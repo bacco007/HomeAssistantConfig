@@ -1,0 +1,23 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Bureau of Meterology
+    icon: mdi:weather-partly-snowy-rainy
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+    modules:
+      - default
+  - type: custom:integration-card
+    integration: bureau_of_meteorology
+    columns: 1
+    hide_integration_title: true
+    card_mod:
+      style: |
+        .entity-state-only {
+          display: none !important;
+        }

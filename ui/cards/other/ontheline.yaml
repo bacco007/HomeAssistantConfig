@@ -24,7 +24,7 @@ cards:
         columns: 2
         type: grid
         cards:
-          - type: custom:mushroom-template-card
+          - type: custom:mushroom-legacy-template-card
             style: |
               ha-card {
                 background-color: var(--background-color);
@@ -34,7 +34,7 @@ cards:
               }}
             secondary: Reddit Post Karma
             fill_container: true
-          - type: custom:mushroom-template-card
+          - type: custom:mushroom-legacy-template-card
             style: |
               ha-card {
                 background-color: var(--background-color);
@@ -44,7 +44,7 @@ cards:
               'comment_karma') }}
             secondary: Reddit Comment Karma
             fill_container: true
-          - type: custom:mushroom-template-card
+          - type: custom:mushroom-legacy-template-card
             style: |
               ha-card {
                 background-color: var(--background-color);
@@ -54,7 +54,7 @@ cards:
               'awardee_karma') }}
             secondary: Reddit Awardee Karma
             fill_container: true
-          - type: custom:mushroom-template-card
+          - type: custom:mushroom-legacy-template-card
             style: |
               ha-card {
                 background-color: var(--background-color);
@@ -77,7 +77,7 @@ cards:
         columns: 2
         type: grid
         cards:
-          - type: custom:mushroom-template-card
+          - type: custom:mushroom-legacy-template-card
             style: |
               ha-card {
                 background-color: var(--background-color);
@@ -88,7 +88,7 @@ cards:
             secondary: Mastodon Followers
             fill_container: true
 
-          - type: custom:mushroom-template-card
+          - type: custom:mushroom-legacy-template-card
             style: |
               ha-card {
                 background-color: var(--background-color);
@@ -98,7 +98,7 @@ cards:
               }}
             secondary: Mastodon Following
             fill_container: true
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         style: |
           ha-card {
             background-color: var(--background-color);

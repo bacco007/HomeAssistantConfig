@@ -1,0 +1,25 @@
+{
+    "type": "object",
+    "properties": {
+        "value": {
+            "type": "string",
+            "title": "QR Code Content",
+            "default": "https://esphome.io",
+            "description": "The string to encode in the QR code"
+        },
+        "ecc": {
+            "type": "string",
+            "title": "Error Correction",
+            "default": "LOW",
+            "enum": ["LOW", "MEDIUM", "QUARTILE", "HIGH"],
+            "description": "Error correction level"
+        },
+        "color": {
+            "type": "string",
+            "title": "Color",
+            "default": "black",
+            "enum": ["black", "white"]
+        }
+    },
+    "_note": "Scale is auto-calculated based on widget dimensions to fit the QR code"
+}

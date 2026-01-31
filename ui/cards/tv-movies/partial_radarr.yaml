@@ -96,7 +96,7 @@ cards:
     entities:
       - type: custom:fold-entity-row
         head:
-          type: custom:mushroom-template-card
+          type: custom:mushroom-legacy-template-card
           primary: Upcoming Movies
           icon: mdi:movie
           icon_color: green

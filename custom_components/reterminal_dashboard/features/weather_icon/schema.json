@@ -1,0 +1,37 @@
+{
+    "type": "object",
+    "properties": {
+        "size": {
+            "type": "integer",
+            "title": "Size (px)",
+            "default": 48,
+            "minimum": 8,
+            "maximum": 200,
+            "description": "Icon size in pixels"
+        },
+        "color": {
+            "type": "string",
+            "title": "Color",
+            "default": "black",
+            "enum": [
+                "black",
+                "white",
+                "red",
+                "green",
+                "blue",
+                "yellow",
+                "gray"
+            ]
+        },
+        "icon_map": {
+            "type": "string",
+            "title": "Icon Mapping",
+            "default": "default",
+            "enum": [
+                "default",
+                "custom"
+            ],
+            "description": "Weather state to icon mapping strategy"
+        }
+    }
+}

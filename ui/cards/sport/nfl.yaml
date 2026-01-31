@@ -23,6 +23,7 @@ cards:
         template: sports_card
         variables:
           - entity: sensor.upcoming_sport_nfl_all_teams
+          - calendar: calendar.ical_nfl_all_teams
       - type: custom:mushroom-chips-card
         alignment: center
         card_mod:
@@ -93,7 +94,7 @@ cards:
               action: none
             icon: mdi:list-box-outline
             content: AFC East Standings
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {
@@ -149,7 +150,7 @@ cards:
               {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
               {%- endif -%}
               {%- endfor -%}
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {
@@ -223,7 +224,7 @@ cards:
               action: none
             icon: mdi:list-box-outline
             content: NFC East Standings
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {
@@ -279,7 +280,7 @@ cards:
               {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
               {%- endif -%}
               {%- endfor -%}
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {
@@ -342,6 +343,7 @@ cards:
         template: sports_card
         variables:
           - entity: sensor.upcoming_sport_new_england_patriots
+          - calendar: calendar.ical_new_england_patriots
       - type: custom:mushroom-chips-card
         alignment: center
         card_mod:
@@ -361,7 +363,7 @@ cards:
           - type: template
             icon: mdi:calendar-alert
             content: Calendar
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {

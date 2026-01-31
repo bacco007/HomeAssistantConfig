@@ -1,0 +1,22 @@
+---
+sensor:
+  - name: "Season"
+    unique_id: seasonname
+    state: >-
+      {{ states('sensor.season') | title
+         if states('sensor.season') not in ['unknown', 'unavailable']
+         else 'Unknown' }}
+
+    icon: >-
+      {% set season = states('sensor.season') %}
+      {% if season == 'spring' %}
+        mdi:flower
+      {% elif season == 'summer' %}
+        mdi:weather-sunny
+      {% elif season == 'autumn' %}
+        mdi:leaf
+      {% elif season == 'winter' %}
+        mdi:snowflake
+      {% else %}
+        mdi:calendar
+      {% endif %}

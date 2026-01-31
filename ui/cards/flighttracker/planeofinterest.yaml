@@ -1,5 +1,5 @@
 ---
-type: custom:mushroom-template-card
+type: custom:mushroom-legacy-template-card
 primary: Bird Watch - Latest Aircraft of Interest
 secondary: >-
   {% from 'easy_time.jinja' import custom_relative_time%}

@@ -1,0 +1,249 @@
+---
+sensor:
+  - name: Sun State
+    unique_id: sun_state_day
+    state: >-
+      {% if is_state('sun.sun', 'above_horizon') %}
+        Day
+      {% else %}
+        Night
+      {% endif %}
+    icon: >-
+      {% if is_state('sun.sun', 'above_horizon') %}
+        mdi:weather-sunny
+      {% else %}
+        mdi:weather-night
+      {% endif %}
+
+  - name: period of the day
+    unique_id: period_of_day
+    state: >-
+      {% if (as_timestamp(state_attr('sun.sun','next_dusk')) - as_timestamp(state_attr('sun.sun','next_setting'))) < 0 %}
+        dusk
+      {% elif (as_timestamp(state_attr('sun.sun','next_rising')) - as_timestamp(state_attr('sun.sun','next_dawn'))) < 0 %}
+        dawn
+      {% elif (state_attr('sun.sun','elevation') | float(0)) < -4 %}
+        night
+      {% else %}
+        day
+      {% endif %}
+    icon: >-
+      {% if (as_timestamp(state_attr('sun.sun','next_dusk')) - as_timestamp(state_attr('sun.sun','next_setting'))) < 0 %}
+        mdi:weather-sunset-down
+      {% elif (as_timestamp(state_attr('sun.sun','next_rising')) - as_timestamp(state_attr('sun.sun','next_dawn'))) < 0 %}
+        mdi:weather-sunset-up
+      {% elif (state_attr('sun.sun','elevation') | float(0)) < -4 %}
+        mdi:weather-night
+      {% else %}
+        mdi:weather-sunny
+      {% endif %}
+
+  - name: Next Dawn
+    unique_id: sun_nextdawn
+    state: "{{ as_timestamp(state_attr('sun.sun','next_dawn')) | timestamp_custom('%a %H:%M') }}"
+    icon: mdi:weather-sunset-up
+
+  - name: Next Dusk
+    unique_id: sun_nextdusk
+    state: "{{ as_timestamp(state_attr('sun.sun','next_dusk')) | timestamp_custom('%a %H:%M') }}"
+    icon: mdi:weather-sunset-down
+
+  - name: Next Midnight
+    unique_id: sun_nextmidnight
+    state: "{{ as_timestamp(state_attr('sun.sun','next_midnight')) | timestamp_custom('%a %H:%M') }}"
+    icon: mdi:weather-night
+
+  - name: Next Noon
+    unique_id: sun_nextnoon
+    state: "{{ as_timestamp(state_attr('sun.sun','next_noon')) | timestamp_custom('%a %H:%M') }}"
+    icon: mdi:weather-sunny
+
+  - name: Next Rising
+    unique_id: sun_nextrising
+    state: "{{ as_timestamp(state_attr('sun.sun','next_rising')) | timestamp_custom('%a %H:%M') }}"
+    icon: mdi:weather-sunset-up
+
+  - name: Next Setting
+    unique_id: sun_nextsetting
+    state: "{{ as_timestamp(state_attr('sun.sun','next_setting')) | timestamp_custom('%a %H:%M') }}"
+    icon: mdi:weather-sunset-down
+
+  - name: Sun Angle
+    unique_id: sun_solarangle
+    unit_of_measurement: "°"
+    state: "{{ '%+.1f'|format(state_attr('sun.sun', 'elevation')) }}"
+    icon: mdi:weather-sunny
+
+  - name: Elevation
+    unique_id: sun_angle
+    unit_of_measurement: "°"
+    state: "{{ state_attr('sun.sun', 'elevation') }}"
+    icon: mdi:axis-y-rotate-clockwise
+
+  - name: Azimuth
+    unique_id: sun_azimuth
+    unit_of_measurement: "°"
+    state: "{{ state_attr('sun.sun', 'azimuth') }}"
+    icon: mdi:axis-z-rotate-clockwise
+
+  - name: Sun
+    unique_id: sun_state
+    state: >-
+      {% if is_state('sun.sun', 'above_horizon') %}
+        sets at {% set ts = as_timestamp(state_attr('sun.sun', 'next_setting')) | timestamp_custom('%H:%M') %} {{ ts.lstrip('0') }}
+      {% else %}
+        rises at {% set ts = as_timestamp(state_attr('sun.sun', 'next_rising')) | timestamp_custom('%H:%M') %} {{ ts.lstrip('0') }}
+      {% endif %}
+    icon: >-
+      {% if is_state('sun.sun', 'above_horizon') %}
+        mdi:weather-sunny
+      {% else %}
+        mdi:weather-night
+      {% endif %}
+
+  - name: Sun Friendly
+    unique_id: sun_state_friendly
+    state: >-
+      {# NOTE: this uses sensor.date_time in your original. If you still have it, keep as-is. #}
+      {% set current = as_timestamp(strptime(states('sensor.date_time'), '%Y-%m-%d, %H:%M')) %}
+      {% set dusk = as_timestamp(state_attr('sun.sun', 'next_dusk')) %}
+      {% if current <= dusk %}
+        {% set setting = as_timestamp(state_attr('sun.sun', 'next_setting')) %}
+        {% if current >= setting %}
+          is setting
+        {% elif (setting - current) <= 60*30 %}
+          will set in a few minutes
+        {% else %}
+          {% set hour = setting|timestamp_custom('%H') | int %}
+          {% set minute = setting|timestamp_custom('%M') | int %}
+          {% set minute_friendly = '' %}
+          {% set half = false %}
+          {% if minute >= 10 and minute <= 20 %}
+            {% set minute_friendly = 'a quarter past ' %}
+          {% elif minute > 20 and minute < 40 %}
+            {% set half = true %}
+          {% elif minute >= 40 and minute <= 50 %}
+            {% set minute_friendly = 'a quarter to ' %}
+            {% set hour = hour + 1 %}
+          {% elif minute > 50 %}
+            {% set hour = hour + 1 %}
+          {% endif %}
+          {% if hour >= 24 %}
+            {% set hour = hour - 24 %}
+          {% endif %}
+          {% if hour == 0 %}
+            {% set hour_friendly = 'midnight' %}
+          {% elif hour == 12 %}
+            {% set hour_friendly = 'noon' %}
+          {% elif hour > 12 %}
+            {% set hour_friendly = hour - 12 %}
+          {% else %}
+            {% set hour_friendly = hour %}
+          {% endif %}
+          {% if half %}
+            will set at around {{ hour_friendly }} and a half
+          {% else %}
+            will set at around {{ minute_friendly }}{{ hour_friendly }}
+          {% endif %}
+        {% endif %}
+      {% else %}
+        {% set dawn = as_timestamp(state_attr('sun.sun', 'next_dawn')) %}
+        {% set rising = as_timestamp(state_attr('sun.sun', 'next_rising')) %}
+        {% set diff = ((rising - current) / 60 / 60) %}
+        {% set hour = diff | int %}
+        {% set minute = (diff - hour) | round(2) %}
+        {% if hour %}
+          {% if minute > 0.66 %}
+            {% set hour = hour + 1 %}
+          {% elif minute > 0.33 %}
+            {% set minute_friendly = ' and a half' %}
+          {% endif %}
+          will rise in about {{hour}}{{ minute_friendly }} hour{% if hour > 0 %}s{% endif %}
+        {% elif (rising - dawn) < 0 %}
+          is rising
+        {% else %}
+          will rise in a few minutes
+        {% endif %}
+      {% endif %}
+    icon: >-
+      {% if is_state('sun.sun', 'above_horizon') %}
+        mdi:weather-sunny
+      {% else %}
+        mdi:weather-night
+      {% endif %}
+
+  - name: Daylight remaining minutes
+    unique_id: daylight_remaining_min
+    unit_of_measurement: "min"
+    state: >-
+      {{ ((as_timestamp(state_attr('sun.sun','next_setting')) - now().timestamp()) / 60) | int }}
+
+  - name: Daylight remaining hh:mm
+    unique_id: daylight_remaining_hm
+    state: >-
+      {{ (as_timestamp(state_attr('sun.sun','next_setting')) - now().timestamp())
+         | timestamp_custom('%H:%M', false) }}
+
+  - name: Next Sunrise
+    unique_id: nextsunrise
+    state: >-
+      {{ as_timestamp(state_attr('sun.sun', 'next_rising')) | timestamp_custom(' %I:%M %p') | replace(" 0", "") }}
+    icon: mdi:weather-sunset-up
+
+  - name: Next Sunset
+    unique_id: nextsunset
+    state: >-
+      {{ as_timestamp(state_attr('sun.sun', 'next_setting')) | timestamp_custom(' %I:%M %p') | replace(" 0", "") }}
+    icon: mdi:weather-sunset-down
+
+  - name: Sunrise
+    unique_id: sunrisetoday
+    state: >-
+      {{ as_timestamp(states('sensor.tbsmarthome_sun_rising')) | timestamp_custom(' %I:%M %p') | replace(" 0", "") }}
+    icon: mdi:weather-sunset-up
+
+  - name: Sunset
+    unique_id: sunsettoday
+    state: >-
+      {{ as_timestamp(states('sensor.tbsmarthome_sun_setting')) | timestamp_custom(' %I:%M %p') | replace(" 0", "") }}
+    icon: mdi:weather-sunset-down
+
+  - name: Day Length Yesterday
+    unique_id: daylightyesterday
+    state: "{{ state_attr('sensor.tbsmarthome_sun_daylight', 'yesterday_hms') }}"
+    icon: mdi:weather-sunny
+
+  - name: Day Length Today
+    unique_id: daylighttoday
+    state: "{{ state_attr('sensor.tbsmarthome_sun_daylight', 'today_hms') }}"
+    icon: mdi:weather-sunny
+
+  - name: Day Length Tomorrow
+    unique_id: daylighttomorrow
+    state: "{{ state_attr('sensor.tbsmarthome_sun_daylight', 'tomorrow_hms') }}"
+    icon: mdi:weather-sunny
+
+  - name: Change in Day Length
+    unique_id: daylengthchange
+    unit_of_measurement: "seconds"
+    state: >-
+      {{ ((state_attr('sensor.tbsmarthome_sun_daylight', 'today') - state_attr('sensor.tbsmarthome_sun_daylight', 'yesterday')) * 3600) | round(0) }}
+    icon: mdi:weather-sunny
+
+  - name: Daylight Percent Remaining
+    unique_id: sun_daylightpct_remain
+    unit_of_measurement: "%"
+    state: >-
+      {%- set total = state_attr('sensor.tbsmarthome_sun_daylight', 'today') | float(0) -%}
+      {%- set used = (now() - state_attr('sensor.tbsmarthome_sun_rising', 'today')).total_seconds() / 3600 -%}
+      {%- if total > 0 -%}
+        {{ (100 * ((total - used) / total)) | round(2) }}
+      {%- else -%}
+        {{ 0 }}
+      {%- endif -%}
+    icon: >-
+      {% if is_state('sun.sun', 'above_horizon') %}
+        mdi:weather-sunny
+      {% else %}
+        mdi:weather-night
+      {% endif %}

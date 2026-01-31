@@ -14,7 +14,7 @@ sequence:
       device: "{{ fan }}"
       command: fan_speed_{{ speed }}
     target:
-      entity_id: remote.wi_fi_universal_remote
+      entity_id: remote.universal_remote
   - if:
       - condition: template
         value_template: "{{ speed }}"

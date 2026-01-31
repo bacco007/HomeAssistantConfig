@@ -1,0 +1,13 @@
+{
+  "domain": "ha_visualiser",
+  "name": "Entity Visualizer",
+  "codeowners": ["@jonducrou"],
+  "config_flow": true,
+  "dependencies": ["http"],
+  "documentation": "https://github.com/jonducrou/ha_visualiser",
+  "integration_type": "service",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/jonducrou/ha_visualiser/issues",
+  "requirements": [],
+  "version": "0.8.20"
+}

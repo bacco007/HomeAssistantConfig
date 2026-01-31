@@ -11,6 +11,7 @@ cards:
     template: sports_card
     variables:
       - entity: sensor.upcoming_sport_sydney_sixers_women
+      - calendar: calendar.ical_sydney_sixers_women
   - type: custom:mushroom-chips-card
     alignment: center
     card_mod:

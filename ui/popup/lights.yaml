@@ -11,7 +11,7 @@ cards:
     show_last_updated: false
     show_attribute: false
     scrolling_effect: false
-  - entity: light.all_lights
+  - entity: light.lights
     type: custom:bubble-card
     card_type: button
     button_type: slider
@@ -44,7 +44,7 @@ cards:
                 show_attribute: true
                 attribute: brightness
       exclude:
-        - entity_id: light.all_lights
+        - entity_id: light.lights
         - entity_id: light.browser*
         - state: unavailable
     card:

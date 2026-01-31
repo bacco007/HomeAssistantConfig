@@ -1,0 +1,12 @@
+{
+  "domain": "solstice_season",
+  "name": "Solstice Season",
+  "codeowners": ["@moerk-o"],
+  "config_flow": true,
+  "documentation": "https://github.com/moerk-o/ha-solstice_season",
+  "integration_type": "service",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/moerk-o/ha-solstice_season/issues",
+  "requirements": ["ephem>=4.1.0"],
+  "version": "1.5.0"
+}

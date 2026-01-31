@@ -1,7 +1,7 @@
 ---
 type: custom:stack-in-card
 cards:
-  - type: custom:mushroom-template-card
+  - type: custom:mushroom-legacy-template-card
     primary: Media
     icon: mdi:television
     icon_color: "#6eaadc"
@@ -95,7 +95,7 @@ cards:
                 s in state_attr('sensor.frontpage_plex_unwatched_tv','data')[:5] -%}
                   {{
                     {
-                    "type": "custom:mushroom-template-card",
+                    "type": "custom:mushroom-legacy-template-card",
                     "entity": "sensor.frontpage_plex_unwatched_tv",
                     "primary": "Plex (New, Unwatched TV)",
                     "secondary": s.title + " - " + s.episode + " (" + s.number + ")\nAdded " + custom_relative_time(s.airdate, values='day'),
@@ -140,7 +140,7 @@ cards:
                 {% for s in state_attr('sensor.frontpage_plex_unwatched_movies','data')[:5] -%}
                   {{
                     {
-                    "type": "custom:mushroom-template-card",
+                    "type": "custom:mushroom-legacy-template-card",
                     "entity": "sensor.frontpage_plex_unwatched_movies",
                     "primary": "Plex (New, Unwatched Movies)",
                     "secondary": s.title + "\nAdded " + custom_relative_time(s.airdate, values='day'),
@@ -194,7 +194,7 @@ cards:
                   {% endif -%}
                   {{
                     {
-                    "type": "custom:mushroom-template-card",
+                    "type": "custom:mushroom-legacy-template-card",
                     "entity": "sensor.frontpage_sonarr_upcoming",
                     "primary": "Sonarr (Upcoming TV)",
                     "secondary": s.title + " - " + s.episode + " (" + s.number + ")\nAiring " + custom_relative_time(s.airdate, values='day, hour'),
@@ -241,7 +241,7 @@ cards:
                 s in state_attr('sensor.frontpage_radarr_upcoming','data')[:5] -%}
                   {{
                     {
-                    "type": "custom:mushroom-template-card",
+                    "type": "custom:mushroom-legacy-template-card",
                     "entity": "sensor.frontpage_radarr_upcoming",
                     "primary": "Radarr (Upcoming Movies)",
                     "secondary": s.title + "\nReleased " + custom_relative_time(s.airdate, values='day'),

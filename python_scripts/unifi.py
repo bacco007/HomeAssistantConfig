@@ -106,7 +106,6 @@ for h in health_data["data"]:
                     "speedtest_status": h["speedtest_status"],
                     "speedtest_lastrun": h["speedtest_lastrun"],
                     "speedtest_ping": h["speedtest_ping"],
-                    "uptime": h["uptime"],
                 }
             )
 
@@ -218,11 +217,11 @@ for client_data in rules["data"]:
             if client_data["uplink"]["uplink_source"] == "legacy":
                 internet = client_data["uplink"]["up"]
             else:
-                internet = client_data["internet"]
-                print("client_data['model'] %s", client_data["model"])
+                internet = "UDM"
+                # print("client_data['model'] %s", client_data["model"])
         elif "internet" in client_data.keys():
             internet = client_data["internet"]
-            print("client_data['model'] %s", client_data["model"])
+            # print("client_data['model'] %s", client_data["model"])
     cpu = 0
     ram = 0
     try:

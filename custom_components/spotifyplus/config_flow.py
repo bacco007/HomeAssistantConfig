@@ -17,7 +17,6 @@ dependencies and install the requirements of the component.
 from __future__ import annotations
 from collections.abc import Mapping
 import logging
-from pickle import NONE
 from typing import Any
 import voluptuous as vol
 
@@ -27,11 +26,11 @@ from spotifywebapipython.models import Device, SpotifyConnectDevices
 from homeassistant.components import zeroconf
 from homeassistant.config_entries import (
     ConfigEntry,
-    ConfigFlow,
     ConfigFlowResult,
     OptionsFlow,
+    SOURCE_REAUTH,
 )
-from homeassistant.const import CONF_DESCRIPTION, CONF_ID, CONF_NAME, Platform
+from homeassistant.const import CONF_DESCRIPTION, CONF_ID, CONF_NAME
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import config_entry_oauth2_flow, config_validation as cv, selector
@@ -51,8 +50,9 @@ from .const import (
     CONF_OPTION_SCRIPT_TURN_ON,
     CONF_OPTION_SOURCE_LIST_HIDE,
     CONF_OPTION_SPOTIFY_SCAN_INTERVAL,
-    CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_DC,
-    CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_KEY,
+    CONF_OPTION_TURN_OFF_AUTO_PAUSE,
+    CONF_OPTION_TURN_ON_AUTO_RESUME,
+    CONF_OPTION_TURN_ON_AUTO_SOURCE_SELECT,
     DEFAULT_OPTION_SPOTIFY_SCAN_INTERVAL,
     DOMAIN, 
     DOMAIN_SCRIPT,
@@ -69,15 +69,17 @@ if (_logsi == None):
 _logsi.SystemLogger = logging.getLogger(__name__)
 
 
-class SpotifyFlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain=DOMAIN):
+class SpotifyPlusConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain=DOMAIN):
     """
-    Config flow to handle Spotify OAuth2 authentication.
+    Config flow to handle SpotifyPlus OAuth2 authentication.
     """
 
+    # integration DOMAIN (must be a local variable; can't use the constant reference).
     DOMAIN = DOMAIN
-    VERSION = 1
 
-    reauth_entry: ConfigEntry | None = None
+    # integration configuration entry major version number.
+    VERSION = 2
+
 
     @property
     def logger(self) -> logging.Logger:
@@ -99,11 +101,11 @@ class SpotifyFlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, dom
             "show_dialog": "true"
         }
         
-        _logsi.LogDictionary(SILevel.Verbose, "Configure Component extra_authorize_data - data (dictionary)", data)
+        _logsi.LogDictionary(SILevel.Verbose, "Configure Component extra_authorize_data - data (dictionary)", data, colorValue=SIColors.Tan)
         return data
 
 
-    async def async_oauth_create_entry(self, data:dict[str,Any]) -> FlowResult:
+    async def async_oauth_create_entry(self, data:dict[str,Any]) -> ConfigFlowResult:
         """ 
         Create an oauth config entry or update existing entry for reauth. 
         
@@ -112,26 +114,26 @@ class SpotifyFlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, dom
                 Configuration data for the entry (e.g. id, name, token, auth_implementation, etc).
                 
         Returns:
-            A `FlowResult` object that indicates the flow result.
+            A `ConfigFlowResult` object that indicates the flow result.
         """
         spotifyClient:SpotifyClient = None
 
         try:
 
             # trace.
-            _logsi.EnterMethod(SILevel.Debug)
-            _logsi.LogDictionary(SILevel.Verbose, "ConfigFlow is starting the OAuth2 config entry flow - parameters", data, prettyPrint=True)
+            _logsi.EnterMethod(SILevel.Debug, colorValue=SIColors.Tan)
+            _logsi.LogDictionary(SILevel.Verbose, "ConfigFlow is starting the OAuth2 config entry flow - parameters", data, prettyPrint=True, colorValue=SIColors.Tan)
 
             try:
             
                 # get shared zeroconf instance.
-                _logsi.LogVerbose("Retrieving the HA shared Zeroconf instance")
+                _logsi.LogVerbose("Retrieving the HA shared Zeroconf instance", colorValue=SIColors.Tan)
                 zeroconf_instance = await zeroconf.async_get_instance(self.hass)
 
                 # create new spotify web api python client instance - "SpotifyClient()".
                 # note that Spotify Connect Directory task will be disabled, since we don't need it
                 # for creating the OAuth2 application credentials.
-                _logsi.LogVerbose("Creating SpotifyClient instance")
+                _logsi.LogVerbose("Creating SpotifyClient instance, and retrieving account information", colorValue=SIColors.Tan)
                 tokenStorageDir:str = "%s/.storage" % (self.hass.config.config_dir)
                 tokenStorageFile:str = "%s_tokens.json" % (DOMAIN)
                 spotifyClient = await self.hass.async_add_executor_job(
@@ -149,35 +151,59 @@ class SpotifyFlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, dom
                     None,                   # spotifyWebPlayerCookieSpdc:str=None,
                     None,                   # spotifyWebPlayerCookieSpkey:str=None,
                 )
-                _logsi.LogObject(SILevel.Verbose, "SpotifyClient instance created - object", spotifyClient)
+                _logsi.LogObject(SILevel.Verbose, "SpotifyClient instance created - object", spotifyClient, colorValue=SIColors.Tan)
 
+            except Exception as ex:
+            
+                _logsi.LogException(None, ex, colorValue=SIColors.Tan)
+                return self.async_abort(reason="connection_error")
+
+            try:
+            
                 clientId:str = None
                 tokenProfileId:str = None
 
                 # set spotify web api token authorization from HA-managed OAuth2 session token.
-                _logsi.LogVerbose("Setting SpotifyClient token authorization from OAuth2 session token")
+                _logsi.LogVerbose("Setting SpotifyClient token authorization from OAuth2 session token", colorValue=SIColors.Tan)
                 await self.hass.async_add_executor_job(
                     spotifyClient.SetAuthTokenFromToken, clientId, data["token"], tokenProfileId
                 )
 
-                _logsi.LogObject(SILevel.Verbose, "SpotifyClient token authorization was set - object (with AuthToken)", spotifyClient)
-                _logsi.LogObject(SILevel.Verbose, "SpotifyClient UserProfile - object", spotifyClient.UserProfile)
+                _logsi.LogObject(SILevel.Verbose, "SpotifyClient token authorization was set - object (with AuthToken)", spotifyClient, colorValue=SIColors.Tan)
+                _logsi.LogObject(SILevel.Verbose, "SpotifyClient UserProfile - object", spotifyClient.UserProfile, colorValue=SIColors.Tan)
 
             except Exception as ex:
             
-                _logsi.LogException(None, ex)
+                _logsi.LogException(None, ex, colorValue=SIColors.Tan)
                 return self.async_abort(reason="setauthtoken_error")
 
-            # is this a reauthentication request?
-            # if so, and the unique id's are different then it's a mismatch error.
-            if self.reauth_entry:
-                if spotifyClient.UserProfile.Id != self.reauth_entry.data[CONF_ID]:
-                    _logsi.LogWarning("Re-authenticated account id ('%s') does not match the initial authentication account id ('%s')!" % (spotifyClient.UserProfile.Id, self.reauth_entry.data[CONF_ID]))
-                    return self.async_abort(reason="reauth_account_mismatch")
-       
             # set configuration entry unique id (e.g. spotify profile id).
-            await self.async_set_unique_id(spotifyClient.UserProfile.Id)
-            _logsi.LogVerbose("ConfigFlow assigned unique_id of '%s' for Spotify UserProfile '%s'" % (self.unique_id, spotifyClient.UserProfile.DisplayName))
+            # this value should match the value assigned in media_player `_attr_unique_id` attribute.
+            await self.async_set_unique_id(spotifyClient.UserProfile.Id + "_" + DOMAIN)
+            _logsi.LogVerbose("ConfigFlow assigned unique_id of '%s' for Spotify UserProfile '%s'" % (self.unique_id, spotifyClient.UserProfile.DisplayName), colorValue=SIColors.Tan)
+
+            # is this a reauthentication request?
+            # if so, then abort if the unique ID does not match the reauth / reconfigure context.
+            if self.source == SOURCE_REAUTH:
+                _logsi.LogVerbose("ConfigFlow re-auth source detected; checking for account mismatch using unique_id of '%s' for Spotify DisplayName '%s'" % (self.unique_id, spotifyClient.UserProfile.DisplayName), colorValue=SIColors.Tan)
+                self._abort_if_unique_id_mismatch(reason="reauth_account_mismatch")
+                return self.async_update_reload_and_abort(
+                    self._get_reauth_entry(), title=spotifyClient.UserProfile.DisplayName, data=data
+                )
+
+            # one final check to see if a configuration entry already exists for the unique id.
+            # if it IS already configured, then we will display an "already_configured" message 
+            # to the user and halt the flow to prevent a duplicate configuration entry.
+            # this will also prevent the HA system log warning: "Detected that custom integration
+            # 'xxx'xcreates a config entry when another entry with the same unique ID exists.".
+            _logsi.LogVerbose("ConfigFlow is verifying USER ENTRY device details have not already been configured: unique_id=\"%s\", display name=\"%s\"" % (self.unique_id, spotifyClient.UserProfile.DisplayName), colorValue=SIColors.Tan)
+            self._abort_if_unique_id_configured(
+                error="already_configured",
+                description_placeholders={
+                    "userinfo_name": spotifyClient.UserProfile.DisplayName,
+                    "userinfo_id": spotifyClient.UserProfile.Id
+                    },
+            )
 
             # set configuration data parameters.
             data[CONF_ID] = spotifyClient.UserProfile.Id
@@ -185,19 +211,19 @@ class SpotifyFlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, dom
             data[CONF_DESCRIPTION] = "(%s account)" % spotifyClient.UserProfile.Product.capitalize()
 
             # create the configuration entry.
-            _logsi.LogDictionary(SILevel.Verbose, "ConfigFlow is creating a configuration entry for Spotify Id='%s', name='%s'" % (data[CONF_ID], data[CONF_NAME]), data)
+            _logsi.LogDictionary(SILevel.Verbose, "ConfigFlow is creating a configuration entry for Spotify Id='%s', name='%s'" % (data[CONF_ID], data[CONF_NAME]), data, colorValue=SIColors.Tan)
             configEntry:FlowResult = self.async_create_entry(
                 title=f"SpotifyPlus {data[CONF_NAME]}",
                 description=data[CONF_DESCRIPTION],
                 data=data
             )
-            _logsi.LogDictionary(SILevel.Verbose, "ConfigFlow created configuration entry for Spotify Id='%s', name='%s'" % (data[CONF_ID], data[CONF_NAME]), data, prettyPrint=True)
+            _logsi.LogDictionary(SILevel.Verbose, "ConfigFlow created configuration entry for Spotify Id='%s', name='%s'" % (data[CONF_ID], data[CONF_NAME]), data, prettyPrint=True, colorValue=SIColors.Tan)
             return configEntry
 
         except Exception as ex:
             
             # trace.
-            _logsi.LogException(None, ex, logToSystemLogger=False)
+            _logsi.LogException(None, ex, logToSystemLogger=False, colorValue=SIColors.Tan)
             raise
         
         finally:
@@ -207,10 +233,10 @@ class SpotifyFlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, dom
                 spotifyClient.Dispose()
 
             # trace.
-            _logsi.LeaveMethod(SILevel.Debug)
+            _logsi.LeaveMethod(SILevel.Debug, colorValue=SIColors.Tan)
 
 
-    async def async_step_reauth(self, entry_data:Mapping[str, Any]) -> FlowResult:
+    async def async_step_reauth(self, entry_data:Mapping[str, Any]) -> ConfigFlowResult:
         """
         Perform reauth upon an API authentication error or migration of old entries.
         
@@ -219,22 +245,20 @@ class SpotifyFlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, dom
                 A dictionary of entry data values.
 
         Returns:
-            A `FlowResult` object that indicates the flow result.
+            A `ConfigFlowResult` object that indicates the flow result.
+
+        Refer to the following developer guide on how to handle expired application credentials:
+        - https://developers.home-assistant.io/docs/integration_setup_failures/#handling-expired-credentials
+        - https://developers.home-assistant.io/docs/config_entries_config_flow_handler/#reauthentication
+
+        ReAuth processing can be tested by calling the `entry.async_start_reauth(hass)` method
+        from the __init__.py `async_setup_entry` logic (after session token is established).
         """
         try:
 
             # trace.
-            _logsi.EnterMethod(SILevel.Debug)
-            _logsi.LogDictionary(SILevel.Verbose, "ConfigFlow is starting the OAuth2 Re-Authentication flow - user input parameters", entry_data, prettyPrint=True)
-
-            # get
-            self.reauth_entry = self.hass.config_entries.async_get_entry(
-                self.context["entry_id"]
-            )
-
-            # trace.
-            if self.reauth_entry is not None:
-                _logsi.LogDictionary(SILevel.Verbose, "reauth_entry Data", self.reauth_entry.data, prettyPrint=True)
+            _logsi.EnterMethod(SILevel.Debug, colorValue=SIColors.Tan)
+            _logsi.LogDictionary(SILevel.Verbose, "ConfigFlow is starting the OAuth2 Re-Authentication flow - user input parameters", entry_data, prettyPrint=True, colorValue=SIColors.Tan)
 
             # prompt the user to re-authenticate.
             return await self.async_step_reauth_confirm()
@@ -242,16 +266,16 @@ class SpotifyFlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, dom
         except Exception as ex:
             
             # trace.
-            _logsi.LogException(None, ex, logToSystemLogger=False)
+            _logsi.LogException(None, ex, logToSystemLogger=False, colorValue=SIColors.Tan)
             raise
         
         finally:
 
             # trace.
-            _logsi.LeaveMethod(SILevel.Debug)
+            _logsi.LeaveMethod(SILevel.Debug, colorValue=SIColors.Tan)
 
 
-    async def async_step_reauth_confirm(self, user_input:dict[str,Any]|None=None) -> FlowResult:
+    async def async_step_reauth_confirm(self, user_input:dict[str,Any]|None=None) -> ConfigFlowResult:
         """
         Dialog that informs the user that reauth is required.
         
@@ -261,51 +285,67 @@ class SpotifyFlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler, dom
                 the form was submitted, or null if the form is being shown initially.
 
         Returns:
-            A `FlowResult` object that indicates the flow result.
+            A `ConfigFlowResult` object that indicates the flow result.
         """
         try:
 
             # trace.
-            _logsi.EnterMethod(SILevel.Debug)
-            _logsi.LogDictionary(SILevel.Verbose, "ConfigFlow is confirming the OAuth2 Re-Authentication flow - user input parameters", user_input, prettyPrint=True)
-            if self.reauth_entry is not None:
-                _logsi.LogDictionary(SILevel.Verbose, "reauth_entry Data", self.reauth_entry.data, prettyPrint=True)
+            _logsi.EnterMethod(SILevel.Debug, colorValue=SIColors.Tan)
+            _logsi.LogDictionary(SILevel.Verbose, "ConfigFlow is confirming the OAuth2 Re-Authentication flow - user input parameters", user_input, prettyPrint=True, colorValue=SIColors.Tan)
 
-            # is this a reauthentication request?
-            # if so, then it's a mismatch error.
-            if self.reauth_entry:
-                _logsi.LogWarning("Re-authenticated account id ('%s') mismatch detected" % self.reauth_entry.data[CONF_ID])
-                return self.async_abort(reason="reauth_account_mismatch")
+            reauth_account_name = "unknown"
+            reauth_account_id = "unknown"
+
+            # get reauth config entry linked to the current context.
+            reauth_entry = self._get_reauth_entry()
+            if (reauth_entry is not None):
+
+                # trace.
+                if (_logsi.IsOn(SILevel.Verbose)):
+                    _logsi.LogObject(SILevel.Verbose, "ConfigFlow OAuth2 Re-Authentication flow - reauth_entry object", reauth_entry, colorValue=SIColors.Tan)
+                    _logsi.LogDictionary(SILevel.Verbose, "ConfigFlow OAuth2 Re-Authentication flow - reauth_entry data", reauth_entry.data, prettyPrint=True, colorValue=SIColors.Tan)
+
+                # default reauth account information details.
+                # note that there could be instances where the "id" and "name" attributes 
+                # do not exist in the reauth entry data; in this case, we will use the
+                # unique_id and the title instead.
+                reauth_account_id = reauth_entry.data.get(CONF_ID, None) or reauth_entry.unique_id.replace("_" + DOMAIN, "")  # drop the "_spotifyplus" suffix
+                reauth_account_name = reauth_entry.data.get(CONF_NAME, None) or reauth_entry.title
 
             # if user has not authenticated then prompt the user to authenticate.
-            if user_input is None and self.reauth_entry:
-                _logsi.LogVerbose("ConfigFlow is prompting user to authenticate for account id ('%s')" % self.reauth_entry.data[CONF_ID])
+            if user_input is None:
+
+                _logsi.LogVerbose("ConfigFlow is prompting user to authenticate for account name \"%s\", id \"%s\"" % (reauth_account_name, reauth_account_id), colorValue=SIColors.Tan)
                 return self.async_show_form(
                     step_id="reauth_confirm",
-                    description_placeholders={"account": self.reauth_entry.data[CONF_ID]},
+                    description_placeholders={
+                        "account_id": reauth_account_id,
+                        "account_name": reauth_account_name
+                        },
                     errors={},
                 )
 
             # at this point, the user has been authenticated to Spotify.
             # now the user needs to pick an OAuth2 implementation (e.g. application credentials) to use.
             return await self.async_step_pick_implementation(
-                user_input={"implementation": self.reauth_entry.data["auth_implementation"]}
+                user_input={"implementation": reauth_entry.data["auth_implementation"]}
             )
 
         except Exception as ex:
             
             # trace.
-            _logsi.LogException(None, ex, logToSystemLogger=False)
+            _logsi.LogException(None, ex, logToSystemLogger=False, colorValue=SIColors.Tan)
             raise
         
         finally:
 
             # trace.
-            _logsi.LeaveMethod(SILevel.Debug)
+            _logsi.LeaveMethod(SILevel.Debug, colorValue=SIColors.Tan)
+
 
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlow:
+    def async_get_options_flow(config_entry: ConfigEntry) -> SpotifyPlusOptionsFlow:
         """
         Get the options flow for this handler, which enables options support.
 
@@ -346,7 +386,7 @@ class SpotifyPlusOptionsFlow(OptionsFlow):
 
             # load config entry options values.
             self._Options = dict(entry.options)
-            
+
         except Exception as ex:
             
             # trace.
@@ -409,7 +449,10 @@ class SpotifyPlusOptionsFlow(OptionsFlow):
                 self._Options[CONF_OPTION_SCRIPT_TURN_OFF] = user_input.get(CONF_OPTION_SCRIPT_TURN_OFF, None)
                 self._Options[CONF_OPTION_SCRIPT_TURN_ON] = user_input.get(CONF_OPTION_SCRIPT_TURN_ON, None)
                 self._Options[CONF_OPTION_SOURCE_LIST_HIDE] = user_input.get(CONF_OPTION_SOURCE_LIST_HIDE, None)
-                
+                self._Options[CONF_OPTION_TURN_OFF_AUTO_PAUSE] = user_input.get(CONF_OPTION_TURN_OFF_AUTO_PAUSE, True)
+                self._Options[CONF_OPTION_TURN_ON_AUTO_RESUME] = user_input.get(CONF_OPTION_TURN_ON_AUTO_RESUME, True)
+                self._Options[CONF_OPTION_TURN_ON_AUTO_SOURCE_SELECT] = user_input.get(CONF_OPTION_TURN_ON_AUTO_SOURCE_SELECT, True)
+
                 # validations.
                 # spotify scan interval must be in the 4 to 60 range (if specified).
                 spotifyScanInterval:int = user_input.get(CONF_OPTION_SPOTIFY_SCAN_INTERVAL, DEFAULT_OPTION_SPOTIFY_SCAN_INTERVAL)
@@ -426,14 +469,18 @@ class SpotifyPlusOptionsFlow(OptionsFlow):
                     # show the next configuration options form.
                     return await self.async_step_02_options_player()
 
-            # load available spotify connect devices.
+            # load available spotify connect devices;
             device_list:list[str] = await self.hass.async_add_executor_job(self._GetPlayerDevicesList)
-            if (device_list is None) or (len(device_list) == 0):
-                errors["base"] = "no_player_devices"
 
             # log device that is currently selected.
             device_default:str = self._Options.get(CONF_OPTION_DEVICE_DEFAULT, None)
             _logsi.LogVerbose("'%s': OptionsFlow option '%s' - SELECTED value: '%s'" % (self._name, CONF_OPTION_DEVICE_DEFAULT, device_default))
+
+            # if no devices, then remove device default value.
+            if (device_list is None):
+                device_list = []
+                _logsi.LogVerbose("'%s': OptionsFlow option '%s' - Spotify Connect device list is empty; removing default device selection" % (self._name, CONF_OPTION_DEVICE_DEFAULT))
+                self._Options.pop(CONF_OPTION_DEVICE_DEFAULT, None)
                    
             # create validation schema.
             schema = vol.Schema(
@@ -467,6 +514,18 @@ class SpotifyPlusOptionsFlow(OptionsFlow):
                                  ): cv.positive_int,
                     vol.Optional(CONF_OPTION_ALWAYS_ON, 
                                  description={"suggested_value": self._Options.get(CONF_OPTION_ALWAYS_ON)},
+                                 ): cv.boolean,
+                    vol.Optional(CONF_OPTION_TURN_OFF_AUTO_PAUSE, 
+                                 description={"suggested_value": self._Options.get(CONF_OPTION_TURN_OFF_AUTO_PAUSE)},
+                                 default=True,  # default to True if not supplied
+                                 ): cv.boolean,
+                    vol.Optional(CONF_OPTION_TURN_ON_AUTO_RESUME, 
+                                 description={"suggested_value": self._Options.get(CONF_OPTION_TURN_ON_AUTO_RESUME)},
+                                 default=True,  # default to True if not supplied
+                                 ): cv.boolean,
+                    vol.Optional(CONF_OPTION_TURN_ON_AUTO_SOURCE_SELECT, 
+                                 description={"suggested_value": self._Options.get(CONF_OPTION_TURN_ON_AUTO_SOURCE_SELECT)},
+                                 default=True,  # default to True if not supplied
                                  ): cv.boolean,
                 }
             )
@@ -533,24 +592,16 @@ class SpotifyPlusOptionsFlow(OptionsFlow):
                 self._Options[CONF_OPTION_DEVICE_LOGINID] = user_input.get(CONF_OPTION_DEVICE_LOGINID, None)
                 self._Options[CONF_OPTION_DEVICE_USERNAME] = user_input.get(CONF_OPTION_DEVICE_USERNAME, None)
                 self._Options[CONF_OPTION_DEVICE_PASSWORD] = user_input.get(CONF_OPTION_DEVICE_PASSWORD, None)
-                self._Options[CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_DC] = user_input.get(CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_DC, None)
-                self._Options[CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_KEY] = user_input.get(CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_KEY, None)
                 
                 # validations.
                 # if device username was entered then device password is required.
                 deviceLoginid:str = user_input.get(CONF_OPTION_DEVICE_LOGINID, None)
                 deviceUsername:str = user_input.get(CONF_OPTION_DEVICE_USERNAME, None)
                 devicePassword:str = user_input.get(CONF_OPTION_DEVICE_PASSWORD, None)
-                webplayerCookieSpdc:str = user_input.get(CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_DC, None)
-                webplayerCookieSpkey:str = user_input.get(CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_KEY, None)
                 if (deviceUsername is not None) and (devicePassword is None):
                     errors["base"] = "device_password_required"
                 if (deviceUsername is None) and (devicePassword is not None):
                     errors["base"] = "device_username_required"
-                if (webplayerCookieSpdc is not None) and (webplayerCookieSpkey is None):
-                    errors["base"] = "spotify_webplayer_sp_key_required"
-                if (webplayerCookieSpkey is not None) and (webplayerCookieSpdc is None):
-                    errors["base"] = "spotify_webplayer_sp_dc_required"
 
                 # any validation errors? if not, then ...
                 if "base" not in errors:
@@ -565,18 +616,11 @@ class SpotifyPlusOptionsFlow(OptionsFlow):
                         data=self._Options
                     )
 
-            # load available spotify connect devices.
-            device_list:list[str] = await self.hass.async_add_executor_job(self._GetPlayerDevicesList)
-            if (device_list is None) or (len(device_list) == 0):
-                errors["base"] = "no_player_devices"
-
             # log device that is currently selected.
             device_loginid:str = self._Options.get(CONF_OPTION_DEVICE_LOGINID, None)
             _logsi.LogVerbose("'%s': OptionsFlow option '%s' - value: '%s'" % (self._name, CONF_OPTION_DEVICE_LOGINID, device_loginid))
             device_username:str = self._Options.get(CONF_OPTION_DEVICE_USERNAME, None)
             _logsi.LogVerbose("'%s': OptionsFlow option '%s' - value: '%s'" % (self._name, CONF_OPTION_DEVICE_USERNAME, device_username))
-            webplayer_cookie_sp_key:str = self._Options.get(CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_KEY, None)
-            _logsi.LogVerbose("'%s': OptionsFlow option '%s' - value: '%s'" % (self._name, CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_KEY, webplayer_cookie_sp_key))
                    
             # create validation schema.
             schema = vol.Schema(
@@ -591,12 +635,6 @@ class SpotifyPlusOptionsFlow(OptionsFlow):
                                  ): cv.string,
                     vol.Optional(CONF_OPTION_DEVICE_PASSWORD, 
                                  description={"suggested_value": self._Options.get(CONF_OPTION_DEVICE_PASSWORD)},
-                                 ): cv.string,
-                    vol.Optional(CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_DC, 
-                                 description={"suggested_value": self._Options.get(CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_DC)},
-                                 ): cv.string,
-                    vol.Optional(CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_KEY, 
-                                 description={"suggested_value": self._Options.get(CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_KEY)},
                                  ): cv.string,
                 }
             )
@@ -638,7 +676,8 @@ class SpotifyPlusOptionsFlow(OptionsFlow):
             # get configuration instance data so we can reference the client instance.
             _logsi.LogVerbose("'%s': OptionsFlow is retrieving instance data" % self._name)
             data:InstanceDataSpotifyPlus = self.hass.data[DOMAIN].get(self._entry.entry_id, None)
-            _logsi.LogObject(SILevel.Verbose, "'%s': OptionsFlow instance data.spotifyClient" % self._name, data.spotifyClient)
+            if (data) and (data.spotifyClient):
+                _logsi.LogObject(SILevel.Verbose, "'%s': OptionsFlow instance data.spotifyClient" % self._name, data.spotifyClient)
             _logsi.LogObject(SILevel.Verbose, "'%s': OptionsFlow instance data.options" % self._name, data.options)
             
             # get spotify connect player device list.
@@ -658,7 +697,7 @@ class SpotifyPlusOptionsFlow(OptionsFlow):
         except Exception as ex:
             
             _logsi.LogError("'%s': OptionsFlow could not retrieve Spotify Connect player device list: %s" % (self._name, str(ex)))
-            return None
+            return []
         
         finally:
 

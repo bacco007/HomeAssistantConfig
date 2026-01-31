@@ -2,24 +2,36 @@
   "config": {
     "step": {
       "pick_implementation": {
-        "title": "Select SpotifyPlus OAuth Credential"
+        "title": "Select SpotifyPlus OAuth Credential",
+        "data": {
+          "implementation": "SpotifyPlus Application Credentials"
+        },
+        "data_description": {
+          "implementation": "Select an application credential to authenticate to Spotify."
+        }
       },
       "reauth_confirm": {
         "title": "SpotifyPlus Re-Authentication Required",
-        "description": "The Spotify integration needs to re-authenticate with Spotify for account: {account}"
+        "description": "The SpotifyPlus integration needs to re-authenticate with Spotify for user name \"{account_name}\", user-id \"{account_id}\"."
       }
     },
     "abort": {
+      "_comment_01": "***** IMPORTANT ***** some of these resources are not referenced in our config_flow, but are still required by OAuth2 processing!",
+      "already_configured": "An existing service entry has already been configured for Spotify user \"{userinfo_name}\", user-id \"{userinfo_id}\".  Please modify the existing service entry, or select a different Application Credential when adding a service.",
       "authorize_url_timeout": "Timeout generating authorize URL.",
-      "missing_configuration": "The Spotify integration is not configured. Please follow the documentation.",
-      "no_url_available": "[%key:common::config_flow::abort::oauth2_no_url_available%]",
-      "reauth_account_mismatch": "Spotify account authenticated with does not match the account needing re-authentication for the SpotifyPlus integration; please check the System Log for further information.",
+      "connection_error": "Could not retrieve Spotify account information. Is the user registered in the Spotify Developer Dashboard?",
       "invalid_access_token": "OAuth access token is invalid for the SpotifyPlus integration; please check the System Log for further information.",
+      "missing_configuration": "The Spotify integration is not configured. Please follow the documentation.",
+      "missing_credentials": "The integration requires application credentials.",
+      "no_url_available": "Redirect URL is not available; URL is required since you have not configured an external URL in Home Assistant.",
       "oauth_error": "OAuth error occurred while processing SpotifyPlus OAuth Application Credentials; please check the System Log for further information.",
+      "oauth_failed": "OAuth request failed while processing SpotifyPlus OAuth Application Credentials; please check the System Log for further information.",
       "oauth_timeout": "OAuth timeout error occurred while processing SpotifyPlus OAuth Application Credentials.  This usually indicates a temporary condition; please check the System Log for further information.",
       "oauth_unauthorized": "OAuth Application Credentials are unauthorized for use by the SpotifyPlus integration; please check the System Log for further information.",
-      "oauth_failed": "OAuth request failed while processing SpotifyPlus OAuth Application Credentials; please check the System Log for further information.",
-      "setauthtoken_error": "SpotifyClient authorization token could not be set from OAuth2 session token; please check the System Log for further information."
+      "reauth_account_mismatch": "Spotify account authenticated with does not match the account needing re-authentication for the SpotifyPlus integration; please check the System Log for further information.",
+      "reauth_successful": "Re-authentication was successful",
+      "setauthtoken_error": "SpotifyClient authorization token could not be set from OAuth2 session token; please check the System Log for further information.",
+      "user_rejected_authorize": "Account linking rejected: {error}"
     },
     "create_entry": {
       "default": "Successfully authenticated with Spotify."
@@ -36,7 +48,10 @@
           "script_turn_on": "Script called to turn on device that plays media content.",
           "script_turn_off": "Script called to turn off device that plays media content.",
           "source_list_hide": "The semi-colon delimited list of device names to hide in the source list.",
-          "spotify_scan_interval": "Scan interval (in seconds) used to query Spotify Player playstate (range 4 - 60)."
+          "spotify_scan_interval": "Scan interval (in seconds) used to query Spotify Player playstate (range 4 - 60).",
+          "turn_off_auto_pause": "Automatically pause Spotify Player when media player is turned off.",
+          "turn_on_auto_resume": "Automatically resume Spotify Player when media player is turned on.",
+          "turn_on_auto_source_select": "Automatically select source when media player is turned on."
         },
         "submit": "Next"
       },
@@ -46,20 +61,15 @@
         "data": {
           "device_loginid": "Spotify Connect canonical loginid to use when connecting to an inactive device.",
           "device_password": "Spotify Connect password to use when connecting to an inactive device.",
-          "device_username": "Spotify Connect username to use when connecting to an inactive device.",
-          "spotify_webplayer_cookie_sp_dc": "Spotify Web Player cookie credentials SP_DC value.",
-          "spotify_webplayer_cookie_sp_key": "Spotify Web Player cookie credentials SP_KEY value."
+          "device_username": "Spotify Connect username to use when connecting to an inactive device."
         },
         "submit": "Save"
       }
     },
     "error": {
-      "no_player_devices": "Per Spotify Web API, there are currently no Spotify Connect devices active.  Please close the configuration options, play a track on any Spotify Connect player for a minute or two, and then open the configuration options again.",
       "device_password_required": "Spotify Connect Device Password is required if a Spotify Connect Device Username was specified.",
       "device_username_required": "Spotify Connect Device Username is required if a Spotify Connect Device Password was specified.",
-      "spotify_scan_interval_range_invalid": "Spotify Scan Interval is invalid; please specify a whole number between 4 and 60, or leave blank to use the default (30).",
-      "spotify_webplayer_sp_dc_required": "Spotify Web Player cookie sp_dc value is required if the Spotify Web Player cookie sp_key value was specified.",
-      "spotify_webplayer_sp_key_required": "Spotify Web Player cookie sp_key value is required if the Spotify Web Player cookie sp_dc value was specified."
+      "spotify_scan_interval_range_invalid": "Spotify Scan Interval is invalid; please specify a whole number between 4 and 60, or leave blank to use the default (30)."
     }
   },
   "system_health": {
@@ -82,7 +92,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "uris": {
           "name": "URI's",
@@ -108,7 +118,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -122,7 +132,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -136,7 +146,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -150,7 +160,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -164,7 +174,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "playlist_id": {
           "name": "Playlist ID",
@@ -182,7 +192,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -196,7 +206,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -210,7 +220,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -224,7 +234,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -238,7 +248,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "playlist_id": {
           "name": "ID's",
@@ -256,7 +266,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -270,7 +280,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "album_id": {
           "name": "Album Id",
@@ -288,7 +298,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "limit": {
           "name": "Limit",
@@ -318,7 +328,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "limit": {
           "name": "Limit",
@@ -348,7 +358,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "album_id": {
           "name": "Album ID",
@@ -378,7 +388,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "artist_id": {
           "name": "Artist Id",
@@ -392,7 +402,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "artist_id": {
           "name": "Artist Id",
@@ -430,7 +440,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "artist_id": {
           "name": "Artist Id",
@@ -444,7 +454,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "artist_id": {
           "name": "Artist Id",
@@ -462,7 +472,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "artist_id": {
           "name": "Artist Id",
@@ -484,7 +494,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "after": {
           "name": "After Artist ID",
@@ -510,7 +520,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "audiobook_id": {
           "name": "Audiobook ID",
@@ -528,7 +538,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "audiobook_id": {
           "name": "Audiobook ID",
@@ -558,7 +568,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "limit": {
           "name": "Limit",
@@ -584,7 +594,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "country": {
           "name": "Market / Country Code",
@@ -606,7 +616,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "category_id": {
           "name": "Category ID",
@@ -640,7 +650,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "chapter_id": {
           "name": "Chapter Id",
@@ -658,7 +668,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "image_url": {
           "name": "Image URL",
@@ -676,7 +686,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "episode_id": {
           "name": "Episode Id",
@@ -694,7 +704,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "limit": {
           "name": "Limit",
@@ -720,7 +730,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "limit": {
           "name": "Limit",
@@ -752,13 +762,69 @@
         }
       }
     },
+    "get_image_palette_colors": {
+      "name": "Get Image Palette Colors",
+      "description": "Get color palette RGB values from the specified image source.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
+        },
+        "image_source": {
+          "name": "Image Source",
+          "description": "The image source to extract color palette information from.  If the prefix of the value is `http:` or `https:`, then the image is downloaded from the url.  This can also point to a filename on the local file system.  If null, the currently playing Spotify track image url is used.  Example = `https://i.scdn.co/image/ab67616d0000b2733deaee5f76ab2da15dd8db86`, `c:/image1.jpg`"
+        },
+        "color_count": {
+          "name": "Color Count",
+          "description": "The size of the palette (max number of colors).  Default is 10.  Range is 1 to 256."
+        },
+        "color_quality": {
+          "name": "Color Quality",
+          "description": "Controls the processing time and quality of the palette generation.  A lower value (e.g. 1) results in higher quality but takes more processing time, while a higher value (e.g. 5) is faster but may result in a lower-quality palette.  Default is 5; Range is 1 to 10."
+        },
+        "brightness_filter_low": {
+          "name": "Brightness Filter Low",
+          "description": "Removes colors that are too dark based on their brightness value.  Range is 0 to 765.  Default is None."
+        },
+        "brightness_filter_high": {
+          "name": "Brightness Filter High",
+          "description": "Removes colors that are too light based on their brightness value.  Range is 0 to 765.  Default is None."
+        },
+        "hue_distance_filter": {
+          "name": "Hue Distance Filter",
+          "description": "Remove colors that are too close to each other for the specified hue.  This keeps the colors looking fairly distinct.  Range is 0 to 360.  Default is None."
+        }
+      }
+    },
+    "get_image_vibrant_colors": {
+      "name": "Get Image Vibrant Colors",
+      "description": "Get vibrant color palette values from the specified image source.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
+        },
+        "image_source": {
+          "name": "Image Source",
+          "description": "The image source to extract color palette information from.  If the prefix of the value is `http:` or `https:`, then the image is downloaded from the url.  This can also point to a filename on the local file system.  If null, the currently playing Spotify track image url is used.  Example = `https://i.scdn.co/image/ab67616d0000b2733deaee5f76ab2da15dd8db86`, `c:/image1.jpg`"
+        },
+        "color_count": {
+          "name": "Color Count",
+          "description": "The number of colors in the initial palette from which swatches will be generated.  Default is 64; Range is 1 to 256."
+        },
+        "color_quality": {
+          "name": "Color Quality",
+          "description": "Controls the processing time and quality of the palette generation.  A lower value (e.g. 1) results in higher quality but takes more processing time, while a higher value (e.g. 5) is faster but may result in a lower-quality palette.  Default is 5; Range is 1 to 10."
+        }
+      }
+    },
     "get_player_devices": {
       "name": "Get Player Devices",
       "description": "Get information about a user's available Spotify Connect player devices.  Some device models are not supported and will not be listed in the API response.",
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "refresh": {
           "name": "Refresh?",
@@ -770,13 +836,23 @@
         }
       }
     },
+    "get_player_last_played_info": {
+      "name": "Get Player Last Played Info",
+      "description": "Get information about the content that was last playing on the Spotify Player, including context, item (track / episode), progress, and active device.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
+        }
+      }
+    },
     "get_player_now_playing": {
       "name": "Get Player Now Playing",
       "description": "Get the object currently being played on the user's Spotify account.",
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "market": {
           "name": "Market / Country Code",
@@ -794,7 +870,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "market": {
           "name": "Market / Country Code",
@@ -812,7 +888,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         }
       }
     },
@@ -822,7 +898,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "limit": {
           "name": "Limit",
@@ -848,7 +924,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "playlist_id": {
           "name": "Playlist Id",
@@ -874,7 +950,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "playlist_id": {
           "name": "Playlist Id",
@@ -888,7 +964,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "limit": {
           "name": "Limit",
@@ -914,7 +990,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "playlist_id": {
           "name": "Playlist ID",
@@ -952,7 +1028,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "user_id": {
           "name": "User ID",
@@ -982,7 +1058,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "show_id": {
           "name": "Show Id",
@@ -1000,7 +1076,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "show_id": {
           "name": "Show ID",
@@ -1030,7 +1106,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "limit": {
           "name": "Limit",
@@ -1060,7 +1136,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "device_value": {
           "name": "Device Value",
@@ -1094,7 +1170,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "refresh": {
           "name": "Refresh Cache?",
@@ -1112,11 +1188,29 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "track_id": {
           "name": "Track Id",
           "description": "The Spotify ID of the track.  If omitted, the currently playing track uri id value is used."
+        },
+        "market": {
+          "name": "Market / Country Code",
+          "description": "An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.  The country associated with the user account will take priority over this parameter."
+        }
+      }
+    },
+    "get_track_audio_features": {
+      "name": "Get Track Audio Features",
+      "description": "Get audio feature information for a single track identified by its unique Spotify ID.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
+        },
+        "track_id": {
+          "name": "Track ID",
+          "description": "The Spotify ID of the track.  Example = `1kWUud3vY5ij5r62zxpTRy`.  If null, the currently playing track uri id value is used."
         }
       }
     },
@@ -1126,7 +1220,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "limit": {
           "name": "Limit",
@@ -1147,6 +1241,14 @@
         "sort_result": {
           "name": "Sort Result?",
           "description": "True to sort result items by name prior to returning to the caller; otherwise, False to return results in the order that the Spotify Web API returned them."
+        },
+        "filter_artist": {
+          "name": "Filter By Artist",
+          "description": "Filter returned entries by an artist name.  Value can be the full name of the artist (e.g. \"Jeremy Camp\"), or a partial name (e.g. \"Camp\")."
+        },
+        "filter_album": {
+          "name": "Filter By Album",
+          "description": "Filter returned entries by an album name.  Value can be the full name of the album (e.g. \"Carried Me\"), or a partial name (e.g. \"Carried\")."
         }
       }
     },
@@ -1156,7 +1258,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "limit": {
           "name": "Limit",
@@ -1354,11 +1456,25 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
           "description": "A comma-separated list of the Spotify track IDs.  Maximum of 100 IDs.  Example `7ouMYWpwJ422jRcDASZB7P,4VqPOruhp5EdPBeR92t6lQ,2takcwOaAZWiXQijPHIx7B`."
+        }
+      }
+    },
+    "get_id_from_uri": {
+      "name": "Get Id From Uri",
+      "description": "Gets the Id portion of a Spotify URI value.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
+        },
+        "uri": {
+          "name": "Spotify URI Value",
+          "description": "Spotify URI value to parse. Example: `spotify:track:6vc9OTcyd3hyzabCmsdnwE`."
         }
       }
     },
@@ -1368,7 +1484,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "time_range": {
           "name": "Time Range",
@@ -1398,7 +1514,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "time_range": {
           "name": "Time Range",
@@ -1422,13 +1538,31 @@
         }
       }
     },
+    "list_application_credential_mappings": {
+      "name": "List Application Credential Mappings",
+      "description": "List Home Assistant application credential mappings to determine which configuration entitys use which credential.",
+      "fields": {
+        "filter_domain": {
+          "name": "Domain Name Filter",
+          "description": "Limit entries displayed to the specified domain name (e.g. 'spotifyplus', 'spotify', etc)."
+        },
+        "filter_credentials_only": {
+          "name": "Application Credentials Filter?",
+          "description": "True (default) to limit entries displayed to those that have Application Credentials defined; otherwise, False to include all entries."
+        },
+        "list_domain_entities": {
+          "name": "List Domain Entities",
+          "description": "True to list entities that are children of the domain; otherwise, False (default) to exclude domain entity details."
+        }
+      }
+    },
     "player_media_pause": {
       "name": "Player Media Pause",
       "description": "Pause media play for the specified Spotify Connect device.",
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "device_id": {
           "name": "Device ID",
@@ -1446,7 +1580,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "context_uri": {
           "name": "Context Uri",
@@ -1471,6 +1605,14 @@
         "delay": {
           "name": "Delay",
           "description": "Time delay (in seconds) to wait AFTER issuing the final Connect command (if necessary). This delay will give the spotify web api time to process the device list change before another command is issued.  Default is 0.50; value range is 0 - 10."
+        },
+        "shuffle": {
+          "name": "Shuffle?",
+          "description": "True to enable player shuffle mode; False to disable player shuffle mode; None to use current player shuffle mode. Default is None."
+        },
+        "play_show_latest_episode": {
+          "name": "Play Show Latest Episode?",
+          "description": "True to play the most current episode of a podcast show, starting at the beginning; otherwise, False to resume playing of the podcast episode that was previously played. Default is False. This argument is only considered for 'show' contexts."
         }
       }
     },
@@ -1480,7 +1622,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "device_id": {
           "name": "Device ID",
@@ -1488,7 +1630,7 @@
         },
         "shuffle": {
           "name": "Shuffle?",
-          "description": "True to set player shuffle mode to on; otherwise, False for no shuffle."
+          "description": "True to enable player shuffle mode; False to disable player shuffle mode; None to use current player shuffle mode. Default is None."
         },
         "delay": {
           "name": "Delay",
@@ -1501,6 +1643,14 @@
         "limit_total": {
           "name": "Limit Total",
           "description": "The maximum number of items to retrieve from favorites.  Default is 200; Range is 1 - 750."
+        },
+        "filter_artist": {
+          "name": "Filter By Artist",
+          "description": "Filter returned entries by an artist name.  Value can be the full name of the artist (e.g. \"Jeremy Camp\"), or a partial name (e.g. \"Camp\")."
+        },
+        "filter_album": {
+          "name": "Filter By Album",
+          "description": "Filter returned entries by an album name.  Value can be the full name of the album (e.g. \"Carried Me\"), or a partial name (e.g. \"Carried\")."
         }
       }
     },
@@ -1510,7 +1660,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "uris": {
           "name": "Uri's",
@@ -1527,6 +1677,10 @@
         "delay": {
           "name": "Delay",
           "description": "Time delay (in seconds) to wait AFTER issuing the final Connect command (if necessary). This delay will give the spotify web api time to process the device list change before another command is issued.  Default is 0.50; value range is 0 - 10."
+        },
+        "shuffle": {
+          "name": "Shuffle?",
+          "description": "True to enable player shuffle mode; False to disable player shuffle mode; None to use current player shuffle mode. Default is None."
         }
       }
     },
@@ -1536,7 +1690,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "device_id": {
           "name": "Device ID",
@@ -1554,7 +1708,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "position_ms": {
           "name": "Absolute Seek Position",
@@ -1580,7 +1734,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "device_id": {
           "name": "Device ID",
@@ -1598,7 +1752,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "device_id": {
           "name": "Device ID",
@@ -1616,7 +1770,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "state": {
           "name": "State",
@@ -1638,7 +1792,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "state": {
           "name": "Shuffle State?",
@@ -1660,7 +1814,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "volume_level": {
           "name": "Volume Level",
@@ -1682,7 +1836,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "device_id": {
           "name": "Device ID",
@@ -1716,7 +1870,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "playlist_id": {
           "name": "Playlist ID",
@@ -1734,7 +1888,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "playlist_id": {
           "name": "Playlist ID",
@@ -1768,7 +1922,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "user_id": {
           "name": "User ID",
@@ -1802,7 +1956,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "playlist_id": {
           "name": "Playlist ID",
@@ -1824,7 +1978,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "playlist_id": {
           "name": "Playlist ID",
@@ -1838,7 +1992,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "playlist_id": {
           "name": "Playlist ID",
@@ -1860,7 +2014,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "playlist_id": {
           "name": "Playlist ID",
@@ -1890,7 +2044,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "playlist_id": {
           "name": "Playlist ID",
@@ -1908,7 +2062,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -1922,7 +2076,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -1936,7 +2090,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -1950,7 +2104,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -1964,7 +2118,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -1978,7 +2132,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -1992,7 +2146,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -2006,7 +2160,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -2020,7 +2174,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -2034,11 +2188,41 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
           "description": "A comma-separated list of Spotify track id's (e.g. `1kWUud3vY5ij5r62zxpTRy,4eoYKv2kDwJS7gRGh5q6SK`).  A maximum of 50 id's may be specified.  If omitted, the currently playing context uri id value is used."
+        }
+      }
+    },
+    "search_all": {
+      "name": "Search All",
+      "description": "Get Spotify catalog information about albums, artists, playlists, tracks, shows, episodes or audiobooks that match a keyword string. Audiobooks are only available within the US, UK, Canada, Ireland, New Zealand and Australia markets.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
+        },
+        "criteria": {
+          "name": "Search Criteria",
+          "description": "The criteria to search for."
+        },
+        "criteria_type": {
+          "name": "Search Criteria",
+          "description": "A comma-separated list of item types to search across.  Search results include hits from all the specified item types.  For example, 'album,track' returns both albums and tracks matching criteria argument.  Allowed values are 'album', 'artist', 'playlist', 'track', 'show', 'episode', 'audiobook'.  Default is 'track'."
+        },
+        "market": {
+          "name": "Market / Country Code",
+          "description": "An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.  The country associated with the Spotify user account will take priority over this parameter."
+        },
+        "include_external": {
+          "name": "Include External",
+          "description": "If 'audio' is specified it signals that the client can play externally hosted audio content, and marks the content as playable in the response. By default externally hosted audio content is marked as unplayable in the response.  Allowed values are 'audio'."
+        },
+        "limit_total": {
+          "name": "Limit Total",
+          "description": "The maximum number of items to return for the request, per criteria type. Paging is automatically used to retrieve all available items up to the maximum number specified per type. Default is 20."
         }
       }
     },
@@ -2048,7 +2232,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "criteria": {
           "name": "Search Criteria",
@@ -2082,7 +2266,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "criteria": {
           "name": "Search Criteria",
@@ -2116,7 +2300,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "criteria": {
           "name": "Search Criteria",
@@ -2150,7 +2334,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "criteria": {
           "name": "Search Criteria",
@@ -2184,7 +2368,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "criteria": {
           "name": "Search Criteria",
@@ -2218,7 +2402,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "criteria": {
           "name": "Search Criteria",
@@ -2252,7 +2436,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "criteria": {
           "name": "Search Criteria",
@@ -2280,13 +2464,23 @@
         }
       }
     },
+    "trigger_scan_interval": {
+      "name": "Trigger Scan Interval",
+      "description": "Triggers a scan interval sequence, which will update HA State values from content currently being played on the user's Spotify account.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
+        }
+      }
+    },
     "unfollow_artists": {
       "name": "Unfollow Artists",
       "description": "Remove the current user as a follower of one or more artists.",
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -2300,7 +2494,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "playlist_id": {
           "name": "Playlist ID",
@@ -2314,7 +2508,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
         "ids": {
           "name": "ID's",
@@ -2460,7 +2654,7 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         }
       }
     },
@@ -2470,11 +2664,15 @@
       "fields": {
         "entity_id": {
           "name": "Entity ID",
-          "description": "Entity ID of the SpotifyPlus device that will make the request to the Spotify Web API."
+          "description": "Entity ID of the SpotifyPlus service account that will make the request to the Spotify Web API."
         },
-        "timeout": {
-          "name": "Timeout",
-          "description": "Level percentage to adjust the volume by. Default is 0.1, range is 0.1 to 1.0."
+        "level": {
+          "name": "Level",
+          "description": "Level percentage to adjust the volume by. Default is 0.10 (e.g. 10 percent), range is 0.01 to 1.00 (e.g. 1 to 100 percent)."
+        },
+        "level_percent": {
+          "name": "Level Percentage",
+          "description": "Level percentage to adjust the volume by. Default is 10, range is 1 to 100 (e.g. percent). level argument is ignored if this argument is specified."
         }
       }
     }

@@ -5,14 +5,6 @@ description: "Update Monitored Entities Groups automatically"
 mode: single
 max_exceeded: silent
 triggers:
-  - platform: homeassistant
-    id: startup
-    event: start
-
-  - platform: state
-    entity_id: input_boolean.ha_startup_pending
-    to: "off"
-
   - platform: event
     event_type: call_service
     event_data:
@@ -22,10 +14,6 @@ triggers:
   - platform: time_pattern
     minutes: "/1"
 actions:
-  - if: "{{ trigger.id == 'startup' }}"
-    then:
-      - delay: 240
-
   # Unavailable Entities
   - service: group.set
     data:
@@ -34,12 +22,25 @@ actions:
       icon: mdi:check-circle
       entities: >
         {%- set ignore_seconds = 60 %}
-        {%- set ignored = state_attr('group.ignored_unavailable_entities', 'entity_id') %}
-        {%- set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
-        {%- set entities = states
-            |rejectattr('domain','in',['button', 'conversation', 'device_tracker', 'event', 'group', 'image', 'input_button', 'input_text', 'remote', 'tts', 'scene', 'stt', 'media_player'])
-            |selectattr('state','in',['unavailable','unknown','none'])
-            |rejectattr('entity_id','in',state_attr('group.ignored_unavailable_entities','entity_id'))
+        {% set ignore_label = 'ignored' %}
+        {% set ignored_domains = ['button', 'conversation', 'device_tracker', 'event', 'group', 'image', 'input_button', 'input_text', 'remote', 'tts', 'scene', 'stt', 'media_player'] %}
+        {% set ignore_ts = (now().timestamp() - ignore_seconds)|as_datetime %}
+        {% set disabled_device_entities = state_attr('sensor.disabled_entities', 'entities')
+            | regex_replace(find='\[|\]|\{|\}|\'entity_id\':', replace='') %}
+        {% set ignored_devices = label_devices(ignore_label | lower) %}
+        {% set ignored_device_entities = namespace(value=[]) %}
+        {% for device in ignored_devices %}
+          {% set ignored_device_entities.value = ignored_device_entities.value + device_entities(device) %}
+        {% endfor %}
+        {{ states
+            | rejectattr('domain', 'in', ignored_domains)
+            | rejectattr('entity_id', 'in', disabled_device_entities)
+            | rejectattr('entity_id', 'in', state_attr('group.ignored_unavailable_entities', 'entity_id'))
+            | rejectattr('entity_id', 'in', ['group.monitor_unavailable_entities', 'group.ignored_unavailable_entities'])
+            | rejectattr('entity_id', 'in', ignored_device_entities.value)
+            | rejectattr('entity_id', 'in', label_entities(ignore_label | lower))
+            | rejectattr('last_changed', 'ge', ignore_ts)
+            | selectattr('state', 'in', ['unknown', 'unavailable'])
             |rejectattr('entity_id','search','rssfeed_')
             |rejectattr('entity_id','search','button.')
             |rejectattr('entity_id','search','select.')
@@ -85,9 +86,7 @@ actions:
             |rejectattr('entity_id','in',expand(integration_entities('hdhomerun'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('flightradar24'))|map(attribute='entity_id')|list)
             |rejectattr('entity_id','in',expand(integration_entities('bermuda'))|map(attribute='entity_id')|list)
-            |rejectattr('last_changed','ge',ignore_ts) %}
-        {% set entities =  entities | rejectattr('entity_id', 'in', ignored) if ignored != none else entities %}
-        {{ entities | map(attribute='entity_id') | list | sort }}
+            | map(attribute='entity_id') | list | sort }}
 
   # Available Updataes
   - service: group.set

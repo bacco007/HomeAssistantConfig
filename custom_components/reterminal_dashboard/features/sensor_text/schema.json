@@ -1,0 +1,126 @@
+{
+    "type": "object",
+    "properties": {
+        "entity_id": {
+            "type": "string",
+            "title": "Entity ID",
+            "description": "Home Assistant Entity ID"
+        },
+        "title": {
+            "type": "string",
+            "title": "Label / Title"
+        },
+        "value_format": {
+            "type": "string",
+            "title": "Format",
+            "default": "label_value",
+            "enum": [
+                "label_value",
+                "label_newline_value",
+                "value_only"
+            ]
+        },
+        "label_font_size": {
+            "type": "integer",
+            "title": "Label Font Size",
+            "default": 14,
+            "minimum": 8,
+            "maximum": 72
+        },
+        "value_font_size": {
+            "type": "integer",
+            "title": "Value Font Size",
+            "default": 20,
+            "minimum": 8,
+            "maximum": 72
+        },
+        "font_family": {
+            "type": "string",
+            "title": "Font Family",
+            "default": "Inter",
+            "enum": [
+                "Inter",
+                "Roboto",
+                "OpenSans",
+                "Lato",
+                "Oswald",
+                "Montserrat",
+                "Raleway",
+                "Merriweather",
+                "NotoSans",
+                "Ubuntu"
+            ]
+        },
+        "font_weight": {
+            "type": "integer",
+            "title": "Font Weight",
+            "default": 400,
+            "enum": [
+                100,
+                200,
+                300,
+                400,
+                500,
+                600,
+                700,
+                800,
+                900
+            ]
+        },
+        "precision": {
+            "type": "integer",
+            "title": "Precision",
+            "default": -1,
+            "description": "Decimal places (-1 for default)"
+        },
+        "unit": {
+            "type": "string",
+            "title": "Unit Override"
+        },
+        "is_local_sensor": {
+            "type": "boolean",
+            "title": "Local / On-Device Sensor",
+            "default": false
+        },
+        "is_text_sensor": {
+            "type": "boolean",
+            "title": "Force Text Sensor",
+            "default": false
+        },
+        "text_align": {
+            "type": "string",
+            "title": "Text Align",
+            "default": "TOP_LEFT",
+            "enum": [
+                "TOP_LEFT",
+                "TOP_CENTER",
+                "TOP_RIGHT"
+            ]
+        },
+        "label_align": {
+            "type": "string",
+            "title": "Label Align",
+            "default": "TOP_LEFT",
+            "enum": [
+                "TOP_LEFT",
+                "TOP_CENTER",
+                "TOP_RIGHT"
+            ]
+        },
+        "value_align": {
+            "type": "string",
+            "title": "Value Align",
+            "default": "TOP_LEFT",
+            "enum": [
+                "TOP_LEFT",
+                "TOP_CENTER",
+                "TOP_RIGHT"
+            ]
+        },
+        "color": {
+            "type": "string",
+            "title": "Color",
+            "default": "black"
+        }
+    }
+}

@@ -1,0 +1,53 @@
+---
+switch:
+  - name: "[Addon] Cloudflared"
+    unique_id: addon_cloudflared
+    state: "{{ is_state('binary_sensor.cloudflared_running', 'on') }}"
+    availability: "{{ states('binary_sensor.cloudflared_running') not in ['unknown','unavailable'] }}"
+    turn_on:
+      service: hassio.addon_start
+      data:
+        addon: 9074a9fa_cloudflared
+    turn_off:
+      service: hassio.addon_stop
+      data:
+        addon: 9074a9fa_cloudflared
+
+  - name: "[Addon] Home Assistant Google Drive Backup"
+    unique_id: addon_gdrivebackup
+    state: "{{ is_state('binary_sensor.home_assistant_google_drive_backup_running', 'on') }}"
+    availability: "{{ states('binary_sensor.home_assistant_google_drive_backup_running') not in ['unknown','unavailable'] }}"
+    turn_on:
+      service: hassio.addon_start
+      data:
+        addon: cebe7a76_hassio_google_drive_backup
+    turn_off:
+      service: hassio.addon_stop
+      data:
+        addon: cebe7a76_hassio_google_drive_backup
+
+  - name: "[Addon] Sungather"
+    unique_id: addon_sungather
+    state: "{{ is_state('binary_sensor.sungather_running', 'on') }}"
+    availability: "{{ states('binary_sensor.sungather_running') not in ['unknown','unavailable'] }}"
+    turn_on:
+      service: hassio.addon_start
+      data:
+        addon: 7b536ee6_sungather
+    turn_off:
+      service: hassio.addon_stop
+      data:
+        addon: 7b536ee6_sungather
+
+  - name: "[Addon] Zigbee2MQTT"
+    unique_id: addon_zigbee2mqtt
+    state: "{{ is_state('binary_sensor.zigbee2mqtt_running', 'on') }}"
+    availability: "{{ states('binary_sensor.zigbee2mqtt_running') not in ['unknown','unavailable'] }}"
+    turn_on:
+      service: hassio.addon_start
+      data:
+        addon: 45df7312_zigbee2mqtt
+    turn_off:
+      service: hassio.addon_stop
+      data:
+        addon: 45df7312_zigbee2mqtt

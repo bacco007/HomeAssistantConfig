@@ -1,0 +1,18 @@
+{
+  "domain": "matter_binding_helper",
+  "name": "Matter Binding Helper",
+  "codeowners": [
+    "@cedricziel"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "matter",
+    "http",
+    "websocket_api"
+  ],
+  "documentation": "https://github.com/cedricziel/ha-matter-binding-helper",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/cedricziel/ha-matter-binding-helper/issues",
+  "requirements": [],
+  "version": "0.28.0"
+}

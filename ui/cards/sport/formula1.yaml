@@ -24,6 +24,7 @@ cards:
         template: sports_card
         variables:
           - entity: sensor.upcoming_sport_formula_1
+          - calendar: calendar.ical_formula_1
       - type: custom:mushroom-chips-card
         alignment: center
         card_mod:
@@ -302,6 +303,7 @@ cards:
         template: sports_card
         variables:
           - entity: sensor.upcoming_sport_formula_2
+          - calendar: calendar.ical_formula_2
       - type: custom:mushroom-chips-card
         alignment: center
         card_mod:
@@ -321,7 +323,7 @@ cards:
           - type: template
             icon: mdi:calendar-alert
             content: Calendar
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {
@@ -352,6 +354,7 @@ cards:
         template: sports_card
         variables:
           - entity: sensor.upcoming_sport_formula_3
+          - calendar: calendar.ical_formula_3
       - type: custom:mushroom-chips-card
         alignment: center
         card_mod:
@@ -371,7 +374,7 @@ cards:
           - type: template
             icon: mdi:calendar-alert
             content: Calendar
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {

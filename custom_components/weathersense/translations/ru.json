@@ -1,0 +1,41 @@
+{
+  "config": {
+    "title": "HA WeatherSense",
+    "step": {
+      "user": {
+        "title": "Настройка HA WeatherSense",
+        "description": "Настройте датчик для расчёта ощущаемой температуры на основе условий окружающей среды.",
+        "data": {
+          "name": "Название датчика",
+          "temperature_sensor": "Датчик температуры",
+          "humidity_sensor": "Датчик влажности",
+          "wind_speed_sensor": "Датчик скорости ветра (необязательно)",
+          "pressure_sensor": "Датчик давления (необязательно)",
+          "solar_radiation_sensor": "Датчик солнечной радиации (необязательно)",
+          "is_outdoor": "Это для уличных условий?",
+          "display_unit": "Единица отображения температуры"
+        }
+      }
+    },
+    "error": {
+      "temperature_required": "Датчик температуры обязателен",
+      "humidity_required": "Датчик влажности обязателен"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Настройки HA WeatherSense",
+        "data": {
+          "temperature_sensor": "Датчик температуры",
+          "humidity_sensor": "Датчик влажности",
+          "wind_speed_sensor": "Датчик скорости ветра (необязательно)",
+          "pressure_sensor": "Датчик давления (необязательно)",
+          "solar_radiation_sensor": "Датчик солнечной радиации (необязательно)",
+          "is_outdoor": "Это для уличных условий?",
+          "display_unit": "Единица отображения температуры"
+        }
+      }
+    }
+  }
+}

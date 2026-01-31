@@ -1,0 +1,34 @@
+---
+sensor:
+  - name: "Next Holiday"
+    unique_id: next_holiday
+    icon: mdi:calendar-heart
+    device_class: timestamp
+    state: >
+      {%- set input_date = state_attr('calendar.australia_nsw', 'start_time') -%}
+      {% set date = as_datetime(input_date, none) %}
+      {{ as_datetime(as_timestamp(input_date)) if date != none else none }}
+    attributes:
+      display: >
+        {% set input_date = state_attr('calendar.australia_nsw', 'start_time') -%}
+        {%- set date = as_datetime(input_date, none) -%}
+        {%- set date = as_datetime(as_timestamp(input_date)) if date != none else none -%}
+        {% if date != none %}
+          {%- set date = as_local(date) %}
+          {%- if date < now() - timedelta(days=1) -%} Yesterday
+          {%- elif date == now() + timedelta(days=1) -%} Today
+          {%- elif date == now() + timedelta(days=2) -%} Tomorrow
+          {%- elif date >= now() + timedelta(days=3) %}{{ date.strftime('%A, %B %d %Y') }} ({{ (as_local(date).date() - now().date()).days }} Days)
+          {%- else %}{{ date.strftime(format) }}
+          {%- endif %}
+        {%- endif %}
+      holiday: "{{ state_attr('calendar.australia_nsw', 'message') }}"
+      days_until: >
+        {%- set input_date = state_attr('calendar.australia_nsw', 'start_time') -%}
+        {%- set date = as_datetime(input_date, none) -%}
+        {%- set date = as_datetime(as_timestamp(input_date)) if date != none else none -%}
+        {%- if date != none %}
+          {{ (as_local(date).date() - now().date()).days }}
+        {%- else %}
+          0
+        {%- endif %}

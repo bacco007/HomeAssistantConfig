@@ -1,11 +1,22 @@
 """Handles state variable access and change notification."""
 
 import asyncio
+from datetime import datetime
 import logging
 
+from homeassistant.const import STATE_UNAVAILABLE, STATE_UNKNOWN
 from homeassistant.core import Context
 from homeassistant.helpers.restore_state import DATA_RESTORE_STATE
 from homeassistant.helpers.service import async_get_all_descriptions
+from homeassistant.helpers.template import (
+    _SENTINEL,
+    forgiving_boolean,
+    forgiving_float,
+    forgiving_int,
+    forgiving_round,
+    raise_no_default,
+)
+from homeassistant.util import dt as dt_util
 
 from .const import LOGGER_PATH
 from .entity import PyscriptEntity
@@ -13,7 +24,7 @@ from .function import Function
 
 _LOGGER = logging.getLogger(LOGGER_PATH + ".state")
 
-STATE_VIRTUAL_ATTRS = {"entity_id", "last_changed", "last_updated"}
+STATE_VIRTUAL_ATTRS = {"entity_id", "last_changed", "last_updated", "last_reported"}
 
 
 class StateVal(str):
@@ -26,7 +37,50 @@ class StateVal(str):
         new_var.entity_id = state.entity_id
         new_var.last_updated = state.last_updated
         new_var.last_changed = state.last_changed
+        new_var.last_reported = state.last_reported
         return new_var
+
+    def as_float(self, default: float = _SENTINEL) -> float:
+        """Return the state converted to float via the forgiving helper."""
+        return forgiving_float(self, default=default)
+
+    def as_int(self, default: int = _SENTINEL, base: int = 10) -> int:
+        """Return the state converted to int via the forgiving helper."""
+        return forgiving_int(self, default=default, base=base)
+
+    def as_bool(self, default: bool = _SENTINEL) -> bool:
+        """Return the state converted to bool via the forgiving helper."""
+        return forgiving_boolean(self, default=default)
+
+    def as_round(self, precision: int = 0, method: str = "common", default: float = _SENTINEL) -> float:
+        """Return the rounded state value via the forgiving helper."""
+        return forgiving_round(self, precision=precision, method=method, default=default)
+
+    def as_datetime(self, default: datetime = _SENTINEL) -> datetime:
+        """Return the state converted to a datetime, matching the forgiving template behaviour."""
+        try:
+            return dt_util.parse_datetime(self, raise_on_error=True)
+        except (ValueError, TypeError):
+            if default is _SENTINEL:
+                raise_no_default("as_datetime", self)
+        return default
+
+    def is_unknown(self) -> bool:
+        """Return True if the state equals STATE_UNKNOWN."""
+        return self == STATE_UNKNOWN
+
+    def is_unavailable(self) -> bool:
+        """Return True if the state equals STATE_UNAVAILABLE."""
+        return self == STATE_UNAVAILABLE
+
+    def has_value(self) -> bool:
+        """Return True if the state is neither unknown nor unavailable."""
+        return not self.is_unknown() and not self.is_unavailable()
+
+
+STATE_CALLABLE_ATTRS = {
+    attr for attr, value in StateVal.__dict__.items() if callable(value) and not attr.startswith("_")
+}
 
 
 class State:
@@ -259,6 +313,7 @@ class State:
             or (parts[0] in cls.service2args and parts[2] in cls.service2args[parts[0]])
             or parts[2] in value.attributes
             or parts[2] in STATE_VIRTUAL_ATTRS
+            or parts[2] in STATE_CALLABLE_ATTRS
         ):
             return True
         return False
@@ -423,6 +478,7 @@ class State:
             "state.get_attr": cls.get_attr,  # deprecated form; to be removed
             "state.persist": cls.persist,
             "state.delete": cls.delete,
+            "state.exist": cls.exist,
             "pyscript.config": cls.pyscript_config,
         }
         Function.register(functions)

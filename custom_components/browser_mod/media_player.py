@@ -1,3 +1,5 @@
+import copy
+import logging
 from homeassistant.components import media_source
 from homeassistant.components.media_player import (
     MediaPlayerEntity,
@@ -22,6 +24,7 @@ from homeassistant.util import dt
 from .entities import BrowserModEntity
 from .const import DOMAIN, DATA_ADDERS
 
+_LOGGER = logging.getLogger(__name__)
 
 async def async_setup_platform(
     hass, config_entry, async_add_entities, discoveryInfo=None
@@ -57,7 +60,18 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
             "unavailable": STATE_UNAVAILABLE,
             "on": STATE_ON,
             "off": STATE_OFF,
+            "idle": STATE_IDLE,
         }.get(state, STATE_UNKNOWN)
+    
+    @property
+    def extra_state_attributes(self):
+        """Return the device state attributes."""
+        attributes = super().extra_state_attributes
+        attributes.update({
+            "video_interaction_required": self._data.get("player", {}).get("extra", {}).get("videoInteractionRequired", "unknown"),
+            "audio_interaction_required": self._data.get("player", {}).get("extra", {}).get("audioInteractionRequired", "unknown"),
+        })
+        return attributes
 
     @property
     def supported_features(self):
@@ -83,6 +97,10 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
         return self._data.get("player", {}).get("muted", False)
 
     @property
+    def source(self):
+        return self._data.get("player", {}).get("src", None)
+
+    @property
     def media_duration(self):
         duration = self._data.get("player", {}).get("media_duration", None)
         return float(duration) if duration is not None else None
@@ -96,13 +114,52 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
     def media_position_updated_at(self):
         return dt.utcnow()
 
+    @property
+    def media_content_id(self):
+        return self._data.get("player", {}).get("extra", {}).get("media_content_id", None)
+
+    @property
+    def media_content_type(self):
+        return self._data.get("player", {}).get("extra", {}).get("media_content_type", None)
+
+    @property
+    def media_title(self):
+        return self._data.get("player", {}).get("extra", {}).get("title", None)
+
+    @property
+    def media_image_remotely_accessible(self):
+        return True if self._data.get("player", {}).get("extra", {}).get("thumb", None) else False
+
+    @property
+    def media_image_url(self):
+        return self._data.get("player", {}).get("extra", {}).get("thumb", None)
+
     async def async_set_volume_level(self, volume):
         await self.browser.send("player-set-volume", volume_level=volume)
 
     async def async_mute_volume(self, mute):
+        if (not mute and self._data.get("player", {}).get("extra", {}).get("audioInteractionRequired", True)):
+            _LOGGER.warning(
+                f"Unmute browser: {self.browserID}. Interaction may be required."
+            )
         await self.browser.send("player-mute", mute=mute)
 
     async def async_play_media(self, media_type, media_id, **kwargs):
+        if media_type.startswith("video/"):
+            if self._data.get("player", {}).get("extra", {}).get("videoInteractionRequired", True):
+                _LOGGER.warning(
+                    f"Playing video in browser: {self.browserID}. Interaction may be required."
+                )
+        if media_type.startswith("audio/"):
+            if self._data.get("player", {}).get("extra", {}).get("audioInteractionRequired", True):
+                _LOGGER.warning(
+                    f"Playing audio in browser: {self.browserID}. Interaction may be required."
+                )
+        # We cant't alter kwargs as this will end up altering the default value in the 
+        # core media_player schema. Hence we deepcopy before altering.
+        kwargs = copy.deepcopy(kwargs)
+        kwargs["extra"]["media_content_id"] = media_id
+        kwargs["extra"]["media_content_type"] = media_type
         if media_source.is_media_source_id(media_id):
             play_item = await media_source.async_resolve_media(
                 self.hass, media_id, self.entity_id

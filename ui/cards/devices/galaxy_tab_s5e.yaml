@@ -10,40 +10,10 @@ cards:
         background: var(--ha-card-background);
         opacity: 1;
         }
+    modules:
+      - default
+  - type: custom:device-card
+    exclude_sections: []
+    title: " "
+    device_id: ad401cd0b5ec318f7d9825ca3a3c9fea
 
-  - type: entities
-    card_mod:
-      style: &style |
-        ha-card {
-        #states > * {
-          margin: 0 !important;
-        }
-    show_header_toggle: false
-    state_color: true
-    entities:
-      - binary_sensor.galaxy_tab_s5e_device_admin
-      - binary_sensor.galaxy_tab_s5e_kiosk_mode
-      - binary_sensor.galaxy_tab_s5e_plugged_in
-      - button.galaxy_tab_s5e_bring_to_foreground
-      - button.galaxy_tab_s5e_load_start_url
-      - button.galaxy_tab_s5e_restart_browser
-      - button.galaxy_tab_s5e_restart_device
-      - button.galaxy_tab_s5e_send_to_background
-      - media_player.galaxy_tab_s5e
-      - number.galaxy_tab_s5e_screen_brightness
-      - number.galaxy_tab_s5e_screen_off_timer
-      - number.galaxy_tab_s5e_screensaver_brightness
-      - number.galaxy_tab_s5e_screensaver_timer
-      - sensor.galaxy_tab_s5e_battery
-      - sensor.galaxy_tab_s5e_current_page
-      - sensor.galaxy_tab_s5e_foreground_app
-      - sensor.galaxy_tab_s5e_free_memory
-      - sensor.galaxy_tab_s5e_internal_storage_free_space
-      - sensor.galaxy_tab_s5e_internal_storage_total_space
-      - sensor.galaxy_tab_s5e_screen_orientation
-      - sensor.galaxy_tab_s5e_total_memory
-      - switch.galaxy_tab_s5e_kiosk_lock
-      - switch.galaxy_tab_s5e_maintenance_mode
-      - switch.galaxy_tab_s5e_motion_detection
-      - switch.galaxy_tab_s5e_screen
-      - switch.galaxy_tab_s5e_screensaver

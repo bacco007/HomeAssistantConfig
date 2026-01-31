@@ -1,0 +1,74 @@
+{
+  "config": {
+    "step": {
+      "location": {
+        "description": "Configuration de l'emplacement géographique et du fuseau horaire.",
+        "data": {
+          "location_name": "Nom de l'emplacement de votre télescope",
+          "latitude": "Latitude (-89° à 89°)",
+          "longitude": "Longitude (-180° à 180°)",
+          "elevation": "Élévation (0m à 4000m)",
+          "timezone_info": "Fuseau horaire dans la base de données TZ"
+        }
+      },
+      "calculation": {
+        "description": "Configuration du calcul des conditions, de l'intervalle de mise à jour des prévisions, du chemin vers votre /config/www, et de l'activation des fonctionnalités expérimentales d'AstroWeather.",
+        "data": {
+          "cloudcover_weight": "Contribution de la couverture nuageuse",
+          "fog_weight": "Contribution de la densité du brouillard",
+          "seeing_weight": "Contribution de la visibilité",
+          "transparency_weight": "Contribution de la transparence",
+          "calm_weight": "Contribution du degré de temps calme",
+          "forecast_interval": "Intervalle entre les mises à jour des prévisions (min)",
+          "uptonight_path": "Chemin vers /conf/www",
+          "experimental_features": "Fonctionnalités expérimentales",
+          "open_meteo_service": "Service Open Meteo à utiliser"
+        }
+      },
+      "cloudweakening": {
+        "description": "Configuration de l'influence des différentes hauteurs de nuages sur le calcul.",
+        "data": {
+          "cloudcover_high_weakening": "Influence des nuages élevés (%)",
+          "cloudcover_medium_weakening": "Influence des nuages moyens (%)",
+          "cloudcover_low_weakening": "Influence des nuages bas (%)"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "location": {
+        "description": "Configuration de l'emplacement géographique et du fuseau horaire.",
+        "data": {
+          "location_name": "Nom de l'emplacement de votre télescope",
+          "latitude": "Latitude (-89° à 89°)",
+          "longitude": "Longitude (-180° à 180°)",
+          "elevation": "Élévation (0m à 4000m)",
+          "timezone_info": "Fuseau horaire dans la base de données TZ"
+        }
+      },
+      "calculation": {
+        "description": "Configuration du calcul des conditions, de l'intervalle de mise à jour des prévisions, du chemin vers votre /config/www, et de l'activation des fonctionnalités expérimentales d'AstroWeather.",
+        "data": {
+          "cloudcover_weight": "Contribution de la couverture nuageuse",
+          "fog_weight": "Contribution de la densité du brouillard",
+          "seeing_weight": "Contribution de la visibilité",
+          "transparency_weight": "Contribution de la transparence",
+          "calm_weight": "Contribution du degré de temps calme",
+          "forecast_interval": "Intervalle entre les mises à jour des prévisions (min)",
+          "uptonight_path": "Chemin vers conf/www",
+          "experimental_features": "Fonctionnalités expérimentales",
+          "open_meteo_service": "Service Open Meteo à utiliser"
+        }
+      },
+      "cloudweakening": {
+        "description": "Configuration de l'influence des différentes hauteurs de nuages sur le calcul.",
+        "data": {
+          "cloudcover_high_weakening": "Influence des nuages élevés (%)",
+          "cloudcover_medium_weakening": "Influence des nuages moyens (%)",
+          "cloudcover_low_weakening": "Influence des nuages bas (%)"
+        }
+      }
+    }
+  }
+}

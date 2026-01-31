@@ -1,7 +1,7 @@
 ---
 type: custom:stack-in-card
 cards:
-  - type: custom:mushroom-template-card
+  - type: custom:mushroom-legacy-template-card
     primary: Docker Settings and Controls
     icon: mdi:docker
     icon_color: blue

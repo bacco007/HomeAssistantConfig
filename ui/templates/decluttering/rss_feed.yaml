@@ -13,7 +13,7 @@ rss_feed:
     overlay-margin: 0em
     button-background: transparent
     title-card:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       primary: '{{ state_attr("[[entity]]", ''friendly_name'') }} '
       icon: '{{ state_attr("[[entity]]", ''icon'') }}'
       secondary: >

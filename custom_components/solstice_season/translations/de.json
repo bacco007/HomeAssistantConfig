@@ -1,0 +1,74 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Solstice Season konfigurieren",
+        "description": "Astronomische Jahreszeitenerfassung einrichten",
+        "data": {
+          "name": "Name",
+          "hemisphere": "Hemisphäre",
+          "mode": "Berechnungsmodus"
+        }
+      }
+    },
+    "error": {
+      "already_configured": "Eine Instanz mit diesem Namen existiert bereits"
+    },
+    "abort": {
+      "already_configured": "Diese Instanz ist bereits konfiguriert"
+    }
+  },
+  "selector": {
+    "hemisphere": {
+      "options": {
+        "northern": "Nordhalbkugel",
+        "southern": "Südhalbkugel"
+      }
+    },
+    "mode": {
+      "options": {
+        "astronomical": "Astronomisch",
+        "meteorological": "Kalendarisch (Meteorologisch)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "current_season": {
+        "name": "Aktuelle Jahreszeit",
+        "state": {
+          "spring": "Frühling",
+          "summer": "Sommer",
+          "autumn": "Herbst",
+          "winter": "Winter"
+        }
+      },
+      "spring_equinox": {
+        "name": "Frühlingsanfang"
+      },
+      "summer_solstice": {
+        "name": "Sommeranfang"
+      },
+      "autumn_equinox": {
+        "name": "Herbstanfang"
+      },
+      "winter_solstice": {
+        "name": "Winteranfang"
+      },
+      "daylight_trend": {
+        "name": "Tageslichttrend",
+        "state": {
+          "days_getting_longer": "Tage werden länger",
+          "days_getting_shorter": "Tage werden kürzer",
+          "solstice_today": "Sonnenwende heute"
+        }
+      },
+      "next_daylight_trend_change": {
+        "name": "Nächste Trendwende"
+      },
+      "next_season_change": {
+        "name": "Nächster Jahreszeitenwechsel"
+      }
+    }
+  }
+}

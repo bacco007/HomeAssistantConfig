@@ -10,90 +10,55 @@ cards:
         background: var(--ha-card-background);
         opacity: 1;
         }
-
-  - type: entities
-    card_mod:
-      style: |
-        #states > * {
-          margin: 0 !important;
-        }
-    entities:
-      - type: button
-        icon: mdi:television-guide
-        name: Admin Panel
-        action_name: OPEN
-        tap_action:
-          action: url
-          url_path: http://192.168.1.120
-      - type: section
-      - type: custom:fold-entity-row
+    modules:
+      - default
+  - type: custom:stack-in-card
+    cards:
+      - type: custom:device-card
+        exclude_sections: []
+        title: " "
+        device_id: 8f2a5283b8391cee88779957ab8b734b
+      - type: entities
         card_mod:
           style: |
-            #items {
-              padding-left: 12px !important;
-              padding-right: 12px !important;
-            }
-            #measure {
-              padding-top: 0 !important;
-            }
-            #measure > * {
+            #states > * {
               margin: 0 !important;
             }
-        padding: 0
-        head:
-          type: custom:template-entity-row
-          name: Channels
-          icon: mdi:television-classic
-          state: ""
         entities:
-          - entity: sensor.1251b32b_channel_count
-            name: Channel Count
-          - entity: binary_sensor.1251b32b_channel_scanning
-            name: Channel Scanning
-          - entity: sensor.1251b32b_disabled_channels
-            name: Disabled Channels
-          - entity: sensor.1251b32b_favourite_channels
-            name: Favourite Channels
-      - type: custom:fold-entity-row
-        card_mod:
-          style: |
-            #items {
-              padding-left: 12px !important;
-              padding-right: 12px !important;
-            }
-            #measure {
-              padding-top: 0 !important;
-            }
-            #measure > * {
-              margin: 0 !important;
-            }
-        padding: 0
-        head:
-          type: custom:template-entity-row
-          name: Tuners
-          icon: mdi:television
-          state: ""
-        entities:
-          - entity: sensor.1251b32b_tuner_count
-            name: Tuner Count
-          - entity: sensor.1251b32b_tuner0
-            name: Tuner 1
-          - entity: sensor.1251b32b_tuner1
-            name: Tuner 2
-          - entity: sensor.1251b32b_tuner2
-            name: Tuner 3
-          - entity: sensor.1251b32b_tuner3
-            name: Tuner 4
-      - type: section
-      - entity: button.1251b32b_channel_scan
-        name: Channel Scan
-      - entity: button.1251b32b_restart
-        name: Restart
-      - entity: select.1251b32b_channel_sources
-        name: Channel Sources
-      - type: section
-      - entity: update.1251b32b_firmware
-        type: custom:template-entity-row
-        name: "{{ state_attr(config.entity, 'friendly_name').split(':',1)[0] }}"
-        state: "New: {{ state_attr(config.entity, 'latest_version') }}"
-        secondary: "Current: {{ state_attr(config.entity, 'installed_version')}}"
+          - type: button
+            icon: mdi:television-guide
+            name: Admin Panel
+            action_name: OPEN
+            tap_action:
+              action: url
+              url_path: http://192.168.1.120
+          - type: custom:fold-entity-row
+            card_mod:
+              style: |
+                #items {
+                  padding-left: 12px !important;
+                  padding-right: 12px !important;
+                }
+                #measure {
+                  padding-top: 0 !important;
+                }
+                #measure > * {
+                  margin: 0 !important;
+                }
+            padding: 0
+            head:
+              type: custom:template-entity-row
+              name: Tuners
+              icon: mdi:television
+              state: ""
+            entities:
+              - entity: sensor.1251b32b_tuner_count
+                name: Tuner Count
+              - entity: sensor.1251b32b_tuner0
+                name: Tuner 1
+              - entity: sensor.1251b32b_tuner1
+                name: Tuner 2
+              - entity: sensor.1251b32b_tuner2
+                name: Tuner 3
+              - entity: sensor.1251b32b_tuner3
+                name: Tuner 4

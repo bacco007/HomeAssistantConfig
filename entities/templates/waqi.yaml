@@ -116,3 +116,17 @@ sensor:
     availability: "{{ is_number(states('sensor.particulate_matter_pm10')) }}"
     attributes:
       category: waqi
+
+  - name: "AQI - PM10"
+    unique_id: waqi_tamworth_pm10
+    unit_of_measurement: "AQI"
+    state: >-
+      {{ state_attr('sensor.waqi_tamworth_north_west_slopes', 'pm_10') }}
+    icon: mdi:cloud
+
+  - name: "AQI - PM2.5"
+    unique_id: waqi_tamworth_pm25
+    unit_of_measurement: "AQI"
+    state: >-
+      {{ state_attr('sensor.waqi_tamworth_north_west_slopes', 'pm_2_5') }}
+    icon: mdi:cloud

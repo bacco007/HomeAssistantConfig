@@ -2,21 +2,17 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 import datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from attr import asdict
+from homeassistant.components.diagnostics.util import async_redact_data
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import entity_registry as er
 from proxmoxer.core import ResourceException
 
-from homeassistant.components.diagnostics.util import async_redact_data
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers import device_registry as dr, entity_registry as er
-from homeassistant.helpers.device_registry import DeviceEntry
-
 from .api import get_api
-from .const import CONF_DISKS_ENABLE, COORDINATORS, DOMAIN, PROXMOX_CLIENT
+from .const import CONF_DISKS_ENABLE, COORDINATORS, PROXMOX_CLIENT
 from .coordinator import (
     ProxmoxDiskCoordinator,
     ProxmoxLXCCoordinator,
@@ -24,7 +20,15 @@ from .coordinator import (
     ProxmoxQEMUCoordinator,
     ProxmoxStorageCoordinator,
     ProxmoxUpdateCoordinator,
+    ProxmoxZFSCoordinator,
 )
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.device_registry import DeviceEntry
 
 TO_REDACT_CONFIG = ["host", "username", "password"]
 
@@ -39,8 +43,7 @@ async def async_get_api_data_diagnostics(
     hass: HomeAssistant, config_entry: ConfigEntry
 ) -> dict[str, Any]:
     """Get API info for diagnostics."""
-
-    proxmox_client = hass.data[DOMAIN][config_entry.entry_id][PROXMOX_CLIENT]
+    proxmox_client = config_entry.runtime_data[PROXMOX_CLIENT]
 
     proxmox = proxmox_client.get_api_client()
 
@@ -129,10 +132,23 @@ async def async_get_api_data_diagnostics(
                 nodes[node["node"]]["storage"]["error"] = error
 
         try:
+            nodes[node["node"]]["zfs"] = await hass.async_add_executor_job(
+                get_api, proxmox, f"nodes/{node['node']}/disks/zfs"
+            )
+        except ResourceException as error:
+            if error.status_code == 403:
+                nodes[node["node"]]["zfs"]["error"] = (
+                    "403 Forbidden: Permission check failed"
+                )
+            else:
+                nodes[node["node"]]["zfs"]["error"] = error
+
+        try:
             nodes[node["node"]]["updates"] = await hass.async_add_executor_job(
                 get_api, proxmox, f"nodes/{node['node']}/apt/update"
             )
         except ResourceException as error:
+            nodes[node["node"]]["updates"] = {}
             if error.status_code == 403:
                 nodes[node["node"]]["updates"]["error"] = (
                     "403 Forbidden: Permission check failed"
@@ -145,6 +161,7 @@ async def async_get_api_data_diagnostics(
                 get_api, proxmox, f"nodes/{node['node']}/apt/versions"
             )
         except ResourceException as error:
+            nodes[node["node"]]["updates"] = {}
             nodes[node["node"]]["updates"]["error"] = error
 
         if config_entry.options.get(CONF_DISKS_ENABLE, True):
@@ -191,7 +208,6 @@ async def async_get_config_entry_diagnostics(
     hass: HomeAssistant, config_entry: ConfigEntry
 ) -> dict[str, Any]:
     """Return diagnostics for a config entry."""
-
     coordinators: dict[
         str,
         ProxmoxNodeCoordinator
@@ -199,8 +215,9 @@ async def async_get_config_entry_diagnostics(
         | ProxmoxLXCCoordinator
         | ProxmoxStorageCoordinator
         | ProxmoxUpdateCoordinator
-        | ProxmoxDiskCoordinator,
-    ] = hass.data[DOMAIN][config_entry.entry_id][COORDINATORS]
+        | ProxmoxDiskCoordinator
+        | ProxmoxZFSCoordinator,
+    ] = config_entry.runtime_data[COORDINATORS]
 
     api_data = await async_get_api_data_diagnostics(hass, config_entry)
 
@@ -243,6 +260,7 @@ async def async_get_config_entry_diagnostics(
                 ProxmoxStorageCoordinator,
                 ProxmoxUpdateCoordinator,
                 ProxmoxDiskCoordinator,
+                ProxmoxZFSCoordinator,
             )
             and (coordinator_data := coordinator.data) is not None
         ):
@@ -258,6 +276,7 @@ async def async_get_config_entry_diagnostics(
                         ProxmoxStorageCoordinator,
                         ProxmoxUpdateCoordinator,
                         ProxmoxDiskCoordinator,
+                        ProxmoxZFSCoordinator,
                     )
                     and (coordinator_sub_data := coordinator_sub.data) is not None
                 ):
@@ -273,9 +292,9 @@ async def async_get_config_entry_diagnostics(
         "proxmox_coordinators": async_redact_data(
             proxmox_coordinators, TO_REDACT_COORD
         ),
-        "api_response": async_redact_data(api_data, TO_REDACT_API)
-        if api_data is not None
-        else {},
+        "api_response": (
+            async_redact_data(api_data, TO_REDACT_API) if api_data is not None else {}
+        ),
     }
 
 
@@ -283,7 +302,6 @@ async def async_get_device_diagnostics(
     hass: HomeAssistant, config_entry: ConfigEntry, device: DeviceEntry
 ) -> Mapping[str, Any]:
     """Return diagnostics for a device entry."""
-
     config_entry_diagnostics = await async_get_config_entry_diagnostics(
         hass, config_entry
     )

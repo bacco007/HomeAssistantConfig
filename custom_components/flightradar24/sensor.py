@@ -9,7 +9,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
-from .const import DOMAIN, TRANSLATION_KEY_TRACKED
+from .const import DOMAIN
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .coordinator import FlightRadar24Coordinator
@@ -20,7 +20,7 @@ import copy
 @dataclass
 class FlightRadar24SensorRequiredKeysMixin:
     value: Callable[[FlightRadar24Coordinator], Any]
-    attributes: Callable[[FlightRadar24Coordinator], Any]
+    attributes: Callable[[FlightRadar24Coordinator], Any] | None
 
 
 @dataclass
@@ -32,47 +32,110 @@ SENSOR_TYPES: tuple[FlightRadar24SensorEntityDescription, ...] = (
     FlightRadar24SensorEntityDescription(
         key="in_area",
         name="Current in area",
-        icon="mdi:airplane",
+        icon="mdi:airplane-marker",
         state_class=SensorStateClass.TOTAL,
-        value=lambda coord: len(coord.in_area) if coord.in_area is not None else 0,
-        attributes=lambda coord: {'flights': [coord.in_area[x] for x in coord.in_area] if coord.in_area else {}},
+        value=lambda coord: len(coord.flight.in_area_list),
+        attributes=lambda coord: {'flights': coord.flight.in_area_list},
     ),
     FlightRadar24SensorEntityDescription(
         key="entered",
         name="Entered area",
-        icon="mdi:airplane",
+        icon="mdi:airplane-check",
         state_class=SensorStateClass.TOTAL,
-        value=lambda coord: len(coord.entered),
-        attributes=lambda coord: {'flights': coord.entered},
+        value=lambda coord: len(coord.flight.entered_list),
+        attributes=lambda coord: {'flights': coord.flight.entered_list},
     ),
     FlightRadar24SensorEntityDescription(
         key="exited",
         name="Exited area",
-        icon="mdi:airplane",
+        icon="mdi:airplane-remove",
         state_class=SensorStateClass.TOTAL,
-        value=lambda coord: len(coord.exited),
-        attributes=lambda coord: {'flights': coord.exited},
+        value=lambda coord: len(coord.flight.exited_list),
+        attributes=lambda coord: {'flights': coord.flight.exited_list},
     ),
     FlightRadar24SensorEntityDescription(
         key="most_tracked",
         name="Most tracked",
-        icon="mdi:airplane",
+        icon="mdi:airplane-search",
         state_class=SensorStateClass.TOTAL,
-        value=lambda coord: len(coord.most_tracked) if coord.most_tracked is not None else None,
-        attributes=lambda coord: {
-            'flights': [coord.most_tracked[x] for x in coord.most_tracked] if coord.most_tracked else {}},
+        value=lambda coord: len(coord.flight.most_tracked_list) if coord.flight.most_tracked_list else None,
+        attributes=lambda coord: {'flights': coord.flight.most_tracked_list if coord.flight.most_tracked_list else {}},
+    ),
+    FlightRadar24SensorEntityDescription(
+        key="airport_arrivals_on_time",
+        name="Airport arrivals on time",
+        icon="mdi:airplane-check",
+        state_class=SensorStateClass.TOTAL,
+        value=lambda coord: coord.airport.stats.arrivals_on_time if coord.airport.stats else None,
+        attributes=None,
+    ),
+    FlightRadar24SensorEntityDescription(
+        key="airport_arrivals_delayed",
+        name="Airport arrivals delayed",
+        icon="mdi:airplane-alert",
+        state_class=SensorStateClass.TOTAL,
+        value=lambda coord: coord.airport.stats.arrivals_delayed if coord.airport.stats else None,
+        attributes=None,
+    ),
+    FlightRadar24SensorEntityDescription(
+        key="airport_arrivals_canceled",
+        name="Airport arrivals canceled",
+        icon="mdi:airplane-remove",
+        state_class=SensorStateClass.TOTAL,
+        value=lambda coord: coord.airport.stats.arrivals_canceled if coord.airport.stats else None,
+        attributes=None,
+    ),
+    FlightRadar24SensorEntityDescription(
+        key="airport_arrivals",
+        name="Airport arrivals",
+        icon="mdi:airplane-landing",
+        state_class=SensorStateClass.TOTAL,
+        value=lambda coord: len(coord.airport.arrivals) if coord.airport.arrivals is not None else None,
+        attributes=lambda coord: {'flights': coord.airport.arrivals} if coord.airport.arrivals is not None else None,
+    ),
+    FlightRadar24SensorEntityDescription(
+        key="airport_departures_on_time",
+        name="Airport departures on time",
+        icon="mdi:airplane-check",
+        state_class=SensorStateClass.TOTAL,
+        value=lambda coord: coord.airport.stats.departures_on_time if coord.airport.stats else None,
+        attributes=None,
+    ),
+    FlightRadar24SensorEntityDescription(
+        key="airport_departures_delayed",
+        name="Airport departures delayed",
+        icon="mdi:airplane-alert",
+        state_class=SensorStateClass.TOTAL,
+        value=lambda coord: coord.airport.stats.departures_delayed if coord.airport.stats else None,
+        attributes=None,
+    ),
+    FlightRadar24SensorEntityDescription(
+        key="airport_departures_canceled",
+        name="Airport departures canceled",
+        icon="mdi:airplane-remove",
+        state_class=SensorStateClass.TOTAL,
+        value=lambda coord: coord.airport.stats.departures_canceled if coord.airport.stats else None,
+        attributes=None,
+    ),
+    FlightRadar24SensorEntityDescription(
+        key="airport_departures",
+        name="Airport departures",
+        icon="mdi:airplane-takeoff",
+        state_class=SensorStateClass.TOTAL,
+        value=lambda coord: len(coord.airport.departures) if coord.airport.departures is not None else None,
+        attributes=lambda coord: ({'flights': coord.airport.departures}
+                                  if coord.airport.departures is not None else None),
     ),
 )
 
 RESTORE_SENSOR_TYPES: tuple[FlightRadar24SensorEntityDescription, ...] = (
     FlightRadar24SensorEntityDescription(
-        key=TRANSLATION_KEY_TRACKED,
+        key="tracked",
         name="Additional tracked",
         icon="mdi:airplane",
         state_class=SensorStateClass.TOTAL,
-        translation_key=TRANSLATION_KEY_TRACKED,
-        value=lambda coord: len(coord.tracked) if coord.tracked is not None else 0,
-        attributes=lambda coord: {'flights': [coord.tracked[x] for x in coord.tracked] if coord.tracked else {}},
+        value=lambda coord: len(coord.flight.tracked_list),
+        attributes=lambda coord: {'flights': coord.flight.tracked_list},
     ),
 )
 
@@ -110,9 +173,10 @@ class FlightRadar24Sensor(CoordinatorEntity[FlightRadar24Coordinator], SensorEnt
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         self._attr_native_value = self.entity_description.value(self.coordinator)
-        new_attributes = copy.deepcopy(self.entity_description.attributes(self.coordinator))
-        new_attributes["last_updated"] = datetime.datetime.now().isoformat()
-        self._attr_extra_state_attributes = new_attributes
+        if self.entity_description.attributes and self.entity_description.attributes(self.coordinator) is not None:
+            new_attributes = copy.deepcopy(self.entity_description.attributes(self.coordinator))
+            new_attributes["last_updated"] = datetime.datetime.now().isoformat()
+            self._attr_extra_state_attributes = new_attributes
         self.async_write_ha_state()
 
     @property
@@ -122,4 +186,13 @@ class FlightRadar24Sensor(CoordinatorEntity[FlightRadar24Coordinator], SensorEnt
 
 
 class FlightRadar24RestoreSensor(FlightRadar24Sensor, RestoreSensor):
-    pass
+    async def async_added_to_hass(self):
+        """Restore state on startup."""
+        await super().async_added_to_hass()
+        last_state = await self.async_get_last_state()
+
+        if last_state:
+            tracked = {}
+            for flight in last_state.attributes.get('flights', {}):
+                tracked[flight.get('id') or flight.get('flight_number') or flight.get('callsign')] = flight
+            self.coordinator.flight.set_tracked(tracked)

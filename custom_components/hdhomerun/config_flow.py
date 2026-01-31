@@ -16,10 +16,10 @@ from homeassistant import config_entries, data_entry_flow
 # TODO: remove when bumping minimum version to 2025.2.x
 try:
     from homeassistant.helpers.service_info.ssdp import (
-        SsdpServiceInfo,
         ATTR_UPNP_MODEL_NAME,
         ATTR_UPNP_SERIAL,
         ATTR_UPNP_SERVICE_LIST,
+        SsdpServiceInfo,
     )
 except ImportError:
     from homeassistant.components.ssdp import (
@@ -202,7 +202,7 @@ class HDHomerunConfigFlow(config_entries.ConfigFlow, Logger, domain=DOMAIN):
         err_msg: str | None = None
         try:
             self._discovered_devices_hd: list[HDHomeRunDevice] = await Discover(
-                session=async_get_clientsession(hass=self.hass)
+                session=async_get_clientsession(self.hass)
             ).async_discover()
             if len(self._discovered_devices_hd) == 0:
                 raise ValueError

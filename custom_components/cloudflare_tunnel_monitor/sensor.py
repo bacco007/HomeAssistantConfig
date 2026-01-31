@@ -139,7 +139,7 @@ class CloudflareTunnelSensor(SensorEntity):
     async def async_update(self):
         """Update the state of the sensor."""
         _LOGGER.debug(f"Requesting refresh for tunnel {self._tunnel['id']}")
-        await self.coordinator.async_request_refresh()
+        await self.coordinator.async_refresh()
         if self.coordinator.data is not None:
             _LOGGER.debug(f"Coordinator data is not None. Searching for updated tunnel data for {self._tunnel['id']}")
 

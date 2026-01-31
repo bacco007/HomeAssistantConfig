@@ -1,0 +1,19 @@
+{
+  "domain": "whoop",
+  "name": "WHOOP",
+  "codeowners": [
+    "@prankstr"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "http",
+    "application_credentials"
+  ],
+  "documentation": "https://github.com/prankstr/hassio-whoop",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/prankstr/hassio-whoop/issues",
+  "requirements": [
+    "aiohttp>=3.8.0"
+  ],
+  "version": "1.1.0"
+}

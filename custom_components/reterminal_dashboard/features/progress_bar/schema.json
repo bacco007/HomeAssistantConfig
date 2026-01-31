@@ -1,0 +1,35 @@
+{
+    "type": "progress_bar",
+    "name": "Progress Bar",
+    "props": {
+        "show_label": {
+            "type": "boolean",
+            "default": true
+        },
+        "show_percentage": {
+            "type": "boolean",
+            "default": true
+        },
+        "bar_height": {
+            "type": "number",
+            "default": 15
+        },
+        "border_width": {
+            "type": "number",
+            "default": 1
+        },
+        "color": {
+            "type": "string",
+            "default": "black",
+            "enum": [
+                "black",
+                "white",
+                "gray"
+            ]
+        },
+        "is_local_sensor": {
+            "type": "boolean",
+            "default": false
+        }
+    }
+}

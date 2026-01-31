@@ -1,0 +1,41 @@
+{
+  "config": {
+    "title": "HA WeatherSense",
+    "step": {
+      "user": {
+        "title": "设置 HA WeatherSense",
+        "description": "设置传感器以根据环境条件计算体感温度。",
+        "data": {
+          "name": "传感器名称",
+          "temperature_sensor": "温度传感器",
+          "humidity_sensor": "湿度传感器",
+          "wind_speed_sensor": "风速传感器（可选）",
+          "pressure_sensor": "压力传感器（可选）",
+          "solar_radiation_sensor": "太阳辐射传感器（可选）",
+          "is_outdoor": "这是用于室外条件吗？",
+          "display_unit": "温度显示单位"
+        }
+      }
+    },
+    "error": {
+      "temperature_required": "需要温度传感器",
+      "humidity_required": "需要湿度传感器"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "HA WeatherSense 选项",
+        "data": {
+          "temperature_sensor": "温度传感器",
+          "humidity_sensor": "湿度传感器",
+          "wind_speed_sensor": "风速传感器（可选）",
+          "pressure_sensor": "压力传感器（可选）",
+          "solar_radiation_sensor": "太阳辐射传感器（可选）",
+          "is_outdoor": "这是用于室外条件吗？",
+          "display_unit": "温度显示单位"
+        }
+      }
+    }
+  }
+}

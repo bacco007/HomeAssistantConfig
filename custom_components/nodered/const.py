@@ -1,12 +1,18 @@
 """Constants for Node-RED."""
 
-from .version import __version__ as VERSION
+from .version import __version__
+
+VERSION = __version__
 
 # Base component constants
 DOMAIN = "nodered"
 DOMAIN_DATA = f"{DOMAIN}_data"
+WEBHOOKS = "webhooks"
 
 ISSUE_URL = "https://github.com/zachowj/hass-node-red/issues"
+
+# Home Assistant limits any state to 255 characters
+HA_MAX_STATE_LENGTH = 255
 
 # Configuration
 CONF_ATTRIBUTES = "attributes"

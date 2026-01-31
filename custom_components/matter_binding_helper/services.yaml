@@ -1,0 +1,8 @@
+---
+submit_survey:
+  name: Submit Matter Survey
+  description: >-
+    Manually submit anonymized device capability data to the Matter Survey.
+    This helps build a community database of Matter device capabilities.
+    Only public device information is shared (vendor/product IDs, clusters,
+    device types). No personal data or device names are transmitted.

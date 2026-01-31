@@ -1,0 +1,6 @@
+---
+offline_integration_count:
+  name: Offline Integration Count
+  initial: 0
+  min: 0
+  max: 9000

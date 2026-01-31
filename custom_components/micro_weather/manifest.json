@@ -1,0 +1,14 @@
+{
+  "domain": "micro_weather",
+  "name": "Micro Weather Station",
+  "codeowners": ["@caplaz"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/caplaz/micro-weather-station",
+  "integration_type": "device",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/caplaz/micro-weather-station/issues",
+  "loggers": ["custom_components.micro_weather"],
+  "requirements": ["voluptuous>=0.13.1"],
+  "version": "4.1.2"
+}

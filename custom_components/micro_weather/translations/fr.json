@@ -1,0 +1,239 @@
+{
+  "config": {
+    "error": {
+      "missing_outdoor_temp": "❌ Le capteur de température extérieure est requis. Veuillez sélectionner un capteur de température qui mesure les conditions extérieures.",
+      "unknown": "❌ Une erreur inattendue s'est produite pendant la configuration. Veuillez vérifier vos sélections de capteurs et réessayer."
+    },
+    "step": {
+      "atmospheric": {
+        "data": {
+          "altitude": "Altitude de la Station",
+          "dewpoint_sensor": "Capteur de Point de Rosée",
+          "humidity_sensor": "Capteur d'Humidité",
+          "outdoor_temp_sensor": "Capteur de Température Extérieure",
+          "pressure_sensor": "Capteur de Pression Atmosphérique"
+        },
+        "data_description": {
+          "altitude": "Élévation de la station au-dessus du niveau de la mer. Utilisée pour ajuster les lectures de pression à l'équivalent du niveau de la mer pour une détection météorologique précise. Réglez à 0 si votre capteur de pression fournit déjà la pression au niveau de la mer (MSLP) ou pour des lectures de capteur brutes. Améliore la précision des prévisions, surtout pour la prédiction météorologique basée sur la pression.",
+          "dewpoint_sensor": "Capteur optionnel fournissant une mesure directe du point de rosée pour une précision maximale. Utilisé dans la détection de brouillard (>98% humidité + point de rosée) et les calculs de confort. Se rabat sur le point de rosée calculé si non fourni.",
+          "humidity_sensor": "Capteur optionnel essentiel pour la détection de brouillard (se déclenche à >98% d'humidité). Utilisé dans les calculs d'index de confort, d'index de chaleur et la détermination de probabilité de précipitation.",
+          "outdoor_temp_sensor": "Capteur requis pour la détection météorologique de base. Fournit des lectures de température utilisées dans tous les calculs météorologiques et la détection de conditions.",
+          "pressure_sensor": "Capteur optionnel qui permet les prévisions météorologiques (5 jours et horaires). Détecte les tempêtes par des chutes rapides de pression et fournit une analyse de tendance pour la prédiction des modèles météorologiques."
+        },
+        "description": "Configurez les capteurs de température, humidité, pression et altitude.\n\n**Requis :** Le capteur de température extérieure est obligatoire pour la détection météorologique de base.\n\n**Capteurs Atmosphériques :**\n\n🌡️ **Température Extérieure** (requis)\n• Capteur central pour tous les calculs météorologiques et la détection de conditions\n• Utilisé dans les calculs de confort, refroidissement éolien et index de chaleur\n• Essentiel pour la fonctionnalité de base de l'entité météorologique\n\n🌡️ **Capteur de Point de Rosée** (optionnel)\n• Mesure directe du point de rosée pour une précision maximale\n• Utilisé dans l'algorithme de détection de brouillard (>98% humidité + point de rosée)\n• Améliore les calculs d'index de confort\n• Solution de secours : Calculé à partir de température + humidité si non disponible\n\n💧 **Capteur d'Humidité** (optionnel)\n• Essentiel pour la détection de brouillard (se déclenche à >98% d'humidité)\n• Utilisé dans les calculs d'index de confort et d'index de chaleur\n• Aide à déterminer la probabilité de précipitation\n• Combiné avec la radiation solaire pour l'analyse de la couverture nuageuse\n\n📊 **Capteur de Pression** (optionnel)\n• Composant central pour les prévisions météorologiques (5 jours et horaires)\n• Détection des tempêtes (chutes rapides de pression indiquent des tempêtes)\n• Analyse des tendances pour la prédiction des modèles météorologiques\n• Utilisé pour calculer la stabilité météorologique et la probabilité de changement\n\n🏔️ **Altitude** (optionnel)\n• Élévation de la station au-dessus du niveau de la mer\n• Ajuste les calculs de pression atmosphérique pour votre emplacement\n• Améliore la précision des prévisions, surtout pour les prédictions basées sur la pression\n• Altitudes plus élevées = lectures de pression attendues plus faibles",
+        "title": "Capteurs Atmosphériques"
+      },
+      "final": {
+        "data": {
+          "update_interval": "Intervalle de Mise à Jour (minutes)"
+        },
+        "data_description": {
+          "update_interval": "À quelle fréquence les données météorologiques sont rafraîchies et les capteurs sont interrogés. Plage : 1-60 minutes. Des valeurs plus faibles fournissent des mises à jour plus réactives mais peuvent augmenter la charge système."
+        },
+        "description": "Définissez l'intervalle de mise à jour pour votre station météorologique.\n\n**Intervalle de Mise à Jour :**\n• À quelle fréquence les données météorologiques sont rafraîchies et les capteurs sont interrogés\n• Plage : 1-60 minutes\n• Des valeurs plus faibles fournissent des mises à jour plus réactives mais peuvent augmenter la charge système\n• Recommandé : 5-15 minutes pour la plupart des installations",
+        "title": "Configuration Finale"
+      },
+      "rain": {
+        "data": {
+          "rain_rate_sensor": "Capteur de Taux de Pluie",
+          "rain_state_sensor": "Capteur d'État de Pluie"
+        },
+        "data_description": {
+          "rain_rate_sensor": "Capteur optionnel pour la mesure directe de l'intensité des précipitations. Déclenche des conditions météorologiques pluvieuses/orageuses et remplace les autres conditions lorsque la pluie est détectée.",
+          "rain_state_sensor": "Capteur optionnel pour la détection booléenne de pluie (états sec/humide). Fournit un remplacement immédiat de condition météorologique lorsque humide et une détection de précipitation de secours."
+        },
+        "description": "Configurez les capteurs de détection de précipitation.\n\n**Capteurs de Pluie :**\n\n🌧️ **Capteur de Taux de Pluie** (optionnel)\n• Mesure directe de l'intensité des précipitations\n• Déclenche des conditions météorologiques pluvieuses/orageuses\n• Utilisé pour les prévisions de précipitation\n• Remplace les autres conditions lorsque la pluie est détectée\n\n🌦️ **Capteur d'État de Pluie** (optionnel)\n• Détection booléenne de pluie (états sec/humide)\n• Remplacement immédiat de condition météorologique lorsque humide\n• Détection de précipitation de secours si capteur de taux non disponible",
+        "title": "Capteurs de Pluie"
+      },
+      "solar": {
+        "data": {
+          "solar_lux_sensor": "Capteur Solaire Lux",
+          "solar_radiation_sensor": "Capteur de Radiation Solaire",
+          "sun_sensor": "Capteur Solaire",
+          "uv_index_sensor": "Capteur d'Index UV",
+          "zenith_max_radiation": "Radiation Maximale au Zénith"
+        },
+        "data_description": {
+          "solar_lux_sensor": "Capteur optionnel pour la détection jour/nuit basée sur la lumière. Détection de couverture nuageuse de secours et calculs de visibilité lorsque le capteur de radiation solaire n'est pas disponible.",
+          "solar_radiation_sensor": "Capteur optionnel pour la détection primaire de couverture nuageuse (>400 W/m² = ensoleillé, <100 = nuageux). Utilisé dans la détection de brouillard et remplace les autres conditions pour la détection de ciel dégagé.",
+          "sun_sensor": "Capteur optionnel fournissant des données d'élévation solaire pour des calculs précis de couverture nuageuse. Améliore la précision de détection météorologique en tenant compte de la position du soleil (élévation plus élevée = plus de radiation solaire attendue). Se rabat à 45° d'élévation si non configuré.",
+          "uv_index_sensor": "Capteur optionnel pour la confirmation de ciel dégagé (UV élevé = définitivement ensoleillé). Fournit une mesure d'intensité solaire pour des recommandations de sécurité et une précision améliorée de détection de météo ensoleillée.",
+          "zenith_max_radiation": "Rayonnement solaire maximum au zénith (soleil directement au-dessus). Utilisé pour normaliser les lectures de rayonnement solaire pour des calculs précis de couverture nuageuse. Valeurs typiques : 400-1200 W/m² selon l'emplacement et les conditions atmosphériques."
+        },
+        "description": "Configurez les capteurs de radiation solaire, lumière, UV et position du soleil.\n\n**Capteurs Solaires :**\n\n☀️ **Capteur de Radiation Solaire** (optionnel)\n• Détection primaire de couverture nuageuse (>400 W/m² = ensoleillé, <100 = nuageux)\n• Classification jour/nuit et intensité solaire\n• Utilisé dans la détection de brouillard (radiation faible + humidité élevée)\n• Remplace les autres conditions pour la détection de ciel dégagé\n\n💡 **Capteur Solaire Lux** (optionnel)\n• Détection jour/nuit basée sur la lumière\n• Détection de couverture nuageuse de secours si capteur de radiation non disponible\n• Calculs de visibilité et détection de crépuscule\n\n🛡️ **Capteur d'Index UV** (optionnel)\n• Confirmation de ciel dégagé (UV élevé = définitivement ensoleillé)\n• Mesure d'intensité solaire pour recommandations de sécurité\n• Précision améliorée de détection de météo ensoleillée\n\n☀️ **Capteur Solaire** (optionnel)\n• Données d'élévation solaire pour calculs précis de couverture nuageuse\n• Améliore la détection météorologique en tenant compte de la position du soleil\n• Élévation plus élevée = plus de radiation solaire attendue\n• Solution de secours : 45° d'élévation si non configuré",
+        "title": "Capteurs Solaires et du Soleil"
+      },
+      "user": {
+        "data": {
+          "altitude": "Altitude de la Station",
+          "dewpoint_sensor": "Capteur de Point de Rosée",
+          "humidity_sensor": "Capteur d'Humidité",
+          "outdoor_temp_sensor": "Capteur de Température Extérieure",
+          "pressure_sensor": "Capteur de Pression Atmosphérique",
+          "rain_rate_sensor": "Capteur de Taux de Pluie",
+          "rain_state_sensor": "Capteur d'État de Pluie",
+          "solar_lux_sensor": "Capteur Solaire Lux",
+          "solar_radiation_sensor": "Capteur de Radiation Solaire",
+          "sun_sensor": "Capteur Solaire",
+          "update_interval": "Intervalle de Mise à Jour (minutes)",
+          "uv_index_sensor": "Capteur d'Index UV",
+          "wind_direction_sensor": "Capteur de Direction du Vent",
+          "wind_gust_sensor": "Capteur de Rafales de Vent",
+          "wind_speed_sensor": "Capteur de Vitesse du Vent"
+        },
+        "data_description": {
+          "altitude": "Élévation de la station au-dessus du niveau de la mer. Utilisée pour ajuster les lectures de pression à l'équivalent du niveau de la mer pour une détection météorologique précise. Réglez à 0 si votre capteur de pression fournit déjà la pression au niveau de la mer (MSLP) ou pour des lectures de capteur brutes. Améliore la précision des prévisions, surtout pour la prédiction météorologique basée sur la pression. Par défaut à votre paramètre d'élévation Home Assistant s'il est disponible, sinon 0.0 (utilise votre système d'unités Home Assistant).",
+          "dewpoint_sensor": "Capteur optionnel fournissant une mesure directe du point de rosée pour une précision maximale. Utilisé dans la détection de brouillard (>98% humidité + point de rosée) et les calculs de confort. Se rabat sur le point de rosée calculé si non fourni.",
+          "humidity_sensor": "Capteur optionnel essentiel pour la détection de brouillard (se déclenche à >98% d'humidité). Utilisé dans les calculs d'index de confort, d'index de chaleur et la détermination de probabilité de précipitation.",
+          "outdoor_temp_sensor": "Capteur requis pour la détection météorologique de base. Fournit des lectures de température utilisées dans tous les calculs météorologiques et la détection de conditions.",
+          "pressure_sensor": "Capteur optionnel qui permet les prévisions météorologiques (5 jours et horaires). Détecte les tempêtes par des chutes rapides de pression et fournit une analyse de tendance pour la prédiction des modèles météorologiques.",
+          "rain_rate_sensor": "Capteur optionnel pour la mesure directe de l'intensité des précipitations. Déclenche des conditions météorologiques pluvieuses/orageuses et remplace les autres conditions lorsque la pluie est détectée.",
+          "rain_state_sensor": "Capteur optionnel pour la détection booléenne de pluie (états sec/humide). Fournit un remplacement immédiat de condition météorologique lorsque humide et une détection de précipitation de secours.",
+          "solar_lux_sensor": "Capteur optionnel pour la détection jour/nuit basée sur la lumière. Détection de couverture nuageuse de secours et calculs de visibilité lorsque le capteur de radiation solaire n'est pas disponible.",
+          "solar_radiation_sensor": "Capteur optionnel pour la détection primaire de couverture nuageuse (>400 W/m² = ensoleillé, <100 = nuageux). Utilisé dans la détection de brouillard et remplace les autres conditions pour la détection de ciel dégagé.",
+          "sun_sensor": "Capteur optionnel fournissant des données d'élévation solaire pour des calculs précis de couverture nuageuse. Améliore la précision de détection météorologique en tenant compte de la position du soleil (élévation plus élevée = plus de radiation solaire attendue). Se rabat à 45° d'élévation si non configuré.",
+          "update_interval": "À quelle fréquence les données météorologiques sont rafraîchies et les capteurs sont interrogés. Plage : 1-60 minutes. Des valeurs plus faibles fournissent des mises à jour plus réactives mais peuvent augmenter la charge système.",
+          "uv_index_sensor": "Capteur optionnel pour la confirmation de ciel dégagé (UV élevé = définitivement ensoleillé). Fournit une mesure d'intensité solaire pour des recommandations de sécurité et une précision améliorée de détection de météo ensoleillée.",
+          "wind_direction_sensor": "Capteur optionnel fournissant des données de cap du vent pour des rapports météorologiques détaillés. Utilisé dans le suivi des tempêtes et améliore la précision des prévisions avec des données de vent directionnel.",
+          "wind_gust_sensor": "Capteur optionnel pour la détection de météo sévère et la mesure d'intensité des tempêtes. Fournit des alertes de sécurité pour des conditions de vent dangereuses et une classification améliorée des tempêtes.",
+          "wind_speed_sensor": "Capteur optionnel pour la détection des conditions de vent. Détection des tempêtes (>25 km/h + pluie = orageux), calculs de refroidissement éolien et alertes météo sévère."
+        },
+        "description": "Connectez vos capteurs météorologiques pour créer une entité météo intelligente.\n\n**Requis :** Seule la température extérieure est requise.\n\n**Processus de Configuration :**\n• **Capteurs Atmosphériques** - Température, humidité, pression et altitude\n• **Capteurs de Vent** - Vitesse, direction et rafales de vent\n• **Capteurs de Pluie** - Détection et intensité des précipitations\n• **Capteurs Solaires** - Soleil, radiation et mesures de lumière\n• **Configuration Finale** - Configuration de l'intervalle de mise à jour\n\n**Comment Chaque Capteur est Utilisé :**\n\n🌡️ **Capteur de Point de Rosée** (optionnel)\n• Mesure directe du point de rosée pour une précision maximale\n• Utilisé dans l'algorithme de détection de brouillard (>98% humidité + point de rosée)\n• Améliore les calculs d'index de confort\n• Solution de secours : Calculé à partir de température + humidité si non disponible\n\n💧 **Capteur d'Humidité** (optionnel)\n• Essentiel pour la détection de brouillard (se déclenche à >98% d'humidité)\n• Utilisé dans les calculs d'index de confort et d'index de chaleur\n• Aide à déterminer la probabilité de précipitation\n• Combiné avec la radiation solaire pour l'analyse de la couverture nuageuse\n\n📊 **Capteur de Pression** (optionnel)\n• Composant central pour les prévisions météorologiques (5 jours et horaires)\n• Détection des tempêtes (chutes rapides de pression indiquent des tempêtes)\n• Analyse des tendances pour la prédiction des modèles météorologiques\n• Utilisé pour calculer la stabilité météorologique et la probabilité de changement\n\n🏔️ **Altitude** (optionnel)\n• Élévation de la station au-dessus du niveau de la mer\n• Ajuste les calculs de pression atmosphérique pour votre emplacement\n• Améliore la précision des prévisions, surtout pour les prédictions basées sur la pression\n• Altitudes plus élevées = lectures de pression attendues plus faibles\n\n💨 **Capteur de Vitesse du Vent** (optionnel)\n• Détermine les conditions de vent dans l'état météorologique\n• Détection des tempêtes (>25 km/h + pluie = conditions orageuses)\n• Calculs de refroidissement éolien pour la température apparente\n• Alertes météo sévère et prévisions liées au vent\n\n🧭 **Capteur de Direction du Vent** (optionnel)\n• Fournit des données de cap du vent pour des rapports météorologiques détaillés\n• Utilisé dans le suivi des tempêtes et l'analyse des modèles météorologiques\n• Améliore la précision des prévisions avec des données de vent directionnel\n\n🌪️ **Capteur de Rafales de Vent** (optionnel)\n• Détection de météo sévère et mesure d'intensité des tempêtes\n• Alertes de sécurité pour conditions de vent dangereuses\n• Classification améliorée des tempêtes (vents avec rafales vs constants)\n\n🌧️ **Capteur de Taux de Pluie** (optionnel)\n• Mesure directe de l'intensité des précipitations\n• Déclenche des conditions météorologiques pluvieuses/orageuses\n• Utilisé pour les prévisions de précipitation\n• Remplace les autres conditions lorsque la pluie est détectée\n\n🌦️ **Capteur d'État de Pluie** (optionnel)\n• Détection booléenne de pluie (états sec/humide)\n• Remplacement immédiat de condition météorologique lorsque humide\n• Détection de précipitation de secours si capteur de taux non disponible\n\n☀️ **Capteur de Radiation Solaire** (optionnel)\n• Détection primaire de couverture nuageuse (>400 W/m² = ensoleillé, <100 = nuageux)\n• Classification jour/nuit et intensité solaire\n• Utilisé dans la détection de brouillard (radiation faible + humidité élevée)\n• Remplace les autres conditions pour la détection de ciel dégagé\n\n💡 **Capteur Solaire Lux** (optionnel)\n• Détection jour/nuit basée sur la lumière\n• Détection de couverture nuageuse de secours si capteur de radiation non disponible\n• Calculs de visibilité et détection de crépuscule\n\n🛡️ **Capteur d'Index UV** (optionnel)\n• Confirmation de ciel dégagé (UV élevé = définitivement ensoleillé)\n• Mesure d'intensité solaire pour recommandations de sécurité\n• Précision améliorée de détection de météo ensoleillée\n\n☀️ **Capteur Solaire** (optionnel)\n• Données d'élévation solaire pour calculs précis de couverture nuageuse\n• Améliore la détection météorologique en tenant compte de la position du soleil\n• Élévation plus élevée = plus de radiation solaire attendue\n• Solution de secours : 45° d'élévation si non configuré\n\n**Conseils de Configuration :**\n• Utilisez Outils de Développeur → États pour trouver les IDs d'entités de capteurs\n• Les capteurs de température doivent avoir device_class='temperature'\n• Les capteurs de pression doivent utiliser la pression relative/barométrique\n• Intervalle de mise à jour : 1-60 minutes (à quelle fréquence rafraîchir les données météo)\n• Plus de capteurs = détection météorologique plus précise !",
+        "title": "Configuration de la Micro Station Météo"
+      },
+      "wind": {
+        "data": {
+          "wind_direction_sensor": "Capteur de Direction du Vent",
+          "wind_gust_sensor": "Capteur de Rafales de Vent",
+          "wind_speed_sensor": "Capteur de Vitesse du Vent"
+        },
+        "data_description": {
+          "wind_direction_sensor": "Capteur optionnel fournissant des données de cap du vent pour des rapports météorologiques détaillés. Utilisé dans le suivi des tempêtes et améliore la précision des prévisions avec des données de vent directionnel.",
+          "wind_gust_sensor": "Capteur optionnel pour la détection de météo sévère et la mesure d'intensité des tempêtes. Fournit des alertes de sécurité pour des conditions de vent dangereuses et une classification améliorée des tempêtes.",
+          "wind_speed_sensor": "Capteur optionnel pour la détection des conditions de vent. Détection des tempêtes (>25 km/h + pluie = orageux), calculs de refroidissement éolien et alertes météo sévère."
+        },
+        "description": "Configurez les capteurs de vitesse, direction et rafales de vent.\n\n**Capteurs de Vent :**\n\n💨 **Capteur de Vitesse du Vent** (optionnel)\n• Détermine les conditions de vent dans l'état météorologique\n• Détection des tempêtes (>25 km/h + pluie = conditions orageuses)\n• Calculs de refroidissement éolien pour la température apparente\n• Alertes météo sévère et prévisions liées au vent\n\n🧭 **Capteur de Direction du Vent** (optionnel)\n• Fournit des données de cap du vent pour des rapports météorologiques détaillés\n• Utilisé dans le suivi des tempêtes et l'analyse des modèles météorologiques\n• Améliore la précision des prévisions avec des données de vent directionnel\n\n🌪️ **Capteur de Rafales de Vent** (optionnel)\n• Détection de météo sévère et mesure d'intensité des tempêtes\n• Alertes de sécurité pour conditions de vent dangereuses\n• Classification améliorée des tempêtes (vents avec rafales vs constants)",
+        "title": "Capteurs de Vent"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "missing_outdoor_temp": "❌ Le capteur de température extérieure est requis. Veuillez sélectionner un capteur de température qui mesure les conditions extérieures.",
+      "unknown": "❌ Une erreur inattendue s'est produite pendant la configuration. Veuillez vérifier vos sélections de capteurs et réessayer."
+    },
+    "step": {
+      "atmospheric": {
+        "data": {
+          "altitude": "Altitude de la Station",
+          "dewpoint_sensor": "Capteur de Point de Rosée",
+          "humidity_sensor": "Capteur d'Humidité",
+          "outdoor_temp_sensor": "Capteur de Température Extérieure",
+          "pressure_sensor": "Capteur de Pression Atmosphérique"
+        },
+        "data_description": {
+          "altitude": "Élévation de la station au-dessus du niveau de la mer. Utilisée pour ajuster les lectures de pression à l'équivalent du niveau de la mer pour une détection météorologique précise. Réglez à 0 si votre capteur de pression fournit déjà la pression au niveau de la mer (MSLP) ou pour des lectures de capteur brutes. Améliore la précision des prévisions, surtout pour la prédiction météorologique basée sur la pression.",
+          "dewpoint_sensor": "Capteur optionnel fournissant une mesure directe du point de rosée pour une précision maximale. Utilisé dans la détection de brouillard (>98% humidité + point de rosée) et les calculs de confort. Se rabat sur le point de rosée calculé si non fourni.",
+          "humidity_sensor": "Capteur optionnel essentiel pour la détection de brouillard (se déclenche à >98% d'humidité). Utilisé dans les calculs d'index de confort, d'index de chaleur et la détermination de probabilité de précipitation.",
+          "outdoor_temp_sensor": "Capteur requis pour la détection météorologique de base. Fournit des lectures de température utilisées dans tous les calculs météorologiques et la détection de conditions.",
+          "pressure_sensor": "Capteur optionnel qui permet les prévisions météorologiques (5 jours et horaires). Détecte les tempêtes par des chutes rapides de pression et fournit une analyse de tendance pour la prédiction des modèles météorologiques."
+        },
+        "title": "Capteurs Atmosphériques"
+      },
+      "device_config": {
+        "data": {
+          "update_interval": "Intervalle de Mise à Jour (minutes)"
+        },
+        "data_description": {
+          "update_interval": "À quelle fréquence les données météorologiques sont rafraîchies et les capteurs sont interrogés. Plage : 1-60 minutes. Des valeurs plus faibles fournissent des mises à jour plus réactives mais peuvent augmenter la charge système."
+        },
+        "title": "Configuration de l'Appareil"
+      },
+      "init": {
+        "data": {
+          "altitude": "Altitude de la Station",
+          "dewpoint_sensor": "Capteur de Point de Rosée",
+          "humidity_sensor": "Capteur d'Humidité",
+          "outdoor_temp_sensor": "Capteur de Température Extérieure",
+          "pressure_sensor": "Capteur de Pression Atmosphérique",
+          "rain_rate_sensor": "Capteur de Taux de Pluie",
+          "rain_state_sensor": "Capteur d'État de Pluie",
+          "solar_lux_sensor": "Capteur Solaire Lux",
+          "solar_radiation_sensor": "Capteur de Radiation Solaire",
+          "sun_sensor": "Capteur Solaire",
+          "update_interval": "Intervalle de Mise à Jour (minutes)",
+          "uv_index_sensor": "Capteur d'Index UV",
+          "wind_direction_sensor": "Capteur de Direction du Vent",
+          "wind_gust_sensor": "Capteur de Rafales de Vent",
+          "wind_speed_sensor": "Capteur de Vitesse du Vent"
+        },
+        "data_description": {
+          "altitude": "Élévation de la station au-dessus du niveau de la mer. Utilisée pour ajuster les lectures de pression à l'équivalent du niveau de la mer pour une détection météorologique précise. Réglez à 0 si votre capteur de pression fournit déjà la pression au niveau de la mer (MSLP) ou pour des lectures de capteur brutes. Améliore la précision des prévisions, surtout pour la prédiction météorologique basée sur la pression. Par défaut à votre paramètre d'élévation Home Assistant s'il est disponible, sinon 0.0 (utilise votre système d'unités Home Assistant).",
+          "dewpoint_sensor": "Capteur optionnel fournissant une mesure directe du point de rosée pour une précision maximale. Utilisé dans la détection de brouillard (>98% humidité + point de rosée) et les calculs de confort. Se rabat sur le point de rosée calculé si non fourni.",
+          "humidity_sensor": "Capteur optionnel essentiel pour la détection de brouillard (se déclenche à >98% d'humidité). Utilisé dans les calculs d'index de confort, d'index de chaleur et la détermination de probabilité de précipitation.",
+          "outdoor_temp_sensor": "Capteur requis pour la détection météorologique de base. Fournit des lectures de température utilisées dans tous les calculs météorologiques et la détection de conditions.",
+          "pressure_sensor": "Capteur optionnel qui permet les prévisions météorologiques (5 jours et horaires). Détecte les tempêtes par des chutes rapides de pression et fournit une analyse de tendance pour la prédiction des modèles météorologiques.",
+          "rain_rate_sensor": "Capteur optionnel pour la mesure directe de l'intensité des précipitations. Déclenche des conditions météorologiques pluvieuses/orageuses et remplace les autres conditions lorsque la pluie est détectée.",
+          "rain_state_sensor": "Capteur optionnel pour la détection booléenne de pluie (états sec/humide). Fournit un remplacement immédiat de condition météorologique lorsque humide et une détection de précipitation de secours.",
+          "solar_lux_sensor": "Capteur optionnel pour la détection jour/nuit basée sur la lumière. Détection de couverture nuageuse de secours et calculs de visibilité lorsque le capteur de radiation solaire n'est pas disponible.",
+          "solar_radiation_sensor": "Capteur optionnel pour la détection primaire de couverture nuageuse (>400 W/m² = ensoleillé, <100 = nuageux). Utilisé dans la détection de brouillard et remplace les autres conditions pour la détection de ciel dégagé.",
+          "sun_sensor": "Capteur optionnel fournissant des données d'élévation solaire pour des calculs précis de couverture nuageuse. Améliore la précision de détection météorologique en tenant compte de la position du soleil (élévation plus élevée = plus de radiation solaire attendue). Se rabat à 45° d'élévation si non configuré.",
+          "update_interval": "À quelle fréquence les données météorologiques sont rafraîchies et les capteurs sont interrogés. Plage : 1-60 minutes. Des valeurs plus faibles fournissent des mises à jour plus réactives mais peuvent augmenter la charge système.",
+          "uv_index_sensor": "Capteur optionnel pour la confirmation de ciel dégagé (UV élevé = définitivement ensoleillé). Fournit une mesure d'intensité solaire pour des recommandations de sécurité et une précision améliorée de détection de météo ensoleillée.",
+          "wind_direction_sensor": "Capteur optionnel fournissant des données de cap du vent pour des rapports météorologiques détaillés. Utilisé dans le suivi des tempêtes et améliore la précision des prévisions avec des données de vent directionnel.",
+          "wind_gust_sensor": "Capteur optionnel pour la détection de météo sévère et la mesure d'intensité des tempêtes. Fournit des alertes de sécurité pour des conditions de vent dangereuses et une classification améliorée des tempêtes.",
+          "wind_speed_sensor": "Capteur optionnel pour la détection des conditions de vent. Détection des tempêtes (>25 km/h + pluie = orageux), calculs de refroidissement éolien et alertes météo sévère."
+        },
+        "menu_options": {
+          "atmospheric": "Configurer les Capteurs Atmosphériques",
+          "device_config": "Configuration de l'Appareil",
+          "rain": "Configurer les Capteurs de Pluie",
+          "solar": "Configurer les Capteurs Solaires",
+          "wind": "Configurer les Capteurs de Vent"
+        },
+        "title": "Mettre à Jour les Capteurs de la Station Météo"
+      },
+      "rain": {
+        "data": {
+          "rain_rate_sensor": "Capteur de Taux de Pluie",
+          "rain_state_sensor": "Capteur d'État de Pluie"
+        },
+        "data_description": {
+          "rain_rate_sensor": "Capteur optionnel pour la mesure directe de l'intensité des précipitations. Déclenche des conditions météorologiques pluvieuses/orageuses et remplace les autres conditions lorsque la pluie est détectée.",
+          "rain_state_sensor": "Capteur optionnel pour la détection booléenne de pluie (états sec/humide). Fournit un remplacement immédiat de condition météorologique lorsque humide et une détection de précipitation de secours."
+        },
+        "title": "Capteurs de Pluie"
+      },
+      "solar": {
+        "data": {
+          "solar_lux_sensor": "Capteur Solaire Lux",
+          "solar_radiation_sensor": "Capteur de Radiation Solaire",
+          "sun_sensor": "Capteur Solaire",
+          "uv_index_sensor": "Capteur d'Index UV",
+          "zenith_max_radiation": "Radiation Maximale au Zénith"
+        },
+        "data_description": {
+          "solar_lux_sensor": "Capteur optionnel pour la détection jour/nuit basée sur la lumière. Détection de couverture nuageuse de secours et calculs de visibilité lorsque le capteur de radiation solaire n'est pas disponible.",
+          "solar_radiation_sensor": "Capteur optionnel pour la détection primaire de couverture nuageuse (>400 W/m² = ensoleillé, <100 = nuageux). Utilisé dans la détection de brouillard et remplace les autres conditions pour la détection de ciel dégagé.",
+          "sun_sensor": "Capteur optionnel fournissant des données d'élévation solaire pour des calculs précis de couverture nuageuse. Améliore la précision de détection météorologique en tenant compte de la position du soleil (élévation plus élevée = plus de radiation solaire attendue). Se rabat à 45° d'élévation si non configuré.",
+          "uv_index_sensor": "Capteur optionnel pour la confirmation de ciel dégagé (UV élevé = définitivement ensoleillé). Fournit une mesure d'intensité solaire pour des recommandations de sécurité et une précision améliorée de détection de météo ensoleillée.",
+          "zenith_max_radiation": "Rayonnement solaire maximum au zénith (soleil directement au-dessus). Utilisé pour normaliser les lectures de rayonnement solaire pour des calculs précis de couverture nuageuse. Valeurs typiques : 400-1200 W/m² selon l'emplacement et les conditions atmosphériques."
+        },
+        "title": "Capteurs Solaires et du Soleil"
+      },
+      "wind": {
+        "data": {
+          "wind_direction_sensor": "Capteur de Direction du Vent",
+          "wind_gust_sensor": "Capteur de Rafales de Vent",
+          "wind_speed_sensor": "Capteur de Vitesse du Vent"
+        },
+        "data_description": {
+          "wind_direction_sensor": "Capteur optionnel fournissant des données de cap du vent pour des rapports météorologiques détaillés. Utilisé dans le suivi des tempêtes et améliore la précision des prévisions avec des données de vent directionnel.",
+          "wind_gust_sensor": "Capteur optionnel pour la détection de météo sévère et la mesure d'intensité des tempêtes. Fournit des alertes de sécurité pour des conditions de vent dangereuses et une classification améliorée des tempêtes.",
+          "wind_speed_sensor": "Capteur optionnel pour la détection des conditions de vent. Détection des tempêtes (>25 km/h + pluie = orageux), calculs de refroidissement éolien et alertes météo sévère."
+        },
+        "title": "Capteurs de Vent"
+      }
+    }
+  }
+}

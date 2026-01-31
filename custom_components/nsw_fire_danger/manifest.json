@@ -1,0 +1,17 @@
+{
+    "domain": "nsw_fire_danger",
+    "name": "NSW Fire Danger Ratings",
+    "after_dependencies": [
+        "http"
+    ],
+    "codeowners": [
+        "@vwylaw"
+    ],
+    "config_flow": true,
+    "documentation": "https://github.com/vwylaw/nsw_fire_danger",
+    "integration_type": "service",
+    "iot_class": "cloud_polling",
+    "issue_tracker": "https://github.com/vwylaw/nsw_fire_danger/issues",
+    "requirements": [],
+    "version": "1.3.10"
+}

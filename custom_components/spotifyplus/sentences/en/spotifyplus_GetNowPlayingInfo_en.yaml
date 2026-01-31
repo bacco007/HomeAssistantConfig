@@ -1,0 +1,100 @@
+# ============================================================================
+# SpotifyPlus integration intent custom sentence and response definitions.
+#
+# Language: en, English
+# Intent:   SpotifyPlusGetNowPlayingInfo
+# Location: custom_sentences/en/spotifyplus_GetNowPlayingInfo_en.yaml
+# ============================================================================
+language: en
+intents:
+
+  SpotifyPlusGetNowPlayingInfo:
+
+    data:
+
+      - sentences:
+
+          - "[get] spotify [nowplaying|now playing] {spotifyplus_media_type} (info|information|details)"
+
+            # Base sentence phrases for this intent.
+            # This sentence is recognized when a name / area is NOT provided in the spoken command.  
+            # In this case, the first active SpotifyPlus media player is used.
+
+            # __Example Phrases - Default Player__  
+            # - "spotify nowplaying album info"
+            # - "spotify album info"
+            # - "get spotify album info"
+            # - "spotify nowplaying artist info"
+            # - "spotify artist info"
+            # - "get spotify artist info"
+            # - "spotify nowplaying audiobook info"
+            # - "spotify audiobook info"
+            # - "get spotify audiobook info"
+            # - "spotify nowplaying playlist info"
+            # - "spotify playlist info"
+            # - "get spotify playlist info"
+            # - "spotify nowplaying podcast episode info"
+            # - "spotify podcast episode info"
+            # - "get spotify podcast episode info"
+            # - "spotify nowplaying podcast info"
+            # - "spotify podcast info"
+            # - "get spotify podcast info"
+            # - "spotify nowplaying track info"
+            # - "spotify track info"
+            # - "get spotify track info"
+
+        slots:
+
+          name: "Spotify Premium"  # default player to use.
+
+        response: default
+
+      - sentences:
+
+          - "[get] spotify [nowplaying|now playing] {spotifyplus_media_type} (info|information|details) <on_spotifyplus_player_name>"
+
+            # This sentence is recognized when a player name is provided in the spoken 
+            # command (e.g. "on player Spotify Premium", "on Todds player", etc).  
+            # Supports the same base sentence phrases for this intent.
+
+            # __Example Phrases - By Player Name__  
+            # - "get spotify artist info for player spotify premium"
+            # - "get spotify artist info for spotify premium player"
+
+        slots:
+
+          name: ""
+
+        response: default
+
+      - sentences:
+
+          - "[get] spotify [nowplaying|now playing] {spotifyplus_media_type} (info|information|details) <in_spotifyplus_player_area>"
+
+            # This sentence is recognized when a player area is provided in the spoken 
+            # command (e.g. "in the Living Room area", "in the Living Room", etc).  
+            # Supports the same base sentence phrases for this intent.
+
+            # __Example Phrases - By Player Area__  
+            # - "get spotify artist info in the Office area"
+            # - "get spotify artist info in the Office"
+ 
+        slots:
+
+          area: ""
+          name: ""
+
+        response: default
+
+
+# ============================================================================
+# Custom response definitions for THIS intent.
+# Note - Shared responses for all intents are stored in the Common file.
+# ============================================================================
+responses:
+  intents:
+
+    SpotifyPlusGetNowPlayingInfo:
+
+      default: "" # not used - see common `nowplaying_info_xxxxxxx` messages.
+  

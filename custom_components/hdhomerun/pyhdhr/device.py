@@ -7,10 +7,11 @@ import asyncio
 import logging
 import struct
 from enum import Enum, StrEnum, unique
-from typing import Any, Dict, List
+from typing import Any
 from urllib.parse import urlparse
 
 import aiohttp
+from aiohttp.hdrs import USER_AGENT
 
 from .const import (
     HDHOMERUN_TAG_BASE_URL,
@@ -21,6 +22,7 @@ from .const import (
     HDHOMERUN_TAG_GETSET_VALUE,
     HDHOMERUN_TAG_LINEUP_URL,
     HDHOMERUN_TAG_TUNER_COUNT,
+    HTTP_USER_AGENT,
     DiscoverMode,
 )
 from .decorators import needs_http
@@ -36,7 +38,6 @@ class DevicePaths(StrEnum):
     """Available paths on the device."""
 
     DISCOVER = "discover.json"
-    LINEUP = "lineup.json"
     LINEUP_ACTION = "lineup.post"
     LINEUP_STATUS = "lineup_status.json"
     TUNER_STATUS = "status.json"
@@ -53,26 +54,26 @@ class DeviceType(Enum):
 class HDHomeRunDevice:
     """Representation of a device."""
 
-    def __init__(self, host: str) -> None:
+    def __init__(self, host: str, discovery_method: DiscoverMode) -> None:
         """Initialise."""
-        self._discovery_method: DiscoverMode | None = None
+        self._discovery_method: DiscoverMode = discovery_method
         self._host: str = host
         self._log_formatter: Logger = Logger(unique_id=self._host)
-        self._processed_datagram: Dict[str, Any]
-        self._raw_details: Dict[str, Any] = {}
-        self._session: aiohttp.ClientSession | None = None
+        self._processed_datagram: dict[str, Any]
+        self._raw_details: dict[str, Any] = {}
+        self._session: aiohttp.ClientSession
 
         self._base_url: str | None = None
-        self._channel_sources: List[str] | None = None
+        self._channel_sources: list[str] | None = None
         self._device_auth_str: str | None = None
         self._device_id: str | None = None
-        self._device_type: str | None = None
+        self._device_type: DeviceType | None = None
         self._lineup_url: str | None = None
         self._sys_hwmodel: str | None = None
         self._sys_model: str | None = None
         self._sys_version: str | None = None
         self._tuner_count: int | None = None
-        self._tuner_status: List[Dict[str, Any]] | None = None
+        self._tuner_status: list[dict[str, Any]] | None = None
 
     def __repr__(self) -> str:
         """Friendly representation of the device."""
@@ -115,6 +116,7 @@ class HDHomeRunDevice:
             resp = await self._session.get(
                 url=url,
                 raise_for_status=True,
+                headers={USER_AGENT: HTTP_USER_AGENT},
             )
         except Exception as err:  # pylint: disable=broad-except
             _LOGGER.debug(
@@ -130,48 +132,19 @@ class HDHomeRunDevice:
             )
         # endregion
 
-        requests: List[aiohttp.ClientRequest] = [
-            self._session.get(
-                url=self.lineup_url,
-                params={
-                    "show": "found",
-                },
-            ),
-            self._session.get(
-                url=f"{self.base_url}/{DevicePaths.LINEUP_STATUS.value}",
-            ),
-        ]
-
-        responses: List[aiohttp.ClientResponse] = await asyncio.gather(*requests)
-        for resp in responses:
-            key: str = resp.url.name.split(".")[0]
-            if not resp.ok:
-                _LOGGER.debug(
-                    self._log_formatter.format("%s failed with error %d - %s"),
-                    key,
-                    resp.status,
-                    resp.reason,
-                )
-                continue
-
-            self._raw_details[key] = await resp.json()
-            _LOGGER.debug(
-                self._log_formatter.format("results for %s: %s"),
-                key,
-                self._raw_details[key],
-            )
-
     async def _async_gather_details_udp(self) -> None:
         """Gather details via TCP/UDP for a UDP discovered device."""
         from .discover import Discover  # pylint: disable=import-outside-toplevel
 
         # region #-- get the properties available from a discovery --#
-        updated_device: List[HDHomeRunDevice] | HDHomeRunDevice = await Discover(
+        updated_device: list[HDHomeRunDevice] | HDHomeRunDevice = await Discover(
             broadcast_address=self.ip, mode=DiscoverMode.UDP, session=None
         ).async_discover()
         if updated_device:
             updated_device = updated_device[0]
-            for tag in getattr(updated_device, "_processed_datagram", {}).get("data"):
+            for tag in getattr(updated_device, "_processed_datagram", {}).get(
+                "data", {}
+            ):
                 value = self.get_from_datagram(device_details=updated_device, tag=tag)
                 if tag == HDHOMERUN_TAG_BASE_URL:
                     self._base_url = value
@@ -184,7 +157,7 @@ class HDHomeRunDevice:
                 elif tag == HDHOMERUN_TAG_LINEUP_URL:
                     self._lineup_url = value
                 elif tag == HDHOMERUN_TAG_TUNER_COUNT:
-                    self._tuner_count = value
+                    self._tuner_count = int(value) if value is not None else None
         # endregion
 
         # region #-- get the details from the control protocol --#
@@ -195,7 +168,7 @@ class HDHomeRunDevice:
             protocol.async_get_hwmodel(),
         ]
         info = await asyncio.gather(*supplemental_info)
-        prop: Dict[str, Dict[int | str, bytes]]
+        prop: dict[str, dict[int | str, bytes]]
         for prop in info:
             tcp_prop_name = (
                 prop.get("data", {})[HDHOMERUN_TAG_GETSET_NAME].decode().rstrip("\0")
@@ -210,10 +183,10 @@ class HDHomeRunDevice:
 
     async def _async_get_channel_details_udp(
         self, tuner_index: int
-    ) -> Dict[str, int | str]:
+    ) -> dict[str, int | str]:
         """Gather details about the currently tuned channel."""
         protocol: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
-        ret: Dict[str, int | str] = {}
+        ret: dict[str, int | str] = {}
 
         channel_details = await protocol.async_get_tuner_current_channel(
             tuner_idx=tuner_index
@@ -231,7 +204,7 @@ class HDHomeRunDevice:
             .split("\n")
         )
         channel: str
-        channel_name: List[tuple[str, ...]] = [
+        channel_name: list[tuple[str, ...]] = [
             tuple(channel.replace(f"{tuner_channel_id}: ", "").split(" ", maxsplit=1))
             for channel in channel_names
             if channel.startswith(f"{tuner_channel_id}: ")
@@ -251,12 +224,84 @@ class HDHomeRunDevice:
         return ret
 
     @needs_http
+    async def _async_get_lineup_http(self) -> None:
+        """Retrieve the list of channels that have been found."""
+
+        _LOGGER.debug(self._log_formatter.format("entered"))
+        if self._session and self.lineup_url is not None:
+            requests: list = [
+                self._session.get(
+                    url=self.lineup_url,
+                    params={
+                        "show": "found",
+                    },
+                    headers={USER_AGENT: HTTP_USER_AGENT},
+                )
+            ]
+
+            responses: list[aiohttp.ClientResponse] = await asyncio.gather(*requests)
+            for resp in responses:
+                key: str = resp.url.name.split(".")[0]
+                if not resp.ok:
+                    _LOGGER.debug(
+                        self._log_formatter.format("%s failed with error %d - %s"),
+                        key,
+                        resp.status,
+                        resp.reason,
+                    )
+                    continue
+
+                self._raw_details[key] = await resp.json()
+                _LOGGER.debug(
+                    self._log_formatter.format("results for %s: %s"),
+                    key,
+                    self._raw_details[key],
+                )
+
+        _LOGGER.debug(self._log_formatter.format("exited"))
+
+    @needs_http
+    async def _async_get_scanning_status_http(self) -> None:
+        """Retrieve the list of channels that have been found."""
+
+        _LOGGER.debug(self._log_formatter.format("entered"))
+        if self._session and self.lineup_url is not None:
+            requests: list = [
+                self._session.get(
+                    url=f"http://{self.ip}/{DevicePaths.LINEUP_STATUS.value}",
+                    headers={USER_AGENT: HTTP_USER_AGENT},
+                )
+            ]
+
+            responses: list[aiohttp.ClientResponse] = await asyncio.gather(*requests)
+            for resp in responses:
+                key: str = resp.url.name.split(".")[0]
+                if not resp.ok:
+                    _LOGGER.debug(
+                        self._log_formatter.format("%s failed with error %d - %s"),
+                        key,
+                        resp.status,
+                        resp.reason,
+                    )
+                    continue
+
+                self._raw_details[key] = await resp.json()
+                _LOGGER.debug(
+                    self._log_formatter.format("results for %s: %s"),
+                    key,
+                    self._raw_details[key],
+                )
+
+        _LOGGER.debug(self._log_formatter.format("exited"))
+
+    @needs_http
     async def _async_get_tuner_status_http(self) -> None:
         """Get the current details for the tuners using HTTP."""
         _LOGGER.debug(self._log_formatter.format("entered"))
         resp: aiohttp.ClientResponse = await self._session.get(
             url=f"{self.base_url}/{DevicePaths.TUNER_STATUS.value}",
             raise_for_status=True,
+            headers={USER_AGENT: HTTP_USER_AGENT},
         )
         self._tuner_status = await resp.json()
         _LOGGER.debug(self._log_formatter.format("exited"))
@@ -264,16 +309,25 @@ class HDHomeRunDevice:
     async def _async_get_tuner_status_udp(self) -> None:
         """Get the current details for the tuners using the control protocol."""
         _LOGGER.debug(self._log_formatter.format("entered"))
-        protocol: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
+        if self.ip is None:
+            _LOGGER.debug(self._log_formatter.format("exited, no IP set"))
+            return
+
+        protocol: HDHomeRunProtocol = HDHomeRunProtocol(self.ip)
+
+        if self.tuner_count is None:
+            _LOGGER.debug(
+                self._log_formatter.format("exited, no tuner_count information")
+            )
+            return
 
         tuners = [
-            protocol.async_get_tuner_status(tuner_idx=idx)
-            for idx in range(self.tuner_count)
+            protocol.async_get_tuner_status(idx) for idx in range(self.tuner_count)
         ]
 
         # -- process all tuners --#
         _LOGGER.debug(self._log_formatter.format("querying all tuners"))
-        tuner_status: List[Dict[str, str]] = []
+        tuner_status: list[dict[str, str]] = []
         for tuner in await asyncio.gather(*tuners):
             if tuner is None:
                 continue
@@ -282,7 +336,7 @@ class HDHomeRunDevice:
             val = (
                 tuner.get("data", {})[HDHOMERUN_TAG_GETSET_VALUE].decode().rstrip("\0")
             )
-            tuner_info: Dict[str, int | str] = {"Resource": key.split("/")[1]}
+            tuner_info: dict[str, int | str] = {"Resource": key.split("/")[1]}
 
             # status details are space delimted; tags are = delimited
             for detail in val.split(" "):
@@ -305,7 +359,7 @@ class HDHomeRunDevice:
             # need to get the channel details now
             if "SymbolQualityPercent" in tuner_info:
                 channel_details = await self._async_get_channel_details_udp(
-                    tuner_index=tuner_info["Resource"].replace("tuner", "")
+                    int(str(tuner_info["Resource"]).replace("tuner", ""))
                 )
                 tuner_info.update(channel_details)
 
@@ -327,6 +381,28 @@ class HDHomeRunDevice:
         _LOGGER.debug(self._log_formatter.format("exited"))
 
     @needs_http
+    async def async_get_scanning_status(self) -> None:
+        """Retrieve the channel scanning status.  Details can be found in the relevant properties."""
+        _LOGGER.debug(self._log_formatter.format("entered"))
+
+        if self._discovery_method is DiscoverMode.HTTP:
+            _LOGGER.debug(self._log_formatter.format("retrieving scanning status."))
+            await self._async_get_scanning_status_http()
+
+        _LOGGER.debug(self._log_formatter.format("exited"))
+
+    @needs_http
+    async def async_get_lineup_http(self) -> None:
+        """Retrieve the channel lineup.  Results can be found in the channels property."""
+        _LOGGER.debug(self._log_formatter.format("entered"))
+
+        if self._discovery_method is DiscoverMode.HTTP:
+            _LOGGER.debug(self._log_formatter.format("retrieving lineup"))
+            await self._async_get_lineup_http()
+
+        _LOGGER.debug(self._log_formatter.format("exited"))
+
+    @needs_http
     async def async_get_channel_scan_progress(self, timeout: float = 2.5) -> int | None:
         """Return the current channel scan progress as of now."""
         _LOGGER.debug(self._log_formatter.format("entered"))
@@ -336,6 +412,7 @@ class HDHomeRunDevice:
                 url=f"{self.base_url}/{DevicePaths.LINEUP_STATUS.value}",
                 timeout=timeout,
                 raise_for_status=True,
+                headers={USER_AGENT: HTTP_USER_AGENT},
             )
         except Exception as err:  # pylint: disable=broad-except
             _LOGGER.error(self._log_formatter.format("type: %s, %s"), type(err), err)
@@ -348,14 +425,15 @@ class HDHomeRunDevice:
 
     async def async_get_protocol_variable(
         self, name: str, timeout: float = 2.5
-    ) -> Dict[str, int | str]:
+    ) -> dict[str, int | str]:
         """Return a variable from the control protocol."""
         _LOGGER.debug(self._log_formatter.format("entered"))
 
-        ret: Dict[str, int | str] = {}
-        proto: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
-        if (get_variable_func := getattr(proto, "_get_set_req", None)) is not None:
-            ret = await get_variable_func(tag=name, timeout=timeout)
+        ret: dict[str, int | str] = {}
+        if self.ip is not None:
+            proto: HDHomeRunProtocol = HDHomeRunProtocol(self.ip)
+            if (get_variable_func := getattr(proto, "_get_set_req", None)) is not None:
+                ret = await get_variable_func(tag=name, timeout=timeout)
 
         _LOGGER.debug(self._log_formatter.format("exited"))
         return ret
@@ -388,8 +466,9 @@ class HDHomeRunDevice:
     async def async_restart(self) -> None:
         """Restart the device using the control protocol."""
         _LOGGER.debug(self._log_formatter.format("entered"))
-        proto: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
-        await proto.async_restart()
+        if self.ip is not None:
+            proto: HDHomeRunProtocol = HDHomeRunProtocol(host=self.ip)
+            await proto.async_restart()
         _LOGGER.debug(self._log_formatter.format("exited"))
 
     @needs_http
@@ -409,6 +488,7 @@ class HDHomeRunDevice:
                 url=f"{self.base_url}/{DevicePaths.LINEUP_ACTION.value}",
                 params=params,
                 raise_for_status=True,
+                headers={USER_AGENT: HTTP_USER_AGENT},
             )
         except Exception as err:
             _LOGGER.error(self._log_formatter.format("%s; %s"), type(err), err)
@@ -434,7 +514,7 @@ class HDHomeRunDevice:
         return None
 
     @property
-    def channel_sources(self) -> List[str] | None:
+    def channel_sources(self) -> list[str] | None:
         """Get the available sources for channels."""
         if self._channel_sources is None:
             self._channel_sources = self._raw_details.get("lineup_status", {}).get(
@@ -443,7 +523,7 @@ class HDHomeRunDevice:
         return self._channel_sources
 
     @property
-    def channels(self) -> List[Dict[str, str]]:
+    def channels(self) -> list[dict[str, str]]:
         """Get a list of channels as per the HTTP API."""
         return self._raw_details.get("lineup", [])
 
@@ -465,7 +545,7 @@ class HDHomeRunDevice:
         return self._device_type
 
     @property
-    def discovery_method(self):
+    def discovery_method(self) -> DiscoverMode:
         """Return the discovery method."""
         return self._discovery_method
 
@@ -523,7 +603,7 @@ class HDHomeRunDevice:
         )
 
     @property
-    def tuner_status(self) -> List[Dict[str, int | str]] | None:
+    def tuner_status(self) -> list[dict[str, int | str]] | None:
         """Get the status for all tuners."""
         return self._tuner_status
 

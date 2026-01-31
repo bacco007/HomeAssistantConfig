@@ -1,17 +1,16 @@
+from collections.abc import MutableMapping
 import copy
 import logging
-from collections.abc import MutableMapping
-from typing import final
+from typing import Optional, cast, final
+import yaml
 
-import homeassistant.helpers.entity_registry as er
-import voluptuous as vol
-from homeassistant.components.device_tracker import (
+from homeassistant.components.device_tracker.config_entry import TrackerEntity
+from homeassistant.components.device_tracker.const import (
     ATTR_LOCATION_NAME,
     ATTR_SOURCE_TYPE,
-    PLATFORM_SCHEMA,
     SourceType,
-    TrackerEntity,
 )
+from homeassistant.components.device_tracker.legacy import PLATFORM_SCHEMA
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
@@ -27,15 +26,16 @@ from homeassistant.const import (
     Platform,
 )
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers import entity_platform
+from homeassistant.helpers import config_validation as cv, entity_platform
 from homeassistant.helpers.device import async_device_info_to_link_from_device_id
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import generate_entity_id
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+import homeassistant.helpers.entity_registry as er
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import StateType
 from homeassistant.util import slugify
+import voluptuous as vol
 
 from .const import (
     ATTR_ATTRIBUTES,
@@ -52,6 +52,7 @@ from .const import (
     DEFAULT_REPLACE_ATTRIBUTES,
     DOMAIN,
 )
+from .helpers import merge_attribute_dict
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -59,7 +60,7 @@ PLATFORM = Platform.DEVICE_TRACKER
 ENTITY_ID_FORMAT = PLATFORM + ".{}"
 SERVICE_UPDATE_VARIABLE = "update_" + PLATFORM
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({})
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({})  # type: ignore[assignment]
 
 VARIABLE_ATTR_SETTINGS = {
     ATTR_FRIENDLY_NAME: "_attr_name",
@@ -101,7 +102,7 @@ async def async_setup_entry(
         "async_update_variable",
     )
 
-    config = hass.data.get(DOMAIN).get(config_entry.entry_id)
+    config = hass.data.get(DOMAIN, {}).get(config_entry.entry_id, {})
     unique_id = config_entry.entry_id
     # _LOGGER.debug(f"[async_setup_entry] config_entry: {config_entry.as_dict()}")
     # _LOGGER.debug(f"[async_setup_entry] config: {config}")
@@ -116,7 +117,7 @@ async def async_setup_entry(
     else:
         async_add_entities([Variable(hass, config, config_entry, unique_id)])
 
-    return True
+    return None
 
 
 class Variable(RestoreEntity, TrackerEntity):
@@ -130,6 +131,7 @@ class Variable(RestoreEntity, TrackerEntity):
         unique_id,
     ):
         """Initialize a Device Tracker Variable."""
+        super().__init__()
         # _LOGGER.debug(f"({config.get(CONF_NAME, config.get(CONF_VARIABLE_ID))}) [init] config: {config}")
         self._hass = hass
         self._config = config
@@ -143,23 +145,26 @@ class Variable(RestoreEntity, TrackerEntity):
         self._force_update = config.get(CONF_FORCE_UPDATE)
         self._yaml_variable = config.get(CONF_YAML_VARIABLE)
         self._exclude_from_recorder = config.get(CONF_EXCLUDE_FROM_RECORDER)
-        self._attr_device_info = async_device_info_to_link_from_device_id(
-            hass,
-            config.get(CONF_DEVICE_ID),
+        self._attr_device_info = cast(
+            Optional[DeviceInfo],
+            async_device_info_to_link_from_device_id(
+                hass,
+                config.get(CONF_DEVICE_ID),
+            ),
         )
         if (
             config.get(CONF_ATTRIBUTES) is not None
             and config.get(CONF_ATTRIBUTES)
             and isinstance(config.get(CONF_ATTRIBUTES), MutableMapping)
         ):
-            self._attr_extra_state_attributes = self._update_attr_settings(
-                config.get(CONF_ATTRIBUTES)
+            self._attr_extra_state_attributes = cast(
+                dict, self._update_attr_settings(config.get(CONF_ATTRIBUTES))
             )
         else:
-            self._attr_extra_state_attributes = None
+            self._attr_extra_state_attributes = cast(dict, {})
         registry = er.async_get(self._hass)
         current_entity_id = registry.async_get_entity_id(
-            PLATFORM, DOMAIN, self._attr_unique_id
+            DOMAIN, PLATFORM, self._attr_unique_id
         )
         if current_entity_id is not None:
             self.entity_id = current_entity_id
@@ -190,13 +195,40 @@ class Variable(RestoreEntity, TrackerEntity):
                     and state.attributes
                     and isinstance(state.attributes, MutableMapping)
                 ):
-                    self._attr_extra_state_attributes = self._update_attr_settings(
-                        state.attributes.copy(),
-                        just_pop=self._config.get(CONF_UPDATED, False),
+                    # Avoid restoring Home Assistant's computed friendly_name back into
+                    # _attr_name (it may already include the device name prefix).
+                    restored_attributes = dict(state.attributes)
+                    restored_attributes.pop(ATTR_FRIENDLY_NAME, None)
+                    self._attr_extra_state_attributes = cast(
+                        dict,
+                        self._update_attr_settings(
+                            restored_attributes,
+                            just_pop=self._config.get(CONF_UPDATED, False),
+                        ),
                     )
-                _LOGGER.debug(
-                    f"({self._attr_name}) [restored] attributes: {self._attr_extra_state_attributes}"
-                )
+                    _LOGGER.debug(
+                        f"({self._attr_name}) [restored] attributes: {getattr(self, '_attr_extra_state_attributes', {})}"
+                    )
+                    # If there were no attributes restored from state, apply attributes from config
+                    if (
+                        (not getattr(self, "_attr_extra_state_attributes", None)
+                         or self._attr_extra_state_attributes == {})
+                        and self._config.get(CONF_ATTRIBUTES)
+                    ):
+                        self._attr_extra_state_attributes = cast(
+                            dict, self._update_attr_settings(self._config.get(CONF_ATTRIBUTES))
+                        )
+                        _LOGGER.debug(
+                            f"({self._attr_name}) [restored] applied config attributes: {getattr(self, '_attr_extra_state_attributes', {})}"
+                        )
+                        try:
+                            self.async_write_ha_state()
+                        except Exception as err:
+                            _LOGGER.debug(
+                                "(%s) async_write_ha_state failed during restore: %s",
+                                self._attr_name,
+                                err,
+                            )
         if self._config.get(CONF_UPDATED, True):
             self._config.update({CONF_UPDATED: False})
             self._hass.config_entries.async_update_entry(
@@ -236,6 +268,10 @@ class Variable(RestoreEntity, TrackerEntity):
     async def async_update_variable(self, **kwargs) -> None:
         """Update Device Tracker Variable."""
 
+        _LOGGER.debug(
+            f"({self._attr_name}) [async_update_variable] kwargs: {kwargs}"
+        )
+
         updated_attributes = None
 
         replace_attributes = kwargs.get(ATTR_REPLACE_ATTRIBUTES, False)
@@ -252,27 +288,44 @@ class Variable(RestoreEntity, TrackerEntity):
 
         attributes = kwargs.get(ATTR_ATTRIBUTES)
         if attributes is not None:
+            if isinstance(attributes, str):
+                try:
+                    attributes = yaml.safe_load(attributes)
+                except Exception as err:
+                    _LOGGER.error(
+                        f"({self._attr_name}) Failed to parse attributes string: %s", err
+                    )
+                    attributes = None
             if isinstance(attributes, MutableMapping):
                 _LOGGER.debug(
                     f"({self._attr_name}) [async_update_variable] New Attributes: {attributes}"
                 )
                 extra_attributes = self._update_attr_settings(attributes)
-                if updated_attributes is not None:
-                    updated_attributes.update(extra_attributes)
-                else:
-                    updated_attributes = extra_attributes
+                if extra_attributes is not None:
+                    try:
+                        updated_attributes = merge_attribute_dict(
+                            updated_attributes, extra_attributes
+                        )
+                    except ValueError as err:
+                        _LOGGER.error(
+                            "(%s) AttributeError: %s",
+                            self._attr_name,
+                            err,
+                        )
             else:
                 _LOGGER.error(
                     f"({self._attr_name}) AttributeError: Attributes must be a dictionary: {attributes}"
                 )
 
         if updated_attributes is not None:
-            self._attr_extra_state_attributes = copy.deepcopy(updated_attributes)
+            self._attr_extra_state_attributes = cast(
+                dict, copy.deepcopy(updated_attributes)
+            )
             _LOGGER.debug(
                 f"({self._attr_name}) [async_update_variable] Final Attributes: {updated_attributes}"
             )
         else:
-            self._attr_extra_state_attributes = None
+            self._attr_extra_state_attributes = cast(dict, {})
 
         if ATTR_LATITUDE in kwargs:
             self._attr_latitude = kwargs.get(ATTR_LATITUDE)
@@ -289,15 +342,18 @@ class Variable(RestoreEntity, TrackerEntity):
             and kwargs.get(ATTR_DELETE_LOCATION_NAME) is True
         ):
             self._attr_location_name = None
-        self.async_write_ha_state()
+        try:
+            self.async_write_ha_state()
+        except Exception as err:
+            _LOGGER.debug("(%s) async_write_ha_state failed during update: %s", self._attr_name, err)
 
     @property
-    def should_poll(self):
+    def should_poll(self):  # type: ignore[override]
         """If entity should be polled."""
         return False
 
     @property
-    def force_update(self) -> bool:
+    def force_update(self) -> bool:  # type: ignore[override]
         """Force update status of the entity."""
         return self._force_update
 
@@ -307,17 +363,17 @@ class Variable(RestoreEntity, TrackerEntity):
         return self._attr_source_type
 
     @property
-    def latitude(self):
+    def latitude(self):  # type: ignore[override]
         """Return latitude value of the device."""
         return self._attr_latitude
 
     @property
-    def longitude(self):
+    def longitude(self):  # type: ignore[override]
         """Return longitude value of the device."""
         return self._attr_longitude
 
     @property
-    def location_accuracy(self) -> int:
+    def location_accuracy(self) -> int:  # type: ignore[override]
         """Return the location accuracy of the device.
 
         Value in meters.
@@ -325,16 +381,23 @@ class Variable(RestoreEntity, TrackerEntity):
         return self._attr_gps_accuracy if self._attr_gps_accuracy is not None else 0
 
     @property
-    def location_name(self) -> str | None:
+    def location_name(self) -> str | None:  # type: ignore[override]
         """Return a location name for the current location of the device."""
         return self._attr_location_name
 
     @final
     @property
-    def state_attributes(self) -> dict[str, StateType]:
+    def state_attributes(self) -> dict[str, StateType]:  # type: ignore[override]
         """Return the device state attributes."""
         attr: dict[str, StateType] = {}
-        attr.update(super().state_attributes)
+        try:
+            attr.update(super().state_attributes)
+        except AttributeError as err:
+            _LOGGER.debug(
+                "(%s) Unable to read base state_attributes during startup: %s",
+                self._attr_name,
+                err,
+            )
         if self._attr_extra_state_attributes is not None:
             attr.update(self._attr_extra_state_attributes)
         if self._attr_source_type is not None:
@@ -351,7 +414,7 @@ class Variable(RestoreEntity, TrackerEntity):
         return attr
 
     @property
-    def device_info(self) -> DeviceInfo:
+    def device_info(self) -> Optional[DeviceInfo]:  # type: ignore[override]
         """Return device info."""
         return self._attr_device_info
 

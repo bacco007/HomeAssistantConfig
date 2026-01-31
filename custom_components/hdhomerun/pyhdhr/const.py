@@ -1,9 +1,18 @@
 """Constants."""
 
 # region #-- imports --#
+import json
+import os
 from enum import Enum, unique
 
 # endregion
+
+FILE_MANIFEST: str = (
+    f"{os.path.abspath(os.path.join(os.path.split(os.path.abspath(__file__))[0], os.pardir))}/manifest.json"
+)
+with open(FILE_MANIFEST) as f:
+    manifest = json.load(f)
+HTTP_USER_AGENT: str = f"hass_{manifest.get("domain")}/{manifest.get("version")}"
 
 HDHOMERUN_CONTROL_TCP_PORT: int = 65001
 HDHOMERUN_DISCOVER_UDP_PORT: int = 65001

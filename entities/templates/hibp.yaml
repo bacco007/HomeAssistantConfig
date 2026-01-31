@@ -3,13 +3,12 @@ sensor:
   - name: "[HIBP] Breach Summary"
     unique_id: hibp_breach_summary
     icon: mdi:virus-outline
-    state: |
-      {%- set ns = namespace(items=0) %}
-      {%- for x in expand('group.hibp_breaches') | list %}
-      {%- set val = states(x.entity_id) | int %}
-      {%- set ns.items = (ns.items + val) %}
-      {%- endfor %}
-      {{ns.items}}
+    state: >-
+      {{ expand('group.hibp_breaches')
+         | map(attribute='state')
+         | map('int', 0)
+         | sum }}
+    unit_of_measurement: Breaches
     attributes:
       category: hibp
       breaches: >
@@ -21,7 +20,7 @@ sensor:
         {%- set br = state_attr(x.entity_id, y) %}
         {%- set output_item = {'account': fn, 'breach': br} %}
         {%- set ns.output = ns.output + [output_item] %}
-        {% endif %}
+        {%- endif %}
         {%- endfor %}
         {%- endfor %}
         {{ ns.output }}

@@ -1,0 +1,348 @@
+{
+    "title": "Mond Astro",
+    "config": {
+        "step": {
+            "user": {
+                "title": "Mond Astro",
+                "description": "Legen Sie Ihre GPS-Koordinaten und die Höhe fest.",
+                "data": {
+                    "latitude": "Breitengrad",
+                    "longitude": "Längengrad",
+                    "altitude": "Höhe (m)"
+                }
+            },
+            "precision": {
+                "title": "Mond Astro",
+                "description": "Der Hochpräzisionsmodus verringert die Variabilität der Zeitstempel, erhöht jedoch die CPU-Auslastung, da er eine feinere Abtastschrittweite und ein breiteres Verfeinerungsintervall verwendet. Es wird nicht empfohlen, diese Option auf leistungsschwachen Geräten wie Raspberry Pi zu aktivieren.",
+                "data": {
+                    "high_precision": "Hochpräzisionsmodus"
+                }
+            }
+        },
+        "progress": {
+            "download_ephemeris": "Lade die Skyfield DE440-Ephemeride herunter (> 100 MB). Bitte schließen Sie dieses Fenster während des Downloads nicht..."
+        },
+        "abort": {
+            "already_configured": "Mond Astro ist bereits konfiguriert",
+            "missing_data": "Konfigurationsdaten fehlen",
+            "reconfigure_successful": "Konfiguration aktualisiert"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Optionen für Mond Astro",
+                "description": "Passe das Aktualisierungsintervall der Sensoren und die Zeitzonenbehandlung an.\n\nDer Hochpräzisionsmodus reduziert die Variabilität von Zeitstempeln, erhöht aber die CPU-Auslastung, da er einen feineren Abtastschritt und einen größeren Verfeinerungsbereich verwendet. Er wird auf leistungsschwachen Geräten wie dem Raspberry Pi nicht empfohlen.\n\nDas Ereignis-Auffrischungs-Fallback-Intervall erzwingt eine regelmäßige Aktualisierung ereignisbasierter Sensoren (nächste/vorherige Phasen, Apogäum/Perigäum, Tierkreis bei Lunationen), falls die geplante Aktualisierung rund um das nächste Ereignis verpasst wird (Neustart, Zeitänderung, Verzögerung). Niedrigere Werte aktualisieren häufiger; höhere Werte reduzieren die CPU-Auslastung.",
+                "data": {
+                    "scan_interval": "Aktualisierungsintervall der Sensoren (Sekunden)",
+                    "use_ha_timezone": "Zeitzone von Home Assistant verwenden",
+                    "high_precision": "Hochpräzisionsmodus",
+                    "events_refresh_fallback": "Fallback-Intervall für Ereignis-Aktualisierung (Sekunden)"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "above_horizon": {
+                "name": "Über dem Horizont",
+                "state": {
+                    "on": "Über dem Horizont",
+                    "off": "Unter dem Horizont"
+                }
+            }
+        },
+        "sensor": {
+            "phase": {
+                "name": "Phase",
+                "state": {
+                    "new_moon": "Neumond",
+                    "waxing_crescent": "Zunehmende Sichel",
+                    "first_quarter": "Erstes Viertel",
+                    "waxing_gibbous": "Zunehmender Mond",
+                    "full_moon": "Vollmond",
+                    "waning_gibbous": "Abnehmender Mond",
+                    "last_quarter": "Letztes Viertel",
+                    "waning_crescent": "Abnehmende Sichel",
+                    "unknown": "Unbekannt"
+                }
+            },
+            "azimuth": {
+                "name": "Azimut"
+            },
+            "elevation": {
+                "name": "Höhe"
+            },
+            "illumination": {
+                "name": "Beleuchtung"
+            },
+            "distance": {
+                "name": "Entfernung"
+            },
+            "parallax": {
+                "name": "Parallaxe"
+            },
+            "ecliptic_longitude_topocentric": {
+                "name": "Ekliptische Länge (topozentrisch)"
+            },
+            "ecliptic_latitude_topocentric": {
+                "name": "Ekliptische Breite (topozentrisch)"
+            },
+            "ecliptic_longitude_geocentric": {
+                "name": "Ekliptische Länge (geozentrisch)"
+            },
+            "ecliptic_latitude_geocentric": {
+                "name": "Ekliptische Breite (geozentrisch)"
+            },
+            "next_rise": {
+                "name": "Nächster Aufgang"
+            },
+            "next_set": {
+                "name": "Nächster Untergang"
+            },
+            "next_apogee": {
+                "name": "Nächstes Apogäum"
+            },
+            "next_perigee": {
+                "name": "Nächstes Perigäum"
+            },
+            "next_new_moon": {
+                "name": "Nächster Neumond"
+            },
+            "next_first_quarter": {
+                "name": "Nächstes erstes Viertel"
+            },
+            "next_full_moon": {
+                "name": "Nächster Vollmond"
+            },
+            "next_full_moon_name": {
+                "name": "Name des nächsten Vollmonds",
+                "state": {
+                    "wolf_moon": "Wolfsmond",
+                    "snow_moon": "Schneemond",
+                    "worm_moon": "Wurmmond",
+                    "pink_moon": "Rosa Mond",
+                    "flower_moon": "Blumenmond",
+                    "strawberry_moon": "Erdbeermond",
+                    "buck_moon": "Hirschmond",
+                    "sturgeon_moon": "Störmond",
+                    "harvest_moon": "Erntemond",
+                    "hunters_moon": "Jägermond",
+                    "beaver_moon": "Bibermond",
+                    "cold_moon": "Kalter Mond",
+                    "blue_moon": "Blauer Mond",
+                    "unknown": "Unbekannt"
+                }
+            },
+            "next_full_moon_alt_names": {
+                "name": "Alternative Namen des nächsten Vollmonds",
+                "state": {
+                    "wolf_moon_alt_names": "Mond nach Yule, Bleib-zu-Hause-Mond, Stiller Mond, Strenger Mond, Zentraler Mond",
+                    "snow_moon_alt_names": "Hungermond, Bärenmond, Sturmmond, Eismond",
+                    "worm_moon_alt_names": "Fastenmond, Krähenmond, Krustenmond, Keuscher Mond, Zuckermond, Saftmond",
+                    "pink_moon_alt_names": "Eisbrechender Mond, Knospenmond, Erwachender Mond, Eimond, Paschamond",
+                    "flower_moon_alt_names": "Pflanzmond, Milchmond, Hasenmond, Grasmond, Mütter-Mond, Heller Mond",
+                    "strawberry_moon_alt_names": "Rosenmond, Heißer Mond, Metmond, Blumenmond, Pflanzmond",
+                    "buck_moon_alt_names": "Donner-Mond, Heumond, Kräutermond",
+                    "sturgeon_moon_alt_names": "Kornmond, Maismond, Luchsmond, Blitzmond",
+                    "harvest_moon_alt_names": "Voller Maismond, Grüner-Mais-Mond, Maismond, Weinmond, Liedmond, Gerstenmond",
+                    "hunters_moon_alt_names": "Reistrocknungs-Mond, Fallende-Blätter-Mond, Gefriermond, Blutmond, Sanguiner Mond",
+                    "beaver_moon_alt_names": "Reifmond, Gefriermond, Handelsmond, Schneemond, Trauermond, Mond der dunkelsten Tiefen",
+                    "cold_moon_alt_names": "Mond der langen Nächte, Mond vor Yule, Eichenmond, Voller kalter Mond",
+                    "unknown": ""
+                }
+            },
+            "next_last_quarter": {
+                "name": "Nächstes letztes Viertel"
+            },
+
+            "previous_rise": {
+                "name": "Vorheriger Aufgang"
+            },
+            "previous_set": {
+                "name": "Vorheriger Untergang"
+            },
+            "previous_apogee": {
+                "name": "Vorheriges Apogäum"
+            },
+            "previous_perigee": {
+                "name": "Vorheriges Perigäum"
+            },
+            "previous_new_moon": {
+                "name": "Vorheriger Neumond"
+            },
+            "previous_first_quarter": {
+                "name": "Vorheriges erstes Viertel"
+            },
+            "previous_full_moon": {
+                "name": "Vorheriger Vollmond"
+            },
+            "previous_full_moon_name": {
+                "name": "Name des vorherigen Vollmonds",
+                "state": {
+                    "wolf_moon": "Wolfsmond",
+                    "snow_moon": "Schneemond",
+                    "worm_moon": "Wurmmond",
+                    "pink_moon": "Rosa Mond",
+                    "flower_moon": "Blumenmond",
+                    "strawberry_moon": "Erdbeermond",
+                    "buck_moon": "Hirschmond",
+                    "sturgeon_moon": "Störmond",
+                    "harvest_moon": "Erntemond",
+                    "hunters_moon": "Jägermond",
+                    "beaver_moon": "Bibermond",
+                    "cold_moon": "Kalter Mond",
+                    "blue_moon": "Blauer Mond",
+                    "unknown": "Unbekannt"
+                }
+            },
+            "previous_full_moon_alt_names": {
+                "name": "Alternative Namen des vorherigen Vollmonds",
+                "state": {
+                    "wolf_moon_alt_names": "Mond nach Yule, Bleib-zu-Hause-Mond, Stiller Mond, Strenger Mond, Zentraler Mond",
+                    "snow_moon_alt_names": "Hungermond, Bärenmond, Sturmmond, Eismond",
+                    "worm_moon_alt_names": "Fastenmond, Krähenmond, Krustenmond, Keuscher Mond, Zuckermond, Saftmond",
+                    "pink_moon_alt_names": "Eisbrechender Mond, Knospenmond, Erwachender Mond, Eimond, Paschamond",
+                    "flower_moon_alt_names": "Pflanzmond, Milchmond, Hasenmond, Grasmond, Mütter-Mond, Heller Mond",
+                    "strawberry_moon_alt_names": "Rosenmond, Heißer Mond, Metmond, Blumenmond, Pflanzmond",
+                    "buck_moon_alt_names": "Donner-Mond, Heumond, Kräutermond",
+                    "sturgeon_moon_alt_names": "Kornmond, Maismond, Luchsmond, Blitzmond",
+                    "harvest_moon_alt_names": "Voller Maismond, Grüner-Mais-Mond, Maismond, Weinmond, Liedmond, Gerstenmond",
+                    "hunters_moon_alt_names": "Reistrocknungs-Mond, Fallende-Blätter-Mond, Gefriermond, Blutmond, Sanguiner Mond",
+                    "beaver_moon_alt_names": "Reifmond, Gefriermond, Handelsmond, Schneemond, Trauermond, Mond der dunkelsten Tiefen",
+                    "cold_moon_alt_names": "Mond der langen Nächte, Mond vor Yule, Eichenmond, Voller kalter Mond",
+                    "unknown": ""
+                }
+            },
+            "previous_last_quarter": {
+                "name": "Vorheriges letztes Viertel"
+            },
+
+            "ecliptic_longitude_next_full_moon": {
+                "name": "Ekliptische Länge beim nächsten Vollmond"
+            },
+            "ecliptic_latitude_next_full_moon": {
+                "name": "Ekliptische Breite beim nächsten Vollmond"
+            },
+            "ecliptic_longitude_next_new_moon": {
+                "name": "Ekliptische Länge beim nächsten Neumond"
+            },
+            "ecliptic_latitude_next_new_moon": {
+                "name": "Ekliptische Breite beim nächsten Neumond"
+            },
+            "ecliptic_longitude_previous_full_moon": {
+                "name": "Ekliptische Länge beim vorherigen Vollmond"
+            },
+            "ecliptic_latitude_previous_full_moon": {
+                "name": "Ekliptische Breite beim vorherigen Vollmond"
+            },
+            "ecliptic_longitude_previous_new_moon": {
+                "name": "Ekliptische Länge beim vorherigen Neumond"
+            },
+            "ecliptic_latitude_previous_new_moon": {
+                "name": "Ekliptische Breite beim vorherigen Neumond"
+            },
+
+            "zodiac_sign_current_moon": {
+                "name": "Tierkreiszeichen (aktuell)",
+                "state": {
+                    "aries": "Widder",
+                    "taurus": "Stier",
+                    "gemini": "Zwillinge",
+                    "cancer": "Krebs",
+                    "leo": "Löwe",
+                    "virgo": "Jungfrau",
+                    "libra": "Waage",
+                    "scorpio": "Skorpion",
+                    "sagittarius": "Schütze",
+                    "capricorn": "Steinbock",
+                    "aquarius": "Wassermann",
+                    "pisces": "Fische"
+                }
+            },
+            "zodiac_sign_next_new_moon": {
+                "name": "Tierkreiszeichen beim nächsten Neumond",
+                "state": {
+                    "aries": "Widder",
+                    "taurus": "Stier",
+                    "gemini": "Zwillinge",
+                    "cancer": "Krebs",
+                    "leo": "Löwe",
+                    "virgo": "Jungfrau",
+                    "libra": "Waage",
+                    "scorpio": "Skorpion",
+                    "sagittarius": "Schütze",
+                    "capricorn": "Steinbock",
+                    "aquarius": "Wassermann",
+                    "pisces": "Fische"
+                }
+            },
+            "zodiac_sign_next_full_moon": {
+                "name": "Tierkreiszeichen beim nächsten Vollmond",
+                "state": {
+                    "aries": "Widder",
+                    "taurus": "Stier",
+                    "gemini": "Zwillinge",
+                    "cancer": "Krebs",
+                    "leo": "Löwe",
+                    "virgo": "Jungfrau",
+                    "libra": "Waage",
+                    "scorpio": "Skorpion",
+                    "sagittarius": "Schütze",
+                    "capricorn": "Steinbock",
+                    "aquarius": "Wassermann",
+                    "pisces": "Fische"
+                }
+            },
+            "zodiac_sign_previous_new_moon": {
+                "name": "Tierkreiszeichen beim vorherigen Neumond",
+                "state": {
+                    "aries": "Widder",
+                    "taurus": "Stier",
+                    "gemini": "Zwillinge",
+                    "cancer": "Krebs",
+                    "leo": "Löwe",
+                    "virgo": "Jungfrau",
+                    "libra": "Waage",
+                    "scorpio": "Skorpion",
+                    "sagittarius": "Schütze",
+                    "capricorn": "Steinbock",
+                    "aquarius": "Wassermann",
+                    "pisces": "Fische"
+                }
+            },
+            "zodiac_sign_previous_full_moon": {
+                "name": "Tierkreiszeichen beim vorherigen Vollmond",
+                "state": {
+                    "aries": "Widder",
+                    "taurus": "Stier",
+                    "gemini": "Zwillinge",
+                    "cancer": "Krebs",
+                    "leo": "Löwe",
+                    "virgo": "Jungfrau",
+                    "libra": "Waage",
+                    "scorpio": "Skorpion",
+                    "sagittarius": "Schütze",
+                    "capricorn": "Steinbock",
+                    "aquarius": "Wassermann",
+                    "pisces": "Fische"
+                }
+            },
+            "zodiac_degree_current_moon": {
+                "name": "Grad im Tierkreis (aktuell)"
+            },
+            "zodiac_degree_next_new_moon": {
+                "name": "Grad im Tierkreis beim nächsten Neumond"
+            },
+            "zodiac_degree_next_full_moon": {
+                "name": "Grad im Tierkreis beim nächsten Vollmond"
+            },
+            "zodiac_degree_previous_new_moon": {
+                "name": "Grad im Tierkreis beim vorherigen Neumond"
+            },
+            "zodiac_degree_previous_full_moon": {
+                "name": "Grad im Tierkreis beim vorherigen Vollmond"
+            }
+        }
+    }
+}

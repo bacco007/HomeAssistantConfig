@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" role="img" aria-label="Solar System Map">
+<defs>
+<style><![CDATA[
+text{font-family:Arial,system-ui,Segoe UI,Roboto,sans-serif}
+.month-label{font-size:11px;fill:#AAAAAA}
+.planet-label{font-size:10px;fill:#FFFFFF}
+.earth-label{font-size:11px;fill:#4AE24A;font-weight:bold}
+.footer{font-size:10px;fill:#888888}
+]]></style>
+</defs>
+<rect x="0" y="0" width="600" height="600" fill="#000022"/>
+<circle cx="300.0" cy="300.0" r="18" fill="#FFD700" stroke="#FFA500" stroke-width="2"/>
+<text x="300.0" y="305.0" fill="#000000" font-size="16" text-anchor="middle">☉</text>
+<circle cx="300.0" cy="300.0" r="228.23" fill="none" stroke="rgba(102,204,255,0.25)" stroke-width="1"/>
+<circle cx="300.0" cy="300.0" r="261.32" fill="none" stroke="rgba(102,204,255,0.25)" stroke-width="1"/>
+<circle cx="300.0" cy="300.0" r="244.77" fill="none" stroke="rgba(102,204,255,0.15)" stroke-width="33"/>
+<line x1="300.00" y1="275.00" x2="300.00" y2="20.00" stroke="#333333" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="300.00" y="5.00" class="month-label" text-anchor="middle" dominant-baseline="middle">Jan</text>
+<line x1="312.50" y1="278.35" x2="440.00" y2="57.51" stroke="#333333" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="447.50" y="44.52" class="month-label" text-anchor="middle" dominant-baseline="middle">Feb</text>
+<line x1="321.65" y1="287.50" x2="542.49" y2="160.00" stroke="#333333" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="555.48" y="152.50" class="month-label" text-anchor="middle" dominant-baseline="middle">Mar</text>
+<line x1="325.00" y1="300.00" x2="580.00" y2="300.00" stroke="#333333" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="595.00" y="300.00" class="month-label" text-anchor="middle" dominant-baseline="middle">Apr</text>
+<line x1="321.65" y1="312.50" x2="542.49" y2="440.00" stroke="#333333" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="555.48" y="447.50" class="month-label" text-anchor="middle" dominant-baseline="middle">May</text>
+<line x1="312.50" y1="321.65" x2="440.00" y2="542.49" stroke="#333333" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="447.50" y="555.48" class="month-label" text-anchor="middle" dominant-baseline="middle">Jun</text>
+<line x1="300.00" y1="325.00" x2="300.00" y2="580.00" stroke="#333333" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="300.00" y="595.00" class="month-label" text-anchor="middle" dominant-baseline="middle">Jul</text>
+<line x1="287.50" y1="321.65" x2="160.00" y2="542.49" stroke="#333333" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="152.50" y="555.48" class="month-label" text-anchor="middle" dominant-baseline="middle">Aug</text>
+<line x1="278.35" y1="312.50" x2="57.51" y2="440.00" stroke="#333333" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="44.52" y="447.50" class="month-label" text-anchor="middle" dominant-baseline="middle">Sep</text>
+<line x1="275.00" y1="300.00" x2="20.00" y2="300.00" stroke="#333333" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="5.00" y="300.00" class="month-label" text-anchor="middle" dominant-baseline="middle">Oct</text>
+<line x1="278.35" y1="287.50" x2="57.51" y2="160.00" stroke="#333333" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="44.52" y="152.50" class="month-label" text-anchor="middle" dominant-baseline="middle">Nov</text>
+<line x1="287.50" y1="278.35" x2="160.00" y2="57.51" stroke="#333333" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="152.50" y="44.52" class="month-label" text-anchor="middle" dominant-baseline="middle">Dec</text>
+<circle cx="300.0" cy="300.0" r="21.81" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
+<circle cx="282.38" cy="312.86" r="5" fill="#8C7853" stroke="#FFFFFF" stroke-width="1"/>
+<text x="282.38" y="302.86" class="planet-label" text-anchor="middle">☿ Mercury</text>
+<circle cx="300.0" cy="300.0" r="36.36" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
+<circle cx="274.81" cy="326.21" r="5" fill="#FFC649" stroke="#FFFFFF" stroke-width="1"/>
+<text x="274.81" y="316.21" class="planet-label" text-anchor="middle">♀ Venus</text>
+<circle cx="300.0" cy="300.0" r="45.57" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
+<circle cx="322.86" cy="260.57" r="8" fill="#4A90E2" stroke="#00FF00" stroke-width="2"/>
+<text x="322.86" y="242.57" class="earth-label" text-anchor="middle">⊕ You are here</text>
+<circle cx="300.0" cy="300.0" r="58.24" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
+<circle cx="278.87" cy="354.27" r="5" fill="#CD5C5C" stroke="#FFFFFF" stroke-width="1"/>
+<text x="278.87" y="344.27" class="planet-label" text-anchor="middle">♂ Mars</text>
+<circle cx="300.0" cy="300.0" r="121.50" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
+<circle cx="322.62" cy="180.63" r="6" fill="#DAA520" stroke="#FFFFFF" stroke-width="1"/>
+<text x="322.62" y="170.63" class="planet-label" text-anchor="middle">♃ Jupiter</text>
+<circle cx="300.0" cy="300.0" r="156.36" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
+<circle cx="145.19" cy="321.95" r="6" fill="#F4A460" stroke="#FFFFFF" stroke-width="1"/>
+<text x="145.19" y="311.95" class="planet-label" text-anchor="middle">♄ Saturn</text>
+<circle cx="300.0" cy="300.0" r="200.73" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
+<circle cx="170.98" cy="146.23" r="5" fill="#4FD0E2" stroke="#FFFFFF" stroke-width="1"/>
+<text x="170.98" y="136.23" class="planet-label" text-anchor="middle">♅ Uranus</text>
+<circle cx="300.0" cy="300.0" r="227.99" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="none"/>
+<circle cx="75.21" cy="338.03" r="5" fill="#4169E1" stroke="#FFFFFF" stroke-width="1"/>
+<text x="75.21" y="328.03" class="planet-label" text-anchor="middle">♆ Neptune</text>
+<circle cx="300.0" cy="300.0" r="239.06" fill="none" stroke="#444444" stroke-width="0.8" stroke-dasharray="4,2"/>
+<circle cx="205.78" cy="519.71" r="5" fill="#9B870C" stroke="#FFFFFF" stroke-width="1"/>
+<text x="205.78" y="509.71" class="planet-label" text-anchor="middle">♇ Pluto (Dwarf Planet)</text>
+<circle cx="300.0" cy="300.0" r="369.03" fill="none" stroke="#555555" stroke-width="0.8" stroke-dasharray="none"/>
+<circle cx="460.21" cy="632.44" r="3" fill="#00D1B2" stroke="#FFFFFF" stroke-width="0.5"/>
+<text x="460.21" y="624.44" class="planet-label" text-anchor="middle" font-size="8">Voyager 1</text>
+<circle cx="300.0" cy="300.0" r="359.69" fill="none" stroke="#555555" stroke-width="0.8" stroke-dasharray="none"/>
+<circle cx="181.30" cy="639.54" r="3" fill="#00A3A3" stroke="#FFFFFF" stroke-width="0.5"/>
+<text x="181.30" y="631.54" class="planet-label" text-anchor="middle" font-size="8">Voyager 2</text>
+<text x="10" y="590" class="footer">Heliocentric · Sun at center · Jan at top · Logarithmic</text>
+</svg>

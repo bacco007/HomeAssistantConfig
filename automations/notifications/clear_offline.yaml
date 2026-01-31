@@ -1,0 +1,24 @@
+---
+alias: "Clear Offline Integration Notification"
+trigger:
+  - platform: state
+    entity_id: group.connectivity_monitors
+    to: "on"
+condition:
+  - condition: template
+    value_template: >
+      {{ expand('group.connectivity_monitors')
+          | rejectattr('entity_id', 'in', ['binary_sensor.ha_connected_integration_offline_integrations'])
+          | selectattr('state', 'eq', 'off')
+          | list
+          | count == 0 }}
+action:
+  - service: notify.alert
+    data:
+      message: clear_notification
+      data:
+        tag: "offline_integrations"
+  - service: input_number.set_value
+    data:
+      entity_id: input_number.offline_integration_count
+      value: 0

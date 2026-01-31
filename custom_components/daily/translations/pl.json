@@ -1,0 +1,61 @@
+{
+  "title": "Daily Sensor",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Daily Sensor",
+        "description": "Jeśli potrzebujesz pomocy z konfiguracją, zajrzyj na stronę https://github.com/jeroenterheerdt/HADailySensor",
+        "data": {
+          "name": "Unikalna nazwa instancji",
+          "sensor": "Wybierz encję, która dostarczy dane wejściowe",
+          "operation": "Wybierz typ operacji, która ma zostać zastosowana",
+          "unit_of_measurement": "Jednostka miary",
+          "interval": "Interwał odświeżania w sekundach",
+          "auto_reset": "Automatyczny reset o północy"
+        }
+      }
+    },
+    "error": {
+      "intervalnotvalid": "Określony interwał jest nieprawidłowy. Musi wynosić >0 sekund.",
+      "name": "Wpisz unikalną nazwę encji.",
+      "operationnotfound": "Wybierz typ operacji",
+      "sensornotfound": "Jedna albo więcej encji danych wejściowych nie istnieje",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {}
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Daily Sensor",
+        "description": "Jeśli potrzebujesz pomocy z konfiguracją, zajrzyj na stronę https://github.com/jeroenterheerdt/HADailySensor",
+        "data": {
+          "name": "Unikalna nazwa instancji",
+          "sensor": "Wybierz encję, która dostarczy dane wejściowe",
+          "operation": "Wybierz typ operacji, która ma zostać zastosowana",
+          "unit_of_measurement": "Jednostka miary",
+          "interval": "Interwał odświeżania w sekundach",
+          "auto_reset": "Automatyczny reset o północy?"
+        }
+      }
+    },
+    "error": {
+      "intervalnotvalid": "Określony interwał jest nieprawidłowy. Musi wynosić >0 sekund.",
+      "name": "Wpisz unikalną nazwę encji.",
+      "operationnotfound": "Wybierz typ operacji",
+      "sensornotfound": "Jedna albo więcej encji danych wejściowych nie istnieje",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {}
+  },
+  "services": {
+    "reset": {
+      "name": "Reset",
+      "description": "Zresetuj wartość do 'nieznana'"
+    },
+    "update": {
+      "name": "Aktualizacja",
+      "description": "Aktualizacja czujnika"
+    }
+  }
+}

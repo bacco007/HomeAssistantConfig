@@ -1,0 +1,26 @@
+{
+  "domain": "reterminal_dashboard",
+  "name": "ESPHome Designer",
+  "documentation": "https://github.com/koosoli/ESPHomeDesigner",
+  "issue_tracker": "https://github.com/koosoli/ESPHomeDesigner/issues",
+  "configuration_url": "/reterminal-dashboard",
+  "version": "0.8.6.1",
+  "after_dependencies": [
+    "http",
+    "frontend",
+    "panel_iframe"
+  ],
+  "codeowners": [
+    "@koosoli"
+  ],
+  "author": "@koosoli",
+  "config_flow": true,
+  "iot_class": "local_push",
+  "integration_type": "hub",
+  "requirements": [
+    "aiofiles==24.1.0"
+  ],
+  "loggers": [
+    "custom_components.reterminal_dashboard"
+  ]
+}

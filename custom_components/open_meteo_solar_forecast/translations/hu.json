@@ -69,7 +69,7 @@
           "modules power": "A napelemmodulok teljes Watt csúcsteljesítménye",
           "modules_power": "A napelemmodulok teljes Watt csúcsteljesítménye"
         },
-        "description": "Ezek az értékek lehetővé teszik a Forecast.Solar eredményének finomhangolását. Ha egy mező nem egyértelmű, kérem, olvassa el a dokumentációt."
+        "description": "Ezek az értékek lehetővé teszik a Solar Forecast eredményének finomhangolását. Ha egy mező nem egyértelmű, kérem, olvassa el a dokumentációt."
       }
     }
   }

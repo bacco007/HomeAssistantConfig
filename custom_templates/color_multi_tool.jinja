@@ -13,6 +13,14 @@
   SAMPLE USAGE:
     {% from 'color_multi_tool.jinja' import random_name %}
     {{- random_name() -}}
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
 {%- set _color_dict = _nameMap._rgb | random %}
 {{- _color_dict.color -}}
@@ -33,6 +41,14 @@
 
   REMEMBER:
     Everything returned from a macro template is a string.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
 
 {%- set (X,Y) = [range(1001),range(1001)] | map('random') | list %}
@@ -54,6 +70,14 @@
 
   REMEMBER:
     Everything returned from a macro template is a string.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
 {%- set (H,S) = [range(36001),range(10001)] | map('random') | list %}
 {{- H/100 -}},{{- S/100 -}}
@@ -74,6 +98,14 @@
 
   REMEMBER:
     Everything returned from a macro template is a string.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
 {% set (R,G,B) = [range(256),range(256),range(256)] | map('random') | list %}
 {{- R -}},{{- G -}},{{- B -}}
@@ -99,6 +131,14 @@
 
   REMEMBER:
     Everything returned from a macro template is a string.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
   {#- First a test to make sure input is valid #}
 {%- if chkNAME(color_name) | bool %}
@@ -129,10 +169,18 @@
 
   SAMPLE USAGE:
     {% from 'color_multi_tool.jinja' import rgb2name %}
-    {{ name2rgb(color_name) }}
+    {{ rgb2name(10,rgbl) }}
 
   REMEMBER:
     Everything returned from a macro template is a string.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
   {#- First a test to make sure input is valid #}
 {%- if chkRGB(rgbl) | default(false) | bool %}
@@ -183,6 +231,14 @@
 
   REMEMBER:
     Everything returned from a macro template is a string.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
   {#- First a test to make sure input is valid #}
 {%- if chkRGB(rgbl) | bool %}
@@ -252,6 +308,14 @@
 
   REMEMBER:
     Everything returned from a macro template is a string.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
   {#- First a test to make sure input is valid #}
 {%- if chkXY(xyl) | bool %}
@@ -309,11 +373,14 @@
 {% macro hs2rgb(hsl) %}
 {#-
   This will return a CSV string that will convert to a list in the rgb format
-    from the xy list provided.
+    from the hs list provided.
+
   Be sure to convert this to a list when you use it on the other end
     because it arrives as a CSV string.
-  Code lifted directly from the Home Assistant core github November, 2023 at
-    https://github.com/home-assistant/core/blob/dev/homeassistant/util/color.py.
+
+  Code adaptation from https://github.com/jdepp236.
+  See https://github.com/SirGoodenough/Color-Multi-Tool/issues/11#issuecomment-3314419086
+
   Brightness is assumed to be 100%
 
   SAMPLE USAGE:
@@ -323,56 +390,48 @@
 
   REMEMBER:
     Everything returned from a macro template is a string.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
-  {#- First a test to make sure input is valid #}
+    {#- First a test to make sure input is valid #}
 {%- if chkHS(hsl) | bool %}
-  {%- set fH = (hsl[0] | float(0)) %}
-  {%- set fS = (hsl[1] | float(0)) / 100 %}
-  {%- set fB = 1 %}
-  {%- if fS != 0.0 %}
-    {%- set r = 0 %}
-    {%- set g = 0 %}
-    {%- set b = 0 %}
-    {%- set h = fH / 60 %}
-    {%- set f = h - (h | round(1, 'floor')) %}
-    {%- set p = fB * (1 - fS) %}
-    {%- set q = fB * (1 - fS * f) %}
-    {%- set t = fB * (1 - (fS * (1 - f))) %}
-    {%- if h | int == 0 %}
-      {%- set r = (fB * 255) | int(0) %}
-      {%- set g = (t * 255) | int(0) %}
-      {%- set b = (p * 255) | int(0) %}
-    {%- elif h | int == 1 %}
-      {%- set r = (q * 255) | int(0) %}
-      {%- set g = (fB * 255) | int(0) %}
-      {%- set b = (p * 255) | int(0) %}
-    {%- elif h | int == 2 %}
-      {%- set r = (p * 255) | int(0) %}
-      {%- set g = (fB * 255) | int(0) %}
-      {%- set b = (t * 255) | int(0) %}
-    {%- elif h | int == 3 %}
-      {%- set r = (p * 255) | int(0) %}
-      {%- set g = (q * 255) | int(0) %}
-      {%- set b = (fB* 255) | int(0) %}
-    {%- elif h | int == 4 %}
-      {%- set r = (t * 255) | int(0) %}
-      {%- set g = (p * 255) | int(0) %}
-      {%- set b = (fB * 255) | int(0) %}
-    {%- elif h | int == 5 %}
-      {%- set r = (fB * 255) | int(0) %}
-      {%- set g = (p * 255) | int(0) %}
-      {%- set b = (q * 255) | int(0) %}
-    {%- endif %}
-    {%- set R = r | int(0) %}
-    {%- set G = g | int(0) %}
-    {%- set B = b | int(0) %}
+    {#- Correctly scale both H and S to the 0-1 range FIRST. V is assumed 1.0. -#}
+  {%- set h = (hsl[0] | float(0)) / 360 %}
+  {%- set s = (hsl[1] | float(0)) / 100 %}
+  {%- set v = 1.0 %}
+
+  {%- if s == 0.0 %}
+    {%- set r, g, b = v, v, v %}
   {%- else %}
-      {#- Color started as white #}
-    {%- set fV = (fB * 255) | int(0) %}
-    {%- set R = fV | int(0) %}
-    {%- set G = fV | int(0) %}
-    {%- set B = fV | int(0) %}
+    {%- set i = (h * 6.0) | int %}
+    {%- set f = (h * 6.0) - i %}
+    {%- set p = v * (1.0 - s) %}
+    {%- set q = v * (1.0 - s * f) %}
+    {%- set t = v * (1.0 - s * (1.0 - f)) %}
+    {%- if i == 0 %}
+      {%- set r, g, b = v, t, p %}
+    {%- elif i == 1 %}
+      {%- set r, g, b = q, v, p %}
+    {%- elif i == 2 %}
+      {%- set r, g, b = p, v, t %}
+    {%- elif i == 3 %}
+      {%- set r, g, b = p, q, v %}
+    {%- elif i == 4 %}
+      {%- set r, g, b = t, p, v %}
+    {%- else %}
+      {%- set r, g, b = v, p, q %}
+    {%- endif %}
   {%- endif %}
+    {#- Convert the final 0-1 values to 0-255 for RGB. -#}
+  {%- set R = (r * 255) | round(0) | int %}
+  {%- set G = (g * 255) | round(0) | int %}
+  {%- set B = (b * 255) | round(0) | int %}
 {%- else %}
     {#- Input was not valid #}
   {%- set R = 0 %}
@@ -391,7 +450,7 @@
   Code lifted directly from the here November, 2023 at
     https://www.cs.rit.edu/~ncs/color/t_convert.html#RGB%20to%20HSV%20&%20HSV%20to%20RGB.
   Brightness is assumed to be 100%
-  
+
   SAMPLE USAGE:
     {% from 'color_multi_tool.jinja' import rgb2hs %}
     {% set _rgb2hs = rgb2hs(rgbl).split(",") | list %}
@@ -399,6 +458,14 @@
 
   REMEMBER:
     Everything returned from a macro template is a string.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
   {#- First a test to make sure input is valid #}
 {%- if chkRGB(rgbl) | bool %}
@@ -464,6 +531,14 @@
 
   REMEMBER:
     Everything returned from a macro template is a string.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
   {#- First a test to make sure input is valid #}
 {%- if chkHS(hsl) | bool %}
@@ -498,6 +573,14 @@
 
   REMEMBER:
     Everything returned from a macro template is a string.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
   {#- First a test to make sure input is valid #}
 {%- if chkXY(xyl) | bool %}
@@ -535,6 +618,14 @@ Development credit to @Didgeridrew and @jeffcrum on the
   REMEMBER:
     This always returns text, so cast to bool on the other end to be
     certain of the result.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
 {%- if _rgbl is list and _rgbl | count == 3 %}
 {%- for clr in _rgbl if is_number(clr) and int(clr,0) == clr and 0 <= clr <= 255 %}
@@ -564,6 +655,14 @@ Development credit to @123 on the
   REMEMBER:
     This always returns text, so cast to bool on the other end to be
     certain of the result.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
 {{- _xyl is list and
   _xyl | select('number') | list | count == 2 and
@@ -591,12 +690,20 @@ Development credit to @123 on the
   REMEMBER:
     This always returns text, so cast to bool on the other end to be
     certain of the result.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
 {{- _hsl is list and
   _hsl | select('number') | list | count == 2 and
   _hsl | select('<', 0) | list | count == 0 and
-  _hsl[0] <= 100 and
-  _hsl[1] <= 360 -}}
+  _hsl[1] <= 100 and
+  _hsl[0] <= 360 -}}
 {%- endmacro %}
 
 {% macro chkNAME(color_name) %}
@@ -616,6 +723,14 @@ If any is not true, return false.
   REMEMBER:
     This always returns text, so cast to bool on the other end to be
     certain of the result.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
 {%- if color_name is string_like and
   color_name == color_name | regex_replace('[^a-z]', '') %}
@@ -647,11 +762,252 @@ If any is not true, return false.
   SAMPLE USAGE:
     {% from 'color_multi_tool.jinja' import color_list %}
     {{- color_list().split('\n') | list -}}
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
 #}
 {%- for colors in _nameMap._rgb -%}
 {%- set c_list = {colors.color:[colors.r,colors.g,colors.b]} -%}
 {{- c_list ~ '\n'-}}
 {%- endfor -%}
+{%- endmacro %}
+
+{%- macro k2rgb(colour_temperature) %}
+  {# This will return and RGB list of the corresponding Color Temperature 
+  Kelvin value provided.
+  Value will be validated as a number 1000 thru 40000.
+  If you want to cheat with Kelvin values outside that range,
+  read the chkK(int) macro for instructionson doing this.
+
+  Converts from K to RGB, algorithm courtesy of 
+  http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
+  This jinga adaptation courtesy [Didgeridrew](https://github.com/Didgeridrew)
+
+  SAMPLE USAGE:
+    {% set _k2rgb = k2rgb(kl).split(",") | list %}
+    {{ [_k2rgb[0]|int(0),_k2rgb[1]|int(0),_k2rgb[2]|int(0)] }}
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
+#}
+  {# Screen input as a number #}
+{%- set colour_temperature = int(colour_temperature,0) %}
+  {#- The next line returns =, closest, or between 1000 & 40000. #}
+{#- {%- set colour_temperature = ([1000,colour_temperature,40000]|sort)[1] %} #}
+
+  {#- First a test to make sure input is valid #}
+{%- if chkK(colour_temperature) | bool | default(false) %}
+
+  {#- Pull in the data #}
+  {%- set tmp_internal = colour_temperature / 100.0 %}
+
+    {#- red #}
+    {%- if tmp_internal <= 66 %}
+        {%- set red = 255 %}
+    {%- else %}
+        {%- set tmp_red = 329.698727446 * ((tmp_internal - 60)** -0.1332047592)%}
+        {%- if tmp_red < 0%}
+            {%- set red = 0%}
+        {%- elif tmp_red > 255%}
+            {%- set red = 255%}
+        {%- else %}
+            {%- set red = tmp_red%}
+    {%-endif%}{%-endif%}
+    {#- green #}
+    {%- if tmp_internal <= 66 %}
+        {%- set tmp_green = 99.4708025861 * log(tmp_internal) - 161.1195681661 %}
+        {%- if tmp_green < 0%}
+            {%- set green = 0%}
+        {%- elif tmp_green > 255%}
+            {%- set green = 255%}
+        {%- else %}
+            {%- set green = tmp_green%}
+        {%-endif%}
+    {%- else %}
+        {%- set tmp_green = 288.1221695283 * ((tmp_internal - 60)**-0.0755148492) %}
+        {%- if tmp_green < 0%}
+            {%- set green = 0%}
+        {%- elif tmp_green > 255%}
+            {%- set green = 255%}
+        {%- else %}
+            {%- set green = tmp_green%}
+    {%-endif%}{%-endif%}
+    {#- blue #}
+    {%- if tmp_internal >=66%}
+      {%- set  blue = 255%}
+    {%- elif tmp_internal <= 19%}
+        {%- set blue = 0%}
+    {%- else %}
+        {%- set tmp_blue = 138.5177312231 * log(tmp_internal - 10) - 305.0447927307%}
+        {%- if tmp_blue < 0%}
+            {%- set blue = 0%}
+        {%- elif tmp_blue > 255%}
+            {%- set blue = 255%}
+        {%- else %}
+            {%- set blue = tmp_blue%}
+    {%-endif%}{%-endif%}
+    {#- {{ [red|int, green|int, blue|int] }} #}
+    {%- set R = red | int(0) %}
+    {%- set G = green | int(0) %}
+    {%- set B = blue | int(0) %}
+  {%- else %}
+      {#- Input was not valid #}
+    {%- set R = 0 %}
+    {%- set G = 0 %}
+    {%- set B = 0 %}
+{%- endif %}
+{{- R -}},{{- G -}},{{- B -}}
+{%- endmacro %}
+
+{%- macro chkK(_K) -%}
+{#- Is the Kelvin value in the Valid Range? 
+  This will test that a number is a valid Kelvin number 500 thru 40000.
+
+  First we need to test that this is a number.
+  Then we check if it 500 thru 40,000.
+  If all that is true return true.
+  If any is not true, return false.
+
+  NOTE: If you want to input Kelvin numbers that are out of range,
+    then uncomment the {{- true -}}  right before {% endmacro %}
+    so that this only tests for a valid number.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
+-#}
+{%- set _K = _K | int( 0 ) -%}
+{%- if _K == 0 %}
+  {{- false -}}
+{%- else %}
+  {{- ( _K >= 500 ) and ( _K <= 40000) -}}
+{%- endif %}
+{#- {{- true -}} -#}
+{%- endmacro %}
+
+
+{% macro rgb2k(rgbl) %}
+  {# This will return the Color Temperature Kelvin based on the RGB value provided.
+  Input value will be validated as a list of 3 integers between 0 & 255.
+
+  Default output is 0, so if something goes wrong it will return 0.
+
+  Converts from RGB to K, algorithm courtesy of 
+  http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/.
+  The closest match code and the idea for this method is from:
+  https://gist.github.com/xalbertoisorna October, 2025:
+  https://gist.github.com/petrklus/b1f427accdf7438606a6?permalink_comment_id=4977807#gistcomment-4977807
+
+  These numbers were dropped in a table as a lookup and are polled
+  based on a best match formula.
+
+  That formula squares the difference for R, G, & B and adds them up,
+  lowest score wins. The table is not continuous, it jumps 100 KELVIN at a
+  time so there are some approximations going on here.
+  
+  None of this color stuff is exact...
+
+  SAMPLE USAGE:
+    {% from 'color_multi_tool.jinja' import rgb2k %}
+    {{ rgb2k([51.255,255]) }}
+
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
+#}
+{%- set K = namespace(dist = 0, minDist = 200000, out = 0, r = 0, g = 0, b = 0) %}
+    {#- First a test to make sure input is valid #}
+{%- if chkRGB(rgbl) | bool %}
+  {%- set K.r = rgbl[0] | int(0) %}
+  {%- set K.g = rgbl[1] | int(0) %}
+  {%- set K.b = rgbl[2] | int(0) %}
+  {%- if K.r + K.g + K.b != 0 %}
+    {#- Find the best matching KELVIN in the list. #}
+    {%- for best in _rgbKMap['_rgbK'] %}
+    {#- Sum of the square of the differences of r, g, & b. Lowest is best match. #}
+      {%- set K.dist = (K.r-best.L[0])*(K.r-best.L[0])+(K.g-best.L[1])*(K.g-best.L[1])+(K.b-best.L[2])*(K.b-best.L[2]) %}
+      {%- if K.dist < K.minDist %}
+        {%- set K.minDist = K.dist  %}
+        {%- set K.out = best.L[3] %}
+      {%- endif %}
+    {%- endfor %}
+  {%- endif %}
+{%- else %}
+  {%- set K.out = 0 %}
+{%- endif %}
+{{- K.out -}}
+{%- endmacro %}
+
+
+
+{% macro rgb_bestname(rgbl) %}
+{#-
+  This will return a string that is the name in the HA table
+    closest to the rgb list provided based on the sum of the squared differences. 
+
+  Code adapted from https://gist.github.com/xalbertoisorna here October, 2025:
+    https://gist.github.com/petrklus/b1f427accdf7438606a6?permalink_comment_id=4977807#gistcomment-4977807
+
+  For default the color is set to black [0,0,0] so it will
+    give you black for invalid input as well.
+
+  SAMPLE USAGE:
+    {% from 'color_multi_tool.jinja' import rgb_bestname %}
+    {{ rgb_bestname(rgbl) }}
+
+  REMEMBER:
+    Everything returned from a macro template is a string.
+
+  #### 🗿License Notice:
+    * I & my license require attribution as a link back to the original should
+      you use this code in your own creation.
+    * Here is a link to my license & the original github post
+      https://github.com/SirGoodenough/Color-Multi-Tool?tab=License-1-ov-file
+      expected to be followed & referenced
+      as attribution should you use this code elsewhere.
+#}
+
+    {#- Set defaults #}
+{%- set M = namespace(dist = 0, minDist = 200000, out = 'black', r = 0, g = 0, b = 0) %}
+    {#- First a test to make sure input is valid #}
+{%- if chkRGB(rgbl) | bool %}
+  {%- set M.r = rgbl[0] | int(0) %}
+  {%- set M.g = rgbl[1] | int(0) %}
+  {%- set M.b = rgbl[2] | int(0) %}
+  {%- if M.r + M.g + M.b != 0 %}
+    {#- Find the best matching color in the list. #}
+    {%- for best in _nameMap['_rgb'] %}
+    {#- Sum of the square of the differences of r, g, & b. Lowest is best match. #}
+      {%- set M.dist = (M.r-best.r)*(M.r-best.r)+(M.g-best.g)*(M.g-best.g)+(M.b-best.b)*(M.b-best.b) %}
+      {%- if M.dist < M.minDist %}
+        {%- set M.minDist = M.dist  %}
+        {%- set M.out = best.color %}
+      {%- endif %}
+    {%- endfor %}
+  {%- endif %}
+{%- else %}
+  {%- set M.out = 'black' %}
+{%- endif %}
+{{- M.out -}}
 {%- endmacro %}
 
 {#- COLOR NAME TO RGB MAP DATA. DO NOT CHANGE BELOW THIS LINE
@@ -1257,28 +1613,215 @@ If any is not true, return false.
   ],
 } %}
 
+{#- RGB TO KELVIN MAP DATA. DO NOT CHANGE BELOW THIS LINE #}
+{% set _rgbKMap = {
+  '_rgbK': [
+    {'L':[255, 0, 0, 500]},
+    {'L':[255, 17, 0, 600]},
+    {'L':[255, 32, 0, 700]},
+    {'L':[255, 45, 0, 800]},
+    {'L':[255, 57, 0, 900]},
+    {'L':[255, 67, 0, 1000]},
+    {'L':[255, 77, 0, 1100]},
+    {'L':[255, 86, 0, 1200]},
+    {'L':[255, 94, 0, 1300]},
+    {'L':[255, 101, 0, 1400]},
+    {'L':[255, 108, 0, 1500]},
+    {'L':[255, 114, 0, 1600]},
+    {'L':[255, 120, 0, 1700]},
+    {'L':[255, 126, 0, 1800]},
+    {'L':[255, 131, 0, 1900]},
+    {'L':[255, 136, 13, 2000]},
+    {'L':[255, 141, 27, 2100]},
+    {'L':[255, 146, 39, 2200]},
+    {'L':[255, 150, 50, 2300]},
+    {'L':[255, 155, 60, 2400]},
+    {'L':[255, 159, 70, 2500]},
+    {'L':[255, 162, 79, 2600]},
+    {'L':[255, 166, 87, 2700]},
+    {'L':[255, 170, 95, 2800]},
+    {'L':[255, 173, 102, 2900]},
+    {'L':[255, 177, 109, 3000]},
+    {'L':[255, 180, 116, 3100]},
+    {'L':[255, 183, 123, 3200]},
+    {'L':[255, 186, 129, 3300]},
+    {'L':[255, 189, 135, 3400]},
+    {'L':[255, 192, 140, 3500]},
+    {'L':[255, 195, 146, 3600]},
+    {'L':[255, 198, 151, 3700]},
+    {'L':[255, 200, 156, 3800]},
+    {'L':[255, 203, 161, 3900]},
+    {'L':[255, 205, 166, 4000]},
+    {'L':[255, 208, 170, 4100]},
+    {'L':[255, 210, 175, 4200]},
+    {'L':[255, 213, 179, 4300]},
+    {'L':[255, 215, 183, 4400]},
+    {'L':[255, 217, 187, 4500]},
+    {'L':[255, 219, 191, 4600]},
+    {'L':[255, 221, 195, 4700]},
+    {'L':[255, 223, 198, 4800]},
+    {'L':[255, 226, 202, 4900]},
+    {'L':[255, 228, 205, 5000]},
+    {'L':[255, 229, 209, 5100]},
+    {'L':[255, 231, 212, 5200]},
+    {'L':[255, 233, 215, 5300]},
+    {'L':[255, 235, 219, 5400]},
+    {'L':[255, 237, 222, 5500]},
+    {'L':[255, 239, 225, 5600]},
+    {'L':[255, 241, 228, 5700]},
+    {'L':[255, 242, 231, 5800]},
+    {'L':[255, 244, 234, 5900]},
+    {'L':[255, 246, 236, 6000]},
+    {'L':[255, 247, 239, 6100]},
+    {'L':[255, 249, 242, 6200]},
+    {'L':[255, 251, 244, 6300]},
+    {'L':[255, 252, 247, 6400]},
+    {'L':[255, 254, 250, 6500]},
+    {'L':[255, 255, 255, 6600]},
+    {'L':[254, 248, 255, 6700]},
+    {'L':[249, 246, 255, 6800]},
+    {'L':[246, 244, 255, 6900]},
+    {'L':[242, 242, 255, 7000]},
+    {'L':[239, 240, 255, 7100]},
+    {'L':[236, 238, 255, 7200]},
+    {'L':[234, 237, 255, 7300]},
+    {'L':[231, 236, 255, 7400]},
+    {'L':[229, 234, 255, 7500]},
+    {'L':[227, 233, 255, 7600]},
+    {'L':[226, 232, 255, 7700]},
+    {'L':[224, 231, 255, 7800]},
+    {'L':[222, 230, 255, 7900]},
+    {'L':[221, 229, 255, 8000]},
+    {'L':[219, 228, 255, 8100]},
+    {'L':[218, 228, 255, 8200]},
+    {'L':[217, 227, 255, 8300]},
+    {'L':[215, 226, 255, 8400]},
+    {'L':[214, 225, 255, 8500]},
+    {'L':[213, 225, 255, 8600]},
+    {'L':[212, 224, 255, 8700]},
+    {'L':[211, 224, 255, 8800]},
+    {'L':[210, 223, 255, 8900]},
+    {'L':[209, 222, 255, 9000]},
+    {'L':[208, 222, 255, 9100]},
+    {'L':[207, 221, 255, 9200]},
+    {'L':[206, 221, 255, 9300]},
+    {'L':[206, 220, 255, 9400]},
+    {'L':[205, 220, 255, 9500]},
+    {'L':[203, 219, 255, 9700]},
+    {'L':[203, 218, 255, 9800]},
+    {'L':[202, 218, 255, 9900]},
+    {'L':[201, 218, 255, 10000]},
+    {'L':[201, 217, 255, 10100]},
+    {'L':[200, 217, 255, 10200]},
+    {'L':[199, 216, 255, 10300]},
+    {'L':[198, 216, 255, 10500]},
+    {'L':[197, 215, 255, 10700]},
+    {'L':[196, 215, 255, 10800]},
+    {'L':[195, 214, 255, 11000]},
+    {'L':[194, 213, 255, 11300]},
+    {'L':[193, 213, 255, 11400]},
+    {'L':[193, 212, 255, 11500]},
+    {'L':[192, 212, 255, 11700]},
+    {'L':[191, 212, 255, 11800]},
+    {'L':[191, 211, 255, 12000]},
+    {'L':[190, 211, 255, 12100]},
+    {'L':[190, 210, 255, 12200]},
+    {'L':[189, 210, 255, 12400]},
+    {'L':[188, 209, 255, 12700]},
+    {'L':[187, 209, 255, 12800]},
+    {'L':[186, 208, 255, 13200]},
+    {'L':[186, 208, 255, 13300]},
+    {'L':[185, 208, 255, 13400]},
+    {'L':[185, 207, 255, 13600]},
+    {'L':[184, 207, 255, 13800]},
+    {'L':[183, 206, 255, 14150]},
+    {'L':[182, 206, 255, 14500]},
+    {'L':[182, 205, 255, 14600]},
+    {'L':[181, 205, 255, 14900]},
+    {'L':[180, 204, 255, 15300]},
+    {'L':[179, 204, 255, 15500]},
+    {'L':[179, 204, 255, 15600]},
+    {'L':[179, 203, 255, 15800]},
+    {'L':[178, 203, 255, 16100]},
+    {'L':[177, 203, 255, 16300]},
+    {'L':[177, 202, 255, 16500]},
+    {'L':[176, 202, 255, 16900]},
+    {'L':[175, 201, 255, 17400]},
+    {'L':[175, 201, 255, 17500]},
+    {'L':[174, 200, 255, 18000]},
+    {'L':[173, 200, 255, 18300]},
+    {'L':[173, 199, 255, 18600]},
+    {'L':[172, 199, 255, 18900]},
+    {'L':[172, 199, 255, 19200]},
+    {'L':[171, 199, 255, 19300]},
+    {'L':[171, 199, 255, 19400]},
+    {'L':[170, 198, 255, 20100]},
+    {'L':[170, 197, 255, 20400]},
+    {'L':[169, 197, 255, 20700]},
+    {'L':[168, 197, 255, 21200]},
+    {'L':[168, 196, 255, 21600]},
+    {'L':[167, 196, 255, 22000]},
+    {'L':[167, 196, 255, 22300]},
+    {'L':[167, 196, 255, 22400]},
+    {'L':[166, 195, 255, 22800]},
+    {'L':[165, 195, 255, 23400]},
+    {'L':[165, 194, 255, 23800]},
+    {'L':[164, 194, 255, 24500]},
+    {'L':[164, 193, 255, 24900]},
+    {'L':[163, 193, 255, 25400]},
+    {'L':[162, 193, 255, 26000]},
+    {'L':[162, 192, 255, 26400]},
+    {'L':[161, 192, 255, 27150]},
+    {'L':[161, 191, 255, 27650]},
+    {'L':[160, 191, 255, 28200]},
+    {'L':[159, 191, 255, 28950]},
+    {'L':[159, 190, 255, 29500]},
+    {'L':[158, 190, 255, 30300]},
+    {'L':[158, 189, 255, 30950]},
+    {'L':[157, 189, 255, 31650]},
+    {'L':[156, 189, 255, 32490]},
+    {'L':[156, 188, 255, 33300]},
+    {'L':[155, 188, 255, 34200]},
+    {'L':[154, 187, 255, 35800]},
+    {'L':[153, 186, 255, 37200]},
+    {'L':[152, 186, 255, 38300]},
+    {'L':[152, 185, 255, 39000]},
+    {'L':[152, 185, 255, 39200]},
+    {'L':[151, 185, 255, 39700]}
+  ],
+} %}
+
 {#-
 TESTING CODE FOR DEVELOPER TAB TO TEST THIS CUSTOM JINJA:
-{% from 'color_multi_tool.jinja' import random_name, random_xy, random_hs,
+{%- from 'color_multi_tool.jinja' import random_name, random_xy, random_hs, 
 random_rgb, name2rgb, rgb2name, rgb2xy, xy2rgb, hs2rgb, rgb2hs, xy2hs, hs2xy, chkRGB,
-chkXY, chkHS, chkNAME, color_list %}
+chkXY, chkHS, chkNAME, color_list, k2rgb, chkK, rgb2K %}
+
 0 macro random name: {{ random_name() }}
 1 macro random xy list: {% set _rxy1 = random_xy().split(",") | list %}
 {%- set _rxy1_list = [_rxy1[0]|float|round(3),_rxy1[1]|float|round(3)] %}
 {{- _rxy1_list }}
 2 macro random hs list: {% set _rhs2 = random_hs().split(",") | list %}
 {%- set _rhs2_list =  [_rhs2[0]|float|round(3),_rhs2[1]|float|round(2)] %}
-{{- _rhs2_list }} 
+{{- _rhs2_list }}
 3 macro random rgb list: {% set _rrgb3 = random_rgb().split(",") | list %}
 {%- set _rrgb3_list = [_rrgb3[0]|int(0),_rrgb3[1]|int(0),_rrgb3[2]|int(0)] %}
 {{- _rrgb3_list }} 
-
+C macro temperature to rgb list: {% set _rrgbK = range(1000,40000) | random -%}
+{%- set _rrgbT = k2rgb(_rrgbK).split(",") | list %}
+{%- set _rrgbT_list = [_rrgbT[0]|int(0),_rrgbT[1]|int(0),_rrgbT[2]|int(0)] | list %}
+{{- _rrgbK }} K -> {{ _rrgbT_list }}
+F  (using #C) macro RGB to color Temperature: {% set _rgb2Temp = rgb2K(_rrgbT_list) %}
+{{- _rrgbT_list }} -> {{ _rgb2Temp -}}
 4 macro name to rgb list: {% set _nrgb4_name = random_name() %}
 {%- set _nrgb4 = name2rgb(_nrgb4_name).split(",") | list %}
 {%- set _nrgb4_list = [_nrgb4[0]|int(0),_nrgb4[1]|int(0),_nrgb4[2]|int(0)] | list %}
 {{- _nrgb4_name }} -> {{ _nrgb4_list }}
+
 B (using #4) macro RGB to color name: {% set _rgb2name = rgb2name(20,_nrgb4_list) %}
 {{- _nrgb4_list }} -> {{ _rgb2name -}}
+E (using #4) macro rgb to Best Match Name: {%- set _rgb2Bname = rgb_bestname(_nrgb4_list) %}
+{{- _nrgb4_list }} -> {{ _rgb2Bname }}
 5 (using #4) macro rgb to xy list: {% set _rgb2zy5 = rgb2xy(_nrgb4_list).split(",") | list %}
 {%- set _rgb2zy5_list = [_rgb2zy5[0]|float(0)|round(3),_rgb2zy5[1]|float(0)|round(3)] %}
 {{- _nrgb4_list }} -> {{_rgb2zy5_list }}
@@ -1300,13 +1843,35 @@ A (using #8) macro hs to xy list: {% set _hs2xyA = hs2xy(_rgb2hs8_list).split(",
 
 Test the tests by changing the values:
 {%- set _rgbl = [255,165,0] %}
-Check RGB:   {{ chkRGB(_rgbl) | bool }}
+Check RGB Valid:   {{ _rgbl ~" -> "~ chkRGB(_rgbl) | bool }}
+{%- set _rgbl = [235,165,300] %}
+Check RGB FAIL OOR:   {{ _rgbl ~" -> "~ chkRGB(_rgbl) | bool }}
+{%- set _rgbl = ['test',165,0] %}
+Check RGB FAIL text:   {{ _rgbl ~" -> "~ chkRGB(_rgbl) | bool }}
 {%- set _xyl = [0.497,0.472] %}
-check XY :   {{ chkXY(_xyl) | bool }}
+check XY Valid:   {{ _xyl ~" -> "~ chkXY(_xyl) | bool }}
+{%- set _xyl = [0.497,12] %}
+check XY FAIL OOR:   {{ _xyl ~" -> "~ chkXY(_xyl) | bool }}
+{%- set _xyl = [0.497,'test'] %}
+check XY FAIL text:   {{ _xyl ~" -> "~ chkXY(_xyl) | bool }}
 {%- set _hsl = [38.824,100.0] %}
-Check HS :   {{ chkHS(_hsl) | bool }}
+Check HS Valid:   {{ _hsl ~" -> "~ chkHS(_hsl) | bool }}
+{%- set _hsl = [38.824,900] %}
+Check HS FAIL OOR:   {{ _hsl ~" -> "~ chkHS(_hsl) | bool }}
+{%- set _hsl = ['test',100.0] %}
+Check HS FAIL text:   {{ _hsl ~" -> "~ chkHS(_hsl) | bool }}
 {%- set _name = 'orange' %}
-Check NAME : {{ chkNAME(_name) | bool }}
+Check NAME Valid: {{ _name ~" -> "~ chkNAME(_name) | bool }}
+{%- set _name = 'rainbow' %}
+Check NAME FAIL OOR: {{ _name ~" -> "~ chkNAME(_name) | bool }}
+{%- set _name = 255 %}
+Check NAME FAIL number: {{ _name ~" -> "~ chkNAME(_name) | bool }}
+{%- set _kelvin = _rrgbK %}
+Check KELVIN Valid: {{ _kelvin ~" -> "~ chkK(_kelvin) | bool }}
+{%- set _kelvin = 500 %}
+Check KELVIN FAIL OOR: {{ _kelvin ~" -> "~ chkK(_kelvin) | bool }}
+{%- set _kelvin = 'test' %}
+Check KELVIN FAIL text: {{ _kelvin ~" -> "~ chkK(_kelvin) | bool }}
 
 Test color_list:
 {{ color_list().split('\n') | list }}

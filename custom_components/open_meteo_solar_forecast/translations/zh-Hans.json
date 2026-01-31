@@ -69,7 +69,7 @@
           "modules power": "您的太阳能模块的总瓦特峰值功率",
           "modules_power": "您的太阳能模块的总瓦特峰值功率"
         },
-        "description": "这些值用于调节 Forecast.Solar 结果。对于不清楚的字段，请参阅文档。"
+        "description": "这些值用于调节 Solar Forecast 结果。对于不清楚的字段，请参阅文档。"
       }
     }
   }

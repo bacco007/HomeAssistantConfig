@@ -39,16 +39,3 @@ sensor:
     entity_id: sensor.waqi_tamworth_north_west_slopes
     max_age:
       hours: 24
-
-  - platform: template
-    sensors:
-      waqi_tamworth_pm10:
-        friendly_name: "AQI - PM10"
-        value_template: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes', 'pm_10') }}"
-        icon_template: mdi:cloud
-        unit_of_measurement: "AQI"
-      waqi_tamworth_pm25:
-        friendly_name: "AQI - PM2.5"
-        value_template: "{{ state_attr('sensor.waqi_tamworth_north_west_slopes', 'pm_2_5') }}"
-        icon_template: mdi:cloud
-        unit_of_measurement: "AQI"

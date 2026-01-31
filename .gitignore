@@ -23,6 +23,9 @@ gtfs2
 glances
 www/browserless
 .mypy_cache
+custom_icons
+gtfs_static_cache
+.skyfield
 
 # Ignore File Extensions
 *.conf
@@ -50,6 +53,7 @@ home-assistant_v2.db
 home-assistant_v2.db-wal
 home-assistant_v2.db-shm
 home-assistant.log
+home-assistant.log.old
 home-assistant.log.1
 home-assistant.log.fault
 home-assistant-rollback.log
@@ -83,6 +87,7 @@ icloud3*.log
 persist_notify.log
 calendar*.txt
 xmltv/*.xml
+solcast_solar
 
 node-red/*
 !node-red/flows.json

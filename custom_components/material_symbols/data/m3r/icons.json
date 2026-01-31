@@ -72,6 +72,9 @@
         "name": "2mp"
     },
     {
+        "name": "3d"
+    },
+    {
         "name": "3d-rotation"
     },
     {
@@ -171,6 +174,9 @@
         "name": "action-key"
     },
     {
+        "name": "acupuncture"
+    },
+    {
         "name": "acute"
     },
     {
@@ -178,9 +184,6 @@
     },
     {
         "name": "ad-group-off"
-    },
-    {
-        "name": "ad-units"
     },
     {
         "name": "adaptive-audio-mic"
@@ -259,9 +262,6 @@
     },
     {
         "name": "add-shopping-cart"
-    },
-    {
-        "name": "add-to-home-screen"
     },
     {
         "name": "add-to-photos"
@@ -363,9 +363,6 @@
         "name": "animated-images"
     },
     {
-        "name": "aod"
-    },
-    {
         "name": "aod-tablet"
     },
     {
@@ -394,6 +391,9 @@
     },
     {
         "name": "approval-delegation"
+    },
+    {
+        "name": "approval-delegation-off"
     },
     {
         "name": "aq"
@@ -435,6 +435,21 @@
         "name": "arrow-selector-tool"
     },
     {
+        "name": "arrow-shape-up"
+    },
+    {
+        "name": "arrow-shape-up-stack"
+    },
+    {
+        "name": "arrow-shape-up-stack-2"
+    },
+    {
+        "name": "arrows-left-right-circle"
+    },
+    {
+        "name": "arrows-up-down-circle"
+    },
+    {
         "name": "art-track"
     },
     {
@@ -457,6 +472,9 @@
     },
     {
         "name": "assignment-add"
+    },
+    {
+        "name": "assignment-globe"
     },
     {
         "name": "assignment-late"
@@ -537,6 +555,9 @@
         "name": "auto-stories"
     },
     {
+        "name": "auto-stories-off"
+    },
+    {
         "name": "auto-timer"
     },
     {
@@ -555,10 +576,16 @@
         "name": "avg-time"
     },
     {
+        "name": "award-meal"
+    },
+    {
         "name": "award-star"
     },
     {
         "name": "azm"
+    },
+    {
+        "name": "b-circle"
     },
     {
         "name": "back-hand"
@@ -579,16 +606,28 @@
         "name": "badge"
     },
     {
+        "name": "badminton"
+    },
+    {
         "name": "ballot"
     },
     {
         "name": "barcode-reader"
     },
     {
+        "name": "batch-prediction"
+    },
+    {
+        "name": "bath-bedrock"
+    },
+    {
         "name": "bath-outdoor"
     },
     {
         "name": "bath-private"
+    },
+    {
+        "name": "bath-soak"
     },
     {
         "name": "bathroom"
@@ -598,6 +637,27 @@
     },
     {
         "name": "battery-alert"
+    },
+    {
+        "name": "battery-android-alert"
+    },
+    {
+        "name": "battery-android-bolt"
+    },
+    {
+        "name": "battery-android-frame-shield"
+    },
+    {
+        "name": "battery-android-plus"
+    },
+    {
+        "name": "battery-android-question"
+    },
+    {
+        "name": "battery-android-share"
+    },
+    {
+        "name": "battery-android-shield"
     },
     {
         "name": "battery-change"
@@ -643,6 +703,9 @@
     },
     {
         "name": "beenhere"
+    },
+    {
+        "name": "beer-meal"
     },
     {
         "name": "bia"
@@ -717,9 +780,6 @@
         "name": "book-6"
     },
     {
-        "name": "book-online"
-    },
-    {
         "name": "book-ribbon"
     },
     {
@@ -748,6 +808,9 @@
     },
     {
         "name": "bookmark-remove"
+    },
+    {
+        "name": "bookmark-stacks"
     },
     {
         "name": "bookmark-star"
@@ -798,6 +861,9 @@
         "name": "brick"
     },
     {
+        "name": "briefcase-meal"
+    },
+    {
         "name": "brightness-3"
     },
     {
@@ -844,6 +910,9 @@
     },
     {
         "name": "bubble-chart"
+    },
+    {
+        "name": "bucket-check"
     },
     {
         "name": "bug-report"
@@ -894,7 +963,19 @@
         "name": "calendar-apps-script"
     },
     {
+        "name": "calendar-check"
+    },
+    {
         "name": "calendar-clock"
+    },
+    {
+        "name": "calendar-lock"
+    },
+    {
+        "name": "calendar-meal"
+    },
+    {
+        "name": "calendar-meal-2"
     },
     {
         "name": "calendar-month"
@@ -924,16 +1005,10 @@
         "name": "camera-enhance"
     },
     {
-        "name": "camera-front"
-    },
-    {
         "name": "camera-indoor"
     },
     {
         "name": "camera-outdoor"
-    },
-    {
-        "name": "camera-rear"
     },
     {
         "name": "camera-roll"
@@ -966,10 +1041,22 @@
         "name": "candlestick-chart"
     },
     {
+        "name": "cannabis"
+    },
+    {
         "name": "capture"
     },
     {
         "name": "car-crash"
+    },
+    {
+        "name": "car-fan-mid-low-right"
+    },
+    {
+        "name": "car-gear"
+    },
+    {
+        "name": "car-lock"
     },
     {
         "name": "car-rental"
@@ -1050,6 +1137,15 @@
         "name": "chair-alt"
     },
     {
+        "name": "chair-counter"
+    },
+    {
+        "name": "chair-fireplace"
+    },
+    {
+        "name": "chair-umbrella"
+    },
+    {
         "name": "chalet"
     },
     {
@@ -1098,6 +1194,9 @@
         "name": "check-circle"
     },
     {
+        "name": "check-circle-unread"
+    },
+    {
         "name": "checkbook"
     },
     {
@@ -1110,13 +1209,43 @@
         "name": "cheer"
     },
     {
+        "name": "chef-hat"
+    },
+    {
         "name": "chess"
+    },
+    {
+        "name": "chess-bishop"
+    },
+    {
+        "name": "chess-bishop-2"
+    },
+    {
+        "name": "chess-king"
+    },
+    {
+        "name": "chess-king-2"
+    },
+    {
+        "name": "chess-knight"
     },
     {
         "name": "chess-pawn"
     },
     {
+        "name": "chess-pawn-2"
+    },
+    {
+        "name": "chess-queen"
+    },
+    {
+        "name": "chess-rook"
+    },
+    {
         "name": "child-friendly"
+    },
+    {
+        "name": "child-hat"
     },
     {
         "name": "chrome-reader-mode"
@@ -1254,6 +1383,15 @@
         "name": "computer"
     },
     {
+        "name": "computer-arrow-up"
+    },
+    {
+        "name": "computer-cancel"
+    },
+    {
+        "name": "computer-sound"
+    },
+    {
         "name": "concierge"
     },
     {
@@ -1312,6 +1450,9 @@
     },
     {
         "name": "control-point-duplicate"
+    },
+    {
+        "name": "conversation"
     },
     {
         "name": "convert-to-text"
@@ -1569,9 +1710,6 @@
         "name": "developer-mode-tv"
     },
     {
-        "name": "device-unknown"
-    },
-    {
         "name": "devices"
     },
     {
@@ -1599,6 +1737,9 @@
         "name": "diamond"
     },
     {
+        "name": "diamond-shine"
+    },
+    {
         "name": "dictionary"
     },
     {
@@ -1609,6 +1750,12 @@
     },
     {
         "name": "digital-wellbeing"
+    },
+    {
+        "name": "dine-heart"
+    },
+    {
+        "name": "dine-lamp"
     },
     {
         "name": "dining"
@@ -1770,7 +1917,13 @@
         "name": "drive-folder-upload"
     },
     {
+        "name": "drone"
+    },
+    {
         "name": "dropdown"
+    },
+    {
+        "name": "dropper-eye"
     },
     {
         "name": "dry"
@@ -1794,6 +1947,15 @@
         "name": "e911-emergency"
     },
     {
+        "name": "earbud-left"
+    },
+    {
+        "name": "earbud-right"
+    },
+    {
+        "name": "earbuds-2"
+    },
+    {
         "name": "earbuds-battery"
     },
     {
@@ -1807,12 +1969,6 @@
     },
     {
         "name": "eda"
-    },
-    {
-        "name": "edgesensor-high"
-    },
-    {
-        "name": "edgesensor-low"
     },
     {
         "name": "edit"
@@ -2220,6 +2376,9 @@
         "name": "find-in-page"
     },
     {
+        "name": "fire-extinguisher"
+    },
+    {
         "name": "fire-hydrant"
     },
     {
@@ -2242,6 +2401,9 @@
     },
     {
         "name": "fitness-tracker"
+    },
+    {
+        "name": "fitness-trackers"
     },
     {
         "name": "flag"
@@ -2400,6 +2562,24 @@
         "name": "format-h4"
     },
     {
+        "name": "format-image-back"
+    },
+    {
+        "name": "format-image-break-left"
+    },
+    {
+        "name": "format-image-break-right"
+    },
+    {
+        "name": "format-image-front"
+    },
+    {
+        "name": "format-image-inline-left"
+    },
+    {
+        "name": "format-image-inline-right"
+    },
+    {
         "name": "format-ink-highlighter"
     },
     {
@@ -2442,6 +2622,12 @@
         "name": "forward-to-inbox"
     },
     {
+        "name": "fragrance"
+    },
+    {
+        "name": "frame-bug"
+    },
+    {
         "name": "frame-person"
     },
     {
@@ -2478,16 +2664,70 @@
         "name": "gallery-thumbnail"
     },
     {
+        "name": "game-bumper-left"
+    },
+    {
+        "name": "game-bumper-right"
+    },
+    {
+        "name": "game-button-l"
+    },
+    {
+        "name": "game-button-l1"
+    },
+    {
+        "name": "game-button-l2"
+    },
+    {
+        "name": "game-button-r"
+    },
+    {
+        "name": "game-button-r1"
+    },
+    {
+        "name": "game-button-r2"
+    },
+    {
+        "name": "game-button-zl"
+    },
+    {
+        "name": "game-button-zr"
+    },
+    {
+        "name": "game-stick-l3"
+    },
+    {
+        "name": "game-stick-left"
+    },
+    {
+        "name": "game-stick-r3"
+    },
+    {
+        "name": "game-stick-right"
+    },
+    {
+        "name": "game-trigger-left"
+    },
+    {
+        "name": "game-trigger-right"
+    },
+    {
         "name": "gamepad"
     },
     {
         "name": "garage"
     },
     {
+        "name": "garage-check"
+    },
+    {
         "name": "garage-door"
     },
     {
         "name": "garage-home"
+    },
+    {
+        "name": "garage-money"
     },
     {
         "name": "garden-cart"
@@ -2580,10 +2820,19 @@
         "name": "hallway"
     },
     {
+        "name": "hanami-dango"
+    },
+    {
         "name": "hand-gesture"
     },
     {
         "name": "hand-gesture-off"
+    },
+    {
+        "name": "hand-meal"
+    },
+    {
+        "name": "hand-package"
     },
     {
         "name": "handheld-controller"
@@ -2646,6 +2895,9 @@
         "name": "health-and-safety"
     },
     {
+        "name": "health-cross"
+    },
+    {
         "name": "health-metrics"
     },
     {
@@ -2664,6 +2916,12 @@
         "name": "hearing-aid-disabled"
     },
     {
+        "name": "hearing-aid-disabled-left"
+    },
+    {
+        "name": "hearing-aid-left"
+    },
+    {
         "name": "heart-broken"
     },
     {
@@ -2674,6 +2932,9 @@
     },
     {
         "name": "heart-plus"
+    },
+    {
+        "name": "heart-smile"
     },
     {
         "name": "heat-pump-balance"
@@ -2701,6 +2962,9 @@
     },
     {
         "name": "hide-source"
+    },
+    {
+        "name": "high-chair"
     },
     {
         "name": "high-density"
@@ -2784,6 +3048,9 @@
         "name": "hourglass-arrow-up"
     },
     {
+        "name": "hourglass-check"
+    },
+    {
         "name": "hourglass-pause"
     },
     {
@@ -2844,7 +3111,13 @@
         "name": "image"
     },
     {
+        "name": "image-arrow-up"
+    },
+    {
         "name": "image-aspect-ratio"
+    },
+    {
+        "name": "image-inset"
     },
     {
         "name": "image-not-supported"
@@ -2943,6 +3216,12 @@
         "name": "jamboard-kiosk"
     },
     {
+        "name": "japanese-curry"
+    },
+    {
+        "name": "japanese-flag"
+    },
+    {
         "name": "kebab-dining"
     },
     {
@@ -3031,6 +3310,9 @@
     },
     {
         "name": "landscape-2"
+    },
+    {
+        "name": "landscape-2-edit"
     },
     {
         "name": "landscape-2-off"
@@ -3139,6 +3421,9 @@
     },
     {
         "name": "linked-camera"
+    },
+    {
+        "name": "lips"
     },
     {
         "name": "liquor"
@@ -3306,10 +3591,16 @@
         "name": "mail"
     },
     {
+        "name": "mail-asterisk"
+    },
+    {
         "name": "mail-lock"
     },
     {
         "name": "mail-off"
+    },
+    {
+        "name": "mail-shield"
     },
     {
         "name": "manage-accounts"
@@ -3319,6 +3610,12 @@
     },
     {
         "name": "map"
+    },
+    {
+        "name": "map-pin-heart"
+    },
+    {
+        "name": "map-pin-review"
     },
     {
         "name": "map-search"
@@ -3355,6 +3652,15 @@
     },
     {
         "name": "masks"
+    },
+    {
+        "name": "massage"
+    },
+    {
+        "name": "meal-dinner"
+    },
+    {
+        "name": "meal-lunch"
     },
     {
         "name": "measuring-tape"
@@ -3396,6 +3702,9 @@
         "name": "menu-book"
     },
     {
+        "name": "menu-book-2"
+    },
+    {
         "name": "mic"
     },
     {
@@ -3409,6 +3718,9 @@
     },
     {
         "name": "mic-external-on"
+    },
+    {
+        "name": "mic-gear"
     },
     {
         "name": "mic-noise-cancel-off"
@@ -3450,13 +3762,133 @@
         "name": "mms"
     },
     {
+        "name": "mobile-alert"
+    },
+    {
+        "name": "mobile-arrow-down"
+    },
+    {
+        "name": "mobile-arrow-right"
+    },
+    {
+        "name": "mobile-arrow-up-right"
+    },
+    {
+        "name": "mobile-camera"
+    },
+    {
+        "name": "mobile-camera-front"
+    },
+    {
+        "name": "mobile-camera-rear"
+    },
+    {
+        "name": "mobile-cancel"
+    },
+    {
+        "name": "mobile-cast"
+    },
+    {
+        "name": "mobile-charge"
+    },
+    {
+        "name": "mobile-chat"
+    },
+    {
+        "name": "mobile-check"
+    },
+    {
+        "name": "mobile-code"
+    },
+    {
         "name": "mobile-friendly"
+    },
+    {
+        "name": "mobile-gear"
+    },
+    {
+        "name": "mobile-hand"
+    },
+    {
+        "name": "mobile-hand-left"
+    },
+    {
+        "name": "mobile-hand-left-off"
+    },
+    {
+        "name": "mobile-hand-off"
+    },
+    {
+        "name": "mobile-info"
+    },
+    {
+        "name": "mobile-layout"
+    },
+    {
+        "name": "mobile-loupe"
     },
     {
         "name": "mobile-off"
     },
     {
+        "name": "mobile-question"
+    },
+    {
+        "name": "mobile-rotate"
+    },
+    {
+        "name": "mobile-rotate-lock"
+    },
+    {
         "name": "mobile-screen-share"
+    },
+    {
+        "name": "mobile-screensaver"
+    },
+    {
+        "name": "mobile-sensor-hi"
+    },
+    {
+        "name": "mobile-sensor-lo"
+    },
+    {
+        "name": "mobile-share"
+    },
+    {
+        "name": "mobile-share-stack"
+    },
+    {
+        "name": "mobile-sound"
+    },
+    {
+        "name": "mobile-sound-2"
+    },
+    {
+        "name": "mobile-sound-off"
+    },
+    {
+        "name": "mobile-speaker"
+    },
+    {
+        "name": "mobile-text"
+    },
+    {
+        "name": "mobile-text-2"
+    },
+    {
+        "name": "mobile-theft"
+    },
+    {
+        "name": "mobile-ticket"
+    },
+    {
+        "name": "mobile-unlock"
+    },
+    {
+        "name": "mobile-vibrate"
+    },
+    {
+        "name": "mobile-wrench"
     },
     {
         "name": "mode-comment"
@@ -3492,6 +3924,9 @@
         "name": "money-bag"
     },
     {
+        "name": "money-range"
+    },
+    {
         "name": "monitor-heart"
     },
     {
@@ -3513,7 +3948,13 @@
         "name": "mood-bad"
     },
     {
+        "name": "moon-stars"
+    },
+    {
         "name": "moped"
+    },
+    {
+        "name": "moped-package"
     },
     {
         "name": "more"
@@ -3538,6 +3979,9 @@
     },
     {
         "name": "mountain-flag"
+    },
+    {
+        "name": "mountain-steam"
     },
     {
         "name": "mouse-lock-off"
@@ -3576,6 +4020,9 @@
         "name": "movie-off"
     },
     {
+        "name": "movie-speaker"
+    },
+    {
         "name": "moving-beds"
     },
     {
@@ -3589,6 +4036,9 @@
     },
     {
         "name": "museum"
+    },
+    {
+        "name": "music-history"
     },
     {
         "name": "music-video"
@@ -3628,6 +4078,18 @@
     },
     {
         "name": "nest-eco-leaf"
+    },
+    {
+        "name": "nest-farsight-cool"
+    },
+    {
+        "name": "nest-farsight-dual"
+    },
+    {
+        "name": "nest-farsight-eco"
+    },
+    {
+        "name": "nest-farsight-heat"
     },
     {
         "name": "nest-found-savings"
@@ -3708,9 +4170,6 @@
         "name": "nightlight-off"
     },
     {
-        "name": "nights-stay"
-    },
-    {
         "name": "no-backpack"
     },
     {
@@ -3771,6 +4230,12 @@
         "name": "notification-add"
     },
     {
+        "name": "notification-audio"
+    },
+    {
+        "name": "notification-audio-off"
+    },
+    {
         "name": "notification-important"
     },
     {
@@ -3778,6 +4243,9 @@
     },
     {
         "name": "notification-settings"
+    },
+    {
+        "name": "notification-sound"
     },
     {
         "name": "notifications"
@@ -3810,10 +4278,10 @@
         "name": "offline-pin-off"
     },
     {
-        "name": "offline-share"
+        "name": "oil-barrel"
     },
     {
-        "name": "oil-barrel"
+        "name": "okonomiyaki"
     },
     {
         "name": "on-device-training"
@@ -3897,7 +4365,13 @@
         "name": "oxygen-saturation"
     },
     {
+        "name": "p2p"
+    },
+    {
         "name": "package"
+    },
+    {
+        "name": "padel"
     },
     {
         "name": "page-footer"
@@ -3907,6 +4381,9 @@
     },
     {
         "name": "page-info"
+    },
+    {
+        "name": "page-menu-ios"
     },
     {
         "name": "pages"
@@ -3933,19 +4410,40 @@
         "name": "paragliding"
     },
     {
+        "name": "parent-child-dining"
+    },
+    {
         "name": "park"
+    },
+    {
+        "name": "parking-meter"
+    },
+    {
+        "name": "parking-sign"
+    },
+    {
+        "name": "parking-valet"
     },
     {
         "name": "partly-cloudy-day"
     },
     {
+        "name": "partly-cloudy-night"
+    },
+    {
         "name": "partner-exchange"
+    },
+    {
+        "name": "partner-heart"
     },
     {
         "name": "party-mode"
     },
     {
         "name": "passkey"
+    },
+    {
+        "name": "passport"
     },
     {
         "name": "patient-list"
@@ -3960,6 +4458,12 @@
         "name": "pause-presentation"
     },
     {
+        "name": "payment-arrow-down"
+    },
+    {
+        "name": "payment-card"
+    },
+    {
         "name": "payments"
     },
     {
@@ -3970,6 +4474,9 @@
     },
     {
         "name": "pentagon"
+    },
+    {
+        "name": "percent-discount"
     },
     {
         "name": "performance-max"
@@ -4032,6 +4539,9 @@
         "name": "person-edit"
     },
     {
+        "name": "person-heart"
+    },
+    {
         "name": "person-off"
     },
     {
@@ -4051,6 +4561,12 @@
     },
     {
         "name": "person-search"
+    },
+    {
+        "name": "person-shield"
+    },
+    {
+        "name": "person-text"
     },
     {
         "name": "personal-bag"
@@ -4146,6 +4662,9 @@
         "name": "physical-therapy"
     },
     {
+        "name": "pickleball"
+    },
+    {
         "name": "picture-as-pdf"
     },
     {
@@ -4216,6 +4735,12 @@
     },
     {
         "name": "play-shapes"
+    },
+    {
+        "name": "playground"
+    },
+    {
+        "name": "playground-2"
     },
     {
         "name": "playing-cards"
@@ -4431,6 +4956,9 @@
         "name": "rectangle"
     },
     {
+        "name": "rectangle-add"
+    },
+    {
         "name": "relax"
     },
     {
@@ -4470,6 +4998,9 @@
         "name": "reset-brightness"
     },
     {
+        "name": "reset-exposure"
+    },
+    {
         "name": "reset-focus"
     },
     {
@@ -4501,6 +5032,9 @@
     },
     {
         "name": "responsive-layout"
+    },
+    {
+        "name": "rest-area"
     },
     {
         "name": "restore-from-trash"
@@ -4570,6 +5104,9 @@
     },
     {
         "name": "router"
+    },
+    {
+        "name": "router-off"
     },
     {
         "name": "routine"
@@ -4689,7 +5226,13 @@
         "name": "search-check-2"
     },
     {
+        "name": "search-gear"
+    },
+    {
         "name": "security-update-good"
+    },
+    {
+        "name": "security-update-warning"
     },
     {
         "name": "select-to-speak"
@@ -4705,9 +5248,6 @@
     },
     {
         "name": "send-time-extension"
-    },
-    {
-        "name": "send-to-mobile"
     },
     {
         "name": "sensor-door"
@@ -4824,6 +5364,9 @@
         "name": "settings-remote"
     },
     {
+        "name": "settings-seating"
+    },
+    {
         "name": "settings-slow-motion"
     },
     {
@@ -4851,6 +5394,9 @@
         "name": "share-reviews"
     },
     {
+        "name": "shaved-ice"
+    },
+    {
         "name": "shelves"
     },
     {
@@ -4873,6 +5419,12 @@
     },
     {
         "name": "shield-spark"
+    },
+    {
+        "name": "shield-toggle"
+    },
+    {
+        "name": "shield-watch"
     },
     {
         "name": "shield-with-heart"
@@ -5052,10 +5604,16 @@
         "name": "soap"
     },
     {
+        "name": "soba"
+    },
+    {
         "name": "social-leaderboard"
     },
     {
         "name": "solar-power"
+    },
+    {
+        "name": "solo-dining"
     },
     {
         "name": "sort-by-alpha"
@@ -5115,6 +5673,18 @@
         "name": "split-scene"
     },
     {
+        "name": "split-scene-down"
+    },
+    {
+        "name": "split-scene-left"
+    },
+    {
+        "name": "split-scene-right"
+    },
+    {
+        "name": "split-scene-up"
+    },
+    {
         "name": "splitscreen-add"
     },
     {
@@ -5157,6 +5727,9 @@
         "name": "square"
     },
     {
+        "name": "square-circle"
+    },
+    {
         "name": "stack"
     },
     {
@@ -5193,16 +5766,25 @@
         "name": "star-rate"
     },
     {
+        "name": "star-shine"
+    },
+    {
         "name": "stars"
+    },
+    {
+        "name": "stars-2"
     },
     {
         "name": "stat-0"
     },
     {
-        "name": "stay-primary-portrait"
+        "name": "stethoscope"
     },
     {
-        "name": "stethoscope"
+        "name": "sticker"
+    },
+    {
+        "name": "sticker-add"
     },
     {
         "name": "sticky-note"
@@ -5277,10 +5859,16 @@
         "name": "subtitles"
     },
     {
+        "name": "subtitles-gear"
+    },
+    {
         "name": "subtitles-off"
     },
     {
         "name": "subway"
+    },
+    {
+        "name": "subway-walk"
     },
     {
         "name": "summarize"
@@ -5355,6 +5943,9 @@
         "name": "switch-access-2"
     },
     {
+        "name": "switch-access-3"
+    },
+    {
         "name": "switch-account"
     },
     {
@@ -5385,10 +5976,10 @@
         "name": "sync-saved-locally"
     },
     {
-        "name": "syringe"
+        "name": "sync-saved-locally-off"
     },
     {
-        "name": "system-update"
+        "name": "syringe"
     },
     {
         "name": "tab"
@@ -5418,6 +6009,9 @@
         "name": "tab-recent"
     },
     {
+        "name": "tab-search"
+    },
+    {
         "name": "table-bar"
     },
     {
@@ -5436,7 +6030,13 @@
         "name": "table-lamp"
     },
     {
+        "name": "table-large"
+    },
+    {
         "name": "table-restaurant"
+    },
+    {
+        "name": "table-sign"
     },
     {
         "name": "table-view"
@@ -5449,6 +6049,9 @@
     },
     {
         "name": "takeout-dining"
+    },
+    {
+        "name": "takeout-dining-2"
     },
     {
         "name": "tamper-detection-off"
@@ -5464,6 +6067,9 @@
     },
     {
         "name": "task"
+    },
+    {
+        "name": "tatami-seat"
     },
     {
         "name": "taxi-alert"
@@ -5502,6 +6108,9 @@
         "name": "theaters"
     },
     {
+        "name": "thermometer-alert"
+    },
+    {
         "name": "thermometer-gain"
     },
     {
@@ -5515,6 +6124,9 @@
     },
     {
         "name": "thumb-up"
+    },
+    {
+        "name": "thumbs-up-double"
     },
     {
         "name": "thumbs-up-down"
@@ -5688,6 +6300,9 @@
         "name": "travel-luggage-and-bags"
     },
     {
+        "name": "triangle-circle"
+    },
+    {
         "name": "trolley"
     },
     {
@@ -5745,10 +6360,16 @@
         "name": "type-specimen"
     },
     {
+        "name": "udon"
+    },
+    {
         "name": "ulna-radius-alt"
     },
     {
         "name": "unarchive"
+    },
+    {
+        "name": "undereye"
     },
     {
         "name": "unfloat-landscape"
@@ -5826,6 +6447,9 @@
         "name": "verified"
     },
     {
+        "name": "verified-off"
+    },
+    {
         "name": "verified-user"
     },
     {
@@ -5833,9 +6457,6 @@
     },
     {
         "name": "vertical-split"
-    },
-    {
-        "name": "vibration"
     },
     {
         "name": "video-call"
@@ -5946,6 +6567,9 @@
         "name": "voice-chat"
     },
     {
+        "name": "voice-chat-off"
+    },
+    {
         "name": "voice-over-off"
     },
     {
@@ -5997,6 +6621,12 @@
         "name": "wall-lamp"
     },
     {
+        "name": "wand-shine"
+    },
+    {
+        "name": "wand-stars"
+    },
+    {
         "name": "ward"
     },
     {
@@ -6012,13 +6642,22 @@
         "name": "wash"
     },
     {
+        "name": "washoku"
+    },
+    {
         "name": "watch"
+    },
+    {
+        "name": "watch-arrow"
     },
     {
         "name": "watch-button-press"
     },
     {
         "name": "watch-check"
+    },
+    {
+        "name": "watch-lock"
     },
     {
         "name": "watch-off"
@@ -6180,7 +6819,19 @@
         "name": "wrong-location"
     },
     {
+        "name": "x-circle"
+    },
+    {
+        "name": "y-circle"
+    },
+    {
+        "name": "yakitori"
+    },
+    {
         "name": "yard"
+    },
+    {
+        "name": "yoshoku"
     },
     {
         "name": "your-trips"

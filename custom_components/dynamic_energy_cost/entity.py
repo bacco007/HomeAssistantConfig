@@ -9,7 +9,7 @@ from homeassistant.core import CALLBACK_TYPE, HomeAssistant, callback
 from homeassistant.helpers.event import async_track_point_in_time
 from homeassistant.util.dt import now
 
-from .const import HOURLY, DAILY, MANUAL, MONTHLY, WEEKLY, YEARLY
+from .const import QUARTERLY, HOURLY, DAILY, MANUAL, MONTHLY, WEEKLY, YEARLY
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -32,16 +32,28 @@ class BaseUtilitySensor(SensorEntity):
         """Determine the exact datetime for the next reset based on the interval."""
         current_time = now()
 
-        if self._interval == HOURLY:
-            ## Only activate for testing purpose:
-            #return current_time + timedelta(seconds=30)
+        if self._interval == QUARTERLY:
+            # Only activate for testing purpose:
+            # return current_time + timedelta(seconds=30)
 
-            return current_time.replace(
-                minute=0, second=0, microsecond=0
-            ) + timedelta(hours=1)
-            
+            current_time = current_time.replace(second=0, microsecond=0)
+
+            next_quarter = ((current_time.minute // 15) + 1) * 15
+            if next_quarter >= 60:
+                return current_time.replace(minute=0) + timedelta(hours=1)
+            else:
+                return current_time.replace(minute=next_quarter)
+
+        if self._interval == HOURLY:
+            # Only activate for testing purpose:
+            # return current_time + timedelta(seconds=30)
+
+            return current_time.replace(minute=0, second=0, microsecond=0) + timedelta(
+                hours=1
+            )
+
         if self._interval == DAILY:
-            ## Only activate for testing purpose:
+            # Only activate for testing purpose:
             # return current_time + timedelta(seconds=30)
 
             return current_time.replace(
@@ -106,12 +118,24 @@ class BaseUtilitySensor(SensorEntity):
         """Reset the energy cost and cumulative energy kWh."""
         self._state = Decimal(0) if type(self._state) is Decimal else 0
 
-        if hasattr(self, "_cumulative_energy_kwh"):
-            self._cumulative_energy_kwh = 0  # pylint: disable=attribute-defined-outside-init
+        if hasattr(self, "_cumulative_energy"):
+            self._cumulative_energy = 0  # pylint: disable=attribute-defined-outside-init
+        if hasattr(self, "_cumulative_cost"):
+            self._cumulative_cost = 0  # pylint: disable=attribute-defined-outside-init
 
+        if hasattr(self, "_last_energy_reading"):
+            self._last_energy_reading = None  # pylint: disable=attribute-defined-outside-init
         self._last_update = now()
         self.async_write_ha_state()
         _LOGGER.debug("Meter reset for %s", self._name)
+
+    @callback
+    def async_calibrate(self, value):
+        """Calibrate the state with a given value."""
+        _LOGGER.debug("Calibrate %s = %s type(%s)", self._name, value, type(value))
+        self._cumulative_cost = float(str(value))
+        self._state = self._cumulative_cost
+        self.async_write_ha_state()
 
     async def async_will_remove_from_hass(self):
         """Remove the reset event from the schedule."""

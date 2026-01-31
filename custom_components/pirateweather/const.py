@@ -1,4 +1,4 @@
-"""Consts for the OpenWeatherMap."""
+"""Consts for the Pirate Weather."""
 
 from __future__ import annotations
 
@@ -32,10 +32,13 @@ DEFAULT_NAME = "PirateWeather"
 DEFAULT_LANGUAGE = "en"
 DEFAULT_UNITS = "us"
 DEFAULT_SCAN_INTERVAL = 1200
+DEFAULT_ENDPOINT = "https://api.pirateweather.net"
 ATTRIBUTION = "Data provided by Pirate Weather GUI"
 MANUFACTURER = "PirateWeather"
 CONF_LANGUAGE = "language"
 CONF_UNITS = "units"
+CONF_ENDPOINT = "endpoint"
+CONF_MODELS = "models"
 CONFIG_FLOW_VERSION = 2
 ENTRY_NAME = "name"
 ENTRY_WEATHER_COORDINATOR = "weather_coordinator"
@@ -138,6 +141,10 @@ ALL_CONDITIONS = {
     "current_day_liquid": "Current Day Liquid Accumulation",
     "current_day_snow": "Current Day Snow Accumulation",
     "current_day_ice": "Current Day Ice Accumulation",
+    "cape": "Convective Available Potential Energy",
+    "cape_max": "Convective Available Potential Energy Max",
+    "solar": "Downward Short-Wave Radiation Flux",
+    "solar_max": "Downward Short-Wave Radiation Flux Max",
 }
 
 LANGUAGES = [

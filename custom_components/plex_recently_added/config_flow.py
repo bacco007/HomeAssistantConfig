@@ -10,7 +10,7 @@ from homeassistant.helpers.selector import (
     ConstantSelector,
     ConstantSelectorConfig
 )
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.config_entries import ConfigEntry, ConfigFlowResult
 from homeassistant.core import callback
 from homeassistant.config_entries import ConfigFlow
 from homeassistant.const import (
@@ -90,3 +90,37 @@ class PlexConfigFlow(ConfigFlow, domain=DOMAIN):
 
         schema = self.add_suggested_values_to_schema(PLEX_SCHEMA, user_input)
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
+
+    async def async_step_reconfigure(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Handle reconfiguration of the integration."""
+        errors = {}
+        entry = self.hass.config_entries.async_get_entry(self.context["entry_id"])
+
+        if user_input is not None:
+            try:
+                await setup_client(
+                    self.hass,
+                    user_input[CONF_NAME],
+                    user_input[CONF_SSL],
+                    user_input[CONF_API_KEY],
+                    user_input[CONF_MAX],
+                    user_input[CONF_ON_DECK],
+                    user_input[CONF_HOST],
+                    user_input[CONF_PORT],
+                    user_input.get(CONF_SECTION_TYPES, []),
+                    user_input.get(CONF_SECTION_LIBRARIES, []),
+                    user_input.get(CONF_EXCLUDE_KEYWORDS, []),
+                )
+            except FailedToLogin as err:
+                errors = {'base': 'failed_to_login'}
+            else:
+                return self.async_update_reload_and_abort(
+                    entry,
+                    data={**entry.data, **user_input},
+                    reason="reconfigure_successful"
+                )
+
+        schema = self.add_suggested_values_to_schema(PLEX_SCHEMA, entry.data)
+        return self.async_show_form(step_id="reconfigure", data_schema=schema, errors=errors)

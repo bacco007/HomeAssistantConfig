@@ -1,0 +1,36 @@
+---
+sensor:
+  - name: "Air Quality Level"
+    unique_id: nsw_air_quality_tamworth_airpollev
+    icon: mdi:chemical-weapon
+    state: >-
+      {% set index = states('sensor.nsw_air_quality_tamworth') | float(-1) %}
+      {% if index > 200 %}
+        Hazardous
+      {% elif index > 150 %}
+        Very Poor
+      {% elif index > 100 %}
+        Poor
+      {% elif index > 67 %}
+        Fair
+      {% elif index > 34 %}
+        Good
+      {% elif index >= 0 %}
+        Very Good
+      {% else %}
+        Unavailable
+      {% endif %}
+
+  - name: "AQI - PM10"
+    unique_id: nsw_air_quality_tamworth_pm10
+    unit_of_measurement: "AQI"
+    icon: mdi:cloud
+    state: >-
+      {{ state_attr('sensor.nsw_air_quality_tamworth', 'pm10') }}
+
+  - name: "AQI - PM2.5"
+    unique_id: nsw_air_quality_tamworth_pm25
+    unit_of_measurement: "AQI"
+    icon: mdi:cloud
+    state: >-
+      {{ state_attr('sensor.nsw_air_quality_tamworth', 'pm25') }}

@@ -1,6 +1,6 @@
-delete from states where created <= datetime('now', '-7 days');
+delete from states where last_reported_ts < UNIX_TIMESTAMP(NOW() - INTERVAL 4 DAY);
 
-delete from events where created <= datetime('now', '-2 days');
+delete from events where time_fired_ts < UNIX_TIMESTAMP(NOW() - INTERVAL 4 DAY);
 
 delete from states where created < curdate()-7;
 
@@ -12,6 +12,20 @@ optimize table events;
 optimize table states;
 
 VACUUM;
+
+---
+
+DELETE FROM statistics
+WHERE start_ts < UNIX_TIMESTAMP(NOW() - INTERVAL 4 DAY);
+
+DELETE FROM statistics_short_term
+WHERE start_ts < UNIX_TIMESTAMP(NOW() - INTERVAL 4 DAY);
+
+DELETE FROM statistics_meta
+WHERE id NOT IN (SELECT DISTINCT metadata_id FROM statistics)
+  AND id NOT IN (SELECT DISTINCT metadata_id FROM statistics_short_term);
+
+---
 
 SELECT entity_id, count(*)
 FROM "states"
@@ -106,13 +120,54 @@ SELECT
       )
     FROM
       states
+      JOIN state_attributes ON states.attributes_id = state_attributes.attributes_id
   ) AS bytes_pct,
   states_meta.entity_id
 FROM
   states
-LEFT JOIN state_attributes ON (states.attributes_id=state_attributes.attributes_id)
-LEFT JOIN states_meta ON (states.metadata_id=states_meta.metadata_id)
+LEFT JOIN state_attributes ON states.attributes_id = state_attributes.attributes_id
+LEFT JOIN states_meta ON states.metadata_id = states_meta.metadata_id
 GROUP BY
-  states.metadata_id
+  states.metadata_id, states_meta.entity_id
 ORDER BY
-  cnt DESC
+  bytes_pct DESC;
+
+SELECT 
+  statistics.metadata_id,
+  statistics_meta.id,
+  statistics_meta.statistic_id, 
+  COUNT(*)
+FROM statistics, statistics_meta
+WHERE statistics.metadata_id = statistics_meta.id
+GROUP BY
+    statistics_meta.statistic_id
+ORDER BY
+    COUNT(*) DESC;
+
+---
+    SELECT
+  COUNT(*) as cnt,
+  COUNT(*) * 100 / (SELECT COUNT(*) FROM events) AS cnt_pct,
+  event_types.event_type
+FROM events
+INNER JOIN event_types ON events.event_type_id = event_types.event_type_id
+GROUP BY event_types.event_type
+ORDER BY cnt ASC;
+
+SELECT
+  COUNT(*) AS cnt,
+  COUNT(*) * 100 / (SELECT COUNT(*) FROM states) AS cnt_pct,
+  states_meta.entity_id
+FROM states
+INNER JOIN states_meta ON states.metadata_id=states_meta.metadata_id
+GROUP BY states_meta.entity_id
+ORDER BY cnt ASC
+
+---
+
+DELETE s
+FROM states s
+INNER JOIN states_meta sm
+  ON s.metadata_id = sm.metadata_id
+WHERE sm.entity_id LIKE 'sensor.alternative_time_nato_date_time_group'
+

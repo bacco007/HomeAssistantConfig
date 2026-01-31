@@ -1,0 +1,23 @@
+{
+    "type": "battery_icon",
+    "name": "Battery Icon",
+    "props": {
+        "size": {
+            "type": "number",
+            "default": 32
+        },
+        "color": {
+            "type": "string",
+            "default": "black",
+            "enum": [
+                "black",
+                "white",
+                "gray"
+            ]
+        },
+        "is_local_sensor": {
+            "type": "boolean",
+            "default": false
+        }
+    }
+}

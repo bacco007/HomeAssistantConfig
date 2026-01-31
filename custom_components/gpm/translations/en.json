@@ -1,0 +1,68 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "The repository is already configured.",
+            "install_failed": "Unable to install repository. See logs for details.",
+            "invalid_structure": "Repository has invalid structure. See logs for details.",
+            "unknown": "Unexpected error"
+        },
+        "error": {
+            "invalid_template": "The template is invalid.",
+            "invalid_url": "The URL is invalid.",
+            "unknown": "Unexpected error"
+        },
+        "step": {
+            "resource": {
+                "data": {
+                    "download_url": "URL"
+                },
+                "description": "Frontend resources require URL from where to download compiled JS / CSS files when changes are detected within the repository.\n\nVariable `'{{version}}'` will be replaced with the corresponding GIT repository tag / commit hash (as configured in previous step).\n\nExamples:\n\n```\nhttps://raw.githubusercontent.com/user/awesome-resource/refs/tags/'{{version}}'/dist/bundle.min.js\nhttps://raw.githubusercontent.com/user/awesome-resource/refs/tags/'{{version}}'/dist.js\nhttps://github.com/user/awesome-resource/releases/download/'{{version}}'/awesome-resource.js\n```",
+                "title": "Fill in resource details"
+            },
+            "user": {
+                "data": {
+                    "type": "Repository type",
+                    "update_strategy": "Update strategy",
+                    "url": "URL"
+                },
+                "data_description": {
+                    "type": "Integrations are `custom_components` that are not part of Home Assistant.\nResources are frontend elements like themes, Lovelace plugins, etc.",
+                    "update_strategy": "Determines which references from repository are reported as updates in Home Assistant.\nLatest tag will offer the latest stable version. Latest unstable tag will offer the latest tag, even if it is a dev, alpha, beta, or RC version. Latest commit will always follow the latest commit (this is the least stable option).",
+                    "url": "E.g.: `https://github.com/user/awesome-component.git`"
+                },
+                "title": "Fill in GIT repository details"
+            }
+        }
+    },
+    "issues": {
+        "restart_required": {
+            "fix_flow": {
+                "step": {
+                    "init": {
+                        "description": "Restart is required to finish {action} of `{name}`.",
+                        "menu_options": {
+                            "restart": "Restart"
+                        },
+                        "title": "Restart required"
+                    }
+                }
+            },
+            "title": "Restart required"
+        }
+    },
+    "selector": {
+        "type": {
+            "options": {
+                "integration": "Integration",
+                "resource": "Resource"
+            }
+        },
+        "update_strategy": {
+            "options": {
+                "latest_commit": "Latest commit",
+                "latest_tag": "Latest tag",
+                "latest_unstable_tag": "Latest unstable tag (including dev, alpha, beta, RC versions)"
+            }
+        }
+    }
+}

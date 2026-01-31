@@ -62,14 +62,14 @@ def influxdb2_query_to_entity(
 
     try:
         response = task.executor(queryparam.query, query)
-    except:
-        log.error("Exception when processing parameters: " + str(locals()))
+    except Exception as e:
+        log.error(f"Exception when executing query: {e}")
+        log.error("Parameters: " + str({k: v for k, v in locals().items() if k != 'client'}))
         raise
 
     log.info("query result: " + str(response))
 
     attributes = {}
-    DATA = []
 
     if unit_of_measurement:
         attributes["unit_of_measurement"] = unit_of_measurement
@@ -81,22 +81,26 @@ def influxdb2_query_to_entity(
         attributes["icon"] = icon
 
     lastTime = ""
+    lastPoint = None  # prevent NameError when no records are returned
+
     for table in response:
         for record in table.records:
             attributes[record.get_time().isoformat()] = record.get_value()
             lastPoint = record.get_value()
+            lastTime = record.get_time().isoformat()
+
+    if lastPoint is None:
+        log.warning('InfluxDB query returned no records; setting state to "unknown"')
+        state.set(entity_id, value="unknown", new_attributes=attributes)
+        return
 
     state.set(entity_id, value=lastPoint, new_attributes=attributes)
-
-    # log.error(entity_id)
-    # log.error(lastPoint)
-    # log.error(attributes)
 
 
 def get_config(name):
     value = pyscript.app_config.get(name)
     if value is None:
-        log.error('"' + name + '" is required by not defined in Pyscript config')
+        log.error('"' + name + '" is required but not defined in Pyscript config')
     return value
 
 

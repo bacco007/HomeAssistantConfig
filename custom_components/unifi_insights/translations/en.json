@@ -1,89 +1,246 @@
 {
-    "config": {
-        "step": {
-            "user": {
-                "description": "Set up UniFi Insights integration. You need an API key from your UniFi Controller.",
-                "data": {
-                    "api_key": "API Key",
-                    "host": "Host URL (e.g., https://192.168.10.1)",
-                    "verify_ssl": "Verify SSL certificate"
-                }
-            },
-            "reauth_confirm": {
-                "description": "The UniFi Insights integration needs to re-authenticate your account",
-                "title": "Reauthenticate Integration",
-                "data": {
-                    "api_key": "API Key"
-                }
-            }
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connection Type",
+        "description": "Select how you want to connect to your UniFi Controller.",
+        "data": {
+          "connection_type": "Connection Type"
         },
-        "error": {
-            "cannot_connect": "Failed to connect to UniFi controller",
-            "invalid_auth": "Invalid API key",
-            "unknown": "Unexpected error occurred"
-        },
-        "abort": {
-            "already_configured": "Device is already configured",
-            "reauth_successful": "Re-authentication was successful"
+        "data_description": {
+          "connection_type": "Local: Connect directly to your UniFi device on your network.\nRemote: Connect via UniFi Cloud using your cloud API key."
         }
+      },
+      "local": {
+        "title": "Local Connection",
+        "description": "Connect directly to your UniFi device on your local network.",
+        "data": {
+          "host": "Host URL",
+          "api_key": "API Key",
+          "verify_ssl": "Verify SSL Certificate"
+        },
+        "data_description": {
+          "host": "The URL of your UniFi device (e.g., https://192.168.1.1)",
+          "api_key": "API key from your UniFi Controller (Settings → Control Plane → API Keys)",
+          "verify_ssl": "Disable for self-signed certificates (common for local devices)"
+        }
+      },
+      "remote": {
+        "title": "Remote Connection (UniFi Cloud)",
+        "description": "Connect to your UniFi device via the UniFi Cloud.",
+        "data": {
+          "console_id": "Console ID",
+          "api_key": "API Key"
+        },
+        "data_description": {
+          "console_id": "Your UniFi Console ID from unifi.ui.com",
+          "api_key": "Cloud API key from your UniFi account"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reauthenticate",
+        "description": "The UniFi Insights integration needs to re-authenticate your account.",
+        "data": {
+          "api_key": "API Key"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure",
+        "description": "Update the UniFi Insights integration configuration.",
+        "data": {
+          "host": "Host URL",
+          "api_key": "API Key",
+          "verify_ssl": "Verify SSL Certificate",
+          "console_id": "Console ID"
+        }
+      }
     },
-    "services": {
-        "refresh_data": {
-            "name": "Refresh Data",
-            "description": "Force an immediate refresh of UniFi Insights data.",
-            "fields": {
-                "site_id": {
-                    "name": "Site ID",
-                    "description": "Optional site ID to refresh. If not specified, refreshes all sites."
-                }
-            }
-        },
-        "restart_device": {
-            "name": "Restart Device",
-            "description": "Restart a UniFi device.",
-            "fields": {
-                "site_id": {
-                    "name": "Site ID",
-                    "description": "The site ID where the device is located."
-                },
-                "device_id": {
-                    "name": "Device ID",
-                    "description": "The ID of the device to restart."
-                }
-            }
-        }
+    "error": {
+      "cannot_connect": "Failed to connect to UniFi controller. Please check the host address and network connectivity.",
+      "invalid_auth": "Invalid API key. Please verify your credentials.",
+      "unknown": "An unexpected error occurred. Please check the logs for details."
     },
-    "entity": {
-        "sensor": {
-            "cpu_usage": {
-                "name": "CPU Usage"
-            },
-            "memory_usage": {
-                "name": "Memory Usage"
-            },
-            "uptime": {
-                "name": "Uptime"
-            },
-            "tx_rate": {
-                "name": "Transmit Rate"
-            },
-            "rx_rate": {
-                "name": "Receive Rate"
-            }
-        },
-        "binary_sensor": {
-            "device_status": {
-                "name": "Device Status",
-                "state": {
-                    "on": "Online",
-                    "off": "Offline"
-                }
-            }
-        },
-        "button": {
-            "device_restart": {
-                "name": "Device Restart"
-            }
-        }
+    "abort": {
+      "already_configured": "This device is already configured.",
+      "reauth_successful": "Re-authentication was successful.",
+      "account_mismatch": "The API key provided does not match the original account. Please use the same API key or remove and re-add the integration."
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "UniFi Insights Options",
+        "description": "Configure additional options for the UniFi Insights integration.",
+        "data": {
+          "track_wifi_clients": "Track WiFi Clients",
+          "track_wired_clients": "Track Wired Clients"
+        },
+        "data_description": {
+          "track_wifi_clients": "Create device tracker entities for connected WiFi clients. This may create many entities.",
+          "track_wired_clients": "Create device tracker entities for connected wired (LAN) clients. This may create many entities."
+        }
+      }
+    }
+  },
+  "services": {
+    "refresh_data": {
+      "name": "Refresh Data",
+      "description": "Force an immediate refresh of UniFi Insights data.",
+      "fields": {
+        "site_id": {
+          "name": "Site ID",
+          "description": "Optional site ID to refresh. If not specified, refreshes all sites."
+        }
+      }
+    },
+    "restart_device": {
+      "name": "Restart Device",
+      "description": "Restart a UniFi device.",
+      "fields": {
+        "site_id": {
+          "name": "Site ID",
+          "description": "The site ID where the device is located."
+        },
+        "device_id": {
+          "name": "Device ID",
+          "description": "The ID of the device to restart."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "cpu_usage": {
+        "name": "CPU Usage"
+      },
+      "memory_usage": {
+        "name": "Memory Usage"
+      },
+      "uptime": {
+        "name": "Uptime"
+      },
+      "tx_rate": {
+        "name": "Transmit Rate"
+      },
+      "rx_rate": {
+        "name": "Receive Rate"
+      },
+      "temperature": {
+        "name": "Temperature"
+      },
+      "humidity": {
+        "name": "Humidity"
+      },
+      "light_level": {
+        "name": "Light Level"
+      },
+      "battery": {
+        "name": "Battery"
+      },
+      "storage_used": {
+        "name": "Storage Used"
+      },
+      "storage_available": {
+        "name": "Storage Available"
+      }
+    },
+    "binary_sensor": {
+      "device_status": {
+        "name": "Status",
+        "state": {
+          "on": "Online",
+          "off": "Offline"
+        }
+      },
+      "motion": {
+        "name": "Motion"
+      },
+      "door": {
+        "name": "Door"
+      },
+      "is_recording": {
+        "name": "Recording"
+      },
+      "is_dark": {
+        "name": "Dark"
+      },
+      "doorbell": {
+        "name": "Doorbell"
+      }
+    },
+    "button": {
+      "device_restart": {
+        "name": "Restart"
+      },
+      "reboot": {
+        "name": "Reboot"
+      }
+    },
+    "camera": {
+      "camera": {
+        "name": "Camera"
+      }
+    },
+    "light": {
+      "floodlight": {
+        "name": "Floodlight"
+      }
+    },
+    "switch": {
+      "status_light": {
+        "name": "Status Light"
+      },
+      "hdr_mode": {
+        "name": "HDR Mode"
+      },
+      "high_fps_mode": {
+        "name": "High FPS Mode"
+      }
+    },
+    "select": {
+      "recording_mode": {
+        "name": "Recording Mode"
+      },
+      "infrared_mode": {
+        "name": "Infrared Mode"
+      }
+    },
+    "number": {
+      "mic_volume": {
+        "name": "Microphone Volume"
+      },
+      "speaker_volume": {
+        "name": "Speaker Volume"
+      },
+      "chime_volume": {
+        "name": "Chime Volume"
+      }
+    }
+  },
+  "exceptions": {
+    "cannot_connect": {
+      "message": "Unable to connect to UniFi controller at {host}. Please check the host address and network connectivity."
+    },
+    "invalid_auth": {
+      "message": "Invalid API key. Please verify your credentials and try again."
+    },
+    "timeout": {
+      "message": "Connection to UniFi controller timed out. The device may be unreachable or overloaded."
+    },
+    "device_not_found": {
+      "message": "Device {device_id} was not found in site {site_id}."
+    },
+    "no_coordinator": {
+      "message": "No UniFi Insights coordinator found. Please ensure the integration is properly configured."
+    },
+    "no_protect_coordinator": {
+      "message": "No UniFi Protect coordinator found. Please ensure UniFi Protect is available."
+    },
+    "api_error": {
+      "message": "API error: {error}"
+    },
+    "unknown_error": {
+      "message": "An unexpected error occurred: {error}"
+    }
+  }
 }

@@ -8,7 +8,9 @@ async def async_clear_values() -> dict:
     # Reset values
     new_values = {
         "sport": None,
+        "sport_path": None,
         "league": None,
+        "league_path": None,
         "league_logo": None,
         "season": None,
         "team_abbr": None,
@@ -28,6 +30,7 @@ async def async_clear_values() -> dict:
         "team_id": None,
         "team_record": None,
         "team_rank": None,
+        "team_conference_id": None,
         "team_homeaway": None,
         "team_logo": None,
         "team_url": None,
@@ -41,6 +44,7 @@ async def async_clear_values() -> dict:
         "opponent_id": None,
         "opponent_record": None,
         "opponent_rank": None,
+        "opponent_conference_id": None,
         "opponent_homeaway": None,
         "opponent_logo": None,
         "opponent_url": None,
@@ -68,6 +72,7 @@ async def async_clear_values() -> dict:
         "opponent_sets_won": None,
         "last_update": None,
         "api_message": None,
+        "api_url": None,
         "private_fast_refresh": False,
     }
 

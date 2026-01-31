@@ -1,0 +1,1116 @@
+blueprint:
+  name: ⛔ Offline Devices Report with Notification Actions
+  description: "Offline Devices Report with Notification Actions\n\U0001F680 Version
+    2026.01.06.07d  \n\n- debug time delay fixed (07d)\n\n***Features***\n\U0001F4F1
+    Device Notifications\n   - Send alerts to mobile devices via mobile_app integration\n
+    \  - iOS and Android specific notification options\n   - Configurable interruption
+    levels and sounds\n\n\U0001F4E2 Persistent Web UI Notifications\n   - Dashboard
+    notifications for offline devices\n   - Optional \"no issues\" confirmation messages\n\n⚡
+    Execution methods\n   - Schedule Time and Day(s)\n   - Manual trigger via button\n
+    \  - Debug mode for immediate offline/unknown state changes\n\n\U0001F6AB️ Entity
+    exclusion options\n   - Directly select specific entities\n   - Pattern-based
+    exclusions using text strings\n   - Case-sensitive matching for precise control\n
+    \  - Include or Exclude entities with Visability disabled in HA (hidden entities)\n
+    \  - NOTE - Some Template Entities may cause problems or errors due to how HA
+    processes them. Exclude those entities if you have problems or disable Visability
+    for them in HA's settings.\n\n\U0001F4C8 Flexible display formats\n   - Friendly
+    names only\n   - Entity IDs only\n   - Combined format (Friendly Name + Entity
+    ID)\n\n\U0001F3AC Custom actions after report\n   - Add offline devices to To-Do
+    list automatically\n   - Action buttons in notifications for manual control\n
+    \  - Custom automation actions integration\n   - {{ offline_devices }} variable
+    returns a formatted list of offline devices\n   - {{ offline_devices_count }}
+    variable returns the count of offline devices\t   \n\n\U0001F4E1 Smart device
+    detection\n   - Automatic battery sensor identification\n   - Switch monitoring
+    for offline states\n   - Combined or separate reporting options\n\n\U0001F4D6
+    Logging\n   - Debug to Logbook\n   - Easy troubleshooting configuration\n\n\U0001F41B
+    Real-Time Debug Mode (Short-term troubleshooting only)\n   - Trigger on entity
+    state changes to offline/unknown\n   - Configurable delay to confirm persistent
+    offline state\n   - Uses same exclusions as scheduled reports\n"
+  domain: automation
+  input:
+    trigger_settings:
+      name: ⚙️ Trigger Settings
+      description: You must enable at least one.
+      collapsed: true
+      input:
+        include_button:
+          name: Use Button Trigger?
+          description: Enable manual triggering via button
+          default: disable_button_trigger
+          selector:
+            select:
+              options:
+              - label: Enabled
+                value: enable_button_trigger
+              - label: Disabled
+                value: disable_button_trigger
+              custom_value: false
+              sort: false
+              multiple: false
+        button_entity:
+          name: Set Button Trigger
+          description: Button that will trigger the automation
+          default: []
+          selector:
+            entity:
+              domain:
+              - input_button
+              multiple: false
+              reorder: false
+        include_time:
+          name: Use an Automatic Reoccuring Report?
+          description: Day and Time to automatically run the report
+          default: time_disabled
+          selector:
+            select:
+              options:
+              - label: Enabled
+                value: time_enabled
+              - label: Disabled
+                value: time_disabled
+              custom_value: false
+              sort: false
+              multiple: false
+        time:
+          name: Set Reoccuring Time
+          description: When to run automatic checks
+          default: 05:00:00
+          selector:
+            time: {}
+        weekday_options:
+          name: Set Reoccuring Days
+          description: Must select at least one day when enabled
+          default:
+          - mon
+          - tue
+          - wed
+          - thu
+          - fri
+          - sat
+          - sun
+          selector:
+            select:
+              multiple: true
+              mode: list
+              options:
+              - label: Monday
+                value: mon
+              - label: Tuesday
+                value: tue
+              - label: Wednesday
+                value: wed
+              - label: Thursday
+                value: thu
+              - label: Friday
+                value: fri
+              - label: Saturday
+                value: sat
+              - label: Sunday
+                value: sun
+              custom_value: false
+              sort: false
+    device_settings:
+      name: "\U0001F6AB Exclusion Settings"
+      description: Configure device monitoring parameters
+      collapsed: true
+      input:
+        include_hidden_entities:
+          name: Include Hidden Entities
+          description: Include entities marked as hidden (Visible disabled in entity
+            settings)
+          default: exclude_hidden
+          selector:
+            select:
+              options:
+              - label: Exclude Hidden Entities
+                value: exclude_hidden
+              - label: Include Hidden Entities
+                value: include_hidden
+              custom_value: false
+              sort: false
+              multiple: false
+        exclude_entities:
+          name: Individual Entities
+          description: Manually select entities to ignore
+          default: []
+          selector:
+            entity:
+              multiple: true
+              reorder: false
+        exclude_strings:
+          name: Text Pattern Exclusions
+          description: 'Exclude entities containing specific text type in one string
+            per line ... CaSe SenSative! Examples: sensor.phone _battery temperature'
+          default: ''
+          selector:
+            text:
+              multiline: true
+              multiple: false
+    notification_settings:
+      name: "\U0001F4E2 Notification Settings"
+      description: Configure alert preferences
+      collapsed: true
+      input:
+        include_easy_notify:
+          name: Device Notifications
+          default: disabled_easy_notify
+          selector:
+            select:
+              options:
+              - label: Disabled
+                value: disabled_easy_notify
+              - label: Enabled
+                value: enable_easy_notify
+              - label: Enabled with No Issues confirmation
+                value: enable_easy_okay_notify
+              custom_value: false
+              sort: false
+              multiple: false
+        notify_device:
+          name: Devices to Notify
+          description: Select at least one if Device Notifications are enabled
+          default: []
+          selector:
+            device:
+              integration: mobile_app
+              multiple: true
+        notify_title:
+          name: Notification Title
+          default: Offline Devices Report
+          selector:
+            text:
+              multiline: false
+              multiple: false
+        notify_message:
+          name: Message Format
+          default: all_sensors
+          selector:
+            select:
+              options:
+              - label: All Offline Devices
+                value: all_sensors
+              - label: Only Battery Sensors
+                value: sensors
+              - label: Only Switches
+                value: switches
+              custom_value: false
+              sort: false
+              multiple: false
+        notify_okay_message:
+          name: No Issues Confirmation Message
+          default: No offline devices detected
+          selector:
+            text:
+              multiline: false
+              multiple: false
+        notify_interruption_level:
+          name: iOS Interruption Level
+          description: only for iOS
+          default: active
+          selector:
+            select:
+              options:
+              - label: Default
+                value: active
+              - label: Critical Notifications
+                value: critical
+              - label: Time Sensitive Notifications
+                value: time-sensitive
+              - label: Quiet Notifications Without Waking Screen
+                value: passive
+              custom_value: false
+              sort: false
+              multiple: false
+        notify_sound:
+          name: iOS Notification Sound
+          description: only for iOS
+          default: ''
+          selector:
+            text:
+              multiline: false
+              multiple: false
+        notify_data:
+          name: Android Options
+          description: Android-specific notification options
+          default: []
+          selector:
+            select:
+              multiple: true
+              options:
+              - label: High Priority
+                value: high_priority
+              - label: Sticky Notification
+                value: sticky
+              - label: Notification Channel
+                value: channel
+              custom_value: false
+              sort: false
+        notify_channel:
+          name: Android Notification Channel
+          description: only for Android
+          default: ''
+          selector:
+            text:
+              multiline: false
+              multiple: false
+        include_persistent_notification:
+          name: Persistent Notification
+          default: disabled_persistent_notification
+          selector:
+            select:
+              options:
+              - label: Disabled
+                value: disabled_persistent_notification
+              - label: Enabled
+                value: enable_persistent_notification
+              - label: Enabled with No Issues confirmation
+                value: enable_persistent_okay_notification
+              custom_value: false
+              sort: false
+              multiple: false
+        display_options:
+          name: Display Options
+          description: What the notifications will show
+          default: friendly_names
+          selector:
+            select:
+              options:
+              - label: Entity IDs
+                value: entity_ids
+              - label: Friendly Names
+                value: friendly_names
+              - label: Both
+                value: both
+              custom_value: false
+              sort: false
+              multiple: false
+    action_buttons_settings:
+      name: "\U0001F680 Action Buttons"
+      description: 'Configure notification actions
+
+
+        ⚠️ **To-Do List Limitations:**
+
+        Home Assistant To-Do lists have a 255 character limit for descriptions.
+
+        This blueprint automatically:
+
+        1. Removes domain prefixes (sensor., binary_sensor., switch.)
+
+        2. Truncates to 252 characters
+
+        3. Adds "++" when truncated to indicate more content exists
+
+        '
+      collapsed: true
+      input:
+        auto_add_to_do:
+          name: Automatically Add to To-Do List
+          description: Automatically add offline devices to the To-Do list without
+            requiring action button press
+          default: disable_auto_add_to_do
+          selector:
+            select:
+              options:
+              - label: Disabled
+                value: disable_auto_add_to_do
+              - label: Enabled
+                value: enable_auto_add_to_do
+              custom_value: false
+              sort: false
+              multiple: false
+        notify_tag:
+          name: Notification Action Tag
+          description: A unique tag to identify the action buttons for this notification.
+            Helps prevent interference from other notifications.
+          default: offline_devices_report_action
+          selector:
+            text:
+              multiline: false
+              multiple: false
+        notify_action_buttons:
+          name: Action Buttons
+          default: disabled_notify_action_buttons
+          selector:
+            select:
+              options:
+              - label: Disabled
+                value: disabled_notify_action_buttons
+              - label: Add To-Do Button
+                value: enable_to_do_list_button
+              - label: Add To-Do with Confirmation
+                value: enable_to_do_list_button_and_confirmation
+              custom_value: false
+              sort: false
+              multiple: false
+        to_do_list:
+          name: To-Do List
+          default: []
+          selector:
+            entity:
+              domain:
+              - todo
+              multiple: false
+              reorder: false
+        to_do_task_title:
+          name: Task Title
+          default: Check Offline Devices
+          selector:
+            text:
+              multiline: false
+              multiple: false
+        action_button_to_do:
+          name: Action Button Text
+          default: Add to To-Do List
+          selector:
+            text:
+              multiline: false
+              multiple: false
+        action_button_cancel:
+          name: Cancel Button Text
+          default: Cancel
+          selector:
+            text:
+              multiline: false
+              multiple: false
+        action_button_confirmation_title:
+          name: Confirmation Title
+          default: Action Confirmation
+          selector:
+            text:
+              multiline: false
+              multiple: false
+        action_button_confirmation_message:
+          name: Confirmation Message
+          default: Task added to To-Do list
+          selector:
+            text:
+              multiline: false
+              multiple: false
+        cancel_action_button_confirmation_message:
+          name: Cancel Confirmation Message
+          default: Action cancelled
+          selector:
+            text:
+              multiline: false
+              multiple: false
+    custom_actions_settings:
+      name: ⚡ Custom Actions
+      description: Additional actions to run
+      collapsed: true
+      input:
+        include_custom_actions:
+          name: Enable Custom Actions
+          default: disabled_custom_actions
+          selector:
+            select:
+              options:
+              - label: Enabled
+                value: enable_custom_actions
+              - label: Disabled
+                value: disable_custom_actions
+              custom_value: false
+              sort: false
+              multiple: false
+        custom_actions:
+          name: Custom Actions
+          default: []
+          selector:
+            action: {}
+    global_conditions_settings:
+      name: "\U0001F30D Global Conditions"
+      description: Additional conditions for automation
+      collapsed: true
+      input:
+        global_conditions:
+          name: Conditions
+          default: []
+          selector:
+            condition: {}
+    debug_settings:
+      name: "\U0001F41B Debug Settings"
+      description: Configure debug options
+      collapsed: true
+      input:
+        include_logbook_debug:
+          name: Debug to Logbook?
+          description: Adds extra log entries for troubleshooting. Applies to ALL
+            runs of the automation (button, schedule, AND debug mode)
+          default: enable_logbook_debug
+          selector:
+            select:
+              options:
+              - label: Enabled
+                value: enable_logbook_debug
+              - label: Disabled
+                value: disable_logbook_debug
+              custom_value: false
+              sort: false
+              multiple: false
+        include_debug:
+          name: Real-Time Debug Mode?
+          description: "⚠️FOR SHORT-TERM TROUBLESHOOTING ONLY\n\n  Triggers on entity
+            state changes to Offline or Unknown. Uses same exclusions as scheduled
+            reports."
+          default: debug_disabled
+          selector:
+            select:
+              options:
+              - label: Enabled
+                value: debug_enabled
+              - label: Disabled
+                value: debug_disabled
+              custom_value: false
+              sort: false
+              multiple: false
+        debug_offline_delay:
+          name: Wait Time Confirmation - only for Real-Time Debug Mode
+          description: Time to wait to ensure entity stays in Offline or Unknown state,
+            not a momentary issue (hours:minutes:seconds)
+          default: 00:03:00
+          selector:
+            duration: {}
+  source_url: https://gist.github.com/Ltek/0c9cecf632b9c32915130680d834bcf7
+variables:
+  include_button: !input include_button
+  include_time: !input include_time
+  include_debug: !input include_debug
+  debug_offline_delay: !input debug_offline_delay
+  debug_offline_delay_seconds: "{% set delay = debug_offline_delay %} {% if delay
+    is string %}\n  {# Parse HH:MM:SS string #}\n  {% set parts = delay.split(':')
+    %}\n  {% set hours = parts[0] | int %}\n  {% set minutes = parts[1] | int if parts|length
+    > 1 else 0 %}\n  {% set seconds = parts[2] | int if parts|length > 2 else 0 %}\n
+    \ {{ (hours * 3600 + minutes * 60 + seconds) | int }}\n{% elif delay is mapping
+    and 'hours' in delay %}\n  {# Already a duration dict #}\n  {{ (delay.hours *
+    3600 + delay.minutes * 60 + delay.seconds) | int }}\n{% else %}\n  {# Fallback
+    to 3 minutes #}\n  180\n{% endif %}\n"
+  weekday_options: !input weekday_options
+  include_hidden_entities: !input include_hidden_entities
+  exclude_entities: !input exclude_entities
+  exclude_strings: !input exclude_strings
+  display_options: !input display_options
+  include_easy_notify: !input include_easy_notify
+  notify_device: !input notify_device
+  notify_title: !input notify_title
+  notify_message: !input notify_message
+  notify_okay_message: !input notify_okay_message
+  notify_interruption_level: !input notify_interruption_level
+  notify_sound: !input notify_sound
+  notify_data: !input notify_data
+  notify_channel: !input notify_channel
+  include_persistent_notification: !input include_persistent_notification
+  notify_action_buttons: !input notify_action_buttons
+  auto_add_to_do: !input auto_add_to_do
+  notify_tag: !input notify_tag
+  to_do_list: !input to_do_list
+  to_do_task_title: !input to_do_task_title
+  action_button_to_do: !input action_button_to_do
+  action_button_cancel: !input action_button_cancel
+  action_button_confirmation_title: !input action_button_confirmation_title
+  action_button_confirmation_message: !input action_button_confirmation_message
+  cancel_action_button_confirmation_message: !input cancel_action_button_confirmation_message
+  include_custom_actions: !input include_custom_actions
+  include_logbook_debug: !input include_logbook_debug
+  exclude_regex: "{% if exclude_strings is defined %}\n  {% set patterns = exclude_strings.split('\\n')
+    | map('trim') | reject('eq', '') | list %}\n  {{ patterns | join('|') if patterns
+    else 'a^' }}\n{% else %}\n  a^\n{% endif %}"
+  all_exclude_entities: '{{ exclude_entities if exclude_entities is defined else []
+    }}'
+  to_do_description: "{% set full_description = easy_notify_message | default('')
+    %} {% if full_description %}\n  {# Remove domain prefixes for cleaner display
+    #}\n  {% set cleaned = full_description | regex_replace('(sensor\\\\.|binary_sensor\\\\.|switch\\\\.)',
+    '') %}\n  {# Truncate to 252 chars and add ++ if truncated #}\n  {% if cleaned
+    | length > 252 %}\n    {{ cleaned[:252] ~ '++' }}\n  {% else %}\n    {{ cleaned
+    }}\n  {% endif %}\n{% else %}\n  ''\n{% endif %}\n"
+  _offline_devices: "{% set exclude_entities_list = all_exclude_entities if all_exclude_entities
+    is iterable else [all_exclude_entities] %} {% set entities = states | map(attribute='entity_id')
+    | reject('search', 'cloud') | reject('in', exclude_entities_list) | reject('search',
+    exclude_regex) | list %} {% if include_hidden_entities == 'exclude_hidden' %}\n
+    \ {% set entities = entities | reject('is_hidden_entity') | list %}\n{% endif
+    %} {% set sensors = entities | select('search', '^(sensor|binary_sensor)') | list
+    %} {% set battery_entities = sensors | select('is_state_attr', 'device_class',
+    'battery') | reject('has_value') | list %} {% set switches = entities | select('search',
+    '^switch') | reject('has_value') | list %} {% set offline_entities = (battery_entities
+    + switches) | unique %} {% if display_options == 'entity_ids' %}\n  {{ offline_entities
+    | list }}\n{% elif display_options == 'friendly_names' %}\n  {{ offline_entities
+    | map('state_attr', 'friendly_name') | list }}\n{% elif display_options == 'both'
+    %}\n  {% set result = namespace(items=[]) %}\n  {% for e in offline_entities %}\n
+    \   {% set friendly_name = state_attr(e, 'friendly_name') %}\n    {% set item
+    = friendly_name ~ ' (' ~ e ~ ')' if friendly_name else e %}\n    {% set result.items
+    = result.items + [item] %}\n  {% endfor %}\n  {{ result.items }}\n{% else %}\n
+    \ []\n{% endif %}\n"
+  offline_devices: '{% if _offline_devices | length > 0 %} {{ ''- '' ~ (_offline_devices
+    | sort | join(''\n- '')) }} {% else %} No offline devices detected. {% endif %}
+
+    '
+  offline_devices_count: '{{ _offline_devices | length }}
+
+    '
+  _battery_sensors: "{% set exclude_entities_list = all_exclude_entities if all_exclude_entities
+    is iterable else [all_exclude_entities] %} {% set entities = states | map(attribute='entity_id')
+    | reject('search', 'cloud') | reject('in', exclude_entities_list) | reject('search',
+    exclude_regex) | list %} {% if include_hidden_entities == 'exclude_hidden' %}\n
+    \ {% set entities = entities | reject('is_hidden_entity') | list %}\n{% endif
+    %} {% set sensors = entities | select('search', '^(sensor|binary_sensor)') | list
+    %} {% set battery_entities = sensors | select('is_state_attr', 'device_class',
+    'battery') | reject('has_value') | list %} {% if display_options == 'entity_ids'
+    %}\n  {{ battery_entities | list }}\n{% elif display_options == 'friendly_names'
+    %}\n  {{ battery_entities | map('state_attr', 'friendly_name') | list }}\n{% elif
+    display_options == 'both' %}\n  {% set result = namespace(items=[]) %}\n  {% for
+    e in battery_entities %}\n    {% set friendly_name = state_attr(e, 'friendly_name')
+    %}\n    {% set item = friendly_name ~ ' (' ~ e ~ ')' if friendly_name else e %}\n
+    \   {% set result.items = result.items + [item] %}\n  {% endfor %}\n  {{ result.items
+    }}\n{% else %}\n  []\n{% endif %}\n"
+  _switches: "{% set exclude_entities_list = all_exclude_entities if all_exclude_entities
+    is iterable else [all_exclude_entities] %} {% set entities = states | map(attribute='entity_id')
+    | reject('search', 'cloud') | reject('in', exclude_entities_list) | reject('search',
+    exclude_regex) | list %} {% if include_hidden_entities == 'exclude_hidden' %}\n
+    \ {% set entities = entities | reject('is_hidden_entity') | list %}\n{% endif
+    %} {% set switches = entities | select('search', '^switch') | reject('has_value')
+    | list %} {% if display_options == 'entity_ids' %}\n  {{ switches | list }}\n{%
+    elif display_options == 'friendly_names' %}\n  {{ switches | map('state_attr',
+    'friendly_name') | list }}\n{% elif display_options == 'both' %}\n  {% set result
+    = namespace(items=[]) %}\n  {% for e in switches %}\n    {% set friendly_name
+    = state_attr(e, 'friendly_name') %}\n    {% set item = friendly_name ~ ' (' ~
+    e ~ ')' if friendly_name else e %}\n    {% set result.items = result.items + [item]
+    %}\n  {% endfor %}\n  {{ result.items }}\n{% else %}\n  []\n{% endif %}\n"
+  all_sensors: "{% if _offline_devices | length > 0 %}\n  {{ '' ~ offline_devices_count
+    ~ ' Offline Devices\\n\\n' ~ ('- ' ~ (_offline_devices | sort | join('\\n- ')))
+    }}\n{% else %}\n  ''\n{% endif %}\n"
+  sensors: "{% if _battery_sensors | length > 0 %}\n  {{ '\U0001F50B ' ~ _battery_sensors
+    | length ~ ' Offline Battery Sensor(s):\\n\\n' ~ ('- ' ~ (_battery_sensors | sort
+    | join('\\n- '))) }}\n{% else %}\n  ''\n{% endif %}\n"
+  switches: "{% if _switches | length > 0 %}\n  {{ '\U0001F50C ' ~ _switches | length
+    ~ ' Offline Switch(es):\\n\\n' ~ ('- ' ~ (_switches | sort | join('\\n- '))) }}\n{%
+    else %}\n  ''\n{% endif %}\n"
+  easy_notify_message: "{% if notify_message == 'all_sensors' %}\n  {{ all_sensors
+    if all_sensors else '' }}\n{% elif notify_message == 'sensors' %}\n  {{ sensors
+    if sensors else '' }}\n{% elif notify_message == 'switches' %}\n  {{ switches
+    if switches else '' }}\n{% else %}\n  ''\n{% endif %}\n"
+  sensors_names: "{% if _battery_sensors | length > 0 %}\n  {{ (_battery_sensors |
+    list | sort | join('\\n')) }}\n{% else %}\n  ''\n{% endif %}\n"
+  switches_names: "{% if _switches | length > 0 %}\n  {{ (_switches | list | sort
+    | join('\\n')) }}\n{% else %}\n  ''\n{% endif %}\n"
+  device_message_data: "{% set message = namespace(data={}) %} {% set push = namespace(data={})
+    %} {% if notify_interruption_level in ['active', 'critical', 'time-sensitive',
+    'passive'] %}\n  {% set push.data = dict(push.data, **{ 'interruption-level':
+    notify_interruption_level }) %}\n{% endif %} {% if notify_sound != '' %}\n  {%
+    set push.data = dict(push.data, **{ 'sound': notify_sound }) %}\n{% endif %} {%
+    if push.data %}\n  {% set message.data = dict(message.data, **{ 'push': push.data
+    }) %}\n{% endif %} {% if 'high_priority' in notify_data %}\n  {% set message.data
+    = dict(message.data, **{ 'ttl': 0, 'priority': 'high' }) %}\n{% endif %} {% if
+    'channel' in notify_data %}\n  {% set message.data = dict(message.data, **{ 'channel':
+    notify_channel }) %}\n{% endif %} {% if 'sticky' in notify_data %}\n  {% set message.data
+    = dict(message.data, **{ 'sticky': \"true\" }) %}\n{% endif %} {% set message.data
+    = dict(message.data, **{ 'tag': notify_tag }) %} {{ message.data }}\n"
+  device_message_data_action_button: "{% set message = namespace(data={}) %} {% set
+    push = namespace(data={}) %} {% if notify_interruption_level in ['active', 'critical',
+    'time-sensitive', 'passive'] %}\n  {% set push.data = dict(push.data, **{ 'interruption-level':
+    notify_interruption_level }) %}\n{% endif %} {% if notify_sound != '' %}\n  {%
+    set push.data = dict(push.data, **{ 'sound': notify_sound }) %}\n{% endif %} {%
+    if push.data %}\n  {% set message.data = dict(message.data, **{ 'push': push.data
+    }) %}\n{% endif %} {% if 'high_priority' in notify_data %}\n  {% set message.data
+    = dict(message.data, **{ 'ttl': 0, 'priority': 'high' }) %}\n{% endif %} {% if
+    'channel' in notify_data %}\n  {% set message.data = dict(message.data, **{ 'channel':
+    notify_channel }) %}\n{% endif %} {% if 'sticky' in notify_data %}\n  {% set message.data
+    = dict(message.data, **{ 'sticky': \"true\" }) %}\n{% endif %} {% set actions
+    = [\n  {'action': action_button_to_do, 'title': action_button_to_do},\n  {'action':
+    action_button_cancel, 'title': action_button_cancel}\n] %} {% set message.data
+    = dict(message.data, **{ 'actions': actions, 'tag': notify_tag }) %} {{ message.data
+    }}\n"
+  device_confirmation_message_data: "{% set message = namespace(data={}) %} {% set
+    push = namespace(data={}) %} {% if notify_interruption_level in ['active', 'critical',
+    'time-sensitive', 'passive'] %}\n  {% set push.data = dict(push.data, **{ 'interruption-level':
+    notify_interruption_level }) %}\n{% endif %} {% if notify_sound != '' %}\n  {%
+    set push.data = dict(push.data, **{ 'sound': notify_sound }) %}\n{% endif %} {%
+    if push.data %}\n  {% set message.data = dict(message.data, **{ 'push': push.data
+    }) %}\n{% endif %} {% if 'high_priority' in notify_data %}\n  {% set message.data
+    = dict(message.data, **{ 'ttl': 0, 'priority': 'high' }) %}\n{% endif %} {% if
+    'channel' in notify_data %}\n  {% set message.data = dict(message.data, **{ 'channel':
+    notify_channel }) %}\n{% endif %} {% if 'sticky' in notify_data %}\n  {% set message.data
+    = dict(message.data, **{ 'sticky': \"true\" }) %}\n{% endif %} {% set message.data
+    = dict(message.data, **{ 'tag': notify_tag }) %} {{ message.data }}\n"
+trigger:
+- platform: state
+  entity_id: !input button_entity
+  id: button_trigger
+- platform: time
+  at: !input time
+  id: time_trigger
+- platform: event
+  id: debug_trigger
+  event_type: state_changed
+  event_data:
+    new_state:
+      state:
+      - unknown
+      - unavailable
+condition:
+- condition: or
+  conditions:
+  - condition: and
+    conditions:
+    - condition: trigger
+      id: button_trigger
+    - condition: template
+      value_template: '{{ include_button == ''enable_button_trigger'' }}'
+  - condition: and
+    conditions:
+    - condition: trigger
+      id: time_trigger
+    - condition: template
+      value_template: '{{ include_time == ''time_enabled'' }}'
+    - condition: template
+      value_template: '{{ now().strftime(''%a'').lower() in weekday_options }}'
+  - condition: and
+    conditions:
+    - condition: trigger
+      id: debug_trigger
+    - condition: template
+      value_template: '{{ include_debug == ''debug_enabled'' }}'
+- condition: and
+  conditions: !input global_conditions
+action:
+- if:
+    condition: template
+    value_template: '{{ trigger.id == ''debug_trigger'' and include_debug == ''debug_enabled''
+      }}'
+  then:
+  - variables:
+      entity_id: '{{ trigger.event.data.entity_id }}'
+      new_state: '{{ trigger.event.data.new_state.state }}'
+      old_state: '{{ trigger.event.data.old_state.state if trigger.event.data.old_state
+        else "" }}'
+      exclude_entities_list: '{{ all_exclude_entities if all_exclude_entities is iterable
+        else [all_exclude_entities] }}'
+      entity_excluded: "{% if entity_id in exclude_entities_list %}\n  true\n{% elif
+        exclude_regex != 'a^' and entity_id is search(exclude_regex) %}\n  true\n{%
+        elif include_hidden_entities == 'exclude_hidden' and is_hidden_entity(entity_id)
+        %}\n  true\n{% elif entity_id is search('cloud') %}\n  true\n{% else %}\n
+        \ false\n{% endif %}\n"
+      is_battery_or_switch: "{% if entity_id is search('^(sensor|binary_sensor)')
+        %}\n  {% if device_class(entity_id) == 'battery' %}\n    true\n  {% else %}\n
+        \   false\n  {% endif %}\n{% elif entity_id is search('^switch') %}\n  true\n{%
+        else %}\n  false\n{% endif %}\n"
+      valid_state_change: "{% if new_state in ['unknown', 'unavailable'] and old_state
+        not in ['unknown', 'unavailable'] %}\n  true\n{% else %}\n  false\n{% endif
+        %}\n"
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ valid_state_change == true and entity_excluded == false
+          and is_battery_or_switch == true }}'
+      sequence:
+      - alias: Wait for offline delay and check if entity is still offline
+        wait_template: '{{ states(entity_id) not in [''unknown'', ''unavailable'']
+          }}
+
+          '
+        timeout: '{{ debug_offline_delay_seconds }}'
+        continue_on_timeout: false
+      - choose:
+        - conditions:
+          - condition: template
+            value_template: '{{ wait.completed }}'
+          sequence:
+          - alias: Entity came back online during delay period
+            service: logbook.log
+            data:
+              name: Offline Devices Report Debug
+              message: Debug mode cancelled for {{ entity_id }} - came back online
+                during delay period
+          - stop: Debug mode cancelled - entity came back online
+      - alias: Entity remained offline/unknown for the full delay period
+        service: logbook.log
+        data:
+          name: Offline Devices Report Debug
+          message: '{% set td = as_timedelta(debug_offline_delay) if debug_offline_delay
+            else as_timedelta(''00:03:00'') %} Debug mode triggered for {{ entity_id
+            }} - remained offline/unknown for {{ td.total_seconds() // 3600 }}h {{
+            (td.total_seconds() % 3600) // 60 }}m {{ td.total_seconds() % 60 }}s
+
+            '
+    - conditions: []
+      sequence:
+      - alias: Entity is excluded or not a battery/switch, stop automation
+        service: logbook.log
+        data:
+          name: Offline Devices Report Debug
+          message: 'Debug mode ignored for {{ entity_id }} - excluded: {{ entity_excluded
+            }}, is_battery_or_switch: {{ is_battery_or_switch }}, valid_state_change:
+            {{ valid_state_change }}'
+      - stop: Debug mode cancelled - entity excluded or not battery/switch
+- if:
+  - condition: template
+    value_template: '{{ include_logbook_debug == ''enable_logbook_debug'' }}'
+  then:
+  - service: logbook.log
+    data:
+      name: Offline Devices Report Debug
+      message: 'Initial: include_easy_notify: {{ include_easy_notify | default(''undefined'')
+        }},
+
+        include_persistent_notification: {{ include_persistent_notification | default(''undefined'')
+        }},
+
+        notify_device: {{ notify_device | default(''undefined'') }},
+
+        offline_devices_count: {{ offline_devices_count | default(''0'') }},
+
+        _battery_sensors_count: {{ _battery_sensors | length | default(''0'') }},
+
+        _switches_count: {{ _switches | length | default(''0'') }},
+
+        easy_notify_message length: {{ easy_notify_message | default('''') | length
+        }},
+
+        to_do_description length: {{ to_do_description | default('''') | length }},
+
+        to_do_list: {{ to_do_list | default(''undefined'') }},
+
+        include_hidden_entities: {{ include_hidden_entities | default(''undefined'')
+        }}
+
+        '
+- choose:
+  - alias: Use the easy notify options
+    conditions:
+    - condition: template
+      value_template: '{{ include_easy_notify == ''enable_easy_notify'' or include_easy_notify
+        == ''enable_easy_okay_notify'' }}'
+    - condition: template
+      value_template: '{{ notify_device | length > 0 }}'
+    sequence:
+    - alias: Send a notification to each device
+      repeat:
+        for_each: '{{ notify_device | default([]) }}'
+        sequence:
+        - choose:
+          - alias: Offline devices have been found
+            conditions:
+            - condition: template
+              value_template: '{{ easy_notify_message != '''' }}'
+            sequence:
+            - choose:
+              - alias: Easy notify with no action button
+                conditions:
+                - condition: template
+                  value_template: '{{ notify_action_buttons == ''disabled_notify_action_buttons''
+                    or auto_add_to_do == ''enable_auto_add_to_do'' }}'
+                sequence:
+                - service: notify.mobile_app_{{ device_attr(repeat.item, 'name') |
+                    slugify }}
+                  data:
+                    title: !input notify_title
+                    message: '{{ easy_notify_message }}'
+                    data: '{{ device_message_data }}'
+                - if:
+                  - condition: template
+                    value_template: '{{ include_logbook_debug == ''enable_logbook_debug''
+                      }}'
+                  then:
+                  - service: logbook.log
+                    data:
+                      name: Offline Devices Report Debug
+                      message: 'Sent notification without action buttons to device:
+                        {{ device_attr(repeat.item, ''name'') | slugify }}, service:
+                        notify.mobile_app_{{ device_attr(repeat.item, ''name'') |
+                        slugify }}, tag: {{ notify_tag }}, message length: {{ easy_notify_message
+                        | length }}'
+              - alias: Easy notify with action button
+                conditions:
+                - condition: template
+                  value_template: '{{ notify_action_buttons != ''disabled_notify_action_buttons''
+                    and auto_add_to_do != ''enable_auto_add_to_do'' }}'
+                sequence:
+                - service: notify.mobile_app_{{ device_attr(repeat.item, 'name') |
+                    slugify }}
+                  data:
+                    title: !input notify_title
+                    message: '{{ easy_notify_message }}'
+                    data: '{{ device_message_data_action_button }}'
+                - if:
+                  - condition: template
+                    value_template: '{{ include_logbook_debug == ''enable_logbook_debug''
+                      }}'
+                  then:
+                  - service: logbook.log
+                    data:
+                      name: Offline Devices Report Debug
+                      message: 'Sent notification with action buttons to device: {{
+                        device_attr(repeat.item, ''name'') | slugify }}, service:
+                        notify.mobile_app_{{ device_attr(repeat.item, ''name'') |
+                        slugify }}, tag: {{ notify_tag }}, actions: {{ device_message_data_action_button
+                        }}'
+          - alias: No offline devices have been found
+            conditions:
+            - condition: template
+              value_template: '{{ easy_notify_message == '''' }}'
+            - condition: template
+              value_template: '{{ include_easy_notify == ''enable_easy_okay_notify''
+                }}'
+            sequence:
+            - service: notify.mobile_app_{{ device_attr(repeat.item, 'name') | slugify
+                }}
+              data:
+                title: !input notify_title
+                message: !input notify_okay_message
+                data: '{{ device_message_data }}'
+            - if:
+              - condition: template
+                value_template: '{{ include_logbook_debug == ''enable_logbook_debug''
+                  }}'
+              then:
+              - service: logbook.log
+                data:
+                  name: Offline Devices Report Debug
+                  message: 'Sent no-issues notification to device: {{ device_attr(repeat.item,
+                    ''name'') | slugify }}, service: notify.mobile_app_{{ device_attr(repeat.item,
+                    ''name'') | slugify }}, tag: {{ notify_tag }}, message: {{ notify_okay_message
+                    }}'
+- choose:
+  - alias: Use the easy notify persistent notification options
+    conditions:
+    - condition: template
+      value_template: '{{ include_persistent_notification == ''enable_persistent_notification''
+        or include_persistent_notification == ''enable_persistent_okay_notification''
+        }}'
+    sequence:
+    - choose:
+      - alias: Offline devices have been found
+        conditions:
+        - condition: template
+          value_template: '{{ easy_notify_message != '''' }}'
+        sequence:
+        - service: persistent_notification.create
+          data:
+            title: ⛔ {{ notify_title }}
+            message: '{{ easy_notify_message }}'
+            notification_id: offline_devices_report
+        - if:
+          - condition: template
+            value_template: '{{ include_logbook_debug == ''enable_logbook_debug''
+              }}'
+          then:
+          - service: logbook.log
+            data:
+              name: Offline Devices Report Debug
+              message: 'Created persistent notification, id: offline_devices_report,
+                message length: {{ easy_notify_message | length }}'
+      - alias: No offline devices have been found
+        conditions:
+        - condition: template
+          value_template: '{{ easy_notify_message == '''' }}'
+        - condition: template
+          value_template: '{{ include_persistent_notification == ''enable_persistent_okay_notification''
+            }}'
+        sequence:
+        - service: persistent_notification.create
+          data:
+            title: ⛔ {{ notify_title }}
+            message: !input notify_okay_message
+            notification_id: offline_devices_report_ok
+        - if:
+          - condition: template
+            value_template: '{{ include_logbook_debug == ''enable_logbook_debug''
+              }}'
+          then:
+          - service: logbook.log
+            data:
+              name: Offline Devices Report Debug
+              message: 'Created persistent no-issues notification, id: offline_devices_report_ok,
+                message: {{ notify_okay_message }}'
+- choose:
+  - alias: Auto-add to To-Do list when enabled
+    conditions:
+    - condition: template
+      value_template: '{{ auto_add_to_do == ''enable_auto_add_to_do'' and to_do_description
+        != '''' }}'
+    - condition: template
+      value_template: '{{ to_do_list | length > 0 and is_state(to_do_list[0], ''unknown'')
+        == false and is_state(to_do_list[0], ''unavailable'') == false }}'
+    sequence:
+    - service: todo.add_item
+      data:
+        entity_id: '{{ to_do_list[0] }}'
+        item: !input to_do_task_title
+        description: '{{ to_do_description }}'
+      continue_on_error: true
+    - if:
+      - condition: template
+        value_template: '{{ include_logbook_debug == ''enable_logbook_debug'' }}'
+      then:
+      - service: logbook.log
+        data:
+          name: Offline Devices Report Debug
+          message: 'Auto-added To-Do item to {{ to_do_list[0] }}: title={{ to_do_task_title
+            }}, description length={{ to_do_description | length }}, truncated_description={{
+            to_do_description }}'
+- choose:
+  - alias: Check if the To-Do action button is enabled
+    conditions:
+    - condition: template
+      value_template: '{{ include_easy_notify == ''enable_easy_notify'' or include_easy_notify
+        == ''enable_easy_okay_notify'' }}'
+    - condition: template
+      value_template: '{{ notify_action_buttons == ''enable_to_do_list_button'' or
+        notify_action_buttons == ''enable_to_do_list_button_and_confirmation'' }}'
+    - condition: template
+      value_template: '{{ auto_add_to_do != ''enable_auto_add_to_do'' }}'
+    - condition: template
+      value_template: '{{ notify_device | length > 0 }}'
+    - condition: template
+      value_template: '{{ to_do_list | length > 0 and is_state(to_do_list[0], ''unknown'')
+        == false and is_state(to_do_list[0], ''unavailable'') == false }}'
+    sequence:
+    - alias: Wait for a response from the action buttons
+      wait_for_trigger:
+      - platform: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: '{{ action_button_to_do }}'
+      - platform: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: '{{ action_button_cancel }}'
+      timeout: 00:15:00
+      continue_on_timeout: true
+    - if:
+      - condition: template
+        value_template: '{{ include_logbook_debug == ''enable_logbook_debug'' }}'
+      then:
+      - service: logbook.log
+        data:
+          name: Offline Devices Report Debug
+          message: 'Wait for trigger result: {{ wait.trigger | default(''no trigger
+            received'', true) }}, action: {{ wait.trigger.event.data.action if wait.trigger
+            else ''none'' }}, tag: {{ notify_tag if wait.trigger else ''none'' }},
+            event_data: {{ wait.trigger.event.data if wait.trigger else ''none'' }}'
+    - choose:
+      - alias: Check if confirmation message is disabled
+        conditions:
+        - condition: template
+          value_template: '{{ notify_action_buttons == ''enable_to_do_list_button''
+            }}'
+        sequence:
+        - if:
+          - condition: template
+            value_template: '{{ wait.trigger is not none and wait.trigger.event.data.action
+              == action_button_to_do }}'
+          then:
+          - service: todo.add_item
+            data:
+              entity_id: '{{ to_do_list[0] }}'
+              item: !input to_do_task_title
+              description: '{{ to_do_description }}'
+            continue_on_error: true
+          - if:
+            - condition: template
+              value_template: '{{ include_logbook_debug == ''enable_logbook_debug''
+                }}'
+            then:
+            - service: logbook.log
+              data:
+                name: Offline Devices Report Debug
+                message: 'Added To-Do item to {{ to_do_list[0] }}: title={{ to_do_task_title
+                  }}, description length={{ to_do_description | length }}, truncated_description={{
+                  to_do_description }}, entity_state={{ states(to_do_list[0]) }}'
+        - if:
+          - condition: template
+            value_template: '{{ wait.trigger is not none and wait.trigger.event.data.action
+              == action_button_cancel }}'
+          then:
+          - if:
+            - condition: template
+              value_template: '{{ include_logbook_debug == ''enable_logbook_debug''
+                }}'
+            then:
+            - service: logbook.log
+              data:
+                name: Offline Devices Report Debug
+                message: 'Action cancelled for tag: {{ notify_tag }}'
+          - stop: Action cancelled
+      - alias: Check if confirmation message is enabled
+        conditions:
+        - condition: template
+          value_template: '{{ notify_action_buttons == ''enable_to_do_list_button_and_confirmation''
+            }}'
+        sequence:
+        - if:
+          - condition: template
+            value_template: '{{ wait.trigger is not none and wait.trigger.event.data.action
+              == action_button_to_do }}'
+          then:
+          - service: todo.add_item
+            data:
+              entity_id: '{{ to_do_list[0] }}'
+              item: !input to_do_task_title
+              description: '{{ to_do_description }}'
+            continue_on_error: true
+          - if:
+            - condition: template
+              value_template: '{{ include_logbook_debug == ''enable_logbook_debug''
+                }}'
+            then:
+            - service: logbook.log
+              data:
+                name: Offline Devices Report Debug
+                message: 'Added To-Do item to {{ to_do_list[0] }}: title={{ to_do_task_title
+                  }}, description length={{ to_do_description | length }}, truncated_description={{
+                  to_do_description }}, entity_state={{ states(to_do_list[0]) }}'
+          - repeat:
+              for_each: '{{ notify_device | default([]) }}'
+              sequence:
+              - service: notify.mobile_app_{{ device_attr(repeat.item, 'name') | slugify
+                  }}
+                data:
+                  title: !input action_button_confirmation_title
+                  message: !input action_button_confirmation_message
+                  data: '{{ device_confirmation_message_data }}'
+                continue_on_error: true
+              - if:
+                - condition: template
+                  value_template: '{{ include_logbook_debug == ''enable_logbook_debug''
+                    }}'
+                then:
+                - service: logbook.log
+                  data:
+                    name: Offline Devices Report Debug
+                    message: 'Sent confirmation notification to device: {{ device_attr(repeat.item,
+                      ''name'') | slugify }}, service: notify.mobile_app_{{ device_attr(repeat.item,
+                      ''name'') | slugify }}, tag: {{ notify_tag }}, message: {{ action_button_confirmation_message
+                      }}'
+        - if:
+          - condition: template
+            value_template: '{{ wait.trigger is not none and wait.trigger.event.data.action
+              == action_button_cancel }}'
+          then:
+          - repeat:
+              for_each: '{{ notify_device | default([]) }}'
+              sequence:
+              - service: notify.mobile_app_{{ device_attr(repeat.item, 'name') | slugify
+                  }}
+                data:
+                  title: !input action_button_confirmation_title
+                  message: !input cancel_action_button_confirmation_message
+                  data: '{{ device_message_data }}'
+                continue_on_error: true
+              - if:
+                - condition: template
+                  value_template: '{{ include_logbook_debug == ''enable_logbook_debug''
+                    }}'
+                then:
+                - service: logbook.log
+                  data:
+                    name: Offline Devices Report Debug
+                    message: 'Sent cancel confirmation notification to device: {{
+                      device_attr(repeat.item, ''name'') | slugify }}, service: notify.mobile_app_{{
+                      device_attr(repeat.item, ''name'') | slugify }}, tag: {{ notify_tag
+                      }}, message: {{ cancel_action_button_confirmation_message }}'
+- choose:
+  - alias: Perform the custom actions
+    conditions:
+    - condition: template
+      value_template: '{{ include_custom_actions == ''enable_custom_actions'' }}'
+    sequence: !input custom_actions
+mode: single

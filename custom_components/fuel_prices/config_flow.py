@@ -21,8 +21,19 @@ from homeassistant.const import (
     CONF_SCAN_INTERVAL,
 )
 
+from pyfuelprices import FuelPrices
+
 from . import FuelPricesConfigEntry
-from .const import DOMAIN, NAME, CONF_AREAS, CONF_SOURCES, CONF_STATE_VALUE, CONF_CHEAPEST_SENSORS, CONF_CHEAPEST_SENSORS_COUNT, CONF_CHEAPEST_SENSORS_FUEL_TYPE
+from .const import (
+    DOMAIN,
+    NAME,
+    CONF_AREAS,
+    CONF_SOURCES,
+    CONF_STATE_VALUE,
+    CONF_CHEAPEST_SENSORS,
+    CONF_CHEAPEST_SENSORS_COUNT,
+    CONF_CHEAPEST_SENSORS_FUEL_TYPE
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -89,8 +100,8 @@ SYSTEM_SCHEMA = vol.Schema(
             selector.NumberSelectorConfig(
                 mode=selector.NumberSelectorMode.BOX,
                 min=1,
-                max=1440,
-                unit_of_measurement="m",
+                max=24,
+                unit_of_measurement="h",
             )
         )
     }
@@ -114,9 +125,9 @@ OPTIONS_AREA_SCHEMA = AREA_SCHEMA.extend(
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow."""
 
-    VERSION = 3
+    VERSION = 4
     configured_areas: list[dict] = []
-    configured_sources = []
+    source_configuration = {}
     configuring_area = {}
     configuring_index = -1
     state_value = "name"
@@ -140,11 +151,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         await self.async_set_unique_id(NAME)
         self._abort_if_unique_id_configured()
         self.configured_areas = []
-        self.configured_sources = []
+        self.source_configuration = {}
         self.configuring_area = {}
         self.configuring_index = -1
         self.timeout = 10
-        self.interval = 1440
+        self.interval = 24
         # add the home location as a default (this can optionally be removed).
         self.configured_areas.append(
             {
@@ -170,17 +181,42 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_sources(self, user_input: dict[str, Any] | None = None):
         """Set data source config."""
         if user_input is not None:
-            self.configured_sources = user_input[CONF_SOURCES]
-            self.timeout = user_input[CONF_TIMEOUT]
-            self.interval = user_input[CONF_SCAN_INTERVAL]
+            if len(user_input.keys()) > 0:
+                self.source_configuration = dict.fromkeys(
+                    user_input[CONF_SOURCES], {})
+                self.timeout = user_input[CONF_TIMEOUT]
+                self.interval = user_input[CONF_SCAN_INTERVAL]
+            for src in self.source_configuration:
+                if FuelPrices.source_requires_config(src) and len(self.source_configuration[src].keys()) == 0:
+                    return await self.async_step_source_config(source=src)
+                else:
+                    self.source_configuration.setdefault(src, {})
             return await self.async_step_main_menu(None)
         return self.async_show_form(
             step_id="sources",
             data_schema=self.add_suggested_values_to_schema(SYSTEM_SCHEMA, {
-                CONF_SOURCES: self.configured_sources,
+                CONF_SOURCES: list(self.source_configuration.keys()),
                 CONF_TIMEOUT: self.timeout,
                 CONF_SCAN_INTERVAL: self.interval
             }))
+
+    async def async_step_source_config(
+        self,
+        user_input: dict[str, Any] | None = None,
+        source: str | None = None
+    ):
+        """Show the config for a specific data source."""
+        if user_input is not None:
+            self.source_configuration[self.configuring_source] = user_input
+            return await self.async_step_sources({})
+        self.configuring_source = source
+        return self.async_show_form(
+            step_id="source_config",
+            data_schema=FuelPrices.get_source_config_schema(source),
+            description_placeholders={
+                "source": source.capitalize()
+            }
+        )
 
     async def async_step_area_menu(self, _: None = None) -> FlowResult:
         """Show the area menu."""
@@ -287,14 +323,14 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Save configuration."""
         errors: dict[str, str] = {}
         if user_input is not None:
-            if len(self.configured_sources) > 0:
-                user_input[CONF_SOURCES] = self.configured_sources
+            if len(self.source_configuration.keys()) > 0:
+                user_input[CONF_SOURCES] = self.source_configuration
             elif self.hass.config.country is not None:
-                user_input[CONF_SOURCES] = COUNTRY_MAP.get(
-                    self.hass.config.country)
+                user_input[CONF_SOURCES] = dict.fromkeys(COUNTRY_MAP.get(
+                    self.hass.config.country), {})
             else:
-                user_input[CONF_SOURCES] = [
-                    k.value for k in build_sources_list()]
+                user_input[CONF_SOURCES] = dict.fromkeys([
+                    k.value for k in build_sources_list()], {})
             user_input[CONF_AREAS] = self.configured_areas
             user_input[CONF_SCAN_INTERVAL] = self.interval
             user_input[CONF_TIMEOUT] = self.timeout
@@ -312,12 +348,14 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 class FuelPricesOptionsFlow(config_entries.OptionsFlowWithConfigEntry):
     """OptionsFlow for fuel_prices module."""
 
+    global_config = {}
     configured_areas: list[dict] = []
-    configured_sources = []
+    source_configuration = {}
     configuring_area = {}
     configuring_index = -1
+    configuring_source = ""
     timeout = 10
-    interval = 1440
+    interval = 24
     state_value = "name"
     config_entry: FuelPricesConfigEntry
 
@@ -335,7 +373,7 @@ class FuelPricesOptionsFlow(config_entries.OptionsFlowWithConfigEntry):
             title=self.config_entry.title,
             data={
                 CONF_AREAS: self.configured_areas,
-                CONF_SOURCES: self.configured_sources,
+                CONF_SOURCES: self.source_configuration,
                 CONF_SCAN_INTERVAL: self.interval,
                 CONF_TIMEOUT: self.timeout,
                 CONF_STATE_VALUE: self.state_value
@@ -365,15 +403,15 @@ class FuelPricesOptionsFlow(config_entries.OptionsFlowWithConfigEntry):
         self.configured_areas = self.config_entry.options.get(
             CONF_AREAS, self.config_entry.data.get(CONF_AREAS, [])
         )
-        self.configured_sources = self.config_entry.options.get(
-            CONF_SOURCES, self.config_entry.data.get(CONF_SOURCES, [])
+        self.source_configuration = self.config_entry.options.get(
+            CONF_SOURCES, self.config_entry.data.get(CONF_SOURCES, {})
         )
         self.timeout = self.config_entry.options.get(
             CONF_TIMEOUT, self.config_entry.data.get(CONF_TIMEOUT, 10)
         )
         self.interval = self.config_entry.options.get(
             CONF_SCAN_INTERVAL, self.config_entry.data.get(
-                CONF_SCAN_INTERVAL, 1440)
+                CONF_SCAN_INTERVAL, 24)
         )
         self.state_value = self.config_entry.options.get(
             CONF_STATE_VALUE, self.config_entry.data.get(
@@ -395,10 +433,17 @@ class FuelPricesOptionsFlow(config_entries.OptionsFlowWithConfigEntry):
     async def async_step_sources(self, user_input: dict[str, Any] | None = None):
         """Set data source config."""
         if user_input is not None:
-            self.configured_sources = user_input[CONF_SOURCES]
-            self.timeout = user_input[CONF_TIMEOUT]
-            self.interval = user_input[CONF_SCAN_INTERVAL]
-            self.state_value = user_input[CONF_STATE_VALUE]
+            if len(user_input.keys()) > 0:
+                self.source_configuration = dict.fromkeys(
+                    user_input[CONF_SOURCES], {})
+                self.timeout = user_input[CONF_TIMEOUT]
+                self.interval = user_input[CONF_SCAN_INTERVAL]
+                self.state_value = user_input[CONF_STATE_VALUE]
+            for src in self.source_configuration:
+                if FuelPrices.source_requires_config(src) and len(self.source_configuration[src].keys()) == 0:
+                    return await self.async_step_source_config(source=src)
+                else:
+                    self.source_configuration.setdefault(src, {})
             return await self.async_step_main_menu(None)
         return self.async_show_form(
             step_id="sources",
@@ -416,11 +461,29 @@ class FuelPricesOptionsFlow(config_entries.OptionsFlowWithConfigEntry):
                         )
                     )
                 }), {
-                    CONF_SOURCES: self.configured_sources,
+                    CONF_SOURCES: list(self.source_configuration.keys()),
                     CONF_TIMEOUT: self.timeout,
                     CONF_SCAN_INTERVAL: self.interval,
                     CONF_STATE_VALUE: self.state_value
                 }))
+
+    async def async_step_source_config(
+        self,
+        user_input: dict[str, Any] | None = None,
+        source: str | None = None
+    ):
+        """Show the config for a specific data source."""
+        if user_input is not None:
+            self.source_configuration[self.configuring_source] = user_input
+            return await self.async_step_sources({})
+        self.configuring_source = source
+        return self.async_show_form(
+            step_id="source_config",
+            data_schema=FuelPrices.get_source_config_schema(source),
+            description_placeholders={
+                "source": source.capitalize()
+            }
+        )
 
     async def async_step_area_menu(self, _: None = None) -> FlowResult:
         """Show the area menu."""
@@ -444,9 +507,10 @@ class FuelPricesOptionsFlow(config_entries.OptionsFlowWithConfigEntry):
                     CONF_LATITUDE: user_input[CONF_LATITUDE],
                     CONF_LONGITUDE: user_input[CONF_LONGITUDE],
                     CONF_RADIUS: user_input[CONF_RADIUS],
-                    CONF_CHEAPEST_SENSORS: user_input[CONF_CHEAPEST_SENSORS],
-                    CONF_CHEAPEST_SENSORS_COUNT: user_input[CONF_CHEAPEST_SENSORS_COUNT],
-                    CONF_CHEAPEST_SENSORS_FUEL_TYPE: user_input[CONF_CHEAPEST_SENSORS_FUEL_TYPE]
+                    CONF_CHEAPEST_SENSORS: user_input.get(CONF_CHEAPEST_SENSORS, False),
+                    CONF_CHEAPEST_SENSORS_COUNT: user_input.get(CONF_CHEAPEST_SENSORS_COUNT, 5),
+                    CONF_CHEAPEST_SENSORS_FUEL_TYPE: user_input.get(
+                        CONF_CHEAPEST_SENSORS_FUEL_TYPE, None)
                 }
             )
             return await self.async_step_area_menu()
@@ -506,9 +570,10 @@ class FuelPricesOptionsFlow(config_entries.OptionsFlowWithConfigEntry):
                     CONF_LATITUDE: user_input[CONF_LATITUDE],
                     CONF_LONGITUDE: user_input[CONF_LONGITUDE],
                     CONF_RADIUS: user_input[CONF_RADIUS],
-                    CONF_CHEAPEST_SENSORS: user_input[CONF_CHEAPEST_SENSORS],
-                    CONF_CHEAPEST_SENSORS_COUNT: user_input[CONF_CHEAPEST_SENSORS_COUNT],
-                    CONF_CHEAPEST_SENSORS_FUEL_TYPE: user_input[CONF_CHEAPEST_SENSORS_FUEL_TYPE]
+                    CONF_CHEAPEST_SENSORS: user_input.get(CONF_CHEAPEST_SENSORS, False),
+                    CONF_CHEAPEST_SENSORS_COUNT: user_input.get(CONF_CHEAPEST_SENSORS_COUNT, 5),
+                    CONF_CHEAPEST_SENSORS_FUEL_TYPE: user_input.get(
+                        CONF_CHEAPEST_SENSORS_FUEL_TYPE, None)
                 }
             )
             return await self.async_step_area_menu()
@@ -561,14 +626,14 @@ class FuelPricesOptionsFlow(config_entries.OptionsFlowWithConfigEntry):
         """Save configuration."""
         errors: dict[str, str] = {}
         if user_input is not None:
-            if len(self.configured_sources) > 0:
-                user_input[CONF_SOURCES] = self.configured_sources
+            if len(self.source_configuration.keys()) > 0:
+                user_input[CONF_SOURCES] = self.source_configuration
             elif self.hass.config.country is not None:
-                user_input[CONF_SOURCES] = COUNTRY_MAP.get(
-                    self.hass.config.country)
+                user_input[CONF_SOURCES] = dict.fromkeys(COUNTRY_MAP.get(
+                    self.hass.config.country), {})
             else:
-                user_input[CONF_SOURCES] = [
-                    k.value for k in build_sources_list()]
+                user_input[CONF_SOURCES] = dict.fromkeys([
+                    k.value for k in build_sources_list()], {})
             user_input[CONF_AREAS] = self.configured_areas
             user_input[CONF_SCAN_INTERVAL] = self.interval
             user_input[CONF_TIMEOUT] = self.timeout

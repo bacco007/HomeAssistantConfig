@@ -16,6 +16,8 @@ cards:
         tap_action:
           action: navigate
           navigation_path: "#weatherforecast"
+    modules:
+      - default
   - type: custom:bubble-card
     card_type: button
     button_type: state
@@ -51,17 +53,17 @@ cards:
     show_state: true
     show_last_changed: false
     card_layout: large-2-rows
-    columns: 2
-    rows: 2
     show_icon: true
     scrolling_effect: false
     show_name: true
     show_attribute: false
+    modules:
+      - default
   - type: custom:bubble-card
     card_type: button
     button_type: state
     entity: weather.east_tamworth_hourly
-    name: "Current Weather"
+    name: Current Weather
     styles: |-
       .bubble-button-card-container {
         background: rgba(33, 150, 243, 0.2) !important;
@@ -69,7 +71,6 @@ cards:
       .bubble-icon {
         opacity: 1;
       }
-      ${(() => {if(window.innerWidth < 450){card.classList.add('rows-2')}})()}
     sub_button:
       - entity: sensor.weather_humidity
         show_name: false
@@ -97,11 +98,14 @@ cards:
     show_last_changed: false
     grid_options:
       columns: full
-    card_layout: large
+    card_layout: large-2-rows
     show_icon: true
     scrolling_effect: false
     show_name: true
     show_attribute: false
+    modules:
+      - default
+    rows: ""
   - type: custom:bubble-card
     card_type: button
     button_type: state
@@ -134,12 +138,12 @@ cards:
     show_state: false
     show_last_changed: false
     card_layout: large-2-rows
-    columns: 2
-    rows: 2
     show_icon: true
     scrolling_effect: false
     show_name: true
     show_attribute: false
+    modules:
+      - default
   - square: false
     type: grid
     cards:
@@ -156,8 +160,6 @@ cards:
         scrolling_effect: false
         show_state: false
         card_layout: large-2-rows
-        columns: 2
-        rows: 2
         styles: |-
           .bubble-button-card-container {
             background-color: rgba(${state < 51 ? "0, 153, 102" : state < 101 ? "255, 222, 51" : state < 151 ? "255, 153, 51" : state < 201 ? "204, 0, 51" : state < 301 ? "102, 0, 153" : state> 301 ? "126, 0, 35" : "192,192,192" },0.5) !important;
@@ -208,7 +210,6 @@ cards:
             show_state: true
             show_background: false
             name: C
-
       - type: custom:bubble-card
         card_type: button
         button_type: state
@@ -275,14 +276,14 @@ cards:
       unique: true
       card:
         type: grid
-        columns: 1
+        columns: 2
         square: false
       filter:
         template: |-
           {% for s in state_attr('sensor.east_tamworth_warnings','warnings') -%}
             {{
               {
-              "type": "custom:mushroom-template-card",
+              "type": "custom:mushroom-legacy-template-card",
               "primary": s.short_title,
               "secondary": s.title,
               "multiline_secondary": true,

@@ -1,0 +1,16 @@
+{
+  "domain": "abcemergency",
+  "name": "ABC Emergency",
+  "codeowners": [
+    "@troykelly"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/troykelly/homeassistant-abcemergency",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/troykelly/homeassistant-abcemergency/issues",
+  "requirements": [
+    "shapely>=2.0.0"
+  ],
+  "version": "0.4.6"
+}

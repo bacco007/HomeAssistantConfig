@@ -1,0 +1,154 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ABC Emergency",
+        "description": "What would you like to monitor?",
+        "data": {
+          "instance_type": "Monitoring type"
+        }
+      },
+      "state": {
+        "title": "Select State/Territory",
+        "description": "Select the Australian state or territory to monitor for emergencies.",
+        "data": {
+          "state": "State/Territory"
+        }
+      },
+      "zone_name": {
+        "title": "Zone Configuration",
+        "description": "Configure a monitoring zone for proximity-based alerts.",
+        "data": {
+          "zone_name": "Zone name",
+          "location": "Location"
+        }
+      },
+      "zone_radius": {
+        "title": "Alert Radii by Incident Type",
+        "description": "Configure the alert radius for each incident type. Incidents within these distances will be tracked.",
+        "data": {
+          "radius_bushfire": "Bushfire radius",
+          "radius_earthquake": "Earthquake radius",
+          "radius_storm": "Storm radius",
+          "radius_flood": "Flood radius",
+          "radius_fire": "Structure fire radius",
+          "radius_heat": "Extreme heat radius",
+          "radius_other": "Other incidents radius"
+        }
+      },
+      "person": {
+        "title": "Select Person",
+        "description": "Select a person entity to monitor. The integration will track emergencies near this person's current location.",
+        "data": {
+          "person_entity_id": "Person"
+        }
+      },
+      "person_radius": {
+        "title": "Alert Radii by Incident Type",
+        "description": "Configure the alert radius for each incident type. Incidents within these distances from the person will be tracked.",
+        "data": {
+          "radius_bushfire": "Bushfire radius",
+          "radius_earthquake": "Earthquake radius",
+          "radius_storm": "Storm radius",
+          "radius_flood": "Flood radius",
+          "radius_fire": "Structure fire radius",
+          "radius_heat": "Extreme heat radius",
+          "radius_other": "Other incidents radius"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to ABC Emergency API",
+      "api_error": "ABC Emergency API returned an error. Please try again later.",
+      "unknown": "Unexpected error occurred. Check logs for details.",
+      "name_required": "Please enter a zone name",
+      "person_required": "Please select a person entity"
+    },
+    "abort": {
+      "already_configured": "This configuration is already set up"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ABC Emergency Options"
+      },
+      "radius": {
+        "title": "Alert Radii by Incident Type",
+        "description": "Configure the alert radius for each incident type.",
+        "data": {
+          "radius_bushfire": "Bushfire radius",
+          "radius_earthquake": "Earthquake radius",
+          "radius_storm": "Storm radius",
+          "radius_flood": "Flood radius",
+          "radius_fire": "Structure fire radius",
+          "radius_heat": "Extreme heat radius",
+          "radius_other": "Other incidents radius"
+        }
+      }
+    },
+    "abort": {
+      "no_options_state": "State instances have no configurable options"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "incidents_total": {
+        "name": "Total Incidents"
+      },
+      "incidents_nearby": {
+        "name": "Nearby Incidents"
+      },
+      "nearest_incident": {
+        "name": "Nearest Incident"
+      },
+      "highest_alert_level": {
+        "name": "Highest Alert Level"
+      },
+      "bushfires": {
+        "name": "Bushfires"
+      },
+      "floods": {
+        "name": "Floods"
+      },
+      "storms": {
+        "name": "Storms"
+      },
+      "emergency_warnings": {
+        "name": "Emergency Warnings"
+      },
+      "watch_and_acts": {
+        "name": "Watch and Acts"
+      },
+      "advices": {
+        "name": "Advices"
+      }
+    },
+    "binary_sensor": {
+      "active_alert": {
+        "name": "Active Alert"
+      },
+      "emergency_warning": {
+        "name": "Emergency Warning"
+      },
+      "watch_and_act": {
+        "name": "Watch and Act"
+      },
+      "advice": {
+        "name": "Advice"
+      },
+      "inside_polygon": {
+        "name": "Inside Emergency Zone"
+      },
+      "inside_emergency_warning": {
+        "name": "Inside Emergency Warning Zone"
+      },
+      "inside_watch_and_act": {
+        "name": "Inside Watch and Act Zone"
+      },
+      "inside_advice": {
+        "name": "Inside Advice Zone"
+      }
+    }
+  }
+}

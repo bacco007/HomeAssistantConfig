@@ -67,18 +67,18 @@ class TemperatureHeatmapCard extends LitElement {
     var TD69 = this.shadowRoot.getElementById(this.id+"td69")
     var TD6a = this.shadowRoot.getElementById(this.id+"td6a")
     var TD6b = this.shadowRoot.getElementById(this.id+"td6b")
-    if (TD60) TD68.style.border = '0px dotted #000000';
-    if (TD61) TD68.style.border = '0px dotted #000000';
-    if (TD62) TD68.style.border = '0px dotted #000000';
-    if (TD63) TD68.style.border = '0px dotted #000000';
-    if (TD64) TD68.style.border = '0px dotted #000000';
-    if (TD65) TD68.style.border = '0px dotted #000000';
-    if (TD66) TD68.style.border = '0px dotted #000000';
-    if (TD67) TD68.style.border = '0px dotted #000000';
-    if (TD68) TD68.style.border = '0px dotted #000000';
-    if (TD69) TD68.style.border = '0px dotted #000000';
-    if (TD6a) TD68.style.border = '0px dotted #000000';
-    if (TD6b) TD68.style.border = '0px dotted #000000';
+    if (TD60) TD68.style.outline = '0px dotted #000000';
+    if (TD61) TD68.style.outline = '0px dotted #000000';
+    if (TD62) TD68.style.outline = '0px dotted #000000';
+    if (TD63) TD68.style.outline = '0px dotted #000000';
+    if (TD64) TD68.style.outline = '0px dotted #000000';
+    if (TD65) TD68.style.outline = '0px dotted #000000';
+    if (TD66) TD68.style.outline = '0px dotted #000000';
+    if (TD67) TD68.style.outline = '0px dotted #000000';
+    if (TD68) TD68.style.outline = '0px dotted #000000';
+    if (TD69) TD68.style.outline = '0px dotted #000000';
+    if (TD6a) TD68.style.outline = '0px dotted #000000';
+    if (TD6b) TD68.style.outline = '0px dotted #000000';
     this.dayDizio = {};
     this.dayDizioPartial = {};
     var leftButton = this.shadowRoot.getElementById(this.id+"leftButton");
@@ -134,10 +134,10 @@ class TemperatureHeatmapCard extends LitElement {
       if (this.config.decimal_point !== undefined) decimal_point = this.config.decimal_point;
       if (decimal_point && text != -999 && !isNaN(text)) {
         var text_dec = (Math.round(text * 10) / 10).toFixed(1);
+        var sign = (text >= 0) ? "" : "-";
         var text_int = parseInt(text_dec);
         var text_flo = parseInt(((Math.round(text * 10) / 10) - text_int) * 10);
-        if (text_flo < 0) text_flo = text_flo * -1;
-        var text_html = text_int + ".<small>" + text_flo + "</small>";
+        var text_html = sign + Math.abs(text_int) + ".<small>" + Math.abs(text_flo) + "</small>";
         theDiv.innerHTML = text_html;
       }
       theTD.style.backgroundColor = "#"+this.tempToRGB(text);
@@ -462,32 +462,37 @@ class TemperatureHeatmapCard extends LitElement {
       var TD69 = this.shadowRoot.getElementById(this.id+"td69")
       var TD6a = this.shadowRoot.getElementById(this.id+"td6a")
       var TD6b = this.shadowRoot.getElementById(this.id+"td6b")
-      if (DayNOW1 == this.Day6) {
-        if (_id == "td60" && nowHour == 0 && TD60) TD60.style.border = '4px dotted #000000';
-        if (_id == "td61" && nowHour == 1 && TD61) TD61.style.border = '4px dotted #000000';
-        if (_id == "td62" && nowHour == 2 && TD62) TD62.style.border = '4px dotted #000000';
-        if (_id == "td63" && nowHour == 3 && TD63) TD63.style.border = '4px dotted #000000';
-        if (_id == "td64" && nowHour == 4 && TD64) TD64.style.border = '4px dotted #000000';
-        if (_id == "td65" && nowHour == 5 && TD65) TD65.style.border = '4px dotted #000000';
-        if (_id == "td66" && nowHour == 6 && TD66) TD66.style.border = '4px dotted #000000';
-        if (_id == "td67" && nowHour == 7 && TD67) TD67.style.border = '4px dotted #000000';
-        if (_id == "td68" && nowHour == 8 && TD68) TD68.style.border = '4px dotted #000000';
-        if (_id == "td69" && nowHour == 9 && TD69) TD69.style.border = '4px dotted #000000';
-        if (_id == "td6a" && nowHour == 10 && TD6a) TD6a.style.border = '4px dotted #000000';
-        if (_id == "td6b" && nowHour == 11 && TD6b) TD6b.style.border = '4px dotted #000000';
+      var rightButton = this.shadowRoot.getElementById(this.id+"rightButton");
+      var tempNow = 0;
+      if (rightButton) {
+        if ((this.DayNOW == this.Day6) && (this.MonthNOW == this.Month6)) { tempNow = 1; }
+      }
+      if (DayNOW1 == this.Day6 && tempNow == 1) {
+        if (_id == "td60" && nowHour == 0 && TD60) TD60.style.outline = '4px dotted #000000';
+        if (_id == "td61" && nowHour == 1 && TD61) TD61.style.outline = '4px dotted #000000';
+        if (_id == "td62" && nowHour == 2 && TD62) TD62.style.outline = '4px dotted #000000';
+        if (_id == "td63" && nowHour == 3 && TD63) TD63.style.outline = '4px dotted #000000';
+        if (_id == "td64" && nowHour == 4 && TD64) TD64.style.outline = '4px dotted #000000';
+        if (_id == "td65" && nowHour == 5 && TD65) TD65.style.outline = '4px dotted #000000';
+        if (_id == "td66" && nowHour == 6 && TD66) TD66.style.outline = '4px dotted #000000';
+        if (_id == "td67" && nowHour == 7 && TD67) TD67.style.outline = '4px dotted #000000';
+        if (_id == "td68" && nowHour == 8 && TD68) TD68.style.outline = '4px dotted #000000';
+        if (_id == "td69" && nowHour == 9 && TD69) TD69.style.outline = '4px dotted #000000';
+        if (_id == "td6a" && nowHour == 10 && TD6a) TD6a.style.outline = '4px dotted #000000';
+        if (_id == "td6b" && nowHour == 11 && TD6b) TD6b.style.outline = '4px dotted #000000';
       } else {
-        if (TD60) TD60.style.border = '0px dotted #000000';
-        if (TD61) TD61.style.border = '0px dotted #000000';
-        if (TD62) TD62.style.border = '0px dotted #000000';
-        if (TD63) TD63.style.border = '0px dotted #000000';
-        if (TD64) TD64.style.border = '0px dotted #000000';
-        if (TD65) TD65.style.border = '0px dotted #000000';
-        if (TD66) TD66.style.border = '0px dotted #000000';
-        if (TD67) TD67.style.border = '0px dotted #000000';
-        if (TD68) TD68.style.border = '0px dotted #000000';
-        if (TD69) TD69.style.border = '0px dotted #000000';
-        if (TD6a) TD6a.style.border = '0px dotted #000000';
-        if (TD6b) TD6b.style.border = '0px dotted #000000';
+        if (TD60) TD60.style.outline = '0px dotted #000000';
+        if (TD61) TD61.style.outline = '0px dotted #000000';
+        if (TD62) TD62.style.outline = '0px dotted #000000';
+        if (TD63) TD63.style.outline = '0px dotted #000000';
+        if (TD64) TD64.style.outline = '0px dotted #000000';
+        if (TD65) TD65.style.outline = '0px dotted #000000';
+        if (TD66) TD66.style.outline = '0px dotted #000000';
+        if (TD67) TD67.style.outline = '0px dotted #000000';
+        if (TD68) TD68.style.outline = '0px dotted #000000';
+        if (TD69) TD69.style.outline = '0px dotted #000000';
+        if (TD6a) TD6a.style.outline = '0px dotted #000000';
+        if (TD6b) TD6b.style.outline = '0px dotted #000000';
       }
   }
 
@@ -943,31 +948,55 @@ class TemperatureHeatmapCard extends LitElement {
           if (this.gridForecast && this.gridForecast[7][jj] != -999 && grid7[7][jj] == -999) grid7[7][jj] = this.gridForecast[7][jj];
       }
       if (this.lastHour !== undefined) {
-           if (this.lastTime == "00") i = 0;
-           if (this.lastTime == "01") i = 0;
-           if (this.lastTime == "02") i = 1;
-           if (this.lastTime == "03") i = 1;
-           if (this.lastTime == "04") i = 2;
-           if (this.lastTime == "05") i = 2;
-           if (this.lastTime == "06") i = 3;
-           if (this.lastTime == "07") i = 3;
-           if (this.lastTime == "08") i = 4;
-           if (this.lastTime == "09") i = 4;
-           if (this.lastTime == "10") i = 5;
-           if (this.lastTime == "11") i = 5;
-           if (this.lastTime == "12") i = 6;
-           if (this.lastTime == "13") i = 6;
-           if (this.lastTime == "14") i = 7;
-           if (this.lastTime == "15") i = 7;
-           if (this.lastTime == "16") i = 8;
-           if (this.lastTime == "17") i = 8;
-           if (this.lastTime == "18") i = 9;
-           if (this.lastTime == "19") i = 9;
-           if (this.lastTime == "20") i = 10;
-           if (this.lastTime == "21") i = 10;
-           if (this.lastTime == "22") i = 11;
-           if (this.lastTime == "23") i = 11;
-           if (this.DayNOW == this.Day6) grid7[6][this.hourIndex] = this.lastHour;
+           var lastTimeNow = (new Date()).toLocaleDateString("en-EN", {day: '2-digit'});
+           if (lastTimeNow == "00") i = 0;
+           if (lastTimeNow == "01") i = 0;
+           if (lastTimeNow == "02") i = 1;
+           if (lastTimeNow == "03") i = 1;
+           if (lastTimeNow == "04") i = 2;
+           if (lastTimeNow == "05") i = 2;
+           if (lastTimeNow == "06") i = 3;
+           if (lastTimeNow == "07") i = 3;
+           if (lastTimeNow == "08") i = 4;
+           if (lastTimeNow == "09") i = 4;
+           if (lastTimeNow == "10") i = 5;
+           if (lastTimeNow == "11") i = 5;
+           if (lastTimeNow == "12") i = 6;
+           if (lastTimeNow == "13") i = 6;
+           if (lastTimeNow == "14") i = 7;
+           if (lastTimeNow == "15") i = 7;
+           if (lastTimeNow == "16") i = 8;
+           if (lastTimeNow == "17") i = 8;
+           if (lastTimeNow == "18") i = 9;
+           if (lastTimeNow == "19") i = 9;
+           if (lastTimeNow == "20") i = 10;
+           if (lastTimeNow == "21") i = 10;
+           if (lastTimeNow == "22") i = 11;
+           if (lastTimeNow == "23") i = 11;
+           var rightButton = this.shadowRoot.getElementById(this.id+"rightButton");
+           var tempNow = 0;
+           if (rightButton) {
+              if ((this.DayNOW == this.Day6) && (this.MonthNOW == this.Month6)) { tempNow = 1; }
+           }
+           if (this.DayNOW == this.Day6 && tempNow == 1) {
+              if (i > this.hourIndex) {
+                  const entityId = this.config.entity;
+                  const state = this.myhass.states[entityId];
+                  const stateStr = state ? state.state : "-999";
+                  grid7[6][this.hourIndex] = stateStr;
+              } else if (this.lastHour !== undefined) grid7[6][this.hourIndex] = this.lastHour;
+              else {
+                  const entityId = this.config.entity;
+                  const state = this.myhass.states[entityId];
+                  const stateStr = state ? state.state : "-999";
+                  grid7[6][this.hourIndex] = stateStr;
+              }
+           }
+      } else {
+           const entityId = this.config.entity;                                                                                                        
+           const state = this.myhass.states[entityId];                                                                                                        
+           const stateStr = state ? state.state : "-999";                                                                                              
+           grid7[6][this.hourIndex] = stateStr;                                                                                                        
       }
     }
     

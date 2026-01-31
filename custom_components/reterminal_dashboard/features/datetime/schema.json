@@ -1,0 +1,41 @@
+{
+    "type": "datetime",
+    "name": "Date & Time",
+    "props": {
+        "format": {
+            "type": "string",
+            "default": "time_date",
+            "enum": [
+                "time_date",
+                "time_only",
+                "date_only"
+            ]
+        },
+        "time_font_size": {
+            "type": "number",
+            "default": 28
+        },
+        "date_font_size": {
+            "type": "number",
+            "default": 16
+        },
+        "font_family": {
+            "type": "string",
+            "default": "Roboto",
+            "enum": [
+                "Roboto",
+                "Inter",
+                "Open Sans"
+            ]
+        },
+        "color": {
+            "type": "string",
+            "default": "black",
+            "enum": [
+                "black",
+                "white",
+                "gray"
+            ]
+        }
+    }
+}

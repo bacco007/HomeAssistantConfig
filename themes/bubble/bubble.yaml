@@ -1,4 +1,4 @@
-# Bubble Light & Dark
+# Bubble Light & Dark v1.2
 
 # Noctis from aFFekopp was my initial theme (thanks dude!)
 # Bubble is a modified one and is maintained by Clooos
@@ -61,7 +61,7 @@ Bubble:
       background-color: "rgba(57, 54, 70, 1)" #'rgb(23, 24, 26)'
       primary-background-color: "var(--background-color)"
       background-color-2: "rgb(92, 83, 103)" #'#2e4a74'
-      secondary-background-color: "none"
+      secondary-background-color: "var(--background-color-2)"
       markdown-code-background-color: "var(--background-color)"
 
       # Card
@@ -69,13 +69,13 @@ Bubble:
       ha-card-background: "rgba(79, 69, 87, 1)" #'rgb(36, 37, 41)'
       ha-card-box-shadow: "none"
       ha-card-border-radius: "28px"
-      ha-card-border-style: "solid !important"
-      ha-card-border-width: "1px !important"
-      ha-card-border-color: "none !important"
+      ha-card-border-style: "solid"
+      ha-card-border-width: "0px"
+      ha-card-border-color: "none"
       border-color: "none"
       grid-card-gap: "18px"
       horizontal-stack-card-margin: "0 10px"
-      border-style: "none !important"
+      border-style: "none"
       ha-card-background-active: "rgba(103,114,209, 0.4) radial-gradient(at bottom, rgba(103,114,209, 0.5) 0%, rgba(103,114,209, 0) 70%)"
       control-button-border-radius: "50px"
       control-button-background-color: "var(--ha-card-background)"

@@ -25,7 +25,7 @@ cards:
             padding-bottom: 10px !important;
             }
       cards:
-        - type: custom:mushroom-template-card
+        - type: custom:mushroom-legacy-template-card
           primary: |
             Currently Playing on {{state_attr(state_attr(entity, 'active_child'), 'friendly_name')}}
           secondary: >
@@ -131,7 +131,7 @@ cards:
               card_mod: *style
               tap_action:
                 action: toggle
-              entity: script.sonos_favourites_double_j_sydney_nsw
+              entity: script.sonos_favourites_double_j_sydney
               picture: /local/radioicons/double_j_sydney_nsw.png
             - type: template
               card_mod: *style
@@ -228,7 +228,7 @@ cards:
   - square: false
     type: grid
     cards:
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         primary: Top Track (This Week)
         secondary: |-
           {{ state_attr('sensor.lastfm_user_weeklytrackchart','track')[0].artist.name }} - {{ state_attr('sensor.lastfm_user_weeklytrackchart', 'track')[0].name }}
@@ -244,7 +244,7 @@ cards:
                 --card-secondary-font-size: 10px;
                 --card-primary-font-size: 12px;
               }
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         primary: Top Track (This Month)
         secondary: >-
           {{ state_attr('sensor.lastfm_user_monthlytrackchart','track')[0].artist.name }} - {{state_attr('sensor.lastfm_user_monthlytrackchart', 'track')[0].name }}

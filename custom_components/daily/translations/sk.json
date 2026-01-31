@@ -23,5 +23,39 @@
       "unknown": "[%key:common::config_flow::error::unknown%]"
     },
     "abort": {}
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Denný snímač",
+        "description": "Ak potrebujete pomoc s konfiguráciou, pozrite si https://github.com/jeroenterheerdt/HADailySensor",
+        "data": {
+          "name": "Jedinečný názov inštancie",
+          "sensor": "Entita, ktorá bude poskytovať vstup pre denný senzor",
+          "operation": "Operácia, ktorá sa má použiť na snímač",
+          "unit_of_measurement": "Jednotka merania",
+          "interval": "Interval obnovovania v sekundách",
+          "auto_reset": "Automaticky resetovať o 00:00 ?"
+        }
+      }
+    },
+    "error": {
+      "intervalnotvalid": "Zadaný interval nie je platný. Musí byť > 0 sekúnd.",
+      "name": "Zadajte jedinečný názov pre túto inštanciu.",
+      "operationnotfound": "Zadajte podporovanú operáciu.",
+      "sensornotfound": "Jeden alebo viacero špecifikovaných snímačov neexistuje.",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {}
+  },
+  "services": {
+    "reset": {
+      "name": "Reset",
+      "description": "Obnovte hodnotu na 'neznáme'"
+    },
+    "update": {
+      "name": "Aktualizácia",
+      "description": "Aktualizácia denného snímača"
+    }
   }
 }

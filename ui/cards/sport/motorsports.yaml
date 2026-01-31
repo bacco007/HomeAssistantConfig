@@ -26,6 +26,7 @@ cards:
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_supercars
+                - calendar: calendar.ical_supercars
       - attributes:
           label: NASCAR
         card:
@@ -35,16 +36,19 @@ cards:
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_nascar_cup_series
+                - calendar: calendar.ical_nascar_cup_series
 
             - type: custom:decluttering-card
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_nascar_xfinity_series
+                - calendar: calendar.ical_nascar_xfinity_series
 
             - type: custom:decluttering-card
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_nascar_truck_series
+                - calendar: calendar.ical_nascar_truck_series
       - attributes:
           label: Bikes
         card:
@@ -54,10 +58,12 @@ cards:
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_motogp
+                - calendar: calendar.ical_motogp
             - type: custom:decluttering-card
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_worldsbk
+                - calendar: calendar.ical_worldsbk
       - attributes:
           label: GT
         card:
@@ -67,16 +73,19 @@ cards:
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_gt_world_challenge_asia
+                - calendar: calendar.ical_gt_world_challenge_asia
 
             - type: custom:decluttering-card
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_gt_world_challenge_australia
+                - calendar: calendar.ical_gt_world_challenge_australia
 
             - type: custom:decluttering-card
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_igtc
+                - calendar: calendar.ical_igtc
       - attributes:
           label: Touring Cars
         card:
@@ -86,16 +95,19 @@ cards:
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_btcc
+                - calendar: calendar.ical_btcc
 
             - type: custom:decluttering-card
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_dtm
+                - calendar: calendar.ical_dtm
 
             - type: custom:decluttering-card
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_tcr_australia
+                - calendar: calendar.ical_tcr_australia
       - attributes:
           label: Other
         card:
@@ -105,33 +117,40 @@ cards:
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_extreme_e
+                - calendar: calendar.ical_extreme_e
 
             - type: custom:decluttering-card
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_formula_e
+                - calendar: calendar.ical_formula_e
 
             - type: custom:decluttering-card
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_imsa
+                - calendar: calendar.ical_imsa
 
             - type: custom:decluttering-card
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_indycar
+                - calendar: calendar.ical_indycar
 
             - type: custom:decluttering-card
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_misc_motorsport
+                - calendar: calendar.ical_misc_motorsport
 
             - type: custom:decluttering-card
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_wec
+                - calendar: calendar.ical_wec
 
             - type: custom:decluttering-card
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_wrc
+                - calendar: calendar.ical_wrc

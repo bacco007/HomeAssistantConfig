@@ -89,7 +89,7 @@ cards:
     entities:
       - type: custom:fold-entity-row
         head:
-          type: custom:mushroom-template-card
+          type: custom:mushroom-legacy-template-card
           primary: Upcoming Shows
           icon: mdi:television
           icon_color: green

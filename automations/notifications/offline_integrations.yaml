@@ -1,0 +1,127 @@
+---
+alias: "[Notifications] Offline Integrations"
+id: notifications_offline_integrations
+mode: single
+
+trigger:
+  # Notify at most every 2 hours (on the hour)
+  - platform: time_pattern
+    hours: "/2"
+    minutes: "0"
+    seconds: "0"
+    id: every_2_hours
+
+  # Notify if the count increases vs last-notified value and stays that way 5 minutes
+  - platform: template
+    id: increased_5_min
+    value_template: >
+      {% set current =
+        expand('group.connectivity_monitors')
+          | rejectattr('entity_id', 'in', ['binary_sensor.ha_connected_integration_offline_integrations'])
+          | selectattr('state', 'eq', 'off')
+          | list
+          | count %}
+      {% set previous = states('input_number.offline_integration_count') | int(0) %}
+      {{ current > previous }}
+    for:
+      minutes: 5
+
+condition:
+  # Only do anything if there's at least one offline integration
+  - condition: template
+    value_template: >
+      {{ expand('group.connectivity_monitors')
+          | rejectattr('entity_id', 'in', ['binary_sensor.ha_connected_integration_offline_integrations'])
+          | selectattr('state', 'eq', 'off')
+          | list
+          | count > 0 }}
+
+action:
+  - variables:
+      current_count: >
+        {{ expand('group.connectivity_monitors')
+            | rejectattr('entity_id', 'in', ['binary_sensor.ha_connected_integration_offline_integrations'])
+            | selectattr('state', 'eq', 'off')
+            | list
+            | count }}
+      previous_count: >
+        {{ states('input_number.offline_integration_count') | int(0) }}
+      offline_list: >
+        {{ expand('group.connectivity_monitors')
+              | rejectattr('entity_id', 'in', ['binary_sensor.ha_connected_integration_offline_integrations'])
+              | selectattr('state', 'eq', 'off')
+              | map(attribute='entity_id')
+              | map('replace', 'binary_sensor.ha_connected_integration_', '')
+              | list
+              | sort }}
+
+  # Every 2 hours: notify (since condition guarantees current_count > 0)
+  # Increased trigger: notify (it only fires after 5 min of being higher)
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: every_2_hours
+        sequence:
+          - service: notify.alert
+            data:
+              title: Offline Integrations Detected
+              message: >-
+                {{ current_count }} Offline Integrations Detected:
+                - {{ offline_list | join('\n- ') }}
+              data:
+                tag: offline_integrations
+                notification_id: offline_integrations
+                push:
+                  badge: 1
+                  sound: none
+                  interruption-level: time-sensitive
+                presentation_options:
+                  - alert
+                  - badge
+                group: alerts
+                actions:
+                  - title: "Restart HA"
+                    action: notify_action_restart_ha
+                    destructive: true
+                    authenticationRequired: true
+                  - title: "Pause Alert"
+                    action: pause_alert_offline_integrations
+
+          - service: input_number.set_value
+            data:
+              entity_id: input_number.offline_integration_count
+              value: "{{ current_count }}"
+
+      - conditions:
+          - condition: trigger
+            id: increased_5_min
+        sequence:
+          - service: notify.alert
+            data:
+              title: Offline Integrations Increased
+              message: >-
+                Offline integrations increased from {{ previous_count }} to {{ current_count }} (persisted 5 minutes):
+                - {{ offline_list | join('\n- ') }}
+              data:
+                tag: offline_integrations
+                notification_id: offline_integrations
+                push:
+                  badge: 1
+                  sound: none
+                  interruption-level: time-sensitive
+                presentation_options:
+                  - alert
+                  - badge
+                group: alerts
+                actions:
+                  - title: "Restart HA"
+                    action: notify_action_restart_ha
+                    destructive: true
+                    authenticationRequired: true
+                  - title: "Pause Alert"
+                    action: pause_alert_offline_integrations
+
+          - service: input_number.set_value
+            data:
+              entity_id: input_number.offline_integration_count
+              value: "{{ current_count }}"

@@ -4,7 +4,7 @@ from __future__ import annotations
 import asyncio
 from collections.abc import Coroutine
 import re
-from typing import Any
+from typing import Any, cast
 
 import voluptuous as vol
 
@@ -42,7 +42,14 @@ from .config import (
 )
 from .config_flow import loc_from_options
 from .const import CONF_OBS_ELV, DOMAIN, SIG_ASTRAL_DATA_UPDATED, SIG_HA_LOC_UPDATED
-from .helpers import ConfigData, ObsElvs, async_get_loc_data, init_sun2_data, sun2_data
+from .helpers import (
+    ConfigData,
+    LocData,
+    ObsElvs,
+    async_get_loc_data,
+    init_sun2_data,
+    sun2_data,
+)
 
 PLATFORMS = [Platform.BINARY_SENSOR, Platform.SENSOR]
 
@@ -141,11 +148,11 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         if not event.data:
             return
 
-        new_ha_loc_data = await async_get_loc_data(hass, hass.config)
+        new_ha_loc_data = cast(LocData, await async_get_loc_data(hass, hass.config))
         if ha_loc_data_changed := new_ha_loc_data != s2data.ha_loc_data:
             s2data.ha_loc_data = new_ha_loc_data
 
-        if not any(key in event.data for key in ("location_name", "language")):
+        if "location_name" not in event.data:
             if ha_loc_data_changed:
                 async_dispatcher_send(hass, SIG_HA_LOC_UPDATED)
             return
@@ -203,6 +210,7 @@ async def entry_updated(hass: HomeAssistant, entry: ConfigEntry) -> None:
     config_data = sun2_data(hass).config_data[entry.entry_id]
     if (
         entry.title == config_data.title
+        and entry.pref_disable_polling == config_data.pref_disable_polling
         and entry.options.get(CONF_BINARY_SENSORS, []) == config_data.binary_sensors
         and entry.options.get(CONF_SENSORS, []) == config_data.sensors
     ):
@@ -224,6 +232,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up config entry."""
     sun2_data(hass).config_data[entry.entry_id] = ConfigData(
         entry.title,
+        entry.pref_disable_polling,
         entry.options.get(CONF_BINARY_SENSORS, [])[:],
         entry.options.get(CONF_SENSORS, [])[:],
         await async_get_loc_data(hass, entry.options),

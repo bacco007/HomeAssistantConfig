@@ -25,10 +25,12 @@ cards:
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_wallabies
+                - calendar: calendar.ical_wallabies
             - type: custom:decluttering-card
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_international_rugby_all_teams
+                - calendar: calendar.ical_international_rugby_all_teams
       - attributes:
           label: Super Rugby
         card:
@@ -125,3 +127,4 @@ cards:
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_nsw_waratahs
+                - calendar: calendar.ical_nsw_waratahs

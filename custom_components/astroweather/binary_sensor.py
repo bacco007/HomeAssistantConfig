@@ -5,8 +5,9 @@ import logging
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceInfo
 
-from .const import CONF_LOCATION_NAME, DEFAULT_LOCATION_NAME, DOMAIN
+from .const import CONF_LOCATION_NAME, DEFAULT_LOCATION_NAME, DOMAIN, MANUFACTURER, VERSION
 from .entity import AstroWeatherEntity
 
 SENSOR_NAME = 0
@@ -82,6 +83,7 @@ class AstroWeatherBinarySensor(AstroWeatherEntity, BinarySensorEntity):
         self._location_name = entries.get(CONF_LOCATION_NAME, DEFAULT_LOCATION_NAME)
         self._sensor_name = SENSOR_TYPES[self._sensor][SENSOR_NAME]
         self._attr_unique_id = f"{entry.entry_id}_{DOMAIN.lower()}_{self._sensor_name.lower().replace(' ', '_')}"
+        self._unique_id = f"{entry.entry_id}_{DOMAIN.lower()}"
         self._name = f"{DOMAIN.capitalize()} {self._location_name} {self._sensor_name}"
 
     @property
@@ -98,3 +100,13 @@ class AstroWeatherBinarySensor(AstroWeatherEntity, BinarySensorEntity):
     def icon(self):
         """Icon to use in the frontend."""
         return SENSOR_TYPES[self._sensor][SENSOR_ICON]
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return the device info."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._unique_id)},
+            name=f"{MANUFACTURER} {self._location_name}",
+            manufacturer=MANUFACTURER,
+            sw_version=VERSION,
+        )

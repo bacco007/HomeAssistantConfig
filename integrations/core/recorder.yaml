@@ -27,6 +27,7 @@ recorder:
       - switch
       - update
       - weblink
+      - weather
       - zone
     entities:
       - sensor.adsb_aircraft_tracked
@@ -76,6 +77,13 @@ recorder:
       - sensor.the_dream_police_memory_utilization
       - sensor.the_dream_police_cpu_utilization
       - sensor.ha_uptime
+      - sensor.energy_supply_charge
+      - sensor.energy_timeofuse_tariff
+      - sensor.swap_use
+      - sensor.swap_use_percent
+      - sensor.energy_solar_tariff
+      - sensor.stats_watchman
+      - sensor.stats_docker
     entity_globs:
       - binary_sensor.node_pve*
       - binary_sensor.node_pvetbsh*
@@ -114,9 +122,7 @@ recorder:
       - sensor.ical*
       - sensor.international_space_station*
       - sensor.iss*
-      - sensor.load*
       - sensor.lxc*
-      - sensor.memory_*
       - sensor.mqtt_load*
       - sensor.mqtt_total*
       - sensor.mqtt_total*
@@ -129,7 +135,6 @@ recorder:
       - sensor.plane_overhead_detail*
       - sensor.plex_tautulli*
       - sensor.plexstats_*
-      - sensor.processor_use*
       - sensor.pve_ha_*
       - sensor.pvenuc*
       - sensor.pvetbsh*
@@ -187,6 +192,22 @@ recorder:
       - sensor.*distance_to_*
       - sensor.*_distance
       - sensor.*_nearest_scanner
+      - sensor.alternative_time*
+      - sensor.*_cpu_percent
+      - sensor.thecube2_*
+      - sensor.*_memory_percent
+      - sensor.astroweather*
+      - sensor.weatherflow_forecast*
+      - sensor.home_assistant_analytics*
+      - sensor.fast_furious*
+      - sensor.hateful_8*
+      - sensor.the_dream_police*
+      - binary_sensor.starlink_*
+      - sensor.moon_astro*
+      - sensor.*_trip_*_due
+      - sensor.tbsmarthome_cheapest_u95*
+      - sensor.*pvenuc*
+      - sensor.abc_emergency_*
     event_types:
       - automation_triggered
       - call_service
@@ -221,6 +242,10 @@ recorder:
       - flightradar24_most_tracked_new
       - flightradar24_area_landed
       - flightradar24_area_took_off
+      - abc_emergency_new_incident
+      - abc_emergency_new_bushfire
+      - abc_emergency_new_riverine_flood
+      - abc_emergency_new_filre
   include:
     entities:
       - sensor.tamhospital_waitingtime

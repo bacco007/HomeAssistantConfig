@@ -27,6 +27,7 @@ cards:
               template: sports_card
               variables:
                 - entity: sensor.upcoming_sport_bayern_munich
+                - calendar: calendar.ical_bayern_munich
       - attributes:
           label: France
         card:

@@ -1,7 +1,13 @@
 ---
 # https://github.com/iprak/yahoofinance
 yahoofinance:
-  decimal_places: 3
+  include_dividend_values: true
+  include_fifty_day_values: true
+  include_fifty_two_week_values: true
+  include_post_values: true
+  include_pre_values: true
+  include_two_hundred_day_values: true
+  decimal_places: 4
   scan_interval:
     minutes: 30
   show_trending_icon: true
@@ -54,7 +60,6 @@ yahoofinance:
     - ORCL
     - QOZ.AX
     - RDDT
-    - REX.AX
     - RIO
     - RIO.AX
     - RIO.L
@@ -62,7 +67,6 @@ yahoofinance:
     - SHIB-AUD
     - SKT.AX
     - STW.AX
-    - SWM.AX
     - SXL.AX
     - T
     - TEAM

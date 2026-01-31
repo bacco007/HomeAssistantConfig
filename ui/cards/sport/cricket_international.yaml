@@ -24,6 +24,7 @@ cards:
         template: sports_card
         variables:
           - entity: sensor.upcoming_sport_international_cricket_mens
+          - calendar: calendar.ical_international_cricket_mens
       - type: custom:mushroom-chips-card
         alignment: center
         card_mod:
@@ -74,6 +75,7 @@ cards:
         template: sports_card
         variables:
           - entity: sensor.upcoming_sport_australia_cricket
+          - calendar: calendar.ical_australia_cricket
       - type: custom:mushroom-chips-card
         alignment: center
         card_mod:
@@ -93,7 +95,7 @@ cards:
           - type: template
             icon: mdi:calendar-alert
             content: Calendar
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {
@@ -124,6 +126,7 @@ cards:
         template: sports_card
         variables:
           - entity: sensor.upcoming_sport_australia_cricket_women
+          - calendar: calendar.ical_australia_cricket_women
       - type: custom:mushroom-chips-card
         alignment: center
         card_mod:
@@ -143,7 +146,7 @@ cards:
           - type: template
             icon: mdi:calendar-alert
             content: Calendar
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {

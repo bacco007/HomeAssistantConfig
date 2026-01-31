@@ -7,9 +7,9 @@ import asyncio
 import logging
 import socket
 import struct
-from typing import List, Tuple
 
 import aiohttp
+from aiohttp.hdrs import USER_AGENT
 
 from .const import (
     HDHOMERUN_DEVICE_ID_WILDCARD,
@@ -19,6 +19,7 @@ from .const import (
     HDHOMERUN_TAG_DEVICE_TYPE,
     HDHOMERUN_TYPE_DISCOVER_REQ,
     HDHOMERUN_TYPE_DISCOVER_RPY,
+    HTTP_USER_AGENT,
     DiscoverMode,
 )
 from .device import DevicePaths, HDHomeRunDevice
@@ -49,13 +50,13 @@ class Discover:
         self._created_session: bool = False
         self._interface: str | None = interface
         self._mode: DiscoverMode = DiscoverMode(mode)
-        self._session: aiohttp.ClientSession | None = session or None
+        self._session: aiohttp.ClientSession = session
         self._udp_timeout: float = 1
 
-    async def async_discover(self) -> List[HDHomeRunDevice]:
+    async def async_discover(self) -> list[HDHomeRunDevice]:
         """Carry out a discovery."""
         _LOGGER.debug(self._log_formatter.format("entered"))
-        discovered_devices: List[HDHomeRunDevice] = []
+        discovered_devices: list[HDHomeRunDevice] = []
 
         if self._mode in (DiscoverMode.AUTO, DiscoverMode.UDP):
             _LOGGER.debug(self._log_formatter.format("carrying out UDP discovery"))
@@ -95,16 +96,18 @@ class Discover:
                     response: aiohttp.ClientResponse = await self._session.get(
                         url=url,
                         raise_for_status=True,
+                        headers={USER_AGENT: HTTP_USER_AGENT},
                     )
                 except aiohttp.ClientConnectionError:
                     _LOGGER.warning("%s is unavailable for querying", url)
                 except Exception as err:  # pylint: disable=broad-except
                     _LOGGER.error(
                         self._log_formatter.format(
-                            "error in HTTP discovery; type: %s, %s"
+                            "error in HTTP discovery; type: %s, %s, %s"
                         ),
                         type(err),
                         err,
+                        HTTP_USER_AGENT,
                     )
                 # endregion
 
@@ -117,12 +120,11 @@ class Discover:
                 already_discovered = [device.ip for device in discovered_devices]
                 resp_json = await response.json()
                 for device in resp_json:
-                    if (host := device.get("LocalIP", None)) is not None:
+                    if (host := device.get("LocalIP")) is not None:
                         try:
                             idx: int = already_discovered.index(host)
                         except ValueError:
-                            hdhr_device = HDHomeRunDevice(host=host)
-                            setattr(hdhr_device, "_discovery_method", DiscoverMode.HTTP)
+                            hdhr_device = HDHomeRunDevice(host, DiscoverMode.HTTP)
                             _LOGGER.debug(
                                 self._log_formatter.format(
                                     "adding %s to discovered devices"
@@ -147,7 +149,7 @@ class Discover:
             # region #-- check local discovery to see if HTTP is available --#
             def _find_in_discovered_devices(device_ip: str) -> int | None:
                 """Find a device in discovered devices."""
-                ret: List[int] = [
+                ret: list[int] = [
                     idx
                     for idx, device in enumerate(discovered_devices)
                     if device.ip == device_ip
@@ -165,8 +167,9 @@ class Discover:
                     self._log_formatter.format("creating dummy found device for %s"),
                     self._broadcast_address,
                 )
-                discovered_devices = [HDHomeRunDevice(host=self._broadcast_address)]
-                setattr(discovered_devices[0], "_discovery_method", DiscoverMode.HTTP)
+                discovered_devices = [
+                    HDHomeRunDevice(self._broadcast_address, DiscoverMode.HTTP)
+                ]
             already_discovered = [device.ip for device in discovered_devices]
             for device_ip in already_discovered:
                 discovered_idx = _find_in_discovered_devices(device_ip)
@@ -182,8 +185,12 @@ class Discover:
                         response: aiohttp.ClientResponse = await self._session.get(
                             url=url,
                             raise_for_status=True,
+                            headers={USER_AGENT: HTTP_USER_AGENT},
                         )
-                    except (aiohttp.ClientConnectionError, aiohttp.ClientResponseError) as exc:
+                    except (
+                        aiohttp.ClientConnectionError,
+                        aiohttp.ClientResponseError,
+                    ) as exc:
                         _LOGGER.debug(self._log_formatter.format("%s"), exc)
                         if (
                             discovered_devices[discovered_idx].discovery_method
@@ -239,7 +246,7 @@ class Discover:
 class _DiscoverProtocol(asyncio.DatagramProtocol):
     """Internal implementation of the discovery protocol."""
 
-    discovered_devices: List[HDHomeRunDevice] = []
+    discovered_devices: list[HDHomeRunDevice] = []
 
     def __init__(
         self,
@@ -251,7 +258,7 @@ class _DiscoverProtocol(asyncio.DatagramProtocol):
         self._interface: str | None = interface
         self._log_formatter: Logger = Logger(prefix=f"{__class__.__name__}.")
         self._target = (target, port)
-        self._transport: asyncio.DatagramTransport | None = None
+        self._transport: asyncio.DatagramTransport
 
         self.discovered_devices = []
 
@@ -278,7 +285,7 @@ class _DiscoverProtocol(asyncio.DatagramProtocol):
     def connection_lost(self, exc: Exception | None) -> None:
         """React to the connection being lost."""
 
-    def datagram_received(self, data: bytes, addr: Tuple[str, int]) -> None:
+    def datagram_received(self, data: bytes, addr: tuple[str, int]) -> None:
         """Process the data received.
 
         :param data: data received in response to the message
@@ -289,8 +296,9 @@ class _DiscoverProtocol(asyncio.DatagramProtocol):
 
         if ip_address not in [device.ip for device in self.discovered_devices]:
             # region #-- initialise the device object --#
-            discovered_device: HDHomeRunDevice = HDHomeRunDevice(host=ip_address)
-            setattr(discovered_device, "_discovery_method", DiscoverMode.UDP)
+            discovered_device: HDHomeRunDevice = HDHomeRunDevice(
+                ip_address, DiscoverMode.UDP
+            )
             response = HDHomeRunProtocol.parse_response(data)
             _LOGGER.debug("UDP response: %s", response)
             # endregion
@@ -309,7 +317,7 @@ class _DiscoverProtocol(asyncio.DatagramProtocol):
         _LOGGER.debug(self._log_formatter.format("entered"))
 
         pkt_type: bytes = struct.pack(">H", HDHOMERUN_TYPE_DISCOVER_REQ)
-        payload_data: List[Tuple[int, bytes]] = [
+        payload_data: list[tuple[int, bytes]] = [
             (HDHOMERUN_TAG_DEVICE_TYPE, struct.pack(">I", HDHOMERUN_DEVICE_TYPE_TUNER)),
             (HDHOMERUN_TAG_DEVICE_ID, struct.pack(">I", HDHOMERUN_DEVICE_ID_WILDCARD)),
         ]

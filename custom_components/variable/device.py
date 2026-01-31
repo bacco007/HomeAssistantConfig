@@ -12,15 +12,14 @@ from homeassistant.const import (
     CONF_NAME,
 )
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 
 from .const import CONF_YAML_VARIABLE, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def create_device(hass: HomeAssistant, entry: ConfigEntry):
+async def create_device(hass: HomeAssistant, entry: ConfigEntry) -> None:
     # _LOGGER.debug(f"({entry.title}) [create_device] entry: {entry}")
 
     device_registry = dr.async_get(hass)
@@ -46,7 +45,7 @@ async def create_device(hass: HomeAssistant, entry: ConfigEntry):
 
     domain_entries = hass.config_entries.async_loaded_entries(DOMAIN)
     # _LOGGER.debug(f"({device.name}) [create_device] domain_entries: {domain_entries}")
-    domain_entities = []
+    domain_entities: list = []
     for entry in domain_entries:
         # _LOGGER.debug(f"({device.name}) [create_device] domain_entry: {entry}")
         # _LOGGER.debug(f"({device.name}) [create_device] domain_entry data: {entry.data}")
@@ -77,7 +76,8 @@ async def create_device(hass: HomeAssistant, entry: ConfigEntry):
         _LOGGER.debug(
             f"({device.name}) [create_device] Reloading entity_id: {entity.entity_id}"
         )
-        hass.config_entries.async_schedule_reload(entity.config_entry_id)
+        if entity.config_entry_id:
+            hass.config_entries.async_schedule_reload(entity.config_entry_id)
 
 
 async def update_device(hass: HomeAssistant, entry: ConfigEntry, user_input) -> bool:
@@ -86,6 +86,9 @@ async def update_device(hass: HomeAssistant, entry: ConfigEntry, user_input) -> 
     device_registry = dr.async_get(hass)
     device = device_registry.async_get_device(identifiers={(DOMAIN, entry.entry_id)})
     # _LOGGER.debug(f"({device.name}) [update_device] device: {device}")
+    if device is None:
+        _LOGGER.debug("No device found to update")
+        return False
 
     device_registry.async_update_device(
         device_id=device.id,
@@ -97,7 +100,10 @@ async def update_device(hass: HomeAssistant, entry: ConfigEntry, user_input) -> 
         serial_number=user_input.get(ATTR_SERIAL_NUMBER),
         configuration_url=user_input.get(ATTR_CONFIGURATION_URL),
     )
-    _LOGGER.debug(f"({device.name}) [update_device] updated device: {device}")
+    _LOGGER.debug(
+        f"({getattr(device, 'name', '')}) [update_device] updated device: {device}"
+    )
+    return True
 
 
 async def remove_device(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -107,8 +113,8 @@ async def remove_device(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     entity_registry = er.async_get(hass)
 
     device = device_registry.async_get_device(identifiers={(DOMAIN, entry.entry_id)})
-    _LOGGER.debug(f"({device.name}) [remove_device] device: {device}")
-    if not device:
+    _LOGGER.debug(f"({getattr(device, 'name', '')}) [remove_device] device: {device}")
+    if device is None:
         return True
     entities = er.async_entries_for_device(
         registry=entity_registry, device_id=device.id, include_disabled_entities=True
@@ -123,6 +129,7 @@ async def remove_device(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _LOGGER.debug(
             f"({device.name}) [remove_device] Reloading entity_id: {entity.entity_id}"
         )
-        hass.config_entries.async_schedule_reload(entity.config_entry_id)
+        if entity.config_entry_id:
+            hass.config_entries.async_schedule_reload(entity.config_entry_id)
 
     return True

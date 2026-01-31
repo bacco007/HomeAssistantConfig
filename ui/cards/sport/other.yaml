@@ -28,8 +28,10 @@ cards:
     template: sports_card
     variables:
       - entity: sensor.upcoming_sport_swifts
+      - calendar: calendar.ical_swifts
 
   - type: custom:decluttering-card
     template: sports_card
     variables:
       - entity: sensor.upcoming_sport_sailgp
+      - calendar: calendar.ical_sailgp

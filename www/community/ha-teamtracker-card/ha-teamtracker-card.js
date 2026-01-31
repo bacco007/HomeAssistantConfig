@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.14";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.17";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -298,7 +298,7 @@ $19fe8e3abedf4df0$export$c7c07a37856565d.elementStyles = [], $19fe8e3abedf4df0$e
  * SPDX-License-Identifier: BSD-3-Clause
  */ const $f58f44579a4747ac$var$n = globalThis, $f58f44579a4747ac$var$c = $f58f44579a4747ac$var$n.trustedTypes, $f58f44579a4747ac$var$h = $f58f44579a4747ac$var$c ? $f58f44579a4747ac$var$c.createPolicy("lit-html", {
     createHTML: (t)=>t
-}) : void 0, $f58f44579a4747ac$var$f = "$lit$", $f58f44579a4747ac$var$v = `lit$${Math.random().toFixed(9).slice(2)}$`, $f58f44579a4747ac$var$m = "?" + $f58f44579a4747ac$var$v, $f58f44579a4747ac$var$_ = `<${$f58f44579a4747ac$var$m}>`, $f58f44579a4747ac$var$w = document, $f58f44579a4747ac$var$lt = ()=>$f58f44579a4747ac$var$w.createComment(""), $f58f44579a4747ac$var$st = (t)=>null === t || "object" != typeof t && "function" != typeof t, $f58f44579a4747ac$var$g = Array.isArray, $f58f44579a4747ac$var$$ = (t)=>$f58f44579a4747ac$var$g(t) || "function" == typeof t?.[Symbol.iterator], $f58f44579a4747ac$var$x = "[ 	\n\f\r]", $f58f44579a4747ac$var$T = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, $f58f44579a4747ac$var$E = /-->/g, $f58f44579a4747ac$var$k = />/g, $f58f44579a4747ac$var$O = RegExp(`>|${$f58f44579a4747ac$var$x}(?:([^\\s"'>=/]+)(${$f58f44579a4747ac$var$x}*=${$f58f44579a4747ac$var$x}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), $f58f44579a4747ac$var$S = /'/g, $f58f44579a4747ac$var$j = /"/g, $f58f44579a4747ac$var$M = /^(?:script|style|textarea|title)$/i, $f58f44579a4747ac$var$P = (t)=>(i, ...s)=>({
+}) : void 0, $f58f44579a4747ac$var$f = "$lit$", $f58f44579a4747ac$var$v = `lit$${Math.random().toFixed(9).slice(2)}$`, $f58f44579a4747ac$var$m = "?" + $f58f44579a4747ac$var$v, $f58f44579a4747ac$var$_ = `<${$f58f44579a4747ac$var$m}>`, $f58f44579a4747ac$var$w = document, $f58f44579a4747ac$var$lt = ()=>$f58f44579a4747ac$var$w.createComment(""), $f58f44579a4747ac$var$st = (t)=>null === t || "object" != typeof t && "function" != typeof t, $f58f44579a4747ac$var$g = Array.isArray, $f58f44579a4747ac$var$$ = (t)=>$f58f44579a4747ac$var$g(t) || "function" == typeof t?.[Symbol.iterator], $f58f44579a4747ac$var$x = "[ \t\n\f\r]", $f58f44579a4747ac$var$T = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, $f58f44579a4747ac$var$E = /-->/g, $f58f44579a4747ac$var$k = />/g, $f58f44579a4747ac$var$O = RegExp(`>|${$f58f44579a4747ac$var$x}(?:([^\\s"'>=/]+)(${$f58f44579a4747ac$var$x}*=${$f58f44579a4747ac$var$x}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), $f58f44579a4747ac$var$S = /'/g, $f58f44579a4747ac$var$j = /"/g, $f58f44579a4747ac$var$M = /^(?:script|style|textarea|title)$/i, $f58f44579a4747ac$var$P = (t)=>(i, ...s)=>({
             _$litType$: t,
             strings: i,
             values: s
@@ -642,25 +642,25 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
     }
     constructor(){
         super();
-        this.currentPage = "card";
-        this._entity = "";
+        this.currentPage = 'card';
+        this._entity = '';
         this.entities = [];
         this._formValueChanged = this._formValueChanged.bind(this);
     }
     setConfig(config) {
         if (!config) throw new Error("Invalid configuration");
         this._config = config;
-        this._entity = config.entity || "";
+        this._entity = config.entity || '';
     }
     get config() {
         return this._config;
     }
     updated(changedProperties) {
-        if (changedProperties.has("hass")) this.fetchEntities();
-        if (changedProperties.has("_config") && this._config && this._config.entity) this._entity = this._config.entity;
+        if (changedProperties.has('hass')) this.fetchEntities();
+        if (changedProperties.has('_config') && this._config && this._config.entity) this._entity = this._config.entity;
     }
     fetchEntities() {
-        if (this.hass) this.entities = Object.keys(this.hass.states).filter((e)=>e.startsWith("sensor.") && this.hass.states[e].attributes.hasOwnProperty("sport")).sort((a, b)=>a.localeCompare(b));
+        if (this.hass) this.entities = Object.keys(this.hass.states).filter((e)=>e.startsWith('sensor.') && this.hass.states[e].attributes.hasOwnProperty('sport')).sort((a, b)=>a.localeCompare(b));
     }
     configChanged(newConfig) {
         const event = new Event("config-changed", {
@@ -677,7 +677,7 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
         const newConfig = {
             ...this._config
         };
-        if (key === "entity") {
+        if (key === 'entity') {
             newConfig.entity = event.target.value;
             this._entity = event.target.value;
         }
@@ -689,8 +689,8 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
         let newConfig = {
             ...this._config
         };
-        if (key.includes(".")) {
-            const parts = key.split(".");
+        if (key.includes('.')) {
+            const parts = key.split('.');
             let currentLevel = newConfig;
             for(let i = 0; i < parts.length - 1; i++){
                 const part = parts[i];
@@ -708,7 +708,7 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
         this.requestUpdate();
     }
     _formValueChanged(event) {
-        if (event.target.tagName.toLowerCase() === "ha-form") {
+        if (event.target.tagName.toLowerCase() === 'ha-form') {
             const newConfig = event.detail.value;
             this.configChanged(newConfig);
             this.requestUpdate();
@@ -769,9 +769,9 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
                     naturalMenuWidth
                     fixedMenuPosition
                     label="Entity"
-                    .configValue=${"entity"}
+                    .configValue=${'entity'}
                     .value=${this._entity}
-                    @change=${(e)=>this._EntityChanged(e, "entity")}
+                    @change=${(e)=>this._EntityChanged(e, 'entity')}
                     @closed=${(ev)=>ev.stopPropagation()}
                     >
                     ${this.entities.map((entity)=>{
@@ -784,18 +784,18 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
             <ha-select
                 naturalMenuWidth
                 fixedMenuPosition
-                .configValue=${"home_side"}
+                .configValue=${'home_side'}
                 .value=${this._config.home_side}
-                @change=${(e)=>this._valueChanged(e, "home_side")}
+                @change=${(e)=>this._valueChanged(e, 'home_side')}
                 @closed=${(ev)=>ev.stopPropagation()}
                 >
-                <ha-list-item .value=${""}>Team on Left</ha-list-item>
-                <ha-list-item .value=${"left"}>Home on Left</ha-list-item>
-                <ha-list-item .value=${"right"}>Home on Right</ha-list-item>
+                <ha-list-item .value=${''}>Team on Left</ha-list-item>
+                <ha-list-item .value=${'left'}>Home on Left</ha-list-item>
+                <ha-list-item .value=${'right'}>Home on Right</ha-list-item>
             </ha-select>
             <div class="switch-container">
                 <ha-switch
-                    @change="${(e)=>this._valueChanged(e, "show_league")}"
+                    @change="${(e)=>this._valueChanged(e, 'show_league')}"
                     .checked="${this._config.show_league === true}"
                     >
                 </ha-switch>
@@ -805,7 +805,7 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
             </div>
             <div class="switch-container">
                 <ha-switch
-                    @change="${(e)=>this._valueChanged(e, "show_rank")}"
+                    @change="${(e)=>this._valueChanged(e, 'show_rank')}"
                     .checked="${this._config.show_rank !== false}"
                     >
                 </ha-switch>
@@ -815,7 +815,7 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
             </div>
             <div class="switch-container">    
                 <ha-switch
-                    @change="${(e)=>this._valueChanged(e, "show_timeouts")}"
+                    @change="${(e)=>this._valueChanged(e, 'show_timeouts')}"
                     .checked="${this._config.show_timeouts !== false}"
                     >
                 </ha-switch>
@@ -825,7 +825,7 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
             </div>
             <div class="switch-container">    
                 <ha-switch
-                    @change="${(e)=>this._valueChanged(e, "outline")}"
+                    @change="${(e)=>this._valueChanged(e, 'outline')}"
                     .checked="${this._config.outline === true}"
                     >
                 </ha-switch>
@@ -836,8 +836,8 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
             <div class="indented-container">
                 <ha-textfield
                     label="Outline Color"
-                    .value="${this._config.outline_color || "lightgrey"}"
-                    @change="${(e)=>this._valueChanged(e, "outline_color")}"
+                    .value="${this._config.outline_color || 'lightgrey'}"
+                    @change="${(e)=>this._valueChanged(e, 'outline_color')}"
                     >
                 </ha-textfield>
             </div>
@@ -845,35 +845,35 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
             <h4>Overrides:</h4>
             <ha-textfield
                 label="Title"
-                .value="${this._config.card_title || ""}"
-                @change="${(e)=>this._valueChanged(e, "card_title")}"
+                .value="${this._config.card_title || ''}"
+                @change="${(e)=>this._valueChanged(e, 'card_title')}"
                 >
             </ha-textfield>
             </br>
             <ha-textfield
                 label="Team URL"
-                .value="${this._config.team_url || ""}"
-                @change="${(e)=>this._valueChanged(e, "team_url")}"
+                .value="${this._config.team_url || ''}"
+                @change="${(e)=>this._valueChanged(e, 'team_url')}"
                 >
             </ha-textfield>
             </br>
             <ha-textfield
                 label="Opponent URL"
-                .value="${this._config.opponent_url || ""}"
-                @change="${(e)=>this._valueChanged(e, "opponent_url")}"
+                .value="${this._config.opponent_url || ''}"
+                @change="${(e)=>this._valueChanged(e, 'opponent_url')}"
                 >
             </ha-textfield>
             </br>
             <ha-textfield
                 label="Bottom URL"
-                .value="${this._config.bottom_url || ""}"
-                @change="${(e)=>this._valueChanged(e, "bottom_url")}"
+                .value="${this._config.bottom_url || ''}"
+                @change="${(e)=>this._valueChanged(e, 'bottom_url')}"
                 >
             </ha-textfield>
             <hr>
             <div class="switch-container">    
                 <ha-switch
-                    @change="${(e)=>this._valueChanged(e, "debug")}"
+                    @change="${(e)=>this._valueChanged(e, 'debug')}"
                     .checked="${this._config.debug === true}"
                     >
                 </ha-switch>
@@ -1901,7 +1901,7 @@ const $4f808b6be6c4ddc7$export$acb2a88f7d552ebf = {
         "gameStat1": "%s",
         "gameStat2": "%s",
         "gameStat3": "",
-        "gameBar": "Tirs (cadrer)",
+        "gameBar": "Tirs (cadr\xe9s)",
         "teamBarLabel": "%s",
         "oppoBarLabel": "%s"
     },
@@ -2794,34 +2794,34 @@ var $cfd70fadc94c42c5$var$languages = {
 };
 class $cfd70fadc94c42c5$export$9850010f89e291bb {
     constructor(lang = "en"){
-        this.lang = lang.replace(/['"]+/g, "").replace("-", "_");
+        this.lang = lang.replace(/['"]+/g, '').replace('-', '_');
     }
     translate(key, search, replace) {
         var lang = this.lang;
         var translated;
-        search = search || "";
-        replace = replace || "";
+        search = search || '';
+        replace = replace || '';
         try {
-            translated = key.split(".").reduce(function(o, i) {
+            translated = key.split('.').reduce(function(o, i) {
                 return o[i];
             }, $cfd70fadc94c42c5$var$languages[lang]);
         } catch (e) {
             try {
-                translated = key.split(".").reduce(function(o, i) {
+                translated = key.split('.').reduce(function(o, i) {
                     return o[i];
                 }, $cfd70fadc94c42c5$var$languages[lang].substring(0, 2));
             } catch (e) {
                 try {
-                    translated = key.split(".").reduce(function(o, i) {
+                    translated = key.split('.').reduce(function(o, i) {
                         return o[i];
-                    }, $cfd70fadc94c42c5$var$languages["en"]);
+                    }, $cfd70fadc94c42c5$var$languages['en']);
                 } catch (e) {
-                    translated = "{" + key + "}";
+                    translated = '{' + key + '}';
                 }
             }
         }
-        if (translated === undefined || !(typeof translated === "string") && !(translated instanceof String)) translated = "{" + key + "}";
-        if (search !== "" && replace !== "") translated = translated.replace(search, replace);
+        if (translated === undefined || !(typeof translated === 'string') && !(translated instanceof String)) translated = '{' + key + '}';
+        if (search !== '' && replace !== '') translated = translated.replace(search, replace);
         return translated;
     }
 }
@@ -2970,7 +2970,7 @@ function $654f96c20a3bcd40$export$3f4c9efb42c5bfd8(c) {
                 onerror="this.onerror=null; this.src='${c.logoBGAlternate[2]}';" />
             <div class="card-content">
                 <div class="team">
-                    <a class="left-clickable ${!c.url[1] ? "disabled" : ""}" href="${c.url[1] ? c.url[1] : "#"}" target="_blank">
+                    <a class="left-clickable ${!c.url[1] ? 'disabled' : ''}" href="${c.url[1] ? c.url[1] : '#'}" target="_blank">
                         <img class="logo" src="${c.logo[1]}" 
                             onerror="this.onerror=null; this.src='${c.logoAlternate[1]}'; this.onerror=function() { this.src='${c.logoError[1]}'; };" />
                         <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
@@ -3015,7 +3015,7 @@ function $654f96c20a3bcd40$export$3f4c9efb42c5bfd8(c) {
         "--possession-opacity": `${c.possessionOp[2]}`
     })}>&bull;</div>
                 <div class="team">
-                    <a class="right-clickable ${!c.url[2] ? "disabled" : ""}" href="${c.url[2] ? c.url[2] : "#"}" target="_blank">
+                    <a class="right-clickable ${!c.url[2] ? 'disabled' : ''}" href="${c.url[2] ? c.url[2] : '#'}" target="_blank">
                         <img class="logo" src="${c.logo[2]}" 
                             onerror="this.onerror=null; this.src='${c.logoAlternate[2]}'; this.onerror=function() { this.src='${c.logoError[2]}'; };" />
                         <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
@@ -3073,7 +3073,7 @@ function $654f96c20a3bcd40$export$3f4c9efb42c5bfd8(c) {
         "--series-summary-display": `${c.seriesSummaryDisplay}`
     })}>${c.seriesSummary}</div>
             <div class="line"></div>
-            <a class="bottom-clickable ${!c.bottomURL ? "disabled" : ""}" href="${c.bottomURL ? c.bottomURL : "#"}" target="_blank">
+            <a class="bottom-clickable ${!c.bottomURL ? 'disabled' : ''}" href="${c.bottomURL ? c.bottomURL : '#'}" target="_blank">
                 <div class="in-row1">
                     <div class="venue">${c.venue}</div>
                     <div class="down-distance">${c.in1}</div>
@@ -3168,39 +3168,39 @@ function $ba84a5acf45954c4$export$823f4865e91cfbff(c) {
                 onerror="this.onerror=null; this.src='${c.logoBGAlternate[2]}';" />
             <div class="card-content">
                 <div class="team">
-                    <a class="left-clickable ${!c.url[1] ? "disabled" : ""}" href="${c.url[1] ? c.url[1] : "#"}" target="_blank">
+                    <a class="left-clickable ${!c.url[1] ? 'disabled' : ''}" href="${c.url[1] ? c.url[1] : '#'}" target="_blank">
                         <img class="logo" src="${c.logo[1]}" 
                             onerror="this.onerror=null; this.src='${c.logoAlternate[1]}'; this.onerror=function() { this.src='${c.logoError[1]}'; };" />
                         <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
-        "--rank-display": c.rankDisplay
+        '--rank-display': c.rankDisplay
     })}>${c.rank[1]}</span> ${c.name[1]}</div>
                         <div class="record">${c.record[1]}</div>
                     </a>
                 </div>
                 <div class="score" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
-        "--score_opacity": c.scoreOp[1],
+        '--score_opacity': c.scoreOp[1],
         "--score_size": c.scoreSize
     })}>${c.score[1]}</div>
                 <div class="divider">&nbsp&nbsp&nbsp</div>
                 <div class="score" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
-        "--score_opacity": c.scoreOp[2],
+        '--score_opacity': c.scoreOp[2],
         "--score_size": c.scoreSize
     })}>${c.score[2]}</div>
                 <div class="team">
-                    <a class="right-clickable ${!c.url[2] ? "disabled" : ""}" href="${c.url[2] ? c.url[2] : "#"}" target="_blank">
+                    <a class="right-clickable ${!c.url[2] ? 'disabled' : ''}" href="${c.url[2] ? c.url[2] : '#'}" target="_blank">
                         <img class="logo" src="${c.logo[2]}" 
                             onerror="this.onerror=null; this.src='${c.logoAlternate[2]}'; this.onerror=function() { this.src='${c.logoError[2]}'; };" />
                         <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
-        "--rank-display": c.rankDisplay
+        '--rank-display': c.rankDisplay
     })}>${c.rank[2]}</span> ${c.name[2]}</div>
                         <div class="record">${c.record[2]}</div>
                     </a>
                 </div>
             </div>
-            <a class="bottom-clickable ${!c.bottomURL ? "disabled" : ""}" href="${c.bottomURL ? c.bottomURL : "#"}" target="_blank">
+            <a class="bottom-clickable ${!c.bottomURL ? 'disabled' : ''}" href="${c.bottomURL ? c.bottomURL : '#'}" target="_blank">
                 <div class="post-row1">${c.finalTerm}</div>
                 <div class="post-series-info" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
-        "--series-summary-display": c.seriesSummaryDisplay
+        '--series-summary-display': c.seriesSummaryDisplay
     })}>${c.seriesSummary}</div>
             </a>
         </div>
@@ -3233,7 +3233,7 @@ function $32e2f72be859b718$export$d6bad15bd473a528(c) {
                 onerror="this.onerror=null; this.src='${c.logoBGAlternate[2]}';" />
             <div class="card-content">
                 <div class="team">
-                    <a class="left-clickable ${!c.url[1] ? "disabled" : ""}" href="${c.url[1] ? c.url[1] : "#"}" target="_blank">
+                    <a class="left-clickable ${!c.url[1] ? 'disabled' : ''}" href="${c.url[1] ? c.url[1] : '#'}" target="_blank">
                         <img class="logo" src="${c.logo[1]}" 
                             onerror="this.onerror=null; this.src='${c.logoAlternate[1]}'; this.onerror=function() { this.src='${c.logoError[1]}'; };" />
                         <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
@@ -3248,7 +3248,7 @@ function $32e2f72be859b718$export$d6bad15bd473a528(c) {
                     <div class="gametime">${c.gameTime}</div>
                 </div>
                 <div class="team">
-                    <a class="right-clickable ${!c.url[2] ? "disabled" : ""}" href="${c.url[2] ? c.url[2] : "#"}" target="_blank">
+                    <a class="right-clickable ${!c.url[2] ? 'disabled' : ''}" href="${c.url[2] ? c.url[2] : '#'}" target="_blank">
                         <img class="logo" src="${c.logo[2]}" 
                             onerror="this.onerror=null; this.src='${c.logoAlternate[2]}'; this.onerror=function() { this.src='${c.logoError[2]}'; };" />
                         <div class="name"><span class="rank" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
@@ -3262,7 +3262,7 @@ function $32e2f72be859b718$export$d6bad15bd473a528(c) {
         "--series-summary-display": `${c.seriesSummaryDisplay}`
     })}>${c.seriesSummary}</div>
             <div class="line"></div>
-            <a class="bottom-clickable ${!c.bottomURL ? "disabled" : ""}" href="${c.bottomURL ? c.bottomURL : "#"}" target="_blank">
+            <a class="bottom-clickable ${!c.bottomURL ? 'disabled' : ''}" href="${c.bottomURL ? c.bottomURL : '#'}" target="_blank">
                 <div class="pre-row1">
                     <div class="date">${c.startTerm} ${c.startTime}</div>
                     <div class="odds">${c.pre1}</div>
@@ -3318,17 +3318,17 @@ function $84bc952fd23869d6$export$554552fb00f06e66(c) {
 }
 function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, sport, team, oppo) {
     // Set default sections to display / hide
-    c.initialsDisplay = "none";
-    c.outsDisplay = "none";
-    c.basesDisplay = "none";
-    c.barDisplay = "inherit";
-    c.timeoutsDisplay = "inline";
-    c.rankDisplay = "inline";
-    c.seriesSummaryDisplay = "none";
-    if (o.bottomURL == "more-info") c.bottomURL = null;
+    c.initialsDisplay = 'none';
+    c.outsDisplay = 'none';
+    c.basesDisplay = 'none';
+    c.barDisplay = 'inherit';
+    c.timeoutsDisplay = 'inline';
+    c.rankDisplay = 'inline';
+    c.seriesSummaryDisplay = 'none';
+    if (o.bottomURL == 'more-info') c.bottomURL = null;
     else c.bottomURL = o.bottomURL || stateObj.attributes.event_url;
-    if (o.show_timeouts == false) c.timeoutsDisplay = "none";
-    if (o.show_rank == false) c.rankDisplay = "none";
+    if (o.show_timeouts == false) c.timeoutsDisplay = 'none';
+    if (o.show_rank == false) c.rankDisplay = 'none';
     c.onFirstOp = 0.2;
     c.onSecondOp = 0.2;
     c.onThirdOp = 0.2;
@@ -3341,24 +3341,24 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
     // Set Scoreboard data
     c.logo[team] = stateObj.attributes.team_logo;
     c.logoAlternate[team] = stateObj.attributes.team_logo;
-    if (c.logo[team] && o.darkMode) c.logo[team] = c.logo[team].replace("/500/", "/500-dark/");
+    if (c.logo[team] && o.darkMode) c.logo[team] = c.logo[team].replace('/500/', '/500-dark/');
     c.logoError[team] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
     c.logoBG[team] = stateObj.attributes.team_logo;
     c.logoBGAlternate[team] = stateObj.attributes.team_logo;
     c.name[team] = stateObj.attributes.team_name;
-    if (o.teamURL == "more-info") c.url[team] = null;
+    if (o.teamURL == 'more-info') c.url[team] = null;
     else c.url[team] = o.teamURL || stateObj.attributes.team_url;
     c.rank[team] = stateObj.attributes.team_rank;
     c.record[team] = stateObj.attributes.team_record;
     c.winner[team] = stateObj.attributes.team_winner || false;
     c.logo[oppo] = stateObj.attributes.opponent_logo;
     c.logoAlternate[oppo] = stateObj.attributes.opponent_logo;
-    if (c.logo[oppo] && o.darkMode) c.logo[oppo] = c.logo[oppo].replace("/500/", "/500-dark/");
+    if (c.logo[oppo] && o.darkMode) c.logo[oppo] = c.logo[oppo].replace('/500/', '/500-dark/');
     c.logoError[oppo] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
     c.logoBG[oppo] = stateObj.attributes.opponent_logo;
     c.logoBGAlternate[oppo] = stateObj.attributes.opponent_logo;
     c.name[oppo] = stateObj.attributes.opponent_name;
-    if (o.opponentURL == "more-info") c.url[oppo] = null;
+    if (o.opponentURL == 'more-info') c.url[oppo] = null;
     else c.url[oppo] = o.opponentURL || stateObj.attributes.opponent_url;
     c.rank[oppo] = stateObj.attributes.opponent_rank;
     c.record[oppo] = stateObj.attributes.opponent_record;
@@ -3370,23 +3370,23 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
         c.logoBG[oppo] = stateObj.attributes.league_logo;
         c.logoBGAlternate[oppo] = stateObj.attributes.league_logo;
     }
-    if (c.logoBG[team] && o.darkMode) c.logoBG[team] = c.logoBG[team].replace("/500/", "/500-dark/");
-    if (c.logoBG[oppo] && o.darkMode) c.logoBG[oppo] = c.logoBG[oppo].replace("/500/", "/500-dark/");
+    if (c.logoBG[team] && o.darkMode) c.logoBG[team] = c.logoBG[team].replace('/500/', '/500-dark/');
+    if (c.logoBG[oppo] && o.darkMode) c.logoBG[oppo] = c.logoBG[oppo].replace('/500/', '/500-dark/');
     c.score[team] = stateObj.attributes.team_score;
     c.score[oppo] = stateObj.attributes.opponent_score;
     c.scoreOp[1] = .6;
     c.scoreOp[2] = .6;
     if (c.winner[team]) c.scoreOp[team] = 1;
     if (c.winner[oppo]) c.scoreOp[oppo] = 1;
-    if (stateObj.attributes.team_homeaway == "home") {
+    if (stateObj.attributes.team_homeaway == 'home') {
         c.color[team] = stateObj.attributes.team_colors[0];
         c.color[oppo] = stateObj.attributes.opponent_colors[1];
-    } else if (stateObj.attributes.team_homeaway == "away") {
+    } else if (stateObj.attributes.team_homeaway == 'away') {
         c.color[team] = stateObj.attributes.team_colors[1];
         c.color[oppo] = stateObj.attributes.opponent_colors[0];
     } else {
-        c.color[team] = "#ffffff";
-        c.color[oppo] = "#000000";
+        c.color[team] = '#ffffff';
+        c.color[oppo] = '#000000';
     }
     c.possessionOp[team] = 0;
     c.possessionOp[oppo] = 0;
@@ -3404,13 +3404,13 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
     c.venue = stateObj.attributes.venue;
     c.location = stateObj.attributes.location;
     c.pre1 = stateObj.attributes.odds;
-    c.pre2 = "";
+    c.pre2 = '';
     if (stateObj.attributes.overunder) c.pre2 = t.translate(sport + ".overUnder", "%s", String(stateObj.attributes.overunder));
     c.pre3 = stateObj.attributes.tv_network;
-    c.in0 = "";
-    c.in1 = "";
+    c.in0 = '';
+    c.in1 = '';
     if (stateObj.attributes.down_distance_text) c.in1 = t.translate(sport + ".gameStat1", "%s", stateObj.attributes.down_distance_text);
-    c.in2 = "";
+    c.in2 = '';
     if (stateObj.attributes.tv_network) c.in2 = t.translate(sport + ".gameStat2", "%s", stateObj.attributes.tv_network);
     c.finalTerm = stateObj.attributes.clock + " - " + c.gameDatePOST;
     // Set Play data
@@ -3452,24 +3452,24 @@ function $84bc952fd23869d6$export$f8996dc3406efa5a(o, c) {
 function $84bc952fd23869d6$export$539ef78a097046ba(c, stateObj, t, lang, time_format, server_time_zone) {
     var gameDate = new Date(stateObj.attributes.date);
     var gameDateStr = gameDate.toLocaleDateString(lang, {
-        month: "short",
-        day: "2-digit"
+        month: 'short',
+        day: '2-digit'
     });
     var todayDate = new Date();
     var todayDateStr = todayDate.toLocaleDateString(lang, {
-        month: "short",
-        day: "2-digit"
+        month: 'short',
+        day: '2-digit'
     });
     var tomorrowDate = new Date();
     tomorrowDate.setDate(todayDate.getDate() + 1);
     var tomorrowDateStr = tomorrowDate.toLocaleDateString(lang, {
-        month: "short",
-        day: "2-digit"
+        month: 'short',
+        day: '2-digit'
     });
     var nextweekDate = new Date();
     nextweekDate.setDate(todayDate.getDate() + 6);
     c.gameWeekday = gameDate.toLocaleDateString(lang, {
-        weekday: "long"
+        weekday: 'long'
     });
     if (gameDateStr === todayDateStr) c.gameWeekday = t.translate("common.today");
     else if (gameDateStr === tomorrowDateStr) c.gameWeekday = t.translate("common.tomorrow");
@@ -3478,50 +3478,50 @@ function $84bc952fd23869d6$export$539ef78a097046ba(c, stateObj, t, lang, time_fo
     if (gameDate > nextweekDate) c.gameDatePRE = gameDateStr;
     if (server_time_zone) {
         c.gameTime = gameDate.toLocaleTimeString(lang, {
-            hour: "2-digit",
-            minute: "2-digit",
+            hour: '2-digit',
+            minute: '2-digit',
             timeZone: server_time_zone
         });
         if (time_format == "24") c.gameTime = gameDate.toLocaleTimeString(lang, {
-            hour: "2-digit",
-            minute: "2-digit",
+            hour: '2-digit',
+            minute: '2-digit',
             hour12: false,
             timeZone: server_time_zone
         });
         if (time_format == "12") c.gameTime = gameDate.toLocaleTimeString(lang, {
-            hour: "2-digit",
-            minute: "2-digit",
+            hour: '2-digit',
+            minute: '2-digit',
             hour12: true,
             timeZone: server_time_zone
         });
         if (time_format == "system") {
             var sys_lang = navigator.language || "en";
             c.gameTime = gameDate.toLocaleTimeString(sys_lang, {
-                hour: "2-digit",
-                minute: "2-digit",
+                hour: '2-digit',
+                minute: '2-digit',
                 timeZone: server_time_zone
             });
         }
     } else {
         c.gameTime = gameDate.toLocaleTimeString(lang, {
-            hour: "2-digit",
-            minute: "2-digit"
+            hour: '2-digit',
+            minute: '2-digit'
         });
         if (time_format == "24") c.gameTime = gameDate.toLocaleTimeString(lang, {
-            hour: "2-digit",
-            minute: "2-digit",
+            hour: '2-digit',
+            minute: '2-digit',
             hour12: false
         });
         if (time_format == "12") c.gameTime = gameDate.toLocaleTimeString(lang, {
-            hour: "2-digit",
-            minute: "2-digit",
+            hour: '2-digit',
+            minute: '2-digit',
             hour12: true
         });
         if (time_format == "system") {
             var sys_lang = navigator.language || "en";
             c.gameTime = gameDate.toLocaleTimeString(sys_lang, {
-                hour: "2-digit",
-                minute: "2-digit"
+                hour: '2-digit',
+                minute: '2-digit'
             });
         }
     }
@@ -3559,17 +3559,17 @@ function $8d10daf0cda71373$export$e9b71e702ec65841(t, stateObj, c, team, oppo) {
     c.in1 = t.translate("baseball.gameStat1", "%s", String(stateObj.attributes.balls));
     c.in2 = t.translate("baseball.gameStat2", "%s", String(stateObj.attributes.strikes));
     c.in0 = t.translate("baseball.gameStat3", "%s", String(stateObj.attributes.outs));
-    c.outsDisplay = "inherit";
-    c.timeoutsDisplay = "none";
-    c.basesDisplay = "inherit";
+    c.outsDisplay = 'inherit';
+    c.timeoutsDisplay = 'none';
+    c.basesDisplay = 'inherit';
 }
 function $8d10daf0cda71373$export$d7bcdef8b0eb1304(t, stateObj, c, team, oppo) {
-    c.timeoutsDisplay = "none";
-    c.barDisplay = "none";
+    c.timeoutsDisplay = 'none';
+    c.barDisplay = 'none';
 }
 function $8d10daf0cda71373$export$8e398608f504e816(t, stateObj, c, team, oppo) {
     var subscores = [];
-    c.timeoutsDisplay = "none";
+    c.timeoutsDisplay = 'none';
     c.barDisplay = "none";
     c.in1 = stateObj.attributes.odds;
     c.in2 = stateObj.attributes.quarter;
@@ -3589,10 +3589,10 @@ function $8d10daf0cda71373$export$d4f0019d7c6b6a3d(t, stateObj, c, team, oppo) {
     c.venue = stateObj.attributes.event_name;
     c.barLength[team] = stateObj.attributes.team_shots_on_target;
     c.barLength[oppo] = stateObj.attributes.opponent_shots_on_target;
-    c.barLabel[team] = t.translate("golf.teamBarLabel", "%s", stateObj.attributes.team_total_shots + "(" + stateObj.attributes.team_shots_on_target + ")");
-    c.barLabel[oppo] = t.translate("golf.oppoBarLabel", "%s", stateObj.attributes.opponent_total_shots + "(" + stateObj.attributes.opponent_shots_on_target + ")");
+    c.barLabel[team] = t.translate("golf.teamBarLabel", "%s", stateObj.attributes.team_total_shots + '(' + stateObj.attributes.team_shots_on_target + ')');
+    c.barLabel[oppo] = t.translate("golf.oppoBarLabel", "%s", stateObj.attributes.opponent_total_shots + '(' + stateObj.attributes.opponent_shots_on_target + ')');
     c.finalTerm = stateObj.attributes.clock;
-    c.timeoutsDisplay = "none";
+    c.timeoutsDisplay = 'none';
     c.logo[team] = (0, $4fcaa3c95ba349ea$export$6df7962ea75d9a39) + stateObj.attributes.team_id + ".png";
     c.logo[oppo] = (0, $4fcaa3c95ba349ea$export$6df7962ea75d9a39) + stateObj.attributes.opponent_id + ".png";
     c.logoAlternate[team] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
@@ -3603,11 +3603,11 @@ function $8d10daf0cda71373$export$5a6583dd53975e58(t, stateObj, c, team, oppo) {
     c.barLength[oppo] = stateObj.attributes.opponent_shots_on_target;
     c.barLabel[team] = t.translate("hockey.teamBarLabel", "%s", String(stateObj.attributes.team_shots_on_target));
     c.barLabel[oppo] = t.translate("hockey.oppoBarLabel", "%s", String(stateObj.attributes.opponent_shots_on_target));
-    c.timeoutsDisplay = "none";
+    c.timeoutsDisplay = 'none';
 }
 function $8d10daf0cda71373$export$b95402321280aab2(t, stateObj, c, team, oppo) {
     c.title = c.title || stateObj.attributes.event_name;
-    c.timeoutsDisplay = "none";
+    c.timeoutsDisplay = 'none';
     c.barDisplay = "none";
     c.logo[team] = (0, $4fcaa3c95ba349ea$export$7e154a1de2266268) + stateObj.attributes.team_id + ".png";
     c.logo[oppo] = (0, $4fcaa3c95ba349ea$export$7e154a1de2266268) + stateObj.attributes.opponent_id + ".png";
@@ -3621,7 +3621,7 @@ function $8d10daf0cda71373$export$75a82cd3fb272a60(t, stateObj, c, team, oppo) {
         c.in1 = stateObj.attributes.quarter;
         c.finalTerm = stateObj.attributes.clock + " - " + c.gameDatePOST + " (" + stateObj.attributes.quarter + ")";
     }
-    c.timeoutsDisplay = "none";
+    c.timeoutsDisplay = 'none';
     c.barLength[team] = stateObj.attributes.team_total_shots;
     c.barLength[oppo] = stateObj.attributes.team_total_shots;
     c.barLabel[team] = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
@@ -3645,9 +3645,9 @@ function $8d10daf0cda71373$export$75a82cd3fb272a60(t, stateObj, c, team, oppo) {
 function $8d10daf0cda71373$export$215e00a8cdeadf2(t, stateObj, c, team, oppo) {
     c.barLength[team] = stateObj.attributes.team_total_shots;
     c.barLength[oppo] = stateObj.attributes.opponent_total_shots;
-    c.barLabel[team] = t.translate("soccer.teamBarLabel", "%s", stateObj.attributes.team_total_shots + "(" + stateObj.attributes.team_shots_on_target + ")");
-    c.barLabel[oppo] = t.translate("soccer.oppoBarLabel", "%s", stateObj.attributes.opponent_total_shots + "(" + stateObj.attributes.opponent_shots_on_target + ")");
-    c.timeoutsDisplay = "none";
+    c.barLabel[team] = t.translate("soccer.teamBarLabel", "%s", stateObj.attributes.team_total_shots + '(' + stateObj.attributes.team_shots_on_target + ')');
+    c.barLabel[oppo] = t.translate("soccer.oppoBarLabel", "%s", stateObj.attributes.opponent_total_shots + '(' + stateObj.attributes.opponent_shots_on_target + ')');
+    c.timeoutsDisplay = 'none';
 }
 function $8d10daf0cda71373$export$b80102c1df210e4f(t, stateObj, c, team, oppo) {
     c.venue = stateObj.attributes.venue;
@@ -3663,11 +3663,11 @@ function $8d10daf0cda71373$export$b80102c1df210e4f(t, stateObj, c, team, oppo) {
     c.barLength[oppo] = stateObj.attributes.opponent_score;
     if (stateObj.attributes.team_shots_on_target) {
         c.gameBar = t.translate("tennis.gameBar", "%s", stateObj.attributes.clock + "(tiebreak)");
-        c.barLabel[team] = t.translate("tennis.teamBarLabel", "%s", stateObj.attributes.team_score + "(" + stateObj.attributes.team_shots_on_target + ")");
+        c.barLabel[team] = t.translate("tennis.teamBarLabel", "%s", stateObj.attributes.team_score + '(' + stateObj.attributes.team_shots_on_target + ')');
     } else c.barLabel[team] = t.translate("tennis.teamBarLabel", "%s", String(stateObj.attributes.team_score));
     if (stateObj.attributes.team_shots_on_target) {
         c.gameBar = t.translate("tennis.gameBar", "%s", stateObj.attributes.clock + "(tiebreak)");
-        c.barLabel[oppo] = t.translate("tennis.oppoBarLabel", "%s", stateObj.attributes.opponent_score + "(" + stateObj.attributes.opponent_shots_on_target + ")");
+        c.barLabel[oppo] = t.translate("tennis.oppoBarLabel", "%s", stateObj.attributes.opponent_score + '(' + stateObj.attributes.opponent_shots_on_target + ')');
     } else c.barLabel[oppo] = t.translate("tennis.oppoBarLabel", "%s", String(stateObj.attributes.opponent_score));
     c.timeoutsOp[team][1] = stateObj.attributes.team_sets_won >= 1 ? 1 : 0.2;
     c.timeoutsOp[team][2] = stateObj.attributes.team_sets_won >= 2 ? 1 : 0.2;
@@ -3680,7 +3680,7 @@ function $8d10daf0cda71373$export$b80102c1df210e4f(t, stateObj, c, team, oppo) {
     c.logoAlternate[team] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
     c.logoAlternate[oppo] = (0, $4fcaa3c95ba349ea$export$607dc1951b62972e);
     c.title = c.title || stateObj.attributes.event_name;
-    c.timeoutsDisplay = "inline";
+    c.timeoutsDisplay = 'inline';
 }
 function $8d10daf0cda71373$export$ae478c65328ff5a5(t, stateObj, c, team, oppo) {
     c.gameBar = t.translate("volleyball.gameBar", "%s", stateObj.attributes.clock);
@@ -3694,7 +3694,7 @@ function $8d10daf0cda71373$export$ae478c65328ff5a5(t, stateObj, c, team, oppo) {
     c.timeoutsOp[oppo][1] = stateObj.attributes.opponent_sets_won >= 1 ? 1 : 0.2;
     c.timeoutsOp[oppo][2] = stateObj.attributes.opponent_sets_won >= 2 ? 1 : 0.2;
     c.timeoutsOp[oppo][3] = stateObj.attributes.opponent_sets_won >= 3 ? 1 : 0.2;
-    c.timeoutsDisplay = "inline";
+    c.timeoutsDisplay = 'inline';
 }
 
 
@@ -3717,13 +3717,13 @@ const $1a7c5d625ead7579$export$c579ff79a032fc68 = (0, $def2de46b9306e8a$export$d
 
 .possession { opacity: var(--possession-opacity, 1); font-size: 2.5em; text-align: center; font-weight:900; }
 .divider { font-size: 2.5em; text-align: center; margin: 0 4px; }
-.name { font-size: 1.4em; margin-bottom: 4px; }
+.name { font-size: 1.4em; }
 .rank { display: var(--rank-display, inline); font-size:0.8em; }
 .record { font-size:1.0em; height 1.0em; }
 .timeouts-wrapper { margin: 0.4em auto; width: 70%; display: var(--timeouts-display, inline); }
 .timeout { height: 0.6em; border-radius: 0.3em; background-color: var(--timeout-color, #000000); border: var(--timeout-border, 1px) solid var(--timeout-border-color, #ffffff); width: 20%; display: inline-block; margin: 0.4em auto; position: relative; opacity: var(--timeout-opacity, 0.2); }
-.bases { display: var(--bases-display, inherit); font-size: 2.5em; text-align: center; font-weight:900; }
-.on-base { opacity: var(--on-base-opacity, 1); display: inline-block; }
+.bases { display: var(--bases-display, inherit); font-size: 2.5em; text-align: center; font-weight:900; line-height: 0.6; margin: 0; padding: 0; }
+.on-base { opacity: var(--on-base-opacity, 1); display: inline-block; line-height: 0.6; margin: 0; padding: 0; }
 .pitcher { opacity: 0.0; display: inline-block; }
 .in-row1 { font-size: 1em; height: 1em; margin: 6px 0 2px; }
 .in-row2 { ; font-size: 1em; height: 1em; margin: 6px 0 2px; }
@@ -3790,15 +3790,15 @@ class $a510245ba2c1e365$export$c12aa10d47d2f051 extends (0, $ab210b2da7b39b9d$ex
     getCardSize() {
         const stateObj = this.hass.states[this._config.entity];
         switch(stateObj.state){
-            case "PRE":
+            case 'PRE':
                 return 7;
-            case "IN":
+            case 'IN':
                 return 10;
-            case "POST":
+            case 'POST':
                 return 5;
-            case "BYE":
+            case 'BYE':
                 return 4;
-            case "NOT_FOUND":
+            case 'NOT_FOUND':
                 return 4;
             default:
                 return 4;
@@ -3813,13 +3813,13 @@ class $a510245ba2c1e365$export$c12aa10d47d2f051 extends (0, $ab210b2da7b39b9d$ex
         if (!this.hass || !this._config) return (0, $07b3e4094688f328$export$b2e19b637b85e37f)();
         const stateObj = this.hass.states[this._config.entity];
         if (!stateObj) return (0, $07b3e4094688f328$export$adab126bb38c4dbc)(this._config.entity);
-        if (stateObj.state == "unavailable") return (0, $07b3e4094688f328$export$83a5095ba0388927)(this._config.entity);
+        if (stateObj.state == 'unavailable') return (0, $07b3e4094688f328$export$83a5095ba0388927)(this._config.entity);
         //
         //  Set card options based on configuration
         //
         o.cardTitle = this._config.card_title || "";
         o.outline = this._config.outline;
-        o.outlineColor = this._config.outline_color || "#ffffff";
+        o.outlineColor = this._config.outline_color || '#ffffff';
         o.showLeague = this._config.show_league;
         o.homeSide = String(this._config.home_side).toUpperCase();
         o.teamURL = this._config.team_url;
@@ -3867,7 +3867,7 @@ class $a510245ba2c1e365$export$c12aa10d47d2f051 extends (0, $ab210b2da7b39b9d$ex
         //  NCAA Specific Changes
         //
         if (stateObj.attributes.league) {
-            if (stateObj.attributes.league.includes("NCAA")) c.notFoundLogo = "https://a.espncdn.com/i/espn/misc_logos/500/ncaa.png";
+            if (stateObj.attributes.league.includes("NCAA")) c.notFoundLogo = 'https://a.espncdn.com/i/espn/misc_logos/500/ncaa.png';
         }
         //
         //  Reduce score font size if needed
@@ -3879,14 +3879,14 @@ class $a510245ba2c1e365$export$c12aa10d47d2f051 extends (0, $ab210b2da7b39b9d$ex
         if (o.debug) {
             var lastUpdate = new Date(stateObj.attributes.last_update);
             var updateTime = lastUpdate.toLocaleTimeString(lang, {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit"
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
             });
             if (server_time_zone) updateTime = lastUpdate.toLocaleTimeString(lang, {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
                 timeZone: server_time_zone
             });
             c.title = this._config.entity + " " + c.title + "(";
@@ -3897,15 +3897,15 @@ class $a510245ba2c1e365$export$c12aa10d47d2f051 extends (0, $ab210b2da7b39b9d$ex
         //  Render the card based on the state
         //
         switch(stateObj.state){
-            case "PRE":
+            case 'PRE':
                 return (0, $32e2f72be859b718$export$d6bad15bd473a528)(c);
-            case "IN":
+            case 'IN':
                 return (0, $654f96c20a3bcd40$export$3f4c9efb42c5bfd8)(c);
-            case "POST":
+            case 'POST':
                 return (0, $ba84a5acf45954c4$export$823f4865e91cfbff)(c);
-            case "BYE":
+            case 'BYE':
                 return (0, $6af844b6602814f2$export$eac7a64041e7dd4f)(c);
-            case "NOT_FOUND":
+            case 'NOT_FOUND':
                 return (0, $5cc9eebd21270610$export$cbe2629e62de17f0)(c);
             default:
                 return (0, $07b3e4094688f328$export$e26cf6a49fd1ec72)(c);
@@ -3913,16 +3913,16 @@ class $a510245ba2c1e365$export$c12aa10d47d2f051 extends (0, $ab210b2da7b39b9d$ex
     }
     firstUpdated() {
         // Add the double-click event listener to the card
-        this.shadowRoot.querySelector("ha-card").addEventListener("dblclick", ()=>this._handleDoubleClick());
+        this.shadowRoot.querySelector('ha-card').addEventListener('dblclick', ()=>this._handleDoubleClick());
     }
     _handleDoubleClick() {
-        const event = new Event("hass-action", {
+        const event = new Event('hass-action', {
             bubbles: true,
             composed: true
         });
         event.detail = {
             config: this._actionConfig,
-            action: "dblclick"
+            action: 'dblclick'
         };
         this.dispatchEvent(event);
     }

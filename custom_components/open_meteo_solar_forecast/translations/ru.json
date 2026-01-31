@@ -11,7 +11,7 @@
           "modules_power": "Общая пиковая мощность Ваших солнечных модулей (в Ваттах)",
           "name": "Название"
         },
-        "description": "Настройка Home Assistant для интеграции с Forecast.Solar."
+        "description": "Настройка Home Assistant для интеграции с Solar Forecast."
       }
     }
   },
@@ -29,7 +29,7 @@
           "inverter_size": "Мощность инвертора (в Ваттах)",
           "modules power": "Общая пиковая мощность Ваших солнечных модулей (в Ваттах)"
         },
-        "description": "Настройки интеграции Forecast.Solar."
+        "description": "Настройки интеграции Solar Forecast."
       }
     }
   }

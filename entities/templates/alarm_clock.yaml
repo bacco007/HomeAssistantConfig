@@ -57,7 +57,7 @@ sensor:
     state: ""
     attributes:
       category: alarm_clock
-      default_music: "Double J (Sydney, NSW)"
+      default_music: "Double J Sydney"
       default_sonos: "media_player.bedroom_symfonisk"
       default_light: "light.bedroom_lamp"
 

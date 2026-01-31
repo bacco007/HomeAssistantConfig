@@ -1,169 +1,175 @@
 {
-    "title": "Fuel Prices",
     "config": {
+        "abort": {
+            "already_configured": "For performance considerations and memory efficiency, only one instance of this integration is allowed."
+        },
         "step": {
-            "finished": {
-                "title": "Fuel Prices",
-                "description": "Click submit to finish setup"
-            },
-            "sources": {
-                "title": "Configure data collection sources",
-                "description": "Using this menu you can change what providers the integration will collect data from. By default it will use all data sources available for your current country as configured in Home Assistant.",
+            "area_create": {
                 "data": {
-                    "sources": "Data source(s)",
-                    "timeout": "Data source timeout",
-                    "scan_interval": "Data source update interval",
-                    "state": "State to show on the created sensors"
-                }
+                    "cheapest_stations": "Register entities for top n cheapest fuel stations in this area",
+                    "cheapest_stations_count": "Number of cheapest fuel station entities to create",
+                    "cheapest_stations_fuel_type": "The fuel type to use for the cheapest fuel station entites",
+                    "latitude": "Latitude for the center of the search location",
+                    "longitude": "Longitude for the center of the search location",
+                    "name": "Area name (must be unique)",
+                    "radius": "Maximum search radius"
+                },
+                "description": "Using this menu you can create areas to register devices and sensors. This integration will create a device for each fuel station discovered, under this a sensor will be created for each fuel type.",
+                "title": "Create an area"
+            },
+            "area_delete": {
+                "data": {
+                    "name": "Area name"
+                },
+                "title": "Select area to delete"
             },
             "area_menu": {
-                "title": "Configure areas to register devices and sensors.",
                 "description": "By default your home location has already been added automatically with a radius of 20 miles, this can be removed or changed if needed.",
                 "menu_options": {
                     "area_create": "Create an area",
-                    "area_update_select": "Update an area",
                     "area_delete": "Delete an area",
+                    "area_update_select": "Update an area",
                     "main_menu": "Return to main menu"
-                }
-            },
-            "area_create": {
-                "title": "Create an area",
-                "description": "Using this menu you can create areas to register devices and sensors. This integration will create a device for each fuel station discovered, under this a sensor will be created for each fuel type.",
-                "data": {
-                    "name": "Area name (must be unique)",
-                    "radius": "Maximum search radius",
-                    "latitude": "Latitude for the center of the search location",
-                    "longitude": "Longitude for the center of the search location",
-                    "cheapest_stations": "Register entities for top n cheapest fuel stations in this area",
-                    "cheapest_stations_count": "Number of cheapest fuel station entities to create",
-                    "cheapest_stations_fuel_type": "The fuel type to use for the cheapest fuel station entites"
-                }
-            },
-            "area_update_select": {
-                "title": "Select area to update",
-                "data": {
-                    "name": "Area name"
-                }
+                },
+                "title": "Configure areas to register devices and sensors."
             },
             "area_update": {
-                "title": "Create an area",
-                "description": "Using this menu you can create areas to register devices and sensors. This integration will create a device for each fuel station discovered, under this a sensor will be created for each fuel type.",
                 "data": {
-                    "name": "Area name (must be unique)",
-                    "radius": "Maximum search radius",
+                    "cheapest_stations": "(Deprecated) Register entities for top n cheapest fuel stations in this area",
+                    "cheapest_stations_count": "(Deprecated) Number of cheapest fuel station entities to create",
+                    "cheapest_stations_fuel_type": "(Deprecated) The fuel type to use for the cheapest fuel station entites",
                     "latitude": "Latitude for the center of the search location",
                     "longitude": "Longitude for the center of the search location",
-                    "cheapest_stations": "Register entities for top n cheapest fuel stations in this area",
-                    "cheapest_stations_count": "Number of cheapest fuel station entities to create",
-                    "cheapest_stations_fuel_type": "The fuel type to use for the cheapest fuel station entites"
-                }
+                    "name": "Area name (must be unique)",
+                    "radius": "Maximum search radius"
+                },
+                "description": "Using this menu you can create areas to register devices and sensors. This integration will create a device for each fuel station discovered, under this a sensor will be created for each fuel type.",
+                "title": "Create an area"
             },
-            "area_delete": {
-                "title": "Select area to delete",
+            "area_update_select": {
                 "data": {
                     "name": "Area name"
-                }
+                },
+                "title": "Select area to update"
+            },
+            "finished": {
+                "description": "Click submit to finish setup",
+                "title": "Fuel Prices"
+            },
+            "sources": {
+                "data": {
+                    "scan_interval": "Data source update interval",
+                    "sources": "Data source(s)",
+                    "state": "State to show on the created sensors",
+                    "timeout": "Data source timeout"
+                },
+                "description": "Using this menu you can change what providers the integration will collect data from. By default it will use all data sources available for your current country as configured in Home Assistant.",
+                "title": "Configure data collection sources"
             }
-        },
-        "abort": {
-            "already_configured": "For performance considerations and memory efficiency, only one instance of this integration is allowed."
         }
     },
-    "services": {
-        "find_fuels": {
-            "name": "Find fuel prices from location",
-            "description": "This will retrieve all fuel prices for a given location sorted by the cheapest first.",
-            "fields": {
-                "location": {
-                    "name": "Location",
-                    "description": "The location of the area to search"
-                },
-                "type": {
-                    "name": "Fuel Type",
-                    "description": "The fuel type to search for (such as E5, E10, B7, SDV)"
-                },
-                "source": {
-                    "name": "Data Source to search",
-                    "description": "The data source ID to search, defaults to 'any' for all data sources."
-                }
-            }
-        },
-        "find_fuel_station": {
-            "name": "Find fuel stations from location",
-            "description": "Find all of the available fuel stations, alongside available fuels and cost for a given location. The results are not sorted.",
-            "fields": {
-                "location": {
-                    "name": "Location",
-                    "description": "The location of the area to search"
-                },
-                "source": {
-                    "name": "Data Source to search",
-                    "description": "The data source ID to search, defaults to 'any' for all data sources."
-                }
-            }
+    "issues": {
+        "deprecate_cheapest_stations": {
+            "description": "The 'cheapest_stations' option is deprecated and will be removed in a future release. Please use the 'find_fuels' service to retrieve a list of cheapest fuel prices instead.",
+            "title": "Cheapest N Fuel Stations deprecation"
         }
     },
     "options": {
         "step": {
+            "area_create": {
+                "data": {
+                    "cheapest_stations": "Register entities for top n cheapest fuel stations in this area",
+                    "cheapest_stations_count": "Number of cheapest fuel station entities to create",
+                    "cheapest_stations_fuel_type": "The fuel type to use for the cheapest fuel station entites",
+                    "latitude": "Latitude for the center of the search location",
+                    "longitude": "Longitude for the center of the search location",
+                    "name": "Area name (must be unique)",
+                    "radius": "Maximum search radius"
+                },
+                "description": "Using this menu you can create areas to register devices and sensors. This integration will create a device for each fuel station discovered, under this a sensor will be created for each fuel type.",
+                "title": "Create an area"
+            },
+            "area_delete": {
+                "data": {
+                    "name": "Area name"
+                },
+                "title": "Select area to delete"
+            },
+            "area_menu": {
+                "menu_options": {
+                    "area_create": "Create an area",
+                    "area_delete": "Delete an area",
+                    "area_update_select": "Update an area",
+                    "main_menu": "Return to main menu"
+                },
+                "title": "Configure areas to register devices and sensors"
+            },
+            "area_update": {
+                "data": {
+                    "cheapest_stations": "Register entities for top n cheapest fuel stations in this area",
+                    "cheapest_stations_count": "Number of cheapest fuel station entities to create",
+                    "cheapest_stations_fuel_type": "The fuel type to use for the cheapest fuel station entites",
+                    "latitude": "Latitude for the center of the search location",
+                    "longitude": "Longitude for the center of the search location",
+                    "name": "Area name (must be unique)",
+                    "radius": "Maximum search radius"
+                },
+                "description": "Using this menu you can create areas to register devices and sensors. This integration will create a device for each fuel station discovered, under this a sensor will be created for each fuel type.",
+                "title": "Create an area"
+            },
+            "area_update_select": {
+                "data": {
+                    "name": "Area name"
+                },
+                "title": "Select area to update"
+            },
             "finished": {
-                "title": "Fuel Prices",
-                "description": "Click submit to finish setup"
+                "description": "Click submit to finish setup",
+                "title": "Fuel Prices"
             },
             "sources": {
-                "title": "Configure data collection sources",
-                "description": "Using this menu you can change what providers the integration will collect data from.",
                 "data": {
                     "sources": "Data source(s)",
                     "state": "State to show on the created sensors"
-                }
-            },
-            "area_menu": {
-                "title": "Configure areas to register devices and sensors",
-                "menu_options": {
-                    "area_create": "Create an area",
-                    "area_update_select": "Update an area",
-                    "area_delete": "Delete an area",
-                    "main_menu": "Return to main menu"
-                }
-            },
-            "area_create": {
-                "title": "Create an area",
-                "description": "Using this menu you can create areas to register devices and sensors. This integration will create a device for each fuel station discovered, under this a sensor will be created for each fuel type.",
-                "data": {
-                    "name": "Area name (must be unique)",
-                    "radius": "Maximum search radius",
-                    "latitude": "Latitude for the center of the search location",
-                    "longitude": "Longitude for the center of the search location",
-                    "cheapest_stations": "Register entities for top n cheapest fuel stations in this area",
-                    "cheapest_stations_count": "Number of cheapest fuel station entities to create",
-                    "cheapest_stations_fuel_type": "The fuel type to use for the cheapest fuel station entites"
-                }
-            },
-            "area_update_select": {
-                "title": "Select area to update",
-                "data": {
-                    "name": "Area name"
-                }
-            },
-            "area_update": {
-                "title": "Create an area",
-                "description": "Using this menu you can create areas to register devices and sensors. This integration will create a device for each fuel station discovered, under this a sensor will be created for each fuel type.",
-                "data": {
-                    "name": "Area name (must be unique)",
-                    "radius": "Maximum search radius",
-                    "latitude": "Latitude for the center of the search location",
-                    "longitude": "Longitude for the center of the search location",
-                    "cheapest_stations": "Register entities for top n cheapest fuel stations in this area",
-                    "cheapest_stations_count": "Number of cheapest fuel station entities to create",
-                    "cheapest_stations_fuel_type": "The fuel type to use for the cheapest fuel station entites"
-                }
-            },
-            "area_delete": {
-                "title": "Select area to delete",
-                "data": {
-                    "name": "Area name"
-                }
+                },
+                "description": "Using this menu you can change what providers the integration will collect data from.",
+                "title": "Configure data collection sources"
             }
         }
-    }
+    },
+    "services": {
+        "find_fuel_station": {
+            "description": "Find all of the available fuel stations, alongside available fuels and cost for a given location. The results are not sorted.",
+            "fields": {
+                "location": {
+                    "description": "The location of the area to search",
+                    "name": "Location"
+                },
+                "source": {
+                    "description": "The data source ID to search, defaults to 'any' for all data sources.",
+                    "name": "Data Source to search"
+                }
+            },
+            "name": "Find fuel stations from location"
+        },
+        "find_fuels": {
+            "description": "This will retrieve all fuel prices for a given location sorted by the cheapest first.",
+            "fields": {
+                "location": {
+                    "description": "The location of the area to search",
+                    "name": "Location"
+                },
+                "source": {
+                    "description": "The data source ID to search, defaults to 'any' for all data sources.",
+                    "name": "Data Source to search"
+                },
+                "type": {
+                    "description": "The fuel type to search for (such as E5, E10, B7, SDV)",
+                    "name": "Fuel Type"
+                }
+            },
+            "name": "Find fuel prices from location"
+        }
+    },
+    "title": "Fuel Prices"
 }

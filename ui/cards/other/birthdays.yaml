@@ -11,53 +11,66 @@ cards:
         opacity: 1;
         }
   - type: custom:auto-entities
+    unique: true
+    show_empty: false
     card:
-      type: entities
-      show_header_toggle: false
-      card_mod:
-        style: |
-          ha-card {
-            background: none;
-            box-shadow: none;
-          }
-          .card-content {
-            padding: 0 !important
-          }
+      type: custom:layout-card
+      layout_type: masonry
+    card_param: cards
     filter:
-      include:
-        - entity_id: sensor.anniversary_*
-          options:
-            type: custom:mushroom-template-card
-            icon: mdi:gift
-            primary: |
-              {{ state_attr(entity, 'friendly_name') }} ({{state_attr(entity, 'years_at_anniversary') }})
-            icon_color: green
-            secondary: "{{ states(entity) }} days"
-            badge_icon: |-
-              {%- set event = int(states(entity)) %}
-              {% if (event) <= 10 %}
-              mdi:exclamation-thick
-              {% endif%}
-            badge_color: red
-            card_mod:
-              style:
-                mushroom-shape-icon$: |
-                  .shape {
-                    background: radial-gradient(var(--card-background-color) 60%, transparent 0%), conic-gradient(rgb(var(--rgb-red)) {{ (365-int(states(config.entity)))/365*100 }}% 0%, var(--card-background-color) 0% 100%);
-                  }
-                  .shape:after {
-                    content: "";
-                    height: 100%;
-                    width: 100%;
-                    position: absolute;
-                    border-radius: 50%;
-                    background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
-                  }
-      exclude:
-        - entity_id: sensor.anniversary_days*
-        - entity_id: sensor.anniversary_datetracking_my*
+      template: |
+        {%- for s in expand(integration_entities('anniversaries'))
+            | selectattr('state', 'is_number')
+            | rejectattr('entity_id', 'search', '^sensor\.anniversary_days')
+            | rejectattr('entity_id', 'search', 'sensor.anniversary_days*')
+            | rejectattr('entity_id', 'search', 'sensor.anniversary_myworkbirthday')
+            | sort(attribute='attributes.weeks_remaining', reverse=false)
+        -%}
+          {%- set e = s.entity_id -%}
+          {%- set fname = state_attr(e, 'friendly_name') or 'Birthday' -%}
+          {%- set name = 'Thomas' if fname == 'My Birthday' else fname.split("'")[0] -%}
+          {%- set years = state_attr(e, 'years_at_anniversary') | int(0) -%}
+          {%- set days_left = states(e) | int(0) -%}
+          {%- set current_date = now() -%}
+          {%- set start_of_year = current_date.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0) -%}
+          {%- set next_dt = as_datetime(state_attr(e,'next_date')) if state_attr(e,'next_date') else (now() + timedelta(days=1)) -%}
+        
+          {{
+            {
+              "type": "custom:timeflow-card",
+              "title": name ~ "’s " ~ years ~ (
+                'st' if years % 10 == 1 and years % 100 != 11 else
+                'nd' if years % 10 == 2 and years % 100 != 12 else
+                'rd' if years % 10 == 3 and years % 100 != 13 else
+                'th'
+              ) ~ " Birthday",
+              "target_date": next_dt.replace(tzinfo=None).isoformat(),
+              "creation_date": start_of_year.isoformat(),
+              "show_days": true,
+              "show_hours": false,
+              "show_minutes": false,
+              "show_seconds": false,
+              "icon": "mdi:gift",
+              "text_color": (
+                "#FF6B6B" if days_left == 0 else
+                "#4ECDC4" if days_left <= 7 else
+                "#45B7D1" if days_left <= 30 else
+                "#96CEB4"
+              ),
+              "background_color": "#2C3150",
+              "progress_color": "#D0CFCF",
+              "aspect_ratio": "4/2",
+              "stroke_width": 12,
+              "compact_format": false,
+              "style": "classic-compact",
+              "card_mod": {
+                "style": "ha-card .title {font-size: 1rem;} ha-card .subtitle {font-size: 1rem;}"
+              }
+            }
+          }},
+        {%- endfor -%}
+
     sort:
-      method: attribute
-      attribute: weeks_remaining
-      reverse: false
+      method: state
       numeric: true
+

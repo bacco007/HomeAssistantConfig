@@ -50,7 +50,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         raise ConfigEntryNotReady("Failed to Log-in") from err
     coordinator = PlexDataCoordinator(hass, client)
 
-    hass.http.register_view(ImagesRedirect(config_entry))
+    hass.http.register_view(ImagesRedirect(hass, config_entry))
     await coordinator.async_config_entry_first_refresh()
     hass.data.setdefault(DOMAIN, {})[config_entry.entry_id] = coordinator
 

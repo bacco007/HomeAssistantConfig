@@ -14,7 +14,7 @@ cards:
     columns: 1
     type: grid
     cards:
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         multiline_secondary: true
         primary: "NBN FTTN Upgrade > Home"
         secondary: >-
@@ -67,7 +67,7 @@ cards:
                 padding-top: 5px !important;
                 padding-bottom: 5px !important;
               }
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         multiline_secondary: true
         primary: "NBN FTTN Upgrade > Work"
         secondary: >-

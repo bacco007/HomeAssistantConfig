@@ -1,7 +1,9 @@
 {
     "domain": "variable",
     "name": "Variables+History",
-    "after_dependencies": ["recorder"],
+    "after_dependencies": [
+        "recorder"
+    ],
     "codeowners": [
         "@rogro82",
         "@enkama",
@@ -12,6 +14,8 @@
     "documentation": "https://github.com/enkama/hass-variables",
     "iot_class": "local_push",
     "issue_tracker": "https://github.com/enkama/hass-variables/issues",
-    "requirements": ["iso4217>=1.11.20220401"],
-    "version": "3.4.9"
+    "requirements": [
+        "iso4217>=1.11.20220401"
+    ],
+    "version": "3.5.5"
 }

@@ -6,7 +6,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
 
-from .const import DOMAIN, TIMEOUT_MINUTES
+from .const import DOMAIN, POLL_INTERVAL_MINUTES
 from .plex_api import (
     PlexApi,
     FailedToLogin,
@@ -23,11 +23,11 @@ class PlexDataCoordinator(DataUpdateCoordinator[Dict[str, Any]]):
             _LOGGER,
             name=DOMAIN,
             update_method=self._async_update_data,
-            update_interval=timedelta(minutes=TIMEOUT_MINUTES),
+            update_interval=timedelta(minutes=POLL_INTERVAL_MINUTES),
         )
     
     async def _async_update_data(self) -> Dict[str, Any]:
         try:
             return await self._client.update()
-        except FailedToLogin:
+        except FailedToLogin as err:
             raise ConfigEntryError("Failed to Log-in") from err

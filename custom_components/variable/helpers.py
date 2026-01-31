@@ -1,11 +1,121 @@
 from __future__ import annotations
 
+import copy
 import datetime
 import logging
+from collections.abc import MutableMapping
+from typing import Any
 
 import homeassistant.util.dt as dt_util
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def _parse_attribute_path(path: str) -> list:
+    tokens: list = []
+    buffer = ""
+    index = 0
+    while index < len(path):
+        char = path[index]
+        if char == ".":
+            if buffer:
+                tokens.append(buffer)
+                buffer = ""
+            index += 1
+            continue
+        if char == "[":
+            if buffer:
+                tokens.append(buffer)
+                buffer = ""
+            closing = path.find("]", index)
+            if closing == -1:
+                raise ValueError(f"Invalid attribute path: {path}")
+            index_str = path[index + 1:closing]
+            if not index_str.isdigit():
+                raise ValueError(f"Invalid list index in attribute path: {path}")
+            tokens.append(int(index_str))
+            index = closing + 1
+            continue
+        buffer += char
+        index += 1
+    if buffer:
+        tokens.append(buffer)
+    return tokens
+
+
+def looks_like_attribute_path(path: str) -> bool:
+    if "[" in path:
+        return True
+    if "." not in path:
+        return False
+    try:
+        tokens = _parse_attribute_path(path)
+    except ValueError:
+        return False
+    return len(tokens) > 1
+
+
+def set_nested_attribute(target: MutableMapping, path: str, value) -> None:
+    tokens = _parse_attribute_path(path)
+    if not tokens:
+        raise ValueError("Attribute path cannot be empty")
+
+    current = target
+    for idx, token in enumerate(tokens):
+        is_last = idx == len(tokens) - 1
+        if isinstance(token, str):
+            if not isinstance(current, MutableMapping):
+                raise ValueError(
+                    f"Expected mapping while navigating attribute path: {path}"
+                )
+            if is_last:
+                current[token] = copy.deepcopy(value)
+            else:
+                next_token = tokens[idx + 1]
+                existing = current.get(token)
+                if isinstance(next_token, int):
+                    if not isinstance(existing, list):
+                        existing = []
+                else:
+                    if not isinstance(existing, MutableMapping):
+                        existing = {}
+                current[token] = existing
+                current = existing
+        else:
+            if not isinstance(current, list):
+                raise ValueError(
+                    f"Expected list while navigating attribute path: {path}"
+                )
+            next_token = tokens[idx + 1] if not is_last else None
+            if is_last:
+                while len(current) <= token:
+                    current.append(None)
+                current[token] = copy.deepcopy(value)
+            else:
+                next_container: list[Any] | MutableMapping[str, Any] = (
+                    [] if isinstance(next_token, int) else {}
+                )
+                while len(current) <= token:
+                    current.append(copy.deepcopy(next_container))
+                if isinstance(next_token, int):
+                    if not isinstance(current[token], list):
+                        current[token] = []
+                else:
+                    if not isinstance(current[token], MutableMapping):
+                        current[token] = {}
+                current = current[token]
+
+
+def merge_attribute_dict(
+    existing: MutableMapping | None, updates: MutableMapping
+) -> MutableMapping:
+    merged: MutableMapping = copy.deepcopy(existing) if existing is not None else {}
+    for attr, value in updates.items():
+        if isinstance(attr, str) and looks_like_attribute_path(attr):
+            set_nested_attribute(merged, attr, value)
+        else:
+            merged[attr] = copy.deepcopy(value)
+    return merged
 
 
 def to_num(s):

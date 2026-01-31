@@ -1,0 +1,118 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Integration Connectivity Status
+    icon: mdi:home-assistant
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+    modules:
+      - default
+  - type: entities
+    entities:
+      - type: custom:auto-entities
+        filter:
+          template: |-
+            {% for x in  expand('group.connectivity_monitors')
+              | rejectattr('entity_id', 'in', ['binary_sensor.ha_connected_integration_offline_integrations'])
+              | selectattr('state', 'eq', 'off')
+              |map(attribute='entity_id')
+              |list|sort -%}
+              {{
+                {
+                   "entity": x,
+                   "name": state_attr(x, 'friendly_name')|replace("[HA Connected Integration] ",""),
+                   "type": "custom:multiple-entity-row",
+                   "secondary_info": "last-changed",
+                   "show_state": false,
+                   "entities": [
+                      {
+                         "icon": "mdi:alert-decagram"
+                      },
+                      {
+                         "icon": "mdi:check-decagram"
+                      }
+                   ],
+                   "card_mod": {
+                      "style": {
+                         "hui-generic-entity-row $": "",
+                         ".": "div.entity:nth-child(1) state-badge {\n  color: {% if is_state(config.entity, 'off') %} #db4437 {% else %} var(--secondary-text-color) {% endif %}\n}\ndiv.entity:nth-child(2) state-badge {\n  color: {% if is_state(config.entity, 'on') %} #43a047 {% else %} var(--secondary-text-color) {% endif %}\n}\n"
+                      }
+                   }
+                }
+              }},
+            {%- endfor %}
+        card:
+          type: custom:fold-entity-row
+          open: true
+          head:
+            type: custom:template-entity-row
+            name: Integrations with Issues
+            icon: mdi:text-box-check
+            state: >
+              {{expand('group.connectivity_monitors')
+
+              | rejectattr('entity_id', 'in',
+              ['binary_sensor.ha_connected_integration_offline_integrations'])
+
+              | selectattr('state', 'eq', 'off')
+
+              |map(attribute='entity_id')
+
+              |list|count}}
+      - type: custom:auto-entities
+        filter:
+          template: |-
+            {% for x in  expand('group.connectivity_monitors')
+              | rejectattr('entity_id', 'in', ['binary_sensor.ha_connected_integration_offline_integrations'])
+              | selectattr('state', 'eq', 'on')
+              |map(attribute='entity_id')
+              |list|sort -%}
+              {{
+                {
+                   "entity": x,
+                   "name": state_attr(x, 'friendly_name')|replace("[HA Connected Integration] ",""),
+                   "type": "custom:multiple-entity-row",
+                   "secondary_info": "last-changed",
+                   "show_state": false,
+                   "entities": [
+                      {
+                         "icon": "mdi:alert-decagram"
+                      },
+                      {
+                         "icon": "mdi:check-decagram"
+                      }
+                   ],
+                   "card_mod": {
+                      "style": {
+                         "hui-generic-entity-row $": "",
+                         ".": "div.entity:nth-child(1) state-badge {\n  color: {% if is_state(config.entity, 'off') %} #db4437 {% else %} var(--secondary-text-color) {% endif %}\n}\ndiv.entity:nth-child(2) state-badge {\n  color: {% if is_state(config.entity, 'on') %} #43a047 {% else %} var(--secondary-text-color) {% endif %}\n}\n"
+                      }
+                   }
+                }
+              }},
+            {%- endfor %}
+        card:
+          type: custom:fold-entity-row
+          head:
+            type: custom:template-entity-row
+            name: Integrations without Issues
+            icon: mdi:text-box-check
+            state: >
+              {{expand('group.connectivity_monitors')
+
+              | rejectattr('entity_id', 'in',
+              ['binary_sensor.ha_connected_integration_offline_integrations'])
+
+              | selectattr('state', 'eq', 'on')
+
+              |map(attribute='entity_id')
+
+              |list|count}}
+          padding: 5
+          group_config:
+            secondary_info: last-changed

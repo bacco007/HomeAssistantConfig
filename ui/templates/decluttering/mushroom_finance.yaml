@@ -22,7 +22,7 @@ mushroom_finance:
             box-shadow: none;
           }
       cards:
-        - type: custom:mushroom-template-card
+        - type: custom:mushroom-legacy-template-card
           entity: "[[entity]]"
           primary: "{{state_attr(entity, 'symbol')}}"
           secondary: "{{state_attr(entity, 'friendly_name')}}"
@@ -36,7 +36,7 @@ mushroom_finance:
                 border: 0;
                 box-shadow: none;
               }
-        - type: custom:mushroom-template-card
+        - type: custom:mushroom-legacy-template-card
           entity: "[[entity]]"
           primary: >
             {% if state_attr(entity, 'currencySymbol') == none

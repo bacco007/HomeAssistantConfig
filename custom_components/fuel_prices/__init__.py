@@ -2,18 +2,13 @@
 
 import logging
 
-from datetime import timedelta
 from dataclasses import dataclass
 
 from pyfuelprices import FuelPrices
-from pyfuelprices.const import PROP_AREA_LAT, PROP_AREA_LONG, PROP_AREA_RADIUS
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     Platform,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_RADIUS,
     CONF_TIMEOUT,
     CONF_SCAN_INTERVAL,
     CONF_NAME
@@ -25,9 +20,18 @@ from homeassistant.core import (
     SupportsResponse,
 )
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
-from .const import DOMAIN, CONF_AREAS, CONF_SOURCES, CONF_CHEAPEST_SENSORS, CONF_CHEAPEST_SENSORS_COUNT, CONF_CHEAPEST_SENSORS_FUEL_TYPE
+from .const import (
+    DOMAIN,
+    CONF_AREAS,
+    CONF_SOURCES,
+    CONF_CHEAPEST_SENSORS,
+    CONF_CHEAPEST_SENSORS_COUNT,
+    CONF_CHEAPEST_SENSORS_FUEL_TYPE
+)
 from .coordinator import FuelPricesCoordinator
+from .repairs import raise_feature_deprecation
 
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = [Platform.SENSOR]
@@ -45,36 +49,42 @@ class FuelPricesConfig:
 type FuelPricesConfigEntry = ConfigEntry[FuelPricesConfig]
 
 
-def _build_configured_areas(hass_areas: dict) -> list[dict]:
-    module_areas = []
-    for area in hass_areas:
-        module_areas.append(
-            {
-                PROP_AREA_RADIUS: area[CONF_RADIUS],
-                PROP_AREA_LAT: area[CONF_LATITUDE],
-                PROP_AREA_LONG: area[CONF_LONGITUDE],
-            }
-        )
-    return module_areas
-
-
-async def async_setup_entry(hass: HomeAssistant, entry: FuelPricesConfigEntry) -> bool:
-    """Create ConfigEntry."""
+def _build_module_config(entry: FuelPricesConfigEntry) -> dict:
+    """Build a given config entry into the config dict for the pyfuelprices module."""
     sources = entry.options.get(
-        CONF_SOURCES, entry.data.get(CONF_SOURCES, None))
+        CONF_SOURCES, entry.data.get(CONF_SOURCES, {}))
     areas = entry.options.get(CONF_AREAS, entry.data.get(CONF_AREAS, None))
     timeout = entry.options.get(CONF_TIMEOUT, entry.data.get(CONF_TIMEOUT, 30))
     update_interval = entry.options.get(
         CONF_SCAN_INTERVAL, entry.data.get(CONF_SCAN_INTERVAL, 1440)
     )
+    return {
+        "areas": areas,
+        "providers": sources,
+        "timeout": timeout,
+        "update_interval": update_interval
+    }
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: FuelPricesConfigEntry) -> bool:
+    """Create ConfigEntry."""
+
     default_lat = hass.config.latitude
     default_long = hass.config.longitude
+    mod_config = _build_module_config(entry)
+    for area in mod_config["areas"]:
+        if area.get(CONF_CHEAPEST_SENSORS, False) and area.get(CONF_CHEAPEST_SENSORS_FUEL_TYPE) is not None:
+            raise_feature_deprecation(
+                hass,
+                entry,
+                CONF_CHEAPEST_SENSORS,
+                "2025.11.0"
+            )
+            break
     try:
         fuel_prices: FuelPrices = FuelPrices.create(
-            enabled_sources=sources,
-            configured_areas=_build_configured_areas(areas),
-            timeout=timedelta(seconds=timeout),
-            update_interval=timedelta(minutes=update_interval),
+            client_session=async_create_clientsession(hass),
+            configuration=mod_config
         )
     except Exception as err:
         _LOGGER.error(err)
@@ -144,7 +154,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: FuelPricesConfigEntry) -
     hass.services.async_register(DOMAIN, "force_update", handle_force_update)
 
     entry.runtime_data = FuelPricesConfig(
-        coordinator=coordinator, areas=areas, config=entry)
+        coordinator=coordinator, areas=mod_config[CONF_AREAS], config=entry)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
@@ -160,11 +170,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: FuelPricesConfigEntry) -
 async def async_unload_entry(hass: HomeAssistant, entry: FuelPricesConfigEntry) -> bool:
     """Unload a config entry."""
     _LOGGER.debug("Unloading config entry %s", entry.entry_id)
-    await entry.runtime_data.coordinator.api.client_session.close()
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     return unload_ok
-
-# Example migration function
 
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
@@ -176,12 +183,24 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     if config_entry.options:
         new_data = {**config_entry.options}
 
-    if config_entry.version > 2:
+    if config_entry.version > 4:
         # This means the user has downgraded from a future version
         return False
 
+    if config_entry.version == 3:
+        _LOGGER.warning("Updating configuration for fuel prices.")
+        sources = new_data[CONF_SOURCES]
+        providers = {}
+        for source in sources:
+            providers[source] = {}
+        new_data[CONF_SOURCES] = providers
+        new_data[CONF_SCAN_INTERVAL] = new_data[CONF_SCAN_INTERVAL]/60
+        hass.config_entries.async_update_entry(
+            config_entry, data=new_data, version=4, options=new_data
+        )
+
     if config_entry.version == 2:
-        _LOGGER.warning("Removing jet and morrisons from config entry.")
+        _LOGGER.warning("Removing morrisons from config entry.")
         if "morrisons" in new_data[CONF_SOURCES]:
             new_data[CONF_SOURCES].remove("morrisons")
         hass.config_entries.async_update_entry(

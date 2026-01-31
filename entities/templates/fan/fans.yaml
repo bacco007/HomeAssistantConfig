@@ -1,0 +1,87 @@
+---
+fan:
+  - name: "[Fan] Office Fan"
+    unique_id: office_fan
+    speed_count: 3
+
+    state: "{{ is_state('input_boolean.office_fan_state', 'on') }}"
+
+    percentage: >-
+      {% set perval = states('input_number.office_fan_speed') | int(0) %}
+      {% if perval == 3 %}
+        100
+      {% elif perval == 2 %}
+        66
+      {% elif perval == 1 %}
+        33
+      {% else %}
+        0
+      {% endif %}
+
+    turn_on:
+      service: script.fan_on
+      data:
+        fan: office_fan
+
+    turn_off:
+      service: script.fan_off
+      data:
+        fan: office_fan
+
+    set_percentage:
+      service: script.fan_set_speed_state
+      data:
+        fan: office_fan
+        speed: >-
+          {% if percentage == 100 %}
+            3
+          {% elif percentage == 66 %}
+            2
+          {% elif percentage == 33 %}
+            1
+          {% else %}
+            0
+          {% endif %}
+
+  - name: "[Fan] Bedroom Fan"
+    unique_id: bedroom_fan
+    speed_count: 3
+
+    state: "{{ is_state('input_boolean.bedroom_fan_state', 'on') }}"
+
+    percentage: >-
+      {% set perval = states('input_number.bedroom_fan_speed') | int(0) %}
+      {% if perval == 3 %}
+        100
+      {% elif perval == 2 %}
+        66
+      {% elif perval == 1 %}
+        33
+      {% else %}
+        0
+      {% endif %}
+
+    turn_on:
+      service: script.fan_on
+      data:
+        fan: bedroom_fan
+
+    turn_off:
+      service: script.fan_off
+      data:
+        fan: bedroom_fan
+
+    set_percentage:
+      service: script.fan_set_speed_state
+      data:
+        fan: bedroom_fan
+        speed: >-
+          {% if percentage == 100 %}
+            3
+          {% elif percentage == 66 %}
+            2
+          {% elif percentage == 33 %}
+            1
+          {% else %}
+            0
+          {% endif %}

@@ -1,0 +1,73 @@
+---
+trigger:
+  platform: time_pattern
+  minutes: "/1"
+sensor:
+  - name: eink_display_data_greeting
+    unique_id: eink_display_data_greeting
+    icon: ios:display-2
+    availability: "true"
+    state: >
+      {%- if now() > today_at('18:00') %}
+        Good evening
+      {%- elif now() > today_at('12:00') %}
+        Good afternoon
+      {%- elif now() > today_at('5:00') %}
+        Good morning
+      {%- else %}
+        Good night
+      {%- endif %}
+  - name: eink_display_data_media_playing_status
+    unique_id: eink_display_data_media_playing_status
+    icon: ios:display-2
+    availability: "true"
+    state: >
+      {{ states('media_player.currently_playing') }}
+  - name: eink_display_data_media_playing_title
+    unique_id: eink_display_data_media_playing_title
+    icon: ios:display-2
+    availability: "true"
+    state: >
+      {{ state_attr('media_player.currently_playing', 'media_title') | title }}
+  - name: eink_display_data_media_playing_artist
+    unique_id: eink_display_data_media_playing_artist
+    icon: ios:display-2
+    availability: "true"
+    state: >
+      {{ state_attr('media_player.currently_playing', 'media_artist') | title }} (on {{ state_attr('media_player.currently_playing', 'media_channel') | title }})
+  - name: eink_display_data_media_weather_forecast_1
+    unique_id: eink_display_data_weather_forecast_1
+    icon: ios:display-2
+    availability: "true"
+    state: >
+      {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[1].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[1].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[1].temperature  | int}}°C
+  - name: eink_display_data_media_weather_forecast_2
+    unique_id: eink_display_data_weather_forecast_2
+    icon: ios:display-2
+    availability: "true"
+    state: >
+      {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[2].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[2].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[2].temperature  | int}}°C
+  - name: eink_display_data_media_weather_forecast_3
+    unique_id: eink_display_data_weather_forecast_3
+    icon: ios:display-2
+    availability: "true"
+    state: >
+      {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[3].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[3].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[3].temperature  | int}}°C
+  - name: eink_display_data_media_weather_forecast_4
+    unique_id: eink_display_data_weather_forecast_4
+    icon: ios:display-2
+    availability: "true"
+    state: >
+      {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[4].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[4].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[4].temperature  | int}}°C
+  - name: eink_display_data_media_weather_forecast_5
+    unique_id: eink_display_data_weather_forecast_5
+    icon: ios:display-2
+    availability: "true"
+    state: >
+      {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[5].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[5].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[5].temperature  | int}}°C
+  - name: eink_display_data_media_weather_forecast_6
+    unique_id: eink_display_data_weather_forecast_6
+    icon: ios:display-2
+    availability: "true"
+    state: >
+      {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[6].datetime| as_timestamp | timestamp_custom('%a', True)}}: {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[6].templow | int }}°C - {{ state_attr('sensor.weather_forecasts', 'weatherflow_forecast_brisbane_st_daily')[6].temperature  | int}}°C

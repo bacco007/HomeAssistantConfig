@@ -44,6 +44,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if hass.data.get(DOMAIN) is None:
         hass.data.setdefault(DOMAIN, {})
         _LOGGER.info(STARTUP_MESSAGE)
+    if entry.entry_id in hass.data[DOMAIN]:
+        _LOGGER.warning(f"Sensor '{entry.title}' already set up. Updating config dynamically.")
+        existing_data = hass.data[DOMAIN][entry.entry_id]
+        existing_entity = existing_data.get("entity")
+        if existing_entity:
+            await existing_entity.async_update_config(entry.data)
+        return True
     name = entry.data.get(CONF_NAME)
     name_no_spaces_but_underscores = name.replace(" ", "_")
     input_sensor = entry.data.get(CONF_INPUT_SENSOR)
@@ -138,23 +145,56 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def options_update_listener(hass, config_entry):
     """Handle options update."""
-    hass.data[DOMAIN][config_entry.entry_id][CONF_INTERVAL] = config_entry.options.get(
-        CONF_INTERVAL
-    )
-    hass.data[DOMAIN][config_entry.entry_id][CONF_INPUT_SENSOR] = (
-        config_entry.options.get(CONF_INPUT_SENSOR)
-    )
-    hass.data[DOMAIN][config_entry.entry_id][CONF_AUTO_RESET] = (
-        config_entry.options.get(CONF_AUTO_RESET)
-    )
-    hass.data[DOMAIN][config_entry.entry_id][CONF_OPERATION] = config_entry.options.get(
-        CONF_OPERATION
-    )
-    hass.data[DOMAIN][config_entry.entry_id][CONF_UNIT_OF_MEASUREMENT] = (
-        config_entry.options.get(CONF_UNIT_OF_MEASUREMENT)
-    )
-    await hass.config_entries.async_reload(config_entry.entry_id)
+    coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
+    # Update interval if changed
+    new_interval = config_entry.options.get(CONF_INTERVAL)
+    if new_interval is not None and int(new_interval) != coordinator.interval:
+        _LOGGER.info(
+            "Changing update interval (no reload) to %s seconds for entry '%s'.",
+            new_interval,
+            config_entry.entry_id,
+        )
+        coordinator.interval = int(new_interval)
+        coordinator.update_interval = timedelta(seconds=coordinator.interval)
+
+    # Update input sensor if changed
+    new_input = config_entry.options.get(CONF_INPUT_SENSOR)
+    if new_input and new_input != coordinator.input_sensor:
+        _LOGGER.info("Changing input sensor from '%s' to '%s'.", coordinator.input_sensor, new_input)
+        coordinator.input_sensor = new_input
+        sensor_entity = coordinator.entities.get("sensor")
+        if sensor_entity:
+            sensor_entity.async_write_ha_state()
+
+    # Update auto_reset if changed
+    new_auto_reset = config_entry.options.get(CONF_AUTO_RESET)
+    if new_auto_reset is not None and new_auto_reset != coordinator.auto_reset:
+        _LOGGER.info("Changing auto_reset from '%s' to '%s'.", coordinator.auto_reset, new_auto_reset)
+        coordinator.auto_reset = new_auto_reset
+        sensor_entity = coordinator.entities.get("sensor")
+        if sensor_entity:
+            sensor_entity.async_write_ha_state()
+
+    # Update operation if changed
+    new_operation = config_entry.options.get(CONF_OPERATION)
+    if new_operation and new_operation != coordinator.operation:
+        _LOGGER.info("Changing operation from '%s' to '%s'.", coordinator.operation, new_operation)
+        coordinator.operation = new_operation
+        sensor_entity = coordinator.entities.get("sensor")
+        if sensor_entity:
+            sensor_entity.async_write_ha_state()
+
+    # Update unit_of_measurement if changed
+    new_uom = config_entry.options.get(CONF_UNIT_OF_MEASUREMENT)
+    if new_uom and new_uom != coordinator.unit_of_measurement:
+        _LOGGER.info("Changing unit_of_measurement from '%s' to '%s'.", coordinator.unit_of_measurement, new_uom)
+        coordinator.unit_of_measurement = new_uom
+        sensor_entity = coordinator.entities.get("sensor")
+        if sensor_entity:
+            sensor_entity.async_write_ha_state()
+
+    await coordinator.async_request_refresh()
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Handle removal of an entry."""

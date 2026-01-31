@@ -73,7 +73,7 @@ cards:
     scrolling_effect: false
     show_name: true
     show_attribute: false
-  - type: custom:mushroom-template-card
+  - type: custom:mushroom-legacy-template-card
     primary: Closest Plane Overhead
     secondary: >-
       {{states(entity)}}, {{state_attr(entity, 'aircraft_rego')}}
@@ -123,7 +123,7 @@ cards:
             box-shadow: none;
           }
 
-  - type: custom:mushroom-template-card
+  - type: custom:mushroom-legacy-template-card
     primary: Last Plane of Interest (Plane Fence)
     secondary: >-
       {% from 'easy_time.jinja' import custom_relative_time %}

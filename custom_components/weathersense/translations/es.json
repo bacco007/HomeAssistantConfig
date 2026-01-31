@@ -1,0 +1,41 @@
+{
+  "config": {
+    "title": "HA WeatherSense",
+    "step": {
+      "user": {
+        "title": "Configurar HA WeatherSense",
+        "description": "Configurar un sensor para calcular la temperatura percibida basada en las condiciones ambientales.",
+        "data": {
+          "name": "Nombre del Sensor",
+          "temperature_sensor": "Sensor de Temperatura",
+          "humidity_sensor": "Sensor de Humedad",
+          "wind_speed_sensor": "Sensor de Velocidad del Viento (opcional)",
+          "pressure_sensor": "Sensor de Presión (opcional)",
+          "solar_radiation_sensor": "Sensor de Radiación Solar (opcional)",
+          "is_outdoor": "¿Es esto para condiciones exteriores?",
+          "display_unit": "Unidad de Visualización de Temperatura"
+        }
+      }
+    },
+    "error": {
+      "temperature_required": "El sensor de temperatura es obligatorio",
+      "humidity_required": "El sensor de humedad es obligatorio"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opciones de HA WeatherSense",
+        "data": {
+          "temperature_sensor": "Sensor de Temperatura",
+          "humidity_sensor": "Sensor de Humedad",
+          "wind_speed_sensor": "Sensor de Velocidad del Viento (opcional)",
+          "pressure_sensor": "Sensor de Presión (opcional)",
+          "solar_radiation_sensor": "Sensor de Radiación Solar (opcional)",
+          "is_outdoor": "¿Es esto para condiciones exteriores?",
+          "display_unit": "Unidad de Visualización de Temperatura"
+        }
+      }
+    }
+  }
+}

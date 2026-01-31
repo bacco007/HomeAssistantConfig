@@ -1,8 +1,9 @@
 """Support for Node-RED discovery."""
 
-import asyncio
 import logging
+from typing import Any
 
+from homeassistant.components.websocket_api.connection import ActiveConnection
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import (
     async_dispatcher_connect,
@@ -42,68 +43,55 @@ SUPPORTED_COMPONENTS = [
 
 _LOGGER = logging.getLogger(__name__)
 
-ALREADY_DISCOVERED = "discovered_components"
+ALREADY_DISCOVERED = "already_discovered"
 CHANGE_ENTITY_TYPE = "change_entity_type"
-CONFIG_ENTRY_LOCK = "config_entry_lock"
-CONFIG_ENTRY_IS_SETUP = "config_entry_is_setup"
+PLATFORMS_LOADED = "platforms_loaded"
 DISCOVERY_DISPATCHED = "discovery_dispatched"
 
 
-async def start_discovery(hass: HomeAssistant, hass_config, config_entry=None) -> bool:
+async def start_discovery(hass: HomeAssistant, hass_config: dict) -> None:
     """Initialize of Node-RED Discovery."""
 
-    async def async_device_message_received(msg, connection):
+    async def async_device_message_received(
+        msg: dict[str, Any], connection: ActiveConnection
+    ) -> None:
         """Process the received message."""
         component = msg[CONF_COMPONENT]
         server_id = msg[CONF_SERVER_ID]
         node_id = msg[CONF_NODE_ID]
 
         if component not in SUPPORTED_COMPONENTS:
-            _LOGGER.warning(f"Integration {component} is not supported")
+            _LOGGER.warning("Integration %s is not supported", component)
             return
 
         discovery_hash = f"{DOMAIN}-{server_id}-{node_id}"
-        data = hass.data[DOMAIN_DATA]
+        data = hass_config
 
-        _LOGGER.debug(f"Discovery message: {msg}")
+        _LOGGER.debug("Discovery message: %s", msg)
 
         if ALREADY_DISCOVERED not in data:
-            data[ALREADY_DISCOVERED] = {}
-        if discovery_hash in data[ALREADY_DISCOVERED]:
-            if data[ALREADY_DISCOVERED][discovery_hash] != component:
-                # Remove old
-                log_text = f"Changing {data[ALREADY_DISCOVERED][discovery_hash]} to"
-                msg[CONF_REMOVE] = CHANGE_ENTITY_TYPE
-            elif CONF_REMOVE in msg:
-                log_text = "Removing"
-            else:
-                # Dispatch update
-                log_text = "Updating"
+            data[ALREADY_DISCOVERED] = set()
 
-            _LOGGER.info(f"{log_text} {component} {server_id} {node_id}")
+        # Check if already discovered
+        already_discovered = discovery_hash in data[ALREADY_DISCOVERED]
 
-            data[ALREADY_DISCOVERED][discovery_hash] = component
+        if already_discovered:
+            log_text = "Removing" if CONF_REMOVE in msg else "Updating"
+
+            _LOGGER.info("%s %s %s %s", log_text, component, server_id, node_id)
+
             async_dispatcher_send(
                 hass, NODERED_DISCOVERY_UPDATED.format(discovery_hash), msg, connection
             )
         else:
-            # Add component
-            _LOGGER.info(f"Creating {component} {server_id} {node_id}")
-            data[ALREADY_DISCOVERED][discovery_hash] = component
+            # Add component - ensure platform is set up first
+            _LOGGER.info("Creating %s %s %s", component, server_id, node_id)
 
-            async with data[CONFIG_ENTRY_LOCK]:
-                if component not in data[CONFIG_ENTRY_IS_SETUP]:
-                    await hass.config_entries.async_forward_entry_setups(
-                        config_entry, [component]
-                    )
-                    data[CONFIG_ENTRY_IS_SETUP].add(component)
+            data[ALREADY_DISCOVERED].add(discovery_hash)
 
             async_dispatcher_send(
                 hass, NODERED_DISCOVERY_NEW.format(component), msg, connection
             )
-
-    hass.data[DOMAIN_DATA][CONFIG_ENTRY_LOCK] = asyncio.Lock()
-    hass.data[DOMAIN_DATA][CONFIG_ENTRY_IS_SETUP] = set()
 
     hass.data[DOMAIN_DATA][DISCOVERY_DISPATCHED] = async_dispatcher_connect(
         hass,
@@ -112,6 +100,6 @@ async def start_discovery(hass: HomeAssistant, hass_config, config_entry=None) -
     )
 
 
-def stop_discovery(hass: HomeAssistant):
+def stop_discovery(hass: HomeAssistant) -> None:
     """Remove discovery dispatcher."""
     hass.data[DOMAIN_DATA][DISCOVERY_DISPATCHED]()

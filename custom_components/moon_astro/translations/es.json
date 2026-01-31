@@ -1,0 +1,348 @@
+{
+    "title": "Luna Astro",
+    "config": {
+        "step": {
+            "user": {
+                "title": "Luna Astro",
+                "description": "Configura tus coordenadas GPS y altitud.",
+                "data": {
+                    "latitude": "Latitud",
+                    "longitude": "Longitud",
+                    "altitude": "Altitud (m)"
+                }
+            },
+            "precision": {
+                "title": "Luna Astro",
+                "description": "El modo de alta precisión reduce la variabilidad de las marcas de tiempo, pero aumenta el uso de CPU porque utiliza un paso de muestreo más fino y un rango de refinamiento más amplio. No se recomienda activar esta opción en dispositivos de baja potencia como Raspberry Pi.",
+                "data": {
+                    "high_precision": "Modo de alta precisión"
+                }
+            }
+        },
+        "progress": {
+            "download_ephemeris": "Descargando la efeméride Skyfield DE440 (> 100 MB). Por favor, no cierres esta ventana durante la descarga..."
+        },
+        "abort": {
+            "already_configured": "Luna Astro ya está configurado",
+            "missing_data": "Faltan datos de configuración",
+            "reconfigure_successful": "Configuración actualizada"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Opciones de Luna Astro",
+                "description": "Ajusta el intervalo de actualización de los sensores y la gestión de la zona horaria.\n\nEl modo de alta precisión reduce la variabilidad de las marcas de tiempo, pero aumenta el uso de CPU porque utiliza un paso de muestreo más fino y un rango de refinamiento más amplio. No se recomienda en dispositivos de baja potencia como Raspberry Pi.\n\nEl intervalo de actualización de respaldo de eventos fuerza una actualización periódica de los sensores basados en eventos (fases siguientes/anteriores, apogeo/perigeo, zodiaco en las lunaciones) en caso de que se pierda la actualización programada alrededor del próximo evento (reinicio, cambio de hora, retraso). Valores más bajos actualizan con más frecuencia; valores más altos reducen el uso de CPU.",
+                "data": {
+                    "scan_interval": "Intervalo de actualización de los sensores (segundos)",
+                    "use_ha_timezone": "Usar la zona horaria de Home Assistant",
+                    "high_precision": "Modo de alta precisión",
+                    "events_refresh_fallback": "Intervalo de actualización de respaldo de eventos (segundos)"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "above_horizon": {
+                "name": "Sobre el horizonte",
+                "state": {
+                    "on": "Sobre el horizonte",
+                    "off": "Bajo el horizonte"
+                }
+            }
+        },
+        "sensor": {
+            "phase": {
+                "name": "Fase",
+                "state": {
+                    "new_moon": "Luna nueva",
+                    "waxing_crescent": "Creciente",
+                    "first_quarter": "Cuarto creciente",
+                    "waxing_gibbous": "Gibosa creciente",
+                    "full_moon": "Luna llena",
+                    "waning_gibbous": "Gibosa menguante",
+                    "last_quarter": "Cuarto menguante",
+                    "waning_crescent": "Menguante",
+                    "unknown": "Desconocida"
+                }
+            },
+            "azimuth": {
+                "name": "Acimut"
+            },
+            "elevation": {
+                "name": "Elevación"
+            },
+            "illumination": {
+                "name": "Iluminación"
+            },
+            "distance": {
+                "name": "Distancia"
+            },
+            "parallax": {
+                "name": "Paralaje"
+            },
+            "ecliptic_longitude_topocentric": {
+                "name": "Longitud eclíptica (topocéntrica)"
+            },
+            "ecliptic_latitude_topocentric": {
+                "name": "Latitud eclíptica (topocéntrica)"
+            },
+            "ecliptic_longitude_geocentric": {
+                "name": "Longitud eclíptica (geocéntrica)"
+            },
+            "ecliptic_latitude_geocentric": {
+                "name": "Latitud eclíptica (geocéntrica)"
+            },
+            "next_rise": {
+                "name": "Próximo orto"
+            },
+            "next_set": {
+                "name": "Próximo ocaso"
+            },
+            "next_apogee": {
+                "name": "Próximo apogeo"
+            },
+            "next_perigee": {
+                "name": "Próximo perigeo"
+            },
+            "next_new_moon": {
+                "name": "Próxima luna nueva"
+            },
+            "next_first_quarter": {
+                "name": "Próximo primer cuarto"
+            },
+            "next_full_moon": {
+                "name": "Próxima luna llena"
+            },
+            "next_full_moon_name": {
+                "name": "Nombre de la próxima luna llena",
+                "state": {
+                    "wolf_moon": "Luna del Lobo",
+                    "snow_moon": "Luna de Nieve",
+                    "worm_moon": "Luna del Gusano",
+                    "pink_moon": "Luna Rosa",
+                    "flower_moon": "Luna de las Flores",
+                    "strawberry_moon": "Luna de Fresa",
+                    "buck_moon": "Luna del Ciervo",
+                    "sturgeon_moon": "Luna del Esturión",
+                    "harvest_moon": "Luna de la Cosecha",
+                    "hunters_moon": "Luna del Cazador",
+                    "beaver_moon": "Luna del Castor",
+                    "cold_moon": "Luna Fría",
+                    "blue_moon": "Luna Azul",
+                    "unknown": "Desconocido"
+                }
+            },
+            "next_full_moon_alt_names": {
+                "name": "Nombres alternativos de la próxima luna llena",
+                "state": {
+                    "wolf_moon_alt_names": "Luna después de Yule, Luna de quedarse en casa, Luna silenciosa, Luna severa, Luna central",
+                    "snow_moon_alt_names": "Luna hambrienta, Luna del oso, Luna de tormenta, Luna de hielo",
+                    "worm_moon_alt_names": "Luna de Cuaresma, Luna del cuervo, Luna de costra, Luna casta, Luna de azúcar, Luna de savia",
+                    "pink_moon_alt_names": "Luna de romper el hielo, Luna de brotes, Luna del despertar, Luna del huevo, Luna pascual",
+                    "flower_moon_alt_names": "Luna de siembra, Luna de leche, Luna de liebre, Luna de hierba, Luna de las madres, Luna brillante",
+                    "strawberry_moon_alt_names": "Luna de la rosa, Luna caliente, Luna de hidromiel, Luna de las flores, Luna de siembra",
+                    "buck_moon_alt_names": "Luna del trueno, Luna del heno, Luna de hierbas",
+                    "sturgeon_moon_alt_names": "Luna del grano, Luna del maíz, Luna del lince, Luna del relámpago",
+                    "harvest_moon_alt_names": "Luna llena del maíz, Luna del maíz verde, Luna del maíz, Luna del vino, Luna de la canción, Luna de la cebada",
+                    "hunters_moon_alt_names": "Luna del arroz secándose, Luna de hojas que caen, Luna de congelación, Luna de sangre, Luna sanguina",
+                    "beaver_moon_alt_names": "Luna de escarcha, Luna de congelación, Luna del comercio, Luna de nieve, Luna de luto, Luna de las profundidades más oscuras",
+                    "cold_moon_alt_names": "Luna de las noches largas, Luna antes de Yule, Luna del roble, Luna fría llena",
+                    "unknown": ""
+                }
+            },
+            "next_last_quarter": {
+                "name": "Próximo último cuarto"
+            },
+
+            "previous_rise": {
+                "name": "Orto anterior"
+            },
+            "previous_set": {
+                "name": "Ocaso anterior"
+            },
+            "previous_apogee": {
+                "name": "Apogeo anterior"
+            },
+            "previous_perigee": {
+                "name": "Perigeo anterior"
+            },
+            "previous_new_moon": {
+                "name": "Luna nueva anterior"
+            },
+            "previous_first_quarter": {
+                "name": "Primer cuarto anterior"
+            },
+            "previous_full_moon": {
+                "name": "Luna llena anterior"
+            },
+            "previous_full_moon_name": {
+                "name": "Nombre de la luna llena anterior",
+                "state": {
+                    "wolf_moon": "Luna del Lobo",
+                    "snow_moon": "Luna de Nieve",
+                    "worm_moon": "Luna del Gusano",
+                    "pink_moon": "Luna Rosa",
+                    "flower_moon": "Luna de las Flores",
+                    "strawberry_moon": "Luna de Fresa",
+                    "buck_moon": "Luna del Ciervo",
+                    "sturgeon_moon": "Luna del Esturión",
+                    "harvest_moon": "Luna de la Cosecha",
+                    "hunters_moon": "Luna del Cazador",
+                    "beaver_moon": "Luna del Castor",
+                    "cold_moon": "Luna Fría",
+                    "blue_moon": "Luna Azul",
+                    "unknown": "Desconocido"
+                }
+            },
+            "previous_full_moon_alt_names": {
+                "name": "Nombres alternativos de la luna llena anterior",
+                "state": {
+                    "wolf_moon_alt_names": "Luna después de Yule, Luna de quedarse en casa, Luna silenciosa, Luna severa, Luna central",
+                    "snow_moon_alt_names": "Luna hambrienta, Luna del oso, Luna de tormenta, Luna de hielo",
+                    "worm_moon_alt_names": "Luna de Cuaresma, Luna del cuervo, Luna de costra, Luna casta, Luna de azúcar, Luna de savia",
+                    "pink_moon_alt_names": "Luna de romper el hielo, Luna de brotes, Luna del despertar, Luna del huevo, Luna pascual",
+                    "flower_moon_alt_names": "Luna de siembra, Luna de leche, Luna de liebre, Luna de hierba, Luna de las madres, Luna brillante",
+                    "strawberry_moon_alt_names": "Luna de la rosa, Luna caliente, Luna de hidromiel, Luna de las flores, Luna de siembra",
+                    "buck_moon_alt_names": "Luna del trueno, Luna del heno, Luna de hierbas",
+                    "sturgeon_moon_alt_names": "Luna del grano, Luna del maíz, Luna del lince, Luna del relámpago",
+                    "harvest_moon_alt_names": "Luna llena del maíz, Luna del maíz verde, Luna del maíz, Luna del vino, Luna de la canción, Luna de la cebada",
+                    "hunters_moon_alt_names": "Luna del arroz secándose, Luna de hojas que caen, Luna de congelación, Luna de sangre, Luna sanguina",
+                    "beaver_moon_alt_names": "Luna de escarcha, Luna de congelación, Luna del comercio, Luna de nieve, Luna de luto, Luna de las profundidades más oscuras",
+                    "cold_moon_alt_names": "Luna de las noches largas, Luna antes de Yule, Luna del roble, Luna fría llena",
+                    "unknown": ""
+                }
+            },
+            "previous_last_quarter": {
+                "name": "Último cuarto anterior"
+            },
+
+            "ecliptic_longitude_next_full_moon": {
+                "name": "Longitud eclíptica en la próxima luna llena"
+            },
+            "ecliptic_latitude_next_full_moon": {
+                "name": "Latitud eclíptica en la próxima luna llena"
+            },
+            "ecliptic_longitude_next_new_moon": {
+                "name": "Longitud eclíptica en la próxima luna nueva"
+            },
+            "ecliptic_latitude_next_new_moon": {
+                "name": "Latitud eclíptica en la próxima luna nueva"
+            },
+            "ecliptic_longitude_previous_full_moon": {
+                "name": "Longitud eclíptica en la luna llena anterior"
+            },
+            "ecliptic_latitude_previous_full_moon": {
+                "name": "Latitud eclíptica en la luna llena anterior"
+            },
+            "ecliptic_longitude_previous_new_moon": {
+                "name": "Longitud eclíptica en la luna nueva anterior"
+            },
+            "ecliptic_latitude_previous_new_moon": {
+                "name": "Latitud eclíptica en la luna nueva anterior"
+            },
+
+            "zodiac_sign_current_moon": {
+                "name": "Signo del zodiaco (actual)",
+                "state": {
+                    "aries": "Aries",
+                    "taurus": "Tauro",
+                    "gemini": "Géminis",
+                    "cancer": "Cáncer",
+                    "leo": "Leo",
+                    "virgo": "Virgo",
+                    "libra": "Libra",
+                    "scorpio": "Escorpio",
+                    "sagittarius": "Sagitario",
+                    "capricorn": "Capricornio",
+                    "aquarius": "Acuario",
+                    "pisces": "Piscis"
+                }
+            },
+            "zodiac_sign_next_new_moon": {
+                "name": "Signo del zodiaco en la próxima luna nueva",
+                "state": {
+                    "aries": "Aries",
+                    "taurus": "Tauro",
+                    "gemini": "Géminis",
+                    "cancer": "Cáncer",
+                    "leo": "Leo",
+                    "virgo": "Virgo",
+                    "libra": "Libra",
+                    "scorpio": "Escorpio",
+                    "sagittarius": "Sagitario",
+                    "capricorn": "Capricornio",
+                    "aquarius": "Acuario",
+                    "pisces": "Piscis"
+                }
+            },
+            "zodiac_sign_next_full_moon": {
+                "name": "Signo del zodiaco en la próxima luna llena",
+                "state": {
+                    "aries": "Aries",
+                    "taurus": "Tauro",
+                    "gemini": "Géminis",
+                    "cancer": "Cáncer",
+                    "leo": "Leo",
+                    "virgo": "Virgo",
+                    "libra": "Libra",
+                    "scorpio": "Escorpio",
+                    "sagittarius": "Sagitario",
+                    "capricorn": "Capricornio",
+                    "aquarius": "Acuario",
+                    "pisces": "Piscis"
+                }
+            },
+            "zodiac_sign_previous_new_moon": {
+                "name": "Signo del zodiaco en la luna nueva anterior",
+                "state": {
+                    "aries": "Aries",
+                    "taurus": "Tauro",
+                    "gemini": "Géminis",
+                    "cancer": "Cáncer",
+                    "leo": "Leo",
+                    "virgo": "Virgo",
+                    "libra": "Libra",
+                    "scorpio": "Escorpio",
+                    "sagittarius": "Sagitario",
+                    "capricorn": "Capricornio",
+                    "aquarius": "Acuario",
+                    "pisces": "Piscis"
+                }
+            },
+            "zodiac_sign_previous_full_moon": {
+                "name": "Signo del zodiaco en la luna llena anterior",
+                "state": {
+                    "aries": "Aries",
+                    "taurus": "Tauro",
+                    "gemini": "Géminis",
+                    "cancer": "Cáncer",
+                    "leo": "Leo",
+                    "virgo": "Virgo",
+                    "libra": "Libra",
+                    "scorpio": "Escorpio",
+                    "sagittarius": "Sagitario",
+                    "capricorn": "Capricornio",
+                    "aquarius": "Acuario",
+                    "pisces": "Piscis"
+                }
+            },
+            "zodiac_degree_current_moon": {
+                "name": "Grado zodiacal (actual)"
+            },
+            "zodiac_degree_next_new_moon": {
+                "name": "Grado zodiacal en la próxima luna nueva"
+            },
+            "zodiac_degree_next_full_moon": {
+                "name": "Grado zodiacal en la próxima luna llena"
+            },
+            "zodiac_degree_previous_new_moon": {
+                "name": "Grado zodiacal en la luna nueva anterior"
+            },
+            "zodiac_degree_previous_full_moon": {
+                "name": "Grado zodiacal en la luna llena anterior"
+            }
+        }
+    }
+}

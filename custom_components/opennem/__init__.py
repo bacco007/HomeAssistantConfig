@@ -228,16 +228,16 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
 #                     _LOGGER.error("OpenNEM [%s]: Issue getting emissions data", region)
 
             # Flow from other Regions
-            async with session.get(API_ENDPOINT_FLOW) as flremotedata:
-                _LOGGER.debug(
-                    "OpenNEM [%s]: Getting Flow State from %s",
-                    region,
-                    API_ENDPOINT_FLOW,
-                )
-                if flremotedata.status == 200:
-                    fldata = await flremotedata.json()
-                else:
-                    _LOGGER.error("OpenNEM [%s]: Issue getting flow data", region)
+#            async with session.get(API_ENDPOINT_FLOW) as flremotedata:
+#                _LOGGER.debug(
+#                    "OpenNEM [%s]: Getting Flow State from %s",
+#                    region,
+#                    API_ENDPOINT_FLOW,
+#                )
+#                if flremotedata.status == 200:
+#                    fldata = await flremotedata.json()
+#                else:
+#                    _LOGGER.error("OpenNEM [%s]: Issue getting flow data", region)
 
         if data is not None:
             _LOGGER.debug(
@@ -373,22 +373,22 @@ class OpenNEMDataUpdateCoordinator(DataUpdateCoordinator):
 #                         _LOGGER.debug("OpenNEM [%s]: No Emissions Data Found", region)
 
             # Flow from other region
-            if fldata is not None:
-                for frow in fldata["data"]:
-                    fcode = frow["code"]
-                    fregion = fcode.split("->")
-                    if region.upper() in fregion:
-                        fregion.remove(region.upper())
-                        fregionto = fregion[0].replace("1", "")
-                        value = frow["history"]["data"][-1]
-                        if value == None:
-                            value = 0
-                        self._values["flow_" + fregionto] = round(value, 4)
-                        regiondata.append("flow_" + fregionto)
-                    fregionto = None
-                    value = None
-            else:
-                _LOGGER.debug("OpenNEM [%s]: No Flow Data Found", region)
+#            if fldata is not None:
+#                for frow in fldata["data"]:
+#                    fcode = frow["code"]
+#                    fregion = fcode.split("->")
+#                    if region.upper() in fregion:
+#                        fregion.remove(region.upper())
+#                        fregionto = fregion[0].replace("1", "")
+#                        value = frow["history"]["data"][-1]
+#                        if value == None:
+#                            value = 0
+#                        self._values["flow_" + fregionto] = round(value, 4)
+#                        regiondata.append("flow_" + fregionto)
+#                    fregionto = None
+#                    value = None
+#            else:
+#                _LOGGER.debug("OpenNEM [%s]: No Flow Data Found", region)
 
             if region == "wa1":
                 self._values["last_update"] = dt_util.as_utc(

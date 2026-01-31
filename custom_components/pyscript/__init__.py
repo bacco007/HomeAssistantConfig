@@ -5,6 +5,7 @@ import glob
 import json
 import logging
 import os
+import shutil
 import time
 import traceback
 from typing import Any, Callable, Dict, List, Set, Union
@@ -21,10 +22,11 @@ from homeassistant.const import (
     EVENT_STATE_CHANGED,
     SERVICE_RELOAD,
 )
-from homeassistant.core import Config, Event as HAEvent, HomeAssistant, ServiceCall
+from homeassistant.core import Event as HAEvent, HomeAssistant, ServiceCall
 from homeassistant.exceptions import HomeAssistantError
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.restore_state import DATA_RESTORE_STATE
+from homeassistant.helpers.typing import ConfigType
 from homeassistant.loader import bind_hass
 
 from .const import (
@@ -36,7 +38,9 @@ from .const import (
     FOLDER,
     LOGGER_PATH,
     REQUIREMENTS_FILE,
+    SERVICE_GENERATE_STUBS,
     SERVICE_JUPYTER_KERNEL_START,
+    SERVICE_RESPONSE_ONLY,
     UNSUB_LISTENERS,
     WATCHDOG_TASK,
 )
@@ -48,6 +52,7 @@ from .jupyter_kernel import Kernel
 from .mqtt import Mqtt
 from .requirements import install_requirements
 from .state import State, StateVal
+from .stubs.generator import StubsGenerator
 from .trigger import TrigTime
 from .webhook import Webhook
 
@@ -64,7 +69,7 @@ PYSCRIPT_SCHEMA = vol.Schema(
 CONFIG_SCHEMA = vol.Schema({DOMAIN: PYSCRIPT_SCHEMA}, extra=vol.ALLOW_EXTRA)
 
 
-async def async_setup(hass: HomeAssistant, config: Config) -> bool:
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Component setup, run import config flow for each entry in config."""
     await restore_state(hass)
     if DOMAIN in config:
@@ -150,7 +155,7 @@ async def watchdog_start(
         """Class for handling watchdog events."""
 
         def __init__(
-            self, watchdog_q: asyncio.Queue, observer: watchdog.observers.Observer, path: str
+            self, watchdog_q: asyncio.Queue, observer: watchdog.observers.ObserverType, path: str
         ) -> None:
             self.watchdog_q = watchdog_q
             self._observer = observer
@@ -299,6 +304,47 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
     hass.services.async_register(DOMAIN, SERVICE_RELOAD, reload_scripts_handler)
 
+    async def generate_stubs_service(call: ServiceCall) -> Dict[str, Any]:
+        """Generate pyscript IDE stub files."""
+
+        generator = StubsGenerator(hass)
+        generated_body = await generator.build()
+        stubs_path = os.path.join(hass.config.path(FOLDER), "modules", "stubs")
+
+        def write_stubs(path) -> dict[str, Any]:
+            res: dict[str, Any] = {}
+            try:
+                os.makedirs(path, exist_ok=True)
+
+                builtins_path = os.path.join(os.path.dirname(__file__), "stubs", "pyscript_builtins.py")
+                shutil.copy2(builtins_path, path)
+
+                gen_path = os.path.join(path, "pyscript_generated.py")
+                with open(gen_path, "w", encoding="utf-8") as f:
+                    f.write(generated_body)
+                res["status"] = "OK"
+                return res
+            except Exception as e:
+                _LOGGER.exception("Stubs generation failed: %s", e)
+                res["status"] = "Error"
+                res["exception"] = str(e)
+                res["message"] = "Check pyscript logs"
+                return res
+
+        result = await hass.async_add_executor_job(write_stubs, stubs_path)
+
+        if generator.ignored_identifiers:
+            result["ignored_identifiers"] = sorted(generator.ignored_identifiers)
+
+        if result["status"] == "OK":
+            _LOGGER.info("Pyscript stubs generated to %s", stubs_path)
+
+        return result
+
+    hass.services.async_register(
+        DOMAIN, SERVICE_GENERATE_STUBS, generate_stubs_service, supports_response=SERVICE_RESPONSE_ONLY
+    )
+
     async def jupyter_kernel_start(call: ServiceCall) -> None:
         """Handle Jupyter kernel start call."""
         _LOGGER.debug("service call to jupyter_kernel_start: %s", call.data)
@@ -348,9 +394,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         await State.update(new_vars, func_args)
 
     async def hass_started(event: HAEvent) -> None:
-        _LOGGER.debug("adding state changed listener and starting global contexts")
+        _LOGGER.debug("starting global contexts")
         await State.get_service_params()
-        hass.data[DOMAIN][UNSUB_LISTENERS].append(hass.bus.async_listen(EVENT_STATE_CHANGED, state_changed))
         start_global_contexts()
 
     async def hass_stop(event: HAEvent) -> None:
@@ -366,6 +411,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         await Function.reaper_stop()
 
     # Store callbacks to event listeners so we can unsubscribe on unload
+    _LOGGER.debug("adding state_changed listener")
+    hass.data[DOMAIN][UNSUB_LISTENERS].append(hass.bus.async_listen(EVENT_STATE_CHANGED, state_changed))
     hass.data[DOMAIN][UNSUB_LISTENERS].append(
         hass.bus.async_listen(EVENT_HOMEASSISTANT_STARTED, hass_started)
     )
@@ -570,7 +617,7 @@ async def load_scripts(hass: HomeAssistant, config_data: Dict[str, Any], global_
         for global_ctx_name, global_ctx in ctx_all.items():
             if global_ctx_name not in ctx2files:
                 ctx_delete.add(global_ctx_name)
-        # delete all global_ctxs that have changeed source or mtime
+        # delete all global_ctxs that have changed source or mtime
         for global_ctx_name, src_info in ctx2files.items():
             if global_ctx_name in ctx_all:
                 ctx = ctx_all[global_ctx_name]

@@ -1,0 +1,239 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Micro Weather Station Setup",
+        "description": "Connect your weather sensors to create an intelligent weather entity.\n\n**Required:** Only outdoor temperature is required.\n\n**Setup Process:**\n• **Atmospheric Sensors** - Temperature, humidity, pressure, and altitude\n• **Wind Sensors** - Wind speed, direction, and gust measurements\n• **Rain Sensors** - Precipitation detection and intensity\n• **Solar Sensors** - Sun, radiation, and light measurements\n• **Final Settings** - Update interval configuration\n\n**How Each Sensor Is Used:**\n\n🌡️ **Dewpoint Sensor** (optional)\n• Direct dewpoint measurement for maximum accuracy\n• Used in fog detection algorithm (>98% humidity + dewpoint)\n• Improves comfort index calculations\n• Fallback: Calculated from temperature + humidity if not available\n\n💧 **Humidity Sensor** (optional)\n• Essential for fog detection (triggers at >98% humidity)\n• Used in comfort index and heat index calculations\n• Helps determine precipitation probability\n• Combined with solar radiation for cloud cover analysis\n\n📊 **Pressure Sensor** (optional)\n• Core component for weather forecasting (5-day and hourly)\n• Storm detection (rapid pressure drops indicate storms)\n• Trend analysis for weather pattern prediction\n• Used to calculate weather stability and change probability\n\n🏔️ **Altitude** (optional)\n• Station elevation above sea level\n• Adjusts atmospheric pressure calculations for your location\n• Improves forecast accuracy, especially for pressure-based predictions\n• Higher altitudes = lower expected pressure readings\n\n💨 **Wind Speed Sensor** (optional)\n• Determines wind conditions in weather state\n• Storm detection (>25 km/h + rain = stormy conditions)\n• Wind chill calculations for apparent temperature\n• Severe weather alerts and wind-related forecasting\n\n🧭 **Wind Direction Sensor** (optional)\n• Provides wind bearing data for detailed weather reports\n• Used in storm tracking and weather pattern analysis\n• Enhances forecast accuracy with directional wind data\n\n🌪️ **Wind Gust Sensor** (optional)\n• Severe weather detection and storm intensity measurement\n• Safety alerts for dangerous wind conditions\n• Enhanced storm classification (gusty vs steady winds)\n\n🌧️ **Rain Rate Sensor** (optional)\n• Direct precipitation intensity measurement\n• Triggers rainy/stormy weather conditions\n• Used for precipitation forecasting\n• Overrides other conditions when rain detected\n\n🌦️ **Rain State Sensor** (optional)\n• Boolean rain detection (dry/wet states)\n• Immediate weather condition override when wet\n• Backup precipitation detection if rate sensor unavailable\n\n☀️ **Solar Radiation Sensor** (optional)\n• Primary cloud cover detection (>400 W/m² = sunny, <100 = cloudy)\n• Day/night classification and solar intensity\n• Used in fog detection (low radiation + high humidity)\n• Overrides other conditions for clear sky detection\n\n💡 **Solar Lux Sensor** (optional)\n• Light-based day/night detection\n• Backup cloud cover detection if radiation sensor unavailable\n• Visibility calculations and twilight detection\n\n🛡️ **UV Index Sensor** (optional)\n• Clear sky confirmation (high UV = definitely sunny)\n• Sun intensity measurement for safety recommendations\n• Enhanced sunny weather detection accuracy\n\n☀️ **Sun Sensor** (optional)\n• Solar elevation data for accurate cloud cover calculations\n• Improves weather detection by accounting for sun position\n• Higher elevation = more expected solar radiation\n• Fallback: 45° elevation if not configured\n\n**Configuration Tips:**\n• Use Developer Tools → States to find sensor entity IDs\n• Temperature sensors should have device_class='temperature'\n• Pressure sensors should use relative/barometric pressure\n• Update interval: 1-60 minutes (how often to refresh weather data)\n• More sensors = more accurate weather detection!",
+        "data": {
+          "outdoor_temp_sensor": "Outdoor Temperature Sensor",
+          "dewpoint_sensor": "Dewpoint Sensor",
+          "humidity_sensor": "Humidity Sensor",
+          "pressure_sensor": "Atmospheric Pressure Sensor",
+          "altitude": "Station Altitude",
+          "wind_speed_sensor": "Wind Speed Sensor",
+          "wind_direction_sensor": "Wind Direction Sensor",
+          "wind_gust_sensor": "Wind Gust Sensor",
+          "rain_rate_sensor": "Rain Rate Sensor",
+          "rain_state_sensor": "Rain State Sensor",
+          "solar_radiation_sensor": "Solar Radiation Sensor",
+          "solar_lux_sensor": "Solar Lux Sensor",
+          "uv_index_sensor": "UV Index Sensor",
+          "sun_sensor": "Sun Sensor",
+          "update_interval": "Update Interval (minutes)"
+        },
+        "data_description": {
+          "outdoor_temp_sensor": "Required sensor for basic weather detection. Provides temperature readings used in all weather calculations and condition detection.",
+          "dewpoint_sensor": "Optional sensor providing direct dewpoint measurement for maximum accuracy. Used in fog detection (>98% humidity + dewpoint) and comfort calculations. Falls back to calculated dewpoint if not provided.",
+          "humidity_sensor": "Optional sensor essential for fog detection (triggers at >98% humidity). Used in comfort index, heat index calculations, and precipitation probability determination.",
+          "pressure_sensor": "Optional sensor that enables weather forecasting (5-day and hourly). Detects storms through rapid pressure drops and provides trend analysis for weather pattern prediction.",
+          "altitude": "Station elevation above sea level. Used to adjust pressure readings to sea-level equivalent for accurate weather detection. Set to 0 if your pressure sensor already provides sea-level pressure (MSLP) or for raw sensor readings. Improves forecast accuracy, especially for pressure-based weather prediction. Defaults to your Home Assistant elevation setting if available, otherwise 0.0 (uses your Home Assistant unit system).",
+          "wind_speed_sensor": "Optional sensor for wind condition detection. Storm detection (>25 km/h + rain = stormy), wind chill calculations, and severe weather alerts.",
+          "wind_direction_sensor": "Optional sensor providing wind bearing data for detailed weather reports. Used in storm tracking and enhances forecast accuracy with directional wind data.",
+          "wind_gust_sensor": "Optional sensor for severe weather detection and storm intensity measurement. Provides safety alerts for dangerous wind conditions and enhanced storm classification.",
+          "rain_rate_sensor": "Optional sensor for direct precipitation intensity measurement. Triggers rainy/stormy weather conditions and overrides other conditions when rain is detected.",
+          "rain_state_sensor": "Optional sensor for boolean rain detection (dry/wet states). Provides immediate weather condition override when wet and backup precipitation detection.",
+          "solar_radiation_sensor": "Optional sensor for primary cloud cover detection (>400 W/m² = sunny, <100 = cloudy). Used in fog detection and overrides other conditions for clear sky detection.",
+          "solar_lux_sensor": "Optional sensor for light-based day/night detection. Backup cloud cover detection and visibility calculations when solar radiation sensor unavailable.",
+          "uv_index_sensor": "Optional sensor for clear sky confirmation (high UV = definitely sunny). Provides sun intensity measurement for safety recommendations and enhanced sunny weather detection.",
+          "sun_sensor": "Optional sensor providing solar elevation data for accurate cloud cover calculations. Improves weather detection accuracy by accounting for sun position (higher elevation = more expected solar radiation). Falls back to 45° elevation if not configured.",
+          "update_interval": "How often the weather data is refreshed and sensors are polled. Range: 1-60 minutes. Lower values provide more responsive updates but may increase system load."
+        }
+      },
+      "atmospheric": {
+        "title": "Atmospheric Sensors",
+        "description": "Configure temperature, humidity, pressure, and altitude sensors.\n\n**Required:** Outdoor temperature sensor is mandatory for basic weather detection.\n\n**Atmospheric Sensors:**\n\n🌡️ **Outdoor Temperature** (required)\n• Core sensor for all weather calculations and condition detection\n• Used in comfort calculations, wind chill, and heat index\n• Essential for basic weather entity functionality\n\n🌡️ **Dewpoint Sensor** (optional)\n• Direct dewpoint measurement for maximum accuracy\n• Used in fog detection algorithm (>98% humidity + dewpoint)\n• Improves comfort index calculations\n• Fallback: Calculated from temperature + humidity if not available\n\n💧 **Humidity Sensor** (optional)\n• Essential for fog detection (triggers at >98% humidity)\n• Used in comfort index and heat index calculations\n• Helps determine precipitation probability\n• Combined with solar radiation for cloud cover analysis\n\n📊 **Pressure Sensor** (optional)\n• Core component for weather forecasting (5-day and hourly)\n• Storm detection (rapid pressure drops indicate storms)\n• Trend analysis for weather pattern prediction\n• Used to calculate weather stability and change probability\n\n🏔️ **Altitude** (optional)\n• Station elevation above sea level\n• Adjusts atmospheric pressure calculations for your location\n• Improves forecast accuracy, especially for pressure-based predictions\n• Higher altitudes = lower expected pressure readings",
+        "data": {
+          "outdoor_temp_sensor": "Outdoor Temperature Sensor",
+          "dewpoint_sensor": "Dewpoint Sensor",
+          "humidity_sensor": "Humidity Sensor",
+          "pressure_sensor": "Atmospheric Pressure Sensor",
+          "altitude": "Station Altitude"
+        },
+        "data_description": {
+          "outdoor_temp_sensor": "Required sensor for basic weather detection. Provides temperature readings used in all weather calculations and condition detection.",
+          "dewpoint_sensor": "Optional sensor providing direct dewpoint measurement for maximum accuracy. Used in fog detection (>98% humidity + dewpoint) and comfort calculations. Falls back to calculated dewpoint if not provided.",
+          "humidity_sensor": "Optional sensor essential for fog detection (triggers at >98% humidity). Used in comfort index, heat index calculations, and precipitation probability determination.",
+          "pressure_sensor": "Optional sensor that enables weather forecasting (5-day and hourly). Detects storms through rapid pressure drops and provides trend analysis for weather pattern prediction.",
+          "altitude": "Station elevation above sea level. Used to adjust pressure readings to sea-level equivalent for accurate weather detection. Set to 0 if your pressure sensor already provides sea-level pressure (MSLP) or for raw sensor readings. Improves forecast accuracy, especially for pressure-based weather prediction."
+        }
+      },
+      "wind": {
+        "title": "Wind Sensors",
+        "description": "Configure wind speed, direction, and gust sensors.\n\n**Wind Sensors:**\n\n💨 **Wind Speed Sensor** (optional)\n• Determines wind conditions in weather state\n• Storm detection (>25 km/h + rain = stormy conditions)\n• Wind chill calculations for apparent temperature\n• Severe weather alerts and wind-related forecasting\n\n🧭 **Wind Direction Sensor** (optional)\n• Provides wind bearing data for detailed weather reports\n• Used in storm tracking and weather pattern analysis\n• Enhances forecast accuracy with directional wind data\n\n🌪️ **Wind Gust Sensor** (optional)\n• Severe weather detection and storm intensity measurement\n• Safety alerts for dangerous wind conditions\n• Enhanced storm classification (gusty vs steady winds)",
+        "data": {
+          "wind_speed_sensor": "Wind Speed Sensor",
+          "wind_direction_sensor": "Wind Direction Sensor",
+          "wind_gust_sensor": "Wind Gust Sensor"
+        },
+        "data_description": {
+          "wind_speed_sensor": "Optional sensor for wind condition detection. Storm detection (>25 km/h + rain = stormy), wind chill calculations, and severe weather alerts.",
+          "wind_direction_sensor": "Optional sensor providing wind bearing data for detailed weather reports. Used in storm tracking and enhances forecast accuracy with directional wind data.",
+          "wind_gust_sensor": "Optional sensor for severe weather detection and storm intensity measurement. Provides safety alerts for dangerous wind conditions and enhanced storm classification."
+        }
+      },
+      "rain": {
+        "title": "Rain Sensors",
+        "description": "Configure precipitation detection sensors.\n\n**Rain Sensors:**\n\n🌧️ **Rain Rate Sensor** (optional)\n• Direct precipitation intensity measurement\n• Triggers rainy/stormy weather conditions\n• Used for precipitation forecasting\n• Overrides other conditions when rain detected\n\n🌦️ **Rain State Sensor** (optional)\n• Boolean rain detection (dry/wet states)\n• Immediate weather condition override when wet\n• Backup precipitation detection if rate sensor unavailable",
+        "data": {
+          "rain_rate_sensor": "Rain Rate Sensor",
+          "rain_state_sensor": "Rain State Sensor"
+        },
+        "data_description": {
+          "rain_rate_sensor": "Optional sensor for direct precipitation intensity measurement. Triggers rainy/stormy weather conditions and overrides other conditions when rain is detected.",
+          "rain_state_sensor": "Optional sensor for boolean rain detection (dry/wet states). Provides immediate weather condition override when wet and backup precipitation detection."
+        }
+      },
+      "solar": {
+        "title": "Solar & Sun Sensors",
+        "description": "Configure solar radiation, light, UV, and sun position sensors.\n\n**Solar Sensors:**\n\n☀️ **Solar Radiation Sensor** (optional)\n• Primary cloud cover detection (>400 W/m² = sunny, <100 = cloudy)\n• Day/night classification and solar intensity\n• Used in fog detection (low radiation + high humidity)\n• Overrides other conditions for clear sky detection\n\n💡 **Solar Lux Sensor** (optional)\n• Light-based day/night detection\n• Backup cloud cover detection if radiation sensor unavailable\n• Visibility calculations and twilight detection\n\n🛡️ **UV Index Sensor** (optional)\n• Clear sky confirmation (high UV = definitely sunny)\n• Sun intensity measurement for safety recommendations\n• Enhanced sunny weather detection accuracy\n\n☀️ **Sun Sensor** (optional)\n• Solar elevation data for accurate cloud cover calculations\n• Improves weather detection by accounting for sun position\n• Higher elevation = more expected solar radiation\n• Fallback: 45° elevation if not configured",
+        "data": {
+          "solar_radiation_sensor": "Solar Radiation Sensor",
+          "solar_lux_sensor": "Solar Lux Sensor",
+          "uv_index_sensor": "UV Index Sensor",
+          "sun_sensor": "Sun Sensor",
+          "zenith_max_radiation": "Zenith Max Radiation"
+        },
+        "data_description": {
+          "solar_radiation_sensor": "Optional sensor for primary cloud cover detection (>400 W/m² = sunny, <100 = cloudy). Used in fog detection and overrides other conditions for clear sky detection.",
+          "solar_lux_sensor": "Optional sensor for light-based day/night detection. Backup cloud cover detection and visibility calculations when solar radiation sensor unavailable.",
+          "uv_index_sensor": "Optional sensor for clear sky confirmation (high UV = definitely sunny). Provides sun intensity measurement for safety recommendations and enhanced sunny weather detection.",
+          "sun_sensor": "Optional sensor providing solar elevation data for accurate cloud cover calculations. Improves weather detection accuracy by accounting for sun position (higher elevation = more expected solar radiation). Falls back to 45° elevation if not configured.",
+          "zenith_max_radiation": "Maximum solar radiation at zenith (directly overhead sun). Used to normalize solar radiation readings for accurate cloud cover calculations. Typical values: 400-1200 W/m² depending on location and atmospheric conditions."
+        }
+      },
+      "final": {
+        "title": "Final Configuration",
+        "description": "Set the update interval for your weather station.\n\n**Update Interval:**\n• How often the weather data is refreshed and sensors are polled\n• Range: 1-60 minutes\n• Lower values provide more responsive updates but may increase system load\n• Recommended: 5-15 minutes for most installations",
+        "data": {
+          "update_interval": "Update Interval (minutes)"
+        },
+        "data_description": {
+          "update_interval": "How often the weather data is refreshed and sensors are polled. Range: 1-60 minutes. Lower values provide more responsive updates but may increase system load."
+        }
+      }
+    },
+    "error": {
+      "missing_outdoor_temp": "❌ Outdoor temperature sensor is required. Please select a temperature sensor that measures outdoor conditions.",
+      "unknown": "❌ An unexpected error occurred during configuration. Please check your sensor selections and try again."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Update Weather Station Sensors",
+        "menu_options": {
+          "atmospheric": "Configure Atmospheric Sensors",
+          "wind": "Configure Wind Sensors",
+          "rain": "Configure Rain Sensors",
+          "solar": "Configure Solar Sensors",
+          "device_config": "Device Configuration"
+        },
+        "data": {
+          "outdoor_temp_sensor": "Outdoor Temperature Sensor",
+          "dewpoint_sensor": "Dewpoint Sensor",
+          "humidity_sensor": "Humidity Sensor",
+          "pressure_sensor": "Atmospheric Pressure Sensor",
+          "wind_speed_sensor": "Wind Speed Sensor",
+          "wind_direction_sensor": "Wind Direction Sensor",
+          "wind_gust_sensor": "Wind Gust Sensor",
+          "rain_rate_sensor": "Rain Rate Sensor",
+          "rain_state_sensor": "Rain State Sensor",
+          "solar_radiation_sensor": "Solar Radiation Sensor",
+          "solar_lux_sensor": "Solar Lux Sensor",
+          "uv_index_sensor": "UV Index Sensor",
+          "sun_sensor": "Sun Sensor",
+          "altitude": "Station Altitude",
+          "update_interval": "Update Interval (minutes)"
+        },
+        "data_description": {
+          "outdoor_temp_sensor": "Required sensor for basic weather detection. Provides temperature readings used in all weather calculations and condition detection.",
+          "dewpoint_sensor": "Optional sensor providing direct dewpoint measurement for maximum accuracy. Used in fog detection (>98% humidity + dewpoint) and comfort calculations. Falls back to calculated dewpoint if not provided.",
+          "humidity_sensor": "Optional sensor essential for fog detection (triggers at >98% humidity). Used in comfort index, heat index calculations, and precipitation probability determination.",
+          "pressure_sensor": "Optional sensor that enables weather forecasting (5-day and hourly). Detects storms through rapid pressure drops and provides trend analysis for weather pattern prediction.",
+          "wind_speed_sensor": "Optional sensor for wind condition detection. Storm detection (>25 km/h + rain = stormy), wind chill calculations, and severe weather alerts.",
+          "wind_direction_sensor": "Optional sensor providing wind bearing data for detailed weather reports. Used in storm tracking and enhances forecast accuracy with directional wind data.",
+          "wind_gust_sensor": "Optional sensor for severe weather detection and storm intensity measurement. Provides safety alerts for dangerous wind conditions and enhanced storm classification.",
+          "rain_rate_sensor": "Optional sensor for direct precipitation intensity measurement. Triggers rainy/stormy weather conditions and overrides other conditions when rain is detected.",
+          "rain_state_sensor": "Optional sensor for boolean rain detection (dry/wet states). Provides immediate weather condition override when wet and backup precipitation detection.",
+          "solar_radiation_sensor": "Optional sensor for primary cloud cover detection (>400 W/m² = sunny, <100 = cloudy). Used in fog detection and overrides other conditions for clear sky detection.",
+          "solar_lux_sensor": "Optional sensor for light-based day/night detection. Backup cloud cover detection and visibility calculations when solar radiation sensor unavailable.",
+          "uv_index_sensor": "Optional sensor for clear sky confirmation (high UV = definitely sunny). Provides sun intensity measurement for safety recommendations and enhanced sunny weather detection.",
+          "sun_sensor": "Optional sensor providing solar elevation data for accurate cloud cover calculations. Improves weather detection accuracy by accounting for sun position (higher elevation = more expected solar radiation). Falls back to 45° elevation if not configured.",
+          "altitude": "Station elevation above sea level. Used to adjust pressure readings to sea-level equivalent for accurate weather detection. Set to 0 if your pressure sensor already provides sea-level pressure (MSLP) or for raw sensor readings. Improves forecast accuracy, especially for pressure-based weather prediction. Defaults to your Home Assistant elevation setting if available, otherwise 0.0 (uses your Home Assistant unit system).",
+          "update_interval": "How often the weather data is refreshed and sensors are polled. Range: 1-60 minutes. Lower values provide more responsive updates but may increase system load."
+        }
+      },
+      "atmospheric": {
+        "title": "Atmospheric Sensors",
+        "data": {
+          "outdoor_temp_sensor": "Outdoor Temperature Sensor",
+          "dewpoint_sensor": "Dewpoint Sensor",
+          "humidity_sensor": "Humidity Sensor",
+          "pressure_sensor": "Atmospheric Pressure Sensor",
+          "altitude": "Station Altitude"
+        },
+        "data_description": {
+          "outdoor_temp_sensor": "Required sensor for basic weather detection. Provides temperature readings used in all weather calculations and condition detection.",
+          "dewpoint_sensor": "Optional sensor providing direct dewpoint measurement for maximum accuracy. Used in fog detection (>98% humidity + dewpoint) and comfort calculations. Falls back to calculated dewpoint if not provided.",
+          "humidity_sensor": "Optional sensor essential for fog detection (triggers at >98% humidity). Used in comfort index, heat index calculations, and precipitation probability determination.",
+          "pressure_sensor": "Optional sensor that enables weather forecasting (5-day and hourly). Detects storms through rapid pressure drops and provides trend analysis for weather pattern prediction.",
+          "altitude": "Station elevation above sea level. Used to adjust pressure readings to sea-level equivalent for accurate weather detection. Set to 0 if your pressure sensor already provides sea-level pressure (MSLP) or for raw sensor readings. Improves forecast accuracy, especially for pressure-based weather prediction."
+        }
+      },
+      "wind": {
+        "title": "Wind Sensors",
+        "data": {
+          "wind_speed_sensor": "Wind Speed Sensor",
+          "wind_direction_sensor": "Wind Direction Sensor",
+          "wind_gust_sensor": "Wind Gust Sensor"
+        },
+        "data_description": {
+          "wind_speed_sensor": "Optional sensor for wind condition detection. Storm detection (>25 km/h + rain = stormy), wind chill calculations, and severe weather alerts.",
+          "wind_direction_sensor": "Optional sensor providing wind bearing data for detailed weather reports. Used in storm tracking and enhances forecast accuracy with directional wind data.",
+          "wind_gust_sensor": "Optional sensor for severe weather detection and storm intensity measurement. Provides safety alerts for dangerous wind conditions and enhanced storm classification."
+        }
+      },
+      "rain": {
+        "title": "Rain Sensors",
+        "data": {
+          "rain_rate_sensor": "Rain Rate Sensor",
+          "rain_state_sensor": "Rain State Sensor"
+        },
+        "data_description": {
+          "rain_rate_sensor": "Optional sensor for direct precipitation intensity measurement. Triggers rainy/stormy weather conditions and overrides other conditions when rain is detected.",
+          "rain_state_sensor": "Optional sensor for boolean rain detection (dry/wet states). Provides immediate weather condition override when wet and backup precipitation detection."
+        }
+      },
+      "solar": {
+        "title": "Solar & Sun Sensors",
+        "data": {
+          "solar_radiation_sensor": "Solar Radiation Sensor",
+          "solar_lux_sensor": "Solar Lux Sensor",
+          "uv_index_sensor": "UV Index Sensor",
+          "sun_sensor": "Sun Sensor",
+          "zenith_max_radiation": "Zenith Max Radiation"
+        },
+        "data_description": {
+          "solar_radiation_sensor": "Optional sensor for primary cloud cover detection (>400 W/m² = sunny, <100 = cloudy). Used in fog detection and overrides other conditions for clear sky detection.",
+          "solar_lux_sensor": "Optional sensor for light-based day/night detection. Backup cloud cover detection and visibility calculations when solar radiation sensor unavailable.",
+          "uv_index_sensor": "Optional sensor for clear sky confirmation (high UV = definitely sunny). Provides sun intensity measurement for safety recommendations and enhanced sunny weather detection.",
+          "sun_sensor": "Optional sensor providing solar elevation data for accurate cloud cover calculations. Improves weather detection accuracy by accounting for sun position (higher elevation = more expected solar radiation). Falls back to 45° elevation if not configured.",
+          "zenith_max_radiation": "Maximum solar radiation at zenith (directly overhead sun). Used to normalize solar radiation readings for accurate cloud cover calculations. Typical values: 400-1200 W/m² depending on location and atmospheric conditions."
+        }
+      },
+      "device_config": {
+        "title": "Device Configuration",
+        "data": {
+          "update_interval": "Update Interval (minutes)"
+        },
+        "data_description": {
+          "update_interval": "How often the weather data is refreshed and sensors are polled. Range: 1-60 minutes. Lower values provide more responsive updates but may increase system load."
+        }
+      }
+    },
+    "error": {
+      "missing_outdoor_temp": "❌ Outdoor temperature sensor is required. Please select a temperature sensor that measures outdoor conditions.",
+      "unknown": "❌ An unexpected error occurred during configuration. Please check your sensor selections and try again."
+    }
+  }
+}

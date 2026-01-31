@@ -2,6 +2,8 @@ from typing import Final
 
 DOMAIN: Final = "plex_recently_added"
 TIMEOUT_MINUTES: Final = 10
+POLL_INTERVAL_MINUTES: Final = 10
+SIGN_URL_TTL_MINUTES: Final = 10080  # 7 days
 
 
 DEFAULT_NAME: Final = 'Plex Recently Added'

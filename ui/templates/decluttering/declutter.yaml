@@ -179,7 +179,7 @@ docker_uptime_card:
     type: custom:stack-in-card
     mode: horizontal
     cards:
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         entity: "[[switch_entity]]"
         primary: "[[name]]"
         icon_color: |

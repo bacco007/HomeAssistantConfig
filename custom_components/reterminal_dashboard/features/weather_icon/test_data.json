@@ -1,0 +1,47 @@
+[
+    {
+        "id": "weather_widget_1",
+        "type": "weather_icon",
+        "x": 100,
+        "y": 100,
+        "width": 48,
+        "height": 48,
+        "entity_id": "weather.forecast_home",
+        "title": "Weather",
+        "props": {
+            "size": 48,
+            "color": "black",
+            "icon_map": "default"
+        }
+    },
+    {
+        "id": "weather_widget_2",
+        "type": "weather_icon",
+        "x": 200,
+        "y": 100,
+        "width": 64,
+        "height": 64,
+        "entity_id": "weather.forecast_home",
+        "title": "Weather Large",
+        "props": {
+            "size": 64,
+            "color": "black",
+            "icon_map": "default"
+        }
+    },
+    {
+        "id": "weather_widget_3",
+        "type": "weather_icon",
+        "x": 300,
+        "y": 100,
+        "width": 32,
+        "height": 32,
+        "entity_id": "weather.openweathermap",
+        "title": "Weather Small",
+        "props": {
+            "size": 32,
+            "color": "white",
+            "icon_map": "default"
+        }
+    }
+]

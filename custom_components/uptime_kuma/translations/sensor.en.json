@@ -1,8 +1,0 @@
-{
-  "state": {
-      "uptimerobot__monitor_status": {
-          "down": "Down",
-          "up": "Up"
-      }
-  }
-}

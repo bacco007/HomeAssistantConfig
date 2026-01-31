@@ -1,0 +1,16 @@
+---
+switch:
+  - name: "Bedroom TV"
+    unique_id: harmonyhub
+    state: >-
+      {{ state_attr('remote.harmony_hub', 'current_activity') != 'PowerOff' }}
+
+    turn_on:
+      service: remote.turn_on
+      target:
+        entity_id: remote.harmony_hub
+
+    turn_off:
+      service: remote.turn_off
+      target:
+        entity_id: remote.harmony_hub

@@ -1,0 +1,30 @@
+---
+sensor:
+  - name: "Moon Phase"
+    unique_id: moonphase
+    state: >-
+      {{ states('sensor.moon') | replace('_', ' ') | title
+          if states('sensor.moon') not in ['unknown', 'unavailable']
+          else 'Unknown' }}
+
+    icon: >-
+      {% set phase = states('sensor.moon') %}
+      {% if phase == 'new_moon' %}
+        mdi:moon-new
+      {% elif phase == 'waxing_crescent' %}
+        mdi:moon-waxing-crescent
+      {% elif phase == 'first_quarter' %}
+        mdi:moon-first-quarter
+      {% elif phase == 'waxing_gibbous' %}
+        mdi:moon-waxing-gibbous
+      {% elif phase == 'full_moon' %}
+        mdi:moon-full
+      {% elif phase == 'waning_gibbous' %}
+        mdi:moon-waning-gibbous
+      {% elif phase == 'last_quarter' %}
+        mdi:moon-last-quarter
+      {% elif phase == 'waning_crescent' %}
+        mdi:moon-waning-crescent
+      {% else %}
+        mdi:moon
+      {% endif %}

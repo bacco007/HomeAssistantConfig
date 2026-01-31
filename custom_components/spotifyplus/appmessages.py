@@ -22,6 +22,66 @@ class STAppMessages:
     The '%s' argument was not specified for the '%s' function
     """
 
+    MSG_INTENT_HANDLE_REQUEST:str = "Handling intent request '%s'"
+    """
+    Handling intent request '%s'
+    """
+
+    MSG_INTENT_HANDLE_REQUEST_PARMS:str = "Intent Handler Parameters: `%s`"
+    """
+    Intent Handler Parameters: `%s`
+    """
+
+    MSG_INTENT_HANDLE_REQUEST_SLOTS:str = "Intent Handler Parameters: `%s` (slots)"
+    """
+    Intent Handler Parameters: `%s` (slots)
+    """
+
+    MSG_INTENT_HANDLER_EXCEPTION:str = "Intent handler exception detected for \"%s\": %s"
+    """
+    Intent handler exception detected for \"%s\": %s
+    """
+
+    MSG_INTENT_VALIDATE_SLOTS_EXCEPTION:str = "Slot validation failed for Intent handler method '%s': %s"
+    """
+    An unhandled exception occurred in Intent handler method '%s'; exception: %s
+    """
+
+    MSG_INTENT_HANDLER_REGISTER:str = "Component is registering intent handler: '%s'"
+    """
+    Component is registering intent handler: '%s'
+    """
+
+    MSG_INTENT_HANDLER_RESPONSE:str = "Intent handler response: '%s'"
+    """
+    Intent handler response: '%s'
+    """
+
+    MSG_INTENT_HANDLER_SLOT_INFO:str = "Current slot values for intent: '%s'"
+    """
+    Current slot values for intent: '%s'
+    """
+
+    MSG_INTENT_MATCH_CONSTRAINTS_REQ:str="Intent matching contraints request: '%s'"
+    """
+    Intent matching contraints request: '%s'
+    """
+
+    MSG_INTENT_MATCH_CONSTRAINTS_RSLT:str="Intent matching contraints result: '%s' (isMatch=%s, noMatchReason=%s, noMatchName=%s)"
+    """
+    Intent matching contraints result: '%s' (isMatch=%s, noMatchReason=%s, noMatchName=%s)
+    """
+
+    MSG_INTENT_TARGET_ENTITY_STATE:str="Intent '%s' target entity state: '%s'"
+    """
+    Intent '%s' target entity state: '%s'
+    """
+
+    WARN_INTENT_RESPONSE_TEMPLATE_RENDER_ERROR:str=" \
+    SpotifyPlus Intent response render error: \
+    Text: \"%s\" \
+    Error: %s"
+
     MSG_SERVICE_CALL_START:str = "Processing service call '%s' in async '%s' method"
     """
     Processing service call '%s' in async '%s' method
@@ -39,7 +99,7 @@ class STAppMessages:
 
     MSG_SERVICE_REQUEST_REGISTER:str = "Component async_setup is registering async service: '%s'"
     """
-    Component async_setup is registering component async service request: '%s'
+    Component async_setup is registering async service: '%s'
     """
 
     MSG_SERVICE_REQUEST_UNKNOWN:str = "Service request '%s' was not recognized by the '%s' method"
@@ -49,7 +109,7 @@ class STAppMessages:
 
     MSG_SERVICE_REQUEST_EXCEPTION:str = "An unhandled exception occurred in Service request method '%s'; exception: %s"
     """
-    Service request '%s' was not recognized by the '%s' method
+    An unhandled exception occurred in Service request method '%s'; exception: %s
     """
 
     MSG_SERVICE_EXECUTE:str = "Executing '%s' service on media player '%s'"

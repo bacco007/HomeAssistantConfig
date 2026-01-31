@@ -79,7 +79,7 @@ class WeatherBase(WeatherEntity):
         tzinfo = zoneinfo.ZoneInfo(self.collector.locations_data["data"]["timezone"])
         return [
             Forecast(
-                datetime=iso8601.parse_date(data["date"]).astimezone(tzinfo).isoformat(),
+                datetime=iso8601.parse_date(data["date"]).astimezone(tzinfo).replace(tzinfo=None).isoformat(),
                 native_temperature=data["temp_max"],
                 condition=MAP_CONDITION[data["icon_descriptor"]],
                 templow=data["temp_min"],
@@ -93,7 +93,7 @@ class WeatherBase(WeatherEntity):
         tzinfo = zoneinfo.ZoneInfo(self.collector.locations_data["data"]["timezone"])
         return [
             Forecast(
-                datetime=iso8601.parse_date(data["time"]).astimezone(tzinfo).isoformat(),
+                datetime=iso8601.parse_date(data["time"]).astimezone(tzinfo).replace(tzinfo=None).isoformat(),
                 native_temperature=data["temp"],
                 condition=MAP_CONDITION[data["icon_descriptor"]],
                 native_precipitation=data["rain_amount_max"],
@@ -102,7 +102,7 @@ class WeatherBase(WeatherEntity):
                 native_wind_speed=data["wind_speed_kilometre"],
                 wind_gust_speed=data["wind_gust_speed_kilometre"],
                 humidity=data["relative_humidity"],
-                uv=data["uv"],
+                uv_index=data["uv"],
             )
             for data in self.collector.hourly_forecasts_data["data"]
         ]

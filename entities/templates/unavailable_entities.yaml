@@ -12,7 +12,6 @@ sensor:
       {{ entities | count if entities != none else -1 }}
     attributes:
       entity_id: >
-        {#- Temporary #}
         {{expand('group.monitor_unavailable_entities')| map(attribute='entity_id') | list | sort}}
 
   - name: "Unavailable Devices"

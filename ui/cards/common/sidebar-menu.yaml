@@ -144,7 +144,7 @@ cards:
           padding: 8px;
           width: auto;
         }
-# - type: custom:mushroom-template-card
+# - type: custom:mushroom-legacy-template-card
 #   entity: sensor.time
 #   primary: "{{states(entity)}}"
 #   secondary: TMW
@@ -165,7 +165,7 @@ cards:
 #           --card-primary-font-size: 13px;
 #           --card-primary-font-weight: 800;
 #         }
-# - type: custom:mushroom-template-card
+# - type: custom:mushroom-legacy-template-card
 #   entity: sensor.time_london
 #   primary: "{{states(entity)}}"
 #   secondary: LDN
@@ -186,7 +186,7 @@ cards:
 #           --card-primary-font-size: 13px;
 #           --card-primary-font-weight: 800;
 #         }
-# - type: custom:mushroom-template-card
+# - type: custom:mushroom-legacy-template-card
 #   entity: sensor.time_new_york
 #   primary: "{{states(entity)}}"
 #   secondary: NYC

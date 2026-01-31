@@ -11,6 +11,7 @@ cards:
     template: sports_card
     variables:
       - entity: sensor.upcoming_sport_premier_league_all_teams
+      - calendar: calendar.ical_premier_league_all_teams
   - type: custom:mushroom-chips-card
     alignment: center
     card_mod:

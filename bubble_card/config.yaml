@@ -1,0 +1,8 @@
+migration:
+  done: true
+  sources:
+    entity_count: 2
+    yaml_count: 0
+    written_count: 0
+  migrated_at: '2026-01-29T11:27:39.525Z'
+  version: 1

@@ -94,64 +94,70 @@ class DailySensor(DailySensorEntity):
         # update the sensor
         input_state = self.hass.states.get(self.coordinator.input_sensor)
         state_minmax_changed = False
-        try:
-            if input_state not in (None, STATE_UNKNOWN, STATE_UNAVAILABLE):
-                input_state = parse_sensor_state(input_state)
-                the_val = convert_to_float(input_state)
-                if self._state not in (None, STATE_UNKNOWN, STATE_UNAVAILABLE):
-                    self._state = convert_to_float(self._state)
-                # apply the operation and update self._state
-                if self.coordinator.operation == CONF_SUM:
-                    if self._state in (None, STATE_UNKNOWN, STATE_UNAVAILABLE):
-                        self._state = the_val
-                    else:
-                        self._state = self._state + the_val
-                elif self.coordinator.operation == CONF_MAX:
-                    if (
-                        self._state in (None, STATE_UNKNOWN, STATE_UNAVAILABLE)
-                        or the_val > self._state
-                    ):
-                        self._state = the_val
-                        state_minmax_changed = True
-                elif self.coordinator.operation == CONF_MIN:
-                    if (
-                        self._state in (None, STATE_UNKNOWN, STATE_UNAVAILABLE)
-                        or the_val < self._state
-                    ):
-                        self._state = the_val
-                        state_minmax_changed = True
-                elif self.coordinator.operation == CONF_MEAN:
-                    self._values.append(the_val)
-                    self._state = round(
-                        (sum(self._values) * 1.0) / len(self._values), 1
-                    )
-                elif self.coordinator.operation == CONF_MEDIAN:
-                    self._values.append(the_val)
-                    self._state = median(self._values)
-                elif self.coordinator.operation == CONF_STDEV:
-                    self._values.append(the_val)
-                    self._state = stdev(self._values)
-                elif self.coordinator.operation == CONF_VARIANCE:
-                    self._values.append(the_val)
-                    with contextlib.suppress(StatisticsError):
-                        self._state = variance(self._values)
-                if state_minmax_changed:
-                    self._occurrence = datetime.now()
+        if input_state not in (None, STATE_UNKNOWN, STATE_UNAVAILABLE):
+            input_state = parse_sensor_state(input_state)
+            the_val = convert_to_float(input_state)
+            
+            # Check if the converted value is unavailable
+            if the_val == STATE_UNAVAILABLE:
+                self._state = STATE_UNAVAILABLE
                 self.hass.add_job(self.async_write_ha_state)
-            else:
-                # sensor is unknown at startup, state which comes after is considered as initial state
-                _LOGGER.debug(
-                    "Initial state for {} is {}".format(
-                        self.coordinator.input_sensor, input_state
-                    )
-                )
                 return
-        except ValueError:
-            _LOGGER.error(
-                "unable to convert to float. Please check the source sensor ({}) is available.".format(
-                    self.coordinator.input_sensor
+                
+            if self._state not in (None, STATE_UNKNOWN, STATE_UNAVAILABLE):
+                self._state = convert_to_float(self._state)
+                # Check if the current state conversion failed
+                if self._state == STATE_UNAVAILABLE:
+                    self._state = STATE_UNAVAILABLE
+                    self.hass.add_job(self.async_write_ha_state)
+                    return
+                    
+            # apply the operation and update self._state
+            if self.coordinator.operation == CONF_SUM:
+                if self._state in (None, STATE_UNKNOWN, STATE_UNAVAILABLE):
+                    self._state = the_val
+                else:
+                    self._state = self._state + the_val
+            elif self.coordinator.operation == CONF_MAX:
+                if (
+                    self._state in (None, STATE_UNKNOWN, STATE_UNAVAILABLE)
+                    or the_val > self._state
+                ):
+                    self._state = the_val
+                    state_minmax_changed = True
+            elif self.coordinator.operation == CONF_MIN:
+                if (
+                    self._state in (None, STATE_UNKNOWN, STATE_UNAVAILABLE)
+                    or the_val < self._state
+                ):
+                    self._state = the_val
+                    state_minmax_changed = True
+            elif self.coordinator.operation == CONF_MEAN:
+                self._values.append(the_val)
+                self._state = round(
+                    (sum(self._values) * 1.0) / len(self._values), 1
+                )
+            elif self.coordinator.operation == CONF_MEDIAN:
+                self._values.append(the_val)
+                self._state = median(self._values)
+            elif self.coordinator.operation == CONF_STDEV:
+                self._values.append(the_val)
+                self._state = stdev(self._values)
+            elif self.coordinator.operation == CONF_VARIANCE:
+                self._values.append(the_val)
+                with contextlib.suppress(StatisticsError):
+                    self._state = variance(self._values)
+            if state_minmax_changed:
+                self._occurrence = datetime.now()
+            self.hass.add_job(self.async_write_ha_state)
+        else:
+            # sensor is unknown at startup, state which comes after is considered as initial state
+            _LOGGER.debug(
+                "Initial state for {} is {}".format(
+                    self.coordinator.input_sensor, input_state
                 )
             )
+            return
 
     @property
     def name(self):

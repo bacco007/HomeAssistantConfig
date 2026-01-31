@@ -1,0 +1,69 @@
+---
+trigger:
+  - trigger: state
+    entity_id: weather.east_tamworth  # Replace with your weather entity
+  - trigger: time_pattern
+    hours: "/1"
+action:
+  - action: weather.get_forecasts
+    target:
+      entity_id: weather.east_tamworth  # Replace with your weather entity
+    data:
+      type: daily
+    response_variable: forecast_data
+sensor:
+  - name: "Weather Forecast Day 0 High"
+    unique_id: weather_forecast_day_0_high
+    unit_of_measurement: "°C"
+    state: "{{ forecast_data['weather.east_tamworth'].forecast[0].temperature | default('N/A') }}"
+  - name: "Weather Forecast Day 0 Low"
+    unique_id: weather_forecast_day_0_low
+    unit_of_measurement: "°C"
+    state: "{{ forecast_data['weather.east_tamworth'].forecast[0].templow | default('N/A') }}"
+  - name: "Weather Forecast Day 0 Condition"
+    unique_id: weather_forecast_day_0_condition
+    state: "{{ forecast_data['weather.east_tamworth'].forecast[0].condition | default('cloudy') }}"
+  - name: "Weather Forecast Day 1 High"
+    unique_id: weather_forecast_day_1_high
+    unit_of_measurement: "°C"
+    state: "{{ forecast_data['weather.east_tamworth'].forecast[1].temperature | default('N/A') }}"
+  - name: "Weather Forecast Day 1 Low"
+    unique_id: weather_forecast_day_1_low
+    unit_of_measurement: "°C"
+    state: "{{ forecast_data['weather.east_tamworth'].forecast[1].templow | default('N/A') }}"
+  - name: "Weather Forecast Day 1 Condition"
+    unique_id: weather_forecast_day_1_condition
+    state: "{{ forecast_data['weather.east_tamworth'].forecast[1].condition | default('cloudy') }}"
+  - name: "Weather Forecast Day 2 High"
+    unique_id: weather_forecast_day_2_high
+    unit_of_measurement: "°C"
+    state: "{{ forecast_data['weather.east_tamworth'].forecast[2].temperature | default('N/A') }}"
+  - name: "Weather Forecast Day 2 Low"
+    unique_id: weather_forecast_day_2_low
+    unit_of_measurement: "°C"
+    state: "{{ forecast_data['weather.east_tamworth'].forecast[2].templow | default('N/A') }}"
+  - name: "Weather Forecast Day 2 Condition"
+    unique_id: weather_forecast_day_2_condition
+    state: "{{ forecast_data['weather.east_tamworth'].forecast[2].condition | default('cloudy') }}"
+  - name: "Weather Forecast Day 3 High"
+    unique_id: weather_forecast_day_3_high
+    unit_of_measurement: "°C"
+    state: "{{ forecast_data['weather.east_tamworth'].forecast[3].temperature | default('N/A') }}"
+  - name: "Weather Forecast Day 3 Low"
+    unique_id: weather_forecast_day_3_low
+    unit_of_measurement: "°C"
+    state: "{{ forecast_data['weather.east_tamworth'].forecast[3].templow | default('N/A') }}"
+  - name: "Weather Forecast Day 3 Condition"
+    unique_id: weather_forecast_day_3_condition
+    state: "{{ forecast_data['weather.east_tamworth'].forecast[3].condition | default('cloudy') }}"
+  - name: "Weather Forecast Day 4 High"
+    unique_id: weather_forecast_day_4_high
+    unit_of_measurement: "°C"
+    state: "{{ forecast_data['weather.east_tamworth'].forecast[4].temperature | default('N/A') }}"
+  - name: "Weather Forecast Day 4 Low"
+    unique_id: weather_forecast_day_4_low
+    unit_of_measurement: "°C"
+    state: "{{ forecast_data['weather.east_tamworth'].forecast[4].templow | default('N/A') }}"
+  - name: "Weather Forecast Day 4 Condition"
+    unique_id: weather_forecast_day_4_condition
+    state: "{{ forecast_data['weather.east_tamworth'].forecast[4].condition | default('cloudy') }}"

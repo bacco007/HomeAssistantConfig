@@ -58,7 +58,7 @@ class EMSCEarthquakeOptionsFlowHandler(config_entries.OptionsFlow):
     """Handle options for EMSC Earthquake integration."""
 
     def __init__(self, config_entry):
-        self.config_entry = config_entry
+        self._config_entry = config_entry
 
     async def async_step_init(self, user_input=None):
         """Manage the options for the custom integration."""

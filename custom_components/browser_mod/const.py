@@ -18,16 +18,28 @@ WS_SETTINGS = f"{WS_ROOT}/settings"
 WS_RECALL_ID = f"{WS_ROOT}/recall_id"
 WS_LOG = f"{WS_ROOT}/log"
 
-BROWSER_MOD_SERVICES = [
+BROWSER_MOD_BROWSER_SERVICES = [
     "sequence",
     "delay",
     "popup",
     "more_info",
     "close_popup",
+    "set_popup_style",
     "notification",
     "navigate",
     "refresh",
+    "change_browser_id",
     "set_theme",
     "console",
     "javascript",
+]
+
+BROWSER_MOD_COMPONENT_SERVICES = [
+    "deregister_browser",
+]
+
+DYNAMIC_ENTITIES = [
+    "camera",
+    "battery_level",
+    "charging",
 ]

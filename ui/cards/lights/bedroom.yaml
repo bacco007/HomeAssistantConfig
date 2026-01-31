@@ -62,7 +62,7 @@ cards:
     overlay-margin: 0em
     button-background: transparent
     title-card:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       primary: Debugging Graphs
       icon: mdi:lightbulb
       card_mod:

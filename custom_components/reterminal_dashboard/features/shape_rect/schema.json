@@ -1,0 +1,11 @@
+{
+  "type": "shape_rect",
+  "name": "Rectangle",
+  "props": {
+    "color": { "type": "string", "default": "black", "enum": ["black", "white", "gray"] },
+    "fill": { "type": "boolean", "default": false },
+    "border_width": { "type": "number", "default": 1 },
+    "opacity": { "type": "number", "default": 100 },
+    "invert": { "type": "boolean", "default": false }
+  }
+}

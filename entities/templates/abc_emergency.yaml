@@ -1,0 +1,48 @@
+---
+sensor:
+  - name: "Bushfire Risk Level"
+    unique_id: abc_emergency_bushfire_risk_level
+    state: >
+      {%- set bushfires = states('sensor.abc_emergency_home_bushfires') | int(0) %}
+      {%- set nearest = states('sensor.abc_emergency_home_nearest_incident') | float(999) %}
+      {%- set is_bushfire = state_attr('sensor.abc_emergency_home_nearest_incident', 'event_type') == 'Bushfire' %}
+      {%- set level = states('sensor.abc_emergency_home_highest_alert_level') %}
+
+      {%- if level == 'Emergency' and is_bushfire and nearest < 20 %}
+        Extreme
+      {%- elif level in ['Emergency', 'Watch and Act'] and is_bushfire and nearest < 50 %}
+        Very High
+      {%- elif bushfires > 0 and nearest < 75 %}
+        High
+      {%- elif bushfires > 0 %}
+        Moderate
+      {%- else %}
+        Low
+      {%- endif %}
+    icon: >
+      {%- if is_state('sensor.bushfire_risk_level', 'Extreme') %}
+        mdi:fire-alert
+      {%- elif is_state('sensor.bushfire_risk_level', 'Very High') %}
+        mdi:fire
+      {%- elif is_state('sensor.bushfire_risk_level', 'High') %}
+        mdi:fire
+      {%- else %}
+        mdi:fire-off
+      {% endif %}
+
+  - name: "ABC Emergency Summary"
+    unique_id: abc_emergency_summary
+    state: >
+      {% if is_state('binary_sensor.abc_emergency_home_active_alert', 'on') %}
+        {{ state_attr('sensor.abc_emergency_home_nearest_incident', 'event_type') }}
+        {{ states('sensor.abc_emergency_home_nearest_incident') }}km
+        {{ state_attr('sensor.abc_emergency_home_nearest_incident', 'direction') }}
+      {% else %}
+        No active alerts
+      {% endif %}
+    attributes:
+      headline: >
+        {{ state_attr('sensor.abc_emergency_home_nearest_incident', 'headline') }}
+      alert_level: >
+        {{ state_attr('sensor.abc_emergency_home_nearest_incident', 'alert_level') }}
+      url: "https://www.abc.net.au/emergency"

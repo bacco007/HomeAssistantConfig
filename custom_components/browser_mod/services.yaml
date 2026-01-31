@@ -3,13 +3,21 @@ sequence:
   description: "Run a sequence of services"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     sequence:
       name: Actions
       description: List of services to run
@@ -21,13 +29,21 @@ delay:
   description: "Wait for a time"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     time:
       name: Time
       description: Time to wait (ms)
@@ -40,13 +56,26 @@ popup:
   description: "Display a popup"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
+    popup_card_id:
+      name: Popup-card ID
+      description: ID of the popup-card to use as a template for the popup
+      selector:
+        text:
     title:
       name: Title
       description: "Popup title"
@@ -55,24 +84,102 @@ popup:
     content:
       name: Content
       required: true
-      description: "Popup content (Test or lovelace card configuration)"
+      description: "Popup content (Text or lovelace card configuration)"
       selector:
         object:
-    size:
-      name: Size
-      description: ""
+    initial_style:
+      name: Initial Style
+      description: "Initial style to apply to the popup"
       selector:
         select:
           mode: dropdown
+          custom_value: true
           options:
             - normal
+            - classic
             - wide
             - fullscreen
+    style_sequence:
+      name: Style Sequence
+      description: "Sequence of styles to cycle through when user taps the title or with browser_mod.set_popup_style service"
+      selector:
+        select:
+          mode: dropdown
+          custom_value: true
+          multiple: true
+          options:
+            - initial
+            - normal
+            - classic
+            - wide
+            - fullscreen
+    popup_styles:
+      name: Popup Styles
+      description: "Popup styles to apply. Use 'all' to always apply the style. You can add to standard styles or create your own"
+      selector:
+        object:
+          label_field: style
+          description_field: include_styles
+          multiple: true
+          fields:
+            style:
+              label: Style
+              selector:
+                select:
+                  mode: dropdown
+                  custom_value: true
+                  options:
+                    - normal
+                    - classic
+                    - wide
+                    - fullscreen
+                    - card
+                    - all
+            include_styles:
+              label: Also apply styles from...
+              selector:
+                select:
+                  mode: dropdown
+                  custom_value: true
+                  multiple: true
+                  options:
+                    - normal
+                    - classic
+                    - wide
+                    - fullscreen
+            styles:
+              label: CSS Styles
+              selector:
+                text:
+                  multiline: true
     right_button:
       name: Right button
       description: Text of the right button
       selector:
         text:
+    right_button_variant:
+      name: Right button variant
+      description: Variant of the right button
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - brand
+            - neutral
+            - danger
+            - warning
+            - success
+    right_button_appearance:
+      name: Right button appearance
+      description: Appearance of the right button
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - accent
+            - filled
+            - outlined
+            - plain
     right_button_action:
       name: Right button action
       description: Action to perform when the right button is pressed
@@ -83,6 +190,29 @@ popup:
       description: Text of the left button
       selector:
         text:
+    left_button_variant:
+      name: Left button variant
+      description: Variant of the left button
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - brand
+            - neutral
+            - danger
+            - warning
+            - success
+    left_button_appearance:
+      name: Left button appearance
+      description: Appearance of the left button
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - accent
+            - filled
+            - outlined
+            - plain
     left_button_action:
       name: Left button action
       description: Action to perform when left button is pressed
@@ -116,31 +246,53 @@ popup:
       description: Action to perform when popup is closed by timeout
       selector:
         object:
-    style:
-      name: Styles
-      description: CSS code to apply to the popup window
+    timeout_hide_progress:
+      name: Hide timeout progress
+      description: Hide timeout progress bar
+      selector:
+        boolean:
+    tag:
+      name: Tag
+      description: Tag for managing multiple popups
       selector:
         text:
-          multiline: true
 
 more_info:
   name: more_info
   description: "Show more-info dialog"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     entity:
       name: Entity ID
       description: ""
-      required: true
       selector:
         text:
+    view:
+      name: View
+      description: More-info view to show
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - info
+            - history
+            - settings
+            - related
     large:
       name: Large size
       description: ""
@@ -153,32 +305,118 @@ more_info:
       default: false
       selector:
         boolean:
+    close:
+      name: Close existing more-info dialog
+      description: Close the more-info dialog if open
+      default: false
+      selector:
+        boolean:
 
 close_popup:
   name: close_popup
   description: "Close a popup"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
+    all:
+      name: All popups
+      description: Close all Browser Mod popups on the browser
+      default: false
+      selector:
+        boolean:
+    tag:
+      name: Tag
+      description: Tag for popup to close when using multiple popups
+      selector:
+        text:
+
+set_popup_style:
+  name: Set popup style
+  description: "Set the style of a popup"
+  fields:
+    browser_id:
+      name: Target Browser
+      description: ""
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
+    all:
+      name: All popups
+      description: Set style for all open Browser Mod popups on the browser
+      default: false
+      selector:
+        boolean:
+    tag:
+      name: Tag
+      description: Tag for popup to set style for when using multiple popups
+      selector:
+        text:
+    style:
+      name: Style
+      description: Style to apply to the popup
+      selector:
+        select:
+          mode: dropdown
+          custom_value: true
+          options:
+            - normal
+            - classic
+            - wide
+            - fullscreen
+    direction:
+      name: Direction
+      description: Direction to cycle through style sequence
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - forward
+            - back
 
 notification:
   name: notification
   description: "Display a short notification"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     message:
       name: Message
       description: "Message to display"
@@ -207,13 +445,21 @@ navigate:
   description: "Navigate browser to a different page"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     path:
       name: Path
       description: "Target path"
@@ -225,26 +471,71 @@ refresh:
   description: "Refresh page"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
+
+change_browser_id:
+  name: change_browser_id
+  description: "Change browser ID" 
+  fields:
+    current_browser_id:
+      name: Current Browser ID
+      description: "Current Browser ID of the browser to change"
+      selector:
+        device:
+          multiple: false
+          filter:
+            integration: "browser_mod"
+    new_browser_id:
+      name: New ID
+      description: "New Browser ID for the browser"
+      selector:
+        text:
+    register:
+      name: Register
+      description: "Register the browser"
+      selector:
+        boolean:
+    refresh:
+      name: Refresh
+      description: "Refresh the browser after changing the ID"
+      default: true
+      selector:
+        boolean:
 
 set_theme:
   name: set_theme
   description: "Change the current theme"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     theme:
       name: Theme
       description: "Name of theme or 'auto'"
@@ -275,13 +566,21 @@ console:
   description: "Print text to browser console"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     message:
       name: Message
       description: "Text to print"
@@ -293,15 +592,52 @@ javascript:
   description: "Run arbitrary JavaScript code"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     code:
       name: Code
       description: "JavaScript code to run"
       selector:
         object:
+
+deregister_browser:
+  name: deregister_browser
+  description: "Deregister a browser. Include at leaset one paremeter. Calling wiith either exclude parameter will deregister all browsers except those excluded."
+  fields:
+    browser_id:
+      name: Target Browsers
+      description: ""
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
+    browser_id_exclude:
+      name: Browsers to exclude
+      description: "Exclude browser from deregister"
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
+    area_id_exclude:
+      name: Areas to exclude
+      description: "Exclude browsers in area from deregister"
+      selector:
+        area:
+          multiple: true
+          entity:
+            integration: "browser_mod"

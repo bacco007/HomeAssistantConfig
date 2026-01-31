@@ -7,7 +7,7 @@ browser_mod:
     content:
       type: custom:stack-in-card
       cards:
-        - type: custom:mushroom-template-card
+        - type: custom:mushroom-legacy-template-card
           primary: Media Players
           icon: mdi:play-network
           icon_color: blue

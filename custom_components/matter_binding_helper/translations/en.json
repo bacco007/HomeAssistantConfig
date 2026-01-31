@@ -1,0 +1,43 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Matter Binding Helper",
+        "description": "This integration allows you to manage Matter device bindings. Make sure the Matter integration is configured before proceeding.",
+        "data": {}
+      },
+      "telemetry": {
+        "title": "Help Improve Matter Compatibility",
+        "description": "Share anonymized device information to help build a database of Matter device capabilities. This data helps suggest compatible binding targets and improves the integration for everyone.\n\n**What we collect:**\n- Vendor and product information (manufacturer names, model IDs)\n- Device capabilities (supported clusters, device types)\n- Hardware/software versions\n\n**What we never collect:**\n- Device names or labels you've assigned\n- Room/area information\n- Any personally identifiable information",
+        "data": {
+          "telemetry_enabled": "Share anonymized device data"
+        },
+        "data_description": {
+          "telemetry_enabled": "Help improve Matter device compatibility by sharing anonymous capability data with matter-survey.org"
+        }
+      }
+    },
+    "error": {
+      "matter_not_configured": "The Matter integration is not configured. Please set up Matter first."
+    },
+    "abort": {
+      "already_configured": "Matter Binding Helper is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Matter Binding Helper Options",
+        "description": "Configure the Matter Binding Helper integration.",
+        "data": {
+          "telemetry_enabled": "Share anonymized device data",
+          "demo_mode": "Demo Mode"
+        },
+        "data_description": {
+          "telemetry_enabled": "Share anonymous device capability data with matter-survey.org to help improve binding suggestions",
+          "demo_mode": "Enable demo mode to show mock Matter devices for UI development. Disable when using real Matter devices."
+        }
+      }
+    }
+  }
+}

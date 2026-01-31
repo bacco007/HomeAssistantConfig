@@ -1,0 +1,11 @@
+---
+id: notify_action_restart_ha
+alias: "[Notifications Action] Start HA"
+max_exceeded: silent
+trigger:
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: notify_action_restart_ha
+action:
+  - service: homeassistant.restart

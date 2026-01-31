@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>reTerminal Dashboard Designer · YAML Snippet Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google Fonts for live preview -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&family=Quicksand:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="editor.css">
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div>
+      <h1><span class="logo-dot"></span> reTerminal Designer <span
+          style="font-size: 10px; color: var(--muted); vertical-align: middle;">v0.5</span></h1>
+      <div style="margin-top: 4px; font-size: 10px;">
+        <a href="https://github.com/koosoli/ReTerminalDesigner" target="_blank"
+          style="color: var(--accent); text-decoration: none; display: flex; align-items: center; gap: 4px;">
+          <svg height="12" width="12" viewBox="0 0 16 16" fill="currentColor">
+            <path
+              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+            </path>
+          </svg>
+          GitHub Repository
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-group">
+    </div>
+    <button id="deviceSettingsBtn" class="btn btn-secondary btn-full" style="margin-top:4px;">Device Settings</button>
+    <div class="status-bar">
+    </div>
+    </div>
+
+    <div class="sidebar-group">
+      <div class="sidebar-section-label">Pages</div>
+      <div id="pageList" class="page-list"></div>
+      <button id="addPageBtn" class="btn btn-secondary btn-full">+ Add page</button>
+      <button id="clearAllBtn" class="btn btn-secondary btn-full" style="margin-top:4px;"
+        title="Remove all widgets from current page">Clear current page</button>
+    </div>
+
+    <div class="sidebar-group">
+      <div class="sidebar-section-label">Widgets</div>
+      <div id="widgetPalette" class="widget-list">
+        <div class="item" data-widget-type="label">
+          <span class="label">Floating text</span>
+          <span class="tag">Text</span>
+        </div>
+        <div class="item" data-widget-type="sensor_text">
+          <span class="label">Sensor text</span>
+          <span class="tag">Entity</span>
+        </div>
+        <div class="item" data-widget-type="datetime">
+          <span class="label">Date & Time</span>
+          <span class="tag">Time</span>
+        </div>
+        <div class="item" data-widget-type="progress_bar">
+          <span class="label">Progress bar</span>
+          <span class="tag">Entity</span>
+        </div>
+        <div class="item" data-widget-type="icon">
+          <span class="label">MDI icon</span>
+          <span class="tag">Icon</span>
+        </div>
+        <div class="item" data-widget-type="battery_icon">
+          <span class="label">Battery icon</span>
+          <span class="tag">Entity</span>
+        </div>
+        <div class="item" data-widget-type="weather_icon">
+          <span class="label">Weather icon</span>
+          <span class="tag">Icon</span>
+        </div>
+        <div class="item" data-widget-type="shape_rect">
+          <span class="label">Rectangle / box</span>
+          <span class="tag">Shape</span>
+        </div>
+        <div class="item" data-widget-type="shape_circle">
+          <span class="label">Circle</span>
+          <span class="tag">Shape</span>
+        </div>
+        <div class="item" data-widget-type="line">
+          <span class="label">Line</span>
+          <span class="tag">Shape</span>
+        </div>
+        <div class="item" data-widget-type="image">
+          <span class="label">Image</span>
+          <span class="tag">Media</span>
+        </div>
+        <div class="item" data-widget-type="online_image">
+          <span class="label">Puppet / Remote image</span>
+          <span class="tag">Remote</span>
+        </div>
+        <div class="item" data-widget-type="graph">
+          <span class="label">Graph / Chart</span>
+          <span class="tag">Data</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-group">
+      <button id="saveLayoutBtn" class="btn btn-full">Save layout</button>
+      <button id="generateSnippetBtn" class="btn btn-secondary btn-full">Generate ESPHome snippet</button>
+      <div class="status-bar" id="sidebarStatus">
+        <span>Layout status will appear here.</span>
+        <span class="emph">Snippets are additive to your base ESPHome config.</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="main-header">
+      <div class="main-header-title">
+        <h2>Visual layout editor</h2>
+        <span>Each widget on the canvas becomes part of your ESPHome display lambda.</span>
+      </div>
+      <div class="main-header-actions">
+        <button id="editorSettingsBtn" class="btn btn-secondary">⚙ Editor Settings</button>
+      </div>
+    </div>
+
+    <div class="canvas-wrap">
+      <div class="canvas-area-wrapper">
+        <div class="centered-stack">
+          <section class="canvas-area">
+            <div class="canvas-toolbar">
+              <span>Page: <strong id="currentPageName">Loading...</strong></span>
+              <span>Place widgets to define what the reTerminal shows.</span>
+            </div>
+            <div id="canvas" class="canvas">
+              <div class="canvas-grid"></div>
+            </div>
+          </section>
+
+          <section class="snippet-area">
+            <div class="snippet-header">
+              <span>ESPHome YAML Configuration (editable - paste or modify, then click Update Layout)</span>
+              <div class="snippet-actions">
+                <button id="copySnippetBtn" class="btn btn-secondary"
+                  style="padding:3px 6px;font-size:9px;">Copy</button>
+                <button id="fullscreenSnippetBtn" class="btn btn-secondary"
+                  style="padding:3px 6px;font-size:9px;">Fullscreen</button>
+                <button id="updateLayoutBtn" class="btn btn-primary"
+                  style="padding:3px 8px;font-size:9px;font-weight:bold;">Update Layout from YAML</button>
+              </div>
+            </div>
+            <textarea id="snippetBox" class="snippet-box"># Click "Generate ESPHome snippet" to see output here.
+# This includes layout and minimal surrounding definitions.
+# You can paste YAML here or edit it directly, then click "Update Layout from YAML" to import changes.
+            </textarea>
+            <div class="status-bar">
+              <span>Edit YAML above and click "Update Layout from YAML" to import.</span>
+              <span>Generated YAML can be pasted into ESPHome, then compiled and flashed.</span>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <aside class="right-panel">
+        <h3>Widget properties</h3>
+        <div class="field" style="margin-bottom:2px;">
+          <div class="prop-label">Editor options</div>
+          <label style="display:flex;align-items:center;gap:6px;font-size:9px;color:var(--muted);">
+            <input id="snapToggle" type="checkbox" checked style="width:auto;height:auto;margin:0;" />
+            <span>Snap to guides</span>
+          </label>
+        </div>
+        <div id="propertiesPanel">
+          <div class="field">
+            <span style="font-size:9px;color:var(--muted);">
+              Select a widget on the canvas to edit its position, size, text, color, fill, shading, and line thickness.
+            </span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Fullscreen snippet modal -->
+  <div id="snippetFullscreenModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <div>ESPHome YAML snippet (fullscreen)</div>
+        <button id="snippetFullscreenClose" class="btn btn-secondary">Close</button>
+      </div>
+      <div class="modal-body">
+        <pre id="snippetFullscreenContent"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import snippet modal -->
+  <div id="importSnippetModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <div>Import ESPHome snippet</div>
+        <button id="importSnippetCancel" class="btn btn-secondary">Cancel</button>
+      </div>
+      <div class="modal-body">
+        <textarea id="importSnippetTextarea" placeholder="# Paste your ESPHome snippet here"></textarea>
+        <div id="importSnippetError" class="prop-label" style="color: var(--danger);"></div>
+        <div>Page Settings</div>
+        <button id="pageSettingsClose" class="btn btn-secondary">Close</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <div class="prop-label">Page Name</div>
+          <input id="pageSettingsName" class="prop-input" type="text" placeholder="Page name" />
+        </div>
+        <div class="field">
+          <div class="prop-label">Refresh Interval (seconds)</div>
+          <input id="pageSettingsRefresh" class="prop-input" type="number" min="0" step="1"
+            placeholder="Auto (uses ESPHome default)" />
+          <div style="font-size: 9px; color: var(--muted); margin-top: 2px;">
+            Leave empty for default. Set to 0 for manual refresh only. Recommended: 60-300 seconds.
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="pageSettingsSave" class="btn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Device Settings Modal -->
+  <div id="deviceSettingsModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <div>Device Settings</div>
+        <button id="deviceSettingsClose" class="btn btn-secondary">Close</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <div class="prop-label">Device Name</div>
+          <input id="deviceName" class="prop-input" type="text" placeholder="e.g. Living Room" />
+        </div>
+        <div class="field">
+          <div class="prop-label">Device Model</div>
+          <select id="deviceModel" class="prop-input">
+            <option value="reterminal_e1001">reTerminal E1001 (Monochrome)</option>
+            <option value="reterminal_e1002">reTerminal E1002 (6-Color)</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="prop-label">Orientation</div>
+          <select id="deviceOrientation" class="prop-input">
+            <option value="landscape">Landscape</option>
+            <option value="portrait">Portrait</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="prop-label">Appearance</div>
+          <label style="display:flex;align-items:center;gap:6px;font-size:11px;">
+            <input id="deviceDarkMode" type="checkbox" />
+            <span>Dark mode background (E-Ink simulation)</span>
+          </label>
+        </div>
+
+        <div class="form-group"
+          style="border-top: 1px solid var(--border-subtle); padding-top: 12px; margin-top: 12px;">
+          <label class="prop-label">Power & Refresh Strategy</label>
+
+          <!-- Option 1: Standard (Always On) -->
+          <div class="checkbox-row" style="margin-top: 6px;">
+            <input type="radio" id="mode-standard" name="powerStrategy" value="standard" checked
+              onchange="togglePowerSettings()">
+            <label for="mode-standard" style="font-weight: 500;">Standard (Always On)</label>
+          </div>
+          <p class="hint" style="margin-left: 22px; margin-bottom: 8px;">
+            Device stays online. Screen updates automatically based on page timers.
+          </p>
+
+          <!-- Option 2: Night Mode -->
+          <div class="checkbox-row">
+            <input type="radio" id="setting-sleep-enabled" name="powerStrategy" value="night"
+              onchange="togglePowerSettings()">
+            <label for="setting-sleep-enabled" style="font-weight: 500;">Night Mode (Screen off at night)</label>
+          </div>
+          <!-- Night Mode Settings (Hidden by default) -->
+          <div class="row" id="sleep-times-row"
+            style="display:none; margin-left: 22px; margin-bottom: 8px; border-left: 2px solid var(--border-subtle); padding-left: 10px;">
+            <div class="col">
+              <label class="sub-label">Start Hour (0-23)</label>
+              <input type="number" id="setting-sleep-start" min="0" max="23" value="0">
+            </div>
+            <div class="col">
+              <label class="sub-label">End Hour (0-23)</label>
+              <input type="number" id="setting-sleep-end" min="0" max="23" value="5">
+            </div>
+          </div>
+
+          <!-- Option 3: Manual Refresh -->
+          <div class="checkbox-row">
+            <input type="radio" id="setting-manual-refresh" name="powerStrategy" value="manual"
+              onchange="togglePowerSettings()">
+            <label for="setting-manual-refresh" style="font-weight: 500;">Manual Refresh Only</label>
+          </div>
+          <p class="hint" style="margin-left: 22px; margin-bottom: 8px;">
+            No auto-updates. Device stays online waiting for button presses or HA commands.
+          </p>
+
+          <!-- Option 4: Deep Sleep -->
+          <div class="checkbox-row">
+            <input type="radio" id="setting-deep-sleep-enabled" name="powerStrategy" value="deepsleep"
+              onchange="togglePowerSettings()">
+            <label for="setting-deep-sleep-enabled" style="font-weight: 500;">Deep Sleep (Battery Saver)</label>
+          </div>
+          <!-- Deep Sleep Settings (Hidden by default) -->
+          <div class="row" id="deep-sleep-interval-row"
+            style="display:none; margin-left: 22px; margin-bottom: 8px; border-left: 2px solid var(--border-subtle); padding-left: 10px;">
+            <div class="col">
+              <label class="sub-label">Update Interval (seconds)</label>
+              <input type="number" id="setting-deep-sleep-interval" min="60" value="600">
+              <p class="hint">Device goes offline between updates.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="deviceSettingsSave" class="btn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Editor Settings Modal -->
+  <div id="editorSettingsModal" class="modal-backdrop hidden">
+    <div class="modal" style="max-width: 500px; height: auto;">
+      <div class="modal-header">
+        <div>⚙ Editor Settings</div>
+        <button id="editorSettingsClose" class="btn btn-secondary">Close</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="prop-label">Canvas Size</label>
+          <div id="editorCanvasSizeLabel" style="font-size: 14px; color: var(--text); margin-bottom: 8px;">
+            800 x 480 px · reTerminal E-Ink
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="prop-label">Snap to Grid</label>
+          <div class="checkbox-row">
+            <input type="checkbox" id="editorSnapToGrid" checked>
+            <label for="editorSnapToGrid">Enable snap guides when dragging widgets</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="prop-label">Grid Display</label>
+          <div class="checkbox-row">
+            <input type="checkbox" id="editorShowGrid" checked>
+            <label for="editorShowGrid">Show canvas grid overlay</label>
+          </div>
+        </div>
+
+        <div class="form-group"
+          style="border-top: 1px solid var(--border-subtle); padding-top: 12px; margin-top: 12px;">
+          <label class="prop-label">Editor Theme</label>
+          <div class="checkbox-row">
+            <input type="checkbox" id="editorLightMode">
+            <label for="editorLightMode">Light mode interface</label>
+          </div>
+          <p class="hint" style="color: var(--muted); font-size: 11px; margin-top: 4px;">Switch between dark and light
+            editor theme.</p>
+        </div>
+
+        <div class="form-group"
+          style="border-top: 1px solid var(--border-subtle); padding-top: 12px; margin-top: 12px;">
+          <label class="prop-label">Entity Cache</label>
+          <p class="hint" style="color: var(--muted); font-size: 12px; margin-bottom: 8px;">Entities are cached from
+            Home Assistant for the picker.</p>
+          <button id="editorRefreshEntities" class="btn btn-secondary" style="font-size: 12px; padding: 6px 12px;">↻
+            Refresh Entity List</button>
+          <span id="editorEntityCount" style="font-size: 11px; color: var(--muted); margin-left: 8px;"></span>
+        </div>
+
+        <div class="form-group"
+          style="border-top: 1px solid var(--border-subtle); padding-top: 12px; margin-top: 12px;">
+          <label class="prop-label">Keyboard Shortcuts</label>
+          <div style="font-size: 12px; color: var(--muted); line-height: 1.8;">
+            <div><kbd
+                style="background: var(--bg); padding: 2px 6px; border-radius: 3px; border: 1px solid var(--border-subtle);">Ctrl+Z</kbd>
+              Undo</div>
+            <div><kbd
+                style="background: var(--bg); padding: 2px 6px; border-radius: 3px; border: 1px solid var(--border-subtle);">Ctrl+Y</kbd>
+              Redo</div>
+            <div><kbd
+                style="background: var(--bg); padding: 2px 6px; border-radius: 3px; border: 1px solid var(--border-subtle);">Ctrl+C</kbd>
+              Copy widget</div>
+            <div><kbd
+                style="background: var(--bg); padding: 2px 6px; border-radius: 3px; border: 1px solid var(--border-subtle);">Ctrl+V</kbd>
+              Paste widget</div>
+            <div><kbd
+                style="background: var(--bg); padding: 2px 6px; border-radius: 3px; border: 1px solid var(--border-subtle);">Delete</kbd>
+              Remove selected widget</div>
+            <div><kbd
+                style="background: var(--bg); padding: 2px 6px; border-radius: 3px; border: 1px solid var(--border-subtle);">Alt
+                + Drag</kbd> Disable snap guides</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="editorSettingsDone" class="btn">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Visual toggling script for Power Strategy -->
+  <script>
+    function togglePowerSettings() {
+      // Hide all sub-settings first
+      document.getElementById('sleep-times-row').style.display = 'none';
+      document.getElementById('deep-sleep-interval-row').style.display = 'none';
+
+      // Show based on selection
+      if (document.getElementById('setting-sleep-enabled').checked) {
+        document.getElementById('sleep-times-row').style.display = 'flex';
+      }
+      if (document.getElementById('setting-deep-sleep-enabled').checked) {
+        document.getElementById('deep-sleep-interval-row').style.display = 'flex';
+      }
+    }
+  </script>
+
+  <script src="editor.js"></script>
+</body>
+
+</html>

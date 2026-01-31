@@ -1,53 +1,30 @@
 ---
 alias: "[Addon Watchguard] Zigbee2MQTT"
 description: ""
+mode: single
 triggers:
-  - minutes: "*"
+  - minutes: /5
     trigger: time_pattern
 conditions:
-  - condition: state
-    entity_id: binary_sensor.zigbee2mqtt_bridge_connection_state
-    state: unavailable
-    for:
-      hours: 0
-      minutes: 5
-      seconds: 0
+  - condition: or
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.zigbee2mqtt_bridge_connection_state
+        state: "off"
+      - condition: state
+        entity_id: binary_sensor.zigbee2mqtt_bridge_connection_state
+        state: unavailable
 actions:
-  - repeat:
-      until:
-        - condition: state
-          entity_id: binary_sensor.zigbee2mqtt_running
-          state: "on"
-          for:
-            hours: 0
-            minutes: 5
-            seconds: 0
-      sequence:
-        - if:
-            - condition: state
-              entity_id: binary_sensor.zigbee2mqtt_running
-              state: "off"
-          then:
-            - data:
-                addon: 45df7312_zigbee2mqtt
-              action: hassio.addon_start
-            - delay:
-                hours: 0
-                minutes: 1
-                seconds: 0
-                milliseconds: 0
-            - data: {}
-              target:
-                entity_id: binary_sensor.zigbee2mqtt_running
-              action: homeassistant.update_entity
-          else:
-            - delay:
-                hours: 0
-                minutes: 0
-                seconds: 30
-                milliseconds: 0
-            - data: {}
-              target:
-                entity_id: binary_sensor.zigbee2mqtt_running
-              action: homeassistant.update_entity
-mode: single
+  - data:
+      addon: 45df7312_zigbee2mqtt
+    action: hassio.addon_restart
+  - action: notify.alert
+    data:
+      title: Zigbee2MQTT Restarted
+      message: Zigbee2MQTT connectivity has stopped, addon has been restarted
+      data:
+        tag: watchguard_z2m
+        notification_id: watchguard_z2m
+        push:
+          badge: 1
+          sound: none

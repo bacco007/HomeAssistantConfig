@@ -1,0 +1,83 @@
+{
+    "type": "object",
+    "properties": {
+        "entity_id": {
+            "type": "string",
+            "title": "Entity ID",
+            "description": "Home Assistant Sensor Entity ID"
+        },
+        "title": {
+            "type": "string",
+            "title": "Title"
+        },
+        "duration": {
+            "type": "string",
+            "title": "Duration",
+            "default": "1h",
+            "description": "e.g., 1h, 24h, 30m"
+        },
+        "border": {
+            "type": "boolean",
+            "title": "Show Border",
+            "default": true
+        },
+        "x_grid": {
+            "type": "string",
+            "title": "X Grid",
+            "description": "Grid interval (e.g., 1h)"
+        },
+        "y_grid": {
+            "type": "string",
+            "title": "Y Grid",
+            "description": "Grid interval (e.g., 10)"
+        },
+        "line_type": {
+            "type": "string",
+            "title": "Line Type",
+            "default": "SOLID",
+            "enum": [
+                "SOLID",
+                "DASHED",
+                "DOTTED"
+            ]
+        },
+        "line_thickness": {
+            "type": "integer",
+            "title": "Line Thickness",
+            "default": 3,
+            "minimum": 1,
+            "maximum": 10
+        },
+        "continuous": {
+            "type": "boolean",
+            "title": "Continuous",
+            "default": true
+        },
+        "min_value": {
+            "type": "number",
+            "title": "Min Value"
+        },
+        "max_value": {
+            "type": "number",
+            "title": "Max Value"
+        },
+        "min_range": {
+            "type": "number",
+            "title": "Min Range"
+        },
+        "max_range": {
+            "type": "number",
+            "title": "Max Range"
+        },
+        "is_local_sensor": {
+            "type": "boolean",
+            "title": "Local / On-Device Sensor",
+            "default": false
+        },
+        "color": {
+            "type": "string",
+            "title": "Color",
+            "default": "black"
+        }
+    }
+}

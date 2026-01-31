@@ -229,7 +229,7 @@ cards:
       - type: section
       - type: custom:fold-entity-row
         head:
-          type: custom:mushroom-template-card
+          type: custom:mushroom-legacy-template-card
           primary: Top Albums (All Time)
           secondary: >
             {{ state_attr('sensor.lastfm_user_topalbums', 'album')[0].artist.name }} - {{ state_attr('sensor.lastfm_user_topalbums', 'album')[0].name }}

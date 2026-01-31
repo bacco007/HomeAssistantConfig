@@ -1,0 +1,41 @@
+{
+  "config": {
+    "title": "HA WeatherSense",
+    "step": {
+      "user": {
+        "title": "HA WeatherSense einrichten",
+        "description": "Einen Sensor einrichten, um die gefühlte Temperatur basierend auf Umgebungsbedingungen zu berechnen.",
+        "data": {
+          "name": "Sensorname",
+          "temperature_sensor": "Temperatursensor",
+          "humidity_sensor": "Feuchtigkeitssensor",
+          "wind_speed_sensor": "Windgeschwindigkeitssensor (optional)",
+          "pressure_sensor": "Drucksensor (optional)",
+          "solar_radiation_sensor": "Solarstrahlungssensor (optional)",
+          "is_outdoor": "Ist dies für Außenbedingungen?",
+          "display_unit": "Temperaturanzeigeeinheit"
+        }
+      }
+    },
+    "error": {
+      "temperature_required": "Temperatursensor ist erforderlich",
+      "humidity_required": "Feuchtigkeitssensor ist erforderlich"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "HA WeatherSense Optionen",
+        "data": {
+          "temperature_sensor": "Temperatursensor",
+          "humidity_sensor": "Feuchtigkeitssensor",
+          "wind_speed_sensor": "Windgeschwindigkeitssensor (optional)",
+          "pressure_sensor": "Drucksensor (optional)",
+          "solar_radiation_sensor": "Solarstrahlungssensor (optional)",
+          "is_outdoor": "Ist dies für Außenbedingungen?",
+          "display_unit": "Temperaturanzeigeeinheit"
+        }
+      }
+    }
+  }
+}

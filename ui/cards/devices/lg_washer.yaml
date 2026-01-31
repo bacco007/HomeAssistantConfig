@@ -10,71 +10,9 @@ cards:
         background: var(--ha-card-background);
         opacity: 1;
         }
-
-  - type: custom:stack-in-card
-    card_mod:
-      style: &style |
-        #states > * {
-          margin: 0 !important;
-        }
-    cards:
-      - type: entities
-        card_mod:
-          style: *style
-        show_header_toggle: false
-        state_color: true
-        entities:
-          - entity: binary_sensor.washer_error_state
-            name: Error State
-          - type: attribute
-            entity: sensor.washer
-            attribute: run_state
-            icon: mdi:washing-machine
-            name: Run State
-      - type: conditional
-        conditions:
-          - entity: sensor.washer_run_state
-            state_not: "-"
-        card:
-          type: entities
-          card_mod:
-            style: *style
-          entities:
-            - binary_sensor.washer_remote_start
-            - binary_sensor.washer_door_lock
-            - binary_sensor.washer_child_lock
-            - binary_sensor.washer_standby
-            - binary_sensor.washer_error_state
-            - type: section
-            - type: attribute
-              entity: sensor.washer
-              attribute: run_state
-              icon: mdi:washing-machine
-              name: Run State
-            - type: attribute
-              entity: sensor.washer
-              attribute: current_course
-              icon: mdi:format-list-bulleted-square
-              name: Current Course
-            - type: attribute
-              entity: sensor.washer
-              attribute: spin_speed
-              icon: mdi:rotate-right
-              name: Spin Speed
-            - type: attribute
-              entity: sensor.washer
-              attribute: water_temp
-              icon: mdi:thermometer
-              name: Water Temp
-            - type: attribute
-              entity: sensor.washer
-              attribute: remain_time
-              icon: mdi:clock
-              name: Time Remaining
-            - type: section
-            - sensor.washer_countdown_time
-            - sensor.washer_remaining_time
-            - sensor.washer_initial_time
-            - sensor.washer_tub_clean_counter
-            - sensor.washer_error_message
-            - sensor.washer_rinse_mode
+    modules:
+      - default
+  - type: custom:device-card
+    exclude_sections: []
+    title: " "
+    device_id: 14dcce0506b211eba53485b12f03e2cd

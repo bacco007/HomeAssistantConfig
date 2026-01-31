@@ -1,0 +1,17 @@
+{
+  "domain": "willyweather",
+  "name": "WillyWeather",
+  "codeowners": ["@safepay"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/safepay/willyweather-forecast-home-assistant",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/safepay/willyweather-forecast-home-assistant/issues",
+  "requirements": [],
+  "version": "2.4.0"
+}
+
+
+
+
+

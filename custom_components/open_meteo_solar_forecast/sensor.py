@@ -33,7 +33,7 @@ from .coordinator import OpenMeteoSolarForecastDataUpdateCoordinator
 
 @dataclass(frozen=True)
 class OpenMeteoSolarForecastSensorEntityDescription(SensorEntityDescription):
-    """Describes a Forecast.Solar Sensor."""
+    """Describes a Solar Forecast Sensor."""
 
     state: Callable[[Estimate], Any] | None = None
 

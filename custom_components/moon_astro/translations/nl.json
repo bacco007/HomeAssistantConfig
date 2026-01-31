@@ -1,0 +1,349 @@
+{
+    "title": "Maan Astro",
+    "config": {
+        "step": {
+            "user": {
+                "title": "Maan Astro",
+                "description": "Stel je GPS-coördinaten en hoogte in.",
+                "data": {
+                    "latitude": "Breedtegraad",
+                    "longitude": "Lengtegraad",
+                    "altitude": "Hoogte (m)"
+                }
+            },
+            "precision": {
+                "title": "Maan Astro",
+                "description": "De modus hoge precisie vermindert de variabiliteit van tijdstempels, maar verhoogt het CPU-gebruik omdat er een fijnere samplingstap en een bredere verfijningsmarge wordt gebruikt. Het wordt niet aanbevolen om deze optie in te schakelen op apparaten met weinig rekenkracht zoals Raspberry Pi.",
+                "data": {
+                    "high_precision": "Modus hoge precisie"
+                }
+            }
+        },
+        "progress": {
+            "download_ephemeris": "Skyfield DE440-ephemeride downloaden (> 100 MB). Sluit dit venster niet tijdens het downloaden..."
+        },
+        "abort": {
+            "already_configured": "Maan Astro is al geconfigureerd",
+            "missing_data": "Configuratiegegevens ontbreken",
+            "reconfigure_successful": "Configuratie bijgewerkt"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Maan Astro-opties",
+                "description": "Pas het update-interval van de sensoren en de tijdzone-afhandeling aan.\n\nDe modus met hoge precisie vermindert de variatie in tijdstempels, maar verhoogt het CPU-gebruik omdat een fijnere sample-stap en een bredere verfijningsmarge worden gebruikt. Niet aanbevolen op apparaten met weinig rekenkracht zoals de Raspberry Pi.\n\nHet fallback-interval voor het verversen van gebeurtenissen forceert een periodieke verversing van gebeurtenisgestuurde sensoren (volgende/vorige fasen, apogeum/perigeum, dierenriem bij lunaties) als de geplande verversing rond de volgende gebeurtenis wordt gemist (herstart, tijdswijziging, vertraging). Lagere waarden verversen vaker; hogere waarden verlagen het CPU-gebruik.",
+                "data": {
+                    "scan_interval": "Update-interval van sensoren (seconden)",
+                    "use_ha_timezone": "Tijdzone van Home Assistant gebruiken",
+                    "high_precision": "Modus hoge precisie",
+                    "events_refresh_fallback": "Fallback-interval voor het verversen van gebeurtenissen (seconden)"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "above_horizon": {
+                "name": "Boven de horizon",
+                "state": {
+                    "on": "Boven de horizon",
+                    "off": "Onder de horizon"
+                }
+            }
+        },
+        "sensor": {
+            "phase": {
+                "name": "Fase",
+                "state": {
+                    "new_moon": "Nieuwe maan",
+                    "waxing_crescent": "Wassende sikkel",
+                    "first_quarter": "Eerste kwartier",
+                    "waxing_gibbous": "Wassende maan",
+                    "full_moon": "Volle maan",
+                    "waning_gibbous": "Afnemende maan",
+                    "last_quarter": "Laatste kwartier",
+                    "waning_crescent": "Afnemende sikkel",
+                    "unknown": "Onbekend"
+                }
+            },
+            "azimuth": {
+                "name": "Azimut"
+            },
+            "elevation": {
+                "name": "Hoekhoogte"
+            },
+            "illumination": {
+                "name": "Verlichting"
+            },
+            "distance": {
+                "name": "Afstand"
+            },
+            "parallax": {
+                "name": "Parallax"
+            },
+            "ecliptic_longitude_topocentric": {
+                "name": "Ecliptische lengte (topocentrisch)"
+            },
+            "ecliptic_latitude_topocentric": {
+                "name": "Ecliptische breedte (topocentrisch)"
+            },
+            "ecliptic_longitude_geocentric": {
+                "name": "Ecliptische lengte (geocentrisch)"
+            },
+            "ecliptic_latitude_geocentric": {
+                "name": "Ecliptische breedte (geocentrisch)"
+            },
+            "next_rise": {
+                "name": "Volgende opkomst"
+            },
+            "next_set": {
+                "name": "Volgende ondergang"
+            },
+            "next_apogee": {
+                "name": "Volgende apogeum"
+            },
+            "next_perigee": {
+                "name": "Volgende perigeum"
+            },
+            "next_new_moon": {
+                "name": "Volgende nieuwe maan"
+            },
+            "next_first_quarter": {
+                "name": "Volgend eerste kwartier"
+            },
+            "next_full_moon": {
+                "name": "Volgende volle maan"
+            },
+            "next_full_moon_name": {
+                "name": "Naam van de volgende volle maan",
+                "state": {
+                    "wolf_moon": "Wolfsmaan",
+                    "snow_moon": "Sneeuwmaan",
+                    "worm_moon": "Wormenmaan",
+                    "pink_moon": "Roze Maan",
+                    "flower_moon": "Bloemenmaan",
+                    "strawberry_moon": "Aardbeienmaan",
+                    "buck_moon": "Bokkenmaan",
+                    "sturgeon_moon": "Steurmaan",
+                    "harvest_moon": "Oogstmaan",
+                    "hunters_moon": "Jagersmaan",
+                    "beaver_moon": "Bevermaan",
+                    "cold_moon": "Koude Maan",
+                    "blue_moon": "Blauwe Maan",
+                    "unknown": "Onbekend"
+                }
+            },
+            "next_full_moon_alt_names": {
+                "name": "Alternatieve namen van de volgende volle maan",
+                "state": {
+                    "wolf_moon_alt_names": "Maan na Yule, Blijf-thuismaan, Stille Maan, Strenge Maan, Middelpuntmaan",
+                    "snow_moon_alt_names": "Hongersmaan, Berenmaan, Stormmaan, IJsmaan",
+                    "worm_moon_alt_names": "Vastentijdmaan, Kraaienmaan, Sneeuwkorstmaan, Kuise Maan, Suikermaan, Sapmaan",
+                    "pink_moon_alt_names": "Breekijsmaan, Knoppenmaan, Ontwakingsmaan, Eimaan, Paasmaan",
+                    "flower_moon_alt_names": "Plantmaan, Melkmaan, Hazenmaan, Grasmaan, Moedersmaan, Heldere Maan",
+                    "strawberry_moon_alt_names": "Rozenmaan, Hete Maan, Mede-maan, Bloemenmaan, Plantmaan",
+                    "buck_moon_alt_names": "Dondermaan, Hooimaan, Kruidenmaan",
+                    "sturgeon_moon_alt_names": "Graanmaan, Maïsmaan, Lynxmaan, Bliksemmaan",
+                    "harvest_moon_alt_names": "Volle Maïsmaan, Groene Maïsmaan, Maïsmaan, Wijnmaan, Zangmaan, Gerstmaan",
+                    "hunters_moon_alt_names": "Droogrijstmaan, Vallende-bladerenmaan, Vriesmaan, Bloedmaan, Sanguine Maan",
+                    "beaver_moon_alt_names": "Rijpmaan, Vriesmaan, Handelsmaan, Sneeuwmaan, Rouwmaan, Donkerste-dieptenmaan",
+                    "cold_moon_alt_names": "Maan van de Lange Nachten, Maan vóór Yule, Eikenmaan, Volle Koude Maan",
+                    "unknown": ""
+                }
+            },
+            "next_last_quarter": {
+                "name": "Volgend laatste kwartier"
+            },
+
+            "previous_rise": {
+                "name": "Vorige opkomst"
+            },
+            "previous_set": {
+                "name": "Vorige ondergang"
+            },
+            "previous_apogee": {
+                "name": "Vorig apogeum"
+            },
+            "previous_perigee": {
+                "name": "Vorig perigeum"
+            },
+            "previous_new_moon": {
+                "name": "Vorige nieuwe maan"
+            },
+            "previous_first_quarter": {
+                "name": "Vorig eerste kwartier"
+            },
+            "previous_full_moon": {
+                "name": "Vorige volle maan"
+            },
+            "previous_full_moon_name": {
+                "name": "Naam van de vorige volle maan",
+                "state": {
+                    "wolf_moon": "Wolfsmaan",
+                    "snow_moon": "Sneeuwmaan",
+                    "worm_moon": "Wormenmaan",
+                    "pink_moon": "Roze Maan",
+                    "flower_moon": "Bloemenmaan",
+                    "strawberry_moon": "Aardbeienmaan",
+                    "buck_moon": "Bokkenmaan",
+                    "sturgeon_moon": "Steurmaan",
+                    "harvest_moon": "Oogstmaan",
+                    "hunters_moon": "Jagersmaan",
+                    "beaver_moon": "Bevermaan",
+                    "cold_moon": "Koude Maan",
+                    "blue_moon": "Blauwe Maan",
+                    "unknown": "Onbekend"
+                }
+            },
+            "previous_full_moon_alt_names": {
+                "name": "Alternatieve namen van de vorige volle maan",
+                "state": {
+                    "wolf_moon_alt_names": "Maan na Yule, Blijf-thuismaan, Stille Maan, Strenge Maan, Middelpuntmaan",
+                    "snow_moon_alt_names": "Hongersmaan, Berenmaan, Stormmaan, IJsmaan",
+                    "worm_moon_alt_names": "Vastentijdmaan, Kraaienmaan, Sneeuwkorstmaan, Kuise Maan, Suikermaan, Sapmaan",
+                    "pink_moon_alt_names": "Breekijsmaan, Knoppenmaan, Ontwakingsmaan, Eimaan, Paasmaan",
+                    "flower_moon_alt_names": "Plantmaan, Melkmaan, Hazenmaan, Grasmaan, Moedersmaan, Heldere Maan",
+                    "strawberry_moon_alt_names": "Rozenmaan, Hete Maan, Mede-maan, Bloemenmaan, Plantmaan",
+                    "buck_moon_alt_names": "Dondermaan, Hooimaan, Kruidenmaan",
+                    "sturgeon_moon_alt_names": "Graanmaan, Maïsmaan, Lynxmaan, Bliksemmaan",
+                    "harvest_moon_alt_names": "Volle Maïsmaan, Groene Maïsmaan, Maïsmaan, Wijnmaan, Zangmaan, Gerstmaan",
+                    "hunters_moon_alt_names": "Droogrijstmaan, Vallende-bladerenmaan, Vriesmaan, Bloedmaan, Sanguine Maan",
+                    "beaver_moon_alt_names": "Rijpmaan, Vriesmaan, Handelsmaan, Sneeuwmaan, Rouwmaan, Donkerste-dieptenmaan",
+                    "cold_moon_alt_names": "Maan van de Lange Nachten, Maan vóór Yule, Eikenmaan, Volle Koude Maan",
+                    "unknown": ""
+                }
+            },
+            "previous_last_quarter": {
+                "name": "Vorig laatste kwartier"
+            },
+
+            "ecliptic_longitude_next_full_moon": {
+                "name": "Ecliptische lengte bij de volgende volle maan"
+            },
+            "ecliptic_latitude_next_full_moon": {
+                "name": "Ecliptische breedte bij de volgende volle maan"
+            },
+            "ecliptic_longitude_next_new_moon": {
+                "name": "Ecliptische lengte bij de volgende nieuwe maan"
+            },
+            "ecliptic_latitude_next_new_moon": {
+                "name": "Ecliptische breedte bij de volgende nieuwe maan"
+            },
+            "ecliptic_longitude_previous_full_moon": {
+                "name": "Ecliptische lengte bij de vorige volle maan"
+            },
+            "ecliptic_latitude_previous_full_moon": {
+                "name": "Ecliptische breedte bij de vorige volle maan"
+            },
+            "ecliptic_longitude_previous_new_moon": {
+                "name": "Ecliptische lengte bij de vorige nieuwe maan"
+            },
+            "ecliptic_latitude_previous_new_moon": {
+                "name": "Ecliptische breedte bij de vorige nieuwe maan"
+            },
+
+            "zodiac_sign_current_moon": {
+                "name": "Dierenriemteken (huidig)",
+                "state": {
+                    "aries": "Ram",
+                    "taurus": "Stier",
+                    "gemini": "Tweelingen",
+                    "cancer": "Kreeft",
+                    "leo": "Leeuw",
+                    "virgo": "Maagd",
+                    "libra": "Weegschaal",
+                    "scorpio": "Schorpioen",
+                    "sagittarius": "Boogschutter",
+                    "capricorn": "Steenbok",
+                    "aquarius": "Waterman",
+                    "pisces": "Vissen"
+                }
+            },
+            "zodiac_sign_next_new_moon": {
+                "name": "Dierenriemteken bij de volgende nieuwe maan",
+                "state": {
+                    "aries": "Ram",
+                    "taurus": "Stier",
+                    "gemini": "Tweelingen",
+                    "cancer": "Kreeft",
+                    "leo": "Leeuw",
+                    "virgo": "Maagd",
+                    "libra": "Weegschaal",
+                    "scorpio": "Schorpioen",
+                    "sagittarius": "Boogschutter",
+                    "capricorn": "Steenbok",
+                    "aquarius": "Waterman",
+                    "pisces": "Vissen"
+                }
+            },
+            "zodiac_sign_next_full_moon": {
+                "name": "Dierenriemteken bij de volgende volle maan",
+                "state": {
+                    "aries": "Ram",
+                    "taurus": "Stier",
+                    "gemini": "Tweelingen",
+                    "cancer": "Kreeft",
+                    "leo": "Leeuw",
+                    "virgo": "Maagd",
+                    "libra": "Weegschaal",
+                    "scorpio": "Schorpioen",
+                    "sagittarius": "Boogschutter",
+                    "capricorn": "Steenbok",
+                    "aquarius": "Waterman",
+                    "pisces": "Vissen"
+                }
+            },
+            "zodiac_sign_previous_new_moon": {
+                "name": "Dierenriemteken bij de vorige nieuwe maan",
+                "state": {
+                    "aries": "Ram",
+                    "taurus": "Stier",
+                    "gemini": "Tweelingen",
+                    "cancer": "Kreeft",
+                    "leo": "Leeuw",
+                    "virgo": "Maagd",
+                    "libra": "Weegschaal",
+                    "scorpio": "Schorpioen",
+                    "sagittarius": "Boogschutter",
+                    "capricorn": "Steenbok",
+                    "aquarius": "Waterman",
+                    "pisces": "Vissen"
+                }
+            },
+            "zodiac_sign_previous_full_moon": {
+                "name": "Dierenriemteken bij de vorige volle maan",
+                "state": {
+                    "aries": "Ram",
+                    "taurus": "Stier",
+                    "gemini": "Tweelingen",
+                    "cancer": "Kreeft",
+                    "leo": "Leeuw",
+                    "virgo": "Maagd",
+                    "libra": "Weegschaal",
+                    "scorpio": "Schorpioen",
+                    "sagittarius": "Boogschutter",
+                    "capricorn": "Steenbok",
+                    "aquarius": "Waterman",
+                    "pisces": "Vissen"
+                }
+            },
+
+            "zodiac_degree_current_moon": {
+                "name": "Dierenriemgraad (huidig)"
+            },
+            "zodiac_degree_next_new_moon": {
+                "name": "Dierenriemgraad bij de volgende nieuwe maan"
+            },
+            "zodiac_degree_next_full_moon": {
+                "name": "Dierenriemgraad bij de volgende volle maan"
+            },
+            "zodiac_degree_previous_new_moon": {
+                "name": "Dierenriemgraad bij de vorige nieuwe maan"
+            },
+            "zodiac_degree_previous_full_moon": {
+                "name": "Dierenriemgraad bij de vorige volle maan"
+            }
+        }
+    }
+}

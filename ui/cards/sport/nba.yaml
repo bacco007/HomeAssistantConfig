@@ -22,6 +22,7 @@ cards:
         template: sports_card
         variables:
           - entity: sensor.upcoming_sport_nba_all_teams
+          - calendar: calendar.ical_nba_all_teams
       - type: custom:mushroom-chips-card
         alignment: center
         card_mod:
@@ -127,7 +128,7 @@ cards:
               {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
               {%- endif -%}
               {%- endfor -%}
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {
@@ -201,7 +202,7 @@ cards:
               action: none
             icon: mdi:list-box-outline
             content: WC, Northwest Standings
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {
@@ -257,7 +258,7 @@ cards:
               {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
               {%- endif -%}
               {%- endfor -%}
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {

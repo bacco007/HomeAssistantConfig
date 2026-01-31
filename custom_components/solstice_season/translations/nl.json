@@ -1,0 +1,74 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Solstice Season configureren",
+        "description": "Astronomische seizoensregistratie instellen",
+        "data": {
+          "name": "Naam",
+          "hemisphere": "Halfrond",
+          "mode": "Berekeningsmodus"
+        }
+      }
+    },
+    "error": {
+      "already_configured": "Een instantie met deze naam bestaat al"
+    },
+    "abort": {
+      "already_configured": "Deze instantie is al geconfigureerd"
+    }
+  },
+  "selector": {
+    "hemisphere": {
+      "options": {
+        "northern": "Noordelijk halfrond",
+        "southern": "Zuidelijk halfrond"
+      }
+    },
+    "mode": {
+      "options": {
+        "astronomical": "Astronomisch",
+        "meteorological": "Meteorologisch (Kalendergebaseerd)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "current_season": {
+        "name": "Huidig seizoen",
+        "state": {
+          "spring": "Lente",
+          "summer": "Zomer",
+          "autumn": "Herfst",
+          "winter": "Winter"
+        }
+      },
+      "spring_equinox": {
+        "name": "Lentenachtevening"
+      },
+      "summer_solstice": {
+        "name": "Zomerzonnewende"
+      },
+      "autumn_equinox": {
+        "name": "Herfstnachtevening"
+      },
+      "winter_solstice": {
+        "name": "Winterzonnewende"
+      },
+      "daylight_trend": {
+        "name": "Daglichttrend",
+        "state": {
+          "days_getting_longer": "Dagen worden langer",
+          "days_getting_shorter": "Dagen worden korter",
+          "solstice_today": "Zonnewende vandaag"
+        }
+      },
+      "next_daylight_trend_change": {
+        "name": "Volgende trendwijziging"
+      },
+      "next_season_change": {
+        "name": "Volgende seizoenswisseling"
+      }
+    }
+  }
+}

@@ -180,7 +180,7 @@ cards:
     overlay-margin: 0em
     button-background: transparent
     title-card:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       primary: Petrol Price Detail
       icon: mdi:gas-station
       card_mod:

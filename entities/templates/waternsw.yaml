@@ -1,0 +1,40 @@
+---
+sensor:
+  - name: "Chaffey Dam"
+    unique_id: waternsw_chaffey_dam
+    icon: mdi:water
+    state: "419069"
+    attributes:
+      dead_water_level: 518.649
+      spillway_level: 525.100
+      catchment_area: "406 sq km"
+      surface_area: "542 ha"
+      capacity: 102000
+      active_storage: 90360
+      dead_storage: 2400
+
+  - name: "Keepit Dam"
+    unique_id: waternsw_keepit_dam
+    icon: mdi:water
+    state: "419041"
+    attributes:
+      dead_water_level: 304.570
+      spillway_level: 318.590
+      catchment_area: "5700 sq km"
+      surface_area: "4370 ha"
+      capacity: 420000
+      active_storage: 243451
+      dead_storage: 6600
+
+  - name: "Split Rock Dam"
+    unique_id: waternsw_split_rock_dam
+    icon: mdi:water
+    state: "419080"
+    attributes:
+      dead_water_level: 408.000
+      spillway_level: 449.000
+      catchment_area: "1660 sq km"
+      surface_area: "2150 ha"
+      capacity: 397000
+      active_storage: 116461
+      dead_storage: 3200

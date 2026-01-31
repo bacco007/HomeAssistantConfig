@@ -30,7 +30,7 @@ action:
                 text:
                   type: mrkdwn
                   text: Home Assistant Stopped
-      - service: notify.mobile_app_tbiphone15promax
+      - service: notify.mobile_app_tbiphone17promax
         data:
           message: Home Assistant has Stopped
           title: Home Assistant Stopped

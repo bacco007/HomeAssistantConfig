@@ -2,7 +2,7 @@
 
 from typing import Callable, Union, Optional
 
-from .vendor.libdyson import (
+from libdyson import (
     Dyson360Eye,
     Dyson360Heurist,
     Dyson360VisNav,
@@ -12,8 +12,8 @@ from .vendor.libdyson import (
     DysonBigQuiet,
 )
 
-from .vendor.libdyson.const import MessageType
-from .vendor.libdyson.dyson_device import DysonFanDevice
+from libdyson.const import MessageType
+from libdyson.dyson_device import DysonFanDevice
 
 from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
@@ -59,6 +59,7 @@ async def async_setup_entry(
             entities.extend(
                 [
                     DysonFilterLifeSensor(device, name),
+                    DysonFilterLifeSensorPercentage(device, name),
                     DysonParticulatesSensor(coordinator, device, name),
                 ]
             )
@@ -152,6 +153,22 @@ class DysonFilterLifeSensor(DysonSensor):
     def native_value(self) -> int:
         """Return the state of the sensor."""
         return self._device.filter_life
+
+
+class DysonFilterLifeSensorPercentage(DysonSensor):
+    """Dyson filter life sensor (in percentage) for Pure Cool Link."""
+
+    _SENSOR_TYPE = "filter_life_percentage"
+    _SENSOR_NAME = "Filter Life Percentage"
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_icon = "mdi:filter-outline"
+    _attr_native_unit_of_measurement = PERCENTAGE
+    _attr_suggested_display_precision = 0
+
+    @property
+    def native_value(self) -> float:
+        """Return the state of the sensor calculated to a %."""
+        return (self._device.filter_life / 4300) * 100
 
 
 class DysonCarbonFilterLifeSensor(DysonSensor):

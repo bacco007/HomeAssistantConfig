@@ -82,7 +82,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         or entry.options.get(CONF_EXPERIMENTAL_FEATURES, None) is None
         or entry.options.get(CONF_OPEN_METEO_SERVICE, None) is None
     ):
-        # Apparently 7Timer has problems with a longitude of 0 degrees so we're catching this
         hass.config_entries.async_update_entry(
             entry,
             options={
@@ -90,7 +89,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 CONF_FORECAST_TYPE: entry.data.get(CONF_FORECAST_TYPE, FORECAST_TYPE_HOURLY),
                 CONF_LOCATION_NAME: entry.data.get(CONF_LOCATION_NAME, DEFAULT_LOCATION_NAME),
                 CONF_LATITUDE: entry.data[CONF_LATITUDE],
-                CONF_LONGITUDE: entry.data[CONF_LONGITUDE] if entry.data[CONF_LONGITUDE] != 0 else 0.000001,
+                CONF_LONGITUDE: entry.data[CONF_LONGITUDE],
                 CONF_ELEVATION: entry.data.get(CONF_ELEVATION, DEFAULT_ELEVATION),
                 CONF_TIMEZONE_INFO: entry.data.get(CONF_TIMEZONE_INFO, DEFAULT_TIMEZONE_INFO),
                 CONF_CONDITION_CLOUDCOVER_WEIGHT: entry.data.get(
@@ -212,6 +211,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         name=DOMAIN,
         update_method=astroweather.get_location_data,
         update_interval=timedelta(minutes=entry.options.get(CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL)),
+        config_entry=entry,
     )
     await coordinator.async_config_entry_first_refresh()
     if not coordinator.last_update_success:
@@ -229,6 +229,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         name=DOMAIN,
         update_method=astroweather.get_hourly_forecast,
         update_interval=timedelta(minutes=entry.options.get(CONF_FORECAST_INTERVAL, DEFAULT_FORECAST_INTERVAL)),
+        config_entry=entry,
     )
     await fcst_coordinator.async_config_entry_first_refresh()
     if not fcst_coordinator.last_update_success:

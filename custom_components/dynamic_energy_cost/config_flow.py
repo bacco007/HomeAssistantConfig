@@ -2,14 +2,18 @@
 
 import logging
 
-import voluptuous as vol
-
 from homeassistant import config_entries
-from homeassistant.exceptions import ConfigValidationError
+from homeassistant.components.input_number import DOMAIN as INPUT_NUMBER_DOMAIN
+from homeassistant.components.number import DOMAIN as NUMBER_DOMAIN
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.helpers import selector
 import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers.schema_config_entry_flow import SchemaFlowError
+
+import voluptuous as vol
 
 from .const import DOMAIN
+
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -40,42 +44,46 @@ class DynamicEnergyCostConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     "energy_sensor"
                 ):
                     _LOGGER.warning("Neither power nor energy sensor was provided")
-                    raise ConfigValidationError(
-                        "Please enter either a power sensor or an energy sensor, not both."
-                    )
+                    raise SchemaFlowError("invalid_config")
                 if user_input.get("power_sensor") and user_input.get("energy_sensor"):
                     _LOGGER.warning("Both power and energy sensors were provided")
-                    raise ConfigValidationError(
-                        "Please enter only one type of sensor (power or energy)."
-                    )
+                    raise SchemaFlowError("missing_sensor")
 
                 # Create the config dictionary
                 config = {
                     "electricity_price_sensor": user_input["electricity_price_sensor"],
                     "power_sensor": user_input.get("power_sensor"),
                     "energy_sensor": user_input.get("energy_sensor"),
-                    "integration_description": user_input.get("integration_description", "Unnamed"),
+                    "integration_description": user_input.get(
+                        "integration_description", "Unnamed"
+                    ),
                 }
                 _LOGGER.info("Config entry created successfully")
-                return self.async_create_entry(title=f"Dynamic Energy Cost - {user_input.get('integration_description', 'Unnamed')}", data=config)
+                return self.async_create_entry(
+                    title=f"Dynamic Energy Cost - {user_input.get('integration_description', 'Unnamed')}",
+                    data=config,
+                )
             except vol.Invalid as err:
                 _LOGGER.error("Validation error: %s", err)
                 errors["base"] = "invalid_entity"
 
         schema = vol.Schema(
             {
-                vol.Optional("integration_description"): selector.TextSelector(),
+                vol.Required("integration_description"): selector.TextSelector(),
                 vol.Required("electricity_price_sensor"): selector.EntitySelector(
-                    selector.EntitySelectorConfig(domain="sensor", multiple=False)
+                    selector.EntitySelectorConfig(
+                        domain=[SENSOR_DOMAIN, NUMBER_DOMAIN, INPUT_NUMBER_DOMAIN],
+                        multiple=False,
+                    )
                 ),
                 vol.Optional("power_sensor"): selector.EntitySelector(
                     selector.EntitySelectorConfig(
-                        domain="sensor", multiple=False, device_class="power"
+                        domain=[SENSOR_DOMAIN], multiple=False, device_class="power"
                     )
                 ),
                 vol.Optional("energy_sensor"): selector.EntitySelector(
                     selector.EntitySelectorConfig(
-                        domain="sensor", multiple=False, device_class="energy"
+                        domain=[SENSOR_DOMAIN], multiple=False, device_class="energy"
                     )
                 ),
             }
@@ -91,4 +99,62 @@ class DynamicEnergyCostConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 "power_sensor": "Power Usage Sensor",
                 "energy_sensor": "Energy (kWh) Sensor",
             },
+        )
+
+    @staticmethod
+    def async_get_options_flow(config_entry):
+        """Get the options flow for this handler."""
+        return DynamicEnergyCostOptionsFlow(config_entry)
+
+
+class DynamicEnergyCostOptionsFlow(config_entries.OptionsFlow):
+    """Handle an options flow for DynamicEnergyCost."""
+
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        """Initialize options flow."""
+        super().__init__()
+
+    async def async_step_init(self, user_input=None):
+        """Manage the options."""
+        return await self.async_step_user(user_input)
+
+    async def async_step_user(self, user_input=None):
+        """Handle the initial step."""
+        errors = {}
+
+        current_values = self.config_entry.options or self.config_entry.data
+
+        if user_input is not None:
+            return self.async_create_entry(title="", data=user_input)
+
+        schema_dict = {
+            vol.Required(
+                "electricity_price_sensor",
+                default=current_values.get("electricity_price_sensor"),
+            ): selector.EntitySelector(
+                selector.EntitySelectorConfig(
+                    domain=[SENSOR_DOMAIN, NUMBER_DOMAIN, INPUT_NUMBER_DOMAIN],
+                    multiple=False,
+                )
+            )
+        }
+
+        for key, device_class in (
+            ("power_sensor", "power"),
+            ("energy_sensor", "energy"),
+        ):
+            schema_dict[
+                vol.Optional(key, default=current_values.get(key, vol.UNDEFINED))
+            ] = selector.EntitySelector(
+                selector.EntitySelectorConfig(
+                    domain=[SENSOR_DOMAIN],
+                    multiple=False,
+                    device_class=device_class,
+                )
+            )
+
+        return self.async_show_form(
+            step_id="user",
+            data_schema=vol.Schema(schema_dict),
+            errors=errors,
         )

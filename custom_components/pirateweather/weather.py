@@ -90,6 +90,45 @@ MAP_CONDITION = {
     "thunderstorm": ATTR_CONDITION_LIGHTNING,
     "tornado": ATTR_CONDITION_EXCEPTIONAL,
     "none": ATTR_CONDITION_EXCEPTIONAL,
+    "mixed": ATTR_CONDITION_SNOWY_RAINY,
+}
+
+WEATHER_UNITS = {
+    "si": {
+        "temperature": UnitOfTemperature.CELSIUS,
+        "wind_speed": UnitOfSpeed.METERS_PER_SECOND,
+        "pressure": UnitOfPressure.MBAR,
+        "precipitation": UnitOfPrecipitationDepth.MILLIMETERS,
+        "visibility": UnitOfLength.KILOMETERS,
+    },
+    "us": {
+        "temperature": UnitOfTemperature.FAHRENHEIT,
+        "wind_speed": UnitOfSpeed.MILES_PER_HOUR,
+        "pressure": UnitOfPressure.MBAR,
+        "precipitation": UnitOfPrecipitationDepth.INCHES,
+        "visibility": UnitOfLength.MILES,
+    },
+    "ca": {
+        "temperature": UnitOfTemperature.CELSIUS,
+        "wind_speed": UnitOfSpeed.KILOMETERS_PER_HOUR,
+        "pressure": UnitOfPressure.MBAR,
+        "precipitation": UnitOfPrecipitationDepth.MILLIMETERS,
+        "visibility": UnitOfLength.KILOMETERS,
+    },
+    "uk": {
+        "temperature": UnitOfTemperature.CELSIUS,
+        "wind_speed": UnitOfSpeed.MILES_PER_HOUR,
+        "pressure": UnitOfPressure.MBAR,
+        "precipitation": UnitOfPrecipitationDepth.MILLIMETERS,
+        "visibility": UnitOfLength.MILES,
+    },
+    "uk2": {
+        "temperature": UnitOfTemperature.CELSIUS,
+        "wind_speed": UnitOfSpeed.MILES_PER_HOUR,
+        "pressure": UnitOfPressure.MBAR,
+        "precipitation": UnitOfPrecipitationDepth.MILLIMETERS,
+        "visibility": UnitOfLength.MILES,
+    },
 }
 
 CONF_UNITS = "units"
@@ -123,13 +162,22 @@ async def async_setup_platform(
     )
 
 
-def _map_daily_forecast(forecast) -> Forecast:
+def _get_precip(forecast, unit_system: str) -> float | None:
+    """Get and convert precipitation accumulation."""
+    precip = forecast.d.get("precipAccumulation")
+    if precip is not None and unit_system != "us":
+        return precip * 10
+    return precip
+
+
+def _map_daily_forecast(forecast, unit_system) -> Forecast:
+    precip = _get_precip(forecast, unit_system)
     return {
         "datetime": utc_from_timestamp(forecast.d.get("time")).isoformat(),
         "condition": MAP_CONDITION.get(forecast.d.get("icon")),
         "native_temperature": forecast.d.get("temperatureHigh"),
         "native_templow": forecast.d.get("temperatureLow"),
-        "native_precipitation": forecast.d.get("precipAccumulation") * 10,
+        "native_precipitation": precip,
         "precipitation_probability": round(
             forecast.d.get("precipProbability") * 100, 0
         ),
@@ -138,10 +186,50 @@ def _map_daily_forecast(forecast) -> Forecast:
         "native_wind_speed": round(forecast.d.get("windSpeed"), 2),
         "native_wind_gust_speed": round(forecast.d.get("windGust"), 2),
         "wind_bearing": round(forecast.d.get("windBearing"), 0),
+        "native_dew_point": forecast.d.get("dewPoint"),
+        "native_pressure": forecast.d.get("pressure"),
+        "uv_index": round(forecast.d.get("uvIndex"), 2),
     }
 
 
-def _map_hourly_forecast(forecast) -> Forecast:
+def _map_day_night_forecast(
+    forecast, unit_system, is_day: bool | None = None
+) -> Forecast:
+    precip = _get_precip(forecast, unit_system)
+    # If caller provided an `is_day` hint (we'll pass parity from the list),
+    # prefer that. Otherwise fall back to a minimal inference from the icon.
+    is_daytime: bool | None = is_day
+    if is_daytime is None:
+        icon = forecast.d.get("icon")
+        if isinstance(icon, str):
+            if "night" in icon:
+                is_daytime = False
+            elif "day" in icon:
+                is_daytime = True
+
+    return {
+        "is_daytime": is_daytime,
+        "datetime": utc_from_timestamp(forecast.d.get("time")).isoformat(),
+        "condition": MAP_CONDITION.get(forecast.d.get("icon")),
+        "native_temperature": forecast.d.get("temperature"),
+        "native_apparent_temperature": forecast.d.get("apparentTemperature"),
+        "native_dew_point": forecast.d.get("dewPoint"),
+        "native_pressure": forecast.d.get("pressure"),
+        "native_wind_speed": round(forecast.d.get("windSpeed"), 2),
+        "wind_bearing": round(forecast.d.get("windBearing"), 0),
+        "native_wind_gust_speed": round(forecast.d.get("windGust"), 2),
+        "humidity": round(forecast.d.get("humidity") * 100, 2),
+        "native_precipitation": precip,
+        "precipitation_probability": round(
+            forecast.d.get("precipProbability") * 100, 0
+        ),
+        "cloud_coverage": round(forecast.d.get("cloudCover") * 100, 0),
+        "uv_index": round(forecast.d.get("uvIndex"), 2),
+    }
+
+
+def _map_hourly_forecast(forecast, unit_system) -> Forecast:
+    precip = _get_precip(forecast, unit_system)
     return {
         "datetime": utc_from_timestamp(forecast.d.get("time")).isoformat(),
         "condition": MAP_CONDITION.get(forecast.d.get("icon")),
@@ -153,7 +241,7 @@ def _map_hourly_forecast(forecast) -> Forecast:
         "wind_bearing": round(forecast.d.get("windBearing"), 0),
         "native_wind_gust_speed": round(forecast.d.get("windGust"), 2),
         "humidity": round(forecast.d.get("humidity") * 100, 2),
-        "native_precipitation": round(forecast.d.get("precipIntensity"), 2),
+        "native_precipitation": precip,
         "precipitation_probability": round(
             forecast.d.get("precipProbability") * 100, 0
         ),
@@ -191,12 +279,11 @@ class PirateWeather(SingleCoordinatorWeatherEntity[WeatherUpdateCoordinator]):
 
     _attr_attribution = ATTRIBUTION
     _attr_should_poll = False
-
-    _attr_native_precipitation_unit = UnitOfPrecipitationDepth.MILLIMETERS
-    _attr_native_pressure_unit = UnitOfPressure.MBAR
-    _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
-    _attr_native_visibility_unit = UnitOfLength.KILOMETERS
-    _attr_native_wind_speed_unit = UnitOfSpeed.METERS_PER_SECOND
+    _attr_supported_features = (
+        WeatherEntityFeature.FORECAST_DAILY
+        | WeatherEntityFeature.FORECAST_TWICE_DAILY
+        | WeatherEntityFeature.FORECAST_HOURLY
+    )
 
     def __init__(
         self,
@@ -209,12 +296,6 @@ class PirateWeather(SingleCoordinatorWeatherEntity[WeatherUpdateCoordinator]):
         """Initialize the sensor."""
         super().__init__(weather_coordinator)
         self._attr_name = name
-        # self._attr_device_info = DeviceInfo(
-        #    entry_type=DeviceEntryType.SERVICE,
-        #    identifiers={(DOMAIN, unique_id)},
-        #    manufacturer=MANUFACTURER,
-        #    name=DEFAULT_NAME,
-        # )
         self._weather_coordinator = weather_coordinator
         self._name = name
         self._mode = forecast_mode
@@ -226,19 +307,19 @@ class PirateWeather(SingleCoordinatorWeatherEntity[WeatherUpdateCoordinator]):
 
         self.outputRound = outputRound
 
+        units = WEATHER_UNITS.get(
+            self._weather_coordinator.requested_units, WEATHER_UNITS["si"]
+        )
+        self._attr_native_temperature_unit = units["temperature"]
+        self._attr_native_wind_speed_unit = units["wind_speed"]
+        self._attr_native_pressure_unit = units["pressure"]
+        self._attr_native_precipitation_unit = units["precipitation"]
+        self._attr_native_visibility_unit = units["visibility"]
+
     @property
     def unique_id(self):
         """Return a unique_id for this entity."""
         return self._unique_id
-
-    @property
-    def supported_features(self) -> WeatherEntityFeature:
-        """Determine supported features based on available data sets reported by Pirate Weather."""
-        features = WeatherEntityFeature(0)
-
-        features |= WeatherEntityFeature.FORECAST_DAILY
-        features |= WeatherEntityFeature.FORECAST_HOURLY
-        return features
 
     @property
     def available(self):
@@ -260,7 +341,20 @@ class PirateWeather(SingleCoordinatorWeatherEntity[WeatherUpdateCoordinator]):
         """Return the temperature."""
         temperature = self._weather_coordinator.data.currently().d.get("temperature")
 
-        return round(temperature, 2)
+        return round(temperature, 2) if temperature != -999 else None
+
+    @property
+    def native_apparent_temperature(self):
+        """Return the apparent temperature."""
+        native_apparent_temperature = self._weather_coordinator.data.currently().d.get(
+            "apparentTemperature"
+        )
+
+        return (
+            round(native_apparent_temperature, 2)
+            if native_apparent_temperature != -999
+            else None
+        )
 
     @property
     def cloud_coverage(self):
@@ -269,54 +363,63 @@ class PirateWeather(SingleCoordinatorWeatherEntity[WeatherUpdateCoordinator]):
             self._weather_coordinator.data.currently().d.get("cloudCover") * 100.0
         )
 
-        return round(cloudCover, 2)
+        return round(cloudCover, 2) if cloudCover != -999 else None
 
     @property
     def humidity(self):
         """Return the humidity."""
         humidity = self._weather_coordinator.data.currently().d.get("humidity") * 100.0
 
-        return round(humidity, 2)
+        return round(humidity, 2) if humidity != -999 else None
+
+    @property
+    def native_dew_point(self):
+        """Return the dew point."""
+        native_dew_point = self._weather_coordinator.data.currently().d.get("dewPoint")
+
+        return round(native_dew_point, 2) if native_dew_point != -999 else None
 
     @property
     def native_wind_speed(self):
         """Return the wind speed."""
         windspeed = self._weather_coordinator.data.currently().d.get("windSpeed")
 
-        return round(windspeed, 2)
+        return round(windspeed, 2) if windspeed != -999 else None
 
     @property
     def native_wind_gust_speed(self):
         """Return the wind gust speed."""
         windGust = self._weather_coordinator.data.currently().d.get("windGust")
 
-        return round(windGust, 2)
+        return round(windGust, 2) if windGust != -999 else None
 
     @property
     def wind_bearing(self):
         """Return the wind bearing."""
-        return self._weather_coordinator.data.currently().d.get("windBearing")
+        windBearing = self._weather_coordinator.data.currently().d.get("windBearing")
+
+        return windBearing if windBearing != -999 else None
 
     @property
     def ozone(self):
         """Return the ozone level."""
         ozone = self._weather_coordinator.data.currently().d.get("ozone")
 
-        return round(ozone, 2)
+        return round(ozone, 2) if ozone != -999 else None
 
     @property
     def native_pressure(self):
         """Return the pressure."""
         pressure = self._weather_coordinator.data.currently().d.get("pressure")
 
-        return round(pressure, 2)
+        return round(pressure, 2) if pressure != -999 else None
 
     @property
     def native_visibility(self):
         """Return the visibility."""
         visibility = self._weather_coordinator.data.currently().d.get("visibility")
 
-        return round(visibility, 2)
+        return round(visibility, 2) if visibility != -999 else None
 
     @property
     def condition(self):
@@ -332,7 +435,27 @@ class PirateWeather(SingleCoordinatorWeatherEntity[WeatherUpdateCoordinator]):
         if not daily_forecast:
             return None
 
-        return [_map_daily_forecast(f) for f in daily_forecast]
+        return [
+            _map_daily_forecast(f, self._weather_coordinator.requested_units)
+            for f in daily_forecast
+        ]
+
+    @callback
+    def _async_forecast_twice_daily(self) -> list[Forecast] | None:
+        """Return the twice daily forecast."""
+        day_night_forecast = self._weather_coordinator.data.day_night().data
+        if not day_night_forecast:
+            _LOGGER.debug("No twice daily forecast")
+            return None
+
+        # The API returns twice-daily blocks in alternating order: day, night,
+        # day, night, ... so infer daytime by index parity (even index = day).
+        return [
+            _map_day_night_forecast(
+                f, self._weather_coordinator.requested_units, (i % 2) == 0
+            )
+            for i, f in enumerate(day_night_forecast)
+        ]
 
     @callback
     def _async_forecast_hourly(self) -> list[Forecast] | None:
@@ -342,24 +465,7 @@ class PirateWeather(SingleCoordinatorWeatherEntity[WeatherUpdateCoordinator]):
         if not hourly_forecast:
             return None
 
-        return [_map_hourly_forecast(f) for f in hourly_forecast]
-
-    async def async_update(self) -> None:
-        """Get the latest data from PW and updates the states."""
-        await self._weather_coordinator.async_request_refresh()
-
-    #    async def update(self):
-    #        """Get the latest data from Dark Sky."""
-    #        await self._dark_sky.update()
-    #
-    #        self._ds_data = self._dark_sky.data
-    #        currently = self._dark_sky.currently
-    #        self._ds_currently = currently.d if currently else {}
-    #        self._ds_hourly = self._dark_sky.hourly
-    #        self._ds_daily = self._dark_sky.daily
-
-    async def async_added_to_hass(self) -> None:
-        """Connect to dispatcher listening for entity data notifications."""
-        self.async_on_remove(
-            self._weather_coordinator.async_add_listener(self.async_write_ha_state)
-        )
+        return [
+            _map_hourly_forecast(f, self._weather_coordinator.requested_units)
+            for f in hourly_forecast
+        ]

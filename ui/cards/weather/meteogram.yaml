@@ -16,7 +16,7 @@ cards:
         cards:
           - type: vertical-stack
             cards:
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: Today
                 secondary: ""
                 icon: ""
@@ -56,7 +56,7 @@ cards:
                       margin-top: -10px !important;
                       margin-bottom: -10px !important;
                     }
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: >-
                   {{ state_attr('sensor.weather_forecasts','bom_daily')[0].temperature | round(0) }}°
                 secondary: ""
@@ -80,7 +80,7 @@ cards:
                 picture: ""
           - type: vertical-stack
             cards:
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: >-
                   {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[1].datetime) | timestamp_custom('%a %-d') }}
                 secondary: ""
@@ -96,7 +96,7 @@ cards:
                       {{ weathercond2img(cond) }}
                 alignment: center
                 card_mod: *chipstyle
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: >-
                   {{ state_attr('sensor.weather_forecasts','bom_daily')[1].temperature | round(0) }}° -‎ ‎‎{{ state_attr('sensor.weather_forecasts','bom_daily')[1].templow | round(0) }}°
                 secondary: ""
@@ -104,7 +104,7 @@ cards:
                 card_mod: *tempstyle
           - type: vertical-stack
             cards:
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: >-
                   {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[2].datetime) | timestamp_custom('%a %-d') }}
                 secondary: ""
@@ -120,7 +120,7 @@ cards:
                       {{ weathercond2img(cond) }}
                 alignment: center
                 card_mod: *chipstyle
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: >-
                   {{ state_attr('sensor.weather_forecasts','bom_daily')[2].temperature | round(0) }}° - ‎{{ state_attr('sensor.weather_forecasts','bom_daily')[2].templow | round(0) }}°
                 secondary: ""
@@ -128,7 +128,7 @@ cards:
                 card_mod: *tempstyle
           - type: vertical-stack
             cards:
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: >-
                   {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[3].datetime) | timestamp_custom('%a %-d') }}
                 secondary: ""
@@ -144,7 +144,7 @@ cards:
                       {{ weathercond2img(cond) }}
                 alignment: center
                 card_mod: *chipstyle
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: >-
                   {{ state_attr('sensor.weather_forecasts','bom_daily')[3].temperature | round(0) }}° - ‎{{ state_attr('sensor.weather_forecasts','bom_daily')[3].templow | round(0) }}°
                 secondary: ""
@@ -152,7 +152,7 @@ cards:
                 card_mod: *tempstyle
           - type: vertical-stack
             cards:
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: >-
                   {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[4].datetime) | timestamp_custom('%a %-d') }}
                 secondary: ""
@@ -168,7 +168,7 @@ cards:
                       {{ weathercond2img(cond) }}
                 alignment: center
                 card_mod: *chipstyle
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: >-
                   {{ state_attr('sensor.weather_forecasts','bom_daily')[4].temperature | round(0) }}° - ‎{{ state_attr('sensor.weather_forecasts','bom_daily')[4].templow | round(0) }}°
                 secondary: ""
@@ -176,7 +176,7 @@ cards:
                 card_mod: *tempstyle
           - type: vertical-stack
             cards:
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: >-
                   {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[5].datetime) | timestamp_custom('%a %-d') }}
                 secondary: ""
@@ -192,7 +192,7 @@ cards:
                       {{ weathercond2img(cond) }}
                 alignment: center
                 card_mod: *chipstyle
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: >-
                   {{ state_attr('sensor.weather_forecasts','bom_daily')[5].temperature | round(0) }}° - {{ state_attr('sensor.weather_forecasts','bom_daily')[5].templow | round(0) }}°
                 secondary: ""
@@ -200,7 +200,7 @@ cards:
                 card_mod: *tempstyle
           - type: vertical-stack
             cards:
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: >-
                   {{ as_timestamp(state_attr('sensor.weather_forecasts','bom_daily')[6].datetime) | timestamp_custom('%a %-d') }}
                 secondary: ""
@@ -216,7 +216,7 @@ cards:
                       {{ weathercond2img(cond) }}
                 alignment: center
                 card_mod: *chipstyle
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: >-
                   {{ state_attr('sensor.weather_forecasts','bom_daily')[6].temperature | round(0)  }}° - {{ state_attr('sensor.weather_forecasts','bom_daily')[6].templow | round(0) }}°
                 secondary: ""

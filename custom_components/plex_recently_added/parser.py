@@ -9,8 +9,26 @@ import math
 from datetime import datetime, timedelta
 from homeassistant.core import HomeAssistant
 from homeassistant.components.http.auth import async_sign_path
+from time import time
 
-from .const import TIMEOUT_MINUTES
+# Stable signed-path cache: prevents new URLs on each 10-min refresh
+# Re-signs only when near expiry, so browsers don't re-download unchanged images.
+_SIGNED_URL_CACHE = {}           # key: raw_path (without authSig), value: (signed_url, expires_epoch)
+_STALE_MARGIN_SEC = 24 * 3600    # renew 1 day before expiry to be safe
+
+def _stable_signed_path(hass: HomeAssistant, raw_path: str, ttl_minutes: int) -> str:
+    now = time()
+    entry = _SIGNED_URL_CACHE.get(raw_path)
+    if entry:
+        signed_url, exp = entry
+        if exp - now > _STALE_MARGIN_SEC:
+            return signed_url
+    # Sign a fresh URL and remember its approximate expiry
+    signed = async_sign_path(hass, raw_path, timedelta(minutes=ttl_minutes))
+    _SIGNED_URL_CACHE[raw_path] = (signed, now + ttl_minutes * 60)
+    return signed
+
+from .const import SIGN_URL_TTL_MINUTES
 
 import logging
 _LOGGER = logging.getLogger(__name__)
@@ -94,11 +112,19 @@ def parse_data(hass: HomeAssistant, data, max, base_url, token, identifier, sect
 
 
         thumb_IDs = extract_metadata_and_type(thumb)
-        data_output["poster"] = async_sign_path(hass, f'{images_base_url}?metadata={thumb_IDs[0]}&thumb={thumb_IDs[2]}', timedelta(minutes=TIMEOUT_MINUTES)) if thumb_IDs else ""
+        data_output["poster"] = _stable_signed_path(
+            hass,
+            f'{images_base_url}?metadata={thumb_IDs[0]}&thumb={thumb_IDs[2]}&v={int(item.get("updatedAt", item.get("addedAt", 0)))}',
+            SIGN_URL_TTL_MINUTES
+        ) if thumb_IDs else ""
 
 
         art_IDs = extract_metadata_and_type(art)
-        data_output["fanart"] = async_sign_path(hass, f'{images_base_url}?metadata={art_IDs[0]}&art={art_IDs[2]}', timedelta(minutes=TIMEOUT_MINUTES)) if art_IDs else ""
+        data_output["fanart"] = _stable_signed_path(
+            hass,
+            f'{images_base_url}?metadata={art_IDs[0]}&art={art_IDs[2]}&v={int(item.get("updatedAt", item.get("addedAt", 0)))}',
+            SIGN_URL_TTL_MINUTES
+        ) if art_IDs else ""
 
 
         data_output["deep_link"] = deep_link if identifier else None

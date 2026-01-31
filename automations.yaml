@@ -1,27 +1,43 @@
-# - id: '1722733318654'
-#   alias: '[Paralympics] Notify on Medal Win'
-#   description: ''
-#   trigger:
-#   - platform: state
-#     entity_id:
-#     - sensor.paralympics_medal_count_total
-#   condition:
-#   - condition: template
-#     value_template: '{{ trigger.from_state.state|int(0) < trigger.to_state.state|int(0)
-#       }}'
-#   action:
-#   - data:
-#       title: Paralympics - Another Medal!
-#       data:
-#         push:
-#           badge: 1
-#           interruption-level: time-sensitive
-#         presentation_options:
-#         - alert
-#         - badge
-#       message: "Another Medal! Bringing our total to {{states('sensor.paralympics_medal_count_total')
-#         }}, ranked {{states('sensor.paralympics_medal_count_ranking') }}  \n\U0001F947
-#         {{states('sensor.paralympics_medal_count_gold') }}  \U0001F948 {{states('sensor.paralympics_medal_count_silver')
-#         }}  \U0001F949 {{states('sensor.paralympics_medal_count_bronze') }}"
-#     action: notify.alert
-#   mode: single
+- id: '1751697921200'
+  alias: Restart Zigbee2MQTT if lights unavailable
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - light.office_lamp
+    - light.bedroom_lamp
+    to: unavailable
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  conditions: []
+  actions:
+  - action: hassio.addon_restart
+    metadata: {}
+    data:
+      addon: 45df7312_zigbee2mqtt
+  mode: single
+- id: '1767396737607'
+  alias: '[TIME] Sync IKEA ALPSTUGA'
+  description: ''
+  triggers:
+  - at: 03:15:00
+    trigger: time
+  - entity_id:
+    - switch.alpstuga_air_quality_monitor
+    from:
+    - unavailable
+    to:
+    trigger: state
+  actions:
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - action: matter_time_sync.sync_time
+    data:
+      node_id: 22
+      endpoint: 0
+  mode: restart

@@ -1,0 +1,239 @@
+{
+  "config": {
+    "error": {
+      "missing_outdoor_temp": "❌ È richiesto il sensore di temperatura esterna. Seleziona un sensore di temperatura che misuri le condizioni esterne.",
+      "unknown": "❌ Si è verificato un errore imprevisto durante la configurazione. Controlla le tue selezioni di sensori e riprova."
+    },
+    "step": {
+      "atmospheric": {
+        "data": {
+          "altitude": "Altitudine della Stazione",
+          "dewpoint_sensor": "Sensore Punto di Rugiada",
+          "humidity_sensor": "Sensore di Umidità",
+          "outdoor_temp_sensor": "Sensore Temperatura Esterna",
+          "pressure_sensor": "Sensore Pressione Atmosferica"
+        },
+        "data_description": {
+          "altitude": "Elevazione della stazione sopra il livello del mare. Utilizzata per regolare le letture di pressione all'equivalente del livello del mare per rilevamento meteorologico accurato. Imposta a 0 se il tuo sensore di pressione fornisce già pressione al livello del mare (MSLP) o per letture sensore grezze. Migliora precisione previsioni, specialmente per previsione meteorologica basata su pressione.",
+          "dewpoint_sensor": "Sensore opzionale che fornisce misurazione diretta del punto di rugiada per massima precisione. Utilizzato nel rilevamento nebbia (>98% umidità + punto di rugiada) e calcoli comfort. Si ripega sul punto di rugiada calcolato se non fornito.",
+          "humidity_sensor": "Sensore opzionale essenziale per rilevamento nebbia (si attiva con >98% umidità). Utilizzato nei calcoli indice comfort, indice calore e determinazione probabilità precipitazione.",
+          "outdoor_temp_sensor": "Sensore richiesto per rilevamento meteorologico di base. Fornisce letture di temperatura utilizzate in tutti i calcoli meteorologici e rilevamento condizioni.",
+          "pressure_sensor": "Sensore opzionale che abilita previsioni meteorologiche (5 giorni e orarie). Rileva tempeste tramite cali rapidi di pressione e fornisce analisi tendenze per previsione modelli meteorologici."
+        },
+        "description": "Configura i sensori di temperatura, umidità, pressione e altitudine.\n\n**Richiesto:** Il sensore di temperatura esterna è obbligatorio per il rilevamento meteorologico di base.\n\n**Sensori Atmosferici:**\n\n🌡️ **Temperatura Esterna** (richiesta)\n• Sensore centrale per tutti i calcoli meteorologici e rilevamento condizioni\n• Utilizzata nei calcoli comfort, wind chill e indice calore\n• Essenziale per funzionalità di base dell'entità meteorologica\n\n🌡️ **Sensore Punto di Rugiada** (opzionale)\n• Misurazione diretta del punto di rugiada per massima precisione\n• Utilizzato nell'algoritmo di rilevamento nebbia (>98% umidità + punto di rugiada)\n• Migliora i calcoli dell'indice di comfort\n• Fallback: Calcolato da temperatura + umidità se non disponibile\n\n💧 **Sensore di Umidità** (opzionale)\n• Essenziale per il rilevamento della nebbia (si attiva con >98% umidità)\n• Utilizzato nei calcoli dell'indice di comfort e indice di calore\n• Aiuta a determinare la probabilità di precipitazione\n• Combinato con radiazione solare per analisi copertura nuvolosa\n\n📊 **Sensore di Pressione** (opzionale)\n• Componente centrale per previsioni meteorologiche (5 giorni e orarie)\n• Rilevamento tempeste (cali rapidi di pressione indicano tempeste)\n• Analisi delle tendenze per previsione dei modelli meteorologici\n• Utilizzato per calcolare stabilità meteorologica e probabilità di cambiamento\n\n🏔️ **Altitudine** (opzionale)\n• Elevazione della stazione sopra il livello del mare\n• Regola i calcoli di pressione atmosferica per la tua posizione\n• Migliora la precisione delle previsioni, specialmente per previsioni basate su pressione\n• Altitudini maggiori = letture di pressione attese minori",
+        "title": "Sensori Atmosferici"
+      },
+      "final": {
+        "data": {
+          "update_interval": "Intervallo di Aggiornamento (minuti)"
+        },
+        "data_description": {
+          "update_interval": "Quanto spesso i dati meteorologici vengono aggiornati e i sensori interrogati. Intervallo: 1-60 minuti. Valori più bassi forniscono aggiornamenti più reattivi ma possono aumentare il carico sistema."
+        },
+        "description": "Imposta l'intervallo di aggiornamento per la tua stazione meteorologica.\n\n**Intervallo di Aggiornamento:**\n• Quanto spesso i dati meteorologici vengono aggiornati e i sensori interrogati\n• Intervallo: 1-60 minuti\n• Valori più bassi forniscono aggiornamenti più reattivi ma possono aumentare il carico sistema\n• Raccomandato: 5-15 minuti per la maggior parte delle installazioni",
+        "title": "Configurazione Finale"
+      },
+      "rain": {
+        "data": {
+          "rain_rate_sensor": "Sensore Tasso di Pioggia",
+          "rain_state_sensor": "Sensore Stato Pioggia"
+        },
+        "data_description": {
+          "rain_rate_sensor": "Sensore opzionale per misurazione diretta intensità precipitazioni. Attiva condizioni meteorologiche piovose/tempestose e sovrascrive altre condizioni quando viene rilevata pioggia.",
+          "rain_state_sensor": "Sensore opzionale per rilevamento booleano pioggia (stati secco/bagnato). Fornisce sovrascrittura immediata condizione meteorologica quando bagnato e rilevamento precipitazioni backup."
+        },
+        "description": "Configura i sensori di rilevamento precipitazioni.\n\n**Sensori della Pioggia:**\n\n🌧️ **Sensore Tasso di Pioggia** (opzionale)\n• Misurazione diretta dell'intensità delle precipitazioni\n• Attiva condizioni meteorologiche piovose/tempestose\n• Utilizzato per previsioni di precipitazione\n• Sovrascrive altre condizioni quando viene rilevata pioggia\n\n🌦️ **Sensore Stato Pioggia** (opzionale)\n• Rilevamento booleano della pioggia (stati secco/bagnato)\n• Sovrascrittura immediata delle condizioni meteorologiche quando bagnato\n• Rilevamento precipitazioni di backup se sensore tasso non disponibile",
+        "title": "Sensori della Pioggia"
+      },
+      "solar": {
+        "data": {
+          "solar_lux_sensor": "Sensore Solare Lux",
+          "solar_radiation_sensor": "Sensore Radiazione Solare",
+          "sun_sensor": "Sensore Solare",
+          "uv_index_sensor": "Sensore Indice UV",
+          "zenith_max_radiation": "Radiazione Massima allo Zenit"
+        },
+        "data_description": {
+          "solar_lux_sensor": "Sensore opzionale per rilevamento giorno/notte basato sulla luce. Rilevamento copertura nuvolosa backup e calcoli visibilità quando sensore radiazione solare non disponibile.",
+          "solar_radiation_sensor": "Sensore opzionale per rilevamento primario copertura nuvolosa (>400 W/m² = soleggiato, <100 = nuvoloso). Utilizzato nel rilevamento nebbia e sovrascrive altre condizioni per rilevamento cielo sereno.",
+          "sun_sensor": "Sensore opzionale che fornisce dati elevazione solare per calcoli precisi copertura nuvolosa. Migliora precisione rilevamento meteorologico considerando posizione sole (elevazione maggiore = più radiazione solare attesa). Si ripega a 45° elevazione se non configurato.",
+          "uv_index_sensor": "Sensore opzionale per conferma cielo sereno (UV alto = definitivamente soleggiato). Fornisce misurazione intensità solare per raccomandazioni sicurezza e precisione migliorata rilevamento meteo soleggiato.",
+          "zenith_max_radiation": "Radiazione solare massima allo zenit (sole direttamente sopra). Utilizzato per normalizzare le letture di radiazione solare per calcoli precisi di copertura nuvolosa. Valori tipici: 400-1200 W/m² a seconda della posizione e delle condizioni atmosferiche."
+        },
+        "description": "Configura i sensori di radiazione solare, luce, UV e posizione del sole.\n\n**Sensori Solari:**\n\n☀️ **Sensore Radiazione Solare** (opzionale)\n• Rilevamento primario copertura nuvolosa (>400 W/m² = soleggiato, <100 = nuvoloso)\n• Classificazione giorno/notte e intensità solare\n• Utilizzato nel rilevamento nebbia (radiazione bassa + umidità alta)\n• Sovrascrive altre condizioni per rilevamento cielo sereno\n\n💡 **Sensore Solare Lux** (opzionale)\n• Rilevamento giorno/notte basato sulla luce\n• Rilevamento copertura nuvolosa di backup se sensore radiazione non disponibile\n• Calcoli di visibilità e rilevamento crepuscolo\n\n🛡️ **Sensore Indice UV** (opzionale)\n• Conferma cielo sereno (UV alto = definitivamente soleggiato)\n• Misurazione intensità solare per raccomandazioni di sicurezza\n• Precisione migliorata del rilevamento meteo soleggiato\n\n☀️ **Sensore Solare** (opzionale)\n• Dati elevazione solare per calcoli precisi copertura nuvolosa\n• Migliora il rilevamento meteorologico considerando la posizione del sole\n• Elevazione maggiore = più radiazione solare attesa\n• Fallback: 45° di elevazione se non configurato",
+        "title": "Sensori Solari e del Sole"
+      },
+      "user": {
+        "data": {
+          "altitude": "Altitudine della Stazione",
+          "dewpoint_sensor": "Sensore Punto di Rugiada",
+          "humidity_sensor": "Sensore di Umidità",
+          "outdoor_temp_sensor": "Sensore Temperatura Esterna",
+          "pressure_sensor": "Sensore Pressione Atmosferica",
+          "rain_rate_sensor": "Sensore Tasso di Pioggia",
+          "rain_state_sensor": "Sensore Stato Pioggia",
+          "solar_lux_sensor": "Sensore Solare Lux",
+          "solar_radiation_sensor": "Sensore Radiazione Solare",
+          "sun_sensor": "Sensore Solare",
+          "update_interval": "Intervallo di Aggiornamento (minuti)",
+          "uv_index_sensor": "Sensore Indice UV",
+          "wind_direction_sensor": "Sensore Direzione del Vento",
+          "wind_gust_sensor": "Sensore Raffiche di Vento",
+          "wind_speed_sensor": "Sensore Velocità del Vento"
+        },
+        "data_description": {
+          "altitude": "Elevazione della stazione sopra il livello del mare. Utilizzata per regolare le letture di pressione all'equivalente del livello del mare per rilevamento meteorologico accurato. Imposta a 0 se il tuo sensore di pressione fornisce già pressione al livello del mare (MSLP) o per letture sensore grezze. Migliora precisione previsioni, specialmente per previsione meteorologica basata su pressione. Predefinito alla tua impostazione elevazione Home Assistant se disponibile, altrimenti 0.0 (usa il tuo sistema unità Home Assistant).",
+          "dewpoint_sensor": "Sensore opzionale che fornisce misurazione diretta del punto di rugiada per massima precisione. Utilizzato nel rilevamento nebbia (>98% umidità + punto di rugiada) e calcoli comfort. Si ripega sul punto di rugiada calcolato se non fornito.",
+          "humidity_sensor": "Sensore opzionale essenziale per rilevamento nebbia (si attiva con >98% umidità). Utilizzato nei calcoli indice comfort, indice calore e determinazione probabilità precipitazione.",
+          "outdoor_temp_sensor": "Sensore richiesto per rilevamento meteorologico di base. Fornisce letture di temperatura utilizzate in tutti i calcoli meteorologici e rilevamento condizioni.",
+          "pressure_sensor": "Sensore opzionale che abilita previsioni meteorologiche (5 giorni e orarie). Rileva tempeste tramite cali rapidi di pressione e fornisce analisi tendenze per previsione modelli meteorologici.",
+          "rain_rate_sensor": "Sensore opzionale per misurazione diretta intensità precipitazioni. Attiva condizioni meteorologiche piovose/tempestose e sovrascrive altre condizioni quando viene rilevata pioggia.",
+          "rain_state_sensor": "Sensore opzionale per rilevamento booleano pioggia (stati secco/bagnato). Fornisce sovrascrittura immediata condizione meteorologica quando bagnato e rilevamento precipitazioni backup.",
+          "solar_lux_sensor": "Sensore opzionale per rilevamento giorno/notte basato sulla luce. Rilevamento copertura nuvolosa backup e calcoli visibilità quando sensore radiazione solare non disponibile.",
+          "solar_radiation_sensor": "Sensore opzionale per rilevamento primario copertura nuvolosa (>400 W/m² = soleggiato, <100 = nuvoloso). Utilizzato nel rilevamento nebbia e sovrascrive altre condizioni per rilevamento cielo sereno.",
+          "sun_sensor": "Sensore opzionale che fornisce dati elevazione solare per calcoli precisi copertura nuvolosa. Migliora precisione rilevamento meteorologico considerando posizione sole (elevazione maggiore = più radiazione solare attesa). Si ripega a 45° elevazione se non configurato.",
+          "update_interval": "Quanto spesso i dati meteorologici vengono aggiornati e i sensori interrogati. Intervallo: 1-60 minuti. Valori più bassi forniscono aggiornamenti più reattivi ma possono aumentare il carico sistema.",
+          "uv_index_sensor": "Sensore opzionale per conferma cielo sereno (UV alto = definitivamente soleggiato). Fornisce misurazione intensità solare per raccomandazioni sicurezza e precisione migliorata rilevamento meteo soleggiato.",
+          "wind_direction_sensor": "Sensore opzionale che fornisce dati direzione vento per rapporti meteorologici dettagliati. Utilizzato nel tracciamento tempeste e migliora precisione previsioni con dati vento direzionale.",
+          "wind_gust_sensor": "Sensore opzionale per rilevamento meteo severo e misurazione intensità tempeste. Fornisce allerte sicurezza per condizioni vento pericolose e classificazione tempeste migliorata.",
+          "wind_speed_sensor": "Sensore opzionale per rilevamento condizioni vento. Rilevamento tempeste (>25 km/h + pioggia = tempestoso), calcoli wind chill e allerte meteo severo."
+        },
+        "description": "Collega i tuoi sensori meteorologici per creare un'entità meteorologica intelligente.\n\n**Richiesto:** È richiesta solo la temperatura esterna.\n\n**Processo di Configurazione:**\n• **Sensori Atmosferici** - Temperatura, umidità, pressione e altitudine\n• **Sensori del Vento** - Velocità, direzione e raffiche del vento\n• **Sensori della Pioggia** - Rilevamento e intensità delle precipitazioni\n• **Sensori Solari** - Sole, radiazione e misurazioni della luce\n• **Configurazione Finale** - Configurazione dell'intervallo di aggiornamento\n\n**Come Viene Utilizzato Ogni Sensore:**\n\n🌡️ **Sensore Punto di Rugiada** (opzionale)\n• Misurazione diretta del punto di rugiada per massima precisione\n• Utilizzato nell'algoritmo di rilevamento nebbia (>98% umidità + punto di rugiada)\n• Migliora i calcoli dell'indice di comfort\n• Fallback: Calcolato da temperatura + umidità se non disponibile\n\n💧 **Sensore di Umidità** (opzionale)\n• Essenziale per il rilevamento della nebbia (si attiva con >98% umidità)\n• Utilizzato nei calcoli dell'indice di comfort e indice di calore\n• Aiuta a determinare la probabilità di precipitazione\n• Combinato con radiazione solare per analisi copertura nuvolosa\n\n📊 **Sensore di Pressione** (opzionale)\n• Componente centrale per previsioni meteorologiche (5 giorni e orarie)\n• Rilevamento tempeste (cali rapidi di pressione indicano tempeste)\n• Analisi delle tendenze per previsione dei modelli meteorologici\n• Utilizzato per calcolare stabilità meteorologica e probabilità di cambiamento\n\n🏔️ **Altitudine** (opzionale)\n• Elevazione della stazione sopra il livello del mare\n• Regola i calcoli di pressione atmosferica per la tua posizione\n• Migliora la precisione delle previsioni, specialmente per previsioni basate su pressione\n• Altitudini maggiori = letture di pressione attese minori\n\n💨 **Sensore Velocità del Vento** (opzionale)\n• Determina le condizioni del vento nello stato meteorologico\n• Rilevamento tempeste (>25 km/h + pioggia = condizioni tempestose)\n• Calcoli wind chill per temperatura apparente\n• Allerte meteo severo e previsioni relative al vento\n\n🧭 **Sensore Direzione del Vento** (opzionale)\n• Fornisce dati di direzione del vento per rapporti meteorologici dettagliati\n• Utilizzato nel tracciamento delle tempeste e analisi dei modelli meteorologici\n• Migliora la precisione delle previsioni con dati del vento direzionale\n\n🌪️ **Sensore Raffiche di Vento** (opzionale)\n• Rilevamento meteo severo e misurazione intensità delle tempeste\n• Allerte di sicurezza per condizioni di vento pericolose\n• Classificazione migliorata delle tempeste (venti con raffiche vs costanti)\n\n🌧️ **Sensore Tasso di Pioggia** (opzionale)\n• Misurazione diretta dell'intensità delle precipitazioni\n• Attiva condizioni meteorologiche piovose/tempestose\n• Utilizzato per previsioni di precipitazione\n• Sovrascrive altre condizioni quando viene rilevata pioggia\n\n🌦️ **Sensore Stato Pioggia** (opzionale)\n• Rilevamento booleano della pioggia (stati secco/bagnato)\n• Sovrascrittura immediata delle condizioni meteorologiche quando bagnato\n• Rilevamento precipitazioni di backup se sensore tasso non disponibile\n\n☀️ **Sensore Radiazione Solare** (opzionale)\n• Rilevamento primario copertura nuvolosa (>400 W/m² = soleggiato, <100 = nuvoloso)\n• Classificazione giorno/notte e intensità solare\n• Utilizzato nel rilevamento nebbia (radiazione bassa + umidità alta)\n• Sovrascrive altre condizioni per rilevamento cielo sereno\n\n💡 **Sensore Solare Lux** (opzionale)\n• Rilevamento giorno/notte basato sulla luce\n• Rilevamento copertura nuvolosa di backup se sensore radiazione non disponibile\n• Calcoli di visibilità e rilevamento crepuscolo\n\n🛡️ **Sensore Indice UV** (opzionale)\n• Conferma cielo sereno (UV alto = definitivamente soleggiato)\n• Misurazione intensità solare per raccomandazioni di sicurezza\n• Precisione migliorata del rilevamento meteo soleggiato\n\n☀️ **Sensore Solare** (opzionale)\n• Dati elevazione solare per calcoli precisi copertura nuvolosa\n• Migliora il rilevamento meteorologico considerando la posizione del sole\n• Elevazione maggiore = più radiazione solare attesa\n• Fallback: 45° di elevazione se non configurato\n\n**Suggerimenti per la Configurazione:**\n• Usa Strumenti Sviluppatore → Stati per trovare gli ID delle entità sensori\n• I sensori di temperatura dovrebbero avere device_class='temperature'\n• I sensori di pressione dovrebbero usare pressione relativa/barometrica\n• Intervallo aggiornamento: 1-60 minuti (quanto spesso aggiornare i dati meteo)\n• Più sensori = rilevamento meteorologico più accurato!",
+        "title": "Configurazione Micro Stazione Meteorologica"
+      },
+      "wind": {
+        "data": {
+          "wind_direction_sensor": "Sensore Direzione del Vento",
+          "wind_gust_sensor": "Sensore Raffiche di Vento",
+          "wind_speed_sensor": "Sensore Velocità del Vento"
+        },
+        "data_description": {
+          "wind_direction_sensor": "Sensore opzionale che fornisce dati direzione vento per rapporti meteorologici dettagliati. Utilizzato nel tracciamento tempeste e migliora precisione previsioni con dati vento direzionale.",
+          "wind_gust_sensor": "Sensore opzionale per rilevamento meteo severo e misurazione intensità tempeste. Fornisce allerte sicurezza per condizioni vento pericolose e classificazione tempeste migliorata.",
+          "wind_speed_sensor": "Sensore opzionale per rilevamento condizioni vento. Rilevamento tempeste (>25 km/h + pioggia = tempestoso), calcoli wind chill e allerte meteo severo."
+        },
+        "description": "Configura i sensori di velocità, direzione e raffiche del vento.\n\n**Sensori del Vento:**\n\n💨 **Sensore Velocità del Vento** (opzionale)\n• Determina le condizioni del vento nello stato meteorologico\n• Rilevamento tempeste (>25 km/h + pioggia = condizioni tempestose)\n• Calcoli wind chill per temperatura apparente\n• Allerte meteo severo e previsioni relative al vento\n\n🧭 **Sensore Direzione del Vento** (opzionale)\n• Fornisce dati di direzione del vento per rapporti meteorologici dettagliati\n• Utilizzato nel tracciamento delle tempeste e analisi dei modelli meteorologici\n• Migliora la precisione delle previsioni con dati del vento direzionale\n\n🌪️ **Sensore Raffiche di Vento** (opzionale)\n• Rilevamento meteo severo e misurazione intensità delle tempeste\n• Allerte di sicurezza per condizioni di vento pericolose\n• Classificazione migliorata delle tempeste (venti con raffiche vs costanti)",
+        "title": "Sensori del Vento"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "missing_outdoor_temp": "❌ È richiesto il sensore di temperatura esterna. Seleziona un sensore di temperatura che misuri le condizioni esterne.",
+      "unknown": "❌ Si è verificato un errore imprevisto durante la configurazione. Controlla le tue selezioni di sensori e riprova."
+    },
+    "step": {
+      "atmospheric": {
+        "data": {
+          "altitude": "Altitudine della Stazione",
+          "dewpoint_sensor": "Sensore Punto di Rugiada",
+          "humidity_sensor": "Sensore di Umidità",
+          "outdoor_temp_sensor": "Sensore Temperatura Esterna",
+          "pressure_sensor": "Sensore Pressione Atmosferica"
+        },
+        "data_description": {
+          "altitude": "Elevazione della stazione sopra il livello del mare. Utilizzata per regolare le letture di pressione all'equivalente del livello del mare per rilevamento meteorologico accurato. Imposta a 0 se il tuo sensore di pressione fornisce già pressione al livello del mare (MSLP) o per letture sensore grezze. Migliora precisione previsioni, specialmente per previsione meteorologica basata su pressione.",
+          "dewpoint_sensor": "Sensore opzionale che fornisce misurazione diretta del punto di rugiada per massima precisione. Utilizzato nel rilevamento nebbia (>98% umidità + punto di rugiada) e calcoli comfort. Si ripega sul punto di rugiada calcolato se non fornito.",
+          "humidity_sensor": "Sensore opzionale essenziale per rilevamento nebbia (si attiva con >98% umidità). Utilizzato nei calcoli indice comfort, indice calore e determinazione probabilità precipitazione.",
+          "outdoor_temp_sensor": "Sensore richiesto per rilevamento meteorologico di base. Fornisce letture di temperatura utilizzate in tutti i calcoli meteorologici e rilevamento condizioni.",
+          "pressure_sensor": "Sensore opzionale che abilita previsioni meteorologiche (5 giorni e orarie). Rileva tempeste tramite cali rapidi di pressione e fornisce analisi tendenze per previsione modelli meteorologici."
+        },
+        "title": "Sensori Atmosferici"
+      },
+      "device_config": {
+        "data": {
+          "update_interval": "Intervallo di Aggiornamento (minuti)"
+        },
+        "data_description": {
+          "update_interval": "Quanto spesso i dati meteorologici vengono aggiornati e i sensori interrogati. Intervallo: 1-60 minuti. Valori più bassi forniscono aggiornamenti più reattivi ma possono aumentare il carico sistema."
+        },
+        "title": "Configurazione Dispositivo"
+      },
+      "init": {
+        "data": {
+          "altitude": "Altitudine della Stazione",
+          "dewpoint_sensor": "Sensore Punto di Rugiada",
+          "humidity_sensor": "Sensore di Umidità",
+          "outdoor_temp_sensor": "Sensore Temperatura Esterna",
+          "pressure_sensor": "Sensore Pressione Atmosferica",
+          "rain_rate_sensor": "Sensore Tasso di Pioggia",
+          "rain_state_sensor": "Sensore Stato Pioggia",
+          "solar_lux_sensor": "Sensore Solare Lux",
+          "solar_radiation_sensor": "Sensore Radiazione Solare",
+          "sun_sensor": "Sensore Solare",
+          "update_interval": "Intervallo di Aggiornamento (minuti)",
+          "uv_index_sensor": "Sensore Indice UV",
+          "wind_direction_sensor": "Sensore Direzione del Vento",
+          "wind_gust_sensor": "Sensore Raffiche di Vento",
+          "wind_speed_sensor": "Sensore Velocità del Vento"
+        },
+        "data_description": {
+          "altitude": "Elevazione della stazione sopra il livello del mare. Utilizzata per regolare le letture di pressione all'equivalente del livello del mare per rilevamento meteorologico accurato. Imposta a 0 se il tuo sensore di pressione fornisce già pressione al livello del mare (MSLP) o per letture sensore grezze. Migliora precisione previsioni, specialmente per previsione meteorologica basata su pressione. Predefinito alla tua impostazione elevazione Home Assistant se disponibile, altrimenti 0.0 (usa il tuo sistema unità Home Assistant).",
+          "dewpoint_sensor": "Sensore opzionale che fornisce misurazione diretta del punto di rugiada per massima precisione. Utilizzato nel rilevamento nebbia (>98% umidità + punto di rugiada) e calcoli comfort. Si ripega sul punto di rugiada calcolato se non fornito.",
+          "humidity_sensor": "Sensore opzionale essenziale per rilevamento nebbia (si attiva con >98% umidità). Utilizzato nei calcoli indice comfort, indice calore e determinazione probabilità precipitazione.",
+          "outdoor_temp_sensor": "Sensore richiesto per rilevamento meteorologico di base. Fornisce letture di temperatura utilizzate in tutti i calcoli meteorologici e rilevamento condizioni.",
+          "pressure_sensor": "Sensore opzionale che abilita previsioni meteorologiche (5 giorni e orarie). Rileva tempeste tramite cali rapidi di pressione e fornisce analisi tendenze per previsione modelli meteorologici.",
+          "rain_rate_sensor": "Sensore opzionale per misurazione diretta intensità precipitazioni. Attiva condizioni meteorologiche piovose/tempestose e sovrascrive altre condizioni quando viene rilevata pioggia.",
+          "rain_state_sensor": "Sensore opzionale per rilevamento booleano pioggia (stati secco/bagnato). Fornisce sovrascrittura immediata condizione meteorologica quando bagnato e rilevamento precipitazioni backup.",
+          "solar_lux_sensor": "Sensore opzionale per rilevamento giorno/notte basato sulla luce. Rilevamento copertura nuvolosa backup e calcoli visibilità quando sensore radiazione solare non disponibile.",
+          "solar_radiation_sensor": "Sensore opzionale per rilevamento primario copertura nuvolosa (>400 W/m² = soleggiato, <100 = nuvoloso). Utilizzato nel rilevamento nebbia e sovrascrive altre condizioni per rilevamento cielo sereno.",
+          "sun_sensor": "Sensore opzionale che fornisce dati elevazione solare per calcoli precisi copertura nuvolosa. Migliora precisione rilevamento meteorologico considerando posizione sole (elevazione maggiore = più radiazione solare attesa). Si ripega a 45° elevazione se non configurato.",
+          "update_interval": "Quanto spesso i dati meteorologici vengono aggiornati e i sensori interrogati. Intervallo: 1-60 minuti. Valori più bassi forniscono aggiornamenti più reattivi ma possono aumentare il carico sistema.",
+          "uv_index_sensor": "Sensore opzionale per conferma cielo sereno (UV alto = definitivamente soleggiato). Fornisce misurazione intensità solare per raccomandazioni sicurezza e precisione migliorata rilevamento meteo soleggiato.",
+          "wind_direction_sensor": "Sensore opzionale che fornisce dati direzione vento per rapporti meteorologici dettagliati. Utilizzato nel tracciamento tempeste e migliora precisione previsioni con dati vento direzionale.",
+          "wind_gust_sensor": "Sensore opzionale per rilevamento meteo severo e misurazione intensità tempeste. Fornisce allerte sicurezza per condizioni vento pericolose e classificazione tempeste migliorata.",
+          "wind_speed_sensor": "Sensore opzionale per rilevamento condizioni vento. Rilevamento tempeste (>25 km/h + pioggia = tempestoso), calcoli wind chill e allerte meteo severo."
+        },
+        "menu_options": {
+          "atmospheric": "Configura Sensori Atmosferici",
+          "device_config": "Configurazione Dispositivo",
+          "rain": "Configura Sensori della Pioggia",
+          "solar": "Configura Sensori Solari",
+          "wind": "Configura Sensori del Vento"
+        },
+        "title": "Aggiorna Sensori Stazione Meteorologica"
+      },
+      "rain": {
+        "data": {
+          "rain_rate_sensor": "Sensore Tasso di Pioggia",
+          "rain_state_sensor": "Sensore Stato Pioggia"
+        },
+        "data_description": {
+          "rain_rate_sensor": "Sensore opzionale per misurazione diretta intensità precipitazioni. Attiva condizioni meteorologiche piovose/tempestose e sovrascrive altre condizioni quando viene rilevata pioggia.",
+          "rain_state_sensor": "Sensore opzionale per rilevamento booleano pioggia (stati secco/bagnato). Fornisce sovrascrittura immediata condizione meteorologica quando bagnato e rilevamento precipitazioni backup."
+        },
+        "title": "Sensori della Pioggia"
+      },
+      "solar": {
+        "data": {
+          "solar_lux_sensor": "Sensore Solare Lux",
+          "solar_radiation_sensor": "Sensore Radiazione Solare",
+          "sun_sensor": "Sensore Solare",
+          "uv_index_sensor": "Sensore Indice UV",
+          "zenith_max_radiation": "Radiazione Massima allo Zenit"
+        },
+        "data_description": {
+          "solar_lux_sensor": "Sensore opzionale per rilevamento giorno/notte basato sulla luce. Rilevamento copertura nuvolosa backup e calcoli visibilità quando sensore radiazione solare non disponibile.",
+          "solar_radiation_sensor": "Sensore opzionale per rilevamento primario copertura nuvolosa (>400 W/m² = soleggiato, <100 = nuvoloso). Utilizzato nel rilevamento nebbia e sovrascrive altre condizioni per rilevamento cielo sereno.",
+          "sun_sensor": "Sensore opzionale che fornisce dati elevazione solare per calcoli precisi copertura nuvolosa. Migliora precisione rilevamento meteorologico considerando posizione sole (elevazione maggiore = più radiazione solare attesa). Si ripega a 45° elevazione se non configurato.",
+          "uv_index_sensor": "Sensore opzionale per conferma cielo sereno (UV alto = definitivamente soleggiato). Fornisce misurazione intensità solare per raccomandazioni sicurezza e precisione migliorata rilevamento meteo soleggiato.",
+          "zenith_max_radiation": "Radiazione solare massima allo zenit (sole direttamente sopra). Utilizzato per normalizzare le letture di radiazione solare per calcoli precisi di copertura nuvolosa. Valori tipici: 400-1200 W/m² a seconda della posizione e delle condizioni atmosferiche."
+        },
+        "title": "Sensori Solari e del Sole"
+      },
+      "wind": {
+        "data": {
+          "wind_direction_sensor": "Sensore Direzione del Vento",
+          "wind_gust_sensor": "Sensore Raffiche di Vento",
+          "wind_speed_sensor": "Sensore Velocità del Vento"
+        },
+        "data_description": {
+          "wind_direction_sensor": "Sensore opzionale che fornisce dati direzione vento per rapporti meteorologici dettagliati. Utilizzato nel tracciamento tempeste e migliora precisione previsioni con dati vento direzionale.",
+          "wind_gust_sensor": "Sensore opzionale per rilevamento meteo severo e misurazione intensità tempeste. Fornisce allerte sicurezza per condizioni vento pericolose e classificazione tempeste migliorata.",
+          "wind_speed_sensor": "Sensore opzionale per rilevamento condizioni vento. Rilevamento tempeste (>25 km/h + pioggia = tempestoso), calcoli wind chill e allerte meteo severo."
+        },
+        "title": "Sensori del Vento"
+      }
+    }
+  }
+}

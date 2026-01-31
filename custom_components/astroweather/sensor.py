@@ -14,9 +14,10 @@ from homeassistant.const import (
     UnitOfTime,
 )
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.util import dt as dt_util
 
-from .const import CONF_LOCATION_NAME, DEFAULT_LOCATION_NAME, DOMAIN, UPTONIGHT
+from .const import CONF_LOCATION_NAME, DEFAULT_LOCATION_NAME, DOMAIN, MANUFACTURER, UPTONIGHT, VERSION
 from .entity import AstroWeatherEntity
 
 SENSOR_NAME = 0
@@ -318,6 +319,13 @@ SENSOR_TYPES = {
         None,
         None,
     ],
+    "moon_icon": [
+        "Moon Icon",
+        None,
+        "mdi:moon-waning-gibbous",
+        None,
+        None,
+    ],
     "moon_next_new_moon": [
         "Moon Next New Moon",
         None,
@@ -379,6 +387,13 @@ SENSOR_TYPES = {
         None,
         "mdi:moon-full",
         None,
+        None,
+    ],
+    "moon_next_dark_night": [
+        "Moon Next Dark Night",
+        None,
+        "mdi:rocket-launch-outline",
+        SensorDeviceClass.TIMESTAMP,
         None,
     ],
     "night_duration_astronomical": [
@@ -488,6 +503,7 @@ class AstroWeatherSensor(AstroWeatherEntity, SensorEntity):
         self._location_name = entries.get(CONF_LOCATION_NAME, DEFAULT_LOCATION_NAME)
         self._sensor_name = SENSOR_TYPES[self._sensor][SENSOR_NAME]
         self._attr_unique_id = f"{entry.entry_id}_{DOMAIN.lower()}_{self._sensor_name.lower().replace(' ', '_')}"
+        self._unique_id = f"{entry.entry_id}_{DOMAIN.lower()}"
         self._name = f"{DOMAIN.capitalize()} {self._location_name} {self._sensor_name}"
 
     @property
@@ -530,6 +546,16 @@ class AstroWeatherSensor(AstroWeatherEntity, SensorEntity):
         """State class of sensor."""
 
         return self._state_class
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return the device info."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._unique_id)},
+            name=f"{MANUFACTURER} {self._location_name}",
+            manufacturer=MANUFACTURER,
+            sw_version=VERSION,
+        )
 
     @property
     def extra_state_attributes(self) -> {}:

@@ -1,0 +1,35 @@
+---
+sensor:
+  - name: "Current UV Index Level"
+    unique_id: uvindex_level_current
+    state: >-
+      {% set index = states('sensor.current_uv_index') | float(-1) %}
+      {% if index > 11 %}
+        Extreme
+      {% elif index > 8 %}
+        Very High
+      {% elif index > 6 %}
+        High
+      {% elif index > 3 %}
+        Moderate
+      {% elif index >= 0 %}
+        Low
+      {% else %}
+        Unavailable
+      {% endif %}
+
+    icon: >-
+      {% set index = states('sensor.current_uv_index') | float(-1) %}
+      {% if index > 11 %}
+        mdi:weather-sunny-alert
+      {% elif index > 8 %}
+        mdi:weather-sunny-alert
+      {% elif index > 6 %}
+        mdi:weather-sunny
+      {% elif index > 3 %}
+        mdi:weather-partly-cloudy
+      {% elif index >= 0 %}
+        mdi:weather-cloudy
+      {% else %}
+        mdi:weather-sunny-off
+      {% endif %}

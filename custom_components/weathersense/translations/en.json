@@ -1,0 +1,41 @@
+{
+  "config": {
+    "title": "HA WeatherSense",
+    "step": {
+      "user": {
+        "title": "Set up HA WeatherSense",
+        "description": "Set up a sensor to calculate feels-like temperature based on environmental conditions.",
+        "data": {
+          "name": "Sensor Name",
+          "temperature_sensor": "Temperature Sensor",
+          "humidity_sensor": "Humidity Sensor",
+          "wind_speed_sensor": "Wind Speed Sensor (optional)",
+          "pressure_sensor": "Pressure Sensor (optional)",
+          "solar_radiation_sensor": "Solar Radiation Sensor (optional)",
+          "is_outdoor": "Is this for outdoor conditions?",
+          "display_unit": "Display Temperature Unit"
+        }
+      }
+    },
+    "error": {
+      "temperature_required": "Temperature sensor is required",
+      "humidity_required": "Humidity sensor is required"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "HA WeatherSense Options",
+        "data": {
+          "temperature_sensor": "Temperature Sensor",
+          "humidity_sensor": "Humidity Sensor",
+          "wind_speed_sensor": "Wind Speed Sensor (optional)",
+          "pressure_sensor": "Pressure Sensor (optional)",
+          "solar_radiation_sensor": "Solar Radiation Sensor (optional)",
+          "is_outdoor": "Is this for outdoor conditions?",
+          "display_unit": "Display Temperature Unit"
+        }
+      }
+    }
+  }
+}

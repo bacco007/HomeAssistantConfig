@@ -35,21 +35,48 @@ cards:
         attribute: time_formatted
       - entity: sensor.sleep_rem_sleep
         show_background: false
-        show_state: true
+        show_state: false
         icon: mdi:sleep
         name: REM
         show_name: true
+        show_attribute: true
+        attribute: time_formatted
       - entity: sensor.sleep_light_sleep
         show_background: false
-        show_state: true
+        show_state: false
         icon: mdi:sleep
         name: Light
         show_name: true
+        show_attribute: true
+        attribute: time_formatted
       - entity: sensor.sleep_deep_sleep
         show_background: false
-        show_state: true
+        show_state: false
         icon: mdi:sleep
         name: Deep
         show_name: true
+        show_attribute: true
+        attribute: time_formatted
     show_icon: true
     show_attribute: false
+  - type: custom:bubble-card
+    card_type: button
+    button_type: name
+    entity: sensor.whoop_thomas_day_strain
+    name: WHOOP
+    icon: m3o:fitness-tracker
+    sub_button:
+      - entity: sensor.whoop_thomas_sleep_performance
+        show_state: true
+        state_background: false
+        show_background: false
+      - entity: sensor.whoop_thomas_recovery_score
+        show_icon: true
+        state_background: true
+        show_background: false
+        show_state: true
+      - entity: sensor.whoop_thomas_day_strain
+        state_background: false
+        show_state: true
+        show_background: false
+    card_layout: normal

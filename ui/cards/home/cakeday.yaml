@@ -20,7 +20,7 @@ cards:
     columns: 2
     type: grid
     cards:
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         icon: mdi:cake-variant
         primary: |
           In {{ states("sensor.anniversary_my_birthday") }} days
@@ -61,7 +61,7 @@ cards:
                 border-radius: 50%;
                 background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
               }
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         icon: mdi:cake-variant
         primary: |
           In {{ states("sensor.anniversary_my_work_birthday") }} days
@@ -103,7 +103,7 @@ cards:
                 border-radius: 50%;
                 background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
               }
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         icon: mdi:gift
         primary: |
           {%- from 'next_birthday.jinja' import next_birthday_friendly_name -%}
@@ -143,10 +143,46 @@ cards:
                 border-radius: 50%;
                 background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
               }
+      - type: custom:mushroom-legacy-template-card
+        icon: mdi:calendar-heart
+        primary: "{{ state_attr(entity, 'holiday') }}"
+        icon_color: green
+        secondary: "{{ state_attr(entity, 'display') }}"
+        badge_icon: |-
+          {%- set event = int(state_attr(entity, 'days_until')) %}
+          {% if (event) <= 10 %}
+          mdi:exclamation-thick
+          {% endif %}
+        badge_color: red
+        entity: sensor.next_holiday
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                #background-color: var(--background-color);
+                --icon-size: 40px;
+                --icon-symbol-size: 25px;
+                --card-secondary-font-size: 10px;
+                --card-primary-font-size: 12px;
+              }
+            mushroom-shape-icon$: |
+              {% set days = int(state_attr('sensor.next_holiday', 'days_until')) %}
+              .shape {
+                background: radial-gradient(var(--card-background-color) 60%, transparent 0%), conic-gradient(rgb(var(--rgb-red)) {{ (365-int(days))/365*100 }}% 0%, var(--card-background-color) 0% 100%);
+              }
+              .shape:after {
+                content: "";
+                height: 100%;
+                width: 100%;
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
+              }
+
   - square: false
     type: grid
     cards:
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         icon: mdi:calendar-end
         primary: Month End
         icon_color: orange
@@ -183,7 +219,7 @@ cards:
                 border-radius: var(--icon-border-radius);
                 background: rgba(var(--rgb-{{ config.icon_color }}), 0.2);
               }
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         icon: mdi:calendar-end
         primary: Year End
         icon_color: orange

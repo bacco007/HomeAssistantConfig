@@ -422,7 +422,7 @@ cards:
         entities:
           - type: custom:fold-entity-row
             head:
-              type: custom:mushroom-template-card
+              type: custom:mushroom-legacy-template-card
               primary: Plex Top Users
               secondary: >
                 {{state_attr('sensor.plex_tautulli_topusers', 'rows')[0].friendly_name }}
@@ -500,7 +500,7 @@ cards:
         entities:
           - type: custom:fold-entity-row
             head:
-              type: custom:mushroom-template-card
+              type: custom:mushroom-legacy-template-card
               primary: Plex Watch Summary
               secondary: >
                 {{state_attr('sensor.plex_tautulli_history', 'data')[0].full_title }}
@@ -567,7 +567,7 @@ cards:
         entities:
           - type: custom:fold-entity-row
             head:
-              type: custom:mushroom-template-card
+              type: custom:mushroom-legacy-template-card
               primary: Plex Watch Stats - TV
               icon: mdi:plex
               icon_color: orange
@@ -652,7 +652,7 @@ cards:
         entities:
           - type: custom:fold-entity-row
             head:
-              type: custom:mushroom-template-card
+              type: custom:mushroom-legacy-template-card
               primary: Plex Watch Stats - Movies
               icon: mdi:plex
               icon_color: orange
@@ -737,7 +737,7 @@ cards:
         entities:
           - type: custom:fold-entity-row
             head:
-              type: custom:mushroom-template-card
+              type: custom:mushroom-legacy-template-card
               primary: Plex Recently Added - TV Shows
               secondary: >
                 {{state_attr('sensor.plex_recently_added', 'data')[1].title }}
@@ -806,7 +806,7 @@ cards:
         entities:
           - type: custom:fold-entity-row
             head:
-              type: custom:mushroom-template-card
+              type: custom:mushroom-legacy-template-card
               primary: Plex Recently Added - Movies
               secondary: >
                 {{state_attr('sensor.plex_recently_added_movie', 'data')[1].title }}
@@ -875,7 +875,7 @@ cards:
         entities:
           - type: custom:fold-entity-row
             head:
-              type: custom:mushroom-template-card
+              type: custom:mushroom-legacy-template-card
               primary: Plex Top TV - Last 30 Days
               secondary: >
                 {{state_attr('sensor.plex_tautulli_toptv_30days', 'rows')[0].title }}
@@ -953,7 +953,7 @@ cards:
         entities:
           - type: custom:fold-entity-row
             head:
-              type: custom:mushroom-template-card
+              type: custom:mushroom-legacy-template-card
               primary: Plex Top TV - By Duration
               secondary: >
                 {{state_attr('sensor.plex_tautulli_toptv', 'rows')[0].title }}
@@ -1031,7 +1031,7 @@ cards:
         entities:
           - type: custom:fold-entity-row
             head:
-              type: custom:mushroom-template-card
+              type: custom:mushroom-legacy-template-card
               primary: Plex Top TV - By Eps Watched
               secondary: >
                 {{state_attr('sensor.plex_tautulli_toptv_plays', 'rows')[0].title }}
@@ -1109,7 +1109,7 @@ cards:
         entities:
           - type: custom:fold-entity-row
             head:
-              type: custom:mushroom-template-card
+              type: custom:mushroom-legacy-template-card
               primary: Plex Top Movies
               secondary: >
                 {{state_attr('sensor.plex_tautulli_topmovies', 'rows')[0].title }}

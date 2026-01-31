@@ -10,9 +10,24 @@ cards:
         background: var(--ha-card-background);
         opacity: 1;
         }
-  - show_state: false
-    show_name: false
-    camera_view: live
-    type: picture-entity
-    image: https://view.myairportcams.com/YSTW/showimagecamera1.php
-    entity: sensor.test
+  - type: custom:tabbed-card
+    options: {}
+    tabs:
+      - card:
+          type: picture
+          image: https://view.myairportcams.com/YSTW/showimagecamera1.php
+
+        attributes:
+          label: Camera 1
+      - card:
+          type: picture
+          image: https://view.myairportcams.com/YSTW/showimagecamera2.php
+
+        attributes:
+          label: Camera 2
+      - card:
+          type: picture
+          image: https://view.myairportcams.com/YSTW/showimagecamera3.php
+
+        attributes:
+          label: Camera 3

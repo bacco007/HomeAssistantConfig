@@ -19,7 +19,7 @@ cards:
 
     button-background: transparent
     title-card:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       primary: Top Airlines Tracked
       icon: mdi:airplane-search
       secondary: >
@@ -71,7 +71,7 @@ cards:
 
     button-background: transparent
     title-card:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       primary: Top Aircraft Tracked (By Model)
       icon: mdi:airplane-search
       secondary: >
@@ -123,7 +123,7 @@ cards:
 
     button-background: transparent
     title-card:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       primary: Top Aircraft Tracked (By Tail Number)
       icon: mdi:airplane-search
       secondary: >
@@ -183,7 +183,7 @@ cards:
 
     button-background: transparent
     title-card:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       primary: Top Flights Tracked (By Arrival Airport)
       icon: mdi:airplane-search
       secondary: >
@@ -235,7 +235,7 @@ cards:
 
     button-background: transparent
     title-card:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       primary: Top Flights Tracked (By Departure Airport)
       icon: mdi:airplane-search
       secondary: >

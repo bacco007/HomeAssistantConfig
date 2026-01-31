@@ -3,7 +3,7 @@ type: vertical-stack
 cards:
   - type: custom:bubble-card
     card_type: separator
-    name: Home Assistant Snapshots
+    name: Home Assistant Backups
     icon: mdi:home-assistant
     styles: |-
       .bubble-line {
@@ -19,70 +19,13 @@ cards:
           margin: 0 !important;
         }
     entities:
-      - type: custom:template-entity-row
-        entity: sensor.backup_state
-        name: Hass Backups
-        icon: mdi:folder-sync
-        state: |
-          {{ 'Problem' if is_state('binary_sensor.backups_stale','on')
-            else states('sensor.backup_state')|replace('_',' ')|title }}
-        secondary: >
-          Backups: {{ state_attr('sensor.backup_state','backups_in_home_assistant') }} -
-          Last: {{
-          state_attr('sensor.backup_state','last_backup')|as_timestamp(none)|timestamp_custom('%b
-          %-d, %H:%M %p',true,none) }}
-        tap_action:
-          action: more-info
-        double_tap_action:
-          action: navigate
-          navigation_path: /hassio/backups
-        hold_action:
-          action: navigate
-          navigation_path: /hassio/ingress/cebe7a76_hassio_google_drive_backup
       - type: custom:fold-entity-row
         head:
-          type: custom:template-entity-row
-          name: Backup History
-          icon: mdi:home-assistant
-          state: ""
-          card_mod:
-            style: |
-              #measures > * {
-                margin: 0 !important;
-              }
-        padding: 0
+          entity: sensor.backup_backup_manager_state
+          name: Backup State
+          icon: mdi:folder-sync
         entities:
-          - type: custom:hui-element
-            card_type: custom:flex-table-card
-            entities:
-              include: sensor.backup_state
-            css:
-              table+: "border-collapse: collapse;"
-            sort_by: backups
-            columns:
-              - name: Name
-                data: backups
-                modify: x.name
-              - name: Date
-                data: backups
-                modify: |
-                  var date = new Date(x.date);
-                  String(date.getDate()).padStart(2,'0')+"/"+
-                  (String(date.getMonth()+ 1).padStart(2,'0'))+"/"+
-                  date.getFullYear()
-              - name: State
-                data: backups
-                modify: x.state
-              - name: Size
-                data: backups
-                modify: x.size
-            card_mod:
-              style: |
-                ha-card {
-                  background: none;
-                  border: 0;
-                  box-shadow: none;
-                  overflow: auto;
-                  padding-top: 5px;
-                  font-size: 12px;
-                }
+          - entity: sensor.backup_last_successful_automatic_backup
+            name: Last Successful Backup
+          - entity: sensor.backup_next_scheduled_automatic_backup
+            name: Next Scheduled Backup

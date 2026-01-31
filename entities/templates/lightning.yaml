@@ -1,0 +1,10 @@
+---
+sensor:
+  - name: "[Lightning] Latest Strike Entity ID"
+    unique_id: lightning_latest_strike_entity_id
+    icon: mdi:flash-alert-outline
+    state: |
+      {% set strikes = states.geo_location | selectattr('entity_id', 'search', 'geo_location.lightning_strike_') | sort(attribute='last_updated', reverse=true) | list %}
+      {{ strikes[0].entity_id if strikes else 'none' }}
+    attributes:
+      category: lightning

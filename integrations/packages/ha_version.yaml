@@ -40,10 +40,3 @@ sensor:
       Content-Type: application/json
       Authorization: !secret ha_api_llat
       User-Agent: Home Assistant REST sensor
-
-  - platform: template
-    sensors:
-      count_all_components:
-        friendly_name: "All Components"
-        icon_template: mdi:code-tags
-        value_template: "{{ states.sensor.hass_main_config.attributes.components | count }}"

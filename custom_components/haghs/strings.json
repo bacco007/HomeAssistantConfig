@@ -1,0 +1,19 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure HAGHS",
+        "description": "Select the sensors from System Monitor and File Size integration.",
+        "data": {
+          "cpu_sensor": "Processor Usage (CPU) %",
+          "ram_sensor": "Memory Usage (RAM) %",
+          "disk_sensor": "Disk Usage (Home) %",
+          "db_sensor": "Database Size (MB)",
+          "log_sensor": "Log File Size (MB) - Optional",
+          "core_update_entity": "Core Update Entity",
+          "ignore_label": "Label to ignore (Zombies)"
+        }
+      }
+    }
+  }
+}

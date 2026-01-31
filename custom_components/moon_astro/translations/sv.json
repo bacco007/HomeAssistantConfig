@@ -1,0 +1,349 @@
+{
+    "title": "Måne Astro",
+    "config": {
+        "step": {
+            "user": {
+                "title": "Måne Astro",
+                "description": "Ställ in dina GPS‑koordinater och din höjd.",
+                "data": {
+                    "latitude": "Latitud",
+                    "longitude": "Longitud",
+                    "altitude": "Höjd (m)"
+                }
+            },
+            "precision": {
+                "title": "Måne Astro",
+                "description": "Högprecisionsläge minskar variationen i tidsstämplar men ökar CPU-användningen eftersom det använder ett finare samplingssteg och ett bredare förfiningsintervall. Det rekommenderas inte att aktivera detta på enheter med låg prestanda som Raspberry Pi.",
+                "data": {
+                    "high_precision": "Högprecisionsläge"
+                }
+            }
+        },
+        "progress": {
+            "download_ephemeris": "Laddar ner Skyfield DE440-efemeriden (> 100 MB). Stäng inte detta fönster under nedladdningen..."
+        },
+        "abort": {
+            "already_configured": "Måne Astro är redan konfigurerad",
+            "missing_data": "Konfigurationsdata saknas",
+            "reconfigure_successful": "Konfigurationen har uppdaterats"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Alternativ för Måne Astro",
+                "description": "Justera sensorernas uppdateringsintervall och hantering av tidszon.\n\nHögprecisionsläge minskar variationen i tidsstämplar, men ökar CPU-användningen eftersom det använder ett finare samplingssteg och ett bredare förfiningsintervall. Det rekommenderas inte på lågpresterande enheter som Raspberry Pi.\n\nFallback-intervallet för händelseuppdatering tvingar en periodisk uppdatering av händelsebaserade sensorer (nästa/föregående faser, apogeum/perigeum, zodiak vid lunationer) om den schemalagda uppdateringen runt nästa händelse missas (omstart, tidsändring, fördröjning). Lägre värden uppdaterar oftare; högre värden minskar CPU-användningen.",
+                "data": {
+                    "scan_interval": "Uppdateringsintervall för sensorer (sekunder)",
+                    "use_ha_timezone": "Använd Home Assistants tidszon",
+                    "high_precision": "Högprecisionsläge",
+                    "events_refresh_fallback": "Fallback-intervall för händelseuppdatering (sekunder)"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "above_horizon": {
+                "name": "Över horisonten",
+                "state": {
+                    "on": "Över horisonten",
+                    "off": "Under horisonten"
+                }
+            }
+        },
+        "sensor": {
+            "phase": {
+                "name": "Fas",
+                "state": {
+                    "new_moon": "Nymåne",
+                    "waxing_crescent": "Tilltagande skära",
+                    "first_quarter": "Första kvarteret",
+                    "waxing_gibbous": "Tilltagande måne",
+                    "full_moon": "Fullmåne",
+                    "waning_gibbous": "Avtagande måne",
+                    "last_quarter": "Sista kvarteret",
+                    "waning_crescent": "Avtagande skära",
+                    "unknown": "Okänt"
+                }
+            },
+            "azimuth": {
+                "name": "Azimut"
+            },
+            "elevation": {
+                "name": "Höjdvinkel"
+            },
+            "illumination": {
+                "name": "Belysning"
+            },
+            "distance": {
+                "name": "Avstånd"
+            },
+            "parallax": {
+                "name": "Parallax"
+            },
+            "ecliptic_longitude_topocentric": {
+                "name": "Ekliptisk longitud (topocentrisk)"
+            },
+            "ecliptic_latitude_topocentric": {
+                "name": "Ekliptisk latitud (topocentrisk)"
+            },
+            "ecliptic_longitude_geocentric": {
+                "name": "Ekliptisk longitud (geocentrisk)"
+            },
+            "ecliptic_latitude_geocentric": {
+                "name": "Ekliptisk latitud (geocentrisk)"
+            },
+            "next_rise": {
+                "name": "Nästa uppgång"
+            },
+            "next_set": {
+                "name": "Nästa nedgång"
+            },
+            "next_apogee": {
+                "name": "Nästa apogeum"
+            },
+            "next_perigee": {
+                "name": "Nästa perigeum"
+            },
+            "next_new_moon": {
+                "name": "Nästa nymåne"
+            },
+            "next_first_quarter": {
+                "name": "Nästa första kvarter"
+            },
+            "next_full_moon": {
+                "name": "Nästa fullmåne"
+            },
+            "next_full_moon_name": {
+                "name": "Namn på nästa fullmåne",
+                "state": {
+                    "wolf_moon": "Vargmåne",
+                    "snow_moon": "Snömåne",
+                    "worm_moon": "Maskmåne",
+                    "pink_moon": "Rosa måne",
+                    "flower_moon": "Blomstermåne",
+                    "strawberry_moon": "Jordgubbsmåne",
+                    "buck_moon": "Hjortmåne",
+                    "sturgeon_moon": "Störmåne",
+                    "harvest_moon": "Skördemåne",
+                    "hunters_moon": "Jägarmåne",
+                    "beaver_moon": "Bävermåne",
+                    "cold_moon": "Köldmåne",
+                    "blue_moon": "Blå måne",
+                    "unknown": "Okänd"
+                }
+            },
+            "next_full_moon_alt_names": {
+                "name": "Alternativa namn för nästa fullmåne",
+                "state": {
+                    "wolf_moon_alt_names": "Månen efter Yule, Hemma-måne, Tyst måne, Sträng måne, Centrum-måne",
+                    "snow_moon_alt_names": "Hunger-måne, Björnmåne, Stormmåne, Ismåne",
+                    "worm_moon_alt_names": "Fastemåne, Kråkmåne, Skorpmåne, Kysk måne, Sockermåne, Säftmåne",
+                    "pink_moon_alt_names": "Isbrytningsmåne, Knoppmåne, Uppvaknandets måne, Äggmåne, Påskmåne",
+                    "flower_moon_alt_names": "Planteringsmåne, Mjölkmåne, Haremåne, Gräsmåne, Mödrarnas måne, Ljus måne",
+                    "strawberry_moon_alt_names": "Rosmåne, Het måne, Mjöd-måne, Blomstermåne, Planteringsmåne",
+                    "buck_moon_alt_names": "Åskmåne, Hömåne, Örtmåne",
+                    "sturgeon_moon_alt_names": "Sädmåne, Majsmåne, Lodjursmåne, Blixtmåne",
+                    "harvest_moon_alt_names": "Full majsmåne, Grön majsmåne, Majsmåne, Vinmåne, Sångmåne, Kornmåne",
+                    "hunters_moon_alt_names": "Torkat-ris-måne, Fallande löv-måne, Frysmåne, Blodmåne, Sanguine-måne",
+                    "beaver_moon_alt_names": "Frostmåne, Frysmåne, Handelsmåne, Snömåne, Sorgmåne, Månens mörkaste djup",
+                    "cold_moon_alt_names": "Långa nätter-måne, Månen före Yule, Ekmåne, Full köldmåne",
+                    "unknown": ""
+                }
+            },
+            "next_last_quarter": {
+                "name": "Nästa sista kvarter"
+            },
+
+            "previous_rise": {
+                "name": "Föregående uppgång"
+            },
+            "previous_set": {
+                "name": "Föregående nedgång"
+            },
+            "previous_apogee": {
+                "name": "Föregående apogeum"
+            },
+            "previous_perigee": {
+                "name": "Föregående perigeum"
+            },
+            "previous_new_moon": {
+                "name": "Föregående nymåne"
+            },
+            "previous_first_quarter": {
+                "name": "Föregående första kvarter"
+            },
+            "previous_full_moon": {
+                "name": "Föregående fullmåne"
+            },
+            "previous_full_moon_name": {
+                "name": "Namn på föregående fullmåne",
+                "state": {
+                    "wolf_moon": "Vargmåne",
+                    "snow_moon": "Snömåne",
+                    "worm_moon": "Maskmåne",
+                    "pink_moon": "Rosa måne",
+                    "flower_moon": "Blomstermåne",
+                    "strawberry_moon": "Jordgubbsmåne",
+                    "buck_moon": "Hjortmåne",
+                    "sturgeon_moon": "Störmåne",
+                    "harvest_moon": "Skördemåne",
+                    "hunters_moon": "Jägarmåne",
+                    "beaver_moon": "Bävermåne",
+                    "cold_moon": "Köldmåne",
+                    "blue_moon": "Blå måne",
+                    "unknown": "Okänd"
+                }
+            },
+            "previous_full_moon_alt_names": {
+                "name": "Alternativa namn för föregående fullmåne",
+                "state": {
+                    "wolf_moon_alt_names": "Månen efter Yule, Hemma-måne, Tyst måne, Sträng måne, Centrum-måne",
+                    "snow_moon_alt_names": "Hunger-måne, Björnmåne, Stormmåne, Ismåne",
+                    "worm_moon_alt_names": "Fastemåne, Kråkmåne, Skorpmåne, Kysk måne, Sockermåne, Säftmåne",
+                    "pink_moon_alt_names": "Isbrytningsmåne, Knoppmåne, Uppvaknandets måne, Äggmåne, Påskmåne",
+                    "flower_moon_alt_names": "Planteringsmåne, Mjölkmåne, Haremåne, Gräsmåne, Mödrarnas måne, Ljus måne",
+                    "strawberry_moon_alt_names": "Rosmåne, Het måne, Mjöd-måne, Blomstermåne, Planteringsmåne",
+                    "buck_moon_alt_names": "Åskmåne, Hömåne, Örtmåne",
+                    "sturgeon_moon_alt_names": "Sädmåne, Majsmåne, Lodjursmåne, Blixtmåne",
+                    "harvest_moon_alt_names": "Full majsmåne, Grön majsmåne, Majsmåne, Vinmåne, Sångmåne, Kornmåne",
+                    "hunters_moon_alt_names": "Torkat-ris-måne, Fallande löv-måne, Frysmåne, Blodmåne, Sanguine-måne",
+                    "beaver_moon_alt_names": "Frostmåne, Frysmåne, Handelsmåne, Snömåne, Sorgmåne, Månens mörkaste djup",
+                    "cold_moon_alt_names": "Långa nätter-måne, Månen före Yule, Ekmåne, Full köldmåne",
+                    "unknown": ""
+                }
+            },
+            "previous_last_quarter": {
+                "name": "Föregående sista kvarter"
+            },
+
+            "ecliptic_longitude_next_full_moon": {
+                "name": "Ekliptisk longitud vid nästa fullmåne"
+            },
+            "ecliptic_latitude_next_full_moon": {
+                "name": "Ekliptisk latitud vid nästa fullmåne"
+            },
+            "ecliptic_longitude_next_new_moon": {
+                "name": "Ekliptisk longitud vid nästa nymåne"
+            },
+            "ecliptic_latitude_next_new_moon": {
+                "name": "Ekliptisk latitud vid nästa nymåne"
+            },
+            "ecliptic_longitude_previous_full_moon": {
+                "name": "Ekliptisk longitud vid föregående fullmåne"
+            },
+            "ecliptic_latitude_previous_full_moon": {
+                "name": "Ekliptisk latitud vid föregående fullmåne"
+            },
+            "ecliptic_longitude_previous_new_moon": {
+                "name": "Ekliptisk longitud vid föregående nymåne"
+            },
+            "ecliptic_latitude_previous_new_moon": {
+                "name": "Ekliptisk latitud vid föregående nymåne"
+            },
+
+            "zodiac_sign_current_moon": {
+                "name": "Stjärntecken (nuvarande)",
+                "state": {
+                    "aries": "Väduren",
+                    "taurus": "Oxen",
+                    "gemini": "Tvillingarna",
+                    "cancer": "Kräftan",
+                    "leo": "Lejonet",
+                    "virgo": "Jungfrun",
+                    "libra": "Vågen",
+                    "scorpio": "Skorpionen",
+                    "sagittarius": "Skytten",
+                    "capricorn": "Stenbocken",
+                    "aquarius": "Vattumannen",
+                    "pisces": "Fiskarna"
+                }
+            },
+            "zodiac_sign_next_new_moon": {
+                "name": "Stjärntecken vid nästa nymåne",
+                "state": {
+                    "aries": "Väduren",
+                    "taurus": "Oxen",
+                    "gemini": "Tvillingarna",
+                    "cancer": "Kräftan",
+                    "leo": "Lejonet",
+                    "virgo": "Jungfrun",
+                    "libra": "Vågen",
+                    "scorpio": "Skorpionen",
+                    "sagittarius": "Skytten",
+                    "capricorn": "Stenbocken",
+                    "aquarius": "Vattumannen",
+                    "pisces": "Fiskarna"
+                }
+            },
+            "zodiac_sign_next_full_moon": {
+                "name": "Stjärntecken vid nästa fullmåne",
+                "state": {
+                    "aries": "Väduren",
+                    "taurus": "Oxen",
+                    "gemini": "Tvillingarna",
+                    "cancer": "Kräftan",
+                    "leo": "Lejonet",
+                    "virgo": "Jungfrun",
+                    "libra": "Vågen",
+                    "scorpio": "Skorpionen",
+                    "sagittarius": "Skytten",
+                    "capricorn": "Stenbocken",
+                    "aquarius": "Vattumannen",
+                    "pisces": "Fiskarna"
+                }
+            },
+            "zodiac_sign_previous_new_moon": {
+                "name": "Stjärntecken vid föregående nymåne",
+                "state": {
+                    "aries": "Väduren",
+                    "taurus": "Oxen",
+                    "gemini": "Tvillingarna",
+                    "cancer": "Kräftan",
+                    "leo": "Lejonet",
+                    "virgo": "Jungfrun",
+                    "libra": "Vågen",
+                    "scorpio": "Skorpionen",
+                    "sagittarius": "Skytten",
+                    "capricorn": "Stenbocken",
+                    "aquarius": "Vattumannen",
+                    "pisces": "Fiskarna"
+                }
+            },
+            "zodiac_sign_previous_full_moon": {
+                "name": "Stjärntecken vid föregående fullmåne",
+                "state": {
+                    "aries": "Väduren",
+                    "taurus": "Oxen",
+                    "gemini": "Tvillingarna",
+                    "cancer": "Kräftan",
+                    "leo": "Lejonet",
+                    "virgo": "Jungfrun",
+                    "libra": "Vågen",
+                    "scorpio": "Skorpionen",
+                    "sagittarius": "Skytten",
+                    "capricorn": "Stenbocken",
+                    "aquarius": "Vattumannen",
+                    "pisces": "Fiskarna"
+                }
+            },
+
+            "zodiac_degree_current_moon": {
+                "name": "Zodiakgrad (nuvarande)"
+            },
+            "zodiac_degree_next_new_moon": {
+                "name": "Zodiakgrad vid nästa nymåne"
+            },
+            "zodiac_degree_next_full_moon": {
+                "name": "Zodiakgrad vid nästa fullmåne"
+            },
+            "zodiac_degree_previous_new_moon": {
+                "name": "Zodiakgrad vid föregående nymåne"
+            },
+            "zodiac_degree_previous_full_moon": {
+                "name": "Zodiakgrad vid föregående fullmåne"
+            }
+        }
+    }
+}

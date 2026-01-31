@@ -144,7 +144,7 @@ cards:
 
     button-background: transparent
     title-card:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       primary: Daily Flights Tracked Graph
       icon: mdi:airplane
       card_mod:
@@ -222,7 +222,7 @@ cards:
 
     button-background: transparent
     title-card:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       primary: Weekly Flights Tracked Graph
       icon: mdi:airplane
       card_mod:

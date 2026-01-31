@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from functools import cached_property
+from functools import cached_property  # pylint: disable=hass-deprecated-import
 import logging
 from pathlib import Path
 import shutil
@@ -17,7 +17,9 @@ from homeassistant.components.file_upload import process_uploaded_file
 from homeassistant.config_entries import (
     SOURCE_IMPORT,
     ConfigEntry,
+    ConfigEntryBaseFlow,
     ConfigFlow,
+    ConfigFlowResult,
     OptionsFlowWithConfigEntry,
 )
 from homeassistant.const import (
@@ -30,9 +32,10 @@ from homeassistant.const import (
     UnitOfSpeed,
 )
 from homeassistant.core import State, callback
-from homeassistant.data_entry_flow import FlowHandler, FlowResult
 from homeassistant.helpers.selector import (
     BooleanSelector,
+    DurationSelector,
+    DurationSelectorConfig,
     EntitySelector,
     EntitySelectorConfig,
     FileSelector,
@@ -54,9 +57,12 @@ from .const import (
     ATTR_LON,
     CONF_ALL_STATES,
     CONF_DRIVING_SPEED,
+    CONF_END_DRIVING_DELAY,
     CONF_ENTITY,
     CONF_ENTITY_PICTURE,
+    CONF_MAX_SPEED_AGE,
     CONF_REQ_MOVEMENT,
+    CONF_SHOW_UNKNOWN_AS_0,
     CONF_USE_PICTURE,
     DOMAIN,
     MIME_TO_SUFFIX,
@@ -77,7 +83,10 @@ def split_conf(conf: dict[str, Any]) -> dict[str, dict[str, Any]]:
                 (
                     CONF_ENTITY_ID,
                     CONF_REQ_MOVEMENT,
+                    CONF_MAX_SPEED_AGE,
+                    CONF_SHOW_UNKNOWN_AS_0,
                     CONF_DRIVING_SPEED,
+                    CONF_END_DRIVING_DELAY,
                     CONF_ENTITY_PICTURE,
                 ),
             ),
@@ -85,7 +94,7 @@ def split_conf(conf: dict[str, Any]) -> dict[str, dict[str, Any]]:
     }
 
 
-class CompositeFlow(FlowHandler):
+class CompositeFlow(ConfigEntryBaseFlow):
     """Composite flow mixin."""
 
     @cached_property
@@ -103,9 +112,11 @@ class CompositeFlow(FlowHandler):
         """Return real path to "/local/uploaded" directory."""
         return self._local_dir / "uploaded"
 
-    @cached_property
     def _local_files(self) -> list[str]:
-        """Return a list of files in "/local" and subdirectories."""
+        """Return a list of files in "/local" and subdirectories.
+
+        Must be called in an executor since it does file I/O.
+        """
         if not (local_dir := self._local_dir).is_dir():
             _LOGGER.debug("/local directory (%s) does not exist", local_dir)
             return []
@@ -171,14 +182,14 @@ class CompositeFlow(FlowHandler):
     def _save_uploaded_file(self, uploaded_file_id: str) -> str:
         """Save uploaded file.
 
-        Must be called in an executor.
+        Must be called in an executor since it does file I/O.
 
         Returns name of file relative to "/local".
         """
         with process_uploaded_file(self.hass, uploaded_file_id) as uf_path:
             ud = self._uploaded_dir
             ud.mkdir(parents=True, exist_ok=True)
-            suffix = MIME_TO_SUFFIX[filetype.guess_mime(uf_path)]
+            suffix = MIME_TO_SUFFIX[cast(str, filetype.guess_mime(uf_path))]
             fn = ud / f"x.{suffix}"
             idx = 0
             while (uf := fn.with_stem(f"image{idx:03d}")).exists():
@@ -188,20 +199,33 @@ class CompositeFlow(FlowHandler):
 
     async def async_step_options(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Get config options."""
         errors = {}
 
         if user_input is not None:
             self.options[CONF_REQ_MOVEMENT] = user_input[CONF_REQ_MOVEMENT]
+            if user_input[CONF_SHOW_UNKNOWN_AS_0]:
+                self.options[CONF_SHOW_UNKNOWN_AS_0] = True
+            elif CONF_SHOW_UNKNOWN_AS_0 in self.options:
+                # For backward compatibility, represent False as the absence of the
+                # option.
+                del self.options[CONF_SHOW_UNKNOWN_AS_0]
+            if CONF_MAX_SPEED_AGE in user_input:
+                self.options[CONF_MAX_SPEED_AGE] = user_input[CONF_MAX_SPEED_AGE]
+            elif CONF_MAX_SPEED_AGE in self.options:
+                del self.options[CONF_MAX_SPEED_AGE]
             if CONF_DRIVING_SPEED in user_input:
                 self.options[CONF_DRIVING_SPEED] = SpeedConverter.convert(
                     user_input[CONF_DRIVING_SPEED],
                     self._speed_uom,
                     UnitOfSpeed.METERS_PER_SECOND,
                 )
-            elif CONF_DRIVING_SPEED in self.options:
-                del self.options[CONF_DRIVING_SPEED]
+            else:
+                if CONF_DRIVING_SPEED in self.options:
+                    del self.options[CONF_DRIVING_SPEED]
+                if CONF_END_DRIVING_DELAY in self.options:
+                    del self.options[CONF_END_DRIVING_DELAY]
             prv_cfgs = {
                 cfg[CONF_ENTITY]: cfg for cfg in self.options.get(CONF_ENTITY_ID, [])
             }
@@ -218,6 +242,8 @@ class CompositeFlow(FlowHandler):
             ]
             self.options[CONF_ENTITY_ID] = new_cfgs
             if new_cfgs:
+                if CONF_DRIVING_SPEED in self.options:
+                    return await self.async_step_end_driving_delay()
                 return await self.async_step_ep_menu()
             errors[CONF_ENTITY_ID] = "at_least_one_entity"
 
@@ -245,6 +271,12 @@ class CompositeFlow(FlowHandler):
                     )
                 ),
                 vol.Required(CONF_REQ_MOVEMENT): BooleanSelector(),
+                vol.Required(CONF_SHOW_UNKNOWN_AS_0): BooleanSelector(),
+                vol.Optional(CONF_MAX_SPEED_AGE): DurationSelector(
+                    DurationSelectorConfig(
+                        enable_day=False, enable_millisecond=False, allow_negative=False
+                    )
+                ),
                 vol.Optional(CONF_DRIVING_SPEED): NumberSelector(
                     NumberSelectorConfig(
                         unit_of_measurement=self._speed_uom,
@@ -257,7 +289,10 @@ class CompositeFlow(FlowHandler):
             suggested_values = {
                 CONF_ENTITY_ID: self._entity_ids,
                 CONF_REQ_MOVEMENT: self.options[CONF_REQ_MOVEMENT],
+                CONF_SHOW_UNKNOWN_AS_0: self.options.get(CONF_SHOW_UNKNOWN_AS_0, False),
             }
+            if CONF_MAX_SPEED_AGE in self.options:
+                suggested_values[CONF_MAX_SPEED_AGE] = self.options[CONF_MAX_SPEED_AGE]
             if CONF_DRIVING_SPEED in self.options:
                 suggested_values[CONF_DRIVING_SPEED] = SpeedConverter.convert(
                     self.options[CONF_DRIVING_SPEED],
@@ -271,7 +306,42 @@ class CompositeFlow(FlowHandler):
             step_id="options", data_schema=data_schema, errors=errors, last_step=False
         )
 
-    async def async_step_ep_menu(self, _: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_end_driving_delay(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Get end driving delay."""
+        if user_input is not None:
+            if CONF_END_DRIVING_DELAY in user_input:
+                self.options[CONF_END_DRIVING_DELAY] = user_input[
+                    CONF_END_DRIVING_DELAY
+                ]
+            elif CONF_END_DRIVING_DELAY in self.options:
+                del self.options[CONF_END_DRIVING_DELAY]
+            return await self.async_step_ep_menu()
+
+        data_schema = vol.Schema(
+            {
+                vol.Optional(CONF_END_DRIVING_DELAY): DurationSelector(
+                    DurationSelectorConfig(
+                        enable_day=False, enable_millisecond=False, allow_negative=False
+                    )
+                ),
+            }
+        )
+        if CONF_END_DRIVING_DELAY in self.options:
+            suggested_values = {
+                CONF_END_DRIVING_DELAY: self.options[CONF_END_DRIVING_DELAY]
+            }
+            data_schema = self.add_suggested_values_to_schema(
+                data_schema, suggested_values
+            )
+        return self.async_show_form(
+            step_id="end_driving_delay", data_schema=data_schema, last_step=False
+        )
+
+    async def async_step_ep_menu(
+        self, _: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Specify where to get composite's picture from."""
         entity_id, local_file = self._cur_entity_picture
         cur_source: Path | str | None
@@ -281,7 +351,7 @@ class CompositeFlow(FlowHandler):
             cur_source = entity_id
 
         menu_options = ["all_states", "ep_upload_file", "ep_input_entity"]
-        if self._local_files:
+        if await self.hass.async_add_executor_job(self._local_files):
             menu_options.insert(1, "ep_local_file")
         if cur_source:
             menu_options.append("ep_none")
@@ -294,7 +364,7 @@ class CompositeFlow(FlowHandler):
 
     async def async_step_ep_input_entity(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Specify which input to get composite's picture from."""
         if user_input is not None:
             self._set_entity_picture(entity_id=user_input.get(CONF_ENTITY))
@@ -323,13 +393,13 @@ class CompositeFlow(FlowHandler):
 
     async def async_step_ep_local_file(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Specify a local file for composite's picture."""
         if user_input is not None:
             self._set_entity_picture(local_file=user_input.get(CONF_ENTITY_PICTURE))
             return await self.async_step_all_states()
 
-        local_files = self._local_files
+        local_files = await self.hass.async_add_executor_job(self._local_files)
         _, local_file = self._cur_entity_picture
         if local_file and local_file not in local_files:
             local_files.append(local_file)
@@ -340,7 +410,7 @@ class CompositeFlow(FlowHandler):
                         options=local_files,
                         mode=SelectSelectorMode.DROPDOWN,
                     )
-                )
+                ),
             }
         )
         if local_file:
@@ -353,21 +423,31 @@ class CompositeFlow(FlowHandler):
 
     async def async_step_ep_upload_file(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Upload a file for composite's picture."""
         if user_input is not None:
             if (uploaded_file_id := user_input.get(CONF_ENTITY_PICTURE)) is None:
                 self._set_entity_picture()
                 return await self.async_step_all_states()
 
-            local_dir_exists = self._local_dir.is_dir()
-            local_file = await self.hass.async_add_executor_job(
-                self._save_uploaded_file, uploaded_file_id
+            def save_uploaded_file() -> tuple[bool, str]:
+                """Save uploaded file.
+
+                Must be called in an executor since it does file I/O.
+
+                Returns if local directory existed beforehand and name of uploaded file.
+                """
+                local_dir_exists = self._local_dir.is_dir()
+                local_file = self._save_uploaded_file(uploaded_file_id)
+                return local_dir_exists, local_file
+
+            local_dir_exists, local_file = await self.hass.async_add_executor_job(
+                save_uploaded_file
             )
             self._set_entity_picture(local_file=local_file)
-            if local_dir_exists:
-                return await self.async_step_all_states()
-            return await self.async_step_ep_warn()
+            if not local_dir_exists:
+                return await self.async_step_ep_warn()
+            return await self.async_step_all_states()
 
         accept = ", ".join(f".{ext}" for ext in PICTURE_SUFFIXES)
         data_schema = vol.Schema(
@@ -383,7 +463,7 @@ class CompositeFlow(FlowHandler):
 
     async def async_step_ep_warn(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Warn that since "/local" was created system might need to be restarted."""
         if user_input is not None:
             return await self.async_step_all_states()
@@ -394,14 +474,16 @@ class CompositeFlow(FlowHandler):
             last_step=False,
         )
 
-    async def async_step_ep_none(self, _: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_ep_none(
+        self, _: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Set composite's entity picture to none."""
         self._set_entity_picture()
         return await self.async_step_all_states()
 
     async def async_step_all_states(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Specify if all states should be used for appropriate entities."""
         if user_input is not None:
             entity_ids = user_input.get(CONF_ENTITY, [])
@@ -430,7 +512,9 @@ class CompositeFlow(FlowHandler):
         return self.async_show_form(step_id="all_states", data_schema=data_schema)
 
     @abstractmethod
-    async def async_step_done(self, _: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_done(
+        self, _: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Finish the flow."""
 
 
@@ -457,16 +541,14 @@ class CompositeConfigFlow(ConfigFlow, CompositeFlow, domain=DOMAIN):
     @callback
     def async_supports_options_flow(cls, config_entry: ConfigEntry) -> bool:
         """Return options flow support for this handler."""
-        if config_entry.source == SOURCE_IMPORT:
-            return False
-        return True
+        return config_entry.source != SOURCE_IMPORT
 
     @property
     def options(self) -> dict[str, Any]:
         """Return mutable copy of options."""
         return self._options
 
-    async def async_step_import(self, data: dict[str, Any]) -> FlowResult:
+    async def async_step_import(self, data: dict[str, Any]) -> ConfigFlowResult:
         """Import config entry from configuration."""
         if (driving_speed := data.get(CONF_DRIVING_SPEED)) is not None:
             data[CONF_DRIVING_SPEED] = SpeedConverter.convert(
@@ -483,7 +565,9 @@ class CompositeConfigFlow(ConfigFlow, CompositeFlow, domain=DOMAIN):
             **split_conf(data),  # type: ignore[arg-type]
         )
 
-    async def async_step_user(self, _: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_user(
+        self, _: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Start user config flow."""
         return await self.async_step_name()
 
@@ -499,7 +583,7 @@ class CompositeConfigFlow(ConfigFlow, CompositeFlow, domain=DOMAIN):
 
     async def async_step_name(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Get name."""
         errors = {}
 
@@ -517,7 +601,9 @@ class CompositeConfigFlow(ConfigFlow, CompositeFlow, domain=DOMAIN):
             step_id="name", data_schema=data_schema, errors=errors, last_step=False
         )
 
-    async def async_step_done(self, _: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_done(
+        self, _: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Finish the flow."""
         return self.async_create_entry(title=self._name, data={}, options=self.options)
 
@@ -525,6 +611,8 @@ class CompositeConfigFlow(ConfigFlow, CompositeFlow, domain=DOMAIN):
 class CompositeOptionsFlow(OptionsFlowWithConfigEntry, CompositeFlow):
     """Composite integration options flow."""
 
-    async def async_step_done(self, _: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_done(
+        self, _: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Finish the flow."""
         return self.async_create_entry(title="", data=self.options)

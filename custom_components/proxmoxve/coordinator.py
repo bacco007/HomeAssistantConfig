@@ -3,25 +3,25 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
+from homeassistant.const import CONF_HOST, CONF_USERNAME
+from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import issue_registry as ir
+from homeassistant.helpers.typing import UNDEFINED, UndefinedType
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from proxmoxer import AuthenticationError, ProxmoxAPI
 from proxmoxer.core import ResourceException
 from requests.exceptions import (
     ConnectionError as connError,
+)
+from requests.exceptions import (
     ConnectTimeout,
     HTTPError,
     RetryError,
     SSLError,
 )
-
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_HOST, CONF_USERNAME
-from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryAuthFailed
-from homeassistant.helpers import device_registry as dr, issue_registry as ir
-from homeassistant.helpers.typing import UNDEFINED, UndefinedType
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import get_api
 from .const import CONF_NODE, DOMAIN, LOGGER, UPDATE_INTERVAL, ProxmoxType
@@ -32,7 +32,12 @@ from .models import (
     ProxmoxStorageData,
     ProxmoxUpdateData,
     ProxmoxVMData,
+    ProxmoxZFSData,
 )
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
 
 
 class ProxmoxCoordinator(
@@ -59,7 +64,6 @@ class ProxmoxNodeCoordinator(ProxmoxCoordinator):
         node_name: str,
     ) -> None:
         """Initialize the Proxmox Node coordinator."""
-
         super().__init__(
             hass,
             LOGGER,
@@ -75,7 +79,6 @@ class ProxmoxNodeCoordinator(ProxmoxCoordinator):
 
     async def _async_update_data(self) -> ProxmoxNodeData:
         """Update data  for Proxmox Node."""
-
         api_path = "nodes"
         node_status = ""
         node_api = {}
@@ -109,9 +112,8 @@ class ProxmoxNodeCoordinator(ProxmoxCoordinator):
                 self.resource_id,
             )
             if api_status is None:
-                raise UpdateFailed(
-                    f"Node {self.resource_id} unable to be found in host {self.config_entry.data[CONF_HOST]}"
-                )
+                msg = f"Node {self.resource_id} unable to be found in host {self.config_entry.data[CONF_HOST]}"
+                raise UpdateFailed(msg)
 
             api_status["status"] = node_api["status"]
             api_status["cpu"] = node_api["cpu"]
@@ -174,51 +176,74 @@ class ProxmoxNodeCoordinator(ProxmoxCoordinator):
         if node_status != "":
             return ProxmoxNodeData(
                 type=ProxmoxType.Node,
-                model=api_status["cpuinfo"]["model"]
-                if (("cpuinfo" in api_status) and "model" in api_status["cpuinfo"])
-                else UNDEFINED,
+                model=(
+                    api_status["cpuinfo"]["model"]
+                    if (("cpuinfo" in api_status) and "model" in api_status["cpuinfo"])
+                    else UNDEFINED
+                ),
                 status=api_status.get("status", "Offline"),
-                version=api_status["version"].get("version", UNDEFINED)
-                if ("version" in api_status)
-                else UNDEFINED,
+                version=(
+                    api_status["version"].get("version", UNDEFINED)
+                    if ("version" in api_status)
+                    else UNDEFINED
+                ),
                 uptime=api_status.get("uptime", UNDEFINED),
                 cpu=api_status.get("cpu", UNDEFINED),
                 disk_total=api_status.get("disk_max", UNDEFINED),
                 disk_used=api_status.get("disk_used", UNDEFINED),
-                memory_total=api_status["memory"]["total"]
-                if (("memory" in api_status) and "total" in api_status["memory"])
-                else UNDEFINED,
-                memory_used=api_status["memory"]["used"]
-                if (("memory" in api_status) and "used" in api_status["memory"])
-                else UNDEFINED,
-                memory_free=api_status["memory"]["free"]
-                if (("memory" in api_status) and "free" in api_status["memory"])
-                else UNDEFINED,
-                swap_total=api_status["swap"]["total"]
-                if (("swap" in api_status) and "total" in api_status["swap"])
-                else UNDEFINED,
-                swap_free=api_status["swap"]["free"]
-                if (("swap" in api_status) and "free" in api_status["swap"])
-                else UNDEFINED,
-                swap_used=api_status["swap"]["used"]
-                if (("swap" in api_status) and "used" in api_status["swap"])
-                else UNDEFINED,
-                qemu_on=api_status["qemu"]["total"]
-                if (("qemu" in api_status) and "total" in api_status["qemu"])
-                else 0,
-                qemu_on_list=api_status["qemu"]["list"]
-                if (("qemu" in api_status) and "list" in api_status["qemu"])
-                else UNDEFINED,
-                lxc_on=api_status["lxc"]["total"]
-                if (("lxc" in api_status) and "total" in api_status["lxc"])
-                else 0,
-                lxc_on_list=api_status["lxc"]["list"]
-                if (("lxc" in api_status) and "list" in api_status["lxc"])
-                else UNDEFINED,
+                memory_total=(
+                    api_status["memory"]["total"]
+                    if (("memory" in api_status) and "total" in api_status["memory"])
+                    else UNDEFINED
+                ),
+                memory_used=(
+                    api_status["memory"]["used"]
+                    if (("memory" in api_status) and "used" in api_status["memory"])
+                    else UNDEFINED
+                ),
+                memory_free=(
+                    api_status["memory"]["free"]
+                    if (("memory" in api_status) and "free" in api_status["memory"])
+                    else UNDEFINED
+                ),
+                swap_total=(
+                    api_status["swap"]["total"]
+                    if (("swap" in api_status) and "total" in api_status["swap"])
+                    else UNDEFINED
+                ),
+                swap_free=(
+                    api_status["swap"]["free"]
+                    if (("swap" in api_status) and "free" in api_status["swap"])
+                    else UNDEFINED
+                ),
+                swap_used=(
+                    api_status["swap"]["used"]
+                    if (("swap" in api_status) and "used" in api_status["swap"])
+                    else UNDEFINED
+                ),
+                qemu_on=(
+                    api_status["qemu"]["total"]
+                    if (("qemu" in api_status) and "total" in api_status["qemu"])
+                    else 0
+                ),
+                qemu_on_list=(
+                    api_status["qemu"]["list"]
+                    if (("qemu" in api_status) and "list" in api_status["qemu"])
+                    else UNDEFINED
+                ),
+                lxc_on=(
+                    api_status["lxc"]["total"]
+                    if (("lxc" in api_status) and "total" in api_status["lxc"])
+                    else 0
+                ),
+                lxc_on_list=(
+                    api_status["lxc"]["list"]
+                    if (("lxc" in api_status) and "list" in api_status["lxc"])
+                    else UNDEFINED
+                ),
             )
-        raise UpdateFailed(
-            f"Node {self.resource_id} unable to be found in host {self.config_entry.data[CONF_HOST]}"
-        )
+        msg = f"Node {self.resource_id} unable to be found in host {self.config_entry.data[CONF_HOST]}"
+        raise UpdateFailed(msg)
 
 
 class ProxmoxQEMUCoordinator(ProxmoxCoordinator):
@@ -232,7 +257,6 @@ class ProxmoxQEMUCoordinator(ProxmoxCoordinator):
         qemu_id: int,
     ) -> None:
         """Initialize the Proxmox QEMU coordinator."""
-
         super().__init__(
             hass,
             LOGGER,
@@ -248,7 +272,6 @@ class ProxmoxQEMUCoordinator(ProxmoxCoordinator):
 
     async def _async_update_data(self) -> ProxmoxVMData:
         """Update data  for Proxmox QEMU."""
-
         node_name = None
         api_status = None
 
@@ -269,7 +292,7 @@ class ProxmoxQEMUCoordinator(ProxmoxCoordinator):
                     node_name = resource["node"]
 
         if node_name is not None:
-            api_path = f"nodes/{str(node_name)}/qemu/{self.resource_id}/status/current"
+            api_path = f"nodes/{node_name!s}/qemu/{self.resource_id}/status/current"
             api_status = await self.hass.async_add_executor_job(
                 poll_api,
                 self.hass,
@@ -280,27 +303,33 @@ class ProxmoxQEMUCoordinator(ProxmoxCoordinator):
                 self.resource_id,
             )
         else:
-            raise UpdateFailed(f"{self.resource_id} QEMU node not found")
+            msg = f"{self.resource_id} QEMU node not found"
+            raise UpdateFailed(msg)
 
         if api_status is None or "status" not in api_status:
-            raise UpdateFailed(f"QEMU {self.resource_id} unable to be found")
+            msg = f"QEMU {self.resource_id} unable to be found"
+            raise UpdateFailed(msg)
 
         update_device_via(self, ProxmoxType.QEMU, node_name)
         return ProxmoxVMData(
             type=ProxmoxType.QEMU,
             node=node_name,
-            status=api_status["lock"]
-            if ("lock" in api_status and api_status["lock"] == "suspended")
-            else (api_status.get("status", UNDEFINED)),
+            status=(
+                api_status["lock"]
+                if ("lock" in api_status and api_status["lock"] == "suspended")
+                else (api_status.get("status", UNDEFINED))
+            ),
             name=api_status.get("name", UNDEFINED),
             health=api_status.get("qmpstatus", UNDEFINED),
             uptime=api_status.get("uptime", UNDEFINED),
             cpu=api_status.get("cpu", UNDEFINED),
             memory_total=api_status.get("maxmem", UNDEFINED),
             memory_used=api_status.get("mem", UNDEFINED),
-            memory_free=(api_status["maxmem"] - api_status["mem"])
-            if ("maxmem" in api_status and "mem" in api_status)
-            else UNDEFINED,
+            memory_free=(
+                (api_status["maxmem"] - api_status["mem"])
+                if ("maxmem" in api_status and "mem" in api_status)
+                else UNDEFINED
+            ),
             network_in=api_status.get("netin", UNDEFINED),
             network_out=api_status.get("netout", UNDEFINED),
             disk_total=api_status.get("maxdisk", UNDEFINED),
@@ -319,7 +348,6 @@ class ProxmoxLXCCoordinator(ProxmoxCoordinator):
         container_id: int,
     ) -> None:
         """Initialize the Proxmox LXC coordinator."""
-
         super().__init__(
             hass,
             LOGGER,
@@ -335,7 +363,6 @@ class ProxmoxLXCCoordinator(ProxmoxCoordinator):
 
     async def _async_update_data(self) -> ProxmoxLXCData:
         """Update data  for Proxmox LXC."""
-
         node_name = None
         api_status = None
 
@@ -356,7 +383,7 @@ class ProxmoxLXCCoordinator(ProxmoxCoordinator):
                     node_name = resource["node"]
 
         if node_name is not None:
-            api_path = f"nodes/{str(node_name)}/lxc/{self.resource_id}/status/current"
+            api_path = f"nodes/{node_name!s}/lxc/{self.resource_id}/status/current"
             api_status = await self.hass.async_add_executor_job(
                 poll_api,
                 self.hass,
@@ -367,10 +394,12 @@ class ProxmoxLXCCoordinator(ProxmoxCoordinator):
                 self.resource_id,
             )
         else:
-            raise UpdateFailed(f"{self.resource_id} LXC node not found")
+            msg = f"{self.resource_id} LXC node not found"
+            raise UpdateFailed(msg)
 
         if api_status is None or "status" not in api_status:
-            raise UpdateFailed(f"LXC {self.resource_id} unable to be found")
+            msg = f"LXC {self.resource_id} unable to be found"
+            raise UpdateFailed(msg)
 
         update_device_via(self, ProxmoxType.LXC, node_name)
 
@@ -383,18 +412,22 @@ class ProxmoxLXCCoordinator(ProxmoxCoordinator):
             cpu=api_status.get("cpu", UNDEFINED),
             memory_total=api_status.get("maxmem", UNDEFINED),
             memory_used=api_status.get("mem", UNDEFINED),
-            memory_free=(api_status["maxmem"] - api_status["mem"])
-            if ("maxmem" in api_status and "mem" in api_status)
-            else UNDEFINED,
+            memory_free=(
+                (api_status["maxmem"] - api_status["mem"])
+                if ("maxmem" in api_status and "mem" in api_status)
+                else UNDEFINED
+            ),
             network_in=api_status.get("netin", UNDEFINED),
             network_out=api_status.get("netout", UNDEFINED),
             disk_total=api_status.get("maxdisk", UNDEFINED),
             disk_used=api_status.get("disk", UNDEFINED),
             swap_total=api_status.get("maxswap", UNDEFINED),
             swap_used=api_status.get("swap", UNDEFINED),
-            swap_free=(api_status["maxswap"] - api_status["swap"])
-            if ("maxswap" in api_status and "swap" in api_status)
-            else UNDEFINED,
+            swap_free=(
+                (api_status["maxswap"] - api_status["swap"])
+                if ("maxswap" in api_status and "swap" in api_status)
+                else UNDEFINED
+            ),
         )
 
 
@@ -409,7 +442,6 @@ class ProxmoxStorageCoordinator(ProxmoxCoordinator):
         storage_id: str,
     ) -> None:
         """Initialize the Proxmox Storage coordinator."""
-
         super().__init__(
             hass,
             LOGGER,
@@ -425,7 +457,6 @@ class ProxmoxStorageCoordinator(ProxmoxCoordinator):
 
     async def _async_update_data(self) -> ProxmoxStorageData:
         """Update data  for Proxmox Update."""
-
         node_name = None
         api_status = None
 
@@ -441,9 +472,8 @@ class ProxmoxStorageCoordinator(ProxmoxCoordinator):
         )
 
         for resource in resources if resources is not None else []:
-            if "storage" in resource:
-                if resource["id"] == self.resource_id:
-                    node_name = resource["node"]
+            if "storage" in resource and resource["id"] == self.resource_id:
+                node_name = resource["node"]
 
         api_path = "cluster/resources?type=storage"
         api_storages = await self.hass.async_add_executor_job(
@@ -462,10 +492,11 @@ class ProxmoxStorageCoordinator(ProxmoxCoordinator):
                 api_status = api_storage
 
         if api_status is None or "content" not in api_status:
-            raise UpdateFailed(f"Storage {self.resource_id} unable to be found")
+            msg = f"Storage {self.resource_id} unable to be found"
+            raise UpdateFailed(msg)
 
         storage_id = api_status["id"]
-        name = f"Storage {storage_id.replace("storage/", "")}"
+        name = f"Storage {storage_id.replace('storage/', '')}"
         return ProxmoxStorageData(
             type=ProxmoxType.Storage,
             node=node_name,
@@ -473,6 +504,64 @@ class ProxmoxStorageCoordinator(ProxmoxCoordinator):
             disk_total=api_status.get("maxdisk", UNDEFINED),
             disk_used=api_status.get("disk", UNDEFINED),
             content=api_status.get("content", UNDEFINED),
+        )
+
+
+class ProxmoxZFSCoordinator(ProxmoxCoordinator):
+    """Proxmox VE ZFS data update coordinator."""
+
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        proxmox: ProxmoxAPI,
+        api_category: str,
+        node_name: str,
+        zfs_id: str,
+    ) -> None:
+        """Initialize the Proxmox ZFS coordinator."""
+        super().__init__(
+            hass,
+            LOGGER,
+            name=f"proxmox_coordinator_{api_category}_{zfs_id}",
+            update_interval=timedelta(seconds=UPDATE_INTERVAL),
+        )
+
+        self.hass = hass
+        self.config_entry: ConfigEntry = self.config_entry
+        self.proxmox = proxmox
+        self.node_name = node_name
+        self.resource_id = zfs_id
+
+    async def _async_update_data(self) -> ProxmoxStorageData:
+        """Update data for Proxmox Update."""
+        api_path = f"nodes/{self.node_name}/disks/zfs"
+        pools = await self.hass.async_add_executor_job(
+            poll_api,
+            self.hass,
+            self.config_entry,
+            self.proxmox,
+            api_path,
+            ProxmoxType.ZFS,
+            self.resource_id,
+        )
+
+        pool_status = []
+        for pool in pools:
+            if pool["name"] == self.resource_id:
+                pool_status = pool
+
+        if pool_status is None:
+            msg = f"ZFS Pool {self.resource_id} unable to be found for Node {self.node_name}"
+            raise UpdateFailed(msg)
+
+        return ProxmoxZFSData(
+            type=ProxmoxType.ZFS,
+            node=self.node_name,
+            name=f"ZFS Pool {self.resource_id}",
+            health=pool_status.get("health", UNDEFINED),
+            size=pool_status.get("size", UNDEFINED),
+            alloc=pool_status.get("alloc", UNDEFINED),
+            free=pool_status.get("free", UNDEFINED),
         )
 
 
@@ -487,7 +576,6 @@ class ProxmoxUpdateCoordinator(ProxmoxCoordinator):
         node_name: str,
     ) -> None:
         """Initialize the Proxmox Update coordinator."""
-
         super().__init__(
             hass,
             LOGGER,
@@ -503,7 +591,6 @@ class ProxmoxUpdateCoordinator(ProxmoxCoordinator):
 
     async def _async_update_data(self) -> ProxmoxUpdateData:
         """Update data  for Proxmox Update."""
-
         api_path = "nodes"
         node_status = ""
         node_api = {}
@@ -527,7 +614,7 @@ class ProxmoxUpdateCoordinator(ProxmoxCoordinator):
 
         if node_status == "online":
             if self.node_name is not None:
-                api_path = f"nodes/{str(self.node_name)}/apt/update"
+                api_path = f"nodes/{self.node_name!s}/apt/update"
                 api_status = await self.hass.async_add_executor_job(
                     poll_api,
                     self.hass,
@@ -538,7 +625,8 @@ class ProxmoxUpdateCoordinator(ProxmoxCoordinator):
                     self.resource_id,
                 )
             else:
-                raise UpdateFailed(f"{self.resource_id} node not found")
+                msg = f"{self.resource_id} node not found"
+                raise UpdateFailed(msg)
 
         if api_status is None:
             return ProxmoxUpdateData(
@@ -578,7 +666,6 @@ class ProxmoxDiskCoordinator(ProxmoxCoordinator):
         disk_id: str,
     ) -> None:
         """Initialize the Proxmox Disk coordinator."""
-
         super().__init__(
             hass,
             LOGGER,
@@ -607,9 +694,8 @@ class ProxmoxDiskCoordinator(ProxmoxCoordinator):
 
     async def _async_update_data(self) -> ProxmoxDiskData:
         """Update data  for Proxmox Disk."""
-
         if self.node_name is not None:
-            api_path = f"nodes/{str(self.node_name)}/disks/list"
+            api_path = f"nodes/{self.node_name}/disks/list"
             api_status = await self.hass.async_add_executor_job(
                 poll_api,
                 self.hass,
@@ -620,13 +706,15 @@ class ProxmoxDiskCoordinator(ProxmoxCoordinator):
                 self.resource_id,
             )
         else:
-            raise UpdateFailed(f"{self.resource_id} node not found")
+            msg = f"{self.resource_id} node not found"
+            raise UpdateFailed(msg)
 
         if api_status is None:
             return ProxmoxDiskData(
                 type=ProxmoxType.Disk,
                 node=self.node_name,
-                path=self.resource_id,
+                disk_id=self.resource_id,
+                path=None,
                 disk_wearout=UNDEFINED,
                 vendor=None,
                 serial=None,
@@ -644,9 +732,13 @@ class ProxmoxDiskCoordinator(ProxmoxCoordinator):
             )
 
         for disk in api_status:
-            if disk["devpath"] == self.resource_id:
+            if (
+                ("wwn" in disk and disk["wwn"] == self.resource_id)
+                or ("by_id_link" in disk and disk["by_id_link"] == self.resource_id)
+                or ("serial" in disk and disk["serial"] == self.resource_id)
+            ):
                 disk_attributes = {}
-                api_path = f"nodes/{self.node_name}/disks/smart?disk={self.resource_id}"
+                api_path = f"nodes/{self.node_name}/disks/smart?disk={disk["devpath"]}"
                 try:
                     disk_attributes_api = await self.hass.async_add_executor_job(
                         poll_api,
@@ -722,26 +814,31 @@ class ProxmoxDiskCoordinator(ProxmoxCoordinator):
                 return ProxmoxDiskData(
                     type=ProxmoxType.Disk,
                     node=self.node_name,
-                    path=self.resource_id,
+                    disk_id=self.resource_id,
+                    path=disk["devpath"],
                     vendor=disk.get("vendor", None),
                     serial=disk.get("serial", None),
                     model=disk.get("model", None),
                     disk_type=disk_type,
-                    disk_wearout=float(disk["wearout"])
-                    if (
-                        "wearout" in disk
-                        and disk_type.upper() in ("SSD", "NVME")
-                        and str(disk["wearout"]).upper() != "N/A"
-                    )
-                    else UNDEFINED,
+                    disk_wearout=(
+                        float(disk["wearout"])
+                        if (
+                            "wearout" in disk
+                            and disk_type.upper() in ("SSD", "NVME")
+                            and str(disk["wearout"]).upper() != "N/A"
+                        )
+                        else UNDEFINED
+                    ),
                     size=float(disk["size"]) if "size" in disk else UNDEFINED,
                     health=disk.get("health", UNDEFINED),
-                    disk_rpm=float(disk["rpm"])
-                    if (
-                        "rpm" in disk
-                        and disk_type.upper() not in ("SSD", "NVME", "USB", None)
-                    )
-                    else UNDEFINED,
+                    disk_rpm=(
+                        float(disk["rpm"])
+                        if (
+                            "rpm" in disk
+                            and disk_type.upper() not in ("SSD", "NVME", "USB", None)
+                        )
+                        else UNDEFINED
+                    ),
                     temperature_air=disk_attributes.get("temperature_air", UNDEFINED),
                     temperature=disk_attributes.get("temperature", UNDEFINED),
                     power_cycles=disk_attributes.get("power_cycles", UNDEFINED),
@@ -750,9 +847,8 @@ class ProxmoxDiskCoordinator(ProxmoxCoordinator):
                     power_loss=disk_attributes.get("power_loss", UNDEFINED),
                 )
 
-        raise UpdateFailed(
-            f"Disk {self.resource_id} not found on node {self.node_name}."
-        )
+        msg = f"Disk {self.resource_id} not found on node {self.node_name}."
+        raise UpdateFailed(msg)
 
 
 def update_device_via(
@@ -808,7 +904,7 @@ def poll_api(
     def permission_to_resource(
         api_category: ProxmoxType,
         resource_id: int | str | None = None,
-    ):
+    ) -> str:
         """Return the permissions required for the resource."""
         match api_category:
             case ProxmoxType.Node:
@@ -848,7 +944,7 @@ def poll_api(
                 severity=ir.IssueSeverity.ERROR,
                 translation_key="resource_exception_forbiden",
                 translation_placeholders={
-                    "resource": f"{api_category.capitalize()} {resource_id.replace(f"{ProxmoxType.Update.capitalize()} ", "")}",
+                    "resource": f"{api_category.capitalize()} {resource_id.replace(f'{ProxmoxType.Update.capitalize()} ', '')}",
                     "user": config_entry.data[CONF_USERNAME],
                     "permission": permission_to_resource(
                         api_category,

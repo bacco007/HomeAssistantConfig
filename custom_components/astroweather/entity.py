@@ -4,8 +4,6 @@ from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.helpers.entity import Entity
 
 from .const import (
-    ATTRIBUTION_OPEN_METEO,
-    ATTRIBUTION_SEVENTIMER,
     CONF_EXPERIMENTAL_FEATURES,
     CONF_LOCATION_NAME,
     CONF_OPEN_METEO_SERVICE,
@@ -57,10 +55,6 @@ class AstroWeatherEntity(Entity):
 
         attribution = DEFAULT_ATTRIBUTION
 
-        if self.entries.get(CONF_OPEN_METEO_SERVICE) != DISABLED:
-            attribution += ATTRIBUTION_OPEN_METEO
-        if not self.entries.get(CONF_EXPERIMENTAL_FEATURES):
-            attribution += ATTRIBUTION_SEVENTIMER
         return {
             ATTR_ATTRIBUTION: attribution,
         }

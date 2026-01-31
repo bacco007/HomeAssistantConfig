@@ -1,0 +1,68 @@
+"""Template for new calendar implementation."""
+from __future__ import annotations
+
+from datetime import datetime, timedelta
+
+from .base import AlternativeTimeSensorBase
+
+
+class TemplateCalendarSensor(AlternativeTimeSensorBase):
+    """Sensor for displaying Template Calendar.
+    
+    This is a template for creating new calendar implementations.
+    Copy this file and modify it for your specific calendar system.
+    """
+
+    def __init__(self, base_name: str) -> None:
+        """Initialize the template calendar sensor.
+        
+        Args:
+            base_name: The base name for the sensor entity
+        """
+        # Call parent constructor with:
+        # - base_name: from parameter
+        # - sensor_type: unique identifier for this sensor (used in entity_id)
+        # - friendly_name: display name in the UI
+        super().__init__(base_name, "template_calendar", "Template Calendar")
+        
+        # Set the icon (use appropriate Material Design Icon)
+        self._attr_icon = "mdi:calendar"
+        
+        # Set update interval based on calendar precision needs:
+        # - timedelta(seconds=1) for second precision
+        # - timedelta(minutes=1) for minute precision
+        # - timedelta(hours=1) for daily calendars
+        self._update_interval = timedelta(hours=1)
+        
+        # Initialize any calendar-specific data here
+        self.months = ["Month1", "Month2", "Month3"]
+        self.weekdays = ["Day1", "Day2", "Day3"]
+        
+        # Add any other initialization needed
+
+    def calculate_time(self) -> str:
+        """Calculate current time in the template calendar.
+        
+        This method is called based on the update_interval to calculate
+        the current time/date in your calendar system.
+        
+        Returns:
+            A string representation of the current time/date
+        """
+        now = datetime.now()
+        
+        # Your calendar calculation logic here
+        # Example:
+        year = now.year - 1900  # Adjust epoch as needed
+        month = self.months[now.month - 1]
+        day = now.day
+        
+        # Format and return the result
+        # Keep it concise but informative
+        return f"Year {year}, {day} {month}"
+        
+    # Optional: Override async_added_to_hass if you need special initialization
+    # async def async_added_to_hass(self) -> None:
+    #     """When entity is added to hass."""
+    #     # Do any async initialization here
+    #     await super().async_added_to_hass()

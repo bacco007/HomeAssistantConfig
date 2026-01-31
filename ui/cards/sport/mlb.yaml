@@ -23,6 +23,7 @@ cards:
         template: sports_card
         variables:
           - entity: sensor.upcoming_sport_mlb_all_teams
+          - calendar: calendar.ical_mlb_all_teams
       - type: custom:mushroom-chips-card
         alignment: center
         card_mod:
@@ -138,7 +139,7 @@ cards:
               {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
               {%- endif -%}
               {%- endfor -%}
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {
@@ -212,7 +213,7 @@ cards:
               action: none
             icon: mdi:list-box-outline
             content: NL, Central Standings
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {
@@ -268,7 +269,7 @@ cards:
               {{x['team']['displayName']}}, {{x['stats']|selectattr("abbreviation", "eq", "PCT")|map(attribute="displayValue")|first}}%
               {%- endif -%}
               {%- endfor -%}
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {
@@ -331,6 +332,7 @@ cards:
         template: sports_card
         variables:
           - entity: sensor.upcoming_sport_new_york_yankees
+          - calendar: calendar.ical_new_york_yankees
       - type: custom:mushroom-chips-card
         alignment: center
         card_mod:
@@ -350,7 +352,7 @@ cards:
           - type: template
             icon: mdi:calendar-alert
             content: Calendar
-            card_mod: &style
+            card_mod:
               style:
                 .: |
                   ha-card {

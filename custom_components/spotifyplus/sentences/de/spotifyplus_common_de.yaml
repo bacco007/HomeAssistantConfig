@@ -1,0 +1,460 @@
+# ============================================================================
+# SpotifyPlus Integration allgemeine Antworten, Listen, Erweiterungsregeln, etc.
+#
+# Ort: custom_sentences/de/spotifyplus_common_de.yaml
+# Sprache: de, Deutsch
+# ============================================================================
+language: de
+responses:
+
+  # ============================================================================
+  # SpotifyPlus Plattform-Antworten.
+  #
+  # Beachten Sie, dass die HA-Konversationsintegration dieses Konzept nicht versteht,
+  # da diese Funktionalität einzigartig für UNSERE Integration ist. Daher müssen Sie
+  # die Integration neu laden (oder HA neu starten), damit Änderungen an diesen
+  # Nachrichten wirksam werden.
+  # ============================================================================
+  spotifyplus:
+
+    # Allgemeine Fehlermeldungen.
+    error_unhandled: "Ein unerwarteter Fehler ist aufgetreten:\n\n{{ slots.error_info.text }}"
+    error_failed_to_handle: "Absicht konnte nicht verarbeitet werden:\n\n{{ slots.error_info.text }}"
+    error_media_type_invalid: "Medientyp-Wert \"{{ slots.spotifyplus_media_type.text }}\" ({{ slots.spotifyplus_media_type.value }}) wurde nicht erkannt."
+    error_player_deck_control_invalid: "Player-Steuerungswert \"{{ slots.spotifyplus_player_deck_control.text }}\" ({{ slots.spotifyplus_player_deck_control.value }}) wurde nicht erkannt."
+    error_player_volume_control_invalid: "Player-Lautstärkereglerwert \"{{ slots.spotifyplus_player_volume_control.text }}\" ({{ slots.spotifyplus_player_volume_control.value }}) wurde nicht erkannt."
+    error_search_play_control_invalid: "Such-Wiedergabe-Steuerungswert \"{{ slots.spotifyplus_search_play_control.text }}\" ({{ slots.spotifyplus_search_play_control.value }}) wurde nicht erkannt."
+    error_search_no_criteria: "Suchkriterien nicht angegeben für Such-Wiedergabe-Steuerungstyp \"{{ slots.spotifyplus_search_play_control.text }}\" ({{ slots.spotifyplus_search_play_control.value }})."
+
+    # Nachrichten zu Informationsanfragen.
+    get_info_artist_bio: "Künstlerbiografie für \"{{ slots.artist_title.text }}\" ... \n\n{{ slots.artist_bio.text | truncate(400, end=' ...') }}\n\n[mehr Infos unter {{ slots.artist_url.text }}]({{ slots.artist_url.value }})"
+
+    # Nachrichten zur Favoritenverwaltung.
+    favorite_operation_invalid: "Favoriten-Operationstyp war ungültig: \"{{ slots.favorite_operator.text }}\"."
+    favorite_add_remove_album_ok: "Okay, {{ slots.favorite_operator.text }} des Spotify-Albumfavoriten \"{{ slots.album_title.text }}\" von Künstler \"{{ slots.artist_title.text }}\" war erfolgreich."
+    favorite_add_remove_artist_ok: "Okay, {{ slots.favorite_operator.text }} des Spotify-Künstlerfavoriten \"{{ slots.artist_title.text }}\" war erfolgreich."
+    favorite_add_remove_audiobook_ok: "Okay, {{ slots.favorite_operator.text }} des Spotify-Hörbuchfavoriten \"{{ slots.audiobook_title.text }}\" von Autor \"{{ slots.author_title.text }}\" war erfolgreich."
+    favorite_add_remove_playlist_ok: "Okay, {{ slots.favorite_operator.text }} des Spotify-Playlistfavoriten \"{{ slots.playlist_title.text }}\" war erfolgreich."
+    favorite_add_remove_podcast_ok: "Okay, {{ slots.favorite_operator.text }} des Spotify-Podcastfavoriten \"{{ slots.podcast_title.text }}\" war erfolgreich."
+    favorite_add_remove_podcast_episode_ok: "Okay, {{ slots.favorite_operator.text }} des Spotify-Episodenfavoriten \"{{ slots.episode_title.text }}\" aus Podcast \"{{ slots.podcast_title.text }}\" war erfolgreich."
+    favorite_add_remove_track_ok: "Okay, {{ slots.favorite_operator.text }} des Spotify-Titelfavoriten \"{{ slots.track_title.text }}\" von Künstler \"{{ slots.artist_title.text }}\" war erfolgreich."
+
+    # Nachrichten zu "Jetzt läuft"-Informationen.
+    nowplaying_info_album: "Media Player spielt einen Titel vom Album \"{{ slots.album_title.text }}\" von Künstler \"{{ slots.artist_title.text }}\".\n\n[mehr Infos unter {{ slots.album_url.text }}]({{ slots.album_url.value }})"
+    nowplaying_info_audiobook: "Media Player spielt \"{{ slots.chapter_title.text }}\" aus dem Hörbuch \"{{ slots.audiobook_title.text }}\" von Autor \"{{ slots.author_title.text }}\".\n\n[mehr Infos unter {{ slots.audiobook_url.text }}]({{ slots.audiobook_url.value }})"
+    nowplaying_info_playlist: "Media Player spielt einen Titel aus der Playlist \"{{ slots.playlist_title.text }}\".\n\n[mehr Infos unter {{ slots.playlist_url.text }}]({{ slots.playlist_url.value }})"
+    nowplaying_info_podcast: "Media Player spielt die Episode \"{{ slots.episode_title.text }}\" aus dem Podcast \"{{ slots.podcast_title.text }}\".\n\n[mehr Infos unter {{ slots.podcast_url.text }}]({{ slots.podcast_url.value }})"
+    nowplaying_info_podcast_episode: "Media Player spielt die Episode \"{{ slots.episode_title.text }}\" aus dem Podcast \"{{ slots.podcast_title.text }}\".\n\n[mehr Infos unter {{ slots.episode_url.text }}]({{ slots.episode_url.value }})"
+    nowplaying_info_track: "Media Player spielt den Titel \"{{ slots.track_title.text }}\" vom Album \"{{ slots.album_title.text }}\" von Künstler \"{{ slots.artist_title.text }}\".\n\n[mehr Infos unter {{ slots.album_url.text }}]({{ slots.album_url.value }})"
+    nowplaying_no_media_album: "SpotifyPlus Media Player spielt derzeit keine Medien, die Album-Informationen enthalten."
+    nowplaying_no_media_artist: "SpotifyPlus Media Player spielt derzeit keine Medien, die Künstler-Informationen enthalten."
+    nowplaying_no_media_audiobook: "SpotifyPlus Media Player spielt derzeit keine Medien, die Hörbuch-Informationen enthalten."
+    nowplaying_no_media_playlist: "SpotifyPlus Media Player spielt derzeit keine Medien, die Playlist-Informationen enthalten."
+    nowplaying_no_media_podcast: "SpotifyPlus Media Player spielt derzeit keine Medien, die Podcast-Informationen enthalten."
+    nowplaying_no_media_podcast_episode: "SpotifyPlus Media Player spielt derzeit keine Medien, die Podcast-Episoden-Informationen enthalten."
+    nowplaying_no_media_track: "SpotifyPlus Media Player spielt derzeit keine Medien, die Titel-Informationen enthalten."
+
+    # Media-Player-bezogene Nachrichten.
+    play_album_with_artist: "Spiele Spotify-Album \"{{ slots.album_title.text }}\" von Künstler \"{{ slots.artist_title.text }}\"."
+    play_album: "Spiele Spotify-Album \"{{ slots.album_title.text }}\"."
+    play_audiobook: "Spiele Spotify-Hörbuch \"{{ slots.audiobook_title.text }}\"."
+    play_audiobook_with_author: "Spiele Spotify-Hörbuch \"{{ slots.audiobook_title.text }}\" von Autor \"{{ slots.author_title.text }}\"."
+    play_favorite_tracks: "Spiele Spotify-Favoriten."
+    play_favorite_tracks_for_artist: "Spiele Spotify-Favoriten für Künstler \"{{ slots.artist_title.text }}\"."
+    play_playlist: "Spiele Spotify-Playlist \"{{ slots.playlist_title.text }}\"."
+    play_podcast: "Spiele Spotify-Podcast \"{{ slots.podcast_title.text }}\"."
+    play_podcast_episode: "Spiele Spotify-Episode \"{{ slots.episode_title.text }}\" aus Podcast \"{{ slots.podcast_title.text }}\"."
+    play_track_with_artist: "Spiele Spotify-Titel \"{{ slots.track_title.text }}\" von Künstler \"{{ slots.artist_title.text }}\"."
+    play_track: "Spiele Spotify-Titel \"{{ slots.track_title.text }}\"."
+    player_already_playing_media: "Media Player \"{{ slots.target_player.text }}\" spielt bereits Medien ab."
+    player_deck_control_pause: "Okay, Spotify hat die Wiedergabe pausiert."
+    player_deck_control_resume: "Okay, Spotify hat die Wiedergabe fortgesetzt."
+    player_deck_control_seek_start: "Okay, Spotify hat den Titel neu gestartet."
+    player_deck_control_skip_next: "Okay, Spotify hat zum nächsten Titel gesprungen."
+    player_deck_control_skip_previous: "Okay, Spotify hat zum vorherigen Titel gesprungen."
+    player_features_not_supported: "Media Player \"{{ slots.name.text }}\" unterstützt die für diese Anfrage erforderlichen Funktionen nicht: \"{{ slots.error_features.text }}\"."
+    player_not_exposed_to_voice: "Media Player \"{{ slots.target_player.text }}\" wurde nicht für den Sprachassistenten freigegeben."
+    player_not_matched: "SpotifyPlus Media Player konnte mit \"{{ slots.target_player.text }}\" nicht gefunden werden."
+    player_not_matched_area: "SpotifyPlus Media Player konnte für den Bereich \"{{ slots.area.text }}\" nicht gefunden werden."
+    player_not_playing_media: "Media Player \"{{ slots.target_player.text }}\" spielt derzeit keine Medien ab."
+    player_not_spotifyplus: "Der gefundene Media Player \"{{ slots.target_player.text }}\" ist kein SpotifyPlus Media Player."
+    player_volume_control_down: "Okay, die Spotify-Lautstärke wurde um {{ slots.player_volume_step_pct.text }} Prozent verringert."
+    player_volume_control_mute: "Okay, die Spotify-Lautstärke wurde stummgeschaltet."
+    player_volume_control_set_step_level: "Okay, die Spotify-Lautstärkeschrittweite ist {{ slots.player_volume_step_pct.text }} Prozent."
+    player_volume_control_set_level: "Okay, die Spotify-Lautstärke wurde auf {{ slots.player_volume_level_pct.text }} Prozent eingestellt."
+    player_volume_control_unmute: "Okay, die Spotify-Lautstärke wurde wiederhergestellt."
+    player_volume_control_up: "Okay, die Spotify-Lautstärke wurde um {{ slots.player_volume_step_pct.text }} Prozent erhöht."
+    playlist_created: "Okay, habe die Spotify-Playlist mit dem Namen \"{{ slots.playlist_title.text }}\" erstellt.\n\n[mehr Infos unter {{ slots.playlist_url.text }}]({{ slots.playlist_url.value }})"
+
+    # Allgemeine Spotify-Informationsnachrichten.
+    spotify_no_artist_info: "Künstlerinformationen für \"{{ slots.artist_name.text }}\" konnten nicht gefunden werden."
+    spotify_search_no_items_album: "Albuminformationen für \"{{ slots.criteria_arg_1.text }}\" konnten nicht gefunden werden. Suchkriterien: \"{{ slots.search_criteria.text }}\"."
+    spotify_search_no_items_audiobook: "Hörbuch-Informationen für \"{{ slots.criteria_arg_1.text }}\" konnten nicht gefunden werden. Suchkriterien: \"{{ slots.search_criteria.text }}\"."
+    spotify_search_no_items_playlist: "Playlist-Informationen für \"{{ slots.criteria_arg_1.text }}\" konnten nicht gefunden werden. Suchkriterien: \"{{ slots.search_criteria.text }}\"."
+    spotify_search_no_items_podcast: "Podcast-Informationen für \"{{ slots.criteria_arg_1.text }}\" konnten nicht gefunden werden. Suchkriterien: \"{{ slots.search_criteria.text }}\"."
+    spotify_search_no_items_podcast_episode: "Episodeninformationen für \"{{ slots.criteria_arg_1.text }}\" konnten nicht gefunden werden. Suchkriterien: \"{{ slots.search_criteria.text }}\"."
+    spotify_search_no_items_track: "Titelinformationen für \"{{ slots.criteria_arg_1.text }}\" konnten nicht gefunden werden. Suchkriterien: \"{{ slots.search_criteria.text }}\"."
+    spotify_premium_required: "Entschuldigung, für die angeforderte Funktion mit dem Media Player \"{{ slots.target_player.text }}\" ist ein Spotify-Premium-Konto erforderlich."
+
+  # ============================================================================
+  # SpotifyPlus generic responses.
+  #
+  # Note that the HA conversation integration does not understand this concept,
+  # as this functionality is unique to OUR integration.  With that said, you
+  # must reload the integration (or restart HA) in order for changes to take
+  # effect for these messages.
+  # ============================================================================
+  generic-response-1: "This is generic response message 1"
+  generic-response-2: "This is generic response message 2"
+  generic-response-3: "This is generic response message 3"
+
+
+  # ============================================================================
+  # Home Assistant error responses.
+  #
+  # The values here will override HA built-in error responses.
+  # They are purposefully designed to be as generic as possible, as they cover
+  # multiple domain / platform types.
+  # ============================================================================
+  errors:
+
+    # Allgemeine Fehler.
+    no_intent: "Entschuldigung, das habe ich nicht verstanden."
+    handle_error: "Ein unerwarteter Fehler ist aufgetreten."
+
+    # Fehler bei der Intent-Zuordnung, wenn Ziele nicht aufgelöst werden können.
+    no_area: "Entschuldigung, ich kenne keinen Bereich namens \"{{ area }}\"."
+    no_floor: "Entschuldigung, ich kenne keine Etage namens \"{{ floor }}\"."
+    no_domain: "Entschuldigung, ich kenne keine \"{{ domain.replace('_', ' ') }}\"."
+    no_domain_in_area: "Entschuldigung, ich kenne keine \"{{ domain.replace('_', ' ') }}\" im Bereich \"{{ area }}\"."
+    no_domain_in_floor: "Entschuldigung, ich kenne keine \"{{ domain.replace('_', ' ') }}\" auf der Etage \"{{ floor }}\"."
+    no_device_class: "Entschuldigung, ich kenne keine \"{{ device_class }}\"."
+    no_device_class_in_area: "Entschuldigung, ich kenne keine \"{{ device_class }}\" im Bereich \"{{ area }}\"."
+    no_device_class_in_floor: "Entschuldigung, ich kenne keine \"{{ device_class }}\" auf der Etage \"{{ floor }}\"."
+    no_entity: "Entschuldigung, ich kenne kein Gerät namens \"{{ entity }}\"."
+    no_entity_in_area: "Entschuldigung, ich kenne kein Gerät namens \"{{ entity }}\" im Bereich \"{{ area }}\"."
+    no_entity_in_floor: "Entschuldigung, ich kenne kein Gerät namens \"{{ entity }}\" auf der Etage \"{{ floor }}\"."
+    entity_wrong_state: "Entschuldigung, kein Gerät ist {{ state | lower }}."
+    feature_not_supported: "Entschuldigung, kein Gerät unterstützt die erforderlichen Funktionen."
+
+    # Fehler bei der Intent-Zuordnung, wenn Ziele aufgelöst werden können, aber nicht für den Sprachassistenten freigegeben sind.
+    no_entity_exposed: "Entschuldigung, \"{{ entity }}\" ist nicht für den Sprachassistenten freigegeben."
+    no_entity_in_area_exposed: "Entschuldigung, \"{{ entity }}\" im Bereich \"{{ area }}\" ist nicht für den Sprachassistenten freigegeben."
+    no_entity_in_floor_exposed: "Entschuldigung, \"{{ entity }}\" auf der Etage \"{{ floor }}\" ist nicht für den Sprachassistenten freigegeben."
+    no_domain_exposed: "Entschuldigung, keine \"{{ domain.replace('_', ' ') }}\" ist für den Sprachassistenten freigegeben."
+    no_domain_in_area_exposed: "Entschuldigung, keine \"{{ domain.replace('_', ' ') }}\" im Bereich \"{{ area }}\" ist für den Sprachassistenten freigegeben."
+    no_domain_in_floor_exposed: "Entschuldigung, keine \"{{ domain.replace('_', ' ') }}\" auf der Etage \"{{ floor }}\" ist für den Sprachassistenten freigegeben."
+    no_device_class_exposed: "Entschuldigung, keine \"{{ device_class }}\" ist für den Sprachassistenten freigegeben."
+    no_device_class_in_area_exposed: "Entschuldigung, keine \"{{ device_class }}\" im Bereich \"{{ area }}\" ist für den Sprachassistenten freigegeben."
+    no_device_class_in_floor_exposed: "Entschuldigung, keine \"{{ device_class }}\" auf der Etage \"{{ floor }}\" ist für den Sprachassistenten freigegeben."
+
+    # Fehler bei der Intent-Zuordnung, wenn mehrere (freigegebene) Geräte denselben Namen haben.
+    duplicate_entities: "Entschuldigung, es gibt mehrere Geräte namens \"{{ entity }}\"."
+    duplicate_entities_in_area: "Entschuldigung, es gibt mehrere Geräte namens \"{{ entity }}\" im Bereich \"{{ area }}\"."
+    duplicate_entities_in_floor: "Entschuldigung, es gibt mehrere Geräte namens \"{{ entity }}\" auf der Etage \"{{ floor }}\"."
+
+
+# ============================================================================
+# SpotifyPlus gemeinsame Listen
+# ============================================================================
+lists:
+
+  freeform:
+    wildcard: true
+  album_name:
+    wildcard: true
+  artist_name:
+    wildcard: true
+  device_name:
+    wildcard: true
+  playlist_name:
+    wildcard: true
+  track_name:
+    wildcard: true
+
+  favorite_operator:
+    # out-Werte müssen englische Werte sein.
+    values:
+      - in: "(hinzufügen|add)"
+        out: "add"
+      - in: "(entfernen|remove)"
+        out: "remove"
+
+  latest_episode:
+    # out values must be English value.
+    values:
+      - in: "(latest|current) episode"
+        out: "on"
+      - in: ""
+        out: "off"
+
+  player_repeat_mode:
+    # out-Werte müssen englische Werte sein.
+    values:
+      - in: "(an|ein|titel)"
+        out: "track"
+      - in: "(kontext|alle|liste)"
+        out: "context"
+      - in: "(aus|deaktiviert)"
+        out: "off"
+
+  player_shuffle_mode:
+    # out-Werte müssen englische Werte sein.
+    values:
+      - in: "(an|ein|aktiviert)"
+        out: "on"
+      - in: "(aus|deaktiviert)"
+        out: "off"
+
+  player_volume_level:
+    values:
+      - in: (max|maximum|höchste)
+        out: 100
+      - in: (min|minimum|niedrigste)
+        out: 1
+
+  player_volume_level_pct:
+    range:
+      type: "percentage"
+      from: 0
+      to: 100
+
+  player_volume_step_pct:
+    range:
+      type: "percentage"
+      from: 1
+      to: 100
+
+  spotifyplus_media_type:
+    # out-Werte müssen englische Werte sein.
+    values:
+      - in: "album"
+        out: "album"
+      - in: "künstler"
+        out: "artist"
+      - in: "hörbuch"
+        out: "audiobook"
+      - in: "playlist"
+        out: "playlist"
+      - in: "(podcast|show) episode"
+        out: "episode"
+      - in: "(podcast|show)"
+        out: "podcast"
+      - in: "(titel|lied|song)"
+        out: "track"
+
+  spotifyplus_player_deck_control:
+    # out-Werte müssen englische Werte sein.
+    values:
+      - in: "(pause|stopp)"
+        out: "pause"
+      - in: "(fortsetzen|start)"
+        out: "resume"
+      - in: "(neustart|von vorne)"
+        out: "seek_start"
+      - in: "(nächster|weiter)"
+        out: "skip_next"
+      - in: "(vorheriger|zurück)"
+        out: "skip_previous"
+
+  spotifyplus_player_volume_control:
+    # out-Werte müssen englische Werte sein.
+    values:
+      - in: "stumm"
+        out: "mute"
+      - in: "laut"
+        out: "unmute"
+      - in: "leiser"
+        out: "step_down"
+      - in: "lauter"
+        out: "step_up"
+      - in: "lautstärke schritt auf {player_volume_step_pct} [prozent|%]"
+        out: "set_step_level"
+      - in: "lautstärke auf {player_volume_level_pct} [prozent|%]"
+        out: "set_level"
+
+  spotifyplus_search_play_control_multi:
+    # out-Werte müssen englische Werte sein.
+    values:
+      - in: "episode"
+        out: "podcast_episode"
+      - in: "künstler album"
+        out: "artist_album"
+      - in: "künstler (titel|lied|song)"
+        out: "artist_track"
+
+  spotifyplus_search_play_control_single:
+    # out-Werte müssen englische Werte sein.
+    values:
+      - in: "album [{spotifyplus_album_names:criteria_arg_1}]"
+        out: "album"
+      - in: "hörbuch [{spotifyplus_audiobook_names:criteria_arg_1}]"
+        out: "audiobook"
+      - in: "playlist [{spotifyplus_playlist_names:criteria_arg_1}]"
+        out: "playlist"
+      - in: "(podcast|show) [{spotifyplus_podcast_names:criteria_arg_1}] [{latest_episode}]"
+        out: "podcast"
+      - in: "(beliebte songs|beliebte lieder|Favoriten Titel)"
+        out: "favorite_tracks"
+      - in: "(beliebte songs|beliebte lieder|Favoriten Titel) von künstler {spotifyplus_artist_names:criteria_arg_1}"
+        out: "favorite_tracks_artist"
+      - in: "(titel|lied|song) [{spotifyplus_track_names:criteria_arg_1}]"
+        out: "track"
+
+  # --------------------------------------------------------------------------------------
+  # SpotifyPlus sprachfreundliche Album-Identifikatoren.
+  #
+  # Diese Liste wird hauptsächlich verwendet, um Spotify-Alben zu identifizieren, die
+  # bei einem gesprochenen Satz falsch interpretiert werden, oder wenn Sie ein
+  # bestimmtes Album von mehreren Album-Versionen wünschen.
+  #
+  #  in: Sprachfreundlicher Identifikator.
+  # out: Spotify-Album-URI-Wert.
+  # --------------------------------------------------------------------------------------
+  spotifyplus_album_names:
+    values:
+      - in: "Test Listeneintrag"
+        out: "spotify:album:4guAwaniEAEQSW0NCpo4gm" # Journey, 2022 Remaster
+      - in: "Escape"
+        out: "spotify:album:4guAwaniEAEQSW0NCpo4gm" # Journey, 2022 Remaster
+      - in: "Escape 1981"
+        out: "spotify:album:0gHmMKZ9s3ztqeMfAzwxRL" # Journey, 1981 Live, Escape Tour
+
+  # --------------------------------------------------------------------------------------
+  # SpotifyPlus sprachfreundliche Künstler-Identifikatoren.
+  #
+  # Diese Liste wird hauptsächlich verwendet, um Spotify-Künstler zu identifizieren, die
+  # bei einem gesprochenen Satz falsch interpretiert werden, oder wenn Sie einen
+  # bestimmten Künstler von mehreren Künstler-Versionen wünschen.
+  #
+  #  in: Sprachfreundlicher Identifikator.
+  # out: Spotify-Künstler-URI-Wert.
+  # --------------------------------------------------------------------------------------
+  spotifyplus_artist_names:
+    values:
+      - in: "Test Listeneintrag"
+        out: "spotify:artist:6kFLnclYFc3gzpNt13wim5"  # Seventh Day Slumber
+
+  # --------------------------------------------------------------------------------------
+  # SpotifyPlus sprachfreundliche Hörbuch-Identifikatoren.
+  #
+  # Diese Liste wird hauptsächlich verwendet, um Spotify-Hörbücher zu identifizieren, die
+  # bei einem gesprochenen Satz falsch interpretiert werden, oder wenn Sie ein
+  # bestimmtes Hörbuch von mehreren Hörbuch-Versionen wünschen.
+  #
+  #  in: Sprachfreundlicher Identifikator.
+  # out: Spotify-Hörbuch-URI-Wert.
+  # --------------------------------------------------------------------------------------
+  spotifyplus_audiobook_names:
+    values:
+      - in: "Test Listeneintrag"
+        out: "spotify:show:74aydHJKgYz3AIq3jjBSv1"
+
+  # --------------------------------------------------------------------------------------
+  # SpotifyPlus sprachfreundliche Gerätenamen-Identifikatoren.
+  #
+  # Diese Liste wird verwendet, um Spotify Connect-Gerätenamen zu identifizieren.
+  # Diese sollten mit dem übereinstimmen, was im `source_list`-Attribut des Media Players steht.
+  #
+  #  in: Sprachfreundlicher Identifikator.
+  # out: SpotifyPlus media_player source_list Eintrag.
+  # --------------------------------------------------------------------------------------
+  spotifyplus_device_names:
+    values:
+      - in: "Büro"
+        out: "Office Speaker"
+
+  # --------------------------------------------------------------------------------------
+  # SpotifyPlus sprachfreundliche Playlist-Identifikatoren.
+  #
+  # Diese Liste wird hauptsächlich verwendet, um algorithmische Spotify-Playlists zu
+  # identifizieren, die von der Spotify Web API seit dem 27.11.2024 nicht mehr
+  # zurückgegeben werden können.
+  #
+  #  in: Sprachfreundlicher Identifikator.
+  # out: Spotify-Playlist-URI-Wert.
+  # --------------------------------------------------------------------------------------
+  spotifyplus_playlist_names:
+    values:
+      - in: "Test Listeneintrag"
+        out: "spotify:playlist:37i9dQZEVXcTh0pBxo9pZe"
+      - in: "(Daily Mix|Tagesmix) (1|eins)"
+        out: "spotify:playlist:37i9dQZF1E39vTG3GurFPW"
+      - in: "(Daily Mix|Tagesmix) (2|zwei)"
+        out: "spotify:playlist:37i9dQZF1E39DIjrju3A9t"
+      - in: "(Daily Mix|Tagesmix) (3|drei)"
+        out: "spotify:playlist:37i9dQZF1E36yv9pXdC1Mb"
+      - in: "(Daily Mix|Tagesmix) (4|vier)"
+        out: "spotify:playlist:37i9dQZF1E35Ejqg6yJW0p"
+      - in: "(Daily Mix|Tagesmix) (5|fünf)"
+        out: "spotify:playlist:37i9dQZF1E35nVVgp8iMex"
+      - in: "Mix der Woche"
+        out: "spotify:playlist:37i9dQZEVXcTh0pBxo9pZe"
+      - in: "(DJ|deejay|dee jay)"
+        out: "spotify:playlist:37i9dQZF1EYkqdzj48dyYq"
+
+  # --------------------------------------------------------------------------------------
+  # SpotifyPlus sprachfreundliche Podcast-Identifikatoren.
+  #
+  # Diese Liste wird hauptsächlich verwendet, um Spotify-Podcasts zu identifizieren, die
+  # bei einem gesprochenen Satz falsch interpretiert werden, oder wenn Sie einen
+  # bestimmten Podcast von mehreren Podcast-Versionen wünschen.
+  #
+  #  in: Sprachfreundlicher Identifikator.
+  # out: Spotify-Podcast-URI-Wert.
+  # --------------------------------------------------------------------------------------
+  spotifyplus_podcast_names:
+    values:
+      - in: "Test Listeneintrag"
+        out: "spotify:show:6kAsbP8pxwaU2kPibKTuHE"
+
+  # --------------------------------------------------------------------------------------
+  # SpotifyPlus sprachfreundliche Titel-Identifikatoren.
+  #
+  # Diese Liste wird hauptsächlich verwendet, um Spotify-Titel zu identifizieren, die
+  # bei einem gesprochenen Satz falsch interpretiert werden, oder wenn Sie einen
+  # bestimmten Titel von mehreren Titel-Versionen wünschen.
+  #
+  #  in: Sprachfreundlicher Identifikator.
+  # out: Spotify-Titel-URI-Wert.
+  # --------------------------------------------------------------------------------------
+  spotifyplus_track_names:
+    values:
+      - in: "Test Listeintrag"
+        out: "spotify:track:5ehcf6UL1TkwozB386cRAp" # Journey, 2024 Remaster, Don't Stop believin'
+      - in: "Don't Stop Believing"
+        out: "spotify:track:5ehcf6UL1TkwozB386cRAp" # Journey, 2024 Remaster
+      - in: "Don't Stop Believing 1981"
+        out: "spotify:track:3Ab9C0oz70wDyigunvnG5N" # Journey, 1981 Live, Escape Tour
+
+
+# ============================================================================
+# SpotifyPlus gemeinsame Erweiterungsregeln
+# ============================================================================
+expansion_rules:
+  in_spotifyplus_player_area: "in [dem|der|im] ({area}|bereich {area})"
+  on_spotifyplus_player_name: "auf [dem] ({name} player|player {name})"
+
+
+# ============================================================================
+# SpotifyPlus gemeinsame zu ignorierende Wörter
+# ============================================================================
+skip_words:
+  - "bitte"
+  - "kannst du"
+  - "könntest du"
+  - "würdest du"
+  - "für mich"
+  - "ich möchte"
+  - "ich will"
+  - "der"
+  - "die"
+  - "das"
+  - "den"
+  - "dem"
+  - "des"
+  - "ein"
+  - "eine"
+  - "einen"
+  - "einem"
+  - "eines"

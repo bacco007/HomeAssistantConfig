@@ -1,0 +1,349 @@
+{
+    "title": "Ay Astro",
+    "config": {
+        "step": {
+            "user": {
+                "title": "Ay Astro",
+                "description": "GPS koordinatlarınızı ve rakımınızı ayarlayın.",
+                "data": {
+                    "latitude": "Enlem",
+                    "longitude": "Boylam",
+                    "altitude": "Rakım (m)"
+                }
+            },
+            "precision": {
+                "title": "Ay Astro",
+                "description": "Yüksek hassasiyet modu zaman damgası değişkenliğini azaltır, ancak daha ince bir örnekleme adımı ve daha geniş bir iyileştirme aralığı kullandığı için CPU kullanımını artırır. Raspberry Pi gibi düşük güçlü cihazlarda bu seçeneğin etkinleştirilmesi önerilmez.",
+                "data": {
+                    "high_precision": "Yüksek hassasiyet modu"
+                }
+            }
+        },
+        "progress": {
+            "download_ephemeris": "Skyfield DE440 efemerisi indiriliyor (> 100 MB). İndirme sırasında lütfen bu pencereyi kapatmayın..."
+        },
+        "abort": {
+            "already_configured": "Ay Astro zaten yapılandırılmış",
+            "missing_data": "Yapılandırma verileri eksik",
+            "reconfigure_successful": "Yapılandırma güncellendi"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Ay Astro seçenekleri",
+                "description": "Sensörlerin güncelleme aralığını ve saat dilimi yönetimini ayarlayın.\n\nYüksek hassasiyet modu zaman damgası değişkenliğini azaltır, ancak daha ince örnekleme adımı ve daha geniş bir iyileştirme aralığı kullandığı için CPU kullanımını artırır. Raspberry Pi gibi düşük güçlü cihazlarda önerilmez.\n\nOlay yenileme yedek aralığı, bir sonraki olay etrafındaki planlı yenileme kaçırılırsa (yeniden başlatma, saat değişimi, gecikme) olay tabanlı sensörlerin (sonraki/önceki evreler, apoj/perij, lunasyonlarda zodyak) periyodik olarak yenilenmesini zorlar. Daha düşük değerler daha sık yeniler; daha yüksek değerler CPU kullanımını azaltır.",
+                "data": {
+                    "scan_interval": "Sensör güncelleme aralığı (saniye)",
+                    "use_ha_timezone": "Home Assistant saat dilimini kullan",
+                    "high_precision": "Yüksek hassasiyet modu",
+                    "events_refresh_fallback": "Olay yenileme yedek aralığı (saniye)"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "above_horizon": {
+                "name": "Ufkun üzerinde",
+                "state": {
+                    "on": "Ufkun üzerinde",
+                    "off": "Ufkun altında"
+                }
+            }
+        },
+        "sensor": {
+            "phase": {
+                "name": "Evre",
+                "state": {
+                    "new_moon": "Yeni ay",
+                    "waxing_crescent": "Hilal (büyüyen)",
+                    "first_quarter": "İlk dördün",
+                    "waxing_gibbous": "Şişkin ay (büyüyen)",
+                    "full_moon": "Dolunay",
+                    "waning_gibbous": "Şişkin ay (küçülen)",
+                    "last_quarter": "Son dördün",
+                    "waning_crescent": "Hilal (küçülen)",
+                    "unknown": "Bilinmiyor"
+                }
+            },
+            "azimuth": {
+                "name": "Azimut"
+            },
+            "elevation": {
+                "name": "Yükseklik açısı"
+            },
+            "illumination": {
+                "name": "Aydınlanma"
+            },
+            "distance": {
+                "name": "Mesafe"
+            },
+            "parallax": {
+                "name": "Paralaks"
+            },
+            "ecliptic_longitude_topocentric": {
+                "name": "Ekliptik boylam (toposantrik)"
+            },
+            "ecliptic_latitude_topocentric": {
+                "name": "Ekliptik enlem (toposantrik)"
+            },
+            "ecliptic_longitude_geocentric": {
+                "name": "Ekliptik boylam (jeosantrik)"
+            },
+            "ecliptic_latitude_geocentric": {
+                "name": "Ekliptik enlem (jeosantrik)"
+            },
+            "next_rise": {
+                "name": "Sıradaki doğuş"
+            },
+            "next_set": {
+                "name": "Sıradaki batış"
+            },
+            "next_apogee": {
+                "name": "Sıradaki apogee"
+            },
+            "next_perigee": {
+                "name": "Sıradaki perigee"
+            },
+            "next_new_moon": {
+                "name": "Sıradaki yeni ay"
+            },
+            "next_first_quarter": {
+                "name": "Sıradaki ilk dördün"
+            },
+            "next_full_moon": {
+                "name": "Sıradaki dolunay"
+            },
+            "next_full_moon_name": {
+                "name": "Bir sonraki dolunayın adı",
+                "state": {
+                    "wolf_moon": "Kurt Dolunayı",
+                    "snow_moon": "Kar Dolunayı",
+                    "worm_moon": "Solucan Dolunayı",
+                    "pink_moon": "Pembe Dolunay",
+                    "flower_moon": "Çiçek Dolunayı",
+                    "strawberry_moon": "Çilek Dolunayı",
+                    "buck_moon": "Geyik Dolunayı",
+                    "sturgeon_moon": "Mersin Balığı Dolunayı",
+                    "harvest_moon": "Hasat Dolunayı",
+                    "hunters_moon": "Avcı Dolunayı",
+                    "beaver_moon": "Kunduz Dolunayı",
+                    "cold_moon": "Soğuk Dolunay",
+                    "blue_moon": "Mavi Dolunay",
+                    "unknown": "Bilinmiyor"
+                }
+            },
+            "next_full_moon_alt_names": {
+                "name": "Bir sonraki dolunay için alternatif adlar",
+                "state": {
+                    "wolf_moon_alt_names": "Yule Sonrası Ay, Evde Kal Ayı, Sakin Ay, Sert Ay, Merkez Ay",
+                    "snow_moon_alt_names": "Açlık Ayı, Ayı Ayı, Fırtına Ayı, Buz Ayı",
+                    "worm_moon_alt_names": "Oruç Ayı, Karga Ayı, Kabuk Ayı, İffet Ayı, Şeker Ayı, Özsu Ayı",
+                    "pink_moon_alt_names": "Buz Kıran Ay, Tomurcuk Ayı, Uyanış Ayı, Yumurta Ayı, Paskalya Ayı",
+                    "flower_moon_alt_names": "Ekim Ayı, Süt Ayı, Tavşan Ayı, Çimen Ayı, Anneler Ayı, Parlak Ay",
+                    "strawberry_moon_alt_names": "Gül Ayı, Sıcak Ay, Bal Şarabı Ayı, Çiçek Ayı, Ekim Ayı",
+                    "buck_moon_alt_names": "Gök Gürültüsü Ayı, Saman Ayı, Ot Ayı",
+                    "sturgeon_moon_alt_names": "Tahıl Ayı, Mısır Ayı, Vaşak Ayı, Şimşek Ayı",
+                    "harvest_moon_alt_names": "Tam Mısır Ayı, Yeşil Mısır Ayı, Mısır Ayı, Şarap Ayı, Şarkı Ayı, Arpa Ayı",
+                    "hunters_moon_alt_names": "Pirinç Kurutma Ayı, Düşen Yapraklar Ayı, Don Ayı, Kanlı Ay, Kızıl Ay",
+                    "beaver_moon_alt_names": "Kırağı Ayı, Don Ayı, Ticaret Ayı, Kar Ayı, Yas Ayı, En Karanlık Derinlikler Ayı",
+                    "cold_moon_alt_names": "Uzun Geceler Ayı, Yule Öncesi Ay, Meşe Ayı, Tam Soğuk Ay",
+                    "unknown": ""
+                }
+            },
+            "next_last_quarter": {
+                "name": "Sıradaki son dördün"
+            },
+
+            "previous_rise": {
+                "name": "Önceki doğuş"
+            },
+            "previous_set": {
+                "name": "Önceki batış"
+            },
+            "previous_apogee": {
+                "name": "Önceki apogee"
+            },
+            "previous_perigee": {
+                "name": "Önceki perigee"
+            },
+            "previous_new_moon": {
+                "name": "Önceki yeni ay"
+            },
+            "previous_first_quarter": {
+                "name": "Önceki ilk dördün"
+            },
+            "previous_full_moon": {
+                "name": "Önceki dolunay"
+            },
+            "previous_full_moon_name": {
+                "name": "Önceki dolunayın adı",
+                "state": {
+                    "wolf_moon": "Kurt Dolunayı",
+                    "snow_moon": "Kar Dolunayı",
+                    "worm_moon": "Solucan Dolunayı",
+                    "pink_moon": "Pembe Dolunay",
+                    "flower_moon": "Çiçek Dolunayı",
+                    "strawberry_moon": "Çilek Dolunayı",
+                    "buck_moon": "Geyik Dolunayı",
+                    "sturgeon_moon": "Mersin Balığı Dolunayı",
+                    "harvest_moon": "Hasat Dolunayı",
+                    "hunters_moon": "Avcı Dolunayı",
+                    "beaver_moon": "Kunduz Dolunayı",
+                    "cold_moon": "Soğuk Dolunay",
+                    "blue_moon": "Mavi Dolunay",
+                    "unknown": "Bilinmiyor"
+                }
+            },
+            "previous_full_moon_alt_names": {
+                "name": "Önceki dolunay için alternatif adlar",
+                "state": {
+                    "wolf_moon_alt_names": "Yule Sonrası Ay, Evde Kal Ayı, Sakin Ay, Sert Ay, Merkez Ay",
+                    "snow_moon_alt_names": "Açlık Ayı, Ayı Ayı, Fırtına Ayı, Buz Ayı",
+                    "worm_moon_alt_names": "Oruç Ayı, Karga Ayı, Kabuk Ayı, İffet Ayı, Şeker Ayı, Özsu Ayı",
+                    "pink_moon_alt_names": "Buz Kıran Ay, Tomurcuk Ayı, Uyanış Ayı, Yumurta Ayı, Paskalya Ayı",
+                    "flower_moon_alt_names": "Ekim Ayı, Süt Ayı, Tavşan Ayı, Çimen Ayı, Anneler Ayı, Parlak Ay",
+                    "strawberry_moon_alt_names": "Gül Ayı, Sıcak Ay, Bal Şarabı Ayı, Çiçek Ayı, Ekim Ayı",
+                    "buck_moon_alt_names": "Gök Gürültüsü Ayı, Saman Ayı, Ot Ayı",
+                    "sturgeon_moon_alt_names": "Tahıl Ayı, Mısır Ayı, Vaşak Ayı, Şimşek Ayı",
+                    "harvest_moon_alt_names": "Tam Mısır Ayı, Yeşil Mısır Ayı, Mısır Ayı, Şarap Ayı, Şarkı Ayı, Arpa Ayı",
+                    "hunters_moon_alt_names": "Pirinç Kurutma Ayı, Düşen Yapraklar Ayı, Don Ayı, Kanlı Ay, Kızıl Ay",
+                    "beaver_moon_alt_names": "Kırağı Ayı, Don Ayı, Ticaret Ayı, Kar Ayı, Yas Ayı, En Karanlık Derinlikler Ayı",
+                    "cold_moon_alt_names": "Uzun Geceler Ayı, Yule Öncesi Ay, Meşe Ayı, Tam Soğuk Ay",
+                    "unknown": ""
+                }
+            },
+            "previous_last_quarter": {
+                "name": "Önceki son dördün"
+            },
+
+            "ecliptic_longitude_next_full_moon": {
+                "name": "Sıradaki dolunayda ekliptik boylam"
+            },
+            "ecliptic_latitude_next_full_moon": {
+                "name": "Sıradaki dolunayda ekliptik enlem"
+            },
+            "ecliptic_longitude_next_new_moon": {
+                "name": "Sıradaki yeni ayda ekliptik boylam"
+            },
+            "ecliptic_latitude_next_new_moon": {
+                "name": "Sıradaki yeni ayda ekliptik enlem"
+            },
+            "ecliptic_longitude_previous_full_moon": {
+                "name": "Önceki dolunayda ekliptik boylam"
+            },
+            "ecliptic_latitude_previous_full_moon": {
+                "name": "Önceki dolunayda ekliptik enlem"
+            },
+            "ecliptic_longitude_previous_new_moon": {
+                "name": "Önceki yeni ayda ekliptik boylam"
+            },
+            "ecliptic_latitude_previous_new_moon": {
+                "name": "Önceki yeni ayda ekliptik enlem"
+            },
+
+            "zodiac_sign_current_moon": {
+                "name": "Burç (mevcut)",
+                "state": {
+                    "aries": "Koç",
+                    "taurus": "Boğa",
+                    "gemini": "İkizler",
+                    "cancer": "Yengeç",
+                    "leo": "Aslan",
+                    "virgo": "Başak",
+                    "libra": "Terazi",
+                    "scorpio": "Akrep",
+                    "sagittarius": "Yay",
+                    "capricorn": "Oğlak",
+                    "aquarius": "Kova",
+                    "pisces": "Balık"
+                }
+            },
+            "zodiac_sign_next_new_moon": {
+                "name": "Sıradaki yeni ayda burç",
+                "state": {
+                    "aries": "Koç",
+                    "taurus": "Boğa",
+                    "gemini": "İkizler",
+                    "cancer": "Yengeç",
+                    "leo": "Aslan",
+                    "virgo": "Başak",
+                    "libra": "Terazi",
+                    "scorpio": "Akrep",
+                    "sagittarius": "Yay",
+                    "capricorn": "Oğlak",
+                    "aquarius": "Kova",
+                    "pisces": "Balık"
+                }
+            },
+            "zodiac_sign_next_full_moon": {
+                "name": "Sıradaki dolunayda burç",
+                "state": {
+                    "aries": "Koç",
+                    "taurus": "Boğa",
+                    "gemini": "İkizler",
+                    "cancer": "Yengeç",
+                    "leo": "Aslan",
+                    "virgo": "Başak",
+                    "libra": "Terazi",
+                    "scorpio": "Akrep",
+                    "sagittarius": "Yay",
+                    "capricorn": "Oğlak",
+                    "aquarius": "Kova",
+                    "pisces": "Balık"
+                }
+            },
+            "zodiac_sign_previous_new_moon": {
+                "name": "Önceki yeni ayda burç",
+                "state": {
+                    "aries": "Koç",
+                    "taurus": "Boğa",
+                    "gemini": "İkizler",
+                    "cancer": "Yengeç",
+                    "leo": "Aslan",
+                    "virgo": "Başak",
+                    "libra": "Terazi",
+                    "scorpio": "Akrep",
+                    "sagittarius": "Yay",
+                    "capricorn": "Oğlak",
+                    "aquarius": "Kova",
+                    "pisces": "Balık"
+                }
+            },
+            "zodiac_sign_previous_full_moon": {
+                "name": "Önceki dolunayda burç",
+                "state": {
+                    "aries": "Koç",
+                    "taurus": "Boğa",
+                    "gemini": "İkizler",
+                    "cancer": "Yengeç",
+                    "leo": "Aslan",
+                    "virgo": "Başak",
+                    "libra": "Terazi",
+                    "scorpio": "Akrep",
+                    "sagittarius": "Yay",
+                    "capricorn": "Oğlak",
+                    "aquarius": "Kova",
+                    "pisces": "Balık"
+                }
+            },
+
+            "zodiac_degree_current_moon": {
+                "name": "Burç derecesi (mevcut)"
+            },
+            "zodiac_degree_next_new_moon": {
+                "name": "Sıradaki yeni ayda burç derecesi"
+            },
+            "zodiac_degree_next_full_moon": {
+                "name": "Sıradaki dolunayda burç derecesi"
+            },
+            "zodiac_degree_previous_new_moon": {
+                "name": "Önceki yeni ayda burç derecesi"
+            },
+            "zodiac_degree_previous_full_moon": {
+                "name": "Önceki dolunayda burç derecesi"
+            }
+        }
+    }
+}

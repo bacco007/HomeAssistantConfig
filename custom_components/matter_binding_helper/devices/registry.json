@@ -1,0 +1,297 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2025-12-02T07:45:48.640Z",
+  "devices": [
+    {
+      "id": "eve_thermo",
+      "fingerprint": {
+        "vendorId": 4874,
+        "requiredClusters": [
+          319486977
+        ],
+        "requiredDeviceTypes": [
+          769
+        ]
+      },
+      "vendor": "Eve Systems",
+      "model": "Eve Thermo",
+      "description": "Smart radiator valve with Thread/Matter, HomeKit and weekly heating schedules",
+      "extends": [
+        {
+          "name": "thermostatSchedule",
+          "clusters": [
+            {
+              "id": 319486977,
+              "vendorId": 4874,
+              "name": "Eve Thermo",
+              "description": "Eve thermostat proprietary cluster for schedule and valve data",
+              "attributes": [
+                {
+                  "id": 319422464,
+                  "name": "schedule",
+                  "type": {
+                    "type": "blob",
+                    "parser": "eve.schedule"
+                  },
+                  "access": [
+                    "R"
+                  ],
+                  "description": "Heating schedule binary data. Contains weekly schedule with day entries and time slots.",
+                  "parser": "eve.schedule"
+                },
+                {
+                  "id": 319422488,
+                  "name": "valvePosition",
+                  "type": "uint8",
+                  "access": [
+                    "R",
+                    "S"
+                  ],
+                  "description": "Current valve opening position",
+                  "unit": "%"
+                },
+                {
+                  "id": 319422480,
+                  "name": "temperatureOffset",
+                  "type": "int8",
+                  "access": [
+                    "R",
+                    "W"
+                  ],
+                  "description": "Temperature calibration offset. Value in 0.1°C increments.",
+                  "unit": "0.1°C"
+                }
+              ]
+            }
+          ],
+          "uiComponent": "eve-schedule",
+          "showInDetails": true
+        }
+      ],
+      "productUrl": "https://www.evehome.com/eve-thermo"
+    },
+    {
+      "id": "aqara_u200",
+      "fingerprint": {
+        "vendorId": 4447,
+        "requiredClusters": [
+          291503106
+        ],
+        "requiredDeviceTypes": [
+          10
+        ]
+      },
+      "vendor": "Aqara",
+      "model": "Smart Lock U200",
+      "description": "Smart lock with Matter, fingerprint reader, NFC, and smartphone unlock",
+      "extends": [
+        {
+          "name": "aqaraLockSettings",
+          "clusters": [
+            {
+              "id": 291503106,
+              "vendorId": 4447,
+              "name": "Aqara Lock Settings",
+              "description": "Aqara proprietary lock settings cluster. Attribute meanings are partially documented.",
+              "attributes": [
+                {
+                  "id": 291438609,
+                  "name": "setting1",
+                  "type": "uint8",
+                  "access": [
+                    "R"
+                  ],
+                  "description": "Unknown setting (possibly lock mode). Observed value: 1"
+                },
+                {
+                  "id": 291438610,
+                  "name": "setting2",
+                  "type": "uint8",
+                  "access": [
+                    "R"
+                  ],
+                  "description": "Unknown setting (possibly sound). Observed value: 2"
+                },
+                {
+                  "id": 291438611,
+                  "name": "setting3",
+                  "type": "uint8",
+                  "access": [
+                    "R"
+                  ],
+                  "description": "Unknown setting. Observed value: 0"
+                },
+                {
+                  "id": 291438612,
+                  "name": "setting4",
+                  "type": "uint8",
+                  "access": [
+                    "R"
+                  ],
+                  "description": "Unknown setting. Observed value: 0"
+                },
+                {
+                  "id": 291438613,
+                  "name": "setting5",
+                  "type": "uint8",
+                  "access": [
+                    "R"
+                  ],
+                  "description": "Unknown setting. Observed value: 1"
+                }
+              ]
+            },
+            {
+              "id": 323746816,
+              "vendorId": 4447,
+              "name": "Aqara Unknown",
+              "description": "Unknown Aqara proprietary cluster found on endpoint 0",
+              "attributes": [
+                {
+                  "id": 323682304,
+                  "name": "unknown",
+                  "type": "bool",
+                  "access": [
+                    "R"
+                  ],
+                  "description": "Unknown boolean attribute. Observed value: true"
+                }
+              ]
+            }
+          ],
+          "showInDetails": true
+        }
+      ],
+      "productUrl": "https://www.aqara.com/eu/product/smart-lock-u200"
+    },
+    {
+      "id": "aqara_w100",
+      "fingerprint": {
+        "vendorId": 4447,
+        "productNamePattern": "W100",
+        "requiredDeviceTypes": [
+          770
+        ]
+      },
+      "vendor": "Aqara",
+      "model": "Climate Sensor W100",
+      "description": "Temperature and humidity sensor with Matter support. Uses standard clusters only.",
+      "productUrl": "https://www.aqara.com/eu/product/temperature-humidity-sensor-w100"
+    }
+  ],
+  "clusters": [
+    {
+      "id": 319486977,
+      "vendorId": 4874,
+      "name": "Eve Thermo",
+      "description": "Eve thermostat proprietary cluster for schedule and valve data",
+      "attributes": [
+        {
+          "id": 319422464,
+          "name": "schedule",
+          "type": {
+            "type": "blob",
+            "parser": "eve.schedule"
+          },
+          "access": [
+            "R"
+          ],
+          "description": "Heating schedule binary data. Contains weekly schedule with day entries and time slots.",
+          "parser": "eve.schedule"
+        },
+        {
+          "id": 319422488,
+          "name": "valvePosition",
+          "type": "uint8",
+          "access": [
+            "R",
+            "S"
+          ],
+          "description": "Current valve opening position",
+          "unit": "%"
+        },
+        {
+          "id": 319422480,
+          "name": "temperatureOffset",
+          "type": "int8",
+          "access": [
+            "R",
+            "W"
+          ],
+          "description": "Temperature calibration offset. Value in 0.1°C increments.",
+          "unit": "0.1°C"
+        }
+      ]
+    },
+    {
+      "id": 291503106,
+      "vendorId": 4447,
+      "name": "Aqara Lock Settings",
+      "description": "Aqara proprietary lock settings cluster. Attribute meanings are partially documented.",
+      "attributes": [
+        {
+          "id": 291438609,
+          "name": "setting1",
+          "type": "uint8",
+          "access": [
+            "R"
+          ],
+          "description": "Unknown setting (possibly lock mode). Observed value: 1"
+        },
+        {
+          "id": 291438610,
+          "name": "setting2",
+          "type": "uint8",
+          "access": [
+            "R"
+          ],
+          "description": "Unknown setting (possibly sound). Observed value: 2"
+        },
+        {
+          "id": 291438611,
+          "name": "setting3",
+          "type": "uint8",
+          "access": [
+            "R"
+          ],
+          "description": "Unknown setting. Observed value: 0"
+        },
+        {
+          "id": 291438612,
+          "name": "setting4",
+          "type": "uint8",
+          "access": [
+            "R"
+          ],
+          "description": "Unknown setting. Observed value: 0"
+        },
+        {
+          "id": 291438613,
+          "name": "setting5",
+          "type": "uint8",
+          "access": [
+            "R"
+          ],
+          "description": "Unknown setting. Observed value: 1"
+        }
+      ]
+    },
+    {
+      "id": 323746816,
+      "vendorId": 4447,
+      "name": "Aqara Unknown",
+      "description": "Unknown Aqara proprietary cluster found on endpoint 0",
+      "attributes": [
+        {
+          "id": 323682304,
+          "name": "unknown",
+          "type": "bool",
+          "access": [
+            "R"
+          ],
+          "description": "Unknown boolean attribute. Observed value: true"
+        }
+      ]
+    }
+  ]
+}

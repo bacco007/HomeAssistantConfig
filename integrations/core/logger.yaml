@@ -2,7 +2,7 @@
 # https://www.home-assistant.io/integrations/logger/
 # Log Severities: notset, debug, info, warn, warning, error, fatal, critical
 logger:
-  default: error
+  default: warning
   filters:
     TransportNSW.transportnsw:
       - "No stop events for this query"
@@ -44,7 +44,7 @@ logger:
       - "Trigger Update Coordinator: Sequence to get the .* forecast data: Run through weather entities to check if the right forecast is provided: Error executing script. Error for call_service at pos 1: Service call requested response data but did not match any entities"
       - "Trigger Update Coordinator: Sequence to get the .* forecast data: Run through weather entities to check if the right forecast is provided: Error executing script. Error for call_service at pos 1: Entity .* does not support this service."
     homeassistant.loader:
-      - We found a custom integration'
+      - "We found a custom integration"
     py.warnings:
       - "InsecureRequestWarning: Unverified HTTPS request is being made to host"
     spotipy.client:

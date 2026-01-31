@@ -1,0 +1,47 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "Your NASA API Key",
+          "watch_selection": "Select what to watch",
+          "watch_number": "How many to watch",
+          "top_neos": "Select how many Near Earth Objects to track",
+          "specific_neo": "Select the name of the Near Earth Object to track",
+          "update_hour": "What hour of the day should Neo Watcher update?"
+        },
+        "data_description": {
+          "api_key": "Apply for a free key here: https://api.nasa.gov/#signUp"
+        },
+        "title": "NEO Watcher"
+        
+      },
+      "top_neos": {
+        "data": {
+          "weeks_ahead": "How many weeks to look ahead",
+          "top_neos": "Select how many Near Earth Objects to track"
+        },
+        "data_description": {
+          "weeks_ahead": "Max 2 years. May cause slower startup of HA.",
+          "top_neos": "Between 1 and 20."
+        },
+        "title": "NEO Watcher"
+        
+      }
+      ,
+      "specific_neo": {
+        "data": {
+          "specific_neo": "Select the name of the Near Earth Object to track"
+        },
+        "data_description": {
+          "specific_neo": "You can find NEO names here: https://cneos.jpl.nasa.gov/ca/"
+        },
+        "title": "NEO Watcher"
+        
+      }
+    },
+    "abort": {
+      "already_configured": "Device is already configured"
+    }
+  }
+}

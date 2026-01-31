@@ -1,0 +1,13 @@
+---
+sensor:
+  - name: "Sonos Source"
+    unique_id: office_sonos_source
+    icon: si:sonos
+    state: >-
+      {% if is_state('media_player.office_sonos', 'playing') %}
+        {{ state_attr('media_player.office_sonos', 'media_channel')
+           if state_attr('media_player.office_sonos', 'media_channel') not in [None, '', 'unknown']
+           else 'Playing' }}
+      {% else %}
+        Not Playing
+      {% endif %}

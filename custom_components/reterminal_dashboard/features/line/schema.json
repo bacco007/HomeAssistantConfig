@@ -1,0 +1,31 @@
+{
+    "type": "line",
+    "name": "Line",
+    "props": {
+        "orientation": {
+            "type": "string",
+            "default": "horizontal",
+            "enum": [
+                "horizontal",
+                "vertical"
+            ]
+        },
+        "color": {
+            "type": "string",
+            "default": "black",
+            "enum": [
+                "black",
+                "white",
+                "gray"
+            ]
+        },
+        "stroke_width": {
+            "type": "number",
+            "default": 3
+        },
+        "invert": {
+            "type": "boolean",
+            "default": false
+        }
+    }
+}

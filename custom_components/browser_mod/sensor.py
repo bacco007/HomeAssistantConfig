@@ -34,6 +34,8 @@ class BrowserSensor(BrowserModEntity, SensorEntity):
 
     @property
     def native_value(self):
+        if self.parameter == "browserID":
+            return self.browserID
         val = self._data.get("browser", {}).get(self.parameter, None)
         if len(str(val)) > 255:
             val = str(val)[:250] + "..."
@@ -57,6 +59,7 @@ class BrowserSensor(BrowserModEntity, SensorEntity):
 
         if self.parameter == "currentUser":
             retval["userData"] = self._data.get("browser", {}).get("userData")
+            retval["person"] = self._data.get("browser", {}).get("person")
 
         if self.parameter == "path":
             retval["pathSegments"] = (

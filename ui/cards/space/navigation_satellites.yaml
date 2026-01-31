@@ -141,7 +141,7 @@ cards:
     overlay-margin: 0em
     button-background: transparent
     title-card:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       primary: GNSS Map
       icon: mdi:map-clock
       card_mod:

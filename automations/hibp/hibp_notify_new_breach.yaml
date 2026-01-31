@@ -24,7 +24,7 @@ action:
             text:
               type: mrkdwn
               text: HIBP has added a new breach on one of your email addresses
-  - service: notify.mobile_app_tbiphone15promax
+  - service: notify.mobile_app_tbiphone17promax
     data:
       message: HIBP has added a new breach on one of your email addresses
       title: New Breach on HIBP

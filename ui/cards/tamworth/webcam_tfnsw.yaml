@@ -1,0 +1,15 @@
+---
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Webcam (TfNSW) - Brisbane Street at Kable
+    icon: mdi:cctv
+    styles: |-
+      .bubble-line {
+        background: var(--ha-card-background);
+        opacity: 1;
+        }
+  - type: picture
+    image: >-
+      https://webcams.transport.nsw.gov.au/livetraffic-webcams/cameras/brisbane_street_tamworth.jpeg?

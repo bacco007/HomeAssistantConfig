@@ -1,0 +1,40 @@
+{
+    "type": "object",
+    "properties": {
+        "url": {
+            "type": "string",
+            "title": "Image URL",
+            "description": "URL to the image"
+        },
+        "format": {
+            "type": "string",
+            "title": "Format",
+            "default": "PNG",
+            "enum": [
+                "PNG",
+                "JPEG"
+            ]
+        },
+        "render_mode": {
+            "type": "string",
+            "title": "Render Mode",
+            "default": "Auto",
+            "enum": [
+                "Auto",
+                "Binary",
+                "Grayscale",
+                "Color (RGB565)"
+            ]
+        },
+        "update_interval": {
+            "type": "string",
+            "title": "Update Interval",
+            "default": "1h"
+        },
+        "invert": {
+            "type": "boolean",
+            "title": "Invert Colors",
+            "default": false
+        }
+    }
+}

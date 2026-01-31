@@ -41,12 +41,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: GoogleHomeConfigEntry) -
         hass.data.setdefault(DOMAIN, {})
         _LOGGER.info(STARTUP_MESSAGE)
 
-    username = cast(str, entry.data.get(CONF_USERNAME))
-    password = cast(str, entry.data.get(CONF_PASSWORD))
-    android_id = cast(str, entry.data.get(CONF_ANDROID_ID))
-    master_token = cast(str, entry.data.get(CONF_MASTER_TOKEN))
+    username = cast("str", entry.data.get(CONF_USERNAME))
+    password = cast("str", entry.data.get(CONF_PASSWORD))
+    android_id = cast("str", entry.data.get(CONF_ANDROID_ID))
+    master_token = cast("str", entry.data.get(CONF_MASTER_TOKEN))
     update_interval = cast(
-        int, entry.options.get(CONF_UPDATE_INTERVAL, UPDATE_INTERVAL)
+        "int", entry.options.get(CONF_UPDATE_INTERVAL, UPDATE_INTERVAL)
     )
 
     _LOGGER.debug(
@@ -72,6 +72,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: GoogleHomeConfigEntry) -
         name=SENSOR,
         update_method=glocaltokens_client.update_google_devices_information,
         update_interval=timedelta(seconds=update_interval),
+        config_entry=entry,
     )
 
     await coordinator.async_config_entry_first_refresh()
@@ -83,7 +84,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: GoogleHomeConfigEntry) -
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
-    entry.add_update_listener(async_update_entry)
+    entry.async_on_unload(entry.add_update_listener(async_update_entry))
     return True
 
 
@@ -98,11 +99,12 @@ async def async_unload_entry(hass: HomeAssistant, entry: GoogleHomeConfigEntry) 
 
 async def async_update_entry(hass: HomeAssistant, entry: GoogleHomeConfigEntry) -> None:
     """Update config entry."""
-    _LOGGER.debug("Updating entry...")
+    _LOGGER.debug("Options updated, updating coordinator interval...")
     update_interval: int = entry.options.get(CONF_UPDATE_INTERVAL, UPDATE_INTERVAL)
     coordinator: DataUpdateCoordinator[list[GoogleHomeDevice]] = hass.data[DOMAIN][
         entry.entry_id
     ][DATA_COORDINATOR]
+    # This property has a setter
     coordinator.update_interval = timedelta(seconds=update_interval)  # type: ignore[misc]
     _LOGGER.debug(
         "Coordinator update interval is: %s", timedelta(seconds=update_interval)

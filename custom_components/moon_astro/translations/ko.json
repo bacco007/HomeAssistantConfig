@@ -1,0 +1,349 @@
+{
+    "title": "문 아스트로",
+    "config": {
+        "step": {
+            "user": {
+                "title": "문 아스트로",
+                "description": "GPS 좌표와 고도를 설정하세요.",
+                "data": {
+                    "latitude": "위도",
+                    "longitude": "경도",
+                    "altitude": "고도 (m)"
+                }
+            },
+            "precision": {
+                "title": "문 아스트로",
+                "description": "고정밀 모드는 타임스탬프 변동성을 줄이지만, 더 미세한 샘플링 단계와 더 넓은 정밀화 범위를 사용하므로 CPU 사용량이 증가합니다. Raspberry Pi와 같은 저사양 장치에서는 활성화를 권장하지 않습니다.",
+                "data": {
+                    "high_precision": "고정밀 모드"
+                }
+            }
+        },
+        "progress": {
+            "download_ephemeris": "Skyfield DE440 천체력(> 100MB)을 다운로드하는 중입니다. 다운로드 중에는 이 창을 닫지 마세요..."
+        },
+        "abort": {
+            "already_configured": "문 아스트로는 이미 구성되어 있습니다",
+            "missing_data": "구성 데이터가 누락되었습니다",
+            "reconfigure_successful": "구성이 업데이트되었습니다"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "문 아스트로 옵션",
+                "description": "센서 업데이트 간격과 시간대 처리를 조정합니다.\n\n고정밀 모드는 타임스탬프 변동성을 줄이지만, 더 미세한 샘플링 단계와 더 넓은 정밀화 범위를 사용하므로 CPU 사용량이 증가합니다. Raspberry Pi와 같은 저전력 장치에서는 권장되지 않습니다.\n\n이벤트 새로 고침 폴백 간격은 다음 이벤트 주변에서 예약된 새로 고침이 누락될 경우(재시작, 시간 변경, 지연)에 대비하여 이벤트 기반 센서(다음/이전 위상, 원지점/근지점, lunation 시의 황도대)를 주기적으로 새로 고칩니다. 값이 낮을수록 더 자주 새로 고치며, 값이 높을수록 CPU 사용량이 줄어듭니다.",
+                "data": {
+                    "scan_interval": "센서 업데이트 간격(초)",
+                    "use_ha_timezone": "Home Assistant 시간대 사용",
+                    "high_precision": "고정밀 모드",
+                    "events_refresh_fallback": "이벤트 새로 고침 폴백 간격(초)"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "above_horizon": {
+                "name": "지평선 위",
+                "state": {
+                    "on": "지평선 위",
+                    "off": "지평선 아래"
+                }
+            }
+        },
+        "sensor": {
+            "phase": {
+                "name": "위상",
+                "state": {
+                    "new_moon": "삭",
+                    "waxing_crescent": "초승달",
+                    "first_quarter": "상현",
+                    "waxing_gibbous": "상현 후 볼록달",
+                    "full_moon": "보름달",
+                    "waning_gibbous": "하현 전 볼록달",
+                    "last_quarter": "하현",
+                    "waning_crescent": "그믐달",
+                    "unknown": "알 수 없음"
+                }
+            },
+            "azimuth": {
+                "name": "방위각"
+            },
+            "elevation": {
+                "name": "고도각"
+            },
+            "illumination": {
+                "name": "조도"
+            },
+            "distance": {
+                "name": "거리"
+            },
+            "parallax": {
+                "name": "시차"
+            },
+            "ecliptic_longitude_topocentric": {
+                "name": "황경 (지표관측, 토포센트릭)"
+            },
+            "ecliptic_latitude_topocentric": {
+                "name": "황위 (지표관측, 토포센트릭)"
+            },
+            "ecliptic_longitude_geocentric": {
+                "name": "황경 (지구중심)"
+            },
+            "ecliptic_latitude_geocentric": {
+                "name": "황위 (지구중심)"
+            },
+            "next_rise": {
+                "name": "다음 월출"
+            },
+            "next_set": {
+                "name": "다음 월몰"
+            },
+            "next_apogee": {
+                "name": "다음 원지점(아포지)"
+            },
+            "next_perigee": {
+                "name": "다음 근지점(페리지)"
+            },
+            "next_new_moon": {
+                "name": "다음 삭(신월)"
+            },
+            "next_first_quarter": {
+                "name": "다음 상현"
+            },
+            "next_full_moon": {
+                "name": "다음 보름달(만월)"
+            },
+            "next_full_moon_name": {
+                "name": "다음 보름달 이름",
+                "state": {
+                    "wolf_moon": "울프 문",
+                    "snow_moon": "스노 문",
+                    "worm_moon": "웜 문",
+                    "pink_moon": "핑크 문",
+                    "flower_moon": "플라워 문",
+                    "strawberry_moon": "스트로베리 문",
+                    "buck_moon": "벅 문",
+                    "sturgeon_moon": "스터전 문",
+                    "harvest_moon": "하베스트 문",
+                    "hunters_moon": "헌터스 문",
+                    "beaver_moon": "비버 문",
+                    "cold_moon": "콜드 문",
+                    "blue_moon": "블루 문",
+                    "unknown": "알 수 없음"
+                }
+            },
+            "next_full_moon_alt_names": {
+                "name": "다음 보름달의 대체 이름(일반적)",
+                "state": {
+                    "wolf_moon_alt_names": "율(Yule) 이후의 달, 집에 머무는 달, 고요한 달, 혹독한 달, 중심의 달",
+                    "snow_moon_alt_names": "굶주린 달, 곰의 달, 폭풍의 달, 얼음의 달",
+                    "worm_moon_alt_names": "사순절의 달, 까마귀의 달, 눈껍질의 달, 정결한 달, 설탕의 달, 수액의 달",
+                    "pink_moon_alt_names": "얼음이 깨지는 달, 새싹의 달, 깨어남의 달, 달걀의 달, 부활절의 달",
+                    "flower_moon_alt_names": "심는 달, 우유의 달, 산토끼의 달, 풀의 달, 어머니의 달, 밝은 달",
+                    "strawberry_moon_alt_names": "장미의 달, 더운 달, 미드(벌꿀술)의 달, 꽃의 달, 심는 달",
+                    "buck_moon_alt_names": "천둥의 달, 건초의 달, 약초의 달",
+                    "sturgeon_moon_alt_names": "곡식의 달, 옥수수의 달, 스라소니의 달, 번개의 달",
+                    "harvest_moon_alt_names": "옥수수 보름달, 푸른 옥수수의 달, 옥수수의 달, 와인의 달, 노래의 달, 보리의 달",
+                    "hunters_moon_alt_names": "말린 쌀의 달, 낙엽의 달, 얼어붙는 달, 피의 달, 상귀네 문",
+                    "beaver_moon_alt_names": "서리의 달, 얼어붙는 달, 교역의 달, 눈의 달, 애도의 달, 가장 어두운 심연의 달",
+                    "cold_moon_alt_names": "긴 밤의 달, 율 이전의 달, 참나무의 달, 차가운 보름달",
+                    "unknown": ""
+                }
+            },
+            "next_last_quarter": {
+                "name": "다음 하현"
+            },
+
+            "previous_rise": {
+                "name": "이전 월출"
+            },
+            "previous_set": {
+                "name": "이전 월몰"
+            },
+            "previous_apogee": {
+                "name": "이전 원지점(아포지)"
+            },
+            "previous_perigee": {
+                "name": "이전 근지점(페리지)"
+            },
+            "previous_new_moon": {
+                "name": "이전 삭(신월)"
+            },
+            "previous_first_quarter": {
+                "name": "이전 상현"
+            },
+            "previous_full_moon": {
+                "name": "이전 보름달(만월)"
+            },
+            "previous_full_moon_name": {
+                "name": "이전 보름달 이름",
+                "state": {
+                    "wolf_moon": "울프 문",
+                    "snow_moon": "스노 문",
+                    "worm_moon": "웜 문",
+                    "pink_moon": "핑크 문",
+                    "flower_moon": "플라워 문",
+                    "strawberry_moon": "스트로베리 문",
+                    "buck_moon": "벅 문",
+                    "sturgeon_moon": "스터전 문",
+                    "harvest_moon": "하베스트 문",
+                    "hunters_moon": "헌터스 문",
+                    "beaver_moon": "비버 문",
+                    "cold_moon": "콜드 문",
+                    "blue_moon": "블루 문",
+                    "unknown": "알 수 없음"
+                }
+            },
+            "previous_full_moon_alt_names": {
+                "name": "이전 보름달의 대체 이름(일반적)",
+                "state": {
+                    "wolf_moon_alt_names": "율(Yule) 이후의 달, 집에 머무는 달, 고요한 달, 혹독한 달, 중심의 달",
+                    "snow_moon_alt_names": "굶주린 달, 곰의 달, 폭풍의 달, 얼음의 달",
+                    "worm_moon_alt_names": "사순절의 달, 까마귀의 달, 눈껍질의 달, 정결한 달, 설탕의 달, 수액의 달",
+                    "pink_moon_alt_names": "얼음이 깨지는 달, 새싹의 달, 깨어남의 달, 달걀의 달, 부활절의 달",
+                    "flower_moon_alt_names": "심는 달, 우유의 달, 산토끼의 달, 풀의 달, 어머니의 달, 밝은 달",
+                    "strawberry_moon_alt_names": "장미의 달, 더운 달, 미드(벌꿀술)의 달, 꽃의 달, 심는 달",
+                    "buck_moon_alt_names": "천둥의 달, 건초의 달, 약초의 달",
+                    "sturgeon_moon_alt_names": "곡식의 달, 옥수수의 달, 스라소니의 달, 번개의 달",
+                    "harvest_moon_alt_names": "옥수수 보름달, 푸른 옥수수의 달, 옥수수의 달, 와인의 달, 노래의 달, 보리의 달",
+                    "hunters_moon_alt_names": "말린 쌀의 달, 낙엽의 달, 얼어붙는 달, 피의 달, 상귀네 문",
+                    "beaver_moon_alt_names": "서리의 달, 얼어붙는 달, 교역의 달, 눈의 달, 애도의 달, 가장 어두운 심연의 달",
+                    "cold_moon_alt_names": "긴 밤의 달, 율 이전의 달, 참나무의 달, 차가운 보름달",
+                    "unknown": ""
+                }
+            },
+            "previous_last_quarter": {
+                "name": "이전 하현"
+            },
+
+            "ecliptic_longitude_next_full_moon": {
+                "name": "다음 보름달 때의 황경"
+            },
+            "ecliptic_latitude_next_full_moon": {
+                "name": "다음 보름달 때의 황위"
+            },
+            "ecliptic_longitude_next_new_moon": {
+                "name": "다음 신월 때의 황경"
+            },
+            "ecliptic_latitude_next_new_moon": {
+                "name": "다음 신월 때의 황위"
+            },
+            "ecliptic_longitude_previous_full_moon": {
+                "name": "이전 보름달 때의 황경"
+            },
+            "ecliptic_latitude_previous_full_moon": {
+                "name": "이전 보름달 때의 황위"
+            },
+            "ecliptic_longitude_previous_new_moon": {
+                "name": "이전 신월 때의 황경"
+            },
+            "ecliptic_latitude_previous_new_moon": {
+                "name": "이전 신월 때의 황위"
+            },
+
+            "zodiac_sign_current_moon": {
+                "name": "황도대 별자리(현재)",
+                "state": {
+                    "aries": "양자리",
+                    "taurus": "황소자리",
+                    "gemini": "쌍둥이자리",
+                    "cancer": "게자리",
+                    "leo": "사자자리",
+                    "virgo": "처녀자리",
+                    "libra": "천칭자리",
+                    "scorpio": "전갈자리",
+                    "sagittarius": "사수자리",
+                    "capricorn": "염소자리",
+                    "aquarius": "물병자리",
+                    "pisces": "물고기자리"
+                }
+            },
+            "zodiac_sign_next_new_moon": {
+                "name": "다음 신월의 황도대 별자리",
+                "state": {
+                    "aries": "양자리",
+                    "taurus": "황소자리",
+                    "gemini": "쌍둥이자리",
+                    "cancer": "게자리",
+                    "leo": "사자자리",
+                    "virgo": "처녀자리",
+                    "libra": "천칭자리",
+                    "scorpio": "전갈자리",
+                    "sagittarius": "사수자리",
+                    "capricorn": "염소자리",
+                    "aquarius": "물병자리",
+                    "pisces": "물고기자리"
+                }
+            },
+            "zodiac_sign_next_full_moon": {
+                "name": "다음 보름달의 황도대 별자리",
+                "state": {
+                    "aries": "양자리",
+                    "taurus": "황소자리",
+                    "gemini": "쌍둥이자리",
+                    "cancer": "게자리",
+                    "leo": "사자자리",
+                    "virgo": "처녀자리",
+                    "libra": "천칭자리",
+                    "scorpio": "전갈자리",
+                    "sagittarius": "사수자리",
+                    "capricorn": "염소자리",
+                    "aquarius": "물병자리",
+                    "pisces": "물고기자리"
+                }
+            },
+            "zodiac_sign_previous_new_moon": {
+                "name": "이전 신월의 황도대 별자리",
+                "state": {
+                    "aries": "양자리",
+                    "taurus": "황소자리",
+                    "gemini": "쌍둥이자리",
+                    "cancer": "게자리",
+                    "leo": "사자자리",
+                    "virgo": "처녀자리",
+                    "libra": "천칭자리",
+                    "scorpio": "전갈자리",
+                    "sagittarius": "사수자리",
+                    "capricorn": "염소자리",
+                    "aquarius": "물병자리",
+                    "pisces": "물고기자리"
+                }
+            },
+            "zodiac_sign_previous_full_moon": {
+                "name": "이전 보름달의 황도대 별자리",
+                "state": {
+                    "aries": "양자리",
+                    "taurus": "황소자리",
+                    "gemini": "쌍둥이자리",
+                    "cancer": "게자리",
+                    "leo": "사자자리",
+                    "virgo": "처녀자리",
+                    "libra": "천칭자리",
+                    "scorpio": "전갈자리",
+                    "sagittarius": "사수자리",
+                    "capricorn": "염소자리",
+                    "aquarius": "물병자리",
+                    "pisces": "물고기자리"
+                }
+            },
+
+            "zodiac_degree_current_moon": {
+                "name": "황도대 도수(현재)"
+            },
+            "zodiac_degree_next_new_moon": {
+                "name": "다음 신월의 황도대 도수"
+            },
+            "zodiac_degree_next_full_moon": {
+                "name": "다음 보름달의 황도대 도수"
+            },
+            "zodiac_degree_previous_new_moon": {
+                "name": "이전 신월의 황도대 도수"
+            },
+            "zodiac_degree_previous_full_moon": {
+                "name": "이전 보름달의 황도대 도수"
+            }
+        }
+    }
+}

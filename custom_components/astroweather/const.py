@@ -6,6 +6,8 @@ from homeassistant.const import Platform
 # Domain and platforms
 # #####################################################
 DOMAIN = "astroweather"
+VERSION = "0.75.0"
+MANUFACTURER = "AstroWeather"
 
 ASTROWEATHER_PLATFORMS = (
     Platform.BINARY_SENSOR,
@@ -42,10 +44,8 @@ CONF_OPEN_METEO_SERVICE = DISABLED
 # #####################################################
 # Default values
 # #####################################################
-DEFAULT_ATTRIBUTION = "Powered by Met.no"
-ATTRIBUTION_OPEN_METEO = ", Open-Meteo"
-ATTRIBUTION_SEVENTIMER = ", 7Timer"
-EXPERIMENTAL_ATTRIBUTION = "Powered by Met.no"
+DEFAULT_ATTRIBUTION = "Powered by Met.no and Open-Meteo"
+EXPERIMENTAL_ATTRIBUTION = "Experimental"
 DEFAULT_FORECAST_INTERVAL = 5
 FORECAST_INTERVAL_MIN = 1
 FORECAST_INTERVAL_MAX = 240
@@ -105,6 +105,8 @@ ATTR_WEATHER_SUN_NEXT_SETTING_ASTRO = "sun_next_setting_astro"
 ATTR_WEATHER_MOON_NEXT_RISING = "moon_next_rising"
 ATTR_WEATHER_MOON_NEXT_SETTING = "moon_next_setting"
 ATTR_WEATHER_MOON_PHASE = "moon_phase"
+ATTR_WEATHER_MOON_ICON = "moon_icon"
+ATTR_WEATHER_NEXT_DARK_NIGHT = "moon_next_dark_night"
 ATTR_WEATHER_MOON_NEXT_NEW_MOON = "moon_next_new_moon"
 ATTR_WEATHER_MOON_NEXT_FULL_MOON = "moon_next_full_moon"
 ATTR_WEATHER_DEEP_SKY_DARKNESS = "deep_sky_darkness"

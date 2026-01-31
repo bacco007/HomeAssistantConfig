@@ -4,6 +4,7 @@
 sports_card:
   default:
     - entity: sensor.upcoming_sport_afl_all_teams
+    - calendar: calendar.ical_afl_all_teams
   card:
     type: custom:stack-in-card
     card_mod:
@@ -14,18 +15,18 @@ sports_card:
             box-shadow: none !important;
           }
     cards:
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         primary: >-
           {{ state_attr(entity, 'friendly_name') | replace('[Upcoming Sport] ', '')
           }}
-        secondary: >-
-          {{ iif(state_attr(entity, 'nextevent_time') == 'No Event Scheduled', 'No
-          Event Scheduled', state_attr(entity, 'nextevent_desc') + ' ' +
-          state_attr(entity, 'nextevent_time')) }}
+        # secondary: >-
+        #   {{ iif(state_attr(entity, 'nextevent_time') == 'No Event Scheduled', 'No
+        #   Event Scheduled', state_attr(entity, 'nextevent_desc') + ' ' +
+        #   state_attr(entity, 'nextevent_time')) }}
 
-          {{ iif(state_attr(entity, 'afterevent_time') == 'No Event Scheduled', 'No
-          Event Scheduled', state_attr(entity, 'afterevent_desc') + ' ' +
-          state_attr(entity, 'afterevent_time')) }}
+        #   {{ iif(state_attr(entity, 'afterevent_time') == 'No Event Scheduled', 'No
+        #   Event Scheduled', state_attr(entity, 'afterevent_desc') + ' ' +
+        #   state_attr(entity, 'afterevent_time')) }}
         entity: "[[entity]]"
         fill_container: true
         tap_action:
@@ -40,6 +41,11 @@ sports_card:
             mushroom-state-info$: |
               .container {
                 text-align: right;
+                height: 40px;
+              }
+              .primary {
+                padding-top: 10px;
+                font-weight: 800 !important;
               }
             .: |
               ha-card:before {
@@ -57,6 +63,80 @@ sports_card:
                 box-shadow: none !important;
                 }
               ha-card {
+                margin: 0px 10px 2px 0px;
                 # background-color: var(--background-color);
                 box-shadow: none !important;
+                # --card-primary-font-size: 16px;
+                # font-weight: 700 !important;
               }
+      - type: custom:calendar-card-pro
+        entities:
+          - entity: "[[calendar]]"
+        days_to_show: 365
+        compact_events_to_show: 3
+        filter_duplicates: true
+        split_multiday_events: true
+        day_spacing: 5px
+        event_spacing: 5px
+        max_height: 200px
+        weekday_font_size: 10px
+        day_font_size: 16px
+        month_font_size: 10px
+        show_past_events: true
+        show_countdown: true
+        show_progress_bar: true
+        event_font_size: 12px
+        show_single_allday_time: false
+        time_24h: true
+        time_font_size: 11px
+        location_font_size: 11px
+        weather:
+          position: date
+          date:
+            show_conditions: true
+            show_high_temp: true
+            show_low_temp: false
+            icon_size: 14px
+            font_size: 12px
+            color: var(--primary-text-color)
+          event:
+            show_conditions: true
+            show_temp: true
+            icon_size: 14px
+            font_size: 12px
+            color: var(--primary-text-color)
+        tap_action:
+          action: expand
+        refresh_interval: 120
+        refresh_on_navigate: false
+        time_location_icon_size: 11px
+        card_mod:
+          style: |
+            ha-card {
+              border-radius: 0;
+              border: none;
+              padding-top: 0px !important;
+              padding-bottom: 0px !important;
+              background: transparent;
+              box-shadow: none;
+            }
+            /* Make today's events stand out */
+            .day-table.today .event-title {
+              font-size: 14px !important;     /* Larger text */
+              font-weight: bold !important;   /* Bold text */
+              color: var(--accent-color) !important; /* Use theme accent color */
+              animation: todayPulse 3s infinite alternate;
+              transition: border-left-color 1s ease-in-out;
+            }
+
+            /* Add subtle left border pulse animation */
+            .day-table.today .event {
+              border-left-width: 4px !important;
+              transition: border-left-color 1s ease-in-out;
+              animation: todayPulse 3s infinite alternate;
+            }
+
+            @keyframes todayPulse {
+              from { border-left-color: var(--accent-color); }
+              to { border-left-color: var(--primary-color); }
+            }

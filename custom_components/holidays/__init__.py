@@ -38,8 +38,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     config_entry.add_update_listener(update_listener)
     # Add calendar
     hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(
-            config_entry, const.CALENDAR_PLATFORM
+        hass.config_entries.async_forward_entry_setups(
+            config_entry, {const.CALENDAR_PLATFORM}
         )
     )
     return True
@@ -109,7 +109,7 @@ async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Update listener - to re-create device after options update."""
     await hass.config_entries.async_forward_entry_unload(entry, const.CALENDAR_PLATFORM)
     hass.async_add_job(
-        hass.config_entries.async_forward_entry_setup(entry, const.CALENDAR_PLATFORM)
+        hass.config_entries.async_forward_entry_setups(entry, {const.CALENDAR_PLATFORM})
     )
 
 

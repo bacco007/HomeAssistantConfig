@@ -2,46 +2,50 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from datetime import timedelta
-from typing import Any, Final
+from typing import TYPE_CHECKING, Any, Final
 
+import homeassistant.util.dt as dt_util
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     PERCENTAGE,
     REVOLUTIONS_PER_MINUTE,
+    EntityCategory,
     Platform,
     UnitOfInformation,
     UnitOfTemperature,
     UnitOfTime,
 )
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import UNDEFINED, StateType
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-import homeassistant.util.dt as dt_util
 
 from . import async_migrate_old_unique_ids, device_info
 from .const import (
-    LOGGER,
     CONF_LXC,
     CONF_NODES,
     CONF_QEMU,
     CONF_STORAGE,
     COORDINATORS,
-    DOMAIN,
     ProxmoxKeyAPIParse,
     ProxmoxType,
 )
 from .entity import ProxmoxEntity, ProxmoxEntityDescription
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Mapping
+
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.device_registry import DeviceInfo
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+    from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+
+    from .models import ProxmoxDiskData, ProxmoxZFSData
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -62,9 +66,11 @@ PROXMOX_SENSOR_DISK: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
         name="Disk free",
         icon="mdi:harddisk",
         native_unit_of_measurement=UnitOfInformation.BYTES,
-        value_fn=lambda x: (x.disk_total - x.disk_used)
-        if (UNDEFINED not in (x.disk_total, x.disk_used))
-        else 0,
+        value_fn=lambda x: (
+            (x.disk_total - x.disk_used)
+            if (UNDEFINED not in (x.disk_total, x.disk_used))
+            else 0
+        ),
         device_class=SensorDeviceClass.DATA_SIZE,
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=2,
@@ -78,9 +84,11 @@ PROXMOX_SENSOR_DISK: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
         icon="mdi:harddisk",
         native_unit_of_measurement=PERCENTAGE,
         conversion_fn=lambda x: (x * 100) if x != UNDEFINED and x > 0 else 0,
-        value_fn=lambda x: 1 - (x.disk_used / x.disk_total)
-        if (UNDEFINED not in (x.disk_used, x.disk_total) and x.disk_total > 0)
-        else 0,
+        value_fn=lambda x: (
+            1 - (x.disk_used / x.disk_total)
+            if (UNDEFINED not in (x.disk_used, x.disk_total) and x.disk_total > 0)
+            else 0
+        ),
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=1,
         entity_registry_enabled_default=False,
@@ -116,9 +124,11 @@ PROXMOX_SENSOR_DISK: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
         icon="mdi:harddisk",
         native_unit_of_measurement=PERCENTAGE,
         conversion_fn=lambda x: (x * 100) if x != UNDEFINED and x > 0 else 0,
-        value_fn=lambda x: (x.disk_used / x.disk_total)
-        if (UNDEFINED not in (x.disk_used, x.disk_total) and x.disk_total > 0)
-        else 0,
+        value_fn=lambda x: (
+            (x.disk_used / x.disk_total)
+            if (UNDEFINED not in (x.disk_used, x.disk_total) and x.disk_total > 0)
+            else 0
+        ),
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=1,
         translation_key="disk_used_perc",
@@ -142,9 +152,11 @@ PROXMOX_SENSOR_MEMORY: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
         icon="mdi:memory",
         native_unit_of_measurement=PERCENTAGE,
         conversion_fn=lambda x: (x * 100) if x != UNDEFINED and x > 0 else 0,
-        value_fn=lambda x: (x.memory_free / x.memory_total)
-        if (UNDEFINED not in (x.memory_free, x.memory_total) and x.memory_total > 0)
-        else 0,
+        value_fn=lambda x: (
+            (x.memory_free / x.memory_total)
+            if (UNDEFINED not in (x.memory_free, x.memory_total) and x.memory_total > 0)
+            else 0
+        ),
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=2,
         entity_registry_enabled_default=False,
@@ -179,9 +191,11 @@ PROXMOX_SENSOR_MEMORY: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
         icon="mdi:memory",
         native_unit_of_measurement=PERCENTAGE,
         conversion_fn=lambda x: (x * 100) if x != UNDEFINED and x > 0 else 0,
-        value_fn=lambda x: (x.memory_used / x.memory_total)
-        if (UNDEFINED not in (x.memory_used, x.memory_total) and x.memory_total > 0)
-        else 0,
+        value_fn=lambda x: (
+            (x.memory_used / x.memory_total)
+            if (UNDEFINED not in (x.memory_used, x.memory_total) and x.memory_total > 0)
+            else 0
+        ),
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=2,
         translation_key="memory_used_perc",
@@ -206,9 +220,11 @@ PROXMOX_SENSOR_SWAP: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
         icon="mdi:memory",
         native_unit_of_measurement=PERCENTAGE,
         conversion_fn=lambda x: (x * 100) if x != UNDEFINED and x > 0 else 0,
-        value_fn=lambda x: (x.swap_free / x.swap_total)
-        if (UNDEFINED not in (x.swap_free, x.swap_total) and x.swap_total > 0)
-        else 0,
+        value_fn=lambda x: (
+            (x.swap_free / x.swap_total)
+            if (UNDEFINED not in (x.swap_free, x.swap_total) and x.swap_total > 0)
+            else 0
+        ),
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=2,
         entity_registry_enabled_default=False,
@@ -244,9 +260,11 @@ PROXMOX_SENSOR_SWAP: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
         icon="mdi:memory",
         native_unit_of_measurement=PERCENTAGE,
         conversion_fn=lambda x: (x * 100) if x != UNDEFINED and x > 0 else 0,
-        value_fn=lambda x: (x.swap_used / x.swap_total)
-        if (UNDEFINED not in (x.swap_used, x.swap_total) and x.swap_total > 0)
-        else 0,
+        value_fn=lambda x: (
+            (x.swap_used / x.swap_total)
+            if (UNDEFINED not in (x.swap_used, x.swap_total) and x.swap_total > 0)
+            else 0
+        ),
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=2,
         entity_registry_enabled_default=False,
@@ -352,9 +370,11 @@ PROXMOX_SENSOR_QEMU: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
         name="Status",
         icon="mdi:server",
         translation_key="status_raw",
-        value_fn=lambda x: x.health
-        if (x.health not in ["running", "stopped", UNDEFINED])
-        else x.status,
+        value_fn=lambda x: (
+            x.health
+            if (x.health not in ["running", "stopped", UNDEFINED])
+            else x.status
+        ),
     ),
     *PROXMOX_SENSOR_CPU,
     *PROXMOX_SENSOR_DISK,
@@ -425,6 +445,7 @@ PROXMOX_SENSOR_DISKS: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=0,
         translation_key="temperature",
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     ProxmoxSensorEntityDescription(
         key="temperature_air",
@@ -435,6 +456,7 @@ PROXMOX_SENSOR_DISKS: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=0,
         translation_key="temperature_air",
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     ProxmoxSensorEntityDescription(
         key="power_cycles",
@@ -482,6 +504,67 @@ PROXMOX_SENSOR_DISKS: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
     ),
 )
 
+PROXMOX_SENSOR_ZFS: Final[tuple[ProxmoxSensorEntityDescription, ...]] = (
+    ProxmoxSensorEntityDescription(
+        key="health",
+        name="Health",
+        icon="mdi:nas",
+        translation_key="zfs_health",
+    ),
+    ProxmoxSensorEntityDescription(
+        key="free_perc",
+        name="Free percentage",
+        icon="mdi:nas",
+        native_unit_of_measurement=PERCENTAGE,
+        conversion_fn=lambda x: (x * 100) if x != UNDEFINED and x > 0 else 0,
+        value_fn=lambda x: (
+            (x.free / x.size)
+            if (UNDEFINED not in (x.free, x.size) and x.size > 0)
+            else 0
+        ),
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
+        translation_key="zfs_free_perc",
+    ),
+    ProxmoxSensorEntityDescription(
+        key="size",
+        name="Size",
+        icon="mdi:nas",
+        native_unit_of_measurement=UnitOfInformation.BYTES,
+        device_class=SensorDeviceClass.DATA_SIZE,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=2,
+        suggested_unit_of_measurement=UnitOfInformation.GIGABYTES,
+        translation_key="zfs_total",
+    ),
+    ProxmoxSensorEntityDescription(
+        key="alloc",
+        name="Used",
+        icon="mdi:nas",
+        native_unit_of_measurement=UnitOfInformation.BYTES,
+        device_class=SensorDeviceClass.DATA_SIZE,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=2,
+        suggested_unit_of_measurement=UnitOfInformation.GIGABYTES,
+        translation_key="zfs_used",
+    ),
+    ProxmoxSensorEntityDescription(
+        key="used_perc",
+        name="Used percentage",
+        icon="mdi:nas",
+        native_unit_of_measurement=PERCENTAGE,
+        conversion_fn=lambda x: (x * 100) if x != UNDEFINED and x > 0 else 0,
+        value_fn=lambda x: (
+            (x.alloc / x.size)
+            if (UNDEFINED not in (x.alloc, x.size) and x.size > 0)
+            else 0
+        ),
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
+        translation_key="zfs_used_perc",
+    ),
+)
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -489,7 +572,6 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up sensor."""
-
     async_add_entities(await async_setup_sensors_nodes(hass, config_entry))
     async_add_entities(await async_setup_sensors_qemu(hass, config_entry))
     async_add_entities(await async_setup_sensors_lxc(hass, config_entry))
@@ -501,11 +583,10 @@ async def async_setup_sensors_nodes(
     config_entry: ConfigEntry,
 ) -> list:
     """Set up sensor."""
-
     sensors = []
     migrate_unique_id_disks = []
 
-    coordinators = hass.data[DOMAIN][config_entry.entry_id][COORDINATORS]
+    coordinators = coordinator = config_entry.runtime_data[COORDINATORS]
 
     for node in config_entry.data[CONF_NODES]:
         if f"{ProxmoxType.Node}_{node}" in coordinators:
@@ -516,14 +597,8 @@ async def async_setup_sensors_nodes(
         if coordinator.data is not None:
             for description in PROXMOX_SENSOR_NODES:
                 if (
-                    (
-                        (
-                            data_value := getattr(
-                                coordinator.data, description.key, False
-                            )
-                        )
-                        #and data_value != UNDEFINED
-                    )
+                    (data_value := getattr(coordinator.data, description.key, False))
+                    # and data_value != UNDEFINED
                     or data_value == 0
                     or (
                         (value := description.value_fn) is not None
@@ -579,11 +654,7 @@ async def async_setup_sensors_nodes(
                         )
 
             coordinator_disks_data: ProxmoxDiskData
-            for coordinator_disk in (
-                coordinators[f"{ProxmoxType.Disk}_{node}"]
-                if f"{ProxmoxType.Disk}_{node}" in coordinators
-                else []
-            ):
+            for coordinator_disk in coordinators.get(f"{ProxmoxType.Disk}_{node}", []):
                 if (coordinator_disks_data := coordinator_disk.data) is None:
                     continue
 
@@ -603,6 +674,21 @@ async def async_setup_sensors_nodes(
                             and value(coordinator_disk.data) is not None
                         )
                     ):
+                        migrate_unique_id_disks.append(
+                            {
+                                "old_unique_id": f"{config_entry.entry_id}_{coordinator_disks_data.path}_{description.key}",
+                                "new_unique_id": f"{config_entry.entry_id}_{node}_{coordinator_disks_data.disk_id}_{description.key}",
+                            }
+                        )
+                        migrate_unique_id_disks.append(
+                            {
+                                "old_unique_id": f"{config_entry.entry_id}_{node}_{coordinator_disks_data.path}_{description.key}",
+                                "new_unique_id": f"{config_entry.entry_id}_{node}_{coordinator_disks_data.disk_id}_{description.key}",
+                            }
+                        )
+                        await async_migrate_old_unique_ids(
+                            hass, Platform.SENSOR, migrate_unique_id_disks
+                        )
                         sensors.append(
                             create_sensor(
                                 coordinator=coordinator_disk,
@@ -611,22 +697,53 @@ async def async_setup_sensors_nodes(
                                     config_entry=config_entry,
                                     api_category=ProxmoxType.Disk,
                                     node=node,
-                                    resource_id=coordinator_disks_data.path,
+                                    resource_id=coordinator_disks_data.disk_id,
                                     cordinator_resource=coordinator_disks_data,
                                 ),
                                 description=description,
-                                resource_id=f"{node}_{coordinator_disks_data.path}",
+                                resource_id=f"{node}_{coordinator_disks_data.disk_id}",
                                 config_entry=config_entry,
                             )
                         )
-                        migrate_unique_id_disks.append(
-                            {
-                                "old_unique_id": f"{config_entry.entry_id}_{coordinator_disks_data.path}_{description.key}",
-                                "new_unique_id": f"{config_entry.entry_id}_{node}_{coordinator_disks_data.path}_{description.key}",
-                            }
+
+            coordinator_zfs_data: ProxmoxZFSData
+            for coordinator_zfs in coordinators.get(f"{ProxmoxType.ZFS}_{node}", []):
+                if (coordinator_zfs_data := coordinator_zfs.data) is None:
+                    continue
+
+                for description in PROXMOX_SENSOR_ZFS:
+                    if (
+                        (
+                            (
+                                data_value := getattr(
+                                    coordinator_zfs.data, description.key, False
+                                )
+                            )
+                            and data_value != UNDEFINED
+                        )
+                        or data_value == 0
+                        or (
+                            (value := description.value_fn) is not None
+                            and value(coordinator_zfs.data) is not None
+                        )
+                    ):
+                        sensors.append(
+                            create_sensor(
+                                coordinator=coordinator_zfs,
+                                info_device=device_info(
+                                    hass=hass,
+                                    config_entry=config_entry,
+                                    api_category=ProxmoxType.ZFS,
+                                    node=node,
+                                    resource_id=coordinator_zfs_data.name,
+                                    cordinator_resource=coordinator_zfs_data,
+                                ),
+                                description=description,
+                                resource_id=f"{node}_{coordinator_zfs_data.name}",
+                                config_entry=config_entry,
+                            )
                         )
 
-    await async_migrate_old_unique_ids(hass, Platform.SENSOR, migrate_unique_id_disks)
     return sensors
 
 
@@ -635,10 +752,9 @@ async def async_setup_sensors_qemu(
     config_entry: ConfigEntry,
 ) -> list:
     """Set up sensor."""
-
     sensors = []
 
-    coordinators = hass.data[DOMAIN][config_entry.entry_id][COORDINATORS]
+    coordinators = config_entry.runtime_data[COORDINATORS]
 
     for vm_id in config_entry.data[CONF_QEMU]:
         if f"{ProxmoxType.QEMU}_{vm_id}" in coordinators:
@@ -650,36 +766,31 @@ async def async_setup_sensors_qemu(
             continue
 
         for description in PROXMOX_SENSOR_QEMU:
-            if description.api_category in (None, ProxmoxType.QEMU):
-                if (
-                    (
-                        (
-                            data_value := getattr(
-                                coordinator.data, description.key, False
-                            )
-                        )
-                        and data_value != UNDEFINED
-                    )
-                    or data_value == 0
-                    or (
-                        (value := description.value_fn) is not None
-                        and value(coordinator.data) is not None
-                    )
-                ):
-                    sensors.append(
-                        create_sensor(
-                            coordinator=coordinator,
-                            info_device=device_info(
-                                hass=hass,
-                                config_entry=config_entry,
-                                api_category=ProxmoxType.QEMU,
-                                resource_id=vm_id,
-                            ),
-                            description=description,
-                            resource_id=vm_id,
+            if description.api_category in (None, ProxmoxType.QEMU) and (
+                (
+                    (data_value := getattr(coordinator.data, description.key, False))
+                    and data_value != UNDEFINED
+                )
+                or data_value == 0
+                or (
+                    (value := description.value_fn) is not None
+                    and value(coordinator.data) is not None
+                )
+            ):
+                sensors.append(
+                    create_sensor(
+                        coordinator=coordinator,
+                        info_device=device_info(
+                            hass=hass,
                             config_entry=config_entry,
-                        )
+                            api_category=ProxmoxType.QEMU,
+                            resource_id=vm_id,
+                        ),
+                        description=description,
+                        resource_id=vm_id,
+                        config_entry=config_entry,
                     )
+                )
 
     return sensors
 
@@ -689,10 +800,9 @@ async def async_setup_sensors_lxc(
     config_entry: ConfigEntry,
 ) -> list:
     """Set up sensor."""
-
     sensors = []
 
-    coordinators = hass.data[DOMAIN][config_entry.entry_id][COORDINATORS]
+    coordinators = config_entry.runtime_data[COORDINATORS]
 
     for ct_id in config_entry.data[CONF_LXC]:
         if f"{ProxmoxType.LXC}_{ct_id}" in coordinators:
@@ -704,36 +814,31 @@ async def async_setup_sensors_lxc(
             continue
 
         for description in PROXMOX_SENSOR_LXC:
-            if description.api_category in (None, ProxmoxType.LXC):
-                if (
-                    (
-                        (
-                            data_value := getattr(
-                                coordinator.data, description.key, False
-                            )
-                        )
-                        and data_value != UNDEFINED
-                    )
-                    or data_value == 0
-                    or (
-                        (value := description.value_fn) is not None
-                        and value(coordinator.data) is not None
-                    )
-                ):
-                    sensors.append(
-                        create_sensor(
-                            coordinator=coordinator,
-                            info_device=device_info(
-                                hass=hass,
-                                config_entry=config_entry,
-                                api_category=ProxmoxType.LXC,
-                                resource_id=ct_id,
-                            ),
-                            description=description,
-                            resource_id=ct_id,
+            if description.api_category in (None, ProxmoxType.LXC) and (
+                (
+                    (data_value := getattr(coordinator.data, description.key, False))
+                    and data_value != UNDEFINED
+                )
+                or data_value == 0
+                or (
+                    (value := description.value_fn) is not None
+                    and value(coordinator.data) is not None
+                )
+            ):
+                sensors.append(
+                    create_sensor(
+                        coordinator=coordinator,
+                        info_device=device_info(
+                            hass=hass,
                             config_entry=config_entry,
-                        )
+                            api_category=ProxmoxType.LXC,
+                            resource_id=ct_id,
+                        ),
+                        description=description,
+                        resource_id=ct_id,
+                        config_entry=config_entry,
                     )
+                )
 
     return sensors
 
@@ -743,10 +848,9 @@ async def async_setup_sensors_storages(
     config_entry: ConfigEntry,
 ) -> list:
     """Set up sensor."""
-
     sensors = []
 
-    coordinators = hass.data[DOMAIN][config_entry.entry_id][COORDINATORS]
+    coordinators = config_entry.runtime_data[COORDINATORS]
 
     for storage_id in config_entry.data[CONF_STORAGE]:
         if f"{ProxmoxType.Storage}_{storage_id}" in coordinators:
@@ -758,37 +862,32 @@ async def async_setup_sensors_storages(
             continue
 
         for description in PROXMOX_SENSOR_STORAGE:
-            if description.api_category in (None, ProxmoxType.Storage):
-                if (
-                    (
-                        (
-                            data_value := getattr(
-                                coordinator.data, description.key, False
-                            )
-                        )
-                        and data_value != UNDEFINED
-                    )
-                    or data_value == 0
-                    or (
-                        (value := description.value_fn) is not None
-                        and value(coordinator.data) is not None
-                    )
-                ):
-                    sensors.append(
-                        create_sensor(
-                            coordinator=coordinator,
-                            info_device=device_info(
-                                hass=hass,
-                                config_entry=config_entry,
-                                api_category=ProxmoxType.Storage,
-                                resource_id=storage_id,
-                                cordinator_resource=coordinator.data,
-                            ),
-                            description=description,
-                            resource_id=storage_id,
+            if description.api_category in (None, ProxmoxType.Storage) and (
+                (
+                    (data_value := getattr(coordinator.data, description.key, False))
+                    and data_value != UNDEFINED
+                )
+                or data_value == 0
+                or (
+                    (value := description.value_fn) is not None
+                    and value(coordinator.data) is not None
+                )
+            ):
+                sensors.append(
+                    create_sensor(
+                        coordinator=coordinator,
+                        info_device=device_info(
+                            hass=hass,
                             config_entry=config_entry,
-                        )
+                            api_category=ProxmoxType.Storage,
+                            resource_id=storage_id,
+                            cordinator_resource=coordinator.data,
+                        ),
+                        description=description,
+                        resource_id=storage_id,
+                        config_entry=config_entry,
                     )
+                )
 
     return sensors
 
@@ -833,7 +932,9 @@ class ProxmoxSensorEntity(ProxmoxEntity, SensorEntity):
         if (data := self.coordinator.data) is None:
             return None
 
-        if (not getattr(data, self.entity_description.key, False)) and getattr(data, self.entity_description.key, True) != 0:
+        if (not getattr(data, self.entity_description.key, False)) and getattr(
+            data, self.entity_description.key, True
+        ) != 0:
             if value := self.entity_description.value_fn:
                 native_value = value(data)
             elif self.entity_description.key in (
@@ -861,7 +962,6 @@ class ProxmoxSensorEntity(ProxmoxEntity, SensorEntity):
     @property
     def available(self) -> bool:
         """Return sensor availability."""
-
         return super().available and self.coordinator.data is not None
 
     @property

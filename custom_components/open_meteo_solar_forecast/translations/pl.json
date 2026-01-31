@@ -30,7 +30,7 @@
           "modules power": "Całkowita moc szczytowa modułów fotowoltaicznych w watach",
           "modules_power": "Całkowita moc szczytowa modułów fotowoltaicznych w watach"
         },
-        "description": "Te wartości pozwalają dostosować wyniki dla Forecast.Solar. Proszę zapoznać się z dokumentacją, jeśli pole jest niejasne."
+        "description": "Te wartości pozwalają dostosować wyniki dla Solar Forecast. Proszę zapoznać się z dokumentacją, jeśli pole jest niejasne."
       }
     }
   }

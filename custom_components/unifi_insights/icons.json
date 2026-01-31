@@ -1,0 +1,188 @@
+{
+  "entity": {
+    "sensor": {
+      "cpu_usage": {
+        "default": "mdi:cpu-64-bit"
+      },
+      "memory_usage": {
+        "default": "mdi:memory"
+      },
+      "uptime": {
+        "default": "mdi:clock-start"
+      },
+      "tx_rate": {
+        "default": "mdi:upload-network"
+      },
+      "rx_rate": {
+        "default": "mdi:download-network"
+      },
+      "firmware_version": {
+        "default": "mdi:text-box-check"
+      },
+      "wired_clients": {
+        "default": "mdi:network"
+      },
+      "wireless_clients": {
+        "default": "mdi:wifi"
+      },
+      "port_poe_power": {
+        "default": "mdi:flash"
+      },
+      "port_speed": {
+        "default": "mdi:speedometer"
+      },
+      "port_tx_bytes": {
+        "default": "mdi:upload"
+      },
+      "port_rx_bytes": {
+        "default": "mdi:download"
+      },
+      "wan_ip": {
+        "default": "mdi:ip-network"
+      },
+      "wan_uptime": {
+        "default": "mdi:clock-start"
+      },
+      "temperature": {
+        "default": "mdi:thermometer"
+      },
+      "humidity": {
+        "default": "mdi:water-percent"
+      },
+      "light": {
+        "default": "mdi:brightness-5"
+      },
+      "battery": {
+        "default": "mdi:battery"
+      }
+    },
+    "binary_sensor": {
+      "device_status": {
+        "default": "mdi:lan-connect",
+        "state": {
+          "off": "mdi:lan-disconnect"
+        }
+      },
+      "wan_status": {
+        "default": "mdi:wan",
+        "state": {
+          "off": "mdi:wan"
+        }
+      },
+      "camera_motion": {
+        "default": "mdi:motion-sensor",
+        "state": {
+          "off": "mdi:motion-sensor-off"
+        }
+      },
+      "camera_person_detection": {
+        "default": "mdi:account",
+        "state": {
+          "off": "mdi:account-off"
+        }
+      },
+      "camera_vehicle_detection": {
+        "default": "mdi:car",
+        "state": {
+          "off": "mdi:car-off"
+        }
+      },
+      "camera_animal_detection": {
+        "default": "mdi:paw",
+        "state": {
+          "off": "mdi:paw-off"
+        }
+      },
+      "camera_package_detection": {
+        "default": "mdi:package-variant",
+        "state": {
+          "off": "mdi:package-variant-closed"
+        }
+      },
+      "camera_doorbell_ring": {
+        "default": "mdi:bell-ring",
+        "state": {
+          "off": "mdi:bell"
+        }
+      },
+      "sensor_motion": {
+        "default": "mdi:motion-sensor",
+        "state": {
+          "off": "mdi:motion-sensor-off"
+        }
+      },
+      "sensor_door": {
+        "default": "mdi:door-open",
+        "state": {
+          "off": "mdi:door-closed"
+        }
+      }
+    },
+    "button": {
+      "restart": {
+        "default": "mdi:restart"
+      },
+      "play_chime": {
+        "default": "mdi:bell-ring"
+      }
+    },
+    "switch": {
+      "microphone": {
+        "default": "mdi:microphone",
+        "state": {
+          "off": "mdi:microphone-off"
+        }
+      }
+    },
+    "select": {
+      "recording_mode": {
+        "default": "mdi:record-rec"
+      },
+      "hdr_mode": {
+        "default": "mdi:hdr"
+      },
+      "video_mode": {
+        "default": "mdi:video"
+      },
+      "light_mode": {
+        "default": "mdi:lightbulb"
+      }
+    },
+    "number": {
+      "microphone_volume": {
+        "default": "mdi:microphone"
+      },
+      "brightness_level": {
+        "default": "mdi:brightness-6"
+      },
+      "volume": {
+        "default": "mdi:volume-high"
+      },
+      "repeat_times": {
+        "default": "mdi:repeat"
+      }
+    }
+  },
+  "services": {
+    "refresh_data": "mdi:refresh",
+    "restart_device": "mdi:restart",
+    "set_recording_mode": "mdi:record-rec",
+    "set_hdr_mode": "mdi:hdr",
+    "set_video_mode": "mdi:video",
+    "set_mic_volume": "mdi:microphone",
+    "set_light_mode": "mdi:lightbulb",
+    "set_light_level": "mdi:brightness-6",
+    "ptz_move": "mdi:cctv",
+    "ptz_patrol": "mdi:cctv",
+    "set_chime_volume": "mdi:volume-high",
+    "play_chime_ringtone": "mdi:bell-ring",
+    "set_chime_ringtone": "mdi:music",
+    "set_chime_repeat_times": "mdi:repeat",
+    "authorize_guest": "mdi:account-check",
+    "generate_voucher": "mdi:ticket",
+    "delete_voucher": "mdi:ticket-outline",
+    "trigger_alarm": "mdi:alarm-light",
+    "create_liveview": "mdi:view-grid",
+    "set_liveview": "mdi:view-grid-plus"
+  }
+}

@@ -5,16 +5,18 @@ The spotifyplus integration.
 from __future__ import annotations
 
 from asyncio import run_coroutine_threadsafe
-from datetime import timedelta
 from urllib3._version import __version__ as urllib3_version
 
 import functools
+import json
 import logging
+import os
 import threading
 import voluptuous as vol
 
-from spotifywebapipython import SpotifyClient
+from spotifywebapipython import SpotifyClient, SpotifyAuthToken
 from spotifywebapipython.models import SpotifyConnectDevices, SpotifyConnectDevice
+from spotifywebapipython.const import VERSION as spotifywebapipython_VERSION
 
 from homeassistant.components import zeroconf
 from homeassistant.components.media_player import MediaPlayerEntity
@@ -22,23 +24,127 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform, CONF_ID
 from homeassistant.core import HomeAssistant, ServiceCall, ServiceResponse, SupportsResponse
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady, HomeAssistantError, IntegrationError, ServiceValidationError
-from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import config_validation as cv, entity_registry as er
 from homeassistant.helpers.config_entry_oauth2_flow import (OAuth2Session, async_get_config_entry_implementation)
 from homeassistant.helpers.issue_registry import IssueSeverity, async_create_issue
 from homeassistant.helpers.typing import ConfigType
-#from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .appmessages import STAppMessages
+from .instancedata_spotifyplus import InstanceDataSpotifyPlus
 from .const import (
-    CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_DC,
-    CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_KEY,
     CONF_OPTION_DEVICE_LOGINID,
     CONF_OPTION_DEVICE_PASSWORD,
     CONF_OPTION_DEVICE_USERNAME,
     DOMAIN, 
-    SPOTIFY_SCOPES
+    SPOTIFY_SCOPES,
+    SERVICE_SPOTIFY_ADD_PLAYER_QUEUE_ITEMS,
+    SERVICE_SPOTIFY_CHECK_ALBUM_FAVORITES,
+    SERVICE_SPOTIFY_CHECK_ARTISTS_FOLLOWING,
+    SERVICE_SPOTIFY_CHECK_AUDIOBOOK_FAVORITES,
+    SERVICE_SPOTIFY_CHECK_EPISODE_FAVORITES,
+    SERVICE_SPOTIFY_CHECK_PLAYLIST_FOLLOWERS,
+    SERVICE_SPOTIFY_CHECK_SHOW_FAVORITES,
+    SERVICE_SPOTIFY_CHECK_TRACK_FAVORITES,
+    SERVICE_SPOTIFY_CHECK_USERS_FOLLOWING,
+    SERVICE_SPOTIFY_FOLLOW_ARTISTS,
+    SERVICE_SPOTIFY_FOLLOW_PLAYLIST,
+    SERVICE_SPOTIFY_FOLLOW_USERS,
+    SERVICE_SPOTIFY_GET_ALBUM,
+    SERVICE_SPOTIFY_GET_ALBUM_FAVORITES,
+    SERVICE_SPOTIFY_GET_ALBUM_NEW_RELEASES,
+    SERVICE_SPOTIFY_GET_ALBUM_TRACKS,
+    SERVICE_SPOTIFY_GET_ARTIST,
+    SERVICE_SPOTIFY_GET_ARTIST_ALBUMS,
+    SERVICE_SPOTIFY_GET_ARTIST_INFO,
+    SERVICE_SPOTIFY_GET_ARTIST_RELATED_ARTISTS,
+    SERVICE_SPOTIFY_GET_ARTIST_TOP_TRACKS,
+    SERVICE_SPOTIFY_GET_ARTISTS_FOLLOWED,
+    SERVICE_SPOTIFY_GET_AUDIOBOOK,
+    SERVICE_SPOTIFY_GET_AUDIOBOOK_CHAPTERS,
+    SERVICE_SPOTIFY_GET_AUDIOBOOK_FAVORITES,
+    SERVICE_SPOTIFY_GET_BROWSE_CATEGORYS_LIST,
+    SERVICE_SPOTIFY_GET_CATEGORY_PLAYLISTS,
+    SERVICE_SPOTIFY_GET_CHAPTER,
+    SERVICE_SPOTIFY_GET_COVER_IMAGE_FILE,
+    SERVICE_SPOTIFY_GET_EPISODE,
+    SERVICE_SPOTIFY_GET_EPISODE_FAVORITES,
+    SERVICE_SPOTIFY_GET_FEATURED_PLAYLISTS, 
+    SERVICE_SPOTIFY_GET_ID_FROM_URI,
+    SERVICE_SPOTIFY_GET_IMAGE_PALETTE_COLORS, 
+    SERVICE_SPOTIFY_GET_IMAGE_VIBRANT_COLORS,
+    SERVICE_SPOTIFY_GET_PLAYER_DEVICES,
+    SERVICE_SPOTIFY_GET_PLAYER_LAST_PLAYED_INFO,
+    SERVICE_SPOTIFY_GET_PLAYER_NOW_PLAYING,
+    SERVICE_SPOTIFY_GET_PLAYER_PLAYBACK_STATE,
+    SERVICE_SPOTIFY_GET_PLAYER_QUEUE_INFO,
+    SERVICE_SPOTIFY_GET_PLAYER_RECENT_TRACKS,
+    SERVICE_SPOTIFY_GET_PLAYLIST,
+    SERVICE_SPOTIFY_GET_PLAYLIST_COVER_IMAGE,
+    SERVICE_SPOTIFY_GET_PLAYLIST_FAVORITES,
+    SERVICE_SPOTIFY_GET_PLAYLIST_ITEMS, 
+    SERVICE_SPOTIFY_GET_PLAYLISTS_FOR_USER,
+    SERVICE_SPOTIFY_GET_SHOW,
+    SERVICE_SPOTIFY_GET_SHOW_EPISODES,
+    SERVICE_SPOTIFY_GET_SHOW_FAVORITES, 
+    SERVICE_SPOTIFY_GET_SPOTIFY_CONNECT_DEVICE,
+    SERVICE_SPOTIFY_GET_SPOTIFY_CONNECT_DEVICES,
+    SERVICE_SPOTIFY_GET_TRACK,
+    SERVICE_SPOTIFY_GET_TRACK_AUDIO_FEATURES,
+    SERVICE_SPOTIFY_GET_TRACK_FAVORITES,
+    SERVICE_SPOTIFY_GET_TRACK_RECOMMENDATIONS,
+    SERVICE_SPOTIFY_GET_TRACKS_AUDIO_FEATURES, 
+    SERVICE_SPOTIFY_GET_USERS_TOP_ARTISTS,
+    SERVICE_SPOTIFY_GET_USERS_TOP_TRACKS,
+    SERVICE_SPOTIFY_PLAYER_MEDIA_PAUSE, 
+    SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_CONTEXT, 
+    SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_TRACK_FAVORITES,
+    SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_TRACKS,
+    SERVICE_SPOTIFY_PLAYER_MEDIA_RESUME,
+    SERVICE_SPOTIFY_PLAYER_MEDIA_SEEK, 
+    SERVICE_SPOTIFY_PLAYER_MEDIA_SKIP_NEXT, 
+    SERVICE_SPOTIFY_PLAYER_MEDIA_SKIP_PREVIOUS,
+    SERVICE_SPOTIFY_PLAYER_SET_REPEAT_MODE,
+    SERVICE_SPOTIFY_PLAYER_SET_SHUFFLE_MODE,
+    SERVICE_SPOTIFY_PLAYER_SET_VOLUME_LEVEL,
+    SERVICE_SPOTIFY_PLAYER_TRANSFER_PLAYBACK,
+    SERVICE_SPOTIFY_PLAYLIST_CHANGE,
+    SERVICE_SPOTIFY_PLAYLIST_COVER_IMAGE_ADD,
+    SERVICE_SPOTIFY_PLAYLIST_CREATE,
+    SERVICE_SPOTIFY_PLAYLIST_ITEMS_ADD,
+    SERVICE_SPOTIFY_PLAYLIST_ITEMS_CLEAR,
+    SERVICE_SPOTIFY_PLAYLIST_ITEMS_REMOVE, 
+    SERVICE_SPOTIFY_PLAYLIST_ITEMS_REORDER,
+    SERVICE_SPOTIFY_PLAYLIST_ITEMS_REPLACE,
+    SERVICE_SPOTIFY_REMOVE_ALBUM_FAVORITES,
+    SERVICE_SPOTIFY_REMOVE_AUDIOBOOK_FAVORITES,
+    SERVICE_SPOTIFY_REMOVE_EPISODE_FAVORITES, 
+    SERVICE_SPOTIFY_REMOVE_SHOW_FAVORITES,
+    SERVICE_SPOTIFY_REMOVE_TRACK_FAVORITES,
+    SERVICE_SPOTIFY_SAVE_ALBUM_FAVORITES,
+    SERVICE_SPOTIFY_SAVE_AUDIOBOOK_FAVORITES, 
+    SERVICE_SPOTIFY_SAVE_EPISODE_FAVORITES,
+    SERVICE_SPOTIFY_SAVE_SHOW_FAVORITES,
+    SERVICE_SPOTIFY_SAVE_TRACK_FAVORITES, 
+    SERVICE_SPOTIFY_SEARCH_ALL,
+    SERVICE_SPOTIFY_SEARCH_ALBUMS, 
+    SERVICE_SPOTIFY_SEARCH_ARTISTS, 
+    SERVICE_SPOTIFY_SEARCH_AUDIOBOOKS,
+    SERVICE_SPOTIFY_SEARCH_EPISODES, 
+    SERVICE_SPOTIFY_SEARCH_PLAYLISTS,
+    SERVICE_SPOTIFY_SEARCH_SHOWS,
+    SERVICE_SPOTIFY_SEARCH_TRACKS, 
+    SERVICE_SPOTIFY_TRIGGER_SCAN_INTERVAL,
+    SERVICE_SPOTIFY_UNFOLLOW_ARTISTS,
+    SERVICE_SPOTIFY_UNFOLLOW_PLAYLIST,
+    SERVICE_SPOTIFY_UNFOLLOW_USERS,
+    SERVICE_SPOTIFY_ZEROCONF_DEVICE_CONNECT,
+    SERVICE_SPOTIFY_ZEROCONF_DEVICE_DISCONNECT,
+    SERVICE_SPOTIFY_ZEROCONF_DEVICE_GETINFO,
+    SERVICE_SPOTIFY_ZEROCONF_DISCOVER_DEVICES, 
+    SERVICE_VOLUME_SET_STEP,
+    SERVICE_LIST_APPLICATION_CREDENTIAL_MAPPPINGS,
+    SERVICE_TEST_TOKEN_EXPIRE,
 )
-from .instancedata_spotifyplus import InstanceDataSpotifyPlus
 
 __all__ = [
     "DOMAIN",
@@ -50,17 +156,16 @@ TOKEN_STATUS:str = 'status'
 TOKEN_STATUS_REFRESH_EVENT:str = 'TokenRefreshEvent'
 TOKENUPDATER_LOCK = threading.Lock()   # syncronous lock to sync access to token updates.
 
+REAUTH_TEST_FIRST_TIME:bool = None    # used when testing app creds reauth processing
+
 try:
 
     from smartinspectpython.siauto import SIAuto, SILevel, SISession, SIConfigurationTimer, SIColors
 
-    # load SmartInspect settings from a configuration settings file.
+    # load SmartInspect settings from a configuration settings file;
+    # configuration file will be monitored for changes, and reloaded if required.
     siConfigPath: str = "./smartinspect.cfg"
     SIAuto.Si.LoadConfiguration(siConfigPath)
-
-    # start monitoring the configuration file for changes, and reload it when it changes.
-    # this will check the file for changes every 60 seconds.
-    siConfig:SIConfigurationTimer = SIConfigurationTimer(SIAuto.Si, siConfigPath)
 
     # get smartinspect logger reference; create a new session for this module name.
     _logsi:SISession = SIAuto.Si.GetSession(__name__)
@@ -87,107 +192,8 @@ CONFIG_SCHEMA = cv.removed(DOMAIN, raise_if_present=False)
 
 
 # -----------------------------------------------------------------------------------
-# Custom Service Schemas.
+# Custom Service schemas.
 # -----------------------------------------------------------------------------------
-SERVICE_SPOTIFY_ADD_PLAYER_QUEUE_ITEMS:str = 'add_player_queue_items'
-SERVICE_SPOTIFY_CHECK_ALBUM_FAVORITES:str = 'check_album_favorites'
-SERVICE_SPOTIFY_CHECK_ARTISTS_FOLLOWING:str = 'check_artists_following'
-SERVICE_SPOTIFY_CHECK_AUDIOBOOK_FAVORITES:str = 'check_audiobook_favorites'
-SERVICE_SPOTIFY_CHECK_EPISODE_FAVORITES:str = 'check_episode_favorites'
-SERVICE_SPOTIFY_CHECK_PLAYLIST_FOLLOWERS:str = 'check_playlist_followers'
-SERVICE_SPOTIFY_CHECK_SHOW_FAVORITES:str = 'check_show_favorites'
-SERVICE_SPOTIFY_CHECK_TRACK_FAVORITES:str = 'check_track_favorites'
-SERVICE_SPOTIFY_CHECK_USERS_FOLLOWING:str = 'check_users_following'
-SERVICE_SPOTIFY_FOLLOW_ARTISTS:str = 'follow_artists'
-SERVICE_SPOTIFY_FOLLOW_PLAYLIST:str = 'follow_playlist'
-SERVICE_SPOTIFY_FOLLOW_USERS:str = 'follow_users'
-SERVICE_SPOTIFY_GET_ALBUM:str = 'get_album'
-SERVICE_SPOTIFY_GET_ALBUM_FAVORITES:str = 'get_album_favorites'
-SERVICE_SPOTIFY_GET_ALBUM_NEW_RELEASES:str = 'get_album_new_releases'
-SERVICE_SPOTIFY_GET_ALBUM_TRACKS:str = 'get_album_tracks'
-SERVICE_SPOTIFY_GET_ARTIST:str = 'get_artist'
-SERVICE_SPOTIFY_GET_ARTIST_ALBUMS:str = 'get_artist_albums'
-SERVICE_SPOTIFY_GET_ARTIST_INFO:str = 'get_artist_info'
-SERVICE_SPOTIFY_GET_ARTIST_RELATED_ARTISTS:str = 'get_artist_related_artists'
-SERVICE_SPOTIFY_GET_ARTIST_TOP_TRACKS:str = 'get_artist_top_tracks'
-SERVICE_SPOTIFY_GET_ARTISTS_FOLLOWED:str = 'get_artists_followed'
-SERVICE_SPOTIFY_GET_AUDIOBOOK:str = 'get_audiobook'
-SERVICE_SPOTIFY_GET_AUDIOBOOK_CHAPTERS:str = 'get_audiobook_chapters'
-SERVICE_SPOTIFY_GET_AUDIOBOOK_FAVORITES:str = 'get_audiobook_favorites'
-SERVICE_SPOTIFY_GET_BROWSE_CATEGORYS_LIST:str = 'get_browse_categorys_list'
-SERVICE_SPOTIFY_GET_CATEGORY_PLAYLISTS:str = 'get_category_playlists'
-SERVICE_SPOTIFY_GET_CHAPTER:str = 'get_chapter'
-SERVICE_SPOTIFY_GET_COVER_IMAGE_FILE:str = 'get_cover_image_file'
-SERVICE_SPOTIFY_GET_EPISODE:str = 'get_episode'
-SERVICE_SPOTIFY_GET_EPISODE_FAVORITES:str = 'get_episode_favorites'
-SERVICE_SPOTIFY_GET_FEATURED_PLAYLISTS:str = 'get_featured_playlists'
-SERVICE_SPOTIFY_GET_PLAYER_DEVICES:str = 'get_player_devices'
-SERVICE_SPOTIFY_GET_PLAYER_NOW_PLAYING:str = 'get_player_now_playing'
-SERVICE_SPOTIFY_GET_PLAYER_PLAYBACK_STATE:str = 'get_player_playback_state'
-SERVICE_SPOTIFY_GET_PLAYER_QUEUE_INFO:str = 'get_player_queue_info'
-SERVICE_SPOTIFY_GET_PLAYER_RECENT_TRACKS:str = 'get_player_recent_tracks'
-SERVICE_SPOTIFY_GET_PLAYLIST:str = 'get_playlist'
-SERVICE_SPOTIFY_GET_PLAYLIST_COVER_IMAGE:str = 'get_playlist_cover_image'
-SERVICE_SPOTIFY_GET_PLAYLIST_FAVORITES:str = 'get_playlist_favorites'
-SERVICE_SPOTIFY_GET_PLAYLIST_ITEMS:str = 'get_playlist_items'
-SERVICE_SPOTIFY_GET_PLAYLISTS_FOR_USER:str = 'get_playlists_for_user'
-SERVICE_SPOTIFY_GET_SHOW:str = 'get_show'
-SERVICE_SPOTIFY_GET_SHOW_EPISODES:str = 'get_show_episodes'
-SERVICE_SPOTIFY_GET_SHOW_FAVORITES:str = 'get_show_favorites'
-SERVICE_SPOTIFY_GET_SPOTIFY_CONNECT_DEVICE:str = 'get_spotify_connect_device'
-SERVICE_SPOTIFY_GET_SPOTIFY_CONNECT_DEVICES:str = 'get_spotify_connect_devices'
-SERVICE_SPOTIFY_GET_TRACK:str = 'get_track'
-SERVICE_SPOTIFY_GET_TRACK_FAVORITES:str = 'get_track_favorites'
-SERVICE_SPOTIFY_GET_TRACK_RECOMMENDATIONS:str = 'get_track_recommendations'
-SERVICE_SPOTIFY_GET_TRACKS_AUDIO_FEATURES:str = 'get_tracks_audio_features'
-SERVICE_SPOTIFY_GET_USERS_TOP_ARTISTS:str = 'get_users_top_artists'
-SERVICE_SPOTIFY_GET_USERS_TOP_TRACKS:str = 'get_users_top_tracks'
-SERVICE_SPOTIFY_PLAYER_MEDIA_PAUSE:str = 'player_media_pause'
-SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_CONTEXT:str = 'player_media_play_context'
-SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_TRACK_FAVORITES:str = 'player_media_play_track_favorites'
-SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_TRACKS:str = 'player_media_play_tracks'
-SERVICE_SPOTIFY_PLAYER_MEDIA_RESUME:str = 'player_media_resume'
-SERVICE_SPOTIFY_PLAYER_MEDIA_SEEK:str = 'player_media_seek'
-SERVICE_SPOTIFY_PLAYER_MEDIA_SKIP_NEXT:str = 'player_media_skip_next'
-SERVICE_SPOTIFY_PLAYER_MEDIA_SKIP_PREVIOUS:str = 'player_media_skip_previous'
-SERVICE_SPOTIFY_PLAYER_SET_REPEAT_MODE:str = 'player_set_repeat_mode'
-SERVICE_SPOTIFY_PLAYER_SET_SHUFFLE_MODE:str = 'player_set_shuffle_mode'
-SERVICE_SPOTIFY_PLAYER_SET_VOLUME_LEVEL:str = 'player_set_volume_level'
-SERVICE_SPOTIFY_PLAYER_TRANSFER_PLAYBACK:str = 'player_transfer_playback'
-SERVICE_SPOTIFY_PLAYLIST_CHANGE:str = 'playlist_change'
-SERVICE_SPOTIFY_PLAYLIST_COVER_IMAGE_ADD:str = 'playlist_cover_image_add'
-SERVICE_SPOTIFY_PLAYLIST_CREATE:str = 'playlist_create'
-SERVICE_SPOTIFY_PLAYLIST_ITEMS_ADD:str = 'playlist_items_add'
-SERVICE_SPOTIFY_PLAYLIST_ITEMS_CLEAR:str = 'playlist_items_clear'
-SERVICE_SPOTIFY_PLAYLIST_ITEMS_REMOVE:str = 'playlist_items_remove'
-SERVICE_SPOTIFY_PLAYLIST_ITEMS_REORDER:str = 'playlist_items_reorder'
-SERVICE_SPOTIFY_PLAYLIST_ITEMS_REPLACE:str = 'playlist_items_replace'
-SERVICE_SPOTIFY_REMOVE_ALBUM_FAVORITES:str = 'remove_album_favorites'
-SERVICE_SPOTIFY_REMOVE_AUDIOBOOK_FAVORITES:str = 'remove_audiobook_favorites'
-SERVICE_SPOTIFY_REMOVE_EPISODE_FAVORITES:str = 'remove_episode_favorites'
-SERVICE_SPOTIFY_REMOVE_SHOW_FAVORITES:str = 'remove_show_favorites'
-SERVICE_SPOTIFY_REMOVE_TRACK_FAVORITES:str = 'remove_track_favorites'
-SERVICE_SPOTIFY_SAVE_ALBUM_FAVORITES:str = 'save_album_favorites'
-SERVICE_SPOTIFY_SAVE_AUDIOBOOK_FAVORITES:str = 'save_audiobook_favorites'
-SERVICE_SPOTIFY_SAVE_EPISODE_FAVORITES:str = 'save_episode_favorites'
-SERVICE_SPOTIFY_SAVE_SHOW_FAVORITES:str = 'save_show_favorites'
-SERVICE_SPOTIFY_SAVE_TRACK_FAVORITES:str = 'save_track_favorites'
-SERVICE_SPOTIFY_SEARCH_ALBUMS:str = 'search_albums'
-SERVICE_SPOTIFY_SEARCH_ARTISTS:str = 'search_artists'
-SERVICE_SPOTIFY_SEARCH_AUDIOBOOKS:str = 'search_audiobooks'
-SERVICE_SPOTIFY_SEARCH_EPISODES:str = 'search_episodes'
-SERVICE_SPOTIFY_SEARCH_PLAYLISTS:str = 'search_playlists'
-SERVICE_SPOTIFY_SEARCH_SHOWS:str = 'search_shows'
-SERVICE_SPOTIFY_SEARCH_TRACKS:str = 'search_tracks'
-SERVICE_SPOTIFY_UNFOLLOW_ARTISTS:str = 'unfollow_artists'
-SERVICE_SPOTIFY_UNFOLLOW_PLAYLIST:str = 'unfollow_playlist'
-SERVICE_SPOTIFY_UNFOLLOW_USERS:str = 'unfollow_users'
-SERVICE_SPOTIFY_ZEROCONF_DEVICE_CONNECT:str = 'zeroconf_device_connect'
-SERVICE_SPOTIFY_ZEROCONF_DEVICE_DISCONNECT:str = 'zeroconf_device_disconnect'
-SERVICE_SPOTIFY_ZEROCONF_DEVICE_GETINFO:str = 'zeroconf_device_getinfo'
-SERVICE_SPOTIFY_ZEROCONF_DISCOVER_DEVICES:str = 'zeroconf_discover_devices'
-
-
 SERVICE_SPOTIFY_ADD_PLAYER_QUEUE_ITEMS_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
@@ -289,7 +295,7 @@ SERVICE_SPOTIFY_GET_ALBUM_FAVORITES_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("market"): cv.string,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
         vol.Optional("sort_result"): cv.boolean,
@@ -300,7 +306,7 @@ SERVICE_SPOTIFY_GET_ALBUM_NEW_RELEASES_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("country"): cv.string,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
         vol.Optional("sort_result"): cv.boolean,
@@ -312,7 +318,7 @@ SERVICE_SPOTIFY_GET_ALBUM_TRACKS_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("album_id"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("market"): cv.string,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
     }
@@ -331,7 +337,7 @@ SERVICE_SPOTIFY_GET_ARTIST_ALBUMS_SCHEMA = vol.Schema(
         vol.Optional("artist_id"): cv.string,
         vol.Optional("include_groups"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("market"): cv.string,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
         vol.Optional("sort_result"): cv.boolean,
@@ -385,7 +391,7 @@ SERVICE_SPOTIFY_GET_AUDIOBOOK_CHAPTERS_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("audiobook_id"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("market"): cv.string,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
     }
@@ -395,7 +401,7 @@ SERVICE_SPOTIFY_GET_AUDIOBOOK_FAVORITES_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
         vol.Optional("sort_result"): cv.boolean,
     }
@@ -415,7 +421,7 @@ SERVICE_SPOTIFY_GET_CATEGORY_PLAYLISTS_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Required("category_id"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("country"): cv.string,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
         vol.Optional("sort_result"): cv.boolean,
@@ -450,7 +456,7 @@ SERVICE_SPOTIFY_GET_EPISODE_FAVORITES_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
         vol.Optional("sort_result"): cv.boolean,
     }
@@ -460,7 +466,7 @@ SERVICE_SPOTIFY_GET_FEATURED_PLAYLISTS_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("country"): cv.string,
         vol.Optional("locale"): cv.string,
         vol.Optional("timestamp"): cv.string,
@@ -469,11 +475,45 @@ SERVICE_SPOTIFY_GET_FEATURED_PLAYLISTS_SCHEMA = vol.Schema(
     }
 )
 
+SERVICE_SPOTIFY_GET_ID_FROM_URI_SCHEMA = vol.Schema(
+    {
+        vol.Required("entity_id"): cv.entity_id,
+        vol.Optional("uri"): cv.string,
+    }
+)
+
+SERVICE_SPOTIFY_GET_IMAGE_PALETTE_COLORS_SCHEMA = vol.Schema(
+    {
+        vol.Required("entity_id"): cv.entity_id,
+        vol.Optional("image_source"): cv.string,
+        vol.Optional("color_count", default=10): vol.Any(None, vol.All(vol.Coerce(int), vol.Range(min=1, max=256))),
+        vol.Optional("color_quality", default=None): vol.Any(None, vol.All(vol.Coerce(int), vol.Range(min=1, max=10))),
+        vol.Optional("brightness_filter_low", default=None): vol.Any(None, vol.All(vol.Coerce(int), vol.Range(min=0, max=765))),
+        vol.Optional("brightness_filter_high", default=None): vol.Any(None, vol.All(vol.Coerce(int), vol.Range(min=0, max=765))),
+        vol.Optional("hue_distance_filter", default=None): vol.Any(None, vol.All(vol.Coerce(int), vol.Range(min=0, max=360))),
+    }
+)
+
+SERVICE_SPOTIFY_GET_IMAGE_VIBRANT_COLORS_SCHEMA = vol.Schema(
+    {
+        vol.Required("entity_id"): cv.entity_id,
+        vol.Optional("image_source"): cv.string,
+        vol.Optional("color_count", default=64): vol.All(vol.Range(min=1,max=256)),
+        vol.Optional("color_quality", default=1): vol.All(vol.Range(min=1,max=10)),
+    }
+)
+
 SERVICE_SPOTIFY_GET_PLAYER_DEVICES_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("refresh"): cv.boolean,
         vol.Optional("sort_result"): cv.boolean,
+    }
+)
+
+SERVICE_SPOTIFY_GET_PLAYER_LAST_PLAYED_INFO_SCHEMA = vol.Schema(
+    {
+        vol.Required("entity_id"): cv.entity_id,
     }
 )
 
@@ -530,7 +570,7 @@ SERVICE_SPOTIFY_GET_PLAYLIST_FAVORITES_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
         vol.Optional("sort_result"): cv.boolean,
     }
@@ -541,7 +581,7 @@ SERVICE_SPOTIFY_GET_PLAYLIST_ITEMS_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("playlist_id"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("market"): cv.string,
         vol.Optional("fields"): cv.string,
         vol.Optional("additional_types"): cv.string,
@@ -554,7 +594,7 @@ SERVICE_SPOTIFY_GET_PLAYLISTS_FOR_USER_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("user_id"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
         vol.Optional("sort_result"): cv.boolean,
     }
@@ -573,7 +613,7 @@ SERVICE_SPOTIFY_GET_SHOW_EPISODES_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("show_id"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("market"): cv.string,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
     }
@@ -583,7 +623,7 @@ SERVICE_SPOTIFY_GET_SHOW_FAVORITES_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
         vol.Optional("sort_result"): cv.boolean,
         vol.Optional("exclude_audiobooks"): cv.boolean,
@@ -614,6 +654,14 @@ SERVICE_SPOTIFY_GET_TRACK_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("track_id"): cv.string,
+        vol.Optional("market"): cv.string,
+    }
+)
+
+SERVICE_SPOTIFY_GET_TRACK_AUDIO_FEATURES_SCHEMA = vol.Schema(
+    {
+        vol.Required("entity_id"): cv.entity_id,
+        vol.Required("track_id"): cv.string,
     }
 )
 
@@ -621,10 +669,12 @@ SERVICE_SPOTIFY_GET_TRACK_FAVORITES_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("market"): cv.string,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
         vol.Optional("sort_result"): cv.boolean,
+        vol.Optional("filter_artist"): cv.string,
+        vol.Optional("filter_album"): cv.string,
     }
 )
 
@@ -693,7 +743,7 @@ SERVICE_SPOTIFY_GET_USERS_TOP_ARTISTS_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("time_range"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
         vol.Optional("sort_result"): cv.boolean,
     }
@@ -704,7 +754,7 @@ SERVICE_SPOTIFY_GET_USERS_TOP_TRACKS_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("time_range"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
         vol.Optional("sort_result"): cv.boolean,
     }
@@ -723,10 +773,12 @@ SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_CONTEXT_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Required("context_uri"): cv.string,
         vol.Optional("offset_uri"): cv.string,
-        vol.Optional("offset_position", default=-1): vol.All(vol.Range(min=-1,max=500)),
+        vol.Optional("offset_position", default=-1): vol.All(vol.Range(min=-1,max=11000)),
         vol.Optional("position_ms", default=-1): vol.All(vol.Range(min=-1,max=999999999)),
         vol.Optional("device_id"): cv.string,
         vol.Optional("delay", default=0.50): vol.All(vol.Range(min=0,max=10.0)),
+        vol.Optional("shuffle"): cv.boolean,
+        vol.Optional("play_show_latest_episode"): cv.boolean,
     }
 )
 
@@ -738,6 +790,8 @@ SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_TRACK_FAVORITES_SCHEMA = vol.Schema(
         vol.Optional("delay", default=0.50): vol.All(vol.Range(min=0,max=10.0)),
         vol.Optional("resolve_device_id"): cv.boolean,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=999999)),
+        vol.Optional("filter_artist"): cv.string,
+        vol.Optional("filter_album"): cv.string,
     }
 )
 
@@ -748,6 +802,7 @@ SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_TRACKS_SCHEMA = vol.Schema(
         vol.Optional("position_ms", default=-1): vol.All(vol.Range(min=-1,max=999999999)),
         vol.Optional("device_id"): cv.string,
         vol.Optional("delay", default=0.50): vol.All(vol.Range(min=0,max=10.0)),
+        vol.Optional("shuffle"): cv.boolean,
     }
 )
 
@@ -970,12 +1025,23 @@ SERVICE_SPOTIFY_SAVE_TRACK_FAVORITES_SCHEMA = vol.Schema(
     }
 )
 
+SERVICE_SPOTIFY_SEARCH_ALL_SCHEMA = vol.Schema(
+    {
+        vol.Required("entity_id"): cv.entity_id,
+        vol.Required("criteria"): cv.string,
+        vol.Optional("criteria_type"): cv.string,
+        vol.Optional("market"): cv.string,
+        vol.Optional("include_external"): cv.string,
+        vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
+    }
+)
+
 SERVICE_SPOTIFY_SEARCH_ALBUMS_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
         vol.Required("criteria"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("market"): cv.string,
         vol.Optional("include_external"): cv.string,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
@@ -987,7 +1053,7 @@ SERVICE_SPOTIFY_SEARCH_ARTISTS_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Required("criteria"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("market"): cv.string,
         vol.Optional("include_external"): cv.string,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
@@ -999,7 +1065,7 @@ SERVICE_SPOTIFY_SEARCH_AUDIOBOOKS_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Required("criteria"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("market"): cv.string,
         vol.Optional("include_external"): cv.string,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
@@ -1011,7 +1077,7 @@ SERVICE_SPOTIFY_SEARCH_EPISODES_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Required("criteria"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("market"): cv.string,
         vol.Optional("include_external"): cv.string,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
@@ -1023,7 +1089,7 @@ SERVICE_SPOTIFY_SEARCH_PLAYLISTS_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Required("criteria"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("market"): cv.string,
         vol.Optional("include_external"): cv.string,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
@@ -1035,7 +1101,7 @@ SERVICE_SPOTIFY_SEARCH_SHOWS_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Required("criteria"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("market"): cv.string,
         vol.Optional("include_external"): cv.string,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
@@ -1047,10 +1113,16 @@ SERVICE_SPOTIFY_SEARCH_TRACKS_SCHEMA = vol.Schema(
         vol.Required("entity_id"): cv.entity_id,
         vol.Required("criteria"): cv.string,
         vol.Optional("limit", default=50): vol.All(vol.Range(min=0,max=50)),
-        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=500)),
+        vol.Optional("offset", default=0): vol.All(vol.Range(min=0,max=10000)),
         vol.Optional("market"): cv.string,
         vol.Optional("include_external"): cv.string,
         vol.Optional("limit_total", default=0): vol.All(vol.Range(min=0,max=9999)),
+    }
+)
+
+SERVICE_SPOTIFY_TRIGGER_SCAN_INTERVAL_SCHEMA = vol.Schema(
+    {
+        vol.Required("entity_id"): cv.entity_id,
     }
 )
 
@@ -1126,23 +1198,49 @@ SERVICE_SPOTIFY_ZEROCONF_DISCOVER_DEVICES_SCHEMA = vol.Schema(
 # -----------------------------------------------------------------------------------
 # Custom Service Schemas - MediaPlayerEntity enhancements.
 # -----------------------------------------------------------------------------------
-SERVICE_VOLUME_SET_STEP:str = 'volume_set_step'
 SERVICE_VOLUME_SET_STEP_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
-        vol.Required("level", default=0.10): vol.All(vol.Range(min=0,max=1.0)),
+        vol.Optional("level", default=None): vol.Any(None, vol.All(vol.Coerce(float), vol.Range(min=0.01, max=1.00))),
+        vol.Optional("level_percent", default=None): vol.Any(None, vol.All(vol.Coerce(int), vol.Range(min=1, max=100)))
     }
 )
 
+
 # -----------------------------------------------------------------------------------
-# Custom Service Schemas - internal testing
+# Custom Service Schemas - non-Spotify Web API related.
 # -----------------------------------------------------------------------------------
-SERVICE_TEST_TOKEN_EXPIRE:str = 'test_token_expire'
+SERVICE_LIST_APPLICATION_CREDENTIAL_MAPPPINGS_SCHEMA = vol.Schema(
+    {
+        vol.Optional("filter_domain"): cv.string,
+        vol.Optional("filter_credentials_only", default=True): cv.boolean,
+        vol.Optional("list_domain_entities", default=False): cv.boolean,
+    }
+)
+
 SERVICE_TEST_TOKEN_EXPIRE_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
     }
 )
+
+
+def _get_file_contents_json(filePath: str, title: str) -> dict:
+    """
+    Retrieves the contents of the specified JSON text file.
+    
+    Args:
+        filePath (str):
+            Fully-qualified file path whose contents will be read.
+        title (str):
+            Title to assign to the log entry.
+    Returns:
+        A dictionary object loaded from JSON file.
+    """
+    result = None
+    with open(filePath, "r") as f:
+        result = json.load(f)
+    return result
 
 
 def _trace_LogTextFile(filePath: str, title: str) -> None:
@@ -1192,7 +1290,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     
             # log verion information for supporting packages.
             _logsi.LogValue(SILevel.Verbose, "urllib3 version", urllib3_version)
+            _logsi.LogValue(SILevel.Verbose, "spotifywebapipython version", spotifywebapipython_VERSION, colorValue=SIColors.Coral)
 
+            # log configuration data.
             for item in config:
                 itemKey:str = str(item)
                 itemObj = config[itemKey]
@@ -1215,6 +1315,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 translation_key="removed_yaml",
             )
 
+        # storage directory path.
+        storage_dir = hass.config.path(".storage")
 
         async def service_handle_spotify_command(service: ServiceCall) -> None:
             """
@@ -1294,8 +1396,10 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     position_ms = service.data.get("position_ms")
                     device_id = service.data.get("device_id")
                     delay = service.data.get("delay")
+                    shuffle = service.data.get("shuffle")
+                    play_show_latest_episode = service.data.get("play_show_latest_episode")
                     _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
-                    await hass.async_add_executor_job(entity.service_spotify_player_media_play_context, context_uri, offset_uri, offset_position, position_ms, device_id, delay)
+                    await hass.async_add_executor_job(entity.service_spotify_player_media_play_context, context_uri, offset_uri, offset_position, position_ms, device_id, delay, shuffle, play_show_latest_episode)
 
                 elif service.service == SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_TRACK_FAVORITES:
 
@@ -1305,8 +1409,10 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     delay = service.data.get("delay")
                     resolve_device_id = service.data.get("resolve_device_id")
                     limit_total = service.data.get("limit_total")
+                    filter_artist = service.data.get("filter_artist")
+                    filter_album = service.data.get("filter_album")
                     _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
-                    await hass.async_add_executor_job(entity.service_spotify_player_media_play_track_favorites, device_id, shuffle, delay, resolve_device_id, limit_total)
+                    await hass.async_add_executor_job(entity.service_spotify_player_media_play_track_favorites, device_id, shuffle, delay, resolve_device_id, limit_total, filter_artist, filter_album)
 
                 elif service.service == SERVICE_SPOTIFY_PLAYER_MEDIA_PLAY_TRACKS:
 
@@ -1315,8 +1421,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     position_ms = service.data.get("position_ms")
                     device_id = service.data.get("device_id")
                     delay = service.data.get("delay")
+                    shuffle = service.data.get("shuffle")
                     _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
-                    await hass.async_add_executor_job(entity.service_spotify_player_media_play_tracks, uris, position_ms, device_id, delay)
+                    await hass.async_add_executor_job(entity.service_spotify_player_media_play_tracks, uris, position_ms, device_id, delay, shuffle)
 
                 elif service.service == SERVICE_SPOTIFY_PLAYER_MEDIA_RESUME:
 
@@ -1481,6 +1588,12 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
                     await hass.async_add_executor_job(entity.service_spotify_save_track_favorites, ids)
 
+                elif service.service == SERVICE_SPOTIFY_TRIGGER_SCAN_INTERVAL:
+
+                    # test token expiration.
+                    _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
+                    await hass.async_add_executor_job(entity.service_spotify_trigger_scan_interval)
+
                 elif service.service == SERVICE_SPOTIFY_UNFOLLOW_ARTISTS:
 
                     # unfollow artist(s).
@@ -1513,7 +1626,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     # test token expiration.
                     _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
                     level = service.data.get("level")
-                    await hass.async_add_executor_job(entity.service_volume_set_step, level)
+                    level_percent = service.data.get("level_percent")
+                    await hass.async_add_executor_job(entity.service_volume_set_step, level, level_percent)
 
                 else:
                     
@@ -1804,6 +1918,34 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
                     response = await hass.async_add_executor_job(entity.service_spotify_get_featured_playlists, limit, offset, country, locale, timestamp, limit_total, sort_result)
 
+                elif service.service == SERVICE_SPOTIFY_GET_ID_FROM_URI:
+
+                    # get id from uri.
+                    uri = service.data.get("uri")
+                    _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
+                    response = await hass.async_add_executor_job(entity.service_spotify_get_id_from_uri, uri)
+
+                elif service.service == SERVICE_SPOTIFY_GET_IMAGE_PALETTE_COLORS:
+
+                    # get image palette colors.
+                    image_source = service.data.get("image_source")
+                    color_count = service.data.get("color_count")
+                    color_quality = service.data.get("color_quality")
+                    brightness_filter_low = service.data.get("brightness_filter_low")
+                    brightness_filter_high = service.data.get("brightness_filter_high")
+                    hue_distance_filter = service.data.get("hue_distance_filter")
+                    _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
+                    response = await hass.async_add_executor_job(entity.service_spotify_get_image_palette_colors, image_source, color_count, color_quality, brightness_filter_low, brightness_filter_high, hue_distance_filter)
+
+                elif service.service == SERVICE_SPOTIFY_GET_IMAGE_VIBRANT_COLORS:
+
+                    # get image vibrant colors.
+                    image_source = service.data.get("image_source")
+                    color_count = service.data.get("color_count")
+                    color_quality = service.data.get("color_quality")
+                    _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
+                    response = await hass.async_add_executor_job(entity.service_spotify_get_image_vibrant_colors, image_source, color_count, color_quality)
+
                 elif service.service == SERVICE_SPOTIFY_GET_PLAYER_DEVICES:
 
                     # get spotify player device list.
@@ -1811,6 +1953,12 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     sort_result = service.data.get("sort_result")
                     _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
                     response = await hass.async_add_executor_job(entity.service_spotify_get_player_devices, refresh, sort_result)
+
+                elif service.service == SERVICE_SPOTIFY_GET_PLAYER_LAST_PLAYED_INFO:
+
+                    # get spotify player last played information.
+                    _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
+                    response = await hass.async_add_executor_job(entity.service_spotify_get_player_last_played_info)
 
                 elif service.service == SERVICE_SPOTIFY_GET_PLAYER_NOW_PLAYING:
 
@@ -1949,8 +2097,17 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
                     # get spotify track details.
                     track_id = service.data.get("track_id")
+                    market = service.data.get("market")
                     _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
-                    response = await hass.async_add_executor_job(entity.service_spotify_get_track, track_id)
+                    response = await hass.async_add_executor_job(entity.service_spotify_get_track, track_id, market)
+
+                elif service.service == SERVICE_SPOTIFY_GET_TRACK_AUDIO_FEATURES:
+
+                    # get spotify album favorites.
+                    limit = service.data.get("limit")
+                    track_id = service.data.get("track_id")
+                    _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
+                    response = await hass.async_add_executor_job(entity.service_spotify_get_track_audio_features, track_id)
 
                 elif service.service == SERVICE_SPOTIFY_GET_TRACK_FAVORITES:
 
@@ -1960,8 +2117,10 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     market = service.data.get("market")
                     limit_total = service.data.get("limit_total")
                     sort_result = service.data.get("sort_result")
+                    filter_artist = service.data.get("filter_artist")
+                    filter_album = service.data.get("filter_album")
                     _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
-                    response = await hass.async_add_executor_job(entity.service_spotify_get_track_favorites, limit, offset, market, limit_total, sort_result)
+                    response = await hass.async_add_executor_job(entity.service_spotify_get_track_favorites, limit, offset, market, limit_total, sort_result, filter_artist, filter_album)
 
                 elif service.service == SERVICE_SPOTIFY_GET_TRACK_RECOMMENDATIONS:
 
@@ -2119,6 +2278,17 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                     _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
                     response = await hass.async_add_executor_job(entity.service_spotify_playlist_items_replace, playlist_id, uris)
 
+                elif service.service == SERVICE_SPOTIFY_SEARCH_ALL:
+
+                    # search Spotify for specified criteria.
+                    criteria = service.data.get("criteria")
+                    criteria_type = service.data.get("criteria_type")
+                    market = service.data.get("market")
+                    include_external = service.data.get("include_external")
+                    limit_total = service.data.get("limit_total")
+                    _logsi.LogVerbose(STAppMessages.MSG_SERVICE_EXECUTE % (service.service, entity.name))
+                    response = await hass.async_add_executor_job(entity.service_spotify_search_all, criteria, criteria_type, market, include_external, limit_total)
+                    
                 elif service.service == SERVICE_SPOTIFY_SEARCH_ALBUMS:
 
                     # search Spotify for specified criteria.
@@ -2272,6 +2442,212 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
             finally:
             
+                # trace.
+                _logsi.LeaveMethod(SILevel.Debug)
+
+
+        async def service_list_application_credential_mappings(service: ServiceCall):
+            """
+            List Application Credential mappings.
+
+            Args:
+                service (ServiceCall):
+                    ServiceCall instance that contains service data (requested service name, field parameters, etc).
+            """
+            apiMethodName:str = "service_list_application_credential_mappings"
+
+            try:
+
+                # trace.
+                _logsi.EnterMethod(SILevel.Debug)
+                _logsi.LogVerbose(STAppMessages.MSG_SERVICE_CALL_START, service.service, apiMethodName)
+                _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_CALL_PARM, service)
+                _logsi.LogDictionary(SILevel.Verbose, STAppMessages.MSG_SERVICE_CALL_DATA, service.data)
+
+                # get optional filter criteria.
+                filter_domain = service.data.get("filter_domain")
+                filter_credentials_only = service.data.get("filter_credentials_only")
+                list_domain_entities = service.data.get("list_domain_entities")
+
+                try:
+                    _logsi.LogVerbose("Opening configuration files")
+
+                    # read file contents via an "async_add_executor_job" to avoid the following
+                    # error: "Detected blocking call to open with args inside the event loop
+                    app_creds = await hass.async_add_executor_job(_get_file_contents_json, os.path.join(storage_dir, "application_credentials"), "Application Credentials")
+                    config_entries = await hass.async_add_executor_job(_get_file_contents_json, os.path.join(storage_dir, "core.config_entries"), "Core Config Entries")
+                    entity_registry = await hass.async_add_executor_job(_get_file_contents_json, os.path.join(storage_dir, "core.entity_registry"), "Core Entity Registry")
+
+                except Exception as e:
+
+                    # log exception, but not to system logger as HA will take care of it.
+                    _logsi.LogException("AppCred Mapper - Error reading storage files: %s" % (str(ex)), ex, logToSystemLogger=False)
+                    return
+
+                # Map domain to application credentials.
+                # A domain may have multiple application credentials.
+                _logsi.LogVerbose("Mapping Domain to Credentials")
+                domain_to_creds = {}
+                for cred in app_creds.get("data", {}).get("items", []):
+                    domain = cred.get("domain")
+                    domain_to_creds.setdefault(domain, []).append({
+                        "id": cred.get("id"),
+                        "client_id": cred.get("client_id"),
+                        "name": cred.get("name"),
+                    })
+                _logsi.LogDictionary(SILevel.Verbose, "Domain to Credentials dictionary", domain_to_creds)
+
+                # Map config entry id to domain.
+                _logsi.LogVerbose("Mapping Config Entry ID to Domain")
+                entry_to_domain = {}
+                for entry in config_entries.get("data", {}).get("entries", []):
+                    config_entry_id = entry.get("entry_id")
+                    domain = entry.get("domain")
+                    if not domain:
+                        continue
+                    if filter_domain and domain != filter_domain:
+                        continue
+                    entry_to_domain.setdefault(config_entry_id, domain)
+                _logsi.LogDictionary(SILevel.Verbose, "Config Entry ID to Domain dictionary", entry_to_domain)
+
+                # Map config entry id to application credential.
+                # A config entry only has a single (or none) application credential.
+                _logsi.LogVerbose("Mapping Config Entry ID to Application Credential")
+                entry_to_creds = {}
+                for entry in config_entries.get("data", {}).get("entries", []):
+                    config_entry_id = entry.get("entry_id")
+                    domain = entry.get("domain")
+                    entry_data = entry.get("data", {})
+                    auth_implementation = entry_data.get("auth_implementation")
+                    if not domain:
+                        continue
+                    if filter_domain and domain != filter_domain:
+                        continue
+                    if filter_credentials_only and (auth_implementation is None):
+                        continue
+                    #entry_to_creds.setdefault(config_entry_id, []).append({
+                    entry_to_creds.setdefault(config_entry_id, {
+                        "domain": domain,
+                        "name": entry_data.get("name"),
+                        "title": entry.get("title"),
+                        "auth_implementation": auth_implementation,
+                        "id": entry_data.get("id"), # could be null
+                        "description": entry_data.get("description"), # could be null
+                    })
+                _logsi.LogDictionary(SILevel.Verbose, "Config Entry ID to Application Credential dictionary", entry_to_creds)
+                _logsi.LogDictionary(SILevel.Verbose, "Config Entry ID to Application Credential dictionary (prettyPrint)", entry_to_creds, prettyPrint=True)
+
+                # Map entity id to application credential.
+                # An entity only has a single (or none) application credential.
+                _logsi.LogVerbose("Mapping Entity ID to Application Credential")
+                entity_to_creds = {}
+                for ent in entity_registry.get("data", {}).get("entities", []):
+                    config_entry_id = ent["config_entry_id"]
+                    domain = entry_to_domain.get(config_entry_id)
+                    credential = entry_to_creds.get(config_entry_id, {})
+                    entity_id = ent.get("entity_id")
+                    name = ent.get("name") or ent.get("original_name")
+                    id_value = ent.get("id")
+                    if not domain:
+                        continue
+                    if filter_domain and domain != filter_domain:
+                        continue
+                    if filter_credentials_only and (credential == {}):
+                        continue
+                    #entity_to_creds.setdefault(id_value, []).append({
+                    entity_to_creds.setdefault(id_value, {
+                        "domain": domain,
+                        "entity_id": entity_id,
+                        "name": name,
+                        "config_entry_id": config_entry_id,
+                        "credential": credential,
+                    })
+                _logsi.LogDictionary(SILevel.Verbose, "Entity ID to Application Credential dictionary", entity_to_creds)
+                _logsi.LogDictionary(SILevel.Verbose, "Entity ID to Application Credential dictionary (prettyPrint)", entity_to_creds, prettyPrint=True)
+
+                # Map entities to domains/creds.
+                # An entity only has a single (or none) application credential.
+                _logsi.LogVerbose("Mapping Entities to Domains / Credentials")
+                results = {}
+                for ent in entity_registry.get("data", {}).get("entities", []):
+                    config_entry_id = ent["config_entry_id"]
+                    domain = entry_to_domain.get(config_entry_id)
+                    id_value = ent.get("id")
+                    entity_id = ent["entity_id"]
+                    name = ent["name"] or ent["original_name"]
+                    credential = entity_to_creds.get(id_value, {})
+                    if not domain:
+                        continue
+                    if filter_domain and domain != filter_domain:
+                        continue
+                    if filter_credentials_only and (credential == {}):
+                        continue
+                    results.setdefault(domain, []).append({
+                    #results.setdefault(domain, {
+                        "id": id_value,
+                        "entity_id": entity_id,
+                        "unique_id": ent.get("unique_id"),
+                        "name": name,
+                        "credential": credential
+                    })
+                _logsi.LogDictionary(SILevel.Verbose, "Entities to Domains / Credentials dictionary", results)
+                _logsi.LogDictionary(SILevel.Verbose, "Entities to Domains / Credentials dictionary (prettyPrint)", results, prettyPrint=True)
+
+                # Format text.
+                _logsi.LogVerbose("Formatting results")
+                lines = []
+                for domain, entities in results.items():
+                    lines.append(f"**Domain: {domain}**")
+
+                    # list application credentials.
+                    credentials = domain_to_creds.get(domain, [])
+                    lines.append("  Application Credentials:")
+                    if credentials:
+                        for c in credentials:
+                            lines.append(f"    - ID: `{c['id']}`, Client ID: `{c['client_id']}`, Name: `{c['name']}`")
+                            for e in entities:
+                                entity_cred_id = e.get("credential", {}).get("credential", {}).get("auth_implementation")
+                                if c['id'] == entity_cred_id:
+                                    lines.append(f"      - Entity ID: `{e['entity_id']}`, Name: `{e['name']}`, Unique ID: `{e['unique_id']}`")
+                    else:
+                        lines.append("    - No credentials found")
+
+                    # list defined entities.
+                    if (list_domain_entities):
+                        lines.append("  Entities:")
+                        for e in entities:
+                            lines.append(f"    - ID: `{e['entity_id']}`, Name: `{e['name']}`, Unique ID: `{e['unique_id']}`")
+
+                    lines.append("")
+
+                text = "\n".join(lines) if lines else (
+                    f"No entities found for domain '{filter_domain}'"
+                    if filter_domain else "No entities found."
+                )
+
+                # Log and return results.
+                _logsi.LogText(SILevel.Message, "List Application Credential Mappings by Domain result", text)
+                _LOGGER.info("Application Credential Mapping:\n%s", text)
+
+                # return the result as a dictionary.
+                return {
+                    "result": text
+                }
+
+            except HomeAssistantError as ex: 
+                
+                # log error, but not to system logger as HA will take care of it.
+                _logsi.LogError(str(ex), logToSystemLogger=False)
+                raise
+            
+            except Exception as ex:
+
+                # log exception, but not to system logger as HA will take care of it.
+                _logsi.LogException(STAppMessages.MSG_SERVICE_REQUEST_EXCEPTION % (service.service, apiMethodName), ex, logToSystemLogger=False)
+                raise
+            
+            finally:
+                
                 # trace.
                 _logsi.LeaveMethod(SILevel.Debug)
 
@@ -2611,6 +2987,33 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             supports_response=SupportsResponse.ONLY,
         )
 
+        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_GET_ID_FROM_URI, SERVICE_SPOTIFY_GET_ID_FROM_URI_SCHEMA)
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_SPOTIFY_GET_ID_FROM_URI,
+            service_handle_spotify_serviceresponse,
+            schema=SERVICE_SPOTIFY_GET_ID_FROM_URI_SCHEMA,
+            supports_response=SupportsResponse.ONLY,
+        )
+
+        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_GET_IMAGE_PALETTE_COLORS, SERVICE_SPOTIFY_GET_IMAGE_PALETTE_COLORS_SCHEMA)
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_SPOTIFY_GET_IMAGE_PALETTE_COLORS,
+            service_handle_spotify_serviceresponse,
+            schema=SERVICE_SPOTIFY_GET_IMAGE_PALETTE_COLORS_SCHEMA,
+            supports_response=SupportsResponse.ONLY,
+        )
+
+        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_GET_IMAGE_VIBRANT_COLORS, SERVICE_SPOTIFY_GET_IMAGE_VIBRANT_COLORS_SCHEMA)
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_SPOTIFY_GET_IMAGE_VIBRANT_COLORS,
+            service_handle_spotify_serviceresponse,
+            schema=SERVICE_SPOTIFY_GET_IMAGE_VIBRANT_COLORS_SCHEMA,
+            supports_response=SupportsResponse.ONLY,
+        )
+
         _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_GET_PLAYER_DEVICES, SERVICE_SPOTIFY_GET_PLAYER_DEVICES_SCHEMA)
         hass.services.async_register(
             DOMAIN,
@@ -2626,6 +3029,15 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             SERVICE_SPOTIFY_GET_PLAYER_PLAYBACK_STATE,
             service_handle_spotify_serviceresponse,
             schema=SERVICE_SPOTIFY_GET_PLAYER_PLAYBACK_STATE_SCHEMA,
+            supports_response=SupportsResponse.ONLY,
+        )
+
+        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_GET_PLAYER_LAST_PLAYED_INFO, SERVICE_SPOTIFY_GET_PLAYER_LAST_PLAYED_INFO_SCHEMA)
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_SPOTIFY_GET_PLAYER_LAST_PLAYED_INFO,
+            service_handle_spotify_serviceresponse,
+            schema=SERVICE_SPOTIFY_GET_PLAYER_LAST_PLAYED_INFO_SCHEMA,
             supports_response=SupportsResponse.ONLY,
         )
 
@@ -2752,6 +3164,15 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             SERVICE_SPOTIFY_GET_TRACK,
             service_handle_spotify_serviceresponse,
             schema=SERVICE_SPOTIFY_GET_TRACK_SCHEMA,
+            supports_response=SupportsResponse.ONLY,
+        )
+
+        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_GET_TRACK_AUDIO_FEATURES, SERVICE_SPOTIFY_GET_TRACK_AUDIO_FEATURES_SCHEMA)
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_SPOTIFY_GET_TRACK_AUDIO_FEATURES,
+            service_handle_spotify_serviceresponse,
+            schema=SERVICE_SPOTIFY_GET_TRACK_AUDIO_FEATURES_SCHEMA,
             supports_response=SupportsResponse.ONLY,
         )
 
@@ -3070,6 +3491,15 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             supports_response=SupportsResponse.NONE,
         )
 
+        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_SEARCH_ALL, SERVICE_SPOTIFY_SEARCH_ALL_SCHEMA)
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_SPOTIFY_SEARCH_ALL,
+            service_handle_spotify_serviceresponse,
+            schema=SERVICE_SPOTIFY_SEARCH_ALL_SCHEMA,
+            supports_response=SupportsResponse.ONLY,
+        )
+
         _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_SEARCH_ALBUMS, SERVICE_SPOTIFY_SEARCH_ALBUMS_SCHEMA)
         hass.services.async_register(
             DOMAIN,
@@ -3131,6 +3561,15 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             service_handle_spotify_serviceresponse,
             schema=SERVICE_SPOTIFY_SEARCH_TRACKS_SCHEMA,
             supports_response=SupportsResponse.ONLY,
+        )
+
+        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_TRIGGER_SCAN_INTERVAL, SERVICE_SPOTIFY_TRIGGER_SCAN_INTERVAL_SCHEMA)
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_SPOTIFY_TRIGGER_SCAN_INTERVAL,
+            service_handle_spotify_command,
+            schema=SERVICE_SPOTIFY_TRIGGER_SCAN_INTERVAL_SCHEMA,
+            supports_response=SupportsResponse.NONE,
         )
 
         _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_SPOTIFY_UNFOLLOW_ARTISTS, SERVICE_SPOTIFY_UNFOLLOW_ARTISTS_SCHEMA)
@@ -3196,21 +3635,30 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             supports_response=SupportsResponse.ONLY,
         )
 
-        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_TEST_TOKEN_EXPIRE, SERVICE_TEST_TOKEN_EXPIRE_SCHEMA)
-        hass.services.async_register(
-            DOMAIN,
-            SERVICE_TEST_TOKEN_EXPIRE,
-            service_handle_spotify_command,
-            schema=SERVICE_TEST_TOKEN_EXPIRE_SCHEMA,
-            supports_response=SupportsResponse.NONE,
-        )
-
         _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_VOLUME_SET_STEP, SERVICE_VOLUME_SET_STEP_SCHEMA)
         hass.services.async_register(
             DOMAIN,
             SERVICE_VOLUME_SET_STEP,
             service_handle_spotify_command,
             schema=SERVICE_VOLUME_SET_STEP_SCHEMA,
+            supports_response=SupportsResponse.NONE,
+        )
+
+        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_LIST_APPLICATION_CREDENTIAL_MAPPPINGS, SERVICE_LIST_APPLICATION_CREDENTIAL_MAPPPINGS_SCHEMA)
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_LIST_APPLICATION_CREDENTIAL_MAPPPINGS,
+            service_list_application_credential_mappings,
+            schema=SERVICE_LIST_APPLICATION_CREDENTIAL_MAPPPINGS_SCHEMA,
+            supports_response=SupportsResponse.ONLY,
+        )
+
+        _logsi.LogObject(SILevel.Verbose, STAppMessages.MSG_SERVICE_REQUEST_REGISTER % SERVICE_TEST_TOKEN_EXPIRE, SERVICE_TEST_TOKEN_EXPIRE_SCHEMA)
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_TEST_TOKEN_EXPIRE,
+            service_handle_spotify_command,
+            schema=SERVICE_TEST_TOKEN_EXPIRE_SCHEMA,
             supports_response=SupportsResponse.NONE,
         )
 
@@ -3254,62 +3702,15 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
 
         # get OAuth2 implementation and create an OAuth2 session.
         implementation = await async_get_config_entry_implementation(hass, entry)
-        session = OAuth2Session(hass, entry, implementation)
-
         _logsi.LogObject(SILevel.Verbose, "'%s': Component async_setup_entry OAuth2 implementation object" % entry.title, implementation)
+        session = OAuth2Session(hass, entry, implementation)
         _logsi.LogObject(SILevel.Verbose, "'%s': Component async_setup_entry OAuth2 session object" % entry.title, session)
-        _logsi.LogDictionary(SILevel.Verbose, "'%s': Component async_setup_entry OAuth2 session.token (dictionary)" % entry.title, session.token, prettyPrint=True)
 
         # ensure we have a valid session token, and that the session is fully created.
+        _logsi.LogDictionary(SILevel.Verbose, "'%s': Component async_setup_entry OAuth2 session.token (dictionary)" % entry.title, session.token, prettyPrint=True)
         _logsi.LogVerbose("'%s': Component async_setup_entry is calling async_ensure_token_valid to ensure OAuth2 session is fully-established" % entry.title)
         await session.async_ensure_token_valid()
             
-        # *** Don't need the DataUpdateCoordinator anymore; left here in case we need it for future needs.
-        # # -----------------------------------------------------------------------------------
-        # # Define DataUpdateCoordinator function.
-        # # -----------------------------------------------------------------------------------
-        # async def _OnDataUpdateCoordinatorInterval() -> SpotifyConnectDevices:
-        #     """
-        #     This method will be executed by the DataUpdateCoordinator at regular intervals to 
-        #     provide data updates to the integration.
-
-        #     In our case, it will retrieve the list of Spotify Connect devices that are available.
-        #     Note that this is not really necessary starting with v1.0.86, but I left it in here
-        #     in case we wanted to re-enable it for other types of data updates in the future.
-            
-        #     Returns:
-        #         A `SpotifyConnectDevices` instance.
-        #     """
-        #     result:SpotifyConnectDevices = None
-
-        #     try:
-
-        #         _logsi.LogVerbose("'%s': Component DataUpdateCoordinator is retrieving Spotify Connect device list" % entry.title)
-
-        #         # just return the list of devices in the directory.
-        #         result = spotifyClient.SpotifyConnectDirectory.GetDevices()
-
-        #         # do not make any calls to the web api out of this method (or any underlying calls)
-        #         # since it could possibly invoke a "_TokenUpdater()" method call; that will repeat
-        #         # the token refresh and cause a thread deadlock since we call "async_refresh_token()"
-        #         # with a "run_coroutine_threadsafe()" method!
-
-        #         # # refresh Spotify Connect devices.
-        #         # result = await hass.async_add_executor_job(
-        #         #     spotifyClient.GetSpotifyConnectDevices,
-        #         #     True
-        #         # )
-
-        #         # trace.
-        #         _logsi.LogDictionary(SILevel.Verbose, "'%s': Component DataUpdateCoordinator update results" % entry.title, result.ToDictionary(), prettyPrint=True)
-        #         return result
-
-        #     except Exception as ex:
-                
-        #         _logsi.LogException("'%s': Component DataUpdateCoordinator update exception" % entry.title, ex)
-        #         raise UpdateFailed from ex
-
-
         # -----------------------------------------------------------------------------------
         # Define OAuth2 Session Token Updater.
         # -----------------------------------------------------------------------------------
@@ -3326,7 +3727,7 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
             # trace.
             _logsi.LogVerbose("'%s': TOKENUPDATER_LOCK is preparing to set the lock for method _TokenUpdater" % entry.title, colorValue=SIColors.Gold)
             if TOKENUPDATER_LOCK.locked():
-                _logsi.LogVerbose("'%s': _TokenUpdater is waiting on a previous token update to complete" % entry.title, colorValue=SIColors.Red)
+                _logsi.LogVerbose("'%s': _TokenUpdater is waiting on a previous token update to complete" % entry.title, colorValue=SIColors.Orange)
 
             # only allow one thread to update authorization token at a time; otherwise a deadlock
             # occurs in the `run_coroutine_threadsafe(session.implementation.async_refresh_token)` line!
@@ -3339,7 +3740,7 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
 
                     # trace.
                     _logsi.EnterMethod(SILevel.Debug)
-                    _logsi.LogVerbose("'%s': Component OAuth2 session token is either expired or not valid; calling async_refresh_token to refresh the token" % entry.title, colorValue=SIColors.Gold)
+                    _logsi.LogVerbose("'%s': Component OAuth2 session token is either expired, not valid, or just refreshed by another HA worker thread; starting token refresh processing" % entry.title, colorValue=SIColors.Gold)
 
                     # note that we do NOT use the `async_ensure_token_valid` method here, as it may
                     # determine that the token does not yet need to be refreshed (via self.valid_token).
@@ -3360,8 +3761,19 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
 
                     # trace.
                     _logsi.LogObject(SILevel.Debug, "'%s': Component OAuth2 implementation object" % entry.title, implementation, colorValue=SIColors.Gold)
-                    _logsi.LogDictionary(SILevel.Verbose, "'%s': Component OAuth2 session.token (pre-update)" % entry.title, session.token, prettyPrint=True, colorValue=SIColors.Gold)
-                
+                    _logsi.LogDictionary(SILevel.Verbose, "'%s': Component OAuth2 session.token (pre-update, dictionary)" % entry.title, session.token, prettyPrint=True, colorValue=SIColors.Gold)
+
+                    # get formatted token, to make expiration checks easier.
+                    formattedToken0:SpotifyAuthToken = SpotifyAuthToken("TokenRefreshAuthType", "TokenRefreshProfileId", root=session.token)
+                    _logsi.LogObject(SILevel.Verbose, "'%s': Component OAuth2 session token (pre-update, session.token)" % entry.title, formattedToken0, excludeNonPublic=True, colorValue=SIColors.Gold)
+
+                    # a quick check to see if session token is expired.  the session token update may have already occured
+                    # by another HA worker thread while we were waiting for the lock to free; if that is the case, then we 
+                    # don't need to refresh the token since it was just refreshed by the other thread!
+                    if (not formattedToken0.IsExpired):
+                        _logsi.LogObject(SILevel.Verbose, "'%s': Component OAuth2 session.token was updated by another HA worker thread; refresh not necessary" % entry.title, formattedToken0, excludeNonPublic=True, colorValue=SIColors.Gold)
+                        return session.token
+
                     # we will refresh the token from the `session.config_entry.data['token']` value (instead of
                     # the `session.token` value) in case the token was refreshed in the `update` method.
                     # note - the `session.token` value will not change until AFTER `async_update_entry` is processed!
@@ -3369,7 +3781,8 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
                     # refresh the session token. 
                     _logsi.LogVerbose("'%s': Component is calling async_refresh_token to refresh the session token" % entry.title, colorValue=SIColors.Gold)
                     token = run_coroutine_threadsafe(
-                        session.implementation.async_refresh_token(session.config_entry.data['token']), hass.loop
+                        session.implementation.async_refresh_token(session.config_entry.data['token']), 
+                        hass.loop
                     ).result()
                     token[TOKEN_STATUS] = TOKEN_STATUS_REFRESH_EVENT
 
@@ -3386,8 +3799,9 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
                     )
                 
                     # trace.
-                    #_logsi.LogDictionary(SILevel.Verbose, "'%s': Component OAuth2 session.token (post-update)" % entry.title, session.token, prettyPrint=True, colorValue=SIColors.Gold)
                     _logsi.LogVerbose("'%s': Component OAuth2 session token refresh complete" % entry.title, colorValue=SIColors.Gold)
+                    formattedToken2:SpotifyAuthToken = SpotifyAuthToken("TokenRefreshAuthType", "TokenRefreshProfileId", root=token)
+                    _logsi.LogObject(SILevel.Verbose, "'%s': Component OAuth2 session token (post-update, token)" % entry.title, formattedToken2, excludeNonPublic=True, colorValue=SIColors.Gold)
 
                     # return refreshed token to caller.
                     return token
@@ -3402,6 +3816,10 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
 
                     # trace.
                     _logsi.LeaveMethod(SILevel.Debug)
+
+            # trace.
+            _logsi.LogVerbose("'%s': TOKENUPDATER_LOCK is RESET for method _TokenUpdater" % entry.title, colorValue=SIColors.Gold)
+
 
         # -----------------------------------------------------------------------------------
         # Continue with async_setup_entry
@@ -3427,8 +3845,8 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
             entry.options.get(CONF_OPTION_DEVICE_LOGINID, None),                    # spotifyConnectLoginId:str=None,
             2.0,                                                                    # spotifyConnectDiscoveryTimeout:float=2.0,   # 0 to disable Spotify Connect Zeroconf browsing features.
             True,                                                                   # spotifyConnectDirectoryEnabled:bool=True,   # disable Spotify Connect Directory Task.
-            entry.options.get(CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_DC, None),    # spotifyWebPlayerCookieSpdc:str=None,
-            entry.options.get(CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_KEY, None),   # spotifyWebPlayerCookieSpdc:str=None,
+            None,                                                                   # spotifyWebPlayerCookieSpdc:str=None,
+            None,                                                                   # spotifyWebPlayerCookieSpdc:str=None,
         )       
         _logsi.LogObject(SILevel.Verbose, "'%s': Component async_setup_entry spotifyClient object" % entry.title, spotifyClient)
 
@@ -3446,20 +3864,18 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
         _logsi.LogObject(SILevel.Verbose, "'%s': Component async_setup_entry spotifyClient object (with AuthToken)" % entry.title, spotifyClient)
         _logsi.LogObject(SILevel.Verbose, "'%s': Component async_setup_entry Spotify UserProfile object" % entry.title, spotifyClient.UserProfile)
 
-        # *** Don't need the DataUpdateCoordinator anymore; left here in case we need it for future needs.
-        # # define a DataUpdateCoordinator that will poll for updated device entries every 60 minutes.
-        # device_coordinator:DataUpdateCoordinator[SpotifyConnectDevices] = DataUpdateCoordinator(
-        #     hass,
-        #     _LOGGER,
-        #     name=f"{entry.title} Device List Refresh",
-        #     update_interval=timedelta(minutes=60),
-        #     update_method=_OnDataUpdateCoordinatorInterval,
-        # )
-        # _logsi.LogObject(SILevel.Verbose, "'%s': Component async_setup_entry device DataUpdateCoordinator object" % entry.title, device_coordinator)
+        # ensure authentication token scopes have not changed.
+        if not set(session.token["scope"].split(" ")).issuperset(SPOTIFY_SCOPES):
+            _logsi.LogWarning("'%s': Spotify authentication token scopes have changed; user needs to re-authenticate their application credentials" % (entry.title), colorValue=SIColors.Tan)
+            raise ConfigEntryAuthFailed
 
-        # # wait for first refresh of DataUpdateCoordinator to get the initial device list.
-        # _logsi.LogObject(SILevel.Verbose, "'%s': Component async_setup_entry waiting for device DataUpdateCoordinator initial update" % entry.title, device_coordinator)
-        # await device_coordinator.async_config_entry_first_refresh()
+        # TEST TODO - force application credentials to re-authenticate for the specified test account.
+        # leave the following comments in here, in case you need to application credential re-authorization logic.
+        # global REAUTH_TEST_FIRST_TIME
+        # if (entry.title.lower().find("free") > -1) and (REAUTH_TEST_FIRST_TIME is None):
+        #     _logsi.LogWarning("'%s': TEST TODO - Testing app creds reauth processing" % (entry.title), colorValue=SIColors.Red)
+        #     REAUTH_TEST_FIRST_TIME = True
+        #     entry.async_start_reauth(hass)  # start reauth flow.
 
         # dump initial Spotify Connect device list (for HA debug log).
         scDevices:SpotifyConnectDevices = spotifyClient.SpotifyConnectDirectory.GetDevices()
@@ -3473,7 +3889,6 @@ async def async_setup_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
         _logsi.LogVerbose("'%s': Component async_setup_entry is creating the media player platform instance data object" % entry.title)
         hass.data.setdefault(DOMAIN, {})
         hass.data[DOMAIN][entry.entry_id] = InstanceDataSpotifyPlus(
-            #devices=device_coordinator,
             session=session,
             spotifyClient=spotifyClient,
             media_player=None,
@@ -3576,12 +3991,12 @@ async def async_unload_entry(hass:HomeAssistant, entry:ConfigEntry) -> bool:
             # dispose of SpotifyClient resources (stops directory task, unwires events, etc).
             if (data is not None):
                 if (data.spotifyClient is not None):
-                    _logsi.LogObject(SILevel.Verbose, "'%s': Component async_unload_entry is disposing the SpotifyClient object" % entry.title, data.spotifyClient)
+                    _logsi.LogVerbose("'%s': Component async_unload_entry is disposing the SpotifyClient object" % entry.title)
                     data.spotifyClient.Dispose()
 
             # a quick check to make sure all update listeners were removed (see method doc notes above).
             if len(entry.update_listeners) > 0:
-                _logsi.LogArray(SILevel.Warning, "'%s': Component configuration update_listener(s) did not get removed before configuration unload (%d items - should be 0 prioer to HA 2026.0 release, but after that release still contains entries)" % (entry.title, len(entry.update_listeners)), entry.update_listeners)
+                _logsi.LogArray(SILevel.Warning, "'%s': Component configuration update_listener(s) did not get removed before configuration unload (%d items - should be 0 prior to HA 2026.0 release, but after that release still contains entries)" % (entry.title, len(entry.update_listeners)), entry.update_listeners)
                 # 2024/06/08 - I commented out the following line to clear the `update_listeners`, as it was causing `ValueError: list.remove(x): x not in list`
                 # exceptions starting with the HA 2024.6.0 release!
                 #entry.update_listeners.clear()
@@ -3656,54 +4071,168 @@ async def options_update_listener(hass:HomeAssistant, entry:ConfigEntry) -> None
       just the authentication token that is being udpated, which will occur every 1 hour (controlled by
       Spotify Web API token expiration).
     """
-    # trace.
-    _logsi.LogVerbose("'%s': TOKENUPDATER_LOCK is preparing to set the lock for method options_update_listener" % entry.title, colorValue=SIColors.Gold)
-    if TOKENUPDATER_LOCK.locked():
-        _logsi.LogVerbose("'%s': options_update_listener is waiting on TOKENUPDATER_LOCK to free" % entry.title, colorValue=SIColors.Gold)
-
-    # only allow one thread to update authorization token at a time; otherwise a deadlock
-    # occurs in the `run_coroutine_threadsafe(session.implementation.async_refresh_token)` line!
-    with TOKENUPDATER_LOCK:
+    try:
 
         # trace.
-        _logsi.LogVerbose("'%s': TOKENUPDATER_LOCK is set for method options_update_listener" % entry.title)
+        _logsi.EnterMethod(SILevel.Debug)
+        _logsi.LogObject(SILevel.Verbose, "'%s': Component detected configuration entry options update" % entry.title, entry)
+        _logsi.LogDictionary(SILevel.Verbose, "'%s': Component options_update_listener entry.data dictionary" % entry.title, entry.data)
+        _logsi.LogDictionary(SILevel.Verbose, "'%s': Component options_update_listener entry.options dictionary" % entry.title, entry.options)
 
-        try:
-
-            # trace.
-            _logsi.EnterMethod(SILevel.Debug)
-            _logsi.LogObject(SILevel.Verbose, "'%s': Component detected configuration entry options update" % entry.title, entry)
-            _logsi.LogDictionary(SILevel.Verbose, "'%s': Component options_update_listener entry.data dictionary" % entry.title, entry.data)
-            _logsi.LogDictionary(SILevel.Verbose, "'%s': Component options_update_listener entry.options dictionary" % entry.title, entry.options)
-
-            # check if the authentication token was refreshed; if not, then it's a user-initiated
-            # change and the configuration should be reloaded to apply the changes.
-            # if it IS an authentication token refresh, then do NOT reload the configuration.
-            shouldReload:bool = True
-            _logsi.LogVerbose("'%s': Component options_update_listener is checking for authentication token refresh event" % entry.title)
-            if (entry.data is not None):
-                token:dict = entry.data.get('token', None)
-                if (token is not None):
-                    _logsi.LogDictionary(SILevel.Verbose, "'%s': Component options_update_listener token data" % entry.title, token)
-                    status = token.get(TOKEN_STATUS, None)
-                    if (status == TOKEN_STATUS_REFRESH_EVENT):
-                        # token refresh detected; indicate configuration should not be reloaded, and remove
-                        # the token status key so it's not saved with the configuration data.
-                        shouldReload = False
-                        entry.data['token'].pop(TOKEN_STATUS, None)
-                        _logsi.LogVerbose("'%s': Component options_update_listener detected authentication token refresh; configuration will NOT be reloaded" % entry.title)
+        # check if the authentication token was refreshed; if not, then it's a user-initiated
+        # change and the configuration should be reloaded to apply the changes.
+        # if it IS an authentication token refresh, then do NOT reload the configuration.
+        shouldReload:bool = True
+        _logsi.LogVerbose("'%s': Component options_update_listener is checking for authentication token refresh event" % entry.title)
+        if (entry.data is not None):
+            token:dict = entry.data.get('token', None)
+            if (token is not None):
+                _logsi.LogDictionary(SILevel.Verbose, "'%s': Component options_update_listener token data" % entry.title, token)
+                status = token.get(TOKEN_STATUS, None)
+                if (status == TOKEN_STATUS_REFRESH_EVENT):
+                    # token refresh detected; indicate configuration should not be reloaded, and remove
+                    # the token status key so it's not saved with the configuration data.
+                    shouldReload = False
+                    entry.data['token'].pop(TOKEN_STATUS, None)
+                    _logsi.LogVerbose("'%s': Component options_update_listener detected authentication token refresh; configuration will NOT be reloaded" % entry.title)
         
-            # reload the configuration entry (if necessary).
-            if shouldReload:
-                _logsi.LogVerbose("'%s': Component options_update_listener is reloading the configuration (due to UI options change)" % entry.title)
-                await hass.config_entries.async_reload(entry.entry_id)
-            else:
-                _logsi.LogVerbose("'%s': Component options_update_listener is NOT reloading the configuration (due to token refresh)" % entry.title)
+        # reload the configuration entry (if necessary).
+        if shouldReload:
 
             # trace.
-            _logsi.LogVerbose("'%s': Component options_update_listener completed" % entry.title)
+            _logsi.LogVerbose("'%s': TOKENUPDATER_LOCK is preparing to set the lock for method options_update_listener" % entry.title, colorValue=SIColors.Gold)
+            if TOKENUPDATER_LOCK.locked():
+                _logsi.LogVerbose("'%s': options_update_listener is waiting on TOKENUPDATER_LOCK to free" % entry.title, colorValue=SIColors.Gold)
 
-        finally:
+            try:
+
+                # only allow one thread to update authorization token at a time; otherwise a deadlock
+                # occurs in the `run_coroutine_threadsafe(session.implementation.async_refresh_token)` line!
+                with TOKENUPDATER_LOCK:
+
+                    # trace.
+                    _logsi.LogVerbose("'%s': TOKENUPDATER_LOCK is set for method options_update_listener" % entry.title, colorValue=SIColors.Gold)
+
+                    _logsi.LogVerbose("'%s': Component options_update_listener is reloading the configuration (due to UI options change)" % entry.title)
+                    await hass.config_entries.async_reload(entry.entry_id)
+
+            finally:
+
+                # trace.
+                _logsi.LogVerbose("'%s': TOKENUPDATER_LOCK is RESET for method options_update_listener" % entry.title, colorValue=SIColors.Gold)
+
+        else:
 
             # trace.
-            _logsi.LeaveMethod(SILevel.Debug)
+            _logsi.LogVerbose("'%s': Component options_update_listener is NOT reloading the configuration (due to token refresh)" % entry.title)
+
+        # trace.
+        _logsi.LogVerbose("'%s': Component options_update_listener completed" % entry.title)
+
+    finally:
+
+        # trace.
+        _logsi.LeaveMethod(SILevel.Debug)
+
+
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """
+    Migrate older version of a config entry to a new version format.
+
+    You can also update the `unique_id` value as well.
+
+    This method is called when the configuration entry.version value does not match
+    the hardcoded `SpotifyPlusConfigFlow.VERSION = n` value.
+    """
+    try:
+
+        # trace.
+        _logsi.EnterMethod(SILevel.Debug)
+        _logsi.LogObject(SILevel.Verbose, "'%s': Component detected configuration entry migration" % entry.title, entry)
+        _logsi.LogDictionary(SILevel.Verbose, "'%s': Component async_migrate_entry entry.data dictionary" % entry.title, entry.data)
+        _logsi.LogDictionary(SILevel.Verbose, "'%s': Component async_migrate_entry entry.options dictionary" % entry.title, entry.options)
+
+        # check config entry version to know what we need to migrate from.
+        if entry.version == 1:
+
+            # trace.
+            _logsi.LogVerbose("'%s': Migrating config entry from version %s to version 2" % (entry.title, entry.version), colorValue=SIColors.DarkBlue)
+
+            # as of HA 2026.03 the unique_id value needs to be unique across all domains,
+            # otherwise an exception will occur and the integration will not load!
+            # version 1 of the integration uses the same unique_id as the HA Spotify 
+            # integration (e.g. Spotify user id), so we need to update the unique_id value.
+            # in our case, we will just tack the "_DOMAIN" suffix onto the existing unique_id.
+
+            # save the current unique_id value for entity entry modifications.
+            old_unique_id = entry.unique_id
+
+            # formulate the new unique_id value.
+            new_unique_id = entry.unique_id + "_" + DOMAIN
+            _logsi.LogVerbose("'%s': Migrating config entry unique_id from \"%s\" to \"%s\"" % (entry.title, entry.unique_id, new_unique_id), colorValue=SIColors.DarkBlue)
+
+            # if you also need to adjust data.
+            new_data = {**entry.data}
+            # if "deprecated_key" in new_data:
+            #     new_data.pop("deprecated_key")
+
+            # if you also need to adjust options.
+            new_options = {**entry.options}
+            # if "deprecated_key" in new_options:
+            #     new_options.pop("deprecated_key")
+
+            # update configuration entry to newer version structure, and
+            # increment the version indicator by one.
+            hass.config_entries.async_update_entry(
+                entry,
+                unique_id=new_unique_id,
+                data=new_data,
+                options=new_options,
+                version=2,  # update version to next version number
+            )
+
+            # now that the configuration entry has been updated, let's loop through
+            # the entity registry and update the unique id of any existing entities
+            # that are children of this configuration entry.
+
+            # get the entity registry.
+            entity_registry = er.async_get(hass)
+
+            # process all entities.
+            for entity in list(entity_registry.entities.values()):
+
+                # is this entity a child of the configuration entry?  if not, then don't bother.
+                if entity.config_entry_id != entry.entry_id:
+                    continue
+
+                # is this entity referencing the config entry old unique_id value?
+                if entity.unique_id == old_unique_id:
+
+                    # is there an entity that already contains our new unique_id?
+                    if entity_registry.async_get_entity_id(entity.domain, entity.platform, new_unique_id):
+                        # duplicate found; remove the old entity.
+                        _logsi.LogVerbose("'%s': Removing existing entity_id \"%s\" so that a new entity can be created for the unique_id (avoid duplicate entities)" % (entry.title, entity.entity_id), colorValue=SIColors.DarkBlue)
+                        entity_registry.async_remove(entity.entity_id)
+                    else:
+                        # update the entity with the new unique_id.
+                        _logsi.LogVerbose("'%s': Updating entity_id \"%s\" unique_id value from \"%s\" to \"%s\"" % (entry.title, entity.entity_id, entity.unique_id, new_unique_id), colorValue=SIColors.DarkBlue)
+                        entity_registry.async_update_entity(entity.entity_id, new_unique_id=new_unique_id)
+
+        # trace.
+        _logsi.LogObject(SILevel.Verbose, "'%s': Component configuration entry migration complete" % entry.title, entry)
+        _logsi.LogDictionary(SILevel.Verbose, "'%s': Component async_migrate_entry entry.data dictionary (migrated)" % entry.title, entry.data)
+        _logsi.LogDictionary(SILevel.Verbose, "'%s': Component async_migrate_entry entry.options dictionary (migrated)" % entry.title, entry.options)
+
+        # return True so Home Assistant knows the migration succeeded.
+        return True
+
+    except Exception as ex:
+
+        # log exception, but not to system logger as HA will take care of it.
+        _logsi.LogException("'%s': Component async_migrate_entry Exception" % (entry.title), ex, logToSystemLogger=False)
+        raise
+
+    finally:
+
+        # trace.
+        _logsi.LeaveMethod(SILevel.Debug)

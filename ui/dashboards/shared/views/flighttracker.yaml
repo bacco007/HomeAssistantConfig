@@ -36,7 +36,7 @@ cards:
       - !include /config/ui/cards/flighttracker/airplanes_live.yaml
       - !include /config/ui/cards/flighttracker/adsb_exchange.yaml
       - !include /config/ui/cards/flighttracker/planefinder.yaml
-      - !include /config/ui/cards/flighttracker/radarplane.yaml
+      # - !include /config/ui/cards/flighttracker/radarplane.yaml
       - !include /config/ui/cards/flighttracker/radarbox.yaml
       - !include /config/ui/cards/flighttracker/flights_tracked.yaml
       - !include /config/ui/cards/flighttracker/distance.yaml

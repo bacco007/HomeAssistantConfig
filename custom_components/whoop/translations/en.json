@@ -1,0 +1,25 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "WHOOP"
+      },
+      "reauth_confirm": {
+        "title": "Reauthenticate WHOOP",
+        "description": "Please reauthenticate with your WHOOP account."
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "WHOOP Options",
+        "description": "Configure display units for duration and energy sensors. Select \"Manual\" for duration to configure units per-entity in Home Assistant's entity settings.",
+        "data": {
+          "duration_unit": "Duration Unit",
+          "energy_unit": "Energy Unit"
+        }
+      }
+    }
+  }
+}

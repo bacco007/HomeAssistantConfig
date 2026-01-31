@@ -1,0 +1,63 @@
+{
+    "type": "text",
+    "name": "Text",
+    "props": {
+        "text": {
+            "type": "string",
+            "default": "Text"
+        },
+        "font_size": {
+            "type": "number",
+            "default": 20
+        },
+        "font_family": {
+            "type": "string",
+            "default": "Roboto",
+            "enum": [
+                "Roboto",
+                "Inter",
+                "Open Sans"
+            ]
+        },
+        "color": {
+            "type": "string",
+            "default": "black",
+            "enum": [
+                "black",
+                "white",
+                "gray"
+            ]
+        },
+        "font_weight": {
+            "type": "number",
+            "default": 400
+        },
+        "italic": {
+            "type": "boolean",
+            "default": false
+        },
+        "text_align": {
+            "type": "string",
+            "default": "TOP_LEFT",
+            "enum": [
+                "TOP_LEFT",
+                "TOP_CENTER",
+                "TOP_RIGHT",
+                "CENTER_LEFT",
+                "CENTER",
+                "CENTER_RIGHT",
+                "BOTTOM_LEFT",
+                "BOTTOM_CENTER",
+                "BOTTOM_RIGHT"
+            ]
+        },
+        "bpp": {
+            "type": "number",
+            "default": 1
+        },
+        "invert": {
+            "type": "boolean",
+            "default": false
+        }
+    }
+}

@@ -70,7 +70,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                 ].data
             ) is None:
                 device = await Discover(
-                    broadcast_address=config_entry.data.get(CONF_HOST),
+                    broadcast_address=config_entry.data.get(CONF_HOST, ""),
                     mode=DiscoverMode(
                         config_entry.options.get(
                             CONF_DISCOVERY_MODE, DEF_DISCOVERY_MODE.value
@@ -81,7 +81,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                 if device:
                     device = device[0]
             await device.async_gather_details()
-            device_registry: dr.DeviceRegistry = dr.async_get(hass=hass)
+            device_registry: dr.DeviceRegistry = dr.async_get(hass)
             device_entry: list[dr.DeviceEntry] = [
                 device_details
                 for _, device_details in device_registry.devices.items()
@@ -127,7 +127,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                 ).async_discover()
                 if device:
                     device = device[0]
-            await device.async_gather_details()
+                await device.async_gather_details()
             await device.async_refresh_tuner_status()
         except Exception as exc:
             _LOGGER.warning(log_formatter.format("%s"), exc)
@@ -148,6 +148,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         CONF_DATA_COORDINATOR_GENERAL
     ] = coordinator_general
     await coordinator_general.async_config_entry_first_refresh()
+    if coordinator_general.data is not None:
+        await coordinator_general.data.async_get_lineup_http()
+        await coordinator_general.data.async_get_scanning_status()
 
     coordinator_tuner_status: DataUpdateCoordinator = DataUpdateCoordinator(
         hass,
@@ -280,6 +283,7 @@ class HDHomerunTunerEntity(CoordinatorEntity):
             manufacturer=f"SiliconDust ({self.coordinator.data.discovery_method.name})",
             model=self.coordinator.data.model if self.coordinator.data else "",
             name=self._device_name,
+            via_device=(DOMAIN, self._config.unique_id),
         )
 
     @property

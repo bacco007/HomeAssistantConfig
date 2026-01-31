@@ -1,0 +1,60 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "替代时间系统",
+        "description": "欢迎使用替代时间系统！\n\n此集成提供各种替代日历和时间系统，用于教育和娱乐目的。",
+        "data": {
+          "name": "集成名称"
+        }
+      },
+      "select_categories": {
+        "title": "选择日历类别",
+        "description": "选择您要配置的日历类别：\n\n{details}",
+        "data": {
+          "categories": "要包含的类别"
+        }
+      },
+      "select_calendars_by_category": {
+        "title": "选择{category}日历",
+        "description": "从{category}类别中选择日历：\n\n{details}",
+        "data": {
+          "calendars": "要激活的日历"
+        }
+      },
+      "plugin_options": {
+        "title": "配置{calendar_name}",
+        "description": "**{calendar_name}**\n\n{calendar_description}\n\n配置以下选项："
+      },
+      "disclaimer": {
+        "title": "重要通知",
+        "description": "## ⚠️ 替代时间系统 - 免责声明\n\n此集成提供的替代日历和时间系统**仅用于教育和娱乐目的**。\n\n### 请注意：\n• 计算可能不是100％准确\n• 某些日历是虚构的或理论性的\n• 历史日历可能有变化\n• 时区和转换是近似值\n\n### 发现问题？\n如果您发现错误或有改进建议，请在我们的GitHub存储库中报告：\n\n**https://github.com/Lexorius/alternative_time**\n\n继续使用即表示您承认这些时间系统不应用于关键时间测量或官方目的。"
+      }
+    },
+    "error": {
+      "unknown": "发生意外错误"
+    },
+    "abort": {
+      "no_calendars_found": "未找到日历实现。请检查安装。",
+      "no_options": "{message}"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "配置日历选项",
+        "description": "选择一个日历来配置其选项：\n\n{title}",
+        "data": {
+          "calendar": "要配置的日历"
+        }
+      },
+      "configure_calendar": {
+        "title": "配置{calendar_name}",
+        "description": "**{calendar_name}**\n\n{calendar_description}\n\n调整以下设置："
+      }
+    },
+    "abort": {
+      "no_options": "{message}"
+    }
+  }
+}

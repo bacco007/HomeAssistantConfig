@@ -1,0 +1,1212 @@
+ring_tile_mod:
+  name: "Ring Tile Mod"
+  version: "1.1.0"
+  creator: "KingNutshell"
+  link: "https://github.com/Clooos/Bubble-Card/discussions/XXXX"
+  
+  supported:
+    - button
+    - climate
+    - cover
+    - media-player
+    - select
+  
+  description: |
+    Transform your Bubble Cards into powerful Ring Tile Cards! This module converts any Bubble Card button into a feature-rich ring visualization with advanced entity support and an intuitive, organized editor interface. Features include: Ring Types (Open 270° or Closed 360°), Advanced Entity Objects with attribute access, Smart Unit Detection (4-tier priority system), Multiple Indicators (Arc/Dot/Pointer), Scale options with labels, Dual markers with flexible positioning, Smart color handling, and performance optimizations.
+  
+  code: |
+    ${(() => {
+      if (card.dataset.ringTileModApplied) return;
+      card.dataset.ringTileModApplied = 'true';
+      
+      const settings = this.config?.ring_tile_mod || {};
+        
+                // Ensure mutual exclusivity between scale labels and marker values
+                const getSetting = (key, fallback) => settings[key] ?? fallback;
+                if (getSetting('scale', 'none') === 'ticks_with_labels' && getSetting('show_marker_value', false)) {
+                    settings.show_marker_value = false;
+                }
+        
+                // Optimized helper functions
+                const getEntityState = (entityId) => entityId && this._hass?.states?.[entityId] || null;
+                
+                // Enhanced entity value getter with full object support
+                const getEntityValue = (entityConfig, fallbackAttribute = null) => {
+                    let entityId, attribute;
+                    
+                    // Handle different input formats
+                    if (typeof entityConfig === 'string') {
+                        entityId = entityConfig;
+                        attribute = fallbackAttribute;
+                    } else if (typeof entityConfig === 'object' && entityConfig !== null) {
+                        entityId = entityConfig.entity;
+                        attribute = entityConfig.attribute || fallbackAttribute;
+                    } else {
+                        return 0;
+                    }
+                    
+                    const state = getEntityState(entityId);
+                    if (!state) return 0;
+                    
+                    const value = attribute && state.attributes?.[attribute] !== undefined ? 
+                        state.attributes[attribute] : state.state;
+                    return parseFloat(value) || 0;
+                };
+        
+                // Enhanced entity configuration resolver
+                const resolveEntityConfig = (entityConfig) => {
+                    if (typeof entityConfig === 'string') {
+                        return { entity: entityConfig, attribute: null };
+                    } else if (typeof entityConfig === 'object' && entityConfig !== null) {
+                        return {
+                            entity: entityConfig.entity,
+                            attribute: entityConfig.attribute || null,
+                            device_class: entityConfig.device_class || null,
+                            unit_of_measurement: entityConfig.unit_of_measurement || null
+                        };
+                    }
+                    return { entity: null, attribute: null };
+                };
+        
+                // Enhanced unit detection with object config support
+                const getEntityUnit = (entityConfig) => {
+                    const config = resolveEntityConfig(entityConfig);
+                    if (!config.entity) return '';
+                    
+                    const entityState = getEntityState(config.entity);
+                    if (!entityState) return '';
+                    
+                    // Priority 1: Explicit unit from config object
+                    if (config.unit_of_measurement) {
+                        return config.unit_of_measurement;
+                    }
+                    
+                    // Priority 2: Entity's unit_of_measurement attribute
+                    if (entityState.attributes?.unit_of_measurement) {
+                        return entityState.attributes.unit_of_measurement;
+                    }
+                    
+                    // Priority 3: Smart inference based on explicit device_class from config
+                    if (config.device_class) {
+                        switch (config.device_class) {
+                            case 'battery': return '%';
+                            case 'humidity': return '%';
+                            case 'temperature': return '°C';
+                            case 'pressure': return 'hPa';
+                            case 'power': return 'W';
+                            case 'energy': return 'kWh';
+                            case 'voltage': return 'V';
+                            case 'current': return 'A';
+                            case 'illuminance': return 'lx';
+                            case 'signal_strength': return 'dBm';
+                            case 'data_rate': return 'Mbps';
+                            case 'frequency': return 'Hz';
+                            default: return '';
+                        }
+                    }
+                    
+                    // Priority 4: Domain and device class inference (existing logic)
+                    const domain = entityState.entity_id.split('.')[0];
+                    const deviceClass = entityState.attributes?.device_class;
+                    const state = config.attribute ? 
+                        entityState.attributes?.[config.attribute] : 
+                        entityState.state;
+                    
+                    switch (domain) {
+                        case 'fan':
+                            if (typeof state === 'string' && !isNaN(parseFloat(state))) return '%';
+                            break;
+                        case 'light':
+                            if (entityState.attributes?.brightness !== undefined) return '%';
+                            break;
+                        case 'cover':
+                            if (entityState.attributes?.current_position !== undefined) return '%';
+                            break;
+                        case 'climate':
+                            if (entityState.attributes?.current_temperature !== undefined) {
+                                return entityState.attributes?.temperature_unit || '°C';
+                            }
+                            break;
+                        case 'sensor':
+                            switch (deviceClass) {
+                                case 'battery': return '%';
+                                case 'humidity': return '%';
+                                case 'temperature': return '°C';
+                                case 'pressure': return 'hPa';
+                                case 'power': return 'W';
+                                case 'energy': return 'kWh';
+                                case 'voltage': return 'V';
+                                case 'current': return 'A';
+                                case 'illuminance': return 'lx';
+                                case 'signal_strength': return 'dBm';
+                                default:
+                                    const numValue = parseFloat(state);
+                                    if (!isNaN(numValue) && numValue >= 0 && numValue <= 100 && Number.isInteger(numValue)) {
+                                        return '%';
+                                    }
+                                    break;
+                            }
+                            break;
+                    }
+                    
+                    return '';
+                };
+        
+                const getMarkerValue = (markerConfig) => {
+                    if (markerConfig == null) return null;
+                    if (typeof markerConfig === 'number') return markerConfig;
+                    if (typeof markerConfig === 'string') {
+                        const numValue = parseFloat(markerConfig);
+                        return !isNaN(numValue) ? numValue : getEntityValue(markerConfig);
+                    }
+                    if (typeof markerConfig === 'object') {
+                        // Support both old format and new entity config object format
+                        return markerConfig.entity ? getEntityValue(markerConfig) : null;
+                    }
+                    return null;
+                };
+        
+                const getMinMaxFromEntity = (entityConfig) => {
+                    const config = resolveEntityConfig(entityConfig);
+                    if (!config.entity) return { min: null, max: null };
+                    
+                    const state = getEntityState(config.entity);
+                    if (!state?.attributes) return { min: null, max: null };
+                    
+                    const attr = state.attributes;
+                    const domain = config.entity.split('.')[0];
+                    let min = attr.min ?? attr.min_value ?? attr.minimum ?? (domain === 'climate' ? attr.min_temp : null);
+                    let max = attr.max ?? attr.max_value ?? attr.maximum ?? (domain === 'climate' ? attr.max_temp : null);
+                    
+                    if (domain === 'sensor' && (attr.device_class === 'battery' || config.device_class === 'battery')) {
+                        min = min ?? 0;
+                        max = max ?? 100;
+                    }
+                    
+                    return { min: min ? parseFloat(min) : null, max: max ? parseFloat(max) : null };
+                };
+        
+                const calculateProgress = () => {
+                    // Check for manual progress override first
+                    const manualProgress = getSetting('test_progress', null);
+                    if (manualProgress !== null && typeof manualProgress === 'number') {
+                        return Math.max(0, Math.min(100, manualProgress));
+                    }
+                    
+                    const entityConfig = getSetting('ring_entity', '') || this.config.entity;
+                    if (!entityConfig) return 50;
+                    
+                    const currentValue = getEntityValue(entityConfig);
+                    const entityMinMax = getMinMaxFromEntity(entityConfig);
+                    const minValue = getSetting('min', entityMinMax.min ?? 0);
+                    const maxValue = getSetting('max', entityMinMax.max ?? 100);
+                    return maxValue <= minValue ? 50 : Math.max(0, Math.min(100, ((currentValue - minValue) / (maxValue - minValue)) * 100));
+                };
+        
+                const getEffectiveDimensions = (element) => {
+                    if (!element?.getBoundingClientRect) return { width: 48, height: 48 };
+                    const rect = element.getBoundingClientRect();
+                    let { width, height } = rect;
+                    if (width === 0 || height === 0) {
+                        const style = window.getComputedStyle(element);
+                        width = parseFloat(style.width) || 48;
+                        height = parseFloat(style.height) || 48;
+                    }
+                    return { width: Math.max(width, 48), height: Math.max(height, 48) };
+                };
+        
+                const getCoordFromDegrees = (angle, radius, center) => {
+                    const rad = (angle * Math.PI) / 180;
+                    return [center + radius * Math.cos(rad), center + radius * Math.sin(rad)];
+                };
+        
+                const calcNiceNum = (range, round) => {
+                    const exp = Math.floor(Math.log10(range));
+                    const frac = range / Math.pow(10, exp);
+                    const niceFrac = round ? 
+                        (frac < 1.5 ? 1 : frac < 3 ? 2 : frac < 7 ? 5 : 10) :
+                        (frac <= 1 ? 1 : frac <= 2 ? 2 : frac <= 5 ? 5 : 10);
+                    return niceFrac * Math.pow(10, exp);
+                };
+        
+                const calcSubdivisions = (bigStep) => {
+                    const oom = Math.pow(10, Math.floor(Math.log10(bigStep)));
+                    const frac = bigStep / oom;
+                    return frac === 5 ? [bigStep / 5, bigStep / 10] : [bigStep / 2, bigStep / 10];
+                };
+        
+                const countDecimals = (value, maxDecimals = 1) => {
+                    if (Math.floor(value) === value) return 0;
+                    const str = value.toString();
+                    const dotIndex = str.indexOf('.');
+                    const eIndex = str.indexOf('e-');
+                    return dotIndex !== -1 && eIndex === -1 ? 
+                        Math.min(str.length - dotIndex - 1, maxDecimals) :
+                        eIndex !== -1 ? Math.min(parseInt(str.slice(eIndex + 2), 10), maxDecimals) : 0;
+                };
+        
+                const getRoundedValue = (value, forceInteger = false) => {
+                    if (typeof value !== 'number') return String(value);
+                    if (forceInteger) return Math.round(value).toString();
+                    
+                    // Ganzzahlen bleiben Ganzzahlen (kein .0)
+                    if (Math.floor(value) === value) return value.toString();
+                    
+                    // Für Dezimalzahlen: max. 1 Dezimalstelle
+                    const maxDecimals = settings.max_decimals || 1;
+                    return value.toFixed(Math.min(countDecimals(value, maxDecimals), maxDecimals));
+                };
+        
+                // Gemeinsame Hilfsfunktion für Zone-Content (enhanced with entity object support)
+                const getZoneContent = (zoneType, entityConfig) => {
+                    const config = resolveEntityConfig(entityConfig);
+                    const entityState = getEntityState(config.entity);
+                    const bubbleCardEntity = this.config.entity;
+                    const bubbleCardConfig = resolveEntityConfig(bubbleCardEntity);
+                    const bubbleCardState = getEntityState(bubbleCardConfig.entity);
+                    const bubbleCardValue = bubbleCardState ? getEntityValue(bubbleCardEntity) : 0;
+                    const ringEntityValue = entityState ? getEntityValue(entityConfig) : 0;
+                    
+                    switch (zoneType) {
+                        case 'value': return { text: getRoundedValue(bubbleCardValue), unit: '' };
+                        case 'value_with_unit': return { 
+                            text: getRoundedValue(bubbleCardValue), 
+                            unit: getEntityUnit(bubbleCardEntity)
+                        };
+                        case 'ring_value': return { text: getRoundedValue(ringEntityValue), unit: '' };
+                        case 'ring_value_with_unit': return { 
+                            text: getRoundedValue(ringEntityValue), 
+                            unit: getEntityUnit(entityConfig)
+                        };
+                        case 'unit': return { text: getEntityUnit(bubbleCardEntity), unit: '' };
+                        case 'ring_unit': return { text: getEntityUnit(entityConfig), unit: '' };
+                        case 'custom_text': return { text: getSetting(`${zoneType === 'info_zone' ? 'info' : 'ring'}_zone_custom_text`, ''), unit: '' };
+                        default: return { text: '', unit: '' };
+                    }
+                };
+        
+                const renderInfoZone = (size, entity, ringType) => {
+                    const infoZone = getSetting('info_zone', 'none');
+                    if (infoZone === 'none' || ringType === 'closed') return '';
+                    
+                    const center = size / 2, scaleFactor = size / 100;
+                    const infoZoneFontSize = Math.max(8, 20 * scaleFactor * 0.6);
+                    const yPosition = center + 41 * scaleFactor * 1.1 + infoZoneFontSize / 3.5;
+                    
+                    if (infoZone === 'min_max') {
+                        const minValue = getSetting('min', 0), maxValue = getSetting('max', 100);
+                        const minText = getRoundedValue(minValue, true), maxText = maxValue - minValue < 0.01 ? '–' : getRoundedValue(maxValue, true);
+                        const scaledXShift = 32 * scaleFactor * 0.8;
+                        return `<text class="info-zone-text" x="${center - scaledXShift}" y="${yPosition}" text-anchor="start" alignment-baseline="alphabetic" font-size="${infoZoneFontSize}">${minText}</text>
+                                <text class="info-zone-text" x="${center + scaledXShift}" y="${yPosition}" text-anchor="end" alignment-baseline="alphabetic" font-size="${infoZoneFontSize}">${maxText}</text>`;
+                    }
+                    
+                    const { text, unit } = getZoneContent(infoZone, entity);
+                    return (text || unit) ? `<text class="info-zone-text" x="${center}" y="${yPosition}" text-anchor="middle" alignment-baseline="alphabetic" font-size="${infoZoneFontSize}">${unit ? `${text}${unit}` : text}</text>` : '';
+                };
+        
+                const renderRingZone = (size, entity, ringType) => {
+                    const ringZone = getSetting('ring_zone', 'none');
+                    if (ringZone === 'none' || getSetting('indicator', 'arc') === 'pointer') return '';
+                    
+                    const center = size / 2, scaleFactor = size / 100;
+                    const { text, unit } = getZoneContent(ringZone, entity);
+                    
+                    if (text || unit) {
+                        const fontSize = Math.max(10, 42 * scaleFactor * 0.6), unitSize = fontSize * 0.8, yPosition = center + fontSize / 3.5;
+                        return unit ? 
+                            `<text class="ring-zone-text tight" x="${center}" y="${yPosition}" text-anchor="middle" alignment-baseline="alphabetic" font-size="${fontSize}">${text}<tspan alignment-baseline="alphabetic" font-size="${unitSize}">${unit}</tspan></text>` :
+                            `<text class="ring-zone-text tight" x="${center}" y="${yPosition}" text-anchor="middle" alignment-baseline="alphabetic" font-size="${fontSize}">${text}</text>`;
+                    }
+                    return '';
+                };
+        
+                /**
+                 * Ring Path Helper - wie in der Original Ring Tile Card
+                 */
+                const getRingPath = (startAngle, endAngle, centerX, centerY, outerRadius, width) => {
+                    const innerRadius = outerRadius - width;
+                    const longPathFlag = Math.abs(endAngle - startAngle) > 180 ? 1 : 0;
+                    
+                    const getCoordFromDegrees = (angle, radius) => {
+                        const rad = (angle * Math.PI) / 180;
+                        const x = centerX + radius * Math.cos(rad);
+                        const y = centerY + radius * Math.sin(rad);
+                        return [x, y];
+                    };
+                    
+                    const outerStart = getCoordFromDegrees(startAngle, outerRadius);
+                    const outerEnd = getCoordFromDegrees(endAngle, outerRadius);
+                    const innerStart = getCoordFromDegrees(endAngle, innerRadius);
+                    const innerEnd = getCoordFromDegrees(startAngle, innerRadius);
+                    
+                    const commands = [];
+                    commands.push(`M ${outerStart.join(' ')}`);
+                    commands.push(`A ${outerRadius} ${outerRadius} 0 ${longPathFlag} 1 ${outerEnd.join(' ')}`);
+                    commands.push(`A ${width / 2} ${width / 2} 0 0 1 ${innerStart.join(' ')}`);
+                    commands.push(`A ${innerRadius} ${innerRadius} 0 ${longPathFlag} 0 ${innerEnd.join(' ')}`);
+                    commands.push(`A ${width / 2} ${width / 2} 0 0 1 ${outerStart.join(' ')}`);
+                    
+                    return commands.join(' ');
+                };
+        
+                /**
+                 * Marker Helper Functions
+                 */
+                const createMarkers = (size, ringType, minValue, maxValue) => {
+                    let content = '';
+                    const center = size / 2;
+                    const strokeWidth = 4;
+                    const ringRadius = size / 2 - strokeWidth / 2 + 2;
+                    const markerStyle = getSetting('marker_style', 'dot');
+                    const showValue = getSetting('show_marker_value', false);
+                    
+                    // Process marker 1
+                    const marker1Value = getMarkerValue(getSetting('marker', null));
+                    if (marker1Value !== null) {
+                        let marker1Color = getSetting('marker_colour', 'grey') || getSetting('marker_color', 'grey');
+                        // Convert RGB array to CSS color if needed
+                        if (Array.isArray(marker1Color) && marker1Color.length >= 3) {
+                            marker1Color = `rgb(${marker1Color[0]}, ${marker1Color[1]}, ${marker1Color[2]})`;
+                        }
+                        content += renderMarker(marker1Value, marker1Color, center, ringRadius, strokeWidth, ringType, minValue, maxValue, markerStyle, showValue);
+                    }
+                    
+                    // Process marker 2
+                    const marker2Value = getMarkerValue(getSetting('marker2', null));
+                    if (marker2Value !== null) {
+                        let marker2Color = getSetting('marker2_colour', 'grey') || getSetting('marker2_color', 'grey');
+                        // Convert RGB array to CSS color if needed
+                        if (Array.isArray(marker2Color) && marker2Color.length >= 3) {
+                            marker2Color = `rgb(${marker2Color[0]}, ${marker2Color[1]}, ${marker2Color[2]})`;
+                        }
+                        content += renderMarker(marker2Value, marker2Color, center, ringRadius, strokeWidth, ringType, minValue, maxValue, markerStyle, showValue);
+                    }
+                    
+                    return content;
+                };
+        
+                const renderMarker = (value, color, center, ringRadius, strokeWidth, ringType, minValue, maxValue, markerStyle, showValue) => {
+                    // Calculate marker position as percentage
+                    const range = maxValue - minValue;
+                    if (range <= 0) return '';
+                    
+                    let markerProgress = ((value - minValue) / range) * 100;
+                    markerProgress = Math.max(0, Math.min(100, markerProgress));
+                    
+                    let markerAngle;
+                    if (ringType === 'open') {
+                        // Open ring: 135° to 405° (270° range)
+                        const startAngle = 135;
+                        const totalAngle = 270;
+                        markerAngle = startAngle + (markerProgress / 100) * totalAngle;
+                    } else {
+                        // Closed ring: Bei start_position_closed = 0 soll bei 0° (12 Uhr) gestartet werden
+                        const baseAngle = -90 + (markerProgress / 100) * 360; // 360° Ring, startet bei -90° (12 Uhr)
+                        const userRotation = getSetting('start_position_closed', 0);
+                        markerAngle = baseAngle + userRotation;
+                    }
+                    
+                    // Calculate marker position
+                    const rad = (markerAngle * Math.PI) / 180;
+                    let content = '';
+                    
+                    if (markerStyle === 'line') {
+                        // Create marker as a line tick from outer edge towards center
+                        const tickLength = strokeWidth * 2; // Length of the tick line
+                        const outerRadius = ringRadius + strokeWidth / 2 - 1; // Shortened by 1px on outer side
+                        const innerRadius = outerRadius - tickLength + 2; // Shortened by 2px on inner side (1px more)
+                        
+                        // Outer point (on ring edge)
+                        const outerX = center + outerRadius * Math.cos(rad);
+                        const outerY = center + outerRadius * Math.sin(rad);
+                        
+                        // Inner point (towards center)
+                        const innerX = center + innerRadius * Math.cos(rad);
+                        const innerY = center + innerRadius * Math.sin(rad);
+                        
+                        content += `
+                            <line x1="${outerX}" y1="${outerY}" 
+                                  x2="${innerX}" y2="${innerY}" 
+                                  stroke="${color}" 
+                                  stroke-width="2"
+                                  stroke-linecap="round"
+                                  class="ring-marker marker-line" />
+                        `;
+                    } else {
+                        // Create marker as a small circle (default 'dot' style) - positioned closer to ring center
+                        const dotRadius = ringRadius - strokeWidth / 2; // Move dots 2px further inward
+                        const markerX = center + dotRadius * Math.cos(rad);
+                        const markerY = center + dotRadius * Math.sin(rad);
+                        const markerRadius = strokeWidth / 2 + 1; // Slightly larger than half stroke width
+                        
+                        content += `
+                            <circle cx="${markerX}" cy="${markerY}" 
+                                    r="${markerRadius}" 
+                                    fill="${color}" 
+                                    stroke="white"
+                                    stroke-width="1"
+                                    class="ring-marker marker-dot" />
+                        `;
+                    }
+                    
+                    // Add marker value label if requested
+                    if (showValue) {
+                        const outerRadius = ringRadius + strokeWidth / 2 + 2;
+                        
+                        // Label radius - positioned outside the ring like scale labels
+                        let labelRadius = outerRadius * 0.45;
+                        
+                        // markerAngle already includes rotation for closed rings - use it directly
+                        const degrees = markerAngle % 360;
+                        const labelRad = (degrees * Math.PI) / 180;
+                        const labelX = center + labelRadius * Math.cos(labelRad);
+                        const labelY = center + labelRadius * Math.sin(labelRad);
+                        
+                        // Use same font size configuration as scale labels
+                        const fontSize = strokeWidth * getSetting('scale_label_size', 1.8);
+                        
+                        // Format the value with appropriate decimals
+                        const places = countDecimals(value, 1);
+                        const formattedValue = value.toFixed(places);
+                        
+                        content += `
+                            <text x="${labelX}" y="${labelY}" 
+                                  text-anchor="middle" 
+                                  alignment-baseline="central" 
+                                  font-size="${fontSize}" 
+                                  fill="var(--primary-text-color)" 
+                                  opacity="0.9"
+                                  class="marker-label">${formattedValue}</text>
+                        `;
+                    }
+                    
+                    return content;
+                };
+        
+                /**
+                 * Indicator Helper Functions
+                 */
+                const createIndicator = (size, progress, indicatorType, ringType) => {
+                    if (indicatorType === 'none' || indicatorType === 'dot') return ''; // Dot wird jetzt in createProgressRing gerendert
+                    
+                    const center = size / 2;
+                    const strokeWidth = 4;
+                    const ringRadius = size / 2 - strokeWidth / 2 + 2;
+                    
+                    let content = '';
+                    
+                    // Nur noch Pointer-Indicator (vereinheitlicht für beide Ring-Typen)
+                    if (indicatorType === 'pointer') {
+                        const pointerColor = "color-mix(in srgb, orange 80%, var(--primary-text-color))";
+                        
+                        // Einheitliche Winkel-Berechnung für beide Ring-Typen
+                        let currentAngle;
+                        if (ringType === 'open') {
+                            const startAngle = 135;
+                            const totalAngle = 270;
+                            const progressAngle = (progress / 100) * totalAngle;
+                            currentAngle = startAngle + progressAngle;
+                        } else if (ringType === 'closed') {
+                            const baseAngle = -90 + (progress / 100) * 360;
+                            const userRotation = getSetting('start_position_closed', 0);
+                            currentAngle = baseAngle + userRotation;
+                        }
+                        
+                        // Einheitliche Pointer-Berechnung (wie bei open - bessere Position)
+                        const startAngle_pointer = (currentAngle + 180) % 360;
+                        const endAngle_pointer = currentAngle;
+                        
+                        // Koordinaten berechnung
+                        const startRadius = (0.15 * size) / 2;
+                        const endRadius = ringRadius;
+                        
+                        // Start point (Zentrum-nah)
+                        const startRad = (startAngle_pointer * Math.PI) / 180;
+                        const startX = center + startRadius * Math.cos(startRad);
+                        const startY = center + startRadius * Math.sin(startRad);
+                        
+                        // End point (Ring-Position)
+                        const endRad = (endAngle_pointer * Math.PI) / 180;
+                        const endX = center + endRadius * Math.cos(endRad);
+                        const endY = center + endRadius * Math.sin(endRad);
+                        
+                        // Pointer mit Linie und Zentral-Kreisen
+                        content += `
+                            <g class="indicator">
+                                <line class="pointer"
+                                      x1="${startX}" y1="${startY}"
+                                      x2="${endX}" y2="${endY}"
+                                      stroke="${pointerColor}"
+                                      stroke-width="2"
+                                      stroke-linecap="round" />
+                                <circle class="pointer"
+                                        cx="${center}" cy="${center}"
+                                        r="4"
+                                        fill="${pointerColor}" />
+                                <circle class="pointer-centre"
+                                        cx="${center}" cy="${center}"
+                                        r="2"
+                                        fill="#444444" />
+                            </g>
+                        `;
+                    }
+                    
+                    return content;
+                };
+        
+                /**
+                 * Scale Rendering - 1:1 aus Original Ring Tile Card
+                 */
+                // Optimized scale generation
+                const createScale = (size, minValue, maxValue, ringType) => {
+                    const scaleType = getSetting('scale', 'none');
+                    if (scaleType === 'none' || maxValue <= minValue) return '';
+        
+                    const center = size / 2, strokeWidth = 4, outerRadius = size / 2 - strokeWidth / 2 + 2;
+                    const targetGrandTicks = 3, maxTotalTicks = 80, targetLabels = getSetting('scale_label_count', 3);
+                    const range = maxValue - minValue;
+        
+                    // Calculate step sizes
+                    const niceRange = calcNiceNum(range, false);
+                    const grandStep = calcNiceNum(niceRange / (targetGrandTicks - 1), true);
+                    const [majorStep, minorStep] = calcSubdivisions(grandStep);
+                    const produceMinorSteps = Math.round(range / minorStep) < maxTotalTicks;
+        
+                    // Generate tick arrays
+                    const getTicks = (step, exclude = []) => {
+                        const ticks = [];
+                        for (let value = Math.ceil(minValue / step) * step; value <= maxValue; value += step) {
+                            if (!exclude.includes(value)) ticks.push(value);
+                        }
+                        return ticks;
+                    };
+        
+                    const grand = getTicks(grandStep);
+                    const major = getTicks(majorStep, grand);
+                    const minor = produceMinorSteps ? getTicks(minorStep, [...grand, ...major]) : [];
+        
+                    // Angle calculation and rendering
+                    const isOpen = ringType === 'open';
+                    const startDegrees = isOpen ? 135 : -90;
+                    const totalDegrees = isOpen ? 270 : 360;
+                    const userRotation = !isOpen ? getSetting('start_position_closed', 0) : 0;
+        
+                    const mapValueToDegrees = (value) => {
+                        const baseAngle = startDegrees + (totalDegrees * (value - minValue)) / range;
+                        return (baseAngle + userRotation) % 360;
+                    };
+        
+                    const renderTick = (value, depth) => {
+                        const degrees = mapValueToDegrees(value);
+                        const p1 = getCoordFromDegrees(degrees, outerRadius, center);
+                        const p2 = getCoordFromDegrees(degrees, outerRadius - depth * strokeWidth, center);
+                        return `M ${p1[0]} ${p1[1]} L ${p2[0]} ${p2[1]}`;
+                    };
+        
+                    const renderLabel = (value) => {
+                        const degrees = mapValueToDegrees(value);
+                        const labelRadius = outerRadius * 0.45;
+                        const p3 = getCoordFromDegrees(degrees, labelRadius, center);
+                        const fontSize = strokeWidth * getSetting('scale_label_size', 1.8);
+                        return `<text x="${p3[0]}" y="${p3[1]}" text-anchor="middle" alignment-baseline="central" font-size="${fontSize}" fill="var(--primary-text-color)" opacity="0.7">${value}</text>`;
+                    };
+                    // Render tick marks
+                    let content = '';
+                    const tickStrokeScale = 1;
+        
+                    if (grand.length > 0) {
+                        content += `<path d="${grand.map(value => renderTick(value, 1.35)).join(' ')}" stroke="var(--primary-text-color)" stroke-width="${1.8 * tickStrokeScale}" stroke-opacity="1" fill="none" />`;
+                    }
+        
+                    if (major.length > 0) {
+                        content += `<path d="${major.map(value => renderTick(value, 1.2)).join(' ')}" stroke="var(--primary-text-color)" stroke-width="${1.2 * tickStrokeScale}" stroke-opacity="0.7" fill="none" />`;
+                    }
+        
+                    if (minor.length > 0) {
+                        content += `<path d="${minor.map(value => renderTick(value, 1)).join(' ')}" stroke="var(--primary-text-color)" stroke-width="${0.6 * tickStrokeScale}" stroke-opacity="0.3" fill="none" />`;
+                    }
+        
+                    // Labels for ticks_with_labels
+                    if (scaleType === 'ticks_with_labels') {
+                        const labelStep = calcNiceNum(niceRange / (targetLabels - 1), true);
+                        let labelValues = [];
+                        for (let value = Math.ceil(minValue / labelStep) * labelStep; value <= maxValue; value += labelStep) {
+                            labelValues.push(value);
+                        }
+        
+                        // Prevent overlap for closed rings
+                        if (!isOpen && labelValues.length > 1) {
+                            const firstAngle = mapValueToDegrees(labelValues[0]) % 360;
+                            const lastAngle = mapValueToDegrees(labelValues[labelValues.length - 1]) % 360;
+                            const minAngleDiff = 30;
+                            let angleDiff = Math.abs(lastAngle - firstAngle);
+                            if (angleDiff > 180) angleDiff = 360 - angleDiff;
+                            if (angleDiff < minAngleDiff) labelValues = labelValues.slice(0, -1);
+                        }
+        
+                        const places = labelValues.reduce((max, value) => Math.max(max, countDecimals(value, 1)), 0);
+                        labelValues.forEach(value => {
+                            content += renderLabel(parseFloat(value.toFixed(places)));
+                        });
+                    }
+        
+                    return `<g class="scale">${content}</g>`;
+                };
+        
+                // Optimized progress ring creation
+                const createProgressRing = (size, progress) => {
+                    const center = size / 2, strokeWidth = 4, ringRadius = size / 2 - strokeWidth / 2 + 2;
+                    let ringColor = getSetting('ring_color', 'var(--primary-color)');
+                    if (Array.isArray(ringColor) && ringColor.length >= 3) {
+                        ringColor = `rgb(${ringColor[0]}, ${ringColor[1]}, ${ringColor[2]})`;
+                    }
+        
+                    const ringType = getSetting('ring_type', 'closed');
+                    const indicatorType = getSetting('indicator', 'arc');
+                    const entity = getSetting('ring_entity', '') || this.config.entity;
+                    const entityMinMax = getMinMaxFromEntity(entity);
+                    let minValue = getSetting('min', entityMinMax.min ?? 0);
+                    let maxValue = getSetting('max', entityMinMax.max ?? 100);
+                    
+                    let content = '';
+                    
+                    // Einheitliche Ring-Rendering für beide Typen - OHNE SVG Transform
+                    let startAngle, endAngle;
+                    if (ringType === 'open') {
+                        startAngle = 135; // Start bei bottom-left (135°)
+                        endAngle = startAngle + 270; // 270° Bogen bis bottom-right
+                    } else if (ringType === 'closed') {
+                        // Closed: Direkte Winkelberechnung mit Benutzer-Rotation
+                        const baseStart = -90; // 12 Uhr Position
+                        const userRotation = getSetting('start_position_closed', 0);
+                        startAngle = baseStart + userRotation;
+                        endAngle = startAngle + 360; // Vollkreis
+                    }
+                    
+                    // Hintergrund-Ring mit getRingPath() - Jeder Ring-Typ hat seine eigenen Winkel
+                    if (ringType === 'open') {
+                        const backgroundPath = getRingPath(startAngle, endAngle, center, center, ringRadius, strokeWidth);
+                        content += `
+                            <path d="${backgroundPath}" 
+                                  fill="rgba(255,255,255,0.2)" 
+                                  stroke="none" />
+                        `;
+                    } else if (ringType === 'closed') {
+                        // Für closed Ring: Vollkreis-Hintergrund mit gleichem Radius wie open Ring
+                        // Verwende den gleichen Radius wie bei getRingPath (Mittellinie des Rings)
+                        const backgroundRadius = ringRadius - strokeWidth / 2;
+                        content += `
+                            <circle cx="${center}" cy="${center}" 
+                                    r="${backgroundRadius}" 
+                                    fill="none" 
+                                    stroke="rgba(255,255,255,0.2)" 
+                                    stroke-width="${strokeWidth}" />
+                        `;
+                    }
+                    
+                    // Progress-Ring - Jeder Ring-Typ berechnet Progress unterschiedlich
+                    if (progress > 0) {
+                        let progressEndAngle;
+                        if (ringType === 'open') {
+                            const progressAngle = (progress / 100) * 270;
+                            progressEndAngle = startAngle + progressAngle;
+                        } else {
+                            const progressAngle = (progress / 100) * 360;
+                            progressEndAngle = startAngle + progressAngle;
+                        }
+                        
+                        const progressPath = getRingPath(startAngle, progressEndAngle, center, center, ringRadius, strokeWidth);
+                        content += `
+                            <path d="${progressPath}" 
+                                  fill="${ringColor}" 
+                                  stroke="none" />
+                        `;
+                    }
+                    
+                    // Dot Indicator - Jeder Ring-Typ berechnet Position unterschiedlich
+                    if (indicatorType === 'dot') {
+                        let dotAngle;
+                        if (ringType === 'open') {
+                            dotAngle = 135 + (progress / 100) * 270;
+                        } else {
+                            const baseAngle = -90 + (progress / 100) * 360;
+                            const userRotation = getSetting('start_position_closed', 0);
+                            dotAngle = baseAngle + userRotation;
+                        }
+                        
+                        // Dot-Position auf der Ring-Mittellinie
+                        const dotRadius = ringRadius - strokeWidth / 2;
+                        
+                        const rad = (dotAngle * Math.PI) / 180;
+                        const dotX = center + dotRadius * Math.cos(rad);
+                        const dotY = center + dotRadius * Math.sin(rad);
+                        
+                        content += `
+                            <circle cx="${dotX}" cy="${dotY}" 
+                                    r="3" 
+                                    fill="${ringColor}" 
+                                    stroke="white"
+                                    stroke-width="1"
+                                    class="dot-indicator" />
+                        `;
+                    }
+                    
+                    // Scale wird unter dem Ring und über den Indikatoren gerendert
+                    const scaleContent = createScale(size, minValue, maxValue, ringType);
+                    if (scaleContent) {
+                        content += scaleContent;
+                    }
+        
+                    // Markers - rendered over the ring but under indicators
+                    const markerContent = createMarkers(size, ringType, minValue, maxValue);
+                    if (markerContent) {
+                        content += `<g class="markers">${markerContent}</g>`;
+                    }
+        
+                    // Ring Zone - Ring interior text/icon in center
+                    const entityToUse = settings.ring_entity || this.config.entity;
+                    if (entityToUse) {
+                        const ringZoneContent = renderRingZone(size, entityToUse, ringType);
+                        if (ringZoneContent) {
+                            content += `<g class="ring-zone">${ringZoneContent}</g>`;
+                        }
+                    }
+        
+                    // Info Zone - Ring interior text
+                    if (entityToUse) {
+                        const infoZoneContent = renderInfoZone(size, entityToUse, ringType);
+                        if (infoZoneContent) {
+                            content += `<g class="info-zone">${infoZoneContent}</g>`;
+                        }
+                    }
+        
+                    // Pointer Indicator
+                    if (indicatorType === 'pointer') {
+                        content += createIndicator(size, progress, indicatorType, ringType);
+                    }
+                    
+                    return content;
+                };
+                /**
+                 * Main Implementation - Nur Ring anzeigen
+                 */
+                const applyRingTile = () => {
+                    // Find the icon container - erweiterte Suche nach allen möglichen Container-Klassen
+                    const iconContainer = card.querySelector('.bubble-main-icon-container') || 
+                                        card.querySelector('.bubble-icon-container') ||
+                                        card.querySelector('.icon-container') ||
+                                        card.querySelector('.bubble-action') ||
+                                        card.querySelector('[class*="icon"]');
+                    
+                    if (!iconContainer) {
+                        return;
+                    }
+                    
+                    // Style the container first to ensure proper dimensions
+                    if (iconContainer.style.position === 'static' || !iconContainer.style.position) {
+                        iconContainer.style.position = 'relative';
+                    }
+                    
+                    // Sicherstellen dass Overflow sichtbar ist für Dot-Indicator
+                    iconContainer.style.overflow = 'visible';
+                    
+                    // Auch parent container auf overflow visible setzen falls vorhanden
+                    let parentContainer = iconContainer.parentElement;
+                    while (parentContainer && parentContainer !== card) {
+                        if (parentContainer.style) {
+                            parentContainer.style.overflow = 'visible';
+                        }
+                        parentContainer = parentContainer.parentElement;
+                    }
+        
+                    // Hide original icon if requested or if ticks_with_labels is enabled or if marker values are shown or if pointer indicator is used or if ring_zone is active
+                    const shouldHideIcon = getSetting('hide_icon', false) || getSetting('scale', 'none') === 'ticks_with_labels' || getSetting('show_marker_value', false) || getSetting('indicator', 'arc') === 'pointer' || (getSetting('ring_zone', 'none') !== 'none');
+                    
+                    if (shouldHideIcon) {
+                        const icons = iconContainer.querySelectorAll('ha-icon, ha-state-icon, .icon, [class*="icon"]:not(.ring-tile-svg)');
+                        icons.forEach(icon => {
+                            if (!icon.classList.contains('ring-tile-svg') && !icon.querySelector('.ring-tile-svg')) {
+                                icon.style.opacity = '0';
+                                icon.style.visibility = 'hidden';
+                            }
+                        });
+                        
+                        // Make icon container background transparent
+                        iconContainer.style.backgroundColor = 'transparent';
+                        iconContainer.style.background = 'transparent';
+                    } else {
+                        // Restore icon visibility if hide_icon is false and scale is not ticks_with_labels and marker values are not shown and pointer is not used
+                        const icons = iconContainer.querySelectorAll('ha-icon, ha-state-icon, .icon, [class*="icon"]:not(.ring-tile-svg)');
+                        icons.forEach(icon => {
+                            if (!icon.classList.contains('ring-tile-svg') && !icon.querySelector('.ring-tile-svg')) {
+                                icon.style.opacity = '';
+                                icon.style.visibility = '';
+                            }
+                        });
+                        
+                        // Restore original background
+                        iconContainer.style.backgroundColor = '';
+                        iconContainer.style.background = '';
+                    }
+        
+                    // Remove existing ring if present
+                    let svg = iconContainer.querySelector('.ring-tile-svg');
+                    if (!svg) {
+                        svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                        svg.setAttribute("class", "ring-tile-svg");
+                        svg.style.cssText = "position:absolute;top:-8px;left:-8px;width:calc(100% + 16px);height:calc(100% + 16px);pointer-events:none;overflow:visible";
+                        iconContainer.appendChild(svg);
+                    }
+        
+                    // Update SVG with ring content
+                    const dimensions = getEffectiveDimensions(iconContainer);
+                    const size = Math.max(dimensions.width, dimensions.height); // Größere Dimension verwenden
+                    const progress = calculateProgress();
+                    
+                    // SVG mit Padding für Dot-Überlauf
+                    const dotPadding = 8;
+                    const paddedSize = size + (dotPadding * 2);
+                    svg.setAttribute("viewBox", `${-dotPadding} ${-dotPadding} ${paddedSize} ${paddedSize}`);
+                    svg.setAttribute("width", paddedSize);
+                    svg.setAttribute("height", paddedSize);
+                    svg.innerHTML = createProgressRing(size, progress);
+                };
+        
+                // Apply the ring tile modification
+                applyRingTile();
+        
+                // Set up periodic updates for dynamic entities
+                const updateInterval = setInterval(() => {
+                    if (!card.isConnected) {
+                        clearInterval(updateInterval);
+                        return;
+                    }
+                    applyRingTile();
+                }, 10000); // Update every 10 seconds - optimized for better performance
+        
+                // Store interval reference for cleanup
+                card.dataset.ringTileUpdateInterval = updateInterval;
+        
+                // Apply CSS styles
+                if (!card.querySelector('#ring-tile-mod-style')) {
+                    const style = document.createElement('style');
+                    style.id = 'ring-tile-mod-style';
+                    style.textContent = `
+                        .bubble-icon-container {
+                            background: transparent !important;
+                        }
+                        
+                        .ring-tile-svg svg {
+                            transition: all 0.3s ease-in-out;
+                        }
+                        
+                        .ring-tile-elements {
+                            text-align: center;
+                        }
+                        
+                        .ring-tile-elements span {
+                            display: block;
+                            line-height: 1.2;
+                        }
+                        
+                        /* Size adjustments for different ring sizes */
+                        .bubble-icon-container[style*="width: 40px"] .ring-tile-elements {
+                            font-size: 0.7em;
+                        }
+                        
+                        .bubble-icon-container[style*="width: 80px"] .ring-tile-elements {
+                            font-size: 0.8em;
+                        }
+                        
+                        .bubble-icon-container[style*="width: 120px"] .ring-tile-elements {
+                            font-size: 0.9em;
+                        }
+                        
+                        /* Hover effects */
+                        .bubble-icon-container:hover .ring-tile-svg svg {
+                            transform: scale(1.05);
+                        }
+                        
+                        /* Common text styles */
+                        .ring-tile-svg .info-zone-text,
+                        .ring-tile-svg .marker-label,
+                        .ring-tile-svg .ring-zone-text {
+                            font-family: var(--ha-font-family-body, 'Roboto', sans-serif);
+                            fill: var(--primary-text-color);
+                        }
+                        
+                        /* Info zone text styles */
+                        .ring-tile-svg .info-zone-text {
+                            font-weight: 600;
+                            letter-spacing: -0.2px;
+                        }
+                        
+                        .ring-tile-svg .info-zone-text.closed {
+                            opacity: 0.6;
+                            font-weight: 500;
+                        }
+                        
+                        /* Marker styles */
+                        .ring-tile-svg .ring-marker {
+                            transition: all 0.2s ease-in-out;
+                        }
+                        
+                        .ring-tile-svg .ring-marker:hover {
+                            transform: scale(1.2);
+                        }
+                        
+                        .ring-tile-svg .marker-line {
+                            transition: all 0.2s ease-in-out;
+                        }
+                        
+                        .ring-tile-svg .marker-line:hover {
+                            stroke-width: 3;
+                        }
+                        
+                        /* Marker label styles */
+                        .ring-tile-svg .marker-label {
+                            font-weight: 500;
+                            pointer-events: none;
+                        }
+                        
+                        /* Ring zone text styles */
+                        .ring-tile-svg .ring-zone-text {
+                            font-weight: 700;
+                            letter-spacing: -0.5px;
+                        }
+                        
+                        .ring-tile-svg .ring-zone-text.tight {
+                            font-weight: 800;
+                        }
+                        
+        
+      `;
+      card.appendChild(style);
+    }
+    })()}
+  
+  editor:
+    - type: expandable
+      title: Ring Configuration
+      expanded: true
+      schema:
+        - name: ring_entity
+          label: Ring Entity (Entity shown in Ring)
+          selector:
+            entity: {}
+        - name: ring_type
+          label: Ring Type
+          selector:
+            select:
+              options:
+                - value: open
+                  label: Open (270°)
+                - value: closed
+                  label: Closed (360°)
+          default: closed
+        - name: start_position_closed
+          label: Start Position / Angle (Closed rings only)
+          selector:
+            number:
+              min: 0
+              max: 360
+              step: 15
+              unit_of_measurement: °
+          default: 0
+        - name: min
+          label: Minimum Value
+          selector:
+            number:
+              step: 1
+          default: 0
+        - name: max
+          label: Maximum Value
+          selector:
+            number:
+              step: 1
+          default: 100
+        - name: ring_color
+          label: Ring Color
+          selector:
+            color_rgb: {}
+          default: var(--primary-color)
+        - name: scale_label_size
+          label: Label Font Size
+          selector:
+            number:
+              min: 1
+              max: 3
+              step: 0.1
+          default: 1.8
+        - name: icon
+          label: Custom Icon
+          description: Override entity icon (e.g., mdi:temperature-celsius)
+          selector:
+            icon: {}
+        - name: hide_icon
+          label: >-
+            Hide Original Icon (Auto-hidden with Indicator - Pointer / Scale - Ticks
+            with Labels / Marker with Labels / Ring Zone Configuration)
+          selector:
+            boolean: {}
+          default: false
+    - type: expandable
+      title: Indicator Settings
+      expanded: false
+      schema:
+        - name: indicator
+          label: Indicator Type
+          selector:
+            select:
+              options:
+                - value: arc
+                  label: Arc
+                - value: dot
+                  label: Dot
+                - value: pointer
+                  label: Pointer (Hides icon)
+          default: arc
+    - type: expandable
+      title: Scale Settings
+      expanded: false
+      schema:
+        - name: scale
+          label: Scale Type
+          selector:
+            select:
+              options:
+                - value: none
+                  label: None
+                - value: ticks
+                  label: Ticks
+                - value: ticks_with_labels
+                  label: Ticks with Labels (Conflicts with marker values)
+          default: none
+        - name: scale_label_count
+          label: Number of Labels
+          selector:
+            number:
+              min: 2
+              max: 10
+              step: 1
+          default: 3
+    - type: expandable
+      title: Info Zone Settings
+      expanded: false
+      schema:
+        - name: info_zone
+          label: Info Zone (Ring Interior)
+          selector:
+            select:
+              options:
+                - value: none
+                  label: None
+                - value: value
+                  label: Bubble Card Value
+                - value: value_with_unit
+                  label: Bubble Card Value + Unit
+                - value: ring_value
+                  label: Ring Value
+                - value: ring_value_with_unit
+                  label: Ring Value + Unit
+                - value: unit
+                  label: Bubble Card Unit
+                - value: ring_unit
+                  label: Ring Unit
+                - value: custom_text
+                  label: Custom Text
+                - value: min_max
+                  label: Min/Max
+          default: none
+        - name: info_zone_custom_text
+          label: Custom Info Zone Text
+          description: Text to display when Info Zone is set to 'Custom Text'
+          selector:
+            text: {}
+          default: ''
+    - type: expandable
+      title: Ring Zone Settings
+      expanded: false
+      schema:
+        - name: ring_zone
+          label: Ring Zone (Ring Center)
+          description: >-
+            Note: Ring zone is automatically disabled when Pointer indicator is used
+            to prevent visual overlap
+          selector:
+            select:
+              options:
+                - value: none
+                  label: None
+                - value: value
+                  label: Bubble Card Value
+                - value: value_with_unit
+                  label: Bubble Card Value + Unit
+                - value: ring_value
+                  label: Ring Value
+                - value: ring_value_with_unit
+                  label: Ring Value + Unit
+                - value: unit
+                  label: Bubble Card Unit
+                - value: ring_unit
+                  label: Ring Unit
+                - value: custom_text
+                  label: Custom Text
+          default: none
+        - name: ring_zone_custom_text
+          label: Custom Ring Zone Text
+          description: Text to display when Ring Zone is set to 'Custom Text'
+          selector:
+            text: {}
+          default: ''
+    - type: expandable
+      title: Markers
+      expanded: false
+      schema:
+        - type: expandable
+          title: Marker 1
+          expanded: false
+          schema:
+            - name: marker
+              label: Marker 1 - Position
+              selector:
+                text: {}
+              default: '78'
+            - name: marker_colour
+              label: Marker 1 - Color
+              selector:
+                color_rgb: {}
+              default: red
+        - type: expandable
+          title: Marker 2
+          expanded: false
+          schema:
+            - name: marker2
+              label: Marker 2 - Position
+              selector:
+                text: {}
+              default: '32'
+            - name: marker2_colour
+              label: Marker 2 - Color
+              selector:
+                color_rgb: {}
+              default: green
+        - name: marker_style
+          label: Marker Style
+          selector:
+            select:
+              options:
+                - value: dot
+                  label: Dot
+                - value: line
+                  label: Line
+          default: dot
+        - name: show_marker_value
+          label: Show Marker Values
+          description: >-
+            Display marker values as labels (hides icon, conflicts with scale
+            labels)
+          selector:
+            boolean: {}
+          default: false

@@ -38,11 +38,11 @@ cards:
       - !include /config/ui/cards/home/home.yaml
       - !include /config/ui/cards/home/weather.yaml
       - !include /config/ui/cards/home/tamworth.yaml
-      - !include /config/ui/cards/home/alerts.yaml
       - type: custom:layout-break
       - !include /config/ui/cards/home/solar.yaml
       - !include /config/ui/cards/home/sun_moon.yaml
       - !include /config/ui/cards/home/me.yaml
+      - !include /config/ui/cards/home/alerts.yaml
       # - !include /config/ui/cards/home/lights-kiosk.yaml
       - type: custom:layout-break
       - !include /config/ui/cards/home/sport-kiosk.yaml

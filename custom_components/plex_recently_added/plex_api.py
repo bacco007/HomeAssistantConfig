@@ -50,7 +50,7 @@ class PlexApi():
         try:
             info_res = await self._hass.async_add_executor_job(
                 requests.get,
-                f'{info_url}?X-Plex-Token={self._token}', 
+                f'{info_url}?X-Plex-Token={self._token}',
                 {
                     "headers":{
                         "User-agent": USER_AGENT,
@@ -62,8 +62,8 @@ class PlexApi():
             check_headers(info_res)
             root = ElementTree.fromstring(info_res.text)
             identifier = root.get("machineIdentifier")
-        except OSError as e:
-            raise FailedToLogin
+        except (OSError, ValueError) as e:
+            raise FailedToLogin from e
 
         url_base = f'{info_url}/library/sections'
         all_libraries = f'{url_base}/all'
@@ -76,7 +76,7 @@ class PlexApi():
         try:
             libraries = await self._hass.async_add_executor_job(
                 requests.get,
-                f'{all_libraries}?X-Plex-Token={self._token}', 
+                f'{all_libraries}?X-Plex-Token={self._token}',
                 {
                     "headers":{
                         "User-agent": USER_AGENT,
@@ -91,8 +91,8 @@ class PlexApi():
                 libs.append(lib.get("title"))
                 if lib.get("type") in self._section_types and (len(self._section_libraries) == 0 or lib.get("title") in self._section_libraries):
                     sections.append({'type': lib.get("type"),'key': lib.get("key")})
-        except OSError as e:
-            raise FailedToLogin
+        except (OSError, ValueError) as e:
+            raise FailedToLogin from e
 
         """ Looping through all libraries (sections) """
         data = {
@@ -102,30 +102,34 @@ class PlexApi():
             data[s] = []
 
         for library in sections:
-            recent_or_deck = on_deck if self._on_deck else recently_added
-            sub_sec = await self._hass.async_add_executor_job(
-                requests.get,
-                f'{recent_or_deck.format(library["key"], self._max * 2)}&X-Plex-Token={self._token}', 
-                {
-                    "headers":{
-                        "User-agent": USER_AGENT,
-                        "Accept": ACCEPTS,
-                    },
-                    "timeout":10
-                }
-            )
-            check_headers(sub_sec)
-            root = ElementTree.fromstring(sub_sec.text)
-            parsed_libs = parse_library(root)
-            
-            # Fetch trailer URLs for each item
-            for item in parsed_libs:
-                item['trailer'] = await get_tmdb_trailer_url(self._hass, item['title'], library['type'])
-            
-            if library["type"] not in data['all']:
-                data['all'][library["type"]] = []
-            data['all'][library["type"]] += parsed_libs
-            data[library["type"]] += parsed_libs
+            try:
+                recent_or_deck = on_deck if self._on_deck else recently_added
+                sub_sec = await self._hass.async_add_executor_job(
+                    requests.get,
+                    f'{recent_or_deck.format(library["key"], self._max * 2)}&X-Plex-Token={self._token}',
+                    {
+                        "headers":{
+                            "User-agent": USER_AGENT,
+                            "Accept": ACCEPTS,
+                        },
+                        "timeout":10
+                    }
+                )
+                check_headers(sub_sec)
+                root = ElementTree.fromstring(sub_sec.text)
+                parsed_libs = parse_library(root)
+
+                # Fetch trailer URLs for each item
+                for item in parsed_libs:
+                    item['trailer'] = await get_tmdb_trailer_url(self._hass, item['title'], library['type'])
+
+                if library["type"] not in data['all']:
+                    data['all'][library["type"]] = []
+                data['all'][library["type"]] += parsed_libs
+                data[library["type"]] += parsed_libs
+            except (OSError, ValueError) as e:
+                # Skip this library if it fails to load
+                continue
 
         data_out = {}
         for k in data.keys():

@@ -38,3 +38,12 @@ class DailySensorEntity(RestoreEntity):
     async def async_update(self):
         """Update Coordinator entity."""
         await self.coordinator.async_request_refresh()
+
+    async def async_update_config(self, new_config):
+        self._name = new_config.get("name", self._name)
+        self._input_entity_id = new_config.get("input_sensor", self._input_entity_id)
+        self._operation = new_config.get("operation", self._operation)
+        self._interval = new_config.get("interval", self._interval)
+        self._unit_of_measurement = new_config.get("unit_of_measurement", self._unit_of_measurement)
+        self._auto_reset = new_config.get("auto_reset", self._auto_reset)
+        await self.async_update_ha_state()

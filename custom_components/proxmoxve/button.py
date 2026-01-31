@@ -3,14 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from . import device_info
 from .api import ProxmoxClient, post_api_command
@@ -19,13 +14,19 @@ from .const import (
     CONF_NODES,
     CONF_QEMU,
     COORDINATORS,
-    DOMAIN,
     LOGGER,
     PROXMOX_CLIENT,
     ProxmoxCommand,
     ProxmoxType,
 )
 from .entity import ProxmoxEntity, ProxmoxEntityDescription
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.device_registry import DeviceInfo
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+    from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -145,11 +146,10 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up button."""
-
     buttons = []
 
-    coordinators = hass.data[DOMAIN][config_entry.entry_id][COORDINATORS]
-    proxmox_client = hass.data[DOMAIN][config_entry.entry_id][PROXMOX_CLIENT]
+    coordinators = config_entry.runtime_data[COORDINATORS]
+    proxmox_client = config_entry.runtime_data[PROXMOX_CLIENT]
 
     for node in config_entry.data[CONF_NODES]:
         if f"{ProxmoxType.Node}_{node}" in coordinators:
@@ -190,8 +190,7 @@ async def async_setup_entry(
             if (
                 (api_category := description.api_category)
                 and ProxmoxType.QEMU in api_category
-                or api_category is None
-            ):
+            ) or api_category is None:
                 buttons.append(
                     create_button(
                         coordinator=coordinator,
@@ -221,8 +220,7 @@ async def async_setup_entry(
             if (
                 (api_category := description.api_category)
                 and ProxmoxType.LXC in api_category
-                or api_category is None
-            ):
+            ) or api_category is None:
                 buttons.append(
                     create_button(
                         coordinator=coordinator,
@@ -287,15 +285,14 @@ class ProxmoxButtonEntity(ProxmoxEntity, ButtonEntity):
         self._attr_device_info = info_device
         self.config_entry = config_entry
 
-        def _button_press():
+        def _button_press() -> None:
             """Post start command & tell HA state is on."""
-
             if api_category == ProxmoxType.Node:
                 node = resource_id
                 vm_id = None
             else:
                 if (data := self.coordinator.data) is None:
-                    return None
+                    return
                 node = data.node
                 vm_id = resource_id
 

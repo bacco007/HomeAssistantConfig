@@ -1,0 +1,74 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure Solstice Season",
+        "description": "Set up astronomical season tracking",
+        "data": {
+          "name": "Name",
+          "hemisphere": "Hemisphere",
+          "mode": "Calculation mode"
+        }
+      }
+    },
+    "error": {
+      "already_configured": "An instance with this name already exists"
+    },
+    "abort": {
+      "already_configured": "This instance is already configured"
+    }
+  },
+  "selector": {
+    "hemisphere": {
+      "options": {
+        "northern": "Northern Hemisphere",
+        "southern": "Southern Hemisphere"
+      }
+    },
+    "mode": {
+      "options": {
+        "astronomical": "Astronomical",
+        "meteorological": "Meteorological (Calendar-based)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "current_season": {
+        "name": "Current Season",
+        "state": {
+          "spring": "Spring",
+          "summer": "Summer",
+          "autumn": "Autumn",
+          "winter": "Winter"
+        }
+      },
+      "spring_equinox": {
+        "name": "Spring Equinox"
+      },
+      "summer_solstice": {
+        "name": "Summer Solstice"
+      },
+      "autumn_equinox": {
+        "name": "Autumn Equinox"
+      },
+      "winter_solstice": {
+        "name": "Winter Solstice"
+      },
+      "daylight_trend": {
+        "name": "Daylight Trend",
+        "state": {
+          "days_getting_longer": "Days getting longer",
+          "days_getting_shorter": "Days getting shorter",
+          "solstice_today": "Solstice today"
+        }
+      },
+      "next_daylight_trend_change": {
+        "name": "Next Trend Change"
+      },
+      "next_season_change": {
+        "name": "Next Season Change"
+      }
+    }
+  }
+}

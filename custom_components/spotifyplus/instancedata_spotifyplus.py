@@ -10,7 +10,6 @@ from homeassistant.components.media_player import MediaPlayerEntity
 from homeassistant.helpers.config_entry_oauth2_flow import (
     OAuth2Session
 )
-#from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
     CONF_OPTION_ALWAYS_ON,
@@ -22,8 +21,9 @@ from .const import (
     CONF_OPTION_SCRIPT_TURN_ON,
     CONF_OPTION_SOURCE_LIST_HIDE,
     CONF_OPTION_SPOTIFY_SCAN_INTERVAL,
-    CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_DC,
-    CONF_OPTION_SPOTIFY_WEBPLAYER_COOKIE_SP_KEY,
+    CONF_OPTION_TURN_OFF_AUTO_PAUSE,
+    CONF_OPTION_TURN_ON_AUTO_RESUME,
+    CONF_OPTION_TURN_ON_AUTO_SOURCE_SELECT,
     DEFAULT_OPTION_SPOTIFY_SCAN_INTERVAL,
 )
 
@@ -36,14 +36,7 @@ class InstanceDataSpotifyPlus:
     to function.  It is created in `__init__.py`, and referenced in various other
     modules.
     """
-    
-    # *** Don't need the DataUpdateCoordinator anymore; left here in case we need it for future needs.
-    # devices: DataUpdateCoordinator[SpotifyConnectDevices] 
-    # """
-    # List of Spotify Connect devices that are available.
-    # This property is refreshed at regular intervals by a DataUpdateCoordinator.
-    # """
-    
+       
     media_player: MediaPlayerEntity
     """
     The media player instance used to control media playback.
@@ -151,3 +144,33 @@ class InstanceDataSpotifyPlus:
         # return result.
         return result
 
+    @property
+    def OptionTurnOffAutoPause(self) -> bool:
+        """
+        Automatically pause (True) or not (False) the Spotify Player when the media player is turned off.
+
+        This option is only relevant if the player TURN_ON / TURN_OFF features are enabled.
+        """
+        return self.options.get(CONF_OPTION_TURN_OFF_AUTO_PAUSE, True)
+
+    @property
+    def OptionTurnOnAutoResume(self) -> bool:
+        """
+        Automatically resume (True) or not (False) the Spotify Player when the media player is turned on.
+
+        This option is only relevant if the player TURN_ON / TURN_OFF features are enabled.
+        """
+        return self.options.get(CONF_OPTION_TURN_ON_AUTO_RESUME, True)
+
+    @property
+    def OptionTurnOnAutoSelectSource(self) -> bool:
+        """
+        Automatically select the source device to transfer playback to (True) or not (False) when the 
+        media player is turned on (enabled by default).
+        
+        If False, then source will be obtained from Spotify Player Playback state.  If there is no active 
+        Spotify Player device, then a source will not be selected.
+
+        This option is only relevant if the player TURN_ON / TURN_OFF features are enabled.
+        """
+        return self.options.get(CONF_OPTION_TURN_ON_AUTO_SOURCE_SELECT, True)

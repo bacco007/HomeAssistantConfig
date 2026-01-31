@@ -9,51 +9,22 @@ esphome:
   comment: ${esp_name}
   includes:
     - common.h
-  on_boot:
-    priority: 200.0
-    then:
-      - component.update: eink_display
-      - wait_until:
-          condition:
-            lambda: "return id(data_updated) == true;"
-            # Wait a bit longer so all the items are received
-      - delay: 5s
-      - logger.log: "Initial sensor data received: Refreshing display..."
-      - lambda: "id(initial_data_received) = true;"
-      - script.execute: update_screen
 
 esp32:
   board: esp32dev
   framework:
-    type: arduino
-
-# external_components:
-#   - source:
-#       type: git
-#       url: https://github.com/atomicmike/esphome.git
-#       ref: waveshare-color-2022.6
-#     components: [waveshare_epaper]
-
-# external_components:
-#   # twisterss fork of esphome-dev
-#   - source:
-#       type: git
-#       url: https://github.com/twisterss/esphome-dev.git
-#       ref: waveshare-red-black
-#     components: [waveshare_epaper]
-
-# external_components:
-#   - source: my_components_waveshare75
+    type: esp-idf
 
 logger:
 
 # Enable Home Assistant API
 api:
-  password: ""
+  encryption:
+    key: !secret btpb_apikey
 
 ota:
-  platform: esphome
-  password: ""
+  - platform: esphome  # Your existing OTA method
+  - platform: web_server  # Add this for web-based OTA uploads
 
 wifi:
   ssid: !secret wifi_ssid
@@ -66,638 +37,685 @@ wifi:
     ssid: ${esp_name} Fallback"
     password: !secret ap_password
 
-# mqtt:
-#   broker: !secret mqtt_host
-#   username: !secret mqtt_user
-#   password: !secret mqtt_password
-#   discovery: true
-#   discovery_retain: true
-#   discovery_unique_id_generator: mac
-#   discovery_object_id_generator: device_name
-#   birth_message:
-#     topic: esp/wavesharedisplay
-#     payload: online
-#   will_message:
-#     topic: esp/wavesharedisplay
-#     payload: offline
-#   shutdown_message:
-#     topic: esp/wavesharedisplay
-#     payload: offline
-#   on_message:
-#     - topic: esp/displayupdate
-#       payload: 'ON'
-#       then:
-#       - component.update: eink_display
-
 captive_portal:
 
 web_server:
   port: 80
   include_internal: true
 
-globals:
-  - id: data_updated
-    type: bool
-    restore_value: no
-    initial_value: "false"
-  - id: initial_data_received
-    type: bool
-    restore_value: no
-    initial_value: "false"
-  - id: recorded_display_refresh
-    type: int
-    restore_value: yes
-    initial_value: "0"
+# ---
 
-script:
-  - id: update_screen
-    then:
-      - lambda: "id(data_updated) = false;"
-      - component.update: eink_display
-      - lambda: "id(recorded_display_refresh) += 1;"
-      - lambda: "id(display_last_update).publish_state(id(ntp).now().timestamp);"
-
-select:
-  - platform: template
-    name: "${esp_name} Appearance"
-    id: appearance
-    options:
-      - "Dark Mode"
-      - "Light Mode"
-    initial_option: "Light Mode"
-    restore_value: true
-    optimistic: true
-    entity_category: config
-
-time:
-  - platform: homeassistant
-    id: ntp
-    on_time_sync:
-      - then:
-          - component.update: sunrise
-          - component.update: sunset
-          - logger.log: Time has been set and is valid!
-    on_time:
-      - seconds: 0
-        minutes: /5
-        then:
-          - if:
-              condition:
-                lambda: "return id(data_updated) == true;"
-              then:
-                - lambda: "id(initial_data_received) = true;"
-                - logger.log: "Sensor data updated: Refreshing display..."
-                - component.update: eink_display
-                - lambda: "id(data_updated) = false;"
-                - lambda: "id(recorded_display_refresh) += 1;"
-                - lambda: "id(display_last_update).publish_state(id(ntp).now().timestamp);"
-              else:
-                - logger.log: "No sensors updated - skipping display refresh."
-
-sun:
-  latitude: !secret home_latitude
-  longitude: !secret home_longitude
-
-button:
-  - platform: shutdown
-    name: "${esp_name} Shutdown"
-  - platform: restart
-    name: "${esp_name} Restart"
-  - platform: template
-    name: "${esp_name} Refresh"
-    icon: "mdi:update"
-    entity_category: config
-    on_press:
-      - script.execute: update_screen
-
-switch:
-  - platform: gpio
-    id: statusLED
-    name: "${esp_name} Status LED"
-    pin:
-      number: GPIO2
-      mode: OUTPUT
-    restore_mode: ALWAYS_OFF
-
-text_sensor:
-  - platform: wifi_info
-    ip_address:
-      name: "${esp_name} IP Address"
-      id: ip_address
-      icon: "mdi:server-network"
-      entity_category: diagnostic
-    ssid:
-      name: "${esp_name} Connected SSID"
-      id: ssid
-      icon: mdi:wifi-strength-2
-      entity_category: diagnostic
-    bssid:
-      name: "${esp_name} Connected BSSID"
-      id: bssid
-      icon: mdi:wifi-strength-2
-      entity_category: diagnostic
-    mac_address:
-      name: "${esp_name} WiFi Mac Address"
-      id: macaddress
-      icon: mdi:wifi-strength-2
-      entity_category: diagnostic
-    scan_results:
-      name: "${esp_name} Latest Scan Results"
-      id: wifiscanresults
-      icon: mdi:wifi
-      entity_category: diagnostic
-
-  - platform: template
-    name: "${esp_name} Uptime"
-    id: uptime_human
-    icon: mdi:clock-start
-
-  - platform: version
-    name: "${esp_name} ESPHome Version"
-    entity_category: diagnostic
-    hide_timestamp: true
-
-  - platform: sun
-    id: sunrise
-    name: Sun Next Sunrise
-    type: sunrise
-    format: "%H:%M"
-    internal: true
-    update_interval: never
-
-  - platform: sun
-    id: sunset
-    name: Sun Next Sunset
-    type: sunset
-    format: "%H:%M"
-    internal: true
-    update_interval: never
-
-  - platform: homeassistant
-    entity_id: sun.sun
-    id: hasun
-    internal: true
-  - platform: homeassistant
-    entity_id: sensor.moon
-    id: moon
-    internal: true
-
-  # media
-  - platform: homeassistant
-    entity_id: sensor.e_ink_display_data
-    attribute: media_playing_status
-    id: media_status
-    on_value:
-      then:
-        - lambda: "id(data_updated) = true;"
-  - platform: homeassistant
-    entity_id: sensor.e_ink_display_data
-    attribute: media_playing_title
-    id: media_title
-    on_value:
-      then:
-        - lambda: "id(data_updated) = true;"
-  - platform: homeassistant
-    entity_id: sensor.e_ink_display_data
-    attribute: media_playing_artist
-    id: media_artist
-
-  - platform: homeassistant
-    id: condition
-    entity_id: sensor.e_ink_display_data
-    attribute: current_weather_condition
-    on_value:
-      then:
-        - lambda: "id(data_updated) = true;"
-
-  - platform: homeassistant
-    entity_id: sensor.e_ink_display_data
-    attribute: forecast_day1
-    id: forecast1
-  - platform: homeassistant
-    entity_id: sensor.e_ink_display_data
-    attribute: forecast_day2
-    id: forecast2
-  - platform: homeassistant
-    entity_id: sensor.e_ink_display_data
-    attribute: forecast_day3
-    id: forecast3
-  - platform: homeassistant
-    entity_id: sensor.e_ink_display_data
-    attribute: forecast_day4
-    id: forecast4
-  - platform: homeassistant
-    entity_id: sensor.e_ink_display_data
-    attribute: forecast_day5
-    id: forecast5
-  - platform: homeassistant
-    entity_id: sensor.e_ink_display_data
-    attribute: forecast_day6
-    id: forecast6
-  - platform: homeassistant
-    entity_id: sensor.e_ink_display_data
-    attribute: greeting
-    id: greeting
-    on_value:
-      then:
-        - lambda: "id(data_updated) = true;"
-  # Moon phase
-  - platform: homeassistant
-    entity_id: sensor.moon
-    id: moon_phase
-  - platform: homeassistant
-    entity_id: sensor.moon_rise
-    id: moon_rise
-  - platform: homeassistant
-    entity_id: sensor.moon_set
-    id: moon_set
-
-sensor:
-  - platform: template
-    name: "${esp_name} Display Last Update"
-    device_class: timestamp
-    entity_category: "diagnostic"
-    id: display_last_update
-
-  - platform: template
-    name: "${esp_name} Recorded Display Refresh"
-    lambda: "return id(recorded_display_refresh);"
-    accuracy_decimals: 0
-    unit_of_measurement: "Refreshes"
-    state_class: "total_increasing"
-    entity_category: "diagnostic"
-
-  - platform: wifi_signal
-    id: sensor_wifi_signal
-    name: "${esp_name} WiFi"
-    entity_category: "diagnostic"
-    unit_of_measurement: "dBm"
-    update_interval: 60s
-    on_value:
-      - component.update: sensor_wifi_signal_percentage
-
-  - platform: template
-    id: sensor_wifi_signal_percentage
-    name: "${esp_name} Wi-Fi Signal Percentage"
-    icon: "mdi:wifi"
-    unit_of_measurement: "%"
-    update_interval: never
-    lambda: |-
-      if (id(sensor_wifi_signal).state) {
-        if (id(sensor_wifi_signal).state <= -100 ) {
-          return 0;
-        } else if (id(sensor_wifi_signal).state >= -50) {
-          return 100;
-        } else {
-          return 2 * (id(sensor_wifi_signal).state + 100);
-        }
-      } else {
-        return NAN;
-      }
-
-  - platform: uptime
-    name: Uptime Sensor
-    id: uptime_sensor
-    update_interval: 60s
-    on_raw_value:
-      then:
-        - text_sensor.template.publish:
-            id: uptime_human
-            state: !lambda |-
-              int seconds = round(id(uptime_sensor).raw_state);
-              int days = seconds / (24 * 3600);
-              seconds = seconds % (24 * 3600);
-              int hours = seconds / 3600;
-              seconds = seconds % 3600;
-              int minutes = seconds /  60;
-              seconds = seconds % 60;
-              return (
-                (days ? to_string(days) + "d " : "") +
-                (hours ? to_string(hours) + "h " : "") +
-                (minutes ? to_string(minutes) + "m " : "") +
-                (to_string(seconds) + "s")
-              ).c_str();
-
-  ## Data from Home Assistant
-  - platform: homeassistant
-    id: temperature
-    entity_id: sensor.e_ink_display_data
-    attribute: home_temperature
-    on_value:
-      then:
-        - lambda: "id(data_updated) = true;"
-
-  - platform: homeassistant
-    id: max_temp
-    entity_id: sensor.e_ink_display_data
-    attribute: home_temperature_max
-
-  - platform: homeassistant
-    id: min_temp
-    entity_id: sensor.e_ink_display_data
-    attribute: home_temperature_min
-
-  - platform: homeassistant
-    id: rainfall
-    entity_id: sensor.e_ink_display_data
-    attribute: home_rainfall_today
-    on_value:
-      then:
-        - lambda: "id(data_updated) = true;"
-
-  - platform: homeassistant
-    id: rainfall_week
-    entity_id: sensor.e_ink_display_data
-    attribute: home_rainfall_week
-
-  - platform: homeassistant
-    id: rainfall_month
-    entity_id: sensor.e_ink_display_data
-    attribute: home_rainfall_month
-
-  - platform: homeassistant
-    id: rainfall_year
-    entity_id: sensor.e_ink_display_data
-    attribute: home_rainfall_year
-
-font:
-  - file:
-      type: gfonts
-      family: Red Hat Display
-      weight: 700
-    id: din_big
-    size: 30
-    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
-  - file:
-      type: gfonts
-      family: Red Hat Display
-      weight: 900
-    id: din_med
-    size: 20
-    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
-  - file:
-      type: gfonts
-      family: Red Hat Display
-      weight: 700
-    id: text_20
-    size: 20
-    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
-  - file:
-      type: gfonts
-      family: Red Hat Display
-      weight: 700
-    id: text_forecast
-    size: 20
-    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
-  - file:
-      type: gfonts
-      family: Red Hat Display
-      weight: 700
-    id: text_current_temp
-    size: 35
-    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
-  - file:
-      type: gfonts
-      family: Red Hat Display
-      weight: 700
-    id: text_25_bold
-    size: 15
-    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
-  - file:
-      type: gfonts
-      family: Red Hat Display
-      weight: 800
-    id: text_footer
-    size: 20
-    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
-  - file:
-      type: gfonts
-      family: Red Hat Display
-      weight: 700
-    id: din_small_bold
-    size: 5
-    glyphs: "'!%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ íëabcdefghijklmnopqrstuvwxyz&/"
-
-  # https://pictogrammers.github.io/@mdi/font/5.3.45/
-  - file: "fonts/materialdesignicons-webfont.ttf"
-    id: font_icons_large
-    size: 75
-    glyphs:
-      - "\U000F0594" # clear-night
-      - "\U000F0590" # cloudy
-      - "\U000F0591" # fog
-      - "\U000F0592" # hail
-      - "\U000F0593" # lightning
-      - "\U000F067E" # lightning-rainy
-      - "\U000F0F31" # night-partly-cloudy
-      - "\U000F0595" # partly-cloudy
-      - "\U000F0596" # pouring
-      - "\U000F0597" # rainy
-      - "\U000F0F36" # snowy
-      - "\U000F067F" # snowy-rainy
-      - "\U000F0599" # sunny
-      - "\U000F059D" # windy
-      - "\U000F059E" # windy-variant
-      - "\U000F0F38" # exCentereptional
-  - file: "fonts/materialdesignicons-webfont.ttf"
-    id: font_icons
-    size: 40
-    glyphs:
-      - "\U000F0384" # MusicBox
-      - "\U000F0502" # TVbox
-      - "\U000F0510" # temp
-      - "\U000F059D" # wind
-      - "\U000F059B" # sunset
-      - "\U000F059C" # sunrise
-      - "\U000F0E02" # Thermo Down
-      - "\U000F0E03" # Thermo Up
-      - "\U000F050F" # Temp
-      - "\U000F04DB" # stop
-      - "\U000F040A" # play
-      - "\U000F03E4" # pause
-      - "\U000F0597" # rainy
-      - "\U000F1A09" # mdi-triangle-small-down
-      - "\U000F1A0A" # mdi-triangle-small-up
-  - file: "fonts/materialdesignicons-webfont.ttf"
-    id: font_icons_temp
-    size: 50
-    glyphs:
-      - "\U000F050F" # Temp
-  - file: fonts/materialdesignicons-webfont.ttf
-    id: font_wifi
-    size: 20
-    glyphs:
-      - "\U000F091F"
-      - "\U000F0922"
-      - "\U000F0925"
-      - "\U000F0928"
-      - "\U000F092B"
-
-color:
-  - id: COLOR_RED
-    red: 100%
-    green: 0%
-    blue: 0%
-    white: 0%
 spi:
   clk_pin: GPIO13
   mosi_pin: GPIO14
 
 display:
   - platform: waveshare_epaper
-    id: eink_display
-    # cs_pin: 15
-    # dc_pin: 27
-    # busy_pin:
-    #   number: 25
-    #   inverted: True
-    # reset_pin: 26
-    # #model: 7.50inbv2
-    # #model: 7.50in-bv2-rb
-
-    model: 7.50in-bV3
-    update_interval: never
-    cs_pin:
-      number: GPIO15
-      ignore_strapping_warning: true
+    cs_pin: GPIO15
     dc_pin: GPIO27
     busy_pin:
       number: GPIO25
-      inverted: True
+      inverted: true
     reset_pin: GPIO26
     reset_duration: 2ms
-    rotation: 180
+    #model: 7.50in-bV3
+    model: 7.50in-bV3-bwr
+    rotation: 180°
+    update_interval: 3min
+    id: epaper_display
+
     lambda: |-
-      int xres = it.get_width();
-      int yres = it.get_height();
+      const auto COLOR_WHITE = Color(0, 0, 0); // Inverted for e-ink
+      const auto COLOR_BLACK = Color(255, 255, 255); // Inverted for e-ink
+      const auto COLOR_RED = Color(255, 0, 0);
+      const auto COLOR_GREEN = Color(0, 255, 0);
+      const auto COLOR_BLUE = Color(0, 0, 255);
+      const auto COLOR_YELLOW = Color(255, 255, 0);
+      const auto COLOR_ORANGE = Color(255, 165, 0);
+      auto color_off = COLOR_WHITE;
+      auto color_on = COLOR_BLACK;
 
-      auto color_text = Color::WHITE;
-      auto color_bg = Color::BLACK;
+      auto extract_time = [](const char* iso_str) -> std::string {
+          // Expected format: YYYY-MM-DDTHH:MM:SS or similar
+          std::string s(iso_str);
+          if (s.length() >= 16) return s.substr(11, 5);
+          return "";
+      };
 
-      auto index = id(appearance).active_index();
-
-      if (index.has_value()) {
-        if (index.value() == 1) {
-          ESP_LOGD("custom", "Light Mode is selected - using black text on a white background.");
-          color_text = Color::BLACK;
-          color_bg = Color::WHITE;
-        } else {
-          ESP_LOGD("custom", "Dark Mode is selected - using white text on a black background.");
+      int currentPage = id(display_page);
+      if (currentPage == 0) {
+        // page:name "Page 1"
+        // page:dark_mode "inherit"
+        // page:refresh_type "interval"
+        // page:refresh_time ""
+        // Clear screen for this page
+        it.fill(COLOR_WHITE);
+        color_off = COLOR_WHITE;
+        color_on = COLOR_BLACK;
+        // widget:shape_rect id:w_mjwdwfq0baz14 type:shape_rect x:0 y:450 w:800 h:30 fill:true border:1 color:black border_color:black 
+        it.filled_rectangle(0, 450, 800, 30, COLOR_BLACK);
+        // widget:datetime id:w_mjwdx59gj55fn type:datetime x:6 y:450 w:236 h:30 format:weekday_day_month time_size:28 date_size:21 color:white text_align:CENTER_LEFT italic:false font_family:"Ubuntu" 
+        {
+          auto now = id(ha_time).now();
+          it.strftime(6, 450, id(font_ubuntu_400_21), COLOR_WHITE, TextAlign::TOP_LEFT, "%A %d %B", now);
         }
-      }
-
-      // Fill background.
-      it.fill(color_bg);
-
-      if (id(initial_data_received) == false) {
-        it.printf(xres/2, yres/2, id(din_big), COLOR_RED, TextAlign::TOP_CENTER, "Waiting for data...");
-      } else {
-
-        #define x_pad 10 // border padding
-        #define y_pad 10 // border padding
-
-        #define y1 y_pad
-        #define y2 ((yres-10)/4 * 1)
-        #define y3 ((yres-10)/4 * 2)
-        #define y4 ((yres-10)/4 * 3)
-        #define val_pad 60 // padding before value
-        #define x1 x_pad // x position 1st column name
-        #define x2 ((xres/4) * 1) // x position 2nd column name
-        #define x3 ((xres/4) * 2) // x position 3rd column name
-        #define x4 ((xres/4) * 3) // x position 3rd column name
-
-        int wifi_x_a = xres-x_pad;
-        int wifi_y_a = yres-y_pad+2;
-
-        // it.fill(COLOR_OFF);
-
-        it.printf(20, 5, id(din_big), COLOR_RED, id(greeting).state.c_str());
-        it.rectangle(2, 2, xres-4, yres-4);
-
-        auto playing = id(media_status).state == "playing";
-        auto paused = id(media_status).state == "paused";
-        auto mediaIcon = playbackStatusToIcon(playing, paused);
-        it.printf(x1, y1+70, id(font_icons), TextAlign::BASELINE_LEFT, mediaIcon.c_str());
-        if (playing || paused) {
-          it.printf(x1+45, y1+55, id(din_med), TextAlign::BASELINE_LEFT, "%s", id(media_artist).state.c_str());
-          it.printf(x1+45, y1+75, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(media_title).state.c_str());
-        } else {
-          it.printf(x1+45, y1+65, id(text_20), TextAlign::BASELINE_LEFT, "Nothing Playing");
+        // widget:wifi_signal id:w_mjwdyqavxeyjk type:wifi_signal x:765 y:453 w:24 h:24 entity:wifi_signal_dbm size:24 font_size:12 color:white show_dbm:false local:true 
+        {
+          const char* wifi_icon = "\U000F092B"; // Default: wifi-strength-alert-outline
+          if (id(wifi_signal_dbm).has_state()) {
+            float signal = id(wifi_signal_dbm).state;
+            if (std::isnan(signal)) signal = -100;
+            if (signal >= -50) wifi_icon = "\U000F0928";      // wifi-strength-4 (Excellent)
+            else if (signal >= -60) wifi_icon = "\U000F0925"; // wifi-strength-3 (Good)
+            else if (signal >= -75) wifi_icon = "\U000F0922"; // wifi-strength-2 (Fair)
+            else if (signal >= -100) wifi_icon = "\U000F091F"; // wifi-strength-1 (Weak)
+            else wifi_icon = "\U000F092B";                    // wifi-strength-alert-outline
+          }
+          it.printf(765, 453, id(font_material_design_icons_400_24), COLOR_WHITE, "%s", wifi_icon);
         }
-
-        auto dayTime = id(hasun).state == "above_horizon";
-        auto conditionIcon = conditionToIcon(id(condition).state, dayTime);
-        it.printf(xres - x_pad, 40, id(font_icons_large), TextAlign::CENTER_RIGHT, conditionIcon.c_str());
-
-        it.print(x1, y2, id(din_med), COLOR_RED, TextAlign::BASELINE_LEFT, "Current Temp");
-        it.printf(x1-5, y2+65, id(font_icons_temp), COLOR_RED, TextAlign::BASELINE_LEFT, "\U000F050F");
-        it.printf(x1+45, y2+55, id(text_current_temp), COLOR_RED, TextAlign::BASELINE_LEFT, "%.1f°C", id(temperature).state);
-        it.print(x2, y2, id(din_med), TextAlign::BASELINE_LEFT, "Temp Today");
-        it.printf(x2, y2+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0E03");
-        it.printf(x2+45, y2+32, id(text_20), TextAlign::BASELINE_LEFT, "%.1f°C", id(max_temp).state);
-        it.printf(x2, y2+80, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0E02");
-        it.printf(x2+45, y2+72, id(text_20), TextAlign::BASELINE_LEFT, "%.1f°C", id(min_temp).state);
-        it.print(x3, y2, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
-        it.print(x4, y2, id(din_med), TextAlign::BASELINE_LEFT, "Rainfall");
-        it.printf(x4, y2+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0597");
-        it.printf(x4+45, y2+30, id(text_20), TextAlign::BASELINE_LEFT, "T: %.2fmm", id(rainfall).state);
-        it.printf(x4+45, y2+50, id(text_20), TextAlign::BASELINE_LEFT, "W: %.2fmm", id(rainfall_week).state);
-        it.printf(x4+45, y2+70, id(text_20), TextAlign::BASELINE_LEFT, "M: %.2fmm", id(rainfall_month).state);
-        it.printf(x4+45, y2+90, id(text_20), TextAlign::BASELINE_LEFT, "Y: %.2fmm", id(rainfall_year).state);
-
-        it.print(x1, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
-        it.print(x2, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
-        it.print(x3, y3, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
-
-        it.print(x4, y3, id(din_med), TextAlign::BASELINE_LEFT, "Forecast");
-        it.printf(x4+5, y3+25, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast1).state.c_str());
-        it.printf(x4+5, y3+50, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast2).state.c_str());
-        it.printf(x4+5, y3+75, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast3).state.c_str());
-        it.printf(x4+5, y3+100, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast4).state.c_str());
-        it.printf(x4+5, y3+125, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast5).state.c_str());
-        it.printf(x4+5, y3+150, id(text_forecast), TextAlign::BASELINE_LEFT, "%s", id(forecast6).state.c_str());
-
-        it.print(x1, y4, id(din_med), TextAlign::BASELINE_LEFT, "Sun");
-        it.printf(x1, y4+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F059C");
-        it.printf(x1+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(sunrise).state.c_str());
-        it.printf(x1, y4+80, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F059B");
-        it.printf(x1+45, y4+70, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(sunset).state.c_str());
-        it.print(x2, y4, id(din_med), TextAlign::BASELINE_LEFT, "Moon");
-        it.printf(x2, y4+40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F1A0A");
-        it.printf(x2+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(moon_rise).state.c_str());
-        it.printf(x2, y4+80, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F1A09");
-        it.printf(x2+45, y4+70, id(text_20), TextAlign::BASELINE_LEFT, "%s", id(moon_set).state.c_str());
-        it.print(x3, y4, id(din_med), TextAlign::BASELINE_LEFT, "Heading");
-        it.printf(x3, y4 + 40, id(font_icons), TextAlign::BASELINE_LEFT, "\U000F0510");
-        it.printf(x3+45, y4+30, id(text_20), TextAlign::BASELINE_LEFT, "%.1f °C", id(max_temp).state);
-
-        // Footer
-        it.filled_rectangle(0, yres-30, xres, yres);
-        it.strftime(x_pad, yres-y_pad/2, id(text_footer), COLOR_OFF, TextAlign::BASELINE_LEFT, "%A %d %b %Y", id(ntp).now());
-        it.strftime(xres/2, yres-y_pad/2, id(text_footer), COLOR_OFF, TextAlign::BASELINE_CENTER, "Last Update %H:%M", id(ntp).now());
-
-        // WiFi Signal Strength
-        if (id(sensor_wifi_signal).has_state()) {
-          if (id(sensor_wifi_signal).state >= -50) {
-            //Excellent
-            it.print(wifi_x_a, wifi_y_a, id(font_wifi), COLOR_OFF, TextAlign::BASELINE_RIGHT, "󰤨");
-            ESP_LOGI("WiFi", "Excellent");
-          } else if (id(sensor_wifi_signal).state >= -60) {
-            //Good
-            it.print(wifi_x_a, wifi_y_a, id(font_wifi), COLOR_OFF, TextAlign::BASELINE_RIGHT, "󰤥");
-            ESP_LOGI("WiFi", "Good");
-          } else if (id(sensor_wifi_signal).state >= -67) {
-            //Fair
-            it.print(wifi_x_a, wifi_y_a, id(font_wifi), COLOR_OFF, TextAlign::BASELINE_RIGHT, "󰤢");
-            ESP_LOGI("WiFi", "Fair");
-          } else if (id(sensor_wifi_signal).state >= -70) {
-            //Weak
-            it.print(wifi_x_a, wifi_y_a, id(font_wifi), COLOR_OFF, TextAlign::BASELINE_RIGHT, "󰤟");
-            ESP_LOGI("WiFi", "Weak");
-          } else {
-            //Unlikely working signal
-            it.print(wifi_x_a, wifi_y_a, id(font_wifi), COLOR_OFF, TextAlign::BASELINE_RIGHT, "󰤫");
-            ESP_LOGI("WiFi", "Unlikely");
+        // widget:weather_icon id:w_mjwdzwcukw4jx type:weather_icon x:744 y:7 w:48 h:48 entity:weather.east_tamworth size:48 color:black 
+        {
+          std::string weather_state = id(weather_east_tamworth).state;
+          const char* icon = "\U000F0599"; // Default: sunny
+          if (weather_state == "clear-night") icon = "\U000F0594";
+          else if (weather_state == "cloudy") icon = "\U000F0590";
+          else if (weather_state == "exceptional") icon = "\U000F0026";
+          else if (weather_state == "fog") icon = "\U000F0591";
+          else if (weather_state == "hail") icon = "\U000F0592";
+          else if (weather_state == "lightning") icon = "\U000F0593";
+          else if (weather_state == "lightning-rainy") icon = "\U000F067E";
+          else if (weather_state == "partlycloudy") icon = "\U000F0595";
+          else if (weather_state == "pouring") icon = "\U000F0596";
+          else if (weather_state == "rainy") icon = "\U000F0597";
+          else if (weather_state == "snowy") icon = "\U000F0598";
+          else if (weather_state == "snowy-rainy") icon = "\U000F067F";
+          else if (weather_state == "sunny") icon = "\U000F0599";
+          else if (weather_state == "windy") icon = "\U000F059D";
+          else if (weather_state == "windy-variant") icon = "\U000F059E";
+          it.printf(744, 7, id(font_material_design_icons_400_48), COLOR_BLACK, "%s", icon);
+        }
+        // widget:sensor_text id:w_mjwe0nzpkn7sj type:sensor_text x:606 y:5 w:131 h:52 ent:sensor.weather_temperature entity_2: title:"[Weather] Temperature" format:value_only label_font:40 value_font:40 color:black label_align:CENTER value_align:CENTER precision:1 unit:"" hide_unit:false prefix:"" postfix:"" separator:"~" local:false text_sensor:false font_family:"Ubuntu" font_weight:700 italic:false 
+        {
+          char buf1[32];
+          snprintf(buf1, sizeof(buf1), "%.1f", id(sensor_weather_temperature).state);
+          std::string val1 = buf1;
+          std::string sensorValue = val1;
+          std::string fullValue = "" + sensorValue + "°C" + "";
+          it.printf(606 + 131/2, 5 + 52/2, id(font_ubuntu_700_40), COLOR_BLACK, TextAlign::CENTER, "%s", fullValue.c_str());
+        }
+        // widget:weather_forecast id:w_mjwe92bggsldj type:weather_forecast x:715 y:59 w:82 h:383 weather_entity:"weather.east_tamworth" layout:vertical show_high_low:true day_font_size:15 temp_font_size:15 icon_size:20 font_family:"Ubuntu" color:black 
+        {
+          static std::map<std::string, const char*> weather_icons = {
+            {"clear-night", "\U000F0594"}, {"cloudy", "\U000F0590"},
+            {"exceptional", "\U000F0026"}, {"fog", "\U000F0591"},
+            {"hail", "\U000F0592"}, {"lightning", "\U000F0593"},
+            {"lightning-rainy", "\U000F067E"}, {"partlycloudy", "\U000F0595"},
+            {"pouring", "\U000F0596"}, {"rainy", "\U000F0597"},
+            {"snowy", "\U000F0598"}, {"snowy-rainy", "\U000F067F"},
+            {"sunny", "\U000F0599"}, {"windy", "\U000F059D"},
+            {"windy-variant", "\U000F059E"}
+          };
+          auto get_icon = [&](const std::string& cond) -> const char* {
+            return weather_icons.count(cond) ? weather_icons[cond] : "\U000F0590";
+          };
+          auto get_day_name = [](int offset) -> std::string {
+            if (offset == 0) return "Today";
+            auto t = id(ha_time).now();
+            if (!t.is_valid()) return "---";
+            ESPTime future = ESPTime::from_epoch_local(t.timestamp + (offset * 86400));
+            char buf[8]; future.strftime(buf, sizeof(buf), "%a");
+            return std::string(buf);
+          };
+          {
+            int dx = 715; int dy = 59;
+            it.printf(dx + 41, dy, id(font_ubuntu_700_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_day_name(0).c_str());
+            std::string cond = id(weather_cond_day0).state;
+            it.printf(dx + 41, dy + 19, id(font_material_design_icons_400_20), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_icon(cond));
+            float high = id(weather_high_day0).state; float low = id(weather_low_day0).state;
+            if (!std::isnan(high) && !std::isnan(low)) {
+              it.printf(dx + 41, dy + 43, id(font_ubuntu_400_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0f/%.0f", high, low);
+            }
+          }
+          {
+            int dx = 715; int dy = 135;
+            it.printf(dx + 41, dy, id(font_ubuntu_700_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_day_name(1).c_str());
+            std::string cond = id(weather_cond_day1).state;
+            it.printf(dx + 41, dy + 19, id(font_material_design_icons_400_20), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_icon(cond));
+            float high = id(weather_high_day1).state; float low = id(weather_low_day1).state;
+            if (!std::isnan(high) && !std::isnan(low)) {
+              it.printf(dx + 41, dy + 43, id(font_ubuntu_400_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0f/%.0f", high, low);
+            }
+          }
+          {
+            int dx = 715; int dy = 211;
+            it.printf(dx + 41, dy, id(font_ubuntu_700_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_day_name(2).c_str());
+            std::string cond = id(weather_cond_day2).state;
+            it.printf(dx + 41, dy + 19, id(font_material_design_icons_400_20), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_icon(cond));
+            float high = id(weather_high_day2).state; float low = id(weather_low_day2).state;
+            if (!std::isnan(high) && !std::isnan(low)) {
+              it.printf(dx + 41, dy + 43, id(font_ubuntu_400_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0f/%.0f", high, low);
+            }
+          }
+          {
+            int dx = 715; int dy = 287;
+            it.printf(dx + 41, dy, id(font_ubuntu_700_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_day_name(3).c_str());
+            std::string cond = id(weather_cond_day3).state;
+            it.printf(dx + 41, dy + 19, id(font_material_design_icons_400_20), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_icon(cond));
+            float high = id(weather_high_day3).state; float low = id(weather_low_day3).state;
+            if (!std::isnan(high) && !std::isnan(low)) {
+              it.printf(dx + 41, dy + 43, id(font_ubuntu_400_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0f/%.0f", high, low);
+            }
+          }
+          {
+            int dx = 715; int dy = 363;
+            it.printf(dx + 41, dy, id(font_ubuntu_700_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_day_name(4).c_str());
+            std::string cond = id(weather_cond_day4).state;
+            it.printf(dx + 41, dy + 19, id(font_material_design_icons_400_20), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_icon(cond));
+            float high = id(weather_high_day4).state; float low = id(weather_low_day4).state;
+            if (!std::isnan(high) && !std::isnan(low)) {
+              it.printf(dx + 41, dy + 43, id(font_ubuntu_400_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0f/%.0f", high, low);
+            }
           }
         }
+        // widget:icon id:w_1767329574886_163_33 type:icon x:525 y:107 w:38 h:37 code:F0E02 size:29 color:black 
+        it.printf(525, 107, id(font_material_design_icons_400_29), COLOR_BLACK, "%s", "\U000F0E02");
+        // widget:sensor_text id:w_1767329574886_341_94 type:sensor_text x:529 y:111 w:186 h:29 ent:sensor.weather_temperature_today_minimum_display entity_2: title:"[Weather] Temperature Today Maximum" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"" postfix:"" separator:"~" local:false text_sensor:true font_family:"Ubuntu" font_weight:400 italic:false 
+        {
+          std::string val1 = id(sensor_weather_temperature_today_minimum_display_txt).state;
+          std::string sensorValue = val1;
+          std::string fullValue = "" + sensorValue + "" + "";
+          it.printf(529 + 186, 111 + 29/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+        }
+        // widget:sensor_text id:w_1767329616788_743_15 type:sensor_text x:529 y:72 w:186 h:29 ent:sensor.weather_temperature_today_maximum_display entity_2: title:"[Weather] Temperature Today Maximum" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"" postfix:"" separator:"~" local:false text_sensor:true font_family:"Ubuntu" font_weight:400 italic:false 
+        {
+          std::string val1 = id(sensor_weather_temperature_today_maximum_display_txt).state;
+          std::string sensorValue = val1;
+          std::string fullValue = "" + sensorValue + "" + "";
+          it.printf(529 + 186, 72 + 29/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+        }
+        // widget:icon id:w_1767329616788_255_91 type:icon x:525 y:69 w:38 h:37 code:F0E03 size:29 color:black 
+        it.printf(525, 69, id(font_material_design_icons_400_29), COLOR_BLACK, "%s", "\U000F0E03");
+        // widget:sensor_text id:w_mjwegpk5qny8f type:sensor_text x:597 y:333 w:118 h:35 ent:sensor.weatherflow_rainfall_daily entity_2: title:"" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"T: " postfix:"" separator:"~" local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
+        {
+          char buf1[32];
+          snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_weatherflow_rainfall_daily).state);
+          std::string val1 = buf1;
+          std::string sensorValue = val1;
+          std::string fullValue = "T: " + sensorValue + "mm" + "";
+          it.printf(597 + 118, 333 + 35/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+        }
+        // widget:sensor_text id:w_1767329800554_894_94 type:sensor_text x:597 y:355 w:118 h:35 ent:sensor.weatherflow_rainfall_weekly entity_2: title:"Weatherflow Rainfall (Weekly)" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"W: " postfix:"" separator:"~" local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
+        {
+          char buf1[32];
+          snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_weatherflow_rainfall_weekly).state);
+          std::string val1 = buf1;
+          std::string sensorValue = val1;
+          std::string fullValue = "W: " + sensorValue + "mm" + "";
+          it.printf(597 + 118, 355 + 35/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+        }
+        // widget:sensor_text id:w_1767329817616_192_70 type:sensor_text x:597 y:382 w:118 h:35 ent:sensor.weatherflow_rainfall_monthly entity_2: title:"Weatherflow Rainfall (Weekly)" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"M: " postfix:"" separator:"~" local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
+        {
+          char buf1[32];
+          snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_weatherflow_rainfall_monthly).state);
+          std::string val1 = buf1;
+          std::string sensorValue = val1;
+          std::string fullValue = "M: " + sensorValue + "mm" + "";
+          it.printf(597 + 118, 382 + 35/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+        }
+        // widget:sensor_text id:w_1767329837327_370_53 type:sensor_text x:597 y:406 w:118 h:35 ent:sensor.weatherflow_rainfall_yearly entity_2: title:"Weatherflow Rainfall (Weekly)" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"Y: " postfix:"" separator:"~" local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
+        {
+          char buf1[32];
+          snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_weatherflow_rainfall_yearly).state);
+          std::string val1 = buf1;
+          std::string sensorValue = val1;
+          std::string fullValue = "Y: " + sensorValue + "mm" + "";
+          it.printf(597 + 118, 406 + 35/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+        }
+        // widget:icon id:w_1767329895179_437_80 type:icon x:677 y:301 w:38 h:36 code:F0597 size:36 color:black 
+        it.printf(677, 301, id(font_material_design_icons_400_36), COLOR_BLACK, "%s", "\U000F0597");
+        // widget:sensor_text id:w_mjwixkg88gots type:sensor_text x:32 y:372 w:126 h:29 ent:sensor.moon_rise entity_2: title:"Moon Rise" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"" postfix:"" separator:"~" local:false text_sensor:true font_family:"Ubuntu" font_weight:400 italic:false 
+        {
+          std::string val1 = id(sensor_moon_rise_txt).state;
+          std::string sensorValue = val1;
+          std::string fullValue = "" + sensorValue + "" + "";
+          it.printf(32 + 126, 372 + 29/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+        }
+        // widget:sensor_text id:w_mjwiy6t3pul6r type:sensor_text x:37 y:401 w:120 h:40 ent:sensor.moon_set entity_2: title:"Moon Set" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"" postfix:"" separator:"~" local:false text_sensor:true font_family:"Ubuntu" font_weight:400 italic:false 
+        {
+          std::string val1 = id(sensor_moon_set_txt).state;
+          std::string sensorValue = val1;
+          std::string fullValue = "" + sensorValue + "" + "";
+          it.printf(37 + 120, 401 + 40/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+        }
+        // widget:icon id:w_mjwizyjfzaabf type:icon x:18 y:369 w:38 h:36 code:F1D17 size:29 color:black 
+        it.printf(18, 369, id(font_material_design_icons_400_29), COLOR_BLACK, "%s", "\U000F1D17");
+        // widget:icon id:w_1767337360808_985_2 type:icon x:18 y:403 w:38 h:36 code:F1D16 size:29 color:black 
+        it.printf(18, 403, id(font_material_design_icons_400_29), COLOR_BLACK, "%s", "\U000F1D16");
+        // widget:sensor_text id:w_mjxiwcglqbwon type:sensor_text x:306 y:384 w:188 h:27 ent:sensor.sungrow_sg5kd_daily_import_from_grid entity_2: title:"" format:value_only label_font:14 value_font:20 color:black label_align:CENTER value_align:CENTER precision:2 unit:"" hide_unit:false prefix:"From Grid: " postfix:"" separator:" ~ " local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
+        {
+          char buf1[32];
+          snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_sungrow_sg5kd_daily_import_from_grid).state);
+          std::string val1 = buf1;
+          std::string sensorValue = val1;
+          std::string fullValue = "From Grid: " + sensorValue + "kWh" + "";
+          it.printf(306 + 188/2, 384 + 27/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER, "%s", fullValue.c_str());
+        }
+        // widget:sensor_text id:w_1767397781687_178_22 type:sensor_text x:306 y:410 w:188 h:27 ent:sensor.sungrow_sg5kd_daily_export_to_grid entity_2: title:"Sungrow SG5KD Daily Export to Grid" format:value_only label_font:14 value_font:20 color:black label_align:CENTER value_align:CENTER precision:2 unit:"" hide_unit:false prefix:"To Grid: " postfix:"" separator:" ~ " local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
+        {
+          char buf1[32];
+          snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_sungrow_sg5kd_daily_export_to_grid).state);
+          std::string val1 = buf1;
+          std::string sensorValue = val1;
+          std::string fullValue = "To Grid: " + sensorValue + "kWh" + "";
+          it.printf(306 + 188/2, 410 + 27/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER, "%s", fullValue.c_str());
+        }
+        // widget:sensor_text id:w_1767397819199_342_44 type:sensor_text x:306 y:357 w:188 h:27 ent:sensor.sungrow_sg5kd_daily_generation entity_2: title:"Sungrow SG5KD Daily Export to Grid" format:value_only label_font:14 value_font:20 color:black label_align:CENTER value_align:CENTER precision:2 unit:"" hide_unit:false prefix:"Gen:  " postfix:"" separator:" ~ " local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
+        {
+          char buf1[32];
+          snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_sungrow_sg5kd_daily_generation).state);
+          std::string val1 = buf1;
+          std::string sensorValue = val1;
+          std::string fullValue = "Gen:  " + sensorValue + "kWh" + "";
+          it.printf(306 + 188/2, 357 + 27/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER, "%s", fullValue.c_str());
+        }
+        // widget:datetime id:w_mjxjby3hbicto type:datetime x:359 y:451 w:83 h:28 format:time_only time_size:28 date_size:16 color:white text_align:CENTER italic:false font_family:"Ubuntu" 
+        {
+          auto now = id(ha_time).now();
+          it.strftime(359 + 83/2, 451, id(font_ubuntu_700_28), COLOR_WHITE, TextAlign::TOP_CENTER, "%H:%M", now);
+        }
       }
+
+
+# ====================================
+# Device Settings
+# ====================================
+# Orientation: landscape
+# Dark Mode: disabled
+# Refresh Interval: 600
+# Power Strategy: Scheduled Night Sleep
+# Sleep Start Hour: 22
+# Sleep End Hour: 5
+# Disable updates from 22 to 5
+# ====================================
+
+globals:
+  - id: display_page
+    type: int
+    restore_value: true
+    initial_value: '0'
+  - id: page_refresh_default_s
+    type: int
+    restore_value: true
+    initial_value: '600'
+  - id: page_refresh_current_s
+    type: int
+    restore_value: false
+    initial_value: '60'
+  - id: last_page_switch_time
+    type: uint32_t
+    restore_value: false
+    initial_value: '0'
+
+http_request:
+  verify_ssl: false
+  timeout: 20s
+
+time:
+  - platform: homeassistant
+    id: ha_time
+
+sensor:
+  - platform: homeassistant
+    id: sensor_weather_temperature
+    entity_id: sensor.weather_temperature
+    internal: true
+  - platform: homeassistant
+    id: sensor_weatherflow_rainfall_daily
+    entity_id: sensor.weatherflow_rainfall_daily
+    internal: true
+  - platform: homeassistant
+    id: sensor_weatherflow_rainfall_weekly
+    entity_id: sensor.weatherflow_rainfall_weekly
+    internal: true
+  - platform: homeassistant
+    id: sensor_weatherflow_rainfall_monthly
+    entity_id: sensor.weatherflow_rainfall_monthly
+    internal: true
+  - platform: homeassistant
+    id: sensor_weatherflow_rainfall_yearly
+    entity_id: sensor.weatherflow_rainfall_yearly
+    internal: true
+  - platform: homeassistant
+    id: sensor_sungrow_sg5kd_daily_import_from_grid
+    entity_id: sensor.sungrow_sg5kd_daily_import_from_grid
+    internal: true
+  - platform: homeassistant
+    id: sensor_sungrow_sg5kd_daily_export_to_grid
+    entity_id: sensor.sungrow_sg5kd_daily_export_to_grid
+    internal: true
+  - platform: homeassistant
+    id: sensor_sungrow_sg5kd_daily_generation
+    entity_id: sensor.sungrow_sg5kd_daily_generation
+    internal: true
+  - platform: homeassistant
+    id: weather_high_day0
+    entity_id: sensor.weather_forecast_day_0_high
+    internal: true
+  - platform: homeassistant
+    id: weather_low_day0
+    entity_id: sensor.weather_forecast_day_0_low
+    internal: true
+  - platform: homeassistant
+    id: weather_high_day1
+    entity_id: sensor.weather_forecast_day_1_high
+    internal: true
+  - platform: homeassistant
+    id: weather_low_day1
+    entity_id: sensor.weather_forecast_day_1_low
+    internal: true
+  - platform: homeassistant
+    id: weather_high_day2
+    entity_id: sensor.weather_forecast_day_2_high
+    internal: true
+  - platform: homeassistant
+    id: weather_low_day2
+    entity_id: sensor.weather_forecast_day_2_low
+    internal: true
+  - platform: homeassistant
+    id: weather_high_day3
+    entity_id: sensor.weather_forecast_day_3_high
+    internal: true
+  - platform: homeassistant
+    id: weather_low_day3
+    entity_id: sensor.weather_forecast_day_3_low
+    internal: true
+  - platform: homeassistant
+    id: weather_high_day4
+    entity_id: sensor.weather_forecast_day_4_high
+    internal: true
+  - platform: homeassistant
+    id: weather_low_day4
+    entity_id: sensor.weather_forecast_day_4_low
+    internal: true
+  # WiFi Signal Strength Sensor
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    id: wifi_signal_dbm
+    update_interval: 60s
+
+button:
+  - platform: template
+    name: "Next Page"
+    on_press:
+      then:
+        - script.execute:
+            id: change_page_to
+            target_page: !lambda 'return id(display_page) + 1;'
+  - platform: template
+    name: "Previous Page"
+    on_press:
+      then:
+        - script.execute:
+            id: change_page_to
+            target_page: !lambda 'return id(display_page) - 1;'
+  - platform: template
+    name: "Refresh Display"
+    on_press:
+      then:
+        - component.update: epaper_display
+  - platform: template
+    name: "Go to Page 1"
+    on_press:
+      then:
+        - script.execute:
+            id: change_page_to
+            target_page: 0
+
+text_sensor:
+  # Home Assistant Text Sensors
+  - platform: homeassistant
+    id: sensor_weather_temperature_today_minimum_display_txt
+    entity_id: sensor.weather_temperature_today_minimum_display
+    internal: true
+  - platform: homeassistant
+    id: sensor_weather_temperature_today_maximum_display_txt
+    entity_id: sensor.weather_temperature_today_maximum_display
+    internal: true
+  - platform: homeassistant
+    id: sensor_moon_rise_txt
+    entity_id: sensor.moon_rise
+    internal: true
+  - platform: homeassistant
+    id: sensor_moon_set_txt
+    entity_id: sensor.moon_set
+    internal: true
+
+  # Weather Entity Sensors
+  - platform: homeassistant
+    id: weather_east_tamworth
+    entity_id: weather.east_tamworth
+    internal: true
+
+  # Weather Forecast Condition Sensors
+  - platform: homeassistant
+    id: weather_cond_day0
+    entity_id: sensor.weather_forecast_day_0_condition
+    internal: true
+  - platform: homeassistant
+    id: weather_cond_day1
+    entity_id: sensor.weather_forecast_day_1_condition
+    internal: true
+  - platform: homeassistant
+    id: weather_cond_day2
+    entity_id: sensor.weather_forecast_day_2_condition
+    internal: true
+  - platform: homeassistant
+    id: weather_cond_day3
+    entity_id: sensor.weather_forecast_day_3_condition
+    internal: true
+  - platform: homeassistant
+    id: weather_cond_day4
+    entity_id: sensor.weather_forecast_day_4_condition
+    internal: true
+
+# ============================================================================
+# HOME ASSISTANT TEMPLATE SENSORS
+# Add these template sensors to your Home Assistant configuration.yaml:
+# ============================================================================
+#
+# template:
+#   - trigger:
+#       - trigger: state
+#         entity_id: weather.forecast_home  # Replace with your weather entity
+#       - trigger: time_pattern
+#         hours: "/1"
+#     action:
+#       - action: weather.get_forecasts
+#         target:
+#           entity_id: weather.forecast_home  # Replace with your weather entity
+#         data:
+#           type: daily
+#         response_variable: forecast_data
+#     sensor:
+#       - name: "Weather Forecast Day 0 High"
+#         unique_id: weather_forecast_day_0_high
+#         unit_of_measurement: "°C"
+#         state: "{{ forecast_data['weather.forecast_home'].forecast[0].temperature | default('N/A') }}"
+#       - name: "Weather Forecast Day 0 Low"
+#         unique_id: weather_forecast_day_0_low
+#         unit_of_measurement: "°C"
+#         state: "{{ forecast_data['weather.forecast_home'].forecast[0].templow | default('N/A') }}"
+#       - name: "Weather Forecast Day 0 Condition"
+#         unique_id: weather_forecast_day_0_condition
+#         state: "{{ forecast_data['weather.forecast_home'].forecast[0].condition | default('cloudy') }}"
+#       - name: "Weather Forecast Day 1 High"
+#         unique_id: weather_forecast_day_1_high
+#         unit_of_measurement: "°C"
+#         state: "{{ forecast_data['weather.forecast_home'].forecast[1].temperature | default('N/A') }}"
+#       - name: "Weather Forecast Day 1 Low"
+#         unique_id: weather_forecast_day_1_low
+#         unit_of_measurement: "°C"
+#         state: "{{ forecast_data['weather.forecast_home'].forecast[1].templow | default('N/A') }}"
+#       - name: "Weather Forecast Day 1 Condition"
+#         unique_id: weather_forecast_day_1_condition
+#         state: "{{ forecast_data['weather.forecast_home'].forecast[1].condition | default('cloudy') }}"
+#       - name: "Weather Forecast Day 2 High"
+#         unique_id: weather_forecast_day_2_high
+#         unit_of_measurement: "°C"
+#         state: "{{ forecast_data['weather.forecast_home'].forecast[2].temperature | default('N/A') }}"
+#       - name: "Weather Forecast Day 2 Low"
+#         unique_id: weather_forecast_day_2_low
+#         unit_of_measurement: "°C"
+#         state: "{{ forecast_data['weather.forecast_home'].forecast[2].templow | default('N/A') }}"
+#       - name: "Weather Forecast Day 2 Condition"
+#         unique_id: weather_forecast_day_2_condition
+#         state: "{{ forecast_data['weather.forecast_home'].forecast[2].condition | default('cloudy') }}"
+#       - name: "Weather Forecast Day 3 High"
+#         unique_id: weather_forecast_day_3_high
+#         unit_of_measurement: "°C"
+#         state: "{{ forecast_data['weather.forecast_home'].forecast[3].temperature | default('N/A') }}"
+#       - name: "Weather Forecast Day 3 Low"
+#         unique_id: weather_forecast_day_3_low
+#         unit_of_measurement: "°C"
+#         state: "{{ forecast_data['weather.forecast_home'].forecast[3].templow | default('N/A') }}"
+#       - name: "Weather Forecast Day 3 Condition"
+#         unique_id: weather_forecast_day_3_condition
+#         state: "{{ forecast_data['weather.forecast_home'].forecast[3].condition | default('cloudy') }}"
+#       - name: "Weather Forecast Day 4 High"
+#         unique_id: weather_forecast_day_4_high
+#         unit_of_measurement: "°C"
+#         state: "{{ forecast_data['weather.forecast_home'].forecast[4].temperature | default('N/A') }}"
+#       - name: "Weather Forecast Day 4 Low"
+#         unique_id: weather_forecast_day_4_low
+#         unit_of_measurement: "°C"
+#         state: "{{ forecast_data['weather.forecast_home'].forecast[4].templow | default('N/A') }}"
+#       - name: "Weather Forecast Day 4 Condition"
+#         unique_id: weather_forecast_day_4_condition
+#         state: "{{ forecast_data['weather.forecast_home'].forecast[4].condition | default('cloudy') }}"
+#
+# ============================================================================
+
+font:
+  - file:
+      type: gfonts
+      family: Roboto
+      weight: 400
+    id: font_roboto_400_20
+    size: 20
+    glyphs: ["\U00000020", "\U00000021", "\U00000022", "\U00000023", "\U00000024", "\U00000025", "\U00000026", "\U00000027", "\U00000028", "\U00000029", "\U0000002a", "\U0000002b", "\U0000002c", "\U0000002d", "\U0000002e", "\U0000002f", "\U00000030", "\U00000031", "\U00000032", "\U00000033", "\U00000034", "\U00000035", "\U00000036", "\U00000037", "\U00000038", "\U00000039", "\U0000003a", "\U0000003b", "\U0000003c", "\U0000003d", "\U0000003e", "\U0000003f", "\U00000040", "\U00000041", "\U00000042", "\U00000043", "\U00000044", "\U00000045", "\U00000046", "\U00000047", "\U00000048", "\U00000049", "\U0000004a", "\U0000004b", "\U0000004c", "\U0000004d", "\U0000004e", "\U0000004f", "\U00000050", "\U00000051", "\U00000052", "\U00000053", "\U00000054", "\U00000055", "\U00000056", "\U00000057", "\U00000058", "\U00000059", "\U0000005a", "\U0000005b", "\U0000005c", "\U0000005d", "\U0000005e", "\U0000005f", "\U00000060", "\U00000061", "\U00000062", "\U00000063", "\U00000064", "\U00000065", "\U00000066", "\U00000067", "\U00000068", "\U00000069", "\U0000006a", "\U0000006b", "\U0000006c", "\U0000006d", "\U0000006e", "\U0000006f", "\U00000070", "\U00000071", "\U00000072", "\U00000073", "\U00000074", "\U00000075", "\U00000076", "\U00000077", "\U00000078", "\U00000079", "\U0000007a", "\U0000007b", "\U0000007c", "\U0000007d", "\U0000007e", "\U000000B0", "\U000000B1", "\U000000B2", "\U000000B3", "\U000000B5", "\U000000A3", "\U000000A5", "\U000000A9", "\U000000AE", "\U000000D7", "\U000000F7", "\U000003BC", "\U000003A9", "\U000020AC", "\U00002122"]
+  - file:
+      type: gfonts
+      family: Ubuntu
+      weight: 700
+    id: font_ubuntu_700_28
+    size: 28
+    glyphs: ["\U00000020", "\U00000021", "\U00000022", "\U00000023", "\U00000024", "\U00000025", "\U00000026", "\U00000027", "\U00000028", "\U00000029", "\U0000002a", "\U0000002b", "\U0000002c", "\U0000002d", "\U0000002e", "\U0000002f", "\U00000030", "\U00000031", "\U00000032", "\U00000033", "\U00000034", "\U00000035", "\U00000036", "\U00000037", "\U00000038", "\U00000039", "\U0000003a", "\U0000003b", "\U0000003c", "\U0000003d", "\U0000003e", "\U0000003f", "\U00000040", "\U00000041", "\U00000042", "\U00000043", "\U00000044", "\U00000045", "\U00000046", "\U00000047", "\U00000048", "\U00000049", "\U0000004a", "\U0000004b", "\U0000004c", "\U0000004d", "\U0000004e", "\U0000004f", "\U00000050", "\U00000051", "\U00000052", "\U00000053", "\U00000054", "\U00000055", "\U00000056", "\U00000057", "\U00000058", "\U00000059", "\U0000005a", "\U0000005b", "\U0000005c", "\U0000005d", "\U0000005e", "\U0000005f", "\U00000060", "\U00000061", "\U00000062", "\U00000063", "\U00000064", "\U00000065", "\U00000066", "\U00000067", "\U00000068", "\U00000069", "\U0000006a", "\U0000006b", "\U0000006c", "\U0000006d", "\U0000006e", "\U0000006f", "\U00000070", "\U00000071", "\U00000072", "\U00000073", "\U00000074", "\U00000075", "\U00000076", "\U00000077", "\U00000078", "\U00000079", "\U0000007a", "\U0000007b", "\U0000007c", "\U0000007d", "\U0000007e", "\U000000B0", "\U000000B1", "\U000000B2", "\U000000B3", "\U000000B5", "\U000000A3", "\U000000A5", "\U000000A9", "\U000000AE", "\U000000D7", "\U000000F7", "\U000003BC", "\U000003A9", "\U000020AC", "\U00002122"]
+  - file:
+      type: gfonts
+      family: Ubuntu
+      weight: 400
+    id: font_ubuntu_400_21
+    size: 21
+    glyphs: ["\U00000020", "\U00000021", "\U00000022", "\U00000023", "\U00000024", "\U00000025", "\U00000026", "\U00000027", "\U00000028", "\U00000029", "\U0000002a", "\U0000002b", "\U0000002c", "\U0000002d", "\U0000002e", "\U0000002f", "\U00000030", "\U00000031", "\U00000032", "\U00000033", "\U00000034", "\U00000035", "\U00000036", "\U00000037", "\U00000038", "\U00000039", "\U0000003a", "\U0000003b", "\U0000003c", "\U0000003d", "\U0000003e", "\U0000003f", "\U00000040", "\U00000041", "\U00000042", "\U00000043", "\U00000044", "\U00000045", "\U00000046", "\U00000047", "\U00000048", "\U00000049", "\U0000004a", "\U0000004b", "\U0000004c", "\U0000004d", "\U0000004e", "\U0000004f", "\U00000050", "\U00000051", "\U00000052", "\U00000053", "\U00000054", "\U00000055", "\U00000056", "\U00000057", "\U00000058", "\U00000059", "\U0000005a", "\U0000005b", "\U0000005c", "\U0000005d", "\U0000005e", "\U0000005f", "\U00000060", "\U00000061", "\U00000062", "\U00000063", "\U00000064", "\U00000065", "\U00000066", "\U00000067", "\U00000068", "\U00000069", "\U0000006a", "\U0000006b", "\U0000006c", "\U0000006d", "\U0000006e", "\U0000006f", "\U00000070", "\U00000071", "\U00000072", "\U00000073", "\U00000074", "\U00000075", "\U00000076", "\U00000077", "\U00000078", "\U00000079", "\U0000007a", "\U0000007b", "\U0000007c", "\U0000007d", "\U0000007e", "\U000000B0", "\U000000B1", "\U000000B2", "\U000000B3", "\U000000B5", "\U000000A3", "\U000000A5", "\U000000A9", "\U000000AE", "\U000000D7", "\U000000F7", "\U000003BC", "\U000003A9", "\U000020AC", "\U00002122"]
+  - file: "fonts/materialdesignicons-webfont.ttf"
+    id: font_material_design_icons_400_24
+    size: 24
+    glyphs: ["\U000F091F", "\U000F0922", "\U000F0925", "\U000F0928", "\U000F092B"]
+  - file:
+      type: gfonts
+      family: Roboto
+      weight: 400
+    id: font_roboto_400_12
+    size: 12
+    glyphs: ["\U00000020", "\U00000021", "\U00000022", "\U00000023", "\U00000024", "\U00000025", "\U00000026", "\U00000027", "\U00000028", "\U00000029", "\U0000002a", "\U0000002b", "\U0000002c", "\U0000002d", "\U0000002e", "\U0000002f", "\U00000030", "\U00000031", "\U00000032", "\U00000033", "\U00000034", "\U00000035", "\U00000036", "\U00000037", "\U00000038", "\U00000039", "\U0000003a", "\U0000003b", "\U0000003c", "\U0000003d", "\U0000003e", "\U0000003f", "\U00000040", "\U00000041", "\U00000042", "\U00000043", "\U00000044", "\U00000045", "\U00000046", "\U00000047", "\U00000048", "\U00000049", "\U0000004a", "\U0000004b", "\U0000004c", "\U0000004d", "\U0000004e", "\U0000004f", "\U00000050", "\U00000051", "\U00000052", "\U00000053", "\U00000054", "\U00000055", "\U00000056", "\U00000057", "\U00000058", "\U00000059", "\U0000005a", "\U0000005b", "\U0000005c", "\U0000005d", "\U0000005e", "\U0000005f", "\U00000060", "\U00000061", "\U00000062", "\U00000063", "\U00000064", "\U00000065", "\U00000066", "\U00000067", "\U00000068", "\U00000069", "\U0000006a", "\U0000006b", "\U0000006c", "\U0000006d", "\U0000006e", "\U0000006f", "\U00000070", "\U00000071", "\U00000072", "\U00000073", "\U00000074", "\U00000075", "\U00000076", "\U00000077", "\U00000078", "\U00000079", "\U0000007a", "\U0000007b", "\U0000007c", "\U0000007d", "\U0000007e", "\U000000B0", "\U000000B1", "\U000000B2", "\U000000B3", "\U000000B5", "\U000000A3", "\U000000A5", "\U000000A9", "\U000000AE", "\U000000D7", "\U000000F7", "\U000003BC", "\U000003A9", "\U000020AC", "\U00002122"]
+  - file: "fonts/materialdesignicons-webfont.ttf"
+    id: font_material_design_icons_400_48
+    size: 48
+    glyphs: ["\U000F0026", "\U000F0590", "\U000F0591", "\U000F0592", "\U000F0593", "\U000F0594", "\U000F0595", "\U000F0596", "\U000F0597", "\U000F0598", "\U000F0599", "\U000F059D", "\U000F059E", "\U000F067E", "\U000F067F"]
+  - file:
+      type: gfonts
+      family: Ubuntu
+      weight: 700
+    id: font_ubuntu_700_40
+    size: 40
+    glyphs: ["\U00000020", "\U00000021", "\U00000022", "\U00000023", "\U00000024", "\U00000025", "\U00000026", "\U00000027", "\U00000028", "\U00000029", "\U0000002a", "\U0000002b", "\U0000002c", "\U0000002d", "\U0000002e", "\U0000002f", "\U00000030", "\U00000031", "\U00000032", "\U00000033", "\U00000034", "\U00000035", "\U00000036", "\U00000037", "\U00000038", "\U00000039", "\U0000003a", "\U0000003b", "\U0000003c", "\U0000003d", "\U0000003e", "\U0000003f", "\U00000040", "\U00000041", "\U00000042", "\U00000043", "\U00000044", "\U00000045", "\U00000046", "\U00000047", "\U00000048", "\U00000049", "\U0000004a", "\U0000004b", "\U0000004c", "\U0000004d", "\U0000004e", "\U0000004f", "\U00000050", "\U00000051", "\U00000052", "\U00000053", "\U00000054", "\U00000055", "\U00000056", "\U00000057", "\U00000058", "\U00000059", "\U0000005a", "\U0000005b", "\U0000005c", "\U0000005d", "\U0000005e", "\U0000005f", "\U00000060", "\U00000061", "\U00000062", "\U00000063", "\U00000064", "\U00000065", "\U00000066", "\U00000067", "\U00000068", "\U00000069", "\U0000006a", "\U0000006b", "\U0000006c", "\U0000006d", "\U0000006e", "\U0000006f", "\U00000070", "\U00000071", "\U00000072", "\U00000073", "\U00000074", "\U00000075", "\U00000076", "\U00000077", "\U00000078", "\U00000079", "\U0000007a", "\U0000007b", "\U0000007c", "\U0000007d", "\U0000007e", "\U000000B0", "\U000000B1", "\U000000B2", "\U000000B3", "\U000000B5", "\U000000A3", "\U000000A5", "\U000000A9", "\U000000AE", "\U000000D7", "\U000000F7", "\U000003BC", "\U000003A9", "\U000020AC", "\U00002122"]
+  - file:
+      type: gfonts
+      family: Ubuntu
+      weight: 700
+    id: font_ubuntu_700_15
+    size: 15
+    glyphs: ["\U00000020", "\U00000021", "\U00000022", "\U00000023", "\U00000024", "\U00000025", "\U00000026", "\U00000027", "\U00000028", "\U00000029", "\U0000002a", "\U0000002b", "\U0000002c", "\U0000002d", "\U0000002e", "\U0000002f", "\U00000030", "\U00000031", "\U00000032", "\U00000033", "\U00000034", "\U00000035", "\U00000036", "\U00000037", "\U00000038", "\U00000039", "\U0000003a", "\U0000003b", "\U0000003c", "\U0000003d", "\U0000003e", "\U0000003f", "\U00000040", "\U00000041", "\U00000042", "\U00000043", "\U00000044", "\U00000045", "\U00000046", "\U00000047", "\U00000048", "\U00000049", "\U0000004a", "\U0000004b", "\U0000004c", "\U0000004d", "\U0000004e", "\U0000004f", "\U00000050", "\U00000051", "\U00000052", "\U00000053", "\U00000054", "\U00000055", "\U00000056", "\U00000057", "\U00000058", "\U00000059", "\U0000005a", "\U0000005b", "\U0000005c", "\U0000005d", "\U0000005e", "\U0000005f", "\U00000060", "\U00000061", "\U00000062", "\U00000063", "\U00000064", "\U00000065", "\U00000066", "\U00000067", "\U00000068", "\U00000069", "\U0000006a", "\U0000006b", "\U0000006c", "\U0000006d", "\U0000006e", "\U0000006f", "\U00000070", "\U00000071", "\U00000072", "\U00000073", "\U00000074", "\U00000075", "\U00000076", "\U00000077", "\U00000078", "\U00000079", "\U0000007a", "\U0000007b", "\U0000007c", "\U0000007d", "\U0000007e", "\U000000B0", "\U000000B1", "\U000000B2", "\U000000B3", "\U000000B5", "\U000000A3", "\U000000A5", "\U000000A9", "\U000000AE", "\U000000D7", "\U000000F7", "\U000003BC", "\U000003A9", "\U000020AC", "\U00002122"]
+  - file:
+      type: gfonts
+      family: Ubuntu
+      weight: 400
+    id: font_ubuntu_400_15
+    size: 15
+    glyphs: ["\U00000020", "\U00000021", "\U00000022", "\U00000023", "\U00000024", "\U00000025", "\U00000026", "\U00000027", "\U00000028", "\U00000029", "\U0000002a", "\U0000002b", "\U0000002c", "\U0000002d", "\U0000002e", "\U0000002f", "\U00000030", "\U00000031", "\U00000032", "\U00000033", "\U00000034", "\U00000035", "\U00000036", "\U00000037", "\U00000038", "\U00000039", "\U0000003a", "\U0000003b", "\U0000003c", "\U0000003d", "\U0000003e", "\U0000003f", "\U00000040", "\U00000041", "\U00000042", "\U00000043", "\U00000044", "\U00000045", "\U00000046", "\U00000047", "\U00000048", "\U00000049", "\U0000004a", "\U0000004b", "\U0000004c", "\U0000004d", "\U0000004e", "\U0000004f", "\U00000050", "\U00000051", "\U00000052", "\U00000053", "\U00000054", "\U00000055", "\U00000056", "\U00000057", "\U00000058", "\U00000059", "\U0000005a", "\U0000005b", "\U0000005c", "\U0000005d", "\U0000005e", "\U0000005f", "\U00000060", "\U00000061", "\U00000062", "\U00000063", "\U00000064", "\U00000065", "\U00000066", "\U00000067", "\U00000068", "\U00000069", "\U0000006a", "\U0000006b", "\U0000006c", "\U0000006d", "\U0000006e", "\U0000006f", "\U00000070", "\U00000071", "\U00000072", "\U00000073", "\U00000074", "\U00000075", "\U00000076", "\U00000077", "\U00000078", "\U00000079", "\U0000007a", "\U0000007b", "\U0000007c", "\U0000007d", "\U0000007e", "\U000000B0", "\U000000B1", "\U000000B2", "\U000000B3", "\U000000B5", "\U000000A3", "\U000000A5", "\U000000A9", "\U000000AE", "\U000000D7", "\U000000F7", "\U000003BC", "\U000003A9", "\U000020AC", "\U00002122"]
+  - file: "fonts/materialdesignicons-webfont.ttf"
+    id: font_material_design_icons_400_20
+    size: 20
+    glyphs: ["\U000F0026", "\U000F0590", "\U000F0591", "\U000F0592", "\U000F0593", "\U000F0594", "\U000F0595", "\U000F0596", "\U000F0597", "\U000F0598", "\U000F0599", "\U000F059D", "\U000F059E", "\U000F067E", "\U000F067F"]
+  - file: "fonts/materialdesignicons-webfont.ttf"
+    id: font_material_design_icons_400_29
+    size: 29
+    glyphs: ["\U000F0E02", "\U000F0E03", "\U000F1D16", "\U000F1D17"]
+  - file:
+      type: gfonts
+      family: Ubuntu
+      weight: 400
+    id: font_ubuntu_400_14
+    size: 14
+    glyphs: ["\U00000020", "\U00000021", "\U00000022", "\U00000023", "\U00000024", "\U00000025", "\U00000026", "\U00000027", "\U00000028", "\U00000029", "\U0000002a", "\U0000002b", "\U0000002c", "\U0000002d", "\U0000002e", "\U0000002f", "\U00000030", "\U00000031", "\U00000032", "\U00000033", "\U00000034", "\U00000035", "\U00000036", "\U00000037", "\U00000038", "\U00000039", "\U0000003a", "\U0000003b", "\U0000003c", "\U0000003d", "\U0000003e", "\U0000003f", "\U00000040", "\U00000041", "\U00000042", "\U00000043", "\U00000044", "\U00000045", "\U00000046", "\U00000047", "\U00000048", "\U00000049", "\U0000004a", "\U0000004b", "\U0000004c", "\U0000004d", "\U0000004e", "\U0000004f", "\U00000050", "\U00000051", "\U00000052", "\U00000053", "\U00000054", "\U00000055", "\U00000056", "\U00000057", "\U00000058", "\U00000059", "\U0000005a", "\U0000005b", "\U0000005c", "\U0000005d", "\U0000005e", "\U0000005f", "\U00000060", "\U00000061", "\U00000062", "\U00000063", "\U00000064", "\U00000065", "\U00000066", "\U00000067", "\U00000068", "\U00000069", "\U0000006a", "\U0000006b", "\U0000006c", "\U0000006d", "\U0000006e", "\U0000006f", "\U00000070", "\U00000071", "\U00000072", "\U00000073", "\U00000074", "\U00000075", "\U00000076", "\U00000077", "\U00000078", "\U00000079", "\U0000007a", "\U0000007b", "\U0000007c", "\U0000007d", "\U0000007e", "\U000000B0", "\U000000B1", "\U000000B2", "\U000000B3", "\U000000B5", "\U000000A3", "\U000000A5", "\U000000A9", "\U000000AE", "\U000000D7", "\U000000F7", "\U000003BC", "\U000003A9", "\U000020AC", "\U00002122"]
+  - file:
+      type: gfonts
+      family: Ubuntu
+      weight: 400
+    id: font_ubuntu_400_20
+    size: 20
+    glyphs: ["\U00000020", "\U00000021", "\U00000022", "\U00000023", "\U00000024", "\U00000025", "\U00000026", "\U00000027", "\U00000028", "\U00000029", "\U0000002a", "\U0000002b", "\U0000002c", "\U0000002d", "\U0000002e", "\U0000002f", "\U00000030", "\U00000031", "\U00000032", "\U00000033", "\U00000034", "\U00000035", "\U00000036", "\U00000037", "\U00000038", "\U00000039", "\U0000003a", "\U0000003b", "\U0000003c", "\U0000003d", "\U0000003e", "\U0000003f", "\U00000040", "\U00000041", "\U00000042", "\U00000043", "\U00000044", "\U00000045", "\U00000046", "\U00000047", "\U00000048", "\U00000049", "\U0000004a", "\U0000004b", "\U0000004c", "\U0000004d", "\U0000004e", "\U0000004f", "\U00000050", "\U00000051", "\U00000052", "\U00000053", "\U00000054", "\U00000055", "\U00000056", "\U00000057", "\U00000058", "\U00000059", "\U0000005a", "\U0000005b", "\U0000005c", "\U0000005d", "\U0000005e", "\U0000005f", "\U00000060", "\U00000061", "\U00000062", "\U00000063", "\U00000064", "\U00000065", "\U00000066", "\U00000067", "\U00000068", "\U00000069", "\U0000006a", "\U0000006b", "\U0000006c", "\U0000006d", "\U0000006e", "\U0000006f", "\U00000070", "\U00000071", "\U00000072", "\U00000073", "\U00000074", "\U00000075", "\U00000076", "\U00000077", "\U00000078", "\U00000079", "\U0000007a", "\U0000007b", "\U0000007c", "\U0000007d", "\U0000007e", "\U000000B0", "\U000000B1", "\U000000B2", "\U000000B3", "\U000000B5", "\U000000A3", "\U000000A5", "\U000000A9", "\U000000AE", "\U000000D7", "\U000000F7", "\U000003BC", "\U000003A9", "\U000020AC", "\U00002122"]
+  - file: "fonts/materialdesignicons-webfont.ttf"
+    id: font_material_design_icons_400_36
+    size: 36
+    glyphs: ["\U000F0597"]
+  - file:
+      type: gfonts
+      family: Ubuntu
+      weight: 400
+    id: font_ubuntu_400_16
+    size: 16
+    glyphs: ["\U00000020", "\U00000021", "\U00000022", "\U00000023", "\U00000024", "\U00000025", "\U00000026", "\U00000027", "\U00000028", "\U00000029", "\U0000002a", "\U0000002b", "\U0000002c", "\U0000002d", "\U0000002e", "\U0000002f", "\U00000030", "\U00000031", "\U00000032", "\U00000033", "\U00000034", "\U00000035", "\U00000036", "\U00000037", "\U00000038", "\U00000039", "\U0000003a", "\U0000003b", "\U0000003c", "\U0000003d", "\U0000003e", "\U0000003f", "\U00000040", "\U00000041", "\U00000042", "\U00000043", "\U00000044", "\U00000045", "\U00000046", "\U00000047", "\U00000048", "\U00000049", "\U0000004a", "\U0000004b", "\U0000004c", "\U0000004d", "\U0000004e", "\U0000004f", "\U00000050", "\U00000051", "\U00000052", "\U00000053", "\U00000054", "\U00000055", "\U00000056", "\U00000057", "\U00000058", "\U00000059", "\U0000005a", "\U0000005b", "\U0000005c", "\U0000005d", "\U0000005e", "\U0000005f", "\U00000060", "\U00000061", "\U00000062", "\U00000063", "\U00000064", "\U00000065", "\U00000066", "\U00000067", "\U00000068", "\U00000069", "\U0000006a", "\U0000006b", "\U0000006c", "\U0000006d", "\U0000006e", "\U0000006f", "\U00000070", "\U00000071", "\U00000072", "\U00000073", "\U00000074", "\U00000075", "\U00000076", "\U00000077", "\U00000078", "\U00000079", "\U0000007a", "\U0000007b", "\U0000007c", "\U0000007d", "\U0000007e", "\U000000B0", "\U000000B1", "\U000000B2", "\U000000B3", "\U000000B5", "\U000000A3", "\U000000A5", "\U000000A9", "\U000000AE", "\U000000D7", "\U000000F7", "\U000003BC", "\U000003A9", "\U000020AC", "\U00002122"]
+script:
+  - id: change_page_to
+    parameters:
+      target_page: int
+    then:
+      - lambda: |-
+          int pages_count = 1;
+          int target = target_page;
+          while (target < 0) target += pages_count;
+          target %= pages_count;
+          
+          if (id(display_page) != target) {
+            id(display_page) = target;
+            id(last_page_switch_time) = millis();
+            id(epaper_display).update();
+            ESP_LOGI("display", "Switched to page %d", target);
+            // Restart refresh logic
+            if (id(manage_run_and_sleep).is_running()) id(manage_run_and_sleep).stop();
+            id(manage_run_and_sleep).execute();
+          }
+  - id: manage_run_and_sleep
+    mode: restart
+    then:
+      - logger.log: "Waiting for sync..."
+      - wait_until:
+          condition:
+            lambda: 'return id(ha_time).now().is_valid() && api_is_connected();'
+          timeout: 60s
+      - delay: 5s
+      - lambda: 'id(page_refresh_current_s) = id(page_refresh_default_s);'
+      - component.update: epaper_display
+      - delay: !lambda 'return id(page_refresh_current_s) * 1000;'
+      - script.execute: manage_run_and_sleep

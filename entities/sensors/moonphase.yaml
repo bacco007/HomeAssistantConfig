@@ -1,7 +1,0 @@
----
-platform: template
-sensors:
-  moonphase:
-    friendly_name: "Moon Phase"
-    value_template: >
-      {{ states('sensor.moon').title().replace('_',' ') }}

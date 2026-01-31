@@ -11,7 +11,7 @@
           "modules_power": "Potência de pico total em Watts de seus módulos solares",
           "name": "Nome"
         },
-        "description": "Esses valores permitem ajustar o resultado do Forecast.Solar. Consulte a documentação se um campo não estiver claro."
+        "description": "Esses valores permitem ajustar o resultado do Solar Forecast. Consulte a documentação se um campo não estiver claro."
       }
     }
   },
@@ -67,7 +67,7 @@
           "modules power": "Potência de pico total em Watts de seus módulos solares",
           "modules_power": "Potência de pico total em Watts de seus módulos solares"
         },
-        "description": "Esses valores permitem ajustar o resultado do Forecast.Solar. Consulte a documentação se um campo não estiver claro."
+        "description": "Esses valores permitem ajustar o resultado do Solar Forecast. Consulte a documentação se um campo não estiver claro."
       }
     }
   }

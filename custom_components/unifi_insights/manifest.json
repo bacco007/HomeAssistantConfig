@@ -2,15 +2,16 @@
   "domain": "unifi_insights",
   "name": "UniFi Insights",
   "bluetooth": [],
-  "codeowners": ["@domalab"],
+  "codeowners": ["@ruaan-deysel"],
   "config_flow": true,
+  "dependencies": ["ffmpeg", "stream"],
   "dhcp": [],
-  "documentation": "https://github.com/domalab/ha-unifi-insights",
+  "documentation": "https://github.com/ruaan-deysel/ha-unifi-insights",
   "integration_type": "hub",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/domalab/ha-unifi-insights/issues",
+  "issue_tracker": "https://github.com/ruaan-deysel/ha-unifi-insights/issues",
   "loggers": ["custom_components.unifi_insights"],
-  "requirements": [],
+  "requirements": ["unifi-official-api~=1.1.0"],
   "ssdp": [
     {
       "manufacturer": "Ubiquiti Networks",
@@ -26,6 +27,6 @@
     }
   ],
   "usb": [],
-  "version": "2025.01.20",
+  "version": "2026.2.0",
   "zeroconf": []
 }

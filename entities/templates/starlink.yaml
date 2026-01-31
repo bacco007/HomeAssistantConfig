@@ -1,0 +1,23 @@
+---
+sensor:
+  - name: Starlink Uptime Tracking
+    unique_id: starlink_uptime_tracking
+    state: >-
+      {%- set up = states('sensor.starlink_connectivity_connected')|float(0) %}
+      {%- set down = states('sensor.starlink_connectivity_disconnected')|float(0) %}
+      {%- set total = up + down %}
+      {{ (100 * up / total if total > 0 else 0) | round(2) }}
+    unit_of_measurement: "%"
+    attributes:
+      uptime_hm: >-
+        {%- set hours = states('sensor.starlink_connectivity_connected') | float(0) %}
+        {%- set h = hours | int %}
+        {%- set m = ((hours - h) * 60) | int %}
+        {{ "%02d:%02d" | format(h, m) }}
+      downtime_hm: >- 
+        {%- set hours = states('sensor.starlink_connectivity_disconnected') | float(0) %}
+        {%- set h = hours | int %}
+        {%- set m = ((hours - h) * 60) | int %}
+        {%- set s = ((((hours - h) * 60) - m) * 60) | int %}
+        {{ "%02d:%02d:%02d" | format(h, m, s) }}
+    icon: mdi:network-strength-1

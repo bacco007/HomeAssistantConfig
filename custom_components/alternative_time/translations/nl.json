@@ -1,0 +1,60 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Alternatieve Tijdsystemen",
+        "description": "Welkom bij Alternatieve Tijdsystemen!\n\nDeze integratie biedt verschillende alternatieve kalenders en tijdsystemen voor educatieve en entertainmentdoeleinden.",
+        "data": {
+          "name": "Naam van de integratie"
+        }
+      },
+      "select_categories": {
+        "title": "Selecteer kalendercategorieën",
+        "description": "Kies welke categorieën kalenders u wilt configureren:\n\n{details}",
+        "data": {
+          "categories": "Op te nemen categorieën"
+        }
+      },
+      "select_calendars_by_category": {
+        "title": "Selecteer {category} kalenders",
+        "description": "Kies kalenders uit de {category} categorie:\n\n{details}",
+        "data": {
+          "calendars": "Te activeren kalenders"
+        }
+      },
+      "plugin_options": {
+        "title": "Configureer {calendar_name}",
+        "description": "**{calendar_name}**\n\n{calendar_description}\n\nConfigureer de onderstaande opties:"
+      },
+      "disclaimer": {
+        "title": "Belangrijke mededeling",
+        "description": "## ⚠️ Alternatieve Tijdsystemen - Disclaimer\n\nDe alternatieve kalenders en tijdsystemen die door deze integratie worden geleverd zijn **alleen voor educatieve en entertainmentdoeleinden**.\n\n### Let op:\n• De berekeningen zijn mogelijk niet 100% nauwkeurig\n• Sommige kalenders zijn fictief of theoretisch\n• Historische kalenders kunnen variaties hebben\n• Tijdzones en conversies zijn benaderingen\n\n### Een probleem gevonden?\nAls u fouten ontdekt of suggesties voor verbeteringen heeft, meld deze dan op onze GitHub-repository:\n\n**https://github.com/Lexorius/alternative_time**\n\nDoor verder te gaan erkent u dat deze tijdsystemen niet mogen worden gebruikt voor kritische tijdregistratie of officiële doeleinden."
+      }
+    },
+    "error": {
+      "unknown": "Er is een onverwachte fout opgetreden"
+    },
+    "abort": {
+      "no_calendars_found": "Geen kalenderimplementaties gevonden. Controleer de installatie.",
+      "no_options": "{message}"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configureer kalenderopties",
+        "description": "Selecteer een kalender om de opties te configureren:\n\n{title}",
+        "data": {
+          "calendar": "Te configureren kalender"
+        }
+      },
+      "configure_calendar": {
+        "title": "Configureer {calendar_name}",
+        "description": "**{calendar_name}**\n\n{calendar_description}\n\nPas de onderstaande instellingen aan:"
+      }
+    },
+    "abort": {
+      "no_options": "{message}"
+    }
+  }
+}

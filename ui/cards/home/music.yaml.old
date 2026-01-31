@@ -407,7 +407,7 @@ cards:
   - square: false
     type: grid
     cards:
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         primary: Top Track (This Week)
         secondary: |-
           {{ state_attr('sensor.lastfm_user_weeklytrackchart',
@@ -428,7 +428,7 @@ cards:
                 padding-top: 5px !important;
                 padding-bottom: 5px !important;
               }
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         primary: Top Track (This Month)
         secondary: >-
           {{ state_attr('sensor.lastfm_user_monthlytrackchart',

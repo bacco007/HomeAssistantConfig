@@ -1,0 +1,129 @@
+{
+    "type": "quote_rss",
+    "name": "Quote / RSS Feed",
+    "props": {
+        "feed_url": {
+            "type": "string",
+            "title": "RSS Feed URL",
+            "description": "URL of the RSS feed to fetch quotes from",
+            "default": "https://www.brainyquote.com/link/quotebr.rss"
+        },
+        "show_author": {
+            "type": "boolean",
+            "title": "Show Author",
+            "description": "Display the quote author below the quote",
+            "default": true
+        },
+        "random": {
+            "type": "boolean",
+            "title": "Random Quote",
+            "description": "Select a random quote from the feed instead of the latest",
+            "default": true
+        },
+        "refresh_interval": {
+            "type": "string",
+            "title": "Refresh Interval",
+            "description": "How often to fetch a new quote",
+            "default": "1h",
+            "enum": [
+                "15min",
+                "30min",
+                "1h",
+                "2h",
+                "4h",
+                "8h",
+                "12h",
+                "24h"
+            ]
+        },
+        "quote_font_size": {
+            "type": "number",
+            "title": "Quote Font Size",
+            "default": 18,
+            "minimum": 10,
+            "maximum": 48
+        },
+        "author_font_size": {
+            "type": "number",
+            "title": "Author Font Size",
+            "default": 14,
+            "minimum": 8,
+            "maximum": 32
+        },
+        "font_family": {
+            "type": "string",
+            "title": "Font Family",
+            "default": "Roboto",
+            "enum": [
+                "Roboto",
+                "Inter",
+                "OpenSans",
+                "Lato",
+                "Oswald",
+                "Montserrat",
+                "Raleway",
+                "Merriweather",
+                "NotoSans",
+                "Ubuntu"
+            ]
+        },
+        "font_weight": {
+            "type": "number",
+            "title": "Font Weight",
+            "default": 400,
+            "enum": [
+                100,
+                200,
+                300,
+                400,
+                500,
+                600,
+                700,
+                800,
+                900
+            ]
+        },
+        "color": {
+            "type": "string",
+            "title": "Text Color",
+            "default": "black",
+            "enum": [
+                "black",
+                "white",
+                "gray",
+                "red",
+                "green",
+                "blue",
+                "yellow"
+            ]
+        },
+        "text_align": {
+            "type": "string",
+            "title": "Text Alignment",
+            "default": "TOP_LEFT",
+            "enum": [
+                "TOP_LEFT",
+                "TOP_CENTER",
+                "TOP_RIGHT",
+                "CENTER_LEFT",
+                "CENTER",
+                "CENTER_RIGHT",
+                "BOTTOM_LEFT",
+                "BOTTOM_CENTER",
+                "BOTTOM_RIGHT"
+            ]
+        },
+        "word_wrap": {
+            "type": "boolean",
+            "title": "Word Wrap",
+            "description": "Automatically wrap long quotes to fit the widget width",
+            "default": true
+        },
+        "italic_quote": {
+            "type": "boolean",
+            "title": "Italic Quote",
+            "description": "Display the quote text in italics",
+            "default": true
+        }
+    }
+}

@@ -171,7 +171,7 @@ cards:
 #       {% for s in expand(states.group.upcomingsport_thisweek)|map(attribute='entity_id')|list|sort -%}
 #         {{
 #           {
-#             "type": "custom:mushroom-template-card",
+#             "type": "custom:mushroom-legacy-template-card",
 #             "primary": "{{ state_attr(entity, 'friendly_name') | replace('[Upcoming Sport] ', '') }}",
 #             "multiline_secondary": true,
 #             "secondary": "{{ iif(state_attr(entity, 'nextevent_time') == 'No Event Scheduled', 'No Event Scheduled', state_attr(entity, 'nextevent_desc') + ' ' + state_attr(entity, 'nextevent_time')) }}\n{{ iif(state_attr(entity, 'afterevent_time') == 'No Event Scheduled', 'No Event Scheduled', state_attr(entity, 'afterevent_desc') + ' ' + state_attr(entity, 'afterevent_time')) }}",

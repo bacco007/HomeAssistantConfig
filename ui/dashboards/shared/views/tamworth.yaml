@@ -35,6 +35,7 @@ cards:
       - !include /config/ui/cards/tamworth/dams.yaml
       - !include /config/ui/cards/tamworth/bushfire.yaml
       - !include /config/ui/cards/tamworth/webcam_ystw.yaml
+      - !include /config/ui/cards/tamworth/webcam_tfnsw.yaml
       - !include /config/ui/cards/tamworth/gdacs.yaml
       - !include /config/ui/cards/tamworth/earthquakes.yaml
 

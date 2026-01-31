@@ -46,7 +46,7 @@ cards:
         sort(attribute="attributes.sortorder")  -%}
           {{
             {
-              "type": "custom:mushroom-template-card",
+              "type": "custom:mushroom-legacy-template-card",
               "primary": "{{ state_attr(entity, \"friendly_name\") }}",
               "multiline_secondary": true,
               "secondary": "{{ state_attr(entity, \"nextevent\") }} ({{ state_attr(entity, \"nexttime\") }})\n{{ state_attr(entity, \"nexteventafter\") }}",

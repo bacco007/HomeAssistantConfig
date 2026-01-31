@@ -2,17 +2,17 @@
   "domain": "holidays",
   "name": "Holidays",
   "codeowners": [
-    "@bruxy70"
+    "@ifflanb"
   ],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/bruxy70/Holidays/",
+  "documentation": "https://github.com/ifflanb/Holidays/",
   "integration_type": "helper",
   "iot_class": "calculated",
-  "issue_tracker": "https://github.com/bruxy70/Holidays/issues",
+  "issue_tracker": "https://github.com/ifflanb/Holidays/issues",
   "requirements": [
     "python-dateutil>=2.8.2",
-    "holidays>=0.35"
+    "holidays>=0.36"
   ],
-  "version": "1.9.10"
+  "version": "1.0"
 }

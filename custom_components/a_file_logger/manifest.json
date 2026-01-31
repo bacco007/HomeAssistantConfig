@@ -1,0 +1,8 @@
+{
+  "domain": "a_file_logger",
+  "name": "Log to home-assistant.log",
+  "codeowners": ["@petro31"],
+  "iot_class": "calculated",
+  "requirements": [],
+  "version": "1.0.1"
+}

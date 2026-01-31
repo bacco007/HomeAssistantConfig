@@ -169,9 +169,11 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
             entry_id = slugify(f"{config.get(CONF_TEAM_ID)}")
             sensor_coordinator = hass.data[DOMAIN][sensor_name][COORDINATOR]
             super().__init__(sensor_coordinator)
+            self._yaml_coordinator = sensor_coordinator  # Store reference for cleanup
+
             try:
                 sport_path = config[CONF_SPORT_PATH]
-            except:
+            except (KeyError, AttributeError):  # pylint: disable=broad-exception-caught
                 sport_path = DEFAULT_SPORT_PATH
 
         if sport_path == DEFAULT_SPORT_PATH:
@@ -195,7 +197,9 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         self._state = "PRE"
 
         self._sport = None
+        self._sport_path = None
         self._league = None
+        self._league_path = None
         self._league_logo = None
         self._season = None
         self._team_abbr = None
@@ -217,6 +221,7 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         self._team_id = None
         self._team_record = None
         self._team_rank = None
+        self._team_conference_id = None
         self._team_homeaway = None
         self._team_logo = None
         self._team_url = None
@@ -231,6 +236,7 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         self._opponent_id = None
         self._opponent_record = None
         self._opponent_rank = None
+        self._opponent_conference_id = None
         self._opponent_homeaway = None
         self._opponent_logo = None
         self._opponent_url = None
@@ -263,6 +269,7 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
 
         self._last_update = None
         self._api_message = None
+        self._api_url = None
 
     @property
     def unique_id(self) -> str:
@@ -303,7 +310,9 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         attrs[ATTR_ATTRIBUTION] = ATTRIBUTION
 
         attrs["sport"] = self.coordinator.data["sport"]
+        attrs["sport_path"] = self.coordinator.data["sport_path"]
         attrs["league"] = self.coordinator.data["league"]
+        attrs["league_path"] = self.coordinator.data["league_path"]
         attrs["league_logo"] = self.coordinator.data["league_logo"]
         attrs["season"] = self.coordinator.data["season"]
         attrs["team_abbr"] = self.coordinator.data["team_abbr"]
@@ -325,6 +334,7 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         attrs["team_id"] = self.coordinator.data["team_id"]
         attrs["team_record"] = self.coordinator.data["team_record"]
         attrs["team_rank"] = self.coordinator.data["team_rank"]
+        attrs["team_conference_id"] = self.coordinator.data["team_conference_id"]
         attrs["team_homeaway"] = self.coordinator.data["team_homeaway"]
         attrs["team_logo"] = self.coordinator.data["team_logo"]
         attrs["team_url"] = self.coordinator.data["team_url"]
@@ -340,6 +350,7 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         attrs["opponent_id"] = self.coordinator.data["opponent_id"]
         attrs["opponent_record"] = self.coordinator.data["opponent_record"]
         attrs["opponent_rank"] = self.coordinator.data["opponent_rank"]
+        attrs["opponent_conference_id"] = self.coordinator.data["opponent_conference_id"]
         attrs["opponent_homeaway"] = self.coordinator.data["opponent_homeaway"]
         attrs["opponent_logo"] = self.coordinator.data["opponent_logo"]
         attrs["opponent_url"] = self.coordinator.data["opponent_url"]
@@ -379,6 +390,7 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
 
         attrs["last_update"] = self.coordinator.data["last_update"]
         attrs["api_message"] = self.coordinator.data["api_message"]
+        attrs["api_url"] = self.coordinator.data["api_url"]
 
         return attrs
 
@@ -386,3 +398,10 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
     def available(self) -> bool:
         """Return if entity is available."""
         return self.coordinator.last_update_success
+
+    async def async_will_remove_from_hass(self) -> None:
+        """Clean up when entity is being removed."""
+        # Only cleanup for YAML setup (entry is None)
+        if hasattr(self, '_yaml_coordinator'):
+            await self._yaml_coordinator.async_shutdown()
+            _LOGGER.debug("%s: Cleaned up YAML coordinator", self._name)

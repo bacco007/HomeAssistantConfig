@@ -1,0 +1,11 @@
+{
+  "domain": "ha_transportnsw",
+  "name": "Transport NSW Mk II",
+  "codeowners": ["@andystewart999"],
+  "config_flow": true,
+  "documentation": "https://github.com/andystewart999/ha_transportnsw",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/andystewart999/ha_transportnsw",
+  "requirements": ["pytransportnswv2==2.2.0"],
+  "version": "2.2.0"
+}

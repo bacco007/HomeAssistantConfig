@@ -5,9 +5,9 @@ substitutions:
   esphome_comment: Bluetooth Proxy
   ip_address: 192.168.1.231
   ip_gw: 192.168.1.1
-  ip_netmask: 255.255.255.0  
+  ip_netmask: 255.255.255.0
   log_level: debug  # Enable levels logging https://esphome.io/components/logger.html
-                    # none, error, warn, info, debug (default), verbose, very_verbose  
+                    # none, error, warn, info, debug (default), verbose, very_verbose
 
 esphome:
   name: ${name}
@@ -15,6 +15,7 @@ esphome:
   comment: ${esphome_comment}
   min_version: 2025.2.1
   name_add_mac_suffix: true
+  compile_process_limit: 2
   project:
     name: esphome.bluetooth-proxy
     version: "24.7.4.1"
@@ -88,12 +89,12 @@ text_sensor:
     ssid:
       id: network_ssid
       name: SSID
-      
+
   - platform: template
     name: ${friendly_name} Uptime
     id: ${haname}_uptime
     icon: mdi:clock-start
-    entity_category: "diagnostic"      
+    entity_category: "diagnostic"
 
 sensor:
   - platform: wifi_signal
@@ -123,4 +124,4 @@ sensor:
         }
       } else {
         return NAN;
-      }    
+      }

@@ -7,7 +7,6 @@ trigger:
   - platform: state
     id: mobile
     entity_id:
-      - alert.backup_alert
       - alert.weatherflow_cloud
       - alert.weatherflow_local
       - alert.zigbee_network

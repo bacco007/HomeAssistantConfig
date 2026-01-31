@@ -27,7 +27,7 @@ cards:
           background-size: 110%;
         }
     cards:
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         entity: sensor.iss_2
         primary: International Space Station
         icon: mdi:space-station
@@ -266,7 +266,7 @@ cards:
     child-padding: 0.5em
     button-background: transparent
     title-card:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       primary: Next ISS Passes
       icon: mdi:space-station
       card_mod:
@@ -320,7 +320,7 @@ cards:
     overlay-margin: 0em
     button-background: transparent
     title-card:
-      type: custom:mushroom-template-card
+      type: custom:mushroom-legacy-template-card
       primary: ISS Position & Trajectory
       icon: mdi:map-clock
       card_mod:

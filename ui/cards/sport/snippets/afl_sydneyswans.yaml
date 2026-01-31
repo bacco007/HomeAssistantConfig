@@ -11,6 +11,7 @@ cards:
     template: sports_card
     variables:
       - entity: sensor.upcoming_sport_sydney_swans
+      - calendar: calendar.ical_sydney_swans
   - type: custom:mushroom-chips-card
     alignment: center
     card_mod:

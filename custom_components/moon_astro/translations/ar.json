@@ -1,0 +1,348 @@
+{
+    "title": "قمر أسترو",
+    "config": {
+        "step": {
+            "user": {
+                "title": "قمر أسترو",
+                "description": "اضبط إحداثيات نظام تحديد المواقع (GPS) والارتفاع.",
+                "data": {
+                    "latitude": "خط العرض",
+                    "longitude": "خط الطول",
+                    "altitude": "الارتفاع (م)"
+                }
+            },
+            "precision": {
+                "title": "لون أسترو",
+                "description": "يقلّل وضع الدقّة العالية من تذبذب الطوابع الزمنية، لكنه يزيد من استخدام وحدة المعالجة المركزية لأنه يستخدم خطوة أخذ عينات أدق ونطاق تحسين أوسع. لا يُنصح بتفعيل هذا الخيار على الأجهزة منخفضة القدرة مثل Raspberry Pi.",
+                "data": {
+                    "high_precision": "وضع الدقّة العالية"
+                }
+            }
+        },
+        "progress": {
+            "download_ephemeris": "جاري تنزيل تقويم Skyfield DE440 الفلكي (> 100 ميجابايت). يرجى عدم إغلاق هذه النافذة أثناء التنزيل..."
+        },
+        "abort": {
+            "already_configured": "قمر أسترو مُكوَّن بالفعل",
+            "missing_data": "بيانات التكوين مفقودة",
+            "reconfigure_successful": "تم تحديث الإعدادات"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "خيارات قمر أسترو",
+                "description": "اضبط فترة تحديث المستشعرات ومعالجة المنطقة الزمنية.\n\nيقلّل وضع الدقة العالية من تذبذب الطوابع الزمنية، لكنه يزيد من استخدام المعالج لأنه يستخدم خطوة أخذ عينات أدق ونطاق تحسين أوسع. لا يُنصح به على الأجهزة منخفضة الطاقة مثل Raspberry Pi.\n\nتفرض فترة التحديث الاحتياطية للأحداث تحديثًا دوريًا للمستشعرات المعتمدة على الأحداث (الأطوار التالية/السابقة، الأوج/الحضيض، الأبراج عند الاقترانات القمرية) في حال فُقد التحديث المجدول حول الحدث التالي (إعادة تشغيل، تغيير الوقت، تأخير). القيم الأقل تُحدّث بشكل أكثر تكرارًا؛ القيم الأعلى تقلّل استخدام المعالج.",
+                "data": {
+                    "scan_interval": "فاصل تحديث المستشعرات (بالثواني)",
+                    "use_ha_timezone": "استخدام المنطقة الزمنية لـ Home Assistant",
+                    "high_precision": "وضع الدقّة العالية",
+                    "events_refresh_fallback": "فترة التحديث الاحتياطية للأحداث (ثوانٍ)"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "above_horizon": {
+                "name": "فوق الأفق",
+                "state": {
+                    "on": "فوق الأفق",
+                    "off": "تحت الأفق"
+                }
+            }
+        },
+        "sensor": {
+            "phase": {
+                "name": "الطور",
+                "state": {
+                    "new_moon": "المحاق",
+                    "waxing_crescent": "هلال متزايد",
+                    "first_quarter": "التربيع الأول",
+                    "waxing_gibbous": "أحدب متزايد",
+                    "full_moon": "البدر",
+                    "waning_gibbous": "أحدب متناقص",
+                    "last_quarter": "التربيع الأخير",
+                    "waning_crescent": "هلال متناقص",
+                    "unknown": "غير معروف"
+                }
+            },
+            "azimuth": {
+                "name": "السمت"
+            },
+            "elevation": {
+                "name": "الارتفاع الزاوي"
+            },
+            "illumination": {
+                "name": "الإضاءة"
+            },
+            "distance": {
+                "name": "المسافة"
+            },
+            "parallax": {
+                "name": "اختلاف المنظر"
+            },
+            "ecliptic_longitude_topocentric": {
+                "name": "خط الطول الكسوفي (موضعي)"
+            },
+            "ecliptic_latitude_topocentric": {
+                "name": "خط العرض الكسوفي (موضعي)"
+            },
+            "ecliptic_longitude_geocentric": {
+                "name": "خط الطول الكسوفي (مركزي أرضي)"
+            },
+            "ecliptic_latitude_geocentric": {
+                "name": "خط العرض الكسوفي (مركزي أرضي)"
+            },
+            "next_rise": {
+                "name": "موعد الشروق التالي"
+            },
+            "next_set": {
+                "name": "موعد الغروب التالي"
+            },
+            "next_apogee": {
+                "name": "الأوج التالي"
+            },
+            "next_perigee": {
+                "name": "الحضيض التالي"
+            },
+            "next_new_moon": {
+                "name": "المحاق التالي"
+            },
+            "next_first_quarter": {
+                "name": "التربيع الأول التالي"
+            },
+            "next_full_moon": {
+                "name": "البدر التالي"
+            },
+            "next_full_moon_name": {
+                "name": "اسم البدر القادم",
+                "state": {
+                    "wolf_moon": "قمر الذئب",
+                    "snow_moon": "قمر الثلج",
+                    "worm_moon": "قمر الديدان",
+                    "pink_moon": "القمر الوردي",
+                    "flower_moon": "قمر الزهور",
+                    "strawberry_moon": "قمر الفراولة",
+                    "buck_moon": "قمر الأيل",
+                    "sturgeon_moon": "قمر الحفش",
+                    "harvest_moon": "قمر الحصاد",
+                    "hunters_moon": "قمر الصياد",
+                    "beaver_moon": "قمر القندس",
+                    "cold_moon": "قمر البرد",
+                    "blue_moon": "القمر الأزرق",
+                    "unknown": "غير معروف"
+                }
+            },
+            "next_full_moon_alt_names": {
+                "name": "أسماء بديلة للبدر القادم",
+                "state": {
+                    "wolf_moon_alt_names": "قمر ما بعد يول, قمر البقاء في المنزل, القمر الهادئ, القمر القاسي, القمر المركزي",
+                    "snow_moon_alt_names": "قمر الجوع, قمر الدب, قمر العاصفة, قمر الجليد",
+                    "worm_moon_alt_names": "قمر الصوم الكبير, قمر الغراب, قمر القشرة, القمر العفيف, قمر السكر, قمر النسغ",
+                    "pink_moon_alt_names": "قمر تكسّر الجليد, قمر التبرعم, قمر الاستيقاظ, قمر البيض, القمر الفصحي",
+                    "flower_moon_alt_names": "قمر الزراعة, قمر الحليب, قمر الأرنب, قمر العشب, قمر الأمهات, القمر المشرق",
+                    "strawberry_moon_alt_names": "قمر الورود, قمر الحر, قمر الميد, قمر الزهور, قمر الزراعة",
+                    "buck_moon_alt_names": "قمر الرعد, قمر القش, قمر الأعشاب",
+                    "sturgeon_moon_alt_names": "قمر الحبوب, قمر الذرة, قمر الوشق, قمر البرق",
+                    "harvest_moon_alt_names": "قمر ذرة كامل, قمر الذرة الخضراء, قمر الذرة, قمر النبيذ, قمر الأغنية, قمر الشعير",
+                    "hunters_moon_alt_names": "قمر تجفيف الأرز, قمر الأوراق المتساقطة, قمر التجمد, قمر الدم, القمر الدموي",
+                    "beaver_moon_alt_names": "قمر الصقيع, قمر التجمد, قمر المقايضة, قمر الثلج, قمر الحداد, قمر أعماق الظلام",
+                    "cold_moon_alt_names": "قمر الليالي الطويلة, قمر ما قبل يول, قمر البلوط, قمر برد كامل",
+                    "unknown": ""
+                }
+            },
+            "next_last_quarter": {
+                "name": "التربيع الأخير التالي"
+            },
+
+            "previous_rise": {
+                "name": "موعد الشروق السابق"
+            },
+            "previous_set": {
+                "name": "موعد الغروب السابق"
+            },
+            "previous_apogee": {
+                "name": "الأوج السابق"
+            },
+            "previous_perigee": {
+                "name": "الحضيض السابق"
+            },
+            "previous_new_moon": {
+                "name": "المحاق السابق"
+            },
+            "previous_first_quarter": {
+                "name": "التربيع الأول السابق"
+            },
+            "previous_full_moon": {
+                "name": "البدر السابق"
+            },
+            "previous_full_moon_name": {
+                "name": "اسم البدر السابق",
+                "state": {
+                    "wolf_moon": "قمر الذئب",
+                    "snow_moon": "قمر الثلج",
+                    "worm_moon": "قمر الديدان",
+                    "pink_moon": "القمر الوردي",
+                    "flower_moon": "قمر الزهور",
+                    "strawberry_moon": "قمر الفراولة",
+                    "buck_moon": "قمر الأيل",
+                    "sturgeon_moon": "قمر الحفش",
+                    "harvest_moon": "قمر الحصاد",
+                    "hunters_moon": "قمر الصياد",
+                    "beaver_moon": "قمر القندس",
+                    "cold_moon": "قمر البرد",
+                    "blue_moon": "القمر الأزرق",
+                    "unknown": "غير معروف"
+                }
+            },
+            "previous_full_moon_alt_names": {
+                "name": "أسماء بديلة للبدر السابق",
+                "state": {
+                    "wolf_moon_alt_names": "قمر ما بعد يول, قمر البقاء في المنزل, القمر الهادئ, القمر القاسي, القمر المركزي",
+                    "snow_moon_alt_names": "قمر الجوع, قمر الدب, قمر العاصفة, قمر الجليد",
+                    "worm_moon_alt_names": "قمر الصوم الكبير, قمر الغراب, قمر القشرة, القمر العفيف, قمر السكر, قمر النسغ",
+                    "pink_moon_alt_names": "قمر تكسّر الجليد, قمر التبرعم, قمر الاستيقاظ, قمر البيض, القمر الفصحي",
+                    "flower_moon_alt_names": "قمر الزراعة, قمر الحليب, قمر الأرنب, قمر العشب, قمر الأمهات, القمر المشرق",
+                    "strawberry_moon_alt_names": "قمر الورود, قمر الحر, قمر الميد, قمر الزهور, قمر الزراعة",
+                    "buck_moon_alt_names": "قمر الرعد, قمر القش, قمر الأعشاب",
+                    "sturgeon_moon_alt_names": "قمر الحبوب, قمر الذرة, قمر الوشق, قمر البرق",
+                    "harvest_moon_alt_names": "قمر ذرة كامل, قمر الذرة الخضراء, قمر الذرة, قمر النبيذ, قمر الأغنية, قمر الشعير",
+                    "hunters_moon_alt_names": "قمر تجفيف الأرز, قمر الأوراق المتساقطة, قمر التجمد, قمر الدم, القمر الدموي",
+                    "beaver_moon_alt_names": "قمر الصقيع, قمر التجمد, قمر المقايضة, قمر الثلج, قمر الحداد, قمر أعماق الظلام",
+                    "cold_moon_alt_names": "قمر الليالي الطويلة, قمر ما قبل يول, قمر البلوط, قمر برد كامل",
+                    "unknown": ""
+                }
+            },
+            "previous_last_quarter": {
+                "name": "التربيع الأخير السابق"
+            },
+
+            "ecliptic_longitude_next_full_moon": {
+                "name": "خط الطول الكسوفي عند البدر التالي"
+            },
+            "ecliptic_latitude_next_full_moon": {
+                "name": "خط العرض الكسوفي عند البدر التالي"
+            },
+            "ecliptic_longitude_next_new_moon": {
+                "name": "خط الطول الكسوفي عند المحاق التالي"
+            },
+            "ecliptic_latitude_next_new_moon": {
+                "name": "خط العرض الكسوفي عند المحاق التالي"
+            },
+            "ecliptic_longitude_previous_full_moon": {
+                "name": "خط الطول الكسوفي عند البدر السابق"
+            },
+            "ecliptic_latitude_previous_full_moon": {
+                "name": "خط العرض الكسوفي عند البدر السابق"
+            },
+            "ecliptic_longitude_previous_new_moon": {
+                "name": "خط الطول الكسوفي عند المحاق السابق"
+            },
+            "ecliptic_latitude_previous_new_moon": {
+                "name": "خط العرض الكسوفي عند المحاق السابق"
+            },
+
+            "zodiac_sign_current_moon": {
+                "name": "برج البروج (الحالي)",
+                "state": {
+                    "aries": "الحمل",
+                    "taurus": "الثور",
+                    "gemini": "الجوزاء",
+                    "cancer": "السرطان",
+                    "leo": "الأسد",
+                    "virgo": "العذراء",
+                    "libra": "الميزان",
+                    "scorpio": "العقرب",
+                    "sagittarius": "القوس",
+                    "capricorn": "الجدي",
+                    "aquarius": "الدلو",
+                    "pisces": "الحوت"
+                }
+            },
+            "zodiac_sign_next_new_moon": {
+                "name": "برج البروج عند المحاق التالي",
+                "state": {
+                    "aries": "الحمل",
+                    "taurus": "الثور",
+                    "gemini": "الجوزاء",
+                    "cancer": "السرطان",
+                    "leo": "الأسد",
+                    "virgo": "العذراء",
+                    "libra": "الميزان",
+                    "scorpio": "العقرب",
+                    "sagittarius": "القوس",
+                    "capricorn": "الجدي",
+                    "aquarius": "الدلو",
+                    "pisces": "الحوت"
+                }
+            },
+            "zodiac_sign_next_full_moon": {
+                "name": "برج البروج عند البدر التالي",
+                "state": {
+                    "aries": "الحمل",
+                    "taurus": "الثور",
+                    "gemini": "الجوزاء",
+                    "cancer": "السرطان",
+                    "leo": "الأسد",
+                    "virgo": "العذراء",
+                    "libra": "الميزان",
+                    "scorpio": "العقرب",
+                    "sagittarius": "القوس",
+                    "capricorn": "الجدي",
+                    "aquarius": "الدلو",
+                    "pisces": "الحوت"
+                }
+            },
+            "zodiac_sign_previous_new_moon": {
+                "name": "برج البروج عند المحاق السابق",
+                "state": {
+                    "aries": "الحمل",
+                    "taurus": "الثور",
+                    "gemini": "الجوزاء",
+                    "cancer": "السرطان",
+                    "leo": "الأسد",
+                    "virgo": "العذراء",
+                    "libra": "الميزان",
+                    "scorpio": "العقرب",
+                    "sagittarius": "القوس",
+                    "capricorn": "الجدي",
+                    "aquarius": "الدلو",
+                    "pisces": "الحوت"
+                }
+            },
+            "zodiac_sign_previous_full_moon": {
+                "name": "برج البروج عند البدر السابق",
+                "state": {
+                    "aries": "الحمل",
+                    "taurus": "الثور",
+                    "gemini": "الجوزاء",
+                    "cancer": "السرطان",
+                    "leo": "الأسد",
+                    "virgo": "العذراء",
+                    "libra": "الميزان",
+                    "scorpio": "العقرب",
+                    "sagittarius": "القوس",
+                    "capricorn": "الجدي",
+                    "aquarius": "الدلو",
+                    "pisces": "الحوت"
+                }
+            },
+            "zodiac_degree_current_moon": {
+                "name": "درجة البروج (الحالية)"
+            },
+            "zodiac_degree_next_new_moon": {
+                "name": "درجة البروج عند المحاق التالي"
+            },
+            "zodiac_degree_next_full_moon": {
+                "name": "درجة البروج عند البدر التالي"
+            },
+            "zodiac_degree_previous_new_moon": {
+                "name": "درجة البروج عند المحاق السابق"
+            },
+            "zodiac_degree_previous_full_moon": {
+                "name": "درجة البروج عند البدر السابق"
+            }
+        }
+    }
+}

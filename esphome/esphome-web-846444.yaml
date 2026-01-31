@@ -1,0 +1,252 @@
+substitutions:
+  esphome_name: "testcyd"
+  ip_address: 192.168.1.196
+  ip_gw: 192.168.1.1
+  ip_netmask: 255.255.255.0  
+
+esphome:
+  name: $esphome_name
+  friendly_name: $esphome_name
+  min_version: 2025.5.0
+  name_add_mac_suffix: false
+
+esp32:
+  board: esp32dev
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  platform: esphome
+  password: ""
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  manual_ip:
+    static_ip: ${ip_address}
+    gateway: ${ip_gw}
+    subnet: ${ip_netmask}
+  ap:
+    ssid: ${esphome_name} Fallback"
+    password: !secret ap_password
+
+captive_portal:
+
+web_server:
+  port: 80
+
+    
+color:   
+  - id: room_bg_color
+    hex: CCFFCC #lygrøn
+  - id: room_image_color
+    hex: ff3399 #4d30ed #03a9f4 #4D30ED #mørkeblå
+  - id: room_image_bg_color
+    hex: ff4e03 #FF4E03 #mørke orange
+  - id: room_image_bg_grad_color
+    hex: FFFF00 #lys gul
+#Generik colors
+  - id: HA_blue
+    hex: 03a9f4
+  - id: color_grey
+    hex: D1D0CE
+  - id: color_dark_grey
+    hex: A0A0A0
+
+  - id: default_border_color
+    hex: FF0000
+  - id: default_button_text_color
+    hex: FFFFFF
+  - id: sub_page_border_color
+    hex: FFFFFF
+  - id: sub_page_button_border_color
+    hex: FFFFFF
+  - id: default_button_bg_color
+    hex: 2F8CD8
+  - id: default_button_check_bg_color
+    hex: 1d5f96
+  - id: default_button_check_bg_grad_color
+    hex: 03324A
+  - id: default_button_check_text_color
+    hex: fff300
+  - id: sub_page_footer_pressed_button_bg_color
+    hex: FFFF00
+  - id: default_button_pressed_bg_color
+    hex: 006699
+  - id: default_button_pressed_bg_grad_color
+    hex: 00334d
+  - id: default_button_bg_grad_color
+    hex: 005782
+  - id: default_button_border_color
+    hex: 0077b3
+
+font:
+  - file: "gfonts://Roboto"
+    id: font_xs
+    size: 20
+  - file: "gfonts://Roboto"
+    id: font_s
+    size: 25 
+  - file: "gfonts://Roboto"
+    id: font_m
+    size: 35
+  - file: "gfonts://Roboto"
+    id: font_l
+    size: 55
+  - file: "gfonts://Roboto"
+    id: font_xl
+    size: 70
+
+output:
+  - platform: ledc
+    pin: GPIO21
+    id: backlight_pwm
+
+  - platform: ledc
+    pin: GPIO4
+    id: led_red
+    inverted: true
+
+  - platform: ledc
+    pin: GPIO16
+    id: led_green
+    inverted: true
+
+  - platform: ledc
+    pin: GPIO17
+    id: led_blue
+    inverted: true
+
+light:
+  - platform: monochromatic
+    output: backlight_pwm
+    name: '"Display Backlight"'
+    id: backlight
+    restore_mode: ALWAYS_ON
+    internal: True
+    on_turn_on:
+      then:
+        - light.turn_on:
+            id: backlight
+            brightness: 75%
+            red: 100%
+            green: 100%
+            blue: 100%
+
+  - platform: rgb
+    name: "Rear LED"
+    id: rear_led
+    restore_mode: ALWAYS_OFF
+    red: led_red
+    green: led_green
+    blue: led_blue
+    internal: True
+
+spi:
+  - id: spi_tft
+    clk_pin: GPIO14
+    mosi_pin: GPIO13
+    miso_pin: GPIO12
+
+display:
+  - platform: ili9xxx  
+    id: my_display
+    model: ST7796
+    spi_id: spi_tft
+    dc_pin: GPIO2
+    cs_pin: GPIO15
+    dimensions: 
+      width: 480
+      height: 320
+    data_rate: 80MHz   #40MHz
+    color_order: RGB
+    invert_colors: false
+    update_interval: never
+    auto_clear_enabled: false
+    show_test_card: false     
+    transform:
+      swap_xy: true 
+      mirror_y: false
+      mirror_x: false
+
+i2c:
+  id: bus_a
+  sda: 33
+  scl: 32
+  scan: true
+
+touchscreen:
+  - platform: gt911  #xpt2046
+    id: my_touch
+    display: my_display
+#    reset_pin: 25
+#    interrupt_pin: GPIO21
+#    threshold: 400
+
+    i2c_id: bus_a
+    update_interval: 50ms
+    transform:
+      swap_xy: true
+      mirror_x: true
+      mirror_y: false
+
+    on_touch: 
+      - lambda: |-
+          ESP_LOGI("cal", "x=%d, y=%d, x_raw=%0d, y_raw=%d",
+            touch.x,
+            touch.y,
+            touch.x_raw,
+            touch.y_raw
+            );
+      - light.turn_on: 
+          id: backlight
+          brightness: 100%
+    on_release:
+      then:
+        - if:
+            condition: lvgl.is_paused
+            then:
+              - lvgl.resume:
+              - lvgl.widget.redraw:
+        - delay: 10s
+        - light.control: 
+            id: backlight
+            brightness: 50%
+        - delay: 5s
+        - light.control: 
+            id: backlight
+            brightness: 5%
+
+
+lvgl:
+  displays:
+    - my_display
+  touchscreens:
+    - my_touch
+  buffer_size: 25%
+  color_depth: 16
+  bg_color: room_bg_color #0
+  pad_all: 0
+  border_width: 0
+  border_color: HA_blue
+  outline_width: 0
+  shadow_width: 0
+  text_font: font_s
+  align: center
+  style_definitions:
+    - id: default_style      # choose an ID for your definition
+      border_color: default_border_color
+      border_width: 0
+      align: CENTER
+      text_align: CENTER
+  pages:
+    - id: main_page
+      widgets:
+        - label:
+            align: CENTER
+            text: 'Hello World!'

@@ -48,6 +48,7 @@ cards:
           - !include /config/ui/cards/homeassistant/uptime.yaml
           - !include /config/ui/cards/homeassistant/logfile.yaml
           - !include /config/ui/cards/homeassistant/homeassistant.yaml
+          - !include /config/ui/cards/homeassistant/integration_connectivity.yaml
           - !include /config/ui/cards/homeassistant/updates.yaml
           - !include /config/ui/cards/homeassistant/addons.yaml
           - !include /config/ui/cards/homeassistant/ha_versions.yaml

@@ -6,7 +6,6 @@ https://github.com/iprak/yahoofinance
 from __future__ import annotations
 
 from datetime import date, datetime, timedelta
-import logging
 
 from homeassistant.components.sensor import (
     DOMAIN as SENSOR_DOMAIN,
@@ -21,55 +20,52 @@ from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType, StateTyp
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
 
-from . import SymbolDefinition, convert_to_float
+from . import convert_to_float
 from .const import (
     ATTR_CURRENCY_SYMBOL,
-    ATTR_DIVIDEND_DATE,
     ATTR_MARKET_STATE,
-    ATTR_POST_MARKET_TIME,
-    ATTR_PRE_MARKET_TIME,
     ATTR_QUOTE_SOURCE_NAME,
     ATTR_QUOTE_TYPE,
-    ATTR_REGULAR_MARKET_TIME,
     ATTR_SYMBOL,
     ATTR_TRENDING,
     ATTRIBUTION,
     CONF_DECIMAL_PLACES,
     CONF_SHOW_CURRENCY_SYMBOL_AS_UNIT,
+    CONF_SHOW_OFF_MARKET_VALUES,
     CONF_SHOW_TRENDING_ICON,
     CONF_SYMBOLS,
     CURRENCY_CODES,
     DATA_CURRENCY_SYMBOL,
-    DATA_DIVIDEND_DATE,
     DATA_FINANCIAL_CURRENCY,
+    DATA_LONG_NAME,
     DATA_MARKET_STATE,
-    DATA_POST_MARKET_TIME,
-    DATA_PRE_MARKET_TIME,
     DATA_QUOTE_SOURCE_NAME,
     DATA_QUOTE_TYPE,
     DATA_REGULAR_MARKET_PREVIOUS_CLOSE,
     DATA_REGULAR_MARKET_PRICE,
-    DATA_REGULAR_MARKET_TIME,
     DATA_SHORT_NAME,
+    DATE_DATA_KEYS,
     DEFAULT_CURRENCY,
     DEFAULT_NUMERIC_DATA_GROUP,
     DOMAIN,
     HASS_DATA_CONFIG,
     HASS_DATA_COORDINATORS,
+    LOGGER,
     NUMERIC_DATA_GROUPS,
     PERCENTAGE_DATA_KEYS_NEEDING_MULTIPLICATION,
+    TIME_PRICE_DATA_DICT,
 )
 from .coordinator import YahooSymbolUpdateCoordinator
+from .dataclasses import SymbolDefinition
 
-_LOGGER = logging.getLogger(__name__)
 ENTITY_ID_FORMAT = SENSOR_DOMAIN + "." + DOMAIN + "_{}"
 
 
 async def async_setup_platform(
     hass: HomeAssistant,
-    _config: ConfigType,
+    config: ConfigType,
     async_add_entities: AddEntitiesCallback,
-    _discovery_info: DiscoveryInfoType | None = None,
+    discovery_info: DiscoveryInfoType | None = None,
 ):
     """Set up the Yahoo Finance sensor platform."""
 
@@ -88,9 +84,9 @@ async def async_setup_platform(
         for symbol in symbol_definitions
     ]
 
-    # We have already invoked async_refresh on coordinator, so don'tupdate_before_add
+    # We have already invoked async_refresh on coordinator, so don't update_before_add
     async_add_entities(sensors, update_before_add=False)
-    _LOGGER.info("Entities added for %s", [item.symbol for item in symbol_definitions])
+    LOGGER.info("Entities added for %s", [item.symbol for item in symbol_definitions])
 
 
 class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
@@ -100,7 +96,9 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
     _currency = DEFAULT_CURRENCY
     _icon = None
     _market_price = None
-    _short_name = None
+    _long_name = None
+    _short_name: str | None = None
+    _symbol: str
     _target_currency = None
     _original_currency = None
     _last_available_timer = None
@@ -132,6 +130,7 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
         self._previous_close = None
         self._target_currency = symbol_definition.target_currency
         self._no_unit = symbol_definition.no_unit
+        self._show_off_market_values = domain_config[CONF_SHOW_OFF_MARKET_VALUES]
 
         self._unique_id = symbol
         self.entity_id = async_generate_entity_id(ENTITY_ID_FORMAT, symbol, hass=hass)
@@ -152,17 +151,19 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
         # pylint: disable=consider-using-dict-items
 
         # Initialize all numeric attributes which we want to include to None
-        for group in NUMERIC_DATA_GROUPS:
-            if group == DEFAULT_NUMERIC_DATA_GROUP or domain_config.get(group, True):
-                for value in NUMERIC_DATA_GROUPS[group]:
+        for group, group_items in NUMERIC_DATA_GROUPS.items():
+            # All optional features data items are excluded by default
+            if group == DEFAULT_NUMERIC_DATA_GROUP or domain_config.get(group, False):
+                for value in group_items:
                     self._numeric_data_to_include.append(value)
 
                     key = value[0]
                     self._attr_extra_state_attributes[key] = None
 
         # Delay initial data population to `available` which is called from `_async_write_ha_state`
-        _LOGGER.debug(
-            "Created entity for target_currency=%s",
+        LOGGER.debug(
+            "Created entity for %s with target_currency=%s",
+            self._symbol,
             self._target_currency,
         )
 
@@ -202,7 +203,13 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
     def name(self) -> str:
         """Return the name of the sensor."""
         if self._short_name is not None:
-            return self._short_name
+            # In UK regions, shortName was reported to be the same as symbol.
+            # Falling to longName if that is available in that case.
+            if self._short_name.lower() == self._symbol.lower():
+                if self._long_name is not None:
+                    return self._long_name
+            else:
+                return self._short_name
 
         return self._symbol
 
@@ -237,7 +244,7 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
             and super().available
             and not self._waiting_on_conversion
         )
-        _LOGGER.debug("%s available=%s", self._symbol, value)
+        LOGGER.debug("%s available=%s", self._symbol, value)
         return value
 
     @callback
@@ -274,40 +281,67 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
 
         return None
 
+    def _get_market_price(self, symbol_data: dict) -> float | None:
+        if not symbol_data:
+            return None
+        if not self._show_off_market_values:
+          return symbol_data[DATA_REGULAR_MARKET_PRICE]
+        price_time = 0
+        price = None
+        for t, p in TIME_PRICE_DATA_DICT.items():
+            if price_time < symbol_data[t]:
+                price_time = symbol_data[t]
+                price = symbol_data[p]
+        return price
+
     def _get_target_currency_conversion(self) -> float | None:
+        """Return the conversion factor to target currency."""
         value = None
         self._waiting_on_conversion = False
 
-        if self._target_currency and self._original_currency:
-            if self._target_currency == self._original_currency:
-                _LOGGER.info("%s No conversion necessary", self._symbol)
-                return None
+        if not self._original_currency:
+            return None
 
+        # GBp needs to be converted to GBP. There is no symbol in YahooFinance for this
+        # and we will simply use the multiplication factor of 0.01.
+
+        if not self._target_currency:
+            return 0.01 if self._original_currency == "GBp" else None
+
+        if self._target_currency == self._original_currency:
+            LOGGER.info("%s No conversion necessary", self._symbol)
+            return None
+
+        if self._original_currency == "GBp":
+            value = 0.01
+            conversion_symbol = f"GBP{self._target_currency}=X".upper()
+        else:
+            value = 1
             conversion_symbol = (
                 f"{self._original_currency}{self._target_currency}=X".upper()
             )
 
-            # Locate conversion symbol in all coordinators
-            symbol_data = self._find_symbol_data(conversion_symbol)
+        # Locate conversion symbol in all coordinators
+        symbol_data = self._find_symbol_data(conversion_symbol)
 
-            if symbol_data is not None:
-                value = symbol_data[DATA_REGULAR_MARKET_PRICE]
-                _LOGGER.debug("%s %s is %s", self._symbol, conversion_symbol, value)
-            else:
-                _LOGGER.info(
-                    "%s No data found for %s, symbol added to coordinator",
-                    self._symbol,
-                    conversion_symbol,
-                )
-                self._waiting_on_conversion = True
+        if symbol_data is not None:
+            value = value * self._get_market_price(symbol_data)
+            LOGGER.debug("%s %s is %s", self._symbol, conversion_symbol, value)
+        else:
+            LOGGER.info(
+                "%s No data found for %s, symbol added to coordinator",
+                self._symbol,
+                conversion_symbol,
+            )
+            self._waiting_on_conversion = True
 
-                # The conversion symbol is added to the current coordinator
-                self.coordinator.add_symbol(conversion_symbol)
+            # The conversion symbol is added to the current coordinator
+            self.coordinator.add_symbol(conversion_symbol)
 
         return value
 
-    def _update_original_currency(self, symbol_data) -> bool:
-        """Update the original currency."""
+    def _update_original_currency_once(self, symbol_data) -> bool:
+        """Calculate the original currency once."""
 
         # Symbol currency does not change so calculate it only once
         if self._original_currency is not None:
@@ -318,7 +352,7 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
         financial_currency = symbol_data[DATA_FINANCIAL_CURRENCY]
         currency = symbol_data[DATA_CURRENCY_SYMBOL]
 
-        _LOGGER.debug(
+        LOGGER.debug(
             "%s currency=%s financialCurrency=%s",
             self._symbol,
             currency,
@@ -332,25 +366,26 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
 
         data = self.coordinator.data
         if data is None:
-            _LOGGER.debug("%s Coordinator data is None", self._symbol)
+            LOGGER.debug("%s Coordinator data is None", self._symbol)
             return
 
         symbol_data: dict = data.get(self._symbol)
         if symbol_data is None:
-            _LOGGER.debug("%s Symbol data is None", self._symbol)
+            LOGGER.debug("%s Symbol data is None", self._symbol)
             return
 
-        self._update_original_currency(symbol_data)
+        self._update_original_currency_once(symbol_data)
         conversion = self._get_target_currency_conversion()
 
         self._short_name = symbol_data[DATA_SHORT_NAME]
+        self._long_name = symbol_data[DATA_LONG_NAME]
 
-        market_price = symbol_data[DATA_REGULAR_MARKET_PRICE]
+        market_price = self._get_market_price(symbol_data)
         self._market_price = self.safe_convert(market_price, conversion)
         # _market_price gets rounded in the `state` getter.
 
         if conversion:
-            _LOGGER.info(
+            LOGGER.info(
                 "%s converted %s X %s = %s",
                 self._symbol,
                 market_price,
@@ -386,29 +421,21 @@ class YahooFinanceSensor(CoordinatorEntity, SensorEntity):
             DATA_MARKET_STATE
         ]
 
-        self._attr_extra_state_attributes[ATTR_DIVIDEND_DATE] = (
-            self.convert_timestamp_to_datetime(
-                symbol_data.get(DATA_DIVIDEND_DATE), "date"
-            )
-        )
+        for key in DATE_DATA_KEYS:
+            if key in self._attr_extra_state_attributes:
+                self._attr_extra_state_attributes[key] = (
+                    self.convert_timestamp_to_datetime(
+                        self._attr_extra_state_attributes[key], "date"
+                    )
+                )
 
-        self._attr_extra_state_attributes[ATTR_REGULAR_MARKET_TIME] = (
-            self.convert_timestamp_to_datetime(
-                symbol_data.get(DATA_REGULAR_MARKET_TIME), "dateTime"
-            )
-        )
-
-        self._attr_extra_state_attributes[ATTR_POST_MARKET_TIME] = (
-            self.convert_timestamp_to_datetime(
-                symbol_data.get(DATA_POST_MARKET_TIME), "dateTime"
-            )
-        )
-
-        self._attr_extra_state_attributes[ATTR_PRE_MARKET_TIME] = (
-            self.convert_timestamp_to_datetime(
-                symbol_data.get(DATA_PRE_MARKET_TIME), "dateTime"
-            )
-        )
+        for key in TIME_PRICE_DATA_DICT:
+            if key in self._attr_extra_state_attributes:
+                self._attr_extra_state_attributes[key] = (
+                    self.convert_timestamp_to_datetime(
+                        self._attr_extra_state_attributes[key], "dateTime"
+                    )
+                )
 
         # Use target_currency if we have conversion data. Otherwise keep using the
         # currency from data.

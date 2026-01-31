@@ -45,42 +45,45 @@ cards:
         show_background: true
         show_attribute: true
         attribute: today_hms
+        show_name: true
+        name: D
       - entity: sensor.tbsmarthome_sun_daylight
         show_name: false
         show_state: false
-        icon: mdi:calendar
+        icon: mdi:calendar-arrow-right
         show_background: false
         show_attribute: true
         attribute: tomorrow_hms
-    name: Day Length
-    styles: |-
-      .bubble-sub-button-1 {
-          background-color: '#F03A3E' !important;
-      }
-  - type: custom:bubble-card
-    card_type: button
-    button_type: state
-    entity: sensor.tbsmarthome_sun_night
-    scrolling_effect: false
-    show_state: false
-    sub_button:
+        name: ""
       - entity: sensor.tbsmarthome_sun_night
-        show_state: true
+        show_state: false
         icon: mdi:calendar-today
         show_background: true
+        show_attribute: true
+        attribute: today_hms
+        show_name: true
+        name: "N"
       - entity: sensor.tbsmarthome_sun_night
         show_name: false
         show_state: false
-        icon: mdi:calendar
+        icon: mdi:calendar-arrow-right
+        show_background: false
         show_attribute: true
         attribute: tomorrow_hms
-        show_background: false
-    name: Night Length
+        name: ""
+    modules:
+      - default
+    name: Day/Night Length
     styles: |-
       .bubble-sub-button-1 {
           background-color: '#F03A3E' !important;
       }
-  - type: custom:mushroom-template-card
+      .bubble-sub-button-3 {
+          background-color: '#F03A3E' !important;
+      }
+    card_layout: large-2-rows
+
+  - type: custom:mushroom-legacy-template-card
     card_mod:
       style:
         .: |

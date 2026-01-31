@@ -10,6 +10,60 @@ cards:
         background: var(--ha-card-background);
         opacity: 1;
         }
+  - square: false
+    columns: 2
+    type: grid
+    cards:
+      - type: custom:bubble-card
+        card_type: button
+        button_type: state
+        entity: sensor.starlink_uptime_tracking
+        name: Starlink Uptime
+        show_state: true
+        icon: phu:starlink
+        card_layout: large-2-rows
+        sub_button:
+          - entity: sensor.starlink_uptime_tracking
+            show_background: false
+            show_state: false
+            icon: mdi:arrow-up
+            name: Up
+            show_name: true
+            show_attribute: true
+            attribute: uptime_hm
+          - entity: sensor.starlink_uptime_tracking
+            show_background: false
+            show_state: false
+            icon: mdi:arrow-down
+            name: Down
+            show_name: true
+            show_attribute: true
+            attribute: downtime_hm
+      - type: custom:bubble-card
+        card_type: button
+        button_type: name
+        name: Starlink Daily Traffic
+        show_state: true
+        icon: phu:starlink
+        card_layout: large-2-rows
+        sub_button:
+          - entity: sensor.starlink_download_daily
+            show_background: false
+            show_state: true
+            icon: mdi:cloud-download
+            name: DL
+            show_name: true
+            show_attribute: false
+            attribute: uptime_hm
+            show_icon: true
+          - entity: sensor.starlink_upload_daily
+            show_background: false
+            show_state: true
+            icon: mdi:cloud-upload
+            name: UL
+            show_name: true
+            show_attribute: false
+            attribute: downtime_hm
 
   - square: false
     columns: 2
@@ -34,7 +88,6 @@ cards:
             color: rgb(${state = 'ok' ? "0, 153, 102" : "204, 0, 51" }) !important;
             opacity: 1 !important;
           }
-
       - type: custom:bubble-card
         card_type: button
         button_type: state
@@ -89,13 +142,13 @@ cards:
     columns: 2
     type: grid
     cards:
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         multiline_secondary: true
-        primary: "NBN FTTN Upgrade > Home"
+        primary: NBN FTTN Upgrade > Home
         secondary: >-
-          {%- set tech_status = state_attr(entity, 'addressDetail')['techChangeStatus'] %}
-          {%- set status_map = {
-            'Not Planned': 'No FTTP upgrade',
+          {%- set tech_status = state_attr(entity,
+          'addressDetail')['techChangeStatus'] %} {%- set status_map = {
+            'Not Planned': 'No FTTP upgrade planned',
             'Planned': 'FTTP Planned',
             'In Design': 'FTTP Upgrade in Design',
             'Committed': 'FTTP Upgrade Committed',
@@ -104,13 +157,12 @@ cards:
             'MDU Complex Eligible To Apply': 'MDU Complex Eligible to Apply',
             'New Tech Connected': 'New Technology Connected',
             'Previous Tech Disconnected': 'Previous Technology Disconnected'
-          } %}
-          {{ status_map[tech_status] if tech_status in status_map else tech_status }}
-          {%- if states(entity) == "FTTP_NA" %}
-          Target: {{state_attr(entity, 'addressDetail')['targetEligibilityQuarter']}}
+          } %} {{ status_map[tech_status] if tech_status in status_map else
+          tech_status }} {%- if states(entity) == "FTTP_NA" %} Target:
+          {{state_attr(entity, 'addressDetail')['targetEligibilityQuarter']}}
           {%- else %}
-          No Target Date Yet
-          {%- endif %}
+
+          No Target Date Yet {%- endif %}
         icon: mdi:check-network
         tap_action:
           action: none
@@ -142,13 +194,13 @@ cards:
                 padding-top: 2px !important;
                 padding-bottom: 2px !important;
               }
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         multiline_secondary: true
-        primary: "NBN FTTN Upgrade > Work"
+        primary: NBN FTTN Upgrade > Work
         secondary: >-
-          {%- set tech_status = state_attr(entity, 'addressDetail')['techChangeStatus'] %}
-          {%- set status_map = {
-            'Not Planned': 'No FTTP upgrade',
+          {%- set tech_status = state_attr(entity,
+          'addressDetail')['techChangeStatus'] %} {%- set status_map = {
+            'Not Planned': 'No FTTP upgrade planned',
             'Planned': 'FTTP Planned',
             'In Design': 'FTTP Upgrade in Design',
             'Committed': 'FTTP Upgrade Committed',
@@ -157,13 +209,12 @@ cards:
             'MDU Complex Eligible To Apply': 'MDU Complex Eligible to Apply',
             'New Tech Connected': 'New Technology Connected',
             'Previous Tech Disconnected': 'Previous Technology Disconnected'
-          } %}
-          {{ status_map[tech_status] if tech_status in status_map else tech_status }}
-          {%- if states(entity) == "FTTP_NA" %}
-          Target: {{state_attr(entity, 'addressDetail')['targetEligibilityQuarter']}}
+          } %} {{ status_map[tech_status] if tech_status in status_map else
+          tech_status }} {%- if states(entity) == "FTTP_NA" %} Target:
+          {{state_attr(entity, 'addressDetail')['targetEligibilityQuarter']}}
           {%- else %}
-          No Target Date Yet
-          {%- endif %}
+
+          No Target Date Yet {%- endif %}
         icon: mdi:check-network
         tap_action:
           action: none
@@ -195,12 +246,12 @@ cards:
                 padding-top: 2px !important;
                 padding-bottom: 2px !important;
               }
-      - type: custom:mushroom-template-card
+      - type: custom:mushroom-legacy-template-card
         multiline_secondary: true
-        primary: "NBN FTTN Upgrade > Kate"
+        primary: NBN FTTN Upgrade > Kate
         secondary: >-
-          {%- set tech_status = state_attr(entity, 'addressDetail')['techChangeStatus'] %}
-          {%- set status_map = {
+          {%- set tech_status = state_attr(entity,
+          'addressDetail')['techChangeStatus'] %} {%- set status_map = {
             'Not Planned': 'No FTTP upgrade',
             'Planned': 'FTTP Planned',
             'In Design': 'FTTP Upgrade in Design',
@@ -210,13 +261,8 @@ cards:
             'MDU Complex Eligible To Apply': 'MDU Complex Eligible to Apply',
             'New Tech Connected': 'New Technology Connected',
             'Previous Tech Disconnected': 'Previous Technology Disconnected'
-          } %}
-          {{ status_map[tech_status] if tech_status in status_map else tech_status }}
-          {%- if states(entity) == "FTTP_NA" %}
-          Target: {{state_attr(entity, 'addressDetail')['targetEligibilityQuarter']}}
-          {%- else %}
-          No Target Date Yet
-          {%- endif %}
+          } %} {{ status_map[tech_status] if tech_status in status_map else
+          tech_status }}
         icon: mdi:check-network
         tap_action:
           action: none

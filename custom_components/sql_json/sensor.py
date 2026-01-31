@@ -1,4 +1,5 @@
 """Sensor from an SQL Query (with JSON to object conversion)."""
+
 ## Based on: core/homeassistant/components/sql/sensor.py @ core-2021.5.1
 
 import datetime
@@ -99,7 +100,7 @@ def setup_platform(hass, config, add_entities, _discovery_info=None):
             )
 
         sensor = SQLSensor(
-            name, sessmaker, query_str, column_name, unit, value_template
+            hass, name, sessmaker, query_str, column_name, unit, value_template
         )
         queries.append(sensor)
 
@@ -109,14 +110,14 @@ def setup_platform(hass, config, add_entities, _discovery_info=None):
 class SQLSensor(SensorEntity):
     """Representation of an SQL sensor."""
 
-    def __init__(self, name, sessmaker, query, column, unit, value_template):
+    def __init__(self, hass, name, sessmaker, query, column, unit, value_template):
         """Initialize the SQL sensor."""
         self._name = name
         self._query = query
         self._query_template = None
         if is_template_string(query):
             _LOGGER.debug("using template: %s", self._query)
-            self._query_template = Template(query)
+            self._query_template = Template(hass=hass, template=query)
         self._unit_of_measurement = unit
         self._template = value_template
         self._column_name = column

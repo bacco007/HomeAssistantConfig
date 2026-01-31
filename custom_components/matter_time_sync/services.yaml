@@ -1,0 +1,32 @@
+sync_time:
+  name: Sync time
+  description: Synchronizes time on a single Matter device.
+  fields:
+    node_id:
+      name: Node ID
+      description: The Matter Node ID of the device
+      required: true
+      example: 1
+      selector:
+        number:
+          min: 1
+          max: 65535
+          mode: box
+    endpoint:
+      name: Endpoint
+      description: The Matter Endpoint (usually 0)
+      default: 0
+      required: false
+      selector:
+        number:
+          min: 0
+          max: 255
+          mode: box
+
+sync_all:
+  name: Sync all
+  description: Synchronizes time on all filtered Matter devices.
+
+refresh_devices:
+  name: Refresh devices
+  description: Scan for new Matter devices and create buttons for them.

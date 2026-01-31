@@ -1,0 +1,21 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "NSW Fire Danger Ratings",
+                "description": "Select your NSW fire weather area to monitor fire danger ratings and total fire ban information.",
+                "data": {
+                    "area": "Fire Weather Area"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Failed to connect to NSW RFS API. Please check your internet connection and try again.",
+            "invalid_area": "The selected area could not be found in the API response.",
+            "unknown": "Unexpected error occurred. Please try again."
+        },
+        "abort": {
+            "already_configured": "This fire weather area is already configured."
+        }
+    }
+}

@@ -11,6 +11,7 @@ cards:
     template: sports_card
     variables:
       - entity: sensor.upcoming_sport_manchester_united
+      - calendar: calendar.ical_manchester_united
   - type: custom:mushroom-chips-card
     alignment: center
     card_mod:

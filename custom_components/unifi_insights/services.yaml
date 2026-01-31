@@ -1,11 +1,15 @@
+---
 # Service definitions for UniFi Insights
+
+# Core services
 refresh_data:
   name: Refresh Data
   description: Force an immediate refresh of UniFi Insights data.
   fields:
     site_id:
       name: Site ID
-      description: Optional site ID to refresh. If not specified, refreshes all sites.
+      description: >-
+        Optional site ID to refresh. If not specified, refreshes all sites.
       required: false
       selector:
         text:
@@ -23,6 +27,305 @@ restart_device:
     device_id:
       name: Device ID
       description: The ID of the device to restart.
+      required: true
+      selector:
+        text:
+
+# UniFi Protect Chime services
+set_chime_volume:
+  name: Set Chime Volume
+  description: Set the volume level for a UniFi Protect chime.
+  fields:
+    chime_id:
+      name: Chime ID
+      description: ID of the chime
+      required: true
+      example: "60e9c8c0e3e4b8001a123456"
+      selector:
+        text:
+    volume:
+      name: Volume
+      description: Chime volume level (0-100)
+      required: true
+      example: 80
+      selector:
+        number:
+          min: 0
+          max: 100
+          step: 1
+    camera_id:
+      name: Camera ID
+      description: Optional camera ID to set volume for specific camera
+      required: false
+      example: "60e9c8c0e3e4b8001a123456"
+      selector:
+        text:
+
+play_chime_ringtone:
+  name: Play Chime Ringtone
+  description: Play a ringtone on a UniFi Protect chime.
+  fields:
+    chime_id:
+      name: Chime ID
+      description: ID of the chime
+      required: true
+      example: "60e9c8c0e3e4b8001a123456"
+      selector:
+        text:
+    ringtone_id:
+      name: Ringtone ID
+      description: >-
+        Optional ringtone ID to play (uses current setting if not specified)
+      required: false
+      example: "default"
+      selector:
+        select:
+          options:
+            - "default"
+            - "mechanical"
+            - "digital"
+            - "christmas"
+            - "traditional"
+            - "custom1"
+            - "custom2"
+
+set_chime_ringtone:
+  name: Set Chime Ringtone
+  description: Set the ringtone for a UniFi Protect chime.
+  fields:
+    chime_id:
+      name: Chime ID
+      description: ID of the chime
+      required: true
+      example: "60e9c8c0e3e4b8001a123456"
+      selector:
+        text:
+    ringtone_id:
+      name: Ringtone ID
+      description: Ringtone to set
+      required: true
+      example: "default"
+      selector:
+        select:
+          options:
+            - "default"
+            - "mechanical"
+            - "digital"
+            - "christmas"
+            - "traditional"
+            - "custom1"
+            - "custom2"
+    camera_id:
+      name: Camera ID
+      description: >-
+        Optional camera ID to set ringtone for specific camera
+      required: false
+      example: "60e9c8c0e3e4b8001a123456"
+      selector:
+        text:
+
+set_chime_repeat_times:
+  name: Set Chime Repeat Times
+  description: Set the number of times a chime repeats when triggered.
+  fields:
+    chime_id:
+      name: Chime ID
+      description: ID of the chime
+      required: true
+      example: "60e9c8c0e3e4b8001a123456"
+      selector:
+        text:
+    repeat_times:
+      name: Repeat Times
+      description: Number of times to repeat the chime (1-10)
+      required: true
+      example: 3
+      selector:
+        number:
+          min: 1
+          max: 10
+          step: 1
+    camera_id:
+      name: Camera ID
+      description: >-
+        Optional camera ID to set repeat times for specific camera
+      required: false
+      example: "60e9c8c0e3e4b8001a123456"
+      selector:
+        text:
+
+# UniFi Network services
+authorize_guest:
+  name: Authorize Guest
+  description: Authorize guest access for a client on the UniFi Network.
+  fields:
+    site_id:
+      name: Site ID
+      description: The site ID where the client is located
+      required: true
+      selector:
+        text:
+    client_id:
+      name: Client ID
+      description: The ID of the client to authorize
+      required: true
+      selector:
+        text:
+    duration_minutes:
+      name: Duration (minutes)
+      description: Duration of guest access in minutes
+      required: false
+      default: 480
+      selector:
+        number:
+          min: 1
+          max: 43200
+    upload_limit_kbps:
+      name: Upload Limit (kbps)
+      description: Upload speed limit in kbps
+      required: false
+      selector:
+        number:
+          min: 0
+    download_limit_kbps:
+      name: Download Limit (kbps)
+      description: Download speed limit in kbps
+      required: false
+      selector:
+        number:
+          min: 0
+    data_limit_mb:
+      name: Data Limit (MB)
+      description: Total data limit in MB
+      required: false
+      selector:
+        number:
+          min: 0
+
+generate_voucher:
+  name: Generate Voucher
+  description: Generate hotspot vouchers for guest WiFi access.
+  fields:
+    site_id:
+      name: Site ID
+      description: The site ID where to generate vouchers
+      required: true
+      selector:
+        text:
+    count:
+      name: Count
+      description: Number of vouchers to generate
+      required: false
+      default: 1
+      selector:
+        number:
+          min: 1
+          max: 100
+    duration_minutes:
+      name: Duration (minutes)
+      description: Duration of voucher validity in minutes
+      required: false
+      default: 480
+      selector:
+        number:
+          min: 1
+          max: 43200
+    upload_limit_kbps:
+      name: Upload Limit (kbps)
+      description: Upload speed limit in kbps
+      required: false
+      selector:
+        number:
+          min: 0
+    download_limit_kbps:
+      name: Download Limit (kbps)
+      description: Download speed limit in kbps
+      required: false
+      selector:
+        number:
+          min: 0
+    data_limit_mb:
+      name: Data Limit (MB)
+      description: Total data limit in MB
+      required: false
+      selector:
+        number:
+          min: 0
+    note:
+      name: Note
+      description: Optional note for the voucher
+      required: false
+      selector:
+        text:
+
+delete_voucher:
+  name: Delete Voucher
+  description: Delete a hotspot voucher.
+  fields:
+    site_id:
+      name: Site ID
+      description: The site ID where the voucher is located
+      required: true
+      selector:
+        text:
+    voucher_id:
+      name: Voucher ID
+      description: The ID of the voucher to delete
+      required: true
+      selector:
+        text:
+
+# UniFi Protect services
+trigger_alarm:
+  name: Trigger Alarm
+  description: Trigger an alarm via the UniFi Protect alarm manager.
+  fields:
+    alarm_id:
+      name: Alarm ID
+      description: The ID of the alarm to trigger
+      required: true
+      selector:
+        text:
+
+create_liveview:
+  name: Create Live View
+  description: Create a new live view in UniFi Protect.
+  fields:
+    name:
+      name: Name
+      description: Name of the live view
+      required: true
+      selector:
+        text:
+    layout:
+      name: Layout
+      description: Layout type (1-4)
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 4
+    is_default:
+      name: Is Default
+      description: Set as default live view
+      required: false
+      default: false
+      selector:
+        boolean:
+
+set_liveview:
+  name: Set Live View
+  description: Set the active live view for a viewer.
+  fields:
+    viewer_id:
+      name: Viewer ID
+      description: The ID of the viewer
+      required: true
+      selector:
+        text:
+    liveview_id:
+      name: Live View ID
+      description: The ID of the live view to set
       required: true
       selector:
         text:

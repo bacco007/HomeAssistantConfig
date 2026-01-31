@@ -1,0 +1,348 @@
+{
+    "title": "ムーンアストロ",
+    "config": {
+        "step": {
+            "user": {
+                "title": "ムーンアストロ",
+                "description": "GPS 座標と標高を設定してください。",
+                "data": {
+                    "latitude": "緯度",
+                    "longitude": "経度",
+                    "altitude": "標高 (m)"
+                }
+            },
+            "precision": {
+                "title": "ムーンアストロ",
+                "description": "高精度モードはタイムスタンプのばらつきを減らしますが、より細かいサンプリングステップと広いリファインメント範囲を使用するため CPU 使用率が増加します。Raspberry Pi のような低消費電力デバイスでは有効化を推奨しません。",
+                "data": {
+                    "high_precision": "高精度モード"
+                }
+            }
+        },
+        "progress": {
+            "download_ephemeris": "Skyfield DE440 暦表（> 100 MB）をダウンロードしています。ダウンロード中はこのウィンドウを閉じないでください..."
+        },
+        "abort": {
+            "already_configured": "ムーンアストロはすでに設定されています",
+            "missing_data": "設定データが不足しています",
+            "reconfigure_successful": "設定が更新されました"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "ムーンアストロのオプション",
+                "description": "センサーの更新間隔とタイムゾーン処理を調整します。\n\n高精度モードはタイムスタンプのばらつきを減らしますが、より細かいサンプリング間隔と広いリファイン範囲を使用するため CPU 使用率が増加します。Raspberry Pi などの低性能デバイスでは推奨されません。\n\nイベント更新フォールバック間隔は、次のイベント付近で予定されていた更新が失敗した場合（再起動、時刻変更、遅延）に備えて、イベントベースのセンサー（次/前のフェーズ、遠地点/近地点、朔望時の黄道十二宮）を定期的に更新します。小さい値ほど頻繁に更新され、大きい値ほど CPU 使用率が低くなります。",
+                "data": {
+                    "scan_interval": "センサー更新間隔（秒）",
+                    "use_ha_timezone": "Home Assistant のタイムゾーンを使用",
+                    "high_precision": "高精度モード",
+                    "events_refresh_fallback": "イベント更新フォールバック間隔（秒）"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "above_horizon": {
+                "name": "地平線の上",
+                "state": {
+                    "on": "地平線の上",
+                    "off": "地平線の下"
+                }
+            }
+        },
+        "sensor": {
+            "phase": {
+                "name": "位相",
+                "state": {
+                    "new_moon": "新月",
+                    "waxing_crescent": "三日月（上弦前）",
+                    "first_quarter": "上弦",
+                    "waxing_gibbous": "十三夜（上弦後）",
+                    "full_moon": "満月",
+                    "waning_gibbous": "居待月（下弦前）",
+                    "last_quarter": "下弦",
+                    "waning_crescent": "三日月（下弦後）",
+                    "unknown": "不明"
+                }
+            },
+            "azimuth": {
+                "name": "方位角"
+            },
+            "elevation": {
+                "name": "高度角"
+            },
+            "illumination": {
+                "name": "照度"
+            },
+            "distance": {
+                "name": "距離"
+            },
+            "parallax": {
+                "name": "視差"
+            },
+            "ecliptic_longitude_topocentric": {
+                "name": "黄経（地表視＝トポセントリック）"
+            },
+            "ecliptic_latitude_topocentric": {
+                "name": "黄緯（地表視＝トポセントリック）"
+            },
+            "ecliptic_longitude_geocentric": {
+                "name": "黄経（地心）"
+            },
+            "ecliptic_latitude_geocentric": {
+                "name": "黄緯（地心）"
+            },
+            "next_rise": {
+                "name": "次の月の出"
+            },
+            "next_set": {
+                "name": "次の月の入"
+            },
+            "next_apogee": {
+                "name": "次の遠地点"
+            },
+            "next_perigee": {
+                "name": "次の近地点"
+            },
+            "next_new_moon": {
+                "name": "次の新月"
+            },
+            "next_first_quarter": {
+                "name": "次の上弦"
+            },
+            "next_full_moon": {
+                "name": "次の満月"
+            },
+            "next_full_moon_name": {
+                "name": "次の満月の名称",
+                "state": {
+                    "wolf_moon": "ウルフムーン",
+                    "snow_moon": "スノームーン",
+                    "worm_moon": "ワームムーン",
+                    "pink_moon": "ピンクムーン",
+                    "flower_moon": "フラワームーン",
+                    "strawberry_moon": "ストロベリームーン",
+                    "buck_moon": "バックムーン",
+                    "sturgeon_moon": "スタージョンムーン",
+                    "harvest_moon": "ハーベストムーン",
+                    "hunters_moon": "ハンターズムーン",
+                    "beaver_moon": "ビーバームーン",
+                    "cold_moon": "コールドムーン",
+                    "blue_moon": "ブルームーン",
+                    "unknown": "不明"
+                }
+            },
+            "next_full_moon_alt_names": {
+                "name": "次の満月の別名（一般的）",
+                "state": {
+                    "wolf_moon_alt_names": "ユールの後の月, 家にいる月, 静かな月, 厳しい月, 中央の月",
+                    "snow_moon_alt_names": "飢えの月, 熊の月, 嵐の月, 氷の月",
+                    "worm_moon_alt_names": "四旬節の月, カラスの月, 雪の皮の月, 貞節の月, 砂糖の月, 樹液の月",
+                    "pink_moon_alt_names": "氷解の月, 芽吹きの月, 目覚めの月, 卵の月, 復活祭の月",
+                    "flower_moon_alt_names": "植え付けの月, 乳の月, 野ウサギの月, 草の月, 母の月, 明るい月",
+                    "strawberry_moon_alt_names": "バラの月, 暑い月, 蜂蜜酒の月, 花の月, 植え付けの月",
+                    "buck_moon_alt_names": "雷の月, 干し草の月, 薬草の月",
+                    "sturgeon_moon_alt_names": "穀物の月, トウモロコシの月, オオヤマネコの月, 稲妻の月",
+                    "harvest_moon_alt_names": "トウモロコシの満月, 青いトウモロコシの月, トウモロコシの月, ワインの月, 歌の月, 大麦の月",
+                    "hunters_moon_alt_names": "乾燥米の月, 落葉の月, 凍結の月, 血の月, サングインムーン",
+                    "beaver_moon_alt_names": "霜の月, 凍結の月, 交易の月, 雪の月, 喪の月, 最も暗い深みの月",
+                    "cold_moon_alt_names": "長い夜の月, ユール前の月, オークの月, 寒い満月",
+                    "unknown": ""
+                }
+            },
+            "next_last_quarter": {
+                "name": "次の下弦"
+            },
+
+            "previous_rise": {
+                "name": "前回の月の出"
+            },
+            "previous_set": {
+                "name": "前回の月の入"
+            },
+            "previous_apogee": {
+                "name": "前回の遠地点"
+            },
+            "previous_perigee": {
+                "name": "前回の近地点"
+            },
+            "previous_new_moon": {
+                "name": "前回の新月"
+            },
+            "previous_first_quarter": {
+                "name": "前回の上弦"
+            },
+            "previous_full_moon": {
+                "name": "前回の満月"
+            },
+            "previous_full_moon_name": {
+                "name": "前回の満月の名称",
+                "state": {
+                    "wolf_moon": "ウルフムーン",
+                    "snow_moon": "スノームーン",
+                    "worm_moon": "ワームムーン",
+                    "pink_moon": "ピンクムーン",
+                    "flower_moon": "フラワームーン",
+                    "strawberry_moon": "ストロベリームーン",
+                    "buck_moon": "バックムーン",
+                    "sturgeon_moon": "スタージョンムーン",
+                    "harvest_moon": "ハーベストムーン",
+                    "hunters_moon": "ハンターズムーン",
+                    "beaver_moon": "ビーバームーン",
+                    "cold_moon": "コールドムーン",
+                    "blue_moon": "ブルームーン",
+                    "unknown": "不明"
+                }
+            },
+            "previous_full_moon_alt_names": {
+                "name": "前回の満月の別名（一般的）",
+                "state": {
+                    "wolf_moon_alt_names": "ユールの後の月, 家にいる月, 静かな月, 厳しい月, 中央の月",
+                    "snow_moon_alt_names": "飢えの月, 熊の月, 嵐の月, 氷の月",
+                    "worm_moon_alt_names": "四旬節の月, カラスの月, 雪の皮の月, 貞節の月, 砂糖の月, 樹液の月",
+                    "pink_moon_alt_names": "氷解の月, 芽吹きの月, 目覚めの月, 卵の月, 復活祭の月",
+                    "flower_moon_alt_names": "植え付けの月, 乳の月, 野ウサギの月, 草の月, 母の月, 明るい月",
+                    "strawberry_moon_alt_names": "バラの月, 暑い月, 蜂蜜酒の月, 花の月, 植え付けの月",
+                    "buck_moon_alt_names": "雷の月, 干し草の月, 薬草の月",
+                    "sturgeon_moon_alt_names": "穀物の月, トウモロコシの月, オオヤマネコの月, 稲妻の月",
+                    "harvest_moon_alt_names": "トウモロコシの満月, 青いトウモロコシの月, トウモロコシの月, ワインの月, 歌の月, 大麦の月",
+                    "hunters_moon_alt_names": "乾燥米の月, 落葉の月, 凍結の月, 血の月, サングインムーン",
+                    "beaver_moon_alt_names": "霜の月, 凍結の月, 交易の月, 雪の月, 喪の月, 最も暗い深みの月",
+                    "cold_moon_alt_names": "長い夜の月, ユール前の月, オークの月, 寒い満月",
+                    "unknown": ""
+                }
+            },
+            "previous_last_quarter": {
+                "name": "前回の下弦"
+            },
+
+            "ecliptic_longitude_next_full_moon": {
+                "name": "次の満月時の黄経"
+            },
+            "ecliptic_latitude_next_full_moon": {
+                "name": "次の満月時の黄緯"
+            },
+            "ecliptic_longitude_next_new_moon": {
+                "name": "次の新月時の黄経"
+            },
+            "ecliptic_latitude_next_new_moon": {
+                "name": "次の新月時の黄緯"
+            },
+            "ecliptic_longitude_previous_full_moon": {
+                "name": "前回の満月時の黄経"
+            },
+            "ecliptic_latitude_previous_full_moon": {
+                "name": "前回の満月時の黄緯"
+            },
+            "ecliptic_longitude_previous_new_moon": {
+                "name": "前回の新月時の黄経"
+            },
+            "ecliptic_latitude_previous_new_moon": {
+                "name": "前回の新月時の黄緯"
+            },
+
+            "zodiac_sign_current_moon": {
+                "name": "黄道十二宮（現在）",
+                "state": {
+                    "aries": "おひつじ座",
+                    "taurus": "おうし座",
+                    "gemini": "ふたご座",
+                    "cancer": "かに座",
+                    "leo": "しし座",
+                    "virgo": "おとめ座",
+                    "libra": "てんびん座",
+                    "scorpio": "さそり座",
+                    "sagittarius": "いて座",
+                    "capricorn": "やぎ座",
+                    "aquarius": "みずがめ座",
+                    "pisces": "うお座"
+                }
+            },
+            "zodiac_sign_next_new_moon": {
+                "name": "次の新月時の黄道十二宮",
+                "state": {
+                    "aries": "おひつじ座",
+                    "taurus": "おうし座",
+                    "gemini": "ふたご座",
+                    "cancer": "かに座",
+                    "leo": "しし座",
+                    "virgo": "おとめ座",
+                    "libra": "てんびん座",
+                    "scorpio": "さそり座",
+                    "sagittarius": "いて座",
+                    "capricorn": "やぎ座",
+                    "aquarius": "みずがめ座",
+                    "pisces": "うお座"
+                }
+            },
+            "zodiac_sign_next_full_moon": {
+                "name": "次の満月時の黄道十二宮",
+                "state": {
+                    "aries": "おひつじ座",
+                    "taurus": "おうし座",
+                    "gemini": "ふたご座",
+                    "cancer": "かに座",
+                    "leo": "しし座",
+                    "virgo": "おとめ座",
+                    "libra": "てんびん座",
+                    "scorpio": "さそり座",
+                    "sagittarius": "いて座",
+                    "capricorn": "やぎ座",
+                    "aquarius": "みずがめ座",
+                    "pisces": "うお座"
+                }
+            },
+            "zodiac_sign_previous_new_moon": {
+                "name": "前回の新月時の黄道十二宮",
+                "state": {
+                    "aries": "おひつじ座",
+                    "taurus": "おうし座",
+                    "gemini": "ふたご座",
+                    "cancer": "かに座",
+                    "leo": "しし座",
+                    "virgo": "おとめ座",
+                    "libra": "てんびん座",
+                    "scorpio": "さそり座",
+                    "sagittarius": "いて座",
+                    "capricorn": "やぎ座",
+                    "aquarius": "みずがめ座",
+                    "pisces": "うお座"
+                }
+            },
+            "zodiac_sign_previous_full_moon": {
+                "name": "前回の満月時の黄道十二宮",
+                "state": {
+                    "aries": "おひつじ座",
+                    "taurus": "おうし座",
+                    "gemini": "ふたご座",
+                    "cancer": "かに座",
+                    "leo": "しし座",
+                    "virgo": "おとめ座",
+                    "libra": "てんびん座",
+                    "scorpio": "さそり座",
+                    "sagittarius": "いて座",
+                    "capricorn": "やぎ座",
+                    "aquarius": "みずがめ座",
+                    "pisces": "うお座"
+                }
+            },
+            "zodiac_degree_current_moon": {
+                "name": "黄道度数（現在）"
+            },
+            "zodiac_degree_next_new_moon": {
+                "name": "次の新月時の黄道度数"
+            },
+            "zodiac_degree_next_full_moon": {
+                "name": "次の満月時の黄道度数"
+            },
+            "zodiac_degree_previous_new_moon": {
+                "name": "前回の新月時の黄道度数"
+            },
+            "zodiac_degree_previous_full_moon": {
+                "name": "前回の満月時の黄道度数"
+            }
+        }
+    }
+}

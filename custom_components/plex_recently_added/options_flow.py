@@ -32,6 +32,10 @@ class PlexOptionFlow(OptionsFlow):
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         errors = {}
 
+        # Check if the integration is loaded and coordinator is available
+        if DOMAIN not in self.hass.data or self._config_entry.entry_id not in self.hass.data[DOMAIN]:
+            return self.async_abort(reason="integration_not_loaded")
+
         coordinator = self.hass.data[DOMAIN][self._config_entry.entry_id]
 
         if user_input is not None:

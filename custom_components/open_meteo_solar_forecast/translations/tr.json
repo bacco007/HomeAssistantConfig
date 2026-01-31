@@ -69,7 +69,7 @@
           "modules power": "Solar modüllerinizin toplam en yüksek Watt gücü",
           "modules_power": "Solar modüllerinizin toplam en yüksek Watt gücü"
         },
-        "description": "Bu değerler, Forecast.Solar sonucunun değiştirilmesine izin verir. Bir alan net değilse lütfen belgelere bakın."
+        "description": "Bu değerler, Solar Forecast sonucunun değiştirilmesine izin verir. Bir alan net değilse lütfen belgelere bakın."
       }
     }
   }
