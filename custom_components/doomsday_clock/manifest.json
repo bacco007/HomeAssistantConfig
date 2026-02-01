@@ -1,9 +1,13 @@
 {
   "domain": "doomsday_clock",
   "name": "Doomsday Clock",
+  "version": "2.0.0",
   "documentation": "https://github.com/renemarc/home-assistant-doomsday-clock",
-  "requirements": ["countdoom==0.2.1"],
+  "requirements": [
+    "beautifulsoup4==4.7.1"
+  ],
   "dependencies": [],
-  "codeowners": ["@renemarc"],
-  "version": "0.1"
+  "codeowners": [
+    "@renemarc"
+  ]
 }
