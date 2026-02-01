@@ -38,60 +38,68 @@ async def async_setup_entry(
 ) -> None:
     """Set up Matter Binding sensors from a config entry."""
     coordinator = MatterBindingCoordinator(hass, config_entry)
-    await coordinator.async_config_entry_first_refresh()
 
     # Store coordinator for later use
     hass.data[DOMAIN][config_entry.entry_id]["coordinator"] = coordinator
 
-    # Get device registry to look up Matter devices
-    device_registry = dr.async_get(hass)
+    # Start coordinator refresh in background without blocking startup
+    # This allows HA to continue loading while we fetch Matter data
+    async def _async_setup_entities() -> None:
+        """Fetch data and create entities in the background."""
+        await coordinator.async_config_entry_first_refresh()
 
-    # Create sensors for each endpoint with binding cluster
-    entities: list[MatterBindingSensor] = []
+        # Get device registry to look up Matter devices
+        device_registry = dr.async_get(hass)
 
-    for node_data in coordinator.data.get("nodes", []):
-        node_id = node_data["node_id"]
-        node_name = node_data.get("name", f"Node {node_id}")
-        ha_device_id = node_data.get("ha_device_id")
+        # Create sensors for each endpoint with binding cluster
+        entities: list[MatterBindingSensor] = []
 
-        # Look up the Matter device to get its identifiers
-        matter_device = None
-        matter_identifiers: set[tuple[str, str]] | None = None
-        if ha_device_id:
-            matter_device = device_registry.async_get(ha_device_id)
-            if matter_device:
-                matter_identifiers = matter_device.identifiers
-                _LOGGER.debug(
-                    "Found Matter device for node %s: %s (identifiers: %s)",
-                    node_id,
-                    matter_device.name,
-                    matter_identifiers,
+        for node_data in coordinator.data.get("nodes", []):
+            node_id = node_data["node_id"]
+            node_name = node_data.get("name", f"Node {node_id}")
+            ha_device_id = node_data.get("ha_device_id")
+
+            # Look up the Matter device to get its identifiers
+            matter_device = None
+            matter_identifiers: set[tuple[str, str]] | None = None
+            if ha_device_id:
+                matter_device = device_registry.async_get(ha_device_id)
+                if matter_device:
+                    matter_identifiers = matter_device.identifiers
+                    _LOGGER.debug(
+                        "Found Matter device for node %s: %s (identifiers: %s)",
+                        node_id,
+                        matter_device.name,
+                        matter_identifiers,
+                    )
+
+            for endpoint in node_data.get("endpoints", []):
+                endpoint_id = endpoint["endpoint_id"]
+
+                # Only create sensor for endpoints with binding cluster
+                if not endpoint.get("has_binding_cluster"):
+                    continue
+
+                # Skip endpoint 0 (root node)
+                if endpoint_id == 0:
+                    continue
+
+                entities.append(
+                    MatterBindingSensor(
+                        coordinator=coordinator,
+                        node_id=node_id,
+                        endpoint_id=endpoint_id,
+                        node_name=node_name,
+                        matter_identifiers=matter_identifiers,
+                        device_info_data=node_data.get("device_info", {}),
+                    )
                 )
 
-        for endpoint in node_data.get("endpoints", []):
-            endpoint_id = endpoint["endpoint_id"]
+        _LOGGER.info("Setting up %d Matter Binding sensors", len(entities))
+        async_add_entities(entities)
 
-            # Only create sensor for endpoints with binding cluster
-            if not endpoint.get("has_binding_cluster"):
-                continue
-
-            # Skip endpoint 0 (root node)
-            if endpoint_id == 0:
-                continue
-
-            entities.append(
-                MatterBindingSensor(
-                    coordinator=coordinator,
-                    node_id=node_id,
-                    endpoint_id=endpoint_id,
-                    node_name=node_name,
-                    matter_identifiers=matter_identifiers,
-                    device_info_data=node_data.get("device_info", {}),
-                )
-            )
-
-    _LOGGER.info("Setting up %d Matter Binding sensors", len(entities))
-    async_add_entities(entities)
+    # Run entity setup in background task
+    hass.async_create_task(_async_setup_entities())
 
     # NOTE: Proprietary sensors DISABLED - was causing Matter integration to crash
     # The issue is that reading proprietary attributes via Matter client triggers
