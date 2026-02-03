@@ -42,9 +42,9 @@ _LOGGER = logging.getLogger(__name__)
 # Global variable for the update listener.
 UPDATE_LISTENER = None
 
-def sanitize_name(name):
+def sanitize_name(device_name):
     """Sanitizes a string by replacing characters not in [a-zA-Z0-9_-] with '_'."""
-    return re.sub(r'[^a-zA-Z0-9_-]', '_', name)
+    return re.sub(r'[^a-zA-Z0-9_-]', '_', device_name)
 
 async def async_setup_entry(hass, entry):
     """Set up the UniFi MQTT integration from a config entry."""
@@ -93,13 +93,13 @@ async def async_setup_entry(hass, entry):
                 _LOGGER.error("Error fetching stats for %s: %s", target_mac, err)
                 continue
 
-            name = devs.get("name", "Unknown")
+            device_name = devs.get("name", "Unknown")
             mac = devs.get("mac", "Unknown")
             device_type = devs.get("type", "Unknown")
             uptime_seconds = devs.get("uptime", 0)
 
             # Sanitize the device name for use in MQTT topics
-            sanitized_name = sanitize_name(name)
+            sanitized_name = sanitize_name(device_name)
 
             # Calculate uptime
             days = uptime_seconds // 86400
@@ -125,7 +125,6 @@ async def async_setup_entry(hass, entry):
                 "update": "available" if devs.get("upgradable") else "none",
                 "firmware_version": devs.get("version", "Unknown"),
                 "ip_address": devs.get("ip", "Unknown"),
-                "device_name": name,  # workaround for issue where friendly name duplicates the name
             }
 
             # Add additional attributes for switches
@@ -139,7 +138,7 @@ async def async_setup_entry(hass, entry):
                     for index, row in port_table.iterrows():
                         port_status[f"port{row['port_idx']}"] = "up" if row["up"] else "down"
                         if "poe_enable" in port_table.columns:
-                            port_poe[f"port{row['port_idx']}"] = "power" if row["poe_enable"] else "none"
+                            port_poe[f"port{row['port_idx']}"] = "power" if row["port_poe"] else "none"
                         if "poe_power" in port_table.columns:
                             port_power[f"port{row['port_idx']}"] = 0 if pd.isna(row["poe_power"]) else row["poe_power"]
 
@@ -267,14 +266,14 @@ async def async_setup_entry(hass, entry):
             # Build MQTT discovery payload.
             discovery_topic = f"homeassistant/sensor/unifi_mqtt/{sanitized_name}/config"
             sensor_payload = {
-                "name": name,
-                "default_entity_id": sanitized_name,
+                "name": "Uptime",
+                "default_entity_id": f"sensor.{sanitized_name}",    
                 "state_topic": f"unifi_mqtt/devices/{sanitized_name}/state",
                 "unique_id": mac.replace(":", ""),
                 "json_attributes_topic": f"unifi_mqtt/devices/{sanitized_name}/attributes",
                 "device": {
                     "identifiers": [f"unifi_{mac.replace(':', '')}"],
-                    "name": name,
+                    "name": device_name,
                     "manufacturer": "UniFi",
                     "model": devs.get("model", "Unknown"),
                     "sw_version": devs.get("version", "Unknown"),
@@ -290,7 +289,7 @@ async def async_setup_entry(hass, entry):
             attributes_topic = f"unifi_mqtt/devices/{sanitized_name}/attributes"
             await async_publish(hass, attributes_topic, json.dumps(attributes), retain=True)
 
-            active_devices.append(name)
+            active_devices.append(device_name)
 
         # Publish device summary
         device_summary_topic = "unifi_mqtt/devices/summary"
