@@ -5,7 +5,7 @@ const LitElement = Object.getPrototypeOf(customElements.get("ha-panel-lovelace")
 const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
-console.info("📦 clock-pv-forecast-card v1.9.1 loaded (Full Editor)");
+console.info("📦 clock-pv-forecast-card v1.9.2 loaded (Full Editor)");
 
 const translations = {
   en: { forecast: "Forecast", remaining: "Remaining", last_updated: "Last updated", today: "Today", tomorrow: "Tomorrow", error_config: "Configuration Error", error_entity: "At least one forecast entity must be defined", unavailable: "Unavailable", unknown: "Unknown" },
@@ -75,6 +75,7 @@ class ClockPvForecastCard extends LitElement {
       show_tooltips: false,
       scale_mode: 'fixed',
       forecast_attribute: null,
+      show_attribute_value: false,
       attribute_color: '#f39c12',
       ...config
     };
@@ -229,6 +230,14 @@ class ClockPvForecastCard extends LitElement {
       }
     }
 
+    let displayValue = this._formatValue(value, item.entity);
+    if (this.config.show_attribute_value && this.config.forecast_attribute && entityState.attributes[this.config.forecast_attribute] !== undefined) {
+      const attrVal = parseFloat(entityState.attributes[this.config.forecast_attribute]);
+      if (!isNaN(attrVal)) {
+        displayValue += ` (${this._formatValue(attrVal, item.entity)})`;
+      }
+    }
+
     return html`
       <div class="forecast-row" role="row">
         <div class="day" role="cell" style="width: ${this.config.day_column_width}">${dayLabel}</div>
@@ -238,7 +247,7 @@ class ClockPvForecastCard extends LitElement {
           ${remainingDot}${remainingText}
           ${this.config.show_tooltips ? this._renderTooltip(value, item.entity, dayLabel) : ''}
         </div>
-        <div class="value" role="cell">${this._formatValue(value, item.entity)}</div>
+        <div class="value" role="cell">${displayValue}</div>
       </div>`;
   }
 
@@ -395,7 +404,7 @@ class ClockPvForecastCard extends LitElement {
     .attribute-marker { position: absolute; top: 0; bottom: 0; width: 4px; background: var(--attr-color, #f39c12); opacity: 0.8; z-index: 5; transform: translateX(-50%); box-shadow: 0 0 4px rgba(0,0,0,0.4); border-radius: 2px; }
     .remaining-dot { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; border-radius: 50%; background: var(--marker-color, #2c3e50); border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); z-index: 2; cursor: help; }
     .remaining-text-inside { position: absolute; bottom: 100%; left: 0; transform: translate(-50%, -2px); background: rgba(0, 0, 0, 0.7); color: white; border-radius: 3px; font-size: 0.65em; font-weight: bold; padding: 1px 4px; z-index: 10; pointer-events: none; white-space: nowrap; }
-    .value { width: 4.5em; text-align: right; font-size: 0.85em; font-weight: bold; white-space: nowrap; color: var(--secondary-text-color); }
+    .value { min-width: 4.5em; text-align: right; font-size: 0.85em; font-weight: bold; white-space: nowrap; color: var(--secondary-text-color); }
     .value.error { color: var(--error-color, #e74c3c); }
     .error-text { font-size: 0.7em; color: var(--error-color, #e74c3c); text-align: center; }
     .tooltip { position: absolute; top: -60px; left: 50%; transform: translateX(-50%); background: var(--card-background-color, white); border: 1px solid var(--divider-color, #eee); border-radius: 4px; padding: 8px; font-size: 0.8em; box-shadow: 0 2px 8px rgba(0,0,0,0.15); opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 20; white-space: nowrap; color: var(--primary-text-color); }
@@ -403,8 +412,8 @@ class ClockPvForecastCard extends LitElement {
     .tooltip-content { text-align: center; }
     @keyframes fill-bar { to { width: var(--bar-width); } }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-    @media (max-width: 480px) { .forecast-rows { gap: 0.2em; padding: 0.5em; } .remaining-dot { width: 8px; height: 8px; border-width: 1px; } .remaining-text-inside { font-size: 0.6em; right: 6px; } .value { font-size: 0.75em; width: 3.5em; } .day { font-size: 0.85em; } .tooltip { top: -50px; font-size: 0.7em; } }
-    @media (max-width: 320px) { .forecast-rows { gap: 0.1em; padding: 0.3em; } .forecast-row { gap: 0.4em; } .remaining-dot { width: 6px; height: 6px; border-width: 1px; } .remaining-text-inside { font-size: 0.55em; right: 4px; } }
+    @media (max-width: 480px) { .forecast-rows { gap: 0.2em; padding: 0.5em; } .remaining-dot { width: 8px; height: 8px; border-width: 1px; } .remaining-text-inside { font-size: 0.6em; } .value { font-size: 0.75em; width: 3.5em; } .day { font-size: 0.85em; } .tooltip { top: -50px; font-size: 0.7em; } }
+    @media (max-width: 320px) { .forecast-rows { gap: 0.1em; padding: 0.3em; } .forecast-row { gap: 0.4em; } .remaining-dot { width: 6px; height: 6px; border-width: 1px; } .remaining-text-inside { font-size: 0.55em; } }
   `;
 }
 
@@ -436,6 +445,7 @@ class ClockPvForecastCardEditor extends LitElement {
       scale_mode: "Scaling Mode",
       max_value: "Max Value (kWh)",
       forecast_attribute: "Info Attribute (e.g. estimate10 for solcast users)",
+      show_attribute_value: "Show Attribute Value Text",
       attribute_color: "Attribute Color (Hex)",
       display_mode: "Display Mode",
       bar_style: "Bar Style",
@@ -470,6 +480,7 @@ class ClockPvForecastCardEditor extends LitElement {
       // DISPLAY & FORMATS
       { name: "max_value", selector: { number: { mode: "box", min: 1 } } },
       { name: "forecast_attribute", selector: { text: {} } },
+      { name: "show_attribute_value", selector: { boolean: {} } },
       { name: "attribute_color", selector: { text: {} } },
       {
         name: "display_mode",
