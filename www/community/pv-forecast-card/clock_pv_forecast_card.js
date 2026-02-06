@@ -5,7 +5,7 @@ const LitElement = Object.getPrototypeOf(customElements.get("ha-panel-lovelace")
 const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
-console.info("📦 clock-pv-forecast-card v1.9.0 loaded (Full Editor)");
+console.info("📦 clock-pv-forecast-card v1.9.1 loaded (Full Editor)");
 
 const translations = {
   en: { forecast: "Forecast", remaining: "Remaining", last_updated: "Last updated", today: "Today", tomorrow: "Tomorrow", error_config: "Configuration Error", error_entity: "At least one forecast entity must be defined", unavailable: "Unavailable", unknown: "Unknown" },
@@ -222,7 +222,7 @@ class ClockPvForecastCard extends LitElement {
 
           remainingText = html`
             <div class="remaining-text-inside" 
-                 style="--marker-color: ${this.config.marker_color}; left: ${positionPercent}%; transform: translate(${translateVal}, -50%); padding-left: 4px; padding-right: 4px;">
+                 style="left: ${positionPercent}%;">
               ${this._formatValue(remaining, this.config.entity_remaining)}
             </div>`;
         }
@@ -394,7 +394,7 @@ class ClockPvForecastCard extends LitElement {
     .bar.blink { animation: fill-bar var(--animation-time) ease-out forwards, blink 1s infinite; }
     .attribute-marker { position: absolute; top: 0; bottom: 0; width: 4px; background: var(--attr-color, #f39c12); opacity: 0.8; z-index: 5; transform: translateX(-50%); box-shadow: 0 0 4px rgba(0,0,0,0.4); border-radius: 2px; }
     .remaining-dot { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; border-radius: 50%; background: var(--marker-color, #2c3e50); border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); z-index: 2; cursor: help; }
-    .remaining-text-inside { position: absolute; top: 50%; transform: translateY(-50%); color: white; font-size: 0.7em; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); z-index: 3; pointer-events: none; white-space: nowrap; }
+    .remaining-text-inside { position: absolute; bottom: 100%; left: 0; transform: translate(-50%, -2px); background: rgba(0, 0, 0, 0.7); color: white; border-radius: 3px; font-size: 0.65em; font-weight: bold; padding: 1px 4px; z-index: 10; pointer-events: none; white-space: nowrap; }
     .value { width: 4.5em; text-align: right; font-size: 0.85em; font-weight: bold; white-space: nowrap; color: var(--secondary-text-color); }
     .value.error { color: var(--error-color, #e74c3c); }
     .error-text { font-size: 0.7em; color: var(--error-color, #e74c3c); text-align: center; }
