@@ -8,7 +8,8 @@
       "already_configured_disabled": "That API key has already been registered, although the entry has been disabled.  Please re-enable it and use 'add new journey' to add one or more journeys instead.",
       "reconfigure_successful": "New API key registered.",
       "reconfigure_successful_no_change": "No changes made.",
-      "reconfigure_successful_api_change_true": "New API key registered."
+      "reconfigure_successful_api_change_true": "Reconfiguration to a new API key was successful.",
+      "reconfigure_successful_api_change_false": "Reconfiguration successful using the existing API key."
     },
     "error": {
       "apiratelimitexceeded": "API rate limit exceeded - wait a moment and try again.",
@@ -23,8 +24,7 @@
           "api_key": "Your Transport NSW API key",
 		  "scan_interval": "Sensor update interval (seconds)"
         },
-        "description": "Enter your Transport NSW API key.  If you don't have one you can register [here](https://opendata.transport.nsw.gov.au/data/user/register).",
-        "title": "Transport NSW Mk II"
+        "description": "Enter your Transport NSW API key.  If you don't have one you can register [here]({tfnsw_registration})."
       }
     }
   },
@@ -35,7 +35,6 @@
 			  "user": "xAdd new journey",
 			  "reconfigure": "xChange journey options"
 		  },
-		  "title": "Transport NSW Mk II",
 		  "step": {
 			  "user" : {
 				  "data": {
@@ -84,8 +83,7 @@
                       "destination_id": "The stop ID/name of your destination",
                       "create_reverse_trip": "Also create the return journey"
 				  },
-				  "description": "Provide the details of the journey you want to monitor - specific Stop IDs or general stop names can be used.  If entering a stop name, such as 'Central station' the more specific you are the more likely that the API will find the right stop.\n\nFor the origin you can also choose a Mobile App-sourced Device Tracker so your current location becomes the origin.\n\nIf you enter multiple destinations the journey with the earliest arrival time across ALL destinations will be shown.\n\nStop IDs can be looked up [here](https://transportnsw.info/routes/train#/).",
-				  "title": "Transport NSW Mk II"
+				  "description": "Provide the details of the journey you want to monitor - specific Stop IDs or general stop names can be used.  If entering a stop name, such as 'Central station' the more specific you are the more likely that the API will find the right stop.\n\nFor the origin you can also choose a Mobile App-sourced Device Tracker so your current location becomes the origin.\n\nIf you enter multiple destinations the journey with the earliest arrival time across ALL destinations will be shown.\n\nStop IDs can be looked up [here]({tfnsw_stopfinder})."
 			  },
 			  "settings": {
 				"data_description": {
@@ -95,10 +93,11 @@
 					  "origin_transport_type": "Origin transport types",
                       "destination_transport_type": "Destination transport types",
 					  "route_filter": "Route filter",
-                      "trip_wait_time": "The minimum time from now to wait before the journey starts (minutes)",
+					  "max_changes": "Maximum trip changes (0-5)",
+                      "trip_wait_time": "The minimum time from now to wait before the journey starts (0-60 minutes)",
                       "trips_to_create": "Trips to create"
 				  },
-				  "description": "Select the appropriate transport types, the minimum departure time from now and an optional route filter.\n\n{journey_description}\n\nIf you specify a route filter, only journeys with that text in the line name (eg T9 Northern Line) or short line name (eg T9) will be shown.",
+				  "description": "Select the appropriate transport types, the minimum departure time from now and optional route/max changes filters.\n\n{journey_description}\n\nIf you specify a route filter, only journeys with that text in the line name (eg T9 Northern Line) or short line name (eg T9) will be shown.",
 				  "title": "{journey_name}"
 			  },
 			  "sensors": {
@@ -138,7 +137,8 @@
 						  "origin_line_name_short": "Short version of first leg line name (eg T1)",
 						  "origin_detail": "The specific origin platform, stop, wharf etc (eg Platform 4)",
 						  "origin_occupancy": "First leg vehicle occupancy (eg Many seats, few seats etc)",
-						  "origin_name": "Origin name (eg Gordon Station, Platform 1, Gordon)"
+						  "origin_name": "Origin name (eg Gordon Station, Platform 1, Gordon)",
+						  "origin_train_set": "Origin train set type (eg Tangara, Waratah etc)"
 						}
 					},
 					"destination_sensors": {
@@ -149,7 +149,8 @@
 						  "destination_line_name_short": "Short version of last leg line name (eg T9)",
 						  "destination_detail": "The specific destination platform, stop, wharf etc (eg Platform 4)",
 						  "destination_name": "Destination name (eg Gadigal Station, Platform 1, Sydney)",
-						  "destination_occupancy": "Last leg vehicle occupancy (eg Many seats, few seats etc)"
+						  "destination_occupancy": "Last leg vehicle occupancy (eg Many seats, few seats etc)",
+						  "destination_train_set": "Destination train set type (eg Tangara, Waratah etc)"
 						}
 					},
 					"device_trackers": {

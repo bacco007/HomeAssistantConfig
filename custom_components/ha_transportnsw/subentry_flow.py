@@ -20,11 +20,13 @@ from homeassistant.config_entries import (
     #OptionsFlow,
     SOURCE_RECONFIGURE
 )
+
 from homeassistant.const import (
     CONF_API_KEY,
     CONF_NAME,
     CONF_SCAN_INTERVAL,
 )
+
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 
@@ -39,14 +41,19 @@ from .helpers import (
 _LOGGER = logging.getLogger(__name__)
 
 def convert_transport_types_numeric_to_friendly(transport_type_list: dict[str]) -> dict[int]:
-    # Convert the text-based transport types to their numeric equivalents
-    # If empty, just use 0 'all transport types'
+    # Convert the numeric-transport types to their friendly name equivalents
+    # If empty, just use the default
     if not transport_type_list:
         return DEFAULT_TRANSPORT_TYPE_SELECTOR
 
+    if transport_type_list == [0]:
+        transport_type_list = ALL_TRANSPORT_TYPE_NUMERIC
+
     temp_list = []
     for transport_type in transport_type_list:
-        temp_list.append(TRANSPORT_TYPE.get(transport_type, 0))
+        value = TRANSPORT_TYPE.get(transport_type)
+        if value is not None:
+            temp_list.append(value)
 
     return temp_list
 
@@ -54,7 +61,7 @@ def convert_transport_types_friendly_to_numeric(transport_type_list: dict[str]) 
     # Convert the text-based transport types to their numeric equivalents
     # If empty, just use 0 'all transport types'
     if not transport_type_list:
-        return [0]
+        return DEFAULT_TRANSPORT_TYPE_NUMERIC
 
     temp_list = []
     for transport_type in transport_type_list:
@@ -75,10 +82,10 @@ def create_subentries(self, config_entry, input_data):
         description_placeholders['plural'] = 's'
 
         return_data = copy.deepcopy(input_data)
-        return_data[CONF_ORIGIN_ID] = input_data[CONF_DESTINATION_ID]
+        return_data[CONF_ORIGIN_ID] = input_data[CONF_DESTINATION_ID][0]
         return_data[CONF_ORIGIN_NAME] = input_data[CONF_DESTINATION_NAME]
         return_data[CONF_ORIGIN_TRANSPORT_TYPE] = input_data[CONF_DESTINATION_TRANSPORT_TYPE]
-        return_data[CONF_DESTINATION_ID] = input_data[CONF_ORIGIN_ID]
+        return_data[CONF_DESTINATION_ID] = [input_data[CONF_ORIGIN_ID]]
         return_data[CONF_DESTINATION_NAME] = input_data[CONF_ORIGIN_NAME]
         return_data[CONF_DESTINATION_TRANSPORT_TYPE] = input_data[CONF_ORIGIN_TRANSPORT_TYPE]
         del return_data[CONF_CREATE_REVERSE_TRIP]
@@ -268,7 +275,7 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
                             errors["base"] = "outbound_already_configured"
     
                     if user_input[CONF_CREATE_REVERSE_TRIP]:
-                        unique_id_destination = '_'.join(input_data[CONF_DESTINATION_ID])
+                        unique_id_destination = '_'.join(user_input[CONF_DESTINATION_ID])
                         unique_id = f"{unique_id_destination}_{user_input[CONF_ORIGIN_ID]}"
     
                         for existing_subentry in self._get_entry().subentries.values():
@@ -338,9 +345,17 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
              }
         )
 
+        description_placeholders = {
+            "tfnsw_stopfinder": TFNSW_STOPFINDER
+        }
+
         # Show initial form.
         return self.async_show_form(
-            step_id="user", data_schema=JOURNEY_DATA_SCHEMA, errors=errors, last_step = False
+            step_id="user",
+            data_schema=JOURNEY_DATA_SCHEMA,
+            description_placeholders=description_placeholders,
+            errors=errors,
+            last_step = False
         )
 
     async def async_step_settings(
@@ -390,7 +405,8 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
                     vol.Required(CONF_ORIGIN_TRANSPORT_TYPE, default=default_origin_type): cv.multi_select(ORIGIN_TRANSPORT_TYPE_LIST),
                     vol.Required(CONF_DESTINATION_TRANSPORT_TYPE, default=default_destination_type): cv.multi_select(DESTINATION_TRANSPORT_TYPE_LIST),
                     vol.Optional(CONF_ROUTE_FILTER, default = user_input.get(CONF_ROUTE_FILTER, DEFAULT_ROUTE_FILTER)): str,
-                    vol.Required(CONF_TRIP_WAIT_TIME, default = user_input.get(CONF_TRIP_WAIT_TIME, DEFAULT_TRIP_WAIT_TIME)): vol.All(vol.Coerce(int), vol.Range(min=1, max=MAX_TRIP_WAIT_TIME)),
+                    vol.Required(CONF_MAX_CHANGES, default = user_input.get(CONF_MAX_CHANGES, DEFAULT_MAX_CHANGES)): vol.All(vol.Coerce(int), vol.Range(min=0, max=MAX_MAX_CHANGES)),
+                    vol.Required(CONF_TRIP_WAIT_TIME, default = user_input.get(CONF_TRIP_WAIT_TIME, DEFAULT_TRIP_WAIT_TIME)): vol.All(vol.Coerce(int), vol.Range(min=0, max=MAX_TRIP_WAIT_TIME)),
                 }
             )
 
@@ -627,7 +643,8 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
                     vol.Required(CONF_ORIGIN_DETAIL_SENSOR, default = user_input['origin_sensors'].get(CONF_ORIGIN_DETAIL_SENSOR, DEFAULT_ORIGIN_DETAIL_SENSOR)): bool,
                     vol.Required(CONF_FIRST_LEG_LINE_NAME_SENSOR, default = user_input['origin_sensors'].get(CONF_FIRST_LEG_LINE_NAME_SENSOR, DEFAULT_FIRST_LEG_LINE_NAME_SENSOR)): bool,
                     vol.Required(CONF_FIRST_LEG_LINE_NAME_SHORT_SENSOR, default = user_input['origin_sensors'].get(CONF_FIRST_LEG_LINE_NAME_SHORT_SENSOR, DEFAULT_FIRST_LEG_LINE_NAME_SHORT_SENSOR)): bool,
-                    vol.Required(CONF_FIRST_LEG_OCCUPANCY_SENSOR, default = user_input['origin_sensors'].get(CONF_FIRST_LEG_OCCUPANCY_SENSOR, DEFAULT_FIRST_LEG_OCCUPANCY_SENSOR)): bool
+                    vol.Required(CONF_FIRST_LEG_OCCUPANCY_SENSOR, default = user_input['origin_sensors'].get(CONF_FIRST_LEG_OCCUPANCY_SENSOR, DEFAULT_FIRST_LEG_OCCUPANCY_SENSOR)): bool,
+                    vol.Required(CONF_FIRST_LEG_TRAIN_SET_SENSOR, default = user_input['origin_sensors'].get(CONF_FIRST_LEG_TRAIN_SET_SENSOR, DEFAULT_FIRST_LEG_TRAIN_SET_SENSOR)): bool
                 }
             )
 
@@ -637,7 +654,8 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
                     vol.Required(CONF_DESTINATION_DETAIL_SENSOR, default = user_input['destination_sensors'].get(CONF_DESTINATION_DETAIL_SENSOR, DEFAULT_DESTINATION_DETAIL_SENSOR)): bool,
                     vol.Required(CONF_LAST_LEG_LINE_NAME_SENSOR, default = user_input['destination_sensors'].get(CONF_LAST_LEG_LINE_NAME_SENSOR, DEFAULT_LAST_LEG_LINE_NAME_SENSOR)): bool,
                     vol.Required(CONF_LAST_LEG_LINE_NAME_SHORT_SENSOR, default = user_input['destination_sensors'].get(CONF_LAST_LEG_LINE_NAME_SHORT_SENSOR, DEFAULT_LAST_LEG_LINE_NAME_SHORT_SENSOR)): bool,
-                    vol.Required(CONF_LAST_LEG_OCCUPANCY_SENSOR, default = user_input['destination_sensors'].get(CONF_LAST_LEG_OCCUPANCY_SENSOR, DEFAULT_LAST_LEG_OCCUPANCY_SENSOR)): bool
+                    vol.Required(CONF_LAST_LEG_OCCUPANCY_SENSOR, default = user_input['destination_sensors'].get(CONF_LAST_LEG_OCCUPANCY_SENSOR, DEFAULT_LAST_LEG_OCCUPANCY_SENSOR)): bool,
+                    vol.Required(CONF_LAST_LEG_TRAIN_SET_SENSOR, default = user_input['destination_sensors'].get(CONF_LAST_LEG_TRAIN_SET_SENSOR, DEFAULT_LAST_LEG_TRAIN_SET_SENSOR)): bool
                 }
             )
 
@@ -722,4 +740,3 @@ class CannotConnect(HomeAssistantError):
 
 class InvalidAuth(HomeAssistantError):
     """Error to indicate there is invalid auth."""
-

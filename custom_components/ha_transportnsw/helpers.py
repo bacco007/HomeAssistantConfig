@@ -42,12 +42,11 @@ def get_device_trackers(hass: HomeAssistant, entity_filter: str):
 
 def get_trips (api_key: str, name_origin: str, name_destination: str, journey_wait_time: int = 0, origin_transport_type: int = [0], destination_transport_type: int = [0],
               strict_transport_type: bool = False, route_filter: str = '', journeys_to_return: int = 1, include_realtime_location: bool = True, 
-              include_alerts: bool = False, alert_severity: str = 'high', alert_type: str = ['all']):
+              include_alerts: bool = False, alert_severity: str = 'high', alert_type: str = ['all'], max_changes: int = 5):
 
     # Use the Transport NSW API to request trip information
     # Exceptions will be caught by the calling function
 
-    # Handle a painful 'byref' issue caused by the function we're calling  #TODO - fix this on the PyTransportNSWV2 side!
     try:
         if not include_alerts:
             alert_severity = 'none'
@@ -56,12 +55,24 @@ def get_trips (api_key: str, name_origin: str, name_destination: str, journey_wa
         data = tfnsw.get_trip (api_key = api_key, name_origin = name_origin, name_destination = name_destination, journey_wait_time = journey_wait_time,
             origin_transport_type = origin_transport_type, destination_transport_type = destination_transport_type, strict_transport_type = strict_transport_type, raw_output = False,
             route_filter = route_filter, journeys_to_return = journeys_to_return, include_realtime_location = include_realtime_location,
-            include_alerts = alert_severity, alert_type = alert_type, check_stop_ids = False)
+            include_alerts = alert_severity, alert_type = alert_type, check_stop_ids = False, max_changes = max_changes)
     
         return json.loads(data)
 
-    except:
-        return None
+    except InvalidAPIKey:
+        raise InvalidAPIKey
+    
+    except APIRateLimitExceeded:
+        raise APIRateLimitExceeded
+    
+    except StopError:
+        raise StopError
+
+    except TripError:
+        raise TripError
+    
+    except Exception as ex:
+        raise TripError
 
 def check_stops (api_key: str, stops: List[str]):
     # Check all provided stops using the Transport NSW API, and return all the associated stop metadata
@@ -102,6 +113,19 @@ def get_stop_detail (stop_data, stop_id: str, property: str):
         return "n/a"
 
 
+def get_optional_sensors (subentry_data: str):
+    # Return the current subentry options in the same format as 'set_optional_sensors' for comparison
+    optional_sensors = {}
+
+    try:
+        for option_group in ['time_and_change_sensors', 'origin_sensors', 'destination_sensors', 'device_trackers']:
+            optional_sensors[option_group] = subentry_data[option_group]
+
+        return optional_sensors
+
+    except:
+        return None
+
 def set_optional_sensors (sensor_creation: str):
     # Determine which optional sensors to create
 
@@ -109,16 +133,16 @@ def set_optional_sensors (sensor_creation: str):
     if sensor_creation == 'changes_and_times':
         sensor_options = {
             'time_and_change_sensors': {CONF_CHANGES_SENSOR: True, CONF_DELAY_SENSOR: True, CONF_FIRST_LEG_DEPARTURE_TIME_SENSOR: True, CONF_LAST_LEG_ARRIVAL_TIME_SENSOR: True},
-            'origin_sensors': {CONF_ORIGIN_NAME_SENSOR: False, CONF_ORIGIN_DETAIL_SENSOR: False, CONF_FIRST_LEG_LINE_NAME_SENSOR: False, CONF_FIRST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_FIRST_LEG_OCCUPANCY_SENSOR: False}, 
-            'destination_sensors': {CONF_DESTINATION_NAME_SENSOR: False, CONF_DESTINATION_DETAIL_SENSOR: False, CONF_LAST_LEG_LINE_NAME_SENSOR: False, CONF_LAST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_LAST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_LAST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_LAST_LEG_OCCUPANCY_SENSOR: False},
+            'origin_sensors': {CONF_ORIGIN_NAME_SENSOR: False, CONF_ORIGIN_DETAIL_SENSOR: False, CONF_FIRST_LEG_LINE_NAME_SENSOR: False, CONF_FIRST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_FIRST_LEG_OCCUPANCY_SENSOR: False, CONF_FIRST_LEG_TRAIN_SET_SENSOR: False}, 
+            'destination_sensors': {CONF_DESTINATION_NAME_SENSOR: False, CONF_DESTINATION_DETAIL_SENSOR: False, CONF_LAST_LEG_LINE_NAME_SENSOR: False, CONF_LAST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_LAST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_LAST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_LAST_LEG_OCCUPANCY_SENSOR: False, CONF_LAST_LEG_TRAIN_SET_SENSOR: False},
             'device_trackers': {CONF_FIRST_LEG_DEVICE_TRACKER: DEFAULT_FIRST_LEG_DEVICE_TRACKER, CONF_LAST_LEG_DEVICE_TRACKER: DEFAULT_FIRST_LEG_DEVICE_TRACKER, CONF_ORIGIN_DEVICE_TRACKER: DEFAULT_ORIGIN_DEVICE_TRACKER, CONF_DESTINATION_DEVICE_TRACKER: DEFAULT_DESTINATION_DEVICE_TRACKER}
             }
 
     elif sensor_creation == 'verbose':
         sensor_options = {
             'time_and_change_sensors': {CONF_CHANGES_SENSOR: True, CONF_DELAY_SENSOR: True, CONF_FIRST_LEG_DEPARTURE_TIME_SENSOR: True, CONF_LAST_LEG_ARRIVAL_TIME_SENSOR: True},
-            'origin_sensors': {CONF_ORIGIN_NAME_SENSOR: True, CONF_ORIGIN_DETAIL_SENSOR: True, CONF_FIRST_LEG_LINE_NAME_SENSOR: True, CONF_FIRST_LEG_LINE_NAME_SHORT_SENSOR: True, CONF_FIRST_LEG_TRANSPORT_TYPE_SENSOR: True, CONF_FIRST_LEG_TRANSPORT_NAME_SENSOR: True, CONF_FIRST_LEG_OCCUPANCY_SENSOR: True}, 
-            'destination_sensors': {CONF_DESTINATION_NAME_SENSOR: True, CONF_DESTINATION_DETAIL_SENSOR: True, CONF_LAST_LEG_LINE_NAME_SENSOR: True, CONF_LAST_LEG_LINE_NAME_SHORT_SENSOR: True, CONF_LAST_LEG_TRANSPORT_TYPE_SENSOR: True, CONF_LAST_LEG_TRANSPORT_NAME_SENSOR: True, CONF_LAST_LEG_OCCUPANCY_SENSOR: True},
+            'origin_sensors': {CONF_ORIGIN_NAME_SENSOR: True, CONF_ORIGIN_DETAIL_SENSOR: True, CONF_FIRST_LEG_LINE_NAME_SENSOR: True, CONF_FIRST_LEG_LINE_NAME_SHORT_SENSOR: True, CONF_FIRST_LEG_TRANSPORT_TYPE_SENSOR: True, CONF_FIRST_LEG_TRANSPORT_NAME_SENSOR: True, CONF_FIRST_LEG_OCCUPANCY_SENSOR: True, CONF_FIRST_LEG_TRAIN_SET_SENSOR: True}, 
+            'destination_sensors': {CONF_DESTINATION_NAME_SENSOR: True, CONF_DESTINATION_DETAIL_SENSOR: True, CONF_LAST_LEG_LINE_NAME_SENSOR: True, CONF_LAST_LEG_LINE_NAME_SHORT_SENSOR: True, CONF_LAST_LEG_TRANSPORT_TYPE_SENSOR: True, CONF_LAST_LEG_TRANSPORT_NAME_SENSOR: True, CONF_LAST_LEG_OCCUPANCY_SENSOR: True, CONF_LAST_LEG_TRAIN_SET_SENSOR: True},
             'device_trackers': {CONF_FIRST_LEG_DEVICE_TRACKER: 'always', CONF_LAST_LEG_DEVICE_TRACKER: 'always', CONF_ORIGIN_DEVICE_TRACKER: 'always', CONF_DESTINATION_DEVICE_TRACKER: 'always'}
             }
  
@@ -126,24 +150,24 @@ def set_optional_sensors (sensor_creation: str):
     elif sensor_creation == 'basic':
         sensor_options = {
             'time_and_change_sensors': {CONF_CHANGES_SENSOR: True, CONF_DELAY_SENSOR: False, CONF_FIRST_LEG_DEPARTURE_TIME_SENSOR: False, CONF_LAST_LEG_ARRIVAL_TIME_SENSOR: True},
-            'origin_sensors': {CONF_ORIGIN_NAME_SENSOR: False, CONF_ORIGIN_DETAIL_SENSOR: False, CONF_FIRST_LEG_LINE_NAME_SENSOR: False, CONF_FIRST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_FIRST_LEG_OCCUPANCY_SENSOR: False}, 
-            'destination_sensors': {CONF_DESTINATION_NAME_SENSOR: False, CONF_DESTINATION_DETAIL_SENSOR: False, CONF_LAST_LEG_LINE_NAME_SENSOR: False, CONF_LAST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_LAST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_LAST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_LAST_LEG_OCCUPANCY_SENSOR: False},
+            'origin_sensors': {CONF_ORIGIN_NAME_SENSOR: False, CONF_ORIGIN_DETAIL_SENSOR: False, CONF_FIRST_LEG_LINE_NAME_SENSOR: False, CONF_FIRST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_FIRST_LEG_OCCUPANCY_SENSOR: False, CONF_FIRST_LEG_TRAIN_SET_SENSOR: False}, 
+            'destination_sensors': {CONF_DESTINATION_NAME_SENSOR: False, CONF_DESTINATION_DETAIL_SENSOR: False, CONF_LAST_LEG_LINE_NAME_SENSOR: False, CONF_LAST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_LAST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_LAST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_LAST_LEG_OCCUPANCY_SENSOR: False, CONF_LAST_LEG_TRAIN_SET_SENSOR: False},
             'device_trackers': {CONF_FIRST_LEG_DEVICE_TRACKER: DEFAULT_FIRST_LEG_DEVICE_TRACKER, CONF_LAST_LEG_DEVICE_TRACKER: DEFAULT_LAST_LEG_DEVICE_TRACKER, CONF_ORIGIN_DEVICE_TRACKER: DEFAULT_ORIGIN_DEVICE_TRACKER, CONF_DESTINATION_DEVICE_TRACKER: DEFAULT_DESTINATION_DEVICE_TRACKER}
             }
  
     elif sensor_creation == 'medium':
         sensor_options = {
             'time_and_change_sensors': {CONF_CHANGES_SENSOR: True, CONF_DELAY_SENSOR: False, CONF_FIRST_LEG_DEPARTURE_TIME_SENSOR: False, CONF_LAST_LEG_ARRIVAL_TIME_SENSOR: True},
-            'origin_sensors': {CONF_ORIGIN_NAME_SENSOR: True, CONF_ORIGIN_DETAIL_SENSOR: True, CONF_FIRST_LEG_LINE_NAME_SENSOR: False, CONF_FIRST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_FIRST_LEG_OCCUPANCY_SENSOR: False}, 
-            'destination_sensors': {CONF_DESTINATION_NAME_SENSOR: False, CONF_DESTINATION_DETAIL_SENSOR: True, CONF_LAST_LEG_LINE_NAME_SENSOR: False, CONF_LAST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_LAST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_LAST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_LAST_LEG_OCCUPANCY_SENSOR: False},
+            'origin_sensors': {CONF_ORIGIN_NAME_SENSOR: True, CONF_ORIGIN_DETAIL_SENSOR: True, CONF_FIRST_LEG_LINE_NAME_SENSOR: False, CONF_FIRST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_FIRST_LEG_OCCUPANCY_SENSOR: False, CONF_FIRST_LEG_TRAIN_SET_SENSOR: False}, 
+            'destination_sensors': {CONF_DESTINATION_NAME_SENSOR: False, CONF_DESTINATION_DETAIL_SENSOR: True, CONF_LAST_LEG_LINE_NAME_SENSOR: False, CONF_LAST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_LAST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_LAST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_LAST_LEG_OCCUPANCY_SENSOR: False, CONF_LAST_LEG_TRAIN_SET_SENSOR: False},
             'device_trackers': {CONF_FIRST_LEG_DEVICE_TRACKER: DEFAULT_FIRST_LEG_DEVICE_TRACKER, CONF_LAST_LEG_DEVICE_TRACKER: DEFAULT_LAST_LEG_DEVICE_TRACKER, CONF_ORIGIN_DEVICE_TRACKER: DEFAULT_ORIGIN_DEVICE_TRACKER, CONF_DESTINATION_DEVICE_TRACKER: DEFAULT_DESTINATION_DEVICE_TRACKER}
             }
 
     else:
         sensor_options = {
             'time_and_change_sensors': {CONF_CHANGES_SENSOR: False, CONF_DELAY_SENSOR: False, CONF_FIRST_LEG_DEPARTURE_TIME_SENSOR: False, CONF_LAST_LEG_ARRIVAL_TIME_SENSOR: False},
-            'origin_sensors': {CONF_ORIGIN_NAME_SENSOR: False, CONF_ORIGIN_DETAIL_SENSOR: False, CONF_FIRST_LEG_LINE_NAME_SENSOR: False, CONF_FIRST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_FIRST_LEG_OCCUPANCY_SENSOR: False}, 
-            'destination_sensors': {CONF_DESTINATION_NAME_SENSOR: False, CONF_DESTINATION_DETAIL_SENSOR: False, CONF_LAST_LEG_LINE_NAME_SENSOR: False, CONF_LAST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_LAST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_LAST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_LAST_LEG_OCCUPANCY_SENSOR: False},
+            'origin_sensors': {CONF_ORIGIN_NAME_SENSOR: False, CONF_ORIGIN_DETAIL_SENSOR: False, CONF_FIRST_LEG_LINE_NAME_SENSOR: False, CONF_FIRST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_FIRST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_FIRST_LEG_OCCUPANCY_SENSOR: False, CONF_FIRST_LEG_TRAIN_SET_SENSOR: False}, 
+            'destination_sensors': {CONF_DESTINATION_NAME_SENSOR: False, CONF_DESTINATION_DETAIL_SENSOR: False, CONF_LAST_LEG_LINE_NAME_SENSOR: False, CONF_LAST_LEG_LINE_NAME_SHORT_SENSOR: False, CONF_LAST_LEG_TRANSPORT_TYPE_SENSOR: False, CONF_LAST_LEG_TRANSPORT_NAME_SENSOR: False, CONF_LAST_LEG_OCCUPANCY_SENSOR: False, CONF_LAST_LEG_TRAIN_SET_SENSOR: False},
             'device_trackers': {CONF_FIRST_LEG_DEVICE_TRACKER: DEFAULT_FIRST_LEG_DEVICE_TRACKER, CONF_LAST_LEG_DEVICE_TRACKER: DEFAULT_LAST_LEG_DEVICE_TRACKER, CONF_ORIGIN_DEVICE_TRACKER: DEFAULT_ORIGIN_DEVICE_TRACKER, CONF_DESTINATION_DEVICE_TRACKER: DEFAULT_DESTINATION_DEVICE_TRACKER}
             }
 

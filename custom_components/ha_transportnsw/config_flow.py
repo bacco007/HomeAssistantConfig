@@ -84,10 +84,9 @@ class TransportNSWConfigFlowHandler(ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             if self.source == SOURCE_IMPORT:
-                # There won't have been a previous key to check against so create an empty variable
-                self._previous_key = ''
-
+                # There won't have been a previous key to check against so create an empty 'previous key' variable
                 # Also we don't need to do any validation as it's already been done elsewhere
+                self._previous_key = ''
             else:
                 # The form has been filled in and submitted, so process the data provided.
                 try:
@@ -111,17 +110,36 @@ class TransportNSWConfigFlowHandler(ConfigFlow, domain=DOMAIN):
 
 
             if not errors:
-                # The API key is confirmed to be valid - let's make sure there isn't another entry
-                if user_input[CONF_API_KEY] != self._previous_key:
-#                    reason = "reconfigure_successful"
-                    existing_entry = await self.async_set_unique_id(user_input[CONF_API_KEY])
-                else:
-#                    reason = "reconfigure_successful_no_change"
-                    existing_entry = None
+                # The API key is confirmed to be valid so set the entry unique ID based on the API key - we'll check for uniqueness shortly
+                existing_entry = await self.async_set_unique_id(user_input[CONF_API_KEY])
 
-                if self.source == SOURCE_IMPORT:
+                if self.source == SOURCE_RECONFIGURE:
+                    if user_input[CONF_API_KEY] != self._previous_key:
+                        # We're reconfiguring and the API key is changing.  Make sure there isn't already an entry with the same key
+                        self._abort_if_unique_id_configured()
+
+                        # Still here?  There's no existing integration with the new API key
+                        reason = "reconfigure_successful"
+                    else:
+                        # The API key hasn't changed - no need to check for a unique ID conflict
+                        reason = "reconfigure_successful_no_change"
+
+                    # Get a reference to the config entry that's being reconfigured
+                    config_entry = self._get_reconfigure_entry()
+
+                    # We don't have an update listener in place (it causes problems when adding multiple subentries in one go) so we need to force an update ourselves, rather than just doing the update and having a listener catch it
+                    return self.async_update_reload_and_abort(
+                        config_entry,
+                        title=f"Transport NSW Mk II ({user_input[CONF_API_KEY][-4:]})",
+                        unique_id=user_input[CONF_API_KEY],
+                        data=user_input,
+                        reload_even_if_entry_is_unchanged=False,
+                        reason = f"reconfigure_successful_api_change_{str(user_input[CONF_API_KEY] != self._previous_key).lower()}"
+                    )
+
+                elif self.source == SOURCE_IMPORT:
                     if existing_entry is not None:
-                        # If we're importing but skipping, raise a persistent notification
+                        # Looks like we're trying to re-import an existing entry, so create a persistent notification and abort
                         persistent_notification.create(
                             self.hass,
                             f"Skipping the migration of legacy configuration.yaml entries for API key ending `{user_input[CONF_API_KEY][-4:]}` as they've already been imported, or there's already a config entry with the same key.\n\nPlease remove those entries from configuration.yaml.",
@@ -129,50 +147,44 @@ class TransportNSWConfigFlowHandler(ConfigFlow, domain=DOMAIN):
                             notification_id=f"{DOMAIN}_{user_input[CONF_API_KEY]}_unique_check"
                             )
 
-                # Abort if it's already configured
-                self._abort_if_unique_id_configured()
-
-                # If we got there then there's no unique ID conflict
-                if self.source == SOURCE_RECONFIGURE:
-                    config_entry = self._get_reconfigure_entry()
-
-                    # We don't have an update listener in place (it causes problems when adding multiple subentries in one go) so we need to force an update ourselves
-                    return self.async_update_reload_and_abort(
-                        config_entry,
-                        data=user_input,
-                        reload_even_if_entry_is_unchanged=False,
-                        reason = f"reconfigure_successful_api_change_{str(user_input[CONF_API_KEY] != self._previous_key).lower()}"
-                    )
+                        self._abort_if_unique_id_configured()
 
                 else:
-                    # Create the config entry.
-                    # Set our title variable here for use later
+                    # It's a brand new config entry, but we still need to check for a unique id conflict
+                    self._abort_if_unique_id_configured()
 
-                    self._title = f"Transport NSW Mk II ({user_input[CONF_API_KEY][-4:]})"
+                # If we're here we're creating a new config entry, either via an import or via the user's ConfigFlow
+                # Set our title variable here for use later
 
-                    if self.source == SOURCE_IMPORT:
-                        # We want to create the config entry and then as many subentries as we've been provided
-                        # The data for the config entry is a subset of what we've been provided via the import process
-                        self._input_data = {CONF_API_KEY: user_input[CONF_API_KEY], CONF_SCAN_INTERVAL: user_input[CONF_SCAN_INTERVAL]}
-                        subentry_data = user_input['subentry_data']
+                if self.source == SOURCE_IMPORT:
+                    # We want to create the config entry and then as many subentries as we've been provided
+                    # The data for the config entry is a subset of what we've been provided via the import process
+                    self._input_data = {
+                        CONF_API_KEY: user_input[CONF_API_KEY],
+                        CONF_SCAN_INTERVAL: user_input[CONF_SCAN_INTERVAL]
                         
-                        persistent_notification.create(
-                            self.hass,
-                            f"Successfully imported legacy configuration.yaml entries for API key ending `{user_input[CONF_API_KEY][-4:]}` - please remove those entries from configuration.yaml.",
-                            title='Transport NSW Mk II',
-                            notification_id=f"{DOMAIN}_{user_input[CONF_API_KEY]}"
-                            )
-                        
-                    else:
-                        self._input_data = user_input
-                        # We're just creating the config entry now
-                        subentry_data = None
-                        
-                    return self.async_create_entry(
-                        title=self._title,
-                        data=self._input_data,
-                        subentries = subentry_data
+                    }
+                    subentry_data = user_input['subentry_data']
+                    
+                    # Create a persistent notification now, we won't have a chance later
+                    persistent_notification.create(
+                        self.hass,
+                        f"Successfully imported legacy configuration.yaml entries for API key ending `{user_input[CONF_API_KEY][-4:]}` - please remove those entries from configuration.yaml.",
+                        title='Transport NSW Mk II',
+                        notification_id=f"{DOMAIN}_{user_input[CONF_API_KEY]}"
                         )
+                    
+                else:
+                    self._input_data = user_input
+                    # We're just creating a brand new config entry
+                    subentry_data = None
+
+                # Actually create the config entry (and optionally the subentries if we're importing)
+                return self.async_create_entry(
+                    title=f"Transport NSW Mk II ({user_input[CONF_API_KEY][-4:]})",
+                    data=self._input_data,
+                    subentries=subentry_data
+                    )
 
         if user_input is None:
             if self.source == SOURCE_RECONFIGURE:
@@ -194,16 +206,21 @@ class TransportNSWConfigFlowHandler(ConfigFlow, domain=DOMAIN):
             }
         )
 
+        description_placeholders = {
+            "tfnsw_registration": "https://opendata.transport.nsw.gov.au/data/user/register"
+        }
+
         # Show initial form
         return self.async_show_form(
-            step_id="user", data_schema=USER_DATA_SCHEMA, errors=errors
+            step_id="user",
+            data_schema=USER_DATA_SCHEMA,
+            errors=errors,
+            last_step = True,
+            description_placeholders = description_placeholders
         )
 
     async def async_step_import(self, user_input: dict[str, Any]):
-#        # Make sure this entry hasn't been imported already
-#        self._async_abort_entries_match(user_input)
-
-#        # We're here so the config entry for this import hasn't been created already
+        # We're here so the config entry for this import hasn't been created already
         # We've been passed a complete subentry data-set, plus what we need to set up the initial config entry as well
         return await self.async_step_user(user_input = user_input)
 
@@ -216,7 +233,3 @@ class CannotConnect(HomeAssistantError):
 
 class InvalidAuth(HomeAssistantError):
     """Error to indicate there is invalid auth."""
-
-
-
-

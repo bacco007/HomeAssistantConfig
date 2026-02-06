@@ -212,7 +212,7 @@ class TransportNSWDeviceTracker(CoordinatorEntity, TrackerEntity):
         attrs = {}
 
         try:
-            attrs['Attribution'] = ATTRIBUTION
+            attrs['Attribution'] = TFNSW_ATTRIBUTION
 
             # We can't change the name of the sensor on the fly, but we can update the attributes
             if self.entity_description.key in [CONF_ORIGIN_DEVICE_TRACKER, CONF_DESTINATION_DEVICE_TRACKER]:
