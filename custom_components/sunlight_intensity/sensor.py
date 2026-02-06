@@ -266,5 +266,5 @@ class SunElevationSensor(CoordinatorEntity, SensorEntity):
             "name": "Sunlight Intensity",
             "manufacturer": "UrbanFrame",
             "model": "Sunlight Intensity Calculator",
-            "sw_version": "1.0.5",
+            "sw_version": "1.0.7",
         }
