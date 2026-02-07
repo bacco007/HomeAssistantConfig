@@ -1,0 +1,82 @@
+{
+  "config": {
+    "step": {
+      "accept": {
+        "title": "Legal Disclaimer — Acceptance Required",
+        "description": "Please review the legal disclaimer below and accept to continue.\n\nLink: {link}\n\n{text}",
+        "data": {
+          "accept": "I have read and accept the disclaimer"
+        }
+      },
+      "choose": {
+        "title": "Add CAP Alerts",
+        "description": "Choose how to add a feed",
+        "data": {
+          "mode": "Mode"
+        }
+      },
+      "catalog": {
+        "title": "Select Country",
+        "data": {
+          "country": "Country"
+        }
+      },
+      "catalog_region": {
+        "title": "Select Region",
+        "data": {
+          "region": "Region"
+        }
+      },
+      "catalog_source": {
+        "title": "Select Source",
+        "data": {
+          "source": "Source"
+        }
+      },
+      "manual": {
+        "title": "Add feed manually",
+        "data": {
+          "name": "Name",
+          "url": "URL",
+          "format": "Format"
+        }
+      }
+    },
+    "abort": {
+      "no_selection": "No selection",
+      "disclaimer_not_accepted": "Disclaimer not accepted"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Manage feeds",
+        "data": {
+          "add_or_replace": "Add or replace",
+          "name": "Name",
+          "url": "URL",
+          "format": "Format",
+          "reset_failures_for": "Reset failures for feed"
+        }
+      }
+    }
+  },
+  "issues": {
+    "disclaimer_required": {
+      "title": "CAP Alerts disabled — disclaimer acceptance required",
+      "description": "CAP Alerts is disabled until you accept the legal disclaimer.\n\nOpen the integration and reconfigure to accept, or visit: {link}"
+    },
+    "feed_disabled": {
+      "title": "Feed disabled due to repeated failures",
+      "description": "Feed {slug} ({url}) was disabled after repeated failures. Use Options to reset failures once resolved."
+    },
+    "feed_no_geometry": {
+      "title": "Feed lacks geometry features",
+      "description": "Feed {slug} ({url}) does not include polygons, circles, or points. Some automations may be limited. Review the source or continue knowingly."
+    },
+    "feed_no_content": {
+      "title": "Feed has no alerts (persistently)",
+      "description": "Feed {slug} ({url}) has returned no alerts for multiple checks. If unexpected, verify the endpoint; otherwise, you can ignore this."
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "issues": {
+    "disclaimer_required": {
+      "title": "CAP Alerts disabled — disclaimer acceptance required",
+      "description": "CAP Alerts is disabled until you accept the legal disclaimer.\n\nOpen the integration and reconfigure to accept, or visit: {link}"
+    },
+    "feed_disabled": {
+      "title": "Feed disabled due to repeated failures",
+      "description": "Feed {slug} ({url}) was disabled after repeated failures. Use Options to reset failures once resolved."
+    },
+    "feed_no_geometry": {
+      "title": "Feed lacks geometry features",
+      "description": "Feed {slug} ({url}) does not include polygons, circles, or points. Some automations may be limited. Review the source or continue knowingly."
+    },
+    "feed_no_content": {
+      "title": "Feed has no alerts (persistently)",
+      "description": "Feed {slug} ({url}) has returned no alerts for multiple checks. If unexpected, verify the endpoint; otherwise, you can ignore this."
+    }
+  }
+}

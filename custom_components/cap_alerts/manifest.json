@@ -1,0 +1,19 @@
+{
+  "domain": "cap_alerts",
+  "name": "CAP Alerts (Multi-Feed)",
+  "version": "0.1.0",
+  "documentation": "https://github.com/twcau/CAP-au-for-home-assistant",
+  "issue_tracker": "https://github.com/twcau/CAP-au-for-home-assistant/issues",
+  "codeowners": [
+    "@twcau"
+  ],
+  "config_flow": true,
+  "iot_class": "cloud_polling",
+  "requirements": [
+    "xmltodict>=0.13.0"
+  ],
+  "loggers": [
+    "custom_components.cap_alerts"
+  ],
+  "integration_type": "service"
+}
