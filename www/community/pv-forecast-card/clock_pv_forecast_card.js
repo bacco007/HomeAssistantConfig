@@ -5,7 +5,7 @@ const LitElement = Object.getPrototypeOf(customElements.get("ha-panel-lovelace")
 const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
-console.info("📦 clock-pv-forecast-card v1.9.2 loaded (Full Editor)");
+console.info("📦 clock-pv-forecast-card v1.9.3 loaded (Full Editor)");
 
 const translations = {
   en: { forecast: "Forecast", remaining: "Remaining", last_updated: "Last updated", today: "Today", tomorrow: "Tomorrow", error_config: "Configuration Error", error_entity: "At least one forecast entity must be defined", unavailable: "Unavailable", unknown: "Unknown" },
@@ -234,7 +234,7 @@ class ClockPvForecastCard extends LitElement {
     if (this.config.show_attribute_value && this.config.forecast_attribute && entityState.attributes[this.config.forecast_attribute] !== undefined) {
       const attrVal = parseFloat(entityState.attributes[this.config.forecast_attribute]);
       if (!isNaN(attrVal)) {
-        displayValue += ` (${this._formatValue(attrVal, item.entity)})`;
+        displayValue += ` (${this._formatNumberOnly(attrVal)})`;
       }
     }
 
