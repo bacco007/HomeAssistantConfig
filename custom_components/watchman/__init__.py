@@ -17,12 +17,13 @@ from .const import (
     CONF_IGNORED_FILES,
     CONF_IGNORED_ITEMS,
     CONF_IGNORED_STATES,
+    CONF_LOG_OBFUSCATE,
     CONF_REPORT_PATH,
     CONF_SECTION_APPEARANCE_LOCATION,
     CONF_STARTUP_DELAY,
     CONFIG_ENTRY_MINOR_VERSION,
     CONFIG_ENTRY_VERSION,
-    DB_FILENAME,
+    CURRENT_DB_SCHEMA_VERSION,
     DEFAULT_DELAY,
     DEFAULT_OPTIONS,
     DEFAULT_REPORT_FILENAME,
@@ -33,12 +34,13 @@ from .const import (
     REPORT_SERVICE_NAME,
     STATE_SAFE_MODE,
     STATE_WAITING_HA,
+    STORAGE_VERSION,
 )
 from .coordinator import WatchmanCoordinator
 from .hub import WatchmanHub
 from .services import WatchmanServicesSetup
 from .utils.logger import _LOGGER
-from .utils.utils import get_config
+from .utils.utils import get_config, set_obfuscation_config
 
 type WMConfigEntry = ConfigEntry[WMData]
 
@@ -65,8 +67,11 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: WMConfigEntry) ->
         legacy_db_path.rename(db_path)
 
     integration = await async_get_integration(hass, DOMAIN)
+    
+    # Configure obfuscation
+    set_obfuscation_config(config_entry.data.get(CONF_LOG_OBFUSCATE, True))
+    
     hub = WatchmanHub(hass, str(db_path))
-    await hub.async_init()
     coordinator = WatchmanCoordinator(
         hass,
         _LOGGER,
@@ -87,8 +92,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: WMConfigEntry) ->
         # prime the coordinator with cached data immediately to minimize startup delay
         try:
             _LOGGER.debug("HA is ready. Prime coordinator with cached data.")
-            parsed_entities = await hub.async_get_parsed_entities()
-            parsed_services = await hub.async_get_parsed_services()
+            all_items = await hub.async_get_all_items()
+            parsed_entities = all_items["entities"]
+            parsed_services = all_items["services"]
             initial_data = await coordinator.async_process_parsed_data(
                 parsed_entities, parsed_services
             )
@@ -106,19 +112,26 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: WMConfigEntry) ->
         _LOGGER.debug("Subscribed to HA events.")
 
         if event:
+            # integration started during HA startup
+            # use startup delay to schedule initial parsing (usually longer)
             startup_delay = get_config(hass, CONF_STARTUP_DELAY, 0)
-            _LOGGER.debug(
-                f"Watchman started during HA startup). Initial parse in: {startup_delay}s."
-            )
         else:
+            # intergation started after installation from Devices&Services
+            # use short delay to schedule initial parsing (usually longer)
             startup_delay = DEFAULT_DELAY
-            _LOGGER.debug(
-                f"Watchman installed (HA running). Initial parse in: {startup_delay}s."
-            )
 
-        coordinator.request_parser_rescan(reason="startup", delay=startup_delay)
+        _LOGGER.debug(
+            f"Executing mandatory startup scan in: {startup_delay}s."
+        )
 
-    _LOGGER.info("Watchman integration started [%s]", coordinator.version)
+        coordinator.request_parser_rescan(reason="mandatory startup scan", delay=startup_delay)
+
+    _LOGGER.info(
+        "Watchman integration started [%s], DB: %s, Stats: %s",
+        coordinator.version,
+        CURRENT_DB_SCHEMA_VERSION,
+        STORAGE_VERSION,
+    )
 
     # Check for previous crash
     lock_path = Path(hass.config.path(".storage", LOCK_FILENAME))
@@ -161,6 +174,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: WMConfigEntry) ->
 
 async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Reload integration when options changed."""
+    set_obfuscation_config(entry.data.get(CONF_LOG_OBFUSCATE, True))
+    if hasattr(entry, "runtime_data") and entry.runtime_data:
+        _LOGGER.debug("Invalidating FilterContext cache due to update Watchman config_entry data")
+        entry.runtime_data.coordinator.invalidate_filter_context()
     await hass.config_entries.async_reload(entry.entry_id)
 
 
@@ -280,6 +297,12 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
                 data[CONF_STARTUP_DELAY] = min_delay
 
             current_minor = 2
+
+        if current_minor < 3:
+            _LOGGER.info("Migrating Watchman entry to minor version 3")
+            # Default to True (enabled)
+            data[CONF_LOG_OBFUSCATE] = DEFAULT_OPTIONS.get(CONF_LOG_OBFUSCATE, True)
+            current_minor = 3
 
         if current_minor != config_entry.minor_version:
             hass.config_entries.async_update_entry(

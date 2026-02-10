@@ -22,6 +22,7 @@ from ..const import (
     CONF_IGNORED_ITEMS,
     CONF_IGNORED_STATES,
     CONF_INCLUDED_FOLDERS,
+    CONF_LOG_OBFUSCATE,
     CONF_REPORT_PATH,
     CONF_SECTION_APPEARANCE_LOCATION,
     CONF_STARTUP_DELAY,
@@ -29,6 +30,14 @@ from ..const import (
     DOMAIN_DATA,
 )
 from .logger import _LOGGER, INDENT
+
+_OBFUSCATE_ENABLED = True
+
+
+def set_obfuscation_config(enabled: bool) -> None:
+    """Set the global obfuscation enabled state."""
+    global _OBFUSCATE_ENABLED
+    _OBFUSCATE_ENABLED = enabled
 
 
 def get_val(
@@ -101,6 +110,7 @@ def get_config(hass: HomeAssistant, key: str, default: Any | None = None) -> Any
         CONF_IGNORED_STATES,
         CONF_EXCLUDE_DISABLED_AUTOMATION,
         CONF_STARTUP_DELAY,
+        CONF_LOG_OBFUSCATE,
     ]:
         return get_val(entry.data, key)
 
@@ -190,8 +200,14 @@ def get_entity_state(
     return state, name
 
 
-def obfuscate_id(item_id: str) -> str:
+def obfuscate_id(item_id: Any) -> Any:
     """Obfuscate entity or action ID for logging."""
+    if not _OBFUSCATE_ENABLED:
+        return item_id
+
+    if isinstance(item_id, (list, tuple, set)):
+        return ", ".join([str(obfuscate_id(x)) for x in item_id])
+
     if not isinstance(item_id, str) or "." not in item_id:
         return item_id
 
@@ -201,6 +217,10 @@ def obfuscate_id(item_id: str) -> str:
 
     if len(name) <= 3:
         return f"{domain}.{name}"
+
+    if len(name) > 15:
+        # Truncate to 15 chars: 3 visible + 11 stars + '~'
+        return f"{domain}.{name[:3]}***********~"
 
     prefix = name[:3]
     suffix = name[3:]

@@ -1,6 +1,7 @@
 import asyncio
 from collections.abc import Awaitable, Callable, Generator
 import contextlib
+from dataclasses import dataclass
 import datetime
 import fnmatch
 import logging
@@ -9,8 +10,7 @@ from pathlib import Path
 import re
 import sqlite3
 import time
-from dataclasses import dataclass
-from typing import Any, Generator, TypedDict
+from typing import Any, TypedDict
 
 import anyio
 import yaml
@@ -21,17 +21,18 @@ from ..const import DB_TIMEOUT
 from .logger import _LOGGER
 from .parser_const import (
     BUNDLED_IGNORED_ITEMS,
+    CONFIG_ENTRY_DOMAINS,
     ESPHOME_ALLOWED_KEYS,
     ESPHOME_PATH_SEGMENT,
     HA_DOMAINS,
+    IGNORED_BRANCH_KEYS,
     IGNORED_DIRS,
-    IGNORED_KEYS,
+    IGNORED_VALUE_KEYS,
     JSON_FILE_EXTS,
     MAX_FILE_SIZE,
     PLATFORMS,
     STORAGE_WHITELIST,
     YAML_FILE_EXTS,
-    CONFIG_ENTRY_DOMAINS,
 )
 from .yaml_loader import LineLoader
 
@@ -268,8 +269,8 @@ def _recursive_search(
         for key, value in data.items():
             line_no = getattr(key, "line", None)
 
-            # Check for Ignored Keys
-            if isinstance(key, str) and key.lower() in IGNORED_KEYS:
+            # exclude whole branch with key name from IGNORED_BRANCH_KEYS
+            if isinstance(key, str) and key.lower() in IGNORED_BRANCH_KEYS:
                 continue
 
             # 1. Check Key (Skip if ESPHome mode)
@@ -364,6 +365,11 @@ def _recursive_search(
 
         line_no = getattr(data, "line", None)
         key_name = parent_key
+
+        # ignore _values_ of the key from IGNORED_VALUE_KEYS
+        # this does not prevent parser to traverse in if there are nested keys
+        if key_name and str(key_name).lower() in IGNORED_VALUE_KEYS:
+            return
 
         # ESPHome Mode: Only process value if key_name is allowed
         if is_esphome:
@@ -639,6 +645,8 @@ def _scan_files_sync(root_path: str, ignored_patterns: list[str]) -> tuple[list[
 # --- WatchmanParser ---
 
 class WatchmanParser:
+    """Parses HA configuration files to extract entities and actions."""
+
     def __init__(self, db_path: str, executor: Callable[[Callable, Any], Awaitable[Any]] | None = None) -> None:
         self.db_path = db_path
         # default_async_executor is used by parser CLI
@@ -657,63 +665,26 @@ class WatchmanParser:
             _LOGGER.error(f"Database error in {self.db_path}: {e}")
             raise
 
-    def check_and_fix_db(self) -> None:
-        """Check if database is valid, delete and recreate if corrupted."""
-        try:
-            with self._db_session() as conn:
-                conn.execute("SELECT 1")
-        except sqlite3.DatabaseError as e:
-            msg = str(e).lower()
-            if "locked" in msg or "busy" in msg:
-                _LOGGER.warning(f"Database locked during check, skipping repair: {e}")
-                return
+    def _configure_connection(self, conn: sqlite3.Connection) -> None:
+        """Apply runtime settings to the connection.
 
-            _LOGGER.error(f"Database corrupted ({e}), deleting {self.db_path}")
-            path = Path(self.db_path)
-            if path.exists():
-                try:
-                    path.unlink()
-                except OSError as remove_err:
-                    _LOGGER.error(f"Failed to remove corrupted DB: {remove_err}")
+        These operations should not trigger extra i/o writes and
+        can be applied each time database is opened"""
 
-            # Re-init (will create new file)
-            try:
-                self._init_db(self.db_path).close()
-            except Exception as init_err:
-                _LOGGER.error(f"Failed to recreate DB: {init_err}")
+        conn.execute("PRAGMA foreign_keys = ON;")
+        conn.execute("PRAGMA journal_mode = TRUNCATE;")
+        conn.execute("PRAGMA synchronous = OFF;")
 
-    def _init_db(self, db_path: str) -> sqlite3.Connection:
-        # Ensure directory exists
-        path = Path(db_path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-
+    def _create_fresh_db(self, db_path: str) -> sqlite3.Connection:
+        """Create a fresh database with the current schema."""
         from ..const import CURRENT_DB_SCHEMA_VERSION
 
         conn = sqlite3.connect(db_path, timeout=DB_TIMEOUT)
         try:
-            # Check version
-            cursor = conn.cursor()
-            cursor.execute("PRAGMA user_version")
-            db_version = cursor.fetchone()[0]
-
-            if db_version > CURRENT_DB_SCHEMA_VERSION:
-                _LOGGER.warning(
-                    "Database version %s is newer than supported version %s. Rebuilding database.",
-                    db_version,
-                    CURRENT_DB_SCHEMA_VERSION,
-                )
-                conn.close()
-                path.unlink(missing_ok=True)
-                return self._init_db(db_path)
-
-            if db_version < CURRENT_DB_SCHEMA_VERSION:
-                self._migrate_db(conn, db_version, CURRENT_DB_SCHEMA_VERSION)
-
             c = conn.cursor()
 
-            c.execute("PRAGMA foreign_keys = ON;")
-            c.execute("PRAGMA journal_mode = TRUNCATE;")
-            c.execute("PRAGMA synchronous = OFF;")
+            # Set pragmas ensuring they are active for creation
+            self._configure_connection(conn)
 
             c.execute(
                 """CREATE TABLE IF NOT EXISTS processed_files (
@@ -759,9 +730,8 @@ class WatchmanParser:
 
             c.execute("INSERT OR IGNORE INTO scan_config (id) VALUES (1)")
 
-            # Set version if new DB
-            if db_version == 0:
-                cursor.execute(f"PRAGMA user_version = {CURRENT_DB_SCHEMA_VERSION}")
+            # Set version
+            c.execute(f"PRAGMA user_version = {CURRENT_DB_SCHEMA_VERSION}")
 
             conn.commit()
             return conn
@@ -769,17 +739,51 @@ class WatchmanParser:
             conn.close()
             raise
 
-    def _migrate_db(
-        self, conn: sqlite3.Connection, from_version: int, to_version: int
-    ) -> None:
-        """Handle database migrations."""
-        _LOGGER.info("Migrating database from version %s to %s", from_version, to_version)
-        if from_version == 0 and to_version == 2:
-            # Migration 0 -> 2 (Passive): just bump version
-            # Dead columns remain in scan_config but are ignored by named SELECTs
+    def _init_db(self, db_path: str) -> sqlite3.Connection:
+        """Initialize the database connection, handling creation and migrations."""
+        # Ensure directory exists
+        path = Path(db_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+        # 1. File Missing -> Fresh Create
+        if not path.exists():
+            return self._create_fresh_db(db_path)
+
+        from ..const import CURRENT_DB_SCHEMA_VERSION
+
+        conn = None
+        try:
+            # 2. File Exists -> Check Version
+            conn = sqlite3.connect(db_path, timeout=DB_TIMEOUT)
             cursor = conn.cursor()
-            cursor.execute("PRAGMA user_version = 2")
-            conn.commit()
+            cursor.execute("PRAGMA user_version")
+            db_version = cursor.fetchone()[0]
+
+            if db_version != CURRENT_DB_SCHEMA_VERSION:
+                _LOGGER.info(
+                    "Cache DB version mismatch (found %s, expected %s), recreating cache. First parse may take some time.",
+                    db_version,
+                    CURRENT_DB_SCHEMA_VERSION,
+                )
+                conn.close()
+                path.unlink(missing_ok=True)
+                return self._create_fresh_db(db_path)
+
+            # 3. Version Match -> Setup Runtime Pragmas & Return
+            self._configure_connection(conn)
+            return conn
+
+        except (sqlite3.DatabaseError, Exception) as e:
+            _LOGGER.error(f"Database error during init ({e}), recreating cache.")
+            # Ensure connection is closed if it was opened
+            if conn:
+                try:
+                    conn.close()
+                except Exception:
+                    pass
+
+            path.unlink(missing_ok=True)
+            return self._create_fresh_db(db_path)
 
     async def _async_scan_files_legacy(self, root_path: str, ignored_patterns: list[str]) -> tuple[list[dict[str, Any]], int]:
         """Phase 1: Asynchronous file scanning using anyio.
@@ -1052,7 +1056,7 @@ class WatchmanParser:
             _LOGGER.debug(
                 f"Phase 3 (Parse): finished in {(time.monotonic() - parse_time):.3f} sec"
             )
-            _LOGGER.debug(f"Total Scan finished in {duration:.3f} sec")
+            _LOGGER.debug(f"Total Scan finished in {duration:.3f} sec, force refresh sensors now.")
 
             current_timestamp = datetime.datetime.now().isoformat()
 
