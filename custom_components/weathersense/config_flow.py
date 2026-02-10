@@ -23,8 +23,13 @@ from .const import (
     CONF_PRESSURE_SENSOR,
     CONF_IS_OUTDOOR,
     CONF_SOLAR_RADIATION_SENSOR,
+    CONF_WIND_DIRECTION_SENSOR,
+    CONF_WIND_DIRECTION_CORRECTION,
+    CONF_SMOOTHING_ENABLED,
+    CONF_SMOOTHING_FACTOR,
     DEFAULT_NAME,
     DEFAULT_IS_OUTDOOR,
+    DEFAULT_SMOOTHING_FACTOR,
     CONF_DISPLAY_UNIT,
 )
 
@@ -79,6 +84,16 @@ class WeatherSenseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     ),
                     vol.Optional(CONF_SOLAR_RADIATION_SENSOR): selector.EntitySelector(
                         selector.EntitySelectorConfig(domain="sensor")
+                    ),
+                    vol.Optional(CONF_WIND_DIRECTION_SENSOR): selector.EntitySelector(
+                        selector.EntitySelectorConfig(domain="sensor")
+                    ),
+                    vol.Optional(CONF_WIND_DIRECTION_CORRECTION, default=False): bool,
+                    vol.Optional(CONF_SMOOTHING_ENABLED, default=False): bool,
+                    vol.Optional(CONF_SMOOTHING_FACTOR, default=DEFAULT_SMOOTHING_FACTOR): selector.NumberSelector(
+                        selector.NumberSelectorConfig(
+                            min=0.05, max=0.95, step=0.05, mode=selector.NumberSelectorMode.SLIDER
+                        )
                     ),
                     vol.Optional(CONF_IS_OUTDOOR, default=DEFAULT_IS_OUTDOOR): bool,
                     vol.Optional(CONF_DISPLAY_UNIT): selector.SelectSelector(
@@ -153,6 +168,37 @@ class WeatherSenseOptionsFlow(config_entries.OptionsFlow):
             options[vol.Optional(CONF_SOLAR_RADIATION_SENSOR)] = selector.EntitySelector(
                 selector.EntitySelectorConfig(domain="sensor")
             )
+
+        # Wind direction sensor (optional)
+        wind_direction_value = current_config.get(CONF_WIND_DIRECTION_SENSOR)
+        if wind_direction_value is not None:
+            options[vol.Optional(CONF_WIND_DIRECTION_SENSOR, default=wind_direction_value)] = selector.EntitySelector(
+                selector.EntitySelectorConfig(domain="sensor")
+            )
+        else:
+            options[vol.Optional(CONF_WIND_DIRECTION_SENSOR)] = selector.EntitySelector(
+                selector.EntitySelectorConfig(domain="sensor")
+            )
+
+        # Wind direction correction toggle (experimental, default False)
+        options[vol.Optional(
+            CONF_WIND_DIRECTION_CORRECTION,
+            default=current_config.get(CONF_WIND_DIRECTION_CORRECTION, False)
+        )] = bool
+
+        # Smoothing options
+        options[vol.Optional(
+            CONF_SMOOTHING_ENABLED,
+            default=current_config.get(CONF_SMOOTHING_ENABLED, False)
+        )] = bool
+        options[vol.Optional(
+            CONF_SMOOTHING_FACTOR,
+            default=current_config.get(CONF_SMOOTHING_FACTOR, DEFAULT_SMOOTHING_FACTOR)
+        )] = selector.NumberSelector(
+            selector.NumberSelectorConfig(
+                min=0.05, max=0.95, step=0.05, mode=selector.NumberSelectorMode.SLIDER
+            )
+        )
 
         # Boolean and select fields can have defaults
         options[vol.Optional(CONF_IS_OUTDOOR, default=current_config.get(CONF_IS_OUTDOOR, DEFAULT_IS_OUTDOOR))] = bool

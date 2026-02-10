@@ -12,6 +12,10 @@
           "wind_speed_sensor": "हवा की गति सेंसर (वैकल्पिक)",
           "pressure_sensor": "दबाव सेंसर (वैकल्पिक)",
           "solar_radiation_sensor": "सौर विकिरण सेंसर (वैकल्पिक)",
+          "wind_direction_sensor": "हवा की दिशा सेंसर (वैकल्पिक)",
+          "wind_direction_correction": "हवा की दिशा सुधार सक्षम करें (प्रयोगात्मक)",
+          "smoothing_enabled": "आउटपुट स्मूथिंग सक्षम करें (EMA फ़िल्टर)",
+          "smoothing_factor": "स्मूथिंग संवेदनशीलता (कम = अधिक स्मूथ, अधिक = तेज़)",
           "is_outdoor": "क्या यह बाहरी स्थितियों के लिए है?",
           "display_unit": "तापमान प्रदर्शन इकाई"
         }
@@ -32,6 +36,10 @@
           "wind_speed_sensor": "हवा की गति सेंसर (वैकल्पिक)",
           "pressure_sensor": "दबाव सेंसर (वैकल्पिक)",
           "solar_radiation_sensor": "सौर विकिरण सेंसर (वैकल्पिक)",
+          "wind_direction_sensor": "हवा की दिशा सेंसर (वैकल्पिक)",
+          "wind_direction_correction": "हवा की दिशा सुधार सक्षम करें (प्रयोगात्मक)",
+          "smoothing_enabled": "आउटपुट स्मूथिंग सक्षम करें (EMA फ़िल्टर)",
+          "smoothing_factor": "स्मूथिंग संवेदनशीलता (कम = अधिक स्मूथ, अधिक = तेज़)",
           "is_outdoor": "क्या यह बाहरी स्थितियों के लिए है?",
           "display_unit": "तापमान प्रदर्शन इकाई"
         }

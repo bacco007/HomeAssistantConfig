@@ -18,10 +18,15 @@ CONF_IS_OUTDOOR = "is_outdoor"
 CONF_SOLAR_RADIATION_SENSOR = "solar_radiation_sensor"
 CONF_TIME_OF_DAY = "time_of_day"
 CONF_DISPLAY_UNIT = "display_unit"
+CONF_WIND_DIRECTION_SENSOR = "wind_direction_sensor"
+CONF_WIND_DIRECTION_CORRECTION = "wind_direction_correction"
+CONF_SMOOTHING_ENABLED = "smoothing_enabled"
+CONF_SMOOTHING_FACTOR = "smoothing_factor"
 
 # Default values
 DEFAULT_NAME = "Feels Like Temperature"
 DEFAULT_IS_OUTDOOR = True
+DEFAULT_SMOOTHING_FACTOR = 0.3
 
 # Comfort levels (short form)
 COMFORT_EXTREME_COLD = "extreme_cold"
@@ -92,3 +97,5 @@ ATTR_PRESSURE = "pressure"
 ATTR_IS_OUTDOOR = "is_outdoor"
 ATTR_TIME_OF_DAY = "time_of_day"
 ATTR_IS_COMFORTABLE = "is_comfortable"
+ATTR_WIND_DIRECTION = "wind_direction"
+ATTR_WIND_DIRECTION_CORRECTION = "wind_direction_correction_applied"

@@ -12,6 +12,10 @@
           "wind_speed_sensor": "风速传感器（可选）",
           "pressure_sensor": "压力传感器（可选）",
           "solar_radiation_sensor": "太阳辐射传感器（可选）",
+          "wind_direction_sensor": "风向传感器（可选）",
+          "wind_direction_correction": "启用风向校正（实验性）",
+          "smoothing_enabled": "启用输出平滑（EMA滤波器）",
+          "smoothing_factor": "平滑灵敏度（越低越平滑，越高越快）",
           "is_outdoor": "这是用于室外条件吗？",
           "display_unit": "温度显示单位"
         }
@@ -32,6 +36,10 @@
           "wind_speed_sensor": "风速传感器（可选）",
           "pressure_sensor": "压力传感器（可选）",
           "solar_radiation_sensor": "太阳辐射传感器（可选）",
+          "wind_direction_sensor": "风向传感器（可选）",
+          "wind_direction_correction": "启用风向校正（实验性）",
+          "smoothing_enabled": "启用输出平滑（EMA滤波器）",
+          "smoothing_factor": "平滑灵敏度（越低越平滑，越高越快）",
           "is_outdoor": "这是用于室外条件吗？",
           "display_unit": "温度显示单位"
         }

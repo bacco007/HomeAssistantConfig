@@ -12,6 +12,10 @@
           "wind_speed_sensor": "Wind Speed Sensor (optional)",
           "pressure_sensor": "Pressure Sensor (optional)",
           "solar_radiation_sensor": "Solar Radiation Sensor (optional)",
+          "wind_direction_sensor": "Wind Direction Sensor (optional)",
+          "wind_direction_correction": "Enable wind direction correction (experimental)",
+          "smoothing_enabled": "Enable output smoothing (EMA filter)",
+          "smoothing_factor": "Smoothing responsiveness (lower = smoother, higher = faster)",
           "is_outdoor": "Is this for outdoor conditions?",
           "display_unit": "Display Temperature Unit"
         }
@@ -32,6 +36,10 @@
           "wind_speed_sensor": "Wind Speed Sensor (optional)",
           "pressure_sensor": "Pressure Sensor (optional)",
           "solar_radiation_sensor": "Solar Radiation Sensor (optional)",
+          "wind_direction_sensor": "Wind Direction Sensor (optional)",
+          "wind_direction_correction": "Enable wind direction correction (experimental)",
+          "smoothing_enabled": "Enable output smoothing (EMA filter)",
+          "smoothing_factor": "Smoothing responsiveness (lower = smoother, higher = faster)",
           "is_outdoor": "Is this for outdoor conditions?",
           "display_unit": "Display Temperature Unit"
         }
