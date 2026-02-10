@@ -46,9 +46,12 @@ def get_location_value(data, key: str, value: str, index: int = -1) -> Tuple[any
     try:
         available = False
 
-        locations = data['locations_list']['locations']
+        if key in [CONF_FIRST_LEG_DEVICE_TRACKER, CONF_LAST_LEG_DEVICE_TRACKER]:
+            source = data['locations_list']['vehicles']
+        else:
+            source = data['locations_list']['locations']
 
-        result = next((item for item in locations if item['key'] == key), None)
+        result = next((item for item in source if item['key'] == key), None)
         if result is not None:
             available = True
 
@@ -221,6 +224,7 @@ class TransportNSWDeviceTracker(CoordinatorEntity, TrackerEntity):
 
         finally:
             return attrs
+
 
 
 
