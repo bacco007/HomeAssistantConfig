@@ -16,7 +16,7 @@
                 "data": {
                     "download_url": "URL"
                 },
-                "description": "Frontend resources require URL from where to download compiled JS / CSS files when changes are detected within the repository.\n\nVariable `'{{version}}'` will be replaced with the corresponding GIT repository tag / commit hash (as configured in previous step).\n\nExamples:\n\n```\nhttps://raw.githubusercontent.com/user/awesome-resource/refs/tags/'{{version}}'/dist/bundle.min.js\nhttps://raw.githubusercontent.com/user/awesome-resource/refs/tags/'{{version}}'/dist.js\nhttps://github.com/user/awesome-resource/releases/download/'{{version}}'/awesome-resource.js\n```",
+                "description": "Frontend resources require URL from where to download compiled JS / CSS files when changes are detected within the repository.\n\nVariable `'{{version}}'` will be replaced with the corresponding GIT repository tag / commit hash (as configured in previous step).\n\nExamples:\n\n```\n{example_url_1}\n{example_url_2}\n{example_url_3}\n```",
                 "title": "Fill in resource details"
             },
             "user": {
@@ -28,7 +28,7 @@
                 "data_description": {
                     "type": "Integrations are `custom_components` that are not part of Home Assistant.\nResources are frontend elements like themes, Lovelace plugins, etc.",
                     "update_strategy": "Determines which references from repository are reported as updates in Home Assistant.\nLatest tag will offer the latest stable version. Latest unstable tag will offer the latest tag, even if it is a dev, alpha, beta, or RC version. Latest commit will always follow the latest commit (this is the least stable option).",
-                    "url": "E.g.: `https://github.com/user/awesome-component.git`"
+                    "url": "E.g.: `{example_url}`"
                 },
                 "title": "Fill in GIT repository details"
             }

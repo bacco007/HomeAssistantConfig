@@ -102,7 +102,12 @@ class GPMConfigFlow(ConfigFlow, domain=DOMAIN):
             STEP_USER_DATA_SCHEMA, user_input or {}
         )
         return self.async_show_form(
-            step_id="user", data_schema=data_schema, errors=errors
+            step_id="user",
+            data_schema=data_schema,
+            errors=errors,
+            description_placeholders={
+                "example_url": "https://github.com/user/awesome-component.git",
+            },
         )
 
     async def async_step_resource(
@@ -127,7 +132,14 @@ class GPMConfigFlow(ConfigFlow, domain=DOMAIN):
             STEP_RESOURCE_DATA_SCHEMA, user_input or default_value
         )
         return self.async_show_form(
-            step_id="resource", data_schema=data_schema, errors=errors
+            step_id="resource",
+            data_schema=data_schema,
+            errors=errors,
+            description_placeholders={
+                "example_url_1": "https://raw.githubusercontent.com/user/awesome-resource/refs/tags/'{{version}}'/dist/bundle.min.js",
+                "example_url_2": "https://raw.githubusercontent.com/user/awesome-resource/refs/tags/'{{version}}'/dist.js",
+                "example_url_3": "https://github.com/user/awesome-resource/releases/download/'{{version}}'/awesome-resource.js",
+            },
         )
 
     def _get_resource_defaults(self, user_input: dict[str, Any]) -> dict[str, Any]:

@@ -19,5 +19,5 @@
   "requirements": [
     "GitPython~=3.1.43"
   ],
-  "version": "0.4.3"
+  "version": "0.5.0"
 }

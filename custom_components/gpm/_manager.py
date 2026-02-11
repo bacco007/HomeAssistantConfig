@@ -224,9 +224,7 @@ class RepositoryManager:
                 latest_tag = await self._get_latest_tag()
             if self.update_strategy == UpdateStrategy.LATEST_UNSTABLE_TAG:
                 latest_tag = await self._get_latest_tag(only_stable=False)
-            self._latest_version_cache = (
-                latest_tag if latest_tag else await self._get_latest_commit()
-            )
+            self._latest_version_cache = latest_tag or await self._get_latest_commit()
         return self._latest_version_cache
 
     @ensure_cloned
@@ -530,7 +528,7 @@ class ResourceRepositoryManager(RepositoryManager):
     ) -> ResourceStorageCollection:
         """Return the Lovelace resource storage."""
         try:
-            res: ResourceStorageCollection = hass.data[LOVELACE_DOMAIN]["resources"]
+            res: ResourceStorageCollection = hass.data[LOVELACE_DOMAIN].resources
         except KeyError as e:
             raise ResourcesUpdateError("ResourceStorageCollection not found") from e
         if not hasattr(res, "store") or res.store is None:
