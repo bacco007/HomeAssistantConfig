@@ -5,10 +5,21 @@
 const render = (el, widget, { getColorStyle }) => {
     const props = widget.props || {};
 
-    const bgCol = props.bg_color || props.background_color || props.color || "theme_auto";
+    // bg_color/border_color only override 'color' when explicitly set to a real color
+    // (theme_auto is treated as "not explicitly set" so 'color' takes precedence)
+    const effectiveBg = (props.bg_color && props.bg_color !== "theme_auto") ? props.bg_color : null;
+    const effectiveBorder = (props.border_color && props.border_color !== "theme_auto") ? props.border_color : null;
+
+    const bgCol = effectiveBg || props.color || "theme_auto";
+    const borderCol = effectiveBorder || props.color || "theme_auto";
+
     el.style.backgroundColor = props.fill ? getColorStyle(bgCol) : "transparent";
-    el.style.border = `${props.border_width || 1}px solid ${getColorStyle(props.border_color || props.color || "theme_auto")}`;
+    el.style.border = `${props.border_width || 1}px solid ${getColorStyle(borderCol)}`;
     el.style.boxSizing = "border-box";
+
+    if (props.opacity !== undefined && props.opacity < 100) {
+        el.style.opacity = props.opacity / 100;
+    }
 };
 
 const exportLVGL = (w, { common, convertColor, formatOpacity }) => {
@@ -37,8 +48,6 @@ export default {
         fill: false,
         border_width: 1,
         color: "theme_auto",
-        bg_color: "theme_auto",
-        border_color: "theme_auto",
         radius: 0,
         opa: 255
     },
@@ -47,9 +56,12 @@ export default {
         const p = w.props || {};
 
         // Resolve colors (handle theme_auto)
-        // Fallback to p.color if border/bg not set (matching render logic)
-        let fill = p.fill ? (p.bg_color || p.color) : null;
-        let outline = p.border_color || p.color || "black";
+        // bg_color/border_color only override 'color' when explicitly set to a real color
+        const effectiveBg = (p.bg_color && p.bg_color !== "theme_auto") ? p.bg_color : null;
+        const effectiveBorder = (p.border_color && p.border_color !== "theme_auto") ? p.border_color : null;
+
+        let fill = p.fill ? (effectiveBg || p.color) : null;
+        let outline = effectiveBorder || p.color || "black";
 
         // Force mapping for theme_auto
         if (fill === "theme_auto" || (p.fill && !fill)) fill = layout?.darkMode ? "white" : "black";
@@ -76,8 +88,8 @@ export default {
             y_start: Math.round(w.y),
             x_end: Math.round(w.x + w.width),
             y_end: Math.round(w.y + w.height),
-            fill: p.fill ? (p.bg_color || p.color || "black") : null,
-            outline: p.border_color || p.color || "black",
+            fill: p.fill ? ((p.bg_color && p.bg_color !== "theme_auto" ? p.bg_color : null) || p.color || "black") : null,
+            outline: (p.border_color && p.border_color !== "theme_auto" ? p.border_color : null) || p.color || "black",
             width: p.border_width || 1,
             radius: p.radius || 0
         };
@@ -91,8 +103,10 @@ export default {
         const fill = !!p.fill;
         const borderWidth = parseInt(p.border_width || 1, 10);
         const colorProp = p.color || "theme_auto";
-        const borderColorProp = p.border_color || colorProp;
-        const color = getColorConst(colorProp);
+        const fillColorProp = (p.bg_color && p.bg_color !== "theme_auto") ? p.bg_color : colorProp;
+        const borderColorProp = (p.border_color && p.border_color !== "theme_auto") ? p.border_color : colorProp;
+
+        const fillColor = getColorConst(fillColorProp);
         const borderColor = getColorConst(borderColorProp);
 
         const rectX = Math.floor(w.x);
@@ -100,15 +114,15 @@ export default {
         const rectW = Math.floor(w.width);
         const rectH = Math.floor(w.height);
 
-        lines.push(`        // widget:shape_rect id:${w.id} type:shape_rect x:${rectX} y:${rectY} w:${rectW} h:${rectH} fill:${fill} border:${borderWidth} color:${colorProp} border_color:${borderColorProp} ${getCondProps(w)}`);
+        lines.push(`        // widget:shape_rect id:${w.id} type:shape_rect x:${rectX} y:${rectY} w:${rectW} h:${rectH} fill:${fill} border:${borderWidth} color:${fillColorProp} border_color:${borderColorProp} ${getCondProps(w)}`);
 
         const cond = getConditionCheck(w);
         if (cond) lines.push(`        ${cond}`);
 
         if (fill) {
-            addDitherMask(lines, colorProp, isEpaper, rectX, rectY, rectW, rectH, p.radius || 0);
-            if (!(colorProp.toLowerCase() === "gray" && isEpaper)) {
-                lines.push(`        it.filled_rectangle(${rectX}, ${rectY}, ${rectW}, ${rectH}, ${color});`);
+            addDitherMask(lines, fillColorProp, isEpaper, rectX, rectY, rectW, rectH, p.radius || 0);
+            if (!(fillColorProp.toLowerCase() === "gray" && isEpaper)) {
+                lines.push(`        it.filled_rectangle(${rectX}, ${rectY}, ${rectW}, ${rectH}, ${fillColor});`);
             }
         }
 

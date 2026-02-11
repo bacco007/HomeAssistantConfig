@@ -204,7 +204,8 @@ export function render(canvasInstance) {
                     feature.render(el, widget, {
                         getColorStyle: wrappedGetColorStyle,
                         selected: isSelected,
-                        profile: profile
+                        profile: profile,
+                        isDark: isDark
                     });
                 } catch (err) {
                     el.textContent = `Error: ${type}`;
@@ -299,7 +300,7 @@ function getPageEffectiveDarkMode(page) {
     const pageDarkMode = page?.dark_mode;
     if (pageDarkMode === "dark") return true;
     if (pageDarkMode === "light") return false;
-    return !!AppState.settings.dark_mode;
+    return !!AppState.settings.darkMode;
 }
 
 function renderLvglGridOverlayToElement(element, layout, dims, isDark) {
@@ -513,7 +514,8 @@ export function updateWidgetDOM(canvasInstance, widget, skipPluginRender = false
                 feature.render(el, widget, {
                     getColorStyle: wrappedGetColorStyle,
                     selected: isSelected,
-                    profile: profile
+                    profile: profile,
+                    isDark: getEffectiveDarkMode()
                 });
             } catch (err) {
                 // Silent fail for minor real-time updates to keep performance high
@@ -531,7 +533,7 @@ export function getEffectiveDarkMode() {
     // "light" = force light mode
     if (pageDarkMode === "dark") return true;
     if (pageDarkMode === "light") return false;
-    return !!AppState.settings.dark_mode;
+    return !!AppState.settings.darkMode;
 }
 
 function renderLvglGridOverlay(canvasInstance, layout, dims, isDark) {

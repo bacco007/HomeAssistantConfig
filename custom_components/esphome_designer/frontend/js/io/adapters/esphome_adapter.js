@@ -198,7 +198,7 @@ export class ESPHomeAdapter extends BaseAdapter {
             PluginRegistry.onExportEsphome({ ...context, lines: includeLines });
 
             // Core Globals
-            globalLines.push("- id: display_page", "  type: int", "  restore_value: true", "  initial_value: '0'");
+            globalLines.push("- id: display_page", "  type: int", "  restore_value: false", "  initial_value: '0'");
 
             // Match legacy epaper detection for regression testing
             const isEpaper = !!(profile.features && (profile.features.epaper || profile.features.epd));

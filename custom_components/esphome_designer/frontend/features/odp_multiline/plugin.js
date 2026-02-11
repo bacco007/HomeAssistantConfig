@@ -54,6 +54,7 @@ export default {
         if (color === "theme_auto") {
             color = layout?.darkMode ? "white" : "black";
         }
+        if (color === "transparent") color = "black";
 
         return {
             type: "multiline",
@@ -75,6 +76,7 @@ export default {
         if (color === "theme_auto") {
             color = layout?.darkMode ? "white" : "black";
         }
+        if (color === "transparent") color = "black";
 
         const size = p.font_size || 16;
         const lineSpacing = p.line_spacing || 4;

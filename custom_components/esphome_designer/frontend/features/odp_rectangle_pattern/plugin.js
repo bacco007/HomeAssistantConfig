@@ -56,6 +56,12 @@ export default {
     render,
     exportOpenDisplay: (w, { layout, page }) => {
         const p = w.props || {};
+        let fill = (p.fill === "theme_auto" || !p.fill) ? (layout?.darkMode ? "white" : "black") : p.fill;
+        if (fill === "transparent") fill = null;
+
+        let outline = (p.outline === "theme_auto" || !p.outline) ? (layout?.darkMode ? "white" : "black") : p.outline;
+        if (outline === "transparent") outline = "black";
+
         return {
             type: "rectangle_pattern",
             x_start: Math.round(w.x),
@@ -66,8 +72,8 @@ export default {
             y_offset: p.y_offset || 5,
             x_repeat: p.x_repeat || 3,
             y_repeat: p.y_repeat || 2,
-            fill: (p.fill === "theme_auto" || !p.fill) ? (layout?.darkMode ? "white" : "black") : p.fill,
-            outline: (p.outline === "theme_auto" || !p.outline) ? (layout?.darkMode ? "white" : "black") : p.outline,
+            fill: fill,
+            outline: outline,
             width: p.border_width || 1,
             x_end: Math.round(w.x + w.width),
             y_end: Math.round(w.y + w.height)
@@ -75,6 +81,9 @@ export default {
     },
     exportOEPL: (w, { layout, page }) => {
         const p = w.props || {};
+        let fill = p.fill || "white";
+        if (fill === "transparent") fill = null;
+
         return {
             type: "rectangle_pattern",
             x_start: Math.round(w.x),
@@ -85,7 +94,7 @@ export default {
             y_offset: p.y_offset || 5,
             x_repeat: p.x_repeat || 3,
             y_repeat: p.y_repeat || 2,
-            fill: p.fill || "white",
+            fill: fill,
             outline: p.outline || "black",
             width: p.border_width || 1,
             x_end: Math.round(w.x + w.width),

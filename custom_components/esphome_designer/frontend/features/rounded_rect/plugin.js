@@ -6,12 +6,20 @@ const render = (el, widget, { getColorStyle }) => {
     const props = widget.props || {};
     const radius = parseInt(props.radius || 10, 10);
     const borderWidth = parseInt(props.border_width || 4, 10);
-    const color = props.color || "theme_auto";
 
-    el.style.backgroundColor = props.fill ? getColorStyle(color) : "transparent";
+    const color = props.color || "theme_auto";
+    // bg_color/border_color only override 'color' when explicitly set to a real color
+    const effectiveBg = (props.bg_color && props.bg_color !== "theme_auto") ? props.bg_color : null;
+    const effectiveBorder = (props.border_color && props.border_color !== "theme_auto") ? props.border_color : null;
+
+    const bgCol = effectiveBg || color;
+    const borderCol = effectiveBorder || (props.fill ? (props.show_border === false ? bgCol : "black") : color);
+
+    el.style.backgroundColor = props.fill ? getColorStyle(bgCol) : "transparent";
+
     const borderColor = (props.fill && (props.show_border === false || props.show_border === "false"))
-        ? getColorStyle(color)
-        : getColorStyle(props.border_color || (props.fill ? "black" : color));
+        ? getColorStyle(bgCol)
+        : getColorStyle(borderCol);
 
     el.style.border = `${borderWidth}px solid ${borderColor}`;
     el.style.borderRadius = `${radius}px`;
@@ -49,8 +57,6 @@ export default {
         fill: false,
         border_width: 4,
         color: "theme_auto",
-        bg_color: "theme_auto",
-        border_color: "theme_auto",
         show_border: true,
         opa: 255
     },
@@ -103,16 +109,20 @@ export default {
         const showBorder = p.show_border !== false;
         const r = parseInt(p.radius || 10, 10);
         const thickness = parseInt(p.border_width || 4, 10);
+
         const colorProp = p.color || "theme_auto";
-        const borderColorProp = p.border_color || (fill ? "black" : colorProp);
-        const color = getColorConst(colorProp);
+        const fillColorProp = (p.bg_color && p.bg_color !== "theme_auto") ? p.bg_color : colorProp;
+        const borderColorProp = (p.border_color && p.border_color !== "theme_auto") ? p.border_color : (fill ? "black" : colorProp);
+
+        const fillColor = getColorConst(fillColorProp);
         const borderColor = getColorConst(borderColorProp);
+
         const rrectX = Math.floor(w.x);
         const rrectY = Math.floor(w.y + (typeof RECT_Y_OFFSET !== 'undefined' ? RECT_Y_OFFSET : 0));
         const rrectW = Math.floor(w.width);
         const rrectH = Math.floor(w.height);
 
-        lines.push(`        // widget:rounded_rect id:${w.id} type:rounded_rect x:${rrectX} y:${rrectY} w:${rrectW} h:${rrectH} fill:${fill} show_border:${showBorder} border:${thickness} radius:${r} color:${colorProp} border_color:${borderColorProp} ${getCondProps(w)}`);
+        lines.push(`        // widget:rounded_rect id:${w.id} type:rounded_rect x:${rrectX} y:${rrectY} w:${rrectW} h:${rrectH} fill:${fill} show_border:${showBorder} border:${thickness} radius:${r} color:${fillColorProp} border_color:${borderColorProp} ${getCondProps(w)}`);
 
         const cond = getConditionCheck(w);
         if (cond) lines.push(`        ${cond}`);
@@ -137,9 +147,9 @@ export default {
                 if (fr < 0) fr = 0;
             }
             if (colorProp.toLowerCase() === "gray" && isEpaper) {
-                addDitherMask(lines, colorProp, isEpaper, fx, fy, fw, fh, fr);
+                addDitherMask(lines, fillColorProp, isEpaper, fx, fy, fw, fh, fr);
             } else {
-                if (fw > 0 && fh > 0) lines.push(`          draw_filled_rrect(${fx}, ${fy}, ${fw}, ${fh}, ${fr}, ${color});`);
+                if (fw > 0 && fh > 0) lines.push(`          draw_filled_rrect(${fx}, ${fy}, ${fw}, ${fh}, ${fr}, ${fillColor});`);
             }
         } else {
             // Transparent Border logic

@@ -76,11 +76,18 @@ export default {
         }
         // Offset points by widget position
         const offsetPoints = points.map(([x, y]) => [Math.round(w.x + x), Math.round(w.y + y)]);
+
+        let fill = (p.fill === "theme_auto" || !p.fill) ? (layout?.darkMode ? "white" : "black") : (p.fill || "red");
+        if (fill === "transparent") fill = null;
+
+        let outline = (p.outline === "theme_auto" || !p.outline) ? (layout?.darkMode ? "white" : "black") : (p.outline || "black");
+        if (outline === "transparent") outline = "black";
+
         return {
             type: "polygon",
             points: offsetPoints,
-            fill: (p.fill === "theme_auto" || !p.fill) ? (layout?.darkMode ? "white" : "black") : (p.fill || "red"),
-            outline: (p.outline === "theme_auto" || !p.outline) ? (layout?.darkMode ? "white" : "black") : (p.outline || "black"),
+            fill: fill,
+            outline: outline,
             width: p.border_width || 1
         };
     },
@@ -91,10 +98,14 @@ export default {
             try { points = JSON.parse(points); } catch (e) { points = [[0, 0], [50, 0], [50, 50], [0, 50]]; }
         }
         const offsetPoints = points.map(([x, y]) => [Math.round(w.x + x), Math.round(w.y + y)]);
+
+        let fill = p.fill || "red";
+        if (fill === "transparent") fill = null;
+
         return {
             type: "polygon",
             points: offsetPoints,
-            fill: p.fill || "red",
+            fill: fill,
             outline: p.outline || "black",
             width: p.border_width || 1
         };

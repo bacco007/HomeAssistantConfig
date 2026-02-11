@@ -66,6 +66,11 @@ export default {
         if (typeof icons === "string") {
             icons = icons.split(",").map(s => s.trim()).filter(s => s);
         }
+
+        let color = p.fill || "black";
+        if (color === "theme_auto") color = layout?.darkMode ? "white" : "black";
+        if (color === "transparent") color = "black";
+
         return {
             type: "icon_sequence",
             visible: true,
@@ -75,7 +80,7 @@ export default {
             size: p.size || 24,
             direction: p.direction || "right",
             spacing: p.spacing || 6,
-            fill: p.fill || "black"
+            fill: color
         };
     },
     exportOEPL: (w, { layout, page }) => {
@@ -84,6 +89,10 @@ export default {
         if (typeof icons === "string") {
             icons = icons.split(",").map(s => s.trim()).filter(s => s);
         }
+
+        let color = p.fill || "black";
+        if (color === "transparent") color = "black";
+
         return {
             type: "icon_sequence",
             x: Math.round(w.x),
@@ -92,7 +101,7 @@ export default {
             size: p.size || 24,
             direction: p.direction || "right",
             spacing: p.spacing || 6,
-            fill: p.fill || "black"
+            fill: color
         };
     }
 };

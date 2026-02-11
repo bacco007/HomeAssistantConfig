@@ -851,6 +851,7 @@ export class PropertiesPanel {
             this.addColorSelector("Fill/Line Color", props.color || "black", colors, (v) => updateProp("color", v));
 
             if (type !== "line") {
+                this.addCheckbox("Fill", props.fill !== false, (v) => updateProp("fill", v));
                 this.addColorSelector("Background", props.bg_color || "transparent", colors, (v) => updateProp("bg_color", v));
                 this.addLabeledInput("Border Width", "number", props.border_width || 0, (v) => updateProp("border_width", parseInt(v, 10)));
             } else {
@@ -861,6 +862,52 @@ export class PropertiesPanel {
                 this.addLabeledInput("Corner Radius", "number", props.radius || 4, (v) => updateProp("radius", parseInt(v, 10)));
             }
             this.addDropShadowButton(this.getContainer(), widget.id);
+            this.endSection();
+        }
+        else if (type === "odp_ellipse" || type === "odp_polygon" || type === "odp_rectangle_pattern" || type === "odp_arc" || type === "odp_icon_sequence") {
+            this.createSection("ODP Style", true);
+            if (type !== "odp_icon_sequence") {
+                this.addColorSelector("Outline", props.outline || "black", colors, (v) => updateProp("outline", v));
+                this.addColorSelector("Fill", props.fill || "transparent", colors, (v) => updateProp("fill", v));
+                this.addLabeledInput("Border Width", "number", props.border_width || 1, (v) => updateProp("border_width", parseInt(v, 10)));
+            } else {
+                this.addColorSelector("Color", props.fill || "black", colors, (v) => updateProp("fill", v));
+                this.addLabeledInput("Icon Size", "number", props.size || 24, (v) => updateProp("size", parseInt(v, 10)));
+                this.addSelect("Direction", props.direction || "right", ["right", "down"], (v) => updateProp("direction", v));
+                this.addLabeledInput("Spacing", "number", props.spacing || 6, (v) => updateProp("spacing", parseInt(v, 10)));
+                this.addLabeledInput("Icons (comma sep)", "text", Array.isArray(props.icons) ? props.icons.join(", ") : (props.icons || ""), (v) => updateProp("icons", v));
+            }
+
+            if (type === "odp_rectangle_pattern") {
+                this.addLabeledInput("Repeat X", "number", props.x_repeat || 3, (v) => updateProp("x_repeat", parseInt(v, 10)));
+                this.addLabeledInput("Repeat Y", "number", props.y_repeat || 2, (v) => updateProp("y_repeat", parseInt(v, 10)));
+                this.addLabeledInput("Size X", "number", props.x_size || 30, (v) => updateProp("x_size", parseInt(v, 10)));
+                this.addLabeledInput("Size Y", "number", props.y_size || 15, (v) => updateProp("y_size", parseInt(v, 10)));
+            }
+            if (type === "odp_arc") {
+                this.addLabeledInput("Start Angle", "number", props.start_angle || 0, (v) => updateProp("start_angle", parseInt(v, 10)));
+                this.addLabeledInput("End Angle", "number", props.end_angle || 90, (v) => updateProp("end_angle", parseInt(v, 10)));
+            }
+            this.endSection();
+        }
+        else if (type === "odp_plot") {
+            this.createSection("Plot Config", true);
+            this.addLabeledInput("Duration (sec)", "number", props.duration || 36400, (v) => updateProp("duration", parseInt(v, 10)));
+            this.addColorSelector("Background", props.background || "white", colors, (v) => updateProp("background", v));
+            this.addColorSelector("Outline", props.outline || "#ccc", colors, (v) => updateProp("outline", v));
+            this.endSection();
+        }
+        else if (type === "odp_multiline") {
+            this.createSection("Multiline Content", true);
+            this.addLabeledInput("Text", "textarea", props.text || "Line 1|Line 2", (v) => updateProp("text", v));
+            this.addLabeledInput("Delimiter", "text", props.delimiter || "|", (v) => updateProp("delimiter", v));
+            this.endSection();
+
+            this.createSection("Appearance", true);
+            this.addLabeledInput("Font Size", "number", props.font_size || 16, (v) => updateProp("font_size", parseInt(v, 10)));
+            this.addLabeledInput("Line Spacing", "number", props.line_spacing || 4, (v) => updateProp("line_spacing", parseInt(v, 10)));
+            this.addColorSelector("Color", props.color || "black", colors, (v) => updateProp("color", v));
+            this.addSelect("Font", props.font_family || "Roboto", ["Roboto", "Inter", "Roboto Mono"], (v) => updateProp("font_family", v));
             this.endSection();
         }
         else {

@@ -65,6 +65,10 @@ export default {
         const p = w.props || {};
         const cx = Math.round(w.x + w.width / 2);
         const cy = Math.round(w.y + w.height / 2);
+
+        let outline = (p.outline === "theme_auto" || !p.outline) ? (layout?.darkMode ? "white" : "black") : (p.outline || "black");
+        if (outline === "transparent") outline = "black";
+
         return {
             type: "arc",
             x: cx,
@@ -72,7 +76,7 @@ export default {
             radius: p.radius || Math.round(Math.min(w.width, w.height) / 2),
             start_angle: p.start_angle || 0,
             end_angle: p.end_angle || 90,
-            outline: (p.outline === "theme_auto" || !p.outline) ? (layout?.darkMode ? "white" : "black") : (p.outline || "black"),
+            outline: outline,
             width: p.border_width || 2
         };
     },
@@ -80,6 +84,10 @@ export default {
         const p = w.props || {};
         const cx = Math.round(w.x + w.width / 2);
         const cy = Math.round(w.y + w.height / 2);
+
+        let outline = p.outline || "black";
+        if (outline === "transparent") outline = "black";
+
         return {
             type: "arc",
             x: cx,
@@ -87,7 +95,7 @@ export default {
             radius: p.radius || Math.round(Math.min(w.width, w.height) / 2),
             start_angle: p.start_angle || 0,
             end_angle: p.end_angle || 90,
-            outline: p.outline || "black",
+            outline: outline,
             width: p.border_width || 2
         };
     }

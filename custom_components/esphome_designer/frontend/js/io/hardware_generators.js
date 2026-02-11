@@ -234,7 +234,10 @@ export function generateDisplaySection(profile, layout = {}, isLvgl = false) {
 
     if (profile.display_config) {
         lines.push("display:");
-        lines.push(...profile.display_config);
+        // Fix: Filter out existing rotation from profile config to strictly enforce Designer's orientation setting
+        const configLines = profile.display_config.filter(l => !l.trim().startsWith("rotation:"));
+        lines.push(...configLines);
+
         // Correct auto_clear_enabled for LVGL if present in config
         if (isLvgl) {
             for (let i = 0; i < lines.length; i++) {
@@ -243,6 +246,9 @@ export function generateDisplaySection(profile, layout = {}, isLvgl = false) {
                 }
             }
         }
+
+        // Inject the calculated rotation (ensures Designer 'Landscape/Portrait' toggle works)
+        lines.push(`    rotation: ${displayRotation}`);
         lines.push("");
     } else {
         const isLcd = !!(profile.features && (profile.features.lcd || profile.features.oled));
