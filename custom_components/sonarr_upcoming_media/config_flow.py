@@ -23,6 +23,10 @@ from .sonarr_api import (
     SonarrCannotBeReached
 )
 
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import callback
+from .options_flow import SonarrOptionFlow
+
 def valid_max():
     return lambda x: type(x) == int and x > 0
 
@@ -40,6 +44,11 @@ SONARR_SCHEMA = vol.Schema({
 
 class SonarrConfigFlow(ConfigFlow, domain=DOMAIN):
     """Config flow for the Sonarr integration."""
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry: ConfigEntry) -> SonarrOptionFlow:
+        return SonarrOptionFlow(config_entry)
+
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ):

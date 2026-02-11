@@ -23,5 +23,15 @@
       "failed_to_login": "Failed to Log-in",
       "cannot_be_reached": "Sonarr cannot be reached"
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "days": "How many days look ahead for the upcoming sensor",
+          "max": "Max number of items in sensor"
+        }
+      }
+    }
   }
 }
