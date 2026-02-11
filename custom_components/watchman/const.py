@@ -14,12 +14,12 @@ DOMAIN_DATA = f"{DOMAIN}_data"
 
 
 CONFIG_ENTRY_VERSION = 2
-CONFIG_ENTRY_MINOR_VERSION = 3
+CONFIG_ENTRY_MINOR_VERSION = 4
 
 DEFAULT_REPORT_FILENAME = f"{DOMAIN}_report.txt"
 DB_FILENAME = f"{DOMAIN}_v2.db"
 LEGACY_DB_FILENAME = f"{DOMAIN}.db"
-CURRENT_DB_SCHEMA_VERSION = 3
+CURRENT_DB_SCHEMA_VERSION = 4
 STORAGE_KEY = f"{DOMAIN}.stats"
 STORAGE_VERSION = 1
 LOCK_FILENAME = f"{DOMAIN}.lock"
@@ -33,6 +33,7 @@ DEFAULT_DELAY = 10
 
 PACKAGE_NAME = f"custom_components.{DOMAIN}"
 REPORT_SERVICE_NAME = "report"
+LABELS_SERVICE_NAME = "set_ignored_labels"
 
 HASS_DATA_CANCEL_HANDLERS = "cancel_handlers"
 
@@ -68,6 +69,7 @@ CONF_COLUMNS_WIDTH = "columns_width"
 CONF_STARTUP_DELAY = "startup_delay"
 CONF_FRIENDLY_NAMES = "friendly_names"
 CONF_LOG_OBFUSCATE = "log_obfuscate"
+CONF_IGNORED_LABELS = "ignored_labels"
 # configuration parameters allowed in watchman.report service data
 CONF_ALLOWED_SERVICE_PARAMS = [
     CONF_SERVICE_NAME,

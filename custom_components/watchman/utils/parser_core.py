@@ -12,7 +12,6 @@ import sqlite3
 import time
 from typing import Any, TypedDict
 
-import anyio
 import yaml
 
 from homeassistant.core import HomeAssistant
@@ -31,6 +30,9 @@ from .parser_const import (
     JSON_FILE_EXTS,
     MAX_FILE_SIZE,
     PLATFORMS,
+    REGEX_ENTITY_BOUNDARY,
+    REGEX_ENTITY_SUFFIX,
+    REGEX_OPTIONAL_STATES,
     STORAGE_WHITELIST,
     YAML_FILE_EXTS,
 )
@@ -91,11 +93,18 @@ def get_domains(hass: HomeAssistant | None = None) -> list[str]:
 
 _ALL_DOMAINS = get_domains()
 
+def _compile_entity_pattern(domains: list[str]) -> re.Pattern:
+    """Compile entity regex from a list of domains (factory method)."""
+    domain_part = "|".join(domains)
+    pattern = (
+        f"{REGEX_ENTITY_BOUNDARY}{REGEX_OPTIONAL_STATES}(({domain_part})"
+        f"{REGEX_ENTITY_SUFFIX})"
+    )
+    return re.compile(pattern, re.IGNORECASE)
+
+
 # Regex patterns to identify entitites definitions
-_ENTITY_PATTERN = re.compile(
-    r"(?:^|[^a-zA-Z0-9_./\\])(?:states\.)?((" + "|".join(_ALL_DOMAINS) + r")\.[a-z0-9_]+)",
-    re.IGNORECASE
-)
+_ENTITY_PATTERN = _compile_entity_pattern(_ALL_DOMAINS)
 
 # Regex patterns to identify actions (services) definitions
 _SERVICE_PATTERN = re.compile(
@@ -110,6 +119,9 @@ def _detect_file_type(filepath: str) -> str:
     path = Path(filepath)
     filename = path.name
     if filename in STORAGE_WHITELIST:
+        return "json"
+    
+    if filename.startswith("lovelace"):
         return "json"
 
     # Check for ESPHome path segment
@@ -159,10 +171,9 @@ def _derive_context(
     if not isinstance(node, dict):
         return parent_context
 
-    # Guard clause: If already inside an automation, preserve it.
-    # This prevents nested 'choose' or 'repeat' blocks (which look like scripts)
-    # from overwriting the automation context.
-    if parent_context.is_active and parent_context.parent_type == "automation":
+    # guard: if we are already inside a defined context (Automation or Script),
+    # do not allow nested structures (like repeat, choose) to redefine it.
+    if parent_context.is_active:
         return parent_context
 
     c_id = node.get("id")
@@ -624,9 +635,12 @@ def _scan_files_sync(root_path: str, ignored_patterns: list[str]) -> tuple[list[
     # 2. Targeted scan of .storage
     storage_path_obj = Path(root_path) / ".storage"
     if storage_path_obj.is_dir():
-        for filename in STORAGE_WHITELIST:
-            file_path_obj = storage_path_obj / filename
-            if file_path_obj.is_file():
+        for file_path_obj in storage_path_obj.iterdir():
+            if not file_path_obj.is_file():
+                continue
+            
+            filename = file_path_obj.name
+            if filename in STORAGE_WHITELIST or filename.startswith("lovelace"):
                 try:
                     stat_res = file_path_obj.stat()
                     scanned_files.append(
@@ -785,85 +799,6 @@ class WatchmanParser:
             path.unlink(missing_ok=True)
             return self._create_fresh_db(db_path)
 
-    async def _async_scan_files_legacy(self, root_path: str, ignored_patterns: list[str]) -> tuple[list[dict[str, Any]], int]:
-        """Phase 1: Asynchronous file scanning using anyio.
-
-        Returns a list of file metadata and a count of ignored files.
-        """
-        scanned_files = []
-        ignored_count = 0
-        cwd = Path.cwd()
-        root = anyio.Path(root_path)
-
-
-
-        # rglob("**/*.yaml") iterates recursively
-        # also need to filter against _IGNORED_DIRS and ignored_patterns
-        try:
-            # 1. Glob all YAML files
-            async for path in root.glob("**/*.yaml"):
-                # Check _IGNORED_DIRS
-                # We must check relative path to avoid matching parents of root (like /tmp in tests)
-                try:
-                    rel_path = path.relative_to(root)
-                except ValueError:
-                    # Should not happen with glob from root, but safe fallback
-                    continue
-
-                # If any parent directory in the relative path is ignored, skip
-                # we exclude the last part (filename) to allow files named like ignored dirs (unlikely but safe)
-                if any(part in IGNORED_DIRS for part in rel_path.parts[:-1]):
-                    continue
-
-                abs_path = str(path)
-
-                # Check ignored_patterns (user config)
-                is_ignored_user = False
-                try:
-                    rel_path_cwd = str(path.relative_to(cwd))
-                except ValueError:
-                    rel_path_cwd = abs_path
-
-                for pattern in ignored_patterns:
-                    if fnmatch.fnmatch(abs_path, pattern) or fnmatch.fnmatch(rel_path_cwd, pattern):
-                        is_ignored_user = True
-                        break
-
-                if is_ignored_user:
-                    ignored_count += 1
-                    continue
-
-                # Stat the file to get mtime
-                try:
-                    stat_result = await path.stat()
-                    mtime = stat_result.st_mtime
-                    scanned_files.append({'path': abs_path, 'mtime': mtime, 'size': stat_result.st_size})
-                except OSError as e:
-                    if await path.is_symlink():
-                         _LOGGER.warning(f"Skipping broken symlink: {abs_path}")
-                    else:
-                         _LOGGER.error(f"Error accessing file {abs_path}: {e}")
-                    continue
-
-            # 2. Targeted scan of .storage (whitelist)
-            # This handles extensionless JSON files like 'lovelace_dashboards'
-            storage_path = root / ".storage"
-            if await storage_path.exists() and await storage_path.is_dir():
-                for whitelist_name in STORAGE_WHITELIST:
-                    file_path = storage_path / whitelist_name
-                    if await file_path.exists() and await file_path.is_file():
-                         try:
-                            abs_path = str(file_path)
-                            stat_result = await file_path.stat()
-                            scanned_files.append({'path': abs_path, 'mtime': stat_result.st_mtime, 'size': stat_result.st_size})
-                         except OSError as e:
-                            _LOGGER.error(f"Error accessing whitelist file {abs_path}: {e}")
-
-        except OSError as e:
-            _LOGGER.error(f"Error during file scan: {e}")
-
-        return scanned_files, ignored_count
-
     async def _async_scan_files(self, root_path: str, ignored_patterns: list[str]) -> tuple[list[dict[str, Any]], int]:
         """Phase 1: Synchronous file scanning (offloaded to thread).
 
@@ -888,14 +823,11 @@ class WatchmanParser:
         try:
             # --- Phase 0: Setup ---
             # Build Entity Pattern
-            entity_pattern = _ENTITY_PATTERN
-            if custom_domains:
-                entity_pattern = re.compile(
-                    r"(?:^|[^a-zA-Z0-9_.])(?:states\.)?(("
-                    + "|".join(custom_domains)
-                    + r")\.[a-z0-9_]+)",
-                    re.IGNORECASE,
-                )
+            entity_pattern = (
+                _compile_entity_pattern(custom_domains)
+                if custom_domains
+                else _ENTITY_PATTERN
+            )
 
             # --- Phase 1: Async File Scanning ---
             _LOGGER.debug(

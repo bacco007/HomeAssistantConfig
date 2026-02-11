@@ -67,10 +67,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: WMConfigEntry) ->
         legacy_db_path.rename(db_path)
 
     integration = await async_get_integration(hass, DOMAIN)
-    
+
     # Configure obfuscation
     set_obfuscation_config(config_entry.data.get(CONF_LOG_OBFUSCATE, True))
-    
+
     hub = WatchmanHub(hass, str(db_path))
     coordinator = WatchmanCoordinator(
         hass,
@@ -124,7 +124,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: WMConfigEntry) ->
             f"Executing mandatory startup scan in: {startup_delay}s."
         )
 
-        coordinator.request_parser_rescan(reason="mandatory startup scan", delay=startup_delay)
+        coordinator.request_parser_rescan(reason="integration reload", delay=startup_delay)
 
     _LOGGER.info(
         "Watchman integration started [%s], DB: %s, Stats: %s",
@@ -303,6 +303,11 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
             # Default to True (enabled)
             data[CONF_LOG_OBFUSCATE] = DEFAULT_OPTIONS.get(CONF_LOG_OBFUSCATE, True)
             current_minor = 3
+
+        if current_minor < 4:
+            _LOGGER.info("Migrating Watchman entry to minor version 4")
+            # Do not initialize ignored_labels here to allow text entity to restore state lazily
+            current_minor = 4
 
         if current_minor != config_entry.minor_version:
             hass.config_entries.async_update_entry(
