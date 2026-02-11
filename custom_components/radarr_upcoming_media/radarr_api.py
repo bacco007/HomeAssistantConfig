@@ -58,7 +58,7 @@ class RadarrApi():
         if api.status_code == 200:
             if self._days == 1:
                 in_cinemas = list(filter(
-                    lambda x: x['inCidemas'][:-10] == str(start), api.json()
+                    lambda x: x['inCinemas'][:-10] == str(start), api.json()
                     ))
                 digital_release = list(filter(
                     lambda x: x['digitalRelease'][:-10] == str(start), api.json()

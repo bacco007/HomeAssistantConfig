@@ -23,20 +23,12 @@ class RadarrOptionFlow(OptionsFlow):
 
         if user_input is not None:
             # Validate and process user input here
-            updated_data = {
-                **self._config_entry.data,
-                CONF_DAYS: user_input[CONF_DAYS],
-                CONF_MAX: user_input[CONF_MAX],
-                CONF_THEATERS: user_input[CONF_THEATERS]
-            }
-            self._config_entry.data = updated_data
-
-            return self.async_create_entry(title="", data=updated_data)
+            return self.async_create_entry(title="", data=user_input)
 
         RADARR_SCHEMA = vol.Schema({
-            vol.Required(CONF_DAYS, default=self._config_entry.data[CONF_DAYS]): vol.All(vol.Coerce(int), vol.Range(min=1)),
-            vol.Required(CONF_MAX, default=self._config_entry.data[CONF_MAX]): vol.All(vol.Coerce(int), vol.Range(min=0)),
-            vol.Optional(CONF_THEATERS, default=self._config_entry.data[CONF_THEATERS]): vol.All(bool),
+            vol.Required(CONF_DAYS, default=self._config_entry.options.get(CONF_DAYS, self._config_entry.data[CONF_DAYS])): vol.All(vol.Coerce(int), vol.Range(min=1)),
+            vol.Required(CONF_MAX, default=self._config_entry.options.get(CONF_MAX, self._config_entry.data[CONF_MAX])): vol.All(vol.Coerce(int), vol.Range(min=0)),
+            vol.Optional(CONF_THEATERS, default=self._config_entry.options.get(CONF_THEATERS, self._config_entry.data[CONF_THEATERS])): vol.All(bool),
         })
 
         # Display a form to gather user input

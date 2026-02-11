@@ -34,13 +34,13 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             setup_client,
             hass,
             config_entry.data[CONF_API_KEY],
-            config_entry.data[CONF_DAYS],
+            config_entry.options.get(CONF_DAYS, config_entry.data[CONF_DAYS]),
             config_entry.data[CONF_HOST],
             config_entry.data[CONF_PORT],
             config_entry.data[CONF_SSL],
             config_entry.data[CONF_URLBASE],
-            config_entry.data[CONF_THEATERS],
-            config_entry.data[CONF_MAX],
+            config_entry.options.get(CONF_THEATERS, config_entry.data[CONF_THEATERS]),
+            config_entry.options.get(CONF_MAX, config_entry.data[CONF_MAX]),
         )
     except FailedToLogin as err:
         raise ConfigEntryNotReady('Failed to Log-in') from err
