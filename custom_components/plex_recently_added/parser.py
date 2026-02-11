@@ -35,16 +35,33 @@ _LOGGER = logging.getLogger(__name__)
 
 def parse_library(root):
     output = []
+
+    def parse_medium(medium):
+        data = dict(medium.attrib)
+
+        children = {}
+
+        for child in medium:
+            if "tag" in child.attrib:
+                tag_name = child.tag
+                tag_value = child.get("tag")
+
+                children.setdefault(tag_name, []).append(tag_value)
+
+        data.update(children)
+
+        return data
+
     for medium in root.findall("Video"):
-        output.append(medium.attrib)
+        output.append(parse_medium(medium))
 
-    if len(output) == 0:
+    if not output:
         for medium in root.findall("Directory"):
-            output.append(medium.attrib)
+            output.append(parse_medium(medium))
 
-    if len(output) == 0:
+    if not output:
         for medium in root.findall("Photo"):
-            output.append(medium.attrib)
+            output.append(parse_medium(medium))
 
     return output
 
@@ -90,7 +107,7 @@ def parse_data(hass: HomeAssistant, data, max, base_url, token, identifier, sect
         data_output["release"] = '$day, $date $time'
         data_output["flag"] = "viewCount" not in item
         data_output["title"] = item.get("grandparentTitle", item.get("parentTitle", item.get("title", "")))
-        if item.get("title", None):
+        if item.get("title", None) and item.get("type", "unknown") in ("show", "album", "episode"):
             data_output["episode"] = item["title"]
         else:
             data_output["episode"] = ''
@@ -105,8 +122,18 @@ def parse_data(hass: HomeAssistant, data, max, base_url, token, identifier, sect
         if int(item.get('duration', 0)) > 0:
             data_output["runtime"] = math.floor(int(item["duration"]) / 60000)
         data_output["studio"] = item.get("studio", "")
-        data_output["genres"] = ", ".join([genre['tag'] for genre in item.get('Genre', [])][:3])
-        data_output["rating"] = ('\N{BLACK STAR} ' + str(item.get("rating"))) if int(float(item.get("rating", 0))) > 0 else ''
+        plex_genres = item.get('Genre', [])[:3]
+        if not plex_genres:
+            plex_genres = (item.get('tmdb_genres') or [])[:3]
+        data_output["genres"] = ", ".join(plex_genres)
+        plex_rating = float(item.get("rating") or 0)
+        tmdb_rating = float(item.get("tmdb_rating") or 0)
+        if plex_rating > 0:
+            data_output["rating"] = '\N{BLACK STAR} ' + item.get("rating")
+        elif tmdb_rating > 0:
+            data_output["rating"] = '\N{BLACK STAR} ' + str(round(tmdb_rating, 1))
+        else:
+            data_output["rating"] = ''
         data_output['summary'] = item.get('summary', '')
         data_output['trailer'] = item.get('trailer')
 

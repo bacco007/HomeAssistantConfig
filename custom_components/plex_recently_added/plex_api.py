@@ -119,9 +119,13 @@ class PlexApi():
                 root = ElementTree.fromstring(sub_sec.text)
                 parsed_libs = parse_library(root)
 
-                # Fetch trailer URLs for each item
+                # Fetch TMDB data (trailer, rating, genres) for each item
                 for item in parsed_libs:
-                    item['trailer'] = await get_tmdb_trailer_url(self._hass, item['title'], library['type'])
+                    search_title = item.get('grandparentTitle', item.get('title', ''))
+                    tmdb_data = await get_tmdb_trailer_url(self._hass, search_title, library['type'])
+                    item['trailer'] = tmdb_data['trailer']
+                    item['tmdb_rating'] = tmdb_data['tmdb_rating']
+                    item['tmdb_genres'] = tmdb_data['tmdb_genres']
 
                 if library["type"] not in data['all']:
                     data['all'][library["type"]] = []
@@ -140,7 +144,8 @@ class PlexApi():
                 for item in parsed_data:
                     if item.get('trailer') is None:
                         item_type = 'movie' if item.get('episode') == '' else 'show'
-                        item['trailer'] = await get_tmdb_trailer_url(self._hass, item['title'], item_type)
+                        tmdb_data = await get_tmdb_trailer_url(self._hass, item['title'], item_type)
+                        item['trailer'] = tmdb_data['trailer']
             
             data_out[k] = {'data': [DEFAULT_PARSE_DICT] + parsed_data}
 
