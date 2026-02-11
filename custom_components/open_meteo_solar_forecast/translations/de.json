@@ -9,7 +9,10 @@
           "latitude": "Breitengrad",
           "longitude": "Längengrad",
           "modules_power": "Gesamt-Watt-Spitzenleistung deiner Solarmodule",
-          "name": "Name"
+          "name": "Name",
+          "use_horizon": "Wenn aktiviert, wird die in der Horizontdatei spezifizierte Horizontlinie für die Beschattung der Module berücksichtigt.",
+          "horizon_filepath": "Pfad zur Horizont-Datei",
+          "partial_shading": "(Nur zusammen mit Horizontlinie:) Wenn aktiviert, werden Schatten als partiell behandelt."
         },
         "description": "Gib die Daten deiner Solarmodule ein. Wenn ein Feld unklar ist, schlage bitte in der Dokumentation nach."
       }
@@ -90,7 +93,10 @@
           "damping_morning": "Dämpfungsfaktor: Passt die Ergebnisse am Morgen an (0.0-1.0, 0.0 = keine Dämpfung, 1.0 = maximale Dämpfung)",
           "declination": "Deklination (0 = Horizontal, 90 = Vertikal)",
           "inverter_size": "Wechselrichtergröße (Watt)",
-          "modules_power": "Gesamt-Watt-Spitzenleistung deiner Solarmodule"
+          "modules_power": "Gesamt-Watt-Spitzenleistung deiner Solarmodule",
+          "use_horizon": "Berücksichtige Horizontline aus Horizont-Datei",
+          "horizon_filepath": "Pfad zur Horizont-Datei",
+          "partial_shading": "Behandle Schatten als partiell"
         },
         "description": "Mit diesen Werten kann das Ergebnis von Solar Forecast angepasst werden. Wenn ein Feld unklar ist, lies bitte in der Dokumentation nach."
       }
