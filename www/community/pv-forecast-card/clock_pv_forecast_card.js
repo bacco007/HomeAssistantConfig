@@ -5,7 +5,7 @@ const LitElement = Object.getPrototypeOf(customElements.get("ha-panel-lovelace")
 const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
-console.info("📦 clock-pv-forecast-card v1.9.3 loaded (Full Editor)");
+console.info("📦 clock-pv-forecast-card v2.0.1 loaded (Smooth Operator)");
 
 const translations = {
   en: { forecast: "Forecast", remaining: "Remaining", last_updated: "Last updated", today: "Today", tomorrow: "Tomorrow", error_config: "Configuration Error", error_entity: "At least one forecast entity must be defined", unavailable: "Unavailable", unknown: "Unknown" },
@@ -29,7 +29,8 @@ class ClockPvForecastCard extends LitElement {
       entity_tomorrow: "sensor.energy_production_tomorrow",
       max_value: 50,
       display_mode: "weekday",
-      bar_style: "gradient"
+      bar_style: "gradient",
+      bar_type: "smooth"
     };
   }
 
@@ -53,6 +54,7 @@ class ClockPvForecastCard extends LitElement {
       bar_color_start: '#3498db',
       bar_color_end: '#2ecc71',
       bar_style: 'gradient',
+      bar_type: 'smooth',
       color_thresholds: [{ value: 0, color: '#e74c3c' }, { value: 10, color: '#f1c40f' }, { value: 20, color: '#2ecc71' }],
       remaining_color_start: '#999999',
       remaining_color_end: '#cccccc',
@@ -77,6 +79,7 @@ class ClockPvForecastCard extends LitElement {
       forecast_attribute: null,
       show_attribute_value: false,
       attribute_color: '#f39c12',
+      bar_shape: 'rounded',
       ...config
     };
 
@@ -169,16 +172,24 @@ class ClockPvForecastCard extends LitElement {
 
     const dayLabel = this._getDayLabel(item.offset);
 
+    const rowMax = this.config.scale_mode === 'daily' ? (value > 0 ? value : 1) : maxValue;
+    const barWidthVal = this._barWidth(value, rowMax);
+
     let backgroundValue;
     if (this.config.bar_style === 'solid') {
       backgroundValue = this._getThresholdColor(value);
+    } else if (this.config.bar_style === 'tiered') {
+      // For tiered, we always want the segments to be relative to the GLOBAL scale (maxValue),
+      // so that "10kWh" looks the same width on every bar.
+      backgroundValue = this._getTieredBackground(maxValue);
     } else {
       backgroundValue = `linear-gradient(to right, ${this.config.bar_color_start}, ${this.config.bar_color_end})`;
     }
 
-    const rowMax = this.config.scale_mode === 'daily' ? (value > 0 ? value : 1) : maxValue;
-    const barWidthVal = this._barWidth(value, rowMax);
     const barStyle = `--bar-width: ${barWidthVal}%; --bar-bg: ${backgroundValue}; --animation-time: ${this.config.animation_duration}`;
+    const barTypeClass = this.config.bar_type ? `type-${this.config.bar_type}` : 'type-smooth';
+    const barShapeClass = `shape-${this.config.bar_shape || 'rounded'}`;
+    const isFixedGradient = this.config.gradient_fixed || this.config.bar_style === 'tiered';
 
     let attributeMarker = '';
     let attributeText = '';
@@ -186,6 +197,8 @@ class ClockPvForecastCard extends LitElement {
     if (this.config.forecast_attribute && entityState.attributes[this.config.forecast_attribute] !== undefined) {
       const attrVal = parseFloat(entityState.attributes[this.config.forecast_attribute]);
       if (!isNaN(attrVal)) {
+        // Markers should also be relative to global max in fixed/tiered modes for consistency? 
+        // Current logic uses rowMax which is correct for bar position.
         const attrPos = this._barWidth(attrVal, rowMax);
         attributeMarker = html`<div class="attribute-marker" style="left: ${attrPos}%; --attr-color: ${this.config.attribute_color || '#f39c12'};"></div>`;
         // Optional: Add to tooltip or text? For now, just marker as requested "visual all the time"
@@ -241,14 +254,56 @@ class ClockPvForecastCard extends LitElement {
     return html`
       <div class="forecast-row" role="row">
         <div class="day" role="cell" style="width: ${this.config.day_column_width}">${dayLabel}</div>
-        <div class="bar-container ${this.config.gradient_fixed ? 'fixed-gradient' : ''}" role="cell">
-          <div class="bar" style="${barStyle}"></div>
+        <div class="bar-container ${barShapeClass} ${isFixedGradient ? 'fixed-gradient' : ''}" role="cell">
+          <div class="bar ${barTypeClass} ${barShapeClass}" style="${barStyle}"></div>
           ${attributeMarker}
           ${remainingDot}${remainingText}
           ${this.config.show_tooltips ? this._renderTooltip(value, item.entity, dayLabel) : ''}
         </div>
         <div class="value" role="cell">${displayValue}</div>
       </div>`;
+  }
+
+  _getTieredBackground(max) {
+    if (max <= 0) return this.config.bar_color_start;
+
+    // Sort thresholds: e.g. [{0, red}, {10, yellow}, {20, green}]
+    // We need to fill the bar from 0 to 100% (where 100% = max)
+    // Range 0 -> 10 (value) : 0% -> 10/max % : Color Red
+    // Range 10 -> 20 (value) : 10/max % -> 20/max % : Color Yellow
+    // Range 20 -> max (value) : 20/max % -> 100% : Color Green
+
+    let thresholds = this.config.color_thresholds || [];
+    // Ensure we have a sorted list
+    thresholds = [...thresholds].sort((a, b) => a.value - b.value);
+
+    // If no thresholds, fallback
+    if (thresholds.length === 0) return this.config.bar_color_start;
+
+    let gradientStops = [];
+
+    // Iterate thresholds
+    for (let i = 0; i < thresholds.length; i++) {
+      const current = thresholds[i];
+      const next = thresholds[i + 1]; // undefined if last
+
+      const startVal = current.value;
+      const endVal = next ? next.value : max; // if last, go to max
+
+      // Convert to percentages relative to max
+      const startP = Math.max(0, Math.min((startVal / max) * 100, 100));
+      const endP = Math.max(0, Math.min((endVal / max) * 100, 100));
+
+      // If range is valid (start < end)
+      if (endP > startP) {
+        gradientStops.push(`${current.color} ${startP}%`);
+        gradientStops.push(`${current.color} ${endP}%`);
+      }
+    }
+
+    if (gradientStops.length === 0) return this.config.bar_color_start;
+
+    return `linear-gradient(to right, ${gradientStops.join(', ')})`;
   }
 
   _renderErrorRow(item, index, errorMessage) {
@@ -280,12 +335,14 @@ class ClockPvForecastCard extends LitElement {
 
     const barStyle = `--bar-width: ${this._barWidth(remaining, maxValue)}%; --bar-bg: linear-gradient(to left, ${start}, ${end}); --animation-time: ${this.config.animation_duration}`;
     const blinkClass = belowThreshold && this.config.remaining_blink ? 'blink' : '';
+    const barTypeClass = this.config.bar_type ? `type-${this.config.bar_type}` : 'type-smooth';
+    const barShapeClass = `shape-${this.config.bar_shape || 'rounded'}`;
 
     return html`
         <div class="forecast-row">
             <div class="day" style="width: ${this.config.day_column_width}">${remainingLabel}</div>
-            <div class="bar-container rtl ${this.config.gradient_fixed ? 'fixed-gradient' : ''}">
-                <div class="bar ${blinkClass}" style="${barStyle}"></div>
+            <div class="bar-container rtl ${barShapeClass} ${(this.config.gradient_fixed || this.config.bar_style === 'tiered') ? 'fixed-gradient' : ''}">
+                <div class="bar ${blinkClass} ${barTypeClass} ${barShapeClass}" style="${barStyle}"></div>
                 ${this.config.show_tooltips ? this._renderTooltip(remaining, this.config.entity_remaining, remainingLabel) : ''}
             </div>
             <div class="value">${this._formatValue(remaining, this.config.entity_remaining)}</div>
@@ -398,9 +455,22 @@ class ClockPvForecastCard extends LitElement {
     .bar-container { flex-grow: 1; height: 14px; background: var(--divider-color, #eee); border-radius: 7px; position: relative; overflow: visible; container-type: inline-size; }
     .bar-container.rtl { direction: rtl; }
     .bar-container.error { display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    
     .bar { height: 100%; border-radius: 7px; width: 0%; background: var(--bar-bg); animation: fill-bar var(--animation-time) ease-out forwards; }
+    .bar-container.shape-sharp, .bar.shape-sharp { border-radius: 0; }
     .bar-container.fixed-gradient .bar { background-size: 100cqi; }
     .bar.blink { animation: fill-bar var(--animation-time) ease-out forwards, blink 1s infinite; }
+    
+    /* Bar Types */
+    .bar.type-segmented {
+      -webkit-mask-image: repeating-linear-gradient(to right, black 0, black 8px, transparent 8px, transparent 10px);
+      mask-image: repeating-linear-gradient(to right, black 0, black 8px, transparent 8px, transparent 10px);
+    }
+    .bar.type-digital {
+      -webkit-mask-image: repeating-linear-gradient(to right, black 0, black 3px, transparent 3px, transparent 4px);
+      mask-image: repeating-linear-gradient(to right, black 0, black 3px, transparent 3px, transparent 4px);
+    }
+
     .attribute-marker { position: absolute; top: 0; bottom: 0; width: 4px; background: var(--attr-color, #f39c12); opacity: 0.8; z-index: 5; transform: translateX(-50%); box-shadow: 0 0 4px rgba(0,0,0,0.4); border-radius: 2px; }
     .remaining-dot { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; border-radius: 50%; background: var(--marker-color, #2c3e50); border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); z-index: 2; cursor: help; }
     .remaining-text-inside { position: absolute; bottom: 100%; left: 0; transform: translate(-50%, -2px); background: rgba(0, 0, 0, 0.7); color: white; border-radius: 3px; font-size: 0.65em; font-weight: bold; padding: 1px 4px; z-index: 10; pointer-events: none; white-space: nowrap; }
@@ -423,11 +493,46 @@ class ClockPvForecastCard extends LitElement {
 class ClockPvForecastCardEditor extends LitElement {
   static properties = { hass: {}, _config: {} };
 
-  setConfig(config) { this._config = config; }
+  setConfig(config) {
+    this._config = { ...config };
+
+    // SMART INITIALIZATION: Don't overwrite what the user is currently typing
+    if (this._manualTiers === undefined) {
+      if (this._config.color_thresholds) {
+        this._manualTiers = this._config.color_thresholds
+          .map(t => `${t.value}:${t.color}`)
+          .join(', ');
+      } else {
+        this._manualTiers = '';
+      }
+    }
+  }
 
   _valueChanged(ev) {
     if (!this._config || !this.hass) return;
-    this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: ev.detail.value } }));
+    let config = { ...ev.detail.value };
+
+    // Update our local buffer
+    this._manualTiers = config.color_thresholds_manual || '';
+
+    // Parse it ONLY for the config sync
+    if (this._manualTiers.trim()) {
+      config.color_thresholds = this._manualTiers
+        .split(',')
+        .map(s => {
+          const parts = s.split(':');
+          if (parts.length < 2) return null;
+          const v = parseFloat(parts[0].trim());
+          const c = parts[1].trim();
+          return isNaN(v) ? null : { value: v, color: c };
+        })
+        .filter(t => t !== null);
+    }
+
+    // Optimization: avoid sending the virtual field to YAML if possible, 
+    // but we need it in the 'config' object passed back to ha-form in the next render cycle.
+
+    this.dispatchEvent(new CustomEvent("config-changed", { detail: { config } }));
   }
 
   _computeLabel = (schema) => {
@@ -448,7 +553,9 @@ class ClockPvForecastCardEditor extends LitElement {
       show_attribute_value: "Show Attribute Value Text",
       attribute_color: "Attribute Color (Hex)",
       display_mode: "Display Mode",
-      bar_style: "Bar Style",
+      bar_style: "Bar Color Style",
+      bar_type: "Bar Shape Type",
+      bar_shape: "Corner Style",
       show_tooltips: "Show Tooltips",
       gradient_fixed: "Fixed Gradient (0-100%)",
       animation_duration: "Animation Duration (e.g. 1s)",
@@ -463,7 +570,9 @@ class ClockPvForecastCardEditor extends LitElement {
       remaining_color_start: "Remaining Color Start",
       remaining_color_end: "Remaining Color End",
       remaining_low_color_start: "Low Warning Color Start",
-      remaining_low_color_end: "Low Warning Color End"
+      remaining_low_color_end: "Low Warning Color End",
+
+      color_thresholds_manual: "Color Tiers (0:red, 10:yellow)"
     };
     return labelMap[schema.name] || schema.name;
   }
@@ -471,17 +580,32 @@ class ClockPvForecastCardEditor extends LitElement {
   render() {
     if (!this.hass || !this._config) return html``;
 
-    const schema = [
-      // ENTITIES GROUP
+    // Ensure the form shows our current typing buffer
+    const formData = {
+      ...this._config,
+      color_thresholds_manual: this._manualTiers
+    };
+
+    const entitiesSchema = [
       { name: "entity_today", selector: { entity: {} } },
       { name: "entity_tomorrow", selector: { entity: {} } },
       ...Array.from({ length: 11 }, (_, i) => ({ name: `entity_day${i + 3}`, selector: { entity: {} } })),
+    ];
 
-      // DISPLAY & FORMATS
+    const displaySchema = [
       { name: "max_value", selector: { number: { mode: "box", min: 1 } } },
-      { name: "forecast_attribute", selector: { text: {} } },
-      { name: "show_attribute_value", selector: { boolean: {} } },
-      { name: "attribute_color", selector: { text: {} } },
+      {
+        name: "scale_mode",
+        selector: {
+          select: {
+            mode: "dropdown", options: [
+              { value: "fixed", label: "Fixed (Max Value)" },
+              { value: "auto", label: "Auto-Scale (Data max)" },
+              { value: "daily", label: "Daily (Each bar 100%)" }
+            ]
+          }
+        }
+      },
       {
         name: "display_mode",
         selector: {
@@ -518,41 +642,56 @@ class ClockPvForecastCardEditor extends LitElement {
         }
       },
       { name: "relative_plus_one", selector: { boolean: {} } },
+      { name: "show_tooltips", selector: { boolean: {} } },
+      { name: "animation_duration", selector: { text: {} } },
+    ];
 
-      // BAR STYLING
+    const stylingSchema = [
       {
         name: "bar_style",
         selector: {
           select: {
             mode: "dropdown", options: [
               { value: "gradient", label: "Gradient" },
-              { value: "solid", label: "Solid (Thresholds)" }
+              { value: "solid", label: "Solid (Thresholds)" },
+              { value: "tiered", label: "Tiered (Thresholds)" }
             ]
           }
         }
       },
-      { name: "animation_duration", selector: { text: {} } },
+      { name: "color_thresholds_manual", selector: { text: {} } },
       {
-        name: "scale_mode",
+        name: "bar_shape",
         selector: {
           select: {
             mode: "dropdown", options: [
-              { value: "fixed", label: "Fixed (Max Value)" },
-              { value: "auto", label: "Auto-Scale (Data max)" },
-              { value: "daily", label: "Daily (Each bar 100%)" }
+              { value: "rounded", label: "Rounded (Soft)" },
+              { value: "sharp", label: "Rectangular (Sharp)" }
             ]
           }
         }
       },
-      { name: "gradient_fixed", selector: { boolean: {} } },
-      { name: "show_tooltips", selector: { boolean: {} } },
-
-      // BAR COLORS (TEXT INPUTS FOR HEX)
+      {
+        name: "bar_type",
+        selector: {
+          select: {
+            mode: "dropdown", options: [
+              { value: "smooth", label: "Smooth (Default)" },
+              { value: "segmented", label: "Segmented (Blocks)" },
+              { value: "digital", label: "Digital (Lines)" }
+            ]
+          }
+        }
+      },
       { name: "bar_color_start", selector: { text: {} } },
       { name: "bar_color_end", selector: { text: {} } },
-      { name: "marker_color", selector: { text: {} } },
+      { name: "gradient_fixed", selector: { boolean: {} } },
+      { name: "forecast_attribute", selector: { text: {} } },
+      { name: "show_attribute_value", selector: { boolean: {} } },
+      { name: "attribute_color", selector: { text: {} } },
+    ];
 
-      // REMAINING SETTINGS
+    const remainingSchema = [
       { name: "entity_remaining", selector: { entity: {} } },
       { name: "remaining_label", selector: { text: {} } },
       {
@@ -569,8 +708,7 @@ class ClockPvForecastCardEditor extends LitElement {
       { name: "remaining_inverted", selector: { boolean: {} } },
       { name: "remaining_threshold", selector: { number: { mode: "box", min: 0 } } },
       { name: "remaining_blink", selector: { boolean: {} } },
-
-      // REMAINING COLORS
+      { name: "marker_color", selector: { text: {} } },
       { name: "remaining_color_start", selector: { text: {} } },
       { name: "remaining_color_end", selector: { text: {} } },
       { name: "remaining_low_color_start", selector: { text: {} } },
@@ -578,16 +716,82 @@ class ClockPvForecastCardEditor extends LitElement {
     ];
 
     return html`
-      <ha-form
-        .hass=${this.hass}
-        .data=${this._config}
-        .schema=${schema}
-        .computeLabel=${this._computeLabel}
-        @value-changed=${this._valueChanged}
-      ></ha-form>
-      <div style="margin-top: 16px; font-size: 0.9em; font-style: italic; color: var(--secondary-text-color);">
-        Note: The complex list "color_thresholds" is not supported in the visual editor. Please use YAML mode for that.
+      <div class="editor-container">
+        <div class="section">
+          <div class="section-header">Forecast Entities</div>
+          <ha-form
+            .hass=${this.hass}
+            .data=${formData}
+            .schema=${entitiesSchema}
+            .computeLabel=${this._computeLabel}
+            @value-changed=${this._valueChanged}
+          ></ha-form>
+        </div>
+
+        <div class="section">
+          <div class="section-header">Display Settings</div>
+          <ha-form
+            .hass=${this.hass}
+            .data=${formData}
+            .schema=${displaySchema}
+            .computeLabel=${this._computeLabel}
+            @value-changed=${this._valueChanged}
+          ></ha-form>
+        </div>
+
+        <div class="section">
+          <div class="section-header">Bar Styling</div>
+          <ha-form
+            .hass=${this.hass}
+            .data=${formData}
+            .schema=${stylingSchema}
+            .computeLabel=${this._computeLabel}
+            @value-changed=${this._valueChanged}
+          ></ha-form>
+          <div class="tip">
+            Format: <strong>value:color</strong> (e.g. 0:red, 10:#f1c40f)
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">Remaining Energy</div>
+          <ha-form
+            .hass=${this.hass}
+            .data=${formData}
+            .schema=${remainingSchema}
+            .computeLabel=${this._computeLabel}
+            @value-changed=${this._valueChanged}
+          ></ha-form>
+        </div>
       </div>
+
+      <style>
+        .editor-container {
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+        .section-header {
+          font-weight: bold;
+          font-size: 1.1em;
+          margin-bottom: 12px;
+          padding-bottom: 4px;
+          border-bottom: 1px solid var(--divider-color);
+          color: var(--primary-color);
+        }
+        .section {
+          background: var(--secondary-background-color);
+          padding: 12px;
+          border-radius: 8px;
+        }
+        .tip {
+          margin-top: 8px;
+          font-size: 0.85em;
+          color: var(--secondary-text-color);
+          opacity: 0.8;
+          padding-left: 4px;
+        }
+      </style>
     `;
   }
 }
