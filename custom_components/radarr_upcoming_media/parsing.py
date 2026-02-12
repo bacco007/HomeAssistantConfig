@@ -93,6 +93,10 @@ def parse_data(inData, tz, host, port, ssl, theaters, urlbase):
                                                             ]][:3])
             except:
                 movie['genres'] = ''
+            try:
+                movie['tmdb_rating'] = tmdb_json.get('vote_average', 0)
+            except:
+                movie['tmdb_rating'] = 0
 
     attributes = {}
     card_json = []
@@ -146,12 +150,21 @@ def parse_data(inData, tz, host, port, ssl, theaters, urlbase):
         card_item['title'] = movie.get('title', '')
         card_item['runtime'] = movie.get('runtime', '')
         card_item['studio'] = movie.get('studio', '')
-        card_item['genres'] = movie.get('genres', '')
-
-        if 'ratings' in movie and movie['ratings'] and movie['ratings'].get('value', 0) > 0:
-            card_item['rating'] = ('\N{BLACK STAR} ' + str(movie['ratings']['value']))
+        radarr_rating = 0
+        if 'ratings' in movie and movie['ratings']:
+            if isinstance(movie['ratings'].get('tmdb'), dict):
+                radarr_rating = movie['ratings']['tmdb'].get('value', 0)
+            elif movie['ratings'].get('value', 0) > 0:
+                radarr_rating = movie['ratings']['value']
+        tmdb_rating = float(movie.get('tmdb_rating', 0) or 0)
+        if radarr_rating and radarr_rating > 0:
+            card_item['rating'] = ('\N{BLACK STAR} ' + str(round(radarr_rating, 1)))
+        elif tmdb_rating > 0:
+            card_item['rating'] = ('\N{BLACK STAR} ' + str(round(tmdb_rating, 1)))
         else:
             card_item['rating'] = ''
+        card_item['genres'] = movie.get('genres', '')
+        card_item['tmdb_id'] = movie.get('tmdbId', '')
         card_item['summary'] = movie.get('overview', '')
         if 'youTubeTrailerId' in movie:
             card_item['trailer'] = f'https://www.youtube.com/watch?v={movie["youTubeTrailerId"]}'
