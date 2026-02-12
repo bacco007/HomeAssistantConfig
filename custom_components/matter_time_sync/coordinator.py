@@ -4,7 +4,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -22,6 +22,15 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+# Matter/CHIP epoch used by Time Synchronization cluster (microseconds since 2000-01-01)
+_CHIP_EPOCH = datetime(2000, 1, 1, tzinfo=timezone.utc)
+
+
+def _to_chip_epoch_us(dt: datetime) -> int:
+    """Convert a datetime to microseconds since CHIP epoch (2000-01-01)."""
+    dt_utc = dt.astimezone(timezone.utc)
+    return int((dt_utc - _CHIP_EPOCH).total_seconds() * 1_000_000)
 
 
 class MatterTimeSyncCoordinator:
@@ -184,6 +193,22 @@ class MatterTimeSyncCoordinator:
         self._nodes_cache = self._parse_nodes(raw_nodes)
         return self._nodes_cache
 
+    def _get_time_sync_endpoints(self, attributes: dict[str, Any]) -> list[int]:
+        """Return endpoint(s) that expose the Time Synchronization cluster (56)."""
+        endpoints: set[int] = set()
+        for key in attributes.keys():
+            parts = key.split("/")
+            if len(parts) < 2:
+                continue
+            try:
+                endpoint_id = int(parts[0])
+                cluster_id = int(parts[1])
+            except ValueError:
+                continue
+            if cluster_id == 56:
+                endpoints.add(endpoint_id)
+        return sorted(endpoints)
+
     def _parse_nodes(self, raw_nodes: list) -> list[dict[str, Any]]:
         """Parse raw node data into usable format."""
         parsed: list[dict[str, Any]] = []
@@ -201,7 +226,8 @@ class MatterTimeSyncCoordinator:
                 "serial_number": attributes.get("0/40/15", ""),
             }
 
-            has_time_sync = self._check_time_sync_cluster(attributes)
+            time_sync_endpoints = self._get_time_sync_endpoints(attributes)
+            has_time_sync = bool(time_sync_endpoints)
 
             ha_name = self._get_ha_device_name(node_id)
             node_label = device_info.get("node_label", "")
@@ -237,6 +263,7 @@ class MatterTimeSyncCoordinator:
                     "product_name": product_name,
                     "device_info": device_info,
                     "has_time_sync": has_time_sync,
+                    "time_sync_endpoints": time_sync_endpoints,
                 }
             )
 
@@ -260,6 +287,25 @@ class MatterTimeSyncCoordinator:
         """Sync time on a Matter device."""
         lock = self._per_node_sync_locks.setdefault(node_id, asyncio.Lock())
         async with lock:
+            # Ensure we have node info for endpoint auto-selection
+            if not self._nodes_cache:
+                await self.async_get_matter_nodes()
+
+            endpoint_id = endpoint
+            if endpoint == 0:
+                node = next(
+                    (n for n in self._nodes_cache if n.get("node_id") == node_id),
+                    None,
+                )
+                endpoints = (node or {}).get("time_sync_endpoints") or []
+                if endpoints and 0 not in endpoints:
+                    endpoint_id = endpoints[0]
+                    _LOGGER.debug(
+                        "Using Time Sync endpoint %s for node %s (cluster 56 not on endpoint 0)",
+                        endpoint_id,
+                        node_id,
+                    )
+
             try:
                 tz = ZoneInfo(self._timezone)
             except Exception:
@@ -276,8 +322,8 @@ class MatterTimeSyncCoordinator:
             utc_offset = total_offset
             dst_offset = 0
 
-            # UTC time in microseconds since epoch
-            utc_microseconds = int(utc_now.timestamp() * 1_000_000)
+            # Matter Time Sync uses CHIP epoch (2000-01-01) in microseconds
+            utc_microseconds = _to_chip_epoch_us(utc_now)
 
             _LOGGER.info(
                 "Syncing time for node %s: local=%s, UTC=%s, offset=%ds, DST=%ds (forced to 0)",
@@ -308,7 +354,7 @@ class MatterTimeSyncCoordinator:
                 "device_command",
                 {
                     "node_id": node_id,
-                    "endpoint_id": endpoint,
+                    "endpoint_id": endpoint_id,
                     "cluster_id": TIME_SYNC_CLUSTER_ID,
                     "command_name": "SetTimeZone",
                     "payload": {"TimeZone": tz_list_with_name},
@@ -319,7 +365,7 @@ class MatterTimeSyncCoordinator:
                     "device_command",
                     {
                         "node_id": node_id,
-                        "endpoint_id": endpoint,
+                        "endpoint_id": endpoint_id,
                         "cluster_id": TIME_SYNC_CLUSTER_ID,
                         "command_name": "SetTimeZone",
                         "payload": {"timeZone": tz_list_with_name},
@@ -339,7 +385,7 @@ class MatterTimeSyncCoordinator:
                     "device_command",
                     {
                         "node_id": node_id,
-                        "endpoint_id": endpoint,
+                        "endpoint_id": endpoint_id,
                         "cluster_id": TIME_SYNC_CLUSTER_ID,
                         "command_name": "SetTimeZone",
                         "payload": {"TimeZone": tz_list_no_name},
@@ -350,7 +396,7 @@ class MatterTimeSyncCoordinator:
                         "device_command",
                         {
                             "node_id": node_id,
-                            "endpoint_id": endpoint,
+                            "endpoint_id": endpoint_id,
                             "cluster_id": TIME_SYNC_CLUSTER_ID,
                             "command_name": "SetTimeZone",
                             "payload": {"timeZone": tz_list_no_name},
@@ -365,7 +411,7 @@ class MatterTimeSyncCoordinator:
             # ---------------------------------------------------------
             # 2) Set DST Offset SECOND (Try PascalCase first, then camelCase)
             # ---------------------------------------------------------
-            far_future_us = int((utc_now.timestamp() + 365 * 24 * 3600) * 1_000_000)
+            far_future_us = _to_chip_epoch_us(utc_now + timedelta(days=365))
 
             dst_list = [
                 {
@@ -379,7 +425,7 @@ class MatterTimeSyncCoordinator:
                 "device_command",
                 {
                     "node_id": node_id,
-                    "endpoint_id": endpoint,
+                    "endpoint_id": endpoint_id,
                     "cluster_id": TIME_SYNC_CLUSTER_ID,
                     "command_name": "SetDSTOffset",
                     "payload": {"DSTOffset": dst_list},
@@ -392,7 +438,7 @@ class MatterTimeSyncCoordinator:
                     "device_command",
                     {
                         "node_id": node_id,
-                        "endpoint_id": endpoint,
+                        "endpoint_id": endpoint_id,
                         "cluster_id": TIME_SYNC_CLUSTER_ID,
                         "command_name": "SetDSTOffset",
                         "payload": {"dstOffset": dst_list},
@@ -410,14 +456,25 @@ class MatterTimeSyncCoordinator:
             # ---------------------------------------------------------
             # 3) Set UTC Time LAST (Try PascalCase first, then camelCase)
             # ---------------------------------------------------------
-            payload_utc_pascal = {"UTCTime": utc_microseconds, "granularity": 3}
-            payload_utc_camel = {"utcTime": utc_microseconds, "granularity": 3}
+            # Some stacks/devices require TimeSource to be provided.
+            # Keep the existing mechanic (PascalCase first, then camelCase) while including TimeSource.
+            time_source = 1
+            payload_utc_pascal = {
+                "UTCTime": utc_microseconds,
+                "granularity": 3,
+                "TimeSource": time_source,
+            }
+            payload_utc_camel = {
+                "utcTime": utc_microseconds,
+                "granularity": 3,
+                "timeSource": time_source,
+            }
 
             time_response = await self._async_send_command(
                 "device_command",
                 {
                     "node_id": node_id,
-                    "endpoint_id": endpoint,
+                    "endpoint_id": endpoint_id,
                     "cluster_id": TIME_SYNC_CLUSTER_ID,
                     "command_name": "SetUTCTime",
                     "payload": payload_utc_pascal,
@@ -430,7 +487,7 @@ class MatterTimeSyncCoordinator:
                     "device_command",
                     {
                         "node_id": node_id,
-                        "endpoint_id": endpoint,
+                        "endpoint_id": endpoint_id,
                         "cluster_id": TIME_SYNC_CLUSTER_ID,
                         "command_name": "SetUTCTime",
                         "payload": payload_utc_camel,
