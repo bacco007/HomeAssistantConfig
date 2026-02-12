@@ -126,6 +126,7 @@ class PlexApi():
                     item['trailer'] = tmdb_data['trailer']
                     item['tmdb_rating'] = tmdb_data['tmdb_rating']
                     item['tmdb_genres'] = tmdb_data['tmdb_genres']
+                    item['tmdb_id'] = tmdb_data['tmdb_id']
 
                 if library["type"] not in data['all']:
                     data['all'][library["type"]] = []

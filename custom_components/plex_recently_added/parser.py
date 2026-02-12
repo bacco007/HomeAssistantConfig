@@ -125,7 +125,6 @@ def parse_data(hass: HomeAssistant, data, max, base_url, token, identifier, sect
         plex_genres = item.get('Genre', [])[:3]
         if not plex_genres:
             plex_genres = (item.get('tmdb_genres') or [])[:3]
-        data_output["genres"] = ", ".join(plex_genres)
         plex_rating = float(item.get("rating") or 0)
         tmdb_rating = float(item.get("tmdb_rating") or 0)
         if plex_rating > 0:
@@ -134,6 +133,8 @@ def parse_data(hass: HomeAssistant, data, max, base_url, token, identifier, sect
             data_output["rating"] = '\N{BLACK STAR} ' + str(round(tmdb_rating, 1))
         else:
             data_output["rating"] = ''
+        data_output["genres"] = ", ".join(plex_genres)
+        data_output["tmdb_id"] = item.get('tmdb_id', '')
         data_output['summary'] = item.get('summary', '')
         data_output['trailer'] = item.get('trailer')
 
