@@ -64,6 +64,7 @@ def parse_data(data, tz, host, port, ssl, url_base=None):
             card_item['genres'] = ', '.join(show['series']['genres'])
         else:
             card_item['genres'] = ''
+        card_item['tmdb_id'] = ''
         card_item['summary'] = show.get('overview', '')
         
         if 'title' in show['series']:
@@ -75,6 +76,7 @@ def parse_data(data, tz, host, port, ssl, url_base=None):
 
                 if tmdb_json['results']:
                     tmdb_id = tmdb_json['results'][0]['id']
+                    card_item['tmdb_id'] = tmdb_id
                     details_url = TMDB_DETAILS_URL.format(tmdb_id)
                     details_response = session.get(details_url)
                     details_json = details_response.json()
