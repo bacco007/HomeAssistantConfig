@@ -11,7 +11,7 @@ DEFAULT_PARSE_DICT: Final = {
     'title_default': '$title',
     'line1_default': '$episode',
     'line2_default': '$release',
-    'line3_default': '$rating - $runtime',
-    'line4_default': '$number - $studio',
+    'line3_default': '$number - $rating - $runtime',
+    'line4_default': '$genres',
     'icon': 'mdi:arrow-down-bold'
 }
