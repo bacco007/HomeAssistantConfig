@@ -8,5 +8,5 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/custom-components/sensor.radarr_upcoming_media/issues",
   "requirements": [],
-  "version": "0.4.5"
+  "version": "0.4.6"
 }

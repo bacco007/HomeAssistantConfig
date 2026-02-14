@@ -68,7 +68,7 @@ class RadarrApi():
                     ))
                 return {
                     'online': True,
-                    'data': parse_data((in_cinemas + digital_release + physical_release)[:self._max], tz, self._host, self._port, self._ssl, self._theaters)
+                    'data': parse_data((in_cinemas + digital_release + physical_release)[:self._max], tz, self._host, self._port, self._ssl, self._theaters, self._urlbase)
                 }
 
             return {
