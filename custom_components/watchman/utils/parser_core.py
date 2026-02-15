@@ -203,7 +203,7 @@ def _scan_string_for_entities(
         end_idx = match.end(1)
         if end_idx < len(content):
             next_char = content[end_idx]
-            if next_char == "-":
+            if next_char in ("-", "{", "["):
                 continue
             if next_char == ".":
                 if "states." not in match.group(0).lower():
@@ -570,8 +570,8 @@ def _parse_config_entries_file(
         # Create Context
         context = ParserContext(
             is_active=True,
-            parent_type=domain,
-            parent_alias=entry.get("title"),
+            parent_type=f"helper_{domain}",
+            parent_alias=entry.get("title") or entry.get("options", {}).get("name"),
             parent_id=entry.get("entry_id"),
         )
 

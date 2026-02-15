@@ -158,7 +158,7 @@ def table_renderer(
             row = [
                 fill(service, columns_width[0]),
                 fill("missing", columns_width[1]),
-                fill(parsed_list[service]["locations"], columns_width[2]),
+                format_occurrences(parsed_list[service]["occurrences"], columns_width[2]),
             ]
             table.add_row(row)
         table.align = "l"
@@ -173,7 +173,7 @@ def table_renderer(
                 [
                     fill(entity, columns_width[0], name),
                     fill(state, columns_width[1]),
-                    fill(parsed_list[entity]["locations"], columns_width[2]),
+                    format_occurrences(parsed_list[entity]["occurrences"], columns_width[2]),
                 ]
             )
 
@@ -193,30 +193,80 @@ def text_renderer(
     result = ""
     if entry_type == REPORT_ENTRY_TYPE_SERVICE:
         for service in missing_items:
-            result += f"{service} in {fill(parsed_list[service]['locations'], 0)}\n"
+            loc = format_occurrences(parsed_list[service]["occurrences"], 0)
+            result += f"{service} in {loc}\n"
         return result
     if entry_type == REPORT_ENTRY_TYPE_ENTITY:
         friendly_names = get_config(hass, CONF_FRIENDLY_NAMES, False)
         for entity in missing_items:
             state, name = get_entity_state(hass, entity, friendly_names=friendly_names)
             entity_col = entity if not name else f"{entity} ('{name}')"
-            result += f"{entity_col} [{state}] in: {fill(parsed_list[entity]['locations'], 0)}\n"
+            loc = format_occurrences(parsed_list[entity]["occurrences"], 0)
+            result += f"{entity_col} [{state}] in: {loc}\n"
 
         return result
     return f"Text render error: unknown entry type: {entry_type}"
 
 
+def format_occurrences(occurrences: list[dict[str, Any]], width: int) -> str:
+    """Format occurrence locations, handling UI helpers gracefully."""
+    helpers = set()
+    files = {}
+
+    for occ in occurrences:
+        context = occ.get("context")
+        path = occ["path"]
+        line = occ["line"]
+
+        # Check for UI Helper
+        if context and context.get("parent_type", "").startswith("helper_"):
+            p_type = context["parent_type"].replace("helper_", "").capitalize()
+            alias = context.get("parent_alias") or "Unknown"
+
+            emoji = ""
+            if p_type == "Group":
+                emoji = "👥"
+            elif p_type == "Template":
+                emoji = "🧩"
+
+            helpers.add(f'{emoji} {p_type}: "{alias}"')
+        else:
+            # Standard File
+            if path not in files:
+                files[path] = []
+            files[path].append(str(line))
+
+    lines = sorted(helpers)
+    for path, line_numer_list in files.items():
+        lines.append(f"📄 {path}:{','.join(line_numer_list)}")
+
+    out = "\n".join(lines)
+
+    if width > 0:
+        wrapped_lines = []
+        for line in out.split("\n"):
+            wrapped_lines.extend(wrap(line, width))
+        return "\n".join([line.ljust(width) for line in wrapped_lines])
+
+    return out
+
+
 def fill(data: Any, width: int, extra: str | None = None) -> str:
     """Arrange data by table column width."""
     if data and isinstance(data, dict):
-        key, val = next(iter(data.items()))
-        out = f"{key}:{','.join([str(v) for v in val])}"
+        lines = []
+        for key, val in data.items():
+            lines.append(f"{key}:{','.join([str(v) for v in val])}")
+        out = "\n".join(lines)
     else:
         out = str(data) if not extra else f"{data} ('{extra}')"
 
-    return (
-        "\n".join([out.ljust(width) for out in wrap(out, width)]) if width > 0 else out
-    )
+    if width > 0:
+        wrapped_lines = []
+        for line in out.split("\n"):
+            wrapped_lines.extend(wrap(line, width))
+        return "\n".join([line.ljust(width) for line in wrapped_lines])
+    return out
 
 
 def get_columns_width(user_width: list[int] | None) -> list[int]:
