@@ -537,6 +537,34 @@ var $24c52f343453d62d$export$2e2bcd8739ae039 = {
 };
 
 
+const $216640a6cb8d8606$export$19efda5681568302 = (superClass)=>{
+    class HassUpdateClass extends superClass {
+        get hass() {
+            return this.__hassValue;
+        }
+        set hass(value) {
+            this.__hassValue = value;
+        }
+        connectedCallback() {
+            super.connectedCallback();
+            globalThis.addEventListener('hass-update', this._boundHassUpdateHandler);
+        }
+        disconnectedCallback() {
+            super.disconnectedCallback();
+            globalThis.removeEventListener('hass-update', this._boundHassUpdateHandler);
+        }
+        _handleHassUpdate(event) {
+            const { detail: { hass: hass } } = event;
+            this.hass = hass;
+        }
+        constructor(...args){
+            super(...args), this._boundHassUpdateHandler = this._handleHassUpdate.bind(this);
+        }
+    }
+    return HassUpdateClass;
+};
+
+
 /**
  * Configuration utilities for feature flag management
  */ const $a64cd1666b27644b$export$805ddaeeece0413e = (config, feature)=>!config || config.features?.includes(feature) || false;
@@ -567,13 +595,17 @@ var $24c52f343453d62d$export$2e2bcd8739ae039 = {
     // Check if it's a wildcard pattern (contains *)
     if (pattern.includes('*')) {
         // Convert wildcard pattern to regex
-        const regexPattern = pattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&') // Escape special regex chars
-        .replace(/\*/g, '.*'); // Convert * to .*
+        const regexPattern = pattern.replaceAll(/[.+?^${}()|[\]\\]/g, String.raw`\$&`) // Escape special regex chars
+        .replaceAll('*', '.*'); // Convert * to .*
         const regex = new RegExp(`^${regexPattern}$`, 'i');
         return regex.test(str);
     }
     // Default to exact match
     return str === pattern;
+};
+const $8e9091561798c377$export$74ca6da3809e132c = (deviceId, deviceName, nameByUser, patterns)=>{
+    if (!patterns?.length) return false;
+    return patterns.some((p)=>$8e9091561798c377$export$78e968efcca6b7ef(deviceId, p) || $8e9091561798c377$export$78e968efcca6b7ef(deviceName, p) || $8e9091561798c377$export$78e968efcca6b7ef(nameByUser ?? null, p));
 };
 
 
@@ -620,7 +652,7 @@ const $e24dedcf9e480b2d$export$50fdfeece43146fd = (hass, entityId, fakeState = f
 /**
  * https://github.com/home-assistant/frontend/blob/dev/src/common/entity/state_active.ts
  */ /**
- * https://github.com/home-assistant/frontend/blob/dev/src/data/entity.ts
+ * https://github.com/home-assistant/frontend/blob/dev/src/data/entity/entity.ts
  */ /**
  * https://github.com/home-assistant/frontend/blob/dev/src/common/array/literal-includes.ts#L6
  */ /**
@@ -630,39 +662,40 @@ const $e24dedcf9e480b2d$export$50fdfeece43146fd = (hass, entityId, fakeState = f
  */ const $2dcc326b5e422db7$export$2fff862a498eed4d = (array)=>(searchElement, fromIndex)=>array.includes(searchElement, fromIndex);
 
 
-const $fa460070836bbf6d$export$f2d101b977a134fd = 'unavailable';
-const $fa460070836bbf6d$export$78244dbb77cfa6b6 = 'unknown';
-const $fa460070836bbf6d$export$8a4b4288adcd729e = 'on';
-const $fa460070836bbf6d$export$173de64b5ad0d5b4 = 'off';
-const $fa460070836bbf6d$export$565a86226f245f0b = [
-    $fa460070836bbf6d$export$f2d101b977a134fd,
-    $fa460070836bbf6d$export$78244dbb77cfa6b6
+const $ae715937da4da853$export$f2d101b977a134fd = 'unavailable';
+const $ae715937da4da853$export$78244dbb77cfa6b6 = 'unknown';
+const $ae715937da4da853$export$8a4b4288adcd729e = 'on';
+const $ae715937da4da853$export$173de64b5ad0d5b4 = 'off';
+const $ae715937da4da853$export$565a86226f245f0b = [
+    $ae715937da4da853$export$f2d101b977a134fd,
+    $ae715937da4da853$export$78244dbb77cfa6b6
 ];
-const $fa460070836bbf6d$export$8ccd97e727a09c65 = [
-    $fa460070836bbf6d$export$f2d101b977a134fd,
-    $fa460070836bbf6d$export$78244dbb77cfa6b6,
-    $fa460070836bbf6d$export$173de64b5ad0d5b4
+const $ae715937da4da853$export$8ccd97e727a09c65 = [
+    $ae715937da4da853$export$f2d101b977a134fd,
+    $ae715937da4da853$export$78244dbb77cfa6b6,
+    $ae715937da4da853$export$173de64b5ad0d5b4
 ];
-const $fa460070836bbf6d$export$dea4173a348a2153 = (0, $2dcc326b5e422db7$export$2fff862a498eed4d)($fa460070836bbf6d$export$565a86226f245f0b);
-const $fa460070836bbf6d$export$3473ff6928139ced = (0, $2dcc326b5e422db7$export$2fff862a498eed4d)($fa460070836bbf6d$export$8ccd97e727a09c65);
+const $ae715937da4da853$export$dea4173a348a2153 = (0, $2dcc326b5e422db7$export$2fff862a498eed4d)($ae715937da4da853$export$565a86226f245f0b);
+const $ae715937da4da853$export$3473ff6928139ced = (0, $2dcc326b5e422db7$export$2fff862a498eed4d)($ae715937da4da853$export$8ccd97e727a09c65);
 
 
 
 function $043ab5348dd51237$export$c0e85c3982a3daa6(stateObj, state) {
     const domain = (0, $e7dc90bb09bfe22d$export$2044bdc9670769ab)(stateObj.entity_id);
+    // Intentional: SonarQube cleanup - using ?? instead of explicit check
     const compareState = state ?? stateObj?.state;
     if ([
         'button',
         'event',
         'input_button',
         'scene'
-    ].includes(domain)) return compareState !== (0, $fa460070836bbf6d$export$f2d101b977a134fd);
-    if ((0, $fa460070836bbf6d$export$dea4173a348a2153)(compareState)) return false;
+    ].includes(domain)) return compareState !== (0, $ae715937da4da853$export$f2d101b977a134fd);
+    if ((0, $ae715937da4da853$export$dea4173a348a2153)(compareState)) return false;
     // The "off" check is relevant for most domains, but there are exceptions
     // such as "alert" where "off" is still a somewhat active state and
     // therefore gets a custom color and "idle" is instead the state that
     // matches what most other domains consider inactive.
-    if (compareState === (0, $fa460070836bbf6d$export$173de64b5ad0d5b4) && domain !== 'alert') return false;
+    if (compareState === (0, $ae715937da4da853$export$173de64b5ad0d5b4) && domain !== 'alert') return false;
     // Custom cases
     switch(domain){
         case 'alarm_control_panel':
@@ -712,7 +745,7 @@ function $043ab5348dd51237$export$c0e85c3982a3daa6(stateObj, state) {
 
 
 const $093edc2594769ee5$export$c6a2d06cc40e579 = (hass, config, deviceId, deviceName)=>{
-    const deviceEntities = Object.values(hass.entities).filter((entity)=>entity.device_id === deviceId).map((entity)=>{
+    const deviceEntities = Object.values(hass.entities).filter((entity)=>entity.device_id === deviceId && !entity.hidden).map((entity)=>{
         const state = (0, $e24dedcf9e480b2d$export$50fdfeece43146fd)(hass, entity.entity_id);
         if (state === undefined) return;
         // convenience
@@ -745,18 +778,19 @@ const $562e4e067cd81a2b$export$30c823bc834d6ab4 = (hass, config)=>{
         diagnostics: [],
         configurations: []
     };
-    // Determine device_id from config.device_id or by resolving config.entity_id
-    const deviceId = config.device_id ?? (config.entity_id ? (0, $e6782818bfcf779d$export$fcf7c33d7fd02301)(hass, config.entity_id)?.device_id : undefined);
+    // Determine device_id from config.device_id or by resolving config.entity/config.entity_id
+    const entityId = config.entity ?? config.entity_id;
+    const deviceId = config.device_id ?? (entityId ? (0, $e6782818bfcf779d$export$fcf7c33d7fd02301)(hass, entityId)?.device_id : undefined);
     if (!deviceId) return undefined;
     const hassDevice = (0, $5bd3a7e1f19a6de3$export$30c823bc834d6ab4)(hass, deviceId);
     if (!hassDevice) return undefined;
-    device.name = hassDevice.name ?? 'Device';
+    device.name = hassDevice.name_by_user ?? hassDevice.name ?? 'Device';
     device.model = [
         hassDevice.manufacturer,
         hassDevice.model,
         hassDevice.model_id
     ].filter(Boolean).join(' ');
-    const entities = (0, $093edc2594769ee5$export$c6a2d06cc40e579)(hass, config, hassDevice.id, hassDevice.name);
+    const entities = (0, $093edc2594769ee5$export$c6a2d06cc40e579)(hass, config, hassDevice.id, device.name);
     entities.forEach((entity)=>{
         if ($562e4e067cd81a2b$var$shouldSkipEntity(entity, config)) return;
         $562e4e067cd81a2b$var$addEntityToDevice(entity, device, config);
@@ -1832,6 +1866,7 @@ const $e1ab409cd148a528$export$4742c54ffa379383 = (entities, sortConfig)=>{
 const $9c83ab07519e6203$export$43835e9acf248a15 = (node, type, detail, options)=>{
     options = options || {};
     // @ts-ignore
+    // Intentional: SonarQube cleanup - using ?? instead of explicit check
     detail = detail ?? {};
     const event = new Event(type, {
         bubbles: options.bubbles ?? true,
@@ -2072,7 +2107,7 @@ const $a6a6434f1848f426$export$40075bc608c4544e = (entity, inverseEntities = [])
 
 const $91384c06f34fa41f$export$535a09426ee2ea59 = async (hass, entity, className)=>{
     // Load the card helpers
-    const helpers = await window.loadCardHelpers();
+    const helpers = await globalThis.loadCardHelpers();
     // Create the row configuration, we will handle actions ourselves
     const config = {
         entity: entity.entity_id,
@@ -2261,8 +2296,9 @@ const $1ed74ce23f0ef067$export$c18c768bbe3223b7 = (hass, entity)=>(0, $f58f44579
 const $da09c6fad515207c$export$69836945d4c6961f = (hass, config)=>{
     // Check if the hide_entity_state feature is enabled
     if ((0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'hide_entity_state')) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
-    if (!config.entity_id) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
-    const state = (0, $e24dedcf9e480b2d$export$50fdfeece43146fd)(hass, config.entity_id);
+    const entityId = config.entity ?? config.entity_id;
+    if (!entityId) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
+    const state = (0, $e24dedcf9e480b2d$export$50fdfeece43146fd)(hass, entityId);
     if (!state) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
     return (0, $1ed74ce23f0ef067$export$c18c768bbe3223b7)(hass, state);
 };
@@ -2596,7 +2632,7 @@ $30856da572fd852b$exports = function equal(a, b) {
 };
 
 
-class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $ab210b2da7b39b9d$export$3f2f9f5909897157) {
+class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $216640a6cb8d8606$export$19efda5681568302)((0, $ab210b2da7b39b9d$export$3f2f9f5909897157)) {
     /**
    * Returns the component's styles
    */ static get styles() {
@@ -2614,6 +2650,11 @@ class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $ab210b2da7b39b9d$ex
     // required for integration card
     set config(config) {
         this.setConfig(config);
+    }
+    /**
+   * Home Assistant instance (readable for HassUpdateElement interface)
+   */ get hass() {
+        return this._hass;
     }
     /**
    * Updates the card's state when Home Assistant state changes
@@ -3157,6 +3198,7 @@ class $4d8f78da09198f60$export$eb3c6eb92a4f4397 extends (0, $ab210b2da7b39b9d$ex
 
 
 
+
 /**
  * https://github.com/home-assistant/frontend/blob/dev/src/common/string/capitalize-first-letter.ts
  */ const $1409036132f3ee41$export$d07f57595c356899 = (str)=>str.charAt(0).toUpperCase() + str.slice(1);
@@ -3168,25 +3210,31 @@ const $68e99829eee639f8$export$26c6f48841fe1a8a = (str)=>str.split('_').map((s)=
 const $be605d8f132c1e28$export$48cc0f50054c9113 = (device, entryIds)=>device.config_entries?.some((entryId)=>entryIds.includes(entryId)) ?? false;
 
 
+async function $21a2be1ad8240bf4$export$75025f85344f722b(hass, params) {
+    const { integration: integration, includeDevices: includeDevices, excludeDevices: excludeDevices = [] } = params;
+    const results = await hass.callWS({
+        type: 'config_entries/get',
+        domain: integration
+    });
+    const configEntries = results.map((e)=>e.entry_id);
+    const devices = [];
+    for (const device of Object.values(hass.devices)){
+        if (!(0, $be605d8f132c1e28$export$48cc0f50054c9113)(device, configEntries)) continue;
+        const hasIncludeList = !!includeDevices && includeDevices.length > 0;
+        const isIncluded = hasIncludeList ? (0, $8e9091561798c377$export$74ca6da3809e132c)(device.id, device.name, device.name_by_user, includeDevices) : includeDevices === undefined; // undefined = include all, [] = include none
+        const isExcluded = (0, $8e9091561798c377$export$74ca6da3809e132c)(device.id, device.name, device.name_by_user, excludeDevices);
+        if (isIncluded && !isExcluded) devices.push(device.id);
+    }
+    return {
+        name: (0, $68e99829eee639f8$export$26c6f48841fe1a8a)(integration),
+        devices: devices
+    };
+}
 
 
 
 
 
-const $49ae81c1680fcc1f$export$78de33bacfd1396b = (config, deviceId, deviceName)=>{
-    if (!config.exclude_devices?.length) return false;
-    // Check if any exclusion pattern matches the device ID or name
-    return config.exclude_devices.some((pattern)=>(0, $8e9091561798c377$export$78e968efcca6b7ef)(deviceId, pattern) || (0, $8e9091561798c377$export$78e968efcca6b7ef)(deviceName, pattern));
-};
-
-
-
-const $1f8809714ac7ce41$export$b4dbcc601e3f7204 = (config, deviceId, deviceName)=>{
-    // If include_devices is specified, device must match one of the patterns
-    if (config.include_devices?.length) return config.include_devices.some((pattern)=>(0, $8e9091561798c377$export$78e968efcca6b7ef)(deviceId, pattern) || (0, $8e9091561798c377$export$78e968efcca6b7ef)(deviceName, pattern));
-    // If no include_devices specified, return false
-    return false;
-};
 
 
 
@@ -3230,6 +3278,54 @@ const $5d5dec7c32377406$export$d424543ab4012665 = (0, $def2de46b9306e8a$export$d
 `;
 
 
+/**
+ * https://github.com/home-assistant/frontend/blob/dev/src/data/ws-templates.ts
+ */ const $a93c212e3c25d01e$export$851ba8a4d3782151 = (conn, onChange, params)=>conn.subscribeMessage((msg)=>onChange(msg), {
+        type: 'render_template',
+        ...params
+    });
+
+
+class $70d8f6c18f07ed2a$export$7bf83dadddfc0eda {
+    constructor(_onChange){
+        this._onChange = _onChange;
+    }
+    /** The template string we're currently subscribed to (if any). */ get subscribedTemplate() {
+        return this._subscribedTemplate;
+    }
+    /** The resolved device IDs from the last template result. */ get deviceIds() {
+        return this._deviceIds;
+    }
+    /**
+   * Subscribe to the given template. No-ops if already subscribed to the same
+   * string. Tears down an existing subscription when the template changes.
+   */ connect(connection, template) {
+        if (this._subscribedTemplate === template) return;
+        // Template changed — clean up old subscription first
+        this.disconnect();
+        this._subscribedTemplate = template;
+        this._unsub = (0, $a93c212e3c25d01e$export$851ba8a4d3782151)(connection, (result)=>{
+            if ('error' in result) {
+                console.error('Integration Card: template error:', result.error);
+                return;
+            }
+            this._deviceIds = result.result;
+            this._onChange();
+        }, {
+            template: template
+        });
+    }
+    /** Tear down the active subscription (if any). */ disconnect() {
+        if (this._unsub) {
+            this._unsub.then((unsub)=>unsub());
+            this._unsub = undefined;
+        }
+        this._subscribedTemplate = undefined;
+        this._deviceIds = undefined;
+    }
+}
+
+
 
 class $3bda94c4eb71d8c0$export$ad4bbebd033175bb extends (0, $ab210b2da7b39b9d$export$3f2f9f5909897157) {
     /**
@@ -3245,39 +3341,61 @@ class $3bda94c4eb71d8c0$export$ad4bbebd033175bb extends (0, $ab210b2da7b39b9d$ex
    * Sets up the card configuration
    * @param {Config} config - The card configuration
    */ setConfig(config) {
-        if (!$30856da572fd852b$exports(config, this._config)) this._config = config;
+        if (!$30856da572fd852b$exports(config, this._config)) {
+            this._config = config;
+            if (typeof config.include_devices !== 'string' || config.include_devices !== this._includeTemplateSub.subscribedTemplate) this._includeTemplateSub.disconnect();
+            if (typeof config.exclude_devices !== 'string' || config.exclude_devices !== this._excludeTemplateSub.subscribedTemplate) this._excludeTemplateSub.disconnect();
+        }
     }
     /**
    * Updates the card's state when Home Assistant state changes
    * @param {HomeAssistant} hass - The Home Assistant instance
    */ set hass(hass) {
         this._hass = hass;
-        const data = {
-            name: '',
-            devices: []
-        };
-        if (!this._config.integration) return;
-        // Get all devices from the specified integration
-        data.name = (0, $68e99829eee639f8$export$26c6f48841fe1a8a)(this._config.integration);
-        // Get config entries for the integration domain
-        hass.callWS({
-            type: 'config_entries/get',
-            domain: this._config.integration
-        }).then((results)=>{
-            const configEntries = results.map((e)=>e.entry_id);
-            // Simplified device inclusion/exclusion logic
-            Object.values(hass.devices).forEach((device)=>{
-                // Check if device belongs to the integration first
-                if ((0, $be605d8f132c1e28$export$48cc0f50054c9113)(device, configEntries)) {
-                    const hasIncludeList = !!this._config.include_devices && this._config.include_devices.length > 0;
-                    const isIncluded = hasIncludeList ? (0, $1f8809714ac7ce41$export$b4dbcc601e3f7204)(this._config, device.id, device.name) : true; // If no include list, all devices are considered "included"
-                    const isExcluded = (0, $49ae81c1680fcc1f$export$78de33bacfd1396b)(this._config, device.id, device.name);
-                    // Add device if:
-                    // 1. It passes the inclusion check (either matches a pattern or no patterns specified)
-                    // 2. It doesn't match any exclusion pattern
-                    if (isIncluded && !isExcluded) data.devices.push(device.id);
-                }
-            });
+        // update children who are subscribed
+        (0, $9c83ab07519e6203$export$43835e9acf248a15)(this, 'hass-update', {
+            hass: hass
+        });
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        this._tryConnect();
+    }
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this._includeTemplateSub.disconnect();
+        this._excludeTemplateSub.disconnect();
+    }
+    /**
+   * Subscribe to Jinja templates when include_devices or exclude_devices is a template string.
+   */ _tryConnect() {
+        if (!this._hass) return;
+        const includeTemplate = this._config?.include_devices;
+        const excludeTemplate = this._config?.exclude_devices;
+        if (typeof includeTemplate === 'string') this._includeTemplateSub.connect(this._hass.connection, includeTemplate);
+        else this._includeTemplateSub.disconnect();
+        if (typeof excludeTemplate === 'string') this._excludeTemplateSub.connect(this._hass.connection, excludeTemplate);
+        else this._excludeTemplateSub.disconnect();
+        this._computeIntegration();
+    }
+    /**
+   * Compute the integration data (device list) from current state.
+   * Called from the hass setter and when template results arrive.
+   */ _computeIntegration() {
+        const hass = this._hass;
+        if (!hass || !this._config?.integration) return;
+        // If using include_devices template but it hasn't resolved yet, wait
+        if (typeof this._config.include_devices === 'string' && !this._includeTemplateSub.deviceIds) return;
+        // If using exclude_devices template but it hasn't resolved yet, wait
+        if (typeof this._config.exclude_devices === 'string' && !this._excludeTemplateSub.deviceIds) return;
+        // pass config and template results to function for it to handle.
+        const effectiveIncludeDevices = typeof this._config.include_devices === 'string' ? this._includeTemplateSub.deviceIds : this._config.include_devices;
+        const effectiveExcludeDevices = typeof this._config.exclude_devices === 'string' ? this._excludeTemplateSub.deviceIds : this._config.exclude_devices;
+        (0, $21a2be1ad8240bf4$export$75025f85344f722b)(hass, {
+            integration: this._config.integration,
+            includeDevices: effectiveIncludeDevices,
+            excludeDevices: effectiveExcludeDevices
+        }).then((data)=>{
             if (!$30856da572fd852b$exports(data, this._integration)) this._integration = data;
         });
     }
@@ -3299,6 +3417,7 @@ class $3bda94c4eb71d8c0$export$ad4bbebd033175bb extends (0, $ab210b2da7b39b9d$ex
    * renders the lit element card
    * @returns {TemplateResult} The rendered HTML template
    */ render() {
+        if (!this._hass) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
         if (!this._integration?.devices?.length) {
             const message = this._integration ? `${(0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(this._hass, 'card.no_devices_found')} ${this._config.integration}` : (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(this._hass, 'card.loading');
             return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<ha-card>
@@ -3351,6 +3470,13 @@ class $3bda94c4eb71d8c0$export$ad4bbebd033175bb extends (0, $ab210b2da7b39b9d$ex
         // Otherwise, return an empty object to use the default responsive behavior
         return {};
     }
+    constructor(...args){
+        super(...args), /** Manages the Jinja template websocket subscription for include_devices */ this._includeTemplateSub = new (0, $70d8f6c18f07ed2a$export$7bf83dadddfc0eda)(()=>{
+            this._computeIntegration();
+        }), /** Manages the Jinja template websocket subscription for exclude_devices */ this._excludeTemplateSub = new (0, $70d8f6c18f07ed2a$export$7bf83dadddfc0eda)(()=>{
+            this._computeIntegration();
+        });
+    }
 }
 (0, $24c52f343453d62d$export$29e00dfd3077644b)([
     (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
@@ -3402,13 +3528,22 @@ class $bb372a36f92bd9c9$export$9e322cdd8735282 extends (0, $ab210b2da7b39b9d$exp
         if (!config.exclude_entities?.length) delete config.exclude_entities;
         if (!config.exclude_sections?.length) delete config.exclude_sections;
         if (!config.section_order?.length) delete config.section_order;
-        if (!config.exclude_devices?.length) delete config.exclude_devices;
-        if (!config.include_devices?.length) delete config.include_devices;
         if (!config.columns || config.columns <= 0) delete config.columns;
+        this._cleanupDevicesField(config, 'include_devices');
+        this._cleanupDevicesField(config, 'exclude_devices');
         // @ts-ignore
         (0, $9c83ab07519e6203$export$43835e9acf248a15)(this, 'config-changed', {
             config: config
         });
+    }
+    /**
+   * Clean up include_devices or exclude_devices: remove if empty string or empty array.
+   * Both support string (template) or string[] (device list).
+   */ _cleanupDevicesField(config, key) {
+        const value = config[key];
+        if (typeof value === 'string') {
+            if (value.trim().length === 0) delete config[key];
+        } else if (Array.isArray(value) && !value.length) delete config[key];
     }
     constructor(...args){
         super(...args), /**
@@ -3428,7 +3563,7 @@ class $bb372a36f92bd9c9$export$9e322cdd8735282 extends (0, $ab210b2da7b39b9d$exp
 
 
 var $b06602ab53bd58a3$exports = {};
-$b06602ab53bd58a3$exports = JSON.parse("{\"name\":\"device-card\",\"version\":\"0.15.0\",\"author\":\"Patrick Masters\",\"license\":\"ISC\",\"description\":\"Custom Home Assistant card to show info about your devices.\",\"source\":\"src/index.ts\",\"module\":\"dist/device-card.js\",\"targets\":{\"module\":{\"includeNodeModules\":true}},\"scripts\":{\"watch\":\"parcel watch\",\"build\":\"parcel build\",\"format\":\"prettier --write .\",\"test\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha\",\"test:coverage\":\"nyc yarn test\",\"test:watch\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha --watch\",\"update\":\"npx npm-check-updates -u && yarn install\"},\"devDependencies\":{\"@istanbuljs/nyc-config-typescript\":\"^1.0.2\",\"@open-wc/testing\":\"^4.0.0\",\"@parcel/transformer-inline-string\":\"^2.15.4\",\"@testing-library/dom\":\"^10.4.1\",\"@trivago/prettier-plugin-sort-imports\":\"^5.2.2\",\"@types/chai\":\"^5.2.2\",\"@types/jsdom\":\"^21.1.7\",\"@types/mocha\":\"^10.0.10\",\"@types/sinon\":\"^17.0.4\",\"chai\":\"^5.2.1\",\"jsdom\":\"^26.1.0\",\"mocha\":\"^11.7.1\",\"nyc\":\"^17.1.0\",\"parcel\":\"^2.15.4\",\"prettier\":\"3.6.2\",\"prettier-plugin-organize-imports\":\"^4.2.0\",\"proxyquire\":\"^2.1.3\",\"sinon\":\"^21.0.0\",\"ts-node\":\"^10.9.2\",\"tsconfig-paths\":\"^4.2.0\",\"typescript\":\"^5.9.2\"},\"dependencies\":{\"@lit/task\":\"^1.0.3\",\"fast-deep-equal\":\"^3.1.3\",\"lit\":\"^3.3.1\"}}");
+$b06602ab53bd58a3$exports = JSON.parse("{\"name\":\"device-card\",\"version\":\"0.16.0\",\"author\":\"Patrick Masters\",\"license\":\"ISC\",\"description\":\"Custom Home Assistant card to show info about your devices.\",\"source\":\"src/index.ts\",\"module\":\"dist/device-card.js\",\"targets\":{\"module\":{\"includeNodeModules\":true}},\"scripts\":{\"watch\":\"parcel watch\",\"build\":\"parcel build\",\"format\":\"prettier --write .\",\"test\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha\",\"test:coverage\":\"nyc yarn test\",\"test:watch\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha --watch\",\"update\":\"npx npm-check-updates -u && yarn install\"},\"devDependencies\":{\"@istanbuljs/nyc-config-typescript\":\"^1.0.2\",\"@open-wc/testing\":\"^4.0.0\",\"@parcel/transformer-inline-string\":\"^2.15.4\",\"@testing-library/dom\":\"^10.4.1\",\"@trivago/prettier-plugin-sort-imports\":\"^5.2.2\",\"@types/chai\":\"^5.2.2\",\"@types/jsdom\":\"^21.1.7\",\"@types/mocha\":\"^10.0.10\",\"@types/sinon\":\"^17.0.4\",\"chai\":\"^5.2.1\",\"jsdom\":\"^26.1.0\",\"mocha\":\"^11.7.1\",\"nyc\":\"^17.1.0\",\"parcel\":\"^2.15.4\",\"prettier\":\"3.6.2\",\"prettier-plugin-organize-imports\":\"^4.2.0\",\"proxyquire\":\"^2.1.3\",\"sinon\":\"^21.0.0\",\"ts-node\":\"^10.9.2\",\"tsconfig-paths\":\"^4.2.0\",\"typescript\":\"^5.9.2\"},\"dependencies\":{\"@lit/task\":\"^1.0.3\",\"fast-deep-equal\":\"^3.1.3\",\"lit\":\"^3.3.1\"}}");
 
 
 // Register the custom elements with the browser
@@ -3437,9 +3572,9 @@ customElements.define('device-card-editor', (0, $4d8f78da09198f60$export$eb3c6eb
 customElements.define('integration-card', (0, $3bda94c4eb71d8c0$export$ad4bbebd033175bb));
 customElements.define('integration-card-editor', (0, $bb372a36f92bd9c9$export$9e322cdd8735282));
 // Ensure the customCards array exists on the window object
-window.customCards = window.customCards || [];
+globalThis.customCards = globalThis.customCards || [];
 // Register the cards with Home Assistant's custom card registry
-window.customCards.push({
+globalThis.customCards.push({
     // Unique identifier for the card type
     type: 'device-card',
     // Display name in the UI
