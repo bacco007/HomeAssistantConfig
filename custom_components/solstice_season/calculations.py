@@ -495,6 +495,16 @@ def calculate_season_data(hemisphere: str, mode: str, now: datetime) -> SeasonDa
         astronomical_events["december_solstice"],
     )
 
+    # Apply hemisphere correction to daylight trend
+    # The base calculation assumes northern hemisphere perspective
+    # For southern hemisphere, the interpretation is reversed
+    if hemisphere == HEMISPHERE_SOUTHERN:
+        if daylight_trend == TREND_LONGER:
+            daylight_trend = TREND_SHORTER
+        elif daylight_trend == TREND_SHORTER:
+            daylight_trend = TREND_LONGER
+        # TREND_SOLSTICE stays the same
+
     next_trend_change, next_trend_event_type = get_next_solstice(
         hemisphere, now, astronomical_events, astronomical_events_next
     )
