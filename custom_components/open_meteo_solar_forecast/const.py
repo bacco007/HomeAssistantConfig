@@ -19,6 +19,8 @@ CONF_USE_HORIZON = "use_horizon"
 CONF_PARTIAL_SHADING = "partial_shading"
 CONF_HORIZON_FILEPATH = "horizon_filepath"
 CONF_MODEL = "model"
+CONF_RETAIN_LATEST_FORECAST_WHEN_UNAVAILABLE = "retain_latest_forecast_when_unavailable"
+CONF_MAX_FORECAST_AGE_MINUTES = "max_forecast_age_minutes"
 
 ATTR_WATTS = "watts"
 ATTR_WH_PERIOD = "wh_period"
