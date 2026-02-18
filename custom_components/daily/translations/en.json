@@ -11,7 +11,8 @@
           "operation": "The operation to be applied to the sensor",
           "unit_of_measurement": "The unit of measurement",
           "interval": "Refresh interval in seconds",
-          "auto_reset": "Automatically reset at 00:00"
+          "auto_reset": "Automatically reset at 00:00",
+          "preserve_on_unavailable": "Preserve value when source sensor is unavailable"
         }
       }
     },
@@ -35,7 +36,8 @@
           "operation": "The operation to be applied to the sensor",
           "unit_of_measurement": "The unit of measurement",
           "interval": "Refresh interval in seconds",
-          "auto_reset": "Automatically reset at 00:00 ?"
+          "auto_reset": "Automatically reset at 00:00 ?",
+          "preserve_on_unavailable": "Preserve value when source sensor is unavailable ?"
         }
       }
     },

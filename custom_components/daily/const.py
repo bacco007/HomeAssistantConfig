@@ -3,7 +3,7 @@
 DOMAIN = "daily"
 NAME = "Daily Sensor"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "v2025.7.1"
+VERSION = "v2026.2.6"
 COORDINATOR = "coordinator"
 ISSUE_URL = "https://github.com/jeroenterheerdt/HADailySensor/issues"
 
@@ -16,7 +16,7 @@ PLATFORMS = [SENSOR]
 
 # Localization
 LANGUAGE_FILES_DIR = "translations"
-SUPPORTED_LANGUAGES = ["da", "el", "en", "es", "fr", "nb", "nl", "sk", "sl"]
+SUPPORTED_LANGUAGES = ["da", "el", "en", "es", "fr", "nb", "nl", "pl", "sk", "sl"]
 
 # Config
 CONF_INPUT_SENSOR = "sensor"
@@ -25,6 +25,7 @@ CONF_NAME = "name"
 CONF_INTERVAL = "interval"
 CONF_UNIT_OF_MEASUREMENT = "unit_of_measurement"
 CONF_AUTO_RESET = "auto_reset"
+CONF_PRESERVE_ON_UNAVAILABLE = "preserve_on_unavailable"
 
 # Attributes
 ATTR_DATETIME_OF_OCCURRENCE = "datetime_of_occurrence"
@@ -48,8 +49,9 @@ VALID_OPERATIONS = [
 ]
 
 # Defaults
-DEFAULT_INTERVAL = 1800.0  # seconds
+DEFAULT_INTERVAL = 1800  # seconds (int to match schema)
 DEFAULT_AUTO_RESET = True
+DEFAULT_PRESERVE_ON_UNAVAILABLE = False
 # Services
 SERVICE_RESET = "reset"
 SERVICE_UPDATE = "update"

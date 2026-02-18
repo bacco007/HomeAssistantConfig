@@ -11,7 +11,8 @@
           "operation": "Operácia, ktorá sa má použiť na snímač",
           "unit_of_measurement": "Jednotka merania",
           "interval": "Interval obnovovania v sekund",
-          "auto_reset": "Automaticky resetovať o 00:00"
+          "auto_reset": "Automaticky resetovať o 00:00",
+          "preserve_on_unavailable": "Zachovať hodnotu, keď je zdrojový snímač nedostupný"
         }
       }
     },
@@ -35,7 +36,8 @@
           "operation": "Operácia, ktorá sa má použiť na snímač",
           "unit_of_measurement": "Jednotka merania",
           "interval": "Interval obnovovania v sekundách",
-          "auto_reset": "Automaticky resetovať o 00:00 ?"
+          "auto_reset": "Automaticky resetovať o 00:00 ?",
+          "preserve_on_unavailable": "Zachovať hodnotu, keď je zdrojový snímač nedostupný ?"
         }
       }
     },

@@ -11,7 +11,8 @@
           "operation": "Operacija, ki se bo izvedla",
           "unit_of_measurement": "Enota meritve",
           "interval": "Interval osvežitve v sekundah",
-          "auto_reset": "Samodejno ponastavi ob 00:00"
+          "auto_reset": "Samodejno ponastavi ob 00:00",
+          "preserve_on_unavailable": "Ohrani vrednost, ko izvorni senzor ni na voljo"
         }
       }
     },
@@ -35,7 +36,8 @@
           "operation": "Operacija, ki se bo izvedla",
           "unit_of_measurement": "Enota meritve",
           "interval": "Interval osvežitve v sekundah",
-          "auto_reset": "Samodejno ponastavi ob 00:00"
+          "auto_reset": "Samodejno ponastavi ob 00:00",
+          "preserve_on_unavailable": "Ohrani vrednost, ko izvorni senzor ni na voljo"
         }
       }
     },

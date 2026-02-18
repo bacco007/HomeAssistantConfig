@@ -11,7 +11,8 @@
           "operation": "Wybierz typ operacji, która ma zostać zastosowana",
           "unit_of_measurement": "Jednostka miary",
           "interval": "Interwał odświeżania w sekundach",
-          "auto_reset": "Automatyczny reset o północy"
+          "auto_reset": "Automatyczny reset o północy",
+          "preserve_on_unavailable": "Zachowaj wartość gdy czujnik źródłowy jest niedostępny"
         }
       }
     },
@@ -35,7 +36,8 @@
           "operation": "Wybierz typ operacji, która ma zostać zastosowana",
           "unit_of_measurement": "Jednostka miary",
           "interval": "Interwał odświeżania w sekundach",
-          "auto_reset": "Automatyczny reset o północy?"
+          "auto_reset": "Automatyczny reset o północy?",
+          "preserve_on_unavailable": "Zachowaj wartość gdy czujnik źródłowy jest niedostępny ?"
         }
       }
     },

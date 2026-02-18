@@ -11,7 +11,8 @@
           "operation": "De operatie die op de dagelijkse sensor wordt gedaan",
           "unit_of_measurement": "De eenheid van de sensor",
           "interval": "Ververs interval in seconden",
-          "auto_reset": "Automatische reset om 00:00"
+          "auto_reset": "Automatische reset om 00:00",
+          "preserve_on_unavailable": "Behoud waarde wanneer bronsensor niet beschikbaar is"
         }
       }
     },

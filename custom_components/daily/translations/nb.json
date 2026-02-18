@@ -11,7 +11,8 @@
           "operation": "Operasjonen som skal brukes på sensoren",
           "unit_of_measurement": "Måleenheten",
           "interval": "Oppdater intervall i sekunder",
-          "auto_reset": "Återställs automatiskt vid midnatt?"
+          "auto_reset": "Återställs automatiskt vid midnatt?",
+          "preserve_on_unavailable": "Bevar verdi når kildesensoren er utilgjengelig"
         }
       }
     },

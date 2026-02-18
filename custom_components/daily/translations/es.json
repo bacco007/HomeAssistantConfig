@@ -11,7 +11,8 @@
           "operation": "Operación a aplicar al sensor",
           "unit_of_measurement": "Unidad de medida",
           "interval": "Intervalo de refresco en segundos",
-          "auto_reset": "Resetear automáticamente a las 00:00"
+          "auto_reset": "Resetear automáticamente a las 00:00",
+          "preserve_on_unavailable": "Preservar valor cuando el sensor de origen no está disponible"
         }
       }
     },
@@ -35,7 +36,8 @@
           "operation": "La operación que se aplicará al sensor",
           "unit_of_measurement": "La unidad de medida",
           "interval": "Intervalo de actualización en segundos",
-          "auto_reset": "Reiniciar automáticamente a las 00:00?"
+          "auto_reset": "Reiniciar automáticamente a las 00:00?",
+          "preserve_on_unavailable": "Preservar valor cuando el sensor de origen no está disponible ?"
         }
       }
     },

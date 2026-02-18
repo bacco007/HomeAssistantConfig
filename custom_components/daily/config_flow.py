@@ -9,10 +9,12 @@ from .const import (  # pylint: disable=unused-import
     CONF_UNIT_OF_MEASUREMENT,
     CONF_INTERVAL,
     CONF_AUTO_RESET,
+    CONF_PRESERVE_ON_UNAVAILABLE,
     NAME,
     VALID_OPERATIONS,
     DEFAULT_INTERVAL,
     DEFAULT_AUTO_RESET,
+    DEFAULT_PRESERVE_ON_UNAVAILABLE,
 )
 from .exceptions import SensorNotFound, OperationNotFound, IntervalNotValid, NotUnique
 from .options_flow import DailySensorOptionsFlowHandler
@@ -28,7 +30,6 @@ class DailySensorConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Daily Sensor."""
 
     VERSION = 1
-    CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
 
     def __init__(self):
         """Initialize."""
@@ -71,21 +72,17 @@ class DailySensorConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 self._errors["base"] = "name"
             except SensorNotFound:
                 _LOGGER.error(
-                    "Input sensor {} not found.".format(user_input[CONF_INPUT_SENSOR])
+                    f"Input sensor {user_input[CONF_INPUT_SENSOR]} not found."
                 )
                 self._errors["base"] = "sensornotfound"
             except OperationNotFound:
                 _LOGGER.error(
-                    "Specified operation {} not valid.".format(
-                        user_input[CONF_OPERATION]
-                    ),
+                    f"Specified operation {user_input[CONF_OPERATION]} not valid."
                 )
                 self._errors["base"] = "operationnotfound"
             except IntervalNotValid:
                 _LOGGER.error(
-                    "Specified interval {} not valid.".format(
-                        user_input[CONF_INTERVAL]
-                    ),
+                    f"Specified interval {user_input[CONF_INTERVAL]} not valid."
                 )
                 self._errors["base"] = "intervalnotvalid"
 
@@ -104,6 +101,10 @@ class DailySensorConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Required(CONF_UNIT_OF_MEASUREMENT): str,
                     vol.Required(CONF_INTERVAL, default=DEFAULT_INTERVAL): int,
                     vol.Required(CONF_AUTO_RESET, default=DEFAULT_AUTO_RESET): bool,
+                    vol.Required(
+                        CONF_PRESERVE_ON_UNAVAILABLE,
+                        default=DEFAULT_PRESERVE_ON_UNAVAILABLE,
+                    ): bool,
                 }
             ),
             errors=self._errors,
@@ -115,7 +116,7 @@ class DailySensorConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """Get options flow."""
         return DailySensorOptionsFlowHandler(config_entry)
 
-    async def _check_unique(self, thename):
+    async def _check_unique(self, name):
         """Test if the specified name is not already claimed."""
-        await self.async_set_unique_id(thename)
+        await self.async_set_unique_id(name)
         self._abort_if_unique_id_configured()

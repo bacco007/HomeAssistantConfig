@@ -11,7 +11,8 @@
           "operation": "L'opération à appliquer au capteur",
           "unit_of_measurement": "L'unité de mesure",
           "interval": "L'intervalle de mise à jour en secondes",
-          "auto_reset": "Reset automatique à minuit ?"
+          "auto_reset": "Reset automatique à minuit ?",
+          "preserve_on_unavailable": "Conserver la valeur lorsque le capteur source est indisponible"
         }
       }
     },

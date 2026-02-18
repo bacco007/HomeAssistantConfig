@@ -17,9 +17,11 @@ from .const import (
     CONF_INTERVAL,
     CONF_NAME,
     CONF_OPERATION,
+    CONF_PRESERVE_ON_UNAVAILABLE,
     CONF_UNIT_OF_MEASUREMENT,
     COORDINATOR,
     DEFAULT_AUTO_RESET,
+    DEFAULT_PRESERVE_ON_UNAVAILABLE,
     DOMAIN,
     EVENT_RESET,
     EVENT_UPDATE,
@@ -45,19 +47,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         hass.data.setdefault(DOMAIN, {})
         _LOGGER.info(STARTUP_MESSAGE)
     if entry.entry_id in hass.data[DOMAIN]:
-        _LOGGER.warning(f"Sensor '{entry.title}' already set up. Updating config dynamically.")
-        existing_data = hass.data[DOMAIN][entry.entry_id]
-        existing_entity = existing_data.get("entity")
-        if existing_entity:
-            await existing_entity.async_update_config(entry.data)
+        _LOGGER.warning(
+            f"Sensor '{entry.title}' already set up. Skipping duplicate setup."
+        )
         return True
     name = entry.data.get(CONF_NAME)
-    name_no_spaces_but_underscores = name.replace(" ", "_")
+    sanitized_name = name.replace(" ", "_")
     input_sensor = entry.data.get(CONF_INPUT_SENSOR)
     operation = entry.data.get(CONF_OPERATION)
     interval = entry.data.get(CONF_INTERVAL)
     unit_of_measurement = entry.data.get(CONF_UNIT_OF_MEASUREMENT)
     auto_reset = entry.data.get(CONF_AUTO_RESET, DEFAULT_AUTO_RESET)
+    preserve_on_unavailable = entry.data.get(
+        CONF_PRESERVE_ON_UNAVAILABLE, DEFAULT_PRESERVE_ON_UNAVAILABLE
+    )
 
     # update listener for options flow
     hass_data = dict(entry.data)
@@ -97,6 +100,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         unit_of_measurement = hass.data[DOMAIN][entry.entry_id][
             CONF_UNIT_OF_MEASUREMENT
         ] = entry.options.get(CONF_UNIT_OF_MEASUREMENT)
+    if CONF_PRESERVE_ON_UNAVAILABLE in entry.options and entry.options.get(
+        CONF_PRESERVE_ON_UNAVAILABLE
+    ) != entry.data.get(CONF_PRESERVE_ON_UNAVAILABLE):
+        preserve_on_unavailable = hass.data[DOMAIN][entry.entry_id][
+            CONF_PRESERVE_ON_UNAVAILABLE
+        ] = entry.options.get(CONF_PRESERVE_ON_UNAVAILABLE)
     # set up coordinator
     coordinator = DailySensorUpdateCoordinator(
         hass,
@@ -106,6 +115,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         interval=interval,
         unit_of_measurement=unit_of_measurement,
         auto_reset=auto_reset,
+        preserve_on_unavailable=preserve_on_unavailable,
     )
 
     await coordinator.async_refresh()
@@ -117,19 +127,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
-    # add update listener if not already added.
-    # if weakref.ref(async_reload_entry) not in entry.update_listeners:
-    #    entry.add_update_listener(async_reload_entry)
-
     # register services
     hass.services.async_register(
         DOMAIN,
-        f"{name_no_spaces_but_underscores}_{SERVICE_RESET}",
+        f"{sanitized_name}_{SERVICE_RESET}",
         coordinator.handle_reset,
     )
     hass.services.async_register(
         DOMAIN,
-        f"{name_no_spaces_but_underscores}_{SERVICE_UPDATE}",
+        f"{sanitized_name}_{SERVICE_UPDATE}",
         coordinator.handle_update,
     )
     return True
@@ -161,7 +167,11 @@ async def options_update_listener(hass, config_entry):
     # Update input sensor if changed
     new_input = config_entry.options.get(CONF_INPUT_SENSOR)
     if new_input and new_input != coordinator.input_sensor:
-        _LOGGER.info("Changing input sensor from '%s' to '%s'.", coordinator.input_sensor, new_input)
+        _LOGGER.info(
+            "Changing input sensor from '%s' to '%s'.",
+            coordinator.input_sensor,
+            new_input,
+        )
         coordinator.input_sensor = new_input
         sensor_entity = coordinator.entities.get("sensor")
         if sensor_entity:
@@ -170,7 +180,11 @@ async def options_update_listener(hass, config_entry):
     # Update auto_reset if changed
     new_auto_reset = config_entry.options.get(CONF_AUTO_RESET)
     if new_auto_reset is not None and new_auto_reset != coordinator.auto_reset:
-        _LOGGER.info("Changing auto_reset from '%s' to '%s'.", coordinator.auto_reset, new_auto_reset)
+        _LOGGER.info(
+            "Changing auto_reset from '%s' to '%s'.",
+            coordinator.auto_reset,
+            new_auto_reset,
+        )
         coordinator.auto_reset = new_auto_reset
         sensor_entity = coordinator.entities.get("sensor")
         if sensor_entity:
@@ -179,7 +193,11 @@ async def options_update_listener(hass, config_entry):
     # Update operation if changed
     new_operation = config_entry.options.get(CONF_OPERATION)
     if new_operation and new_operation != coordinator.operation:
-        _LOGGER.info("Changing operation from '%s' to '%s'.", coordinator.operation, new_operation)
+        _LOGGER.info(
+            "Changing operation from '%s' to '%s'.",
+            coordinator.operation,
+            new_operation,
+        )
         coordinator.operation = new_operation
         sensor_entity = coordinator.entities.get("sensor")
         if sensor_entity:
@@ -188,13 +206,34 @@ async def options_update_listener(hass, config_entry):
     # Update unit_of_measurement if changed
     new_uom = config_entry.options.get(CONF_UNIT_OF_MEASUREMENT)
     if new_uom and new_uom != coordinator.unit_of_measurement:
-        _LOGGER.info("Changing unit_of_measurement from '%s' to '%s'.", coordinator.unit_of_measurement, new_uom)
+        _LOGGER.info(
+            "Changing unit_of_measurement from '%s' to '%s'.",
+            coordinator.unit_of_measurement,
+            new_uom,
+        )
         coordinator.unit_of_measurement = new_uom
         sensor_entity = coordinator.entities.get("sensor")
         if sensor_entity:
             sensor_entity.async_write_ha_state()
 
+    # Update preserve_on_unavailable if changed
+    new_preserve_on_unavailable = config_entry.options.get(CONF_PRESERVE_ON_UNAVAILABLE)
+    if (
+        new_preserve_on_unavailable is not None
+        and new_preserve_on_unavailable != coordinator.preserve_on_unavailable
+    ):
+        _LOGGER.info(
+            "Changing preserve_on_unavailable from '%s' to '%s'.",
+            coordinator.preserve_on_unavailable,
+            new_preserve_on_unavailable,
+        )
+        coordinator.preserve_on_unavailable = new_preserve_on_unavailable
+        sensor_entity = coordinator.entities.get("sensor")
+        if sensor_entity:
+            sensor_entity.async_write_ha_state()
+
     await coordinator.async_request_refresh()
+
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Handle removal of an entry."""
@@ -219,7 +258,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def async_remove_entry(hass, entry):
     """Remove Daily sensor config entry."""
     if DOMAIN in hass.data and entry.entry_id in hass.data[DOMAIN]:
-        coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
+        coordinator = hass.data[DOMAIN][entry.entry_id][COORDINATOR]
         await coordinator.async_delete_config()
         del hass.data[DOMAIN][entry.entry_id]
 
@@ -236,6 +275,7 @@ class DailySensorUpdateCoordinator(DataUpdateCoordinator):
         interval,
         unit_of_measurement,
         auto_reset,
+        preserve_on_unavailable,
     ):
         """Initialize."""
         self.name = name
@@ -244,6 +284,7 @@ class DailySensorUpdateCoordinator(DataUpdateCoordinator):
         self.interval = int(interval)
         self.unit_of_measurement = unit_of_measurement
         self.auto_reset = auto_reset
+        self.preserve_on_unavailable = preserve_on_unavailable
         self.hass = hass
         self.entities = {}
         self.platforms = []
@@ -253,7 +294,7 @@ class DailySensorUpdateCoordinator(DataUpdateCoordinator):
         super().__init__(hass, _LOGGER, name=name, update_interval=SCAN_INTERVAL)
 
         # reset happens at midnight
-        _LOGGER.info("auto_reset: {0}".format(self.auto_reset))
+        _LOGGER.info(f"auto_reset: {self.auto_reset}")
         if self.auto_reset:
             async_track_time_change(
                 hass,
@@ -262,12 +303,12 @@ class DailySensorUpdateCoordinator(DataUpdateCoordinator):
                 minute=0,
                 second=0,
             )
-            _LOGGER.info("registered for time change.")
+            _LOGGER.info("Registered for time change at midnight.")
         self.entry_setup_completed = True
 
-    def register_entity(self, thetype, entity):
+    def register_entity(self, entity_type, entity):
         """Register an entity."""
-        self.entities[thetype] = entity
+        self.entities[entity_type] = entity
 
     def fire_event(self, event):
         """Fire an event."""
@@ -275,7 +316,7 @@ class DailySensorUpdateCoordinator(DataUpdateCoordinator):
         self.hass.bus.fire(event_to_fire)
 
     def handle_reset(self, call):
-        """Hande the reset service call."""
+        """Handle the reset service call."""
         self.fire_event(EVENT_RESET)
 
     def handle_update(self, call):
@@ -283,11 +324,11 @@ class DailySensorUpdateCoordinator(DataUpdateCoordinator):
         self.fire_event(EVENT_UPDATE)
 
     async def _async_reset(self, *args):
-        _LOGGER.info("Resetting daily sensor {}!".format(self.name))
+        _LOGGER.info(f"Resetting daily sensor {self.name}")
         self.fire_event(EVENT_RESET)
 
     async def _async_update_data(self):
         """Update data."""
-        _LOGGER.info("Updating Daily Sensor {}".format(self.name))
+        _LOGGER.info(f"Updating Daily Sensor {self.name}")
         # fire an event so the sensor can update itself.
         self.fire_event(EVENT_UPDATE)

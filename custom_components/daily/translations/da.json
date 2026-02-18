@@ -11,7 +11,8 @@
           "operation": "Den handling, der skal anvendes på sensoren",
           "unit_of_measurement": "Måleenheden",
           "interval": "Opdateringsinterval i sekunder",
-          "auto_reset": "Nulstil automatisk kl 00:00"
+          "auto_reset": "Nulstil automatisk kl 00:00",
+          "preserve_on_unavailable": "Bevar værdi når kildesensor er utilgængelig"
         }
       }
     },
@@ -35,7 +36,8 @@
           "operation": "Den handling, der skal anvendes på sensoren",
           "unit_of_measurement": "Måleenheden",
           "interval": "Opdateringsinterval i sekunder",
-          "auto_reset": "Nulstil automatisk kl 00:00 ?"
+          "auto_reset": "Nulstil automatisk kl 00:00 ?",
+          "preserve_on_unavailable": "Bevar værdi når kildesensor er utilgængelig ?"
         }
       }
     },

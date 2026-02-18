@@ -1,6 +1,6 @@
 """Sensor platform for Daily Sensor."""
 
-import asyncio
+import contextlib
 from datetime import datetime
 import logging
 from statistics import StatisticsError, median, stdev, variance
@@ -29,10 +29,7 @@ from .const import (  # pylint: disable=unused-import
     ICON,
 )
 from .entity import DailySensorEntity
-
-# from homeassistant.helpers import entity_registry as er
 from .helpers import parse_sensor_state, convert_to_float
-import contextlib
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -49,7 +46,7 @@ class DailySensor(DailySensorEntity):
 
     def __init__(self, hass, coordinator, entity):
         """Init for DailySensor."""
-        super(DailySensor, self).__init__(coordinator, entity)
+        super().__init__(coordinator, entity)
         self._state = None
         self._values = []
         self._occurrence = None
@@ -61,20 +58,11 @@ class DailySensor(DailySensorEntity):
         self.coordinator.register_entity(self.name, self.entity_id)
 
         # listen to the update event and reset event
-        event_to_listen = f"{self.coordinator.name}_{EVENT_RESET}"
-        self.hass.bus.async_listen(
-            event_to_listen,
-            lambda event: self._handle_reset(  # pylint: disable=unnecessary-lambda
-                event
-            ),
-        )
-        event_to_listen_2 = f"{self.coordinator.name}_{EVENT_UPDATE}"
-        self.hass.bus.async_listen(
-            event_to_listen_2,
-            lambda event: self._handle_update(  # pylint: disable=unnecessary-lambda
-                event
-            ),
-        )
+        reset_event = f"{self.coordinator.name}_{EVENT_RESET}"
+        self.hass.bus.async_listen(reset_event, self._handle_reset)
+
+        update_event = f"{self.coordinator.name}_{EVENT_UPDATE}"
+        self.hass.bus.async_listen(update_event, self._handle_update)
 
         state = await self.async_get_last_state()
         self._state = parse_sensor_state(state)
@@ -97,21 +85,25 @@ class DailySensor(DailySensorEntity):
         if input_state not in (None, STATE_UNKNOWN, STATE_UNAVAILABLE):
             input_state = parse_sensor_state(input_state)
             the_val = convert_to_float(input_state)
-            
+
             # Check if the converted value is unavailable
             if the_val == STATE_UNAVAILABLE:
-                self._state = STATE_UNAVAILABLE
-                self.hass.add_job(self.async_write_ha_state)
+                # Only set state to unavailable if preserve_on_unavailable is False
+                if not self.coordinator.preserve_on_unavailable:
+                    self._state = STATE_UNAVAILABLE
+                    self.hass.add_job(self.async_write_ha_state)
                 return
-                
+
             if self._state not in (None, STATE_UNKNOWN, STATE_UNAVAILABLE):
                 self._state = convert_to_float(self._state)
                 # Check if the current state conversion failed
                 if self._state == STATE_UNAVAILABLE:
-                    self._state = STATE_UNAVAILABLE
-                    self.hass.add_job(self.async_write_ha_state)
+                    # Only set state to unavailable if preserve_on_unavailable is False
+                    if not self.coordinator.preserve_on_unavailable:
+                        self._state = STATE_UNAVAILABLE
+                        self.hass.add_job(self.async_write_ha_state)
                     return
-                    
+
             # apply the operation and update self._state
             if self.coordinator.operation == CONF_SUM:
                 if self._state in (None, STATE_UNKNOWN, STATE_UNAVAILABLE):
@@ -134,9 +126,7 @@ class DailySensor(DailySensorEntity):
                     state_minmax_changed = True
             elif self.coordinator.operation == CONF_MEAN:
                 self._values.append(the_val)
-                self._state = round(
-                    (sum(self._values) * 1.0) / len(self._values), 1
-                )
+                self._state = round((sum(self._values) * 1.0) / len(self._values), 1)
             elif self.coordinator.operation == CONF_MEDIAN:
                 self._values.append(the_val)
                 self._state = median(self._values)
@@ -153,9 +143,7 @@ class DailySensor(DailySensorEntity):
         else:
             # sensor is unknown at startup, state which comes after is considered as initial state
             _LOGGER.debug(
-                "Initial state for {} is {}".format(
-                    self.coordinator.input_sensor, input_state
-                )
+                f"Initial state for {self.coordinator.input_sensor} is {input_state}"
             )
             return
 

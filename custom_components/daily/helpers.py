@@ -28,8 +28,6 @@ def convert_to_float(float_value):
         return float(float_value)
     except (ValueError, TypeError):
         _LOGGER.debug(
-            "unable to convert {} to float. Source sensor may be unavailable.".format(
-                float_value
-            )
+            f"Unable to convert {float_value} to float. Source sensor may be unavailable."
         )
         return STATE_UNAVAILABLE
