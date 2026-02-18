@@ -21,7 +21,7 @@ export class DeviceSettings {
         this.modelInput = document.getElementById('deviceModel');
         this.orientationInput = document.getElementById('deviceOrientation');
         this.darkModeInput = document.getElementById('deviceDarkMode');
-        this.extendedLatinGlyphsInput = document.getElementById('deviceExtendedLatinGlyphs');
+
         this.invertedColorsInput = document.getElementById('deviceInvertedColors');
 
         // Power Strategy
@@ -107,7 +107,7 @@ export class DeviceSettings {
 
         // ESPHome Only Fields
         this.powerStrategySection = document.getElementById('powerStrategySection');
-        this.deviceExtendedLatinGlyphsField = document.getElementById('deviceExtendedLatinGlyphsField');
+
         this.deviceInvertedColorsField = document.getElementById('deviceInvertedColorsField');
     }
     init() {
@@ -313,7 +313,8 @@ export class DeviceSettings {
             this.customChip, this.customTech, this.customResPreset, this.customRes, this.customShape,
             this.customPsram, this.customDisplayDriver, this.customDisplayModel, this.customTouchTech,
             'pin_cs', 'pin_dc', 'pin_rst', 'pin_busy', 'pin_clk', 'pin_mosi',
-            'pin_backlight', 'pin_sda', 'pin_scl', 'pin_touch_int', 'pin_touch_rst'
+            'pin_backlight', 'pin_sda', 'pin_scl', 'pin_touch_int', 'pin_touch_rst',
+            'pin_battery_adc', 'pin_battery_enable'
         ];
 
         const triggerSave = () => {
@@ -363,8 +364,11 @@ export class DeviceSettings {
                 sda: getVal('pin_sda'),
                 scl: getVal('pin_scl'),
                 touch_int: getVal('pin_touch_int'),
-                touch_rst: getVal('pin_touch_rst')
-            }
+                touch_rst: getVal('pin_touch_rst'),
+                batteryAdc: getVal('pin_battery_adc'),
+                batteryEnable: getVal('pin_battery_enable')
+            },
+            orientation: this.orientationInput?.value || 'landscape'
         };
     }
 
@@ -405,7 +409,8 @@ export class DeviceSettings {
         const pinInputIds = [
             'pin_cs', 'pin_dc', 'pin_rst', 'pin_busy', 'pin_clk', 'pin_mosi',
             'pin_backlight', 'pin_sda', 'pin_scl',
-            'pin_touch_int', 'pin_touch_rst'
+            'pin_touch_int', 'pin_touch_rst',
+            'pin_battery_adc', 'pin_battery_enable'
         ];
 
         pinInputIds.forEach(id => {
@@ -471,8 +476,11 @@ export class DeviceSettings {
                     sda: getVal('pin_sda'),
                     scl: getVal('pin_scl'),
                     touch_int: getVal('pin_touch_int'),
-                    touch_rst: getVal('pin_touch_rst')
-                }
+                    touch_rst: getVal('pin_touch_rst'),
+                    batteryAdc: getVal('pin_battery_adc'),
+                    batteryEnable: getVal('pin_battery_enable')
+                },
+                orientation: this.orientationInput?.value || 'landscape'
             };
 
 
@@ -636,7 +644,7 @@ export class DeviceSettings {
         if (this.renderingModeInput) this.renderingModeInput.value = AppState.settings.renderingMode || 'direct';
         if (this.orientationInput) this.orientationInput.value = AppState.settings.orientation || "landscape";
         if (this.darkModeInput) this.darkModeInput.checked = !!AppState.settings.darkMode;
-        if (this.extendedLatinGlyphsInput) this.extendedLatinGlyphsInput.checked = !!AppState.settings.extendedLatinGlyphs;
+
         if (this.invertedColorsInput) this.invertedColorsInput.checked = !!AppState.settings.invertedColors;
 
         // Determine power mode
@@ -749,6 +757,8 @@ export class DeviceSettings {
         setPin('pin_scl', pins.scl);
         setPin('pin_touch_int', pins.touch_int);
         setPin('pin_touch_rst', pins.touch_rst);
+        setPin('pin_battery_adc', pins.batteryAdc);
+        setPin('pin_battery_enable', pins.batteryEnable);
     }
 
     populateProtocolFields() {
@@ -917,9 +927,7 @@ export class DeviceSettings {
         if (this.powerStrategySection) {
             this.powerStrategySection.style.display = isESPHome ? 'block' : 'none';
         }
-        if (this.deviceExtendedLatinGlyphsField) {
-            this.deviceExtendedLatinGlyphsField.style.display = isESPHome ? 'block' : 'none';
-        }
+
         if (this.deviceInvertedColorsField) {
             // Only show for ESPHome AND when it's an E-Paper display
             const currentModel = this.modelInput ? this.modelInput.value : null;
@@ -1021,12 +1029,7 @@ export class DeviceSettings {
             });
         }
 
-        // Extended Latin Glyphs (diacritics)
-        if (this.extendedLatinGlyphsInput) {
-            this.extendedLatinGlyphsInput.addEventListener('change', () => {
-                updateSetting('extendedLatinGlyphs', this.extendedLatinGlyphsInput.checked);
-            });
-        }
+
 
         // Inverted Colors (for e-paper displays with swapped black/white)
         if (this.invertedColorsInput) {

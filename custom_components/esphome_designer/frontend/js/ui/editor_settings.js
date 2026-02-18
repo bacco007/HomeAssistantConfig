@@ -1,6 +1,6 @@
 import { AppState } from '../core/state.js';
 import { emit, EVENTS } from '../core/events.js';
-import { setHaManualUrl, refreshHaBaseUrl, setHaToken, getHaManualUrl, getHaToken } from '../utils/env.js';
+import { setHaManualUrl, refreshHaBaseUrl, setHaToken, getHaManualUrl, getHaToken, isDeployedInHa } from '../utils/env.js';
 import { showToast } from '../utils/dom.js';
 import { fetchEntityStates } from '../io/ha_api.js';
 import { Logger } from '../utils/logger.js';
@@ -18,12 +18,16 @@ export class EditorSettings {
         this.refreshEntitiesBtn = document.getElementById('editorRefreshEntities');
         this.entityCountLabel = document.getElementById('editorEntityCount');
         this.gridOpacity = document.getElementById('editorGridOpacity');
+        this.extendedLatinGlyphs = document.getElementById('editorExtendedLatinGlyphs');
 
         // HA Connection
         this.haManualUrl = document.getElementById('haManualUrl');
         this.haLlatToken = document.getElementById('haLlatToken');
         this.testHaBtn = document.getElementById('editorTestHaBtn');
         this.haTestResult = document.getElementById('haTestResult');
+        this.haDeployedWarning = document.getElementById('haDeployedWarning');
+        this.haCorsTip = document.getElementById('haCorsTip');
+
 
         // AI Settings
         this.aiProvider = document.getElementById('aiProvider');
@@ -95,9 +99,30 @@ export class EditorSettings {
             cb.checked = selectedGlyphsets.includes(cb.value);
         });
 
+        // Extended Latin Glyphs
+        if (this.extendedLatinGlyphs) {
+            this.extendedLatinGlyphs.checked = !!settings.extendedLatinGlyphs;
+        }
+
         // HA Connection
-        if (this.haManualUrl) this.haManualUrl.value = getHaManualUrl() || "";
-        if (this.haLlatToken) this.haLlatToken.value = getHaToken() || "";
+        const deployedInHa = isDeployedInHa();
+        if (this.haManualUrl) {
+            this.haManualUrl.value = getHaManualUrl() || "";
+            this.haManualUrl.disabled = deployedInHa;
+            this.haManualUrl.style.opacity = deployedInHa ? "0.5" : "1";
+        }
+        if (this.haLlatToken) {
+            this.haLlatToken.value = getHaToken() || "";
+            this.haLlatToken.disabled = deployedInHa;
+            this.haLlatToken.style.opacity = deployedInHa ? "0.5" : "1";
+        }
+        if (this.haDeployedWarning) {
+            this.haDeployedWarning.classList.toggle('hidden', !deployedInHa);
+        }
+        if (this.haCorsTip) {
+            this.haCorsTip.classList.toggle('hidden', deployedInHa);
+        }
+
         if (this.haTestResult) this.haTestResult.textContent = "";
         if (this.aiTestResult) this.aiTestResult.textContent = "";
 
@@ -320,6 +345,13 @@ export class EditorSettings {
                 AppState.updateSettings({ glyphsets: checked });
             });
         });
+
+        // Extended Latin Glyphs
+        if (this.extendedLatinGlyphs) {
+            this.extendedLatinGlyphs.addEventListener('change', () => {
+                AppState.updateSettings({ extendedLatinGlyphs: this.extendedLatinGlyphs.checked });
+            });
+        }
 
         // Collapsible Categories logic
         const categoryHeaders = this.modal.querySelectorAll('.settings-category-header');

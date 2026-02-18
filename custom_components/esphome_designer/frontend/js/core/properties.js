@@ -703,6 +703,15 @@ export class PropertiesPanel {
             this.addLabeledInputWithIconPicker("Icon Code", "text", props.code || "F0595", (v) => updateProp("code", v), widget);
             this.addLabeledInput("Size", "number", props.size || 48, (v) => updateProp("size", parseInt(v, 10)));
             this.addColorSelector("Color", props.color || "black", colors, (v) => updateProp("color", v));
+            this.addColorSelector("Background", props.bg_color || "transparent", colors, (v) => updateProp("bg_color", v));
+
+            this.createSection("Border Style", false);
+            this.addLabeledInput("Border Width", "number", props.border_width || 0, (v) => updateProp("border_width", parseInt(v, 10)));
+            this.addColorSelector("Border Color", props.border_color || "theme_auto", colors, (v) => updateProp("border_color", v));
+            this.addLabeledInput("Corner Radius", "number", props.border_radius || 0, (v) => updateProp("border_radius", parseInt(v, 10)));
+            this.addDropShadowButton(this.getContainer(), widget.id);
+            this.endSection();
+
             this.endSection();
         }
         else if (type === "sensor_text") {
@@ -910,6 +919,7 @@ export class PropertiesPanel {
             this.addSelect("Font", props.font_family || "Roboto", ["Roboto", "Inter", "Roboto Mono"], (v) => updateProp("font_family", v));
             this.endSection();
         }
+
         else {
             // Smart Generic Fallback: Include Entity & Title if they likely exist
             const hasEntity = widget.entity_id !== undefined || props.weather_entity !== undefined || type.includes("sensor") || type.includes("icon");
@@ -949,6 +959,27 @@ export class PropertiesPanel {
         const updateProp = (key, value) => {
             const newProps = { ...widget.props, [key]: value };
             AppState.updateWidget(widget.id, { props: newProps });
+
+            // Sync border radius to shadow if it exists (User Request: mirror corner radius)
+            if (key === "border_radius" || key === "radius" || key === "corner_radius") {
+                const page = AppState.getCurrentPage();
+                if (page && page.widgets) {
+                    const r = parseInt(value, 10) || 0;
+                    const shadowName = (widget.props?.name || widget.type) + " Shadow";
+                    const shadow = page.widgets.find(w =>
+                        (w.props && w.props.name === shadowName) ||
+                        (w.x === (widget.x || 0) + 5 && w.y === (widget.y || 0) + 5 && w.width === widget.width && w.height === widget.height)
+                    );
+
+                    if (shadow) {
+                        if (shadow.type === "shape_rect" && r > 0) {
+                            AppState.updateWidget(shadow.id, { type: "rounded_rect", props: { ...shadow.props, radius: r } });
+                        } else if (shadow.type === "rounded_rect") {
+                            AppState.updateWidget(shadow.id, { props: { ...shadow.props, radius: r } });
+                        }
+                    }
+                }
+            }
         };
 
         if (type === "shape_rect" || type === "shape_circle") {
@@ -1121,6 +1152,8 @@ export class PropertiesPanel {
                     this.autoPopulateTitleFromEntity(widget.id, v);
                 }
             }, widget);
+            this.addLabeledInput("Attribute (optional)", "text", props.attribute || "", (v) => updateProp("attribute", v.trim()));
+            this.addHint("Read a specific attribute instead of the entity state, e.g. 'temperature' or 'forecast'.");
             // Text Sensor toggle (auto-detected when entity is selected)
             this.addCheckbox("Text Sensor (string value)", props.is_text_sensor || false, (v) => updateProp("is_text_sensor", v));
             this.addHint("Enable if entity returns text instead of numbers.");
@@ -1250,7 +1283,14 @@ export class PropertiesPanel {
             ];
             this.addSelect("Align", props.text_align || "CENTER", alignOptions, (v) => updateProp("text_align", v));
             this.addColorSelector("Background", props.bg_color || "transparent", colors, (v) => updateProp("bg_color", v));
+
+            this.createSection("Border Style", false);
+            this.addLabeledInput("Border Width", "number", props.border_width || 0, (v) => updateProp("border_width", parseInt(v, 10)));
+            this.addColorSelector("Border Color", props.border_color || "theme_auto", colors, (v) => updateProp("border_color", v));
+            this.addLabeledInput("Corner Radius", "number", props.border_radius || 0, (v) => updateProp("border_radius", parseInt(v, 10)));
             this.addDropShadowButton(this.getContainer(), widget.id);
+            this.endSection();
+
             this.endSection();
         }
         else if (type === "lvgl_label") {
@@ -1375,7 +1415,14 @@ export class PropertiesPanel {
             this.addSelect("Font Reference", props.font_ref || "font_mdi_medium", ["font_mdi_medium", "font_mdi_large"], (v) => updateProp("font_ref", v));
             this.addColorSelector("Color", props.color || "black", colors, (v) => updateProp("color", v));
             this.addColorSelector("Background", props.bg_color || "transparent", colors, (v) => updateProp("bg_color", v));
+
+            this.createSection("Border Style", false);
+            this.addLabeledInput("Border Width", "number", props.border_width || 0, (v) => updateProp("border_width", parseInt(v, 10)));
+            this.addColorSelector("Border Color", props.border_color || "theme_auto", colors, (v) => updateProp("border_color", v));
+            this.addLabeledInput("Corner Radius", "number", props.border_radius || 0, (v) => updateProp("border_radius", parseInt(v, 10)));
             this.addDropShadowButton(this.getContainer(), widget.id);
+            this.endSection();
+
             this.endSection();
         }
         else if (type === "battery_icon") {
@@ -1427,6 +1474,30 @@ export class PropertiesPanel {
                 updateProp("font_size", n);
             });
             this.addColorSelector("Color", props.color || "black", colors, (v) => updateProp("color", v));
+            this.endSection();
+        }
+        else if (type === "quote_rss") {
+            this.createSection("Data Source", true);
+            this.addLabeledInput("Feed URL", "text", props.feed_url || "https://www.brainyquote.com/link/quotebr.rss", (v) => updateProp("feed_url", v));
+            this.addLabeledInput("Refresh", "text", props.refresh_interval || "1h", (v) => updateProp("refresh_interval", v));
+            this.addCheckbox("Randomize", props.random !== false, (v) => updateProp("random", v));
+            this.endSection();
+
+            this.createSection("Appearance", true);
+            this.addCheckbox("Show Author", props.show_author !== false, (v) => updateProp("show_author", v));
+            this.addCheckbox("Italic Quote", props.italic_quote !== false, (v) => updateProp("italic_quote", v));
+            this.addLabeledInput("Quote Font Size", "number", props.quote_font_size || 18, (v) => updateProp("quote_font_size", parseInt(v, 10)));
+            this.addLabeledInput("Author Font Size", "number", props.author_font_size || 14, (v) => updateProp("author_font_size", parseInt(v, 10)));
+            this.addColorSelector("Color", props.color || "black", colors, (v) => updateProp("color", v));
+            this.addColorSelector("Background", props.bg_color || "transparent", colors, (v) => updateProp("bg_color", v));
+
+            this.createSection("Border Style", false);
+            this.addLabeledInput("Border Width", "number", props.border_width || 0, (v) => updateProp("border_width", parseInt(v, 10)));
+            this.addColorSelector("Border Color", props.border_color || "theme_auto", colors, (v) => updateProp("border_color", v));
+            this.addLabeledInput("Corner Radius", "number", props.border_radius || 0, (v) => updateProp("border_radius", parseInt(v, 10)));
+            this.addDropShadowButton(this.getContainer(), widget.id);
+            this.endSection();
+
             this.endSection();
         }
         else if (type === "ondevice_temperature") {
@@ -1531,6 +1602,8 @@ export class PropertiesPanel {
             this.addLabeledInputWithPicker("Weather Entity ID", "text", widget.entity_id || props.weather_entity || "weather.forecast_home", (v) => {
                 AppState.updateWidget(widget.id, { entity_id: v });
             }, widget);
+            this.addLabeledInput("Attribute (optional)", "text", props.attribute || "", (v) => updateProp("attribute", v.trim()));
+            this.addHint("Read a specific attribute for weather state (e.g. forecast).");
             this.endSection();
 
             this.createSection("Appearance", true);
@@ -1543,7 +1616,14 @@ export class PropertiesPanel {
             });
             this.addColorSelector("Color", props.color || "black", colors, (v) => updateProp("color", v));
             this.addColorSelector("Background", props.bg_color || "transparent", colors, (v) => updateProp("bg_color", v));
+
+            this.createSection("Border Style", false);
+            this.addLabeledInput("Border Width", "number", props.border_width || 0, (v) => updateProp("border_width", parseInt(v, 10)));
+            this.addColorSelector("Border Color", props.border_color || "theme_auto", colors, (v) => updateProp("border_color", v));
+            this.addLabeledInput("Corner Radius", "number", props.border_radius || 0, (v) => updateProp("border_radius", parseInt(v, 10)));
             this.addDropShadowButton(this.getContainer(), widget.id);
+            this.endSection();
+
             this.endSection();
         }
         else if (type === "weather_forecast") {
@@ -1584,12 +1664,13 @@ export class PropertiesPanel {
                 this.addHint('Browse <a href="https://fonts.google.com" target="_blank">fonts.google.com</a>');
             }
             this.addColorSelector("Color", props.color || "black", colors, (v) => updateProp("color", v));
-            this.addCheckbox("Show Border", props.show_border !== false, (v) => updateProp("show_border", v));
-            if (props.show_border !== false) {
-                this.addLabeledInput("Border Width", "number", props.border_width !== undefined ? props.border_width : 1, (v) => updateProp("border_width", parseInt(v, 10)));
-                this.addColorSelector("Border Color", props.border_color || "black", colors, (v) => updateProp("border_color", v));
-            }
             this.addColorSelector("Background Color", props.background_color || "transparent", colors, (v) => updateProp("background_color", v));
+            this.endSection();
+
+            this.createSection("Border Style", false);
+            this.addLabeledInput("Border Width", "number", props.border_width || 0, (v) => updateProp("border_width", parseInt(v, 10)));
+            this.addColorSelector("Border Color", props.border_color || "theme_auto", colors, (v) => updateProp("border_color", v));
+            this.addLabeledInput("Corner Radius", "number", props.border_radius || 0, (v) => updateProp("border_radius", parseInt(v, 10)));
             this.addDropShadowButton(this.getContainer(), widget.id);
             this.endSection();
         }
@@ -1929,11 +2010,14 @@ export class PropertiesPanel {
         else if (type === "calendar") {
             this.createSection("Appearance", true);
             this.addColorSelector("Text Color", props.text_color || "black", colors, (v) => updateProp("text_color", v));
-            this.addColorSelector("Border Color", props.border_color || "black", colors, (v) => updateProp("border_color", v));
             this.addColorSelector("Background", props.background_color || "white", colors, (v) => updateProp("background_color", v));
+            this.endSection();
 
-            this.addLabeledInput("Border Width", "number", props.border_width || 2, (v) => updateProp("border_width", parseInt(v, 10)));
-            this.addCheckbox("Show Border", props.show_border !== false, (v) => updateProp("show_border", v));
+            this.createSection("Border Style", false);
+            this.addLabeledInput("Border Width", "number", props.border_width || 0, (v) => updateProp("border_width", parseInt(v, 10)));
+            this.addColorSelector("Border Color", props.border_color || "theme_auto", colors, (v) => updateProp("border_color", v));
+            this.addLabeledInput("Corner Radius", "number", props.border_radius || 0, (v) => updateProp("border_radius", parseInt(v, 10)));
+            this.addDropShadowButton(this.getContainer(), widget.id);
             this.endSection();
 
             this.createSection("Font Sizes", false);
@@ -1941,6 +2025,12 @@ export class PropertiesPanel {
             this.addLabeledInput("Day Name Size", "number", props.font_size_day || 24, (v) => updateProp("font_size_day", parseInt(v, 10)));
             this.addLabeledInput("Grid Text Size", "number", props.font_size_grid || 14, (v) => updateProp("font_size_grid", parseInt(v, 10)));
             this.addLabeledInput("Event Text Size", "number", props.font_size_event || 18, (v) => updateProp("font_size_event", parseInt(v, 10)));
+            this.endSection();
+
+            this.createSection("Visibility", true);
+            this.addCheckbox("Show Header", props.show_header !== false, (v) => updateProp("show_header", v));
+            this.addCheckbox("Show Grid", props.show_grid !== false, (v) => updateProp("show_grid", v));
+            this.addCheckbox("Show Events", props.show_events !== false, (v) => updateProp("show_events", v));
             this.endSection();
 
             this.createSection("Data Source", true);
@@ -2582,7 +2672,14 @@ export class PropertiesPanel {
         const btn = document.createElement("button");
         btn.className = "btn btn-secondary btn-full btn-xs";
         btn.innerHTML = `<span class="mdi mdi-box-shadow"></span> Create Drop Shadow`;
-        btn.onclick = () => AppState.createDropShadow(widgetId);
+        btn.onclick = () => {
+            const selected = AppState.selectedWidgetIds || [];
+            if (selected.includes(widgetId)) {
+                AppState.createDropShadow(selected);
+            } else {
+                AppState.createDropShadow(widgetId);
+            }
+        };
 
         wrap.appendChild(btn);
         container.appendChild(wrap);

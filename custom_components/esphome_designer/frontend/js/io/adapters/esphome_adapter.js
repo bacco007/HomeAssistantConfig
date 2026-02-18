@@ -180,6 +180,7 @@ export class ESPHomeAdapter extends BaseAdapter {
         const context = {
             widgets: allWidgets,
             profile,
+            layout,
             displayId,
             adapter: this,
             isLvgl,
@@ -329,18 +330,29 @@ export class ESPHomeAdapter extends BaseAdapter {
                 const binaryDomains = ["switch.", "light.", "fan.", "input_boolean.", "cover.", "lock."];
                 const isBinaryDomain = binaryDomains.some(d => entityId.startsWith(d));
 
-                if (isHaSensor && !isBinaryDomain && !seenEntityIds.has(entityId)) {
-                    // Safe ID truncated to 63 chars for ESPHome compatibility
-                    let safeId = entityId.replace(/[^a-zA-Z0-9_]/g, "_");
-                    if (safeId.length > 63) safeId = safeId.substring(0, 63);
+                if (isHaSensor && !isBinaryDomain) {
+                    const attribute = (p.attribute || "").trim();
+                    // Build a unique key: entity + attribute combination
+                    const entityKey = attribute ? `${entityId}__attr__${attribute}` : entityId;
 
-                    if (!seenSensorIds.has(safeId)) {
-                        seenEntityIds.add(entityId);
-                        seenSensorIds.add(safeId);
-                        numericSensorLinesExtra.push("- platform: homeassistant");
-                        numericSensorLinesExtra.push(`  id: ${safeId}`);
-                        numericSensorLinesExtra.push(`  entity_id: ${entityId}`);
-                        numericSensorLinesExtra.push(`  internal: true`);
+                    if (!seenEntityIds.has(entityKey)) {
+                        // Safe ID truncated to 63 chars for ESPHome compatibility
+                        let safeId = attribute
+                            ? (entityId + "_" + attribute).replace(/[^a-zA-Z0-9_]/g, "_")
+                            : entityId.replace(/[^a-zA-Z0-9_]/g, "_");
+                        if (safeId.length > 63) safeId = safeId.substring(0, 63);
+
+                        if (!seenSensorIds.has(safeId)) {
+                            seenEntityIds.add(entityKey);
+                            seenSensorIds.add(safeId);
+                            numericSensorLinesExtra.push("- platform: homeassistant");
+                            numericSensorLinesExtra.push(`  id: ${safeId}`);
+                            numericSensorLinesExtra.push(`  entity_id: ${entityId}`);
+                            if (attribute) {
+                                numericSensorLinesExtra.push(`  attribute: ${attribute}`);
+                            }
+                            numericSensorLinesExtra.push(`  internal: true`);
+                        }
                     }
                 }
             });
@@ -352,9 +364,66 @@ export class ESPHomeAdapter extends BaseAdapter {
                 lines.push(...mergedSafetyLines.flatMap(l => l.split('\n').map(sub => "  " + sub)));
             }
 
+            // Safety Fix: Auto-register any HA text sensors used in conditions or linked to widgets
+            const allWidgetsForText = pages.flatMap(p => (p.widgets || []).filter(w => !w.hidden));
+            const textSensorLinesExtra = [];
+
+            allWidgetsForText.forEach(w => {
+                const condEnt = (w.condition_entity || "").trim();
+                const primaryEnt = (w.entity_id || "").trim();
+                const p = w.props || {};
+
+                [condEnt, primaryEnt].forEach(ent => {
+                    if (!ent || p.is_local_sensor) return;
+
+                    const isTextHa = ent.startsWith("text_sensor.") || ent.startsWith("weather.");
+                    let isStringCond = false;
+
+                    // Check if this entity is used in a string condition
+                    if (ent === condEnt && w.condition_operator !== "range") {
+                        const state = w.condition_state;
+                        // Heuristic: If condition state is not numeric and not a boolean keyword, treat as string
+                        const stateLower = (state || "").toLowerCase();
+                        const booleanKeywords = ["on", "off", "true", "false", "online", "offline"];
+                        if (state && isNaN(parseFloat(state)) && !booleanKeywords.includes(stateLower)) {
+                            isStringCond = true;
+                        }
+                    }
+
+                    if ((isTextHa || isStringCond)) {
+                        const attribute = (p.attribute || "").trim();
+                        const entityKey = attribute ? `${ent}__attr__${attribute}` : ent;
+
+                        if (!seenEntityIds.has(entityKey)) {
+                            // Text sensors traditionally use _txt suffix in this adapter for safety/differentiation
+                            const base = attribute ? (ent + "_" + attribute) : ent;
+                            const safeId = base.replace(/[^a-zA-Z0-9_]/g, "_") + "_txt";
+
+                            if (!seenSensorIds.has(safeId)) {
+                                seenEntityIds.add(entityKey);
+                                seenSensorIds.add(safeId);
+                                textSensorLinesExtra.push("- platform: homeassistant");
+                                textSensorLinesExtra.push(`  id: ${safeId}`);
+                                textSensorLinesExtra.push(`  entity_id: ${ent}`);
+                                if (attribute) {
+                                    textSensorLinesExtra.push(`  attribute: ${attribute}`);
+                                }
+                                textSensorLinesExtra.push(`  internal: true`);
+                            }
+                        }
+                    }
+                });
+            });
+
             // Text Sensors
             const textSensorLinesOrig = [];
             PluginRegistry.onExportTextSensors({ ...context, lines: textSensorLinesOrig });
+
+            // Merge extra text sensors
+            if (textSensorLinesExtra.length > 0) {
+                textSensorLinesOrig.push(...textSensorLinesExtra);
+            }
+
             const textSensorLines = this.processPendingTriggers(textSensorLinesOrig, pendingTriggers, isLvgl, "on_value");
             if (textSensorLines.length > 0) {
                 lines.push("text_sensor:");
@@ -1009,21 +1078,42 @@ export class ESPHomeAdapter extends BaseAdapter {
             yaml = yaml.replace(/auto_clear_enabled:\s*true/g, "auto_clear_enabled: false");
         }
 
-        if ((profile.id && profile.id === "waveshare_esp32_s3_touch_lcd_7") ||
-            (profile.name && profile.name.toLowerCase().includes("waveshare touch lcd 7"))) {
-            // Fix #182: Native resolution is 800x480 (Landscape), so rotation should be 0 for landscape.
-            let rotation = 0;
-            if (orientation === "portrait") rotation = 90;
-            else if (orientation === "landscape") rotation = 0;
-            else if (orientation === "portrait_inverted") rotation = 270;
-            else if (orientation === "landscape_inverted") rotation = 180;
+        // Generic Rotation Logic for all package-based hardware
+        if (profile.resolution) {
+            const res = profile.resolution;
+            const isNativePortrait = res.height > res.width;
+            const isRequestedPortrait = orientation === 'portrait' || orientation === 'portrait_inverted';
+            const isRequestedInverted = orientation === 'landscape_inverted' || orientation === 'portrait_inverted';
+            const needsOrientationSwap = isNativePortrait !== isRequestedPortrait;
 
-            // More robust replacement: look for rotation inside display platform
+            // Detect the base rotation already present in the hardware YAML
+            const baseRotationMatch = yaml.match(/display:[\s\S]*?rotation:\s*(\d+)/);
+            const baseRotation = baseRotationMatch ? parseInt(baseRotationMatch[1], 10) : 0;
+
+            // Calculate the additional rotation needed on top of the base
+            // Base rotation is the hardware's default (e.g. 180 for Guition jc4827w543)
+            // We only need to add an offset when switching orientation or requesting inverted
+            let rotationOffset = 0;
+            if (needsOrientationSwap) rotationOffset += 90;
+            if (isRequestedInverted) rotationOffset += 180;
+
+            const rotation = (baseRotation + rotationOffset) % 360;
+
+            Logger.log(`[Adapter] Orientation: ${orientation}, base rotation: ${baseRotation}, offset: ${rotationOffset}, final: ${rotation}`);
+
+            // Apply rotation to YAML
             yaml = yaml.replace(/(display:[\s\S]*?rotation:\s*)\d+/g, `$1${rotation}`);
 
-            // Also update the Captive Portal hotspot name in the header if present
-            const deviceName = (profile.name || "ESPHome-Device").replace(/["\\]/g, "").split(" ")[0];
-            yaml = yaml.replace(/"Waveshare-7-Inch"/g, `"${deviceName}-Hotspot"`);
+            // Note: Do NOT swap width/height in the dimensions block.
+            // The dimensions: block describes the physical panel hardware specs.
+            // ESPHome's rotation: property handles logical canvas orientation.
+            // Swapping dimensions conflicts with rotation (see GitHub issue #297).
+
+            // Specific Fix for Waveshare 7" Hotspot Name
+            if (profile.name && profile.name.toLowerCase().includes("waveshare touch lcd 7")) {
+                const deviceName = (profile.name || "ESPHome-Device").replace(/["\\]/g, "").split(" ")[0];
+                yaml = yaml.replace(/"Waveshare-7-Inch"/g, `"${deviceName}-Hotspot"`);
+            }
 
             // Fix #129: Indentation-aware GT911 transform logic
             // Match any whitespace before id: my_touchscreen
@@ -1039,22 +1129,14 @@ export class ESPHomeAdapter extends BaseAdapter {
 
                 if (transform) {
                     // Remove existing transform if present to avoid duplication
-                    // Check if transform block already exists
                     const hasTransform = new RegExp(`^${indent}transform:`, 'm').test(yaml);
                     if (hasTransform) {
-                        // Replace existing transform block
-                        // This is tricky with regex, simpler to just replace the whole touchscreen block or 
-                        // trust that the previous ID replace approach works if the block is immediately after ID
-                        // But often it's not. 
-                        // Let's stick to the ID injection but we must clean up old transform if needed?
-                        // Actually, if we just append, YAML usually takes the last key if duplicated? No, that's JSON. YAML errs.
-
-                        // Let's use a simpler approach: replace "transform:\n ... swap_xy: true" with our new block
-                        // Finding the specific 2-line block:
-                        const oldTransformRegex = new RegExp(`^${indent}transform:[\\s\\S]*?swap_xy: true`, 'm');
+                        // Replace existing transform block (match from transform: through all indented children)
+                        const oldTransformRegex = new RegExp(
+                            `^${indent}transform:\\n(${indent}  \\S+[^\\n]*\\n?)+`, 'm'
+                        );
                         if (oldTransformRegex.test(yaml)) {
-                            // Fix: Prepend indent because 'transform' variable starts with 'transform:', not '  transform:'
-                            yaml = yaml.replace(oldTransformRegex, `${indent}${transform}`);
+                            yaml = yaml.replace(oldTransformRegex, `${indent}${transform}\n`);
                         }
                     } else {
                         // Inject after ID
@@ -1068,23 +1150,15 @@ export class ESPHomeAdapter extends BaseAdapter {
                     if (!yaml.includes("on_release:")) {
                         const wakeupTrigger = `\n${indent}on_release:\n${indent}  - if:\n${indent}      condition: lvgl.is_paused\n${indent}      then:\n${indent}        - lvgl.resume:\n${indent}        - lvgl.widget.redraw:\n${indent}        - light.turn_on: display_backlight`;
 
-                        // Append to the end of the touchscreen component
-                        // We find the 'touchscreen:' block start, then look for the next top-level key (start of line)
-                        // IF touchscreen is the last block, we append to end of file.
-
                         const tsBlockStart = yaml.search(/^touchscreen:/m);
                         if (tsBlockStart !== -1) {
                             const afterTsBlock = yaml.slice(tsBlockStart);
-                            // Find next top-level key (start of line with non-space)
-                            // Skip the first line (touchscreen:)
                             const nextKeyMatch = afterTsBlock.slice(12).match(/^\w/m);
 
                             if (nextKeyMatch) {
-                                // Insert before next key
                                 const insertIdx = tsBlockStart + 12 + nextKeyMatch.index;
                                 yaml = yaml.slice(0, insertIdx) + wakeupTrigger + "\n\n" + yaml.slice(insertIdx);
                             } else {
-                                // End of file
                                 yaml = yaml.trimEnd() + wakeupTrigger + "\n";
                             }
                         }
@@ -1266,11 +1340,12 @@ export class ESPHomeAdapter extends BaseAdapter {
         }
 
         // Standardized naming convention - plugins should follow this too
-        let valExpr = `id(${safeId}).state`;
+        let valExpr;
         if (isText && !ent.startsWith("text_sensor.")) {
-            // Only use _txt if it was auto-detected as text and isn't already prefixed
-            // But for consistency with sensor_text plugin, we might need it.
-            // Actually, let's keep it simple: id(safeId).state is usually enough if registered correctly.
+            // Fix #298: Use _txt suffix for auto-detected text sensors to match registration
+            valExpr = `id(${safeId}_txt).state`;
+        } else {
+            valExpr = `id(${safeId}).state`;
         }
 
         let cond = "";

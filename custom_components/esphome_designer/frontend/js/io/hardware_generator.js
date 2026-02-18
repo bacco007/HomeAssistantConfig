@@ -142,6 +142,26 @@ export function generateCustomHardwareYaml(config) {
         lines.push(`    height: ${resHeight}`);
     }
 
+    // Rotation Logic
+    // Native Portrait detection (Height > Width)
+    const isNativePortrait = resHeight > resWidth;
+    const isRequestedPortrait = config.orientation === 'portrait' || config.orientation === 'portrait_inverted';
+    const isRequestedInverted = config.orientation === 'landscape_inverted' || config.orientation === 'portrait_inverted';
+
+    let rotation = 0;
+    if (isNativePortrait) {
+        // If native is portrait, and we want landscape, we rotate 90
+        rotation = isRequestedPortrait ? 0 : 90;
+    } else {
+        // If native is landscape, and we want portrait, we rotate 90
+        rotation = isRequestedPortrait ? 90 : 0;
+    }
+
+    if (isRequestedInverted) rotation = (rotation + 180) % 360;
+
+    // Apply rotation
+    lines.push(`    rotation: ${rotation}`);
+
     lines.push("    lambda: |-");
     lines.push("      # __LAMBDA_PLACEHOLDER__");
     lines.push("");
@@ -162,7 +182,7 @@ export function generateCustomHardwareYaml(config) {
         lines.push("light:");
         lines.push("  - platform: monochromatic");
         lines.push("    output: backlight_brightness_output");
-        lines.push("    id: lcdbacklight_brightness");
+        lines.push("    id: display_backlight");
         lines.push("    name: LCD Backlight");
         lines.push("    icon: mdi:wall-sconce-flat-outline");
         lines.push("    restore_mode: ALWAYS_ON");
@@ -223,6 +243,15 @@ export function generateCustomHardwareYaml(config) {
         lines.push(`  - platform: ${touchTech}`);
         if (pins.touch_int) lines.push(`    interrupt_pin: ${pins.touch_int}`);
         if (pins.touch_rst) lines.push(`    reset_pin: ${pins.touch_rst}`);
+
+        // Wake up logic for LVGL
+        lines.push("    on_release:");
+        lines.push("      - if:");
+        lines.push("          condition: lvgl.is_paused");
+        lines.push("          then:");
+        lines.push("            - lvgl.resume:");
+        lines.push("            - lvgl.widget.redraw:");
+        lines.push("            - light.turn_on: display_backlight");
         lines.push("");
     }
 
