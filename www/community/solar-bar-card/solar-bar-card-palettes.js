@@ -1,6 +1,6 @@
 // solar-bar-card-palettes.js
 // Color palette definitions for Solar Bar Card
-// Version 2.0.0 - Added battery colors
+// Version 2.1.0 - Added background color options for card and stats tiles
 
 export const COLOR_PALETTES = {
   'classic-solar': {
@@ -15,7 +15,14 @@ export const COLOR_PALETTES = {
       ev_charge: '#81D4FA',
       battery_bar: '#90CAF9',
       battery_charge: '#80DEEA',
-      battery_discharge: '#64B5F6'
+      battery_discharge: '#64B5F6',
+      card_background: null,
+      stats_solar_background: null,
+      stats_export_background: null,
+      stats_import_background: null,
+      stats_usage_background: null,
+      stats_battery_background: null,
+      stats_ev_background: null
     }
   },
   'soft-meadow': {
@@ -30,7 +37,14 @@ export const COLOR_PALETTES = {
       ev_charge: '#B2EBF2',
       battery_bar: '#B2EBF2',
       battery_charge: '#B2DFDB',
-      battery_discharge: '#90CAF9'
+      battery_discharge: '#90CAF9',
+      card_background: null,
+      stats_solar_background: null,
+      stats_export_background: null,
+      stats_import_background: null,
+      stats_usage_background: null,
+      stats_battery_background: null,
+      stats_ev_background: null
     }
   },
   'ocean-sunset': {
@@ -45,7 +59,14 @@ export const COLOR_PALETTES = {
       ev_charge: '#B3E5FC',
       battery_bar: '#B3E5FC',
       battery_charge: '#A5D6E8',
-      battery_discharge: '#81C7E8'
+      battery_discharge: '#81C7E8',
+      card_background: null,
+      stats_solar_background: null,
+      stats_export_background: null,
+      stats_import_background: null,
+      stats_usage_background: null,
+      stats_battery_background: null,
+      stats_ev_background: null
     }
   },
   'garden-fresh': {
@@ -60,7 +81,14 @@ export const COLOR_PALETTES = {
       ev_charge: '#B2DFDB',
       battery_bar: '#B2DFDB',
       battery_charge: '#9ED4CC',
-      battery_discharge: '#80CBC4'
+      battery_discharge: '#80CBC4',
+      card_background: null,
+      stats_solar_background: null,
+      stats_export_background: null,
+      stats_import_background: null,
+      stats_usage_background: null,
+      stats_battery_background: null,
+      stats_ev_background: null
     }
   },
   'peachy-keen': {
@@ -75,7 +103,14 @@ export const COLOR_PALETTES = {
       ev_charge: '#B3D9E6',
       battery_bar: '#B3D9E6',
       battery_charge: '#A0DBE6',
-      battery_discharge: '#7EC8DB'
+      battery_discharge: '#7EC8DB',
+      card_background: null,
+      stats_solar_background: null,
+      stats_export_background: null,
+      stats_import_background: null,
+      stats_usage_background: null,
+      stats_battery_background: null,
+      stats_ev_background: null
     }
   },
   'cloudy-day': {
@@ -90,7 +125,14 @@ export const COLOR_PALETTES = {
       ev_charge: '#C4E4F5',
       battery_bar: '#C4E4F5',
       battery_charge: '#B0D9E8',
-      battery_discharge: '#9CCFDF'
+      battery_discharge: '#9CCFDF',
+      card_background: null,
+      stats_solar_background: null,
+      stats_export_background: null,
+      stats_import_background: null,
+      stats_usage_background: null,
+      stats_battery_background: null,
+      stats_ev_background: null
     }
   },
   'floral-charm': {
@@ -105,7 +147,14 @@ export const COLOR_PALETTES = {
       ev_charge: '#A7E9F7',     // morning dew
       battery_bar: '#A7E9F7',
       battery_charge: '#9EE3C8',// soft sage
-      battery_discharge: '#FF8DAA'// punchy rose
+      battery_discharge: '#FF8DAA',// punchy rose
+      card_background: null,
+      stats_solar_background: null,
+      stats_export_background: null,
+      stats_import_background: null,
+      stats_usage_background: null,
+      stats_battery_background: null,
+      stats_ev_background: null
     }
   },
 
@@ -121,7 +170,14 @@ export const COLOR_PALETTES = {
       ev_charge: '#0DBA7A',     // teal green
       battery_bar: '#0DBA7A',
       battery_charge: '#333333',// dark neutral
-      battery_discharge: '#111111'// near-black accent
+      battery_discharge: '#111111',// near-black accent
+      card_background: null,
+      stats_solar_background: null,
+      stats_export_background: null,
+      stats_import_background: null,
+      stats_usage_background: null,
+      stats_battery_background: null,
+      stats_ev_background: null
     }
   },
 
@@ -137,7 +193,14 @@ export const COLOR_PALETTES = {
       ev_charge: '#D7F7E2',     // seafoam
       battery_bar: '#D7F7E2',
       battery_charge: '#FBE6C6',// peachy highlight
-      battery_discharge: '#C2D9FF'// soft blue discharge
+      battery_discharge: '#C2D9FF',// soft blue discharge
+      card_background: null,
+      stats_solar_background: null,
+      stats_export_background: null,
+      stats_import_background: null,
+      stats_usage_background: null,
+      stats_battery_background: null,
+      stats_ev_background: null
     }
   },
 
@@ -153,7 +216,14 @@ export const COLOR_PALETTES = {
       ev_charge: '#00B0FF',     // electric blue
       battery_bar: '#00B0FF',
       battery_charge: '#00FF7F',// neon green
-      battery_discharge: '#FF6F00'// hot orange
+      battery_discharge: '#FF6F00',// hot orange
+      card_background: null,
+      stats_solar_background: null,
+      stats_export_background: null,
+      stats_import_background: null,
+      stats_usage_background: null,
+      stats_battery_background: null,
+      stats_ev_background: null
     }
   },
 
@@ -169,7 +239,14 @@ export const COLOR_PALETTES = {
       ev_charge: '#264653',     // deep slate
       battery_bar: '#264653',
       battery_charge: '#F7B267',// soft gold
-      battery_discharge: '#B07A5A'// brown accent
+      battery_discharge: '#B07A5A',// brown accent
+      card_background: null,
+      stats_solar_background: null,
+      stats_export_background: null,
+      stats_import_background: null,
+      stats_usage_background: null,
+      stats_battery_background: null,
+      stats_ev_background: null
     }
   },
 
@@ -185,7 +262,14 @@ export const COLOR_PALETTES = {
       ev_charge: '#3D4F3A',     // forest
       battery_bar: '#3D4F3A',
       battery_charge: '#6D5A46',// brown earth
-      battery_discharge: '#2E2B26'// deep charcoal
+      battery_discharge: '#2E2B26',// deep charcoal
+      card_background: null,
+      stats_solar_background: null,
+      stats_export_background: null,
+      stats_import_background: null,
+      stats_usage_background: null,
+      stats_battery_background: null,
+      stats_ev_background: null
     }
   },
 
@@ -201,7 +285,14 @@ export const COLOR_PALETTES = {
       ev_charge: '#B06AFF',     // neon purple
       battery_bar: '#B06AFF',
       battery_charge: '#FF6FFF',// hot pink charge
-      battery_discharge: '#2D2DFF'// electric indigo
+      battery_discharge: '#2D2DFF',// electric indigo
+      card_background: null,
+      stats_solar_background: null,
+      stats_export_background: null,
+      stats_import_background: null,
+      stats_usage_background: null,
+      stats_battery_background: null,
+      stats_ev_background: null
     }
   },
 
@@ -217,7 +308,14 @@ export const COLOR_PALETTES = {
       ev_charge: '#BFD7D5',     // muted aqua
       battery_bar: '#BFD7D5',
       battery_charge: '#CFC2A9',// stone
-      battery_discharge: '#8C8476'// taupe
+      battery_discharge: '#8C8476',// taupe
+      card_background: null,
+      stats_solar_background: null,
+      stats_export_background: null,
+      stats_import_background: null,
+      stats_usage_background: null,
+      stats_battery_background: null,
+      stats_ev_background: null
     }
   },
   'custom': {
@@ -232,7 +330,14 @@ export const COLOR_PALETTES = {
       ev_charge: '#87CEEB',
       battery_bar: '#87CEEB',
       battery_charge: '#4DD0E1',
-      battery_discharge: '#42A5F5'
+      battery_discharge: '#42A5F5',
+      card_background: null,
+      stats_solar_background: null,
+      stats_export_background: null,
+      stats_import_background: null,
+      stats_usage_background: null,
+      stats_battery_background: null,
+      stats_ev_background: null
     }
   }
 };

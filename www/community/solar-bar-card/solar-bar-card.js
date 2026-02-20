@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.2.2 - Fix card layout for battery and export/import tiles
+// Version 2.3.0 - Add custom background colors for stats tiles and card
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -805,7 +805,7 @@ class SolarBarCard extends HTMLElement {
         ha-card {
           padding: 4px 8px;
           position: relative;
-          background: var(--ha-card-background, var(--card-background-color, white));
+          background: ${colors.card_background || 'var(--ha-card-background, var(--card-background-color, white))'};
         }
 
         .card-header {
@@ -910,6 +910,13 @@ class SolarBarCard extends HTMLElement {
           background-color: var(--grid-usage-color);
           box-shadow: 0 0 4px var(--grid-usage-color);
         }
+
+        ${colors.stats_solar_background ? `.stat[data-action-key="solar"] { background: ${colors.stats_solar_background}; }` : ''}
+        ${colors.stats_export_background ? `.stat[data-action-key="export"] { background: ${colors.stats_export_background}; }` : ''}
+        ${colors.stats_import_background ? `.stat[data-action-key="import"] { background: ${colors.stats_import_background}; }` : ''}
+        ${colors.stats_usage_background ? `.stat[data-action-key="usage"] { background: ${colors.stats_usage_background}; }` : ''}
+        ${colors.stats_battery_background ? `.stat[data-action-key="battery"] { background: ${colors.stats_battery_background}; }` : ''}
+        ${colors.stats_ev_background ? `.stat[data-action-key="ev"] { background: ${colors.stats_ev_background}; }` : ''}
 
         .battery-container {
           position: relative;
