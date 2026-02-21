@@ -1,6 +1,6 @@
 // solar-bar-card-palettes.js
 // Color palette definitions for Solar Bar Card
-// Version 2.1.0 - Added background color options for card and stats tiles
+// Version 2.6.0 - Inline stats detail, EV/consumer history, reduced tile spacing
 
 export const COLOR_PALETTES = {
   'classic-solar': {
@@ -22,7 +22,9 @@ export const COLOR_PALETTES = {
       stats_import_background: null,
       stats_usage_background: null,
       stats_battery_background: null,
-      stats_ev_background: null
+      stats_ev_background: null,
+      stats_consumer_1_background: null,
+      stats_consumer_2_background: null
     }
   },
   'soft-meadow': {
@@ -44,7 +46,9 @@ export const COLOR_PALETTES = {
       stats_import_background: null,
       stats_usage_background: null,
       stats_battery_background: null,
-      stats_ev_background: null
+      stats_ev_background: null,
+      stats_consumer_1_background: null,
+      stats_consumer_2_background: null
     }
   },
   'ocean-sunset': {
@@ -66,7 +70,9 @@ export const COLOR_PALETTES = {
       stats_import_background: null,
       stats_usage_background: null,
       stats_battery_background: null,
-      stats_ev_background: null
+      stats_ev_background: null,
+      stats_consumer_1_background: null,
+      stats_consumer_2_background: null
     }
   },
   'garden-fresh': {
@@ -88,7 +94,9 @@ export const COLOR_PALETTES = {
       stats_import_background: null,
       stats_usage_background: null,
       stats_battery_background: null,
-      stats_ev_background: null
+      stats_ev_background: null,
+      stats_consumer_1_background: null,
+      stats_consumer_2_background: null
     }
   },
   'peachy-keen': {
@@ -110,7 +118,9 @@ export const COLOR_PALETTES = {
       stats_import_background: null,
       stats_usage_background: null,
       stats_battery_background: null,
-      stats_ev_background: null
+      stats_ev_background: null,
+      stats_consumer_1_background: null,
+      stats_consumer_2_background: null
     }
   },
   'cloudy-day': {
@@ -132,7 +142,9 @@ export const COLOR_PALETTES = {
       stats_import_background: null,
       stats_usage_background: null,
       stats_battery_background: null,
-      stats_ev_background: null
+      stats_ev_background: null,
+      stats_consumer_1_background: null,
+      stats_consumer_2_background: null
     }
   },
   'floral-charm': {
@@ -154,7 +166,9 @@ export const COLOR_PALETTES = {
       stats_import_background: null,
       stats_usage_background: null,
       stats_battery_background: null,
-      stats_ev_background: null
+      stats_ev_background: null,
+      stats_consumer_1_background: null,
+      stats_consumer_2_background: null
     }
   },
 
@@ -177,7 +191,9 @@ export const COLOR_PALETTES = {
       stats_import_background: null,
       stats_usage_background: null,
       stats_battery_background: null,
-      stats_ev_background: null
+      stats_ev_background: null,
+      stats_consumer_1_background: null,
+      stats_consumer_2_background: null
     }
   },
 
@@ -200,7 +216,9 @@ export const COLOR_PALETTES = {
       stats_import_background: null,
       stats_usage_background: null,
       stats_battery_background: null,
-      stats_ev_background: null
+      stats_ev_background: null,
+      stats_consumer_1_background: null,
+      stats_consumer_2_background: null
     }
   },
 
@@ -223,7 +241,9 @@ export const COLOR_PALETTES = {
       stats_import_background: null,
       stats_usage_background: null,
       stats_battery_background: null,
-      stats_ev_background: null
+      stats_ev_background: null,
+      stats_consumer_1_background: null,
+      stats_consumer_2_background: null
     }
   },
 
@@ -246,7 +266,9 @@ export const COLOR_PALETTES = {
       stats_import_background: null,
       stats_usage_background: null,
       stats_battery_background: null,
-      stats_ev_background: null
+      stats_ev_background: null,
+      stats_consumer_1_background: null,
+      stats_consumer_2_background: null
     }
   },
 
@@ -269,7 +291,9 @@ export const COLOR_PALETTES = {
       stats_import_background: null,
       stats_usage_background: null,
       stats_battery_background: null,
-      stats_ev_background: null
+      stats_ev_background: null,
+      stats_consumer_1_background: null,
+      stats_consumer_2_background: null
     }
   },
 
@@ -292,7 +316,9 @@ export const COLOR_PALETTES = {
       stats_import_background: null,
       stats_usage_background: null,
       stats_battery_background: null,
-      stats_ev_background: null
+      stats_ev_background: null,
+      stats_consumer_1_background: null,
+      stats_consumer_2_background: null
     }
   },
 
@@ -315,7 +341,9 @@ export const COLOR_PALETTES = {
       stats_import_background: null,
       stats_usage_background: null,
       stats_battery_background: null,
-      stats_ev_background: null
+      stats_ev_background: null,
+      stats_consumer_1_background: null,
+      stats_consumer_2_background: null
     }
   },
   'custom': {
@@ -337,7 +365,9 @@ export const COLOR_PALETTES = {
       stats_import_background: null,
       stats_usage_background: null,
       stats_battery_background: null,
-      stats_ev_background: null
+      stats_ev_background: null,
+      stats_consumer_1_background: null,
+      stats_consumer_2_background: null
     }
   }
 };
