@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.6.0 - Inline stats detail, EV/consumer history, reduced tile spacing
+// Version 2.7.0 - Total house consumption, battery SOC formatting, auto-scaling stats, editor consolidation
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -122,6 +122,7 @@ class SolarBarCard extends HTMLElement {
       show_battery_indicator: true,
       battery_flow_animation_speed: 2,
       decimal_places: 1,
+      battery_soc_decimal_places: 1,
       // Net import/export history
       import_history_entity: null,
       export_history_entity: null,
@@ -442,6 +443,7 @@ class SolarBarCard extends HTMLElement {
       show_battery_indicator = true,
       battery_flow_animation_speed = 2,
       decimal_places = 1,
+      battery_soc_decimal_places = 1,
       // Net import/export history
       import_history_entity = null,
       export_history_entity = null,
@@ -626,6 +628,9 @@ class SolarBarCard extends HTMLElement {
       gridToHome = Math.max(0, nonEvConsumption - solarToHome - batteryToHome);
       gridToEv = Math.max(0, evUsage - solarToEv - batteryToEv);
     }
+    // Total house consumption from energy balance (all sources feeding the house)
+    const totalHouseConsumption = solarToHome + solarToEv + gridToHome + gridToEv + batteryToHome + batteryToEv;
+
     // 0211 change, from const to let
     const totalGridImport = gridImportPower;
 
@@ -893,6 +898,8 @@ class SolarBarCard extends HTMLElement {
           flex-direction: column;
           gap: 6px;
           margin-bottom: 8px;
+          container-type: inline-size;
+          container-name: stats;
         }
 
         .power-stats {
@@ -908,6 +915,7 @@ class SolarBarCard extends HTMLElement {
           text-align: center;
           cursor: pointer;
           transition: transform 0.2s ease, opacity 0.2s ease;
+          overflow: hidden;
         }
 
         .stat:hover {
@@ -927,6 +935,7 @@ class SolarBarCard extends HTMLElement {
           align-items: center;
           justify-content: center;
           gap: 4px;
+          white-space: nowrap;
         }
 
         .stat-value {
@@ -934,12 +943,29 @@ class SolarBarCard extends HTMLElement {
           font-size: 15px;
           font-weight: 600;
           line-height: 1.2;
+          white-space: nowrap;
         }
 
         .stat-detail-inline {
           font-size: 11px;
           font-weight: 400;
           color: var(--secondary-text-color);
+        }
+
+        /* Scale down stat fonts on narrow containers to prevent overflow */
+        @container stats (max-width: 350px) {
+          .stat-value { font-size: 13px; }
+          .stat-label { font-size: 10px; }
+          .stat-detail-inline { font-size: 10px; }
+          .stat-history { font-size: 10px; }
+        }
+
+        @container stats (max-width: 280px) {
+          .stat-value { font-size: 11px; }
+          .stat-label { font-size: 9px; }
+          .stat-detail-inline { font-size: 9px; }
+          .stat-history { font-size: 9px; }
+          .stat { padding: 4px 6px; }
         }
 
         .stat-history {
@@ -1509,7 +1535,7 @@ class SolarBarCard extends HTMLElement {
             ` : null,
             `<div class="stat" data-entity="${self_consumption_entity}" data-action-key="usage" title="${this.getLabel('click_history')}">
               <div class="stat-label">${this.getLabel('usage')}</div>
-              <div class="stat-value">${selfConsumption.toFixed(decimal_places)} kW${isInline ? renderDetail(hasConsHistoryData && dailyConsumption !== null ? `${dailyConsumption.toFixed(decimal_places)} kWh` : null) : ''}</div>
+              <div class="stat-value">${totalHouseConsumption.toFixed(decimal_places)} kW${isInline ? renderDetail(hasConsHistoryData && dailyConsumption !== null ? `${dailyConsumption.toFixed(decimal_places)} kWh` : null) : ''}</div>
               ${!isInline ? renderDetail(hasConsHistoryData && dailyConsumption !== null ? `${dailyConsumption.toFixed(decimal_places)} kWh` : null) : ''}
             </div>`
           ].filter(Boolean);
@@ -1517,7 +1543,7 @@ class SolarBarCard extends HTMLElement {
           // Extra tiles (dynamic): Battery, EV, consumers
           const extraTiles = [];
           if (hasBattery) {
-            const battDetail = `${batterySOC.toFixed(decimal_places)}%`;
+            const battDetail = `${batterySOC.toFixed(battery_soc_decimal_places)} %`;
             extraTiles.push(`
               <div class="stat battery-stat" data-entity="${battery_power_entity || battery_soc_entity}" data-action-key="battery" title="${this.getLabel('click_history')}">
                 <div class="stat-label">${this.getLabel('battery')}</div>
@@ -1579,7 +1605,7 @@ class SolarBarCard extends HTMLElement {
               <div class="solar-bar-label">
                 <span>${this.getLabel('power_flow')}</span>
                 <span class="capacity-label">
-                  ${hasBattery && show_battery_indicator ? `${this.getLabel('battery')} ${batterySOC.toFixed(decimal_places)}% | ` : ''}0 - ${inverter_size}kW
+                  ${hasBattery && show_battery_indicator ? `${this.getLabel('battery')} ${batterySOC.toFixed(battery_soc_decimal_places)} % | ` : ''}0 - ${inverter_size}kW
                 </span>
               </div>
             ` : ''}
@@ -1587,7 +1613,7 @@ class SolarBarCard extends HTMLElement {
               ${hasBattery && show_battery_indicator ? `
                 <div class="battery-bar-wrapper ${isIdle ? 'standby' : ''}" style="width: ${batteryBarWidth}%" data-entity="${battery_soc_entity}" data-action-key="battery" title="${this.getLabel('click_history')}">
                   <div class="battery-bar-fill ${batteryCharging ? 'charging' : batteryDischarging ? 'discharging' : batterySOC < 20 ? 'low' : batterySOC < 50 ? 'medium' : ''}" style="width: ${batterySOC}%"></div>
-                  ${shouldShowSegmentText(batteryBarWidth, `${batterySOC.toFixed(decimal_places)}%`, 100) ? `<div class="bar-overlay-label">${batterySOC.toFixed(decimal_places)}%</div>` : ''}
+                  ${shouldShowSegmentText(batteryBarWidth, `${batterySOC.toFixed(battery_soc_decimal_places)} %`, 100) ? `<div class="bar-overlay-label">${batterySOC.toFixed(battery_soc_decimal_places)} %</div>` : ''}
                 </div>
               ` : ''}
               <div class="solar-bar-wrapper ${isIdle ? 'standby' : ''}" style="width: ${powerBarWidth}%" data-entity="${production_entity}" data-action-key="solar" title="${this.getLabel('click_history')}">
@@ -1615,7 +1641,7 @@ class SolarBarCard extends HTMLElement {
                 ${showUsageIndicator ? `
                   <div class="usage-indicator"
                        style="left: ${usagePercent}%"
-                       title="${this.getLabel('total_usage')}: ${selfConsumption.toFixed(decimal_places)}kW"></div>
+                       title="${this.getLabel('total_usage')}: ${totalHouseConsumption.toFixed(decimal_places)}kW"></div>
                 ` : ''}
               </div>
               ${(hasGridImport || hasGridExport) ? `
@@ -1681,7 +1707,7 @@ class SolarBarCard extends HTMLElement {
               ${solarToHome > 0 ? `
                 <div class="legend-item" data-entity="${self_consumption_entity}" data-action-key="usage" title="${this.getLabel('click_history')}">
                   <div class="legend-color solar-home-color"></div>
-                  <span>${this.getLabel('usage')}${show_legend_values ? ` ${selfConsumption.toFixed(decimal_places)}kW` : ''}</span>
+                  <span>${this.getLabel('usage')}${show_legend_values ? ` ${totalHouseConsumption.toFixed(decimal_places)}kW` : ''}</span>
                 </div>
               ` : ''}
               ${(solarToEv > 0 || gridToEv > 0) ? `
@@ -1862,6 +1888,7 @@ class SolarBarCard extends HTMLElement {
       show_battery_indicator: true,
       battery_flow_animation_speed: 2,
       decimal_places: 1,
+      battery_soc_decimal_places: 1,
       stats_border_radius: 8
     };
   }
@@ -1939,6 +1966,7 @@ class SolarBarCardEditor extends HTMLElement {
       show_bar_label: "Show Bar Label",
       show_bar_values: "Show Bar Values",
       decimal_places: "Decimal Places",
+      battery_soc_decimal_places: "Battery SOC Decimals",
       stats_border_radius: "Stats Tile Border Radius",
       show_stats_detail: "Show Stats Detail Row",
       stats_detail_position: "Stats Detail Position",
@@ -1965,7 +1993,9 @@ class SolarBarCardEditor extends HTMLElement {
       tap_action_export: "Export Tap Action",
       tap_action_usage: "Usage Tap Action",
       tap_action_battery: "Battery Tap Action",
-      tap_action_ev: "EV Tap Action"
+      tap_action_ev: "EV Tap Action",
+      tap_action_consumer_1: "Consumer 1 Tap Action",
+      tap_action_consumer_2: "Consumer 2 Tap Action"
     };
     return labels[schema.name] || schema.name;
   }
@@ -2009,7 +2039,8 @@ class SolarBarCardEditor extends HTMLElement {
       show_legend_values: "Show current kW values in the legend",
       show_bar_label: "Show 'Power Flow 0-XkW' label above the bar",
       show_bar_values: "Show kW values and labels on the bar segments",
-      decimal_places: "Number of decimal places to display for all power values (kW) and battery percentage",
+      decimal_places: "Number of decimal places to display for all power values (kW)",
+      battery_soc_decimal_places: "Number of decimal places for battery SOC percentage (0, 1, or 2)",
       stats_border_radius: "Border radius for stats tiles in pixels (default 8px, increase to match rounded card themes like Bubble Cards)",
       show_stats_detail: "Show the detail row on stats tiles (daily kWh, net position, battery %). Disable to save vertical space.",
       stats_detail_position: "Where to show the detail: 'below' as a 3rd row, or 'inline' next to the kW value separated by a slash.",
@@ -2036,7 +2067,9 @@ class SolarBarCardEditor extends HTMLElement {
       tap_action_export: "Action when tapping Export elements (stats tile, grid icon when exporting, legend). Defaults to showing entity history.",
       tap_action_usage: "Action when tapping Usage elements (stats tile, legend). Defaults to showing entity history.",
       tap_action_battery: "Action when tapping Battery elements (stats tile, battery bar, legend). Defaults to showing entity history.",
-      tap_action_ev: "Action when tapping EV elements (stats tile, legend). Defaults to showing entity history."
+      tap_action_ev: "Action when tapping EV elements (stats tile, legend). Defaults to showing entity history.",
+      tap_action_consumer_1: "Action when tapping Consumer 1 stats tile. Defaults to showing entity history.",
+      tap_action_consumer_2: "Action when tapping Consumer 2 stats tile. Defaults to showing entity history."
     };
     return helpers[schema.name];
   }
@@ -2197,18 +2230,38 @@ class SolarBarCardEditor extends HTMLElement {
           },
           { name: "show_net_indicator", default: true, selector: { boolean: {} } },
           {
-            name: "decimal_places",
-            default: 1,
-            selector: {
-              select: {
-                options: [
-                  { value: 1, label: "1 decimal place" },
-                  { value: 2, label: "2 decimal places" },
-                  { value: 3, label: "3 decimal places" }
-                ],
-                mode: "dropdown"
+            type: "grid",
+            schema: [
+              {
+                name: "decimal_places",
+                default: 1,
+                selector: {
+                  select: {
+                    options: [
+                      { value: 1, label: "1 decimal place" },
+                      { value: 2, label: "2 decimal places" },
+                      { value: 3, label: "3 decimal places" }
+                    ],
+                    mode: "dropdown"
+                  }
+                }
+              },
+              {
+                name: "battery_soc_decimal_places",
+                label: "Battery SOC Decimals",
+                default: 1,
+                selector: {
+                  select: {
+                    options: [
+                      { value: 0, label: "0 decimal places" },
+                      { value: 1, label: "1 decimal place" },
+                      { value: 2, label: "2 decimal places" }
+                    ],
+                    mode: "dropdown"
+                  }
+                }
               }
-            }
+            ]
           },
           {
             name: "color_palette",
@@ -2264,7 +2317,9 @@ class SolarBarCardEditor extends HTMLElement {
           { name: "tap_action_export", selector: { "ui-action": {} } },
           { name: "tap_action_usage", selector: { "ui-action": {} } },
           { name: "tap_action_battery", selector: { "ui-action": {} } },
-          { name: "tap_action_ev", selector: { "ui-action": {} } }
+          { name: "tap_action_ev", selector: { "ui-action": {} } },
+          { name: "tap_action_consumer_1", selector: { "ui-action": {} } },
+          { name: "tap_action_consumer_2", selector: { "ui-action": {} } }
         ]
       },
       // NET PRODUCTION/CONSUMPTION HISTORY
