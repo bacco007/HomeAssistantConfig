@@ -31,7 +31,7 @@ from .const import (
     CONF_CHEAPEST_SENSORS_FUEL_TYPE
 )
 from .coordinator import FuelPricesCoordinator
-from .repairs import raise_feature_deprecation
+from .repairs import raise_fixable_deprecation
 
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = [Platform.SENSOR]
@@ -74,13 +74,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: FuelPricesConfigEntry) -
     mod_config = _build_module_config(entry)
     for area in mod_config["areas"]:
         if area.get(CONF_CHEAPEST_SENSORS, False) and area.get(CONF_CHEAPEST_SENSORS_FUEL_TYPE) is not None:
-            raise_feature_deprecation(
+            raise_fixable_deprecation(
                 hass,
                 entry,
                 CONF_CHEAPEST_SENSORS,
                 "2025.11.0"
             )
             break
+    if "directlease" in mod_config["providers"]:
+        raise_fixable_deprecation(
+            hass,
+            entry,
+            "directlease",
+            "2026.6.0"
+        )
     try:
         fuel_prices: FuelPrices = FuelPrices.create(
             client_session=async_create_clientsession(hass),

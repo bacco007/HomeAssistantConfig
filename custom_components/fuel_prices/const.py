@@ -12,3 +12,5 @@ CONF_STATE_VALUE = "state"
 CONF_CHEAPEST_SENSORS = "cheapest_stations"
 CONF_CHEAPEST_SENSORS_COUNT = "cheapest_stations_count"
 CONF_CHEAPEST_SENSORS_FUEL_TYPE = "cheapest_stations_fuel_type"
+
+CONF_LOCATION = "location"

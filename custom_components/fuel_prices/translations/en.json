@@ -4,54 +4,6 @@
             "already_configured": "For performance considerations and memory efficiency, only one instance of this integration is allowed."
         },
         "step": {
-            "area_create": {
-                "data": {
-                    "cheapest_stations": "Register entities for top n cheapest fuel stations in this area",
-                    "cheapest_stations_count": "Number of cheapest fuel station entities to create",
-                    "cheapest_stations_fuel_type": "The fuel type to use for the cheapest fuel station entites",
-                    "latitude": "Latitude for the center of the search location",
-                    "longitude": "Longitude for the center of the search location",
-                    "name": "Area name (must be unique)",
-                    "radius": "Maximum search radius"
-                },
-                "description": "Using this menu you can create areas to register devices and sensors. This integration will create a device for each fuel station discovered, under this a sensor will be created for each fuel type.",
-                "title": "Create an area"
-            },
-            "area_delete": {
-                "data": {
-                    "name": "Area name"
-                },
-                "title": "Select area to delete"
-            },
-            "area_menu": {
-                "description": "By default your home location has already been added automatically with a radius of 20 miles, this can be removed or changed if needed.",
-                "menu_options": {
-                    "area_create": "Create an area",
-                    "area_delete": "Delete an area",
-                    "area_update_select": "Update an area",
-                    "main_menu": "Return to main menu"
-                },
-                "title": "Configure areas to register devices and sensors."
-            },
-            "area_update": {
-                "data": {
-                    "cheapest_stations": "(Deprecated) Register entities for top n cheapest fuel stations in this area",
-                    "cheapest_stations_count": "(Deprecated) Number of cheapest fuel station entities to create",
-                    "cheapest_stations_fuel_type": "(Deprecated) The fuel type to use for the cheapest fuel station entites",
-                    "latitude": "Latitude for the center of the search location",
-                    "longitude": "Longitude for the center of the search location",
-                    "name": "Area name (must be unique)",
-                    "radius": "Maximum search radius"
-                },
-                "description": "Using this menu you can create areas to register devices and sensors. This integration will create a device for each fuel station discovered, under this a sensor will be created for each fuel type.",
-                "title": "Create an area"
-            },
-            "area_update_select": {
-                "data": {
-                    "name": "Area name"
-                },
-                "title": "Select area to update"
-            },
             "finished": {
                 "description": "Click submit to finish setup",
                 "title": "Fuel Prices"
@@ -70,23 +22,24 @@
     },
     "issues": {
         "deprecate_cheapest_stations": {
-            "description": "The 'Cheapest Stations' option is deprecated and will be removed in a future release. Please use the 'find_fuels' action to retrieve a list of cheapest fuel prices instead.",
-            "title": "Deprecation Notice: Cheapest Fuel Station Sensors"
+            "description": "The 'cheapest_stations' option is deprecated and has been removed. Please use the 'find_fuels' service to retrieve a list of cheapest fuel prices instead.\n\nPress repair to remove the configuration.",
+            "title": "Cheapest N Fuel Stations deprecation"
+        },
+        "deprecate_directlease": {
+            "description": "The 'directlease' data source is deprecated and will be removed in a future release. Press repair to use ANWB onderweg instead.\n\nYou will need to manually clean up any existing entities after removing this data source as the integration will not automatically remove them since the data source will still be available for selection in the integration options.",
+            "title": "DirectLease data source deprecation"
         }
     },
     "options": {
         "step": {
             "area_create": {
                 "data": {
-                    "cheapest_stations": "Register entities for top n cheapest fuel stations in this area",
-                    "cheapest_stations_count": "Number of cheapest fuel station entities to create",
-                    "cheapest_stations_fuel_type": "The fuel type to use for the cheapest fuel station entites",
                     "latitude": "Latitude for the center of the search location",
                     "longitude": "Longitude for the center of the search location",
                     "name": "Area name (must be unique)",
                     "radius": "Maximum search radius"
                 },
-                "description": "Using this menu you can create areas to register devices and sensors. This integration will create a device for each fuel station discovered, under this a sensor will be created for each fuel type.",
+                "description": "Using this menu you can create areas to register sensors to track fuel prices. This integration will create a sensor that represents a single fuel station.",
                 "title": "Create an area"
             },
             "area_delete": {
@@ -106,15 +59,12 @@
             },
             "area_update": {
                 "data": {
-                    "cheapest_stations": "Register entities for top n cheapest fuel stations in this area",
-                    "cheapest_stations_count": "Number of cheapest fuel station entities to create",
-                    "cheapest_stations_fuel_type": "The fuel type to use for the cheapest fuel station entites",
                     "latitude": "Latitude for the center of the search location",
                     "longitude": "Longitude for the center of the search location",
                     "name": "Area name (must be unique)",
                     "radius": "Maximum search radius"
                 },
-                "description": "Using this menu you can create areas to register devices and sensors. This integration will create a device for each fuel station discovered, under this a sensor will be created for each fuel type.",
+                "description": "Using this menu you can create areas to register sensors to track fuel prices. This integration will create a sensor that represents a single fuel station.",
                 "title": "Create an area"
             },
             "area_update_select": {
