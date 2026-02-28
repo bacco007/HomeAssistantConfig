@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.7.0 - Total house consumption, battery SOC formatting, auto-scaling stats, editor consolidation
+// Version 2.7.1 - Fix usage tile mirroring production (#53), consumer tap actions
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -600,13 +600,22 @@ class SolarBarCard extends HTMLElement {
 
     // Calculate EV usage split
     const evUsage = isActuallyCharging ? actualEvCharging : 0;
-    const nonEvConsumption = Math.max(0, selfConsumption - evUsage);
 
-    // Calculate how much solar and grid power each type of consumption
-    const solarToLoad = Math.min(solarProduction, selfConsumption);
-
-    // Calculate battery contribution to load when discharging
+    // Calculate battery flows
     const batteryToLoad = batteryDischarging ? Math.abs(batteryPower) : 0;
+    const batteryChargeRate = batteryCharging ? Math.abs(batteryPower) : 0;
+
+    // Total house consumption from energy balance (physics-based, independent of self_consumption_entity)
+    // energy in = energy out: solar = export + house + batteryCharge, house = solar - export + import + batteryDischarge - batteryCharge
+    const totalHouseConsumption = Math.max(0, solarProduction - exportPower + gridImportPower + batteryToLoad - batteryChargeRate);
+
+    // Use energy-balance consumption for flow decomposition so grid contribution is never lost
+    // (self_consumption_entity on many inverters reports solar self-consumption, not total house consumption)
+    const effectiveConsumption = Math.max(selfConsumption, totalHouseConsumption);
+    const nonEvConsumption = Math.max(0, effectiveConsumption - evUsage);
+
+    // Calculate how much solar feeds the load directly
+    const solarToLoad = Math.min(solarProduction, effectiveConsumption);
 
     let solarToHome = 0;
     let solarToEv = 0;
@@ -615,9 +624,9 @@ class SolarBarCard extends HTMLElement {
     let gridToHome = 0;
     let gridToEv = 0;
 
-    if (selfConsumption > 0) {
-      const homeRatio = nonEvConsumption / selfConsumption;
-      const evRatio = evUsage / selfConsumption;
+    if (effectiveConsumption > 0) {
+      const homeRatio = nonEvConsumption / effectiveConsumption;
+      const evRatio = evUsage / effectiveConsumption;
 
       solarToHome = solarToLoad * homeRatio;
       solarToEv = solarToLoad * evRatio;
@@ -628,8 +637,6 @@ class SolarBarCard extends HTMLElement {
       gridToHome = Math.max(0, nonEvConsumption - solarToHome - batteryToHome);
       gridToEv = Math.max(0, evUsage - solarToEv - batteryToEv);
     }
-    // Total house consumption from energy balance (all sources feeding the house)
-    const totalHouseConsumption = solarToHome + solarToEv + gridToHome + gridToEv + batteryToHome + batteryToEv;
 
     // 0211 change, from const to let
     const totalGridImport = gridImportPower;
@@ -638,7 +645,7 @@ class SolarBarCard extends HTMLElement {
     const evDisplayPower = isActuallyCharging ? 0 : Math.max(0, car_charger_load - exportPower);
 
     // Calculate excess solar for EV ready indicator
-    const excessSolar = solarProduction - selfConsumption;
+    const excessSolar = solarProduction - effectiveConsumption;
     const evReadyHalf = car_charger_load > 0 && !isActuallyCharging && excessSolar >= (car_charger_load * 0.5);
     const evReadyFull = car_charger_load > 0 && !isActuallyCharging && excessSolar >= car_charger_load;
 
