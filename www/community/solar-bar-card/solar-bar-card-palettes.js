@@ -24,7 +24,10 @@ export const COLOR_PALETTES = {
       stats_battery_background: null,
       stats_ev_background: null,
       stats_consumer_1_background: null,
-      stats_consumer_2_background: null
+      stats_consumer_2_background: null,
+      grid_icon_import: null,
+      grid_icon_export: null,
+      grid_icon_idle: null
     }
   },
   'soft-meadow': {
@@ -48,7 +51,10 @@ export const COLOR_PALETTES = {
       stats_battery_background: null,
       stats_ev_background: null,
       stats_consumer_1_background: null,
-      stats_consumer_2_background: null
+      stats_consumer_2_background: null,
+      grid_icon_import: null,
+      grid_icon_export: null,
+      grid_icon_idle: null
     }
   },
   'ocean-sunset': {
@@ -72,7 +78,10 @@ export const COLOR_PALETTES = {
       stats_battery_background: null,
       stats_ev_background: null,
       stats_consumer_1_background: null,
-      stats_consumer_2_background: null
+      stats_consumer_2_background: null,
+      grid_icon_import: null,
+      grid_icon_export: null,
+      grid_icon_idle: null
     }
   },
   'garden-fresh': {
@@ -96,7 +105,10 @@ export const COLOR_PALETTES = {
       stats_battery_background: null,
       stats_ev_background: null,
       stats_consumer_1_background: null,
-      stats_consumer_2_background: null
+      stats_consumer_2_background: null,
+      grid_icon_import: null,
+      grid_icon_export: null,
+      grid_icon_idle: null
     }
   },
   'peachy-keen': {
@@ -120,7 +132,10 @@ export const COLOR_PALETTES = {
       stats_battery_background: null,
       stats_ev_background: null,
       stats_consumer_1_background: null,
-      stats_consumer_2_background: null
+      stats_consumer_2_background: null,
+      grid_icon_import: null,
+      grid_icon_export: null,
+      grid_icon_idle: null
     }
   },
   'cloudy-day': {
@@ -144,7 +159,10 @@ export const COLOR_PALETTES = {
       stats_battery_background: null,
       stats_ev_background: null,
       stats_consumer_1_background: null,
-      stats_consumer_2_background: null
+      stats_consumer_2_background: null,
+      grid_icon_import: null,
+      grid_icon_export: null,
+      grid_icon_idle: null
     }
   },
   'floral-charm': {
@@ -168,7 +186,10 @@ export const COLOR_PALETTES = {
       stats_battery_background: null,
       stats_ev_background: null,
       stats_consumer_1_background: null,
-      stats_consumer_2_background: null
+      stats_consumer_2_background: null,
+      grid_icon_import: null,
+      grid_icon_export: null,
+      grid_icon_idle: null
     }
   },
 
@@ -193,7 +214,10 @@ export const COLOR_PALETTES = {
       stats_battery_background: null,
       stats_ev_background: null,
       stats_consumer_1_background: null,
-      stats_consumer_2_background: null
+      stats_consumer_2_background: null,
+      grid_icon_import: null,
+      grid_icon_export: null,
+      grid_icon_idle: null
     }
   },
 
@@ -218,7 +242,10 @@ export const COLOR_PALETTES = {
       stats_battery_background: null,
       stats_ev_background: null,
       stats_consumer_1_background: null,
-      stats_consumer_2_background: null
+      stats_consumer_2_background: null,
+      grid_icon_import: null,
+      grid_icon_export: null,
+      grid_icon_idle: null
     }
   },
 
@@ -243,7 +270,10 @@ export const COLOR_PALETTES = {
       stats_battery_background: null,
       stats_ev_background: null,
       stats_consumer_1_background: null,
-      stats_consumer_2_background: null
+      stats_consumer_2_background: null,
+      grid_icon_import: null,
+      grid_icon_export: null,
+      grid_icon_idle: null
     }
   },
 
@@ -268,7 +298,10 @@ export const COLOR_PALETTES = {
       stats_battery_background: null,
       stats_ev_background: null,
       stats_consumer_1_background: null,
-      stats_consumer_2_background: null
+      stats_consumer_2_background: null,
+      grid_icon_import: null,
+      grid_icon_export: null,
+      grid_icon_idle: null
     }
   },
 
@@ -293,7 +326,10 @@ export const COLOR_PALETTES = {
       stats_battery_background: null,
       stats_ev_background: null,
       stats_consumer_1_background: null,
-      stats_consumer_2_background: null
+      stats_consumer_2_background: null,
+      grid_icon_import: null,
+      grid_icon_export: null,
+      grid_icon_idle: null
     }
   },
 
@@ -318,7 +354,10 @@ export const COLOR_PALETTES = {
       stats_battery_background: null,
       stats_ev_background: null,
       stats_consumer_1_background: null,
-      stats_consumer_2_background: null
+      stats_consumer_2_background: null,
+      grid_icon_import: null,
+      grid_icon_export: null,
+      grid_icon_idle: null
     }
   },
 
@@ -343,7 +382,10 @@ export const COLOR_PALETTES = {
       stats_battery_background: null,
       stats_ev_background: null,
       stats_consumer_1_background: null,
-      stats_consumer_2_background: null
+      stats_consumer_2_background: null,
+      grid_icon_import: null,
+      grid_icon_export: null,
+      grid_icon_idle: null
     }
   },
   'custom': {
@@ -367,7 +409,10 @@ export const COLOR_PALETTES = {
       stats_battery_background: null,
       stats_ev_background: null,
       stats_consumer_1_background: null,
-      stats_consumer_2_background: null
+      stats_consumer_2_background: null,
+      grid_icon_import: null,
+      grid_icon_export: null,
+      grid_icon_idle: null
     }
   }
 };
@@ -386,6 +431,13 @@ export function getCardColors(config) {
       ...config.custom_colors
     };
   }
+
+  // Override grid icon colors from flat config keys (for editor UI compatibility)
+  // color_rgb selector returns [r, g, b] array; convert to CSS rgb() string
+  const toColor = (v) => Array.isArray(v) ? `rgb(${v[0]}, ${v[1]}, ${v[2]})` : v;
+  if (config.grid_icon_import_color) colors = { ...colors, grid_icon_import: toColor(config.grid_icon_import_color) };
+  if (config.grid_icon_export_color) colors = { ...colors, grid_icon_export: toColor(config.grid_icon_export_color) };
+  if (config.grid_icon_idle_color) colors = { ...colors, grid_icon_idle: toColor(config.grid_icon_idle_color) };
 
   return colors;
 }

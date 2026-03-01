@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.7.1 - Fix usage tile mirroring production (#53), consumer tap actions
+// Version 2.7.3 - Configurable grid icon colors, bar segment text spacing
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -130,6 +130,8 @@ class SolarBarCard extends HTMLElement {
       production_history_entity: null,
       consumption_history_entity: null,
       show_net_indicator: true,
+      // Grid icon always visible
+      show_grid_icon_always: false,
       // Header sensors
       header_sensor_1: null,
       header_sensor_2: null,
@@ -179,6 +181,7 @@ class SolarBarCard extends HTMLElement {
         click_history: 'Click to view history',
         grid_import: 'Grid Import',
         grid_export: 'Grid Export',
+        grid_idle: 'Grid Idle',
         forecast_potential: 'Forecast solar potential',
         total_usage: 'Total usage',
         excess_solar_half: 'Excess solar can cover 50%+ of EV charging',
@@ -197,6 +200,7 @@ class SolarBarCard extends HTMLElement {
         click_history: 'Klicken für Verlauf',
         grid_import: 'Netzbezug',
         grid_export: 'Netzeinspeisung',
+        grid_idle: 'Netz Inaktiv',
         forecast_potential: 'Prognose Solarpotenzial',
         total_usage: 'Gesamtverbrauch',
         excess_solar_half: 'Überschüssiger Solarstrom kann 50%+ des EV-Ladens abdecken',
@@ -215,6 +219,7 @@ class SolarBarCard extends HTMLElement {
         click_history: 'Cliquer pour voir l\'historique',
         grid_import: 'Import réseau',
         grid_export: 'Export réseau',
+        grid_idle: 'Réseau Inactif',
         forecast_potential: 'Potentiel solaire prévu',
         total_usage: 'Consommation totale',
         excess_solar_half: 'L\'excédent solaire peut couvrir 50%+ de la charge VE',
@@ -233,6 +238,7 @@ class SolarBarCard extends HTMLElement {
         click_history: 'Haga clic para ver el historial',
         grid_import: 'Importación de red',
         grid_export: 'Exportación de red',
+        grid_idle: 'Red Inactiva',
         forecast_potential: 'Potencial solar previsto',
         total_usage: 'Consumo total',
         excess_solar_half: 'El exceso solar puede cubrir el 50%+ de la carga VE',
@@ -251,6 +257,7 @@ class SolarBarCard extends HTMLElement {
         click_history: 'Clicca per vedere la cronologia',
         grid_import: 'Importazione rete',
         grid_export: 'Esportazione rete',
+        grid_idle: 'Rete Inattiva',
         forecast_potential: 'Potenziale solare previsto',
         total_usage: 'Consumo totale',
         excess_solar_half: 'L\'eccesso solare può coprire il 50%+ della ricarica VE',
@@ -269,6 +276,7 @@ class SolarBarCard extends HTMLElement {
         click_history: 'Klik voor geschiedenis',
         grid_import: 'Netimport',
         grid_export: 'Netexport',
+        grid_idle: 'Net Inactief',
         forecast_potential: 'Voorspeld zonnepotentieel',
         total_usage: 'Totaal verbruik',
         excess_solar_half: 'Overschot zonne-energie kan 50%+ van EV-opladen dekken',
@@ -287,6 +295,7 @@ class SolarBarCard extends HTMLElement {
         click_history: 'Clique para ver o histórico',
         grid_import: 'Importação da rede',
         grid_export: 'Exportação da rede',
+        grid_idle: 'Rede Inativa',
         forecast_potential: 'Potencial solar previsto',
         total_usage: 'Consumo total',
         excess_solar_half: 'O excesso solar pode cobrir 50%+ do carregamento VE',
@@ -305,6 +314,7 @@ class SolarBarCard extends HTMLElement {
         click_history: 'Kliknij, aby zobaczyć historię',
         grid_import: 'Import z sieci',
         grid_export: 'Eksport do sieci',
+        grid_idle: 'Sieć Nieaktywna',
         forecast_potential: 'Prognozowany potencjał słoneczny',
         total_usage: 'Całkowite zużycie',
         excess_solar_half: 'Nadmiar energii słonecznej może pokryć 50%+ ładowania EV',
@@ -323,6 +333,7 @@ class SolarBarCard extends HTMLElement {
         click_history: 'Klicka för att visa historik',
         grid_import: 'Nätimport',
         grid_export: 'Nätexport',
+        grid_idle: 'Nät Inaktivt',
         forecast_potential: 'Prognostiserad solpotential',
         total_usage: 'Total förbrukning',
         excess_solar_half: 'Överskott av solenergi kan täcka 50%+ av EV-laddning',
@@ -341,6 +352,7 @@ class SolarBarCard extends HTMLElement {
         click_history: 'Klik for at se historik',
         grid_import: 'Netimport',
         grid_export: 'Neteksport',
+        grid_idle: 'Net Inaktiv',
         forecast_potential: 'Forventet solpotentiale',
         total_usage: 'Samlet forbrug',
         excess_solar_half: 'Overskydende solenergi kan dække 50%+ af EV-opladning',
@@ -359,6 +371,7 @@ class SolarBarCard extends HTMLElement {
         click_history: 'Klikk for å se historikk',
         grid_import: 'Nettimport',
         grid_export: 'Netteksport',
+        grid_idle: 'Nett Inaktiv',
         forecast_potential: 'Forventet solpotensial',
         total_usage: 'Totalt forbruk',
         excess_solar_half: 'Overskudd av solenergi kan dekke 50%+ av EV-lading',
@@ -377,6 +390,7 @@ class SolarBarCard extends HTMLElement {
         click_history: 'Клацніть, щоб побачити історію',
         grid_import: 'Імпорт з мережі',
         grid_export: 'Експорт до мережі',
+        grid_idle: 'Мережа Неактивна',
         forecast_potential: 'Прогноз потенціалу сонячної енергії',
         total_usage: 'Загальне споживання',
         excess_solar_half: 'Надлишок сонячної енергії може покрити 50%+ навантаження електромобіля',
@@ -451,6 +465,7 @@ class SolarBarCard extends HTMLElement {
       production_history_entity = null,
       consumption_history_entity = null,
       show_net_indicator = true,
+      show_grid_icon_always = false,
       // Header sensors
       header_sensor_1 = null,
       header_sensor_2 = null,
@@ -791,7 +806,8 @@ class SolarBarCard extends HTMLElement {
     // Only reserve space for battery bar if it's both configured AND the indicator is shown
     const batteryBarWidth = (hasBattery && show_battery_indicator) ? Math.min(rawBatteryBarWidth, 30) : 0;
     // Reserve space for grid icon (32px ~= 3% of typical container width)
-    const gridIconSpace = (hasGridImport || hasGridExport) ? 3 : 0;
+    const showGridIcon = hasGridImport || hasGridExport || show_grid_icon_always;
+    const gridIconSpace = showGridIcon ? 3 : 0;
     // Power bar takes up remaining space
     const powerBarWidth = 100 - batteryBarWidth - gridIconSpace;
 
@@ -1007,6 +1023,9 @@ class SolarBarCard extends HTMLElement {
         ${colors.stats_ev_background ? `.stat[data-action-key="ev"] { background: ${colors.stats_ev_background}; }` : ''}
         ${colors.stats_consumer_1_background ? `.stat[data-action-key="consumer_1"] { background: ${colors.stats_consumer_1_background}; }` : ''}
         ${colors.stats_consumer_2_background ? `.stat[data-action-key="consumer_2"] { background: ${colors.stats_consumer_2_background}; }` : ''}
+        ${colors.grid_icon_import ? `.grid-icon.import { background: ${colors.grid_icon_import}; }` : ''}
+        ${colors.grid_icon_export ? `.grid-icon.export { background: ${colors.grid_icon_export}; }` : ''}
+        ${colors.grid_icon_idle ? `.grid-icon.idle { background: ${colors.grid_icon_idle}; }` : ''}
 
         .battery-container {
           position: relative;
@@ -1245,7 +1264,7 @@ class SolarBarCard extends HTMLElement {
 
         .grid-icon ha-icon {
           --mdc-icon-size: 20px;
-          color: black;
+          color: var(--grid-icon-color, black);
         }
 
         .grid-icon.import {
@@ -1256,6 +1275,12 @@ class SolarBarCard extends HTMLElement {
         .grid-icon.export {
           background: linear-gradient(135deg, var(--solar-export-color), var(--solar-export-color));
           box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .grid-icon.idle {
+          background: var(--disabled-text-color, #9e9e9e);
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          opacity: 0.6;
         }
 
         .bar-segment {
@@ -1625,11 +1650,11 @@ class SolarBarCard extends HTMLElement {
               ` : ''}
               <div class="solar-bar-wrapper ${isIdle ? 'standby' : ''}" style="width: ${powerBarWidth}%" data-entity="${production_entity}" data-action-key="solar" title="${this.getLabel('click_history')}">
                 <div class="solar-bar">
-                  ${solarHomePercent > 0 ? `<div class="bar-segment solar-home-segment" style="width: ${solarHomePercent}%">${show_bar_values && solarToHome > 0.1 && shouldShowSegmentText(solarHomePercent, `${solarToHome.toFixed(decimal_places)}kW`, powerBarWidth) ? `${solarToHome.toFixed(decimal_places)}kW` : ''}</div>` : ''}
-                  ${solarEvPercent > 0 ? `<div class="bar-segment solar-ev-segment" style="width: ${solarEvPercent}%">${show_bar_values && solarToEv > 0.1 && shouldShowSegmentText(solarEvPercent, `${solarToEv.toFixed(decimal_places)}kW ${this.getLabel('ev')}`, powerBarWidth) ? `${solarToEv.toFixed(decimal_places)}kW ${this.getLabel('ev')}` : ''}</div>` : ''}
-                  ${batteryChargePercent > 0 ? `<div class="bar-segment battery-charge-segment" style="width: ${batteryChargePercent}%">${show_bar_values && solarToBattery > 0.1 && shouldShowSegmentText(batteryChargePercent, `${solarToBattery.toFixed(decimal_places)}kW ${this.getLabel('battery')}`, powerBarWidth) ? `${solarToBattery.toFixed(decimal_places)}kW ${this.getLabel('battery')}` : ''}</div>` : ''}
-                  ${exportPercent > 0 ? `<div class="bar-segment export-segment" style="width: ${exportPercent}%">${show_bar_values && shouldShowSegmentText(exportPercent, `${exportPower.toFixed(decimal_places)}kW ${this.getLabel('export')}`, powerBarWidth) ? `${exportPower.toFixed(decimal_places)}kW ${this.getLabel('export')}` : ''}</div>` : ''}
-                  ${evPotentialPercent > 0 ? `<div class="bar-segment car-charger-segment" style="width: ${evPotentialPercent}%">${show_bar_values && shouldShowSegmentText(evPotentialPercent, `${car_charger_load}kW ${this.getLabel('ev')}`, powerBarWidth) ? `${car_charger_load}kW ${this.getLabel('ev')}` : ''}</div>` : ''}
+                  ${solarHomePercent > 0 ? `<div class="bar-segment solar-home-segment" style="width: ${solarHomePercent}%">${show_bar_values && solarToHome > 0.1 && shouldShowSegmentText(solarHomePercent, `${solarToHome.toFixed(decimal_places)} kW`, powerBarWidth) ? `${solarToHome.toFixed(decimal_places)} kW` : ''}</div>` : ''}
+                  ${solarEvPercent > 0 ? `<div class="bar-segment solar-ev-segment" style="width: ${solarEvPercent}%">${show_bar_values && solarToEv > 0.1 && shouldShowSegmentText(solarEvPercent, `${solarToEv.toFixed(decimal_places)} kW ${this.getLabel('ev')}`, powerBarWidth) ? `${solarToEv.toFixed(decimal_places)} kW ${this.getLabel('ev')}` : ''}</div>` : ''}
+                  ${batteryChargePercent > 0 ? `<div class="bar-segment battery-charge-segment" style="width: ${batteryChargePercent}%">${show_bar_values && solarToBattery > 0.1 && shouldShowSegmentText(batteryChargePercent, `${solarToBattery.toFixed(decimal_places)} kW ${this.getLabel('battery')}`, powerBarWidth) ? `${solarToBattery.toFixed(decimal_places)} kW ${this.getLabel('battery')}` : ''}</div>` : ''}
+                  ${exportPercent > 0 ? `<div class="bar-segment export-segment" style="width: ${exportPercent}%">${show_bar_values && shouldShowSegmentText(exportPercent, `${exportPower.toFixed(decimal_places)} kW ${this.getLabel('export')}`, powerBarWidth) ? `${exportPower.toFixed(decimal_places)} kW ${this.getLabel('export')}` : ''}</div>` : ''}
+                  ${evPotentialPercent > 0 ? `<div class="bar-segment car-charger-segment" style="width: ${evPotentialPercent}%">${show_bar_values && shouldShowSegmentText(evPotentialPercent, `${car_charger_load} kW ${this.getLabel('ev')}`, powerBarWidth) ? `${car_charger_load} kW ${this.getLabel('ev')}` : ''}</div>` : ''}
                   ${unusedPercent > 0 ? `<div class="bar-segment unused-segment" style="width: ${unusedPercent}%"></div>` : ''}
                 </div>
                 ${isIdle ? `<div class="standby-label">🌙 ${this.getLabel('standby_mode')}</div>` : ''}
@@ -1651,11 +1676,11 @@ class SolarBarCard extends HTMLElement {
                        title="${this.getLabel('total_usage')}: ${totalHouseConsumption.toFixed(decimal_places)}kW"></div>
                 ` : ''}
               </div>
-              ${(hasGridImport || hasGridExport) ? `
-                <div class="grid-icon ${hasGridImport ? 'import' : 'export'}"
-                     data-entity="${grid_power_entity || (hasGridImport ? import_entity : export_entity)}"
+              ${showGridIcon ? `
+                <div class="grid-icon ${hasGridImport ? 'import' : hasGridExport ? 'export' : 'idle'}"
+                     data-entity="${grid_power_entity || (hasGridImport ? import_entity : export_entity) || import_entity || export_entity}"
                      data-action-key="${hasGridImport ? 'import' : 'export'}"
-                     title="${hasGridImport ? `${this.getLabel('grid_import')}: ${gridImportPower.toFixed(decimal_places)}kW - ${this.getLabel('click_history')}` : `${this.getLabel('grid_export')}: ${exportPower.toFixed(decimal_places)}kW - ${this.getLabel('click_history')}`}">
+                     title="${hasGridImport ? `${this.getLabel('grid_import')}: ${gridImportPower.toFixed(decimal_places)}kW - ${this.getLabel('click_history')}` : hasGridExport ? `${this.getLabel('grid_export')}: ${exportPower.toFixed(decimal_places)}kW - ${this.getLabel('click_history')}` : this.getLabel('grid_idle')}">
                   <ha-icon icon="mdi:transmission-tower"></ha-icon>
                 </div>
               ` : ''}
@@ -1967,6 +1992,10 @@ class SolarBarCardEditor extends HTMLElement {
       production_history_entity: "Daily Solar Production Sensor",
       consumption_history_entity: "Daily Home Consumption Sensor",
       show_net_indicator: "Show Net Import/Export Indicator",
+      show_grid_icon_always: "Always Show Grid Icon",
+      grid_icon_import_color: "Grid Icon Import Color",
+      grid_icon_export_color: "Grid Icon Export Color",
+      grid_icon_idle_color: "Grid Icon Idle Color",
       show_stats: "Show Individual Stats",
       show_legend: "Show Legend",
       show_legend_values: "Show Legend Values",
@@ -2041,6 +2070,10 @@ class SolarBarCardEditor extends HTMLElement {
       production_history_entity: "Daily solar power production sensor (kWh) - shows total energy produced today",
       consumption_history_entity: "Daily home consumption sensor (kWh) - shows total energy used today",
       show_net_indicator: "Show colored indicator on import/export tile (green=net exporter, red=net importer)",
+      show_grid_icon_always: "Always show grid icon next to the solar bar, even when there is no import or export. Icon turns grey when idle.",
+      grid_icon_import_color: "Custom background color for the grid icon when importing.",
+      grid_icon_export_color: "Custom background color for the grid icon when exporting.",
+      grid_icon_idle_color: "Custom background color for the grid icon when idle (no import/export).",
       show_stats: "Display individual power statistics above the bar (dynamic layout - adapts to configured entities)",
       show_legend: "Display color-coded legend below the bar",
       show_legend_values: "Show current kW values in the legend",
@@ -2236,6 +2269,15 @@ class SolarBarCardEditor extends HTMLElement {
             ]
           },
           { name: "show_net_indicator", default: true, selector: { boolean: {} } },
+          { name: "show_grid_icon_always", default: false, selector: { boolean: {} } },
+          {
+            type: "grid",
+            schema: [
+              { name: "grid_icon_import_color", selector: { color_rgb: {} } },
+              { name: "grid_icon_export_color", selector: { color_rgb: {} } },
+              { name: "grid_icon_idle_color", selector: { color_rgb: {} } }
+            ]
+          },
           {
             type: "grid",
             schema: [
