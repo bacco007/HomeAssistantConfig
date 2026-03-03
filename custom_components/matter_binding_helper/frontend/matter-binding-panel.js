@@ -952,6 +952,30 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
   .gap-24 {
     gap: 24px;
   }
+`,s`
+  .link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 13px;
+    transition: opacity 0.2s;
+  }
+
+  .link:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+
+  .link-subtle {
+    color: var(--secondary-text-color);
+    text-decoration: none;
+    font-size: 12px;
+    transition: color 0.2s;
+  }
+
+  .link-subtle:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+  }
 `],yt=s`
   .card {
     background: var(--card-background-color);
@@ -4118,6 +4142,56 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     flex-direction: column;
     gap: 24px;
   }
+`,s`
+  .footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--divider-color);
+  }
+
+  .footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 800px;
+  }
+
+  .footer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .footer-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--primary-text-color);
+    margin-bottom: 4px;
+  }
+
+  .footer-description {
+    font-size: 12px;
+    color: var(--secondary-text-color);
+    line-height: 1.5;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 12px;
+  }
+
+  .footer-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .footer-link:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
 `],qt=[s`
   .device-details {
     display: flex;
@@ -4825,6 +4899,46 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
       </div>
+    `}_renderFooter(){return V`
+      <div class="footer">
+        <div class="footer-content">
+          <div class="footer-section">
+            <div class="footer-title">Learn More About Matter</div>
+            <div class="footer-description">
+              Explore community resources and contribute to the growing ecosystem of Matter-enabled smart home devices.
+            </div>
+          </div>
+          <div class="footer-links">
+            <a
+              href="https://matter-survey.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="footer-link"
+              title="Browse 3,970+ cataloged Matter devices with ratings and compatibility information"
+            >
+              Matter Survey Database →
+            </a>
+            <a
+              href="https://csa-iot.org/all-solutions/matter/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="footer-link"
+              title="Official Matter specification and documentation"
+            >
+              Matter Specification →
+            </a>
+            <a
+              href="https://github.com/cedricziel/ha-matter-binding-helper"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="footer-link"
+              title="View source code and contribute to this integration"
+            >
+              GitHub Repository →
+            </a>
+          </div>
+        </div>
+      </div>
     `}render(){return V`
       <div class="${this.narrow?"narrow":""}">
         <div class="header">
@@ -4920,6 +5034,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           @created=${this._handleAutomationCreated}
         ></matter-create-automation-dialog>
         ${this._renderSurveyResultDialog()}
+        ${this._renderFooter()}
       </div>
     `}_renderOverviewTab(){return V`
       <div class="overview-content">
