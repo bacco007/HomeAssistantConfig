@@ -12,3 +12,6 @@ LABEL_API_KEY = "API Token"
 # Constants for placeholders or suggested values
 PLACEHOLDER_API_KEY = "api-token"
 PLACEHOLDER_ACCOUNT_ID = "your-account-id"
+CONF_METRICS_URL = "metrics_url"
+LABEL_METRICS_URL = "Metrics URL"
+PLACEHOLDER_METRICS_URL = "http://10.0.30.5:20241/metrics"

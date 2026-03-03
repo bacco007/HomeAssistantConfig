@@ -4,12 +4,14 @@
         "user":{
            "data":{
               "account_id":"Account ID",
-              "api_key":"API Token"
+              "api_key":"API Token",
+              "metrics_url":"Metrics URL (optioneel)"
            }
         }
      },
      "error":{
         "cannot_connect":"Kan geen verbinding maken met de API, controleer je API Token en internetverbinding.",
+        "cannot_connect_metrics":"Kan geen verbinding maken met het metrics-endpoint. Controleer of de URL bereikbaar is vanuit Home Assistant.",
         "invalid_auth":"Ongeldige authenticatie, controleer je gegevens.",
         "unknown":"Onbekende fout, controleer je logs."
      },

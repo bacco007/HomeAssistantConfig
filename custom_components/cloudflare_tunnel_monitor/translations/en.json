@@ -4,12 +4,14 @@
         "user": {
           "data": {
             "account_id": "Account ID",
-            "api_key": "API Token"
+            "api_key": "API Token",
+            "metrics_url": "Metrics URL (optional)"
           }
         }
       },
       "error": {
         "cannot_connect": "Cannot connect to the service, please check your API Token and internet connection.",
+        "cannot_connect_metrics": "Cannot connect to the metrics endpoint. Verify the URL is reachable from Home Assistant.",
         "invalid_auth": "Invalid authentication, please check your credentials.",
         "unknown": "Unknown error, please check the logs."
       },
