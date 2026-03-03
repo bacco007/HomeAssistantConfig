@@ -27,7 +27,8 @@ export const COLOR_PALETTES = {
       stats_consumer_2_background: null,
       grid_icon_import: null,
       grid_icon_export: null,
-      grid_icon_idle: null
+      grid_icon_idle: null,
+      grid_icon_color: null
     }
   },
   'soft-meadow': {
@@ -54,7 +55,8 @@ export const COLOR_PALETTES = {
       stats_consumer_2_background: null,
       grid_icon_import: null,
       grid_icon_export: null,
-      grid_icon_idle: null
+      grid_icon_idle: null,
+      grid_icon_color: null
     }
   },
   'ocean-sunset': {
@@ -81,7 +83,8 @@ export const COLOR_PALETTES = {
       stats_consumer_2_background: null,
       grid_icon_import: null,
       grid_icon_export: null,
-      grid_icon_idle: null
+      grid_icon_idle: null,
+      grid_icon_color: null
     }
   },
   'garden-fresh': {
@@ -108,7 +111,8 @@ export const COLOR_PALETTES = {
       stats_consumer_2_background: null,
       grid_icon_import: null,
       grid_icon_export: null,
-      grid_icon_idle: null
+      grid_icon_idle: null,
+      grid_icon_color: null
     }
   },
   'peachy-keen': {
@@ -135,7 +139,8 @@ export const COLOR_PALETTES = {
       stats_consumer_2_background: null,
       grid_icon_import: null,
       grid_icon_export: null,
-      grid_icon_idle: null
+      grid_icon_idle: null,
+      grid_icon_color: null
     }
   },
   'cloudy-day': {
@@ -162,7 +167,8 @@ export const COLOR_PALETTES = {
       stats_consumer_2_background: null,
       grid_icon_import: null,
       grid_icon_export: null,
-      grid_icon_idle: null
+      grid_icon_idle: null,
+      grid_icon_color: null
     }
   },
   'floral-charm': {
@@ -189,7 +195,8 @@ export const COLOR_PALETTES = {
       stats_consumer_2_background: null,
       grid_icon_import: null,
       grid_icon_export: null,
-      grid_icon_idle: null
+      grid_icon_idle: null,
+      grid_icon_color: null
     }
   },
 
@@ -217,7 +224,8 @@ export const COLOR_PALETTES = {
       stats_consumer_2_background: null,
       grid_icon_import: null,
       grid_icon_export: null,
-      grid_icon_idle: null
+      grid_icon_idle: null,
+      grid_icon_color: null
     }
   },
 
@@ -245,7 +253,8 @@ export const COLOR_PALETTES = {
       stats_consumer_2_background: null,
       grid_icon_import: null,
       grid_icon_export: null,
-      grid_icon_idle: null
+      grid_icon_idle: null,
+      grid_icon_color: null
     }
   },
 
@@ -273,7 +282,8 @@ export const COLOR_PALETTES = {
       stats_consumer_2_background: null,
       grid_icon_import: null,
       grid_icon_export: null,
-      grid_icon_idle: null
+      grid_icon_idle: null,
+      grid_icon_color: null
     }
   },
 
@@ -301,7 +311,8 @@ export const COLOR_PALETTES = {
       stats_consumer_2_background: null,
       grid_icon_import: null,
       grid_icon_export: null,
-      grid_icon_idle: null
+      grid_icon_idle: null,
+      grid_icon_color: null
     }
   },
 
@@ -329,7 +340,8 @@ export const COLOR_PALETTES = {
       stats_consumer_2_background: null,
       grid_icon_import: null,
       grid_icon_export: null,
-      grid_icon_idle: null
+      grid_icon_idle: null,
+      grid_icon_color: null
     }
   },
 
@@ -357,7 +369,8 @@ export const COLOR_PALETTES = {
       stats_consumer_2_background: null,
       grid_icon_import: null,
       grid_icon_export: null,
-      grid_icon_idle: null
+      grid_icon_idle: null,
+      grid_icon_color: null
     }
   },
 
@@ -385,7 +398,8 @@ export const COLOR_PALETTES = {
       stats_consumer_2_background: null,
       grid_icon_import: null,
       grid_icon_export: null,
-      grid_icon_idle: null
+      grid_icon_idle: null,
+      grid_icon_color: null
     }
   },
   'custom': {
@@ -412,7 +426,8 @@ export const COLOR_PALETTES = {
       stats_consumer_2_background: null,
       grid_icon_import: null,
       grid_icon_export: null,
-      grid_icon_idle: null
+      grid_icon_idle: null,
+      grid_icon_color: null
     }
   }
 };
@@ -438,6 +453,7 @@ export function getCardColors(config) {
   if (config.grid_icon_import_color) colors = { ...colors, grid_icon_import: toColor(config.grid_icon_import_color) };
   if (config.grid_icon_export_color) colors = { ...colors, grid_icon_export: toColor(config.grid_icon_export_color) };
   if (config.grid_icon_idle_color) colors = { ...colors, grid_icon_idle: toColor(config.grid_icon_idle_color) };
+  if (config.grid_icon_color) colors = { ...colors, grid_icon_color: toColor(config.grid_icon_color) };
 
   return colors;
 }

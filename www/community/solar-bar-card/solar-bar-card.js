@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.7.3 - Configurable grid icon colors, bar segment text spacing
+// Version 2.7.5 - Fix grid icon circle colors not applying from config
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -1023,9 +1023,6 @@ class SolarBarCard extends HTMLElement {
         ${colors.stats_ev_background ? `.stat[data-action-key="ev"] { background: ${colors.stats_ev_background}; }` : ''}
         ${colors.stats_consumer_1_background ? `.stat[data-action-key="consumer_1"] { background: ${colors.stats_consumer_1_background}; }` : ''}
         ${colors.stats_consumer_2_background ? `.stat[data-action-key="consumer_2"] { background: ${colors.stats_consumer_2_background}; }` : ''}
-        ${colors.grid_icon_import ? `.grid-icon.import { background: ${colors.grid_icon_import}; }` : ''}
-        ${colors.grid_icon_export ? `.grid-icon.export { background: ${colors.grid_icon_export}; }` : ''}
-        ${colors.grid_icon_idle ? `.grid-icon.idle { background: ${colors.grid_icon_idle}; }` : ''}
 
         .battery-container {
           position: relative;
@@ -1264,23 +1261,22 @@ class SolarBarCard extends HTMLElement {
 
         .grid-icon ha-icon {
           --mdc-icon-size: 20px;
-          color: var(--grid-icon-color, black);
+          color: ${colors.grid_icon_color || 'black'};
         }
 
         .grid-icon.import {
-          background: linear-gradient(135deg, var(--grid-usage-color), var(--grid-usage-color));
+          background: ${colors.grid_icon_import || 'linear-gradient(135deg, var(--grid-usage-color), var(--grid-usage-color))'};
           box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .grid-icon.export {
-          background: linear-gradient(135deg, var(--solar-export-color), var(--solar-export-color));
+          background: ${colors.grid_icon_export || 'linear-gradient(135deg, var(--solar-export-color), var(--solar-export-color))'};
           box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .grid-icon.idle {
-          background: var(--disabled-text-color, #9e9e9e);
+          background: ${colors.grid_icon_idle || 'var(--disabled-text-color, #9e9e9e)'};
           box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-          opacity: 0.6;
         }
 
         .bar-segment {
@@ -1681,7 +1677,7 @@ class SolarBarCard extends HTMLElement {
                      data-entity="${grid_power_entity || (hasGridImport ? import_entity : export_entity) || import_entity || export_entity}"
                      data-action-key="${hasGridImport ? 'import' : 'export'}"
                      title="${hasGridImport ? `${this.getLabel('grid_import')}: ${gridImportPower.toFixed(decimal_places)}kW - ${this.getLabel('click_history')}` : hasGridExport ? `${this.getLabel('grid_export')}: ${exportPower.toFixed(decimal_places)}kW - ${this.getLabel('click_history')}` : this.getLabel('grid_idle')}">
-                  <ha-icon icon="mdi:transmission-tower"></ha-icon>
+                  <ha-icon icon="mdi:transmission-tower" style="color: ${colors.grid_icon_color || 'black'}"></ha-icon>
                 </div>
               ` : ''}
               ${showBatteryFlow ? `
@@ -1996,6 +1992,7 @@ class SolarBarCardEditor extends HTMLElement {
       grid_icon_import_color: "Grid Icon Import Color",
       grid_icon_export_color: "Grid Icon Export Color",
       grid_icon_idle_color: "Grid Icon Idle Color",
+      grid_icon_color: "Grid Icon Tower Color",
       show_stats: "Show Individual Stats",
       show_legend: "Show Legend",
       show_legend_values: "Show Legend Values",
@@ -2071,9 +2068,10 @@ class SolarBarCardEditor extends HTMLElement {
       consumption_history_entity: "Daily home consumption sensor (kWh) - shows total energy used today",
       show_net_indicator: "Show colored indicator on import/export tile (green=net exporter, red=net importer)",
       show_grid_icon_always: "Always show grid icon next to the solar bar, even when there is no import or export. Icon turns grey when idle.",
-      grid_icon_import_color: "Custom background color for the grid icon when importing.",
-      grid_icon_export_color: "Custom background color for the grid icon when exporting.",
-      grid_icon_idle_color: "Custom background color for the grid icon when idle (no import/export).",
+      grid_icon_import_color: "Custom background color for the grid icon circle when importing.",
+      grid_icon_export_color: "Custom background color for the grid icon circle when exporting.",
+      grid_icon_idle_color: "Custom background color for the grid icon circle when idle (no import/export).",
+      grid_icon_color: "Color of the transmission tower icon inside the circle (default: black).",
       show_stats: "Display individual power statistics above the bar (dynamic layout - adapts to configured entities)",
       show_legend: "Display color-coded legend below the bar",
       show_legend_values: "Show current kW values in the legend",
@@ -2275,7 +2273,8 @@ class SolarBarCardEditor extends HTMLElement {
             schema: [
               { name: "grid_icon_import_color", selector: { color_rgb: {} } },
               { name: "grid_icon_export_color", selector: { color_rgb: {} } },
-              { name: "grid_icon_idle_color", selector: { color_rgb: {} } }
+              { name: "grid_icon_idle_color", selector: { color_rgb: {} } },
+              { name: "grid_icon_color", selector: { color_rgb: {} } }
             ]
           },
           {
