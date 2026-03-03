@@ -1,0 +1,13 @@
+{
+  "domain": "whodunnit",
+  "name": "Whodunnit",
+  "version": "1.2.0",
+  "documentation": "https://github.com/sfox38/whodunnit",
+  "issue_tracker": "https://github.com/sfox38/whodunnit/issues",
+  "codeowners": ["@sfox38"],
+  "config_flow": true,
+  "integration_type": "service",
+  "iot_class": "local_push",
+  "dependencies": [],
+  "requirements": []
+}
