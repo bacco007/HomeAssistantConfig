@@ -1,0 +1,59 @@
+{
+  "config": {
+    "abort": {
+      "reconfigure_successful": "Reconfiguration was successful."
+    },
+    "error": {
+      "invalid_data_url": "Enter a full URL starting with http:// or https://.",
+      "replace_demo_data_url": "Replace the demo URL with your actual SkyAware endpoint."
+    },
+    "step": {
+      "user": {
+        "title": "Set up ADS-B SkyVista",
+        "description": "Configure the aircraft data source and polling behavior. Example URL: http://your-skyaware-host/skyaware/data/aircraft.json",
+        "data": {
+          "name": "Name",
+          "data_url": "Data URL",
+          "update_interval": "Update interval (seconds)",
+          "max_age": "Max aircraft age (seconds)",
+          "hexdb_enabled": "Enable HexDB enrichment"
+        },
+        "data_description": {
+          "name": "Display name shown in Devices & Services.",
+          "data_url": "Full URL to your SkyAware aircraft.json endpoint.",
+          "update_interval": "How often to fetch new aircraft data.",
+          "max_age": "Hide aircraft last seen longer than this.",
+          "hexdb_enabled": "Adds registration, type, and image metadata from HexDB."
+        }
+      },
+      "reconfigure": {
+        "title": "ADS-B SkyVista",
+        "description": "Update the required data source URL.",
+        "data": {
+          "data_url": "Data URL"
+        },
+        "data_description": {
+          "data_url": "Full URL to your SkyAware aircraft.json endpoint."
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ADS-B SkyVista options",
+        "description": "Adjust update behavior and enrichment options.",
+        "data": {
+          "update_interval": "Update interval (seconds)",
+          "max_age": "Max aircraft age (seconds)",
+          "hexdb_enabled": "Enable HexDB enrichment"
+        },
+        "data_description": {
+          "update_interval": "How often to fetch new aircraft data.",
+          "max_age": "Hide aircraft last seen longer than this.",
+          "hexdb_enabled": "Adds registration, type, and image metadata from HexDB."
+        }
+      }
+    }
+  }
+}
