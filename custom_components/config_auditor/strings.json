@@ -1,0 +1,91 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Home Assistant Config Auditor",
+        "description": "Configure H.A.C.A to monitor your Home Assistant configuration.",
+        "data": {
+          "scan_interval": "Scan interval (minutes)"
+        }
+      }
+    },
+    "error": {
+      "invalid_interval": "Scan interval must be between 5 and 1440 minutes"
+    },
+    "abort": {
+      "already_configured": "H.A.C.A is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "H.A.C.A Options",
+        "data": {
+          "scan_interval": "Scan interval (minutes)",
+          "auto_fix_enabled": "Enable automatic fixes",
+          "backup_enabled": "Enable automatic backups",
+          "startup_delay_seconds": "Startup scan delay (seconds)",
+          "event_monitoring_enabled": "Continuous monitoring (auto-scan on events)",
+          "event_debounce_seconds": "Event monitoring debounce delay (seconds)"
+        }
+      }
+    }
+  },
+  "title": "H.A.C.A",
+  "stats": {
+    "dashboards": "Dashboards",
+    "dashboards_desc": "Missing entities"
+  },
+  "tabs": {
+    "dashboards": "Dashboards"
+  },
+  "sections": {
+    "dashboard_issues": "Dashboard Issues"
+  },
+  "entity": {
+    "sensor": {
+      "dashboard_issues": {
+        "name": "Dashboard Issues"
+      }
+    }
+  },
+  "panel": {
+    "stats": {
+      "dashboards": "Dashboards",
+      "dashboards_desc": "Missing entities",
+      "recorder_orphans": "DB Orphans",
+      "recorder_orphans_desc": "Wasted space"
+    },
+    "tabs": {
+      "dashboards": "Dashboards",
+      "history": "History",
+      "issues": "Issues",
+      "recorder": "DB Orphans",
+      "tools": "Tools",
+      "backups": "Backups",
+      "reports": "Reports",
+      "batteries": "Batteries"
+    },
+    "sections": {
+      "dashboard_issues": "Dashboard Issues",
+      "recorder_orphans": "Orphaned Recorder Entities",
+      "history": "Audit History"
+    },
+    "actions": {
+      "purge_all_orphans": "Purge all orphans"
+    },
+    "messages": {},
+    "complex_automation": "Complex automation (score {score}): {triggers} triggers, {conditions} conditions, {actions} actions, {templates} templates",
+    "god_automation": "🚨 God Automation (score {score}): {triggers} triggers, {conditions} conditions, {actions} actions, {templates} templates — should be split",
+    "complex_automation_recommendation": "Extract some actions into reusable scripts to reduce complexity",
+    "god_automation_recommendation": "This automation is too complex. Split it into several specialized automations or scripts"
+  },
+  "analyzer": {
+    "ghost_automation": "Ghost automation: active but not triggered in {days} days",
+    "ghost_unavailable_triggers": "Ghost automation: trigger entities are unavailable ({entities})",
+    "fix_unavailable_triggers": "Check or replace the unavailable trigger entities — likely root cause",
+    "verify_triggers_restrictive": "Check if triggers are too restrictive, or if the automation is still needed",
+    "probable_duplicate_automation": "Probable duplicate at {pct}% similarity with \"{other}\" (Jaccard of triggers/actions)",
+    "review_probable_duplicate": "Compare with \"{other}\" and merge or remove the duplicate"
+  }
+}

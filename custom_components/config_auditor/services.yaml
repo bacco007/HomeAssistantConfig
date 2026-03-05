@@ -1,0 +1,230 @@
+scan_all:
+  name: Scan All
+  description: Run a complete configuration audit including automations, entities, and performance checks.
+
+scan_automations:
+  name: Scan Automations
+  description: Scan all automations for best practice violations and potential issues.
+
+scan_entities:
+  name: Scan Entities
+  description: Scan all entities for issues like zombies, unavailable, or stale entities.
+
+generate_report:
+  name: Generate Report
+  description: Generate a comprehensive audit report (Markdown and JSON) with health score and recommendations.
+
+list_reports:
+  name: List Reports
+  description: List all generated reports.
+  supports_response: only
+
+preview_device_id:
+  name: Preview device_id Fix
+  description: Preview conversion of device_id references to entity_id in an automation without modifying the file.
+  supports_response: only
+  fields:
+    automation_id:
+      name: Automation ID
+      description: The unique ID of the automation to analyse.
+      required: true
+      example: "1234567890abc"
+      selector:
+        text:
+
+fix_device_id:
+  name: Fix device_id
+  description: Apply conversion of device_id references to entity_id in an automation. A backup is created automatically before modification.
+  fields:
+    automation_id:
+      name: Automation ID
+      description: The unique ID of the automation to fix.
+      required: true
+      example: "1234567890abc"
+      selector:
+        text:
+    dry_run:
+      name: Dry Run
+      description: Simulate the fix without applying changes.
+      required: false
+      default: false
+      selector:
+        boolean:
+
+preview_mode:
+  name: Preview Mode Change
+  description: Preview automation mode change without applying.
+  supports_response: only
+  fields:
+    automation_id:
+      name: Automation ID
+      description: The ID of the automation.
+      required: true
+      example: "1234567890abc"
+      selector:
+        text:
+    mode:
+      name: Mode
+      description: The new mode to apply.
+      required: true
+      example: "restart"
+      selector:
+        select:
+          options:
+            - "single"
+            - "restart"
+            - "queued"
+            - "parallel"
+
+fix_mode:
+  name: Fix Mode
+  description: Change automation mode (creates backup).
+  fields:
+    automation_id:
+      name: Automation ID
+      description: The ID of the automation.
+      required: true
+      example: "1234567890abc"
+      selector:
+        text:
+    mode:
+      name: Mode
+      description: The new mode to apply.
+      required: true
+      example: "restart"
+      selector:
+        select:
+          options:
+            - "single"
+            - "restart"
+            - "queued"
+            - "parallel"
+
+preview_template:
+  name: Preview Template Fix
+  description: Preview conversion of simple template conditions into native state conditions.
+  supports_response: only
+  fields:
+    automation_id:
+      name: Automation ID
+      description: The ID of the automation.
+      required: true
+      example: "1234567890abc"
+
+fix_template:
+  name: Fix Template
+  description: Convert simple template conditions into native state conditions (creates backup).
+  fields:
+    automation_id:
+      name: Automation ID
+      description: The ID of the automation.
+      required: true
+      example: "1234567890abc"
+    dry_run:
+      name: Dry Run
+      description: Simulate the fix without applying changes.
+      required: false
+      default: false
+      selector:
+        boolean:
+
+suggest_description_ai:
+  name: Suggest Description AI
+  description: Use AI to suggest a description for an automation or script based on its logic.
+  supports_response: only
+  fields:
+    entity_id:
+      name: Entity ID
+      description: The entity ID of the automation or script.
+      required: true
+      example: "automation.my_cool_automation"
+
+fix_description:
+  name: Fix Description
+  description: Apply a description to an automation or script.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: The entity ID of the automation or script.
+      required: true
+      example: "automation.my_cool_automation"
+    description:
+      name: Description
+      description: The description text to apply.
+      required: true
+      example: "This automation turns on the light when movement is detected."
+
+list_backups:
+  name: List Backups
+  description: List all available automation backups.
+  supports_response: only
+
+
+create_backup:
+  name: Create Backup
+  description: Manually create a backup of automations.yaml.
+  supports_response: optional
+
+restore_backup:
+  name: Restore Backup
+  description: Restore automations from a backup file (creates backup of current state first).
+  supports_response: optional
+  fields:
+    backup_path:
+      name: Backup Path
+      description: Full path to the backup file.
+      required: true
+      example: "/config/.haca_backups/automations_20260209_120000.yaml"
+      selector:
+        text:
+
+get_report_content:
+  name: Get Report Content
+  description: Retrieve the content of a generated report file.
+  supports_response: only
+  fields:
+    filename:
+      name: Filename
+      description: The name of the report file (e.g., report_20231027_123456.md).
+      required: true
+      example: "report_20231027_123456.md"
+
+apply_zombie_fix:
+  name: Apply Zombie Entity Fix
+  description: Replace or remove a reference to a non-existent entity in an automation. A backup is created automatically.
+  supports_response: only
+  fields:
+    automation_id:
+      name: Automation ID
+      description: The unique ID or entity_id of the automation to fix.
+      required: true
+      example: "automation.lumiere_salon"
+      selector:
+        text:
+    old_entity_id:
+      name: Missing entity
+      description: "The entity_id that no longer exists (e.g. light.evier)."
+      required: true
+      example: "light.evier"
+      selector:
+        text:
+    new_entity_id:
+      name: Replacement entity
+      description: The replacement entity_id. Leave empty to remove the reference.
+      required: false
+      example: "light.evier_new"
+      selector:
+        text:
+
+get_fuzzy_suggestions:
+  name: Get Fuzzy Suggestions
+  description: Suggest existing entities similar to a not-found entity.
+  supports_response: only
+  fields:
+    entity_id:
+      name: Entity ID
+      description: The entity_id that was not found, for which to search alternatives.
+      required: true
+      example: "light.evier"
+      selector:
+        text:

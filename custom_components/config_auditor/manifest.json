@@ -1,0 +1,18 @@
+{
+  "domain": "config_auditor",
+  "name": "Home Assistant Config Auditor (H.A.C.A)",
+  "codeowners": [
+    "@haca"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/JeanMarc-Labs/ha-config-auditor",
+  "issue_tracker": "https://github.com/JeanMarc-Labs/ha-config-auditor/issues",
+  "requirements": [
+    "PyYAML>=6.0",
+    "fpdf2>=2.7.4"
+  ],
+  "version": "1.1.0",
+  "iot_class": "local_polling",
+  "icon": "mdi:shield-check",
+  "dependencies": []
+}
