@@ -92,7 +92,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant 設定監査ツール",
-    "version": "V1.1.0",
+    "version": "V1.1.2",
     "buttons": {
       "scan_all": "完全スキャン",
       "automations": "オートメーション",
@@ -288,7 +288,8 @@
       "loading_report": "レポート読み込み中...",
       "loading_proposal": "提案読み込み中...",
       "error_loading": "レポートの読み込みエラー",
-      "error_display": "レポート表示エラー"
+      "error_display": "レポート表示エラー",
+      "generating": "Generating…"
     },
     "ai": {
       "analyzing": "AIが問題を分析中です...",
@@ -605,7 +606,12 @@
       "applying": "適用中…",
       "close": "閉じる",
       "retry": "再試行",
-      "triggers_label": "🔀 {n} トリガー"
+      "triggers_label": "🔀 {n} トリガー",
+      "conditions_label": "🔍 {n} 条件",
+      "actions_label": "▶ {n} アクション",
+      "templates_label": "📝 {n} テンプレート",
+      "analysis_title": "分析",
+      "refactoring_title": "リファクタリング提案 (ドライラン)"
     },
     "optimizer": {
       "tagline": "解析・分割・近代化・ブループリント",
@@ -622,7 +628,8 @@
       "close_rescan": "閉じて再スキャン",
       "new_badge": "新規",
       "blueprint_yaml": "ブループリント使用YAML",
-      "automations_written": "{count} 件のオートメーションを書き込みました。"
+      "automations_written": "{count} 件のオートメーションを書き込みました。",
+      "apply_blueprint": "Blueprintを適用"
     },
     "haca_ignore": {
       "info_title": "無視ラベル",
@@ -857,7 +864,21 @@
     "status_poor": "不良です。対応が必要です。",
     "issue": "問題",
     "fix": "修正",
-    "page": "ページ"
+    "page": "ページ",
+    "script_issues_section": "スクリプトの問題",
+    "scene_issues_section": "シーンの問題",
+    "blueprint_issues_section": "ブループリントの問題",
+    "performance_issues_section": "パフォーマンスの問題",
+    "security_issues_section": "セキュリティの問題",
+    "dashboard_issues_section": "ダッシュボードの問題",
+    "no_script_issues": "スクリプトの問題は検出されませんでした！",
+    "no_scene_issues": "シーンの問題は検出されませんでした！",
+    "no_blueprint_issues": "ブループリントの問題は検出されませんでした！",
+    "no_performance_issues": "パフォーマンスの問題は検出されませんでした！",
+    "no_security_issues": "セキュリティの問題は検出されませんでした！",
+    "no_dashboard_issues": "ダッシュボードの問題は検出されませんでした！",
+    "blueprint_issues": "ブループリントの問題",
+    "dashboard_issues": "ダッシュボードの問題"
   },
   "notifications": {
     "new_issues_title": "⚠️ H.A.C.A — {count} 件の新しい高優先度の問題が検出されました",
@@ -941,5 +962,8 @@
     "complexity_yaml_unavailable": "(YAMLは利用できません)",
     "complexity_prompt": "あなたはHome Assistantの専門家です。この{kind}の複雑さを分析してください。\n\n**{kind_upper} :** {alias}\n**エンティティID :** {entity_id}\n**HACAスコア :** {score}\n**スコア詳細 :** {score_line}\n\n{yaml_section}\n\n任務は2部構成です：\nPART 1 - 説明（3～5文）：\nなぜこの{kind}が複雑なのか、どの部分がスコアに最も寄与しているか、リスク（保守性、デバッグ）を説明してください。\n\nPART 2 - YAML提案：\n具体的な分割案を提案してください。繰り返しのアクションブロックを別スクリプトに抽出し、メインファイルを簡潔にします。完全なYAMLを提供してください。\n\n必ず次の形式で回答してください：\n```explanation\n[ここに説明を書く]\n```\n\n```yaml_proposal\n[提案するyamlを書く]\n```",
     "complexity_fallback": "複雑さスコア: {score}。この{kind}は {triggers} 件のトリガー、{conditions} 件の条件、{actions} 件の再帰的アクション、{templates} 件のテンプレートを含みます。繰り返しのアクションブロックを再利用可能なスクリプトに抽出することを検討してください。"
+  },
+  "actions": {
+    "close": "Close"
   }
 }

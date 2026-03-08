@@ -92,7 +92,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant Config Auditor",
-    "version": "V1.1.0",
+    "version": "V1.1.2",
     "buttons": {
       "scan_all": "Scansione Completa",
       "automations": "Automazioni",
@@ -288,7 +288,8 @@
       "loading_report": "Caricamento rapporto...",
       "loading_proposal": "Caricamento proposta...",
       "error_loading": "Errore nel caricamento dei rapporti",
-      "error_display": "Errore nella visualizzazione dei rapporti"
+      "error_display": "Errore nella visualizzazione dei rapporti",
+      "generating": "Generating…"
     },
     "ai": {
       "analyzing": "L'IA sta analizzando il tuo problema...",
@@ -605,7 +606,12 @@
       "applying": "Applicazione in corso…",
       "close": "Chiudi",
       "retry": "Riprova",
-      "triggers_label": "🔀 {n} trigger"
+      "triggers_label": "🔀 {n} trigger",
+      "conditions_label": "🔍 {n} condizioni",
+      "actions_label": "▶ {n} azioni",
+      "templates_label": "📝 {n} modelli",
+      "analysis_title": "Analisi",
+      "refactoring_title": "Proposta di refactoring (Dry Run)"
     },
     "optimizer": {
       "tagline": "Analisi · Divisione · Modernizzazione · Blueprint",
@@ -622,7 +628,8 @@
       "close_rescan": "Chiudi & Riscansiona",
       "new_badge": "NUOVO",
       "blueprint_yaml": "Uso blueprint YAML",
-      "automations_written": "{count} automazione/i scritta/e."
+      "automations_written": "{count} automazione/i scritta/e.",
+      "apply_blueprint": "Applica blueprint"
     },
     "haca_ignore": {
       "info_title": "Etichetta Ignora",
@@ -857,7 +864,21 @@
     "status_poor": "Scarso. Azione necessaria.",
     "issue": "Problema",
     "fix": "Risolvi",
-    "page": "Pagina"
+    "page": "Pagina",
+    "script_issues_section": "Problemi degli Script",
+    "scene_issues_section": "Problemi delle Scene",
+    "blueprint_issues_section": "Problemi dei Blueprint",
+    "performance_issues_section": "Problemi di Performance",
+    "security_issues_section": "Problemi di Sicurezza",
+    "dashboard_issues_section": "Problemi della Dashboard",
+    "no_script_issues": "Nessun problema di script rilevato!",
+    "no_scene_issues": "Nessun problema di scena rilevato!",
+    "no_blueprint_issues": "Nessun problema di blueprint rilevato!",
+    "no_performance_issues": "Nessun problema di performance rilevato!",
+    "no_security_issues": "Nessun problema di sicurezza rilevato!",
+    "no_dashboard_issues": "Nessun problema di dashboard rilevato!",
+    "blueprint_issues": "Problemi dei Blueprint",
+    "dashboard_issues": "Problemi della Dashboard"
   },
   "notifications": {
     "new_issues_title": "⚠️ H.A.C.A — {count} nuovi problema/i GRAVE rilevato/i",
@@ -941,5 +962,8 @@
     "complexity_yaml_unavailable": "(YAML non disponibile)",
     "complexity_prompt": "Sei un esperto di Home Assistant. Analizza la complessità di questo {kind}.\n\n** {kind_upper} :** {alias}\n**ID Entità :** {entity_id}\n**Punteggio HACA :** {score}\n**Dettaglio punteggio :** {score_line}\n\n{yaml_section}\n\nMISSIONE IN 2 PARTI:\nPARTE 1 - SPIEGAZIONE (3-5 frasi):\nSpiega perché questo {kind} è complesso, quali parti contribuiscono maggiormente al punteggio e i rischi (manutenzione, debug).\n\nPARTE 2 - PROPOSTA YAML:\nProponi una suddivisione concreta: estrai blocchi di azioni ripetitive in script separati, semplifica il file principale. Fornisci l'YAML completo.\n\nRISPONDI RIGOROSAMENTE CON QUESTO FORMATO:\n```explanation\n[la tua spiegazione qui]\n```\n\n```yaml_proposal\n[YAML proposto qui]\n```",
     "complexity_fallback": "Punteggio di complessità: {score}. Questo {kind} contiene {triggers} trigger, {conditions} condizione/i, {actions} azione/i ricorsiva/e e {templates} template. Considera di estrarre blocchi di azioni ripetitive in script riutilizzabili."
+  },
+  "actions": {
+    "close": "Close"
   }
 }

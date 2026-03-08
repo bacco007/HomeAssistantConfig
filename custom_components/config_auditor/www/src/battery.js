@@ -22,7 +22,7 @@
       ].map(s => `
         <div style="background:var(--secondary-background-color);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;border:1px solid var(--divider-color);">
           <div style="display:flex;align-items:center;gap:6px;">
-            <ha-icon icon="${s.icon}" style="--mdc-icon-size:18px;color:${s.color};"></ha-icon>
+            ${_icon(s.icon.replace("mdi:", ""), 18)}
             <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--secondary-text-color);">${s.label}</span>
           </div>
           <div style="font-size:26px;font-weight:800;color:${s.color};line-height:1;">${s.val}</div>
@@ -209,7 +209,7 @@
         : this.t('messages.no_issues');
       container.innerHTML = `
         <div class="empty-state">
-            <ha-icon icon="mdi:check-decagram-outline"></ha-icon>
+            ${_icon("check-decagram-outline")}
             <p>${msg}</p>
         </div>`;
       return;
@@ -247,29 +247,29 @@
         <div class="issue-main">
             <div class="issue-info">
                 <div class="issue-header-row">
-                    <ha-icon icon="${isSecurity ? 'mdi:shield-alert' : cardIcon}" style="--mdc-icon-size: 17px; flex-shrink:0; ${isSecurity ? 'color: var(--error-color, #ef5350);' : isGhost ? 'color: #9c27b0;' : isDuplicate ? 'color: #ffa726;' : ''}"></ha-icon>
+                    ${_icon((isSecurity ? 'shield-alert' : cardIcon.replace('mdi:', '')), 17)}
                     <div class="issue-title">${this.escapeHtml(i.alias || i.entity_id || '')}</div>
                 </div>
                 <div class="issue-entity">${this.escapeHtml(i.entity_id || '')}</div>
                 ${i.type === 'zombie_entity' && (i.automation_names || i.source_name) ? `
                 <div style="font-size:12px;color:var(--secondary-text-color);margin-top:4px;display:flex;align-items:center;gap:4px;">
-                    <ha-icon icon="mdi:robot" style="--mdc-icon-size:12px;flex-shrink:0;"></ha-icon>
+                    ${_icon("robot", 12)}
                     <span>${this.t('issues.in_automations')} ${this.escapeHtml((i.automation_names || [i.source_name]).slice(0,3).join(', '))}</span>
                 </div>` : i.type === 'dashboard_missing_entity' ? `
                 <div style="font-size:12px;color:var(--secondary-text-color);margin-top:4px;display:flex;align-items:center;gap:4px;">
-                    <ha-icon icon="mdi:view-dashboard-outline" style="--mdc-icon-size:12px;flex-shrink:0;"></ha-icon>
+                    ${_icon("view-dashboard-outline", 12)}
                     <span>${this.escapeHtml(i.source_name || i.dashboard || '?')} &rsaquo; ${this.escapeHtml((i.locations || [i.location || '?']).slice(0,2).join(', '))}</span>
                 </div>` : (i.location && i.location !== '—' ? `
                 <div style="font-size:12px;color:var(--secondary-text-color);margin-top:4px;display:flex;align-items:center;gap:4px;">
-                    <ha-icon icon="mdi:map-marker-outline" style="--mdc-icon-size:12px;flex-shrink:0;"></ha-icon>
+                    ${_icon("map-marker-outline", 12)}
                     <span>${this.escapeHtml(i.location)}</span>
                 </div>` : '')}
             </div>
             <div class="issue-btns">
-                ${editUrl ? `<a href="${editUrl}" target="_blank" style="text-decoration: none;"><button class="edit-ha-btn" style="background: var(--secondary-background-color); color: var(--primary-text-color); border: 1px solid var(--divider-color);"><ha-icon icon="mdi:pencil"></ha-icon> ${this.t('actions.edit_ha')}</button></a>` : ''}
-                ${dashboardUrl ? `<a href="${dashboardUrl}" target="_blank" style="text-decoration: none;"><button class="edit-ha-btn" style="background: var(--secondary-background-color); color: var(--primary-text-color); border: 1px solid var(--divider-color);"><ha-icon icon="mdi:view-dashboard-edit-outline"></ha-icon> ${this.t('issues.open_dashboard')}</button></a>` : ''}
+                ${editUrl ? `<a href="${editUrl}" target="_blank" style="text-decoration: none;"><button class="edit-ha-btn" style="background: var(--secondary-background-color); color: var(--primary-text-color); border: 1px solid var(--divider-color);">${_icon("pencil")} ${this.t('actions.edit_ha')}</button></a>` : ''}
+                ${dashboardUrl ? `<a href="${dashboardUrl}" target="_blank" style="text-decoration: none;"><button class="edit-ha-btn" style="background: var(--secondary-background-color); color: var(--primary-text-color); border: 1px solid var(--divider-color);">${_icon("view-dashboard-edit-outline")} ${this.t('issues.open_dashboard')}</button></a>` : ''}
                 <button class="explain-btn" data-idx="${idx}" style="background: var(--accent-color, #03a9f4); color: white;">
-                    <ha-icon icon="mdi:robot"></ha-icon> IA
+                    ${_icon("robot")} IA
                 </button>
                 ${i.entity_id && i.entity_id.startsWith('automation.') && (() => {
                   const scores = this._lastData?.complexity_scores || [];
@@ -279,9 +279,9 @@
                 <button class="optimize-btn" data-idx="${idx}"
                   title="${this.t('issues.complexity_score_title', {score: (this._lastData?.complexity_scores||[]).find(s=>s.entity_id===i.entity_id)?.score||0})}"
                   style="background:linear-gradient(135deg,#7b68ee,#a855f7);color:white;display:flex;align-items:center;gap:4px;">
-                  <ha-icon icon="mdi:auto-fix" style="--mdc-icon-size:15px;"></ha-icon> ${this.t('issues.optimize')}
+                  ${_icon("auto-fix", 15)} ${this.t('issues.optimize')}
                 </button>` : ''}
-                ${isFixable ? `<button class="fix-btn" data-idx="${idx}"><ha-icon icon="mdi:magic-staff"></ha-icon> ${this.t('actions.fix')}</button>` : ''}
+                ${isFixable ? `<button class="fix-btn" data-idx="${idx}">${_icon("magic-staff")} ${this.t('actions.fix')}</button>` : ''}
             </div>
         </div>
         <div class="issue-message">${this.escapeHtml(i.message || '')}</div>
@@ -340,7 +340,7 @@
 
         ${i.recommendation ? `
             <div class="issue-reco">
-                <ha-icon icon="mdi:lightbulb-outline" style="--mdc-icon-size: 16px; flex-shrink:0; margin-top:1px;"></ha-icon>
+                ${_icon("lightbulb-outline", 16)}
                 <span>${this.escapeHtml(i.recommendation)}</span>
             </div>
         ` : ''}
@@ -411,7 +411,7 @@
       card._updateContent(`
         <div style="padding: 24px;">
             <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid var(--divider-color); padding-bottom: 16px;">
-                <ha-icon icon="mdi:robot" style="--mdc-icon-size: 48px; color: var(--primary-color);"></ha-icon>
+                ${_icon("robot", 48)}
                 <div>
                     <h2 style="margin: 0;">${this.t('modals.ai_analysis')}</h2>
                     <div style="font-size: 14px; opacity: 0.7;">${issue.alias || issue.entity_id}</div>
@@ -465,7 +465,7 @@
       const card = this.createModal(`
         <div style="padding: 24px;">
             <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid var(--divider-color); padding-bottom: 16px;">
-                <ha-icon icon="mdi:alert-circle" style="--mdc-icon-size: 48px; color: var(--error-color);"></ha-icon>
+                ${_icon("alert-circle", 48)}
                 <div>
                     <h2 style="margin: 0;">${this.t('modals.broken_device_ref')}</h2>
                     <div style="font-size: 14px; opacity: 0.7;">${issue.entity_id}</div>
@@ -479,7 +479,7 @@
             
             <div style="background: var(--secondary-background-color); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
                 <div style="font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                    <ha-icon icon="mdi:lightbulb-outline" style="color: var(--primary-color);"></ha-icon>
+                    ${_icon("lightbulb-outline")}
                     ${this.t('modals.how_to_fix')}
                 </div>
                 <ol style="margin: 0; padding-left: 20px; line-height: 1.8;">
@@ -492,7 +492,7 @@
             
             <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
                 <button class="close-btn" style="background: var(--secondary-background-color); color: var(--primary-text-color); border: 1px solid var(--divider-color);">${this.t('actions.close')}</button>
-                ${editUrl ? `<a href="${editUrl}" target="_blank" style="text-decoration: none;"><button class="edit-btn" style="background: var(--primary-color); color: white;"><ha-icon icon="mdi:pencil"></ha-icon> ${this.t('modals.open_editor')}</button></a>` : ''}
+                ${editUrl ? `<a href="${editUrl}" target="_blank" style="text-decoration: none;"><button class="edit-btn" style="background: var(--primary-color); color: white;">${_icon("pencil")} ${this.t('modals.open_editor')}</button></a>` : ''}
             </div>
         </div>
       `);
@@ -532,7 +532,6 @@
       if (automation_id) {
         serviceData = { automation_id: automation_id };
       } else {
-        console.warn("Could not find automation ID for", issue.entity_id);
         this.showHANotification(this.t('fix.cannot_find_automation'), issue.entity_id || '', 'haca_error');
         return;
       }
@@ -594,7 +593,7 @@
     const _isMobile = window.innerWidth <= 600;
     modal.style.cssText = `
         position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.8); z-index: 9999;
+        background: rgba(0,0,0,0.5); z-index: 9999;
         display: flex; justify-content: center; align-items: ${_isMobile ? 'flex-end' : 'center'};
       `;
 
@@ -612,17 +611,17 @@
     // Add close button absolutely positioned in top right of modal card
     const closeBtn = document.createElement('button');
     closeBtn.className = 'modal-close-btn';
-    closeBtn.innerHTML = '<ha-icon icon="mdi:close"></ha-icon>';
+    closeBtn.innerHTML = _icon("close", 18);
     closeBtn.style.cssText = `
         position: absolute;
-        top: 14px;
-        right: 9px;
-        width: 20px;
-        height: 20px;
+        top: 12px;
+        right: 14px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         border: none;
         background: var(--secondary-background-color);
-        color: #333;
+        color: var(--primary-text-color);
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -724,7 +723,7 @@
     const suggestionsHtml = suggestions.length > 0
       ? `<div style="margin-bottom:16px;">
           <div style="font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
-            <ha-icon icon="mdi:lightbulb-on-outline" style="color:var(--warning-color);--mdc-icon-size:18px;"></ha-icon>
+            ${_icon("lightbulb-on-outline", 18)}
             ${this.t('zombie.similar_detected')}
           </div>
           <div style="display:flex;flex-wrap:wrap;gap:8px;">
@@ -733,7 +732,7 @@
                 style="background:var(--secondary-background-color);color:var(--primary-text-color);
                        border:1px solid var(--primary-color);border-radius:8px;padding:6px 14px;
                        font-size:13px;cursor:pointer;">
-                <ha-icon icon="mdi:swap-horizontal" style="--mdc-icon-size:14px;"></ha-icon> ${s}
+                ${_icon("swap-horizontal", 14)} ${s}
               </button>`).join('')}
           </div>
         </div>`
@@ -752,7 +751,7 @@
     card._updateContent(`
       <div style="padding:24px;max-height:80vh;overflow-y:auto;">
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;border-bottom:1px solid var(--divider-color);padding-bottom:16px;">
-          <ha-icon icon="mdi:ghost-outline" style="--mdc-icon-size:42px;color:var(--error-color);"></ha-icon>
+          ${_icon("ghost-outline", 42)}
           <div>
             <h2 style="margin:0;">${this.t('zombie.entity_not_found')}</h2>
             <div style="font-size:13px;opacity:0.7;">${zombieId}</div>
@@ -778,7 +777,7 @@
         </div>
 
         <div style="background:var(--secondary-background-color);padding:12px 16px;border-radius:8px;margin-bottom:20px;font-size:13px;color:var(--secondary-text-color);">
-          <ha-icon icon="mdi:shield-check-outline" style="--mdc-icon-size:15px;"></ha-icon>
+          ${_icon("shield-check-outline", 15)}
           ${this.t('zombie.auto_backup_info')}
         </div>
 
@@ -787,10 +786,10 @@
           <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
             <button class="close-btn" style="background:var(--secondary-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);">${this.t('actions.cancel')}</button>
             <button id="apply-zombie-single-btn" style="background:var(--primary-color);color:white;font-weight:600;" ${automationIds.length <= 1 ? 'style="display:none"' : ''}>
-              <ha-icon icon="mdi:magic-staff"></ha-icon> ${this.t('zombie.fix_this')}
+              ${_icon("magic-staff")} ${this.t('zombie.fix_this')}
             </button>
             <button id="apply-zombie-btn" style="background:var(--error-color);color:white;font-weight:600;" ${automationIds.length <= 1 ? '' : ''}>
-              <ha-icon icon="mdi:magic-staff"></ha-icon> ${automationIds.length > 1 ? this.t('zombie.fix_all', {count: automationIds.length}) : this.t('modals.apply_correction')}
+              ${_icon("magic-staff")} ${automationIds.length > 1 ? this.t('zombie.fix_all', {count: automationIds.length}) : this.t('modals.apply_correction')}
             </button>
           </div>
         </div>
@@ -820,7 +819,7 @@
         zombieEditorContainer.innerHTML = `
           <a href="${editorUrl}" target="_blank" style="text-decoration:none;">
             <button style="background:var(--secondary-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);">
-              <ha-icon icon="mdi:pencil"></ha-icon> ${this.t('zombie.edit_manual')}
+              ${_icon("pencil")} ${this.t('zombie.edit_manual')}
             </button>
           </a>`;
       }
@@ -894,7 +893,7 @@
       card._updateContent(`
             <div style="padding: 24px;">
                 <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid var(--divider-color); padding-bottom: 16px;">
-                    <ha-icon icon="mdi:robot-confused-outline" style="--mdc-icon-size: 40px; color: var(--primary-color);"></ha-icon>
+                    ${_icon("robot-confused-outline", 40)}
                     <div>
                         <h2 style="margin: 0;">${this.t('modals.suggest_description')}</h2>
                         <div style="font-size: 14px; opacity: 0.7;">${issue.alias || issue.entity_id}</div>
@@ -965,17 +964,17 @@
     card._updateContent(`
         <div class="section-header" style="background: var(--secondary-background-color); border-bottom: 1px solid var(--divider-color); padding: 20px 24px; padding-right: 48px; flex-shrink: 0;">
             <h2 style="margin:0; font-size: 20px; display: flex; align-items: center; gap: 12px;">
-                <ha-icon icon="mdi:magic-staff"></ha-icon> ${this.t('modals.correction_proposal')}
+                ${_icon("magic-staff")} ${this.t('modals.correction_proposal')}
             </h2>
         </div>
         <div style="padding: 24px; flex: 1; overflow-y: auto; min-height: 0;">
             <div style="margin-bottom: 24px; background: rgba(var(--rgb-primary-color), 0.05); padding: 16px; border-radius: 12px; border-left: 4px solid var(--primary-color);">
                 <div style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                    <ha-icon icon="mdi:robot" style="--mdc-icon-size: 18px; color: var(--primary-color);"></ha-icon>
+                    ${_icon("robot", 18)}
                     <strong>${this.t('modals.automation')}:</strong> <span style="font-weight: 500;">${result.alias}</span> (${result.automation_id})
                 </div>
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <ha-icon icon="mdi:alert-circle-outline" style="--mdc-icon-size: 18px; color: var(--error-color);"></ha-icon>
+                    ${_icon("alert-circle-outline", 18)}
                     <strong>${this.t('modals.problem')}:</strong> ${issue.message}
                 </div>
             </div>
@@ -983,13 +982,13 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
                 <div>
                     <h3 style="margin-top:0; color: var(--error-color); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;">
-                        <ha-icon icon="mdi:minus-box-outline"></ha-icon> ${this.t('modals.before')}
+                        ${_icon("minus-box-outline")} ${this.t('modals.before')}
                     </h3>
                     <pre style="background: var(--secondary-background-color); padding: 16px; overflow: auto; border-radius: 12px; font-size: 12px; border: 1px solid var(--divider-color); max-height: 400px;">${this.escapeHtml(result.current_yaml)}</pre>
                 </div>
                 <div>
                     <h3 style="margin-top:0; color: var(--success-color, #4caf50); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;">
-                        <ha-icon icon="mdi:plus-box-outline"></ha-icon> ${this.t('modals.after')}
+                        ${_icon("plus-box-outline")} ${this.t('modals.after')}
                     </h3>
                     <pre style="background: var(--secondary-background-color); padding: 16px; overflow: auto; border-radius: 12px; font-size: 12px; border: 1px solid var(--divider-color); max-height: 400px; outline: 1px solid var(--success-color, #4caf50); outline-offset: -1px;">${this.highlightDiff(result.new_yaml, result.current_yaml)}</pre>
                 </div>
@@ -997,7 +996,7 @@
             
             <div style="background: var(--secondary-background-color); padding: 20px; border-radius: 12px; border: 1px solid var(--divider-color);">
                 <div style="font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
-                    <ha-icon icon="mdi:playlist-check"></ha-icon>
+                    ${_icon("playlist-check")}
                     ${this.t('modals.changes_identified')} (${result.changes_count}):
                 </div>
                 <ul style="margin: 0; padding-left: 24px; line-height: 1.6; color: var(--primary-text-color);">
@@ -1008,9 +1007,9 @@
         <div style="padding: 20px 24px; border-top: 1px solid var(--divider-color); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; background: var(--secondary-background-color); flex-shrink: 0;">
             <div id="edit-btn-container"></div>
             <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end;">
-                <button style="background: var(--secondary-background-color); color: var(--primary-text-color); border: 1px solid var(--divider-color);" onclick="this.closest('.haca-modal').remove()"><ha-icon icon="mdi:close"></ha-icon> ${this.t('actions.cancel')}</button>
+                <button style="background: var(--secondary-background-color); color: var(--primary-text-color); border: 1px solid var(--divider-color);" onclick="this.closest('.haca-modal').remove()">${_icon("close")} ${this.t('actions.cancel')}</button>
                 <button id="apply-fix-btn" style="background: var(--primary-color); color: white; padding: 12px 24px; border-radius: 12px; box-shadow: 0 4px 10px rgba(var(--rgb-primary-color), 0.3);">
-                    <ha-icon icon="mdi:check-circle-outline"></ha-icon> ${this.t('modals.apply_correction')}
+                    ${_icon("check-circle-outline")} ${this.t('modals.apply_correction')}
                 </button>
             </div>
         </div>
@@ -1023,7 +1022,7 @@
       editContainer.innerHTML = `
         <a href="${editUrl}" target="_blank" style="text-decoration:none;">
           <button style="background:var(--secondary-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);">
-            <ha-icon icon="mdi:pencil"></ha-icon> ${this.t('zombie.edit_manual')}
+            ${_icon("pencil")} ${this.t('zombie.edit_manual')}
           </button>
         </a>`;
     }
@@ -1064,7 +1063,7 @@
                     <p style="color: var(--secondary-text-color); margin-bottom: 24px; line-height: 1.6;">${response.message}</p>
                     ${response.backup_path ? `
                         <div style="background: var(--secondary-background-color); padding: 12px; border-radius: 12px; margin-bottom: 32px; display: inline-flex; align-items: center; gap: 10px; border: 1px solid var(--divider-color);">
-                            <ha-icon icon="mdi:zip-box-outline" style="color: var(--primary-color);"></ha-icon>
+                            ${_icon("zip-box-outline")}
                             <span style="font-family: monospace; font-size: 12px;">${this.t('backup.backup_created')}: ${response.backup_path.split(/[\\/]/).pop()}</span>
                         </div>
                     ` : ''}
@@ -1079,12 +1078,12 @@
       } else {
         this.showHANotification('❌ ' + this.t('notifications.error'), response.error || this.t('fix.error_unknown'), 'haca_error');
         btn.disabled = false;
-        btn.innerHTML = `<ha-icon icon="mdi:check-circle-outline"></ha-icon> ${this.t('modals.apply_correction')}`;
+        btn.innerHTML = `${_icon("check-circle-outline")} ${this.t('modals.apply_correction')}`;
       }
     } catch (e) {
       this.showHANotification('❌ ' + this.t('notifications.error'), e.message, 'haca_error');
       btn.disabled = false;
-      btn.innerHTML = `<ha-icon icon="mdi:check-circle-outline"></ha-icon> ${this.t('modals.apply_correction')}`;
+      btn.innerHTML = `${_icon("check-circle-outline")} ${this.t('modals.apply_correction')}`;
     }
   }
 
@@ -1180,7 +1179,7 @@
     if (this._scanAllInProgress) return;
     this._scanAllInProgress = true;
     const btn = this.shadowRoot.querySelector('#scan-all');
-    const originalContent = `<ha-icon icon="mdi:magnify-scan"></ha-icon> ${this.t('buttons.scan_all')}`;
+    const originalContent = `${_icon("magnify-scan")} ${this.t('buttons.scan_all')}`;
     this._setButtonLoading(btn, true, originalContent);
 
     // Timeout de sécurité : si haca_scan_complete n'arrive pas en 5 min,
@@ -1208,7 +1207,6 @@
 
       // Timeout de sécurité
       scanTimeoutId = setTimeout(() => {
-        console.warn('[HACA] Scan timeout — forcing UI unlock');
         _cleanup();
         this.loadData();
       }, SCAN_TIMEOUT_MS);
@@ -1220,7 +1218,6 @@
         _cleanup();
       }
     } catch (error) {
-      console.error('[HACA] Scan error:', error);
       this.showHANotification('❌ ' + this.t('notifications.error'), error.message, 'haca_error');
       _cleanup();
     }
@@ -1230,7 +1227,7 @@
     if (this._scanAutoInProgress) return;
     this._scanAutoInProgress = true;
     const btn = this.shadowRoot.querySelector('#scan-auto');
-    const originalContent = `<ha-icon icon="mdi:robot"></ha-icon> ${this.t('buttons.automations')}`;
+    const originalContent = `${_icon("robot")} ${this.t('buttons.automations')}`;
     this._setButtonLoading(btn, true, originalContent);
     let unsubDone = null;
     let tid = null;
@@ -1258,7 +1255,7 @@
     if (this._scanEntityInProgress) return;
     this._scanEntityInProgress = true;
     const btn = this.shadowRoot.querySelector('#scan-entity');
-    const originalContent = `<ha-icon icon="mdi:lightning-bolt"></ha-icon> ${this.t('buttons.entities')}`;
+    const originalContent = `${_icon("lightning-bolt")} ${this.t('buttons.entities')}`;
     this._setButtonLoading(btn, true, originalContent);
     let unsubDone = null;
     let tid = null;
@@ -1333,27 +1330,27 @@
     toast.innerHTML = `
       <div style="display: flex; align-items: center; gap: 12px;">
         <div style="background: ${iconBg}; padding: 10px; border-radius: 12px; box-shadow: 0 4px 12px rgba(3, 169, 244, 0.3);">
-          <ha-icon icon="${icon}" style="--mdc-icon-size: 24px; color: ${iconColor};"></ha-icon>
+          ${_icon(icon.replace("mdi:", ""), 24)}
         </div>
         <div style="flex: 1;">
           <div style="font-weight: 700; font-size: 16px;">${title}</div>
           <div style="font-size: 12px; opacity: 0.7;">${message}</div>
         </div>
         <button class="close-toast" style="background: rgba(255,255,255,0.1); border: none; color: white; padding: 6px; border-radius: 8px; cursor: pointer;">
-          <ha-icon icon="mdi:close" style="--mdc-icon-size: 18px;"></ha-icon>
+          ${_icon("close", 18)}
         </button>
       </div>
       ${actionButton ? `
         <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1);">
           <div style="font-size: 11px; opacity: 0.6; display: flex; align-items: center; gap: 4px;">
-            <ha-icon icon="mdi:shield-check-outline" style="--mdc-icon-size: 14px;"></ha-icon>
+            ${_icon("shield-check-outline", 14)}
             ${this.t('notifications.reported_by')}
           </div>
           ${actionButton}
         </div>
       ` : `
         <div style="font-size: 11px; opacity: 0.6; display: flex; align-items: center; gap: 4px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1);">
-          <ha-icon icon="mdi:shield-check-outline" style="--mdc-icon-size: 14px;"></ha-icon>
+          ${_icon("shield-check-outline", 14)}
           ${this.t('notifications.reported_by')}
         </div>
       `}
@@ -1464,7 +1461,7 @@
     if (!reports || !Array.isArray(reports) || reports.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
-            <ha-icon icon="mdi:file-search-outline"></ha-icon>
+            ${_icon("file-search-outline")}
             <p>${this.t('messages.no_reports')}</p>
         </div>`;
       return;
@@ -1492,7 +1489,7 @@
                   <td>
                     <div style="display:flex;align-items:center;gap:12px;">
                       <div style="background:var(--primary-color);color:white;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                        <ha-icon icon="mdi:calendar-check"></ha-icon>
+                        ${_icon("calendar-check")}
                       </div>
                       <div>
                         <div style="font-weight:600;font-size:14px;white-space:nowrap;">${new Date(s.created).toLocaleString()}</div>
@@ -1506,11 +1503,11 @@
                         <div style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px;border:1px solid var(--divider-color);border-radius:10px;background:var(--secondary-background-color);flex-shrink:0;">
                           <span style="font-size:10px;font-weight:800;color:var(--primary-color);">${ext.toUpperCase()}</span>
                           <div style="display:flex;gap:5px;">
-                            <button class="view-report-btn" data-name="${info.name}" title="${this.t('actions.view')}" style="padding:5px;background:white;color:var(--primary-color);border:1px solid var(--divider-color);border-radius:7px;">
-                              <ha-icon icon="mdi:eye-outline" style="--mdc-icon-size:16px;"></ha-icon>
+                            <button class="view-report-btn" data-name="${info.name}" title="${this.t('actions.view')}" style="padding:5px;background:var(--card-background-color,var(--secondary-background-color));color:var(--primary-color);border:1px solid var(--divider-color);border-radius:7px;">
+                              ${_icon("eye-outline", 16)}
                             </button>
                             <button class="dl-report-btn" data-name="${info.name}" title="${this.t('actions.download')}" style="padding:5px;background:white;color:var(--success-color,#4caf50);border:1px solid var(--divider-color);border-radius:7px;">
-                              <ha-icon icon="mdi:download-outline" style="--mdc-icon-size:16px;"></ha-icon>
+                              ${_icon("download-outline", 16)}
                             </button>
                           </div>
                           <span style="font-size:10px;color:var(--secondary-text-color);">${Math.round(info.size / 1024)} KB</span>
@@ -1520,7 +1517,7 @@
                   </td>
                   <td>
                     <button class="delete-report-btn" data-session="${s.session_id}" style="padding:8px;background:var(--error-color,#ef5350);color:white;border:none;border-radius:8px;">
-                      <ha-icon icon="mdi:delete-outline" style="--mdc-icon-size:18px;"></ha-icon>
+                      ${_icon("delete-outline", 18)}
                     </button>
                   </td>
                 </tr>
@@ -1533,7 +1530,7 @@
           ${paged.map(s => `
             <div class="m-card">
               <div class="m-card-title">
-                <ha-icon icon="mdi:calendar-check" style="color:var(--primary-color);flex-shrink:0;margin-top:1px;"></ha-icon>
+                ${_icon("calendar-check")}
                 ${new Date(s.created).toLocaleString()}
               </div>
               <div class="m-card-meta">ID: ${s.session_id}</div>
@@ -1543,10 +1540,10 @@
                     <span class="fmt-pill-label">${ext.toUpperCase()} · ${Math.round(info.size / 1024)} KB</span>
                     <div class="fmt-pill-btns">
                       <button class="view-report-btn" data-name="${info.name}" style="color:var(--primary-color);">
-                        <ha-icon icon="mdi:eye-outline" style="--mdc-icon-size:16px;"></ha-icon>
+                        ${_icon("eye-outline", 16)}
                       </button>
                       <button class="dl-report-btn" data-name="${info.name}" style="color:var(--success-color,#4caf50);">
-                        <ha-icon icon="mdi:download-outline" style="--mdc-icon-size:16px;"></ha-icon>
+                        ${_icon("download-outline", 16)}
                       </button>
                     </div>
                   </div>
@@ -1554,7 +1551,7 @@
               </div>
               <div class="m-card-btns">
                 <button class="delete-report-btn" data-session="${s.session_id}" style="background:var(--error-color,#ef5350);color:white;">
-                  <ha-icon icon="mdi:delete-outline"></ha-icon> ${this.t('actions.delete')}
+                  ${_icon("delete-outline")} ${this.t('actions.delete')}
                 </button>
               </div>
             </div>
@@ -1577,7 +1574,6 @@
       );
       this._pagWire(container, () => this.renderReports(container._allReports));
     } catch (err) {
-      console.error('[HACA] Error rendering reports:', err);
       container.innerHTML = `<div class="empty-state">❌ ${this.t('reports.error_display')}: ${err.message}</div>`;
     }
   }
@@ -1594,13 +1590,13 @@
       card._updateContent(`
           <div style="padding: 16px 70px 16px 20px; border-bottom: 1px solid var(--divider-color); display: flex; justify-content: space-between; align-items: center; background: var(--secondary-background-color); gap: 12px; flex-wrap: wrap;">
               <h2 style="margin:0; font-size: 16px; display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
-                <ha-icon icon="mdi:file-pdf-box" style="color: var(--error-color); flex-shrink: 0;"></ha-icon>
+                ${_icon("file-pdf-box")}
                 <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${name}</span>
               </h2>
               <div style="display: flex; gap: 8px; flex-shrink: 0;">
                 <a href="/haca_reports/${name}" target="_blank" style="text-decoration: none;">
                   <button style="background: var(--primary-color); color: white; padding: 8px 12px; font-size: 12px;">
-                    <ha-icon icon="mdi:fullscreen"></ha-icon> ${this.t('actions.fullscreen')}
+                    ${_icon("fullscreen")} ${this.t('actions.fullscreen')}
                   </button>
                 </a>
               </div>

@@ -92,6 +92,7 @@ var ISSUE_TYPES_BY_CATEGORY = [
 function renderConfigTab(options, lang, t) {
   // t() is the translation function passed from the panel component
   if (!t) t = (key) => key; // fallback: return key as-is
+  var _icon = window._icon || function(n,s){return '';};
   lang = lang || 'en';
   var excludedTypes = new Set(options.excluded_issue_types || []);
 
@@ -116,7 +117,7 @@ function renderConfigTab(options, lang, t) {
     return '<div class="cfg-cat-section">' +
       '<div class="cfg-cat-section-header">' +
       '<div class="cfg-cat-header-left">' +
-      '<ha-icon icon="' + cat.icon + '" style="--mdc-icon-size:18px;color:var(--primary-color);"></ha-icon>' +
+      _icon((cat.icon || "").replace("mdi:",""), 18) +
       '<span class="cfg-cat-section-title">' + label + '</span>' +
       '<span class="cfg-cat-count" id="count-' + cat.id + '"></span>' +
       '</div>' +
@@ -133,7 +134,7 @@ function renderConfigTab(options, lang, t) {
 
     // ── Header ──
     '<div class="cfg-header">' +
-    '<ha-icon icon="mdi:cog" style="--mdc-icon-size:28px;color:var(--primary-color);"></ha-icon>' +
+    _icon("cog", 28) +
     '<div>' +
     '<div class="cfg-header-title">' + t('config.title') + '</div>' +
     '<div class="cfg-header-sub">' + t('config.general_settings_sub') + '</div>' +
@@ -142,7 +143,7 @@ function renderConfigTab(options, lang, t) {
 
     // ── Section : Scan ──
     '<div class="cfg-section">' +
-    '<div class="cfg-section-title"><ha-icon icon="mdi:magnify-scan" style="--mdc-icon-size:18px;"></ha-icon>' + t('config.automatic_scan') + '</div>' +
+    '<div class="cfg-section-title">' + _icon("magnify-scan", 18) + t('config.automatic_scan') + '</div>' +
     '<div class="cfg-row">' +
     '<div class="cfg-row-label"><span>' + t('config.scan_interval_minutes') + '</span><span class="cfg-row-hint">5 – 1440 min</span></div>' +
     '<input type="number" id="cfg-scan-interval" class="cfg-input" min="5" max="1440" value="' + (options.scan_interval || 60) + '">' +
@@ -155,7 +156,7 @@ function renderConfigTab(options, lang, t) {
 
     // ── Section : Événements ──
     '<div class="cfg-section">' +
-    '<div class="cfg-section-title"><ha-icon icon="mdi:bell-ring-outline" style="--mdc-icon-size:18px;"></ha-icon>' + t('config.event_monitoring') + '</div>' +
+    '<div class="cfg-section-title">' + _icon("bell-ring-outline", 18) + t('config.event_monitoring') + '</div>' +
     '<div class="cfg-row">' +
     '<div class="cfg-row-label"><span>' + t('config.active_monitoring') + '</span><span class="cfg-row-hint">' + t('config.auto_rescan_after_changes') + '</span></div>' +
     '<label class="cfg-toggle"><input type="checkbox" id="cfg-event-monitoring"' + (options.event_monitoring_enabled !== false ? ' checked' : '') + '><span class="cfg-toggle-slider"></span></label>' +
@@ -169,7 +170,7 @@ function renderConfigTab(options, lang, t) {
     // ── Section : Types d'issues ──
     '<div class="cfg-section">' +
     '<div class="cfg-section-title">' +
-    '<ha-icon icon="mdi:checkbox-multiple-marked-outline" style="--mdc-icon-size:18px;"></ha-icon>' +
+    _icon("checkbox-multiple-marked-outline", 18) +
     t('config.issue_types') +
     '</div>' +
     '<div class="cfg-section-hint">' +
@@ -180,7 +181,7 @@ function renderConfigTab(options, lang, t) {
 
     // ── Section : Batteries ──
     '<div class="cfg-section">' +
-    '<div class="cfg-section-title"><ha-icon icon="mdi:battery" style="--mdc-icon-size:18px;"></ha-icon>' + t('config.battery_thresholds') + '</div>' +
+    '<div class="cfg-section-title">' + _icon("battery", 18) + t('config.battery_thresholds') + '</div>' +
     '<div class="cfg-row"><div class="cfg-row-label"><span>🔴 ' + t('config.battery_critical') + '</span></div><input type="number" id="cfg-battery-critical" class="cfg-input" min="1" max="50" value="' + (options.battery_critical || 5) + '"></div>' +
     '<div class="cfg-row"><div class="cfg-row-label"><span>🟠 ' + t('config.battery_low') + '</span></div><input type="number" id="cfg-battery-low" class="cfg-input" min="5" max="50" value="' + (options.battery_low || 15) + '"></div>' +
     '<div class="cfg-row"><div class="cfg-row-label"><span>🟡 ' + t('config.battery_warning') + '</span></div><input type="number" id="cfg-battery-warning" class="cfg-input" min="10" max="75" value="' + (options.battery_warning || 25) + '"></div>' +
@@ -188,7 +189,7 @@ function renderConfigTab(options, lang, t) {
 
     // ── Section : Historique ──
     '<div class="cfg-section">' +
-    '<div class="cfg-section-title"><ha-icon icon="mdi:history" style="--mdc-icon-size:18px;"></ha-icon>' + t('config.history_backups') + '</div>' +
+    '<div class="cfg-section-title">' + _icon("history", 18) + t('config.history_backups') + '</div>' +
     '<div class="cfg-row">' +
     '<div class="cfg-row-label"><span>' + t('config.history_retention') + '</span><span class="cfg-row-hint">30 – 730</span></div>' +
     '<input type="number" id="cfg-history-retention" class="cfg-input" min="30" max="730" value="' + (options.history_retention_days || 365) + '">' +
@@ -201,7 +202,7 @@ function renderConfigTab(options, lang, t) {
 
     // ── Section Diagnostics & Logs ──
     '<div class="cfg-section" style="margin-top:4px;">' +
-    '<div class="cfg-section-title"><ha-icon icon="mdi:bug" style="--mdc-icon-size:18px;color:var(--warning-color,#ffa726);"></ha-icon>' + t('config.diagnostics_logs') + '</div>' +
+    '<div class="cfg-section-title">' + _icon("bug", 18) + t('config.diagnostics_logs') + '</div>' +
     '<div class="cfg-row" style="align-items:flex-start;">' +
     '<div class="cfg-row-label">' +
     '<span>' + t('config.debug_mode') + '</span>' +
@@ -223,15 +224,15 @@ function renderConfigTab(options, lang, t) {
     '<div class="cfg-actions">' +
     `
       <div class="cfg-section" style="padding:16px 20px;">
-        <div class="cfg-section-title"><ha-icon icon="mdi:label-off-outline" style="--mdc-icon-size:18px;"></ha-icon>${t('config.haca_ignore_title')}</div>
+        <div class="cfg-section-title">${_icon("label-off-outline", 18)}${t('config.haca_ignore_title')}</div>
         <div class="cfg-row-hint" style="margin-top:8px;line-height:1.6;">${t('config.haca_ignore_info')}</div>
         <div class="cfg-row-hint" style="margin-top:6px;">
           <code style="background:var(--code-background-color,rgba(0,0,0,0.1));padding:2px 6px;border-radius:4px;">haca_ignore</code>
         </div>
       </div>
       ` +
-      '<button class="cfg-btn cfg-btn-secondary" id="cfg-reset-btn"><ha-icon icon="mdi:restore" style="--mdc-icon-size:18px;"></ha-icon>' + t('config.reset') + '</button>' +
-    '<button class="cfg-btn cfg-btn-primary" id="cfg-save-btn"><ha-icon icon="mdi:content-save" style="--mdc-icon-size:18px;"></ha-icon>' + t('config.save') + '</button>' +
+      '<button class="cfg-btn cfg-btn-secondary" id="cfg-reset-btn">' + _icon("restore", 18) + t('config.reset') + '</button>' +
+    '<button class="cfg-btn cfg-btn-primary" id="cfg-save-btn">' + _icon("content-save", 18) + t('config.save') + '</button>' +
     '</div>' +
     '<div id="cfg-save-status" class="cfg-save-status" style="display:none;"></div>' +
     '</div>';

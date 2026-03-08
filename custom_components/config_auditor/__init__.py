@@ -1,4 +1,4 @@
-"""H.A.C.A — Home Assistant Config Auditor v1.1.0"""
+"""H.A.C.A — Home Assistant Config Auditor v1.1.2"""
 from __future__ import annotations
 
 import asyncio

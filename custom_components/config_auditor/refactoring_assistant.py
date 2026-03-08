@@ -968,6 +968,31 @@ class RefactoringAssistant:
             _LOGGER.error("Error loading automation: %s", e)
             return None
 
+    async def _load_script_by_entity_id(self, entity_id: str) -> dict | None:
+        """Load a specific script configuration by entity_id (e.g. 'script.my_script')."""
+        def read_scripts():
+            if not self._scripts_file.exists():
+                return {}
+            with open(self._scripts_file, "r", encoding="utf-8") as f:
+                return yaml.safe_load(f) or {}
+
+        try:
+            scripts = await self.hass.async_add_executor_job(read_scripts)
+            # scripts.yaml is a dict keyed by script alias/id
+            script_key = entity_id.replace("script.", "")
+            if script_key in scripts:
+                config = scripts[script_key]
+                config["_script_key"] = script_key
+                return config
+            # Fallback: search by alias
+            for key, cfg in scripts.items():
+                if isinstance(cfg, dict) and cfg.get("alias", "").lower().replace(" ", "_") == script_key:
+                    cfg["_script_key"] = key
+                    return cfg
+            return None
+        except Exception:
+            return None
+
     async def _get_entities_for_device(self, device_id: str) -> list[str]:
         """Get entity IDs for a device."""
         entity_reg = er.async_get(self.hass)
@@ -1228,3 +1253,82 @@ class RefactoringAssistant:
             "alias": alias,
             "suggestion": suggestion,
         }
+    async def apply_description_fix(self, entity_id: str, description: str) -> dict[str, Any]:
+        """Write a description field into an automation or script YAML config."""
+        if not entity_id or not description:
+            return {"success": False, "error": "entity_id and description are required"}
+
+        is_script = entity_id.startswith("script.")
+
+        # ── Resolve automation_id ─────────────────────────────────────────
+        if is_script:
+            target_id = None  # scripts are matched by entity key, not by id field
+        else:
+            registry = er.async_get(self.hass)
+            entry = registry.async_get(entity_id)
+            if entry and entry.unique_id:
+                target_id = entry.unique_id
+            else:
+                target_id = entity_id.replace("automation.", "")
+
+        backup_path = await self._create_backup()
+
+        try:
+            if is_script:
+                # ── Scripts ───────────────────────────────────────────────
+                script_key = entity_id.replace("script.", "")
+
+                def _read_scripts():
+                    with open(self._scripts_file, "r", encoding="utf-8") as f:
+                        return yaml.safe_load(f) or {}
+
+                def _write_scripts(data):
+                    with open(self._scripts_file, "w", encoding="utf-8") as f:
+                        yaml.dump(data, f, default_flow_style=False, allow_unicode=True)
+
+                scripts = await self.hass.async_add_executor_job(_read_scripts)
+
+                if script_key not in scripts:
+                    return {"success": False, "error": f"Script '{script_key}' not found in scripts.yaml"}
+
+                scripts[script_key]["description"] = description
+                await self.hass.async_add_executor_job(_write_scripts, scripts)
+
+            else:
+                # ── Automations ───────────────────────────────────────────
+                def _read_automations():
+                    with open(self._automations_file, "r", encoding="utf-8") as f:
+                        return yaml.safe_load(f) or []
+
+                def _write_automations(data):
+                    with open(self._automations_file, "w", encoding="utf-8") as f:
+                        yaml.dump(data, f, default_flow_style=False, allow_unicode=True)
+
+                automations = await self.hass.async_add_executor_job(_read_automations)
+
+                found = False
+                for automation in automations:
+                    if automation.get("id") == target_id:
+                        automation["description"] = description
+                        found = True
+                        break
+
+                if not found:
+                    return {
+                        "success": False,
+                        "error": f"Automation '{target_id}' not found in automations.yaml",
+                    }
+
+                await self.hass.async_add_executor_job(_write_automations, automations)
+
+            return {
+                "success": True,
+                "entity_id": entity_id,
+                "description": description,
+                "backup_path": str(backup_path),
+                "message": "Description saved. Reload automations/scripts to apply.",
+            }
+
+        except Exception as exc:
+            _LOGGER.error("apply_description_fix error: %s", exc)
+            return {"success": False, "error": str(exc), "backup_path": str(backup_path)}

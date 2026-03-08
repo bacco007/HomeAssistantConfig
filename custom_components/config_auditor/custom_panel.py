@@ -92,7 +92,7 @@ async def async_register_panel(hass: HomeAssistant) -> None:
                 "_panel_custom": {
                     "name": "haca-panel",
                     "js_url": f"/{DOMAIN}_static/haca-panel.js?v={cache_bust}",
-                    "embed_iframe": False,
+                    "embed_iframe": True,
                     "trust_external": False,
                 }
             },

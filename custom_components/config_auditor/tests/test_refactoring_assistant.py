@@ -1,4 +1,4 @@
-"""Tests for RefactoringAssistant — v1.1.0."""
+"""Tests for RefactoringAssistant — v1.1.2."""
 from __future__ import annotations
 
 import pytest

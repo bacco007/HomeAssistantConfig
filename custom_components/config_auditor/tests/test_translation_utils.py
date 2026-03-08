@@ -1,4 +1,4 @@
-"""Tests for TranslationHelper — v1.1.0.
+"""Tests for TranslationHelper — v1.1.2.
 
 Guards against:
   - load_language not loading the 'analyzer' section

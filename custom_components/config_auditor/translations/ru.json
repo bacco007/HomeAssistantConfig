@@ -92,7 +92,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Аудитор конфигураций Home Assistant",
-    "version": "V1.1.0",
+    "version": "V1.1.2",
     "buttons": {
       "scan_all": "Полное сканирование",
       "automations": "Автоматизации",
@@ -288,7 +288,8 @@
       "loading_report": "Загрузка отчёта...",
       "loading_proposal": "Загрузка предложения...",
       "error_loading": "Ошибка загрузки отчётов",
-      "error_display": "Ошибка при отображении отчётов"
+      "error_display": "Ошибка при отображении отчётов",
+      "generating": "Generating…"
     },
     "ai": {
       "analyzing": "ИИ анализирует вашу проблему...",
@@ -605,7 +606,12 @@
       "applying": "Применение…",
       "close": "Закрыть",
       "retry": "Повторить",
-      "triggers_label": "🔀 {n} триггеров"
+      "triggers_label": "🔀 {n} триггеров",
+      "conditions_label": "🔍 {n} условий",
+      "actions_label": "▶ {n} действий",
+      "templates_label": "📝 {n} шаблонов",
+      "analysis_title": "Анализ",
+      "refactoring_title": "Предложение по рефакторингу (Dry Run)"
     },
     "optimizer": {
       "tagline": "Анализ · Разделение · Модернизация · Шаблоны",
@@ -622,7 +628,8 @@
       "close_rescan": "Закрыть и пересканировать",
       "new_badge": "НОВОЕ",
       "blueprint_yaml": "Использование шаблона в YAML",
-      "automations_written": "Записано {count} автоматизаций."
+      "automations_written": "Записано {count} автоматизаций.",
+      "apply_blueprint": "Применить blueprint"
     },
     "haca_ignore": {
       "info_title": "Метка игнорирования",
@@ -857,7 +864,21 @@
     "status_poor": "Плохо. Требуются действия.",
     "issue": "Проблема",
     "fix": "Исправление",
-    "page": "Страница"
+    "page": "Страница",
+    "script_issues_section": "Проблемы со Скриптами",
+    "scene_issues_section": "Проблемы со Сценами",
+    "blueprint_issues_section": "Проблемы с Шаблонами",
+    "performance_issues_section": "Проблемы Производительности",
+    "security_issues_section": "Проблемы Безопасности",
+    "dashboard_issues_section": "Проблемы Панели",
+    "no_script_issues": "Проблемы со скриптами не обнаружены!",
+    "no_scene_issues": "Проблемы со сценами не обнаружены!",
+    "no_blueprint_issues": "Проблемы с шаблонами не обнаружены!",
+    "no_performance_issues": "Проблемы производительности не обнаружены!",
+    "no_security_issues": "Проблемы безопасности не обнаружены!",
+    "no_dashboard_issues": "Проблемы панели не обнаружены!",
+    "blueprint_issues": "Проблемы с Шаблонами",
+    "dashboard_issues": "Проблемы Панели"
   },
   "notifications": {
     "new_issues_title": "⚠️ H.A.C.A — обнаружено {count} новых КРИТИЧЕСКИХ проблем(ы)",
@@ -941,5 +962,8 @@
     "complexity_yaml_unavailable": "(YAML недоступен)",
     "complexity_prompt": "Вы эксперт по Home Assistant. Проанализируйте сложность этого {kind}.\n\n** {kind_upper} :** {alias}\n**ID сущности :** {entity_id}\n**Оценка HACA :** {score}\n**Детали оценки :** {score_line}\n\n{yaml_section}\n\nЗАДАЧА В 2 ЧАСТЯХ:\nЧАСТЬ 1 - ОБЪЯСНЕНИЕ (3-5 предложений):\nОбъясните, почему этот {kind} сложный, какие части вносят наибольший вклад в оценку и риски (обслуживание, отладка).\n\nЧАСТЬ 2 - ПРЕДЛОЖЕНИЕ YAML:\nПредложите конкретное разделение: выделите повторяющиеся блоки действий в отдельные сценарии, упростите основной файл. Предоставьте полный YAML.\n\nОТВЕЧАЙТЕ СТРОГО В ЭТОМ ФОРМАТЕ:\n```explanation\n[ваше объяснение здесь]\n```\n\n```yaml_proposal\n[предложенный yaml здесь]\n```",
     "complexity_fallback": "Оценка сложности: {score}. Этот {kind} содержит {triggers} триггер(ы), {conditions} условие(я), {actions} рекурсивное(ые) действие(я) и {templates} шаблон(ы). Рассмотрите возможность выделения повторяющихся блоков действий в повторно используемые скрипты."
+  },
+  "actions": {
+    "close": "Close"
   }
 }

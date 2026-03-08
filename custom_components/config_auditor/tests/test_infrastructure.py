@@ -1,10 +1,10 @@
-"""Infrastructure & integration tests — v1.1.0.
+"""Infrastructure & integration tests — v1.1.2.
 
 Covers:
   - health_score importable from both services.py and health_score.py
   - event_monitor: listeners registered, debounce, cleanup
   - models: AuditIssue, ComplexityScore, BatteryEntry importable + CoordinatorData keys
-  - VERSION = 1.1.0
+  - VERSION = 1.1.2
 """
 from __future__ import annotations
 
@@ -22,10 +22,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 # ══════════════════════════════════════════════════════════════════════════════
 
 class TestVersion:
-    def test_version_is_1_1_0(self):
+    def test_version_is_1_1_2(self):
         from custom_components.config_auditor.const import VERSION
-        assert VERSION == "1.1.0", (
-            f"Expected VERSION='1.1.0', got '{VERSION}'. "
+        assert VERSION == "1.1.2", (
+            f"Expected VERSION='1.1.2', got '{VERSION}'. "
             "Bump const.py VERSION when making a minor release."
         )
 

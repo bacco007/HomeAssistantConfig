@@ -75,7 +75,7 @@
         <td style="padding:6px 8px;text-align:center;">
           <button class="cplx-ai-btn" data-entity="${row.entity_id}"
             style="background:var(--accent-color,#03a9f4);color:white;padding:4px 10px;font-size:11px;border-radius:8px;border:none;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap;">
-            <ha-icon icon="mdi:robot" style="--mdc-icon-size:13px;"></ha-icon> ${this.t('misc.ia_btn')}
+            ${_icon("robot", 13)} ${this.t('misc.ia_btn')}
           </button>
         </td>
       </tr>`;
@@ -118,7 +118,7 @@
       fresh.addEventListener('click', () => {
         this._complexitySortKey = 'score';
         this._complexitySortAsc = !this._complexitySortAsc;
-        fresh.innerHTML = `<ha-icon icon="mdi:sort-${this._complexitySortAsc ? 'ascending' : 'descending'}"></ha-icon> ${this.t('tables.score_col')} ${this._complexitySortAsc ? '↑' : '↓'}`;
+        fresh.innerHTML = `${_icon(this._complexitySortAsc ? "sort-ascending" : "sort-descending")} ${this.t('tables.score_col')} ${this._complexitySortAsc ? '↑' : '↓'}`;
         this._drawComplexityTable();
       });
     }
@@ -191,7 +191,7 @@
         <td style="padding:6px 8px;text-align:center;">
           <button class="cplx-ai-btn" data-entity="${row.entity_id}"
             style="background:var(--accent-color,#03a9f4);color:white;padding:4px 10px;font-size:11px;border-radius:8px;border:none;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap;">
-            <ha-icon icon="mdi:robot" style="--mdc-icon-size:13px;"></ha-icon> ${this.t('misc.ia_btn')}
+            ${_icon("robot", 13)} ${this.t('misc.ia_btn')}
           </button>
         </td>
       </tr>`;

@@ -31,4 +31,5 @@ HASH=$(sha256sum "$TMP" | cut -c1-8)
 echo "// HACA-BUILD: $HASH  $(date -u +%Y-%m-%dT%H:%M:%SZ)" | cat - "$TMP" > "$OUT"
 rm "$TMP"
 
+echo "$HASH" > "$SCRIPT_DIR/haca-panel.hash"
 echo "✅ haca-panel.js built — hash: $HASH  ($(wc -l < "$OUT") lines)"

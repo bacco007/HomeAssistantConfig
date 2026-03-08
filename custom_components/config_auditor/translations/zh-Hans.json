@@ -92,7 +92,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant 配置审计器",
-    "version": "V1.1.0",
+    "version": "V1.1.2",
     "buttons": {
       "scan_all": "全面扫描",
       "automations": "自动化",
@@ -288,7 +288,8 @@
       "loading_report": "报告加载中...",
       "loading_proposal": "建议加载中...",
       "error_loading": "加载报告时出错",
-      "error_display": "显示报告时出错"
+      "error_display": "显示报告时出错",
+      "generating": "Generating…"
     },
     "ai": {
       "analyzing": "AI 正在分析您的问题...",
@@ -605,7 +606,12 @@
       "applying": "应用中…",
       "close": "关闭",
       "retry": "重试",
-      "triggers_label": "🔀 {n} 触发器"
+      "triggers_label": "🔀 {n} 触发器",
+      "conditions_label": "🔍 {n} 条件",
+      "actions_label": "▶ {n} 动作",
+      "templates_label": "📝 {n} 模板",
+      "analysis_title": "分析",
+      "refactoring_title": "重构建议（试运行）"
     },
     "optimizer": {
       "tagline": "分析 · 拆分 · 现代化 · 蓝图",
@@ -622,7 +628,8 @@
       "close_rescan": "关闭并重新扫描",
       "new_badge": "新",
       "blueprint_yaml": "蓝图使用 YAML",
-      "automations_written": "已写入 {count} 个自动化。"
+      "automations_written": "已写入 {count} 个自动化。",
+      "apply_blueprint": "应用蓝图"
     },
     "haca_ignore": {
       "info_title": "忽略标签",
@@ -857,7 +864,21 @@
     "status_poor": "较差。需要采取措施。",
     "issue": "问题",
     "fix": "解决方案",
-    "page": "页码"
+    "page": "页码",
+    "script_issues_section": "脚本问题",
+    "scene_issues_section": "场景问题",
+    "blueprint_issues_section": "蓝图问题",
+    "performance_issues_section": "性能问题",
+    "security_issues_section": "安全问题",
+    "dashboard_issues_section": "仪表板问题",
+    "no_script_issues": "未检测到脚本问题！",
+    "no_scene_issues": "未检测到场景问题！",
+    "no_blueprint_issues": "未检测到蓝图问题！",
+    "no_performance_issues": "未检测到性能问题！",
+    "no_security_issues": "未检测到安全问题！",
+    "no_dashboard_issues": "未检测到仪表板问题！",
+    "blueprint_issues": "蓝图问题",
+    "dashboard_issues": "仪表板问题"
   },
   "notifications": {
     "new_issues_title": "⚠️ H.A.C.A — 发现 {count} 个新的高优先级问题",
@@ -941,5 +962,8 @@
     "complexity_yaml_unavailable": "(YAML不可用)",
     "complexity_prompt": "您是一位Home Assistant专家。请分析此{kind}的复杂度。\n\n** {kind_upper} ：** {alias}\n**实体ID ：** {entity_id}\n**HACA评分 ：** {score}\n**评分详情 ：** {score_line}\n\n{yaml_section}\n\n任务分两部分：\n第一部分 - 说明（3-5句）：\n说明为何此{kind}复杂，哪些部分贡献最大，及相关风险（维护、调试）。\n\n第二部分 - YAML提议：\n提出具体拆分方案：将重复的动作块抽取到独立脚本，简化主文件。并提供完整YAML。\n\n请严格按照以下格式回复：\n```explanation\n[您的说明]\n```\n\n```yaml_proposal\n[提议的yaml]\n```",
     "complexity_fallback": "复杂度评分：{score}。此{kind}包含{triggers}个触发器，{conditions}个条件，{actions}个递归动作和{templates}个模板。建议将重复动作块抽取为可重用脚本。"
+  },
+  "actions": {
+    "close": "Close"
   }
 }

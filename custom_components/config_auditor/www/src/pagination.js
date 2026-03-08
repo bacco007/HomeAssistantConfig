@@ -67,7 +67,7 @@
                background:var(--secondary-background-color);color:var(--primary-text-color);
                cursor:${disabled ? 'default' : 'pointer'};opacity:${disabled ? '0.4' : '1'};
                display:flex;align-items:center;gap:4px;">
-        <ha-icon icon="${icon}" style="--mdc-icon-size:15px;"></ha-icon>${label}
+        ${_icon(icon.replace("mdi:",""), 15)}${label}
       </button>`;
 
     return `

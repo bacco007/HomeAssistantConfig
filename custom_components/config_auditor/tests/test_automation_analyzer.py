@@ -1,4 +1,4 @@
-"""Unit + regression tests for AutomationAnalyzer — v1.1.0.
+"""Unit + regression tests for AutomationAnalyzer — v1.1.2.
 
 Covers:
   - Core analysis helpers (delay parsing, fingerprinting, Jaccard similarity)

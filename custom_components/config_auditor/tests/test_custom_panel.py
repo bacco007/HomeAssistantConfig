@@ -1,4 +1,4 @@
-"""Tests for custom_panel.py — v1.1.0.
+"""Tests for custom_panel.py — v1.1.2.
 
 Guards against:
   - Static path served from /{DOMAIN} conflicting with panel URL → 403 on refresh

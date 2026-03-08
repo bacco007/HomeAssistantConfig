@@ -67,7 +67,7 @@
                border-bottom:${i === 0 ? '2px solid var(--primary-color)' : '2px solid transparent'};
                background:none;color:${i === 0 ? 'var(--primary-color)' : 'var(--secondary-text-color)'};
                font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">
-        <ha-icon icon="${t.icon}" style="--mdc-icon-size:15px;"></ha-icon> ${t.label}
+        ${_icon(t.icon.replace("mdi:",""), 15)} ${t.label}
         ${t.id === 'optim-tab-split' ? `<span style="background:#7b68ee;color:white;border-radius:8px;padding:0 6px;font-size:10px;">${this.t('optimizer.new_badge')}</span>` : ''}
         ${t.id === 'optim-tab-blueprint' ? '<span style="background:#e8a838;color:white;border-radius:8px;padding:0 6px;font-size:10px;">MATCH</span>' : ''}
       </button>`).join('');
@@ -145,7 +145,7 @@
             style="background:linear-gradient(135deg,#7b68ee,#a855f7);color:white;
                    padding:10px 20px;border-radius:10px;font-weight:600;
                    box-shadow:0 4px 12px rgba(123,104,238,0.4);display:flex;align-items:center;gap:6px;">
-            <ha-icon icon="mdi:check-circle-outline" style="--mdc-icon-size:16px;"></ha-icon>
+            ${_icon("check-circle-outline", 16)}
             ${applyLabel}
           </button>
         </div>
@@ -183,8 +183,8 @@
             data-entity="${this.escapeHtml(entityId)}"
             style="background:linear-gradient(135deg,#e8a838,#f59e0b);color:white;
                    padding:10px 20px;border-radius:10px;font-weight:600;">
-            <ha-icon icon="mdi:puzzle" style="--mdc-icon-size:16px;"></ha-icon>
-            Appliquer le blueprint
+            ${_icon("puzzle", 16)}
+            ${this.t('optimizer.apply_blueprint')}
           </button>
         </div>` : ''}
       </div>` : '';
@@ -197,7 +197,7 @@
              flex-shrink:0;background:var(--secondary-background-color);">
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
             <div style="display:flex;align-items:center;gap:10px;">
-              <ha-icon icon="mdi:auto-fix" style="--mdc-icon-size:28px;color:#7b68ee;"></ha-icon>
+              ${_icon("auto-fix", 28)}
               <div>
                 <div style="font-size:16px;font-weight:700;">Optimiseur IA — ${this.escapeHtml(alias)}</div>
                 <div style="font-size:11px;color:var(--secondary-text-color);">${this.escapeHtml(entityId)}</div>
@@ -277,7 +277,7 @@
                 ${r.backup_path ? `
                 <div style="background:var(--secondary-background-color);padding:10px;border-radius:10px;
                      display:inline-flex;align-items:center;gap:8px;border:1px solid var(--divider-color);font-size:12px;">
-                  <ha-icon icon="mdi:zip-box-outline" style="color:var(--primary-color);"></ha-icon>
+                  ${_icon("zip-box-outline")}
                   Backup : ${this.escapeHtml(r.backup_path.split(/[\\/]/).pop())}
                 </div>` : ''}
                 <div style="margin-top:28px;">
@@ -292,12 +292,12 @@
             setTimeout(() => this.scanAutomations(), 1200);
           } else {
             btn.disabled = false;
-            btn.innerHTML = `<ha-icon icon="mdi:check-circle-outline"></ha-icon> ${this.t('optimizer.retry')}`;
+            btn.innerHTML = `${_icon("check-circle-outline")} ${this.t('optimizer.retry')}`;
             this.showHANotithis._showNotification(this.t('misc.ai_error') + (r.error || this.t('fix.error_unknown')), '', 'haca_error');
           }
         } catch(err) {
           btn.disabled = false;
-          btn.innerHTML = `<ha-icon icon="mdi:check-circle-outline"></ha-icon> ${this.t('optimizer.retry')}`;
+          btn.innerHTML = `${_icon("check-circle-outline")} ${this.t('optimizer.retry')}`;
           this.showHANotithis._showNotification(this.t('misc.ai_error') + err.message, '', 'haca_error');
         }
       });

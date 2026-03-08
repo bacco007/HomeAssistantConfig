@@ -1,4 +1,4 @@
-"""Regression tests for event_monitor.py — v1.1.0."""
+"""Regression tests for event_monitor.py — v1.1.2."""
 from __future__ import annotations
 
 import asyncio

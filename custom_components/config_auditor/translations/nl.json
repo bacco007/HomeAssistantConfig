@@ -92,7 +92,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant Config Auditor",
-    "version": "V1.1.0",
+    "version": "V1.1.2",
     "buttons": {
       "scan_all": "Volledige scan",
       "automations": "Automatiseringen",
@@ -288,7 +288,8 @@
       "loading_report": "Rapport laden...",
       "loading_proposal": "Voorstel laden...",
       "error_loading": "Fout bij laden van rapporten",
-      "error_display": "Fout bij weergeven van rapporten"
+      "error_display": "Fout bij weergeven van rapporten",
+      "generating": "Generating…"
     },
     "ai": {
       "analyzing": "AI analyseert uw probleem...",
@@ -605,7 +606,12 @@
       "applying": "Bezig met toepassen…",
       "close": "Sluiten",
       "retry": "Opnieuw proberen",
-      "triggers_label": "🔀 {n} triggers"
+      "triggers_label": "🔀 {n} triggers",
+      "conditions_label": "🔍 {n} voorwaarden",
+      "actions_label": "▶ {n} acties",
+      "templates_label": "📝 {n} sjablonen",
+      "analysis_title": "Analyse",
+      "refactoring_title": "Refactoringvoorstel (Dry Run)"
     },
     "optimizer": {
       "tagline": "Analyse · Opsplitsen · Modernisering · Blauwdrukken",
@@ -622,7 +628,8 @@
       "close_rescan": "Sluiten & Opnieuw scannen",
       "new_badge": "NIEUW",
       "blueprint_yaml": "Blauwdruk-gebruik YAML",
-      "automations_written": "{count} automatisering(en) geschreven."
+      "automations_written": "{count} automatisering(en) geschreven.",
+      "apply_blueprint": "Blueprint toepassen"
     },
     "haca_ignore": {
       "info_title": "Negeer label",
@@ -857,7 +864,21 @@
     "status_poor": "Slecht. Actie vereist.",
     "issue": "Probleem",
     "fix": "Oplossing",
-    "page": "Pagina"
+    "page": "Pagina",
+    "script_issues_section": "Script Problemen",
+    "scene_issues_section": "Scène Problemen",
+    "blueprint_issues_section": "Blueprint Problemen",
+    "performance_issues_section": "Prestatie Problemen",
+    "security_issues_section": "Beveiligings Problemen",
+    "dashboard_issues_section": "Dashboard Problemen",
+    "no_script_issues": "Geen scriptproblemen gedetecteerd!",
+    "no_scene_issues": "Geen scèneproblemen gedetecteerd!",
+    "no_blueprint_issues": "Geen blueprintproblemen gedetecteerd!",
+    "no_performance_issues": "Geen prestatieproblemen gedetecteerd!",
+    "no_security_issues": "Geen beveiligingsproblemen gedetecteerd!",
+    "no_dashboard_issues": "Geen dashboardproblemen gedetecteerd!",
+    "blueprint_issues": "Blueprint Problemen",
+    "dashboard_issues": "Dashboard Problemen"
   },
   "notifications": {
     "new_issues_title": "⚠️ H.A.C.A — {count} nieuwe HOGE fout(en) gedetecteerd",
@@ -941,5 +962,8 @@
     "complexity_yaml_unavailable": "(YAML niet beschikbaar)",
     "complexity_prompt": "Je bent een Home Assistant-expert. Analyseer de complexiteit van deze {kind}.\n\n** {kind_upper} :** {alias}\n**Entiteit ID :** {entity_id}\n**HACA Score :** {score}\n**Score detail :** {score_line}\n\n{yaml_section}\n\nMISSIE IN 2 DELEN:\nDEEL 1 - UITLEG (3-5 zinnen):\nLeg uit waarom deze {kind} complex is, welke onderdelen het meest bijdragen aan de score, en de risico's (onderhoud, debugging).\n\nDEEL 2 - YAML VOORSTEL:\nStel een concrete opsplitsing voor: haal repetitieve actieblokken uit in aparte scripts, vereenvoudig het hoofdbestand. Geef de volledige YAML.\n\nREAGEER STRIKT MET DIT FORMAT:\n```explanation\n[jouw uitleg hier]\n```\n\n```yaml_proposal\n[voorgestelde yaml hier]\n```",
     "complexity_fallback": "Complexiteitsscore: {score}. Deze {kind} bevat {triggers} trigger(s), {conditions} conditie(s), {actions} recursieve actie(s) en {templates} template(s). Overweeg om repetitieve actieblokken in herbruikbare scripts te extraheren."
+  },
+  "actions": {
+    "close": "Close"
   }
 }

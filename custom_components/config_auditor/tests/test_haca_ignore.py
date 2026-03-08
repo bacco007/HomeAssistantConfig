@@ -1,4 +1,4 @@
-"""Tests for the haca_ignore label feature — v1.1.0.
+"""Tests for the haca_ignore label feature — v1.1.2.
 
 Guards against:
   - Entities with haca_ignore label appearing in any scan result

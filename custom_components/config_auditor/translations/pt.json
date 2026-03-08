@@ -92,7 +92,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Auditor de Configuração do Home Assistant",
-    "version": "V1.1.0",
+    "version": "V1.1.2",
     "buttons": {
       "scan_all": "Verificação Completa",
       "automations": "Automações",
@@ -288,7 +288,8 @@
       "loading_report": "Carregando relatório...",
       "loading_proposal": "Carregando proposta...",
       "error_loading": "Erro ao carregar relatórios",
-      "error_display": "Erro ao exibir relatórios"
+      "error_display": "Erro ao exibir relatórios",
+      "generating": "Generating…"
     },
     "ai": {
       "analyzing": "A IA está analisando seu problema...",
@@ -605,7 +606,12 @@
       "applying": "Aplicando…",
       "close": "Fechar",
       "retry": "Tentar novamente",
-      "triggers_label": "🔀 {n} gatilhos"
+      "triggers_label": "🔀 {n} gatilhos",
+      "conditions_label": "🔍 {n} condições",
+      "actions_label": "▶ {n} ações",
+      "templates_label": "📝 {n} modelos",
+      "analysis_title": "Análise",
+      "refactoring_title": "Proposta de refactoring (Dry Run)"
     },
     "optimizer": {
       "tagline": "Análise · Divisão · Modernização · Blueprints",
@@ -622,7 +628,8 @@
       "close_rescan": "Fechar & Reescanear",
       "new_badge": "NOVO",
       "blueprint_yaml": "Uso do Blueprint YAML",
-      "automations_written": "{count} automação(ões) gravada(s)."
+      "automations_written": "{count} automação(ões) gravada(s).",
+      "apply_blueprint": "Aplicar blueprint"
     },
     "haca_ignore": {
       "info_title": "Rótulo de ignorar",
@@ -857,7 +864,21 @@
     "status_poor": "Ruim. Ação necessária.",
     "issue": "Problema",
     "fix": "Correção",
-    "page": "Página"
+    "page": "Página",
+    "script_issues_section": "Problemas de Scripts",
+    "scene_issues_section": "Problemas de Cenas",
+    "blueprint_issues_section": "Problemas de Blueprints",
+    "performance_issues_section": "Problemas de Desempenho",
+    "security_issues_section": "Problemas de Segurança",
+    "dashboard_issues_section": "Problemas do Painel",
+    "no_script_issues": "Nenhum problema de script detectado!",
+    "no_scene_issues": "Nenhum problema de cena detectado!",
+    "no_blueprint_issues": "Nenhum problema de blueprint detectado!",
+    "no_performance_issues": "Nenhum problema de desempenho detectado!",
+    "no_security_issues": "Nenhum problema de segurança detectado!",
+    "no_dashboard_issues": "Nenhum problema de painel detectado!",
+    "blueprint_issues": "Problemas de Blueprints",
+    "dashboard_issues": "Problemas do Painel"
   },
   "notifications": {
     "new_issues_title": "⚠️ H.A.C.A — {count} nova(s) questão(ões) ALTA(s) detectada(s)",
@@ -941,5 +962,8 @@
     "complexity_yaml_unavailable": "(YAML não disponível)",
     "complexity_prompt": "Você é um especialista em Home Assistant. Analise a complexidade deste(a) {kind}.\n\n** {kind_upper} :** {alias}\n**ID da Entidade :** {entity_id}\n**Pontuação HACA :** {score}\n**Detalhe da pontuação :** {score_line}\n\n{yaml_section}\n\nMISSÃO EM 2 PARTES:\nPARTE 1 - EXPLICAÇÃO (3-5 frases):\nExplique por que este(a) {kind} é complexo(a), quais partes contribuem mais para a pontuação e os riscos (manutenção, depuração).\n\nPARTE 2 - PROPOSTA YAML:\nProponha uma divisão concreta: extraia blocos de ação repetitivos em scripts separados, simplifique o arquivo principal. Forneça o YAML completo.\n\nRESPONDA ESTRITAMENTE NESTE FORMATO:\n```explanation\n[sua explicação aqui]\n```\n\n```yaml_proposal\n[yaml proposto aqui]\n```",
     "complexity_fallback": "Pontuação de complexidade: {score}. Este(a) {kind} contém {triggers} gatilho(s), {conditions} condição(ões), {actions} ação(ões) recursiva(s) e {templates} template(s). Considere extrair blocos de ação repetitivos em scripts reutilizáveis."
+  },
+  "actions": {
+    "close": "Close"
   }
 }

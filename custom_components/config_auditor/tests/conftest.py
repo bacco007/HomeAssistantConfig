@@ -1,4 +1,4 @@
-"""Shared pytest fixtures for H.A.C.A v1.1.0 tests.
+"""Shared pytest fixtures for H.A.C.A v1.1.2 tests.
 
 Run with:
     pip install pytest pytest-asyncio
@@ -45,7 +45,7 @@ class _MockStatesProxy:
 
 
 class MockRegistryEntry:
-    """Minimal entity registry entry with label support (v1.1.0: haca_ignore)."""
+    """Minimal entity registry entry with label support (v1.1.2: haca_ignore)."""
 
     def __init__(
         self,

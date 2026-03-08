@@ -50,7 +50,7 @@
     // Load D3 lazily
     let d3;
     try { d3 = await this._loadD3(); }
-    catch(e) { console.error('HACA: D3 load failed', e); return; }
+    catch(e) { return; }
 
     // Store raw data for filter reuse
     this._graphRawData = graphData;
@@ -350,12 +350,12 @@
       <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px;">
         ${editUrl ? `<a href="${editUrl}" target="_blank" style="text-decoration:none;">
           <button style="width:100%;background:var(--primary-color);color:white;border-radius:8px;padding:8px;">
-            <ha-icon icon="mdi:pencil" style="--mdc-icon-size:14px;"></ha-icon> Modifier dans HA
+            ${_icon("pencil", 14)} Modifier dans HA
           </button>
         </a>` : ''}
         ${node.type === 'entity' ? `<a href="${haStateUrl}" target="_blank" style="text-decoration:none;">
           <button style="width:100%;background:var(--secondary-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);border-radius:8px;padding:8px;">
-            <ha-icon icon="mdi:eye" style="--mdc-icon-size:14px;"></ha-icon> ${this.t('graph.view_state')}
+            ${_icon("eye", 14)} ${this.t('graph.view_state')}
           </button>
         </a>` : ''}
       </div>`;
@@ -448,7 +448,6 @@
     };
     img.onerror = () => {
       // Fallback: download as SVG if PNG rendering fails
-      console.warn('[HACA] PNG export failed, falling back to SVG');
       this._graphExportSVG();
     };
     img.src = svgB64;

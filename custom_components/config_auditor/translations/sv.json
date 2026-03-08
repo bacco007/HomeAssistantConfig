@@ -92,7 +92,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant Config Auditor",
-    "version": "V1.1.0",
+    "version": "V1.1.2",
     "buttons": {
       "scan_all": "Fullständig skanning",
       "automations": "Automationer",
@@ -606,7 +606,12 @@
       "applying": "Tillämpar…",
       "close": "Stäng",
       "retry": "Försök igen",
-      "triggers_label": "🔀 {n} triggers"
+      "triggers_label": "🔀 {n} triggers",
+      "conditions_label": "🔍 {n} villkor",
+      "actions_label": "▶ {n} åtgärder",
+      "templates_label": "📝 {n} mallar",
+      "analysis_title": "Analys",
+      "refactoring_title": "Refactoring-förslag (Dry Run)"
     },
     "optimizer": {
       "tagline": "Analys · Uppdelning · Modernisering · Blueprints",
@@ -623,7 +628,8 @@
       "close_rescan": "Stäng och skanna om",
       "new_badge": "NEW",
       "blueprint_yaml": "Blueprint-användning YAML",
-      "automations_written": "{count} automation(s) written."
+      "automations_written": "{count} automation(s) written.",
+      "apply_blueprint": "Tillämpa blueprint"
     },
     "haca_ignore": {
       "info_title": "Ignorera etikett",
@@ -858,7 +864,21 @@
     "status_poor": "Dåligt. Åtgärd krävs.",
     "issue": "Problem",
     "fix": "Åtgärda",
-    "page": "Sida"
+    "page": "Sida",
+    "script_issues_section": "Skriptproblem",
+    "scene_issues_section": "Scensproblem",
+    "blueprint_issues_section": "Ritningsproblem",
+    "performance_issues_section": "Prestandaproblem",
+    "security_issues_section": "Säkerhetsproblem",
+    "dashboard_issues_section": "Instrumentbrädesproblem",
+    "no_script_issues": "Inga skriptproblem hittades!",
+    "no_scene_issues": "Inga scensproblem hittades!",
+    "no_blueprint_issues": "Inga ritningsproblem hittades!",
+    "no_performance_issues": "Inga prestandaproblem hittades!",
+    "no_security_issues": "Inga säkerhetsproblem hittades!",
+    "no_dashboard_issues": "Inga instrumentbrädesproblem hittades!",
+    "blueprint_issues": "Ritningsproblem",
+    "dashboard_issues": "Instrumentbrädesproblem"
   },
   "notifications": {
     "new_issues_title": "⚠️ H.A.C.A — {count} new HIGH issue(s) detected",
@@ -942,5 +962,8 @@
     "complexity_yaml_unavailable": "(YAML not available)",
     "complexity_prompt": "You are a Home Assistant expert. Analyse the complexity of this {kind}.\n\n** {kind_upper} :** {alias}\n**Entity ID :** {entity_id}\n**HACA Score :** {score}\n**Score detail :** {score_line}\n\n{yaml_section}\n\nMISSION IN 2 PARTS:\nPART 1 - EXPLANATION (3-5 sentences):\nExplain why this {kind} is complex, which parts contribute most to the score, and the risks (maintenance, debugging).\n\nPART 2 - YAML PROPOSAL:\nPropose a concrete split: extract repetitive action blocks into separate scripts, simplify the main file. Provide the full YAML.\n\nRESPOND STRICTLY WITH THIS FORMAT:\n```explanation\n[your explanation here]\n```\n\n```yaml_proposal\n[proposed yaml here]\n```",
     "complexity_fallback": "Complexity score: {score}. This {kind} contains {triggers} trigger(s), {conditions} condition(s), {actions} recursive action(s) and {templates} template(s). Consider extracting repetitive action blocks into reusable scripts."
+  },
+  "actions": {
+    "close": "Close"
   }
 }

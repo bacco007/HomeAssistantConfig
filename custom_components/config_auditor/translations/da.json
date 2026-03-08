@@ -92,7 +92,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant Config Auditor",
-    "version": "V1.1.0",
+    "version": "V1.1.2",
     "buttons": {
       "scan_all": "Fuld skanning",
       "automations": "Automatiseringer",
@@ -606,7 +606,12 @@
       "applying": "Anvender…",
       "close": "Luk",
       "retry": "Prøv igen",
-      "triggers_label": "🔀 {n} triggers"
+      "triggers_label": "🔀 {n} triggers",
+      "conditions_label": "🔍 {n} betingelser",
+      "actions_label": "▶ {n} handlinger",
+      "templates_label": "📝 {n} skabeloner",
+      "analysis_title": "Analyse",
+      "refactoring_title": "Refactoring-forslag (Dry Run)"
     },
     "optimizer": {
       "tagline": "Analyse · Opdeling · Modernisering · Blueprints",
@@ -623,7 +628,8 @@
       "close_rescan": "Luk og genskan",
       "new_badge": "NEW",
       "blueprint_yaml": "Blueprint-brug YAML",
-      "automations_written": "{count} automation(s) written."
+      "automations_written": "{count} automation(s) written.",
+      "apply_blueprint": "Anvend blueprint"
     },
     "haca_ignore": {
       "info_title": "Ignorer etiket",
@@ -858,7 +864,21 @@
     "status_poor": "Dårligt. Handling påkrævet.",
     "issue": "Problem",
     "fix": "Ret",
-    "page": "Side"
+    "page": "Side",
+    "script_issues_section": "Script Issues",
+    "scene_issues_section": "Scene Issues",
+    "blueprint_issues_section": "Blueprint Issues",
+    "performance_issues_section": "Performance Issues",
+    "security_issues_section": "Security Issues",
+    "dashboard_issues_section": "Dashboard Issues",
+    "no_script_issues": "No script issues detected!",
+    "no_scene_issues": "No scene issues detected!",
+    "no_blueprint_issues": "No blueprint issues detected!",
+    "no_performance_issues": "No performance issues detected!",
+    "no_security_issues": "No security issues detected!",
+    "no_dashboard_issues": "No dashboard issues detected!",
+    "blueprint_issues": "Blueprint Issues",
+    "dashboard_issues": "Dashboard Issues"
   },
   "notifications": {
     "new_issues_title": "⚠️ H.A.C.A — {count} new HIGH issue(s) detected",
@@ -942,5 +962,8 @@
     "complexity_yaml_unavailable": "(YAML not available)",
     "complexity_prompt": "You are a Home Assistant expert. Analyse the complexity of this {kind}.\n\n** {kind_upper} :** {alias}\n**Entity ID :** {entity_id}\n**HACA Score :** {score}\n**Score detail :** {score_line}\n\n{yaml_section}\n\nMISSION IN 2 PARTS:\nPART 1 - EXPLANATION (3-5 sentences):\nExplain why this {kind} is complex, which parts contribute most to the score, and the risks (maintenance, debugging).\n\nPART 2 - YAML PROPOSAL:\nPropose a concrete split: extract repetitive action blocks into separate scripts, simplify the main file. Provide the full YAML.\n\nRESPOND STRICTLY WITH THIS FORMAT:\n```explanation\n[your explanation here]\n```\n\n```yaml_proposal\n[proposed yaml here]\n```",
     "complexity_fallback": "Complexity score: {score}. This {kind} contains {triggers} trigger(s), {conditions} condition(s), {actions} recursive action(s) and {templates} template(s). Consider extracting repetitive action blocks into reusable scripts."
+  },
+  "actions": {
+    "close": "Close"
   }
 }

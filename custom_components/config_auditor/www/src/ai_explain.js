@@ -33,24 +33,24 @@
       // Score colour
       const s = row.score;
       const [scoreColor, levelText] =
-        s >= 50 ? ['#ef5350', '🚨 God Automation'] :
-        s >= 30 ? ['#ffa726', '⚠️ Complexe']       :
-        s >= 15 ? ['#ffd54f', '🔶 Moyen']           :
-                  ['#66bb6a', '✅ Simple'];
+        s >= 50 ? ['#ef5350', this.t('complexity.level_god')]     :
+        s >= 30 ? ['#ffa726', this.t('complexity.level_complex')] :
+        s >= 15 ? ['#ffd54f', this.t('complexity.level_medium')]  :
+                  ['#66bb6a', this.t('complexity.level_simple')];
 
       modal._updateContent(`
         <div style="display:flex;flex-direction:column;height:100%;max-height:90vh;">
 
           <!-- Header -->
-          <div style="padding:20px 24px;border-bottom:1px solid var(--divider-color);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;">
+          <div style="padding:20px 60px 20px 24px;border-bottom:1px solid var(--divider-color);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;">
             <div style="display:flex;align-items:center;gap:12px;">
-              <ha-icon icon="mdi:robot" style="--mdc-icon-size:36px;color:var(--primary-color);flex-shrink:0;"></ha-icon>
+              ${_icon("robot", 36)}
               <div>
                 <div style="font-size:18px;font-weight:700;">${this.escapeHtml(row.alias)}</div>
                 <div style="font-size:12px;color:var(--secondary-text-color);">${this.escapeHtml(row.entity_id)}</div>
               </div>
             </div>
-            <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+            <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;margin-right:8px;">
               <span style="font-size:22px;font-weight:800;color:${scoreColor};">${row.score}</span>
               <span style="font-size:12px;padding:3px 10px;border-radius:8px;background:var(--secondary-background-color);font-weight:600;">${levelText}</span>
             </div>
@@ -59,9 +59,9 @@
           <!-- Score breakdown pills -->
           <div style="padding:12px 24px;border-bottom:1px solid var(--divider-color);display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;background:var(--secondary-background-color);">
             ${row.triggers  !== undefined ? `<span style="background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;padding:2px 10px;font-size:12px;">${this.t('ai_explain.triggers_label', {n: row.triggers})}</span>` : ''}
-            ${row.conditions !== undefined ? `<span style="background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;padding:2px 10px;font-size:12px;">🔍 ${row.conditions} conditions</span>` : ''}
-            ${row.actions   !== undefined ? `<span style="background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;padding:2px 10px;font-size:12px;">▶ ${row.actions} actions</span>` : ''}
-            ${row.templates !== undefined ? `<span style="background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;padding:2px 10px;font-size:12px;">📝 ${row.templates} templates</span>` : ''}
+            ${row.conditions !== undefined ? `<span style="background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;padding:2px 10px;font-size:12px;">${this.t('ai_explain.conditions_label', {n: row.conditions})}</span>` : ''}
+            ${row.actions   !== undefined ? `<span style="background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;padding:2px 10px;font-size:12px;">${this.t('ai_explain.actions_label', {n: row.actions})}</span>` : ''}
+            ${row.templates !== undefined ? `<span style="background:var(--card-background-color);border:1px solid var(--divider-color);border-radius:6px;padding:2px 10px;font-size:12px;">${this.t('ai_explain.templates_label', {n: row.templates})}</span>` : ''}
           </div>
 
           <!-- Body -->
@@ -70,7 +70,7 @@
             <!-- Explanation -->
             <div>
               <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--secondary-text-color);margin-bottom:8px;">
-                <ha-icon icon="mdi:lightbulb-outline" style="--mdc-icon-size:14px;"></ha-icon> Analyse
+                ${_icon("lightbulb-outline", 14)} ${this.t('ai_explain.analysis_title')}
               </div>
               <div style="background:var(--secondary-background-color);padding:16px;border-radius:12px;line-height:1.7;font-size:14px;white-space:pre-wrap;border-left:4px solid var(--primary-color);">
                 ${this.escapeHtml(explanation)}
@@ -81,7 +81,7 @@
             <!-- Refactoring proposal -->
             <div>
               <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--secondary-text-color);margin-bottom:8px;">
-                <ha-icon icon="mdi:magic-staff" style="--mdc-icon-size:14px;"></ha-icon> Proposition de refactoring (Dry Run)
+                ${_icon("magic-staff", 14)} ${this.t('ai_explain.refactoring_title')}
               </div>
               <div style="background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:12px;overflow:hidden;">
                 <div style="padding:8px 14px;background:rgba(var(--rgb-primary-color,33,150,243),0.07);font-size:12px;color:var(--secondary-text-color);border-bottom:1px solid var(--divider-color);">
@@ -98,40 +98,27 @@
           </div>
 
           <!-- Footer -->
-          <div style="padding:16px 24px;border-top:1px solid var(--divider-color);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;background:var(--secondary-background-color);flex-shrink:0;">
-            <div style="display:flex;gap:10px;flex-wrap:wrap;">
-              ${this.getHAEditUrl(row.entity_id) ? `
-                <a href="${this.getHAEditUrl(row.entity_id)}" target="_blank" style="text-decoration:none;">
-                  <button style="background:var(--card-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);">
-                    <ha-icon icon="mdi:pencil"></ha-icon> Modifier manuellement
-                  </button>
-                </a>` : ''}
-            </div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;">
-              <button class="modal-close-btn" style="background:var(--card-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);">
-                Fermer
-              </button>
-              ${hasProposal ? `
-              <button id="apply-split-btn" style="background:var(--primary-color);color:white;padding:10px 20px;border-radius:12px;box-shadow:0 4px 10px rgba(var(--rgb-primary-color,33,150,243),0.3);">
-                <ha-icon icon="mdi:check-circle-outline"></ha-icon> Appliquer le refactoring
-              </button>` : ''}
-            </div>
+          <div style="padding:16px 24px;border-top:1px solid var(--divider-color);display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;background:var(--secondary-background-color);flex-shrink:0;">
+            ${this.getHAEditUrl(row.entity_id) ? `
+              <a href="${this.getHAEditUrl(row.entity_id)}" target="_blank" style="text-decoration:none;">
+                <button style="background:var(--card-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);padding:10px 22px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px;">
+                  ${_icon("pencil")} ${this.t('zombie.edit_manual')}
+                </button>
+              </a>` : ''}
+            ${hasProposal ? `
+            <button id="apply-split-btn" style="background:var(--primary-color);color:white;padding:10px 20px;border-radius:12px;box-shadow:0 4px 10px rgba(var(--rgb-primary-color,33,150,243),0.3);">
+              ${_icon("check-circle-outline")} ${this.t('ai_explain.apply_btn')}
+            </button>` : ''}
           </div>
         </div>
       `);
-
-      // Close button
-      modal.querySelector('.modal-close-btn').addEventListener('click', () => {
-        if (modal._closeModal) modal._closeModal();
-        else modal.parentElement?.remove();
-      });
 
       // Apply button — write split_proposal to scripts.yaml (new scripts) + simplified automation
       if (hasProposal) {
         modal.querySelector('#apply-split-btn').addEventListener('click', async () => {
           const btn = modal.querySelector('#apply-split-btn');
           btn.disabled = true;
-          btn.innerHTML = '<span class="btn-loader"></span> Application…';
+          btn.innerHTML = '<span class="btn-loader"></span> ' + this.t('ai_explain.applying');
           try {
             await this.hass.callWS({
               type: 'call_service',
@@ -150,14 +137,14 @@
                 </p>
                 <button onclick="this.closest('.haca-modal').remove()"
                   style="margin-top:24px;background:var(--primary-color);color:white;padding:10px 28px;border-radius:10px;">
-                  Fermer
+                  ${this.t('ai_explain.close')}
                 </button>
               </div>
             `);
             setTimeout(() => this.scanAutomations(), 1500);
           } catch(err) {
             btn.disabled = false;
-            btn.innerHTML = '<ha-icon icon="mdi:check-circle-outline"></ha-icon> Appliquer le refactoring';
+            btn.innerHTML = _icon("check-circle-outline") + ' ' + this.t('ai_explain.apply_btn');
             this.showHANotithis._showNotification(this.t('misc.error_apply') + err.message, '', 'haca_error');
           }
         });
@@ -167,10 +154,10 @@
       modal._updateContent(`
         <div style="padding:32px;text-align:center;color:var(--error-color);">
           <div style="font-size:40px;margin-bottom:16px;">❌</div>
-          <div style="font-size:15px;">${this.escapeHtml(error.message || 'Erreur inconnue')}</div>
+          <div style="font-size:15px;">${this.escapeHtml(error.message || this.t('misc.error_unknown'))}</div>
           <button onclick="this.closest('.haca-modal').remove()"
             style="margin-top:20px;background:var(--primary-color);color:white;padding:8px 20px;border-radius:8px;">
-            Fermer
+            ${this.t('ai_explain.close')}
           </button>
         </div>
       `);

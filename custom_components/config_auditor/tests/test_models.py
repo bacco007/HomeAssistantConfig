@@ -1,4 +1,4 @@
-"""Tests for models.py — AuditIssue, ComplexityScore, BatteryEntry — v1.1.0."""
+"""Tests for models.py — AuditIssue, ComplexityScore, BatteryEntry — v1.1.2."""
 from __future__ import annotations
 
 import pytest

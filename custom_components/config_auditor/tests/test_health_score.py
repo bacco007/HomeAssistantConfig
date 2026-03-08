@@ -1,4 +1,4 @@
-"""Tests for health_score.calculate_health_score() — v1.1.0.
+"""Tests for health_score.calculate_health_score() — v1.1.2.
 
 Formula: ratio-based with per-category caps and a floor of 20.
 denominator = max(total_entities + total_automations, 10)

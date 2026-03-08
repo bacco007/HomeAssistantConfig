@@ -1,4 +1,4 @@
-"""Tests for conversation.py — v1.1.0.
+"""Tests for conversation.py — v1.1.2.
 
 Guards against:
   - from __future__ at wrong position (caused SyntaxError on import)
