@@ -47,6 +47,13 @@ query_estimate_data:
     undampened:
       example: "false"
 
+set_custom_hours:
+  name: Set custom hours sensor
+  description: Set the custom hours sensor number of hours
+  fields:
+    hours:
+      example: "6"
+
 set_dampening:
   name: Set forecasts dampening
   description: Set the hourly or half-hourly forecast dampening factors

@@ -65,6 +65,7 @@ from .const import (
     EXCEPTION_DAMPEN_WITHOUT_GENERATION,
     EXCEPTION_EXPORT_MULTIPLE_ENTITIES,
     EXCEPTION_EXPORT_NO_ENTITY,
+    EXCEPTION_GENERATION_MIXED_TYPES,
     EXCEPTION_HARD_NOT_NUMBER,
     EXCEPTION_HARD_TOO_MANY,
     EXCEPTION_INTERNAL_ERROR,
@@ -149,7 +150,7 @@ def validate_api_limit(user_input: dict[str, Any], api_count: int) -> tuple[str,
     return api_quota, None
 
 
-async def __get_time_zone(hass: HomeAssistant) -> ZoneInfo | timezone:
+async def _get_time_zone(hass: HomeAssistant) -> ZoneInfo | timezone:
     tz = await dt_util.async_get_time_zone(hass.config.time_zone)
     return tz if tz is not None else dt_util.UTC
 
@@ -171,7 +172,7 @@ async def validate_sites(hass: HomeAssistant, user_input: dict[str, Any]) -> tup
         user_input[API_QUOTA],
         DEFAULT_SOLCAST_HTTPS_URL,
         hass.config.path(f"{hass.config.config_dir}/solcast.json"),
-        await __get_time_zone(hass),
+        await _get_time_zone(hass),
         user_input[AUTO_UPDATE],
         {str(a): 1.0 for a in range(24)},
         user_input[CUSTOM_HOUR_SENSOR],
@@ -193,10 +194,11 @@ async def validate_sites(hass: HomeAssistant, user_input: dict[str, Any]) -> tup
         user_input[AUTO_DAMPEN],
     )
     solcast = SolcastApi(session, options, hass)
-    await solcast.read_advanced_options()
+    await solcast.async_migrate_config_files()
+    await solcast.advanced_opt.read_advanced_options()
     solcast.headers = get_session_headers(solcast, await get_version(hass))
 
-    status, message, api_key_in_error = await solcast.get_sites_and_usage(prior_crash=False, use_cache=False)
+    status, message, api_key_in_error = await solcast.sites_cache.get_sites_and_usage(prior_crash=False, use_cache=False)
     if status != 200:
         if status in (401, 403):
             return status, f"Bad API key, {message} returned for {api_key_in_error}"
@@ -428,6 +430,60 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
             self.hass.data[DOMAIN].pop(PRESUMED_DEAD)
             await self.hass.config_entries.async_reload(self._entry.entry_id)
 
+    def _build_sensor_options(self) -> tuple[list[SelectOptionDict], list[SelectOptionDict]]:
+        """Build sorted sensor and energy sensor option lists for the options form.
+
+        Returns:
+            tuple[list[SelectOptionDict], list[SelectOptionDict]]: Sorted lists of sensors
+                Energy/power and energy-only sensors, excluding own entities.
+
+        """
+        entity_registry = er.async_get(self.hass)
+        own_entities = {entry for entry, details in entity_registry.entities.items() if details.config_entry_id == self._entry.entry_id}
+        sensors: list[SelectOptionDict] = [
+            SelectOptionDict(label=entry, value=entry)
+            for entry, details in entity_registry.entities.items()
+            if entry not in own_entities
+            and entry.startswith("sensor.")
+            and details.disabled_by is None
+            and (
+                SensorDeviceClass.ENERGY in (details.device_class, details.original_device_class)
+                or SensorDeviceClass.POWER in (details.device_class, details.original_device_class)
+            )
+        ]
+        state_entities = self.hass.states.async_entity_ids("sensor")
+        sensor_values = {option["value"] for option in sensors}
+        sensors += [
+            SelectOptionDict(label=entity, value=entity)
+            for entity in state_entities
+            if entity not in sensor_values
+            and entity not in own_entities
+            and (state := self.hass.states.get(entity)) is not None
+            and (device_class := state.attributes.get("device_class")) is not None
+            and device_class in (SensorDeviceClass.ENERGY, SensorDeviceClass.POWER)
+        ]
+        sensors.sort(key=lambda x: x["label"])
+        energy_sensors: list[SelectOptionDict] = [
+            SelectOptionDict(label=entry, value=entry)
+            for entry, details in entity_registry.entities.items()
+            if entry not in own_entities
+            and entry.startswith("sensor.")
+            and details.disabled_by is None
+            and (SensorDeviceClass.ENERGY in (details.device_class, details.original_device_class))
+        ]
+        energy_sensor_values = {option["value"] for option in energy_sensors}
+        energy_sensors += [
+            SelectOptionDict(label=entity, value=entity)
+            for entity in state_entities
+            if entity not in energy_sensor_values
+            and entity not in own_entities
+            and (state := self.hass.states.get(entity)) is not None
+            and (device_class := state.attributes.get("device_class")) is not None
+            and device_class in (SensorDeviceClass.ENERGY)
+        ]
+        energy_sensors.sort(key=lambda x: x["label"])
+        return sensors, energy_sensors
+
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:  # noqa: C901
         """Initialise main options flow step.
 
@@ -483,9 +539,9 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
                         if len(to_set) > api_count:
                             errors[BASE] = EXCEPTION_HARD_TOO_MANY
                             _LOGGER.debug("Options validation failed: %s", errors[BASE])
-                    else:
-                        hard_limit = ",".join(to_set)
-                        all_config_data[HARD_LIMIT_API] = hard_limit
+                        else:
+                            hard_limit = ",".join(to_set)
+                            all_config_data[HARD_LIMIT_API] = hard_limit
 
                 # Validate estimated actuals and auto-dampen.
                 all_config_data[GET_ACTUALS] = user_input.get(GET_ACTUALS, False)
@@ -505,6 +561,19 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
                 if not errors:
                     if user_input.get(AUTO_DAMPEN, False) and not user_input[GENERATION_ENTITIES]:
                         errors[BASE] = EXCEPTION_DAMPEN_WITHOUT_GENERATION
+                        _LOGGER.debug("Options validation failed: %s", errors[BASE])
+                if not errors and len(user_input.get(GENERATION_ENTITIES, [])) > 1:
+                    gen_entities = user_input[GENERATION_ENTITIES]
+                    device_classes = set()
+                    _entity_registry = er.async_get(self.hass)
+                    for gen_entity in gen_entities:
+                        r_entity = _entity_registry.async_get(gen_entity)
+                        if r_entity is not None:
+                            dc = r_entity.device_class or r_entity.original_device_class
+                            if dc in (SensorDeviceClass.ENERGY, SensorDeviceClass.POWER):
+                                device_classes.add(dc)
+                    if len(device_classes) > 1:
+                        errors[BASE] = EXCEPTION_GENERATION_MIXED_TYPES
                         _LOGGER.debug("Options validation failed: %s", errors[BASE])
                 if not errors:
                     if user_input.get(SITE_EXPORT_ENTITY, []) != [] and len(user_input.get(SITE_EXPORT_ENTITY, [])) > 1:
@@ -577,15 +646,7 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
                 SelectOptionDict(label=site[NAME] + " (" + site[RESOURCE_ID] + ")", value=site[RESOURCE_ID]) for site in solcast.sites
             ]
 
-        entity_registry = er.async_get(self.hass)
-        sensors: list[SelectOptionDict] = [SelectOptionDict(label="not_loaded", value="")]
-        sensors = [
-            SelectOptionDict(label=entry, value=entry)
-            for entry, details in entity_registry.entities.items()
-            if "solcast_pv_forecast" not in entry
-            and details.disabled_by is None
-            and (SensorDeviceClass.ENERGY in (details.device_class, details.original_device_class))
-        ]
+        sensors, energy_sensors = self._build_sensor_options()
 
         if self._options.get(SITE_EXPORT_ENTITY, "") != "":
             site_export_default = [self._options[SITE_EXPORT_ENTITY]]
@@ -629,7 +690,7 @@ class SolcastSolarOptionFlowHandler(OptionsFlow):
                         SelectSelectorConfig(options=sensors, mode=SelectSelectorMode.DROPDOWN, multiple=True)
                     ),
                     vol.Optional(SITE_EXPORT_ENTITY, default=site_export_default): SelectSelector(
-                        SelectSelectorConfig(options=sensors, mode=SelectSelectorMode.DROPDOWN, multiple=True)
+                        SelectSelectorConfig(options=energy_sensors, mode=SelectSelectorMode.DROPDOWN, multiple=True)
                     ),
                     vol.Optional(
                         SITE_EXPORT_LIMIT,

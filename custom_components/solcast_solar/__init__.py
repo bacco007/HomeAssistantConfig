@@ -11,30 +11,23 @@ from typing import Any, Final
 import zoneinfo
 
 import aiofiles
-import voluptuous as vol
 
 from homeassistant import loader
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY, Platform
-from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import (
     ConfigEntryAuthFailed,
     ConfigEntryError,
     ConfigEntryNotReady,
-    ServiceValidationError,
 )
-from homeassistant.helpers import (
-    aiohttp_client,
-    config_validation as cv,
-    entity_registry as er,
-)
+from homeassistant.helpers import aiohttp_client, entity_registry as er
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.util import dt as dt_util
 
+from .actions import ServiceActions, register_stub_actions, unregister_actions
 from .const import (
-    ACTION,
     ADVANCED_USER_AGENT,
-    API_KEY,
     API_QUOTA,
     AUTO_DAMPEN,
     AUTO_UPDATE,
@@ -50,30 +43,17 @@ from .const import (
     CONFIG_FOLDER_DISCRETE,
     CUSTOM_HOUR_SENSOR,
     DAILY_LIMIT,
-    DAMP_FACTOR,
     DEFAULT_SOLCAST_HTTPS_URL,
     DELAYED_RESTART_ON_CRASH,
     DOMAIN,
     DT_DATE_FORMAT,
     ENTRY_OPTIONS,
-    EVENT_END_DATETIME,
-    EVENT_START_DATETIME,
-    EXCEPTION_DAMP_AUTO_ENABLED,
-    EXCEPTION_DAMP_COUNT_NOT_CORRECT,
-    EXCEPTION_DAMP_ERROR_PARSING,
-    EXCEPTION_DAMP_NO_ALL_24,
-    EXCEPTION_DAMP_NO_FACTORS,
-    EXCEPTION_DAMP_NOT_SITE,
-    EXCEPTION_DAMP_OUTSIDE_RANGE,
-    EXCEPTION_HARD_NOT_POSITIVE_NUMBER,
-    EXCEPTION_HARD_TOO_MANY,
     EXCEPTION_INIT_CANNOT_GET_SITES,
     EXCEPTION_INIT_CANNOT_GET_SITES_CACHE_INVALID,
     EXCEPTION_INIT_KEY_INVALID,
     EXCEPTION_INIT_NO_SITES,
     EXCEPTION_INIT_UNKNOWN,
     EXCEPTION_INIT_USAGE_CORRUPT,
-    EXCEPTION_INTEGRATION_NOT_LOADED,
     EXCEPTION_INTEGRATION_PRIOR_CRASH,
     EXCLUDE_SITES,
     GENERATION_ENTITIES,
@@ -92,25 +72,10 @@ from .const import (
     PRIOR_CRASH_TIME,
     PRIOR_CRASH_TRANSLATION_KEY,
     RESET_OLD_KEY,
-    RESOURCE_ID,
-    SCHEMA,
-    SERVICE_CLEAR_DATA,
-    SERVICE_FORCE_UPDATE_ESTIMATES,
-    SERVICE_FORCE_UPDATE_FORECASTS,
-    SERVICE_GET_DAMPENING,
-    SERVICE_QUERY_ESTIMATE_DATA,
-    SERVICE_QUERY_FORECAST_DATA,
-    SERVICE_REMOVE_HARD_LIMIT,
-    SERVICE_SET_DAMPENING,
-    SERVICE_SET_HARD_LIMIT,
-    SERVICE_UPDATE,
-    SITE,
     SITE_DAMP,
     SITE_EXPORT_ENTITY,
     SITE_EXPORT_LIMIT,
     SOLCAST,
-    SUPPORTS_RESPONSE,
-    UNDAMPENED,
     UPGRADE_FUNCTION,
     USE_ACTUALS,
     VERSION,
@@ -130,36 +95,6 @@ PLATFORMS: Final = [
     Platform.SELECT,
     Platform.SENSOR,
 ]
-SERVICE_DAMP_SCHEMA: Final = vol.All(
-    {
-        vol.Required(DAMP_FACTOR): cv.string,
-        vol.Optional(SITE): cv.string,
-    }
-)
-SERVICE_DAMP_GET_SCHEMA: Final = vol.All(
-    {
-        vol.Optional(SITE): cv.string,
-    }
-)
-SERVICE_HARD_LIMIT_SCHEMA: Final = vol.All(
-    {
-        vol.Required(HARD_LIMIT): cv.string,
-    }
-)
-SERVICE_QUERY_SCHEMA: Final = vol.All(
-    {
-        vol.Required(EVENT_START_DATETIME): cv.datetime,
-        vol.Required(EVENT_END_DATETIME): cv.datetime,
-        vol.Optional(UNDAMPENED): cv.boolean,
-        vol.Optional(SITE): cv.string,
-    }
-)
-SERVICE_QUERY_ESTIMATE_SCHEMA: Final = vol.All(
-    {
-        vol.Optional(EVENT_START_DATETIME): cv.datetime,
-        vol.Optional(EVENT_END_DATETIME): cv.datetime,
-    }
-)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -167,7 +102,7 @@ _LOGGER = logging.getLogger(__name__)
 def __log_init_message(entry: ConfigEntry, version: str, solcast: SolcastApi) -> None:
     _LOGGER.debug("UTC times are converted to %s", solcast.options.tz)
     _LOGGER.debug("Successful init")
-    _LOGGER.info("Solcast integration version %s", version)
+    _LOGGER.debug("Solcast integration version %s", version)
 
 
 async def get_version(hass: HomeAssistant) -> str:
@@ -278,7 +213,7 @@ def get_session_headers(solcast: SolcastApi, version: str) -> dict[str, str]:
 async def __get_granular_dampening(hass: HomeAssistant, entry: ConfigEntry, solcast: SolcastApi) -> None:
     opt = {**entry.options}
     # Set internal per-site dampening set flag. This is a hidden option until True.
-    opt[SITE_DAMP] = await solcast.granular_dampening_data()
+    opt[SITE_DAMP] = await solcast.dampening.granular_data()
     hass.config_entries.async_update_entry(entry, options=opt)
 
 
@@ -294,7 +229,7 @@ async def __check_stale_start(coordinator: SolcastUpdateCoordinator) -> bool:
     """Check whether the integration has been failed for some time and then is restarted, and if so update forecast."""
     _LOGGER.debug("Checking for stale start")
     stale = False
-    if coordinator.solcast.is_stale_data():
+    if coordinator.solcast.sites_cache.stale_data:
         _LOGGER.warning("The update automation has not been running, updating forecast")
         kwargs: dict[str, Any] = {
             "ignore_auto_enabled": True,
@@ -312,19 +247,16 @@ async def __check_auto_update_missed(coordinator: SolcastUpdateCoordinator) -> b
     """Check whether an auto-update has been missed, and if so update forecast."""
     stale = False
     if coordinator.solcast.options.auto_update != AutoUpdate.NONE:
-        auto_updated = coordinator.solcast.get_data()[AUTO_UPDATED]
+        auto_updated = coordinator.solcast.data[AUTO_UPDATED]
         if auto_updated == 99999 or auto_updated != coordinator.divisions:  # Cannot determine freshness
             _LOGGER.debug("Cannot determine freshness of auto-update forecast (last update forced, or configuration changed)")
             stale = False
         elif auto_updated > 0:
             _LOGGER.debug("Checking whether auto update forecast is stale")
-            if (
-                coordinator.interval_just_passed is not None
-                and coordinator.solcast.get_data()[LAST_ATTEMPT] < coordinator.interval_just_passed
-            ):
+            if coordinator.interval_just_passed is not None and coordinator.solcast.data[LAST_ATTEMPT] < coordinator.interval_just_passed:
                 _LOGGER.info(
                     "Last auto update forecast recorded (%s) is older than expected, should be (%s), updating forecast",
-                    coordinator.solcast.get_data()[LAST_ATTEMPT].astimezone(coordinator.solcast.options.tz).strftime(DT_DATE_FORMAT),
+                    coordinator.solcast.data[LAST_ATTEMPT].astimezone(coordinator.solcast.options.tz).strftime(DT_DATE_FORMAT),
                     coordinator.interval_just_passed.astimezone(coordinator.solcast.options.tz).strftime(DT_DATE_FORMAT),
                 )
                 kwargs: dict[str, Any] = {
@@ -339,7 +271,7 @@ async def __check_auto_update_missed(coordinator: SolcastUpdateCoordinator) -> b
     return stale
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:  # noqa: C901
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up the integration.
 
     * Get and sanitise options.
@@ -403,10 +335,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:  #
 
     hass.data[DOMAIN][PRESUMED_DEAD] = True  # Presumption that init will not be successful.
     solcast = SolcastApi(aiohttp_client.async_get_clientsession(hass), options, hass, entry)
-    await solcast.read_advanced_options()
+    await solcast.async_migrate_config_files()
+    await solcast.advanced_opt.read_advanced_options()
 
     solcast.headers = get_session_headers(solcast, version)
-    await solcast.get_sites_and_usage(prior_crash=prior_crash)
+    await solcast.sites_cache.get_sites_and_usage(prior_crash=prior_crash)
     match solcast.sites_status:
         case SitesStatus.BAD_KEY:
             raise_and_record(hass, ConfigEntryAuthFailed, EXCEPTION_INIT_KEY_INVALID)
@@ -432,10 +365,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:  #
     hass.data[DOMAIN][SOLCAST] = solcast
     hass.data[DOMAIN][ENTRY_OPTIONS] = {**entry.options}
 
-    if await solcast.load_saved_data():
-        await solcast.model_automated_dampening()
-        await solcast.apply_forward_dampening()
-        await solcast.build_forecast_and_actuals(raise_exc=True)
+    if await solcast.sites_cache.load_saved_data():
+        await solcast.dampening.model_automated()
+        await solcast.dampening.apply_forward()
+        await solcast.fetcher.build_forecast_and_actuals(raise_exc=True)
 
     coordinator = SolcastUpdateCoordinator(hass, entry, solcast, version)
     entry.runtime_data = SolcastData(coordinator=coordinator)
@@ -459,282 +392,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:  #
     if not await __check_auto_update_missed(coordinator):
         await __check_stale_start(coordinator)
 
-    async def action_call_update_forecast(call: ServiceCall) -> None:
-        """Handle action.
-
-        Arguments:
-            call (ServiceCall): Not used.
-
-        """
-        _LOGGER.info("Action: Fetching forecast")
-        await coordinator.service_event_update()
-
-    async def action_call_force_update_forecast(call: ServiceCall) -> None:
-        """Handle action.
-
-        Arguments:
-            call (ServiceCall): Not used.
-
-        """
-        _LOGGER.info("Forced update: Fetching forecast")
-        await coordinator.service_event_force_update()
-
-    async def action_call_force_update_estimates(call: ServiceCall) -> None:
-        """Handle action.
-
-        Arguments:
-            call (ServiceCall): Not used.
-
-        """
-        _LOGGER.info("Forced update: Fetching estimated actuals")
-        await coordinator.service_event_force_update_estimates()
-
-    async def action_call_clear_solcast_data(call: ServiceCall) -> None:
-        """Handle action.
-
-        Arguments:
-            call (ServiceCall): Not used.
-
-        """
-        _LOGGER.info("Action: Clearing history and fetching past actuals and forecast")
-        await coordinator.service_event_delete_old_solcast_json_file()
-
-    async def action_call_get_forecast_data(call: ServiceCall) -> dict[str, Any] | None:
-        """Handle action.
-
-        Arguments:
-            call (ServiceCall): The data to act on: a start and optional end date/time (defaults to now), optional dampened/undampened, optional site.
-
-        Returns:
-            dict[str, Any] | None: The Solcast data from start to end date/times.
-
-        """
-        try:
-            _LOGGER.info("Action: Query forecast data")
-            data = await coordinator.service_query_forecast_data(
-                dt_util.as_utc(call.data.get(EVENT_START_DATETIME, dt_util.now())),
-                dt_util.as_utc(call.data.get(EVENT_END_DATETIME, dt_util.now())),
-                call.data.get(SITE, "all").replace("_", "-"),
-                call.data.get(UNDAMPENED, False),
-            )
-        except ValueError as e:
-            raise ServiceValidationError(f"{e}") from e
-
-        return {"data": data}
-
-    async def action_call_get_estimate_data(call: ServiceCall) -> dict[str, Any] | None:
-        """Handle action.
-
-        Arguments:
-            call (ServiceCall): The data to act on: an optional start and end date/time (defaults to all of of yesterday).
-
-        Returns:
-            dict[str, Any] | None: The Solcast data from start to end date/times.
-
-        """
-        try:
-            _LOGGER.info("Action: Query estimate data")
-            day_start = coordinator.solcast.get_day_start_utc()
-            data = await coordinator.service_query_estimate_data(
-                dt_util.as_utc(call.data.get(EVENT_START_DATETIME, day_start - timedelta(days=1))),
-                dt_util.as_utc(call.data.get(EVENT_END_DATETIME, day_start)),
-                call.data.get(UNDAMPENED, True),
-            )
-        except ValueError as e:
-            raise ServiceValidationError(f"{e}") from e
-
-        return {"data": data}
-
-    async def action_call_set_dampening(call: ServiceCall) -> None:
-        """Handle action.
-
-        Arguments:
-            call (ServiceCall): The data to act on: a set of dampening values, and an optional site.
-
-        Raises:
-            HomeAssistantError: Notify Home Assistant that an error has occurred.
-            ServiceValidationError: Notify Home Assistant that an error has occurred, with translation.
-
-        """
-        _LOGGER.info("Action: Set dampening")
-
-        if solcast.options.auto_dampen:
-            raise ServiceValidationError(translation_domain=DOMAIN, translation_key=EXCEPTION_DAMP_AUTO_ENABLED)
-
-        factors = call.data.get(DAMP_FACTOR, "")
-        site = call.data.get(SITE)  # Optional site.
-
-        factors = factors.strip().replace(" ", "")
-        factors = factors.split(",")
-        if factors[0] == "":
-            raise ServiceValidationError(translation_domain=DOMAIN, translation_key=EXCEPTION_DAMP_NO_FACTORS)
-        if len(factors) not in (24, 48):
-            raise ServiceValidationError(translation_domain=DOMAIN, translation_key=EXCEPTION_DAMP_COUNT_NOT_CORRECT)
-        if site is not None:
-            site = site.lower().replace("_", "-")
-            if site == "all":
-                if (len(factors)) != 48:
-                    raise ServiceValidationError(translation_domain=DOMAIN, translation_key=EXCEPTION_DAMP_NO_ALL_24)
-            elif site not in [s[RESOURCE_ID] for s in solcast.sites]:
-                raise ServiceValidationError(translation_domain=DOMAIN, translation_key=EXCEPTION_DAMP_NOT_SITE)
-        elif len(factors) == 48:
-            site = "all"
-        out_of_range = False
-        try:
-            for factor in factors:
-                if float(factor) < 0 or float(factor) > 1:
-                    out_of_range = True
-        except:  # noqa: E722
-            raise ServiceValidationError(translation_domain=DOMAIN, translation_key=EXCEPTION_DAMP_ERROR_PARSING) from None
-        if out_of_range:
-            raise ServiceValidationError(translation_domain=DOMAIN, translation_key=EXCEPTION_DAMP_OUTSIDE_RANGE)
-
-        opt = {**entry.options}
-
-        if site is None:
-            damp_factors: dict[str, float] = {}
-            for i in range(24):
-                factor = float(factors[i])
-                damp_factors.update({f"{i}": factor})
-                opt[f"damp{i:02}"] = factor
-            solcast.damp = damp_factors
-            if solcast.granular_dampening:
-                _LOGGER.debug("Clear granular dampening")
-                opt[SITE_DAMP] = False  # Clear "hidden" option.
-                solcast.set_allow_granular_dampening_reset(True)
-        else:
-            await solcast.refresh_granular_dampening_data()  # Ensure latest file content gets updated
-            solcast.granular_dampening[site] = [float(factors[i]) for i in range(len(factors))]
-            await solcast.serialise_granular_dampening()
-            old_damp = opt.get(SITE_DAMP, False)
-            opt[SITE_DAMP] = True  # Set "hidden" option.
-            if opt[SITE_DAMP] == old_damp:
-                await solcast.apply_forward_dampening()
-                await coordinator.solcast.build_forecast_data()
-        coordinator.set_data_updated(True)
-        await coordinator.update_integration_listeners()
-        coordinator.set_data_updated(False)
-
-        hass.config_entries.async_update_entry(entry, options=opt)
-
-    async def action_call_get_dampening(call: ServiceCall) -> dict[str, Any] | None:
-        """Handle action.
-
-        Arguments:
-            call (ServiceCall): The data to act on: an optional site.
-
-        Raises:
-            HomeAssistantError: Notify Home Assistant that an error has occurred.
-
-        """
-        _LOGGER.info("Action: Get dampening")
-
-        site = call.data.get(SITE)  # Optional site.
-        if site is not None:
-            site_underscores = "_" in site
-            site = site.lower().replace("_", "-")
-        else:
-            site_underscores = False
-        data = await solcast.get_dampening(site=site, site_underscores=site_underscores)
-        return {"data": data}
-
-    async def action_call_set_hard_limit(call: ServiceCall) -> None:
-        """Handle action.
-
-        Arguments:
-            call (ServiceCall): The data to act on: a hard limit.
-
-        Raises:
-            HomeAssistantError: Notify Home Assistant that an error has occurred.
-            ServiceValidationError: Notify Home Assistant that an error has occurred, with translation.
-
-        """
-        _LOGGER.info("Action: Set hard limit")
-
-        hard_limit = call.data.get(HARD_LIMIT, "100.0")
-        to_set: list[str] = []
-        for limit in hard_limit.split(","):
-            limit = limit.strip()
-            if not limit.replace(".", "", 1).isdigit():
-                raise ServiceValidationError(
-                    translation_domain=DOMAIN,
-                    translation_key=EXCEPTION_HARD_NOT_POSITIVE_NUMBER,
-                )
-            to_set.append(f"{float(limit):.1f}")
-        if len(to_set) > len(entry.options[API_KEY].split(",")):
-            raise ServiceValidationError(translation_domain=DOMAIN, translation_key=EXCEPTION_HARD_TOO_MANY)
-
-        opt = {**entry.options}
-        opt[HARD_LIMIT_API] = ",".join(to_set)
-        hass.config_entries.async_update_entry(entry, options=opt)
-
-    async def action_call_remove_hard_limit(call: ServiceCall) -> None:
-        """Handle action.
-
-        Arguments:
-            call (ServiceCall): Not used.
-
-        Raises:
-            HomeAssistantError: Notify Home Assistant that an error has occurred.
-
-        """
-        _LOGGER.info("Action: Remove hard limit")
-
-        opt = {**entry.options}
-        opt[HARD_LIMIT_API] = "100.0"
-        hass.config_entries.async_update_entry(entry, options=opt)
-
-    service_actions: dict[str, dict[str, Any]] = {
-        SERVICE_CLEAR_DATA: {ACTION: action_call_clear_solcast_data},
-        SERVICE_FORCE_UPDATE_ESTIMATES: {ACTION: action_call_force_update_estimates},
-        SERVICE_FORCE_UPDATE_FORECASTS: {ACTION: action_call_force_update_forecast},
-        SERVICE_GET_DAMPENING: {
-            ACTION: action_call_get_dampening,
-            SCHEMA: SERVICE_DAMP_GET_SCHEMA,
-            SUPPORTS_RESPONSE: SupportsResponse.ONLY,
-        },
-        SERVICE_QUERY_ESTIMATE_DATA: {
-            ACTION: action_call_get_estimate_data,
-            SCHEMA: SERVICE_QUERY_ESTIMATE_SCHEMA,
-            SUPPORTS_RESPONSE: SupportsResponse.ONLY,
-        },
-        SERVICE_QUERY_FORECAST_DATA: {
-            ACTION: action_call_get_forecast_data,
-            SCHEMA: SERVICE_QUERY_SCHEMA,
-            SUPPORTS_RESPONSE: SupportsResponse.ONLY,
-        },
-        SERVICE_REMOVE_HARD_LIMIT: {ACTION: action_call_remove_hard_limit},
-        SERVICE_SET_DAMPENING: {ACTION: action_call_set_dampening, SCHEMA: SERVICE_DAMP_SCHEMA},
-        SERVICE_SET_HARD_LIMIT: {ACTION: action_call_set_hard_limit, SCHEMA: SERVICE_HARD_LIMIT_SCHEMA},
-        SERVICE_UPDATE: {ACTION: action_call_update_forecast},
-    }
-
-    for action, call in service_actions.items():
-        _LOGGER.debug("Register action %s.%s", DOMAIN, action)
-        hass.services.async_remove(DOMAIN, action)  # Remove the error action
-        if call.get(SUPPORTS_RESPONSE):
-            hass.services.async_register(DOMAIN, action, call[ACTION], call[SCHEMA], call[SUPPORTS_RESPONSE])
-            continue
-        if call.get(SCHEMA):
-            hass.services.async_register(DOMAIN, action, call[ACTION], call[SCHEMA])
-            continue
-        hass.services.async_register(DOMAIN, action, call[ACTION])
+    ServiceActions(hass, entry, coordinator, solcast)
 
     return True
-
-
-async def stub_action(call: ServiceCall) -> None:
-    """Raise an exception on action when the entry is not loaded.
-
-    Arguments:
-        call (ServiceCall): Not used.
-
-    Raises:
-        HomeAssistantError: Notify the caller that the integration is not loaded.
-
-    """
-    _LOGGER.error("Integration not loaded")
-    raise ServiceValidationError(translation_domain=DOMAIN, translation_key=EXCEPTION_INTEGRATION_NOT_LOADED)
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
@@ -750,20 +410,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         bool: Whether setup has completed successfully.
 
     """
-    actions = [
-        SERVICE_CLEAR_DATA,
-        SERVICE_FORCE_UPDATE_ESTIMATES,
-        SERVICE_FORCE_UPDATE_FORECASTS,
-        SERVICE_GET_DAMPENING,
-        SERVICE_QUERY_ESTIMATE_DATA,
-        SERVICE_QUERY_FORECAST_DATA,
-        SERVICE_REMOVE_HARD_LIMIT,
-        SERVICE_SET_DAMPENING,
-        SERVICE_SET_HARD_LIMIT,
-        SERVICE_UPDATE,
-    ]
-    for action in actions:
-        hass.services.async_register(DOMAIN, action, stub_action)
+    register_stub_actions(hass)
     return True
 
 
@@ -785,11 +432,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
-        # Remove all actions
-        for action in hass.services.async_services_for_domain(DOMAIN):
-            _LOGGER.debug("Remove action %s.%s", DOMAIN, action)
-            hass.services.async_remove(DOMAIN, action)
-            hass.services.async_register(DOMAIN, action, stub_action)  # Switch to an error action
+        unregister_actions(hass)
 
     return unload_ok
 
@@ -894,7 +537,7 @@ async def async_update_options(hass: HomeAssistant, entry: ConfigEntry) -> None:
             reload = True
             if hass.data[DOMAIN][ENTRY_OPTIONS].get(AUTO_DAMPEN, False):
                 # Turning auto-dampening off, so reset the granular dampening file content.
-                path = Path(coordinator.solcast.get_filename_dampening())
+                path = Path(coordinator.solcast.dampening.get_filename())
                 _LOGGER.debug("Unlink %s", path)
                 if path.exists():
                     path.unlink()
@@ -902,12 +545,12 @@ async def async_update_options(hass: HomeAssistant, entry: ConfigEntry) -> None:
         if changed(SITE_DAMP):
             damp_changed = True
             if not entry.options[SITE_DAMP]:
-                if coordinator.solcast.allow_granular_dampening_reset():
-                    coordinator.solcast.granular_dampening = {}
-                    path = Path(coordinator.solcast.get_filename_dampening())
+                if coordinator.solcast.dampening.allow_granular_reset():
+                    coordinator.solcast.dampening.factors = {}
+                    path = Path(coordinator.solcast.dampening.get_filename())
                     if path.exists():
                         path.unlink()
-            await coordinator.solcast.apply_forward_dampening()
+            await coordinator.solcast.dampening.apply_forward()
 
         if damp_changed or changed(USE_ACTUALS):
             recalculate_and_refresh = True
@@ -926,7 +569,7 @@ async def async_update_options(hass: HomeAssistant, entry: ConfigEntry) -> None:
             if entry.options.get(GET_ACTUALS):
                 await coordinator.solcast.build_actual_data()
         elif recalculate_splines:
-            await coordinator.solcast.recalculate_splines()
+            await coordinator.solcast.query.recalculate_splines()
         coordinator.set_data_updated(True)
         await coordinator.update_integration_listeners()
         coordinator.set_data_updated(False)
