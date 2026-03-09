@@ -571,6 +571,24 @@ const $216640a6cb8d8606$export$19efda5681568302 = (superClass)=>{
 
 
 /**
+ * @file handle-expand-event.ts
+ * @description Handles expand/collapse events for entity rows in the device card
+ */ const $e0b9cfe4671c52ff$export$1a8cd32250c148d8 = (ev, expansions, updateExpansions)=>{
+    const entityId = ev.detail?.device_card?.entity_id;
+    if (ev.detail?.device_card?.expand && entityId) {
+        ev.stopPropagation();
+        updateExpansions({
+            ...expansions,
+            expandedEntities: {
+                ...expansions.expandedEntities,
+                [entityId]: !expansions.expandedEntities[entityId]
+            }
+        });
+    }
+};
+
+
+/**
  * Checks if a string matches a pattern which can be:
  * - Exact match
  * - Wildcard pattern with * (e.g., "sensor_*")
@@ -745,7 +763,8 @@ function $043ab5348dd51237$export$c0e85c3982a3daa6(stateObj, state) {
 
 
 const $093edc2594769ee5$export$c6a2d06cc40e579 = (hass, config, deviceId, deviceName)=>{
-    const deviceEntities = Object.values(hass.entities).filter((entity)=>entity.device_id === deviceId && !entity.hidden).map((entity)=>{
+    const includeHidden = config.features?.includes('show_hidden_entities');
+    const deviceEntities = Object.values(hass.entities).filter((entity)=>entity.device_id === deviceId && (includeHidden || !entity.hidden)).map((entity)=>{
         const state = (0, $e24dedcf9e480b2d$export$50fdfeece43146fd)(hass, entity.entity_id);
         if (state === undefined) return;
         // convenience
@@ -759,7 +778,13 @@ const $093edc2594769ee5$export$c6a2d06cc40e579 = (hass, config, deviceId, device
             isProblemEntity: state.attributes.device_class === 'problem',
             isActive: active,
             config: {
-                tap_action: config.tap_action,
+                tap_action: config.tap_action || {
+                    action: 'fire-dom-event',
+                    device_card: {
+                        expand: true,
+                        entity_id: entity.entity_id
+                    }
+                },
                 hold_action: config.hold_action || {
                     action: 'more-info'
                 },
@@ -1832,169 +1857,7 @@ const $e1ab409cd148a528$export$4742c54ffa379383 = (entities, sortConfig)=>{
  * @description Entity row rendering for the device card
  * This file handles the rendering of individual entity rows within the device card,
  * including their state content, percentage bars, and expandable attribute details.
- */ /**
- * https://github.com/home-assistant/frontend/blob/dev/src/common/dom/fire_event.ts
- */ // Polymer legacy event helpers used courtesy of the Polymer project.
-//
-// Copyright (c) 2017 The Polymer Authors. All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are
-// met:
-//
-//    * Redistributions of source code must retain the above copyright
-// notice, this list of conditions and the following disclaimer.
-//    * Redistributions in binary form must reproduce the above
-// copyright notice, this list of conditions and the following disclaimer
-// in the documentation and/or other materials provided with the
-// distribution.
-//    * Neither the name of Google Inc. nor the names of its
-// contributors may be used to endorse or promote products derived from
-// this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-const $9c83ab07519e6203$export$43835e9acf248a15 = (node, type, detail, options)=>{
-    options = options || {};
-    // @ts-ignore
-    // Intentional: SonarQube cleanup - using ?? instead of explicit check
-    detail = detail ?? {};
-    const event = new Event(type, {
-        bubbles: options.bubbles ?? true,
-        cancelable: Boolean(options.cancelable),
-        composed: options.composed ?? true
-    });
-    event.detail = detail;
-    node.dispatchEvent(event);
-    return event;
-};
-
-
-/**
- * https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/common/directives/action-handler-directive.ts
  */ 
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */ const $107bb7d062dde330$export$9ba3b3f20a85bfa = {
-    ATTRIBUTE: 1,
-    CHILD: 2,
-    PROPERTY: 3,
-    BOOLEAN_ATTRIBUTE: 4,
-    EVENT: 5,
-    ELEMENT: 6
-}, $107bb7d062dde330$export$99b43ad1ed32e735 = (t)=>(...e)=>({
-            _$litDirective$: t,
-            values: e
-        });
-class $107bb7d062dde330$export$befdefbdce210f91 {
-    constructor(t){}
-    get _$AU() {
-        return this._$AM._$AU;
-    }
-    _$AT(t, e, i) {
-        this._$Ct = t, this._$AM = e, this._$Ci = i;
-    }
-    _$AS(t, e) {
-        return this.update(t, e);
-    }
-    update(t, e) {
-        return this.render(...e);
-    }
-}
-
-
-
-
-const $69fb27e443983086$var$getActionHandler = ()=>{
-    const body = document.body;
-    if (body.querySelector('action-handler')) return body.querySelector('action-handler');
-    const actionhandler = document.createElement('action-handler');
-    body.appendChild(actionhandler);
-    return actionhandler;
-};
-const $69fb27e443983086$export$520aee61eb0a2770 = (element, options)=>{
-    const actionhandler = $69fb27e443983086$var$getActionHandler();
-    if (!actionhandler) return;
-    actionhandler.bind(element, options);
-};
-const $69fb27e443983086$export$8a44987212de21b = (0, $107bb7d062dde330$export$99b43ad1ed32e735)(class extends (0, $107bb7d062dde330$export$befdefbdce210f91) {
-    update(part, [options]) {
-        $69fb27e443983086$export$520aee61eb0a2770(part.element, options);
-        return 0, $f58f44579a4747ac$export$9c068ae9cc5db4e8;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    render(_options) {}
-});
-
-
-/**
- * Toggles the expanded state of an entity row to show/hide attributes
- *
- * @param {HTMLElement} element - The card component instance
- * @param {Expansions} expansions - The expansions object for managing entity states
- * @param {string} entityId - The entity ID to toggle
- * @param {Event} e - The click event that triggered the toggle
- */ const $57febad8376708f1$var$toggleEntityAttributes = (expansions, entityId, e, updateExpansions)=>{
-    // Prevent event from bubbling up
-    e.stopPropagation();
-    updateExpansions({
-        ...expansions,
-        expandedEntities: {
-            ...expansions.expandedEntities,
-            [entityId]: !expansions.expandedEntities[entityId]
-        }
-    });
-};
-const $57febad8376708f1$export$8a44987212de21b = (entity)=>{
-    const isActionEnabled = (actionConfig)=>actionConfig?.action !== 'none' && actionConfig?.action !== undefined;
-    return (0, $69fb27e443983086$export$8a44987212de21b)({
-        hasDoubleClick: isActionEnabled(entity.config?.double_tap_action),
-        hasHold: isActionEnabled(entity.config?.hold_action)
-    });
-};
-const $57febad8376708f1$export$3d3654ce4577c53d = (element, expansions, entity, updateExpansions)=>{
-    return {
-        /**
-     * Handles an action event by creating and dispatching a 'hass-action' custom event.
-     * The event contains the entity configuration and the action type (tap, double_tap, hold).
-     *
-     * @param {ActionHandlerEvent} ev - The action handler event to process
-     */ handleEvent: (ev)=>{
-            // Extract action from event detail
-            const action = ev.detail?.action;
-            if (!action) return;
-            // If the action is 'tap' and no specific tap action is set, toggle entity attributes
-            if (action === 'tap' && !entity.config?.tap_action) {
-                $57febad8376708f1$var$toggleEntityAttributes(expansions, entity.entity_id, ev, updateExpansions);
-                return;
-            }
-            // Create configuration object for the action
-            const actionConfig = {
-                entity: entity.entity_id,
-                ...entity.config
-            };
-            // @ts-ignore
-            (0, $9c83ab07519e6203$export$43835e9acf248a15)(element, 'hass-action', {
-                config: actionConfig,
-                action: action
-            });
-        }
-    };
-};
-
-
-
 
 const $5cc8c88379d13dba$export$16bd37df0047a29c = (attributes)=>{
     // Filter out common attributes that are less interesting or already shown
@@ -2032,6 +1895,37 @@ const $5cc8c88379d13dba$export$16bd37df0047a29c = (attributes)=>{
 
 
 
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */ const $107bb7d062dde330$export$9ba3b3f20a85bfa = {
+    ATTRIBUTE: 1,
+    CHILD: 2,
+    PROPERTY: 3,
+    BOOLEAN_ATTRIBUTE: 4,
+    EVENT: 5,
+    ELEMENT: 6
+}, $107bb7d062dde330$export$99b43ad1ed32e735 = (t)=>(...e)=>({
+            _$litDirective$: t,
+            values: e
+        });
+class $107bb7d062dde330$export$befdefbdce210f91 {
+    constructor(t){}
+    get _$AU() {
+        return this._$AM._$AU;
+    }
+    _$AT(t, e, i) {
+        this._$Ct = t, this._$AM = e, this._$Ci = i;
+    }
+    _$AS(t, e) {
+        return this.update(t, e);
+    }
+    update(t, e) {
+        return this.render(...e);
+    }
+}
 
 
 /**
@@ -2108,20 +2002,13 @@ const $a6a6434f1848f426$export$40075bc608c4544e = (entity, inverseEntities = [])
 const $91384c06f34fa41f$export$535a09426ee2ea59 = async (hass, entity, className)=>{
     // Load the card helpers
     const helpers = await globalThis.loadCardHelpers();
-    // Create the row configuration, we will handle actions ourselves
+    // Create the row configuration - HA's row handles actions using our config.
     const config = {
         entity: entity.entity_id,
         // our name removes the device name from the friendly name
         name: entity.name,
-        tap_action: {
-            action: 'none'
-        },
-        hold_action: {
-            action: 'none'
-        },
-        double_tap_action: {
-            action: 'none'
-        }
+        // add our actions
+        ...entity.config
     };
     // Create the row element
     const element = helpers.createRowElement(config);
@@ -2133,7 +2020,7 @@ const $91384c06f34fa41f$export$535a09426ee2ea59 = async (hass, entity, className
 };
 
 
-const $68e7242076c3e34e$export$120ff0929b202a6d = async (hass, entity, element, expansions, updateExpansions, config)=>{
+const $68e7242076c3e34e$export$120ff0929b202a6d = async (hass, entity, expansions, config)=>{
     let statusClassName;
     // Determine status class based on problem state
     if (entity.isProblemEntity) // Add color to problem class based on state
@@ -2152,8 +2039,6 @@ const $68e7242076c3e34e$export$120ff0929b202a6d = async (hass, entity, element, 
         statusClassName,
         isEntityExpanded ? 'expanded-row' : ''
     ].join(' ')}"
-    @action=${(0, $57febad8376708f1$export$3d3654ce4577c53d)(element, expansions, entity, updateExpansions)}
-    .actionHandler=${(0, $57febad8376708f1$export$8a44987212de21b)(entity)}
   >
     <div class="row-content">
       ${stateContentResult}
@@ -2204,14 +2089,14 @@ const $2ae7b32fc5b69f7f$export$ae9a281c4379b144 = (expansion, title, entities, i
   </div>`;
 
 
-const $9b8ea5fddc8bd48e$export$4c0287abd2ec956e = async (element, expansions, hass, config, title, entities, updateExpansions)=>{
+const $9b8ea5fddc8bd48e$export$4c0287abd2ec956e = async (expansions, hass, config, title, entities, updateExpansions)=>{
     // Don't render anything if there are no entities to display
     if (!entities || entities.length === 0) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
     // Determine how many entities to preview based on config
     const size = config.preview_count ?? 3;
     // Check if this section needs collapsible functionality
     const needsExpansion = entities.length > size;
-    // Get the current expanded state from the element
+    // Get the current expanded state
     const isExpanded = expansions.expandedSections[title] || false;
     // Sort and filter entities based on expanded state
     const sortedEntities = (0, $e1ab409cd148a528$export$4742c54ffa379383)(entities, config.sort);
@@ -2220,7 +2105,7 @@ const $9b8ea5fddc8bd48e$export$4c0287abd2ec956e = async (element, expansions, ha
     const isCompact = (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'compact');
     const sectionClass = `section ${isExpanded ? 'expanded' : ''} ${needsExpansion ? '' : 'few-items'} ${isCompact ? 'compact' : ''}`;
     // Render all rows asynchronously
-    const rowPromises = displayEntities.map((entity)=>(0, $68e7242076c3e34e$export$120ff0929b202a6d)(hass, entity, element, expansions, updateExpansions, config));
+    const rowPromises = displayEntities.map((entity)=>(0, $68e7242076c3e34e$export$120ff0929b202a6d)(hass, entity, expansions, config));
     const rowResults = await Promise.all(rowPromises);
     return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div class="${sectionClass}">
     <div class="section-header">
@@ -2233,7 +2118,7 @@ const $9b8ea5fddc8bd48e$export$4c0287abd2ec956e = async (element, expansions, ha
 };
 
 
-const $10f7eb590266dd05$export$7dcefa9ef83b8269 = async (element, expansions, hass, config, device, updateExpansions)=>{
+const $10f7eb590266dd05$export$7dcefa9ef83b8269 = async (expansions, hass, config, device, updateExpansions)=>{
     const sectionConfig = [
         {
             name: (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'sections.controls'),
@@ -2265,7 +2150,7 @@ const $10f7eb590266dd05$export$7dcefa9ef83b8269 = async (element, expansions, ha
         });
     } else // default order
     orderedSections = sectionConfig;
-    const sectionPromises = orderedSections.map((section)=>(0, $9b8ea5fddc8bd48e$export$4c0287abd2ec956e)(element, expansions, hass, config, section.name, section.entities, updateExpansions));
+    const sectionPromises = orderedSections.map((section)=>(0, $9b8ea5fddc8bd48e$export$4c0287abd2ec956e)(expansions, hass, config, section.name, section.entities, updateExpansions));
     const sectionResults = await Promise.all(sectionPromises);
     return sectionResults.filter((result)=>result !== (0, $f58f44579a4747ac$export$45b790e32b2810ee));
 };
@@ -2703,7 +2588,10 @@ class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $216640a6cb8d8606$ex
         } else if (entity) // If header is hidden but we have an entity state to show
         headerContent = (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div class="entity-state-only">${entity}</div>`;
         return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`
-      <ha-card class="${problem ? 'problem' : ''}">
+      <ha-card
+        class="${problem ? 'problem' : ''}"
+        @ll-custom=${(ev)=>(0, $e0b9cfe4671c52ff$export$1a8cd32250c148d8)(ev, this._expansions, (e)=>this._expansions = e)}
+      >
         ${headerContent}
         ${this.collapse ? (0, $f58f44579a4747ac$export$45b790e32b2810ee) : this._renderSectionsTask.render({
             initial: ()=>(0, $f58f44579a4747ac$export$45b790e32b2810ee),
@@ -2727,7 +2615,7 @@ class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $216640a6cb8d8606$ex
    */ this._renderSectionsTask = new (0, $1dfff43fc77cdecb$export$2dea7024bcdd7731)(this, {
             task: async ([device, config, hass, expansions])=>{
                 if (!device || !config || !hass) return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)``;
-                const sections = await (0, $10f7eb590266dd05$export$7dcefa9ef83b8269)(this, expansions, hass, config, device, (e)=>this._expansions = e);
+                const sections = await (0, $10f7eb590266dd05$export$7dcefa9ef83b8269)(expansions, hass, config, device, (e)=>this._expansions = e);
                 return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`${sections}`;
             },
             args: ()=>[
@@ -3054,6 +2942,10 @@ const $84451a3e48ae541f$var$featuresSchema = (integration, entities)=>{
                             {
                                 label: 'Start Collapsed',
                                 value: 'collapse'
+                            },
+                            {
+                                label: 'Show Hidden Entities',
+                                value: 'show_hidden_entities'
                             }
                         ]
                     }
@@ -3153,6 +3045,52 @@ const $84451a3e48ae541f$export$da5c1d4caabd4738 = (hass, config)=>{
     ];
 };
 
+
+/**
+ * https://github.com/home-assistant/frontend/blob/dev/src/common/dom/fire_event.ts
+ */ // Polymer legacy event helpers used courtesy of the Polymer project.
+//
+// Copyright (c) 2017 The Polymer Authors. All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+//    * Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//    * Redistributions in binary form must reproduce the above
+// copyright notice, this list of conditions and the following disclaimer
+// in the documentation and/or other materials provided with the
+// distribution.
+//    * Neither the name of Google Inc. nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+const $9c83ab07519e6203$export$43835e9acf248a15 = (node, type, detail, options)=>{
+    options = options || {};
+    // @ts-ignore
+    // Intentional: SonarQube cleanup - using ?? instead of explicit check
+    detail = detail ?? {};
+    const event = new Event(type, {
+        bubbles: options.bubbles ?? true,
+        cancelable: Boolean(options.cancelable),
+        composed: options.composed ?? true
+    });
+    event.detail = detail;
+    node.dispatchEvent(event);
+    return event;
+};
 
 
 
@@ -3563,7 +3501,7 @@ class $bb372a36f92bd9c9$export$9e322cdd8735282 extends (0, $ab210b2da7b39b9d$exp
 
 
 var $b06602ab53bd58a3$exports = {};
-$b06602ab53bd58a3$exports = JSON.parse("{\"name\":\"device-card\",\"version\":\"0.16.0\",\"author\":\"Patrick Masters\",\"license\":\"ISC\",\"description\":\"Custom Home Assistant card to show info about your devices.\",\"source\":\"src/index.ts\",\"module\":\"dist/device-card.js\",\"targets\":{\"module\":{\"includeNodeModules\":true}},\"scripts\":{\"watch\":\"parcel watch\",\"build\":\"parcel build\",\"format\":\"prettier --write .\",\"test\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha\",\"test:coverage\":\"nyc yarn test\",\"test:watch\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha --watch\",\"update\":\"npx npm-check-updates -u && yarn install\"},\"devDependencies\":{\"@istanbuljs/nyc-config-typescript\":\"^1.0.2\",\"@open-wc/testing\":\"^4.0.0\",\"@parcel/transformer-inline-string\":\"^2.15.4\",\"@testing-library/dom\":\"^10.4.1\",\"@trivago/prettier-plugin-sort-imports\":\"^5.2.2\",\"@types/chai\":\"^5.2.2\",\"@types/jsdom\":\"^21.1.7\",\"@types/mocha\":\"^10.0.10\",\"@types/sinon\":\"^17.0.4\",\"chai\":\"^5.2.1\",\"jsdom\":\"^26.1.0\",\"mocha\":\"^11.7.1\",\"nyc\":\"^17.1.0\",\"parcel\":\"^2.15.4\",\"prettier\":\"3.6.2\",\"prettier-plugin-organize-imports\":\"^4.2.0\",\"proxyquire\":\"^2.1.3\",\"sinon\":\"^21.0.0\",\"ts-node\":\"^10.9.2\",\"tsconfig-paths\":\"^4.2.0\",\"typescript\":\"^5.9.2\"},\"dependencies\":{\"@lit/task\":\"^1.0.3\",\"fast-deep-equal\":\"^3.1.3\",\"lit\":\"^3.3.1\"}}");
+$b06602ab53bd58a3$exports = JSON.parse("{\"name\":\"device-card\",\"version\":\"0.17.0\",\"author\":\"Patrick Masters\",\"license\":\"ISC\",\"description\":\"Custom Home Assistant card to show info about your devices.\",\"source\":\"src/index.ts\",\"module\":\"dist/device-card.js\",\"targets\":{\"module\":{\"includeNodeModules\":true}},\"scripts\":{\"watch\":\"parcel watch\",\"build\":\"parcel build\",\"format\":\"prettier --write .\",\"test\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha\",\"test:coverage\":\"nyc yarn test\",\"test:watch\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha --watch\",\"update\":\"npx npm-check-updates -u && yarn install\"},\"devDependencies\":{\"@istanbuljs/nyc-config-typescript\":\"^1.0.2\",\"@open-wc/testing\":\"^4.0.0\",\"@parcel/transformer-inline-string\":\"^2.15.4\",\"@testing-library/dom\":\"^10.4.1\",\"@trivago/prettier-plugin-sort-imports\":\"^5.2.2\",\"@types/chai\":\"^5.2.2\",\"@types/jsdom\":\"^21.1.7\",\"@types/mocha\":\"^10.0.10\",\"@types/sinon\":\"^17.0.4\",\"chai\":\"^5.2.1\",\"jsdom\":\"^26.1.0\",\"mocha\":\"^11.7.1\",\"nyc\":\"^17.1.0\",\"parcel\":\"^2.15.4\",\"prettier\":\"3.6.2\",\"prettier-plugin-organize-imports\":\"^4.2.0\",\"proxyquire\":\"^2.1.3\",\"sinon\":\"^21.0.0\",\"ts-node\":\"^10.9.2\",\"tsconfig-paths\":\"^4.2.0\",\"typescript\":\"^5.9.2\"},\"dependencies\":{\"@lit/task\":\"^1.0.3\",\"fast-deep-equal\":\"^3.1.3\",\"lit\":\"^3.3.1\"}}");
 
 
 // Register the custom elements with the browser
