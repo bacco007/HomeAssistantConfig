@@ -104,9 +104,9 @@ def parse_data(inData, tz, host, port, ssl, theaters, urlbase):
     card_json.append(DEFAULT_PARSE_DICT)
     for movie in sorted(data, key=lambda i: i['path']):
         card_item = {}
+        handled = False
         if(movie.get('_nearest_release_type') == 'inCinemas' or ('inCinemas' in movie and days_until(movie['inCinemas'], tz) > -1 and '_nearest_release_type' not in movie)):
             if not theaters:
-                # Check if there are other future releases to show instead
                 if 'digitalRelease' in movie and days_until(movie['digitalRelease'], tz) > -1:
                     movie['_nearest_release_type'] = 'digitalRelease'
                 elif 'physicalRelease' in movie and days_until(movie['physicalRelease'], tz) > -1:
@@ -119,32 +119,34 @@ def parse_data(inData, tz, host, port, ssl, theaters, urlbase):
                     card_item['release'] = 'In Theaters $day'
                 else:
                     card_item['release'] = 'In Theaters $day, $date'
-        if movie.get('_nearest_release_type') == 'digitalRelease' or ('digitalRelease' in movie and '_nearest_release_type' not in movie):
-            card_item['airdate'] = movie['digitalRelease']
-            try:
-                days_to_release = days_until(movie['digitalRelease'], tz)
-            except:
-                days_to_release = -1  # Treat as past release if date parsing fails
-            if days_to_release < 0:
-                card_item['release'] = 'Available Online'
-            elif days_to_release <= 7:
-                card_item['release'] = 'Available Online $day'
+                handled = True
+        if not handled:
+            if movie.get('_nearest_release_type') == 'digitalRelease' or ('digitalRelease' in movie and '_nearest_release_type' not in movie):
+                card_item['airdate'] = movie['digitalRelease']
+                try:
+                    days_to_release = days_until(movie['digitalRelease'], tz)
+                except:
+                    days_to_release = -1  # Treat as past release if date parsing fails
+                if days_to_release < 0:
+                    card_item['release'] = 'Available Online'
+                elif days_to_release <= 7:
+                    card_item['release'] = 'Available Online $day'
+                else:
+                    card_item['release'] = 'Available Online $day, $date'
+            elif movie.get('_nearest_release_type') == 'physicalRelease' or ('physicalRelease' in movie and '_nearest_release_type' not in movie):
+                card_item['airdate'] = movie['physicalRelease']
+                try:
+                    days_to_release = days_until(movie['physicalRelease'], tz)
+                except:
+                    days_to_release = -1  # Treat as past release if date parsing fails
+                if days_to_release < 0:
+                    card_item['release'] = 'Available'
+                elif days_to_release <= 7:
+                    card_item['release'] = 'Available $day'
+                else:
+                    card_item['release'] = 'Available $day, $date'
             else:
-                card_item['release'] = 'Available Online $day, $date'
-        elif movie.get('_nearest_release_type') == 'physicalRelease' or ('physicalRelease' in movie and '_nearest_release_type' not in movie):
-            card_item['airdate'] = movie['physicalRelease']
-            try:
-                days_to_release = days_until(movie['physicalRelease'], tz)
-            except:
-                days_to_release = -1  # Treat as past release if date parsing fails
-            if days_to_release < 0:
-                card_item['release'] = 'Available'
-            elif days_to_release <= 7:
-                card_item['release'] = 'Available $day'
-            else:
-                card_item['release'] = 'Available $day, $date'
-        else:
-            continue
+                continue
 
         card_item['flag'] = movie.get('hasFile', '')
         card_item['title'] = movie.get('title', '')
