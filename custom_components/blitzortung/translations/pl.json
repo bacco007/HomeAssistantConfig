@@ -36,9 +36,15 @@
       }
     }
   },
+  "exceptions": {
+    "mqtt_connect_not_ready": {
+      "message": "Nie udało się połączyć z serwerem MQTT Blitzortung: {error}"
+    }
+  },
   "entity": {
     "sensor": {
       "azimuth": {
+        "name": "Azymut błyskawicy",
         "state_attributes": {
           "lat": {
             "name": "Szerokość geograficzna"
@@ -48,7 +54,11 @@
           }
         }
       },
+      "counter": {
+        "name": "Licznik błyskawic"
+      },
       "distance": {
+        "name": "Odległość błyskawicy",
         "state_attributes": {
           "lat": {
             "name": "Szerokość geograficzna"

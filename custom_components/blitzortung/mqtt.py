@@ -11,7 +11,7 @@ import attr
 import paho.mqtt.client as mqtt
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers.dispatcher import dispatcher_send
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.util import dt as dt_util
 from paho.mqtt.matcher import MQTTMatcher
 
@@ -96,7 +96,7 @@ class MQTT:
         self.keepalive = keepalive
         self.subscriptions: list[Subscription] = []
         self.connected = False
-        self._mqttc: mqtt.Client = None
+        self._mqttc: mqtt.Client
         self._paho_lock = asyncio.Lock()
 
         self.init_client()
@@ -123,20 +123,16 @@ class MQTT:
     async def async_connect(self) -> None:
         """Connect to the host. Does not process messages yet."""
         result: int | None = None
-        try:
-            result = await self.hass.async_add_executor_job(
-                self._mqttc.connect,
-                self.host,
-                self.port,
-                self.keepalive,
-            )
-        except OSError as err:
-            _LOGGER.error("Failed to connect to MQTT server due to exception: %s", err)
+
+        result = await self.hass.async_add_executor_job(
+            self._mqttc.connect,
+            self.host,
+            self.port,
+            self.keepalive,
+        )
 
         if result is not None and result != 0:
-            _LOGGER.error(
-                "Failed to connect to MQTT server: %s", mqtt.error_string(result)
-            )
+            _raise_on_error(result)
 
         self._mqttc.loop_start()
 
@@ -226,7 +222,9 @@ class MQTT:
             return
 
         self.connected = True
-        dispatcher_send(self.hass, MQTT_CONNECTED)
+        self.hass.loop.call_soon_threadsafe(
+            async_dispatcher_send, self.hass, MQTT_CONNECTED
+        )
         _LOGGER.info(
             "Connected to MQTT server %s:%s (%s)",
             self.host,
@@ -289,7 +287,9 @@ class MQTT:
     def _mqtt_on_disconnect(self, _mqttc, _userdata, result_code: int) -> None:  # noqa: ANN001
         """Disconnected callback."""
         self.connected = False
-        dispatcher_send(self.hass, MQTT_DISCONNECTED)
+        self.hass.loop.call_soon_threadsafe(
+            async_dispatcher_send, self.hass, MQTT_DISCONNECTED
+        )
         _LOGGER.info(
             "Disconnected from MQTT server %s:%s (%s)",
             self.host,

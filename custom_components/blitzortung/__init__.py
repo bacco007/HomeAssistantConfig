@@ -7,10 +7,13 @@ from collections.abc import Callable
 from typing import Any
 
 import voluptuous as vol
-from homeassistant.components.sensor import SensorDeviceClass
+from homeassistant.components.persistent_notification import (
+    async_create as async_create_notification,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME, UnitOfLength
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.typing import ConfigType
@@ -93,8 +96,16 @@ async def async_setup_entry(
         server_stats=config.get(SERVER_STATS),
     )
 
+    try:
+        await config_entry.runtime_data.connect()
+    except (HomeAssistantError, OSError) as err:
+        raise ConfigEntryNotReady(
+            translation_domain=DOMAIN,
+            translation_key="mqtt_connect_not_ready",
+            translation_placeholders={"error": str(err)},
+        ) from err
+
     await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
-    await config_entry.runtime_data.connect()
 
     if not config_entry.update_listeners:
         config_entry.add_update_listener(async_update_options)
@@ -104,7 +115,7 @@ async def async_setup_entry(
 
 async def async_update_options(
     hass: HomeAssistant, config_entry: BlitzortungConfigEntry
-) -> bool:
+) -> None:
     """Update options."""
     _LOGGER.info("async_update_options")
     await hass.config_entries.async_reload(config_entry.entry_id)
@@ -131,24 +142,34 @@ async def async_migrate_entry(
         radius = entry.data[CONF_RADIUS]
         name = entry.data[CONF_NAME]
 
-        entry.unique_id = f"{latitude}-{longitude}-{name}-lightning"
-        entry.data = {CONF_NAME: name}
-        entry.options = {
+        new_unique_id = f"{latitude}-{longitude}-{name}-lightning"
+        new_data = {CONF_NAME: name}
+        new_options = {
             CONF_LATITUDE: latitude,
             CONF_LONGITUDE: longitude,
             CONF_RADIUS: radius,
         }
-        entry.version = 2
+
+        hass.config_entries.async_update_entry(
+            entry,
+            unique_id=new_unique_id,
+            data=new_data,
+            options=new_options,
+            version=2,
+        )
     if entry.version == 2:  # noqa: PLR2004
-        entry.options = dict(entry.options)
-        entry.options[CONF_IDLE_RESET_TIMEOUT] = DEFAULT_IDLE_RESET_TIMEOUT
-        entry.version = 3
+        new_options = entry.options.copy()
+        new_options[CONF_IDLE_RESET_TIMEOUT] = DEFAULT_IDLE_RESET_TIMEOUT
+
+        hass.config_entries.async_update_entry(entry, options=new_options, version=3)
     if entry.version == 3:  # noqa: PLR2004
-        entry.options = dict(entry.options)
-        entry.options[CONF_TIME_WINDOW] = entry.options.pop(
+        new_options = entry.options.copy()
+
+        new_options[CONF_TIME_WINDOW] = new_options.pop(
             CONF_IDLE_RESET_TIMEOUT, DEFAULT_TIME_WINDOW
         )
-        entry.version = 4
+
+        hass.config_entries.async_update_entry(entry, options=new_options, version=4)
     if entry.version == 4:  # noqa: PLR2004
         new_data = entry.data.copy()
 
@@ -167,9 +188,14 @@ async def async_migrate_entry(
             CONF_TIME_WINDOW: time_window,
             CONF_MAX_TRACKED_LIGHTNINGS: max_tracked_lightnings,
         }
+        new_unique_id = f"{latitude}-{longitude}"
 
         hass.config_entries.async_update_entry(
-            entry, data=new_data, options=new_options, version=5
+            entry,
+            unique_id=new_unique_id,
+            data=new_data,
+            options=new_options,
+            version=5,
         )
 
     return True
@@ -283,6 +309,11 @@ class BlitzortungCoordinator:
         await self.mqtt_client.async_disconnect()
         for cb in self._disconnect_callbacks:
             cb()
+        self._disconnect_callbacks.clear()
+        self.sensors.clear()
+        self.callbacks.clear()
+        self.lightning_callbacks.clear()
+        self.on_tick_callbacks.clear()
 
     def on_hello_message(self, message: Message, *args: Any) -> None:  # noqa: ARG002
         """Handle incoming hello message."""
@@ -304,7 +335,7 @@ class BlitzortungCoordinator:
             current_version = parse_version(__version__)
             if latest_version > current_version:
                 _LOGGER.info("new version is available: %s", latest_version_str)
-                self.hass.components.persistent_notification.async_create(
+                async_create_notification(
                     title=latest_version_title,
                     message=latest_version_message,
                     notification_id="blitzortung_new_version_available",
@@ -317,7 +348,7 @@ class BlitzortungCoordinator:
         if message.topic.startswith("blitzortung/1.1"):
             lightning = json_loads_object(message.payload)
             self.compute_polar_coords(lightning)
-            if lightning[SensorDeviceClass.DISTANCE] < self.radius:
+            if lightning[ATTR_LIGHTNING_DISTANCE] < self.radius:
                 _LOGGER.debug("lightning data: %s", lightning)
                 self.last_time = time.time()
                 for cb in self.lightning_callbacks:

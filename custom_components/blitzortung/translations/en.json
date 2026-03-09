@@ -36,9 +36,15 @@
       }
     }
   },
+  "exceptions": {
+    "mqtt_connect_not_ready": {
+      "message": "Failed to connect to Blitzortung MQTT server: {error}"
+    }
+  },
   "entity": {
     "sensor": {
       "azimuth": {
+        "name": "Lightning azimuth",
         "state_attributes": {
           "lat": {
             "name": "Latitude"
@@ -48,7 +54,11 @@
           }
         }
       },
+      "counter": {
+        "name": "Lightning counter"
+      },
       "distance": {
+        "name": "Lightning distance",
         "state_attributes": {
           "lat": {
             "name": "Latitude"
