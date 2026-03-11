@@ -21,8 +21,17 @@ def calculate_heat_index(temperature: float, humidity: float) -> float:
     """
     Calculate Heat Index (HI) for high temperatures (≥ 27°C).
 
-    Uses the NWS algorithm with adjustments for edge cases.
-    Note: The formula works in Fahrenheit, so we convert inputs and outputs.
+    Uses the Rothfusz regression equation from NWS Technical Attachment SR 90-23,
+    with low-humidity and high-humidity adjustments per the NWS Weather Prediction
+    Center algorithm. The formula operates in Fahrenheit internally.
+
+    References:
+        Rothfusz, L.P. (1990). "The Heat Index 'Equation'."
+        NWS Technical Attachment SR/SSD 90-23.
+        https://www.weather.gov/media/ffc/ta_htindx.PDF
+
+        NWS WPC Heat Index calculation:
+        https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml
     """
     # Convert Celsius to Fahrenheit for calculation
     t_f = (temperature * 9/5) + 32
@@ -66,8 +75,18 @@ def calculate_heat_index(temperature: float, humidity: float) -> float:
 def calculate_wind_chill(temperature: float, wind_speed: float) -> float:
     """Calculate Wind Chill Temperature (WCT) for low temperatures (≤ 10°C).
 
-    Uses the North American / UK wind chill index formula.
+    Uses the JAG/TI wind chill formula jointly adopted by Environment Canada
+    and the US National Weather Service for the 2001/2002 winter season.
     Temperature in °C, wind_speed in m/s (converted to km/h for the formula).
+    Minimum wind threshold: 4.828 km/h (3 mph per NWS specification).
+
+    References:
+        Osczevski, R. & Bluestein, M. (2005). "The new wind chill equivalent
+        temperature chart." Bulletin of the American Meteorological Society,
+        86(10), 1453-1458. DOI: 10.1175/BAMS-86-10-1453
+
+        NWS Wind Chill Chart:
+        https://www.weather.gov/safety/cold-wind-chill-chart
     """
     t = temperature
     # Convert m/s to km/h as the formula requires km/h
@@ -84,7 +103,20 @@ def calculate_wind_chill(temperature: float, wind_speed: float) -> float:
 def calculate_steadman_apparent_temp(
     temperature: float, humidity: float, wind_speed: float
 ) -> float:
-    """Calculate Steadman Apparent Temperature for universal range."""
+    """Calculate Steadman Apparent Temperature for universal range.
+
+    AT = T + 0.33*e - 0.70*v - 4.00, where e is vapor pressure (hPa)
+    calculated via the Tetens equation. Adopted by the Australian Bureau
+    of Meteorology (BOM).
+
+    References:
+        Steadman, R.G. (1994). "Norms of apparent temperature in Australia."
+        Australian Meteorological Magazine, 43, 1-16.
+        http://www.bom.gov.au/jshess/docs/1994/steadman.pdf
+
+        BOM Thermal Stress information:
+        https://www.bom.gov.au/info/thermal_stress/
+    """
     t = temperature
     v = wind_speed
 
@@ -98,7 +130,17 @@ def calculate_steadman_apparent_temp(
 def apply_solar_correction(
     feels_like: float, time_of_day: Optional[datetime] = None, cloudiness: float = 0
 ) -> float:
-    """Apply solar radiation correction based on time of day and cloudiness."""
+    """Apply solar radiation correction based on time of day and cloudiness.
+
+    Uses a half-sine model for diurnal solar intensity distribution,
+    a well-established approach in solar energy literature.
+
+    References:
+        Collares-Pereira, M. & Rabl, A. (1979). "The average distribution
+        of solar radiation — correlations between diffuse and hemispherical
+        and between daily and hourly insolation values." Solar Energy,
+        22, 155-164. DOI: 10.1016/0038-092X(79)90100-2
+    """
     if time_of_day is None:
         time_of_day = datetime.now()
 
@@ -139,15 +181,24 @@ def apply_solar_correction(
         )
     
     # Nighttime cooling effect (minor)
-    elif 22 <= hour or hour <= 4:
-        # Very slight cooling at night
+    elif hour >= 19 or hour <= 4:
+        # Very slight cooling at night / evening
         solar_factor = -0.5
     
     return feels_like + solar_factor
 
 
 def apply_pressure_correction(feels_like: float, pressure: Optional[float] = None) -> float:
-    """Apply pressure correction to feels-like temperature."""
+    """Apply pressure correction to feels-like temperature.
+
+    Uses a simplified linear heuristic: correction = 0.1 * (101.3 - pressure).
+    Standard atmospheric pressure is 101.325 kPa (10th CGPM, 1954).
+
+    Note: This is a custom heuristic, not a peer-reviewed formula. Research on
+    barometric pressure effects on thermal comfort exists (e.g. Ruivo et al.,
+    2021, PMVaps model), but the specific linear coefficient used here is an
+    empirical approximation.
+    """
     if pressure is None or pressure <= 0:
         return feels_like
 
@@ -316,11 +367,6 @@ def determine_outdoor_comfort(feels_like: float, method: str) -> str:
         COMFORT_SLIGHTLY_WARM, COMFORT_WARM, COMFORT_HOT,
         COMFORT_VERY_HOT, COMFORT_EXTREME_HOT
     )
-
-    # Sanity check - if feels_like is unreasonable, use more conservative estimate
-    if feels_like > 60:  # Unreasonably high temperature
-        _LOGGER.warning("Calculated feels-like temperature is unreasonably high: %s°C. Using more conservative estimate.", feels_like)
-        feels_like = min(feels_like, 50)  # Cap at 50°C which is still extremely hot
 
     if method == "Heat Index":
         if feels_like >= 54:

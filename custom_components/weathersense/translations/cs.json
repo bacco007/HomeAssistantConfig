@@ -1,0 +1,49 @@
+{
+  "config": {
+    "title": "HA WeatherSense",
+    "step": {
+      "user": {
+        "title": "Nastavit HA WeatherSense",
+        "description": "Nastavte senzor pro výpočet pocitové teploty na základě podmínek prostředí.",
+        "data": {
+          "name": "Název senzoru",
+          "temperature_sensor": "Senzor teploty",
+          "humidity_sensor": "Senzor vlhkosti",
+          "wind_speed_sensor": "Senzor rychlosti větru (volitelné)",
+          "pressure_sensor": "Senzor tlaku (volitelné)",
+          "solar_radiation_sensor": "Senzor slunečního záření (volitelné)",
+          "wind_direction_sensor": "Senzor směru větru (volitelné)",
+          "wind_direction_correction": "Povolit korekci směru větru (experimentální)",
+          "smoothing_enabled": "Povolit vyhlazování výstupu (EMA filtr)",
+          "smoothing_factor": "Citlivost vyhlazování (nižší = hladší, vyšší = rychlejší)",
+          "is_outdoor": "Jedná se o venkovní podmínky?",
+          "display_unit": "Jednotka zobrazení teploty"
+        }
+      }
+    },
+    "error": {
+      "temperature_required": "Senzor teploty je povinný",
+      "humidity_required": "Senzor vlhkosti je povinný"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Možnosti HA WeatherSense",
+        "data": {
+          "temperature_sensor": "Senzor teploty",
+          "humidity_sensor": "Senzor vlhkosti",
+          "wind_speed_sensor": "Senzor rychlosti větru (volitelné)",
+          "pressure_sensor": "Senzor tlaku (volitelné)",
+          "solar_radiation_sensor": "Senzor slunečního záření (volitelné)",
+          "wind_direction_sensor": "Senzor směru větru (volitelné)",
+          "wind_direction_correction": "Povolit korekci směru větru (experimentální)",
+          "smoothing_enabled": "Povolit vyhlazování výstupu (EMA filtr)",
+          "smoothing_factor": "Citlivost vyhlazování (nižší = hladší, vyšší = rychlejší)",
+          "is_outdoor": "Jedná se o venkovní podmínky?",
+          "display_unit": "Jednotka zobrazení teploty"
+        }
+      }
+    }
+  }
+}
