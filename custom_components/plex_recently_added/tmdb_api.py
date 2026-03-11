@@ -1,4 +1,5 @@
 import aiohttp
+import re
 
 TMDB_API_KEY = '1f7708bb9a218ab891a5d438b1b63992'
 TMDB_SEARCH_URL = 'https://api.themoviedb.org/3/search/{media_type}?api_key={api_key}&query={query}'
@@ -13,6 +14,8 @@ async def get_tmdb_trailer_url(hass, title, media_type):
         media_type = 'movie'
     else:
         return EMPTY_TMDB_RESULT.copy()
+
+    title = re.sub(r'\s*\(.*?\)', '', title).strip()
 
     async with aiohttp.ClientSession() as session:
         # Search for the movie or TV show
