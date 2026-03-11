@@ -1596,6 +1596,11 @@ let S = class extends H {
   }
   async showDialog(e) {
     this.hass = e.hass, this.config = e.config, this._opener = e.opener, this.mode = e.mode, e.title && (this.detailTitle = e.title), e.events && (this.detailEvents = e.events), e.addEventState && (this._addEventState = e.addEventState), this.open = !0, window.history.pushState({ calendarCardPlusPopup: !0 }, ""), this.requestUpdate(), await this.updateComplete;
+    const t = this.renderRoot.querySelector("ha-adaptive-dialog");
+    if (t && t.shadowRoot) {
+      const i = t.shadowRoot.querySelector("ha-bottom-sheet");
+      i && (i.style.removeProperty("--dialog-transform"), i.style.removeProperty("--dialog-transition"));
+    }
   }
   connectedCallback() {
     super.connectedCallback(), window.addEventListener("popstate", this._onPopState);
@@ -1705,8 +1710,8 @@ $t(S, "styles", fe`
         ha-adaptive-dialog {
             --dialog-content-padding: 0px 12px 12px;
             --ha-dialog-max-width: 96vw !important;
-            --ha-bottom-sheet-height: calc(100dvh - max(var(--safe-area-inset-top), 48px));
-            --ha-bottom-sheet-max-height: var(--ha-bottom-sheet-height);
+            --ha-bottom-sheet-height: calc(100dvh - max(var(--safe-area-inset-top), 48px)) !important;
+            --ha-bottom-sheet-max-height: var(--ha-bottom-sheet-height) !important;
         }
 
         .dialog-header {
