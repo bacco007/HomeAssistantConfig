@@ -650,6 +650,129 @@ const mediaItemTitleStyle = i$8`
     white-space: nowrap;
   }
 `;
+const t$1 = { ATTRIBUTE: 1, CHILD: 2 }, e$1 = (t2) => (...e2) => ({ _$litDirective$: t2, values: e2 });
+let i$4 = class i2 {
+  constructor(t2) {
+  }
+  get _$AU() {
+    return this._$AM._$AU;
+  }
+  _$AT(t2, e2, i5) {
+    this._$Ct = t2, this._$AM = e2, this._$Ci = i5;
+  }
+  _$AS(t2, e2) {
+    return this.update(t2, e2);
+  }
+  update(t2, e2) {
+    return this.render(...e2);
+  }
+};
+const n$3 = "important", i$3 = " !" + n$3, o$1 = e$1(class extends i$4 {
+  constructor(t2) {
+    if (super(t2), t2.type !== t$1.ATTRIBUTE || "style" !== t2.name || t2.strings?.length > 2) throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.");
+  }
+  render(t2) {
+    return Object.keys(t2).reduce(((e2, r2) => {
+      const s2 = t2[r2];
+      return null == s2 ? e2 : e2 + `${r2 = r2.includes("-") ? r2 : r2.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g, "-$&").toLowerCase()}:${s2};`;
+    }), "");
+  }
+  update(e2, [r2]) {
+    const { style: s2 } = e2.element;
+    if (void 0 === this.ft) return this.ft = new Set(Object.keys(r2)), this.render(r2);
+    for (const t2 of this.ft) null == r2[t2] && (this.ft.delete(t2), t2.includes("-") ? s2.removeProperty(t2) : s2[t2] = null);
+    for (const t2 in r2) {
+      const e3 = r2[t2];
+      if (null != e3) {
+        this.ft.add(t2);
+        const r3 = "string" == typeof e3 && e3.endsWith(i$3);
+        t2.includes("-") || r3 ? s2.setProperty(t2, r3 ? e3.slice(0, -11) : e3, r3 ? n$3 : "") : s2[t2] = e3;
+      }
+    }
+    return T;
+  }
+});
+function findMatchingCustomFavorite(customFavorites, mediaContentId) {
+  if (!customFavorites || !mediaContentId) {
+    return void 0;
+  }
+  for (const key in customFavorites) {
+    const match = customFavorites[key].find((f2) => f2.media_content_id === mediaContentId);
+    if (match) {
+      return match;
+    }
+  }
+  return void 0;
+}
+const DEFAULT_MEDIA_THUMBNAIL = "data:image/png;base64,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";
+function hasItemsWithImage(items) {
+  return items.some((item) => item.thumbnail);
+}
+function getValueFromKeyIgnoreSpecialChars(customFavoriteThumbnails, currentTitle) {
+  for (const title in customFavoriteThumbnails) {
+    if (removeSpecialChars(title) === removeSpecialChars(currentTitle)) {
+      return customFavoriteThumbnails[title];
+    }
+  }
+  return void 0;
+}
+function getThumbnail(mediaItem, config, itemsWithImage) {
+  const favoritesConfig = config.mediaBrowser?.favorites ?? {};
+  const overrides = config.player?.mediaArtworkOverrides;
+  const artworkOverride = overrides ? findMatchingOverride(overrides, { media_title: mediaItem.title, media_content_id: mediaItem.media_content_id }, mediaItem.thumbnail) : void 0;
+  let thumbnail = artworkOverride?.imageUrl ?? getValueFromKeyIgnoreSpecialChars(favoritesConfig.customThumbnails, mediaItem.title) ?? mediaItem.thumbnail;
+  if (!thumbnail) {
+    thumbnail = getValueFromKeyIgnoreSpecialChars(favoritesConfig.customThumbnailsIfMissing, mediaItem.title);
+    if (itemsWithImage && !thumbnail) {
+      thumbnail = favoritesConfig.customThumbnailsIfMissing?.["default"] || DEFAULT_MEDIA_THUMBNAIL;
+    }
+  } else if (thumbnail?.match(/https:\/\/brands\.home-assistant\.io\/.+\/logo.png/)) {
+    thumbnail = thumbnail?.replace("logo.png", "icon.png");
+  }
+  return thumbnail || "";
+}
+function removeSpecialChars(str) {
+  return str.replace(/[^a-zA-Z0-9 ]/g, "");
+}
+function indexOfWithoutSpecialChars(array, str) {
+  let result = -1;
+  array.forEach((value, index) => {
+    if (removeSpecialChars(value) === removeSpecialChars(str)) {
+      result = index;
+    }
+  });
+  return result;
+}
+function stringContainsAnyItemInArray(array, str) {
+  return !!array.find((value) => str.includes(value));
+}
+const IGNORED_MEDIA_SOURCES = ["media-source://tts", "media-source://camera", "media-source://image", "media-source://image_upload"];
+function filterOutIgnoredMediaSources(items) {
+  return items.filter((item) => !IGNORED_MEDIA_SOURCES.some((src) => item.media_content_id?.startsWith(src)));
+}
+function getGridItemSize(_itemsPerRow, isPortrait) {
+  return { width: "100px", height: isPortrait ? "180px" : "150px" };
+}
+function itemsWithFallbacks(mediaPlayerItems, config) {
+  const itemsWithImage = hasItemsWithImage(mediaPlayerItems);
+  return mediaPlayerItems.map((item) => {
+    const thumbnail = getThumbnail(item, config, itemsWithImage);
+    return {
+      ...item,
+      thumbnail
+    };
+  });
+}
+function renderFavoritesItem(item, showTitle = true, titleColor, titleBgColor) {
+  const titleStyle = o$1({
+    color: titleColor ?? "",
+    backgroundColor: titleBgColor ?? ""
+  });
+  return x`
+    <div class="thumbnail" ?hidden=${!item.thumbnail} style="background-image: url(${item.thumbnail})"></div>
+    <div class="title" ?hidden=${!showTitle} style=${titleStyle}>${item.title}</div>
+  `;
+}
 function matchesString(value, expected) {
   return !!value && value === expected;
 }
@@ -700,6 +823,12 @@ function getArtworkImage(store, resolvedImageUrl) {
       entityImage = override.imageUrl;
     }
     sizePercentage = override?.sizePercentage ?? sizePercentage;
+  }
+  if (!override) {
+    const matchingFavorite = findMatchingCustomFavorite(store.config.mediaBrowser?.favorites?.customFavorites, store.activePlayer.attributes.media_content_id);
+    if (matchingFavorite?.useThumbnailAsArtwork && matchingFavorite.thumbnail) {
+      entityImage = matchingFavorite.thumbnail;
+    }
   }
   return { entityImage, sizePercentage };
 }
@@ -1376,11 +1505,11 @@ __decorateClass$P([
   n$4({ attribute: false })
 ], PlayerControls.prototype, "store");
 customElements.define("sonos-player-controls", PlayerControls);
-const { I: t$1 } = Z, i$4 = (o2) => null === o2 || "object" != typeof o2 && "function" != typeof o2, f$1 = (o2) => void 0 === o2.strings, s$2 = () => document.createComment(""), r$2 = (o2, i5, n3) => {
+const { I: t } = Z, i$2 = (o2) => null === o2 || "object" != typeof o2 && "function" != typeof o2, f$1 = (o2) => void 0 === o2.strings, s$2 = () => document.createComment(""), r$2 = (o2, i5, n3) => {
   const e2 = o2._$AA.parentNode, l2 = void 0 === i5 ? o2._$AB : i5._$AA;
   if (void 0 === n3) {
     const i6 = e2.insertBefore(s$2(), l2), c3 = e2.insertBefore(s$2(), l2);
-    n3 = new t$1(i6, c3, o2, o2.options);
+    n3 = new t(i6, c3, o2, o2.options);
   } else {
     const t2 = n3._$AB.nextSibling, i6 = n3._$AM, c3 = i6 !== o2;
     if (c3) {
@@ -1405,29 +1534,12 @@ const { I: t$1 } = Z, i$4 = (o2) => null === o2 || "object" != typeof o2 && "fun
     t2.remove(), t2 = o3;
   }
 };
-const t = { ATTRIBUTE: 1, CHILD: 2 }, e$1 = (t2) => (...e2) => ({ _$litDirective$: t2, values: e2 });
-let i$3 = class i2 {
-  constructor(t2) {
-  }
-  get _$AU() {
-    return this._$AM._$AU;
-  }
-  _$AT(t2, e2, i5) {
-    this._$Ct = t2, this._$AM = e2, this._$Ci = i5;
-  }
-  _$AS(t2, e2) {
-    return this.update(t2, e2);
-  }
-  update(t2, e2) {
-    return this.render(...e2);
-  }
-};
 const s$1 = (i5, t2) => {
   const e2 = i5._$AN;
   if (void 0 === e2) return false;
   for (const i6 of e2) i6._$AO?.(t2, false), s$1(i6, t2);
   return true;
-}, o$1 = (i5) => {
+}, o = (i5) => {
   let t2, e2;
   do {
     if (void 0 === (t2 = i5._$AM)) break;
@@ -1442,18 +1554,18 @@ const s$1 = (i5, t2) => {
   }
 };
 function h$1(i5) {
-  void 0 !== this._$AN ? (o$1(this), this._$AM = i5, r$1(this)) : this._$AM = i5;
+  void 0 !== this._$AN ? (o(this), this._$AM = i5, r$1(this)) : this._$AM = i5;
 }
-function n$3(i5, t2 = false, e2 = 0) {
+function n$2(i5, t2 = false, e2 = 0) {
   const r2 = this._$AH, h2 = this._$AN;
-  if (void 0 !== h2 && 0 !== h2.size) if (t2) if (Array.isArray(r2)) for (let i6 = e2; i6 < r2.length; i6++) s$1(r2[i6], false), o$1(r2[i6]);
-  else null != r2 && (s$1(r2, false), o$1(r2));
+  if (void 0 !== h2 && 0 !== h2.size) if (t2) if (Array.isArray(r2)) for (let i6 = e2; i6 < r2.length; i6++) s$1(r2[i6], false), o(r2[i6]);
+  else null != r2 && (s$1(r2, false), o(r2));
   else s$1(this, i5);
 }
 const c$2 = (i5) => {
-  i5.type == t.CHILD && (i5._$AP ??= n$3, i5._$AQ ??= h$1);
+  i5.type == t$1.CHILD && (i5._$AP ??= n$2, i5._$AQ ??= h$1);
 };
-class f extends i$3 {
+class f extends i$4 {
   constructor() {
     super(...arguments), this._$AN = void 0;
   }
@@ -1461,7 +1573,7 @@ class f extends i$3 {
     super._$AT(i5, t2, e2), r$1(this), this.isConnected = i5._$AU;
   }
   _$AO(i5, t2 = true) {
-    i5 !== this.isConnected && (this.isConnected = i5, i5 ? this.reconnected?.() : this.disconnected?.()), t2 && (s$1(this, i5), o$1(this));
+    i5 !== this.isConnected && (this.isConnected = i5, i5 ? this.reconnected?.() : this.disconnected?.()), t2 && (s$1(this, i5), o(this));
   }
   setValue(t2) {
     if (f$1(this._$Ct)) this._$Ct._$AI(t2, this);
@@ -1489,7 +1601,7 @@ class s {
     return this.G;
   }
 }
-let i$2 = class i3 {
+let i$1 = class i3 {
   constructor() {
     this.Y = void 0, this.Z = void 0;
   }
@@ -1503,13 +1615,13 @@ let i$2 = class i3 {
     this.Z?.(), this.Y = this.Z = void 0;
   }
 };
-const n$2 = (t2) => !i$4(t2) && "function" == typeof t2.then, h = 1073741823;
+const n$1 = (t2) => !i$2(t2) && "function" == typeof t2.then, h = 1073741823;
 let c$1 = class c extends f {
   constructor() {
-    super(...arguments), this._$Cwt = h, this._$Cbt = [], this._$CK = new s(this), this._$CX = new i$2();
+    super(...arguments), this._$Cwt = h, this._$Cbt = [], this._$CK = new s(this), this._$CX = new i$1();
   }
   render(...s2) {
-    return s2.find(((t2) => !n$2(t2))) ?? T;
+    return s2.find(((t2) => !n$1(t2))) ?? T;
   }
   update(s2, i5) {
     const e2 = this._$Cbt;
@@ -1519,7 +1631,7 @@ let c$1 = class c extends f {
     this.isConnected || this.disconnected();
     for (let t2 = 0; t2 < i5.length && !(t2 > this._$Cwt); t2++) {
       const s3 = i5[t2];
-      if (!n$2(s3)) return this._$Cwt = t2, s3;
+      if (!n$1(s3)) return this._$Cwt = t2, s3;
       t2 < r2 && s3 === e2[t2] || (this._$Cwt = h, r2 = 0, Promise.resolve(s3).then((async (t3) => {
         for (; c3.get(); ) await c3.get();
         const i6 = o2.deref();
@@ -1539,34 +1651,9 @@ let c$1 = class c extends f {
   }
 };
 const m = e$1(c$1);
-function n$1(n3, r2, t2) {
+function n2(n3, r2, t2) {
   return n3 ? r2(n3) : t2?.(n3);
 }
-const n2 = "important", i$1 = " !" + n2, o = e$1(class extends i$3 {
-  constructor(t$12) {
-    if (super(t$12), t$12.type !== t.ATTRIBUTE || "style" !== t$12.name || t$12.strings?.length > 2) throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.");
-  }
-  render(t2) {
-    return Object.keys(t2).reduce(((e2, r2) => {
-      const s2 = t2[r2];
-      return null == s2 ? e2 : e2 + `${r2 = r2.includes("-") ? r2 : r2.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g, "-$&").toLowerCase()}:${s2};`;
-    }), "");
-  }
-  update(e2, [r2]) {
-    const { style: s2 } = e2.element;
-    if (void 0 === this.ft) return this.ft = new Set(Object.keys(r2)), this.render(r2);
-    for (const t2 of this.ft) null == r2[t2] && (this.ft.delete(t2), t2.includes("-") ? s2.removeProperty(t2) : s2[t2] = null);
-    for (const t2 in r2) {
-      const e3 = r2[t2];
-      if (null != e3) {
-        this.ft.add(t2);
-        const r3 = "string" == typeof e3 && e3.endsWith(i$1);
-        t2.includes("-") || r3 ? s2.setProperty(t2, r3 ? e3.slice(0, -11) : e3, r3 ? n2 : "") : s2[t2] = e3;
-      }
-    }
-    return T;
-  }
-});
 var __defProp$O = Object.defineProperty;
 var __decorateClass$O = (decorators, target, key, kind) => {
   var result = void 0;
@@ -1582,11 +1669,11 @@ class PlayerHeader extends i$5 {
     const entityStyle = headerEntityFontSize ? { fontSize: `${headerEntityFontSize}rem` } : {};
     const songStyle = headerSongFontSize ? { fontSize: `${headerSongFontSize}rem` } : {};
     return x` <div class="info">
-      <div class="entity" style=${o(entityStyle)} ?hidden=${!!hideEntityName}>
+      <div class="entity" style=${o$1(entityStyle)} ?hidden=${!!hideEntityName}>
         ${getSpeakerList(this.store.activePlayer, this.store.predefinedGroups)}
       </div>
-      <div class="song" style=${o(songStyle)}>${this.getSong()}</div>
-      <div class="artist-album" ?hidden=${!!hideArtistAlbum}>${this.getAlbum()} ${n$1(showAudioInputFormat, () => m(this.getAudioInputFormat()))}</div>
+      <div class="song" style=${o$1(songStyle)}>${this.getSong()}</div>
+      <div class="artist-album" ?hidden=${!!hideArtistAlbum}>${this.getAlbum()} ${n2(showAudioInputFormat, () => m(this.getAudioInputFormat()))}</div>
       <sonos-progress .store=${this.store}></sonos-progress>
     </div>`;
   }
@@ -1709,7 +1796,7 @@ class PlayerProgress extends i$5 {
     await this.store.mediaControlService.seek(this.store.activePlayer, position);
   }
   progressBarStyle(mediaDuration) {
-    return o({ width: `${this.playingProgress / mediaDuration * 100}%` });
+    return o$1({ width: `${this.playingProgress / mediaDuration * 100}%` });
   }
   trackProgress() {
     const position = this.store.activePlayer?.attributes.media_position || 0;
@@ -2676,75 +2763,6 @@ class HassService {
     return entities.find((e2) => e2?.entity_id?.toLowerCase().includes(namePart.toLowerCase()))?.entity_id;
   }
 }
-const DEFAULT_MEDIA_THUMBNAIL = "data:image/png;base64,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";
-function hasItemsWithImage(items) {
-  return items.some((item) => item.thumbnail);
-}
-function getValueFromKeyIgnoreSpecialChars(customFavoriteThumbnails, currentTitle) {
-  for (const title in customFavoriteThumbnails) {
-    if (removeSpecialChars(title) === removeSpecialChars(currentTitle)) {
-      return customFavoriteThumbnails[title];
-    }
-  }
-  return void 0;
-}
-function getThumbnail(mediaItem, config, itemsWithImage) {
-  const favoritesConfig = config.mediaBrowser?.favorites ?? {};
-  const overrides = config.player?.mediaArtworkOverrides;
-  const artworkOverride = overrides ? findMatchingOverride(overrides, { media_title: mediaItem.title, media_content_id: mediaItem.media_content_id }, mediaItem.thumbnail) : void 0;
-  let thumbnail = artworkOverride?.imageUrl ?? getValueFromKeyIgnoreSpecialChars(favoritesConfig.customThumbnails, mediaItem.title) ?? mediaItem.thumbnail;
-  if (!thumbnail) {
-    thumbnail = getValueFromKeyIgnoreSpecialChars(favoritesConfig.customThumbnailsIfMissing, mediaItem.title);
-    if (itemsWithImage && !thumbnail) {
-      thumbnail = favoritesConfig.customThumbnailsIfMissing?.["default"] || DEFAULT_MEDIA_THUMBNAIL;
-    }
-  } else if (thumbnail?.match(/https:\/\/brands\.home-assistant\.io\/.+\/logo.png/)) {
-    thumbnail = thumbnail?.replace("logo.png", "icon.png");
-  }
-  return thumbnail || "";
-}
-function removeSpecialChars(str) {
-  return str.replace(/[^a-zA-Z0-9 ]/g, "");
-}
-function indexOfWithoutSpecialChars(array, str) {
-  let result = -1;
-  array.forEach((value, index) => {
-    if (removeSpecialChars(value) === removeSpecialChars(str)) {
-      result = index;
-    }
-  });
-  return result;
-}
-function stringContainsAnyItemInArray(array, str) {
-  return !!array.find((value) => str.includes(value));
-}
-const IGNORED_MEDIA_SOURCES = ["media-source://tts", "media-source://camera", "media-source://image", "media-source://image_upload"];
-function filterOutIgnoredMediaSources(items) {
-  return items.filter((item) => !IGNORED_MEDIA_SOURCES.some((src) => item.media_content_id?.startsWith(src)));
-}
-function getGridItemSize(_itemsPerRow, isPortrait) {
-  return { width: "100px", height: isPortrait ? "180px" : "150px" };
-}
-function itemsWithFallbacks(mediaPlayerItems, config) {
-  const itemsWithImage = hasItemsWithImage(mediaPlayerItems);
-  return mediaPlayerItems.map((item) => {
-    const thumbnail = getThumbnail(item, config, itemsWithImage);
-    return {
-      ...item,
-      thumbnail
-    };
-  });
-}
-function renderFavoritesItem(item, showTitle = true, titleColor, titleBgColor) {
-  const titleStyle = o({
-    color: titleColor ?? "",
-    backgroundColor: titleBgColor ?? ""
-  });
-  return x`
-    <div class="thumbnail" ?hidden=${!item.thumbnail} style="background-image: url(${item.thumbnail})"></div>
-    <div class="title" ?hidden=${!showTitle} style=${titleStyle}>${item.title}</div>
-  `;
-}
 class MediaBrowseService {
   constructor(hass, config) {
     this.massConfigEntryId = null;
@@ -3180,6 +3198,10 @@ class MediaPlayer {
     return this.members.every((member) => member.isMemberMuted());
   }
   getCurrentTrack() {
+    const matchingFavorite = findMatchingCustomFavorite(this.config.mediaBrowser?.favorites?.customFavorites, this.attributes.media_content_id);
+    if (matchingFavorite?.useTitleAsMediaTitle) {
+      return matchingFavorite.title;
+    }
     let track = `${this.attributes.media_artist || ""} - ${this.attributes.media_title || ""}`;
     track = track.replace(/^ - | - $/g, "");
     if (!track) {
@@ -3402,7 +3424,7 @@ class SectionButton extends i$5 {
     return x`<sonos-icon-button
       @click=${() => this.dispatchSection()}
       selected=${this.selectedSection === this.section || E}
-      style=${o(styles)}
+      style=${o$1(styles)}
     >
       <ha-icon .icon=${this.icon}></ha-icon>
     </sonos-icon-button>`;
@@ -4517,6 +4539,11 @@ const FAVORITES_SUB_SCHEMA = [
     help: "Border for favorites icons (e.g., 1px solid white)"
   },
   {
+    name: "iconMarginPercentage",
+    type: "integer",
+    help: "Margin around favorites icon artwork in percentage (e.g., 10 for 10%)"
+  },
+  {
     name: "iconPadding",
     type: "float",
     help: "Padding around favorites icon artwork (rem)",
@@ -5132,7 +5159,7 @@ class Card extends i$5 {
       [SEARCH, () => x`<sonos-search .store=${this.store} @item-selected=${this.onMediaItemSelected}></sonos-search>`]
     ]) : x`<div class="no-players">${noPlayersText}</div>`}
         </div>
-        ${n$1(
+        ${n2(
       showFooter,
       () => x`<sonos-footer
               style=${this.footerStyle(footerHeight)}
@@ -5180,7 +5207,7 @@ class Card extends i$5 {
   haCardStyle(height) {
     const width = getWidth(this.config);
     const minWidth = this.config.minWidth ?? 20;
-    return o({
+    return o$1({
       color: "var(--secondary-text-color)",
       height: `${height}rem`,
       minWidth: `${minWidth}rem`,
@@ -5206,13 +5233,13 @@ class Card extends i$5 {
     });
   }
   footerStyle(height) {
-    return o({
+    return o$1({
       height: `${height}rem`,
       padding: "0 1rem"
     });
   }
   contentStyle(height) {
-    return o({
+    return o$1({
       overflowY: "auto",
       height: `${height}rem`
     });
@@ -5433,7 +5460,7 @@ var __decorateClass$w = (decorators, target, key, kind) => {
 class GroupingButton extends i$5 {
   render() {
     const iconAndName = !!this.icon && !!this.name || E;
-    const buttonStyle = o({
+    const buttonStyle = o$1({
       ...this.buttonColor ? { "--control-button-background-color": this.buttonColor } : {},
       ...this.fontSize ? { fontSize: `${this.fontSize}rem` } : {}
     });
@@ -5969,12 +5996,12 @@ class Group extends i$5 {
     const currentTrack = hideCurrentTrack ? "" : this.player.getCurrentTrack();
     const speakerList = getSpeakerList(this.player, this.store.predefinedGroups);
     const icons = this.player.members.map((member) => member.attributes.icon).filter((icon) => icon);
-    const listItemStyle = o({
+    const listItemStyle = o$1({
       ...itemMargin ? { margin: itemMargin } : {},
       ...backgroundColor ? { background: backgroundColor } : {}
     });
-    const speakersStyle = o(speakersFontSize ? { fontSize: `${speakersFontSize}rem` } : {});
-    const titleStyle = o(titleFontSize ? { fontSize: `${titleFontSize}rem` } : {});
+    const speakersStyle = o$1(speakersFontSize ? { fontSize: `${speakersFontSize}rem` } : {});
+    const titleStyle = o$1(titleFontSize ? { fontSize: `${titleFontSize}rem` } : {});
     return x`
       <mwc-list-item
         hasMeta
@@ -6086,7 +6113,7 @@ var __decorateClass$p = (decorators, target, key, kind) => {
 class Groups extends i$5 {
   render() {
     const { buttonWidth } = this.store.config.groups ?? {};
-    const listStyleMap = buttonWidth ? o({ width: `${buttonWidth}rem` }) : "";
+    const listStyleMap = buttonWidth ? o$1({ width: `${buttonWidth}rem` }) : "";
     return x`
       <mwc-list activatable class="list" style=${listStyleMap}>
         ${this.store.allGroups.map((group) => {
@@ -6197,9 +6224,9 @@ class FavoritesIcons extends i$5 {
     }
   }
   buttonStyle(favoritesItemsPerRow) {
-    const margin = "1%";
+    const margin = `${this.store.config.mediaBrowser?.favorites?.iconMarginPercentage ?? 1}%`;
     const size = `calc(100% / ${favoritesItemsPerRow} - ${margin} * 2)`;
-    return o({
+    return o$1({
       width: size,
       height: size,
       margin
@@ -6217,7 +6244,7 @@ class FavoritesIcons extends i$5 {
         .thumbnail {
           width: 100%;
           padding-bottom: 100%;
-          margin: 0 6%;
+          margin: 0;
           background-size: 100%;
           background-repeat: no-repeat;
           background-position: center;
@@ -7013,9 +7040,9 @@ class GridLayout extends GridBaseLayout {
     this._scrollSize = size;
   }
 }
-const e = e$1(class extends i$3 {
-  constructor(t$12) {
-    if (super(t$12), t$12.type !== t.ATTRIBUTE || "class" !== t$12.name || t$12.strings?.length > 2) throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.");
+const e = e$1(class extends i$4 {
+  constructor(t2) {
+    if (super(t2), t2.type !== t$1.ATTRIBUTE || "class" !== t2.name || t2.strings?.length > 2) throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.");
   }
   render(t2) {
     return " " + Object.keys(t2).filter(((s2) => t2[s2])).join(" ") + " ";
@@ -7088,9 +7115,9 @@ const u = (e2, s2, t2) => {
   const r2 = /* @__PURE__ */ new Map();
   for (let l2 = s2; l2 <= t2; l2++) r2.set(e2[l2], l2);
   return r2;
-}, c2 = e$1(class extends i$3 {
+}, c2 = e$1(class extends i$4 {
   constructor(e2) {
-    if (super(e2), e2.type !== t.CHILD) throw Error("repeat() can only be used in text expressions");
+    if (super(e2), e2.type !== t$1.CHILD) throw Error("repeat() can only be used in text expressions");
   }
   dt(e2, s2, t2) {
     let r2;
@@ -7964,7 +7991,7 @@ class VirtualizeDirective extends f {
     this._renderItem = (item, idx) => defaultRenderItem(item, idx + this._first);
     this._keyFunction = (item, idx) => defaultKeyFunction(item, idx + this._first);
     this._items = [];
-    if (part.type !== t.CHILD) {
+    if (part.type !== t$1.CHILD) {
       throw new Error("The virtualize directive can only be used in child expressions");
     }
   }
@@ -8514,7 +8541,7 @@ let HaMediaPlayerBrowse = class extends i$5 {
                               <lit-virtualizer
                                 scroller
                                 .items=${children}
-                                style=${o({
+                                style=${o$1({
       height: `${children.length * 72 + 26}px`
     })}
                                 .renderItem=${this._renderListItem}
@@ -8577,7 +8604,7 @@ let HaMediaPlayerBrowse = class extends i$5 {
                               <lit-virtualizer
                                 scroller
                                 .items=${children}
-                                style=${o({
+                                style=${o$1({
       height: `${children.length * 72 + 26}px`
     })}
                                 .renderItem=${this._renderListItem}
@@ -9284,7 +9311,7 @@ __decorateClass$l([
 HaMediaPlayerBrowse = __decorateClass$l([
   t$3("sonos-ha-media-player-browse")
 ], HaMediaPlayerBrowse);
-const i4 = e$1(class extends i$3 {
+const i4 = e$1(class extends i$4 {
   constructor() {
     super(...arguments), this.key = E;
   }
@@ -9331,6 +9358,13 @@ const mediaBrowserStyles = i$8`
   sonos-icon-button.shortcut-active {
     color: var(--accent-color);
   }
+  .play-all-warning {
+    padding: 8px 12px;
+    background: var(--warning-color, #ffa726);
+    color: var(--primary-text-color);
+    font-size: 0.85rem;
+    text-align: center;
+  }
   .loading-overlay {
     position: absolute;
     inset: 0;
@@ -9367,15 +9401,15 @@ function renderLayoutMenu(layout, onSelect) {
   return x`
     <ha-dropdown @wa-select=${onSelect}>
       <sonos-icon-button slot="trigger" .path=${mdiDotsVertical}></sonos-icon-button>
-      <ha-dropdown-item value="auto" .selected=${layout === "auto"} style=${o(layout === "auto" ? selectedStyle : {})}>
+      <ha-dropdown-item value="auto" .selected=${layout === "auto"} style=${o$1(layout === "auto" ? selectedStyle : {})}>
         <ha-svg-icon slot="icon" .path=${mdiAlphaABoxOutline}></ha-svg-icon>
         Auto
       </ha-dropdown-item>
-      <ha-dropdown-item value="grid" .selected=${layout === "grid"} style=${o(layout === "grid" ? selectedStyle : {})}>
+      <ha-dropdown-item value="grid" .selected=${layout === "grid"} style=${o$1(layout === "grid" ? selectedStyle : {})}>
         <ha-svg-icon slot="icon" .path=${mdiGrid}></ha-svg-icon>
         Grid
       </ha-dropdown-item>
-      <ha-dropdown-item value="list" .selected=${layout === "list"} style=${o(layout === "list" ? selectedStyle : {})}>
+      <ha-dropdown-item value="list" .selected=${layout === "list"} style=${o$1(layout === "list" ? selectedStyle : {})}>
         <ha-svg-icon slot="icon" .path=${mdiListBoxOutline}></ha-svg-icon>
         List
       </ha-dropdown-item>
@@ -9386,23 +9420,7 @@ async function playAll(store, children) {
   if (!children.length) {
     return null;
   }
-  const player = store.activePlayer;
-  await store.hass.callService("media_player", "play_media", {
-    entity_id: player.id,
-    media_content_id: children[0].media_content_id,
-    media_content_type: children[0].media_content_type,
-    enqueue: "replace"
-  });
-  await Promise.all(
-    children.slice(1).map(
-      (child) => store.hass.callService("media_player", "play_media", {
-        entity_id: player.id,
-        media_content_id: child.media_content_id,
-        media_content_type: child.media_content_type,
-        enqueue: "add"
-      })
-    )
-  );
+  await store.mediaControlService.queueAndPlay(store.activePlayer, children, "replace");
   return children[0];
 }
 function renderShortcutButton(shortcut, onClick, isActive = false) {
@@ -9437,6 +9455,7 @@ class MediaBrowserBrowser extends i$5 {
     this.currentTitle = "";
     this.isCurrentPathStart = false;
     this.playAllLoading = false;
+    this.playAllWarning = "";
     this.mediaLoaded = false;
     this.toggleStartPath = () => {
       if (this.isCurrentPathStart) {
@@ -9525,6 +9544,7 @@ class MediaBrowserBrowser extends i$5 {
     const shortcut = config.shortcut;
     return x`
       ${this.playAllLoading ? x`<div class="loading-overlay"><div class="loading-spinner"></div></div>` : E}
+      ${this.playAllWarning ? x`<div class="play-all-warning">${this.playAllWarning}</div>` : E}
       ${config.hideHeader ? "" : x`<div class="header">
             ${this.navigateIds.length > 1 ? x`<sonos-icon-button .path=${mdiArrowLeft} @click=${this.goBack}></sonos-icon-button>` : x`<div class="spacer"></div>`}
             <span class="title">${this.currentTitle || "Media Browser"}</span>
@@ -9568,11 +9588,28 @@ class MediaBrowserBrowser extends i$5 {
     if (!children.length) {
       return;
     }
+    this.playAllWarning = "";
     this.playAllLoading = true;
     try {
       const firstItem = await playAll(this.store, children);
       if (firstItem) {
         this.dispatchEvent(customEvent(MEDIA_ITEM_SELECTED, firstItem));
+      }
+      if (children.length > 1) {
+        let lastCount = 0;
+        for (let attempt = 0; attempt < 4; attempt++) {
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+          const queue = await this.store.hassService.getQueue(this.store.activePlayer);
+          if (queue.length >= children.length) {
+            break;
+          }
+          if (queue.length <= lastCount) {
+            this.playAllWarning = `Only ${queue.length} of ${children.length} items were added to the queue. Some media types do not support queueing.`;
+            setTimeout(() => this.playAllWarning = "", 8e3);
+            break;
+          }
+          lastCount = queue.length;
+        }
       }
     } catch (e2) {
       console.error("Failed to play all:", e2);
@@ -9602,6 +9639,9 @@ __decorateClass$k([
 __decorateClass$k([
   r$3()
 ], MediaBrowserBrowser.prototype, "playAllLoading");
+__decorateClass$k([
+  r$3()
+], MediaBrowserBrowser.prototype, "playAllWarning");
 __decorateClass$k([
   r$3()
 ], MediaBrowserBrowser.prototype, "mediaLoaded");
