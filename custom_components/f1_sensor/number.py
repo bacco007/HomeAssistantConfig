@@ -1,16 +1,17 @@
 from __future__ import annotations
-from contextlib import suppress
 
-from typing import Any, Callable
+from collections.abc import Callable
+from contextlib import suppress
+from typing import Any
 
 from homeassistant.components.number import NumberEntity, NumberMode
-from homeassistant.helpers.entity import EntityCategory
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityCategory
 
-from .const import DOMAIN
-from .entity import F1AuxEntity
 from .calibration import LiveDelayCalibrationManager
+from .const import DOMAIN
+from .entity import F1AuxEntity, default_object_id, set_suggested_object_id
 from .live_delay import LiveDelayController
 
 
@@ -33,6 +34,7 @@ async def async_setup_entry(
         entry_id=entry.entry_id,
         device_name=entry.data.get("sensor_name", "F1"),
     )
+    set_suggested_object_id(entity, default_object_id("live_delay"))
     async_add_entities([entity])
 
 

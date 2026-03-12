@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 import logging
-from typing import Any, Callable
+from typing import Any
 
 from homeassistant.components.button import ButtonEntity
 from homeassistant.components.select import SelectEntity
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.entity import EntityCategory
+
+from .calibration import LiveDelayCalibrationManager
 from .const import (
     DOMAIN,
     REPLAY_START_REFERENCE_FORMATION,
@@ -17,7 +20,6 @@ from .const import (
 from .entity import F1AuxEntity
 from .replay_mode import ReplayController, ReplayState
 from .replay_start import ReplayStartReferenceController
-from .calibration import LiveDelayCalibrationManager
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -385,6 +387,64 @@ class F1ReplayStopButton(F1AuxEntity, ButtonEntity):
     async def async_press(self) -> None:
         """Handle button press - stop replay."""
         await self._controller.async_stop()
+
+
+class F1ReplayBackButton(F1AuxEntity, ButtonEntity):
+    """Button to rewind replay by 30 seconds."""
+
+    _device_category = "system"
+    _attr_entity_category = EntityCategory.CONFIG
+    _attr_translation_key = "replay_back_30"
+
+    def __init__(
+        self,
+        controller: ReplayController,
+        unique_id: str,
+        entry_id: str,
+        device_name: str,
+    ) -> None:
+        F1AuxEntity.__init__(self, unique_id, entry_id, device_name)
+        ButtonEntity.__init__(self)
+        self._controller = controller
+        self._attr_icon = "mdi:rewind-30"
+
+    async def async_press(self) -> None:
+        """Handle button press - rewind replay."""
+        if self._controller.state in (
+            ReplayState.READY,
+            ReplayState.PLAYING,
+            ReplayState.PAUSED,
+        ):
+            await self._controller.async_seek_by(-30)
+
+
+class F1ReplayForwardButton(F1AuxEntity, ButtonEntity):
+    """Button to fast-forward replay by 30 seconds."""
+
+    _device_category = "system"
+    _attr_entity_category = EntityCategory.CONFIG
+    _attr_translation_key = "replay_forward_30"
+
+    def __init__(
+        self,
+        controller: ReplayController,
+        unique_id: str,
+        entry_id: str,
+        device_name: str,
+    ) -> None:
+        F1AuxEntity.__init__(self, unique_id, entry_id, device_name)
+        ButtonEntity.__init__(self)
+        self._controller = controller
+        self._attr_icon = "mdi:fast-forward-30"
+
+    async def async_press(self) -> None:
+        """Handle button press - fast-forward replay."""
+        if self._controller.state in (
+            ReplayState.READY,
+            ReplayState.PLAYING,
+            ReplayState.PAUSED,
+        ):
+            await self._controller.async_seek_by(30)
 
 
 class F1ReplayStatusSensor(F1AuxEntity, SensorEntity):

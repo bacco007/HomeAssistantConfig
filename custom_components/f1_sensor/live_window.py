@@ -1,21 +1,20 @@
 from __future__ import annotations
-from contextlib import suppress
 
 import asyncio
-import logging
-from dataclasses import dataclass, replace
-from datetime import datetime, timedelta, timezone
+from collections.abc import Callable, Iterable
 import contextlib
+from contextlib import suppress
+from dataclasses import dataclass, replace
+from datetime import UTC, datetime, timedelta, timezone
 import json
+import logging
 import re
 import time
-from typing import Any, Callable, Iterable, Protocol, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Protocol
 
-import async_timeout
 from aiohttp import ClientSession
 from homeassistant.util import dt as dt_util
 
-from .signalr import LiveBus
 from .const import (
     DOMAIN,
     EVENT_TRACKER_ACTIVE_CACHE_TTL,
@@ -30,11 +29,14 @@ from .const import (
     EVENT_TRACKER_MEETING_ENDPOINT_PREFIX,
     EVENT_TRACKER_REQUEST_TIMEOUT,
 )
+from .signalr import LiveBus
 
 if TYPE_CHECKING:
     from . import LiveSessionCoordinator
 
 _LOGGER = logging.getLogger(f"custom_components.{DOMAIN}")
+
+_NO_SPOILER_MANAGER_KEY = "no_spoiler_manager"
 
 STATIC_BASE = "https://livetiming.formula1.com/static"
 SESSION_END_STATES = {"Finished", "Finalised", "Ends"}
@@ -197,10 +199,10 @@ def _to_utc(date_str: str | None, gmt_offset: str | None) -> datetime | None:
         offset = _parse_offset(gmt_offset)
         tzinfo = timezone(offset)
     except Exception:  # noqa: BLE001
-        tzinfo = timezone.utc
+        tzinfo = UTC
     if dt_val.tzinfo is None:
         dt_val = dt_val.replace(tzinfo=tzinfo)
-    return dt_val.astimezone(timezone.utc)
+    return dt_val.astimezone(UTC)
 
 
 def _normalize_path(path: str | None) -> str | None:
@@ -345,7 +347,7 @@ class LiveScheduleSource(Protocol):
 class IndexScheduleSource:
     """Primary schedule source backed by LiveTiming Index.json."""
 
-    def __init__(self, session_coord: "LiveSessionCoordinator") -> None:
+    def __init__(self, session_coord: LiveSessionCoordinator) -> None:
         self._session_coord = session_coord
 
     async def async_fetch_windows(
@@ -462,7 +464,7 @@ class EventTrackerScheduleSource:
         if not self._env_source_url:
             return
         try:
-            async with async_timeout.timeout(self._timeout):
+            async with asyncio.timeout(self._timeout):
                 async with self._http.get(self._env_source_url) as resp:
                     if resp.status != 200:
                         return
@@ -516,7 +518,7 @@ class EventTrackerScheduleSource:
             "locale": self._locale,
         }
         url = self._build_url(endpoint)
-        async with async_timeout.timeout(self._timeout):
+        async with asyncio.timeout(self._timeout):
             async with self._http.get(url, headers=headers) as resp:
                 text = await resp.text()
                 if resp.status != 200:
@@ -732,13 +734,21 @@ def _clock_finished(clock: dict | None) -> bool:
         return False
 
 
+def _session_status_running(status_payload: dict | None) -> bool:
+    if not isinstance(status_payload, dict):
+        return False
+    status = str(status_payload.get("Status") or "").strip()
+    started = str(status_payload.get("Started") or "").strip()
+    return status in SESSION_RUNNING_STATES or started in SESSION_RUNNING_STATES
+
+
 class LiveSessionSupervisor:
     """Coordinates when the SignalR connection should run."""
 
     def __init__(
         self,
         hass,
-        session_coord: "LiveSessionCoordinator",
+        session_coord: LiveSessionCoordinator,
         bus: LiveBus,
         *,
         http_session: ClientSession,
@@ -839,6 +849,15 @@ class LiveSessionSupervisor:
         if source == "none" and prev_source != "none":
             _LOGGER.info("schedule source selected: none (fail-closed idle)")
 
+    @property
+    def _is_no_spoiler_active(self) -> bool:
+        """Return True when No Spoiler Mode is active."""
+        try:
+            mgr = (self._hass.data.get(DOMAIN) or {}).get(_NO_SPOILER_MANAGER_KEY)
+            return mgr is not None and bool(mgr.is_active)
+        except Exception:  # noqa: BLE001
+            return False
+
     def wake(self) -> None:
         """Interrupt the supervisor sleep cycle so it re-evaluates immediately."""
         self._wake_event.set()
@@ -897,6 +916,11 @@ class LiveSessionSupervisor:
                 # Defer activation while replay controls the bus
                 if self._availability.replay_locked:
                     await self._interruptible_sleep(ACTIVE_REFRESH.total_seconds())
+                    continue
+                # Defer activation while No Spoiler Mode is active
+                if self._is_no_spoiler_active:
+                    self._availability.set_state(False, "no-spoiler")
+                    await self._interruptible_sleep(IDLE_REFRESH.total_seconds())
                     continue
                 await self._activate_window(window, source=source)
 
@@ -1109,6 +1133,7 @@ class LiveSessionSupervisor:
         url = _build_static_url(window.path, "SessionInfo.jsonStream")
         status_url = _build_static_url(window.path, "SessionStatus.jsonStream")
         data_url = _build_static_url(window.path, "SessionData.jsonStream")
+        session_status_payload: dict[str, Any] | None = None
         for name, target in (
             ("SessionInfo", url),
             ("SessionStatus", status_url),
@@ -1117,6 +1142,8 @@ class LiveSessionSupervisor:
             try:
                 payload = await self._fetch_json(target)
                 if payload:
+                    if name == "SessionStatus" and isinstance(payload, dict):
+                        session_status_payload = payload
                     _LOGGER.debug(
                         "%s prime %s keys=%s",
                         window.label,
@@ -1127,6 +1154,62 @@ class LiveSessionSupervisor:
                 _LOGGER.debug(
                     "Failed priming %s for %s", name, window.label, exc_info=True
                 )
+        await self._prime_lap_count(window, session_status_payload)
+
+    async def _prime_lap_count(
+        self, window: SessionWindow, session_status: dict[str, Any] | None
+    ) -> None:
+        if not window.path or not _session_status_running(session_status):
+            return
+        url = _build_static_url(window.path, "LapCount.jsonStream")
+        try:
+            payload = await self._fetch_lapcount_snapshot(url)
+        except Exception:  # noqa: BLE001
+            _LOGGER.debug("Failed priming LapCount for %s", window.label, exc_info=True)
+            return
+        if not payload:
+            return
+        self._bus.inject_message("LapCount", payload)
+        _LOGGER.debug("%s prime LapCount payload=%s", window.label, payload)
+
+    async def _fetch_lapcount_snapshot(self, url: str) -> dict[str, int] | None:
+        async with asyncio.timeout(10):
+            async with self._http.get(url) as resp:
+                if resp.status == 404:
+                    return None
+                resp.raise_for_status()
+                text = await resp.text()
+        return self._parse_lapcount_snapshot(text)
+
+    @staticmethod
+    def _parse_lapcount_snapshot(payload: str | None) -> dict[str, int] | None:
+        if not isinstance(payload, str) or not payload.strip():
+            return None
+        snapshot: dict[str, int] = {}
+        for raw_line in payload.splitlines():
+            line = raw_line.lstrip("\ufeff").strip()
+            if not line or line.upper().startswith("URL:"):
+                continue
+            json_start = line.find("{")
+            if json_start == -1:
+                continue
+            try:
+                item = json.loads(line[json_start:])
+            except json.JSONDecodeError:
+                continue
+            if not isinstance(item, dict):
+                continue
+            current_lap = _as_int(
+                item.get("CurrentLap") if "CurrentLap" in item else item.get("LapCount")
+            )
+            total_laps = _as_int(item.get("TotalLaps"))
+            if current_lap is not None and current_lap > 0:
+                snapshot["CurrentLap"] = current_lap
+            if total_laps is not None and total_laps > 0:
+                snapshot["TotalLaps"] = total_laps
+        if "CurrentLap" not in snapshot:
+            return None
+        return snapshot
 
     async def _monitor_window(self, window: SessionWindow, *, source: str) -> str:
         label = window.label
@@ -1138,6 +1221,14 @@ class LiveSessionSupervisor:
         )
         while not self._stopped:
             await self._interruptible_sleep(ACTIVE_REFRESH.total_seconds())
+            # If No Spoiler Mode was activated mid-session, close the connection immediately.
+            if self._is_no_spoiler_active:
+                _LOGGER.info(
+                    "No Spoiler Mode activated mid-session; closing live connection for %s",
+                    label,
+                )
+                reason = "no-spoiler-activated"
+                break
             now = dt_util.utcnow()
             hb_age = self._bus.last_heartbeat_age()
             activity_age = self._bus.last_stream_activity_age(LIVE_ACTIVITY_STREAMS)
@@ -1212,7 +1303,7 @@ class LiveSessionSupervisor:
         return False
 
     async def _fetch_json(self, url: str) -> Any:
-        async with async_timeout.timeout(10):
+        async with asyncio.timeout(10):
             async with self._http.get(url) as resp:
                 if resp.status == 404:
                     return None
