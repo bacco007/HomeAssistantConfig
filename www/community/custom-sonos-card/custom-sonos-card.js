@@ -3696,6 +3696,10 @@ const VOLUMES_SCHEMA = [
     selector: { boolean: {} }
   },
   {
+    name: "hideActivePlayerName",
+    selector: { boolean: {} }
+  },
+  {
     name: "labelForAllSlider",
     type: "string"
   }
@@ -3704,6 +3708,10 @@ const QUEUE_SCHEMA = [
   {
     name: "title",
     type: "string"
+  },
+  {
+    name: "hideActivePlayerName",
+    selector: { boolean: {} }
   },
   {
     name: "itemBackgroundColor",
@@ -3739,6 +3747,11 @@ const SEARCH_SCHEMA = [
     name: "title",
     type: "string",
     help: "Custom title for the search section"
+  },
+  {
+    name: "hideActivePlayerName",
+    selector: { boolean: {} },
+    help: "Hide active player/group name in the search header"
   },
   {
     name: "massConfigEntryId",
@@ -4486,6 +4499,10 @@ customElements.define("sonos-card-player-tab", PlayerTab);
 const MEDIA_BROWSER_SCHEMA = [
   {
     name: "hideHeader",
+    selector: { boolean: {} }
+  },
+  {
+    name: "hideActivePlayerName",
     selector: { boolean: {} }
   },
   {
@@ -9345,6 +9362,32 @@ const mediaBrowserStyles = i$8`
     white-space: nowrap;
     text-align: center;
   }
+  .title-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .title-section .title {
+    flex: 0;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+  .player-name {
+    font-size: calc(var(--sonos-font-size, 1rem) * 0.8);
+    color: var(--secondary-text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    max-width: 100%;
+  }
   .spacer {
     width: 48px;
   }
@@ -9542,12 +9585,17 @@ class MediaBrowserBrowser extends i$5 {
   render() {
     const config = this.store.config.mediaBrowser ?? {};
     const shortcut = config.shortcut;
+    const playerName = getSpeakerList(this.store.activePlayer, this.store.predefinedGroups);
+    const hideActivePlayerName = config.hideActivePlayerName ?? false;
     return x`
       ${this.playAllLoading ? x`<div class="loading-overlay"><div class="loading-spinner"></div></div>` : E}
       ${this.playAllWarning ? x`<div class="play-all-warning">${this.playAllWarning}</div>` : E}
       ${config.hideHeader ? "" : x`<div class="header">
             ${this.navigateIds.length > 1 ? x`<sonos-icon-button .path=${mdiArrowLeft} @click=${this.goBack}></sonos-icon-button>` : x`<div class="spacer"></div>`}
-            <span class="title">${this.currentTitle || "Media Browser"}</span>
+            <div class="title-section">
+              <span class="title">${this.currentTitle || "Media Browser"}</span>
+              <span class="player-name" ?hidden=${hideActivePlayerName}>${playerName}</span>
+            </div>
             ${this.renderPlayAllButton()} ${renderShortcutButton(shortcut, () => this.navigateToShortcut(shortcut), this.isShortcutActive(shortcut))}
             <sonos-icon-button .path=${mdiStar} @click=${this.goToFavorites} title="Favorites"></sonos-icon-button>
             <sonos-icon-button
@@ -9753,11 +9801,15 @@ class MediaBrowser extends i$5 {
   renderFavorites() {
     const config = this.store.config.mediaBrowser ?? {};
     const title = config.favorites?.title ?? "Favorites";
+    const playerName = getSpeakerList(this.store.activePlayer, this.store.predefinedGroups);
     const onlyFavorites = config.onlyFavorites ?? false;
+    const hideActivePlayerName = config.hideActivePlayerName ?? false;
     return x`
       ${config.hideHeader ? "" : x`<div class="header">
-            <div class="spacer"></div>
-            <span class="title">${title}</span>
+            <div class="title-section">
+              <span class="title">${title}</span>
+              <span class="player-name" ?hidden=${hideActivePlayerName}>${playerName}</span>
+            </div>
             ${onlyFavorites ? "" : renderShortcutButton(config.shortcut, this.onShortcutClick)}
             ${onlyFavorites ? "" : x`<sonos-icon-button .path=${mdiPlayBoxMultiple} @click=${this.goToBrowser} title="Browse Media"></sonos-icon-button>
                   <sonos-icon-button
@@ -10524,11 +10576,16 @@ const _QueueHeader = class _QueueHeader extends i$5 {
     this.operationRunning = false;
   }
   render() {
+    const playerName = getSpeakerList(this.store.activePlayer, this.store.predefinedGroups);
+    const hideActivePlayerName = this.store.config.queue?.hideActivePlayerName ?? false;
     return x`
       <div class="header">
-        <div class="title-container">
-          <span class="title">${this.queueTitle}</span>
-          <span class="item-count" ?hidden=${this.itemCount === 0}>(${this.itemCount} items)</span>
+        <div class="title-section">
+          <div class="title-row">
+            <span class="title">${this.queueTitle}</span>
+            <span class="item-count" ?hidden=${this.itemCount === 0}>(${this.itemCount} items)</span>
+          </div>
+          <span class="player-name" ?hidden=${hideActivePlayerName}>${playerName}</span>
         </div>
         <div class="header-icons">
           <sonos-queue-search .items=${this.items} .selectMode=${this.selectMode} @queue-search-action=${this.onSearchAction}></sonos-queue-search>
@@ -10598,16 +10655,29 @@ _QueueHeader.styles = i$8`
     .header-icons > * {
       display: inline-block;
     }
-    .title-container {
+    .title-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      min-width: 0;
+      padding: 0.5rem;
+    }
+    .title-row {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       min-width: 0;
-      padding: 0.5rem;
     }
     .title {
       font-size: calc(var(--sonos-font-size, 1rem) * 1.2);
       font-weight: bold;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .player-name {
+      font-size: calc(var(--sonos-font-size, 1rem) * 0.85);
+      color: var(--secondary-text-color);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -12623,10 +12693,15 @@ class SearchHeader extends i$5 {
   }
   render() {
     const hasOverflow = this.overflowIcons.length > 0;
+    const playerName = getSpeakerList(this.store.activePlayer, this.store.predefinedGroups);
+    const hideActivePlayerName = this.store.config.search?.hideActivePlayerName ?? false;
     return x`
       <div class="header">
         <div class="title-container">
-          <span class="title">${this.title}</span>
+          <div class="title-text">
+            <span class="title">${this.title}</span>
+            <span class="player-name" ?hidden=${hideActivePlayerName}>${playerName}</span>
+          </div>
         </div>
         <div class="header-icons">
           <div class="media-type-icons" ?hidden=${this.selectMode}>
@@ -12717,9 +12792,22 @@ class SearchHeader extends i$5 {
         min-width: 0;
         padding: 0.5rem;
       }
+      .title-text {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        min-width: 0;
+      }
       .title {
         font-size: calc(var(--sonos-font-size, 1rem) * 1.2);
         font-weight: bold;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .player-name {
+        font-size: calc(var(--sonos-font-size, 1rem) * 0.85);
+        color: var(--secondary-text-color);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -12773,6 +12861,9 @@ __decorateClass$6([
 __decorateClass$6([
   n$4()
 ], SearchHeader.prototype, "viewMode");
+__decorateClass$6([
+  n$4({ attribute: false })
+], SearchHeader.prototype, "store");
 __decorateClass$6([
   r$3()
 ], SearchHeader.prototype, "filterMenuOpen");
@@ -13519,6 +13610,7 @@ class Search extends i$5 {
             .hasSelection=${this.hasSelection}
             .libraryFilter=${this.libraryFilter}
             .viewMode=${this.viewMode}
+            .store=${this.store}
             @header-action=${this.handleHeaderAction}
           ></sonos-search-header>
           <sonos-search-bar
@@ -13733,12 +13825,14 @@ class Volumes extends i$5 {
   render() {
     const members = this.store.activePlayer.members;
     const showAll = members.length > 1;
+    const hideActivePlayerName = this.store.config.volumes?.hideActivePlayerName ?? false;
+    const playerName = showAll && !hideActivePlayerName ? getSpeakerList(this.store.activePlayer, this.store.predefinedGroups) : "";
     return x`
-      <div ?hidden=${!showAll}>${showAll ? this.volumeWithName(this.store.activePlayer) : E}</div>
+      <div ?hidden=${!showAll}>${showAll ? this.volumeWithName(this.store.activePlayer, true, playerName) : E}</div>
       ${members.map((member) => this.volumeWithName(member, false))}
     `;
   }
-  volumeWithName(player, updateMembers = true) {
+  volumeWithName(player, updateMembers = true, groupName = "") {
     const { labelForAllSlider, hideCogwheel } = this.store.config.volumes ?? {};
     const { showVolumeUpAndDownButtons } = this.store.config.player ?? {};
     const name = updateMembers ? labelForAllSlider ?? "All" : player.name;
@@ -13747,7 +13841,13 @@ class Volumes extends i$5 {
     const hideSwitches = updateMembers || !this.showSwitches[player.id];
     return x` <div class="row">
       <div class="volume-name">
-        <div class="volume-name-text">${name}</div>
+        ${updateMembers && groupName ? x`
+              <div class="volume-name-text grouped-name">
+                <span class="grouped-name-prefix">${name} (</span>
+                <span class="grouped-name-main">${groupName}</span>
+                <span class="grouped-name-suffix">)</span>
+              </div>
+            ` : x`<div class="volume-name-text">${name}</div>`}
       </div>
       <div class="slider-row">
         <sonos-icon-button
@@ -13797,7 +13897,7 @@ class Volumes extends i$5 {
         display: flex;
         flex-direction: column;
         padding-top: 0.3rem;
-        padding-right: 1rem;
+        padding-inline: 0.5rem;
         padding-bottom: 0.2rem;
       }
 
@@ -13821,6 +13921,8 @@ class Volumes extends i$5 {
         overflow: hidden;
         flex-direction: column;
         text-align: center;
+        max-width: 90%;
+        align-self: center;
       }
 
       .volume-name-text {
@@ -13831,6 +13933,22 @@ class Volumes extends i$5 {
         font-size: calc(var(--sonos-font-size, 1rem) * 1.1);
         font-weight: bold;
         min-height: 1rem;
+      }
+
+      .grouped-name {
+        display: flex;
+        align-items: center;
+      }
+
+      .grouped-name-main {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .grouped-name-prefix,
+      .grouped-name-suffix {
+        flex-shrink: 0;
       }
 
       .slider-row {
