@@ -692,14 +692,25 @@ const n$3 = "important", i$3 = " !" + n$3, o$1 = e$1(class extends i$4 {
     return T;
   }
 });
-function findMatchingCustomFavorite(customFavorites, mediaContentId) {
+function findMatchingCustomFavorite(customFavorites, mediaContentId, playerId) {
   if (!customFavorites || !mediaContentId) {
     return void 0;
   }
-  for (const key in customFavorites) {
-    const match = customFavorites[key].find((f2) => f2.media_content_id === mediaContentId);
-    if (match) {
-      return match;
+  const keys = playerId ? [playerId, "all"] : Object.keys(customFavorites);
+  for (const key of keys) {
+    for (const favorite of customFavorites[key] ?? []) {
+      if (favorite.media_content_id === mediaContentId) {
+        return favorite;
+      }
+      if (favorite.contentIdRegexpForUseAs) {
+        try {
+          if (new RegExp(favorite.contentIdRegexpForUseAs).test(mediaContentId)) {
+            return favorite;
+          }
+        } catch {
+          continue;
+        }
+      }
     }
   }
   return void 0;
@@ -825,7 +836,11 @@ function getArtworkImage(store, resolvedImageUrl) {
     sizePercentage = override?.sizePercentage ?? sizePercentage;
   }
   if (!override) {
-    const matchingFavorite = findMatchingCustomFavorite(store.config.mediaBrowser?.favorites?.customFavorites, store.activePlayer.attributes.media_content_id);
+    const matchingFavorite = findMatchingCustomFavorite(
+      store.config.mediaBrowser?.favorites?.customFavorites,
+      store.activePlayer.attributes.media_content_id,
+      store.activePlayer.id
+    );
     if (matchingFavorite?.useThumbnailAsArtwork && matchingFavorite.thumbnail) {
       entityImage = matchingFavorite.thumbnail;
     }
@@ -1890,21 +1905,23 @@ class Volume extends i$5 {
     const isMuted = this.updateMembers ? this.player.isGroupMuted() : this.player.isMemberMuted();
     const muteIcon = isMuted ? mdiVolumeMute : mdiVolumeHigh;
     const disabled = this.player.ignoreVolume;
-    const sliderHeight = this.isPlayer && this.playerConfig.volumeSliderHeight;
-    const muteButtonSize = this.isPlayer && this.playerConfig.volumeMuteButtonSize;
+    const globalSliderHeight = this.config.volumeSliderHeight;
+    const sliderHeight = this.isPlayer ? this.playerConfig.volumeSliderHeight ?? globalSliderHeight : globalSliderHeight;
+    const muteButtonSize = this.isPlayer ? this.playerConfig.volumeMuteButtonSize : void 0;
+    const iconButtonSize = muteButtonSize ?? sliderHeight;
+    const buttonStyle = [
+      sliderHeight ? `height: ${sliderHeight}rem;` : "",
+      iconButtonSize ? `--icon-button-size: ${iconButtonSize}rem;--icon-size: ${iconButtonSize * 0.75}rem;` : ""
+    ].join("");
+    const sliderStyle = sliderHeight ? `--control-slider-thickness: ${sliderHeight}rem;` : "";
     return x`
-      <style>
-        :host {
-          ${sliderHeight ? `--control-slider-thickness: ${sliderHeight}rem;` : ""}
-          ${muteButtonSize ? `--icon-button-size: ${muteButtonSize}rem; --icon-size: ${muteButtonSize * 0.75}rem;` : ""}
-        }
-      </style>
       <div class="volume" slim=${this.slim || E}>
         <sonos-icon-button
           .disabled=${disabled}
           @click=${this.mute}
           .path=${muteIcon}
           hide=${this.isPlayer && this.playerConfig.hideVolumeMuteButton || E}
+          style=${buttonStyle}
         >
         </sonos-icon-button>
         <div class="volume-slider">
@@ -1915,6 +1932,7 @@ class Volume extends i$5 {
             @slider-moved=${this.sliderMoved}
             .disabled=${disabled}
             class=${this.config.dynamicVolumeSlider && max === 100 ? "over-threshold" : ""}
+            style=${sliderStyle}
           ></ha-control-slider>
           <div class="volume-level" hide=${this.isPlayer && this.playerConfig.hideVolumePercentage || E}>
             <div style="flex: ${volume}">${volume > 0 ? "0%" : ""}</div>
@@ -1923,7 +1941,7 @@ class Volume extends i$5 {
           </div>
         </div>
         <div class="percentage-slim" hide=${this.slim && E}>${volume}%</div>
-        <sonos-icon-button hide=${this.store.hidePower()} @click=${this.togglePower} .path=${mdiPower}></sonos-icon-button>
+        <sonos-icon-button hide=${this.store.hidePower()} @click=${this.togglePower} .path=${mdiPower} style=${buttonStyle}></sonos-icon-button>
       </div>
     `;
   }
@@ -1969,7 +1987,6 @@ class Volume extends i$5 {
       }
 
       *[slim] * {
-        --control-slider-thickness: 10px;
         --icon-button-size: 30px;
         --icon-size: 20px;
       }
@@ -3198,7 +3215,7 @@ class MediaPlayer {
     return this.members.every((member) => member.isMemberMuted());
   }
   getCurrentTrack() {
-    const matchingFavorite = findMatchingCustomFavorite(this.config.mediaBrowser?.favorites?.customFavorites, this.attributes.media_content_id);
+    const matchingFavorite = findMatchingCustomFavorite(this.config.mediaBrowser?.favorites?.customFavorites, this.attributes.media_content_id, this.id);
     if (matchingFavorite?.useTitleAsMediaTitle) {
       return matchingFavorite.title;
     }
@@ -3882,6 +3899,12 @@ const COMMON_SCHEMA = [
     selector: { boolean: {} }
   },
   {
+    name: "listItemHeight",
+    type: "float",
+    help: "Height of list items in rem (e.g., media browser rows, queue rows)",
+    valueMin: 0.1
+  },
+  {
     name: "mediaTitleRegexToReplace",
     type: "string"
   },
@@ -3904,6 +3927,12 @@ const COMMON_SCHEMA = [
   {
     name: "storePlayerInSessionStorage",
     selector: { boolean: {} }
+  },
+  {
+    name: "volumeSliderHeight",
+    type: "float",
+    help: "Global height of volume sliders (rem)",
+    valueMin: 0.1
   },
   {
     name: "volumeStepSize",
@@ -6162,7 +6191,9 @@ class FavoritesList extends i$5 {
     return x`
       <mwc-list multi class="list">
         ${itemsWithFallbacks(this.items, this.config).map((item) => {
-      return x` <sonos-media-row @click=${() => this.dispatchEvent(customEvent(MEDIA_ITEM_SELECTED, item))} .item=${item}></sonos-media-row> `;
+      return x`
+            <sonos-media-row @click=${() => this.dispatchEvent(customEvent(MEDIA_ITEM_SELECTED, item))} .item=${item} .store=${this.store}></sonos-media-row>
+          `;
     })}
       </mwc-list>
     `;
@@ -10757,7 +10788,8 @@ class MediaRow extends i$5 {
     const { itemBackgroundColor, itemTextColor, selectedItemBackgroundColor, selectedItemTextColor } = this.store?.config?.queue ?? {};
     const bgColor = this.selected ? selectedItemBackgroundColor : itemBackgroundColor;
     const textColor = this.selected ? selectedItemTextColor : itemTextColor;
-    const cssVars = (bgColor ? `--secondary-background-color: ${bgColor};` : "") + (textColor ? `--secondary-text-color: ${textColor};` : "");
+    const listItemHeight = this.store.config.listItemHeight;
+    const cssVars = (bgColor ? `--secondary-background-color: ${bgColor};` : "") + (textColor ? `--secondary-text-color: ${textColor};` : "") + (listItemHeight ? `height: ${listItemHeight}rem;` : "");
     const hasBadges = this.showFavoriteBadge || this.showLibraryBadge || this.isFavorite !== null || this.isInLibrary !== null;
     const showClickableHeart = this.isFavorite !== null;
     const showClickableLibrary = this.isInLibrary !== null;
@@ -10846,7 +10878,7 @@ class MediaRow extends i$5 {
         .button {
           margin: 0.3rem;
           border-radius: 0.3rem;
-          height: 25px;
+          height: 1.8rem;
           padding-inline: 0.1rem;
         }
 
@@ -13839,6 +13871,8 @@ class Volumes extends i$5 {
     const volDown = async () => await this.store.mediaControlService.volumeDown(player, updateMembers);
     const volUp = async () => await this.store.mediaControlService.volumeUp(player, updateMembers);
     const hideSwitches = updateMembers || !this.showSwitches[player.id];
+    const sliderHeight = this.store.config.volumeSliderHeight;
+    const buttonStyle = sliderHeight ? `height: ${sliderHeight}rem;--icon-button-size: ${sliderHeight}rem;--icon-size: ${sliderHeight * 0.75}rem;` : "";
     return x` <div class="row">
       <div class="volume-name">
         ${updateMembers && groupName ? x`
@@ -13855,14 +13889,22 @@ class Volumes extends i$5 {
           ?hidden=${!showVolumeUpAndDownButtons}
           @click=${volDown}
           .path=${mdiVolumeMinus}
+          style=${buttonStyle}
         ></sonos-icon-button>
         <sonos-volume .store=${this.store} .player=${player} .updateMembers=${updateMembers}></sonos-volume>
-        <sonos-icon-button .disabled=${player.ignoreVolume} ?hidden=${!showVolumeUpAndDownButtons} @click=${volUp} .path=${mdiVolumePlus}></sonos-icon-button>
+        <sonos-icon-button
+          .disabled=${player.ignoreVolume}
+          ?hidden=${!showVolumeUpAndDownButtons}
+          @click=${volUp}
+          .path=${mdiVolumePlus}
+          style=${buttonStyle}
+        ></sonos-icon-button>
         <sonos-icon-button
           ?hidden=${updateMembers || !!hideCogwheel}
           @click=${() => this.toggleShowSwitches(player)}
           .path=${mdiCog}
           show-switches=${this.showSwitches[player.id] || E}
+          style=${buttonStyle}
         ></sonos-icon-button>
       </div>
       <div class="switches" ?hidden=${hideSwitches}>
