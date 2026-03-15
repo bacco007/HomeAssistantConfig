@@ -14,7 +14,9 @@ import yaml
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import area_registry as ar
+from homeassistant.util import slugify as ha_slugify
 
 from .translation_utils import TranslationHelper
 
@@ -164,6 +166,15 @@ class AutomationAnalyzer:
         
         # Check for malformed blueprints
         await self._check_blueprint_issues()
+
+        # v1.3.0 — Script graph analysis (cycles, depth, single-mode-loop, orphans)
+        await self._analyze_script_graph()
+
+        # v1.3.0 — Blueprint refactoring candidates
+        self._detect_blueprint_candidates()
+
+        # v1.3.0 — Advanced scene analysis (unavailable refs, 90-day ghost, duplicates)
+        await self._analyze_advanced_scenes()
         
         # Separate issues by entity_id prefix and issue type
         self.automation_issues = []
@@ -173,13 +184,23 @@ class AutomationAnalyzer:
 
         BLUEPRINT_ISSUE_TYPES = {
             "blueprint_missing_path",
+            "blueprint_file_not_found",
             "blueprint_no_inputs",
             "blueprint_empty_input",
+            "blueprint_input_entity_unknown",
+            "blueprint_input_entity_unavailable",
         }
 
         for issue in self.issues:
             entity_id = issue.get("entity_id", "")
             issue_type = issue.get("type", "")
+            # Propagate source_file from automation config to issue (v1.2.0)
+            if "source_file" not in issue:
+                cfg = self._automation_configs.get(entity_id) or self._script_configs.get(entity_id)
+                if cfg:
+                    sf = cfg.get("_source_file", "")
+                    if sf:
+                        issue["source_file"] = sf
             if issue_type in BLUEPRINT_ISSUE_TYPES:
                 # Blueprint issues go to their own list regardless of entity_id
                 self.blueprint_issues.append(issue)
@@ -250,80 +271,185 @@ class AutomationAnalyzer:
         )
 
     async def _load_ignored_entities(self) -> None:
-        """Cache entity_ids that have the haca_ignore label."""
-        self._ignored_entity_ids = set()
-        try:
-            ent_reg = er.async_get(self.hass)
-            for entry in ent_reg.entities.values():
-                if "haca_ignore" in entry.labels:
-                    self._ignored_entity_ids.add(entry.entity_id)
-        except Exception as e:
-            _LOGGER.debug("haca_ignore: error loading entity labels: %s", e)
-        _LOGGER.debug("haca_ignore: %d entities ignored", len(self._ignored_entity_ids))
+        """Cache entity_ids that have the haca_ignore label (entity or device level)."""
+        from .translation_utils import async_get_haca_ignored_entity_ids
+        self._ignored_entity_ids = await async_get_haca_ignored_entity_ids(self.hass)
 
     def _is_ignored(self, entity_id: str) -> bool:
         """Return True if this entity should be skipped (has haca_ignore label)."""
         return entity_id in self._ignored_entity_ids
 
     async def _load_automation_configs(self) -> None:
-        """Load automation configurations from automations.yaml."""
+        """Load automation configurations from all sources:
+        - automations.yaml (standard UI file)
+        - .storage/core.automation (UI automations in HA storage)
+        - packages/*.yaml (homeassistant.packages)
+        - Files referenced via !include_dir_merge_list in configuration.yaml
+        Deduplicates by unique_id.
+        """
         self._automation_configs = {}
-        
+        seen_unique_ids: set[str] = set()
         config_dir = Path(self.hass.config.config_dir)
-        automations_file = config_dir / "automations.yaml"
-        
-        if not automations_file.exists():
-            _LOGGER.warning("automations.yaml not found at %s", automations_file)
-            return
-        
-        try:
-            def read_automations():
-                with open(automations_file, "r", encoding="utf-8") as f:
-                    content = yaml.safe_load(f)
-                    return content if content is not None else []
-            
-            automations = await self.hass.async_add_executor_job(read_automations)
-            
-            if not isinstance(automations, list):
-                _LOGGER.warning("automations.yaml is not a list, got %s", type(automations))
-                return
-            
-            _LOGGER.debug("Loaded %d automations from file", len(automations))
-            
-            # Map automations to entity_ids
-            entity_reg = er.async_get(self.hass)
-            
-            for config in automations:
-                if not isinstance(config, dict):
-                    continue
-                    
-                automation_id = config.get("id")
-                alias = config.get("alias", "")
-                
-                entity_id = None
-                # Find matching entity by unique_id
+        entity_reg = er.async_get(self.hass)
+
+        def _map_config_to_entity(config: dict, source_file: str) -> tuple[str | None, dict]:
+            """Resolve the HA entity_id for a raw automation config dict."""
+            config = dict(config)
+            config["_source_file"] = source_file
+            automation_id = config.get("id")
+            alias = config.get("alias", "")
+            entity_id = None
+
+            # 1. Primary: look up the entity_registry by unique_id (most reliable)
+            if automation_id:
                 for entity in entity_reg.entities.values():
-                    if entity.platform == "automation" and entity.unique_id == automation_id:
+                    if entity.platform == "automation" and entity.unique_id == str(automation_id):
                         entity_id = entity.entity_id
                         break
-                
-                # Fallback to alias-based entity_id
-                if not entity_id and alias:
-                    entity_id = f"automation.{alias.lower().replace(' ', '_').replace('-', '_')}"
-                    # Check if this entity exists in the registry
-                    if not any(e.entity_id == entity_id for e in entity_reg.entities.values()):
-                        entity_id = None
-                
-                # Last resort: use generic identifier
-                if not entity_id:
-                    entity_id = f"automation.unknown_{automation_id or len(self._automation_configs)}"
-                
-                self._automation_configs[entity_id] = config
-                _LOGGER.debug("Mapped automation '%s' to %s", alias or automation_id, entity_id)
-            
-            _LOGGER.info("Loaded %d automation configs successfully", len(self._automation_configs))
-        except Exception as e:
-            _LOGGER.error("Error loading automations.yaml: %s", e, exc_info=True)
+
+            # 2. Fallback: derive from alias using the SAME slugify HA uses
+            #    (must match HA's entity_id so that haca_ignore labels are found correctly)
+            if not entity_id and alias:
+                candidate = f"automation.{ha_slugify(alias)}"
+                if any(e.entity_id == candidate for e in entity_reg.entities.values()):
+                    entity_id = candidate
+
+            # 3. Last resort: synthetic key — will never match the entity_registry
+            if not entity_id:
+                entity_id = f"automation.unknown_{automation_id or len(self._automation_configs)}"
+
+            return entity_id, config
+
+        def _register(config: dict, source: str) -> None:
+            """Register one automation config, deduplicating by unique_id."""
+            unique_id = config.get("id")
+            if unique_id and str(unique_id) in seen_unique_ids:
+                return
+            if unique_id:
+                seen_unique_ids.add(str(unique_id))
+            entity_id, enriched = _map_config_to_entity(config, source)
+            self._automation_configs[entity_id] = enriched
+
+        # ── 1. automations.yaml ───────────────────────────────────────────
+        automations_file = config_dir / "automations.yaml"
+        if automations_file.exists():
+            try:
+                def _read_yaml_list(path):
+                    with open(path, "r", encoding="utf-8") as f:
+                        content = yaml.safe_load(f)
+                    return content if isinstance(content, list) else []
+
+                automations = await self.hass.async_add_executor_job(
+                    _read_yaml_list, automations_file
+                )
+                for cfg in automations:
+                    if isinstance(cfg, dict):
+                        _register(cfg, "automations.yaml")
+                _LOGGER.debug("automations.yaml: loaded %d entries", len(automations))
+            except Exception as e:
+                _LOGGER.error("Error loading automations.yaml: %s", e, exc_info=True)
+
+        # ── 2. .storage/core.automation (UI automations) ──────────────────
+        storage_file = config_dir / ".storage" / "core.automation"
+        if storage_file.exists():
+            try:
+                def _read_storage():
+                    with open(storage_file, "r", encoding="utf-8") as f:
+                        return json.load(f)
+
+                storage_data = await self.hass.async_add_executor_job(_read_storage)
+                items = storage_data.get("data", {}).get("items", [])
+                for cfg in items:
+                    if isinstance(cfg, dict):
+                        _register(cfg, ".storage/core.automation")
+                _LOGGER.debug(".storage/core.automation: loaded %d entries", len(items))
+            except Exception as e:
+                _LOGGER.error("Error loading .storage/core.automation: %s", e, exc_info=True)
+
+        # ── 3. packages/*.yaml (homeassistant.packages) ───────────────────
+        packages_dir = config_dir / "packages"
+        if packages_dir.is_dir():
+            try:
+                def _read_packages(pkg_dir: Path) -> list[tuple[str, list]]:
+                    results = []
+                    for yaml_file in sorted(pkg_dir.rglob("*.yaml")):
+                        try:
+                            with open(yaml_file, "r", encoding="utf-8") as f:
+                                content = yaml.safe_load(f)
+                            if not isinstance(content, dict):
+                                continue
+                            # Support top-level 'automation:' or nested under 'homeassistant:'
+                            automations_raw = content.get("automation", [])
+                            if not automations_raw:
+                                automations_raw = content.get("homeassistant", {}).get("automation", [])
+                            if isinstance(automations_raw, dict):
+                                automations_raw = [automations_raw]
+                            if automations_raw:
+                                results.append((str(yaml_file.relative_to(pkg_dir.parent)), automations_raw))
+                        except Exception:
+                            pass
+                    return results
+
+                pkg_results = await self.hass.async_add_executor_job(_read_packages, packages_dir)
+                for source_rel, pkg_automations in pkg_results:
+                    for cfg in pkg_automations:
+                        if isinstance(cfg, dict):
+                            _register(cfg, f"packages/{source_rel}")
+                _LOGGER.debug("packages/: loaded automations from %d files", len(pkg_results))
+            except Exception as e:
+                _LOGGER.error("Error loading packages/*.yaml: %s", e, exc_info=True)
+
+        # ── 4. configuration.yaml — !include_dir_merge_list ───────────────
+        config_yaml_path = config_dir / "configuration.yaml"
+        if config_yaml_path.exists():
+            try:
+                def _scan_config_includes(cfg_path: Path, cfg_dir: Path) -> list[tuple[str, list]]:
+                    """Detect and resolve !include_dir_merge_list automation directories."""
+                    results = []
+                    try:
+                        with open(cfg_path, "r", encoding="utf-8") as f:
+                            raw = f.read()
+                        # Detect: automation: !include_dir_merge_list <dir>
+                        import re as _re
+                        matches = _re.findall(
+                            r"^automation\s*:\s*!include_dir_merge_list\s+(\S+)",
+                            raw, _re.MULTILINE
+                        )
+                        for rel_dir in matches:
+                            target = cfg_dir / rel_dir
+                            if target.is_dir():
+                                for yaml_file in sorted(target.rglob("*.yaml")):
+                                    try:
+                                        with open(yaml_file, "r", encoding="utf-8") as f:
+                                            content = yaml.safe_load(f)
+                                        if isinstance(content, list):
+                                            rel = str(yaml_file.relative_to(cfg_dir))
+                                            results.append((rel, content))
+                                        elif isinstance(content, dict):
+                                            rel = str(yaml_file.relative_to(cfg_dir))
+                                            results.append((rel, [content]))
+                                    except Exception:
+                                        pass
+                    except Exception:
+                        pass
+                    return results
+
+                include_results = await self.hass.async_add_executor_job(
+                    _scan_config_includes, config_yaml_path, config_dir
+                )
+                for source_rel, inc_automations in include_results:
+                    for cfg in inc_automations:
+                        if isinstance(cfg, dict):
+                            _register(cfg, source_rel)
+                _LOGGER.debug("configuration.yaml includes: loaded automations from %d files", len(include_results))
+            except Exception as e:
+                _LOGGER.error("Error scanning configuration.yaml includes: %s", e, exc_info=True)
+
+        _LOGGER.info(
+            "Total automation configs loaded: %d (from %d unique sources)",
+            len(self._automation_configs),
+            len({c.get("_source_file", "?") for c in self._automation_configs.values()}),
+        )
 
     async def _load_script_configs(self) -> None:
         """Load script configurations from scripts.yaml."""
@@ -344,23 +470,340 @@ class AutomationAnalyzer:
             _LOGGER.error("Error loading scripts.yaml: %s", e)
 
     async def _load_scene_configs(self) -> None:
-        """Load scene configurations from scenes.yaml."""
+        """Load scene configurations from scenes.yaml.
+
+        HA derives the entity_id from the scene *name* using slugify():
+            scene.{slugify(name)}
+        We must use the same function to match what hass.states contains.
+        """
         config_dir = Path(self.hass.config.config_dir)
         scenes_file = config_dir / "scenes.yaml"
-        if not scenes_file.exists(): return
-        
+        if not scenes_file.exists():
+            return
+
         try:
             def read_scenes():
                 with open(scenes_file, "r", encoding="utf-8") as f:
                     content = yaml.safe_load(f)
                     return content if content is not None else []
-            
+
             scenes = await self.hass.async_add_executor_job(read_scenes)
             for config in scenes:
-                if isinstance(config, dict) and "id" in config:
-                    self._scene_configs[f"scene.{config.get('name', config['id']).lower().replace(' ', '_')}"] = config
+                if not isinstance(config, dict):
+                    continue
+                if "id" not in config and "name" not in config:
+                    continue
+                # HA builds the entity_id via slugify(name), same as any other entity.
+                # Fall back to slugify(id) if name is absent (rare but valid).
+                name_or_id = config.get("name") or config.get("id", "")
+                entity_id = f"scene.{ha_slugify(str(name_or_id))}"
+                self._scene_configs[entity_id] = config
         except Exception as e:
             _LOGGER.error("Error loading scenes.yaml: %s", e)
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # v1.3.0 — Script graph analysis (a/)
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def _collect_script_calls_recursive(self, actions: Any) -> set[str]:
+        """Return all script.* entity_ids called in an action tree (recursively)."""
+        called: set[str] = set()
+        if isinstance(actions, dict):
+            actions = [actions]
+        if not isinstance(actions, list):
+            return called
+        for action in actions:
+            if not isinstance(action, dict):
+                continue
+            service = action.get("service") or action.get("action", "")
+            if isinstance(service, str):
+                # Direct call: service: script.my_script
+                if service.startswith("script.") and service != "script.turn_on":
+                    called.add(service)
+                # script.turn_on with target entity_id
+                elif service == "script.turn_on":
+                    target = action.get("target", {})
+                    if isinstance(target, dict):
+                        eid = target.get("entity_id")
+                        for e in ([eid] if isinstance(eid, str) else (eid or [])):
+                            if isinstance(e, str) and e.startswith("script."):
+                                called.add(e)
+            # Recurse into all branch types
+            for key in ("sequence", "then", "else", "default"):
+                called.update(self._collect_script_calls_recursive(action.get(key, [])))
+            for branch in action.get("choose", []):
+                if isinstance(branch, dict):
+                    called.update(self._collect_script_calls_recursive(branch.get("sequence", [])))
+            called.update(self._collect_script_calls_recursive(action.get("parallel", [])))
+            repeat = action.get("repeat")
+            if isinstance(repeat, dict):
+                called.update(self._collect_script_calls_recursive(repeat.get("sequence", [])))
+        return called
+
+    async def _analyze_script_graph(self) -> None:
+        """v1.3.0 — Build script call graph and detect:
+        - Cycles (high)
+        - Call depth > SCRIPT_CALL_DEPTH_THRESHOLD (medium)
+        - mode:single scripts called in rapid-trigger automations (medium)
+        - Orphan scripts never called by anything (low)
+        """
+        from .const import SCRIPT_CALL_DEPTH_THRESHOLD, SCRIPT_BLUEPRINT_MIN_AUTOMATIONS
+        t = self._translator.t
+
+        # ── Build call graph ─────────────────────────────────────────────
+        # graph[script_id] = set of script_ids it calls
+        graph: dict[str, set[str]] = {eid: set() for eid in self._script_configs}
+        called_by_anyone: set[str] = set()
+
+        for caller_id, config in {**self._automation_configs, **self._script_configs}.items():
+            actions = config.get("actions") or config.get("action") or config.get("sequence", [])
+            if not isinstance(actions, list):
+                actions = [actions] if actions else []
+            called = self._collect_script_calls_recursive(actions)
+            called_by_anyone.update(called)
+            if caller_id in self._script_configs:
+                graph[caller_id].update(called & set(self._script_configs))
+
+        await asyncio.sleep(0)
+
+        # ── 1. Cycle detection (DFS with path stack) ──────────────────────
+        visited: set[str] = set()
+        reported_cycles: set[frozenset] = set()
+
+        def _dfs(node: str, path: list, path_set: set) -> None:
+            if node in path_set:
+                cycle_start = path.index(node)
+                cycle = path[cycle_start:]
+                key = frozenset(cycle)
+                if key not in reported_cycles:
+                    reported_cycles.add(key)
+                    cycle_str = " → ".join([*cycle, node])
+                    self.issues.append({
+                        "entity_id": cycle[0],
+                        "type": "script_cycle",
+                        "severity": "high",
+                        "message": t("script_cycle", cycle=cycle_str),
+                        "recommendation": t("script_break_cycle"),
+                    })
+                return
+            if node in visited:
+                return
+            path.append(node)
+            path_set.add(node)
+            for neighbor in sorted(graph.get(node, set())):
+                _dfs(neighbor, path, path_set)
+            path.pop()
+            path_set.discard(node)
+            visited.add(node)
+
+        for node in sorted(graph.keys()):
+            if node not in visited and not self._is_ignored(node):
+                _dfs(node, [], set())
+
+        cycle_members = {eid for key in reported_cycles for eid in key}
+        await asyncio.sleep(0)
+
+        # ── 2. Call depth > threshold ────────────────────────────────────
+        def _max_depth(node: str, seen: frozenset) -> int:
+            """Max call depth from node, with cycle guard."""
+            if node in seen:
+                return 0
+            children = graph.get(node, set())
+            if not children:
+                return 0
+            new_seen = seen | {node}
+            return 1 + max((_max_depth(c, new_seen) for c in children), default=0)
+
+        for script_id in self._script_configs:
+            if self._is_ignored(script_id) or script_id in cycle_members:
+                continue
+            depth = _max_depth(script_id, frozenset())
+            if depth > SCRIPT_CALL_DEPTH_THRESHOLD:
+                alias = self._script_configs[script_id].get("alias", script_id)
+                self.issues.append({
+                    "entity_id": script_id,
+                    "type": "script_call_depth",
+                    "severity": "medium",
+                    "message": t("script_call_depth", alias=alias, depth=depth),
+                    "recommendation": t("script_reduce_depth"),
+                })
+
+        await asyncio.sleep(0)
+
+        # ── 3. mode:single called from rapid-trigger automations ──────────
+        RAPID_TRIGGER_PLATFORMS = {"time_pattern", "time", "interval", "mqtt"}
+        single_mode_scripts = {
+            eid for eid, cfg in self._script_configs.items()
+            if cfg.get("mode") == "single"
+        }
+        already_reported_single: set[str] = set()
+
+        for auto_id, config in self._automation_configs.items():
+            if self._is_ignored(auto_id):
+                continue
+            triggers = config.get("triggers") or config.get("trigger", [])
+            if isinstance(triggers, dict):
+                triggers = [triggers]
+            if not isinstance(triggers, list):
+                continue
+            is_rapid = any(
+                isinstance(tr, dict) and tr.get("platform") in RAPID_TRIGGER_PLATFORMS
+                for tr in triggers
+            )
+            if not is_rapid:
+                continue
+            actions = config.get("actions") or config.get("action", [])
+            if not isinstance(actions, list):
+                actions = [actions] if actions else []
+            called = self._collect_script_calls_recursive(actions)
+            for script_id in (called & single_mode_scripts) - already_reported_single:
+                already_reported_single.add(script_id)
+                alias = self._script_configs[script_id].get("alias", script_id)
+                auto_alias = config.get("alias", auto_id)
+                self.issues.append({
+                    "entity_id": script_id,
+                    "type": "script_single_mode_loop",
+                    "severity": "medium",
+                    "message": t("script_single_mode_loop", alias=alias, automation=auto_alias),
+                    "recommendation": t("script_single_mode_fix"),
+                })
+
+        await asyncio.sleep(0)
+
+        # ── 4. Orphan scripts (never called) ─────────────────────────────
+        for script_id in self._script_configs:
+            if self._is_ignored(script_id) or script_id in called_by_anyone:
+                continue
+            alias = self._script_configs[script_id].get("alias", script_id)
+            self.issues.append({
+                "entity_id": script_id,
+                "type": "script_orphan",
+                "severity": "low",
+                "message": t("script_orphan", alias=alias),
+                "recommendation": t("script_remove_or_integrate"),
+            })
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # v1.3.0 — Blueprint refactoring suggestion (c/)
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def _detect_blueprint_candidates(self) -> None:
+        """v1.3.0 — Flag scripts called by > SCRIPT_BLUEPRINT_MIN_AUTOMATIONS
+        distinct automations as blueprint refactoring candidates."""
+        from .const import SCRIPT_BLUEPRINT_MIN_AUTOMATIONS
+        t = self._translator.t
+        script_callers: dict[str, set[str]] = {}  # script_id → set of automation_ids
+
+        for auto_id, config in self._automation_configs.items():
+            actions = config.get("actions") or config.get("action", [])
+            if not isinstance(actions, list):
+                actions = [actions] if actions else []
+            for script_id in self._collect_script_calls_recursive(actions):
+                if script_id in self._script_configs:
+                    script_callers.setdefault(script_id, set()).add(auto_id)
+
+        for script_id, auto_ids in script_callers.items():
+            if len(auto_ids) > SCRIPT_BLUEPRINT_MIN_AUTOMATIONS:
+                alias = self._script_configs[script_id].get("alias", script_id)
+                self.issues.append({
+                    "entity_id": script_id,
+                    "type": "script_blueprint_candidate",
+                    "severity": "low",
+                    "message": t("script_blueprint_candidate",
+                                 alias=alias, count=len(auto_ids)),
+                    "recommendation": t("script_create_blueprint"),
+                    "automation_ids": sorted(auto_ids)[:10],
+                })
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # v1.3.0 — Advanced scene analysis (b/)
+    # ═══════════════════════════════════════════════════════════════════════
+
+    async def _analyze_advanced_scenes(self) -> None:
+        """v1.3.0 — Advanced scene checks:
+        - Entity in scene is currently unavailable (medium)
+        - Scene not activated in 90 days (low)
+        - Duplicate scenes with identical entity/state set (medium)
+        """
+        from .const import SCENE_GHOST_DAYS
+        t = self._translator.t
+        cutoff = datetime.now(timezone.utc) - timedelta(days=SCENE_GHOST_DAYS)
+
+        fingerprints: dict[str, str] = {}  # scene_entity_id → fingerprint
+
+        for entity_id, config in self._scene_configs.items():
+            if self._is_ignored(entity_id):
+                continue
+            entities = config.get("entities", {})
+            if not isinstance(entities, dict):
+                entities = {}
+
+            # 1. Unavailable entity references
+            for ent_id in entities:
+                state = self.hass.states.get(ent_id)
+                if state and state.state in ("unavailable", "unknown"):
+                    self.issues.append({
+                        "entity_id": entity_id,
+                        "type": "scene_entity_unavailable",
+                        "severity": "medium",
+                        "message": t("scene_entity_unavailable", entity_id=ent_id),
+                        "recommendation": t("scene_fix_unavailable_entity"),
+                    })
+
+            # 2. Last triggered > SCENE_GHOST_DAYS days ago
+            scene_state = self.hass.states.get(entity_id)
+            if scene_state:
+                raw_ts = (scene_state.attributes.get("last_triggered")
+                          or scene_state.attributes.get("last_activated"))
+                if raw_ts:
+                    try:
+                        if isinstance(raw_ts, datetime):
+                            last_dt = raw_ts if raw_ts.tzinfo else raw_ts.replace(tzinfo=timezone.utc)
+                        else:
+                            ts = str(raw_ts).rstrip("Z")
+                            if "+" not in ts and ts.count("-") < 3:
+                                ts += "+00:00"
+                            last_dt = datetime.fromisoformat(ts)
+                        if last_dt < cutoff:
+                            days_ago = (datetime.now(timezone.utc) - last_dt).days
+                            self.issues.append({
+                                "entity_id": entity_id,
+                                "type": "scene_not_triggered",
+                                "severity": "low",
+                                "message": t("scene_not_triggered", days=days_ago),
+                                "recommendation": t("scene_check_if_used"),
+                            })
+                    except Exception:
+                        pass
+
+            # 3. Build dedup fingerprint
+            try:
+                fp_parts = [
+                    f"{eid}:{json.dumps(sv, sort_keys=True) if isinstance(sv, dict) else str(sv)}"
+                    for eid, sv in sorted(entities.items())
+                ]
+                fingerprints[entity_id] = "|".join(fp_parts)
+            except Exception:
+                pass
+
+            await asyncio.sleep(0)
+
+        # Duplicate detection
+        seen: dict[str, str] = {}  # fingerprint → first scene_entity_id
+        for scene_id, fp in fingerprints.items():
+            if not fp:
+                continue
+            if fp in seen:
+                other = seen[fp]
+                self.issues.append({
+                    "entity_id": scene_id,
+                    "type": "scene_duplicate",
+                    "severity": "medium",
+                    "message": t("scene_duplicate", other_scene=other),
+                    "recommendation": t("scene_merge_duplicates"),
+                })
+            else:
+                seen[fp] = scene_id
 
     def _analyze_script(self, entity_id: str, config: dict[str, Any]) -> None:
         """Analyze a single script."""
@@ -971,6 +1414,10 @@ class AutomationAnalyzer:
             if not state:
                 continue
 
+            # Skip ignored automations
+            if self._is_ignored(entity_id):
+                continue
+
             # Skip disabled automations
             if state.state == "off":
                 continue
@@ -1082,6 +1529,8 @@ class AutomationAnalyzer:
 
         for entity_id, config in self._automation_configs.items():
             # Exact signature (normalised JSON hash)
+            if self._is_ignored(entity_id):
+                continue
             triggers = config.get("triggers") or config.get("trigger", [])
             actions  = config.get("actions")  or config.get("action",  [])
             sig = self._exact_fingerprint(triggers, actions)
@@ -1247,6 +1696,8 @@ class AutomationAnalyzer:
         MAX_DELAY_MINUTES = 30
         
         for entity_id, config in self._automation_configs.items():
+            if self._is_ignored(entity_id):
+                continue
             alias = config.get("alias", entity_id)
             actions = config.get("actions") or config.get("action", [])
 
@@ -1313,6 +1764,10 @@ class AutomationAnalyzer:
         config_dir = Path(self.hass.config.config_dir)
 
         for entity_id, config in self._automation_configs.items():
+            # Respect haca_ignore label
+            if self._is_ignored(entity_id):
+                continue
+
             alias = config.get("alias", entity_id)
 
             # Check if automation uses a blueprint

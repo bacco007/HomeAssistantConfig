@@ -22,11 +22,11 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 # ══════════════════════════════════════════════════════════════════════════════
 
 class TestVersion:
-    def test_version_is_1_1_2(self):
+    def test_version_is_1_5_2(self):
         from custom_components.config_auditor.const import VERSION
-        assert VERSION == "1.1.2", (
-            f"Expected VERSION='1.1.2', got '{VERSION}'. "
-            "Bump const.py VERSION when making a minor release."
+        assert VERSION == "1.5.2", (
+            f"Expected VERSION='1.4.3', got '{VERSION}'. "
+            "Update tests when version changes."
         )
 
     def test_version_string_format(self):

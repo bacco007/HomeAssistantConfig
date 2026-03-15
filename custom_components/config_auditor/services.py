@@ -214,10 +214,23 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry) -> None:
             
             # Mettre à jour le coordinator avec les nouvelles données
             current_data = coordinator.data or {}
+
+            # Route scene.* issues from entity_analyzer into scene_issue_list
+            entity_scene_issues = [i for i in issues if i.get("entity_id", "").startswith("scene.")]
+            pure_entity_issues  = [i for i in issues if not i.get("entity_id", "").startswith("scene.")]
+            merged_scene_issues = current_data.get("scene_issue_list", []) + entity_scene_issues
+
+            # Separate helper issues (already split by entity_analyzer.analyze_all)
+            helper_issues = getattr(entity_analyzer, "helper_issues", [])
+
             updated_data = {
                 **current_data,
-                "entity_issues": len(issues),
-                "entity_issue_list": issues,
+                "entity_issues": len(pure_entity_issues),
+                "entity_issue_list": pure_entity_issues,
+                "helper_issues": len(helper_issues),
+                "helper_issue_list": helper_issues,
+                "scene_issues": len(merged_scene_issues),
+                "scene_issue_list": merged_scene_issues,
             }
             
             # Recalculer le health_score
@@ -238,7 +251,7 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry) -> None:
                 + len(updated_data.get("script_issue_list", []))
                 + len(updated_data.get("scene_issue_list", []))
                 + len(updated_data.get("blueprint_issue_list", []))
-                + len(entity_issues) + len(perf_issues) + len(sec_issues)
+                + len(entity_issues) + len(helper_issues) + len(perf_issues) + len(sec_issues)
             )
 
             coordinator.async_set_updated_data(updated_data)
@@ -296,7 +309,8 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry) -> None:
             """Handle list_reports service."""
             data = hass.data[DOMAIN][entry.entry_id]
             report_gen = data["report_generator"]
-            reports = report_gen.list_reports()
+            # list_reports() does synchronous glob() — must run in executor
+            reports = await hass.async_add_executor_job(report_gen.list_reports)
             return {"reports": reports, "count": len(reports)}
 
         async def handle_get_report_content(call: ServiceCall) -> dict:

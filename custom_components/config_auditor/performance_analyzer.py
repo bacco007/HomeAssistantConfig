@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 from .const import (
     ISSUE_HIGH_FREQUENCY,
     ISSUE_VERY_HIGH_FREQUENCY,
@@ -72,6 +73,9 @@ class PerformanceAnalyzer:
         # 3. Detect expensive template patterns in automation configs
         if automation_configs:
             await self._detect_expensive_templates(automation_configs)
+
+        # 4. v1.2.0 — Analyze template sensor/binary_sensor entities
+        await self._analyze_template_entities()
 
         _LOGGER.info("Performance analysis complete: %d issues found, analyzed %d states", 
                      len(self.issues), len(automations))
@@ -299,6 +303,237 @@ class PerformanceAnalyzer:
             for item in config:
                 templates.extend(self._extract_templates_recursively(item))
         return templates
+
+    async def _analyze_template_entities(self) -> None:
+        """v1.2.0 — Detect issues in template sensor and binary_sensor entities.
+        
+        Detections:
+        - states('x') without is_state() — no unavailable handling
+        - now() without a time_pattern trigger — constant recomputation
+        - Template sensor without device_class or unit_of_measurement
+        - Templates that reference each other (cycle detection)
+        - availability: missing when template references potentially unavailable entities
+        """
+        import re as _re
+        t = self._translator.t
+
+        # Load template platform configs from .storage/core.config_entries is fragile.
+        # Instead we inspect the HA state machine for entities created by the template platform.
+        all_states = self.hass.states.async_all()
+
+        # We detect template entities by platform via entity registry
+        try:
+            entity_reg = er.async_get(self.hass)
+        except Exception:
+            return
+
+        template_entity_ids: set[str] = set()
+        for entry in entity_reg.entities.values():
+            if entry.platform == "template" and entry.domain in ("sensor", "binary_sensor"):
+                template_entity_ids.add(entry.entity_id)
+
+        if not template_entity_ids:
+            return
+
+        # Also try to read template config from configuration.yaml / packages
+        # For now we rely on state attributes which expose the template string sometimes
+        # The key info we can get from states:
+        # - state_class, device_class, unit_of_measurement  → attributes
+        # - The template string itself is NOT in state attrs for security reasons
+        # We can still do meaningful checks on the attribute metadata.
+
+        # For template string analysis, we try to load template platform YAML if available
+        config_dir_path = None
+        try:
+            from pathlib import Path as _Path
+            import yaml as _yaml
+            config_dir_path = _Path(self.hass.config.config_dir)
+        except Exception:
+            pass
+
+        # Build a map of template configs from YAML sources
+        template_configs: dict[str, dict] = {}
+        if config_dir_path:
+            def _load_template_yaml(cfg_dir):
+                """Load template: platform entries from configuration.yaml and packages."""
+                results = {}
+                # configuration.yaml
+                cfg_yaml = cfg_dir / "configuration.yaml"
+                if cfg_yaml.exists():
+                    try:
+                        with open(cfg_yaml, "r", encoding="utf-8") as f:
+                            content = _yaml.safe_load(f)
+                        if isinstance(content, dict):
+                            for section in ("sensor", "binary_sensor"):
+                                items = content.get(section, [])
+                                if isinstance(items, dict):
+                                    items = [items]
+                                for item in (items if isinstance(items, list) else []):
+                                    if isinstance(item, dict) and item.get("platform") == "template":
+                                        for tpl in item.get("sensors", {}).values():
+                                            if isinstance(tpl, dict):
+                                                uid = tpl.get("unique_id", tpl.get("friendly_name", ""))
+                                                results[f"template_cfg_{uid}"] = tpl
+                    except Exception:
+                        pass
+                # packages/
+                pkgs = cfg_dir / "packages"
+                if pkgs.is_dir():
+                    for yf in sorted(pkgs.rglob("*.yaml")):
+                        try:
+                            with open(yf, "r", encoding="utf-8") as f:
+                                content = _yaml.safe_load(f)
+                            if not isinstance(content, dict):
+                                continue
+                            for section in ("sensor", "binary_sensor"):
+                                items = content.get(section, [])
+                                if isinstance(items, dict):
+                                    items = [items]
+                                for item in (items if isinstance(items, list) else []):
+                                    if isinstance(item, dict) and item.get("platform") == "template":
+                                        for tpl in item.get("sensors", {}).values():
+                                            if isinstance(tpl, dict):
+                                                uid = tpl.get("unique_id", tpl.get("friendly_name", ""))
+                                                results[f"template_cfg_{uid}"] = tpl
+                        except Exception:
+                            pass
+                return results
+
+            try:
+                template_configs = await self.hass.async_add_executor_job(
+                    _load_template_yaml, config_dir_path
+                )
+            except Exception as e:
+                _LOGGER.debug("Template YAML load error: %s", e)
+
+        # ── Collect all template strings we can analyse ────────────────────
+        # For each template entity, gather template strings from YAML configs
+        template_strings: dict[str, list[str]] = {}  # entity_id -> [template strings]
+        for eid, cfg in template_configs.items():
+            strings = []
+            for k in ("value_template", "availability_template", "attribute_templates"):
+                val = cfg.get(k)
+                if isinstance(val, str):
+                    strings.append(val)
+                elif isinstance(val, dict):
+                    strings.extend(v for v in val.values() if isinstance(v, str))
+            template_strings[eid] = strings
+
+        # ── Per-entity checks ──────────────────────────────────────────────
+        checked = 0
+        for state in all_states:
+            entity_id = state.entity_id
+            if entity_id not in template_entity_ids:
+                continue
+
+            attrs = state.attributes or {}
+            domain = entity_id.split(".")[0]
+
+            # 1. Missing metadata (device_class / unit_of_measurement for sensors)
+            if domain == "sensor":
+                device_class = attrs.get("device_class")
+                unit = attrs.get("unit_of_measurement")
+                if not device_class and not unit:
+                    self.issues.append({
+                        "entity_id": entity_id,
+                        "type": "template_sensor_no_metadata",
+                        "severity": "low",
+                        "message": t("template_sensor_no_metadata", entity_id=entity_id),
+                        "recommendation": t("template_sensor_add_metadata"),
+                    })
+
+            checked += 1
+            if checked % 20 == 0:
+                await asyncio.sleep(0)
+
+        # ── Template-string-level checks (only if we got YAML configs) ────
+        all_value_templates: dict[str, str] = {}  # entity_id/cfg_key -> value_template
+        for cfg_key, cfg in template_configs.items():
+            vt = cfg.get("value_template", "")
+            if vt:
+                all_value_templates[cfg_key] = vt
+
+        for cfg_key, cfg in template_configs.items():
+            value_template = cfg.get("value_template", "")
+            availability = cfg.get("availability_template") or cfg.get("availability")
+            triggers_raw = cfg.get("triggers") or cfg.get("trigger", [])
+            if isinstance(triggers_raw, dict):
+                triggers_raw = [triggers_raw]
+
+            trigger_platforms = {
+                tr.get("platform", "") for tr in (triggers_raw if isinstance(triggers_raw, list) else [])
+                if isinstance(tr, dict)
+            }
+
+            if not value_template:
+                continue
+
+            # 2. states() without is_state() → no unavailable guard
+            states_calls = _re.findall(r"states\(['\"]([^'\"]+)['\"]\)", value_template)
+            is_state_calls = _re.findall(r"is_state\(['\"]([^'\"]+)['\"]\)", value_template)
+            unguarded = [e for e in states_calls if e not in is_state_calls]
+            if unguarded and not availability:
+                self.issues.append({
+                    "entity_id": cfg_key,
+                    "type": "template_no_unavailable_check",
+                    "severity": "medium",
+                    "message": t("template_no_unavailable_check", entities=", ".join(unguarded[:3])),
+                    "recommendation": t("template_add_unavailable_check"),
+                })
+
+            # 3. now() without time_pattern trigger
+            if "now()" in value_template and "time_pattern" not in trigger_platforms:
+                self.issues.append({
+                    "entity_id": cfg_key,
+                    "type": "template_now_without_trigger",
+                    "severity": "medium",
+                    "message": t("template_now_without_trigger"),
+                    "recommendation": t("template_add_time_pattern_trigger"),
+                })
+
+            # 4. Missing availability when entities may be unavailable
+            all_referenced = set(states_calls)
+            if all_referenced and not availability:
+                self.issues.append({
+                    "entity_id": cfg_key,
+                    "type": "template_missing_availability",
+                    "severity": "low",
+                    "message": t("template_missing_availability", count=len(all_referenced)),
+                    "recommendation": t("template_add_availability"),
+                })
+
+        # 5. Cycle detection — template A references B which references A
+        # Build reference graph from value_template strings
+        ref_graph: dict[str, set[str]] = {}
+        for cfg_key, vt in all_value_templates.items():
+            refs = set(_re.findall(r"states\(['\"]([^'\"]+)['\"]\)", vt))
+            refs |= set(_re.findall(r"is_state\(['\"]([^'\"]+)['\"]\)", vt))
+            ref_graph[cfg_key] = refs
+
+        # Simple cycle detection using DFS
+        def _has_cycle(node: str, visited: set, rec_stack: set) -> bool:
+            visited.add(node)
+            rec_stack.add(node)
+            for neighbor in ref_graph.get(node, set()):
+                if neighbor not in visited:
+                    if _has_cycle(neighbor, visited, rec_stack):
+                        return True
+                elif neighbor in rec_stack:
+                    return True
+            rec_stack.discard(node)
+            return False
+
+        visited_global: set[str] = set()
+        for node in list(ref_graph.keys()):
+            if node not in visited_global:
+                if _has_cycle(node, visited_global, set()):
+                    self.issues.append({
+                        "entity_id": node,
+                        "type": "template_sensor_cycle",
+                        "severity": "high",
+                        "message": t("template_sensor_cycle", entity_id=node),
+                        "recommendation": t("template_break_cycle"),
+                    })
 
     def get_issue_summary(self) -> dict[str, Any]:
         """Get a summary of performance issues."""

@@ -270,18 +270,14 @@ class TestHacaIgnoreInAutomationAnalyzer:
 
     @pytest.mark.asyncio
     async def test_is_ignored_returns_true_after_load(self):
-        entries = [MockRegistryEntry("automation.skip_me", labels={"haca_ignore"})]
-        registry = MockEntityRegistry(entries)
-        er_mock = _mock_er(registry)
         hass = MockHass()
+        hass.add_registry_entry(MockRegistryEntry("automation.skip_me", labels={"haca_ignore"}))
         import custom_components.config_auditor.automation_analyzer as _aa_mod
-        with patch("custom_components.config_auditor.automation_analyzer.TranslationHelper") as TH, \
-             patch.object(_aa_mod, "er", er_mock):
+        with patch("custom_components.config_auditor.automation_analyzer.TranslationHelper") as TH:
             TH.return_value.t = lambda key, **kw: key
             TH.return_value.async_load_language = AsyncMock()
             from custom_components.config_auditor.automation_analyzer import AutomationAnalyzer
             a = AutomationAnalyzer(hass)
-        _aa_mod.er = er_mock
         await a._load_ignored_entities()
         assert a._is_ignored("automation.skip_me") is True
         assert a._is_ignored("automation.normal") is False

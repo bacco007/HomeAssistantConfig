@@ -1,4 +1,4 @@
-"""H.A.C.A — Home Assistant Config Auditor v1.1.2"""
+"""H.A.C.A — Home Assistant Config Auditor v1.3.0"""
 from __future__ import annotations
 
 import asyncio
@@ -73,22 +73,87 @@ if MODULE_4_COMPLIANCE_REPORT:
 if MODULE_5_REFACTORING_ASSISTANT:
     from .refactoring_assistant import RefactoringAssistant
 
+# ── v1.4.0 ────────────────────────────────────────────────────────────────
+from .const import (
+    MODULE_15_MCP_SERVER,
+    MODULE_16_PROACTIVE_AGENT,
+    MODULE_17_COMPLIANCE_ANALYZER,
+)
+
+if MODULE_15_MCP_SERVER:
+    from .mcp_server import async_setup_mcp_server
+
+from .llm_api import HacaLLMAPI, HACA_LLM_API_ID
+
+if MODULE_16_PROACTIVE_AGENT:
+    from .proactive_agent import async_setup_proactive_agent
+
+if MODULE_17_COMPLIANCE_ANALYZER:
+    from .compliance_analyzer import ComplianceAnalyzer
+
+# ── v1.5.0 ────────────────────────────────────────────────────────────────
+from .const import (
+    MODULE_18_BATTERY_PREDICTOR,
+    MODULE_19_AREA_COMPLEXITY,
+    MODULE_20_REDUNDANCY_ANALYZER,
+    MODULE_21_RECORDER_IMPACT,
+)
+
+if MODULE_18_BATTERY_PREDICTOR:
+    from .battery_predictor import BatteryPredictor
+
+if MODULE_19_AREA_COMPLEXITY:
+    from .area_complexity_analyzer import AreaComplexityAnalyzer
+
+if MODULE_20_REDUNDANCY_ANALYZER:
+    from .redundancy_analyzer import RedundancyAnalyzer
+
+if MODULE_21_RECORDER_IMPACT:
+    from .recorder_impact_analyzer import RecorderImpactAnalyzer
+
 
 import json as _json
 from pathlib import Path as _Path
 
+# ── Cache mémoire des fichiers de traduction ────────────────────────────────
+# Préchargé au démarrage via _async_preload_ts_cache() pour éviter tout I/O
+# bloquant dans l'event loop (violation asyncio détectée par HA Python 3.14).
+_TS_CACHE: dict[str, dict] = {}   # {lang: {section: {key: value}}}
+
+
 def _ts(hass, section: str, key: str, **kwargs) -> str:
-    """Get a translation string from JSON files using user_language."""
+    """Get a translation string from in-memory cache (never does file I/O)."""
     lang = hass.data.get("config_auditor", {}).get("user_language") or hass.config.language or "en"
+    data = _TS_CACHE.get(lang) or _TS_CACHE.get("en") or {}
+    val = data.get(section, {}).get(key, key)
     try:
-        p = _Path(__file__).parent / "translations" / f"{lang}.json"
-        if not p.exists():
-            p = _Path(__file__).parent / "translations" / "en.json"
-        data = _json.loads(p.read_text(encoding="utf-8"))
-        val = data.get(section, {}).get(key, key)
         return val.format(**kwargs) if kwargs else val
     except Exception:
-        return key
+        return val
+
+
+async def _async_preload_ts_cache(hass: "HomeAssistant") -> None:
+    """Pre-load all translation JSON files into _TS_CACHE using the thread pool."""
+    trans_dir = _Path(__file__).parent / "translations"
+
+    def _load_one(path: _Path) -> tuple[str, dict]:
+        raw = _json.loads(path.read_text(encoding="utf-8"))
+        # The JSON root is {"panel": {...}}; store only the "panel" dict
+        return path.stem, raw.get("panel", raw)
+
+    def _list_translations() -> list[_Path]:
+        """Blocking glob — must run in executor."""
+        return sorted(trans_dir.glob("*.json"))
+
+    import asyncio
+    paths = await hass.async_add_executor_job(_list_translations)
+    tasks = [hass.async_add_executor_job(_load_one, p) for p in paths]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    for res in results:
+        if isinstance(res, tuple):
+            lang_code, panel = res
+            _TS_CACHE[lang_code] = panel
+    _LOGGER.debug("[HACA] Translation cache loaded: %s languages", len(_TS_CACHE))
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -108,6 +173,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     _LOGGER.info("Setting up %s v%s", NAME, VERSION)
 
     hass.data.setdefault(DOMAIN, {})
+
+    # Pré-charger le cache de traductions (évite tout I/O bloquant dans l'event loop)
+    await _async_preload_ts_cache(hass)
     
     if entry.entry_id in hass.data[DOMAIN]:
         _LOGGER.warning("H.A.C.A already set up for this entry")
@@ -136,6 +204,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Create optional modules
     report_generator = ReportGenerator(hass) if MODULE_4_COMPLIANCE_REPORT else None
     refactoring_assistant = RefactoringAssistant(hass) if MODULE_5_REFACTORING_ASSISTANT else None
+    compliance_analyzer = ComplianceAnalyzer(hass) if MODULE_17_COMPLIANCE_ANALYZER else None
+
+    # ── v1.5.0 analyzers ──────────────────────────────────────────────────
+    battery_predictor = BatteryPredictor(hass) if MODULE_18_BATTERY_PREDICTOR else None
+    area_complexity_analyzer = AreaComplexityAnalyzer(hass) if MODULE_19_AREA_COMPLEXITY else None
+    redundancy_analyzer = RedundancyAnalyzer(hass) if MODULE_20_REDUNDANCY_ANALYZER else None
+    recorder_impact_analyzer = RecorderImpactAnalyzer(hass) if MODULE_21_RECORDER_IMPACT else None
     
     scan_interval = entry.options.get("scan_interval", DEFAULT_SCAN_INTERVAL)
     
@@ -146,17 +221,32 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # Catégories exclues configurées dans le panel HACA
         excluded: set = set(entry.options.get("excluded_categories", []))
 
-        automation_issues = (
-            await automation_analyzer.analyze_all()
-            if "automations" not in excluded else []
-        )
-        entity_issues = (
-            await entity_analyzer.analyze_all(
-                automation_analyzer.automation_configs,
-                automation_analyzer.script_configs,
+        try:
+            automation_issues = (
+                await automation_analyzer.analyze_all()
+                if "automations" not in excluded else []
             )
-            if "entities" not in excluded else []
-        )
+        except Exception as _auto_err:
+            _LOGGER.error(
+                "HACA: automation_analyzer.analyze_all() CRASHED — %s",
+                _auto_err, exc_info=True,
+            )
+            automation_issues = []
+
+        try:
+            entity_issues = (
+                await entity_analyzer.analyze_all(
+                    automation_analyzer.automation_configs,
+                    automation_analyzer.script_configs,
+                )
+                if "entities" not in excluded else []
+            )
+        except Exception as _ent_err:
+            _LOGGER.error(
+                "HACA: entity_analyzer.analyze_all() CRASHED — %s",
+                _ent_err, exc_info=True,
+            )
+            entity_issues = []
         # Pass automation configs to performance analyzer for complexity checks
         performance_issues = (
             await performance_analyzer.analyze_all(
@@ -179,11 +269,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             except Exception as dash_err:
                 _LOGGER.error("Dashboard analysis error: %s", dash_err)
 
-        # Scan batteries
+        # Scan batteries — lire les seuils depuis les options courantes (pas de reload requis)
         battery_list: list = []
         if "batteries" not in excluded:
             try:
-                battery_list = await battery_monitor.analyze_all()
+                battery_list = await battery_monitor.analyze_all(
+                    critical=entry.options.get("battery_critical", 5),
+                    low=entry.options.get("battery_low", 15),
+                    warning=entry.options.get("battery_warning", 25),
+                )
             except Exception as bat_err:
                 _LOGGER.error("Battery monitor error: %s", bat_err)
 
@@ -197,14 +291,36 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             except Exception as rec_err:
                 _LOGGER.error("Recorder orphan analysis error: %s", rec_err)
 
+        # ── v1.4.0 : Compliance analysis (MODULE 17) ─────────────────────
+        # NOTE: excluded_types doit être défini ICI pour être utilisable par compliance
+        excluded_types: set = set(entry.options.get("excluded_issue_types", []))
+
+        compliance_issues: list = []
+        if compliance_analyzer and "compliance" not in excluded:
+            try:
+                compliance_issues = await compliance_analyzer.async_analyze()
+                if excluded_types:
+                    compliance_issues = [i for i in compliance_issues if i.get("type", "") not in excluded_types]
+            except Exception as comp_err:
+                _LOGGER.error("Compliance analyzer error: %s", comp_err)
+
         # Get separated issue lists from automation analyzer
         automation_only_issues = automation_analyzer.automation_issues
         script_issues = automation_analyzer.script_issues
         scene_issues = automation_analyzer.scene_issues
         blueprint_issues = automation_analyzer.blueprint_issues
 
+        # Get helper issues separated by entity_analyzer
+        helper_issues = getattr(entity_analyzer, "helper_issues", [])
+
+        # Route scene.* issues from entity_analyzer into scene_issue_list
+        # (entity_analyzer produces unavailable/stale/zombie issues for scene.* that
+        #  belong in the Scenes tab, not the Entities tab)
+        entity_scene_issues = [i for i in entity_issues if i.get("entity_id", "").startswith("scene.")]
+        entity_issues       = [i for i in entity_issues if not i.get("entity_id", "").startswith("scene.")]
+        scene_issues        = scene_issues + entity_scene_issues
+
         # Filtrage par type d'issue (configuré dans le panel HACA → onglet Configuration)
-        excluded_types: set = set(entry.options.get("excluded_issue_types", []))
         if excluded_types:
             def _filter(lst):
                 return [i for i in lst if i.get("type", "") not in excluded_types]
@@ -213,6 +329,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             scene_issues           = _filter(scene_issues)
             blueprint_issues       = _filter(blueprint_issues)
             entity_issues          = _filter(entity_issues)
+            helper_issues          = _filter(helper_issues)
             performance_issues     = _filter(performance_issues)
             security_issues        = _filter(security_issues)
             dashboard_issues       = _filter(dashboard_issues)
@@ -225,22 +342,23 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             total_automations=total_automations,
         )        
         _LOGGER.info(
-            "Health Score Calculation: Automation=%d, Scripts=%d, Blueprints=%d, Entities=%d, Performance=%d, Dashboard=%d. Score=%d%%",
+            "Health Score Calculation: Automation=%d, Scripts=%d, Blueprints=%d, Entities=%d, Helpers=%d, Performance=%d, Dashboard=%d. Score=%d%%",
             len(automation_only_issues), len(script_issues), len(blueprint_issues),
-            len(entity_issues), len(performance_issues), len(dashboard_issues), health_score
+            len(entity_issues), len(helper_issues), len(performance_issues), len(dashboard_issues), health_score
         )
  
         # ── Save audit snapshot to history ───────────────────────────────
         scan_result = {
             "health_score":    health_score,
             "total_issues":    len(automation_only_issues) + len(script_issues) + len(scene_issues)
-                             + len(blueprint_issues) + len(entity_issues)
+                             + len(blueprint_issues) + len(entity_issues) + len(helper_issues)
                              + len(performance_issues) + len(security_issues)
                              + len(dashboard_issues),
             "automation_issues":   len(automation_only_issues),
             "script_issues":       len(script_issues),
             "scene_issues":        len(scene_issues),
             "entity_issues":       len(entity_issues),
+            "helper_issues":       len(helper_issues),
             "performance_issues":  len(performance_issues),
             "security_issues":     len(security_issues),
             "blueprint_issues":    len(blueprint_issues),
@@ -252,12 +370,55 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             except Exception as hist_err:
                 _LOGGER.warning("HACA History save error: %s", hist_err)
 
+        # ── v1.5.0 — Battery prediction ───────────────────────────────────
+        battery_predictions: list = []
+        if battery_predictor and battery_list:
+            try:
+                await battery_predictor.async_save_battery_snapshot(battery_list)
+                battery_predictions = await battery_predictor.async_compute_predictions(battery_list)
+            except Exception as bp_err:
+                _LOGGER.warning("Battery predictor error: %s", bp_err)
+
+        # ── v1.5.0 — Area complexity heatmap ──────────────────────────────
+        area_complexity_data: dict = {}
+        if area_complexity_analyzer:
+            try:
+                area_complexity_data = await area_complexity_analyzer.async_analyze(
+                    automation_configs=automation_analyzer.automation_configs,
+                    complexity_scores=automation_analyzer.complexity_scores,
+                )
+            except Exception as ac_err:
+                _LOGGER.warning("Area complexity analyzer error: %s", ac_err)
+
+        # ── v1.5.0 — Redundancy analysis ──────────────────────────────────
+        redundancy_data: dict = {}
+        if redundancy_analyzer:
+            try:
+                redundancy_data = await redundancy_analyzer.async_analyze(
+                    automation_configs=automation_analyzer.automation_configs,
+                    blueprint_stats=automation_analyzer.blueprint_stats,
+                    complexity_scores=automation_analyzer.complexity_scores,
+                )
+            except Exception as red_err:
+                _LOGGER.warning("Redundancy analyzer error: %s", red_err)
+
+        # ── v1.5.0 — Recorder impact analysis ────────────────────────────
+        recorder_impact_data: dict = {}
+        if recorder_impact_analyzer:
+            try:
+                recorder_impact_data = await recorder_impact_analyzer.async_analyze(
+                    automation_configs=automation_analyzer.automation_configs,
+                    complexity_scores=automation_analyzer.complexity_scores,
+                )
+            except Exception as ri_err:
+                _LOGGER.warning("Recorder impact analyzer error: %s", ri_err)
+
         # Build dependency graph
         dependency_graph = {"nodes": [], "edges": []}
         try:
             all_flat_issues = (
                 automation_only_issues + script_issues + scene_issues +
-                blueprint_issues + entity_issues + performance_issues +
+                blueprint_issues + entity_issues + helper_issues + performance_issues +
                 security_issues + dashboard_issues
             )
             dependency_graph = await dependency_mapper.build(
@@ -278,13 +439,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             "scene_issues": len(scene_issues),
             "blueprint_issues": len(blueprint_issues),
             "entity_issues": len(entity_issues),
+            "helper_issues": len(helper_issues),
             "performance_issues": len(performance_issues),
             "security_issues": len(security_issues),
             "dashboard_issues": len(dashboard_issues),
             "total_issues": len(automation_only_issues) + len(script_issues) + len(scene_issues)
-                          + len(blueprint_issues) + len(entity_issues)
+                          + len(blueprint_issues) + len(entity_issues) + len(helper_issues)
                           + len(performance_issues) + len(security_issues)
-                          + len(dashboard_issues),
+                          + len(dashboard_issues) + len(compliance_issues),
+            "compliance_issues": len(compliance_issues),
+            "compliance_issue_list": compliance_issues,
             "automation_issue_list": automation_only_issues,
             "complexity_scores":        sorted(automation_analyzer.complexity_scores, key=lambda x: x["score"], reverse=True) if automation_analyzer else [],
             "script_complexity_scores": automation_analyzer.script_complexity_scores if automation_analyzer else [],
@@ -294,6 +458,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             "scene_issue_list": scene_issues,
             "blueprint_issue_list": blueprint_issues,
             "entity_issue_list": entity_issues,
+            "helper_issue_list": helper_issues,
             "performance_issue_list": performance_issues,
             "security_issue_list": security_issues,
             "dashboard_issue_list": dashboard_issues,
@@ -305,6 +470,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             "battery_count": len(battery_list),
             "battery_alerts": sum(1 for b in battery_list if b["severity"] is not None),
             "dependency_graph": dependency_graph,
+            # ── v1.5.0 ────────────────────────────────────────────────────
+            "battery_predictions": battery_predictions,
+            "battery_predictions_count": len(battery_predictions),
+            "battery_alert_7d": sum(1 for p in battery_predictions if p.get("alert_7d")),
+            "area_complexity": area_complexity_data,
+            "redundancy": redundancy_data,
+            "recorder_impact": recorder_impact_data,
         }
     
     coordinator = DataUpdateCoordinator(
@@ -329,6 +501,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "recorder_analyzer": recorder_analyzer,
         "history_manager": history_manager,
         "automation_optimizer": automation_optimizer,
+        "compliance_analyzer": compliance_analyzer,
     }
     
     device_registry = dr.async_get(hass)
@@ -368,6 +541,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "blueprint_issue_list": [],
         "dashboard_issues": 0,
         "dashboard_issue_list": [],
+        "compliance_issues": 0,
+        "compliance_issue_list": [],
         "recorder_orphans": [],
         "recorder_orphan_count": 0,
         "recorder_wasted_mb": 0.0,
@@ -380,6 +555,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "battery_count": 0,
         "battery_alerts": 0,
         "dependency_graph": {"nodes": [], "edges": []},
+        "battery_predictions": [],
+        "battery_predictions_count": 0,
+        "battery_alert_7d": 0,
+        "area_complexity": {},
+        "redundancy": {},
+        "recorder_impact": {},
     }
 
     async def _first_scan_when_ready(hass_: HomeAssistant) -> None:
@@ -433,6 +614,23 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if MODULE_10_EVENT_MONITORING:
         async_setup_event_monitor(hass, entry)
     # ── End Event-Based Monitoring ────────────────────────────────────────
+
+    # ── v1.4.0 : Serveur MCP (MODULE 15) ─────────────────────────────────
+    if MODULE_15_MCP_SERVER:
+        await async_setup_mcp_server(hass)
+
+    # ── v1.5.1 : LLM API — expose les outils HACA à Mistral/OpenAI/etc. ──
+    # L'utilisateur configure : HA Settings → Voice Assistants → [agent] → LLM API → HACA
+    try:
+        from homeassistant.helpers import llm as _llm
+        _llm.async_register_api(hass, HacaLLMAPI(hass))
+        _LOGGER.info("[HACA] LLM API 'HACA' enregistrée — configurez-la dans Voice Assistants")
+    except Exception as _llm_err:
+        _LOGGER.warning("[HACA] Impossible d'enregistrer le LLM API: %s", _llm_err)
+
+    # ── v1.4.0 : Agent IA Proactif (MODULE 16) ───────────────────────────
+    if MODULE_16_PROACTIVE_AGENT:
+        async_setup_proactive_agent(hass, entry)
 
     # ── Post-scan notification listener ──────────────────────────────────
     # Après chaque refresh du coordinator (scan périodique OU déclenché par
@@ -541,6 +739,13 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     async_remove_entry (désinstallation complète).
     """
     _LOGGER.info("Unloading %s", NAME)
+
+    # Désenregistrer le LLM API HACA
+    try:
+        from homeassistant.helpers import llm as _llm
+        _llm._async_get_apis(hass).pop(HACA_LLM_API_ID, None)
+    except Exception:
+        pass
 
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 

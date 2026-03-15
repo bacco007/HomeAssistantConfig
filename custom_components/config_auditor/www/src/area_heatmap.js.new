@@ -1,0 +1,79 @@
+  // ════════════════════════════════════════════════════════════════════════
+  //  AREA HEATMAP — _showAreaSuggestionAI
+  //  All text from this.t('diag_prompts.area.*') — zero hardcoded strings.
+  // ════════════════════════════════════════════════════════════════════════
+
+  async _showAreaSuggestionAI(item) {
+    let chatPrompt = '';
+    const eid   = item.entity_id || '';
+    const alias = item.alias     || eid;
+    const t     = (k, p) => this.t(k, p);
+
+    if (item.suggestion === 'cross_area') {
+      const areas = item.area_name || '';
+      chatPrompt = [
+        t('diag_prompts.marker'),
+        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.area.cross_area_problem', {areas})})}`,
+        '',
+        t('diag_prompts.read_with', {cmd: `haca_get_automation("${eid}")`}),
+        '',
+        t('diag_prompts.then'),
+        t('diag_prompts.area.cross_area_step1'),
+        t('diag_prompts.area.cross_area_step2'),
+        t('diag_prompts.step3'),
+        '',
+        t('diag_prompts.menu_title'),
+        t('diag_prompts.area.cross_area_choice_proceed'),
+        t('diag_prompts.area.cross_area_choice_backup'),
+        t('diag_prompts.choice_manual'),
+        t('diag_prompts.choice_cancel'),
+      ].join('\n');
+
+    } else if (item.suggestion === 'merge_simple_automations') {
+      const area  = item.area_name || '';
+      const count = item.auto_count || '';
+      const score = item.avg_score  || '';
+      chatPrompt = [
+        t('diag_prompts.marker'),
+        `${t('diag_prompts.header', {alias: area, eid: area, problem: t('diag_prompts.area.merge_problem', {area, count, score})})}`,
+        '',
+        t('diag_prompts.area.merge_read', {area}),
+        '',
+        t('diag_prompts.then'),
+        t('diag_prompts.area.merge_step1'),
+        t('diag_prompts.area.merge_step2'),
+        t('diag_prompts.step3'),
+        '',
+        t('diag_prompts.menu_title'),
+        t('diag_prompts.area.merge_choice_proceed'),
+        t('diag_prompts.area.merge_choice_backup'),
+        t('diag_prompts.choice_manual'),
+        t('diag_prompts.choice_cancel'),
+      ].join('\n');
+
+    } else {
+      // high complexity — split suggestion
+      const area  = item.area_name || '';
+      const score = item.avg_score  || '';
+      chatPrompt = [
+        t('diag_prompts.marker'),
+        `${t('diag_prompts.header', {alias: area, eid: area, problem: t('diag_prompts.area.split_problem', {area, score})})}`,
+        '',
+        t('diag_prompts.area.split_read', {area}),
+        '',
+        t('diag_prompts.then'),
+        t('diag_prompts.area.split_step1'),
+        t('diag_prompts.area.split_step2'),
+        t('diag_prompts.step3'),
+        '',
+        t('diag_prompts.menu_title'),
+        t('diag_prompts.area.split_choice_proceed'),
+        t('diag_prompts.area.split_choice_backup'),
+        t('diag_prompts.choice_manual'),
+        t('diag_prompts.choice_cancel'),
+      ].join('\n');
+    }
+
+    this._areaComplexityLoaded = false;
+    this._openChatWithMessage(chatPrompt);
+  }

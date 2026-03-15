@@ -16,7 +16,19 @@ MODULES=(
   optimizer.js
   ai_explain.js
   dep_graph.js
+  utils.js
+  scan.js
+  fixes.js
+  reports.js
+  issues.js
   battery.js
+  battery_predict.js
+  area_heatmap.js
+  redundancy.js
+  recorder_impact.js
+  closer.js
+  compliance.js
+  mcp_panel.js
 )
 
 TMP=$(mktemp)

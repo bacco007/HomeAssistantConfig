@@ -58,8 +58,10 @@ async def async_register_panel(hass: HomeAssistant) -> None:
             reports_dir = Path(hass.config.path("haca_reports"))
             reports_dir.mkdir(exist_ok=True)
 
+            brand_dir = integration_dir / "brand"
             static_paths = [
                 StaticPathConfig(f"/{DOMAIN}_static", str(www_dir), cache_headers=True),
+                StaticPathConfig(f"/{DOMAIN}_brand", str(brand_dir), cache_headers=True),
                 StaticPathConfig("/haca_reports", str(reports_dir), cache_headers=True),
             ]
             try:

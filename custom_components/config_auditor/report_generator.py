@@ -26,7 +26,7 @@ def _load_translations_from_json(language: str) -> dict:
     try:
         data = _json.loads(path.read_text(encoding="utf-8")).get("report", {})
         _LOGGER.info(
-            "HACA v1.1.2 translations: path=%s keys=%d script_section=%s",
+            "HACA v1.3.0 translations: path=%s keys=%d script_section=%s",
             path, len(data), data.get("script_issues_section", "MISSING"),
         )
         return data
@@ -217,7 +217,7 @@ class ReportGenerator:
         report += f"## 💡 {self._t('recommendations')}\n\n"
         report += self._generate_recommendations(health_score, automation_issues, entity_issues)
         
-        report += f"\n\n---\n\n*{self._t('report_generated_by')} v1.1.2 - {timestamp_display}*\n"
+        report += f"\n\n---\n\n*{self._t('report_generated_by')} v1.3.0 - {timestamp_display}*\n"
         
         # Save report with provided timestamp
         filename = f"report_{timestamp_str}.md"
@@ -262,7 +262,7 @@ class ReportGenerator:
 
         report_data = {
             "timestamp": timestamp.isoformat(),
-            "version": "1.1.2",
+            "version": "1.2.0",
             "language": self._translations.get("title", "H.A.C.A Configuration Report"),
             "summary": summary,
             "issues": {
@@ -534,7 +534,7 @@ class ReportGenerator:
         # Footer
         pdf.ln(10)
         pdf.set_font(_pdf_font, "I", 9)
-        pdf.cell(0, 8, f"{t('report_generated_by')} v1.1.2 - {timestamp_display}", ln=1)
+        pdf.cell(0, 8, f"{t('report_generated_by')} v1.3.0 - {timestamp_display}", ln=1)
 
         filename = f"report_{timestamp_str}.pdf"
         filepath = self._reports_dir / filename
@@ -681,37 +681,58 @@ class ReportGenerator:
         return counts
 
     def list_reports(self) -> list[dict]:
-        """List all generated reports grouped by session."""
-        sessions = {}
-        
-        # Regex to extract timestamp: report_20231027_123456.md -> 20231027_123456
+        """List all generated reports grouped by session (audit reports + agent reports)."""
         import re
-        pattern = re.compile(r"report_(\d{8}_\d{6})")
-        
+        sessions = {}
+
+        # ── Rapports d'audit classiques : report_TIMESTAMP.* ─────────────
+        audit_pattern = re.compile(r"report_(\d{8}_\d{6})")
         for report_file in self._reports_dir.glob("report_*"):
-            match = pattern.match(report_file.stem)
+            match = audit_pattern.match(report_file.stem)
             if not match:
                 continue
-                
             session_id = match.group(1)
             stat = report_file.stat()
-            fmt = report_file.suffix[1:]
-            
+            fmt = report_file.suffix[1:]  # "md", "pdf", "html"
             if session_id not in sessions:
                 sessions[session_id] = {
                     "session_id": session_id,
+                    "report_type": "audit",
                     "created": datetime.fromtimestamp(stat.st_mtime).isoformat(),
-                    "formats": {}
+                    "formats": {},
                 }
-            
             sessions[session_id]["formats"][fmt] = {
                 "name": report_file.name,
-                "size": stat.st_size
+                "size": stat.st_size,
             }
-        
-        # Sort by session ID (timestamp) descending
-        sorted_sessions = sorted(sessions.values(), key=lambda x: x["session_id"], reverse=True)
-        return sorted_sessions[:20]  # Last 20 sessions
+
+        # ── Rapports agent hebdomadaires : agent_report_TIMESTAMP_scoreXX.md ──
+        agent_pattern = re.compile(r"agent_report_(\d{8}_\d{6})")
+        for report_file in self._reports_dir.glob("agent_report_*"):
+            match = agent_pattern.match(report_file.stem)
+            if not match:
+                continue
+            session_id = "agent_" + match.group(1)
+            stat = report_file.stat()
+            if session_id not in sessions:
+                sessions[session_id] = {
+                    "session_id": session_id,
+                    "report_type": "agent",   # ← distingue les rapports agent
+                    "created": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                    "formats": {},
+                }
+            sessions[session_id]["formats"]["md"] = {
+                "name": report_file.name,
+                "size": stat.st_size,
+            }
+
+        # Sort by timestamp descending
+        sorted_sessions = sorted(
+            sessions.values(),
+            key=lambda x: x["session_id"].replace("agent_", ""),
+            reverse=True,
+        )
+        return sorted_sessions[:30]  # 30 rapports max
 
     async def delete_report_session(self, session_id: str) -> dict:
         """Delete all report files for a given session ID."""

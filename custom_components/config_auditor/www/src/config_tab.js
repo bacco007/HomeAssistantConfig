@@ -85,6 +85,21 @@ var ISSUE_TYPES_BY_CATEGORY = [
       { id: 'dashboard_missing_entity', fixable: false },
     ]
   },
+  {
+    id: 'compliance', icon: 'mdi:shield-check-outline',
+    types: [
+      { id: 'compliance_no_friendly_name',          fixable: false },
+      { id: 'compliance_raw_entity_name',           fixable: false },
+      { id: 'compliance_area_no_icon',              fixable: false },
+      { id: 'compliance_unused_label',              fixable: false },
+      { id: 'compliance_automation_no_description', fixable: false },
+      { id: 'compliance_automation_no_unique_id',   fixable: false },
+      { id: 'compliance_script_no_description',     fixable: false },
+      { id: 'compliance_entity_no_area',            fixable: false },
+      { id: 'compliance_helper_no_icon',            fixable: false },
+      { id: 'compliance_helper_no_area',            fixable: false },
+    ]
+  },
 ];
 
 // ─── Rendering ────────────────────────────────────────────────────────────
@@ -185,6 +200,7 @@ function renderConfigTab(options, lang, t) {
     '<div class="cfg-row"><div class="cfg-row-label"><span>🔴 ' + t('config.battery_critical') + '</span></div><input type="number" id="cfg-battery-critical" class="cfg-input" min="1" max="50" value="' + (options.battery_critical || 5) + '"></div>' +
     '<div class="cfg-row"><div class="cfg-row-label"><span>🟠 ' + t('config.battery_low') + '</span></div><input type="number" id="cfg-battery-low" class="cfg-input" min="5" max="50" value="' + (options.battery_low || 15) + '"></div>' +
     '<div class="cfg-row"><div class="cfg-row-label"><span>🟡 ' + t('config.battery_warning') + '</span></div><input type="number" id="cfg-battery-warning" class="cfg-input" min="10" max="75" value="' + (options.battery_warning || 25) + '"></div>' +
+    '<div style="margin-top:8px;padding:9px 13px;background:rgba(3,169,244,0.12);border-left:3px solid #0288d1;border-radius:6px;font-size:12px;color:var(--primary-text-color);">ℹ️ ' + t('battery_scan_note') + '</div>' +
     '</div>' +
 
     // ── Section : Historique ──
@@ -220,21 +236,61 @@ function renderConfigTab(options, lang, t) {
     '</div>' +
     '</div>' +
 
+    // ── v1.4.2 : Token HA pour Chat IA + MCP externe ─────────────────────
+    '<div class="cfg-section" style="margin-top:4px;">' +
+    '<div class="cfg-section-title">' + _icon('key-variant', 18) + ' ' + t('config.mcp_token_section') + '</div>' +
+    '<p style="font-size:13px;color:var(--secondary-text-color);margin:6px 0 12px;line-height:1.5;">' +
+      t('config.mcp_token_description') +
+    '</p>' +
+    // Indicateur si token déjà configuré
+    (options.mcp_ha_token
+      ? '<div style="display:flex;align-items:center;gap:6px;padding:8px 12px;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:8px;margin-bottom:10px;">' +
+          '<span style="color:#388e3c;font-size:18px;">✅</span>' +
+          '<span style="font-size:13px;color:#388e3c;font-weight:500;">' + t('config.mcp_token_set') + '</span>' +
+          '<button id="cfg-mcp-token-clear" style="margin-left:auto;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:1px solid var(--divider-color);background:var(--secondary-background-color);">' +
+            t('config.mcp_token_clear') +
+          '</button>' +
+        '</div>'
+      : '') +
+    '<div class="cfg-row" style="align-items:flex-start;">' +
+    '<div class="cfg-row-label">' +
+    '<span>' + t('config.mcp_token_label') + '</span>' +
+    '<span class="cfg-row-hint">' + t('config.mcp_token_link_hint') + ' <a href="/profile/security" target="_top" style="color:var(--primary-color);">' + t('config.mcp_token_link_text') + '</a></span>' +
+    '</div>' +
+    '<input type="password" id="cfg-mcp-token" class="cfg-input" ' +
+      'style="width:260px;font-family:monospace;font-size:12px;" ' +
+      'placeholder="eyJ..." autocomplete="new-password">' +
+    '</div>' +
+    '<p style="font-size:11px;color:var(--secondary-text-color);margin:6px 0 2px;line-height:1.5;">' +
+      t('config.mcp_token_privacy') +
+    '</p>' +
+    '<p style="font-size:11px;color:var(--success-color,#4caf50);margin:0;font-weight:500;">' +
+      '✓ ' + t('config.mcp_token_no_restart') +
+    '</p>' +
+    '</div>' +
+
+    // ── Ignore label section (outside cfg-actions) ──
+    `<div class="cfg-section" style="padding:16px 20px;">
+      <div class="cfg-section-title">${_icon("label-off-outline", 18)}${t('config.haca_ignore_title')}</div>
+      <div class="cfg-row-hint" style="margin-top:8px;line-height:1.6;">${t('config.haca_ignore_info')}</div>
+      <div class="cfg-row-hint" style="margin-top:6px;">
+        <code style="background:var(--code-background-color,rgba(0,0,0,0.1));padding:2px 6px;border-radius:4px;">haca_ignore</code>
+      </div>
+    </div>` +
+
     // ── Boutons ──
     '<div class="cfg-actions">' +
-    `
-      <div class="cfg-section" style="padding:16px 20px;">
-        <div class="cfg-section-title">${_icon("label-off-outline", 18)}${t('config.haca_ignore_title')}</div>
-        <div class="cfg-row-hint" style="margin-top:8px;line-height:1.6;">${t('config.haca_ignore_info')}</div>
-        <div class="cfg-row-hint" style="margin-top:6px;">
-          <code style="background:var(--code-background-color,rgba(0,0,0,0.1));padding:2px 6px;border-radius:4px;">haca_ignore</code>
-        </div>
-      </div>
-      ` +
       '<button class="cfg-btn cfg-btn-secondary" id="cfg-reset-btn">' + _icon("restore", 18) + t('config.reset') + '</button>' +
-    '<button class="cfg-btn cfg-btn-primary" id="cfg-save-btn">' + _icon("content-save", 18) + t('config.save') + '</button>' +
+      '<button class="cfg-btn cfg-btn-primary" id="cfg-save-btn">' + _icon("content-save", 18) + t('config.save') + '</button>' +
     '</div>' +
     '<div id="cfg-save-status" class="cfg-save-status" style="display:none;"></div>' +
+
+    // ── v1.4.0 : Section MCP + Agent IA ──────────────────────────────────
+    '<div id="mcp-section-container" style="margin-top:8px;padding:0 4px;">' +
+    '<div style="padding:20px;text-align:center;color:var(--secondary-text-color);font-size:13px;">' +
+    _icon("loading", 20) + ' MCP / Agent IA...' +
+    '</div></div>' +
+
     '</div>';
 }
 
@@ -284,8 +340,8 @@ var CONFIG_TAB_CSS = `
   .cfg-badge { font-size: 0.72em; padding: 1px 6px; border-radius: 3px; margin-left: 6px; font-weight: 600; vertical-align: middle; }
   .cfg-badge-fix { background: rgba(34,197,94,0.15); color: #15803d; border: 1px solid rgba(34,197,94,0.4); }
   /* ── Actions ── */
-  .cfg-actions { display: flex; gap: 12px; justify-content: flex-end; padding: 8px 0; }
-  .cfg-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 0.9em; font-weight: 600; cursor: pointer; border: none; transition: background 0.2s, transform 0.1s; }
+  .cfg-actions { display: flex; gap: 12px; justify-content: flex-end; padding: 8px 0; flex-wrap: wrap; }
+  .cfg-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 0.9em; font-weight: 600; cursor: pointer; border: none; transition: background 0.2s, transform 0.1s; white-space: nowrap; height: 40px; box-sizing: border-box; }
   .cfg-btn:active { transform: scale(0.97); }
   .cfg-btn-primary { background: var(--primary-color); color: white; border-color: transparent; }
   .cfg-btn-primary:hover { background: var(--primary-color); color: white; filter: brightness(1.1); border-color: transparent; }
@@ -337,6 +393,14 @@ function collectFormOptions(root) {
     history_retention_days: num('#cfg-history-retention', 365),
     backup_enabled: bool('#cfg-backup-enabled', true),
     debug_mode: bool('#cfg-debug-toggle', false),
+    // Token MCP / Chat IA : vide = ne pas modifier; valeur saisie = mettre à jour
+    mcp_ha_token: (function() {
+      var el = q('#cfg-mcp-token');
+      if (!el) return undefined;
+      var v = (el.value || '').trim();
+      if (!v) return undefined;  // champ vide = pas de modification
+      return v;  // nouvelle valeur saisie
+    })(),
   };
 }
 

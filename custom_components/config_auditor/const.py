@@ -2,7 +2,7 @@
 
 DOMAIN = "config_auditor"
 NAME = "H.A.C.A"
-VERSION = "1.1.2"
+VERSION = "1.5.2"
 
 # Configuration
 DEFAULT_SCAN_INTERVAL = 60
@@ -30,6 +30,8 @@ SERVICE_EXPLAIN_ISSUE = "explain_issue_ai"
 SERVICE_PURGE_GHOSTS = "purge_ghosts"
 SERVICE_FUZZY_SUGGESTIONS = "get_fuzzy_suggestions"
 SERVICE_PURGE_RECORDER_ORPHANS = "purge_recorder_orphans"
+SERVICE_FIX_DESCRIPTION = "fix_description"
+SERVICE_SUGGEST_DESCRIPTION = "suggest_description_ai"
 
 # Module Status
 MODULE_1_AUTOMATION_SCANNER = True  
@@ -43,6 +45,8 @@ MODULE_9_DASHBOARD_ANALYZER = True
 MODULE_10_EVENT_MONITORING = True   
 MODULE_11_RECORDER_ANALYZER = True  
 MODULE_12_AUDIT_HISTORY = True      
+MODULE_13_HELPER_ANALYZER = True    # v1.2.0 — input_* & timer analysis
+MODULE_14_GROUP_ANALYZER = True     # v1.3.0 — group.* analysis
 
 # Severity levels
 SEVERITY_HIGH = "high"
@@ -82,6 +86,25 @@ ISSUE_VERY_HIGH_FREQUENCY = "very_high_trigger_frequency"
 ISSUE_BURST_PATTERN = "burst_trigger_pattern"
 ISSUE_TEMPLATE_HIGH_REFRESH = "template_high_refresh_rate"
 
+# Issue types - Module 13 (Helper Analyzer — v1.2.0)
+ISSUE_HELPER_UNUSED = "helper_unused"
+ISSUE_HELPER_ORPHANED_DISABLED = "helper_orphaned_disabled_only"
+ISSUE_HELPER_NO_NAME = "helper_no_friendly_name"
+ISSUE_INPUT_SELECT_DUPLICATE_OPTIONS = "input_select_duplicate_options"
+ISSUE_INPUT_SELECT_EMPTY_OPTION = "input_select_empty_option"
+ISSUE_INPUT_NUMBER_INVALID_RANGE = "input_number_invalid_range"
+ISSUE_INPUT_TEXT_INVALID_PATTERN = "input_text_invalid_pattern"
+ISSUE_TIMER_NEVER_STARTED = "timer_never_started"
+ISSUE_TIMER_ZERO_DURATION = "timer_zero_duration"
+ISSUE_TIMER_ORPHANED = "timer_orphaned"
+
+# Issue types - Template sensors (v1.2.0)
+ISSUE_TEMPLATE_NO_UNAVAILABLE_CHECK = "template_no_unavailable_check"
+ISSUE_TEMPLATE_NOW_WITHOUT_TRIGGER = "template_now_without_trigger"
+ISSUE_TEMPLATE_SENSOR_NO_METADATA = "template_sensor_no_metadata"
+ISSUE_TEMPLATE_SENSOR_CYCLE = "template_sensor_cycle"
+ISSUE_TEMPLATE_MISSING_AVAILABILITY = "template_missing_availability"
+
 # Paths
 BACKUP_DIR = ".haca_backups"
 REPORTS_DIR = "haca_reports"
@@ -94,3 +117,53 @@ HIGH_FREQUENCY_TRIGGERS_PER_HOUR = 50
 VERY_HIGH_FREQUENCY_TRIGGERS_PER_HOUR = 100
 BURST_TRIGGERS_IN_MINUTES = 10
 BURST_WINDOW_MINUTES = 5
+
+# Issue types - v1.3.0 — Script depth & graph analysis
+ISSUE_SCRIPT_CYCLE = "script_cycle"
+ISSUE_SCRIPT_CALL_DEPTH = "script_call_depth"
+ISSUE_SCRIPT_SINGLE_MODE_LOOP = "script_single_mode_loop"
+ISSUE_SCRIPT_ORPHAN = "script_orphan"
+ISSUE_SCRIPT_BLUEPRINT_CANDIDATE = "script_blueprint_candidate"
+
+# Issue types - v1.3.0 — Advanced scene analysis
+ISSUE_SCENE_ENTITY_UNAVAILABLE = "scene_entity_unavailable"
+ISSUE_SCENE_NOT_TRIGGERED = "scene_not_triggered"
+ISSUE_SCENE_DUPLICATE = "scene_duplicate"
+
+# Issue types - v1.3.0 — Group analysis (Module 14)
+ISSUE_GROUP_EMPTY = "group_empty"
+ISSUE_GROUP_MISSING_ENTITIES = "group_missing_entities"
+ISSUE_GROUP_ALL_UNAVAILABLE = "group_all_unavailable"
+ISSUE_GROUP_NESTED_DEEP = "group_nested_deep"
+
+# Thresholds - v1.3.0
+SCRIPT_CALL_DEPTH_THRESHOLD = 3     # > 3 levels → medium
+SCENE_GHOST_DAYS = 90               # scene not triggered → low issue
+SCRIPT_BLUEPRINT_MIN_AUTOMATIONS = 3  # used by > N automations → candidate
+
+# ─── v1.4.0 ────────────────────────────────────────────────────────────────
+
+# Module flags — v1.4.0
+MODULE_15_MCP_SERVER = True         # Serveur MCP natif
+MODULE_16_PROACTIVE_AGENT = True    # Agent IA proactif
+MODULE_17_COMPLIANCE_ANALYZER = True  # Analyse de conformité
+
+# ── v1.5.0 ────────────────────────────────────────────────────────────────
+MODULE_18_BATTERY_PREDICTOR = True      # Prédiction de pannes batterie
+MODULE_19_AREA_COMPLEXITY = True        # Heatmap complexité par zone
+MODULE_20_REDUNDANCY_ANALYZER = True    # Automations redondantes inter-modules
+MODULE_21_RECORDER_IMPACT = True        # Impact DB Recorder par automation
+
+# Issue types - v1.4.0 — Compliance (Module 17)
+ISSUE_COMPLIANCE_NO_FRIENDLY_NAME       = "compliance_no_friendly_name"
+ISSUE_COMPLIANCE_RAW_ENTITY_NAME        = "compliance_raw_entity_name"
+ISSUE_COMPLIANCE_AREA_NO_ICON           = "compliance_area_no_icon"
+ISSUE_COMPLIANCE_UNUSED_LABEL           = "compliance_unused_label"
+ISSUE_COMPLIANCE_AUTO_NO_DESCRIPTION    = "compliance_automation_no_description"
+ISSUE_COMPLIANCE_AUTO_NO_UNIQUE_ID      = "compliance_automation_no_unique_id"
+ISSUE_COMPLIANCE_SCRIPT_NO_DESCRIPTION  = "compliance_script_no_description"
+ISSUE_COMPLIANCE_ENTITY_NO_AREA         = "compliance_entity_no_area"
+ISSUE_COMPLIANCE_ENTITY_NO_AREA_BULK    = "compliance_entity_no_area_bulk"
+
+# AI cache key (in hass.data[DOMAIN][entry_id])
+AI_CACHE_KEY = "ai_explanation_cache"

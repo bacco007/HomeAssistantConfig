@@ -74,3 +74,34 @@ class TranslationHelper:
                 _LOGGER.debug("Error formatting translation key '%s': %s", key, e)
                 return template
         return template
+
+
+async def async_get_haca_ignored_entity_ids(hass) -> set[str]:
+    """Return the full set of entity_ids that should be ignored by HACA.
+
+    Checks both entity_registry (label on the entity itself) and
+    device_registry (label on the device — all its entities are then ignored).
+    """
+    from homeassistant.helpers import entity_registry as er, device_registry as dr
+
+    ignored: set[str] = set()
+    try:
+        ent_reg = er.async_get(hass)
+        dev_reg = dr.async_get(hass)
+
+        # 1. Entities labeled directly
+        for entry in ent_reg.entities.values():
+            if "haca_ignore" in (entry.labels or set()):
+                ignored.add(entry.entity_id)
+
+        # 2. Devices labeled → all their entities are ignored
+        for device in dev_reg.devices.values():
+            if "haca_ignore" in (getattr(device, "labels", None) or set()):
+                for entry in ent_reg.entities.get_entries_for_device_id(device.id):
+                    ignored.add(entry.entity_id)
+
+    except Exception as exc:
+        _LOGGER.warning("[HACA] Error building haca_ignore set: %s", exc)
+
+    _LOGGER.debug("[HACA] haca_ignore: %d entity_ids will be skipped", len(ignored))
+    return ignored

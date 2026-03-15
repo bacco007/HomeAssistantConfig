@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   if (customElements.get('haca-panel')) return; // already loaded, skip entirely
-  const HACA_VERSION = '1.1.2'; // build marker
+  const HACA_VERSION = '1.5.0'; // build marker
 
   // Dans l'iframe (embed_iframe:true), ha-icon n'est pas enregistré.
   // On copie la définition depuis le document parent où HA l'a déjà défini.
@@ -89,12 +89,25 @@
     'view-dashboard-outline': 'M19,5V7H15V5H19M9,5V11H5V5H9M19,13V19H15V13H19M9,17V19H5V17H9M21,3H13V9H21V3M11,3H3V13H11V3M21,11H13V21H21V11M11,15H3V21H11V15Z',
     'view-list': 'M9,5V9H21V5M9,19H21V15H9M9,14H21V10H9M4,9H8V5H4M4,19H8V15H4M4,14H8V10H4V14Z',
     'zip-box-outline': 'M12 17V15H14V17H12M14 13V11H12V13H14M14 9V7H12V9H14M10 11H12V9H10V11M10 15H12V13H10V15M21 5V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V5C3 3.9 3.9 3 5 3H19C20.1 3 21 3.9 21 5M19 5H12V7H10V5H5V19H19V5Z',
+    'arrow-decision': 'M18,20A2,2 0 0,0 20,18A2,2 0 0,0 18,16C17.5,16 17.05,16.19 16.71,16.5L9.91,12.08C9.96,11.89 10,11.7 10,11.5C10,11.3 9.96,11.11 9.91,10.92L16.7,6.5C17.05,6.81 17.5,7 18,7A2,2 0 0,0 20,5A2,2 0 0,0 18,3A2,2 0 0,0 16,5C16,5.2 16.04,5.39 16.09,5.58L9.3,10C8.95,9.69 8.5,9.5 8,9.5A2,2 0 0,0 6,11.5A2,2 0 0,0 8,13.5C8.5,13.5 8.95,13.31 9.3,13L16.09,17.42C16.04,17.61 16,17.8 16,18A2,2 0 0,0 18,20Z',
+    'blueprint': 'M5,3H19A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3M5,5V19H19V5H5M7,7H17V9H7V7M7,11H17V13H7V11M7,15H14V17H7V15Z',
+    'content-copy': 'M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z',
+    'content-duplicate': 'M11,15H13V17H11V15M11,7H13V13H11V7M13,2A10,10 0 0,1 23,12A10,10 0 0,1 13,22H11A10,10 0 0,1 1,12A10,10 0 0,1 11,2H13M13,4H11A8,8 0 0,0 3,12A8,8 0 0,0 11,20H13A8,8 0 0,0 21,12A8,8 0 0,0 13,4Z',
+    'home-outline': 'M12,5.69L17,10.19V18H15V12H9V18H7V10.19L12,5.69M12,3L2,12H5V20H11V14H13V20H19V12H22L12,3Z',
+    'map-legend': 'M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2M2,22V20H5.5L7,22H2M7,20H9.5L11,22H8.5L7,20M11,20H13.5L15,22H12.5L11,20M15,20H17.5L19,22H16.5L15,20M19,20H22V22H20.5L19,20Z',
+    'map-marker-off': 'M16.37,16.1L11.75,11.47L6.64,6.36L5.27,5L4,6.27L6.73,9C6.26,9.91 6,10.93 6,12C6,15.31 8.69,18 12,18C13.07,18 14.09,17.74 15,17.27L17.73,20L19,18.73L17.37,17.1M12,16A4,4 0 0,1 8,12C8,11.39 8.14,10.8 8.4,10.27L13.73,15.6C13.2,15.86 12.61,16 12,16M12,6A4,4 0 0,1 16,10C16,10.19 15.97,10.38 15.95,10.56L17.5,12.11C17.82,11.44 18,10.74 18,10A6,6 0 0,0 12,4C11.26,4 10.56,4.18 9.89,4.5L11.44,6.05C11.62,6.03 11.81,6 12,6M2,4.27L3.28,3L21,20.73L19.73,22L15.9,18.16C14.68,18.71 13.38,19 12,19A7,7 0 0,1 5,12C5,10.62 5.29,9.32 5.84,8.1L2,4.27Z',
+    'pencil-outline': 'M14.06,9L15,9.94L5.92,19H5V18.08L14.06,9M17.66,3C17.41,3 17.15,3.1 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18.17,3.09 17.92,3 17.66,3M14.06,6.19L3,17.25V21H6.75L17.81,9.94L14.06,6.19Z',
+    'source-branch-check': 'M13,14.5A3.5,3.5 0 0,0 9.5,18A3.5,3.5 0 0,0 13,21.5A3.5,3.5 0 0,0 16.5,18A3.5,3.5 0 0,0 13,14.5M6.5,2.5A3.5,3.5 0 0,0 3,6A3.5,3.5 0 0,0 6.5,9.5A3.5,3.5 0 0,0 10,6A3.5,3.5 0 0,0 6.5,2.5M6.5,4A2,2 0 0,1 8.5,6A2,2 0 0,1 6.5,8A2,2 0 0,1 4.5,6A2,2 0 0,1 6.5,4M13,16A2,2 0 0,1 15,18A2,2 0 0,1 13,20A2,2 0 0,1 11,18A2,2 0 0,1 13,16M13.09,11H7.5V8.83C8.94,8.37 10,7.05 10,5.5C10,3.57 8.43,2 6.5,2A3.5,3.5 0 0,0 3,5.5C3,7.05 4.06,8.37 5.5,8.83V15.17C4.06,15.63 3,16.95 3,18.5C3,20.43 4.57,22 6.5,22A3.5,3.5 0 0,0 10,18.5C10,16.95 8.94,15.63 7.5,15.17V13H13.09C13.03,13.5 13,14 13,14.5A5.5,5.5 0 0,0 18.5,20A5.5,5.5 0 0,0 24,14.5A5.5,5.5 0 0,0 18.5,9A5.5,5.5 0 0,0 13.09,11M18.5,11A3.5,3.5 0 0,1 22,14.5A3.5,3.5 0 0,1 18.5,18A3.5,3.5 0 0,1 15,14.5A3.5,3.5 0 0,1 18.5,11Z',
+    'source-merge': 'M7,5A2,2 0 0,1 9,7A2,2 0 0,1 7,9C6.06,9 5.27,8.46 4.87,7.68L3,7.68V10C3,11.1 3.9,12 5,12H11C11,12.55 11.45,13 12,13H13V15.07C12.06,15.42 11.38,16.31 11.38,17.38A2.62,2.62 0 0,0 14,20A2.62,2.62 0 0,0 16.62,17.38C16.62,16.31 15.94,15.42 15,15.07V13H16C16.55,13 17,12.55 17,12H21C22.1,12 23,11.1 23,10V7.68H21.13C20.73,8.46 19.94,9 19,9A2,2 0 0,1 17,7A2,2 0 0,1 19,5C19.94,5 20.73,5.54 21.13,6.32H23V4C23,2.9 22.1,2 21,2H17.13C16.73,1.22 15.94,.68 15,.68A2,2 0 0,0 13,.68A2,2 0 0,0 12,2A2,2 0 0,0 13,3.32V5H11C10,5 9.27,5.61 9.05,6.44C8.7,5.85 8.13,5.44 7.5,5.3L7.5,5A2,2 0 0,1 7,5M12,16A1,1 0 0,1 13,17A1,1 0 0,1 12,18A1,1 0 0,1 11,17A1,1 0 0,1 12,16Z',
+
     'shield-alert': 'M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5M11,7H13V13H11M11,15H13V17H11',
     'alert-decagram': 'M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M13,17H11V15H13V17M13,13H11V7H13V13Z',
     'eye-off': 'M11.83,9L15,12.16C15,12.11 15,12.05 15,12A3,3 0 0,0 12,9C11.94,9 11.89,9 11.83,9M7.53,9.8L9.08,11.35C9.03,11.56 9,11.77 9,12A3,3 0 0,0 12,15C12.22,15 12.44,14.97 12.65,14.92L14.2,16.47C13.53,16.8 12.79,17 12,17A5,5 0 0,1 7,12C7,11.21 7.2,10.47 7.53,9.8M2,4.27L4.28,6.55L4.73,7C3.08,8.3 1.78,10 1,12C2.73,16.39 7,19.5 12,19.5C13.55,19.5 15.03,19.2 16.38,18.66L16.81,19.08L19.73,22L21,20.73L3.27,3M12,7A5,5 0 0,1 17,12C17,12.64 16.87,13.26 16.64,13.82L19.57,16.75C21.07,15.5 22.27,13.86 23,12C21.27,7.61 17,4.5 12,4.5C10.6,4.5 9.26,4.75 8,5.2L10.17,7.35C10.74,7.13 11.35,7 12,7Z',
     'robot-confused': 'M20 4H18V3H20.5C20.78 3 21 3.22 21 3.5V5.5C21 5.78 20.78 6 20.5 6H20V7H19V5H20V4M19 9H20V8H19V9M17 3H16V7H17V3M23 15V18C23 18.55 22.55 19 22 19H21V20C21 21.11 20.11 22 19 22H5C3.9 22 3 21.11 3 20V19H2C1.45 19 1 18.55 1 18V15C1 14.45 1.45 14 2 14H3C3 10.13 6.13 7 10 7H11V5.73C10.4 5.39 10 4.74 10 4C10 2.9 10.9 2 12 2S14 2.9 14 4C14 4.74 13.6 5.39 13 5.73V7H14C14.34 7 14.67 7.03 15 7.08V10H19.74C20.53 11.13 21 12.5 21 14H22C22.55 14 23 14.45 23 15M10 15.5C10 14.12 8.88 13 7.5 13S5 14.12 5 15.5 6.12 18 7.5 18 10 16.88 10 15.5M19 15.5C19 14.12 17.88 13 16.5 13S14 14.12 14 15.5 15.12 18 16.5 18 19 16.88 19 15.5M17 8H16V9H17V8Z',
     'sort-ascending': 'M19 17H22L18 21L14 17H17V3H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z',
     'sort-descending': 'M19 7H22L18 3L14 7H17V21H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z',
+    'page-first': 'M18.41 16.59L13.82 12L18.41 7.41L17 6L11 12L17 18L18.41 16.59M6 6H8V18H6V6Z',
+    'page-last':  'M5.59 7.41L10.18 12L5.59 16.59L7 18L13 12L7 6L5.59 7.41M16 6H18V18H16V6Z',
     'cog-outline': 'M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10M10,22C9.75,22 9.54,21.82 9.5,21.58L9.13,18.93C8.5,18.68 7.96,18.34 7.44,17.94L4.95,18.95C4.73,19.03 4.46,18.95 4.34,18.73L2.34,15.27C2.21,15.05 2.27,14.78 2.46,14.63L4.57,12.97L4.5,12L4.57,11L2.46,9.37C2.27,9.22 2.21,8.95 2.34,8.73L4.34,5.27C4.46,5.05 4.73,4.96 4.95,5.05L7.44,6.05C7.96,5.66 8.5,5.32 9.13,5.07L9.5,2.42C9.54,2.18 9.75,2 10,2H14C14.25,2 14.46,2.18 14.5,2.42L14.87,5.07C15.5,5.32 16.04,5.66 16.56,6.05L19.05,5.05C19.27,4.96 19.54,5.05 19.66,5.27L21.66,8.73C21.79,8.95 21.73,9.22 21.54,9.37L19.43,11L19.5,12L19.43,13L21.54,14.63C21.73,14.78 21.79,15.05 21.66,15.27L19.66,18.73C19.54,18.95 19.27,19.04 19.05,18.95L16.56,17.95C16.04,18.34 15.5,18.68 14.87,18.93L14.5,21.58C14.46,21.82 14.25,22 14,22H10M11.25,4L10.88,6.61C9.68,6.86 8.62,7.5 7.85,8.39L5.44,7.35L4.69,8.65L6.8,10.2C6.4,11.37 6.4,12.64 6.8,13.8L4.68,15.36L5.43,16.66L7.86,15.62C8.63,16.5 9.68,17.14 10.87,17.38L11.24,20H12.76L13.13,17.39C14.32,17.14 15.37,16.5 16.14,15.62L18.57,16.66L19.32,15.36L17.2,13.81C17.6,12.64 17.6,11.37 17.2,10.2L19.31,8.65L18.56,7.35L16.15,8.39C15.38,7.5 14.32,6.86 13.12,6.62L12.75,4H11.25Z',
   };
   function _icon(name, size) {
@@ -108,7 +121,11 @@
   // Cache partagé entre toutes les instances de haca-panel (survive les navigations HA).
   // HA recrée l'élément à chaque navigation → les propriétés d'instance sont perdues.
   // Ce cache module-level évite tout écran de chargement lors des navigations suivantes.
-  const _HC = { data: null, translations: null, language: null, pagination: {} };
+  // Cache invalidation par version — évite d'afficher les clés brutes après une mise à jour
+  if (!window._HC_HACA || window._HC_HACA.version !== '1.5.0') {
+    window._HC_HACA = { data: null, translations: null, language: null, pagination: {}, version: '1.5.0' };
+  }
+  const _HC = window._HC_HACA;
 
   // ── Surveillance log ────────────────────────────────────────────────────────
   // Persiste dans window._HACA_LOG pour survivre aux navigations dans le même
@@ -278,6 +295,31 @@
     // HA définit toutes ses variables de thème dans des <style> du parent —
     // pas en inline style. En copiant les règles qui ciblent "html", on les
     // rend disponibles dans l'iframe (shadow DOM ET document.body pour les modals).
+    // ── Ouvre la fenêtre more-info native de HA pour une entité ──────────
+    // Le panel est chargé dans une iframe (embed_iframe: true).
+    // Les événements dispatched DANS l'iframe ne remontent pas vers le
+    // document parent où HA écoute `hass-more-info` sur <home-assistant>.
+    // Solution : dispatcher l'événement directement sur l'élément racine HA
+    // du document parent, avec bubbles+composed pour traverser les shadow roots.
+    _openMoreInfo(entityId) {
+      if (!entityId) return;
+      try {
+        const parentDoc = window.parent?.document;
+        if (!parentDoc) return;
+        // <home-assistant> est le root de l'appli HA dans le parent
+        const haRoot = parentDoc.querySelector('home-assistant');
+        const target = haRoot || parentDoc.body;
+        target.dispatchEvent(new CustomEvent('hass-more-info', {
+          bubbles: true,
+          composed: true,
+          detail: { entityId },
+        }));
+      } catch (err) {
+        // Fallback si l'accès cross-origin échoue (ne devrait pas arriver ici)
+        _hlog('WRN', '_openMoreInfo failed: ' + err.message);
+      }
+    }
+
     _syncTheme() {
       try {
         const parentDoc = window.parent?.document;
@@ -369,14 +411,10 @@
       // Fallback: check prefers-color-scheme media query
       const hasDark = this._hass?.themes?.darkMode
         ?? window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const base = '/' + (this._panel?.config?._panel_custom?.js_url || '').split('/').slice(0,2).join('/');
-      // Derive static root from the JS URL already registered
-      // js_url = /config_auditor_static/haca-panel.js?v=xxx → root = /config_auditor_static
-      const jsUrl = this._panel?.config?._panel_custom?.js_url || '';
-      const staticRoot = jsUrl ? '/' + jsUrl.split('/')[1] : '/config_auditor_static';
+      // brand/ is served at /config_auditor_brand (separate static route from www/)
       const src = hasDark
-        ? `${staticRoot}/brand/dark_icon.png`
-        : `${staticRoot}/brand/icon.png`;
+        ? '/config_auditor_brand/dark_icon.png'
+        : '/config_auditor_brand/icon.png';
       if (logo.src !== src) logo.src = src;
     }
 
@@ -785,17 +823,27 @@
         }
         .tabs::-webkit-scrollbar { display: none; }
         .tabs .tab {
-          flex: 1; min-width: 0;
-          padding: 12px 20px;
+          flex: 0 0 auto;
+          padding: 9px 10px;
           background: transparent; cursor: pointer;
           border-radius: 10px; border: none;
           color: var(--secondary-text-color);
           font-weight: 600; white-space: nowrap;
-          display: flex; align-items: center; justify-content: center; gap: 8px;
-          transition: all 0.2s ease; font-size: 14px;
+          display: flex; align-items: center; justify-content: center; gap: 5px;
+          transition: all 0.2s ease; font-size: 12px;
         }
-        .tabs .tab ha-icon { --mdc-icon-size: 20px; flex-shrink: 0; }
-        .tab-label { display: inline; }
+        .tabs .tab ha-icon { --mdc-icon-size: 18px; flex-shrink: 0; }
+        .tab-label { display: inline; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+        /* Badge numérique en superscript — flottant au-dessus de l'icône */
+        .tabs .tab { position: relative; }
+        .tab-badge-wrap {
+          position: absolute; top: 2px; right: 2px;
+          background: var(--error-color, #ef5350); color: #fff;
+          border-radius: 8px; padding: 1px 5px;
+          font-size: 9px; font-weight: 700; line-height: 1.4;
+          pointer-events: none;
+        }
+        .tab-badge-wrap.warning { background: var(--warning-color, #ff9800); }
         .tabs .tab:hover { color: var(--primary-text-color); background: rgba(0,0,0,0.05); }
         .tabs .tab.active { background: var(--card-background-color); color: var(--primary-color); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
 
@@ -804,24 +852,27 @@
           border-bottom: 1px solid var(--divider-color);
           padding: 8px 16px 0;
           background: var(--secondary-background-color);
+          overflow-x: auto;
+          scrollbar-width: none;
         }
+        .subtabs-container::-webkit-scrollbar { display: none; }
         .subtabs {
           display: flex; gap: 2px;
-          overflow-x: auto; scrollbar-width: none;
-          -webkit-overflow-scrolling: touch;
+          overflow-x: visible;
+          min-width: max-content;
         }
-        .subtabs::-webkit-scrollbar { display: none; }
         .subtabs .subtab {
           flex-shrink: 0;
-          padding: 8px 14px;
+          padding: 7px 10px;
           background: transparent; cursor: pointer;
           border: none; border-bottom: 3px solid transparent;
           color: var(--secondary-text-color);
           font-weight: 500; white-space: nowrap;
-          display: flex; align-items: center; gap: 6px;
-          transition: all 0.2s ease; font-size: 13px;
+          display: flex; align-items: center; gap: 5px;
+          transition: all 0.2s ease; font-size: 12px;
           border-radius: 0;
         }
+        .subtabs .subtab span { max-width: 100px; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: middle; }
         .subtabs .subtab ha-icon { --mdc-icon-size: 15px; flex-shrink: 0; }
         .subtabs .subtab:hover { color: var(--primary-text-color); }
         .subtabs .subtab.active { color: var(--primary-color); border-bottom-color: var(--primary-color); font-weight: 700; }
@@ -992,9 +1043,9 @@
         @keyframes haca-rotation { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
 
         /* ═══════════════════════════════════════════
-           TABLET  ≤ 900px  — hide tab text
+           TABLET  ≤ 1150px  — hide tab text, icon only
            ═══════════════════════════════════════════ */
-        @media (max-width: 900px) {
+        @media (max-width: 1150px) {
           .tab-label { display: none; }
           .tabs .tab { gap: 0; padding: 10px; }
         }
@@ -1003,7 +1054,7 @@
            MOBILE  ≤ 600px
            ═══════════════════════════════════════════ */
         @media (max-width: 600px) {
-          { padding: 10px; }
+          .section-card { padding: 10px; }
 
           /* Header */
           .header { padding: 14px 16px; border-radius: 12px; gap: 12px; }
@@ -1020,8 +1071,7 @@
           .stat-label { font-size: 10px; }
           .stat-desc { display: none; }
 
-          /* Top-level tabs: keep labels visible, reduce padding */
-          .tabs .tab { padding: 10px 12px; font-size: 13px; }
+          /* Top-level tabs: keep labels visible at < 600px via icon-only already */
           .tabs-container { padding: 6px 0; }
           /* Sub-tabs: icon-only on small screens */
           .subtabs .subtab span { display: none; }
@@ -1200,6 +1250,14 @@
           </div>
           <div class="stat-card">
             <div class="stat-header">
+                <span class="stat-label">${this.t('stats.helpers')}</span>
+                ${_icon("cog-outline")}
+            </div>
+            <div class="stat-value" id="helper-count">0</div>
+            <div class="stat-desc">${this.t('stats.helpers_desc')}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
                 <span class="stat-label">${this.t('stats.performance')}</span>
                 ${_icon("speedometer-slow")}
             </div>
@@ -1234,43 +1292,49 @@
         
         <div class="tabs-container">
           <div class="tabs">
-            <button class="tab active" data-tab="issues">
+            <button class="tab active" data-tab="issues" title="${this.t('tab_tooltips.issues')}">
               ${_icon("alert-circle-outline")}
               <span class="tab-label">${this.t('tabs.issues')}</span>
             </button>
-            <button class="tab" data-tab="recorder">
+            <button class="tab" data-tab="recorder" title="${this.t('tab_tooltips.recorder')}">
               ${_icon("database-alert-outline")}
               <span class="tab-label">${this.t('tabs.recorder')}</span>
             </button>
-            <button class="tab" data-tab="history">
+            <button class="tab" data-tab="history" title="${this.t('tab_tooltips.history')}">
               ${_icon("chart-timeline-variant")}
               <span class="tab-label">${this.t('tabs.history')}</span>
             </button>
-            <button class="tab" data-tab="backups">
+            <button class="tab" data-tab="backups" title="${this.t('tab_tooltips.backups')}">
               ${_icon("archive-arrow-down-outline")}
               <span class="tab-label">${this.t('tabs.backups')}</span>
             </button>
-            <button class="tab" data-tab="reports">
+            <button class="tab" data-tab="reports" title="${this.t('tab_tooltips.reports')}">
               ${_icon("file-chart-outline")}
               <span class="tab-label">${this.t('tabs.reports')}</span>
             </button>
-            <button class="tab" data-tab="carte">
+            <button class="tab" data-tab="carte" title="${this.t('tab_tooltips.carte')}">
               ${_icon("graph")}
               <span class="tab-label">${this.t('tabs.carte')}</span>
             </button>
-            <button class="tab" data-tab="batteries">
+            <button class="tab" data-tab="batteries" title="${this.t('tab_tooltips.batteries')}">
               ${_icon("battery-alert")}
               <span class="tab-label">${this.t('tabs.batteries')}</span>
-              <span id="tab-badge-batteries" style="display:none;background:#ef5350;color:#fff;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:4px;"></span>
+              <span id="tab-badge-batteries" class="tab-badge-wrap" style="display:none;"></span>
             </button>
-            <button class="tab" data-tab="chat">
+            <button class="tab" data-tab="chat" title="${this.t('tab_tooltips.chat')}">
               ${_icon("robot-happy-outline")}
               <span class="tab-label">${this.t('tabs.chat')}</span>
             </button>
-            <button class="tab" data-tab="config">
+            <button class="tab" data-tab="compliance" title="${this.t('tab_tooltips.compliance')}">
+              ${_icon("check-circle-outline")}
+              <span class="tab-label">${this.t('tabs.compliance')}</span>
+              <span id="tab-badge-compliance" class="tab-badge-wrap warning" style="display:none;"></span>
+            </button>
+            <button class="tab" data-tab="config" title="${this.t('tab_tooltips.config')}">
               ${_icon("tune-variant")}
               <span class="tab-label">${this.t('tabs.config')}</span>
             </button>
+
           </div>
         </div>
 
@@ -1290,9 +1354,12 @@
                 <button class="subtab" data-subtab="scripts">${_icon("script-text")} <span>${this.t('tabs.scripts')}</span></button>
                 <button class="subtab" data-subtab="scenes">${_icon("palette")} <span>${this.t('tabs.scenes')}</span></button>
                 <button class="subtab" data-subtab="entities">${_icon("lightning-bolt")} <span>${this.t('tabs.entities')}</span></button>
+                <button class="subtab" data-subtab="helpers">${_icon("cog-outline")} <span>${this.t('tabs.helpers')}</span></button>
                 <button class="subtab" data-subtab="performance">${_icon("gauge")} <span>${this.t('tabs.performance')}</span></button>
                 <button class="subtab" data-subtab="blueprints">${_icon("file-document-outline")} <span>${this.t('tabs.blueprints')}</span></button>
                 <button class="subtab" data-subtab="dashboards">${_icon("view-dashboard-outline")} <span>${this.t('tabs.dashboards')}</span></button>
+                <button class="subtab" data-subtab="area-complexity" title="${this.t('tabs.area_complexity')}">${_icon("map-legend")} <span>${this.t('tabs.area_complexity')}</span></button>
+                <button class="subtab" data-subtab="redundancy" title="${this.t('tabs.redundancy')}">${_icon("content-duplicate")} <span>${this.t('tabs.redundancy')}</span></button>
               </div>
             </div>
 
@@ -1527,6 +1594,23 @@
                   </table>
                 </div>
               </div>
+            </div><!-- /subtab-entities -->
+
+            <div id="subtab-helpers" class="subtab-content">
+              <div class="section-header">
+                <h2>${_icon("cog-outline")} ${this.t('sections.helper_issues')}</h2>
+              </div>
+              <div class="filter-bar" id="filter-bar-issues-helpers">
+                <span class="filter-label">${this.t('filter.label')}</span>
+                <div class="filter-chips">
+                  <button class="filter-chip active-all" data-filter="all" data-target="issues-helpers">${this.t('filter.all')}</button>
+                  <button class="filter-chip" data-filter="high" data-target="issues-helpers">${this.t('filter.high')}</button>
+                  <button class="filter-chip" data-filter="medium" data-target="issues-helpers">${this.t('filter.medium')}</button>
+                  <button class="filter-chip" data-filter="low" data-target="issues-helpers">${this.t('filter.low')}</button>
+                </div>
+                <button class="export-csv-btn" data-target="issues-helpers">${_icon("file-delimited-outline", 16)} ${this.t('filter.export_csv')}</button>
+              </div>
+              <div id="issues-helpers" class="issue-list"></div>
             </div>
 
             <div id="subtab-performance" class="subtab-content">
@@ -1607,27 +1691,59 @@
               <div id="issues-dashboards" class="issue-list"></div>
             </div>
 
+            <!-- ── v1.5.0 subtab: Area Complexity ─────────────────── -->
+            <div id="subtab-area-complexity" class="subtab-content">
+              <div style="padding:0 20px 20px;" id="area-complexity-container">
+                <div style="text-align:center;padding:32px;color:var(--secondary-text-color);">${this.t('area_complexity.run_scan_first')}</div>
+              </div>
+            </div>
+
+            <!-- ── v1.5.0 subtab: Redundancy ──────────────────────── -->
+            <div id="subtab-redundancy" class="subtab-content">
+              <div style="padding:0 20px 20px;" id="redundancy-container">
+                <div style="text-align:center;padding:32px;color:var(--secondary-text-color);">${this.t('redundancy.run_scan_first')}</div>
+              </div>
+            </div>
+
           </div><!-- /tab-issues -->
 
           <!-- ══════════════════════════════════════════════════════════
-               TAB RECORDER ORPHANS
+               TAB RECORDER — Orphelins + Impact DB (v1.5.0)
                ══════════════════════════════════════════════════════════ -->
           <div id="tab-recorder" class="tab-content">
-            <div class="section-header">
-              <h2 style="display:flex;align-items:center;gap:8px;">
-                ${_icon("database-alert-outline")}
-                ${this.t('sections.recorder_orphans')}
-                <span id="recorder-db-badge" style="display:none;font-size:12px;background:#ff7043;color:#fff;padding:2px 8px;border-radius:10px;"></span>
-              </h2>
-              <div class="section-header-btns">
-                <button id="recorder-purge-all-btn" style="display:none;background:#ff7043;color:#fff;">
-                  ${_icon("delete-sweep-outline")} ${this.t('actions.purge_all_orphans')}
-                </button>
+            <div class="subtabs-container">
+              <div class="subtabs" id="subtabs-recorder">
+                <button class="subtab active" data-subtab="rec-orphans">${_icon("database-alert-outline")} <span>${this.t('recorder.subtab_orphans')}</span></button>
+                <button class="subtab" data-subtab="rec-impact">${_icon("database-check-outline")} <span>${this.t('recorder.subtab_impact')}</span></button>
               </div>
             </div>
-            <div id="recorder-orphan-list" style="padding:16px 20px;">
-              <div style="color:var(--secondary-text-color);">${this.t('messages.loading')}</div>
-            </div>
+
+            <!-- SubTab: Orphelins -->
+            <div class="subtab-content active" id="subtab-rec-orphans">
+              <div class="section-header">
+                <h2 style="display:flex;align-items:center;gap:8px;">
+                  ${_icon("database-alert-outline")}
+                  ${this.t('sections.recorder_orphans')}
+                  <span id="recorder-db-badge" style="display:none;font-size:12px;background:#ff7043;color:#fff;padding:2px 8px;border-radius:10px;"></span>
+                </h2>
+                <div class="section-header-btns">
+                  <button id="recorder-purge-all-btn" style="display:none;background:#ff7043;color:#fff;">
+                    ${_icon("delete-sweep-outline")} ${this.t('actions.purge_all_orphans')}
+                  </button>
+                </div>
+              </div>
+              <div id="recorder-orphan-list" style="padding:16px 20px;">
+                <div style="color:var(--secondary-text-color);">${this.t('messages.loading')}</div>
+              </div>
+            </div><!-- /subtab-rec-orphans -->
+
+            <!-- SubTab: Impact DB -->
+            <div class="subtab-content" id="subtab-rec-impact">
+              <div style="padding:0 20px 20px;" id="recorder-impact-container">
+                <div style="text-align:center;padding:32px;color:var(--secondary-text-color);">${this.t('recorder_impact.run_scan_first')}</div>
+              </div>
+            </div><!-- /subtab-rec-impact -->
+
           </div><!-- /tab-recorder -->
 
           <!-- ══════════════════════════════════════════════════════════
@@ -1799,63 +1915,100 @@
                ══════════════════════════════════════════════════════════ -->
           <div id="tab-batteries" class="tab-content">
 
-            <!-- Summary bar -->
-            <div class="section-header">
-              <h2 style="display:flex;align-items:center;gap:8px;">
-                ${_icon("battery-alert")}
-                Moniteur de Batteries
-              </h2>
-              <div class="section-header-btns" style="display:flex;align-items:center;gap:10px;">
-                <span id="bat-summary-text" style="font-size:13px;color:var(--secondary-text-color);"></span>
-                <select id="bat-filter-select" style="padding:6px 10px;border-radius:8px;border:1px solid var(--divider-color);background:var(--card-background-color);color:var(--primary-text-color);font-size:13px;cursor:pointer;">
-                  <option value="all">${this.t('battery.filter_all')}</option>
-                  <option value="alert">${this.t('battery.filter_alert')}</option>
-                  <option value="high">${this.t('battery.filter_critical')}</option>
-                  <option value="medium">${this.t('battery.filter_low')}</option>
-                  <option value="low">${this.t('battery.filter_watch')}</option>
-                  <option value="ok">${this.t('battery.filter_ok')}</option>
-                </select>
+            <!-- Battery subtabs -->
+            <div class="subtabs-container">
+              <div class="subtabs" id="subtabs-battery">
+                <button class="subtab active" data-subtab="monitor">${_icon("battery-check")} <span>${this.t('battery.subtab_monitor')}</span></button>
+                <button class="subtab" data-subtab="predict">${_icon("chart-timeline-variant")} <span>${this.t('battery.subtab_predict')}</span></button>
               </div>
             </div>
 
-            <!-- Stat cards -->
-            <div id="bat-stat-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;padding:0 20px 16px;"></div>
+            <!-- SubTab: Monitor -->
+            <div class="subtab-content active" id="subtab-battery-monitor">
+              <div class="section-header">
+                <div class="section-header-btns" style="display:flex;align-items:center;gap:10px;">
+                  <span id="bat-summary-text" style="font-size:13px;color:var(--secondary-text-color);"></span>
+                  <select id="bat-filter-select" style="padding:6px 10px;border-radius:8px;border:1px solid var(--divider-color);background:var(--card-background-color);color:var(--primary-text-color);font-size:13px;cursor:pointer;">
+                    <option value="all">${this.t('battery.filter_all')}</option>
+                    <option value="alert">${this.t('battery.filter_alert')}</option>
+                    <option value="high">${this.t('battery.filter_critical')}</option>
+                    <option value="medium">${this.t('battery.filter_low')}</option>
+                    <option value="low">${this.t('battery.filter_watch')}</option>
+                    <option value="ok">${this.t('battery.filter_ok')}</option>
+                  </select>
+                </div>
+              </div>
+              <div id="bat-stat-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;padding:0 20px 16px;"></div>
+              <div style="padding:0 20px 20px;overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:420px;">
+                  <thead>
+                    <tr style="border-bottom:2px solid var(--divider-color);">
+                      <th style="padding:8px 10px;text-align:left;color:var(--secondary-text-color);font-weight:600;">${this.t('tables.device')}</th>
+                      <th style="padding:8px 10px;text-align:center;color:var(--secondary-text-color);font-weight:600;min-width:120px;">${this.t('tables.level_col')}</th>
+                      <th style="padding:8px 10px;text-align:center;color:var(--secondary-text-color);font-weight:600;min-width:90px;">${this.t('tables.status_col')}</th>
+                    </tr>
+                  </thead>
+                  <tbody id="bat-tbody">
+                    <tr><td colspan="3" style="text-align:center;padding:24px;color:var(--secondary-text-color);">${this.t('battery.run_scan')}</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div><!-- /subtab-battery-monitor -->
 
-            <!-- Battery table -->
-            <div style="padding:0 20px 20px;overflow-x:auto;">
-              <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:420px;">
-                <thead>
-                  <tr style="border-bottom:2px solid var(--divider-color);">
-                    <th style="padding:8px 10px;text-align:left;color:var(--secondary-text-color);font-weight:600;">${this.t('tables.device')}</th>
-                    <th style="padding:8px 10px;text-align:center;color:var(--secondary-text-color);font-weight:600;min-width:120px;">${this.t('tables.level_col')}</th>
-                    <th style="padding:8px 10px;text-align:center;color:var(--secondary-text-color);font-weight:600;min-width:90px;">${this.t('tables.status_col')}</th>
-                  </tr>
-                </thead>
-                <tbody id="bat-tbody">
-                  <tr><td colspan="3" style="text-align:center;padding:24px;color:var(--secondary-text-color);">${this.t('battery.run_scan')}</td></tr>
-                </tbody>
-              </table>
-            </div>
+            <!-- SubTab: Predict -->
+            <div class="subtab-content" id="subtab-battery-predict">
+              <div style="padding:0 20px 20px;" id="bat-predict-container">
+                <div style="text-align:center;padding:32px;color:var(--secondary-text-color);">
+                  ${this.t('battery_predict.run_scan_first')}
+                </div>
+              </div>
+            </div><!-- /subtab-battery-predict -->
+
           </div><!-- /tab-batteries -->
+
+          <!-- Predict detail modal -->
+          <div id="predict-detail-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+            <div style="background:var(--card-background-color);border-radius:14px;padding:20px;width:90%;max-width:480px;position:relative;">
+              <button id="predict-modal-close" style="position:absolute;top:10px;right:12px;background:none;border:none;cursor:pointer;font-size:20px;color:var(--secondary-text-color);">&#x2715;</button>
+              <h3 id="predict-modal-title" style="margin:0 0 12px;font-size:16px;font-weight:700;"></h3>
+              <div id="predict-modal-chart"></div>
+              <div id="predict-modal-stats"></div>
+            </div>
+          </div>
 
           <!-- TAB CHAT IA -->
           <div id="tab-chat" class="tab-content">
             <div style="display:flex;flex-direction:column;height:calc(100vh - 220px);padding:0;">
-              <div style="padding:16px 20px 12px;border-bottom:1px solid var(--divider-color);flex-shrink:0;">
+
+              <!-- Header -->
+              <div style="padding:14px 20px 12px;border-bottom:1px solid var(--divider-color);flex-shrink:0;">
                 <h2 style="margin:0;font-size:16px;display:flex;align-items:center;gap:8px;">
                   ${_icon("robot-happy-outline")}
                   ${this.t('chat.title')}
                 </h2>
-                <p style="margin:6px 0 0;font-size:12px;color:var(--secondary-text-color);">
-                  ${this.t('chat.subtitle')}
-                </p>
               </div>
+
+              <!-- Exemples (collapsible) -->
+              <div id="chat-examples-panel" style="flex-shrink:0;border-bottom:1px solid var(--divider-color);background:var(--secondary-background-color);">
+                <button id="chat-examples-toggle"
+                  style="width:100%;padding:8px 20px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;color:var(--primary-text-color);font-size:12px;font-weight:600;">
+                  <span style="display:flex;align-items:center;gap:6px;">${_icon('lightbulb-on-outline',14)} ${this.t('chat.examples_title')}</span>
+                  <span id="chat-examples-chevron" style="transition:transform 0.2s;">${_icon('chevron-down',14)}</span>
+                </button>
+                <div id="chat-examples-body" style="display:none;padding:0 16px 12px;display:flex;flex-wrap:wrap;gap:6px;">
+                  ${this._buildExampleChips()}
+                </div>
+              </div>
+
+              <!-- Messages -->
               <div id="chat-messages" style="flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:12px;">
                 <div style="background:var(--secondary-background-color);border-radius:12px;padding:12px 16px;max-width:85%;align-self:flex-start;">
                   <div style="font-size:11px;color:var(--secondary-text-color);margin-bottom:4px;">${this.t('misc.ai_assistant')}</div>
                   <div>${this.t('chat.greeting')}</div>
                 </div>
               </div>
+
+              <!-- Input -->
               <div style="padding:12px 20px;border-top:1px solid var(--divider-color);flex-shrink:0;display:flex;gap:8px;align-items:flex-end;">
                 <textarea id="chat-input" placeholder="${this.t('chat.placeholder')}" rows="2"
                   style="flex:1;padding:10px 14px;border-radius:12px;border:1px solid var(--divider-color);background:var(--card-background-color);color:var(--primary-text-color);font-size:14px;font-family:inherit;resize:vertical;min-height:42px;max-height:120px;outline:none;line-height:1.4;"></textarea>
@@ -1876,9 +2029,58 @@
             </div>
           </div><!-- /tab-config -->
 
+          <!-- ══════════════════════════════════════════════════════════
+               TAB COMPLIANCE — Conformité bonnes pratiques HA v1.4.0
+               ══════════════════════════════════════════════════════════ -->
+          <div id="tab-compliance" class="tab-content">
+            <div style="padding:40px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;">
+              <div class="loader"></div>
+              <div style="font-size:15px;color:var(--secondary-text-color);">${this.t('compliance.scanning') || 'Chargement...'}</div>
+            </div>
+          </div><!-- /tab-compliance -->
+
+
+          <!-- ── History diff modal ─────────────────────────────────── -->
+          <div id="history-diff-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1000;align-items:center;justify-content:center;">
+            <div style="background:var(--card-background-color);border-radius:14px;padding:20px;width:95%;max-width:680px;max-height:85vh;overflow-y:auto;position:relative;">
+              <button id="history-diff-close" style="position:absolute;top:10px;right:12px;background:none;border:none;cursor:pointer;font-size:20px;color:var(--secondary-text-color);">&#x2715;</button>
+              <h3 style="margin:0 0 16px;font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;">
+                ${_icon("source-branch-check", 18)} ${this.t('history.diff_title')}
+              </h3>
+              <div id="diff-modal-body"></div>
+            </div>
+          </div>
+
         </div><!-- /section-card -->
       </div><!-- /container -->
     `;
+    }
+
+    _buildExampleChips() {
+      const examples = [
+        this.t('chat.ex_audit'),
+        this.t('chat.ex_create_auto'),
+        this.t('chat.ex_debug'),
+        this.t('chat.ex_rename'),
+        this.t('chat.ex_history'),
+        this.t('chat.ex_helpers'),
+        this.t('chat.ex_backup'),
+        this.t('chat.ex_template'),
+        this.t('chat.ex_delete_auto'),
+        this.t('chat.ex_search'),
+        this.t('chat.ex_dashboard'),
+        this.t('chat.ex_system'),
+      ];
+      return examples.map(ex => {
+        const safe = ex.replace(/"/g, '&quot;');
+        return '<button class="chat-example-chip" data-example="' + safe + '"'
+          + ' style="font-size:11px;padding:4px 10px;border-radius:16px;border:1px solid var(--divider-color);'
+          + 'background:var(--card-background-color);color:var(--primary-text-color);cursor:pointer;'
+          + 'white-space:nowrap;transition:all 0.15s;"'
+          + ' onmouseover="this.style.background=\'var(--primary-color)\';this.style.color=\'white\';this.style.borderColor=\'var(--primary-color)\';"'
+          + ' onmouseout="this.style.background=\'var(--card-background-color)\';this.style.color=\'var(--primary-text-color)\';this.style.borderColor=\'var(--divider-color)\';">'
+          + safe + '</button>';
+      }).join('');
     }
 
     attachListeners() {
@@ -1893,6 +2095,36 @@
           if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this._sendChatMessage(); }
         });
       }
+
+      // Chat examples panel — toggle collapse
+      const exToggle = this.shadowRoot.querySelector('#chat-examples-toggle');
+      const exBody   = this.shadowRoot.querySelector('#chat-examples-body');
+      const exChevron = this.shadowRoot.querySelector('#chat-examples-chevron');
+      if (exToggle && exBody) {
+        // Start collapsed
+        exBody.style.display = 'none';
+        exToggle.addEventListener('click', () => {
+          const open = exBody.style.display !== 'none';
+          exBody.style.display = open ? 'none' : 'flex';
+          if (exChevron) exChevron.style.transform = open ? '' : 'rotate(180deg)';
+        });
+      }
+
+      // Chat example chips — click to inject into input and send
+      this.shadowRoot.querySelectorAll('.chat-example-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const txt = chip.dataset.example || '';
+          if (!txt) return;
+          const inp = this.shadowRoot.querySelector('#chat-input');
+          if (inp) {
+            inp.value = txt;
+            // Close examples panel
+            if (exBody) exBody.style.display = 'none';
+            if (exChevron) exChevron.style.transform = '';
+            this._sendChatMessage();
+          }
+        });
+      });
 
       // Recorder stat-card → navigate to recorder tab
       this.shadowRoot.querySelector('#recorder-stat-btn')?.addEventListener('click', () => this.switchTab('recorder'));
@@ -1950,10 +2182,51 @@
         });
       });
 
-      // Sub-tabs inside Issues tab
-      this.shadowRoot.querySelectorAll('.subtabs .subtab').forEach(subtab => {
+      // Recorder subtabs (orphelins / impact)
+      this.shadowRoot.querySelectorAll('#subtabs-recorder .subtab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          this.shadowRoot.querySelectorAll('#subtabs-recorder .subtab').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const id = btn.dataset.subtab;
+          this.shadowRoot.querySelectorAll('#tab-recorder .subtab-content').forEach(c => c.classList.remove('active'));
+          const panel = this.shadowRoot.querySelector(`#subtab-${id}`);
+          if (panel) panel.classList.add('active');
+          if (id === 'rec-impact') this.loadRecorderImpact();
+        });
+      });
+
+      // Battery subtabs (monitor / predict)
+      this.shadowRoot.querySelectorAll('#subtabs-battery .subtab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          this.shadowRoot.querySelectorAll('#subtabs-battery .subtab').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const id = btn.dataset.subtab;
+          this.shadowRoot.querySelectorAll('#tab-batteries .subtab-content').forEach(c => c.classList.remove('active'));
+          const panel = this.shadowRoot.querySelector(`#subtab-battery-${id}`);
+          if (panel) panel.classList.add('active');
+          if (id === 'predict') this.loadBatteryPredictions();
+        });
+      });
+
+      // History diff modal close
+      this.shadowRoot.querySelector('#history-diff-close')?.addEventListener('click', () => {
+        const m = this.shadowRoot.querySelector('#history-diff-modal');
+        if (m) m.style.display = 'none';
+      });
+
+      // Predict modal close
+      this.shadowRoot.querySelector('#predict-modal-close')?.addEventListener('click', () => {
+        const m = this.shadowRoot.querySelector('#predict-detail-modal');
+        if (m) m.style.display = 'none';
+      });
+
+      // Sub-tabs inside Issues tab — scoped to #subtabs-issues only
+      this.shadowRoot.querySelectorAll('#subtabs-issues .subtab').forEach(subtab => {
         subtab.addEventListener('click', () => {
           this.switchSubtab(subtab.dataset.subtab);
+          const st = subtab.dataset.subtab;
+          if (st === 'area-complexity') this.loadAreaComplexity();
+          else if (st === 'redundancy') this.loadRedundancy();
         });
       });
 
@@ -2280,70 +2553,36 @@
       const text = input.value.trim();
       if (!text) return;
 
+      // Rate limiting — 1 requête / 3s pour éviter l'épuisement des quotas IA
+      const now = Date.now();
+      if (this._lastChatTime && (now - this._lastChatTime) < 3000) {
+        const wait = Math.ceil((3000 - (now - this._lastChatTime)) / 1000);
+        this._appendChatMsg('assistant',
+          `⏳ ${this.t('chat.rate_limit', {wait}) || `Wait ${wait}s`}`);
+        return;
+      }
+      this._lastChatTime = now;
+
       input.value = '';
       this._appendChatMsg('user', text);
-
-      // Build context from last scan results
-      const stats = this._lastStats || {};
-      const ctx = stats.total_issues != null
-        ? this.t('ai_prompts.chat_context').replace('{total_issues}',stats.total_issues).replace('{automations}',stats.automations_count||0).replace('{scripts}',stats.scripts_count||0)
-        : '';
 
       // Show typing indicator
       const typingDiv = this._appendChatMsg('assistant', '…');
       if (sendBtn) sendBtn.disabled = true;
 
       try {
-        // ai_task.generate_data — service officiel HA pour les tâches IA.
-        // IMPORTANT : ce service exige return_response=true, sinon HA retourne 400.
-        // callService() accepte un 6e argument `returnResponse` (bool) qui ajoute
-        // return_response:true dans le message WebSocket sous-jacent.
-        // La réponse arrive dans result.response = { data: "...", conversation_id: "..." }
-        let reply = null;
-
-        try {
-          const result = await this._hass.callService(
-            'ai_task',
-            'generate_data',
-            {
-              task_name: 'HACA Chat',
-              instructions: ctx + text,
-            },
-            undefined, // target — aucun pour ai_task
-            false,     // notifyOnError — on gère nous-mêmes
-            true       // returnResponse — REQUIS pour récupérer la réponse
-          );
-          const data = result?.response?.data;
-          if (data) {
-            reply = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
-            this._chatConvId = result?.response?.conversation_id || null;
-          }
-        } catch (aiErr) {
-          // ai_task non disponible (aucun modèle IA configuré dans HA) → fallback
-        }
-
-        // Fallback : conversation/process (Assist pipeline avec agent IA configuré)
-        if (!reply) {
-          try {
-            const wsResult = await this._hass.callWS({
-              type: 'conversation/process',
-              text: ctx + text,
-              language: this._hass.language || 'en',
-              conversation_id: this._chatConvId || null,
-            });
-            this._chatConvId = wsResult.conversation_id;
-            reply = wsResult.response?.speech?.plain?.speech
-              || wsResult.response?.speech?.text
-              || null;
-          } catch (convErr) {
-          }
-        }
-
-        if (reply) {
-          typingDiv.querySelector('div:last-child').textContent = reply;
-        } else {
-          typingDiv.querySelector('div:last-child').textContent = this.t('misc.no_ai_model');
-        }
+        // Appel au handler Python haca/chat qui gère :
+        // - Le prompt système HACA + contexte HA
+        // - L'agentic loop [HACA_ACTION:] → exécution d'outils
+        // - Le fallback conversation/process si pas de réponse
+        const wsResult = await this._hass.callWS({
+          type: 'haca/chat',
+          message: text,
+          conversation_id: this._chatConvId || undefined,
+        });
+        const reply = wsResult?.reply || this.t('misc.no_ai_model');
+        this._chatConvId = wsResult?.conversation_id || this._chatConvId;
+        typingDiv.querySelector('div:last-child').textContent = reply;
       } catch (e) {
         typingDiv.querySelector('div:last-child').textContent = this.t('misc.ai_error') + (e.message || String(e));
       } finally {
@@ -2360,12 +2599,37 @@
       this.shadowRoot.querySelector(`#tab-${tabName}`)?.classList.add('active');
       this._activeTab = tabName;
       if (tabName === 'config') this.loadConfigTab();
+      if (tabName === 'compliance') this.loadComplianceTab();
+    }
+
+    // Ouvre le tab Chat, pré-remplit et envoie automatiquement le message
+    _openChatWithMessage(message) {
+      // Gemini flash context limit ~30k tokens ≈ 120k chars. Tronquer à 6000 chars
+      // pour laisser de la place au contexte système + historique + réponse.
+      const MAX_PROMPT_CHARS = 6000;
+      const truncated = message.length > MAX_PROMPT_CHARS
+        ? message.slice(0, MAX_PROMPT_CHARS) + '\n…[prompt tronqué]'
+        : message;
+      // Les modales sont dans document.body (via createModal), pas dans shadowRoot
+      document.body.querySelectorAll('.haca-modal').forEach(m => m.remove());
+      // Bascule vers le chat
+      this.switchTab('chat');
+      // Injecte + envoie le message
+      const input = this.shadowRoot.querySelector('#chat-input');
+      if (input) {
+        input.value = truncated;
+        setTimeout(() => {
+          const sendBtn = this.shadowRoot.querySelector('#chat-send');
+          if (sendBtn && !sendBtn.disabled) sendBtn.click();
+        }, 80);
+      }
     }
 
     switchSubtab(subtabName) {
-      this.shadowRoot.querySelectorAll('.subtabs .subtab').forEach(t => t.classList.remove('active'));
-      this.shadowRoot.querySelector(`.subtabs .subtab[data-subtab="${subtabName}"]`)?.classList.add('active');
-      this.shadowRoot.querySelectorAll('.subtab-content').forEach(c => c.classList.remove('active'));
+      // Scoped strictly to Issues tab — never touch battery/recorder subtabs
+      this.shadowRoot.querySelectorAll('#subtabs-issues .subtab').forEach(t => t.classList.remove('active'));
+      this.shadowRoot.querySelector(`#subtabs-issues .subtab[data-subtab="${subtabName}"]`)?.classList.add('active');
+      this.shadowRoot.querySelectorAll('#tab-issues .subtab-content').forEach(c => c.classList.remove('active'));
       this.shadowRoot.querySelector(`#subtab-${subtabName}`)?.classList.add('active');
     }
 
@@ -2382,6 +2646,45 @@
 
         el.innerHTML = renderConfigTab(options, lang, this.t.bind(this));
         this._attachConfigListeners(el, options);
+
+        // ── v1.4.0 : Section MCP + Agent ───────────────────────────────
+        const mcpContainer = el.querySelector('#mcp-section-container');
+        if (mcpContainer && typeof renderMcpSection === 'function') {
+          try {
+            const [mcpStatus, agentStatus] = await Promise.all([
+              this._hass.callWS({ type: 'haca/mcp_status' }).catch(() => null),
+              this._hass.callWS({ type: 'haca/agent_status' }).catch(() => null),
+            ]);
+            mcpContainer.innerHTML = renderMcpSection(mcpStatus, agentStatus, this.t.bind(this));
+            // Bouton rapport forcé — avec téléchargement MD
+            if (typeof wireForceReportButton === 'function') {
+              wireForceReportButton(this.shadowRoot, this._hass, this.t.bind(this));
+            }
+
+            // Sélecteur fréquence rapport automatique
+            const freqSel = this.shadowRoot.querySelector('#agent-report-freq');
+            if (freqSel && !freqSel._wired) {
+              freqSel._wired = true;
+              freqSel.addEventListener('change', async () => {
+                try {
+                  await this._hass.callWS({
+                    type: 'haca/save_options',
+                    options: { report_frequency: freqSel.value },
+                  });
+                } catch(e) {
+                  console.warn('[HACA] save report_frequency error', e);
+                }
+              });
+            }
+            // Agent config pills — register Shadow DOM container for _hacaAgentSwitch
+            const tabsContainer = mcpContainer.querySelector('#agent-config-tabs');
+            if (tabsContainer && typeof _hacaAgentSwitchContainer !== 'undefined') {
+              window._hacaAgentSwitchContainer = tabsContainer;
+            }
+          } catch (mcpErr) {
+            mcpContainer.innerHTML = `<div style="padding:12px;color:var(--secondary-text-color);font-size:13px;">MCP/Agent: ${mcpErr.message}</div>`;
+          }
+        }
       } catch (err) {
         el.innerHTML = `<div style="padding:32px;text-align:center;color:var(--error-color);">
         ❌ Erreur de chargement : ${err.message}
@@ -2389,9 +2692,137 @@
       }
     }
 
+    // ─── Onglet Conformité v1.4.2 ──────────────────────────────────────────
+
+    async loadComplianceTab() {
+      const el = this.shadowRoot.querySelector('#tab-compliance');
+      if (!el) return;
+
+      // État local persistant sur l'instance
+      if (!this._complianceAll)    this._complianceAll    = null;
+      if (!this._complianceSort)   this._complianceSort   = 'severity';
+      if (!this._complianceFilter) this._complianceFilter = 'all';
+
+      const PAG_ID = 'compliance-list';
+
+      try {
+        // Charger seulement si pas encore en cache
+        if (!this._complianceAll) {
+          el.innerHTML = `<div style="padding:40px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;"><div class="loader"></div><div>${this.t('compliance.scanning')}</div></div>`;
+          const data = await this._hass.callWS({ type: 'haca/get_data', category: 'compliance', limit: 500 });
+          this._complianceAll = data.compliance_issue_list || [];
+        }
+        this._renderCompliancePage(el, PAG_ID);
+      } catch (err) {
+        el.innerHTML = `<div style="padding:32px;text-align:center;color:var(--error-color);">❌ ${err.message}</div>`;
+      }
+    }
+
+    _complianceSortedFiltered() {
+      let issues = (this._complianceAll || []).slice();
+      // Filtre sévérité
+      if (this._complianceFilter && this._complianceFilter !== 'all') {
+        issues = issues.filter(i => i.severity === this._complianceFilter);
+      }
+      // Tri
+      const sev = {high:0, medium:1, low:2};
+      if (this._complianceSort === 'severity') {
+        issues.sort((a,b) => (sev[a.severity]||2) - (sev[b.severity]||2));
+      } else if (this._complianceSort === 'type') {
+        issues.sort((a,b) => (a.type||'').localeCompare(b.type||''));
+      } else if (this._complianceSort === 'entity') {
+        issues.sort((a,b) => (a.alias||a.entity_id||'').localeCompare(b.alias||b.entity_id||''));
+      }
+      return issues;
+    }
+
+    _renderCompliancePage(el, PAG_ID) {
+      // Si le cache a été invalidé (ex : refresh auto), recharger les données
+      if (!this._complianceAll) {
+        this.loadComplianceTab();
+        return;
+      }
+      const all = this._complianceAll;
+      // Counts sur la totalité (pas filtrée) pour les stat cards
+      const counts = {
+        total:  all.length,
+        high:   all.filter(i => i.severity === 'high').length,
+        medium: all.filter(i => i.severity === 'medium').length,
+        low:    all.filter(i => i.severity === 'low').length,
+        _area_truncated: all.some(i => i.type === 'compliance_entity_no_area_bulk'),
+      };
+
+      const filtered = this._complianceSortedFiltered();
+      const st    = this._pagState(PAG_ID);
+      const paged = this._pagSlice(filtered, st.page, st.pageSize);
+      const pagHtml = this._pagHTML(PAG_ID, filtered.length, st.page, st.pageSize);
+
+      // Rendre le HTML
+      if (typeof renderComplianceTab === 'function') {
+        el.innerHTML = renderComplianceTab(paged, this.t.bind(this), this._complianceSort, this._complianceFilter, pagHtml, counts, false);
+      } else {
+        el.innerHTML = `<div style="padding:32px;color:var(--error-color);">renderComplianceTab not found</div>`;
+        return;
+      }
+
+      // Brancher la pagination
+      this._pagWire(el, () => this._renderCompliancePage(el, PAG_ID));
+
+      // Boutons de tri
+      el.querySelectorAll('.compliance-sort-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          this._complianceSort = btn.dataset.sort;
+          this._pagSet(PAG_ID, {page: 0}, () => this._renderCompliancePage(el, PAG_ID));
+        });
+      });
+
+      // Cartes filtre sévérité
+      el.querySelectorAll('.compliance-filter-card').forEach(card => {
+        card.addEventListener('click', () => {
+          this._complianceFilter = card.dataset.filter;
+          this._pagSet(PAG_ID, {page: 0}, () => this._renderCompliancePage(el, PAG_ID));
+        });
+      });
+
+      // Boutons More-Info → ouvre le panneau entité HA
+      el.querySelectorAll('.compliance-moreinfo-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const eid = btn.dataset.eid;
+          if (eid) this._openMoreInfo(eid);
+        });
+      });
+
+      // Mettre à jour le badge tab
+      const badge = this.shadowRoot.querySelector('#tab-badge-compliance');
+      if (badge) {
+        if (all.length > 0) {
+          badge.textContent = all.length > 99 ? '99+' : String(all.length);
+          badge.style.display = '';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    }
+
+
+    _renderComplianceFallback(issues) {
+      return `<div style="padding:32px;text-align:center;"><div style="font-size:48px;">✅</div><div style="font-size:18px;margin-top:12px;">${this.t('compliance.all_good')}</div></div>`;
+    }
+
+
+
     _attachConfigListeners(el, options) {
       const lang = this._language || 'en';
       const t = (fr, en) => lang === 'fr' ? fr : en;
+
+      // Bouton "Effacer le token" MCP
+      el.querySelector('#cfg-mcp-token-clear')?.addEventListener('click', async () => {
+        if (!confirm(this.t('config.mcp_token_clear') + '?')) return;
+        try {
+          await this._hass.callWS({ type: 'haca/save_options', options: { mcp_ha_token: '' } });
+          this.loadConfigTab();
+        } catch(e) { console.warn('[HACA] clear token error', e); }
+      });
 
       // Compteurs initiaux
       _updateTypeCounts(el);
@@ -2526,6 +2957,8 @@
         _HC.data = result;           // cache module : survive aux navigations
         this._dataErrorCount = 0;
         window._HACA_STATE.errors = 0;
+        // Invalider le cache conformité (nouvelles données = rescan)
+        this._complianceAll = null;
         _hlog('INF', 'loadData(): SUCCESS score=' + result?.health_score + '%');
         this.updateUI(result);
         // Hide the boot splash on first successful data load
@@ -2603,17 +3036,17 @@
 
       // Update Issues tab badge with total issue count
       const totalIssues = (data.automation_issues || 0) + (data.script_issues || 0)
-        + (data.scene_issues || 0) + (data.entity_issues || 0) + (data.performance_issues || 0)
+        + (data.scene_issues || 0) + (data.entity_issues || 0) + (data.helper_issues || 0)
+        + (data.performance_issues || 0)
         + (data.security_issues || 0) + (data.blueprint_issues || 0) + (data.dashboard_issues || 0);
       const issuesTab = this.shadowRoot.querySelector('.tabs .tab[data-tab="issues"]');
       if (issuesTab) {
-        const existingBadge = issuesTab.querySelector('.tab-count');
+        const existingBadge = issuesTab.querySelector('.tab-badge-wrap');
         if (existingBadge) existingBadge.remove();
         if (totalIssues > 0) {
           const badge = document.createElement('span');
-          badge.className = 'tab-count';
+          badge.className = 'tab-badge-wrap';
           badge.textContent = totalIssues;
-          badge.style.cssText = 'background:var(--error-color,#ef5350);color:#fff;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:4px;';
           issuesTab.appendChild(badge);
         }
       }
@@ -2624,6 +3057,7 @@
       safeSetText('script-count', data.script_issues || 0);
       safeSetText('scene-count', data.scene_issues || 0);
       safeSetText('entity-count', data.entity_issues || 0);
+      safeSetText('helper-count', data.helper_issues || 0);
       safeSetText('perf-count', data.performance_issues || 0);
       safeSetText('security-count', data.security_issues || 0);
       safeSetText('blueprint-count', data.blueprint_issues || 0);
@@ -2662,7 +3096,8 @@
       const securityIssues = data.security_issue_list || [];
       const blueprintIssues = data.blueprint_issue_list || [];
       const dashboardIssues = data.dashboard_issue_list || [];
-      const allIssues = [...autoIssues, ...scriptIssues, ...sceneIssues, ...entityIssues, ...perfIssues, ...securityIssues, ...blueprintIssues, ...dashboardIssues];
+      const helperIssues = data.helper_issue_list || [];
+      const allIssues = [...autoIssues, ...scriptIssues, ...sceneIssues, ...entityIssues, ...helperIssues, ...perfIssues, ...securityIssues, ...blueprintIssues, ...dashboardIssues];
 
       // ── Preserve active filters across refreshes ──────────────────────────
       // Read the currently active filter for each container from the DOM chips,
@@ -2682,6 +3117,7 @@
         ['issues-scripts', scriptIssues],
         ['issues-scenes', sceneIssues],
         ['issues-entities', entityIssues],
+        ['issues-helpers', helperIssues],
         ['issues-performance', perfIssues],
         ['issues-security', securityIssues],
         ['issues-blueprints', blueprintIssues],

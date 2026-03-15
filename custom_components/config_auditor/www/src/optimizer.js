@@ -293,12 +293,12 @@
           } else {
             btn.disabled = false;
             btn.innerHTML = `${_icon("check-circle-outline")} ${this.t('optimizer.retry')}`;
-            this.showHANotithis._showNotification(this.t('misc.ai_error') + (r.error || this.t('fix.error_unknown')), '', 'haca_error');
+            this.showHANotification(this.t('misc.ai_error') + (r.error || this.t('fix.error_unknown')), '', 'haca_error');
           }
         } catch(err) {
           btn.disabled = false;
           btn.innerHTML = `${_icon("check-circle-outline")} ${this.t('optimizer.retry')}`;
-          this.showHANotithis._showNotification(this.t('misc.ai_error') + err.message, '', 'haca_error');
+          this.showHANotification(this.t('misc.ai_error') + err.message, '', 'haca_error');
         }
       });
     });

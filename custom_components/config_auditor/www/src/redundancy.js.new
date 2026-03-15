@@ -1,0 +1,80 @@
+  // ════════════════════════════════════════════════════════════════════════
+  //  REDUNDANCY — _showRedundancyAI
+  //  All text from this.t('diag_prompts.redundancy.*') — zero hardcoded strings.
+  // ════════════════════════════════════════════════════════════════════════
+
+  async _showRedundancyAI(item) {
+    let chatPrompt = '';
+    const eid   = item.entity_id || '';
+    const alias = item.alias     || eid;
+    const t     = (k, p) => this.t(k, p);
+
+    if (item.type === 'blueprint') {
+      const patternLine = item.detail
+        ? `\n${t('diag_prompts.redundancy.pattern_label')}: ${item.detail}`
+        : '';
+      chatPrompt = [
+        t('diag_prompts.marker'),
+        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.redundancy.blueprint_problem')})}${patternLine}`,
+        '',
+        t('diag_prompts.read_with', {cmd: `haca_get_automation("${eid}")`}),
+        '',
+        t('diag_prompts.then'),
+        t('diag_prompts.redundancy.blueprint_step1'),
+        t('diag_prompts.redundancy.blueprint_step2'),
+        t('diag_prompts.step3'),
+        '',
+        t('diag_prompts.menu_title'),
+        t('diag_prompts.redundancy.blueprint_choice_proceed'),
+        t('diag_prompts.redundancy.blueprint_choice_backup'),
+        t('diag_prompts.choice_manual'),
+        t('diag_prompts.choice_cancel'),
+      ].join('\n');
+
+    } else if (item.type === 'native') {
+      const detail = item.detail || '';
+      chatPrompt = [
+        t('diag_prompts.marker'),
+        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.redundancy.native_problem', {detail})})}`,
+        '',
+        t('diag_prompts.read_with', {cmd: `haca_get_automation("${eid}")`}),
+        '',
+        t('diag_prompts.then'),
+        t('diag_prompts.redundancy.native_step1'),
+        t('diag_prompts.redundancy.native_step2'),
+        t('diag_prompts.step3'),
+        '',
+        t('diag_prompts.menu_title'),
+        t('diag_prompts.choice_apply'),
+        t('diag_prompts.choice_backup_apply'),
+        t('diag_prompts.choice_manual'),
+        t('diag_prompts.choice_cancel'),
+      ].join('\n');
+
+    } else {
+      // overlap — two automations with same trigger
+      const [eid_b, trigger_sig] = (item.detail || '').split('|');
+      const alias_a = item.alias.split(' ↔ ')[0] || alias;
+      const alias_b = item.alias.split(' ↔ ')[1] || eid_b || '';
+      chatPrompt = [
+        t('diag_prompts.marker'),
+        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.redundancy.overlap_problem', {alias_a, eid_a: eid, alias_b, trigger: trigger_sig})})}`,
+        '',
+        t('diag_prompts.redundancy.overlap_read', {eid_a: eid, eid_b: eid_b || alias_b}),
+        '',
+        t('diag_prompts.then'),
+        t('diag_prompts.redundancy.overlap_step1'),
+        t('diag_prompts.redundancy.overlap_step2'),
+        t('diag_prompts.step3'),
+        '',
+        t('diag_prompts.menu_title'),
+        t('diag_prompts.redundancy.overlap_choice_proceed'),
+        t('diag_prompts.redundancy.overlap_choice_backup'),
+        t('diag_prompts.choice_manual'),
+        t('diag_prompts.choice_cancel'),
+      ].join('\n');
+    }
+
+    this._redundancyLoaded = false;
+    this._openChatWithMessage(chatPrompt);
+  }

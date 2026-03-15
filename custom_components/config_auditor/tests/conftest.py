@@ -1,4 +1,4 @@
-"""Shared pytest fixtures for H.A.C.A v1.1.2 tests.
+"""Shared pytest fixtures for H.A.C.A tests.
 
 Run with:
     pip install pytest pytest-asyncio
@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import sys
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock
 import pytest
@@ -28,6 +29,8 @@ class MockState:
         self.entity_id = entity_id
         self.state = state
         self.attributes = attributes or {}
+        # Provide a recent last_updated so stale-entity checks don't fire
+        self.last_updated = datetime.now(tz=timezone.utc)
 
 
 class _MockStatesProxy:
@@ -45,7 +48,7 @@ class _MockStatesProxy:
 
 
 class MockRegistryEntry:
-    """Minimal entity registry entry with label support (v1.1.2: haca_ignore)."""
+    """Minimal entity registry entry with label support."""
 
     def __init__(
         self,
@@ -56,6 +59,8 @@ class MockRegistryEntry:
         device_id: str | None = None,
         platform: str = "test",
         unique_id: str | None = None,
+        config_entry_id: str | None = None,
+        area_id: str | None = None,
     ):
         self.entity_id = entity_id
         self.labels: set = labels or set()
@@ -63,18 +68,28 @@ class MockRegistryEntry:
         self.device_id = device_id
         self.platform = platform
         self.unique_id = unique_id or entity_id
+        self.config_entry_id = config_entry_id
+        self.area_id = area_id
+        self.domain = entity_id.split(".")[0] if "." in entity_id else "unknown"
+
+
+class _MockEntityItems(dict):
+    """Dict subclass that also implements get_entries_for_device_id."""
+
+    def get_entries_for_device_id(self, device_id: str) -> list:
+        return [e for e in self.values() if getattr(e, "device_id", None) == device_id]
 
 
 class MockEntityRegistry:
     """Minimal entity registry mock."""
 
     def __init__(self, entries: list | None = None):
-        self._entries: dict = {}
+        self._entries: _MockEntityItems = _MockEntityItems()
         for e in (entries or []):
             self._entries[e.entity_id] = e
 
     @property
-    def entities(self):
+    def entities(self) -> _MockEntityItems:
         return self._entries
 
     def async_get(self, entity_id: str):
@@ -84,10 +99,40 @@ class MockEntityRegistry:
         self._entries[entry.entity_id] = entry
 
 
+class MockDeviceEntry:
+    def __init__(self, device_id: str, *, labels: set | None = None, area_id: str | None = None):
+        self.id = device_id
+        self.labels: set = labels or set()
+        self.area_id = area_id
+
+
+class MockDeviceRegistry:
+    """Minimal device registry mock."""
+
+    def __init__(self, devices: list | None = None):
+        self._devices: dict = {}
+        for d in (devices or []):
+            self._devices[d.id] = d
+
+    @property
+    def devices(self) -> dict:
+        return self._devices
+
+    def async_get(self, device_id: str):
+        return self._devices.get(device_id)
+
+
 class MockHass:
-    """Minimal HomeAssistant mock sufficient for all HACA unit tests."""
+    """Minimal HomeAssistant mock sufficient for all HACA unit tests.
+
+    Crucially, pre-populates hass.data with the entity/device registry keys
+    so that er.async_get(hass) / dr.async_get(hass) via @singleton return
+    our mocks instead of creating empty unloaded EntityRegistry instances.
+    """
 
     def __init__(self, config_dir: str = "/tmp/haca_test"):
+        from homeassistant.helpers import entity_registry as er, device_registry as dr
+
         self.config = MagicMock()
         self.config.config_dir = config_dir
         self.config.language = "en"
@@ -95,23 +140,41 @@ class MockHass:
         self.states = _MockStatesProxy(self._states)
         self.loop = MagicMock()
         self.bus = MagicMock()
-        self.data: dict = {}
         self.config_entries = MagicMock()
         self.config_entries.async_entries = MagicMock(return_value=[])
         self.services = MagicMock()
         self.services.async_call = AsyncMock(return_value=None)
         self._entity_registry = MockEntityRegistry()
+        self._device_registry = MockDeviceRegistry()
+
+        # Pre-populate hass.data so er/dr @singleton returns our mocks
+        self.data: dict = {
+            er.DATA_REGISTRY: self._entity_registry,
+            dr.DATA_REGISTRY: self._device_registry,
+        }
 
     def add_state(self, entity_id: str, state: str = "on", attributes: dict | None = None):
         self._states[entity_id] = MockState(entity_id, state, attributes or {})
 
-    def add_registry_entry(self, entry) -> None:
+    def add_registry_entry(self, entry: MockRegistryEntry) -> None:
         self._entity_registry.add(entry)
         if entry.entity_id not in self._states:
             self._states[entry.entity_id] = MockState(entry.entity_id)
 
+    def add_device(self, device: MockDeviceEntry) -> None:
+        self._device_registry._devices[device.id] = device
+
     async def async_add_executor_job(self, func, *args):
         return func(*args)
+
+    def async_create_task(self, coro):
+        """No-op in tests — swallows background tasks like _auto_backup."""
+        import asyncio
+        try:
+            coro.close()
+        except Exception:
+            pass
+        return asyncio.Future()
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -192,3 +255,14 @@ def god_automation():
         ] * 4,
         "actions": actions,
     }
+
+
+# ── pytest-asyncio configuration ────────────────────────────────────────────
+import pytest
+
+def pytest_configure(config):
+    """Register asyncio_mode so @pytest.mark.asyncio works without warnings."""
+    try:
+        config.addinivalue_line("markers", "asyncio: mark test as async")
+    except Exception:
+        pass

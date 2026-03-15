@@ -22,6 +22,7 @@ import yaml
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import device_registry as dr
 # Note: entity_registry intentionally NOT used here.
 # Lovelace shows "Entity not found" when the entity has no state in hass.states,
 # regardless of whether it exists in the registry (disabled, ghost entries, etc.).
@@ -75,12 +76,9 @@ class DashboardAnalyzer:
         self.issues = []
         language = self.hass.data.get("config_auditor", {}).get("user_language") or self.hass.config.language or "en"
         await self._translator.async_load_language(language)
-        # Load haca_ignore label (store as instance attr so _add_issue can access it)
-        self._haca_ignored = set()
-        try:
-            for entry in er.async_get(self.hass).entities.values():
-                if "haca_ignore" in entry.labels: self._haca_ignored.add(entry.entity_id)
-        except Exception: pass
+        # Load haca_ignore label (entity + device level)
+        from .translation_utils import async_get_haca_ignored_entity_ids
+        self._haca_ignored = await async_get_haca_ignored_entity_ids(self.hass)
 
         known = await self._build_known_entities()
         _LOGGER.warning(
@@ -188,6 +186,26 @@ class DashboardAnalyzer:
             _LOGGER.warning("[HACA Dashboard] .storage dir not found: %s", storage_dir)
             return result
 
+        # ── Step 1: build id → real url_path mapping from lovelace_dashboards ──
+        # HA stores custom dashboards in .storage/lovelace_dashboards with the
+        # real browser url_path (e.g. "dashboard-jm"), which can differ from the
+        # storage filename suffix (e.g. "lovelace.dashboard_jm" → id "dashboard_jm").
+        id_to_url_path: dict[str, str] = {}
+        dashboards_registry = storage_dir / "lovelace_dashboards"
+        if dashboards_registry.exists():
+            try:
+                with open(dashboards_registry, encoding="utf-8") as f:
+                    reg = json.load(f)
+                for item in reg.get("data", {}).get("items", []):
+                    if isinstance(item, dict) and item.get("id") and item.get("url_path"):
+                        id_to_url_path[item["id"]] = item["url_path"]
+                _LOGGER.warning(
+                    "[HACA Dashboard] lovelace_dashboards registry: %s", id_to_url_path
+                )
+            except Exception as exc:
+                _LOGGER.warning("[HACA Dashboard] Failed to read lovelace_dashboards: %s", exc)
+
+        # ── Step 2: read each lovelace config file ────────────────────────────
         lovelace_files = [
             p for p in storage_dir.iterdir()
             if p.name == "lovelace" or p.name.startswith("lovelace.")
@@ -224,8 +242,18 @@ class DashboardAnalyzer:
                     continue
 
                 title = config.get("title") or path.name
-                # url_path: "lovelace" for default, "dashboard_jm" for lovelace.dashboard_jm
-                url_path = path.name[len("lovelace."):] if path.name.startswith("lovelace.") else "lovelace"
+
+                # Derive the real browser url_path:
+                # 1. For the default dashboard (file "lovelace"), always "lovelace".
+                # 2. For extra dashboards (file "lovelace.<id>"), look up the real
+                #    url_path from the registry (e.g. "dashboard-jm"); fall back to
+                #    the file-derived id only if the registry entry is missing.
+                if path.name.startswith("lovelace."):
+                    file_id = path.name[len("lovelace."):]
+                    url_path = id_to_url_path.get(file_id, file_id)
+                else:
+                    url_path = "lovelace"
+
                 result[str(title)] = (config, url_path)
                 _LOGGER.warning(
                     "[HACA Dashboard] Loaded '%s' from %s (%d views) url_path='%s'",
@@ -387,8 +415,8 @@ class DashboardAnalyzer:
     # ── Issue creation ────────────────────────────────────────────────────
 
     def _add_issue(self, entity_id: str, dashboard_title: str, card_path: str, url_path: str = "lovelace") -> None:
-        # Build the HA navigation URL for this dashboard
-        # Default dashboard: /lovelace/0  |  Extra: /dashboard_jm/0
+        # Build the HA navigation URL — url_path is now the real browser path
+        # (e.g. "dashboard-jm") read from .storage/lovelace_dashboards registry.
         dashboard_url = f"/{url_path}/0"
 
         for existing in self.issues:

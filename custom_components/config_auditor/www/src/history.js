@@ -174,6 +174,11 @@
       dot.addEventListener('mouseleave', () => {
         if (tooltip) tooltip.style.display = 'none';
       });
+      dot.addEventListener('click', () => {
+        const idx = parseInt(dot.dataset.idx);
+        const entry = history[idx];
+        if (entry?.ts) this._loadHistoryDiff(entry.ts);
+      });
     });
 
     // X-axis labels (show ~5 evenly spaced)
@@ -257,11 +262,25 @@
         <td style="padding:8px 10px;text-align:center;font-weight:700;color:${scoreCol};">${entry.score}%</td>
         <td style="padding:8px 10px;text-align:center;">${deltaStr}</td>
         <td style="padding:8px 10px;text-align:center;">${entry.total ?? '—'}</td>
+        <td style="padding:6px 8px;text-align:center;">
+          <button class="history-diff-btn" data-ts="${tsEsc}" style="background:none;border:1px solid var(--divider-color);border-radius:6px;padding:3px 8px;cursor:pointer;font-size:11px;color:var(--primary-color);display:flex;align-items:center;gap:4px;">
+            ${_icon('source-branch-check', 12)} Diff
+          </button>
+        </td>
       </tr>`;
     }).join('');
 
     // Stocker les données pour le "tout supprimer"
     tbody._historyData = history;
+
+    // Wire diff buttons
+    tbody.querySelectorAll('.history-diff-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const ts = btn.dataset.ts;
+        if (ts) this._loadHistoryDiff(ts);
+      });
+    });
 
     // Listeners checkboxes
     this._attachHistoryDeleteListeners(history);
@@ -370,5 +389,154 @@
     } catch (e) {
       alert(this.t('history.delete_error') + e.message);
     }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  //  HISTORY DIFF — Timeline diff on scan click
+  // ═══════════════════════════════════════════════════════════════════
+
+  async _loadHistoryDiff(ts) {
+    const modal = this.shadowRoot.querySelector('#history-diff-modal');
+    if (!modal) return;
+    modal.style.display = 'flex';
+    modal.querySelector('#diff-modal-body').innerHTML = `<div style="text-align:center;padding:24px;color:var(--secondary-text-color);">${_icon('loading', 22)} ${this.t('history.diff_loading')}</div>`;
+
+    try {
+      const result = await this._hass.callWS({ type: 'haca/get_history_diff', ts });
+      this._renderHistoryDiff(result);
+    } catch (e) {
+      const body = modal.querySelector('#diff-modal-body');
+      if (body) body.innerHTML = `<div style="color:var(--error-color);padding:16px;">${this.t('history.diff_error')}: ${e.message}</div>`;
+    }
+  }
+
+  _renderHistoryDiff(data) {
+    const modal = modal_el => this.shadowRoot.querySelector(modal_el);
+    const body = this.shadowRoot.querySelector('#diff-modal-body');
+    if (!body) return;
+
+    const target = data.target;
+    const pred   = data.predecessor;
+    const diff   = data.diff || {};
+    const newIssues = data.new_issues || [];
+    const resolved  = data.resolved_issues || [];
+    const scoreDelta = data.score_delta || 0;
+
+    if (!pred) {
+      body.innerHTML = `<div style="padding:16px;color:var(--secondary-text-color);">${this.t('history.diff_no_predecessor')}</div>`;
+      return;
+    }
+
+    const deltaColor = scoreDelta > 0 ? '#4caf50' : scoreDelta < 0 ? '#ef5350' : 'var(--secondary-text-color)';
+    const deltaStr   = scoreDelta > 0 ? `▲ +${scoreDelta}` : scoreDelta < 0 ? `▼ ${scoreDelta}` : '→ 0';
+
+    // Header
+    const headerHtml = `
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--divider-color);">
+        <div style="flex:1;min-width:120px;text-align:center;">
+          <div style="font-size:11px;color:var(--secondary-text-color);margin-bottom:4px;">${pred.date} ${pred.time}</div>
+          <div style="font-size:28px;font-weight:800;color:${pred.score >= 80 ? '#4caf50' : pred.score >= 50 ? '#ffa726' : '#ef5350'};">${pred.score}%</div>
+        </div>
+        <div style="font-size:22px;font-weight:700;color:${deltaColor};">${deltaStr}</div>
+        <div style="flex:1;min-width:120px;text-align:center;">
+          <div style="font-size:11px;color:var(--secondary-text-color);margin-bottom:4px;">${target.date} ${target.time}</div>
+          <div style="font-size:28px;font-weight:800;color:${target.score >= 80 ? '#4caf50' : target.score >= 50 ? '#ffa726' : '#ef5350'};">${target.score}%</div>
+        </div>
+      </div>`;
+
+    // Category diff grid
+    const catLabels = {
+      automation: this.t('history.diff_cat_automation'),
+      script:     this.t('history.diff_cat_script'),
+      scene:      this.t('history.diff_cat_scene'),
+      entity:     this.t('history.diff_cat_entity'),
+      performance:this.t('history.diff_cat_performance'),
+      security:   this.t('history.diff_cat_security'),
+      blueprint:  this.t('history.diff_cat_blueprint'),
+      dashboard:  this.t('history.diff_cat_dashboard'),
+    };
+    const catCells = Object.entries(diff).map(([cat, d]) => {
+      const color = d.delta < 0 ? '#4caf50' : d.delta > 0 ? '#ef5350' : 'var(--secondary-text-color)';
+      const sign  = d.delta > 0 ? '+' : '';
+      const bg    = d.delta < 0 ? 'rgba(76,175,80,0.08)' : d.delta > 0 ? 'rgba(239,83,80,0.08)' : 'var(--secondary-background-color)';
+      return `<div style="background:${bg};border-radius:8px;padding:8px 12px;text-align:center;border:1px solid var(--divider-color);">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--secondary-text-color);margin-bottom:2px;">${catLabels[cat] || cat}</div>
+        <div style="font-size:18px;font-weight:800;">${d.new}</div>
+        <div style="font-size:12px;color:${color};font-weight:600;">${sign}${d.delta}</div>
+      </div>`;
+    }).join('');
+
+    // New / resolved issues
+    const issueTag = (i, type) => {
+      const bg = type === 'new' ? 'rgba(239,83,80,0.12)' : 'rgba(76,175,80,0.12)';
+      const col = type === 'new' ? '#ef5350' : '#4caf50';
+      const icon = type === 'new' ? 'plus-circle-outline' : 'check-circle-outline';
+      return `<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:${bg};border-radius:6px;margin-bottom:4px;">
+        ${_icon(icon, 16, col)}
+        <div style="flex:1;min-width:0;">
+          <span style="font-weight:600;font-size:13px;">${this.escapeHtml(i.entity_id || '—')}</span>
+          <span style="font-size:11px;color:var(--secondary-text-color);margin-left:6px;">${this.escapeHtml(i.type || '')}</span>
+          ${i.severity ? `<span style="background:${col};color:#fff;border-radius:4px;font-size:10px;padding:1px 5px;margin-left:6px;">${i.severity}</span>` : ''}
+        </div>
+      </div>`;
+    };
+
+    const issuesHtml = (newIssues.length || resolved.length) ? `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;">
+        <div>
+          <h5 style="margin:0 0 8px;color:#ef5350;display:flex;align-items:center;gap:6px;">
+            ${_icon('plus-circle-outline', 16, '#ef5350')} ${this.t('history.diff_new_issues')} (${newIssues.length})
+          </h5>
+          ${newIssues.length ? newIssues.map(i => issueTag(i, 'new')).join('') : `<div style="color:var(--secondary-text-color);font-size:13px;">${this.t('history.diff_none')}</div>`}
+        </div>
+        <div>
+          <h5 style="margin:0 0 8px;color:#4caf50;display:flex;align-items:center;gap:6px;">
+            ${_icon('check-circle-outline', 16, '#4caf50')} ${this.t('history.diff_resolved')} (${resolved.length})
+          </h5>
+          ${resolved.length ? resolved.map(i => issueTag(i, 'resolved')).join('') : `<div style="color:var(--secondary-text-color);font-size:13px;">${this.t('history.diff_none')}</div>`}
+        </div>
+      </div>` : '';
+
+    // Export buttons
+    const exportBtns = `
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--divider-color);">
+        <button id="diff-export-md-btn" style="background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;">
+          ${_icon('file-document-outline', 14)} ${this.t('history.diff_export_md')}
+        </button>
+      </div>`;
+
+    body.innerHTML = headerHtml
+      + `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-bottom:8px;">${catCells}</div>`
+      + issuesHtml
+      + exportBtns;
+
+    // Wire export MD
+    const mdBtn = body.querySelector('#diff-export-md-btn');
+    if (mdBtn) mdBtn.onclick = () => this._exportDiffMarkdown(data);
+  }
+
+  _exportDiffMarkdown(data) {
+    const t = data.target;
+    const p = data.predecessor;
+    const diff = data.diff || {};
+    let md = `# HACA Audit Diff\n\n**${p.date}** → **${t.date}**\n\n`;
+    md += `| Score | ${p.score}% | → | ${t.score}% | Delta: ${data.score_delta > 0 ? '+' : ''}${data.score_delta} pts |\n|---|---|---|---|---|\n\n`;
+    md += `## Catégories\n\n| Catégorie | Avant | Après | Delta |\n|---|---|---|---|\n`;
+    for (const [cat, d] of Object.entries(diff)) {
+      md += `| ${cat} | ${d.old} | ${d.new} | ${d.delta > 0 ? '+' : ''}${d.delta} |\n`;
+    }
+    if (data.new_issues?.length) {
+      md += `\n## Nouveaux problèmes\n\n`;
+      data.new_issues.forEach(i => { md += `- 🔴 **${i.entity_id}** \`${i.type}\` (${i.severity}): ${i.message || ''}\n`; });
+    }
+    if (data.resolved_issues?.length) {
+      md += `\n## Problèmes résolus\n\n`;
+      data.resolved_issues.forEach(i => { md += `- ✅ **${i.entity_id}** \`${i.type}\`\n`; });
+    }
+    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `haca_diff_${t.date}.md`; a.click();
+    URL.revokeObjectURL(url);
   }
 

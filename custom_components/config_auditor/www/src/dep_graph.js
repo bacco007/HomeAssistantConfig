@@ -320,9 +320,61 @@
                          entity: this.t('graph.legend_entity'), blueprint:'Blueprint', device: this.t('graph.legend_device') };
     title.textContent = node.label;
 
-    const editUrl = this.getHAEditUrl(node.id);
+    const editUrl    = this.getHAEditUrl(node.id);
     const haStateUrl = `/developer-tools/state`;
 
+    // ── Build relationship maps from raw graph data ───────────────────────
+    // IMPORTANT: D3 mute les edges pendant la simulation — source/target
+    // deviennent des objets nœuds, pas des strings. On normalise avec ?.id ?? e.source.
+    const edges     = (this._graphRawData?.edges  || []);
+    const nodeIndex = Object.fromEntries((this._graphRawData?.nodes || []).map(n => [n.id, n]));
+
+    const _edgeSrc = e => (typeof e.source === 'object' ? e.source?.id : e.source) ?? '';
+    const _edgeTgt = e => (typeof e.target === 'object' ? e.target?.id : e.target) ?? '';
+
+    // "Uses" = edges where this node is the source
+    const uses = edges
+      .filter(e => _edgeSrc(e) === node.id)
+      .map(e => ({ node: nodeIndex[_edgeTgt(e)], rel: e.rel, id: _edgeTgt(e) }))
+      .filter(e => e.node);
+
+    // "Used by" = edges where this node is the target
+    const usedBy = edges
+      .filter(e => _edgeTgt(e) === node.id)
+      .map(e => ({ node: nodeIndex[_edgeSrc(e)], rel: e.rel, id: _edgeSrc(e) }))
+      .filter(e => e.node);
+
+    const relColor = { automation:'#7b68ee', script:'#20b2aa', scene:'#ffa500',
+                       entity:'#6dbf6d', blueprint:'#e8a838', device:'#a0a0b0' };
+
+    const _relItem = (entry) => {
+      const n   = entry.node;
+      const col = relColor[n.type] || '#888';
+      const lbl = this.escapeHtml(n.label || n.id);
+      const eid = this.escapeHtml(n.id);
+      return `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;background:var(--secondary-background-color);margin-bottom:4px;cursor:pointer;"
+                   data-node-id="${eid}" class="graph-rel-item">
+        <span style="width:8px;height:8px;border-radius:50%;background:${col};flex-shrink:0;"></span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${eid}">${lbl}</div>
+          <div style="font-size:10px;color:var(--secondary-text-color);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${eid}</div>
+        </div>
+        <span style="font-size:10px;background:${col}22;color:${col};border-radius:4px;padding:1px 5px;flex-shrink:0;">${n.type}</span>
+      </div>`;
+    };
+
+    const _relSection = (label, items, icon) => {
+      if (!items.length) return '';
+      return `
+        <div style="margin-bottom:14px;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--secondary-text-color);margin-bottom:6px;display:flex;align-items:center;gap:4px;">
+            ${_icon(icon, 12)} ${label} <span style="margin-left:4px;background:var(--secondary-background-color);border-radius:10px;padding:1px 7px;font-size:10px;color:var(--primary-text-color);">${items.length}</span>
+          </div>
+          ${items.map(_relItem).join('')}
+        </div>`;
+    };
+
+    // ── Issues ────────────────────────────────────────────────────────────
     const issueRows = (node.issue_summary || []).map(iss => {
       const sCol = iss.severity === 'high' ? '#ef5350' : iss.severity === 'medium' ? '#ffa726' : '#ffd54f';
       return `<div style="padding:8px;border-radius:8px;background:var(--secondary-background-color);margin-bottom:6px;border-left:3px solid ${sCol};">
@@ -332,35 +384,229 @@
     }).join('');
 
     body.innerHTML = `
-      <div style="margin-bottom:12px;">
+      <!-- Type badge + degree -->
+      <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px;">
         <span style="background:${this._graphNodeColor(node)};color:white;border-radius:6px;padding:2px 10px;font-size:11px;font-weight:700;">
           ${typeLabels[node.type] || node.type}
         </span>
-        <span style="margin-left:8px;font-size:12px;color:var(--secondary-text-color);">${node.degree} connexion${node.degree !== 1 ? 's' : ''}</span>
+        <span style="font-size:12px;color:var(--secondary-text-color);">${node.degree} connexion${node.degree !== 1 ? 's' : ''}</span>
       </div>
-      <div style="font-size:11px;color:var(--secondary-text-color);margin-bottom:12px;word-break:break-all;">${this.escapeHtml(node.id)}</div>
+      <div style="font-size:11px;color:var(--secondary-text-color);margin-bottom:14px;word-break:break-all;">${this.escapeHtml(node.id)}</div>
 
+      <!-- Issues -->
       ${node.issue_count > 0 ? `
         <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--secondary-text-color);margin-bottom:6px;">
           ${node.issue_count} issue${node.issue_count > 1 ? 's' : ''}
         </div>
         ${issueRows}
-      ` : `<div style="font-size:13px;color:#66bb6a;margin-bottom:12px;">${this.t('graph.no_issues')}</div>`}
+      ` : `<div style="font-size:13px;color:#66bb6a;margin-bottom:14px;">${this.t('graph.no_issues')}</div>`}
 
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px;">
+      <!-- Relationships -->
+      ${_relSection(this.t('graph.used_by'), usedBy, 'arrow-left-circle-outline')}
+      ${_relSection(this.t('graph.uses'), uses, 'arrow-right-circle-outline')}
+
+      ${!usedBy.length && !uses.length ? `
+        <div style="padding:12px;background:var(--secondary-background-color);border-radius:8px;font-size:12px;color:var(--secondary-text-color);text-align:center;margin-bottom:14px;">
+          ${_icon('link-off', 14)} ${this.t('graph.orphan')}
+        </div>` : ''}
+
+      <!-- Actions -->
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
         ${editUrl ? `<a href="${editUrl}" target="_blank" style="text-decoration:none;">
-          <button style="width:100%;background:var(--primary-color);color:white;border-radius:8px;padding:8px;">
+          <button style="width:100%;background:var(--primary-color);color:white;border-radius:8px;padding:8px;border:none;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;">
             ${_icon("pencil", 14)} Modifier dans HA
           </button>
         </a>` : ''}
         ${node.type === 'entity' ? `<a href="${haStateUrl}" target="_blank" style="text-decoration:none;">
-          <button style="width:100%;background:var(--secondary-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);border-radius:8px;padding:8px;">
+          <button style="width:100%;background:var(--secondary-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);border-radius:8px;padding:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;">
             ${_icon("eye", 14)} ${this.t('graph.view_state')}
           </button>
         </a>` : ''}
+        <button id="sidebar-export-csv"
+          style="width:100%;background:var(--secondary-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);border-radius:8px;padding:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;">
+          ${_icon("file-delimited-outline", 14)} ${this.t('graph.export_node_csv')}
+        </button>
+        <button id="sidebar-export-md"
+          style="width:100%;background:var(--secondary-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);border-radius:8px;padding:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;">
+          ${_icon("language-markdown-outline", 14)} ${this.t('graph.export_node_md')}
+        </button>
       </div>`;
 
     sb.style.display = 'block';
+
+    // Sauvegarder les données du nœud courant dans le sidebar lui-même.
+    // Si _graphStopAll() est appelé (disconnect, refresh), _graphRawData devient null
+    // mais les données déjà capturées restent disponibles via sb._hacaNodeData.
+    sb._hacaNodeData = { node, usedBy, uses,
+      allNodes: (this._graphRawData?.nodes || []) };
+
+    // Click on a relation item → navigate to that node in the sidebar
+    body.querySelectorAll('.graph-rel-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const targetId = el.dataset.nodeId;
+        // Prefer live data, fallback to saved snapshot
+        const nodeList = this._graphRawData?.nodes || sb._hacaNodeData?.allNodes || [];
+        const targetNode = nodeList.find(n => n.id === targetId);
+        if (targetNode) this._graphShowSidebar(targetNode);
+      });
+    });
+
+    // Export CSV — données capturées en closure, indépendantes de _graphRawData
+    body.querySelector('#sidebar-export-csv')?.addEventListener('click', () => {
+      this._graphExportNodeCSV(node, usedBy, uses);
+    });
+    // Export MD — idem
+    body.querySelector('#sidebar-export-md')?.addEventListener('click', () => {
+      this._graphExportNodeMD(node, usedBy, uses);
+    });
+  }
+
+  // ── Export CSV: relations for one node ───────────────────────────────────
+  _graphExportNodeCSV(node, usedBy, uses) {
+    const rows = [['entity_id', 'label', 'type', 'relationship', 'direction']];
+    usedBy.forEach(e => rows.push([e.id, e.node.label || e.id, e.node.type, e.rel, 'used_by']));
+    uses.forEach(e   => rows.push([e.id, e.node.label || e.id, e.node.type, e.rel, 'uses']));
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const slug = (node.label || node.id).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40);
+    this._downloadText(csv, `haca-relations-${slug}.csv`, 'text/csv');
+  }
+
+  // ── Export MD: relations for one node ────────────────────────────────────
+  _graphExportNodeMD(node, usedBy, uses) {
+    const typeLabel = this.t(`graph.legend_${node.type}`) || node.type;
+    const slug = (node.label || node.id).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40);
+    const date = new Date().toISOString().slice(0, 16).replace('T', ' ');
+
+    let md = `# ${node.label || node.id}\n`;
+    md += `\`${node.id}\` · ${typeLabel} · ${node.degree} ${this.t('graph.connections') || 'connections'}\n`;
+    if (node.issue_count > 0) md += `⚠️ ${node.issue_count} issue${node.issue_count > 1 ? 's' : ''}\n`;
+    md += '\n';
+
+    if (usedBy.length) {
+      md += `## ← ${this.t('graph.used_by')} (${usedBy.length})\n\n`;
+      usedBy.forEach(e => {
+        const tl = this.t(`graph.legend_${e.node.type}`) || e.node.type;
+        md += `- ${e.node.label || e.id}  \`${e.id}\`  *(${tl})*\n`;
+      });
+      md += '\n';
+    }
+
+    if (uses.length) {
+      md += `## → ${this.t('graph.uses')} (${uses.length})\n\n`;
+      uses.forEach(e => {
+        const tl = this.t(`graph.legend_${e.node.type}`) || e.node.type;
+        md += `- ${e.node.label || e.id}  \`${e.id}\`  *(${tl})*\n`;
+      });
+      md += '\n';
+    }
+
+    if (!usedBy.length && !uses.length) {
+      md += `> ${this.t('graph.orphan')}\n\n`;
+    }
+
+    md += `---\n*HACA — ${date}*\n`;
+    this._downloadText(md, `haca-${slug}.md`, 'text/markdown');
+  }
+
+  // ── Export CSV: ALL relationships in the graph ────────────────────────────
+  _graphExportRelationshipsCSV() {
+    if (!this._graphRawData) return;
+    const { nodes, edges } = this._graphRawData;
+    const nodeIndex = Object.fromEntries(nodes.map(n => [n.id, n]));
+    const _src = e => (typeof e.source === 'object' ? e.source?.id : e.source) ?? '';
+    const _tgt = e => (typeof e.target === 'object' ? e.target?.id : e.target) ?? '';
+
+    const rows = [['source_id', 'source_label', 'source_type', 'relationship', 'target_id', 'target_label', 'target_type']];
+    edges.forEach(e => {
+      const sid = _src(e); const tid = _tgt(e);
+      const s = nodeIndex[sid] || { label: sid, type: '' };
+      const t = nodeIndex[tid] || { label: tid, type: '' };
+      rows.push([sid, s.label || sid, s.type, e.rel, tid, t.label || tid, t.type]);
+    });
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    this._downloadText(csv, `haca-relations-${new Date().toISOString().slice(0,10)}.csv`, 'text/csv');
+  }
+
+  // ── Export MD: ALL relationships in the graph ─────────────────────────────
+  _graphExportRelationshipsMD() {
+    if (!this._graphRawData) return;
+    const { nodes, edges } = this._graphRawData;
+    const nodeIndex = Object.fromEntries(nodes.map(n => [n.id, n]));
+    const _src = e => (typeof e.source === 'object' ? e.source?.id : e.source) ?? '';
+    const _tgt = e => (typeof e.target === 'object' ? e.target?.id : e.target) ?? '';
+
+    // Index: node → qui l'utilise / ce qu'il utilise
+    const byTarget = {};
+    const bySource = {};
+    edges.forEach(e => {
+      const sid = _src(e); const tid = _tgt(e);
+      if (!byTarget[tid]) byTarget[tid] = [];
+      byTarget[tid].push(sid);
+      if (!bySource[sid]) bySource[sid] = [];
+      bySource[sid].push(tid);
+    });
+
+    const date = new Date().toISOString().slice(0, 10);
+    const order = { automation:0, script:1, scene:2, blueprint:3, entity:4, device:5 };
+    const sorted = [...nodes].sort((a, b) =>
+      (order[a.type] ?? 9) - (order[b.type] ?? 9) || (a.label || a.id).localeCompare(b.label || b.id)
+    );
+
+    let md = `# ${this.t('graph.title') || 'Dependency Graph'}\n`;
+    md += `${date} · ${nodes.length} ${this.t('graph.md_nodes') || 'nodes'} · ${edges.length} ${this.t('graph.md_edges') || 'connections'}\n\n`;
+
+    // Group by type for readability
+    const typeOrder = ['automation', 'script', 'scene', 'blueprint', 'entity', 'device'];
+    for (const type of typeOrder) {
+      const group = sorted.filter(n => n.type === type);
+      if (!group.length) continue;
+
+      const typeLabel = this.t(`graph.legend_${type}`) || type;
+      md += `---\n\n## ${typeLabel} (${group.length})\n\n`;
+
+      for (const node of group) {
+        const usedByIds = byTarget[node.id] || [];
+        const usesIds   = bySource[node.id] || [];
+
+        md += `### ${node.label || node.id}\n`;
+        md += `\`${node.id}\``;
+        if (node.issue_count > 0) md += ` · ⚠️ ${node.issue_count} issue${node.issue_count > 1 ? 's' : ''}`;
+        md += '\n\n';
+
+        if (usedByIds.length) {
+          md += `**← ${this.t('graph.used_by')}**\n`;
+          usedByIds.forEach(sid => {
+            const s = nodeIndex[sid];
+            md += `- ${s?.label || sid}  \`${sid}\`\n`;
+          });
+          md += '\n';
+        }
+        if (usesIds.length) {
+          md += `**→ ${this.t('graph.uses')}**\n`;
+          usesIds.forEach(tid => {
+            const t = nodeIndex[tid];
+            md += `- ${t?.label || tid}  \`${tid}\`\n`;
+          });
+          md += '\n';
+        }
+        if (!usedByIds.length && !usesIds.length) {
+          md += `*${this.t('graph.orphan')}*\n\n`;
+        }
+      }
+    }
+
+    md += `---\n*HACA*\n`;
+    this._downloadText(md, `haca-report-${date}.md`, 'text/markdown');
+  }
+
+  _downloadText(content, filename, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   // ── Export SVG ────────────────────────────────────────────────────────────

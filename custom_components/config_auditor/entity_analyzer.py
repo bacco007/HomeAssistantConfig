@@ -15,6 +15,18 @@ from .translation_utils import TranslationHelper
 
 _LOGGER = logging.getLogger(__name__)
 
+# Domains that are analysed by other HACA analyzers (automation_analyzer, etc.)
+# and must NOT appear in the "Entities" issues tab.
+# NOTE: "scene" is intentionally NOT in this set — scene.* issues from entity_analyzer
+# are routed to scene_issue_list in async_update_data (see __init__.py).
+_ENTITY_SKIP_DOMAINS: frozenset[str] = frozenset({
+    "automation",
+    "script",
+    "sun",
+    "zone",
+    "person",
+})
+
 
 class EntityAnalyzer:
     """Analyze entities for issues."""
@@ -50,15 +62,15 @@ class EntityAnalyzer:
         language = self.hass.data.get("config_auditor", {}).get("user_language") or self.hass.config.language or "en"
         await self._translator.async_load_language(language)
         
+        # Load ignored entities (haca_ignore label) — MUST be first, before any analysis
+        self._ignored_entity_ids = await self._load_ignored_entity_ids()
+
         # Build entity reference map (automations + scripts)
         if automation_configs or script_configs:
             await self._build_entity_references(automation_configs or {}, script_configs or {})
         
         # Analyze entity states
         await self._analyze_entity_states()
-        
-        # Load ignored entities (haca_ignore label)
-        self._ignored_entity_ids = await self._load_ignored_entity_ids()
 
         # Analyze zombie entities
         await self._analyze_zombie_entities()
@@ -72,12 +84,33 @@ class EntityAnalyzer:
         # Analyze broken device references
         await self._analyze_device_integrity(automation_configs)
         
-        # Analyze unused input_booleans
-        await self._analyze_unused_input_booleans()
+        # v1.2.0 — Extended input_* helper analysis (covers input_boolean too)
+        await self._analyze_input_helpers(automation_configs or {}, script_configs or {})
+
+        # v1.2.0 — Timer helper analysis
+        await self._analyze_timer_helpers(automation_configs or {}, script_configs or {})
+
+        # v1.3.0 — Group analysis
+        await self._analyze_groups()
         
         _LOGGER.info("Entity analysis complete: %d issues found", len(self.issues))
-        
-        return self.issues
+
+        # Separate helper issues (input_*, timer, counter) from pure entity issues
+        _HELPER_DOMAINS = {
+            "input_boolean", "input_number", "input_text",
+            "input_select", "input_datetime", "input_button",
+            "timer", "counter",
+        }
+        self.helper_issues: list[dict] = []
+        pure_entity_issues: list[dict] = []
+        for issue in self.issues:
+            domain = issue.get("entity_id", "").split(".")[0]
+            if domain in _HELPER_DOMAINS or issue.get("type", "").startswith("helper_") or issue.get("type", "") in ("unused_input_boolean",):
+                self.helper_issues.append(issue)
+            else:
+                pure_entity_issues.append(issue)
+
+        return pure_entity_issues
 
     async def _build_entity_references(
         self,
@@ -198,8 +231,16 @@ class EntityAnalyzer:
         for idx, entity in enumerate(all_entities):
             entity_id = entity.entity_id
             
+            # Skip ignored entities
+            if entity_id in self._ignored_entity_ids:
+                continue
+
             # Skip HACA's own sensors to avoid self-reporting
             if entity_id.startswith("sensor.h_a_c_a_"):
+                continue
+
+            # Skip domains managed by other HACA analyzers (scenes, automations, scripts…)
+            if entity_id.split(".")[0] in _ENTITY_SKIP_DOMAINS:
                 continue
             
             # Check for unavailable entities
@@ -232,32 +273,23 @@ class EntityAnalyzer:
                 time_since_update = datetime.now(entity.last_updated.tzinfo) - entity.last_updated
                 
                 if time_since_update > timedelta(days=7):
-                    # Skip certain domains
-                    skip_domains = ["sun", "zone", "person", "automation", "script"]
-                    if not any(entity_id.startswith(f"{domain}.") for domain in skip_domains):
-                        referencing_automations = self._entity_references.get(entity_id, [])
-                        severity = "medium" if referencing_automations else "low"
-                        
-                        self.issues.append({
-                            "entity_id": entity_id,
-                            "type": "stale_entity",
-                            "severity": severity,
-                            "message": t("entity_not_updated", days=time_since_update.days),
-                            "recommendation": t("entity_may_be_broken"),
-                        })
+                    referencing_automations = self._entity_references.get(entity_id, [])
+                    severity = "medium" if referencing_automations else "low"
+                    
+                    self.issues.append({
+                        "entity_id": entity_id,
+                        "type": "stale_entity",
+                        "severity": severity,
+                        "message": t("entity_not_updated", days=time_since_update.days),
+                        "recommendation": t("entity_may_be_broken"),
+                    })
             
             if idx % 50 == 0: await asyncio.sleep(0)
 
     async def _load_ignored_entity_ids(self) -> set:
-        """Return entity_ids that carry the haca_ignore label."""
-        ignored = set()
-        try:
-            for entry in er.async_get(self.hass).entities.values():
-                if "haca_ignore" in entry.labels:
-                    ignored.add(entry.entity_id)
-        except Exception as e:
-            _LOGGER.debug("haca_ignore: %s", e)
-        return ignored
+        """Return entity_ids that carry the haca_ignore label (entity or device level)."""
+        from .translation_utils import async_get_haca_ignored_entity_ids
+        return await async_get_haca_ignored_entity_ids(self.hass)
 
     async def _analyze_zombie_entities(self) -> None:
         """Detect zombie entities - referenced but don't exist."""
@@ -267,6 +299,10 @@ class EntityAnalyzer:
 
         for idx, (entity_id, automations) in enumerate(self._entity_references.items()):
             if entity_id in self._ignored_entity_ids:
+                continue
+            # Scenes, automations, scripts etc. are managed by their own analyzers
+            if entity_id.split(".")[0] in _ENTITY_SKIP_DOMAINS:
+                if idx % 50 == 0: await asyncio.sleep(0)
                 continue
             if entity_id not in existing_entities:
                 automation_ids = list(dict.fromkeys(automations))  # deduplicate, keep order
@@ -300,6 +336,10 @@ class EntityAnalyzer:
             entity_id = entry.entity_id
             if entity_id in self._ignored_entity_ids:
                 continue
+            # Scenes, automations, scripts etc. are managed by their own analyzers
+            if entity_id.split(".")[0] in _ENTITY_SKIP_DOMAINS:
+                if idx % 50 == 0: await asyncio.sleep(0)
+                continue
             # Check for disabled entities that are referenced
             if entry.disabled_by is not None:
                 referencing_automations = self._entity_references.get(entity_id, [])
@@ -319,7 +359,13 @@ class EntityAnalyzer:
         t = self._translator.t
         
         for idx, entry in enumerate(entity_reg.entities.values()):
-            # A ghost entry is often one where the platform is defined but doesn't exist anymore
+            if entry.entity_id in self._ignored_entity_ids:
+                if idx % 50 == 0: await asyncio.sleep(0)
+                continue
+            # Scenes, automations, scripts etc. are managed by their own analyzers
+            if entry.entity_id.split(".")[0] in _ENTITY_SKIP_DOMAINS:
+                if idx % 50 == 0: await asyncio.sleep(0)
+                continue
             # or the integration that created it is no longer available.
             # HA usually marks these as orphaned but doesn't always show them to users.
             
@@ -353,6 +399,11 @@ class EntityAnalyzer:
         t = self._translator.t
         
         for idx, (automation_id, config) in enumerate(automation_configs.items()):
+            # Skip ignored automations
+            if automation_id in self._ignored_entity_ids:
+                if idx % 20 == 0: await asyncio.sleep(0)
+                continue
+
             # Collect all device_ids in this automation
             device_ids = self._extract_field_recursively(config, "device_id")
             
@@ -396,7 +447,12 @@ class EntityAnalyzer:
         
         for idx, entity in enumerate(input_booleans):
             entity_id = entity.entity_id
-            
+
+            # Skip ignored entities
+            if entity_id in self._ignored_entity_ids:
+                if idx % 20 == 0: await asyncio.sleep(0)
+                continue
+
             # Check if this input_boolean is referenced anywhere
             if entity_id not in self._entity_references or len(self._entity_references[entity_id]) == 0:
                 self.issues.append({
@@ -407,8 +463,276 @@ class EntityAnalyzer:
                     "recommendation": t("remove_unused_helper"),
                     "fix_available": False,
                 })
-            
+
             if idx % 20 == 0: await asyncio.sleep(0)
+
+    async def _analyze_input_helpers(
+        self,
+        automation_configs: dict[str, dict],
+        script_configs: dict[str, dict],
+    ) -> None:
+        """v1.2.0 — Analyse des input_* helpers (toutes catégories)."""
+        import re as _re
+        t = self._translator.t
+
+        INPUT_DOMAINS = (
+            "input_boolean", "input_number", "input_text",
+            "input_select", "input_datetime",
+        )
+
+        # Build a flat text dump of all configs for fast template scanning
+        all_config_text = ""
+        for cfg in list(automation_configs.values()) + list(script_configs.values()):
+            try:
+                import json as _json
+                all_config_text += _json.dumps(cfg) + " "
+            except Exception:
+                pass
+
+        all_states = self.hass.states.async_all()
+        helpers = [s for s in all_states if s.entity_id.split(".")[0] in INPUT_DOMAINS]
+
+        for idx, entity in enumerate(helpers):
+            entity_id = entity.entity_id
+            if entity_id in self._ignored_entity_ids:
+                continue
+
+            domain = entity_id.split(".")[0]
+            attrs = entity.attributes or {}
+            friendly_name = attrs.get("friendly_name", "")
+
+            # ── Check if referenced in any automation/script ──────────────
+            refs = self._entity_references.get(entity_id, [])
+            if not refs and entity_id not in all_config_text:
+                self.issues.append({
+                    "entity_id": entity_id,
+                    "type": "helper_unused",
+                    "severity": "low",
+                    "message": t("helper_unused", entity_id=entity_id),
+                    "recommendation": t("remove_unused_helper"),
+                })
+                if idx % 20 == 0:
+                    await asyncio.sleep(0)
+                continue
+
+            # ── Check if referenced ONLY in disabled automations ──────────
+            if refs:
+                all_disabled = all(
+                    self.hass.states.get(aid) is not None
+                    and self.hass.states.get(aid).state == "off"
+                    for aid in refs
+                    if aid.startswith("automation.")
+                )
+                if all_disabled and all(aid.startswith("automation.") for aid in refs):
+                    self.issues.append({
+                        "entity_id": entity_id,
+                        "type": "helper_orphaned_disabled_only",
+                        "severity": "low",
+                        "message": t("helper_orphaned_disabled_only", entity_id=entity_id, count=len(refs)),
+                        "recommendation": t("helper_orphaned_recommendation"),
+                    })
+
+            # ── No friendly_name ──────────────────────────────────────────
+            if not friendly_name or friendly_name == entity_id:
+                self.issues.append({
+                    "entity_id": entity_id,
+                    "type": "helper_no_friendly_name",
+                    "severity": "low",
+                    "message": t("helper_no_friendly_name", entity_id=entity_id),
+                    "recommendation": t("helper_add_friendly_name"),
+                })
+
+            # ── Domain-specific checks ────────────────────────────────────
+            if domain == "input_select":
+                options = attrs.get("options", [])
+                # Duplicate options
+                if len(options) != len(set(options)):
+                    dupes = [o for o in options if options.count(o) > 1]
+                    self.issues.append({
+                        "entity_id": entity_id,
+                        "type": "input_select_duplicate_options",
+                        "severity": "medium",
+                        "message": t("input_select_duplicate_options", entity_id=entity_id, dupes=", ".join(set(dupes))),
+                        "recommendation": t("input_select_remove_duplicates"),
+                    })
+                # Empty options
+                if any(str(o).strip() == "" for o in options):
+                    self.issues.append({
+                        "entity_id": entity_id,
+                        "type": "input_select_empty_option",
+                        "severity": "medium",
+                        "message": t("input_select_empty_option", entity_id=entity_id),
+                        "recommendation": t("input_select_remove_empty"),
+                    })
+
+            elif domain == "input_number":
+                min_val = attrs.get("min")
+                max_val = attrs.get("max")
+                step_val = attrs.get("step")
+                if min_val is not None and max_val is not None:
+                    try:
+                        mn, mx = float(min_val), float(max_val)
+                        if mn >= mx:
+                            self.issues.append({
+                                "entity_id": entity_id,
+                                "type": "input_number_invalid_range",
+                                "severity": "high",
+                                "message": t("input_number_invalid_range", entity_id=entity_id, min=mn, max=mx),
+                                "recommendation": t("input_number_fix_range"),
+                            })
+                        elif step_val is not None:
+                            st = float(step_val)
+                            rng = mx - mn
+                            if st > rng:
+                                self.issues.append({
+                                    "entity_id": entity_id,
+                                    "type": "input_number_invalid_range",
+                                    "severity": "medium",
+                                    "message": t("input_number_step_exceeds_range", entity_id=entity_id, step=st, range=round(rng, 4)),
+                                    "recommendation": t("input_number_fix_range"),
+                                })
+                    except (ValueError, TypeError):
+                        pass
+
+            elif domain == "input_text":
+                pattern = attrs.get("pattern")
+                if pattern:
+                    try:
+                        _re.compile(pattern)
+                    except _re.error as rex:
+                        self.issues.append({
+                            "entity_id": entity_id,
+                            "type": "input_text_invalid_pattern",
+                            "severity": "high",
+                            "message": t("input_text_invalid_pattern", entity_id=entity_id, error=str(rex)),
+                            "recommendation": t("input_text_fix_pattern"),
+                        })
+
+            if idx % 20 == 0:
+                await asyncio.sleep(0)
+
+    async def _analyze_timer_helpers(
+        self,
+        automation_configs: dict[str, dict],
+        script_configs: dict[str, dict],
+    ) -> None:
+        """v1.2.0 — Analyse des timer helpers."""
+        t = self._translator.t
+
+        all_states = self.hass.states.async_all()
+        timers = [s for s in all_states if s.entity_id.startswith("timer.")]
+
+        if not timers:
+            return
+
+        # Build sets of timer_ids that appear in trigger events, actions, etc.
+        timers_in_event_trigger: dict[str, list[str]] = {}   # timer_id -> [automation_ids]
+        timers_in_start_action: set[str] = set()
+        timers_in_cancel_action: set[str] = set()
+
+        def _collect_timer_refs(configs: dict[str, dict]) -> None:
+            def _scan_actions_recursive(actions_raw, automation_id: str) -> None:
+                """Recursively scan actions including choose/parallel/repeat."""
+                if isinstance(actions_raw, dict):
+                    actions_raw = [actions_raw]
+                if not isinstance(actions_raw, list):
+                    return
+                for action in actions_raw:
+                    if not isinstance(action, dict):
+                        continue
+                    service = action.get("service") or action.get("action", "")
+                    target = action.get("target", {})
+                    target_eid = target.get("entity_id", "") if isinstance(target, dict) else ""
+                    if service == "timer.start" and target_eid:
+                        for eid in ([target_eid] if isinstance(target_eid, str) else target_eid):
+                            timers_in_start_action.add(eid)
+                    if service in ("timer.cancel", "timer.pause") and target_eid:
+                        for eid in ([target_eid] if isinstance(target_eid, str) else target_eid):
+                            timers_in_cancel_action.add(eid)
+                    # Recurse into nested structures
+                    for nested_key in ("sequence", "then", "else"):
+                        if nested_key in action:
+                            _scan_actions_recursive(action[nested_key], automation_id)
+                    # choose: list of {conditions, sequence}
+                    for choose_branch in action.get("choose", []):
+                        if isinstance(choose_branch, dict):
+                            _scan_actions_recursive(choose_branch.get("sequence", []), automation_id)
+                    # parallel: list of action groups
+                    _scan_actions_recursive(action.get("parallel", []), automation_id)
+                    # repeat: {sequence}
+                    if "repeat" in action and isinstance(action["repeat"], dict):
+                        _scan_actions_recursive(action["repeat"].get("sequence", []), automation_id)
+
+            for automation_id, config in configs.items():
+                # Check triggers for timer.* events
+                for key in ("triggers", "trigger"):
+                    triggers = config.get(key, [])
+                    if isinstance(triggers, dict):
+                        triggers = [triggers]
+                    for tr in (triggers if isinstance(triggers, list) else []):
+                        if not isinstance(tr, dict):
+                            continue
+                        if tr.get("platform") == "event" and tr.get("event_type", "").startswith("timer."):
+                            eid = tr.get("event_data", {}).get("entity_id", "")
+                            if eid:
+                                timers_in_event_trigger.setdefault(eid, []).append(automation_id)
+
+                # Scan actions recursively
+                for key in ("actions", "action", "sequence"):
+                    _scan_actions_recursive(config.get(key, []), automation_id)
+
+        _collect_timer_refs(automation_configs)
+        _collect_timer_refs(script_configs)
+
+        for idx, entity in enumerate(timers):
+            entity_id = entity.entity_id
+            if entity_id in self._ignored_entity_ids:
+                continue
+
+            attrs = entity.attributes or {}
+            duration = attrs.get("duration", "")
+
+            # ── Timer with duration 0 ─────────────────────────────────────
+            if duration in ("0:00:00", "00:00:00", "0"):
+                self.issues.append({
+                    "entity_id": entity_id,
+                    "type": "timer_zero_duration",
+                    "severity": "medium",
+                    "message": t("timer_zero_duration", entity_id=entity_id),
+                    "recommendation": t("timer_set_duration"),
+                })
+
+            # ── Timer in event trigger but never started ───────────────────
+            in_trigger = entity_id in timers_in_event_trigger
+            in_start = entity_id in timers_in_start_action
+
+            if in_trigger and not in_start:
+                automation_names = [
+                    self._automation_alias_map.get(aid, aid)
+                    for aid in timers_in_event_trigger.get(entity_id, [])
+                ]
+                self.issues.append({
+                    "entity_id": entity_id,
+                    "type": "timer_never_started",
+                    "severity": "high",
+                    "message": t("timer_never_started", entity_id=entity_id),
+                    "recommendation": t("timer_add_start_action"),
+                    "automation_names": automation_names[:3],
+                })
+
+            # ── Timer never used at all ────────────────────────────────────
+            refs = self._entity_references.get(entity_id, [])
+            if not refs and not in_trigger and not in_start and not in_trigger:
+                self.issues.append({
+                    "entity_id": entity_id,
+                    "type": "timer_orphaned",
+                    "severity": "low",
+                    "message": t("timer_orphaned", entity_id=entity_id),
+                    "recommendation": t("remove_unused_helper"),
+                })
+
+            if idx % 20 == 0:
+                await asyncio.sleep(0)
 
     def get_issue_summary(self) -> dict[str, Any]:
         """Get a summary of entity issues."""
@@ -439,3 +763,111 @@ class EntityAnalyzer:
                 summary["unused_helpers"] += 1
         
         return summary
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # v1.3.0 — Group analysis (d/)
+    # ═══════════════════════════════════════════════════════════════════════
+
+    async def _analyze_groups(self) -> None:
+        """v1.3.0 — Analyse des group.* entities:
+        - Groupe vide (medium)
+        - Entités manquantes dans le groupe (medium)
+        - Toutes les entités unavailable (medium)
+        - Imbrication > 2 niveaux (low)
+        """
+        t = self._translator.t
+        all_states = self.hass.states.async_all()
+        groups = [s for s in all_states if s.entity_id.startswith("group.")]
+
+        if not groups:
+            return
+
+        all_entity_ids = {s.entity_id for s in all_states}
+
+        for idx, group_state in enumerate(groups):
+            entity_id = group_state.entity_id
+            if entity_id in self._ignored_entity_ids:
+                continue
+
+            members = group_state.attributes.get("entity_id", [])
+            if isinstance(members, str):
+                members = [members] if members else []
+            if not isinstance(members, list):
+                members = []
+            # Filter out empty strings (malformed state attribute)
+            members = [m for m in members if isinstance(m, str) and m.strip()]
+
+            # 1. Groupe vide
+            if not members:
+                self.issues.append({
+                    "entity_id": entity_id,
+                    "type": "group_empty",
+                    "severity": "medium",
+                    "message": t("group_empty", entity_id=entity_id),
+                    "recommendation": t("group_add_members"),
+                })
+                continue  # no members → other checks irrelevant
+
+            # 2. Entités manquantes
+            missing = [m for m in members if m not in all_entity_ids]
+            if missing:
+                self.issues.append({
+                    "entity_id": entity_id,
+                    "type": "group_missing_entities",
+                    "severity": "medium",
+                    "message": t("group_missing_entities",
+                                 count=len(missing), entity_id=entity_id),
+                    "recommendation": t("group_fix_references"),
+                    "missing_entities": missing[:10],
+                })
+
+            # 3. Toutes les entités unavailable
+            present_states = [
+                self.hass.states.get(m) for m in members if m in all_entity_ids
+            ]
+            if present_states and all(
+                s is not None and s.state in ("unavailable", "unknown")
+                for s in present_states
+            ):
+                self.issues.append({
+                    "entity_id": entity_id,
+                    "type": "group_all_unavailable",
+                    "severity": "medium",
+                    "message": t("group_all_unavailable", entity_id=entity_id),
+                    "recommendation": t("group_check_availability"),
+                })
+
+            # 4. Imbrication > 2 niveaux
+            depth = self._calc_group_nesting_depth(entity_id, frozenset())
+            if depth > 2:
+                self.issues.append({
+                    "entity_id": entity_id,
+                    "type": "group_nested_deep",
+                    "severity": "low",
+                    "message": t("group_nested_deep",
+                                 entity_id=entity_id, depth=depth),
+                    "recommendation": t("group_flatten"),
+                })
+
+            if idx % 20 == 0:
+                await asyncio.sleep(0)
+
+    def _calc_group_nesting_depth(self, group_id: str, visited: frozenset) -> int:
+        """Recursively compute group nesting depth. Returns 1 for leaf groups."""
+        if group_id in visited:
+            return 0  # cycle guard
+        state = self.hass.states.get(group_id)
+        if not state:
+            return 1
+        members = state.attributes.get("entity_id", [])
+        if isinstance(members, str):
+            members = [members]
+        sub_groups = [m for m in (members or []) if isinstance(m, str)
+                      and m.startswith("group.")]
+        if not sub_groups:
+            return 1
+        new_visited = visited | {group_id}
+        return 1 + max(
+            self._calc_group_nesting_depth(sg, new_visited)
+            for sg in sub_groups
+        )

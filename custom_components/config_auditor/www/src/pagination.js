@@ -35,7 +35,6 @@
    */
   _pagHTML(id, total, page, pageSize) {
     if (total === 0) {
-      // Même sans items : afficher le sélecteur de taille pour que l'utilisateur sache qu'il existe
       return `<div class="pag-bar" data-pag-id="${id}"
         style="display:flex;align-items:center;gap:8px;padding:10px 4px 4px;
                border-top:1px solid var(--divider-color);margin-top:8px;">
@@ -63,12 +62,17 @@
     const navBtn = (label, icon, disabled, targetPage) => `
       <button class="pag-nav" data-pag-id="${id}" data-page="${targetPage}"
         ${disabled ? 'disabled' : ''}
-        style="padding:4px 10px;border-radius:6px;font-size:12px;border:1px solid var(--divider-color);
+        style="padding:4px 8px;border-radius:6px;font-size:12px;border:1px solid var(--divider-color);
                background:var(--secondary-background-color);color:var(--primary-text-color);
                cursor:${disabled ? 'default' : 'pointer'};opacity:${disabled ? '0.4' : '1'};
-               display:flex;align-items:center;gap:4px;">
-        ${_icon(icon.replace("mdi:",""), 15)}${label}
+               display:flex;align-items:center;gap:2px;min-width:32px;justify-content:center;">
+        ${label ? label : ''}${icon ? _icon(icon.replace('mdi:',''), 14) : ''}
       </button>`;
+
+    // Page indicator: "Page X / N"
+    const pageLabel = this.t('pagination.page_of')
+      .replace('{page}', page + 1)
+      .replace('{total}', totalPages);
 
     return `
       <div class="pag-bar" data-pag-id="${id}"
@@ -79,11 +83,14 @@
           ${sizeBtn(10)}${sizeBtn(50)}${sizeBtn(100)}
         </div>
         <span style="font-size:12px;color:var(--secondary-text-color);">
-          ${from}–${to} sur <strong>${total}</strong>
+          ${from}–${to} / <strong>${total}</strong>
         </span>
-        <div style="display:flex;gap:6px;">
+        <div style="display:flex;gap:4px;align-items:center;">
+          ${navBtn('', 'mdi:page-first',  page === 0,              0)}
           ${navBtn(this.t('pagination.prev'), 'mdi:chevron-left',  page === 0,              page - 1)}
+          <span style="font-size:12px;color:var(--secondary-text-color);white-space:nowrap;padding:0 4px;">${pageLabel}</span>
           ${navBtn(this.t('pagination.next'), 'mdi:chevron-right', page >= totalPages - 1,  page + 1)}
+          ${navBtn('', 'mdi:page-last',   page >= totalPages - 1, totalPages - 1)}
         </div>
       </div>`;
   }

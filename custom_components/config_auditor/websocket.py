@@ -14,10 +14,25 @@ from homeassistant.helpers.translation import async_get_translations
 
 from .const import DOMAIN
 
+def _ts(hass, section: str, key: str, **kwargs) -> str:
+    """Get a translation string from the in-memory cache (websocket-local copy)."""
+    lang = hass.data.get("config_auditor", {}).get("user_language") or hass.config.language or "en"
+    # Import cache lazily to avoid circular import at module load time
+    try:
+        from . import _TS_CACHE  # noqa: PLC0415
+        data = _TS_CACHE.get(lang) or _TS_CACHE.get("en") or {}
+    except Exception:
+        data = {}
+    val = data.get(section, {}).get(key, key)
+    try:
+        return val.format(**kwargs) if kwargs else val
+    except Exception:
+        return val
+
 _LOGGER = logging.getLogger(__name__)
 
 
-@callback
+
 def async_register_websocket_handlers(hass: HomeAssistant) -> None:
     """Register WebSocket handlers."""
     websocket_api.async_register_command(hass, handle_get_data)
@@ -27,6 +42,9 @@ def async_register_websocket_handlers(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, handle_list_backups)
     websocket_api.async_register_command(hass, handle_restore_backup)
     websocket_api.async_register_command(hass, handle_get_translations)
+    websocket_api.async_register_command(hass, handle_explain_issue)
+    websocket_api.async_register_command(hass, handle_ai_suggest_fix)
+    websocket_api.async_register_command(hass, handle_apply_field_fix)
     websocket_api.async_register_command(hass, handle_purge_recorder_orphans)
     websocket_api.async_register_command(hass, handle_get_history)
     websocket_api.async_register_command(hass, handle_delete_history)
@@ -34,6 +52,18 @@ def async_register_websocket_handlers(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, handle_get_options)
     websocket_api.async_register_command(hass, handle_save_options)
     websocket_api.async_register_command(hass, handle_set_log_level)
+    # ── v1.4.0 ─────────────────────────────────────────────────────────────
+    websocket_api.async_register_command(hass, handle_mcp_status)
+    websocket_api.async_register_command(hass, handle_agent_status)
+    websocket_api.async_register_command(hass, handle_agent_force_report)
+    websocket_api.async_register_command(hass, handle_record_fix_outcome)
+    # ── v1.5.0 ─────────────────────────────────────────────────────────────
+    websocket_api.async_register_command(hass, handle_get_battery_predictions)
+    websocket_api.async_register_command(hass, handle_export_battery_csv)
+    websocket_api.async_register_command(hass, handle_get_area_complexity)
+    websocket_api.async_register_command(hass, handle_get_redundancy)
+    websocket_api.async_register_command(hass, handle_get_recorder_impact)
+    websocket_api.async_register_command(hass, handle_get_history_diff)
     _LOGGER.info("✅ WebSocket handlers registered")
 
 
@@ -44,7 +74,7 @@ def async_register_websocket_handlers(hass: HomeAssistant) -> None:
         vol.Optional("offset", default=0): int,
         vol.Optional("category"): vol.In([
             "automation", "script", "scene", "blueprint",
-            "entity", "performance", "security", "dashboard"
+            "entity", "performance", "security", "dashboard", "compliance"
         ]),
     }
 )
@@ -89,6 +119,7 @@ async def handle_get_data(
             "performance": "performance_issue_list",
             "security":    "security_issue_list",
             "dashboard":   "dashboard_issue_list",
+            "compliance":  "compliance_issue_list",
         }
 
         def _get_list(key: str) -> list:
@@ -107,6 +138,7 @@ async def handle_get_data(
         perf_list   = cdata.get("performance_issue_list", [])
         sec_list    = cdata.get("security_issue_list", [])
         dash_list   = cdata.get("dashboard_issue_list", [])
+        comp_list   = cdata.get("compliance_issue_list", [])
 
         connection.send_result(
             msg["id"],
@@ -120,6 +152,7 @@ async def handle_get_data(
                 "performance_issues":   cdata.get("performance_issues", 0),
                 "security_issues":      cdata.get("security_issues", 0),
                 "dashboard_issues":     cdata.get("dashboard_issues", 0),
+                "compliance_issues":    cdata.get("compliance_issues", 0),
                 "total_issues":         cdata.get("total_issues", 0),
                 # Paginated lists
                 "automation_issue_list":    _paginate(auto_list)   if not category or category == "automation"  else auto_list,
@@ -130,6 +163,7 @@ async def handle_get_data(
                 "performance_issue_list":   _paginate(perf_list)   if not category or category == "performance" else perf_list,
                 "security_issue_list":      _paginate(sec_list)    if not category or category == "security"    else sec_list,
                 "dashboard_issue_list":     _paginate(dash_list)   if not category or category == "dashboard"   else dash_list,
+                "compliance_issue_list":   _paginate(comp_list)   if not category or category == "compliance"   else comp_list,
                 # Dependency graph
                 "dependency_graph": cdata.get("dependency_graph", {"nodes": [], "edges": []}),
                 # Battery monitor
@@ -159,6 +193,7 @@ async def handle_get_data(
                     "total_performance": len(perf_list),
                     "total_security":    len(sec_list),
                     "total_dashboard":   len(dash_list),
+                    "total_compliance":  len(comp_list),
                 },
             },
         )
@@ -172,6 +207,7 @@ async def handle_get_data(
         vol.Required("type"): "haca/scan_all",
     }
 )
+@websocket_api.require_admin
 @websocket_api.async_response
 async def handle_scan_all(
     hass: HomeAssistant,
@@ -238,6 +274,7 @@ async def handle_scan_all(
         vol.Optional("mode"): str,
     }
 )
+@websocket_api.require_admin
 @websocket_api.async_response
 async def handle_preview_fix(
     hass: HomeAssistant,
@@ -286,6 +323,7 @@ async def handle_preview_fix(
         vol.Optional("mode"): str,
     }
 )
+@websocket_api.require_admin
 @websocket_api.async_response
 async def handle_apply_fix(
     hass: HomeAssistant,
@@ -373,6 +411,7 @@ async def handle_list_backups(
         vol.Required("backup_path"): str,
     }
 )
+@websocket_api.require_admin
 @websocket_api.async_response
 async def handle_restore_backup(
     hass: HomeAssistant,
@@ -411,6 +450,7 @@ async def handle_restore_backup(
         vol.Required("entity_ids"): [str],
     }
 )
+@websocket_api.require_admin
 @websocket_api.async_response
 async def handle_purge_recorder_orphans(
     hass: HomeAssistant,
@@ -678,6 +718,7 @@ async def handle_get_history(
     vol.Required("type"): "haca/delete_history",
     vol.Required("timestamps"): [str],
 })
+@websocket_api.require_admin
 @websocket_api.async_response
 async def handle_delete_history(
     hass: HomeAssistant,
@@ -762,24 +803,267 @@ async def handle_get_translations(
 
 @websocket_api.websocket_command(
     {
+        vol.Required("type"): "haca/explain_issue",
+        vol.Required("issue"): dict,
+    }
+)
+@websocket_api.async_response
+async def handle_explain_issue(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Explain a HACA issue using AI (IA locale ou fallback textuel)."""
+    try:
+        from .conversation import explain_issue_ai
+        issue_data = msg.get("issue", {})
+        explanation = await explain_issue_ai(hass, issue_data)
+        connection.send_result(msg["id"], {"explanation": explanation})
+    except Exception as e:
+        _LOGGER.error("Error in haca/explain_issue: %s", e, exc_info=True)
+        connection.send_error(msg["id"], "error", str(e))
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "haca/ai_suggest_fix",
+        vol.Required("issue"): dict,
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def handle_ai_suggest_fix(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Génère par IA la valeur manquante pour une issue simple (description, alias…).
+
+    Retourne {field, suggestion, entity_id} — pas de modification effectuée.
+    L'utilisateur peut éditer la suggestion dans la modale avant d'appliquer.
+    """
+    from pathlib import Path as _Path
+    import yaml as _yaml
+    from .conversation import _async_call_ai
+
+    issue      = msg.get("issue", {})
+    issue_type = issue.get("type", "")
+    entity_id  = issue.get("entity_id", "")
+    alias      = issue.get("alias") or entity_id
+
+    # ── Déterminer le champ cible ────────────────────────────────────────
+    FIELD_MAP = {
+        "no_description": "description",
+        "no_alias":       "alias",
+    }
+    field = FIELD_MAP.get(issue_type)
+    if not field:
+        connection.send_error(msg["id"], "unsupported_type",
+                              f"Issue type '{issue_type}' n'est pas une correction simple")
+        return
+
+    # ── Lire le YAML de l'automation/script ─────────────────────────────
+    yaml_snippet = ""
+    try:
+        is_script = entity_id.startswith("script.")
+        target = _Path(hass.config.config_dir) / ("scripts.yaml" if is_script else "automations.yaml")
+        slug   = entity_id.split(".", 1)[-1]
+
+        def _read_yaml():
+            data = _yaml.safe_load(target.read_text(encoding="utf-8")) or []
+            if not isinstance(data, list):
+                data = [data]
+            for item in data:
+                if not isinstance(item, dict):
+                    continue
+                if (item.get("alias") == alias
+                        or str(item.get("id", "")) == slug
+                        or item.get("alias", "").lower().replace(" ", "_") == slug):
+                    return _yaml.dump(item, allow_unicode=True, default_flow_style=False)
+            return ""
+
+        yaml_snippet = await hass.async_add_executor_job(_read_yaml)
+    except Exception as exc:
+        _LOGGER.debug("[HACA suggest] Could not read YAML for %s: %s", entity_id, exc)
+
+    # ── Construire le prompt ─────────────────────────────────────────────
+    lang = hass.config.language or "fr"
+
+    if field == "description":
+        prompt = (
+            f"You are a Home Assistant expert. Generate a concise, helpful description "
+            f"(1–2 sentences, max 120 characters) for this {'script' if entity_id.startswith('script.') else 'automation'}.\n"
+            f"Name: {alias}\n"
+        )
+        if yaml_snippet:
+            prompt += f"YAML:\n```yaml\n{yaml_snippet[:2000]}\n```\n"
+        prompt += (
+            f"Respond in {lang}. "
+            f"Return ONLY the description text — no quotes, no explanation, no prefix."
+        )
+    elif field == "alias":
+        prompt = (
+            f"You are a Home Assistant expert. Generate a short, clear alias (name) "
+            f"for this {'script' if entity_id.startswith('script.') else 'automation'}.\n"
+            f"Entity ID: {entity_id}\n"
+        )
+        if yaml_snippet:
+            prompt += f"YAML:\n```yaml\n{yaml_snippet[:2000]}\n```\n"
+        prompt += (
+            f"Respond in {lang}. "
+            f"Return ONLY the alias text — no quotes, no explanation."
+        )
+
+    # ── Appeler l'IA ─────────────────────────────────────────────────────
+    try:
+        suggestion = await _async_call_ai(hass, prompt, "HACA Simple Fix")
+        suggestion = suggestion.strip().strip('"').strip("'")
+        if not suggestion:
+            connection.send_error(msg["id"], "no_suggestion", "L'IA n'a pas retourné de suggestion")
+            return
+        connection.send_result(msg["id"], {
+            "field":     field,
+            "suggestion": suggestion,
+            "entity_id": entity_id,
+        })
+    except Exception as exc:
+        _LOGGER.error("[HACA suggest] AI error: %s", exc)
+        connection.send_error(msg["id"], "ai_error", str(exc))
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "haca/apply_field_fix",
+        vol.Required("entity_id"): str,
+        vol.Required("field"): str,
+        vol.Required("value"): str,
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def handle_apply_field_fix(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Applique une correction simple (description, alias) directement dans le YAML.
+
+    Pas de sauvegarde — l'opération est non-destructive (on ajoute/modifie un champ texte).
+    Recharge les automations/scripts après modification.
+    """
+    from pathlib import Path as _Path
+    import yaml as _yaml
+
+    entity_id = msg["entity_id"]
+    field     = msg["field"]
+    value     = msg["value"].strip()
+
+    if field not in ("description", "alias"):
+        connection.send_error(msg["id"], "unsupported_field", f"Champ '{field}' non supporté")
+        return
+
+    is_script  = entity_id.startswith("script.")
+    target     = _Path(hass.config.config_dir) / ("scripts.yaml" if is_script else "automations.yaml")
+    slug       = entity_id.split(".", 1)[-1]
+    domain     = "script" if is_script else "automation"
+
+    def _apply():
+        raw  = target.read_text(encoding="utf-8")
+        data = _yaml.safe_load(raw) or []
+        if not isinstance(data, list):
+            data = [data]
+
+        # Matching par priorité décroissante (même logique que les outils MCP) :
+        # 1. id HA numérique exact
+        # 2. entity_id slug exact  (ex: "automation.lumiere_salon" → slug "lumiere_salon")
+        # 3. alias exact (case-sensitive, puis case-insensitive)
+        #
+        # Le fallback msg.get("alias", item_alias) était supprimé car il matchait
+        # systématiquement le premier élément quand l'alias n'était pas fourni.
+        alias_provided = msg.get("alias", "").strip()
+
+        found_item = None
+        # Pass 1 — id numérique exact
+        for item in data:
+            if not isinstance(item, dict):
+                continue
+            if str(item.get("id", "")).strip() == slug:
+                found_item = item
+                break
+
+        # Pass 2 — alias exact (case-sensitive puis insensitive)
+        if found_item is None and alias_provided:
+            for sensitive in (True, False):
+                for item in data:
+                    if not isinstance(item, dict):
+                        continue
+                    a = item.get("alias", "")
+                    if (a if sensitive else a.lower()) == \
+                       (alias_provided if sensitive else alias_provided.lower()):
+                        found_item = item
+                        break
+                if found_item is not None:
+                    break
+
+        if found_item is None:
+            raise ValueError(
+                f"Automation/script '{entity_id}' (alias={alias_provided!r}) "
+                f"introuvable dans {target.name}. "
+                f"Vérifiez que entity_id et alias sont corrects."
+            )
+
+        found_item[field] = value
+        matched = True  # noqa: F841 — kept for clarity
+
+        # Écriture atomique — évite la corruption si HA crashe pendant l'écriture
+        import os as _os
+        _tmp = str(target) + ".tmp"
+        try:
+            with open(_tmp, "w", encoding="utf-8") as _fh:
+                _fh.write(_yaml.dump(data, allow_unicode=True, default_flow_style=False, sort_keys=False))
+            _os.replace(_tmp, str(target))
+        except Exception:
+            try: _os.unlink(_tmp)
+            except OSError: pass
+            raise
+
+    try:
+        await hass.async_add_executor_job(_apply)
+        # Recharger pour que HA prenne en compte
+        await hass.services.async_call(domain, "reload", {}, blocking=True)
+        connection.send_result(msg["id"], {"success": True, "field": field, "value": value})
+    except Exception as exc:
+        _LOGGER.error("[HACA apply_field_fix] %s: %s", entity_id, exc)
+        connection.send_error(msg["id"], "apply_error", str(exc))
+
+
+@websocket_api.websocket_command(
+    {
         vol.Required("type"): "haca/chat",
         vol.Required("message"): str,
         vol.Optional("conversation_id"): str,
     }
 )
+@websocket_api.require_admin
 @websocket_api.async_response
 async def handle_chat(
     hass: HomeAssistant,
     connection: websocket_api.ActiveConnection,
     msg: dict[str, Any],
 ) -> None:
-    """Forward a message to the HA AI configured in Settings → General → AI Suggestion.
+    """Chat IA avec fallback automatique entre tous les agents configurés dans HA.
 
-    Uses ai_task.generate_data exclusively (conversation.async_converse is deprecated).
-    Injects current HACA health context (score, issue counts, top-5 issues) so the
-    LLM can give relevant answers about the user's HA configuration.
+    L'agent préféré (pipeline Assist) est essayé en premier.
+    Si il échoue (quota épuisé, timeout, erreur), HACA tente les autres agents
+    disponibles dans l'ordre : Gemini, Llama, etc.
+
+    Chaque agent doit avoir le LLM API HACA activé pour utiliser les 58 outils :
+      HA Settings → Voice Assistants → [agent] → LLM API → HACA
     """
-    from .conversation import _async_find_ai_task_entity, _async_call_ai
+    from homeassistant.core import Context
+    from homeassistant.components.conversation import async_converse
+    from .conversation import _async_find_all_conversation_agents, _is_llm_error_reply
+    import inspect as _inspect
 
     user_msg = msg["message"].strip()
     conv_id  = msg.get("conversation_id")
@@ -788,74 +1072,83 @@ async def handle_chat(
         connection.send_error(msg["id"], "empty_message", "Empty message")
         return
 
-    # Check an ai_task entity is available
-    entity_id = await _async_find_ai_task_entity(hass)
-    if not entity_id:
+    # Tous les agents disponibles — préféré en premier
+    agents = await _async_find_all_conversation_agents(hass)
+    if not agents:
         connection.send_result(
             msg["id"],
-            {
-                "reply": (
-                    "⚠️ Aucun service IA (ai_task) n'est configuré dans Home Assistant.\n\n"
-                    "Rendez-vous dans **Paramètres → Général → Suggestion de l'IA** "
-                    "pour configurer OpenAI, Gemini ou Ollama."
-                ),
-                "conversation_id": conv_id,
-                "agent_id": None,
-            },
+            {"reply": _ts(hass, "misc", "no_ai_model"), "conversation_id": conv_id, "agent_id": None},
         )
         return
 
-    # Build HACA context prefix
-    try:
-        entries    = hass.config_entries.async_entries(DOMAIN)
-        cdata_raw  = hass.data.get(DOMAIN, {}).get(entries[0].entry_id, {}) if entries else {}
-        coordinator = cdata_raw.get("coordinator")
-        cdata       = coordinator.data if coordinator and coordinator.data else {}
+    # Préparer les kwargs async_converse une seule fois
+    params = set(_inspect.signature(async_converse).parameters)
 
-        score        = cdata.get("health_score", "?")
-        total_issues = cdata.get("total_issues", "?")
-        auto_issues  = cdata.get("automation_issues", 0)
-        ent_issues   = cdata.get("entity_issues", 0)
-        sec_issues   = cdata.get("security_issues", 0)
-        perf_issues  = cdata.get("performance_issues", 0)
+    def _make_kwargs(agent_id: str) -> dict:
+        kw: dict = {
+            "hass": hass,
+            "text": user_msg,
+            "conversation_id": conv_id,
+            "context": Context(),
+            "agent_id": agent_id,
+        }
+        if "language" in params:
+            kw["language"] = hass.config.language or "en"
+        if "device_id" in params:
+            kw["device_id"] = None
+        return kw
 
-        all_issues = (
-            list(cdata.get("automation_issue_list", []))
-            + list(cdata.get("entity_issue_list", []))
-            + list(cdata.get("security_issue_list", []))
+    def _extract_reply(result) -> str:
+        if not result or not result.response:
+            return ""
+        speech = result.response.speech
+        if not isinstance(speech, dict):
+            return ""
+        return (
+            speech.get("plain", {}).get("speech", "")
+            or next((v.get("speech", "") for v in speech.values() if isinstance(v, dict)), "")
         )
-        sev_order = {"high": 0, "medium": 1, "low": 2}
-        top5 = sorted(all_issues, key=lambda i: sev_order.get(i.get("severity", "low"), 2))[:5]
-        top5_txt = "\n".join(
-            f"  - [{i.get('severity', '?').upper()}] "
-            f"{i.get('alias') or i.get('entity_id', '?')}: "
-            f"{(i.get('message') or '')[:120]}"
-            for i in top5
-        ) or "  Aucune issue détectée."
 
-        context_prefix = (
-            f"[Contexte H.A.C.A — score {score}/100 | "
-            f"{total_issues} issue(s) : automations={auto_issues}, "
-            f"entités={ent_issues}, sécurité={sec_issues}, perf={perf_issues}]\n"
-            f"Top issues :\n{top5_txt}\n\n"
-        )
-        full_prompt = context_prefix + user_msg
-    except Exception:
-        full_prompt = user_msg
+    last_error = ""
+    for agent_id in agents:
+        try:
+            _LOGGER.info("[HACA Chat] Trying agent=%s msg=%.80s", agent_id, user_msg)
+            result = await async_converse(**_make_kwargs(agent_id))
+            reply  = _extract_reply(result)
 
-    try:
-        reply = await _async_call_ai(hass, full_prompt, "HACA Chat")
-        connection.send_result(
-            msg["id"],
-            {
-                "reply":           reply or "⚠️ Tous les services IA ont échoué (quota atteint ou service indisponible). Vérifiez votre configuration IA dans HA Paramètres → Général → Suggestion de l'IA.",
-                "conversation_id": conv_id,
-                "agent_id":        entity_id,
-            },
-        )
-    except Exception as exc:
-        _LOGGER.error("[HACA Chat] ai_task error: %s", exc)
-        connection.send_error(msg["id"], "chat_error", str(exc))
+            if not reply:
+                _LOGGER.warning("[HACA Chat] %s: empty reply → trying next", agent_id)
+                continue
+
+            if _is_llm_error_reply(reply):
+                _LOGGER.warning("[HACA Chat] %s: error reply (%.80s) → trying next", agent_id, reply)
+                last_error = reply
+                continue
+
+            # Succès
+            returned_conv_id = conv_id
+            try:
+                returned_conv_id = result.conversation_id or conv_id
+            except Exception:
+                pass
+
+            _LOGGER.info("[HACA Chat] ✓ %s", agent_id)
+            connection.send_result(
+                msg["id"],
+                {"reply": reply, "conversation_id": returned_conv_id, "agent_id": agent_id},
+            )
+            return
+
+        except Exception as exc:
+            last_error = str(exc)
+            _LOGGER.warning("[HACA Chat] %s failed: %s → trying next", agent_id, exc)
+
+    # Tous les agents ont échoué
+    _LOGGER.error("[HACA Chat] All agents failed. Last error: %s", last_error)
+    connection.send_result(
+        msg["id"],
+        {"reply": last_error or _ts(hass, "misc", "ai_error"), "conversation_id": conv_id, "agent_id": None},
+    )
 
 
 @websocket_api.websocket_command(
@@ -875,7 +1168,11 @@ async def handle_get_options(
         connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
         return
     entry = entries[0]
-    connection.send_result(msg["id"], {"options": dict(entry.options)})
+    opts = dict(entry.options)
+    # Masquer le token pour ne pas l'exposer au frontend (sécurité)
+    if opts.get("mcp_ha_token"):
+        opts["mcp_ha_token"] = True   # boolean = "configuré" sans révéler la valeur
+    connection.send_result(msg["id"], {"options": opts})
 
 
 @websocket_api.websocket_command(
@@ -884,6 +1181,7 @@ async def handle_get_options(
         vol.Required("options"): dict,
     }
 )
+@websocket_api.require_admin
 @websocket_api.async_response
 async def handle_save_options(
     hass: HomeAssistant,
@@ -907,9 +1205,12 @@ async def handle_save_options(
         "battery_critical", "battery_low", "battery_warning",
         "history_retention_days", "backup_enabled",
         "debug_mode",
+        "mcp_ha_token",
+        "excluded_compliance_types",
+        "report_frequency",   # daily | weekly | monthly | never
     }
     for key, value in incoming.items():
-        if key in ALLOWED_KEYS:
+        if key in ALLOWED_KEYS and value is not None:  # ignorer les None (token non modifié)
             new_options[key] = value
 
     hass.config_entries.async_update_entry(entry, options=new_options)
@@ -952,6 +1253,7 @@ async def handle_save_options(
         vol.Required("level"): vol.In(["debug", "info", "warning", "error"]),
     }
 )
+@websocket_api.require_admin
 @websocket_api.async_response
 async def handle_set_log_level(
     hass: HomeAssistant,
@@ -989,3 +1291,355 @@ async def handle_set_log_level(
     _LOGGER.info("[HACA] Log level set to %s for custom_components.config_auditor", level_str)
     connection.send_result(msg["id"], {"success": True, "level": level_str})
 
+
+# ─── v1.4.0 WebSocket Handlers ────────────────────────────────────────────
+
+@websocket_api.websocket_command({"type": "haca/mcp_status"})
+@websocket_api.async_response
+async def handle_mcp_status(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Retourne le statut et l'URL du serveur MCP HACA."""
+    try:
+        import json as _json
+        base_url = hass.config.external_url or hass.config.internal_url or "http://homeassistant.local:8123"
+        mcp_url = f"{base_url.rstrip('/')}/api/haca_mcp"
+
+        claude_code_config = {
+            "mcpServers": {
+                "haca": {
+                    "command": "npx",
+                    "args": ["-y", "@modelcontextprotocol/server-proxy"],
+                    "env": {
+                        "MCP_SERVER_URL": mcp_url,
+                        "MCP_AUTH_HEADER": "Authorization: Bearer <YOUR_HA_LONG_LIVED_TOKEN>",
+                    },
+                }
+            }
+        }
+        connection.send_result(msg["id"], {
+            "active": True,
+            "url": "/api/haca_mcp",
+            "full_url": mcp_url,
+            "info_url": f"{mcp_url}/info",
+            "auth": "Bearer <HA Long-Lived Access Token>",
+            "tools": [
+                "haca_get_score", "haca_get_issues", "haca_get_automation",
+                "haca_fix_suggestion", "haca_apply_fix",
+                "haca_get_batteries", "haca_explain_issue",
+            ],
+            "claude_code_snippet": _json.dumps(claude_code_config, indent=2, ensure_ascii=False),
+        })
+    except Exception as exc:
+        connection.send_error(msg["id"], "mcp_error", str(exc))
+
+
+@websocket_api.websocket_command({"type": "haca/agent_status"})
+@websocket_api.async_response
+async def handle_agent_status(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Retourne le statut de l'agent IA proactif."""
+    try:
+        from .proactive_agent import get_agent
+        agent = get_agent(hass)
+
+        if not agent:
+            connection.send_result(msg["id"], {"active": False, "correlations": []})
+            return
+
+        correlations = await agent.analyze_correlations()
+        prefs = agent.get_preferences()
+
+        entries = hass.config_entries.async_entries(DOMAIN)
+        entry_data = hass.data.get(DOMAIN, {}).get(entries[0].entry_id, {}) if entries else {}
+        last_report = entry_data.get("last_weekly_report")
+        entry = entries[0] if entries else None
+        report_frequency = entry.options.get("report_frequency", "weekly") if entry else "weekly"
+
+        connection.send_result(msg["id"], {
+            "active": True,
+            "correlations": correlations[:10],
+            "last_weekly_report": last_report,
+            "preferred_fix_types": prefs.get_preferred_fix_types(),
+            "report_frequency": report_frequency,
+        })
+    except Exception as exc:
+        connection.send_error(msg["id"], "agent_error", str(exc))
+
+
+@websocket_api.websocket_command({"type": "haca/agent_force_report"})
+@websocket_api.require_admin
+@websocket_api.async_response
+async def handle_agent_force_report(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Force l'envoi immédiat du rapport hebdomadaire et retourne le contenu MD."""
+    try:
+        from .proactive_agent import get_agent
+        agent = get_agent(hass)
+        if not agent:
+            connection.send_error(msg["id"], "no_agent", "Agent not running")
+            return
+        # Reset last report date pour forcer l'envoi
+        entries = hass.config_entries.async_entries(DOMAIN)
+        entry_data: dict = {}
+        if entries:
+            entry_data = hass.data.get(DOMAIN, {}).get(entries[0].entry_id, {})
+            entry_data.pop("last_weekly_report", None)
+            entry_data.pop("last_report_markdown", None)
+
+        await agent._check_weekly_report_async()
+
+        # Récupérer le markdown généré
+        markdown = entry_data.get("last_report_markdown", "")
+        report_file = entry_data.get("last_report_file", "")
+        filename = ""
+        if report_file:
+            from pathlib import Path
+            filename = Path(report_file).name
+
+        connection.send_result(msg["id"], {
+            "success": True,
+            "markdown": markdown,
+            "filename": filename,
+            "report_file": report_file,
+        })
+    except Exception as exc:
+        connection.send_error(msg["id"], "force_report_error", str(exc))
+
+
+@websocket_api.websocket_command({
+    vol.Required("type"): "haca/record_fix_outcome",
+    vol.Required("issue_type"): str,
+    vol.Required("accepted"): bool,
+})
+@websocket_api.require_admin
+@websocket_api.async_response
+async def handle_record_fix_outcome(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Enregistre si un fix a été accepté ou refusé (apprentissage agent)."""
+    try:
+        from .proactive_agent import get_agent
+        agent = get_agent(hass)
+        if agent:
+            agent.record_fix_outcome(msg["issue_type"], msg["accepted"])
+        connection.send_result(msg["id"], {"success": True})
+    except Exception as exc:
+        connection.send_error(msg["id"], "outcome_error", str(exc))
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  v1.5.0 — WebSocket handlers
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _get_coordinator(hass):
+    """Helper: return coordinator data or None."""
+    entries = hass.config_entries.async_entries(DOMAIN)
+    if not entries:
+        return None, None
+    entry = entries[0]
+    coord = hass.data.get(DOMAIN, {}).get(entry.entry_id, {}).get("coordinator")
+    return entry, coord
+
+
+# ── Battery predictions ────────────────────────────────────────────────────────
+
+@websocket_api.websocket_command({vol.Required("type"): "haca/get_battery_predictions"})
+@websocket_api.require_admin
+@websocket_api.async_response
+async def handle_get_battery_predictions(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Return battery discharge predictions."""
+    try:
+        entry, coord = _get_coordinator(hass)
+        if not coord:
+            connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
+            return
+        data = coord.data or {}
+        connection.send_result(msg["id"], {
+            "predictions": data.get("battery_predictions", []),
+            "alert_7d":    data.get("battery_alert_7d", 0),
+        })
+    except Exception as exc:
+        connection.send_error(msg["id"], "prediction_error", str(exc))
+
+
+@websocket_api.websocket_command({vol.Required("type"): "haca/export_battery_csv"})
+@websocket_api.require_admin
+@websocket_api.async_response
+async def handle_export_battery_csv(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Return full battery history as CSV string."""
+    try:
+        from .const import MODULE_18_BATTERY_PREDICTOR
+        if not MODULE_18_BATTERY_PREDICTOR:
+            connection.send_result(msg["id"], {"csv": "date,entity_id,level\n"})
+            return
+        from .battery_predictor import BatteryPredictor
+        predictor = BatteryPredictor(hass)
+        csv_data = await predictor.async_export_csv()
+        connection.send_result(msg["id"], {"csv": csv_data})
+    except Exception as exc:
+        connection.send_error(msg["id"], "csv_error", str(exc))
+
+
+# ── Area complexity ────────────────────────────────────────────────────────────
+
+@websocket_api.websocket_command({vol.Required("type"): "haca/get_area_complexity"})
+@websocket_api.async_response
+async def handle_get_area_complexity(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Return area complexity heatmap data."""
+    try:
+        entry, coord = _get_coordinator(hass)
+        if not coord:
+            connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
+            return
+        data = coord.data or {}
+        connection.send_result(msg["id"], data.get("area_complexity", {}))
+    except Exception as exc:
+        connection.send_error(msg["id"], "area_error", str(exc))
+
+
+# ── Redundancy ─────────────────────────────────────────────────────────────────
+
+@websocket_api.websocket_command({vol.Required("type"): "haca/get_redundancy"})
+@websocket_api.require_admin
+@websocket_api.async_response
+async def handle_get_redundancy(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Return redundancy analysis results."""
+    try:
+        entry, coord = _get_coordinator(hass)
+        if not coord:
+            connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
+            return
+        data = coord.data or {}
+        connection.send_result(msg["id"], data.get("redundancy", {}))
+    except Exception as exc:
+        connection.send_error(msg["id"], "redundancy_error", str(exc))
+
+
+# ── Recorder impact ────────────────────────────────────────────────────────────
+
+@websocket_api.websocket_command({vol.Required("type"): "haca/get_recorder_impact"})
+@websocket_api.require_admin
+@websocket_api.async_response
+async def handle_get_recorder_impact(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Return recorder DB impact analysis."""
+    try:
+        entry, coord = _get_coordinator(hass)
+        if not coord:
+            connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
+            return
+        data = coord.data or {}
+        connection.send_result(msg["id"], data.get("recorder_impact", {}))
+    except Exception as exc:
+        connection.send_error(msg["id"], "recorder_impact_error", str(exc))
+
+
+# ── History diff ───────────────────────────────────────────────────────────────
+
+@websocket_api.websocket_command({
+    vol.Required("type"): "haca/get_history_diff",
+    vol.Required("ts"): str,      # timestamp of the scan to diff
+})
+@websocket_api.require_admin
+@websocket_api.async_response
+async def handle_get_history_diff(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Return diff between a scan and its predecessor (new/resolved issues)."""
+    try:
+        entries = hass.config_entries.async_entries(DOMAIN)
+        if not entries:
+            connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
+            return
+        entry = entries[0]
+        coord_data = hass.data.get(DOMAIN, {}).get(entry.entry_id, {})
+        history_manager = coord_data.get("history_manager")
+        if not history_manager:
+            connection.send_result(msg["id"], {"diff": None, "error": "history_not_available"})
+            return
+
+        history = await history_manager.async_get_history(limit=365)
+        target_ts = msg["ts"]
+
+        # Find target and predecessor
+        target = next((h for h in history if h.get("ts") == target_ts), None)
+        if not target:
+            connection.send_error(msg["id"], "not_found", f"Scan {target_ts} not found")
+            return
+
+        target_idx = history.index(target)
+        predecessor = history[target_idx - 1] if target_idx > 0 else None
+
+        if not predecessor:
+            connection.send_result(msg["id"], {
+                "target": target,
+                "predecessor": None,
+                "diff": None,
+            })
+            return
+
+        # Compute diff on issue counts per category
+        categories = ["automation", "script", "scene", "entity", "performance",
+                      "security", "blueprint", "dashboard"]
+        diff = {}
+        for cat in categories:
+            old_val = predecessor.get(cat, 0)
+            new_val = target.get(cat, 0)
+            diff[cat] = {
+                "old": old_val,
+                "new": new_val,
+                "delta": new_val - old_val,
+            }
+
+        # Top issues diff (new issues vs resolved)
+        prev_top_ids = {i.get("entity_id") + i.get("type", "") for i in (predecessor.get("top_issues") or [])}
+        curr_top     = target.get("top_issues") or []
+
+        new_issues      = [i for i in curr_top if (i.get("entity_id", "") + i.get("type", "")) not in prev_top_ids]
+        prev_top        = predecessor.get("top_issues") or []
+        curr_top_ids    = {i.get("entity_id") + i.get("type", "") for i in curr_top}
+        resolved_issues = [i for i in prev_top if (i.get("entity_id", "") + i.get("type", "")) not in curr_top_ids]
+
+        connection.send_result(msg["id"], {
+            "target":      target,
+            "predecessor": predecessor,
+            "diff":        diff,
+            "new_issues":      new_issues,
+            "resolved_issues": resolved_issues,
+            "score_delta": target.get("score", 0) - predecessor.get("score", 0),
+        })
+    except Exception as exc:
+        _LOGGER.warning("History diff error: %s", exc)
+        connection.send_error(msg["id"], "diff_error", str(exc))

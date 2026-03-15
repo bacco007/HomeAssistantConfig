@@ -6,6 +6,7 @@ from typing import Any
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import device_registry as dr
 
 from .translation_utils import TranslationHelper
 
@@ -36,20 +37,30 @@ class BatteryMonitor:
         self._low      = low
         self._warning  = warning
 
-    async def analyze_all(self) -> list[dict[str, Any]]:
-        """Return sorted battery list and fire persistent notifications for low batteries."""
+    async def analyze_all(
+        self,
+        critical: int | None = None,
+        low: int | None = None,
+        warning: int | None = None,
+    ) -> list[dict[str, Any]]:
+        """Return sorted battery list and fire persistent notifications for low batteries.
+
+        Thresholds can be overridden at call time so option changes take effect
+        on the next scan without requiring an HA reload.
+        """
+        # Use override values when provided (fresh from entry.options)
+        _critical = critical if critical is not None else self._critical
+        _low      = low      if low      is not None else self._low
+        _warning  = warning  if warning  is not None else self._warning
         self.battery_list = []
 
         # Load language-appropriate translations once per scan
         language = self.hass.data.get("config_auditor", {}).get("user_language") or self.hass.config.language or "en"
         await self._translator.async_load_language(language)
 
-        # Load haca_ignore label
-        _ignored = set()
-        try:
-            for _e in er.async_get(self.hass).entities.values():
-                if "haca_ignore" in _e.labels: _ignored.add(_e.entity_id)
-        except Exception: pass
+        # Load haca_ignore label (entity + device level)
+        from .translation_utils import async_get_haca_ignored_entity_ids
+        _ignored = await async_get_haca_ignored_entity_ids(self.hass)
 
         for state in self.hass.states.async_all():
             entity_id = state.entity_id
@@ -88,11 +99,11 @@ class BatteryMonitor:
             friendly = state.attributes.get("friendly_name", entity_id)
 
             severity = None
-            if level < self._critical:
+            if level < _critical:
                 severity = "high"
-            elif level < self._low:
+            elif level < _low:
                 severity = "medium"
-            elif level < self._warning:
+            elif level < _warning:
                 severity = "low"
 
             unit = state.attributes.get("unit_of_measurement", "%")
