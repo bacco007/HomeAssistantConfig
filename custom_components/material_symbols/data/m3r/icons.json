@@ -576,6 +576,9 @@
         "name": "avg-time"
     },
     {
+        "name": "avocado-bean"
+    },
+    {
         "name": "award-meal"
     },
     {
@@ -933,6 +936,12 @@
         "name": "bus-alert"
     },
     {
+        "name": "bus-map-pin"
+    },
+    {
+        "name": "bus-map-pin-2"
+    },
+    {
         "name": "bus-railway"
     },
     {
@@ -1083,6 +1092,9 @@
         "name": "cards"
     },
     {
+        "name": "cards-stack"
+    },
+    {
         "name": "cards-star"
     },
     {
@@ -1174,6 +1186,9 @@
     },
     {
         "name": "chat-bubble"
+    },
+    {
+        "name": "chat-bubble-off"
     },
     {
         "name": "chat-error"
@@ -1558,6 +1573,12 @@
     },
     {
         "name": "dashboard-2"
+    },
+    {
+        "name": "dashboard-2-edit"
+    },
+    {
+        "name": "dashboard-2-gear"
     },
     {
         "name": "dashboard-customize"
@@ -2376,6 +2397,9 @@
         "name": "find-in-page"
     },
     {
+        "name": "fire-check"
+    },
+    {
         "name": "fire-extinguisher"
     },
     {
@@ -2580,6 +2604,12 @@
         "name": "format-image-inline-right"
     },
     {
+        "name": "format-image-left"
+    },
+    {
+        "name": "format-image-right"
+    },
+    {
         "name": "format-ink-highlighter"
     },
     {
@@ -2587,6 +2617,9 @@
     },
     {
         "name": "format-paint"
+    },
+    {
+        "name": "format-paint-off"
     },
     {
         "name": "format-quote"
@@ -3948,6 +3981,9 @@
         "name": "mood-bad"
     },
     {
+        "name": "mood-heart"
+    },
+    {
         "name": "moon-stars"
     },
     {
@@ -4597,6 +4633,9 @@
     },
     {
         "name": "phone-callback"
+    },
+    {
+        "name": "phone-cancel"
     },
     {
         "name": "phone-disabled"
@@ -5691,6 +5730,9 @@
         "name": "splitscreen-landscape"
     },
     {
+        "name": "splitscreen-landscape-add"
+    },
+    {
         "name": "splitscreen-portrait"
     },
     {
@@ -5916,10 +5958,16 @@
         "name": "swipe-left"
     },
     {
+        "name": "swipe-left-2"
+    },
+    {
         "name": "swipe-left-alt"
     },
     {
         "name": "swipe-right"
+    },
+    {
+        "name": "swipe-right-2"
     },
     {
         "name": "swipe-right-alt"
@@ -6085,6 +6133,9 @@
     },
     {
         "name": "text-ad"
+    },
+    {
+        "name": "text-ad-off"
     },
     {
         "name": "text-compare"
@@ -6648,7 +6699,13 @@
         "name": "watch"
     },
     {
+        "name": "watch-alert"
+    },
+    {
         "name": "watch-arrow"
+    },
+    {
+        "name": "watch-arrow-down"
     },
     {
         "name": "watch-button-press"
@@ -6685,6 +6742,9 @@
     },
     {
         "name": "water-drop"
+    },
+    {
+        "name": "water-drops"
     },
     {
         "name": "water-ec"
@@ -6739,6 +6799,9 @@
     },
     {
         "name": "whatshot"
+    },
+    {
+        "name": "wheat"
     },
     {
         "name": "where-to-vote"
@@ -6835,5 +6898,11 @@
     },
     {
         "name": "your-trips"
+    },
+    {
+        "name": "youtube-activity-2"
+    },
+    {
+        "name": "youtube-video"
     }
 ]
