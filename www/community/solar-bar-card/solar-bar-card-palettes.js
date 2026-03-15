@@ -28,7 +28,9 @@ export const COLOR_PALETTES = {
       grid_icon_import: null,
       grid_icon_export: null,
       grid_icon_idle: null,
-      grid_icon_color: null
+      grid_icon_color: null,
+      ev_icon_idle: null,
+      ev_icon_charging: null
     }
   },
   'soft-meadow': {
@@ -56,7 +58,9 @@ export const COLOR_PALETTES = {
       grid_icon_import: null,
       grid_icon_export: null,
       grid_icon_idle: null,
-      grid_icon_color: null
+      grid_icon_color: null,
+      ev_icon_idle: null,
+      ev_icon_charging: null
     }
   },
   'ocean-sunset': {
@@ -84,7 +88,9 @@ export const COLOR_PALETTES = {
       grid_icon_import: null,
       grid_icon_export: null,
       grid_icon_idle: null,
-      grid_icon_color: null
+      grid_icon_color: null,
+      ev_icon_idle: null,
+      ev_icon_charging: null
     }
   },
   'garden-fresh': {
@@ -112,7 +118,9 @@ export const COLOR_PALETTES = {
       grid_icon_import: null,
       grid_icon_export: null,
       grid_icon_idle: null,
-      grid_icon_color: null
+      grid_icon_color: null,
+      ev_icon_idle: null,
+      ev_icon_charging: null
     }
   },
   'peachy-keen': {
@@ -140,7 +148,9 @@ export const COLOR_PALETTES = {
       grid_icon_import: null,
       grid_icon_export: null,
       grid_icon_idle: null,
-      grid_icon_color: null
+      grid_icon_color: null,
+      ev_icon_idle: null,
+      ev_icon_charging: null
     }
   },
   'cloudy-day': {
@@ -168,7 +178,9 @@ export const COLOR_PALETTES = {
       grid_icon_import: null,
       grid_icon_export: null,
       grid_icon_idle: null,
-      grid_icon_color: null
+      grid_icon_color: null,
+      ev_icon_idle: null,
+      ev_icon_charging: null
     }
   },
   'floral-charm': {
@@ -196,7 +208,9 @@ export const COLOR_PALETTES = {
       grid_icon_import: null,
       grid_icon_export: null,
       grid_icon_idle: null,
-      grid_icon_color: null
+      grid_icon_color: null,
+      ev_icon_idle: null,
+      ev_icon_charging: null
     }
   },
 
@@ -225,7 +239,9 @@ export const COLOR_PALETTES = {
       grid_icon_import: null,
       grid_icon_export: null,
       grid_icon_idle: null,
-      grid_icon_color: null
+      grid_icon_color: null,
+      ev_icon_idle: null,
+      ev_icon_charging: null
     }
   },
 
@@ -254,7 +270,9 @@ export const COLOR_PALETTES = {
       grid_icon_import: null,
       grid_icon_export: null,
       grid_icon_idle: null,
-      grid_icon_color: null
+      grid_icon_color: null,
+      ev_icon_idle: null,
+      ev_icon_charging: null
     }
   },
 
@@ -283,7 +301,9 @@ export const COLOR_PALETTES = {
       grid_icon_import: null,
       grid_icon_export: null,
       grid_icon_idle: null,
-      grid_icon_color: null
+      grid_icon_color: null,
+      ev_icon_idle: null,
+      ev_icon_charging: null
     }
   },
 
@@ -312,7 +332,9 @@ export const COLOR_PALETTES = {
       grid_icon_import: null,
       grid_icon_export: null,
       grid_icon_idle: null,
-      grid_icon_color: null
+      grid_icon_color: null,
+      ev_icon_idle: null,
+      ev_icon_charging: null
     }
   },
 
@@ -341,7 +363,9 @@ export const COLOR_PALETTES = {
       grid_icon_import: null,
       grid_icon_export: null,
       grid_icon_idle: null,
-      grid_icon_color: null
+      grid_icon_color: null,
+      ev_icon_idle: null,
+      ev_icon_charging: null
     }
   },
 
@@ -370,7 +394,9 @@ export const COLOR_PALETTES = {
       grid_icon_import: null,
       grid_icon_export: null,
       grid_icon_idle: null,
-      grid_icon_color: null
+      grid_icon_color: null,
+      ev_icon_idle: null,
+      ev_icon_charging: null
     }
   },
 
@@ -399,7 +425,9 @@ export const COLOR_PALETTES = {
       grid_icon_import: null,
       grid_icon_export: null,
       grid_icon_idle: null,
-      grid_icon_color: null
+      grid_icon_color: null,
+      ev_icon_idle: null,
+      ev_icon_charging: null
     }
   },
   'custom': {
@@ -427,7 +455,9 @@ export const COLOR_PALETTES = {
       grid_icon_import: null,
       grid_icon_export: null,
       grid_icon_idle: null,
-      grid_icon_color: null
+      grid_icon_color: null,
+      ev_icon_idle: null,
+      ev_icon_charging: null
     }
   }
 };
@@ -454,6 +484,8 @@ export function getCardColors(config) {
   if (config.grid_icon_export_color) colors = { ...colors, grid_icon_export: toColor(config.grid_icon_export_color) };
   if (config.grid_icon_idle_color) colors = { ...colors, grid_icon_idle: toColor(config.grid_icon_idle_color) };
   if (config.grid_icon_color) colors = { ...colors, grid_icon_color: toColor(config.grid_icon_color) };
+  if (config.ev_icon_idle_color) colors = { ...colors, ev_icon_idle: toColor(config.ev_icon_idle_color) };
+  if (config.ev_icon_charging_color) colors = { ...colors, ev_icon_charging: toColor(config.ev_icon_charging_color) };
 
   return colors;
 }
