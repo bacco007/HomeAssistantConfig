@@ -5475,14 +5475,14 @@ function buildGroupingItems(store, modifiedItems) {
   }
   return items;
 }
-function waitForGroupSync(store, mainPlayerId, expectedIds) {
+function waitForGroupSync(getStore, mainPlayerId, expectedIds) {
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
       clearInterval(poll);
       resolve();
     }, SYNC_TIMEOUT);
     const poll = setInterval(() => {
-      const mainEntity = store.hass.states[mainPlayerId];
+      const mainEntity = getStore().hass.states[mainPlayerId];
       if (mainEntity) {
         const actualIds = getGroupPlayerIds(mainEntity).sort();
         if (actualIds.length === expectedIds.length && actualIds.every((id, i5) => id === expectedIds[i5])) {
@@ -5806,7 +5806,7 @@ class Grouping extends i$5 {
     try {
       await this.executeChanges(join, unJoin, newMainPlayer, selectedPG);
       this.switchActivePlayerIfNeeded(activePlayer, newMainPlayer, unJoin);
-      await waitForGroupSync(this.store, newMainPlayer, expectedIds);
+      await waitForGroupSync(() => this.store, newMainPlayer, expectedIds);
       await new Promise((resolve) => setTimeout(resolve, POST_SYNC_DELAY));
     } finally {
       this.applying = false;
