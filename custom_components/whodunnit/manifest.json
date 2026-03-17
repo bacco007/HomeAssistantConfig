@@ -1,7 +1,7 @@
 {
   "domain": "whodunnit",
   "name": "Whodunnit",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "documentation": "https://github.com/sfox38/whodunnit",
   "issue_tracker": "https://github.com/sfox38/whodunnit/issues",
   "codeowners": ["@sfox38"],
