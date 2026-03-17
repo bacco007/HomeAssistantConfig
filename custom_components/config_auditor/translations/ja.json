@@ -64,6 +64,18 @@
       },
       "dashboard_issues": {
         "name": "ダッシュボードの問題"
+      },
+      "helper_issues": {
+        "name": "ヘルパーの問題"
+      },
+      "compliance_issues": {
+        "name": "コンプライアンスの問題"
+      },
+      "battery_alerts": {
+        "name": "バッテリーアラート"
+      },
+      "recorder_orphans": {
+        "name": "レコーダー孤立エントリ"
       }
     }
   },
@@ -92,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant 設定監査ツール",
-    "version": "V1.5.2",
+    "version": "V1.6.0",
     "buttons": {
       "scan_all": "完全スキャン",
       "automations": "オートメーション",
@@ -506,19 +518,22 @@
       "placeholder": "質問を入力…",
       "send": "送信",
       "examples_title": "Example prompts",
-      "ex_audit": "What's the health of my HA config?",
-      "ex_create_auto": "Create an automation to turn on entry light at sunset",
-      "ex_debug": "Why isn't my morning automation triggering?",
-      "ex_rename": "Rename sensor.temp_salon to 'Living room — Temperature'",
-      "ex_history": "Show history of light.salon since yesterday",
-      "ex_helpers": "List my unused helpers",
-      "ex_backup": "Create a full HA backup",
-      "ex_template": "Test this template: {{ states('sensor.temp') | float > 20 }}",
-      "ex_delete_auto": "Delete the Night light automation",
-      "ex_search": "Which automations use sensor.pir_salon?",
-      "ex_dashboard": "Add a weather card to my dashboard",
-      "ex_system": "What HA updates are available?",
-      "rate_limit": "次のメッセージまで{wait}秒お待ちください。"
+      "ex_audit": "HAの設定の健全性はどうですか？",
+      "ex_create_auto": "日没時に玄関の照明をオンにするオートメーションを作成して",
+      "ex_debug": "なぜ朝のオートメーションが動かないのですか？",
+      "ex_rename": "sensor.temp_salonを'リビング — 温度'に名前変更して",
+      "ex_history": "昨日からのlight.salonの履歴を表示して",
+      "ex_helpers": "未使用のヘルパーをリストアップして",
+      "ex_backup": "HAの完全バックアップを作成して",
+      "ex_template": "このテンプレートをテストして: {{ states('sensor.temp') | float > 20 }}",
+      "ex_delete_auto": "ナイトライトオートメーションを削除して",
+      "ex_search": "sensor.pir_salonを使っているオートメーションはどれですか？",
+      "ex_dashboard": "ダッシュボードに天気カードを追加して",
+      "ex_system": "HAのアップデートは何がありますか？",
+      "rate_limit": "次のメッセージまで{wait}秒お待ちください。",
+      "setup_title": "設定が必要です",
+      "setup_steps": "設定 → 音声アシスタント → [エージェント] → ⚙️ → HACАを選択",
+      "setup_link": "音声アシスタントを開く"
     },
     "misc": {
       "run_scan_scores": "スキャンを実行してスコアを確認",
@@ -1521,5 +1536,11 @@
     "helper_no_icon": "Helper '{name}' has no icon. Add one in Settings → Helpers.",
     "helper_no_area": "Helper '{name}' has no area. Assign it in Settings → Helpers.",
     "entity_no_area": "Entity '{name}' ({entity_id}) has no area. Assign via Settings → Devices."
+  },
+  "issues": {
+    "generic_high_issue": {
+      "title": "HACA: {type} — {entity}",
+      "description": "{message}\n\nOpen the HACA panel for details and available fixes."
+    }
   }
 }

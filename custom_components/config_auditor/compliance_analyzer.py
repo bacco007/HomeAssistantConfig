@@ -1,4 +1,4 @@
-"""H.A.C.A — Analyseur de conformité aux bonnes pratiques HA (Module 17) v1.4.1.
+"""H.A.C.A — Analyseur de conformité aux bonnes pratiques HA (Module 17) v1.6.0.
 
 Vérifie les conventions de nommage, les métadonnées manquantes et l'organisation
 de la configuration Home Assistant.

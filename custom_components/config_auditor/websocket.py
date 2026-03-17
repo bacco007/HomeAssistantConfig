@@ -31,6 +31,22 @@ def _ts(hass, section: str, key: str, **kwargs) -> str:
 
 _LOGGER = logging.getLogger(__name__)
 
+# ── Simple per-command rate limiter for write-sensitive handlers ────────────
+# Prevents spam on save_options and apply_field_fix (YAML writes).
+# Dict of { "command_key" : last_call_monotonic_time }
+_WS_RATE_LIMITS: dict[str, float] = {}
+_WS_RATE_LIMIT_SECONDS = 2.0  # minimum seconds between calls per command+user
+
+
+def _rate_limited(key: str, seconds: float = _WS_RATE_LIMIT_SECONDS) -> bool:
+    """Return True if the call should be rejected (too soon since last call)."""
+    import time
+    now = time.monotonic()
+    last = _WS_RATE_LIMITS.get(key, 0.0)
+    if now - last < seconds:
+        return True
+    _WS_RATE_LIMITS[key] = now
+    return False
 
 
 def async_register_websocket_handlers(hass: HomeAssistant) -> None:
@@ -64,7 +80,7 @@ def async_register_websocket_handlers(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, handle_get_redundancy)
     websocket_api.async_register_command(hass, handle_get_recorder_impact)
     websocket_api.async_register_command(hass, handle_get_history_diff)
-    _LOGGER.info("✅ WebSocket handlers registered")
+    _LOGGER.info("[HACA] WebSocket handlers registered")
 
 
 @websocket_api.websocket_command(
@@ -86,15 +102,10 @@ async def handle_get_data(
 ) -> None:
     """Handle get data request with optional pagination."""
     try:
-        # Get coordinator data
-        entries = hass.config_entries.async_entries(DOMAIN)
-        if not entries:
+        entry, data = _get_entry_data(hass)
+        if not entry:
             connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
             return
-
-        entry = entries[0]
-        data = hass.data[DOMAIN].get(entry.entry_id)
-        
         if not data:
             connection.send_error(msg["id"], "no_data", "No data available")
             return
@@ -222,13 +233,10 @@ async def handle_scan_all(
     le coordinator a fini, ce que le frontend écoute via subscribeEvents.
     """
     try:
-        entries = hass.config_entries.async_entries(DOMAIN)
-        if not entries:
+        entry, data = _get_entry_data(hass)
+        if not entry:
             connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
             return
-
-        entry = entries[0]
-        data = hass.data[DOMAIN].get(entry.entry_id)
         if not data:
             connection.send_error(msg["id"], "no_data", "No H.A.C.A data found")
             return
@@ -283,14 +291,12 @@ async def handle_preview_fix(
 ) -> None:
     """Handle preview fix request."""
     try:
-        entries = hass.config_entries.async_entries(DOMAIN)
-        if not entries:
+        entry, data = _get_entry_data(hass)
+        if not entry:
             connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
             return
 
-        entry = entries[0]
-        data = hass.data[DOMAIN].get(entry.entry_id)
-        refactoring = data.get("refactoring_assistant")
+        refactoring = data.get("refactoring_assistant") if data else None
         
         if not refactoring:
             connection.send_error(msg["id"], "no_refactoring", "Refactoring module not available")
@@ -332,14 +338,12 @@ async def handle_apply_fix(
 ) -> None:
     """Handle apply fix request."""
     try:
-        entries = hass.config_entries.async_entries(DOMAIN)
-        if not entries:
+        entry, data = _get_entry_data(hass)
+        if not entry:
             connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
             return
 
-        entry = entries[0]
-        data = hass.data[DOMAIN].get(entry.entry_id)
-        refactoring = data.get("refactoring_assistant")
+        refactoring = data.get("refactoring_assistant") if data else None
         
         if not refactoring:
             connection.send_error(msg["id"], "no_refactoring", "Refactoring module not available")
@@ -377,14 +381,12 @@ async def handle_list_backups(
 ) -> None:
     """Handle list backups request."""
     try:
-        entries = hass.config_entries.async_entries(DOMAIN)
-        if not entries:
+        entry, data = _get_entry_data(hass)
+        if not entry:
             connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
             return
 
-        entry = entries[0]
-        data = hass.data[DOMAIN].get(entry.entry_id)
-        refactoring = data.get("refactoring_assistant")
+        refactoring = data.get("refactoring_assistant") if data else None
         
         if not refactoring:
             connection.send_error(msg["id"], "no_refactoring", "Refactoring module not available")
@@ -420,14 +422,12 @@ async def handle_restore_backup(
 ) -> None:
     """Handle restore backup request."""
     try:
-        entries = hass.config_entries.async_entries(DOMAIN)
-        if not entries:
+        entry, data = _get_entry_data(hass)
+        if not entry:
             connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
             return
 
-        entry = entries[0]
-        data = hass.data[DOMAIN].get(entry.entry_id)
-        refactoring = data.get("refactoring_assistant")
+        refactoring = data.get("refactoring_assistant") if data else None
         
         if not refactoring:
             connection.send_error(msg["id"], "no_refactoring", "Refactoring module not available")
@@ -548,12 +548,16 @@ async def handle_purge_recorder_orphans(
 
                     # Delete orphaned state_attributes (only after states are gone)
                     if attr_ids:
-                        placeholders = ",".join(str(a) for a in attr_ids)
+                        # Use bound parameters to prevent SQL injection.
+                        # Build named placeholders :a0, :a1, … for each id.
+                        ph = ", ".join(f":a{i}" for i in range(len(attr_ids)))
+                        params = {f"a{i}": aid for i, aid in enumerate(attr_ids)}
                         r = session.execute(
                             text(
                                 f"DELETE FROM state_attributes "
-                                f"WHERE attributes_id IN ({placeholders})"
-                            )
+                                f"WHERE attributes_id IN ({ph})"
+                            ),
+                            params,
                         )
                         counts["state_attributes"] = r.rowcount
 
@@ -951,6 +955,12 @@ async def handle_apply_field_fix(
     Pas de sauvegarde — l'opération est non-destructive (on ajoute/modifie un champ texte).
     Recharge les automations/scripts après modification.
     """
+    # Rate-limit: prevent spamming YAML writes
+    user_id = connection.user.id if connection.user else "anon"
+    if _rate_limited(f"apply_field_fix:{user_id}"):
+        connection.send_error(msg["id"], "rate_limited", "Too many requests — please wait a moment")
+        return
+
     from pathlib import Path as _Path
     import yaml as _yaml
 
@@ -1132,7 +1142,7 @@ async def handle_chat(
             except Exception:
                 pass
 
-            _LOGGER.info("[HACA Chat] ✓ %s", agent_id)
+            _LOGGER.info("[HACA Chat] OK %s", agent_id)
             connection.send_result(
                 msg["id"],
                 {"reply": reply, "conversation_id": returned_conv_id, "agent_id": agent_id},
@@ -1163,11 +1173,10 @@ async def handle_get_options(
     msg: dict[str, Any],
 ) -> None:
     """Retourne les options courantes de l'intégration HACA."""
-    entries = hass.config_entries.async_entries(DOMAIN)
-    if not entries:
+    entry, _ = _get_entry_data(hass)
+    if not entry:
         connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
         return
-    entry = entries[0]
     opts = dict(entry.options)
     # Masquer le token pour ne pas l'exposer au frontend (sécurité)
     if opts.get("mcp_ha_token"):
@@ -1189,11 +1198,16 @@ async def handle_save_options(
     msg: dict[str, Any],
 ) -> None:
     """Sauvegarde les options HACA depuis le panel (remplace le flux options HA natif)."""
-    entries = hass.config_entries.async_entries(DOMAIN)
-    if not entries:
+    # Rate-limit: prevent spamming config writes
+    user_id = connection.user.id if connection.user else "anon"
+    if _rate_limited(f"save_options:{user_id}"):
+        connection.send_error(msg["id"], "rate_limited", "Too many requests — please wait a moment")
+        return
+
+    entry, _ = _get_entry_data(hass)
+    if not entry:
         connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
         return
-    entry = entries[0]
 
     new_options = dict(entry.options)
     incoming = msg.get("options", {})
@@ -1442,14 +1456,26 @@ async def handle_record_fix_outcome(
 #  v1.5.0 — WebSocket handlers
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def _get_coordinator(hass):
-    """Helper: return coordinator data or None."""
+def _get_entry_data(hass) -> tuple:
+    """Return (entry, entry_data_dict) or (None, None).
+
+    Centralises the repeated entries[0] + hass.data[DOMAIN][entry_id] lookup
+    that appears in almost every WebSocket handler.
+    """
     entries = hass.config_entries.async_entries(DOMAIN)
     if not entries:
         return None, None
     entry = entries[0]
-    coord = hass.data.get(DOMAIN, {}).get(entry.entry_id, {}).get("coordinator")
-    return entry, coord
+    data = hass.data.get(DOMAIN, {}).get(entry.entry_id)
+    return entry, data
+
+
+def _get_coordinator(hass):
+    """Helper: return (entry, coordinator) or (None, None)."""
+    entry, data = _get_entry_data(hass)
+    if not data:
+        return None, None
+    return entry, data.get("coordinator")
 
 
 # ── Battery predictions ────────────────────────────────────────────────────────

@@ -105,15 +105,77 @@ class TestHealthScoreRatioAwareness:
 
 
 class TestHealthScoreCaps:
-    def test_automation_cap_at_30(self):
+    def test_automation_cap_at_25(self):
         huge = make_issues({"high": 1000})
         score = calculate_health_score(huge, [], total_entities=10, total_automations=5)
-        assert score >= 100 - 30
+        assert score >= 100 - 25 - 1  # allow rounding
 
-    def test_dashboard_cap_at_10(self):
+    def test_dashboard_cap_at_3(self):
         huge = make_issues({"high": 1000})
         score = calculate_health_score([], [], None, None, huge, total_entities=10)
-        assert score >= 100 - 10
+        assert score >= 100 - 3 - 1  # allow rounding
+
+
+class TestHealthScoreNewCategories:
+    """Test the new keyword-only parameters added in v3."""
+
+    def test_helper_issues_reduce_score(self):
+        s_base = calculate_health_score([], [], total_entities=100)
+        s_help = calculate_health_score([], [], total_entities=100,
+                                        helper_issues=make_issues({"high": 5}))
+        assert s_help < s_base
+
+    def test_compliance_issues_reduce_score(self):
+        s_base = calculate_health_score([], [], total_entities=100)
+        s_comp = calculate_health_score([], [], total_entities=100,
+                                        compliance_issues=make_issues({"medium": 10}))
+        assert s_comp < s_base
+
+    def test_script_issues_reduce_score(self):
+        s_base = calculate_health_score([], [], total_entities=100)
+        s_scr = calculate_health_score([], [], total_entities=100,
+                                       script_issues=make_issues({"high": 3}))
+        assert s_scr < s_base
+
+    def test_scene_issues_reduce_score(self):
+        s_base = calculate_health_score([], [], total_entities=100)
+        s_scn = calculate_health_score([], [], total_entities=100,
+                                       scene_issues=make_issues({"medium": 5}))
+        assert s_scn < s_base
+
+    def test_blueprint_issues_reduce_score(self):
+        s_base = calculate_health_score([], [], total_entities=100)
+        s_bp = calculate_health_score([], [], total_entities=100,
+                                      blueprint_issues=make_issues({"low": 10}))
+        assert s_bp < s_base
+
+    def test_all_categories_together(self):
+        """Score with issues in all categories should be lower than any single."""
+        issues = make_issues({"high": 2, "medium": 3})
+        s_one = calculate_health_score(issues, [], total_entities=200)
+        s_all = calculate_health_score(
+            issues, issues, issues, issues, issues,
+            total_entities=200, total_automations=50,
+            helper_issues=issues,
+            compliance_issues=issues,
+            script_issues=issues,
+            scene_issues=issues,
+            blueprint_issues=issues,
+        )
+        assert s_all < s_one
+
+    def test_none_kwargs_backward_compat(self):
+        """Passing None for new kwargs should not crash."""
+        score = calculate_health_score(
+            [], [], None, None, None,
+            total_entities=100,
+            helper_issues=None,
+            compliance_issues=None,
+            script_issues=None,
+            scene_issues=None,
+            blueprint_issues=None,
+        )
+        assert score == 100
 
 
 class TestHealthScoreMonotonicity:

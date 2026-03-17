@@ -64,6 +64,18 @@
       },
       "dashboard_issues": {
         "name": "Проблемы Панели Управления"
+      },
+      "helper_issues": {
+        "name": "Проблемы хелперов"
+      },
+      "compliance_issues": {
+        "name": "Проблемы соответствия"
+      },
+      "battery_alerts": {
+        "name": "Предупреждения батарей"
+      },
+      "recorder_orphans": {
+        "name": "Сироты Recorder"
       }
     }
   },
@@ -92,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Аудитор конфигураций Home Assistant",
-    "version": "V1.5.2",
+    "version": "V1.6.0",
     "buttons": {
       "scan_all": "Полное сканирование",
       "automations": "Автоматизации",
@@ -506,19 +518,22 @@
       "placeholder": "Задайте вопрос…",
       "send": "Отправить",
       "examples_title": "Example prompts",
-      "ex_audit": "What's the health of my HA config?",
-      "ex_create_auto": "Create an automation to turn on entry light at sunset",
-      "ex_debug": "Why isn't my morning automation triggering?",
-      "ex_rename": "Rename sensor.temp_salon to 'Living room — Temperature'",
-      "ex_history": "Show history of light.salon since yesterday",
-      "ex_helpers": "List my unused helpers",
-      "ex_backup": "Create a full HA backup",
-      "ex_template": "Test this template: {{ states('sensor.temp') | float > 20 }}",
-      "ex_delete_auto": "Delete the Night light automation",
-      "ex_search": "Which automations use sensor.pir_salon?",
-      "ex_dashboard": "Add a weather card to my dashboard",
-      "ex_system": "What HA updates are available?",
-      "rate_limit": "Подождите {wait}с перед следующим сообщением."
+      "ex_audit": "Каково состояние моей конфигурации HA?",
+      "ex_create_auto": "Создай автоматизацию для включения света у входа на закате",
+      "ex_debug": "Почему моя утренняя автоматизация не срабатывает?",
+      "ex_rename": "Переименуй sensor.temp_salon в 'Гостиная — Температура'",
+      "ex_history": "Покажи историю light.salon с вчерашнего дня",
+      "ex_helpers": "Покажи список моих неиспользуемых помощников",
+      "ex_backup": "Создай полную резервную копию HA",
+      "ex_template": "Протестируй этот шаблон: {{ states('sensor.temp') | float > 20 }}",
+      "ex_delete_auto": "Удали автоматизацию Ночной свет",
+      "ex_search": "Какие автоматизации используют sensor.pir_salon?",
+      "ex_dashboard": "Добавь карточку погоды на мой дашборд",
+      "ex_system": "Какие обновления HA доступны?",
+      "rate_limit": "Подождите {wait}с перед следующим сообщением.",
+      "setup_title": "Требуется настройка",
+      "setup_steps": "Настройки → Голосовые помощники → [ваш агент] → ⚙️ → выберите HACA",
+      "setup_link": "Открыть голосовые помощники"
     },
     "misc": {
       "run_scan_scores": "Запустите сканирование, чтобы увидеть оценки",
@@ -1521,5 +1536,11 @@
     "helper_no_icon": "Helper '{name}' has no icon. Add one in Settings → Helpers.",
     "helper_no_area": "Helper '{name}' has no area. Assign it in Settings → Helpers.",
     "entity_no_area": "Entity '{name}' ({entity_id}) has no area. Assign via Settings → Devices."
+  },
+  "issues": {
+    "generic_high_issue": {
+      "title": "HACA: {type} — {entity}",
+      "description": "{message}\n\nOpen the HACA panel for details and available fixes."
+    }
   }
 }

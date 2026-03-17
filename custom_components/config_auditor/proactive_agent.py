@@ -1,4 +1,4 @@
-"""H.A.C.A — Agent IA Proactif (Module 15) v1.4.0.
+"""H.A.C.A — Agent IA Proactif (Module 15) v1.6.0.
 
 Agent en arrière-plan qui :
 - Analyse les nouveaux événements HA significatifs
@@ -30,11 +30,16 @@ _PREFS_KEY = "user_preferences"  # sous hass.data[DOMAIN][entry_id]
 _WEEKLY_REPORT_KEY = "last_weekly_report"
 
 # Événements HA à surveiller pour l'analyse contextuelle
+# NOTE: call_service was removed — it fires on every single service call
+# (hundreds/minute on large setups) but the agent only counts occurrences
+# without acting on them, causing unnecessary CPU/memory overhead.
+# Replaced with more targeted registry events for config change detection.
 MONITORED_HA_EVENTS = [
     "homeassistant_started",
     "automation_triggered",
     "script_started",
-    "call_service",
+    "automation_reloaded",
+    "scene_reloaded",
 ]
 
 # Seuils de corrélation

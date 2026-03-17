@@ -64,6 +64,18 @@
       },
       "dashboard_issues": {
         "name": "Instrumentpanelsproblem"
+      },
+      "helper_issues": {
+        "name": "Hjälpproblem"
+      },
+      "compliance_issues": {
+        "name": "Efterlevnadsproblem"
+      },
+      "battery_alerts": {
+        "name": "Batterivarningar"
+      },
+      "recorder_orphans": {
+        "name": "Recorder-föräldralösa"
       }
     }
   },
@@ -92,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant konfigurationsgranskare",
-    "version": "V1.5.2",
+    "version": "V1.6.0",
     "buttons": {
       "scan_all": "Fullständig skanning",
       "automations": "Automationer",
@@ -506,19 +518,22 @@
       "placeholder": "Ställ din fråga…",
       "send": "Skicka",
       "examples_title": "Example prompts",
-      "ex_audit": "What's the health of my HA config?",
-      "ex_create_auto": "Create an automation to turn on entry light at sunset",
-      "ex_debug": "Why isn't my morning automation triggering?",
-      "ex_rename": "Rename sensor.temp_salon to 'Living room — Temperature'",
-      "ex_history": "Show history of light.salon since yesterday",
-      "ex_helpers": "List my unused helpers",
-      "ex_backup": "Create a full HA backup",
-      "ex_template": "Test this template: {{ states('sensor.temp') | float > 20 }}",
-      "ex_delete_auto": "Delete the Night light automation",
-      "ex_search": "Which automations use sensor.pir_salon?",
-      "ex_dashboard": "Add a weather card to my dashboard",
-      "ex_system": "What HA updates are available?",
-      "rate_limit": "Vänta {wait}s innan nästa meddelande."
+      "ex_audit": "Vad är hälsotillståndet för min HA-konfiguration?",
+      "ex_create_auto": "Skapa en automatisering för att tända entréljuset vid solnedgång",
+      "ex_debug": "Varför triggas inte min morgonautomatisering?",
+      "ex_rename": "Byt namn på sensor.temp_salon till 'Vardagsrum — Temperatur'",
+      "ex_history": "Visa historik för light.salon sedan igår",
+      "ex_helpers": "Visa mina oanvända hjälpare",
+      "ex_backup": "Skapa en fullständig HA-säkerhetskopia",
+      "ex_template": "Testa den här mallen: {{ states('sensor.temp') | float > 20 }}",
+      "ex_delete_auto": "Ta bort automatiseringen Nattlampa",
+      "ex_search": "Vilka automatiseringar använder sensor.pir_salon?",
+      "ex_dashboard": "Lägg till ett väderkort på min instrumentpanel",
+      "ex_system": "Vilka HA-uppdateringar finns tillgängliga?",
+      "rate_limit": "Vänta {wait}s innan nästa meddelande.",
+      "setup_title": "Konfiguration krävs",
+      "setup_steps": "Inställningar → Röstassistenter → [din agent] → ⚙️ → välj HACA",
+      "setup_link": "Öppna Röstassistenter"
     },
     "misc": {
       "run_scan_scores": "Kör en skanning för att se poäng",
@@ -1521,5 +1536,11 @@
     "helper_no_icon": "Helper '{name}' has no icon. Add one in Settings → Helpers.",
     "helper_no_area": "Helper '{name}' has no area. Assign it in Settings → Helpers.",
     "entity_no_area": "Entity '{name}' ({entity_id}) has no area. Assign via Settings → Devices."
+  },
+  "issues": {
+    "generic_high_issue": {
+      "title": "HACA: {type} — {entity}",
+      "description": "{message}\n\nOpen the HACA panel for details and available fixes."
+    }
   }
 }

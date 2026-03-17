@@ -64,6 +64,18 @@
       },
       "dashboard_issues": {
         "name": "Dashboard Issues"
+      },
+      "helper_issues": {
+        "name": "Helper Issues"
+      },
+      "compliance_issues": {
+        "name": "Compliance Issues"
+      },
+      "battery_alerts": {
+        "name": "Battery Alerts"
+      },
+      "recorder_orphans": {
+        "name": "Recorder Orphans"
       }
     }
   },
@@ -92,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant Config Auditor",
-    "version": "V1.5.2",
+    "version": "V1.6.0",
     "buttons": {
       "scan_all": "Full Scan",
       "automations": "Automations",
@@ -518,7 +530,10 @@
       "ex_search": "Which automations use sensor.pir_salon?",
       "ex_dashboard": "Add a weather card to my dashboard",
       "ex_system": "What HA updates are available?",
-      "rate_limit": "Please wait {wait}s before sending another message."
+      "rate_limit": "Please wait {wait}s before sending another message.",
+      "setup_title": "Setup required",
+      "setup_steps": "Settings → Voice Assistants → [your agent] → ⚙️ → select HACA",
+      "setup_link": "Open Voice Assistants"
     },
     "misc": {
       "run_scan_scores": "Run a scan to see scores",
@@ -1521,5 +1536,11 @@
     "helper_no_icon": "Helper '{name}' has no icon. Add one in Settings → Helpers.",
     "helper_no_area": "Helper '{name}' has no area. Assign it in Settings → Helpers.",
     "entity_no_area": "Entity '{name}' ({entity_id}) has no area. Assign via Settings → Devices."
+  },
+  "issues": {
+    "generic_high_issue": {
+      "title": "HACA: {type} — {entity}",
+      "description": "{message}\n\nOpen the HACA panel for details and available fixes."
+    }
   }
 }

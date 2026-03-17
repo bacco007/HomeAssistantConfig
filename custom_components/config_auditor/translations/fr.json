@@ -64,6 +64,18 @@
       },
       "dashboard_issues": {
         "name": "Problèmes Dashboard"
+      },
+      "helper_issues": {
+        "name": "Problèmes helpers"
+      },
+      "compliance_issues": {
+        "name": "Problèmes conformité"
+      },
+      "battery_alerts": {
+        "name": "Alertes batteries"
+      },
+      "recorder_orphans": {
+        "name": "Orphelins Recorder"
       }
     }
   },
@@ -92,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Auditeur de configuration Home Assistant",
-    "version": "V1.5.2",
+    "version": "V1.6.0",
     "buttons": {
       "scan_all": "Scan Complet",
       "automations": "Automatisations",
@@ -518,7 +530,10 @@
       "ex_search": "Quelles automations utilisent sensor.pir_salon ?",
       "ex_dashboard": "Ajoute une carte météo à mon dashboard",
       "ex_system": "Quelles mises à jour HA sont disponibles ?",
-      "rate_limit": "Attendez {wait}s avant le prochain message."
+      "rate_limit": "Attendez {wait}s avant le prochain message.",
+      "setup_title": "Configuration requise",
+      "setup_steps": "Paramètres → Assistants vocaux → [votre agent] → ⚙️ → sélectionnez HACA",
+      "setup_link": "Ouvrir les Assistants vocaux"
     },
     "misc": {
       "run_scan_scores": "Lancez un scan pour voir les scores",
@@ -1521,5 +1536,11 @@
     "helper_no_icon": "Le helper '{name}' n'a pas d'icône. Ajoutez-en une dans Paramètres → Helpers.",
     "helper_no_area": "Le helper '{name}' n'a pas de zone. Assignez-en une dans Paramètres → Helpers.",
     "entity_no_area": "L'entité '{name}' ({entity_id}) n'a pas de zone. Assignez via Paramètres → Appareils."
+  },
+  "issues": {
+    "generic_high_issue": {
+      "title": "HACA : {type} — {entity}",
+      "description": "{message}\n\nOuvrez le panneau HACA pour les détails et correctifs disponibles."
+    }
   }
 }

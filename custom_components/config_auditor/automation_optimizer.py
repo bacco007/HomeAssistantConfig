@@ -282,9 +282,10 @@ class AutomationOptimizer:
         ) if blueprints else "  (aucun blueprint installé)"
 
         _lang = self.hass.data.get("config_auditor", {}).get("user_language") or self.hass.config.language or "en"
-        import json as _j; from pathlib import Path as _pp
         try:
-            _ap = _j.loads((_pp(__file__).parent / "translations" / f"{_lang}.json").read_text(encoding="utf-8")).get("ai_prompts", {})
+            from . import _TS_CACHE  # noqa: PLC0415
+            _cache = _TS_CACHE.get(_lang) or _TS_CACHE.get("en") or {}
+            _ap = _cache.get("ai_prompts", {})
         except Exception:
             _ap = {}
         _tmpl = _ap.get("optimizer_system", "Optimise this automation:\n\n{content}")

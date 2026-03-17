@@ -46,6 +46,18 @@
     "sensor": {
       "dashboard_issues": {
         "name": "Dashboard Issues"
+      },
+      "helper_issues": {
+        "name": "Helper Issues"
+      },
+      "compliance_issues": {
+        "name": "Compliance Issues"
+      },
+      "battery_alerts": {
+        "name": "Battery Alerts"
+      },
+      "recorder_orphans": {
+        "name": "Recorder Orphans"
       }
     }
   },
@@ -87,5 +99,11 @@
     "verify_triggers_restrictive": "Check if triggers are too restrictive, or if the automation is still needed",
     "probable_duplicate_automation": "Probable duplicate at {pct}% similarity with \"{other}\" (Jaccard of triggers/actions)",
     "review_probable_duplicate": "Compare with \"{other}\" and merge or remove the duplicate"
+  },
+  "issues": {
+    "generic_high_issue": {
+      "title": "HACA: {type} — {entity}",
+      "description": "{message}\n\nOpen the HACA panel for details and available fixes."
+    }
   }
 }

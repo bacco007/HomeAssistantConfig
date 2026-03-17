@@ -1,6 +1,6 @@
 """Health score calculation for H.A.C.A.
 
-v2: ratio-based formula with per-category caps.
+v3: ratio-based formula with per-category caps — all issue types included.
 """
 from __future__ import annotations
 
@@ -16,49 +16,48 @@ def calculate_health_score(
     *,
     total_entities: int = 0,
     total_automations: int = 0,
+    helper_issues: list[dict[str, Any]] | None = None,
+    compliance_issues: list[dict[str, Any]] | None = None,
+    script_issues: list[dict[str, Any]] | None = None,
+    scene_issues: list[dict[str, Any]] | None = None,
+    blueprint_issues: list[dict[str, Any]] | None = None,
 ) -> int:
-    """Calculate health score v2 — ratio-aware, capped per category.
+    """Calculate health score v3 — ratio-aware, capped per category.
 
-    Design goals vs v1
-    ------------------
+    Design goals
+    ------------
     • Context-aware: 20 issues in a 2000-entity install ≠ 20 issues in a
       20-entity install.  We normalize weight by the size of the config.
     • Bounded: a single burst category (e.g. 500 dashboard warnings) cannot
-      wipe the score; each category is capped at 25 penalty points.
+      wipe the score; each category is capped.
     • Floor: score never goes below 20 even on catastrophic configs,
       so users are never demotivated by a zero.
+    • Complete: all issue categories contribute to the score.
 
     Weights
     -------
     severity  : high=5, medium=3, low=1
-    category  : automation/entity (full) — performance/security (½) — dashboard (¼)
+    category  : automation/entity/script (full) — performance/security (½)
+                — helper/scene/blueprint/compliance/dashboard (¼)
 
-    Formula
-    -------
-    For each category c:
-        raw_weight_c  = Σ severity_weight(issue)   for issue in c
-        ratio_c       = raw_weight_c / max(denominator, 1)
-        penalty_c     = min(ratio_c × 100, CAP_c)
-
-    total_penalty = Σ penalty_c
-    score         = max(20, round(100 - total_penalty))
-
-    denominator   = max(total_entities + total_automations, 10)
-                    (floor of 10 prevents division-by-zero on empty installs)
-
-    Category caps
-    -------------
-    automation : 30 pts   (primary quality signal)
-    entity     : 25 pts
-    performance: 15 pts   (half weight already baked in)
-    security   : 20 pts   (security matters, but rarely widespread)
-    dashboard  : 10 pts   (dashboard issues are often cosmetic)
+    Category caps (total max penalty = 100)
+    ----------------------------------------
+    automation  : 25 pts   (primary quality signal)
+    entity      : 20 pts
+    script      : 10 pts
+    performance : 12 pts   (half weight baked in)
+    security    : 15 pts   (security matters, but rarely widespread)
+    helper      :  5 pts   (often cosmetic — unused helpers)
+    scene       :  3 pts   (rarely critical)
+    blueprint   :  3 pts   (rarely critical)
+    compliance  :  4 pts   (naming/area conventions)
+    dashboard   :  3 pts   (dashboard issues are often cosmetic)
 
     Backward compatibility
     ----------------------
-    The two positional parameters are the same as v1.  All new parameters
-    are keyword-only with safe defaults.  Call-sites that pass all five
-    positional args (including None) continue to work unchanged.
+    The five positional parameters are the same as v2.  All new parameters
+    are keyword-only with None defaults.  Existing call-sites that pass all
+    five positional args (including None) continue to work unchanged.
     """
     severity_weights: dict[str, int] = {"high": 5, "medium": 3, "low": 1}
 
@@ -74,18 +73,17 @@ def calculate_health_score(
         w = _weight(issues, divisor)
         return min((w / denominator) * 100, cap)
 
-    auto_list  = list(automation_issues)
-    ent_list   = list(entity_issues)
-    perf_list  = list(performance_issues or [])
-    sec_list   = list(security_issues or [])
-    dash_list  = list(dashboard_issues or [])
-
     penalty = (
-        _penalty(auto_list,  1.0, 30.0)   # automation  — full weight, cap 30
-        + _penalty(ent_list,  1.0, 25.0)  # entity      — full weight, cap 25
-        + _penalty(perf_list, 2.0, 15.0)  # performance — half weight, cap 15
-        + _penalty(sec_list,  2.0, 20.0)  # security    — half weight, cap 20
-        + _penalty(dash_list, 4.0, 10.0)  # dashboard   — quarter weight, cap 10
+        _penalty(list(automation_issues),            1.0, 25.0)   # automation  — full weight
+        + _penalty(list(entity_issues),              1.0, 20.0)   # entity      — full weight
+        + _penalty(list(script_issues or []),         1.0, 10.0)  # script      — full weight
+        + _penalty(list(performance_issues or []),    2.0, 12.0)  # performance — half weight
+        + _penalty(list(security_issues or []),       2.0, 15.0)  # security    — half weight
+        + _penalty(list(helper_issues or []),          4.0,  5.0) # helper      — quarter weight
+        + _penalty(list(scene_issues or []),           4.0,  3.0) # scene       — quarter weight
+        + _penalty(list(blueprint_issues or []),       4.0,  3.0) # blueprint   — quarter weight
+        + _penalty(list(compliance_issues or []),      4.0,  4.0) # compliance  — quarter weight
+        + _penalty(list(dashboard_issues or []),       4.0,  3.0) # dashboard   — quarter weight
     )
 
     return max(20, round(100 - penalty))

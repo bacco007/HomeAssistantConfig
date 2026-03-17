@@ -1,4 +1,4 @@
-"""H.A.C.A — Serveur MCP (Model Context Protocol) v1.4.0.
+"""H.A.C.A — Serveur MCP (Model Context Protocol) v1.6.0.
 
 Expose HACA comme un serveur MCP accessible depuis n'importe quel agent IA
 compatible (Claude Code, Cursor, Copilot, etc.) via HTTP + JSON-RPC 2.0.
@@ -38,7 +38,29 @@ _LOGGER = logging.getLogger(__name__)
 
 MCP_PROTOCOL_VERSION = "2024-11-05"
 MCP_SERVER_NAME = "haca-mcp"
-MCP_SERVER_VERSION = "1.4.1"
+MCP_SERVER_VERSION = "1.6.0"
+
+
+def _slugify(text: str, max_length: int = 60) -> str:
+    """Convert a human-readable name to a safe filesystem/entity slug.
+
+    Properly handles accented characters by decomposing Unicode (NFKD)
+    and stripping combining marks:  é→e, ç→c, ñ→n, ü→u, etc.
+
+    Example: "Allumer une lumière avec un capteur de présence"
+           → "allumer_une_lumiere_avec_un_capteur_de_presence"
+    """
+    import unicodedata
+    import re as _re
+    # NFKD decomposition: é → e + combining accent
+    text = unicodedata.normalize("NFKD", text)
+    # Strip combining characters (accents, diacritics)
+    text = "".join(c for c in text if unicodedata.category(c) != "Mn")
+    # Lowercase and replace non-alphanumeric with underscore
+    text = _re.sub(r"[^a-z0-9_]", "_", text.lower())
+    # Collapse multiple underscores and strip edges
+    text = _re.sub(r"_+", "_", text).strip("_")
+    return text[:max_length]
 
 # ─── Tool definitions (schéma JSON Schema) ────────────────────────────────
 
@@ -190,16 +212,33 @@ def _get_coordinator_data(hass: HomeAssistant) -> dict[str, Any]:
         return {}
 
 
+def _issue_stable_id(issue: dict) -> str:
+    """Generate a stable identifier for an issue (entity_id + type).
+
+    Issues produced by HACA analyzers don't carry an 'id' field.
+    This function creates a deterministic key usable by MCP tools.
+    """
+    eid = issue.get("entity_id", "unknown")
+    itype = issue.get("type", "unknown")
+    return f"{eid}|{itype}"
+
+
 def _find_issue_by_id(cdata: dict, issue_id: str) -> dict | None:
-    """Cherche une issue par son id dans toutes les listes."""
+    """Cherche une issue par son stable id ou entity_id dans toutes les listes."""
     all_lists = [
         "automation_issue_list", "entity_issue_list", "performance_issue_list",
         "security_issue_list", "dashboard_issue_list", "compliance_issue_list",
         "script_issue_list", "scene_issue_list", "blueprint_issue_list",
+        "helper_issue_list",
     ]
     for lst_key in all_lists:
         for issue in cdata.get(lst_key, []):
-            if issue.get("id") == issue_id or str(issue.get("id", "")) == issue_id:
+            # Match on generated stable id, or entity_id, or alias
+            if _issue_stable_id(issue) == issue_id:
+                return issue
+            if issue.get("entity_id") == issue_id:
+                return issue
+            if issue.get("alias") == issue_id:
                 return issue
     return None
 
@@ -241,14 +280,14 @@ async def _check_auth(request: web.Request, hass: HomeAssistant) -> str | None:
 
     if not auth_header:
         _LOGGER.warning(
-            "[HACA MCP] ❌ Auth refusée — header Authorization absent (IP: %s %s %s)",
+            "[HACA MCP] Auth refused — header Authorization absent (IP: %s %s %s)",
             client_ip, request.method, request.path,
         )
         return None
 
     if not auth_header.startswith("Bearer "):
         _LOGGER.warning(
-            "[HACA MCP] ❌ Auth refusée — format invalide (attendu 'Bearer <token>') "
+            "[HACA MCP] Auth refused — format invalide (attendu 'Bearer <token>') "
             "(IP: %s, header: %.20s…)", client_ip, auth_header,
         )
         return None
@@ -256,7 +295,7 @@ async def _check_auth(request: web.Request, hass: HomeAssistant) -> str | None:
     token = auth_header[7:]
     if len(token) < 10:
         _LOGGER.warning(
-            "[HACA MCP] ❌ Auth refusée — token trop court (%d chars) (IP: %s)",
+            "[HACA MCP] Auth refused — token trop court (%d chars) (IP: %s)",
             len(token), client_ip,
         )
         return None
@@ -265,20 +304,20 @@ async def _check_auth(request: web.Request, hass: HomeAssistant) -> str | None:
         user = await hass.auth.async_validate_access_token(token)
         if user:
             _LOGGER.info(
-                "[HACA MCP] ✅ Auth acceptée — user=%s IP=%s %s %s",
+                "[HACA MCP] Auth accepted — user=%s IP=%s %s %s",
                 user.id, client_ip, request.method, request.path,
             )
             return user.id
         else:
             _LOGGER.warning(
-                "[HACA MCP] ❌ Auth refusée — token valide mais user=None (expiré ?) "
-                "(token: %.8s… IP: %s)", token, client_ip,
+                "[HACA MCP] Auth refused — token valid but user=None (expired?) "
+                "(token: %.4s… IP: %s)", token, client_ip,
             )
             return None
     except Exception as exc:
         _LOGGER.warning(
-            "[HACA MCP] ❌ Auth erreur — async_validate_access_token a levé: %s "
-            "(token: %.8s… IP: %s)", exc, token, client_ip,
+            "[HACA MCP] Auth error — async_validate_access_token raised: %s "
+            "(token: %.4s… IP: %s)", exc, token, client_ip,
         )
         return None
 
@@ -325,12 +364,12 @@ async def _tool_get_issues(hass: HomeAssistant, params: dict) -> dict:
         "returned": len(issues),
         "issues": [
             {
-                "id": i.get("id", ""),
+                "id": _issue_stable_id(i),
                 "severity": i.get("severity", "low"),
                 "type": i.get("type", ""),
                 "entity_id": i.get("entity_id", i.get("alias", "")),
                 "message": i.get("message", ""),
-                "fixable": i.get("fixable", False),
+                "fixable": i.get("fix_available", False),
             }
             for i in issues
         ],
@@ -339,37 +378,42 @@ async def _tool_get_issues(hass: HomeAssistant, params: dict) -> dict:
 
 async def _tool_get_score(hass: HomeAssistant, params: dict) -> dict:
     cdata = _get_coordinator_data(hass)
+
+    # All issue list keys for severity counting
+    _ALL_LISTS = [
+        "automation_issue_list", "script_issue_list", "scene_issue_list",
+        "blueprint_issue_list", "entity_issue_list", "helper_issue_list",
+        "performance_issue_list", "security_issue_list",
+        "dashboard_issue_list", "compliance_issue_list",
+    ]
+
+    def _count_sev(severity: str) -> int:
+        return sum(
+            1 for lst_key in _ALL_LISTS
+            for i in cdata.get(lst_key, [])
+            if i.get("severity") == severity
+        )
+
     return {
         "health_score": cdata.get("health_score", 0),
         "total_issues": cdata.get("total_issues", 0),
         "by_severity": {
-            "high": sum(
-                1 for lst in ["automation_issue_list", "entity_issue_list",
-                              "performance_issue_list", "security_issue_list",
-                              "compliance_issue_list"]
-                for i in cdata.get(lst, []) if i.get("severity") == "high"
-            ),
-            "medium": sum(
-                1 for lst in ["automation_issue_list", "entity_issue_list",
-                              "performance_issue_list", "security_issue_list",
-                              "compliance_issue_list"]
-                for i in cdata.get(lst, []) if i.get("severity") == "medium"
-            ),
-            "low": sum(
-                1 for lst in ["automation_issue_list", "entity_issue_list",
-                              "performance_issue_list", "security_issue_list",
-                              "compliance_issue_list"]
-                for i in cdata.get(lst, []) if i.get("severity") == "low"
-            ),
+            "high": _count_sev("high"),
+            "medium": _count_sev("medium"),
+            "low": _count_sev("low"),
         },
         "by_category": {
-            "automation": cdata.get("automation_issues", 0),
-            "entity": cdata.get("entity_issues", 0),
+            "automation":  cdata.get("automation_issues", 0),
+            "script":      cdata.get("script_issues", 0),
+            "scene":       cdata.get("scene_issues", 0),
+            "blueprint":   cdata.get("blueprint_issues", 0),
+            "entity":      cdata.get("entity_issues", 0),
+            "helper":      cdata.get("helper_issues", 0),
             "performance": cdata.get("performance_issues", 0),
-            "security": cdata.get("security_issues", 0),
-            "compliance": len(cdata.get("compliance_issue_list", [])),
+            "security":    cdata.get("security_issues", 0),
+            "dashboard":   cdata.get("dashboard_issues", 0),
+            "compliance":  cdata.get("compliance_issues", 0),
         },
-        "last_scan": cdata.get("last_scan", None),
     }
 
 
@@ -408,14 +452,20 @@ async def _tool_get_automation(hass: HomeAssistant, params: dict) -> dict:
 
     try:
         auto_file = Path(hass.config.config_dir) / "automations.yaml"
-        if auto_file.exists():
+        friendly = attrs.get("friendly_name", "")
+
+        def _read_auto_yaml():
+            if not auto_file.exists():
+                return None
             raw = auto_file.read_text(encoding="utf-8")
             automations = yaml.safe_load(raw) or []
             for auto in automations:
                 if str(auto.get("id", "")) == str(auto_id) or \
-                   auto.get("alias", "") == attrs.get("friendly_name", ""):
-                    yaml_content = yaml.dump(auto, allow_unicode=True, default_flow_style=False)
-                    break
+                   auto.get("alias", "") == friendly:
+                    return yaml.dump(auto, allow_unicode=True, default_flow_style=False)
+            return None
+
+        yaml_content = await hass.async_add_executor_job(_read_auto_yaml)
     except Exception as exc:
         _LOGGER.debug("[HACA MCP] YAML read error: %s", exc)
 
@@ -438,12 +488,12 @@ async def _tool_fix_suggestion(hass: HomeAssistant, params: dict) -> dict:
     if not issue:
         return {"error": f"Issue '{issue_id}' not found"}
 
-    if not issue.get("fixable", False):
+    if not issue.get("fix_available", False):
         return {
             "issue_id": issue_id,
             "fixable": False,
             "message": "No automatic fix available for this issue.",
-            "suggestion": issue.get("fix_description", issue.get("message", "")),
+            "suggestion": issue.get("recommendation", issue.get("message", "")),
         }
 
     return {
@@ -451,7 +501,7 @@ async def _tool_fix_suggestion(hass: HomeAssistant, params: dict) -> dict:
         "fixable": True,
         "type": issue.get("type", ""),
         "entity_id": issue.get("entity_id", ""),
-        "suggestion": issue.get("fix_description", "Appliquer la correction automatique"),
+        "suggestion": issue.get("recommendation", "Appliquer la correction automatique"),
         "preview_available": True,
         "note": "Utilisez haca_apply_fix avec dry_run=true pour voir le diff.",
     }
@@ -468,7 +518,7 @@ async def _tool_apply_fix(hass: HomeAssistant, params: dict) -> dict:
     if not issue:
         return {"error": f"Issue '{issue_id}' not found"}
 
-    if not issue.get("fixable", False):
+    if not issue.get("fix_available", False):
         return {"error": "This issue cannot be fixed automatically"}
 
     if dry_run:
@@ -478,7 +528,7 @@ async def _tool_apply_fix(hass: HomeAssistant, params: dict) -> dict:
             "entity_id": issue.get("entity_id", ""),
             "fix_type": issue.get("type", ""),
             "message": "Dry run: no files modified. Set dry_run=false to apply.",
-            "preview": issue.get("fix_description", ""),
+            "preview": issue.get("recommendation", ""),
         }
 
     # Appliquer via le service HA
@@ -914,12 +964,14 @@ async def _tool_ha_create_automation(hass: HomeAssistant, params: dict) -> dict:
         auto_file = Path(hass.config.config_dir) / "automations.yaml"
 
         # Lire les automations existantes
-        existing: list = []
-        if auto_file.exists():
-            raw = await hass.async_add_executor_job(auto_file.read_text, "utf-8")
-            existing = yaml.safe_load(raw) or []
-            if not isinstance(existing, list):
-                existing = []
+        def _read_existing():
+            if not auto_file.exists():
+                return []
+            raw = auto_file.read_text(encoding="utf-8")
+            data = yaml.safe_load(raw) or []
+            return data if isinstance(data, list) else []
+
+        existing: list = await hass.async_add_executor_job(_read_existing)
 
         # Vérifier doublon par alias
         for a in existing:
@@ -939,7 +991,7 @@ async def _tool_ha_create_automation(hass: HomeAssistant, params: dict) -> dict:
             "success": True,
             "id": new_auto["id"],
             "alias": alias,
-            "entity_id": f"automation.{alias.lower().replace(' ', '_')}",
+            "entity_id": f"automation.{_slugify(alias)}",
             "message": f"Automation '{alias}' created and reloaded.",
         }
     except Exception as exc:
@@ -960,10 +1012,15 @@ async def _tool_ha_update_automation(hass: HomeAssistant, params: dict) -> dict:
 
     try:
         auto_file = Path(hass.config.config_dir) / "automations.yaml"
-        if not auto_file.exists():
-            return {"error": "automations.yaml not found"}
 
-        raw = await hass.async_add_executor_job(auto_file.read_text, "utf-8")
+        def _read_auto():
+            if not auto_file.exists():
+                return None
+            return auto_file.read_text(encoding="utf-8")
+
+        raw = await hass.async_add_executor_job(_read_auto)
+        if raw is None:
+            return {"error": "automations.yaml not found"}
         automations = yaml.safe_load(raw) or []
         if not isinstance(automations, list):
             return {"error": "automations.yaml has unexpected format"}
@@ -1210,7 +1267,7 @@ async def _tool_ha_create_script(hass: HomeAssistant, params: dict) -> dict:
     import yaml
     from pathlib import Path
 
-    script_id = params.get("script_id", "").strip().lower().replace(" ", "_")
+    script_id = _slugify(params.get("script_id", "").strip())
     alias = params.get("alias", "").strip()
     sequence = params.get("sequence")
 
@@ -1231,12 +1288,15 @@ async def _tool_ha_create_script(hass: HomeAssistant, params: dict) -> dict:
 
     try:
         scripts_file = Path(hass.config.config_dir) / "scripts.yaml"
-        existing: dict = {}
-        if scripts_file.exists():
-            raw = await hass.async_add_executor_job(scripts_file.read_text, "utf-8")
-            existing = yaml.safe_load(raw) or {}
-            if not isinstance(existing, dict):
-                existing = {}
+
+        def _read_scripts():
+            if not scripts_file.exists():
+                return {}
+            raw = scripts_file.read_text(encoding="utf-8")
+            data = yaml.safe_load(raw) or {}
+            return data if isinstance(data, dict) else {}
+
+        existing: dict = await hass.async_add_executor_job(_read_scripts)
 
         action = "updated" if script_id in existing else "created"
         existing[script_id] = script_def
@@ -1559,7 +1619,7 @@ async def async_setup_mcp_server(hass: HomeAssistant) -> None:
         hass.http.register_view(HacaMcpInfoView(hass))
         hass.data[_MCP_VIEWS_KEY] = True
         _LOGGER.info(
-            "✅ [HACA MCP] Server registered at /api/haca_mcp "
+            "[HACA MCP] Server registered at /api/haca_mcp "
             "(auth: Bearer <HA Long-Lived Access Token>)"
         )
     except Exception as exc:
@@ -2005,10 +2065,15 @@ async def _tool_ha_remove_automation(hass: HomeAssistant, params: dict) -> dict:
 
     try:
         auto_file = Path(hass.config.config_dir) / "automations.yaml"
-        if not auto_file.exists():
-            return {"error": "automations.yaml not found"}
 
-        raw = await hass.async_add_executor_job(auto_file.read_text, "utf-8")
+        def _read_auto():
+            if not auto_file.exists():
+                return None
+            return auto_file.read_text(encoding="utf-8")
+
+        raw = await hass.async_add_executor_job(_read_auto)
+        if raw is None:
+            return {"error": "automations.yaml not found"}
         automations: list = yaml.safe_load(raw) or []
         if not isinstance(automations, list):
             return {"error": "automations.yaml is not a list"}
@@ -2540,21 +2605,21 @@ async def _tool_ha_deep_search(hass: HomeAssistant, params: dict) -> dict:
     scope = params.get("scope", "all")
     config_dir = Path(hass.config.config_dir)
 
-    files_to_search: list[tuple[str, Path]] = []
-    if scope in ("automations", "all"):
-        auto_file = config_dir / "automations.yaml"
-        if auto_file.exists():
-            files_to_search.append(("automation", auto_file))
-    if scope in ("scripts", "all"):
-        script_file = config_dir / "scripts.yaml"
-        if script_file.exists():
-            files_to_search.append(("script", script_file))
-
     matches: list[dict] = []
     query_lower = query.lower()
 
     def _search_files() -> list[dict]:
         """Lecture + recherche dans le thread executor — avec timeout implicite."""
+        files_to_search: list[tuple[str, Path]] = []
+        if scope in ("automations", "all"):
+            auto_file = config_dir / "automations.yaml"
+            if auto_file.exists():
+                files_to_search.append(("automation", auto_file))
+        if scope in ("scripts", "all"):
+            script_file = config_dir / "scripts.yaml"
+            if script_file.exists():
+                files_to_search.append(("script", script_file))
+
         results: list[dict] = []
         for kind, path in files_to_search:
             raw = path.read_text(encoding="utf-8")
@@ -2577,7 +2642,7 @@ async def _tool_ha_deep_search(hass: HomeAssistant, params: dict) -> dict:
                         "type": kind,
                         "alias": alias,
                         "id": item.get("id", ""),
-                        "entity_id": f"{kind}.{str(alias).lower().replace(' ', '_')}",
+                        "entity_id": f"{kind}.{_slugify(str(alias))}",
                         "matches_in": context_lines,
                     })
         return results
@@ -2685,10 +2750,16 @@ async def _tool_ha_config_list_helpers(hass: HomeAssistant, params: dict) -> dic
         reference_corpus = ""
         if include_orphans_check:
             config_dir = Path(hass.config.config_dir)
-            for fname in ("automations.yaml", "scripts.yaml"):
-                fpath = config_dir / fname
-                if fpath.exists():
-                    reference_corpus += await hass.async_add_executor_job(fpath.read_text, "utf-8")
+
+            def _read_corpus():
+                corpus = ""
+                for fname in ("automations.yaml", "scripts.yaml"):
+                    fpath = config_dir / fname
+                    if fpath.exists():
+                        corpus += fpath.read_text(encoding="utf-8")
+                return corpus
+
+            reference_corpus = await hass.async_add_executor_job(_read_corpus)
 
         helpers: list[dict] = []
         for state in hass.states.async_all():
@@ -2733,7 +2804,7 @@ async def _tool_ha_config_set_helper(hass: HomeAssistant, params: dict) -> dict:
         return {"error": f"Unsupported helper_type '{helper_type}'. Choose from: {sorted(_HELPER_DOMAINS - {'schedule'})}"}
 
     # Build helper_id from name if not provided
-    helper_id = params.get("helper_id") or name.lower().replace(" ", "_").replace("-", "_").replace("'", "")
+    helper_id = params.get("helper_id") or _slugify(name)
     full_entity_id = f"{helper_type}.{helper_id}"
     options = params.get("options") or {}
 
@@ -3167,7 +3238,7 @@ async def _tool_ha_config_set_area(hass: HomeAssistant, params: dict) -> dict:
     if not name:
         return {"error": "name is required"}
 
-    area_id = params.get("area_id") or name.lower().replace(" ", "_").replace("-", "_").replace("'", "").replace("é","e").replace("è","e").replace("ê","e").replace("à","a").replace("ù","u").replace("î","i").replace("ô","o").replace("ç","c")
+    area_id = params.get("area_id") or _slugify(name)
     icon = params.get("icon")
     picture = params.get("picture")
 
@@ -3388,10 +3459,9 @@ async def _tool_ha_create_blueprint(hass: HomeAssistant, params: dict) -> dict:
     blueprint_dict.update(bp_body)
 
     # ── Step 4: write the file ────────────────────────────────────────────────
-    slug_name = re.sub(r"[^a-z0-9_]", "_", blueprint_name.lower()).strip("_")
-    slug_name = re.sub(r"_+", "_", slug_name)[:60]
+    slug_name = _slugify(blueprint_name, 60)
     bp_dir = hass.config.path("blueprints", "automation", "haca")
-    os.makedirs(bp_dir, exist_ok=True)
+    await hass.async_add_executor_job(os.makedirs, bp_dir, 0o777, True)
     bp_path = os.path.join(bp_dir, f"{slug_name}.yaml")
 
     bp_yaml = _yaml.dump(
@@ -3649,8 +3719,7 @@ async def _tool_ha_create_scene(hass: HomeAssistant, params: dict) -> dict:
     if not entities or not isinstance(entities, dict):
         return {"error": "entities dict required, e.g. {'light.salon': {'state': 'on', 'brightness': 200}}"}
 
-    slug = re.sub(r"[^a-z0-9_]", "_", name.lower()).strip("_")
-    slug = re.sub(r"_+", "_", slug)
+    slug = _slugify(name)
     scenes_path = hass.config.path("scenes.yaml")
     try:
         _raw_scenes_path = await _async_read_file(hass, scenes_path)
@@ -3964,7 +4033,7 @@ async def _tool_ha_remove_blueprint(hass: HomeAssistant, params: dict) -> dict:
         return {"error": "Cannot delete files outside /config/blueprints/"}
 
     try:
-        os.remove(fpath)
+        await hass.async_add_executor_job(os.remove, fpath)
     except Exception as exc:
         return {"error": f"Failed to delete blueprint: {exc}"}
 
@@ -4007,12 +4076,11 @@ async def _tool_ha_import_blueprint(hass: HomeAssistant, params: dict) -> dict:
 
     # Build filename from blueprint name
     bp_name = data["blueprint"].get("name", "imported_blueprint")
-    slug = re.sub(r"[^a-z0-9_]", "_", bp_name.lower()).strip("_")
-    slug = re.sub(r"_+", "_", slug)[:60]
+    slug = _slugify(bp_name, 60)
     domain = data["blueprint"].get("domain", "automation")
 
     out_dir = hass.config.path("blueprints", domain, "imported")
-    os.makedirs(out_dir, exist_ok=True)
+    await hass.async_add_executor_job(os.makedirs, out_dir, 0o777, True)
     out_path = os.path.join(out_dir, f"{slug}.yaml")
 
     # Store source_url in blueprint metadata
@@ -4543,9 +4611,9 @@ async def _tool_ha_update_config_file(hass: HomeAssistant, params: dict) -> dict
     # Backup automatique avant toute écriture
     await _auto_backup(hass, f"update_config_file:{basename}")
 
-    try:
+    def _do_write():
+        """Blocking file operations — runs in executor."""
         if mode == "append":
-            # Atomic append: lire + réécrire
             try:
                 existing = open(fpath_real, encoding="utf-8").read()
             except FileNotFoundError:
@@ -4554,16 +4622,21 @@ async def _tool_ha_update_config_file(hass: HomeAssistant, params: dict) -> dict
         elif mode == "patch_line":
             old_text = params.get("old_text", "")
             if not old_text:
-                return {"error": "patch_line mode requires old_text"}
+                raise ValueError("patch_line mode requires old_text")
             try:
                 existing = open(fpath_real, encoding="utf-8").read()
             except FileNotFoundError:
-                return {"error": f"File not found: {fpath_real}"}
+                raise FileNotFoundError(f"File not found: {fpath_real}")
             if old_text not in existing:
-                return {"error": f"old_text not found in {filename}"}
+                raise ValueError(f"old_text not found in {filename}")
             _atomic_write(fpath_real, existing.replace(old_text, content, 1))
         else:  # replace
             _atomic_write(fpath_real, content)
+
+    try:
+        await hass.async_add_executor_job(_do_write)
+    except (ValueError, FileNotFoundError) as exc:
+        return {"error": str(exc)}
     except Exception as exc:
         return {"error": f"Failed to write {fpath_real}: {exc}"}
 

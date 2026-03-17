@@ -95,20 +95,24 @@ async def _haca_notify(
 
 _LOGGER = logging.getLogger(__name__)
 
-import json as _json
-from pathlib import Path as _Path
 
-def _ts(hass, section: str, key: str) -> str:
-    """Synchronously get a translation string from the JSON files."""
+def _ts(hass, section: str, key: str, **kwargs) -> str:
+    """Get a translation string from the in-memory cache (zero file I/O).
+
+    Reads from _TS_CACHE which is pre-loaded at integration setup time
+    via _async_preload_ts_cache(). Never touches the filesystem.
+    """
     lang = hass.data.get("config_auditor", {}).get("user_language") or hass.config.language or "en"
     try:
-        p = _Path(__file__).parent / "translations" / f"{lang}.json"
-        if not p.exists():
-            p = _Path(__file__).parent / "translations" / "en.json"
-        data = _json.loads(p.read_text(encoding="utf-8"))
-        return data.get(section, {}).get(key, key)
+        from . import _TS_CACHE  # noqa: PLC0415
+        data = _TS_CACHE.get(lang) or _TS_CACHE.get("en") or {}
     except Exception:
-        return key
+        data = {}
+    val = data.get(section, {}).get(key, key)
+    try:
+        return val.format(**kwargs) if kwargs else val
+    except Exception:
+        return val
 
 
 async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry) -> None:

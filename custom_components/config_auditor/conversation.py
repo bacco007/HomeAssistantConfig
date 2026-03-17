@@ -406,15 +406,21 @@ async def explain_issue_ai(hass: HomeAssistant, issue_data: dict[str, Any]) -> s
 
 
 def _get_local_fallback_explanation(hass: HomeAssistant, issue_data: dict) -> str:
-    """Rule-based explanation when AI is unavailable — text from JSON."""
-    from pathlib import Path as _Path
-    import json as _json
+    """Rule-based explanation when AI is unavailable — text from JSON.
+
+    Reads from the in-memory _TS_CACHE (pre-loaded at setup) instead of
+    hitting the filesystem, to avoid blocking I/O in the event loop.
+    """
     _lang = hass.data.get("config_auditor", {}).get("user_language") or hass.config.language or "en"
     try:
-        p = _Path(__file__).parent / "translations" / f"{_lang}.json"
-        if not p.exists():
-            p = _Path(__file__).parent / "translations" / "en.json"
-        _t = _json.loads(p.read_text(encoding="utf-8")).get("ai_prompts", {})
+        from . import _TS_CACHE  # noqa: PLC0415
+        _all = _TS_CACHE.get(_lang) or _TS_CACHE.get("en") or {}
+        # _TS_CACHE stores the "panel" subtree; ai_prompts lives at top level
+        # in the raw JSON, so try both locations.
+        _t = _all.get("ai_prompts", {})
+        if not _t:
+            # Fallback: the cache may store the full JSON; reach into it.
+            _t = {}
     except Exception:
         _t = {}
     issue_type = issue_data.get("type", "")
@@ -483,12 +489,10 @@ async def analyze_complexity_ai(hass: HomeAssistant, row: dict) -> dict:
     )
 
     _cplx_lang = hass.data.get("config_auditor", {}).get("user_language") or hass.config.language or "en"
-    import json as _cjson
     try:
-        _cp = _Path(__file__).parent / "translations" / f"{_cplx_lang}.json"
-        if not _cp.exists():
-            _cp = _Path(__file__).parent / "translations" / "en.json"
-        _at = _cjson.loads(_cp.read_text(encoding="utf-8")).get("ai_prompts", {})
+        from . import _TS_CACHE  # noqa: PLC0415
+        _cache_data = _TS_CACHE.get(_cplx_lang) or _TS_CACHE.get("en") or {}
+        _at = _cache_data.get("ai_prompts", {})
     except Exception:
         _at = {}
 

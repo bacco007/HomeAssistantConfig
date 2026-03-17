@@ -64,6 +64,18 @@
       },
       "dashboard_issues": {
         "name": "Dashboardproblemen"
+      },
+      "helper_issues": {
+        "name": "Helper problemen"
+      },
+      "compliance_issues": {
+        "name": "Conformiteitsproblemen"
+      },
+      "battery_alerts": {
+        "name": "Batterijwaarschuwingen"
+      },
+      "recorder_orphans": {
+        "name": "Recorder wezen"
       }
     }
   },
@@ -92,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant configuratie-auditor",
-    "version": "V1.5.2",
+    "version": "V1.6.0",
     "buttons": {
       "scan_all": "Volledige scan",
       "automations": "Automatiseringen",
@@ -506,19 +518,22 @@
       "placeholder": "Stel je vraag…",
       "send": "Versturen",
       "examples_title": "Example prompts",
-      "ex_audit": "What's the health of my HA config?",
-      "ex_create_auto": "Create an automation to turn on entry light at sunset",
-      "ex_debug": "Why isn't my morning automation triggering?",
-      "ex_rename": "Rename sensor.temp_salon to 'Living room — Temperature'",
-      "ex_history": "Show history of light.salon since yesterday",
-      "ex_helpers": "List my unused helpers",
-      "ex_backup": "Create a full HA backup",
-      "ex_template": "Test this template: {{ states('sensor.temp') | float > 20 }}",
-      "ex_delete_auto": "Delete the Night light automation",
-      "ex_search": "Which automations use sensor.pir_salon?",
-      "ex_dashboard": "Add a weather card to my dashboard",
-      "ex_system": "What HA updates are available?",
-      "rate_limit": "Wacht {wait}s voor het volgende bericht."
+      "ex_audit": "Wat is de gezondheid van mijn HA-configuratie?",
+      "ex_create_auto": "Maak een automatisering om het inganglicht bij zonsondergang aan te zetten",
+      "ex_debug": "Waarom wordt mijn ochtendroutine niet geactiveerd?",
+      "ex_rename": "Hernoem sensor.temp_salon naar 'Woonkamer — Temperatuur'",
+      "ex_history": "Toon de geschiedenis van light.salon van gisteren",
+      "ex_helpers": "Geef een lijst van mijn ongebruikte helpers",
+      "ex_backup": "Maak een volledige HA-back-up",
+      "ex_template": "Test dit sjabloon: {{ states('sensor.temp') | float > 20 }}",
+      "ex_delete_auto": "Verwijder de automatisering Nachtlampje",
+      "ex_search": "Welke automatiseringen gebruiken sensor.pir_salon?",
+      "ex_dashboard": "Voeg een weerskaart toe aan mijn dashboard",
+      "ex_system": "Welke HA-updates zijn beschikbaar?",
+      "rate_limit": "Wacht {wait}s voor het volgende bericht.",
+      "setup_title": "Configuratie vereist",
+      "setup_steps": "Instellingen → Spraakassistenten → [uw agent] → ⚙️ → selecteer HACA",
+      "setup_link": "Spraakassistenten openen"
     },
     "misc": {
       "run_scan_scores": "Voer een scan uit om scores te zien",
@@ -1521,5 +1536,11 @@
     "helper_no_icon": "Helper '{name}' has no icon. Add one in Settings → Helpers.",
     "helper_no_area": "Helper '{name}' has no area. Assign it in Settings → Helpers.",
     "entity_no_area": "Entity '{name}' ({entity_id}) has no area. Assign via Settings → Devices."
+  },
+  "issues": {
+    "generic_high_issue": {
+      "title": "HACA: {type} — {entity}",
+      "description": "{message}\n\nOpen the HACA panel for details and available fixes."
+    }
   }
 }
