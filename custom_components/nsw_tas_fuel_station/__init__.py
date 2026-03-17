@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import datetime
 import logging
 from typing import TYPE_CHECKING, Any, cast
 
@@ -13,7 +12,7 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .const import DOMAIN
+from .const import DOMAIN, DEFAULT_SCAN_INTERVAL
 from .coordinator import NSWFuelCoordinator
 
 if TYPE_CHECKING:
@@ -24,8 +23,6 @@ if TYPE_CHECKING:
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS = [Platform.SENSOR]
-# Stations appear to update at random, it could be days between price changes
-DEFAULT_SCAN_INTERVAL = datetime.timedelta(minutes=720)
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: NSWFuelConfigEntry) -> bool:
