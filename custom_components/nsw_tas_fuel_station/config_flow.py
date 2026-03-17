@@ -2,21 +2,25 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 import copy
 import logging
 import re
 from typing import TYPE_CHECKING, Any, cast
 
-import homeassistant.helpers.config_validation as cv
-import voluptuous as vol
-from homeassistant import config_entries
-from homeassistant.config_entries import ConfigFlow
-from homeassistant.const import CONF_CLIENT_ID, CONF_CLIENT_SECRET
-from homeassistant.data_entry_flow import FlowResult
-from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers.aiohttp_client import (
-    async_get_clientsession,
+from nsw_tas_fuel import (
+    NSWFuelApiClient,
+    NSWFuelApiClientAuthError,
+    NSWFuelApiClientError,
 )
+import voluptuous as vol
+
+from homeassistant import config_entries
+from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
+from homeassistant.const import CONF_CLIENT_ID, CONF_CLIENT_SECRET
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
+import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.selector import (
     LocationSelector,
     LocationSelectorConfig,
@@ -27,11 +31,6 @@ from homeassistant.helpers.selector import (
     TextSelector,
     TextSelectorConfig,
     TextSelectorType,
-)
-from nsw_tas_fuel import (
-    NSWFuelApiClient,
-    NSWFuelApiClientAuthError,
-    NSWFuelApiClientError,
 )
 
 from .const import (
@@ -81,7 +80,7 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Step 1: no options, just verify credentials and a list of stations near home zone.
 
         Validates:
@@ -182,7 +181,7 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def async_step_station_select(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Step 2: Present user with a list of nearby stations to select from, process selection."""
 
         errors: dict[str, str] = {}
@@ -234,13 +233,12 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
                     self._config_entry, data=new_config_entry
                 )
                 return self.async_abort(reason="nickname_created")
-            else:
-                new_config_entry = _add_stations_to_nickname(
-                    existing_config_entry, nickname, stations_config_entry
-                )
-                new_config_entry = _add_fuel_to_stations(
-                    new_config_entry, nickname, stations_config_entry
-                )
+            new_config_entry = _add_stations_to_nickname(
+                existing_config_entry, nickname, stations_config_entry
+            )
+            new_config_entry = _add_fuel_to_stations(
+                new_config_entry, nickname, stations_config_entry
+            )
 
             self.hass.config_entries.async_update_entry(
                 self._config_entry, data=new_config_entry
@@ -252,7 +250,7 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
     async def async_step_reconfigure(
         self,
         user_input: dict[str, Any] | None = None,
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Reconfigure an existing config entry.
 
         Supports adding a nickname/location, adding a station to a nickname,
@@ -282,7 +280,7 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def _create_new_config_entry(
         self, nickname: str, selected_stations: list[int]
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Create a config entry for NSW Fuel Check integration.
 
         Store metadata from API to save coordinator additional API calls.
@@ -326,14 +324,14 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
             }
         )
 
-        config_entry = {}
+        config_entry: dict[str, Any] = {}
 
         if user_input:
             config_entry = user_input
         else:
             entries = self._async_current_entries()
             if entries:
-                config_entry = entries[0].data
+                config_entry = dict(entries[0].data)
 
         return self.add_suggested_values_to_schema(schema, config_entry)
 
@@ -375,7 +373,7 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def async_step_advanced_options(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Show reconfigure/advanced options step.
 
         Choose non-default or additional nickname,
@@ -401,8 +399,8 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
         except ValueError as err:
             errors["base"] = str(err)
 
-        # Schema ensures validity
-        fuel_type = user_input.get(CONF_FUEL_TYPE)
+        # Schema enforces fuel type.
+        fuel_type = cast(str, user_input[CONF_FUEL_TYPE])
 
         if errors:
             return self.async_show_form(
@@ -576,7 +574,7 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
 
 
 def _create_nickname_with_stations(
-    entry: dict,
+    entry: Mapping[str, Any],
     nickname: str,
     location: dict,
     stations: list[dict],
@@ -607,7 +605,7 @@ def _create_nickname_with_stations(
 
 
 def _add_stations_to_nickname(
-    entry: dict,
+    entry: Mapping[str, Any],
     nickname: str,
     stations: list[dict],
 ) -> dict:
@@ -647,13 +645,13 @@ def _add_stations_to_nickname(
 
 
 def _add_fuel_to_stations(
-    entry: dict,
+    entry: Mapping[str, Any],
     nickname: str,
     stations: list[dict],
 ) -> dict:
     """Add fuel type to stations."""
 
-    new_entry = copy.deepcopy(entry)
+    new_entry = copy.deepcopy(dict(entry))
     nicknames = dict(new_entry.get("nicknames", {}))
 
     if nickname not in nicknames:

@@ -1,45 +1,45 @@
 {
   "config": {
-    "step": {
-      "user": {
-        "title": "Setup NSW Fuel Check",
-        "description": "Visit api.nsw.gov.au, subscribe to the FuelCheck API (free) and create an app (any name) to obtain your API Key and Secret.\n\nAPI and data provided by NSW Fuel Check, Tasmanian data provided by Fuel Check TAS.",
-        "data": {
-          "client_id": "API Key",
-          "client_secret": "API Secret"
-        }
-      },
-      "advanced_options": {
-        "title": "Advanced Selection",
-        "description": "Accept the \"Home\" location nickname or choose a new name such as \"Work\" to group fuel stations by location.\n\nYou can create multiple locations by using \"Reconfigure\" on the integration page and choosing a new nickname here. To add stations to an existing nickname/location, just enter the nickname. To create a trip e.g. \"Trip to work\" use the same nickname and multiple locations.",
-        "data": {
-          "nickname": "Location nickname",
-          "location": "Select a location",
-          "fuel_type": "To search for a station with a specific fuel, select from the dropdown."
-        }
-      },
-      "station_select": {
-        "title": "Select Stations",
-        "description": "Select your favorite stations then **Submit**. You can select multiple stations before **Submit**.",
-        "data": {
-          "selected_station_codes": "Click to select your favorite stations"
-        }
-      }
+    "abort": {
+      "already_configured": "The NSW Fuel Check integration is already set up.",
+      "nickname_created": "Successfully created new nickname/location with selected stations.",
+      "no_available_stations": "Either you have already configured all nearby stations or try Add Service again with a different location.",
+      "reconfigured": "Successfully added station(s) to existing nickname/location, or fuel to existing station."
     },
     "error": {
       "auth": "NSW Fuel API Key or API Secret is wrong.",
       "connection": "Error connecting to the server. Check logs.",
       "invalid_coordinates": "The latitude or longitude is invalid or outside NSW/ACT/TAS.",
-      "unknown": "Unknown error occurred.",
-      "no_stations": "Please use the drop down to select at least one station.",
       "invalid_nickname": "Invalid nickname, use letters, numbers '-' and '_' only.",
-      "sensor_exists": "You have tried to configure an existing sensor for {station} ({fuel}). Choose a different station or fuel type."
+      "no_stations": "Please use the drop down to select at least one station.",
+      "sensor_exists": "You have tried to configure an existing sensor for {station} ({fuel}). Choose a different station or fuel type.",
+      "unknown": "Unknown error occurred."
     },
-    "abort": {
-      "already_configured": "The NSW Fuel Check integration is already set up.",
-      "no_available_stations": "Either you have already configured all nearby stations or try Add Service again with a different location.",
-      "nickname_created": "Successfully created new nickname/location with selected stations.",
-      "reconfigured": "Successfully added station(s) to existing nickname/location, or fuel to existing station."
+    "step": {
+      "advanced_options": {
+        "data": {
+          "fuel_type": "To search for a station with a specific fuel, select from the dropdown.",
+          "location": "Select a location",
+          "nickname": "Location nickname"
+        },
+        "description": "Accept the \"Home\" location nickname or choose a new name such as \"Work\" to group fuel stations by location.\n\nYou can create multiple locations by using \"Reconfigure\" on the integration page and choosing a new nickname here. To add stations to an existing nickname/location, just enter the nickname. To create a trip e.g. \"Trip to work\" use the same nickname and multiple locations.",
+        "title": "Advanced Selection"
+      },
+      "station_select": {
+        "data": {
+          "selected_station_codes": "Click to select your favorite stations"
+        },
+        "description": "Select your favorite stations then **Submit**. You can select multiple stations before **Submit**.",
+        "title": "Select Stations"
+      },
+      "user": {
+        "data": {
+          "client_id": "API Key",
+          "client_secret": "API Secret"
+        },
+        "description": "Visit api.nsw.gov.au, subscribe to the FuelCheck API (free) and create an app (any name) to obtain your API Key and Secret.\n\nAPI and data provided by NSW Fuel Check, Tasmanian data provided by Fuel Check TAS.",
+        "title": "Setup NSW Fuel Check"
+      }
     }
   }
 }

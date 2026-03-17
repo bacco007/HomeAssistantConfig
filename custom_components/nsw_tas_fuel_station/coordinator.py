@@ -18,13 +18,12 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .const import (
     CHEAPEST_RESULTS_LIMIT,
-    DEFAULT_RADIUS_KM,
     DEFAULT_FUEL_TYPE,
     DEFAULT_FUEL_TYPE_NON_E10,
-    E10_AVAILABLE_STATES,
+    DEFAULT_RADIUS_KM,
     DOMAIN,
+    E10_AVAILABLE_STATES,
 )
-
 from .data import CoordinatorData, StationKey
 
 if TYPE_CHECKING:
@@ -204,7 +203,7 @@ class NSWFuelCoordinator(DataUpdateCoordinator[CoordinatorData]):
 
             if len(combined) == 1:
                 _LOGGER.warning(
-                    "For nickname %s, NSW Fuel API returned only one station for lat=%s lon=%s. Try changing the location.",
+                    "For nickname %s, NSW Fuel API returned only one station for lat=%s lon=%s. Try changing the location",
                     nickname,
                     lat,
                     lon,
@@ -223,7 +222,7 @@ class NSWFuelCoordinator(DataUpdateCoordinator[CoordinatorData]):
 def state_default_fuel(
     au_state: str | None,
 ) -> str:
-    """Extract default fuel type based on Australian state"""
+    """Extract default fuel type based on Australian state."""
 
     if not au_state or au_state not in E10_AVAILABLE_STATES:
         return DEFAULT_FUEL_TYPE_NON_E10
