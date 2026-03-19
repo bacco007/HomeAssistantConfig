@@ -68,6 +68,7 @@ class NSWFuelCoordinator(DataUpdateCoordinator[CoordinatorData]):
             location = nickname_data.get("location", {})
             lat = location.get("latitude")
             lon = location.get("longitude")
+            radius_km = nickname_data.get("radius_km", DEFAULT_RADIUS_KM)
 
             stations = nickname_data.get("stations", [])
             au_state = stations[0]["au_state"] if stations else None
@@ -76,6 +77,7 @@ class NSWFuelCoordinator(DataUpdateCoordinator[CoordinatorData]):
                 "lat": lat,
                 "lon": lon,
                 "au_state": au_state,
+                "radius_km": radius_km,
             }
 
     async def _async_update_data(self) -> CoordinatorData:
@@ -158,6 +160,7 @@ class NSWFuelCoordinator(DataUpdateCoordinator[CoordinatorData]):
             lat = nickname_attr["lat"]
             lon = nickname_attr["lon"]
             au_state = nickname_attr["au_state"]
+            radius_km = nickname_attr["radius_km"]
 
             if lat is None or lon is None:
                 _LOGGER.warning("Nickname '%s' missing lat/lon, skipping", nickname)
@@ -168,7 +171,7 @@ class NSWFuelCoordinator(DataUpdateCoordinator[CoordinatorData]):
             nearby = await self.api.get_fuel_prices_within_radius(
                 latitude=lat,
                 longitude=lon,
-                radius=DEFAULT_RADIUS_KM,
+                radius=radius_km,
                 fuel_type=fuel_type,
             )
 

@@ -5,8 +5,9 @@ from __future__ import annotations
 from collections.abc import Mapping
 import copy
 import logging
+import math
 import re
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, Self, cast
 
 from nsw_tas_fuel import (
     NSWFuelApiClient,
@@ -17,9 +18,10 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
-from homeassistant.const import CONF_CLIENT_ID, CONF_CLIENT_SECRET
+from homeassistant.const import CONF_CLIENT_ID, CONF_CLIENT_SECRET, UnitOfLength
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.util.unit_conversion import DistanceConverter
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.selector import (
     LocationSelector,
@@ -39,6 +41,7 @@ from .const import (
     CONF_FUEL_TYPE,
     CONF_LOCATION,
     CONF_NICKNAME,
+    CONF_RADIUS,
     CONF_SELECTED_STATIONS,
     DEFAULT_FUEL_TYPE,
     DEFAULT_FUEL_TYPE_NON_E10,
@@ -77,6 +80,13 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
         self._station_lookup: dict[int, dict[str, Any]] = {}
         self.api: NSWFuelApiClient | None = None
         self._config_entry: config_entries.ConfigEntry | None = None
+
+    def is_matching(self, other_flow: Self) -> bool:
+        """Return True if other_flow is matching this flow.
+
+        Not applicable — this integration has no device-discovery flows.
+        """
+        return False
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -147,6 +157,7 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
         errors = await self._get_station_list(
             lat,
             lon,
+            DEFAULT_RADIUS_KM,
             fuel_type,
         )
 
@@ -228,13 +239,17 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
                     nickname,
                     self._flow_data[CONF_LOCATION],
                     stations_config_entry,
+                    self._flow_data.get(CONF_RADIUS, DEFAULT_RADIUS_KM),
                 )
                 self.hass.config_entries.async_update_entry(
                     self._config_entry, data=new_config_entry
                 )
                 return self.async_abort(reason="nickname_created")
             new_config_entry = _add_stations_to_nickname(
-                existing_config_entry, nickname, stations_config_entry
+                existing_config_entry,
+                nickname,
+                stations_config_entry,
+                self._flow_data.get(CONF_RADIUS, DEFAULT_RADIUS_KM),
             )
             new_config_entry = _add_fuel_to_stations(
                 new_config_entry, nickname, stations_config_entry
@@ -269,6 +284,15 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
 
         self._flow_data = dict(self._config_entry.data)
 
+        # If the user has changed the radius, use it.
+        # Not that currently non-default nicknames will always revert to default location & radius
+        existing_nicknames = self._flow_data.get("nicknames", {})
+        if existing_nicknames:
+            first_nickname = next(iter(existing_nicknames.values()))
+            self._flow_data[CONF_RADIUS] = first_nickname.get(
+                "radius_km", DEFAULT_RADIUS_KM
+            )
+
         if self.api is None:
             self.api = NSWFuelApiClient(
                 session=async_get_clientsession(self.hass),
@@ -292,6 +316,7 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
             "nicknames": {
                 nickname: {
                     "location": self._flow_data[CONF_LOCATION],
+                    "radius_km": self._flow_data.get(CONF_RADIUS, DEFAULT_RADIUS_KM),
                     "stations": [
                         {
                             "station_code": code,
@@ -402,6 +427,16 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
         # Schema enforces fuel type.
         fuel_type = cast(str, user_input[CONF_FUEL_TYPE])
 
+        radius_meters = user_input[CONF_LOCATION].get(
+            CONF_RADIUS, DEFAULT_RADIUS_KM * 1000
+        )
+        radius_km = DistanceConverter.convert(
+            radius_meters,
+            UnitOfLength.METERS,
+            UnitOfLength.KILOMETERS,
+        )
+        radius_km = max(1, math.ceil(radius_km))
+
         if errors:
             return self.async_show_form(
                 step_id="advanced_options",
@@ -415,10 +450,11 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
                 CONF_LOCATION: {"latitude": lat, "longitude": lon},
                 CONF_AU_STATE: au_state,
                 CONF_FUEL_TYPE: fuel_type,
+                CONF_RADIUS: radius_km,
             }
         )
 
-        errors = await self._get_station_list(lat, lon, fuel_type)
+        errors = await self._get_station_list(lat, lon, radius_km, fuel_type)
         if errors:
             return self.async_show_form(
                 step_id="advanced_options",
@@ -479,6 +515,23 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
         if selected_fuel not in valid_fuel_codes:
             selected_fuel = suggested_fuel
 
+        # Get radius in km, convert to meters for LocationSelector display
+        selected_radius_km = (
+            (user or {}).get(CONF_RADIUS)
+            or self._flow_data.get(CONF_RADIUS)
+            or DEFAULT_RADIUS_KM
+        )
+
+        # LocationSelector expects radius in meters, so convert km to meters for display
+        if not suggested_location.get(CONF_RADIUS):
+            suggested_location = {
+                **suggested_location,
+                CONF_RADIUS: DistanceConverter.convert(
+                    selected_radius_km,
+                    UnitOfLength.KILOMETERS,
+                    UnitOfLength.METERS,
+                ),
+            }
         return vol.Schema(
             {
                 vol.Required(
@@ -492,7 +545,7 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
                     description={"suggested_value": suggested_location},
                 ): LocationSelector(
                     LocationSelectorConfig(
-                        radius=False,
+                        radius=True,
                     )
                 ),
                 vol.Required(
@@ -513,7 +566,8 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
         self,
         lat: float,
         lon: float,
-        fuel_type: str,
+        radius_km: int = DEFAULT_RADIUS_KM,
+        fuel_type: str = DEFAULT_FUEL_TYPE,
     ) -> dict[str, str]:
         """Return a list of nearby stations from API.
 
@@ -531,7 +585,7 @@ class NSWFuelConfigFlow(ConfigFlow, domain=DOMAIN):
             nearby = await self.api.get_fuel_prices_within_radius(
                 latitude=lat,
                 longitude=lon,
-                radius=DEFAULT_RADIUS_KM,
+                radius=radius_km,
                 fuel_type=fuel_type,
             )
 
@@ -578,6 +632,7 @@ def _create_nickname_with_stations(
     nickname: str,
     location: dict,
     stations: list[dict],
+    radius_km: int = DEFAULT_RADIUS_KM,
 ) -> dict:
     """Create a new nickname config entry block with stations and fuel."""
 
@@ -589,6 +644,7 @@ def _create_nickname_with_stations(
 
     nicknames[nickname] = {
         "location": location,
+        "radius_km": radius_km,
         "stations": [
             {
                 "station_code": s["station_code"],
@@ -608,6 +664,7 @@ def _add_stations_to_nickname(
     entry: Mapping[str, Any],
     nickname: str,
     stations: list[dict],
+    radius_km: int | None = None,
 ) -> dict:
     """Add stations to an existing nickname."""
 
@@ -638,6 +695,9 @@ def _add_stations_to_nickname(
             )
 
     nickname_block["stations"] = existing_stations
+
+    if radius_km is not None:
+        nickname_block["radius_km"] = radius_km
     nicknames[nickname] = nickname_block
     new_entry["nicknames"] = nicknames
 
