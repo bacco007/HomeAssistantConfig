@@ -11,6 +11,7 @@ from typing import Any
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ServiceValidationError
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.event import async_track_utc_time_change
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
@@ -18,9 +19,15 @@ from .const import (
     ADVANCED_ENTITY_LOGGING,
     ADVANCED_FORECAST_DAY_ENTITIES,
     ALL,
+    API_FORCE_USED,
     COMPLETION,
     CUSTOM_HOURS,
+    DAMPENED_APE_BREAKDOWN,
+    DAMPENED_DAILY,
+    DAMPENED_MAPE,
+    DAMPENED_PERCENTILES,
     DOMAIN,
+    ENTITY_ACCURACY,
     ENTITY_API_COUNTER,
     ENTITY_API_LIMIT,
     ENTITY_DAMPEN,
@@ -46,17 +53,25 @@ from .const import (
     FACTOR,
     FACTORS,
     GET_ACTUALS,
+    INFINITY_EXCLUDED,
     INTEGRATION_AUTOMATED,
     INTERVAL,
     LAST_UPDATED,
     METHOD,
+    MODEL_PERIOD_DAYS,
     NEED_HISTORY_HOURS,
+    PERIOD_START,
+    SENSOR,
     SITE_DAMP,
     TASK_ACTUALS_FETCH,
     TASK_FORECASTS_FETCH,
     TASK_FORECASTS_FETCH_IMMEDIATE,
     TASK_LISTENERS,
     TASK_MIDNIGHT_UPDATE,
+    UNDAMPENED_APE_BREAKDOWN,
+    UNDAMPENED_DAILY,
+    UNDAMPENED_MAPE,
+    UNDAMPENED_PERCENTILES,
     VALUE,
 )
 from .solcastapi import SolcastApi
@@ -66,7 +81,7 @@ from .watch import FileWatcher
 
 _LOGGER = logging.getLogger(__name__)
 
-NO_ATTRIBUTES = [ENTITY_API_COUNTER, ENTITY_API_LIMIT, ENTITY_DAMPEN, ENTITY_LAST_UPDATED_OLD]
+NO_ATTRIBUTES = [ENTITY_API_COUNTER, ENTITY_API_LIMIT, ENTITY_DAMPEN, ENTITY_ACCURACY, ENTITY_LAST_UPDATED_OLD]
 
 
 class SolcastUpdateCoordinator(DataUpdateCoordinator):
@@ -119,6 +134,7 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
             ENTITY_LAST_UPDATED: [{METHOD: lambda: self.solcast.last_updated}],
             ENTITY_LAST_UPDATED_OLD: [{METHOD: lambda: self.solcast.last_updated}],
             ENTITY_DAMPEN: [{METHOD: lambda: self.solcast.dampening_enabled}],
+            ENTITY_ACCURACY: [{METHOD: lambda: self._updater.accuracy_data.get(DAMPENED_MAPE)}],
         }
         days = [ENTITY_TOTAL_KWH_FORECAST_TODAY, ENTITY_TOTAL_KWH_FORECAST_TOMORROW] + [
             f"total_kwh_forecast_d{r}" for r in range(3, self.advanced_day_entities)
@@ -179,7 +195,13 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
         await self._updater.check_generation_fetch()
         if not await self._updater.check_estimated_actuals_fetch():
-            await self._updater.calculate_accuracy_metrics()
+            if self.solcast.options.get_actuals:
+                entity_registry = er.async_get(self.hass)
+                entity_id = entity_registry.async_get_entity_id(SENSOR, DOMAIN, ENTITY_ACCURACY)
+                if entity_id is not None:
+                    entity = entity_registry.async_get(entity_id)
+                    if entity is not None and not entity.disabled_by:
+                        await self._updater.calculate_accuracy_metrics()
 
         return True
 
@@ -222,13 +244,13 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
     async def _update_utc_midnight_usage_sensor_data(self, _: dt | None = None) -> None:
         """Reset tracked API usage at midnight UTC."""
         await self.solcast.sites_cache.reset_api_usage()
+        await self.solcast.fetcher.reset_failure_stats()
         self._data_updated = True
         await self.update_integration_listeners()
         self._data_updated = False
 
     async def _update_midnight_spline_recalculate(self) -> None:
         """Re-calculates splines at midnight local time."""
-        await self.solcast.fetcher.reset_failure_stats()
         await self.solcast.check_data_records()
         await self.solcast.query.recalculate_splines()
 
@@ -463,6 +485,22 @@ class SolcastUpdateCoordinator(DataUpdateCoordinator):
 
         if key == ENTITY_FORECAST_CUSTOM_HOURS:
             ret |= {CUSTOM_HOURS: self.solcast.options.custom_hour_sensor}
+
+        if key == ENTITY_ACCURACY:
+            data = self._updater.accuracy_data
+            if data:
+                ret |= {
+                    UNDAMPENED_MAPE: data.get(UNDAMPENED_MAPE),
+                    MODEL_PERIOD_DAYS: data.get(MODEL_PERIOD_DAYS),
+                    INFINITY_EXCLUDED: data.get(INFINITY_EXCLUDED),
+                    DAMPENED_APE_BREAKDOWN: [{PERIOD_START: date, "ape": v} for date, v in data.get(DAMPENED_DAILY, {}).items()],
+                    UNDAMPENED_APE_BREAKDOWN: [{PERIOD_START: date, "ape": v} for date, v in data.get(UNDAMPENED_DAILY, {}).items()],
+                    **{f"dampened_p{p}_ape": v for p, v in data.get(DAMPENED_PERCENTILES, {}).items()},
+                    **{f"undampened_p{p}_ape": v for p, v in data.get(UNDAMPENED_PERCENTILES, {}).items()},
+                }
+
+        if key == ENTITY_API_COUNTER:
+            ret[API_FORCE_USED] = self.solcast.successes_forced_24h
 
         return ret
 
