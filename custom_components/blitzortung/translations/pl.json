@@ -2,69 +2,113 @@
   "config": {
     "step": {
       "user": {
-        "description": "Konfiguracja wykrywania błyskawic Blitzortung",
+        "description": "Wybierz typ konfiguracji dla integracji Blitzortung",
         "data": {
-          "name": "Nazwa instancji integracji",
-          "latitude": "Szerokość geograficzna",
-          "longitude": "Długość geograficzna"
+          "config_type": "Typ konfiguracji"
+        },
+        "data_description": {
+          "config_type": "Integracja mo\u017ce korzysta\u0107 ze statycznych wsp\u00f3\u0142rz\u0119dnych lub \u015bledzi\u0107 lokalizacj\u0119 encji."
         }
       },
-      "reconfigure_confirm": {
-        "description": "Zaktualizuj konfigurację dla {name}.",
+      "entity": {
         "data": {
-          "latitude": "Szerokość geograficzna",
-          "longitude": "Długość geograficzna"
+          "location_entity": "Encja lokalizacji"
+        },
+        "data_description": {
+          "location_entity": "Encja `device_tracker`, `person` lub `zone`, kt\u00f3rej lokalizacja b\u0119dzie u\u017cywana przez integracj\u0119."
+        }
+      },
+      "coordinates": {
+        "data": {
+          "name": "Nazwa instancji integracji",
+          "latitude": "Szeroko\u015b\u0107 geograficzna",
+          "longitude": "D\u0142ugo\u015b\u0107 geograficzna"
+        },
+        "data_description": {
+          "name": "Nazwa, kt\u00f3rej integracja b\u0119dzie u\u017cywa\u0107 dla tej konfiguracji.",
+          "latitude": "Liczba dziesi\u0119tna reprezentuj\u0105ca szeroko\u015b\u0107 geograficzn\u0105.",
+          "longitude": "Liczba dziesi\u0119tna reprezentuj\u0105ca d\u0142ugo\u015b\u0107 geograficzn\u0105."
+        }
+      },
+      "reconfigure": {
+        "description": "Zaktualizuj konfiguracj\u0119 dla {name}.",
+        "data": {
+          "latitude": "Szeroko\u015b\u0107 geograficzna",
+          "longitude": "D\u0142ugo\u015b\u0107 geograficzna"
+        },
+        "data_description": {
+          "latitude": "Liczba dziesi\u0119tna reprezentuj\u0105ca szeroko\u015b\u0107 geograficzn\u0105.",
+          "longitude": "Liczba dziesi\u0119tna reprezentuj\u0105ca d\u0142ugo\u015b\u0107 geograficzn\u0105."
         }
       }
     },
-    "error": {},
+    "error": {
+      "entity_without_unique_id": "Wybrana encja nie ma unikalnego identyfikatora, u\u017cyj innej encji.",
+      "entity_without_coordinates": "Wybrana encja nie dostarcza wsp\u00f3\u0142rz\u0119dnych."
+    },
     "abort": {
-      "already_configured": "Usługa jest już skonfigurowana",
-      "reconfigure_successful": "Ponowna konfiguracja powiodła się"
+      "already_configured": "Us\u0142uga jest ju\u017c skonfigurowana",
+      "reconfigure_successful": "Ponowna konfiguracja powiod\u0142a si\u0119",
+      "reconfigure_not_supported": "W przypadku konfiguracji opartej na encji rekonfiguracja nie jest obs\u0142ugiwana."
     }
   },
   "options": {
     "step": {
       "init": {
         "title": "Opcje Blitzortung",
-        "description": "Konfiguracja wykrywania błyskawic Blitzortung",
         "data": {
-          "radius": "Promień wykrywania błyskawic (km / mi)",
-          "time_window": "Okno czasowe (minuty, 0 - wyłączony)",
-          "max_tracked_lightnings": "Maksymalna ilość śledzonych błyskawic"
+          "radius": "Promie\u0144 wykrywania b\u0142yskawic",
+          "time_window": "Okno czasowe",
+          "max_tracked_lightnings": "Maksymalna liczba b\u0142yskawic"
+        },
+        "data_description": {
+          "radius": "Promie\u0144 okr\u0119gu w `km` lub `mi`, dla kt\u00f3rego b\u0119d\u0105 wykrywane b\u0142yskawice.",
+          "time_window": "Czas \u017cycia \u015bledzonych b\u0142yskawic w minutach.",
+          "max_tracked_lightnings": "Maksymalna liczba \u015bledzonych b\u0142yskawic."
         }
       }
     }
   },
   "exceptions": {
     "mqtt_connect_not_ready": {
-      "message": "Nie udało się połączyć z serwerem MQTT Blitzortung: {error}"
+      "message": "Nie uda\u0142o si\u0119 po\u0142\u0105czy\u0107 z serwerem MQTT Blitzortung: {error}"
+    },
+    "no_coordinates_from_entity": {
+      "message": "Encja {location_entity} nie dostarcza wsp\u00f3\u0142rz\u0119dnych."
+    }
+  },
+  "selector": {
+    "config_type": {
+      "options": {
+        "entity": "Encja lokalizacji",
+        "coordinates": "Wsp\u00f3\u0142rz\u0119dne"
+      }
     }
   },
   "entity": {
     "sensor": {
       "azimuth": {
-        "name": "Azymut błyskawicy",
+        "name": "Azymut b\u0142yskawicy",
         "state_attributes": {
           "lat": {
-            "name": "Szerokość geograficzna"
+            "name": "Szeroko\u015b\u0107 geograficzna"
           },
           "lon": {
-            "name": "Długość geograficzna"
+            "name": "D\u0142ugo\u015b\u0107 geograficzna"
           }
         }
       },
       "counter": {
-        "name": "Licznik błyskawic"
+        "name": "Licznik b\u0142yskawic"
       },
       "distance": {
-        "name": "Odległość błyskawicy",
+        "name": "Odleg\u0142o\u015b\u0107 b\u0142yskawicy",
         "state_attributes": {
           "lat": {
-            "name": "Szerokość geograficzna"
+            "name": "Szeroko\u015b\u0107 geograficzna"
           },
           "lon": {
-            "name": "Długość geograficzna"
+            "name": "D\u0142ugo\u015b\u0107 geograficzna"
           }
         }
       }
