@@ -1186,20 +1186,18 @@ function mt(i, e, t) {
     }
     const u = /* @__PURE__ */ new Date(), y = !r.start.dateTime;
     let v;
-    if (l > u)
-      if (t != null && t.show_date) {
-        const m = ((a = i.locale) == null ? void 0 : a.language) || i.language || navigator.language, w = l.toLocaleDateString(m, { day: "2-digit", month: "2-digit", year: "numeric" });
-        if (y)
-          v = w;
-        else {
-          const P = l.toLocaleTimeString(m, { hour: "2-digit", minute: "2-digit" });
-          v = `${w}, ${P}${m.startsWith("de") ? " Uhr" : ""}`;
-        }
-      } else {
-        const m = l.getTime() - u.getTime(), w = Math.ceil(m / 6e4);
-        v = je(i, w);
+    if (t != null && t.show_date) {
+      const m = ((a = i.locale) == null ? void 0 : a.language) || i.language || navigator.language, w = l.toLocaleDateString(m, { day: "2-digit", month: "2-digit", year: "numeric" });
+      if (y)
+        v = w;
+      else {
+        const P = l.toLocaleTimeString(m, { hour: "2-digit", minute: "2-digit" });
+        v = `${w}, ${P}${m.startsWith("de") ? " Uhr" : ""}`;
       }
-    else if (y)
+    } else if (l > u) {
+      const m = l.getTime() - u.getTime(), w = Math.ceil(m / 6e4);
+      v = je(i, w);
+    } else if (y)
       v = i.localize("component.calendar.entity_component._.state_attributes.all_day.name") || "All day";
     else {
       const m = ((s = i.locale) == null ? void 0 : s.language) || i.language || navigator.language, w = (P) => P.toLocaleTimeString(m, { hour: "2-digit", minute: "2-digit" });
@@ -1242,20 +1240,18 @@ function mt(i, e, t) {
     }
     const u = /* @__PURE__ */ new Date(), y = !r.start.dateTime;
     let v, C = -1;
-    if (l > u)
-      if (t != null && t.show_date) {
-        const A = ((P = i.locale) == null ? void 0 : P.language) || i.language || navigator.language, z = l.toLocaleDateString(A, { day: "2-digit", month: "2-digit", year: "numeric" });
-        if (y)
-          v = z;
-        else {
-          const O = l.toLocaleTimeString(A, { hour: "2-digit", minute: "2-digit" });
-          v = `${z}, ${O}${A.startsWith("de") ? " Uhr" : ""}`;
-        }
-      } else {
-        const A = l.getTime() - u.getTime(), z = Math.ceil(A / 6e4);
-        v = je(i, z);
+    if (t != null && t.show_date) {
+      const A = ((P = i.locale) == null ? void 0 : P.language) || i.language || navigator.language, z = l.toLocaleDateString(A, { day: "2-digit", month: "2-digit", year: "numeric" });
+      if (y)
+        v = z;
+      else {
+        const O = l.toLocaleTimeString(A, { hour: "2-digit", minute: "2-digit" });
+        v = `${z}, ${O}${A.startsWith("de") ? " Uhr" : ""}`;
       }
-    else if (y)
+    } else if (l > u) {
+      const A = l.getTime() - u.getTime(), z = Math.ceil(A / 6e4);
+      v = je(i, z);
+    } else if (y)
       v = i.localize("component.calendar.entity_component._.state_attributes.all_day.name") || "All day";
     else {
       const A = ((F = i.locale) == null ? void 0 : F.language) || i.language || navigator.language, z = (Ke) => Ke.toLocaleTimeString(A, { hour: "2-digit", minute: "2-digit" });
@@ -1268,7 +1264,7 @@ function mt(i, e, t) {
       v += ` • ${z}`;
     }
     t != null && t.show_calendar_name && r.calendar_name && (v += ` • ${r.calendar_name}`);
-    const _ = l <= u && h >= u ? u : l, f = ge(r.entity_id, t), p = pe(i, _, f, (t == null ? void 0 : t.dark_mode) ?? !1), g = me(r.entity_id, t), m = g ? `background-color: ${g}; border: none;` : "", w = (t == null ? void 0 : t.show_divider) && d > 0 && e[d - 1].entity_id !== r.entity_id;
+    const _ = l <= u && h >= u ? u : l, f = ge(r.entity_id, t), p = pe(i, _, f, (t == null ? void 0 : t.dark_mode) ?? !1), g = me(r.entity_id, t), m = g ? `background-color: ${g}; border: none;` : "", w = (t == null ? void 0 : t.show_divider) && d > 0;
     return $`
                 ${w ? $`<div class="calendar-divider"></div>` : ""}
                 <div class="calendar-item"  
@@ -1808,6 +1804,11 @@ kt(S, "styles", ye`
             font-size: 0.9em;
             color: var(--secondary-text-color);
         }
+        
+        .calendar-divider {
+            border-top: 1px solid var(--divider-color, #e0e0e0);
+            margin: 4px 12px;
+        }
 
         .add-event-form {
             display: flex;
@@ -2000,6 +2001,7 @@ let ne = class extends R {
                 justify-content: center;
                 height: 100%;
                 width: 100%;
+                box-sizing: border-box;
             }
             .calendar-item {
                 display: flex;
@@ -2007,7 +2009,6 @@ let ne = class extends R {
                 gap: 12px;
                 padding: 12px;
                 border-radius: var(--ha-card-border-radius, 12px);
-                margin-bottom: 8px;
                 cursor: pointer;
                 box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             }
@@ -2061,9 +2062,8 @@ let ne = class extends R {
                 opacity: 0.7;
             }
             .calendar-divider {
-                width: 100%;
                 border-top: 1px solid var(--divider-color, #e0e0e0);
-                margin: 0 0 4px ;
+                margin: 4px 12px;
             }
 
             .add-event-btn {
