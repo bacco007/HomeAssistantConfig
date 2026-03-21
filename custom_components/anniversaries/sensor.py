@@ -1,247 +1,263 @@
-""" Sensor """
-from dateutil.relativedelta import relativedelta
-from datetime import datetime, date
+"""Sensor platform for Anniversaries."""
+from __future__ import annotations
 
-import logging
-
-from homeassistant.helpers.entity import Entity, generate_entity_id
-from homeassistant.components.sensor import ENTITY_ID_FORMAT
-from homeassistant.helpers import template as templater
-import homeassistant.util.dt as dt_util
-from .calendar import EntitiesCalendarData
-from homeassistant.helpers.discovery import async_load_platform
-
-from homeassistant.const import (
-    CONF_NAME,
-    ATTR_ATTRIBUTION,
-)
-
-_LOGGER = logging.getLogger(__name__)
+from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers import entity_registry as er
+from homeassistant.util import slugify
 
 from .const import (
     ATTRIBUTION,
+    ATTR_YEARS_NEXT,
+    ATTR_YEARS_CURRENT,
+    ATTR_DATE,
+    ATTR_NEXT_DATE,
+    ATTR_WEEKS,
+    ATTR_HALF_DATE,
+    ATTR_HALF_DAYS,
+    ATTR_ZODIAC_SIGN,
+    ATTR_NAMED_ANNIVERSARY,
+    ATTR_IS_MILESTONE,
+    ATTR_GENERATION,
+    ATTR_BIRTHSTONE,
+    ATTR_BIRTH_FLOWER,
+    ATTR_CATEGORY,
+    ATTR_DAYS_SINCE_LAST,
+    ATTR_LAST_ANNIVERSARY_DATE,
+    ATTR_YEARS_SINCE_LAST,
+    DOMAIN,
+    DEFAULT_ICON_NORMAL,
+    DEFAULT_ICON_TODAY,
+    DEFAULT_ICON_SOON,
+    DEFAULT_SOON,
     DEFAULT_UNIT_OF_MEASUREMENT,
     CONF_ICON_NORMAL,
     CONF_ICON_TODAY,
     CONF_ICON_SOON,
-    CONF_DATE,
-    CONF_DATE_TEMPLATE,
     CONF_SOON,
-    CONF_HALF_ANNIVERSARY,
     CONF_UNIT_OF_MEASUREMENT,
-    CONF_ID_PREFIX,
-    CONF_ONE_TIME,
-    CONF_COUNT_UP,
-    DOMAIN,
-    SENSOR_PLATFORM,
-    CALENDAR_PLATFORM,
-    CALENDAR_NAME,
+    CONF_UPCOMING_ANNIVERSARIES_SENSOR,
 )
+from .coordinator import AnniversaryDataUpdateCoordinator
+from .data import AnniversaryData
 
-ATTR_YEARS_NEXT = "years_at_anniversary"
-ATTR_YEARS_CURRENT = "current_years"
-ATTR_DATE = "date"
-ATTR_NEXT_DATE = "next_date"
-ATTR_WEEKS = "weeks_remaining"
-ATTR_HALF_DATE = "half_anniversary_date"
-ATTR_HALF_DAYS = "days_until_half_anniversary"
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    """Setup the sensor platform."""
-    async_add_entities([anniversaries(hass, discovery_info)], True)
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up the sensor entities for a config entry."""
+    coordinator: AnniversaryDataUpdateCoordinator = hass.data[DOMAIN]["coordinator"]
 
-async def async_setup_entry(hass, config_entry, async_add_devices):
-    """Setup sensor platform."""
-    async_add_devices([anniversaries(hass, config_entry.data)], True)
+    async_add_entities([AnniversarySensor(coordinator, entry.entry_id, entry)])
 
-def validate_date(value):
-    try:
-        return datetime.strptime(value, "%Y-%m-%d"), False
-    except ValueError:
-        pass
-    try:
-        return datetime.strptime(value, "%m-%d"), True
-    except ValueError:
-            return "Invalid Date", False
+    if entry.options.get(CONF_UPCOMING_ANNIVERSARIES_SENSOR, False):
+        lock = hass.data[DOMAIN]["coordinator_lock"]
+        async with lock:
+            if "summary_sensor_added" not in hass.data[DOMAIN]:
+                async_add_entities([UpcomingAnniversariesSensor(coordinator)])
+                hass.data[DOMAIN]["summary_sensor_added"] = True
 
-class anniversaries(Entity):
-    def __init__(self, hass, config):
-        """Initialize the sensor."""
-        self.config = config
-        self._name = config.get(CONF_NAME)
-        self._id_prefix = config.get(CONF_ID_PREFIX)
-        if self._id_prefix is None:
-            self._id_prefix = "anniversary_"
-        self.entity_id = generate_entity_id(ENTITY_ID_FORMAT, self._id_prefix + self._name, [])
-        self._unknown_year = False
-        self._date = ""
-        self._show_half_anniversary = config.get(CONF_HALF_ANNIVERSARY)
-        self._half_days_remaining = 0
-        self._half_date = ""
-        self._template_sensor = False
-        self._date_template = config.get(CONF_DATE_TEMPLATE)
-        if self._date_template is not None:
-            self._template_sensor = True
-        else:
-            self._date, self._unknown_year = validate_date(config.get(CONF_DATE))
-            self._date = self._date.replace(tzinfo=dt_util.DEFAULT_TIME_ZONE)
-            if self._show_half_anniversary:
-                self._half_date = self._date + relativedelta(months=+6)
-        self._icon_normal = config.get(CONF_ICON_NORMAL)
-        self._icon_today = config.get(CONF_ICON_TODAY)
-        self._icon_soon = config.get(CONF_ICON_SOON)
-        self._soon = config.get(CONF_SOON)
-        self._icon = self._icon_normal
-        self._years_next = 0
-        self._years_current = 0
-        self._state = 0
-        self._weeks_remaining = 0
-        self._unit_of_measurement = config.get(CONF_UNIT_OF_MEASUREMENT)
-        if self._unit_of_measurement is None:
-            self._unit_of_measurement = DEFAULT_UNIT_OF_MEASUREMENT
-        self._one_time = config.get(CONF_ONE_TIME)
-        self._count_up = config.get(CONF_COUNT_UP)
 
-    @property
-    def unique_id(self):
-        """Return a unique ID to use for this sensor."""
-        return self.config.get("unique_id", None)
+class AnniversarySensor(CoordinatorEntity[AnniversaryDataUpdateCoordinator], SensorEntity):
+    """Sensor for a single anniversary."""
 
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return self._name
+    _attr_attribution = ATTRIBUTION
+    # Remove device class to allow custom unit like "Days"
 
-    @property
-    def state(self):
-        """Return the name of the sensor."""
-        return self._state
+    def __init__(
+        self,
+        coordinator: AnniversaryDataUpdateCoordinator,
+        entry_id: str,
+        entry: ConfigEntry,
+    ) -> None:
+        super().__init__(coordinator)
+        self._entry = entry
+        # Properly merge data and options (options override data)
+        self.config = {**entry.data}
+        if entry.options:
+            self.config.update(entry.options)
+        name = self.config.get("name", "anniversary")
+        slug = slugify(name)
+        short_id = entry.entry_id.split("-")[0]
+        self._internal_key = entry_id
+        self._suggested_object_id = f"anniversary_{slug}_{short_id}"
+        self._attr_unique_id = f"{entry.entry_id}_sensor"
+        self._icon_normal = self.config.get(CONF_ICON_NORMAL, DEFAULT_ICON_NORMAL)
+        self._icon_today = self.config.get(CONF_ICON_TODAY, DEFAULT_ICON_TODAY)
+        self._icon_soon = self.config.get(CONF_ICON_SOON, DEFAULT_ICON_SOON)
+        self._soon_days = self.config.get(CONF_SOON, DEFAULT_SOON)
+        # Check if using default icon (for category-specific fallback)
+        self._using_default_icon = self.config.get(CONF_ICON_NORMAL) is None
+        # Use "Days" as the unit of measurement (no device class restriction)
+        self._attr_native_unit_of_measurement = "Days"
 
-    @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        res = {}
-        res[ATTR_ATTRIBUTION] = ATTRIBUTION
-        if self._state in ["Invalid Date", "Invalid Template"]:
-            return res
-        if not self._unknown_year:
-            res[ATTR_YEARS_NEXT] = self._years_next
-            res[ATTR_YEARS_CURRENT] = self._years_current
-        res[ATTR_DATE] = self._date
-        res[ATTR_NEXT_DATE] = self._next_date
-        res[ATTR_WEEKS] = self._weeks_remaining
-        if self._show_half_anniversary:
-            res[ATTR_HALF_DATE] = self._half_date
-            res[ATTR_HALF_DAYS] = self._half_days_remaining
-        return res
-
-    @property
-    def icon(self):
-        return self._icon
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit this state is expressed in."""
-        if self._state in ["Invalid Date", "Invalid Template"]:
-            return
-        return self._unit_of_measurement
-
-    async def async_update(self):
-        """update the sensor"""
-        if self._template_sensor:
-            try:
-                template_date = templater.Template(self._date_template, self.hass).async_render()
-                self._date, self._unknown_year = validate_date(template_date)
-                self._date = self._date.replace(tzinfo=dt_util.DEFAULT_TIME_ZONE)
-            except:
-                self._state = "Invalid Template"
-                return
-            if self._date == "Invalid Date":
-                self._state = self._date
-                return
-
-        today = date.today()
-        years = today.year - self._date.year
-        nextDate = self._date.date()
-
-        if today >= self._date.date() + relativedelta(year=today.year):
-            years = years + 1
-            
-        if not self._one_time:
-            if today >= nextDate:
-                nextDate = self._date.date() + relativedelta(year=today.year)
-            if today > nextDate:
-                nextDate = self._date.date() + relativedelta(year=today.year + 1)
-
-        self._next_date = datetime.combine(nextDate, datetime.min.time())
-        self._next_date = self._next_date.replace(tzinfo=dt_util.DEFAULT_TIME_ZONE)
-        daysRemaining = (nextDate - today).days
-        
-        if self._unknown_year:
-            self._date = datetime(nextDate.year, nextDate.month, nextDate.day)
-            self._date = self._date.replace(tzinfo=dt_util.DEFAULT_TIME_ZONE)
-
-        if daysRemaining == 0:
-            self._icon = self._icon_today
-        elif daysRemaining <= self._soon:
-            self._icon = self._icon_soon
-        else:
-            self._icon = self._icon_normal
-
-        self._state = daysRemaining
-        if daysRemaining == 0:
-            self._years_next = years - 1
-        else:
-            self._years_next = years
-        self._years_current = years - 1
-        self._weeks_remaining = int(daysRemaining / 7)
-
-        if self._count_up:
-            if daysRemaining > 0 and not self._one_time:
-                nextDate = nextDate + relativedelta(years=-1)
-            self._state = (today - nextDate).days
-
-        if self._show_half_anniversary:
-            nextHalfDate = self._half_date.date()
-            if today > nextHalfDate:
-                nextHalfDate = self._half_date.date() + relativedelta(year = today.year)
-            if today > nextHalfDate:
-                nextHalfDate = self._half_date.date() + relativedelta(year = today.year + 1)
-            self._half_days_remaining = (nextHalfDate - today).days
-            self._half_date = datetime(nextHalfDate.year, nextHalfDate.month, nextHalfDate.day)
-            self._half_date = self._half_date.replace(tzinfo=dt_util.DEFAULT_TIME_ZONE)
-
-    async def async_added_to_hass(self):
-        """Once the entity is added we should update to get the initial data loaded. Then add it to the Calendar."""
+    async def async_added_to_hass(self) -> None:
+        """Handle entity being added to hass."""
         await super().async_added_to_hass()
-        self.async_schedule_update_ha_state(True)
-        if DOMAIN not in self.hass.data:
-            self.hass.data[DOMAIN] = {}
-        if SENSOR_PLATFORM not in self.hass.data[DOMAIN]:
-            self.hass.data[DOMAIN][SENSOR_PLATFORM] = {}
-        self.hass.data[DOMAIN][SENSOR_PLATFORM][self.entity_id] = self
+        
+        # Ensure coordinator has our anniversary data
+        if self._internal_key not in self.coordinator.anniversaries:
+            # Try to add our anniversary data to the coordinator
+            try:
+                from .data import AnniversaryData
+                config = {**self._entry.data}
+                if self._entry.options:
+                    config.update(self._entry.options)
+                anniversary_data = AnniversaryData.from_config(config)
+                self.coordinator.anniversaries[self._internal_key] = anniversary_data
+            except Exception as e:
+                _LOGGER.error(f"Failed to add anniversary data for {self._internal_key}: {e}")
+        
+        current_eid = self.entity_id
+        try:
+            domain, object_id = current_eid.split(".")
+        except ValueError:
+            return
+        if not object_id.startswith("anniversary_"):
+            clean_object = object_id
+            if clean_object.startswith("anniversary") and not clean_object.startswith("anniversary_"):
+                clean_object = clean_object[len("anniversary"):].lstrip("_")
+            new_object_id = f"anniversary_{clean_object}" if clean_object else "anniversary"
+            registry = er.async_get(self.hass)
+            registry.async_update_entity(current_eid, new_entity_id=f"{domain}.{new_object_id}")
 
-        if CALENDAR_PLATFORM not in self.hass.data[DOMAIN]:
-            self.hass.data[DOMAIN][
-                CALENDAR_PLATFORM
-            ] = EntitiesCalendarData(self.hass)
-            _LOGGER.debug("Creating Anniversaries calendar")
-            self.hass.async_create_task(
-                async_load_platform(
-                    self.hass,
-                    CALENDAR_PLATFORM,
-                    DOMAIN,
-                    {"name": CALENDAR_NAME},
-                    {"name": CALENDAR_NAME},
-                )
-            )
-        else:
-            _LOGGER.debug("Anniversaries calendar already exists")
-        self.hass.data[DOMAIN][CALENDAR_PLATFORM].add_entity(self.entity_id)
+    @property
+    def anniversary(self) -> AnniversaryData | None:
+        """Get anniversary data."""
+        if not hasattr(self.coordinator, "anniversaries") or self.coordinator.anniversaries is None:
+            return None
+        return self.coordinator.anniversaries.get(self._internal_key)
 
-    async def async_will_remove_from_hass(self):
-        """When sensor is removed from hassio and there are no other sensors in the Anniversaries calendar, remove it."""
-        await super().async_will_remove_from_hass()
-        _LOGGER.debug("Removing: %s" % (self._name))
-        del self.hass.data[DOMAIN][SENSOR_PLATFORM][self.entity_id]
-        self.hass.data[DOMAIN][CALENDAR_PLATFORM].remove_entity(self.entity_id)
+    @property
+    def available(self) -> bool:
+        """Return if entity is available."""
+        # Always return True - entity should always be available even if anniversary data is temporarily missing
+        return True
+
+    @property
+    def name(self) -> str:
+        """Return the name of the sensor."""
+        ann = self.anniversary
+        if ann:
+            return ann.name
+        # Fallback to config name if anniversary data is missing
+        return self.config.get("name", "Unknown Anniversary")
+
+    @property
+    def native_value(self) -> int | None:
+        """Return the state of the sensor."""
+        ann = self.anniversary
+        if ann:
+            return ann.days_remaining
+        # Fallback: return 0 if anniversary data is missing
+        return 0
+
+    @property
+    def icon(self) -> str:
+        """Return the icon to use in the frontend."""
+        ann = self.anniversary
+        if not ann:
+            return self._get_default_icon()
+        days = ann.days_remaining
+        if days == 0:
+            return self._icon_today
+        if days <= self._soon_days:
+            return self._icon_soon
+        return self._get_default_icon()
+
+    def _get_default_icon(self) -> str:
+        """Get the appropriate default icon (category-specific if using defaults)."""
+        if self._using_default_icon:
+            ann = self.anniversary
+            if ann and hasattr(ann, 'category_default_icon'):
+                return ann.category_default_icon
+        return self._icon_normal
+
+    @property
+    def extra_state_attributes(self) -> dict[str, any]:
+        """Return entity specific state attributes."""
+        ann = self.anniversary
+        if not ann:
+            return {}
+        attrs: dict[str, any] = {
+            ATTR_NEXT_DATE: ann.next_anniversary_date,
+            ATTR_WEEKS: ann.weeks_remaining,
+            ATTR_ZODIAC_SIGN: ann.zodiac_sign,
+            ATTR_IS_MILESTONE: ann.is_milestone,
+            ATTR_GENERATION: ann.generation,
+            ATTR_BIRTHSTONE: ann.birthstone,
+            ATTR_BIRTH_FLOWER: ann.birth_flower,
+            ATTR_CATEGORY: ann.category,
+            ATTR_DAYS_SINCE_LAST: ann.days_since_last,
+            ATTR_LAST_ANNIVERSARY_DATE: ann.last_anniversary_date,
+            "custom_emoji": ann.emoji,
+        }
+        if ann.named_anniversary:
+            attrs[ATTR_NAMED_ANNIVERSARY] = ann.named_anniversary
+        if ann.current_years is not None:
+            attrs[ATTR_YEARS_CURRENT] = ann.current_years
+        if ann.next_years is not None:
+            attrs[ATTR_YEARS_NEXT] = ann.next_years
+        if ann.half_anniversary_date is not None:
+            attrs[ATTR_HALF_DATE] = ann.half_anniversary_date
+            attrs[ATTR_HALF_DAYS] = ann.days_until_half_anniversary
+        if not ann.unknown_year:
+            attrs[ATTR_DATE] = ann.date
+            if ann.years_since_last is not None:
+                attrs[ATTR_YEARS_SINCE_LAST] = ann.years_since_last
+        return attrs
+
+
+class UpcomingAnniversariesSensor(CoordinatorEntity[AnniversaryDataUpdateCoordinator], SensorEntity):
+    """Aggregated sensor listing next anniversaries."""
+
+    _attr_attribution = ATTRIBUTION
+    _attr_name = "Upcoming Anniversaries"
+    _attr_icon = "mdi:calendar-multiple"
+
+    def __init__(self, coordinator: AnniversaryDataUpdateCoordinator) -> None:
+        super().__init__(coordinator)
+        self._attr_unique_id = f"{DOMAIN}_summary_sensor"
+
+    async def async_added_to_hass(self) -> None:
+        """Handle entity being added to hass."""
+        await super().async_added_to_hass()
+        current_eid = self.entity_id
+        try:
+            domain, object_id = current_eid.split(".")
+        except ValueError:
+            return
+        if not object_id.startswith("anniversary_"):
+            registry = er.async_get(self.hass)
+            new_object_id = f"anniversary_{object_id}"
+            registry.async_update_entity(current_eid, new_entity_id=f"{domain}.{new_object_id}")
+
+    @property
+    def native_value(self) -> str | None:
+        """Return the state of the sensor."""
+        upcoming = self.coordinator.upcoming_anniversaries
+        if not upcoming:
+            return None
+        return upcoming[0].name
+
+    @property
+    def extra_state_attributes(self) -> dict[str, any] | None:
+        """Return entity specific state attributes."""
+        upcoming = self.coordinator.upcoming_anniversaries
+        if not upcoming:
+            return None
+        return {
+            "upcoming": [
+                {
+                    "name": a.name,
+                    "date": a.next_anniversary_date.isoformat(),
+                    "days_remaining": a.days_remaining,
+                }
+                for a in upcoming
+            ]
+        }

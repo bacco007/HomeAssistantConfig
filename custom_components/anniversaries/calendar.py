@@ -1,136 +1,128 @@
-"""Anniversaries calendar."""
-import logging
+"""Calendar platform for Anniversaries."""
+from __future__ import annotations
+
 from datetime import datetime, timedelta
 
 from homeassistant.components.calendar import CalendarEntity, CalendarEvent
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.util import Throttle
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers import entity_registry as er
+from homeassistant.util import slugify
 
-from .const import CALENDAR_NAME, CALENDAR_PLATFORM, DOMAIN, SENSOR_PLATFORM
-
-_LOGGER = logging.getLogger(__name__)
-
-MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=1)
+from .const import DOMAIN
+from .coordinator import AnniversaryDataUpdateCoordinator
+from .data import AnniversaryData
 
 
-async def async_setup_platform(
-    hass, config, async_add_entities, discovery_info=None
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Add calendar entities to HA, of there are calendar instances."""
-    # pylint: disable=unused-argument
-    # Only single instance allowed
-    if not AnniversariesCalendar.instances:
-        async_add_entities([AnniversariesCalendar()], True)
+    """Set up the calendar platform."""
+    coordinator: AnniversaryDataUpdateCoordinator = hass.data[DOMAIN]["coordinator"]
+    async_add_entities([AnniversaryCalendar(coordinator, entry.entry_id, entry)])
 
 
-class AnniversariesCalendar(CalendarEntity):
-    """The Anniversaries collection calendar class."""
+class AnniversaryCalendar(CoordinatorEntity[AnniversaryDataUpdateCoordinator], CalendarEntity):
+    """Anniversary Calendar class."""
 
-    instances = False
+    def __init__(
+        self,
+        coordinator: AnniversaryDataUpdateCoordinator,
+        entry_id: str,
+        entry: ConfigEntry,
+    ) -> None:
+        """Initialize the calendar with a stable prefixed entity id."""
+        super().__init__(coordinator)
+        self._entry = entry
+        self._internal_key = entry_id
+        self._attr_unique_id = f"{entry.entry_id}_calendar"
+        name = (entry.options or entry.data).get("name", "anniversary")
+        slug = slugify(name)
+        short_id = entry.entry_id.split("-")[0]
+        self._suggested_object_id = f"anniversary_{slug}_{short_id}"
 
-    def __init__(self) -> None:
-        """Create empty calendar."""
-        self._cal_data: dict = {}
-        self._attr_name = CALENDAR_NAME
-        AnniversariesCalendar.instances = True
+    async def async_added_to_hass(self) -> None:
+        """Handle entity being added to hass."""
+        await super().async_added_to_hass()
+        current_eid = self.entity_id
+        try:
+            domain, object_id = current_eid.split(".")
+        except ValueError:
+            return
+        if not object_id.startswith("anniversary_"):
+            clean_object = object_id
+            if clean_object.startswith("anniversary") and not clean_object.startswith("anniversary_"):
+                clean_object = clean_object[len("anniversary"):].lstrip("_")
+            new_object_id = f"anniversary_{clean_object}" if clean_object else "anniversary"
+            registry = er.async_get(self.hass)
+            registry.async_update_entity(current_eid, new_entity_id=f"{domain}.{new_object_id}")
+
+    @property
+    def anniversary(self) -> AnniversaryData | None:
+        """Return the anniversary data."""
+        if not hasattr(self.coordinator, "anniversaries") or self.coordinator.anniversaries is None:
+            return None
+        return self.coordinator.anniversaries.get(self._internal_key)
+
+    @property
+    def available(self) -> bool:
+        """Return True if entity is available."""
+        return self.anniversary is not None
+
+    @property
+    def name(self) -> str:
+        """Return the name of the calendar."""
+        anniversary = self.anniversary
+        if anniversary is None:
+            return "Unknown Anniversary"
+        return anniversary.name
 
     @property
     def event(self) -> CalendarEvent | None:
         """Return the next upcoming event."""
-        return self.hass.data[DOMAIN][CALENDAR_PLATFORM].event
-
-    @property
-    def name(self) -> str | None:
-        """Return the name of the entity."""
-        return self._attr_name
-
-    async def async_update(self) -> None:
-        """Update all calendars."""
-        await self.hass.data[DOMAIN][CALENDAR_PLATFORM].async_update()
+        anniversary = self.anniversary
+        if anniversary is None:
+            return None
+        
+        next_date = anniversary.next_anniversary_date
+        description = (
+            f"Happy {anniversary.next_years}th anniversary!"
+            if anniversary.next_years is not None
+            else anniversary.name
+        )
+        return CalendarEvent(
+            summary=anniversary.name,
+            start=next_date,
+            end=next_date + timedelta(days=1),
+            description=description,
+        )
 
     async def async_get_events(
         self, hass: HomeAssistant, start_date: datetime, end_date: datetime
     ) -> list[CalendarEvent]:
         """Get all events in a specific time frame."""
-        return await self.hass.data[DOMAIN][CALENDAR_PLATFORM].async_get_events(
-            hass, start_date, end_date
-        )
-
-    @property
-    def extra_state_attributes(self) -> dict | None:
-        """Return the device state attributes."""
-        if self.hass.data[DOMAIN][CALENDAR_PLATFORM].event is None:
-            # No tasks, we don't need to show anything.
-            return None
-        return {}
-
-
-class EntitiesCalendarData:
-    """Class used by the Entities Calendar class to hold all entity events."""
-
-    __slots__ = "_hass", "event", "entities", "_throttle"
-
-    def __init__(self, hass: HomeAssistant) -> None:
-        """Initialize an Entities Calendar Data."""
-        self._hass = hass
-        self.event: CalendarEvent | None = None
-        self.entities: list[str] = []
-
-    def add_entity(self, entity_id: str) -> None:
-        """Append entity ID to the calendar."""
-        if entity_id not in self.entities:
-            self.entities.append(entity_id)
-
-    def remove_entity(self, entity_id: str) -> None:
-        """Remove entity ID from the calendar."""
-        if entity_id in self.entities:
-            self.entities.remove(entity_id)
-
-    async def async_get_events(
-        self, hass: HomeAssistant, start_datetime: datetime, end_datetime: datetime
-    ) -> list[CalendarEvent]:
-        """Get all events in a specific time frame."""
-        events: list[CalendarEvent] = []
-        _LOGGER.debug("Anniversaries Calendar - Get Events")
-        if SENSOR_PLATFORM not in hass.data[DOMAIN]:
-            return events
-        start_date = start_datetime.date()
-        end_date = end_datetime.date()
-        for ent in self.entities:
-            _LOGGER.debug("Get Events: Entity Name: " + str(ent))
-            if (ent not in hass.data[DOMAIN][SENSOR_PLATFORM]):
-                continue
-            entity = self._hass.data[DOMAIN][SENSOR_PLATFORM][ent]
-            if (
-                entity
-                and entity.name
-                and entity._next_date.date()
-                and start_date <= entity._next_date.date() <= end_date
-            ):
-                event = CalendarEvent(
-                    summary=entity.name,
-                    start=entity._next_date.date(),
-                    end=entity._next_date.date() + timedelta(days=1),
-                    description=entity.extra_state_attributes["description"]
-                    if "description" in entity.extra_state_attributes
-                    else None,
+        anniversary = self.anniversary
+        if anniversary is None:
+            return []
+        
+        events = []
+        next_date = anniversary.next_anniversary_date
+        if start_date.date() <= next_date <= end_date.date():
+            description = (
+                f"Happy {anniversary.next_years}th anniversary!"
+                if anniversary.next_years is not None
+                else anniversary.name
+            )
+            events.append(
+                CalendarEvent(
+                    summary=anniversary.name,
+                    start=next_date,
+                    end=next_date + timedelta(days=1),
+                    description=description,
                 )
-                events.append(event)
+            )
         return events
-
-    @Throttle(MIN_TIME_BETWEEN_UPDATES)
-    async def async_update(self) -> None:
-        """Get the latest data."""
-        _LOGGER.debug("Update anniversary calendar")
-        for ent in self.entities:
-            _LOGGER.debug("Update Entity Name: " + str(ent))
-            entity = self._hass.data[DOMAIN][SENSOR_PLATFORM][ent]
-            if entity and entity.name and entity._date:
-                self.event = CalendarEvent(
-                    summary=entity.name,
-                    start=entity._next_date.date(),
-                    end=entity._next_date.date() + timedelta(days=1),
-                    description=entity.extra_state_attributes["description"]
-                    if "description" in entity.extra_state_attributes
-                    else None,
-                )

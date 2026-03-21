@@ -26,7 +26,8 @@
             }
         },
         "error": {
-            "invalid_date": "Kuupäeva vorming on vale. Sisesta 'aaaa-kk-pp'  või 'kk-pp' vormingus."
+            "invalid_date": "Kuupäeva vorming on vale. Sisesta 'aaaa-kk-pp'  või 'kk-pp' vormingus.",
+            "no_prefix": "Nimi ei tohi alata 'anniversary_'"
         }
     },
     "options": {
@@ -54,7 +55,8 @@
             }
         },
         "error": {
-            "invalid_date": "Kuupäeva vorming on vale. Sisesta 'aaaa-kk-pp'  või 'kk-pp' vormingus."
+            "invalid_date": "Kuupäeva vorming on vale. Sisesta 'aaaa-kk-pp'  või 'kk-pp' vormingus.",
+            "no_prefix": "Nimi ei tohi alata 'anniversary_'"
         }
     }
 }

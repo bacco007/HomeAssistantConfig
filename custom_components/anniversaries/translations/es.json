@@ -26,7 +26,8 @@
             }
         },
         "error": {
-            "invalid_date": "La fecha no es válida. Por favor, introduza un valor valido 'YYYY-MM-DD'  o 'MM-DD' fecha"
+            "invalid_date": "La fecha no es válida. Por favor, introduza un valor valido 'YYYY-MM-DD'  o 'MM-DD' fecha",
+            "no_prefix": "No comience el nombre con 'anniversary_'"
         }
     },
     "options": {
@@ -54,7 +55,8 @@
             }
         },
         "error": {
-            "invalid_date": "La fecha no es válida. Por favor, introduza un valor valido 'YYYY-MM-DD' o 'MM-DD'"
+            "invalid_date": "La fecha no es válida. Por favor, introduza un valor valido 'YYYY-MM-DD' o 'MM-DD'",
+            "no_prefix": "No comience el nombre con 'anniversary_'"
         }
     }
 }

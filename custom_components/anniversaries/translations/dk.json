@@ -26,7 +26,8 @@
             }
         },
         "error": {
-            "invalid_date": "Datoen er ikke gyldig.  Angiv venligst en gyldig 'YYYY-MM-DD'  eller 'MM-DD' date"
+            "invalid_date": "Datoen er ikke gyldig.  Angiv venligst en gyldig 'YYYY-MM-DD'  eller 'MM-DD' date",
+            "no_prefix": "Navnet må ikke starte med 'anniversary_'"
         }
     },
     "options": {
@@ -54,7 +55,8 @@
             }
         },
         "error": {
-            "invalid_date": "Datoen er ikke gyldig.  Angiv venligst en gyldig 'YYYY-MM-DD' eller 'MM-DD' date"
+            "invalid_date": "Datoen er ikke gyldig.  Angiv venligst en gyldig 'YYYY-MM-DD' eller 'MM-DD' date",
+            "no_prefix": "Navnet må ikke starte med 'anniversary_'"
         }
     }
 }

@@ -26,7 +26,8 @@
             }
         },
         "error": {
-            "invalid_date": "Das Datum ist ungültig.  Bitte gib ein valides Datum im Format \"YYYY-MM-DD\" oder \" MM-DD\" ein."
+            "invalid_date": "Das Datum ist ungültig.  Bitte gib ein valides Datum im Format \"YYYY-MM-DD\" oder \" MM-DD\" ein.",
+            "no_prefix": "Der Name darf nicht mit 'anniversary_' beginnen"
         }
     },
     "options": {
@@ -54,7 +55,8 @@
             }
         },
         "error": {
-            "invalid_date": "Das Datum ist ungültig.  Bitte gib ein valides Datum im Format \"YYYY-MM-DD\" oder \" MM-DD\" ein."
+            "invalid_date": "Das Datum ist ungültig.  Bitte gib ein valides Datum im Format \"YYYY-MM-DD\" oder \" MM-DD\" ein.",
+            "no_prefix": "Der Name darf nicht mit 'anniversary_' beginnen"
         }
     }
 }

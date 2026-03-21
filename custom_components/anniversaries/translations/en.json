@@ -6,7 +6,7 @@
                 "data": {
                     "name": "Friendly name",
                     "date": "First Date (yyyy-mm-dd) or (mm-dd) if year is unknown",
-                    "count_up": "Count Up (Count down is default)",
+                    "category": "Category",
                     "one_time": "One Time Event (Non-recurring)",
                     "show_half_anniversary": "Show Half Anniversary Attributes",
                     "unit_of_measurement": "Text for unit_of_measurement",
@@ -24,7 +24,8 @@
             }
         },
         "error": {
-            "invalid_date": "The date is not valid.  Please enter a valid 'YYYY-MM-DD'  or 'MM-DD' date"
+            "invalid_date": "The date is not valid.  Please enter a valid 'YYYY-MM-DD'  or 'MM-DD' date",
+            "no_prefix": "Do not start the name with 'anniversary_'"
         }
     },
     "options": {
@@ -34,9 +35,10 @@
                 "data": {
                     "name": "Friendly name",
                     "date": "First Date (yyyy-mm-dd) or (mm-yy) if year is unknown",
-                    "count_up": "Count Up (Count down is default)",
+                    "category": "Category",
                     "one_time": "One Time Event (Non-recurring)",
                     "show_half_anniversary": "Show Half Anniversary Attributes",
+                    "upcoming_anniversaries_sensor": "Enable Upcoming Anniversaries Summary Sensor",
                     "unit_of_measurement": "Text for unit_of_measurement"
                 }
             },
@@ -51,7 +53,8 @@
             }
         },
         "error": {
-            "invalid_date": "The date is not valid.  Please enter a valid 'YYYY-MM-DD' or 'MM-DD' date."
+            "invalid_date": "The date is not valid.  Please enter a valid 'YYYY-MM-DD' or 'MM-DD' date.",
+            "no_prefix": "Do not start the name with 'anniversary_'"
         }
     }
 }

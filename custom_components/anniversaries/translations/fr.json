@@ -26,7 +26,8 @@
             }
         },
         "error": {
-            "invalid_date": "La date n'est pas valide. Veuillez saisir une date valide 'YYYY-MM-DD' ou 'MM-DD'"
+            "invalid_date": "La date n'est pas valide. Veuillez saisir une date valide 'YYYY-MM-DD' ou 'MM-DD'",
+            "no_prefix": "Ne commencez pas le nom par 'anniversary_'"
         }
     },
     "options": {
@@ -54,7 +55,8 @@
             }
         },
         "error": {
-            "invalid_date": "La date n'est pas valide. Veuillez saisir une date valide 'YYYY-MM-DD' ou 'MM-DD'"
+            "invalid_date": "La date n'est pas valide. Veuillez saisir une date valide 'YYYY-MM-DD' ou 'MM-DD'",
+            "no_prefix": "Ne commencez pas le nom par 'anniversary_'"
         }
     }
 }

@@ -7,7 +7,6 @@ from datetime import datetime
 import uuid
 
 from .const import (
-    DEFAULT_COUNT_UP,
     DOMAIN,
     DEFAULT_ICON_NORMAL,
     DEFAULT_ICON_SOON,
@@ -15,9 +14,8 @@ from .const import (
     DEFAULT_SOON,
     DEFAULT_HALF_ANNIVERSARY,
     DEFAULT_UNIT_OF_MEASUREMENT,
-    DEFAULT_ID_PREFIX,
     DEFAULT_ONE_TIME,
-    DEFAULT_COUNT_UP,
+    DEFAULT_CATEGORY,
     CONF_ICON_NORMAL,
     CONF_ICON_TODAY,
     CONF_ICON_SOON,
@@ -25,112 +23,92 @@ from .const import (
     CONF_SOON,
     CONF_HALF_ANNIVERSARY,
     CONF_UNIT_OF_MEASUREMENT,
-    CONF_ID_PREFIX,
     CONF_ONE_TIME,
-    CONF_COUNT_UP,
+    CONF_CATEGORY,
+    CATEGORY_OPTIONS,
+    CONF_UPCOMING_ANNIVERSARIES_SENSOR,
+    CONF_EMOJI,
+    DEFAULT_EMOJI,
+    CATEGORY_EMOJIS,
+    EMOJI_OPTIONS,
 )
 
 from homeassistant.const import CONF_NAME
 
 
+from homeassistant.helpers import selector
+
 @config_entries.HANDLERS.register(DOMAIN)
 class AnniversariesFlowHandler(config_entries.ConfigFlow):
-    CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
+    """Handle a config flow for Anniversaries."""
 
-    def __init__(self):
-        self._errors = {}
-        self._data = {}
-        self._data["unique_id"] = str(uuid.uuid4())
+    VERSION = 1
+    
+    def get_default_emoji_for_category(self, category):
+        """Get the default emoji for a given category."""
+        return CATEGORY_EMOJIS.get(category, DEFAULT_EMOJI)
 
-    async def async_step_user(self, user_input=None):   # pylint: disable=unused-argument
-        self._errors = {}
+    async def async_step_user(self, user_input=None):
+        """Handle the initial step."""
+        errors = {}
         if user_input is not None:
-            self._data.update(user_input)
-            if is_not_date(user_input[CONF_DATE], user_input[CONF_ONE_TIME]):
-                self._errors["base"] = "invalid_date"
-            if self._errors == {}:
-                self.init_info = user_input
-                return await self.async_step_icons()
-        return await self._show_user_form(user_input)
+            try:
+                # Prevent leading anniversary_ prefix in name to avoid double prefix
+                raw_name = user_input[CONF_NAME].strip()
+                if raw_name.lower().startswith("anniversary_"):
+                    errors[CONF_NAME] = "no_prefix"
+                    raise ValueError("name has forbidden prefix")
 
-    async def async_step_icons(self, user_input=None):
-        self._errors = {}
-        if user_input is not None:
-            self._data.update(user_input)
-            return self.async_create_entry(title=self._data["name"], data=self._data)
-        return await self._show_icon_form(user_input)
+                # Validate date
+                if is_not_date(user_input[CONF_DATE], user_input.get(CONF_ONE_TIME, False)):
+                    errors[CONF_DATE] = "invalid"
+                    raise ValueError("Invalid date")
 
-    async def _show_user_form(self, user_input):
-        name = ""
-        date = ""
-        count_up = DEFAULT_COUNT_UP
-        one_time = DEFAULT_ONE_TIME
-        half_anniversary = DEFAULT_HALF_ANNIVERSARY
-        unit_of_measurement = DEFAULT_UNIT_OF_MEASUREMENT
-        id_prefix = DEFAULT_ID_PREFIX
-        if user_input is not None:
-            if CONF_NAME in user_input:
-                name = user_input[CONF_NAME]
-            if CONF_DATE in user_input:
-                date = user_input[CONF_DATE]
-            if CONF_COUNT_UP in user_input:
-                count_up = user_input[CONF_COUNT_UP]
-            if CONF_ONE_TIME in user_input:
-                one_time = user_input[CONF_ONE_TIME]
-            if CONF_HALF_ANNIVERSARY in user_input:
-                half_anniversary = user_input[CONF_HALF_ANNIVERSARY]
-            if CONF_UNIT_OF_MEASUREMENT in user_input:
-                unit_of_measurement = user_input[CONF_UNIT_OF_MEASUREMENT]
-            if CONF_ID_PREFIX in user_input:
-                id_prefix = user_input[CONF_ID_PREFIX]
-        data_schema = OrderedDict()
-        data_schema[vol.Required(CONF_NAME, default=name)] = str
-        data_schema[vol.Required(CONF_DATE, default=date)] = str
-        data_schema[vol.Required(CONF_COUNT_UP, default=count_up)] = bool
-        data_schema[vol.Required(CONF_ONE_TIME, default=one_time)] = bool
-        data_schema[vol.Required(CONF_HALF_ANNIVERSARY, default=half_anniversary)] = bool
-        data_schema[vol.Required(CONF_UNIT_OF_MEASUREMENT, default=unit_of_measurement)] = str
-        data_schema[vol.Optional(CONF_ID_PREFIX, default=id_prefix)] = str
-        return self.async_show_form(step_id="user", data_schema=vol.Schema(data_schema), errors=self._errors)
+                # Set a unique ID for the entry
+                await self.async_set_unique_id(str(uuid.uuid4()))
+                self._abort_if_unique_id_configured()
 
-    async def _show_icon_form(self, user_input):
-        icon_normal = DEFAULT_ICON_NORMAL
-        icon_today = DEFAULT_ICON_TODAY
-        days_as_soon = DEFAULT_SOON
-        icon_soon = DEFAULT_ICON_SOON
-        if user_input is not None:
-            if CONF_ICON_NORMAL in user_input:
-                icon_normal = user_input[CONF_ICON_NORMAL]
-            if CONF_ICON_TODAY in user_input:
-                icon_today = user_input[CONF_ICON_TODAY]
-            if CONF_SOON in user_input:
-                days_as_soon = user_input[CONF_SOON]
-            if CONF_ICON_SOON in user_input:
-                icon_soon = user_input[CONF_ICON_SOON]
-        data_schema = OrderedDict()
-        data_schema[vol.Required(CONF_ICON_NORMAL, default=icon_normal)] = str
-        data_schema[vol.Required(CONF_ICON_TODAY, default=icon_today)] = str
-        data_schema[vol.Required(CONF_SOON, default=days_as_soon)] = int
-        data_schema[vol.Required(CONF_ICON_SOON, default=icon_soon)] = str
-        return self.async_show_form(step_id="icons", data_schema=vol.Schema(data_schema), errors=self._errors)
+                return self.async_create_entry(title=user_input[CONF_NAME], data=user_input)
+            except ValueError:
+                if "base" not in errors and not errors:
+                    errors["base"] = "invalid"
+            except Exception:
+                errors["base"] = "invalid"
 
-    async def async_step_import(self, user_input):  # pylint: disable=unused-argument
-        """Import a config entry.
-        Special type of import, we're not actually going to store any data.
-        Instead, we're going to rely on the values that are in config file.
-        """
-        if self._async_current_entries():
-            return self.async_abort(reason="single_instance_allowed")
+        data_schema = vol.Schema(
+            {
+                vol.Required(CONF_NAME): str,
+                vol.Required(CONF_DATE): str,
+                vol.Optional(CONF_CATEGORY, default=DEFAULT_CATEGORY): vol.In(CATEGORY_OPTIONS),
+                vol.Optional(CONF_EMOJI, default=self.get_default_emoji_for_category(DEFAULT_CATEGORY)): vol.In(EMOJI_OPTIONS),
+                vol.Optional(CONF_ONE_TIME, default=DEFAULT_ONE_TIME): bool,
+                vol.Optional(CONF_HALF_ANNIVERSARY, default=DEFAULT_HALF_ANNIVERSARY): bool,
+                vol.Optional(CONF_UNIT_OF_MEASUREMENT, default=DEFAULT_UNIT_OF_MEASUREMENT): str,
+                vol.Optional(CONF_ICON_NORMAL, default=DEFAULT_ICON_NORMAL): selector.IconSelector(),
+                vol.Optional(CONF_ICON_TODAY, default=DEFAULT_ICON_TODAY): selector.IconSelector(),
+                vol.Optional(CONF_SOON, default=DEFAULT_SOON): int,
+                vol.Optional(CONF_ICON_SOON, default=DEFAULT_ICON_SOON): selector.IconSelector(),
+            }
+        )
+        return self.async_show_form(step_id="user", data_schema=data_schema, errors=errors)
 
-        return self.async_create_entry(title="configuration.yaml", data={})
+    async def async_step_import(self, user_input):
+        """Import a config entry from configuration.yaml."""
+        name = user_input[CONF_NAME]
+        unique_id = f"yaml_{name.lower().replace(' ', '_')}"
+
+        await self.async_set_unique_id(unique_id)
+        self._abort_if_unique_id_configured()
+
+        return self.async_create_entry(
+            title=f"{name} (YAML)",
+            data=user_input,
+        )
 
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
-        if config_entry.options.get("unique_id", None) is not None:
-            return OptionsFlowHandler(config_entry)
-        else:
-            return EmptyOptions(config_entry)
+        return OptionsFlowHandler(config_entry)
 
 def is_not_date(date, one_time):
     try:
@@ -149,61 +127,75 @@ def is_not_date(date, one_time):
 
 
 class OptionsFlowHandler(config_entries.OptionsFlow):
-    def __init__(self, config_entry):
-        self.config_entry = config_entry
-        self._data = {}
-        self._data["unique_id"] = config_entry.options.get("unique_id")
+    """Handle an options flow for Anniversaries."""
+
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        """Initialize options flow."""
+        self._config_entry = config_entry
 
     async def async_step_init(self, user_input=None):
-        self._errors = {}
+        """Manage the options."""
+        errors = {}
         if user_input is not None:
-            self._data.update(user_input)
-            if is_not_date(user_input[CONF_DATE], user_input[CONF_ONE_TIME]):
-                self._errors["base"] = "invalid_date"
-            if self._errors == {}:
-                return await self.async_step_icons()
-        return await self._show_init_form(user_input)
+            # Validate date if it was provided
+            if CONF_DATE in user_input and user_input[CONF_DATE]:
+                if is_not_date(user_input[CONF_DATE], user_input.get(CONF_ONE_TIME, False)):
+                    errors[CONF_DATE] = "invalid"
+            
+            if not errors:
+                return self.async_create_entry(title="", data=user_input)
 
-    async def async_step_icons(self, user_input=None):
-        self._errors = {}
-        if user_input is not None:
-            self._data.update(user_input)
-            return self.async_create_entry(title="", data=self._data)
-        return await self._show_icon_form(user_input)
+        # Properly merge data and options to get current values
+        current_config = {**self._config_entry.data}
+        if self._config_entry.options:
+            current_config.update(self._config_entry.options)
 
-    async def _show_init_form(self, user_input):
-        data_schema = OrderedDict()
-        count_up = self.config_entry.options.get(CONF_COUNT_UP)
-        one_time = self.config_entry.options.get(CONF_ONE_TIME)
-        unit_of_measurement = self.config_entry.options.get(CONF_UNIT_OF_MEASUREMENT)
-        half_anniversary = self.config_entry.options.get(CONF_HALF_ANNIVERSARY)
-        if count_up is None:
-            count_up = DEFAULT_COUNT_UP
-        if one_time is None:
-            one_time = DEFAULT_ONE_TIME
-        if half_anniversary is None:
-            half_anniversary = DEFAULT_HALF_ANNIVERSARY
-        if unit_of_measurement is None:
-            unit_of_measurement = DEFAULT_UNIT_OF_MEASUREMENT
-        data_schema[vol.Required(CONF_NAME,default=self.config_entry.options.get(CONF_NAME),)] = str
-        data_schema[vol.Required(CONF_DATE, default=self.config_entry.options.get(CONF_DATE),)] = str
-        data_schema[vol.Required(CONF_COUNT_UP, default=count_up,)] = bool
-        data_schema[vol.Required(CONF_ONE_TIME, default=one_time,)] = bool
-        data_schema[vol.Required(CONF_HALF_ANNIVERSARY,default=half_anniversary,)] = bool
-        data_schema[vol.Required(CONF_UNIT_OF_MEASUREMENT,default=unit_of_measurement,)] = str
-        return self.async_show_form(
-            step_id="init", data_schema=vol.Schema(data_schema), errors=self._errors
+        data_schema = vol.Schema(
+            {
+                vol.Optional(
+                    CONF_DATE,
+                    default=current_config.get(CONF_DATE, ""),
+                ): str,
+                vol.Optional(
+                    CONF_UPCOMING_ANNIVERSARIES_SENSOR,
+                    default=current_config.get(CONF_UPCOMING_ANNIVERSARIES_SENSOR, False),
+                ): bool,
+                vol.Optional(
+                    CONF_CATEGORY,
+                    default=current_config.get(CONF_CATEGORY, DEFAULT_CATEGORY),
+                ): vol.In(CATEGORY_OPTIONS),
+                vol.Optional(
+                    CONF_EMOJI,
+                    default=current_config.get(CONF_EMOJI, CATEGORY_EMOJIS.get(current_config.get(CONF_CATEGORY, DEFAULT_CATEGORY), DEFAULT_EMOJI)),
+                ): vol.In(EMOJI_OPTIONS),
+                vol.Optional(
+                    CONF_ONE_TIME,
+                    default=current_config.get(CONF_ONE_TIME, DEFAULT_ONE_TIME),
+                ): bool,
+                vol.Optional(
+                    CONF_HALF_ANNIVERSARY,
+                    default=current_config.get(CONF_HALF_ANNIVERSARY, DEFAULT_HALF_ANNIVERSARY),
+                ): bool,
+                vol.Optional(
+                    CONF_UNIT_OF_MEASUREMENT,
+                    default=current_config.get(CONF_UNIT_OF_MEASUREMENT, DEFAULT_UNIT_OF_MEASUREMENT),
+                ): str,
+                vol.Optional(
+                    CONF_ICON_NORMAL,
+                    default=current_config.get(CONF_ICON_NORMAL, DEFAULT_ICON_NORMAL),
+                ): selector.IconSelector(),
+                vol.Optional(
+                    CONF_ICON_TODAY,
+                    default=current_config.get(CONF_ICON_TODAY, DEFAULT_ICON_TODAY),
+                ): selector.IconSelector(),
+                vol.Optional(
+                    CONF_SOON,
+                    default=current_config.get(CONF_SOON, DEFAULT_SOON),
+                ): int,
+                vol.Optional(
+                    CONF_ICON_SOON,
+                    default=current_config.get(CONF_ICON_SOON, DEFAULT_ICON_SOON),
+                ): selector.IconSelector(),
+            }
         )
-
-    async def _show_icon_form(self, user_input):
-        data_schema = OrderedDict()
-        data_schema[vol.Required(CONF_ICON_NORMAL,default=self.config_entry.options.get(CONF_ICON_NORMAL),)] = str
-        data_schema[vol.Required(CONF_ICON_TODAY,default=self.config_entry.options.get(CONF_ICON_TODAY),)] = str
-        data_schema[vol.Required(CONF_SOON,default=self.config_entry.options.get(CONF_SOON),)] = int
-        data_schema[vol.Required(CONF_ICON_SOON,default=self.config_entry.options.get(CONF_ICON_SOON),)] = str
-        return self.async_show_form(step_id="icons", data_schema=vol.Schema(data_schema), errors=self._errors)
-
-
-class EmptyOptions(config_entries.OptionsFlow):
-    def __init__(self, config_entry):
-        self.config_entry = config_entry
+        return self.async_show_form(step_id="init", data_schema=data_schema, errors=errors)

@@ -6,7 +6,7 @@
         "data": {
           "name": "Nome amigável",
           "date": "Primeira data (aaaa-mm-dd) ou (mm-dd) se o ano for desconhecido",
-          "count_up": "Contagem crescente (contagem regressiva é o padrão)",
+          "category": "Categoria",
           "one_time": "Evento único (não recorrente)",
           "show_half_anniversary": "Mostrar atributos de meio aniversário",
           "unit_of_measurement": "Texto para unit_of_measurement",
@@ -34,7 +34,7 @@
         "data": {
           "name": "Nome amigável",
           "date": "Primeira data (aaaa-mm-dd) ou (mm-aa) se o ano for desconhecido",
-          "count_up": "Contagem crescente (contagem regressiva é o padrão)",
+          "category": "Categoria",
           "one_time": "Evento único (não recorrente)",
           "show_half_anniversary": "Mostrar atributos de meio aniversário",
           "unit_of_measurement": "Texto para unit_of_measurement"
