@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Background circle -->
+  <circle cx="128" cy="128" r="120" fill="#E3F2FD" stroke="#2196F3" stroke-width="2"/>
+  
+  <!-- Main container for devices -->
+  <g id="devices">
+    <!-- Top left device -->
+    <rect x="30" y="30" width="45" height="60" rx="5" fill="#2196F3" stroke="#1565C0" stroke-width="2"/>
+    <rect x="35" y="35" width="35" height="45" rx="3" fill="#90CAF9" stroke="#2196F3" stroke-width="1"/>
+    <rect x="38" y="82" width="29" height="4" rx="2" fill="#1565C0"/>
+    
+    <!-- Top right device -->
+    <rect x="181" y="30" width="45" height="60" rx="5" fill="#2196F3" stroke="#1565C0" stroke-width="2"/>
+    <rect x="186" y="35" width="35" height="45" rx="3" fill="#90CAF9" stroke="#2196F3" stroke-width="1"/>
+    <rect x="189" y="82" width="29" height="4" rx="2" fill="#1565C0"/>
+    
+    <!-- Bottom left device -->
+    <rect x="30" y="166" width="45" height="60" rx="5" fill="#2196F3" stroke="#1565C0" stroke-width="2"/>
+    <rect x="35" y="171" width="35" height="45" rx="3" fill="#90CAF9" stroke="#2196F3" stroke-width="1"/>
+    <rect x="38" y="218" width="29" height="4" rx="2" fill="#1565C0"/>
+    
+    <!-- Bottom right device -->
+    <rect x="181" y="166" width="45" height="60" rx="5" fill="#2196F3" stroke="#1565C0" stroke-width="2"/>
+    <rect x="186" y="171" width="35" height="45" rx="3" fill="#90CAF9" stroke="#2196F3" stroke-width="1"/>
+    <rect x="189" y="218" width="29" height="4" rx="2" fill="#1565C0"/>
+    
+    <!-- Center connection lines -->
+    <line x1="75" y1="95" x2="125" y2="128" stroke="#2196F3" stroke-width="3"/>
+    <line x1="181" y1="95" x2="131" y2="128" stroke="#2196F3" stroke-width="3"/>
+    <line x1="75" y1="196" x2="125" y2="128" stroke="#2196F3" stroke-width="3"/>
+    <line x1="181" y1="196" x2="131" y2="128" stroke="#2196F3" stroke-width="3"/>
+    
+    <!-- Center management icon -->
+    <circle cx="128" cy="128" r="18" fill="#1565C0" stroke="#2196F3" stroke-width="2"/>
+    <text x="128" y="135" font-size="20" font-weight="bold" fill="#90CAF9" text-anchor="middle">⚙</text>
+  </g>
+</svg>

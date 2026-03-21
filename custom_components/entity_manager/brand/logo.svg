@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#03a9f4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0277bd;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" rx="80" fill="url(#bgGrad)"/>
+  
+  <!-- Main gear icon -->
+  <g transform="translate(256, 256)">
+    <!-- Gear outer ring -->
+    <path d="M 0,-120 L 20,-130 L 30,-110 L 50,-115 L 55,-95 L 75,-95 L 85,-75 L 100,-65 L 95,-45 L 110,-30 L 100,-10 L 115,10 L 100,25 L 100,45 L 80,55 L 75,75 L 55,80 L 45,100 L 25,95 L 10,110 L -10,100 L -25,115 L -45,105 L -55,85 L -75,80 L -80,60 L -100,50 L -105,30 L -120,15 L -110,-5 L -120,-25 L -105,-40 L -100,-60 L -80,-70 L -75,-90 L -55,-95 L -45,-115 L -25,-110 L -10,-125 Z" 
+          fill="white" opacity="0.95"/>
+    
+    <!-- Gear inner circle -->
+    <circle r="65" fill="url(#bgGrad)"/>
+    <circle r="50" fill="white"/>
+    <circle r="35" fill="url(#bgGrad)"/>
+  </g>
+  
+  <!-- Entity list representation -->
+  <g transform="translate(120, 380)">
+    <rect x="0" y="0" width="280" height="24" rx="12" fill="white" opacity="0.9"/>
+    <rect x="0" y="35" width="200" height="24" rx="12" fill="white" opacity="0.9"/>
+    <rect x="0" y="70" width="240" height="24" rx="12" fill="white" opacity="0.9"/>
+  </g>
+  
+  <!-- Checkboxes/dots -->
+  <circle cx="100" cy="392" r="8" fill="#4caf50"/>
+  <circle cx="100" cy="427" r="8" fill="#f44336"/>
+  <circle cx="100" cy="462" r="8" fill="#4caf50"/>
+</svg>

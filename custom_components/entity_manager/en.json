@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Entity Manager Setup",
+        "description": "Enable the Entity Manager panel to manage disabled entities."
+      }
+    },
+    "abort": {
+      "already_configured": "Entity Manager is already configured"
+    }
+  }
+}

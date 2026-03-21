@@ -1,0 +1,24 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Entity Manager Setup",
+        "description": "Entity Manager will help you manage disabled entities in your Home Assistant instance."
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Entity Manager Options",
+        "description": "Select which integrations you want to manage with Entity Manager.",
+        "data": {
+          "managed_integrations": "Select integrations to manage"
+        }
+      }
+    },
+    "abort": {
+      "no_options_available": "No configuration options available yet. Entity Manager works automatically with all integrations."
+    }
+  }
+}
