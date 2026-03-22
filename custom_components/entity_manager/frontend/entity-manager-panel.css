@@ -6253,3 +6253,54 @@ entity-manager-panel[data-theme="dark"] .device-select-checkbox {
 .em-at-filter.never-filter.active {
   border-color: var(--em-warning); background: rgba(255,152,0,0.12); color: var(--em-warning);
 }
+
+
+/* ===== HA NATIVE ICONS (ha-icon) ===== */
+.icon ha-icon,
+.sidebar-item .icon ha-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  --mdc-icon-size: 18px;
+}
+.icon-btn ha-icon {
+  display: block;
+  --mdc-icon-size: 16px;
+  pointer-events: none;
+}
+.em-toast-icon ha-icon {
+  --mdc-icon-size: 18px;
+  vertical-align: middle;
+}
+.em-timeline-time ha-icon {
+  --mdc-icon-size: 14px;
+  vertical-align: middle;
+}
+.entity-header-device ha-icon,
+.entity-header-area ha-icon,
+.entity-header-floor-chip ha-icon,
+.entity-header-state ha-icon,
+.entity-header-time ha-icon {
+  --mdc-icon-size: 14px;
+  vertical-align: middle;
+}
+.smart-group-icon ha-icon {
+  --mdc-icon-size: 18px;
+  vertical-align: middle;
+}
+.em-inline-view-title ha-icon {
+  --mdc-icon-size: 16px;
+  vertical-align: middle;
+}
+.help-section h3 ha-icon {
+  --mdc-icon-size: 16px;
+  vertical-align: middle;
+}
+.em-afd-row ha-icon {
+  --mdc-icon-size: 16px;
+  vertical-align: middle;
+}
+.stat-value ha-icon {
+  --mdc-icon-size: 24px;
+  vertical-align: middle;
+}
