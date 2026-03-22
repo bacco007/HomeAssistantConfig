@@ -29,12 +29,20 @@
         "title": "Remote Connection (UniFi Cloud)",
         "description": "Connect to your UniFi device via the UniFi Cloud.",
         "data": {
-          "console_id": "Console ID",
           "api_key": "API Key"
         },
         "data_description": {
-          "console_id": "Your UniFi Console ID from unifi.ui.com",
-          "api_key": "Cloud API key from your UniFi account"
+          "api_key": "Cloud API key from your UniFi account. After validation, you will choose one of the consoles that this API key can access."
+        }
+      },
+      "select_console": {
+        "title": "Select remote console",
+        "description": "Choose the UniFi console that you want to connect to.",
+        "data": {
+          "console_id": "Console"
+        },
+        "data_description": {
+          "console_id": "These consoles were discovered with your API key."
         }
       },
       "reauth_confirm": {
@@ -56,13 +64,15 @@
       }
     },
     "error": {
-      "cannot_connect": "Failed to connect to UniFi controller. Please check the host address and network connectivity.",
-      "invalid_auth": "Invalid API key. Please verify your credentials.",
-      "unknown": "An unexpected error occurred. Please check the logs for details."
+      "cannot_connect": "Failed to connect",
+      "invalid_auth": "Invalid authentication",
+      "invalid_console_id": "The selected console could not be accessed with this API key.",
+      "no_remote_consoles": "No remote UniFi consoles were found for this API key.",
+      "unknown": "Unexpected error"
     },
     "abort": {
-      "already_configured": "This device is already configured.",
-      "reauth_successful": "Re-authentication was successful.",
+      "already_configured": "Device is already configured",
+      "reauth_successful": "Re-authentication was successful",
       "account_mismatch": "The API key provided does not match the original account. Please use the same API key or remove and re-add the integration."
     }
   },
@@ -128,6 +138,9 @@
       "temperature": {
         "name": "Temperature"
       },
+      "general_temperature": {
+        "name": "Temperature"
+      },
       "humidity": {
         "name": "Humidity"
       },
@@ -187,6 +200,12 @@
       }
     },
     "switch": {
+      "microphone": {
+        "name": "Microphone"
+      },
+      "privacy_mode": {
+        "name": "Privacy Mode"
+      },
       "status_light": {
         "name": "Status Light"
       },
@@ -198,6 +217,21 @@
       }
     },
     "select": {
+      "hdr_mode": {
+        "name": "HDR Mode"
+      },
+      "video_mode": {
+        "name": "Video Mode"
+      },
+      "ringtone": {
+        "name": "Ringtone"
+      },
+      "ptz_preset": {
+        "name": "PTZ Preset"
+      },
+      "liveview": {
+        "name": "Liveview"
+      },
       "recording_mode": {
         "name": "Recording Mode"
       },
@@ -209,11 +243,33 @@
       "mic_volume": {
         "name": "Microphone Volume"
       },
+      "brightness_level": {
+        "name": "Brightness Level"
+      },
       "speaker_volume": {
         "name": "Speaker Volume"
       },
       "chime_volume": {
         "name": "Chime Volume"
+      },
+      "repeat_times": {
+        "name": "Repeat Times"
+      }
+    },
+    "event": {
+      "doorbell_ring": {
+        "name": "Doorbell"
+      },
+      "smart_detection": {
+        "name": "Smart Detection"
+      },
+      "sensor_event": {
+        "name": "Door/Window"
+      }
+    },
+    "update": {
+      "firmware": {
+        "name": "Firmware"
       }
     }
   },

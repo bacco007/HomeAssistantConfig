@@ -172,10 +172,10 @@ class UniFiNetworkClient(BaseUniFiClient):
 
         console_id = self._require_console_id()
 
-        # Remote: /v1/connector/consoles/{consoleId}/proxy/network/integration/v1{endpoint}
-        return (
-            f"/v1/connector/consoles/{console_id}{NETWORK_INTEGRATION_PATH}{endpoint}"
-        )
+        # Remote: /v1/connector/consoles/{consoleId}/network/integration/v1{endpoint}
+        # The connector adds /proxy/ when forwarding to the console, so strip it.
+        connector_path = NETWORK_INTEGRATION_PATH.removeprefix("/proxy")
+        return f"/v1/connector/consoles/{console_id}{connector_path}{endpoint}"
 
     def build_legacy_api_path(self, site_name: str, endpoint: str) -> str:
         """
@@ -201,9 +201,11 @@ class UniFiNetworkClient(BaseUniFiClient):
 
         console_id = self._require_console_id()
 
+        # The connector adds /proxy/ when forwarding to the console, so strip it.
+        connector_path = NETWORK_LEGACY_PATH.removeprefix("/proxy")
         return (
             f"/v1/connector/consoles/{console_id}"
-            f"{NETWORK_LEGACY_PATH}/s/{site_name}{endpoint}"
+            f"{connector_path}/s/{site_name}{endpoint}"
         )
 
     def build_legacy_global_api_path(self, endpoint: str) -> str:
@@ -224,7 +226,9 @@ class UniFiNetworkClient(BaseUniFiClient):
             return f"{NETWORK_LEGACY_PATH}{endpoint}"
 
         console_id = self._require_console_id()
-        return f"/v1/connector/consoles/{console_id}{NETWORK_LEGACY_PATH}{endpoint}"
+        # The connector adds /proxy/ when forwarding to the console, so strip it.
+        connector_path = NETWORK_LEGACY_PATH.removeprefix("/proxy")
+        return f"/v1/connector/consoles/{console_id}{connector_path}{endpoint}"
 
     @property
     def devices(self) -> DevicesEndpoint:

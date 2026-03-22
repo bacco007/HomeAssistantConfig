@@ -178,10 +178,10 @@ async def async_setup_entry(
             _LOGGER.warning(msg)
             raise ConfigEntryAuthFailed(msg) from err
 
-        # Initialize UniFi Protect API client (only for local connections currently)
+        # Initialize UniFi Protect API client
         protect_client: UniFiProtectClient | None = None
         if is_local:
-            _LOGGER.debug("Initializing UniFi Protect API client")
+            _LOGGER.debug("Initializing UniFi Protect API client (LOCAL)")
             protect_client = UniFiProtectClient(
                 auth=auth,
                 base_url=entry.data.get(CONF_HOST, DEFAULT_API_HOST),
@@ -189,8 +189,18 @@ async def async_setup_entry(
                 timeout=30,
                 session=websession,
             )
+        else:
+            _LOGGER.debug("Initializing UniFi Protect API client (REMOTE)")
+            protect_client = UniFiProtectClient(
+                auth=auth,
+                connection_type=ConnectionType.REMOTE,
+                console_id=entry.data.get(CONF_CONSOLE_ID),
+                timeout=30,
+                session=websession,
+            )
 
-            # Verify UniFi Protect API connection by fetching cameras
+        # Verify UniFi Protect API connection by fetching cameras
+        if protect_client:
             _LOGGER.debug("Validating Protect API connection")
             try:
                 cameras = await protect_client.cameras.get_all()
@@ -205,8 +215,6 @@ async def async_setup_entry(
                     err,
                 )
                 protect_client = None
-        else:
-            _LOGGER.info("Protect API not available for remote connections")
 
     # Note: UniFiAuthenticationError is already handled in the inner try block
     # at lines 176-179, which converts it to ConfigEntryAuthFailed

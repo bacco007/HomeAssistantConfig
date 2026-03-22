@@ -174,12 +174,12 @@ class UniFiProtectClient(BaseUniFiClient):
             # Local: /proxy/protect/integration/v1{endpoint}
             # Note: LOCAL Protect API does NOT use /sites/{site_id} prefix
             return f"{PROTECT_INTEGRATION_PATH}{endpoint}"
-        # Remote: /v1/connector/consoles/{consoleId}/proxy/protect/...
-        # .../integration/v1/sites/{siteId}{endpoint}
-        if not site_id:
-            raise ValueError("site_id is required for REMOTE connection type")
+        # Remote: /v1/connector/consoles/{consoleId}/protect/integration/v1{endpoint}
+        # The connector adds /proxy/ when forwarding to the console, so strip it.
+        # Protect API does not use site-scoped paths (unlike Network API).
+        connector_path = PROTECT_INTEGRATION_PATH.removeprefix("/proxy")
         base = f"/v1/connector/consoles/{self._console_id}"
-        return f"{base}{PROTECT_INTEGRATION_PATH}/sites/{site_id}{endpoint}"
+        return f"{base}{connector_path}{endpoint}"
 
     @property
     def cameras(self) -> CamerasEndpoint:

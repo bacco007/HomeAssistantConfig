@@ -12,6 +12,6 @@
   "issue_tracker": "https://github.com/ruaan-deysel/ha-unifi-insights/issues",
   "loggers": ["custom_components.unifi_insights"],
   "usb": [],
-  "version": "2026.3.0",
+  "version": "2026.3.1",
   "zeroconf": []
 }

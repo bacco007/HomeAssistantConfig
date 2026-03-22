@@ -18,7 +18,7 @@ class ConnectionType(str, Enum):
 
     REMOTE: Cloud connection via Ubiquiti's API (https://api.ui.com)
             - Uses cloud API key from account.ui.com
-            - Endpoints: /v1/connector/consoles/{consoleId}/proxy/network/integration/v1/...
+            - Endpoints: /v1/connector/consoles/{consoleId}/network/integration/v1/...
     """
 
     LOCAL = "local"
