@@ -152,7 +152,7 @@
                 ${isRealEntity && !isZombieEntity ? `<button class="open-entity-btn" data-idx="${idx}" title="${this.t('actions.open_entity')}" style="background:var(--secondary-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);">${_icon("open-in-new")} ${this.t('actions.open_entity')}</button>` : ''}
                 ${isZombieEntity ? `<a href="/config/entities" target="_blank" style="text-decoration:none;"><button class="edit-ha-btn" style="background:var(--secondary-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);" title="${this.t('actions.view_entities_list')}">${_icon("format-list-bulleted")} ${this.t('actions.view_entities_list')}</button></a>` : ''}
                 <button class="explain-btn" data-idx="${idx}" style="background: var(--accent-color, #03a9f4); color: white;">
-                    ${_icon("robot")} IA
+                    ${_icon("robot")} ${this.t('actions.ai_explain')}
                 </button>
                 ${i.entity_id && i.entity_id.startsWith('automation.') && (() => {
                   const scores = this._lastData?.complexity_scores || [];
@@ -169,6 +169,7 @@
             </div>
         </div>
         <div class="issue-message">${this.escapeHtml(i.message || '')}</div>
+        ${(() => { const hk = 'issue_types.hints.' + (i.type || ''); const hv = this.t(hk); return (hv && hv !== hk) ? `<div style="font-size:11px;color:var(--secondary-text-color);margin-top:4px;font-style:italic;opacity:0.85;">${this.escapeHtml(hv)}</div>` : ''; })()}
         ${i.complexity_detail ? `
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">
           <span style="background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:6px;padding:2px 9px;font-size:11px;font-family:monospace;font-weight:700;">

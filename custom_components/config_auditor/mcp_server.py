@@ -1,4 +1,4 @@
-"""H.A.C.A — Serveur MCP (Model Context Protocol) v1.6.0.
+"""H.A.C.A — Serveur MCP (Model Context Protocol) v1.6.1.
 
 Expose HACA comme un serveur MCP accessible depuis n'importe quel agent IA
 compatible (Claude Code, Cursor, Copilot, etc.) via HTTP + JSON-RPC 2.0.
@@ -38,7 +38,7 @@ _LOGGER = logging.getLogger(__name__)
 
 MCP_PROTOCOL_VERSION = "2024-11-05"
 MCP_SERVER_NAME = "haca-mcp"
-MCP_SERVER_VERSION = "1.6.0"
+MCP_SERVER_VERSION = "1.6.1"
 
 
 def _slugify(text: str, max_length: int = 60) -> str:
@@ -1457,11 +1457,16 @@ async def _handle_jsonrpc(hass: HomeAssistant, body: dict) -> dict:
 # ─── aiohttp Views ────────────────────────────────────────────────────────
 
 class HacaMcpView(HomeAssistantView):
-    """Vue HTTP principale MCP — POST (JSON-RPC) + GET (SSE keepalive)."""
+    """Vue HTTP principale MCP — POST (JSON-RPC) + GET (SSE keepalive).
+    
+    Uses requires_auth=True so HA handles Bearer token validation natively.
+    This supports Long-Lived Access Tokens, OAuth tokens, and trusted networks.
+    """
 
     url = "/api/haca_mcp"
+    extra_urls = ["/api/haca_mcp/sse"]
     name = "api:haca_mcp"
-    requires_auth = False  # Auth gérée manuellement (Bearer token)
+    requires_auth = True  # HA handles Bearer token validation
     cors_allowed = True
 
     def __init__(self, hass: HomeAssistant) -> None:
@@ -1469,20 +1474,11 @@ class HacaMcpView(HomeAssistantView):
 
     async def post(self, request: web.Request) -> web.Response:
         """Reçoit et traite les messages JSON-RPC 2.0."""
+        user = request.get("hass_user")
         _LOGGER.debug(
-            "[HACA MCP] POST reçu — IP=%s Content-Type=%s",
-            request.remote, request.content_type,
+            "[HACA MCP] POST — IP=%s user=%s",
+            request.remote, user.id if user else "?",
         )
-        user_id = await _check_auth(request, self._hass)
-        if not user_id:
-            return web.Response(
-                status=401,
-                text=json.dumps({
-                    "jsonrpc": "2.0", "id": None,
-                    "error": {"code": -32001, "message": "Unauthorized — Bearer token required"}
-                }),
-                content_type="application/json",
-            )
 
         try:
             body = await request.json()
@@ -1512,7 +1508,7 @@ class HacaMcpView(HomeAssistantView):
 
         # Single request
         method = body.get("method", "?")
-        _LOGGER.debug("[HACA MCP] method=%s user=%s", method, user_id)
+        _LOGGER.debug("[HACA MCP] method=%s user=%s", method, user.id if user else "?")
         result = await _handle_jsonrpc(self._hass, body)
         if not result:
             return web.Response(status=204)
@@ -1524,10 +1520,6 @@ class HacaMcpView(HomeAssistantView):
 
     async def get(self, request: web.Request) -> web.Response:
         """SSE endpoint — keepalive pour clients MCP compatibles SSE."""
-        user_id = await _check_auth(request, self._hass)
-        if not user_id:
-            return web.Response(status=401, text="Unauthorized")
-
         response = web.StreamResponse(
             headers={
                 "Content-Type": "text/event-stream",
@@ -1539,7 +1531,6 @@ class HacaMcpView(HomeAssistantView):
         await response.prepare(request)
 
         # Envoyer l'événement endpoint pour les clients MCP
-        endpoint_url = str(request.url).replace("/api/haca_mcp", "/api/haca_mcp")
         await response.write(
             f"event: endpoint\ndata: {json.dumps({'url': str(request.url)})}\n\n".encode()
         )
@@ -1747,9 +1738,9 @@ _HA_EXTENDED_TOOLS: list[dict[str, Any]] = [
             "and save it to /config/blueprints/automation/haca/<slug>.yaml. "
             "Reads the actual automation YAML, extracts entity references as blueprint inputs, "
             "then writes a fully valid blueprint file and reloads blueprints. "
-            "Use this when the user asks to migrate an automation to a blueprint, "
-            "create a blueprint from an automation, or make an automation reusable. "
-            "Returns the blueprint file path and the full YAML written."
+            "IMPORTANT: This tool does NOT modify or delete the original automation. "
+            "A backup is created automatically — do NOT call ha_backup_create before this tool. "
+            "Call this tool directly with the automation entity_id."
         ),
         "inputSchema": {
             "type": "object",
@@ -3351,10 +3342,32 @@ async def _tool_ha_create_blueprint(hass: HomeAssistant, params: dict) -> dict:
     import os
     import yaml as _yaml
 
+    # Internal backup — AI should NOT call ha_backup_create before this tool
+    await _auto_backup(hass, "_tool_ha_create_blueprint")
+
     automation_ref = params.get("automation_entity_id", "").strip()
     blueprint_name = params.get("blueprint_name", "").strip()
     blueprint_description = params.get("blueprint_description", "").strip()
-    custom_inputs: dict = params.get("inputs") or {}
+
+    # Robust inputs parsing — AI agents may send various formats
+    raw_inputs = params.get("inputs")
+    custom_inputs: dict = {}
+    if raw_inputs:
+        if isinstance(raw_inputs, str):
+            try:
+                import json as _json
+                raw_inputs = _json.loads(raw_inputs)
+            except Exception:
+                raw_inputs = {}
+        if isinstance(raw_inputs, dict):
+            for k, v in raw_inputs.items():
+                if isinstance(v, dict):
+                    custom_inputs[k] = v
+                elif isinstance(v, str):
+                    # AI sent a simple string value — wrap it
+                    custom_inputs[k] = {"name": k, "description": v, "default": v}
+        else:
+            custom_inputs = {}  # invalid format — will auto-detect
 
     if not automation_ref:
         return {"error": "automation_entity_id is required"}
@@ -3434,51 +3447,43 @@ async def _tool_ha_create_blueprint(hass: HomeAssistant, params: dict) -> dict:
                 ).replace(
                     f'"{default_val}"', f"!input {slug}"
                 ).replace(default_val, f"!input {slug}")
-        try:
-            bp_body = _yaml.safe_load(body_str) or bp_body
-        except Exception:
-            pass  # keep original bp_body if re-parse fails
+        # Do NOT round-trip through safe_load — !input is not a standard YAML tag
+        # Keep body_str as raw YAML text with !input references
 
-    blueprint_dict: dict = {
+    # Build input section (keep ALL fields including default — HA requires it)
+    input_section: dict = {}
+    for slug, inp in custom_inputs.items():
+        input_section[slug] = {k: v for k, v in inp.items()}
+
+    blueprint_header: dict = {
         "blueprint": {
             "name": blueprint_name,
             "description": blueprint_description,
             "domain": "automation",
-            "input": {
-                slug: {k: v for k, v in inp.items() if k != "default"}
-                for slug, inp in custom_inputs.items()
-            },
+            "input": input_section,
         }
     }
-    if custom_inputs:
-        # Add variables block mapping inputs for use in templates
-        blueprint_dict["variables"] = {
-            slug: f"!input {slug}" for slug in custom_inputs
-        }
 
-    blueprint_dict.update(bp_body)
+    # Dump header (no !input tags) and body separately
+    header_yaml = _yaml.dump(
+        blueprint_header,
+        allow_unicode=True,
+        default_flow_style=False,
+        sort_keys=False,
+    )
+
+    if custom_inputs:
+        # body_str already has !input references as raw text
+        bp_yaml = header_yaml + "\n" + body_str
+    else:
+        bp_body_yaml = _yaml.dump(bp_body, allow_unicode=True, default_flow_style=False)
+        bp_yaml = header_yaml + "\n" + bp_body_yaml
 
     # ── Step 4: write the file ────────────────────────────────────────────────
     slug_name = _slugify(blueprint_name, 60)
     bp_dir = hass.config.path("blueprints", "automation", "haca")
     await hass.async_add_executor_job(os.makedirs, bp_dir, 0o777, True)
     bp_path = os.path.join(bp_dir, f"{slug_name}.yaml")
-
-    bp_yaml = _yaml.dump(
-        blueprint_dict,
-        allow_unicode=True,
-        default_flow_style=False,
-        sort_keys=False,
-    )
-
-    # YAML dump doesn't support !input tags natively — post-process the string
-    bp_yaml = bp_yaml.replace("'!input ", "!input ").replace(
-        "\"!input ", "!input "
-    )
-    # Fix closing quotes left after the input name
-    import re as _re
-    bp_yaml = _re.sub(r"(!input [a-z0-9_]+)'", r"\1", bp_yaml)
-    bp_yaml = _re.sub(r'(!input [a-z0-9_]+)"', r"\1", bp_yaml)
 
     try:
         _bp_header = (

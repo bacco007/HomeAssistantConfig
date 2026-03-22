@@ -39,6 +39,10 @@ class PerformanceAnalyzer:
         # Load language for translations
         language = self.hass.data.get("config_auditor", {}).get("user_language") or self.hass.config.language or "en"
         await self._translator.async_load_language(language)
+
+        # Load haca_ignore label (entity + device level)
+        from .translation_utils import async_get_haca_ignored_entity_ids
+        _ignored = await async_get_haca_ignored_entity_ids(self.hass)
         
         automation_configs = automation_configs or {}
         
@@ -46,6 +50,8 @@ class PerformanceAnalyzer:
         
         for idx, state in enumerate(automations):
             entity_id = state.entity_id
+            if entity_id in _ignored:
+                continue
             alias = state.attributes.get("friendly_name", entity_id)
             
             # Check for high frequency based on last_triggered

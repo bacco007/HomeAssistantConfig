@@ -37,6 +37,28 @@ var ISSUE_TYPES_BY_CATEGORY = [
       { id: 'unknown_label_reference',            fixable: false },
       { id: 'template_numeric_comparison',        fixable: false },
       { id: 'template_time_check',                fixable: false },
+      { id: 'god_automation',                     fixable: false },
+      { id: 'complex_automation',                 fixable: false },
+    ]
+  },
+  {
+    id: 'scripts', icon: 'mdi:script-text',
+    types: [
+      { id: 'script_cycle',                      fixable: false },
+      { id: 'script_call_depth',                 fixable: false },
+      { id: 'script_single_mode_loop',           fixable: false },
+      { id: 'script_orphan',                     fixable: false },
+      { id: 'script_blueprint_candidate',        fixable: false },
+      { id: 'empty_script',                      fixable: false },
+    ]
+  },
+  {
+    id: 'scenes', icon: 'mdi:palette',
+    types: [
+      { id: 'scene_entity_unavailable',          fixable: false },
+      { id: 'scene_not_triggered',               fixable: false },
+      { id: 'scene_duplicate',                   fixable: false },
+      { id: 'empty_scene',                       fixable: false },
     ]
   },
   {
@@ -50,6 +72,35 @@ var ISSUE_TYPES_BY_CATEGORY = [
       { id: 'disabled_but_referenced', fixable: false },
       { id: 'ghost_registry_entry',    fixable: true  },
       { id: 'unused_input_boolean',    fixable: false },
+    ]
+  },
+  {
+    id: 'helpers', icon: 'mdi:cog-outline',
+    types: [
+      { id: 'helper_unused',                     fixable: false },
+      { id: 'helper_orphaned_disabled_only',     fixable: false },
+      { id: 'helper_no_friendly_name',           fixable: false },
+      { id: 'input_number_invalid_range',        fixable: false },
+      { id: 'input_select_duplicate_options',    fixable: false },
+      { id: 'input_select_empty_option',         fixable: false },
+      { id: 'input_text_invalid_pattern',        fixable: false },
+      { id: 'timer_never_started',               fixable: false },
+      { id: 'timer_orphaned',                    fixable: false },
+      { id: 'timer_zero_duration',               fixable: false },
+      { id: 'template_sensor_no_metadata',       fixable: false },
+      { id: 'template_sensor_cycle',             fixable: false },
+      { id: 'template_missing_availability',     fixable: false },
+      { id: 'template_no_unavailable_check',     fixable: false },
+      { id: 'template_now_without_trigger',      fixable: false },
+    ]
+  },
+  {
+    id: 'groups', icon: 'mdi:group',
+    types: [
+      { id: 'group_empty',                       fixable: false },
+      { id: 'group_missing_entities',            fixable: false },
+      { id: 'group_all_unavailable',             fixable: false },
+      { id: 'group_nested_deep',                 fixable: false },
     ]
   },
   {
@@ -160,12 +211,12 @@ function renderConfigTab(options, lang, t) {
     '<div class="cfg-section">' +
     '<div class="cfg-section-title">' + _icon("magnify-scan", 18) + t('config.automatic_scan') + '</div>' +
     '<div class="cfg-row">' +
-    '<div class="cfg-row-label"><span>' + t('config.scan_interval_minutes') + '</span><span class="cfg-row-hint">5 – 1440 min</span></div>' +
-    '<input type="number" id="cfg-scan-interval" class="cfg-input" min="5" max="1440" value="' + (options.scan_interval || 60) + '">' +
+    '<div class="cfg-row-label"><span>' + t('config.scan_interval_minutes') + '</span><span class="cfg-row-hint">0 = ' + t('config.manual_only') + ' · 5 – 1440 min</span></div>' +
+    '<input type="number" id="cfg-scan-interval" class="cfg-input" min="0" max="1440" value="' + (options.scan_interval != null ? options.scan_interval : 60) + '">' +
     '</div>' +
     '<div class="cfg-row">' +
     '<div class="cfg-row-label"><span>' + t('config.startup_delay') + '</span><span class="cfg-row-hint">0 – 300 s</span></div>' +
-    '<input type="number" id="cfg-startup-delay" class="cfg-input" min="0" max="300" value="' + (options.startup_delay_seconds || 60) + '">' +
+    '<input type="number" id="cfg-startup-delay" class="cfg-input" min="0" max="300" value="' + (options.startup_delay_seconds != null ? options.startup_delay_seconds : 60) + '">' +
     '</div>' +
     '</div>' +
 
@@ -214,6 +265,14 @@ function renderConfigTab(options, lang, t) {
     '<div class="cfg-row-label"><span>' + t('config.auto_backup') + '</span><span class="cfg-row-hint">' + t('config.recommended') + '</span></div>' +
     '<label class="cfg-toggle"><input type="checkbox" id="cfg-backup-enabled"' + (options.backup_enabled !== false ? ' checked' : '') + '><span class="cfg-toggle-slider"></span></label>' +
     '</div>' +
+    '<div class="cfg-row">' +
+    '<div class="cfg-row-label"><span>' + t('config.ha_repairs') + '</span><span class="cfg-row-hint">' + t('config.ha_repairs_hint') + '</span></div>' +
+    '<label class="cfg-toggle"><input type="checkbox" id="cfg-repairs-enabled"' + (options.repairs_enabled !== false ? ' checked' : '') + '><span class="cfg-toggle-slider"></span></label>' +
+    '</div>' +
+    '<div class="cfg-row">' +
+    '<div class="cfg-row-label"><span>' + t('config.battery_notifications') + '</span><span class="cfg-row-hint">' + t('config.battery_notifications_hint') + '</span></div>' +
+    '<label class="cfg-toggle"><input type="checkbox" id="cfg-battery-notif"' + (options.battery_notifications_enabled !== false ? ' checked' : '') + '><span class="cfg-toggle-slider"></span></label>' +
+    '</div>' +
     '</div>' +
 
     // ── Section Diagnostics & Logs ──
@@ -236,39 +295,6 @@ function renderConfigTab(options, lang, t) {
     '</div>' +
     '</div>' +
 
-    // ── v1.4.2 : Token HA pour Chat IA + MCP externe ─────────────────────
-    '<div class="cfg-section" style="margin-top:4px;">' +
-    '<div class="cfg-section-title">' + _icon('key-variant', 18) + ' ' + t('config.mcp_token_section') + '</div>' +
-    '<p style="font-size:13px;color:var(--secondary-text-color);margin:6px 0 12px;line-height:1.5;">' +
-      t('config.mcp_token_description') +
-    '</p>' +
-    // Indicateur si token déjà configuré
-    (options.mcp_ha_token
-      ? '<div style="display:flex;align-items:center;gap:6px;padding:8px 12px;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);border-radius:8px;margin-bottom:10px;">' +
-          '<span style="color:#388e3c;font-size:18px;">✅</span>' +
-          '<span style="font-size:13px;color:#388e3c;font-weight:500;">' + t('config.mcp_token_set') + '</span>' +
-          '<button id="cfg-mcp-token-clear" style="margin-left:auto;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:1px solid var(--divider-color);background:var(--secondary-background-color);">' +
-            t('config.mcp_token_clear') +
-          '</button>' +
-        '</div>'
-      : '') +
-    '<div class="cfg-row" style="align-items:flex-start;">' +
-    '<div class="cfg-row-label">' +
-    '<span>' + t('config.mcp_token_label') + '</span>' +
-    '<span class="cfg-row-hint">' + t('config.mcp_token_link_hint') + ' <a href="/profile/security" target="_top" style="color:var(--primary-color);">' + t('config.mcp_token_link_text') + '</a></span>' +
-    '</div>' +
-    '<input type="password" id="cfg-mcp-token" class="cfg-input" ' +
-      'style="width:260px;font-family:monospace;font-size:12px;" ' +
-      'placeholder="eyJ..." autocomplete="new-password">' +
-    '</div>' +
-    '<p style="font-size:11px;color:var(--secondary-text-color);margin:6px 0 2px;line-height:1.5;">' +
-      t('config.mcp_token_privacy') +
-    '</p>' +
-    '<p style="font-size:11px;color:var(--success-color,#4caf50);margin:0;font-weight:500;">' +
-      '✓ ' + t('config.mcp_token_no_restart') +
-    '</p>' +
-    '</div>' +
-
     // ── Ignore label section (outside cfg-actions) ──
     `<div class="cfg-section" style="padding:16px 20px;">
       <div class="cfg-section-title">${_icon("label-off-outline", 18)}${t('config.haca_ignore_title')}</div>
@@ -288,7 +314,7 @@ function renderConfigTab(options, lang, t) {
     // ── v1.4.0 : Section MCP + Agent IA ──────────────────────────────────
     '<div id="mcp-section-container" style="margin-top:8px;padding:0 4px;">' +
     '<div style="padding:20px;text-align:center;color:var(--secondary-text-color);font-size:13px;">' +
-    _icon("loading", 20) + ' MCP / Agent IA...' +
+    _icon("loading", 20) + ' MCP / AI Agent...' +
     '</div></div>' +
 
     '</div>';
@@ -365,6 +391,8 @@ var DEFAULT_OPTIONS = {
   battery_warning: 25,
   history_retention_days: 365,
   backup_enabled: true,
+  repairs_enabled: true,
+  battery_notifications_enabled: true,
 };
 
 // ─── Collecte des valeurs ─────────────────────────────────────────────────
@@ -382,7 +410,7 @@ function collectFormOptions(root) {
   }
 
   return {
-    scan_interval: num('#cfg-scan-interval', 60),
+    scan_interval: (function() { var el = q('#cfg-scan-interval'); if (!el) return 60; var v = parseInt(el.value, 10); return isNaN(v) ? 60 : Math.max(0, v); })(),
     startup_delay_seconds: num('#cfg-startup-delay', 60),
     event_monitoring_enabled: bool('#cfg-event-monitoring', true),
     event_debounce_seconds: num('#cfg-event-debounce', 30),
@@ -392,15 +420,9 @@ function collectFormOptions(root) {
     battery_warning: num('#cfg-battery-warning', 25),
     history_retention_days: num('#cfg-history-retention', 365),
     backup_enabled: bool('#cfg-backup-enabled', true),
+    repairs_enabled: bool('#cfg-repairs-enabled', true),
+    battery_notifications_enabled: bool('#cfg-battery-notif', true),
     debug_mode: bool('#cfg-debug-toggle', false),
-    // Token MCP / Chat IA : vide = ne pas modifier; valeur saisie = mettre à jour
-    mcp_ha_token: (function() {
-      var el = q('#cfg-mcp-token');
-      if (!el) return undefined;
-      var v = (el.value || '').trim();
-      if (!v) return undefined;  // champ vide = pas de modification
-      return v;  // nouvelle valeur saisie
-    })(),
   };
 }
 

@@ -143,11 +143,22 @@ class HacaDashboardCard extends HTMLElement {
     }
 
     const scoreState = disc.score;
-    const score = scoreState ? parseInt(scoreState.state, 10) : null;
+    const rawScore = scoreState ? parseInt(scoreState.state, 10) : null;
+    const score = (rawScore !== null && !isNaN(rawScore)) ? rawScore : null;
     const status = scoreState?.attributes?.status || "";
+    const lastScan = scoreState?.attributes?.last_scan || "";
+
+    // Format last_scan for display
+    let scanLabel = "";
+    if (lastScan) {
+      try {
+        const d = new Date(lastScan);
+        scanLabel = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      } catch(e) {}
+    }
 
     // Fingerprint
-    const fp = `${score}|${status}|${counters.map(c => c.st.state).join(",")}|${showScore}|${cols}|${title}`;
+    const fp = `${score}|${status}|${counters.map(c => c.st.state).join(",")}|${showScore}|${cols}|${title}|${scanLabel}`;
     if (this._fp === fp) return;
     this._fp = fp;
 
@@ -165,6 +176,7 @@ class HacaDashboardCard extends HTMLElement {
       .hd-h{display:flex;align-items:center;gap:8px;margin-bottom:12px}
       .hd-h ha-icon{--mdc-icon-size:24px;color:var(--primary-color)}
       .hd-h span{font-size:16px;font-weight:600;color:var(--primary-text-color)}
+      .hd-h .hd-ts{margin-left:auto;font-size:11px;font-weight:400;color:var(--secondary-text-color);white-space:nowrap}
       .hd-gw{display:flex;justify-content:center;margin:0 0 16px}
       .hd-g{width:130px;height:130px}
       .hd-gb{fill:none;stroke:var(--divider-color,#e0e0e0);stroke-width:6}
@@ -187,11 +199,18 @@ class HacaDashboardCard extends HTMLElement {
 
     this.content.innerHTML = `
       <div class="hd-h"><ha-icon icon="mdi:shield-check"></ha-icon><span>${_e(title)}</span></div>
-      ${showScore ? `<div class="hd-gw"><svg viewBox="0 0 100 100" class="hd-g"><circle cx="50" cy="50" r="42" class="hd-gb"/><circle cx="50" cy="50" r="42" class="hd-ga" transform="rotate(-90 50 50)"/><text x="50" y="44" class="hd-gv">${score !== null ? score : "\u2014"}</text><text x="50" y="64" class="hd-gl">${_e(status) || "/100"}</text></svg></div>` : ""}
+      ${showScore ? `<div class="hd-gw"><svg viewBox="0 0 100 100" class="hd-g"><circle cx="50" cy="50" r="42" class="hd-gb"/><circle cx="50" cy="50" r="42" class="hd-ga" transform="rotate(-90 50 50)"/><text x="50" y="44" class="hd-gv">${score !== null ? score + "%" : "\u2014"}</text><text x="50" y="64" class="hd-gl">${_e(status) || (score !== null ? "" : "No data")}</text></svg></div>` : ""}
       ${counters.length ? `<div class="hd-r">${counters.map(c => {
         const v = parseInt(c.st.state, 10) || 0;
         const n = c.st.attributes?.friendly_name?.replace(/^H\.?A\.?C\.?A\.?\s*/i, "") || c.meta.label;
-        return `<div class="hd-p${v === 0 ? " z" : ""}" data-e="${_e(c.eid)}"><ha-icon icon="${_e(c.meta.icon)}" style="color:${c.meta.color}"></ha-icon><span class="v" style="color:${v > 0 ? c.meta.color : "inherit"}">${v}</span><span class="l">${_e(n)}</span></div>`;
+        const isBat = c.htype === "battery_alerts";
+        const display = v === 0 ? (isBat ? "✓" : "0") : String(v);
+        const isOkBat = isBat && v === 0;
+        const pillClass = (v === 0 && !isOkBat) ? " z" : "";
+        const valueColor = isOkBat ? "#4caf50" : (v > 0 ? c.meta.color : "inherit");
+        const iconColor = isOkBat ? "#4caf50" : c.meta.color;
+        const tooltip = (isBat && v > 0) ? _e((c.st.attributes?.alert_entities || []).join(", ")) : "";
+        return `<div class="hd-p${pillClass}" data-e="${_e(c.eid)}" title="${tooltip}"><ha-icon icon="${isOkBat ? "mdi:battery-check-outline" : _e(c.meta.icon)}" style="color:${iconColor}"></ha-icon><span class="v" style="color:${valueColor}">${display}</span><span class="l">${_e(n)}</span></div>`;
       }).join("")}</div>` : `<div style="padding:8px;text-align:center;color:var(--secondary-text-color);font-size:13px">No HACA entities found. Run a scan first.</div>`}
       ${(showScan || showLink) ? `<div class="hd-a">${showScan ? `<button class="hd-b" id="hd-s"><ha-icon icon="mdi:magnify-scan"></ha-icon>Scan</button>` : ""}${showLink ? `<a class="hd-b" href="/config_auditor"><ha-icon icon="mdi:open-in-new"></ha-icon>Panel</a>` : ""}</div>` : ""}
     `;

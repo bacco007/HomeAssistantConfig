@@ -1,4 +1,4 @@
-"""H.A.C.A — Agent IA Proactif (Module 15) v1.6.0.
+"""H.A.C.A — Agent IA Proactif (Module 15) v1.6.1.
 
 Agent en arrière-plan qui :
 - Analyse les nouveaux événements HA significatifs

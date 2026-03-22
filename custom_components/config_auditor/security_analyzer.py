@@ -42,8 +42,16 @@ class SecurityAnalyzer:
         # Load language for translations
         language = self.hass.data.get("config_auditor", {}).get("user_language") or self.hass.config.language or "en"
         await self._translator.async_load_language(language)
+
+        # Load haca_ignore label (entity + device level)
+        from .translation_utils import async_get_haca_ignored_entity_ids
+        _ignored = await async_get_haca_ignored_entity_ids(self.hass)
         
-        automation_configs = automation_configs or {}
+        # Filter out ignored automations from configs
+        automation_configs = {
+            eid: cfg for eid, cfg in (automation_configs or {}).items()
+            if eid not in _ignored
+        }
         
         # 1. Scan for hardcoded secrets in automation configs
         await self._scan_for_hardcoded_secrets(automation_configs)

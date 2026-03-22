@@ -165,6 +165,7 @@ async def handle_get_data(
                 "dashboard_issues":     cdata.get("dashboard_issues", 0),
                 "compliance_issues":    cdata.get("compliance_issues", 0),
                 "total_issues":         cdata.get("total_issues", 0),
+                "last_scan":            cdata.get("last_scan"),
                 # Paginated lists
                 "automation_issue_list":    _paginate(auto_list)   if not category or category == "automation"  else auto_list,
                 "script_issue_list":        _paginate(script_list) if not category or category == "script"      else script_list,
@@ -1178,9 +1179,6 @@ async def handle_get_options(
         connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
         return
     opts = dict(entry.options)
-    # Masquer le token pour ne pas l'exposer au frontend (sécurité)
-    if opts.get("mcp_ha_token"):
-        opts["mcp_ha_token"] = True   # boolean = "configuré" sans révéler la valeur
     connection.send_result(msg["id"], {"options": opts})
 
 
@@ -1219,9 +1217,10 @@ async def handle_save_options(
         "battery_critical", "battery_low", "battery_warning",
         "history_retention_days", "backup_enabled",
         "debug_mode",
-        "mcp_ha_token",
         "excluded_compliance_types",
         "report_frequency",   # daily | weekly | monthly | never
+        "repairs_enabled",    # true (default) | false — push HIGH issues to HA Repairs
+        "battery_notifications_enabled",  # true (default) | false — battery persistent notifications
     }
     for key, value in incoming.items():
         if key in ALLOWED_KEYS and value is not None:  # ignorer les None (token non modifié)
@@ -1249,13 +1248,14 @@ async def handle_save_options(
         if not isinstance(entry_data, dict):
             continue
 
-        # scan_interval → mettre à jour l'intervalle du coordinator
+        # scan_interval → mettre à jour l'intervalle du coordinator (0 = manual only)
         if "scan_interval" in incoming:
             coordinator = entry_data.get("coordinator")
             if coordinator is not None:
                 from datetime import timedelta as _td
-                coordinator.update_interval = _td(minutes=max(1, int(incoming["scan_interval"])))
-                _LOGGER.info("[HACA] scan_interval mis à jour dynamiquement : %s min", incoming["scan_interval"])
+                val = int(incoming["scan_interval"])
+                coordinator.update_interval = _td(minutes=max(1, val)) if val > 0 else None
+                _LOGGER.info("[HACA] scan_interval updated: %s", "manual" if val == 0 else f"{val} min")
 
     _LOGGER.info("[HACA] Options saved via panel: %s", list(incoming.keys()))
     connection.send_result(msg["id"], {"success": True, "options": new_options})

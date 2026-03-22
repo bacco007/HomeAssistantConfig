@@ -24,13 +24,12 @@ _LOGGER = logging.getLogger(__name__)
 MAX_REPAIR_ISSUES = 15
 
 # Issue types that map to fixable repairs (the user can click "Fix" in Repairs)
+# Only simple, safe fixes — NEVER complex automations
 FIXABLE_ISSUE_TYPES = {
-    "device_id_in_trigger",
-    "device_id_in_action",
-    "incorrect_mode_for_pattern",
-    "template_condition_simple",
     "compliance_automation_no_description",
     "compliance_script_no_description",
+    "no_description",
+    "no_alias",
 }
 
 
@@ -41,6 +40,14 @@ def _issue_key(issue: dict[str, Any]) -> str:
     return f"{entity_id}_{issue_type}"
 
 
+def _readable_type(issue_type: str) -> str:
+    """Convert a snake_case issue type to a human-readable string.
+
+    e.g. 'device_id_in_trigger' → 'Device ID in trigger'
+    """
+    return issue_type.replace("_", " ").capitalize()
+
+
 async def async_update_repairs(
     hass: HomeAssistant,
     coordinator_data: dict[str, Any],
@@ -48,7 +55,7 @@ async def async_update_repairs(
     """Sync HACA HIGH issues with HA Repairs panel.
 
     - Creates repair entries for new HIGH issues.
-    - Deletes repair entries for issues that are no longer present.
+    - Deletes ALL previous HACA repair entries first (clean slate each scan).
     """
     try:
         from homeassistant.helpers import issue_registry as ir
@@ -60,7 +67,23 @@ async def async_update_repairs(
     if not coordinator_data:
         return
 
-    # Collect all HIGH severity issues across all categories
+    # ── Step 1: Remove ALL existing HACA repairs (clean slate) ────────────
+    # This ensures resolved issues are always removed, even after HA restart.
+    try:
+        registry = ir.async_get(hass)
+        haca_issues = [
+            (domain, issue_id)
+            for (domain, issue_id) in list(registry.issues)
+            if domain == DOMAIN
+        ]
+        for domain, issue_id in haca_issues:
+            ir.async_delete_issue(hass, domain, issue_id)
+        if haca_issues:
+            _LOGGER.debug("[HACA Repairs] Cleared %d previous repair entries", len(haca_issues))
+    except Exception as exc:
+        _LOGGER.debug("[HACA Repairs] Could not clear old issues: %s", exc)
+
+    # ── Step 2: Collect all HIGH severity issues across all categories ────
     all_high_issues: dict[str, dict[str, Any]] = {}
     for list_key in [
         "automation_issue_list", "script_issue_list", "scene_issue_list",
@@ -75,22 +98,25 @@ async def async_update_repairs(
     # Limit to avoid flooding the Repairs panel
     selected = dict(list(all_high_issues.items())[:MAX_REPAIR_ISSUES])
 
-    # Track which HACA issues we manage in Repairs
-    managed_key = f"{DOMAIN}_repair_keys"
-    previous_keys: set[str] = hass.data.get(managed_key, set())
-    current_keys: set[str] = set()
-
-    # Create/update repair entries for current HIGH issues
+    # ── Step 3: Create new repair entries ─────────────────────────────────
     for key, issue in selected.items():
         issue_id = f"haca_{key}"
-        current_keys.add(issue_id)
 
         entity_name = issue.get("alias") or issue.get("entity_id", "?")
         issue_type = issue.get("type", "unknown")
         message_text = (issue.get("message") or "")[:200]
+        recommendation = (issue.get("recommendation") or "")[:200]
 
         try:
             is_fixable = issue_type in FIXABLE_ISSUE_TYPES and issue.get("fix_available", False)
+
+            # Build descriptive message with type explanation + recommendation
+            description_parts = []
+            if message_text:
+                description_parts.append(message_text)
+            if recommendation:
+                description_parts.append(f"Recommendation: {recommendation}")
+            description_parts.append("Open the HACA panel for details and available fixes.")
 
             ir.async_create_issue(
                 hass,
@@ -102,26 +128,15 @@ async def async_update_repairs(
                 translation_key="generic_high_issue",
                 translation_placeholders={
                     "entity": entity_name,
-                    "type": issue_type,
-                    "message": message_text,
+                    "type": _readable_type(issue_type),
+                    "message": "\n\n".join(description_parts),
                 },
             )
         except Exception as exc:
             _LOGGER.debug("[HACA Repairs] Could not create issue %s: %s", issue_id, exc)
 
-    # Remove resolved issues (were in Repairs but no longer HIGH)
-    resolved_keys = previous_keys - current_keys
-    for issue_id in resolved_keys:
-        try:
-            ir.async_delete_issue(hass, DOMAIN, issue_id)
-        except Exception:
-            pass
-
-    # Store current keys for next diff
-    hass.data[managed_key] = current_keys
-
-    if current_keys:
+    if selected:
         _LOGGER.debug(
             "[HACA Repairs] Synced %d HIGH issue(s) to HA Repairs panel",
-            len(current_keys),
+            len(selected),
         )

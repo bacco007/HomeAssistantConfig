@@ -199,7 +199,7 @@
             <div style="display:flex;align-items:center;gap:10px;">
               ${_icon("auto-fix", 28)}
               <div>
-                <div style="font-size:16px;font-weight:700;">Optimiseur IA — ${this.escapeHtml(alias)}</div>
+                <div style="font-size:16px;font-weight:700;">${this.t('actions.ai_explain')} Optimizer — ${this.escapeHtml(alias)}</div>
                 <div style="font-size:11px;color:var(--secondary-text-color);">${this.escapeHtml(entityId)}</div>
               </div>
             </div>

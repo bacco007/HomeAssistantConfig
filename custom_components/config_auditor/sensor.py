@@ -149,6 +149,8 @@ class HACAHealthScoreSensor(HACASensorBase):
             **base,
             "status": status,
             "color": color,
+            "last_scan": self.coordinator.data.get("last_scan"),
+            "total_issues": self.coordinator.data.get("total_issues", 0),
         }
 
 
@@ -448,10 +450,12 @@ class HACABatteryAlertsSensor(HACASensorBase):
         base = super().extra_state_attributes
         if not self.coordinator.data:
             return base
+        alert_entities = self.coordinator.data.get("battery_alert_entities", [])
         return {
             **base,
             "alert_7d": self.coordinator.data.get("battery_alert_7d", 0),
             "battery_count": self.coordinator.data.get("battery_count", 0),
+            "alert_entities": [e["entity_id"] for e in alert_entities],
         }
 
 

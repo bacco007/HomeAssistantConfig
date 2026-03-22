@@ -1,4 +1,4 @@
-"""H.A.C.A — Home Assistant Config Auditor v1.6.0"""
+"""H.A.C.A — Home Assistant Config Auditor v1.6.1"""
 from __future__ import annotations
 
 import asyncio
@@ -19,6 +19,7 @@ from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse, cal
 from homeassistant.helpers import device_registry as dr, config_validation as cv
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.helpers.start import async_at_started
+from homeassistant.util import dt as _dt_util
 from .const import (
     MODULE_9_DASHBOARD_ANALYZER,
     MODULE_10_EVENT_MONITORING,
@@ -542,6 +543,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             "battery_list": battery_list,
             "battery_count": len(battery_list),
             "battery_alerts": sum(1 for b in battery_list if b["severity"] is not None),
+            "battery_alert_entities": [
+                {"entity_id": b["entity_id"], "level": b["level"], "unit": b.get("unit", "%"),
+                 "device_class": b.get("device_class", ""), "severity": b["severity"]}
+                for b in battery_list if b["severity"] is not None
+            ],
             "dependency_graph": dependency_graph,
             # ── v1.5.0 ────────────────────────────────────────────────────
             "battery_predictions": battery_predictions,
@@ -550,6 +556,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             "area_complexity": area_complexity_data,
             "redundancy": redundancy_data,
             "recorder_impact": recorder_impact_data,
+            "last_scan": _dt_util.utcnow().isoformat(),
         }
     
     coordinator = DataUpdateCoordinator(
@@ -557,7 +564,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _LOGGER,
         name=DOMAIN,
         update_method=async_update_data,
-        update_interval=timedelta(minutes=scan_interval),
+        update_interval=timedelta(minutes=scan_interval) if scan_interval > 0 else None,
     )
     
     hass.data[DOMAIN][entry.entry_id] = {
@@ -792,6 +799,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     @callback
     def _on_coordinator_update_repairs() -> None:
         """Sync HIGH issues to HA native Repairs panel after each scan."""
+        # Check option dynamically — user can toggle without restart
+        if not entry.options.get("repairs_enabled", True):
+            return
         cdata = coordinator.data
         if cdata:
             hass.async_create_task(async_update_repairs(hass, cdata))

@@ -256,6 +256,7 @@ async def async_register_panel(hass: HomeAssistant) -> None:
             sidebar_title="H.A.C.A",
             sidebar_icon="mdi:shield-check",
             frontend_url_path=DOMAIN,
+            require_admin=True,
             config={
                 "_panel_custom": {
                     "name": "haca-panel",
@@ -264,7 +265,6 @@ async def async_register_panel(hass: HomeAssistant) -> None:
                     "trust_external": False,
                 }
             },
-            require_admin=False,
             update=True,
         )
         _LOGGER.info("Panel registered: /%s (js?v=%s)", DOMAIN, cache_bust)

@@ -453,6 +453,7 @@ class AutomationAnalyzer:
 
     async def _load_script_configs(self) -> None:
         """Load script configurations from scripts.yaml."""
+        self._script_configs.clear()  # Clear stale data from previous scans
         config_dir = Path(self.hass.config.config_dir)
         scripts_file = config_dir / "scripts.yaml"
         if not scripts_file.exists(): return
@@ -476,6 +477,7 @@ class AutomationAnalyzer:
             scene.{slugify(name)}
         We must use the same function to match what hass.states contains.
         """
+        self._scene_configs.clear()  # Clear stale data from previous scans
         config_dir = Path(self.hass.config.config_dir)
         scenes_file = config_dir / "scenes.yaml"
         if not scenes_file.exists():

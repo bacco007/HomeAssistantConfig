@@ -1,4 +1,4 @@
-"""H.A.C.A — Analyseur de conformité aux bonnes pratiques HA (Module 17) v1.6.0.
+"""H.A.C.A — Analyseur de conformité aux bonnes pratiques HA (Module 17) v1.6.1.
 
 Vérifie les conventions de nommage, les métadonnées manquantes et l'organisation
 de la configuration Home Assistant.
@@ -246,16 +246,41 @@ class ComplianceAnalyzer:
     # ── Check e3 : Labels non utilisés ────────────────────────────────────
 
     async def _check_unused_labels(self) -> None:
-        """Détecte les labels HA créés mais non assignés à des entités."""
+        """Détecte les labels HA créés mais non assignés à des entités, devices ou automations."""
         try:
             label_reg = lr.async_get(self._hass)
             entity_reg = er.async_get(self._hass)
+            device_reg = dr.async_get(self._hass)
 
-            # Collecter tous les labels utilisés
+            # Collecter tous les labels utilisés across ALL registries
             used_label_ids: set[str] = set()
+
+            # 1. Entity labels
             for entry in entity_reg.entities.values():
                 for label_id in (entry.labels or set()):
                     used_label_ids.add(label_id)
+
+            # 2. Device labels
+            for device in device_reg.devices.values():
+                for label_id in (getattr(device, "labels", None) or set()):
+                    used_label_ids.add(label_id)
+
+            # 3. Area labels
+            try:
+                area_reg = ar.async_get(self._hass)
+                for area in area_reg.async_list_areas():
+                    for label_id in (getattr(area, "labels", None) or set()):
+                        used_label_ids.add(label_id)
+            except Exception:
+                pass
+
+            # 4. Automation / script labels (stored in HA state attributes)
+            for state in self._hass.states.async_all():
+                if state.entity_id.startswith(("automation.", "script.")):
+                    entry = entity_reg.async_get(state.entity_id)
+                    if entry:
+                        for label_id in (entry.labels or set()):
+                            used_label_ids.add(label_id)
 
             for label in label_reg.async_list_labels():
                 # Ne pas flaguer haca_ignore lui-même
@@ -271,7 +296,7 @@ class ComplianceAnalyzer:
                         alias=label_name,
                         message=(
                             f"Label '{label_name}' is defined "
-                            f"but not assigned to any entity. Assign it or delete it."
+                            f"but not assigned to any entity, device, or automation. Assign it or delete it."
                         ),
                         message_key="unused_label",
                         message_params={"name": label_name},

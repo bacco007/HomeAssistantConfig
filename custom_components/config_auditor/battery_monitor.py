@@ -65,34 +65,46 @@ class BatteryMonitor:
         for state in self.hass.states.async_all():
             entity_id = state.entity_id
             if entity_id in _ignored: continue
-            # Match sensor.*battery* — case-insensitive on the slug
+
             slug = entity_id.lower()
-            if not (slug.startswith("sensor.") and "battery" in slug):
+            if not slug.startswith("sensor."):
                 continue
+
+            # ── Skip HACA's own sensors (e.g. sensor.h_a_c_a_alertes_batteries) ──
+            if "h_a_c_a_" in slug:
+                continue
+
             if state.state in ("unavailable", "unknown", "none", ""):
                 continue
 
-            # Skip power sensors (W, kW) — battery_power ≠ battery_level
-            unit_raw = state.attributes.get("unit_of_measurement", "")
             device_class = state.attributes.get("device_class", "")
-            if unit_raw.strip().lower() in ("w", "kw", "mw") or device_class == "power":
+            unit_raw = state.attributes.get("unit_of_measurement", "")
+            unit_lower = unit_raw.strip().lower() if unit_raw else ""
+
+            # ── STRICT: only device_class=battery ───────────────────────────
+            # This is the HA standard way to identify battery level sensors.
+            # Name-based detection ("battery" in slug) caused false positives
+            # with battery_power, battery_charge_rate, battery_cycle_count etc.
+            if device_class != "battery":
                 continue
-            # Also skip if entity name contains 'power' but not 'level'
-            slug_lower = entity_id.lower()
-            if "battery_power" in slug_lower or "_power" in slug_lower:
-                if "battery_level" not in slug_lower and "battery_percent" not in slug_lower:
-                    continue
+
+            # ── Unit must be percentage ──────────────────────────────────────
+            if unit_lower not in ("%", "pct", "percent"):
+                continue
+
+            # ── Extra safety: skip power/energy keywords in entity_id ────────
+            power_keywords = ("_power", "_energy", "_voltage", "_current",
+                              "_charge_rate", "_charging", "_cycle_count",
+                              "_temperature", "_health")
+            if any(kw in slug for kw in power_keywords):
+                continue
 
             try:
                 level = float(state.state)
             except (ValueError, TypeError):
                 continue
 
-            # Only accept % unit or no unit — not Watts/kWh etc.
-            if unit_raw.strip() and unit_raw.strip() not in ("%", "pct", "percent"):
-                continue
-
-            # Filter out spurious values (e.g. 200 % from some integrations)
+            # Only 0-100% range
             if not (0 <= level <= 100):
                 continue
 
@@ -122,8 +134,18 @@ class BatteryMonitor:
         _sev_order = {"high": 0, "medium": 1, "low": 2, None: 3}
         self.battery_list.sort(key=lambda b: (_sev_order[b["severity"]], b["level"]))
 
-        # Fire / clear persistent notifications
-        await self._sync_notifications()
+        # Fire / clear persistent notifications (unless disabled in config)
+        _notif_enabled = True
+        try:
+            domain_data = self.hass.data.get("config_auditor", {})
+            for entry_data in domain_data.values():
+                if isinstance(entry_data, dict) and "entry" in entry_data:
+                    _notif_enabled = entry_data["entry"].options.get("battery_notifications_enabled", True)
+                    break
+        except Exception:
+            pass
+        if _notif_enabled:
+            await self._sync_notifications()
 
         _LOGGER.info(
             "Battery monitor: %d batteries found, %d need attention",
