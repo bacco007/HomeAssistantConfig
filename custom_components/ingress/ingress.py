@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
     from typing import Any, Callable, Iterable
 
-    from .config import IngressStore, IngressCfg, RewriteCfg
+    from .config import IngressStore, IngressCfg, RewriteCfg, UserInfo
 
 X_INGRESS_NAME = "X-Ingress-Name"
 X_ORIGINAL_URL = "X-Original-Url"
@@ -26,6 +26,9 @@ X_HASS_ORIGIN = "X-Hass-Origin"
 X_INGRESS_PATH = "X-Ingress-Path"
 X_INGRESS_SUBPATH = "X-Ingress-Subpath"
 HEADER_AUTO_PH = "$auto"
+HEADER_USER_ID_PH = "$user_id"
+HEADER_USER_NAME_PH = "$user_name"
+HEADER_USERNAME_PH = "$username"
 
 INGRESS_MODES = (WorkMode.INGRESS, WorkMode.SUBAPP)
 METH_ALLOW_REDIRECT = (hdrs.METH_GET, hdrs.METH_HEAD)
@@ -180,6 +183,15 @@ document.querySelector("ha-panel-ingress").setProperties({{panel: {{
         if not cfg:
             token = request.cookies.get(self._config.cookie_name(name), "")
             cfg = self._config.check_token(self._hass, token, False)[0]
+
+        user: UserInfo | None = None
+        if cfg and cfg.mode in INGRESS_MODES:
+            user = self._config.check_user_token(
+                request.cookies.get(self._config.user_cookie_name(), "")
+            )
+            if not user and not cfg.static_token:
+                cfg = None
+
         if not cfg or cfg.mode not in INGRESS_MODES:
             # cookie invalid, try redirect to entry
             if cfg := cfg or self._config.get(name):
@@ -195,9 +207,9 @@ document.querySelector("ha-panel-ingress").setProperties({{panel: {{
         try:
             # Websocket
             if _is_websocket(request):
-                return await self._handle_websocket(request, cfg, url)
+                return await self._handle_websocket(request, cfg, user, url)
             # Request
-            return await self._handle_request(request, cfg, url)
+            return await self._handle_request(request, cfg, user, url)
         except aiohttp.ClientError as err:
             _LOGGER.debug("Ingress error with %s / %s: %s", cfg.name, url, err)
             raise web.HTTPBadGateway from None
@@ -211,7 +223,7 @@ document.querySelector("ha-panel-ingress").setProperties({{panel: {{
     head = _handle
 
     async def _handle_websocket(
-        self, request: web.Request, cfg: "IngressCfg", url: URL
+        self, request: web.Request, cfg: "IngressCfg", user: "UserInfo | None", url: URL
     ) -> web.WebSocketResponse:
         """Ingress route for websocket."""
         req_protocols: Iterable[str]
@@ -233,7 +245,7 @@ document.querySelector("ha-panel-ingress").setProperties({{panel: {{
         # Start proxy
         async with self._websession.ws_connect(
             url,
-            headers=_init_header(request, cfg),
+            headers=_init_header(request, cfg, user),
             protocols=req_protocols,
             autoclose=False,
             autoping=False,
@@ -251,7 +263,7 @@ document.querySelector("ha-panel-ingress").setProperties({{panel: {{
         return ws_server
 
     async def _handle_request(
-        self, request: web.Request, cfg: "IngressCfg", url: URL
+        self, request: web.Request, cfg: "IngressCfg", user: "UserInfo | None", url: URL
     ) -> web.Response | web.StreamResponse:
         """Ingress route for request."""
         data = request.content
@@ -263,7 +275,7 @@ document.querySelector("ha-panel-ingress").setProperties({{panel: {{
         async with self._websession.request(
             request.method,
             url,
-            headers=_init_header(request, cfg),
+            headers=_init_header(request, cfg, user),
             params=request.query,
             allow_redirects=False,
             data=data,
@@ -345,7 +357,9 @@ def _forwarded_for_header(forward_for: str | None, peer_name: str) -> str:
     return f"{forward_for}, {connected_ip!s}" if forward_for else f"{connected_ip!s}"
 
 
-def _init_header(request: web.Request, cfg: "IngressCfg") -> dict[str, str]:
+def _init_header(
+    request: web.Request, cfg: "IngressCfg", user: "UserInfo | None"
+) -> dict[str, str]:
     """Create initial header."""
     headers: dict[str, str] = {}
     for name, value in request.headers.items():
@@ -357,7 +371,16 @@ def _init_header(request: web.Request, cfg: "IngressCfg") -> dict[str, str]:
                 continue
         headers[name] = value
     for name, value in cfg.headers.items():
-        if value != HEADER_AUTO_PH:
+        if value == HEADER_USERNAME_PH:
+            if value := user["username"] if user else None:
+                headers[name] = value
+        elif value == HEADER_USER_ID_PH:
+            if value := user["id"] if user else None:
+                headers[name] = value
+        elif value == HEADER_USER_NAME_PH:
+            if value := user["name"] if user else None:
+                headers[name] = value
+        elif value != HEADER_AUTO_PH:
             headers[name] = value
 
     # Ingress information

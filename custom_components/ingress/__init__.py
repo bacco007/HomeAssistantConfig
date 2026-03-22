@@ -31,6 +31,7 @@ from .const import (
 )
 from .config import IngressStore, IngressCfg, RewriteCfg
 from .ingress import IngressView, std_header_name
+from .websocket_api import async_register_websocket_api
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant, ServiceCall
@@ -215,6 +216,9 @@ async def _async_init(hass: "HomeAssistant") -> "DomainData":
         # register ingress view
         config = IngressStore()
         hass.http.register_view(IngressView(hass, config, async_get_clientsession(hass)))
+
+        # register websocket api
+        await async_register_websocket_api(hass)
 
         # register reload config
         async def reload_config(call: "ServiceCall"):
