@@ -123,6 +123,7 @@ class UnifiProtectDoorbellEventEntity(
     """Event entity for UniFi Protect doorbell ring events."""
 
     _attr_has_entity_name = True
+    _attr_translation_key = "doorbell_ring"
     _attr_device_class = EventDeviceClass.DOORBELL
     _attr_event_types: ClassVar[list[str]] = [EVENT_TYPE_DOORBELL_RING]
 
@@ -191,6 +192,7 @@ class UnifiProtectSmartDetectEventEntity(
     """Event entity for UniFi Protect smart detection events."""
 
     _attr_has_entity_name = True
+    _attr_translation_key = "smart_detection"
     _attr_device_class = EventDeviceClass.MOTION
     _attr_event_types: ClassVar[list[str]] = [
         EVENT_TYPE_MOTION,
@@ -279,6 +281,7 @@ class UnifiProtectSensorEventEntity(
     """Event entity for UniFi Protect sensor open/close events."""
 
     _attr_has_entity_name = True
+    _attr_translation_key = "sensor_event"
     _attr_event_types: ClassVar[list[str]] = [
         EVENT_TYPE_SENSOR_OPEN,
         EVENT_TYPE_SENSOR_CLOSE,

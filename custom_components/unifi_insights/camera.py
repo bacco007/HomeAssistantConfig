@@ -121,7 +121,7 @@ class UnifiProtectCamera(UnifiProtectEntity, Camera):  # type: ignore[misc]
                 height=height or 1080,
             )
             return snapshot if isinstance(snapshot, bytes) else None
-        except Exception:  # noqa: BLE001
+        except Exception:
             _LOGGER.debug("Error getting camera snapshot", exc_info=True)
             return None
 
@@ -150,7 +150,7 @@ class UnifiProtectCamera(UnifiProtectEntity, Camera):  # type: ignore[misc]
                     )
                     stream_url: str = stream.high
                     return stream_url
-            except Exception:  # noqa: BLE001
+            except Exception:
                 _LOGGER.debug(
                     "Failed to create dynamic stream, falling back to static URL",
                     exc_info=True,
@@ -170,7 +170,11 @@ class UnifiProtectCamera(UnifiProtectEntity, Camera):  # type: ignore[misc]
         if not nvr_host and self.coordinator.protect_client:
             base_url = str(self.coordinator.protect_client.base_url)
             if "://" in base_url:
-                nvr_host = base_url.split("://")[1].split("/")[0].split(":")[0]
+                nvr_host = (
+                    base_url.split("://")[1]
+                    .split("/", maxsplit=1)[0]
+                    .split(":", maxsplit=1)[0]
+                )
 
         if not nvr_host:
             _LOGGER.warning(

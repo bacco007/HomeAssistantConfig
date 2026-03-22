@@ -19,7 +19,8 @@ from homeassistant.helpers.selector import (
     SelectSelectorConfig,
     SelectSelectorMode,
 )
-from unifi_official_api import (
+
+from .api import (
     ApiKeyAuth,
     ConnectionType,
     LocalAuth,
@@ -27,8 +28,7 @@ from unifi_official_api import (
     UniFiConnectionError,
     UniFiTimeoutError,
 )
-from unifi_official_api.network import UniFiNetworkClient
-
+from .api.network import UniFiNetworkClient
 from .const import (
     CONF_CONNECTION_TYPE,
     CONF_CONSOLE_ID,
@@ -53,6 +53,8 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[misc,c
     def __init__(self) -> None:
         """Initialize the config flow."""
         self._connection_type: str | None = None
+        self._remote_api_key: str | None = None
+        self._discovered_remote_consoles: dict[str, str] = {}
 
     @staticmethod
     @callback  # type: ignore[misc]
@@ -61,6 +63,95 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[misc,c
     ) -> UnifiInsightsOptionsFlow:
         """Get the options flow for this handler."""
         return UnifiInsightsOptionsFlow()
+
+    @staticmethod
+    def _extract_remote_console_options(hosts: list[dict[str, Any]]) -> dict[str, str]:
+        """Build selector labels for accessible remote consoles."""
+        console_hosts: list[dict[str, Any]] = []
+        network_servers: list[dict[str, Any]] = []
+
+        for host in hosts:
+            host_id = host.get("id")
+            host_type = host.get("type")
+            if (
+                not isinstance(host_id, str)
+                or not host_id
+                or not isinstance(host_type, str)
+            ):
+                continue
+
+            if host_type == "console":
+                console_hosts.append(host)
+            elif host_type == "network-server":
+                network_servers.append(host)
+
+        candidates = console_hosts or network_servers
+        options: dict[str, str] = {}
+
+        for host in sorted(candidates, key=lambda item: str(item.get("id", ""))):
+            host_id = str(host["id"])
+            reported_state = host.get("reportedState")
+            hostname = (
+                reported_state.get("hostname")
+                if isinstance(reported_state, dict)
+                else None
+            )
+            host_type = str(host.get("type", "console")).replace("-", " ")
+            display_name = hostname or host_id
+            options[host_id] = f"{display_name} ({host_type})"
+
+        return options
+
+    @staticmethod
+    def _normalize_remote_console_id(
+        console_id: str,
+        discovered_consoles: dict[str, str],
+    ) -> str | None:
+        """Normalize manual or stored console IDs against discovered host IDs."""
+        candidate = console_id.strip()
+        if not candidate:
+            return None
+
+        lowered_candidate = candidate.lower()
+        for discovered_id in discovered_consoles:
+            lowered_discovered = discovered_id.lower()
+            if lowered_candidate == lowered_discovered:
+                return discovered_id
+
+            discovered_prefix = lowered_discovered.split(":", 1)[0]
+            if lowered_candidate == discovered_prefix:
+                return discovered_id
+
+        return None
+
+    async def _async_discover_remote_consoles(self, api_key: str) -> dict[str, str]:
+        """Discover accessible remote consoles for a UI.com API key."""
+        auth = ApiKeyAuth(api_key=api_key)
+        async with UniFiNetworkClient(
+            auth=auth,
+            connection_type=ConnectionType.REMOTE,
+            timeout=30,
+        ) as network_client:
+            hosts = await network_client.get_hosts()
+
+        return self._extract_remote_console_options(hosts)
+
+    async def _async_validate_remote_console(
+        self,
+        api_key: str,
+        console_id: str,
+    ) -> bool:
+        """Validate remote connectivity for a specific console host ID."""
+        auth = ApiKeyAuth(api_key=api_key)
+        async with UniFiNetworkClient(
+            auth=auth,
+            connection_type=ConnectionType.REMOTE,
+            console_id=console_id,
+            timeout=30,
+        ) as network_client:
+            sites = await network_client.sites.get_all()
+
+        return bool(sites)
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -166,35 +257,21 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[misc,c
 
         if user_input is not None:
             try:
-                # Create authentication object for remote connection
-                auth = ApiKeyAuth(api_key=user_input[CONF_API_KEY])
-
-                # Use context manager to ensure proper cleanup
-                async with UniFiNetworkClient(
-                    auth=auth,
-                    connection_type=ConnectionType.REMOTE,
-                    console_id=user_input[CONF_CONSOLE_ID],
-                    timeout=30,
-                ) as network_client:
-                    # Validate by fetching sites
-                    sites = await network_client.sites.get_all()
-                    if sites:
-                        await self.async_set_unique_id(user_input[CONF_API_KEY])
-                        self._abort_if_unique_id_configured()
-
-                        return self.async_create_entry(
-                            title="UniFi Insights (Cloud)",
-                            data={
-                                CONF_CONNECTION_TYPE: CONNECTION_TYPE_REMOTE,
-                                CONF_CONSOLE_ID: user_input[CONF_CONSOLE_ID],
-                                CONF_API_KEY: user_input[CONF_API_KEY],
-                            },
-                        )
-
-                    errors[CONF_API_KEY] = "invalid_auth"
+                api_key = user_input[CONF_API_KEY].strip()
+                discovered_consoles = await self._async_discover_remote_consoles(
+                    api_key
+                )
+                if not discovered_consoles:
+                    errors["base"] = "no_remote_consoles"
+                else:
+                    self._remote_api_key = api_key
+                    self._discovered_remote_consoles = discovered_consoles
+                    return await self.async_step_select_console()
 
             except UniFiAuthenticationError:
                 errors[CONF_API_KEY] = "invalid_auth"
+                self._remote_api_key = None
+                self._discovered_remote_consoles = {}
             except UniFiConnectionError:
                 errors["base"] = "cannot_connect"
             except UniFiTimeoutError:
@@ -207,8 +284,68 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[misc,c
             step_id="remote",
             data_schema=vol.Schema(
                 {
-                    vol.Required(CONF_CONSOLE_ID): str,
                     vol.Required(CONF_API_KEY): str,
+                }
+            ),
+            errors=errors,
+        )
+
+    async def async_step_select_console(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Handle remote console selection after API key validation."""
+        if not self._remote_api_key or not self._discovered_remote_consoles:
+            return await self.async_step_remote()
+
+        errors = {}
+
+        if user_input is not None:
+            console_id = user_input[CONF_CONSOLE_ID]
+
+            try:
+                sites_found = await self._async_validate_remote_console(
+                    self._remote_api_key,
+                    console_id,
+                )
+                if sites_found:
+                    await self.async_set_unique_id(self._remote_api_key)
+                    self._abort_if_unique_id_configured()
+
+                    return self.async_create_entry(
+                        title="UniFi Insights (Cloud)",
+                        data={
+                            CONF_CONNECTION_TYPE: CONNECTION_TYPE_REMOTE,
+                            CONF_CONSOLE_ID: console_id,
+                            CONF_API_KEY: self._remote_api_key,
+                        },
+                    )
+
+                errors[CONF_CONSOLE_ID] = "invalid_console_id"
+            except UniFiAuthenticationError:
+                errors[CONF_CONSOLE_ID] = "invalid_console_id"
+            except UniFiConnectionError:
+                errors["base"] = "cannot_connect"
+            except UniFiTimeoutError:
+                errors["base"] = "cannot_connect"
+            except Exception:  # pylint: disable=broad-except
+                _LOGGER.exception("Unexpected exception during console selection")
+                errors["base"] = "unknown"
+
+        options = [
+            {"value": console_id, "label": label}
+            for console_id, label in self._discovered_remote_consoles.items()
+        ]
+
+        return self.async_show_form(
+            step_id="select_console",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CONF_CONSOLE_ID): SelectSelector(
+                        SelectSelectorConfig(
+                            options=options,
+                            mode=SelectSelectorMode.LIST,
+                        )
+                    ),
                 }
             ),
             errors=errors,
@@ -253,23 +390,37 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[misc,c
                             )
                         errors[CONF_API_KEY] = "invalid_auth"
                 else:
-                    auth = ApiKeyAuth(api_key=user_input[CONF_API_KEY])
-                    async with UniFiNetworkClient(
-                        auth=auth,
-                        connection_type=ConnectionType.REMOTE,
-                        console_id=reauth_entry.data.get(CONF_CONSOLE_ID),
-                        timeout=30,
-                    ) as network_client:
-                        sites = await network_client.sites.get_all()
-                        if sites:
-                            return self.async_update_reload_and_abort(
-                                reauth_entry,
-                                data={
-                                    **reauth_entry.data,
-                                    CONF_API_KEY: user_input[CONF_API_KEY],
-                                },
-                            )
-                        errors[CONF_API_KEY] = "invalid_auth"
+                    api_key = user_input[CONF_API_KEY].strip()
+                    discovered_consoles = await self._async_discover_remote_consoles(
+                        api_key
+                    )
+                    if not discovered_consoles:
+                        errors["base"] = "no_remote_consoles"
+                    else:
+                        console_id = self._normalize_remote_console_id(
+                            reauth_entry.data.get(CONF_CONSOLE_ID, ""),
+                            discovered_consoles,
+                        )
+                        if console_id is None:
+                            errors["base"] = "invalid_console_id"
+                        else:
+                            try:
+                                sites_found = await self._async_validate_remote_console(
+                                    api_key,
+                                    console_id,
+                                )
+                                if sites_found:
+                                    return self.async_update_reload_and_abort(
+                                        reauth_entry,
+                                        data={
+                                            **reauth_entry.data,
+                                            CONF_API_KEY: api_key,
+                                            CONF_CONSOLE_ID: console_id,
+                                        },
+                                    )
+                                errors["base"] = "invalid_console_id"
+                            except UniFiAuthenticationError:
+                                errors["base"] = "invalid_console_id"
 
             except UniFiAuthenticationError:
                 errors[CONF_API_KEY] = "invalid_auth"
@@ -277,7 +428,7 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[misc,c
                 errors["base"] = "cannot_connect"
             except UniFiTimeoutError:
                 errors["base"] = "cannot_connect"
-            except Exception:  # noqa: BLE001
+            except Exception:
                 errors["base"] = "unknown"
 
         return self.async_show_form(
@@ -325,27 +476,43 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[misc,c
                             )
                         errors[CONF_API_KEY] = "invalid_auth"
                 else:
-                    auth = ApiKeyAuth(api_key=user_input[CONF_API_KEY])
-                    async with UniFiNetworkClient(
-                        auth=auth,
-                        connection_type=ConnectionType.REMOTE,
-                        console_id=user_input[CONF_CONSOLE_ID],
-                        timeout=30,
-                    ) as network_client:
-                        sites = await network_client.sites.get_all()
-                        if sites:
-                            await self.async_set_unique_id(user_input[CONF_API_KEY])
-                            self._abort_if_unique_id_mismatch(reason="account_mismatch")
+                    api_key = user_input[CONF_API_KEY].strip()
+                    discovered_consoles = await self._async_discover_remote_consoles(
+                        api_key
+                    )
+                    if not discovered_consoles:
+                        errors["base"] = "no_remote_consoles"
+                    else:
+                        console_id = self._normalize_remote_console_id(
+                            user_input[CONF_CONSOLE_ID],
+                            discovered_consoles,
+                        )
+                        if console_id is None:
+                            errors[CONF_CONSOLE_ID] = "invalid_console_id"
+                        else:
+                            try:
+                                sites_found = await self._async_validate_remote_console(
+                                    api_key,
+                                    console_id,
+                                )
+                                if sites_found:
+                                    await self.async_set_unique_id(api_key)
+                                    self._abort_if_unique_id_mismatch(
+                                        reason="account_mismatch"
+                                    )
 
-                            return self.async_update_reload_and_abort(
-                                entry,
-                                data={
-                                    CONF_CONNECTION_TYPE: CONNECTION_TYPE_REMOTE,
-                                    CONF_CONSOLE_ID: user_input[CONF_CONSOLE_ID],
-                                    CONF_API_KEY: user_input[CONF_API_KEY],
-                                },
-                            )
-                        errors[CONF_API_KEY] = "invalid_auth"
+                                    new_data = {
+                                        CONF_CONNECTION_TYPE: CONNECTION_TYPE_REMOTE,
+                                        CONF_CONSOLE_ID: console_id,
+                                        CONF_API_KEY: api_key,
+                                    }
+                                    return self.async_update_reload_and_abort(
+                                        entry,
+                                        data=new_data,
+                                    )
+                                errors[CONF_CONSOLE_ID] = "invalid_console_id"
+                            except UniFiAuthenticationError:
+                                errors[CONF_CONSOLE_ID] = "invalid_console_id"
 
             except UniFiAuthenticationError:
                 errors[CONF_API_KEY] = "invalid_auth"
@@ -368,7 +535,7 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[misc,c
                             default=entry.data.get(CONF_HOST, DEFAULT_API_HOST),
                         ): str,
                         vol.Required(
-                            CONF_API_KEY, default=entry.data.get(CONF_API_KEY, "")
+                            CONF_API_KEY,
                         ): str,
                         vol.Optional(
                             CONF_VERIFY_SSL,
@@ -386,7 +553,7 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[misc,c
                         CONF_CONSOLE_ID, default=entry.data.get(CONF_CONSOLE_ID, "")
                     ): str,
                     vol.Required(
-                        CONF_API_KEY, default=entry.data.get(CONF_API_KEY, "")
+                        CONF_API_KEY,
                     ): str,
                 }
             ),

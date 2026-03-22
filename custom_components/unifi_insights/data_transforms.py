@@ -1,9 +1,9 @@
 """
-Data transformation functions for unifi-official-api library responses.
+Data transformation functions for vendored UniFi API responses.
 
-This module provides transformation functions to convert library response
-formats to the internal data structures expected by entities, maintaining
-backward compatibility.
+This module provides transformation functions to convert vendored API
+response formats to the internal data structures expected by entities,
+maintaining backward compatibility.
 """
 
 
@@ -34,7 +34,7 @@ def transform_network_device(lib_device: dict) -> dict:
     Transform library network device response to internal format.
 
     Args:
-        lib_device: Device data from unifi-official-api library
+        lib_device: Device data from the vendored UniFi API package
 
     Returns:
         Transformed device data in internal format
@@ -62,7 +62,7 @@ def transform_protect_camera(lib_camera: dict) -> dict:
     Transform library Protect camera response to internal format.
 
     Args:
-        lib_camera: Camera data from unifi-official-api library
+        lib_camera: Camera data from the vendored UniFi API package
 
     Returns:
         Transformed camera data in internal format
@@ -93,7 +93,7 @@ def transform_protect_light(lib_light: dict) -> dict:
     Transform library Protect light response to internal format.
 
     Args:
-        lib_light: Light data from unifi-official-api library
+        lib_light: Light data from the vendored UniFi API package
 
     Returns:
         Transformed light data in internal format
@@ -116,7 +116,7 @@ def transform_protect_sensor(lib_sensor: dict) -> dict:
     Transform library Protect sensor response to internal format.
 
     Args:
-        lib_sensor: Sensor data from unifi-official-api library
+        lib_sensor: Sensor data from the vendored UniFi API package
 
     Returns:
         Transformed sensor data in internal format
@@ -137,7 +137,7 @@ def transform_protect_chime(lib_chime: dict) -> dict:
     Transform library Protect chime response to internal format.
 
     Args:
-        lib_chime: Chime data from unifi-official-api library
+        lib_chime: Chime data from the vendored UniFi API package
 
     Returns:
         Transformed chime data in internal format

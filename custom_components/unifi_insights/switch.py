@@ -21,7 +21,7 @@ from .const import (
     VIDEO_MODE_DEFAULT,
     VIDEO_MODE_HIGH_FPS,
 )
-from .entity import UnifiProtectEntity
+from .entity import UnifiProtectEntity, async_call_coordinator_action
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -36,7 +36,37 @@ _LOGGER = logging.getLogger(__name__)
 PARALLEL_UPDATES = 1
 
 
-async def async_setup_entry(  # noqa: PLR0912
+def _device_has_feature(device_data: dict[str, Any], *features_to_match: str) -> bool:
+    """Return True when a device advertises any of the requested features."""
+    features = device_data.get("features", [])
+    if isinstance(features, dict):
+        return any(
+            bool(features.get(feature_name)) for feature_name in features_to_match
+        )
+    if isinstance(features, list):
+        return any(feature_name in features for feature_name in features_to_match)
+    return False
+
+
+def _get_firewall_rule_action(rule_data: dict[str, Any]) -> str | None:
+    """Return the firewall rule action regardless of payload shape."""
+    action = rule_data.get("action")
+    if isinstance(action, dict):
+        action_type = action.get("type")
+        return str(action_type) if action_type is not None else None
+    return str(action) if action is not None else None
+
+
+def _is_predefined_firewall_rule(rule_data: dict[str, Any]) -> bool:
+    """Return True when a firewall rule appears to be system-defined."""
+    return bool(
+        rule_data.get("predefined")
+        or rule_data.get("isPredefined")
+        or rule_data.get("isSystem")
+    )
+
+
+async def async_setup_entry(
     hass: HomeAssistant,
     entry: UnifiInsightsConfigEntry,
     async_add_entities: AddEntitiesCallback,
@@ -194,14 +224,192 @@ async def async_setup_entry(  # noqa: PLR0912
                 )
             )
 
+    # Add firewall policy enable/disable switches for user-defined rules
+    for site_id, firewall_rules in coordinator.data.get("firewall_rules", {}).items():
+        for rule_id, rule_data in firewall_rules.items():
+            if not isinstance(rule_data, dict):
+                continue
+
+            if _is_predefined_firewall_rule(rule_data):
+                _LOGGER.debug(
+                    "Skipping predefined firewall rule %s in site %s",
+                    rule_id,
+                    site_id,
+                )
+                continue
+
+            rule_name = rule_data.get("name", rule_id)
+            _LOGGER.debug(
+                "Adding enable/disable switch for firewall rule %s",
+                rule_name,
+            )
+            entities.append(
+                UnifiFirewallRuleSwitch(
+                    coordinator=coordinator,
+                    site_id=site_id,
+                    rule_id=rule_id,
+                )
+            )
+
     _LOGGER.info("Adding %d UniFi switches", len(entities))
     async_add_entities(entities)
+
+
+class UnifiFirewallRuleSwitch(SwitchEntity):  # type: ignore[misc]
+    """Switch to enable or disable a user-defined firewall rule."""
+
+    _attr_has_entity_name = True
+    _attr_entity_category = EntityCategory.CONFIG
+
+    def __init__(
+        self,
+        coordinator: UnifiFacadeCoordinator,
+        site_id: str,
+        rule_id: str,
+    ) -> None:
+        """Initialize the firewall rule switch."""
+        self.coordinator = coordinator
+        self._site_id = site_id
+        self._rule_id = rule_id
+
+        rule_data = self._get_rule_data()
+        rule_name = rule_data.get("name") or rule_id
+
+        self._attr_unique_id = f"{site_id}_{rule_id}_firewall_rule"
+        self._attr_name = str(rule_name)
+        self._attr_device_info = self._build_device_info()
+
+    def _get_rule_data(self) -> dict[str, Any]:
+        """Get firewall rule data from the coordinator."""
+        result: dict[str, Any] = (
+            self.coordinator.data.get("firewall_rules", {})
+            .get(self._site_id, {})
+            .get(self._rule_id, {})
+        )
+        return result
+
+    def _find_gateway_device_id(self) -> str | None:
+        """Return the gateway-like device ID for the site if one exists."""
+        site_devices = self.coordinator.data.get("devices", {}).get(self._site_id, {})
+        if not isinstance(site_devices, dict):
+            return None
+
+        for device_id, device_data in site_devices.items():
+            if not isinstance(device_data, dict):
+                continue
+
+            model = str(device_data.get("model", "")).upper()
+            if _device_has_feature(
+                device_data, "gateway", "router"
+            ) or model.startswith(("UDM", "USG", "UXG", "UCG")):
+                return str(device_id)
+
+        return None
+
+    def _build_device_info(self) -> dict[str, Any]:
+        """Build device info for firewall rule grouping."""
+        gateway_device_id = self._find_gateway_device_id()
+        if gateway_device_id is not None:
+            return {"identifiers": {(DOMAIN, f"{self._site_id}_{gateway_device_id}")}}
+
+        site_data = self.coordinator.data.get("sites", {}).get(self._site_id, {})
+        meta = site_data.get("meta", {})
+        site_name = (
+            meta.get("name") if isinstance(meta, dict) else None
+        ) or site_data.get("name", self._site_id)
+
+        return {
+            "identifiers": {(DOMAIN, f"firewall_policies_{self._site_id}")},
+            "name": f"Firewall Policies ({site_name})",
+            "manufacturer": MANUFACTURER,
+            "model": "UniFi Firewall Policies",
+        }
+
+    def _update_local_state(self, *, enabled: bool) -> None:
+        """Update the aggregated coordinator cache for immediate UI feedback."""
+        firewall_rules = self.coordinator.data.setdefault("firewall_rules", {})
+        site_rules = firewall_rules.setdefault(self._site_id, {})
+        rule_data = site_rules.get(self._rule_id)
+        if isinstance(rule_data, dict):
+            rule_data["enabled"] = enabled
+
+    @property
+    def available(self) -> bool:
+        """Return if the switch is available."""
+        return bool(self._get_rule_data())
+
+    @property
+    def is_on(self) -> bool:
+        """Return True if the firewall rule is enabled."""
+        rule_data = self._get_rule_data()
+        return bool(rule_data.get("enabled", True))
+
+    @property
+    def icon(self) -> str:
+        """Return a context-specific icon for the firewall rule state."""
+        return "mdi:shield-lock" if self.is_on else "mdi:shield-off"
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return firewall rule metadata useful in automations and debugging."""
+        rule_data = self._get_rule_data()
+        return {
+            "rule_id": self._rule_id,
+            "action": _get_firewall_rule_action(rule_data),
+            "protocol": rule_data.get("protocol"),
+            "source_zone_id": rule_data.get("sourceZoneId")
+            or rule_data.get("source_zone_id"),
+            "destination_zone_id": rule_data.get("destinationZoneId")
+            or rule_data.get("destination_zone_id"),
+            "logging": rule_data.get("logging", False),
+            "index": rule_data.get("index"),
+        }
+
+    async def _async_set_enabled(self, *, enabled: bool) -> None:
+        """Enable or disable the firewall rule."""
+        action = "Enabling" if enabled else "Disabling"
+        _LOGGER.debug(
+            "%s firewall rule %s in site %s",
+            action,
+            self._rule_id,
+            self._site_id,
+        )
+
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_set_firewall_rule_enabled",
+            f"Unable to update firewall rule {self._rule_id}",
+            self._site_id,
+            self._rule_id,
+            enabled=enabled,
+            fallback_factory=lambda: (
+                self.coordinator.network_client.firewall.update_rule(
+                    self._site_id,
+                    self._rule_id,
+                    enabled=enabled,
+                )
+            ),
+        )
+        self._update_local_state(enabled=enabled)
+        self.async_write_ha_state()
+        await self.coordinator.async_request_refresh()
+
+    async def async_turn_on(self, **kwargs: Any) -> None:
+        """Enable the firewall rule."""
+        _ = kwargs
+        await self._async_set_enabled(enabled=True)
+
+    async def async_turn_off(self, **kwargs: Any) -> None:
+        """Disable the firewall rule."""
+        _ = kwargs
+        await self._async_set_enabled(enabled=False)
 
 
 class UnifiProtectMicrophoneSwitch(UnifiProtectEntity, SwitchEntity):  # type: ignore[misc]
     """Representation of a UniFi Protect Camera Microphone Switch."""
 
     _attr_has_entity_name = True
+    _attr_translation_key = "microphone"
 
     def __init__(
         self,
@@ -241,36 +449,45 @@ class UnifiProtectMicrophoneSwitch(UnifiProtectEntity, SwitchEntity):  # type: i
         _ = kwargs
         _LOGGER.debug("Turning on microphone for camera %s", self._device_id)
 
-        try:
-            await self.coordinator.protect_client.update_camera(
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_update_camera",
+            f"Unable to turn on microphone for camera {self._device_id}",
+            self._device_id,
+            fallback_factory=lambda: self.coordinator.protect_client.update_camera(
                 camera_id=self._device_id,
                 data={"micEnabled": True},
-            )
-            self._attr_is_on = True
-            self.async_write_ha_state()
-        except Exception:
-            _LOGGER.exception("Error turning on microphone")
+            ),
+            micEnabled=True,
+        )
+        self._attr_is_on = True
+        self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn the microphone off."""
         _ = kwargs
         _LOGGER.debug("Turning off microphone for camera %s", self._device_id)
 
-        try:
-            await self.coordinator.protect_client.update_camera(
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_update_camera",
+            f"Unable to turn off microphone for camera {self._device_id}",
+            self._device_id,
+            fallback_factory=lambda: self.coordinator.protect_client.update_camera(
                 camera_id=self._device_id,
                 data={"micEnabled": False},
-            )
-            self._attr_is_on = False
-            self.async_write_ha_state()
-        except Exception:
-            _LOGGER.exception("Error turning off microphone")
+            ),
+            micEnabled=False,
+        )
+        self._attr_is_on = False
+        self.async_write_ha_state()
 
 
 class UnifiProtectPrivacySwitch(UnifiProtectEntity, SwitchEntity):  # type: ignore[misc]
     """Representation of a UniFi Protect Camera Privacy Mode Switch."""
 
     _attr_has_entity_name = True
+    _attr_translation_key = "privacy_mode"
     _attr_icon = "mdi:eye-off"
 
     def __init__(
@@ -319,36 +536,45 @@ class UnifiProtectPrivacySwitch(UnifiProtectEntity, SwitchEntity):  # type: igno
         _ = kwargs
         _LOGGER.debug("Enabling privacy mode for camera %s", self._device_id)
 
-        try:
-            await self.coordinator.protect_client.cameras.update(
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_update_camera_settings",
+            f"Unable to enable privacy mode for camera {self._device_id}",
+            self._device_id,
+            fallback_factory=lambda: self.coordinator.protect_client.cameras.update(
                 self._device_id,
                 is_privacy_mode_enabled=True,
-            )
-            self._attr_is_on = True
-            self.async_write_ha_state()
-        except Exception:
-            _LOGGER.exception("Error enabling privacy mode")
+            ),
+            is_privacy_mode_enabled=True,
+        )
+        self._attr_is_on = True
+        self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn privacy mode off."""
         _ = kwargs
         _LOGGER.debug("Disabling privacy mode for camera %s", self._device_id)
 
-        try:
-            await self.coordinator.protect_client.cameras.update(
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_update_camera_settings",
+            f"Unable to disable privacy mode for camera {self._device_id}",
+            self._device_id,
+            fallback_factory=lambda: self.coordinator.protect_client.cameras.update(
                 self._device_id,
                 is_privacy_mode_enabled=False,
-            )
-            self._attr_is_on = False
-            self.async_write_ha_state()
-        except Exception:
-            _LOGGER.exception("Error disabling privacy mode")
+            ),
+            is_privacy_mode_enabled=False,
+        )
+        self._attr_is_on = False
+        self.async_write_ha_state()
 
 
 class UnifiProtectStatusLightSwitch(UnifiProtectEntity, SwitchEntity):  # type: ignore[misc]
     """Representation of a UniFi Protect Camera Status Light Switch."""
 
     _attr_has_entity_name = True
+    _attr_translation_key = "status_light"
     _attr_icon = "mdi:led-on"
 
     def __init__(
@@ -391,36 +617,45 @@ class UnifiProtectStatusLightSwitch(UnifiProtectEntity, SwitchEntity):  # type: 
         _ = kwargs
         _LOGGER.debug("Turning on status light for camera %s", self._device_id)
 
-        try:
-            await self.coordinator.protect_client.cameras.update(
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_update_camera_settings",
+            f"Unable to turn on status light for camera {self._device_id}",
+            self._device_id,
+            fallback_factory=lambda: self.coordinator.protect_client.cameras.update(
                 self._device_id,
                 led_settings={"isEnabled": True},
-            )
-            self._attr_is_on = True
-            self.async_write_ha_state()
-        except Exception:
-            _LOGGER.exception("Error turning on status light")
+            ),
+            led_settings={"isEnabled": True},
+        )
+        self._attr_is_on = True
+        self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn the status light off."""
         _ = kwargs
         _LOGGER.debug("Turning off status light for camera %s", self._device_id)
 
-        try:
-            await self.coordinator.protect_client.cameras.update(
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_update_camera_settings",
+            f"Unable to turn off status light for camera {self._device_id}",
+            self._device_id,
+            fallback_factory=lambda: self.coordinator.protect_client.cameras.update(
                 self._device_id,
                 led_settings={"isEnabled": False},
-            )
-            self._attr_is_on = False
-            self.async_write_ha_state()
-        except Exception:
-            _LOGGER.exception("Error turning off status light")
+            ),
+            led_settings={"isEnabled": False},
+        )
+        self._attr_is_on = False
+        self.async_write_ha_state()
 
 
 class UnifiProtectHighFPSSwitch(UnifiProtectEntity, SwitchEntity):  # type: ignore[misc]
     """Representation of a UniFi Protect Camera High FPS Mode Switch."""
 
     _attr_has_entity_name = True
+    _attr_translation_key = "high_fps_mode"
     _attr_icon = "mdi:fast-forward"
 
     def __init__(
@@ -462,30 +697,38 @@ class UnifiProtectHighFPSSwitch(UnifiProtectEntity, SwitchEntity):  # type: igno
         _ = kwargs
         _LOGGER.debug("Enabling high FPS mode for camera %s", self._device_id)
 
-        try:
-            await self.coordinator.protect_client.cameras.update(
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_update_camera_settings",
+            f"Unable to enable high FPS mode for camera {self._device_id}",
+            self._device_id,
+            fallback_factory=lambda: self.coordinator.protect_client.cameras.update(
                 self._device_id,
                 video_mode=VIDEO_MODE_HIGH_FPS,
-            )
-            self._attr_is_on = True
-            self.async_write_ha_state()
-        except Exception:
-            _LOGGER.exception("Error enabling high FPS mode")
+            ),
+            video_mode=VIDEO_MODE_HIGH_FPS,
+        )
+        self._attr_is_on = True
+        self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Disable high FPS mode (return to default)."""
         _ = kwargs
         _LOGGER.debug("Disabling high FPS mode for camera %s", self._device_id)
 
-        try:
-            await self.coordinator.protect_client.cameras.update(
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_update_camera_settings",
+            f"Unable to disable high FPS mode for camera {self._device_id}",
+            self._device_id,
+            fallback_factory=lambda: self.coordinator.protect_client.cameras.update(
                 self._device_id,
                 video_mode=VIDEO_MODE_DEFAULT,
-            )
-            self._attr_is_on = False
-            self.async_write_ha_state()
-        except Exception:
-            _LOGGER.exception("Error disabling high FPS mode")
+            ),
+            video_mode=VIDEO_MODE_DEFAULT,
+        )
+        self._attr_is_on = False
+        self.async_write_ha_state()
 
 
 class UnifiPoESwitch(SwitchEntity):  # type: ignore[misc]
@@ -507,21 +750,13 @@ class UnifiPoESwitch(SwitchEntity):  # type: ignore[misc]
         self._device_id = device_id
         self._port_idx = port_idx
 
-        # Get device info for naming
-        device_data = self._get_device_data()
-        device_name = device_data.get("name", device_id)
-
         self._attr_unique_id = f"{site_id}_{device_id}_port_{port_idx}_poe"
         self._attr_name = f"Port {port_idx} PoE"
         self._attr_entity_category = EntityCategory.CONFIG
 
-        # Device info
+        # Group the port entity under the existing network device entry
         self._attr_device_info = {
-            "identifiers": {("unifi_insights", device_id)},
-            "name": device_name,
-            "manufacturer": "Ubiquiti",
-            "model": device_data.get("model", "UniFi Switch"),
-            "via_device": ("unifi_insights", site_id),
+            "identifiers": {(DOMAIN, f"{site_id}_{device_id}")},
         }
 
         # Set initial state
@@ -592,19 +827,26 @@ class UnifiPoESwitch(SwitchEntity):  # type: ignore[misc]
             "Enabling PoE on port %s of device %s", self._port_idx, self._device_id
         )
 
-        try:
-            await self.coordinator.network_client.devices.execute_port_action(
-                self._site_id,
-                self._device_id,
-                self._port_idx,
-                poe_mode="auto",  # Enable PoE with auto mode
-            )
-            self._attr_is_on = True
-            self.async_write_ha_state()
-            # Request coordinator refresh
-            await self.coordinator.async_request_refresh()
-        except Exception:
-            _LOGGER.exception("Error enabling PoE on port %s", self._port_idx)
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_execute_port_action",
+            f"Unable to enable PoE on port {self._port_idx}",
+            self._site_id,
+            self._device_id,
+            self._port_idx,
+            fallback_factory=lambda: (
+                self.coordinator.network_client.devices.execute_port_action(
+                    self._site_id,
+                    self._device_id,
+                    self._port_idx,
+                    poe_mode="auto",
+                )
+            ),
+            poe_mode="auto",
+        )
+        self._attr_is_on = True
+        self.async_write_ha_state()
+        await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Disable PoE on the port."""
@@ -613,19 +855,26 @@ class UnifiPoESwitch(SwitchEntity):  # type: ignore[misc]
             "Disabling PoE on port %s of device %s", self._port_idx, self._device_id
         )
 
-        try:
-            await self.coordinator.network_client.devices.execute_port_action(
-                self._site_id,
-                self._device_id,
-                self._port_idx,
-                poe_mode="off",  # Disable PoE
-            )
-            self._attr_is_on = False
-            self.async_write_ha_state()
-            # Request coordinator refresh
-            await self.coordinator.async_request_refresh()
-        except Exception:
-            _LOGGER.exception("Error disabling PoE on port %s", self._port_idx)
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_execute_port_action",
+            f"Unable to disable PoE on port {self._port_idx}",
+            self._site_id,
+            self._device_id,
+            self._port_idx,
+            fallback_factory=lambda: (
+                self.coordinator.network_client.devices.execute_port_action(
+                    self._site_id,
+                    self._device_id,
+                    self._port_idx,
+                    poe_mode="off",
+                )
+            ),
+            poe_mode="off",
+        )
+        self._attr_is_on = False
+        self.async_write_ha_state()
+        await self.coordinator.async_request_refresh()
 
 
 class UnifiPortEnableSwitch(SwitchEntity):  # type: ignore[misc]
@@ -647,21 +896,13 @@ class UnifiPortEnableSwitch(SwitchEntity):  # type: ignore[misc]
         self._device_id = device_id
         self._port_idx = port_idx
 
-        # Get device info for naming
-        device_data = self._get_device_data()
-        device_name = device_data.get("name", device_id)
-
         self._attr_unique_id = f"{site_id}_{device_id}_port_{port_idx}_enable"
         self._attr_name = f"Port {port_idx} Enable"
         self._attr_entity_category = EntityCategory.CONFIG
 
-        # Device info
+        # Group the port entity under the existing network device entry
         self._attr_device_info = {
             "identifiers": {(DOMAIN, f"{site_id}_{device_id}")},
-            "name": device_name,
-            "manufacturer": MANUFACTURER,
-            "model": device_data.get("model", "UniFi Switch"),
-            "via_device": (DOMAIN, site_id),
         }
 
         # Set initial state
@@ -731,38 +972,52 @@ class UnifiPortEnableSwitch(SwitchEntity):  # type: ignore[misc]
         _ = kwargs
         _LOGGER.debug("Enabling port %s on device %s", self._port_idx, self._device_id)
 
-        try:
-            await self.coordinator.network_client.devices.execute_port_action(
-                self._site_id,
-                self._device_id,
-                self._port_idx,
-                enabled=True,
-            )
-            self._attr_is_on = True
-            self.async_write_ha_state()
-            # Request coordinator refresh
-            await self.coordinator.async_request_refresh()
-        except Exception:
-            _LOGGER.exception("Error enabling port %s", self._port_idx)
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_execute_port_action",
+            f"Unable to enable port {self._port_idx}",
+            self._site_id,
+            self._device_id,
+            self._port_idx,
+            fallback_factory=lambda: (
+                self.coordinator.network_client.devices.execute_port_action(
+                    self._site_id,
+                    self._device_id,
+                    self._port_idx,
+                    enabled=True,
+                )
+            ),
+            enabled=True,
+        )
+        self._attr_is_on = True
+        self.async_write_ha_state()
+        await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Disable the port."""
         _ = kwargs
         _LOGGER.debug("Disabling port %s on device %s", self._port_idx, self._device_id)
 
-        try:
-            await self.coordinator.network_client.devices.execute_port_action(
-                self._site_id,
-                self._device_id,
-                self._port_idx,
-                enabled=False,
-            )
-            self._attr_is_on = False
-            self.async_write_ha_state()
-            # Request coordinator refresh
-            await self.coordinator.async_request_refresh()
-        except Exception:
-            _LOGGER.exception("Error disabling port %s", self._port_idx)
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_execute_port_action",
+            f"Unable to disable port {self._port_idx}",
+            self._site_id,
+            self._device_id,
+            self._port_idx,
+            fallback_factory=lambda: (
+                self.coordinator.network_client.devices.execute_port_action(
+                    self._site_id,
+                    self._device_id,
+                    self._port_idx,
+                    enabled=False,
+                )
+            ),
+            enabled=False,
+        )
+        self._attr_is_on = False
+        self.async_write_ha_state()
+        await self.coordinator.async_request_refresh()
 
 
 class UnifiClientBlockSwitch(SwitchEntity):  # type: ignore[misc]
@@ -816,7 +1071,6 @@ class UnifiClientBlockSwitch(SwitchEntity):  # type: ignore[misc]
                 "name": client_name,
                 "manufacturer": MANUFACTURER,
                 "model": "Network Client",
-                "via_device": (DOMAIN, site_id),
             }
 
     def _get_client_data(self) -> dict[str, Any]:
@@ -849,42 +1103,46 @@ class UnifiClientBlockSwitch(SwitchEntity):  # type: ignore[misc]
             "Allowing client %s in site %s (unblocking)", self._client_id, self._site_id
         )
 
-        try:
-            await self.coordinator.network_client.clients.unblock(
-                self._site_id, self._client_id
-            )
-            _LOGGER.info(
-                "Successfully allowed client %s in site %s",
-                self._client_id,
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_unblock_client",
+            f"Unable to allow client {self._client_id}",
+            self._site_id,
+            self._client_id,
+            fallback_factory=lambda: self.coordinator.network_client.clients.unblock(
                 self._site_id,
-            )
-            # Request coordinator refresh to update state
-            await self.coordinator.async_request_refresh()
-        except Exception:
-            _LOGGER.exception(
-                "Error allowing client %s in site %s", self._client_id, self._site_id
-            )
+                self._client_id,
+            ),
+        )
+        _LOGGER.info(
+            "Successfully allowed client %s in site %s",
+            self._client_id,
+            self._site_id,
+        )
+        await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Block the client."""
         _ = kwargs
         _LOGGER.debug("Blocking client %s in site %s", self._client_id, self._site_id)
 
-        try:
-            await self.coordinator.network_client.clients.block(
-                self._site_id, self._client_id
-            )
-            _LOGGER.info(
-                "Successfully blocked client %s in site %s",
-                self._client_id,
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_block_client",
+            f"Unable to block client {self._client_id}",
+            self._site_id,
+            self._client_id,
+            fallback_factory=lambda: self.coordinator.network_client.clients.block(
                 self._site_id,
-            )
-            # Request coordinator refresh to update state
-            await self.coordinator.async_request_refresh()
-        except Exception:
-            _LOGGER.exception(
-                "Error blocking client %s in site %s", self._client_id, self._site_id
-            )
+                self._client_id,
+            ),
+        )
+        _LOGGER.info(
+            "Successfully blocked client %s in site %s",
+            self._client_id,
+            self._site_id,
+        )
+        await self.coordinator.async_request_refresh()
 
 
 class UnifiWifiSwitch(SwitchEntity):  # type: ignore[misc]
@@ -928,7 +1186,7 @@ class UnifiWifiSwitch(SwitchEntity):  # type: ignore[misc]
             .get(self._site_id, {})
             .get(self._wifi_id, {})
         )
-        return result if result else self._wifi_data
+        return result or self._wifi_data
 
     @property
     def available(self) -> bool:
@@ -961,23 +1219,25 @@ class UnifiWifiSwitch(SwitchEntity):  # type: ignore[misc]
             "Enabling WiFi network %s in site %s", self._wifi_id, self._site_id
         )
 
-        try:
-            await self.coordinator.network_client.wifi.update(
-                self._site_id, self._wifi_id, enabled=True
-            )
-            _LOGGER.info(
-                "Successfully enabled WiFi network %s in site %s",
-                self._wifi_id,
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_update_wifi_network",
+            f"Unable to enable WiFi network {self._wifi_id}",
+            self._site_id,
+            self._wifi_id,
+            fallback_factory=lambda: self.coordinator.network_client.wifi.update(
                 self._site_id,
-            )
-            # Request coordinator refresh to update state
-            await self.coordinator.async_request_refresh()
-        except Exception:
-            _LOGGER.exception(
-                "Error enabling WiFi network %s in site %s",
                 self._wifi_id,
-                self._site_id,
-            )
+                enabled=True,
+            ),
+            enabled=True,
+        )
+        _LOGGER.info(
+            "Successfully enabled WiFi network %s in site %s",
+            self._wifi_id,
+            self._site_id,
+        )
+        await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Disable the WiFi network."""
@@ -986,20 +1246,22 @@ class UnifiWifiSwitch(SwitchEntity):  # type: ignore[misc]
             "Disabling WiFi network %s in site %s", self._wifi_id, self._site_id
         )
 
-        try:
-            await self.coordinator.network_client.wifi.update(
-                self._site_id, self._wifi_id, enabled=False
-            )
-            _LOGGER.info(
-                "Successfully disabled WiFi network %s in site %s",
-                self._wifi_id,
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_update_wifi_network",
+            f"Unable to disable WiFi network {self._wifi_id}",
+            self._site_id,
+            self._wifi_id,
+            fallback_factory=lambda: self.coordinator.network_client.wifi.update(
                 self._site_id,
-            )
-            # Request coordinator refresh to update state
-            await self.coordinator.async_request_refresh()
-        except Exception:
-            _LOGGER.exception(
-                "Error disabling WiFi network %s in site %s",
                 self._wifi_id,
-                self._site_id,
-            )
+                enabled=False,
+            ),
+            enabled=False,
+        )
+        _LOGGER.info(
+            "Successfully disabled WiFi network %s in site %s",
+            self._wifi_id,
+            self._site_id,
+        )
+        await self.coordinator.async_request_refresh()

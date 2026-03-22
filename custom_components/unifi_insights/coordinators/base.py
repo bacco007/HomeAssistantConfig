@@ -11,20 +11,21 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
-from unifi_official_api import (  # noqa: TC002
-    UniFiAuthenticationError,
-    UniFiConnectionError,
-    UniFiResponseError,
-    UniFiTimeoutError,
-)
 
 from custom_components.unifi_insights.const import DOMAIN
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
-    from unifi_official_api.network import UniFiNetworkClient
-    from unifi_official_api.protect import UniFiProtectClient
+
+    from custom_components.unifi_insights.api import (
+        UniFiAuthenticationError,
+        UniFiConnectionError,
+        UniFiResponseError,
+        UniFiTimeoutError,
+    )
+    from custom_components.unifi_insights.api.network import UniFiNetworkClient
+    from custom_components.unifi_insights.api.protect import UniFiProtectClient
 
 _LOGGER = logging.getLogger(__name__)
 

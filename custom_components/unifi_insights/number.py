@@ -23,7 +23,7 @@ from .const import (
     DEVICE_TYPE_CHIME,
     DEVICE_TYPE_LIGHT,
 )
-from .entity import UnifiProtectEntity
+from .entity import UnifiProtectEntity, async_call_coordinator_action
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -111,6 +111,7 @@ class UnifiProtectMicrophoneVolumeNumber(UnifiProtectEntity, NumberEntity):  # t
     """Representation of a UniFi Protect Camera Microphone Volume Number."""
 
     _attr_has_entity_name = True
+    _attr_translation_key = "mic_volume"
     _attr_native_min_value = 0
     _attr_native_max_value = 100
     _attr_native_step = 1
@@ -157,21 +158,28 @@ class UnifiProtectMicrophoneVolumeNumber(UnifiProtectEntity, NumberEntity):  # t
             "Setting microphone volume to %s for camera %s", value, self._device_id
         )
 
-        try:
-            await self.coordinator.protect_client.set_microphone_volume(
-                camera_id=self._device_id,
-                volume=int(value),
-            )
-            self._attr_native_value = value
-            self.async_write_ha_state()
-        except Exception:
-            _LOGGER.exception("Error setting microphone volume")
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_set_microphone_volume",
+            f"Unable to set microphone volume for camera {self._device_id}",
+            self._device_id,
+            int(value),
+            fallback_factory=lambda: (
+                self.coordinator.protect_client.set_microphone_volume(
+                    camera_id=self._device_id,
+                    volume=int(value),
+                )
+            ),
+        )
+        self._attr_native_value = value
+        self.async_write_ha_state()
 
 
 class UnifiProtectLightLevelNumber(UnifiProtectEntity, NumberEntity):  # type: ignore[misc]
     """Representation of a UniFi Protect Light Brightness Level Number."""
 
     _attr_has_entity_name = True
+    _attr_translation_key = "brightness_level"
     _attr_native_min_value = 0
     _attr_native_max_value = 100
     _attr_native_step = 1
@@ -214,21 +222,28 @@ class UnifiProtectLightLevelNumber(UnifiProtectEntity, NumberEntity):  # type: i
         """Set the light brightness level."""
         _LOGGER.debug("Setting light level to %s for light %s", value, self._device_id)
 
-        try:
-            await self.coordinator.protect_client.set_light_brightness(
-                light_id=self._device_id,
-                level=int(value),
-            )
-            self._attr_native_value = value
-            self.async_write_ha_state()
-        except Exception:
-            _LOGGER.exception("Error setting light level")
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_set_light_brightness",
+            f"Unable to set brightness for light {self._device_id}",
+            self._device_id,
+            int(value),
+            fallback_factory=lambda: (
+                self.coordinator.protect_client.set_light_brightness(
+                    light_id=self._device_id,
+                    level=int(value),
+                )
+            ),
+        )
+        self._attr_native_value = value
+        self.async_write_ha_state()
 
 
 class UnifiProtectChimeVolumeNumber(UnifiProtectEntity, NumberEntity):  # type: ignore[misc]
     """Representation of a UniFi Protect Chime Volume Number."""
 
     _attr_has_entity_name = True
+    _attr_translation_key = "chime_volume"
     _attr_native_min_value = 0
     _attr_native_max_value = 100
     _attr_native_step = 1
@@ -278,21 +293,26 @@ class UnifiProtectChimeVolumeNumber(UnifiProtectEntity, NumberEntity):  # type: 
         """Set the chime volume level."""
         _LOGGER.debug("Setting chime volume to %s for chime %s", value, self._device_id)
 
-        try:
-            await self.coordinator.protect_client.set_chime_volume(
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_set_chime_volume",
+            f"Unable to set volume for chime {self._device_id}",
+            self._device_id,
+            int(value),
+            fallback_factory=lambda: self.coordinator.protect_client.set_chime_volume(
                 chime_id=self._device_id,
                 volume=int(value),
-            )
-            self._attr_native_value = int(value)
-            self.async_write_ha_state()
-        except Exception:
-            _LOGGER.exception("Error setting chime volume")
+            ),
+        )
+        self._attr_native_value = int(value)
+        self.async_write_ha_state()
 
 
 class UnifiProtectChimeRepeatTimesNumber(UnifiProtectEntity, NumberEntity):  # type: ignore[misc]
     """Representation of a UniFi Protect Chime Repeat Times Number."""
 
     _attr_has_entity_name = True
+    _attr_translation_key = "repeat_times"
     _attr_native_min_value = 1
     _attr_native_max_value = 10
     _attr_native_step = 1
@@ -344,12 +364,16 @@ class UnifiProtectChimeRepeatTimesNumber(UnifiProtectEntity, NumberEntity):  # t
             "Setting chime repeat times to %s for chime %s", value, self._device_id
         )
 
-        try:
-            await self.coordinator.protect_client.set_chime_repeat(
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_set_chime_repeat",
+            f"Unable to set repeat count for chime {self._device_id}",
+            self._device_id,
+            int(value),
+            fallback_factory=lambda: self.coordinator.protect_client.set_chime_repeat(
                 chime_id=self._device_id,
                 repeat_times=int(value),
-            )
-            self._attr_native_value = int(value)
-            self.async_write_ha_state()
-        except Exception:
-            _LOGGER.exception("Error setting chime repeat times")
+            ),
+        )
+        self._attr_native_value = int(value)
+        self.async_write_ha_state()

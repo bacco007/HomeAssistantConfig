@@ -5,9 +5,10 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, Any
 
-import unifi_official_api
 from homeassistant.components.diagnostics import async_redact_data
 from homeassistant.const import CONF_API_KEY, CONF_HOST
+
+from .api import __version__ as api_version
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -18,7 +19,10 @@ _LOGGER = logging.getLogger(__name__)
 
 TO_REDACT = {
     CONF_API_KEY,
+    CONF_HOST,
     "unique_id",  # Also redact unique_id as it may contain the API key
+    "mac",
+    "mac_address",
     "macAddress",
     "id",
     "deviceId",
@@ -38,11 +42,11 @@ async def async_get_config_entry_diagnostics(
     coordinator = data.coordinator
 
     # Get library version
-    library_version = getattr(unifi_official_api, "__version__", "unknown")
+    library_version = api_version
 
     # Get sanitized connection info
     connection_info = {
-        "host": entry.data.get(CONF_HOST, "unknown"),
+        "host": "**REDACTED**",
         "network_client_connected": coordinator.network_client is not None,
         "protect_client_connected": coordinator.protect_client is not None,
     }

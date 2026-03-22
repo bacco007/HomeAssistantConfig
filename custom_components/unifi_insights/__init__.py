@@ -12,7 +12,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY, CONF_HOST, CONF_VERIFY_SSL, Platform
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from unifi_official_api import (
+
+from .api import (
     ApiKeyAuth,
     ConnectionType,
     LocalAuth,
@@ -20,9 +21,8 @@ from unifi_official_api import (
     UniFiConnectionError,
     UniFiTimeoutError,
 )
-from unifi_official_api.network import UniFiNetworkClient
-from unifi_official_api.protect import UniFiProtectClient
-
+from .api.network import UniFiNetworkClient
+from .api.protect import UniFiProtectClient
 from .const import (
     CONF_CONNECTION_TYPE,
     CONF_CONSOLE_ID,
@@ -108,7 +108,7 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:  # noqa: ARG00
     return True
 
 
-async def async_setup_entry(  # noqa: PLR0915
+async def async_setup_entry(
     hass: HomeAssistant, entry: UnifiInsightsConfigEntry
 ) -> bool:
     """Set up UniFi Insights from a config entry."""
@@ -131,7 +131,7 @@ async def async_setup_entry(  # noqa: PLR0915
             )
 
             # Create authentication object for local connection
-            auth = LocalAuth(
+            auth: LocalAuth | ApiKeyAuth = LocalAuth(
                 api_key=entry.data[CONF_API_KEY],
                 verify_ssl=verify_ssl,
             )
@@ -175,7 +175,7 @@ async def async_setup_entry(  # noqa: PLR0915
             )
         except UniFiAuthenticationError as err:
             msg = "Invalid API key or unable to connect to Network API"
-            _LOGGER.exception(msg)
+            _LOGGER.warning(msg)
             raise ConfigEntryAuthFailed(msg) from err
 
         # Initialize UniFi Protect API client (only for local connections currently)
@@ -198,7 +198,7 @@ async def async_setup_entry(  # noqa: PLR0915
                     "UniFi Protect API validated successfully, found %d cameras",
                     len(cameras),
                 )
-            except Exception as err:  # noqa: BLE001
+            except Exception as err:
                 _LOGGER.warning(
                     "Error validating UniFi Protect API connection, "
                     "continuing without Protect support: %s",
@@ -211,11 +211,11 @@ async def async_setup_entry(  # noqa: PLR0915
     # Note: UniFiAuthenticationError is already handled in the inner try block
     # at lines 176-179, which converts it to ConfigEntryAuthFailed
     except UniFiConnectionError as err:
-        _LOGGER.exception("Connection error")
+        _LOGGER.warning("Connection error: %s", err)
         msg = f"Error communicating with UniFi API: {err}"
         raise ConfigEntryNotReady(msg) from err
     except UniFiTimeoutError as err:
-        _LOGGER.exception("Timeout error")
+        _LOGGER.warning("Timeout error: %s", err)
         msg = f"Timeout connecting to UniFi API: {err}"
         raise ConfigEntryNotReady(msg) from err
 
@@ -271,7 +271,7 @@ async def async_setup_entry(  # noqa: PLR0915
         protect_coordinator=protect_coordinator,
     )
     # Initial aggregation of data
-    facade_coordinator._aggregate_data()  # noqa: SLF001
+    facade_coordinator._aggregate_data()
 
     # Store runtime data in config entry (Gold requirement)
     entry.runtime_data = UnifiInsightsData(
@@ -315,14 +315,14 @@ async def async_unload_entry(
             # Close Protect client (await the async close)
             try:
                 await data.protect_client.close()
-            except Exception as err:  # noqa: BLE001
+            except Exception as err:
                 _LOGGER.debug("Error closing Protect client: %s", err)
 
         # Close Network client (await the async close)
         if data.network_client:
             try:
                 await data.network_client.close()
-            except Exception as err:  # noqa: BLE001
+            except Exception as err:
                 _LOGGER.debug("Error closing Network client: %s", err)
 
     unload_ok: bool = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
@@ -337,6 +337,7 @@ async def async_unload_entry(
         if not remaining_entries:
             _LOGGER.debug("No more config entries, unloading services")
             await async_unload_services(hass)
+            hass.data.pop(f"{DOMAIN}_tracked_clients", None)
             if DOMAIN in hass.data:
                 hass.data.pop(DOMAIN)
             _LOGGER.info("UniFi Insights services unloaded")

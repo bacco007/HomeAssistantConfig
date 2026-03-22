@@ -304,7 +304,7 @@ SET_LIVEVIEW_SCHEMA = vol.Schema(
 )
 
 
-async def async_setup_services(hass: HomeAssistant) -> None:  # noqa: C901, PLR0915
+async def async_setup_services(hass: HomeAssistant) -> None:
     """Set up the UniFi Insights services."""
     _LOGGER.debug("Setting up UniFi Insights services")
 
@@ -346,159 +346,63 @@ async def async_setup_services(hass: HomeAssistant) -> None:  # noqa: C901, PLR0
 
     async def async_handle_restart_device(call: ServiceCall) -> None:
         """Handle the restart device service call."""
-        _LOGGER.debug("Handling restart_device service call with data: %s", call.data)
-
         site_id = call.data["site_id"]
         device_id = call.data["device_id"]
 
-        # Get first coordinator (we only need one to restart a device)
         coordinator = _get_first_coordinator(hass)
-
         if not coordinator:
-            _LOGGER.error("No UniFi Insights coordinator found")
             msg = "No UniFi Insights coordinator found"
             raise HomeAssistantError(msg)
 
-        _LOGGER.info("Attempting to restart device %s in site %s", device_id, site_id)
+        await coordinator.async_restart_device(site_id, device_id)
 
-        try:
-            success = await coordinator.network_client.restart_device(
-                site_id, device_id
-            )
-            if success:
-                _LOGGER.info(
-                    "Successfully initiated restart for device %s in site %s",
-                    device_id,
-                    site_id,
-                )
-            else:
-                _LOGGER.error(
-                    "Failed to restart device %s in site %s", device_id, site_id
-                )
-                msg = f"Failed to restart device {device_id}"
-                raise HomeAssistantError(msg)  # noqa: TRY301
-
-        except Exception as err:
-            _LOGGER.exception(
-                "Error restarting device %s in site %s", device_id, site_id
-            )
-            msg = f"Error restarting device: {err}"
-            raise HomeAssistantError(msg) from err
-
-    # Define Unifi Protect service handlers
     async def async_handle_set_recording_mode(call: ServiceCall) -> None:
         """Handle the set_recording_mode service call."""
-        _LOGGER.debug(
-            "Handling set_recording_mode service call with data: %s", call.data
-        )
-
         camera_id = call.data["camera_id"]
         mode = call.data["mode"]
 
-        # Get first coordinator with Protect API
         coordinator = _get_protect_coordinator(hass)
-
         if not coordinator:
-            _LOGGER.error("No UniFi Protect coordinator found")
             msg = "No UniFi Protect coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            await coordinator.protect_client.update_camera(
-                camera_id=camera_id,
-                data={"recordingSettings": {"mode": mode}},
-            )
-            _LOGGER.info(
-                "Successfully set recording mode to %s for camera %s", mode, camera_id
-            )
-        except Exception as err:
-            _LOGGER.exception("Error setting recording mode")
-            msg = f"Error setting recording mode: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_set_recording_mode(camera_id, mode)
 
     async def async_handle_set_hdr_mode(call: ServiceCall) -> None:
         """Handle the set_hdr_mode service call."""
-        _LOGGER.debug("Handling set_hdr_mode service call with data: %s", call.data)
-
         camera_id = call.data["camera_id"]
         mode = call.data["mode"]
 
-        # Get first coordinator with Protect API
         coordinator = _get_protect_coordinator(hass)
-
         if not coordinator:
-            _LOGGER.error("No UniFi Protect coordinator found")
             msg = "No UniFi Protect coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            await coordinator.protect_client.set_hdr_mode(
-                camera_id=camera_id,
-                mode=mode,
-            )
-            _LOGGER.info(
-                "Successfully set HDR mode to %s for camera %s", mode, camera_id
-            )
-        except Exception as err:
-            _LOGGER.exception("Error setting HDR mode")
-            msg = f"Error setting HDR mode: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_set_hdr_mode(camera_id, mode)
 
     async def async_handle_set_video_mode(call: ServiceCall) -> None:
         """Handle the set_video_mode service call."""
-        _LOGGER.debug("Handling set_video_mode service call with data: %s", call.data)
-
         camera_id = call.data["camera_id"]
         mode = call.data["mode"]
 
-        # Get first coordinator with Protect API
         coordinator = _get_protect_coordinator(hass)
-
         if not coordinator:
-            _LOGGER.error("No UniFi Protect coordinator found")
             msg = "No UniFi Protect coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            await coordinator.protect_client.set_video_mode(
-                camera_id=camera_id,
-                mode=mode,
-            )
-            _LOGGER.info(
-                "Successfully set video mode to %s for camera %s", mode, camera_id
-            )
-        except Exception as err:
-            _LOGGER.exception("Error setting video mode")
-            msg = f"Error setting video mode: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_set_video_mode(camera_id, mode)
 
     async def async_handle_set_mic_volume(call: ServiceCall) -> None:
         """Handle the set_mic_volume service call."""
-        _LOGGER.debug("Handling set_mic_volume service call with data: %s", call.data)
-
         camera_id = call.data["camera_id"]
         volume = call.data["volume"]
 
-        # Get first coordinator with Protect API
         coordinator = _get_protect_coordinator(hass)
-
         if not coordinator:
-            _LOGGER.error("No UniFi Protect coordinator found")
             msg = "No UniFi Protect coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            await coordinator.protect_client.set_microphone_volume(
-                camera_id=camera_id,
-                volume=volume,
-            )
-            _LOGGER.info(
-                "Successfully set mic volume to %s for camera %s", volume, camera_id
-            )
-        except Exception as err:
-            _LOGGER.exception("Error setting mic volume")
-            msg = f"Error setting mic volume: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_set_microphone_volume(camera_id, volume)
 
     # Register services
     _LOGGER.debug("Registering UniFi Insights services")
@@ -545,128 +449,57 @@ async def async_setup_services(hass: HomeAssistant) -> None:  # noqa: C901, PLR0
         schema=SET_MIC_VOLUME_SCHEMA,
     )
 
-    # Define light service handlers
     async def async_handle_set_light_mode(call: ServiceCall) -> None:
         """Handle the set_light_mode service call."""
-        _LOGGER.debug("Handling set_light_mode service call with data: %s", call.data)
-
         light_id = call.data["light_id"]
         mode = call.data["mode"]
 
-        # Get first coordinator with Protect API
         coordinator = _get_protect_coordinator(hass)
-
         if not coordinator:
-            _LOGGER.error("No UniFi Protect coordinator found")
             msg = "No UniFi Protect coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            await coordinator.protect_client.set_light_mode(
-                light_id=light_id,
-                mode=mode,
-            )
-            _LOGGER.info(
-                "Successfully set light mode to %s for light %s", mode, light_id
-            )
-        except Exception as err:
-            _LOGGER.exception("Error setting light mode")
-            msg = f"Error setting light mode: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_set_light_mode(light_id, mode)
 
     async def async_handle_set_light_level(call: ServiceCall) -> None:
         """Handle the set_light_level service call."""
-        _LOGGER.debug("Handling set_light_level service call with data: %s", call.data)
-
         light_id = call.data["light_id"]
         level = call.data["level"]
 
-        # Get first coordinator with Protect API
         coordinator = _get_protect_coordinator(hass)
-
         if not coordinator:
-            _LOGGER.error("No UniFi Protect coordinator found")
             msg = "No UniFi Protect coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            await coordinator.protect_client.set_light_brightness(
-                light_id=light_id,
-                level=level,
-            )
-            _LOGGER.info(
-                "Successfully set light level to %s for light %s", level, light_id
-            )
-        except Exception as err:
-            _LOGGER.exception("Error setting light level")
-            msg = f"Error setting light level: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_set_light_brightness(light_id, level)
 
-    # Define PTZ service handlers
     async def async_handle_ptz_move(call: ServiceCall) -> None:
         """Handle the ptz_move service call."""
-        _LOGGER.debug("Handling ptz_move service call with data: %s", call.data)
-
         camera_id = call.data["camera_id"]
         preset = call.data["preset"]
 
-        # Get first coordinator with Protect API
         coordinator = _get_protect_coordinator(hass)
-
         if not coordinator:
-            _LOGGER.error("No UniFi Protect coordinator found")
             msg = "No UniFi Protect coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            await coordinator.protect_client.ptz_move_to_preset(
-                camera_id=camera_id,
-                preset=preset,
-            )
-            _LOGGER.info(
-                "Successfully moved PTZ camera %s to preset %s", camera_id, preset
-            )
-        except Exception as err:
-            _LOGGER.exception("Error moving PTZ camera")
-            msg = f"Error moving PTZ camera: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_move_ptz_to_preset(camera_id, preset)
 
     async def async_handle_ptz_patrol(call: ServiceCall) -> None:
         """Handle the ptz_patrol service call."""
-        _LOGGER.debug("Handling ptz_patrol service call with data: %s", call.data)
-
         camera_id = call.data["camera_id"]
         action = call.data["action"]
         slot = call.data.get("slot", 0)
 
-        # Get first coordinator with Protect API
         coordinator = _get_protect_coordinator(hass)
-
         if not coordinator:
-            _LOGGER.error("No UniFi Protect coordinator found")
             msg = "No UniFi Protect coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            if action == "start":
-                await coordinator.protect_client.ptz_start_patrol(
-                    camera_id=camera_id,
-                    slot=slot,
-                )
-                _LOGGER.info(
-                    "Successfully started PTZ patrol for camera %s on slot %s",
-                    camera_id,
-                    slot,
-                )
-            else:
-                await coordinator.protect_client.ptz_stop_patrol(
-                    camera_id=camera_id,
-                )
-                _LOGGER.info("Successfully stopped PTZ patrol for camera %s", camera_id)
-        except Exception as err:
-            _LOGGER.exception("Error controlling PTZ patrol")
-            msg = f"Error controlling PTZ patrol: {err}"
-            raise HomeAssistantError(msg) from err
+        if action == "start":
+            await coordinator.async_start_ptz_patrol(camera_id, slot)
+        else:
+            await coordinator.async_stop_ptz_patrol(camera_id)
 
     # Register light services
     hass.services.async_register(
@@ -698,173 +531,66 @@ async def async_setup_services(hass: HomeAssistant) -> None:  # noqa: C901, PLR0
         schema=PTZ_PATROL_SCHEMA,
     )
 
-    # Define chime service handlers
     async def async_handle_set_chime_volume(call: ServiceCall) -> None:
         """Handle the set_chime_volume service call."""
-        _LOGGER.debug("Handling set_chime_volume service call with data: %s", call.data)
-
         chime_id = call.data["chime_id"]
         volume = call.data["volume"]
-        camera_id = call.data.get("camera_id")
 
-        # Get first coordinator with Protect API
         coordinator = _get_protect_coordinator(hass)
-
         if not coordinator:
-            _LOGGER.error("No UniFi Protect coordinator found")
             msg = "No UniFi Protect coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            await coordinator.protect_client.set_chime_volume(
-                chime_id=chime_id,
-                volume=volume,
-                camera_id=camera_id,
-            )
-            _LOGGER.info(
-                "Successfully set chime volume to %s for chime %s", volume, chime_id
-            )
-        except Exception as err:
-            _LOGGER.exception("Error setting chime volume")
-            msg = f"Error setting chime volume: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_set_chime_volume(chime_id, volume)
 
     async def async_handle_play_chime_ringtone(call: ServiceCall) -> None:
         """Handle the play_chime_ringtone service call."""
-        _LOGGER.debug(
-            "Handling play_chime_ringtone service call with data: %s", call.data
-        )
-
         chime_id = call.data["chime_id"]
-        ringtone_id = call.data.get("ringtone_id")
 
-        # Get first coordinator with Protect API
         coordinator = _get_protect_coordinator(hass)
-
         if not coordinator:
-            _LOGGER.error("No UniFi Protect coordinator found")
             msg = "No UniFi Protect coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            await coordinator.protect_client.play_chime(
-                chime_id=chime_id,
-                ringtone_id=ringtone_id,
-            )
-            _LOGGER.info("Successfully played ringtone on chime %s", chime_id)
-        except Exception as err:
-            _LOGGER.exception("Error playing chime ringtone")
-            msg = f"Error playing chime ringtone: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_play_chime(chime_id)
 
     async def async_handle_set_chime_ringtone(call: ServiceCall) -> None:
         """Handle the set_chime_ringtone service call."""
-        _LOGGER.debug(
-            "Handling set_chime_ringtone service call with data: %s", call.data
-        )
-
         chime_id = call.data["chime_id"]
         ringtone_id = call.data["ringtone_id"]
-        camera_id = call.data.get("camera_id")
 
-        # Get first coordinator with Protect API
         coordinator = _get_protect_coordinator(hass)
-
         if not coordinator:
-            _LOGGER.error("No UniFi Protect coordinator found")
             msg = "No UniFi Protect coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            await coordinator.protect_client.set_chime_ringtone(
-                chime_id=chime_id,
-                ringtone_id=ringtone_id,
-                camera_id=camera_id,
-            )
-            _LOGGER.info(
-                "Successfully set ringtone to %s for chime %s", ringtone_id, chime_id
-            )
-        except Exception as err:
-            _LOGGER.exception("Error setting chime ringtone")
-            msg = f"Error setting chime ringtone: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_set_chime_ringtone(chime_id, ringtone_id)
 
     async def async_handle_set_chime_repeat_times(call: ServiceCall) -> None:
         """Handle the set_chime_repeat_times service call."""
-        _LOGGER.debug(
-            "Handling set_chime_repeat_times service call with data: %s", call.data
-        )
-
         chime_id = call.data["chime_id"]
         repeat_times = call.data["repeat_times"]
-        camera_id = call.data.get("camera_id")
 
-        # Get first coordinator with Protect API
         coordinator = _get_protect_coordinator(hass)
-
         if not coordinator:
-            _LOGGER.error("No UniFi Protect coordinator found")
             msg = "No UniFi Protect coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            await coordinator.protect_client.set_chime_repeat(
-                chime_id=chime_id,
-                repeat_times=repeat_times,
-                camera_id=camera_id,
-            )
-            _LOGGER.info(
-                "Successfully set repeat times to %s for chime %s",
-                repeat_times,
-                chime_id,
-            )
-        except Exception as err:
-            _LOGGER.exception("Error setting chime repeat times")
-            msg = f"Error setting chime repeat times: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_set_chime_repeat(chime_id, repeat_times)
 
-    # Define UniFi Network service handlers
-    async def async_handle_authorize_guest(call: ServiceCall) -> None:
+    async def async_handle_authorize_guest(_call: ServiceCall) -> None:
         """Handle the authorize_guest service call."""
-        _LOGGER.debug("Handling authorize_guest service call with data: %s", call.data)
-
-        site_id = call.data["site_id"]
-        client_id = call.data["client_id"]
-        duration_minutes = call.data.get("duration_minutes", 480)
-        upload_limit_kbps = call.data.get("upload_limit_kbps")
-        download_limit_kbps = call.data.get("download_limit_kbps")
-        data_limit_mb = call.data.get("data_limit_mb")
-
-        coordinator = _get_first_coordinator(hass)
-        if not coordinator:
-            _LOGGER.error("No UniFi Insights coordinator found")
-            msg = "No UniFi Insights coordinator found"
-            raise HomeAssistantError(msg)
-
-        try:
-            await coordinator.network_client.authorize_guest(
-                site_id=site_id,
-                client_id=client_id,
-                duration_minutes=duration_minutes,
-                upload_limit_kbps=upload_limit_kbps,
-                download_limit_kbps=download_limit_kbps,
-                data_limit_mb=data_limit_mb,
-            )
-            _LOGGER.info(
-                "Successfully authorized guest %s in site %s", client_id, site_id
-            )
-        except Exception as err:
-            _LOGGER.exception("Error authorizing guest")
-            msg = f"Error authorizing guest: {err}"
-            raise HomeAssistantError(msg) from err
+        msg = (
+            "authorize_guest is not supported by the current UniFi API. "
+            "Use the UniFi controller UI to authorize guests."
+        )
+        raise HomeAssistantError(msg)
 
     async def async_handle_generate_voucher(call: ServiceCall) -> None:
         """Handle the generate_voucher service call."""
-        _LOGGER.debug("Handling generate_voucher service call with data: %s", call.data)
-
         site_id = call.data["site_id"]
         count = call.data.get("count", 1)
-        duration_minutes = call.data.get("duration_minutes", 480)
+        duration_minutes = call.data.get("duration_minutes")
         upload_limit_kbps = call.data.get("upload_limit_kbps")
         download_limit_kbps = call.data.get("download_limit_kbps")
         data_limit_mb = call.data.get("data_limit_mb")
@@ -872,151 +598,70 @@ async def async_setup_services(hass: HomeAssistant) -> None:  # noqa: C901, PLR0
 
         coordinator = _get_first_coordinator(hass)
         if not coordinator:
-            _LOGGER.error("No UniFi Insights coordinator found")
             msg = "No UniFi Insights coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            await coordinator.network_client.generate_voucher(
-                site_id=site_id,
-                count=count,
-                duration_minutes=duration_minutes,
-                upload_limit_kbps=upload_limit_kbps,
-                download_limit_kbps=download_limit_kbps,
-                data_limit_mb=data_limit_mb,
-                note=note,
-            )
-            _LOGGER.info(
-                "Successfully generated %d voucher(s) in site %s", count, site_id
-            )
-        except Exception as err:
-            _LOGGER.exception("Error generating voucher")
-            msg = f"Error generating voucher: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_generate_voucher(
+            site_id,
+            count=count,
+            time_limit_minutes=duration_minutes,
+            tx_rate_limit_kbps=upload_limit_kbps,
+            rx_rate_limit_kbps=download_limit_kbps,
+            data_usage_limit_mbytes=data_limit_mb,
+            name=note,
+        )
 
     async def async_handle_delete_voucher(call: ServiceCall) -> None:
         """Handle the delete_voucher service call."""
-        _LOGGER.debug("Handling delete_voucher service call with data: %s", call.data)
-
         site_id = call.data["site_id"]
         voucher_id = call.data["voucher_id"]
 
         coordinator = _get_first_coordinator(hass)
         if not coordinator:
-            _LOGGER.error("No UniFi Insights coordinator found")
             msg = "No UniFi Insights coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            await coordinator.network_client.delete_voucher(
-                site_id=site_id,
-                voucher_id=voucher_id,
-            )
-            _LOGGER.info(
-                "Successfully deleted voucher %s in site %s", voucher_id, site_id
-            )
-        except Exception as err:
-            _LOGGER.exception("Error deleting voucher")
-            msg = f"Error deleting voucher: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_delete_voucher(site_id, voucher_id)
 
-    # Define UniFi Protect service handlers
     async def async_handle_trigger_alarm(call: ServiceCall) -> None:
         """Handle the trigger_alarm service call."""
-        _LOGGER.debug("Handling trigger_alarm service call with data: %s", call.data)
-
         alarm_id = call.data["alarm_id"]
 
-        coordinator = next(
-            (
-                coord
-                for coord in hass.data[DOMAIN].values()
-                if hasattr(coord, "protect_client") and coord.protect_client is not None
-            ),
-            None,
-        )
-
+        coordinator = _get_protect_coordinator(hass)
         if not coordinator:
-            _LOGGER.error("No UniFi Protect coordinator found")
             msg = "No UniFi Protect coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            await coordinator.protect_client.trigger_alarm(alarm_id=alarm_id)
-            _LOGGER.info("Successfully triggered alarm %s", alarm_id)
-        except Exception as err:
-            _LOGGER.exception("Error triggering alarm")
-            msg = f"Error triggering alarm: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_trigger_alarm(alarm_id)
 
     async def async_handle_create_liveview(call: ServiceCall) -> None:
         """Handle the create_liveview service call."""
-        _LOGGER.debug("Handling create_liveview service call with data: %s", call.data)
-
         name = call.data["name"]
         layout = call.data["layout"]
         is_default = call.data.get("is_default", False)
 
-        coordinator = next(
-            (
-                coord
-                for coord in hass.data[DOMAIN].values()
-                if hasattr(coord, "protect_client") and coord.protect_client is not None
-            ),
-            None,
-        )
-
+        coordinator = _get_protect_coordinator(hass)
         if not coordinator:
-            _LOGGER.error("No UniFi Protect coordinator found")
             msg = "No UniFi Protect coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            data = {
-                "name": name,
-                "layout": layout,
-                "isDefault": is_default,
-            }
-            await coordinator.protect_client.create_liveview(data=data)
-            _LOGGER.info("Successfully created liveview %s", name)
-        except Exception as err:
-            _LOGGER.exception("Error creating liveview")
-            msg = f"Error creating liveview: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_create_liveview(
+            name=name,
+            layout=layout,
+            is_default=is_default,
+        )
 
     async def async_handle_set_liveview(call: ServiceCall) -> None:
         """Handle the set_liveview service call."""
-        _LOGGER.debug("Handling set_liveview service call with data: %s", call.data)
-
         viewer_id = call.data["viewer_id"]
         liveview_id = call.data["liveview_id"]
 
-        coordinator = next(
-            (
-                coord
-                for coord in hass.data[DOMAIN].values()
-                if hasattr(coord, "protect_client") and coord.protect_client is not None
-            ),
-            None,
-        )
-
+        coordinator = _get_protect_coordinator(hass)
         if not coordinator:
-            _LOGGER.error("No UniFi Protect coordinator found")
             msg = "No UniFi Protect coordinator found"
             raise HomeAssistantError(msg)
 
-        try:
-            data = {"liveview": liveview_id}
-            await coordinator.protect_client.update_viewer(
-                viewer_id=viewer_id, data=data
-            )
-            _LOGGER.info(
-                "Successfully set liveview %s for viewer %s", liveview_id, viewer_id
-            )
-        except Exception as err:
-            _LOGGER.exception("Error setting liveview")
-            msg = f"Error setting liveview: {err}"
-            raise HomeAssistantError(msg) from err
+        await coordinator.async_update_viewer(viewer_id, liveview=liveview_id)
 
     # Register chime services
     hass.services.async_register(
@@ -1094,7 +739,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:  # noqa: C901, PLR0
     _LOGGER.info("UniFi Insights services registered successfully")
 
 
-async def async_unload_services(hass: HomeAssistant) -> None:  # noqa: PLR0912
+async def async_unload_services(hass: HomeAssistant) -> None:
     """Unload UniFi Insights services."""
     _LOGGER.debug("Unloading UniFi Insights services")
 

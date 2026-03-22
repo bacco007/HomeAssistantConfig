@@ -23,7 +23,7 @@ from .const import (
     LIGHT_MODE_ALWAYS,
     LIGHT_MODE_OFF,
 )
-from .entity import UnifiProtectEntity
+from .entity import UnifiProtectEntity, async_call_coordinator_action
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -127,15 +127,32 @@ class UnifiProtectLight(UnifiProtectEntity, LightEntity):  # type: ignore[misc]
             brightness = kwargs[ATTR_BRIGHTNESS]
             level = int(brightness * 100 / 255)
             _LOGGER.debug("Setting light %s brightness to %s", self._device_id, level)
-            await self.coordinator.protect_client.set_light_brightness(
-                light_id=self._device_id,
-                level=level,
+            await async_call_coordinator_action(
+                self.coordinator,
+                "async_set_light_brightness",
+                f"Unable to set brightness for light {self._device_id}",
+                self._device_id,
+                level,
+                fallback_factory=lambda: (
+                    self.coordinator.protect_client.set_light_brightness(
+                        light_id=self._device_id,
+                        level=level,
+                    )
+                ),
             )
+            self._attr_brightness = brightness
 
         # Set light mode to always on
-        await self.coordinator.protect_client.set_light_mode(
-            light_id=self._device_id,
-            mode=LIGHT_MODE_ALWAYS,
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_set_light_mode",
+            f"Unable to turn on light {self._device_id}",
+            self._device_id,
+            LIGHT_MODE_ALWAYS,
+            fallback_factory=lambda: self.coordinator.protect_client.set_light_mode(
+                light_id=self._device_id,
+                mode=LIGHT_MODE_ALWAYS,
+            ),
         )
 
         # Update state
@@ -148,9 +165,16 @@ class UnifiProtectLight(UnifiProtectEntity, LightEntity):  # type: ignore[misc]
         _ = kwargs
 
         # Set light mode to off
-        await self.coordinator.protect_client.set_light_mode(
-            light_id=self._device_id,
-            mode=LIGHT_MODE_OFF,
+        await async_call_coordinator_action(
+            self.coordinator,
+            "async_set_light_mode",
+            f"Unable to turn off light {self._device_id}",
+            self._device_id,
+            LIGHT_MODE_OFF,
+            fallback_factory=lambda: self.coordinator.protect_client.set_light_mode(
+                light_id=self._device_id,
+                mode=LIGHT_MODE_OFF,
+            ),
         )
 
         # Update state

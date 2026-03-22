@@ -11,16 +11,17 @@ from homeassistant.components.update import (
     UpdateEntityFeature,
 )
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC, DeviceInfo
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN, MANUFACTURER
-from .entity import UnifiProtectEntity, get_field
+from .coordinators import UnifiFacadeCoordinator
+from .entity import get_field
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
     from . import UnifiInsightsConfigEntry
-    from .coordinators import UnifiFacadeCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -35,7 +36,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up update entities for UniFi Insights integration."""
     coordinator = entry.runtime_data.coordinator
-    entities: list[UnifiNetworkDeviceUpdate | UnifiProtectDeviceUpdate] = []
+    entities: list[UnifiNetworkDeviceUpdate] = []
 
     # Add update entities for network devices
     entities.extend(
@@ -48,65 +49,14 @@ async def async_setup_entry(
         for device_id in devices
     )
 
-    # Add update entities for Protect devices (cameras, NVR, etc.)
-    if coordinator.protect_client:
-        # Camera updates
-        entities.extend(
-            UnifiProtectDeviceUpdate(
-                coordinator=coordinator,
-                device_type="camera",
-                device_id=camera_id,
-            )
-            for camera_id in coordinator.data["protect"].get("cameras", {})
-        )
-
-        # NVR updates
-        entities.extend(
-            UnifiProtectDeviceUpdate(
-                coordinator=coordinator,
-                device_type="nvr",
-                device_id=nvr_id,
-            )
-            for nvr_id in coordinator.data["protect"].get("nvrs", {})
-        )
-
-        # Light updates
-        entities.extend(
-            UnifiProtectDeviceUpdate(
-                coordinator=coordinator,
-                device_type="light",
-                device_id=light_id,
-            )
-            for light_id in coordinator.data["protect"].get("lights", {})
-        )
-
-        # Chime updates
-        entities.extend(
-            UnifiProtectDeviceUpdate(
-                coordinator=coordinator,
-                device_type="chime",
-                device_id=chime_id,
-            )
-            for chime_id in coordinator.data["protect"].get("chimes", {})
-        )
-
-        # Sensor updates
-        entities.extend(
-            UnifiProtectDeviceUpdate(
-                coordinator=coordinator,
-                device_type="sensor",
-                device_id=sensor_id,
-            )
-            for sensor_id in coordinator.data["protect"].get("sensors", {})
-        )
-
     async_add_entities(entities)
 
 
-class UnifiNetworkDeviceUpdate(UpdateEntity):  # type: ignore[misc]
+class UnifiNetworkDeviceUpdate(CoordinatorEntity[UnifiFacadeCoordinator], UpdateEntity):  # type: ignore[misc]
     """Update entity for UniFi network devices."""
 
     _attr_has_entity_name = True
+    _attr_translation_key = "firmware"
     _attr_device_class = UpdateDeviceClass.FIRMWARE
     _attr_supported_features = UpdateEntityFeature(0)  # No install support for now
 
@@ -117,7 +67,7 @@ class UnifiNetworkDeviceUpdate(UpdateEntity):  # type: ignore[misc]
         device_id: str,
     ) -> None:
         """Initialize the update entity."""
-        self.coordinator = coordinator
+        super().__init__(coordinator)
         self._site_id = site_id
         self._device_id = device_id
 
@@ -184,8 +134,21 @@ class UnifiNetworkDeviceUpdate(UpdateEntity):  # type: ignore[misc]
             device_data, "firmwareUpdatable", "firmware_updatable", default=False
         )
         if is_updatable:
-            # Return a placeholder version indicating update available
-            return "Update Available"
+            # Try to get the actual available firmware version
+            new_version = get_field(
+                device_data,
+                "upgradeToFirmware",
+                "upgrade_to_firmware",
+                "availableFirmwareVersion",
+                "available_firmware_version",
+            )
+            if new_version:
+                return new_version  # type: ignore[no-any-return]
+            # Fallback: indicate update by returning a synthetic higher version
+            current = self.installed_version
+            if current:
+                return f"{current}+update"
+            return "update-available"
 
         # No update available - return current version
         return self.installed_version
@@ -199,67 +162,3 @@ class UnifiNetworkDeviceUpdate(UpdateEntity):  # type: ignore[misc]
 
         state = get_field(device_data, "state", "status", default="")
         return isinstance(state, str) and state.upper() == "UPGRADING"
-
-    async def async_added_to_hass(self) -> None:
-        """Run when entity about to be added to hass."""
-        self.async_on_remove(
-            self.coordinator.async_add_listener(self._handle_coordinator_update)
-        )
-
-    def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
-        self.async_write_ha_state()
-
-
-class UnifiProtectDeviceUpdate(UnifiProtectEntity, UpdateEntity):  # type: ignore[misc]
-    """Update entity for UniFi Protect devices."""
-
-    _attr_device_class = UpdateDeviceClass.FIRMWARE
-    _attr_supported_features = UpdateEntityFeature(0)  # No install support for now
-
-    def __init__(
-        self,
-        coordinator: UnifiFacadeCoordinator,
-        device_type: str,
-        device_id: str,
-    ) -> None:
-        """Initialize the update entity."""
-        super().__init__(coordinator, device_type, device_id, "firmware_update")
-
-        self._attr_name = "Firmware"
-
-    @property
-    def installed_version(self) -> str | None:
-        """Return the current firmware version."""
-        device_data = self.device_data
-        if not device_data:
-            return None
-        return get_field(device_data, "firmwareVersion", "firmware_version", "version")  # type: ignore[no-any-return]
-
-    @property
-    def latest_version(self) -> str | None:
-        """Return the latest available firmware version."""
-        device_data = self.device_data
-        if not device_data:
-            return None
-
-        # Check for available firmware
-        available_version = get_field(device_data, "firmwareBuild", "available_version")
-        if available_version and available_version != self.installed_version:
-            return available_version  # type: ignore[no-any-return]
-
-        # Check if update is scheduled or available
-        is_updating = get_field(device_data, "isUpdating", "is_updating", default=False)
-        if is_updating:
-            return "Updating..."
-
-        # No update available - return current version
-        return self.installed_version
-
-    @property
-    def in_progress(self) -> bool:
-        """Return if an update is in progress."""
-        device_data = self.device_data
-        if not device_data:
-            return False
-        return bool(get_field(device_data, "isUpdating", "is_updating", default=False))

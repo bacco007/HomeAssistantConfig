@@ -5,13 +5,12 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, Any
 
-from unifi_official_api import (
+from custom_components.unifi_insights.api import (
     UniFiAuthenticationError,
     UniFiConnectionError,
     UniFiResponseError,
     UniFiTimeoutError,
 )
-
 from custom_components.unifi_insights.const import SCAN_INTERVAL_CONFIG
 
 from .base import UnifiBaseCoordinator
@@ -19,8 +18,9 @@ from .base import UnifiBaseCoordinator
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
-    from unifi_official_api.network import UniFiNetworkClient
-    from unifi_official_api.protect import UniFiProtectClient
+
+    from custom_components.unifi_insights.api.network import UniFiNetworkClient
+    from custom_components.unifi_insights.api.protect import UniFiProtectClient
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -32,6 +32,7 @@ class UnifiConfigCoordinator(UnifiBaseCoordinator):
     Handles:
     - Sites configuration
     - WiFi networks configuration
+    - Firewall policy configuration
     - Network info
     """
 
@@ -54,6 +55,7 @@ class UnifiConfigCoordinator(UnifiBaseCoordinator):
         self.data: dict[str, Any] = {
             "sites": {},
             "wifi": {},
+            "firewall_rules": {},
             "network_info": {},
         }
 
@@ -95,7 +97,7 @@ class UnifiConfigCoordinator(UnifiBaseCoordinator):
                         len(wifi_dict),
                         site_id,
                     )
-                except Exception as err:  # noqa: BLE001
+                except Exception as err:
                     _LOGGER.warning(
                         "Config coordinator: Error fetching WiFi networks "
                         "for site %s: %s",
@@ -104,14 +106,46 @@ class UnifiConfigCoordinator(UnifiBaseCoordinator):
                     )
                     self.data["wifi"][site_id] = {}
 
+                try:
+                    _LOGGER.debug(
+                        "Config coordinator: Fetching firewall rules for site %s",
+                        site_id,
+                    )
+                    firewall_models = await self.network_client.firewall.list_rules(
+                        site_id
+                    )
+                    firewall_rules_dict = {}
+                    for firewall_model in firewall_models:
+                        firewall_rule = self._model_to_dict(firewall_model)
+                        firewall_rule_id = firewall_rule.get("id")
+                        if firewall_rule_id:
+                            firewall_rules_dict[firewall_rule_id] = firewall_rule
+                    self.data["firewall_rules"][site_id] = firewall_rules_dict
+                    _LOGGER.debug(
+                        "Config coordinator: Successfully fetched %d firewall rules "
+                        "for site %s",
+                        len(firewall_rules_dict),
+                        site_id,
+                    )
+                except Exception as err:
+                    _LOGGER.debug(
+                        "Config coordinator: Firewall rules unavailable for site %s: "
+                        "%s",
+                        site_id,
+                        err,
+                    )
+                    self.data["firewall_rules"][site_id] = {}
+
             self._available = True
             _LOGGER.debug(
-                "Config coordinator: Update complete - %d sites, %d WiFi configs",
+                "Config coordinator: Update complete - %d sites, %d WiFi configs, "
+                "%d firewall rules",
                 len(self.data["sites"]),
                 sum(len(w) for w in self.data["wifi"].values()),
+                sum(len(rules) for rules in self.data["firewall_rules"].values()),
             )
 
-            return self.data  # noqa: TRY300
+            return self.data
 
         except UniFiAuthenticationError as err:
             self._handle_auth_error(err)
@@ -121,7 +155,7 @@ class UnifiConfigCoordinator(UnifiBaseCoordinator):
             self._handle_timeout_error(err)
         except UniFiResponseError as err:
             self._handle_response_error(err)
-        except Exception as err:  # noqa: BLE001
+        except Exception as err:
             self._handle_generic_error(err)
 
         # Should never reach here due to raises above
@@ -139,4 +173,10 @@ class UnifiConfigCoordinator(UnifiBaseCoordinator):
 
     def get_wifi_networks(self, site_id: str) -> dict[str, Any]:
         """Get WiFi networks for a site."""
-        return self.data.get("wifi", {}).get(site_id, {})
+        result: dict[str, Any] = self.data.get("wifi", {}).get(site_id, {})
+        return result
+
+    def get_firewall_rules(self, site_id: str) -> dict[str, Any]:
+        """Get firewall rules for a site."""
+        result: dict[str, Any] = self.data.get("firewall_rules", {}).get(site_id, {})
+        return result

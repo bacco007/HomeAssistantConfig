@@ -2,9 +2,15 @@
 
 from __future__ import annotations
 
+import inspect
 import logging
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
+if TYPE_CHECKING:
+    from collections.abc import Awaitable, Callable
+
+from homeassistant.core import callback
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 from homeassistant.helpers.entity import DeviceInfo, EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -27,9 +33,10 @@ def get_field(data: dict[str, Any], *keys: str, default: Any = None) -> Any:
     Get a field from data using multiple possible key names.
 
     Handles both camelCase and snake_case field names from different API versions.
+    Skips keys whose value is None so that fallback keys are still checked.
     """
     for key in keys:
-        if key in data:
+        if key in data and data[key] is not None:
             return data[key]
     return default
 
@@ -46,6 +53,68 @@ def is_device_online(data: dict[str, Any]) -> bool:
     if isinstance(state, str):
         return state.upper() in ("ONLINE", "CONNECTED", "UP")
     return False
+
+
+def get_client_type(client: dict[str, Any]) -> str:
+    """
+    Extract client type from client data.
+
+    The vendored API package serializes the ClientType enum to string values
+    ("WIRED" or "WIRELESS"). This helper normalizes the value for comparison
+    and handles edge cases.
+    """
+    client_type = client.get("type") or client.get("connection_type", "")
+    # Normalize to uppercase string
+    type_str = str(client_type).upper()
+    # Handle both direct values and any legacy enum format
+    if "WIRED" in type_str:
+        return "WIRED"
+    if "WIRELESS" in type_str:
+        return "WIRELESS"
+    return type_str
+
+
+def camera_supports_ptz(camera_data: dict[str, Any]) -> bool:
+    """Return True if a Protect camera advertises PTZ support."""
+    is_ptz = get_field(camera_data, "isPtz", "is_ptz", "hasPtz", default=False)
+    if isinstance(is_ptz, bool):
+        return is_ptz
+
+    feature_flags = get_field(camera_data, "featureFlags", "feature_flags", default={})
+    if isinstance(feature_flags, dict):
+        return bool(feature_flags.get("hasPtz") or feature_flags.get("has_ptz"))
+
+    return False
+
+
+async def async_call_coordinator_action[ActionResult](
+    coordinator: Any,
+    method_name: str,
+    error_message: str,
+    *action_args: Any,
+    fallback_factory: Callable[[], Awaitable[ActionResult]] | None = None,
+    **action_kwargs: Any,
+) -> ActionResult:
+    """Execute a coordinator action and convert unexpected failures to HA errors."""
+    handler = getattr(coordinator, method_name, None)
+    if handler is not None and inspect.iscoroutinefunction(handler):
+        try:
+            result: ActionResult = await handler(*action_args, **action_kwargs)
+            return result
+        except HomeAssistantError:
+            raise
+        except Exception as err:
+            raise HomeAssistantError(error_message) from err
+
+    if fallback_factory is None:
+        raise HomeAssistantError(error_message)
+
+    try:
+        return await fallback_factory()
+    except HomeAssistantError:
+        raise
+    except Exception as err:
+        raise HomeAssistantError(error_message) from err
 
 
 class UnifiInsightsEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: ignore[misc]
@@ -146,6 +215,7 @@ class UnifiInsightsEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: i
             return False
         return is_device_online(device_data)
 
+    @callback  # type: ignore[misc]
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         device_data = (
@@ -179,7 +249,7 @@ class UnifiProtectEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: ig
 
     _attr_has_entity_name = True
 
-    def __init__(  # noqa: PLR0912, PLR0915
+    def __init__(
         self,
         coordinator: UnifiFacadeCoordinator,
         device_type: str,
@@ -274,7 +344,11 @@ class UnifiProtectEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: ig
                 else network_device_name,
                 "manufacturer": MANUFACTURER,
                 "model": network_device.get("model", "Unknown Model"),
-                "sw_version": network_device.get("firmwareVersion"),
+                "sw_version": (
+                    network_device.get("firmwareVersion")
+                    or network_device.get("firmware_version")
+                    or network_device.get("version")
+                ),
                 "configuration_url": (
                     f"{coordinator.network_client.base_url}/network/devices/{network_device_id}"
                 ),
@@ -306,7 +380,6 @@ class UnifiProtectEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: ig
                 "model": lookup_device_data.get(
                     "type", f"UniFi {device_type.capitalize()}"
                 ),
-                "sw_version": lookup_device_data.get("firmwareVersion"),
                 "configuration_url": (
                     f"{coordinator.protect_client.base_url}/protect/devices/{device_id_for_identifier}"
                 ),
@@ -346,8 +419,19 @@ class UnifiProtectEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: ig
         state = device_data.get("state")
         return isinstance(state, str) and state == "CONNECTED"
 
+    @callback  # type: ignore[misc]
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
+        device_data = self.device_data
+        if not device_data:
+            self._attr_available = False
+            self.async_write_ha_state()
+            return
+
+        state = device_data.get("state")
+        self._attr_available = isinstance(state, str) and state == "CONNECTED"
+        self._update_from_data()
+        self.async_write_ha_state()
 
     def _update_from_data(self) -> None:
         """Update entity from data."""

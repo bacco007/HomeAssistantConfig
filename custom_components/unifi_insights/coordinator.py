@@ -13,13 +13,13 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
-from unifi_official_api import (
+
+from .api import (
     UniFiAuthenticationError,
     UniFiConnectionError,
     UniFiResponseError,
     UniFiTimeoutError,
 )
-
 from .const import (
     DEVICE_TYPE_CAMERA,
     DEVICE_TYPE_CHIME,
@@ -34,8 +34,9 @@ from .const import (
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
-    from unifi_official_api.network import UniFiNetworkClient
-    from unifi_official_api.protect import UniFiProtectClient
+
+    from .api.network import UniFiNetworkClient
+    from .api.protect import UniFiProtectClient
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -106,7 +107,7 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     self.protect_client.register_event_update_callback(
                         self._handle_event_update
                     )
-            except Exception as err:  # noqa: BLE001
+            except Exception as err:
                 _LOGGER.debug("WebSocket callbacks not supported: %s", err)
 
     def get_site(self, site_id: str) -> dict[str, Any] | None:
@@ -291,9 +292,9 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 ]
                 stats["id"] = device_id
 
-            return device_id, device_dict, stats  # noqa: TRY300
+            return device_id, device_dict, stats
 
-        except Exception as err:  # noqa: BLE001
+        except Exception as err:
             _LOGGER.debug(
                 "Error getting stats for device %s (%s): %s",
                 device_name,
@@ -359,13 +360,13 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 client.get("id"): client for client in clients if client.get("id")
             }
 
-            return devices_dict, stats_dict, clients_dict  # noqa: TRY300
+            return devices_dict, stats_dict, clients_dict
 
         except Exception:
             _LOGGER.exception("Error processing site %s", site_id)
             return None
 
-    async def _async_update_data(self) -> dict[str, Any]:  # noqa: C901, PLR0912, PLR0915
+    async def _async_update_data(self) -> dict[str, Any]:
         """Fetch data from API."""
         try:
             # Get all sites first using new API
@@ -411,7 +412,7 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                         len(wifi_dict),
                         site_id,
                     )
-                except Exception as err:  # noqa: BLE001
+                except Exception as err:
                     _LOGGER.warning(
                         "Error fetching WiFi networks for site %s: %s", site_id, err
                     )
@@ -472,7 +473,7 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                         _LOGGER.debug(
                             "Successfully fetched %d sensors", len(sensors_models)
                         )
-                    except Exception as err:  # noqa: BLE001
+                    except Exception as err:
                         _LOGGER.warning("Error fetching sensors: %s", err)
 
                     # Fetch NVR using new API
@@ -485,7 +486,7 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                             if nvr_id:
                                 self.data["protect"]["nvrs"][nvr_id] = nvr
                                 _LOGGER.debug("Successfully fetched NVR: %s", nvr_id)
-                    except Exception as err:  # noqa: BLE001
+                    except Exception as err:
                         _LOGGER.debug("Error fetching NVR: %s", err)
 
                     # Fetch chimes using new API
@@ -500,7 +501,7 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                         _LOGGER.debug(
                             "Successfully fetched %d chimes", len(chimes_models)
                         )
-                    except Exception as err:  # noqa: BLE001
+                    except Exception as err:
                         _LOGGER.warning("Error fetching chimes: %s", err)
 
                     # Fetch viewers using new API (if available)
@@ -516,7 +517,7 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                             _LOGGER.debug(
                                 "Successfully fetched %d viewers", len(viewers_models)
                             )
-                    except Exception as err:  # noqa: BLE001
+                    except Exception as err:
                         _LOGGER.debug("Error fetching viewers: %s", err)
 
                     # Fetch liveviews using new API (if available)
@@ -537,7 +538,7 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                                 "Successfully fetched %d liveviews",
                                 len(liveviews_models),
                             )
-                    except Exception as err:  # noqa: BLE001
+                    except Exception as err:
                         _LOGGER.debug("Error fetching liveviews: %s", err)
 
                     _LOGGER.debug(
@@ -562,7 +563,7 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             # Clean up stale devices (Gold requirement)
             self._cleanup_stale_devices()
 
-            return self.data  # noqa: TRY300
+            return self.data
 
         except UniFiAuthenticationError as err:
             self._available = False

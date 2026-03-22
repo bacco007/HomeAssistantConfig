@@ -40,6 +40,7 @@ from .const import (
     DEVICE_TYPE_SENSOR,
 )
 from .entity import UnifiInsightsEntity, UnifiProtectEntity, get_field
+from .entity import get_client_type as _get_client_type
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -52,25 +53,6 @@ if TYPE_CHECKING:
     from .coordinators import UnifiFacadeCoordinator
 
 _LOGGER = logging.getLogger(__name__)
-
-
-def _get_client_type(client: dict[str, Any]) -> str:
-    """
-    Extract client type from client data.
-
-    As of unifi-official-api v1.1.0, the API properly serializes the ClientType
-    enum to string values ("WIRED" or "WIRELESS"). This helper normalizes the
-    value for comparison and handles edge cases.
-    """
-    client_type = client.get("type") or client.get("connection_type", "")
-    # Normalize to uppercase string
-    type_str = str(client_type).upper()
-    # Handle both direct values and any legacy enum format
-    if "WIRED" in type_str:
-        return "WIRED"
-    if "WIRELESS" in type_str:
-        return "WIRELESS"
-    return type_str
 
 
 # Coordinator handles updates centrally (Gold/Platinum requirement)
@@ -128,6 +110,57 @@ def bytes_to_megabits(bytes_per_sec: float | None) -> float | None:
     return round(bytes_per_sec * 8 / 1_000_000, 2)
 
 
+def _get_temperature_entry_value(
+    temperatures: list[dict[str, Any]],
+    preferred_name: str,
+) -> float | int | None:
+    """Return a temperature value from a named legacy device temperature entry."""
+    preferred_name_lower = preferred_name.lower()
+    for temperature in temperatures:
+        name = temperature.get("name")
+        value = temperature.get("value")
+        if (
+            isinstance(name, str)
+            and preferred_name_lower in name.lower()
+            and isinstance(value, (int, float))
+        ):
+            return value
+
+    return None
+
+
+def get_network_device_temperature(device: dict[str, Any]) -> float | int | None:
+    """Extract a network device temperature from merged device data."""
+    direct_temperature = get_field(
+        device,
+        "generalTemperature",
+        "general_temperature",
+        "temperature",
+    )
+    if isinstance(direct_temperature, (int, float)):
+        return direct_temperature
+
+    temperatures = get_field(device, "temperatures", default=[])
+    if not isinstance(temperatures, list):
+        return None
+
+    normalized_temperatures = [
+        item
+        for item in temperatures
+        if isinstance(item, dict) and item.get("value") is not None
+    ]
+    if not normalized_temperatures:
+        return None
+
+    for preferred_name in ("local", "cpu", "phy"):
+        value = _get_temperature_entry_value(normalized_temperatures, preferred_name)
+        if value is not None:
+            return value
+
+    first_value = normalized_temperatures[0].get("value")
+    return first_value if isinstance(first_value, (int, float)) else None
+
+
 # Sensor descriptions for UniFi Protect sensors
 PROTECT_SENSOR_TYPES: tuple[UnifiProtectSensorEntityDescription, ...] = (
     # Temperature sensor
@@ -138,9 +171,9 @@ PROTECT_SENSOR_TYPES: tuple[UnifiProtectSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda sensor: sensor.get("stats", {})
-        .get("temperature", {})
-        .get("value"),
+        value_fn=lambda sensor: (
+            sensor.get("stats", {}).get("temperature", {}).get("value")
+        ),
         device_type=DEVICE_TYPE_SENSOR,
     ),
     # Humidity sensor
@@ -151,9 +184,9 @@ PROTECT_SENSOR_TYPES: tuple[UnifiProtectSensorEntityDescription, ...] = (
         native_unit_of_measurement=PERCENTAGE,
         device_class=SensorDeviceClass.HUMIDITY,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda sensor: sensor.get("stats", {})
-        .get("humidity", {})
-        .get("value"),
+        value_fn=lambda sensor: (
+            sensor.get("stats", {}).get("humidity", {}).get("value")
+        ),
         device_type=DEVICE_TYPE_SENSOR,
     ),
     # Light sensor
@@ -334,7 +367,7 @@ SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         translation_key="cpu_usage",
         name="CPU Usage",
         native_unit_of_measurement=PERCENTAGE,
-        device_class=SensorDeviceClass.POWER_FACTOR,
+        device_class=None,
         state_class=SensorStateClass.MEASUREMENT,
         icon="mdi:cpu-64-bit",
         value_fn=lambda stats: get_stats_field(
@@ -346,7 +379,7 @@ SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         translation_key="memory_usage",
         name="Memory Usage",
         native_unit_of_measurement=PERCENTAGE,
-        device_class=SensorDeviceClass.POWER_FACTOR,
+        device_class=None,
         state_class=SensorStateClass.MEASUREMENT,
         icon="mdi:memory",
         value_fn=lambda stats: get_stats_field(
@@ -410,6 +443,24 @@ SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         ),
     ),
     UnifiInsightsSensorEntityDescription(
+        key="poe_total_power",
+        translation_key="poe_total_power",
+        name="Total PoE Power",
+        native_unit_of_measurement=UnitOfPower.WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        icon="mdi:flash",
+        # Only show on switch devices (devices with 'switching' feature)
+        required_feature="switching",
+        value_fn=lambda stats: get_stats_field(
+            stats,
+            "poe_total_w",
+            "poeTotalW",
+            "total_used_power",
+            "totalUsedPower",
+        ),
+    ),
+    UnifiInsightsSensorEntityDescription(
         key="firmware_version",
         translation_key="firmware_version",
         name="Firmware Version",
@@ -420,6 +471,18 @@ SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         value_fn=lambda device: get_field(
             device, "firmwareVersion", "firmware_version", "version"
         ),
+    ),
+    UnifiInsightsSensorEntityDescription(
+        key="general_temperature",
+        translation_key="general_temperature",
+        name="Temperature",
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        device_class=SensorDeviceClass.TEMPERATURE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+        icon="mdi:thermometer",
+        value_fn=get_network_device_temperature,
     ),
     UnifiInsightsSensorEntityDescription(
         key="wired_clients",
@@ -460,8 +523,11 @@ PORT_SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
         entity_category=None,  # Changed from DIAGNOSTIC to make visible by default
         icon="mdi:flash",
-        value_fn=lambda port: get_field(port, "poe", default={}).get("power")
-        or get_field(port, "poe", default={}).get("watts"),
+        value_fn=lambda port: (
+            get_field(port, "poe_power_w")
+            or get_field(port, "poe", default={}).get("power")
+            or get_field(port, "poe", default={}).get("watts")
+        ),
     ),
     # Port Speed
     UnifiInsightsSensorEntityDescription(
@@ -476,9 +542,11 @@ PORT_SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         # Gold: Disable diagnostic entities by default
         entity_registry_enabled_default=False,
         icon="mdi:speedometer",
-        value_fn=lambda port: get_field(port, "speedMbps", "speed_mbps", "speed")
-        if get_field(port, "state", "status", default="").upper() == "UP"
-        else 0,
+        value_fn=lambda port: (
+            get_field(port, "speedMbps", "speed_mbps", "speed")
+            if get_field(port, "state", "status", default="").upper() == "UP"
+            else 0
+        ),
     ),
     # Port TX Bytes
     UnifiInsightsSensorEntityDescription(
@@ -490,8 +558,10 @@ PORT_SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         state_class=SensorStateClass.TOTAL_INCREASING,
         entity_category=None,  # Changed from DIAGNOSTIC to make visible by default
         icon="mdi:upload",
-        value_fn=lambda port: get_field(port, "stats", default={}).get("txBytes")
-        or get_field(port, "stats", default={}).get("tx_bytes", 0),
+        value_fn=lambda port: (
+            get_field(port, "stats", default={}).get("txBytes")
+            or get_field(port, "stats", default={}).get("tx_bytes", 0)
+        ),
     ),
     # Port RX Bytes
     UnifiInsightsSensorEntityDescription(
@@ -503,8 +573,10 @@ PORT_SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
         state_class=SensorStateClass.TOTAL_INCREASING,
         entity_category=None,  # Changed from DIAGNOSTIC to make visible by default
         icon="mdi:download",
-        value_fn=lambda port: get_field(port, "stats", default={}).get("rxBytes")
-        or get_field(port, "stats", default={}).get("rx_bytes", 0),
+        value_fn=lambda port: (
+            get_field(port, "stats", default={}).get("rxBytes")
+            or get_field(port, "stats", default={}).get("rx_bytes", 0)
+        ),
     ),
 )
 
@@ -541,7 +613,7 @@ WAN_SENSOR_TYPES: tuple[UnifiInsightsSensorEntityDescription, ...] = (
 )
 
 
-async def async_setup_entry(  # noqa: PLR0912, PLR0915
+async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: UnifiInsightsConfigEntry,
     async_add_entities: AddEntitiesCallback,
@@ -594,6 +666,43 @@ async def async_setup_entry(  # noqa: PLR0912, PLR0915
                     )
                     continue
 
+                if (
+                    description.key == "general_temperature"
+                    and get_network_device_temperature(device_data) is None
+                    and not get_field(
+                        device_data,
+                        "hasTemperature",
+                        "has_temperature",
+                        default=False,
+                    )
+                ):
+                    _LOGGER.debug(
+                        "Skipping sensor %s for %s - no temperature data",
+                        description.key,
+                        device_name,
+                    )
+                    continue
+
+                # Only create Total PoE Power sensor if coordinator
+                if description.key == "poe_total_power":
+                    stats = (
+                        coordinator.data.get("stats", {})
+                        .get(site_id, {})
+                        .get(device_id, {})
+                    )
+                    if not isinstance(stats, dict):
+                        continue
+                    poe_keys = (
+                        "poe_total_w",
+                        "poeTotalW",
+                        "total_used_power",
+                        "totalUsedPower",
+                    )
+                    has_any_total = any(stats.get(k) is not None for k in poe_keys)
+                    has_ports = isinstance(stats.get("poe_ports"), dict)
+                    if not has_any_total and not has_ports:
+                        continue
+
                 entities.append(
                     UnifiInsightsSensor(
                         coordinator=coordinator,
@@ -604,13 +713,14 @@ async def async_setup_entry(  # noqa: PLR0912, PLR0915
                 )
 
             # Add port sensors for switches with port interfaces
-            # Handle both camelCase and snake_case for interface keys
-            interfaces = get_field(device_data, "interfaces", default={})
-            # Ensure interfaces is a dict before accessing ports
-            if isinstance(interfaces, dict):
-                ports = get_field(interfaces, "ports", default=[])
-            else:
-                ports = []
+            # Port data can come from:
+            # 1. device_data["ports"] - merged from legacy port_table by coordinator
+            # 2. device_data["interfaces"]["ports"] - new API format (dict)
+            ports = device_data.get("ports", [])
+            if not ports:
+                interfaces = get_field(device_data, "interfaces", default={})
+                if isinstance(interfaces, dict):
+                    ports = get_field(interfaces, "ports", default=[])
             if ports:
                 _LOGGER.debug(
                     "Device %s has %d ports, creating port sensors",
@@ -634,9 +744,25 @@ async def async_setup_entry(  # noqa: PLR0912, PLR0915
                         )
                         continue
 
-                    # Create PoE power sensor only for PoE-capable ports
+                    # Create PoE power sensor for PoE-capable ports
                     poe_data = get_field(port, "poe", default={})
-                    if poe_data.get("enabled"):
+                    poe_marker = False
+                    if isinstance(poe_data, dict):
+                        if poe_data.get("type") or poe_data.get("enabled") is True:
+                            poe_marker = True
+                        else:
+                            pwr = poe_data.get("power")
+                            wts = poe_data.get("watts")
+                            if isinstance(pwr, (int, float)) or isinstance(
+                                wts, (int, float)
+                            ):
+                                poe_marker = True
+
+                    if not poe_marker:
+                        norm = get_field(port, "poe_power_w")
+                        poe_marker = isinstance(norm, (int, float))
+
+                    if poe_marker:
                         poe_desc = PORT_SENSOR_TYPES[0]  # PoE power sensor
                         entities.append(
                             UnifiPortSensor(
@@ -682,6 +808,74 @@ async def async_setup_entry(  # noqa: PLR0912, PLR0915
                         )
                     )
 
+            # Fallback: create PoE power sensors from stats
+            # when interfaces.ports is unavailable
+            def _create_port_sensors_from_stats(
+                stat_key: str,
+                sensor_descriptions: tuple[UnifiInsightsSensorEntityDescription, ...]
+                | list[UnifiInsightsSensorEntityDescription],
+                port_filter: Callable[[UnifiInsightsSensorEntityDescription], bool],
+                *,
+                _site_id: str = site_id,
+                _device_id: str = device_id,
+                _device_features: dict[str, Any] = device_features,
+            ) -> None:
+                """Create per-port sensors from stats."""
+                if "switching" not in _device_features:
+                    return
+
+                stats = (
+                    coordinator.data.get("stats", {})
+                    .get(_site_id, {})
+                    .get(_device_id, {})
+                )
+                if not isinstance(stats, dict):
+                    return
+
+                per_port_stats = stats.get(stat_key)
+                if not isinstance(per_port_stats, dict) or not per_port_stats:
+                    return
+
+                existing_uids = {getattr(e, "unique_id", None) for e in entities}
+                normalised_ports = {
+                    int(k)
+                    for k in per_port_stats
+                    if isinstance(k, int) or (isinstance(k, str) and k.isdigit())
+                }
+
+                for port_idx_int in normalised_ports:
+                    for desc in sensor_descriptions:
+                        if not port_filter(desc):
+                            continue
+
+                        uid = f"{_device_id}_{desc.key}_{port_idx_int}"
+                        if uid in existing_uids:
+                            continue
+
+                        entities.append(
+                            UnifiPortSensor(
+                                coordinator=coordinator,
+                                description=desc,
+                                site_id=_site_id,
+                                device_id=_device_id,
+                                port_idx=port_idx_int,
+                            )
+                        )
+                        existing_uids.add(uid)
+
+            # Fallback: create port PoE sensors from stats
+            _create_port_sensors_from_stats(
+                stat_key="poe_ports",
+                sensor_descriptions=[PORT_SENSOR_TYPES[0]],
+                port_filter=lambda _desc: True,
+            )
+
+            # Fallback: create port TX/RX sensors from stats
+            _create_port_sensors_from_stats(
+                stat_key="port_bytes",
+                sensor_descriptions=PORT_SENSOR_TYPES,
+                port_filter=lambda desc: desc.key in ("port_tx_bytes", "port_rx_bytes"),
+            )
             # Add WAN sensors for gateway devices
             features = get_field(device_data, "features", default={})
             model = get_field(device_data, "model", default="")
@@ -692,15 +886,15 @@ async def async_setup_entry(  # noqa: PLR0912, PLR0915
                     "Device %s is a gateway, creating WAN sensors", device_name
                 )
 
-                for description in WAN_SENSOR_TYPES:
-                    entities.append(  # noqa: PERF401
-                        UnifiInsightsSensor(
-                            coordinator=coordinator,
-                            description=description,
-                            site_id=site_id,
-                            device_id=device_id,
-                        )
+                entities.extend(
+                    UnifiInsightsSensor(
+                        coordinator=coordinator,
+                        description=description,
+                        site_id=site_id,
+                        device_id=device_id,
                     )
+                    for description in WAN_SENSOR_TYPES
+                )
 
     # Add UniFi Protect sensors if API is available
     if coordinator.protect_client:
@@ -714,15 +908,15 @@ async def async_setup_entry(  # noqa: PLR0912, PLR0915
                 sensor_name,
             )
 
-            for description in PROTECT_SENSOR_TYPES:
-                if description.device_type == DEVICE_TYPE_SENSOR:
-                    entities.append(  # noqa: PERF401
-                        UnifiProtectSensor(
-                            coordinator=coordinator,
-                            description=description,
-                            device_id=sensor_id,
-                        )
-                    )
+            entities.extend(
+                UnifiProtectSensor(
+                    coordinator=coordinator,
+                    description=description,
+                    device_id=sensor_id,
+                )
+                for description in PROTECT_SENSOR_TYPES
+                if description.device_type == DEVICE_TYPE_SENSOR
+            )
 
         # Add sensors for UniFi Protect NVRs
         for nvr_id, nvr_data in coordinator.data["protect"]["nvrs"].items():
@@ -789,7 +983,11 @@ class UnifiInsightsSensor(UnifiInsightsEntity, SensorEntity):  # type: ignore[mi
     def native_value(self) -> StateType:
         """Return the state of the sensor."""
         # Special handling for sensors that come from device data (not stats)
-        if self.entity_description.key in ["firmware_version", "wan_ip"]:
+        if self.entity_description.key in [
+            "firmware_version",
+            "wan_ip",
+            "general_temperature",
+        ]:
             device = (
                 self.coordinator.data["devices"]
                 .get(self._site_id, {})
@@ -832,16 +1030,6 @@ class UnifiInsightsSensor(UnifiInsightsEntity, SensorEntity):  # type: ignore[mi
         )
 
         return value
-
-    async def async_update(self) -> None:
-        """Update the sensor."""
-        await super().async_update()
-        _LOGGER.debug(
-            "Updated sensor %s for device %s in site %s",
-            self.entity_description.key,
-            self._device_id,
-            self._site_id,
-        )
 
 
 class UnifiPortSensor(UnifiInsightsEntity, SensorEntity):  # type: ignore[misc]
@@ -896,17 +1084,64 @@ class UnifiPortSensor(UnifiInsightsEntity, SensorEntity):  # type: ignore[misc]
             return None
 
         # Find the port data
-        # Handle interfaces being a list (from get_all) vs dict (from get)
-        interfaces = device_data.get("interfaces", {})
-        # interfaces is a list from get_all(), dict from get()
-        ports = interfaces.get("ports", []) if isinstance(interfaces, dict) else []
+        # Port data can come from:
+        # 1. device_data["ports"] - merged from legacy port_table by coordinator
+        # 2. device_data["interfaces"]["ports"] - new API format (dict)
+        ports = device_data.get("ports", [])
+        if not ports:
+            interfaces = device_data.get("interfaces", {})
+            ports = interfaces.get("ports", []) if isinstance(interfaces, dict) else []
         port_data = None
         for port in ports:
-            if port.get("idx") == self._port_idx:
+            idx = port.get("idx") or port.get("port_idx")
+            if idx == self._port_idx:
                 port_data = port
                 break
 
         if not port_data:
+            # PoE power can be sourced from stats when interfaces.ports is unavailable
+            if self.entity_description.key == "port_poe_power":
+                stats = (
+                    self.coordinator.data.get("stats", {})
+                    .get(self._site_id, {})
+                    .get(self._device_id, {})
+                )
+                if isinstance(stats, dict):
+                    poe_ports = stats.get("poe_ports")
+                    if isinstance(poe_ports, dict):
+                        watts = poe_ports.get(self._port_idx) or poe_ports.get(
+                            str(self._port_idx)
+                        )
+                        if isinstance(watts, (int, float)):
+                            return float(watts)
+                        if isinstance(watts, str):
+                            try:
+                                return float(watts)
+                            except ValueError:
+                                return None
+
+            # TX/RX bytes can be sourced from stats when interfaces.ports is unavailable
+            if self.entity_description.key in ("port_tx_bytes", "port_rx_bytes"):
+                stats = (
+                    self.coordinator.data.get("stats", {})
+                    .get(self._site_id, {})
+                    .get(self._device_id, {})
+                )
+                if isinstance(stats, dict):
+                    port_bytes = stats.get("port_bytes")
+                    if isinstance(port_bytes, dict):
+                        pb = port_bytes.get(self._port_idx) or port_bytes.get(
+                            str(self._port_idx)
+                        )
+                        if isinstance(pb, dict):
+                            v = (
+                                pb.get("tx_bytes")
+                                if self.entity_description.key == "port_tx_bytes"
+                                else pb.get("rx_bytes")
+                            )
+                            if isinstance(v, (int, float)):
+                                return int(v)
+
             _LOGGER.debug(
                 "No port data available for port %d on device %s",
                 self._port_idx,
@@ -914,19 +1149,64 @@ class UnifiPortSensor(UnifiInsightsEntity, SensorEntity):  # type: ignore[misc]
             )
             return None
 
-        # Get stats data if needed for TX/RX bytes
+        # Prefer PoE watts from coordinator stats when available
+        if self.entity_description.key == "port_poe_power":
+            stats = (
+                self.coordinator.data.get("stats", {})
+                .get(self._site_id, {})
+                .get(self._device_id, {})
+            )
+            if isinstance(stats, dict):
+                poe_ports = stats.get("poe_ports")
+                if isinstance(poe_ports, dict):
+                    watts = poe_ports.get(self._port_idx) or poe_ports.get(
+                        str(self._port_idx)
+                    )
+                    if isinstance(watts, (int, float)):
+                        return float(watts)
+                    if isinstance(watts, str):
+                        try:
+                            return float(watts)
+                        except ValueError:
+                            return None
+
+        # TX/RX bytes from coordinator stats
         if self.entity_description.key in ["port_tx_bytes", "port_rx_bytes"]:
             stats = (
                 self.coordinator.data.get("stats", {})
                 .get(self._site_id, {})
                 .get(self._device_id, {})
             )
-            if stats:
-                # Add stats to port data for value_fn
-                port_data = {
-                    **port_data,
-                    "stats": stats.get("ports", {}).get(str(self._port_idx), {}),
-                }
+            if not isinstance(stats, dict):
+                return None
+
+            counter_key = (
+                "tx_bytes"
+                if self.entity_description.key == "port_tx_bytes"
+                else "rx_bytes"
+            )
+
+            # 1) Preferred: legacy-mapped per-port counters
+            port_bytes = stats.get("port_bytes")
+            if isinstance(port_bytes, dict):
+                pb = port_bytes.get(self._port_idx) or port_bytes.get(
+                    str(self._port_idx)
+                )
+                if isinstance(pb, dict):
+                    v = pb.get(counter_key)
+                    if isinstance(v, (int, float)):
+                        return int(v)
+
+            # 2) Optional fallback: upstream per-port counters dict
+            port_data = stats.get("port_data")
+            if isinstance(port_data, dict):
+                pb = port_data.get(self._port_idx) or port_data.get(str(self._port_idx))
+                if isinstance(pb, dict):
+                    v = pb.get(counter_key)
+                    if isinstance(v, (int, float)):
+                        return int(v)
+
+            return None
 
         # Use value_fn to extract the value
         value = self.entity_description.value_fn(port_data)
@@ -943,8 +1223,46 @@ class UnifiPortSensor(UnifiInsightsEntity, SensorEntity):  # type: ignore[misc]
         return value
 
     @property
-    def available(self) -> bool:  # noqa: PLR0911
+    def available(self) -> bool:
         """Return if entity is available."""
+        # PoE power availability based on coordinator stats
+        if self.entity_description.key == "port_poe_power":
+            if not self.coordinator.last_update_success:
+                return False
+            stats = (
+                self.coordinator.data.get("stats", {})
+                .get(self._site_id, {})
+                .get(self._device_id, {})
+            )
+            if isinstance(stats, dict):
+                poe_ports = stats.get("poe_ports")
+                if isinstance(poe_ports, dict):
+                    # If the device provides poe_ports at all,
+                    # keep PoE power sensors available
+                    # (link state may be DOWN while PoE is
+                    # disabled or idle).
+                    return True
+            # Fall through to standard port-state availability logic
+
+        # TX/RX availability based on coordinator stats
+        if self.entity_description.key in ("port_tx_bytes", "port_rx_bytes"):
+            if not self.coordinator.last_update_success:
+                return False
+            stats = (
+                self.coordinator.data.get("stats", {})
+                .get(self._site_id, {})
+                .get(self._device_id, {})
+            )
+            if isinstance(stats, dict):
+                port_bytes = stats.get("port_bytes")
+                if isinstance(port_bytes, dict):
+                    pb = port_bytes.get(self._port_idx) or port_bytes.get(
+                        str(self._port_idx)
+                    )
+                    if isinstance(pb, dict):
+                        return True
+            # Fall through to standard port-state availability logic
+
         # Port sensors are available if the device is available AND the port is UP
         if not self.coordinator.last_update_success:
             return False
@@ -961,16 +1279,20 @@ class UnifiPortSensor(UnifiInsightsEntity, SensorEntity):  # type: ignore[misc]
             return False
 
         # Find the port data
-        ports = device_data.get("interfaces", {})
-        if not isinstance(ports, dict):
-            return False
-        port_list = ports.get("ports", [])
+        # Check device_data["ports"] first (from legacy merge),
+        # fall back to interfaces["ports"]
+        port_list = device_data.get("ports", [])
+        if not port_list:
+            interfaces = device_data.get("interfaces", {})
+            if isinstance(interfaces, dict):
+                port_list = interfaces.get("ports", [])
         if not isinstance(port_list, list):
             return False
 
         port_data = None
         for port in port_list:
-            if port.get("idx") == self._port_idx:
+            idx = port.get("idx") or port.get("port_idx")
+            if idx == self._port_idx:
                 port_data = port
                 break
 
