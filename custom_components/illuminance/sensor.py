@@ -64,10 +64,8 @@ from homeassistant.core import (
 )
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
-from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_platform import AddEntitiesCallback, EntityPlatform
 from homeassistant.helpers.event import async_track_state_change_event
-from homeassistant.helpers.typing import ConfigType
 import homeassistant.util.dt as dt_util
 from homeassistant.util.hass_dict import HassKey
 
@@ -165,48 +163,43 @@ class IlluminanceSensorEntityDescription(SensorEntityDescription):  # type: igno
     scan_interval: timedelta | None = None
 
 
-def _sensor(config: ConfigType, unique_id: str, scan_interval: timedelta) -> Entity:
-    """Create entity to add."""
-    weather_entity = config.get(CONF_ENTITY_ID)
-    fallback = cast(
-        float, config.get(CONF_FALLBACK, DEFAULT_FALLBACK if weather_entity else 1)
-    )
-    if (mode := Mode.__getitem__(cast(str, config[CONF_MODE]))) is Mode.irradiance:
-        device_class = SensorDeviceClass.IRRADIANCE
-        native_unit_of_measurement: str = UnitOfIrradiance.WATTS_PER_SQUARE_METER
-        suggested_display_precision = 1
-    else:
-        device_class = SensorDeviceClass.ILLUMINANCE
-        native_unit_of_measurement = LIGHT_LUX
-        suggested_display_precision = 0
-    entity_description = IlluminanceSensorEntityDescription(
-        key=DOMAIN,
-        device_class=device_class,
-        name=cast(str, config[CONF_NAME]),
-        native_unit_of_measurement=native_unit_of_measurement,
-        state_class=SensorStateClass.MEASUREMENT,
-        suggested_display_precision=suggested_display_precision,
-        weather_entity=weather_entity,
-        mode=mode,
-        fallback=fallback,
-        unique_id=unique_id,
-        scan_interval=scan_interval,
-    )
-
-    return IlluminanceSensor(entity_description)
-
-
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the sensor platform."""
-    config = dict(entry.options)
-    config[CONF_NAME] = entry.title
-    unique_id = entry.unique_id or entry.entry_id
-    scan_interval = timedelta(minutes=config[CONF_SCAN_INTERVAL])
-    async_add_entities([_sensor(config, unique_id, scan_interval)], True)
+    weather_entity = entry.options.get(CONF_ENTITY_ID)
+    mode = Mode.__getitem__(cast(str, entry.options[CONF_MODE]))
+    fallback = cast(
+        float,
+        entry.options.get(CONF_FALLBACK, DEFAULT_FALLBACK if weather_entity else 1),
+    )
+
+    if mode is Mode.irradiance:
+        device_class = SensorDeviceClass.IRRADIANCE
+        native_unit_of_measurement: str = UnitOfIrradiance.WATTS_PER_SQUARE_METER
+        suggested_display_precision = 2
+    else:
+        device_class = SensorDeviceClass.ILLUMINANCE
+        native_unit_of_measurement = LIGHT_LUX
+        suggested_display_precision = 0
+
+    entity_description = IlluminanceSensorEntityDescription(
+        key=DOMAIN,
+        device_class=device_class,
+        name=entry.title,
+        native_unit_of_measurement=native_unit_of_measurement,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=suggested_display_precision,
+        weather_entity=weather_entity,
+        mode=mode,
+        fallback=fallback,
+        unique_id=entry.unique_id or entry.entry_id,
+        scan_interval=timedelta(minutes=entry.options[CONF_SCAN_INTERVAL]),
+    )
+
+    async_add_entities([IlluminanceSensor(entity_description)], True)
 
 
 def _illumiance(elev: Num) -> float:
@@ -335,18 +328,20 @@ class IlluminanceSensor(SensorEntity):
 
         if self.mode is Mode.irradiance:
             value /= LUX_PER_WPSM
+            digits = 2
+        else:
+            digits = None
 
         # Calculate final value.
 
-        self._attr_native_value = value / self._sk
-        display_precision = self._sensor_option_display_precision or 0
+        self._attr_native_value = round(value / self._sk, digits)
         _LOGGER.debug(
-            "%s: Updating %s -> %s / %0.2f = %s",
+            "%s: Updating %s -> %s / %s = %s",
             self.name,
             self._cond_desc,
-            f"{value:0.{display_precision}f}",
+            value,
             self._sk,
-            f"{self._attr_native_value:0.{display_precision}f}",
+            self._attr_native_value,
         )
 
     def _get_divisor_from_weather_data(self, entity_state: State | None) -> None:
