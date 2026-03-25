@@ -55,10 +55,11 @@ from .const import (
     WATCHED_EVENTS,
     WATCHED_SERVICES,
 )
-from .utils.logger import _LOGGER, INDENT
+from .utils.logger import _LOGGER
 from .utils.parser_core import ParseResult
-from .utils.report import fill
 from .utils.utils import (
+    format_occurrences,
+    format_state,
     get_config,
     get_entity_state,
     is_action,
@@ -81,27 +82,19 @@ class FilterContext:
 
 
 def _resolve_automations(
-    hass: HomeAssistant,
     raw_automations: Iterable[str],
     automation_map: dict[str, str],
-    ent_reg: er.EntityRegistry,
 ) -> set[str]:
     """Resolve parser parent IDs to Home Assistant entity IDs."""
     automations = set()
 
     for p_id in raw_automations:
-        # 1. Automation Unique ID match
+        # 1. Unique ID match (automation/script)
         if p_id in automation_map:
             automations.add(automation_map[p_id])
             continue
 
-        # 2. Script ID match (by key)
-        script_id = f"script.{p_id}"
-        if hass.states.get(script_id) or ent_reg.async_get(script_id):
-            automations.add(script_id)
-            continue
-
-        # 3. Fallback
+        # 2. Fallback
         automations.add(p_id)
     return automations
 
@@ -119,7 +112,10 @@ def _is_safe_to_report(
     """
     occurrences = data["locations"]
     raw_automations = data["automations"]
-    automations = _resolve_automations(hass, raw_automations, ctx.automation_map, ctx.entity_registry)
+    automations = _resolve_automations(
+        raw_automations,
+        ctx.automation_map,
+    )
 
     if ctx.exclude_disabled and automations:
         all_parents_disabled = True
@@ -176,11 +172,12 @@ def check_single_entity_status( # noqa: PLR0911
         reg_entry = ctx.entity_registry.async_get(entry)
         current_state, _ = get_entity_state(hass, entry, registry_entry=reg_entry)
 
-        if current_state in ctx.ignored_states:
+        # Fast exit for healthy entities
+        # Only report if state is in MONITORED_STATES
+        if current_state not in MONITORED_STATES:
             return None
 
-        # Fast exit for healthy entities
-        if current_state not in ("missing", "unknown", "unavail", "disabled"):
+        if current_state in ctx.ignored_states:
             return None
 
         # Cross-validation: If missing, check if it's actually an action
@@ -284,6 +281,8 @@ class WatchmanCoordinator(DataUpdateCoordinator):
         self._dirty_entities: set[str] = set()
         self._missing_entities_cache: dict[str, Any] = {}
         self._missing_actions_cache: dict[str, Any] = {}
+        self._parsed_entity_list_cache: dict[str, Any] = {}
+        self._parsed_service_list_cache: dict[str, Any] = {}
         self._force_full_rescan: bool = True
 
         self.data = {
@@ -319,16 +318,19 @@ class WatchmanCoordinator(DataUpdateCoordinator):
         disabled_automations = set()
 
 
-        # 1. Registry Pass: Map unique_id and check disabled_by
+        # 1. Registry pass: map unique_id -> entity_id for automation/script.
+        # For automations, also collect disabled entries when configured.
         for entry in ent_reg.entities.values():
-            if entry.domain != "automation":
+            if entry.domain == "automation":
+                # Map unique_id to entity_id
+                automation_map[entry.unique_id] = entry.entity_id
+
+                if exclude_disabled and entry.disabled_by:
+                    disabled_automations.add(entry.entity_id)
                 continue
 
-            # Map unique_id to entity_id
-            automation_map[entry.unique_id] = entry.entity_id
-
-            if exclude_disabled and entry.disabled_by:
-                disabled_automations.add(entry.entity_id)
+            if entry.domain == "script" and entry.unique_id:
+                automation_map[entry.unique_id] = entry.entity_id
 
         num_disabled_auto = len(disabled_automations)
         num_off_auto = 0
@@ -343,20 +345,11 @@ class WatchmanCoordinator(DataUpdateCoordinator):
             _LOGGER.debug(f"Found {num_off_auto} automations in 'off' state and {num_disabled_auto} registry-disabled automations.")
             _LOGGER.debug("They will be excluded from report due to user settings.")
 
-        # Normalize ignored states (e.g. unavail -> unavailable if needed, or handle in loop)
-        # For now, we pass raw config list and handle mapping in the loop for backward compatibility
-        ignored_states_mapped = set()
-        for s in ignored_states:
-             if s == "unavailable":
-                 ignored_states_mapped.add("unavail")
-             else:
-                 ignored_states_mapped.add(s)
-
         self._filter_context_cache = FilterContext(
             entity_registry=ent_reg,
             disabled_automations=disabled_automations,
             automation_map=automation_map,
-            ignored_states=ignored_states_mapped,
+            ignored_states=set(ignored_states),
             ignored_labels=ignored_labels,
             exclude_disabled=exclude_disabled,
         )
@@ -503,9 +496,9 @@ class WatchmanCoordinator(DataUpdateCoordinator):
             entity_attrs.append(
                 {
                     "id": entity,
-                    "state": state,
+                    "state": format_state(state),
                     "friendly_name": name or "",
-                    "occurrences": fill(parsed_entity_list[entity]["locations"], 0),
+                    "occurrences": format_occurrences(parsed_entity_list[entity]["occurrences"], 0),
                 }
             )
 
@@ -513,7 +506,7 @@ class WatchmanCoordinator(DataUpdateCoordinator):
         service_attrs = [
             {
                 "id": service,
-                "occurrences": fill(parsed_service_list[service]["locations"], 0),
+                "occurrences": format_occurrences(parsed_service_list[service]["occurrences"], 0),
             }
             for service in services_missing
         ]
@@ -570,7 +563,7 @@ class WatchmanCoordinator(DataUpdateCoordinator):
         for entity_id, occurrences in missing_entities.items():
             reg_entry = ctx.entity_registry.async_get(entity_id)
             state, _ = get_entity_state(self.hass, entity_id, registry_entry=reg_entry)
-            entities_list.extend(flatten_occurrences(entity_id, occurrences, state))
+            entities_list.extend(flatten_occurrences(entity_id, occurrences, format_state(state)))
 
         actions_list = []
         for service_id, occurrences in missing_services.items():
@@ -675,7 +668,7 @@ class WatchmanCoordinator(DataUpdateCoordinator):
             self._execute_parse(), "watchman_parse"
         )
 
-    async def async_force_parse(self) -> Any:
+    async def async_force_parse(self, ignore_mtime: bool = False) -> Any:
         """Execute a blocking parse for the report service.
 
         Returns a Task/Coroutine that finishes when parsing is complete.
@@ -686,9 +679,9 @@ class WatchmanCoordinator(DataUpdateCoordinator):
             self._cooldown_unsub = None
 
         # Cancel pending delay
-            if self._delay_unsub:
-                self._delay_unsub.cancel()
-                self._delay_unsub = None
+        if self._delay_unsub:
+            self._delay_unsub.cancel()
+            self._delay_unsub = None
 
         # If already running, return the running task
         if self._parse_task and not self._parse_task.done():
@@ -697,9 +690,9 @@ class WatchmanCoordinator(DataUpdateCoordinator):
 
         # Otherwise, run immediately
         _LOGGER.debug("Force parse requested. Starting immediately.")
-        return await self._execute_parse()
+        return await self._execute_parse(ignore_mtime=ignore_mtime)
 
-    async def _execute_parse(self) -> None:
+    async def _execute_parse(self, ignore_mtime: bool = False) -> None:
         """Execute the heavy parsing logic."""
         if self.safe_mode:
             _LOGGER.warning("_execute_parse: Watchman is in Safe Mode. Skipping parse.")
@@ -718,7 +711,7 @@ class WatchmanCoordinator(DataUpdateCoordinator):
             ignored_files = get_config(self.hass, CONF_IGNORED_FILES, [])
 
             # Perform the scan
-            if parse_result := await self.hub.async_parse(ignored_files):
+            if parse_result := await self.hub.async_parse(ignored_files, ignore_mtime=ignore_mtime):
                 self._last_parse_time = time.time()
                 await self.async_save_stats(parse_result)
                 # After scan, we definitely need full rescan of items status
@@ -910,6 +903,9 @@ class WatchmanCoordinator(DataUpdateCoordinator):
             parsed_service_list = all_items["services"]
             parsed_entity_list = all_items["entities"]
 
+            self._parsed_entity_list_cache = parsed_entity_list
+            self._parsed_service_list_cache = parsed_service_list
+
             ctx = self._build_filter_context()
 
             # Logic Fork: Full vs Partial
@@ -956,9 +952,9 @@ class WatchmanCoordinator(DataUpdateCoordinator):
                 entity_attrs.append(
                     {
                         "id": entity,
-                        "state": state,
+                        "state": format_state(state),
                         "friendly_name": name or "",
-                        "occurrences": fill(parsed_entity_list[entity]["locations"], 0),
+                        "occurrences": format_occurrences(parsed_entity_list[entity]["occurrences"], 0),
                     }
                 )
 
@@ -966,11 +962,10 @@ class WatchmanCoordinator(DataUpdateCoordinator):
             service_attrs = [
                 {
                     "id": service,
-                    "occurrences": fill(parsed_service_list[service]["locations"], 0),
+                    "occurrences": format_occurrences(parsed_service_list[service]["occurrences"], 0),
                 }
                 for service in services_missing
             ]
-
             new_data = {
                 COORD_DATA_MISSING_ENTITIES: len(entities_missing),
                 COORD_DATA_MISSING_ACTIONS: len(services_missing),

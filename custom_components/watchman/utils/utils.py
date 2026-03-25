@@ -4,6 +4,7 @@ from collections.abc import AsyncGenerator
 import fnmatch
 import os
 import re
+from textwrap import wrap
 from types import MappingProxyType
 from typing import Any
 
@@ -15,6 +16,7 @@ from homeassistant.helpers import entity_registry as er
 
 from ..const import (
     CONF_COLUMNS_WIDTH,
+    CONF_ENFORCE_FILE_SIZE,
     CONF_EXCLUDE_DISABLED_AUTOMATION,
     CONF_FRIENDLY_NAMES,
     CONF_HEADER,
@@ -28,6 +30,11 @@ from ..const import (
     CONF_STARTUP_DELAY,
     DEFAULT_OPTIONS,
     DOMAIN_DATA,
+    STATELESS_DOMAINS,
+    TRACKED_STATE_MISSING,
+    TRACKED_STATE_REGISTRY_DISABLED,
+    TRACKED_STATE_UNAVAILABLE,
+    TRACKED_STATE_UNKNOWN,
 )
 from .logger import _LOGGER, INDENT
 
@@ -111,6 +118,7 @@ def get_config(hass: HomeAssistant, key: str, default: Any | None = None) -> Any
         CONF_EXCLUDE_DISABLED_AUTOMATION,
         CONF_STARTUP_DELAY,
         CONF_LOG_OBFUSCATE,
+        CONF_ENFORCE_FILE_SIZE,
     ]:
         return get_val(entry.data, key)
 
@@ -195,19 +203,31 @@ def get_entity_state(
             name = entity_state.name
 
     if not entity_state:
-        state = "missing"
+        state = TRACKED_STATE_MISSING
         if registry_entry is None:
             entity_registry = er.async_get(hass)
             registry_entry = entity_registry.async_get(entry)
 
         if registry_entry and registry_entry.disabled_by:
-            state = "disabled"
+            state = TRACKED_STATE_REGISTRY_DISABLED
     else:
-        state = str(entity_state.state).replace("unavailable", "unavail")
-        if split_entity_id(entry)[0] == "input_button" and state == "unknown":
+        state = str(entity_state.state)
+        if (
+            split_entity_id(entry)[0] in STATELESS_DOMAINS
+            and state == TRACKED_STATE_UNKNOWN
+        ):
             state = "available"
 
     return state, name
+
+
+def format_state(state: str) -> str:
+    """Format state for reports and UI (presentation logic)."""
+    if state == TRACKED_STATE_REGISTRY_DISABLED:
+        return "disabled"
+    if state == TRACKED_STATE_UNAVAILABLE:
+        return "unavail"
+    return state
 
 
 def obfuscate_id(item_id: Any) -> Any:
@@ -243,3 +263,51 @@ def obfuscate_id(item_id: Any) -> Any:
             masked_suffix += char
 
     return f"{domain}.{prefix}{masked_suffix}"
+
+
+def format_column_text(data: Any, width: int, extra: str | None = None) -> str:
+    """Format string into a column, applying wrapping and padding."""
+    out = str(data) if not extra else f"{data} ('{extra}')"
+
+    if width > 0:
+        wrapped_lines = []
+        for line in out.split("\n"):
+            wrapped_lines.extend(wrap(line, width))
+        return "\n".join([line.ljust(width) for line in wrapped_lines])
+    return out
+
+
+def format_occurrences(occurrences: list[dict[str, Any]], width: int) -> str:
+    """Format occurrence locations, handling UI helpers gracefully."""
+    helpers = set()
+    files = {}
+
+    for occ in occurrences:
+        context = occ.get("context")
+        path = occ["path"]
+        line = occ["line"]
+
+        # Check for UI Helper
+        if context and context.get("parent_type", "").startswith("helper_"):
+            p_type = context["parent_type"].replace("helper_", "").capitalize()
+            alias = context.get("parent_alias") or "Unknown"
+
+            emoji = ""
+            if p_type == "Group":
+                emoji = "👥"
+            elif p_type == "Template":
+                emoji = "🧩"
+
+            helpers.add(f'{emoji} {p_type}: "{alias}"')
+        else:
+            # Standard File
+            if path not in files:
+                files[path] = []
+            files[path].append(str(line))
+
+    lines = sorted(helpers)
+    for path, line_numer_list in sorted(files.items()):
+        lines.append(f"📄 {path}:{','.join(line_numer_list)}")
+
+    out = "\n".join(lines)
+    return format_column_text(out, width)

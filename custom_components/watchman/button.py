@@ -2,11 +2,12 @@
 from homeassistant.components.button import ButtonEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
-from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import CONF_REPORT_PATH, DOMAIN, REPORT_SERVICE_NAME
+from .utils.entity import update_or_cleanup_entity
 from .utils.utils import get_config
 
 
@@ -15,7 +16,6 @@ class WatchmanReportButton(ButtonEntity):
 
     _attr_has_entity_name = True
     _attr_translation_key = "create_report_file"
-    _attr_entity_category = EntityCategory.CONFIG
     _attr_icon = "mdi:file-document-outline"
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry) -> None:
@@ -57,4 +57,17 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback
 ) -> None:
     """Set up the button platform."""
+    ent_reg = er.async_get(hass)
+    button_key = "report_button"
+    new_uid = f"{DOMAIN}_{button_key}"
+
+    # migration logic
+    # fixing the bug in WM prior to 8.x where sensor uids were generated using entry uid
+    old_uid = f"{config_entry.entry_id}_{DOMAIN}_{button_key}"
+    await update_or_cleanup_entity(ent_reg, "button", DOMAIN, old_uid, new_uid)
+
+    # fix for duplicated domain uid, introduced by first dev versions of 0.8
+    dub_uid = f"{DOMAIN}_{DOMAIN}_{button_key}"
+    await update_or_cleanup_entity(ent_reg, "button", DOMAIN, dub_uid, new_uid)
+
     async_add_entities([WatchmanReportButton(hass, config_entry)])

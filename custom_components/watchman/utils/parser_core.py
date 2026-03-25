@@ -475,10 +475,11 @@ def _recursive_search(
         line_no = getattr(data, "line", None)
         key_name = parent_key
 
-        # ignore _values_ of the key from IGNORED_VALUE_KEYS
-        # this does not prevent parser to traverse in if there are nested keys
+        # Ignore direct string values of IGNORED_VALUE_KEYS (e.g. trigger, condition intents)
+        # EXCEPT when the value is a Jinja2 template — those must be scanned for entities (Heuristic 21).
         if key_name and str(key_name).lower() in IGNORED_VALUE_KEYS:
-            return
+            if not is_template(data):
+                return
 
         # Sanitize Jinja comments to avoid false positives inside comments
         # We process a copy so we don't modify the original 'data' object which might have attributes
@@ -664,15 +665,7 @@ def process_file_sync(filepath: str, entity_pattern: re.Pattern = _ENTITY_PATTER
 
     try:
         path = Path(filepath)
-        file_size = path.stat().st_size
-        if file_size > MAX_FILE_SIZE:
-            _LOGGER.error(
-                f"File {filepath} is too large ({file_size} bytes), skipping. Max size: {MAX_FILE_SIZE} bytes."
-            )
-            return 0, [], file_type
-
         content = path.read_text(encoding="utf-8")
-
         # Call the engine
         items = _parse_content(content, file_type, filepath, _LOGGER, entity_pattern)
 
@@ -705,7 +698,7 @@ def _is_file_ignored(path_obj: Path, cwd: Path, ignored_patterns: list[str]) -> 
     return False
 
 
-def _scan_files_sync(root_path: str, ignored_patterns: list[str]) -> tuple[list[dict[str, Any]], int]:
+def _scan_files_sync(root_path: str, ignored_patterns: list[str], enforce_file_size: bool = True) -> tuple[list[dict[str, Any]], int]:
     """Scan files syncronously using os.walk (blocking).
 
     Executed as a single job in the executor.
@@ -734,6 +727,12 @@ def _scan_files_sync(root_path: str, ignored_patterns: list[str]) -> tuple[list[
             # Stat
             try:
                 stat_res = abs_path_obj.stat()
+                if enforce_file_size and stat_res.st_size > MAX_FILE_SIZE:
+                    _LOGGER.warning(f"Parser: file {abs_path_obj} skipped due to size ({stat_res.st_size} > {MAX_FILE_SIZE}).")
+                    _LOGGER.warning('Switch off "Enforce max file size limit" in the integration options to parse large files.')
+                    ignored_count += 1
+                    continue
+
                 scanned_files.append(
                     {
                         "path": str(abs_path_obj),
@@ -769,6 +768,12 @@ def _scan_files_sync(root_path: str, ignored_patterns: list[str]) -> tuple[list[
 
                 try:
                     stat_res = file_path_obj.stat()
+                    if enforce_file_size and stat_res.st_size > MAX_FILE_SIZE:
+                        _LOGGER.warning(f"Parser: file {abs_path_obj} skipped due to size ({stat_res.st_size} > {MAX_FILE_SIZE}).")
+                        _LOGGER.warning('Switch off "Enforce max file size limit" in the integration options to parse large files.')
+                        ignored_count += 1
+                        continue
+
                     scanned_files.append(
                         {
                             "path": str(file_path_obj),
@@ -925,25 +930,26 @@ class WatchmanParser:
             path.unlink(missing_ok=True)
             return self._create_fresh_db(db_path)
 
-    async def _async_scan_files(self, root_path: str, ignored_patterns: list[str]) -> tuple[list[dict[str, Any]], int]:
+    async def _async_scan_files(self, root_path: str, ignored_patterns: list[str], enforce_file_size: bool = True) -> tuple[list[dict[str, Any]], int]:
         """Phase 1: Synchronous file scanning (offloaded to thread).
 
         Calls _scan_files_sync in executor.
         """
-        return await self.executor(_scan_files_sync, root_path, ignored_patterns)
+        return await self.executor(_scan_files_sync, root_path, ignored_patterns, enforce_file_size)
 
     async def async_scan(
         self,
         root_path: str,
         ignored_files: list[str],
         *,
-        force: bool = False,
         custom_domains: list[str] | None = None,
         base_path: str | None = None,
+        enforce_file_size: bool = True,
+        ignore_mtime: bool = False,
     ) -> ParseResult | None:
         """Orchestrates the scanning process.
 
-        If force = True, unmodified files will be scanned again
+        If ignore_mtime = True, unmodified files will be scanned again
         """
         start_time = time.monotonic()
         try:
@@ -961,7 +967,7 @@ class WatchmanParser:
             )
             scan_time = time.monotonic()
             files_scanned, ignored_count = await self._async_scan_files(
-                root_path, ignored_files
+                root_path, ignored_files, enforce_file_size
             )
             _LOGGER.debug(
                 f"Parser (Scan): Found {len(files_scanned)} files in {(time.monotonic() - scan_time):.3f} sec"
@@ -1000,13 +1006,16 @@ class WatchmanParser:
 
                 if row:
                     last_scan_str, file_id = row
-                    try:
-                        last_scan_dt = datetime.datetime.fromisoformat(last_scan_str)
-                        file_mtime_dt = datetime.datetime.fromtimestamp(mtime)
-                        if force or file_mtime_dt > last_scan_dt:
-                            should_scan = True
-                    except ValueError:
+                    if ignore_mtime:
                         should_scan = True
+                    else:
+                        try:
+                            last_scan_dt = datetime.datetime.fromisoformat(last_scan_str)
+                            file_mtime_dt = datetime.datetime.fromtimestamp(mtime)
+                            if file_mtime_dt > last_scan_dt:
+                                should_scan = True
+                        except ValueError:
+                            should_scan = True
                 else:
                     should_scan = True
 
@@ -1231,72 +1240,29 @@ class WatchmanParser:
         root_path: str,
         ignored_files: list[str],
         *,
-        force: bool = False,
+        ignore_mtime: bool = False,
         custom_domains: list[str] | None = None,
         base_path: str | None = None,
-    ) -> tuple[list[str], list[str], int, int, dict, ParseResult | None]:
-        """Main parse function.
+        enforce_file_size: bool = True,
+    ) -> ParseResult | None:
+        """Parse configuration files (main function).
 
         Params:
             root_path: where to scan
             ignored_files: file paths which should be ignored during scan
-            force (bool): if false, files witch unchanged modification time will be not be parsed
+            ignore_mtime (bool): if false, files witch unchanged modification time will be not be parsed
             custom_domains: additional domains provided by customer integrations which should not be ignored by WM, e.g. xiaomi_miio.*
             base_path: root path to make file paths relative in the database
 
         Returns:
-            parsed_entity_list (list): Unique entity_ids (item_type='entity').
-            parsed_service_list (list): Unique services (item_type='service').
-            parsed_files_count (int): Number of entries in processed_files.
-            ignored_files_count (int): Always 0 (stub).
-            entity_to_automations (dict): Empty dictionary (stub).
             parse_result (ParseResult): Operational statistics.
 
         """
-        parse_result = await self.async_scan(
+        return await self.async_scan(
             root_path,
             ignored_files,
-            force=force,
             custom_domains=custom_domains,
             base_path=base_path,
+            enforce_file_size=enforce_file_size,
+            ignore_mtime=ignore_mtime,
         )
-
-        try:
-            with self._db_session() as conn:
-                cursor = conn.cursor()
-                # parsed_entity_list
-                cursor.execute(
-                    "SELECT DISTINCT entity_id FROM found_items WHERE item_type = 'entity'"
-                )
-                parsed_entity_list = [row[0] for row in cursor.fetchall()]
-
-                # parsed_service_list
-                cursor.execute(
-                    "SELECT DISTINCT entity_id FROM found_items WHERE item_type = 'service'"
-                )
-                parsed_service_list = [row[0] for row in cursor.fetchall()]
-
-                # parsed_files_count
-                cursor.execute("SELECT COUNT(*) FROM processed_files")
-                parsed_files_count = cursor.fetchone()[0]
-
-                # ignored_files_count
-                ignored_files_count = (
-                    parse_result.ignored_files_count if parse_result else 0
-                )
-
-            entity_to_automations = {}
-
-            return (
-                parsed_entity_list,
-                parsed_service_list,
-                parsed_files_count,
-                ignored_files_count,
-                entity_to_automations,
-                parse_result,
-            )
-        except sqlite3.OperationalError:
-            _LOGGER.error(
-                "Database locked during result fetching in parse(), returning empty results."
-            )
-            return ([], [], 0, 0, {}, None)

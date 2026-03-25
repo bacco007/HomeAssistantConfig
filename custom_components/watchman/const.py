@@ -14,12 +14,12 @@ DOMAIN_DATA = f"{DOMAIN}_data"
 
 
 CONFIG_ENTRY_VERSION = 2
-CONFIG_ENTRY_MINOR_VERSION = 4
+CONFIG_ENTRY_MINOR_VERSION = 6
 
 DEFAULT_REPORT_FILENAME = f"{DOMAIN}_report.txt"
 DB_FILENAME = f"{DOMAIN}_v2.db"
 LEGACY_DB_FILENAME = f"{DOMAIN}.db"
-CURRENT_DB_SCHEMA_VERSION = 8
+CURRENT_DB_SCHEMA_VERSION = 9
 STORAGE_KEY = f"{DOMAIN}.stats"
 STORAGE_VERSION = 1
 LOCK_FILENAME = f"{DOMAIN}.lock"
@@ -31,9 +31,21 @@ PARSE_COOLDOWN = 60
 # delay before start parsing
 DEFAULT_DELAY = 10
 
+STATELESS_DOMAINS = (
+    "button",
+    "input_button",
+    "scene",
+    "event",
+    "notify",
+    "stt",
+    "wake_word",
+)
+
 PACKAGE_NAME = f"custom_components.{DOMAIN}"
 REPORT_SERVICE_NAME = "report"
 LABELS_SERVICE_NAME = "set_ignored_labels"
+
+DOC_URL = "https://github.com/dummylabs/thewatchman"
 
 HASS_DATA_CANCEL_HANDLERS = "cancel_handlers"
 
@@ -65,11 +77,13 @@ CONF_CHUNK_SIZE = "chunk_size"
 CONF_CREATE_FILE = "create_file"
 CONF_SEND_NOTIFICATION = "send_notification"
 CONF_PARSE_CONFIG = "parse_config"
+CONF_FORCE_PARSING = "force_parsing"
 CONF_COLUMNS_WIDTH = "columns_width"
 CONF_STARTUP_DELAY = "startup_delay"
 CONF_FRIENDLY_NAMES = "friendly_names"
 CONF_LOG_OBFUSCATE = "log_obfuscate"
 CONF_IGNORED_LABELS = "ignored_labels"
+CONF_ENFORCE_FILE_SIZE = "enforce_file_size"
 # configuration parameters allowed in watchman.report service data
 CONF_ALLOWED_SERVICE_PARAMS = [
     CONF_SERVICE_NAME,
@@ -78,6 +92,7 @@ CONF_ALLOWED_SERVICE_PARAMS = [
     CONF_CREATE_FILE,
     CONF_SEND_NOTIFICATION,
     CONF_PARSE_CONFIG,
+    CONF_FORCE_PARSING,
     CONF_SERVICE_DATA,
 ]
 
@@ -110,7 +125,17 @@ SENSOR_PARSE_DURATION = "parse_duration"
 SENSOR_LAST_PARSE = "last_parse"
 SENSOR_PROCESSED_FILES = "processed_files"
 SENSOR_IGNORED_FILES = "ignored_files"
-MONITORED_STATES = ["unavailable", "unknown", "missing", "disabled"]
+
+# registry_disabled is artificial state as HA doesn't have `disabled`
+# state in the state machine. Disabled entity simpy does not exists
+# in Entity Registry
+TRACKED_STATE_REGISTRY_DISABLED = "registry_disabled"
+TRACKED_STATE_MISSING = "missing"
+TRACKED_STATE_UNAVAILABLE = "unavailable"
+TRACKED_STATE_UNKNOWN = "unknown"
+
+# entity and aciton states which are monitored by Watchman
+MONITORED_STATES = [TRACKED_STATE_UNAVAILABLE, TRACKED_STATE_UNKNOWN, TRACKED_STATE_MISSING, TRACKED_STATE_REGISTRY_DISABLED]
 
 STATE_WAITING_HA = "waiting_for_ha"
 STATE_PARSING = "parsing"
@@ -132,12 +157,13 @@ BUNDLED_IGNORED_ITEMS = [
 PLATFORMS = [Platform.SENSOR, Platform.TEXT, Platform.BUTTON]
 
 DEFAULT_OPTIONS = {
-    CONF_IGNORED_ITEMS: "",
+    CONF_IGNORED_ITEMS: [],
     CONF_IGNORED_STATES: [],
     CONF_EXCLUDE_DISABLED_AUTOMATION: True,
-    CONF_IGNORED_FILES: "",
+    CONF_IGNORED_FILES: [],
     CONF_STARTUP_DELAY: 30,
     CONF_LOG_OBFUSCATE: True,
+    CONF_ENFORCE_FILE_SIZE: True,
     CONF_SECTION_APPEARANCE_LOCATION: {
         CONF_HEADER: "-== Watchman Report ==-",
         CONF_REPORT_PATH: "",

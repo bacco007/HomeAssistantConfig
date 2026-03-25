@@ -6,7 +6,7 @@ from typing import Any
 
 from homeassistant.core import HomeAssistant
 
-from .const import BUNDLED_IGNORED_ITEMS, CONF_IGNORED_ITEMS
+from .const import BUNDLED_IGNORED_ITEMS, CONF_ENFORCE_FILE_SIZE, CONF_IGNORED_ITEMS
 from .utils.logger import _LOGGER
 from .utils.parser_core import ParseResult, WatchmanParser, get_domains
 from .utils.utils import get_config
@@ -112,7 +112,7 @@ class WatchmanHub:
         return {"entities": entities, "services": services}
 
     async def async_parse(
-        self, ignored_files: list[str], *, force: bool = False
+        self, ignored_files: list[str], ignore_mtime: bool = False
     ) -> ParseResult | None:
         """Asynchronous wrapper for the parse method."""
         if self._is_scanning:
@@ -122,20 +122,15 @@ class WatchmanHub:
         self._is_scanning = True
         try:
             custom_domains = get_domains(self.hass)
+            enforce_file_size = get_config(self.hass, CONF_ENFORCE_FILE_SIZE, True)
 
-            (
-                _entities,
-                _services,
-                _files_parsed,
-                _files_ignored,
-                _ent_to_auto,
-                parse_result,
-            ) = await self._parser.async_parse(
+            parse_result = await self._parser.async_parse(
                 self.hass.config.config_dir,
                 ignored_files,
-                force=force,
                 custom_domains=custom_domains,
                 base_path=self.hass.config.config_dir,
+                enforce_file_size=enforce_file_size,
+                ignore_mtime=ignore_mtime,
             )
 
             self.cached_items = {}

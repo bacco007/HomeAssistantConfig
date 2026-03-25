@@ -17,6 +17,7 @@ from homeassistant.helpers import config_validation as cv, selector
 
 from .const import (
     CONF_COLUMNS_WIDTH,
+    CONF_ENFORCE_FILE_SIZE,
     CONF_EXCLUDE_DISABLED_AUTOMATION,
     CONF_FRIENDLY_NAMES,
     CONF_HEADER,
@@ -36,6 +37,7 @@ from .const import (
     MONITORED_STATES,
 )
 from .utils.logger import _LOGGER
+from .utils.parser_const import MAX_FILE_SIZE
 from .utils.utils import async_is_valid_path, get_val
 
 INCLUDED_FOLDERS_SCHEMA = vol.Schema(vol.All(cv.ensure_list, [cv.string]))
@@ -46,18 +48,24 @@ COLUMNS_WIDTH_SCHEMA = vol.Schema(vol.All(cv.ensure_list, [cv.positive_int]))
 
 
 def _get_data_schema() -> vol.Schema:
-    select = selector.TextSelector(selector.TextSelectorConfig(multiline=True))
+    chip_selector = selector.SelectSelector(
+        selector.SelectSelectorConfig(
+            options=[],
+            multiple=True,
+            custom_value=True,
+        )
+    )
     return vol.Schema(
         {
             vol.Optional(
                 CONF_IGNORED_ITEMS,
-            ): select,
+            ): chip_selector,
             vol.Optional(
                 CONF_IGNORED_STATES,
             ): cv.multi_select(MONITORED_STATES),
             vol.Optional(
                 CONF_IGNORED_FILES,
-            ): select,
+            ): chip_selector,
             vol.Optional(
                 CONF_IGNORED_LABELS,
             ): selector.LabelSelector(
@@ -71,6 +79,9 @@ def _get_data_schema() -> vol.Schema:
             ): cv.boolean,
             vol.Optional(
                 CONF_LOG_OBFUSCATE,
+            ): cv.boolean,
+            vol.Optional(
+                CONF_ENFORCE_FILE_SIZE,
             ): cv.boolean,
             vol.Required(CONF_SECTION_APPEARANCE_LOCATION): data_entry_flow.section(
                 vol.Schema(
@@ -189,13 +200,13 @@ class OptionsFlowHandler(OptionsFlow):
                     CONF_IGNORED_FILES in self.config_entry.data
                     and CONF_IGNORED_FILES not in user_input
                 ):
-                    user_input[CONF_IGNORED_FILES] = ""
+                    user_input[CONF_IGNORED_FILES] = []
 
                 if (
                     CONF_IGNORED_ITEMS in self.config_entry.data
                     and CONF_IGNORED_ITEMS not in user_input
                 ):
-                    user_input[CONF_IGNORED_ITEMS] = ""
+                    user_input[CONF_IGNORED_ITEMS] = []
 
                 # see met.no code, without update_entry the EXISTING entry
                 # will not be updated with user input, but entry.options will do
@@ -212,6 +223,7 @@ class OptionsFlowHandler(OptionsFlow):
             )
             placeholders = dict(placeholders)
             placeholders["url"] = "https://github.com/dummylabs/thewatchman#configuration"
+            placeholders["max_size_kb"] = str(int(MAX_FILE_SIZE / 1024))
             return self.async_show_form(
                 step_id="init",
                 data_schema=self.add_suggested_values_to_schema(
@@ -229,6 +241,7 @@ class OptionsFlowHandler(OptionsFlow):
                 self.config_entry.data,
             ),
             description_placeholders={
-                "url": "https://github.com/dummylabs/thewatchman#configuration"
+                "url": "https://github.com/dummylabs/thewatchman#configuration",
+                "max_size_kb": str(int(MAX_FILE_SIZE / 1024)),
             },
         )
