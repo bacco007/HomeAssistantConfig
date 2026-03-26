@@ -653,6 +653,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         We wait an extra configurable delay before scanning so those entities
         are present and won't be reported as false-positive issues.
         """
+        # Check if startup scan is disabled
+        startup_scan = entry.options.get("startup_scan_enabled",
+                       entry.data.get("startup_scan_enabled", True))
+        if not startup_scan:
+            _LOGGER.info("HACA startup scan disabled by configuration")
+            return
+
         startup_delay = int(
             entry.options.get("startup_delay_seconds",
             entry.data.get("startup_delay_seconds", 60))

@@ -125,6 +125,23 @@ class EntityAnalyzer:
         self._entity_references.clear()
         self._automation_alias_map.clear()
 
+        def _is_valid_entity_id(eid: str) -> bool:
+            """Check if a string looks like a valid HA entity_id (domain.object_id)."""
+            if not isinstance(eid, str) or "." not in eid:
+                return False
+            parts = eid.split(".", 1)
+            # domain must be alpha/underscore, object_id must not be empty
+            return len(parts) == 2 and len(parts[0]) > 0 and len(parts[1]) > 0 and parts[0].replace("_", "").isalpha()
+
+        def _add_ref(entity_id, automation_id):
+            """Add entity reference only if entity_id is valid."""
+            if isinstance(entity_id, list):
+                for eid in entity_id:
+                    if _is_valid_entity_id(eid):
+                        self._entity_references[eid].append(automation_id)
+            elif _is_valid_entity_id(entity_id):
+                self._entity_references[entity_id].append(automation_id)
+
         # Build alias map: entity_id → friendly alias for display
         for entity_id, config in automation_configs.items():
             alias = config.get("alias") or config.get("id") or entity_id
@@ -145,11 +162,7 @@ class EntityAnalyzer:
                     continue
                 entity_id = trigger.get("entity_id")
                 if entity_id:
-                    if isinstance(entity_id, list):
-                        for eid in entity_id:
-                            self._entity_references[eid].append(automation_id)
-                    else:
-                        self._entity_references[entity_id].append(automation_id)
+                    _add_ref(entity_id, automation_id)
             
             # Extract from conditions (support both key formats)
             conditions = config.get("conditions") or config.get("condition", [])
@@ -161,11 +174,7 @@ class EntityAnalyzer:
                     continue
                 entity_id = condition.get("entity_id")
                 if entity_id:
-                    if isinstance(entity_id, list):
-                        for eid in entity_id:
-                            self._entity_references[eid].append(automation_id)
-                    else:
-                        self._entity_references[entity_id].append(automation_id)
+                    _add_ref(entity_id, automation_id)
             
             # Extract from actions (support both key formats)
             actions = config.get("actions") or config.get("action", [])
@@ -178,21 +187,13 @@ class EntityAnalyzer:
                 # Check entity_id at action level
                 action_entity = action.get("entity_id")
                 if action_entity:
-                    if isinstance(action_entity, list):
-                        for eid in action_entity:
-                            self._entity_references[eid].append(automation_id)
-                    else:
-                        self._entity_references[action_entity].append(automation_id)
+                    _add_ref(action_entity, automation_id)
                 # Check entity_id in target
                 target = action.get("target", {})
                 if isinstance(target, dict):
                     entity_id = target.get("entity_id")
                     if entity_id:
-                        if isinstance(entity_id, list):
-                            for eid in entity_id:
-                                self._entity_references[eid].append(automation_id)
-                        else:
-                            self._entity_references[entity_id].append(automation_id)
+                        _add_ref(entity_id, automation_id)
             
             if idx % 10 == 0: await asyncio.sleep(0)
         

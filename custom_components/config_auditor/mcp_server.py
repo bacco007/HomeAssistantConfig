@@ -67,10 +67,7 @@ def _slugify(text: str, max_length: int = 60) -> str:
 MCP_TOOLS: list[dict[str, Any]] = [
     {
         "name": "haca_get_issues",
-        "description": (
-            "Récupère la liste des issues détectées par HACA dans la configuration "
-            "Home Assistant. Peut être filtrée par sévérité et/ou type."
-        ),
+        "description": "Get all HACA audit issues (automation, entity, security, performance). Filter by severity or category.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -99,18 +96,12 @@ MCP_TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "haca_get_score",
-        "description": (
-            "Retourne le score de santé global de la configuration HA (0–100), "
-            "le nombre total d'issues, et la répartition par sévérité."
-        ),
+        "description": "Get the HACA health score (0-100) with breakdown by category.",
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
         "name": "haca_get_automation",
-        "description": (
-            "Retourne le YAML complet d'une automation HA par son entity_id ou alias. "
-            "Utile pour analyser la logique d'une automation spécifique."
-        ),
+        "description": "Read the full YAML config of a specific automation. Use BEFORE ha_update_automation. Accepts entity_id.",
         "inputSchema": {
             "type": "object",
             "required": ["entity_id"],
@@ -179,10 +170,7 @@ MCP_TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "haca_explain_issue",
-        "description": (
-            "Génère une explication IA contextuelle d'une issue spécifique, "
-            "avec des suggestions d'amélioration adaptées à la configuration HA."
-        ),
+        "description": "Get an AI-generated explanation of a specific HACA issue. Provide the full issue object from haca_get_issues.",
         "inputSchema": {
             "type": "object",
             "required": ["issue_id"],
@@ -474,7 +462,7 @@ async def _tool_get_automation(hass: HomeAssistant, params: dict) -> dict:
         "alias": attrs.get("friendly_name", target_id),
         "state": state.state if state else "unknown",
         "last_triggered": attrs.get("last_triggered"),
-        "yaml": yaml_content or f"# YAML non disponible pour {target_id}\n# Vérifiez automations.yaml",
+        "yaml": yaml_content or f"# YAML not available for {target_id}\n# Check automations.yaml",
     }
 
 
@@ -634,11 +622,7 @@ async def _tool_explain_issue(hass: HomeAssistant, params: dict) -> dict:
 HA_CONTROL_TOOLS: list[dict[str, Any]] = [
     {
         "name": "ha_get_entities",
-        "description": (
-            "List Home Assistant entities with their current states and attributes. "
-            "Filter by domain (light, switch, automation…), area name, or keyword search. "
-            "Use this to discover what's available before creating automations or scripts."
-        ),
+        "description": "List HA entities by domain. Use domain for efficiency: automation, light, sensor, climate, weather, etc. Use to discover entities before creating cards/automations.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -677,12 +661,7 @@ HA_CONTROL_TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "ha_create_automation",
-        "description": (
-            "Create a new automation in Home Assistant by writing to automations.yaml. "
-            "The automation is automatically reloaded after creation. "
-            "Trigger types: state, numeric_state, time, sun (sunset/sunrise), event, template. "
-            "Example: create an automation that turns on porch light at sunset."
-        ),
+        "description": "Create a new HA automation. ALWAYS call ha_backup_create first. Config must include: alias, triggers, actions. Call ha_reload_core after.",
         "inputSchema": {
             "type": "object",
             "required": ["alias"],
@@ -722,11 +701,7 @@ HA_CONTROL_TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "ha_update_automation",
-        "description": (
-            "Read an existing automation from automations.yaml and update specific fields. "
-            "Use this to add an action, change a trigger, or modify a condition. "
-            "Provide entity_id or alias to identify the automation, then the fields to update."
-        ),
+        "description": "Update an existing automation. ALWAYS call haca_get_automation first to read current config, then ha_backup_create before modifying.",
         "inputSchema": {
             "type": "object",
             "required": ["entity_id"],
@@ -774,9 +749,10 @@ HA_CONTROL_TOOLS: list[dict[str, Any]] = [
     {
         "name": "ha_get_lovelace",
         "description": (
-            "Read the current Lovelace dashboard configuration. "
-            "Returns the full config including views, cards, and entities. "
-            "Use this before ha_add_lovelace_card to understand the current structure."
+            "Read a Lovelace dashboard structure: views count, card types, titles. "
+            "ALWAYS call this BEFORE ha_add_lovelace_card, ha_update_lovelace_card, "
+            "or ha_remove_lovelace_card to know the views and card indices. "
+            "Use ha_list_dashboards first if you don't know the dashboard_id."
         ),
         "inputSchema": {
             "type": "object",
@@ -791,8 +767,14 @@ HA_CONTROL_TOOLS: list[dict[str, Any]] = [
         "name": "ha_add_lovelace_card",
         "description": (
             "Add a new card to a Lovelace dashboard view. "
-            "Examples: entity card, weather card, light card, button card, glance card. "
-            "The dashboard must be in 'storage' mode (managed via UI), not YAML mode."
+            "IMPORTANT: Always call ha_get_lovelace first to know the view count. "
+            "If the dashboard has only 1 view, use view_index=0 without asking the user. "
+            "Common card types (always use English type names): "
+            "weather-forecast, entities, button, light, thermostat, media-control, "
+            "glance, gauge, history-graph, logbook, map, markdown, picture-entity, "
+            "sensor, statistics-graph, todo-list, area, tile, mushroom-entity-card. "
+            "Example: {\"type\": \"weather-forecast\", \"entity\": \"weather.home\", \"show_forecast\": true}. "
+            "The dashboard must be in 'storage' mode."
         ),
         "inputSchema": {
             "type": "object",
@@ -801,19 +783,15 @@ HA_CONTROL_TOOLS: list[dict[str, Any]] = [
                 "dashboard_id": {"type": "string",
                                  "description": "Dashboard URL path (default: 'lovelace')"},
                 "view_index": {"type": "integer", "default": 0,
-                               "description": "View index to add the card to (0 = first view)"},
+                               "description": "View index (0 = first view). If dashboard has only 1 view, always use 0."},
                 "card": {"type": "object",
-                         "description": "Card config object, e.g. {\"type\": \"weather-forecast\", \"entity\": \"weather.home\"}"},
+                         "description": "Card config object. MUST have a 'type' field (English). Example: {\"type\": \"weather-forecast\", \"entity\": \"weather.home\"}"},
             },
         },
     },
     {
         "name": "ha_create_script",
-        "description": (
-            "Create or update a reusable script in Home Assistant (scripts.yaml). "
-            "Scripts are like automations but triggered manually or called by other automations. "
-            "Example: 'movie mode' script that dims lights, closes blinds, turns on TV."
-        ),
+        "description": "Create or update a script in scripts.yaml. ALWAYS call ha_backup_create first. Provide: alias, sequence. Call ha_reload_core after.",
         "inputSchema": {
             "type": "object",
             "required": ["script_id", "alias", "sequence"],
@@ -1168,49 +1146,32 @@ async def _tool_ha_get_lovelace(hass: HomeAssistant, params: dict) -> dict:
     dashboard_id = params.get("dashboard_id") or "lovelace"
 
     try:
-        # Try storage-mode Lovelace
-        lovelace_data = hass.data.get("lovelace", {})
+        dashboard, err = await _get_lovelace_dashboard(hass, dashboard_id)
+        if err:
+            return err
 
-        # Try to get the dashboard config
-        config = None
-        dashboard = lovelace_data.get(dashboard_id) or lovelace_data.get("lovelace")
+        config = await dashboard.async_load(force=False)
+        if not config or not isinstance(config, dict):
+            return {"error": f"Dashboard '{dashboard_id}' returned empty config."}
 
-        if dashboard and hasattr(dashboard, "async_load"):
-            config = await dashboard.async_load(force=False)
-        elif dashboard and hasattr(dashboard, "_data"):
-            config = dashboard._data
-
-        if config:
-            # Return structure summary to avoid huge payloads
-            views = config.get("views", [])
-            return {
-                "dashboard_id": dashboard_id,
-                "mode": "storage",
-                "title": config.get("title", "Home"),
-                "views_count": len(views),
-                "views": [
-                    {
-                        "index": i,
-                        "title": v.get("title", v.get("path", f"View {i}")),
-                        "path": v.get("path", str(i)),
-                        "cards_count": len(v.get("cards", [])),
-                        "card_types": list({c.get("type", "unknown") for c in v.get("cards", []) if isinstance(c, dict)}),
-                    }
-                    for i, v in enumerate(views)
-                ],
-                "raw_config_available": True,
-            }
-        else:
-            # YAML mode or not found
-            return {
-                "dashboard_id": dashboard_id,
-                "mode": "yaml",
-                "note": (
-                    "Dashboard appears to be in YAML mode or not accessible. "
-                    "To add cards programmatically, use the HA UI (Edit Dashboard) "
-                    "or switch to storage mode in Settings → Dashboards."
-                ),
-            }
+        views = config.get("views", [])
+        return {
+            "dashboard_id": dashboard_id,
+            "mode": "storage",
+            "title": config.get("title", "Home"),
+            "views_count": len(views),
+            "views": [
+                {
+                    "index": i,
+                    "title": v.get("title", v.get("path", f"View {i}")),
+                    "path": v.get("path", str(i)),
+                    "cards_count": len(v.get("cards", [])),
+                    "card_types": list({c.get("type", "unknown") for c in v.get("cards", []) if isinstance(c, dict)}),
+                }
+                for i, v in enumerate(views)
+            ],
+            "raw_config_available": True,
+        }
     except Exception as exc:
         return {"error": f"Failed to read Lovelace config: {exc}"}
 
@@ -1218,36 +1179,68 @@ async def _tool_ha_get_lovelace(hass: HomeAssistant, params: dict) -> dict:
 async def _tool_ha_add_lovelace_card(hass: HomeAssistant, params: dict) -> dict:
     """Ajoute une carte à un dashboard Lovelace (mode storage)."""
     dashboard_id = params.get("dashboard_id") or "lovelace"
-    view_index = int(params.get("view_index", 0))
+    view_index = params.get("view_index")
     card = params.get("card")
 
     if not card or not isinstance(card, dict):
-        return {"error": "card is required and must be an object"}
-    if "type" not in card:
-        return {"error": "card must have a 'type' field, e.g. 'entities', 'weather-forecast'"}
+        return {"error": "card is required and must be an object with a 'type' field"}
+
+    # ── Normalize card type ──────────────────────────────────────────────
+    card_type = card.get("type", "")
+    if not card_type:
+        return {
+            "error": "card must have a 'type' field. Common types: weather-forecast, "
+                     "entities, button, light, thermostat, glance, gauge, history-graph, "
+                     "sensor, tile, area, markdown, map, todo-list, mushroom-entity-card."
+        }
+
+    # ── Auto-detect entity for common card types ─────────────────────────
+    if "entity" not in card:
+        auto_domain = {
+            "weather-forecast": "weather",
+            "media-control": "media_player",
+            "thermostat": "climate",
+            "plant-status": "plant",
+            "alarm-panel": "alarm_control_panel",
+            "humidifier": "humidifier",
+        }.get(card_type)
+        if auto_domain:
+            candidates = [s.entity_id for s in hass.states.async_all()
+                          if s.entity_id.startswith(f"{auto_domain}.")]
+            if len(candidates) == 1:
+                card["entity"] = candidates[0]
+            elif candidates:
+                return {
+                    "error": f"Multiple {auto_domain} entities found. Specify 'entity' in the card config.",
+                    "candidates": candidates[:10],
+                }
+            else:
+                return {"error": f"No {auto_domain} entity found in your HA instance."}
 
     try:
-        lovelace_data = hass.data.get("lovelace", {})
-        dashboard = lovelace_data.get(dashboard_id) or lovelace_data.get("lovelace")
+        dashboard, err = await _get_lovelace_dashboard(hass, dashboard_id)
+        if err:
+            return err
 
-        if not dashboard or not hasattr(dashboard, "async_save"):
-            return {
-                "error": "Dashboard is in YAML mode or not accessible for programmatic editing.",
-                "suggestion": (
-                    "Switch to storage mode: Settings → Dashboards → [your dashboard] → Edit. "
-                    "Or add the card manually via the UI Add Card button."
-                ),
-            }
+        if not hasattr(dashboard, "async_save"):
+            return {"error": "Dashboard is read-only (YAML mode). Switch to storage mode in Settings → Dashboards."}
 
         config = await dashboard.async_load(force=True)
         views = config.get("views", [])
+
+        if not views:
+            return {"error": f"Dashboard '{dashboard_id}' has no views. Create a view first in the HA UI."}
+
+        # Auto-select view 0 if only one view
+        if view_index is None:
+            view_index = 0
+        view_index = int(view_index)
 
         if view_index >= len(views):
             return {"error": f"View index {view_index} out of range (dashboard has {len(views)} views)"}
 
         views[view_index].setdefault("cards", []).append(card)
         config["views"] = views
-
         await dashboard.async_save(config)
 
         return {
@@ -1256,6 +1249,7 @@ async def _tool_ha_add_lovelace_card(hass: HomeAssistant, params: dict) -> dict:
             "view_index": view_index,
             "view_title": views[view_index].get("title", f"View {view_index}"),
             "card_type": card.get("type"),
+            "entity": card.get("entity", ""),
             "message": f"Card '{card.get('type')}' added to view '{views[view_index].get('title', view_index)}'.",
         }
     except Exception as exc:
@@ -1430,7 +1424,7 @@ async def _handle_jsonrpc(hass: HomeAssistant, body: dict) -> dict:
 
             handler = TOOL_HANDLERS.get(tool_name)
             if not handler:
-                return _err(-32601, f"Outil '{tool_name}' inconnu")
+                return _err(-32601, f"Unknown tool '{tool_name}'")
 
             result = await handler(hass, tool_args)
             return _ok({
@@ -1447,11 +1441,11 @@ async def _handle_jsonrpc(hass: HomeAssistant, body: dict) -> dict:
             return _ok({})
 
         else:
-            return _err(-32601, f"Méthode '{method}' non supportée")
+            return _err(-32601, f"Method '{method}' not supported")
 
     except Exception as exc:
         _LOGGER.error("[HACA MCP] Handler error for method '%s': %s", method, exc)
-        return _err(-32603, f"Erreur interne: {exc}")
+        return _err(-32603, f"Internal error: {exc}")
 
 
 # ─── aiohttp Views ────────────────────────────────────────────────────────
@@ -1627,12 +1621,7 @@ async def async_setup_mcp_server(hass: HomeAssistant) -> None:
 _HA_EXTENDED_TOOLS: list[dict[str, Any]] = [
     {
         "name": "ha_backup_create",
-        "description": (
-            "Create a full Home Assistant backup (native HA snapshot, .tar). "
-            "The backup appears in Settings → Backups and can be restored via the HA UI. "
-            "ALWAYS call this before making any destructive changes (deleting automations, "
-            "bulk modifications, refactoring scripts). Returns the backup ID and name."
-        ),
+        "description": "Create a backup before any modification. ALWAYS call this before create/update/remove operations.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -1646,13 +1635,7 @@ _HA_EXTENDED_TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "ha_check_config",
-        "description": (
-            "Validate the current Home Assistant configuration without restarting. "
-            "Checks automations.yaml, scripts.yaml, configuration.yaml and all included files. "
-            "Returns a list of errors if the config is invalid. "
-            "Call this after writing to any YAML config file to confirm it is valid "
-            "before reloading. Returns {valid: true} if no errors found."
-        ),
+        "description": "Validate HA configuration files. Use before ha_reload_core to check for errors.",
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
@@ -1697,12 +1680,7 @@ _HA_EXTENDED_TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "ha_rename_entity",
-        "description": (
-            "Rename a Home Assistant entity: change its friendly_name, entity_id, icon, or area. "
-            "Use this to fix HACA conformity issues: raw entity names, missing icons, missing areas. "
-            "Only the fields you provide are updated — others are left unchanged. "
-            "Note: changing entity_id may break existing automations that reference the old id."
-        ),
+        "description": "Change an entity_id. ALWAYS call ha_backup_create first. WARNING: may break automations/dashboards referencing the old ID.",
         "inputSchema": {
             "type": "object",
             "required": ["entity_id"],
@@ -2258,12 +2236,7 @@ TOOL_HANDLERS.update({
 _HA_MEDIUM_TOOLS: list[dict[str, Any]] = [
     {
         "name": "ha_get_history",
-        "description": (
-            "Retrieve the state history of one or more entities over a time period. "
-            "Returns timestamped state changes. Useful for debugging automations, "
-            "understanding device behavior, battery drain analysis, and recorder impact audits. "
-            "Defaults to the last 24 hours if no start/end provided."
-        ),
+        "description": "Retrieve state history of entities over a time period. Defaults to last 24h. Useful for debugging.",
         "inputSchema": {
             "type": "object",
             "required": ["entity_ids"],
@@ -2323,13 +2296,7 @@ _HA_MEDIUM_TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "ha_deep_search",
-        "description": (
-            "Search inside automation and script YAML content — not just names. "
-            "Finds all automations/scripts that reference a given entity_id, service, "
-            "template string, or keyword inside their triggers, conditions, or actions. "
-            "Essential before renaming or deleting an entity: find all automations that use it. "
-            "Also useful for finding duplicate logic patterns."
-        ),
+        "description": "Search across all HA entities, automations, scripts, scenes for a keyword. Use when user mentions something by name.",
         "inputSchema": {
             "type": "object",
             "required": ["query"],
@@ -2409,12 +2376,7 @@ _HA_MEDIUM_TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "ha_config_set_helper",
-        "description": (
-            "Create or update a helper entity (input_boolean, input_number, input_text, "
-            "input_select, input_datetime, counter, timer). "
-            "If the helper_id already exists, it is updated; otherwise it is created. "
-            "The helper is immediately reloaded and available in HA."
-        ),
+        "description": "Create or update a helper (input_boolean, input_number, input_text, input_select, etc.). Provide: helper_type, name, options.",
         "inputSchema": {
             "type": "object",
             "required": ["helper_type", "name"],
@@ -2459,12 +2421,7 @@ _HA_MEDIUM_TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "ha_config_remove_helper",
-        "description": (
-            "Permanently delete a helper entity. "
-            "IMPORTANT: call ha_backup_create first, and check ha_config_list_helpers "
-            "with include_orphans_check to confirm the helper is not used before deleting. "
-            "The helper is immediately removed from HA."
-        ),
+        "description": "Delete a helper. ALWAYS call ha_backup_create first. Check if referenced in automations before deleting.",
         "inputSchema": {
             "type": "object",
             "required": ["entity_id"],
@@ -2937,12 +2894,7 @@ TOOL_HANDLERS.update({
 _HA_LOW_TOOLS: list[dict[str, Any]] = [
     {
         "name": "ha_get_system_health",
-        "description": (
-            "Get the current health status of Home Assistant and its integrations. "
-            "Returns: HA version, Python version, integrations in error state, "
-            "database size, recorder status, and known issues. "
-            "Use this to enrich the HACA health score context or diagnose system-level problems."
-        ),
+        "description": "Get HA system health: version, database size, integrations in error, recorder status.",
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
@@ -2956,13 +2908,7 @@ _HA_LOW_TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "ha_reload_core",
-        "description": (
-            "Reload a specific Home Assistant domain without restarting HA. "
-            "Supported domains: automations, scripts, scenes, groups, input_boolean, "
-            "input_number, input_text, input_select, input_datetime, timer, counter, "
-            "template, customize, core. "
-            "Always call ha_check_config() before reloading to avoid loading broken YAML."
-        ),
+        "description": "Reload HA core config. Call after creating/updating automations, scripts, or scenes.",
         "inputSchema": {
             "type": "object",
             "required": ["domain"],
@@ -2976,12 +2922,7 @@ _HA_LOW_TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "ha_list_services",
-        "description": (
-            "List all services available in this Home Assistant installation, optionally filtered by domain. "
-            "Returns service names, descriptions, and their parameter schemas. "
-            "Use this to know exactly what services exist before calling ha_call_service, "
-            "avoiding guesses like 'light.toggle' vs 'homeassistant.toggle'."
-        ),
+        "description": "List all available HA services with their parameters. Use before ha_call_service.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -2994,12 +2935,7 @@ _HA_LOW_TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "ha_config_set_area",
-        "description": (
-            "Create or update a Home Assistant area (room/zone). "
-            "If the area_id already exists, its name/icon/picture are updated; otherwise it is created. "
-            "Areas are used to group devices and entities — creating them here makes them immediately "
-            "available for ha_rename_entity area_id assignments."
-        ),
+        "description": "Create or update an area. Provide: name, optional icon and floor.",
         "inputSchema": {
             "type": "object",
             "required": ["name"],
@@ -3025,13 +2961,7 @@ _HA_LOW_TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "ha_manage_entity_labels",
-        "description": (
-            "Add, remove, or replace labels on one or more entities. "
-            "Labels are tags visible in the HA entity registry and can be used to filter entities "
-            "in dashboards and automations. "
-            "Use this to label entities identified by HACA audits "
-            "(e.g. add label 'haca_reviewed' or 'needs_icon')."
-        ),
+        "description": "Add or remove labels from entities. Provide: entity_id, labels list, action (add/remove).",
         "inputSchema": {
             "type": "object",
             "required": ["entity_ids", "action"],
@@ -3362,10 +3292,35 @@ async def _tool_ha_create_blueprint(hass: HomeAssistant, params: dict) -> dict:
         if isinstance(raw_inputs, dict):
             for k, v in raw_inputs.items():
                 if isinstance(v, dict):
-                    custom_inputs[k] = v
+                    # Proper dict input — validate it has required blueprint fields
+                    if "name" in v or "selector" in v:
+                        custom_inputs[k] = v
+                    else:
+                        # Dict without name/selector — wrap as input with selector
+                        custom_inputs[k] = {"name": k, "selector": v}
                 elif isinstance(v, str):
-                    # AI sent a simple string value — wrap it
-                    custom_inputs[k] = {"name": k, "description": v, "default": v}
+                    # AI may send a JSON string as value — try to parse it
+                    try:
+                        import json as _json2
+                        parsed = _json2.loads(v)
+                        if isinstance(parsed, dict):
+                            # The AI sent the ENTIRE inputs dict as a single JSON string value
+                            # under a dummy key like "json" — unwrap it
+                            for pk, pv in parsed.items():
+                                if isinstance(pv, dict):
+                                    custom_inputs[pk] = pv
+                            continue
+                    except Exception:
+                        pass
+                    # Simple string — likely an entity_id default
+                    domain = v.split(".")[0] if "." in v else ""
+                    inp = {"name": k}
+                    if domain:
+                        inp["default"] = v
+                        inp["selector"] = {"entity": {"domain": domain}}
+                    else:
+                        inp["default"] = v
+                    custom_inputs[k] = inp
         else:
             custom_inputs = {}  # invalid format — will auto-detect
 
@@ -3391,8 +3346,8 @@ async def _tool_ha_create_blueprint(hass: HomeAssistant, params: dict) -> dict:
         blueprint_name = alias
     if not blueprint_description:
         blueprint_description = (
-            f"Blueprint généré automatiquement par HACA depuis l'automation \"{alias}\". "
-            "Modifiez la description pour décrire le cas d'usage."
+            f"Blueprint generated by HACA from automation \"{alias}\". "
+            "Edit this description to explain the use case."
         )
 
     # ── Step 2: auto-detect entity_id inputs if not provided by caller ───────
@@ -3419,7 +3374,6 @@ async def _tool_ha_create_blueprint(hass: HomeAssistant, params: dict) -> dict:
             slug = eid.replace(".", "_")
             custom_inputs[slug] = {
                 "name": eid,
-                "description": f"Entité '{eid}' extraite de l'automation d'origine.",
                 "default": eid,
                 "selector": {"entity": {"domain": domain}},
             }
@@ -3450,10 +3404,20 @@ async def _tool_ha_create_blueprint(hass: HomeAssistant, params: dict) -> dict:
         # Do NOT round-trip through safe_load — !input is not a standard YAML tag
         # Keep body_str as raw YAML text with !input references
 
-    # Build input section (keep ALL fields including default — HA requires it)
+    # Build input section — clean format for HA blueprints
     input_section: dict = {}
     for slug, inp in custom_inputs.items():
-        input_section[slug] = {k: v for k, v in inp.items()}
+        # Ensure each input has at minimum: name + selector
+        clean_inp = {}
+        if "name" in inp:
+            clean_inp["name"] = inp["name"]
+        if "description" in inp and inp["description"] != inp.get("default"):
+            clean_inp["description"] = inp["description"]
+        if "selector" in inp:
+            clean_inp["selector"] = inp["selector"]
+        if "default" in inp:
+            clean_inp["default"] = inp["default"]
+        input_section[slug] = clean_inp if clean_inp else inp
 
     blueprint_header: dict = {
         "blueprint": {
@@ -3487,7 +3451,7 @@ async def _tool_ha_create_blueprint(hass: HomeAssistant, params: dict) -> dict:
 
     try:
         _bp_header = (
-            f"# Blueprint généré par HACA depuis l'automation \"{alias}\"\n"
+            f"# Blueprint generated by HACA from automation \"{alias}\"\n"
             f"# Fichier : {bp_path}\n\n"
         )
         await _async_write_file(hass, bp_path, _bp_header + bp_yaml)
@@ -3507,9 +3471,9 @@ async def _tool_ha_create_blueprint(hass: HomeAssistant, params: dict) -> dict:
         "inputs_detected": list(custom_inputs.keys()),
         "yaml": bp_yaml,
         "message": (
-            f"Blueprint '{blueprint_name}' créé dans {bp_path}. "
-            "Visible dans Paramètres → Blueprints → Mes blueprints. "
-            "Pour l'utiliser : Paramètres → Automatisations → Créer → Depuis un blueprint."
+            f"Blueprint '{blueprint_name}' created in {bp_path}. "
+            "Visible in Settings → Blueprints. "
+            "To use it: Settings → Automations → Create → From a blueprint."
         ),
     }
 
@@ -4110,38 +4074,112 @@ async def _tool_ha_import_blueprint(hass: HomeAssistant, params: dict) -> dict:
         "inputs": list(data["blueprint"].get("input", {}).keys()),
         "message": (
             f"Blueprint '{bp_name}' imported to {out_path}. "
-            "Visible dans Paramètres → Blueprints."
+            "Visible in Settings → Blueprints."
         ),
     }
 
 
 # ── DASHBOARDS EDIT ───────────────────────────────────────────────────────────
 
+async def _get_lovelace_dashboard(hass: HomeAssistant, dashboard_id: str = None):
+    """Get a Lovelace dashboard object that supports async_load / async_save.
+    
+    Returns (dashboard_obj, error_dict). If dashboard_obj is None, error_dict
+    explains why. Handles all HA versions.
+    """
+    dashboard_id = dashboard_id or "lovelace"
+    lovelace = hass.data.get("lovelace")
+    
+    if lovelace is None:
+        return None, {"error": "Lovelace component not loaded. Ensure frontend integration is active."}
+    
+    dashboard = None
+    
+    # Strategy 1: Object with .dashboards dict (HA 2024+)
+    if hasattr(lovelace, "dashboards"):
+        dbs = lovelace.dashboards
+        if isinstance(dbs, dict) and dashboard_id in dbs:
+            dashboard = dbs[dashboard_id]
+        if not dashboard and dashboard_id in ("lovelace", "default", None):
+            if hasattr(lovelace, "async_load"):
+                dashboard = lovelace
+    
+    # Strategy 2: Dict-like
+    if not dashboard and isinstance(lovelace, dict):
+        sub = lovelace.get("dashboards", {})
+        if isinstance(sub, dict) and dashboard_id in sub:
+            dashboard = sub[dashboard_id]
+        if not dashboard:
+            dashboard = lovelace.get(dashboard_id)
+        if not dashboard and dashboard_id in ("lovelace", "default"):
+            dashboard = lovelace.get("lovelace")
+        if not dashboard:
+            cfg_obj = lovelace.get("config")
+            if cfg_obj and hasattr(cfg_obj, "async_load"):
+                dashboard = cfg_obj
+    
+    # Strategy 3: The object itself is the default dashboard
+    if not dashboard and hasattr(lovelace, "async_load"):
+        dashboard = lovelace
+    
+    if dashboard and hasattr(dashboard, "async_load"):
+        return dashboard, None
+    
+    available = []
+    if hasattr(lovelace, "dashboards") and isinstance(lovelace.dashboards, dict):
+        available = list(lovelace.dashboards.keys())
+    elif isinstance(lovelace, dict):
+        sub = lovelace.get("dashboards", lovelace)
+        if isinstance(sub, dict):
+            available = [k for k in sub.keys() if k not in ("mode", "resources", "dashboards", "config")]
+    
+    return None, {
+        "error": f"Dashboard '{dashboard_id}' not accessible in storage mode.",
+        "available_dashboards": available,
+        "suggestion": "Switch to storage mode: Settings → Dashboards → edit your dashboard. "
+                      "Available: " + (", ".join(available) if available else "none detected"),
+    }
+
+
 async def _tool_ha_list_dashboards(hass: HomeAssistant, params: dict) -> dict:
     """List all Lovelace dashboards (default + custom)."""
     results: list[dict] = []
-    # Default dashboard
     results.append({
-        "url_path": None,
+        "url_path": "lovelace",
         "title": "Default",
-        "mode": "auto/yaml",
         "icon": "mdi:home",
         "is_default": True,
     })
-    # Custom dashboards from registry
     try:
-        from homeassistant.components.lovelace import dashboard as _lv_dash  # type: ignore
-        from homeassistant.components.lovelace.const import DOMAIN as _LV_DOMAIN  # type: ignore
-        lv_data = hass.data.get(_LV_DOMAIN, {})
-        dashboards = lv_data.get("dashboards", {}) if isinstance(lv_data, dict) else {}
+        lovelace = hass.data.get("lovelace")
+        if lovelace is None:
+            return {"dashboards": results, "total": 1, "note": "Lovelace data not loaded"}
+        
+        dashboards = {}
+        if hasattr(lovelace, "dashboards") and isinstance(lovelace.dashboards, dict):
+            dashboards = lovelace.dashboards
+        elif isinstance(lovelace, dict):
+            dashboards = lovelace.get("dashboards", {})
+            if not isinstance(dashboards, dict):
+                dashboards = {}
+        
+        # Check default dashboard mode
+        if hasattr(lovelace, "async_load"):
+            results[0]["mode"] = "storage"
+        
         for url_path, dash in dashboards.items():
+            if url_path in ("lovelace",):
+                continue
             info: dict = {"url_path": url_path}
-            if hasattr(dash, "config"):
-                cfg = dash.config or {}
+            if hasattr(dash, "config") and isinstance(dash.config, dict):
+                cfg = dash.config
                 info["title"] = cfg.get("title", url_path)
                 info["icon"] = cfg.get("icon", "")
                 info["show_in_sidebar"] = cfg.get("show_in_sidebar", True)
                 info["mode"] = cfg.get("mode", "storage")
+            elif hasattr(dash, "async_load"):
+                info["title"] = url_path
+                info["mode"] = "storage"
             results.append(info)
     except Exception as exc:
         results.append({"note": f"Could not enumerate dashboards: {exc}"})
@@ -4151,12 +4189,11 @@ async def _tool_ha_list_dashboards(hass: HomeAssistant, params: dict) -> dict:
 
 async def _tool_ha_update_lovelace_card(hass: HomeAssistant, params: dict) -> dict:
     """Update an existing Lovelace card by view index + card index."""
-    import json as _json
     view_index = params.get("view_index", 0)
     card_index = params.get("card_index")
     card_id    = params.get("card_id", "")
     new_config = params.get("card_config")
-    dashboard_url = params.get("dashboard_url", None)  # None = default
+    dashboard_id = params.get("dashboard_url") or params.get("dashboard_id") or "lovelace"
 
     if new_config is None:
         return {"error": "card_config required (dict with the full new card definition)"}
@@ -4164,22 +4201,16 @@ async def _tool_ha_update_lovelace_card(hass: HomeAssistant, params: dict) -> di
         return {"error": "Either card_index (int) or card_id (string) required"}
 
     try:
-        from homeassistant.components.lovelace.const import DOMAIN as _LV_DOMAIN  # type: ignore
-        lv_data = hass.data.get(_LV_DOMAIN, {})
-        if dashboard_url is None:
-            lo_config = lv_data.get("config") or list(lv_data.values())[0]
-        else:
-            lo_config = lv_data.get("dashboards", {}).get(dashboard_url)
-        if lo_config is None:
-            return {"error": "Lovelace config not found. Ensure dashboard mode is 'storage'."}
+        dashboard, err = await _get_lovelace_dashboard(hass, dashboard_id)
+        if err:
+            return err
 
-        ll = await lo_config.async_load(False)
+        ll = await dashboard.async_load(False)
         views = ll.get("views", [])
         if view_index >= len(views):
             return {"error": f"view_index {view_index} out of range (dashboard has {len(views)} views)"}
 
         cards = views[view_index].get("cards", [])
-        # Find by card_id if provided
         if card_id:
             target_idx = next(
                 (i for i, c in enumerate(cards)
@@ -4198,7 +4229,7 @@ async def _tool_ha_update_lovelace_card(hass: HomeAssistant, params: dict) -> di
         views[view_index]["cards"] = cards
         ll["views"] = views
 
-        await lo_config.async_save(ll)
+        await dashboard.async_save(ll)
         return {
             "success": True,
             "view_index": view_index,
@@ -4216,22 +4247,17 @@ async def _tool_ha_remove_lovelace_card(hass: HomeAssistant, params: dict) -> di
     view_index = params.get("view_index", 0)
     card_index = params.get("card_index")
     card_id    = params.get("card_id", "")
-    dashboard_url = params.get("dashboard_url", None)
+    dashboard_id = params.get("dashboard_url") or params.get("dashboard_id") or "lovelace"
 
     if card_index is None and not card_id:
         return {"error": "Either card_index (int) or card_id (string) required"}
 
     try:
-        from homeassistant.components.lovelace.const import DOMAIN as _LV_DOMAIN  # type: ignore
-        lv_data = hass.data.get(_LV_DOMAIN, {})
-        if dashboard_url is None:
-            lo_config = lv_data.get("config") or list(lv_data.values())[0]
-        else:
-            lo_config = lv_data.get("dashboards", {}).get(dashboard_url)
-        if lo_config is None:
-            return {"error": "Lovelace config not found."}
+        dashboard, err = await _get_lovelace_dashboard(hass, dashboard_id)
+        if err:
+            return err
 
-        ll = await lo_config.async_load(False)
+        ll = await dashboard.async_load(False)
         views = ll.get("views", [])
         if view_index >= len(views):
             return {"error": f"view_index {view_index} out of range"}
@@ -4252,7 +4278,7 @@ async def _tool_ha_remove_lovelace_card(hass: HomeAssistant, params: dict) -> di
         removed = cards.pop(card_index)
         views[view_index]["cards"] = cards
         ll["views"] = views
-        await lo_config.async_save(ll)
+        await dashboard.async_save(ll)
 
         return {
             "success": True,
@@ -4751,41 +4777,41 @@ TOOL_HANDLERS.update({
 # ── Tool definitions for MCP handshake (all 24 new tools) ─────────────────────
 _NEW_TOOLS_V151: list[dict[str, Any]] = [
     # ── Scripts ────────────────────────────────────────────────────────────
-    {"name": "ha_get_script", "description": "Read a script's full YAML and metadata from scripts.yaml.",
+    {"name": "ha_get_script", "description": "Read a script's full YAML config. Use BEFORE ha_update_script. Accepts entity_id or alias.",
      "inputSchema": {"type": "object", "required": ["entity_id"],
       "properties": {"entity_id": {"type": "string", "description": "script entity_id or alias"}}}},
-    {"name": "ha_update_script", "description": "Update an existing script in scripts.yaml (alias, description, mode, sequence, variables).",
+    {"name": "ha_update_script", "description": "Update a script in scripts.yaml. ALWAYS call ha_get_script first, then ha_backup_create before modifying.",
      "inputSchema": {"type": "object", "required": ["entity_id"],
       "properties": {"entity_id": {"type": "string"}, "alias": {"type": "string"},
                      "description": {"type": "string"}, "mode": {"type": "string"},
                      "sequence": {"type": "array"}, "variables": {"type": "object"},
                      "icon": {"type": "string"}}}},
-    {"name": "ha_remove_script", "description": "Permanently delete a script from scripts.yaml. Call ha_backup_create first.",
+    {"name": "ha_remove_script", "description": "Delete a script from scripts.yaml. ALWAYS call ha_backup_create first. Ask user confirmation.",
      "inputSchema": {"type": "object", "required": ["entity_id"],
       "properties": {"entity_id": {"type": "string"}}}},
     # ── Scenes ─────────────────────────────────────────────────────────────
-    {"name": "ha_get_scene", "description": "Read a scene's YAML and entity states from scenes.yaml.",
+    {"name": "ha_get_scene", "description": "Read a scene's YAML and entity states. Use BEFORE ha_update_scene.",
      "inputSchema": {"type": "object", "required": ["entity_id"],
       "properties": {"entity_id": {"type": "string", "description": "scene entity_id or name, e.g. 'scene.soiree'"}}}},
-    {"name": "ha_create_scene", "description": "Create a new scene in scenes.yaml.",
+    {"name": "ha_create_scene", "description": "Create a new scene. ALWAYS call ha_backup_create first. Provide: name, entities dict. Use ha_get_entities to find entity_ids.",
      "inputSchema": {"type": "object", "required": ["name", "entities"],
       "properties": {"name": {"type": "string"}, "icon": {"type": "string"},
                      "entities": {"type": "object",
                        "description": "e.g. {'light.salon': {'state': 'on', 'brightness': 200}}"}}}},
-    {"name": "ha_update_scene", "description": "Update an existing scene in scenes.yaml (name, icon, entities).",
+    {"name": "ha_update_scene", "description": "Update a scene. ALWAYS call ha_get_scene first, then ha_backup_create before modifying.",
      "inputSchema": {"type": "object", "required": ["entity_id"],
       "properties": {"entity_id": {"type": "string"}, "name": {"type": "string"},
                      "icon": {"type": "string"}, "entities": {"type": "object"}}}},
-    {"name": "ha_remove_scene", "description": "Delete a scene from scenes.yaml. Call ha_backup_create first.",
+    {"name": "ha_remove_scene", "description": "Delete a scene. ALWAYS call ha_backup_create first. Ask user confirmation.",
      "inputSchema": {"type": "object", "required": ["entity_id"],
       "properties": {"entity_id": {"type": "string"}}}},
     # ── Blueprints ─────────────────────────────────────────────────────────
     {"name": "ha_list_blueprints",
-     "description": "List all installed blueprints in /config/blueprints/ (automation + script domains).",
+     "description": "List all automation blueprints (built-in and custom). Use to find paths before ha_get_blueprint.",
      "inputSchema": {"type": "object", "properties": {
        "domain": {"type": "string", "description": "Filter by domain: 'automation' or 'script'. Default: both."}}}},
     {"name": "ha_get_blueprint",
-     "description": "Read the full YAML of an installed blueprint.",
+     "description": "Read a blueprint's full YAML. Use ha_list_blueprints first to find the path.",
      "inputSchema": {"type": "object", "required": ["path"],
       "properties": {"path": {"type": "string",
         "description": "Relative path from /config/blueprints/, e.g. 'automation/haca/my_bp.yaml'"}}}},
@@ -4804,10 +4830,7 @@ _NEW_TOOLS_V151: list[dict[str, Any]] = [
      "inputSchema": {"type": "object", "required": ["path"],
       "properties": {"path": {"type": "string"}}}},
     {"name": "ha_import_blueprint",
-     "description": (
-         "Import a community blueprint from a raw YAML URL (GitHub raw, community.home-assistant.io export, etc.). "
-         "Saves to /config/blueprints/<domain>/imported/<name>.yaml."
-     ),
+     "description": "Import a blueprint from a URL (GitHub, HA community).",
      "inputSchema": {"type": "object", "required": ["url"],
       "properties": {"url": {"type": "string",
         "description": "Direct raw YAML URL, e.g. 'https://raw.githubusercontent.com/.../blueprint.yaml'"}}}},
@@ -4817,8 +4840,9 @@ _NEW_TOOLS_V151: list[dict[str, Any]] = [
      "inputSchema": {"type": "object", "properties": {}}},
     {"name": "ha_update_lovelace_card",
      "description": (
-         "Replace an existing Lovelace card config. Identify the card by view_index + card_index, "
-         "or by card_id if the card has an 'id' field."
+         "Replace an existing Lovelace card. Call ha_get_lovelace first to get view/card indices. "
+         "Identify the card by view_index + card_index, or by card_id. "
+         "Card type names are always in English (e.g. weather-forecast, entities, tile)."
      ),
      "inputSchema": {"type": "object", "required": ["card_config"],
       "properties": {
@@ -4863,10 +4887,7 @@ _NEW_TOOLS_V151: list[dict[str, Any]] = [
       }}},
     # ── Entities ───────────────────────────────────────────────────────────
     {"name": "ha_get_entity_detail",
-     "description": (
-         "Read all metadata for an entity: state, all attributes, registry entry "
-         "(unique_id, platform, area, labels, disabled_by), and device info."
-     ),
+     "description": "Get detailed info about one entity: state, all attributes, device info, area, labels. More complete than ha_get_entities.",
      "inputSchema": {"type": "object", "required": ["entity_id"],
       "properties": {"entity_id": {"type": "string"}}}},
     {"name": "ha_remove_entity",

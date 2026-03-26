@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Auditor de Configuración de Home Assistant",
-    "version": "v1.6.1",
+    "version": "v1.6.2",
     "buttons": {
       "scan_all": "Escaneo Completo",
       "automations": "Automatizaciones",
@@ -689,7 +689,9 @@
       "ha_repairs_hint": "Enviar problemas HIGH a Configuración → Reparaciones",
       "manual_only": "Manual only",
       "battery_notifications": "Battery notifications",
-      "battery_notifications_hint": "Persistent notifications for low battery"
+      "battery_notifications_hint": "Persistent notifications for low battery",
+      "startup_scan": "Escaneo al iniciar",
+      "startup_scan_hint": "Ejecutar un escaneo completo al iniciar Home Assistant"
     },
     "ai_explain": {
       "analyzing": "🤖 Analizando complejidad…",
@@ -1614,5 +1616,25 @@
       "title": "HACA: {type} — {entity}",
       "description": "{message}\n\nAbra el panel HACA para detalles y correcciones disponibles."
     }
+  },
+  "llm_prompt": {
+    "system_role": "Eres HACA, asistente experto en configuración de Home Assistant.",
+    "health_score": "Puntuación de salud actual: {score}/100",
+    "issues_detected": "Problemas detectados: {total} | Automatizaciones: {auto} | Scripts: {scripts}",
+    "top_issues": "Principales problemas:",
+    "no_issues": "No se detectaron problemas.",
+    "context_unavailable": "(contexto no disponible)",
+    "rules_title": "Reglas importantes:",
+    "rule_backup": "Antes de cualquier modificación, llama ha_backup_create.",
+    "rule_explain": "Explica lo que vas a hacer ANTES de hacerlo.",
+    "rule_confirm": "Para operaciones destructivas, pide confirmación al usuario.",
+    "rule_use_tools": "Usa las herramientas disponibles para leer, analizar y modificar la configuración HA.",
+    "rule_proactive": "Sé PROACTIVO: si necesitas información que puedes obtener con una herramienta, úsala en vez de preguntar al usuario.",
+    "workflow_lovelace_title": "Workflow Lovelace (dashboards):",
+    "workflow_lovelace": "1. ha_list_dashboards()\n2. ha_get_lovelace(dashboard_id)\n3. ha_add_lovelace_card() — view_index=0 si solo hay 1 vista. Tipos en inglés: weather-forecast, entities, etc.\n4. ha_update_lovelace_card() / ha_remove_lovelace_card()",
+    "workflow_auto_title": "Workflow automatizaciones:",
+    "workflow_auto": "1. ha_get_entities(domain='automation')\n2. haca_get_automation(entity_id)\n3. ha_create_automation() / ha_update_automation()",
+    "workflow_scripts_title": "Workflow scripts:",
+    "workflow_scripts": "1. ha_get_entities(domain='script')\n2. ha_get_script(entity_id)\n3. ha_create_script() / ha_update_script()"
   }
 }

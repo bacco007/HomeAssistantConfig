@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant Config Auditor",
-    "version": "v1.6.1",
+    "version": "v1.6.2",
     "buttons": {
       "scan_all": "Full Scan",
       "automations": "Automations",
@@ -689,7 +689,9 @@
       "ha_repairs_hint": "Push HIGH issues to Settings → Repairs",
       "manual_only": "Manual only",
       "battery_notifications": "Battery notifications",
-      "battery_notifications_hint": "Persistent notifications for low battery"
+      "battery_notifications_hint": "Persistent notifications for low battery",
+      "startup_scan": "Scan on startup",
+      "startup_scan_hint": "Run a full scan when Home Assistant starts"
     },
     "ai_explain": {
       "analyzing": "🤖 Analysing complexity…",
@@ -1614,5 +1616,25 @@
       "title": "HACA: {type} — {entity}",
       "description": "{message}\n\nOpen the HACA panel for details and available fixes."
     }
+  },
+  "llm_prompt": {
+    "system_role": "You are HACA, an expert Home Assistant configuration assistant.",
+    "health_score": "Current health score: {score}/100",
+    "issues_detected": "Issues detected: {total} | Automations: {auto} | Scripts: {scripts}",
+    "top_issues": "Top issues:",
+    "no_issues": "No issues detected.",
+    "context_unavailable": "(context unavailable)",
+    "rules_title": "Important rules:",
+    "rule_backup": "Before any modification (create, edit, delete), call ha_backup_create.",
+    "rule_explain": "Explain what you will do BEFORE doing it.",
+    "rule_confirm": "For destructive operations, ask user confirmation.",
+    "rule_use_tools": "Use available tools to read, analyze, and modify the HA configuration.",
+    "rule_proactive": "Be PROACTIVE: if you need information you can get via a tool, call the tool instead of asking the user. For example, to know dashboard views, call ha_get_lovelace.",
+    "workflow_lovelace_title": "Lovelace (dashboards) workflow:",
+    "workflow_lovelace": "1. ha_list_dashboards() to list dashboards\n2. ha_get_lovelace(dashboard_id) to see views and cards\n3. ha_add_lovelace_card(card, dashboard_id) to add a card\n   - If only 1 view, use view_index=0 without asking.\n   - Card types are ALWAYS in English: weather-forecast, entities, button, light, thermostat, glance, gauge, tile, area, sensor, etc.\n   - If user says 'weather'/'météo'/'Wetter'/etc., use type='weather-forecast'.\n4. ha_update_lovelace_card() / ha_remove_lovelace_card() to modify/delete",
+    "workflow_auto_title": "Automations workflow:",
+    "workflow_auto": "1. ha_get_entities(domain='automation') to list\n2. haca_get_automation(entity_id) to read full YAML\n3. ha_create_automation() / ha_update_automation() to create/modify",
+    "workflow_scripts_title": "Scripts workflow:",
+    "workflow_scripts": "1. ha_get_entities(domain='script') to list\n2. ha_get_script(entity_id) to read\n3. ha_create_script() / ha_update_script() to create/modify"
   }
 }

@@ -1020,7 +1020,7 @@ async def handle_apply_field_fix(
             raise ValueError(
                 f"Automation/script '{entity_id}' (alias={alias_provided!r}) "
                 f"introuvable dans {target.name}. "
-                f"Vérifiez que entity_id et alias sont corrects."
+                f"Check that entity_id and alias are correct."
             )
 
         found_item[field] = value
@@ -1211,7 +1211,7 @@ async def handle_save_options(
     incoming = msg.get("options", {})
 
     ALLOWED_KEYS = {
-        "scan_interval", "startup_delay_seconds",
+        "scan_interval", "startup_delay_seconds", "startup_scan_enabled",
         "event_monitoring_enabled", "event_debounce_seconds",
         "excluded_categories", "excluded_issue_types",
         "battery_critical", "battery_low", "battery_warning",

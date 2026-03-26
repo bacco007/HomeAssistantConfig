@@ -38,6 +38,7 @@ class ConfigAuditorConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     options={
                         "scan_interval": scan_interval,
                         "startup_delay_seconds": 60,
+                        "startup_scan_enabled": True,
                         "event_monitoring_enabled": True,
                         "event_debounce_seconds": 30,
                         "excluded_categories": [],

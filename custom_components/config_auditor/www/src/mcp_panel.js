@@ -483,7 +483,7 @@ function renderMcpSection(mcpStatus, agentStatus, t) {
       '<div class="cfg-section-title">' + _i('puzzle',18) + ' ' +
         _t('mcp.title') +
         ' <span style="font-size:11px;background:var(--primary-color);color:white;' +
-        'padding:2px 8px;border-radius:10px;font-weight:500;margin-left:6px;">v1.6.1</span>' +
+        'padding:2px 8px;border-radius:10px;font-weight:500;margin-left:6px;">v1.6.2</span>' +
       '</div>' +
       '<p style="margin:6px 0 14px;font-size:13px;color:var(--secondary-text-color);">' +
         _t('mcp.subtitle') +

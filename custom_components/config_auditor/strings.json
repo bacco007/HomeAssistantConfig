@@ -44,6 +44,33 @@
   },
   "entity": {
     "sensor": {
+      "health_score": {
+        "name": "Health Score"
+      },
+      "automation_issues": {
+        "name": "Automation Issues"
+      },
+      "script_issues": {
+        "name": "Script Issues"
+      },
+      "scene_issues": {
+        "name": "Scene Issues"
+      },
+      "blueprint_issues": {
+        "name": "Blueprint Issues"
+      },
+      "entity_issues": {
+        "name": "Entity Issues"
+      },
+      "performance_issues": {
+        "name": "Performance Issues"
+      },
+      "security_issues": {
+        "name": "Security Issues"
+      },
+      "total_issues": {
+        "name": "Total Issues"
+      },
       "dashboard_issues": {
         "name": "Dashboard Issues"
       },

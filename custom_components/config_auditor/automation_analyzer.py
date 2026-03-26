@@ -1533,6 +1533,10 @@ class AutomationAnalyzer:
             # Exact signature (normalised JSON hash)
             if self._is_ignored(entity_id):
                 continue
+            # Skip blueprint-based automations — they share the same structure
+            # by design but serve different purposes (different inputs/cameras/devices)
+            if config.get("use_blueprint"):
+                continue
             triggers = config.get("triggers") or config.get("trigger", [])
             actions  = config.get("actions")  or config.get("action",  [])
             sig = self._exact_fingerprint(triggers, actions)

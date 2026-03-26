@@ -38,3 +38,9 @@ customElements.define('haca-panel', HacaPanel);
 // v1.6.1-guides 1774094227
 // v1.6.1-uvcurl 1774094637
 // v1.6.1-guidescope 1774100422
+// v1.6.1-fixes4 1774250881
+// v1.6.1-lovelace 1774253385
+// v1.6.1-llmprompt 1774256092
+// v1.6.1-tooldescs 1774256746
+// v1.6.2 1774267623
+// v1.6.2-i18n-final 1774268990

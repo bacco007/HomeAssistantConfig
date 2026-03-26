@@ -1,4 +1,4 @@
-// HACA-BUILD: 270d36c5  2026-03-21T13:40:22Z
+// HACA-BUILD: e0ac90fd  2026-03-23T12:29:51Z
 // ── config_tab.js ──────────────────────────────────────────
 // ── config_tab.js ─────────────────────────────────────────────────────────
 // Onglet Configuration du panel HACA
@@ -220,6 +220,10 @@ function renderConfigTab(options, lang, t) {
     '<div class="cfg-row-label"><span>' + t('config.startup_delay') + '</span><span class="cfg-row-hint">0 – 300 s</span></div>' +
     '<input type="number" id="cfg-startup-delay" class="cfg-input" min="0" max="300" value="' + (options.startup_delay_seconds != null ? options.startup_delay_seconds : 60) + '">' +
     '</div>' +
+    '<div class="cfg-row">' +
+    '<div class="cfg-row-label"><span>' + t('config.startup_scan') + '</span><span class="cfg-row-hint">' + t('config.startup_scan_hint') + '</span></div>' +
+    '<label class="cfg-toggle"><input type="checkbox" id="cfg-startup-scan"' + (options.startup_scan_enabled !== false ? ' checked' : '') + '><span class="cfg-toggle-slider"></span></label>' +
+    '</div>' +
     '</div>' +
 
     // ── Section : Événements ──
@@ -385,6 +389,7 @@ var CONFIG_TAB_CSS = `
 var DEFAULT_OPTIONS = {
   scan_interval: 60,
   startup_delay_seconds: 60,
+  startup_scan_enabled: true,
   event_monitoring_enabled: true,
   event_debounce_seconds: 30,
   excluded_issue_types: [],
@@ -414,6 +419,7 @@ function collectFormOptions(root) {
   return {
     scan_interval: (function() { var el = q('#cfg-scan-interval'); if (!el) return 60; var v = parseInt(el.value, 10); return isNaN(v) ? 60 : Math.max(0, v); })(),
     startup_delay_seconds: num('#cfg-startup-delay', 60),
+    startup_scan_enabled: bool('#cfg-startup-scan', true),
     event_monitoring_enabled: bool('#cfg-event-monitoring', true),
     event_debounce_seconds: num('#cfg-event-debounce', 30),
     excluded_issue_types: excluded,
@@ -9073,6 +9079,12 @@ customElements.define('haca-panel', HacaPanel);
 // v1.6.1-guides 1774094227
 // v1.6.1-uvcurl 1774094637
 // v1.6.1-guidescope 1774100422
+// v1.6.1-fixes4 1774250881
+// v1.6.1-lovelace 1774253385
+// v1.6.1-llmprompt 1774256092
+// v1.6.1-tooldescs 1774256746
+// v1.6.2 1774267623
+// v1.6.2-i18n-final 1774268990
 
 // ── compliance.js ──────────────────────────────────────────
 // ── compliance.js ─────────────────────────────────────────────────────────
@@ -9766,7 +9778,7 @@ function renderMcpSection(mcpStatus, agentStatus, t) {
       '<div class="cfg-section-title">' + _i('puzzle',18) + ' ' +
         _t('mcp.title') +
         ' <span style="font-size:11px;background:var(--primary-color);color:white;' +
-        'padding:2px 8px;border-radius:10px;font-weight:500;margin-left:6px;">v1.6.1</span>' +
+        'padding:2px 8px;border-radius:10px;font-weight:500;margin-left:6px;">v1.6.2</span>' +
       '</div>' +
       '<p style="margin:6px 0 14px;font-size:13px;color:var(--secondary-text-color);">' +
         _t('mcp.subtitle') +

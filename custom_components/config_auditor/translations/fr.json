@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Auditeur de configuration Home Assistant",
-    "version": "v1.6.1",
+    "version": "v1.6.2",
     "buttons": {
       "scan_all": "Scan Complet",
       "automations": "Automatisations",
@@ -689,7 +689,9 @@
       "ha_repairs_hint": "Envoyer les issues HIGH vers Paramètres → Réparations",
       "manual_only": "Manuel uniquement",
       "battery_notifications": "Notifications batterie",
-      "battery_notifications_hint": "Notifications persistantes pour batterie faible"
+      "battery_notifications_hint": "Notifications persistantes pour batterie faible",
+      "startup_scan": "Scan au démarrage",
+      "startup_scan_hint": "Lancer un scan complet au démarrage de Home Assistant"
     },
     "ai_explain": {
       "analyzing": "🤖 Analyse de complexité en cours…",
@@ -1597,5 +1599,25 @@
       "title": "HACA : {type} — {entity}",
       "description": "{message}\n\nOuvrez le panneau HACA pour les détails et correctifs disponibles."
     }
+  },
+  "llm_prompt": {
+    "system_role": "Tu es HACA, assistant expert en configuration Home Assistant.",
+    "health_score": "Score de santé actuel : {score}/100",
+    "issues_detected": "Issues détectées : {total} | Automations : {auto} | Scripts : {scripts}",
+    "top_issues": "Top issues :",
+    "no_issues": "Aucune issue détectée.",
+    "context_unavailable": "(contexte indisponible)",
+    "rules_title": "Règles importantes :",
+    "rule_backup": "Avant toute modification (création, édition, suppression), appelle ha_backup_create.",
+    "rule_explain": "Explique ce que tu vas faire AVANT de le faire.",
+    "rule_confirm": "Pour les opérations destructives, demande confirmation à l'utilisateur.",
+    "rule_use_tools": "Utilise les outils disponibles pour lire, analyser et modifier la configuration HA.",
+    "rule_proactive": "Sois PROACTIF : si tu as besoin d'une information que tu peux obtenir via un outil, appelle l'outil au lieu de demander à l'utilisateur. Par exemple, pour connaître les vues d'un dashboard, appelle ha_get_lovelace.",
+    "workflow_lovelace_title": "Workflow Lovelace (dashboards) :",
+    "workflow_lovelace": "1. ha_list_dashboards() pour lister les dashboards\n2. ha_get_lovelace(dashboard_id) pour voir les vues et cartes\n3. ha_add_lovelace_card(card, dashboard_id) pour ajouter une carte\n   - S'il n'y a qu'une vue, utilise view_index=0 sans demander.\n   - Les types de cartes sont TOUJOURS en anglais : weather-forecast, entities, button, light, thermostat, glance, gauge, tile, area, sensor, etc.\n   - Si l'utilisateur dit 'météo', utilise type='weather-forecast'.\n4. ha_update_lovelace_card() / ha_remove_lovelace_card() pour modifier/supprimer",
+    "workflow_auto_title": "Workflow automations :",
+    "workflow_auto": "1. ha_get_entities(domain='automation') pour lister\n2. haca_get_automation(entity_id) pour lire le YAML complet\n3. ha_create_automation() / ha_update_automation() pour créer/modifier",
+    "workflow_scripts_title": "Workflow scripts :",
+    "workflow_scripts": "1. ha_get_entities(domain='script') pour lister\n2. ha_get_script(entity_id) pour lire\n3. ha_create_script() / ha_update_script() pour créer/modifier"
   }
 }

@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant Konfigurationsprüfer",
-    "version": "v1.6.1",
+    "version": "v1.6.2",
     "buttons": {
       "scan_all": "Vollständiger Scan",
       "automations": "Automatisierungen",
@@ -689,7 +689,9 @@
       "ha_repairs_hint": "HIGH-Probleme an Einstellungen → Reparaturen senden",
       "manual_only": "Manual only",
       "battery_notifications": "Battery notifications",
-      "battery_notifications_hint": "Persistent notifications for low battery"
+      "battery_notifications_hint": "Persistent notifications for low battery",
+      "startup_scan": "Scan beim Start",
+      "startup_scan_hint": "Vollständigen Scan beim Start von Home Assistant ausführen"
     },
     "ai_explain": {
       "analyzing": "🤖 Komplexität wird analysiert…",
@@ -1614,5 +1616,25 @@
       "title": "HACA: {type} — {entity}",
       "description": "{message}\n\nÖffnen Sie das HACA-Panel für Details und verfügbare Korrekturen."
     }
+  },
+  "llm_prompt": {
+    "system_role": "Du bist HACA, ein Experte für Home Assistant Konfiguration.",
+    "health_score": "Aktueller Gesundheitswert: {score}/100",
+    "issues_detected": "Erkannte Probleme: {total} | Automatisierungen: {auto} | Skripte: {scripts}",
+    "top_issues": "Top-Probleme:",
+    "no_issues": "Keine Probleme erkannt.",
+    "context_unavailable": "(Kontext nicht verfügbar)",
+    "rules_title": "Wichtige Regeln:",
+    "rule_backup": "Vor jeder Änderung (Erstellen, Bearbeiten, Löschen) ha_backup_create aufrufen.",
+    "rule_explain": "Erkläre, was du tun wirst, BEVOR du es tust.",
+    "rule_confirm": "Bei zerstörenden Operationen den Benutzer um Bestätigung bitten.",
+    "rule_use_tools": "Nutze die verfügbaren Werkzeuge zum Lesen, Analysieren und Ändern der HA-Konfiguration.",
+    "rule_proactive": "Sei PROAKTIV: Wenn du Informationen benötigst, die du über ein Werkzeug erhalten kannst, rufe das Werkzeug auf, anstatt den Benutzer zu fragen.",
+    "workflow_lovelace_title": "Lovelace (Dashboards) Workflow:",
+    "workflow_lovelace": "1. ha_list_dashboards() zum Auflisten\n2. ha_get_lovelace(dashboard_id) für Ansichten und Karten\n3. ha_add_lovelace_card() zum Hinzufügen\n   - Bei nur 1 Ansicht: view_index=0 ohne zu fragen.\n   - Kartentypen IMMER auf Englisch: weather-forecast, entities, button, etc.\n4. ha_update_lovelace_card() / ha_remove_lovelace_card()",
+    "workflow_auto_title": "Automatisierungs-Workflow:",
+    "workflow_auto": "1. ha_get_entities(domain='automation') zum Auflisten\n2. haca_get_automation(entity_id) zum Lesen\n3. ha_create_automation() / ha_update_automation()",
+    "workflow_scripts_title": "Skript-Workflow:",
+    "workflow_scripts": "1. ha_get_entities(domain='script') zum Auflisten\n2. ha_get_script(entity_id) zum Lesen\n3. ha_create_script() / ha_update_script()"
   }
 }

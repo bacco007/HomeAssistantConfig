@@ -157,7 +157,7 @@ def _correlate_issues(cdata: dict) -> list[dict[str, Any]]:
                 "severity": "medium",
                 "message": (
                     f"L'entité '{entity_id}' est référencée dans {len(issues)} automations "
-                    f"mais n'est pas disponible. Vérifier cette entité réglerait {len(issues)} issues."
+                    f"but is not available. Fixing this entity would resolve {len(issues)} issues."
                 ),
             })
 

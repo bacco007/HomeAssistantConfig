@@ -130,8 +130,17 @@ class HacaLLMAPI(llm.API):
         )
 
     async def _build_api_prompt(self) -> str:
-        """Contexte HACA injecté dans le system prompt de l'agent."""
+        """Contexte HACA injecté dans le system prompt de l'agent — multilingue."""
         hass = self.hass
+
+        # ── Load prompt translations ─────────────────────────────────────
+        from .translation_utils import TranslationHelper
+        th = TranslationHelper(hass)
+        lang = hass.data.get(DOMAIN, {}).get("user_language") or hass.config.language or "en"
+        await th.async_load_language_section(lang, "llm_prompt")
+        p = th.t  # shortcut
+
+        # ── Gather HA context ────────────────────────────────────────────
         try:
             entries    = hass.config_entries.async_entries(DOMAIN)
             cdata_raw  = hass.data.get(DOMAIN, {}).get(entries[0].entry_id, {}) if entries else {}
@@ -155,23 +164,27 @@ class HacaLLMAPI(llm.API):
                 f"{i.get('alias') or i.get('entity_id','?')}: "
                 f"{(i.get('message') or '')[:120]}"
                 for i in top5
-            ) or "  Aucune issue détectée."
+            ) or f"  {p('no_issues')}"
         except Exception:
             score        = "?"
             total_issues = 0
-            top5_txt     = "  (contexte indisponible)"
+            top5_txt     = f"  {p('context_unavailable')}"
 
         auto_count   = len(hass.states.async_entity_ids("automation"))
         script_count = len(hass.states.async_entity_ids("script"))
 
         return (
-            "Tu es HACA, assistant expert en configuration Home Assistant.\n"
-            f"Score de santé actuel : {score}/100\n"
-            f"Issues détectées : {total_issues} | Automations : {auto_count} | Scripts : {script_count}\n"
-            f"Top issues :\n{top5_txt}\n\n"
-            "Règles importantes :\n"
-            "- Avant toute modification (création, édition, suppression), appelle ha_backup_create.\n"
-            "- Explique ce que tu vas faire AVANT de le faire.\n"
-            "- Pour les opérations destructives, demande confirmation à l'utilisateur.\n"
-            "- Utilise les outils disponibles pour lire, analyser et modifier la configuration HA.\n"
+            f"{p('system_role')}\n"
+            f"{p('health_score', score=score)}\n"
+            f"{p('issues_detected', total=total_issues, auto=auto_count, scripts=script_count)}\n"
+            f"{p('top_issues')}\n{top5_txt}\n\n"
+            f"{p('rules_title')}\n"
+            f"- {p('rule_backup')}\n"
+            f"- {p('rule_explain')}\n"
+            f"- {p('rule_confirm')}\n"
+            f"- {p('rule_use_tools')}\n"
+            f"- {p('rule_proactive')}\n\n"
+            f"{p('workflow_lovelace_title')}\n{p('workflow_lovelace')}\n\n"
+            f"{p('workflow_auto_title')}\n{p('workflow_auto')}\n\n"
+            f"{p('workflow_scripts_title')}\n{p('workflow_scripts')}\n"
         )
