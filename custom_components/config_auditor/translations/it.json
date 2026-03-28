@@ -104,14 +104,18 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Revisore di configurazione Home Assistant",
-    "version": "v1.6.2",
+    "version": "v1.6.3",
     "buttons": {
       "scan_all": "Scansione Completa",
       "automations": "Automazioni",
       "entities": "Entità",
       "security": "Sicurezza",
       "report": "Rapporto",
-      "refresh": "Aggiorna"
+      "refresh": "Aggiorna",
+      "create_dashboard": "Crea Dashboard",
+      "create_dashboard_hint": "Genera una dashboard HACA nella barra laterale",
+      "creating_dashboard": "Creazione...",
+      "dashboard_error": "Creazione dashboard fallita: {error}"
     },
     "stats": {
       "health_score": "Punteggio Salute",
@@ -691,7 +695,18 @@
       "battery_notifications": "Battery notifications",
       "battery_notifications_hint": "Persistent notifications for low battery",
       "startup_scan": "Scansione all'avvio",
-      "startup_scan_hint": "Eseguire una scansione completa all'avvio di Home Assistant"
+      "startup_scan_hint": "Eseguire una scansione completa all'avvio di Home Assistant",
+      "severity_filters_title": "Filtri notifiche",
+      "severity_filters_hint": "Scegli quali livelli di gravità attivano notifiche persistenti in Home Assistant dopo ogni scansione.",
+      "severity_high": "Gravità alta",
+      "severity_high_hint": "Notifica per problemi critici da risolvere immediatamente",
+      "severity_medium": "Gravità media",
+      "severity_medium_hint": "Notifica per problemi importanti da esaminare",
+      "severity_low": "Gravità bassa",
+      "severity_low_hint": "Notifica per problemi minori e suggerimenti",
+      "dashboard_section_title": "Dashboard HACA",
+      "dashboard_section_hint": "Genera automaticamente una dashboard HACA completa nella barra laterale. Se esiste già, verrà aggiornata.",
+      "dashboard_created": "Dashboard creato con successo! Reindirizzamento..."
     },
     "ai_explain": {
       "analyzing": "🤖 Analisi complessità in corso…",
@@ -1296,6 +1311,34 @@
         "split_choice_proceed": "✅  OK, dividi in automazioni separate",
         "split_choice_backup": "📋  Fai prima un backup, poi dividi"
       }
+    },
+    "dashboard": {
+      "title": "HACA Panoramica",
+      "view_title": "Panoramica",
+      "welcome_line1": "Panoramica in tempo reale dello stato della configurazione Home Assistant.",
+      "welcome_line2": "Ogni contatore mostra il numero di problemi rilevati per categoria.",
+      "table_value": "Valore",
+      "table_meaning": "Significato",
+      "no_issues": "Nessun problema rilevato",
+      "issues_found": "Problemi trovati — controlla il pannello HACA",
+      "open_panel_hint": "Usa il pulsante in basso per aprire il pannello di audit completo.",
+      "health_score": "Punteggio Salute",
+      "security": "Sicurezza",
+      "total_issues": "Totale",
+      "automations": "Automazioni",
+      "entities": "Entità",
+      "performance": "Prestazioni",
+      "scripts": "Script",
+      "scenes": "Scene",
+      "blueprints": "Blueprint",
+      "dashboards": "Dashboard",
+      "helpers": "Helper",
+      "compliance": "Conformità",
+      "battery": "Allarmi Batteria",
+      "recorder_orphans": "Orfani Recorder",
+      "history_title": "Punteggio Salute — Ultimi 7 giorni",
+      "open_panel": "Apri Pannello HACA",
+      "created_toast": "Dashboard HACA creato!"
     }
   },
   "analyzer": {
@@ -1344,7 +1387,7 @@
     "use_entity_id_or_update": "Usa entity_id o aggiorna a un dispositivo valido",
     "verify_entity_updates": "Verifica che l’entità stia ricevendo aggiornamenti",
     "entity_may_be_broken": "L’entità potrebbe essere rotta o non più in uso",
-    "triggered_recently_loop": "Attivata molto di recente ({delta}s fa), possibile loop",
+    "triggered_recently_loop": "Attivato molto recentemente ({delta}s fa), frequenza elevata",
     "complex_automation": "L’automazione ha {count} azioni, risultato complesso",
     "parallel_mode_resources": "Modalità parallela con max={max_runs} può consumare risorse",
     "triggers_modifies_same": "L’automazione attiva e modifica le stesse entità: {entities}",

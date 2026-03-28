@@ -43,13 +43,12 @@ class TestStaticPathNotConflictingWithPanelURL:
     def test_static_path_does_not_use_bare_domain(self):
         src = self._read_source()
         # The www_dir StaticPathConfig must NOT be /{DOMAIN}" (bare)
-        # It should only appear in the _static variant
+        # Allowed patterns: /_static suffix OR /haca-cards (separate from panel URL)
         import re
-        # Find StaticPathConfig lines
         static_lines = [l for l in src.split("\n") if "StaticPathConfig" in l and "www_dir" in l]
         for line in static_lines:
-            assert "_static" in line, (
-                f"StaticPathConfig for www_dir must use _static suffix:\n  {line}"
+            assert "_static" in line or "CARDS_URL_BASE" in line, (
+                f"StaticPathConfig for www_dir must use _static suffix or CARDS_URL_BASE:\n  {line}"
             )
 
     def test_js_url_uses_domain_static(self):

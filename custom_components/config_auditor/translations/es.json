@@ -104,14 +104,18 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Auditor de Configuración de Home Assistant",
-    "version": "v1.6.2",
+    "version": "v1.6.3",
     "buttons": {
       "scan_all": "Escaneo Completo",
       "automations": "Automatizaciones",
       "entities": "Entidades",
       "security": "Seguridad",
       "report": "Informe",
-      "refresh": "Actualizar"
+      "refresh": "Actualizar",
+      "create_dashboard": "Crear Dashboard",
+      "create_dashboard_hint": "Generar un dashboard HACA en la barra lateral",
+      "creating_dashboard": "Creando...",
+      "dashboard_error": "Error al crear el dashboard: {error}"
     },
     "stats": {
       "health_score": "Puntuación de Salud",
@@ -691,7 +695,18 @@
       "battery_notifications": "Battery notifications",
       "battery_notifications_hint": "Persistent notifications for low battery",
       "startup_scan": "Escaneo al iniciar",
-      "startup_scan_hint": "Ejecutar un escaneo completo al iniciar Home Assistant"
+      "startup_scan_hint": "Ejecutar un escaneo completo al iniciar Home Assistant",
+      "severity_filters_title": "Filtros de notificaciones",
+      "severity_filters_hint": "Elige qué niveles de severidad activan notificaciones persistentes en Home Assistant después de cada escaneo.",
+      "severity_high": "Severidad alta",
+      "severity_high_hint": "Notificar problemas críticos que deben corregirse inmediatamente",
+      "severity_medium": "Severidad media",
+      "severity_medium_hint": "Notificar problemas importantes que deben revisarse",
+      "severity_low": "Severidad baja",
+      "severity_low_hint": "Notificar problemas menores y sugerencias de mejora",
+      "dashboard_section_title": "Dashboard HACA",
+      "dashboard_section_hint": "Genera automáticamente un dashboard HACA completo en la barra lateral. Si ya existe, se actualizará.",
+      "dashboard_created": "¡Dashboard creado con éxito! Redirigiendo..."
     },
     "ai_explain": {
       "analyzing": "🤖 Analizando complejidad…",
@@ -1296,6 +1311,34 @@
         "split_choice_proceed": "✅  OK, dividir en automatizaciones separadas",
         "split_choice_backup": "📋  Hacer primero copia de seguridad, luego dividir"
       }
+    },
+    "dashboard": {
+      "title": "HACA Resumen",
+      "view_title": "Resumen",
+      "welcome_line1": "Vista en tiempo real del estado de tu configuración Home Assistant.",
+      "welcome_line2": "Cada contador muestra el número de problemas detectados por categoría.",
+      "table_value": "Valor",
+      "table_meaning": "Significado",
+      "no_issues": "Sin problemas detectados",
+      "issues_found": "Problemas encontrados — revisa el panel HACA",
+      "open_panel_hint": "Usa el botón de abajo para abrir el panel de auditoría completo.",
+      "health_score": "Puntuación de Salud",
+      "security": "Seguridad",
+      "total_issues": "Total",
+      "automations": "Automatizaciones",
+      "entities": "Entidades",
+      "performance": "Rendimiento",
+      "scripts": "Scripts",
+      "scenes": "Escenas",
+      "blueprints": "Blueprints",
+      "dashboards": "Paneles",
+      "helpers": "Helpers",
+      "compliance": "Cumplimiento",
+      "battery": "Alertas de Batería",
+      "recorder_orphans": "Huérfanos Recorder",
+      "history_title": "Puntuación — Últimos 7 días",
+      "open_panel": "Abrir Panel HACA",
+      "created_toast": "¡Dashboard HACA creado!"
     }
   },
   "analyzer": {
@@ -1344,7 +1387,7 @@
     "use_entity_id_or_update": "Usa entity_id o actualiza a un dispositivo válido",
     "verify_entity_updates": "Verifica que la entidad esté recibiendo actualizaciones",
     "entity_may_be_broken": "La entidad puede estar rota o ya no en uso",
-    "triggered_recently_loop": "Disparado muy recientemente ({delta}s atrás), posible bucle",
+    "triggered_recently_loop": "Activado muy recientemente (hace {delta}s), frecuencia alta",
     "complex_automation": "La automatización tiene {count} acciones, lo cual es complejo",
     "parallel_mode_resources": "Modo paralelo con max={max_runs} puede consumir recursos",
     "triggers_modifies_same": "La automatización dispara y modifica las mismas entidades: {entities}",

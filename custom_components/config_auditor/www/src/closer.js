@@ -44,3 +44,16 @@ customElements.define('haca-panel', HacaPanel);
 // v1.6.1-tooldescs 1774256746
 // v1.6.2 1774267623
 // v1.6.2-i18n-final 1774268990
+// v1.6.2-purgefix 1774356194
+// v1.6.2-userfixes 1774426534
+// v1.6.2-trigfix 1774427004
+// v1.6.3-dashboard 1774452804
+// v1.6.3-final 1774469055
+// v1.6.3-dashfix 1774470618
+// v1.6.3-asyncio 1774472361
+// v1.6.3-native-ws 1774509454
+// v1.6.3-pretty-dash 1774527425
+// v1.6.3-pretty 1774618568
+// v1.6.3-i18n-final 1774620242
+// v1.6.3-notif-i18n 1774622143
+// v1.6.3-keys 1774627919

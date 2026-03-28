@@ -104,14 +104,18 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant konfigurations-auditor",
-    "version": "v1.6.2",
+    "version": "v1.6.3",
     "buttons": {
       "scan_all": "Fuld skanning",
       "automations": "Automatiseringer",
       "entities": "Enheder",
       "security": "Sikkerhed",
       "report": "Rapport",
-      "refresh": "Opdatér"
+      "refresh": "Opdatér",
+      "create_dashboard": "Opret dashboard",
+      "create_dashboard_hint": "Generer et HACA-dashboard i sidebjælken",
+      "creating_dashboard": "Opretter...",
+      "dashboard_error": "Oprettelse mislykkedes: {error}"
     },
     "stats": {
       "health_score": "Sundhedsscore",
@@ -691,7 +695,18 @@
       "battery_notifications": "Battery notifications",
       "battery_notifications_hint": "Persistent notifications for low battery",
       "startup_scan": "Scan ved opstart",
-      "startup_scan_hint": "Kør fuld scanning når Home Assistant starter"
+      "startup_scan_hint": "Kør fuld scanning når Home Assistant starter",
+      "severity_filters_title": "Notifikationsfiltre",
+      "severity_filters_hint": "Vælg hvilke alvorlighedsniveauer der udløser vedvarende notifikationer i Home Assistant efter hver scanning.",
+      "severity_high": "Høj alvorlighed",
+      "severity_high_hint": "Notificér ved kritiske problemer",
+      "severity_medium": "Middel alvorlighed",
+      "severity_medium_hint": "Notificér ved vigtige problemer",
+      "severity_low": "Lav alvorlighed",
+      "severity_low_hint": "Notificér ved mindre problemer og forslag",
+      "dashboard_section_title": "HACA Dashboard",
+      "dashboard_section_hint": "Opret automatisk et komplet HACA-oversigts-dashboard i sidebjælken. Hvis det allerede findes, opdateres det.",
+      "dashboard_created": "Dashboard oprettet! Omdirigerer..."
     },
     "ai_explain": {
       "analyzing": "🤖 Analyserer kompleksitet…",
@@ -1296,6 +1311,34 @@
         "split_choice_proceed": "✅  OK, opdel i separate automatiseringer",
         "split_choice_backup": "📋  Lav først sikkerhedskopi, opdel derefter"
       }
+    },
+    "dashboard": {
+      "title": "HACA Oversigt",
+      "view_title": "Oversigt",
+      "welcome_line1": "Realtidsoversigt over din Home Assistant-konfigurations sundhed.",
+      "welcome_line2": "Hver tæller viser antallet af fundne problemer pr. kategori.",
+      "table_value": "Værdi",
+      "table_meaning": "Betydning",
+      "no_issues": "Ingen problemer fundet",
+      "issues_found": "Problemer fundet — tjek HACA-panelet",
+      "open_panel_hint": "Brug knappen i bunden for at åbne det fulde audit-panel.",
+      "health_score": "Sundhedsscore",
+      "security": "Sikkerhed",
+      "total_issues": "Total",
+      "automations": "Automatiseringer",
+      "entities": "Entiteter",
+      "performance": "Ydeevne",
+      "scripts": "Scripts",
+      "scenes": "Scener",
+      "blueprints": "Blueprints",
+      "dashboards": "Dashboards",
+      "helpers": "Hjælpere",
+      "compliance": "Overholdelse",
+      "battery": "Batteriadvarsler",
+      "recorder_orphans": "Recorder-forældreløse",
+      "history_title": "Sundhedsscore — Sidste 7 dage",
+      "open_panel": "Åbn HACA Panel",
+      "created_toast": "HACA Dashboard oprettet!"
     }
   },
   "analyzer": {
@@ -1344,7 +1387,7 @@
     "use_entity_id_or_update": "Brug entity_id eller opdatér til en gyldig enhed",
     "verify_entity_updates": "Verificér at enhed modtager opdateringer",
     "entity_may_be_broken": "Enhed kan være defekt eller ikke længere i brug",
-    "triggered_recently_loop": "Udløst meget nyligt ({delta}s siden), mulig løkke",
+    "triggered_recently_loop": "Udløst meget for nylig ({delta}s siden), høj frekvens",
     "complex_automation": "Automatisering har {count} handlinger, hvilket er komplekst",
     "parallel_mode_resources": "Paralleltilstand med max={max_runs} kan forbruge ressourcer",
     "triggers_modifies_same": "Automatisering udløses på og ændrer de samme enheder: {entities}",

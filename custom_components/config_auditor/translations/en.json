@@ -104,14 +104,18 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant Config Auditor",
-    "version": "v1.6.2",
+    "version": "v1.6.3",
     "buttons": {
       "scan_all": "Full Scan",
       "automations": "Automations",
       "entities": "Entities",
       "security": "Security",
       "report": "Report",
-      "refresh": "Refresh"
+      "refresh": "Refresh",
+      "create_dashboard": "Create Dashboard",
+      "create_dashboard_hint": "Auto-generate a HACA overview dashboard in the sidebar",
+      "creating_dashboard": "Creating...",
+      "dashboard_error": "Dashboard creation failed: {error}"
     },
     "stats": {
       "health_score": "Health Score",
@@ -691,7 +695,18 @@
       "battery_notifications": "Battery notifications",
       "battery_notifications_hint": "Persistent notifications for low battery",
       "startup_scan": "Scan on startup",
-      "startup_scan_hint": "Run a full scan when Home Assistant starts"
+      "startup_scan_hint": "Run a full scan when Home Assistant starts",
+      "severity_filters_title": "Notification Filters",
+      "severity_filters_hint": "Choose which severity levels trigger persistent notifications in Home Assistant after each scan.",
+      "severity_high": "High severity",
+      "severity_high_hint": "Notify for critical issues that should be fixed immediately",
+      "severity_medium": "Medium severity",
+      "severity_medium_hint": "Notify for important issues that should be reviewed",
+      "severity_low": "Low severity",
+      "severity_low_hint": "Notify for minor issues and suggestions for improvement",
+      "dashboard_section_title": "HACA Dashboard",
+      "dashboard_section_hint": "Auto-generate a complete HACA overview dashboard in the sidebar. All HACA sensors will be displayed with gauges, counters and history. If the dashboard already exists, it will be updated.",
+      "dashboard_created": "Dashboard created successfully! Redirecting..."
     },
     "ai_explain": {
       "analyzing": "🤖 Analysing complexity…",
@@ -1296,6 +1311,34 @@
         "split_choice_proceed": "✅  OK, split into separate automations",
         "split_choice_backup": "📋  Make a backup first, then split"
       }
+    },
+    "dashboard": {
+      "title": "HACA Overview",
+      "view_title": "Overview",
+      "welcome_line1": "Real-time overview of your Home Assistant configuration health.",
+      "welcome_line2": "Each counter shows the number of detected issues per category.",
+      "table_value": "Value",
+      "table_meaning": "Meaning",
+      "no_issues": "No issues detected",
+      "issues_found": "Issues found — check the HACA panel",
+      "open_panel_hint": "Use the button at the bottom to open the full audit panel.",
+      "health_score": "Health Score",
+      "security": "Security",
+      "total_issues": "Total Issues",
+      "automations": "Automations",
+      "entities": "Entities",
+      "performance": "Performance",
+      "scripts": "Scripts",
+      "scenes": "Scenes",
+      "blueprints": "Blueprints",
+      "dashboards": "Dashboards",
+      "helpers": "Helpers",
+      "compliance": "Compliance",
+      "battery": "Battery Alerts",
+      "recorder_orphans": "Recorder Orphans",
+      "history_title": "Health Score — Last 7 Days",
+      "open_panel": "Open HACA Panel",
+      "created_toast": "Dashboard HACA created!"
     }
   },
   "analyzer": {
@@ -1344,7 +1387,7 @@
     "use_entity_id_or_update": "Use entity_id or update to a valid device",
     "verify_entity_updates": "Verify entity is receiving updates",
     "entity_may_be_broken": "Entity may be broken or no longer in use",
-    "triggered_recently_loop": "Triggered very recently ({delta}s ago), possible loop",
+    "triggered_recently_loop": "Triggered very recently ({delta}s ago), high frequency",
     "complex_automation": "Automation has {count} actions, which is complex",
     "parallel_mode_resources": "Parallel mode with max={max_runs} can consume resources",
     "triggers_modifies_same": "Automation triggers on and modifies the same entities: {entities}",

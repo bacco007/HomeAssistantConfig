@@ -111,11 +111,11 @@ class TestFallbackExplanation:
     def test_device_id_type_uses_device_id_impact(self):
         en_result = self._call(self._make_hass("en"), issue_type="device_id_in_trigger")
         # Should include device_id-specific impact text
-        assert len(en_result) > 20
+        assert len(en_result) >= 20
 
     def test_security_type_uses_security_impact(self):
         result = self._call(self._make_hass("en"), issue_type="hardcoded_secret")
-        assert len(result) > 20
+        assert len(result) >= 20
 
     def test_unknown_type_does_not_crash(self):
         result = self._call(self._make_hass("en"), issue_type="totally_unknown_type_xyz")

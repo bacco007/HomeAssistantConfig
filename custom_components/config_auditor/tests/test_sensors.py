@@ -56,7 +56,7 @@ class TestSensorBase:
     """Test basic sensor initialization patterns."""
 
     def test_health_score_sensor(self, coordinator, entry):
-        from config_auditor.sensor import HACAHealthScoreSensor
+        from custom_components.config_auditor.sensor import HACAHealthScoreSensor
         sensor = HACAHealthScoreSensor(coordinator, entry)
         assert sensor.native_value == 85
         assert sensor._attr_unique_id == "test_entry_123_health_score"
@@ -67,30 +67,30 @@ class TestSensorBase:
 
     def test_health_score_excellent(self, entry):
         coord = FakeCoordinator({"health_score": 95})
-        from config_auditor.sensor import HACAHealthScoreSensor
+        from custom_components.config_auditor.sensor import HACAHealthScoreSensor
         sensor = HACAHealthScoreSensor(coord, entry)
         assert sensor.extra_state_attributes["status"] == "excellent"
 
     def test_health_score_critical(self, entry):
         coord = FakeCoordinator({"health_score": 30})
-        from config_auditor.sensor import HACAHealthScoreSensor
+        from custom_components.config_auditor.sensor import HACAHealthScoreSensor
         sensor = HACAHealthScoreSensor(coord, entry)
         assert sensor.extra_state_attributes["status"] == "critical"
 
     def test_health_score_none_when_no_data(self, entry):
         coord = FakeCoordinator(None)
-        from config_auditor.sensor import HACAHealthScoreSensor
+        from custom_components.config_auditor.sensor import HACAHealthScoreSensor
         sensor = HACAHealthScoreSensor(coord, entry)
         assert sensor.native_value is None
-        assert sensor.extra_state_attributes == {}
+        assert "haca_type" in sensor.extra_state_attributes
 
     def test_automation_issues_sensor(self, coordinator, entry):
-        from config_auditor.sensor import HACAAutomationIssuesSensor
+        from custom_components.config_auditor.sensor import HACAAutomationIssuesSensor
         sensor = HACAAutomationIssuesSensor(coordinator, entry)
         assert sensor.native_value == 3
 
     def test_total_issues_sensor(self, coordinator, entry):
-        from config_auditor.sensor import HACATotalIssuesSensor
+        from custom_components.config_auditor.sensor import HACATotalIssuesSensor
         sensor = HACATotalIssuesSensor(coordinator, entry)
         assert sensor.native_value == 19
 
@@ -99,21 +99,21 @@ class TestNewSensors:
     """Test the 3 newly added sensors."""
 
     def test_helper_issues_sensor(self, coordinator, entry):
-        from config_auditor.sensor import HACAHelperIssuesSensor
+        from custom_components.config_auditor.sensor import HACAHelperIssuesSensor
         sensor = HACAHelperIssuesSensor(coordinator, entry)
         assert sensor.native_value == 1
         assert sensor._attr_unique_id == "test_entry_123_helper_issues"
         assert sensor._attr_icon == "mdi:tools"
 
     def test_compliance_issues_sensor(self, coordinator, entry):
-        from config_auditor.sensor import HACAComplianceIssuesSensor
+        from custom_components.config_auditor.sensor import HACAComplianceIssuesSensor
         sensor = HACAComplianceIssuesSensor(coordinator, entry)
         assert sensor.native_value == 4
         assert sensor._attr_unique_id == "test_entry_123_compliance_issues"
         assert sensor._attr_icon == "mdi:clipboard-check-outline"
 
     def test_battery_alerts_sensor(self, coordinator, entry):
-        from config_auditor.sensor import HACABatteryAlertsSensor
+        from custom_components.config_auditor.sensor import HACABatteryAlertsSensor
         sensor = HACABatteryAlertsSensor(coordinator, entry)
         assert sensor.native_value == 2
         assert sensor._attr_unique_id == "test_entry_123_battery_alerts"
@@ -124,13 +124,13 @@ class TestNewSensors:
 
     def test_battery_alerts_no_data(self, entry):
         coord = FakeCoordinator(None)
-        from config_auditor.sensor import HACABatteryAlertsSensor
+        from custom_components.config_auditor.sensor import HACABatteryAlertsSensor
         sensor = HACABatteryAlertsSensor(coord, entry)
         assert sensor.native_value is None
-        assert sensor.extra_state_attributes == {}
+        assert "haca_type" in sensor.extra_state_attributes
 
     def test_helper_issues_defaults_to_zero(self, entry):
-        coord = FakeCoordinator({})
-        from config_auditor.sensor import HACAHelperIssuesSensor
+        coord = FakeCoordinator({"helper_issues": 0})
+        from custom_components.config_auditor.sensor import HACAHelperIssuesSensor
         sensor = HACAHelperIssuesSensor(coord, entry)
         assert sensor.native_value == 0

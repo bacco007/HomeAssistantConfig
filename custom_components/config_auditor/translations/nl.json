@@ -104,14 +104,18 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant configuratie-auditor",
-    "version": "v1.6.2",
+    "version": "v1.6.3",
     "buttons": {
       "scan_all": "Volledige scan",
       "automations": "Automatiseringen",
       "entities": "Entiteiten",
       "security": "Beveiliging",
       "report": "Rapport",
-      "refresh": "Vernieuwen"
+      "refresh": "Vernieuwen",
+      "create_dashboard": "Dashboard maken",
+      "create_dashboard_hint": "Maak een HACA-dashboard in de zijbalk",
+      "creating_dashboard": "Wordt aangemaakt...",
+      "dashboard_error": "Dashboard aanmaken mislukt: {error}"
     },
     "stats": {
       "health_score": "Gezondheidscore",
@@ -691,7 +695,18 @@
       "battery_notifications": "Battery notifications",
       "battery_notifications_hint": "Persistent notifications for low battery",
       "startup_scan": "Scan bij opstarten",
-      "startup_scan_hint": "Volledige scan uitvoeren wanneer Home Assistant opstart"
+      "startup_scan_hint": "Volledige scan uitvoeren wanneer Home Assistant opstart",
+      "severity_filters_title": "Notificatiefilters",
+      "severity_filters_hint": "Kies welke ernstniveaus een persistente melding activeren in Home Assistant na elke scan.",
+      "severity_high": "Hoog",
+      "severity_high_hint": "Melden bij kritieke problemen",
+      "severity_medium": "Gemiddeld",
+      "severity_medium_hint": "Melden bij belangrijke problemen",
+      "severity_low": "Laag",
+      "severity_low_hint": "Melden bij kleine problemen en suggesties",
+      "dashboard_section_title": "HACA Dashboard",
+      "dashboard_section_hint": "Maak automatisch een volledig HACA-overzichtsdashboard in de zijbalk aan. Als het al bestaat, wordt het bijgewerkt.",
+      "dashboard_created": "Dashboard succesvol aangemaakt! Doorsturen..."
     },
     "ai_explain": {
       "analyzing": "🤖 Complexiteit analyseren…",
@@ -1296,6 +1311,34 @@
         "split_choice_proceed": "✅  OK, opsplitsen in aparte automatiseringen",
         "split_choice_backup": "📋  Maak eerst een back-up, splits dan op"
       }
+    },
+    "dashboard": {
+      "title": "HACA Overzicht",
+      "view_title": "Overzicht",
+      "welcome_line1": "Realtime overzicht van de gezondheid van je Home Assistant configuratie.",
+      "welcome_line2": "Elke teller toont het aantal gedetecteerde problemen per categorie.",
+      "table_value": "Waarde",
+      "table_meaning": "Betekenis",
+      "no_issues": "Geen problemen gedetecteerd",
+      "issues_found": "Problemen gevonden — controleer het HACA panel",
+      "open_panel_hint": "Gebruik de knop onderaan om het volledige audit panel te openen.",
+      "health_score": "Gezondheidswaarde",
+      "security": "Beveiliging",
+      "total_issues": "Totaal",
+      "automations": "Automatiseringen",
+      "entities": "Entiteiten",
+      "performance": "Prestaties",
+      "scripts": "Scripts",
+      "scenes": "Scènes",
+      "blueprints": "Blueprints",
+      "dashboards": "Dashboards",
+      "helpers": "Helpers",
+      "compliance": "Naleving",
+      "battery": "Batterijwaarschuwingen",
+      "recorder_orphans": "Recorder-wezen",
+      "history_title": "Gezondheidswaarde — Laatste 7 dagen",
+      "open_panel": "HACA Panel openen",
+      "created_toast": "HACA Dashboard aangemaakt!"
     }
   },
   "analyzer": {
@@ -1344,7 +1387,7 @@
     "use_entity_id_or_update": "Gebruik entity_id of werk bij naar een geldig apparaat",
     "verify_entity_updates": "Controleer of entiteit updates ontvangt",
     "entity_may_be_broken": "Entiteit kan defect zijn of niet meer in gebruik",
-    "triggered_recently_loop": "Zeer recent getriggerd ({delta}s geleden), mogelijke lus",
+    "triggered_recently_loop": "Zeer recent geactiveerd ({delta}s geleden), hoge frequentie",
     "complex_automation": "Automatisering heeft {count} acties, wat complex is",
     "parallel_mode_resources": "Parallel modus met max={max_runs} kan bronnen verbruiken",
     "triggers_modifies_same": "Automatisering triggert en wijzigt dezelfde entiteiten: {entities}",

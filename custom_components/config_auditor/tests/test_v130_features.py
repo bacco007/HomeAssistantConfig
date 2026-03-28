@@ -629,11 +629,11 @@ class TestVersionConsistency:
 
     def test_const_version(self):
         from custom_components.config_auditor.const import VERSION
-        assert VERSION == "1.5.2"
+        assert VERSION == "1.6.3"
 
     def test_manifest_version(self):
         manifest = json.loads((self.BASE / "manifest.json").read_text())
-        assert manifest["version"] == "1.5.2"
+        assert manifest["version"] == "1.6.3"
 
     def test_js_core_version(self):
         txt = (self.BASE / "www" / "src" / "core.js").read_text()

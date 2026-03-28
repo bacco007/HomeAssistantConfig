@@ -279,6 +279,24 @@ function renderConfigTab(options, lang, t) {
     '</div>' +
     '</div>' +
 
+    // ── Section Severity Filters ──
+    '<div class="cfg-section" style="margin-top:4px;">' +
+    '<div class="cfg-section-title">' + _icon("filter-variant", 18) + t('config.severity_filters_title') + '</div>' +
+    '<div class="cfg-row-hint" style="margin-bottom:8px;">' + t('config.severity_filters_hint') + '</div>' +
+    '<div class="cfg-row">' +
+    '<div class="cfg-row-label"><span style="color:var(--error-color,#ef5350);font-weight:600;">' + _icon("alert-circle", 14) + ' ' + t('config.severity_high') + '</span><span class="cfg-row-hint">' + t('config.severity_high_hint') + '</span></div>' +
+    '<label class="cfg-toggle"><input type="checkbox" id="cfg-notify-high"' + (options.notify_high_severity !== false ? ' checked' : '') + '><span class="cfg-toggle-slider"></span></label>' +
+    '</div>' +
+    '<div class="cfg-row">' +
+    '<div class="cfg-row-label"><span style="color:var(--warning-color,#ff9800);font-weight:600;">' + _icon("alert", 14) + ' ' + t('config.severity_medium') + '</span><span class="cfg-row-hint">' + t('config.severity_medium_hint') + '</span></div>' +
+    '<label class="cfg-toggle"><input type="checkbox" id="cfg-notify-medium"' + (options.notify_medium_severity === true ? ' checked' : '') + '><span class="cfg-toggle-slider"></span></label>' +
+    '</div>' +
+    '<div class="cfg-row">' +
+    '<div class="cfg-row-label"><span style="color:var(--info-color,#26c6da);font-weight:600;">' + _icon("information-outline", 14) + ' ' + t('config.severity_low') + '</span><span class="cfg-row-hint">' + t('config.severity_low_hint') + '</span></div>' +
+    '<label class="cfg-toggle"><input type="checkbox" id="cfg-notify-low"' + (options.notify_low_severity === true ? ' checked' : '') + '><span class="cfg-toggle-slider"></span></label>' +
+    '</div>' +
+    '</div>' +
+
     // ── Section Diagnostics & Logs ──
     '<div class="cfg-section" style="margin-top:4px;">' +
     '<div class="cfg-section-title">' + _icon("bug", 18) + t('config.diagnostics_logs') + '</div>' +
@@ -306,6 +324,18 @@ function renderConfigTab(options, lang, t) {
       <div class="cfg-row-hint" style="margin-top:6px;">
         <code style="background:var(--code-background-color,rgba(0,0,0,0.1));padding:2px 6px;border-radius:4px;">haca_ignore</code>
       </div>
+    </div>` +
+
+    // ── Dashboard creation section ──
+    `<div class="cfg-section" style="padding:16px 20px;">
+      <div class="cfg-section-title">${_icon("view-dashboard-outline", 18)}${t('config.dashboard_section_title')}</div>
+      <div class="cfg-row-hint" style="margin-top:8px;line-height:1.6;">${t('config.dashboard_section_hint')}</div>
+      <div style="margin-top:14px;">
+        <button class="cfg-btn cfg-btn-secondary" id="cfg-create-dashboard-btn" style="width:100%;">
+          ${_icon("view-dashboard-outline", 18)} ${t('buttons.create_dashboard')}
+        </button>
+      </div>
+      <div id="cfg-dashboard-status" style="display:none;margin-top:10px;padding:10px 14px;border-radius:8px;font-size:0.88em;text-align:center;"></div>
     </div>` +
 
     // ── Boutons ──
@@ -398,6 +428,9 @@ var DEFAULT_OPTIONS = {
   backup_enabled: true,
   repairs_enabled: true,
   battery_notifications_enabled: true,
+  notify_high_severity: true,
+  notify_medium_severity: false,
+  notify_low_severity: false,
 };
 
 // ─── Collecte des valeurs ─────────────────────────────────────────────────
@@ -428,6 +461,9 @@ function collectFormOptions(root) {
     backup_enabled: bool('#cfg-backup-enabled', true),
     repairs_enabled: bool('#cfg-repairs-enabled', true),
     battery_notifications_enabled: bool('#cfg-battery-notif', true),
+    notify_high_severity: bool('#cfg-notify-high', true),
+    notify_medium_severity: bool('#cfg-notify-medium', false),
+    notify_low_severity: bool('#cfg-notify-low', false),
     debug_mode: bool('#cfg-debug-toggle', false),
   };
 }

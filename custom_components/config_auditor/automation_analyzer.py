@@ -452,7 +452,12 @@ class AutomationAnalyzer:
         )
 
     async def _load_script_configs(self) -> None:
-        """Load script configurations from scripts.yaml."""
+        """Load script configurations from scripts.yaml.
+        
+        Uses the entity registry to resolve the ACTUAL entity_id for each script,
+        because users may have renamed the entity_id via Settings → Entities.
+        The YAML key stays the same, but the entity_id in HA's state machine changes.
+        """
         self._script_configs.clear()  # Clear stale data from previous scans
         config_dir = Path(self.hass.config.config_dir)
         scripts_file = config_dir / "scripts.yaml"
@@ -465,8 +470,27 @@ class AutomationAnalyzer:
                     return content if content is not None else {}
             
             scripts = await self.hass.async_add_executor_job(read_scripts)
+
+            # Build a map from original object_id to actual entity_id
+            # (handles renamed scripts via entity registry)
+            from homeassistant.helpers import entity_registry as er
+            ent_reg = er.async_get(self.hass)
+            # Map: original_object_id → actual entity_id
+            registry_map: dict[str, str] = {}
+            for entry in ent_reg.entities.values():
+                if entry.domain == "script":
+                    # entry.unique_id is typically the YAML key
+                    registry_map[entry.unique_id] = entry.entity_id
+                    # Also map by original object_id if different
+                    original_oid = entry.entity_id.split(".", 1)[1] if "." in entry.entity_id else ""
+                    if original_oid:
+                        registry_map[original_oid] = entry.entity_id
+
             for slug, config in scripts.items():
-                self._script_configs[f"script.{slug}"] = config
+                # Use registry entity_id if available (handles renames),
+                # fallback to script.{slug}
+                actual_eid = registry_map.get(slug, f"script.{slug}")
+                self._script_configs[actual_eid] = config
         except Exception as e:
             _LOGGER.error("Error loading scripts.yaml: %s", e)
 

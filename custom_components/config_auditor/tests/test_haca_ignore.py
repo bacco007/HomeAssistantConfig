@@ -276,7 +276,7 @@ class TestBatteryMonitorIgnore:
     @pytest.mark.asyncio
     async def test_ignored_battery_entity_not_in_results(self):
         hass = MockHass()
-        hass.add_state("sensor.phone_battery", "5", {"unit_of_measurement": "%"})
+        hass.add_state("sensor.phone_battery", "5", {"unit_of_measurement": "%", "device_class": "battery"})
         hass.add_registry_entry(
             MockRegistryEntry("sensor.phone_battery", labels={"haca_ignore"})
         )
@@ -289,7 +289,7 @@ class TestBatteryMonitorIgnore:
     @pytest.mark.asyncio
     async def test_non_ignored_battery_entity_in_results(self):
         hass = MockHass()
-        hass.add_state("sensor.door_battery", "3", {"unit_of_measurement": "%"})
+        hass.add_state("sensor.door_battery", "3", {"unit_of_measurement": "%", "device_class": "battery"})
         hass.add_registry_entry(MockRegistryEntry("sensor.door_battery"))
 
         monitor = _make_battery_monitor(hass)

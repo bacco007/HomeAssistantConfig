@@ -104,14 +104,18 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant konfigurationsgranskare",
-    "version": "v1.6.2",
+    "version": "v1.6.3",
     "buttons": {
       "scan_all": "Fullständig skanning",
       "automations": "Automationer",
       "entities": "Entiteter",
       "security": "Säkerhet",
       "report": "Rapport",
-      "refresh": "Uppdatera"
+      "refresh": "Uppdatera",
+      "create_dashboard": "Skapa dashboard",
+      "create_dashboard_hint": "Skapa en HACA-översiktspanel i sidofältet",
+      "creating_dashboard": "Skapar...",
+      "dashboard_error": "Skapande misslyckades: {error}"
     },
     "stats": {
       "health_score": "Hälsopoäng",
@@ -691,7 +695,18 @@
       "battery_notifications": "Battery notifications",
       "battery_notifications_hint": "Persistent notifications for low battery",
       "startup_scan": "Skanna vid start",
-      "startup_scan_hint": "Kör fullständig skanning när Home Assistant startar"
+      "startup_scan_hint": "Kör fullständig skanning när Home Assistant startar",
+      "severity_filters_title": "Aviseringsfilter",
+      "severity_filters_hint": "Välj vilka allvarlighetsnivåer som utlöser beständiga aviseringar i Home Assistant efter varje skanning.",
+      "severity_high": "Hög allvarlighetsgrad",
+      "severity_high_hint": "Avisera vid kritiska problem",
+      "severity_medium": "Medel allvarlighetsgrad",
+      "severity_medium_hint": "Avisera vid viktiga problem",
+      "severity_low": "Låg allvarlighetsgrad",
+      "severity_low_hint": "Avisera vid mindre problem och förslag",
+      "dashboard_section_title": "HACA Dashboard",
+      "dashboard_section_hint": "Skapa automatiskt en komplett HACA-översiktspanel i sidofältet. Om den redan finns uppdateras den.",
+      "dashboard_created": "Dashboard skapat! Omdirigerar..."
     },
     "ai_explain": {
       "analyzing": "🤖 Analyserar komplexitet…",
@@ -1296,6 +1311,34 @@
         "split_choice_proceed": "✅  OK, dela upp i separata automatiseringar",
         "split_choice_backup": "📋  Gör säkerhetskopia först, dela sedan upp"
       }
+    },
+    "dashboard": {
+      "title": "HACA Översikt",
+      "view_title": "Översikt",
+      "welcome_line1": "Realtidsöversikt av din Home Assistant-konfigurationshälsa.",
+      "welcome_line2": "Varje räknare visar antalet upptäckta problem per kategori.",
+      "table_value": "Värde",
+      "table_meaning": "Betydelse",
+      "no_issues": "Inga problem upptäckta",
+      "issues_found": "Problem hittade — kontrollera HACA-panelen",
+      "open_panel_hint": "Använd knappen längst ner för att öppna den fullständiga granskningspanelen.",
+      "health_score": "Hälsopoäng",
+      "security": "Säkerhet",
+      "total_issues": "Totalt",
+      "automations": "Automatiseringar",
+      "entities": "Entiteter",
+      "performance": "Prestanda",
+      "scripts": "Skript",
+      "scenes": "Scener",
+      "blueprints": "Blueprints",
+      "dashboards": "Instrumentpaneler",
+      "helpers": "Hjälpare",
+      "compliance": "Efterlevnad",
+      "battery": "Batterivarningar",
+      "recorder_orphans": "Recorder-föräldralösa",
+      "history_title": "Hälsopoäng — Senaste 7 dagarna",
+      "open_panel": "Öppna HACA Panel",
+      "created_toast": "HACA Dashboard skapat!"
     }
   },
   "analyzer": {
@@ -1344,7 +1387,7 @@
     "use_entity_id_or_update": "Använd entity_id eller uppdatera till en giltig enhet",
     "verify_entity_updates": "Verifiera att entitet tar emot uppdateringar",
     "entity_may_be_broken": "Entitet kan vara trasig eller inte längre i bruk",
-    "triggered_recently_loop": "Utlöstes nyligen ({delta}s sedan), möjlig loop",
+    "triggered_recently_loop": "Utlöst mycket nyligen ({delta}s sedan), hög frekvens",
     "complex_automation": "Automation har {count} åtgärder, vilket är komplext",
     "parallel_mode_resources": "Parallellläge med max={max_runs} kan förbruka resurser",
     "triggers_modifies_same": "Automation utlöser och modifierar samma entiteter: {entities}",

@@ -104,14 +104,18 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Auditeur de configuration Home Assistant",
-    "version": "v1.6.2",
+    "version": "v1.6.3",
     "buttons": {
       "scan_all": "Scan Complet",
       "automations": "Automatisations",
       "entities": "Entités",
       "security": "Sécurité",
       "report": "Rapport",
-      "refresh": "Actualiser"
+      "refresh": "Actualiser",
+      "create_dashboard": "Créer Dashboard",
+      "create_dashboard_hint": "Générer un dashboard HACA dans la barre latérale",
+      "creating_dashboard": "Création...",
+      "dashboard_error": "Échec de création du dashboard : {error}"
     },
     "stats": {
       "health_score": "Score de Santé",
@@ -691,7 +695,18 @@
       "battery_notifications": "Notifications batterie",
       "battery_notifications_hint": "Notifications persistantes pour batterie faible",
       "startup_scan": "Scan au démarrage",
-      "startup_scan_hint": "Lancer un scan complet au démarrage de Home Assistant"
+      "startup_scan_hint": "Lancer un scan complet au démarrage de Home Assistant",
+      "severity_filters_title": "Filtres de notifications",
+      "severity_filters_hint": "Choisissez les niveaux de sévérité qui déclenchent des notifications persistantes dans Home Assistant après chaque scan.",
+      "severity_high": "Sévérité haute",
+      "severity_high_hint": "Notifier pour les problèmes critiques à corriger immédiatement",
+      "severity_medium": "Sévérité moyenne",
+      "severity_medium_hint": "Notifier pour les problèmes importants à examiner",
+      "severity_low": "Sévérité basse",
+      "severity_low_hint": "Notifier pour les problèmes mineurs et suggestions d'amélioration",
+      "dashboard_section_title": "Dashboard HACA",
+      "dashboard_section_hint": "Générer automatiquement un dashboard HACA complet dans la barre latérale. Tous les capteurs HACA seront affichés avec des jauges, compteurs et historique. Si le dashboard existe déjà, il sera mis à jour.",
+      "dashboard_created": "Dashboard créé avec succès ! Redirection..."
     },
     "ai_explain": {
       "analyzing": "🤖 Analyse de complexité en cours…",
@@ -875,7 +890,24 @@
         "script_orphan": "Script jamais appelé par aucune automation ou script.",
         "helper_unused": "Helper non référencé dans aucune automation ou script.",
         "compliance_unused_label": "Label non assigné à aucune entité, appareil ou automation.",
-        "dashboard_missing_entity": "Le dashboard référence une entité inexistante."
+        "dashboard_missing_entity": "Le dashboard référence une entité inexistante.",
+        "blueprint_empty_input": "Le blueprint a une entrée sans valeur par défaut ni sélecteur.",
+        "complex_automation": "L'automatisation a beaucoup d'actions/conditions, envisagez de la diviser.",
+        "deprecated_service": "Utilise un appel de service obsolète qui pourrait cesser de fonctionner.",
+        "device_condition_platform": "La condition utilise la plateforme device au lieu de l'entité.",
+        "device_id_in_condition": "La condition référence un device_id qui casse si l'appareil est réappairé.",
+        "device_trigger_platform": "Le trigger utilise la plateforme device au lieu de l'entité.",
+        "excessive_delay": "L'action a un délai très long qui bloque l'automatisation.",
+        "high_complexity_actions": "La séquence d'actions est très complexe avec un imbrication profonde.",
+        "high_parallel_max": "Le max parallèle est très élevé, peut surcharger le système.",
+        "incorrect_mode_motion_single": "L'automatisation de mouvement utilise le mode single, peut manquer des événements.",
+        "probable_duplicate_automation": "Très similaire à une autre automatisation, possible doublon.",
+        "script_cycle": "Les scripts s'appellent mutuellement en boucle, causant des boucles infinies.",
+        "sensitive_data_exposure": "L'automatisation expose des données sensibles (mots de passe, tokens).",
+        "stale_entity": "L'entité n'a pas été mise à jour depuis longtemps, peut-être hors ligne.",
+        "template_simple_state": "Le template peut être remplacé par une vérification d'état plus simple.",
+        "unavailable_entity": "L'entité est indisponible, vérifiez la connectivité de l'appareil.",
+        "unknown_service": "Appelle un service qui n'existe pas dans cette instance HA."
       }
     },
     "severity": {
@@ -1279,6 +1311,34 @@
         "split_choice_proceed": "✅  OK, découpe en automations séparées",
         "split_choice_backup": "📋  Fais d'abord une sauvegarde, puis découpe"
       }
+    },
+    "dashboard": {
+      "title": "HACA Vue d'ensemble",
+      "view_title": "Vue d'ensemble",
+      "welcome_line1": "Vue en temps réel de la santé de votre configuration Home Assistant.",
+      "welcome_line2": "Chaque compteur affiche le nombre de problèmes détectés par catégorie.",
+      "table_value": "Valeur",
+      "table_meaning": "Signification",
+      "no_issues": "Aucun problème détecté",
+      "issues_found": "Problèmes trouvés — consultez le panel HACA",
+      "open_panel_hint": "Utilisez le bouton en bas pour ouvrir le panel d'audit complet.",
+      "health_score": "Score de Santé",
+      "security": "Sécurité",
+      "total_issues": "Total Problèmes",
+      "automations": "Automatisations",
+      "entities": "Entités",
+      "performance": "Performance",
+      "scripts": "Scripts",
+      "scenes": "Scènes",
+      "blueprints": "Blueprints",
+      "dashboards": "Tableaux de bord",
+      "helpers": "Helpers",
+      "compliance": "Conformité",
+      "battery": "Alertes Batteries",
+      "recorder_orphans": "Orphelins Recorder",
+      "history_title": "Score de Santé — 7 derniers jours",
+      "open_panel": "Ouvrir le Panel HACA",
+      "created_toast": "Dashboard HACA créé !"
     }
   },
   "analyzer": {
@@ -1327,7 +1387,7 @@
     "use_entity_id_or_update": "Utiliser entity_id ou mettre à jour vers un device valide",
     "verify_entity_updates": "Vérifier que l'entité reçoit des mises à jour",
     "entity_may_be_broken": "L'entité peut être cassée ou n'est plus utilisée",
-    "triggered_recently_loop": "Déclenché très récemment ({delta}s ago), boucle possible",
+    "triggered_recently_loop": "Déclenché très récemment (il y a {delta}s), fréquence élevée",
     "complex_automation": "L'automatisation a {count} actions, ce qui est complexe",
     "parallel_mode_resources": "Le mode parallèle avec max={max_runs} peut consommer des ressources",
     "triggers_modifies_same": "L'automatisation se déclenche sur et modifie les mêmes entités : {entities}",

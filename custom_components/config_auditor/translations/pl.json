@@ -104,14 +104,18 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Audytor konfiguracji Home Assistant",
-    "version": "v1.6.2",
+    "version": "v1.6.3",
     "buttons": {
       "scan_all": "Pełne skanowanie",
       "automations": "Automatyzacje",
       "entities": "Encje",
       "security": "Bezpieczeństwo",
       "report": "Raport",
-      "refresh": "Odśwież"
+      "refresh": "Odśwież",
+      "create_dashboard": "Utwórz dashboard",
+      "create_dashboard_hint": "Wygeneruj dashboard HACA na pasku bocznym",
+      "creating_dashboard": "Tworzenie...",
+      "dashboard_error": "Tworzenie nie powiodło się: {error}"
     },
     "stats": {
       "health_score": "Wynik zdrowia",
@@ -691,7 +695,18 @@
       "battery_notifications": "Battery notifications",
       "battery_notifications_hint": "Persistent notifications for low battery",
       "startup_scan": "Skan przy starcie",
-      "startup_scan_hint": "Uruchom pełne skanowanie przy starcie Home Assistant"
+      "startup_scan_hint": "Uruchom pełne skanowanie przy starcie Home Assistant",
+      "severity_filters_title": "Filtry powiadomień",
+      "severity_filters_hint": "Wybierz poziomy ważności, które wyzwalają trwałe powiadomienia w Home Assistant po każdym skanowaniu.",
+      "severity_high": "Wysoka ważność",
+      "severity_high_hint": "Powiadamiaj o krytycznych problemach",
+      "severity_medium": "Średnia ważność",
+      "severity_medium_hint": "Powiadamiaj o ważnych problemach",
+      "severity_low": "Niska ważność",
+      "severity_low_hint": "Powiadamiaj o drobnych problemach i sugestiach",
+      "dashboard_section_title": "Dashboard HACA",
+      "dashboard_section_hint": "Automatycznie wygeneruj pełny dashboard HACA na pasku bocznym. Jeśli już istnieje, zostanie zaktualizowany.",
+      "dashboard_created": "Dashboard utworzony! Przekierowanie..."
     },
     "ai_explain": {
       "analyzing": "🤖 Analizowanie złożoności…",
@@ -1296,6 +1311,34 @@
         "split_choice_proceed": "✅  OK, podziel na osobne automatyzacje",
         "split_choice_backup": "📋  Najpierw utwórz kopię zapasową, potem podziel"
       }
+    },
+    "dashboard": {
+      "title": "HACA Przegląd",
+      "view_title": "Przegląd",
+      "welcome_line1": "Podgląd stanu konfiguracji Home Assistant w czasie rzeczywistym.",
+      "welcome_line2": "Każdy licznik pokazuje liczbę wykrytych problemów w danej kategorii.",
+      "table_value": "Wartość",
+      "table_meaning": "Znaczenie",
+      "no_issues": "Brak problemów",
+      "issues_found": "Znaleziono problemy — sprawdź panel HACA",
+      "open_panel_hint": "Użyj przycisku na dole, aby otworzyć pełny panel audytu.",
+      "health_score": "Wynik zdrowia",
+      "security": "Bezpieczeństwo",
+      "total_issues": "Łącznie",
+      "automations": "Automatyzacje",
+      "entities": "Encje",
+      "performance": "Wydajność",
+      "scripts": "Skrypty",
+      "scenes": "Sceny",
+      "blueprints": "Blueprinty",
+      "dashboards": "Dashboardy",
+      "helpers": "Helpery",
+      "compliance": "Zgodność",
+      "battery": "Alerty baterii",
+      "recorder_orphans": "Osierocone wpisy",
+      "history_title": "Wynik zdrowia — Ostatnie 7 dni",
+      "open_panel": "Otwórz Panel HACA",
+      "created_toast": "Dashboard HACA utworzony!"
     }
   },
   "analyzer": {
@@ -1344,7 +1387,7 @@
     "use_entity_id_or_update": "Użyj entity_id lub zaktualizuj do prawidłowego urządzenia",
     "verify_entity_updates": "Sprawdź, czy encja otrzymuje aktualizacje",
     "entity_may_be_broken": "Encja może być uszkodzona lub nie jest już używana",
-    "triggered_recently_loop": "Wyzwolono bardzo niedawno ({delta}s temu), możliwa pętla",
+    "triggered_recently_loop": "Wyzwolone bardzo niedawno ({delta}s temu), wysoka częstotliwość",
     "complex_automation": "Automatyzacja ma {count} akcji, co jest złożone",
     "parallel_mode_resources": "Tryb równoległy z max={max_runs} może zużywać zasoby",
     "triggers_modifies_same": "Automatyzacja wyzwala się na i modyfikuje te same encje: {entities}",

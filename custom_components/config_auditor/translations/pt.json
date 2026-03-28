@@ -104,14 +104,18 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Auditor de Configuração do Home Assistant",
-    "version": "v1.6.2",
+    "version": "v1.6.3",
     "buttons": {
       "scan_all": "Verificação Completa",
       "automations": "Automações",
       "entities": "Entidades",
       "security": "Segurança",
       "report": "Relatório",
-      "refresh": "Atualizar"
+      "refresh": "Atualizar",
+      "create_dashboard": "Criar Dashboard",
+      "create_dashboard_hint": "Gerar um dashboard HACA na barra lateral",
+      "creating_dashboard": "A criar...",
+      "dashboard_error": "Falha ao criar o dashboard: {error}"
     },
     "stats": {
       "health_score": "Pontuação de Saúde",
@@ -691,7 +695,18 @@
       "battery_notifications": "Battery notifications",
       "battery_notifications_hint": "Persistent notifications for low battery",
       "startup_scan": "Scan ao iniciar",
-      "startup_scan_hint": "Executar uma análise completa ao iniciar o Home Assistant"
+      "startup_scan_hint": "Executar uma análise completa ao iniciar o Home Assistant",
+      "severity_filters_title": "Filtros de notificações",
+      "severity_filters_hint": "Escolha os níveis de severidade que ativam notificações persistentes no Home Assistant após cada scan.",
+      "severity_high": "Severidade alta",
+      "severity_high_hint": "Notificar para problemas críticos",
+      "severity_medium": "Severidade média",
+      "severity_medium_hint": "Notificar para problemas importantes",
+      "severity_low": "Severidade baixa",
+      "severity_low_hint": "Notificar para problemas menores e sugestões",
+      "dashboard_section_title": "Dashboard HACA",
+      "dashboard_section_hint": "Gera automaticamente um dashboard HACA completo na barra lateral. Se já existir, será atualizado.",
+      "dashboard_created": "Dashboard criado com sucesso! Redirecionando..."
     },
     "ai_explain": {
       "analyzing": "🤖 Analisando complexidade…",
@@ -1296,6 +1311,34 @@
         "split_choice_proceed": "✅  OK, dividir em automações separadas",
         "split_choice_backup": "📋  Fazer primeiro cópia de segurança, depois dividir"
       }
+    },
+    "dashboard": {
+      "title": "HACA Visão Geral",
+      "view_title": "Visão Geral",
+      "welcome_line1": "Visão em tempo real da saúde da sua configuração Home Assistant.",
+      "welcome_line2": "Cada contador mostra o número de problemas detetados por categoria.",
+      "table_value": "Valor",
+      "table_meaning": "Significado",
+      "no_issues": "Nenhum problema detetado",
+      "issues_found": "Problemas encontrados — verifique o painel HACA",
+      "open_panel_hint": "Use o botão abaixo para abrir o painel de auditoria completo.",
+      "health_score": "Pontuação de Saúde",
+      "security": "Segurança",
+      "total_issues": "Total",
+      "automations": "Automações",
+      "entities": "Entidades",
+      "performance": "Desempenho",
+      "scripts": "Scripts",
+      "scenes": "Cenas",
+      "blueprints": "Blueprints",
+      "dashboards": "Painéis",
+      "helpers": "Helpers",
+      "compliance": "Conformidade",
+      "battery": "Alertas de Bateria",
+      "recorder_orphans": "Órfãos Recorder",
+      "history_title": "Pontuação — Últimos 7 dias",
+      "open_panel": "Abrir Painel HACA",
+      "created_toast": "Dashboard HACA criado!"
     }
   },
   "analyzer": {
@@ -1344,7 +1387,7 @@
     "use_entity_id_or_update": "Use entity_id ou atualize para um dispositivo válido",
     "verify_entity_updates": "Verifique se a entidade está recebendo atualizações",
     "entity_may_be_broken": "A entidade pode estar quebrada ou não ser usada mais",
-    "triggered_recently_loop": "Acionada muito recentemente ({delta}s atrás), possível loop",
+    "triggered_recently_loop": "Ativado muito recentemente (há {delta}s), frequência elevada",
     "complex_automation": "Automação tem {count} ações, o que é complexo",
     "parallel_mode_resources": "Modo paralelo com max={max_runs} pode consumir recursos",
     "triggers_modifies_same": "Automação aciona e modifica as mesmas entidades: {entities}",

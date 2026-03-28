@@ -208,20 +208,12 @@ class EntityAnalyzer:
                         continue
                     action_entity = action.get("entity_id")
                     if action_entity:
-                        if isinstance(action_entity, list):
-                            for eid in action_entity:
-                                self._entity_references[eid].append(script_id)
-                        else:
-                            self._entity_references[action_entity].append(script_id)
+                        _add_ref(action_entity, script_id)
                     target = action.get("target", {})
                     if isinstance(target, dict):
                         entity_id = target.get("entity_id")
                         if entity_id:
-                            if isinstance(entity_id, list):
-                                for eid in entity_id:
-                                    self._entity_references[eid].append(script_id)
-                            else:
-                                self._entity_references[entity_id].append(script_id)
+                            _add_ref(entity_id, script_id)
                 if idx % 10 == 0: await asyncio.sleep(0)
 
     async def _analyze_entity_states(self) -> None:

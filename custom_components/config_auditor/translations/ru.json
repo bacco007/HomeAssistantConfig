@@ -104,14 +104,18 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Аудитор конфигураций Home Assistant",
-    "version": "v1.6.2",
+    "version": "v1.6.3",
     "buttons": {
       "scan_all": "Полное сканирование",
       "automations": "Автоматизации",
       "entities": "Сущности",
       "security": "Безопасность",
       "report": "Отчёт",
-      "refresh": "Обновить"
+      "refresh": "Обновить",
+      "create_dashboard": "Создать панель",
+      "create_dashboard_hint": "Создать обзорную панель HACA в боковом меню",
+      "creating_dashboard": "Создание...",
+      "dashboard_error": "Ошибка создания панели: {error}"
     },
     "stats": {
       "health_score": "Индекс состояния",
@@ -691,7 +695,18 @@
       "battery_notifications": "Battery notifications",
       "battery_notifications_hint": "Persistent notifications for low battery",
       "startup_scan": "Сканирование при запуске",
-      "startup_scan_hint": "Запустить полное сканирование при запуске Home Assistant"
+      "startup_scan_hint": "Запустить полное сканирование при запуске Home Assistant",
+      "severity_filters_title": "Фильтры уведомлений",
+      "severity_filters_hint": "Выберите уровни серьёзности, которые вызывают постоянные уведомления в Home Assistant после каждого сканирования.",
+      "severity_high": "Высокая",
+      "severity_high_hint": "Уведомлять о критических проблемах",
+      "severity_medium": "Средняя",
+      "severity_medium_hint": "Уведомлять о важных проблемах",
+      "severity_low": "Низкая",
+      "severity_low_hint": "Уведомлять о мелких проблемах и предложениях",
+      "dashboard_section_title": "Панель HACA",
+      "dashboard_section_hint": "Автоматически создать полную обзорную панель HACA в боковом меню. Если панель уже существует, она будет обновлена.",
+      "dashboard_created": "Панель успешно создана! Перенаправление..."
     },
     "ai_explain": {
       "analyzing": "🤖 Анализ сложности…",
@@ -1296,6 +1311,34 @@
         "split_choice_proceed": "✅  OK, разделить на отдельные автоматизации",
         "split_choice_backup": "📋  Сначала создать резервную копию, затем разделить"
       }
+    },
+    "dashboard": {
+      "title": "HACA Обзор",
+      "view_title": "Обзор",
+      "welcome_line1": "Обзор состояния конфигурации Home Assistant в реальном времени.",
+      "welcome_line2": "Каждый счётчик показывает количество обнаруженных проблем по категориям.",
+      "table_value": "Значение",
+      "table_meaning": "Значение",
+      "no_issues": "Проблем не обнаружено",
+      "issues_found": "Обнаружены проблемы — проверьте панель HACA",
+      "open_panel_hint": "Используйте кнопку внизу, чтобы открыть полную панель аудита.",
+      "health_score": "Индекс Здоровья",
+      "security": "Безопасность",
+      "total_issues": "Всего",
+      "automations": "Автоматизации",
+      "entities": "Сущности",
+      "performance": "Производительность",
+      "scripts": "Скрипты",
+      "scenes": "Сцены",
+      "blueprints": "Блюпринты",
+      "dashboards": "Панели",
+      "helpers": "Помощники",
+      "compliance": "Соответствие",
+      "battery": "Батарея",
+      "recorder_orphans": "Записи-сироты",
+      "history_title": "Индекс Здоровья — последние 7 дней",
+      "open_panel": "Открыть панель HACA",
+      "created_toast": "Панель HACA создана!"
     }
   },
   "analyzer": {
@@ -1344,7 +1387,7 @@
     "use_entity_id_or_update": "Используйте entity_id или обновите до корректного устройства",
     "verify_entity_updates": "Проверьте, что сущность получает обновления",
     "entity_may_be_broken": "Сущность может быть повреждена или больше не используется",
-    "triggered_recently_loop": "Сработала совсем недавно ({delta}сек назад), возможен цикл",
+    "triggered_recently_loop": "Сработала совсем недавно ({delta}с назад), высокая частота",
     "complex_automation": "Автоматизация содержит {count} действий, что сложно",
     "parallel_mode_resources": "Параллельный режим с max={max_runs} может потреблять ресурсы",
     "triggers_modifies_same": "Автоматизация триггерится и изменяет одни и те же сущности: {entities}",

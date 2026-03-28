@@ -16,16 +16,16 @@ class TestRepairsIssueKey:
     """Test stable issue key generation."""
 
     def test_basic_key(self):
-        from config_auditor.repairs import _issue_key
+        from custom_components.config_auditor.repairs import _issue_key
         issue = {"entity_id": "automation.test", "type": "zombie_entity"}
         assert _issue_key(issue) == "automation.test_zombie_entity"
 
     def test_missing_fields(self):
-        from config_auditor.repairs import _issue_key
+        from custom_components.config_auditor.repairs import _issue_key
         assert _issue_key({}) == "unknown_unknown"
 
     def test_unique_for_different_types(self):
-        from config_auditor.repairs import _issue_key
+        from custom_components.config_auditor.repairs import _issue_key
         i1 = {"entity_id": "automation.x", "type": "device_id_in_trigger"}
         i2 = {"entity_id": "automation.x", "type": "incorrect_mode_for_pattern"}
         assert _issue_key(i1) != _issue_key(i2)
@@ -41,7 +41,7 @@ class TestRepairsUpdateLogic:
         return hass
 
     def test_no_data_does_nothing(self, mock_hass):
-        from config_auditor.repairs import async_update_repairs
+        from custom_components.config_auditor.repairs import async_update_repairs
         import asyncio
 
         loop = asyncio.new_event_loop()
@@ -52,7 +52,7 @@ class TestRepairsUpdateLogic:
         # Should not raise
 
     def test_no_high_issues_creates_nothing(self, mock_hass):
-        from config_auditor.repairs import async_update_repairs
+        from custom_components.config_auditor.repairs import async_update_repairs
         import asyncio
 
         data = {
@@ -85,11 +85,11 @@ class TestRepairsMaxLimit:
     """Test the MAX_REPAIR_ISSUES limit."""
 
     def test_limit_constant_is_reasonable(self):
-        from config_auditor.repairs import MAX_REPAIR_ISSUES
+        from custom_components.config_auditor.repairs import MAX_REPAIR_ISSUES
         assert 5 <= MAX_REPAIR_ISSUES <= 50
 
     def test_fixable_types_are_strings(self):
-        from config_auditor.repairs import FIXABLE_ISSUE_TYPES
+        from custom_components.config_auditor.repairs import FIXABLE_ISSUE_TYPES
         assert all(isinstance(t, str) for t in FIXABLE_ISSUE_TYPES)
 
 
@@ -99,14 +99,14 @@ class TestDiagnosticsRedaction:
     """Test that sensitive data is properly listed for redaction."""
 
     def test_redact_keys_include_tokens(self):
-        from config_auditor.diagnostics import TO_REDACT
+        from custom_components.config_auditor.diagnostics import TO_REDACT
         assert "mcp_ha_token" in TO_REDACT
         assert "password" in TO_REDACT
         assert "secret" in TO_REDACT
         assert "api_key" in TO_REDACT
 
     def test_redact_keys_are_strings(self):
-        from config_auditor.diagnostics import TO_REDACT
+        from custom_components.config_auditor.diagnostics import TO_REDACT
         assert all(isinstance(k, str) for k in TO_REDACT)
 
 
@@ -142,7 +142,7 @@ class TestDiagnosticsPayload:
     @pytest.mark.asyncio
     async def test_diagnostics_basic_structure(self, mock_hass, mock_entry):
         """Verify the diagnostics output has expected keys."""
-        from config_auditor.diagnostics import async_get_config_entry_diagnostics
+        from custom_components.config_auditor.diagnostics import async_get_config_entry_diagnostics
 
         coordinator = MagicMock()
         coordinator.data = {

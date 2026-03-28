@@ -1,6 +1,7 @@
 """WebSocket API pour H.A.C.A."""
 from __future__ import annotations
 
+import asyncio
 import logging
 import json
 from pathlib import Path
@@ -495,21 +496,27 @@ async def handle_purge_recorder_orphans(
         Runs inside instance.async_add_executor_job so we are on the recorder's
         own DB thread.
 
-        Transaction strategy
-        --------------------
-        All entities are processed inside a SINGLE session.  ``commit()`` is
-        called once at the very end so that either ALL deletions succeed or NONE
-        are persisted (a single ``rollback()`` in the except branch undoes
-        everything).
-
-        Note on state_attributes: rows are shared/deduped by hash across entities.
-        We delete only attributes_id values that are NOT referenced by any OTHER
-        states row, to avoid breaking other entities.
+        Supports both old API (get_session) and new API (session_scope).
         """
         from sqlalchemy import text
 
         deleted = {}
-        session = instance.get_session()
+        
+        # Get a session — try modern API first, fallback to legacy
+        session = None
+        session_ctx = None
+        try:
+            if hasattr(instance, "get_session"):
+                session = instance.get_session()
+            else:
+                # HA 2024+: use session_scope or create from engine
+                from sqlalchemy.orm import Session as _Session
+                session = _Session(bind=instance.engine)
+                _LOGGER.debug("[HACA Purge] Using direct SQLAlchemy Session (modern HA)")
+        except Exception as sess_exc:
+            _LOGGER.warning("[HACA Purge] Cannot create DB session: %s", sess_exc)
+            raise
+
         try:
             for eid in entity_ids:
                 counts = {}
@@ -541,6 +548,18 @@ async def handle_purge_recorder_orphans(
                     attr_ids = [r[0] for r in orphan_attrs]
 
                     # Delete states rows
+                    # MySQL/MariaDB: old_state_id FK constraint requires nullifying
+                    # references before deletion. SQLite doesn't enforce FKs by default
+                    # so this is a no-op there but essential for MySQL.
+                    session.execute(
+                        text(
+                            "UPDATE states SET old_state_id = NULL "
+                            "WHERE old_state_id IN ("
+                            "  SELECT state_id FROM (SELECT state_id FROM states WHERE metadata_id = :mid) AS t"
+                            ")"
+                        ),
+                        {"mid": metadata_id},
+                    )
                     r = session.execute(
                         text("DELETE FROM states WHERE metadata_id = :mid"),
                         {"mid": metadata_id},
@@ -1221,6 +1240,9 @@ async def handle_save_options(
         "report_frequency",   # daily | weekly | monthly | never
         "repairs_enabled",    # true (default) | false — push HIGH issues to HA Repairs
         "battery_notifications_enabled",  # true (default) | false — battery persistent notifications
+        "notify_high_severity",    # true (default) — persistent notification for HIGH issues
+        "notify_medium_severity",  # false (default) — persistent notification for MEDIUM issues
+        "notify_low_severity",     # false (default) — persistent notification for LOW issues
     }
     for key, value in incoming.items():
         if key in ALLOWED_KEYS and value is not None:  # ignorer les None (token non modifié)
@@ -1669,3 +1691,6 @@ async def handle_get_history_diff(
     except Exception as exc:
         _LOGGER.warning("History diff error: %s", exc)
         connection.send_error(msg["id"], "diff_error", str(exc))
+
+
+

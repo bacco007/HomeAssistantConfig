@@ -2940,6 +2940,33 @@
         debugToggle.checked = !!(options.debug_mode);
         window.__haca_debug_mode = debugToggle.checked;
       }
+
+      // Dashboard creation button (in config tab)
+      el.querySelector('#cfg-create-dashboard-btn')?.addEventListener('click', async () => {
+        const btn = el.querySelector('#cfg-create-dashboard-btn');
+        const statusEl = el.querySelector('#cfg-dashboard-status');
+        if (!btn) return;
+        const origText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = _icon("loading") + ' ' + this.t('buttons.creating_dashboard');
+        try {
+          await this._createHacaDashboard();
+          if (statusEl) {
+            statusEl.style.display = '';
+            statusEl.className = 'cfg-save-status success';
+            statusEl.textContent = this.t('config.dashboard_created');
+          }
+        } catch (err) {
+          if (statusEl) {
+            statusEl.style.display = '';
+            statusEl.className = 'cfg-save-status error';
+            statusEl.textContent = this.t('buttons.dashboard_error').replace('{error}', err.message || String(err));
+          }
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = origText;
+        }
+      });
     }
 
     async _doSaveConfig(el) {
@@ -3410,7 +3437,7 @@
         const hass = this._hass;
         if (!hass || !hass.callWS) {
           modal.remove();
-          this._this.showToast(this.t('recorder.purge_error_conn'), 'error');
+          this._showToast(this.t('recorder.purge_error_conn'), 'error');
           return;
         }
 
@@ -3428,9 +3455,140 @@
           this._showToast('✅ ' + this.t('toast.purged_n').replace('{count}', entityIds.length), 'success');
         } catch (err) {
           modal.remove();
-          this._this.showToast(this.t('recorder.purge_error').replace('{error}', err.message || String(err)), 'error');
+          this._showToast(this.t('recorder.purge_error').replace('{error}', err.message || String(err)), 'error');
         }
       });
+    }
+
+    async _createHacaDashboard() {
+      const hass = this._hass;
+      const t = (k) => this.t('dashboard.' + k);
+      if (!hass || !hass.callWS) throw new Error('HA connection unavailable');
+      const URL_PATH = 'haca-overview';
+
+      const dashboards = await hass.callWS({ type: 'lovelace/dashboards/list' });
+      const exists = dashboards.some(d => d.url_path === URL_PATH);
+
+      if (!exists) {
+        await hass.callWS({
+          type: 'lovelace/dashboards/create',
+          url_path: URL_PATH,
+          title: t('title'),
+          icon: 'mdi:shield-check',
+          show_in_sidebar: true,
+          require_admin: false,
+        });
+      }
+
+      const E = {};
+      for (const [eid, state] of Object.entries(hass.states || {})) {
+        const ht = state.attributes?.haca_type;
+        if (ht) E[ht] = eid;
+      }
+
+      const _row2 = (a, b) => {
+        const items = [a, b].filter(Boolean);
+        if (!items.length) return null;
+        if (items.length === 1) return items[0];
+        return { type: 'horizontal-stack', cards: items };
+      };
+
+      const _tile = (ht, icon, tkey, color) => {
+        if (!E[ht]) return null;
+        return { type: 'tile', entity: E[ht], name: t(tkey), icon, color: color || 'primary', vertical: true };
+      };
+
+      const cards = [];
+
+      // Welcome markdown
+      cards.push({
+        type: 'markdown',
+        content: '# \u{1F6E1}\uFE0F ' + t('title') + '\n\n' +
+          t('welcome_line1') + '\n' + t('welcome_line2') + '\n\n' +
+          '| ' + t('table_value') + ' | ' + t('table_meaning') + ' |\n' +
+          '|:---:|:---|\n' +
+          '| **0** | ' + t('no_issues') + ' \u2705 |\n' +
+          '| **> 0** | ' + t('issues_found') + ' |\n\n' +
+          '> \u{1F4A1} *' + t('open_panel_hint') + '*',
+      });
+
+      // Health Score gauge
+      if (E.health_score) {
+        cards.push({
+          type: 'gauge', entity: E.health_score, name: t('health_score'),
+          min: 0, max: 100, severity: { green: 80, yellow: 50, red: 0 }, needle: true,
+        });
+      }
+
+      // Issue counters — 2 per row
+      const rows = [
+        [['security_issues',    'mdi:shield-alert',                  'security',     'red'],
+         ['total_issues',       'mdi:counter',                       'total_issues', 'deep-orange']],
+        [['automation_issues',  'mdi:robot',                         'automations',  'orange'],
+         ['entity_issues',      'mdi:alert-circle-outline',          'entities',     'amber']],
+        [['performance_issues', 'mdi:speedometer',                   'performance',  'teal'],
+         ['script_issues',      'mdi:script-text-outline',           'scripts',      'cyan']],
+        [['scene_issues',       'mdi:palette-outline',               'scenes',       'indigo'],
+         ['blueprint_issues',   'mdi:file-document-outline',         'blueprints',   'blue']],
+        [['dashboard_issues',   'mdi:view-dashboard-outline',        'dashboards',   'purple'],
+         ['helper_issues',      'mdi:form-textbox',                  'helpers',      'blue-grey']],
+        [['compliance_issues',  'mdi:check-decagram-outline',        'compliance',   'green'],
+         ['battery_alerts',     'mdi:battery-alert-variant-outline',  'battery',      'orange']],
+      ];
+
+      for (const [a, b] of rows) {
+        const row = _row2(_tile(...a), _tile(...b));
+        if (row) cards.push(row);
+      }
+
+      // Recorder orphans
+      if (E.recorder_orphans) {
+        cards.push({
+          type: 'tile', entity: E.recorder_orphans, name: t('recorder_orphans'),
+          icon: 'mdi:database-alert-outline', color: 'deep-orange', vertical: true,
+        });
+      }
+
+      // History graph
+      if (E.health_score) {
+        cards.push({
+          type: 'history-graph',
+          entities: [{ entity: E.health_score, name: t('health_score') }],
+          hours_to_show: 168,
+          title: t('history_title'),
+        });
+      }
+
+      // Custom cards
+      cards.push({ type: 'custom:haca-dashboard-card' });
+
+      // Open panel button
+      cards.push({
+        type: 'button', name: t('open_panel'), icon: 'mdi:shield-check',
+        icon_height: '50px',
+        tap_action: { action: 'navigate', navigation_path: '/config_auditor' },
+      });
+
+      await hass.callWS({
+        type: 'lovelace/config/save',
+        url_path: URL_PATH,
+        config: {
+          title: t('title'),
+          views: [{
+            title: t('view_title'),
+            path: 'overview',
+            icon: 'mdi:shield-check',
+            type: 'masonry',
+            cards,
+          }],
+        },
+      });
+
+      this._showToast('\u2705 ' + t('created_toast'), 'success');
+      setTimeout(() => {
+        history.pushState(null, '', '/' + URL_PATH);
+        window.dispatchEvent(new CustomEvent('location-changed'));
+      }, 1000);
     }
 
     _showToast(message, type = 'info') {

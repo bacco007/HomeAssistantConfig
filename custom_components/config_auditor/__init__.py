@@ -729,7 +729,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     @callback
     def _on_coordinator_update() -> None:
-        """Détecte les nouvelles issues HIGH et envoie une notification persistante."""
+        """Detect new issues and send persistent notifications based on severity options."""
         nonlocal _prev_high_issue_keys
         cdata = coordinator.data
         if not cdata:
@@ -746,26 +746,43 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             cdata.get("scene_issue_list", []),
         ]
 
-        # Identifiant stable pour chaque issue HIGH
-        current_high: dict[str, dict] = {}
+        # Check which severity levels should trigger notifications
+        opts = entry.options
+        notify_high = opts.get("notify_high_severity", True)
+        notify_medium = opts.get("notify_medium_severity", False)
+        notify_low = opts.get("notify_low_severity", False)
+        enabled_severities = set()
+        if notify_high:
+            enabled_severities.add("high")
+        if notify_medium:
+            enabled_severities.add("medium")
+        if notify_low:
+            enabled_severities.add("low")
+
+        if not enabled_severities:
+            return
+
+        # Stable identifier for each issue
+        current_issues: dict[str, dict] = {}
         for lst in all_lists:
             for issue in lst:
-                if issue.get("severity") == "high":
+                sev = issue.get("severity", "low")
+                if sev in enabled_severities:
                     key = "|".join([
                         str(issue.get("entity_id", "")),
                         str(issue.get("type", "")),
                         str(issue.get("location", "")),
                     ])
-                    current_high[key] = issue
+                    current_issues[key] = issue
 
-        new_keys = set(current_high) - _prev_high_issue_keys
-        _prev_high_issue_keys = set(current_high)
+        new_keys = set(current_issues) - _prev_high_issue_keys
+        _prev_high_issue_keys = set(current_issues)
 
         if not new_keys:
             return
 
-        # Build consolidated notification for all new HIGH issues
-        new_issues = [current_high[k] for k in new_keys]
+        # Build consolidated notification for all new issues
+        new_issues = [current_issues[k] for k in new_keys]
         count = len(new_issues)
         score = cdata.get("health_score", "?")
 
@@ -800,7 +817,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             )
         )
         _LOGGER.info(
-            "[HACA] Post-scan notification: %d new HIGH issue(s) detected", count
+            "[HACA] Post-scan notification: %d new issue(s) detected", count
         )
 
     @callback

@@ -88,56 +88,21 @@ class PerformanceAnalyzer:
         return self.issues
 
     async def _analyze_trigger_rate(self, state: Any, alias: str) -> None:
-        """Analyze the trigger rate for a specific automation.
+        """Trigger rate analysis placeholder.
         
-        Uses constants from const.py:
-        - VERY_HIGH_FREQUENCY_TRIGGERS_PER_HOUR: triggers/hour above which the
-          automation is flagged as very high frequency (potential loop).
-        - HIGH_FREQUENCY_TRIGGERS_PER_HOUR: triggers/hour for a high frequency warning.
+        Previously checked if last_triggered was recent and flagged it as
+        "high frequency / possible loop". This was flawed: a single timestamp
+        snapshot doesn't measure frequency. An automation triggered 16 seconds
+        ago simply means it ran recently — that's normal.
         
-        Converts to interval in seconds:
-          very_high → 3600 / VERY_HIGH_FREQUENCY_TRIGGERS_PER_HOUR seconds
-          high      → 3600 / HIGH_FREQUENCY_TRIGGERS_PER_HOUR seconds
+        Real frequency detection would require counting triggers over a period
+        via the recorder history, which is expensive. The structural loop
+        detection in _detect_potential_loops is the correct approach for
+        identifying automations that risk looping.
+        
+        This method is kept as a no-op for forward compatibility.
         """
-        last_triggered = state.attributes.get("last_triggered")
-        t = self._translator.t
-
-        # Convert per-hour thresholds to minimum interval in seconds
-        very_high_interval = 3600.0 / VERY_HIGH_FREQUENCY_TRIGGERS_PER_HOUR  # e.g. 36s for 100/h
-        high_interval = 3600.0 / HIGH_FREQUENCY_TRIGGERS_PER_HOUR             # e.g. 72s for 50/h
-
-        if last_triggered:
-            try:
-                # Handle both aware and naive datetimes
-                now = datetime.now(last_triggered.tzinfo)
-                delta = (now - last_triggered).total_seconds()
-
-                if delta < very_high_interval:
-                    # Triggered more frequently than VERY_HIGH_FREQUENCY_TRIGGERS_PER_HOUR
-                    self.issues.append({
-                        "entity_id": state.entity_id,
-                        "alias": alias,
-                        "type": ISSUE_VERY_HIGH_FREQUENCY,
-                        "severity": "high",
-                        "message": t("triggered_recently_loop", delta=f"{delta:.1f}"),
-                        "location": "trigger",
-                        "recommendation": t("verify_triggers"),
-                        "fix_available": False,
-                    })
-                elif delta < high_interval:
-                    # Triggered more frequently than HIGH_FREQUENCY_TRIGGERS_PER_HOUR
-                    self.issues.append({
-                        "entity_id": state.entity_id,
-                        "alias": alias,
-                        "type": ISSUE_HIGH_FREQUENCY,
-                        "severity": "medium",
-                        "message": t("triggered_recently_loop", delta=f"{delta:.1f}"),
-                        "location": "trigger",
-                        "recommendation": t("verify_triggers"),
-                        "fix_available": False,
-                    })
-            except Exception as e:
-                _LOGGER.warning("Error checking trigger rate for %s: %s", alias, e)
+        pass
 
     def _analyze_complexity(self, entity_id: str, alias: str, config: dict[str, Any]) -> None:
         """Analyze automation complexity."""

@@ -104,14 +104,18 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant 設定監査ツール",
-    "version": "v1.6.2",
+    "version": "v1.6.3",
     "buttons": {
       "scan_all": "完全スキャン",
       "automations": "オートメーション",
       "entities": "エンティティ",
       "security": "セキュリティ",
       "report": "レポート",
-      "refresh": "更新"
+      "refresh": "更新",
+      "create_dashboard": "ダッシュボード作成",
+      "create_dashboard_hint": "サイドバーにHACA概要ダッシュボードを作成",
+      "creating_dashboard": "作成中...",
+      "dashboard_error": "ダッシュボード作成失敗: {error}"
     },
     "stats": {
       "health_score": "ヘルススコア",
@@ -691,7 +695,18 @@
       "battery_notifications": "Battery notifications",
       "battery_notifications_hint": "Persistent notifications for low battery",
       "startup_scan": "起動時スキャン",
-      "startup_scan_hint": "Home Assistant起動時にフルスキャンを実行"
+      "startup_scan_hint": "Home Assistant起動時にフルスキャンを実行",
+      "severity_filters_title": "通知フィルター",
+      "severity_filters_hint": "各スキャン後にHome Assistantで永続通知をトリガーする重大度レベルを選択します。",
+      "severity_high": "高い重大度",
+      "severity_high_hint": "重大な問題を通知",
+      "severity_medium": "中程度の重大度",
+      "severity_medium_hint": "重要な問題を通知",
+      "severity_low": "低い重大度",
+      "severity_low_hint": "軽微な問題と提案を通知",
+      "dashboard_section_title": "HACAダッシュボード",
+      "dashboard_section_hint": "サイドバーに完全なHACA概要ダッシュボードを自動生成します。既に存在する場合は更新されます。",
+      "dashboard_created": "ダッシュボード作成成功！リダイレクト中..."
     },
     "ai_explain": {
       "analyzing": "🤖 複雑度を解析中…",
@@ -1296,6 +1311,34 @@
         "split_choice_proceed": "✅  OK、個別のオートメーションに分割する",
         "split_choice_backup": "📋  まずバックアップを作成し、その後分割する"
       }
+    },
+    "dashboard": {
+      "title": "HACA 概要",
+      "view_title": "概要",
+      "welcome_line1": "Home Assistant設定の健全性をリアルタイムで確認できます。",
+      "welcome_line2": "各カウンターはカテゴリごとに検出された問題数を表示します。",
+      "table_value": "値",
+      "table_meaning": "意味",
+      "no_issues": "問題なし",
+      "issues_found": "問題あり — HACAパネルを確認",
+      "open_panel_hint": "下のボタンをクリックして完全な監査パネルを開きます。",
+      "health_score": "ヘルススコア",
+      "security": "セキュリティ",
+      "total_issues": "合計",
+      "automations": "オートメーション",
+      "entities": "エンティティ",
+      "performance": "パフォーマンス",
+      "scripts": "スクリプト",
+      "scenes": "シーン",
+      "blueprints": "ブループリント",
+      "dashboards": "ダッシュボード",
+      "helpers": "ヘルパー",
+      "compliance": "コンプライアンス",
+      "battery": "バッテリー警告",
+      "recorder_orphans": "レコーダー孤立データ",
+      "history_title": "ヘルススコア — 過去7日間",
+      "open_panel": "HACAパネルを開く",
+      "created_toast": "HACAダッシュボード作成完了！"
     }
   },
   "analyzer": {
@@ -1344,7 +1387,7 @@
     "use_entity_id_or_update": "entity_id を使用するか有効なデバイスに更新してください",
     "verify_entity_updates": "エンティティが更新を受け取っているかを確認してください",
     "entity_may_be_broken": "エンティティが壊れているか使用されていない可能性があります",
-    "triggered_recently_loop": "ごく最近トリガーされました（{delta}秒前）、ループの可能性があります",
+    "triggered_recently_loop": "非常に最近トリガー（{delta}秒前）、高頻度",
     "complex_automation": "オートメーションに {count} 個のアクションがあります、複雑です",
     "parallel_mode_resources": "最大 {max_runs} での並列モードは資源を消費する可能性があります",
     "triggers_modifies_same": "オートメーションが同一のエンティティ群 {entities} をトリガーかつ変更しています",

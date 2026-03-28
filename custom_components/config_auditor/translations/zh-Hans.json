@@ -104,14 +104,18 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant 配置审计器",
-    "version": "v1.6.2",
+    "version": "v1.6.3",
     "buttons": {
       "scan_all": "全面扫描",
       "automations": "自动化",
       "entities": "实体",
       "security": "安全",
       "report": "报告",
-      "refresh": "刷新"
+      "refresh": "刷新",
+      "create_dashboard": "创建仪表板",
+      "create_dashboard_hint": "在侧边栏中自动生成HACA概览仪表板",
+      "creating_dashboard": "创建中...",
+      "dashboard_error": "创建仪表板失败: {error}"
     },
     "stats": {
       "health_score": "健康评分",
@@ -691,7 +695,18 @@
       "battery_notifications": "Battery notifications",
       "battery_notifications_hint": "Persistent notifications for low battery",
       "startup_scan": "启动时扫描",
-      "startup_scan_hint": "Home Assistant 启动时执行完整扫描"
+      "startup_scan_hint": "Home Assistant 启动时执行完整扫描",
+      "severity_filters_title": "通知过滤器",
+      "severity_filters_hint": "选择每次扫描后在Home Assistant中触发持久通知的严重级别。",
+      "severity_high": "高严重性",
+      "severity_high_hint": "通知需立即修复的严重问题",
+      "severity_medium": "中等严重性",
+      "severity_medium_hint": "通知需要审查的重要问题",
+      "severity_low": "低严重性",
+      "severity_low_hint": "通知小问题和改进建议",
+      "dashboard_section_title": "HACA仪表板",
+      "dashboard_section_hint": "在侧边栏中自动生成完整的HACA概览仪表板。如果已存在，将会更新。",
+      "dashboard_created": "仪表板创建成功！重定向中..."
     },
     "ai_explain": {
       "analyzing": "🤖 正在分析复杂度…",
@@ -1296,6 +1311,34 @@
         "split_choice_proceed": "✅  好的，拆分为独立的自动化",
         "split_choice_backup": "📋  先备份，然后拆分"
       }
+    },
+    "dashboard": {
+      "title": "HACA 概览",
+      "view_title": "概览",
+      "welcome_line1": "实时查看您的Home Assistant配置健康状况。",
+      "welcome_line2": "每个计数器显示每个类别检测到的问题数量。",
+      "table_value": "值",
+      "table_meaning": "含义",
+      "no_issues": "未检测到问题",
+      "issues_found": "发现问题 — 请检查HACA面板",
+      "open_panel_hint": "使用下方按钮打开完整的审计面板。",
+      "health_score": "健康评分",
+      "security": "安全",
+      "total_issues": "总计",
+      "automations": "自动化",
+      "entities": "实体",
+      "performance": "性能",
+      "scripts": "脚本",
+      "scenes": "场景",
+      "blueprints": "蓝图",
+      "dashboards": "仪表板",
+      "helpers": "助手",
+      "compliance": "合规",
+      "battery": "电池警报",
+      "recorder_orphans": "录制器孤立数据",
+      "history_title": "健康评分 — 过去7天",
+      "open_panel": "打开HACA面板",
+      "created_toast": "HACA仪表板已创建！"
     }
   },
   "analyzer": {
@@ -1344,7 +1387,7 @@
     "use_entity_id_or_update": "使用 entity_id 或更新为有效设备",
     "verify_entity_updates": "确认实体正在接收更新",
     "entity_may_be_broken": "实体可能损坏或不再使用",
-    "triggered_recently_loop": "最近刚触发（{delta}秒前），可能存在循环",
+    "triggered_recently_loop": "最近触发（{delta}秒前），高频率",
     "complex_automation": "自动化有 {count} 个动作，较为复杂",
     "parallel_mode_resources": "并行模式 max={max_runs} 可能消耗资源",
     "triggers_modifies_same": "自动化触发并修改相同实体：{entities}",

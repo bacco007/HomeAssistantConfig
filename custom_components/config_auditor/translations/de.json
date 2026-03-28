@@ -104,14 +104,18 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant Konfigurationsprüfer",
-    "version": "v1.6.2",
+    "version": "v1.6.3",
     "buttons": {
       "scan_all": "Vollständiger Scan",
       "automations": "Automatisierungen",
       "entities": "Entitäten",
       "security": "Sicherheit",
       "report": "Bericht",
-      "refresh": "Aktualisieren"
+      "refresh": "Aktualisieren",
+      "create_dashboard": "Dashboard erstellen",
+      "create_dashboard_hint": "HACA-Dashboard in der Seitenleiste erstellen",
+      "creating_dashboard": "Wird erstellt...",
+      "dashboard_error": "Dashboard-Erstellung fehlgeschlagen: {error}"
     },
     "stats": {
       "health_score": "Gesundheitsscore",
@@ -691,7 +695,18 @@
       "battery_notifications": "Battery notifications",
       "battery_notifications_hint": "Persistent notifications for low battery",
       "startup_scan": "Scan beim Start",
-      "startup_scan_hint": "Vollständigen Scan beim Start von Home Assistant ausführen"
+      "startup_scan_hint": "Vollständigen Scan beim Start von Home Assistant ausführen",
+      "severity_filters_title": "Benachrichtigungsfilter",
+      "severity_filters_hint": "Wählen Sie die Schweregrade, die nach jedem Scan eine persistente Benachrichtigung in Home Assistant auslösen.",
+      "severity_high": "Hoher Schweregrad",
+      "severity_high_hint": "Benachrichtigung bei kritischen Problemen",
+      "severity_medium": "Mittlerer Schweregrad",
+      "severity_medium_hint": "Benachrichtigung bei wichtigen Problemen",
+      "severity_low": "Niedriger Schweregrad",
+      "severity_low_hint": "Benachrichtigung bei kleineren Problemen und Vorschlägen",
+      "dashboard_section_title": "HACA Dashboard",
+      "dashboard_section_hint": "Automatisch ein vollständiges HACA-Dashboard in der Seitenleiste erstellen. Alle HACA-Sensoren werden mit Messgeräten, Zählern und Verlauf angezeigt. Falls vorhanden, wird es aktualisiert.",
+      "dashboard_created": "Dashboard erfolgreich erstellt! Weiterleitung..."
     },
     "ai_explain": {
       "analyzing": "🤖 Komplexität wird analysiert…",
@@ -1296,6 +1311,34 @@
         "split_choice_proceed": "✅  OK, in separate Automatisierungen aufteilen",
         "split_choice_backup": "📋  Erst Backup erstellen, dann aufteilen"
       }
+    },
+    "dashboard": {
+      "title": "HACA Übersicht",
+      "view_title": "Übersicht",
+      "welcome_line1": "Echtzeit-Überblick über den Zustand Ihrer Home Assistant Konfiguration.",
+      "welcome_line2": "Jeder Zähler zeigt die Anzahl erkannter Probleme pro Kategorie.",
+      "table_value": "Wert",
+      "table_meaning": "Bedeutung",
+      "no_issues": "Keine Probleme erkannt",
+      "issues_found": "Probleme gefunden — HACA Panel prüfen",
+      "open_panel_hint": "Klicken Sie unten auf den Button, um das vollständige Audit-Panel zu öffnen.",
+      "health_score": "Gesundheitswert",
+      "security": "Sicherheit",
+      "total_issues": "Gesamt",
+      "automations": "Automatisierungen",
+      "entities": "Entitäten",
+      "performance": "Leistung",
+      "scripts": "Skripte",
+      "scenes": "Szenen",
+      "blueprints": "Blueprints",
+      "dashboards": "Dashboards",
+      "helpers": "Helfer",
+      "compliance": "Konformität",
+      "battery": "Batterie-Warnungen",
+      "recorder_orphans": "Recorder-Waisen",
+      "history_title": "Gesundheitswert — Letzte 7 Tage",
+      "open_panel": "HACA Panel öffnen",
+      "created_toast": "HACA Dashboard erstellt!"
     }
   },
   "analyzer": {
@@ -1344,7 +1387,7 @@
     "use_entity_id_or_update": "entity_id verwenden oder auf ein gültiges Gerät aktualisieren",
     "verify_entity_updates": "Überprüfe, ob die Entität Aktualisierungen erhält",
     "entity_may_be_broken": "Entität ist möglicherweise defekt oder wird nicht mehr verwendet",
-    "triggered_recently_loop": "Sehr kürzlich ausgelöst ({delta}s), möglicher Loop",
+    "triggered_recently_loop": "Kürzlich ausgelöst (vor {delta}s), hohe Frequenz",
     "complex_automation": "Automatisierung hat {count} Aktionen, was sie komplex macht",
     "parallel_mode_resources": "Parallelmodus mit max={max_runs} kann Ressourcen verbrauchen",
     "triggers_modifies_same": "Automatisierung wird von denselben Entitäten ausgelöst, die sie verändert: {entities}",
