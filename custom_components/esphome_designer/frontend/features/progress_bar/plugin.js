@@ -1,119 +1,8 @@
 import { TemplateConverter } from '../../js/utils/template_converter.js';
+import { renderProgressBar } from './render.js';
+import { renderProgressBarProperties } from './properties.js';
 
-const render = (el, widget, tools) => {
-    const props = widget.props || {};
-    const { getColorStyle } = tools;
-    const entityId = widget.entity_id || "";
-    const label = widget.title || "";
-    const showLabel = props.show_label !== false && props.show_label !== "false";
-    const showPercentage = props.show_percentage !== false && props.show_percentage !== "false";
-    const barHeight = props.bar_height || 15;
-    const borderWidth = props.border_width || 1;
-    const color = props.color || "theme_auto";
-
-    const orientation = props.orientation || "horizontal";
-    const isVertical = orientation === "vertical";
-    const fontSize = props.font_size || 12;
-    const textAlign = props.text_align || "CENTER";
-    const min = parseFloat(props.min !== undefined ? props.min : 0);
-    const max = parseFloat(props.max !== undefined ? props.max : 100);
-    const range = max - min;
-
-    let percentValue = 50;
-
-    if (window.AppState && window.AppState.entityStates && entityId) {
-        const stateSet = window.AppState.entityStates[entityId];
-        const state = (stateSet && stateSet.state !== undefined) ? stateSet.state : null;
-        if (state !== undefined && state !== null) {
-            const numVal = parseFloat(String(state).replace(/[^0-9.-]/g, ''));
-            if (!isNaN(numVal)) {
-                percentValue = range === 0 ? 0 : Math.max(0, Math.min(100, (numVal - min) / range * 100));
-            }
-        }
-    }
-
-    const isDark = tools.isDark;
-
-    const getRenderColor = (c) => {
-        if (c === "theme_auto") return isDark ? "#ffffff" : "#000000";
-        if (c === "white" || c === "#ffffff") return isDark ? "#000000" : "#ffffff";
-        if (c === "black" || c === "#000000") return isDark ? "#ffffff" : "#000000";
-        return getColorStyle(c);
-    };
-
-    let renderColor = getRenderColor(color);
-
-    el.innerHTML = "";
-    el.style.display = "flex";
-    el.style.flexDirection = isVertical ? "row" : "column";
-    el.style.justifyContent = "center";
-    el.style.alignItems = "center";
-    el.style.gap = "4px";
-    el.style.color = renderColor;
-
-    const labelRow = document.createElement("div");
-    labelRow.style.display = "flex";
-    labelRow.style.flexDirection = isVertical ? "column" : "row";
-    labelRow.style.justifyContent = isVertical ? "space-between" : (textAlign === "CENTER" ? "space-between" : (textAlign === "LEFT" ? "flex-start" : "flex-end"));
-    labelRow.style.alignItems = "center";
-    labelRow.style.fontSize = `${fontSize}px`;
-    labelRow.style.paddingBottom = isVertical ? "0" : "2px";
-    labelRow.style.paddingRight = isVertical ? "2px" : "0";
-    if (isVertical) {
-        labelRow.style.height = "100%";
-    } else {
-        labelRow.style.width = "100%";
-    }
-
-    if (showLabel && label) {
-        const labelSpan = document.createElement("span");
-        labelSpan.textContent = label;
-        labelRow.appendChild(labelSpan);
-    }
-
-    if (showPercentage) {
-        const pctSpan = document.createElement("span");
-        pctSpan.textContent = Math.round(percentValue) + "%";
-        labelRow.appendChild(pctSpan);
-    }
-
-    if (labelRow.childNodes.length > 0) {
-        el.appendChild(labelRow);
-    }
-
-    const barContainer = document.createElement("div");
-    if (isVertical) {
-        barContainer.style.width = `${barHeight}px`;
-        barContainer.style.height = "100%";
-    } else {
-        barContainer.style.width = "100%";
-        barContainer.style.height = `${barHeight}px`;
-    }
-    barContainer.style.border = `${borderWidth}px solid ${renderColor}`;
-    barContainer.style.borderRadius = "2px";
-    barContainer.style.position = "relative";
-    barContainer.style.overflow = "hidden";
-
-    const isRenderColorLight = (c) => c === "#ffffff" || c === "white" || c === "#fff";
-    barContainer.style.backgroundColor = isRenderColorLight(renderColor) ? "#000000" : "#ffffff";
-
-    const barFill = document.createElement("div");
-    if (isVertical) {
-        barFill.style.width = "100%";
-        barFill.style.height = `${percentValue}%`;
-        barFill.style.position = "absolute";
-        barFill.style.bottom = "0";
-        barFill.style.transition = "height 0.3s ease";
-    } else {
-        barFill.style.width = `${percentValue}%`;
-        barFill.style.height = "100%";
-        barFill.style.transition = "width 0.3s ease";
-    }
-    barFill.style.backgroundColor = renderColor;
-
-    barContainer.appendChild(barFill);
-    el.appendChild(barContainer);
-};
+const render = renderProgressBar;
 
 const exportLVGL = (w, { common, convertColor }) => {
     const p = w.props || {};
@@ -137,7 +26,7 @@ const exportLVGL = (w, { common, convertColor }) => {
 
 const exportDoc = (w, context) => {
     const {
-        lines, addFont, getColorConst, addDitherMask, getCondProps, getConditionCheck, isEpaper, sanitize
+        lines, addFont, getColorConst, addDitherMask, getCondProps, getConditionCheck, isEpaper, sanitize // eslint-disable-line no-unused-vars
     } = context;
 
     const p = w.props || {};
@@ -164,12 +53,11 @@ const exportDoc = (w, context) => {
     const color = getDynamicColor(colorProp);
     const fontId = addFont("Roboto", 400, fontSize);
 
-    // Ensure sensor. prefix if missing and it's not a local sensor
-    if (entityId && !p.is_local_sensor && !entityId.includes(".")) {
+    // Ensure sensor. prefix if missing and it's not a local sensor or mqtt entity
+    if (entityId && !p.is_local_sensor && !entityId.includes(".") && !entityId.toLowerCase().startsWith("mqtt:")) {
         entityId = `sensor.${entityId}`;
     }
 
-    lines.push(`        // widget:progress_bar id:${w.id} type:progress_bar x:${w.x} y:${w.y} w:${w.width} h:${w.height} entity:${entityId} title:"${title}" orientation:${orientation} range:[${min},${max}] color:${colorProp} local:${!!p.is_local_sensor} ${getCondProps(w)}`);
 
     // Background fill
     const bgColorProp = p.bg_color || p.background_color || "transparent";
@@ -212,15 +100,43 @@ const exportDoc = (w, context) => {
             lines.push(`          it.filled_rectangle(${barX + 2}, ${barStartY} + ${totalBarH} - 2 - bar_h, ${barHeight - 4}, bar_h, ${color});`);
             lines.push(`        }`);
         } else {
-            const labelAlign = textAlign === "RIGHT" ? "TextAlign::TOP_RIGHT" : (textAlign === "CENTER" ? "TextAlign::TOP_LEFT" : "TextAlign::TOP_LEFT");
-            const pctAlign = textAlign === "LEFT" ? "TextAlign::TOP_LEFT" : "TextAlign::TOP_RIGHT";
-            const labelX = textAlign === "RIGHT" ? `${w.x} + ${w.width}` : `${w.x}`;
-            const pctX = textAlign === "LEFT" ? `${w.x}` : `${w.x} + ${w.width}`;
+            // When both label AND percentage are shown, they must be spatially separated:
+            // label on left side, percentage on right side (like the canvas preview's space-between).
+            // When only one is shown, textAlign controls its position.
+            const bothShown = (showLabel && title) && showPercentage;
 
             if (showLabel && title) {
+                let labelAlign, labelX;
+                if (bothShown) {
+                    labelAlign = "TextAlign::TOP_LEFT";
+                    labelX = `${w.x}`;
+                } else if (textAlign === "CENTER") {
+                    labelAlign = "TextAlign::TOP_CENTER";
+                    labelX = `${w.x} + ${w.width} / 2`;
+                } else if (textAlign === "RIGHT") {
+                    labelAlign = "TextAlign::TOP_RIGHT";
+                    labelX = `${w.x} + ${w.width}`;
+                } else {
+                    labelAlign = "TextAlign::TOP_LEFT";
+                    labelX = `${w.x}`;
+                }
                 lines.push(`        it.printf(${labelX}, ${w.y}, id(${fontId}), ${color}, ${labelAlign}, "${title}");`);
             }
             if (showPercentage) {
+                let pctAlign, pctX;
+                if (bothShown) {
+                    pctAlign = "TextAlign::TOP_RIGHT";
+                    pctX = `${w.x} + ${w.width}`;
+                } else if (textAlign === "CENTER") {
+                    pctAlign = "TextAlign::TOP_CENTER";
+                    pctX = `${w.x} + ${w.width} / 2`;
+                } else if (textAlign === "LEFT") {
+                    pctAlign = "TextAlign::TOP_LEFT";
+                    pctX = `${w.x}`;
+                } else {
+                    pctAlign = "TextAlign::TOP_RIGHT";
+                    pctX = `${w.x} + ${w.width}`;
+                }
                 lines.push(`        it.printf(${pctX}, ${w.y}, id(${fontId}), ${color}, ${pctAlign}, "%d%%", pct_${idSuffix});`);
             }
             const barY = w.y + (w.height - barHeight);
@@ -243,7 +159,7 @@ const exportDoc = (w, context) => {
 };
 
 const onExportNumericSensors = (context) => {
-    const { lines, widgets, isLvgl, pendingTriggers } = context;
+    const { lines, widgets, isLvgl, pendingTriggers } = context; // eslint-disable-line no-unused-vars
     if (!widgets || widgets.length === 0) return;
 
     for (const w of widgets) {
@@ -254,7 +170,7 @@ const onExportNumericSensors = (context) => {
         if (!entityId || p.is_local_sensor) continue;
 
         // Ensure sensor. prefix if missing
-        if (!entityId.includes(".")) {
+        if (!entityId.includes(".") && !entityId.toLowerCase().startsWith("mqtt:")) {
             entityId = `sensor.${entityId}`;
         }
 
@@ -276,6 +192,7 @@ export default {
         show_label: true,
         show_percentage: true,
         bar_height: 15,
+        entity_id: "",
         border_width: 1,
         color: "theme_auto",
         bg_color: "white",
@@ -284,10 +201,14 @@ export default {
         orientation: "horizontal",
         font_size: 12,
         text_align: "CENTER",
-        mode: "normal"
+        mode: "normal",
+        is_local_sensor: false,
+        opa: 255,
+        opacity: 255
     },
+    renderProperties: renderProgressBarProperties,
     render,
-    exportOpenDisplay: (w, { layout, page }) => {
+    exportOpenDisplay: (w, { _layout, _page }) => {
         const p = w.props || {};
         const entityId = (w.entity_id || "").trim();
         const min = parseFloat(p.min !== undefined ? p.min : 0);
@@ -313,7 +234,7 @@ export default {
             show_percentage: p.show_percentage !== false
         };
     },
-    exportOEPL: (w, { layout, page }) => {
+    exportOEPL: (w, { _layout, _page }) => {
         const p = w.props || {};
         const entityId = (w.entity_id || "").trim();
         const title = w.title || "";
@@ -415,4 +336,7 @@ export default {
     export: exportDoc,
     onExportNumericSensors
 };
+
+
+
 

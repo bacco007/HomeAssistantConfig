@@ -15,18 +15,44 @@ from __future__ import annotations
 import logging
 from typing import Any, Dict
 
+import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.typing import ConfigType
 
 from .const import DOMAIN, STORAGE_KEY, STORAGE_VERSION
 from .http_api import async_register_http_views
-from .panel import ESPHomeDesignerPanelView, ESPHomeDesignerFontView
+from .panel import ESPHomeDesignerPanelView, ESPHomeDesignerFontView, get_panel_module_url
 from .services import async_register_services, async_unregister_services
 from .storage import DashboardStorage
 from .models import DashboardState, DeviceConfig, PageConfig, WidgetConfig
 
 _LOGGER = logging.getLogger(__name__)
+
+YAML_DEVICE_SCHEMA = vol.Schema(
+    {
+        vol.Optional("name"): cv.string,
+        vol.Optional("api_token"): cv.string,
+        vol.Optional("current_page"): vol.Coerce(int),
+        vol.Optional("pages"): [dict],
+    },
+    extra=vol.ALLOW_EXTRA,
+)
+
+CONFIG_SCHEMA = vol.Schema(
+    {
+        DOMAIN: vol.Schema(
+            {
+                vol.Optional("devices", default={}): {
+                    str: YAML_DEVICE_SCHEMA,
+                }
+            },
+            extra=vol.ALLOW_EXTRA,
+        )
+    },
+    extra=vol.ALLOW_EXTRA,
+)
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
@@ -178,14 +204,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Register the sidebar panel if enabled
     if entry.options.get("show_in_sidebar", True):
         try:
-            from homeassistant.components import frontend
-            frontend.async_register_built_in_panel(
+            from homeassistant.components import panel_custom
+
+            await panel_custom.async_register_panel(
                 hass,
-                component_name="iframe",  # Use iframe panel type to load our view
+                frontend_url_path="esphome-designer",
+                webcomponent_name="esphome-designer-panel",
                 sidebar_title="ESPHome Designer",
                 sidebar_icon="mdi:tablet-dashboard",
-                frontend_url_path="esphome-designer",
-                config={"url": "/esphome-designer/editor/index.html"},
+                module_url=get_panel_module_url(),
                 require_admin=False,
             )
             _LOGGER.info("%s: Sidebar panel registered", DOMAIN)

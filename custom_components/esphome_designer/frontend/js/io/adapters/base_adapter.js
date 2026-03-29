@@ -11,6 +11,7 @@ export class BaseAdapter {
      * @returns {Promise<string>} The generated output string.
      */
     async generate(layout) {
+        void layout;
         throw new Error("Method 'generate()' must be implemented.");
     }
 
@@ -18,9 +19,11 @@ export class BaseAdapter {
      * Generates output for a single page.
      * @param {Object} page - The page object from the state.
      * @param {Object} context - Shared context and utilities.
-     * @returns {string[]} Array of output lines.
+     * @returns {any} Adapter-specific page payload.
      */
     generatePage(page, context) {
+        void page;
+        void context;
         throw new Error("Method 'generatePage()' must be implemented.");
     }
 
@@ -28,9 +31,11 @@ export class BaseAdapter {
      * Generates output for a single widget.
      * @param {Object} widget - The widget object from the state.
      * @param {Object} context - Shared context and utilities.
-     * @returns {string[]} Array of output lines.
+     * @returns {any} Adapter-specific widget payload.
      */
     generateWidget(widget, context) {
+        void widget;
+        void context;
         throw new Error("Method 'generateWidget()' must be implemented.");
     }
 
@@ -44,5 +49,3 @@ export class BaseAdapter {
     }
 }
 
-// Expose globally for now to match the project's architecture
-window.BaseAdapter = BaseAdapter;

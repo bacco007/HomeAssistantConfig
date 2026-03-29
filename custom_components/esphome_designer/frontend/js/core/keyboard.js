@@ -1,6 +1,9 @@
-import { AppState } from './state.js';
+// @ts-check
+import { AppState } from './state';
 import { Logger } from '../utils/logger.js';
+import { quickSearchInstance } from '../ui/quick_search.js';
 import { emit, EVENTS } from './events.js';
+import { getLastSnippetHighlightRange, isSnippetAutoHighlightActive } from './snippet_selection_bridge.js';
 
 export class KeyboardHandler {
     constructor() {
@@ -8,35 +11,41 @@ export class KeyboardHandler {
     }
 
     init() {
-        window.addEventListener("keydown", (ev) => this.handleKeyDown(ev));
+        if (typeof globalThis.addEventListener === 'function') {
+            globalThis.addEventListener("keydown", (/** @type {KeyboardEvent} */ ev) => this.handleKeyDown(ev));
+        }
     }
 
+    /**
+     * @param {KeyboardEvent} ev
+     */
     handleKeyDown(ev) {
         // Debug
         // Key event handling
 
-        const state = AppState || window.AppState;
+        const state = AppState;
         if (!state) {
             Logger.error("KeyboardHandler: AppState not found!");
             return;
         }
 
         const hasSelection = state.selectedWidgetIds.length > 0;
-        const selectedWidgetId = state.selectedWidgetId; // Reference for single-widget ops
-        const isAutoHighlight = window.isAutoHighlight || false; // Global flag from snippet editor
+        const isAutoHighlight = isSnippetAutoHighlightActive();
+        const htmlTarget = ev.target instanceof HTMLElement ? ev.target : null;
+        const isEditableTarget = KeyboardHandler.isInput(htmlTarget);
 
         // Quick Search: Shift+Space
         // Quick Search: Shift+Space
         if (ev.shiftKey && ev.code === "Space") {
             // Always trigger, even in input fields
             // Blur the current input if it's focused (e.g. YAML snippet box)
-            if (ev.target.tagName === "INPUT" || ev.target.tagName === "TEXTAREA") {
-                ev.target.blur();
+            if (htmlTarget && KeyboardHandler.isInput(htmlTarget)) {
+                htmlTarget.blur();
             }
 
             ev.preventDefault();
-            if (window.QuickSearch) {
-                window.QuickSearch.open();
+            if (quickSearchInstance) {
+                quickSearchInstance.open();
             }
             return;
         }
@@ -44,17 +53,18 @@ export class KeyboardHandler {
         if ((ev.key === "Delete" || ev.key === "Backspace") && hasSelection) {
             // Special case: If snippet box is focused but selection matches the auto-highlight,
             // treat it as a widget delete.
-            const lastHighlightRange = window.lastHighlightRange;
-            if (ev.target.id === "snippetBox" && lastHighlightRange) {
-                if (ev.target.selectionStart === lastHighlightRange.start &&
-                    ev.target.selectionEnd === lastHighlightRange.end) {
+            const lastHighlightRange = getLastSnippetHighlightRange();
+            if (ev.target instanceof HTMLElement && ev.target.id === "snippetBox" && lastHighlightRange) {
+                const inputTarget = /** @type {HTMLInputElement} */(ev.target);
+                if (inputTarget.selectionStart === lastHighlightRange.start &&
+                    inputTarget.selectionEnd === lastHighlightRange.end) {
                     ev.preventDefault();
                     this.deleteWidget(null); // Fix: Delete current selection (multi), not just the single ID
                     return;
                 }
             }
 
-            if (ev.target.tagName === "INPUT" || ev.target.tagName === "TEXTAREA") {
+            if (isEditableTarget) {
                 return;
             }
             ev.preventDefault();
@@ -64,8 +74,8 @@ export class KeyboardHandler {
 
         // Copy: Ctrl+C
         if ((ev.ctrlKey || ev.metaKey) && ev.key && ev.key.toLowerCase() === "c") {
-            if (ev.target.tagName === "INPUT" || ev.target.tagName === "TEXTAREA") {
-                if (ev.target.id === "snippetBox" && isAutoHighlight) {
+            if (isEditableTarget) {
+                if (htmlTarget?.id === "snippetBox" && isAutoHighlight) {
                     ev.preventDefault();
                     this.copyWidget();
                     return;
@@ -79,8 +89,8 @@ export class KeyboardHandler {
 
         // Paste: Ctrl+V
         if ((ev.ctrlKey || ev.metaKey) && ev.key && ev.key.toLowerCase() === "v") {
-            if (ev.target.tagName === "INPUT" || ev.target.tagName === "TEXTAREA") {
-                if (ev.target.id === "snippetBox" && isAutoHighlight) {
+            if (isEditableTarget) {
+                if (htmlTarget?.id === "snippetBox" && isAutoHighlight) {
                     ev.preventDefault();
                     this.pasteWidget();
                     return;
@@ -94,45 +104,45 @@ export class KeyboardHandler {
 
         // Undo: Ctrl+Z
         if ((ev.ctrlKey || ev.metaKey) && ev.key && ev.key.toLowerCase() === "z" && !ev.shiftKey) {
-            if (ev.target.tagName === "INPUT" || ev.target.tagName === "TEXTAREA") {
+            if (isEditableTarget) {
                 // Allow global undo when snippetBox has auto-highlighted text
-                if (ev.target.id === "snippetBox" && isAutoHighlight) {
+                if (htmlTarget?.id === "snippetBox" && isAutoHighlight) {
                     ev.preventDefault();
                     // Prevent focus stealing during undo state restoration
-                    window._undoRedoInProgress = true;
+                    state.isUndoRedoInProgress = true;
                     state.undo();
-                    setTimeout(() => { window._undoRedoInProgress = false; }, 100);
+                    setTimeout(() => { state.isUndoRedoInProgress = false; }, 100);
                     return;
                 }
                 return;
             }
             ev.preventDefault();
             // Prevent focus stealing during undo state restoration
-            window._undoRedoInProgress = true;
+            state.isUndoRedoInProgress = true;
             state.undo();
-            setTimeout(() => { window._undoRedoInProgress = false; }, 100);
+            setTimeout(() => { state.isUndoRedoInProgress = false; }, 100);
             return;
         }
 
         // Redo: Ctrl+Y or Ctrl+Shift+Z
         if ((ev.ctrlKey || ev.metaKey) && ev.key && (ev.key.toLowerCase() === "y" || (ev.key.toLowerCase() === "z" && ev.shiftKey))) {
-            if (ev.target.tagName === "INPUT" || ev.target.tagName === "TEXTAREA") {
+            if (isEditableTarget) {
                 // Allow global redo when snippetBox has auto-highlighted text
-                if (ev.target.id === "snippetBox" && isAutoHighlight) {
+                if (htmlTarget?.id === "snippetBox" && isAutoHighlight) {
                     ev.preventDefault();
                     // Prevent focus stealing during redo state restoration
-                    window._undoRedoInProgress = true;
+                    state.isUndoRedoInProgress = true;
                     state.redo();
-                    setTimeout(() => { window._undoRedoInProgress = false; }, 100);
+                    setTimeout(() => { state.isUndoRedoInProgress = false; }, 100);
                     return;
                 }
                 return;
             }
             ev.preventDefault();
             // Prevent focus stealing during redo state restoration
-            window._undoRedoInProgress = true;
+            state.isUndoRedoInProgress = true;
             state.redo();
-            setTimeout(() => { window._undoRedoInProgress = false; }, 100);
+            setTimeout(() => { state.isUndoRedoInProgress = false; }, 100);
             return;
         }
 
@@ -140,15 +150,15 @@ export class KeyboardHandler {
         if ((ev.ctrlKey || ev.metaKey) && ev.key && ev.key.toLowerCase() === "l" && hasSelection) {
             ev.preventDefault();
             const selectedWidgets = state.getSelectedWidgets();
-            const allLocked = selectedWidgets.every(w => w.locked);
+            const allLocked = selectedWidgets.every((/** @type {{ locked?: boolean }} */ w) => w.locked);
             // Toggle: if all are locked, unlock them. Otherwise, lock all.
             state.updateWidgets(state.selectedWidgetIds, { locked: !allLocked });
         }
 
         // Select All: Ctrl+A
         if ((ev.ctrlKey || ev.metaKey) && ev.key && ev.key.toLowerCase() === "a") {
-            const isSnippetAuto = ev.target.id === "snippetBox" && isAutoHighlight;
-            if ((ev.target.tagName !== "INPUT" && ev.target.tagName !== "TEXTAREA") || isSnippetAuto) {
+            const isSnippetAuto = ev.target instanceof HTMLElement && ev.target.id === "snippetBox" && isAutoHighlight;
+            if (ev.target instanceof HTMLElement && (!KeyboardHandler.isInput(ev.target) || isSnippetAuto)) {
                 ev.preventDefault();
                 state.selectAllWidgets();
                 return;
@@ -157,7 +167,7 @@ export class KeyboardHandler {
 
         // Toggle Grid: G (if not typing)
         if (ev.key && ev.key.toLowerCase() === "g" && !ev.ctrlKey && !ev.metaKey && !ev.shiftKey && !ev.altKey) {
-            if (ev.target.tagName !== "INPUT" && ev.target.tagName !== "TEXTAREA") {
+            if (ev.target instanceof HTMLElement && (ev.target.tagName !== "INPUT" && ev.target.tagName !== "TEXTAREA")) {
                 ev.preventDefault();
                 const newState = !state.showGrid;
                 state.setShowGrid(newState);
@@ -181,7 +191,7 @@ export class KeyboardHandler {
 
         // Toggle Debug: D (if not typing)
         if (ev.key && ev.key.toLowerCase() === "d" && !ev.ctrlKey && !ev.metaKey && !ev.shiftKey && !ev.altKey) {
-            if (ev.target.tagName !== "INPUT" && ev.target.tagName !== "TEXTAREA") {
+            if (ev.target instanceof HTMLElement && ev.target.tagName !== "INPUT" && ev.target.tagName !== "TEXTAREA") {
                 ev.preventDefault();
                 const newState = !state.showDebugGrid;
                 state.setShowDebugGrid(newState);
@@ -205,7 +215,7 @@ export class KeyboardHandler {
 
         // Toggle Rulers: R (if not typing)
         if (ev.key && ev.key.toLowerCase() === "r" && !ev.ctrlKey && !ev.metaKey && !ev.shiftKey && !ev.altKey) {
-            if (ev.target.tagName !== "INPUT" && ev.target.tagName !== "TEXTAREA") {
+            if (ev.target instanceof HTMLElement && ev.target.tagName !== "INPUT" && ev.target.tagName !== "TEXTAREA") {
                 ev.preventDefault();
                 const newState = !state.showRulers;
                 state.setShowRulers(newState);
@@ -219,7 +229,7 @@ export class KeyboardHandler {
 
         // Deselect / Escape: Escape key
         if (ev.key === "Escape") {
-            if (document.activeElement && (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA")) {
+            if (document.activeElement instanceof HTMLElement && (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA")) {
                 document.activeElement.blur();
             }
             if (state.selectedWidgetIds.length > 0) {
@@ -230,25 +240,24 @@ export class KeyboardHandler {
     }
 
     // Add interaction detection for inputs
+    /** @param {unknown} el */
     static isInput(el) {
-        return el.tagName === "INPUT" || el.tagName === "TEXTAREA";
+        return el instanceof HTMLElement && (el.tagName === "INPUT" || el.tagName === "TEXTAREA");
     }
 
+    /** @param {any} widgetId */
     deleteWidget(widgetId) {
-        const state = AppState || window.AppState;
+        const state = AppState;
         if (state) state.deleteWidget(widgetId);
     }
 
     copyWidget() {
-        const state = AppState || window.AppState;
+        const state = AppState;
         if (state) state.copyWidget();
     }
 
     pasteWidget() {
-        const state = AppState || window.AppState;
+        const state = AppState;
         if (state) state.pasteWidget();
     }
 }
-
-// Initialize globally
-window.KeyboardHandler = KeyboardHandler;

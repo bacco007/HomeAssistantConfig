@@ -3,14 +3,21 @@
  * @returns {string}
  */
 import { DEVICE_PROFILES } from '../io/devices.js';
+import { AppState } from '../core/state';
+import { WidgetFactory } from '../core/widget_factory';
+
+/** @type {Record<string, any>} */
+const deviceProfiles = DEVICE_PROFILES;
+/** @type {import('../core/stores/index').AppStateFacade & Record<string, any>} */
+const appState = /** @type {any} */ (AppState);
 
 export function getDeviceModel() {
     // Check AppState first (Source of Truth)
-    if (window.AppState && window.AppState.deviceModel) {
-        return window.AppState.deviceModel;
+    if (appState && appState.deviceModel) {
+        return appState.deviceModel;
     }
-    // Fallback to global or default
-    return (window.currentDeviceModel || "reterminal_e1001");
+    // Fallback to default
+    return "reterminal_e1001";
 }
 
 /**
@@ -19,8 +26,8 @@ export function getDeviceModel() {
  * @returns {string}
  */
 export function getDeviceDisplayName(model) {
-    if (DEVICE_PROFILES && DEVICE_PROFILES[model]) {
-        return DEVICE_PROFILES[model].name;
+    if (deviceProfiles && deviceProfiles[model]) {
+        return deviceProfiles[model].name;
     }
     switch (model) {
         case "reterminal_e1002": return "reTerminal E1002 (6-Color)";
@@ -37,10 +44,10 @@ export function getDeviceDisplayName(model) {
  */
 export function isRGBDevice() {
     const model = getDeviceModel();
-    if (DEVICE_PROFILES && DEVICE_PROFILES[model]) {
+    if (deviceProfiles && deviceProfiles[model]) {
         // Legacy: check both top-level and features object
-        if (DEVICE_PROFILES[model].features?.lcd) return true;
-        if (DEVICE_PROFILES[model].features?.oled) return true;
+        if (deviceProfiles[model].features?.lcd) return true;
+        if (deviceProfiles[model].features?.oled) return true;
 
         // If it's not explicitly e-paper and not the default monochrome
         // (though default falls through to false usually)
@@ -54,37 +61,54 @@ export function isRGBDevice() {
  */
 export function getAvailableColors() {
     // 1. Protocol Mode Logic
-    const AppState = window.AppState; // Use window ref to avoid circular import issues in utils
-    const mode = AppState?.settings?.renderingMode || 'direct';
+    const mode = appState?.settings?.renderingMode || 'direct';
+
+    const colormode_bwr = ["black", "white", "red", "yellow", "gray"];
+    const colormode_monochrome = ["theme_auto", "black", "white", "gray"];
+    const colormode_fullcolor = ["black", "white", "red", "green", "blue", "yellow", "orange", "gray", "purple", "cyan", "magenta"];
+    const colormode_primary = ["theme_auto", "black", "white", "gray", "red", "green", "blue", "yellow"];
 
     if (mode === 'oepl' || mode === 'opendisplay') {
-        const ph = AppState?.project?.protocolHardware || {};
+        /** @type {{ colorMode?: string }} */
+        const ph = /** @type {any} */ (appState?.project?.protocolHardware || {});
         const colorMode = ph.colorMode || 'bw';
 
         if (colorMode === 'full_color') {
-            return ["black", "white", "red", "green", "blue", "yellow", "orange", "gray", "purple", "cyan", "magenta"];
+            return colormode_fullcolor;
         }
         if (colorMode === 'color_3') {
             // BWR/BWY displays
-            return ["black", "white", "red", "yellow", "gray"];
+            return colormode_bwr;
         }
-        return ["theme_auto", "black", "white", "gray"];
+        return colormode_monochrome;
     }
 
     // 2. ESPHome Mode Logic (Existing)
     if (isRGBDevice()) {
-        return ["black", "white", "red", "green", "blue", "yellow", "orange", "gray", "purple", "cyan", "magenta"];
+        return colormode_fullcolor;
     }
 
     const model = getDeviceModel();
     if (model === "reterminal_e1002") {
-        return ["theme_auto", "black", "white", "gray", "red", "green", "blue", "yellow"];
+        return colormode_primary;
     }
     if (model === "esp32_s3_photopainter") {
-        return ["theme_auto", "black", "white", "gray", "red", "green", "blue", "yellow"];
+        return colormode_primary;
     }
+
+    // Filename-based fallback for custom imported hardware
+    if (model.endsWith("bwr_yaml")) {
+        return colormode_bwr;
+    }
+    if (model.endsWith("fullcolor_yaml")) {
+        return colormode_fullcolor;
+    }
+    if (model.endsWith("primarycolor_yaml")) {
+        return colormode_primary;
+    }
+
     // Default E1001 and TRMNL (True Monochrome)
-    return ["theme_auto", "black", "white", "gray"];
+    return colormode_monochrome;
 }
 
 /**
@@ -101,11 +125,11 @@ export function getColorStyle(colorName) {
 
     switch (colorName.toLowerCase()) {
         case "theme_auto": {
-            const isDark = window.WidgetFactory?.getEffectiveDarkMode?.() || false;
+            const isDark = WidgetFactory.getEffectiveDarkMode();
             return isDark ? "#ffffff" : "#000000";
         }
         case "theme_auto_inverse": {
-            const isDark = window.WidgetFactory?.getEffectiveDarkMode?.() || false;
+            const isDark = WidgetFactory.getEffectiveDarkMode();
             return isDark ? "#000000" : "#ffffff";
         }
         case "white": return "#ffffff";
@@ -120,10 +144,3 @@ export function getColorStyle(colorName) {
         default: return "#000000";
     }
 }
-
-// Global exposure for transition
-window.getDeviceModel = getDeviceModel;
-window.getDeviceDisplayName = getDeviceDisplayName;
-window.isRGBDevice = isRGBDevice;
-window.getAvailableColors = getAvailableColors;
-window.getColorStyle = getColorStyle;

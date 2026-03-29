@@ -12,7 +12,12 @@ const render = (el, widget, { getColorStyle }) => {
     el.style.padding = "2px";
     el.style.backgroundColor = "#444";
 
-    let rows = props.rows || [{ buttons: ["Btn1", "Btn2"] }, { buttons: ["Btn3", "Btn4"] }];
+    let rows = props.rows || [
+        { buttons: ["1", "2", "3"] },
+        { buttons: ["4", "5", "6"] },
+        { buttons: ["7", "8", "9"] },
+        { buttons: ["*", "0", "#"] }
+    ];
     if (!Array.isArray(rows)) rows = [];
     el.style.gridTemplateRows = `repeat(${rows.length || 1}, 1fr)`;
 
@@ -37,7 +42,7 @@ const render = (el, widget, { getColorStyle }) => {
             btn.style.display = "flex";
             btn.style.alignItems = "center";
             btn.style.justifyContent = "center";
-            btn.style.color = "#fff";
+            btn.style.color = getColorStyle(props.text_color || "white");
             btn.style.fontSize = "12px";
             btn.style.fontFamily = "Roboto, sans-serif";
             btn.style.borderRadius = "3px";
@@ -50,25 +55,39 @@ const render = (el, widget, { getColorStyle }) => {
 
 const exportLVGL = (w, { common, convertColor, formatOpacity }) => {
     const p = w.props || {};
-    let matrix = p.rows || [{ buttons: ["1", "2", "3"] }, { buttons: ["4", "5", "6"] }];
+    let matrix = p.rows || [
+        { buttons: ["1", "2", "3"] },
+        { buttons: ["4", "5", "6"] },
+        { buttons: ["7", "8", "9"] },
+        { buttons: ["*", "0", "#"] }
+    ];
 
     // Schema fix: each button must be a dictionary with a 'text' property in newest ESPHome
-    const processedRows = matrix.map(row => ({
-        ...row,
-        buttons: (row.buttons || []).map(btn => {
-            if (typeof btn === 'string' || typeof btn === 'number') {
-                return { text: String(btn) };
-            }
-            return btn;
-        })
-    }));
+    const processedRows = matrix.map((row) => {
+        let buttons = [];
+        if (row && typeof row === 'object' && !Array.isArray(row)) {
+            buttons = row.buttons || [];
+        } else if (typeof row === 'string' || typeof row === 'number') {
+            buttons = [row];
+        }
+
+        return {
+            ...(row && typeof row === 'object' && !Array.isArray(row) ? row : {}),
+            buttons: buttons.map((btn) => {
+                if (typeof btn === 'string' || typeof btn === 'number') {
+                    return { text: String(btn) };
+                }
+                return btn;
+            })
+        };
+    });
 
     return {
         buttonmatrix: {
             ...common,
             rows: processedRows,
             bg_color: convertColor(p.bg_color || "#444"),
-            text_color: convertColor(p.color || "white"),
+            text_color: convertColor(p.text_color || "white"),
             opa: formatOpacity(p.opa)
         }
     };
@@ -86,9 +105,34 @@ export default {
             { buttons: ["*", "0", "#"] }
         ],
         bg_color: "#444",
-        color: "white",
-        opa: 255
+        text_color: "white",
+        opa: 255,
+        opacity: 255
     },
+    schema: [
+        {
+            section: "Matrix Layout",
+            fields: [
+                {
+                    key: "rows", label: "Buttons (JSON Rows)", type: "json", default: [
+                        { buttons: ["1", "2", "3"] },
+                        { buttons: ["4", "5", "6"] },
+                        { buttons: ["7", "8", "9"] },
+                        { buttons: ["*", "0", "#"] }
+                    ]
+                }
+            ]
+        },
+        {
+            section: "Appearance",
+            fields: [
+                { key: "bg_color", label: "Background", type: "color", default: "#444" },
+                { key: "text_color", label: "Text Color", type: "color", default: "white" },
+                { key: "opa", label: "Opacity (0 - 255)", type: "number", default: 255 },
+                { key: "opacity", label: "Opacity (0 - 255)", type: "number", default: 255 }
+            ]
+        }
+    ],
     render,
     exportLVGL
 };

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest'; // eslint-disable-line no-unused-vars
 import { PreferencesStore } from '../../js/core/stores/preferences_store.js';
 
 describe('PreferencesStore', () => {
@@ -24,5 +24,13 @@ describe('PreferencesStore', () => {
         expect(store.snapEnabled).toBe(false);
         store.setShowGrid(false);
         expect(store.showGrid).toBe(false);
+    });
+
+    it('should toggle debug grid and rulers individually', () => {
+        store.setShowDebugGrid(true);
+        expect(store.showDebugGrid).toBe(true);
+
+        store.setShowRulers(true);
+        expect(store.showRulers).toBe(true);
     });
 });

@@ -1,20 +1,32 @@
-import { AppState } from './state.js';
-import { on, emit, EVENTS } from './events.js';
-import { WidgetFactory } from './widget_factory.js';
-import { showToast } from '../utils/dom.js';
+// @ts-check
+import { AppState } from './state';
+import { on, EVENTS } from './events.js';
+import { WidgetFactory } from './widget_factory';
 import { Logger } from '../utils/logger.js';
+import { quickSearchInstance } from '../ui/quick_search.js';
+import { showDeletePageModal, showClearPageModal, setupSidebarMobileToggles } from './sidebar_helpers.js';
 
 export class Sidebar {
-    constructor() {
+    /** @param {any} appInstance */
+    constructor(appInstance = null) {
         Logger.log("Sidebar: Constructor called");
+        /** @type {any} */
+        this.app = appInstance;
+        /** @type {HTMLElement|null} */
         this.pageListEl = document.getElementById("pageList");
+        /** @type {HTMLElement|null} */
         this.pagesHeader = document.getElementById("pagesHeader");
+        /** @type {HTMLElement|null} */
         this.pagesContent = document.getElementById("pagesContent");
+        /** @type {HTMLElement|null} */
         this.widgetPaletteEl = document.getElementById("widgetPalette");
         Logger.log("Sidebar: widgetPaletteEl found?", !!this.widgetPaletteEl);
         if (!this.widgetPaletteEl) Logger.error("Sidebar: widgetPalette element not found!");
+        /** @type {HTMLElement|null} */
         this.addPageBtn = document.getElementById("addPageBtn");
+        /** @type {HTMLElement|null} */
         this.currentPageNameEl = document.getElementById("currentPageName");
+        /** @type {any} */
         this.hoverTimeout = null;
         this.hoveredPageIndex = -1;
     }
@@ -28,13 +40,16 @@ export class Sidebar {
         on(EVENTS.PAGE_CHANGED, () => this.render());
 
         // Pages section toggle
-        if (this.pagesHeader && this.pagesContent) {
-            this.pagesHeader.addEventListener("click", () => {
-                const isHidden = this.pagesContent.classList.toggle("hidden");
-                const chevron = this.pagesHeader.querySelector(".chevron");
+        const pagesHeader = this.pagesHeader;
+        const pagesContent = this.pagesContent;
+        if (pagesHeader && pagesContent) {
+            pagesHeader.addEventListener("click", () => {
+                const isHidden = pagesContent.classList.toggle("hidden");
+                const chevron = /** @type {HTMLElement|null} */(pagesHeader.querySelector(".chevron"));
                 if (chevron) {
                     chevron.style.transform = isHidden ? "rotate(-90deg)" : "rotate(0deg)";
                 }
+
             });
         }
 
@@ -48,12 +63,14 @@ export class Sidebar {
             this.widgetPaletteEl.addEventListener("click", (e) => this.handlePaletteClick(e));
 
             this.widgetPaletteEl.addEventListener("dragstart", (e) => {
-                const item = e.target.closest(".item[data-widget-type]");
+                const item = /** @type {HTMLElement} */(e.target).closest(".item[data-widget-type]");
                 if (item) {
                     const type = item.getAttribute("data-widget-type");
                     Logger.log("[Sidebar] Drag start:", type);
-                    e.dataTransfer.setData("application/widget-type", type);
-                    e.dataTransfer.effectAllowed = "copy";
+                    if (e.dataTransfer) {
+                        e.dataTransfer.setData("application/widget-type", type || "");
+                        e.dataTransfer.effectAllowed = "copy";
+                    }
                 }
             });
         }
@@ -61,7 +78,7 @@ export class Sidebar {
         // Global click debug
         document.addEventListener('click', (e) => {
             const debugDiv = document.getElementById('debug-overlay');
-            if (debugDiv) debugDiv.innerHTML += 'Global click: ' + e.target.tagName + '<br>';
+            if (debugDiv && e.target instanceof HTMLElement) debugDiv.innerHTML += 'Global click: ' + e.target.tagName + '<br>';
         });
 
         // Clear Page Button
@@ -75,8 +92,8 @@ export class Sidebar {
         if (quickSearchBtn) {
             quickSearchBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                if (window.QuickSearch) {
-                    window.QuickSearch.open();
+                if (quickSearchInstance) {
+                    quickSearchInstance.open();
                 } else {
                     Logger.warn("Sidebar: QuickSearch instance not found on window");
                 }
@@ -88,39 +105,46 @@ export class Sidebar {
     }
 
     render() {
-        if (!this.pageListEl) return;
+        const pageListEl = this.pageListEl;
+        if (!pageListEl) return;
 
-        this.pageListEl.innerHTML = "";
-        const pages = AppState.pages;
+        const fragment = document.createDocumentFragment();
+        pageListEl.innerHTML = "";
+        const pages = /** @type {Page[]} */ (AppState.pages);
         const currentIndex = AppState.currentPageIndex;
 
-        pages.forEach((page, index) => {
+        pages.forEach((/** @type {Page} */ page, /** @type {number} */ index) => {
             const item = document.createElement("div");
             item.className = "item" + (index === currentIndex ? " active" : "");
             item.draggable = true;
 
             // Drag Handlers
+            /** @param {DragEvent} e */
             item.ondragstart = (e) => {
-                e.dataTransfer.setData("text/plain", index);
-                e.dataTransfer.effectAllowed = "move";
+                if (e.dataTransfer) {
+                    e.dataTransfer.setData("text/plain", String(index));
+                    e.dataTransfer.effectAllowed = "move";
+                }
                 item.style.opacity = "0.5";
             };
 
             item.ondragend = () => {
                 item.style.opacity = "1";
-                Array.from(this.pageListEl.children).forEach(el => {
+                Array.from(pageListEl.children).forEach((/** @type {any} */ el) => {
                     el.style.borderTop = "";
                     el.style.borderBottom = "";
                 });
             };
 
+            /** @param {DragEvent} e */
             item.ondragover = (e) => {
                 e.preventDefault();
+                if (!e.dataTransfer) return;
                 const isWidgetId = e.dataTransfer.types.includes("application/widget-id");
                 const isWidgetType = e.dataTransfer.types.includes("application/widget-type");
 
                 if (isWidgetId || isWidgetType) {
-                    e.dataTransfer.dropEffect = isWidgetId ? "move" : "copy";
+                    if (e.dataTransfer) e.dataTransfer.dropEffect = isWidgetId ? "move" : "copy";
                     item.style.backgroundColor = "var(--primary-subtle)";
 
                     // Switch page immediately (like clicking) when dragging a widget over it
@@ -129,7 +153,6 @@ export class Sidebar {
                     }
                     return;
                 }
-
                 const rect = item.getBoundingClientRect();
                 const midpoint = rect.top + rect.height / 2;
                 if (e.clientY < midpoint) {
@@ -141,10 +164,11 @@ export class Sidebar {
                 }
             };
 
+            /** @param {DragEvent} e */
             item.ondragleave = (e) => {
                 // Only clear if we're leaving the hovered page, not just re-entering child elements
                 const relatedTarget = e.relatedTarget;
-                if (!item.contains(relatedTarget)) {
+                if (!(relatedTarget instanceof Node) || !item.contains(relatedTarget)) {
                     if (this.hoveredPageIndex === index) {
                         if (this.hoverTimeout) {
                             clearTimeout(this.hoverTimeout);
@@ -158,6 +182,7 @@ export class Sidebar {
                 item.style.backgroundColor = "";
             };
 
+            /** @param {DragEvent} e */
             item.ondrop = (e) => {
                 e.preventDefault();
                 if (this.hoverTimeout) {
@@ -169,6 +194,7 @@ export class Sidebar {
                 item.style.borderBottom = "";
                 item.style.backgroundColor = "";
 
+                if (!e.dataTransfer) return;
                 const widgetId = e.dataTransfer.getData("application/widget-id");
                 const widgetType = e.dataTransfer.getData("application/widget-type");
 
@@ -276,10 +302,11 @@ export class Sidebar {
             }
 
             item.appendChild(actions);
-            this.pageListEl.appendChild(item);
+            fragment.appendChild(item);
         });
 
-        // Update current page name header
+        pageListEl.appendChild(fragment);
+
         if (this.currentPageNameEl) {
             const page = AppState.getCurrentPage();
             this.currentPageNameEl.textContent = page ? page.name : "None";
@@ -290,6 +317,12 @@ export class Sidebar {
         AppState.addPage();
     }
 
+    /**
+     * @param {number} fromIndex 
+     * @param {number} toIndex 
+     * @param {number} clientY 
+     * @param {HTMLElement} targetItem 
+     */
     handlePageReorder(fromIndex, toIndex, clientY, targetItem) {
         if (fromIndex === toIndex) return;
 
@@ -309,6 +342,7 @@ export class Sidebar {
         }
     }
 
+    /** @param {any} e */
     handlePaletteClick(e) {
         const debugDiv = document.getElementById('debug-overlay');
         if (debugDiv) debugDiv.innerHTML += 'handlePaletteClick triggered<br>';
@@ -333,25 +367,24 @@ export class Sidebar {
             Logger.log("Sidebar: Widget added to state");
 
             // Suppress focus skip when adding via click too
-            if (window.app && window.app.canvas) {
-                window.app.canvas.suppressNextFocus = true;
+            if (this.app && this.app.canvas) {
+                this.app.canvas.suppressNextFocus = true;
             }
 
             if (debugDiv) debugDiv.innerHTML += 'Widget added to state<br>';
         } catch (err) {
             Logger.error("Sidebar: Error creating/adding widget", err);
-            if (debugDiv) debugDiv.innerHTML += 'Error: ' + err.message + '<br>';
+            if (debugDiv) debugDiv.innerHTML += 'Error: ' + (/** @type {Error} */(err)).message + '<br>';
         }
     }
 
+    /** @param {number} index */
     openPageSettings(index) {
-        if (window.app && window.app.pageSettings) {
-            window.app.pageSettings.open(index);
+        if (this.app && this.app.pageSettings) {
+            this.app.pageSettings.open(index);
         } else {
-            Logger.error("Sidebar: PageSettings instance not found on window.app");
+            Logger.error("Sidebar: PageSettings instance not found on injected app reference");
             // Fallback (should not be needed if main.js initializes correctly)
-            const page = AppState.pages[index];
-            window.currentPageSettingsTarget = page;
             const modal = document.getElementById("pageSettingsModal");
             if (modal) {
                 modal.classList.remove("hidden");
@@ -360,189 +393,19 @@ export class Sidebar {
         }
     }
 
+    /**
+     * @param {number} index 
+     * @param {any} page 
+     */
     handlePageDelete(index, page) {
-        // Use custom modal instead of native confirm
-        const modal = document.createElement('div');
-        modal.className = 'modal-backdrop';
-        modal.style.display = 'flex';
-        modal.innerHTML = `
-            <div class="modal" style="width: 320px; height: auto; min-height: 150px; padding: var(--space-4);">
-                <div class="modal-header" style="font-size: var(--fs-md); padding-bottom: var(--space-2);">
-                    <div>Delete Page</div>
-                </div>
-                <div class="modal-body" style="padding: var(--space-2) 0;">
-                    <p style="margin-bottom: var(--space-3); font-size: var(--fs-sm);">
-                        Are you sure you want to delete the page <b>"${page.name}"</b>?
-                        <br><br>
-                        This action cannot be undone.
-                    </p>
-                </div>
-                <div class="modal-actions" style="padding-top: var(--space-3); border-top: 1px solid var(--border-subtle);">
-                    <button class="btn btn-secondary close-btn btn-xs">Cancel</button>
-                    <button class="btn btn-primary confirm-btn btn-xs" style="background: var(--danger); color: white; border: none;">Delete</button>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(modal);
-
-        const closeModal = () => modal.remove();
-
-        const confirmAction = () => {
-            closeModal();
-            try {
-                if (typeof AppState.deletePage === 'function') {
-                    AppState.deletePage(index);
-                } else {
-                    console.error('AppState.deletePage is missing');
-                    if (typeof showToast === 'function') showToast('Error: AppState.deletePage not found', 'error');
-                }
-            } catch (e) {
-                console.error('[Sidebar] Error deleting page:', e);
-                if (typeof showToast === 'function') showToast('Error deleting page: ' + e.message, 'error');
-            }
-        };
-
-        modal.querySelectorAll('.close-btn').forEach(btn => btn.onclick = closeModal);
-        modal.querySelector('.confirm-btn').onclick = confirmAction;
-        modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+        showDeletePageModal(index, page);
     }
 
     handleClearPage() {
-        // Defensive check for AppState as fallback
-        const State = AppState || window.AppState;
-        if (!State) {
-            console.error('[Sidebar] AppState is not defined!');
-            if (typeof showToast === 'function') showToast('Error: Application State is not ready.', 'error');
-            return;
-        }
-
-        // Use custom modal instead of native confirm to avoid brower/environment issues
-        const modal = document.createElement('div');
-        modal.className = 'modal-backdrop';
-        modal.style.display = 'flex'; // Force display
-        modal.innerHTML = `
-            <div class="modal" style="width: 320px; height: auto; min-height: 180px; padding: var(--space-4);">
-                <div class="modal-header" style="font-size: var(--fs-md); padding-bottom: var(--space-2);">
-                    <div>Clear Page</div>
-                </div>
-                <div class="modal-body" style="padding: var(--space-2) 0;">
-                    <p style="margin-bottom: var(--space-3); font-size: var(--fs-sm);">Are you sure you want to clear all widgets? <b>Locked</b> widgets will stay.</p>
-                </div>
-                <div class="modal-actions" style="padding-top: var(--space-3); border-top: 1px solid var(--border-subtle);">
-                    <button class="btn btn-secondary close-btn btn-xs">Cancel</button>
-                    <button class="btn btn-primary confirm-btn btn-xs" style="background: var(--danger); color: white; border: none;">Clear All</button>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(modal);
-
-        const closeModal = () => {
-            modal.remove();
-        };
-
-        const confirmAction = () => {
-            closeModal();
-            try {
-                console.log('[Sidebar] Executing clearCurrentPage...');
-                const result = State.clearCurrentPage(true); // true = preserve locked
-
-                if (result.preserved > 0 && typeof showToast === 'function') {
-                    showToast(`Cleared ${result.deleted} widgets. ${result.preserved} locked widget(s) were preserved.`, "info");
-                } else if (result.deleted > 0) {
-                    showToast(`Cleared all ${result.deleted} widgets.`, "success");
-                } else {
-                    if (result.preserved > 0) {
-                        showToast(`No widgets cleared. ${result.preserved} locked widget(s) preserved.`, "info");
-                    } else {
-                        showToast("Page is already empty.", "info");
-                    }
-                }
-                Logger.log('Cleared widgets from current page via AppState');
-            } catch (e) {
-                console.error('[Sidebar] Error clearing page:', e);
-                if (typeof showToast === 'function') showToast('Error clearing page: ' + e.message, 'error');
-            }
-        };
-
-        // Bind events
-        const closeBtns = modal.querySelectorAll('.close-btn');
-        closeBtns.forEach(btn => btn.onclick = closeModal);
-
-        const confirmBtn = modal.querySelector('.confirm-btn');
-        confirmBtn.onclick = confirmAction;
-
-        // Click outside to close
-        modal.onclick = (e) => {
-            if (e.target === modal) closeModal();
-        };
+        showClearPageModal();
     }
 
     setupMobileToggles() {
-        const mobileWidgetsBtn = document.getElementById('mobileWidgetsBtn');
-        const mobilePropsBtn = document.getElementById('mobilePropsBtn');
-        const mobileDeviceBtn = document.getElementById('mobileDeviceBtn');
-        const backdrop = document.getElementById('mobileBackdrop');
-
-        const sidebar = document.querySelector('.sidebar');
-        const rightPanel = document.querySelector('.right-panel');
-
-        const closeAll = () => {
-            sidebar?.classList.remove('mobile-active');
-            rightPanel?.classList.remove('mobile-active');
-            backdrop?.classList.remove('active');
-        };
-
-        mobileWidgetsBtn?.addEventListener('click', () => {
-            const isActive = sidebar?.classList.contains('mobile-active');
-            closeAll();
-            if (!isActive) {
-                sidebar?.classList.add('mobile-active');
-                backdrop?.classList.add('active');
-            }
-        });
-
-        mobilePropsBtn?.addEventListener('click', () => {
-            const isActive = rightPanel?.classList.contains('mobile-active');
-            closeAll();
-            if (!isActive) {
-                rightPanel?.classList.add('mobile-active');
-                backdrop?.classList.add('active');
-            }
-        });
-
-        mobileDeviceBtn?.addEventListener('click', () => {
-            closeAll();
-            window.app?.deviceSettings?.open();
-        });
-
-        const mobileEditorSettingsBtn = document.getElementById('mobileEditorSettingsBtn');
-        mobileEditorSettingsBtn?.addEventListener('click', () => {
-            closeAll();
-            window.app?.editorSettings?.open();
-        });
-
-        backdrop?.addEventListener('click', closeAll);
-
-        // Auto-close on widget selection (mobile only)
-        on(EVENTS.SELECTION_CHANGED, () => {
-            if (window.innerWidth <= 768) {
-                // Keep properties open if we just selected something, but close widget drawer
-                sidebar?.classList.remove('mobile-active');
-                if (!rightPanel?.classList.contains('mobile-active') && !sidebar?.classList.contains('mobile-active')) {
-                    backdrop?.classList.remove('active');
-                }
-            }
-        });
-
-        // Close sidebar when adding a widget from palette
-        const originalHandlePaletteClick = this.handlePaletteClick.bind(this);
-        this.handlePaletteClick = (e) => {
-            originalHandlePaletteClick(e);
-            if (window.innerWidth <= 768) {
-                closeAll();
-            }
-        };
+        setupSidebarMobileToggles(this);
     }
 }

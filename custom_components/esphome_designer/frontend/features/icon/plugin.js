@@ -1,5 +1,23 @@
+import { AppState } from '@core/state';
 import { iconPickerData } from '../../js/core/constants_icons.js';
 import { evaluateTemplatePreview } from '../../js/utils/text_utils.js';
+
+const resolveIconForegroundColor = (colorProp, getColorConst) => {
+    if (colorProp === "theme_auto") return "color_on";
+    if (colorProp === "theme_auto_inverse") return "color_off";
+    if (colorProp === "white") return "color_off";
+    if (colorProp === "black") return "color_on";
+    return getColorConst(colorProp || "black");
+};
+
+const resolveIconBackgroundColor = (colorProp, getColorConst) => {
+    if (!colorProp || colorProp === "transparent") return null;
+    if (colorProp === "theme_auto") return "color_off";
+    if (colorProp === "theme_auto_inverse") return "color_on";
+    if (colorProp === "white") return "color_off";
+    if (colorProp === "black") return "color_on";
+    return getColorConst(colorProp);
+};
 
 const render = (el, widget, { getColorStyle }) => {
     const props = widget.props || {};
@@ -21,7 +39,7 @@ const render = (el, widget, { getColorStyle }) => {
 
     const codeRaw = props.code || "";
     // Handle template in icon code
-    const code = evaluateTemplatePreview(codeRaw, window.AppState?.entityStates).trim().toUpperCase();
+    const code = evaluateTemplatePreview(codeRaw, AppState?.entityStates).trim().toUpperCase();
 
     if (code.includes('{{')) {
         // Still has template - show placeholder
@@ -80,7 +98,39 @@ export default {
         fit_icon_to_frame: true,
         border_width: 0,
         border_color: "theme_auto",
-        border_radius: 0
+        border_radius: 0,
+        opa: 255
+    },
+    renderProperties: (panel, widget) => {
+        const props = widget.props || {};
+        const updateProp = (key, val) => {
+            const newProps = { ...widget.props, [key]: val };
+            AppState.updateWidget(widget.id, { props: newProps });
+        };
+
+        panel.createSection("Icon", true);
+        panel.addIconPicker("Select Icon", props.code || "F07D0", (v) => updateProp("code", v), widget);
+        panel.addCheckbox("Fit icon to frame", props.fit_icon_to_frame !== false, (v) => updateProp("fit_icon_to_frame", v));
+        if (!props.fit_icon_to_frame) {
+            panel.addLabeledInput("Fixed Icon Size", "number", props.size || 48, (v) => updateProp("size", parseInt(v, 10)));
+        }
+        panel.endSection();
+
+        panel.createSection("Appearance", true);
+        panel.addColorSelector("Icon Color", props.color || "theme_auto", null, (v) => updateProp("color", v));
+        panel.addColorSelector("Background", props.bg_color || "transparent", null, (v) => updateProp("bg_color", v));
+        panel.addNumberWithSlider("Opacity (%)", props.opacity !== undefined ? props.opacity : (props.opa !== undefined ? Math.round(props.opa / 2.55) : 100), 0, 100, (v) => {
+            updateProp("opacity", v);
+            updateProp("opa", Math.round(v * 2.55));
+        });
+        panel.endSection();
+
+        panel.createSection("Border Style", false);
+        panel.addLabeledInput("Border Width", "number", props.border_width || 0, (v) => updateProp("border_width", parseInt(v, 10)));
+        panel.addColorSelector("Border Color", props.border_color || "theme_auto", null, (v) => updateProp("border_color", v));
+        panel.addLabeledInput("Corner Radius", "number", props.border_radius || 0, (v) => updateProp("border_radius", parseInt(v, 10)));
+        panel.addDropShadowButton(panel.getContainer(), widget.id);
+        panel.endSection();
     },
     collectRequirements: (w, context) => {
         const p = w.props || {};
@@ -92,7 +142,7 @@ export default {
         context.addFont("Material Design Icons", 400, size);
     },
     render,
-    exportOpenDisplay: (w, { layout, page }) => {
+    exportOpenDisplay: (w, { layout, _page }) => {
         const p = w.props || {};
         const code = (p.code || "F0595").toUpperCase().replace(/^0X/, "");
         const entry = iconPickerData.find(d => d.code.toUpperCase() === code);
@@ -104,11 +154,10 @@ export default {
             x: Math.round(w.x),
             y: Math.round(w.y),
             size: p.size || 48,
-            size: p.size || 48,
             fill: (p.color === "theme_auto") ? (layout?.darkMode ? "white" : "black") : (p.color || "black")
         };
     },
-    exportOEPL: (w, { layout, page }) => {
+    exportOEPL: (w, { _layout, _page }) => {
         const p = w.props || {};
         const code = (p.code || "F0595").toUpperCase().replace(/^0X/, "");
         const entry = iconPickerData.find(d => d.code.toUpperCase() === code);
@@ -142,7 +191,7 @@ export default {
     },
     export: (w, context) => {
         const {
-            lines, addFont, getColorConst, addDitherMask, getCondProps, getConditionCheck, isEpaper
+            lines, addFont, getColorConst, addDitherMask, getCondProps, getConditionCheck, isEpaper // eslint-disable-line no-unused-vars
         } = context;
 
         const p = w.props || {};
@@ -150,28 +199,23 @@ export default {
         const size = parseInt(p.size || 48, 10);
         const colorProp = p.color || "theme_auto";
 
-        // Dynamic Color Logic
-        let color = getColorConst(colorProp);
-        if (colorProp === "theme_auto") color = "color_on";
-        if (colorProp === "white") color = "color_off"; // Background (Dynamic)
-        if (colorProp === "black") color = "color_on";  // Text (Dynamic)
+        const color = resolveIconForegroundColor(colorProp, getColorConst);
 
         // Register Icon Font
         const fontRef = addFont("Material Design Icons", 400, size);
 
-        lines.push(`        // widget:icon id:${w.id} type:icon x:${w.x} y:${w.y} w:${w.width} h:${w.height} code:${code} size:${size} color:${colorProp} ${getCondProps(w)}`);
 
         // Background fill
         const bgColorProp = p.bg_color || p.background_color || "transparent";
-        if (bgColorProp && bgColorProp !== "transparent") {
-            const bgColorConst = getColorConst(bgColorProp);
+        const bgColorConst = resolveIconBackgroundColor(bgColorProp, getColorConst);
+        if (bgColorConst) {
             lines.push(`        it.filled_rectangle(${w.x}, ${w.y}, ${w.width}, ${w.height}, ${bgColorConst});`);
         }
 
         // Draw Border if defined
         const borderWidth = p.border_width || 0;
         if (borderWidth > 0) {
-            const borderColor = getColorConst(p.border_color || "theme_auto");
+            const borderColor = resolveIconForegroundColor(p.border_color || "theme_auto", getColorConst);
             for (let i = 0; i < borderWidth; i++) {
                 lines.push(`        it.rectangle(${w.x} + ${i}, ${w.y} + ${i}, ${w.width} - 2 * ${i}, ${w.height} - 2 * ${i}, ${borderColor});`);
             }

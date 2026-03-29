@@ -22,12 +22,12 @@ const render = (el, widget, { getColorStyle }) => {
     const gridColor = "#e0e0e0";
     for (let y = 0; y <= widget.height; y += widget.height / 4) {
         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", 0);
-        line.setAttribute("y1", y);
-        line.setAttribute("x2", widget.width);
-        line.setAttribute("y2", y);
+        line.setAttribute("x1", "0");
+        line.setAttribute("y1", String(y));
+        line.setAttribute("x2", String(widget.width));
+        line.setAttribute("y2", String(y));
         line.setAttribute("stroke", gridColor);
-        line.setAttribute("stroke-width", 0.5);
+        line.setAttribute("stroke-width", "0.5");
         svg.appendChild(line);
     }
 
@@ -81,8 +81,25 @@ export default {
         outline: "#ccc",
         ylegend: null
     },
+    schema: [
+        {
+            section: "Data Source",
+            fields: [
+                { key: "duration", label: "Duration (Seconds)", type: "number", default: 36400 }
+            ]
+        },
+        {
+            section: "Appearance",
+            fields: [
+                { key: "background", label: "Background", type: "color", default: "white" },
+                { key: "outline", label: "Outline", type: "color", default: "#ccc" },
+                { key: "data", label: "Series Config", type: "hidden", default: [{ entity: "sensor.temperature", color: "black", width: 1, smooth: true, show_points: true }] },
+                { key: "ylegend", label: "Y Legend", type: "text", default: null }
+            ]
+        }
+    ],
     render,
-    exportOpenDisplay: (w, { layout, page }) => {
+    exportOpenDisplay: (w, { _layout, _page }) => {
         const p = w.props || {};
         const exportData = (Array.isArray(p.data) ? p.data : [p.data]).map(item => ({
             entity: item.entity || "",
@@ -108,7 +125,7 @@ export default {
         if (p.ylegend) result.ylegend = p.ylegend;
         return result;
     },
-    exportOEPL: (w, { layout, page }) => {
+    exportOEPL: (w, { _layout, _page }) => {
         const p = w.props || {};
         const exportData = (Array.isArray(p.data) ? p.data : [p.data]).map(item => ({
             entity: item.entity || "",

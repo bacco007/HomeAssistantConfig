@@ -1,5 +1,10 @@
 // --- Graph Preview Helpers ---
 
+/**
+ * Parses a duration string (e.g. "1h", "30m", "60s") into seconds.
+ * @param {string|number} durationStr
+ * @returns {number} Seconds
+ */
 export function parseDuration(durationStr) {
     if (!durationStr) return 3600; // Default 1h
 
@@ -27,7 +32,16 @@ export function parseDuration(durationStr) {
     return val;
 }
 
-export function generateMockData(width, height, min, max) {
+/**
+ * Generates mock data points for a graph.
+ * @param {number} width
+ * @param {number} height
+ * @param {number} [_min]
+ * @param {number} [_max]
+ * @returns {{x: number, y: number}[]}
+ */
+export function generateMockData(width, height, _min, _max) {
+    /** @type {{x: number, y: number}[]} */
     const points = [];
     const numPoints = 50;
 
@@ -52,11 +66,18 @@ export function generateMockData(width, height, min, max) {
 
 /**
  * Maps Home Assistant history data to SVG coordinates for the graph.
- * Supports auto-scaling if min/max are not provided or effectively 0.
+ * @param {number} width
+ * @param {number} height
+ * @param {number} min
+ * @param {number} max
+ * @param {any[]} historyData
+ * @param {string|number} durationStr
+ * @returns {{x: number, y: number}[]}
  */
 export function generateHistoricalDataPoints(width, height, min, max, historyData, durationStr) {
     if (!historyData || historyData.length === 0) return generateMockData(width, height, min, max);
 
+    /** @type {{x: number, y: number}[]} */
     const points = [];
     const durationSec = parseDuration(durationStr);
     const now = Date.now();
@@ -119,7 +140,15 @@ export function generateHistoricalDataPoints(width, height, min, max, historyDat
     return points;
 }
 
-export function drawInternalGrid(svg, width, height, xGridStr, yGridStr, color = "rgba(0,0,0,0.1)") {
+/**
+ * @param {SVGElement} svg
+ * @param {number} width
+ * @param {number} height
+ * @param {string} _xGridStr
+ * @param {string} _yGridStr
+ * @param {string} [color="rgba(0,0,0,0.1)"]
+ */
+export function drawInternalGrid(svg, width, height, _xGridStr, _yGridStr, color = "rgba(0,0,0,0.1)") {
     const gridGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
     gridGroup.setAttribute("stroke", color);
     gridGroup.setAttribute("stroke-dasharray", "2,2");
@@ -132,26 +161,38 @@ export function drawInternalGrid(svg, width, height, xGridStr, yGridStr, color =
     for (let i = 1; i < xLines; i++) {
         const x = (i / xLines) * width;
         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", x);
-        line.setAttribute("y1", 0);
-        line.setAttribute("x2", x);
-        line.setAttribute("y2", height);
+        line.setAttribute("x1", String(x));
+        line.setAttribute("y1", "0");
+        line.setAttribute("x2", String(x));
+        line.setAttribute("y2", String(height));
         gridGroup.appendChild(line);
     }
 
     for (let i = 1; i < yLines; i++) {
         const y = (i / yLines) * height;
         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", 0);
-        line.setAttribute("y1", y);
-        line.setAttribute("x2", width);
-        line.setAttribute("y2", y);
+        line.setAttribute("x1", "0");
+        line.setAttribute("y1", String(y));
+        line.setAttribute("x2", String(width));
+        line.setAttribute("y2", String(y));
         gridGroup.appendChild(line);
     }
 
     svg.appendChild(gridGroup);
 }
 
+/**
+ * @param {HTMLElement|null} container
+ * @param {number} x
+ * @param {number} y
+ * @param {number} width
+ * @param {number} height
+ * @param {number} min
+ * @param {number} max
+ * @param {string|number} durationStr
+ * @param {string} widgetId
+ * @param {string} [color="#666"]
+ */
 export function drawSmartAxisLabels(container, x, y, width, height, min, max, durationStr, widgetId, color = "#666") {
     // container should be the ARTBOARD (div.artboard)
     if (!container) return;
@@ -165,8 +206,8 @@ export function drawSmartAxisLabels(container, x, y, width, height, min, max, du
     const steps = 4; // Min, 25%, 50%, 75%, Max
 
     // Use artboard dimensions for logical clamping
-    const canvasWidth = parseInt(container.style.width) || 800;
-    const canvasHeight = parseInt(container.style.height) || 480;
+    const canvasWidth = parseInt(container.style.width, 10) || 800;
+    const canvasHeight = parseInt(container.style.height, 10) || 480;
 
     // Determine if labels should be inside or outside
     const yLabelsInside = x < 40;
@@ -176,28 +217,30 @@ export function drawSmartAxisLabels(container, x, y, width, height, min, max, du
         const val = min + (range * (i / steps));
         const labelY = y + height - ((i / steps) * height);
 
+        /** @type {HTMLDivElement} */
         const div = document.createElement("div");
         div.className = "graph-axis-label";
         div.dataset.widgetId = widgetId;
-        div.style.position = "absolute";
+        const style = div.style;
+        style.position = "absolute";
 
         if (yLabelsInside) {
-            div.style.left = `${x + 4}px`;
-            div.style.textAlign = "left";
+            style.left = `${x + 4}px`;
+            style.textAlign = "left";
         } else {
             // Positon to left of graph.
             // We use left-based positioning to be relative to artboard origin.
-            div.style.left = `${x - 4}px`;
-            div.style.transform = "translateX(-100%)";
-            div.style.textAlign = "right";
+            style.left = `${x - 4}px`;
+            style.transform = "translateX(-100%)";
+            style.textAlign = "right";
         }
 
-        div.style.top = `${labelY - 6}px`; // Center vertically
-        div.style.fontSize = "10px";
-        div.style.color = color;
-        div.style.opacity = yLabelsInside ? "0.7" : "1.0";
-        div.style.pointerEvents = "none";
-        div.style.zIndex = "10";
+        style.top = `${labelY - 6}px`; // Center vertically
+        style.fontSize = "10px";
+        style.color = color;
+        style.opacity = yLabelsInside ? "0.7" : "1.0";
+        style.pointerEvents = "none";
+        style.zIndex = "10";
         div.textContent = val.toFixed(1);
         container.appendChild(div);
     }
@@ -219,34 +262,36 @@ export function drawSmartAxisLabels(container, x, y, width, height, min, max, du
             else labelText = `-${timeAgo.toFixed(0)}s`;
         }
 
+        /** @type {HTMLDivElement} */
         const div = document.createElement("div");
         div.className = "graph-axis-label";
         div.dataset.widgetId = widgetId;
-        div.style.position = "absolute";
-        div.style.left = `${labelX}px`;
+        const style = div.style;
+        style.position = "absolute";
+        style.left = `${labelX}px`;
 
         if (xLabelsInside) {
-            div.style.top = `${y + height - 14}px`; // Inside, above bottom
+            style.top = `${y + height - 14}px`; // Inside, above bottom
         } else {
-            div.style.top = `${y + height + 4}px`; // Below graph
+            style.top = `${y + height + 4}px`; // Below graph
         }
 
-        div.style.fontSize = "10px";
-        div.style.color = color;
-        div.style.opacity = xLabelsInside ? "0.7" : "1.0";
-        div.style.pointerEvents = "none";
-        div.style.zIndex = "10";
+        style.fontSize = "10px";
+        style.color = color;
+        style.opacity = xLabelsInside ? "0.7" : "1.0";
+        style.pointerEvents = "none";
+        style.zIndex = "10";
 
         // Horizontal clamping for X labels relative to artboard
         if (labelX < 20) {
-            div.style.transform = "none";
-            div.style.textAlign = "left";
+            style.transform = "none";
+            style.textAlign = "left";
         } else if (labelX > canvasWidth - 20) {
-            div.style.transform = "translateX(-100%)";
-            div.style.textAlign = "right";
+            style.transform = "translateX(-100%)";
+            style.textAlign = "right";
         } else {
-            div.style.transform = "translateX(-50%)";
-            div.style.textAlign = "center";
+            style.transform = "translateX(-50%)";
+            style.textAlign = "center";
         }
 
         div.textContent = labelText;

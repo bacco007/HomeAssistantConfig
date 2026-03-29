@@ -1,5 +1,6 @@
 import { Logger } from '../utils/logger.js';
-import { fetchDynamicHardwareProfiles, getOfflineProfilesFromStorage } from './hardware_import.js';
+import { fetchDynamicHardwareProfiles, getOfflineProfilesFromStorage } from './hardware_profile_sources.js';
+import { emit, EVENTS } from '../core/events.js';
 
 // ============================================================================
 // DEVICE HARDWARE PROFILES
@@ -8,24 +9,7 @@ import { fetchDynamicHardwareProfiles, getOfflineProfilesFromStorage } from './h
 // Used to generate all hardware-related YAML sections (sensors, buttons, etc.)
 // ============================================================================
 
-// List of devices explicitly confirmed to work.
-// All other devices will be marked as (untested) in the UI.
-// IMPORTANT: Most device profiles here are snippet-based. 
-// System sections (esphome, esp32, psram, etc.) MUST be commented out 
-// in the generated YAML to allow users to merge this into their 
-// existing device configurations without conflicts.
-export const SUPPORTED_DEVICE_IDS = [
-  'reterminal_e1001',
-  'reterminal_e1002',
-  'trmnl_diy_esp32s3',
-  'esp32_s3_photopainter',
-  'm5stack_paper',
-  'm5stack_coreink',
-  'trmnl',
-  'waveshare_esp32_s3_touch_lcd_7',
-  'waveshare_esp32_s3_touch_lcd_4_3',
-  'seeedstudio_sensecap_indicator'
-];
+
 
 export const DEVICE_PROFILES = {
   // ========================================================================
@@ -151,7 +135,7 @@ export const DEVICE_PROFILES = {
       i2c: { sda: "GPIO1", scl: "GPIO2" },
       spi: { clk: "GPIO7", mosi: "GPIO8" },
       batteryEnable: null,
-      batteryAdc: "GPIO0",
+      batteryAdc: "GPIO3",
       buzzer: null,
       buttons: null
     },
@@ -362,11 +346,125 @@ export const DEVICE_PROFILES = {
     external_components: [
       "  - source: github://Passific/m5paper_esphome"
     ]
+  },
+  lilygo_t5_47: {
+    id: "lilygo_t5_47",
+    name: "Lilygo T5 4.7\" E-Paper",
+    isUntestedProfile: true,
+    displayType: "binary",
+    chip: "esp32",
+    board: "esp-wrover-kit",
+    displayPlatform: "t547",
+    resolution: { width: 960, height: 540 },
+    shape: "rect",
+    psram_speed: "80MHz",
+    pins: {
+      batteryEnable: null,
+      batteryAdc: "GPIO36",
+      buttons: {
+        left: { number: "GPIO39", inverted: true, mode: "INPUT" },
+        right: { number: "GPIO34", inverted: true, mode: "INPUT" },
+        refresh: { number: "GPIO35", inverted: true, mode: "INPUT" }
+      }
+    },
+    battery: {
+      attenuation: "12db",
+      multiplier: 2.0
+    },
+    features: {
+      psram: true,
+      buzzer: false,
+      buttons: true,
+      epaper: true,
+      inverted_colors: true
+    },
+    frameworkHint: "Arduino 3.x (required by the t547 component)",
+    system_section_overrides: {
+      esphome: [
+        "  platformio_options:",
+        "    lib_deps:",
+        "      - https://github.com/Xinyuan-LilyGO/LilyGo-EPD47.git"
+      ],
+      esp32: [
+        "  framework:",
+        "    type: arduino",
+        "    version: 3.3.2",
+        "  flash_size: 16MB"
+      ]
+    },
+    external_components: [
+      "  - source:",
+      "      type: git",
+      "      url: https://github.com/cjb0001/esphome-components",
+      "      ref: idf5-arduino3",
+      "    components: [\"t547\"]"
+    ]
   }
 };
 
+/**
+ * Returns the currently supported, non-untested device profile IDs.
+ * Dynamic profile loads reuse this to keep the exported list in sync.
+ *
+ * @param {Record<string, any>} profiles
+ * @returns {string[]}
+ */
+export function buildSupportedDeviceIds(profiles = DEVICE_PROFILES) {
+  return Object.entries(profiles)
+    .filter(([, profile]) => !profile.isUntestedProfile)
+    .map(([id]) => id);
+}
+
+/**
+ * Merges a dynamic profile into an existing static profile while preserving
+ * static metadata that the YAML source may not carry.
+ *
+ * @param {Record<string, any> | undefined} existing
+ * @param {Record<string, any>} incoming
+ * @returns {Record<string, any>}
+ */
+export function mergeDeviceProfile(existing, incoming) {
+  if (!existing) {
+    return incoming;
+  }
+
+  return {
+    ...existing,
+    ...incoming,
+    features: {
+      ...(existing.features || {}),
+      ...(incoming.features || {})
+    }
+  };
+}
+
+/**
+ * Applies dynamic hardware templates into the device profile registry.
+ *
+ * @param {Record<string, any>} profiles
+ * @param {Array<Record<string, any>>} dynamicTemplates
+ */
+export function applyDynamicProfiles(profiles, dynamicTemplates) {
+  dynamicTemplates.forEach((template) => {
+    profiles[template.id] = mergeDeviceProfile(profiles[template.id], template);
+  });
+}
+
+/**
+ * Restores offline-persisted profiles into the registry.
+ *
+ * @param {Record<string, any>} profiles
+ * @param {Record<string, any>} offlineProfiles
+ */
+export function applyOfflineProfiles(profiles, offlineProfiles) {
+  Object.entries(offlineProfiles).forEach(([id, profile]) => {
+    profiles[id] = profile;
+  });
+}
+
 // Expose generically for other modules (Adapter, etc.)
 // window.DEVICE_PROFILES = DEVICE_PROFILES; // REFACTOR: Removed in favor of strict imports
+export let SUPPORTED_DEVICE_IDS = buildSupportedDeviceIds(DEVICE_PROFILES);
 
 /**
  * Dynamically loads external hardware profiles from the backend
@@ -376,39 +474,19 @@ export async function loadExternalProfiles() {
   try {
     const dynamicTemplates = await fetchDynamicHardwareProfiles();
     Logger.log(`[Devices] Loaded ${dynamicTemplates.length} hardware profiles from backend/bundle.`);
-
-    dynamicTemplates.forEach(template => {
-      // Backend templates are the source of truth for YAML-based devices,
-      // but we merge instead of overwrite to preserve static metadata (like features.lvgl)
-      if (DEVICE_PROFILES[template.id]) {
-        const existing = DEVICE_PROFILES[template.id];
-        DEVICE_PROFILES[template.id] = {
-          ...existing,
-          ...template,
-          features: {
-            ...(existing.features || {}),
-            ...(template.features || {})
-          }
-        };
-      } else {
-        DEVICE_PROFILES[template.id] = template;
-      }
-    });
+    applyDynamicProfiles(DEVICE_PROFILES, dynamicTemplates);
 
     // Handle offline persistence
     const offlineProfiles = getOfflineProfilesFromStorage();
     const offlineIds = Object.keys(offlineProfiles);
     if (offlineIds.length > 0) {
       Logger.log(`[Devices] Restoring ${offlineIds.length} offline profiles from localStorage.`);
-      Object.entries(offlineProfiles).forEach(([id, profile]) => {
-        DEVICE_PROFILES[id] = profile;
-      });
+      applyOfflineProfiles(DEVICE_PROFILES, offlineProfiles);
     }
 
-    // Trigger UI update if necessary (e.g., refresh device settings modal)
-    if (window.app && window.app.deviceSettings && typeof window.app.deviceSettings.populateDeviceSelect === 'function') {
-      window.app.deviceSettings.populateDeviceSelect();
-    }
+    SUPPORTED_DEVICE_IDS = buildSupportedDeviceIds(DEVICE_PROFILES);
+
+    emit(EVENTS.DEVICE_PROFILES_UPDATED);
   } catch (e) {
     Logger.error("Failed to load external hardware profiles:", e);
   }

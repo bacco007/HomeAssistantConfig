@@ -1,6 +1,6 @@
 import { BaseAdapter } from './base_adapter.js';
 import { Logger } from '../../utils/logger.js';
-import { registry as PluginRegistry } from '../../core/plugin_registry.js';
+import { registry } from '../../core/plugin_registry';
 
 /**
  * OpenEpaperLink-specific adapter for generating JSON configuration.
@@ -12,12 +12,12 @@ export class OEPLAdapter extends BaseAdapter {
 
     /**
      * Main entry point for generating the JSON configuration.
-     * @param {import("../../types.js").ProjectPayload} layout
+     * @param {ProjectPayload} layout
      * @returns {Promise<string>} The generated JSON configuration.
      */
     async generate(layout) {
         if (!layout) {
-            console.error("OEPLAdapter: Missing layout");
+            Logger.error("OEPLAdapter: Missing layout");
             return "[]";
         }
 
@@ -29,9 +29,10 @@ export class OEPLAdapter extends BaseAdapter {
             return "[]";
         }
 
+        /** @type {any[]} */
         const payloadItems = [];
 
-        page.widgets.forEach(widget => {
+        page.widgets.forEach((/** @type {Widget} */ widget) => {
             if (widget.hidden || widget.type === 'group') return;
 
             const element = this.generateWidget(widget, { layout, page });
@@ -82,12 +83,12 @@ export class OEPLAdapter extends BaseAdapter {
 
     /**
      * Generates an OEPL element for a single widget.
-     * @param {Object} widget 
-     * @param {Object} context 
+     * @param {Widget} widget 
+     * @param {Record<string, any>} context 
      * @returns {Object|Object[]|null}
      */
     generateWidget(widget, context) {
-        const plugin = PluginRegistry ? PluginRegistry.get(widget.type) : null;
+        const plugin = registry.get(widget.type);
         if (plugin && typeof plugin.exportOEPL === 'function') {
             try {
                 return plugin.exportOEPL(widget, context);
@@ -108,4 +109,3 @@ export class OEPLAdapter extends BaseAdapter {
 }
 
 // Expose globally
-window.OEPLAdapter = OEPLAdapter;

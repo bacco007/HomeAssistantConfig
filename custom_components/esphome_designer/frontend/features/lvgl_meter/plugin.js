@@ -43,7 +43,7 @@ const render = (el, widget, { getColorStyle }) => {
     bgPath.setAttribute("d", d);
     bgPath.setAttribute("fill", "none");
     bgPath.setAttribute("stroke", getColorStyle(props.bg_color || "lightgray"));
-    bgPath.setAttribute("stroke-width", scaleWidth);
+    bgPath.setAttribute("stroke-width", String(scaleWidth));
     bgPath.setAttribute("stroke-linecap", "round");
     svg.appendChild(bgPath);
 
@@ -61,10 +61,10 @@ const render = (el, widget, { getColorStyle }) => {
             const ty2 = polarToY(cy, arcR - scaleWidth / 2 - tickLength, angle);
 
             const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            tick.setAttribute("x1", tx1);
-            tick.setAttribute("y1", ty1);
-            tick.setAttribute("x2", tx2);
-            tick.setAttribute("y2", ty2);
+            tick.setAttribute("x1", String(tx1));
+            tick.setAttribute("y1", String(ty1));
+            tick.setAttribute("x2", String(tx2));
+            tick.setAttribute("y2", String(ty2));
             tickGroup.appendChild(tick);
         }
         svg.appendChild(tickGroup);
@@ -80,19 +80,19 @@ const render = (el, widget, { getColorStyle }) => {
     const ny = polarToY(cy, arcR - 10, needleAngle);
 
     const needle = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    needle.setAttribute("x1", cx);
-    needle.setAttribute("y1", cy);
-    needle.setAttribute("x2", nx);
-    needle.setAttribute("y2", ny);
+    needle.setAttribute("x1", String(cx));
+    needle.setAttribute("y1", String(cy));
+    needle.setAttribute("x2", String(nx));
+    needle.setAttribute("y2", String(ny));
     needle.setAttribute("stroke", getColorStyle(props.indicator_color || "red"));
-    needle.setAttribute("stroke-width", indicatorWidth);
+    needle.setAttribute("stroke-width", String(indicatorWidth));
     needle.setAttribute("stroke-linecap", "round");
     svg.appendChild(needle);
 
     const pivot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    pivot.setAttribute("cx", cx);
-    pivot.setAttribute("cy", cy);
-    pivot.setAttribute("r", indicatorWidth);
+    pivot.setAttribute("cx", String(cx));
+    pivot.setAttribute("cy", String(cy));
+    pivot.setAttribute("r", String(indicatorWidth));
     pivot.setAttribute("fill", getColorStyle(props.indicator_color || "red"));
     svg.appendChild(pivot);
 
@@ -162,7 +162,7 @@ const onExportNumericSensors = (context) => {
         if (!entityId) continue;
 
         // Ensure sensor. prefix if missing
-        if (!entityId.includes(".")) {
+        if (!entityId.includes(".") && !entityId.toLowerCase().startsWith("mqtt:")) {
             entityId = `sensor.${entityId}`;
         }
 
@@ -191,8 +191,51 @@ export default {
         bg_color: "lightgray",
         color: "black",
         indicator_color: "red",
-        opa: 255
+        scale_width: 10,
+        opa: 255,
+        entity_id: "",
+        tick_count: 11,
+        tick_length: 10,
+        label_gap: 10,
+        indicator_width: 4,
+        opacity: 255
     },
+    schema: [
+        {
+            section: "Content",
+            fields: [
+                { key: "entity_id", target: "root", label: "Value Entity ID", type: "entity_picker", default: "" }
+            ]
+        },
+        {
+            section: "Settings",
+            fields: [
+                { key: "value", label: "Value", type: "number", default: 0 },
+                { key: "min", label: "Min Value", type: "number", default: 0 },
+                { key: "max", label: "Max Value", type: "number", default: 100 }
+            ]
+        },
+        {
+            section: "Scale Appearance",
+            fields: [
+                { key: "color", label: "Tick/Label Color", type: "color", default: "black" },
+                { key: "bg_color", label: "Arc/Scale Color", type: "color", default: "lightgray" },
+                { key: "scale_width", label: "Scale Width", type: "number", default: 10 },
+                { key: "tick_count", label: "Ticks", type: "number", default: 11 },
+                { key: "tick_length", label: "Tick Length", type: "number", default: 10 },
+                { key: "label_gap", label: "Label Gap", type: "number", default: 10 }
+            ]
+        },
+        {
+            section: "Indicator",
+            fields: [
+                { key: "indicator_color", label: "Needle Color", type: "color", default: "red" },
+                { key: "indicator_width", label: "Needle Width", type: "number", default: 4 },
+                { key: "opa", label: "Opacity (0 - 255)", type: "number", default: 255 },
+                { key: "opacity", label: "Opacity (0 - 255)", type: "number", default: 255 }
+            ]
+        }
+    ],
     render,
     exportLVGL,
     onExportNumericSensors

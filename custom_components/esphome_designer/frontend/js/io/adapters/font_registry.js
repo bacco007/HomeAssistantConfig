@@ -1,8 +1,19 @@
+import { clampFontWeight } from '../../core/font_weights.js';
+import { Utils } from '../../core/utils';
+
 /**
  * Modular font and glyph registry for ESPHome.
  */
 export class FontRegistry {
     constructor() {
+        /** @type {Set<string>} */
+        this.definedFontIds = new Set();
+        /** @type {Array<{ id: string, file: { type: string, family: string, weight: number, italic: boolean }, size: number, glyphs: string[] }>} */
+        this.fontLines = [];
+        /** @type {Map<number, Set<string>>} */
+        this.iconCodesBySize = new Map();
+        /** @type {string[]} */
+        this.EXTENDED_GLYPHS = [];
         this.reset();
         this.EXTENDED_GLYPHS = [
             ...Array.from({ length: 95 }, (_, i) => `\\U000000${(i + 32).toString(16).toUpperCase().padStart(2, '0')}`),
@@ -13,12 +24,9 @@ export class FontRegistry {
     }
 
     reset() {
-        /** @type {Set<string>} */
-        this.definedFontIds = new Set();
-        /** @type {string[]} */
+        this.definedFontIds.clear();
         this.fontLines = [];
-        /** @type {Map<number, Set<string>>} */
-        this.iconCodesBySize = new Map();
+        this.iconCodesBySize.clear();
     }
 
     /**
@@ -31,7 +39,13 @@ export class FontRegistry {
      */
     addFont(family, weight, size, italic = false) {
         const safeFamily = family.replace(/\s+/g, "_").toLowerCase();
-        const weightNum = parseInt(weight) || 400;
+        let weightNum = parseInt(String(weight), 10) || 400;
+
+        // Guard against invalid Google Font weights (Issue #317)
+        if (family !== "Material Design Icons") {
+            weightNum = clampFontWeight(family, weightNum);
+        }
+
         const italicSuffix = italic ? "_italic" : "";
         const idSize = String(size).replace(".", "_");
         const id = `font_${safeFamily}_${weightNum}_${idSize}${italicSuffix}`;
@@ -66,7 +80,7 @@ export class FontRegistry {
      */
     trackIcon(iconName, size) {
         if (!iconName) return;
-        const sizeInt = parseInt(size, 10);
+        const sizeInt = parseInt(String(size), 10);
         if (!this.iconCodesBySize.has(sizeInt)) {
             this.iconCodesBySize.set(sizeInt, new Set());
         }
@@ -74,13 +88,16 @@ export class FontRegistry {
         // Handle both raw hex codes (from plugins) and icon names (from UI)
         let code = iconName;
         if (!/^F[0-9A-F]{4}$/i.test(iconName)) {
-            code = window.Utils ? window.Utils.getIconCode(iconName) : null;
+            code = Utils.getIconCode(iconName) || "";
         } else {
             code = iconName.toUpperCase();
         }
 
         if (code) {
-            this.iconCodesBySize.get(sizeInt).add(code);
+            const codesForSize = this.iconCodesBySize.get(sizeInt);
+            if (codesForSize) {
+                codesForSize.add(code);
+            }
         }
     }
 
@@ -99,7 +116,7 @@ export class FontRegistry {
         const lines = ["font:"];
 
         // 1. Regular Fonts
-        this.fontLines.forEach(f => {
+        this.fontLines.forEach((f) => {
             lines.push(`  - file:`);
             lines.push(`      type: ${f.file.type}`);
             lines.push(`      family: "${f.file.family}"`);
@@ -117,7 +134,7 @@ export class FontRegistry {
 
             // Only include manual extended glyphs if explicitly requested or if no glyphsets
             if (includeExtendedLatin || (!glyphsets || glyphsets.length === 0)) {
-                const glyphs = f.glyphs.map(g => `"${g}"`).join(", ");
+                const glyphs = f.glyphs.map((g) => `"${g}"`).join(", ");
                 lines.push(`    glyphs: [${glyphs}]`);
             }
         });

@@ -5,31 +5,21 @@
  */
 
 import { Logger } from '../utils/logger.js';
-
-// Global variables for snippet highlighting
-// Keeping them module-scoped since they are internal state for the highlighter
-let lastHighlightRange = null;
-let isAutoHighlight = false;
-
-// EXPOSE TO WINDOW for keyboard.js compatibility
-// This handles the "smart delete/copy" when snippet box is focused
-Object.defineProperty(window, 'lastHighlightRange', {
-    get: () => lastHighlightRange,
-    set: function (val) { lastHighlightRange = val; },
-    configurable: true
-});
-Object.defineProperty(window, 'isAutoHighlight', {
-    get: () => isAutoHighlight,
-    set: function (val) { isAutoHighlight = val; },
-    configurable: true
-});
+import { AppState } from '../core/state';
+import { canvasInstance } from '../core/canvas.js';
+import {
+    clearSnippetAutoHighlight,
+    isSnippetAutoHighlightActive,
+    setLastSnippetHighlightRange,
+    setSnippetAutoHighlight
+} from '../core/snippet_selection_bridge.js';
 
 /**
  * Highlights a widget's YAML block in the snippet editor.
- * @param {string} widgetId 
+ * @param {string|string[]} widgetIds
  */
 export function highlightWidgetInSnippet(widgetIds) {
-    const box = document.getElementById("snippetBox");
+    const box = /** @type {HTMLTextAreaElement | null} */ (document.getElementById("snippetBox"));
     if (!box) return;
 
     const yaml = box.value;
@@ -43,8 +33,10 @@ export function highlightWidgetInSnippet(widgetIds) {
         try {
             box.setSelectionRange(0, 0);
             box.scrollTop = 0;
-            lastHighlightRange = null;
-        } catch (e) { }
+            setLastSnippetHighlightRange(null);
+        } catch (e) {
+            Logger.error("[highlightWidgetInSnippet] Selection error:", e);
+        }
         return;
     }
 
@@ -57,10 +49,13 @@ export function highlightWidgetInSnippet(widgetIds) {
         try {
             box.setSelectionRange(0, yaml.length);
             box.focus();
-            lastHighlightRange = { start: 0, end: yaml.length };
-        } catch (e) { }
+            setLastSnippetHighlightRange({ start: 0, end: yaml.length });
+        } catch (e) {
+            Logger.error("[highlightWidgetInSnippet] Selection error (SnippetMode):", e);
+        }
         return;
     }
+
 
     let minStart = -1;
     let maxEnd = -1;
@@ -70,27 +65,26 @@ export function highlightWidgetInSnippet(widgetIds) {
         let targetStr = `id:${id}`;
         let index = yaml.indexOf(targetStr);
 
-        // Fallback 1: Check for spaced ID (common in YAML body)
+        // Fallback 1: Check for ODP YAML list format comment first to avoid
+        // generic `id: ...` matches inside the comment body.
+        if (index === -1) {
+            targetStr = `# id: ${id}`;
+            index = yaml.indexOf(targetStr);
+        }
+
+        // Fallback 2: Check for spaced ID (common in YAML body)
         if (index === -1) {
             targetStr = `id: ${id}`;
             index = yaml.indexOf(targetStr);
         }
 
-        // Fallback 2: Check for JSON format (common in OEPL/ODP)
+        // Fallback 3: Check for JSON format (common in OEPL/ODP)
         if (index === -1) {
             targetStr = `"id":"${id}"`;
             index = yaml.indexOf(targetStr);
         }
         if (index === -1) {
             targetStr = `"id": "${id}"`;
-            index = yaml.indexOf(targetStr);
-        }
-
-        // Fallback 3: Check for ODP YAML list format.
-        // The adapter now outputs ids as comments: "    # id: widget_id"
-        // Followed by "    - type: ..."
-        if (index === -1) {
-            targetStr = `# id: ${id}`;
             index = yaml.indexOf(targetStr);
         }
 
@@ -191,7 +185,9 @@ export function highlightWidgetInSnippet(widgetIds) {
                 // For YAML (standard or ODP), look for the next "- type:" at the same indentation level
                 // OR any of the stop markers.
                 const nextTypeMarker = "\n    - type:"; // Assuming standard 4-space align in ODP payload
-                const nextTypeIndex = yaml.indexOf(nextTypeMarker, index + targetStr.length);
+                const nextTypeIndex = targetStr.startsWith("# id:")
+                    ? -1
+                    : yaml.indexOf(nextTypeMarker, index + targetStr.length);
 
                 let nextMarkerIndex = -1;
 
@@ -233,10 +229,10 @@ export function highlightWidgetInSnippet(widgetIds) {
         const isTyping = (activeTag === "input" || activeTag === "textarea") && document.activeElement !== box;
 
         // Only modify selection if we rely on auto-highlight (not typing/interacting)
-        const isInteracting = window.Canvas && (window.Canvas.dragState || window.Canvas.lassoState);
+        const isInteracting = canvasInstance && (canvasInstance.dragState || canvasInstance.lassoState);
 
         if (!isTyping && !isInteracting) {
-            window.isAutoHighlight = true;
+            setSnippetAutoHighlight(true);
 
             // Apply selection - Visually highlight the range
             try {
@@ -246,28 +242,27 @@ export function highlightWidgetInSnippet(widgetIds) {
                 // to the box so Ctrl+C works immediately and the highlight is visible.
                 // For multiple/Select All, we skip this to stay on the canvas.
                 // Also skip if undo/redo is in progress to prevent focus stealing.
-                if (ids.length === 1 && !window._undoRedoInProgress) {
+                if (ids.length === 1 && !AppState.isUndoRedoInProgress) {
                     box.focus();
                 }
-            } catch (e) {
+            } catch {
                 // Ignore
             }
         }
 
-        window.lastHighlightRange = { start: minStart, end: maxEnd };
+        setLastSnippetHighlightRange({ start: minStart, end: maxEnd });
 
         // Scroll to selection
         setTimeout(() => {
-            if (box.scrollTo) {
-                const lines = yaml.substring(0, minStart).split('\n');
-                const totalLines = yaml.split('\n').length;
-                const lineNum = lines.length;
-                const lineHeight = box.scrollHeight / totalLines;
+            const boxElement = /** @type {HTMLTextAreaElement} */ (box);
+            const lines = yaml.substring(0, minStart).split('\n');
+            const totalLines = yaml.split('\n').length;
+            const lineNum = lines.length;
+            const lineHeight = boxElement.scrollHeight / totalLines;
 
-                // Align to top third
-                box.scrollTop = (lineNum * lineHeight) - 50;
-                box.scrollLeft = 0;
-            }
+            // Align to top third
+            boxElement.scrollTop = (lineNum * lineHeight) - 50;
+            boxElement.scrollLeft = 0;
         }, 10);
     }
 }
@@ -282,8 +277,8 @@ function initSnippetUILogic() {
 
     // If user clicks or moves cursor manually, it's no longer an "auto" highlight
     const clearAuto = () => {
-        if (window.isAutoHighlight) {
-            window.isAutoHighlight = false;
+        if (isSnippetAutoHighlightActive()) {
+            clearSnippetAutoHighlight();
         }
     };
 

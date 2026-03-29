@@ -24,13 +24,13 @@ const render = (el, widget, { getColorStyle }) => {
     // Vertical lines
     for (let x = 0; x <= widget.width; x += spacing) {
         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", x);
-        line.setAttribute("y1", 0);
-        line.setAttribute("x2", x);
-        line.setAttribute("y2", widget.height);
+        line.setAttribute("x1", String(x));
+        line.setAttribute("y1", "0");
+        line.setAttribute("x2", String(x));
+        line.setAttribute("y2", String(widget.height));
         line.setAttribute("stroke", color);
-        line.setAttribute("stroke-width", 0.5);
-        line.setAttribute("opacity", 0.3);
+        line.setAttribute("stroke-width", "0.5");
+        line.setAttribute("opacity", "0.3");
         if (dashed) {
             line.setAttribute("stroke-dasharray", `${props.dash_length || 2}, ${props.space_length || 4}`);
         }
@@ -40,13 +40,13 @@ const render = (el, widget, { getColorStyle }) => {
     // Horizontal lines
     for (let y = 0; y <= widget.height; y += spacing) {
         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", 0);
-        line.setAttribute("y1", y);
-        line.setAttribute("x2", widget.width);
-        line.setAttribute("y2", y);
+        line.setAttribute("x1", "0");
+        line.setAttribute("y1", String(y));
+        line.setAttribute("x2", String(widget.width));
+        line.setAttribute("y2", String(y));
         line.setAttribute("stroke", color);
-        line.setAttribute("stroke-width", 0.5);
-        line.setAttribute("opacity", 0.3);
+        line.setAttribute("stroke-width", "0.5");
+        line.setAttribute("opacity", "0.3");
         if (dashed) {
             line.setAttribute("stroke-dasharray", `${props.dash_length || 2}, ${props.space_length || 4}`);
         }
@@ -72,10 +72,40 @@ export default {
         show_labels: true,
         label_step: 40,
         label_color: "black",
-        label_font_size: 10
+        label_font_size: 10,
+        opa: 255,
+        opacity: 255
     },
+    schema: [
+        {
+            section: "Grid Settings",
+            fields: [
+                { key: "spacing", label: "Grid Spacing", type: "number", default: 20 },
+                { key: "dashed", label: "Dashed Lines", type: "checkbox", default: true },
+                { key: "dash_length", label: "Dash Length", type: "number", default: 2 },
+                { key: "space_length", label: "Space Length", type: "number", default: 4 }
+            ]
+        },
+        {
+            section: "Labels",
+            fields: [
+                { key: "show_labels", label: "Show Axis Labels", type: "checkbox", default: true },
+                { key: "label_step", label: "Label Every X Pixels", type: "number", default: 40 },
+                { key: "label_font_size", label: "Label Font Size", type: "number", default: 10 }
+            ]
+        },
+        {
+            section: "Appearance",
+            fields: [
+                { key: "line_color", label: "Line Color", type: "color", default: "black" },
+                { key: "label_color", label: "Label Color", type: "color", default: "black" },
+                { key: "opa", label: "Opacity (0 - 255)", type: "number", default: 255 },
+                { key: "opacity", label: "Opacity (0 - 255)", type: "number", default: 255 }
+            ]
+        }
+    ],
     render,
-    exportOpenDisplay: (w, { layout, page }) => {
+    exportOpenDisplay: (w, { _layout, _page }) => {
         const p = w.props || {};
         return {
             type: "debug_grid",
@@ -91,7 +121,7 @@ export default {
             font: "ppb.ttf"
         };
     },
-    exportOEPL: (w, { layout, page }) => {
+    exportOEPL: (w, { _layout, _page }) => {
         const p = w.props || {};
         return {
             type: "debug_grid",

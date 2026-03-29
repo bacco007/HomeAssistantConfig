@@ -1,39 +1,23 @@
 import { emit, EVENTS } from '../events.js';
 import { Logger } from '../../utils/logger.js';
-import { DEFAULT_PREFERENCES } from '../constants.js';
+import { DEFAULT_PREFERENCES } from '../constants';
+
+/**
+ * @typedef {Object} PreferencesState
+ * @property {boolean} snapEnabled
+ * @property {boolean} showGrid
+ * @property {boolean} [showDebugGrid]
+ * @property {boolean} [showRulers]
+ * @property {number} gridOpacity
+ * @property {boolean} editor_light_mode
+ * @property {string} [orientation]
+ * @property {string} [renderingMode]
+ */
 
 export class PreferencesStore {
     constructor() {
-        /**
-         * @type {{
-         *  snapEnabled: boolean,
-         *  showGrid: boolean,
-         *  gridOpacity: number,
-         *  editor_light_mode: boolean,
-         *  aiProvider: string,
-         *  aiModelGemini: string,
-         *  aiModelOpenAI: string,
-         *  aiModelOpenRouter: string,
-         *  aiModelFilter: string,
-         *  extendedLatinGlyphs: boolean,
-         *  autoCycleEnabled: boolean,
-         *  autoCycleIntervalS: number,
-         *  refreshInterval: number,
-         *  manualRefreshOnly: boolean,
-         *  darkMode: boolean,
-         *  sleepEnabled: boolean,
-         *  sleepStartHour: number|null,
-         *  sleepEndHour: number|null,
-         *  deepSleepEnabled: boolean,
-         *  deepSleepInterval: number,
-         *  dailyRefreshEnabled: boolean,
-         *  dailyRefreshTime: string,
-         *  noRefreshStartHour: number|null,
-         *  noRefreshEndHour: number|null,
-         *  glyphsets: string[]
-         * }}
-         */
-        this.state = { ...DEFAULT_PREFERENCES };
+        /** @type {PreferencesState} */
+        this.state = /** @type {PreferencesState} */ ({ ...DEFAULT_PREFERENCES });
     }
 
     /** @returns {boolean} */
@@ -41,15 +25,15 @@ export class PreferencesStore {
     /** @returns {boolean} */
     get showGrid() { return this.state.showGrid; }
     /** @returns {boolean} */
-    get showDebugGrid() { return this.state.showDebugGrid; }
+    get showDebugGrid() { return !!this.state.showDebugGrid; }
     /** @returns {boolean} */
-    get showRulers() { return this.state.showRulers; }
+    get showRulers() { return !!this.state.showRulers; }
     /** @returns {number} */
     get gridOpacity() { return this.state.gridOpacity; }
     /** @returns {boolean} */
     get editor_light_mode() { return this.state.editor_light_mode; }
 
-    /** @param {Partial<Object>} updates */
+    /** @param {Partial<PreferencesState>} updates */
     update(updates) {
         this.state = { ...this.state, ...updates };
         emit(EVENTS.SETTINGS_CHANGED, this.state);

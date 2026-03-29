@@ -11,7 +11,10 @@ const render = (el, widget, { getColorStyle }) => {
 
     el.innerHTML = "";
 
-    if (props.points && typeof props.points === 'string' && props.points.includes(',')) {
+    if (props.points && (
+        (typeof props.points === 'string' && props.points.includes(',')) ||
+        Array.isArray(props.points)
+    )) {
         let pointsArr = [];
         if (typeof props.points === 'string') {
             pointsArr = props.points.split(" ").map(pt => pt.split(",").map(Number));
@@ -62,14 +65,20 @@ const render = (el, widget, { getColorStyle }) => {
 
 const exportLVGL = (w, { common, convertColor, formatOpacity }) => {
     const p = w.props || {};
-    const w_w = common.width;
-    const w_h = common.height;
+    const w_w = common.width ?? w.width;
+    const w_h = common.height ?? w.height;
     let pointsArr;
     const orientation = p.orientation || "horizontal";
 
-    if (p.points && typeof p.points === 'string' && p.points.includes(',')) {
-        pointsArr = p.points.split(" ").map(pt => {
-            const [px, py] = pt.split(",").map(Number);
+    if (p.points && (
+        (typeof p.points === 'string' && p.points.includes(',')) ||
+        Array.isArray(p.points)
+    )) {
+        const rawPoints = typeof p.points === 'string'
+            ? p.points.split(" ")
+            : p.points;
+        pointsArr = rawPoints.map((pt) => {
+            const [px, py] = Array.isArray(pt) ? pt : String(pt).split(",").map(Number);
             return { x: Math.round(px || 0), y: Math.round(py || 0) };
         });
     } else {
@@ -98,8 +107,29 @@ export default {
         line_color: "theme_auto",
         orientation: "horizontal",
         line_rounded: true,
-        opa: 255
+        points: "",
+        opa: 255,
+        opacity: 255
     },
+    schema: [
+        {
+            section: "Line Settings",
+            fields: [
+                { key: "orientation", label: "Orientation", type: "select", options: ["horizontal", "vertical"], default: "horizontal" },
+                { key: "line_width", label: "Line Width", type: "number", default: 3 },
+                { key: "line_rounded", label: "Rounded Ends", type: "checkbox", default: true },
+                { key: "points", label: "Custom Points (x1,y1 x2,y2 ...)", type: "text", default: "" }
+            ]
+        },
+        {
+            section: "Appearance",
+            fields: [
+                { key: "line_color", label: "Line Color", type: "color", default: "theme_auto" },
+                { key: "opa", label: "Opacity (0 - 255)", type: "number", default: 255 },
+                { key: "opacity", label: "Opacity (0 - 255)", type: "number", default: 255 }
+            ]
+        }
+    ],
     render,
     exportLVGL
 };

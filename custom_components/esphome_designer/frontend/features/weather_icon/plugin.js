@@ -1,98 +1,12 @@
-import { getNestedValue } from '../../js/utils/helpers.js';
+import { getSensorPlatformLines } from '../../js/io/adapters/mqtt_helpers.js';
+import { renderWeatherIcon } from './render.js';
+import { renderWeatherIconProperties } from './properties.js';
 
-const render = (el, widget, { getColorStyle }) => {
-    const props = widget.props || {};
-
-    // Apply Border & Background
-    if (props.border_width) {
-        const borderColor = getColorStyle(props.border_color || "black");
-        el.style.border = `${props.border_width}px solid ${borderColor}`;
-        el.style.borderRadius = `${props.border_radius || 0}px`;
-        el.style.boxSizing = "border-box";
-    }
-    if (props.bg_color) {
-        el.style.backgroundColor = getColorStyle(props.bg_color);
-    }
-    let iconCode = "F0595"; // Default
-    let size = props.size || 24;
-    const color = props.color || "theme_auto";
-
-    let weatherState = "sunny"; // Default preview
-    const entityId = widget.entity_id || props.weather_entity || "weather.forecast_home";
-
-    if (entityId && window.AppState && window.AppState.entityStates) {
-        const stateSet = window.AppState.entityStates[entityId];
-        const attribute = (props.attribute || "").trim();
-
-        if (stateSet) {
-            let state = stateSet.state;
-            // If attribute is specified, try to read it. Supports nested paths.
-            if (attribute && stateSet.attributes) {
-                const attrVal = getNestedValue(stateSet.attributes, attribute);
-                if (attrVal !== undefined) {
-                    state = attrVal;
-                }
-            }
-
-            if (state !== null && state !== undefined) {
-                weatherState = String(state).toLowerCase();
-            }
-        }
-    }
-
-    if (props.fit_icon_to_frame) {
-        const padding = 4;
-        const maxDim = Math.max(8, Math.min((widget.width || 0) - padding * 2, (widget.height || 0) - padding * 2));
-        size = Math.round(maxDim);
-    }
-
-    switch (weatherState) {
-        case "clear-night": iconCode = "F0594"; break;
-        case "cloudy": iconCode = "F0590"; break;
-        case "exceptional": iconCode = "F0026"; break;
-        case "fog": iconCode = "F0591"; break;
-        case "hail": iconCode = "F0592"; break;
-        case "lightning": iconCode = "F0593"; break;
-        case "lightning-rainy": iconCode = "F067E"; break;
-        case "partlycloudy": iconCode = "F0595"; break;
-        case "pouring": iconCode = "F0596"; break;
-        case "rainy": iconCode = "F0597"; break;
-        case "snowy": iconCode = "F0598"; break;
-        case "snowy-rainy": iconCode = "F067F"; break;
-        case "sunny": iconCode = "F0599"; break;
-        case "windy": iconCode = "F059D"; break;
-        case "windy-variant": iconCode = "F059E"; break;
-        default: iconCode = "F0599";
-    }
-
-    const cp = 0xf0000 + parseInt(iconCode.slice(1), 16);
-    const ch = String.fromCodePoint(cp);
-
-    el.innerText = ch;
-    el.style.fontSize = `${size}px`;
-    el.style.color = getColorStyle(color);
-    el.style.fontFamily = "MDI, system-ui, -apple-system, BlinkMacSystemFont, -sans-serif";
-    el.style.lineHeight = "1";
-    el.style.display = "flex";
-    el.style.alignItems = "center";
-    el.style.justifyContent = "center";
-
-    if (!entityId) {
-        el.style.flexDirection = "column";
-        el.style.alignItems = "flex-start";
-        el.style.justifyContent = "flex-start";
-
-        const label = document.createElement("div");
-        label.style.fontSize = "10px";
-        label.style.marginTop = "2px";
-        label.textContent = "No Entity";
-        el.appendChild(label);
-    }
-};
+const render = renderWeatherIcon;
 
 const exportDoc = (w, context) => {
     const {
-        lines, addFont, getColorConst, getCondProps, getConditionCheck
+        lines, addFont, getColorConst, getCondProps, getConditionCheck // eslint-disable-line no-unused-vars
     } = context;
 
     const p = w.props || {};
@@ -107,7 +21,6 @@ const exportDoc = (w, context) => {
     if (colorProp === "black") color = "color_on";
     const fontRef = addFont("Material Design Icons", 400, size);
 
-    lines.push(`        // widget:weather_icon id:${w.id} type:weather_icon x:${w.x} y:${w.y} w:${w.width} h:${w.height} entity:${entityId} size:${size} color:${colorProp} ${getCondProps(w)}`);
 
     // Background fill
     const bgColorProp = p.bg_color || p.background_color || "transparent";
@@ -130,7 +43,7 @@ const exportDoc = (w, context) => {
 
     if (entityId) {
         const attributePath = (p.attribute || "").trim();
-        const rootAttr = (attributePath.includes(".") || attributePath.includes("[")) ? attributePath.split(/[.\[]/)[0] : attributePath;
+        const rootAttr = (attributePath.includes(".") || attributePath.includes("[")) ? attributePath.split(/[.[]/)[0] : attributePath;
         const makeSafeId = (eid, suffix = "") => {
             const base = rootAttr ? (eid + "_" + rootAttr) : eid;
             let safe = base.replace(/[^a-zA-Z0-9_]/g, "_");
@@ -189,14 +102,15 @@ const onExportTextSensors = (context) => {
         if (w.type !== "weather_icon") continue;
         const entityId = (w.entity_id || w.props?.weather_entity || "weather.forecast_home").trim();
         const attribute = (w.props?.attribute || "").trim();
-        if (entityId) {
-            weatherEntities.add({ id: w.id, entity_id: entityId, attribute });
+        const mqttTopic = (w.props?.mqtt_topic || "").trim();
+        if (entityId || mqttTopic) {
+            weatherEntities.add({ id: w.id, entity_id: entityId, attribute, mqtt_topic: mqttTopic });
         }
     }
 
-    weatherEntities.forEach(({ id, entity_id, attribute }) => {
+    weatherEntities.forEach(({ id, entity_id, attribute, mqtt_topic }) => {
         const attributePath = (attribute || "").trim();
-        const rootAttr = (attributePath.includes(".") || attributePath.includes("[")) ? attributePath.split(/[.\[]/)[0] : attributePath;
+        const rootAttr = (attributePath.includes(".") || attributePath.includes("[")) ? attributePath.split(/[.[]/)[0] : attributePath;
         const makeSafeId = (eid, suffix = "") => {
             const base = rootAttr ? (eid + "_" + rootAttr) : eid;
             let safe = base.replace(/[^a-zA-Z0-9_]/g, "_");
@@ -219,13 +133,8 @@ const onExportTextSensors = (context) => {
                 lines.push("# Weather Condition Sensors (Detected from Weather Icon)");
             }
             context.seenSensorIds.add(safeId);
-            lines.push("- platform: homeassistant");
-            lines.push(`  id: ${safeId}`);
-            lines.push(`  entity_id: ${entity_id}`);
-            if (rootAttr) {
-                lines.push(`  attribute: ${rootAttr}`);
-            }
-            lines.push(`  internal: true`);
+            const fakeWidget = { props: { mqtt_topic } };
+            lines.push(...getSensorPlatformLines(fakeWidget, entity_id, safeId, rootAttr));
         }
     });
 };
@@ -248,15 +157,20 @@ export default {
         size: 48,
         color: "theme_auto",
         background_color: "transparent",
-        background_color: "transparent",
+        bg_color: "transparent",
         weather_entity: "weather.forecast_home",
+        entity_id: "weather.forecast_home",
+        attribute: "",
         fit_icon_to_frame: true,
         border_width: 0,
         border_color: "theme_auto",
-        border_radius: 0
+        border_radius: 0,
+        opa: 255,
+        opacity: 100
     },
+    renderProperties: renderWeatherIconProperties,
     render,
-    exportOpenDisplay: (w, { layout, page }) => {
+    exportOpenDisplay: (w, { layout, _page }) => {
         const p = w.props || {};
         const entityId = (w.entity_id || p.weather_entity || "weather.forecast_home").trim();
 
@@ -293,7 +207,7 @@ export default {
             anchor: "mm"
         };
     },
-    exportOEPL: (w, { layout, page }) => {
+    exportOEPL: (w, { _layout, _page }) => {
         const p = w.props || {};
         const entityId = (w.entity_id || p.weather_entity || "weather.forecast_home").trim();
         const size = p.size || 48;
@@ -337,7 +251,7 @@ export default {
         if (entityId) {
             // Helper to create safe ESPHome ID (max 59 chars)
             const attributePath = (p.attribute || "").trim();
-            const rootAttr = (attributePath.includes(".") || attributePath.includes("[")) ? attributePath.split(/[.\[]/)[0] : attributePath;
+            const rootAttr = (attributePath.includes(".") || attributePath.includes("[")) ? attributePath.split(/[.[]/)[0] : attributePath;
             const makeSafeId = (eid, suffix = "") => {
                 const base = rootAttr ? (eid + "_" + rootAttr) : eid;
                 let safe = base.replace(/[^a-zA-Z0-9_]/g, "_");
@@ -380,3 +294,6 @@ export default {
     onExportTextSensors,
     export: exportDoc
 };
+
+
+

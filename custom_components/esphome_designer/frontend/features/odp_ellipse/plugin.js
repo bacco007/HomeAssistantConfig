@@ -4,6 +4,35 @@
  * Only available for OpenEPaperLink and OpenDisplay rendering modes
  */
 
+/**
+ * @typedef {{
+ *   x: number,
+ *   y: number,
+ *   width: number,
+ *   height: number,
+ *   props?: Record<string, any>
+ * }} EllipseWidget
+ *
+ * @typedef {{
+ *   getColorStyle: (value: string) => string
+ * }} EllipseRenderTools
+ *
+ * @typedef {{
+ *   layout?: { darkMode?: boolean },
+ *   _page?: unknown
+ * }} OpenDisplayExportContext
+ *
+ * @typedef {{
+ *   _layout?: unknown,
+ *   _page?: unknown
+ * }} OeplExportContext
+ */
+
+/**
+ * @param {HTMLElement} el
+ * @param {EllipseWidget} widget
+ * @param {EllipseRenderTools} tools
+ */
 const render = (el, widget, { getColorStyle }) => {
     const props = widget.props || {};
     el.style.backgroundColor = props.fill ? getColorStyle(props.fill) : "transparent";
@@ -24,8 +53,22 @@ export default {
         outline: "black",
         border_width: 1
     },
+    schema: [
+        {
+            section: "Appearance",
+            fields: [
+                { key: "fill", label: "Fill Color", type: "color", default: null },
+                { key: "outline", label: "Outline Color", type: "color", default: "black" },
+                { key: "border_width", label: "Border Width", type: "number", default: 1 }
+            ]
+        }
+    ],
     render,
-    exportOpenDisplay: (w, { layout, page }) => {
+    /**
+     * @param {EllipseWidget} w
+     * @param {OpenDisplayExportContext} context
+     */
+    exportOpenDisplay: (w, { layout, _page }) => {
         const p = w.props || {};
         let fill = (p.fill === "theme_auto") ? (layout?.darkMode ? "white" : "black") : (p.fill || null);
         if (fill === "transparent") fill = null;
@@ -45,7 +88,11 @@ export default {
             width: p.border_width || 1
         };
     },
-    exportOEPL: (w, { layout, page }) => {
+    /**
+     * @param {EllipseWidget} w
+     * @param {OeplExportContext} context
+     */
+    exportOEPL: (w, { _layout, _page }) => {
         const p = w.props || {};
         let fill = p.fill || null;
         if (fill === "transparent") fill = null;

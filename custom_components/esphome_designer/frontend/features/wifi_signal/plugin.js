@@ -1,65 +1,14 @@
+import { renderWifiSignal } from './render.js';
+import { renderWifiSignalProperties } from './properties.js';
 /**
  * WiFi Signal Plugin
  */
 
-const render = (el, widget, { getColorStyle }) => {
-    const props = widget.props || {};
-    let iconCode = "F0928"; // Default: wifi-strength-4 (excellent)
-    let size = props.size || 24;
-    const color = props.color || "theme_auto";
-    const showDbm = props.show_dbm !== false;
-
-    let signalLevel = -45; // Default preview (excellent signal)
-
-    if (!props.is_local_sensor && widget.entity_id) {
-        if (window.AppState && window.AppState.entityStates) {
-            const stateObj = window.AppState.entityStates[widget.entity_id];
-            if (stateObj && stateObj.state !== undefined) {
-                const val = parseFloat(stateObj.state);
-                if (!isNaN(val)) {
-                    signalLevel = val;
-                }
-            }
-        }
-    }
-
-    if (props.fit_icon_to_frame) {
-        const padding = 4;
-        const maxDim = Math.max(8, Math.min((widget.width || 0) - padding * 2, (widget.height || 0) - padding * 2));
-        size = Math.round(maxDim);
-    }
-
-    if (signalLevel >= -50) iconCode = "F0928";      // wifi-strength-4
-    else if (signalLevel >= -60) iconCode = "F0925"; // wifi-strength-3
-    else if (signalLevel >= -75) iconCode = "F0922"; // wifi-strength-2
-    else if (signalLevel >= -100) iconCode = "F091F"; // wifi-strength-1
-    else iconCode = "F092B";                          // wifi-strength-alert-outline
-
-    const cp = 0xf0000 + parseInt(iconCode.slice(1), 16);
-    const ch = String.fromCodePoint(cp);
-
-    el.innerText = ch;
-    el.style.fontSize = `${size}px`;
-    el.style.color = getColorStyle(color);
-    el.style.fontFamily = "MDI, system-ui, -apple-system, BlinkMacSystemFont, -sans-serif";
-    el.style.lineHeight = "1";
-    el.style.display = "flex";
-    el.style.alignItems = "center";
-    el.style.justifyContent = "center";
-    el.style.flexDirection = "column";
-
-    if (showDbm) {
-        const dbmLabel = document.createElement("div");
-        dbmLabel.style.fontSize = (props.font_size || 12) + "px";
-        dbmLabel.style.marginTop = "2px";
-        dbmLabel.textContent = Math.round(signalLevel) + "dB";
-        el.appendChild(dbmLabel);
-    }
-};
+const render = renderWifiSignal;
 
 const exportDoc = (w, context) => {
     const {
-        lines, addFont, getColorConst, addDitherMask, getCondProps, getConditionCheck, isEpaper
+        lines, addFont, getColorConst, addDitherMask, getCondProps, getConditionCheck, isEpaper // eslint-disable-line no-unused-vars
     } = context;
 
     const p = w.props || {};
@@ -83,13 +32,22 @@ const exportDoc = (w, context) => {
         sensorId = entityId ? entityId.replace(/[^a-zA-Z0-9_]/g, "_") : "wifi_signal_dbm";
     }
 
-    lines.push(`        // widget:wifi_signal id:${w.id} type:wifi_signal x:${w.x} y:${w.y} w:${w.width} h:${w.height} entity:${entityId || "wifi_signal_dbm"} size:${size} font_size:${fontSize} color:${colorProp} show_dbm:${showDbm} local:${isLocal} ${getCondProps(w)}`);
 
     // Background fill
     const bgColorProp = p.bg_color || p.background_color || "transparent";
     if (bgColorProp && bgColorProp !== "transparent") {
         const bgColorConst = getColorConst(bgColorProp);
         lines.push(`        it.filled_rectangle(${w.x}, ${w.y}, ${w.width}, ${w.height}, ${bgColorConst});`);
+    }
+
+    // Border (Restored)
+    const borderWidth = parseInt(p.border_width || 0, 10);
+    if (borderWidth > 0) {
+        const borderColorProp = p.border_color || colorProp;
+        const borderColorConst = getColorConst(borderColorProp);
+        for (let i = 0; i < borderWidth; i++) {
+            lines.push(`        it.rectangle(${w.x} + ${i}, ${w.y} + ${i}, ${w.width} - 2 * ${i}, ${w.height} - 2 * ${i}, ${borderColorConst});`);
+        }
     }
 
     const cond = getConditionCheck(w);
@@ -155,10 +113,12 @@ export default {
         color: "theme_auto",
         show_dbm: true,
         fit_icon_to_frame: false,
-        is_local_sensor: true
+        is_local_sensor: true,
+        opa: 255
     },
+    renderProperties: renderWifiSignalProperties,
     render,
-    exportOpenDisplay: (w, { layout, page }) => {
+    exportOpenDisplay: (w, { layout, _page }) => {
         const p = w.props || {};
         const entityId = (w.entity_id || "sensor.wifi_signal").trim();
         const size = p.size || 24;
@@ -175,6 +135,7 @@ export default {
             `{% if s >= -50 %}wifi-strength-4{% elif s >= -60 %}wifi-strength-3` +
             `{% elif s >= -75 %}wifi-strength-2{% elif s >= -100 %}wifi-strength-1{% else %}wifi-strength-alert-outline{% endif %}`;
 
+        /** @type {any[]} */
         const actions = [
             {
                 type: "icon",
@@ -201,7 +162,7 @@ export default {
 
         return actions;
     },
-    exportOEPL: (w, { layout, page }) => {
+    exportOEPL: (w, { _layout, _page }) => {
         const p = w.props || {};
         const entityId = (w.entity_id || "sensor.wifi_signal").trim();
         const size = p.size || 24;
@@ -213,6 +174,7 @@ export default {
             `{% if s >= -50 %}wifi-strength-4{% elif s >= -60 %}wifi-strength-3` +
             `{% elif s >= -75 %}wifi-strength-2{% elif s >= -100 %}wifi-strength-1{% else %}wifi-strength-alert-outline{% endif %}`;
 
+        /** @type {any[]} */
         const elements = [
             {
                 type: "icon",
@@ -240,7 +202,7 @@ export default {
 
         return elements;
     },
-    exportLVGL: (w, { common, convertColor, getLVGLFont, formatOpacity }) => {
+    exportLVGL: (w, { common, convertColor, getLVGLFont, _formatOpacity }) => {
         const p = w.props || {};
         const entityId = (w.entity_id || "").trim();
         const isLocal = p.is_local_sensor !== false;
@@ -261,6 +223,7 @@ export default {
         iconLambda += '          }\n';
         iconLambda += '          return "\\U000F092B";';
 
+        /** @type {any[]} */
         const widgets = [
             {
                 label: {
@@ -318,7 +281,7 @@ export default {
     export: exportDoc,
     onExportNumericSensors: (context) => {
         // REGRESSION PROOF: Always destructure 'lines' from context
-        const { lines, widgets, isLvgl, pendingTriggers, profile } = context;
+        const { lines, widgets, isLvgl, pendingTriggers, profile } = context; // eslint-disable-line no-unused-vars
         if (!widgets) return;
 
         let needsLocalWifi = false;
@@ -373,4 +336,7 @@ export default {
         }
     }
 };
+
+
+
 

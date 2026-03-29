@@ -1,36 +1,131 @@
 import { Logger } from './logger.js';
 
+const HA_AUTH_MESSAGE_TYPE = 'esphome-designer-ha-auth';
+/** @type {string | null} */
+let runtimeHaRequestToken = null;
+
+/**
+ * @returns {Location | null}
+ */
+function getBrowserLocation() {
+    try {
+        const loc = globalThis.location;
+        return loc ? loc : null;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * @returns {Storage | null}
+ */
+function getWebStorage() {
+    try {
+        return globalThis.localStorage ?? null;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * @param {string | null | undefined} token
+ */
+function setRuntimeHaRequestToken(token) {
+    if (typeof token !== 'string') return;
+    const normalized = token.trim();
+    if (!normalized || normalized === 'null') return;
+    runtimeHaRequestToken = normalized;
+}
+
+function loadEmbeddedHaRequestToken() {
+    try {
+        const frameName = /** @type {string | undefined} */ (/** @type {any} */ (globalThis).name);
+        if (!frameName) return;
+
+        const payload = JSON.parse(frameName);
+        if (payload?.type === HA_AUTH_MESSAGE_TYPE) {
+            setRuntimeHaRequestToken(payload.accessToken);
+        }
+    } catch {
+        // Ignore unrelated window.name payloads.
+    }
+}
+
+function initEmbeddedHaAuthBridge() {
+    loadEmbeddedHaRequestToken();
+
+    try {
+        globalThis.addEventListener?.('message', (event) => {
+            const loc = getBrowserLocation();
+            if (loc && event.origin !== loc.origin) return;
+            const data = /** @type {{ type?: string, accessToken?: string } | undefined} */ (event.data);
+            if (data?.type !== HA_AUTH_MESSAGE_TYPE) return;
+            setRuntimeHaRequestToken(data.accessToken);
+        });
+    } catch {
+        // Ignore environments without window messaging.
+    }
+}
+
+/**
+ * @param {string | null | undefined} url
+ * @returns {string | null}
+ */
+function normalizeHaManualUrl(url) {
+    if (!url) return null;
+
+    let sanitizedUrl = url.trim();
+    if (!sanitizedUrl) return null;
+
+    try {
+        const parsed = new URL(sanitizedUrl);
+        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+            return null;
+        }
+
+        sanitizedUrl = `${parsed.origin}${parsed.pathname}`;
+        if (parsed.search) sanitizedUrl += parsed.search;
+        if (sanitizedUrl.endsWith('/')) {
+            sanitizedUrl = sanitizedUrl.slice(0, -1);
+        }
+
+        if (sanitizedUrl.includes('reterminal_dashboard')) {
+            sanitizedUrl = sanitizedUrl.replace('reterminal_dashboard', 'esphome_designer');
+        }
+
+        if (!sanitizedUrl.includes('/api/')) {
+            sanitizedUrl += '/api/esphome_designer';
+        }
+
+        return sanitizedUrl;
+    } catch {
+        return null;
+    }
+}
+
 /**
  * Detects the Home Assistant backend URL.
  * @returns {string|null} The API base URL or null.
  */
 export function detectHaBackendBaseUrl() {
     // Check manual configuration first (from localStorage)
-    let manualUrl = getHaManualUrl();
+    const manualUrl = getHaManualUrl();
     if (manualUrl) {
-        manualUrl = manualUrl.trim();
-
-        // MIGRATION: If the manual URL contains the old reterminal_dashboard path,
-        // automatically update it to the new esphome_designer path.
-        if (manualUrl.includes('reterminal_dashboard')) {
-            Logger.log("[Env] Migrating legacy manual URL to new domain");
-            manualUrl = manualUrl.replace('reterminal_dashboard', 'esphome_designer');
-            // Persist the migrated URL so we don't do this every time
-            setHaManualUrl(manualUrl);
+        const normalizedManualUrl = normalizeHaManualUrl(manualUrl);
+        if (!normalizedManualUrl) {
+            Logger.warn('[Env] Ignoring invalid manually configured HA URL');
+            return null;
         }
-
-        if (manualUrl.endsWith('/')) {
-            manualUrl = manualUrl.slice(0, -1);
+        if (normalizedManualUrl !== manualUrl.trim()) {
+            Logger.log('[Env] Normalizing stored manual HA URL');
+            setHaManualUrl(normalizedManualUrl);
         }
-        // Ensure suffix is present even if user entered only the base URL previously
-        if (manualUrl && !manualUrl.includes('/api/')) {
-            manualUrl += '/api/esphome_designer';
-        }
-        return manualUrl;
+        return normalizedManualUrl;
     }
 
     try {
-        const loc = window.location;
+        const loc = getBrowserLocation();
+        if (!loc) return null;
         if (loc.protocol === "file:") {
             return null;
         }
@@ -45,7 +140,7 @@ export function detectHaBackendBaseUrl() {
             return `${loc.origin}/api/esphome_designer`;
         }
         return null;
-    } catch (e) {
+    } catch {
         return null;
     }
 }
@@ -56,8 +151,10 @@ export function detectHaBackendBaseUrl() {
  */
 export function getHaManualUrl() {
     try {
-        return localStorage.getItem('ha_manual_url');
-    } catch (e) {
+        const storage = getWebStorage();
+        if (!storage) return null;
+        return storage.getItem('ha_manual_url');
+    } catch {
         return null;
     }
 }
@@ -68,22 +165,18 @@ export function getHaManualUrl() {
  */
 export function setHaManualUrl(url) {
     try {
+        const storage = getWebStorage();
+        if (!storage) return;
         if (url) {
-            let sanitizedUrl = url.trim();
-            // Remove trailing slash if present
-            if (sanitizedUrl.endsWith('/')) {
-                sanitizedUrl = sanitizedUrl.slice(0, -1);
+            const sanitizedUrl = normalizeHaManualUrl(url);
+            if (!sanitizedUrl) {
+                Logger.warn('[Env] Refusing to store invalid HA URL');
+                return;
             }
 
-            // If the URL is just the base (e.g. http://ha.local:8123), 
-            // append the custom component API path automatically.
-            if (!sanitizedUrl.includes('/api/')) {
-                sanitizedUrl += '/api/esphome_designer';
-            }
-
-            localStorage.setItem('ha_manual_url', sanitizedUrl);
+            storage.setItem('ha_manual_url', sanitizedUrl);
         } else {
-            localStorage.removeItem('ha_manual_url');
+            storage.removeItem('ha_manual_url');
         }
     } catch (e) {
         Logger.error("Failed to save HA URL:", e);
@@ -96,10 +189,22 @@ export function setHaManualUrl(url) {
  */
 export function getHaToken() {
     try {
-        return localStorage.getItem('ha_llat_token');
-    } catch (e) {
+        const storage = getWebStorage();
+        if (!storage) return null;
+        return storage.getItem('ha_llat_token');
+    } catch {
         return null;
     }
+}
+
+/**
+ * Gets the token that should be used for Home Assistant requests.
+ * Prefers the runtime token injected by the HA custom panel and
+ * falls back to the manually stored LLAT token for external mode.
+ * @returns {string|null}
+ */
+export function getHaRequestToken() {
+    return runtimeHaRequestToken || getHaToken();
 }
 
 /**
@@ -108,17 +213,22 @@ export function getHaToken() {
  */
 export function setHaToken(token) {
     try {
+        const storage = getWebStorage();
+        if (!storage) return;
         if (token) {
-            localStorage.setItem('ha_llat_token', token);
+            storage.setItem('ha_llat_token', token);
         } else {
-            localStorage.removeItem('ha_llat_token');
+            storage.removeItem('ha_llat_token');
         }
     } catch (e) {
         Logger.error("Failed to save HA Token:", e);
     }
 }
 
+/** @type {string|null} */
 export let HA_API_BASE = detectHaBackendBaseUrl();
+
+initEmbeddedHaAuthBridge();
 
 /**
  * Re-detects the HA backend URL (e.g. after settings change).
@@ -141,7 +251,8 @@ export function hasHaBackend() {
  */
 export function isDeployedInHa() {
     try {
-        const loc = window.location;
+        const loc = getBrowserLocation();
+        if (!loc) return false;
         // If we're not running on file:// and the hostname or path suggests HA,
         // we are "deployed" in HA (either via Addon or Custom Component).
         if (loc.protocol === "file:") return false;
@@ -152,18 +263,9 @@ export function isDeployedInHa() {
             loc.pathname.includes("/api/esphome_designer") ||
             loc.pathname.includes("/esphome-designer")
         );
-    } catch (e) {
+    } catch {
         return false;
     }
 }
 
-// Global exposure for transition
-window.detectHaBackendBaseUrl = detectHaBackendBaseUrl;
-window.getHaManualUrl = getHaManualUrl;
-window.setHaManualUrl = setHaManualUrl;
-window.getHaToken = getHaToken;
-window.setHaToken = setHaToken;
-window.HA_API_BASE = HA_API_BASE;
-window.refreshHaBaseUrl = refreshHaBaseUrl;
-window.hasHaBackend = hasHaBackend;
-window.isDeployedInHa = isDeployedInHa;
+export { normalizeHaManualUrl };

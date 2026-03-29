@@ -31,16 +31,19 @@ const render = (el, widget, { getColorStyle }) => {
 };
 
 const exportLVGL = (w, { common }) => {
+    const p = w.props || {};
     return {
         tileview: {
             ...common,
-            tiles: [
-                {
-                    row: 0,
-                    column: 0,
-                    widgets: []
-                }
-            ]
+            tiles: Array.isArray(p.tiles) && p.tiles.length > 0
+                ? p.tiles
+                : [
+                    {
+                        row: 0,
+                        column: 0,
+                        widgets: []
+                    }
+                ]
         }
     };
 };
@@ -50,8 +53,31 @@ export default {
     name: "Tileview",
     category: "LVGL",
     defaults: {
-        bg_color: "white"
+        bg_color: "white",
+        opa: 255,
+        tiles: [{ row: 0, column: 0, widgets: [] }],
+        opacity: 255
     },
+    schema: [
+        {
+            section: "Tiles",
+            fields: [
+                {
+                    key: "tiles", label: "Tiles Configuration (JSON)", type: "json", default: [
+                        { row: 0, column: 0, widgets: [] }
+                    ]
+                }
+            ]
+        },
+        {
+            section: "Appearance",
+            fields: [
+                { key: "bg_color", label: "Background", type: "color", default: "white" },
+                { key: "opa", label: "Opacity (0 - 255)", type: "number", default: 255 },
+                { key: "opacity", label: "Opacity (0 - 255)", type: "number", default: 255 }
+            ]
+        }
+    ],
     render,
     exportLVGL
 };

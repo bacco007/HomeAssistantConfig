@@ -1,45 +1,60 @@
+import { AppState } from '../core/state';
 import { Logger } from '../utils/logger.js';
 import { emit, EVENTS } from '../core/events.js';
 import { showToast } from '../utils/dom.js';
-import { AppState } from '../core/state.js';
+import { aiService } from '../io/ai_service.js';
 import { DEVICE_PROFILES } from '../io/devices.js';
+import { addBrowserEventListener } from '../utils/browser_runtime.js';
 
-class LLMPrompt {
+export let llmPromptInstance = null;
+
+export class LLMPrompt {
     constructor() {
-        this.modal = document.getElementById('aiPromptModal');
-        this.closeBtn = document.getElementById('aiPromptClose');
-        this.submitBtn = document.getElementById('aiPromptSubmit');
-        this.applyBtn = document.getElementById('aiPromptApply');
-        this.input = document.getElementById('aiPromptInput');
-        this.status = document.getElementById('aiPromptStatus');
-        this.diffPanel = document.getElementById('aiPreviewDiff');
-        this.diffContent = document.getElementById('aiDiffContent');
+        llmPromptInstance = this;
+        this.modal = /** @type {HTMLElement | null} */ (document.getElementById('aiPromptModal'));
+        this.closeBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('aiPromptClose'));
+        this.submitBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('aiPromptSubmit'));
+        this.applyBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('aiPromptApply'));
+        this.openEditorSettingsBtn = /** @type {HTMLButtonElement | null} */ (document.getElementById('aiOpenEditorSettingsBtn'));
+        this.input = /** @type {HTMLTextAreaElement | null} */ (document.getElementById('aiPromptInput'));
+        this.status = /** @type {HTMLElement | null} */ (document.getElementById('aiPromptStatus'));
+        this.diffPanel = /** @type {HTMLElement | null} */ (document.getElementById('aiPreviewDiff'));
+        this.diffContent = /** @type {HTMLElement | null} */ (document.getElementById('aiDiffContent'));
 
+        /** @type {Array<Record<string, unknown>> | null} */
         this.generatedWidgets = null;
+        /** @type {((source: string) => void) | null} */
+        this.onOpenEditorSettings = null;
     }
 
     init() {
-        if (!this.modal) return;
+        if (!this.modal || !this.closeBtn || !this.submitBtn || !this.applyBtn || !this.input || !this.status || !this.diffPanel || !this.diffContent) return;
 
         this.closeBtn.onclick = () => this.close();
         this.submitBtn.onclick = () => this.handleSubmit();
         this.applyBtn.onclick = () => this.handleApply();
+        if (this.openEditorSettingsBtn) {
+            this.openEditorSettingsBtn.onclick = () => {
+                this.close();
+                this.onOpenEditorSettings?.('ai');
+            };
+        }
 
-        window.addEventListener('click', (e) => {
+        addBrowserEventListener('click', (e) => {
             if (e.target === this.modal) this.close();
         });
     }
 
     open() {
-        if (!this.modal) return;
+        if (!this.modal || !this.input || !this.status || !this.diffPanel || !this.applyBtn) return;
         this.modal.classList.remove('hidden');
         this.modal.style.display = 'flex';
         this.input.focus();
 
         // Check if configured
-        const provider = window.AppState.settings.ai_provider || "gemini";
-        const key = window.AppState.settings[`ai_api_key_${provider}`];
-        const warning = document.getElementById('aiConfigWarning');
+        const provider = AppState.settings.ai_provider || "gemini";
+        const key = AppState.settings[`ai_api_key_${provider}`];
+        const warning = /** @type {HTMLElement | null} */ (document.getElementById('aiConfigWarning'));
         if (warning) {
             warning.style.display = key ? 'none' : 'block';
         }
@@ -60,6 +75,7 @@ class LLMPrompt {
     }
 
     async handleSubmit() {
+        if (!this.input || !this.status || !this.diffPanel || !this.applyBtn) return;
         const prompt = this.input.value.trim();
         if (!prompt) return;
 
@@ -70,7 +86,7 @@ class LLMPrompt {
         this.applyBtn.style.display = "none";
 
         try {
-            const currentPage = window.AppState.getCurrentPage();
+            const currentPage = AppState.getCurrentPage();
 
             // Detect display type from device profile
             const deviceId = AppState.deviceModel;
@@ -87,17 +103,17 @@ class LLMPrompt {
             }
 
             const context = {
-                canvas: window.AppState.getCanvasDimensions(),
+                canvas: AppState.getCanvasDimensions(),
                 current_page: currentPage.id,
                 widgets: currentPage.widgets,
-                selected_widget_id: window.AppState.selectedWidgetId,
+                selected_widget_id: AppState.selectedWidgetId,
                 display_type: displayType
             };
 
-            const result = await window.aiService.processPrompt(prompt, context);
+            const result = await aiService.processPrompt(prompt, context);
 
             if (result && Array.isArray(result)) {
-                this.generatedWidgets = result;
+                this.generatedWidgets = /** @type {Array<Record<string, unknown>>} */ (result);
                 this.showDiffPreview(currentPage.widgets, result);
                 this.status.textContent = "Successfully generated changes!";
                 this.status.style.color = "var(--success)";
@@ -107,7 +123,7 @@ class LLMPrompt {
             }
         } catch (e) {
             Logger.error(e);
-            this.status.textContent = "Error: " + e.message;
+            this.status.textContent = "Error: " + (/** @type {Error} */ (e)).message;
             this.status.style.color = "var(--danger)";
         } finally {
             this.setLoading(false);
@@ -118,11 +134,11 @@ class LLMPrompt {
         if (!this.generatedWidgets) return;
 
         try {
-            const currentPage = window.AppState.getCurrentPage();
-            currentPage.widgets = this.generatedWidgets;
+            const currentPage = AppState.getCurrentPage();
+            currentPage.widgets = /** @type {typeof currentPage.widgets} */ (this.generatedWidgets);
 
             // Re-index widgets
-            window.AppState.project.rebuildWidgetsIndex();
+            AppState.project.rebuildWidgetsIndex();
 
             // Trigger update
             emit(EVENTS.STATE_CHANGED);
@@ -131,11 +147,12 @@ class LLMPrompt {
             this.close();
         } catch (e) {
             Logger.error(e);
-            showToast("Failed to apply changes: " + e.message, "error");
+            showToast("Failed to apply changes: " + (/** @type {Error} */ (e)).message, "error");
         }
     }
 
     showDiffPreview(oldWidgets, newWidgets) {
+        if (!this.diffPanel || !this.diffContent) return;
         this.diffPanel.style.display = "block";
 
         // Simple diff: show widget count and names
@@ -169,10 +186,11 @@ class LLMPrompt {
     }
 
     setLoading(isLoading) {
+        if (!this.submitBtn || !this.input) return;
         this.submitBtn.disabled = isLoading;
         this.submitBtn.textContent = isLoading ? "Processing..." : "Generate";
         this.input.disabled = isLoading;
     }
 }
 
-window.llmPrompt = new LLMPrompt();
+

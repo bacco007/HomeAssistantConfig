@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 import yaml
 import re
@@ -15,6 +16,33 @@ from ..const import API_BASE_PATH
 from .base import DesignerBaseView
 
 _LOGGER = logging.getLogger(__name__)
+FRONTEND_HARDWARE_DIR = Path(__file__).parent.parent / "frontend" / "hardware"
+
+
+def _resolve_hardware_package_path(hass: HomeAssistant, package_path: str) -> Path:
+    """Resolve a requested hardware package path safely."""
+    normalized = (package_path or "").strip().replace("\\", "/")
+    if not normalized or ".." in normalized or normalized.startswith("/") or "://" in normalized:
+        raise ValueError("invalid_package_path")
+
+    if normalized.startswith("esphomedesigner_custom_profiles/"):
+        filename = normalized.removeprefix("esphomedesigner_custom_profiles/").strip("/")
+        if not filename or "/" in filename:
+            raise ValueError("invalid_custom_profile_path")
+        custom_profiles_dir = Path(hass.config.path("esphomedesigner_custom_profiles"))
+        resolved = (custom_profiles_dir / filename).resolve()
+        resolved.relative_to(custom_profiles_dir.resolve())
+        return resolved
+
+    if normalized.startswith("hardware/"):
+        relative_name = normalized.removeprefix("hardware/").strip("/")
+        if not relative_name or "/" in relative_name:
+            raise ValueError("invalid_bundled_profile_path")
+        resolved = (FRONTEND_HARDWARE_DIR / relative_name).resolve()
+        resolved.relative_to(FRONTEND_HARDWARE_DIR.resolve())
+        return resolved
+
+    raise ValueError("unsupported_package_path")
 
 class ReTerminalHardwareListView(DesignerBaseView):
     """List available hardware templates from the frontend/hardware directory."""
@@ -80,6 +108,46 @@ class ReTerminalHardwareListView(DesignerBaseView):
                     if inv_match:
                         features["inverted_colors"] = True
                     
+                    # Detect chip and board from early comments or esp32/esp8266 blocks
+                    chip = "esp32"
+                    board = None
+                    
+                    esp8266_match = re.search(r"^\s*esp8266:", content, re.MULTILINE)
+                    if esp8266_match:
+                        chip = "esp8266"
+                    else:
+                        esp32_match = re.search(r"^\s*esp32:", content, re.MULTILINE)
+                        if esp32_match:
+                            # Try to infer specific esp32 variant
+                            if "esp32-s3" in content.lower():
+                                chip = "esp32-s3"
+                            elif "esp32-c3" in content.lower():
+                                chip = "esp32-c3"
+                            elif "esp32-c6" in content.lower():
+                                chip = "esp32-c6"
+                            else:
+                                chip = "esp32"
+                    
+                    board_match = re.search(r"^\s*board:\s*([^\n]+)", content, re.MULTILINE)
+                    if board_match:
+                        board = board_match.group(1).strip()
+                        if not esp8266_match:
+                            if "s3" in board.lower():
+                                chip = "esp32-s3"
+                            elif "c3" in board.lower():
+                                chip = "esp32-c3"
+                            elif "c6" in board.lower():
+                                chip = "esp32-c6"
+                    
+                    # Support explicit comment overrides
+                    chip_comment_match = re.search(r"#\s*Chip:\s*(.*)", content, re.IGNORECASE)
+                    if chip_comment_match:
+                        chip = chip_comment_match.group(1).strip()
+                        
+                    board_comment_match = re.search(r"#\s*Board:\s*(.*)", content, re.IGNORECASE)
+                    if board_comment_match:
+                        board = board_comment_match.group(1).strip()
+                    
                     is_epaper = "waveshare_epaper" in content or "epaper_spi" in content
                     if is_epaper:
                          features["epaper"] = True
@@ -141,6 +209,8 @@ class ReTerminalHardwareListView(DesignerBaseView):
                         "hardwarePackage": hw_package,
                         "resolution": {"width": width, "height": height},
                         "shape": shape,
+                        "chip": chip,
+                        "board": board,
                         "features": features
                     })
                     _LOGGER.debug(f"Loaded profile '{clean_id}' from {yaml_file}")
@@ -151,6 +221,42 @@ class ReTerminalHardwareListView(DesignerBaseView):
             _LOGGER.debug(f"Scanned {scan_dir}: found {len([t for t in templates if (t['isCustomProfile'] == is_custom)])} templates")
 
         return self.json({"templates": templates}, request=request)
+
+
+class ReTerminalHardwarePackageView(DesignerBaseView):
+    """Serve a hardware package through the authenticated API surface."""
+
+    url = f"{API_BASE_PATH}/hardware/package"
+    name = "api:esphome_designer_hardware_package"
+
+    def __init__(self, hass: HomeAssistant) -> None:
+        self.hass = hass
+
+    async def get(self, request) -> Any:
+        package_path = request.query.get("path", "")
+        if not package_path:
+            return self.json({"error": "missing_path"}, status_code=HTTPStatus.BAD_REQUEST, request=request)
+
+        try:
+            file_path = _resolve_hardware_package_path(self.hass, package_path)
+        except ValueError:
+            return self.json({"error": "invalid_path"}, status_code=HTTPStatus.BAD_REQUEST, request=request)
+
+        if not file_path.exists() or not file_path.is_file():
+            return self.json({"error": "not_found"}, status_code=HTTPStatus.NOT_FOUND, request=request)
+
+        try:
+            content = await asyncio.to_thread(file_path.read_text, encoding="utf-8")
+        except Exception as err:  # noqa: BLE001
+            _LOGGER.error("Failed to read hardware package %s: %s", package_path, err)
+            return self.json({"error": "read_failed"}, status_code=HTTPStatus.INTERNAL_SERVER_ERROR, request=request)
+
+        return web.Response(
+            text=content,
+            status=HTTPStatus.OK,
+            content_type="text/plain",
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+        )
 
 
 async def _parse_json_body(request):
