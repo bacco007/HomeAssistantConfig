@@ -387,7 +387,7 @@ async def handle_export_states(
         vol.Required("type"): "entity_manager/import_entity_states",
         vol.Required("entities"): [
             {
-                vol.Required("entity_id"): str,
+                vol.Required("entity_id"): cv.entity_id,
                 vol.Required("is_disabled"): bool,
             }
         ],
@@ -837,8 +837,8 @@ async def handle_get_template_sensors(
 @websocket_api.websocket_command(
     {
         vol.Required("type"): "entity_manager/update_yaml_references",
-        vol.Required("old_entity_id"): str,
-        vol.Required("new_entity_id"): str,
+        vol.Required("old_entity_id"): cv.entity_id,
+        vol.Required("new_entity_id"): cv.entity_id,
         vol.Optional("dry_run", default=False): bool,
     }
 )
@@ -1154,7 +1154,7 @@ _YAML_SKIP = {
 @websocket_api.websocket_command(
     {
         vol.Required("type"): "entity_manager/register_template",
-        vol.Required("entity_id"): str,
+        vol.Required("entity_id"): cv.entity_id,
     }
 )
 @websocket_api.require_admin
@@ -1276,7 +1276,7 @@ async def handle_register_template(
 @websocket_api.websocket_command(
     {
         vol.Required("type"): "entity_manager/get_last_activity",
-        vol.Optional("entity_ids"): [str],
+        vol.Optional("entity_ids"): [cv.entity_id],
     }
 )
 @websocket_api.require_admin
