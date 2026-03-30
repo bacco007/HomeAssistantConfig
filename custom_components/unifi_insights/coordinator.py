@@ -41,7 +41,7 @@ if TYPE_CHECKING:
 _LOGGER = logging.getLogger(__name__)
 
 
-class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):  # type: ignore[misc]
+class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Class to manage fetching UniFi Insights data."""
 
     config_entry: ConfigEntry
@@ -51,7 +51,7 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         hass: HomeAssistant,
         network_client: UniFiNetworkClient,
         protect_client: UniFiProtectClient | None = None,
-        entry: ConfigEntry = None,
+        entry: ConfigEntry | None = None,
     ) -> None:
         """Initialize the coordinator."""
         super().__init__(
@@ -62,7 +62,7 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         )
         self.network_client = network_client
         self.protect_client = protect_client
-        self.config_entry = entry
+        self.config_entry = entry  # type: ignore[assignment]
         self._available = True
         # Track previous device IDs for stale device cleanup (Gold requirement)
         self._previous_network_device_ids: set[str] = set()
@@ -271,7 +271,7 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self, site_id: str, device_dict: dict[str, Any], clients: list[dict[str, Any]]
     ) -> tuple[str, dict[str, Any], dict[str, Any]]:
         """Process a single device and its stats."""
-        device_id = device_dict.get("id")
+        device_id: str = device_dict.get("id", "")
         device_name = device_dict.get("name", device_id)
 
         try:
@@ -305,7 +305,14 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     async def _process_site(
         self, site_id: str
-    ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]] | None:
+    ) -> (
+        tuple[
+            dict[str, dict[str, Any]],
+            dict[str, dict[str, Any]],
+            dict[str, dict[str, Any]],
+        ]
+        | None
+    ):
         """Process a single site's devices and clients."""
         try:
             # Get devices and clients in parallel using new API
@@ -356,8 +363,8 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     devices_dict[device_id] = device
                     stats_dict[device_id] = stats
 
-            clients_dict = {
-                client.get("id"): client for client in clients if client.get("id")
+            clients_dict: dict[str, dict[str, Any]] = {
+                str(client.get("id")): client for client in clients if client.get("id")
             }
 
             return devices_dict, stats_dict, clients_dict

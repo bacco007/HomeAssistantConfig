@@ -57,7 +57,7 @@ async def async_setup_entry(
         "Client tracking enabled - WiFi: %s, Wired: %s", track_wifi, track_wired
     )
 
-    @callback  # type: ignore[misc]
+    @callback
     def async_add_clients() -> None:
         """Add new client trackers."""
         entities: list[UnifiClientTracker] = []
@@ -109,7 +109,7 @@ async def async_setup_entry(
     entry.async_on_unload(coordinator.async_add_listener(async_add_clients))
 
 
-class UnifiClientTracker(CoordinatorEntity[UnifiFacadeCoordinator], ScannerEntity):  # type: ignore[misc]
+class UnifiClientTracker(CoordinatorEntity[UnifiFacadeCoordinator], ScannerEntity):
     """Representation of a UniFi network client."""
 
     _attr_has_entity_name = True
@@ -157,7 +157,7 @@ class UnifiClientTracker(CoordinatorEntity[UnifiFacadeCoordinator], ScannerEntit
                 model=model,
             )
 
-    @property
+    @property  # type: ignore[misc]
     def device_info(self) -> DeviceInfo:
         """Return device info."""
         return self._device_info
@@ -165,7 +165,7 @@ class UnifiClientTracker(CoordinatorEntity[UnifiFacadeCoordinator], ScannerEntit
     def _get_client_data(self) -> dict[str, Any] | None:
         """Get client data from coordinator."""
         clients = self.coordinator.data.get("clients", {}).get(self._site_id, {})
-        return clients.get(self._client_id) if isinstance(clients, dict) else None  # type: ignore[no-any-return]
+        return clients.get(self._client_id) if isinstance(clients, dict) else None
 
     @property
     def is_connected(self) -> bool:

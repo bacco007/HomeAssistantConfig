@@ -130,10 +130,10 @@
         "name": "Uptime"
       },
       "tx_rate": {
-        "name": "Transmit Rate"
+        "name": "Uplink Transmit Rate"
       },
       "rx_rate": {
-        "name": "Receive Rate"
+        "name": "Uplink Receive Rate"
       },
       "temperature": {
         "name": "Temperature"
@@ -155,6 +155,12 @@
       },
       "storage_available": {
         "name": "Storage Available"
+      },
+      "port_tx_rate": {
+        "name": "{port_label} TX Rate"
+      },
+      "port_rx_rate": {
+        "name": "{port_label} RX Rate"
       }
     },
     "binary_sensor": {

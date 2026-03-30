@@ -62,7 +62,7 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class UnifiProtectCamera(UnifiProtectEntity, Camera):  # type: ignore[misc]
+class UnifiProtectCamera(UnifiProtectEntity, Camera):
     """Representation of a UniFi Protect Camera."""
 
     _attr_has_entity_name = True
@@ -115,7 +115,7 @@ class UnifiProtectCamera(UnifiProtectEntity, Camera):  # type: ignore[misc]
         try:
             # Use the correct library API: cameras.get_snapshot()
             # The library supports width and height parameters
-            snapshot = await self.coordinator.protect_client.cameras.get_snapshot(
+            snapshot = await self.coordinator.protect_client.cameras.get_snapshot(  # type: ignore[union-attr]
                 self._device_id,
                 width=width or 1920,
                 height=height or 1080,

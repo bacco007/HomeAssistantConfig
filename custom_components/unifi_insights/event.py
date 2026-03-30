@@ -117,15 +117,15 @@ def _is_doorbell_camera(camera_data: dict[str, Any]) -> bool:
 
 
 class UnifiProtectDoorbellEventEntity(
-    CoordinatorEntity["UnifiFacadeCoordinator"],  # type: ignore[misc]
-    EventEntity,  # type: ignore[misc]
+    CoordinatorEntity["UnifiFacadeCoordinator"],
+    EventEntity,
 ):
     """Event entity for UniFi Protect doorbell ring events."""
 
     _attr_has_entity_name = True
     _attr_translation_key = "doorbell_ring"
     _attr_device_class = EventDeviceClass.DOORBELL
-    _attr_event_types: ClassVar[list[str]] = [EVENT_TYPE_DOORBELL_RING]
+    _attr_event_types: ClassVar[list[str]] = [EVENT_TYPE_DOORBELL_RING]  # type: ignore[misc]
 
     def __init__(
         self,
@@ -141,7 +141,6 @@ class UnifiProtectDoorbellEventEntity(
         camera_name = camera_data.get("name", f"Camera {device_id}")
 
         self._attr_unique_id = f"{DOMAIN}_camera_{device_id}_doorbell_event"
-        self._attr_name = "Doorbell"
 
         # Set device info
         self._attr_device_info = {
@@ -159,7 +158,7 @@ class UnifiProtectDoorbellEventEntity(
             return False
         return bool(camera_data.get("state") == "CONNECTED")
 
-    @callback  # type: ignore[misc]
+    @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         camera_data = self.coordinator.data["protect"]["cameras"].get(
@@ -186,15 +185,15 @@ class UnifiProtectDoorbellEventEntity(
 
 
 class UnifiProtectSmartDetectEventEntity(
-    CoordinatorEntity["UnifiFacadeCoordinator"],  # type: ignore[misc]
-    EventEntity,  # type: ignore[misc]
+    CoordinatorEntity["UnifiFacadeCoordinator"],
+    EventEntity,
 ):
     """Event entity for UniFi Protect smart detection events."""
 
     _attr_has_entity_name = True
     _attr_translation_key = "smart_detection"
     _attr_device_class = EventDeviceClass.MOTION
-    _attr_event_types: ClassVar[list[str]] = [
+    _attr_event_types: ClassVar[list[str]] = [  # type: ignore[misc]
         EVENT_TYPE_MOTION,
         EVENT_TYPE_SMART_DETECT_PERSON,
         EVENT_TYPE_SMART_DETECT_VEHICLE,
@@ -217,7 +216,6 @@ class UnifiProtectSmartDetectEventEntity(
         camera_name = camera_data.get("name", f"Camera {device_id}")
 
         self._attr_unique_id = f"{DOMAIN}_camera_{device_id}_smart_detect_event"
-        self._attr_name = "Smart Detection"
 
         # Set device info
         self._attr_device_info = {
@@ -235,7 +233,7 @@ class UnifiProtectSmartDetectEventEntity(
             return False
         return bool(camera_data.get("state") == "CONNECTED")
 
-    @callback  # type: ignore[misc]
+    @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         camera_data = self.coordinator.data["protect"]["cameras"].get(
@@ -275,14 +273,14 @@ class UnifiProtectSmartDetectEventEntity(
 
 
 class UnifiProtectSensorEventEntity(
-    CoordinatorEntity["UnifiFacadeCoordinator"],  # type: ignore[misc]
-    EventEntity,  # type: ignore[misc]
+    CoordinatorEntity["UnifiFacadeCoordinator"],
+    EventEntity,
 ):
     """Event entity for UniFi Protect sensor open/close events."""
 
     _attr_has_entity_name = True
     _attr_translation_key = "sensor_event"
-    _attr_event_types: ClassVar[list[str]] = [
+    _attr_event_types: ClassVar[list[str]] = [  # type: ignore[misc]
         EVENT_TYPE_SENSOR_OPEN,
         EVENT_TYPE_SENSOR_CLOSE,
     ]
@@ -302,7 +300,6 @@ class UnifiProtectSensorEventEntity(
         sensor_name = sensor_data.get("name", f"Sensor {device_id}")
 
         self._attr_unique_id = f"{DOMAIN}_sensor_{device_id}_event"
-        self._attr_name = "Door/Window"
 
         # Set device info
         self._attr_device_info = {
@@ -320,7 +317,7 @@ class UnifiProtectSensorEventEntity(
             return False
         return bool(sensor_data.get("state") == "CONNECTED")
 
-    @callback  # type: ignore[misc]
+    @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         sensor_data = self.coordinator.data["protect"]["sensors"].get(

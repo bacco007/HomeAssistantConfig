@@ -130,10 +130,10 @@
         "name": "Uptime"
       },
       "tx_rate": {
-        "name": "Transmit Rate"
+        "name": "Uplink Transmit Rate"
       },
       "rx_rate": {
-        "name": "Receive Rate"
+        "name": "Uplink Receive Rate"
       },
       "temperature": {
         "name": "Temperature"
@@ -147,14 +147,80 @@
       "light_level": {
         "name": "Light Level"
       },
+      "light": {
+        "name": "Light"
+      },
       "battery": {
         "name": "Battery"
       },
       "storage_used": {
         "name": "Storage Used"
       },
+      "storage_total": {
+        "name": "Storage Total"
+      },
       "storage_available": {
         "name": "Storage Available"
+      },
+      "storage_used_percent": {
+        "name": "Storage Used Percentage"
+      },
+      "poe_total_power": {
+        "name": "Total PoE Power"
+      },
+      "firmware_version": {
+        "name": "Firmware Version"
+      },
+      "wired_clients": {
+        "name": "Wired Clients"
+      },
+      "wireless_clients": {
+        "name": "Wireless Clients"
+      },
+      "port_poe_power": {
+        "name": "{port_label} PoE Power"
+      },
+      "port_speed": {
+        "name": "{port_label} Speed"
+      },
+      "port_tx_bytes": {
+        "name": "{port_label} TX"
+      },
+      "port_rx_bytes": {
+        "name": "{port_label} RX"
+      },
+      "port_tx_rate": {
+        "name": "{port_label} TX Rate"
+      },
+      "port_rx_rate": {
+        "name": "{port_label} RX Rate"
+      },
+      "port_sfp_module": {
+        "name": "{port_label} SFP Module"
+      },
+      "port_sfp_vendor": {
+        "name": "{port_label} SFP Vendor"
+      },
+      "port_sfp_compliance": {
+        "name": "{port_label} SFP Type"
+      },
+      "port_sfp_serial": {
+        "name": "{port_label} SFP Serial"
+      },
+      "wan_ip": {
+        "name": "WAN IP Address"
+      },
+      "wan_uptime": {
+        "name": "WAN Uptime"
+      },
+      "site_total_clients": {
+        "name": "Total Clients"
+      },
+      "site_wired_clients": {
+        "name": "Wired Clients"
+      },
+      "site_wireless_clients": {
+        "name": "Wireless Clients"
       }
     },
     "binary_sensor": {
@@ -164,6 +230,42 @@
           "on": "Online",
           "off": "Offline"
         }
+      },
+      "wan_status": {
+        "name": "WAN Status"
+      },
+      "camera_motion": {
+        "name": "Motion Detection"
+      },
+      "camera_person_detection": {
+        "name": "Person Detection"
+      },
+      "camera_vehicle_detection": {
+        "name": "Vehicle Detection"
+      },
+      "camera_animal_detection": {
+        "name": "Animal Detection"
+      },
+      "camera_package_detection": {
+        "name": "Package Detection"
+      },
+      "camera_doorbell_ring": {
+        "name": "Ring"
+      },
+      "sensor_motion": {
+        "name": "Motion Detection"
+      },
+      "sensor_door": {
+        "name": "Door/Window Status"
+      },
+      "sensor_tamper": {
+        "name": "Tamper Detection"
+      },
+      "sensor_leak": {
+        "name": "Leak Detection"
+      },
+      "port_sfp_present": {
+        "name": "SFP Module"
       },
       "motion": {
         "name": "Motion"
@@ -187,6 +289,15 @@
       },
       "reboot": {
         "name": "Reboot"
+      },
+      "play": {
+        "name": "Play"
+      },
+      "ptz_patrol_start": {
+        "name": "Start PTZ Patrol"
+      },
+      "ptz_patrol_stop": {
+        "name": "Stop PTZ Patrol"
       }
     },
     "camera": {

@@ -97,14 +97,6 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:  # noqa: ARG001
     """Set up the UniFi Insights component."""
-    _LOGGER.debug("Setting up UniFi Insights component")
-
-    hass.data.setdefault(DOMAIN, {})
-
-    # Set up services
-    await async_setup_services(hass)
-
-    _LOGGER.info("UniFi Insights component setup completed")
     return True
 
 
@@ -291,6 +283,10 @@ async def async_setup_entry(
         _facade_coordinator=facade_coordinator,
     )
 
+    # Register services on first entry setup
+    if not hass.services.has_service(DOMAIN, "refresh_data"):
+        await async_setup_services(hass)
+
     # Set up platforms
     _LOGGER.debug("Setting up platforms: %s", PLATFORMS)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -345,9 +341,6 @@ async def async_unload_entry(
         if not remaining_entries:
             _LOGGER.debug("No more config entries, unloading services")
             await async_unload_services(hass)
-            hass.data.pop(f"{DOMAIN}_tracked_clients", None)
-            if DOMAIN in hass.data:
-                hass.data.pop(DOMAIN)
             _LOGGER.info("UniFi Insights services unloaded")
 
     return unload_ok

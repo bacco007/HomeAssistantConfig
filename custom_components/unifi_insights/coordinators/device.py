@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import time
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
@@ -62,6 +63,9 @@ class UnifiDeviceCoordinator(UnifiBaseCoordinator):
         self.config_coordinator = config_coordinator
         # Track previous device IDs for stale device cleanup (Gold requirement)
         self._previous_network_device_ids: set[str] = set()
+        # Track previous port byte counts for rate computation
+        self._prev_port_bytes: dict[str, dict[int, dict[str, int]]] = {}
+        self._prev_port_bytes_time: float | None = None
         self.data: dict[str, Any] = {
             "devices": {},
             "clients": {},
@@ -165,17 +169,57 @@ class UnifiDeviceCoordinator(UnifiBaseCoordinator):
                 "idx": port_idx,
                 "port_idx": port_idx,
                 "state": "UP" if port.get("up") else "DOWN",
+                "enabled": port.get("enable", True),
                 "speedMbps": port.get("speed"),
                 "speed": port.get("speed"),
             }
 
-            # PoE data
-            poe_enabled = port.get("poe_enable") or port.get("port_poe")
-            poe_power = port.get("poe_power") or port.get("poePower")
-            if poe_enabled or poe_power is not None:
+            # Port type identification fields
+            media = port.get("media")
+            if media:
+                normalized["media"] = media
+
+            is_uplink = port.get("is_uplink")
+            if is_uplink is not None:
+                normalized["is_uplink"] = is_uplink
+
+            port_name = port.get("name")
+            if port_name:
+                normalized["name"] = port_name
+
+            ifname = port.get("ifname")
+            if ifname:
+                normalized["ifname"] = ifname
+
+            network_name = port.get("network_name")
+            if network_name:
+                normalized["network_name"] = network_name
+
+            # SFP module data
+            sfp_found = port.get("sfp_found")
+            if sfp_found is not None:
+                normalized["sfp_found"] = sfp_found
+
+            for sfp_key in (
+                "sfp_part",
+                "sfp_vendor",
+                "sfp_serial",
+                "sfp_compliance",
+            ):
+                sfp_val = port.get(sfp_key)
+                if sfp_val is not None:
+                    normalized[sfp_key] = sfp_val
+
+            # PoE data — only for ports with PoE hardware (port_poe flag)
+            poe_capable = port.get("port_poe", False)
+            if poe_capable:
+                poe_enabled = port.get("poe_enable", False)
+                poe_power = port.get("poe_power") or port.get("poePower")
+                poe_good = port.get("poe_good", False)
                 normalized["poe"] = {
                     "enabled": bool(poe_enabled),
                     "power": poe_power,
+                    "good": bool(poe_good),
                 }
 
             # TX/RX bytes
@@ -251,7 +295,7 @@ class UnifiDeviceCoordinator(UnifiBaseCoordinator):
         legacy_site_name: str | None = None,
     ) -> tuple[str, dict[str, Any], dict[str, Any]]:
         """Process a single device and its stats."""
-        device_id = device_dict.get("id")
+        device_id: str = device_dict.get("id", "")
         device_name = device_dict.get("name", device_id)
 
         try:
@@ -331,7 +375,14 @@ class UnifiDeviceCoordinator(UnifiBaseCoordinator):
 
     async def _process_site(
         self, site_id: str, legacy_site_name: str | None = None
-    ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]] | None:
+    ) -> (
+        tuple[
+            dict[str, dict[str, Any]],
+            dict[str, dict[str, Any]],
+            dict[str, dict[str, Any]],
+        ]
+        | None
+    ):
         """Process a single site's devices and clients."""
         try:
             # Get devices and clients in parallel using new API
@@ -415,8 +466,8 @@ class UnifiDeviceCoordinator(UnifiBaseCoordinator):
                     devices_dict[device_id] = device
                     stats_dict[device_id] = stats
 
-            clients_dict = {
-                client.get("id"): client for client in clients if client.get("id")
+            clients_dict: dict[str, dict[str, Any]] = {
+                str(client.get("id")): client for client in clients if client.get("id")
             }
 
             return devices_dict, stats_dict, clients_dict
@@ -475,6 +526,9 @@ class UnifiDeviceCoordinator(UnifiBaseCoordinator):
                         len(clients_dict),
                     )
 
+            # Compute per-port byte rates from deltas
+            self._compute_port_rates()
+
             self._available = True
             self.data["last_update"] = datetime.now(tz=UTC)
 
@@ -501,6 +555,66 @@ class UnifiDeviceCoordinator(UnifiBaseCoordinator):
 
         # Should never reach here due to raises above
         return self.data  # pragma: no cover
+
+    def _compute_port_rates(self) -> None:
+        """Compute per-port byte rates from consecutive poll deltas."""
+        now = time.monotonic()
+        current_port_bytes: dict[str, dict[int, dict[str, int]]] = {}
+
+        # Collect current byte counts keyed by device_id
+        for stats_dict in self.data.get("stats", {}).values():
+            for device_id, stats in stats_dict.items():
+                if not isinstance(stats, dict):
+                    continue
+                pb = stats.get("port_bytes")
+                if isinstance(pb, dict):
+                    current_port_bytes[device_id] = pb
+
+        prev_time = self._prev_port_bytes_time
+        prev_bytes = self._prev_port_bytes
+
+        # Update stored state for next poll
+        self._prev_port_bytes = current_port_bytes
+        self._prev_port_bytes_time = now
+
+        if prev_time is None or not prev_bytes:
+            return
+
+        elapsed = now - prev_time
+        if elapsed <= 0:
+            return
+
+        # Compute rates and store in stats
+        for stats_dict in self.data.get("stats", {}).values():
+            for device_id, stats in stats_dict.items():
+                if not isinstance(stats, dict):
+                    continue
+
+                prev_dev = prev_bytes.get(device_id)
+                curr_dev = current_port_bytes.get(device_id)
+                if not prev_dev or not curr_dev:
+                    continue
+
+                port_rates: dict[int, dict[str, float]] = {}
+                for port_idx, curr in curr_dev.items():
+                    prev = prev_dev.get(port_idx)
+                    if prev is None:
+                        continue
+
+                    tx_delta = curr.get("tx_bytes", 0) - prev.get("tx_bytes", 0)
+                    rx_delta = curr.get("rx_bytes", 0) - prev.get("rx_bytes", 0)
+
+                    # Skip negative deltas (counter reset)
+                    if tx_delta < 0 or rx_delta < 0:
+                        continue
+
+                    port_rates[port_idx] = {
+                        "tx_bytes_rate": round(tx_delta / elapsed, 1),
+                        "rx_bytes_rate": round(rx_delta / elapsed, 1),
+                    }
+
+                if port_rates:
+                    stats["port_rates"] = port_rates
 
     def _cleanup_stale_devices(self) -> None:
         """Remove stale network devices from the device registry (Gold requirement)."""

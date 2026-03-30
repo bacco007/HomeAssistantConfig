@@ -174,6 +174,9 @@ class FirewallEndpoint:
         """
         List all firewall rules.
 
+        When called without explicit offset/limit, automatically paginates
+        to retrieve all rules.
+
         Args:
             site_id: The site ID.
             offset: Number of items to skip (pagination).
@@ -185,20 +188,52 @@ class FirewallEndpoint:
             List of firewall rules.
 
         """
-        params: dict[str, Any] = {}
-        if offset is not None:
-            params["offset"] = offset
-        if limit is not None:
-            params["limit"] = limit
-        if filter_str:
-            params["filter"] = filter_str
-
         path = self._client.build_api_path(f"/sites/{site_id}/firewall/policies")
-        response = await self._client._get(path, params=params if params else None)
 
+        # When caller supplies explicit pagination, honour it as a single request.
+        if offset is not None or limit is not None:
+            params: dict[str, Any] = {}
+            if offset is not None:
+                params["offset"] = offset
+            if limit is not None:
+                params["limit"] = limit
+            if filter_str:
+                params["filter"] = filter_str
+            return self._parse_rules_response(
+                await self._client._get(path, params=params if params else None)
+            )
+
+        # Auto-paginate to retrieve all rules.
+        all_rules: list[FirewallRule] = []
+        current_offset = 0
+        page_size = 200
+
+        while True:
+            params = {"offset": current_offset, "limit": page_size}
+            if filter_str:
+                params["filter"] = filter_str
+
+            response = await self._client._get(path, params=params)
+            rules = self._parse_rules_response(response)
+            all_rules.extend(rules)
+
+            # Check if there are more pages.
+            total = (
+                response.get("totalCount")
+                if isinstance(response, dict)
+                else None
+            )
+            if total is None or current_offset + page_size >= total:
+                break
+            current_offset += page_size
+
+        return all_rules
+
+    @staticmethod
+    def _parse_rules_response(response: Any) -> list[FirewallRule]:
+        """Parse a firewall policies API response into a list of rules."""
         if response is None:
             return []
-
         data = (
             response.get("data", response) if isinstance(response, dict) else response
         )
@@ -277,6 +312,26 @@ class FirewallEndpoint:
                 return FirewallRule.model_validate(result)
         raise ValueError("Failed to create firewall rule")
 
+    @staticmethod
+    def _extract_rule_payload(
+        response: dict[str, Any] | list[Any] | None,
+    ) -> dict[str, Any] | None:
+        """Extract a firewall rule payload from API responses."""
+        if response is None:
+            return None
+
+        data = (
+            response.get("data", response) if isinstance(response, dict) else response
+        )
+
+        if isinstance(data, dict):
+            return dict(data)
+
+        if isinstance(data, list) and data and isinstance(data[0], dict):
+            return dict(data[0])
+
+        return None
+
     async def update_rule(
         self,
         site_id: str,
@@ -285,6 +340,9 @@ class FirewallEndpoint:
     ) -> FirewallRule:
         """
         Update a firewall rule.
+
+        UniFi Network expects a full policy document via PUT rather than
+        a partial PATCH payload on current controller versions.
 
         Args:
             site_id: The site ID.
@@ -298,13 +356,20 @@ class FirewallEndpoint:
         path = self._client.build_api_path(
             f"/sites/{site_id}/firewall/policies/{rule_id}"
         )
-        response = await self._client._patch(path, json_data=kwargs)
+        current_payload = self._extract_rule_payload(await self._client._get(path))
+        if current_payload is None:
+            raise ValueError(f"Firewall rule {rule_id} not found")
 
-        if isinstance(response, dict):
-            result = response.get("data", response)
-            if isinstance(result, dict):
-                return FirewallRule.model_validate(result)
-        raise ValueError("Failed to update firewall rule")
+        # Strip read-only fields that the PUT endpoint rejects.
+        for key in ("id", "index", "metadata"):
+            current_payload.pop(key, None)
+        current_payload.update(kwargs)
+
+        response = await self._client._put(path, json_data=current_payload)
+        result = self._extract_rule_payload(response)
+        if result is not None:
+            return FirewallRule.model_validate(result)
+        return FirewallRule.model_validate(current_payload)
 
     async def delete_rule(self, site_id: str, rule_id: str) -> bool:
         """
@@ -333,6 +398,9 @@ class FirewallEndpoint:
         """
         Partially update a firewall rule.
 
+        Despite the name, this uses GET+PUT internally because UniFi Network
+        rejects PATCH on current controller versions.
+
         Args:
             site_id: The site ID.
             rule_id: The rule ID.
@@ -342,18 +410,7 @@ class FirewallEndpoint:
             The updated firewall rule.
 
         """
-        path = self._client.build_api_path(
-            f"/sites/{site_id}/firewall/policies/{rule_id}"
-        )
-        response = await self._client._patch(path, json_data=kwargs)
-
-        if isinstance(response, dict):
-            data = response.get("data", response)
-            if isinstance(data, dict):
-                return FirewallRule.model_validate(data)
-            if isinstance(data, list) and len(data) > 0:
-                return FirewallRule.model_validate(data[0])
-        raise ValueError(f"Failed to patch firewall rule {rule_id}")
+        return await self.update_rule(site_id, rule_id, **kwargs)
 
     async def get_policy_ordering(
         self,

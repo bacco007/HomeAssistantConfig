@@ -52,7 +52,7 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class UnifiNetworkDeviceUpdate(CoordinatorEntity[UnifiFacadeCoordinator], UpdateEntity):  # type: ignore[misc]
+class UnifiNetworkDeviceUpdate(CoordinatorEntity[UnifiFacadeCoordinator], UpdateEntity):
     """Update entity for UniFi network devices."""
 
     _attr_has_entity_name = True
@@ -81,9 +81,6 @@ class UnifiNetworkDeviceUpdate(CoordinatorEntity[UnifiFacadeCoordinator], Update
         # Set unique ID
         self._attr_unique_id = f"{site_id}_{device_id}_firmware_update"
 
-        # Set name
-        self._attr_name = "Firmware"
-
         # Create device info
         device_info: dict[str, Any] = {
             "identifiers": {(DOMAIN, f"{site_id}_{device_id}")},
@@ -100,7 +97,7 @@ class UnifiNetworkDeviceUpdate(CoordinatorEntity[UnifiFacadeCoordinator], Update
         if mac:
             device_info["connections"] = {(CONNECTION_NETWORK_MAC, mac)}
 
-        self._attr_device_info = DeviceInfo(**device_info)
+        self._attr_device_info = DeviceInfo(**device_info)  # type: ignore[typeddict-item]
 
     @property
     def available(self) -> bool:

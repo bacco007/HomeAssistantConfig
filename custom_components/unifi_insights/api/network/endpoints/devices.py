@@ -338,12 +338,19 @@ class DevicesEndpoint:
             if port_idx is None:
                 continue
 
-            poe_power = port.get("poe_power")
-            if poe_power is None:
-                poe_power = port.get("poePower")
-            poe_w = _to_float(poe_power)
-            if poe_w is not None:
-                poe_ports[port_idx] = poe_w
+            # Only include PoE data for ports with PoE hardware.
+            # The legacy API reports "poe_power": "0.00" even on non-PoE
+            # ports (e.g. UDM Pro), so we must check the port_poe flag.
+            poe_capable = port.get("port_poe", False) or port.get(
+                "portPoe", False
+            )
+            if poe_capable:
+                poe_power = port.get("poe_power")
+                if poe_power is None:
+                    poe_power = port.get("poePower")
+                poe_w = _to_float(poe_power)
+                if poe_w is not None:
+                    poe_ports[port_idx] = poe_w
 
             rx_bytes = port.get("rx_bytes")
             if rx_bytes is None:
@@ -377,48 +384,6 @@ class DevicesEndpoint:
             poe_ports=poe_ports,
             port_bytes=port_bytes,
         )
-
-    async def execute_port_action(
-        self,
-        site_id: str,
-        device_id: str,
-        port_idx: int,
-        *,
-        poe_mode: str | None = None,
-        speed: str | None = None,
-        enabled: bool | None = None,
-    ) -> bool:
-        """
-        Execute an action on a device port.
-
-        Args:
-            site_id: The site ID.
-            device_id: The device ID.
-            port_idx: The port index (0-based).
-            poe_mode: PoE mode (off, auto, passive24, passthrough).
-            speed: Port speed (auto, 10, 100, 1000, 2500, 10000).
-            enabled: Whether the port is enabled.
-
-        Returns:
-            True if successful.
-
-        """
-        path = self._client.build_api_path(
-            f"/sites/{site_id}/devices/{device_id}/ports/{port_idx}"
-        )
-        data: dict[str, Any] = {}
-        if poe_mode is not None:
-            data["poeMode"] = poe_mode
-        if speed is not None:
-            data["speed"] = speed
-        if enabled is not None:
-            data["enabled"] = enabled
-
-        if not data:
-            raise ValueError("At least one port setting must be provided")
-
-        await self._client._patch(path, json_data=data)
-        return True
 
     async def execute_action(
         self,

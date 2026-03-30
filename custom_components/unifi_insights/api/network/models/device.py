@@ -36,6 +36,7 @@ class DeviceState(str, Enum):
     ADOPTING = "adopting"
     PROVISIONING = "provisioning"
     UPGRADING = "upgrading"
+    GETTING_READY = "GETTING_READY"  # API returns during device startup
     UNKNOWN = "unknown"
 
 
@@ -62,7 +63,7 @@ class Device(BaseModel):
     name: str | None = None
     model: str | None = None
     type: DeviceType | str | None = None  # Accept enum or raw string for new types
-    state: DeviceState | None = None
+    state: DeviceState | str | None = None  # Accept enum or raw string for new states
     ip: str | None = None
     firmware_version: str | None = Field(default=None, alias="firmwareVersion")
     uptime: int | None = None

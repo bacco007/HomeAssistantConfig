@@ -34,6 +34,9 @@ class ClientsEndpoint:
         """
         List all connected clients.
 
+        Automatically paginates through all results when offset/limit
+        are not explicitly provided.
+
         Args:
             site_id: The site ID.
             offset: Number of clients to skip (pagination).
@@ -44,16 +47,60 @@ class ClientsEndpoint:
             List of clients.
 
         """
-        params: dict[str, Any] = {}
-        if offset is not None:
-            params["offset"] = offset
-        if limit is not None:
-            params["limit"] = limit
-        if filter_str:
-            params["filter"] = filter_str
-
         path = self._client.build_api_path(f"/sites/{site_id}/clients")
-        response = await self._client._get(path, params=params if params else None)
+
+        # When caller specifies offset/limit, do a single request (manual pagination)
+        if offset is not None or limit is not None:
+            params: dict[str, Any] = {}
+            if offset is not None:
+                params["offset"] = offset
+            if limit is not None:
+                params["limit"] = limit
+            if filter_str:
+                params["filter"] = filter_str
+            return await self._fetch_page(path, params if params else None)
+
+        # Auto-paginate: fetch all pages
+        page_size = 100
+        current_offset = 0
+        all_clients: list[Client] = []
+
+        while True:
+            params = {"offset": current_offset, "limit": page_size}
+            if filter_str:
+                params["filter"] = filter_str
+
+            response = await self._client._get(path, params=params)
+            if response is None:
+                break
+
+            if not isinstance(response, dict):
+                break
+
+            data = response.get("data", response)
+            if isinstance(data, list):
+                all_clients.extend(
+                    Client.model_validate(item) for item in data
+                )
+
+            total_count = response.get("totalCount")
+            count = response.get("count", 0)
+            if total_count is None or not isinstance(count, int) or count == 0:
+                break
+
+            current_offset += count
+            if current_offset >= total_count:
+                break
+
+        return all_clients
+
+    async def _fetch_page(
+        self,
+        path: str,
+        params: dict[str, Any] | None = None,
+    ) -> list[Client]:
+        """Fetch a single page of clients."""
+        response = await self._client._get(path, params=params)
 
         if response is None:
             return []

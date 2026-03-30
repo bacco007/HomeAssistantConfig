@@ -52,7 +52,7 @@ async def async_setup_entry(
         _LOGGER.debug("Skipping light setup - Protect API not available")
         return
 
-    entities = []
+    entities: list[LightEntity] = []
 
     # Add lights
     for light_id, light_data in coordinator.data["protect"]["lights"].items():
@@ -68,7 +68,7 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class UnifiProtectLight(UnifiProtectEntity, LightEntity):  # type: ignore[misc]
+class UnifiProtectLight(UnifiProtectEntity, LightEntity):
     """Representation of a UniFi Protect Light."""
 
     _attr_has_entity_name = True
@@ -134,7 +134,7 @@ class UnifiProtectLight(UnifiProtectEntity, LightEntity):  # type: ignore[misc]
                 self._device_id,
                 level,
                 fallback_factory=lambda: (
-                    self.coordinator.protect_client.set_light_brightness(
+                    self.coordinator.protect_client.set_light_brightness(  # type: ignore[union-attr]
                         light_id=self._device_id,
                         level=level,
                     )
@@ -149,7 +149,7 @@ class UnifiProtectLight(UnifiProtectEntity, LightEntity):  # type: ignore[misc]
             f"Unable to turn on light {self._device_id}",
             self._device_id,
             LIGHT_MODE_ALWAYS,
-            fallback_factory=lambda: self.coordinator.protect_client.set_light_mode(
+            fallback_factory=lambda: self.coordinator.protect_client.set_light_mode(  # type: ignore[union-attr]
                 light_id=self._device_id,
                 mode=LIGHT_MODE_ALWAYS,
             ),
@@ -171,7 +171,7 @@ class UnifiProtectLight(UnifiProtectEntity, LightEntity):  # type: ignore[misc]
             f"Unable to turn off light {self._device_id}",
             self._device_id,
             LIGHT_MODE_OFF,
-            fallback_factory=lambda: self.coordinator.protect_client.set_light_mode(
+            fallback_factory=lambda: self.coordinator.protect_client.set_light_mode(  # type: ignore[union-attr]
                 light_id=self._device_id,
                 mode=LIGHT_MODE_OFF,
             ),

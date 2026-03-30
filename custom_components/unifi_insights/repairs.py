@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 _LOGGER = logging.getLogger(__name__)
 
 
-class UnifiInsightsRepairFlow(RepairsFlow):  # type: ignore[misc]
+class UnifiInsightsRepairFlow(RepairsFlow):
     """Handler for UniFi Insights repair flows."""
 
     def __init__(self, issue_id: str) -> None:

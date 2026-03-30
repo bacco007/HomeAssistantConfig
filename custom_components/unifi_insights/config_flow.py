@@ -10,11 +10,12 @@ from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
     ConfigFlowResult,
-    OptionsFlow,
+    OptionsFlowWithConfigEntry,
 )
 from homeassistant.const import CONF_API_KEY, CONF_HOST, CONF_VERIFY_SSL
 from homeassistant.core import callback
 from homeassistant.helpers.selector import (
+    SelectOptionDict,
     SelectSelector,
     SelectSelectorConfig,
     SelectSelectorMode,
@@ -45,7 +46,7 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 
-class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[misc,call-arg]
+class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for UniFi Insights."""
 
     VERSION = 1
@@ -57,12 +58,12 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[misc,c
         self._discovered_remote_consoles: dict[str, str] = {}
 
     @staticmethod
-    @callback  # type: ignore[misc]
+    @callback
     def async_get_options_flow(
-        config_entry: ConfigEntry,  # noqa: ARG004
+        config_entry: ConfigEntry,
     ) -> UnifiInsightsOptionsFlow:
         """Get the options flow for this handler."""
-        return UnifiInsightsOptionsFlow()
+        return UnifiInsightsOptionsFlow(config_entry)
 
     @staticmethod
     def _extract_remote_console_options(hosts: list[dict[str, Any]]) -> dict[str, str]:
@@ -172,14 +173,14 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[misc,c
                     ): SelectSelector(
                         SelectSelectorConfig(
                             options=[
-                                {
-                                    "value": CONNECTION_TYPE_LOCAL,
-                                    "label": "Local (Direct connection)",
-                                },
-                                {
-                                    "value": CONNECTION_TYPE_REMOTE,
-                                    "label": "Remote (UniFi Cloud)",
-                                },
+                                SelectOptionDict(
+                                    value=CONNECTION_TYPE_LOCAL,
+                                    label="Local (Direct connection)",
+                                ),
+                                SelectOptionDict(
+                                    value=CONNECTION_TYPE_REMOTE,
+                                    label="Remote (UniFi Cloud)",
+                                ),
                             ],
                             mode=SelectSelectorMode.LIST,
                         )
@@ -331,8 +332,8 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[misc,c
                 _LOGGER.exception("Unexpected exception during console selection")
                 errors["base"] = "unknown"
 
-        options = [
-            {"value": console_id, "label": label}
+        options: list[SelectOptionDict] = [
+            SelectOptionDict(value=console_id, label=label)
             for console_id, label in self._discovered_remote_consoles.items()
         ]
 
@@ -561,7 +562,7 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[misc,c
         )
 
 
-class UnifiInsightsOptionsFlow(OptionsFlow):  # type: ignore[misc]
+class UnifiInsightsOptionsFlow(OptionsFlowWithConfigEntry):
     """Handle options for UniFi Insights integration."""
 
     async def async_step_init(

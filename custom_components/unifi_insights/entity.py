@@ -117,7 +117,7 @@ async def async_call_coordinator_action[ActionResult](
         raise HomeAssistantError(error_message) from err
 
 
-class UnifiInsightsEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: ignore[misc]
+class UnifiInsightsEntity(CoordinatorEntity[UnifiFacadeCoordinator]):
     """Base class for UniFi Insights entities."""
 
     _attr_has_entity_name = True
@@ -144,9 +144,6 @@ class UnifiInsightsEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: i
 
         # Set unique ID
         self._attr_unique_id = f"{site_id}_{device_id}_{description.key}"
-
-        # Set name (just the entity type, device name will be added automatically)
-        self._attr_name = description.name
 
         # Create device info for individual device
         device_info: dict[str, Any] = {
@@ -198,10 +195,10 @@ class UnifiInsightsEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: i
         ):
             device_info["suggested_area"] = "Network"
 
-        self._attr_device_info = DeviceInfo(**device_info)
+        self._attr_device_info = DeviceInfo(**device_info)  # type: ignore[typeddict-item]
 
     @property
-    def device_info(self) -> DeviceInfo:
+    def device_info(self) -> DeviceInfo | None:
         """Return device information."""
         return self._attr_device_info
 
@@ -215,7 +212,7 @@ class UnifiInsightsEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: i
             return False
         return is_device_online(device_data)
 
-    @callback  # type: ignore[misc]
+    @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         device_data = (
@@ -244,7 +241,7 @@ class UnifiInsightsEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: i
         return result if isinstance(result, dict) else None
 
 
-class UnifiProtectEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: ignore[misc]
+class UnifiProtectEntity(CoordinatorEntity[UnifiFacadeCoordinator]):
     """Base class for UniFi Protect entities."""
 
     _attr_has_entity_name = True
@@ -371,6 +368,11 @@ class UnifiProtectEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: ig
             device_id_for_identifier = (
                 original_device_id if parent_camera_id else device_id
             )
+            protect_base_url = (
+                coordinator.protect_client.base_url
+                if coordinator.protect_client is not None
+                else None
+            )
             device_info = {
                 "identifiers": {
                     (DOMAIN, f"protect_{device_type}_{device_id_for_identifier}")
@@ -380,10 +382,11 @@ class UnifiProtectEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: ig
                 "model": lookup_device_data.get(
                     "type", f"UniFi {device_type.capitalize()}"
                 ),
-                "configuration_url": (
-                    f"{coordinator.protect_client.base_url}/protect/devices/{device_id_for_identifier}"
-                ),
             }
+            if protect_base_url:
+                device_info["configuration_url"] = (
+                    f"{protect_base_url}/protect/devices/{device_id_for_identifier}"
+                )
 
             # Set suggested area
             if device_type == DEVICE_TYPE_CAMERA:
@@ -401,10 +404,10 @@ class UnifiProtectEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: ig
                 "Created new device info for %s device %s", device_type, device_id
             )
 
-        self._attr_device_info = DeviceInfo(**device_info)
+        self._attr_device_info = DeviceInfo(**device_info)  # type: ignore[typeddict-item]
 
     @property
-    def device_info(self) -> DeviceInfo:
+    def device_info(self) -> DeviceInfo | None:
         """Return device information."""
         return self._attr_device_info
 
@@ -419,7 +422,7 @@ class UnifiProtectEntity(CoordinatorEntity[UnifiFacadeCoordinator]):  # type: ig
         state = device_data.get("state")
         return isinstance(state, str) and state == "CONNECTED"
 
-    @callback  # type: ignore[misc]
+    @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         device_data = self.device_data

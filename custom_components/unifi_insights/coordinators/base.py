@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 _LOGGER = logging.getLogger(__name__)
 
 
-class UnifiBaseCoordinator(DataUpdateCoordinator[dict[str, Any]]):  # type: ignore[misc]
+class UnifiBaseCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Base class for UniFi Insights coordinators."""
 
     config_entry: ConfigEntry
