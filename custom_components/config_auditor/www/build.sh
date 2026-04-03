@@ -26,6 +26,7 @@ MODULES=(
   area_heatmap.js
   redundancy.js
   recorder_impact.js
+  integrations.js
   closer.js
   compliance.js
   mcp_panel.js

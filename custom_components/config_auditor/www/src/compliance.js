@@ -147,6 +147,12 @@ function renderComplianceTab(items, t, sortBy, filterBy, pagHtml, counts, scanni
       '<td style="padding:10px 8px;vertical-align:top;min-width:110px;max-width:200px;">' +
         '<div style="font-weight:600;font-size:13px;word-break:break-word;">' + alias + '</div>' +
         (eid && eid !== alias ? '<div style="font-size:10px;color:var(--secondary-text-color);font-family:monospace;word-break:break-all;">' + eid + '</div>' : '') +
+        (issue.haca_id ? '<div style="margin-top:4px;display:flex;align-items:center;gap:4px;flex-wrap:wrap;">' +
+          '<span style="font-size:9px;font-weight:600;color:var(--secondary-text-color);">ID =</span>' +
+          '<code class="haca-id-badge-compl" data-haca-id="' + esc(issue.haca_id) + '" title="' + t('issues.click_to_copy_id') + '" style="font-size:9px;font-family:monospace;background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:4px;padding:2px 7px;color:var(--primary-text-color);cursor:pointer;display:inline-flex;align-items:center;gap:3px;line-height:14px;">' +
+            _i('content-copy',9) + ' ' + esc(issue.haca_id) +
+          '</code>' +
+        '</div>' : '') +
       '</td>' +
       '<td style="padding:10px 6px;vertical-align:top;white-space:nowrap;">' +
         '<span style="font-size:11px;background:' + typeBg + ';color:' + typeTxt + ';border-radius:6px;padding:3px 8px;font-weight:600;">' +

@@ -113,6 +113,10 @@ if MODULE_20_REDUNDANCY_ANALYZER:
 if MODULE_21_RECORDER_IMPACT:
     from .recorder_impact_analyzer import RecorderImpactAnalyzer
 
+from .const import MODULE_22_INTEGRATION_MONITOR
+if MODULE_22_INTEGRATION_MONITOR:
+    from .integration_analyzer import IntegrationAnalyzer
+
 
 import json as _json
 from pathlib import Path as _Path
@@ -222,6 +226,26 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # Pré-charger le cache de traductions (évite tout I/O bloquant dans l'event loop)
     await _async_preload_ts_cache(hass)
+
+    # ── Migrate default excluded_issue_types for existing installations ──
+    # New installs get these defaults via config_flow, but users who
+    # installed before v1.6.3 don't.  Merge missing defaults once.
+    _DEFAULT_EXCLUDED_TYPES = {
+        "no_description", "no_alias",
+        "helper_no_friendly_name", "helper_orphaned_disabled_only",
+        "helper_unused", "unused_input_boolean",
+        "script_orphan", "script_blueprint_candidate",
+        "scene_not_triggered", "timer_orphaned",
+        "template_sensor_no_metadata", "template_missing_availability",
+        "missing_state_class", "group_nested_deep",
+    }
+    current_excluded = set(entry.options.get("excluded_issue_types", []))
+    missing_defaults = _DEFAULT_EXCLUDED_TYPES - current_excluded
+    if missing_defaults:
+        new_excluded = sorted(current_excluded | _DEFAULT_EXCLUDED_TYPES)
+        new_options = {**entry.options, "excluded_issue_types": new_excluded}
+        hass.config_entries.async_update_entry(entry, options=new_options)
+        _LOGGER.info("Migrated excluded_issue_types: added %s", missing_defaults)
     
     if entry.entry_id in hass.data[DOMAIN]:
         _LOGGER.warning("H.A.C.A already set up for this entry")
@@ -257,6 +281,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     area_complexity_analyzer = AreaComplexityAnalyzer(hass) if MODULE_19_AREA_COMPLEXITY else None
     redundancy_analyzer = RedundancyAnalyzer(hass) if MODULE_20_REDUNDANCY_ANALYZER else None
     recorder_impact_analyzer = RecorderImpactAnalyzer(hass) if MODULE_21_RECORDER_IMPACT else None
+    integration_analyzer = IntegrationAnalyzer(hass) if MODULE_22_INTEGRATION_MONITOR else None
     
     scan_interval = entry.options.get("scan_interval", DEFAULT_SCAN_INTERVAL)
     
@@ -402,6 +427,26 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             performance_issues     = _filter(performance_issues)
             security_issues        = _filter(security_issues)
             dashboard_issues       = _filter(dashboard_issues)
+
+        # ── Tag each issue with haca_id for frontend display ──────────────
+        import hashlib as _hl
+        def _tag_ids(issue_list: list, cat_code: str) -> list:
+            for issue in issue_list:
+                eid = issue.get("entity_id") or issue.get("alias") or "unknown"
+                itype = (issue.get("type") or "unknown").upper()
+                h = _hl.md5(eid.encode()).hexdigest()[:6]
+                issue["haca_id"] = f"HACA-{cat_code}-{itype}-{h}"
+            return issue_list
+        _tag_ids(automation_only_issues, "AUTO")
+        _tag_ids(script_issues, "SCRIPT")
+        _tag_ids(scene_issues, "SCENE")
+        _tag_ids(blueprint_issues, "BP")
+        _tag_ids(entity_issues, "ENT")
+        _tag_ids(helper_issues, "HELPER")
+        _tag_ids(performance_issues, "PERF")
+        _tag_ids(security_issues, "SEC")
+        _tag_ids(dashboard_issues, "DASH")
+        _tag_ids(compliance_issues, "COMPL")
         
         total_entities     = len(hass.states.async_all())
         total_automations  = len(automation_analyzer.automation_configs) + len(automation_analyzer.script_configs)
@@ -475,6 +520,30 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 )
             except Exception as red_err:
                 _LOGGER.warning("Redundancy analyzer error: %s", red_err)
+
+        # ── Flatten redundancy into a standard issue list ─────────────────
+        redundancy_issue_list: list[dict] = []
+        for item in redundancy_data.get("blueprint_matches", []):
+            item["type"] = "redundancy_blueprint_candidate"
+            item["fix_available"] = True
+            item["message"] = f"Could be replaced by blueprint: {item.get('blueprint_id', '?')}"
+            item["recommendation"] = "Use AI to create a blueprint and convert this automation"
+            redundancy_issue_list.append(item)
+        for item in redundancy_data.get("native_feature_matches", []):
+            item["type"] = "redundancy_native_replacement"
+            item["fix_available"] = True
+            item["message"] = f"Can be replaced by native HA feature: {item.get('description') or item.get('pattern', '?')}"
+            item["recommendation"] = "Use AI to refactor this automation using the native HA feature"
+            redundancy_issue_list.append(item)
+        for item in redundancy_data.get("trigger_overlaps", []):
+            item["type"] = "redundancy_trigger_overlap"
+            item["entity_id"] = item.get("entity_id_a", "")
+            item["alias"] = f"{item.get('alias_a', '')} ↔ {item.get('alias_b', '')}"
+            item["fix_available"] = False
+            item["message"] = f"Trigger overlap with {item.get('alias_b', '?')}: {item.get('trigger_sig', '?')}"
+            item["recommendation"] = "Review both automations to determine if they conflict or should be merged"
+            redundancy_issue_list.append(item)
+        _tag_ids(redundancy_issue_list, "REDUND")
 
         # ── v1.5.0 — Recorder impact analysis ────────────────────────────
         recorder_impact_data: dict = {}
@@ -555,6 +624,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             "battery_alert_7d": sum(1 for p in battery_predictions if p.get("alert_7d")),
             "area_complexity": area_complexity_data,
             "redundancy": redundancy_data,
+            "redundancy_issue_list": redundancy_issue_list,
             "recorder_impact": recorder_impact_data,
             "last_scan": _dt_util.utcnow().isoformat(),
         }
@@ -582,6 +652,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "history_manager": history_manager,
         "automation_optimizer": automation_optimizer,
         "compliance_analyzer": compliance_analyzer,
+        "integration_analyzer": integration_analyzer,
     }
     
     device_registry = dr.async_get(hass)
@@ -642,6 +713,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "battery_alert_7d": 0,
         "area_complexity": {},
         "redundancy": {},
+        "redundancy_issue_list": [],
         "recorder_impact": {},
     }
 

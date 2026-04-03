@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant configuratie-auditor",
-    "version": "v1.6.3",
+    "version": "v1.7.0",
     "buttons": {
       "scan_all": "Volledige scan",
       "automations": "Automatiseringen",
@@ -141,7 +141,9 @@
       "recorder_orphans": "DB Wezen",
       "recorder_orphans_desc": "Verspilde ruimte",
       "helpers": "Helpers",
-      "helpers_desc": "Input/timer/teller problemen"
+      "helpers_desc": "Input/timer/teller problemen",
+      "integrations": "Integraties",
+      "integrations_desc": "Geïnstalleerde componenten"
     },
     "tabs": {
       "all": "Alles",
@@ -168,7 +170,8 @@
       "helpers": "Helpers",
       "area_complexity": "Area Map",
       "redundancy": "Redundancy",
-      "recorder_impact": "DB Impact"
+      "recorder_impact": "DB Impact",
+      "integrations": "Integraties"
     },
     "sections": {
       "all_issues": "Alle problemen",
@@ -438,7 +441,11 @@
       "duplicate_jaccard": "🔁 Jaccard gelijkenis: {pct}%",
       "duplicate_exact": "🔴 Exact duplicaat",
       "segment_issues": "Problemen",
-      "segment_batteries": "Batterijen"
+      "segment_batteries": "Batterijen",
+      "click_to_copy_id": "Klik om dit ID te kopiëren",
+      "id_copied": "ID {id} gekopieerd naar klembord",
+      "fixable": "Herstelbaar",
+      "not_fixable": "Niet herstelbaar"
     },
     "zombie": {
       "searching": "Zoeken naar suggesties…",
@@ -962,7 +969,7 @@
       "token_link": "Profiel → Beveiliging",
       "agent_configs_title": "Configuratie per AI-agent",
       "tools_exposed": "Beschikbare tools",
-      "tools_count_label": "65 tools",
+      "tools_count_label": "67 tools",
       "correlations_detected": "Correlaties gedetecteerd",
       "copy": "Kopiëren",
       "hint_cursor": "Cursor → Settings → Tools & MCP → + Add new MCP server | Bestand: ~/.cursor/mcp.json",
@@ -985,7 +992,19 @@
       "guide_restart_detail": "Bestand → Afsluiten (niet alleen het venster sluiten), dan opnieuw starten.",
       "guide_win_path_detail": "d.w.z. C:\\Users\\<GEBRUIKER>\\AppData\\Roaming\\Claude\\",
       "guide_paste_in_agent": "Plak in de agentconfiguratie",
-      "guide_antigravity_detail": "In Antigravity: Settings → MCP Servers → Add → JSON hierboven plakken. In Gemini CLI: toevoegen aan ~/.gemini/settings.json."
+      "guide_antigravity_detail": "In Antigravity: Settings → MCP Servers → Add → JSON hierboven plakken. In Gemini CLI: toevoegen aan ~/.gemini/settings.json.",
+      "fix_ref_title": "AI Fix-referentie",
+      "fix_ref_subtitle": "Gebruik deze referenties om uw AI-agent HACA-problemen te laten oplossen. Elk probleem heeft een uniek ID dat u kunt kopiëren door erop te klikken.",
+      "fix_ref_id_format": "ID-formaat",
+      "fix_ref_id_example": "Voorbeeld",
+      "fix_ref_categories": "Probleemcategorieën",
+      "fix_ref_severities": "Ernstniveaus",
+      "fix_ref_examples": "Voorbeeld AI-prompts",
+      "fix_ref_ex1": "Los probleem HACA-AUTO-NO_ALIAS-a3f2c1 op",
+      "fix_ref_ex2": "Los alle compliance-problemen van type no_description met lage ernst op",
+      "fix_ref_ex3": "Los alle device_id_in_trigger-problemen op",
+      "fix_ref_ex4": "Toon mij de probleemcatalogus",
+      "fix_ref_ex5": "Los alle oplosbare problemen met hoge ernst op"
     },
     "agent": {
       "title": "Proactieve AI Agent",
@@ -1031,7 +1050,8 @@
       "config": "Configuratie — scaninstellingen, drempelwaarden en genegeerde probleemtypen",
       "area_complexity": "Complexity heatmap by area",
       "redundancy": "Redundant automations",
-      "recorder_impact": "Recorder DB impact per automation"
+      "recorder_impact": "Recorder DB impact per automation",
+      "integrations": "Integratiemonitor"
     },
     "battery_scan_note": "Wijzigingen worden van kracht bij de volgende scan — geen herstart vereist.",
     "battery_predict": {
@@ -1277,10 +1297,10 @@
       },
       "redundancy": {
         "blueprint_problem": "deze automatisering maakt deel uit van een groep van ≥3 structureel identieke automatiseringen — kandidaat voor een blueprint",
-        "blueprint_step1": "1. Leg me uit wat een HA-blueprint is en waarom centralisering van deze automatiseringen het onderhoud vereenvoudigt",
-        "blueprint_step2": "2. Laat me de huidige YAML van deze automatisering zien (📄 Huidige YAML:) en de voorgestelde generieke blueprint (✅ Voorgestelde blueprint:)",
-        "blueprint_choice_proceed": "✅  OK, maak de blueprint en migreer de automatiseringen",
-        "blueprint_choice_backup": "📋  Maak eerst een back-up, maak dan de blueprint",
+        "blueprint_step1": "1. De automation-YAML lezen (zie commando hierboven), structuur analyseren en parametriseerbare elementen identificeren",
+        "blueprint_step2": "2. Een generiek blueprint-YAML genereren uit deze automation. Voorgesteld blueprint tonen (✅ Voorgesteld blueprint:)",
+        "blueprint_choice_proceed": "✅  OK, blueprint nu aanmaken met ha_create_blueprint() en automations migreren",
+        "blueprint_choice_backup": "📋  Eerst backup maken met ha_backup_create(), dan blueprint aanmaken met ha_create_blueprint()",
         "native_problem": "deze automatisering reimplementeert handmatig een functie die al native beschikbaar is in HA: \"{detail}\"",
         "native_step1": "1. Leg me uit waarom de native HA-functie beter is (prestaties, automatische updates, minder onderhoud)",
         "native_step2": "2. Laat me de huidige automatisering YAML zien (📄 Huidige YAML:) en hoe de overeenkomstige native functie te activeren (✅ Voorgestelde native configuratie:)",
@@ -1310,7 +1330,8 @@
         "split_step2": "2. Laat me de huidige YAML zien (📄 Huidige YAML:) en stel de opdeling voor in aparte automatiseringen per functie (✅ Voorgestelde YAML:)",
         "split_choice_proceed": "✅  OK, opsplitsen in aparte automatiseringen",
         "split_choice_backup": "📋  Maak eerst een back-up, splits dan op"
-      }
+      },
+      "issue_id_label": "Probleem-ID"
     },
     "dashboard": {
       "title": "HACA Overzicht",
@@ -1339,6 +1360,45 @@
       "history_title": "Gezondheidswaarde — Laatste 7 dagen",
       "open_panel": "HACA Panel openen",
       "created_toast": "HACA Dashboard aangemaakt!"
+    },
+    "integrations": {
+      "loading": "Integraties scannen...",
+      "error": "Fout bij laden integraties",
+      "run_scan_first": "Klik op het tabblad Integraties om uw integraties te scannen.",
+      "no_hacs": "HACS niet gedetecteerd — alleen core- en aangepaste integraties worden getoond.",
+      "search_placeholder": "Integraties zoeken...",
+      "sort_name": "Sorteren op naam",
+      "sort_type": "Sorteren op type",
+      "sort_entities": "Sorteren op entiteiten",
+      "sort_age": "Sorteren op leeftijd",
+      "stat_total": "Totaal",
+      "stat_cards": "Kaarten",
+      "stat_themes": "Thema's",
+      "stat_unused": "Ongebruikt",
+      "stat_updates": "Updates",
+      "in_use": "In gebruik",
+      "unused": "Ongebruikt",
+      "entities": "entiteiten",
+      "age_days": "{days} dagen",
+      "docs": "Doc",
+      "settings": "Instellingen",
+      "showing": "{count} van {total} getoond",
+      "none_found": "Geen integraties komen overeen met het huidige filter.",
+      "orphan": "Verweesd",
+      "orphan_tooltip": "Heeft entiteiten maar geen actieve config entry",
+      "ask_ai": "AI",
+      "export_csv": "Exporteer CSV",
+      "ai_prompt_header": "De integratie \"{name}\" (domein: {domain}) is geïnstalleerd in Home Assistant.",
+      "ai_prompt_type": "Type: {type}",
+      "ai_prompt_unused": "Deze integratie heeft GEEN actieve config entry — lijkt ongebruikt.",
+      "ai_prompt_orphan": "Deze integratie heeft {count} entiteiten maar GEEN actieve config entry — verweesde entiteiten gevonden.",
+      "ai_prompt_instructions": "1. Controleer of deze integratie wordt gebruikt door automatiseringen, scripts of dashboards.\n2. Indien ongebruikt, leg uit hoe deze veilig te verwijderen.\n3. Bij verweesde entiteiten, leg uit hoe deze op te ruimen.\n4. Noem afhankelijkheden die kunnen breken bij verwijdering.",
+      "export_md": "Exporteer als Markdown",
+      "stat_apps": "Apps",
+      "no_supervisor": "Supervisor niet gedetecteerd — add-ons (apps) worden niet getoond.",
+      "disabled": "Uitgeschakeld",
+      "disabled_tooltip": "Deze integratie is opzettelijk uitgeschakeld — controleer of dit nog gewenst is",
+      "stat_disabled": "Uitgeschakeld"
     }
   },
   "analyzer": {
@@ -1494,7 +1554,10 @@
     "group_all_unavailable": "Alle leden van groep '{entity_id}' zijn niet beschikbaar",
     "group_check_availability": "Controleer waarom lid-entiteiten niet beschikbaar zijn",
     "group_nested_deep": "Groep '{entity_id}' is {depth} niveaus diep genest (prestatieimpact)",
-    "group_flatten": "Maak de groepiërachie platter tot maximaal 2 niveaus"
+    "group_flatten": "Maak de groepiërachie platter tot maximaal 2 niveaus",
+    "entity_unknown_state_referenced": "Entiteit heeft onbekende status en wordt gebruikt door {count} automatisering(en)",
+    "noisy_entity": "Lawaaierige entiteit: {count} statuswijzigingen in 24u",
+    "noisy_entity_recommendation": "Overweeg uitsluiting van de recorder of voeg een statusfilter toe om schrijfbewerkingen te verminderen"
   },
   "stats": {
     "dashboards": "Dashboards",
@@ -1678,6 +1741,9 @@
     "workflow_auto_title": "Automations workflow:",
     "workflow_auto": "1. ha_get_entities(domain='automation') to list\n2. haca_get_automation(entity_id) to read full YAML\n3. ha_create_automation() / ha_update_automation() to create/modify",
     "workflow_scripts_title": "Scripts workflow:",
-    "workflow_scripts": "1. ha_get_entities(domain='script') to list\n2. ha_get_script(entity_id) to read\n3. ha_create_script() / ha_update_script() to create/modify"
+    "workflow_scripts": "1. ha_get_entities(domain='script') to list\n2. ha_get_script(entity_id) to read\n3. ha_create_script() / ha_update_script() to create/modify",
+    "workflow_fix_title": "Workflow probleemoplossing:",
+    "workflow_fix": "1. haca_list_issue_catalog() om categorieën, types en herstelbare problemen te ontdekken\n2. haca_get_issues(category?, type?, severity?) om specifieke problemen op te lijsten\n3. haca_fix_batch(issue_id='HACA-XXX-TYPE-hash') om één probleem op te lossen (dry_run=true standaard)\n4. haca_fix_batch(category?, type?, severity?) voor bulkherstel\n5. Altijd eerst voorvertoning met dry_run=true, dan dry_run=false na gebruikersbevestiging\nID-formaat: HACA-{CATEGORY}-{TYPE}-{HASH6}, bijv. HACA-AUTO-NO_ALIAS-a3f2c1",
+    "rule_use_haca_id": "Elk probleem heeft een uniek haca_id (formaat: HACA-CAT-TYPE-hash). Gebruik ALTIJD het opgegeven haca_id — NOOIT een ID verzinnen of raden."
   }
 }

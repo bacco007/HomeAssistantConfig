@@ -85,25 +85,50 @@
           alias:      btn.dataset.alias || '',
           type:       btn.dataset.type  || '',
           detail:     btn.dataset.detail || '',
+          haca_id:    btn.dataset.hacaId || '',
         });
+      });
+    });
+
+    // Click-to-copy for redundancy HACA IDs
+    container.querySelectorAll('.haca-id-badge-redund').forEach(badge => {
+      badge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = e.currentTarget.dataset.hacaId;
+        if (id) {
+          window._hacaCopyId(id,
+            (msg) => this._showToast(msg),
+            this.t('issues.id_copied', {id: id})
+          );
+        }
       });
     });
   }
 
   _redundancyBlueprintRow(b) {
     const editUrl = this.getHAEditUrl(b.entity_id);
+    const _rid = b.haca_id || '';
+    const _fixable = b.fix_available;
     return `
       <div style="background:var(--card-background-color);border:1px solid var(--divider-color);border-left:3px solid #9c27b0;border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;">
         <div style="flex:1;min-width:140px;">
           <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px;" title="${this.escapeHtml(b.alias)}">${this.escapeHtml(b.alias)}</div>
           <div style="font-size:11px;margin-top:3px;">
-            <span style="background:rgba(156,39,176,0.1);color:#9c27b0;border-radius:5px;padding:1px 7px;font-weight:600;">${this.escapeHtml(b.pattern)}</span>
+            <span style="background:rgba(156,39,176,0.1);color:#9c27b0;border-radius:5px;padding:1px 7px;font-weight:600;">${this.escapeHtml(b.pattern || b.blueprint_id || '')}</span>
+          </div>
+          <div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            ${_rid ? `<span style="font-size:9px;font-weight:600;color:var(--secondary-text-color);">ID =</span>
+            <code class="haca-id-badge-redund" data-haca-id="${this.escapeHtml(_rid)}" title="${this.t('issues.click_to_copy_id')}" style="font-size:9px;font-family:monospace;background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:4px;padding:2px 7px;color:var(--primary-text-color);cursor:pointer;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('content-copy',9)} ${this.escapeHtml(_rid)}</code>` : ''}
+            ${_fixable
+              ? `<span style="font-size:9px;background:var(--success-color,#4caf50);color:white;border-radius:4px;padding:2px 7px;font-weight:700;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('wrench',9)} ${this.t('issues.fixable')}</span>`
+              : `<span style="font-size:9px;background:var(--disabled-color,#9e9e9e);color:white;border-radius:4px;padding:2px 7px;font-weight:600;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('wrench-off',9)} ${this.t('issues.not_fixable')}</span>`
+            }
           </div>
           <div style="font-size:11px;color:var(--secondary-text-color);margin-top:3px;">${this.t('redundancy.blueprint_hint')}</div>
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0;align-self:center;">
           ${editUrl ? `<a href="${editUrl}" target="_blank" style="text-decoration:none;"><button style="background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;">${_icon('pencil-outline',12)} ${this.t('area_complexity.btn_edit')}</button></a>` : ''}
-          <button data-redund-ai-btn="${this.escapeHtml(b.entity_id)}" data-alias="${this.escapeHtml(b.alias)}" data-type="blueprint" data-detail="${this.escapeHtml(b.pattern)}"
+          <button data-redund-ai-btn="${this.escapeHtml(b.entity_id)}" data-alias="${this.escapeHtml(b.alias)}" data-type="blueprint" data-detail="${this.escapeHtml(b.pattern || b.blueprint_id || '')}" data-haca-id="${this.escapeHtml(_rid)}"
             style="background:var(--primary-color);color:white;border:none;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;">
             ${_icon('robot',12)} ${this.t('area_complexity.btn_ai')}
           </button>
@@ -113,18 +138,28 @@
 
   _redundancyNativeRow(n) {
     const editUrl = this.getHAEditUrl(n.entity_id);
+    const _rid = n.haca_id || '';
+    const _fixable = n.fix_available;
     return `
       <div style="background:var(--card-background-color);border:1px solid var(--divider-color);border-left:3px solid #2196f3;border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;">
         <div style="flex:1;min-width:140px;">
           <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px;" title="${this.escapeHtml(n.alias)}">${this.escapeHtml(n.alias)}</div>
           <div style="font-size:11px;margin-top:3px;">
-            <span style="background:rgba(33,150,243,0.1);color:#2196f3;border-radius:5px;padding:1px 7px;font-weight:600;">${this.escapeHtml(n.native_feature)}</span>
+            <span style="background:rgba(33,150,243,0.1);color:#2196f3;border-radius:5px;padding:1px 7px;font-weight:600;">${this.escapeHtml(n.native_feature || n.pattern || '')}</span>
+          </div>
+          <div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            ${_rid ? `<span style="font-size:9px;font-weight:600;color:var(--secondary-text-color);">ID =</span>
+            <code class="haca-id-badge-redund" data-haca-id="${this.escapeHtml(_rid)}" title="${this.t('issues.click_to_copy_id')}" style="font-size:9px;font-family:monospace;background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:4px;padding:2px 7px;color:var(--primary-text-color);cursor:pointer;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('content-copy',9)} ${this.escapeHtml(_rid)}</code>` : ''}
+            ${_fixable
+              ? `<span style="font-size:9px;background:var(--success-color,#4caf50);color:white;border-radius:4px;padding:2px 7px;font-weight:700;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('wrench',9)} ${this.t('issues.fixable')}</span>`
+              : `<span style="font-size:9px;background:var(--disabled-color,#9e9e9e);color:white;border-radius:4px;padding:2px 7px;font-weight:600;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('wrench-off',9)} ${this.t('issues.not_fixable')}</span>`
+            }
           </div>
           <div style="font-size:11px;color:var(--secondary-text-color);margin-top:3px;">${this.t('redundancy.native_hint')}</div>
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0;align-self:center;">
           ${editUrl ? `<a href="${editUrl}" target="_blank" style="text-decoration:none;"><button style="background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;">${_icon('pencil-outline',12)} ${this.t('area_complexity.btn_edit')}</button></a>` : ''}
-          <button data-redund-ai-btn="${this.escapeHtml(n.entity_id)}" data-alias="${this.escapeHtml(n.alias)}" data-type="native" data-detail="${this.escapeHtml(n.native_feature)}"
+          <button data-redund-ai-btn="${this.escapeHtml(n.entity_id)}" data-alias="${this.escapeHtml(n.alias)}" data-type="native" data-detail="${this.escapeHtml(n.native_feature || n.pattern || '')}" data-haca-id="${this.escapeHtml(_rid)}"
             style="background:var(--primary-color);color:white;border:none;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;">
             ${_icon('robot',12)} ${this.t('area_complexity.btn_ai')}
           </button>
@@ -135,6 +170,8 @@
   _redundancyOverlapRow(o) {
     const edit1 = this.getHAEditUrl(o.entity_id_a);
     const edit2 = this.getHAEditUrl(o.entity_id_b);
+    const _rid = o.haca_id || '';
+    const _fixable = o.fix_available;
     return `
       <div style="background:var(--card-background-color);border:1px solid var(--divider-color);border-left:3px solid #ff5722;border-radius:10px;padding:10px 14px;margin-bottom:6px;">
         <div style="display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;">
@@ -148,11 +185,19 @@
               <span style="color:var(--secondary-text-color);align-self:center;">↔</span>
               <span style="background:var(--secondary-background-color);border-radius:5px;padding:1px 8px;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${this.escapeHtml(o.alias_b)}">${this.escapeHtml(o.alias_b)}</span>
             </div>
+            <div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+              ${_rid ? `<span style="font-size:9px;font-weight:600;color:var(--secondary-text-color);">ID =</span>
+              <code class="haca-id-badge-redund" data-haca-id="${this.escapeHtml(_rid)}" title="${this.t('issues.click_to_copy_id')}" style="font-size:9px;font-family:monospace;background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:4px;padding:2px 7px;color:var(--primary-text-color);cursor:pointer;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('content-copy',9)} ${this.escapeHtml(_rid)}</code>` : ''}
+              ${_fixable
+                ? `<span style="font-size:9px;background:var(--success-color,#4caf50);color:white;border-radius:4px;padding:2px 7px;font-weight:700;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('wrench',9)} ${this.t('issues.fixable')}</span>`
+                : `<span style="font-size:9px;background:var(--disabled-color,#9e9e9e);color:white;border-radius:4px;padding:2px 7px;font-weight:600;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('wrench-off',9)} ${this.t('issues.not_fixable')}</span>`
+              }
+            </div>
           </div>
           <div style="display:flex;gap:6px;flex-shrink:0;align-self:center;flex-wrap:wrap;">
             ${edit1 ? `<a href="${edit1}" target="_blank" style="text-decoration:none;"><button style="background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:7px;padding:4px 9px;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:3px;">${_icon('pencil-outline',11)} A</button></a>` : ''}
             ${edit2 ? `<a href="${edit2}" target="_blank" style="text-decoration:none;"><button style="background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:7px;padding:4px 9px;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:3px;">${_icon('pencil-outline',11)} B</button></a>` : ''}
-            <button data-redund-ai-btn="${this.escapeHtml(o.entity_id_a)}" data-alias="${this.escapeHtml(o.alias_a + ' ↔ ' + o.alias_b)}" data-type="overlap" data-detail="${this.escapeHtml(o.entity_id_b + '|' + o.trigger_sig)}"
+            <button data-redund-ai-btn="${this.escapeHtml(o.entity_id_a)}" data-alias="${this.escapeHtml(o.alias_a + ' ↔ ' + o.alias_b)}" data-type="overlap" data-detail="${this.escapeHtml(o.entity_id_b + '|' + o.trigger_sig)}" data-haca-id="${this.escapeHtml(_rid)}"
               style="background:var(--primary-color);color:white;border:none;border-radius:7px;padding:4px 9px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;">
               ${_icon('robot',12)} ${this.t('area_complexity.btn_ai')}
             </button>
@@ -170,7 +215,9 @@
     let chatPrompt = '';
     const eid   = item.entity_id || '';
     const alias = item.alias     || eid;
+    const hid   = item.haca_id   || '';
     const t     = (k, p) => this.t(k, p);
+    const idLine = hid ? `\n${t('diag_prompts.issue_id_label')}: ${hid}` : '';
 
     if (item.type === 'blueprint') {
       const patternLine = item.detail
@@ -178,7 +225,7 @@
         : '';
       chatPrompt = [
         t('diag_prompts.marker'),
-        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.redundancy.blueprint_problem')})}${patternLine}`,
+        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.redundancy.blueprint_problem')})}${idLine}${patternLine}`,
         '',
         t('diag_prompts.read_with', {cmd: `haca_get_automation("${eid}")`}),
         '',
@@ -198,7 +245,7 @@
       const detail = item.detail || '';
       chatPrompt = [
         t('diag_prompts.marker'),
-        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.redundancy.native_problem', {detail})})}`,
+        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.redundancy.native_problem', {detail})})}${idLine}`,
         '',
         t('diag_prompts.read_with', {cmd: `haca_get_automation("${eid}")`}),
         '',
@@ -221,7 +268,7 @@
       const alias_b = item.alias.split(' ↔ ')[1] || eid_b || '';
       chatPrompt = [
         t('diag_prompts.marker'),
-        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.redundancy.overlap_problem', {alias_a, eid_a: eid, alias_b, trigger: trigger_sig})})}`,
+        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.redundancy.overlap_problem', {alias_a, eid_a: eid, alias_b, trigger: trigger_sig})})}${idLine}`,
         '',
         t('diag_prompts.redundancy.overlap_read', {eid_a: eid, eid_b: eid_b || alias_b}),
         '',

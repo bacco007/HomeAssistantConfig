@@ -342,10 +342,12 @@
     const t   = issue.type       || '';
     const eid = issue.entity_id  || '';
     const a   = issue.alias      || eid;
+    const hid = issue.haca_id    || '';
     const ctx = issue.message
       ? `\n${this.t('diag_prompts.context_label')}: ${issue.message}` : '';
     const rec = issue.recommendation
       ? `\n${this.t('diag_prompts.rec_label')}: ${issue.recommendation}` : '';
+    const idLine = hid ? `\n${this.t('diag_prompts.issue_id_label')}: ${hid}` : '';
 
     // ── diag() — YAML before/after diff ────────────────────────────────
     const diag = (readCmd, problemKey, hintKey = null) => {
@@ -355,7 +357,7 @@
         : '';
       return [
         this.t('diag_prompts.marker'),
-        `${this.t('diag_prompts.header', {alias: a, eid, problem})}${ctx}${rec}`,
+        `${this.t('diag_prompts.header', {alias: a, eid, problem})}${idLine}${ctx}${rec}`,
         '',
         this.t('diag_prompts.read_with', {cmd: readCmd}) + hintLine,
         '',
@@ -381,7 +383,7 @@
         : '';
       return [
         this.t('diag_prompts.marker'),
-        `${this.t('diag_prompts.header', {alias: a, eid, problem})}${ctx}${rec}`,
+        `${this.t('diag_prompts.header', {alias: a, eid, problem})}${idLine}${ctx}${rec}`,
         '',
         this.t('diag_prompts.read_with', {cmd: readCmd}) + hintLine,
         '',

@@ -27,6 +27,23 @@ _ENTITY_SKIP_DOMAINS: frozenset[str] = frozenset({
     "person",
 })
 
+# Domains where state "unknown" is structurally normal and should not be flagged.
+# button/input_button: no persistent state by design, "unknown" between presses
+# event: "unknown" until first event fires
+# tts/stt/conversation: service entities, not stateful sensors
+# update: "unknown" until first update check completes
+# calendar: "unknown" when no active event
+# device_tracker: "unknown" if device hasn't been seen yet (reboot, out of range)
+# notify: service entity, no meaningful state
+# scene: transient activation, no persistent state
+# number/select: some integrations initialize as unknown before first value
+_UNKNOWN_NORMAL_DOMAINS: frozenset[str] = frozenset({
+    "button", "input_button", "event",
+    "tts", "stt", "conversation",
+    "update", "calendar",
+    "device_tracker", "notify", "scene",
+})
+
 
 class EntityAnalyzer:
     """Analyze entities for issues."""
@@ -251,15 +268,21 @@ class EntityAnalyzer:
                     "recommendation": t("verify_entity_updates"),
                 })
             
-            # Check for unknown state
+            # Check for unknown state — context-aware
+            # Skip domains where "unknown" is structurally normal (buttons, events, etc.)
+            # For other domains, only flag if the entity is referenced by automations/scripts
             elif entity.state == "unknown":
-                self.issues.append({
-                    "entity_id": entity_id,
-                    "type": "unknown_state",
-                    "severity": "medium",
-                    "message": t("entity_unknown_state"),
-                    "recommendation": t("verify_entity_updates"),
-                })
+                domain = entity_id.split(".")[0]
+                if domain not in _UNKNOWN_NORMAL_DOMAINS:
+                    referencing_automations = self._entity_references.get(entity_id, [])
+                    if referencing_automations:
+                        self.issues.append({
+                            "entity_id": entity_id,
+                            "type": "unknown_state",
+                            "severity": "medium",
+                            "message": t("entity_unknown_state_referenced", count=len(referencing_automations)),
+                            "recommendation": t("verify_entity_updates"),
+                        })
             
             # Check for stale entities (>7 days without update)
             if entity.last_updated:
@@ -785,8 +808,10 @@ class EntityAnalyzer:
             members = group_state.attributes.get("entity_id", [])
             if isinstance(members, str):
                 members = [members] if members else []
-            if not isinstance(members, list):
+            if not isinstance(members, (list, tuple)):
                 members = []
+            else:
+                members = list(members)  # normalize tuple → list
             # Filter out empty strings (malformed state attribute)
             members = [m for m in members if isinstance(m, str) and m.strip()]
 

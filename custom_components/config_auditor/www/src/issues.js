@@ -132,6 +132,13 @@
                     ${isNonStandardSource ? `<span title="${this.escapeHtml(sourceFile)}" style="margin-left:6px;font-size:10px;background:var(--info-color,#2196f3);color:white;border-radius:4px;padding:1px 6px;opacity:0.85;">${_icon('file-document-outline',10)} ${sourceFile.startsWith('packages/') ? 'pkg' : sourceFile.startsWith('.storage') ? 'UI' : 'incl'}</span>` : ''}
                 </div>
                 <div class="issue-entity">${this.escapeHtml(i.entity_id || '')}</div>
+                <div style="margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    ${i.haca_id ? `<span style="display:inline-flex;align-items:center;gap:4px;line-height:16px;"><span style="font-size:10px;font-weight:600;color:var(--secondary-text-color);">ID =</span><code class="haca-id-badge" title="${this.t('issues.click_to_copy_id')}" data-haca-id="${this.escapeHtml(i.haca_id)}" style="font-size:10px;font-family:monospace;background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:4px;padding:2px 8px;color:var(--primary-text-color);cursor:pointer;display:inline-flex;align-items:center;gap:4px;line-height:16px;">${_icon('content-copy',10)} ${this.escapeHtml(i.haca_id)}</code></span>` : ''}
+                    ${isFixable
+                      ? `<span style="font-size:9px;background:var(--success-color,#4caf50);color:white;border-radius:4px;padding:2px 7px;font-weight:700;display:inline-flex;align-items:center;gap:3px;line-height:16px;">${_icon('wrench',10)} ${this.t('issues.fixable')}</span>`
+                      : `<span style="font-size:9px;background:var(--disabled-color,#9e9e9e);color:white;border-radius:4px;padding:2px 7px;font-weight:600;display:inline-flex;align-items:center;gap:3px;line-height:16px;">${_icon('wrench-off',10)} ${this.t('issues.not_fixable')}</span>`
+                    }
+                </div>
                 ${i.type === 'zombie_entity' && (i.automation_names || i.source_name) ? `
                 <div style="font-size:12px;color:var(--secondary-text-color);margin-top:4px;display:flex;align-items:center;gap:4px;">
                     ${_icon("robot", 12)}
@@ -237,6 +244,20 @@
         const idx = parseInt(e.currentTarget.dataset.idx, 10);
         const issue = container._renderedIssues[idx];
         if (issue) this.showFixPreview(issue);
+      });
+    });
+
+    // Click-to-copy for HACA issue IDs
+    container.querySelectorAll('.haca-id-badge').forEach(badge => {
+      badge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = e.currentTarget.dataset.hacaId;
+        if (id) {
+          window._hacaCopyId(id,
+            (msg) => this._showToast(msg),
+            this.t('issues.id_copied', {id: id})
+          );
+        }
       });
     });
 

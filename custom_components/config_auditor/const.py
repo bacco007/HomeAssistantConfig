@@ -2,7 +2,7 @@
 
 DOMAIN = "config_auditor"
 NAME = "H.A.C.A"
-VERSION = "1.6.3"
+VERSION = "1.7.0"
 
 # Configuration
 DEFAULT_SCAN_INTERVAL = 60
@@ -153,6 +153,7 @@ MODULE_18_BATTERY_PREDICTOR = True      # Prédiction de pannes batterie
 MODULE_19_AREA_COMPLEXITY = True        # Heatmap complexité par zone
 MODULE_20_REDUNDANCY_ANALYZER = True    # Automations redondantes inter-modules
 MODULE_21_RECORDER_IMPACT = True        # Impact DB Recorder par automation
+MODULE_22_INTEGRATION_MONITOR = True    # Integration monitor (HACS/Core/Custom)
 
 # Issue types - v1.4.0 — Compliance (Module 17)
 ISSUE_COMPLIANCE_NO_FRIENDLY_NAME       = "compliance_no_friendly_name"

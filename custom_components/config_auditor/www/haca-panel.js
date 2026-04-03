@@ -1,4 +1,4 @@
-// HACA-BUILD: 5638fec1  2026-03-27T16:11:59Z
+// HACA-BUILD: 43de7ce1  2026-04-01T18:20:57Z
 // ── config_tab.js ──────────────────────────────────────────
 // ── config_tab.js ─────────────────────────────────────────────────────────
 // Onglet Configuration du panel HACA
@@ -488,7 +488,7 @@ function _updateTypeCounts(el) {
 (function () {
   'use strict';
   if (customElements.get('haca-panel')) return; // already loaded, skip entirely
-  const HACA_VERSION = '1.6.1'; // build marker
+  const HACA_VERSION = '1.7.0'; // build marker
 
   // Dans l'iframe (embed_iframe:true), ha-icon n'est pas enregistré.
   // On copie la définition depuis le document parent où HA l'a déjà défini.
@@ -576,6 +576,18 @@ function _updateTypeCounts(el) {
     'view-dashboard-outline': 'M19,5V7H15V5H19M9,5V11H5V5H9M19,13V19H15V13H19M9,17V19H5V17H9M21,3H13V9H21V3M11,3H3V13H11V3M21,11H13V21H21V11M11,15H3V21H11V15Z',
     'view-list': 'M9,5V9H21V5M9,19H21V15H9M9,14H21V10H9M4,9H8V5H4M4,19H8V15H4M4,14H8V10H4V14Z',
     'zip-box-outline': 'M12 17V15H14V17H12M14 13V11H12V13H14M14 9V7H12V9H14M10 11H12V9H10V11M10 15H12V13H10V15M21 5V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V5C3 3.9 3.9 3 5 3H19C20.1 3 21 3.9 21 5M19 5H12V7H10V5H5V19H19V5Z',
+    'code-tags': 'M14.6,16.6L19.2,12L14.6,7.4L16,6L22,12L16,18L14.6,16.6M9.4,16.6L4.8,12L9.4,7.4L8,6L2,12L8,18L9.4,16.6Z',
+    'card-outline': 'M21,3H3C1.9,3 1,3.9 1,5V19C1,20.1 1.9,21 3,21H21C22.1,21 23,20.1 23,19V5C23,3.9 22.1,3 21,3M21,19H3V5H21V19Z',
+    'counter': 'M4,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M4,6V18H20V6H4M13,7.5H18V9.5H13V7.5M13,11H18V13H13V11M13,14.5H18V16.5H13V14.5M6.5,7.5A2,2 0 0,1 8.5,9.5A2,2 0 0,1 6.5,11.5A2,2 0 0,1 4.5,9.5A2,2 0 0,1 6.5,7.5M6.5,13C8.5,13 10.5,14 10.5,15V16.5H2.5V15C2.5,14 4.5,13 6.5,13Z',
+    'calendar-outline': 'M19,3H18V1H16V3H8V1H6V3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M19,19H5V9H19V19M19,7H5V5H19V7Z',
+    'arrow-up-circle': 'M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,17V11H15L11.5,6L8,11H11V17H12Z',
+    'alert': 'M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z',
+    'download': 'M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z',
+    'chevron-left': 'M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z',
+    'chevron-right': 'M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z',
+    'home-assistant': 'M21.8,13H20V21H18V13H14.3L12,5.4L9.7,13H6V21H4V13H2.2L12,1L21.8,13Z',
+    'package-variant': 'M2,10.96C1.5,10.68 1.5,10.23 2,9.96L12,4.46L22,9.96C22.5,10.23 22.5,10.68 22,10.96L12,16.46L2,10.96M12,4.46L2,9.96L12,15.46L22,9.96L12,4.46M12,18.46L2,12.96V14.96L12,20.46L22,14.96V12.96L12,18.46Z',
+    'pause-circle-outline': 'M13,16V8H15V16H13M9,16V8H11V16H9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z',
     'arrow-decision': 'M18,20A2,2 0 0,0 20,18A2,2 0 0,0 18,16C17.5,16 17.05,16.19 16.71,16.5L9.91,12.08C9.96,11.89 10,11.7 10,11.5C10,11.3 9.96,11.11 9.91,10.92L16.7,6.5C17.05,6.81 17.5,7 18,7A2,2 0 0,0 20,5A2,2 0 0,0 18,3A2,2 0 0,0 16,5C16,5.2 16.04,5.39 16.09,5.58L9.3,10C8.95,9.69 8.5,9.5 8,9.5A2,2 0 0,0 6,11.5A2,2 0 0,0 8,13.5C8.5,13.5 8.95,13.31 9.3,13L16.09,17.42C16.04,17.61 16,17.8 16,18A2,2 0 0,0 18,20Z',
     'blueprint': 'M5,3H19A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3M5,5V19H19V5H5M7,7H17V9H7V7M7,11H17V13H7V11M7,15H14V17H7V15Z',
     'content-copy': 'M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z',
@@ -605,6 +617,42 @@ function _updateTypeCounts(el) {
   }
   // Exposer globalement pour config_tab.js, battery.js et autres modules
   window._icon = _icon;
+
+  // ── HACA ID utilities (shared across issues, compliance, redundancy) ───
+  window._hacaHash6 = function(str) {
+    // Simple deterministic 6-char hex hash (matches Python md5[:6])
+    var h = 0x811c9dc5;
+    for (var i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 0x01000193);
+    }
+    var hex = ('000000' + ((h >>> 0).toString(16))).slice(-8);
+    return hex.substring(0, 6);
+  };
+
+  window._hacaCopyId = function(id, toastFn, successMsg) {
+    // Robust clipboard copy with fallback for HA shadow DOM / iframe contexts
+    function fallbackCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch(e) { /* ignore */ }
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(id).then(function() {
+        if (toastFn) toastFn(successMsg || ('ID ' + id + ' copied'));
+      }).catch(function() {
+        fallbackCopy(id);
+        if (toastFn) toastFn(successMsg || ('ID ' + id + ' copied'));
+      });
+    } else {
+      fallbackCopy(id);
+      if (toastFn) toastFn(successMsg || ('ID ' + id + ' copied'));
+    }
+  };
 
   // Cache partagé entre toutes les instances de haca-panel (survive les navigations HA).
   // HA recrée l'élément à chaque navigation → les propriétés d'instance sont perdues.
@@ -1339,6 +1387,9 @@ function _updateTypeCounts(el) {
         .tab-badge-wrap.warning { background: var(--warning-color, #ff9800); }
         .tabs .tab:hover { color: var(--primary-text-color); background: rgba(0,0,0,0.05); }
         .tabs .tab.active { background: var(--card-background-color); color: var(--primary-color); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .tabs .tab.tab-config { background: #387aa0 !important; color: white !important; }
+        .tabs .tab.tab-config:hover { background: #2d6485 !important; color: white !important; }
+        .tabs .tab.tab-config.active { background: #2d6485 !important; color: white !important; box-shadow: 0 4px 12px rgba(56,122,160,0.35); }
 
         /* ── SUB-TABS (inside Issues tab) ────────── */
         .subtabs-container {
@@ -1783,6 +1834,14 @@ function _updateTypeCounts(el) {
             <div class="stat-value" id="recorder-orphan-count">—</div>
             <div class="stat-desc" id="recorder-orphan-mb"></div>
           </div>
+          <div class="stat-card" id="integrations-stat-btn" style="border-left: 5px solid #9c27b0; cursor:pointer;">
+            <div class="stat-header">
+                <span class="stat-label">${this.t('stats.integrations')}</span>
+                ${_icon("puzzle")}
+            </div>
+            <div class="stat-value" id="integrations-count">—</div>
+            <div class="stat-desc">${this.t('stats.integrations_desc')}</div>
+          </div>
         </div>
         
         <div class="tabs-container">
@@ -1825,7 +1884,11 @@ function _updateTypeCounts(el) {
               <span class="tab-label">${this.t('tabs.compliance')}</span>
               <span id="tab-badge-compliance" class="tab-badge-wrap warning" style="display:none;"></span>
             </button>
-            <button class="tab" data-tab="config" title="${this.t('tab_tooltips.config')}">
+            <button class="tab" data-tab="integrations" title="${this.t('tab_tooltips.integrations')}">
+              ${_icon("puzzle")}
+              <span class="tab-label">${this.t('tabs.integrations')}</span>
+            </button>
+            <button class="tab tab-config" data-tab="config" title="${this.t('tab_tooltips.config')}" style="margin-left:auto;background:#387aa0;color:white;border-radius:8px;">
               ${_icon("tune-variant")}
               <span class="tab-label">${this.t('tabs.config')}</span>
             </button>
@@ -2529,6 +2592,13 @@ function _updateTypeCounts(el) {
             </div>
           </div><!-- /tab-chat -->
 
+          <!-- TAB INTEGRATIONS -->
+          <div id="tab-integrations" class="tab-content">
+            <div style="padding:20px;" id="integrations-container">
+              <div style="text-align:center;padding:32px;color:var(--secondary-text-color);">${this.t('integrations.run_scan_first')}</div>
+            </div>
+          </div><!-- /tab-integrations -->
+
           <!-- TAB CONFIGURATION -->
           <div id="tab-config" class="tab-content">
             <div style="padding:40px;text-align:center;color:var(--secondary-text-color);">
@@ -2658,6 +2728,9 @@ function _updateTypeCounts(el) {
 
       // "Vue complète" in batteries mini-panel → go to batteries tab
       this.shadowRoot.querySelector('#goto-batteries-tab')?.addEventListener('click', () => this.switchTab('batteries'));
+
+      // Integrations stat card → go to integrations tab
+      this.shadowRoot.querySelector('#integrations-stat-btn')?.addEventListener('click', () => this.switchTab('integrations'));
 
       // Graph toolbar
       this.shadowRoot.querySelector('#graph-reset-btn')?.addEventListener('click', () => this._graphResetZoom());
@@ -3127,6 +3200,7 @@ function _updateTypeCounts(el) {
       this._activeTab = tabName;
       if (tabName === 'config') this.loadConfigTab();
       if (tabName === 'compliance') this.loadComplianceTab();
+      if (tabName === 'integrations') this.loadIntegrations();
     }
 
     // Ouvre le tab Chat, pré-remplit et envoie automatiquement le message
@@ -3336,6 +3410,19 @@ function _updateTypeCounts(el) {
         });
       });
 
+      // Click-to-copy for HACA issue IDs in compliance tab
+      el.querySelectorAll('.haca-id-badge-compl').forEach(badge => {
+        badge.addEventListener('click', () => {
+          const id = badge.dataset.hacaId;
+          if (id) {
+            window._hacaCopyId(id,
+              (msg) => this._showToast(msg),
+              this.t('issues.id_copied', {id: id})
+            );
+          }
+        });
+      });
+
       // Mettre à jour le badge tab
       const badge = this.shadowRoot.querySelector('#tab-badge-compliance');
       if (badge) {
@@ -3521,6 +3608,7 @@ function _updateTypeCounts(el) {
         window._HACA_STATE.errors = 0;
         // Invalider le cache conformité (nouvelles données = rescan)
         this._complianceAll = null;
+        this._integrationsLoaded = false;
         _hlog('INF', 'loadData(): SUCCESS score=' + result?.health_score + '%');
         this.updateUI(result);
         // Hide the boot splash on first successful data load
@@ -5730,10 +5818,12 @@ function _updateTypeCounts(el) {
     const t   = issue.type       || '';
     const eid = issue.entity_id  || '';
     const a   = issue.alias      || eid;
+    const hid = issue.haca_id    || '';
     const ctx = issue.message
       ? `\n${this.t('diag_prompts.context_label')}: ${issue.message}` : '';
     const rec = issue.recommendation
       ? `\n${this.t('diag_prompts.rec_label')}: ${issue.recommendation}` : '';
+    const idLine = hid ? `\n${this.t('diag_prompts.issue_id_label')}: ${hid}` : '';
 
     // ── diag() — YAML before/after diff ────────────────────────────────
     const diag = (readCmd, problemKey, hintKey = null) => {
@@ -5743,7 +5833,7 @@ function _updateTypeCounts(el) {
         : '';
       return [
         this.t('diag_prompts.marker'),
-        `${this.t('diag_prompts.header', {alias: a, eid, problem})}${ctx}${rec}`,
+        `${this.t('diag_prompts.header', {alias: a, eid, problem})}${idLine}${ctx}${rec}`,
         '',
         this.t('diag_prompts.read_with', {cmd: readCmd}) + hintLine,
         '',
@@ -5769,7 +5859,7 @@ function _updateTypeCounts(el) {
         : '';
       return [
         this.t('diag_prompts.marker'),
-        `${this.t('diag_prompts.header', {alias: a, eid, problem})}${ctx}${rec}`,
+        `${this.t('diag_prompts.header', {alias: a, eid, problem})}${idLine}${ctx}${rec}`,
         '',
         this.t('diag_prompts.read_with', {cmd: readCmd}) + hintLine,
         '',
@@ -8063,6 +8153,13 @@ function _updateTypeCounts(el) {
                     ${isNonStandardSource ? `<span title="${this.escapeHtml(sourceFile)}" style="margin-left:6px;font-size:10px;background:var(--info-color,#2196f3);color:white;border-radius:4px;padding:1px 6px;opacity:0.85;">${_icon('file-document-outline',10)} ${sourceFile.startsWith('packages/') ? 'pkg' : sourceFile.startsWith('.storage') ? 'UI' : 'incl'}</span>` : ''}
                 </div>
                 <div class="issue-entity">${this.escapeHtml(i.entity_id || '')}</div>
+                <div style="margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    ${i.haca_id ? `<span style="display:inline-flex;align-items:center;gap:4px;line-height:16px;"><span style="font-size:10px;font-weight:600;color:var(--secondary-text-color);">ID =</span><code class="haca-id-badge" title="${this.t('issues.click_to_copy_id')}" data-haca-id="${this.escapeHtml(i.haca_id)}" style="font-size:10px;font-family:monospace;background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:4px;padding:2px 8px;color:var(--primary-text-color);cursor:pointer;display:inline-flex;align-items:center;gap:4px;line-height:16px;">${_icon('content-copy',10)} ${this.escapeHtml(i.haca_id)}</code></span>` : ''}
+                    ${isFixable
+                      ? `<span style="font-size:9px;background:var(--success-color,#4caf50);color:white;border-radius:4px;padding:2px 7px;font-weight:700;display:inline-flex;align-items:center;gap:3px;line-height:16px;">${_icon('wrench',10)} ${this.t('issues.fixable')}</span>`
+                      : `<span style="font-size:9px;background:var(--disabled-color,#9e9e9e);color:white;border-radius:4px;padding:2px 7px;font-weight:600;display:inline-flex;align-items:center;gap:3px;line-height:16px;">${_icon('wrench-off',10)} ${this.t('issues.not_fixable')}</span>`
+                    }
+                </div>
                 ${i.type === 'zombie_entity' && (i.automation_names || i.source_name) ? `
                 <div style="font-size:12px;color:var(--secondary-text-color);margin-top:4px;display:flex;align-items:center;gap:4px;">
                     ${_icon("robot", 12)}
@@ -8168,6 +8265,20 @@ function _updateTypeCounts(el) {
         const idx = parseInt(e.currentTarget.dataset.idx, 10);
         const issue = container._renderedIssues[idx];
         if (issue) this.showFixPreview(issue);
+      });
+    });
+
+    // Click-to-copy for HACA issue IDs
+    container.querySelectorAll('.haca-id-badge').forEach(badge => {
+      badge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = e.currentTarget.dataset.hacaId;
+        if (id) {
+          window._hacaCopyId(id,
+            (msg) => this._showToast(msg),
+            this.t('issues.id_copied', {id: id})
+          );
+        }
       });
     });
 
@@ -8950,25 +9061,50 @@ function _updateTypeCounts(el) {
           alias:      btn.dataset.alias || '',
           type:       btn.dataset.type  || '',
           detail:     btn.dataset.detail || '',
+          haca_id:    btn.dataset.hacaId || '',
         });
+      });
+    });
+
+    // Click-to-copy for redundancy HACA IDs
+    container.querySelectorAll('.haca-id-badge-redund').forEach(badge => {
+      badge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = e.currentTarget.dataset.hacaId;
+        if (id) {
+          window._hacaCopyId(id,
+            (msg) => this._showToast(msg),
+            this.t('issues.id_copied', {id: id})
+          );
+        }
       });
     });
   }
 
   _redundancyBlueprintRow(b) {
     const editUrl = this.getHAEditUrl(b.entity_id);
+    const _rid = b.haca_id || '';
+    const _fixable = b.fix_available;
     return `
       <div style="background:var(--card-background-color);border:1px solid var(--divider-color);border-left:3px solid #9c27b0;border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;">
         <div style="flex:1;min-width:140px;">
           <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px;" title="${this.escapeHtml(b.alias)}">${this.escapeHtml(b.alias)}</div>
           <div style="font-size:11px;margin-top:3px;">
-            <span style="background:rgba(156,39,176,0.1);color:#9c27b0;border-radius:5px;padding:1px 7px;font-weight:600;">${this.escapeHtml(b.pattern)}</span>
+            <span style="background:rgba(156,39,176,0.1);color:#9c27b0;border-radius:5px;padding:1px 7px;font-weight:600;">${this.escapeHtml(b.pattern || b.blueprint_id || '')}</span>
+          </div>
+          <div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            ${_rid ? `<span style="font-size:9px;font-weight:600;color:var(--secondary-text-color);">ID =</span>
+            <code class="haca-id-badge-redund" data-haca-id="${this.escapeHtml(_rid)}" title="${this.t('issues.click_to_copy_id')}" style="font-size:9px;font-family:monospace;background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:4px;padding:2px 7px;color:var(--primary-text-color);cursor:pointer;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('content-copy',9)} ${this.escapeHtml(_rid)}</code>` : ''}
+            ${_fixable
+              ? `<span style="font-size:9px;background:var(--success-color,#4caf50);color:white;border-radius:4px;padding:2px 7px;font-weight:700;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('wrench',9)} ${this.t('issues.fixable')}</span>`
+              : `<span style="font-size:9px;background:var(--disabled-color,#9e9e9e);color:white;border-radius:4px;padding:2px 7px;font-weight:600;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('wrench-off',9)} ${this.t('issues.not_fixable')}</span>`
+            }
           </div>
           <div style="font-size:11px;color:var(--secondary-text-color);margin-top:3px;">${this.t('redundancy.blueprint_hint')}</div>
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0;align-self:center;">
           ${editUrl ? `<a href="${editUrl}" target="_blank" style="text-decoration:none;"><button style="background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;">${_icon('pencil-outline',12)} ${this.t('area_complexity.btn_edit')}</button></a>` : ''}
-          <button data-redund-ai-btn="${this.escapeHtml(b.entity_id)}" data-alias="${this.escapeHtml(b.alias)}" data-type="blueprint" data-detail="${this.escapeHtml(b.pattern)}"
+          <button data-redund-ai-btn="${this.escapeHtml(b.entity_id)}" data-alias="${this.escapeHtml(b.alias)}" data-type="blueprint" data-detail="${this.escapeHtml(b.pattern || b.blueprint_id || '')}" data-haca-id="${this.escapeHtml(_rid)}"
             style="background:var(--primary-color);color:white;border:none;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;">
             ${_icon('robot',12)} ${this.t('area_complexity.btn_ai')}
           </button>
@@ -8978,18 +9114,28 @@ function _updateTypeCounts(el) {
 
   _redundancyNativeRow(n) {
     const editUrl = this.getHAEditUrl(n.entity_id);
+    const _rid = n.haca_id || '';
+    const _fixable = n.fix_available;
     return `
       <div style="background:var(--card-background-color);border:1px solid var(--divider-color);border-left:3px solid #2196f3;border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;">
         <div style="flex:1;min-width:140px;">
           <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px;" title="${this.escapeHtml(n.alias)}">${this.escapeHtml(n.alias)}</div>
           <div style="font-size:11px;margin-top:3px;">
-            <span style="background:rgba(33,150,243,0.1);color:#2196f3;border-radius:5px;padding:1px 7px;font-weight:600;">${this.escapeHtml(n.native_feature)}</span>
+            <span style="background:rgba(33,150,243,0.1);color:#2196f3;border-radius:5px;padding:1px 7px;font-weight:600;">${this.escapeHtml(n.native_feature || n.pattern || '')}</span>
+          </div>
+          <div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            ${_rid ? `<span style="font-size:9px;font-weight:600;color:var(--secondary-text-color);">ID =</span>
+            <code class="haca-id-badge-redund" data-haca-id="${this.escapeHtml(_rid)}" title="${this.t('issues.click_to_copy_id')}" style="font-size:9px;font-family:monospace;background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:4px;padding:2px 7px;color:var(--primary-text-color);cursor:pointer;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('content-copy',9)} ${this.escapeHtml(_rid)}</code>` : ''}
+            ${_fixable
+              ? `<span style="font-size:9px;background:var(--success-color,#4caf50);color:white;border-radius:4px;padding:2px 7px;font-weight:700;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('wrench',9)} ${this.t('issues.fixable')}</span>`
+              : `<span style="font-size:9px;background:var(--disabled-color,#9e9e9e);color:white;border-radius:4px;padding:2px 7px;font-weight:600;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('wrench-off',9)} ${this.t('issues.not_fixable')}</span>`
+            }
           </div>
           <div style="font-size:11px;color:var(--secondary-text-color);margin-top:3px;">${this.t('redundancy.native_hint')}</div>
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0;align-self:center;">
           ${editUrl ? `<a href="${editUrl}" target="_blank" style="text-decoration:none;"><button style="background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;">${_icon('pencil-outline',12)} ${this.t('area_complexity.btn_edit')}</button></a>` : ''}
-          <button data-redund-ai-btn="${this.escapeHtml(n.entity_id)}" data-alias="${this.escapeHtml(n.alias)}" data-type="native" data-detail="${this.escapeHtml(n.native_feature)}"
+          <button data-redund-ai-btn="${this.escapeHtml(n.entity_id)}" data-alias="${this.escapeHtml(n.alias)}" data-type="native" data-detail="${this.escapeHtml(n.native_feature || n.pattern || '')}" data-haca-id="${this.escapeHtml(_rid)}"
             style="background:var(--primary-color);color:white;border:none;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;">
             ${_icon('robot',12)} ${this.t('area_complexity.btn_ai')}
           </button>
@@ -9000,6 +9146,8 @@ function _updateTypeCounts(el) {
   _redundancyOverlapRow(o) {
     const edit1 = this.getHAEditUrl(o.entity_id_a);
     const edit2 = this.getHAEditUrl(o.entity_id_b);
+    const _rid = o.haca_id || '';
+    const _fixable = o.fix_available;
     return `
       <div style="background:var(--card-background-color);border:1px solid var(--divider-color);border-left:3px solid #ff5722;border-radius:10px;padding:10px 14px;margin-bottom:6px;">
         <div style="display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;">
@@ -9013,11 +9161,19 @@ function _updateTypeCounts(el) {
               <span style="color:var(--secondary-text-color);align-self:center;">↔</span>
               <span style="background:var(--secondary-background-color);border-radius:5px;padding:1px 8px;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${this.escapeHtml(o.alias_b)}">${this.escapeHtml(o.alias_b)}</span>
             </div>
+            <div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+              ${_rid ? `<span style="font-size:9px;font-weight:600;color:var(--secondary-text-color);">ID =</span>
+              <code class="haca-id-badge-redund" data-haca-id="${this.escapeHtml(_rid)}" title="${this.t('issues.click_to_copy_id')}" style="font-size:9px;font-family:monospace;background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:4px;padding:2px 7px;color:var(--primary-text-color);cursor:pointer;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('content-copy',9)} ${this.escapeHtml(_rid)}</code>` : ''}
+              ${_fixable
+                ? `<span style="font-size:9px;background:var(--success-color,#4caf50);color:white;border-radius:4px;padding:2px 7px;font-weight:700;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('wrench',9)} ${this.t('issues.fixable')}</span>`
+                : `<span style="font-size:9px;background:var(--disabled-color,#9e9e9e);color:white;border-radius:4px;padding:2px 7px;font-weight:600;display:inline-flex;align-items:center;gap:3px;line-height:14px;">${_icon('wrench-off',9)} ${this.t('issues.not_fixable')}</span>`
+              }
+            </div>
           </div>
           <div style="display:flex;gap:6px;flex-shrink:0;align-self:center;flex-wrap:wrap;">
             ${edit1 ? `<a href="${edit1}" target="_blank" style="text-decoration:none;"><button style="background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:7px;padding:4px 9px;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:3px;">${_icon('pencil-outline',11)} A</button></a>` : ''}
             ${edit2 ? `<a href="${edit2}" target="_blank" style="text-decoration:none;"><button style="background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:7px;padding:4px 9px;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:3px;">${_icon('pencil-outline',11)} B</button></a>` : ''}
-            <button data-redund-ai-btn="${this.escapeHtml(o.entity_id_a)}" data-alias="${this.escapeHtml(o.alias_a + ' ↔ ' + o.alias_b)}" data-type="overlap" data-detail="${this.escapeHtml(o.entity_id_b + '|' + o.trigger_sig)}"
+            <button data-redund-ai-btn="${this.escapeHtml(o.entity_id_a)}" data-alias="${this.escapeHtml(o.alias_a + ' ↔ ' + o.alias_b)}" data-type="overlap" data-detail="${this.escapeHtml(o.entity_id_b + '|' + o.trigger_sig)}" data-haca-id="${this.escapeHtml(_rid)}"
               style="background:var(--primary-color);color:white;border:none;border-radius:7px;padding:4px 9px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:4px;">
               ${_icon('robot',12)} ${this.t('area_complexity.btn_ai')}
             </button>
@@ -9035,7 +9191,9 @@ function _updateTypeCounts(el) {
     let chatPrompt = '';
     const eid   = item.entity_id || '';
     const alias = item.alias     || eid;
+    const hid   = item.haca_id   || '';
     const t     = (k, p) => this.t(k, p);
+    const idLine = hid ? `\n${t('diag_prompts.issue_id_label')}: ${hid}` : '';
 
     if (item.type === 'blueprint') {
       const patternLine = item.detail
@@ -9043,7 +9201,7 @@ function _updateTypeCounts(el) {
         : '';
       chatPrompt = [
         t('diag_prompts.marker'),
-        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.redundancy.blueprint_problem')})}${patternLine}`,
+        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.redundancy.blueprint_problem')})}${idLine}${patternLine}`,
         '',
         t('diag_prompts.read_with', {cmd: `haca_get_automation("${eid}")`}),
         '',
@@ -9063,7 +9221,7 @@ function _updateTypeCounts(el) {
       const detail = item.detail || '';
       chatPrompt = [
         t('diag_prompts.marker'),
-        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.redundancy.native_problem', {detail})})}`,
+        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.redundancy.native_problem', {detail})})}${idLine}`,
         '',
         t('diag_prompts.read_with', {cmd: `haca_get_automation("${eid}")`}),
         '',
@@ -9086,7 +9244,7 @@ function _updateTypeCounts(el) {
       const alias_b = item.alias.split(' ↔ ')[1] || eid_b || '';
       chatPrompt = [
         t('diag_prompts.marker'),
-        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.redundancy.overlap_problem', {alias_a, eid_a: eid, alias_b, trigger: trigger_sig})})}`,
+        `${t('diag_prompts.header', {alias, eid, problem: t('diag_prompts.redundancy.overlap_problem', {alias_a, eid_a: eid, alias_b, trigger: trigger_sig})})}${idLine}`,
         '',
         t('diag_prompts.redundancy.overlap_read', {eid_a: eid, eid_b: eid_b || alias_b}),
         '',
@@ -9231,6 +9389,414 @@ function _updateTypeCounts(el) {
     }
   }
 
+
+// ── integrations.js ──────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════
+  //  INTEGRATIONS — loadIntegrations · _renderIntegrations
+  // ═══════════════════════════════════════════════════════════════════
+
+  async loadIntegrations() {
+    const container = this.shadowRoot.querySelector('#integrations-container');
+    if (!container) return;
+    if (this._integrationsLoaded) return;
+    container.innerHTML = `<div style="text-align:center;padding:24px;color:var(--secondary-text-color);">
+      <div class="loader" style="margin:0 auto 8px;"></div>${this.t('integrations.loading')}</div>`;
+    try {
+      const result = await this._hass.callWS({ type: 'haca/get_integrations' });
+      this._integrationsData = result;
+      this._integrationsFilter = 'all';
+      this._integrationsSort = 'name';
+      this._integrationsSearch = '';
+      this._integPageSize = 25;
+      this._integPage = 0;
+      this._renderIntegrationsShell(container);
+      this._renderIntegrationsList(container);
+      this._integrationsLoaded = true;
+      // Update dashboard stat card
+      const statEl = this.shadowRoot.querySelector('#integrations-count');
+      if (statEl) statEl.textContent = String(result.total || 0);
+    } catch (e) {
+      container.innerHTML = `<div style="padding:16px;color:var(--error-color);">${this.t('integrations.error')}: ${this.escapeHtml(e.message)}</div>`;
+    }
+  }
+
+  _renderIntegrationsShell(container) {
+    if (!container || !this._integrationsData) return;
+    const data = this._integrationsData;
+    const t = (k, p) => this.t(k, p);
+    const esc = (s) => this.escapeHtml(s);
+    const filter = this._integrationsFilter || 'all';
+    const sort = this._integrationsSort || 'name';
+    const search = this._integrationsSearch || '';
+
+    const statCard = (count, label, filterKey, color) => {
+      const active = filter === filterKey ? 'border:2px solid ' + color + ';' : '';
+      return `<div class="integ-stat-card" data-filter="${filterKey}" style="cursor:pointer;background:var(--card-background-color);border-radius:10px;padding:10px 16px;min-width:80px;text-align:center;${active}">
+        <div style="font-size:22px;font-weight:700;color:${color};">${count}</div>
+        <div style="font-size:11px;color:var(--secondary-text-color);margin-top:2px;">${esc(label)}</div>
+      </div>`;
+    };
+
+    const statsHtml = `
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+        ${statCard(data.total, t('integrations.stat_total'), 'all', 'var(--primary-text-color)')}
+        ${statCard(data.hacs_count, 'HACS', 'hacs', '#9c27b0')}
+        ${statCard(data.core_count, 'Core', 'core', '#2196f3')}
+        ${data.card_count ? statCard(data.card_count, t('integrations.stat_cards'), 'cards', '#e91e63') : ''}
+        ${data.theme_count ? statCard(data.theme_count, t('integrations.stat_themes'), 'themes', '#4caf50') : ''}
+        ${data.custom_count ? statCard(data.custom_count, 'Custom', 'custom', '#ff9800') : ''}
+        ${statCard(data.app_count || 0, t('integrations.stat_apps'), 'apps', 'rgb(241,196,71)')}
+        ${statCard(data.unused_count, t('integrations.stat_unused'), 'unused', 'var(--error-color,#ef5350)')}
+        ${data.disabled_count ? statCard(data.disabled_count, t('integrations.stat_disabled'), 'disabled', '#78909c') : ''}
+        ${data.update_count ? statCard(data.update_count, t('integrations.stat_updates'), 'updates', 'var(--warning-color,#ff9800)') : ''}
+      </div>`;
+
+    const hacsWarning = !data.hacs_available ? `
+      <div style="background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.3);border-radius:10px;padding:10px 16px;margin-bottom:14px;font-size:12px;color:var(--warning-color,#ff9800);display:flex;align-items:center;gap:8px;">
+        ${_icon('alert', 16)} ${t('integrations.no_hacs')}
+      </div>` : '';
+
+    const supervisorWarning = !data.supervisor_available ? `
+      <div style="background:rgba(241,196,71,0.1);border:1px solid rgba(241,196,71,0.3);border-radius:10px;padding:10px 16px;margin-bottom:14px;font-size:12px;color:rgb(200,160,40);display:flex;align-items:center;gap:8px;">
+        ${_icon('alert', 16)} ${t('integrations.no_supervisor')}
+      </div>` : '';
+
+    const searchHtml = `
+      <div style="margin-bottom:14px;display:flex;gap:8px;align-items:center;">
+        <div style="flex:1;position:relative;">
+          <input id="integ-search" type="text" placeholder="${t('integrations.search_placeholder')}"
+            value="${esc(search)}"
+            style="width:100%;padding:8px 12px 8px 34px;border:1px solid var(--divider-color);border-radius:8px;font-size:13px;background:var(--secondary-background-color);color:var(--primary-text-color);box-sizing:border-box;">
+          <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:0.5;">${_icon('magnify', 16)}</span>
+        </div>
+        <select id="integ-sort" style="padding:8px 12px;border:1px solid var(--divider-color);border-radius:8px;font-size:12px;background:var(--secondary-background-color);color:var(--primary-text-color);">
+          <option value="name" ${sort === 'name' ? 'selected' : ''}>${t('integrations.sort_name')}</option>
+          <option value="type" ${sort === 'type' ? 'selected' : ''}>${t('integrations.sort_type')}</option>
+          <option value="entities" ${sort === 'entities' ? 'selected' : ''}>${t('integrations.sort_entities')}</option>
+          <option value="age" ${sort === 'age' ? 'selected' : ''}>${t('integrations.sort_age')}</option>
+        </select>
+        <button id="integ-csv-btn" title="${t('integrations.export_csv')}" style="padding:6px 10px;border:1px solid var(--divider-color);border-radius:8px;background:var(--secondary-background-color);color:var(--primary-text-color);cursor:pointer;display:flex;align-items:center;gap:4px;font-size:12px;">
+          ${_icon('download', 14)} CSV
+        </button>
+        <button id="integ-md-btn" title="${t('integrations.export_md')}" style="padding:6px 10px;border:1px solid var(--divider-color);border-radius:8px;background:var(--secondary-background-color);color:var(--primary-text-color);cursor:pointer;display:flex;align-items:center;gap:4px;font-size:12px;">
+          ${_icon('download', 14)} MD
+        </button>
+      </div>`;
+
+    container.innerHTML = statsHtml + hacsWarning + supervisorWarning + searchHtml +
+      '<div id="integ-count-label" style="font-size:11px;color:var(--secondary-text-color);margin-bottom:8px;"></div>' +
+      '<div id="integ-list"></div>' +
+      '<div id="integ-pag" style="margin-top:12px;"></div>';
+
+    // Wire stat cards
+    container.querySelectorAll('.integ-stat-card').forEach(card => {
+      card.addEventListener('click', () => {
+        this._integrationsFilter = card.dataset.filter;
+        this._integPage = 0;
+        this._renderIntegrationsShell(container);
+        this._renderIntegrationsList(container);
+      });
+    });
+
+    // Wire search — only re-renders list, NOT shell → keeps focus
+    const searchInput = container.querySelector('#integ-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        this._integrationsSearch = e.target.value;
+        this._integPage = 0;
+        this._renderIntegrationsList(container);
+      });
+      if (search) {
+        searchInput.focus();
+        searchInput.setSelectionRange(search.length, search.length);
+      }
+    }
+
+    // Wire sort
+    const sortSelect = container.querySelector('#integ-sort');
+    if (sortSelect) {
+      sortSelect.addEventListener('change', (e) => {
+        this._integrationsSort = e.target.value;
+        this._integPage = 0;
+        this._renderIntegrationsList(container);
+      });
+    }
+
+    // Wire CSV export
+    const csvBtn = container.querySelector('#integ-csv-btn');
+    if (csvBtn) {
+      csvBtn.addEventListener('click', () => this._exportIntegrationsCSV());
+    }
+    const mdBtn = container.querySelector('#integ-md-btn');
+    if (mdBtn) {
+      mdBtn.addEventListener('click', () => this._exportIntegrationsMD());
+    }
+  }
+
+  _renderIntegrationsList(container) {
+    if (!container) container = this.shadowRoot.querySelector('#integrations-container');
+    if (!container || !this._integrationsData) return;
+    const data = this._integrationsData;
+    const t = (k, p) => this.t(k, p);
+    const esc = (s) => this.escapeHtml(s);
+
+    const TYPE_CFG = {
+      hacs:       { color: '#9c27b0', bg: 'rgba(156,39,176,0.08)', label: 'HACS',   icon: 'puzzle' },
+      custom:     { color: '#ff9800', bg: 'rgba(255,152,0,0.08)',   label: 'CUSTOM', icon: 'code-tags' },
+      core:       { color: '#2196f3', bg: 'rgba(33,150,243,0.08)',  label: 'CORE',   icon: 'home-assistant' },
+      hacs_card:  { color: '#e91e63', bg: 'rgba(233,30,99,0.08)',   label: 'CARD',   icon: 'card-outline' },
+      hacs_theme: { color: '#4caf50', bg: 'rgba(76,175,80,0.08)',   label: 'THEME',  icon: 'palette' },
+      app:        { color: 'rgb(241,196,71)', bg: 'rgba(241,196,71,0.10)', label: 'APP', icon: 'package-variant' },
+    };
+
+    const filter = this._integrationsFilter || 'all';
+    const search = (this._integrationsSearch || '').toLowerCase();
+    let items = (data.integrations || []).slice();
+
+    if (filter === 'hacs')     items = items.filter(i => i.type === 'hacs');
+    if (filter === 'core')     items = items.filter(i => i.type === 'core');
+    if (filter === 'cards')    items = items.filter(i => i.type === 'hacs_card');
+    if (filter === 'themes')   items = items.filter(i => i.type === 'hacs_theme');
+    if (filter === 'custom')   items = items.filter(i => i.type === 'custom');
+    if (filter === 'apps')     items = items.filter(i => i.type === 'app');
+    if (filter === 'unused')   items = items.filter(i => !i.in_use && !i.disabled);
+    if (filter === 'disabled') items = items.filter(i => i.disabled);
+    if (filter === 'updates')  items = items.filter(i => i.update_available);
+
+    if (search) {
+      items = items.filter(i =>
+        (i.name || '').toLowerCase().includes(search) ||
+        (i.domain || '').toLowerCase().includes(search)
+      );
+    }
+
+    const sort = this._integrationsSort || 'name';
+    if (sort === 'name')     items.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    if (sort === 'type')     items.sort((a, b) => (a.type || '').localeCompare(b.type || ''));
+    if (sort === 'entities') items.sort((a, b) => (b.entity_count || 0) - (a.entity_count || 0));
+    if (sort === 'age')      items.sort((a, b) => (b.age_days || 0) - (a.age_days || 0));
+
+    const total = items.length;
+    const pageSize = this._integPageSize || 25;
+    const maxPage = Math.max(0, Math.ceil(total / pageSize) - 1);
+    const page = Math.min(this._integPage || 0, maxPage);
+    const paged = items.slice(page * pageSize, (page + 1) * pageSize);
+
+    const countLabel = container.querySelector('#integ-count-label');
+    if (countLabel) countLabel.textContent = t('integrations.showing', {count: total, total: data.total});
+
+    const listEl = container.querySelector('#integ-list');
+    if (!listEl) return;
+
+    if (paged.length === 0) {
+      listEl.innerHTML = `<div style="text-align:center;padding:32px;color:var(--secondary-text-color);">${_icon('check-circle-outline', 36)}<div style="margin-top:8px;">${t('integrations.none_found')}</div></div>`;
+    } else {
+      listEl.innerHTML = paged.map(i => {
+        const tc = TYPE_CFG[i.type] || TYPE_CFG.core;
+        const useBadge = i.in_use
+          ? `<span style="font-size:9px;background:var(--success-color,#4caf50);color:white;border-radius:4px;padding:2px 7px;font-weight:600;">${t('integrations.in_use')}</span>`
+          : i.disabled
+            ? `<span style="font-size:9px;background:#78909c;color:white;border-radius:4px;padding:2px 7px;font-weight:600;" title="${t('integrations.disabled_tooltip')}">${_icon('pause-circle-outline',9)} ${t('integrations.disabled')}</span>`
+            : `<span style="font-size:9px;background:var(--error-color,#ef5350);color:white;border-radius:4px;padding:2px 7px;font-weight:600;">${t('integrations.unused')}</span>`;
+        const updateBadge = i.update_available
+          ? `<span style="font-size:9px;background:var(--warning-color,#ff9800);color:white;border-radius:4px;padding:2px 7px;font-weight:600;">${_icon('arrow-up-circle',9)} ${esc(i.available_version)}</span>`
+          : '';
+        const isOrphan = (i.entity_count > 0 && i.config_entries === 0 && !i.in_use && !i.disabled);
+        const orphanBadge = isOrphan
+          ? `<span style="font-size:9px;background:#ff5722;color:white;border-radius:4px;padding:2px 7px;font-weight:600;" title="${t('integrations.orphan_tooltip')}">${_icon('alert',9)} ${t('integrations.orphan')}</span>`
+          : '';
+        const ageTxt = i.age_days != null ? t('integrations.age_days', {days: i.age_days}) : '';
+        const docLink = i.documentation
+          ? `<a href="${esc(i.documentation)}" target="_blank" rel="noopener" style="color:var(--primary-color);text-decoration:none;font-size:11px;display:inline-flex;align-items:center;gap:3px;">${_icon('open-in-new',11)} ${t('integrations.docs')}</a>`
+          : '';
+        const settingsLink = i.type !== 'hacs_theme' && i.type !== 'hacs_card' && i.in_use
+          ? `<a href="/config/integrations/integration/${esc(i.domain)}" target="_top" style="text-decoration:none;"><button style="background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:7px;padding:4px 9px;cursor:pointer;font-size:11px;display:inline-flex;align-items:center;gap:3px;">${_icon('cog-outline',11)} ${t('integrations.settings')}</button></a>`
+          : '';
+        const aiBtn = ((!i.in_use && !i.disabled) || isOrphan)
+          ? `<button class="integ-ai-btn" data-domain="${esc(i.domain)}" data-name="${esc(i.name)}" data-type="${esc(i.type)}" data-entities="${i.entity_count}"
+              style="background:var(--primary-color);color:white;border:none;border-radius:7px;padding:4px 9px;cursor:pointer;font-size:11px;display:inline-flex;align-items:center;gap:3px;">
+              ${_icon('robot',11)} ${t('integrations.ask_ai')}
+            </button>`
+          : '';
+
+        return `
+        <div style="background:${tc.bg};border:1px solid var(--divider-color);border-left:3px solid ${tc.color};border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:${tc.color};color:white;display:flex;align-items:center;justify-content:center;">
+            ${_icon(tc.icon, 20)}
+          </div>
+          <div style="flex:1;min-width:160px;">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+              <span style="font-weight:600;font-size:13px;">${esc(i.name)}</span>
+              <span style="font-size:9px;background:${tc.color};color:white;border-radius:4px;padding:1px 6px;font-weight:600;">${tc.label}</span>
+              ${useBadge}
+              ${updateBadge}
+              ${orphanBadge}
+            </div>
+            <div style="font-size:11px;color:var(--secondary-text-color);margin-top:2px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span style="font-family:monospace;">${esc(i.domain)}</span>
+              ${i.version ? `<span>v${esc(i.version)}</span>` : ''}
+              ${i.entity_count ? `<span>${_icon('counter',10)} ${i.entity_count} ${t('integrations.entities')}</span>` : ''}
+              ${ageTxt ? `<span>${_icon('calendar-outline',10)} ${esc(ageTxt)}</span>` : ''}
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0;align-items:center;flex-wrap:wrap;">
+            ${docLink}
+            ${settingsLink}
+            ${aiBtn}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // Pagination controls
+    const pagEl = container.querySelector('#integ-pag');
+    if (pagEl && total > pageSize) {
+      const totalPages = maxPage + 1;
+      pagEl.innerHTML = `
+        <div style="display:flex;justify-content:center;align-items:center;gap:8px;">
+          <button class="integ-pag-btn" data-page="${page - 1}" ${page <= 0 ? 'disabled' : ''}
+            style="padding:5px 12px;border:1px solid var(--divider-color);border-radius:6px;background:var(--secondary-background-color);color:var(--primary-text-color);cursor:pointer;font-size:12px;">
+            ${_icon('chevron-left', 14)}
+          </button>
+          <span style="font-size:12px;color:var(--secondary-text-color);">${page + 1} / ${totalPages}</span>
+          <button class="integ-pag-btn" data-page="${page + 1}" ${page >= maxPage ? 'disabled' : ''}
+            style="padding:5px 12px;border:1px solid var(--divider-color);border-radius:6px;background:var(--secondary-background-color);color:var(--primary-text-color);cursor:pointer;font-size:12px;">
+            ${_icon('chevron-right', 14)}
+          </button>
+        </div>`;
+      pagEl.querySelectorAll('.integ-pag-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const p = parseInt(btn.dataset.page, 10);
+          if (p >= 0 && p <= maxPage) {
+            this._integPage = p;
+            this._renderIntegrationsList(container);
+          }
+        });
+      });
+    } else if (pagEl) {
+      pagEl.innerHTML = '';
+    }
+
+    // Wire AI buttons
+    listEl.querySelectorAll('.integ-ai-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this._askAIAboutIntegration(btn.dataset.domain, btn.dataset.name, btn.dataset.type, btn.dataset.entities);
+      });
+    });
+  }
+
+  _askAIAboutIntegration(domain, name, type, entityCount) {
+    const t = (k, p) => this.t(k, p);
+    const prompt = [
+      t('diag_prompts.marker'),
+      t('integrations.ai_prompt_header', {name: name, domain: domain}),
+      t('integrations.ai_prompt_type', {type: type}),
+      parseInt(entityCount, 10) > 0
+        ? t('integrations.ai_prompt_orphan', {count: entityCount})
+        : t('integrations.ai_prompt_unused'),
+      '',
+      t('integrations.ai_prompt_instructions'),
+    ].join('\n');
+    this._openChatWithMessage(prompt);
+  }
+
+  _exportIntegrationsCSV() {
+    if (!this._integrationsData) return;
+    const items = this._integrationsData.integrations || [];
+    const headers = ['name', 'domain', 'type', 'version', 'available_version', 'in_use', 'entity_count', 'config_entries', 'age_days', 'documentation'];
+    const csvRows = [headers.join(',')];
+    for (const i of items) {
+      const row = headers.map(h => {
+        let v = i[h];
+        if (v === true) v = 'yes';
+        if (v === false) v = 'no';
+        if (v == null) v = '';
+        return '"' + String(v).replace(/"/g, '""') + '"';
+      });
+      csvRows.push(row.join(','));
+    }
+    const csv = csvRows.join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'haca_integrations.csv';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 200);
+  }
+
+  _exportIntegrationsMD() {
+    if (!this._integrationsData) return;
+    const data = this._integrationsData;
+    const items = data.integrations || [];
+    const typeLabel = { hacs: 'HACS', custom: 'CUSTOM', core: 'CORE', hacs_card: 'CARD', hacs_theme: 'THEME', app: 'APP' };
+
+    const lines = [];
+    lines.push('# HACA — Integration Monitor Report');
+    lines.push('');
+    lines.push(`Generated: ${new Date().toLocaleString()}`);
+    lines.push('');
+
+    // Summary
+    lines.push('## Summary');
+    lines.push('');
+    lines.push(`| Metric | Count |`);
+    lines.push(`|--------|-------|`);
+    lines.push(`| Total integrations | ${data.total} |`);
+    lines.push(`| HACS integrations | ${data.hacs_count} |`);
+    lines.push(`| Core integrations | ${data.core_count} |`);
+    if (data.custom_count) lines.push(`| Custom integrations | ${data.custom_count} |`);
+    if (data.card_count) lines.push(`| HACS cards | ${data.card_count} |`);
+    if (data.theme_count) lines.push(`| HACS themes | ${data.theme_count} |`);
+    if (data.app_count) lines.push(`| Apps (add-ons) | ${data.app_count} |`);
+    lines.push(`| **Unused** | **${data.unused_count}** |`);
+    if (data.update_count) lines.push(`| Updates available | ${data.update_count} |`);
+    lines.push('');
+
+    // Group by type
+    const groups = {};
+    for (const i of items) {
+      const t = i.type || 'unknown';
+      if (!groups[t]) groups[t] = [];
+      groups[t].push(i);
+    }
+
+    for (const [type, list] of Object.entries(groups)) {
+      lines.push(`## ${typeLabel[type] || type.toUpperCase()} (${list.length})`);
+      lines.push('');
+      lines.push('| Name | Domain | Version | Status | Entities | Age |');
+      lines.push('|------|--------|---------|--------|----------|-----|');
+      for (const i of list) {
+        const status = i.in_use ? '✅ In use' : '❌ Unused';
+        const age = i.age_days != null ? `${i.age_days}d` : '—';
+        const ver = i.version || '—';
+        const upd = i.update_available ? ` → ${i.available_version}` : '';
+        lines.push(`| ${i.name} | \`${i.domain}\` | ${ver}${upd} | ${status} | ${i.entity_count || 0} | ${age} |`);
+      }
+      lines.push('');
+    }
+
+    // Unused section
+    const unused = items.filter(i => !i.in_use);
+    if (unused.length > 0) {
+      lines.push('## ⚠️ Unused Integrations');
+      lines.push('');
+      for (const i of unused) {
+        const orphan = (i.entity_count > 0 && i.config_entries === 0) ? ' — ⚠️ ORPHAN ENTITIES' : '';
+        lines.push(`- **${i.name}** (\`${i.domain}\`) — ${typeLabel[i.type] || i.type}${i.entity_count ? `, ${i.entity_count} entities` : ''}${orphan}`);
+      }
+      lines.push('');
+    }
+
+    const md = lines.join('\n');
+    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'haca_integrations.md';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 200);
+  }
 
 // ── closer.js ──────────────────────────────────────────
 
@@ -9443,6 +10009,12 @@ function renderComplianceTab(items, t, sortBy, filterBy, pagHtml, counts, scanni
       '<td style="padding:10px 8px;vertical-align:top;min-width:110px;max-width:200px;">' +
         '<div style="font-weight:600;font-size:13px;word-break:break-word;">' + alias + '</div>' +
         (eid && eid !== alias ? '<div style="font-size:10px;color:var(--secondary-text-color);font-family:monospace;word-break:break-all;">' + eid + '</div>' : '') +
+        (issue.haca_id ? '<div style="margin-top:4px;display:flex;align-items:center;gap:4px;flex-wrap:wrap;">' +
+          '<span style="font-size:9px;font-weight:600;color:var(--secondary-text-color);">ID =</span>' +
+          '<code class="haca-id-badge-compl" data-haca-id="' + esc(issue.haca_id) + '" title="' + t('issues.click_to_copy_id') + '" style="font-size:9px;font-family:monospace;background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:4px;padding:2px 7px;color:var(--primary-text-color);cursor:pointer;display:inline-flex;align-items:center;gap:3px;line-height:14px;">' +
+            _i('content-copy',9) + ' ' + esc(issue.haca_id) +
+          '</code>' +
+        '</div>' : '') +
       '</td>' +
       '<td style="padding:10px 6px;vertical-align:top;white-space:nowrap;">' +
         '<span style="font-size:11px;background:' + typeBg + ';color:' + typeTxt + ';border-radius:6px;padding:3px 8px;font-weight:600;">' +
@@ -9820,13 +10392,14 @@ function renderMcpSection(mcpStatus, agentStatus, t) {
   var correlations   = (agentStatus && agentStatus.correlations) || [];
   var lastReport     = (agentStatus && agentStatus.last_weekly_report) || null;
 
-  // ── Tool categories — toutes les 58 fonctions _tool_* ─────────────────
+  // ── Tool categories — toutes les 67 fonctions _tool_* ─────────────────
   var toolCategories = [
     {
       icon: '📊', key: 'mcp.cat_audit', fallback: 'Audit HACA',
       color: '',
       tools: ['haca_get_score','haca_get_issues','haca_get_automation',
-              'haca_fix_suggestion','haca_apply_fix','haca_get_batteries','haca_explain_issue']
+              'haca_fix_suggestion','haca_apply_fix','haca_get_batteries','haca_explain_issue',
+              'haca_list_issue_catalog','haca_fix_batch']
     },
     {
       icon: '🔍', key: 'mcp.cat_discovery', fallback: 'Recherche & Découverte',
@@ -10039,6 +10612,78 @@ function renderMcpSection(mcpStatus, agentStatus, t) {
         ' <span style="font-weight:400;opacity:0.7;">(' + _t('mcp.tools_count_label') + ')</span>' +
       '</div>' +
       categoriesHtml +
+
+    '</div>' +
+
+    // ── AI Fix Reference — Issue catalog & prompt examples ──────────────────
+    '<div class="cfg-section" style="margin-top:8px;">' +
+      '<div class="cfg-section-title">' + _i('robot-outline',18) + ' ' +
+        _t('mcp.fix_ref_title', 'AI Fix Reference') +
+      '</div>' +
+      '<p style="margin:6px 0 12px;font-size:13px;color:var(--secondary-text-color);">' +
+        _t('mcp.fix_ref_subtitle', 'Use these references to ask your AI agent to fix HACA issues.') +
+      '</p>' +
+
+      // ID Format
+      '<div style="background:var(--secondary-background-color);border-radius:10px;padding:12px 16px;margin-bottom:10px;">' +
+        '<div style="font-size:12px;font-weight:600;margin-bottom:6px;">' +
+          _i('identifier',14) + ' ' + _t('mcp.fix_ref_id_format', 'Issue ID Format') +
+        '</div>' +
+        '<code style="font-size:13px;font-family:monospace;background:var(--primary-background-color);border:1px solid var(--divider-color);border-radius:6px;padding:6px 12px;display:block;margin-bottom:8px;letter-spacing:0.5px;">HACA-{CATEGORY}-{TYPE}-{HASH6}</code>' +
+        '<div style="font-size:12px;color:var(--secondary-text-color);">' +
+          _t('mcp.fix_ref_id_example', 'Example') + ': <code style="font-family:monospace;background:var(--primary-background-color);padding:2px 6px;border-radius:3px;">HACA-AUTO-NO_ALIAS-a3f2c1</code>' +
+        '</div>' +
+      '</div>' +
+
+      // Categories table
+      '<div style="background:var(--secondary-background-color);border-radius:10px;padding:12px 16px;margin-bottom:10px;">' +
+        '<div style="font-size:12px;font-weight:600;margin-bottom:8px;">' +
+          _i('shape-outline',14) + ' ' + _t('mcp.fix_ref_categories', 'Issue Categories') +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:4px;">' +
+          [
+            ['AUTO','automation'], ['SCRIPT','script'], ['SCENE','scene'], ['BP','blueprint'],
+            ['ENT','entity'], ['HELPER','helper'], ['PERF','performance'], ['SEC','security'],
+            ['DASH','dashboard'], ['COMPL','compliance'], ['REDUND','redundancy']
+          ].map(function(c) {
+            return '<div style="font-size:11px;font-family:monospace;background:var(--primary-background-color);border:1px solid var(--divider-color);border-radius:5px;padding:4px 8px;display:flex;justify-content:space-between;align-items:center;">' +
+              '<span style="font-weight:700;">' + c[0] + '</span>' +
+              '<span style="color:var(--secondary-text-color);font-size:10px;">' + c[1] + '</span>' +
+            '</div>';
+          }).join('') +
+        '</div>' +
+      '</div>' +
+
+      // Severity levels
+      '<div style="background:var(--secondary-background-color);border-radius:10px;padding:12px 16px;margin-bottom:10px;">' +
+        '<div style="font-size:12px;font-weight:600;margin-bottom:6px;">' +
+          _i('alert-circle-outline',14) + ' ' + _t('mcp.fix_ref_severities', 'Severity Levels') +
+        '</div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+          '<span style="font-size:11px;background:var(--error-color,#ef5350);color:white;border-radius:5px;padding:3px 10px;font-weight:600;">HIGH</span>' +
+          '<span style="font-size:11px;background:var(--warning-color,#ff9800);color:white;border-radius:5px;padding:3px 10px;font-weight:600;">MEDIUM</span>' +
+          '<span style="font-size:11px;background:var(--info-color,#2196f3);color:white;border-radius:5px;padding:3px 10px;font-weight:600;">LOW</span>' +
+        '</div>' +
+      '</div>' +
+
+      // Example prompts
+      '<div style="background:var(--secondary-background-color);border-radius:10px;padding:12px 16px;">' +
+        '<div style="font-size:12px;font-weight:600;margin-bottom:8px;">' +
+          _i('chat-outline',14) + ' ' + _t('mcp.fix_ref_examples', 'Example AI Prompts') +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;gap:6px;">' +
+          [
+            _t('mcp.fix_ref_ex1', 'Fix issue HACA-AUTO-NO_ALIAS-a3f2c1'),
+            _t('mcp.fix_ref_ex2', 'Fix all compliance issues of type no_description with low severity'),
+            _t('mcp.fix_ref_ex3', 'Fix all device_id_in_trigger issues'),
+            _t('mcp.fix_ref_ex4', 'Show me the issue catalog'),
+            _t('mcp.fix_ref_ex5', 'Fix all fixable high severity issues'),
+          ].map(function(ex) {
+            return '<code style="font-size:11px;font-family:monospace;background:var(--primary-background-color);border:1px solid var(--divider-color);border-radius:5px;padding:5px 10px;color:var(--primary-text-color);word-break:break-word;">' +
+              '"' + escM(ex) + '"</code>';
+          }).join('') +
+        '</div>' +
+      '</div>' +
 
     '</div>' +
 

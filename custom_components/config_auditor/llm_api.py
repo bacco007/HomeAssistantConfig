@@ -1,4 +1,4 @@
-"""HACA LLM API — expose les 58 outils HACA à n'importe quel agent HA (Mistral, OpenAI…).
+"""HACA LLM API — expose les 67 outils HACA à n'importe quel agent HA (Mistral, OpenAI…).
 
 Configuration utilisateur (une seule fois) :
   HA Settings → Voice Assistants → [votre agent] → LLM API → HACA
@@ -115,7 +115,7 @@ class HacaLLMAPI(llm.API):
     async def async_get_api_instance(
         self, llm_context: llm.LLMContext
     ) -> llm.APIInstance:
-        """Construit l'instance avec le contexte HA courant et les 58 outils."""
+        """Construit l'instance avec le contexte HA courant et les 67 outils."""
         from .mcp_server import MCP_TOOLS
 
         api_prompt = await self._build_api_prompt()
@@ -183,7 +183,9 @@ class HacaLLMAPI(llm.API):
             f"- {p('rule_explain')}\n"
             f"- {p('rule_confirm')}\n"
             f"- {p('rule_use_tools')}\n"
+            f"- {p('rule_use_haca_id')}\n"
             f"- {p('rule_proactive')}\n\n"
+            f"{p('workflow_fix_title')}\n{p('workflow_fix')}\n\n"
             f"{p('workflow_lovelace_title')}\n{p('workflow_lovelace')}\n\n"
             f"{p('workflow_auto_title')}\n{p('workflow_auto')}\n\n"
             f"{p('workflow_scripts_title')}\n{p('workflow_scripts')}\n"

@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant konfigurationsgranskare",
-    "version": "v1.6.3",
+    "version": "v1.7.0",
     "buttons": {
       "scan_all": "Fullständig skanning",
       "automations": "Automationer",
@@ -141,7 +141,9 @@
       "recorder_orphans": "Databas-föräldralösa",
       "recorder_orphans_desc": "Bortkastat utrymme",
       "helpers": "Hjälpare",
-      "helpers_desc": "Input/timer/räknare problem"
+      "helpers_desc": "Input/timer/räknare problem",
+      "integrations": "Integrationer",
+      "integrations_desc": "Installerade komponenter"
     },
     "tabs": {
       "all": "Alla",
@@ -168,7 +170,8 @@
       "helpers": "Hjälpare",
       "area_complexity": "Area Map",
       "redundancy": "Redundancy",
-      "recorder_impact": "DB Impact"
+      "recorder_impact": "DB Impact",
+      "integrations": "Integrationer"
     },
     "sections": {
       "all_issues": "Alla problem",
@@ -386,8 +389,8 @@
       "fix": "Åtgärda",
       "page": "Sida"
     },
-    "complex_automation": "Komplex automatisering (poäng {score}): {triggers} utlösare, {conditions} villkor",
-    "god_automation": "🚨 Gud-automatisering (poäng {score}): {triggers} utlösare, {conditions} villkor",
+    "complex_automation": "Komplex automatisering (poäng {score}): {triggers} utlösare, {conditions} villkor, {actions} åtgärder, {templates} mallar",
+    "god_automation": "🚨 Gud-automatisering (poäng {score}): {triggers} utlösare, {conditions} villkor, {actions} åtgärder, {templates} mallar — bör delas upp",
     "complex_automation_recommendation": "Extrahera några åtgärder till återanvändbara skript för att minska komplexiteten",
     "god_automation_recommendation": "Denna automatisering är för komplex. Dela upp den i flera specialiserade automatiseringar.",
     "battery": {
@@ -438,7 +441,11 @@
       "duplicate_jaccard": "🔁 Jaccard similarity: {pct}%",
       "duplicate_exact": "🔴 Exakt duplikat",
       "segment_issues": "Problem",
-      "segment_batteries": "Batterier"
+      "segment_batteries": "Batterier",
+      "click_to_copy_id": "Klicka för att kopiera detta ID",
+      "id_copied": "ID {id} kopierat till urklipp",
+      "fixable": "Åtgärdbar",
+      "not_fixable": "Ej åtgärdbar"
     },
     "zombie": {
       "searching": "Söker efter förslag…",
@@ -962,7 +969,7 @@
       "token_link": "Profil → Säkerhet",
       "agent_configs_title": "Konfiguration per AI-agent",
       "tools_exposed": "Tillgängliga verktyg",
-      "tools_count_label": "65 verktyg",
+      "tools_count_label": "67 verktyg",
       "correlations_detected": "Korrelationer upptäckta",
       "copy": "Kopiera",
       "hint_cursor": "Cursor → Settings → Tools & MCP → + Add new MCP server | Fil: ~/.cursor/mcp.json",
@@ -985,7 +992,19 @@
       "guide_restart_detail": "Arkiv → Avsluta (inte bara stänga fönstret), starta sedan om.",
       "guide_win_path_detail": "dvs. C:\\Users\\<ANVÄNDARE>\\AppData\\Roaming\\Claude\\",
       "guide_paste_in_agent": "Klistra in i agentkonfigurationen",
-      "guide_antigravity_detail": "I Antigravity: Settings → MCP Servers → Add → klistra in JSON ovan. I Gemini CLI: lägg till i ~/.gemini/settings.json."
+      "guide_antigravity_detail": "I Antigravity: Settings → MCP Servers → Add → klistra in JSON ovan. I Gemini CLI: lägg till i ~/.gemini/settings.json.",
+      "fix_ref_title": "AI Fix-referens",
+      "fix_ref_subtitle": "Använd dessa referenser för att be din AI-agent åtgärda HACA-problem. Varje problem har ett unikt ID som du kan kopiera genom att klicka.",
+      "fix_ref_id_format": "ID-format",
+      "fix_ref_id_example": "Exempel",
+      "fix_ref_categories": "Problemkategorier",
+      "fix_ref_severities": "Allvarlighetsgrader",
+      "fix_ref_examples": "Exempel på AI-prompts",
+      "fix_ref_ex1": "Åtgärda problem HACA-AUTO-NO_ALIAS-a3f2c1",
+      "fix_ref_ex2": "Åtgärda alla compliance-problem av typen no_description med låg allvarlighetsgrad",
+      "fix_ref_ex3": "Åtgärda alla device_id_in_trigger-problem",
+      "fix_ref_ex4": "Visa mig problemkatalogen",
+      "fix_ref_ex5": "Åtgärda alla åtgärdbara problem med hög allvarlighetsgrad"
     },
     "agent": {
       "title": "Proaktiv AI-agent",
@@ -1031,7 +1050,8 @@
       "config": "Konfiguration — skanningsinställningar, trösklar och ignorerade problemtyper",
       "area_complexity": "Complexity heatmap by area",
       "redundancy": "Redundant automations",
-      "recorder_impact": "Recorder DB impact per automation"
+      "recorder_impact": "Recorder DB impact per automation",
+      "integrations": "Integrationsövervakning"
     },
     "battery_scan_note": "Ändringar träder i kraft vid nästa skanning — ingen omstart krävs.",
     "battery_predict": {
@@ -1277,10 +1297,10 @@
       },
       "redundancy": {
         "blueprint_problem": "denna automatisering är en del av en grupp med ≥3 strukturellt identiska automatiseringar — kandidat för blueprint",
-        "blueprint_step1": "1. Förklara vad ett HA-blueprint är och varför centralisering av dessa automatiseringar förenklar underhållet",
-        "blueprint_step2": "2. Visa mig nuvarande YAML för denna automatisering (📄 Nuvarande YAML:) och det föreslagna generiska blueprintet (✅ Föreslagen blueprint:)",
-        "blueprint_choice_proceed": "✅  OK, skapa blueprint och migrera automatiseringar",
-        "blueprint_choice_backup": "📋  Gör säkerhetskopia först, skapa sedan blueprint",
+        "blueprint_step1": "1. Läs automationens YAML (se kommando ovan), analysera strukturen och identifiera parametriserbara element",
+        "blueprint_step2": "2. Generera en generisk blueprint-YAML från denna automation. Visa det föreslagna blueprint (✅ Föreslagen blueprint:)",
+        "blueprint_choice_proceed": "✅  OK, skapa blueprint nu med ha_create_blueprint() och migrera automationerna",
+        "blueprint_choice_backup": "📋  Gör först backup med ha_backup_create(), skapa sedan blueprint med ha_create_blueprint()",
         "native_problem": "denna automatisering återimplementerar manuellt en funktion som redan är inbyggd i HA: \"{detail}\"",
         "native_step1": "1. Förklara varför det är bättre att använda den native HA-funktionen",
         "native_step2": "2. Visa mig nuvarande YAML (📄 Nuvarande YAML:) och hur den motsvarande native funktionen aktiveras (✅ Föreslagen native konfiguration:)",
@@ -1310,7 +1330,8 @@
         "split_step2": "2. Visa mig nuvarande YAML och föreslå uppdelning i separata automatiseringar (✅ Föreslagen YAML:)",
         "split_choice_proceed": "✅  OK, dela upp i separata automatiseringar",
         "split_choice_backup": "📋  Gör säkerhetskopia först, dela sedan upp"
-      }
+      },
+      "issue_id_label": "Problem-ID"
     },
     "dashboard": {
       "title": "HACA Översikt",
@@ -1339,6 +1360,45 @@
       "history_title": "Hälsopoäng — Senaste 7 dagarna",
       "open_panel": "Öppna HACA Panel",
       "created_toast": "HACA Dashboard skapat!"
+    },
+    "integrations": {
+      "loading": "Skannar integrationer...",
+      "error": "Fel vid laddning av integrationer",
+      "run_scan_first": "Klicka på fliken Integrationer för att skanna dina integrationer.",
+      "no_hacs": "HACS inte upptäckt — bara kärn- och anpassade integrationer visas.",
+      "search_placeholder": "Sök integrationer...",
+      "sort_name": "Sortera efter namn",
+      "sort_type": "Sortera efter typ",
+      "sort_entities": "Sortera efter entiteter",
+      "sort_age": "Sortera efter ålder",
+      "stat_total": "Totalt",
+      "stat_cards": "Kort",
+      "stat_themes": "Teman",
+      "stat_unused": "Oanvända",
+      "stat_updates": "Uppdateringar",
+      "in_use": "Används",
+      "unused": "Oanvänd",
+      "entities": "entiteter",
+      "age_days": "{days} dagar",
+      "docs": "Dok",
+      "settings": "Inställningar",
+      "showing": "Visar {count} av {total}",
+      "none_found": "Inga integrationer matchar det aktuella filtret.",
+      "orphan": "Föräldralös",
+      "orphan_tooltip": "Har entiteter men ingen aktiv config entry",
+      "ask_ai": "AI",
+      "export_csv": "Exportera CSV",
+      "ai_prompt_header": "Integrationen \"{name}\" (domän: {domain}) är installerad i Home Assistant.",
+      "ai_prompt_type": "Typ: {type}",
+      "ai_prompt_unused": "Denna integration har INGEN aktiv config entry — den verkar oanvänd.",
+      "ai_prompt_orphan": "Denna integration har {count} entiteter men INGEN aktiv config entry — föräldralösa entiteter upptäckta.",
+      "ai_prompt_instructions": "1. Kontrollera om denna integration används av automatiseringar, skript eller dashboards.\n2. Om oanvänd, förklara hur den tas bort säkert.\n3. Vid föräldralösa entiteter, förklara hur de rensas.\n4. Lista beroenden som kan gå sönder vid borttagning.",
+      "export_md": "Exportera som Markdown",
+      "stat_apps": "Appar",
+      "no_supervisor": "Supervisor inte upptäckt — tillägg (appar) visas inte.",
+      "disabled": "Inaktiverad",
+      "disabled_tooltip": "Denna integration är avsiktligt inaktiverad — kontrollera om det fortfarande behövs",
+      "stat_disabled": "Inaktiverade"
     }
   },
   "analyzer": {
@@ -1494,7 +1554,10 @@
     "group_all_unavailable": "Alla medlemmar i gruppen '{entity_id}' är otillgängliga",
     "group_check_availability": "Kontrollera varför medlemsentiteterna är otillgängliga",
     "group_nested_deep": "Gruppen '{entity_id}' är {depth} nivåer djupt kapslad (prestandapåverkan)",
-    "group_flatten": "Platta ut grupphierarkin till maximalt 2 kapslingsnivåer"
+    "group_flatten": "Platta ut grupphierarkin till maximalt 2 kapslingsnivåer",
+    "entity_unknown_state_referenced": "Entitet har okänt tillstånd och används av {count} automatisering(ar)",
+    "noisy_entity": "Brusig entitet: {count} tillståndsändringar på 24h",
+    "noisy_entity_recommendation": "Överväg att exkludera från recorder eller lägga till ett tillståndsfilter för att minska databasskrivningar"
   },
   "stats": {
     "dashboards": "Instrumentpaneler",
@@ -1678,6 +1741,9 @@
     "workflow_auto_title": "Automations workflow:",
     "workflow_auto": "1. ha_get_entities(domain='automation') to list\n2. haca_get_automation(entity_id) to read full YAML\n3. ha_create_automation() / ha_update_automation() to create/modify",
     "workflow_scripts_title": "Scripts workflow:",
-    "workflow_scripts": "1. ha_get_entities(domain='script') to list\n2. ha_get_script(entity_id) to read\n3. ha_create_script() / ha_update_script() to create/modify"
+    "workflow_scripts": "1. ha_get_entities(domain='script') to list\n2. ha_get_script(entity_id) to read\n3. ha_create_script() / ha_update_script() to create/modify",
+    "workflow_fix_title": "Arbetsflöde för problemlösning:",
+    "workflow_fix": "1. haca_list_issue_catalog() för att upptäcka kategorier, typer och åtgärdbara problem\n2. haca_get_issues(category?, type?, severity?) för att lista specifika problem\n3. haca_fix_batch(issue_id='HACA-XXX-TYPE-hash') för att åtgärda ett enskilt problem (dry_run=true standard)\n4. haca_fix_batch(category?, type?, severity?) för massåtgärd\n5. Alltid förhandsvisa med dry_run=true först, sedan dry_run=false efter användarbekräftelse\nID-format: HACA-{CATEGORY}-{TYPE}-{HASH6}, t.ex. HACA-AUTO-NO_ALIAS-a3f2c1",
+    "rule_use_haca_id": "Varje problem har ett unikt haca_id (format: HACA-CAT-TYPE-hash). Använd ALLTID det angivna haca_id — HITTA ALDRIG PÅ ett ID."
   }
 }

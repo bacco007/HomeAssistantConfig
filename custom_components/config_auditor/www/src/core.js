@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   if (customElements.get('haca-panel')) return; // already loaded, skip entirely
-  const HACA_VERSION = '1.6.1'; // build marker
+  const HACA_VERSION = '1.7.0'; // build marker
 
   // Dans l'iframe (embed_iframe:true), ha-icon n'est pas enregistré.
   // On copie la définition depuis le document parent où HA l'a déjà défini.
@@ -9,7 +9,7 @@
     try {
       const ParentHaIcon = window.parent.customElements.get('ha-icon');
       if (ParentHaIcon) customElements.define('ha-icon', ParentHaIcon);
-    } catch(_) {}
+    } catch (_) { }
   }
 
   // Table des paths MDI — remplace ha-icon pour éviter les problèmes dans l'iframe
@@ -89,6 +89,17 @@
     'view-dashboard-outline': 'M19,5V7H15V5H19M9,5V11H5V5H9M19,13V19H15V13H19M9,17V19H5V17H9M21,3H13V9H21V3M11,3H3V13H11V3M21,11H13V21H21V11M11,15H3V21H11V15Z',
     'view-list': 'M9,5V9H21V5M9,19H21V15H9M9,14H21V10H9M4,9H8V5H4M4,19H8V15H4M4,14H8V10H4V14Z',
     'zip-box-outline': 'M12 17V15H14V17H12M14 13V11H12V13H14M14 9V7H12V9H14M10 11H12V9H10V11M10 15H12V13H10V15M21 5V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V5C3 3.9 3.9 3 5 3H19C20.1 3 21 3.9 21 5M19 5H12V7H10V5H5V19H19V5Z',
+    'code-tags': 'M14.6,16.6L19.2,12L14.6,7.4L16,6L22,12L16,18L14.6,16.6M9.4,16.6L4.8,12L9.4,7.4L8,6L2,12L8,18L9.4,16.6Z',
+    'card-outline': 'M21,3H3C1.9,3 1,3.9 1,5V19C1,20.1 1.9,21 3,21H21C22.1,21 23,20.1 23,19V5C23,3.9 22.1,3 21,3M21,19H3V5H21V19Z',
+    'counter': 'M4,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M4,6V18H20V6H4M13,7.5H18V9.5H13V7.5M13,11H18V13H13V11M13,14.5H18V16.5H13V14.5M6.5,7.5A2,2 0 0,1 8.5,9.5A2,2 0 0,1 6.5,11.5A2,2 0 0,1 4.5,9.5A2,2 0 0,1 6.5,7.5M6.5,13C8.5,13 10.5,14 10.5,15V16.5H2.5V15C2.5,14 4.5,13 6.5,13Z',
+    'calendar-outline': 'M19,3H18V1H16V3H8V1H6V3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M19,19H5V9H19V19M19,7H5V5H19V7Z',
+    'arrow-up-circle': 'M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,17V11H15L11.5,6L8,11H11V17H12Z',
+    'alert': 'M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z',
+    'download': 'M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z',
+    'chevron-left': 'M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z',
+    'chevron-right': 'M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z',
+    'home-assistant': 'M21.8,13H20V21H18V13H14.3L12,5.4L9.7,13H6V21H4V13H2.2L12,1L21.8,13Z',
+    'package-variant': 'M2,10.96C1.5,10.68 1.5,10.23 2,9.96L12,4.46L22,9.96C22.5,10.23 22.5,10.68 22,10.96L12,16.46L2,10.96M12,4.46L2,9.96L12,15.46L22,9.96L12,4.46M12,18.46L2,12.96V14.96L12,20.46L22,14.96V12.96L12,18.46Z',
     'arrow-decision': 'M18,20A2,2 0 0,0 20,18A2,2 0 0,0 18,16C17.5,16 17.05,16.19 16.71,16.5L9.91,12.08C9.96,11.89 10,11.7 10,11.5C10,11.3 9.96,11.11 9.91,10.92L16.7,6.5C17.05,6.81 17.5,7 18,7A2,2 0 0,0 20,5A2,2 0 0,0 18,3A2,2 0 0,0 16,5C16,5.2 16.04,5.39 16.09,5.58L9.3,10C8.95,9.69 8.5,9.5 8,9.5A2,2 0 0,0 6,11.5A2,2 0 0,0 8,13.5C8.5,13.5 8.95,13.31 9.3,13L16.09,17.42C16.04,17.61 16,17.8 16,18A2,2 0 0,0 18,20Z',
     'blueprint': 'M5,3H19A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3M5,5V19H19V5H5M7,7H17V9H7V7M7,11H17V13H7V11M7,15H14V17H7V15Z',
     'content-copy': 'M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z',
@@ -107,7 +118,7 @@
     'sort-ascending': 'M19 17H22L18 21L14 17H17V3H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z',
     'sort-descending': 'M19 7H22L18 3L14 7H17V21H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z',
     'page-first': 'M18.41 16.59L13.82 12L18.41 7.41L17 6L11 12L17 18L18.41 16.59M6 6H8V18H6V6Z',
-    'page-last':  'M5.59 7.41L10.18 12L5.59 16.59L7 18L13 12L7 6L5.59 7.41M16 6H18V18H16V6Z',
+    'page-last': 'M5.59 7.41L10.18 12L5.59 16.59L7 18L13 12L7 6L5.59 7.41M16 6H18V18H16V6Z',
     'cog-outline': 'M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10M10,22C9.75,22 9.54,21.82 9.5,21.58L9.13,18.93C8.5,18.68 7.96,18.34 7.44,17.94L4.95,18.95C4.73,19.03 4.46,18.95 4.34,18.73L2.34,15.27C2.21,15.05 2.27,14.78 2.46,14.63L4.57,12.97L4.5,12L4.57,11L2.46,9.37C2.27,9.22 2.21,8.95 2.34,8.73L4.34,5.27C4.46,5.05 4.73,4.96 4.95,5.05L7.44,6.05C7.96,5.66 8.5,5.32 9.13,5.07L9.5,2.42C9.54,2.18 9.75,2 10,2H14C14.25,2 14.46,2.18 14.5,2.42L14.87,5.07C15.5,5.32 16.04,5.66 16.56,6.05L19.05,5.05C19.27,4.96 19.54,5.05 19.66,5.27L21.66,8.73C21.79,8.95 21.73,9.22 21.54,9.37L19.43,11L19.5,12L19.43,13L21.54,14.63C21.73,14.78 21.79,15.05 21.66,15.27L19.66,18.73C19.54,18.95 19.27,19.04 19.05,18.95L16.56,17.95C16.04,18.34 15.5,18.68 14.87,18.93L14.5,21.58C14.46,21.82 14.25,22 14,22H10M11.25,4L10.88,6.61C9.68,6.86 8.62,7.5 7.85,8.39L5.44,7.35L4.69,8.65L6.8,10.2C6.4,11.37 6.4,12.64 6.8,13.8L4.68,15.36L5.43,16.66L7.86,15.62C8.63,16.5 9.68,17.14 10.87,17.38L11.24,20H12.76L13.13,17.39C14.32,17.14 15.37,16.5 16.14,15.62L18.57,16.66L19.32,15.36L17.2,13.81C17.6,12.64 17.6,11.37 17.2,10.2L19.31,8.65L18.56,7.35L16.15,8.39C15.38,7.5 14.32,6.86 13.12,6.62L12.75,4H11.25Z',
     'menu': 'M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z',
   };
@@ -118,6 +129,42 @@
   }
   // Exposer globalement pour config_tab.js, battery.js et autres modules
   window._icon = _icon;
+
+  // ── HACA ID utilities (shared across issues, compliance, redundancy) ───
+  window._hacaHash6 = function (str) {
+    // Simple deterministic 6-char hex hash (matches Python md5[:6])
+    var h = 0x811c9dc5;
+    for (var i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 0x01000193);
+    }
+    var hex = ('000000' + ((h >>> 0).toString(16))).slice(-8);
+    return hex.substring(0, 6);
+  };
+
+  window._hacaCopyId = function (id, toastFn, successMsg) {
+    // Robust clipboard copy with fallback for HA shadow DOM / iframe contexts
+    function fallbackCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) { /* ignore */ }
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(id).then(function () {
+        if (toastFn) toastFn(successMsg || ('ID ' + id + ' copied'));
+      }).catch(function () {
+        fallbackCopy(id);
+        if (toastFn) toastFn(successMsg || ('ID ' + id + ' copied'));
+      });
+    } else {
+      fallbackCopy(id);
+      if (toastFn) toastFn(successMsg || ('ID ' + id + ' copied'));
+    }
+  };
 
   // Cache partagé entre toutes les instances de haca-panel (survive les navigations HA).
   // HA recrée l'élément à chaque navigation → les propriétés d'instance sont perdues.
@@ -130,10 +177,10 @@
 
   // ── Surveillance log ────────────────────────────────────────────────────────
   // Persiste dans window._HACA_LOG pour survivre aux navigations dans le même
-  function _hlog() {} // logging désactivé en production
+  function _hlog() { } // logging désactivé en production
   if (!window._HACA_STATE) window._HACA_STATE = {
-    booting:false, ready:false, rendered:false, hass:false,
-    splash:false, retry:false, errors:0
+    booting: false, ready: false, rendered: false, hass: false,
+    splash: false, retry: false, errors: 0
   };
 
 
@@ -145,8 +192,8 @@
       this._lastConnection = null;
       this._language = 'en';
       this._connected = false;
-      this._hass       = null;
-      this._panel      = null;
+      this._hass = null;
+      this._panel = null;
       // Le constructor ne fait RIEN d'autre : l'élément n'est pas encore dans le DOM.
       // Tout démarre dans connectedCallback().
       _hlog('INF', 'constructor: element created');
@@ -203,7 +250,7 @@
         this._rejectionHandler = (event) => {
           const msg = event.reason?.message || String(event.reason);
           if (msg.includes('Subscription not found') || msg.includes('not_found') ||
-              msg.includes('Connection lost') || msg.includes('Lost connection')) {
+            msg.includes('Connection lost') || msg.includes('Lost connection')) {
             event.preventDefault();
             this._unsubNewIssues = null;
           }
@@ -336,7 +383,7 @@
                 parts.push(rule.cssText);
               }
             }
-          } catch(_) {} // feuilles cross-origin ignorées
+          } catch (_) { } // feuilles cross-origin ignorées
         }
         if (!parts.length) return;
 
@@ -402,7 +449,7 @@
             height: 20px;
           }
         `;
-      } catch(_) {}
+      } catch (_) { }
     }
 
     _updateLogo() {
@@ -459,10 +506,10 @@
       const fg = getComputedStyle(document.documentElement)
         .getPropertyValue('--primary-color').trim() || '#03a9f4';
       el.style.cssText = [
-        'position:fixed','inset:0','z-index:9999',
-        'display:flex','flex-direction:column','align-items:center','justify-content:center',
+        'position:fixed', 'inset:0', 'z-index:9999',
+        'display:flex', 'flex-direction:column', 'align-items:center', 'justify-content:center',
         `background:${bg}`,
-        'gap:20px','font-family:var(--paper-font-body1_-_font-family,sans-serif)',
+        'gap:20px', 'font-family:var(--paper-font-body1_-_font-family,sans-serif)',
       ].join(';');
       el.innerHTML = `
         <style>
@@ -525,8 +572,8 @@
     _tryBoot() {
       // Préconditions : l'élément doit être dans le DOM, avec hass et panel
       if (!this._connected) return;
-      if (!this._hass)      return;
-      if (!this._panel)     return;
+      if (!this._hass) return;
+      if (!this._panel) return;
 
       if (this._fullyReady) {
         // Déjà initialisé — panel déjà rendu, données en cache → affichage immédiat
@@ -852,6 +899,9 @@
         .tab-badge-wrap.warning { background: var(--warning-color, #ff9800); }
         .tabs .tab:hover { color: var(--primary-text-color); background: rgba(0,0,0,0.05); }
         .tabs .tab.active { background: var(--card-background-color); color: var(--primary-color); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .tabs .tab.tab-config { background: #387aa0 !important; color: white !important; }
+        .tabs .tab.tab-config:hover { background: #2d6485 !important; color: white !important; }
+        .tabs .tab.tab-config.active { background: #2d6485 !important; color: white !important; box-shadow: 0 4px 12px rgba(56,122,160,0.35); }
 
         /* ── SUB-TABS (inside Issues tab) ────────── */
         .subtabs-container {
@@ -1296,6 +1346,14 @@
             <div class="stat-value" id="recorder-orphan-count">—</div>
             <div class="stat-desc" id="recorder-orphan-mb"></div>
           </div>
+          <div class="stat-card" id="integrations-stat-btn" style="border-left: 5px solid #9c27b0; cursor:pointer;">
+            <div class="stat-header">
+                <span class="stat-label">${this.t('stats.integrations')}</span>
+                ${_icon("puzzle")}
+            </div>
+            <div class="stat-value" id="integrations-count">—</div>
+            <div class="stat-desc">${this.t('stats.integrations_desc')}</div>
+          </div>
         </div>
         
         <div class="tabs-container">
@@ -1338,7 +1396,11 @@
               <span class="tab-label">${this.t('tabs.compliance')}</span>
               <span id="tab-badge-compliance" class="tab-badge-wrap warning" style="display:none;"></span>
             </button>
-            <button class="tab" data-tab="config" title="${this.t('tab_tooltips.config')}">
+            <button class="tab" data-tab="integrations" title="${this.t('tab_tooltips.integrations')}">
+              ${_icon("puzzle")}
+              <span class="tab-label">${this.t('tabs.integrations')}</span>
+            </button>
+            <button class="tab tab-config" data-tab="config" title="${this.t('tab_tooltips.config')}" style="margin-left:auto;background:#387aa0;color:white;border-radius:8px;">
               ${_icon("tune-variant")}
               <span class="tab-label">${this.t('tabs.config')}</span>
             </button>
@@ -2013,8 +2075,8 @@
               <div id="chat-examples-panel" style="flex-shrink:0;border-bottom:1px solid var(--divider-color);background:var(--secondary-background-color);">
                 <button id="chat-examples-toggle"
                   style="width:100%;padding:8px 20px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;color:var(--primary-text-color);font-size:12px;font-weight:600;">
-                  <span style="display:flex;align-items:center;gap:6px;">${_icon('lightbulb-on-outline',14)} ${this.t('chat.examples_title')}</span>
-                  <span id="chat-examples-chevron" style="transition:transform 0.2s;">${_icon('chevron-down',14)}</span>
+                  <span style="display:flex;align-items:center;gap:6px;">${_icon('lightbulb-on-outline', 14)} ${this.t('chat.examples_title')}</span>
+                  <span id="chat-examples-chevron" style="transition:transform 0.2s;">${_icon('chevron-down', 14)}</span>
                 </button>
                 <div id="chat-examples-body" style="display:none;padding:0 16px 12px;display:flex;flex-wrap:wrap;gap:6px;">
                   ${this._buildExampleChips()}
@@ -2041,6 +2103,13 @@
               </div>
             </div>
           </div><!-- /tab-chat -->
+
+          <!-- TAB INTEGRATIONS -->
+          <div id="tab-integrations" class="tab-content">
+            <div style="padding:20px;" id="integrations-container">
+              <div style="text-align:center;padding:32px;color:var(--secondary-text-color);">${this.t('integrations.run_scan_first')}</div>
+            </div>
+          </div><!-- /tab-integrations -->
 
           <!-- TAB CONFIGURATION -->
           <div id="tab-config" class="tab-content">
@@ -2128,7 +2197,7 @@
 
       // Chat examples panel — toggle collapse
       const exToggle = this.shadowRoot.querySelector('#chat-examples-toggle');
-      const exBody   = this.shadowRoot.querySelector('#chat-examples-body');
+      const exBody = this.shadowRoot.querySelector('#chat-examples-body');
       const exChevron = this.shadowRoot.querySelector('#chat-examples-chevron');
       if (exToggle && exBody) {
         // Start collapsed
@@ -2171,6 +2240,9 @@
 
       // "Vue complète" in batteries mini-panel → go to batteries tab
       this.shadowRoot.querySelector('#goto-batteries-tab')?.addEventListener('click', () => this.switchTab('batteries'));
+
+      // Integrations stat card → go to integrations tab
+      this.shadowRoot.querySelector('#integrations-stat-btn')?.addEventListener('click', () => this.switchTab('integrations'));
 
       // Graph toolbar
       this.shadowRoot.querySelector('#graph-reset-btn')?.addEventListener('click', () => this._graphResetZoom());
@@ -2598,7 +2670,7 @@
       if (this._lastChatTime && (now - this._lastChatTime) < 3000) {
         const wait = Math.ceil((3000 - (now - this._lastChatTime)) / 1000);
         this._appendChatMsg('assistant',
-          `⏳ ${this.t('chat.rate_limit', {wait}) || `Wait ${wait}s`}`);
+          `⏳ ${this.t('chat.rate_limit', { wait }) || `Wait ${wait}s`}`);
         return;
       }
       this._lastChatTime = now;
@@ -2640,6 +2712,7 @@
       this._activeTab = tabName;
       if (tabName === 'config') this.loadConfigTab();
       if (tabName === 'compliance') this.loadComplianceTab();
+      if (tabName === 'integrations') this.loadIntegrations();
     }
 
     // Ouvre le tab Chat, pré-remplit et envoie automatiquement le message
@@ -2728,7 +2801,7 @@
                     type: 'haca/save_options',
                     options: { report_frequency: freqSel.value },
                   });
-                } catch(e) {
+                } catch (e) {
                   console.warn('[HACA] save report_frequency error', e);
                 }
               });
@@ -2756,8 +2829,8 @@
       if (!el) return;
 
       // État local persistant sur l'instance
-      if (!this._complianceAll)    this._complianceAll    = null;
-      if (!this._complianceSort)   this._complianceSort   = 'severity';
+      if (!this._complianceAll) this._complianceAll = null;
+      if (!this._complianceSort) this._complianceSort = 'severity';
       if (!this._complianceFilter) this._complianceFilter = 'all';
 
       const PAG_ID = 'compliance-list';
@@ -2782,13 +2855,13 @@
         issues = issues.filter(i => i.severity === this._complianceFilter);
       }
       // Tri
-      const sev = {high:0, medium:1, low:2};
+      const sev = { high: 0, medium: 1, low: 2 };
       if (this._complianceSort === 'severity') {
-        issues.sort((a,b) => (sev[a.severity]||2) - (sev[b.severity]||2));
+        issues.sort((a, b) => (sev[a.severity] || 2) - (sev[b.severity] || 2));
       } else if (this._complianceSort === 'type') {
-        issues.sort((a,b) => (a.type||'').localeCompare(b.type||''));
+        issues.sort((a, b) => (a.type || '').localeCompare(b.type || ''));
       } else if (this._complianceSort === 'entity') {
-        issues.sort((a,b) => (a.alias||a.entity_id||'').localeCompare(b.alias||b.entity_id||''));
+        issues.sort((a, b) => (a.alias || a.entity_id || '').localeCompare(b.alias || b.entity_id || ''));
       }
       return issues;
     }
@@ -2802,15 +2875,15 @@
       const all = this._complianceAll;
       // Counts sur la totalité (pas filtrée) pour les stat cards
       const counts = {
-        total:  all.length,
-        high:   all.filter(i => i.severity === 'high').length,
+        total: all.length,
+        high: all.filter(i => i.severity === 'high').length,
         medium: all.filter(i => i.severity === 'medium').length,
-        low:    all.filter(i => i.severity === 'low').length,
+        low: all.filter(i => i.severity === 'low').length,
         _area_truncated: all.some(i => i.type === 'compliance_entity_no_area_bulk'),
       };
 
       const filtered = this._complianceSortedFiltered();
-      const st    = this._pagState(PAG_ID);
+      const st = this._pagState(PAG_ID);
       const paged = this._pagSlice(filtered, st.page, st.pageSize);
       const pagHtml = this._pagHTML(PAG_ID, filtered.length, st.page, st.pageSize);
 
@@ -2829,7 +2902,7 @@
       el.querySelectorAll('.compliance-sort-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           this._complianceSort = btn.dataset.sort;
-          this._pagSet(PAG_ID, {page: 0}, () => this._renderCompliancePage(el, PAG_ID));
+          this._pagSet(PAG_ID, { page: 0 }, () => this._renderCompliancePage(el, PAG_ID));
         });
       });
 
@@ -2837,7 +2910,7 @@
       el.querySelectorAll('.compliance-filter-card').forEach(card => {
         card.addEventListener('click', () => {
           this._complianceFilter = card.dataset.filter;
-          this._pagSet(PAG_ID, {page: 0}, () => this._renderCompliancePage(el, PAG_ID));
+          this._pagSet(PAG_ID, { page: 0 }, () => this._renderCompliancePage(el, PAG_ID));
         });
       });
 
@@ -2846,6 +2919,19 @@
         btn.addEventListener('click', () => {
           const eid = btn.dataset.eid;
           if (eid) this._openMoreInfo(eid);
+        });
+      });
+
+      // Click-to-copy for HACA issue IDs in compliance tab
+      el.querySelectorAll('.haca-id-badge-compl').forEach(badge => {
+        badge.addEventListener('click', () => {
+          const id = badge.dataset.hacaId;
+          if (id) {
+            window._hacaCopyId(id,
+              (msg) => this._showToast(msg),
+              this.t('issues.id_copied', { id: id })
+            );
+          }
         });
       });
 
@@ -3034,6 +3120,7 @@
         window._HACA_STATE.errors = 0;
         // Invalider le cache conformité (nouvelles données = rescan)
         this._complianceAll = null;
+        this._integrationsLoaded = false;
         _hlog('INF', 'loadData(): SUCCESS score=' + result?.health_score + '%');
         this.updateUI(result);
         // Hide the boot splash on first successful data load
@@ -3054,8 +3141,8 @@
           this._dataErrorCount = (this._dataErrorCount || 0) + 1;
           window._HACA_STATE.errors = this._dataErrorCount;
           const reason = isHacaNotReady ? 'HACA not ready (unknown_command)' : 'WS reconnecting';
-          _hlog('WRN', 'loadData(): FAILED #' + this._dataErrorCount + ' — ' + reason + ' | msg=' + msg.substring(0,80));
-            // Splash uniquement pendant le boot initial (pas encore fullyReady).
+          _hlog('WRN', 'loadData(): FAILED #' + this._dataErrorCount + ' — ' + reason + ' | msg=' + msg.substring(0, 80));
+          // Splash uniquement pendant le boot initial (pas encore fullyReady).
           // Post-boot, une erreur WS est silencieuse — le watchdog auto-refresh retentera.
           if (!this._fullyReady) {
             this._showBootSplash();
@@ -3064,7 +3151,7 @@
             window._HACA_STATE.retry = true;
             this._bootRetryTimer = setInterval(() => {
               if (!this._connected || !this._hass) return;
-                    // Ne pas effacer le timer ici : loadData() retourne toujours undefined.
+              // Ne pas effacer le timer ici : loadData() retourne toujours undefined.
               // On efface uniquement quand le boot splash a disparu (= chargement réussi),
               // ce qui est détecté par _hideBootSplash() appelé dans loadData() au succès.
               this.loadData();
@@ -3113,7 +3200,7 @@
           const label = this.t('misc.last_scan') || 'Last scan';
           tsEl.innerHTML = `<span style="font-size:11px;opacity:0.6;">${label}</span><br><span style="font-weight:600;">${dd}/${mm}/${yyyy} ${hh}:${mn}</span>`;
           tsEl.title = d.toLocaleString();
-        } catch(e) { tsEl.textContent = ''; }
+        } catch (e) { tsEl.textContent = ''; }
       }
 
       // Health score card colour
@@ -3325,7 +3412,7 @@
       </table>
       <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
         <span style="font-size:12px;color:var(--secondary-text-color);">
-          ${this.t('recorder.estimated_total', {mb, count})}
+          ${this.t('recorder.estimated_total', { mb, count })}
         </span>
         <button id="recorder-purge-selected-btn" style="background:#ff7043;color:#fff;font-size:12px;padding:6px 14px;">
           ${_icon("delete-sweep-outline", 15)} ${this.t('misc.purge_selection')}
@@ -3522,18 +3609,18 @@
 
       // Issue counters — 2 per row
       const rows = [
-        [['security_issues',    'mdi:shield-alert',                  'security',     'red'],
-         ['total_issues',       'mdi:counter',                       'total_issues', 'deep-orange']],
-        [['automation_issues',  'mdi:robot',                         'automations',  'orange'],
-         ['entity_issues',      'mdi:alert-circle-outline',          'entities',     'amber']],
-        [['performance_issues', 'mdi:speedometer',                   'performance',  'teal'],
-         ['script_issues',      'mdi:script-text-outline',           'scripts',      'cyan']],
-        [['scene_issues',       'mdi:palette-outline',               'scenes',       'indigo'],
-         ['blueprint_issues',   'mdi:file-document-outline',         'blueprints',   'blue']],
-        [['dashboard_issues',   'mdi:view-dashboard-outline',        'dashboards',   'purple'],
-         ['helper_issues',      'mdi:form-textbox',                  'helpers',      'blue-grey']],
-        [['compliance_issues',  'mdi:check-decagram-outline',        'compliance',   'green'],
-         ['battery_alerts',     'mdi:battery-alert-variant-outline',  'battery',      'orange']],
+        [['security_issues', 'mdi:shield-alert', 'security', 'red'],
+        ['total_issues', 'mdi:counter', 'total_issues', 'deep-orange']],
+        [['automation_issues', 'mdi:robot', 'automations', 'orange'],
+        ['entity_issues', 'mdi:alert-circle-outline', 'entities', 'amber']],
+        [['performance_issues', 'mdi:speedometer', 'performance', 'teal'],
+        ['script_issues', 'mdi:script-text-outline', 'scripts', 'cyan']],
+        [['scene_issues', 'mdi:palette-outline', 'scenes', 'indigo'],
+        ['blueprint_issues', 'mdi:file-document-outline', 'blueprints', 'blue']],
+        [['dashboard_issues', 'mdi:view-dashboard-outline', 'dashboards', 'purple'],
+        ['helper_issues', 'mdi:form-textbox', 'helpers', 'blue-grey']],
+        [['compliance_issues', 'mdi:check-decagram-outline', 'compliance', 'green'],
+        ['battery_alerts', 'mdi:battery-alert-variant-outline', 'battery', 'orange']],
       ];
 
       for (const [a, b] of rows) {

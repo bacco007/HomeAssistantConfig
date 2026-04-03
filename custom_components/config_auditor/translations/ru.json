@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Аудитор конфигураций Home Assistant",
-    "version": "v1.6.3",
+    "version": "v1.7.0",
     "buttons": {
       "scan_all": "Полное сканирование",
       "automations": "Автоматизации",
@@ -141,7 +141,9 @@
       "recorder_orphans": "Сироты БД",
       "recorder_orphans_desc": "Затрачено места",
       "helpers": "Помощники",
-      "helpers_desc": "Проблемы с вводом/таймером/счётчиком"
+      "helpers_desc": "Проблемы с вводом/таймером/счётчиком",
+      "integrations": "Интеграции",
+      "integrations_desc": "Установленные компоненты"
     },
     "tabs": {
       "all": "Все",
@@ -168,7 +170,8 @@
       "helpers": "Помощники",
       "area_complexity": "Area Map",
       "redundancy": "Redundancy",
-      "recorder_impact": "DB Impact"
+      "recorder_impact": "DB Impact",
+      "integrations": "Интеграции"
     },
     "sections": {
       "all_issues": "Все проблемы",
@@ -438,7 +441,11 @@
       "duplicate_jaccard": "🔁 Индекс похожести Джаккарда: {pct}%",
       "duplicate_exact": "🔴 Точный дубликат",
       "segment_issues": "Проблемы",
-      "segment_batteries": "Батареи"
+      "segment_batteries": "Батареи",
+      "click_to_copy_id": "Нажмите, чтобы скопировать этот ID",
+      "id_copied": "ID {id} скопирован в буфер обмена",
+      "fixable": "Исправимо",
+      "not_fixable": "Не исправимо"
     },
     "zombie": {
       "searching": "Поиск предложений…",
@@ -962,7 +969,7 @@
       "token_link": "Профиль → Безопасность",
       "agent_configs_title": "Конфигурация по ИИ-агенту",
       "tools_exposed": "Доступные инструменты",
-      "tools_count_label": "65 инструментов",
+      "tools_count_label": "67 инструментов",
       "correlations_detected": "Обнаружены корреляции",
       "copy": "Копировать",
       "hint_cursor": "Cursor → Settings → Tools & MCP → + Add new MCP server | Файл: ~/.cursor/mcp.json",
@@ -985,7 +992,19 @@
       "guide_restart_detail": "Файл → Выход (не просто закрыть окно), затем перезапустить.",
       "guide_win_path_detail": "т.е. C:\\Users\\<ПОЛЬЗОВАТЕЛЬ>\\AppData\\Roaming\\Claude\\",
       "guide_paste_in_agent": "Вставить в конфигурацию агента",
-      "guide_antigravity_detail": "В Antigravity: Settings → MCP Servers → Add → вставить JSON выше. В Gemini CLI: добавить в ~/.gemini/settings.json."
+      "guide_antigravity_detail": "В Antigravity: Settings → MCP Servers → Add → вставить JSON выше. В Gemini CLI: добавить в ~/.gemini/settings.json.",
+      "fix_ref_title": "Справочник AI Fix",
+      "fix_ref_subtitle": "Используйте эти справки для запросов к ИИ-агенту по исправлению проблем HACA. Каждая проблема имеет уникальный ID, который можно скопировать кликом.",
+      "fix_ref_id_format": "Формат идентификатора",
+      "fix_ref_id_example": "Пример",
+      "fix_ref_categories": "Категории проблем",
+      "fix_ref_severities": "Уровни серьёзности",
+      "fix_ref_examples": "Примеры промптов ИИ",
+      "fix_ref_ex1": "Исправь проблему HACA-AUTO-NO_ALIAS-a3f2c1",
+      "fix_ref_ex2": "Исправь все проблемы соответствия типа no_description с низкой серьёзностью",
+      "fix_ref_ex3": "Исправь все проблемы device_id_in_trigger",
+      "fix_ref_ex4": "Покажи каталог проблем",
+      "fix_ref_ex5": "Исправь все исправимые проблемы с высокой серьёзностью"
     },
     "agent": {
       "title": "Проактивный ИИ-агент",
@@ -1031,7 +1050,8 @@
       "config": "Настройки — параметры сканирования, пороги и игнорируемые типы проблем",
       "area_complexity": "Complexity heatmap by area",
       "redundancy": "Redundant automations",
-      "recorder_impact": "Recorder DB impact per automation"
+      "recorder_impact": "Recorder DB impact per automation",
+      "integrations": "Монитор интеграций"
     },
     "battery_scan_note": "Изменения вступают в силу при следующем сканировании — перезапуск не требуется.",
     "battery_predict": {
@@ -1277,10 +1297,10 @@
       },
       "redundancy": {
         "blueprint_problem": "эта автоматизация является частью группы ≥3 структурно идентичных автоматизаций — кандидат на blueprint",
-        "blueprint_step1": "1. Объясни мне что такое blueprint HA и почему централизация этих автоматизаций упрощает обслуживание",
-        "blueprint_step2": "2. Покажи мне текущий YAML этой автоматизации (📄 Текущий YAML:) и предложенный общий blueprint (✅ Предложенный blueprint:)",
-        "blueprint_choice_proceed": "✅  OK, создать blueprint и перенести автоматизации",
-        "blueprint_choice_backup": "📋  Сначала создать резервную копию, затем создать blueprint",
+        "blueprint_step1": "1. Прочитать YAML автоматизации (см. команду выше), проанализировать структуру и определить параметризуемые элементы",
+        "blueprint_step2": "2. Сгенерировать универсальный blueprint YAML из этой автоматизации. Показать предложенный blueprint (✅ Предложенный blueprint:)",
+        "blueprint_choice_proceed": "✅  OK, создать blueprint сейчас с ha_create_blueprint() и мигрировать автоматизации",
+        "blueprint_choice_backup": "📋  Сначала сделать резервную копию с ha_backup_create(), затем создать blueprint с ha_create_blueprint()",
         "native_problem": "эта автоматизация вручную воссоздаёт функционал уже встроенный в HA нативно: \"{detail}\"",
         "native_step1": "1. Объясни почему использование нативной функции HA лучше",
         "native_step2": "2. Покажи мне текущий YAML автоматизации (📄 Текущий YAML:) и как активировать соответствующую нативную функцию (✅ Предложенная нативная конфигурация:)",
@@ -1310,7 +1330,8 @@
         "split_step2": "2. Покажи мне текущий YAML и предложи разделение на отдельные автоматизации (✅ Предложенный YAML:)",
         "split_choice_proceed": "✅  OK, разделить на отдельные автоматизации",
         "split_choice_backup": "📋  Сначала создать резервную копию, затем разделить"
-      }
+      },
+      "issue_id_label": "ID проблемы"
     },
     "dashboard": {
       "title": "HACA Обзор",
@@ -1339,6 +1360,45 @@
       "history_title": "Индекс Здоровья — последние 7 дней",
       "open_panel": "Открыть панель HACA",
       "created_toast": "Панель HACA создана!"
+    },
+    "integrations": {
+      "loading": "Сканирование интеграций...",
+      "error": "Ошибка загрузки интеграций",
+      "run_scan_first": "Нажмите на вкладку Интеграции для анализа ваших интеграций.",
+      "no_hacs": "HACS не обнаружен — показаны только базовые и пользовательские интеграции.",
+      "search_placeholder": "Поиск интеграций...",
+      "sort_name": "По имени",
+      "sort_type": "По типу",
+      "sort_entities": "По сущностям",
+      "sort_age": "По возрасту",
+      "stat_total": "Всего",
+      "stat_cards": "Карточки",
+      "stat_themes": "Темы",
+      "stat_unused": "Не используются",
+      "stat_updates": "Обновления",
+      "in_use": "Используется",
+      "unused": "Не используется",
+      "entities": "сущностей",
+      "age_days": "{days} дней",
+      "docs": "Док",
+      "settings": "Настройки",
+      "showing": "Показано {count} из {total}",
+      "none_found": "Нет интеграций, соответствующих текущему фильтру.",
+      "orphan": "Сирота",
+      "orphan_tooltip": "Есть сущности, но нет активной config entry",
+      "ask_ai": "ИИ",
+      "export_csv": "Экспорт CSV",
+      "ai_prompt_header": "Интеграция \"{name}\" (домен: {domain}) установлена в Home Assistant.",
+      "ai_prompt_type": "Тип: {type}",
+      "ai_prompt_unused": "У этой интеграции НЕТ активной config entry — она не используется.",
+      "ai_prompt_orphan": "У этой интеграции {count} сущностей, но НЕТ активной config entry — обнаружены сиротские сущности.",
+      "ai_prompt_instructions": "1. Проверь, используется ли эта интеграция автоматизациями, скриптами или дашбордами.\n2. Если не используется, объясни как безопасно удалить.\n3. При наличии сиротских сущностей, объясни как их очистить.\n4. Перечисли зависимости, которые могут сломаться при удалении.",
+      "export_md": "Экспорт в Markdown",
+      "stat_apps": "Приложения",
+      "no_supervisor": "Supervisor не обнаружен — дополнения (приложения) не отображаются.",
+      "disabled": "Отключена",
+      "disabled_tooltip": "Эта интеграция намеренно отключена — проверьте, нужно ли это",
+      "stat_disabled": "Отключены"
     }
   },
   "analyzer": {
@@ -1494,7 +1554,10 @@
     "group_all_unavailable": "Все члены группы '{entity_id}' недоступны",
     "group_check_availability": "Проверьте, почему объекты-члены недоступны",
     "group_nested_deep": "Группа '{entity_id}' вложена на {depth} уровней (влияет на производительность)",
-    "group_flatten": "Упростите иерархию групп до максимум 2 уровней вложенности"
+    "group_flatten": "Упростите иерархию групп до максимум 2 уровней вложенности",
+    "entity_unknown_state_referenced": "Сущность в неизвестном состоянии и используется {count} автоматизацией(ями)",
+    "noisy_entity": "Шумная сущность: {count} изменений состояния за 24ч",
+    "noisy_entity_recommendation": "Рассмотрите исключение из рекордера или добавление фильтра состояния для уменьшения записей"
   },
   "stats": {
     "dashboards": "Панели управления",
@@ -1678,6 +1741,9 @@
     "workflow_auto_title": "Automations workflow:",
     "workflow_auto": "1. ha_get_entities(domain='automation') to list\n2. haca_get_automation(entity_id) to read full YAML\n3. ha_create_automation() / ha_update_automation() to create/modify",
     "workflow_scripts_title": "Scripts workflow:",
-    "workflow_scripts": "1. ha_get_entities(domain='script') to list\n2. ha_get_script(entity_id) to read\n3. ha_create_script() / ha_update_script() to create/modify"
+    "workflow_scripts": "1. ha_get_entities(domain='script') to list\n2. ha_get_script(entity_id) to read\n3. ha_create_script() / ha_update_script() to create/modify",
+    "workflow_fix_title": "Рабочий процесс исправления проблем:",
+    "workflow_fix": "1. haca_list_issue_catalog() для обнаружения категорий, типов и исправимых проблем\n2. haca_get_issues(category?, type?, severity?) для списка конкретных проблем\n3. haca_fix_batch(issue_id='HACA-XXX-TYPE-hash') для исправления одной проблемы (dry_run=true по умолчанию)\n4. haca_fix_batch(category?, type?, severity?) для массового исправления\n5. Всегда сначала предварительный просмотр с dry_run=true, затем dry_run=false после подтверждения пользователя\nФормат ID: HACA-{CATEGORY}-{TYPE}-{HASH6}, напр. HACA-AUTO-NO_ALIAS-a3f2c1",
+    "rule_use_haca_id": "Каждая проблема имеет уникальный haca_id (формат: HACA-CAT-TYPE-hash). ВСЕГДА используйте предоставленный haca_id — НИКОГДА не выдумывайте ID."
   }
 }

@@ -97,7 +97,8 @@ class TestToolRegistry:
         in_declared_not_handlers = declared_tool_names - registered_tool_names
         # Aliases ha_* → haca_* sont légitimes (dans TOOL_HANDLERS mais pas dans MCP_TOOLS)
         KNOWN_ALIASES = {"ha_fix_suggestion","ha_explain_issue","ha_get_issues",
-                         "ha_get_automation","ha_get_batteries","ha_apply_fix","ha_get_score"}
+                         "ha_get_automation","ha_get_batteries","ha_apply_fix","ha_get_score",
+                         "ha_list_issue_catalog","ha_fix_batch"}
         in_handlers_not_declared -= KNOWN_ALIASES
         assert not in_handlers_not_declared, (
             f"In TOOL_HANDLERS but not in tools list: {in_handlers_not_declared}"
@@ -107,9 +108,9 @@ class TestToolRegistry:
         )
 
     def test_expected_tool_count(self, registered_tool_names):
-        """There should be exactly 65 registered tools (v1.5.0)."""
+        """There should be exactly 69 registered tools (v1.7.0)."""
         count = len(registered_tool_names)
-        assert count == 65, f"Expected 65 tools, got {count}. Update this test if tools were added/removed."
+        assert count == 69, f"Expected 69 tools, got {count}. Update this test if tools were added/removed."
 
     def test_no_duplicate_tool_names(self):
         """No tool name should appear twice in the tools list."""

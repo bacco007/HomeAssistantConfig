@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 class TestVersion:
     def test_version_is_1_5_2(self):
         from custom_components.config_auditor.const import VERSION
-        assert VERSION == "1.6.3", (
+        assert VERSION == "1.7.0", (
             f"Expected VERSION='1.4.3', got '{VERSION}'. "
             "Update tests when version changes."
         )

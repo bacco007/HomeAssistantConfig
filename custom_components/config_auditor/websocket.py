@@ -80,6 +80,7 @@ def async_register_websocket_handlers(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, handle_get_area_complexity)
     websocket_api.async_register_command(hass, handle_get_redundancy)
     websocket_api.async_register_command(hass, handle_get_recorder_impact)
+    websocket_api.async_register_command(hass, handle_get_integrations)
     websocket_api.async_register_command(hass, handle_get_history_diff)
     _LOGGER.info("[HACA] WebSocket handlers registered")
 
@@ -1087,7 +1088,7 @@ async def handle_chat(
     Si il échoue (quota épuisé, timeout, erreur), HACA tente les autres agents
     disponibles dans l'ordre : Gemini, Llama, etc.
 
-    Chaque agent doit avoir le LLM API HACA activé pour utiliser les 58 outils :
+    Chaque agent doit avoir le LLM API HACA activé pour utiliser les 60 outils :
       HA Settings → Voice Assistants → [agent] → LLM API → HACA
     """
     from homeassistant.core import Context
@@ -1610,6 +1611,32 @@ async def handle_get_recorder_impact(
         connection.send_result(msg["id"], data.get("recorder_impact", {}))
     except Exception as exc:
         connection.send_error(msg["id"], "recorder_impact_error", str(exc))
+
+
+# ── Integration monitor ───────────────────────────────────────────────────────
+
+@websocket_api.websocket_command({vol.Required("type"): "haca/get_integrations"})
+@websocket_api.require_admin
+@websocket_api.async_response
+async def handle_get_integrations(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Return integration monitor analysis results (on-demand, no scan required)."""
+    try:
+        entry, entry_data = _get_entry_data(hass)
+        if not entry_data:
+            connection.send_error(msg["id"], "no_entry", "No H.A.C.A entry found")
+            return
+        analyzer = entry_data.get("integration_analyzer")
+        if not analyzer:
+            connection.send_error(msg["id"], "not_available", "Integration analyzer not available")
+            return
+        result = await analyzer.async_analyze()
+        connection.send_result(msg["id"], result)
+    except Exception as exc:
+        connection.send_error(msg["id"], "integration_error", str(exc))
 
 
 # ── History diff ───────────────────────────────────────────────────────────────

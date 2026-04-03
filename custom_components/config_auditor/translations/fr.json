@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Auditeur de configuration Home Assistant",
-    "version": "v1.6.3",
+    "version": "v1.7.0",
     "buttons": {
       "scan_all": "Scan Complet",
       "automations": "Automatisations",
@@ -141,7 +141,9 @@
       "recorder_orphans": "Orphelins DB",
       "recorder_orphans_desc": "Espace gaspillé",
       "helpers": "Helpers",
-      "helpers_desc": "Issues input/timer/compteur"
+      "helpers_desc": "Issues input/timer/compteur",
+      "integrations": "Intégrations",
+      "integrations_desc": "Composants installés"
     },
     "tabs": {
       "all": "Toutes",
@@ -168,7 +170,8 @@
       "helpers": "Helpers",
       "area_complexity": "Carte Zones",
       "redundancy": "Redondances",
-      "recorder_impact": "Impact DB"
+      "recorder_impact": "Impact DB",
+      "integrations": "Intégrations"
     },
     "sections": {
       "all_issues": "Toutes les Issues",
@@ -438,7 +441,11 @@
       "duplicate_jaccard": "🔁 Similarité Jaccard : {pct}%",
       "duplicate_exact": "🔴 Doublon exact",
       "segment_issues": "Issues",
-      "segment_batteries": "Batteries"
+      "segment_batteries": "Batteries",
+      "click_to_copy_id": "Cliquer pour copier cet ID",
+      "id_copied": "ID {id} copié dans le presse-papiers",
+      "fixable": "Corrigible",
+      "not_fixable": "Non corrigible"
     },
     "zombie": {
       "searching": "Recherche de suggestions…",
@@ -962,7 +969,7 @@
       "token_link": "Profil → Sécurité",
       "agent_configs_title": "Configuration par agent IA",
       "tools_exposed": "Outils exposés",
-      "tools_count_label": "65 outils",
+      "tools_count_label": "67 outils",
       "correlations_detected": "Corrélations détectées",
       "copy": "Copier",
       "hint_cursor": "Cursor → Settings → Tools & MCP → + Add new MCP server | Fichier : ~/.cursor/mcp.json",
@@ -985,7 +992,19 @@
       "guide_restart_detail": "Fichier → Quitter (pas juste fermer la fenêtre), puis relancer.",
       "guide_win_path_detail": "c.-à-d. C:\\Users\\<VOUS>\\AppData\\Roaming\\Claude\\",
       "guide_paste_in_agent": "Coller dans la configuration de l'agent",
-      "guide_antigravity_detail": "Dans Antigravity : Settings → MCP Servers → Add → coller le JSON ci-dessus. Dans Gemini CLI : ajouter dans ~/.gemini/settings.json."
+      "guide_antigravity_detail": "Dans Antigravity : Settings → MCP Servers → Add → coller le JSON ci-dessus. Dans Gemini CLI : ajouter dans ~/.gemini/settings.json.",
+      "fix_ref_title": "Référence AI Fix",
+      "fix_ref_subtitle": "Utilisez ces références pour demander à votre agent IA de corriger les issues HACA. Chaque issue a un identifiant unique que vous pouvez copier en cliquant dessus.",
+      "fix_ref_id_format": "Format de l'identifiant",
+      "fix_ref_id_example": "Exemple",
+      "fix_ref_categories": "Catégories d'issues",
+      "fix_ref_severities": "Niveaux de sévérité",
+      "fix_ref_examples": "Exemples de prompts IA",
+      "fix_ref_ex1": "Corrige l'issue HACA-AUTO-NO_ALIAS-a3f2c1",
+      "fix_ref_ex2": "Corrige toutes les issues de conformité de type no_description avec sévérité basse",
+      "fix_ref_ex3": "Corrige toutes les issues device_id_in_trigger",
+      "fix_ref_ex4": "Montre-moi le catalogue d'issues",
+      "fix_ref_ex5": "Corrige toutes les issues corrigibles de sévérité haute"
     },
     "agent": {
       "title": "Agent IA Proactif",
@@ -1031,7 +1050,8 @@
       "config": "Configuration — paramètres de scan, seuils et types d'issues ignorés",
       "area_complexity": "Heatmap complexité par zone",
       "redundancy": "Automations redondantes",
-      "recorder_impact": "Impact DB Recorder"
+      "recorder_impact": "Impact DB Recorder",
+      "integrations": "Moniteur d'intégrations"
     },
     "battery_scan_note": "Les modifications sont prises en compte au prochain scan — aucun redémarrage requis.",
     "battery_predict": {
@@ -1277,10 +1297,10 @@
       },
       "redundancy": {
         "blueprint_problem": "cette automation fait partie d'un groupe de ≥3 automations structurellement identiques — candidate à la blueprintisation",
-        "blueprint_step1": "1. Explique-moi ce qu'est un blueprint HA et pourquoi centraliser ces automations simplifie la maintenance",
-        "blueprint_step2": "2. Montre-moi le YAML actuel de cette automation (📄 YAML actuel :) et le blueprint générique proposé (✅ Blueprint proposé :)",
-        "blueprint_choice_proceed": "✅  OK, crée le blueprint et migre les automations",
-        "blueprint_choice_backup": "📋  Fais d'abord une sauvegarde, puis crée le blueprint",
+        "blueprint_step1": "1. Lire le YAML de l'automatisation (voir commande ci-dessus), analyser sa structure et identifier les éléments paramétrables",
+        "blueprint_step2": "2. Générer un blueprint YAML générique à partir de cette automatisation. Montrer le blueprint proposé (✅ Blueprint proposé :)",
+        "blueprint_choice_proceed": "✅  OK, créer le blueprint maintenant avec ha_create_blueprint() et migrer les automatisations",
+        "blueprint_choice_backup": "📋  Faire une sauvegarde d'abord avec ha_backup_create(), puis créer le blueprint avec ha_create_blueprint()",
         "native_problem": "cette automation réimplémente manuellement une fonctionnalité déjà intégrée nativement dans HA : \"{detail}\"",
         "native_step1": "1. Explique-moi pourquoi utiliser le natif HA est préférable (performance, mises à jour automatiques, moins de maintenance)",
         "native_step2": "2. Montre-moi le YAML actuel de l'automation (📄 YAML actuel :) et comment activer la fonctionnalité native correspondante (✅ Configuration native proposée :)",
@@ -1310,7 +1330,8 @@
         "split_step2": "2. Montre-moi le YAML actuel (📄 YAML actuel :) et propose le découpage en automations séparées par fonctionnalité (✅ YAML proposé :)",
         "split_choice_proceed": "✅  OK, découpe en automations séparées",
         "split_choice_backup": "📋  Fais d'abord une sauvegarde, puis découpe"
-      }
+      },
+      "issue_id_label": "ID de l'issue"
     },
     "dashboard": {
       "title": "HACA Vue d'ensemble",
@@ -1339,6 +1360,45 @@
       "history_title": "Score de Santé — 7 derniers jours",
       "open_panel": "Ouvrir le Panel HACA",
       "created_toast": "Dashboard HACA créé !"
+    },
+    "integrations": {
+      "loading": "Analyse des intégrations...",
+      "error": "Erreur lors du chargement des intégrations",
+      "run_scan_first": "Cliquez sur l'onglet Intégrations pour analyser vos intégrations.",
+      "no_hacs": "HACS non détecté — seules les intégrations core et custom sont affichées.",
+      "search_placeholder": "Rechercher une intégration...",
+      "sort_name": "Trier par nom",
+      "sort_type": "Trier par type",
+      "sort_entities": "Trier par entités",
+      "sort_age": "Trier par ancienneté",
+      "stat_total": "Total",
+      "stat_cards": "Cartes",
+      "stat_themes": "Thèmes",
+      "stat_unused": "Inutilisées",
+      "stat_updates": "Mises à jour",
+      "in_use": "En service",
+      "unused": "Inutilisée",
+      "entities": "entités",
+      "age_days": "{days} jours",
+      "docs": "Doc",
+      "settings": "Paramètres",
+      "showing": "{count} sur {total} affichées",
+      "none_found": "Aucune intégration ne correspond au filtre actuel.",
+      "orphan": "Orpheline",
+      "orphan_tooltip": "A des entités mais aucune config entry active — résidu potentiel",
+      "ask_ai": "IA",
+      "export_csv": "Exporter en CSV",
+      "ai_prompt_header": "L'intégration \"{name}\" (domaine : {domain}) est installée dans Home Assistant.",
+      "ai_prompt_type": "Type : {type}",
+      "ai_prompt_unused": "Cette intégration n'a AUCUNE config entry active — elle semble inutilisée.",
+      "ai_prompt_orphan": "Cette intégration a {count} entités mais AUCUNE config entry active — entités orphelines détectées.",
+      "ai_prompt_instructions": "1. Vérifie si cette intégration est utilisée par une automatisation, un script ou un dashboard.\n2. Si vraiment inutilisée, explique comment la supprimer proprement.\n3. Si elle a des entités orphelines, explique comment les nettoyer.\n4. Liste les dépendances qui pourraient casser si on la supprime.",
+      "export_md": "Exporter en Markdown",
+      "stat_apps": "Apps",
+      "no_supervisor": "Supervisor non détecté — les add-ons (apps) ne sont pas affichés.",
+      "disabled": "Désactivée",
+      "disabled_tooltip": "Cette intégration est volontairement désactivée — vérifiez si c'est toujours voulu",
+      "stat_disabled": "Désactivées"
     }
   },
   "analyzer": {
@@ -1494,7 +1554,10 @@
     "group_all_unavailable": "Tous les membres du groupe '{entity_id}' sont indisponibles",
     "group_check_availability": "Vérifiez pourquoi les entités membres sont indisponibles ou mettez à jour le groupe",
     "group_nested_deep": "Le groupe '{entity_id}' est imbriqué sur {depth} niveaux (impact performances)",
-    "group_flatten": "Aplatissez la hiérarchie de groupes à 2 niveaux maximum"
+    "group_flatten": "Aplatissez la hiérarchie de groupes à 2 niveaux maximum",
+    "entity_unknown_state_referenced": "L'entité a un état inconnu et est utilisée par {count} automatisation(s)",
+    "noisy_entity": "Entité bruyante : {count} changements d'état en 24h",
+    "noisy_entity_recommendation": "Envisagez de l'exclure du recorder ou d'ajouter un filtre d'état pour réduire les écritures en base"
   },
   "stats": {
     "dashboards": "Dashboards",
@@ -1678,6 +1741,9 @@
     "workflow_auto_title": "Workflow automations :",
     "workflow_auto": "1. ha_get_entities(domain='automation') pour lister\n2. haca_get_automation(entity_id) pour lire le YAML complet\n3. ha_create_automation() / ha_update_automation() pour créer/modifier",
     "workflow_scripts_title": "Workflow scripts :",
-    "workflow_scripts": "1. ha_get_entities(domain='script') pour lister\n2. ha_get_script(entity_id) pour lire\n3. ha_create_script() / ha_update_script() pour créer/modifier"
+    "workflow_scripts": "1. ha_get_entities(domain='script') pour lister\n2. ha_get_script(entity_id) pour lire\n3. ha_create_script() / ha_update_script() pour créer/modifier",
+    "workflow_fix_title": "Workflow correction d'issues :",
+    "workflow_fix": "1. haca_list_issue_catalog() pour découvrir catégories, types et issues corrigibles\n2. haca_get_issues(category?, type?, severity?) pour lister les issues spécifiques\n3. haca_fix_batch(issue_id='HACA-XXX-TYPE-hash') pour corriger une seule issue (dry_run=true par défaut)\n4. haca_fix_batch(category?, type?, severity?) pour corriger en lot\n5. Toujours prévisualiser avec dry_run=true d'abord, puis dry_run=false après confirmation utilisateur\nFormat des IDs : HACA-{CATEGORY}-{TYPE}-{HASH6}, ex: HACA-AUTO-NO_ALIAS-a3f2c1",
+    "rule_use_haca_id": "Chaque issue a un haca_id unique (format : HACA-CAT-TYPE-hash). Utilisez TOUJOURS le haca_id exact fourni — ne JAMAIS fabriquer ou deviner un ID."
   }
 }

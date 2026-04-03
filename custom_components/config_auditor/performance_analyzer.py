@@ -147,6 +147,12 @@ class PerformanceAnalyzer:
 
     def _detect_potential_loops(self, entity_id: str, alias: str, config: dict[str, Any]) -> None:
         """Detect if an automation might trigger itself in a loop."""
+        # Blueprint automations have their own loop-prevention logic
+        # (cooldowns, state checks, mutex) that static analysis cannot
+        # introspect — flagging them produces systematic false positives.
+        if config.get("use_blueprint"):
+            return
+
         t = self._translator.t
         
         triggers = config.get("trigger", [])
@@ -189,24 +195,152 @@ class PerformanceAnalyzer:
     async def _detect_noisy_entities(self) -> None:
         """Detect entities with high update frequency or missing optimizations."""
         t = self._translator.t
-        
+
+        # Only flag template-platform sensors (user-fixable).
+        # Integration-created sensors are not under user control.
+        try:
+            entity_reg = er.async_get(self.hass)
+        except Exception:
+            entity_reg = None
+
+        template_sensor_ids: set[str] = set()
+        if entity_reg:
+            for entry in entity_reg.entities.values():
+                if entry.platform == "template" and entry.domain == "sensor":
+                    template_sensor_ids.add(entry.entity_id)
+
         all_states = self.hass.states.async_all()
         for state in all_states:
             if state.domain == "automation" or state.entity_id.startswith("sensor.h_a_c_a_"):
                 continue
                 
             if state.domain == "sensor":
-                # Missing state_class for frequent sensors
-                if any(k in state.entity_id for k in ["power", "energy", "voltage", "current"]):
-                    if "state_class" not in state.attributes:
-                        self.issues.append({
-                            "entity_id": state.entity_id,
-                            "type": "missing_state_class",
-                            "severity": "low",
-                            "message": t("missing_state_class"),
-                            "recommendation": t("verify_triggers"),
-                            "fix_available": False,
-                        })
+                # Missing state_class for power/energy template sensors only
+                if state.entity_id in template_sensor_ids:
+                    if any(k in state.entity_id for k in ["power", "energy", "voltage", "current"]):
+                        if "state_class" not in state.attributes:
+                            self.issues.append({
+                                "entity_id": state.entity_id,
+                                "type": "missing_state_class",
+                                "severity": "low",
+                                "message": t("missing_state_class"),
+                                "recommendation": t("verify_triggers"),
+                                "fix_available": False,
+                            })
+
+        # ── Noisy entity detection via Recorder DB ────────────────────────
+        await self._detect_noisy_entities_from_db()
+
+    async def _detect_noisy_entities_from_db(self) -> None:
+        """Query the recorder DB to find entities with excessive state changes."""
+        t = self._translator.t
+
+        try:
+            from homeassistant.helpers.recorder import get_instance
+        except ImportError:
+            _LOGGER.debug("Recorder helper not available, skipping noisy detection")
+            return
+
+        try:
+            instance = get_instance(self.hass)
+            if not instance or not hasattr(instance, "engine") or not instance.engine:
+                return
+        except Exception:
+            return
+
+        # Domains where high update frequency is expected and not actionable
+        _NOISY_SKIP_DOMAINS = frozenset({
+            "automation", "script", "scene", "zone", "person",
+            "sun", "weather", "input_boolean", "input_number",
+            "input_select", "input_text", "input_datetime",
+            "input_button", "counter", "timer", "button", "event",
+            "persistent_notification", "conversation", "tts", "stt",
+            "update", "calendar", "notify",
+        })
+
+        THRESHOLD_HIGH = 500      # >500 changes/day = high severity
+        THRESHOLD_MEDIUM = 200    # >200 changes/day = medium severity
+
+        def _query_noisy(inst):
+            """Synchronous DB query for state change frequency (last 24h)."""
+            from sqlalchemy import text
+            import time
+
+            cutoff_ts = time.time() - 86400  # 24h ago
+            noisy: list[tuple[str, int]] = []
+
+            try:
+                with inst.engine.connect() as conn:
+                    try:
+                        conn.execute(text("BEGIN IMMEDIATE"))
+                    except Exception:
+                        pass
+
+                    try:
+                        # Modern schema (HA >= 2023.3): states_meta
+                        rows = conn.execute(text(
+                            "SELECT sm.entity_id, COUNT(*) AS cnt "
+                            "FROM states s "
+                            "JOIN states_meta sm ON s.metadata_id = sm.metadata_id "
+                            "WHERE s.last_updated_ts > :cutoff "
+                            "GROUP BY sm.entity_id "
+                            "HAVING cnt > :threshold "
+                            "ORDER BY cnt DESC "
+                            "LIMIT 50"
+                        ), {"cutoff": cutoff_ts, "threshold": THRESHOLD_MEDIUM}).fetchall()
+                        noisy = [(row[0], int(row[1])) for row in rows]
+                    except Exception:
+                        try:
+                            # Legacy schema: entity_id directly in states
+                            rows = conn.execute(text(
+                                "SELECT entity_id, COUNT(*) AS cnt "
+                                "FROM states "
+                                "WHERE last_updated_ts > :cutoff "
+                                "GROUP BY entity_id "
+                                "HAVING cnt > :threshold "
+                                "ORDER BY cnt DESC "
+                                "LIMIT 50"
+                            ), {"cutoff": cutoff_ts, "threshold": THRESHOLD_MEDIUM}).fetchall()
+                            noisy = [(row[0], int(row[1])) for row in rows]
+                        except Exception as exc2:
+                            _LOGGER.debug("Noisy entity query failed (legacy): %s", exc2)
+
+                    try:
+                        conn.execute(text("ROLLBACK"))
+                    except Exception:
+                        pass
+
+            except Exception as exc:
+                _LOGGER.debug("Noisy entity DB connection error: %s", exc)
+
+            return noisy
+
+        try:
+            noisy_results = await self.hass.async_add_executor_job(_query_noisy, instance)
+        except Exception as exc:
+            _LOGGER.debug("Noisy entity detection error: %s", exc)
+            return
+
+        for entity_id, count in noisy_results:
+            domain = entity_id.split(".")[0]
+            if domain in _NOISY_SKIP_DOMAINS:
+                continue
+            if entity_id.startswith("sensor.h_a_c_a_"):
+                continue
+
+            if count >= THRESHOLD_HIGH:
+                severity = "medium"
+            else:
+                severity = "low"
+
+            self.issues.append({
+                "entity_id": entity_id,
+                "type": "noisy_entity",
+                "severity": severity,
+                "message": t("noisy_entity", count=count),
+                "recommendation": t("noisy_entity_recommendation"),
+                "fix_available": False,
+            })
 
     async def _detect_expensive_templates(self, automation_configs: dict[str, dict[str, Any]]) -> None:
         """Detect automation templates that re-evaluate on every single state change.
@@ -405,13 +539,29 @@ class PerformanceAnalyzer:
                 device_class = attrs.get("device_class")
                 unit = attrs.get("unit_of_measurement")
                 if not device_class and not unit:
-                    self.issues.append({
-                        "entity_id": entity_id,
-                        "type": "template_sensor_no_metadata",
-                        "severity": "low",
-                        "message": t("template_sensor_no_metadata", entity_id=entity_id),
-                        "recommendation": t("template_sensor_add_metadata"),
-                    })
+                    # Skip pure counters/integers — they don't need device_class or unit
+                    state_val = state.state
+                    name_lower = entity_id.lower()
+                    _counter_patterns = (
+                        "count", "total", "number", "nb_", "num_",
+                        "active_", "pending_", "failed_", "running_",
+                    )
+                    is_counter = any(p in name_lower for p in _counter_patterns)
+                    is_integer = False
+                    try:
+                        is_integer = state_val not in ("unknown", "unavailable") and float(state_val) == int(float(state_val))
+                    except (ValueError, TypeError, OverflowError):
+                        pass
+                    if is_counter and is_integer:
+                        pass  # legitimate counter, no metadata needed
+                    else:
+                        self.issues.append({
+                            "entity_id": entity_id,
+                            "type": "template_sensor_no_metadata",
+                            "severity": "low",
+                            "message": t("template_sensor_no_metadata", entity_id=entity_id),
+                            "recommendation": t("template_sensor_add_metadata"),
+                        })
 
             checked += 1
             if checked % 20 == 0:

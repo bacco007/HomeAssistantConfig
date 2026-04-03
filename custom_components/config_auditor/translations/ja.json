@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant 設定監査ツール",
-    "version": "v1.6.3",
+    "version": "v1.7.0",
     "buttons": {
       "scan_all": "完全スキャン",
       "automations": "オートメーション",
@@ -141,7 +141,9 @@
       "recorder_orphans": "DB オーファン",
       "recorder_orphans_desc": "無駄なスペース",
       "helpers": "ヘルパー",
-      "helpers_desc": "入力/タイマー/カウンターの問題"
+      "helpers_desc": "入力/タイマー/カウンターの問題",
+      "integrations": "インテグレーション",
+      "integrations_desc": "インストール済みコンポーネント"
     },
     "tabs": {
       "all": "すべて",
@@ -168,7 +170,8 @@
       "helpers": "ヘルパー",
       "area_complexity": "Area Map",
       "redundancy": "Redundancy",
-      "recorder_impact": "DB Impact"
+      "recorder_impact": "DB Impact",
+      "integrations": "インテグレーション"
     },
     "sections": {
       "all_issues": "全ての問題",
@@ -438,7 +441,11 @@
       "duplicate_jaccard": "🔁 ジャカード類似度: {pct}%",
       "duplicate_exact": "🔴 完全な重複",
       "segment_issues": "問題",
-      "segment_batteries": "バッテリー"
+      "segment_batteries": "バッテリー",
+      "click_to_copy_id": "クリックしてこのIDをコピー",
+      "id_copied": "ID {id} をクリップボードにコピーしました",
+      "fixable": "修正可能",
+      "not_fixable": "修正不可"
     },
     "zombie": {
       "searching": "提案を検索中…",
@@ -962,7 +969,7 @@
       "token_link": "プロファイル → セキュリティ",
       "agent_configs_title": "AIエージェント別設定",
       "tools_exposed": "公開ツール",
-      "tools_count_label": "65ツール",
+      "tools_count_label": "67ツール",
       "correlations_detected": "相関が検出されました",
       "copy": "コピー",
       "hint_cursor": "Cursor → Settings → Tools & MCP → + Add new MCP server | ファイル: ~/.cursor/mcp.json",
@@ -985,7 +992,19 @@
       "guide_restart_detail": "ファイル→終了（ウィンドウを閉じるだけではなく）、その後再起動。",
       "guide_win_path_detail": "すなわち C:\\Users\\<ユーザー>\\AppData\\Roaming\\Claude\\",
       "guide_paste_in_agent": "エージェント設定に貼り付け",
-      "guide_antigravity_detail": "Antigravity: Settings → MCP Servers → Add → 上のJSONを貼り付け。Gemini CLI: ~/.gemini/settings.jsonに追加。"
+      "guide_antigravity_detail": "Antigravity: Settings → MCP Servers → Add → 上のJSONを貼り付け。Gemini CLI: ~/.gemini/settings.jsonに追加。",
+      "fix_ref_title": "AI修正リファレンス",
+      "fix_ref_subtitle": "AIエージェントにHACA問題の修正を依頼する際にこれらのリファレンスを使用してください。各問題にはクリックでコピーできる一意のIDがあります。",
+      "fix_ref_id_format": "IDフォーマット",
+      "fix_ref_id_example": "例",
+      "fix_ref_categories": "問題カテゴリ",
+      "fix_ref_severities": "重要度レベル",
+      "fix_ref_examples": "AIプロンプト例",
+      "fix_ref_ex1": "問題 HACA-AUTO-NO_ALIAS-a3f2c1 を修正して",
+      "fix_ref_ex2": "低重要度のno_descriptionタイプのコンプライアンス問題をすべて修正して",
+      "fix_ref_ex3": "device_id_in_triggerの問題をすべて修正して",
+      "fix_ref_ex4": "問題カタログを表示して",
+      "fix_ref_ex5": "修正可能な高重要度の問題をすべて修正して"
     },
     "agent": {
       "title": "プロアクティブAIエージェント",
@@ -1031,7 +1050,8 @@
       "config": "設定 — スキャン設定、しきい値、無視する問題タイプ",
       "area_complexity": "Complexity heatmap by area",
       "redundancy": "Redundant automations",
-      "recorder_impact": "Recorder DB impact per automation"
+      "recorder_impact": "Recorder DB impact per automation",
+      "integrations": "インテグレーションモニター"
     },
     "battery_scan_note": "変更は次のスキャン時に反映されます — 再起動は不要です。",
     "battery_predict": {
@@ -1277,10 +1297,10 @@
       },
       "redundancy": {
         "blueprint_problem": "このオートメーションは≥3個の構造的に同一のオートメーショングループの一部 — ブループリント候補",
-        "blueprint_step1": "1. HAブループリントとは何か、これらのオートメーションを集中管理することでメンテナンスがどう簡単になるかを説明してください",
-        "blueprint_step2": "2. このオートメーションの現在のYAML（📄 現在のYAML：）と提案された汎用ブループリント（✅ 提案されたブループリント：）を見せてください",
-        "blueprint_choice_proceed": "✅  OK、ブループリントを作成してオートメーションを移行する",
-        "blueprint_choice_backup": "📋  まずバックアップを作成し、その後ブループリントを作成する",
+        "blueprint_step1": "1. オートメーションのYAMLを読み取り（上記コマンド参照）、構造を分析してパラメータ化可能な要素を特定する",
+        "blueprint_step2": "2. このオートメーションから汎用的なblueprintYAMLを生成する。提案されたblueprintを表示する（✅ 提案されたblueprint：）",
+        "blueprint_choice_proceed": "✅  OK、ha_create_blueprint()でblueprintを今すぐ作成し、オートメーションを移行する",
+        "blueprint_choice_backup": "📋  まずha_backup_create()でバックアップを作成し、次にha_create_blueprint()でblueprintを作成する",
         "native_problem": "このオートメーションはHAにすでにネイティブ統合されている機能を手動で再実装している：\"{detail}\"",
         "native_step1": "1. ネイティブHA機能を使用する方が優れている理由を説明してください",
         "native_step2": "2. 現在のYAML（📄 現在のYAML：）と対応するネイティブ機能の有効化方法（✅ 提案されたネイティブ設定：）を見せてください",
@@ -1310,7 +1330,8 @@
         "split_step2": "2. 現在のYAMLと機能ごとの個別オートメーションへの分割提案（✅ 提案されたYAML：）を見せてください",
         "split_choice_proceed": "✅  OK、個別のオートメーションに分割する",
         "split_choice_backup": "📋  まずバックアップを作成し、その後分割する"
-      }
+      },
+      "issue_id_label": "問題ID"
     },
     "dashboard": {
       "title": "HACA 概要",
@@ -1339,6 +1360,45 @@
       "history_title": "ヘルススコア — 過去7日間",
       "open_panel": "HACAパネルを開く",
       "created_toast": "HACAダッシュボード作成完了！"
+    },
+    "integrations": {
+      "loading": "インテグレーションをスキャン中...",
+      "error": "インテグレーションの読み込みエラー",
+      "run_scan_first": "インテグレーションタブをクリックしてスキャンを開始します。",
+      "no_hacs": "HACSが検出されませんでした — コアとカスタムインテグレーションのみ表示されます。",
+      "search_placeholder": "インテグレーションを検索...",
+      "sort_name": "名前順",
+      "sort_type": "タイプ順",
+      "sort_entities": "エンティティ数順",
+      "sort_age": "経過日数順",
+      "stat_total": "合計",
+      "stat_cards": "カード",
+      "stat_themes": "テーマ",
+      "stat_unused": "未使用",
+      "stat_updates": "更新",
+      "in_use": "使用中",
+      "unused": "未使用",
+      "entities": "エンティティ",
+      "age_days": "{days}日",
+      "docs": "ドキュメント",
+      "settings": "設定",
+      "showing": "{total}件中{count}件表示",
+      "none_found": "現在のフィルターに一致するインテグレーションはありません。",
+      "orphan": "孤児",
+      "orphan_tooltip": "エンティティはあるがアクティブなconfig entryがない",
+      "ask_ai": "AI",
+      "export_csv": "CSV出力",
+      "ai_prompt_header": "インテグレーション「{name}」（ドメイン：{domain}）がHome Assistantにインストールされています。",
+      "ai_prompt_type": "タイプ：{type}",
+      "ai_prompt_unused": "このインテグレーションにはアクティブなconfig entryがありません — 未使用のようです。",
+      "ai_prompt_orphan": "このインテグレーションには{count}個のエンティティがありますが、アクティブなconfig entryがありません — 孤児エンティティが検出されました。",
+      "ai_prompt_instructions": "1. このインテグレーションがオートメーション、スクリプト、ダッシュボードで使用されているか確認してください。\n2. 未使用の場合、安全に削除する方法を説明してください。\n3. 孤児エンティティがある場合、クリーンアップ方法を説明してください。\n4. 削除時に影響を受ける依存関係をリストしてください。",
+      "export_md": "Markdownで出力",
+      "stat_apps": "アプリ",
+      "no_supervisor": "Supervisorが検出されませんでした — アドオン（アプリ）は表示されません。",
+      "disabled": "無効",
+      "disabled_tooltip": "このインテグレーションは意図的に無効化されています — まだ必要か確認してください",
+      "stat_disabled": "無効"
     }
   },
   "analyzer": {
@@ -1494,7 +1554,10 @@
     "group_all_unavailable": "グループ '{entity_id}' のすべてのメンバーが利用不可です",
     "group_check_availability": "メンバーエンティティが利用不可な理由を確認してください",
     "group_nested_deep": "グループ '{entity_id}' は {depth} レベル深くネストされています（パフォーマンスへの影響）",
-    "group_flatten": "グループ階層を最大2レベルのネストにフラット化してください"
+    "group_flatten": "グループ階層を最大2レベルのネストにフラット化してください",
+    "entity_unknown_state_referenced": "エンティティの状態が不明で、{count}個のオートメーションで使用されています",
+    "noisy_entity": "ノイズの多いエンティティ：24時間で{count}回の状態変更",
+    "noisy_entity_recommendation": "レコーダーから除外するか、状態フィルターを追加してデータベース書き込みを削減することを検討してください"
   },
   "stats": {
     "dashboards": "ダッシュボード",
@@ -1678,6 +1741,9 @@
     "workflow_auto_title": "Automations workflow:",
     "workflow_auto": "1. ha_get_entities(domain='automation') to list\n2. haca_get_automation(entity_id) to read full YAML\n3. ha_create_automation() / ha_update_automation() to create/modify",
     "workflow_scripts_title": "Scripts workflow:",
-    "workflow_scripts": "1. ha_get_entities(domain='script') to list\n2. ha_get_script(entity_id) to read\n3. ha_create_script() / ha_update_script() to create/modify"
+    "workflow_scripts": "1. ha_get_entities(domain='script') to list\n2. ha_get_script(entity_id) to read\n3. ha_create_script() / ha_update_script() to create/modify",
+    "workflow_fix_title": "問題修正ワークフロー：",
+    "workflow_fix": "1. haca_list_issue_catalog() でカテゴリ、タイプ、修正可能な問題を確認\n2. haca_get_issues(category?, type?, severity?) で特定の問題を一覧表示\n3. haca_fix_batch(issue_id='HACA-XXX-TYPE-hash') で単一の問題を修正（dry_run=trueがデフォルト）\n4. haca_fix_batch(category?, type?, severity?) で一括修正\n5. まずdry_run=trueでプレビュー、ユーザー確認後にdry_run=falseで適用\nIDフォーマット: HACA-{CATEGORY}-{TYPE}-{HASH6}、例: HACA-AUTO-NO_ALIAS-a3f2c1",
+    "rule_use_haca_id": "各問題には固有のhaca_id（形式：HACA-CAT-TYPE-hash）があります。提供されたhaca_idを必ず使用し、IDを推測しないでください。"
   }
 }

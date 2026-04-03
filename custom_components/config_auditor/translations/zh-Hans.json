@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant 配置审计器",
-    "version": "v1.6.3",
+    "version": "v1.7.0",
     "buttons": {
       "scan_all": "全面扫描",
       "automations": "自动化",
@@ -141,7 +141,9 @@
       "recorder_orphans": "数据库孤儿",
       "recorder_orphans_desc": "浪费空间",
       "helpers": "助手",
-      "helpers_desc": "输入/计时器/计数器问题"
+      "helpers_desc": "输入/计时器/计数器问题",
+      "integrations": "集成",
+      "integrations_desc": "已安装的组件"
     },
     "tabs": {
       "all": "全部",
@@ -168,7 +170,8 @@
       "helpers": "助手",
       "area_complexity": "Area Map",
       "redundancy": "Redundancy",
-      "recorder_impact": "DB Impact"
+      "recorder_impact": "DB Impact",
+      "integrations": "集成"
     },
     "sections": {
       "all_issues": "所有问题",
@@ -438,7 +441,11 @@
       "duplicate_jaccard": "🔁 Jaccard 相似度：{pct}%",
       "duplicate_exact": "🔴 完全重复",
       "segment_issues": "问题",
-      "segment_batteries": "电池"
+      "segment_batteries": "电池",
+      "click_to_copy_id": "点击复制此ID",
+      "id_copied": "ID {id} 已复制到剪贴板",
+      "fixable": "可修复",
+      "not_fixable": "不可修复"
     },
     "zombie": {
       "searching": "正在搜索建议...",
@@ -962,7 +969,7 @@
       "token_link": "配置文件 → 安全",
       "agent_configs_title": "按 AI 代理配置",
       "tools_exposed": "公开的工具",
-      "tools_count_label": "65 个工具",
+      "tools_count_label": "67 个工具",
       "correlations_detected": "检测到关联",
       "copy": "复制",
       "hint_cursor": "Cursor → Settings → Tools & MCP → + Add new MCP server | 文件: ~/.cursor/mcp.json",
@@ -985,7 +992,19 @@
       "guide_restart_detail": "文件→退出（不只是关闭窗口），然后重新启动。",
       "guide_win_path_detail": "即 C:\\Users\\<用户>\\AppData\\Roaming\\Claude\\",
       "guide_paste_in_agent": "粘贴到代理配置中",
-      "guide_antigravity_detail": "在 Antigravity: Settings → MCP Servers → Add → 粘贴上方 JSON。在 Gemini CLI: 添加到 ~/.gemini/settings.json。"
+      "guide_antigravity_detail": "在 Antigravity: Settings → MCP Servers → Add → 粘贴上方 JSON。在 Gemini CLI: 添加到 ~/.gemini/settings.json。",
+      "fix_ref_title": "AI修复参考",
+      "fix_ref_subtitle": "使用这些参考让您的AI代理修复HACA问题。每个问题都有唯一的ID，点击即可复制。",
+      "fix_ref_id_format": "ID格式",
+      "fix_ref_id_example": "示例",
+      "fix_ref_categories": "问题类别",
+      "fix_ref_severities": "严重级别",
+      "fix_ref_examples": "AI提示示例",
+      "fix_ref_ex1": "修复问题 HACA-AUTO-NO_ALIAS-a3f2c1",
+      "fix_ref_ex2": "修复所有低严重级别的no_description类型合规问题",
+      "fix_ref_ex3": "修复所有device_id_in_trigger问题",
+      "fix_ref_ex4": "显示问题目录",
+      "fix_ref_ex5": "修复所有可修复的高严重级别问题"
     },
     "agent": {
       "title": "主动AI代理",
@@ -1031,7 +1050,8 @@
       "config": "配置 — 扫描设置、阈值和忽略的问题类型",
       "area_complexity": "Complexity heatmap by area",
       "redundancy": "Redundant automations",
-      "recorder_impact": "Recorder DB impact per automation"
+      "recorder_impact": "Recorder DB impact per automation",
+      "integrations": "集成监控器"
     },
     "battery_scan_note": "更改将在下次扫描时生效 — 无需重启。",
     "battery_predict": {
@@ -1277,10 +1297,10 @@
       },
       "redundancy": {
         "blueprint_problem": "此自动化是≥3个结构相同自动化组的一部分 — 蓝图候选",
-        "blueprint_step1": "1. 解释什么是HA蓝图，以及集中管理这些自动化如何简化维护",
-        "blueprint_step2": "2. 向我展示此自动化的当前YAML（📄 当前YAML：）和建议的通用蓝图（✅ 建议的蓝图：）",
-        "blueprint_choice_proceed": "✅  好的，创建蓝图并迁移自动化",
-        "blueprint_choice_backup": "📋  先备份，然后创建蓝图",
+        "blueprint_step1": "1. 读取自动化YAML（参见上方命令），分析结构并识别可参数化的元素",
+        "blueprint_step2": "2. 从该自动化生成通用blueprint YAML。展示提议的blueprint（✅ 提议的blueprint：）",
+        "blueprint_choice_proceed": "✅  好，现在使用ha_create_blueprint()创建blueprint并迁移自动化",
+        "blueprint_choice_backup": "📋  先用ha_backup_create()备份，再用ha_create_blueprint()创建blueprint",
         "native_problem": "此自动化手动重新实现了HA中已原生集成的功能：\"{detail}\"",
         "native_step1": "1. 解释为什么使用HA原生功能更好",
         "native_step2": "2. 向我展示当前YAML（📄 当前YAML：）以及如何启用相应的原生功能（✅ 建议的原生配置：）",
@@ -1310,7 +1330,8 @@
         "split_step2": "2. 向我展示当前YAML并建议拆分为独立的自动化（✅ 建议的YAML：）",
         "split_choice_proceed": "✅  好的，拆分为独立的自动化",
         "split_choice_backup": "📋  先备份，然后拆分"
-      }
+      },
+      "issue_id_label": "问题ID"
     },
     "dashboard": {
       "title": "HACA 概览",
@@ -1339,6 +1360,45 @@
       "history_title": "健康评分 — 过去7天",
       "open_panel": "打开HACA面板",
       "created_toast": "HACA仪表板已创建！"
+    },
+    "integrations": {
+      "loading": "正在扫描集成...",
+      "error": "加载集成时出错",
+      "run_scan_first": "点击集成标签页扫描您的集成。",
+      "no_hacs": "未检测到HACS — 仅显示核心和自定义集成。",
+      "search_placeholder": "搜索集成...",
+      "sort_name": "按名称排序",
+      "sort_type": "按类型排序",
+      "sort_entities": "按实体数排序",
+      "sort_age": "按安装时间排序",
+      "stat_total": "总计",
+      "stat_cards": "卡片",
+      "stat_themes": "主题",
+      "stat_unused": "未使用",
+      "stat_updates": "可更新",
+      "in_use": "使用中",
+      "unused": "未使用",
+      "entities": "个实体",
+      "age_days": "{days}天",
+      "docs": "文档",
+      "settings": "设置",
+      "showing": "显示{count}/{total}",
+      "none_found": "没有与当前筛选条件匹配的集成。",
+      "orphan": "孤立",
+      "orphan_tooltip": "有实体但没有活跃的config entry",
+      "ask_ai": "问AI",
+      "export_csv": "导出CSV",
+      "ai_prompt_header": "集成\"{name}\"（域名：{domain}）已安装在Home Assistant中。",
+      "ai_prompt_type": "类型：{type}",
+      "ai_prompt_unused": "此集成没有活跃的config entry — 似乎未被使用。",
+      "ai_prompt_orphan": "此集成有{count}个实体但没有活跃的config entry — 检测到孤立实体。",
+      "ai_prompt_instructions": "1. 检查此集成是否被自动化、脚本或仪表板使用。\n2. 如果未使用，说明如何安全删除。\n3. 如果有孤立实体，说明如何清理。\n4. 列出删除后可能受影响的依赖关系。",
+      "export_md": "导出为Markdown",
+      "stat_apps": "应用",
+      "no_supervisor": "未检测到Supervisor — 插件（应用）不会显示。",
+      "disabled": "已禁用",
+      "disabled_tooltip": "此集成已被有意禁用 — 请确认是否仍需要",
+      "stat_disabled": "已禁用"
     }
   },
   "analyzer": {
@@ -1494,7 +1554,10 @@
     "group_all_unavailable": "组 '{entity_id}' 的所有成员均不可用",
     "group_check_availability": "检查为何成员实体不可用",
     "group_nested_deep": "组 '{entity_id}' 嵌套深度为 {depth} 级（影响性能）",
-    "group_flatten": "将组层次结构扁平化至最多 2 层嵌套"
+    "group_flatten": "将组层次结构扁平化至最多 2 层嵌套",
+    "entity_unknown_state_referenced": "实体状态未知，被{count}个自动化使用",
+    "noisy_entity": "嘈杂实体：24小时内{count}次状态变更",
+    "noisy_entity_recommendation": "考虑从记录器中排除或添加状态过滤器以减少数据库写入"
   },
   "stats": {
     "dashboards": "仪表板",
@@ -1678,6 +1741,9 @@
     "workflow_auto_title": "Automations workflow:",
     "workflow_auto": "1. ha_get_entities(domain='automation') to list\n2. haca_get_automation(entity_id) to read full YAML\n3. ha_create_automation() / ha_update_automation() to create/modify",
     "workflow_scripts_title": "Scripts workflow:",
-    "workflow_scripts": "1. ha_get_entities(domain='script') to list\n2. ha_get_script(entity_id) to read\n3. ha_create_script() / ha_update_script() to create/modify"
+    "workflow_scripts": "1. ha_get_entities(domain='script') to list\n2. ha_get_script(entity_id) to read\n3. ha_create_script() / ha_update_script() to create/modify",
+    "workflow_fix_title": "问题修复工作流：",
+    "workflow_fix": "1. haca_list_issue_catalog() 查看所有类别、类型和可修复的问题\n2. haca_get_issues(category?, type?, severity?) 列出特定问题\n3. haca_fix_batch(issue_id='HACA-XXX-TYPE-hash') 修复单个问题（dry_run=true为默认值）\n4. haca_fix_batch(category?, type?, severity?) 批量修复\n5. 始终先用dry_run=true预览，用户确认后再设dry_run=false执行\nID格式：HACA-{CATEGORY}-{TYPE}-{HASH6}，例：HACA-AUTO-NO_ALIAS-a3f2c1",
+    "rule_use_haca_id": "每个问题都有唯一的haca_id（格式：HACA-CAT-TYPE-hash）。始终使用提供的haca_id——绝不要编造或猜测ID。"
   }
 }
