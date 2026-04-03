@@ -1,0 +1,14 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add WaterNSW waterbody",
+        "description": "Create the standard WaterNSW sensors for a waterbody.",
+        "data": {
+          "waterbody_name": "Waterbody name",
+          "site_id": "Site ID"
+        }
+      }
+    }
+  }
+}

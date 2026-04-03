@@ -1,143 +1,203 @@
-"""Sensor platform for WaterNSW"""
-import datetime
-import json
-import logging
-from datetime import timedelta
+from __future__ import annotations
 
-import homeassistant.helpers.config_validation as cv
-import requests
+from datetime import datetime
+import asyncio
+
 import voluptuous as vol
-from homeassistant.components.sensor import PLATFORM_SCHEMA
+
+from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ATTRIBUTION, CONF_ICON, CONF_NAME
-from homeassistant.helpers.entity import Entity
-from homeassistant.util import Throttle
+from homeassistant.core import HomeAssistant
+import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-__version__ = "v0.4"
-_LOGGER = logging.getLogger(__name__)
-
-REQUIREMENTS = []
-
-CONF_SITE = "site_id"
-CONF_VARFROM = "from_variable"
-CONF_VARTO = "to_variable"
-CONF_UOM = "unit_of_measure"
-
-DEFAULT_UOM = "Unknown"
-DEFAULT_ICON = "mdi:water"
-
-MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(minutes=10)
+from .const import (
+    ATTRIBUTION,
+    CONF_SITE_ID,
+    CONF_WATERBODY_NAME,
+    DEFAULT_ICON,
+    DOMAIN,
+    STALE_AFTER_DAYS,
+    WATERBODY_SENSOR_TYPES,
+)
+from .coordinator import WaterNSWCoordinator, format_trace_value
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Required(CONF_NAME): cv.string,
-        vol.Optional(CONF_ICON, default=DEFAULT_ICON): cv.string,
-        vol.Required(CONF_SITE): cv.string,
-        vol.Required(CONF_VARFROM): cv.string,
-        vol.Required(CONF_VARTO): cv.string,
-        vol.Required(CONF_UOM, default=DEFAULT_UOM): cv.string,
+        vol.Optional(CONF_ICON, default=DEFAULT_ICON): cv.icon,
+        vol.Required(CONF_SITE_ID): cv.string,
+        vol.Required("from_variable"): cv.string,
+        vol.Required("to_variable"): cv.string,
+        vol.Required("unit_of_measure"): cv.string,
     }
 )
 
 
-def setup_platform(hass, config, add_entities, discovery_info=None):
-    "Setup Platform"
-    add_entities(
+async def async_setup_platform(
+    hass: HomeAssistant,
+    config: dict,
+    async_add_entities: AddEntitiesCallback,
+    discovery_info=None,
+) -> None:
+    """Keep legacy YAML support."""
+    coordinator = WaterNSWCoordinator(
+        hass,
+        site_id=str(config[CONF_SITE_ID]),
+        var_from=config["from_variable"],
+        var_to=config["to_variable"],
+    )
+    await coordinator.async_config_entry_first_refresh()
+    async_add_entities(
         [
-            WaterNSWSensor(
-                name=config[CONF_NAME],
-                icon=config[CONF_ICON],
-                site=config[CONF_SITE],
-                varfrom=config[CONF_VARFROM],
-                varto=config[CONF_VARTO],
-                uom=config[CONF_UOM],
+            WaterNSWLegacySensor(
+                coordinator=coordinator,
+                config=config,
+                unique_prefix="yaml",
             )
         ]
     )
 
 
-class WaterNSWSensor(Entity):
-    def __init__(self, name: str, icon: str, site: str, varfrom: str, varto: str, uom: str):
-        self._state = None
-        self._name = name
-        self._icon = icon
-        self._attributes = {}
-        self._site = site
-        self._varfrom = varfrom
-        self._varto = varto
-        self._uom = uom
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up all standard WaterNSW sensors for a UI-created waterbody."""
+    waterbody_name = entry.data[CONF_WATERBODY_NAME]
+    site_id = str(entry.data[CONF_SITE_ID])
 
-    @property
-    def name(self):
-        return "WaterNSW " + self._name
+    coordinators: list[tuple[dict, WaterNSWCoordinator]] = []
 
-    @property
-    def state(self):
-        return self._state
+    for definition in WATERBODY_SENSOR_TYPES:
+        coordinator = WaterNSWCoordinator(
+            hass,
+            site_id=site_id,
+            var_from=definition["from_variable"],
+            var_to=definition["to_variable"],
+        )
+        coordinators.append((definition, coordinator))
 
-    @property
-    def icon(self):
-        return self._icon
+    results = await asyncio.gather(
+        *[coordinator.async_config_entry_first_refresh() for _, coordinator in coordinators],
+        return_exceptions=True,
+    )
 
-    @property
-    def state_attributes(self):
-        return self._attributes
+    entities: list[WaterNSWUISensor] = []
+    errors: list[Exception] = []
 
-    @property
-    def unit_of_measurement(self):
-        return self._uom
+    for (definition, coordinator), result in zip(coordinators, results, strict=True):
+        if isinstance(result, Exception):
+            errors.append(result)
+            continue
 
-    @Throttle(MIN_TIME_BETWEEN_UPDATES)
-    def update(self):
-
-        url = (
-            "https://realtimedata.waternsw.com.au/cgi/webservice.exe?{'function':'get_latest_ts_values','version':'2','params':{'site_list':'"
-            + str(self._site)
-            + "','datasource':'PROV','trace_list':[{'varfrom':'"
-            + str(self._varfrom)
-            + "','varto':'"
-            + str(self._varto)
-            + "'}]}}&ver=2"
+        entities.append(
+            WaterNSWUISensor(
+                coordinator=coordinator,
+                entry=entry,
+                waterbody_name=waterbody_name,
+                site_id=site_id,
+                definition=definition,
+            )
         )
 
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-        except HTTPError as http_err:
-            _LOGGER.warning("HTTP Error: %s", http_err)
-        except Exception as err:
-            _LOGGER.warning("Other Error: %s", err)
+    if not entities and errors:
+        raise errors[0]
 
-        results = response.json()
+    async_add_entities(entities)
 
-        self._attributes = {}
-        self._state = 0
 
-        try:
-            reqvalue = results["return"][self._site][0]["values"][0]["v"]
-        except:
-            reqvalue = "unknown"
-            _LOGGER.error("Cannot retrieve date, check config")
+class _WaterNSWBaseSensor(CoordinatorEntity[WaterNSWCoordinator], SensorEntity):
+    """Shared WaterNSW sensor logic."""
 
-        try:
-            time = results["return"][self._site][0]["values"][0]["time"]
-        except:
-            time = "unknown"
+    _attr_has_entity_name = False
 
-        if time == "unknown":
-            datetime_obj = datetime.datetime.now()
-        else:
-            datetime_obj = datetime.datetime.strptime(time, "%Y%m%d%H%M%S")
+    def __init__(self, coordinator: WaterNSWCoordinator) -> None:
+        super().__init__(coordinator)
 
-        # Check for stale data
-        today_obj = datetime.datetime.now()
-        difftime = today_obj - datetime_obj
+    @property
+    def native_value(self):
+        data = self.coordinator.data
+        if data is None or data.timestamp is None:
+            return None
 
-        if difftime.days <= 7:
-            output_str = reqvalue
-        else:
-            output_str = "unknown"
+        age = datetime.now() - data.timestamp
+        if age.days > STALE_AFTER_DAYS:
+            return None
 
-        self._attributes["lastupdate"] = datetime_obj
-        self._attributes["site_id"] = self._site
-        self._attributes[ATTR_ATTRIBUTION] = "Data provided by WaterNSW Real Time Data Platform"
-        self._state = output_str
+        return data.value
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        data = self.coordinator.data
+        timestamp = data.timestamp if data else None
+
+        stale = None
+        if timestamp is not None:
+            stale = (datetime.now() - timestamp).days > STALE_AFTER_DAYS
+
+        return {
+            "site_id": self.coordinator.site_id,
+            "from_variable": self.coordinator.var_from,
+            "to_variable": self.coordinator.var_to,
+            "lastupdate": timestamp,
+            "stale": stale,
+            ATTR_ATTRIBUTION: ATTRIBUTION,
+        }
+
+    @property
+    def device_info(self) -> dict:
+        return {
+            "identifiers": {(DOMAIN, self.coordinator.site_id)},
+            "name": f"WaterNSW Site {self.coordinator.site_id}",
+            "manufacturer": "WaterNSW",
+            "model": "Real Time Data Platform",
+            "entry_type": "service",
+            "configuration_url": "https://realtimedata.waternsw.com.au/",
+        }
+
+
+class WaterNSWUISensor(_WaterNSWBaseSensor):
+    """UI-created standard waterbody sensor."""
+
+    def __init__(
+        self,
+        coordinator: WaterNSWCoordinator,
+        *,
+        entry: ConfigEntry,
+        waterbody_name: str,
+        site_id: str,
+        definition: dict,
+    ) -> None:
+        super().__init__(coordinator)
+
+        self._attr_name = f"WaterNSW {waterbody_name} {definition['name_suffix']}"
+        self._attr_unique_id = f"{entry.entry_id}_{definition['key']}"
+        self._attr_native_unit_of_measurement = definition["unit_of_measure"]
+        self._attr_icon = definition.get("icon", DEFAULT_ICON)
+
+
+class WaterNSWLegacySensor(_WaterNSWBaseSensor):
+    """Legacy YAML-configured sensor."""
+
+    def __init__(
+        self,
+        coordinator: WaterNSWCoordinator,
+        *,
+        config: dict,
+        unique_prefix: str,
+    ) -> None:
+        super().__init__(coordinator)
+
+        name = config[CONF_NAME]
+        site_id = str(config[CONF_SITE_ID])
+        var_from = format_trace_value(config["from_variable"])
+        var_to = format_trace_value(config["to_variable"])
+
+        self._attr_name = f"WaterNSW {name}"
+        self._attr_unique_id = f"{unique_prefix}_{site_id}_{var_from}_{var_to}_{name.lower().replace(' ', '_')}"
+        self._attr_native_unit_of_measurement = config["unit_of_measure"]
+        self._attr_icon = config.get(CONF_ICON, DEFAULT_ICON)

@@ -1,9 +1,12 @@
 {
   "domain": "waternsw",
   "name": "Water NSW",
+  "version": "1.1.0",
   "documentation": "https://github.com/bacco007/sensor.waternsw",
-  "dependencies": [],
   "codeowners": ["@bacco007"],
   "requirements": [],
-  "version": "0.6"
+  "config_flow": true,
+  "iot_class": "cloud_polling",
+  "integration_type": "service",
+  "loggers": ["custom_components.waternsw"]
 }
