@@ -1,12 +1,12 @@
 {
   "domain": "untappd",
-  "version": "0.1.6",
   "name": "Untappd",
-  "documentation": "https://github.com/custom-components/sensor.untappd/blob/master/README.md",
-  "dependencies": [],
-  "codeowners": [
-  "@iantrich",
-  "@swetoast"
-  ],
-  "requirements": ["pyuntappd==0.0.5"]
+  "version": "1.0.0",
+  "documentation": "https://untappd.com/api/docs",
+  "codeowners": [],
+  "config_flow": true,
+  "requirements": [],
+  "iot_class": "cloud_polling",
+  "integration_type": "service",
+  "loggers": ["custom_components.untappd"]
 }
