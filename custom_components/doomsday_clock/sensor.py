@@ -1,155 +1,117 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime, time, timedelta
-import logging
-import re
-
-from aiohttp import ClientError
-from bs4 import BeautifulSoup
-
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers.entity import EntityCategory
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import (
-    CONF_RESOURCE,
-    CONF_SELECTOR,
-    DEFAULT_SELECTORS,
-    DOMAIN,
-    UPDATE_INTERVAL,
-)
-
-_LOGGER = logging.getLogger(__name__)
+from .const import ATTRIBUTION, DEFAULT_ICON, DEFAULT_NAME, DEFAULT_UNIT, DOMAIN
+from .coordinator import DoomsdayClockCoordinator
 
 
-@dataclass(frozen=True)
-class DoomsdayClockData:
-    """Fetched Doomsday Clock data."""
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up Doomsday Clock sensors from config entry."""
+    coordinator = DoomsdayClockCoordinator(hass, entry.data)
+    await coordinator.async_config_entry_first_refresh()
 
-    sentence: str
-    minutes_to_midnight: float
-    midnight_time: str
-    selector_used: str
-
-
-def number_string_to_int(value: str) -> int | None:
-    """Convert textual numbers into integers."""
-    switcher = {
-        "zero": 0,
-        "one": 1,
-        "two": 2,
-        "three": 3,
-        "four": 4,
-        "five": 5,
-        "six": 6,
-        "seven": 7,
-        "eight": 8,
-        "nine": 9,
-    }
-    return switcher.get(value.lower())
-
-
-def sentence_to_number(sentence: str) -> float | None:
-    """Convert Doomsday Clock string to minutes to midnight."""
-    pattern = (
-        r"(?:(?P<integer>\d+)"
-        r"|(?P<string>zero|one|two|three|four|five|six|seven|eight|nine)"
-        r"(?P<andhalf>.*?half)"
-        r"|(?P<half>half)) (?:minutes|a minute|seconds) to midnight"
+    async_add_entities(
+        [
+            DoomsdayClockMinutesSensor(coordinator, entry),
+            DoomsdayClockTimeSensor(coordinator, entry),
+            DoomsdayClockSentenceSensor(coordinator, entry),
+        ]
     )
-    result = re.search(pattern, sentence, re.M | re.I)
 
-    if result is None:
-        return None
 
-    countdown = 0.0
+class DoomsdayClockBaseSensor(CoordinatorEntity[DoomsdayClockCoordinator], SensorEntity):
+    """Base sensor for Doomsday Clock."""
 
-    if result.group("integer"):
-        countdown = float(int(result.group("integer")))
+    _attr_has_entity_name = False
 
-    if result.group("string"):
-        parsed = number_string_to_int(result.group("string"))
-        if parsed is None:
+    def __init__(self, coordinator: DoomsdayClockCoordinator, entry: ConfigEntry) -> None:
+        super().__init__(coordinator)
+        self._entry = entry
+
+    @property
+    def device_info(self) -> dict:
+        """Return device info."""
+        return {
+            "identifiers": {(DOMAIN, "main")},
+            "name": DEFAULT_NAME,
+            "manufacturer": "Bulletin of the Atomic Scientists",
+            "model": "Doomsday Clock",
+            "entry_type": "service",
+            "configuration_url": self.coordinator.resource,
+        }
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        """Return common attributes."""
+        attrs = {
+            ATTR_ATTRIBUTION: ATTRIBUTION,
+        }
+        if self.coordinator.data:
+            attrs["selector_used"] = self.coordinator.data.selector_used
+        return attrs
+
+
+class DoomsdayClockMinutesSensor(DoomsdayClockBaseSensor):
+    """Main Doomsday Clock minutes sensor."""
+
+    def __init__(self, coordinator: DoomsdayClockCoordinator, entry: ConfigEntry) -> None:
+        super().__init__(coordinator, entry)
+        self._attr_name = entry.title or DEFAULT_NAME
+        self._attr_unique_id = "doomsday_clock_main_minutes"
+        self._attr_icon = DEFAULT_ICON
+        self._attr_native_unit_of_measurement = DEFAULT_UNIT
+        self._attr_native_precision = 1
+
+    @property
+    def native_value(self) -> float | None:
+        """Return minutes to midnight."""
+        if not self.coordinator.data:
             return None
-        countdown = float(parsed)
-
-    if result.group("andhalf") or result.group("half"):
-        countdown += 0.5
-
-    # Handle "seconds to midnight"
-    if "seconds to midnight" in sentence.lower():
-        countdown = countdown / 60.0
-
-    return countdown
+        return self.coordinator.data.minutes_to_midnight
 
 
-def number_to_time(value: float) -> str:
-    """Convert number of minutes to midnight into 24h format."""
-    midnight = datetime.combine(
-        datetime.today().date() + timedelta(days=1),
-        time(0, 0, 0),
-    )
-    minutes = int(value // 1)
-    seconds = int(round((value - minutes) * 60))
-    delta = timedelta(minutes=minutes, seconds=seconds)
-    return (midnight - delta).strftime("%H:%M:%S")
+class DoomsdayClockTimeSensor(DoomsdayClockBaseSensor):
+    """Diagnostic time sensor."""
+
+    def __init__(self, coordinator: DoomsdayClockCoordinator, entry: ConfigEntry) -> None:
+        super().__init__(coordinator, entry)
+        self._attr_name = "Doomsday Clock Time"
+        self._attr_unique_id = "doomsday_clock_main_time"
+        self._attr_icon = "mdi:clock-outline"
+        self._attr_entity_category = EntityCategory.DIAGNOSTIC
+
+    @property
+    def native_value(self) -> str | None:
+        """Return formatted time to midnight."""
+        if not self.coordinator.data:
+            return None
+        return self.coordinator.data.midnight_time
 
 
-class DoomsdayClockCoordinator(DataUpdateCoordinator[DoomsdayClockData]):
-    """Coordinator to fetch Doomsday Clock data."""
+class DoomsdayClockSentenceSensor(DoomsdayClockBaseSensor):
+    """Diagnostic raw sentence sensor."""
 
-    def __init__(self, hass: HomeAssistant, config: dict) -> None:
-        self.resource = config[CONF_RESOURCE]
-        configured_selector = config.get(CONF_SELECTOR)
-        self.selectors = (
-            [configured_selector] if configured_selector else list(DEFAULT_SELECTORS)
-        )
+    def __init__(self, coordinator: DoomsdayClockCoordinator, entry: ConfigEntry) -> None:
+        super().__init__(coordinator, entry)
+        self._attr_name = "Doomsday Clock Sentence"
+        self._attr_unique_id = "doomsday_clock_main_sentence"
+        self._attr_icon = "mdi:text-box-outline"
+        self._attr_entity_category = EntityCategory.DIAGNOSTIC
 
-        super().__init__(
-            hass,
-            _LOGGER,
-            name=DOMAIN,
-            update_interval=UPDATE_INTERVAL,
-        )
-
-    async def _async_update_data(self) -> DoomsdayClockData:
-        """Fetch and parse the source page."""
-        session = async_get_clientsession(self.hass)
-
-        try:
-            async with session.get(self.resource, timeout=30) as response:
-                response.raise_for_status()
-                html = await response.text()
-        except (ClientError, TimeoutError, ValueError) as err:
-            raise UpdateFailed(f"Error fetching Doomsday Clock page: {err}") from err
-
-        soup = BeautifulSoup(html, "html.parser")
-
-        sentence = None
-        selector_used = None
-
-        for selector in self.selectors:
-            matches = soup.select(selector)
-            if matches:
-                candidate = matches[0].text.strip()
-                if candidate:
-                    sentence = candidate
-                    selector_used = selector
-                    break
-
-        if not sentence or not selector_used:
-            raise UpdateFailed(
-                "No sentence found using any selector: " + ", ".join(self.selectors)
-            )
-
-        value = sentence_to_number(sentence)
-        if value is None:
-            raise UpdateFailed(f"Could not parse Doomsday Clock sentence: {sentence}")
-
-        return DoomsdayClockData(
-            sentence=sentence,
-            minutes_to_midnight=value,
-            midnight_time=number_to_time(value),
-            selector_used=selector_used,
-        )
+    @property
+    def native_value(self) -> str | None:
+        """Return raw parsed sentence."""
+        if not self.coordinator.data:
+            return None
+        return self.coordinator.data.sentence
