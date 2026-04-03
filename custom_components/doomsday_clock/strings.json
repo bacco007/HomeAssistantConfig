@@ -1,0 +1,15 @@
+{
+  "title": "Doomsday Clock",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add Doomsday Clock",
+        "description": "Configure the Doomsday Clock source page and selector.",
+        "data": {
+          "resource": "Source URL",
+          "selector": "CSS selector"
+        }
+      }
+    }
+  }
+}

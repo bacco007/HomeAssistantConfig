@@ -1,13 +1,12 @@
 {
   "domain": "doomsday_clock",
   "name": "Doomsday Clock",
-  "version": "2.0.0",
-  "documentation": "https://github.com/renemarc/home-assistant-doomsday-clock",
-  "requirements": [
-    "beautifulsoup4==4.7.1"
-  ],
-  "dependencies": [],
-  "codeowners": [
-    "@renemarc"
-  ]
+  "version": "3.0.0",
+  "documentation": "https://github.com/yourname/homeassistant-doomsday-clock",
+  "codeowners": ["@yourname"],
+  "config_flow": true,
+  "requirements": ["beautifulsoup4>=4.12.0"],
+  "iot_class": "cloud_polling",
+  "integration_type": "service",
+  "loggers": ["custom_components.doomsday_clock"]
 }
