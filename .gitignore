@@ -28,8 +28,10 @@ gtfs_static_cache
 .skyfield
 .haca-backups
 .haca_history
+.haca_battery_history
 haca_reports
 f1_replay_cache
+.cache
 
 # Ignore File Extensions
 *.conf
