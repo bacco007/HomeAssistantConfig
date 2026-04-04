@@ -1,0 +1,3 @@
+scan_now:
+  name: "Custom Component Monitor: manual scan"
+  description: Trigger an immediate scan of all HACS-installed custom components.

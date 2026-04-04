@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+import yaml
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -72,6 +73,55 @@ class ComponentScanner:
             _LOGGER.debug("Could not load storage file %s: %s", filename, exc)
             return {}
 
+    @staticmethod
+    def _make_ha_yaml_loader() -> type:
+        """Return a YAML SafeLoader subclass that handles HA custom tags."""
+        loader = type("HALoader", (yaml.SafeLoader,), {})
+        # Handle !include, !include_dir_merge_named, !secret, etc.
+        for tag in ("!include", "!include_dir_merge_named",
+                    "!include_dir_list", "!include_dir_named",
+                    "!secret", "!env_var"):
+            loader.add_constructor(
+                tag, lambda l, n: l.construct_scalar(n)
+            )
+        return loader
+
+    def _list_yaml_dashboard_files(self) -> list[Path]:
+        """Return file paths for YAML-mode Lovelace dashboards.
+
+        Reads ``configuration.yaml`` to find dashboards registered with
+        ``mode: yaml`` and returns their resolved file paths.
+        """
+        config_yaml = self.config_dir / "configuration.yaml"
+        if not config_yaml.exists():
+            return []
+        try:
+            loader = self._make_ha_yaml_loader()
+            with open(config_yaml, encoding="utf-8") as fh:
+                raw = yaml.load(fh, Loader=loader) or {}
+        except (yaml.YAMLError, OSError):
+            return []
+        lovelace = raw.get("lovelace", {}) or {}
+        dashboards = lovelace.get("dashboards", {}) or {}
+        paths: list[Path] = []
+        for dash_cfg in dashboards.values():
+            if not isinstance(dash_cfg, dict):
+                continue
+            if dash_cfg.get("mode") != "yaml":
+                continue
+            filename = dash_cfg.get("filename")
+            if not filename:
+                continue
+            resolved = self.config_dir / filename
+            if resolved.exists():
+                paths.append(resolved)
+        # Also check if the default dashboard is YAML mode
+        if lovelace.get("mode") == "yaml":
+            default = self.config_dir / lovelace.get("filename", "ui-lovelace.yaml")
+            if default.exists():
+                paths.append(default)
+        return paths
+
     async def _load_hacs_repositories(self) -> dict[str, Any]:
         """Return HACS repository dict (cached for the scan cycle)."""
         if self._hacs_repositories is None:
@@ -126,9 +176,19 @@ class ComponentScanner:
             candidates = [repo_short]
             if repo.get("name"):
                 candidates.append(repo["name"])
-            # Strip common prefixes like "ha-"
-            if repo_short.startswith("ha-"):
-                candidates.append(repo_short[3:])
+            rm_name = rm.get("name", "")
+            if rm_name:
+                candidates.append(rm_name)
+            # Strip common repo name prefixes
+            for prefix in ("ha-", "homeassistant-", "home-assistant-", "lovelace-"):
+                if repo_short.lower().startswith(prefix):
+                    candidates.append(repo_short[len(prefix):])
+            # Also strip trailing "-theme" / "-themes" suffix
+            for cand in list(candidates):
+                low = cand.lower()
+                for suffix in ("-theme", "-themes"):
+                    if low.endswith(suffix):
+                        candidates.append(cand[:len(cand) - len(suffix)])
             # Try the YAML filename (without extension) from manifest
             rm_filename = rm.get("filename", "")
             if rm_filename:
@@ -141,13 +201,16 @@ class ComponentScanner:
                 candidate = themes_dir / name
                 if candidate.exists():
                     return candidate
-            # Last resort: scan themes dir for dirs containing repo_short
+            # Broader match: check if dir name appears in a candidate or vice versa
             if themes_dir.exists():
                 for child in themes_dir.iterdir():
                     if child.is_dir():
-                        low = child.name.lower()
+                        dir_low = child.name.lower()
                         for name in candidates:
-                            if name and name.lower() in low:
+                            if not name:
+                                continue
+                            name_low = name.lower()
+                            if name_low in dir_low or dir_low in name_low:
                                 return child
         elif category == "plugin":
             candidates = [repo_short]
@@ -220,8 +283,8 @@ class ComponentScanner:
         """Return the normalised set of theme names actively in use.
 
         Checks:
-        * system-wide default theme (core.config → frontend)
-        * per-user theme (auth → users, frontend.user_data_*)
+        * system-wide default theme (core.config \u2192 frontend)
+        * per-user theme (auth \u2192 users, frontend.user_data_*)
         * all lovelace dashboards (view-level and card-level ``theme`` keys)
         """
         used: set[str] = set()
@@ -265,7 +328,7 @@ class ComponentScanner:
                 if t and isinstance(t, str):
                     used.add(self._normalise_theme_name(t))
 
-        # 3) All lovelace dashboard files — recursive search for "theme" keys
+        # 3) All lovelace dashboard files \u2014 recursive search for "theme" keys
         def _list_lovelace_files() -> list[str]:
             storage = self.config_dir / ".storage"
             if not storage.exists():
@@ -294,6 +357,23 @@ class ComponentScanner:
             except (json.JSONDecodeError, OSError):
                 continue
             self._extract_theme_refs(raw, used)
+
+        # Also scan YAML-mode dashboards for theme references
+        def _read_yaml(path: Path) -> Any:
+            loader = self._make_ha_yaml_loader()
+            with open(path, encoding="utf-8") as fh:
+                return yaml.load(fh, Loader=loader)
+
+        yaml_dashboards = await self.hass.async_add_executor_job(
+            self._list_yaml_dashboard_files
+        )
+        for yf in yaml_dashboards:
+            try:
+                raw = await self.hass.async_add_executor_job(_read_yaml, yf)
+            except (yaml.YAMLError, OSError):
+                continue
+            if raw:
+                self._extract_theme_refs(raw, used)
 
         _LOGGER.debug("Used theme names (normalised): %s", used)
         return used
@@ -362,7 +442,7 @@ class ComponentScanner:
                         is_used = True
                         break
             else:
-                # No variants extracted — fall back to repo name matching
+                # No variants extracted \u2014 fall back to repo name matching
                 if self._normalise_theme_name(name) in used_names:
                     is_used = True
 
@@ -394,6 +474,10 @@ class ComponentScanner:
 
         Returns lowercased card type names (without the ``custom:`` prefix).
         E.g. ``["weather-forecast-card"]``.
+
+        Uses multiple strategies to handle cases where the JS filename
+        doesn't match the registered custom element name (e.g. Firemote,
+        Mushroom).
         """
         rm = repo.get("repository_manifest", {}) or {}
         full_name = repo.get("full_name", "")
@@ -406,9 +490,12 @@ class ComponentScanner:
         if manifest_fn and manifest_fn.endswith(".js"):
             names.append(manifest_fn[:-3].lower())
 
-        # 2) Scan the community directory for .js files
+        # 2) Scan the community directory for .js files and extract
+        #    customElements.define calls from them
         candidates = [repo_short]
         if repo_short.startswith("ha-"):
+            candidates.append(repo_short[3:])
+        if repo_short.startswith("HA-"):
             candidates.append(repo_short[3:])
         community_dir = self.config_dir / "www" / "community"
         for cname in candidates:
@@ -418,8 +505,24 @@ class ComponentScanner:
                     stem = js_file.stem.lower()
                     if stem not in names and not stem.endswith(".gz"):
                         names.append(stem)
+                    # Extract actual registered custom element names from JS
+                    ce_names = self._extract_custom_elements(js_file)
+                    for ce in ce_names:
+                        if ce not in names:
+                            names.append(ce)
 
-        # 3) Fall back to repo short name if nothing found
+        # 3) Add prefix-stripped variants for every name collected so far
+        #    (e.g. "lovelace-horizon-card" \u2192 "horizon-card")
+        stripped_extras: list[str] = []
+        for n in names:
+            for prefix in ("lovelace-", "ha-"):
+                if n.startswith(prefix):
+                    stripped = n[len(prefix):]
+                    if stripped and stripped not in names and stripped not in stripped_extras:
+                        stripped_extras.append(stripped)
+        names.extend(stripped_extras)
+
+        # 4) Fall back to repo short name if nothing found
         if not names:
             stripped = repo_short.lower()
             for prefix in ("lovelace-", "ha-"):
@@ -428,6 +531,125 @@ class ComponentScanner:
             names.append(stripped)
 
         return names
+
+    _CE_DEFINE_RE = re.compile(
+        r'customElements\.define\(\s*["\']([a-z0-9](?:[a-z0-9-]*[a-z0-9])?)["\']',
+        re.IGNORECASE,
+    )
+
+    def _extract_custom_elements(self, js_path: Path) -> list[str]:
+        """Extract custom element names from customElements.define() calls.
+
+        Reads up to 1MB of the JS file and returns all unique element names
+        that look like card types (contain a hyphen, as required by the
+        custom elements spec). Filters out editor elements.
+        """
+        try:
+            # Read a bounded amount to avoid huge memory use on large bundles
+            raw = js_path.read_bytes()[:1_048_576].decode("utf-8", errors="ignore")
+        except OSError:
+            return []
+
+        found: list[str] = []
+        for match in self._CE_DEFINE_RE.finditer(raw):
+            name = match.group(1).lower()
+            # Must contain a hyphen (custom elements spec requirement)
+            if "-" not in name:
+                continue
+            # Skip editor elements \u2014 they aren't card types
+            if name.endswith("-editor"):
+                continue
+            if name not in found:
+                found.append(name)
+        return found
+
+    # -- icon library helpers ------------------------------------------------
+
+    _ICON_PREFIX_RE = re.compile(
+        r'window\.custom(?:Iconsets|Icons)\s*\[\s*["\']([a-zA-Z][a-zA-Z0-9_-]*)["\']\s*\]',
+    )
+
+    def _extract_icon_prefixes(self, js_path: Path) -> list[str]:
+        """Extract icon set prefixes registered by a JS file.
+
+        Looks for patterns like ``window.customIconsets["phu"]`` and
+        ``window.customIcons["cil"]``.
+        """
+        try:
+            raw = js_path.read_bytes()[:2_097_152].decode("utf-8", errors="ignore")
+        except OSError:
+            return []
+        found: list[str] = []
+        for match in self._ICON_PREFIX_RE.finditer(raw):
+            prefix = match.group(1).lower()
+            if prefix not in found:
+                found.append(prefix)
+        return found
+
+    def _has_custom_element_calls(self, js_path: Path) -> bool:
+        """Return True if the JS file contains any customElements.define() call.
+
+        Unlike ``_extract_custom_elements`` which only matches string-literal
+        element names, this catches minified forms like
+        ``customElements.define(e,n)`` as well.
+        """
+        try:
+            raw = js_path.read_bytes()[:2_097_152].decode("utf-8", errors="ignore")
+        except OSError:
+            return False
+        return "customElements.define(" in raw
+
+    async def _collect_used_icon_prefixes(self) -> set[str]:
+        """Return the set of non-standard icon prefixes used in dashboards and entity registry."""
+        used: set[str] = set()
+        icon_re = re.compile(r'"icon"\s*:\s*"([a-zA-Z][a-zA-Z0-9_-]*):')
+        builtin = {"mdi", "hass", "homeassistant"}
+
+        def _scan_storage() -> set[str]:
+            prefixes: set[str] = set()
+            storage = self.config_dir / ".storage"
+            if not storage.exists():
+                return prefixes
+            # Scan lovelace dashboards and entity registry
+            for fp in storage.iterdir():
+                if not fp.is_file():
+                    continue
+                if not (fp.name.startswith("lovelace") or fp.name == "core.entity_registry"):
+                    continue
+                try:
+                    text = fp.read_text(encoding="utf-8", errors="ignore")
+                    for m in icon_re.finditer(text):
+                        p = m.group(1).lower()
+                        if p not in builtin:
+                            prefixes.add(p)
+                except OSError:
+                    continue
+            return prefixes
+
+        used = await self.hass.async_add_executor_job(_scan_storage)
+
+        # Also scan YAML-mode dashboards for icon prefixes
+        yaml_icon_re = re.compile(r'icon:\s*["\']?([a-zA-Z][a-zA-Z0-9_-]*):')
+        def _scan_yaml_dashboards() -> set[str]:
+            prefixes: set[str] = set()
+            for yf in self._list_yaml_dashboard_files():
+                try:
+                    text = yf.read_text(encoding="utf-8", errors="ignore")
+                    for m in yaml_icon_re.finditer(text):
+                        p = m.group(1).lower()
+                        if p not in builtin:
+                            prefixes.add(p)
+                except OSError:
+                    continue
+            return prefixes
+
+        yaml_prefixes = await self.hass.async_add_executor_job(
+            _scan_yaml_dashboards
+        )
+        used |= yaml_prefixes
+
+        _LOGGER.debug("Used icon prefixes: %s", used)
+        return used
 
     async def _collect_used_card_types(self) -> set[str]:
         """Return the set of custom card type names found in lovelace dashboards.
@@ -467,6 +689,23 @@ class ComponentScanner:
                 continue
             self._extract_card_types(raw, used)
 
+        # Also scan YAML-mode dashboards
+        def _read_yaml(path: Path) -> Any:
+            loader = self._make_ha_yaml_loader()
+            with open(path, encoding="utf-8") as fh:
+                return yaml.load(fh, Loader=loader)
+
+        yaml_dashboards = await self.hass.async_add_executor_job(
+            self._list_yaml_dashboard_files
+        )
+        for yf in yaml_dashboards:
+            try:
+                raw = await self.hass.async_add_executor_job(_read_yaml, yf)
+            except (yaml.YAMLError, OSError):
+                continue
+            if raw:
+                self._extract_card_types(raw, used)
+
         _LOGGER.debug("Used card types (custom): %s", used)
         return used
 
@@ -492,6 +731,7 @@ class ComponentScanner:
         """
         hacs_repos = await self._load_hacs_repositories()
         used_types = await self._collect_used_card_types()
+        used_icon_prefixes = await self._collect_used_icon_prefixes()
         now = dt_util.now()
 
         used_list: list[dict[str, Any]] = []
@@ -528,20 +768,76 @@ class ComponentScanner:
                 self._derive_card_types, repo
             )
 
-            # card-mod is a utility — it's used if any card has card_mod styling
+            # card-mod is a utility \u2014 it's used if any card has card_mod styling
             repo_short = (
                 full_name.split("/")[-1].lower() if "/" in full_name else ""
             )
             is_card_mod = "card-mod" in repo_short
 
+            # Check if this plugin is an icon library
+            icon_prefixes: list[str] = []
+            community_dir = self.config_dir / "www" / "community"
+            for cname in [repo_short, full_name.split("/")[-1] if "/" in full_name else ""]:
+                if not cname:
+                    continue
+                d = community_dir / cname
+                if d.is_dir():
+                    for js_file in d.glob("*.js"):
+                        icon_prefixes.extend(
+                            await self.hass.async_add_executor_job(
+                                self._extract_icon_prefixes, js_file
+                            )
+                        )
+
             is_used = False
             if is_card_mod:
                 is_used = "__card_mod__" in used_types
+            elif icon_prefixes:
+                # Icon library \u2014 used if any of its prefixes appear in dashboards
+                for pfx in icon_prefixes:
+                    if pfx in used_icon_prefixes:
+                        is_used = True
+                        break
             else:
                 for ct in card_types:
                     if ct in used_types:
                         is_used = True
                         break
+                # Prefix-based matching for multi-card libraries (e.g. Mushroom)
+                # If a derived name like "mushroom" matches any used card type
+                # starting with "mushroom-", count it as used.
+                if not is_used:
+                    for ct in card_types:
+                        for ut in used_types:
+                            if ut.startswith(ct + "-"):
+                                is_used = True
+                                break
+                        if is_used:
+                            break
+                # Utility plugins (like kiosk-mode) that don't register
+                # custom elements or icon sets are "used" if they are
+                # registered as a lovelace resource.
+                if not is_used and not card_types:
+                    is_used = False  # no card types derived at all
+                elif not is_used:
+                    # Check if this is a utility (no custom element
+                    # definitions found in JS \u2014 only derived from filename)
+                    has_ce = False
+                    for cname in [repo_short, full_name.split("/")[-1] if "/" in full_name else ""]:
+                        if not cname:
+                            continue
+                        d = community_dir / cname
+                        if d.is_dir():
+                            for js_file in d.glob("*.js"):
+                                if self._has_custom_element_calls(js_file):
+                                    has_ce = True
+                                    break
+                        if has_ce:
+                            break
+                    if not has_ce:
+                        # No custom elements found \u2014 it's a utility plugin.
+                        # Mark as used (it's loaded as a resource for a reason).
+                        is_used = True
 
             entry = {
                 "name": name,
@@ -569,7 +865,13 @@ class ComponentScanner:
     # -- integration helpers --------------------------------------------------
 
     async def _get_configured_domains(self) -> set[str]:
-        """Return the set of integration domains that have config entries."""
+        """Return the set of integration domains that are in use.
+
+        Combines:
+        * ``core.config_entries`` \u2014 UI-configured integrations.
+        * ``hass.config.components`` \u2014 all loaded components at runtime,
+          which includes YAML-configured integrations.
+        """
         data = await self._load_storage_file("core.config_entries")
         domains: set[str] = set()
         for entry in data.get("entries", []):
@@ -577,13 +879,19 @@ class ComponentScanner:
                 d = entry.get("domain")
                 if d:
                     domains.add(d)
+        # Also include runtime-loaded components (covers YAML-configured
+        # integrations that don't use config entries).
+        for component in self.hass.config.components:
+            # Strip sub-platforms like "bureau_of_meteorology.sensor"
+            domain = component.split(".", 1)[0]
+            domains.add(domain)
         return domains
 
     async def scan_integrations(self) -> dict[str, Any]:
         """Scan HACS-installed integrations and determine usage.
 
         An integration is considered *used* if its domain appears in
-        ``core.config_entries``.
+        ``core.config_entries`` or ``hass.config.components``.
 
         Returns ``{"total": int, "used": [...], "unused": [...]}``.
         """
@@ -819,6 +1127,10 @@ async def async_setup_entry(
         raise ConfigEntryNotReady(
             f"Failed to initialize coordinator: {exc}"
         ) from exc
+
+    # Store coordinator reference so the scan_now service can access it
+    hass.data.setdefault(DOMAIN, {})
+    hass.data[DOMAIN]["coordinator"] = coordinator
 
     entities = [
         CustomComponentMonitorSensor(coordinator, desc)

@@ -6,9 +6,11 @@ from pathlib import Path
 import shutil
 import time
 
+import voluptuous as vol
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers.typing import ConfigType
 import homeassistant.helpers.config_validation as cv
 
@@ -20,6 +22,8 @@ PLATFORMS: list[Platform] = [Platform.SENSOR]
 
 CARD_JS = "custom-component-monitor-card.js"
 CARD_BASE_PATH = f"/local/{DOMAIN}/{CARD_JS}"
+
+SERVICE_SCAN_NOW = "scan_now"
 
 CONFIG_SCHEMA = cv.empty_config_schema(DOMAIN)
 
@@ -54,7 +58,11 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
 
 async def _register_lovelace_resource(hass: HomeAssistant) -> None:
-    """Add/update the card JS in lovelace_resources with a cache-bust tag."""
+    """Add/update the card JS in lovelace_resources with a cache-bust tag.
+
+    Handles both storage-mode and YAML-mode lovelace gracefully.
+    Users with YAML-mode resources must add the card manually.
+    """
     from homeassistant.components.lovelace import DOMAIN as LL_DOMAIN
     from homeassistant.components.lovelace.resources import (
         ResourceStorageCollection,
@@ -65,11 +73,20 @@ async def _register_lovelace_resource(hass: HomeAssistant) -> None:
         return
 
     ll_data = hass.data[LL_DOMAIN]
-    resources: ResourceStorageCollection | None = getattr(
-        ll_data, "resources", None
-    )
+    resources = getattr(ll_data, "resources", None)
     if resources is None:
         _LOGGER.debug("Lovelace resources collection not available")
+        return
+
+    # Only storage-mode collections support async_create_item / async_update_item.
+    # YAML-mode uses ResourceYAMLCollection which is read-only.
+    if not isinstance(resources, ResourceStorageCollection):
+        _LOGGER.info(
+            "Lovelace resources are configured in YAML mode. "
+            "Please add the card resource manually: "
+            "url: %s, type: module",
+            CARD_BASE_PATH,
+        )
         return
 
     if not resources.loaded:
@@ -110,6 +127,26 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN][entry.entry_id] = {}
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+    # Register the scan_now service (once)
+    if not hass.services.has_service(DOMAIN, SERVICE_SCAN_NOW):
+
+        async def handle_scan_now(call: ServiceCall) -> None:
+            """Handle the scan_now service call."""
+            coordinator = hass.data[DOMAIN].get("coordinator")
+            if coordinator is not None:
+                _LOGGER.info("Manual scan triggered via service call")
+                await coordinator.async_request_refresh()
+            else:
+                _LOGGER.warning("No coordinator available for manual scan")
+
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_SCAN_NOW,
+            handle_scan_now,
+            schema=vol.Schema({}),
+        )
+
     return True
 
 
@@ -118,5 +155,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id, None)
+        # Remove service if no more entries
+        if hass.services.has_service(DOMAIN, SERVICE_SCAN_NOW):
+            hass.services.async_remove(DOMAIN, SERVICE_SCAN_NOW)
+        hass.data[DOMAIN].pop("coordinator", None)
 
     return unload_ok

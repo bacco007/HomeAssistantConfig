@@ -28,5 +28,11 @@
         "name": "Unused Frontend Resources"
       }
     }
+  },
+  "services": {
+    "scan_now": {
+      "name": "Custom Component Monitor: manual scan",
+      "description": "Trigger an immediate scan of all HACS-installed custom components."
+    }
   }
 }
