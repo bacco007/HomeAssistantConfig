@@ -63,6 +63,7 @@ export function generateScriptSection(payload, pages, profile) {
             }
             lines.push(`${baseIndent}    else:`);
             lines.push(`${baseIndent}      - logger.log: "Deep Sleep prevented, retrying in 60s"`);
+            lines.push(`${baseIndent}      - deep_sleep.prevent: deep_sleep_control`);
             lines.push(`${baseIndent}      - delay: 60s`);
             lines.push(`${baseIndent}      - script.execute: deep_sleep_cycle`);
             return;
@@ -93,48 +94,42 @@ export function generateScriptSection(payload, pages, profile) {
     );
 
     lines.push("script:");
-    lines.push("  - id: change_page_to");
-    lines.push("    parameters:");
-    lines.push("      target_page: int");
-    lines.push("    then:");
-    lines.push("      - lambda: |-");
-    lines.push(`          int pages_count = ${pages.length};`);
-    lines.push("          int target = target_page;");
-    lines.push("          while (target < 0) target += pages_count;");
-    lines.push("          target %= pages_count;");
-    lines.push("");
-    lines.push(`          // Debounce: Ignore page changes within ${debounceMs}ms of last change`);
-    lines.push(`          // (adjusted for ${isLcd ? 'LCD' : 'e-paper'} display update time)`);
-    lines.push("          uint32_t now = millis();");
-    lines.push(`          if (now - id(last_page_switch_time) < ${debounceMs}) {`);
-    lines.push(`            ESP_LOGD("display", "Page change ignored (debounce), last switch was %d ms ago", now - id(last_page_switch_time));`);
-    lines.push("            return;");
-    lines.push("          }");
-    lines.push("");
-    lines.push("          if (id(display_page) != target) {");
-    lines.push("            // Set debounce time BEFORE display update (update takes ~1.6s)");
-    lines.push("            id(last_page_switch_time) = now;");
-    lines.push("            id(display_page) = target;");
-    lines.push(`            id(${displayId}).update();`);
-    lines.push(`            ESP_LOGI("display", "Switched to page %d", target);`);
-    if (isBacklightStrategy) {
-        lines.push(`            // LCD Strategy: Wake up backlight on interaction/page change`);
-        lines.push(`            id(backlight_pwm).set_level(0.8); // Restore brightness`);
+    if (hasMultiplePages) {
+        lines.push("  - id: change_page_to");
+        lines.push("    parameters:");
+        lines.push("      target_page: int");
+        lines.push("    then:");
+        lines.push("      - lambda: |-");
+        lines.push(`          int pages_count = ${pages.length};`);
+        lines.push("          int target = target_page;");
+        lines.push("          while (target < 0) target += pages_count;");
+        lines.push("          target %= pages_count;");
+        lines.push("");
+        lines.push(`          // Debounce: Ignore page changes within ${debounceMs}ms of last change`);
+        lines.push(`          // (adjusted for ${isLcd ? 'LCD' : 'e-paper'} display update time)`);
+        lines.push("          uint32_t now = millis();");
+        lines.push(`          if (now - id(last_page_switch_time) < ${debounceMs}) {`);
+        lines.push(`            ESP_LOGD("display", "Page change ignored (debounce), last switch was %d ms ago", now - id(last_page_switch_time));`);
+        lines.push("            return;");
+        lines.push("          }");
+        lines.push("");
+        lines.push("          if (id(display_page) != target) {");
+        lines.push("            // Set debounce time BEFORE display update (update takes ~1.6s)");
+        lines.push("            id(last_page_switch_time) = now;");
+        lines.push("            id(display_page) = target;");
+        lines.push(`            id(${displayId}).update();`);
+        lines.push(`            ESP_LOGI("display", "Switched to page %d", target);`);
+        if (isBacklightStrategy) {
+            lines.push(`            // LCD Strategy: Wake up backlight on interaction/page change`);
+            lines.push(`            id(backlight_pwm).set_level(0.8); // Restore brightness`);
+        }
+        lines.push("          }");
     }
-    lines.push("          }");
 
     if (isDeepSleep) {
         lines.push("");
         lines.push("  - id: deep_sleep_cycle");
         lines.push("    then:");
-        if (payload.deepSleepStayAwakeSwitch) {
-            lines.push("      - if:");
-            lines.push("          condition:");
-            lines.push("            binary_sensor.is_on: stay_awake_switch");
-            lines.push("          then:");
-            lines.push('            - logger.log: "Stay-awake active, deep sleep cycle aborted."');
-            lines.push("            - script.stop: deep_sleep_cycle");
-        }
 
         if (payload.sleepEnabled === true || payload.sleepEnabled === "true" || payload.sleepEnabled === 1 || payload.sleepEnabled === "1") {
             const endStr = String(sEnd).padStart(2, '0');
@@ -196,7 +191,13 @@ export function generateScriptSection(payload, pages, profile) {
     lines.push("                condition:");
     lines.push(`                  lambda: 'return id(ha_time).now().is_valid() && api_is_connected();'`);
     lines.push("                timeout: 120s");
+    lines.push("      - if:");
+    lines.push("          condition:");
+    lines.push(`            lambda: 'return id(initial_sensor_sync_pending);'`);
+    lines.push("          then:");
+    lines.push('            - logger.log: "Waiting 5s for initial sensor updates..."');
     lines.push("            - delay: 5s");
+    lines.push(`            - lambda: 'id(initial_sensor_sync_pending) = false;'`);
 
     if (autoCycleEnabled) lines.push("      - script.execute: auto_cycle_timer");
 
@@ -248,7 +249,8 @@ export function generateScriptSection(payload, pages, profile) {
             });
             lines.push("");
             lines.push("             // If current page is invisible OR another should be shown, switch");
-            lines.push("             if (best_page != -1 && (best_page != p || id(last_page_switch_time) == 0)) {");
+            lines.push("             if (best_page != -1 && best_page != p) {");
+            lines.push("                 id(last_page_switch_time) = millis();");
             lines.push('                 ESP_LOGI("display", "Auto-switching to scheduled page %d", best_page);');
             lines.push("                 id(change_page_to).execute(best_page);");
             lines.push("                 return;");

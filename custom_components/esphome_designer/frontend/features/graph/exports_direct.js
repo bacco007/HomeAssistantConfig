@@ -1,5 +1,8 @@
 /** @typedef {Widget & { props?: Record<string, any>, entity_id?: string, title?: string }} GraphWidget */
 
+import { clampFontWeight } from '../../js/core/font_weights.js';
+import { formatGraphLookbackLabel, inferGraphTimeGrid, parseDuration } from '../../js/utils/graph_helpers.js';
+
 /**
  * @param {GraphWidget} w
  * @param {Record<string, any>} context
@@ -19,11 +22,14 @@ export const exportDoc = (w, context) => {
     const colorProp = p.color || "theme_auto";
     const color = getColorConst(colorProp);
     const lineThickness = parseInt(p.line_thickness || 3, 10);
+    const fontFamily = p.font_family || "Roboto";
+    const fontSize = parseInt(p.font_size || 12, 10) || 12;
+    const fontWeight = clampFontWeight(fontFamily, parseInt(p.font_weight || 400, 10) || 400);
     const minValue = p.min_value || "";
     const maxValue = p.max_value || "";
 
     const safeId = `graph_${w.id}`.replace(/-/g, "_");
-    const fontId = addFont("Roboto", 400, 12);
+    const fontId = addFont(fontFamily, fontWeight, fontSize);
 
     const gridEnabled = p.grid !== false;
     let xGrid = p.x_grid || "";
@@ -31,17 +37,7 @@ export const exportDoc = (w, context) => {
 
     if (gridEnabled) {
         if (!xGrid) {
-            const durationMatch = duration.match(/^(\d+(?:\.\d+)?)(min|h|d)$/);
-            if (durationMatch) {
-                const value = parseFloat(durationMatch[1]);
-                const unit = durationMatch[2];
-                const gridValue = value / 4;
-                if (unit === "h") xGrid = gridValue >= 1 ? `${Math.round(gridValue)}h` : `${Math.round(gridValue * 60)}min`;
-                else if (unit === "min") xGrid = `${Math.round(gridValue)}min`;
-                else if (unit === "d") xGrid = `${Math.round(gridValue * 24)}h`;
-            } else {
-                xGrid = "1h";
-            }
+            xGrid = inferGraphTimeGrid(duration);
         }
         if (!yGrid) {
             const minY = parseFloat(minValue) || 0;
@@ -164,16 +160,7 @@ export const exportDoc = (w, context) => {
             lines.push(`        it.printf(${w.x}+4, ${w.y}+2, id(${fontId}), ${color}, TextAlign::TOP_LEFT, "${title}");`);
         }
 
-        let durationSec = 3600;
-        const durationMatch = duration.match(/^(\d+)([a-z]+)$/i);
-        if (durationMatch) {
-            const value = parseInt(durationMatch[1], 10);
-            const unit = durationMatch[2].toLowerCase();
-            if (unit.startsWith("s")) durationSec = value;
-            else if (unit.startsWith("m")) durationSec = value * 60;
-            else if (unit.startsWith("h")) durationSec = value * 3600;
-            else if (unit.startsWith("d")) durationSec = value * 86400;
-        }
+        const durationSec = parseDuration(duration);
 
         const xLabelSteps = 2;
         for (let index = 0; index <= xLabelSteps; index += 1) {
@@ -183,13 +170,7 @@ export const exportDoc = (w, context) => {
             if (index === 0) align = "TextAlign::TOP_LEFT";
             if (index === xLabelSteps) align = "TextAlign::TOP_RIGHT";
 
-            let labelText = index === xLabelSteps ? "Now" : "";
-            if (index !== xLabelSteps) {
-                const timeAgo = durationSec * (1 - ratio);
-                if (timeAgo >= 3600) labelText = `-${(timeAgo / 3600).toFixed(1)}h`;
-                else if (timeAgo >= 60) labelText = `-${(timeAgo / 60).toFixed(0)}m`;
-                else labelText = `-${timeAgo.toFixed(0)}s`;
-            }
+            const labelText = index === xLabelSteps ? "Now" : formatGraphLookbackLabel(durationSec * (1 - ratio));
             lines.push(`        it.printf(${w.x} + ${xOffset}, ${w.y} + ${w.height} + 2, id(${fontId}), ${color}, ${align}, "${labelText}");`);
         }
     } else {

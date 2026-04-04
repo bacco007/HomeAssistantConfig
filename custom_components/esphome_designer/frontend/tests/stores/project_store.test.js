@@ -61,6 +61,17 @@ describe('ProjectStore', () => {
             expect(store.pages[0].name).toBe('Overview');
             expect(store.currentPageIndex).toBe(0);
         });
+
+        it('recreates a default page when the store has no pages', () => {
+            store.state.pages = [];
+            store.state.currentPageIndex = 2;
+
+            const page = store.getCurrentPage();
+
+            expect(page.name).toBe('Overview');
+            expect(store.pages).toHaveLength(1);
+            expect(store.currentPageIndex).toBe(0);
+        });
     });
 
     describe('Page CRUD', () => {
@@ -165,6 +176,26 @@ describe('ProjectStore', () => {
             expect(store.pages[1].name).toBe('Overview');
         });
 
+        it('updates the current page index when the current page itself is moved', () => {
+            store.addPage();
+            store.addPage();
+            store.setCurrentPageIndex(0);
+
+            store.reorderPage(0, 2);
+
+            expect(store.currentPageIndex).toBe(2);
+        });
+
+        it('updates the current page index when another page crosses over it', () => {
+            store.addPage();
+            store.addPage();
+            store.setCurrentPageIndex(1);
+
+            store.reorderPage(2, 1);
+
+            expect(store.currentPageIndex).toBe(2);
+        });
+
         it('should reorder widgets within a page', () => {
             store.addWidget({ id: 'w1' });
             store.addWidget({ id: 'w2' });
@@ -174,11 +205,41 @@ describe('ProjectStore', () => {
             expect(store.pages[0].widgets[1].id).toBe('w1');
         });
 
+        it('ignores invalid widget reorder indexes', () => {
+            store.addWidget({ id: 'w1' });
+            store.addWidget({ id: 'w2' });
+
+            store.reorderWidget(0, 0, 99);
+
+            expect(store.pages[0].widgets.map((widget) => widget.id)).toEqual(['w1', 'w2']);
+        });
+
+        it('ignores widget reorders for missing pages', () => {
+            store.addWidget({ id: 'w1' });
+            events.emit.mockClear();
+
+            store.reorderWidget(99, 0, 0);
+
+            expect(store.pages[0].widgets.map((widget) => widget.id)).toEqual(['w1']);
+            expect(events.emit).not.toHaveBeenCalled();
+        });
+
         it('should ignore invalid current page changes', () => {
             store.setCurrentPageIndex(99);
 
             expect(store.currentPageIndex).toBe(0);
             expect(events.emit).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('Page insertion', () => {
+        it('increments the current page index when inserting before the current page', () => {
+            store.addPage();
+            store.setCurrentPageIndex(1);
+
+            store.addPage(1);
+
+            expect(store.currentPageIndex).toBe(2);
         });
     });
 
@@ -222,6 +283,14 @@ describe('ProjectStore', () => {
             expect(child?.x).toBe(370);
             expect(child?.y).toBe(270);
         });
+
+        it('returns false when moving to an invalid page index', () => {
+            store.addWidget({ id: 'w1', x: 10, y: 10 });
+            events.emit.mockClear();
+
+            expect(store.moveWidgetToPage('w1', 99)).toBe(false);
+            expect(events.emit).not.toHaveBeenCalled();
+        });
     });
 
     describe('Clear Page', () => {
@@ -250,16 +319,26 @@ describe('ProjectStore', () => {
 
             expect(result).toEqual({ deleted: 1, preserved: 1 });
         });
+
+        it('returns zero counts when no page can be resolved', () => {
+            store.getCurrentPage = vi.fn(() => null);
+
+            expect(store.clearCurrentPage()).toEqual({ deleted: 0, preserved: 0 });
+            expect(events.emit).not.toHaveBeenCalled();
+        });
     });
 
     describe('Payload Round-trip', () => {
         it('should maintain payload consistency', () => {
             store.setDeviceSettings('My-Device', 'esp32_s3');
+            store.setManualYamlOverride('# manual override');
             store.addPage();
             store.addWidget({ id: 'w-trip', type: 'text' });
 
             const payload = store.getPagesPayload();
             expect(payload.deviceName).toBe('My-Device');
+            expect(payload.manualYamlOverride).toBe('# manual override');
+            expect(payload.manual_yaml_override).toBe('# manual override');
             expect(payload.pages.length).toBe(2);
             expect(payload.pages[1].widgets[0].id).toBe('w-trip');
 
@@ -280,6 +359,39 @@ describe('ProjectStore', () => {
 
                 expect(store.getCanvasDimensions(ORIENTATIONS.PORTRAIT)).toEqual({ width: 448, height: 600 });
                 expect(store.getCanvasShape()).toBe('round');
+            } finally {
+                DEVICE_PROFILES.custom = originalCustomProfile;
+            }
+        });
+
+        it('uses the default landscape orientation when no orientation is provided', () => {
+            expect(store.getCanvasDimensions()).toEqual({ width: 400, height: 300 });
+        });
+
+        it('prefers a profile-defined canvas shape when available', () => {
+            const originalShape = DEVICE_PROFILES.reterminal_e1001.shape;
+            DEVICE_PROFILES.reterminal_e1001.shape = 'round';
+
+            try {
+                expect(store.getCanvasShape()).toBe('round');
+            } finally {
+                if (originalShape === undefined) {
+                    delete DEVICE_PROFILES.reterminal_e1001.shape;
+                } else {
+                    DEVICE_PROFILES.reterminal_e1001.shape = originalShape;
+                }
+            }
+        });
+
+        it('falls back to a rectangular canvas shape when no profile shape is available', () => {
+            const originalCustomProfile = DEVICE_PROFILES.custom;
+            delete DEVICE_PROFILES.custom;
+
+            try {
+                store.state.customHardware = {};
+                store.setDeviceSettings('My-Device', 'custom');
+
+                expect(store.getCanvasShape()).toBe('rect');
             } finally {
                 DEVICE_PROFILES.custom = originalCustomProfile;
             }

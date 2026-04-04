@@ -1,3 +1,5 @@
+import { clampFontWeight } from '../../js/core/font_weights.js';
+
 const ensureHex = (color) => (color === "gray" || color === "grey" ? "#808080" : color);
 
 const normalizeEntityId = (entity, isLocal = false) => {
@@ -14,6 +16,11 @@ const getDynamicColor = (getColorConst, color) => {
     return getColorConst(color);
 };
 
+const escapeLvglString = (value) => String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+
+const buildLvglSensorTextLambda = (guardExpr, formatString, valueExpr, fallbackText) =>
+    `!lambda "if (${guardExpr}) { return str_sprintf(\\"${escapeLvglString(formatString)}\\", ${valueExpr}); } return \\"${escapeLvglString(fallbackText)}\\";"`;
+
 const pushSensorValue = (lines, iconFontRef, textFontRef, color, x, y, iconCode, bodyLines) => {
     lines.push(`          {`);
     lines.push(`            it.printf(${Math.round(x)} - 4, ${Math.round(y)}, id(${iconFontRef}), ${color}, TextAlign::CENTER_RIGHT, "%s", "${iconCode}");`);
@@ -26,6 +33,8 @@ export function exportDoc(w, context) {
     const p = w.props || {};
     const iconSize = parseInt(p.icon_size || 20, 10);
     const fontSize = parseInt(p.font_size || 14, 10);
+    const fontFamily = p.font_family || "Roboto";
+    const fontWeight = clampFontWeight(fontFamily, parseInt(p.font_weight || 400, 10) || 400);
     const color = getDynamicColor(getColorConst, ensureHex(p.color || "white"));
     const showWifi = p.show_wifi !== false;
     const showTemp = p.show_temperature !== false;
@@ -54,7 +63,7 @@ export function exportDoc(w, context) {
     const tempId = rawTempEntity ? normalizeEntityId(rawTempEntity, p.temp_is_local) : "";
 
     const iconFontRef = addFont("Material Design Icons", 400, iconSize);
-    const textFontRef = addFont("Roboto", 400, fontSize);
+    const textFontRef = addFont(fontFamily, fontWeight, fontSize);
 
     const cond = getConditionCheck(w);
     if (cond) lines.push(`        ${cond}`);
@@ -212,8 +221,10 @@ export function exportLVGL(w, { common, convertColor, getLVGLFont, profile }) {
     const color = convertColor(ensureHex(p.color || "white"));
     const iconSize = parseInt(p.icon_size || 20, 10);
     const fontSize = parseInt(p.font_size || 14, 10);
+    const fontFamily = p.font_family || "Roboto";
+    const fontWeight = clampFontWeight(fontFamily, parseInt(p.font_weight || 400, 10) || 400);
     const iconFont = getLVGLFont("Material Design Icons", iconSize, 400);
-    const textFont = getLVGLFont("Roboto", fontSize, 400);
+    const textFont = getLVGLFont(fontFamily, fontSize, fontWeight);
     const widgets = [];
 
     if (p.show_wifi !== false) {
@@ -226,7 +237,27 @@ export function exportLVGL(w, { common, convertColor, getLVGLFont, profile }) {
         iconL += '                else return "\\U000F091F";\n';
         iconL += '              }\n';
         iconL += '              return "\\U000F092B";';
-        widgets.push({ obj: { width: "SIZE_CONTENT", height: "SIZE_CONTENT", bg_opa: "transp", border_width: 0, layout: { type: "flex", flex_flow: "row", flex_align_main: "center", flex_align_cross: "center" }, pad_all: 0, widgets: [{ label: { text: iconL, text_font: iconFont, text_color: color } }, { label: { text: '!lambda "return id(wifi_signal_dbm).has_state() ? str_sprintf(\'%.0fdB\', id(wifi_signal_dbm).state).c_str() : \'--dB\';"', text_font: textFont, text_color: color, x: 4 } }] } });
+        widgets.push({
+            obj: {
+                width: "SIZE_CONTENT",
+                height: "SIZE_CONTENT",
+                bg_opa: "transp",
+                border_width: 0,
+                layout: { type: "flex", flex_flow: "row", flex_align_main: "center", flex_align_cross: "center" },
+                pad_all: 0,
+                widgets: [
+                    { label: { text: iconL, text_font: iconFont, text_color: color } },
+                    {
+                        label: {
+                            text: buildLvglSensorTextLambda("id(wifi_signal_dbm).has_state()", "%.0fdB", "id(wifi_signal_dbm).state", "--dB"),
+                            text_font: textFont,
+                            text_color: color,
+                            x: 4
+                        }
+                    }
+                ]
+            }
+        });
     }
 
     if (p.show_temperature !== false) {
@@ -236,7 +267,7 @@ export function exportLVGL(w, { common, convertColor, getLVGLFont, profile }) {
         const unit = p.temp_unit || "\u00B0C";
         const tempExpr = unit === "\u00B0F" ? `(id(${tempId}).state * 9.0 / 5.0 + 32.0)` : `id(${tempId}).state`;
         const tempText = tempId
-            ? `!lambda "if (id(${tempId}).has_state()) { return str_sprintf('%.1f${unit}', ${tempExpr}).c_str(); } return '--${unit}';"`
+            ? buildLvglSensorTextLambda(`id(${tempId}).has_state()`, `%.1f${unit}`, tempExpr, `--${unit}`)
             : `"--${unit}"`;
         widgets.push({ obj: { width: "SIZE_CONTENT", height: "SIZE_CONTENT", bg_opa: "transp", border_width: 0, layout: { type: "flex", flex_flow: "row", flex_align_main: "center", flex_align_cross: "center" }, pad_all: 0, widgets: [{ label: { text: '"\\U000F050F"', text_font: iconFont, text_color: color } }, { label: { text: tempText, text_font: textFont, text_color: color, x: 4 } }] } });
     }
@@ -246,7 +277,7 @@ export function exportLVGL(w, { common, convertColor, getLVGLFont, profile }) {
         if (p.hum_is_local) baseHumId = profile.features?.sht4x ? "sht4x_humidity" : profile.features?.sht3x || profile.features?.sht3xd ? "sht3x_humidity" : profile.features?.shtc3 ? "shtc3_humidity" : (p.hum_entity || "");
         const humId = baseHumId ? baseHumId.replace(/[^a-zA-Z0-9_]/g, "_") : "";
         const humText = humId
-            ? `!lambda "if (id(${humId}).has_state()) { return str_sprintf('%.0f%%', id(${humId}).state).c_str(); } return '--%%';"`
+            ? buildLvglSensorTextLambda(`id(${humId}).has_state()`, "%.0f%%", `id(${humId}).state`, "--%%")
             : `"--%%"`;
         widgets.push({ obj: { width: "SIZE_CONTENT", height: "SIZE_CONTENT", bg_opa: "transp", border_width: 0, layout: { type: "flex", flex_flow: "row", flex_align_main: "center", flex_align_cross: "center" }, pad_all: 0, widgets: [{ label: { text: '"\\U000F058E"', text_font: iconFont, text_color: color } }, { label: { text: humText, text_font: textFont, text_color: color, x: 4 } }] } });
     }
@@ -273,7 +304,7 @@ export function exportLVGL(w, { common, convertColor, getLVGLFont, profile }) {
             batIconL += '                else return "\\U000F0083";\n';
             batIconL += '              }\n';
             batIconL += '              return "\\U000F0082";';
-            batText = `!lambda "return id(${batId}).has_state() ? str_sprintf('%.0f%%', id(${batId}).state).c_str() : '--%%';"`;
+            batText = buildLvglSensorTextLambda(`id(${batId}).has_state()`, "%.0f%%", `id(${batId}).state`, "--%%");
         }
         widgets.push({ obj: { width: "SIZE_CONTENT", height: "SIZE_CONTENT", bg_opa: "transp", border_width: 0, layout: { type: "flex", flex_flow: "row", flex_align_main: "center", flex_align_cross: "center" }, pad_all: 0, widgets: [{ label: { text: batIconL, text_font: iconFont, text_color: color } }, { label: { text: batText, text_font: textFont, text_color: color, x: 4 } }] } });
     }
@@ -372,9 +403,10 @@ export function collectRequirements(widget, context) {
     const p = widget.props || {};
     const iconSize = parseInt(p.icon_size || 20, 10);
     const fontSize = parseInt(p.font_size || 14, 10);
+    const fontFamily = p.font_family || "Roboto";
+    const fontWeight = clampFontWeight(fontFamily, parseInt(p.font_weight || 400, 10) || 400);
     addFont("Material Design Icons", 400, iconSize);
-    addFont("Material Design Icons", 400, iconSize);
-    addFont("Roboto", 400, fontSize);
+    addFont(fontFamily, fontWeight, fontSize);
     if (p.show_wifi !== false) ["F092B", "F091F", "F0922", "F0925", "F0928"].forEach((code) => trackIcon(code, iconSize));
     if (p.show_temperature !== false) ["F050F"].forEach((code) => trackIcon(code, iconSize));
     if (p.show_humidity !== false) ["F058E"].forEach((code) => trackIcon(code, iconSize));

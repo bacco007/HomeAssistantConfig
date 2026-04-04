@@ -2,6 +2,13 @@
  * Graph Plugin
  */
 import { AppState } from '@core/state';
+import { clampFontWeight, getWeightsForFont } from '@core/font_weights.js';
+import { FONT_OPTIONS } from '../../js/core/properties/legacy_renderer_widget_properties_shared.js';
+import {
+    buildGraphHistoryTemplateEntityId,
+    buildGraphHistoryTemplateFilename,
+    buildGraphHistoryTemplateYaml
+} from './history_template.js';
 import { render } from './render.js';
 import {
     exportLVGL,
@@ -12,6 +19,123 @@ import {
     onExportNumericSensors,
     onExportTextSensors
 } from './exports.js';
+
+const BUILT_IN_FONT_OPTIONS = FONT_OPTIONS.filter((option) => option !== "Custom...");
+const DURATION_PRESET_OPTIONS = [
+    { value: '15min', label: '15 Minutes' },
+    { value: '30min', label: '30 Minutes' },
+    { value: '1h', label: '1 Hour' },
+    { value: '3h', label: '3 Hours' },
+    { value: '6h', label: '6 Hours' },
+    { value: '12h', label: '12 Hours' },
+    { value: '1d', label: '1 Day' },
+    { value: '3d', label: '3 Days' },
+    { value: '1w', label: '1 Week' },
+    { value: '2w', label: '2 Weeks' },
+    { value: 'custom', label: 'Custom...' }
+];
+
+/**
+ * @param {string} text
+ * @param {HTMLButtonElement} button
+ * @param {string} idleText
+ * @returns {Promise<void>}
+ */
+const copyTextToClipboard = async (text, button, idleText) => {
+    const setLabel = (label) => {
+        button.textContent = label;
+        window.setTimeout(() => {
+            button.textContent = idleText;
+        }, 2000);
+    };
+
+    if (navigator.clipboard && window.isSecureContext) {
+        try {
+            await navigator.clipboard.writeText(text);
+            setLabel('Copied');
+            return;
+        } catch {
+            // Fall through to the legacy copy path.
+        }
+    }
+
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-999999px';
+    textarea.style.top = '-999999px';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    try {
+        if (document.execCommand('copy')) {
+            setLabel('Copied');
+        } else {
+            setLabel('Error');
+        }
+    } catch {
+        setLabel('Error');
+    } finally {
+        document.body.removeChild(textarea);
+    }
+};
+
+/**
+ * @param {Record<string, any>} panel
+ * @param {GraphWidget} widget
+ * @returns {void}
+ */
+const appendHistoryTemplateButtons = (panel, widget) => {
+    const sourceEntity = (widget.entity_id || '').trim();
+    const helperEntityId = buildGraphHistoryTemplateEntityId(widget);
+    const helperYaml = buildGraphHistoryTemplateYaml(widget);
+    const fileName = buildGraphHistoryTemplateFilename(widget);
+    const canGenerate = !!sourceEntity && !sourceEntity.toLowerCase().startsWith('mqtt:');
+
+    const buttonRow = document.createElement('div');
+    buttonRow.style.display = 'flex';
+    buttonRow.style.gap = '8px';
+    buttonRow.style.marginTop = '12px';
+
+    const copyButton = document.createElement('button');
+    copyButton.className = 'btn btn-secondary btn-full btn-xs';
+    copyButton.textContent = 'Copy HA YAML';
+    copyButton.title = 'Copy the Home Assistant helper package';
+    copyButton.style.flex = '1';
+    copyButton.disabled = !canGenerate;
+    copyButton.addEventListener('click', () => {
+        void copyTextToClipboard(helperYaml, copyButton, 'Copy HA YAML');
+    });
+
+    const downloadButton = document.createElement('button');
+    downloadButton.className = 'btn btn-secondary btn-full btn-xs';
+    downloadButton.textContent = 'Download YAML';
+    downloadButton.title = 'Download the Home Assistant helper package';
+    downloadButton.style.flex = '1';
+    downloadButton.disabled = !canGenerate;
+    downloadButton.addEventListener('click', () => {
+        const blob = new Blob([helperYaml], { type: 'text/yaml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    });
+
+    buttonRow.appendChild(copyButton);
+    buttonRow.appendChild(downloadButton);
+    panel.getContainer().appendChild(buttonRow);
+
+    if (canGenerate) {
+        panel.addHint(`Starter package ready. After importing it into Home Assistant, set this graph's Entity ID to <code>${helperEntityId}</code>.`);
+    } else {
+        panel.addHint('Pick a Home Assistant entity first to generate a history helper package. MQTT topics are not supported for this helper.');
+    }
+};
 
 /** @typedef {Widget & { props?: Record<string, any>, entity_id?: string, title?: string }} GraphWidget */
 
@@ -44,7 +168,15 @@ const renderProperties = (panel, widget) => {
     panel.addLabeledInput("Title", "text", widget.title || "", (/** @type {string} */ value) => {
         AppState.updateWidget(widget.id, { title: value });
     });
-    panel.addLabeledInput("Duration", "text", props.duration || "1h", setTextProp("duration"));
+    const duration = props.duration || "1h";
+    const selectedDurationPreset = DURATION_PRESET_OPTIONS.some((option) => option.value === duration) ? duration : 'custom';
+    panel.addSelect("Duration Preset", selectedDurationPreset, DURATION_PRESET_OPTIONS, (value) => {
+        if (value !== 'custom') {
+            updateProp('duration', value);
+        }
+    });
+    panel.addLabeledInput("Duration", "text", duration, setTextProp("duration"));
+    panel.addHint("Pick a preset or enter a custom span like 90min, 12h, 7d, or 1w.");
     panel.addHint("The device collects data from boot. The graph fills up over the configured duration.");
     panel.endSection();
 
@@ -55,6 +187,7 @@ const renderProperties = (panel, widget) => {
         panel.addLabeledInput("Points to keep", "number", props.history_points || 100, setIntProp("history_points"));
         panel.addCheckbox("Smooth Data (Moving Avg)", !!props.history_smoothing, setBoolProp("history_smoothing"));
         panel.addHint('Warning: <span style="color:orange">Requires a custom HA template sensor that exposes history as a JSON array attribute.</span> Standard HA entities do not have this attribute by default.');
+        appendHistoryTemplateButtons(panel, widget);
     }
     panel.endSection();
 
@@ -83,6 +216,23 @@ const renderProperties = (panel, widget) => {
     panel.addLabeledInput("Line Thickness", "number", props.line_thickness || 3, setIntProp("line_thickness"));
     panel.addCheckbox("Continuous Line", props.continuous !== false, setBoolProp("continuous"));
     panel.addColorSelector("Background", props.background_color || "transparent", null, setTextProp("background_color"));
+    panel.endSection();
+
+    panel.createSection("Typography", false);
+    const fontFamily = props.font_family || "Roboto";
+    const fontWeight = clampFontWeight(fontFamily, parseInt(String(props.font_weight || 400), 10) || 400);
+    panel.addSelect("Font Family", fontFamily, BUILT_IN_FONT_OPTIONS, (value) => {
+        const nextWeight = clampFontWeight(value, parseInt(String(props.font_weight || 400), 10) || 400);
+        AppState.updateWidget(widget.id, {
+            props: {
+                ...widget.props,
+                font_family: value,
+                font_weight: nextWeight
+            }
+        });
+    });
+    panel.addSelect("Font Weight", fontWeight, getWeightsForFont(fontFamily), (value) => updateProp("font_weight", parseInt(String(value), 10)));
+    panel.addLabeledInput("Font Size", "number", props.font_size || 12, setIntProp("font_size"));
     panel.endSection();
 
     panel.createSection("Grid Style", false);
@@ -118,6 +268,9 @@ export default {
         color: "theme_auto",
         background_color: "transparent",
         title: "",
+        font_family: "Roboto",
+        font_size: 12,
+        font_weight: 400,
         x_grid: "",
         y_grid: "",
         line_thickness: 3,

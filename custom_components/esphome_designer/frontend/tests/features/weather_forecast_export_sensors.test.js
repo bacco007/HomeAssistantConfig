@@ -64,8 +64,8 @@ describe('weather_forecast export_sensors', () => {
         expect(output).toContain('id: weather_cond_h1200');
         expect(output).toContain('# HOME ASSISTANT TEMPLATE SENSORS (HOURLY)');
         expect(output).toContain('entity_id: weather.garden');
-        expect(output).toContain("name: 'Weather Forecast Hour 0900'");
-        expect(output).toContain("name: 'Weather Forecast Hour 1200'");
+        expect(output).toContain("name: 'Weather Forecast Hour 0900 High'");
+        expect(output).toContain("name: 'Weather Forecast Hour 1200 High'");
     });
 
     it('exports relative hourly template sensors and tracks required fonts/icons', () => {
@@ -107,5 +107,37 @@ describe('weather_forecast export_sensors', () => {
         expect(addFont).toHaveBeenCalledWith('Montserrat', 400, 16);
         expect(addFont).toHaveBeenCalledWith('Material Design Icons', 400, 48);
         expect(trackIcon).toHaveBeenCalledTimes(15);
+    });
+
+    it('deduplicates repeated daily condition sensors across matching widgets', () => {
+        const lines = [];
+        const seenSensorIds = new Set();
+
+        onExportTextSensors({
+            lines,
+            seenSensorIds,
+            widgets: [
+                {
+                    id: 'weather-primary',
+                    type: 'weather_forecast',
+                    props: {
+                        days: 2,
+                        start_offset: 0
+                    }
+                },
+                {
+                    id: 'weather-secondary',
+                    type: 'weather_forecast',
+                    props: {
+                        days: 2,
+                        start_offset: 0
+                    }
+                }
+            ]
+        });
+
+        expect(lines.filter((line) => line === '  id: weather_cond_day0')).toHaveLength(1);
+        expect(lines.filter((line) => line === '  id: weather_cond_day1')).toHaveLength(1);
+        expect(lines.filter((line) => line === '# Weather Forecast Condition Sensors')).toHaveLength(1);
     });
 });
