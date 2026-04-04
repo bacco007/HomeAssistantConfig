@@ -1,0 +1,20 @@
+---
+resource: "https://www.aip.com.au/aip-api-request?api-path=public/api&call=tgpTables"
+method: GET
+scan_interval: 3600
+sensor:
+  - name: "Sydney ULP Terminal Gate Price"
+    unique_id: sydney_ulp_terminal_gate_price
+    unit_of_measurement: "c/L"
+    value_template: "{{ value_json.sydneyULP['0'].fuelPrice | float | round(4) }}"
+    json_attributes_path: "$.sydneyULP['0']"
+    json_attributes:
+      - date
+
+  - name: "Sydney Diesel Terminal Gate Price"
+    unique_id: sydney_diesel_terminal_gate_price
+    unit_of_measurement: "c/L"
+    value_template: "{{ value_json.sydneyDiesel['0'].fuelPrice | float | round(4) }}"
+    json_attributes_path: "$.sydneyDiesel['0']"
+    json_attributes:
+      - date

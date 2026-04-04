@@ -69,7 +69,6 @@ cards:
       - !include /config/ui/cards/tamworth/snippets/sun_moon.yaml
       - !include /config/ui/cards/tamworth/snippets/uv.yaml
       - !include /config/ui/cards/tamworth/snippets/aqi_waqi.yaml
-      - !include /config/ui/cards/tamworth/snippets/aqi_nswdpe.yaml
       - !include /config/ui/cards/weather/rain_daily.yaml
       - !include /config/ui/cards/weather/rain_weekly.yaml
       - !include /config/ui/cards/weather/temperature_weekly.yaml

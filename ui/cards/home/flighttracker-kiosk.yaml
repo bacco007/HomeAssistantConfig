@@ -67,31 +67,32 @@ cards:
     show_attribute: false
 
   - type: custom:mushroom-legacy-template-card
-    primary: Latest Aircraft of Interest
+    primary: Last Plane of Interest (Plane Alert)
     secondary: >-
-      {% from 'easy_time.jinja' import custom_relative_time%}
-      {{state_attr(entity, 'name')}} ({{state_attr(entity, 'tail')}},
-      {{state_attr(entity, 'call')}}), {{state_attr(entity, 'equipment')}}
-      ({{ custom_relative_time(state_attr(entity, 'date')|replace("/","-") +
-      " " + state_attr(entity, 'time'), values='day, hour')}})
-    icon: mdi:airplane-alert
-    entity: sensor.flighttracker_planefence_aircraft
+      {{state_attr(entity, 'owner')}}
+
+      ({{state_attr(entity, 'tail')}}, {{state_attr(entity, 'callsign')}}, {{state_attr(entity, 'type')}}) / {{state_attr(entity, 'db:tag2')}} / {{state_attr(entity, 'db:link')}} 
+
+      Last Seen {{ state_attr(entity, 'time:time_at_mindist') | int | timestamp_custom('%A, %B %d at %H:%M', true) }}
+    entity: sensor.adsb_planealert
     fill_container: true
-    multiline_secondary: true
     tap_action:
       action: none
     hold_action:
       action: none
     double_tap_action:
       action: none
+    multiline_secondary: true
+    icon: ""
     card_mod:
       style:
+        mushroom-state-info$: |
+          .container {
+            text-align: right;
+          }
         .: |
+
           ha-card {
-            --icon-size: 35px;
-            --icon-symbol-size: 25px;
-            #--card-secondary-font-size: 10px;
-            #--card-primary-font-size: 12px;
-            padding-top: 5px !important;
-            padding-bottom: 5px !important;
+            # background-color: var(--background-color);
+            box-shadow: none;
           }

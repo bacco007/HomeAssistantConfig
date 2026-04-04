@@ -6,7 +6,7 @@ binary_sensor:
     device_class: problem
     delay_on: 0
     state: >
-      {%- if is_state('sensor.sun_state_day', 'Day') and (has_value('sensor.sungrow_sg5kd_active_generation') or (as_timestamp(now())-as_timestamp(states.sensor['sungrow_sg5kd_active_generation'].last_updated))/60 < 240) %}
+      {%- if is_state('sensor.sun_state', 'Day') and (has_value('sensor.sungrow_sg5kd_active_generation') or (as_timestamp(now())-as_timestamp(states.sensor['sungrow_sg5kd_active_generation'].last_updated))/60 < 240) %}
       False
       {%- else %}
       True
@@ -19,7 +19,7 @@ sensor:
     unique_id: solar_production_active
     icon: mdi:solar-power
     state: >-
-      {%- if is_state('sensor.sun_state_day', 'Day') %}
+      {%- if is_state('sensor.sun_state', 'Day') %}
         {% if has_value('sensor.sungrow_sg5kd_active_generation') -%}
           {{states('sensor.sungrow_sg5kd_active_generation')|float(0)}}
         {% else -%}
@@ -46,7 +46,7 @@ sensor:
     unique_id: solar_return_to_grid_active
     icon: mdi:solar-power
     state: >-
-      {%- if is_state('sensor.sun_state_day', 'Day') %}
+      {%- if is_state('sensor.sun_state', 'Day') %}
         {% if has_value('sensor.sungrow_sg5kd_active_export_to_grid') -%}
           {{states('sensor.sungrow_sg5kd_active_export_to_grid')|float(0)}}
         {% else -%}
@@ -73,7 +73,7 @@ sensor:
     unique_id: solar_import_from_grid_active
     icon: mdi:solar-power
     state: >-
-      {%- if is_state('sensor.sun_state_day', 'Day') %}
+      {%- if is_state('sensor.sun_state', 'Day') %}
         {% if has_value('sensor.sungrow_sg5kd_active_import_from_grid') -%}
           {{states('sensor.sungrow_sg5kd_active_import_from_grid')|float(0)}}
         {% else -%}
@@ -100,7 +100,7 @@ sensor:
     unique_id: solar_load_power
     icon: mdi:solar-power
     state: >-
-      {%- if is_state('sensor.sun_state_day', 'Day') %}
+      {%- if is_state('sensor.sun_state', 'Day') %}
         {% if has_value('sensor.sungrow_sg5kd_load_power') -%}
           {{states('sensor.sungrow_sg5kd_load_power')|float(0)}}
         {% else -%}
@@ -127,7 +127,7 @@ sensor:
     unique_id: solar_runtime
     icon: mdi:solar-power
     state: >
-      {%- if is_state('sensor.sun_state_day', 'Day') %}
+      {%- if is_state('sensor.sun_state', 'Day') %}
         {%- set time = state_attr('sensor.sungrowsolar_alldata', 'daily_running_time') | int(default=0) * 60 %}
         {%- set minutes = ((time % 3600) // 60) %}
         {%- set minutes = '{}min'.format(minutes) if minutes > 0 else '' %}
@@ -149,7 +149,7 @@ sensor:
     state_class: measurement
     unit_of_measurement: °C
     state: >
-      {%- if is_state('sensor.sun_state_day', 'Day') %}
+      {%- if is_state('sensor.sun_state', 'Day') %}
         {{state_attr('sensor.sungrowsolar_alldata', 'internal_temperature') | float(0)}}
       {%- else %}
         0

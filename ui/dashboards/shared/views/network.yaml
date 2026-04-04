@@ -34,7 +34,6 @@ cards:
       - !include /config/ui/cards/network/adguard/card.yaml
       - !include /config/ui/cards/network/snippets/internetuptime.yaml
       - !include /config/ui/cards/network/snippets/speedtest.yaml
-      - !include /config/ui/cards/network/snippets/graph_fast_week.yaml
 
   # Actions
   - !include /config/ui/cards/common/actions.yaml

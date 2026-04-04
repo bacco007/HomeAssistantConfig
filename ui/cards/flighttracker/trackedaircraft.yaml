@@ -38,13 +38,12 @@ cards:
       - type: section
         label: Latest Plane of Interest
       - type: custom:template-entity-row
+        entity: sensor.adsb_planealert
         name: >-
-          {{state_attr(config.entity, 'name')}} ({{state_attr(config.entity, 'tail')}}, {{state_attr(config.entity, 'call')}})
+          {{state_attr(entity, 'owner')}} ({{state_attr(config.entity, 'tail')}}, {{state_attr(config.entity, 'callsign')}})
         secondary: >-
-          {% from 'easy_time.jinja' import custom_relative_time %}
-          {{state_attr(config.entity, 'equipment')}} ({{ custom_relative_time(state_attr(config.entity, 'date')|replace("/","-") + " " + state_attr(config.entity, 'time'), values='day, hour')}})
+          {{state_attr(entity, 'type')}}) / {{state_attr(entity, 'db:tag2')}} / {{state_attr(entity, 'db:link')}}  ({{ state_attr(entity, 'time:time_at_mindist') | int | timestamp_custom('%A, %B %d at %H:%M', true) }})
         icon: mdi:airplane
-        entity: sensor.flighttracker_planefence_aircraft
         state: ""
   - type: custom:flex-table-card
     strict: true

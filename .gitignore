@@ -26,6 +26,10 @@ www/browserless
 custom_icons
 gtfs_static_cache
 .skyfield
+.haca-backups
+.haca_history
+haca_reports
+f1_replay_cache
 
 # Ignore File Extensions
 *.conf

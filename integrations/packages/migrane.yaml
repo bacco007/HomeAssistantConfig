@@ -1,0 +1,889 @@
+---
+###############################################################################
+# Migraine Risk Sensor Package
+# A science-backed environmental migraine risk scoring system for Home Assistant
+#
+# Part of the Migraine Risk Card project
+# https://github.com/GreenNovaEmma/migraine-risk-card
+#
+# INSTALLATION:
+#   1. Copy this file to your /config/packages/ directory
+#   2. Edit the "DATA SOURCE CONFIGURATION" section below to match YOUR entities
+#   3. Restart Home Assistant
+#   4. The sensors will begin populating within ~10 minutes
+#
+# REQUIREMENTS:
+#   - A weather integration (BOM, OpenWeatherMap, Met.no, etc.)
+#   - Optional: An air quality integration (WAQI, OpenAQ, etc.)
+#   - Packages must be enabled in configuration.yaml:
+#       homeassistant:
+#         packages: !include_dir_named packages
+#
+# © 2026 — MIT Licence
+###############################################################################
+
+###############################################################################
+#                                                                             #
+#   ██████  DATA SOURCE CONFIGURATION  ██████                                 #
+#                                                                             #
+#   Edit the entity IDs below to match your Home Assistant setup.             #
+#   Leave any entity blank if you don't have that sensor.                     #
+#   The system gracefully handles missing data — only configured factors      #
+#   will contribute to your risk score.                                       #
+#                                                                             #
+#   TIP: Go to Developer Tools → States in your HA to find your entity IDs.  #
+#                                                                             #
+###############################################################################
+
+# We use input_text helpers to store your entity mappings.
+# This means you can also change them from the HA UI after installation
+# (Settings → Devices & Services → Helpers).
+# Values are persisted across restarts — just set them once.
+
+input_text:
+  # ── Weather integration entity (e.g. weather.home, weather.openweathermap) ──
+  migraine_source_weather:
+    name: "Migraine Source: Weather Entity"
+    icon: mdi:weather-partly-cloudy
+    max: 255
+
+  # ── Temperature sensor (or leave blank to use weather entity) ──
+  migraine_source_temperature:
+    name: "Migraine Source: Temperature"
+    icon: mdi:thermometer
+    max: 255
+
+  # ── Humidity sensor (or leave blank to use weather entity) ──
+  migraine_source_humidity:
+    name: "Migraine Source: Humidity"
+    icon: mdi:water-percent
+    max: 255
+
+  # ── Pressure sensor (REQUIRED — this is the most important migraine factor) ──
+  # Examples:
+  #   BOM:              sensor.YOUR_STATION_pressure
+  #   OpenWeatherMap:    sensor.openweathermap_pressure
+  #   WAQI:             sensor.YOUR_LOCATION_pressure
+  migraine_source_pressure:
+    name: "Migraine Source: Pressure"
+    icon: mdi:gauge
+    max: 255
+
+  # ── Wind speed sensor (or leave blank to use weather entity) ──
+  migraine_source_wind_speed:
+    name: "Migraine Source: Wind Speed"
+    icon: mdi:weather-windy
+    max: 255
+
+  # ── UV Index sensor ──
+  migraine_source_uv_index:
+    name: "Migraine Source: UV Index"
+    icon: mdi:weather-sunny-alert
+    max: 255
+
+  # ── Air Quality Index (AQI) sensor ──
+  migraine_source_aqi:
+    name: "Migraine Source: AQI"
+    icon: mdi:smog
+    max: 255
+
+  # ── PM2.5 sensor (optional, refines air quality scoring) ──
+  migraine_source_pm25:
+    name: "Migraine Source: PM2.5"
+    icon: mdi:blur
+    max: 255
+
+  # ── PM10 sensor (optional, refines air quality scoring) ──
+  migraine_source_pm10:
+    name: "Migraine Source: PM10"
+    icon: mdi:blur-linear
+    max: 255
+
+  # ── Ozone sensor (optional, refines air quality scoring) ──
+  migraine_source_ozone:
+    name: "Migraine Source: Ozone"
+    icon: mdi:molecule
+    max: 255
+
+  # ── Weather warnings / alerts sensor (for thunderstorm detection) ──
+  migraine_source_weather_warnings:
+    name: "Migraine Source: Weather Warnings"
+    icon: mdi:alert
+    max: 255
+
+  # ── Forecast text sensor (for thunderstorm / wind keyword detection) ──
+  #    e.g. BOM: sensor.YOUR_LOCATION_extended_text_0
+  migraine_source_forecast_text_today:
+    name: "Migraine Source: Forecast Text (Today)"
+    icon: mdi:text-box-outline
+    max: 255
+
+  # ── Tomorrow's forecast sensors (for next-day risk prediction) ──
+  migraine_source_forecast_temp_max:
+    name: "Migraine Source: Tomorrow Max Temp"
+    icon: mdi:thermometer-chevron-up
+    max: 255
+
+  migraine_source_forecast_temp_min:
+    name: "Migraine Source: Tomorrow Min Temp"
+    icon: mdi:thermometer-chevron-down
+    max: 255
+
+  migraine_source_forecast_uv:
+    name: "Migraine Source: Tomorrow UV Index"
+    icon: mdi:weather-sunny-alert
+    max: 255
+
+  migraine_source_forecast_text:
+    name: "Migraine Source: Tomorrow Forecast Text"
+    icon: mdi:text-box-outline
+    max: 255
+
+  migraine_source_forecast_rain_chance:
+    name: "Migraine Source: Tomorrow Rain Chance"
+    icon: mdi:weather-rainy
+    max: 255
+
+###############################################################################
+# INPUT HELPERS — pressure & temperature tracking state
+# (These are managed automatically by the automations below)
+###############################################################################
+
+input_boolean:
+  migraine_badge_override:
+    name: Migraine Badge Override
+    icon: mdi:medical-bag
+
+input_number:
+  pressure_6h_peak:
+    name: "6h Pressure Peak"
+    min: 900
+    max: 1100
+    step: 0.1
+    unit_of_measurement: "hPa"
+    icon: mdi:gauge-high
+
+  pressure_24h_peak:
+    name: "24h Pressure Peak"
+    min: 900
+    max: 1100
+    step: 0.1
+    unit_of_measurement: "hPa"
+    icon: mdi:gauge-high
+
+  pressure_6h_reset_time:
+    name: "6h Pressure Reset Time"
+    min: 0
+    max: 9999999999
+    step: 1
+    mode: box
+
+  pressure_24h_reset_time:
+    name: "24h Pressure Reset Time"
+    min: 0
+    max: 9999999999
+    step: 1
+    mode: box
+
+  temperature_6h_baseline:
+    name: "6h Temperature Baseline"
+    icon: mdi:thermometer-lines
+    min: -20
+    max: 60
+    step: 0.1
+    unit_of_measurement: "°C"
+    mode: box
+
+  temperature_6h_reset_time:
+    name: "6h Temperature Reset Time"
+    min: 0
+    max: 9999999999
+    step: 1
+    mode: box
+
+###############################################################################
+# TEMPLATE SENSORS
+###############################################################################
+
+template:
+  - sensor:
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # BASE DATA COLLECTION
+      # These sensors normalise your data sources into a consistent
+      # set of "migraine_*" entities used by the scoring system.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+      - name: "Migraine Temperature (°C)"
+        unique_id: migraine_temperature
+        state: >
+          {% set weather_entity = states('input_text.migraine_source_weather') %}
+          {% set temp_entity = states('input_text.migraine_source_temperature') %}
+          {% if temp_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {% set v = states(temp_entity) %}
+            {% if v not in ['unknown','unavailable','',none] %}
+              {{ v | float(0) }}
+            {% else %}
+              {{ state_attr(weather_entity, 'temperature') | float(0) }}
+            {% endif %}
+          {% elif weather_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {{ state_attr(weather_entity, 'temperature') | float(0) }}
+          {% else %}
+            {{ 0 }}
+          {% endif %}
+        unit_of_measurement: "°C"
+        icon: mdi:thermometer
+
+      - name: "Migraine Humidity (%)"
+        unique_id: migraine_humidity
+        state: >
+          {% set weather_entity = states('input_text.migraine_source_weather') %}
+          {% set hum_entity = states('input_text.migraine_source_humidity') %}
+          {% if hum_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {% set v = states(hum_entity) %}
+            {% if v not in ['unknown','unavailable','',none] %}
+              {{ v | float(0) }}
+            {% else %}
+              {{ state_attr(weather_entity, 'humidity') | float(0) }}
+            {% endif %}
+          {% elif weather_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {{ state_attr(weather_entity, 'humidity') | float(0) }}
+          {% else %}
+            {{ 0 }}
+          {% endif %}
+        unit_of_measurement: "%"
+        icon: mdi:water-percent
+
+      - name: "Migraine Pressure (hPa)"
+        unique_id: migraine_pressure_hpa
+        state: >
+          {% set weather_entity = states('input_text.migraine_source_weather') %}
+          {% set pres_entity = states('input_text.migraine_source_pressure') %}
+          {% if pres_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {% set v = states(pres_entity) %}
+            {% if v not in ['unknown','unavailable','',none] and v | float(0) > 900 %}
+              {{ v | float(0) }}
+            {% elif weather_entity not in ['not_configured','unknown','unavailable','',none] %}
+              {% set wa = state_attr(weather_entity, 'pressure') %}
+              {{ wa | float(0) if wa is number and wa | float(0) > 900 else 0 }}
+            {% else %}
+              {{ 0 }}
+            {% endif %}
+          {% elif weather_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {% set wa = state_attr(weather_entity, 'pressure') %}
+            {{ wa | float(0) if wa is number and wa | float(0) > 900 else 0 }}
+          {% else %}
+            {{ 0 }}
+          {% endif %}
+        unit_of_measurement: "hPa"
+        icon: mdi:gauge
+
+      - name: "Migraine Wind Speed (km/h)"
+        unique_id: migraine_wind_speed
+        state: >
+          {% set weather_entity = states('input_text.migraine_source_weather') %}
+          {% set wind_entity = states('input_text.migraine_source_wind_speed') %}
+          {% if wind_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {% set v = states(wind_entity) %}
+            {% if v not in ['unknown','unavailable','',none] %}
+              {{ v | float(0) }}
+            {% else %}
+              {{ state_attr(weather_entity, 'wind_speed') | float(0) }}
+            {% endif %}
+          {% elif weather_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {{ state_attr(weather_entity, 'wind_speed') | float(0) }}
+          {% else %}
+            {{ 0 }}
+          {% endif %}
+        unit_of_measurement: "km/h"
+        icon: mdi:weather-windy
+
+      - name: "Migraine UV Index"
+        unique_id: migraine_uv_index
+        state: >
+          {% set weather_entity = states('input_text.migraine_source_weather') %}
+          {% set uv_entity = states('input_text.migraine_source_uv_index') %}
+          {% if uv_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {% set v = states(uv_entity) %}
+            {% if v not in ['unknown','unavailable','',none] %}
+              {{ v | float(0) }}
+            {% else %}
+              {% set wa = state_attr(weather_entity, 'uv_index') %}
+              {{ wa | float(0) if wa is not none else 0 }}
+            {% endif %}
+          {% elif weather_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {% set wa = state_attr(weather_entity, 'uv_index') %}
+            {{ wa | float(0) if wa is not none else 0 }}
+          {% else %}
+            {{ 0 }}
+          {% endif %}
+        icon: mdi:weather-sunny-alert
+
+      - name: "Migraine WAQI AQI"
+        unique_id: migraine_waqi_aqi
+        state: >
+          {% set aqi_entity = states('input_text.migraine_source_aqi') %}
+          {% if aqi_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {% set v = states(aqi_entity) %}
+            {{ v | float(0) if v not in ['unknown','unavailable','',none] else 0 }}
+          {% else %}
+            {{ 0 }}
+          {% endif %}
+        unit_of_measurement: "AQI"
+        icon: mdi:chemical-weapon
+
+      - name: "Migraine WAQI PM2.5"
+        unique_id: migraine_waqi_pm25
+        state: >
+          {% set pm25_entity = states('input_text.migraine_source_pm25') %}
+          {% if pm25_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {% set v = states(pm25_entity) %}
+            {{ v | float(0) if v not in ['unknown','unavailable','',none] else 0 }}
+          {% else %}
+            {{ 0 }}
+          {% endif %}
+        unit_of_measurement: "µg/m³"
+        icon: mdi:blur
+
+      - name: "Migraine WAQI PM10"
+        unique_id: migraine_waqi_pm10
+        state: >
+          {% set pm10_entity = states('input_text.migraine_source_pm10') %}
+          {% if pm10_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {% set v = states(pm10_entity) %}
+            {{ v | float(0) if v not in ['unknown','unavailable','',none] else 0 }}
+          {% else %}
+            {{ 0 }}
+          {% endif %}
+        unit_of_measurement: "µg/m³"
+        icon: mdi:blur-linear
+
+      - name: "Migraine WAQI Ozone"
+        unique_id: migraine_waqi_o3
+        state: >
+          {% set o3_entity = states('input_text.migraine_source_ozone') %}
+          {% if o3_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {% set v = states(o3_entity) %}
+            {{ v | float(0) if v not in ['unknown','unavailable','',none] else 0 }}
+          {% else %}
+            {{ 0 }}
+          {% endif %}
+        unit_of_measurement: "µg/m³"
+        icon: mdi:molecule
+
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # PRESSURE DROP TRACKING
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+      - name: Migraine Pressure Drop (6h)
+        unique_id: migraine_pressure_drop_6h
+        unit_of_measurement: "hPa"
+        device_class: pressure
+        state_class: measurement
+        availability: >
+          {{ states('sensor.migraine_pressure_hpa') not in ['unknown','unavailable','',none]
+             and states('sensor.migraine_pressure_hpa') | float(0) > 900 }}
+        state: >
+          {% set current = states('sensor.migraine_pressure_hpa') | float(0) %}
+          {% set peak_6h = states('input_number.pressure_6h_peak') | float(0) %}
+          {% set drop = peak_6h - current %}
+          {{ [drop, 0] | max | round(1) }}
+        icon: mdi:trending-down
+        attributes:
+          current_pressure: "{{ states('sensor.migraine_pressure_hpa') }}"
+          peak_pressure_6h: "{{ states('input_number.pressure_6h_peak') }}"
+
+      - name: Migraine Pressure Drop (24h)
+        unique_id: migraine_pressure_drop_24h
+        unit_of_measurement: "hPa"
+        device_class: pressure
+        state_class: measurement
+        availability: >
+          {{ states('sensor.migraine_pressure_hpa') not in ['unknown','unavailable','',none]
+             and states('sensor.migraine_pressure_hpa') | float(0) > 900 }}
+        state: >
+          {% set current = states('sensor.migraine_pressure_hpa') | float(0) %}
+          {% set peak_24h = states('input_number.pressure_24h_peak') | float(0) %}
+          {% set drop = peak_24h - current %}
+          {{ [drop, 0] | max | round(1) }}
+        icon: mdi:trending-down
+        attributes:
+          current_pressure: "{{ states('sensor.migraine_pressure_hpa') }}"
+          peak_pressure_24h: "{{ states('input_number.pressure_24h_peak') }}"
+
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # TEMPERATURE CHANGE TRACKING
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+      - name: "Migraine Temperature Change (6h)"
+        unique_id: migraine_temperature_change_6h
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state_class: measurement
+        availability: >
+          {{ states('sensor.migraine_temperature') not in ['unknown','unavailable','',none]
+             and states('input_number.temperature_6h_baseline') | float(0) != 0 }}
+        state: >
+          {% set current = states('sensor.migraine_temperature') | float(0) %}
+          {% set baseline = states('input_number.temperature_6h_baseline') | float(0) %}
+          {{ (current - baseline) | abs | round(1) }}
+        icon: mdi:thermometer-chevron-up
+        attributes:
+          current_temp: "{{ states('sensor.migraine_temperature') }}"
+          baseline_temp_6h: "{{ states('input_number.temperature_6h_baseline') }}"
+          direction: >
+            {% set current = states('sensor.migraine_temperature') | float(0) %}
+            {% set baseline = states('input_number.temperature_6h_baseline') | float(0) %}
+            {% if current > baseline + 0.5 %}
+              Rising
+            {% elif current < baseline - 0.5 %}
+              Falling
+            {% else %}
+              Stable
+            {% endif %}
+
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # MIGRAINE FACTOR SENSORS (0-2 or 0-3 point scoring per factor)
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+      - name: "Migraine Factor: Humidity"
+        unique_id: migraine_factor_humidity
+        state: >
+          {% set h = states('sensor.migraine_humidity') | float(0) %}
+          {% if h > 80 %}
+            2
+          {% elif h < 30 %}
+            1
+          {% else %}
+            0
+          {% endif %}
+        icon: mdi:water-percent
+
+      - name: "Migraine Factor: Temperature"
+        unique_id: migraine_factor_temperature
+        state: >
+          {% set t = states('sensor.migraine_temperature') | float(0) %}
+          {% if t > 30 or t < 5 %}
+            2
+          {% else %}
+            0
+          {% endif %}
+        icon: mdi:thermometer-alert
+
+      - name: "Migraine Factor: Temperature Change"
+        unique_id: migraine_factor_temperature_change
+        state: >
+          {% set delta = states('sensor.migraine_temperature_change_6h') | float(0) %}
+          {% if delta >= 8 %}
+            2
+          {% elif delta >= 5 %}
+            1
+          {% else %}
+            0
+          {% endif %}
+        icon: mdi:thermometer-chevron-up
+        attributes:
+          change_6h: "{{ states('sensor.migraine_temperature_change_6h') }}°C"
+          direction: "{{ state_attr('sensor.migraine_temperature_change_6h', 'direction') }}"
+          scoring: "0pts (<5°C) | 1pt (5-8°C) | 2pts (≥8°C)"
+
+      - name: "Migraine Factor: Wind"
+        unique_id: migraine_factor_wind
+        state: >
+          {% set w = states('sensor.migraine_wind_speed') | float(0) %}
+          {% if w >= 50 %}
+            2
+          {% elif w >= 35 %}
+            1
+          {% else %}
+            0
+          {% endif %}
+        icon: mdi:weather-windy
+
+      - name: "Migraine Factor: UV / Sun"
+        unique_id: migraine_factor_uv_sun
+        state: >
+          {% set uv = states('sensor.migraine_uv_index') | float(0) %}
+          {% if uv >= 8 %}
+            2
+          {% elif uv >= 6 %}
+            1
+          {% else %}
+            0
+          {% endif %}
+        icon: mdi:white-balance-sunny
+
+      - name: "Migraine Factor: Air Quality"
+        unique_id: migraine_factor_air_quality
+        state: >
+          {% set aqi = states('sensor.migraine_waqi_aqi') | float(0) %}
+          {% set pm25 = states('sensor.migraine_waqi_pm25') | float(0) %}
+          {% set pm10 = states('sensor.migraine_waqi_pm10') | float(0) %}
+          {% set o3 = states('sensor.migraine_waqi_o3') | float(0) %}
+          {% set base = 0 if aqi <= 50 else 1 if aqi <= 100 else 2 if aqi <= 150 else 3 %}
+          {% set nudge = 0 %}
+          {% if pm25 >= 25 %}{% set nudge = nudge + 1 %}{% endif %}
+          {% if pm10 >= 50 %}{% set nudge = nudge + 1 %}{% endif %}
+          {% if o3 >= 120 %}{% set nudge = nudge + 1 %}{% endif %}
+          {{ [base + nudge, 3] | min }}
+        icon: mdi:smog
+        attributes:
+          aqi: "{{ states('sensor.migraine_waqi_aqi') }}"
+          pm25_ugm3: "{{ states('sensor.migraine_waqi_pm25') }}"
+          pm10_ugm3: "{{ states('sensor.migraine_waqi_pm10') }}"
+          o3_ugm3: "{{ states('sensor.migraine_waqi_o3') }}"
+
+      - name: "Migraine Factor: Thunderstorm Nearby"
+        unique_id: migraine_factor_thunderstorm_nearby
+        state: >
+          {% set warn_entity = states('input_text.migraine_source_weather_warnings') %}
+          {% set fc_entity = states('input_text.migraine_source_forecast_text_today') %}
+          {% set weather_entity = states('input_text.migraine_source_weather') %}
+          {# Check weather warnings sensor #}
+          {% set warnings_text = '' %}
+          {% if warn_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {% set warnings_text = states(warn_entity) | lower %}
+          {% endif %}
+          {# Check forecast text sensor #}
+          {% set forecast_text = '' %}
+          {% if fc_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {% set forecast_text = states(fc_entity) | lower %}
+          {% endif %}
+          {# Check weather entity forecast conditions #}
+          {% set condition_thunder = false %}
+          {% if weather_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {% set fc = state_attr(weather_entity, 'forecast') %}
+            {% if fc is iterable %}
+              {% set today = now().date() %}
+              {% set thunder = fc | selectattr('datetime','defined') | selectattr('condition','defined') | selectattr('datetime','search', today|string) | selectattr('condition','in',['thunderstorm','lightning','storm']) | list %}
+              {% set condition_thunder = thunder | length > 0 %}
+            {% endif %}
+          {% endif %}
+          {% set warning_thunder = 'thunderstorm' in warnings_text %}
+          {% set forecast_thunder = 'thunderstorm' in forecast_text or 'thunder' in forecast_text %}
+          {% if warning_thunder %}
+            2
+          {% elif forecast_thunder or condition_thunder %}
+            1
+          {% else %}
+            0
+          {% endif %}
+        icon: mdi:weather-lightning
+        attributes:
+          detection_method: >
+            {% set warn_entity = states('input_text.migraine_source_weather_warnings') %}
+            {% set fc_entity = states('input_text.migraine_source_forecast_text_today') %}
+            {% set weather_entity = states('input_text.migraine_source_weather') %}
+            {% set warnings_text = '' %}
+            {% if warn_entity not in ['not_configured','unknown','unavailable','',none] %}
+              {% set warnings_text = states(warn_entity) | lower %}
+            {% endif %}
+            {% set forecast_text = '' %}
+            {% if fc_entity not in ['not_configured','unknown','unavailable','',none] %}
+              {% set forecast_text = states(fc_entity) | lower %}
+            {% endif %}
+            {% if 'thunderstorm' in warnings_text %}
+              Active warning detected
+            {% elif 'thunderstorm' in forecast_text or 'thunder' in forecast_text %}
+              Forecast text mentions thunderstorm
+            {% else %}
+              No thunderstorm detected
+            {% endif %}
+
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # MIGRAINE RISK SCORE & LEVEL
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+      - name: Migraine Risk Score
+        unique_id: migraine_risk_score
+        unit_of_measurement: "pts"
+        availability: >
+          {{ states('sensor.migraine_pressure_hpa') not in ['unknown','unavailable','',none] }}
+        state: >
+          {% set d6 = states('sensor.migraine_pressure_drop_6h') | float(0) %}
+          {% set d24 = states('sensor.migraine_pressure_drop_24h') | float(0) %}
+          {% set humf = states('sensor.migraine_factor_humidity') | int(0) %}
+          {% set tempf = states('sensor.migraine_factor_temperature') | int(0) %}
+          {% set temp_chg = states('sensor.migraine_factor_temperature_change') | int(0) %}
+          {% set windf = states('sensor.migraine_factor_wind') | int(0) %}
+          {% set uvf = states('sensor.migraine_factor_uv_sun') | int(0) %}
+          {% set thf = states('sensor.migraine_factor_thunderstorm_nearby') | int(0) %}
+          {% set aqif = states('sensor.migraine_factor_air_quality') | int(0) %}
+          {% set d6_pts = 4 if d6 >= 10 else 3 if d6 >= 8 else 2 if d6 >= 6 else 1 if d6 >= 4 else 0 %}
+          {% set d24_pts = 3 if d24 >= 14 else 2 if d24 >= 10 else 1 if d24 >= 6 else 0 %}
+          {{ d6_pts + d24_pts + humf + tempf + temp_chg + windf + uvf + thf + aqif }}
+        icon: mdi:head-alert-outline
+        attributes:
+          pressure_6h_points: >
+            {% set d6 = states('sensor.migraine_pressure_drop_6h') | float(0) %}
+            {{ 4 if d6 >= 10 else 3 if d6 >= 8 else 2 if d6 >= 6 else 1 if d6 >= 4 else 0 }}
+          pressure_24h_points: >
+            {% set d24 = states('sensor.migraine_pressure_drop_24h') | float(0) %}
+            {{ 3 if d24 >= 14 else 2 if d24 >= 10 else 1 if d24 >= 6 else 0 }}
+          humidity_points: "{{ states('sensor.migraine_factor_humidity') | int(0) }}"
+          temperature_points: "{{ states('sensor.migraine_factor_temperature') | int(0) }}"
+          temperature_change_points: "{{ states('sensor.migraine_factor_temperature_change') | int(0) }}"
+          wind_points: "{{ states('sensor.migraine_factor_wind') | int(0) }}"
+          uv_points: "{{ states('sensor.migraine_factor_uv_sun') | int(0) }}"
+          thunderstorm_points: "{{ states('sensor.migraine_factor_thunderstorm_nearby') | int(0) }}"
+          air_quality_points: "{{ states('sensor.migraine_factor_air_quality') | int(0) }}"
+
+      - name: Migraine Risk Level
+        unique_id: migraine_risk_level
+        state: >
+          {% set s = states('sensor.migraine_risk_score') | int(0) %}
+          {% if s >= 12 %}
+            Very High
+          {% elif s >= 8 %}
+            High
+          {% elif s >= 4 %}
+            Moderate
+          {% else %}
+            Low
+          {% endif %}
+        icon: >
+          {% set s = states('sensor.migraine_risk_score') | int(0) %}
+          {% if s >= 12 %}
+            mdi:alert-decagram
+          {% elif s >= 8 %}
+            mdi:alert
+          {% elif s >= 4 %}
+            mdi:alert-outline
+          {% else %}
+            mdi:check
+          {% endif %}
+
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      # TOMORROW'S RISK FORECAST
+      # Only works if you configure the forecast source entities above.
+      # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+      - name: "Migraine Risk Forecast Tomorrow"
+        unique_id: migraine_risk_forecast_tomorrow
+        unit_of_measurement: "pts"
+        availability: >
+          {% set tmax_entity = states('input_text.migraine_source_forecast_temp_max') %}
+          {{ tmax_entity not in ['not_configured','unknown','unavailable','',none]
+             and states(tmax_entity) not in ['unknown','unavailable','',none] }}
+        state: >
+          {% set tmax_entity = states('input_text.migraine_source_forecast_temp_max') %}
+          {% set tmin_entity = states('input_text.migraine_source_forecast_temp_min') %}
+          {% set uv_entity = states('input_text.migraine_source_forecast_uv') %}
+          {% set fc_entity = states('input_text.migraine_source_forecast_text') %}
+          {% set rain_entity = states('input_text.migraine_source_forecast_rain_chance') %}
+          {# Temperature extremes #}
+          {% set tmax = states(tmax_entity) | float(0) if tmax_entity not in ['not_configured','unknown','unavailable','',none] else 20 %}
+          {% set tmin = states(tmin_entity) | float(0) if tmin_entity not in ['not_configured','unknown','unavailable','',none] else 15 %}
+          {% set temp_pts = 2 if (tmax > 30 or tmin < 5) else 1 if (tmax > 28 or tmin < 8) else 0 %}
+          {# Temperature swing (range as proxy for change) #}
+          {% set temp_range = tmax - tmin %}
+          {% set swing_pts = 2 if temp_range >= 15 else 1 if temp_range >= 10 else 0 %}
+          {# UV #}
+          {% set uv = states(uv_entity) | float(0) if uv_entity not in ['not_configured','unknown','unavailable','',none] else 0 %}
+          {% set uv_pts = 2 if uv >= 8 else 1 if uv >= 6 else 0 %}
+          {# Wind & thunderstorm from forecast text #}
+          {% set fc_text = '' %}
+          {% if fc_entity not in ['not_configured','unknown','unavailable','',none] %}
+            {% set fc_text = states(fc_entity) | lower %}
+          {% endif %}
+          {% set wind_pts = 0 %}
+          {% if 'damaging winds' in fc_text or 'destructive winds' in fc_text %}
+            {% set wind_pts = 2 %}
+          {% elif 'strong winds' in fc_text or '45 to' in fc_text or '50 to' in fc_text or '55 to' in fc_text or '60 to' in fc_text %}
+            {% set wind_pts = 2 %}
+          {% elif '35 to' in fc_text or '40 to' in fc_text %}
+            {% set wind_pts = 1 %}
+          {% endif %}
+          {% set thunder_pts = 2 if ('thunderstorm' in fc_text or 'thunder' in fc_text) else 0 %}
+          {# Humidity proxy from rain chance #}
+          {% set rain_chance = states(rain_entity) | float(0) if rain_entity not in ['not_configured','unknown','unavailable','',none] else 0 %}
+          {% set hum_pts = 1 if rain_chance >= 80 else 0 %}
+          {# Total #}
+          {{ temp_pts + swing_pts + uv_pts + wind_pts + thunder_pts + hum_pts }}
+        icon: mdi:crystal-ball
+        attributes:
+          temp_max: >
+            {% set e = states('input_text.migraine_source_forecast_temp_max') %}
+            {{ states(e) ~ '°C' if e not in ['not_configured','unknown','unavailable','',none] else 'N/A' }}
+          temp_min: >
+            {% set e = states('input_text.migraine_source_forecast_temp_min') %}
+            {{ states(e) ~ '°C' if e not in ['not_configured','unknown','unavailable','',none] else 'N/A' }}
+          uv_index: >
+            {% set e = states('input_text.migraine_source_forecast_uv') %}
+            {{ states(e) if e not in ['not_configured','unknown','unavailable','',none] else 'N/A' }}
+          rain_chance: >
+            {% set e = states('input_text.migraine_source_forecast_rain_chance') %}
+            {{ states(e) ~ '%' if e not in ['not_configured','unknown','unavailable','',none] else 'N/A' }}
+          risk_level: >
+            {% set s = states('sensor.migraine_risk_forecast_tomorrow') | int(0) %}
+            {% if s >= 8 %}
+              Very High
+            {% elif s >= 5 %}
+              High
+            {% elif s >= 3 %}
+              Moderate
+            {% else %}
+              Low
+            {% endif %}
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # BINARY SENSORS (alerts & triggers)
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  - binary_sensor:
+      - name: "Migraine Lightning Alert"
+        unique_id: migraine_lightning_alert
+        state: >
+          {{ is_state('input_boolean.migraine_badge_override','on')
+             or states('sensor.migraine_factor_thunderstorm_nearby') | int >= 2 }}
+        device_class: problem
+        icon: >
+          {% if is_state(this.entity_id,'on') %}
+            mdi:weather-lightning
+          {% else %}
+            mdi:head-check-outline
+          {% endif %}
+
+      - name: Migraine Risk Warning
+        unique_id: migraine_risk_warning
+        device_class: problem
+        state: "{{ states('sensor.migraine_risk_score') | int >= 8 }}"
+        icon: >
+          {% if is_state(this.entity_id,'on') %}mdi:alert{% else %}mdi:check{% endif %}
+
+      - name: Pressure Drop Alert (4hPa)
+        unique_id: pressure_drop_alert_4hpa
+        device_class: problem
+        state: >
+          {% set drop_6h = states('sensor.migraine_pressure_drop_6h') | float(0) %}
+          {% set drop_24h = states('sensor.migraine_pressure_drop_24h') | float(0) %}
+          {{ drop_6h >= 4 or drop_24h >= 4 }}
+        icon: >
+          {% if is_state(this.entity_id,'on') %}mdi:trending-down{% else %}mdi:trending-neutral{% endif %}
+        attributes:
+          pressure_drop_6h: "{{ states('sensor.migraine_pressure_drop_6h') }} hPa"
+          pressure_drop_24h: "{{ states('sensor.migraine_pressure_drop_24h') }} hPa"
+          current_pressure: "{{ states('sensor.migraine_pressure_hpa') }} hPa"
+
+      - name: Poor Air Today
+        unique_id: poor_air_today
+        state: >
+          {% set aqi = states('sensor.migraine_waqi_aqi') | float(0) %}
+          {% set pm25 = states('sensor.migraine_waqi_pm25') | float(0) %}
+          {{ aqi > 100 or pm25 >= 25 }}
+        icon: >
+          {% if is_state(this.entity_id,'on') %}mdi:smog{% else %}mdi:weather-sunny{% endif %}
+        device_class: problem
+        attributes:
+          aqi: "{{ states('sensor.migraine_waqi_aqi') }}"
+          pm25: "{{ states('sensor.migraine_waqi_pm25') }}"
+
+###############################################################################
+# AUTOMATIONS — Pressure & Temperature Baseline Tracking
+# These run automatically to maintain the rolling peak/baseline values.
+###############################################################################
+
+automation:
+  - id: migraine_track_pressure_peaks
+    alias: "Migraine: Track Pressure Peaks"
+    description: "Tracks pressure peaks over 6h and 24h rolling windows for migraine drop detection"
+    trigger:
+      - platform: time_pattern
+        minutes: "/10"
+    condition:
+      - condition: template
+        value_template: >
+          {{ states('sensor.migraine_pressure_hpa') not in ['unknown','unavailable','',none]
+             and states('sensor.migraine_pressure_hpa') | float(0) > 900 }}
+    action:
+      - variables:
+          current_pressure: "{{ states('sensor.migraine_pressure_hpa') | float(0) }}"
+          current_time: "{{ as_timestamp(now()) }}"
+          peak_6h: "{{ states('input_number.pressure_6h_peak') | float(0) }}"
+          reset_time_6h: "{{ states('input_number.pressure_6h_reset_time') | int(0) }}"
+          hours_since_reset_6h: "{{ (as_timestamp(now()) - (states('input_number.pressure_6h_reset_time') | int(0))) / 3600 }}"
+          peak_24h: "{{ states('input_number.pressure_24h_peak') | float(0) }}"
+          reset_time_24h: "{{ states('input_number.pressure_24h_reset_time') | int(0) }}"
+          hours_since_reset_24h: "{{ (as_timestamp(now()) - (states('input_number.pressure_24h_reset_time') | int(0))) / 3600 }}"
+      # 6-hour window
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ hours_since_reset_6h >= 6 or reset_time_6h == 0 }}"
+            sequence:
+              - service: input_number.set_value
+                target:
+                  entity_id: input_number.pressure_6h_peak
+                data:
+                  value: "{{ current_pressure }}"
+              - service: input_number.set_value
+                target:
+                  entity_id: input_number.pressure_6h_reset_time
+                data:
+                  value: "{{ current_time }}"
+          - conditions:
+              - condition: template
+                value_template: "{{ current_pressure > peak_6h }}"
+            sequence:
+              - service: input_number.set_value
+                target:
+                  entity_id: input_number.pressure_6h_peak
+                data:
+                  value: "{{ current_pressure }}"
+      # 24-hour window
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ hours_since_reset_24h >= 24 or reset_time_24h == 0 }}"
+            sequence:
+              - service: input_number.set_value
+                target:
+                  entity_id: input_number.pressure_24h_peak
+                data:
+                  value: "{{ current_pressure }}"
+              - service: input_number.set_value
+                target:
+                  entity_id: input_number.pressure_24h_reset_time
+                data:
+                  value: "{{ current_time }}"
+          - conditions:
+              - condition: template
+                value_template: "{{ current_pressure > peak_24h }}"
+            sequence:
+              - service: input_number.set_value
+                target:
+                  entity_id: input_number.pressure_24h_peak
+                data:
+                  value: "{{ current_pressure }}"
+
+  - id: migraine_track_temperature_baseline
+    alias: "Migraine: Track Temperature Baseline"
+    description: "Records temperature baseline every 6 hours for rapid change detection"
+    trigger:
+      - platform: time_pattern
+        minutes: "/10"
+    condition:
+      - condition: template
+        value_template: >
+          {{ states('sensor.migraine_temperature') not in ['unknown','unavailable','',none] }}
+    action:
+      - variables:
+          current_temp: "{{ states('sensor.migraine_temperature') | float(0) }}"
+          current_time: "{{ as_timestamp(now()) }}"
+          reset_time: "{{ states('input_number.temperature_6h_reset_time') | int(0) }}"
+          hours_since_reset: "{{ (as_timestamp(now()) - (states('input_number.temperature_6h_reset_time') | int(0))) / 3600 }}"
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ hours_since_reset >= 6 or reset_time == 0 }}"
+            sequence:
+              - service: input_number.set_value
+                target:
+                  entity_id: input_number.temperature_6h_baseline
+                data:
+                  value: "{{ current_temp }}"
+              - service: input_number.set_value
+                target:
+                  entity_id: input_number.temperature_6h_reset_time
+                data:
+                  value: "{{ current_time }}"
+    mode: single

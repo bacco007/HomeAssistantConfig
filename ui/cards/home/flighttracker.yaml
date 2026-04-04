@@ -124,16 +124,14 @@ cards:
           }
 
   - type: custom:mushroom-legacy-template-card
-    primary: Last Plane of Interest (Plane Fence)
+    primary: Last Plane of Interest (Plane Alert)
     secondary: >-
-      {% from 'easy_time.jinja' import custom_relative_time %}
-      {{state_attr(entity, 'name')}} ({{state_attr(entity, 'tail')}},
-      {{state_attr(entity, 'call')}})
+      {{state_attr(entity, 'owner')}}
 
-      {{state_attr(entity, 'equipment')}} ({{
-      custom_relative_time(state_attr(entity, 'date')|replace("/","-") + " " +
-      state_attr(entity, 'time'), values='day, hour')}})
-    entity: sensor.flighttracker_planefence_aircraft
+      ({{state_attr(entity, 'tail')}}, {{state_attr(entity, 'callsign')}}, {{state_attr(entity, 'type')}}) / {{state_attr(entity, 'db:tag2')}} / {{state_attr(entity, 'db:link')}} 
+
+      Last Seen {{ state_attr(entity, 'time:time_at_mindist') | int | timestamp_custom('%A, %B %d at %H:%M', true) }}
+    entity: sensor.adsb_planealert
     fill_container: true
     tap_action:
       action: none
@@ -156,7 +154,7 @@ cards:
             height: 100%;
             width: 100%;
             left: 5px;
-            background: url( https://content.airhex.com/content/logos/airlines_{{state_attr(config.entity, 'aircraft_operator_icao')}}_90_90_f.png?proportions=keep ) center no-repeat, linear-gradient(to left, transparent, var(--card-background-color) 1000%);
+            background: url( https://content.airhex.com/content/logos/airlines_{{state_attr(config.entity, 'airline_icao')}}_90_90_f.png?proportions=keep ) center no-repeat, linear-gradient(to left, transparent, var(--card-background-color) 1000%);
             background-repeat: no-repeat;
             background-size: auto calc(100% - 10px);, cover;
             background-position: left 15px center;

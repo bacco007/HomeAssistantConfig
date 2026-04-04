@@ -32,7 +32,7 @@ cards:
       - !include /config/ui/cards/devices/sonos_office.yaml
       - !include /config/ui/cards/devices/sonos_symfonisk.yaml
       - !include /config/ui/cards/devices/weatherflow.yaml
-      - !include /config/ui/cards/devices/einkdisplay.yaml
+      # - !include /config/ui/cards/devices/einkdisplay.yaml
       - !include /config/ui/cards/devices/weathermandash.yaml
       - !include /config/ui/cards/devices/zigbee2mqtt.yaml
       - !include /config/ui/cards/devices/lg_washer.yaml

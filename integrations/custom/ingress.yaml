@@ -1,0 +1,27 @@
+---
+ingress:
+  tabs:
+    work_mode: custom # MUST
+    url: /files/ingress/ha-tabs-ingress.js # MUST
+    title: Ingress
+    icon: mdi:cursor-default-click
+  link_automation:
+    parent: tabs
+    work_mode: iframe
+    ui_mode: replace
+    title: Automation
+    icon: mdi:link
+    url: /config/automation/dashboard
+  zigbee:
+    parent: tabs
+    work_mode: ingress
+    ui_mode: toolbar
+    title: ZigBee
+    icon: mdi:zigbee
+    url: http://zigbee2mqtt:8080
+  esphome:
+    parent: tabs
+    work_mode: hassio
+    title: ESPHome
+    icon: mdi:chip
+    url: 5c53de3b_esphome

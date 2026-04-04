@@ -13,24 +13,30 @@ cards:
   - type: custom:bubble-card
     card_type: button
     button_type: state
-    entity: sensor.untappd_beer
+    entity: sensor.untappd_bacco007_untappd_last_beer_bacco007
     name: Beer Stats
     show_state: true
     icon: ""
     card_layout: large-2-rows
     sub_button:
-      - entity: sensor.untappd_total_beers
+      - entity: sensor.untappd_bacco007_untappd_total_beers_bacco007
         show_background: true
         show_state: true
         icon: mdi:beer
-      - entity: sensor.untappd_checked
+        name: Unique
+        show_name: true
+      - entity: sensor.untappd_bacco007_untappd_total_checkins_bacco007
         show_background: false
         show_state: true
         icon: mdi:beer
-      - entity: sensor.untappd_total_badges
+        name: All
+        show_name: true
+      - entity: sensor.untappd_bacco007_untappd_total_badges_bacco007
         show_background: false
         show_state: true
         icon: mdi:medal
+        name: Medals
+        show_name: true
     show_icon: true
     show_attribute: false
   - type: custom:bubble-card

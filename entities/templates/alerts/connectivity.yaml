@@ -1096,19 +1096,6 @@ binary_sensor:
       entity_broken_count: >
         "{{ integration_entities('nodered')|reject('has_value')|list|count }}"
 
-  - name: "[HA Connected Integration] nsw_air_quality"
-    unique_id: ha_connected_integration_nsw_air_quality
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/nsw_air_quality/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('nsw_air_quality')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('nsw_air_quality')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('nsw_air_quality')|reject('has_value')|list|count }}"
-
   - name: "[HA Connected Integration] nsw_fuel_station"
     unique_id: ha_connected_integration_nsw_fuel_station
     icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
@@ -1264,19 +1251,6 @@ binary_sensor:
         "{{ integration_entities('plex_recently_added')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('plex_recently_added')|reject('has_value')|list|count }}"
-
-  - name: "[HA Connected Integration] pocketcasts"
-    unique_id: ha_connected_integration_pocketcasts
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/pocketcasts/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('pocketcasts')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('pocketcasts')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('pocketcasts')|reject('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] prometheus_query"
     unique_id: ha_connected_integration_prometheus_query
@@ -2209,19 +2183,6 @@ binary_sensor:
         "{{ integration_entities('yahoofinance')|list|count }}"
       entity_broken_count: >
         "{{ integration_entities('yahoofinance')|reject('has_value')|list|count }}"
-
-  - name: "[HA Connected Integration] youtube"
-    unique_id: ha_connected_integration_youtube
-    icon: "{{ iif(states(this.entity_id) == '0','mdi:sync','mdi:sync-alert') }}"
-    picture: https://brands.home-assistant.io/youtube/icon.png
-    device_class: connectivity
-    state: "{{ integration_entities('youtube')|select('has_value')|list|count > 0 }}"
-    attributes:
-      category: homeassistant_connectivity
-      entity_count: >
-        "{{ integration_entities('youtube')|list|count }}"
-      entity_broken_count: >
-        "{{ integration_entities('youtube')|reject('has_value')|list|count }}"
 
   - name: "[HA Connected Integration] zodiac"
     unique_id: ha_connected_integration_zodiac

@@ -55,6 +55,10 @@ logger:
       - "0 bytes read on a total of 32 expected bytes"
     hass_nabucasa.remote:
       - "Connection problem to snitun server"
+    custom_components.unifi_insights.api.base:
+      - "Response is not JSON"
+    custom_components.config_auditor.dashboard_analyzer:
+      - "[HACA Dashboard]"
 
   logs:
     aioharmony.harmonyclient: fatal

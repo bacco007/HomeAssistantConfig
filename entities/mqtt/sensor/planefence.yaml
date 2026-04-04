@@ -1,0 +1,11 @@
+---
+- icon: mdi:airplane-alert
+  name: adsb_planefence
+  state_topic: planefence/planefence
+  value_template: "{{value_json.callsign}}"
+  json_attributes_topic: planefence/planefence
+  # device:
+  #   name: "Plane Fence"
+  #   identifiers:
+  #     - planefence
+  #   configuration_url: "https://adsb.tbsmartho.me/planefence/"

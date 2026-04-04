@@ -1,0 +1,34 @@
+blueprint:
+  name: "Docker Socket Proxy: Health Alert"
+  description: "Sends a notification when the chosen proxy host goes offline or a container becomes 'unavailable' or 'unhealthy'."
+  domain: automation
+  input:
+    proxy_sensor:
+      name: Docker Container/Socket Proxy Sensor
+      description: Select the host sensor from the Docker integration.
+      selector:
+        entity:
+          filter:
+            integration: docker_socket_proxy
+    notify_action:
+      name: Notification Action
+      description: "Choose 'Send a notification' and select your browser or mobile device."
+      selector:
+        action: {}
+
+variables:
+  proxy_entity: !input proxy_sensor
+
+trigger:
+  - platform: state
+    entity_id: !input proxy_sensor
+
+condition:
+  - condition: template
+    value_template: >
+      {% set s = states(proxy_entity) | lower %}
+      {{ 'unavail' in s or 'unhealthy' in s }}
+
+action:
+  - choose: []
+    default: !input notify_action

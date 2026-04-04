@@ -33,10 +33,8 @@ recorder:
       - sensor.adsb_aircraft_tracked
       - sensor.adsb_fa_feeder
       - sensor.date_time
-      - sensor.e_ink_display_data
       - sensor.ha_automation_run_history
       - sensor.ha_uptime_hours
-      - sensor.iss
       - sensor.jdownloader_tbsmarthome_links
       - sensor.jdownloader_tbsmarthome_packages
       - sensor.lastfm_user_monthlytrackchart
@@ -49,14 +47,10 @@ recorder:
       - sensor.radarr_movies
       - sensor.sonarr_commands
       - sensor.sungrowsolar_alldata
-      - sensor.sungrowsolar_runtime
-      - sensor.sungrowsolar_runtime
-      - sensor.systemuptime
       - sensor.tautulli_activity
       - sensor.udm_unifios
       - sensor.unavailable_entities
       - sensor.unknown_unavailable_none_entities
-      - sensor.uptime_sensor
       - sensor.weather_wind_bearing
       - sensor.z2m_office_airquality_co2
       - sensor.z2m_office_airquality_formaldehyd
@@ -71,12 +65,10 @@ recorder:
       - sensor.weatherman_data
       - sensor.flighttracker_adsb_aircraft_list
       - sensor.adsb_planefinder_stats
-      - sensor.network_scanner
       - sensor.hass_main_config
       - sensor.weather_forecasts
       - sensor.the_dream_police_memory_utilization
       - sensor.the_dream_police_cpu_utilization
-      - sensor.ha_uptime
       - sensor.energy_supply_charge
       - sensor.energy_timeofuse_tariff
       - sensor.swap_use
@@ -85,6 +77,9 @@ recorder:
       - sensor.stats_watchman
       - sensor.stats_docker
       - sensor.system_ha_global_health_score
+      - sensor.unavailable_devices
+      - sensor.summary_docker_containers
+      - sensor.aircraft
     entity_globs:
       - binary_sensor.node_pve*
       - binary_sensor.node_pvetbsh*
@@ -212,6 +207,14 @@ recorder:
       - sensor.switchy_switch_*
       - sensor.eve_energy_*
       - sensor.daylight*
+      - sensor.starlink*
+      - sensor.alpstuga*
+      - sensor.statistics_logs*
+      - sensor.memory*
+      - sensor.load*
+      - sensor.processor*
+      - sensor.brisbane_st_wind*
+      - sensor.dockersocketproxy*
     event_types:
       - automation_triggered
       - call_service
@@ -221,9 +224,6 @@ recorder:
       - hacs/repository
       - homeassistant_start
       - homeassistant_stop
-      - ios.became_active
-      - ios.entered_background
-      - ios.finished_launching
       - logbook_entry
       - lovelace_updated
       - nodered
@@ -249,11 +249,22 @@ recorder:
       - abc_emergency_new_incident
       - abc_emergency_new_bushfire
       - abc_emergency_new_riverine_flood
-      - abc_emergency_new_filre
+      - abc_emergency_new_fire
+      - abc_emergency_new_grass_fire
+      - abc_emergency-new_other_non-urgent_alerts
+      - entity_registry_updated
+      - repairs_issue_registry_updated
+      - device_registry_updated
+      - yahoofinance_data_updated
+      - f1_sensor_race_control_event
+      - recorder_hourly_statistics_generated
+      - panels_updated
   include:
     entities:
       - sensor.tamhospital_waitingtime
-      - sensor.unifi_gateway_wan_uptimeavail
       - sensor.unifi_networkstats_connected_devices
       - sensor.unifi_networkstats_switchap
       - sensor.flightradar24_current_flights_in_area
+      - sensor.starlink_download_daily
+      - sensor.starlink_upload_daily
+      - sensor.starlink_energy_daily

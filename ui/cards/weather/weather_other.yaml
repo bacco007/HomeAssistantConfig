@@ -19,11 +19,9 @@ cards:
     entities:
       - !include includes/bom.yaml
       - type: section
-      - !include includes/accuweather.yaml
       - !include includes/astroweather.yaml
       - !include includes/openweathermap.yaml
       - !include includes/pirate_weather.yaml
-      - !include includes/weatherbit.yaml
       - type: section
       - entity: weather.forecast_home
         name: Met.no

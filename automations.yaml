@@ -56,3 +56,31 @@
     data:
       value: YSTW
   mode: single
+- id: '1770330241255'
+  alias: Bedroom Rodret Controller
+  description: ''
+  use_blueprint:
+    path: EPMatt/ikea_e2201.yaml
+    input:
+      controller_device: 7a1b17cac52ea330cc645bf99cdeb3aa
+      action_button_up_short:
+      - action: light.turn_off
+        metadata: {}
+        target:
+          device_id:
+          - 6623c3d12a6637f37fab2c6e24c41afc
+          - 126e91428c97177372f5ef7398eb537e
+        data: {}
+      - action: media_player.media_stop
+        metadata: {}
+        target:
+          entity_id:
+          - media_player.bedroom_symfonisk
+          - media_player.office_sonos
+        data: {}
+      action_button_down_short:
+      - action: light.turn_on
+        metadata: {}
+        target:
+          device_id: 126e91428c97177372f5ef7398eb537e
+        data: {}

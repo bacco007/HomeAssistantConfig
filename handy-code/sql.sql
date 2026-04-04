@@ -10,6 +10,8 @@ delete from events where event_id not in (select event_id from states);
 
 optimize table events;
 optimize table states;
+optimize table state_attributes;
+optimize table states_meta;
 
 VACUUM;
 
@@ -130,7 +132,8 @@ LEFT JOIN states_meta ON states.metadata_id = states_meta.metadata_id
 GROUP BY
   states.metadata_id, states_meta.entity_id
 ORDER BY
-  bytes_pct DESC;
+  bytes_pct DESC
+limit 10;
 
 SELECT 
   statistics.metadata_id,
@@ -161,7 +164,7 @@ SELECT
 FROM states
 INNER JOIN states_meta ON states.metadata_id=states_meta.metadata_id
 GROUP BY states_meta.entity_id
-ORDER BY cnt ASC
+ORDER BY cnt deSC limit 50;
 
 ---
 

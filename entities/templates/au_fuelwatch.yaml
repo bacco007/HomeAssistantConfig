@@ -1,0 +1,134 @@
+---
+sensor:
+  - name: AU Fuel Risk Level
+    unique_id: au_fuel_risk_level
+    state: "{{ states('sensor.au_fuel_watch_raw') }}"
+    icon: >-
+      {% set risk = states('sensor.au_fuel_watch_raw') %}
+      {% if risk == 'high' %}
+        mdi:alert
+      {% elif risk == 'medium' %}
+        mdi:alert-outline
+      {% else %}
+        mdi:check-circle-outline
+      {% endif %}
+
+  - name: AU Fuel Most Critical
+    unique_id: au_fuel_most_critical
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'mostCritical') }}"
+    icon: mdi:fuel
+
+  - name: AU Fuel Most Critical Days
+    unique_id: au_fuel_most_critical_days
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'mostCriticalDays') }}"
+    unit_of_measurement: "days"
+    state_class: measurement
+    icon: mdi:calendar-clock
+
+  - name: AU Fuel Depletion Date
+    unique_id: au_fuel_depletion_date
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'depletionDate') }}"
+    icon: mdi:calendar-alert
+
+  - name: AU Fuel MBIE Data Date
+    unique_id: au_fuel_mbie_data_date
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'mbieDataDate') }}"
+    icon: mdi:calendar
+
+  - name: AU Petrol Estimated Days
+    unique_id: au_petrol_estimated_days
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'estimatedPetrolDays') }}"
+    unit_of_measurement: "days"
+    state_class: measurement
+    icon: mdi:gas-station
+
+  - name: AU Diesel Estimated Days
+    unique_id: au_diesel_estimated_days
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'estimatedDieselDays') }}"
+    unit_of_measurement: "days"
+    state_class: measurement
+    icon: mdi:truck
+
+  - name: AU Jet Estimated Days
+    unique_id: au_jet_estimated_days
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'estimatedJetDays') }}"
+    unit_of_measurement: "days"
+    state_class: measurement
+    icon: mdi:airplane
+
+  - name: AU Total Daily Litres
+    unique_id: au_total_daily_litres
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'totalDailyLitres') }}"
+    unit_of_measurement: "L/day"
+    state_class: measurement
+    icon: mdi:water
+
+  - name: AU Total Daily Barrels
+    unique_id: au_total_daily_barrels
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'totalDailyBarrels') }}"
+    unit_of_measurement: "barrels/day"
+    state_class: measurement
+    icon: mdi:barrel
+
+  - name: AU Petrol In Country Days
+    unique_id: au_petrol_in_country_days
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'petrol').inCountryDays }}"
+    unit_of_measurement: "days"
+    state_class: measurement
+    icon: mdi:gas-station
+
+  - name: AU Petrol In Water Days
+    unique_id: au_petrol_in_water_days
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'petrol').inWaterDays }}"
+    unit_of_measurement: "days"
+    state_class: measurement
+    icon: mdi:ferry
+
+  - name: AU Petrol Total Days
+    unique_id: au_petrol_total_days
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'petrol').totalDays }}"
+    unit_of_measurement: "days"
+    state_class: measurement
+    icon: mdi:calendar-range
+
+  - name: AU Diesel In Country Days
+    unique_id: au_diesel_in_country_days
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'diesel').inCountryDays }}"
+    unit_of_measurement: "days"
+    state_class: measurement
+    icon: mdi:truck
+
+  - name: AU Diesel In Water Days
+    unique_id: au_diesel_in_water_days
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'diesel').inWaterDays }}"
+    unit_of_measurement: "days"
+    state_class: measurement
+    icon: mdi:ferry
+
+  - name: AU Diesel Total Days
+    unique_id: au_diesel_total_days
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'diesel').totalDays }}"
+    unit_of_measurement: "days"
+    state_class: measurement
+    icon: mdi:calendar-range
+
+  - name: AU Jet In Country Days
+    unique_id: au_jet_in_country_days
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'jet').inCountryDays }}"
+    unit_of_measurement: "days"
+    state_class: measurement
+    icon: mdi:airplane
+
+  - name: AU Jet In Water Days
+    unique_id: au_jet_in_water_days
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'jet').inWaterDays }}"
+    unit_of_measurement: "days"
+    state_class: measurement
+    icon: mdi:ferry
+
+  - name: AU Jet Total Days
+    unique_id: au_jet_total_days
+    state: "{{ state_attr('sensor.au_fuel_watch_raw', 'jet').totalDays }}"
+    unit_of_measurement: "days"
+    state_class: measurement
+    icon: mdi:calendar-range

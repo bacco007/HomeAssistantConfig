@@ -55,7 +55,6 @@ cards:
     parameters: !include /config/ui/cards/card-config/swipe-card.yaml
     cards:
       - !include /config/ui/cards/tamworth/snippets/aqi_waqi.yaml
-      - !include /config/ui/cards/tamworth/snippets/aqi_nswdpe.yaml
 
   # Popups
   - !include /config/ui/dashboards/shared/includes/popup.yaml
