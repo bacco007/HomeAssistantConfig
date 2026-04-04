@@ -131,6 +131,9 @@ class UntappdLastCheckinSensor(UntappdBaseSensor):
 
 
 class UntappdWishlistCountSensor(UntappdBaseSensor):
+    _attr_native_unit_of_measurement = "count"
+    _attr_state_class = "measurement"
+
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry)
         self._attr_name = f"Untappd Wishlist ({coordinator.username})"
@@ -200,6 +203,9 @@ class UntappdLastBadgeSensor(UntappdBaseSensor):
 
 
 class UntappdLastBadgeLevelSensor(UntappdBaseSensor):
+    _attr_native_unit_of_measurement = "count"
+    _attr_state_class = "measurement"
+
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry)
         self._attr_name = f"Untappd Last Badge Level ({coordinator.username})"
@@ -246,6 +252,8 @@ class UntappdLastBadgeDescriptionSensor(UntappdBaseSensor):
 
 class UntappdApiRemainingSensor(UntappdBaseSensor):
     _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_native_unit_of_measurement = "requests"
+    _attr_state_class = "measurement"
 
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry)
@@ -261,6 +269,8 @@ class UntappdApiRemainingSensor(UntappdBaseSensor):
 
 class UntappdApiLimitSensor(UntappdBaseSensor):
     _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_native_unit_of_measurement = "requests"
+    _attr_state_class = "measurement"
 
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry)
@@ -303,6 +313,10 @@ class UntappdLastBrewerySensor(UntappdBaseSensor):
 
 
 class UntappdLastRatingSensor(UntappdBaseSensor):
+    _attr_native_unit_of_measurement = "★"
+    _attr_state_class = "measurement"
+    _attr_suggested_display_precision = 2
+
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry)
         self._attr_name = f"Untappd Last Rating ({coordinator.username})"
@@ -332,6 +346,7 @@ class UntappdLastVenueSensor(UntappdBaseSensor):
 
 class UntappdLastAbvSensor(UntappdBaseSensor):
     _attr_native_unit_of_measurement = "%"
+    _attr_state_class = "measurement"
 
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry)
@@ -347,6 +362,9 @@ class UntappdLastAbvSensor(UntappdBaseSensor):
 
 
 class UntappdTotalBadgesSensor(UntappdBaseSensor):
+    _attr_native_unit_of_measurement = "count"
+    _attr_state_class = "measurement"
+
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry)
         self._attr_name = f"Untappd Total Badges ({coordinator.username})"
@@ -361,6 +379,9 @@ class UntappdTotalBadgesSensor(UntappdBaseSensor):
 
 
 class UntappdTotalBeersSensor(UntappdBaseSensor):
+    _attr_native_unit_of_measurement = "count"
+    _attr_state_class = "measurement"
+
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry)
         self._attr_name = f"Untappd Total Beers ({coordinator.username})"
@@ -375,6 +396,9 @@ class UntappdTotalBeersSensor(UntappdBaseSensor):
 
 
 class UntappdTotalCreatedBeersSensor(UntappdBaseSensor):
+    _attr_native_unit_of_measurement = "count"
+    _attr_state_class = "measurement"
+
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry)
         self._attr_name = f"Untappd Total Created Beers ({coordinator.username})"
@@ -389,6 +413,9 @@ class UntappdTotalCreatedBeersSensor(UntappdBaseSensor):
 
 
 class UntappdTotalCheckinsSensor(UntappdBaseSensor):
+    _attr_native_unit_of_measurement = "count"
+    _attr_state_class = "measurement"
+
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry)
         self._attr_name = f"Untappd Total Checkins ({coordinator.username})"
@@ -403,6 +430,9 @@ class UntappdTotalCheckinsSensor(UntappdBaseSensor):
 
 
 class UntappdTotalFollowingsSensor(UntappdBaseSensor):
+    _attr_native_unit_of_measurement = "count"
+    _attr_state_class = "measurement"
+
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry)
         self._attr_name = f"Untappd Total Followings ({coordinator.username})"
@@ -417,6 +447,9 @@ class UntappdTotalFollowingsSensor(UntappdBaseSensor):
 
 
 class UntappdTotalFriendsSensor(UntappdBaseSensor):
+    _attr_native_unit_of_measurement = "count"
+    _attr_state_class = "measurement"
+
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry)
         self._attr_name = f"Untappd Total Friends ({coordinator.username})"
@@ -431,6 +464,9 @@ class UntappdTotalFriendsSensor(UntappdBaseSensor):
 
 
 class UntappdTotalPhotosSensor(UntappdBaseSensor):
+    _attr_native_unit_of_measurement = "count"
+    _attr_state_class = "measurement"
+
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry)
         self._attr_name = f"Untappd Total Photos ({coordinator.username})"
