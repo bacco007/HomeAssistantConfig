@@ -1,0 +1,801 @@
+# Nordic Theme
+# Creator: Colton @coltondick
+# Created: Combined the individual dark and light modes into a single theme.
+# Date: 2026-04-02
+
+nordic:
+  modes:
+    light:
+      # ─────────────────────────────────────────────────────────────────────────────
+      # Base Nordic palette (hex + rgb helpers)
+      # ─────────────────────────────────────────────────────────────────────────────
+      aurora-red: "#bf616a"
+      rgb-aurora-red: "rgb(191, 97, 106)"
+
+      aurora-blue: "#5e81ac"
+      rgb-aurora-blue: "rgb(94, 129, 172)"
+
+      aurora-green: "#a3be8c"
+      rgb-aurora-green: "rgb(163, 190, 140)"
+
+      aurora-yellow: "#ebcb8b"
+      rgb-aurora-yellow: "rgb(235, 203, 139)"
+
+      aurora-orange: "#d08770"
+      rgb-aurora-orange: "rgb(208, 135, 112)"
+
+      aurora-pink: "#b48ead"
+      rgb-aurora-pink: "rgb(180, 142, 173)"
+
+      frost-green: "#8fbcbb"
+      rgb-frost-green: "rgb(143, 188, 187)"
+
+      frost-sky-blue: "#88c0d0"
+      rgb-frost-sky-blue: "rgb(136, 192, 208)"
+
+      frost-cadet-blue: "#81a1c1"
+      rgb-frost-cadet-blue: "rgb(129, 161, 193)"
+
+      frost-steel-blue: "#5e81ac"
+      rgb-frost-steel-blue: "rgb(94, 129, 172)"
+
+      snow-dark: "#d8dee9"
+      rgb-snow-dark: "rgb(216, 222, 233)"
+
+      snow-medium: "#e5e9f0"
+      rgb-snow-medium: "rgb(229, 233, 240)"
+
+      snow-light: "#eceff4"
+      rgb-snow-light: "rgb(236, 239, 244)"
+
+      polar-dark-gray: "#2e3440"
+      rgb-polar-dark-gray: "rgb(46, 52, 64)"
+
+      polar-bright-gray: "#3B4252"
+      rgb-polar-bright-gray: "rgb(59, 66, 82)"
+
+      polar-river-gray: "#434c5e"
+      rgb-polar-river-gray: "rgb(67, 76, 94)"
+
+      polar-light-gray: "#4c566a"
+      rgb-polar-light-gray: "rgb(76, 86, 106)"
+
+      # ─────────────────────────────────────────────────────────────────────────────
+      # Fonts
+      # ─────────────────────────────────────────────────────────────────────────────
+      primary-font-family: "Roboto, sans-serif"
+      ha-font-family-body: "var(--primary-font-family)"
+      ha-font-family-heading: "var(--primary-font-family)"
+      ha-font-family-code: "monospace"
+      ha-font-family-longform: "var(--primary-font-family)"
+      ha-font-smoothing: "antialiased"
+
+      ha-font-weight-light: 300
+      ha-font-weight-normal: 400
+      ha-font-weight-medium: 500
+      ha-font-weight-bold: 700
+      ha-font-weight-body: "var(--ha-font-weight-normal)"
+      ha-font-weight-heading: "var(--ha-font-weight-bold)"
+      ha-font-weight-action: "var(--ha-font-weight-medium)"
+
+      ha-font-size-scale: 1rem
+      ha-font-size-2xs: 0.625rem
+      ha-font-size-xs: 0.75rem
+      ha-font-size-s: 0.875rem
+      ha-font-size-m: 1rem
+      ha-font-size-l: 1.125rem
+      ha-font-size-xl: 1.25rem
+      ha-font-size-2xl: 1.5rem
+      ha-font-size-3xl: 1.75rem
+      ha-font-size-4xl: 2rem
+
+      ha-line-height-condensed: 1.1
+      ha-line-height-normal: 1.4
+      ha-line-height-expanded: 1.6
+
+      ha-card-header-font-size: "var(--ha-font-size-2xl)"
+      paper-font-headline_-_font-size: "var(--ha-font-size-2xl)"
+
+      # ─────────────────────────────────────────────────────────────────────────────
+      # Card / badge radius
+      # ─────────────────────────────────────────────────────────────────────────────
+      ha-card-border-radius: "5px"
+      ha-badge-border-radius: "5px"
+      border-color: "transparent"
+      ha-card-border-color: "transparent"
+
+      # ─────────────────────────────────────────────────────────────────────────────
+      # Simple color aliases
+      # ─────────────────────────────────────────────────────────────────────────────
+      red-color: "var(--aurora-red)"
+      blue-color: "var(--frost-steel-blue)"
+      green-color: "var(--aurora-green)"
+      yellow-color: "var(--aurora-yellow)"
+      orange-color: "var(--aurora-orange)"
+      pink-color: "var(--aurora-pink)"
+      amber-color: "var(--aurora-yellow)"
+      deep-orange-color: "var(--aurora-red)"
+      teal-color: "var(--aurora-yellow)" # kept to match your default
+      indigo-color: "var(--frost-cadet-blue)"
+      purple-color: "var(--aurora-pink)"
+      light-blue-color: "var(--aurora-blue)"
+      cyan-color: "var(--frost-sky-blue)"
+      black-color: "var(--polar-dark-gray)"
+
+      # Status / Feedback
+      error-color: var(--red-color)
+      warning-color: var(--orange-color)
+      success-color: var(--green-color)
+      info-color: var(--blue-color)
+
+      # Energy
+      energy-grid-consumption-color: "var(--frost-steel-blue)"
+      energy-grid-return-color: "var(--frost-cadet-blue)"
+      energy-solar-color: "var(--aurora-yellow)"
+      energy-non-fossil-color: "var(--aurora-green)"
+      energy-battery-out-color: "var(--aurora-red)"
+      energy-battery-in-color: "var(--aurora-pink)"
+      energy-gas-color: "var(--aurora-orange)"
+      energy-water-color: "var(--aurora-blue)"
+
+      # ── HA palette scales
+
+      ha-color-primary-05: "#001721"
+      ha-color-primary-10: "#002e3e"
+      ha-color-primary-20: "#004156"
+      ha-color-primary-30: "#006787"
+      ha-color-primary-40: "#009ac7"
+      ha-color-primary-50: "#18bcf2"
+      ha-color-primary-60: "#37c8fd"
+      ha-color-primary-70: "#7bd4fb"
+      ha-color-primary-80: "#b9e6fc"
+      ha-color-primary-90: "#dff3fc"
+      ha-color-primary-95: "#eff9fe"
+      ha-color-neutral-05: "#141414"
+
+      ha-color-neutral-10: "#202020"
+      ha-color-neutral-20: "#363636"
+      ha-color-neutral-30: "#4a4a4a"
+      ha-color-neutral-40: "#5e5e5e"
+      ha-color-neutral-50: "#7a7a7a"
+      ha-color-neutral-60: "#989898"
+      ha-color-neutral-70: "#b1b1b1"
+      ha-color-neutral-80: "#cccccc"
+      ha-color-neutral-90: "#e6e6e6"
+      ha-color-neutral-95: "#f3f3f3"
+
+      ha-color-orange-05: "#280700"
+      ha-color-orange-10: "#3b0f00"
+      ha-color-orange-20: "#5e1c00"
+      ha-color-orange-30: "#7e2900"
+      ha-color-orange-40: "#9d3800"
+      ha-color-orange-50: "#c94e00"
+      ha-color-orange-60: "#f36d00"
+      ha-color-orange-70: "#ff9342"
+      ha-color-orange-80: "#ffbb89"
+      ha-color-orange-90: "#ffe0c8"
+      ha-color-orange-95: "#fff0e4"
+
+      ha-color-red-05: "#2a040b"
+      ha-color-red-10: "#3e0913"
+      ha-color-red-20: "#631323"
+      ha-color-red-30: "#8a132c"
+      ha-color-red-40: "#b30532"
+      ha-color-red-50: "#dc3146"
+      ha-color-red-60: "#f3676c"
+      ha-color-red-70: "#fd8f90"
+      ha-color-red-80: "#ffb8b6"
+      ha-color-red-90: "#ffdedc"
+      ha-color-red-95: "#fff0ef"
+
+      ha-color-green-05: "#031608"
+      ha-color-green-10: "#052310"
+      ha-color-green-20: "#0a3a1d"
+      ha-color-green-30: "#0a5027"
+      ha-color-green-40: "#036730"
+      ha-color-green-50: "#00883c"
+      ha-color-green-60: "#00ac49"
+      ha-color-green-70: "#5dc36f"
+      ha-color-green-80: "#93da98"
+      ha-color-green-90: "#c2f2c1"
+      ha-color-green-95: "#e3f9e3"
+
+      disabled-color: "var(--snow-dark)"
+      grey-color: "var(--polar-light-gray)"
+      white-color: "var(--snow-light)"
+
+      # Text
+      text-color: "var(--polar-bright-gray)"
+      primary-text-color: "var(--text-color)"
+      text-primary-color: "var(--snow-light)"
+      text-light-primary-color: "var(--text-color)"
+      secondary-text-color: "var(--polar-light-gray)"
+      text-medium-light-color: "var(--polar-light-gray)"
+      text-medium-color: "var(--polar-river-gray)" # fixed typo
+      disabled-text-color: "var(--snow-dark)"
+      primary-color: "var(--accent-color)"
+      mdc-text-field-ink-color: "var(--text-color)"
+      mdc-select-fill-color: "var(--background-color)"
+      mdc-select-ink-color: "var(--primary-text-color)"
+      mdc-select-label-ink-color: "var(--secondary-text-color)"
+      mdc-select-idle-line-color: "var(--primary-text-color)"
+      mdc-select-dropdown-icon-color: "var(--secondary-text-color)"
+
+      # Inputs
+      input-dropdown-icon-color: "var(--secondary-text-color)"
+      input-ink-color: "var(--primary-text-color)"
+      input-label-ink-color: "var(--secondary-text-color)"
+      input-idle-line-color: "var(--primary-text-color)"
+      input-hover-line-color: "var(--accent-color)"
+
+      # Main colors
+      app-header-background-color: "var(--polar-light-gray)"
+      app-header-text-color: "var(--snow-light)"
+      accent-color: "var(--frost-green)"
+      accent-medium-color: "var(--frost-cadet-blue)"
+
+      # Backgrounds
+      background-color: "var(--snow-light)"
+      primary-background-color: "var(--background-color)"
+      background-color-2: "var(--snow-dark)"
+      secondary-background-color: "var(--snow-light)"
+
+      # Code editor
+      code-editor-gutter-color: "var(--secondary-background-color)"
+      markdown-code-background-color: "var(--secondary-background-color)"
+      input-fill-color: "var(--secondary-background-color)"
+      codemirror-keyword: "var(--aurora-blue)"
+      codemirror-string: "var(--aurora-green)"
+
+      # Card
+      card-background-color: "var(--ha-card-background)"
+      ha-card-background: "#fafeff"
+      ha-card-box-shadow: "3px 3px 13px -6px rgba(17,35,52,0.2)"
+
+      codemirror-property: "var(--aurora-pink)"
+
+      # forms (since 2026.4)
+      ha-color-form-background: "var(--background-color)"
+      ha-color-form-background-hover: "var(--background-color)"
+      ha-color-form-background-disabled: "var(--background-color)"
+
+      # Icons
+      state-icon-color: "var(--polar-bright-gray)"
+      default-icon-clr: "var(--text-color)"
+
+      # Sidebar
+      sidebar-background-color: "var(--snow-light)"
+      sidebar-icon-color: "var(--polar-bright-gray)"
+      sidebar-selected-icon-color: "var(--accent-color)"
+      sidebar-selected-text-color: "var(--text-color)"
+      divider-color: "var(--background-color-2)"
+      light-primary-color: "var(--ha-card-background)"
+
+      # Sliders
+      paper-slider-knob-color: "var(--accent-medium-color)"
+      paper-slider-pin-color: "var(--background-color-2)"
+      paper-slider-active-color: "var(--accent-medium-color)"
+      paper-slider-container-color: "var(--background-color-2)"
+
+      # Toggle
+      paper-toggle-button-checked-bar-color: "var(--accent-medium-color)"
+      mdc-theme-primary: "var(--accent-medium-color)"
+
+      # Switch
+      switch-checked-color: "var(--accent-color)"
+      switch-unchecked-color: "var(--snow-dark)"
+      switch-checked-button-color: "var(--accent-color)"
+      switch-unchecked-track-color: "var(--background-color-2)"
+      switch-checked-track-color: "var(--background-color-2)"
+
+      # Radio
+      paper-radio-button-checked-color: "var(--accent-color)"
+      mdc-radio-unchecked-color: "var(--secondary-text-color)"
+
+      # Checkbox
+      mdc-checkbox-unchecked-color: "var(--secondary-text-color)"
+
+      # Popups
+      more-info-header-background: "var(--secondary-background-color)"
+      paper-dialog-background-color: "var(--background-color)"
+
+      # Tables
+      table-row-background-color: "var(--background-color)"
+      table-row-alternative-background-color: "var(--ha-card-background)"
+
+      # Badges
+      label-badge-background-color: "var(--background-color)"
+      label-badge-text-color: "var(--text-primary-color)"
+      label-badge-red: "var(--aurora-red)"
+      label-badge-blue: "var(--aurora-blue)"
+      label-badge-green: "var(--aurora-green)"
+      label-badge-yellow: "var(--aurora-yellow)"
+      label-badge-grey: "var(--polar-light-gray)"
+
+      paper-input-container-focus-color: "var(--accent-color)"
+
+      # Custom Header
+      ch-background: "var(--background-color)"
+      ch-active-tab-color: "var(--accent-color)"
+      ch-notification-dot-color: "var(--accent-color)"
+      ch-all-tabs-color: "var(--sidebar-icon-color)"
+      ch-tab-indicator-color: "var(--accent-color)"
+
+      # Mini Mediaplayer
+      mini-media-player-base-color: "var(--text-color)"
+      mini-media-player-accent-color: "var(--accent-color)"
+
+      # Thermostats
+      heat-color: "var(--aurora-orange)"
+      off-color: "var(--aurora-red)"
+
+      # Alarm
+      alarm-color-disarmed: "var(--aurora-green)"
+      alarm-color-armed: "var(--aurora-red)"
+
+      button-color-fill-normal-hover: "color-mix(in srgb, var(--frost-green) 26%, var(--snow-light) 74%)"
+      button-color-fill-normal-active: "color-mix(in srgb, var(--frost-green) 34%, var(--snow-medium) 66%)"
+      ha-color-fill-primary-loud-hover: "color-mix(in srgb, var(--frost-green) 90%, var(--polar-river-gray) 10%)"
+      ha-color-fill-primary-loud-active: "color-mix(in srgb, var(--frost-green) 80%, var(--polar-river-gray) 20%)"
+
+      # Switch color bridge (non-breaking)
+      control-switch-on-color: "var(--state-switch-on-color,  var(--aurora-green))"
+      control-switch-off-color: "var(--state-switch-off-color, var(--polar-light-gray))"
+
+      # ─────────────────────────────────────────────────────────────────────────────
+      # State color (LIGHT)
+      # ─────────────────────────────────────────────────────────────────────────────
+      state-active-color: var(--aurora-yellow)
+      state-inactive-color: var(--polar-light-gray)
+
+      # Per-domain common states
+      state-light-on-color: var(--aurora-yellow)
+      state-light-off-color: var(--polar-bright-gray)
+
+      state-switch-on-color: var(--aurora-yellow)
+      state-switch-off-color: var(--polar-bright-gray)
+
+      state-input_boolean-on-color: var(--aurora-yellow)
+      state-input_boolean-off-color: var(--polar-bright-gray)
+
+      state-lock-locked-color: var(--aurora-green)
+      state-lock-unlocked-color: var(--aurora-red)
+
+      state-cover-open-color: var(--aurora-pink)
+      state-cover-closed-color: var(--aurora-green)
+
+      state-climate-heat-color: var(--aurora-orange)
+      state-climate-cool-color: var(--frost-steel-blue)
+      state-climate-auto-color: var(--aurora-green)
+      state-climate-dry-color: var(--aurora-orange)
+      state-climate-fan_only-color: var(--frost-sky-blue)
+      state-climate-heat_cool-color: var(--aurora-yellow)
+
+      state-sun-above_horizon-color: var(--aurora-yellow)
+      state-sun-below_horizon-color: var(--frost-cadet-blue)
+
+      state-media_player-playing-color: var(--aurora-blue)
+      state-media_player-paused-color: var(--polar-light-gray)
+      state-media_player-idle-color: var(--polar-light-gray)
+
+      state-person-home-color: var(--aurora-green)
+      state-person-not_home-color: var(--frost-cadet-blue)
+
+      state-humidifier-on-color: var(--frost-steel-blue)
+      state-humidifier-off-color: var(--polar-bright-gray)
+
+      state-siren-on-color: var(--aurora-red)
+      state-siren-off-color: var(--polar-bright-gray)
+
+      state-vacuum-active-color: var(--frost-green)
+      state-vacuum-docked-color: var(--polar-bright-gray)
+      state-vacuum-error-color: var(--aurora-red)
+
+      # Alarm panel
+      state-alarm_control_panel-disarmed-color: var(--aurora-green)
+      state-alarm_control_panel-armed_home-color: var(--aurora-red)
+      state-alarm_control_panel-armed_away-color: var(--aurora-red)
+      state-alarm_control_panel-armed_night-color: var(--aurora-red)
+      state-alarm_control_panel-armed_vacation-color: var(--aurora-red)
+      state-alarm_control_panel-arming-color: var(--aurora-orange)
+      state-alarm_control_panel-disarming-color: var(--aurora-orange)
+      state-alarm_control_panel-pending-color: var(--aurora-yellow)
+      state-alarm_control_panel-triggered-color: var(--aurora-red)
+
+    dark:
+      # ─────────────────────────────────────────────────────────────────────────────
+      # Base Nordic palette (hex + rgb helpers)
+      # ─────────────────────────────────────────────────────────────────────────────
+      aurora-red: "#bf616a"
+      rgb-aurora-red: "rgb(191, 97, 106)"
+
+      aurora-blue: "#5e81ac"
+      rgb-aurora-blue: "rgb(94, 129, 172)"
+
+      aurora-green: "#a3be8c"
+      rgb-aurora-green: "rgb(163, 190, 140)"
+
+      aurora-yellow: "#ebcb8b"
+      rgb-aurora-yellow: "rgb(235, 203, 139)"
+
+      aurora-orange: "#d08770"
+      rgb-aurora-orange: "rgb(208, 135, 112)"
+
+      aurora-pink: "#b48ead"
+      rgb-aurora-pink: "rgb(180, 142, 173)"
+
+      frost-green: "#8fbcbb"
+      rgb-frost-green: "rgb(143, 188, 187)"
+
+      frost-sky-blue: "#88c0d0"
+      rgb-frost-sky-blue: "rgb(136, 192, 208)"
+
+      frost-cadet-blue: "#81a1c1"
+      rgb-frost-cadet-blue: "rgb(129, 161, 193)"
+
+      frost-steel-blue: "#5e81ac"
+      rgb-frost-steel-blue: "rgb(94, 129, 172)"
+
+      snow-dark: "#d8dee9"
+      rgb-snow-dark: "rgb(216, 222, 233)"
+
+      snow-medium: "#e5e9f0"
+      rgb-snow-medium: "rgb(229, 233, 240)"
+
+      snow-light: "#eceff4"
+      rgb-snow-light: "rgb(236, 239, 244)"
+
+      polar-dark-gray: "#2e3440"
+      rgb-polar-dark-gray: "rgb(46, 52, 64)"
+
+      polar-bright-gray: "#3B4252"
+      rgb-polar-bright-gray: "rgb(59, 66, 82)"
+
+      polar-river-gray: "#434c5e"
+      rgb-polar-river-gray: "rgb(67, 76, 94)"
+
+      polar-light-gray: "#4c566a"
+      rgb-polar-light-gray: "rgb(76, 86, 106)"
+
+      # ─────────────────────────────────────────────────────────────────────────────
+      # Fonts
+      # ─────────────────────────────────────────────────────────────────────────────
+      primary-font-family: "Roboto, sans-serif"
+      ha-font-family-body: "var(--primary-font-family)"
+      ha-font-family-heading: "var(--primary-font-family)"
+      ha-font-family-code: "monospace"
+      ha-font-family-longform: "var(--primary-font-family)"
+      ha-font-smoothing: "antialiased"
+
+      ha-font-weight-light: 300
+      ha-font-weight-normal: 400
+      ha-font-weight-medium: 500
+      ha-font-weight-bold: 700
+      ha-font-weight-body: "var(--ha-font-weight-normal)"
+      ha-font-weight-heading: "var(--ha-font-weight-bold)"
+      ha-font-weight-action: "var(--ha-font-weight-medium)"
+
+      ha-font-size-scale: 1rem
+      ha-font-size-2xs: 0.625rem
+      ha-font-size-xs: 0.75rem
+      ha-font-size-s: 0.875rem
+      ha-font-size-m: 1rem
+      ha-font-size-l: 1.125rem
+      ha-font-size-xl: 1.25rem
+      ha-font-size-2xl: 1.5rem
+      ha-font-size-3xl: 1.75rem
+      ha-font-size-4xl: 2rem
+
+      ha-line-height-condensed: 1.1
+      ha-line-height-normal: 1.4
+      ha-line-height-expanded: 1.6
+
+      ha-card-header-font-size: "var(--ha-font-size-2xl)"
+      paper-font-headline_-_font-size: "var(--ha-font-size-2xl)"
+
+      # ─────────────────────────────────────────────────────────────────────────────
+      # Card / badge radius
+      # ─────────────────────────────────────────────────────────────────────────────
+      ha-card-border-radius: "5px"
+      ha-badge-border-radius: "5px"
+      border-color: "transparent"
+      ha-card-border-color: "transparent"
+
+      # ─────────────────────────────────────────────────────────────────────────────
+      # Simple color aliases
+      # ─────────────────────────────────────────────────────────────────────────────
+      red-color: "var(--aurora-red)"
+      blue-color: "var(--frost-steel-blue)"
+      green-color: "var(--aurora-green)"
+      yellow-color: "var(--aurora-yellow)"
+      orange-color: "var(--aurora-orange)"
+      pink-color: "var(--aurora-pink)"
+      amber-color: "var(--aurora-yellow)"
+      deep-orange-color: "var(--aurora-red)"
+      teal-color: "var(--aurora-yellow)" # kept to match your default
+      indigo-color: "var(--frost-cadet-blue)"
+      purple-color: "var(--aurora-pink)"
+      light-blue-color: "var(--aurora-blue)"
+      cyan-color: "var(--frost-sky-blue)"
+      black-color: "var(--polar-dark-gray)"
+
+      # Status / Feedback
+      error-color: var(--red-color)
+      warning-color: var(--orange-color)
+      success-color: var(--green-color)
+      info-color: var(--blue-color)
+
+      # Energy
+      energy-grid-consumption-color: "var(--frost-steel-blue)"
+      energy-grid-return-color: "var(--frost-cadet-blue)"
+      energy-solar-color: "var(--aurora-yellow)"
+      energy-non-fossil-color: "var(--aurora-green)"
+      energy-battery-out-color: "var(--aurora-red)"
+      energy-battery-in-color: "var(--aurora-pink)"
+      energy-gas-color: "var(--aurora-orange)"
+      energy-water-color: "var(--aurora-blue)"
+
+      # ── HA palette scales
+
+      ha-color-primary-05: "#001721"
+      ha-color-primary-10: "#002e3e"
+      ha-color-primary-20: "#004156"
+      ha-color-primary-30: "#006787"
+      ha-color-primary-40: "#009ac7"
+      ha-color-primary-50: "#18bcf2"
+      ha-color-primary-60: "#37c8fd"
+      ha-color-primary-70: "#7bd4fb"
+      ha-color-primary-80: "#b9e6fc"
+      ha-color-primary-90: "#dff3fc"
+      ha-color-primary-95: "#eff9fe"
+      ha-color-neutral-05: "#141414"
+
+      ha-color-neutral-10: "#202020"
+      ha-color-neutral-20: "#363636"
+      ha-color-neutral-30: "#4a4a4a"
+      ha-color-neutral-40: "#5e5e5e"
+      ha-color-neutral-50: "#7a7a7a"
+      ha-color-neutral-60: "#989898"
+      ha-color-neutral-70: "#b1b1b1"
+      ha-color-neutral-80: "#cccccc"
+      ha-color-neutral-90: "#e6e6e6"
+      ha-color-neutral-95: "#f3f3f3"
+
+      ha-color-orange-05: "#280700"
+      ha-color-orange-10: "#3b0f00"
+      ha-color-orange-20: "#5e1c00"
+      ha-color-orange-30: "#7e2900"
+      ha-color-orange-40: "#9d3800"
+      ha-color-orange-50: "#c94e00"
+      ha-color-orange-60: "#f36d00"
+      ha-color-orange-70: "#ff9342"
+      ha-color-orange-80: "#ffbb89"
+      ha-color-orange-90: "#ffe0c8"
+      ha-color-orange-95: "#fff0e4"
+
+      ha-color-red-05: "#2a040b"
+      ha-color-red-10: "#3e0913"
+      ha-color-red-20: "#631323"
+      ha-color-red-30: "#8a132c"
+      ha-color-red-40: "#b30532"
+      ha-color-red-50: "#dc3146"
+      ha-color-red-60: "#f3676c"
+      ha-color-red-70: "#fd8f90"
+      ha-color-red-80: "#ffb8b6"
+      ha-color-red-90: "#ffdedc"
+      ha-color-red-95: "#fff0ef"
+
+      ha-color-green-05: "#031608"
+      ha-color-green-10: "#052310"
+      ha-color-green-20: "#0a3a1d"
+      ha-color-green-30: "#0a5027"
+      ha-color-green-40: "#036730"
+      ha-color-green-50: "#00883c"
+      ha-color-green-60: "#00ac49"
+      ha-color-green-70: "#5dc36f"
+      ha-color-green-80: "#93da98"
+      ha-color-green-90: "#c2f2c1"
+      ha-color-green-95: "#e3f9e3"
+
+      # Colors
+      disabled-color: "var(--polar-light-gray)"
+      grey-color: "var(--snow-dark)"
+      white-color: "var(--snow-light)"
+
+      # Text
+      text-color: "var(--snow-light)"
+      primary-text-color: "var(--text-color)"
+      text-primary-color: "var(--text-color)"
+      text-light-primary-color: "var(--text-color)"
+      secondary-text-color: "var(--snow-medium)"
+      text-medium-light-color: "var(--snow-medium)"
+      text-medium-color: "var(--snow-dark)"
+      disabled-text-color: "var(--polar-light-gray)"
+      primary-color: "var(--accent-color)"
+      mdc-text-field-ink-color: "var(--text-color)"
+      mdc-select-fill-color: "var(--background-color)"
+      mdc-select-ink-color: "var(--primary-text-color)"
+      mdc-select-label-ink-color: "var(--secondary-text-color)"
+      mdc-select-idle-line-color: "var(--primary-text-color)"
+      mdc-select-dropdown-icon-color: "var(--secondary-text-color)"
+
+      # Inputs
+      input-dropdown-icon-color: "var(--secondary-text-color)"
+      input-ink-color: "var(--primary-text-color)"
+      input-label-ink-color: "var(--secondary-text-color)"
+      input-idle-line-color: "var(--primary-text-color)"
+      input-hover-line-color: "var(--accent-color)"
+
+      # Main colors
+      app-header-background-color: "var(--polar-light-gray)"
+      app-header-text-color: "var(--snow-light)"
+      accent-color: "var(--frost-green)"
+      accent-medium-color: "var(--frost-cadet-blue)"
+
+      # Backgrounds
+      background-color: "var(--polar-dark-gray)"
+      primary-background-color: "var(--background-color)"
+      background-color-2: "var(--polar-light-gray)"
+      secondary-background-color: "var(--polar-dark-gray)"
+
+      # Code editor
+      code-editor-gutter-color: "var(--secondary-background-color)"
+      markdown-code-background-color: "var(--secondary-background-color)"
+      input-fill-color: "var(--secondary-background-color)"
+      codemirror-keyword: "var(--aurora-blue)"
+      codemirror-string: "var(--aurora-green)"
+
+      # Card
+      card-background-color: "var(--ha-card-background)"
+      ha-card-background: "var(--polar-bright-gray)"
+      ha-card-box-shadow: "3px 3px 13px -6px rgba(17,35,52,1)"
+
+      codemirror-property: "var(--aurora-pink)"
+
+      # forms (since 2026.4)
+      ha-color-form-background: "var(--background-color)"
+      ha-color-form-background-hover: "var(--background-color)"
+      ha-color-form-background-disabled: "var(--background-color)"
+
+      # Icons
+      state-icon-color: "var(--frost-sky-blue)"
+      default-icon-clr: "var(--text-color)"
+
+      # Sidebar
+      sidebar-background-color: "var(--polar-bright-gray)"
+      sidebar-icon-color: "var(--snow-light)"
+      sidebar-selected-icon-color: "var(--accent-color)"
+      sidebar-selected-text-color: "var(--text-color)"
+      divider-color: "var(--background-color-2)"
+      light-primary-color: "var(--ha-card-background)"
+
+      # Sliders
+      paper-slider-knob-color: "var(--accent-medium-color)"
+      paper-slider-pin-color: "var(--background-color-2)"
+      paper-slider-active-color: "var(--accent-medium-color)"
+      paper-slider-container-color: "var(--background-color-2)"
+
+      # Toggle
+      paper-toggle-button-checked-bar-color: "var(--accent-medium-color)"
+      mdc-theme-primary: "var(--accent-medium-color)"
+
+      # Switch
+      switch-checked-color: "var(--accent-color)"
+      switch-unchecked-color: "var(--snow-light)"
+      switch-checked-button-color: "var(--accent-color)"
+      switch-unchecked-track-color: "var(--background-color-2)"
+      switch-checked-track-color: "var(--background-color-2)"
+
+      # Radio
+      paper-radio-button-checked-color: "var(--accent-color)"
+      mdc-radio-unchecked-color: "var(--secondary-text-color)"
+
+      # Checkbox
+      mdc-checkbox-unchecked-color: "var(--secondary-text-color)"
+
+      # Popups
+      more-info-header-background: "var(--secondary-background-color)"
+      paper-dialog-background-color: "var(--background-color)"
+
+      # Tables
+      table-row-background-color: "var(--background-color)"
+      table-row-alternative-background-color: "var(--ha-card-background)"
+
+      # Badges
+      label-badge-background-color: "var(--background-color)"
+      label-badge-text-color: "var(--text-primary-color)"
+      label-badge-red: "var(--aurora-red)"
+      label-badge-blue: "var(--aurora-blue)"
+      label-badge-green: "var(--aurora-green)"
+      label-badge-yellow: "var(--aurora-yellow)"
+      label-badge-grey: "var(--polar-light-gray)"
+
+      paper-input-container-focus-color: "var(--accent-color)"
+
+      # Custom Header
+      ch-background: "var(--background-color)"
+      ch-active-tab-color: "var(--accent-color)"
+      ch-notification-dot-color: "var(--accent-color)"
+      ch-all-tabs-color: "var(--sidebar-icon-color)"
+      ch-tab-indicator-color: "var(--accent-color)"
+
+      # Mini Mediaplayer
+      mini-media-player-base-color: "var(--text-color)"
+      mini-media-player-accent-color: "var(--accent-color)"
+
+      # Thermostats
+      heat-color: "var(--aurora-orange)"
+      off-color: "var(--aurora-red)"
+
+      # Alarm
+      alarm-color-disarmed: "var(--aurora-green)"
+      alarm-color-armed: "var(--aurora-red)"
+
+      button-color-fill-normal-hover: "color-mix(in srgb, var(--frost-green) 30%, var(--polar-bright-gray) 70%)"
+      button-color-fill-normal-active: "color-mix(in srgb, var(--frost-green) 38%, var(--polar-river-gray) 62%)"
+      ha-color-fill-primary-loud-hover: "color-mix(in srgb, var(--frost-green) 88%, var(--polar-dark-gray) 12%)"
+      ha-color-fill-primary-loud-active: "color-mix(in srgb, var(--frost-green) 78%, var(--polar-dark-gray) 22%)"
+
+      # Switch color bridge
+      control-switch-on-color: "var(--state-switch-on-color,  var(--aurora-green))"
+      control-switch-off-color: "var(--state-switch-off-color, var(--snow-medium))"
+
+      # ─────────────────────────────────────────────────────────────────────────────
+      # State color (DARK)
+      # ─────────────────────────────────────────────────────────────────────────────
+      state-active-color: var(--aurora-yellow)
+      state-inactive-color: var(--frost-sky-blue)
+
+      # Per-domain common states
+      state-light-on-color: var(--aurora-yellow)
+      state-light-off-color: var(--frost-sky-blue)
+
+      state-switch-on-color: var(--aurora-yellow)
+      state-switch-off-color: var(--frost-sky-blue)
+
+      state-input_boolean-on-color: var(--aurora-yellow)
+      state-input_boolean-off-color: var(--frost-sky-blue)
+
+      state-lock-locked-color: var(--aurora-green)
+      state-lock-unlocked-color: var(--aurora-red)
+
+      state-cover-open-color: var(--aurora-pink)
+      state-cover-closed-color: var(--aurora-green)
+
+      state-climate-heat-color: var(--aurora-orange)
+      state-climate-cool-color: var(--frost-steel-blue)
+      state-climate-auto-color: var(--aurora-green)
+      state-climate-dry-color: var(--aurora-orange)
+      state-climate-fan_only-color: var(--frost-sky-blue)
+      state-climate-heat_cool-color: var(--aurora-yellow)
+
+      state-sun-above_horizon-color: var(--aurora-yellow)
+      state-sun-below_horizon-color: var(--frost-cadet-blue)
+
+      state-media_player-playing-color: var(--aurora-blue)
+      state-media_player-paused-color: var(--polar-light-gray)
+      state-media_player-idle-color: var(--polar-light-gray)
+
+      state-person-home-color: var(--aurora-green)
+      state-person-not_home-color: var(--frost-cadet-blue)
+
+      state-humidifier-on-color: var(--frost-steel-blue)
+      state-humidifier-off-color: var(--frost-sky-blue)
+
+      state-siren-on-color: var(--aurora-red)
+      state-siren-off-color: var(--frost-sky-blue)
+
+      state-vacuum-active-color: var(--frost-green)
+      state-vacuum-docked-color: var(--frost-sky-blue)
+      state-vacuum-error-color: var(--aurora-red)
+
+      # Alarm panel
+      state-alarm_control_panel-disarmed-color: var(--aurora-green)
+      state-alarm_control_panel-armed_home-color: var(--aurora-red)
+      state-alarm_control_panel-armed_away-color: var(--aurora-red)
+      state-alarm_control_panel-armed_night-color: var(--aurora-red)
+      state-alarm_control_panel-armed_vacation-color: var(--aurora-red)
+      state-alarm_control_panel-arming-color: var(--aurora-orange)
+      state-alarm_control_panel-disarming-color: var(--aurora-orange)
+      state-alarm_control_panel-pending-color: var(--aurora-yellow)
+      state-alarm_control_panel-triggered-color: var(--aurora-red)
