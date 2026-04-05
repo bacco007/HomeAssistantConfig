@@ -4,10 +4,17 @@ from contextlib import ExitStack
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
+from homeassistant.exceptions import ConfigEntryNotReady
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.f1_sensor import (
+    _NO_SPOILER_MANAGER_KEY,
+    _RC_LOG_RESET_EVENT,
+    _RC_LOG_SERVICE,
+    _RC_LOG_SERVICE_MARKER,
+    RaceControlCoordinator,
+    RaceControlLogStore,
     _is_activity_log_excluded_entity,
     _refresh_recorder_entity_filter,
     _wrap_activity_filter,
@@ -23,6 +30,7 @@ from custom_components.f1_sensor.const import (
     OPERATION_MODE_LIVE,
     PLATFORMS,
 )
+from custom_components.f1_sensor.live_delay import LiveDelayReferenceController
 from custom_components.f1_sensor.live_window import LiveAvailabilityTracker
 
 
@@ -44,9 +52,24 @@ class FakeLiveBus:
 class DummyCoordinator:
     def __init__(self, *args, **kwargs) -> None:
         self.config_entry = kwargs.get("config_entry")
+        self.data = kwargs.get("data", {})
+        self._listeners = []
 
     async def async_config_entry_first_refresh(self) -> None:
         return None
+
+    def async_add_listener(self, update_callback):
+        self._listeners.append(update_callback)
+
+        def _unsubscribe() -> None:
+            if update_callback in self._listeners:
+                self._listeners.remove(update_callback)
+
+        return _unsubscribe
+
+    def trigger_update(self) -> None:
+        for listener in list(self._listeners):
+            listener()
 
 
 class FakeReplayController:
@@ -72,7 +95,20 @@ class FakeLiveSupervisor:
         return None
 
 
-def _coordinator_patches():
+class DummyRaceControlLogStore:
+    def __init__(self, *args, **kwargs) -> None:
+        return None
+
+    async def async_initialize(self) -> None:
+        return None
+
+    async def async_close(self) -> None:
+        return None
+
+
+def _coordinator_patches(
+    fia_documents_coordinator_cls=DummyCoordinator,
+):
     """Return context managers that replace all coordinator classes with DummyCoordinator."""
     return (
         patch("custom_components.f1_sensor.F1DataCoordinator", DummyCoordinator),
@@ -86,9 +122,29 @@ def _coordinator_patches():
         ),
         patch(
             "custom_components.f1_sensor.FiaDocumentsCoordinator",
-            DummyCoordinator,
+            fia_documents_coordinator_cls,
         ),
     )
+
+
+class FailingFiaDocumentsCoordinator(DummyCoordinator):
+    last_instance = None
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.data = None
+        FailingFiaDocumentsCoordinator.last_instance = self
+
+    async def async_config_entry_first_refresh(self) -> None:
+        err = ConfigEntryNotReady()
+        err.__cause__ = RuntimeError("403, message='Forbidden'")
+        raise err
+
+    def async_set_updated_data(self, data) -> None:
+        self.data = data
+
+    def build_empty_result(self) -> dict:
+        return {"event_key": None, "race": None, "documents": []}
 
 
 def test_activity_log_exclude_entity_matcher() -> None:
@@ -195,6 +251,154 @@ def test_logbook_subscribe_wrapper_filters_excluded_entities() -> None:
 
 
 @pytest.mark.asyncio
+async def test_race_control_log_store_keeps_newest_first_and_resets(hass) -> None:
+    session_info = DummyCoordinator(
+        data={
+            "Meeting": {"Key": 1001},
+            "StartDate": "2026-03-12T14:00:00Z",
+            "Type": "Race",
+            "Name": "Grand Prix",
+        }
+    )
+    session_status = DummyCoordinator(data={"Status": "Started", "Started": True})
+    store = RaceControlLogStore(
+        hass,
+        "entry-1",
+        session_info_coordinator=session_info,
+        session_status_coordinator=session_status,
+    )
+    reset_events = []
+    unsub = hass.bus.async_listen(
+        _RC_LOG_RESET_EVENT,
+        lambda event: reset_events.append(event.data),
+    )
+
+    try:
+        await store.async_initialize()
+
+        first = store.append(
+            {
+                "Utc": "2026-03-12T14:01:00Z",
+                "Flag": "YELLOW",
+                "Message": "Yellow flag in sector 1",
+            }
+        )
+        second = store.append(
+            {
+                "Utc": "2026-03-12T14:02:00Z",
+                "Category": "SafetyCar",
+                "Message": "Safety car deployed",
+            }
+        )
+        await hass.async_block_till_done()
+
+        assert first is not None
+        assert second is not None
+        assert [item["message"] for item in store.get_items()] == [
+            "Safety car deployed",
+            "Yellow flag in sector 1",
+        ]
+        assert [item["sequence"] for item in store.get_items()] == [2, 1]
+
+        await store.async_clear(reason="manual")
+        await hass.async_block_till_done()
+
+        assert store.get_items() == []
+        assert reset_events[-1]["reason"] == "manual"
+        assert reset_events[-1]["entry_id"] == "entry-1"
+
+        after_clear = store.append(
+            {
+                "Utc": "2026-03-12T14:03:00Z",
+                "Flag": "GREEN",
+                "Message": "Track clear",
+            }
+        )
+        assert after_clear is not None
+        assert after_clear["sequence"] == 1
+
+        session_info.data = {
+            "Meeting": {"Key": 1002},
+            "StartDate": "2026-03-19T14:00:00Z",
+            "Type": "Race",
+            "Name": "Grand Prix",
+        }
+        session_info.trigger_update()
+        await hass.async_block_till_done()
+
+        assert store.get_items() == []
+        assert reset_events[-1]["reason"] == "session_change"
+        assert reset_events[-1]["session_key"] == "1002|2026-03-19T14:00:00Z|Grand Prix"
+    finally:
+        unsub()
+        await store.async_close()
+
+
+@pytest.mark.asyncio
+async def test_race_control_log_clears_when_source_stops(hass) -> None:
+    session_info = DummyCoordinator(
+        data={
+            "Meeting": {"Key": 1001},
+            "StartDate": "2026-03-12T14:00:00Z",
+            "Type": "Race",
+            "Name": "Grand Prix",
+        }
+    )
+    session_status = DummyCoordinator(data={"Status": "Started", "Started": True})
+    store = RaceControlLogStore(
+        hass,
+        "entry-1",
+        session_info_coordinator=session_info,
+        session_status_coordinator=session_status,
+    )
+    live_state = LiveAvailabilityTracker()
+    config_entry = MockConfigEntry(
+        domain=DOMAIN,
+        entry_id="entry-1",
+        data={CONF_OPERATION_MODE: OPERATION_MODE_LIVE},
+    )
+    config_entry.add_to_hass(hass)
+    coordinator = RaceControlCoordinator(
+        hass,
+        session_coord=object(),
+        bus=FakeLiveBus(None, None),
+        config_entry=config_entry,
+        live_state=live_state,
+        log_store=store,
+    )
+    reset_events = []
+    unsub = hass.bus.async_listen(
+        _RC_LOG_RESET_EVENT,
+        lambda event: reset_events.append(event.data),
+    )
+
+    try:
+        await store.async_initialize()
+
+        coordinator._deliver(  # noqa: SLF001 - targeted behavior test
+            {
+                "Utc": "2026-03-12T14:01:00Z",
+                "Flag": "YELLOW",
+                "Message": "Yellow flag in sector 1",
+            }
+        )
+        await hass.async_block_till_done()
+        assert [item["message"] for item in store.get_items()] == [
+            "Yellow flag in sector 1"
+        ]
+
+        live_state.set_state(False, "replay-stopped")
+        await hass.async_block_till_done()
+
+        assert store.get_items() == []
+        assert reset_events[-1]["reason"] == "replay-stopped"
+    finally:
+        unsub()
+        await coordinator.async_close()
+        await store.async_close()
+
+
+@pytest.mark.asyncio
 async def test_async_setup_entry_minimal(hass, mock_config_entry) -> None:
     with ExitStack() as stack:
         stack.enter_context(
@@ -290,6 +494,215 @@ async def test_async_setup_entry_live_mode_wires_event_tracker_fallback(hass) ->
 
 
 @pytest.mark.asyncio
+async def test_async_setup_entry_live_mode_registers_replay_only_components(
+    hass,
+) -> None:
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        data={
+            "sensor_name": "F1",
+            "enable_race_control": True,
+            CONF_OPERATION_MODE: OPERATION_MODE_LIVE,
+            CONF_REPLAY_FILE: "",
+        },
+    )
+    entry.add_to_hass(hass)
+    sentinel_tracker = object()
+
+    with ExitStack() as stack:
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.build_user_agent",
+                AsyncMock(return_value="ua"),
+            )
+        )
+        stack.enter_context(patch("custom_components.f1_sensor.LiveBus", FakeLiveBus))
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.LiveSessionCoordinator",
+                DummyCoordinator,
+            )
+        )
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.ReplayController",
+                FakeReplayController,
+            )
+        )
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.EventTrackerScheduleSource",
+                lambda *_args, **_kwargs: object(),
+            )
+        )
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.LiveSessionSupervisor",
+                FakeLiveSupervisor,
+            )
+        )
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.TrackStatusCoordinator", DummyCoordinator
+            )
+        )
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.SessionStatusCoordinator", DummyCoordinator
+            )
+        )
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.SessionInfoCoordinator", DummyCoordinator
+            )
+        )
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.RaceControlCoordinator", DummyCoordinator
+            )
+        )
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.WeatherDataCoordinator", DummyCoordinator
+            )
+        )
+        stack.enter_context(
+            patch("custom_components.f1_sensor.LapCountCoordinator", DummyCoordinator)
+        )
+        stack.enter_context(
+            patch("custom_components.f1_sensor.LiveModeCoordinator", DummyCoordinator)
+        )
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.SessionClockCoordinator", DummyCoordinator
+            )
+        )
+        stack.enter_context(
+            patch("custom_components.f1_sensor.TopThreeCoordinator", DummyCoordinator)
+        )
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.LiveDriversCoordinator", DummyCoordinator
+            )
+        )
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.FormationStartTracker",
+                lambda *_args, **_kwargs: sentinel_tracker,
+            )
+        )
+        for name in (
+            "TrackStatusCoordinator",
+            "SessionStatusCoordinator",
+            "SessionInfoCoordinator",
+            "SessionClockCoordinator",
+            "RaceControlCoordinator",
+            "WeatherDataCoordinator",
+            "LapCountCoordinator",
+            "LiveModeCoordinator",
+            "LiveDriversCoordinator",
+            "TopThreeCoordinator",
+            "TeamRadioCoordinator",
+            "PitStopCoordinator",
+            "ChampionshipPredictionCoordinator",
+        ):
+            stack.enter_context(
+                patch(f"custom_components.f1_sensor.{name}", DummyCoordinator)
+            )
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.RaceControlLogStore",
+                DummyRaceControlLogStore,
+            )
+        )
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor._async_register_race_control_log_interfaces",
+                lambda *_args, **_kwargs: None,
+            )
+        )
+        for cm in _coordinator_patches():
+            stack.enter_context(cm)
+        hass.config_entries.async_forward_entry_setups = AsyncMock(return_value=None)
+
+        result = await async_setup_entry(hass, entry)
+
+    assert result is True
+    entry_data = hass.data[DOMAIN][entry.entry_id]
+    assert entry_data["operation_mode"] == OPERATION_MODE_LIVE
+    assert entry_data["formation_start_tracker"] is sentinel_tracker
+    assert entry_data["team_radio_coordinator"] is not None
+    assert entry_data["pitstop_coordinator"] is not None
+    assert entry_data["championship_prediction_coordinator"] is not None
+
+
+@pytest.mark.asyncio
+async def test_live_delay_reference_controller_rejects_formation_reference(
+    hass,
+) -> None:
+    controller = LiveDelayReferenceController(hass, "entry-1")
+
+    with (
+        patch.object(
+            controller._store,  # noqa: SLF001 - targeted storage load assertion
+            "async_load",
+            AsyncMock(return_value={"reference": "formation_start"}),
+        ),
+        patch.object(controller, "_async_commit", AsyncMock()),
+    ):
+        result = await controller.async_initialize("formation_start")
+
+    assert result == "session_live"
+    assert controller.current == "session_live"
+
+
+@pytest.mark.asyncio
+async def test_async_setup_entry_continues_when_fia_documents_fail(
+    hass, mock_config_entry
+):
+    FailingFiaDocumentsCoordinator.last_instance = None
+
+    with ExitStack() as stack:
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.build_user_agent",
+                AsyncMock(return_value="ua"),
+            )
+        )
+        stack.enter_context(patch("custom_components.f1_sensor.LiveBus", FakeLiveBus))
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.LiveSessionCoordinator",
+                DummyCoordinator,
+            )
+        )
+        stack.enter_context(
+            patch(
+                "custom_components.f1_sensor.ReplayController",
+                FakeReplayController,
+            )
+        )
+        for cm in _coordinator_patches(
+            fia_documents_coordinator_cls=FailingFiaDocumentsCoordinator
+        ):
+            stack.enter_context(cm)
+        hass.config_entries.async_forward_entry_setups = AsyncMock(return_value=None)
+
+        result = await async_setup_entry(hass, mock_config_entry)
+
+    assert result is True
+    hass.config_entries.async_forward_entry_setups.assert_awaited_once_with(
+        mock_config_entry, PLATFORMS
+    )
+    assert FailingFiaDocumentsCoordinator.last_instance is not None
+    assert FailingFiaDocumentsCoordinator.last_instance.data == {
+        "event_key": None,
+        "race": None,
+        "documents": [],
+    }
+
+
+@pytest.mark.asyncio
 async def test_async_unload_entry_cleans_up_runtime_data_on_success(hass) -> None:
     entry = MockConfigEntry(
         domain=DOMAIN,
@@ -357,3 +770,27 @@ async def test_async_unload_entry_keeps_runtime_data_on_failed_platform_unload(
     assert entry.entry_id in hass.data[DOMAIN]
     assert unsubscribed == []
     assert closed == []
+
+
+@pytest.mark.asyncio
+async def test_async_unload_entry_removes_race_control_service_for_last_entry(
+    hass,
+) -> None:
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        data={
+            "sensor_name": "F1",
+        },
+    )
+    entry.add_to_hass(hass)
+
+    hass.services.async_register(DOMAIN, _RC_LOG_SERVICE, lambda call: None)
+    hass.data.setdefault(DOMAIN, {})[_NO_SPOILER_MANAGER_KEY] = object()
+    hass.data[DOMAIN][_RC_LOG_SERVICE_MARKER] = True
+    hass.data[DOMAIN][entry.entry_id] = {}
+    hass.config_entries.async_unload_platforms = AsyncMock(return_value=True)
+
+    result = await async_unload_entry(hass, entry)
+
+    assert result is True
+    assert not hass.services.has_service(DOMAIN, _RC_LOG_SERVICE)
