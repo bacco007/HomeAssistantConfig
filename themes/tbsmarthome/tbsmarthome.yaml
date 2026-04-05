@@ -171,6 +171,11 @@ tbsmarthome:
   input-outlined-disabled-border-color: 'var(--disabled-text-color)'
   code-editor-background-color: "#222c40"
   codemirror-property: "var(--accent-color)"
+  ha-color-fill-primary-normal-resting: '#2e3b53'
+  ha-color-fill-disabled-normal-resting: '#222c40'
+  ha-color-fill-neutral-quiet-resting: 'var(--card-background-color)'
+  ha-color-fill-primary-quiet-resting: 'var(--background-color)'
+  ha-color-form-background: 'var(--background-color)'
 
   # Main Colors Header
   app-header-background-color: "var(--background-color)" #'#242e42'
@@ -337,6 +342,9 @@ tbsmarthome:
   more-info-header-background: "var(--secondary-background-color)"
   paper-dialog-background-color: var(--background-color)' #'rgba(47,59,82,0.9)'
   popup-border-radius: "5px"
+  ha-dialog-scrim-backdrop-filter: 'blur(10px)'
+  ha-dialog-surface-background: 'rgba(43,55,78,0.7)'
+  mdc-dialog-scrim-color: 'rgba(0,0,0,0.6)'  
 
   # Tables
   table-row-background-color: "var(--background-color)"
