@@ -70,6 +70,7 @@ noctis:
   ha-color-fill-disabled-normal-resting: '#222c40'
   ha-color-fill-neutral-quiet-resting: 'var(--card-background-color)'
   ha-color-fill-primary-quiet-resting: 'var(--background-color)'
+  ha-color-form-background: 'var(--background-color)'
 
   # Main Colors
   app-header-background-color: '#242e42'
