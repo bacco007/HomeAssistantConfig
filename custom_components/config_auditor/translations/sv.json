@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant konfigurationsgranskare",
-    "version": "v1.7.0",
+    "version": "v1.7.1",
     "buttons": {
       "scan_all": "Fullständig skanning",
       "automations": "Automationer",
@@ -1494,8 +1494,8 @@
     "battery_low_message": "## 🟡 Low Battery Level\n\n**Device:** {name}\n**Level:** **{level:.0f}%** — charge soon\n**Entity:** `{entity_id}`\n\nPlan to charge or replace this battery in the coming days.\n\n---\n*H.A.C.A — Home Assistant Config Auditor*",
     "battery_warning_title": "🔵 Battery Monitor — {name}",
     "battery_warning_message": "## 🔵 Battery Level to Monitor\n\n**Device:** {name}\n**Level:** **{level:.0f}%** — keep an eye on it\n**Entity:** `{entity_id}`\n\nNo immediate action required, but monitor this device.\n\n---\n*H.A.C.A — Home Assistant Config Auditor*",
-    "regression_title": "⚠️ H.A.C.A — Health Score Regression",
-    "regression_message": "## ⚠️ Health Score Regression Detected\n\nYour H.A.C.A Health Score has **dropped by {drop} points** over the last {window_days} days.\n\n| Date | Score |\n|------|-------|\n| {ref_date} | **{ref_score}%** |\n| Today | **{cur_score}%** |\n\nOpen the **H.A.C.A panel → History** tab to identify the new issues and restore your configuration quality.\n\n---\n*H.A.C.A — Home Assistant Config Auditor*",
+    "regression_title": "⚠️ H.A.C.A — Hälsopoäng regression",
+    "regression_message": "## ⚠️ Regression i hälsopoäng upptäckt\n\nDitt H.A.C.A hälsopoäng har **sjunkit med {drop} poäng** under de senaste {window_days} dagarna.\n\n| Datum | Poäng |\n|-------|-------|\n| {ref_date} | **{ref_score}%** |\n| Idag | **{cur_score}%** |\n\nÖppna **H.A.C.A-panelen → Historik** för att identifiera de nya problemen och återställa din konfigurationskvalitet.\n\n---\n*H.A.C.A — Home Assistant Config Auditor*\n",
     "dashboard_referenced_in_1_card": "Refereras i 1 kort men existerar inte",
     "dashboard_referenced_in_n_cards": "Refereras i {count} kort men existerar inte",
     "dashboard_edit_fix_reference": "Redigera instrumentpanelen och åtgärda eller ta bort referensen till denna entitet.",
@@ -1625,12 +1625,12 @@
     "dashboard_issues": "Instrumentbrädesproblem"
   },
   "notifications": {
-    "new_issues_title": "⚠️ H.A.C.A — {count} new HIGH issue(s) detected",
-    "new_issues_header": "## ⚠️ New issues detected\n\nCurrent health score: **{score}/100**\n\nThe following items were recently modified and have issues:\n\n",
-    "new_issues_footer": "\n\n---\nOpen the **H.A.C.A panel** to see details and apply fixes.\n\n*H.A.C.A — Home Assistant Config Auditor*",
-    "more_issues": "- *… and {count} more issue(s)*",
-    "uninstalled_title": "🗑️ {name} uninstalled",
-    "uninstalled_body": "## 🗑️ Uninstall complete\n\nThe **H.A.C.A** integration and all its data (reports, backups, history) have been cleanly removed.\n\n⚠️ **Restart Home Assistant** to finalize the uninstall.\n\n"
+    "new_issues_title": "⚠️ H.A.C.A — {count} nya ALLVARLIGA problem upptäckta",
+    "new_issues_header": "## ⚠️ Nya problem upptäckta\n\nAktuellt hälsopoäng: **{score}/100**\n\nFöljande objekt har nyligen ändrats och har problem:\n\n",
+    "new_issues_footer": "\n\n---\nÖppna **H.A.C.A-panelen** för att se detaljer och tillämpa korrigeringar.\n\n*H.A.C.A — Home Assistant Config Auditor*\n",
+    "more_issues": "- *… och {count} fler problem*",
+    "uninstalled_title": "🗑️ {name} avinstallerad",
+    "uninstalled_body": "## 🗑️ Avinstallation klar\n\n**H.A.C.A**-integrationen och all dess data (rapporter, säkerhetskopior, historik) har tagits bort.\n\n⚠️ **Starta om Home Assistant** för att slutföra avinstallationen.\n\n"
   },
   "services_notif": {
     "report_deleted_title": "🗑️ Report deleted",

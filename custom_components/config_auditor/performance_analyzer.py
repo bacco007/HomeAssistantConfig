@@ -321,12 +321,27 @@ class PerformanceAnalyzer:
             _LOGGER.debug("Noisy entity detection error: %s", exc)
             return
 
+        # Check recorder exclusion filter
+        try:
+            from homeassistant.components.recorder import is_entity_recorded
+            _has_recorder_filter = True
+        except ImportError:
+            _has_recorder_filter = False
+
         for entity_id, count in noisy_results:
             domain = entity_id.split(".")[0]
             if domain in _NOISY_SKIP_DOMAINS:
                 continue
             if entity_id.startswith("sensor.h_a_c_a_"):
                 continue
+
+            # Skip entities already excluded from recorder
+            if _has_recorder_filter:
+                try:
+                    if not is_entity_recorded(self.hass, entity_id):
+                        continue
+                except Exception:
+                    pass
 
             if count >= THRESHOLD_HIGH:
                 severity = "medium"

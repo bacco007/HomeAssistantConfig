@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant 設定監査ツール",
-    "version": "v1.7.0",
+    "version": "v1.7.1",
     "buttons": {
       "scan_all": "完全スキャン",
       "automations": "オートメーション",

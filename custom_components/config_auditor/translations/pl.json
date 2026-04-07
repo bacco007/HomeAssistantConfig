@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Audytor konfiguracji Home Assistant",
-    "version": "v1.7.0",
+    "version": "v1.7.1",
     "buttons": {
       "scan_all": "Pełne skanowanie",
       "automations": "Automatyzacje",
@@ -1494,8 +1494,8 @@
     "battery_low_message": "## 🟡 Low Battery Level\n\n**Device:** {name}\n**Level:** **{level:.0f}%** — charge soon\n**Entity:** `{entity_id}`\n\nPlan to charge or replace this battery in the coming days.\n\n---\n*H.A.C.A — Home Assistant Config Auditor*",
     "battery_warning_title": "🔵 Battery Monitor — {name}",
     "battery_warning_message": "## 🔵 Battery Level to Monitor\n\n**Device:** {name}\n**Level:** **{level:.0f}%** — keep an eye on it\n**Entity:** `{entity_id}`\n\nNo immediate action required, but monitor this device.\n\n---\n*H.A.C.A — Home Assistant Config Auditor*",
-    "regression_title": "⚠️ H.A.C.A — Health Score Regression",
-    "regression_message": "## ⚠️ Health Score Regression Detected\n\nYour H.A.C.A Health Score has **dropped by {drop} points** over the last {window_days} days.\n\n| Date | Score |\n|------|-------|\n| {ref_date} | **{ref_score}%** |\n| Today | **{cur_score}%** |\n\nOpen the **H.A.C.A panel → History** tab to identify the new issues and restore your configuration quality.\n\n---\n*H.A.C.A — Home Assistant Config Auditor*",
+    "regression_title": "⚠️ H.A.C.A — Regresja wyniku zdrowia",
+    "regression_message": "## ⚠️ Wykryto regresję wyniku zdrowia\n\nTwój wynik zdrowia H.A.C.A **spadł o {drop} punktów** w ciągu ostatnich {window_days} dni.\n\n| Data | Wynik |\n|------|-------|\n| {ref_date} | **{ref_score}%** |\n| Dziś | **{cur_score}%** |\n\nOtwórz **panel H.A.C.A → Historię** aby zidentyfikować nowe problemy i przywrócić jakość konfiguracji.\n\n---\n*H.A.C.A — Home Assistant Config Auditor*\n",
     "dashboard_referenced_in_1_card": "Użyta w 1 karcie, ale nie istnieje",
     "dashboard_referenced_in_n_cards": "Używana w {count} karcie/kartach, ale nie istnieje",
     "dashboard_edit_fix_reference": "Edytuj dashboard i napraw lub usuń odwołanie do tej encji.",

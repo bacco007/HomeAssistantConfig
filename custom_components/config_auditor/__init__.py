@@ -128,8 +128,14 @@ _TS_CACHE: dict[str, dict] = {}   # {lang: {section: {key: value}}}
 
 
 def _ts(hass, section: str, key: str, **kwargs) -> str:
-    """Get a translation string from in-memory cache (never does file I/O)."""
-    lang = hass.data.get("config_auditor", {}).get("user_language") or hass.config.language or "en"
+    """Get a translation string from in-memory cache (never does file I/O).
+
+    Uses the HA system language (hass.config.language), NOT the last panel
+    user's browser language.  Notifications are server-side and must use
+    the system locale — the user_language key is reserved for panel WS
+    responses.
+    """
+    lang = hass.config.language or "en"
     data = _TS_CACHE.get(lang) or _TS_CACHE.get("en") or {}
     val = data.get(section, {}).get(key, key)
     try:

@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Auditor de Configuração do Home Assistant",
-    "version": "v1.7.0",
+    "version": "v1.7.1",
     "buttons": {
       "scan_all": "Verificação Completa",
       "automations": "Automações",

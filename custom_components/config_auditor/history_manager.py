@@ -53,8 +53,8 @@ class HistoryManager:
         self._loaded = True
 
         # Check for regression after update
-        # Load translations so regression notifications use the HA language
-        language = self.hass.data.get("config_auditor", {}).get("user_language") or self.hass.config.language or "en"
+        # Load translations so regression notifications use the HA system language
+        language = self.hass.config.language or "en"
         await self._translator.async_load_language(language)
         await self._check_regression(snapshot)
 

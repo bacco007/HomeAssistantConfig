@@ -11,8 +11,11 @@
     "PyYAML>=6.0",
     "fpdf2>=2.7.4"
   ],
-  "version": "1.7.0",
+  "version": "1.7.1",
   "iot_class": "local_polling",
   "icon": "mdi:shield-check",
-  "dependencies": ["frontend", "http"]
+  "dependencies": [
+    "frontend",
+    "http"
+  ]
 }
