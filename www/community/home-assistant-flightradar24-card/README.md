@@ -88,6 +88,8 @@ type: custom:flightradar24-card
 | `projection_interval` | Interval in seconds for when to recalculate projected positions and altitude.                                                                                     | `5`                                                                                      | Number (seconds) - `0` disables projection. Radar and list will refresh when flights sensor or tracker updates. |
 | `units`               | Unit object to customize units for altitude, speed and distance.                                                                                                  | units:<br>&nbsp;&nbsp;altitude: ft<br>&nbsp;&nbsp;speed: kts<br>&nbsp;&nbsp;distance: km | `altitude` must be `m` or `ft`<br>`speed` must be `kmh`, `mph` or `kts`<br>`distance` must be `km` or `miles`   |
 | `no_flights_message`  | Message to display if no flights are visible.                                                                                                                     | `No flights are currently visible. Please check back later.`                             | String - Use empty string to disable the message                                                                |
+| `scale`               | Scale factor for the entire card. Useful for kiosk displays where larger text and elements are needed for viewing from a distance.                                | `1.0`                                                                                    | Number between 0.5 and 3.0                                                                                      |
+| `max_flights`         | Maximum number of flights to display in the list. Applied after filtering and sorting.                                                                            | None (shows all)                                                                         | Positive number - Set to limit flights shown, omit or set to 0 for unlimited                                    |
 
 _Note:_ If location is configured, this must be within the area fetched by the [Flightradar24 Integration]("https://github.com/AlexandrErohin/home-assistant-flightradar24").
 The location would normally be the same given to the integration. If no location is configured, the home location for Home Assistant will be used.
@@ -197,6 +199,7 @@ radar:
 | `callsign-label-color` | Color for callsign labels                            | `var(--secondary-text-color)`     | Must be a valid CSS color                             |
 | `hide`                 | Option to hide the radar                             | `false`                           | Must be `true` or `false`                             |
 | `hide_range`           | Option to hide the radar range                       | `false`                           | Must be `true` or `false`                             |
+| `radar_size`           | Size of the radar as percentage of card width        | `70`                              | Number between 30 and 90                              |
 
 ##### Radar Filter
 
