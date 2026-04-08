@@ -43,6 +43,7 @@ from .const import (
     KEY_PRESSURE,
     KEY_PRESSURE_UNIT,
     KEY_RAIN_RATE,
+    KEY_RAIN_RATE_UNIT,
     KEY_RAIN_STATE,
     KEY_SOLAR_LUX_INTERNAL,
     KEY_SOLAR_RADIATION,
@@ -639,5 +640,12 @@ class WeatherDetector:
             dewpoint_c = sensor_data.get(KEY_DEWPOINT)
             if dewpoint_c is not None:
                 analysis_data[KEY_DEWPOINT] = round(dewpoint_c * 9 / 5 + 32, 1)
+
+        # Convert rain rate to in/h if it was in mm/h
+        rain_rate_unit = sensor_data.get(KEY_RAIN_RATE_UNIT)
+        if rain_rate_unit in ["mm/h", "mmh", "mm/hr"]:
+            rain_rate = sensor_data.get(KEY_RAIN_RATE)
+            if rain_rate is not None:
+                analysis_data[KEY_RAIN_RATE] = round(rain_rate / 25.4, 4)
 
         return analysis_data

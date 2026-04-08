@@ -567,7 +567,7 @@ class HourlyForecastGenerator:
                 if (
                     pressure_trend < -0.3
                     or storm_prob > 40
-                    or (isinstance(cloud_cover, (int, float)) and cloud_cover > 70)
+                    or (isinstance(cloud_cover, (int, float)) and cloud_cover >= 60)
                 ):
                     return ATTR_CONDITION_CLOUDY
                 return ATTR_CONDITION_CLEAR_NIGHT

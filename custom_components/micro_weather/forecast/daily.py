@@ -212,6 +212,22 @@ class DailyForecastGenerator:
         # Linear extrapolation with confidence dampening
         trend_extrapolation = temp_trend_per_hour * hours_forward * trend_confidence
         forecast_temp = current_temp + trend_extrapolation
+        # For day 0, ensure the daily maximum reflects projected hourly trend peaks
+        # Estimate hourly-forward maxima using the short-term temp trend to avoid
+        # reporting current observed temp as the day's max when a trend exists.
+        if day_idx == 0:
+            try:
+                hourly_estimates = [
+                    current_temp + temp_trend_per_hour * h for h in range(1, 24)
+                ]
+                hourly_max = (
+                    max(hourly_estimates) if hourly_estimates else forecast_temp
+                )
+                forecast_temp = max(forecast_temp, hourly_max)
+            except Exception as exc:
+                _LOGGER.debug(
+                    "Could not compute hourly_max for day-0 projection: %s", exc
+                )
 
         # Pressure system influence (modifies the trend direction)
         pressure_influence = self._calculate_pressure_temperature_influence(

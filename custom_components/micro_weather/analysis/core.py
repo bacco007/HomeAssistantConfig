@@ -189,6 +189,18 @@ class WeatherConditionAnalyzer:
                 sensors["solar_radiation"] > 5
                 or sensors["solar_lux"] > 50
                 or sensors["uv_index"] > 0.1
+                or (
+                    # Fallback for users without solar/lux/UV sensors:
+                    # use solar_elevation (always available via sun.sun) to
+                    # determine daytime. Only apply when no solar sensor data
+                    # exists, to avoid masking valid low-radiation conditions
+                    # (heavy overcast, heavy rain).
+                    sensors["solar_elevation"] is not None
+                    and sensors["solar_elevation"] > 0
+                    and sensors["solar_radiation"] == 0
+                    and sensors["solar_lux"] == 0
+                    and sensors["uv_index"] == 0
+                )
             ),
             "is_twilight": (
                 (sensors["solar_lux"] > 10 and sensors["solar_lux"] < 100)

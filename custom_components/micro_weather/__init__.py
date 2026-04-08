@@ -53,7 +53,24 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # Create coordinator for managing updates
     coordinator = MicroWeatherCoordinator(hass, entry)
-    await coordinator.async_config_entry_first_refresh()
+    # Attempt an initial refresh; if it fails, signal ConfigEntryNotReady so HA retries
+    try:
+        await coordinator.async_refresh()
+    except UpdateFailed as err:
+        from homeassistant.exceptions import ConfigEntryNotReady
+
+        _LOGGER.error("Initial coordinator refresh failed: %s", err)
+        raise ConfigEntryNotReady from err
+
+    # If coordinator reported an unsuccessful update (async_refresh swallowed the UpdateFailed),
+    # signal that the config entry is not ready so HA retries setup later.
+    from homeassistant.exceptions import ConfigEntryNotReady
+
+    if not getattr(coordinator, "last_update_success", True):
+        _LOGGER.error(
+            "Initial coordinator refresh reported failure: last_update_success=False"
+        )
+        raise ConfigEntryNotReady
 
     # Store coordinator in hass data
     hass.data.setdefault(DOMAIN, {})
