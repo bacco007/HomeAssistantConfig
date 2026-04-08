@@ -1363,7 +1363,7 @@ function delay(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.115.0/helpers/decorate.js
+//#region \0@oxc-project+runtime@0.122.0/helpers/decorate.js
 function __decorate$1(decorators, target, key, desc) {
 	var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -5923,6 +5923,107 @@ __decorate$1([n$5({ attribute: false })], FavoritesList.prototype, "store", void
 __decorate$1([n$5({ type: Array })], FavoritesList.prototype, "items", void 0);
 customElements.define("sonos-favorites-list", FavoritesList);
 //#endregion
+//#region src/sections/media-browser/utils.ts
+var mediaGridCardStyles = i$8`
+  .child {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+  }
+
+  ha-card {
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .child ha-card {
+    overflow: hidden;
+  }
+
+  .child ha-card .thumbnail {
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+    transition: padding-bottom 0.1s ease-out;
+    padding-bottom: 100%;
+  }
+
+  ha-card .image {
+    border-radius: var(--ha-border-radius-sm) var(--ha-border-radius-sm) var(--ha-border-radius-square) var(--ha-border-radius-square);
+  }
+
+  .image {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .centered-image {
+    margin: 0 8px;
+    background-size: contain;
+  }
+
+  .brand-image {
+    background-size: 40%;
+  }
+
+  .child .title {
+    color: var(--secondary-text-color);
+    font-size: calc(var(--sonos-font-size, 1rem) * 0.8);
+    font-weight: normal;
+    padding-top: 7px;
+    padding-inline: 8px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .child ha-card .title {
+    margin-bottom: 6px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  ha-card:hover .image {
+    filter: brightness(70%);
+    transition: filter 0.5s;
+  }
+`;
+function renderMediaGridCard(params) {
+	const { item, onClick, thumbnailContent, actionContent = E, titleContent, cardStyle } = params;
+	return x`
+    <div class="child" .item=${item} @click=${onClick}>
+      <ha-card outlined style=${cardStyle ?? ""}>
+        <div class="thumbnail">${thumbnailContent} ${actionContent}</div>
+        ${titleContent ?? x`<div class="title">${item.title}</div>`}
+      </ha-card>
+    </div>
+  `;
+}
+async function playAll(store, children) {
+	if (!children.length) return null;
+	await store.mediaControlService.queueAndPlay(store.activePlayer, children, "replace");
+	return children[0];
+}
+function renderShortcutButton(shortcut, onClick, isActive = false) {
+	if (!shortcut?.media_content_id || !shortcut?.media_content_type || !shortcut?.name) return E;
+	const icon = shortcut.icon ?? "M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z";
+	return x`
+    <sonos-icon-button class=${isActive ? "shortcut-active" : ""} @click=${onClick} title=${shortcut.name} .path=${icon.startsWith("mdi:") ? void 0 : icon}>
+      ${icon.startsWith("mdi:") ? x`<ha-icon .icon=${icon}></ha-icon>` : E}
+    </sonos-icon-button>
+  `;
+}
+//#endregion
 //#region src/sections/media-browser/favorites/favorites-icons.ts
 var FavoritesIcons = class extends i$5 {
 	render() {
@@ -5931,20 +6032,12 @@ var FavoritesIcons = class extends i$5 {
 		const items = itemsWithFallbacks(this.items, this.store.config);
 		let prevType = "";
 		this.sortItemsByFavoriteTypeIfConfigured(items, favoritesConfig);
-		const iconTitleColor = favoritesConfig.iconTitleColor;
-		const iconTitleBgColor = favoritesConfig.iconTitleBackgroundColor;
-		const border = favoritesConfig.iconBorder;
-		const padding = favoritesConfig.iconPadding;
 		const typeColor = favoritesConfig.typeColor;
 		const typeFontSize = favoritesConfig.typeFontSize;
 		const typeFontWeight = favoritesConfig.typeFontWeight;
 		const typeMarginBottom = favoritesConfig.typeMarginBottom;
 		return x`
       <style>
-        ha-control-button {
-          ${border ? `border: ${border};` : ""}
-          ${padding !== void 0 ? `--control-button-padding: ${padding}rem;` : ""}
-        }
         .favorite-type {
           ${typeColor ? `color: ${typeColor};` : ""}
           ${typeFontSize ? `font-size: ${typeFontSize};` : ""}
@@ -5954,14 +6047,25 @@ var FavoritesIcons = class extends i$5 {
       </style>
       <div class="icons">
         ${items.map((item) => {
+			const showFavoriteType = favoritesConfig.sortByType && item.favoriteType !== prevType || E;
+			const showTitle = !item.thumbnail || !favoritesConfig.hideTitleForThumbnailIcons;
+			const thumbnailInset = favoritesConfig.iconPadding !== void 0 ? `${favoritesConfig.iconPadding}rem` : void 0;
+			const imageStyle = [thumbnailInset ? `top:${thumbnailInset};right:${thumbnailInset};bottom:${thumbnailInset};left:${thumbnailInset};` : "", item.thumbnail ? `background-image:url(${item.thumbnail})` : ""].join(" ");
+			const titleStyle = o$1({
+				color: favoritesConfig.iconTitleColor ?? "",
+				backgroundColor: favoritesConfig.iconTitleBackgroundColor ?? ""
+			});
 			const toRender = x`
-            <div class="favorite-type" show=${favoritesConfig.sortByType && item.favoriteType !== prevType || E}>${item.favoriteType}</div>
-            <ha-control-button
-              style=${this.buttonStyle(mediaBrowserConfig.itemsPerRow || 4)}
-              @click=${() => this.dispatchEvent(customEvent(MEDIA_ITEM_SELECTED, item))}
-            >
-              ${renderFavoritesItem(item, !item.thumbnail || !favoritesConfig.hideTitleForThumbnailIcons, iconTitleColor, iconTitleBgColor)}
-            </ha-control-button>
+            <div class="favorite-type" show=${showFavoriteType}>${item.favoriteType}</div>
+            <div style=${this.buttonStyle(mediaBrowserConfig.itemsPerRow || 4)}>
+              ${renderMediaGridCard({
+				item,
+				onClick: () => this.dispatchEvent(customEvent(MEDIA_ITEM_SELECTED, item)),
+				thumbnailContent: item.thumbnail ? x`<div class="image" style=${imageStyle}></div>` : x`<div class="image image-placeholder" style=${thumbnailInset ? imageStyle : ""}></div>`,
+				titleContent: showTitle ? x`<div class="title" style=${titleStyle}>${item.title}</div>` : void 0,
+				cardStyle: favoritesConfig.iconBorder ? `border:${favoritesConfig.iconBorder};` : ""
+			})}
+            </div>
           `;
 			prevType = item.favoriteType;
 			return toRender;
@@ -5976,36 +6080,23 @@ var FavoritesIcons = class extends i$5 {
 	}
 	buttonStyle(favoritesItemsPerRow) {
 		const margin = `${this.store.config.mediaBrowser?.favorites?.iconMarginPercentage ?? 1}%`;
-		const size = `calc(100% / ${favoritesItemsPerRow} - ${margin} * 2)`;
 		return o$1({
-			width: size,
-			height: size,
+			width: `calc(100% / ${favoritesItemsPerRow} - ${margin} * 2)`,
 			margin
 		});
 	}
 	static get styles() {
-		return [mediaItemTitleStyle, i$8`
+		return [
+			mediaItemTitleStyle,
+			mediaGridCardStyles,
+			i$8`
         .icons {
           display: flex;
           flex-wrap: wrap;
         }
 
-        .thumbnail {
-          width: 100%;
-          padding-bottom: 100%;
-          margin: 0;
-          background-size: 100%;
-          background-repeat: no-repeat;
-          background-position: center;
-        }
-
-        .title {
-          font-size: calc(var(--sonos-font-size, 1rem) * 0.8);
-          position: absolute;
-          width: 100%;
-          line-height: 160%;
-          bottom: 0;
-          background-color: rgba(var(--rgb-card-background-color), 0.733);
+        .image-placeholder {
+          background: var(--secondary-background-color);
         }
 
         .favorite-type {
@@ -6019,7 +6110,8 @@ var FavoritesIcons = class extends i$5 {
         .favorite-type[show] {
           display: block;
         }
-      `];
+      `
+		];
 	}
 };
 __decorate$1([n$5({ attribute: false })], FavoritesIcons.prototype, "store", void 0);
@@ -8323,51 +8415,45 @@ var HaMediaPlayerBrowse = class HaMediaPlayerBrowse extends i$5 {
 		this._headerOffsetHeight = 0;
 		this._renderGridItem = (child) => {
 			const backgroundImage = child.thumbnail ? this._getThumbnailURLorBase64(child.thumbnail).then((value) => `url(${value})`) : "none";
-			return x`
-      <div class="child" .item=${child} @click=${this._childClicked}>
-        <ha-card outlined>
-          <div class="thumbnail">
-            ${child.thumbnail ? x`
-                  <div
-                    class="${e({
-				"centered-image": ["app", "directory"].includes(child.media_class),
-				"brand-image": isBrandUrl(child.thumbnail)
-			})} image"
-                    style="background-image: ${m(backgroundImage, "")}"
-                  ></div>
-                ` : x`
-                  <div class="icon-holder image">
-                    <ha-svg-icon
-                      class=${child.iconPath ? "icon" : "folder"}
-                      .path=${child.iconPath || MediaClassBrowserSettings[child.media_class === "directory" ? child.children_media_class || child.media_class : child.media_class].icon}
-                    ></ha-svg-icon>
-                  </div>
-                `}
-            ${child.can_play ? x`
-                  <ha-icon-button
-                    class="play ${e({ can_expand: child.can_expand })}"
-                    .item=${child}
-                    .label=${this.hass.localize(`ui.components.media-browser.${this.action}-media`)}
-                    .path=${this.action === "play" ? mdiPlay : mdiPlus}
-                    @click=${this._actionClicked}
-                  ></ha-icon-button>
-                ` : ""}
-          </div>
-          <ha-tooltip .for="grid-${slugify(child.title)}" distance="-4"> ${child.title} </ha-tooltip>
-          <div .id="grid-${slugify(child.title)}" class="title">${child.title}</div>
-        </ha-card>
-      </div>
-    `;
+			return renderMediaGridCard({
+				item: child,
+				onClick: this._childClicked,
+				thumbnailContent: child.thumbnail ? x`
+            <div
+              class="${e({
+					"centered-image": ["app", "directory"].includes(child.media_class),
+					"brand-image": isBrandUrl(child.thumbnail)
+				})} image"
+              style="background-image: ${m(backgroundImage, "")}"
+            ></div>
+          ` : x`
+            <div class="icon-holder image">
+              <ha-svg-icon
+                class=${child.iconPath ? "icon" : "folder"}
+                .path=${child.iconPath || MediaClassBrowserSettings[child.media_class === "directory" ? child.children_media_class || child.media_class : child.media_class].icon}
+              ></ha-svg-icon>
+            </div>
+          `,
+				actionContent: child.can_play ? x`
+            <ha-icon-button
+              class="play ${e({ can_expand: child.can_expand })}"
+              .item=${child}
+              .label=${this.hass.localize(`ui.components.media-browser.${this.action}-media`)}
+              .path=${this.action === "play" ? mdiPlay : mdiPlus}
+              @click=${this._actionClicked}
+            ></ha-icon-button>
+          ` : E,
+				titleContent: x`
+        <ha-tooltip .for="grid-${slugify(child.title)}" distance="-4"> ${child.title} </ha-tooltip>
+        <div .id="grid-${slugify(child.title)}" class="title">${child.title}</div>
+      `
+			});
 		};
 		this._renderListItem = (child) => {
 			const mediaClass = MediaClassBrowserSettings[this._currentItem.media_class];
 			const backgroundImage = mediaClass.show_list_images && child.thumbnail ? this._getThumbnailURLorBase64(child.thumbnail).then((value) => `url(${value})`) : "none";
 			return x`
-      <ha-list-item
-        @click=${this._childClicked}
-        .item=${child}
-        .graphic=${mediaClass.show_list_images ? "medium" : "avatar"}
-      >
+      <ha-list-item @click=${this._childClicked} .item=${child} .graphic=${mediaClass.show_list_images ? "medium" : "avatar"}>
         ${backgroundImage === "none" && !child.can_play ? x`<ha-svg-icon
               .path=${MediaClassBrowserSettings[child.media_class === "directory" ? child.children_media_class || child.media_class : child.media_class].icon}
               slot="graphic"
@@ -8622,9 +8708,7 @@ var HaMediaPlayerBrowse = class HaMediaPlayerBrowse extends i$5 {
                                     <span>
                                       <ha-svg-icon .path=${mdiArrowUpRight}></ha-svg-icon>
                                     </span>
-                                    <span>
-                                      ${this.hass.localize("ui.components.media-browser.file_management.highlight_button")}
-                                    </span>
+                                    <span> ${this.hass.localize("ui.components.media-browser.file_management.highlight_button")} </span>
                                   </div>
                                 ` : this.hass.localize("ui.components.media-browser.no_items")}
                           </div>
@@ -8637,11 +8721,7 @@ var HaMediaPlayerBrowse = class HaMediaPlayerBrowse extends i$5 {
                                 .renderItem=${this._renderListItem}
                               ></lit-virtualizer>
                               ${currentItem.not_shown ? x`
-                                    <ha-list-item
-                                      noninteractive
-                                      class="not-shown"
-                                      .graphic=${mediaClass.show_list_images ? "medium" : "avatar"}
-                                    >
+                                    <ha-list-item noninteractive class="not-shown" .graphic=${mediaClass.show_list_images ? "medium" : "avatar"}>
                                       <span class="title">
                                         ${this.hass.localize("ui.components.media-browser.not_shown", { count: currentItem.not_shown })}
                                       </span>
@@ -8649,61 +8729,57 @@ var HaMediaPlayerBrowse = class HaMediaPlayerBrowse extends i$5 {
                                   ` : ""}
                             </ha-list>
                           ` : this.itemsPerRow ? x`
-                    <div class="children flex-grid" style="--items-per-row: ${this.itemsPerRow}">
-                      ${children.map((child) => this._renderGridItem(child))}
-                    </div>
-                    ${currentItem.not_shown ? x`
-                          <div class="grid not-shown">
-                            <div class="title">
-                              ${this.hass.localize("ui.components.media-browser.not_shown", { count: currentItem.not_shown })}
-                            </div>
-                          </div>
-                        ` : ""}
-                  ` : this.preferredLayout === "grid" || this.preferredLayout === "auto" && childrenMediaClass.layout === "grid" ? x`
-                            <lit-virtualizer
-                              scroller
-                              .layout=${grid({
+                              <div class="children flex-grid" style="--items-per-row: ${this.itemsPerRow}">
+                                ${children.map((child) => this._renderGridItem(child))}
+                              </div>
+                              ${currentItem.not_shown ? x`
+                                    <div class="grid not-shown">
+                                      <div class="title">
+                                        ${this.hass.localize("ui.components.media-browser.not_shown", { count: currentItem.not_shown })}
+                                      </div>
+                                    </div>
+                                  ` : ""}
+                            ` : this.preferredLayout === "grid" || this.preferredLayout === "auto" && childrenMediaClass.layout === "grid" ? x`
+                                <lit-virtualizer
+                                  scroller
+                                  .layout=${grid({
 			itemSize: getGridItemSize(this.itemsPerRow, childrenMediaClass.thumbnail_ratio === "portrait"),
 			gap: "8px",
 			flex: { preserve: "aspect-ratio" },
 			justify: "space-evenly",
 			direction: "vertical"
 		})}
-                              .items=${children}
-                              .renderItem=${this._renderGridItem}
-                              class="children ${e({
+                                  .items=${children}
+                                  .renderItem=${this._renderGridItem}
+                                  class="children ${e({
 			portrait: childrenMediaClass.thumbnail_ratio === "portrait",
 			not_shown: !!currentItem.not_shown
 		})}"
-                            ></lit-virtualizer>
-                            ${currentItem.not_shown ? x`
-                                  <div class="grid not-shown">
-                                    <div class="title">
-                                      ${this.hass.localize("ui.components.media-browser.not_shown", { count: currentItem.not_shown })}
-                                    </div>
-                                  </div>
-                                ` : ""}
-                          ` : x`
-                            <ha-list>
-                              <lit-virtualizer
-                                scroller
-                                .items=${children}
-                                style=${o$1({ height: `${children.length * 72 + 26}px` })}
-                                .renderItem=${this._renderListItem}
-                              ></lit-virtualizer>
-                              ${currentItem.not_shown ? x`
-                                    <ha-list-item
-                                      noninteractive
-                                      class="not-shown"
-                                      .graphic=${mediaClass.show_list_images ? "medium" : "avatar"}
-                                    >
-                                      <span class="title">
-                                        ${this.hass.localize("ui.components.media-browser.not_shown", { count: currentItem.not_shown })}
-                                      </span>
-                                    </ha-list-item>
-                                  ` : ""}
-                            </ha-list>
-                          `}
+                                ></lit-virtualizer>
+                                ${currentItem.not_shown ? x`
+                                      <div class="grid not-shown">
+                                        <div class="title">
+                                          ${this.hass.localize("ui.components.media-browser.not_shown", { count: currentItem.not_shown })}
+                                        </div>
+                                      </div>
+                                    ` : ""}
+                              ` : x`
+                                <ha-list>
+                                  <lit-virtualizer
+                                    scroller
+                                    .items=${children}
+                                    style=${o$1({ height: `${children.length * 72 + 26}px` })}
+                                    .renderItem=${this._renderListItem}
+                                  ></lit-virtualizer>
+                                  ${currentItem.not_shown ? x`
+                                        <ha-list-item noninteractive class="not-shown" .graphic=${mediaClass.show_list_images ? "medium" : "avatar"}>
+                                          <span class="title">
+                                            ${this.hass.localize("ui.components.media-browser.not_shown", { count: currentItem.not_shown })}
+                                          </span>
+                                        </ha-list-item>
+                                      ` : ""}
+                                </ha-list>
+                              `}
           </div>
         </div>
       </div>
@@ -8785,10 +8861,7 @@ var HaMediaPlayerBrowse = class HaMediaPlayerBrowse extends i$5 {
         <p>
           ${this.hass.localize("ui.components.media-browser.no_media_folder")}
           <br />
-          ${this.hass.localize("ui.components.media-browser.setup_local_help", { documentation: x`<a
-              href=${documentationUrl(this.hass, "/more-info/local-media/setup-media")}
-              target="_blank"
-              rel="noreferrer"
+          ${this.hass.localize("ui.components.media-browser.setup_local_help", { documentation: x`<a href=${documentationUrl(this.hass, "/more-info/local-media/setup-media")} target="_blank" rel="noreferrer"
               >${this.hass.localize("ui.components.media-browser.documentation")}</a
             >` })}
           <br />
@@ -8822,7 +8895,10 @@ var HaMediaPlayerBrowse = class HaMediaPlayerBrowse extends i$5 {
 		else if (this.scrolled && content.scrollTop < this._headerOffsetHeight) this.scrolled = false;
 	}
 	static get styles() {
-		return [haStyle, i$8`
+		return [
+			haStyle,
+			mediaGridCardStyles,
+			i$8`
         :host {
           display: flex;
           flex-direction: column;
@@ -8994,13 +9070,13 @@ var HaMediaPlayerBrowse = class HaMediaPlayerBrowse extends i$5 {
         div.children.flex-grid {
           display: flex;
           flex-wrap: wrap;
-          padding: 4px;
-          gap: 8px;
+          padding: 0;
+          gap: 0;
         }
 
         .flex-grid .child {
-          /* 8px gap between items, so subtract gap*(n-1)/n ≈ gap for simplicity */
-          width: calc(100% / var(--items-per-row) - 8px);
+          width: calc(100% / var(--items-per-row) - 2%);
+          margin: 1%;
         }
 
         :host([dialog]) .children {
@@ -9032,8 +9108,7 @@ var HaMediaPlayerBrowse = class HaMediaPlayerBrowse extends i$5 {
         }
 
         ha-card .image {
-          border-radius: var(--ha-border-radius-sm) var(--ha-border-radius-sm) var(--ha-border-radius-square)
-            var(--ha-border-radius-square);
+          border-radius: var(--ha-border-radius-sm) var(--ha-border-radius-sm) var(--ha-border-radius-square) var(--ha-border-radius-square);
         }
 
         .image {
@@ -9110,22 +9185,6 @@ var HaMediaPlayerBrowse = class HaMediaPlayerBrowse extends i$5 {
           transition:
             bottom 0.1s ease-out,
             opacity 0.1s ease-out;
-        }
-
-        .child .title {
-          font-size: var(--ha-font-size-l);
-          padding-top: 16px;
-          padding-left: 2px;
-          overflow: hidden;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 1;
-          text-overflow: ellipsis;
-        }
-
-        .child ha-card .title {
-          margin-bottom: 16px;
-          padding-left: 16px;
         }
 
         ha-list-item .graphic {
@@ -9295,7 +9354,8 @@ var HaMediaPlayerBrowse = class HaMediaPlayerBrowse extends i$5 {
         ha-browse-media-tts {
           direction: var(--direction);
         }
-      `];
+      `
+		];
 	}
 };
 __decorate$1([n$5({ attribute: false })], HaMediaPlayerBrowse.prototype, "hass", void 0);
@@ -9465,22 +9525,6 @@ function renderLayoutMenu(layout, onSelect) {
         List
       </ha-dropdown-item>
     </ha-dropdown>
-  `;
-}
-//#endregion
-//#region src/sections/media-browser/utils.ts
-async function playAll(store, children) {
-	if (!children.length) return null;
-	await store.mediaControlService.queueAndPlay(store.activePlayer, children, "replace");
-	return children[0];
-}
-function renderShortcutButton(shortcut, onClick, isActive = false) {
-	if (!shortcut?.media_content_id || !shortcut?.media_content_type || !shortcut?.name) return E;
-	const icon = shortcut.icon ?? "M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z";
-	return x`
-    <sonos-icon-button class=${isActive ? "shortcut-active" : ""} @click=${onClick} title=${shortcut.name} .path=${icon.startsWith("mdi:") ? void 0 : icon}>
-      ${icon.startsWith("mdi:") ? x`<ha-icon .icon=${icon}></ha-icon>` : E}
-    </sonos-icon-button>
   `;
 }
 //#endregion
