@@ -196,10 +196,46 @@ async def async_setup_entry(
             _LOGGER.debug("Validating Protect API connection")
             try:
                 cameras = await protect_client.cameras.get_all()
-                _LOGGER.info(
-                    "UniFi Protect API validated successfully, found %d cameras",
-                    len(cameras),
-                )
+                if cameras is None or not isinstance(cameras, list):
+                    _LOGGER.warning(
+                        "Protect API returned invalid data, "
+                        "disabling Protect support"
+                    )
+                    protect_client = None
+                elif len(cameras) == 0:
+                    # Empty list could be valid (no cameras) or a
+                    # normalised API failure. Probe NVR to disambiguate.
+                    try:
+                        nvr = await protect_client.nvr.get()
+                    except (
+                        UniFiAuthenticationError,
+                        UniFiConnectionError,
+                        UniFiTimeoutError,
+                    ) as err:
+                        _LOGGER.warning(
+                            "Protect API validation failed, "
+                            "disabling Protect support: %s",
+                            err,
+                        )
+                        protect_client = None
+                    else:
+                        if not nvr:
+                            _LOGGER.warning(
+                                "Protect API returned empty data, "
+                                "disabling Protect support"
+                            )
+                            protect_client = None
+                        else:
+                            _LOGGER.info(
+                                "Protect API validated successfully, "
+                                "no cameras found"
+                            )
+                else:
+                    _LOGGER.info(
+                        "UniFi Protect API validated successfully, "
+                        "found %d cameras",
+                        len(cameras),
+                    )
             except Exception as err:
                 _LOGGER.warning(
                     "Error validating UniFi Protect API connection, "
