@@ -26,13 +26,13 @@ BINARY_SENSORS: tuple[UniFiBinaryEntityDescription, ...] = (
         key="wan_internet",
         name="UniFi WAN Internet",
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
-        value_fn=lambda d: bool(d.uplink.get("up")),
+        value_fn=lambda d: any(d.wan_alive.values()) if d.wan_alive else bool(d.uplink.get("up")),
     ),
     UniFiBinaryEntityDescription(
         key="active_wan_up",
         name="UniFi Active WAN Up",
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
-        value_fn=lambda d: bool(d.uplink.get("up")),
+        value_fn=lambda d: any(d.wan_alive.values()) if d.wan_alive else bool(d.uplink.get("up")),
     )
 )
 
@@ -55,7 +55,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
             key=f"wan{wan_number}_internet",
             name=f"UniFi WAN{wan_number} Internet",
             device_class=BinarySensorDeviceClass.CONNECTIVITY,
-            value_fn=lambda d, wn=wan_number: bool(d.wan[wn].get("ip")),
+            value_fn=lambda d, wn=wan_number: d.wan_alive.get(wn, bool(d.wan[wn].get("ip"))),
         )
         entities.append(UniFiGenericBinary(device, host, site, devname, meta, internet))
         link = UniFiBinaryEntityDescription(

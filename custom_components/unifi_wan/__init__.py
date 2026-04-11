@@ -44,6 +44,8 @@ class UniFiWanData:
     gateway: dict[str, Any] | None
     uplink: dict[str, Any]
     wan: dict[int, dict[str, Any]]
+    wan_alive: dict[int, bool]
+    wan_status: dict[int, str]
 
 class UnifiWanClient:
     """Simple HTTP client for UniFi Network endpoints."""
@@ -136,7 +138,9 @@ def _extract_wan_data(payload: dict[str, Any] | None) -> UniFiWanData:
             break
     
     uplink = dict((gateway.get("uplink") or {}) if gateway else {})
-    wan_interfaces = (gateway.get("last_wan_interfaces") or {}).keys()
+    last_wan_interfaces = (gateway.get("last_wan_interfaces") or {}) if gateway else {}
+    last_wan_status_raw = (gateway.get("last_wan_status") or {}) if gateway else {}
+    wan_interfaces = last_wan_interfaces.keys()
 
     wan_numbers: set[int] = set()
     for wan_interface in wan_interfaces:
@@ -190,11 +194,28 @@ def _extract_wan_data(payload: dict[str, Any] | None) -> UniFiWanData:
         if ip6:
             uplink["ip6"] = ip6
 
+    wan_alive: dict[int, bool] = {}
+    wan_status_map: dict[int, str] = {}
+    for wan_key, iface_data in last_wan_interfaces.items():
+        if wan_key == "WAN":
+            n = 1
+        elif wan_key.startswith("WAN"):
+            try:
+                n = int(wan_key[3:])
+            except ValueError:
+                continue
+        else:
+            continue
+        wan_alive[n] = bool(iface_data.get("alive", False))
+        wan_status_map[n] = last_wan_status_raw.get(wan_key, "unknown")
+
     return UniFiWanData(
         devices=devices,
         gateway=gateway,
         uplink=uplink,
-        wan=wan
+        wan=wan,
+        wan_alive=wan_alive,
+        wan_status=wan_status_map,
     )
 
 
