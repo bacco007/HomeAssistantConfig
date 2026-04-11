@@ -1,0 +1,12 @@
+{
+  "domain": "hass_datapoints",
+  "name": "Hass Data Points",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": ["frontend", "history", "http", "logbook", "recorder"],
+  "documentation": "https://github.com/buggedcom/hass-datapoints",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/buggedcom/hass-datapoints/issues",
+  "requirements": [],
+  "version": "0.5.1"
+}

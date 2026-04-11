@@ -1,0 +1,41 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Datapoints",
+        "description": "Registe pontos de dados personalizados, adicione anotações aos seus gráficos de histórico e estatísticas e analise os seus dados. Clique em Enviar para configurar a integração."
+      }
+    },
+    "abort": {
+      "already_configured": "O Datapoints já está configurado."
+    }
+  },
+  "services": {
+    "record": {
+      "name": "Registar evento",
+      "description": "Registe um evento personalizado com uma anotação opcional para uma análise mais aprofundada.",
+      "fields": {
+        "message": {
+          "name": "Mensagem",
+          "description": "Breve descrição do evento."
+        },
+        "annotation": {
+          "name": "Anotação",
+          "description": "Informação detalhada e mais longa sobre o evento."
+        },
+        "entity_ids": {
+          "name": "Entidades",
+          "description": "Entidades ou alvos a associar a este evento. Opcional."
+        },
+        "icon": {
+          "name": "Ícone",
+          "description": "Nome do ícone MDI."
+        },
+        "color": {
+          "name": "Cor",
+          "description": "Cor hexadecimal do marcador."
+        }
+      }
+    }
+  }
+}

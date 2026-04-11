@@ -1,0 +1,41 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Datapoints",
+        "description": "Tallenna omia datapisteitä ja lisää merkintöjä historia- ja tilastokaavioihin sekä analysoi dataasi. Napsauta Lähetä ottaaksesi integraation käyttöön."
+      }
+    },
+    "abort": {
+      "already_configured": "Datapoints on jo määritetty."
+    }
+  },
+  "services": {
+    "record": {
+      "name": "Tallenna tapahtuma",
+      "description": "Tallenna oma tapahtuma valinnaisella merkinnällä syvempää analyysia varten.",
+      "fields": {
+        "message": {
+          "name": "Viesti",
+          "description": "Lyhyt kuvaus tapahtumasta."
+        },
+        "annotation": {
+          "name": "Merkintä",
+          "description": "Tarkempi ja pidempi kuvaus tapahtumasta."
+        },
+        "entity_ids": {
+          "name": "Entiteetit",
+          "description": "Entiteetit tai kohteet, joihin tapahtuma liitetään. Valinnainen."
+        },
+        "icon": {
+          "name": "Kuvake",
+          "description": "MDI-kuvakkeen nimi."
+        },
+        "color": {
+          "name": "Väri",
+          "description": "Merkin heksaväri."
+        }
+      }
+    }
+  }
+}

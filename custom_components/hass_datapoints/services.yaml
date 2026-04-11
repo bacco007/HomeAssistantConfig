@@ -1,0 +1,50 @@
+record:
+  name: Record Data Point
+  description: >
+    Record a custom data point that will appear in the logbook and as an
+    annotation on Hass Data Points history and statistics cards.
+  fields:
+    message:
+      name: Message
+      description: Short description of the event (shown in the logbook and as the marker label).
+      required: true
+      example: "Switched to summer mode"
+      selector:
+        text:
+    annotation:
+      name: Annotation
+      description: >
+        Detailed tooltip text shown when hovering over the annotation marker in
+        chart cards. Defaults to the message if not provided.
+      required: false
+      example: "Thermostat set to 22°C for summer schedule"
+      selector:
+        text:
+          multiline: true
+    entity_ids:
+      name: Entities
+      description: >
+        Optional list of entities to associate this event with. When supplied,
+        history and statistics cards filter events to only those relevant to
+        the displayed entity. Events with no entities are global and appear on
+        all charts.
+      required: false
+      example: "climate.living_room"
+      selector:
+        entity:
+          multiple: true
+    icon:
+      name: Icon
+      description: MDI icon name for the annotation marker. Defaults to mdi:bookmark.
+      required: false
+      example: "mdi:thermometer"
+      selector:
+        icon:
+          placeholder: mdi:bookmark
+    color:
+      name: Color
+      description: Hex color for the annotation marker. Defaults to #03a9f4.
+      required: false
+      example: "#ff5722"
+      selector:
+        color_rgb:

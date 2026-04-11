@@ -1,0 +1,41 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Datapoints",
+        "description": "记录自定义数据点，为历史和统计图表添加注释，并进一步分析你的数据。点击“提交”以设置此集成。"
+      }
+    },
+    "abort": {
+      "already_configured": "Datapoints 已经配置。"
+    }
+  },
+  "services": {
+    "record": {
+      "name": "记录事件",
+      "description": "记录一个自定义事件，并可附带注释以进行更深入的分析。",
+      "fields": {
+        "message": {
+          "name": "消息",
+          "description": "事件的简短说明。"
+        },
+        "annotation": {
+          "name": "注释",
+          "description": "关于事件的更详细、更长的说明。"
+        },
+        "entity_ids": {
+          "name": "实体",
+          "description": "要与此事件关联的实体或目标。可选。"
+        },
+        "icon": {
+          "name": "图标",
+          "description": "MDI 图标名称。"
+        },
+        "color": {
+          "name": "颜色",
+          "description": "标记的十六进制颜色。"
+        }
+      }
+    }
+  }
+}

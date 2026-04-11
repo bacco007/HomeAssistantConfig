@@ -1,0 +1,41 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Datapoints",
+        "description": "Erfassen Sie benutzerdefinierte Datenpunkte, versehen Sie Ihre Verlaufs- und Statistikdiagramme mit Anmerkungen und analysieren Sie Ihre Daten. Klicken Sie auf Senden, um die Integration einzurichten."
+      }
+    },
+    "abort": {
+      "already_configured": "Datapoints ist bereits eingerichtet."
+    }
+  },
+  "services": {
+    "record": {
+      "name": "Ereignis aufzeichnen",
+      "description": "Erfassen Sie ein benutzerdefiniertes Ereignis mit einer optionalen Anmerkung für eine tiefere Analyse.",
+      "fields": {
+        "message": {
+          "name": "Nachricht",
+          "description": "Kurze Beschreibung des Ereignisses."
+        },
+        "annotation": {
+          "name": "Anmerkung",
+          "description": "Detailliertere und längere Informationen zum Ereignis."
+        },
+        "entity_ids": {
+          "name": "Entitäten",
+          "description": "Entitäten oder Ziele, die mit diesem Ereignis verknüpft werden sollen. Optional."
+        },
+        "icon": {
+          "name": "Symbol",
+          "description": "MDI-Symbolname."
+        },
+        "color": {
+          "name": "Farbe",
+          "description": "Hex-Farbe für die Markierung."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Datapoints",
+        "description": "Enregistrez des points de données personnalisés, annotez vos graphiques d'historique et de statistiques, et analysez vos données. Cliquez sur Envoyer pour configurer l'intégration."
+      }
+    },
+    "abort": {
+      "already_configured": "Datapoints est déjà configuré."
+    }
+  },
+  "services": {
+    "record": {
+      "name": "Enregistrer un événement",
+      "description": "Enregistrez un événement personnalisé avec une annotation optionnelle pour une analyse plus approfondie.",
+      "fields": {
+        "message": {
+          "name": "Message",
+          "description": "Brève description de l'événement."
+        },
+        "annotation": {
+          "name": "Annotation",
+          "description": "Informations détaillées et plus longues sur l'événement."
+        },
+        "entity_ids": {
+          "name": "Entités",
+          "description": "Entités ou cibles à associer à cet événement. Facultatif."
+        },
+        "icon": {
+          "name": "Icône",
+          "description": "Nom de l'icône MDI."
+        },
+        "color": {
+          "name": "Couleur",
+          "description": "Couleur hexadécimale du marqueur."
+        }
+      }
+    }
+  }
+}

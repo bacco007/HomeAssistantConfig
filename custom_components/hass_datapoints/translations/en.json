@@ -1,0 +1,41 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Datapoints",
+        "description": "Record custom datapoints and annotate your history and statistics charts, and additionally perform analysis of your data. Click Submit to set up the integration."
+      }
+    },
+    "abort": {
+      "already_configured": "Datapoints is already configured."
+    }
+  },
+  "services": {
+    "record": {
+      "name": "Record Event",
+      "description": "Record a custom event with an optional annotation for deeper analysis.",
+      "fields": {
+        "message": {
+          "name": "Message",
+          "description": "Short description of the event."
+        },
+        "annotation": {
+          "name": "Annotation",
+          "description": "Detailed and longer form information about the event."
+        },
+        "entity_ids": {
+          "name": "Entities",
+          "description": "Entities, or targets to associate this event with. Optional."
+        },
+        "icon": {
+          "name": "Icon",
+          "description": "MDI icon name."
+        },
+        "color": {
+          "name": "Color",
+          "description": "Hex color for the marker."
+        }
+      }
+    }
+  }
+}
