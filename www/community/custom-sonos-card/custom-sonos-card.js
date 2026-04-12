@@ -6004,7 +6004,7 @@ function renderMediaGridCard(params) {
     <div class="child" .item=${item} @click=${onClick}>
       <ha-card outlined style=${cardStyle ?? ""}>
         <div class="thumbnail">${thumbnailContent} ${actionContent}</div>
-        ${titleContent ?? x`<div class="title">${item.title}</div>`}
+        ${titleContent !== void 0 ? titleContent : x`<div class="title">${item.title}</div>`}
       </ha-card>
     </div>
   `;
@@ -6062,7 +6062,7 @@ var FavoritesIcons = class extends i$5 {
 				item,
 				onClick: () => this.dispatchEvent(customEvent(MEDIA_ITEM_SELECTED, item)),
 				thumbnailContent: item.thumbnail ? x`<div class="image" style=${imageStyle}></div>` : x`<div class="image image-placeholder" style=${thumbnailInset ? imageStyle : ""}></div>`,
-				titleContent: showTitle ? x`<div class="title" style=${titleStyle}>${item.title}</div>` : void 0,
+				titleContent: showTitle ? x`<div class="title" style=${titleStyle}>${item.title}</div>` : E,
 				cardStyle: favoritesConfig.iconBorder ? `border:${favoritesConfig.iconBorder};` : ""
 			})}
             </div>
