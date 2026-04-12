@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from abc import ABC, abstractmethod
 from http import HTTPStatus
 from types import TracebackType
@@ -32,6 +33,20 @@ from .exceptions import (
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+_SENSITIVE_KEYS_RE = re.compile(
+    r'"(?:password|psk|passphrase|token|apiKey|api_key|secret|credential|'
+    r'x-api-key|authorization|code|voucher|fingerprint)"\s*:\s*"[^"]*"',
+    re.IGNORECASE,
+)
+
+
+def _redact(text: str) -> str:
+    """Replace sensitive JSON field values with a redaction placeholder."""
+    return _SENSITIVE_KEYS_RE.sub(
+        lambda m: m.group(0).rsplit(":", 1)[0] + ': "**REDACTED**"',
+        text,
+    )
 
 
 class BaseUniFiClient(ABC):
@@ -196,11 +211,14 @@ class BaseUniFiClient(ABC):
                 return await self._handle_response(response)
 
         except aiohttp.ClientConnectorError as err:
-            raise UniFiConnectionError(f"Failed to connect to {url}: {err}") from err
+            msg = f"Failed to connect to {url}: {err}"
+            raise UniFiConnectionError(msg) from err
         except TimeoutError as err:
-            raise UniFiTimeoutError(f"Request to {url} timed out") from err
+            msg = f"Request to {url} timed out"
+            raise UniFiTimeoutError(msg) from err
         except aiohttp.ClientError as err:
-            raise UniFiConnectionError(f"Request to {url} failed: {err}") from err
+            msg = f"Request to {url} failed: {err}"
+            raise UniFiConnectionError(msg) from err
 
     async def _handle_response(
         self,
@@ -225,11 +243,13 @@ class BaseUniFiClient(ABC):
         status = response.status
         response_text = await response.text()
 
-        _LOGGER.debug(
-            "Response status: %s, body: %s",
-            status,
-            response_text[:500] if response_text else "empty",
-        )
+        if _LOGGER.isEnabledFor(logging.DEBUG):
+            redacted_body = _redact(response_text)[:500] if response_text else "empty"
+            _LOGGER.debug(
+                "Response status: %s, body: %s",
+                status,
+                redacted_body,
+            )
 
         if status == HTTPStatus.UNAUTHORIZED:
             raise UniFiAuthenticationError("Authentication failed. Check your API key.")
@@ -258,8 +278,9 @@ class BaseUniFiClient(ABC):
             )
 
         if status >= HTTPStatus.BAD_REQUEST:
+            message = f"API error (status {status})"
             raise UniFiResponseError(
-                f"API error: {response_text}",
+                message,
                 status_code=status,
                 response_body=response_text,
             )
@@ -271,7 +292,10 @@ class BaseUniFiClient(ABC):
             data: dict[str, Any] | list[Any] = await response.json()
             return data
         except (ValueError, aiohttp.ContentTypeError):
-            _LOGGER.warning("Response is not JSON: %s", response_text[:200])
+            redacted_response = (
+                _redact(response_text)[:200] if response_text else "empty"
+            )
+            _LOGGER.warning("Response is not JSON: %s", redacted_response)
             return None
 
     async def _get(

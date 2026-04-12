@@ -18,6 +18,7 @@ class ClientType(str, Enum):
 
     WIRED = "WIRED"
     WIRELESS = "WIRELESS"
+    VPN = "VPN"
 
     @classmethod
     def _missing_(cls, value: object) -> ClientType | None:

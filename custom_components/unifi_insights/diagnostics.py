@@ -6,9 +6,10 @@ import logging
 from typing import TYPE_CHECKING, Any
 
 from homeassistant.components.diagnostics import async_redact_data
-from homeassistant.const import CONF_API_KEY, CONF_HOST
+from homeassistant.const import CONF_API_KEY, CONF_HOST, CONF_VERIFY_SSL
 
 from .api import __version__ as api_version
+from .const import CONF_CONSOLE_ID
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -18,16 +19,49 @@ if TYPE_CHECKING:
 _LOGGER = logging.getLogger(__name__)
 
 TO_REDACT = {
+    # Credentials and secrets
     CONF_API_KEY,
+    "token",
+    "accessToken",
+    "access_token",
+    "refreshToken",
+    "refresh_token",
+    "password",
+    "psk",
+    "passphrase",
+    "secret",
+    "voucher",
+    "fingerprint",
+    # Network identifiers
     CONF_HOST,
-    "unique_id",  # Also redact unique_id as it may contain the API key
+    "ip",
+    "ipAddress",
+    "ip_address",
+    "host",
+    "hostname",
+    "wan_ip",
+    "wanIp",
+    "lan_ip",
+    "lanIp",
+    # Device identifiers
     "mac",
     "mac_address",
     "macAddress",
+    "serial",
+    "serialNumber",
+    "hardwareId",
+    "hardware_id",
+    # HA config entry fields
+    "unique_id",
+    CONF_CONSOLE_ID,
+    CONF_VERIFY_SSL,
+    # Common API response id fields that may contain sensitive info
     "id",
     "deviceId",
     "siteId",
-    "ipAddress",
+    # Location data
+    "latitude",
+    "longitude",
 }
 
 
