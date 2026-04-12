@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.8.1 - The Meter Maid: import legend value bug fix
+// Version 2.9.0 - Template Whisperer: HA Jinja2 label templates + bar segment text tokens
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -16,6 +16,7 @@ class SolarBarCard extends HTMLElement {
 
     // Only update if relevant entities changed or first load
     if (!oldHass || !this.config) {
+      if (!oldHass) this._setupLabelTemplates();
       this.updateCard();
       return;
     }
@@ -55,6 +56,47 @@ class SolarBarCard extends HTMLElement {
     if (shouldUpdate) {
       this.updateCard();
     }
+  }
+
+  // ── HA template subscriptions for label overrides ──
+  // Any label_* / custom_labels value containing {{ }} is evaluated server-side via
+  // the render_template websocket. Results are cached in _labelTemplateValues and
+  // getLabel() returns them in preference over the raw config string.
+  async _setupLabelTemplates() {
+    // Cancel existing subscriptions
+    for (const unsub of Object.values(this._labelTemplateSubs || {})) {
+      try { unsub(); } catch(e) {}
+    }
+    this._labelTemplateSubs = {};
+    if (!this._hass || !this.config) return;
+
+    const keys = ['solar', 'import', 'export', 'usage', 'battery', 'ev', 'power_flow',
+                  'solar_power', 'standby_mode', 'click_history'];
+    for (const key of keys) {
+      const raw = this.config[`label_${key}`] || (this.config.custom_labels || {})[key];
+      if (!raw || !raw.includes('{{')) continue;
+      try {
+        const unsub = await this._hass.connection.subscribeMessage(
+          (msg) => {
+            if (!this._labelTemplateValues) this._labelTemplateValues = {};
+            this._labelTemplateValues[key] = msg.result;
+            this.updateCard();
+          },
+          { type: 'render_template', template: raw }
+        );
+        this._labelTemplateSubs[key] = unsub;
+      } catch(e) {
+        console.warn(`solar-bar-card: template error for label_${key}:`, e);
+      }
+    }
+  }
+
+  disconnectedCallback() {
+    for (const unsub of Object.values(this._labelTemplateSubs || {})) {
+      try { unsub(); } catch(e) {}
+    }
+    this._labelTemplateSubs = {};
+    this._labelTemplateValues = {};
   }
 
   setConfig(config) {
@@ -169,8 +211,16 @@ class SolarBarCard extends HTMLElement {
       show_power_unit: true,
       // EV icon symbol color (mdi:car-electric color inside the circle)
       ev_icon_color: null,
+      // Bar segment text templates — tokens: {value}, {label}, {percent}, {raw}
+      segment_text_solar_home: null,
+      segment_text_solar_ev: null,
+      segment_text_battery_charge: null,
+      segment_text_export: null,
+      segment_text_ev_potential: null,
       ...config
     };
+    // Re-subscribe label templates whenever config changes
+    if (this._hass) this._setupLabelTemplates();
     this.updateCard();
   }
 
@@ -424,9 +474,14 @@ class SolarBarCard extends HTMLElement {
   }
 
   getLabel(key) {
+    // First check resolved HA template values
+    if (this._labelTemplateValues?.[key] !== undefined) {
+      return this._labelTemplateValues[key];
+    }
+
     const { custom_labels = {} } = this.config;
 
-    // First check custom labels
+    // Then check custom labels
     if (custom_labels[key]) {
       return custom_labels[key];
     }
@@ -518,7 +573,13 @@ class SolarBarCard extends HTMLElement {
       power_unit = 'kW',
       show_power_unit = true,
       // EV icon symbol color
-      ev_icon_color = null
+      ev_icon_color = null,
+      // Bar segment text templates
+      segment_text_solar_home = null,
+      segment_text_solar_ev = null,
+      segment_text_battery_charge = null,
+      segment_text_export = null,
+      segment_text_ev_potential = null
     } = this.config;
 
     // Get colors from palette
@@ -534,6 +595,18 @@ class SolarBarCard extends HTMLElement {
       return show_power_unit ? `${num} kW` : `${num}`;
     };
     const powerUnitLabel = show_power_unit ? (power_unit === 'W' ? 'W' : 'kW') : '';
+
+    // Segment text template helper: substitutes {value}, {label}, {percent}, {raw} tokens
+    // Falls back to fmtPow(value) if no template configured
+    const segmentText = (template, value, labelKey, percent) => {
+      if (!template) return null; // use caller default
+      const rawVal = power_unit === 'W' ? Math.round(value * 1000) : value;
+      return template
+        .replace(/\{value\}/g, fmtPow(value))
+        .replace(/\{label\}/g, this.getLabel(labelKey))
+        .replace(/\{percent\}/g, percent != null ? `${Math.round(percent)}%` : '')
+        .replace(/\{raw\}/g, String(rawVal));
+    };
 
     let selfConsumption = 0;
     let exportPower = 0;
@@ -2100,11 +2173,11 @@ class SolarBarCard extends HTMLElement {
               ` : ''}
               <div class="solar-bar-wrapper ${isIdle ? 'standby' : ''}" style="width: ${powerBarWidth}%" data-entity="${production_entity}" data-action-key="solar" title="${this.getLabel('click_history')}">
                 <div class="solar-bar">
-                  ${solarHomePercent > 0 ? `<div class="bar-segment solar-home-segment" style="width: ${solarHomePercent}%">${show_bar_values && solarToHome > 0.1 && shouldShowSegmentText(solarHomePercent, `${fmtPow(solarToHome)}`, powerBarWidth) ? `${fmtPow(solarToHome)}` : ''}</div>` : ''}
-                  ${solarEvPercent > 0 ? `<div class="bar-segment solar-ev-segment" style="width: ${solarEvPercent}%">${show_bar_values && solarToEv > 0.1 && shouldShowSegmentText(solarEvPercent, `${fmtPow(solarToEv)} ${this.getLabel('ev')}`, powerBarWidth) ? `${fmtPow(solarToEv)} ${this.getLabel('ev')}` : ''}</div>` : ''}
-                  ${batteryChargePercent > 0 ? `<div class="bar-segment battery-charge-segment" style="width: ${batteryChargePercent}%">${show_bar_values && solarToBattery > 0.1 && shouldShowSegmentText(batteryChargePercent, `${fmtPow(solarToBattery)} ${this.getLabel('battery')}`, powerBarWidth) ? `${fmtPow(solarToBattery)} ${this.getLabel('battery')}` : ''}</div>` : ''}
-                  ${exportPercent > 0 ? `<div class="bar-segment export-segment" style="width: ${exportPercent}%">${show_bar_values && shouldShowSegmentText(exportPercent, `${fmtPow(exportPower)} ${this.getLabel('export')}`, powerBarWidth) ? `${fmtPow(exportPower)} ${this.getLabel('export')}` : ''}</div>` : ''}
-                  ${evPotentialPercent > 0 ? `<div class="bar-segment car-charger-segment" style="width: ${evPotentialPercent}%">${show_bar_values && shouldShowSegmentText(evPotentialPercent, `${fmtPow(car_charger_load)} ${this.getLabel('ev')}`, powerBarWidth) ? `${fmtPow(car_charger_load)} ${this.getLabel('ev')}` : ''}</div>` : ''}
+                  ${solarHomePercent > 0 ? `<div class="bar-segment solar-home-segment" style="width: ${solarHomePercent}%">${show_bar_values && solarToHome > 0.1 && shouldShowSegmentText(solarHomePercent, segmentText(segment_text_solar_home, solarToHome, 'solar', solarHomePercent) || `${fmtPow(solarToHome)}`, powerBarWidth) ? (segmentText(segment_text_solar_home, solarToHome, 'solar', solarHomePercent) || `${fmtPow(solarToHome)}`) : ''}</div>` : ''}
+                  ${solarEvPercent > 0 ? `<div class="bar-segment solar-ev-segment" style="width: ${solarEvPercent}%">${show_bar_values && solarToEv > 0.1 && shouldShowSegmentText(solarEvPercent, segmentText(segment_text_solar_ev, solarToEv, 'ev', solarEvPercent) || `${fmtPow(solarToEv)} ${this.getLabel('ev')}`, powerBarWidth) ? (segmentText(segment_text_solar_ev, solarToEv, 'ev', solarEvPercent) || `${fmtPow(solarToEv)} ${this.getLabel('ev')}`) : ''}</div>` : ''}
+                  ${batteryChargePercent > 0 ? `<div class="bar-segment battery-charge-segment" style="width: ${batteryChargePercent}%">${show_bar_values && solarToBattery > 0.1 && shouldShowSegmentText(batteryChargePercent, segmentText(segment_text_battery_charge, solarToBattery, 'battery', batteryChargePercent) || `${fmtPow(solarToBattery)} ${this.getLabel('battery')}`, powerBarWidth) ? (segmentText(segment_text_battery_charge, solarToBattery, 'battery', batteryChargePercent) || `${fmtPow(solarToBattery)} ${this.getLabel('battery')}`) : ''}</div>` : ''}
+                  ${exportPercent > 0 ? `<div class="bar-segment export-segment" style="width: ${exportPercent}%">${show_bar_values && shouldShowSegmentText(exportPercent, segmentText(segment_text_export, exportPower, 'export', exportPercent) || `${fmtPow(exportPower)} ${this.getLabel('export')}`, powerBarWidth) ? (segmentText(segment_text_export, exportPower, 'export', exportPercent) || `${fmtPow(exportPower)} ${this.getLabel('export')}`) : ''}</div>` : ''}
+                  ${evPotentialPercent > 0 ? `<div class="bar-segment car-charger-segment" style="width: ${evPotentialPercent}%">${show_bar_values && shouldShowSegmentText(evPotentialPercent, segmentText(segment_text_ev_potential, car_charger_load, 'ev', evPotentialPercent) || `${fmtPow(car_charger_load)} ${this.getLabel('ev')}`, powerBarWidth) ? (segmentText(segment_text_ev_potential, car_charger_load, 'ev', evPotentialPercent) || `${fmtPow(car_charger_load)} ${this.getLabel('ev')}`) : ''}</div>` : ''}
                   ${unusedPercent > 0 ? `<div class="bar-segment unused-segment" style="width: ${unusedPercent}%"></div>` : ''}
                 </div>
                 ${isIdle ? `<div class="standby-label">🌙 ${this.getLabel('standby_mode')}</div>` : ''}
@@ -2204,10 +2277,10 @@ class SolarBarCard extends HTMLElement {
                   <span>${this.getLabel('import')}${show_legend_values ? ` ${fmtPow(totalGridImport)}` : ''}</span>
                 </div>
               ` : ''}
-              ${(solarToEv > 0 || gridToEv > 0) ? `
+              ${evUsage > 0 ? `
                 <div class="legend-item" data-entity="${ev_charger_sensor}" data-action-key="ev" title="${this.getLabel('click_history')}">
                   <div class="legend-color ev-charging-color"></div>
-                  <span>${this.getLabel('ev')}${show_legend_values ? ` ${(solarToEv + gridToEv).toFixed(decimal_places)}kW` : ''}</span>
+                  <span>${this.getLabel('ev')}${show_legend_values ? ` ${fmtPow(evUsage)}` : ''}</span>
                 </div>
               ` : ''}
               ${hasBattery && batteryCharging ? `
@@ -2955,36 +3028,6 @@ class SolarBarCardEditor extends HTMLElement {
       },
       {
         type: "expandable",
-        title: "Custom Labels",
-        expanded: false,
-        flatten: true,
-        schema: [
-          {
-            type: "grid",
-            schema: [
-              { name: "label_solar", selector: { text: {} } },
-              { name: "label_import", selector: { text: {} } }
-            ]
-          },
-          {
-            type: "grid",
-            schema: [
-              { name: "label_export", selector: { text: {} } },
-              { name: "label_usage", selector: { text: {} } }
-            ]
-          },
-          {
-            type: "grid",
-            schema: [
-              { name: "label_battery", selector: { text: {} } },
-              { name: "label_ev", selector: { text: {} } }
-            ]
-          },
-          { name: "label_power_flow", selector: { text: {} } }
-        ]
-      },
-      {
-        type: "expandable",
         title: "Tap Actions",
         expanded: false,
         flatten: true,
@@ -3105,4 +3148,4 @@ window.customCards.push({
   documentationURL: 'https://github.com/0xAHA/solar-bar-card'
 });
 
-console.info('%c🌞 Solar Bar Card v2.7.6 loaded!', 'color: #4CAF50; font-weight: bold;');
+console.info('%c🌞 Solar Bar Card v2.9.0 loaded!', 'color: #4CAF50; font-weight: bold;');
