@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.14.17";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.15.0";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -686,6 +686,11 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
     }
     _valueChanged(event, key) {
         if (!this._config) return;
+        // ha-selector fires detail.value; ha-switch uses target.checked; others use target.value
+        let value;
+        if (event.detail && event.detail.value !== undefined) value = event.detail.value;
+        else if (event.target.checked !== undefined) value = event.target.checked;
+        else value = event.target.value;
         let newConfig = {
             ...this._config
         };
@@ -699,11 +704,8 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
                 };
                 currentLevel = currentLevel[part];
             }
-            const finalKey = parts[parts.length - 1];
-            if (event.target.checked !== undefined) currentLevel[finalKey] = event.target.checked;
-            else currentLevel[finalKey] = event.target.value;
-        } else if (event.target.checked !== undefined) newConfig[key] = event.target.checked;
-        else newConfig[key] = event.target.value;
+            currentLevel[parts[parts.length - 1]] = value;
+        } else newConfig[key] = value;
         this.configChanged(newConfig);
         this.requestUpdate();
     }
@@ -765,34 +767,61 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
         <div>
             <h4>Teamtracker Sensor:</h4>
             <div class="textfield-container">
-                <ha-select
-                    naturalMenuWidth
-                    fixedMenuPosition
-                    label="Entity"
-                    .configValue=${'entity'}
-                    .value=${this._entity}
-                    @change=${(e)=>this._EntityChanged(e, 'entity')}
-                    @closed=${(ev)=>ev.stopPropagation()}
-                    >
-                    ${this.entities.map((entity)=>{
-            return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<ha-list-item .value=${entity}>${entity}</ha-list-item>`;
-        })}
-                </ha-select>
+                <ha-selector
+                    .value=${this._config.entity ?? ''}
+                    .selector=${{
+            entity: {
+                filter: {
+                    integration: 'teamtracker'
+                }
+            }
+        }}
+                    .hass=${this.hass}
+                    @value-changed=${(e)=>{
+            const newConfig = {
+                ...this._config,
+                entity: e.detail.value
+            };
+            this._entity = e.detail.value;
+            this.configChanged(newConfig);
+            this.requestUpdate();
+        }}
+                ></ha-selector>
             </div>
             <hr>
             <h4>Settings:</h4>
-            <ha-select
-                naturalMenuWidth
-                fixedMenuPosition
-                .configValue=${'home_side'}
-                .value=${this._config.home_side}
-                @change=${(e)=>this._valueChanged(e, 'home_side')}
-                @closed=${(ev)=>ev.stopPropagation()}
-                >
-                <ha-list-item .value=${''}>Team on Left</ha-list-item>
-                <ha-list-item .value=${'left'}>Home on Left</ha-list-item>
-                <ha-list-item .value=${'right'}>Home on Right</ha-list-item>
-            </ha-select>
+            <ha-selector
+                label="Home Side"
+                .value=${this._config.home_side || 'team'}
+                .selector=${{
+            select: {
+                mode: 'dropdown',
+                options: [
+                    {
+                        value: 'team',
+                        label: 'Team on Left'
+                    },
+                    {
+                        value: 'left',
+                        label: 'Home on Left'
+                    },
+                    {
+                        value: 'right',
+                        label: 'Home on Right'
+                    }
+                ]
+            }
+        }}
+                @value-changed=${(e)=>{
+            const val = e.detail.value === 'team' ? '' : e.detail.value;
+            const newConfig = {
+                ...this._config,
+                home_side: val
+            };
+            this.configChanged(newConfig);
+            this.requestUpdate();
+        }}
+            ></ha-selector>
             <div class="switch-container">
                 <ha-switch
                     @change="${(e)=>this._valueChanged(e, 'show_league')}"
@@ -3337,7 +3366,7 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
     if (stateObj.attributes.on_third) c.onThirdOp = 1;
     // Set Title data
     c.title = o.cardTitle;
-    if (o.showLeague) c.title = c.title || stateObj.attributes.league;
+    if (o.showLeague) c.title = c.title || stateObj.attributes.league_name;
     // Set Scoreboard data
     c.logo[team] = stateObj.attributes.team_logo;
     c.logoAlternate[team] = stateObj.attributes.team_logo;
@@ -3626,7 +3655,7 @@ function $8d10daf0cda71373$export$75a82cd3fb272a60(t, stateObj, c, team, oppo) {
     c.barLength[oppo] = stateObj.attributes.team_total_shots;
     c.barLabel[team] = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
     c.barLabel[oppo] = t.translate("racing.teamBarLabel", "%s", String(stateObj.attributes.team_total_shots));
-    //    if (stateObj.attributes.league.includes("NASCAR")) {
+    //    if (stateObj.attributes.league_name.includes("NASCAR")) {
     //        c.logo[team] = null;
     //        c.logo[oppo] = null;
     //        c.initials[team] = "";
@@ -3866,8 +3895,8 @@ class $a510245ba2c1e365$export$c12aa10d47d2f051 extends (0, $ab210b2da7b39b9d$ex
         //
         //  NCAA Specific Changes
         //
-        if (stateObj.attributes.league) {
-            if (stateObj.attributes.league.includes("NCAA")) c.notFoundLogo = 'https://a.espncdn.com/i/espn/misc_logos/500/ncaa.png';
+        if (stateObj.attributes.league_name) {
+            if (stateObj.attributes.league_name.includes("NCAA")) c.notFoundLogo = 'https://a.espncdn.com/i/espn/misc_logos/500/ncaa.png';
         }
         //
         //  Reduce score font size if needed
