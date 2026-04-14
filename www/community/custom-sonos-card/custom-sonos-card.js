@@ -950,8 +950,9 @@ function renderFavoritesItem(item, showTitle = true, titleColor, titleBgColor) {
 		color: titleColor ?? "",
 		backgroundColor: titleBgColor ?? ""
 	});
+	const thumbnailStyle = item.thumbnail ? `background-image: url("${item.thumbnail}")` : "";
 	return x`
-    <div class="thumbnail" ?hidden=${!item.thumbnail} style="background-image: url(${item.thumbnail})"></div>
+    <div class="thumbnail" ?hidden=${!item.thumbnail} style=${thumbnailStyle}></div>
     <div class="title" ?hidden=${!showTitle} style=${titleStyle}>${item.title}</div>
   `;
 }
@@ -1016,14 +1017,14 @@ function getBackgroundImage(store, imageLoaded, resolvedImageUrl) {
 	const image = getArtworkImage(store, resolvedImageUrl);
 	if (image?.entityImage && imageLoaded) {
 		const sizeStyle = image.sizePercentage ? `; background-size: ${image.sizePercentage}%` : "";
-		return `background-image: url(${image.entityImage})${sizeStyle}`;
+		return `background-image: url("${image.entityImage}")${sizeStyle}`;
 	}
-	return `background-image: url(${getFallbackImage(store)})`;
+	return `background-image: url("${getFallbackImage(store)}")`;
 }
 function getBackgroundImageUrl(store, imageLoaded, resolvedImageUrl) {
 	const image = getArtworkImage(store, resolvedImageUrl);
-	if (image?.entityImage && imageLoaded) return `url(${image.entityImage})`;
-	return `url(${getFallbackImage(store)})`;
+	if (image?.entityImage && imageLoaded) return `url("${image.entityImage}")`;
+	return `url("${getFallbackImage(store)}")`;
 }
 function getArtworkStyle(store, imageLoaded, resolvedImageUrl) {
 	const { artworkMinHeight: minHeight = 5, artworkBorderRadius: borderRadius = 0 } = store.config.player ?? {};
@@ -1363,7 +1364,7 @@ function delay(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.122.0/helpers/decorate.js
+//#region \0@oxc-project+runtime@0.124.0/helpers/decorate.js
 function __decorate$1(decorators, target, key, desc) {
 	var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -6050,7 +6051,7 @@ var FavoritesIcons = class extends i$5 {
 			const showFavoriteType = favoritesConfig.sortByType && item.favoriteType !== prevType || E;
 			const showTitle = !item.thumbnail || !favoritesConfig.hideTitleForThumbnailIcons;
 			const thumbnailInset = favoritesConfig.iconPadding !== void 0 ? `${favoritesConfig.iconPadding}rem` : void 0;
-			const imageStyle = [thumbnailInset ? `top:${thumbnailInset};right:${thumbnailInset};bottom:${thumbnailInset};left:${thumbnailInset};` : "", item.thumbnail ? `background-image:url(${item.thumbnail})` : ""].join(" ");
+			const imageStyle = [thumbnailInset ? `top:${thumbnailInset};right:${thumbnailInset};bottom:${thumbnailInset};left:${thumbnailInset};` : "", item.thumbnail ? `background-image:url("${item.thumbnail}")` : ""].join(" ");
 			const titleStyle = o$1({
 				color: favoritesConfig.iconTitleColor ?? "",
 				backgroundColor: favoritesConfig.iconTitleBackgroundColor ?? ""
