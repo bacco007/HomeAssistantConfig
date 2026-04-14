@@ -29,6 +29,7 @@ from .const import (
     INITIAL_REQUEST_HEADERS,
     INITIAL_URL,
     LOGGER,
+    MANUAL_SCAN_INTERVAL,
     NUMERIC_DATA_DEFAULTS,
     NUMERIC_DATA_GROUPS,
     STRING_DATA_KEYS,
@@ -386,6 +387,9 @@ class YahooSymbolUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.websession = webSession
         self._cc = cc
         self.failed_count = 0
+
+        if isinstance(update_interval, str) and update_interval == MANUAL_SCAN_INTERVAL:
+            update_interval = None
 
         super().__init__(
             hass,
