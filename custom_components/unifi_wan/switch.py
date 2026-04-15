@@ -8,7 +8,7 @@ from homeassistant.const import STATE_ON
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.restore_state import RestoreEntity
 
-from .const import DOMAIN, CONF_AUTO_SPEEDTEST
+from .const import DOMAIN
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
@@ -17,7 +17,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     host = shared["host"]
     site = shared["site"]
     devname = f"UniFi WAN ({host} / {site})"
-    async_add_entities([UniFiAutoSpeedtestSwitch(shared, entry, host, site, devname, meta)])
+    async_add_entities([UniFiAutoSpeedtestSwitch(shared, host, site, devname, meta)])
 
 
 class UniFiAutoSpeedtestSwitch(SwitchEntity, RestoreEntity):
@@ -28,14 +28,12 @@ class UniFiAutoSpeedtestSwitch(SwitchEntity, RestoreEntity):
     def __init__(
         self,
         shared: dict[str, Any],
-        entry: ConfigEntry,
         host: str,
         site: str,
         devname: str,
         meta: dict[str, Any],
     ):
         self._shared = shared
-        self._entry = entry
         self._host = host
         self._site = site
         self._devname = devname
@@ -69,12 +67,8 @@ class UniFiAutoSpeedtestSwitch(SwitchEntity, RestoreEntity):
         self._shared["manage_auto"](True)
         self._shared["auto_enabled"] = True
         self.async_write_ha_state()
-        new_options = {**self._entry.options, CONF_AUTO_SPEEDTEST: True}
-        self.hass.config_entries.async_update_entry(self._entry, options=new_options)
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         self._shared["manage_auto"](False)
         self._shared["auto_enabled"] = False
         self.async_write_ha_state()
-        new_options = {**self._entry.options, CONF_AUTO_SPEEDTEST: False}
-        self.hass.config_entries.async_update_entry(self._entry, options=new_options)

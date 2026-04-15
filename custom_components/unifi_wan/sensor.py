@@ -20,7 +20,7 @@ from homeassistant.helpers.update_coordinator import (
 from homeassistant.config_entries import ConfigEntry
 
 from .const import DOMAIN
-from .__init__ import UniFiWanData
+from . import UniFiWanData
 
 
 DATA_RATE_UNIT_MEGABITS_PER_SECOND: Final = "Mbit/s"
@@ -220,39 +220,19 @@ async def async_setup_entry(
             key=f"wan{wan_number}_ipv4",
             name=f"UniFi WAN{wan_number} IPv4",
             icon="mdi:ip",
-            value_fn=lambda d, wn=wan_number: d.wan[wn].get("ip") or "unknown",
-        )
-        coord: DataUpdateCoordinator = (
-            rates_coord if ipv4.use_rate_coordinator else device_coord
+            value_fn=lambda d, wn=wan_number: d.wan.get(wn, {}).get("ip") or "unknown",
         )
         entities.append(
-            UniFiGenericSensor(
-                coord,
-                host,
-                site,
-                devname,
-                meta,
-                ipv4,
-            )
+            UniFiGenericSensor(device_coord, host, site, devname, meta, ipv4)
         )
         ipv6 = UniFiSensorDescription(
             key=f"wan{wan_number}_ipv6",
             name=f"UniFi WAN{wan_number} IPv6",
             icon="mdi:ip-network-outline",
-            value_fn=lambda d, wn=wan_number: d.wan[wn].get("ip6") or "unknown",
-        )
-        coord: DataUpdateCoordinator = (
-            rates_coord if ipv6.use_rate_coordinator else device_coord
+            value_fn=lambda d, wn=wan_number: d.wan.get(wn, {}).get("ip6") or "unknown",
         )
         entities.append(
-            UniFiGenericSensor(
-                coord,
-                host,
-                site,
-                devname,
-                meta,
-                ipv6,
-            )
+            UniFiGenericSensor(device_coord, host, site, devname, meta, ipv6)
         )
 
     async_add_entities(entities)

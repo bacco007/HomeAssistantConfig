@@ -14,8 +14,8 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import EntityCategory
 
-from .const import DOMAIN, CONF_HOST, CONF_SITE
-from .__init__ import UniFiWanData
+from .const import DOMAIN
+from . import UniFiWanData
 
 @dataclass
 class UniFiBinaryEntityDescription(BinarySensorEntityDescription):
@@ -32,8 +32,8 @@ BINARY_SENSORS: tuple[UniFiBinaryEntityDescription, ...] = (
         key="active_wan_up",
         name="UniFi Active WAN Up",
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
-        value_fn=lambda d: any(d.wan_alive.values()) if d.wan_alive else bool(d.uplink.get("up")),
-    )
+        value_fn=lambda d: bool(d.uplink.get("up")),
+    ),
 )
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
@@ -55,14 +55,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
             key=f"wan{wan_number}_internet",
             name=f"UniFi WAN{wan_number} Internet",
             device_class=BinarySensorDeviceClass.CONNECTIVITY,
-            value_fn=lambda d, wn=wan_number: d.wan_alive.get(wn, bool(d.wan[wn].get("ip"))),
+            value_fn=lambda d, wn=wan_number: d.wan_alive.get(wn, bool(d.wan.get(wn, {}).get("ip"))),
         )
         entities.append(UniFiGenericBinary(device, host, site, devname, meta, internet))
         link = UniFiBinaryEntityDescription(
             key=f"wan{wan_number}_link",
             name=f"UniFi WAN{wan_number} Link",
             device_class=BinarySensorDeviceClass.CONNECTIVITY,
-            value_fn=lambda d, wn=wan_number: bool(d.wan[wn].get("up")),
+            value_fn=lambda d, wn=wan_number: bool(d.wan.get(wn, {}).get("up")),
         )
         entities.append(UniFiGenericBinary(device, host, site, devname, meta, link))
 

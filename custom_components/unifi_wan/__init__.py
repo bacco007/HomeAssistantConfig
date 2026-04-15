@@ -4,7 +4,7 @@ import asyncio
 import logging
 from datetime import timedelta
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, ServiceCall, CALLBACK_TYPE
@@ -12,12 +12,14 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from homeassistant.const import CONF_HOST, CONF_API_KEY, CONF_VERIFY_SSL
 
 from .const import (
     DOMAIN,
     PLATFORMS,
+    CONF_HOST,
+    CONF_API_KEY,
     CONF_SITE,
+    CONF_VERIFY_SSL,
     CONF_SCAN_INTERVAL,
     CONF_RATE_INTERVAL,
     CONF_AUTO_SPEEDTEST,
@@ -241,8 +243,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         raw = await client.get_devices()
         return _extract_wan_data(raw)
 
-    wan_numbers = (await _update_devices()).wan.keys()
-
     device_coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
@@ -259,7 +259,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         dev_meta["model"] = gw.get("model") or gw.get("type") or "UDM/UGW"
         dev_meta["mac"] = gw.get("mac")
 
-    rates_coordinator: Optional[DataUpdateCoordinator] = None
+    wan_numbers = device_coordinator.data.wan.keys()
+
+    rates_coordinator: DataUpdateCoordinator | None = None
     if dev_meta["mac"] and rate_seconds > 0:
         mac = dev_meta["mac"]
         async def _update_rates():
@@ -277,7 +279,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     entry_signal = f"{SIGNAL_SPEEDTEST_RUNNING}_{entry.entry_id}"
     speedtest_running: bool = False
-    unsub_auto: Optional[CALLBACK_TYPE] = None
+    unsub_auto: CALLBACK_TYPE | None = None
 
     def _dispatch_running():
         async_dispatcher_send(hass, entry_signal)
@@ -306,7 +308,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await set_speedtest_running(True)
         try:
             await client.run_speedtest(mac_local, wan_number)
-            await asyncio.sleep(15) 
+            # Brief pause to allow the gateway to begin the test before we refresh
+            await asyncio.sleep(15)
         except Exception as e:
             _LOGGER.error("Speedtest trigger failed: %s", e)
         finally:
@@ -340,7 +343,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "site": site,
         "dev_meta": dev_meta,
         "auto_enabled": auto_enabled,
-        "auto_unsub": unsub_auto,
         "manage_auto": _schedule_auto,
         "run_speedtest_now": _run_speedtest_now,
         "speedtest_running_signal": entry_signal,
