@@ -175,8 +175,12 @@ Configure radar settings with the radar option.
 radar:
     range: 35
     filter: false
-    primary-color: rgb(0,200,100) // Default colors defined by theme
-    feature-color: rgb(0,100,20)
+    background-color: rgb(0,200,100) // Default colors defined by theme
+    background-opacity: 0.1
+    aircraft-color: rgb(255,100,0)
+    aircraft-marker-size: large
+    radar-grid-color: rgb(150,150,150)
+    local-features-color: rgb(100,150,200)
 ```
 
 To hide the radar:
@@ -192,14 +196,20 @@ radar:
 | `min_range`            | Minimum range of the radar in selected distance unit | 1 km or 1 mile                    | Must be a positive number                             |
 | `max_range`            | Maximum range of the radar in selected distance unit | 100 km or 100 miles               | Must be a positive number                             |
 | `ring_distance`        | Distance between rings in selected distance unit     | 10 km or 10 miles                 | Must be a positive number                             |
-| `filter`               | Filter the flights displayed on the radar            | false                             | `true`, `false` or a filter configuration (see below) |
-| `primary-color`        | Primary color for the radar display                  | `var(--dark-primary-color)`       | Must be a valid CSS color                             |
-| `accent-color`         | Accent Color for the radar display                   | `var(--accent-color)`             | Must be a valid CSS color                             |
-| `feature-color`        | Color for radar features                             | `var(--primary-background-color)` | Must be a valid CSS color                             |
-| `callsign-label-color` | Color for callsign labels                            | `var(--secondary-text-color)`     | Must be a valid CSS color                             |
-| `hide`                 | Option to hide the radar                             | `false`                           | Must be `true` or `false`                             |
+| `filter`                 | Filter the flights displayed on the radar                 | false                           | `true`, `false` or a filter configuration (see below) |
+| `background-color`       | Background tint color for the radar screen                | `var(--dark-primary-color)`     | Must be a valid CSS color                             |
+| `background-opacity`     | Opacity of the radar background tint                      | `0.05`                          | Must be a number between 0 (transparent) and 1 (opaque) |
+| `aircraft-color`         | Color for aircraft markers                                | `var(--accent-color)`           | Must be a valid CSS color                             |
+| `aircraft-selected-color`| Color for selected aircraft markers                       | Same as `aircraft-color`        | Must be a valid CSS color                             |
+| `radar-grid-color`       | Color for radar rings and cardinal direction lines        | `var(--secondary-text-color)`   | Must be a valid CSS color                             |
+| `local-features-color`   | Color for local features (runways, locations, outlines)   | Same as `radar-grid-color`      | Must be a valid CSS color                             |
+| `callsign-label-color`   | Color for callsign labels                                 | `var(--primary-background-color)`| Must be a valid CSS color                            |
+| `aircraft-marker-size`   | Size of aircraft markers on the radar                     | `normal`                        | Must be `small`, `normal`, `large`, `x-large`, or `xx-large` |
+| `hide`                   | Option to hide the radar                                  | `false`                         | Must be `true` or `false`                             |
 | `hide_range`           | Option to hide the radar range                       | `false`                           | Must be `true` or `false`                             |
-| `radar_size`           | Size of the radar as percentage of card width        | `70`                              | Number between 30 and 90                              |
+| `radar_size`             | Size of the radar as percentage of card width             | `70`                            | Number between 30 and 90                              |
+
+**Note:** For backwards compatibility, the old color property names (`primary-color`, `accent-color`, `feature-color`) are still supported but deprecated. They will be automatically migrated to the new names when using the visual editor.
 
 ##### Radar Filter
 
@@ -653,3 +663,7 @@ For support, you can:
 -   Check the documentation for more details and troubleshooting tips.
 
 Feel free to reach out if you encounter any issues or have suggestions for improvements. Your feedback is highly appreciated!
+
+## Attributions
+
+-   Airport and runway data provided by [OurAirports](https://ourairports.com/data/), released to the public domain.
