@@ -136,8 +136,7 @@ nordic-blue:
       energy-battery-out-color: "var(--aurora-red)"
       energy-battery-in-color: "var(--aurora-pink)"
       energy-gas-color: "var(--aurora-orange)"
-      energy-water-color:
-        "var(--aurora-blue)"
+      energy-water-color: "var(--aurora-blue)"
 
         # ── HA palette scales
       ha-color-primary-05: "#001721"
@@ -260,12 +259,12 @@ nordic-blue:
       ha-color-form-background-disabled: "var(--background-color)"
 
       # Icons
-      state-icon-color: "var(--aurora-blue)"
+      state-icon-color: "var(--polar-bright-gray)"
       default-icon-clr: "var(--text-color)"
 
       # Sidebar
       sidebar-background-color: "var(--snow-light)"
-      sidebar-icon-color: "var(--aurora-blue)"
+      sidebar-icon-color: "var(--polar-bright-gray)"
       sidebar-selected-icon-color: "var(--accent-color)"
       sidebar-selected-text-color: "var(--text-color)"
       divider-color: "var(--background-color-2)"
@@ -346,17 +345,17 @@ nordic-blue:
       # State color (LIGHT)
       # ─────────────────────────────────────────────────────────────────────────────
       state-active-color: var(--aurora-yellow)
-      state-inactive-color: var(--aurora-blue)
+      state-inactive-color: var(--polar-light-gray)
 
       # Per-domain common states
       state-light-on-color: var(--aurora-yellow)
-      state-light-off-color: var(--aurora-blue)
+      state-light-off-color: var(--polar-bright-gray)
 
       state-switch-on-color: var(--aurora-yellow)
-      state-switch-off-color: var(--aurora-blue)
+      state-switch-off-color: var(--polar-bright-gray)
 
       state-input_boolean-on-color: var(--aurora-yellow)
-      state-input_boolean-off-color: var(--aurora-blue)
+      state-input_boolean-off-color: var(--polar-bright-gray)
 
       state-lock-locked-color: var(--aurora-green)
       state-lock-unlocked-color: var(--aurora-red)
@@ -382,13 +381,13 @@ nordic-blue:
       state-person-not_home-color: var(--frost-cadet-blue)
 
       state-humidifier-on-color: var(--frost-steel-blue)
-      state-humidifier-off-color: var(--aurora-blue)
+      state-humidifier-off-color: var(--polar-bright-gray)
 
       state-siren-on-color: var(--aurora-red)
-      state-siren-off-color: var(--aurora-blue)
+      state-siren-off-color: var(--polar-bright-gray)
 
       state-vacuum-active-color: var(--frost-green)
-      state-vacuum-docked-color: var(--aurora-blue)
+      state-vacuum-docked-color: var(--polar-bright-gray)
       state-vacuum-error-color: var(--aurora-red)
 
       # Alarm panel
@@ -533,8 +532,7 @@ nordic-blue:
       energy-battery-out-color: "var(--aurora-red)"
       energy-battery-in-color: "var(--aurora-pink)"
       energy-gas-color: "var(--aurora-orange)"
-      energy-water-color:
-        "var(--aurora-blue)"
+      energy-water-color: "var(--aurora-blue)"
 
         # ── HA palette scales
       ha-color-primary-05: "#001721"
