@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.9.0 - Template Whisperer: HA Jinja2 label templates + bar segment text tokens
+// Version 2.9.1 - EV icon solid circle restyle + battery SOC entity selector fix
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -1794,9 +1794,8 @@ class SolarBarCard extends HTMLElement {
           flex-shrink: 0;
           cursor: pointer;
           transition: all 0.3s ease;
-          border: 3px solid var(--disabled-text-color, #9e9e9e);
-          background: var(--secondary-background-color, rgba(0,0,0,0.15));
-          box-sizing: border-box;
+          background: var(--disabled-text-color, #9e9e9e);
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .ev-icon:hover {
@@ -1805,34 +1804,28 @@ class SolarBarCard extends HTMLElement {
 
         .ev-icon ha-icon {
           --mdc-icon-size: 18px;
-          color: ${ev_icon_color || 'var(--primary-text-color)'};
+          color: ${ev_icon_color || 'black'};
         }
 
         .ev-icon.idle {
-          border-color: var(--disabled-text-color, #9e9e9e);
           opacity: 0.6;
         }
 
         .ev-icon.ready-half {
-          border-color: ${colors.ev_icon_charging || 'var(--ev-charging-color)'};
-          opacity: 1;
-        }
-
-        .ev-icon.ready-full {
-          border-color: ${colors.ev_icon_charging || 'var(--ev-charging-color)'};
-          box-shadow: 0 0 6px ${colors.ev_icon_charging || 'var(--ev-charging-color)'};
-          opacity: 1;
-        }
-
-        .ev-icon.charging {
-          background: ${colors.ev_icon_charging || 'var(--ev-charging-color)'};
-          border-color: ${colors.ev_icon_charging || 'var(--ev-charging-color)'};
+          background: ${colors.grid_icon_import || 'linear-gradient(135deg, var(--grid-usage-color), var(--grid-usage-color))'};
           box-shadow: 0 2px 4px rgba(0,0,0,0.2);
           opacity: 1;
         }
 
-        .ev-icon.charging ha-icon {
-          color: ${ev_icon_color || 'white'};
+        .ev-icon.ready-full {
+          background: ${colors.grid_icon_export || 'linear-gradient(135deg, var(--solar-export-color), var(--solar-export-color))'};
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          opacity: 1;
+        }
+
+        .ev-icon.charging {
+          box-shadow: 0 0 10px rgba(251, 191, 36, 0.9), 0 0 22px rgba(251, 191, 36, 0.5);
+          opacity: 1;
         }
 
         .standby-label {
@@ -2866,7 +2859,7 @@ class SolarBarCardEditor extends HTMLElement {
         expanded: false,
         flatten: true,
         schema: [
-          { name: "battery_soc_entity", selector: { entity: { filter: [{ domain: "sensor", device_class: "battery" }] } } },
+          { name: "battery_soc_entity", selector: { entity: { filter: [{ domain: "sensor", device_class: "battery" }, { domain: "sensor", attributes: { unit_of_measurement: "%" } }] } } },
           { name: "battery_power_entity", selector: { entity: { filter: [{ domain: "sensor", device_class: "power" }] } } },
           { name: "invert_battery_power", default: false, selector: { boolean: {} } },
           {
@@ -3148,4 +3141,4 @@ window.customCards.push({
   documentationURL: 'https://github.com/0xAHA/solar-bar-card'
 });
 
-console.info('%c🌞 Solar Bar Card v2.9.0 loaded!', 'color: #4CAF50; font-weight: bold;');
+console.info('%c🌞 Solar Bar Card v2.9.1 loaded!', 'color: #4CAF50; font-weight: bold;');
