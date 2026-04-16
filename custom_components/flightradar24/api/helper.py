@@ -10,6 +10,15 @@ def to_int(element: Any) -> None | int:
         return None
 
 
+def to_float(element: Any) -> None | float:
+    if element is None:
+        return None
+    try:
+        return float(element)
+    except ValueError:
+        return None
+
+
 def get_value(dictionary: dict, keys: list) -> Any | None:
     nested_dict = dictionary
 

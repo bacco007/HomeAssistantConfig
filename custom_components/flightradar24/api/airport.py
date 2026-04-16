@@ -1,6 +1,6 @@
 from enum import Enum
 from FlightRadar24 import FlightRadar24API
-from .helper import to_int, get_value
+from .helper import to_int, to_float, get_value
 from typing import Any
 
 
@@ -12,9 +12,13 @@ class ScheduleType(Enum):
 class AirportStats:
     arrivals_on_time: int
     arrivals_delayed: int
+    arrivals_delay_average: int
+    arrivals_delay_index: float
     arrivals_canceled: int
     departures_on_time: int
     departures_delayed: int
+    departures_delay_average: int
+    departures_delay_index: float
     departures_canceled: int
 
 
@@ -65,13 +69,18 @@ class AirportProcessor:
 
         data = get_value(self._client.get_airport_details(self._code or code), ['airport', 'pluginData'])
         self._stats = AirportStats()
-        stats = get_value(data, ['details', 'stats'])
-        self._stats.arrivals_on_time = to_int(get_value(stats, ['arrivals', 'today', 'quantity', 'onTime']))
-        self._stats.arrivals_delayed = to_int(get_value(stats, ['arrivals', 'today', 'quantity', 'delayed']))
-        self._stats.arrivals_canceled = to_int(get_value(stats, ['arrivals', 'today', 'quantity', 'canceled']))
-        self._stats.departures_on_time = to_int(get_value(stats, ['departures', 'today', 'quantity', 'onTime']))
-        self._stats.departures_delayed = to_int(get_value(stats, ['departures', 'today', 'quantity', 'delayed']))
-        self._stats.departures_canceled = to_int(get_value(stats, ['departures', 'today', 'quantity', 'canceled']))
+        stats = get_value(data, ['details', 'stats', 'arrivals'])
+        self._stats.arrivals_on_time = to_int(get_value(stats, ['today', 'quantity', 'onTime']))
+        self._stats.arrivals_delayed = to_int(get_value(stats, ['today', 'quantity', 'delayed']))
+        self._stats.arrivals_canceled = to_int(get_value(stats, ['today', 'quantity', 'canceled']))
+        self._stats.arrivals_delay_average = to_int(get_value(stats, ['delayAvg']))
+        self._stats.arrivals_delay_index = to_float(get_value(stats, ['delayIndex']))
+        stats = get_value(data, ['details', 'stats', 'departures'])
+        self._stats.departures_on_time = to_int(get_value(stats, ['today', 'quantity', 'onTime']))
+        self._stats.departures_delayed = to_int(get_value(stats, ['today', 'quantity', 'delayed']))
+        self._stats.departures_canceled = to_int(get_value(stats, ['today', 'quantity', 'canceled']))
+        self._stats.departures_delay_average = to_int(get_value(stats, ['delayAvg']))
+        self._stats.departures_delay_index = to_float(get_value(stats, ['delayIndex']))
 
         self._update_schedule(ScheduleType.ARRIVAL, get_value(data, ['schedule', 'arrivals', 'data']))
         self._update_schedule(ScheduleType.DEPARTURE, get_value(data, ['schedule', 'departures', 'data']))
