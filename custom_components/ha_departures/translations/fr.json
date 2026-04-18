@@ -1,0 +1,61 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "location": "Veuillez choisir un emplacement et un rayon de recherche pour trouver des arrêts"
+        },
+        "data_description": {
+        }
+      },
+      "stop": {
+        "data": {
+          "stop_name": "Nom de l’arrêt"
+        },
+        "data_description": {
+          "stop_name": "Veuillez sélectionner un arrêt"
+        }
+      },
+      "lines": {
+        "data": {
+          "lines": "Lignes"
+        },
+        "data_description": {
+          "lines": "Veuillez sélectionner des lignes à surveiller"
+        }
+      },
+      "hubname": {
+        "data": {
+          "hub_name": "Nom du hub"
+        },
+        "data_description": {
+          "hub_name": "Veuillez saisir le nom du nouveau hub de configuration."
+        }
+      }
+    },
+    "error": {
+      "no_stop_found": "Aucun arrêt trouvé.",
+      "invalid_api_response": "Réponse invalide reçue du serveur.",
+      "connection_failed": "La connexion au serveur a échoué. Veuillez réessayer plus tard.",
+      "no_line_selected": "Veuillez sélectionner au moins une ligne."
+    },
+    "abort": {
+      "already_configured": "Cet arrêt est déjà configuré"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "lines": "Lignes"
+        },
+        "data_description": {
+          "lines": "Sélectionner des lignes à surveiller"
+        }
+      }
+    },
+    "abort": {
+      "no_changes_configured": "Aucune modification configurée"
+    }
+  }
+}

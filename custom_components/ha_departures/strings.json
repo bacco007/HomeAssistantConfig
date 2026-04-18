@@ -1,0 +1,61 @@
+{
+  "config": {
+      "step": {
+          "user": {
+              "data": {
+                  "location": "Please choose a location and search radius to find stops"
+              },
+              "data_description": {
+              }
+          },
+          "stop": {
+              "data": {
+                  "stop_name": "Stop name"
+              },
+              "data_description": {
+                  "stop_name": "Please select a stop"
+              }
+          },
+          "lines": {
+              "data": {
+                  "lines": "Routes"
+              },
+              "data_description": {
+                  "lines": "Please select routes to monitor"
+              }
+          },
+          "hubname": {
+              "data": {
+                  "hub_name": "Hub name"
+              },
+              "data_description": {
+                  "hub_name": "Please enter the name of the new configuration hub."
+              }
+          }
+      },
+      "error": {
+          "no_stop_found": "No stops found.",
+          "invalid_api_response": "Received invalid response from server.",
+          "connection_failed": "Connection to server failed. Please try again later.",
+          "no_line_selected": "Please select at least one route."
+      },
+      "abort": {
+          "already_configured": "This stop is already configured"
+      }
+  },
+  "options": {
+      "step": {
+          "init": {
+              "data": {
+                  "lines": "Routes"
+              },
+              "data_description": {
+                  "lines": "Select routes to monitor"
+              }
+          }
+      },
+      "abort": {
+          "no_changes_configured": "No changes configured"
+      }
+  }
+}

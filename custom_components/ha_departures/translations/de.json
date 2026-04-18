@@ -1,0 +1,61 @@
+{
+  "config": {
+      "step": {
+          "user": {
+              "data": {
+                  "location": "Bitte wählen Sie einen Standort und einen Suchradius aus, um Haltestellen zu finden"
+              },
+              "data_description": {
+              }
+          },
+          "stop": {
+              "data": {
+                  "stop_name": "Name der Haltestelle"
+              },
+              "data_description": {
+                  "stop_name": "Bitte wählen Sie eine Haltestelle aus"
+              }
+          },
+          "lines": {
+              "data": {
+                  "lines": "Linien"
+              },
+              "data_description": {
+                  "lines": "Bitte wählen Sie Linien aus"
+              }
+          },
+          "hubname": {
+              "data": {
+                  "hub_name": "Hub-Name"
+              },
+              "data_description": {
+                  "hub_name": "Bitte geben Sie den Namen des neuen Konfigurations-Hubs ein"
+              }
+          }
+      },
+      "error": {
+          "no_stop_found": "Keine Haltestellen gefunden.",
+          "invalid_api_response": "Ungültige Antwort vom Server erhalten.",
+          "connection_failed": "Verbindung zum Server fehlgeschlagen. Bitte versuchen Sie es später erneut.",
+          "no_line_selected": "Bitte wählen Sie mindestens eine Linie aus."
+      },
+      "abort": {
+          "already_configured": "Diese Haltestelle ist bereits konfiguriert"
+      }
+  },
+  "options": {
+      "step": {
+          "init": {
+              "data": {
+                  "lines": "Linien"
+              },
+              "data_description": {
+                  "lines": "Linien auswählen"
+              }
+          }
+      },
+      "abort": {
+          "no_changes_configured": "Keine Änderungen konfiguriert"
+      }
+  }
+}

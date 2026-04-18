@@ -1,0 +1,61 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "location": "Proszę wybrać lokalizację i promień wyszukiwania, aby znaleźć przystanki"
+        },
+        "data_description": {
+        }
+      },
+      "stop": {
+        "data": {
+          "stop_name": "Nazwa przystanku"
+        },
+        "data_description": {
+          "stop_name": "Proszę wybrać przystanek"
+        }
+      },
+      "lines": {
+        "data": {
+          "lines": "Linie"
+        },
+        "data_description": {
+          "lines": "Proszę wybrać linie do monitorowania"
+        }
+      },
+      "hubname": {
+        "data": {
+          "hub_name": "Nazwa huba"
+        },
+        "data_description": {
+          "hub_name": "Proszę wprowadzić nazwę nowego huba konfiguracyjnego"
+        }
+      }
+    },
+    "error": {
+      "no_stop_found": "Nie znaleziono przystanków.",
+      "invalid_api_response": "Otrzymano nieprawidłową odpowiedź od serwera.",
+      "connection_failed": "Połączenie z serwerem nie powiodło się. Proszę spróbować ponownie później.",
+      "no_line_selected": "Proszę wybrać przynajmniej jedną linię."
+    },
+    "abort": {
+      "already_configured": "Ten przystanek jest już skonfigurowany"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "lines": "Linie"
+        },
+        "data_description": {
+          "lines": "Wybierz linie do monitorowania"
+        }
+      }
+    },
+    "abort": {
+      "no_changes_configured": "Nie skonfigurowano żadnych zmian"
+    }
+  }
+}
