@@ -1,0 +1,84 @@
+{
+  "config": {
+    "error": {
+      "league": "Zadaná neplatná liga.",
+      "cannot_fetch_teams": "Nepodarilo sa načítať tímy z ESPN. Skontrolujte pripojenie a skúste to znova.",
+      "no_teams_found": "Pre tento hľadaný výraz sa nenašli žiadne tímy. Skúste iný názov alebo ponechajte prázdne pre manuálne zadanie."
+    },
+    "step": {
+      "user": {
+        "title": "Vybrať šport",
+        "description": "Vyberte šport pre svoj tím alebo športovca.",
+        "data": {
+          "sport_key": "Šport"
+        }
+      },
+      "league": {
+        "title": "Vybrať ligu",
+        "description": "Vyberte ligu pre {sport_name}.",
+        "data": {
+          "league_id": "Liga"
+        }
+      },
+      "search": {
+        "title": "Hľadať tím",
+        "description": "Zadajte názov pre vyhľadanie tímu v lige {league_name} alebo ponechajte prázdne pre manuálne zadanie ID tímu.",
+        "data": {
+          "search_team": "Hľadať názov tímu (voliteľné)"
+        }
+      },
+      "select_team": {
+        "title": "Vybrať tím",
+        "description": "Vyberte svoj tím v lige {league_name} z výsledkov vyhľadávania.",
+        "data": {
+          "team_selection": "Tím",
+          "name": "Priateľský názov (voliteľné)"
+        }
+      },
+      "manual_team": {
+        "title": "Manuálne zadanie tímu",
+        "description": "Zadajte skratku tímu {league_name} alebo ID číslo podľa ESPN, alebo '*' pre výber aktívneho/najnovšieho zápasu.",
+        "data": {
+          "team_id": "ID tímu",
+          "conference_id": "Číslo konferencie",
+          "name": "Priateľský názov"
+        }
+      },
+      "manual_athlete": {
+        "title": "Manuálne zadanie športovca",
+        "description": "Zadajte meno športovca v lige {league_name}, regulárny výraz alebo '*' pre výber aktívneho/najnovšieho zápasu.",
+        "data": {
+          "team_id": "ID športovca",
+          "conference_id": "Číslo konferencie (iba NCAA)",
+          "name": "Priateľský názov"
+        }
+      },
+      "custom_api": {
+        "title": "Konfigurátor vlastného API",
+        "description": "Zadajte časti 'sport_path' a 'league_path' z ESPN API pre konfiguráciu vlastného rozhrania",
+        "data": {
+          "sport_path": "Cesta k športu (Sport Path)",
+          "league_path": "Cesta k lige (League Path)"
+        }
+      },
+      "finalize": {
+        "title": "Potvrdiť názov",
+        "description": "Potvrdiť/zmeniť názov snímača pre {league_name} {team_name}",
+        "data": {
+          "name": "Priateľský názov"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Možnosti Team Tracker",
+        "description": "Zadajte 2-miestny kód jazyka, ktorý sa má použiť pre volanie API.",
+        "data": {
+          "api_language": "Jazyk API"
+        }
+      }
+    }
+  }
+}

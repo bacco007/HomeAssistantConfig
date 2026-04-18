@@ -1,0 +1,84 @@
+{
+  "config": {
+    "error": {
+      "league": "Invalid league entered.",
+      "cannot_fetch_teams": "Could not fetch teams from ESPN. Check your connection and try again.",
+      "no_teams_found": "No teams found for that search term. Try a different name or leave blank for manual entry."
+    },
+    "step": {
+      "user": {
+        "title": "Select Sport",
+        "description": "Choose the sport for your team or athlete.",
+        "data": {
+          "sport_key": "Sport"
+        }
+      },
+      "league": {
+        "title": "Select League",
+        "description": "Choose the {sport_name} league.",
+        "data": {
+          "league_id": "League"
+        }
+      },
+      "search": {
+        "title": "Search Team",
+        "description": "Type name to search for the {league_name} team, or leave blank to enter the team ID manually.",
+        "data": {
+          "search_team": "Search team name (optional)"
+        }
+      },
+      "select_team": {
+        "title": "Select Team",
+        "description": "Choose your {league_name} team from the search results.",
+        "data": {
+          "team_selection": "Team",
+          "name": "Friendly Name (optional)"
+        }
+      },
+      "manual_team": {
+        "title": "Manual Team Entry",
+        "description": "Enter the {league_name} team abbreviation or ID number as shown on ESPN, or '*' to match the active/most recent game.",
+        "data": {
+          "team_id": "Team ID",
+          "conference_id": "Conference Number",
+          "name": "Friendly Name"
+        }
+      },
+      "manual_athlete": {
+        "title": "Manual Athlete Entry",
+        "description": "Enter the {league_name} athlete name, a regular expression, or '*' to match the active/most recent game.",
+        "data": {
+          "team_id": "Athlete ID",
+          "conference_id": "Conference Number (NCAA only)",
+          "name": "Friendly Name"
+        }
+      },
+      "custom_api": {
+        "title": "Custom API Configurator",
+        "description": "Enter the 'sport_path' and 'league_path' portion of the ESPN API to configure a custom API",
+        "data": {
+          "sport_path": "Sport Path",
+          "league_path": "League Path"
+        }
+      },
+      "finalize": {
+        "title": "Confirm Name",
+        "description": "Confirm/change the name for the {league_name} {team_name} sensor",
+        "data": {
+          "name": "Friendly Name"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Team Tracker Options",
+        "description": "Enter the 2-character language code to use for the API call.",
+        "data": {
+          "api_language": "API Language"
+        }
+      }
+    }
+  }
+}
