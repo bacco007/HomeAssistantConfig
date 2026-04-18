@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.9.1 - EV icon solid circle restyle + battery SOC entity selector fix
+// Version 2.9.2 - Legend units now respect power_unit setting (W vs kW)
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -2249,19 +2249,19 @@ class SolarBarCard extends HTMLElement {
               ${solarProduction > 0 ? `
                 <div class="legend-item" data-entity="${production_entity}" data-action-key="solar" title="${this.getLabel('click_history')}">
                   <span>☀️</span>
-                  <span>${this.getLabel('solar')}${show_legend_values ? ` ${solarProduction.toFixed(decimal_places)}kW` : ''}</span>
+                  <span>${this.getLabel('solar')}${show_legend_values ? ` ${fmtPow(solarProduction)}` : ''}</span>
                 </div>
               ` : ''}
               ${solarToHome > 0 ? `
                 <div class="legend-item" data-entity="${self_consumption_entity}" data-action-key="usage" title="${this.getLabel('click_history')}">
                   <div class="legend-color solar-home-color"></div>
-                  <span>${this.getLabel('usage')}${show_legend_values ? ` ${totalHouseConsumption.toFixed(decimal_places)}kW` : ''}</span>
+                  <span>${this.getLabel('usage')}${show_legend_values ? ` ${fmtPow(totalHouseConsumption)}` : ''}</span>
                 </div>
               ` : ''}
               ${exportPower > 0 ? `
                 <div class="legend-item" data-entity="${grid_power_entity || export_entity}" data-action-key="export" title="${this.getLabel('click_history')}">
                   <div class="legend-color export-color"></div>
-                  <span>${this.getLabel('export')}${show_legend_values ? ` ${exportPower.toFixed(decimal_places)}kW` : ''}</span>
+                  <span>${this.getLabel('export')}${show_legend_values ? ` ${fmtPow(exportPower)}` : ''}</span>
                 </div>
               ` : ''}
               ${totalGridImport > 0 ? `
@@ -2279,13 +2279,13 @@ class SolarBarCard extends HTMLElement {
               ${hasBattery && batteryCharging ? `
                 <div class="legend-item" data-entity="${battery_power_entity || battery_charge_entity || battery_soc_entity}" data-action-key="battery" title="${this.getLabel('click_history')}">
                   <div class="legend-color battery-charge-color"></div>
-                  <span>${this.getLabel('battery')}${show_legend_values ? ` ${batteryPower.toFixed(decimal_places)}kW` : ''}</span>
+                  <span>${this.getLabel('battery')}${show_legend_values ? ` ${fmtPow(batteryPower)}` : ''}</span>
                 </div>
               ` : ''}
               ${hasBattery && batteryDischarging ? `
                 <div class="legend-item" data-entity="${battery_power_entity || battery_discharge_entity || battery_soc_entity}" data-action-key="battery" title="${this.getLabel('click_history')}">
                   <div class="legend-color battery-discharge-color"></div>
-                  <span>${this.getLabel('battery')}${show_legend_values ? ` ${Math.abs(batteryPower).toFixed(decimal_places)}kW` : ''}</span>
+                  <span>${this.getLabel('battery')}${show_legend_values ? ` ${fmtPow(Math.abs(batteryPower))}` : ''}</span>
                 </div>
               ` : ''}
             </div>
@@ -3141,4 +3141,4 @@ window.customCards.push({
   documentationURL: 'https://github.com/0xAHA/solar-bar-card'
 });
 
-console.info('%c🌞 Solar Bar Card v2.9.1 loaded!', 'color: #4CAF50; font-weight: bold;');
+console.info('%c🌞 Solar Bar Card v2.9.2 loaded!', 'color: #4CAF50; font-weight: bold;');
