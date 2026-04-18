@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.9.2 - Legend units now respect power_unit setting (W vs kW)
+// Version 2.9.3 - EV charging icon colour follows grid state + config UI label polish
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -1828,6 +1828,14 @@ class SolarBarCard extends HTMLElement {
           opacity: 1;
         }
 
+        .ev-icon.charging.import {
+          background: ${colors.grid_icon_import || 'linear-gradient(135deg, var(--grid-usage-color), var(--grid-usage-color))'};
+        }
+
+        .ev-icon.charging.export {
+          background: ${colors.grid_icon_export || 'linear-gradient(135deg, var(--solar-export-color), var(--solar-export-color))'};
+        }
+
         .standby-label {
           position: absolute;
           top: 50%;
@@ -2151,7 +2159,7 @@ class SolarBarCard extends HTMLElement {
                 </div>
               ` : ''}
               ${showEvCircle ? `
-                <div class="ev-icon ${isActuallyCharging ? 'charging' : evReadyFull ? 'ready-full' : evReadyHalf ? 'ready-half' : 'idle'}"
+                <div class="ev-icon ${isActuallyCharging ? `charging ${hasGridImport ? 'import' : 'export'}` : evReadyFull ? 'ready-full' : evReadyHalf ? 'ready-half' : 'idle'}"
                      data-entity="${ev_charger_sensor}"
                      data-action-key="ev"
                      title="${isActuallyCharging ? `${this.getLabel('ev')}: ${fmtPow(actualEvCharging)} - ${this.getLabel('click_history')}` : evReadyFull ? this.getLabel('excess_solar_full') : evReadyHalf ? this.getLabel('excess_solar_half') : this.getLabel('ev')}">
@@ -2957,19 +2965,19 @@ class SolarBarCardEditor extends HTMLElement {
             schema: [
               {
                 name: "power_unit",
-                label: "Power Display Unit",
+                label: "Unit of measure",
                 default: "kW",
                 selector: {
                   select: {
                     options: [
-                      { value: "kW", label: "kW (kilowatts)" },
-                      { value: "W", label: "W (watts)" }
+                      { value: "kW", label: "kW — kilowatts" },
+                      { value: "W", label: "W — watts" }
                     ],
                     mode: "dropdown"
                   }
                 }
               },
-              { name: "show_power_unit", label: "Show Unit Suffix", default: true, selector: { boolean: {} } }
+              { name: "show_power_unit", label: "Show unit label (kW / W)", default: true, selector: { boolean: {} } }
             ]
           },
           {
@@ -2977,6 +2985,7 @@ class SolarBarCardEditor extends HTMLElement {
             schema: [
               {
                 name: "decimal_places",
+                label: "Power decimal places",
                 default: 1,
                 selector: {
                   select: {
@@ -3141,4 +3150,4 @@ window.customCards.push({
   documentationURL: 'https://github.com/0xAHA/solar-bar-card'
 });
 
-console.info('%c🌞 Solar Bar Card v2.9.2 loaded!', 'color: #4CAF50; font-weight: bold;');
+console.info('%c🌞 Solar Bar Card v2.9.3 loaded!', 'color: #4CAF50; font-weight: bold;');
