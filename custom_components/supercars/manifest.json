@@ -1,0 +1,12 @@
+{
+  "domain": "supercars",
+  "name": "Supercars Championship",
+  "version": "1.0.0",
+  "documentation": "https://github.com/yourusername/ha-supercars",
+  "issue_tracker": "https://github.com/yourusername/ha-supercars/issues",
+  "dependencies": [],
+  "codeowners": ["@yourusername"],
+  "requirements": [],
+  "iot_class": "cloud_polling",
+  "config_flow": true
+}
