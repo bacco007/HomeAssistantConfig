@@ -1,0 +1,57 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Plex Dashboard",
+        "description": "This will install the Plex Dashboard YAML files, register a Lovelace dashboard, and create the required helpers.\n\nDetected Plex servers: {detected}",
+        "data": {
+          "plex_slug": "Plex server slug (e.g. 'myplex' from sensor.plex_myplex)",
+          "dashboard_url_path": "Dashboard URL path",
+          "install_theme": "Install Plex Dark theme to /config/themes/",
+          "install_package": "Install package to /config/packages/",
+          "register_dashboard": "Register Lovelace dashboard automatically"
+        }
+      }
+    },
+    "error": {
+      "slug_required": "A Plex server slug is required.",
+      "slug_invalid": "Slug must be lowercase letters, numbers and underscores only."
+    },
+    "abort": {
+      "already_configured": "Plex Dashboard is already set up."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Plex Dashboard options",
+        "data": {
+          "plex_slug": "Plex server slug",
+          "dashboard_url_path": "Dashboard URL path",
+          "install_theme": "Re-install Plex Dark theme",
+          "install_package": "Re-install package",
+          "register_dashboard": "Re-register Lovelace dashboard",
+          "reset_dashboard": "Reset dashboard to bundled version (overwrites edits)"
+        }
+      }
+    }
+  },
+  "issues": {
+    "missing_frontend_cards": {
+      "title": "Plex Dashboard: {count} frontend card(s) missing",
+      "description": "The Plex Dashboard needs {count} HACS frontend card(s) that aren't installed yet. Click each link below to open it directly in HACS, then install and reload your browser:\n\n{cards}\n\nAfter installing, reload your browser. This Repair will clear automatically."
+    },
+    "packages_not_loaded": {
+      "title": "Plex Dashboard: packages not enabled",
+      "description": "The Plex Dashboard package was written to `/config/packages/plex_dashboard.yaml`, but it doesn't appear to be loaded.\n\nAdd this to your `configuration.yaml` and restart Home Assistant:\n\n```yaml\nhomeassistant:\n  packages: !include_dir_named packages\n```"
+    },
+    "deployment_health": {
+      "title": "Plex Dashboard: {count} deployment issue(s) detected",
+      "description": "The dashboard is installed and running, but a few things look off in this deployment. The dashboard handles each gap gracefully (missing pieces collapse instead of erroring), but you can fix them for the full experience:\n\n{findings}\n\nThis Repair clears automatically once the issues are resolved."
+    },
+    "lovelace_internals_unavailable": {
+      "title": "Plex Dashboard: cannot auto-register dashboard",
+      "description": "Plex Dashboard could not auto-register the Lovelace dashboard because the Home Assistant Lovelace storage internals it uses changed in this HA version.\n\n**Error:** `{error}`\n\nThe dashboard YAML was still written to `/config/dashboards/plex_dashboard.yaml`, so you can register it manually:\n\n1. **Settings → Dashboards → Add Dashboard → From YAML**\n2. URL: `{url_path}`, Title: `Plex`, Icon: `mdi:plex`\n3. Filename: `dashboards/plex_dashboard.yaml`\n\nPlease open an issue at {issue_url} with your HA version so we can restore auto-registration."
+    }
+  }
+}

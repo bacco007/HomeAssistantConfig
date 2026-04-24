@@ -1,0 +1,154 @@
+# =============================================================================
+#  PLEX DASHBOARD PACKAGE
+#  Installed by the Plex Dashboard integration into:
+#     /config/packages/plex_dashboard.yaml
+#
+#  The integration ensures `homeassistant.packages` is configured.
+#  The PLEX_SERVER_NAME placeholder is auto-substituted on install with the
+#  slug supplied during config flow.
+#
+#  Helpers (input_boolean / input_select) are defined here as YAML helpers.
+#  They appear under Settings -> Devices & services -> Helpers as read-only
+#  YAML entries (cannot be edited from the UI, but reload-safe and never
+#  silently disappear).
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# HELPERS (YAML-defined, read-only in UI but reload-safe)
+# -----------------------------------------------------------------------------
+input_boolean:
+  plex_dashboard_show_paused:
+    name: Show paused streams
+    icon: mdi:pause-circle-outline
+  plex_dashboard_show_offline_clients:
+    name: Show idle clients
+    icon: mdi:monitor-off
+
+input_select:
+  plex_dashboard_recently_added_filter:
+    name: Recently added filter
+    icon: mdi:filter-variant
+    options:
+      - All
+      - Movies
+      - TV
+      - Music
+    initial: All
+
+# -----------------------------------------------------------------------------
+# TEMPLATE SENSORS
+# -----------------------------------------------------------------------------
+template:
+  - sensor:
+      # ---------- Active Plex stream count ----------
+      - name: "Plex Active Streams"
+        unique_id: plex_active_streams
+        icon: mdi:play-network
+        unit_of_measurement: "streams"
+        state: >-
+          {{ states.media_player
+             | selectattr('entity_id','match','^media_player\\.plex_')
+             | selectattr('state','in',['playing','paused','buffering'])
+             | list | count }}
+        attributes:
+          playing: >-
+            {{ states.media_player
+               | selectattr('entity_id','match','^media_player\\.plex_')
+               | selectattr('state','eq','playing')
+               | list | count }}
+          paused: >-
+            {{ states.media_player
+               | selectattr('entity_id','match','^media_player\\.plex_')
+               | selectattr('state','eq','paused')
+               | list | count }}
+          buffering: >-
+            {{ states.media_player
+               | selectattr('entity_id','match','^media_player\\.plex_')
+               | selectattr('state','eq','buffering')
+               | list | count }}
+
+      # ---------- Active client list (entity_ids) ----------
+      - name: "Plex Active Client IDs"
+        unique_id: plex_active_client_ids
+        icon: mdi:account-multiple
+        state: >-
+          {{ states.media_player
+             | selectattr('entity_id','match','^media_player\\.plex_')
+             | selectattr('state','in',['playing','paused','buffering'])
+             | map(attribute='entity_id') | list | count }}
+        attributes:
+          entities: >-
+            {{ states.media_player
+               | selectattr('entity_id','match','^media_player\\.plex_')
+               | selectattr('state','in',['playing','paused','buffering'])
+               | map(attribute='entity_id') | list }}
+
+      # ---------- Total bandwidth (from Tautulli, optional) ----------
+      # NOTE: We deliberately do NOT set device_class:data_rate because HA's
+      # data_rate device class only accepts canonical units (bit/s, Mbit/s,
+      # MB/s, etc.), and "Mbps" is not in that allow-list -- it would make
+      # the gauge card raise a "Configuration error". Plain unit_of_measurement
+      # is sufficient for display in the gauge.
+      - name: "Plex Total Bandwidth Mbps"
+        unique_id: plex_total_bandwidth_mbps
+        icon: mdi:speedometer
+        unit_of_measurement: "Mbps"
+        state: >-
+          {%- set tautulli = states('sensor.tautulli_bandwidth_total') -%}
+          {%- if tautulli not in ['unknown','unavailable','none', None] -%}
+            {{ (tautulli | float(0) / 1000) | round(1) }}
+          {%- else -%}
+            0
+          {%- endif -%}
+
+      # ---------- Plex server up/down ----------
+      - name: "Plex Server Online"
+        unique_id: plex_server_online
+        icon: mdi:plex
+        state: >-
+          {% set s = states('sensor.plex_PLEX_SERVER_NAME') %}
+          {{ 'on' if s not in ['unavailable','unknown','none', None] else 'off' }}
+
+      # ---------- Recently Added ----------
+      #
+      # Removed in v2.3.0: the three heuristic template sensors that
+      # filtered the legacy unified `plex_recently_added` sensor by
+      # inspecting `runtime` / `tmdb_id` / `genres` attributes are gone.
+      # The current `plex_recently_added` HACS integration (v0.6+) ships
+      # separate per-type sensors out of the box (`*_recently_added_movie`,
+      # `_show`, `_artist`), and the dashboard now points
+      # `upcoming-media-card` directly at the user-selected sensors via
+      # config-flow placeholders. No template-sensor indirection needed.
+
+  # -------- Per-stream binary sensor (handy for automations) --------
+  - binary_sensor:
+      - name: "Plex Anything Playing"
+        unique_id: plex_anything_playing
+        icon: mdi:play-circle
+        state: >-
+          {{ states('sensor.plex_active_streams') | int(0) > 0 }}
+
+# -----------------------------------------------------------------------------
+# SCRIPTS – dashboard buttons
+# -----------------------------------------------------------------------------
+script:
+  plex_scan_all_libraries:
+    alias: "Plex: Scan All Libraries"
+    icon: mdi:database-refresh
+    sequence:
+      - service: plex.scan_for_clients
+
+  plex_pause_all:
+    alias: "Plex: Pause All Streams"
+    icon: mdi:pause
+    sequence:
+      # Guard: only call media_pause when there is at least one active
+      # Plex client. Without this guard, a tap with no active streams
+      # passes `None` as entity_id and raises in HA's service handler.
+      - condition: template
+        value_template: >-
+          {{ states('sensor.plex_active_streams') | int(0) > 0 }}
+      - service: media_player.media_pause
+        target:
+          entity_id: >-
+            {{ state_attr('sensor.plex_active_client_ids','entities') or [] }}

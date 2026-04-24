@@ -1,0 +1,529 @@
+# =============================================================================
+#  PLEX DASHBOARD  –  magazine grid layout (v2.4.0)
+#  Drop into:  /config/dashboards/plex_dashboard.yaml
+#  Then in configuration.yaml:
+#     lovelace:
+#       mode: storage     # leave default
+#       dashboards:
+#         plex-dashboard:
+#           mode: yaml
+#           title: Plex
+#           icon: mdi:plex
+#           show_in_sidebar: true
+#           filename: dashboards/plex_dashboard.yaml
+#
+#  ---- HACS REQUIREMENTS (frontend) ----
+#    - auto-entities          (custom:auto-entities)
+#    - mini-media-player      (custom:mini-media-player)
+#    - upcoming-media-card    (recently added / sonarr / radarr)
+#  Built-in cards (gauge, tile, markdown, entities, conditional) replace the
+#  previous mushroom + bar-card + button-card dependencies, so HACS no longer
+#  needs them.
+#
+#  ---- DEPLOYMENT-AGNOSTIC ----
+#  This dashboard makes NO assumptions about your Plex server slug, which
+#  optional integrations you have, or whether the package YAML helpers were
+#  installed. Every block uses one of:
+#    * `custom:auto-entities` with `show_empty: false` + an `else:` fallback,
+#      so a missing entity collapses cleanly instead of erroring.
+#    * Glob filters (`sensor.plex_*_library_*`) so any Plex server slug works.
+#    * Defensive Jinja (`states('x') if has_value('x') else '0'`) in templates.
+#  No `PLEX_SERVER_NAME` substitution is required at the dashboard level --
+#  all server-slug references are filtered by glob.
+# =============================================================================
+
+title: Plex
+views:
+  # ===========================================================================
+  # MAIN VIEW
+  # ===========================================================================
+  - title: Overview
+    path: overview
+    icon: mdi:plex
+    type: sections
+    max_columns: 4
+    sections:
+
+      # =======================================================================
+      # ROW 1 / COL 1 – SERVER + QUICK STATS + ACTIONS
+      # =======================================================================
+      # Tighter than v2.3.x: the bandwidth gauge has been replaced with a
+      # compact stat tile inline in the quick-stats markdown row, freeing
+      # up ~250px of vertical space and letting Now Playing breathe.
+      - type: grid
+        column_span: 1
+        cards:
+          - type: heading
+            heading: Plex Server
+            heading_style: title
+            icon: mdi:plex
+
+          # Server status tile. Wrapped in auto-entities so a missing
+          # `sensor.plex_server_online` (created by the bundled package
+          # YAML) collapses cleanly instead of rendering a red error tile.
+          - type: custom:auto-entities
+            show_empty: false
+            card:
+              type: vertical-stack
+            card_param: cards
+            filter:
+              include:
+                - entity_id: sensor.plex_server_online
+                  options:
+                    type: tile
+                    entity: this.entity_id
+                    name: Plex Media Server
+                    icon: mdi:plex
+                    color: orange
+                    tap_action:
+                      action: url
+                      url_path: https://app.plex.tv/desktop
+
+          # Compact quick-stats row. Uses defensive Jinja: every state
+          # read is guarded with `has_value()` so missing template sensors
+          # render as "0" / "--" instead of "unknown" or a red error
+          # tile. Bandwidth shown inline (replaces the full gauge).
+          - type: markdown
+            content: >-
+              <ha-icon icon="mdi:play" style="color:#4caf50"></ha-icon>
+              **{{ state_attr('sensor.plex_active_streams','playing')
+                   if has_value('sensor.plex_active_streams') else 0 }}**
+              &nbsp;&nbsp;
+              <ha-icon icon="mdi:pause" style="color:#ff9800"></ha-icon>
+              **{{ state_attr('sensor.plex_active_streams','paused')
+                   if has_value('sensor.plex_active_streams') else 0 }}**
+              &nbsp;&nbsp;
+              <ha-icon icon="mdi:loading" style="color:#2196f3"></ha-icon>
+              **{{ state_attr('sensor.plex_active_streams','buffering')
+                   if has_value('sensor.plex_active_streams') else 0 }}**
+              &nbsp;&nbsp;
+              <ha-icon icon="mdi:speedometer" style="color:#9c27b0"></ha-icon>
+              **{{ states('sensor.plex_total_bandwidth_mbps')
+                   if has_value('sensor.plex_total_bandwidth_mbps')
+                   else '--' }} Mbps**
+
+          # Server actions. Scripts are created by the bundled package
+          # YAML; wrap in auto-entities so missing scripts collapse.
+          - type: custom:auto-entities
+            show_empty: false
+            card:
+              type: horizontal-stack
+            card_param: cards
+            filter:
+              include:
+                - entity_id: script.plex_scan_all_libraries
+                  options:
+                    type: tile
+                    entity: this.entity_id
+                    name: Scan
+                    icon: mdi:database-refresh
+                    color: blue
+                    tap_action:
+                      action: call-service
+                      service: script.plex_scan_all_libraries
+                - entity_id: script.plex_pause_all
+                  options:
+                    type: tile
+                    entity: this.entity_id
+                    name: Pause All
+                    icon: mdi:pause-octagon
+                    color: amber
+                    tap_action:
+                      action: call-service
+                      service: script.plex_pause_all
+                - entity_id: sensor.plex_server_online
+                  options:
+                    type: tile
+                    entity: this.entity_id
+                    name: Open Web
+                    icon: mdi:open-in-new
+                    color: orange
+                    tap_action:
+                      action: url
+                      url_path: https://app.plex.tv/desktop
+
+      # =======================================================================
+      # ROW 1 / COL 2 – NOW PLAYING (auto-generated per active client)
+      # =======================================================================
+      # v2.4.0: dropped from column_span:2 -> 1. With the bandwidth gauge
+      # gone and Recently Added moved to its own full-width row below,
+      # 1 column lines up cleanly with the other top-row sections and
+      # avoids the giant empty middle area on wide displays.
+      - type: grid
+        column_span: 1
+        cards:
+          - type: heading
+            heading: Now Playing
+            heading_style: title
+            icon: mdi:play-circle
+
+          # Empty-state card. `condition: state` is safe even when the
+          # entity is missing -- it simply won't match -- so this is fine
+          # in HA Sections views (unlike `condition: template`, which
+          # renders as red error tiles when the underlying sensor is
+          # missing). If the package YAML wasn't installed, the card just
+          # never appears.
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: binary_sensor.plex_anything_playing
+                state: "off"
+            card:
+              type: markdown
+              content: |
+                ### <ha-icon icon="mdi:sleep"></ha-icon> Nothing is playing
+                _All Plex clients are idle_
+
+          # Auto-entities: one rich mini-media-player per active stream.
+          # mini-media-player handles artwork, title, progress, and controls.
+          #
+          # NOTE: per auto-entities docs, the `options:` block (which receives
+          # the `this.entity_id` substitution) MUST live inside each
+          # `filter.include[]` entry, not at the top level of auto-entities --
+          # a top-level `options:` is silently ignored, which is what made
+          # earlier versions emit broken cards with no `type:`.
+          #
+          # We keep the mini-media-player config minimal -- many of its
+          # options (hide.power, hide.volume, info: scroll, etc.) trigger
+          # "Configuration error" on certain mini-media-player versions when
+          # passed through auto-entities' substitution. The defaults already
+          # produce a clean card.
+          - type: custom:auto-entities
+            show_empty: false
+            card:
+              type: vertical-stack
+            card_param: cards
+            filter:
+              include:
+                - entity_id: media_player.plex_*
+                  state: playing
+                  options:
+                    type: custom:mini-media-player
+                    entity: this.entity_id
+                    artwork: cover
+                - entity_id: media_player.plex_*
+                  state: paused
+                  options:
+                    type: custom:mini-media-player
+                    entity: this.entity_id
+                    artwork: cover
+                - entity_id: media_player.plex_*
+                  state: buffering
+                  options:
+                    type: custom:mini-media-player
+                    entity: this.entity_id
+                    artwork: cover
+              exclude:
+                - state: "unavailable"
+                - state: "unknown"
+                - state: "off"
+                - state: "idle"
+            sort:
+              method: state
+              reverse: true
+
+      # =======================================================================
+      # ROW 1 / COL 3 – CLIENTS
+      # =======================================================================
+      - type: grid
+        column_span: 1
+        cards:
+          - type: heading
+            heading: Clients
+            heading_style: title
+            icon: mdi:monitor-multiple
+
+          # All Plex clients (active + idle)
+          - type: custom:auto-entities
+            card:
+              type: entities
+              state_color: true
+              title: ""
+            filter:
+              include:
+                - entity_id: media_player.plex_*
+              exclude:
+                - state: "unavailable"
+            sort:
+              method: state
+              reverse: true
+
+      # =======================================================================
+      # ROW 1 / COL 4 – LIBRARIES
+      # =======================================================================
+      # v2.4.0: promoted to its own top-row section (was nested under
+      # Server in v2.3.x) so the magazine grid has 4 balanced top tiles.
+      - type: grid
+        column_span: 1
+        cards:
+          - type: heading
+            heading: Libraries
+            heading_style: title
+            icon: mdi:bookshelf
+
+          # Library counts via auto-entities. Plex creates library sensors
+          # named `sensor.plex_<server_slug>_library_<library_name>`, so the
+          # glob `sensor.plex_*_library_*` matches any server slug. We use
+          # `else:` (a fallback card rendered when zero entities match)
+          # instead of `show_empty:false`, because some HA versions render
+          # the zero-entity entities-card as a "Configuration error" tile.
+          #
+          # Excludes:
+          # - bundled package template sensors (plex_active_streams etc.)
+          # - "doubled-prefix" orphans: when a Plex server has been
+          #   re-added or an old config entry leaves stragglers, HA can
+          #   end up with `sensor.plex_<slug>_plex_<slug>_library_*`
+          #   entries that duplicate the real library counts. The
+          #   `sensor.plex_*_plex_*_library_*` glob filters them out
+          #   regardless of slug. Real library sensors only have ONE
+          #   `plex_<slug>` segment.
+          # - numeric-suffix orphans (`_2`, `_3`, ..., `_99`): when HA's
+          #   entity registry collides on entity_id, it appends `_N`.
+          #   The real, primary library sensor never has a trailing
+          #   underscore-number; only orphans do. The exclusion regex
+          #   `/^sensor\.plex_.+_library_.+_\d+$/` catches them.
+          - type: custom:auto-entities
+            card:
+              type: entities
+              state_color: false
+            filter:
+              include:
+                - entity_id: sensor.plex_*_library_*
+                  options:
+                    secondary_info: last-changed
+              exclude:
+                - state: "unavailable"
+                - state: "unknown"
+                - entity_id: sensor.plex_active_streams
+                - entity_id: sensor.plex_active_client_ids
+                - entity_id: sensor.plex_total_bandwidth_mbps
+                - entity_id: sensor.plex_server_online
+                # Doubled-prefix orphans (re-added Plex integration)
+                - entity_id: sensor.plex_*_plex_*_library_*
+                # Numeric-suffix orphans (entity_id collisions)
+                - entity_id: /^sensor\.plex_.+_library_.+_\d+$/
+            sort:
+              method: name
+            else:
+              type: markdown
+              content: >-
+                _No Plex library sensors found._<br>
+                Enable them under **Settings → Devices & Services →
+                Plex → Configure** and tick the libraries you want
+                exposed as sensors.
+
+      # =======================================================================
+      # ROW 2 / FULL WIDTH – RECENTLY ADDED FILTER PILL
+      # =======================================================================
+      # The filter input_select sits above the 3-column poster row so it
+      # visually anchors the "magazine" Recently Added section.
+      - type: grid
+        column_span: 4
+        cards:
+          - type: heading
+            heading: Recently Added
+            heading_style: title
+            icon: mdi:new-box
+          # Use auto-entities for the filter pill so a missing helper is
+          # handled by `show_empty: false` rather than a conditional.
+          - type: custom:auto-entities
+            show_empty: false
+            card:
+              type: entities
+            filter:
+              include:
+                - entity_id: input_select.plex_dashboard_recently_added_filter
+                  options:
+                    name: Show
+
+      # =======================================================================
+      # ROW 3 / COLS 1-3 – RECENTLY ADDED POSTERS (Movies | Episodes | Music)
+      # =======================================================================
+      # Magazine-style 3-up poster grid. Each card uses an auto-entities
+      # regex filter to discover the right sensor at render time (since
+      # v2.3.3). The `plex_recently_added` HACS integration (v0.6+) emits
+      # typed sensors per media type; the suffix uniquely identifies the
+      # type:
+      #   *recently_added_movie           -> Movies
+      #   *recently_added_show            -> TV / Episodes
+      #   *recently_added_(artist|music)  -> Music
+      # The leading prefix varies by Plex server slug (e.g.
+      # `sensor.plex_recently_added_movie` vs the doubled-prefix
+      # `sensor.plex_plex_recently_added_movie`), so a regex match on the
+      # suffix avoids any setup-time placeholder substitution and works
+      # regardless of slug.
+      #
+      # `max: 4` per column keeps each tile compact -- 3 columns × 4 = 12
+      # tiles total visible without scrolling, vs the v2.3.x single-column
+      # 6-tile layout that hid 2/3 of the Recently Added content.
+      #
+      # `else:` markdown collapses the card cleanly if no matching sensor
+      # exists (integration not installed, or that media type doesn't
+      # exist on this Plex server).
+      - type: grid
+        column_span: 1
+        cards:
+          - type: custom:auto-entities
+            card:
+              type: vertical-stack
+            card_param: cards
+            filter:
+              include:
+                - entity_id: /^sensor\..*recently_added.*_movie$/
+                  options:
+                    type: custom:upcoming-media-card
+                    entity: this.entity_id
+                    title: New Movies
+                    image_style: poster
+                    max: 4
+                    date: mmdd
+            sort:
+              method: name
+              count: 1
+            else:
+              type: markdown
+              content: >-
+                _New Movies sensor not found._<br>
+                Install [plex_recently_added](https://github.com/custom-components/sensor.plex_recently_added)
+                v0.6+ to populate this card.
+
+      - type: grid
+        column_span: 1
+        cards:
+          - type: custom:auto-entities
+            card:
+              type: vertical-stack
+            card_param: cards
+            filter:
+              include:
+                - entity_id: /^sensor\..*recently_added.*_show$/
+                  options:
+                    type: custom:upcoming-media-card
+                    entity: this.entity_id
+                    title: New Episodes
+                    image_style: poster
+                    max: 4
+                    date: mmdd
+            sort:
+              method: name
+              count: 1
+            else:
+              type: markdown
+              content: >-
+                _New Episodes sensor not found._<br>
+                Install [plex_recently_added](https://github.com/custom-components/sensor.plex_recently_added)
+                v0.6+ to populate this card.
+
+      - type: grid
+        column_span: 1
+        cards:
+          - type: custom:auto-entities
+            card:
+              type: vertical-stack
+            card_param: cards
+            filter:
+              include:
+                - entity_id: /^sensor\..*recently_added.*_(artist|music)$/
+                  options:
+                    type: custom:upcoming-media-card
+                    entity: this.entity_id
+                    title: New Music
+                    image_style: poster
+                    max: 4
+                    date: mmdd
+            sort:
+              method: name
+              count: 1
+            else:
+              type: markdown
+              content: >-
+                _New Music sensor not found._<br>
+                Install [plex_recently_added](https://github.com/custom-components/sensor.plex_recently_added)
+                v0.6+ with a Plex music library to populate this card.
+
+  # ===========================================================================
+  # SECONDARY VIEW – Coming Soon (Sonarr / Radarr)
+  # ===========================================================================
+  - title: Coming Soon
+    path: coming-soon
+    icon: mdi:calendar-clock
+    type: sections
+    max_columns: 4
+    sections:
+
+      - type: grid
+        column_span: 2
+        cards:
+          - type: heading
+            heading: Upcoming Movies (Radarr)
+            icon: mdi:movie-roll
+          # Radarr is optional. Wrapped in auto-entities so a missing
+          # `sensor.radarr_upcoming_media` collapses cleanly (with a
+          # markdown hint) instead of rendering an empty progress bar.
+          - type: custom:auto-entities
+            card:
+              type: vertical-stack
+            card_param: cards
+            filter:
+              include:
+                - entity_id: sensor.radarr_upcoming_media
+                  options:
+                    type: custom:upcoming-media-card
+                    entity: this.entity_id
+                    title: ""
+                    image_style: fanart
+                    max: 8
+                    date: mmdd
+            else:
+              type: markdown
+              content: >-
+                _Radarr integration not detected._<br>
+                Install the [Radarr integration](https://www.home-assistant.io/integrations/radarr/)
+                to populate this list.
+
+      - type: grid
+        column_span: 2
+        cards:
+          - type: heading
+            heading: Upcoming Episodes (Sonarr)
+            icon: mdi:television-classic
+          # Sonarr is optional. Same pattern as Radarr above.
+          - type: custom:auto-entities
+            card:
+              type: vertical-stack
+            card_param: cards
+            filter:
+              include:
+                - entity_id: sensor.sonarr_upcoming_media
+                  options:
+                    type: custom:upcoming-media-card
+                    entity: this.entity_id
+                    title: ""
+                    image_style: fanart
+                    max: 8
+                    date: mmdd
+            else:
+              type: markdown
+              content: >-
+                _Sonarr integration not detected._<br>
+                Install the [Sonarr integration](https://www.home-assistant.io/integrations/sonarr/)
+                to populate this list.
+
+      - type: grid
+        column_span: 4
+        cards:
+          - type: heading
+            heading: Settings
+            icon: mdi:cog
+          # Helpers are created by the bundled package YAML. Wrapped in
+          # auto-entities so missing helpers collapse instead of
+          # rendering "Entity not found" rows.
+          - type: custom:auto-entities
+            show_empty: false
+            card:
+              type: entities
+            filter:
+              include:
+                - entity_id: input_boolean.plex_dashboard_show_paused
+                - entity_id: input_boolean.plex_dashboard_show_offline_clients
+                - entity_id: input_select.plex_dashboard_recently_added_filter

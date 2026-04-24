@@ -1,0 +1,39 @@
+# =============================================================================
+#  PLEX DASHBOARD THEME
+#  Drop into:  /config/themes/plex_dashboard.yaml
+#  In configuration.yaml:
+#     frontend:
+#       themes: !include_dir_merge_named themes
+#  Then activate from Profile → Theme: "Plex Dark"
+# =============================================================================
+
+Plex Dark:
+  # base
+  primary-color: "#e5a00d"          # Plex amber
+  accent-color: "#e5a00d"
+  app-header-background-color: "#1f1f1f"
+  app-header-text-color: "#e5a00d"
+
+  # background
+  primary-background-color: "#1a1a1a"
+  secondary-background-color: "#232323"
+  card-background-color: "rgba(35,35,35,0.85)"
+  ha-card-background: "rgba(35,35,35,0.85)"
+  ha-card-border-radius: "14px"
+  ha-card-box-shadow: "0 4px 14px rgba(0,0,0,0.45)"
+
+  # text
+  primary-text-color: "#ffffff"
+  secondary-text-color: "#cccccc"
+  text-primary-color: "#ffffff"
+  disabled-text-color: "#777777"
+
+  # state
+  state-icon-color: "#e5a00d"
+  state-icon-active-color: "#e5a00d"
+  paper-item-icon-color: "#e5a00d"
+  paper-item-icon-active-color: "#e5a00d"
+
+  # mushroom
+  mush-rgb-orange: "229, 160, 13"
+  mush-rgb-amber: "229, 160, 13"
