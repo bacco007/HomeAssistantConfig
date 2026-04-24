@@ -1364,7 +1364,7 @@ function delay(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.124.0/helpers/decorate.js
+//#region \0@oxc-project+runtime@0.126.0/helpers/decorate.js
 function __decorate$1(decorators, target, key, desc) {
 	var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7066,7 +7066,8 @@ UnpinnedEvent.eventName = "unpinned";
 var ScrollerShim = class {
 	constructor(element) {
 		this._element = null;
-		this._node = element ?? window;
+		const node = element ?? window;
+		this._node = node;
 		if (element) this._element = element;
 	}
 	get element() {
@@ -8854,7 +8855,7 @@ var HaMediaPlayerBrowse = class HaMediaPlayerBrowse extends i$5 {
 		}
 		if (!error) return;
 		this._closeDialogAction();
-		this.hass.localize("ui.components.media-browser.media_browsing_error"), this._renderError(error);
+		this, this.hass.localize("ui.components.media-browser.media_browsing_error"), this._renderError(error);
 	}
 	_renderError(err) {
 		if (err.message === "Media directory does not exist.") return x`
@@ -9616,7 +9617,8 @@ var MediaBrowserBrowser = class extends i$5 {
 		currentPathTitle = this.currentTitle;
 	}
 	updateIsCurrentPathStart() {
-		this.isCurrentPathStart = localStorage.getItem(START_PATH_KEY$1) === JSON.stringify(this.navigateIds);
+		const startPath = localStorage.getItem(START_PATH_KEY$1);
+		this.isCurrentPathStart = startPath === JSON.stringify(this.navigateIds);
 	}
 	render() {
 		const config = this.store.config.mediaBrowser ?? {};
@@ -9890,6 +9892,7 @@ __decorate$1([n$5({ attribute: false })], OperationOverlay.prototype, "hass", vo
 customElements.define("sonos-operation-overlay", OperationOverlay);
 //#endregion
 //#region src/components/play-menu.ts
+var _PlayMenu;
 var PLAY_MENU_ACTIONS = [
 	{ enqueue: "replace" },
 	{
@@ -9993,8 +9996,9 @@ var PlayMenu = class extends i$5 {
 	closeMenu() {
 		this.dispatchEvent(customEvent("play-menu-close"));
 	}
-	static {
-		this.styles = i$8`
+};
+_PlayMenu = PlayMenu;
+_PlayMenu.styles = i$8`
     :host {
       display: contents;
     }
@@ -10033,8 +10037,6 @@ var PlayMenu = class extends i$5 {
       flex-shrink: 0;
     }
   `;
-	}
-};
 __decorate$1([n$5({ type: Boolean })], PlayMenu.prototype, "disabled", void 0);
 __decorate$1([n$5({ type: Boolean })], PlayMenu.prototype, "hasSelection", void 0);
 __decorate$1([n$5({ type: Boolean })], PlayMenu.prototype, "inline", void 0);
@@ -10129,6 +10131,7 @@ var queueSearchStyles = i$8`
 `;
 //#endregion
 //#region src/sections/queue/queue-search-panel.ts
+var _QueueSearchPanel;
 var QueueSearchPanel = class extends i$5 {
 	constructor(..._args) {
 		super(..._args);
@@ -10196,8 +10199,9 @@ var QueueSearchPanel = class extends i$5 {
 	dispatchAction(action) {
 		this.dispatchEvent(customEvent("queue-search-ui-action", action));
 	}
-	static {
-		this.styles = i$8`
+};
+_QueueSearchPanel = QueueSearchPanel;
+_QueueSearchPanel.styles = i$8`
     :host {
       display: block;
       position: absolute;
@@ -10249,8 +10253,6 @@ var QueueSearchPanel = class extends i$5 {
       color: var(--accent-color);
     }
   `;
-	}
-};
 __decorate$1([n$5()], QueueSearchPanel.prototype, "searchText", void 0);
 __decorate$1([n$5({ type: Boolean })], QueueSearchPanel.prototype, "selectMode", void 0);
 __decorate$1([n$5({ type: Number })], QueueSearchPanel.prototype, "matchCount", void 0);
@@ -10260,6 +10262,7 @@ __decorate$1([n$5({ type: Boolean })], QueueSearchPanel.prototype, "showOnlyMatc
 customElements.define("sonos-queue-search-panel", QueueSearchPanel);
 //#endregion
 //#region src/sections/queue/queue-search.ts
+var _QueueSearch;
 var QueueSearch = class extends i$5 {
 	constructor(..._args) {
 		super(..._args);
@@ -10402,7 +10405,8 @@ var QueueSearch = class extends i$5 {
 			this.showOnlyMatches = false;
 			return;
 		}
-		this.currentMatchIndex = getCurrentMatchIndex(matchIndices, continueFromCurrent, this.matchIndices[this.currentMatchIndex] ?? -1);
+		const lastHighlighted = this.matchIndices[this.currentMatchIndex] ?? -1;
+		this.currentMatchIndex = getCurrentMatchIndex(matchIndices, continueFromCurrent, lastHighlighted);
 		const match = createQueueSearchMatch(matchIndices[this.currentMatchIndex], this.currentMatchIndex, matchIndices);
 		this.dispatch({
 			type: "match",
@@ -10459,10 +10463,9 @@ var QueueSearch = class extends i$5 {
 	dispatch(action) {
 		this.dispatchEvent(customEvent("queue-search-action", action));
 	}
-	static {
-		this.styles = queueSearchStyles;
-	}
 };
+_QueueSearch = QueueSearch;
+_QueueSearch.styles = queueSearchStyles;
 __decorate$1([n$5({ attribute: false })], QueueSearch.prototype, "items", void 0);
 __decorate$1([n$5({ type: Boolean })], QueueSearch.prototype, "selectMode", void 0);
 __decorate$1([r$3()], QueueSearch.prototype, "expanded", void 0);
@@ -10474,6 +10477,7 @@ __decorate$1([e$3("sonos-queue-search-panel")], QueueSearch.prototype, "panel", 
 customElements.define("sonos-queue-search", QueueSearch);
 //#endregion
 //#region src/components/selection-actions.ts
+var _SelectionActions;
 var SelectionActions = class extends i$5 {
 	constructor(..._args) {
 		super(..._args);
@@ -10514,20 +10518,20 @@ var SelectionActions = class extends i$5 {
 				break;
 		}
 	}
-	static {
-		this.styles = i$8`
+};
+_SelectionActions = SelectionActions;
+_SelectionActions.styles = i$8`
     :host {
       display: contents;
     }
   `;
-	}
-};
 __decorate$1([n$5({ type: Boolean })], SelectionActions.prototype, "hasSelection", void 0);
 __decorate$1([n$5({ type: Boolean })], SelectionActions.prototype, "disabled", void 0);
 __decorate$1([n$5({ type: Boolean })], SelectionActions.prototype, "showInvert", void 0);
 customElements.define("sonos-selection-actions", SelectionActions);
 //#endregion
 //#region src/sections/queue/queue-header.ts
+var _QueueHeader;
 var QueueHeader = class extends i$5 {
 	constructor(..._args) {
 		super(..._args);
@@ -10598,8 +10602,9 @@ var QueueHeader = class extends i$5 {
 	dispatchAction(action) {
 		this.dispatchEvent(customEvent("queue-header-action", action));
 	}
-	static {
-		this.styles = i$8`
+};
+_QueueHeader = QueueHeader;
+_QueueHeader.styles = i$8`
     :host {
       display: block;
       flex-shrink: 0;
@@ -10671,8 +10676,6 @@ var QueueHeader = class extends i$5 {
       text-shadow: 0 0 2px black;
     }
   `;
-	}
-};
 __decorate$1([n$5()], QueueHeader.prototype, "queueTitle", void 0);
 __decorate$1([n$5({ type: Number })], QueueHeader.prototype, "itemCount", void 0);
 __decorate$1([n$5({ attribute: false })], QueueHeader.prototype, "items", void 0);
@@ -10929,6 +10932,7 @@ __decorate$1([n$5({ type: Boolean })], MediaRow.prototype, "libraryLoading", voi
 customElements.define("sonos-media-row", MediaRow);
 //#endregion
 //#region src/sections/queue/queue-list.ts
+var _QueueList;
 var QueueList = class extends i$5 {
 	constructor(..._args) {
 		super(..._args);
@@ -10996,8 +11000,9 @@ var QueueList = class extends i$5 {
 	dispatchAction(action) {
 		this.dispatchEvent(customEvent("queue-list-action", action));
 	}
-	static {
-		this.styles = i$8`
+};
+_QueueList = QueueList;
+_QueueList.styles = i$8`
     :host {
       display: flex;
       flex-direction: column;
@@ -11025,8 +11030,6 @@ var QueueList = class extends i$5 {
       padding: 2rem;
     }
   `;
-	}
-};
 __decorate$1([n$5({ type: Boolean })], QueueList.prototype, "loading", void 0);
 __decorate$1([n$5({ type: Boolean })], QueueList.prototype, "searchExpanded", void 0);
 __decorate$1([n$5({ type: Number })], QueueList.prototype, "selectedIndex", void 0);
@@ -11966,20 +11969,20 @@ __decorate$1([r$3()], QueueSonos.prototype, "operationProgress", void 0);
 __decorate$1([r$3()], QueueSonos.prototype, "cancelOperation", void 0);
 //#endregion
 //#region src/sections/queue/queue-section.ts
+var _Queue;
 var Queue = class extends i$5 {
 	render() {
 		return this.store.config.entityPlatform === "music_assistant" ? x`<sonos-queue-mass .store=${this.store}></sonos-queue-mass>` : x`<sonos-queue-sonos .store=${this.store}></sonos-queue-sonos>`;
 	}
-	static {
-		this.styles = i$8`
+};
+_Queue = Queue;
+_Queue.styles = i$8`
     :host {
       display: block;
       height: 100%;
       overflow: hidden;
     }
   `;
-	}
-};
 __decorate$1([n$5()], Queue.prototype, "store", void 0);
 //#endregion
 //#region src/sections/search/search-utils.ts
