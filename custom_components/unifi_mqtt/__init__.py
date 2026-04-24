@@ -19,10 +19,18 @@ import re
 from datetime import timedelta
 
 import pandas as pd
+import urllib3
 from pyunifi.controller import Controller
 
 from homeassistant.components.mqtt import async_publish
 from homeassistant.helpers.event import async_track_time_interval
+
+# Suppress urllib3's InsecureRequestWarning at import time. Users commonly run
+# their UniFi controller with a self-signed cert and set verify_ssl=False, in
+# which case urllib3 logs this warning on every reconnect. Applying the filter
+# inside async_setup_entry is too late — the first login call races with it.
+# No-op when verify_ssl is True, since no warning is emitted in that case.
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 from .const import (
     DOMAIN,
@@ -39,8 +47,6 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-# Global variable for the update listener.
-UPDATE_LISTENER = None
 
 def sanitize_name(device_name):
     """Sanitizes a string by replacing characters not in [a-zA-Z0-9_-] with '_'."""
@@ -55,7 +61,10 @@ async def async_setup_entry(hass, entry):
     port = entry.data[CONF_PORT]
     verify_ssl = entry.data[CONF_VERIFY_SSL]
     version = entry.data[CONF_VERSION]
-    update_interval = entry.data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
+    update_interval = entry.options.get(
+        CONF_UPDATE_INTERVAL,
+        entry.data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL),
+    )
 
     def init_controller():
         return Controller(
@@ -68,13 +77,49 @@ async def async_setup_entry(hass, entry):
         _LOGGER.error("Failed to initialize UniFi controller: %s", e)
         return False
 
+    entry_data = hass.data.setdefault(DOMAIN, {}).setdefault(entry.entry_id, {})
+    # Cache of last-published discovery payload per MAC, so we only re-publish
+    # when the payload changes (e.g. firmware or name update) instead of every cycle.
+    entry_data["discovery_cache"] = {}
+    # Exponential-backoff state for upstream failures. UniFi controllers apply a
+    # login rate-limit; without backoff a short poll interval hits the limit and
+    # the integration silently stops publishing after a few hours (issue #25).
+    entry_data["consecutive_failures"] = 0
+    entry_data["skip_cycles"] = 0
+
     async def update_unifi_data(now):
         """Fetch data from the UniFi controller and publish MQTT discovery, state, and attribute messages."""
+        if entry_data["skip_cycles"] > 0:
+            entry_data["skip_cycles"] -= 1
+            return
+
         try:
             unifi_devices = await hass.async_add_executor_job(controller.get_aps)
         except Exception as err:
-            _LOGGER.error("Error fetching devices: %s", err)
+            entry_data["consecutive_failures"] += 1
+            # Backoff cycles: 1, 3, 7, 15, 31, 60 (capped). On a 60s interval
+            # that's a worst-case hour between retries after repeated failures.
+            entry_data["skip_cycles"] = min(2 ** entry_data["consecutive_failures"] - 1, 60)
+            if entry_data["consecutive_failures"] == 1:
+                _LOGGER.warning(
+                    "Error fetching UniFi devices (%s); backing off exponentially.",
+                    err,
+                )
+            else:
+                _LOGGER.debug(
+                    "Error fetching UniFi devices (%d consecutive, next attempt in %d cycles): %s",
+                    entry_data["consecutive_failures"],
+                    entry_data["skip_cycles"] + 1,
+                    err,
+                )
             return
+
+        if entry_data["consecutive_failures"] > 0:
+            _LOGGER.info(
+                "UniFi controller reachable again after %d failed attempts",
+                entry_data["consecutive_failures"],
+            )
+            entry_data["consecutive_failures"] = 0
 
         active_devices = []
 
@@ -134,13 +179,16 @@ async def async_setup_entry(hass, entry):
                 port_power = {}
 
                 if devs.get("state") == 1:
-                    port_table = pd.DataFrame(devs.get("port_table")).sort_values("port_idx")
-                    for index, row in port_table.iterrows():
-                        port_status[f"port{row['port_idx']}"] = "up" if row["up"] else "down"
-                        if "poe_enable" in port_table.columns:
-                            port_poe[f"port{row['port_idx']}"] = "power" if row["port_poe"] else "none"
-                        if "poe_power" in port_table.columns:
-                            port_power[f"port{row['port_idx']}"] = 0 if pd.isna(row["poe_power"]) else row["poe_power"]
+                    port_table_data = devs.get("port_table") or []
+                    port_table = pd.DataFrame(port_table_data)
+                    if not port_table.empty and "port_idx" in port_table.columns:
+                        port_table = port_table.sort_values("port_idx")
+                        for index, row in port_table.iterrows():
+                            port_status[f"port{row['port_idx']}"] = "up" if row["up"] else "down"
+                            if "port_poe" in port_table.columns:
+                                port_poe[f"port{row['port_idx']}"] = "power" if row["port_poe"] else "none"
+                            if "poe_power" in port_table.columns:
+                                port_power[f"port{row['port_idx']}"] = 0 if pd.isna(row["poe_power"]) else row["poe_power"]
 
                 current_temperature = devs.get("general_temperature", 0) if devs.get("has_temperature") else "N/A"
 
@@ -157,15 +205,15 @@ async def async_setup_entry(hass, entry):
 
             # Add additional attributes for access points
             elif device_type == "uap":
-                vap_table_data = devs.get("vap_table")
-                if not vap_table_data:
-                    continue
+                vap_table_data = devs.get("vap_table") or []
                 vap_table = pd.DataFrame(vap_table_data)
-                if "radio" not in vap_table.columns:
-                    continue
-                ghz2_4 = vap_table[vap_table["radio"] == "ng"]
-                ghz5 = vap_table[vap_table["radio"] == "na"]
-                ghz6 = vap_table[vap_table["radio"] == "6e"]
+                if not vap_table.empty and "radio" in vap_table.columns:
+                    ghz2_4 = vap_table[vap_table["radio"] == "ng"]
+                    ghz5 = vap_table[vap_table["radio"] == "na"]
+                    ghz6 = vap_table[vap_table["radio"] == "6e"]
+                else:
+                    empty = pd.DataFrame()
+                    ghz2_4 = ghz5 = ghz6 = empty
 
                 radio_24ghz = {}
                 for index, row in ghz2_4.iterrows():
@@ -225,14 +273,19 @@ async def async_setup_entry(hass, entry):
 
             # Add additional attributes for UDM SE
             elif device_type == "udm":
-                port_table = pd.DataFrame(devs.get("port_table")).sort_values("port_idx")
+                port_table_data = devs.get("port_table") or []
+                port_table = pd.DataFrame(port_table_data)
                 port_status = {}
                 port_poe = {}
                 port_power = {}
-                for index, row in port_table.iterrows():
-                    port_status[row["port_idx"]] = "up" if row["up"] else "down"
-                    port_poe[f"port{row['port_idx']}"] = "power" if row["poe_enable"] else "none"
-                    port_power[f"port{row['port_idx']}"] = row["poe_power"]
+                if not port_table.empty and "port_idx" in port_table.columns:
+                    port_table = port_table.sort_values("port_idx")
+                    for index, row in port_table.iterrows():
+                        port_status[row["port_idx"]] = "up" if row["up"] else "down"
+                        if "poe_enable" in port_table.columns:
+                            port_poe[f"port{row['port_idx']}"] = "power" if row["poe_enable"] else "none"
+                        if "poe_power" in port_table.columns:
+                            port_power[f"port{row['port_idx']}"] = 0 if pd.isna(row["poe_power"]) else row["poe_power"]
 
                 temperatures = devs.get("temperatures", [])
                 temperature_names = {}
@@ -267,7 +320,7 @@ async def async_setup_entry(hass, entry):
             discovery_topic = f"homeassistant/sensor/unifi_mqtt/{sanitized_name}/config"
             sensor_payload = {
                 "name": "Uptime",
-                "default_entity_id": f"sensor.{sanitized_name}",    
+                "default_entity_id": f"sensor.{sanitized_name}",
                 "state_topic": f"unifi_mqtt/devices/{sanitized_name}/state",
                 "unique_id": mac.replace(":", ""),
                 "json_attributes_topic": f"unifi_mqtt/devices/{sanitized_name}/attributes",
@@ -279,7 +332,13 @@ async def async_setup_entry(hass, entry):
                     "sw_version": devs.get("version", "Unknown"),
                 },
             }
-            await async_publish(hass, discovery_topic, json.dumps(sensor_payload), retain=True)
+            # Only publish discovery when something in the payload has changed
+            # (new device, firmware/name update). Re-publishing every cycle is
+            # what caused the "already used unique_id" warning spam (issue #34).
+            payload_json = json.dumps(sensor_payload, sort_keys=True)
+            if entry_data["discovery_cache"].get(mac) != payload_json:
+                await async_publish(hass, discovery_topic, payload_json, retain=True)
+                entry_data["discovery_cache"][mac] = payload_json
 
             # Publish device state (uptime)
             state_topic = f"unifi_mqtt/devices/{sanitized_name}/state"
@@ -291,22 +350,139 @@ async def async_setup_entry(hass, entry):
 
             active_devices.append(device_name)
 
+        # Publish WAN / gateway health (issues #27 and #33). Site-level stats
+        # live in /stat/health, not per-device get_aps, so we query them
+        # separately and synthesise a "Gateway" MQTT sensor.
+        try:
+            health_info = await hass.async_add_executor_job(controller.get_healthinfo)
+        except Exception as err:
+            _LOGGER.debug("Could not fetch site health info: %s", err)
+            health_info = []
+
+        wan_subsystem = next(
+            (s for s in (health_info or []) if isinstance(s, dict) and s.get("subsystem") == "wan"),
+            None,
+        )
+        www_subsystem = next(
+            (s for s in (health_info or []) if isinstance(s, dict) and s.get("subsystem") == "www"),
+            None,
+        )
+
+        # Only publish the synthetic gateway sensor when the site actually has
+        # a UniFi gateway adopted. Otherwise the `wan` subsystem is a placeholder
+        # with empty fields (num_gw=0, no gw_mac) and the sensor is meaningless.
+        if wan_subsystem and wan_subsystem.get("num_gw", 0) > 0:
+            gw_mac = wan_subsystem.get("gw_mac") or ""
+            gw_name = wan_subsystem.get("gw_name") or "UniFi Gateway"
+            sanitized_wan = sanitize_name(f"{gw_name}_wan")
+
+            wan_attributes = {
+                "type": "wan",
+                "status": wan_subsystem.get("status", "unknown"),
+                "wan_ip": wan_subsystem.get("wan_ip", "Unknown"),
+                "gateway_name": gw_name,
+                "gateway_mac": gw_mac,
+                "gateway_version": wan_subsystem.get("gw_version", "Unknown"),
+                "isp_name": wan_subsystem.get("isp_name", "Unknown"),
+                "isp_organization": wan_subsystem.get("isp_organization", "Unknown"),
+                "num_connected": wan_subsystem.get("num_sta", 0),
+                "rx_bytes_rate": wan_subsystem.get("rx_bytes-r", 0),
+                "tx_bytes_rate": wan_subsystem.get("tx_bytes-r", 0),
+                "num_gateways": wan_subsystem.get("num_gw", 0),
+                "num_adopted": wan_subsystem.get("num_adopted", 0),
+                "num_disconnected": wan_subsystem.get("num_disconnected", 0),
+                "num_pending": wan_subsystem.get("num_pending", 0),
+            }
+
+            # Per-WAN uptime/latency stats (supports multi-WAN setups: WAN, WAN2, …)
+            for wan_key, stats in (wan_subsystem.get("uptime_stats") or {}).items():
+                if not isinstance(stats, dict):
+                    continue
+                prefix = str(wan_key).lower()
+                wan_attributes[f"{prefix}_availability"] = stats.get("availability", 0)
+                wan_attributes[f"{prefix}_latency_average"] = stats.get("latency_average", 0)
+                wan_attributes[f"{prefix}_uptime"] = stats.get("uptime", 0)
+                wan_attributes[f"{prefix}_time_period"] = stats.get("time_period", 0)
+                for idx, monitor in enumerate(stats.get("monitors") or []):
+                    if not isinstance(monitor, dict):
+                        continue
+                    wan_attributes[f"{prefix}_monitor_{idx}_target"] = monitor.get("target", "")
+                    wan_attributes[f"{prefix}_monitor_{idx}_type"] = monitor.get("type", "")
+                    wan_attributes[f"{prefix}_monitor_{idx}_availability"] = monitor.get("availability", 0)
+                    wan_attributes[f"{prefix}_monitor_{idx}_latency"] = monitor.get("latency_average", 0)
+
+            # Speedtest + internet uplink telemetry (from the `www` subsystem)
+            if www_subsystem:
+                wan_attributes.update({
+                    "internet_status": www_subsystem.get("status", "unknown"),
+                    "internet_latency": www_subsystem.get("latency", 0),
+                    "internet_uptime": www_subsystem.get("uptime", 0),
+                    "internet_rx_bytes_rate": www_subsystem.get("rx_bytes-r", 0),
+                    "internet_tx_bytes_rate": www_subsystem.get("tx_bytes-r", 0),
+                    "speedtest_status": www_subsystem.get("speedtest_status", "unknown"),
+                    "speedtest_last_run": www_subsystem.get("speedtest_lastrun", 0),
+                    "speedtest_ping": www_subsystem.get("speedtest_ping", 0),
+                    "speedtest_download_mbps": www_subsystem.get("xput_down", 0),
+                    "speedtest_upload_mbps": www_subsystem.get("xput_up", 0),
+                })
+
+            unique_id_base = gw_mac.replace(":", "") if gw_mac else sanitized_wan
+            discovery_topic = f"homeassistant/sensor/unifi_mqtt/{sanitized_wan}/config"
+            sensor_payload = {
+                "name": "Status",
+                "default_entity_id": f"sensor.{sanitized_wan}",
+                "state_topic": f"unifi_mqtt/devices/{sanitized_wan}/state",
+                "unique_id": f"{unique_id_base}_wan",
+                "json_attributes_topic": f"unifi_mqtt/devices/{sanitized_wan}/attributes",
+                "device": {
+                    "identifiers": [f"unifi_wan_{unique_id_base}"],
+                    "name": gw_name,
+                    "manufacturer": "UniFi",
+                    "model": "Gateway",
+                    "sw_version": wan_subsystem.get("gw_version", "Unknown"),
+                },
+            }
+
+            wan_cache_key = f"wan:{unique_id_base}"
+            payload_json = json.dumps(sensor_payload, sort_keys=True)
+            if entry_data["discovery_cache"].get(wan_cache_key) != payload_json:
+                await async_publish(hass, discovery_topic, payload_json, retain=True)
+                entry_data["discovery_cache"][wan_cache_key] = payload_json
+
+            state_topic = f"unifi_mqtt/devices/{sanitized_wan}/state"
+            await async_publish(hass, state_topic, wan_subsystem.get("status", "unknown"), retain=True)
+
+            attributes_topic = f"unifi_mqtt/devices/{sanitized_wan}/attributes"
+            await async_publish(hass, attributes_topic, json.dumps(wan_attributes), retain=True)
+
+            active_devices.append(f"{gw_name} (WAN)")
+
         # Publish device summary
         device_summary_topic = "unifi_mqtt/devices/summary"
         await async_publish(hass, device_summary_topic, json.dumps(active_devices), retain=True)
 
-    global UPDATE_LISTENER
-    UPDATE_LISTENER = async_track_time_interval(
+    entry_data["unsub_interval"] = async_track_time_interval(
         hass, update_unifi_data, timedelta(seconds=update_interval)
     )
+    entry_data["unsub_options"] = entry.add_update_listener(_async_options_updated)
     hass.async_create_task(update_unifi_data(None))
 
     return True
 
+
+async def _async_options_updated(hass, entry):
+    """Reload the entry so a changed update interval takes effect."""
+    await hass.config_entries.async_reload(entry.entry_id)
+
+
 async def async_unload_entry(hass, entry):
     """Unload a config entry."""
-    global UPDATE_LISTENER
-    if UPDATE_LISTENER is not None:
-        UPDATE_LISTENER()
-        UPDATE_LISTENER = None
+    entry_data = hass.data.get(DOMAIN, {}).pop(entry.entry_id, None)
+    if entry_data:
+        unsub_interval = entry_data.get("unsub_interval")
+        if unsub_interval is not None:
+            unsub_interval()
+        unsub_options = entry_data.get("unsub_options")
+        if unsub_options is not None:
+            unsub_options()
     return True
