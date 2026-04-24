@@ -14,6 +14,9 @@ from .const import (
     CONF_ALTITUDE,
     CONF_DEWPOINT_SENSOR,
     CONF_HUMIDITY_SENSOR,
+    CONF_LIGHTNING_COUNT_SENSOR,
+    CONF_LIGHTNING_DISTANCE_SENSOR,
+    CONF_LIGHTNING_TIME_SENSOR,
     CONF_OUTDOOR_TEMP_SENSOR,
     CONF_PRESSURE_SENSOR,
     CONF_RAIN_RATE_SENSOR,
@@ -150,6 +153,17 @@ class ConfigFlowHandler(ConfigFlow, domain=DOMAIN):
                 vol.Optional(CONF_SUN_SENSOR): selector.EntitySelector(
                     selector.EntitySelectorConfig(domain="sun")
                 ),
+                vol.Optional(CONF_LIGHTNING_COUNT_SENSOR): selector.EntitySelector(
+                    selector.EntitySelectorConfig(domain="sensor")
+                ),
+                vol.Optional(CONF_LIGHTNING_DISTANCE_SENSOR): selector.EntitySelector(
+                    selector.EntitySelectorConfig(
+                        domain="sensor", device_class="distance"
+                    )
+                ),
+                vol.Optional(CONF_LIGHTNING_TIME_SENSOR): selector.EntitySelector(
+                    selector.EntitySelectorConfig()
+                ),
                 vol.Optional(
                     CONF_UPDATE_INTERVAL, default=DEFAULT_UPDATE_INTERVAL
                 ): selector.NumberSelector(
@@ -224,12 +238,21 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 return await self.async_step_rain()
             elif user_input["next_step_id"] == "solar":
                 return await self.async_step_solar()
+            elif user_input["next_step_id"] == "lightning":
+                return await self.async_step_lightning()
             elif user_input["next_step_id"] == "device_config":
                 return await self.async_step_device_config()
 
         return self.async_show_menu(
             step_id="init",
-            menu_options=["atmospheric", "wind", "rain", "solar", "device_config"],
+            menu_options=[
+                "atmospheric",
+                "wind",
+                "rain",
+                "solar",
+                "lightning",
+                "device_config",
+            ],
         )
 
     async def async_step_atmospheric(
@@ -586,6 +609,67 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             data_schema=data_schema,
         )
 
+    async def async_step_lightning(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Handle lightning sensor configuration."""
+        if user_input is not None:
+            # Ensure optional fields are present in user_input
+            self._optional_entities(
+                [
+                    CONF_LIGHTNING_COUNT_SENSOR,
+                    CONF_LIGHTNING_DISTANCE_SENSOR,
+                    CONF_LIGHTNING_TIME_SENSOR,
+                ],
+                user_input,
+            )
+
+            # Store lightning sensor data
+            self._data.update(user_input)
+
+            # Save changes immediately
+            options = dict(self.config_entry.options)
+            for field in user_input:
+                value = user_input[field]
+                if value and value not in ("", "None"):
+                    options[field] = value
+                else:
+                    options[field] = None
+            self.hass.config_entries.async_update_entry(
+                self.config_entry, options=options
+            )
+
+            return await self.async_step_init()
+
+        # Get current options for defaults
+        current_options = self.config_entry.options
+
+        # Build lightning sensors schema
+        schema_dict: dict[Any, Any] = {}
+
+        schema_dict[
+            vol.Optional(CONF_LIGHTNING_COUNT_SENSOR, default=vol.UNDEFINED)
+        ] = selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor"))
+
+        schema_dict[
+            vol.Optional(CONF_LIGHTNING_DISTANCE_SENSOR, default=vol.UNDEFINED)
+        ] = selector.EntitySelector(
+            selector.EntitySelectorConfig(domain="sensor", device_class="distance")
+        )
+
+        schema_dict[vol.Optional(CONF_LIGHTNING_TIME_SENSOR, default=vol.UNDEFINED)] = (
+            selector.EntitySelector(selector.EntitySelectorConfig())
+        )
+
+        data_schema = self.add_suggested_values_to_schema(
+            vol.Schema(schema_dict), current_options
+        )
+
+        return self.async_show_form(
+            step_id="lightning",
+            data_schema=data_schema,
+        )
+
     async def async_step_device_config(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
@@ -616,6 +700,9 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     CONF_SOLAR_LUX_SENSOR,
                     CONF_UV_INDEX_SENSOR,
                     CONF_SUN_SENSOR,
+                    CONF_LIGHTNING_COUNT_SENSOR,
+                    CONF_LIGHTNING_DISTANCE_SENSOR,
+                    CONF_LIGHTNING_TIME_SENSOR,
                 ]
 
                 for field in all_sensor_fields:

@@ -24,6 +24,9 @@ CONF_SOLAR_RADIATION_SENSOR = "solar_radiation_sensor"
 CONF_SOLAR_LUX_SENSOR = "solar_lux_sensor"
 CONF_UV_INDEX_SENSOR = "uv_index_sensor"
 CONF_SUN_SENSOR = "sun_sensor"
+CONF_LIGHTNING_COUNT_SENSOR = "lightning_count_sensor"
+CONF_LIGHTNING_DISTANCE_SENSOR = "lightning_distance_sensor"
+CONF_LIGHTNING_TIME_SENSOR = "lightning_time_sensor"
 CONF_ALTITUDE = "altitude"
 CONF_ZENITH_MAX_RADIATION = "zenith_max_radiation"
 
@@ -63,6 +66,9 @@ KEY_RAIN_STATE = "rain_state"
 KEY_SUN = "sun"
 
 KEY_SOLAR_LUX_INTERNAL = "solar_lux"
+KEY_LIGHTNING_COUNT = "lightning_count"
+KEY_LIGHTNING_DISTANCE = "lightning_distance"
+KEY_LIGHTNING_TIME = "lightning_time"
 
 # Sensor unit keys
 KEY_TEMPERATURE_UNIT = "outdoor_temp_unit"
@@ -71,6 +77,7 @@ KEY_PRESSURE_UNIT = "pressure_unit"
 KEY_WIND_SPEED_UNIT = "wind_speed_unit"
 KEY_WIND_GUST_UNIT = "wind_gust_unit"
 KEY_RAIN_RATE_UNIT = "rain_rate_unit"
+KEY_LIGHTNING_DISTANCE_UNIT = "lightning_distance_unit"
 
 # Pressure Units
 PRESSURE_HPA_UNIT = "hPa"

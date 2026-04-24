@@ -332,6 +332,41 @@ class TrendsAnalyzer:
         """
         return self.get_historical_trends("pressure", hours=24)
 
+    def compute_pressure_acceleration(self) -> float:
+        """Compute pressure trend acceleration from the last 24h of readings.
+
+        Splits pressure history into two equal halves, computes the linear
+        trend slope for each using calculate_trend(), and returns the
+        difference (slope_second - slope_first).
+
+        Returns:
+            float: Acceleration in inHg/3h² (negative = fall speeding up,
+                   positive = fall slowing, ~0.0 = steady or insufficient data)
+        """
+        if "pressure" not in self._sensor_history:
+            return 0.0
+
+        entries = list(self._sensor_history["pressure"])
+        if len(entries) < 4:
+            return 0.0
+
+        midpoint = len(entries) // 2
+        first_half = entries[:midpoint]
+        second_half = entries[midpoint:]
+
+        def _slope(half: list[dict[str, Any]]) -> float:
+            timestamps = [e["timestamp"] for e in half]
+            values = [e["value"] for e in half]
+            if isinstance(timestamps[0], (int, float)):
+                time_diffs = [float(t - timestamps[0]) for t in timestamps]
+            else:
+                time_diffs = [
+                    (t - timestamps[0]).total_seconds() / 3600 for t in timestamps
+                ]
+            return self.calculate_trend(time_diffs, values)
+
+        return _slope(second_half) - _slope(first_half)
+
     def calculate_circular_mean(self, directions: List[float]) -> float:
         """Calculate the circular mean of wind directions.
 

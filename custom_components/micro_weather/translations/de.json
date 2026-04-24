@@ -149,6 +149,19 @@
         },
         "title": "Gerätekonfiguration"
       },
+      "lightning": {
+        "data": {
+          "lightning_count_sensor": "Blitzanzahl-Sensor",
+          "lightning_distance_sensor": "Blitzentfernungs-Sensor",
+          "lightning_time_sensor": "Blitz-Zeitstempel-Sensor"
+        },
+        "data_description": {
+          "lightning_count_sensor": "Optionaler Sensor für Echtzeit-Blitzerkennung mit einem Hardware-Blitzdetektor (z.B. Ecowitt WH57). Liefert die Anzahl erkannter Blitzeinschläge. Ersetzt bei Konfiguration die heuristische Blitzerkennung basierend auf Druck- und Windmustern.",
+          "lightning_distance_sensor": "Optionaler Sensor für die Entfernung zum letzten erkannten Blitzeinschlag. Wird zusammen mit dem Blitzanzahl-Sensor verwendet, um festzustellen, ob ein Gewitter in der Nähe ist. Unterstützt km und mi.",
+          "lightning_time_sensor": "Optionaler Sensor für den Zeitstempel des letzten Blitzeinschlags. Stellt sicher, dass nur aktuelle Blitze (innerhalb der letzten 30 Minuten) eine Gewitter-Bedingung auslösen."
+        },
+        "title": "Blitz-Sensoren"
+      },
       "init": {
         "data": {
           "altitude": "Stationshöhe",
@@ -187,6 +200,7 @@
         "menu_options": {
           "atmospheric": "Atmosphärische Sensoren Konfigurieren",
           "device_config": "Gerätekonfiguration",
+          "lightning": "Blitz-Sensoren Konfigurieren",
           "rain": "Regen-Sensoren Konfigurieren",
           "solar": "Solar-Sensoren Konfigurieren",
           "wind": "Wind-Sensoren Konfigurieren"

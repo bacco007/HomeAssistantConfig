@@ -126,6 +126,7 @@
           "wind": "Configure Wind Sensors",
           "rain": "Configure Rain Sensors",
           "solar": "Configure Solar Sensors",
+          "lightning": "Configure Lightning Sensors",
           "device_config": "Device Configuration"
         },
         "data": {
@@ -219,6 +220,19 @@
           "uv_index_sensor": "Optional sensor for clear sky confirmation (high UV = definitely sunny). Provides sun intensity measurement for safety recommendations and enhanced sunny weather detection.",
           "sun_sensor": "Optional sensor providing solar elevation data for accurate cloud cover calculations. Improves weather detection accuracy by accounting for sun position (higher elevation = more expected solar radiation). Falls back to 45° elevation if not configured.",
           "zenith_max_radiation": "Maximum solar radiation at zenith (directly overhead sun). Used to normalize solar radiation readings for accurate cloud cover calculations. Typical values: 400-1200 W/m² depending on location and atmospheric conditions."
+        }
+      },
+      "lightning": {
+        "title": "Lightning Sensors",
+        "data": {
+          "lightning_count_sensor": "Lightning Strike Count Sensor",
+          "lightning_distance_sensor": "Lightning Distance Sensor",
+          "lightning_time_sensor": "Lightning Timestamp Sensor"
+        },
+        "data_description": {
+          "lightning_count_sensor": "Optional sensor for real-time lightning detection using a hardware lightning detector (e.g., Ecowitt WH57). Provides the number of detected lightning strikes. When configured, replaces the heuristic lightning detection based on pressure and wind patterns.",
+          "lightning_distance_sensor": "Optional sensor providing the distance to the last detected lightning strike. Used together with the strike count sensor to determine if lightning is nearby. Supports both km and mi units.",
+          "lightning_time_sensor": "Optional sensor providing the timestamp of the last detected lightning strike. Used to ensure only recent strikes (within the last 30 minutes) trigger lightning conditions, preventing stale detections from persisting."
         }
       },
       "device_config": {

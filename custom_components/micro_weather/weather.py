@@ -41,6 +41,7 @@ from .const import (
 )
 from .forecast import (
     DailyForecastGenerator,
+    EvolutionModeler,
     HourlyForecastGenerator,
     MeteorologicalAnalyzer,
 )
@@ -104,6 +105,7 @@ class MicroWeatherEntity(CoordinatorEntity, WeatherEntity):
                 coordinator.solar_analyzer,
                 coordinator.trends_analyzer,
             )
+            self._evolution_modeler = EvolutionModeler()
             # AstronomicalCalculator removed - diurnal logic inlined
         else:
             # Fallback if analyzers are not available
@@ -132,6 +134,7 @@ class MicroWeatherEntity(CoordinatorEntity, WeatherEntity):
             self._hourly_generator = HourlyForecastGenerator(
                 atmospheric_analyzer, solar_analyzer, trends_analyzer
             )
+            self._evolution_modeler = EvolutionModeler()
             # AstronomicalCalculator removed - diurnal logic inlined
 
     async def async_added_to_hass(self) -> None:
@@ -340,6 +343,13 @@ class MicroWeatherEntity(CoordinatorEntity, WeatherEntity):
                         )
             altitude = altitude_value
 
+            # Get sunrise/sunset times for day/night condition conversion
+            sunrise_time, sunset_time = get_sun_times(self.coordinator.hass)
+            if hasattr(sunrise_time, "_mock_name"):
+                sunrise_time = None
+            if hasattr(sunset_time, "_mock_name"):
+                sunset_time = None
+
             # Get historical patterns from trends analyzer
             historical_patterns = {}
             if (
@@ -350,13 +360,29 @@ class MicroWeatherEntity(CoordinatorEntity, WeatherEntity):
                     self.coordinator.trends_analyzer.analyze_historical_patterns()
                 )
 
+            meteorological_state = self._meteorological_analyzer.analyze_state(
+                sensor_data, altitude
+            )
+            if (
+                hasattr(self.coordinator, "trends_analyzer")
+                and self.coordinator.trends_analyzer
+            ):
+                meteorological_state["pressure_acceleration"] = (
+                    self.coordinator.trends_analyzer.compute_pressure_acceleration()
+                )
+            system_evolution = self._evolution_modeler.model_system_evolution(
+                meteorological_state, current_condition=current_condition
+            )
+
             forecast_data = self._daily_generator.generate_forecast(
                 current_condition,
                 sensor_data,
                 altitude,
-                self._meteorological_analyzer.analyze_state(sensor_data, altitude),
+                meteorological_state,
                 historical_patterns,
-                {},  # system_evolution - empty for now
+                system_evolution,
+                sunrise_time=sunrise_time,
+                sunset_time=sunset_time,
             )
 
             # Convert to Forecast objects
@@ -455,6 +481,20 @@ class MicroWeatherEntity(CoordinatorEntity, WeatherEntity):
                         )
             altitude = altitude_value
 
+            meteorological_state = self._meteorological_analyzer.analyze_state(
+                sensor_data, altitude
+            )
+            if (
+                hasattr(self.coordinator, "trends_analyzer")
+                and self.coordinator.trends_analyzer
+            ):
+                meteorological_state["pressure_acceleration"] = (
+                    self.coordinator.trends_analyzer.compute_pressure_acceleration()
+                )
+            micro_evolution = self._evolution_modeler.model_system_evolution(
+                meteorological_state, current_condition=current_condition
+            )
+
             forecast_data = self._hourly_generator.generate_forecast(
                 current_temp=float(convert_to_fahrenheit(current_temp) or 68.0),
                 current_condition=current_condition,
@@ -462,11 +502,9 @@ class MicroWeatherEntity(CoordinatorEntity, WeatherEntity):
                 sunrise_time=sunrise_time,
                 sunset_time=sunset_time,
                 altitude=altitude,
-                meteorological_state=self._meteorological_analyzer.analyze_state(
-                    sensor_data, altitude
-                ),
-                hourly_patterns={},  # hourly_patterns - empty for now
-                micro_evolution={},  # micro_evolution - empty for now
+                meteorological_state=meteorological_state,
+                hourly_patterns={},
+                micro_evolution=micro_evolution,
                 # astronomical_calculator removed - diurnal logic inlined
             )
             # Convert to Forecast objects

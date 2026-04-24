@@ -50,6 +50,7 @@ from ..meteorological_constants import (
     WindAdjustmentConstants,
 )
 from ..weather_utils import convert_to_kmh, is_forecast_hour_daytime
+from .evolution import apply_confidence_clamping, find_lifecycle_phase
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -372,23 +373,20 @@ class HourlyForecastGenerator:
         hourly_patterns: Dict[str, Any],
         micro_evolution: Dict[str, Any],
     ) -> str:
-        """Forecast condition using pressure trend trajectory.
+        """Forecast condition using weather system lifecycle phases.
 
-        Condition evolution is driven by:
-        1. Pressure trend trajectory (falling = deteriorating, rising = improving)
-        2. Day/night transitions (sunny ↔ clear-night)
-        3. Cloud cover analysis for current state
-
-        Evolution happens gradually - conditions step up/down the severity ladder
-        based on the cumulative trajectory score.
+        Maps the forecast hour to a LifecyclePhase and derives the condition
+        from that phase, applying confidence-decay clamping.  Falls back to
+        the current condition (with day/night conversion) when no lifecycle
+        is available in micro_evolution.
 
         Args:
             hour_idx: Hour index (0-23)
-            current_condition: Current/previous hour's condition
+            current_condition: Current/previous hour's condition (fallback)
             astronomical_context: Day/night info
             meteorological_state: Meteorological state
-            hourly_patterns: Hourly patterns
-            micro_evolution: Micro-evolution model
+            hourly_patterns: Hourly patterns (kept for API compat)
+            micro_evolution: Must contain a "lifecycle" key from EvolutionModeler
 
         Returns:
             str: Forecasted condition
@@ -398,135 +396,18 @@ class HourlyForecastGenerator:
 
         is_daytime = astronomical_context["is_daytime"]
 
-        # Calculate cumulative trajectory score for this hour
-        trajectory_score = self._calculate_hourly_trajectory(
-            hour_idx, meteorological_state
+        lifecycle = micro_evolution.get("lifecycle", [])
+        phase = find_lifecycle_phase(lifecycle, float(hour_idx))
+
+        if phase is None:
+            # Graceful fallback when lifecycle not yet computed
+            condition = current_condition
+        else:
+            condition = apply_confidence_clamping(phase.condition, phase.confidence)
+
+        return self._apply_day_night_conversion(
+            condition, is_daytime, meteorological_state
         )
-
-        # Evolve condition based on trajectory
-        forecast_condition = self._evolve_hourly_condition(
-            current_condition, trajectory_score, hour_idx
-        )
-
-        # Apply day/night conversion
-        forecast_condition = self._apply_day_night_conversion(
-            forecast_condition, is_daytime, meteorological_state
-        )
-
-        return forecast_condition
-
-    def _calculate_hourly_trajectory(
-        self, hour_idx: int, meteorological_state: Dict[str, Any]
-    ) -> float:
-        """Calculate cumulative trajectory score for hourly evolution.
-
-        Trajectory accumulates over hours based on pressure trends.
-        Rapid changes = faster evolution, stable = slow/no evolution.
-
-        Args:
-            hour_idx: Hour index (0-23)
-            meteorological_state: Meteorological state
-
-        Returns:
-            float: Trajectory score (-100 to +100)
-        """
-        pressure_analysis = meteorological_state.get("pressure_analysis", {})
-        current_trend = pressure_analysis.get("current_trend", 0)
-        storm_prob = pressure_analysis.get("storm_probability", 0)
-
-        if not isinstance(current_trend, (int, float)):
-            current_trend = 0.0
-        if not isinstance(storm_prob, (int, float)):
-            storm_prob = 0.0
-
-        # Base score from pressure trend
-        # -1.0 inHg/3h trend = -30 score per hour
-        hourly_contribution = current_trend * 30.0
-
-        # Storm probability adds negative (deteriorating) score
-        if storm_prob > 50:
-            hourly_contribution -= (storm_prob - 50) * 0.5
-
-        # Accumulate over hours (with diminishing weight for distant hours)
-        cumulative_factor = min(hour_idx, 6)  # Cap at 6 hours of accumulation
-        trajectory_score = hourly_contribution * cumulative_factor
-
-        # Cloud cover influence
-        cloud_analysis = meteorological_state.get("cloud_analysis", {})
-        cloud_cover = cloud_analysis.get("cloud_cover", 50)
-        if isinstance(cloud_cover, (int, float)):
-            # High cloud cover = negative bias
-            cloud_bias = (cloud_cover - 50) * 0.3
-            trajectory_score -= cloud_bias
-
-        return max(-100, min(100, trajectory_score))
-
-    def _evolve_hourly_condition(
-        self, current_condition: str, trajectory_score: float, hour_idx: int
-    ) -> str:
-        """Evolve condition based on hourly trajectory.
-
-        Similar to daily evolution but with smaller steps (max 1 per 3 hours).
-
-        Args:
-            current_condition: Starting condition
-            trajectory_score: Cumulative trajectory (-100 to +100)
-            hour_idx: Hour index for step limiting
-
-        Returns:
-            str: Evolved condition
-        """
-        condition_ladder = [
-            ATTR_CONDITION_POURING,
-            ATTR_CONDITION_LIGHTNING_RAINY,
-            ATTR_CONDITION_RAINY,
-            ATTR_CONDITION_CLOUDY,
-            ATTR_CONDITION_PARTLYCLOUDY,
-            ATTR_CONDITION_SUNNY,
-        ]
-
-        # Handle special conditions
-        if current_condition == ATTR_CONDITION_FOG:
-            # Fog typically clears as the day progresses (sun burns it off)
-            # or persists at night. Add clearing bonus for daytime hours.
-            fog_clearing_bonus = hour_idx * 3  # +3 per hour as fog clears
-            adjusted_score = trajectory_score + fog_clearing_bonus
-            if adjusted_score > 40:
-                return ATTR_CONDITION_SUNNY
-            elif adjusted_score > 15:
-                return ATTR_CONDITION_PARTLYCLOUDY
-            else:
-                return ATTR_CONDITION_CLOUDY
-
-        if current_condition == ATTR_CONDITION_SNOWY:
-            # Snow evolves based on trajectory - may continue, turn to rain, or clear
-            snow_clearing_bonus = hour_idx * 2  # +2 per hour
-            adjusted_score = trajectory_score + snow_clearing_bonus
-            if adjusted_score > 50:
-                return ATTR_CONDITION_PARTLYCLOUDY  # Snow ended, clearing
-            elif adjusted_score > 30:
-                return ATTR_CONDITION_CLOUDY  # Snow ended, still cloudy
-            elif adjusted_score > 10:
-                return ATTR_CONDITION_RAINY  # Warming, snow turning to rain
-            else:
-                return ATTR_CONDITION_SNOWY  # Still cold, snow continues
-
-        if current_condition == ATTR_CONDITION_CLEAR_NIGHT:
-            current_condition = ATTR_CONDITION_SUNNY
-
-        # Find current position
-        try:
-            current_idx = condition_ladder.index(current_condition)
-        except ValueError:
-            current_idx = 3  # Default to cloudy
-
-        # Calculate steps (max 1 step per 3 hours)
-        max_steps = max(1, hour_idx // 3)
-        steps = int(trajectory_score / 40)  # ±40 = 1 step
-        steps = max(-max_steps, min(max_steps, steps))
-
-        new_idx = max(0, min(len(condition_ladder) - 1, current_idx + steps))
-        return condition_ladder[new_idx]
 
     def _apply_day_night_conversion(
         self,

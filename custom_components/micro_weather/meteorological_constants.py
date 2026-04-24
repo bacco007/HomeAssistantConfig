@@ -198,6 +198,32 @@ class PrecipitationThresholds:
 
 
 @dataclass(frozen=True)
+class LightningThresholds:
+    """Lightning detection thresholds for hardware lightning sensors.
+
+    Distance values are in miles (converted from km if metric sensor).
+    Used when a dedicated lightning detector (e.g., Ecowitt WH57) is
+    configured, providing real lightning detection instead of the
+    heuristic-based approach using pressure and wind patterns.
+
+    References:
+        - NWS lightning safety guidelines (30/30 rule)
+        - AMS lightning distance classification
+    """
+
+    # Lightning distance thresholds (miles)
+    IMMINENT = 5  # < 5 mi (8 km) - Immediate danger
+    CLOSE = 10  # < 10 mi (16 km) - Nearby lightning
+    NEARBY = 25  # < 25 mi (40 km) - Lightning in the area
+
+    # Minimum strike count to consider lightning active
+    MIN_STRIKES = 1  # At least 1 detected strike
+
+    # Maximum age of last lightning strike to consider active (minutes)
+    MAX_AGE_MINUTES = 30  # Strikes older than 30 min are no longer relevant
+
+
+@dataclass(frozen=True)
 class TemperatureThresholds:
     """Temperature-related thresholds for weather classification.
 

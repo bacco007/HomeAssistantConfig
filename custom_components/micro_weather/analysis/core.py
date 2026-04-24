@@ -25,6 +25,9 @@ from homeassistant.components.weather import (
 from ..const import (
     KEY_DEWPOINT,
     KEY_HUMIDITY,
+    KEY_LIGHTNING_COUNT,
+    KEY_LIGHTNING_DISTANCE,
+    KEY_LIGHTNING_TIME,
     KEY_OUTDOOR_TEMP,
     KEY_PRESSURE,
     KEY_RAIN_RATE,
@@ -35,6 +38,7 @@ from ..const import (
     KEY_WIND_SPEED,
 )
 from ..meteorological_constants import (
+    LightningThresholds,
     PrecipitationThresholds,
     TemperatureThresholds,
     WindThresholds,
@@ -90,6 +94,10 @@ class WeatherConditionAnalyzer:
         # Calculate derived parameters
         params = self._calculate_parameters(sensors, altitude)
 
+        # Priority 0: Real lightning sensor detection (highest priority)
+        if condition := self._check_lightning_sensor(sensors, params):
+            return condition
+
         # Priority 1: Active precipitation
         if condition := self._check_precipitation(sensors, params):
             return condition
@@ -141,6 +149,10 @@ class WeatherConditionAnalyzer:
         elif rain_state in ["not raining", "no rain", "0", "false", "off"]:
             rain_state = "dry"
 
+        # Extract lightning sensor data (None means sensor not configured)
+        lightning_count_raw = sensor_data.get(KEY_LIGHTNING_COUNT)
+        lightning_distance_raw = sensor_data.get(KEY_LIGHTNING_DISTANCE)
+
         return {
             "rain_rate": rain_rate,
             "rain_state": rain_state,
@@ -154,6 +166,15 @@ class WeatherConditionAnalyzer:
             "pressure": float(sensor_data.get(KEY_PRESSURE) or 29.92),
             "dewpoint_raw": sensor_data.get(KEY_DEWPOINT),
             "solar_elevation": sensor_data.get("solar_elevation"),
+            "lightning_count": (
+                float(lightning_count_raw) if lightning_count_raw is not None else None
+            ),
+            "lightning_distance": (
+                float(lightning_distance_raw)
+                if lightning_distance_raw is not None
+                else None
+            ),
+            "lightning_time": sensor_data.get(KEY_LIGHTNING_TIME),
         }
 
     def _calculate_parameters(
@@ -214,6 +235,107 @@ class WeatherConditionAnalyzer:
             ),
             "gust_factor": sensors["wind_gust"] / max(sensors["wind_speed"], 1),
         }
+
+    def _check_lightning_sensor(
+        self, sensors: Dict[str, Any], params: Dict[str, Any]
+    ) -> Optional[str]:
+        """Check for lightning using a dedicated hardware sensor.
+
+        When a real lightning detector (e.g., Ecowitt WH57) is configured,
+        this provides direct lightning detection without relying on
+        pressure/wind heuristics, eliminating false positives.
+
+        Requires all three sensors (count, distance, time) to be present.
+        The timestamp is essential to avoid stale detections — without it,
+        a single morning strike would show "lightning" all day.
+
+        Args:
+            sensors: Dictionary of sensor values including lightning data
+            params: Dictionary of calculated parameters
+
+        Returns:
+            Weather condition string if lightning detected, None otherwise
+            Possible returns: lightning, lightning-rainy
+        """
+        lightning_count = sensors.get("lightning_count")
+        lightning_distance = sensors.get("lightning_distance")
+        lightning_time = sensors.get("lightning_time")
+
+        # No lightning sensor configured (need all three)
+        if lightning_count is None or lightning_distance is None:
+            return None
+
+        # Check if lightning is active and nearby
+        if (
+            lightning_count < LightningThresholds.MIN_STRIKES
+            or lightning_distance > LightningThresholds.NEARBY
+        ):
+            return None
+
+        # Check if the last strike is recent enough
+        if lightning_time is not None:
+            try:
+                from datetime import datetime, timedelta
+
+                # Handle both datetime objects (after Ecowitt/ha-ecowitt-iot#59)
+                # and raw date strings (e.g. "04/05/2026 22:14:55")
+                if isinstance(lightning_time, datetime):
+                    last_strike = lightning_time
+                elif isinstance(lightning_time, str):
+                    # Parse string — try ISO format and common variations
+                    for fmt in (None, "%m/%d/%Y %H:%M:%S", "%Y-%m-%d %H:%M:%S"):
+                        try:
+                            if fmt is None:
+                                last_strike = datetime.fromisoformat(lightning_time)
+                            else:
+                                last_strike = datetime.strptime(lightning_time, fmt)
+                            break
+                        except ValueError:
+                            continue
+                    else:
+                        _LOGGER.warning(
+                            "Could not parse lightning timestamp: %s",
+                            lightning_time,
+                        )
+                        return None
+                else:
+                    _LOGGER.warning(
+                        "Unexpected lightning time type: %s", type(lightning_time)
+                    )
+                    return None
+
+                # Make naive if needed for comparison
+                if last_strike.tzinfo is not None:
+                    last_strike = last_strike.replace(tzinfo=None)
+
+                age_minutes = (datetime.now() - last_strike).total_seconds() / 60
+
+                if age_minutes > LightningThresholds.MAX_AGE_MINUTES:
+                    _LOGGER.debug(
+                        "Lightning sensor: last strike %.0f min ago, ignoring",
+                        age_minutes,
+                    )
+                    return None
+            except Exception as e:
+                _LOGGER.warning("Error checking lightning time: %s", e)
+                return None
+
+        _LOGGER.debug(
+            "Lightning sensor: %d strikes, %.1f mi away",
+            int(lightning_count),
+            lightning_distance,
+        )
+
+        # Check if it's also raining
+        rain_rate = sensors["rain_rate"]
+        rain_state = sensors["rain_state"]
+        has_rain = (
+            rain_rate > PrecipitationThresholds.SIGNIFICANT or rain_state == "wet"
+        )
+
+        if has_rain:
+            return ATTR_CONDITION_LIGHTNING_RAINY
+        return ATTR_CONDITION_LIGHTNING
 
     def _check_precipitation(
         self, sensors: Dict[str, float], params: Dict[str, Any]

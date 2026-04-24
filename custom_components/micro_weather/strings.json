@@ -19,6 +19,9 @@
           "solar_lux_sensor": "Solar Lux Sensor",
           "uv_index_sensor": "UV Index Sensor",
           "sun_sensor": "Sun Sensor",
+          "lightning_count_sensor": "Lightning Strike Count Sensor",
+          "lightning_distance_sensor": "Lightning Distance Sensor",
+          "lightning_time_sensor": "Lightning Timestamp Sensor",
           "update_interval": "Update Interval (minutes)"
         },
         "data_description": {
@@ -36,6 +39,9 @@
           "solar_lux_sensor": "Optional sensor for light-based day/night detection. Backup cloud cover detection and visibility calculations when solar radiation sensor unavailable.",
           "uv_index_sensor": "Optional sensor for clear sky confirmation (high UV = definitely sunny). Provides sun intensity measurement for safety recommendations and enhanced sunny weather detection.",
           "sun_sensor": "Optional sensor providing solar elevation data for accurate cloud cover calculations. Improves weather detection accuracy by accounting for sun position (higher elevation = more expected solar radiation). Falls back to 45° elevation if not configured.",
+          "lightning_count_sensor": "Optional sensor for real-time lightning detection using a hardware lightning detector (e.g., Ecowitt WH57). Provides the number of detected lightning strikes. When configured, replaces the heuristic lightning detection based on pressure and wind patterns.",
+          "lightning_distance_sensor": "Optional sensor providing the distance to the last detected lightning strike. Used together with the strike count sensor to determine if lightning is nearby. Supports both km and mi units.",
+          "lightning_time_sensor": "Optional sensor providing the timestamp of the last detected lightning strike. Used to ensure only recent strikes (within the last 30 minutes) trigger lightning conditions, preventing stale detections from persisting.",
           "update_interval": "How often the weather data is refreshed and sensors are polled. Range: 1-60 minutes. Lower values provide more responsive updates but may increase system load."
         }
       },
@@ -126,6 +132,7 @@
           "wind": "Configure Wind Sensors",
           "rain": "Configure Rain Sensors",
           "solar": "Configure Solar Sensors",
+          "lightning": "Configure Lightning Sensors",
           "device_config": "Device Configuration"
         },
         "data": {
@@ -142,6 +149,9 @@
           "solar_lux_sensor": "Solar Lux Sensor",
           "uv_index_sensor": "UV Index Sensor",
           "sun_sensor": "Sun Sensor",
+          "lightning_count_sensor": "Lightning Strike Count Sensor",
+          "lightning_distance_sensor": "Lightning Distance Sensor",
+          "lightning_time_sensor": "Lightning Timestamp Sensor",
           "altitude": "Station Altitude",
           "update_interval": "Update Interval (minutes)"
         },
@@ -159,6 +169,9 @@
           "solar_lux_sensor": "Optional sensor for light-based day/night detection. Backup cloud cover detection and visibility calculations when solar radiation sensor unavailable.",
           "uv_index_sensor": "Optional sensor for clear sky confirmation (high UV = definitely sunny). Provides sun intensity measurement for safety recommendations and enhanced sunny weather detection.",
           "sun_sensor": "Optional sensor providing solar elevation data for accurate cloud cover calculations. Improves weather detection accuracy by accounting for sun position (higher elevation = more expected solar radiation). Falls back to 45° elevation if not configured.",
+          "lightning_count_sensor": "Optional sensor for real-time lightning detection using a hardware lightning detector (e.g., Ecowitt WH57). Provides the number of detected lightning strikes. When configured, replaces the heuristic lightning detection based on pressure and wind patterns.",
+          "lightning_distance_sensor": "Optional sensor providing the distance to the last detected lightning strike. Used together with the strike count sensor to determine if lightning is nearby. Supports both km and mi units.",
+          "lightning_time_sensor": "Optional sensor providing the timestamp of the last detected lightning strike. Used to ensure only recent strikes (within the last 30 minutes) trigger lightning conditions, preventing stale detections from persisting.",
           "altitude": "Station elevation above sea level. Used to adjust pressure readings to sea-level equivalent for accurate weather detection. Set to 0 if your pressure sensor already provides sea-level pressure (MSLP) or for raw sensor readings. Improves forecast accuracy, especially for pressure-based weather prediction. Defaults to your Home Assistant elevation setting if available, otherwise 0.0 (uses your Home Assistant unit system).",
           "update_interval": "How often the weather data is refreshed and sensors are polled. Range: 1-60 minutes. Lower values provide more responsive updates but may increase system load."
         }
@@ -219,6 +232,19 @@
           "uv_index_sensor": "Optional sensor for clear sky confirmation (high UV = definitely sunny). Provides sun intensity measurement for safety recommendations and enhanced sunny weather detection.",
           "sun_sensor": "Optional sensor providing solar elevation data for accurate cloud cover calculations. Improves weather detection accuracy by accounting for sun position (higher elevation = more expected solar radiation). Falls back to 45° elevation if not configured.",
           "zenith_max_radiation": "Maximum solar radiation at zenith (directly overhead sun). Used to normalize solar radiation readings for accurate cloud cover calculations. Typical values: 400-1200 W/m² depending on location and atmospheric conditions."
+        }
+      },
+      "lightning": {
+        "title": "Lightning Sensors",
+        "data": {
+          "lightning_count_sensor": "Lightning Strike Count Sensor",
+          "lightning_distance_sensor": "Lightning Distance Sensor",
+          "lightning_time_sensor": "Lightning Timestamp Sensor"
+        },
+        "data_description": {
+          "lightning_count_sensor": "Optional sensor for real-time lightning detection using a hardware lightning detector (e.g., Ecowitt WH57). Provides the number of detected lightning strikes. When configured, replaces the heuristic lightning detection based on pressure and wind patterns.",
+          "lightning_distance_sensor": "Optional sensor providing the distance to the last detected lightning strike. Used together with the strike count sensor to determine if lightning is nearby. Supports both km and mi units.",
+          "lightning_time_sensor": "Optional sensor providing the timestamp of the last detected lightning strike. Used to ensure only recent strikes (within the last 30 minutes) trigger lightning conditions, preventing stale detections from persisting."
         }
       },
       "device_config": {

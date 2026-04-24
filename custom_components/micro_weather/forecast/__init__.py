@@ -9,7 +9,12 @@ This package contains specialized forecast generation components:
 """
 
 from .daily import DailyForecastGenerator
-from .evolution import EvolutionModeler
+from .evolution import (
+    EvolutionModeler,
+    LifecyclePhase,
+    apply_confidence_clamping,
+    find_lifecycle_phase,
+)
 from .hourly import HourlyForecastGenerator
 from .meteorological import MeteorologicalAnalyzer
 
@@ -17,5 +22,8 @@ __all__ = [
     "DailyForecastGenerator",
     "EvolutionModeler",
     "HourlyForecastGenerator",
+    "LifecyclePhase",
     "MeteorologicalAnalyzer",
+    "apply_confidence_clamping",
+    "find_lifecycle_phase",
 ]
