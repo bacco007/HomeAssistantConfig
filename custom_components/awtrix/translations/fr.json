@@ -1,0 +1,535 @@
+{
+  "config": {
+    "error": {
+      "unknown": "Erreur inattendue"
+    },
+    "abort": {
+      "single_instance_allowed": "Une seule instance de cette intégration est autorisée."
+    },
+    "step": {}
+  },
+  "services": {
+    "settings": {
+      "name": "Configurer les paramètres Awtrix",
+      "description": "Configurer divers paramètres de l'affichage Awtrix via MQTT.",
+      "fields": {
+        "device": {
+          "name": "Appareil Awtrix",
+          "description": "L'appareil Awtrix à configurer."
+        },
+        "ATIME": {
+          "name": "Durée d'affichage de l'application",
+          "description": "Durée (en secondes) pendant laquelle une application est affichée."
+        },
+        "TEFF": {
+          "name": "Effet de transition de l'application",
+          "description": "Choisir entre les effets de transition d'application (0-10)."
+        },
+        "TSPEED": {
+          "name": "Vitesse de transition de l'application",
+          "description": "Temps (en millisecondes) pris pour la transition vers l'application suivante."
+        },
+        "TCOL": {
+          "name": "Couleur globale du texte",
+          "description": "Couleur globale du texte pour l'affichage."
+        },
+        "TMODE": {
+          "name": "Style de l'application de l'heure",
+          "description": "Modifie le style de l'application de l'heure (0-6)."
+        },
+        "CHCOL": {
+          "name": "Couleur de l'en-tête du calendrier",
+          "description": "Couleur de l'en-tête du calendrier dans l'application de l'heure."
+        },
+        "CBCOL": {
+          "name": "Couleur du corps du calendrier",
+          "description": "Couleur du corps du calendrier dans l'application de l'heure."
+        },
+        "CTCOL": {
+          "name": "Couleur du texte du calendrier",
+          "description": "Couleur du texte pour le calendrier dans l'application de l'heure."
+        },
+        "WD": {
+          "name": "Affichage du jour de la semaine",
+          "description": "Activer ou désactiver l'affichage du jour de la semaine."
+        },
+        "WDCA": {
+          "name": "Couleur des jours actifs",
+          "description": "Couleur pour les jours actifs."
+        },
+        "WDCI": {
+          "name": "Couleur des jours inactifs",
+          "description": "Couleur pour les jours inactifs."
+        },
+        "BRI": {
+          "name": "Luminosité de la matrice",
+          "description": "Luminosité de la matrice (0-255)."
+        },
+        "ABRI": {
+          "name": "Contrôle automatique de la luminosité",
+          "description": "Activer ou désactiver l'ajustement automatique de la luminosité."
+        },
+        "ATRANS": {
+          "name": "Transition automatique de l'application",
+          "description": "Activer ou désactiver le passage automatique à l'application suivante."
+        },
+        "CCORRECTION": {
+          "name": "Correction de couleur",
+          "description": "Ajuster la correction de couleur pour la matrice (valeurs RGB)."
+        },
+        "CTEMP": {
+          "name": "Température de couleur",
+          "description": "Définir la température de couleur pour la matrice (valeurs RGB)."
+        },
+        "TFORMAT": {
+          "name": "Format de l'heure",
+          "description": "Format pour l'affichage de l'heure. Voir : https://blueforcer.github.io/awtrix3/#/api?id=available-time-formats"
+        },
+        "DFORMAT": {
+          "name": "Format de la date",
+          "description": "Format pour l'affichage de la date. Voir : https://blueforcer.github.io/awtrix3/#/api?id=available-date-formats"
+        },
+        "SOM": {
+          "name": "Commencer la semaine le lundi",
+          "description": "Activer ou désactiver le début de la semaine le lundi."
+        },
+        "CEL": {
+          "name": "Température en Celsius",
+          "description": "Afficher la température en Celsius (faux pour Fahrenheit)."
+        },
+        "BLOCKN": {
+          "name": "Bloquer les touches de navigation physiques",
+          "description": "Bloquer les touches de navigation physiques mais toujours envoyer l'entrée via MQTT."
+        },
+        "UPPERCASE": {
+          "name": "Texte en majuscules",
+          "description": "Afficher le texte en majuscules."
+        },
+        "TIME_COL": {
+          "name": "Couleur du texte de l'application de l'heure",
+          "description": "Couleur du texte pour l'application de l'heure. Utiliser 0 pour la couleur globale du texte."
+        },
+        "DATE_COL": {
+          "name": "Couleur du texte de l'application de la date",
+          "description": "Couleur du texte pour l'application de la date. Utiliser 0 pour la couleur globale du texte."
+        },
+        "TEMP_COL": {
+          "name": "Couleur du texte de l'application de la température",
+          "description": "Couleur du texte pour l'application de la température. Utiliser 0 pour la couleur globale du texte."
+        },
+        "HUM_COL": {
+          "name": "Couleur du texte de l'application de l'humidité",
+          "description": "Couleur du texte pour l'application de l'humidité. Utiliser 0 pour la couleur globale du texte."
+        },
+        "BAT_COL": {
+          "name": "Couleur du texte de l'application de la batterie",
+          "description": "Couleur du texte pour l'application de la batterie. Utiliser 0 pour la couleur globale du texte."
+        },
+        "SSPEED": {
+          "name": "Vitesse de défilement",
+          "description": "Pourcentage de modification de la vitesse de défilement originale."
+        },
+        "TIM": {
+          "name": "Activer l'application de l'heure",
+          "description": "Activer ou désactiver l'application de l'heure native (nécessite un redémarrage)."
+        },
+        "DAT": {
+          "name": "Activer l'application de la date",
+          "description": "Activer ou désactiver l'application de la date native (nécessite un redémarrage)."
+        },
+        "HUM": {
+          "name": "Activer l'application de l'humidité",
+          "description": "Activer ou désactiver l'application de l'humidité native (nécessite un redémarrage)."
+        },
+        "TEMP": {
+          "name": "Activer l'application de la température",
+          "description": "Activer ou désactiver l'application de la température native (nécessite un redémarrage)."
+        },
+        "BAT": {
+          "name": "Activer l'application de la batterie",
+          "description": "Activer ou désactiver l'application de la batterie native (nécessite un redémarrage)."
+        },
+        "MATP": {
+          "name": "Activer la matrice",
+          "description": "Activer ou désactiver la matrice sans animation de mise sous tension."
+        },
+        "VOL": {
+          "name": "Volume du buzzer",
+          "description": "Définir le volume pour le buzzer et le DFPlayer (0-30)."
+        },
+        "OVERLAY": {
+          "name": "Effet de superposition global",
+          "description": "Définir un effet de superposition global (ne peut pas être utilisé avec les superpositions spécifiques à l'application)."
+        }
+      }
+    },
+    "notification": {
+      "name": "Afficher une notification personnalisée",
+      "description": "Envoyer un message personnalisé à l'affichage Awtrix.",
+      "fields": {
+        "device": {
+          "name": "Appareil Awtrix",
+          "description": "L'appareil Awtrix auquel envoyer la notification."
+        },
+        "duration": {
+          "name": "Durée d'affichage",
+          "description": "Temps (en secondes) pendant lequel la notification doit être affichée."
+        },
+        "repeat": {
+          "name": "Défilement répété",
+          "description": "Nombre de fois où le texte doit défiler à travers la matrice avant la fin de la notification (-1 durée prise en compte)."
+        },
+        "hold": {
+          "name": "Maintenir la notification",
+          "description": "Définir sur vrai pour maintenir la notification affiché jusqu'à ce que vous appuyiez sur le bouton du milieu ou la fassiez disparaître via HomeAssistant."
+        },
+        "stack": {
+          "name": "Empiler les notifications",
+          "description": "Si désactivé, remplace immédiatement la notification en cours."
+        },
+        "wakeup": {
+          "name": "Réveiller la matrice",
+          "description": "Si la matrice est arrétée, réveille la matrice pendant la notification."
+        },
+        "clients": {
+          "name": "Transmettre aux clients",
+          "description": "Envoyer cette notification à d'autres appareils Awtrix."
+        },
+        "text": {
+          "name": "Texte du message",
+          "description": "Le texte à afficher sur la matrice (Ex. : Bonjour, Awtrix). Pour présenter un texte où des fragments peuvent être coloriés, utiliser un tableau de fragments avec 't' représentant le fragment de texte et 'c' représentant la valeur hexadécimale de la couleur (Ex. : [{ 't': 'Bonjour, ', 'c': 'FF0000'}, {'t': 'monde !', 'c': '00FF00'}])."
+        },
+        "textCase": {
+          "name": "Casse du texte",
+          "description": "Convertir la casse du texte."
+        },
+        "color": {
+          "name": "Couleur",
+          "description": "Couleur du texte ou des graphiques."
+        },
+        "rainbow": {
+          "name": "Effet arc-en-ciel",
+          "description": "Applique un effet arc-en-ciel animé au texte."
+        },
+        "gradient": {
+          "name": "Couleurs dégradées",
+          "description": "Applique un dégradée en utilisant deux couleurs."
+        },
+        "center": {
+          "name": "Centrer le texte",
+          "description": "Centre un texte court et non défilant."
+        },
+        "topText": {
+          "name": "Texte en haut",
+          "description": "Si activé, dessine le texte en haut."
+        },
+        "textOffset": {
+          "name": "Décalage du texte",
+          "description": "Définit un décalage pour la position de départ du texte."
+        },
+        "blinkText": {
+          "name": "Intervalle de clignotement",
+          "description": "Fait clignoter le texte à l'intervalle donné (ms)."
+        },
+        "fadeText": {
+          "name": "Intervalle de fondu",
+          "description": "Fait apparaître et disparaître le texte à l'intervalle donné (ms)."
+        },
+        "noScroll": {
+          "name": "Désactiver le défilement",
+          "description": "Empêche le texte de défiler."
+        },
+        "scrollSpeed": {
+          "name": "Vitesse de défilement",
+          "description": "Pourcentage de la vitesse de défilement originale."
+        },
+        "background": {
+          "name": "Couleur de fond",
+          "description": "Définit la couleur de fond."
+        },
+        "effect": {
+          "name": "Effet de fond",
+          "description": "Effet à afficher en arrière-plan."
+        },
+        "effectSettings": {
+          "name": "Paramètres de l'effet",
+          "description": "Paramètres pour la couleur et la vitesse de l'effet."
+        },
+        "overlay": {
+          "name": "Effet de superposition",
+          "description": "Définit un effet de superposition."
+        },
+        "icon": {
+          "name": "Icône",
+          "description": "ID ou nom de fichier d'une icône à afficher."
+        },
+        "pushIcon": {
+          "name": "Comportement de l'icône",
+          "description": "0 = statique, 1 = se déplace une fois, 2 = réapparaît."
+        },
+        "sound": {
+          "name": "Fichier sonore",
+          "description": "Nom de fichier du fichier RTTTL ou MP3 à jouer."
+        },
+        "rtttl": {
+          "name": "Chaîne sonore RTTTL",
+          "description": "Chaîne sonore formatée RTTTL à jouer."
+        },
+        "loopSound": {
+          "name": "Répèter le son",
+          "description": "Répète le son aussi longtemps que la notification est active."
+        },
+        "bar": {
+          "name": "Données du bargraphe",
+          "description": "Dessine un bargraphe. Sans icône, maximum 16 valeurs, avec icône 11 valeurs : [ 10, 20, 30, 40 ]"
+        },
+        "barBC": {
+          "name": "Couleur de fond du bargraphe",
+          "description": "Couleur de fond du bargraphe."
+        },
+        "line": {
+          "name": "Données du graphique en ligne",
+          "description": "Dessine un graphique en ligne. Sans icône, maximum 16 valeurs, avec icône 11 valeurs : [ 5, 15, 25, 35 ]"
+        },
+        "autoscale": {
+          "name": "Mise à l'échelle automatique du graphique",
+          "description": "Active la mise à l'échelle automatique pour les graphiques à barres et en ligne."
+        },
+        "progress": {
+          "name": "Valeur de progression",
+          "description": "Affiche une barre de progression (0-100)."
+        },
+        "progressC": {
+          "name": "Couleur de la barre de progression",
+          "description": "Couleur de la barre de progression."
+        },
+        "progressBC": {
+          "name": "Couleur de fond de la barre de progression",
+          "description": "Couleur de fond de la barre de progression."
+        },
+        "draw": {
+          "name": "Dessiner une image personnalisée",
+          "description": "Tableau d'instructions de dessin. Chaque objet représente une commande de dessin. https://blueforcer.github.io/awtrix3/#/api?id=drawing-instructions"
+        }
+      },
+      "sections": {
+        "Notification Global Parameters": {
+          "name": "Paramètres globaux de notification",
+          "description": "Paramètres globaux pour les notifications."
+        },
+        "Text Parameters": {
+          "name": "Paramètres de texte",
+          "description": "Paramètres pour le texte des notifications."
+        },
+        "Background & Effect Parameters": {
+          "name": "Paramètres de l'arrière plan et d'effet",
+          "description": "Paramètres pour l'arrière plan' et les effets des notifications."
+        },
+        "Icon Parameters": {
+          "name": "Paramètres d'icône",
+          "description": "Paramètres pour les icônes des notifications."
+        },
+        "Sound Parameters": {
+          "name": "Paramètres sonores",
+          "description": "Paramètres pour les sons des notifications."
+        },
+        "Graph & Chart Parameters": {
+          "name": "Paramètres de représentations graphiques",
+          "description": "Paramètres pour les graphiques et barres de progréssions des notifications."
+        }
+      }
+    },
+    "custom_app": {
+      "name": "Afficher une application personnalisée",
+      "description": "Envoyer un message personnalisé à l'affichage Awtrix.",
+      "fields": {
+        "device": {
+          "name": "Appareil Awtrix",
+          "description": "L'appareil Awtrix à mettre à jour avec l'application personnalisée."
+        },
+        "app": {
+          "name": "Nom de l'application",
+          "description": "Le nom de l'application personnalisée à mettre à jour."
+        },
+        "save": {
+          "name": "Enregistrer dans la mémoire flash",
+          "description": "Enregistre l'application personnalisée dans la mémoire flash."
+        },
+        "duration": {
+          "name": "Durée d'affichage",
+          "description": "Temps (en secondes) pendant lequel l'application doit être affichée."
+        },
+        "repeat": {
+          "name": "Défilement répété",
+          "description": "Nombre de fois où le texte doit défiler (-1 pour infini)."
+        },
+        "lifetime": {
+          "name": "Durée de vie de l'application",
+          "description": "Supprime l'application si aucune mise à jour n'est reçue dans ce délai (secondes)."
+        },
+        "lifetimeMode": {
+          "name": "Mode de durée de vie",
+          "description": "0 = supprime l'application, 1 = la marque comme obsolète avec un rectangle rouge autour de l'application."
+        },
+        "pos": {
+          "name": "Position de la page personnalisée",
+          "description": "Définit la position de la page personnalisée dans la boucle."
+        },
+        "text": {
+          "name": "Texte du message",
+          "description": "Le texte à afficher sur la matrice (Ex. : Bonjour, Awtrix). Pour présenter un texte où des fragments peuvent être coloriés, utiliser un tableau de fragments avec 't' représentant le fragment de texte et 'c' représentant la valeur hexadécimale de la couleur (Ex. : [{ 't': 'Bonjour, ', 'c': 'FF0000'}, {'t': 'monde !', 'c': '00FF00'}])."
+        },
+        "textCase": {
+          "name": "Casse du texte",
+          "description": "Convertir la casse du texte."
+        },
+        "color": {
+          "name": "Couleur",
+          "description": "Couleur du texte ou des graphiques."
+        },
+        "rainbow": {
+          "name": "Effet arc-en-ciel",
+          "description": "Applique un effet arc-en-ciel animé au texte."
+        },
+        "gradient": {
+          "name": "Couleurs dégradées",
+          "description": "Applique un dégradée en utilisant deux couleurs."
+        },
+        "center": {
+          "name": "Centrer le texte",
+          "description": "Centre un texte court et non défilant."
+        },
+        "topText": {
+          "name": "Texte en haut",
+          "description": "Si activé, dessine le texte en haut."
+        },
+        "textOffset": {
+          "name": "Décalage du texte",
+          "description": "Définit un décalage pour la position de départ du texte."
+        },
+        "blinkText": {
+          "name": "Intervalle de clignotement",
+          "description": "Fait clignoter le texte à l'intervalle donné (ms)."
+        },
+        "fadeText": {
+          "name": "Intervalle de fondu",
+          "description": "Fait apparaître et disparaître le texte à l'intervalle donné (ms)."
+        },
+        "noScroll": {
+          "name": "Désactiver le défilement",
+          "description": "Empêche le texte de défiler."
+        },
+        "scrollSpeed": {
+          "name": "Vitesse de défilement",
+          "description": "Pourcentage de la vitesse de défilement originale."
+        },
+        "background": {
+          "name": "Couleur de fond",
+          "description": "Définit la couleur de fond."
+        },
+        "effect": {
+          "name": "Effet de fond",
+          "description": "Effet à afficher en arrière-plan."
+        },
+        "effectSettings": {
+          "name": "Paramètres de l'effet",
+          "description": "Paramètres pour la couleur et la vitesse de l'effet."
+        },
+        "overlay": {
+          "name": "Effet de superposition",
+          "description": "Définit un effet de superposition."
+        },
+        "icon": {
+          "name": "Icône",
+          "description": "ID ou nom de fichier d'une icône à afficher."
+        },
+        "pushIcon": {
+          "name": "Comportement de l'icône",
+          "description": "0 = statique, 1 = se déplace une fois, 2 = réapparaît."
+        },
+        "bar": {
+          "name": "Données du bargraphe",
+          "description": "Dessine un bargraphe. Sans icône, maximum 16 valeurs, avec icône 11 valeurs : [ 10, 20, 30, 40 ]"
+        },
+        "barBC": {
+          "name": "Couleur de fond du bargraphe",
+          "description": "Couleur de fond du bargraphe."
+        },
+        "line": {
+          "name": "Données du graphique en ligne",
+          "description": "Dessine un graphique en ligne. Sans icône, maximum 16 valeurs, avec icône 11 valeurs : [ 5, 15, 25, 35 ]"
+        },
+        "autoscale": {
+          "name": "Mise à l'échelle automatique du graphique",
+          "description": "Active la mise à l'échelle automatique pour les graphiques à barres et en ligne."
+        },
+        "progress": {
+          "name": "Valeur de progression",
+          "description": "Affiche une barre de progression (0-100)."
+        },
+        "progressC": {
+          "name": "Couleur de la barre de progression",
+          "description": "Couleur de la barre de progression."
+        },
+        "progressBC": {
+          "name": "Couleur de fond de la barre de progression",
+          "description": "Couleur de fond de la barre de progression."
+        },
+        "draw": {
+          "name": "Dessiner une image personnalisée",
+          "description": "Tableau d'instructions de dessin. Chaque objet représente une commande de dessin. https://blueforcer.github.io/awtrix3/#/api?id=drawing-instructions"
+        }
+      },
+      "sections": {
+        "Custom App Global Parameters": {
+          "name": "Paramètres globaux de l'application personnalisée",
+          "description": "Paramètres globaux pour les applications personnalisées."
+        },
+        "Text Parameters": {
+          "name": "Paramètres de texte",
+          "description": "Paramètres pour le texte des applications personnalisées."
+        },
+        "Background & Effect Parameters": {
+          "name": "Paramètres de l'arrière plan et d'effet",
+          "description": "Paramètres pour le fond et les effets des applications personnalisées."
+        },
+        "Icon Parameters": {
+          "name": "Paramètres d'icône",
+          "description": "Paramètres pour les icônes des applications personnalisées."
+        },
+        "Graph & Chart Parameters": {
+          "name": "Paramètres de représentations graphiques",
+          "description": "Paramètres pour les graphiques et barres de progréssions des applications personnalisées."
+        }
+      }
+    },
+    "delete_custom_app": {
+      "name": "Supprimer une application personnalisée",
+      "description": "Supprimer une application personnalisée de l'appareil Awtrix.",
+      "fields": {
+        "device": {
+          "name": "Appareil Awtrix",
+          "description": "L'appareil Awtrix à partir duquel supprimer l'application personnalisée."
+        },
+        "app": {
+          "name": "Nom de l'application",
+          "description": "Le nom de l'application personnalisée à supprimer."
+        }
+      }
+    },
+    "deep_sleep": {
+      "name": "Veille profonde",
+      "description": "Envoyer la carte en mode veille profonde (éteint également la matrice), bon pour économiser la vie de la batterie.",
+      "fields": {
+        "device": {
+          "name": "Appareil Awtrix",
+          "description": "L'appareil Awtrix à mettre en mode veille profonde."
+        },
+        "sleep": {
+          "name": "Secondes de veille",
+          "description": "Nombre de secondes de veille"
+        }
+      }
+    }
+  }
+}
