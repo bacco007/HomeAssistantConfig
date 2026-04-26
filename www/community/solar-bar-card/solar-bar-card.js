@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.9.3 - EV charging icon colour follows grid state + config UI label polish
+// Version 2.9.4 - Console badge style + config label fixes
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -206,11 +206,10 @@ class SolarBarCard extends HTMLElement {
       ev_history_entity: null,
       consumer_1_history_entity: null,
       consumer_2_history_entity: null,
+      ev_icon_color: null,
       // Power unit display
       power_unit: 'kW',
       show_power_unit: true,
-      // EV icon symbol color (mdi:car-electric color inside the circle)
-      ev_icon_color: null,
       // Bar segment text templates — tokens: {value}, {label}, {percent}, {raw}
       segment_text_solar_home: null,
       segment_text_solar_ev: null,
@@ -572,8 +571,6 @@ class SolarBarCard extends HTMLElement {
       // Power unit display
       power_unit = 'kW',
       show_power_unit = true,
-      // EV icon symbol color
-      ev_icon_color = null,
       // Bar segment text templates
       segment_text_solar_home = null,
       segment_text_solar_ev = null,
@@ -1804,7 +1801,7 @@ class SolarBarCard extends HTMLElement {
 
         .ev-icon ha-icon {
           --mdc-icon-size: 18px;
-          color: ${ev_icon_color || 'black'};
+          color: ${colors.ev_icon_color || 'white'};
         }
 
         .ev-icon.idle {
@@ -2163,7 +2160,7 @@ class SolarBarCard extends HTMLElement {
                      data-entity="${ev_charger_sensor}"
                      data-action-key="ev"
                      title="${isActuallyCharging ? `${this.getLabel('ev')}: ${fmtPow(actualEvCharging)} - ${this.getLabel('click_history')}` : evReadyFull ? this.getLabel('excess_solar_full') : evReadyHalf ? this.getLabel('excess_solar_half') : this.getLabel('ev')}">
-                  <ha-icon icon="mdi:car-electric"></ha-icon>
+                  <ha-icon icon="mdi:car"></ha-icon>
                 </div>
               ` : ''}
               ${hasBattery && show_battery_indicator ? `
@@ -2653,8 +2650,7 @@ class SolarBarCardEditor extends HTMLElement {
       grid_icon_export_color: "Grid Icon Export Color",
       grid_icon_idle_color: "Grid Icon Idle Color",
       grid_icon_color: "Grid Icon Tower Color",
-      ev_icon_idle_color: "EV Icon Idle Color",
-      ev_icon_charging_color: "EV Icon Charging Color",
+      ev_icon_color: "EV Car Icon Color",
       show_stats: "Show Individual Stats",
       show_legend: "Show Legend",
       show_legend_values: "Show Legend Values",
@@ -2662,6 +2658,8 @@ class SolarBarCardEditor extends HTMLElement {
       show_bar_values: "Show Bar Values",
       decimal_places: "Decimal Places",
       battery_soc_decimal_places: "Battery SOC Decimals",
+      power_unit: "Power Unit",
+      show_power_unit: "Show Power Unit",
       stats_border_radius: "Stats Tile Border Radius",
       show_stats_detail: "Show Stats Detail Row",
       stats_detail_position: "Stats Detail Position",
@@ -2740,8 +2738,7 @@ class SolarBarCardEditor extends HTMLElement {
       grid_icon_export_color: "Custom background color for the grid icon circle when exporting.",
       grid_icon_idle_color: "Custom background color for the grid icon circle when idle (no import/export).",
       grid_icon_color: "Color of the transmission tower icon inside the circle (default: black).",
-      ev_icon_idle_color: "Custom color for the EV icon when idle (not charging, no excess solar).",
-      ev_icon_charging_color: "Custom color for the EV icon when actively charging.",
+      ev_icon_color: "Color of the car icon inside the EV circle (default: white).",
       show_stats: "Display individual power statistics above the bar (dynamic layout - adapts to configured entities)",
       show_legend: "Display color-coded legend below the bar",
       show_legend_values: "Show current kW values in the legend",
@@ -2955,8 +2952,6 @@ class SolarBarCardEditor extends HTMLElement {
               { name: "grid_icon_export_color", selector: { color_rgb: {} } },
               { name: "grid_icon_idle_color", selector: { color_rgb: {} } },
               { name: "grid_icon_color", selector: { color_rgb: {} } },
-              { name: "ev_icon_idle_color", selector: { color_rgb: {} } },
-              { name: "ev_icon_charging_color", selector: { color_rgb: {} } },
               { name: "ev_icon_color", selector: { color_rgb: {} } }
             ]
           },
@@ -3150,4 +3145,8 @@ window.customCards.push({
   documentationURL: 'https://github.com/0xAHA/solar-bar-card'
 });
 
-console.info('%c🌞 Solar Bar Card v2.9.3 loaded!', 'color: #4CAF50; font-weight: bold;');
+console.info(
+  '%c SOLAR-BAR-CARD %c v2.9.4 ',
+  'color:#fff;background:#f57c00;font-weight:700;padding:2px 4px;border-radius:4px 0 0 4px;',
+  'color:#f57c00;background:#fff3e0;font-weight:700;padding:2px 4px;border-radius:0 4px 4px 0;'
+);

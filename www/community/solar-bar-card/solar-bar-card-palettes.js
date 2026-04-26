@@ -484,8 +484,7 @@ export function getCardColors(config) {
   if (config.grid_icon_export_color) colors = { ...colors, grid_icon_export: toColor(config.grid_icon_export_color) };
   if (config.grid_icon_idle_color) colors = { ...colors, grid_icon_idle: toColor(config.grid_icon_idle_color) };
   if (config.grid_icon_color) colors = { ...colors, grid_icon_color: toColor(config.grid_icon_color) };
-  if (config.ev_icon_idle_color) colors = { ...colors, ev_icon_idle: toColor(config.ev_icon_idle_color) };
-  if (config.ev_icon_charging_color) colors = { ...colors, ev_icon_charging: toColor(config.ev_icon_charging_color) };
+  if (config.ev_icon_color) colors = { ...colors, ev_icon_color: toColor(config.ev_icon_color) };
 
   return colors;
 }
