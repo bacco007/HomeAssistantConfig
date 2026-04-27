@@ -38,6 +38,7 @@ class ClockPvForecastCard extends LitElement {
     super();
     this._weekdayCache = {};
     this._dateCache = {};
+    this._cacheDate = new Date().toDateString();
     this._configError = null;
   }
 
@@ -119,7 +120,17 @@ class ClockPvForecastCard extends LitElement {
     return false;
   }
 
+  _checkCacheDate() {
+    const today = new Date().toDateString();
+    if (this._cacheDate !== today) {
+      this._weekdayCache = {};
+      this._dateCache = {};
+      this._cacheDate = today;
+    }
+  }
+
   render() {
+    this._checkCacheDate();
     if (this._configError) {
       const errorTitle = this._localize('error_config');
       const errorMsg = this._configError === 'config_missing' ? 'Configuration is required' : this._localize('error_entity');
@@ -253,7 +264,7 @@ class ClockPvForecastCard extends LitElement {
 
     return html`
       <div class="forecast-row" role="row">
-        <div class="day" role="cell" style="width: ${this.config.day_column_width}">${dayLabel}</div>
+        <div class="day" role="cell" style="min-width: ${this.config.day_column_width}">${dayLabel}</div>
         <div class="bar-container ${barShapeClass} ${isFixedGradient ? 'fixed-gradient' : ''}" role="cell">
           <div class="bar ${barTypeClass} ${barShapeClass}" style="${barStyle}"></div>
           ${attributeMarker}
@@ -310,7 +321,7 @@ class ClockPvForecastCard extends LitElement {
     const dayLabel = this._getDayLabel(item.offset);
     return html`
         <div class="forecast-row error" role="row">
-            <div class="day" role="cell" style="width: ${this.config.day_column_width}">${dayLabel}</div>
+            <div class="day" role="cell" style="min-width: ${this.config.day_column_width}">${dayLabel}</div>
             <div class="bar-container error" role="cell">
                 <div class="error-text">${errorMessage}</div>
             </div>
@@ -340,7 +351,7 @@ class ClockPvForecastCard extends LitElement {
 
     return html`
         <div class="forecast-row">
-            <div class="day" style="width: ${this.config.day_column_width}">${remainingLabel}</div>
+            <div class="day" style="min-width: ${this.config.day_column_width}">${remainingLabel}</div>
             <div class="bar-container rtl ${barShapeClass} ${(this.config.gradient_fixed || this.config.bar_style === 'tiered') ? 'fixed-gradient' : ''}">
                 <div class="bar ${blinkClass} ${barTypeClass} ${barShapeClass}" style="${barStyle}"></div>
                 ${this.config.show_tooltips ? this._renderTooltip(remaining, this.config.entity_remaining, remainingLabel) : ''}
@@ -352,7 +363,7 @@ class ClockPvForecastCard extends LitElement {
   _errorBar(label, msg) {
     return html`
         <div class="forecast-row error">
-            <div class="day" style="width: ${this.config.day_column_width}">${label}</div>
+            <div class="day" style="min-width: ${this.config.day_column_width}">${label}</div>
             <div class="bar-container error">
                 <div class="error-text">${msg}</div>
             </div>
@@ -448,11 +459,11 @@ class ClockPvForecastCard extends LitElement {
 
 
   static styles = css`
-    .forecast-rows { display: flex; flex-direction: column; gap: 0.4em; padding: 1em; isolation: isolate; }
-    .forecast-row { display: flex; align-items: center; gap: 0.8em; }
-    .forecast-row.error { opacity: 0.6; }
-    .day { text-align: right; font-weight: bold; color: var(--primary-text-color); }
-    .bar-container { flex-grow: 1; height: 14px; background: var(--divider-color, #eee); border-radius: 7px; position: relative; overflow: visible; container-type: inline-size; }
+    .forecast-rows { display: grid; grid-template-columns: max-content 1fr auto; row-gap: 0.4em; column-gap: 0.8em; padding: 1em; isolation: isolate; align-items: center; }
+    .forecast-row { display: contents; }
+    .forecast-row.error > * { opacity: 0.6; }
+    .day { text-align: right; font-weight: bold; color: var(--primary-text-color); white-space: nowrap; }
+    .bar-container { width: 100%; height: 14px; background: var(--divider-color, #eee); border-radius: 7px; position: relative; overflow: visible; container-type: inline-size; }
     .bar-container.rtl { direction: rtl; }
     .bar-container.error { display: flex; align-items: center; justify-content: center; overflow: hidden; }
     
@@ -482,8 +493,8 @@ class ClockPvForecastCard extends LitElement {
     .tooltip-content { text-align: center; }
     @keyframes fill-bar { to { width: var(--bar-width); } }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-    @media (max-width: 480px) { .forecast-rows { gap: 0.2em; padding: 0.5em; } .remaining-dot { width: 8px; height: 8px; border-width: 1px; } .remaining-text-inside { font-size: 0.6em; } .value { font-size: 0.75em; width: 3.5em; } .day { font-size: 0.85em; } .tooltip { top: -50px; font-size: 0.7em; } }
-    @media (max-width: 320px) { .forecast-rows { gap: 0.1em; padding: 0.3em; } .forecast-row { gap: 0.4em; } .remaining-dot { width: 6px; height: 6px; border-width: 1px; } .remaining-text-inside { font-size: 0.55em; } }
+    @media (max-width: 480px) { .forecast-rows { row-gap: 0.2em; padding: 0.5em; } .remaining-dot { width: 8px; height: 8px; border-width: 1px; } .remaining-text-inside { font-size: 0.6em; } .value { font-size: 0.75em; width: 3.5em; } .day { font-size: 0.85em; } .tooltip { top: -50px; font-size: 0.7em; } }
+    @media (max-width: 320px) { .forecast-rows { row-gap: 0.1em; column-gap: 0.4em; padding: 0.3em; } .remaining-dot { width: 6px; height: 6px; border-width: 1px; } .remaining-text-inside { font-size: 0.55em; } }
   `;
 }
 
