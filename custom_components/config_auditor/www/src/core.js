@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   if (customElements.get('haca-panel')) return; // already loaded, skip entirely
-  const HACA_VERSION = '1.7.0'; // build marker
+  const HACA_VERSION = '1.6.4'; // build marker
 
   // Dans l'iframe (embed_iframe:true), ha-icon n'est pas enregistré.
   // On copie la définition depuis le document parent où HA l'a déjà défini.
@@ -9,7 +9,7 @@
     try {
       const ParentHaIcon = window.parent.customElements.get('ha-icon');
       if (ParentHaIcon) customElements.define('ha-icon', ParentHaIcon);
-    } catch (_) { }
+    } catch(_) {}
   }
 
   // Table des paths MDI — remplace ha-icon pour éviter les problèmes dans l'iframe
@@ -118,7 +118,7 @@
     'sort-ascending': 'M19 17H22L18 21L14 17H17V3H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z',
     'sort-descending': 'M19 7H22L18 3L14 7H17V21H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z',
     'page-first': 'M18.41 16.59L13.82 12L18.41 7.41L17 6L11 12L17 18L18.41 16.59M6 6H8V18H6V6Z',
-    'page-last': 'M5.59 7.41L10.18 12L5.59 16.59L7 18L13 12L7 6L5.59 7.41M16 6H18V18H16V6Z',
+    'page-last':  'M5.59 7.41L10.18 12L5.59 16.59L7 18L13 12L7 6L5.59 7.41M16 6H18V18H16V6Z',
     'cog-outline': 'M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10M10,22C9.75,22 9.54,21.82 9.5,21.58L9.13,18.93C8.5,18.68 7.96,18.34 7.44,17.94L4.95,18.95C4.73,19.03 4.46,18.95 4.34,18.73L2.34,15.27C2.21,15.05 2.27,14.78 2.46,14.63L4.57,12.97L4.5,12L4.57,11L2.46,9.37C2.27,9.22 2.21,8.95 2.34,8.73L4.34,5.27C4.46,5.05 4.73,4.96 4.95,5.05L7.44,6.05C7.96,5.66 8.5,5.32 9.13,5.07L9.5,2.42C9.54,2.18 9.75,2 10,2H14C14.25,2 14.46,2.18 14.5,2.42L14.87,5.07C15.5,5.32 16.04,5.66 16.56,6.05L19.05,5.05C19.27,4.96 19.54,5.05 19.66,5.27L21.66,8.73C21.79,8.95 21.73,9.22 21.54,9.37L19.43,11L19.5,12L19.43,13L21.54,14.63C21.73,14.78 21.79,15.05 21.66,15.27L19.66,18.73C19.54,18.95 19.27,19.04 19.05,18.95L16.56,17.95C16.04,18.34 15.5,18.68 14.87,18.93L14.5,21.58C14.46,21.82 14.25,22 14,22H10M11.25,4L10.88,6.61C9.68,6.86 8.62,7.5 7.85,8.39L5.44,7.35L4.69,8.65L6.8,10.2C6.4,11.37 6.4,12.64 6.8,13.8L4.68,15.36L5.43,16.66L7.86,15.62C8.63,16.5 9.68,17.14 10.87,17.38L11.24,20H12.76L13.13,17.39C14.32,17.14 15.37,16.5 16.14,15.62L18.57,16.66L19.32,15.36L17.2,13.81C17.6,12.64 17.6,11.37 17.2,10.2L19.31,8.65L18.56,7.35L16.15,8.39C15.38,7.5 14.32,6.86 13.12,6.62L12.75,4H11.25Z',
     'menu': 'M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z',
   };
@@ -131,7 +131,7 @@
   window._icon = _icon;
 
   // ── HACA ID utilities (shared across issues, compliance, redundancy) ───
-  window._hacaHash6 = function (str) {
+  window._hacaHash6 = function(str) {
     // Simple deterministic 6-char hex hash (matches Python md5[:6])
     var h = 0x811c9dc5;
     for (var i = 0; i < str.length; i++) {
@@ -142,7 +142,7 @@
     return hex.substring(0, 6);
   };
 
-  window._hacaCopyId = function (id, toastFn, successMsg) {
+  window._hacaCopyId = function(id, toastFn, successMsg) {
     // Robust clipboard copy with fallback for HA shadow DOM / iframe contexts
     function fallbackCopy(text) {
       var ta = document.createElement('textarea');
@@ -150,13 +150,13 @@
       ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
       document.body.appendChild(ta);
       ta.select();
-      try { document.execCommand('copy'); } catch (e) { /* ignore */ }
+      try { document.execCommand('copy'); } catch(e) { /* ignore */ }
       document.body.removeChild(ta);
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(id).then(function () {
+      navigator.clipboard.writeText(id).then(function() {
         if (toastFn) toastFn(successMsg || ('ID ' + id + ' copied'));
-      }).catch(function () {
+      }).catch(function() {
         fallbackCopy(id);
         if (toastFn) toastFn(successMsg || ('ID ' + id + ' copied'));
       });
@@ -177,10 +177,10 @@
 
   // ── Surveillance log ────────────────────────────────────────────────────────
   // Persiste dans window._HACA_LOG pour survivre aux navigations dans le même
-  function _hlog() { } // logging désactivé en production
+  function _hlog() {} // logging désactivé en production
   if (!window._HACA_STATE) window._HACA_STATE = {
-    booting: false, ready: false, rendered: false, hass: false,
-    splash: false, retry: false, errors: 0
+    booting:false, ready:false, rendered:false, hass:false,
+    splash:false, retry:false, errors:0
   };
 
 
@@ -192,8 +192,8 @@
       this._lastConnection = null;
       this._language = 'en';
       this._connected = false;
-      this._hass = null;
-      this._panel = null;
+      this._hass       = null;
+      this._panel      = null;
       // Le constructor ne fait RIEN d'autre : l'élément n'est pas encore dans le DOM.
       // Tout démarre dans connectedCallback().
       _hlog('INF', 'constructor: element created');
@@ -250,7 +250,7 @@
         this._rejectionHandler = (event) => {
           const msg = event.reason?.message || String(event.reason);
           if (msg.includes('Subscription not found') || msg.includes('not_found') ||
-            msg.includes('Connection lost') || msg.includes('Lost connection')) {
+              msg.includes('Connection lost') || msg.includes('Lost connection')) {
             event.preventDefault();
             this._unsubNewIssues = null;
           }
@@ -383,7 +383,7 @@
                 parts.push(rule.cssText);
               }
             }
-          } catch (_) { } // feuilles cross-origin ignorées
+          } catch(_) {} // feuilles cross-origin ignorées
         }
         if (!parts.length) return;
 
@@ -449,7 +449,7 @@
             height: 20px;
           }
         `;
-      } catch (_) { }
+      } catch(_) {}
     }
 
     _updateLogo() {
@@ -506,10 +506,10 @@
       const fg = getComputedStyle(document.documentElement)
         .getPropertyValue('--primary-color').trim() || '#03a9f4';
       el.style.cssText = [
-        'position:fixed', 'inset:0', 'z-index:9999',
-        'display:flex', 'flex-direction:column', 'align-items:center', 'justify-content:center',
+        'position:fixed','inset:0','z-index:9999',
+        'display:flex','flex-direction:column','align-items:center','justify-content:center',
         `background:${bg}`,
-        'gap:20px', 'font-family:var(--paper-font-body1_-_font-family,sans-serif)',
+        'gap:20px','font-family:var(--paper-font-body1_-_font-family,sans-serif)',
       ].join(';');
       el.innerHTML = `
         <style>
@@ -572,8 +572,8 @@
     _tryBoot() {
       // Préconditions : l'élément doit être dans le DOM, avec hass et panel
       if (!this._connected) return;
-      if (!this._hass) return;
-      if (!this._panel) return;
+      if (!this._hass)      return;
+      if (!this._panel)     return;
 
       if (this._fullyReady) {
         // Déjà initialisé — panel déjà rendu, données en cache → affichage immédiat
@@ -2075,8 +2075,8 @@
               <div id="chat-examples-panel" style="flex-shrink:0;border-bottom:1px solid var(--divider-color);background:var(--secondary-background-color);">
                 <button id="chat-examples-toggle"
                   style="width:100%;padding:8px 20px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;color:var(--primary-text-color);font-size:12px;font-weight:600;">
-                  <span style="display:flex;align-items:center;gap:6px;">${_icon('lightbulb-on-outline', 14)} ${this.t('chat.examples_title')}</span>
-                  <span id="chat-examples-chevron" style="transition:transform 0.2s;">${_icon('chevron-down', 14)}</span>
+                  <span style="display:flex;align-items:center;gap:6px;">${_icon('lightbulb-on-outline',14)} ${this.t('chat.examples_title')}</span>
+                  <span id="chat-examples-chevron" style="transition:transform 0.2s;">${_icon('chevron-down',14)}</span>
                 </button>
                 <div id="chat-examples-body" style="display:none;padding:0 16px 12px;display:flex;flex-wrap:wrap;gap:6px;">
                   ${this._buildExampleChips()}
@@ -2197,7 +2197,7 @@
 
       // Chat examples panel — toggle collapse
       const exToggle = this.shadowRoot.querySelector('#chat-examples-toggle');
-      const exBody = this.shadowRoot.querySelector('#chat-examples-body');
+      const exBody   = this.shadowRoot.querySelector('#chat-examples-body');
       const exChevron = this.shadowRoot.querySelector('#chat-examples-chevron');
       if (exToggle && exBody) {
         // Start collapsed
@@ -2670,7 +2670,7 @@
       if (this._lastChatTime && (now - this._lastChatTime) < 3000) {
         const wait = Math.ceil((3000 - (now - this._lastChatTime)) / 1000);
         this._appendChatMsg('assistant',
-          `⏳ ${this.t('chat.rate_limit', { wait }) || `Wait ${wait}s`}`);
+          `⏳ ${this.t('chat.rate_limit', {wait}) || `Wait ${wait}s`}`);
         return;
       }
       this._lastChatTime = now;
@@ -2801,7 +2801,7 @@
                     type: 'haca/save_options',
                     options: { report_frequency: freqSel.value },
                   });
-                } catch (e) {
+                } catch(e) {
                   console.warn('[HACA] save report_frequency error', e);
                 }
               });
@@ -2829,8 +2829,8 @@
       if (!el) return;
 
       // État local persistant sur l'instance
-      if (!this._complianceAll) this._complianceAll = null;
-      if (!this._complianceSort) this._complianceSort = 'severity';
+      if (!this._complianceAll)    this._complianceAll    = null;
+      if (!this._complianceSort)   this._complianceSort   = 'severity';
       if (!this._complianceFilter) this._complianceFilter = 'all';
 
       const PAG_ID = 'compliance-list';
@@ -2855,13 +2855,13 @@
         issues = issues.filter(i => i.severity === this._complianceFilter);
       }
       // Tri
-      const sev = { high: 0, medium: 1, low: 2 };
+      const sev = {high:0, medium:1, low:2};
       if (this._complianceSort === 'severity') {
-        issues.sort((a, b) => (sev[a.severity] || 2) - (sev[b.severity] || 2));
+        issues.sort((a,b) => (sev[a.severity]||2) - (sev[b.severity]||2));
       } else if (this._complianceSort === 'type') {
-        issues.sort((a, b) => (a.type || '').localeCompare(b.type || ''));
+        issues.sort((a,b) => (a.type||'').localeCompare(b.type||''));
       } else if (this._complianceSort === 'entity') {
-        issues.sort((a, b) => (a.alias || a.entity_id || '').localeCompare(b.alias || b.entity_id || ''));
+        issues.sort((a,b) => (a.alias||a.entity_id||'').localeCompare(b.alias||b.entity_id||''));
       }
       return issues;
     }
@@ -2875,15 +2875,15 @@
       const all = this._complianceAll;
       // Counts sur la totalité (pas filtrée) pour les stat cards
       const counts = {
-        total: all.length,
-        high: all.filter(i => i.severity === 'high').length,
+        total:  all.length,
+        high:   all.filter(i => i.severity === 'high').length,
         medium: all.filter(i => i.severity === 'medium').length,
-        low: all.filter(i => i.severity === 'low').length,
+        low:    all.filter(i => i.severity === 'low').length,
         _area_truncated: all.some(i => i.type === 'compliance_entity_no_area_bulk'),
       };
 
       const filtered = this._complianceSortedFiltered();
-      const st = this._pagState(PAG_ID);
+      const st    = this._pagState(PAG_ID);
       const paged = this._pagSlice(filtered, st.page, st.pageSize);
       const pagHtml = this._pagHTML(PAG_ID, filtered.length, st.page, st.pageSize);
 
@@ -2902,7 +2902,7 @@
       el.querySelectorAll('.compliance-sort-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           this._complianceSort = btn.dataset.sort;
-          this._pagSet(PAG_ID, { page: 0 }, () => this._renderCompliancePage(el, PAG_ID));
+          this._pagSet(PAG_ID, {page: 0}, () => this._renderCompliancePage(el, PAG_ID));
         });
       });
 
@@ -2910,7 +2910,7 @@
       el.querySelectorAll('.compliance-filter-card').forEach(card => {
         card.addEventListener('click', () => {
           this._complianceFilter = card.dataset.filter;
-          this._pagSet(PAG_ID, { page: 0 }, () => this._renderCompliancePage(el, PAG_ID));
+          this._pagSet(PAG_ID, {page: 0}, () => this._renderCompliancePage(el, PAG_ID));
         });
       });
 
@@ -2929,7 +2929,7 @@
           if (id) {
             window._hacaCopyId(id,
               (msg) => this._showToast(msg),
-              this.t('issues.id_copied', { id: id })
+              this.t('issues.id_copied', {id: id})
             );
           }
         });
@@ -3141,8 +3141,8 @@
           this._dataErrorCount = (this._dataErrorCount || 0) + 1;
           window._HACA_STATE.errors = this._dataErrorCount;
           const reason = isHacaNotReady ? 'HACA not ready (unknown_command)' : 'WS reconnecting';
-          _hlog('WRN', 'loadData(): FAILED #' + this._dataErrorCount + ' — ' + reason + ' | msg=' + msg.substring(0, 80));
-          // Splash uniquement pendant le boot initial (pas encore fullyReady).
+          _hlog('WRN', 'loadData(): FAILED #' + this._dataErrorCount + ' — ' + reason + ' | msg=' + msg.substring(0,80));
+            // Splash uniquement pendant le boot initial (pas encore fullyReady).
           // Post-boot, une erreur WS est silencieuse — le watchdog auto-refresh retentera.
           if (!this._fullyReady) {
             this._showBootSplash();
@@ -3151,7 +3151,7 @@
             window._HACA_STATE.retry = true;
             this._bootRetryTimer = setInterval(() => {
               if (!this._connected || !this._hass) return;
-              // Ne pas effacer le timer ici : loadData() retourne toujours undefined.
+                    // Ne pas effacer le timer ici : loadData() retourne toujours undefined.
               // On efface uniquement quand le boot splash a disparu (= chargement réussi),
               // ce qui est détecté par _hideBootSplash() appelé dans loadData() au succès.
               this.loadData();
@@ -3200,7 +3200,7 @@
           const label = this.t('misc.last_scan') || 'Last scan';
           tsEl.innerHTML = `<span style="font-size:11px;opacity:0.6;">${label}</span><br><span style="font-weight:600;">${dd}/${mm}/${yyyy} ${hh}:${mn}</span>`;
           tsEl.title = d.toLocaleString();
-        } catch (e) { tsEl.textContent = ''; }
+        } catch(e) { tsEl.textContent = ''; }
       }
 
       // Health score card colour
@@ -3412,7 +3412,7 @@
       </table>
       <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
         <span style="font-size:12px;color:var(--secondary-text-color);">
-          ${this.t('recorder.estimated_total', { mb, count })}
+          ${this.t('recorder.estimated_total', {mb, count})}
         </span>
         <button id="recorder-purge-selected-btn" style="background:#ff7043;color:#fff;font-size:12px;padding:6px 14px;">
           ${_icon("delete-sweep-outline", 15)} ${this.t('misc.purge_selection')}
@@ -3609,18 +3609,18 @@
 
       // Issue counters — 2 per row
       const rows = [
-        [['security_issues', 'mdi:shield-alert', 'security', 'red'],
-        ['total_issues', 'mdi:counter', 'total_issues', 'deep-orange']],
-        [['automation_issues', 'mdi:robot', 'automations', 'orange'],
-        ['entity_issues', 'mdi:alert-circle-outline', 'entities', 'amber']],
-        [['performance_issues', 'mdi:speedometer', 'performance', 'teal'],
-        ['script_issues', 'mdi:script-text-outline', 'scripts', 'cyan']],
-        [['scene_issues', 'mdi:palette-outline', 'scenes', 'indigo'],
-        ['blueprint_issues', 'mdi:file-document-outline', 'blueprints', 'blue']],
-        [['dashboard_issues', 'mdi:view-dashboard-outline', 'dashboards', 'purple'],
-        ['helper_issues', 'mdi:form-textbox', 'helpers', 'blue-grey']],
-        [['compliance_issues', 'mdi:check-decagram-outline', 'compliance', 'green'],
-        ['battery_alerts', 'mdi:battery-alert-variant-outline', 'battery', 'orange']],
+        [['security_issues',    'mdi:shield-alert',                  'security',     'red'],
+         ['total_issues',       'mdi:counter',                       'total_issues', 'deep-orange']],
+        [['automation_issues',  'mdi:robot',                         'automations',  'orange'],
+         ['entity_issues',      'mdi:alert-circle-outline',          'entities',     'amber']],
+        [['performance_issues', 'mdi:speedometer',                   'performance',  'teal'],
+         ['script_issues',      'mdi:script-text-outline',           'scripts',      'cyan']],
+        [['scene_issues',       'mdi:palette-outline',               'scenes',       'indigo'],
+         ['blueprint_issues',   'mdi:file-document-outline',         'blueprints',   'blue']],
+        [['dashboard_issues',   'mdi:view-dashboard-outline',        'dashboards',   'purple'],
+         ['helper_issues',      'mdi:form-textbox',                  'helpers',      'blue-grey']],
+        [['compliance_issues',  'mdi:check-decagram-outline',        'compliance',   'green'],
+         ['battery_alerts',     'mdi:battery-alert-variant-outline',  'battery',      'orange']],
       ];
 
       for (const [a, b] of rows) {

@@ -488,7 +488,7 @@ function _updateTypeCounts(el) {
 (function () {
   'use strict';
   if (customElements.get('haca-panel')) return; // already loaded, skip entirely
-  const HACA_VERSION = '1.7.1'; // build marker
+  const HACA_VERSION = '1.7.2'; // build marker
 
   // Dans l'iframe (embed_iframe:true), ha-icon n'est pas enregistré.
   // On copie la définition depuis le document parent où HA l'a déjà défini.

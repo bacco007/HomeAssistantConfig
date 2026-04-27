@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant 配置审计器",
-    "version": "v1.7.1",
+    "version": "v1.7.2",
     "buttons": {
       "scan_all": "全面扫描",
       "automations": "自动化",

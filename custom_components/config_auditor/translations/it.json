@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Revisore di configurazione Home Assistant",
-    "version": "v1.7.1",
+    "version": "v1.7.2",
     "buttons": {
       "scan_all": "Scansione Completa",
       "automations": "Automazioni",
