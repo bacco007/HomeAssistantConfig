@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.9.4 - Console badge style + config label fixes
+// Version 2.9.5 - GPU performance fix: remove Gaussian blur from animated SVG path
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -1429,7 +1429,7 @@ class SolarBarCard extends HTMLElement {
           padding: 0 12px;
           height: 32px;
           margin-bottom: 4px;
-          transition: all 0.3s ease;
+          transition: border-color 0.3s ease, background-color 0.3s ease;
         }
 
         .battery-indicator.charging {
@@ -1478,7 +1478,8 @@ class SolarBarCard extends HTMLElement {
           bottom: 1px;
           background: linear-gradient(90deg, #4CAF50, #8BC34A);
           border-radius: 1px;
-          transition: width 0.3s ease;
+          transition: transform 0.3s ease;
+          transform-origin: left center;
         }
 
         .battery-level.low {
@@ -1568,9 +1569,10 @@ class SolarBarCard extends HTMLElement {
           left: 0;
           top: 0;
           bottom: 0;
+          width: 100%;
           background: linear-gradient(90deg, var(--battery-bar-color), var(--battery-bar-color));
-          transition: width 0.3s ease;
-          border-radius: 16px;
+          transform-origin: left center;
+          transition: transform 0.3s ease;
         }
 
         .bar-overlay-label {
@@ -1639,7 +1641,7 @@ class SolarBarCard extends HTMLElement {
           align-items: center;
           justify-content: center;
           font-size: 18px;
-          transition: all 0.3s ease;
+          transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
           flex-shrink: 0;
           cursor: pointer;
         }
@@ -1676,7 +1678,7 @@ class SolarBarCard extends HTMLElement {
           align-items: center;
           justify-content: center;
           font-size: 18px;
-          transition: all 0.3s ease;
+          transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
           flex-shrink: 0;
           cursor: pointer;
           background: var(--solar-usage-color);
@@ -1737,7 +1739,7 @@ class SolarBarCard extends HTMLElement {
           color: white;
           font-size: 10px;
           font-weight: 600;
-          transition: all 0.3s ease;
+          transition: width 0.3s ease, opacity 0.3s ease;
           text-shadow: 0 1px 2px rgba(0,0,0,0.5);
           position: relative;
           z-index: 3;
@@ -1790,7 +1792,7 @@ class SolarBarCard extends HTMLElement {
           justify-content: center;
           flex-shrink: 0;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: transform 0.3s ease, background-color 0.3s ease, opacity 0.3s ease;
           background: var(--disabled-text-color, #9e9e9e);
           box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
@@ -2165,7 +2167,7 @@ class SolarBarCard extends HTMLElement {
               ` : ''}
               ${hasBattery && show_battery_indicator ? `
                 <div class="battery-bar-wrapper ${isIdle ? 'standby' : ''}" style="width: ${batteryBarWidth}%" data-entity="${battery_soc_entity}" data-action-key="battery" title="${this.getLabel('click_history')}">
-                  <div class="battery-bar-fill ${batteryCharging ? 'charging' : batteryDischarging ? 'discharging' : batterySOC < 20 ? 'low' : batterySOC < 50 ? 'medium' : ''}" style="width: ${batterySOC}%"></div>
+                  <div class="battery-bar-fill ${batteryCharging ? 'charging' : batteryDischarging ? 'discharging' : batterySOC < 20 ? 'low' : batterySOC < 50 ? 'medium' : ''}" style="transform: scaleX(${(batterySOC / 100).toFixed(4)})"></div>
                   ${shouldShowSegmentText(batteryBarWidth, `${batterySOC.toFixed(battery_soc_decimal_places)} %`, 100) ? `<div class="bar-overlay-label">${batterySOC.toFixed(battery_soc_decimal_places)} %</div>` : ''}
                 </div>
               ` : ''}
@@ -2206,21 +2208,11 @@ class SolarBarCard extends HTMLElement {
               ` : ''}
               ${showBatteryFlow ? `
                 <svg class="flow-line-container" width="100%" height="32" viewBox="0 0 100 32" preserveAspectRatio="xMidYMid slice" style="z-index: 2;">
-                  <defs>
-                    <filter id="batteryGlow">
-                      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                      <feMerge>
-                        <feMergeNode in="coloredBlur"/>
-                        <feMergeNode in="SourceGraphic"/>
-                      </feMerge>
-                    </filter>
-                  </defs>
                   <path id="batteryFlowPath"
                         d="${batteryFlowPath}"
                         stroke="${batteryFlowColor}"
                         stroke-width="4"
                         fill="none"
-                        filter="url(#batteryGlow)"
                         stroke-dasharray="4,4"
                         opacity="0.7"
                         vector-effect="non-scaling-stroke">
@@ -3146,7 +3138,7 @@ window.customCards.push({
 });
 
 console.info(
-  '%c SOLAR-BAR-CARD %c v2.9.4 ',
+  '%c SOLAR-BAR-CARD %c v2.9.5 ',
   'color:#fff;background:#f57c00;font-weight:700;padding:2px 4px;border-radius:4px 0 0 4px;',
   'color:#f57c00;background:#fff3e0;font-weight:700;padding:2px 4px;border-radius:0 4px 4px 0;'
 );
