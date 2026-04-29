@@ -1,0 +1,69 @@
+{
+  "2026-tasmania": {
+    "sessions": [
+      {
+        "label": "Practice 1",
+        "type": "practice",
+        "start_iso": "2026-05-22T16:05:00+10:00",
+        "start_local": "Fri 22 May 16:05 Hobart"
+      },
+      {
+        "label": "Practice 2",
+        "type": "practice",
+        "start_iso": "2026-05-22T18:20:00+10:00",
+        "start_local": "Fri 22 May 18:20 Hobart"
+      },
+      {
+        "label": "Qualifying",
+        "type": "qualifying",
+        "start_iso": "2026-05-23T10:35:00+10:00",
+        "start_local": "Sat 23 May 10:35 Hobart"
+      },
+      {
+        "label": "Race 1",
+        "type": "race",
+        "start_iso": "2026-05-23T14:00:00+10:00",
+        "start_local": "Sat 23 May 14:00 Hobart"
+      },
+      {
+        "label": "Race 2",
+        "type": "race",
+        "start_iso": "2026-05-23T16:10:00+10:00",
+        "start_local": "Sat 23 May 16:10 Hobart"
+      },
+      {
+        "label": "Race 3",
+        "type": "race",
+        "start_iso": "2026-05-24T13:45:00+10:00",
+        "start_local": "Sun 24 May 13:45 Hobart"
+      }
+    ]
+  },
+  "2026-darwin": {
+    "sessions": []
+  },
+  "2026-townsville": {
+    "sessions": []
+  },
+  "2026-perth": {
+    "sessions": []
+  },
+  "2026-ipswich": {
+    "sessions": []
+  },
+  "2026-the-bend": {
+    "sessions": []
+  },
+  "2026-bathurst": {
+    "sessions": []
+  },
+  "2026-gold-coast": {
+    "sessions": []
+  },
+  "2026-sandown": {
+    "sessions": []
+  },
+  "2026-adelaide": {
+    "sessions": []
+  }
+}

@@ -21,7 +21,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     news_coordinator = NewsCoordinator(hass)
     schedule_coordinator = ScheduleCoordinator(hass)
     standings_coordinator = StandingsCoordinator(hass)
-    results_coordinator = ResultsCoordinator(hass)
+    results_coordinator = ResultsCoordinator(hass, timing_coordinator)
 
     await timing_coordinator.async_config_entry_first_refresh()
     await news_coordinator.async_config_entry_first_refresh()

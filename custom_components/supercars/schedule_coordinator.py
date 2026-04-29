@@ -1,15 +1,17 @@
 """Dynamic Supercars schedule coordinator.
 
-Selects the current or next event from the 2026 calendar by date,
-fetches the official schedule article from supercars.com, parses
-Supercars-only session times from the markdown tables, and provides
-countdown data updated every 30 seconds.
+Selects the current or next event from the 2026 calendar by date.
+Session data is loaded from the bundled schedule_2026.json first; if no
+local sessions are found for the event, falls back to fetching and parsing
+the official schedule article from supercars.com.
 """
 from __future__ import annotations
 
+import json
 import logging
 import re
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -18,6 +20,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DOMAIN
+
+_LOCAL_SCHEDULE_PATH = Path(__file__).parent / "schedule_2026.json"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -220,6 +224,37 @@ def _parse_time(time_str: str, year: int, month: int, day: int, tz: ZoneInfo) ->
         return datetime(year, month, day, int(m.group(1)), int(m.group(2)), tzinfo=tz)
     except ValueError:
         return None
+
+
+def _load_local_sessions(slug: str, event_tz: str) -> list[dict]:
+    """Load sessions for *slug* from the bundled schedule_2026.json.
+
+    Returns an empty list when the slug is absent or has no sessions.
+    """
+    try:
+        data = json.loads(_LOCAL_SCHEDULE_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as err:
+        _LOGGER.warning("Could not read local schedule file: %s", err)
+        return []
+
+    raw_sessions = data.get(slug, {}).get("sessions", [])
+    sessions: list[dict] = []
+    tz = ZoneInfo(event_tz)
+
+    for raw in raw_sessions:
+        try:
+            start_dt = datetime.fromisoformat(raw["start_iso"]).astimezone(tz)
+        except (KeyError, ValueError):
+            continue
+        sessions.append({
+            "label":       raw.get("label", "Session"),
+            "type":        raw.get("type", "other"),
+            "start":       start_dt,
+            "start_iso":   start_dt.isoformat(),
+            "start_local": raw.get("start_local", start_dt.strftime(f"%a %d %b %H:%M {event_tz.split('/')[-1]}")),
+        })
+
+    return sorted(sessions, key=lambda s: s["start"])
 
 
 def _parse_schedule_html(html: str, event: dict) -> list[dict]:
@@ -464,23 +499,37 @@ class ScheduleCoordinator(DataUpdateCoordinator):
                 "next_race_countdown_seconds": None,
             }
 
-        # Re-fetch schedule HTML only when the event changes
+        # Reload sessions only when the event changes
         if event["slug"] != self._cached_slug:
-            _LOGGER.info("Fetching schedule for %s from %s", event["name"], event["schedule_url"])
-            try:
-                html = await self._fetch_schedule(event["schedule_url"])
-                self._cached_sessions = _parse_schedule_html(html, event)
-                self._cached_slug = event["slug"]
-                _LOGGER.debug(
-                    "Parsed %d Supercars sessions for %s",
-                    len(self._cached_sessions),
-                    event["name"],
+            # Prefer local JSON — no network request needed
+            local = _load_local_sessions(event["slug"], event["tz"])
+            if local:
+                _LOGGER.info(
+                    "Loaded %d local sessions for %s", len(local), event["name"]
                 )
-            except Exception as err:
-                _LOGGER.warning("Could not fetch schedule for %s: %s", event["name"], err)
-                if not self._cached_sessions:
-                    raise UpdateFailed(f"Schedule fetch failed: {err}") from err
-                # Fall through with stale cache
+                self._cached_sessions = local
+                self._cached_slug = event["slug"]
+            else:
+                # Fall back to web scraping
+                _LOGGER.info(
+                    "No local sessions for %s; fetching from %s",
+                    event["name"],
+                    event["schedule_url"],
+                )
+                try:
+                    html = await self._fetch_schedule(event["schedule_url"])
+                    self._cached_sessions = _parse_schedule_html(html, event)
+                    self._cached_slug = event["slug"]
+                    _LOGGER.debug(
+                        "Parsed %d Supercars sessions for %s",
+                        len(self._cached_sessions),
+                        event["name"],
+                    )
+                except Exception as err:
+                    _LOGGER.warning("Could not fetch schedule for %s: %s", event["name"], err)
+                    if not self._cached_sessions:
+                        raise UpdateFailed(f"Schedule fetch failed: {err}") from err
+                    # Fall through with stale cache
 
         local_now = now.astimezone(ZoneInfo(event["tz"]))
         data = _countdown_data(self._cached_sessions, local_now)
