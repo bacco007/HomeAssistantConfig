@@ -1,12 +1,11 @@
 # Nordic Theme
 # Creator: Colton @coltondick
-# Date: 2026-04-26
-# Notes: MDC/list/menu hardening, profile dropdown selected-state fixes, organization, and contrast-audit adjustments.
+# Date: 2026-04-29
+# Notes: Deduplication of keys accidentally added in the Web Awesome compatibility layer.
 
 nordic:
   modes:
     light:
-
       # ─────────────────────────────────────────────────────────────────────────────
       # Base Nordic palette
       # ─────────────────────────────────────────────────────────────────────────────
@@ -127,7 +126,6 @@ nordic:
       primary-color: "var(--accent-color)"
       accent-color: "var(--frost-green)"
       accent-medium-color: "var(--frost-cadet-blue)"
-
 
       # Contrast-safe variants for light mode surfaces.
       # These keep the Nordic hue family but darken colors enough for readable UI states.
@@ -356,8 +354,6 @@ nordic:
       md-sys-color-on-primary: "var(--polar-dark-gray)"
       md-sys-color-primary-container: "var(--snow-dark)"
       md-sys-color-on-primary-container: "var(--polar-dark-gray)"
-      md-sys-color-secondary-container: "var(--snow-medium)"
-      md-sys-color-on-secondary-container: "var(--polar-dark-gray)"
       md-list-container-color: "var(--ha-card-background)"
       md-list-item-label-text-color: "var(--primary-text-color)"
       md-list-item-supporting-text-color: "var(--secondary-text-color)"
@@ -564,7 +560,6 @@ nordic:
       state-alarm_control_panel-pending-color: var(--contrast-yellow-color)
       state-alarm_control_panel-triggered-color: var(--aurora-red)
     dark:
-
       # ─────────────────────────────────────────────────────────────────────────────
       # Base Nordic palette
       # ─────────────────────────────────────────────────────────────────────────────
@@ -690,7 +685,6 @@ nordic:
       contrast-red-color: "#c6767f"
       contrast-blue-color: "#7392b7"
       muted-visible-color: "var(--ha-color-neutral-60)"
-
 
       # ─────────────────────────────────────────────────────────────────────────────
       # Typography
@@ -900,8 +894,6 @@ nordic:
       paper-item-icon-active-color: "var(--polar-dark-gray)"
       mdc-theme-surface: "var(--ha-card-background)"
       mdc-theme-on-surface: "var(--primary-text-color)"
-      mdc-theme-on-primary: "var(--polar-dark-gray)"
-      mdc-theme-on-secondary: "var(--polar-dark-gray)"
       md-sys-color-surface: "var(--ha-card-background)"
       md-sys-color-on-surface: "var(--primary-text-color)"
       md-sys-color-surface-container: "var(--polar-river-gray)"
@@ -909,8 +901,6 @@ nordic:
       md-sys-color-on-primary: "var(--polar-dark-gray)"
       md-sys-color-primary-container: "var(--polar-river-gray)"
       md-sys-color-on-primary-container: "var(--snow-light)"
-      md-sys-color-secondary-container: "var(--polar-river-gray)"
-      md-sys-color-on-secondary-container: "var(--snow-light)"
       md-list-container-color: "var(--ha-card-background)"
       md-list-item-label-text-color: "var(--primary-text-color)"
       md-list-item-supporting-text-color: "var(--secondary-text-color)"
