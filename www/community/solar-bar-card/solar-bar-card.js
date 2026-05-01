@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.9.5 - GPU performance fix: remove Gaussian blur from animated SVG path
+// Version 2.9.6 - Fix Usage stat mirror + show Grid Idle tile when entity configured
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -2053,7 +2053,7 @@ class SolarBarCard extends HTMLElement {
             </div>`,
             `<div class="stat" data-entity="${self_consumption_entity}" data-action-key="usage" title="${this.getLabel('click_history')}">
               <div class="stat-label">${this.getLabel('usage')}</div>
-              <div class="stat-value">${fmtPow(totalHouseConsumption)}${isInline ? renderDetail(hasConsHistoryData && dailyConsumption !== null ? `${dailyConsumption.toFixed(decimal_places)} kWh` : null) : ''}</div>
+              <div class="stat-value">${fmtPow(self_consumption_entity ? selfConsumption : totalHouseConsumption)}${isInline ? renderDetail(hasConsHistoryData && dailyConsumption !== null ? `${dailyConsumption.toFixed(decimal_places)} kWh` : null) : ''}</div>
               ${!isInline ? renderDetail(hasConsHistoryData && dailyConsumption !== null ? `${dailyConsumption.toFixed(decimal_places)} kWh` : null) : ''}
             </div>`,
             exportPower > 0 ? `
@@ -2075,6 +2075,11 @@ class SolarBarCard extends HTMLElement {
                 </div>
                 <div class="stat-value">${fmtPow(totalGridImport)}${isInline ? renderDetail(importDetailText) : ''}</div>
                 ${!isInline ? renderDetail(importDetailText) : ''}
+              </div>
+            ` : (grid_power_entity || export_entity || import_entity) ? `
+              <div class="stat" data-entity="${grid_power_entity || export_entity || import_entity}" data-action-key="export" title="${this.getLabel('grid_idle')}">
+                <div class="stat-label">${this.getLabel('grid_idle')}</div>
+                <div class="stat-value">${fmtPow(0)}</div>
               </div>
             ` : null
           ].filter(Boolean);
@@ -3138,7 +3143,7 @@ window.customCards.push({
 });
 
 console.info(
-  '%c SOLAR-BAR-CARD %c v2.9.5 ',
+  '%c SOLAR-BAR-CARD %c v2.9.6 ',
   'color:#fff;background:#f57c00;font-weight:700;padding:2px 4px;border-radius:4px 0 0 4px;',
   'color:#f57c00;background:#fff3e0;font-weight:700;padding:2px 4px;border-radius:0 4px 4px 0;'
 );
