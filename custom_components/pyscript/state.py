@@ -1,19 +1,24 @@
 """Handles state variable access and change notification."""
 
 import asyncio
-from datetime import datetime
 import logging
+from datetime import datetime
 
 from homeassistant.const import STATE_UNAVAILABLE, STATE_UNKNOWN
 from homeassistant.core import Context
 from homeassistant.helpers.restore_state import DATA_RESTORE_STATE
 from homeassistant.helpers.service import async_get_all_descriptions
-from homeassistant.helpers.template import (
+from homeassistant.helpers.template.extensions.math import _SENTINEL as MATH_SENTINEL
+from homeassistant.helpers.template.extensions.math import MathExtension
+from homeassistant.helpers.template.extensions.type_cast import (
+    _SENTINEL as TYPECAST_SENTINEL,
+)
+from homeassistant.helpers.template.extensions.type_cast import (
+    TypeCastExtension,
+)
+from homeassistant.helpers.template.helpers import (
     _SENTINEL,
     forgiving_boolean,
-    forgiving_float,
-    forgiving_int,
-    forgiving_round,
     raise_no_default,
 )
 from homeassistant.util import dt as dt_util
@@ -40,21 +45,25 @@ class StateVal(str):
         new_var.last_reported = state.last_reported
         return new_var
 
-    def as_float(self, default: float = _SENTINEL) -> float:
+    def as_float(self, default: float = TYPECAST_SENTINEL) -> float:
         """Return the state converted to float via the forgiving helper."""
-        return forgiving_float(self, default=default)
+        return TypeCastExtension.forgiving_float(self, default=default)
 
-    def as_int(self, default: int = _SENTINEL, base: int = 10) -> int:
+    def as_int(self, default: int = TYPECAST_SENTINEL, base: int = 10) -> int:
         """Return the state converted to int via the forgiving helper."""
-        return forgiving_int(self, default=default, base=base)
+        return TypeCastExtension.forgiving_int(self, default=default, base=base)
 
     def as_bool(self, default: bool = _SENTINEL) -> bool:
         """Return the state converted to bool via the forgiving helper."""
         return forgiving_boolean(self, default=default)
 
-    def as_round(self, precision: int = 0, method: str = "common", default: float = _SENTINEL) -> float:
+    def as_round(
+        self, precision: int = 0, method: str = "common", default: float = MATH_SENTINEL
+    ) -> float:
         """Return the rounded state value via the forgiving helper."""
-        return forgiving_round(self, precision=precision, method=method, default=default)
+        return MathExtension.forgiving_round(
+            self, precision=precision, method=method, default=default
+        )
 
     def as_datetime(self, default: datetime = _SENTINEL) -> datetime:
         """Return the state converted to a datetime, matching the forgiving template behaviour."""
