@@ -37,7 +37,7 @@ HISTORY_LOG_SIZE = 25
 BLEED_PLATFORMS = frozenset({"esphome"})
 
 # Identity Constants
-ID_INDIRECT_AUTOMATION = "automation.indirect"
+ID_INDIRECT_AUTOMATION = "whodunnit.indirect"
 NAME_INDIRECT_AUTOMATION = "Automation (Indirect)"
 NAME_DEVICE = "Device"
 NAME_READY = "None"
@@ -92,11 +92,11 @@ SOURCE_TYPE_SERVICE = "service"     # Service account (Node-RED, AppDaemon, etc.
 EVENT_TRIGGER_DETECTED = "whodunnit_trigger_detected"
 
 # Default Values
-EVENT_TIME_DEFAULT = "None"
-SOURCE_TYPE_DEFAULT = "None"
-SOURCE_ID_DEFAULT = "None"
-USER_ID_DEFAULT = "None"
-CONTEXT_ID_DEFAULT = "None"
+EVENT_TIME_DEFAULT = None
+SOURCE_TYPE_DEFAULT = None
+SOURCE_ID_DEFAULT = None
+USER_ID_DEFAULT = None
+CONTEXT_ID_DEFAULT = None
 
 SUPPORTED_DOMAINS = [
     # Trackable device domains
@@ -112,3 +112,19 @@ SUPPORTED_DOMAINS = [
     # Other meaningful trackable domains
     "alarm_control_panel", "timer",
 ]
+
+# Cache tuning constants (shared by __init__.py and sensor.py)
+# How long (seconds) a cached context entry remains valid.
+CACHE_TTL = 120
+# Maximum entries in the shared context cache at any one time.
+CACHE_MAX_SIZE = 200
+# Minimum interval (seconds) between cache cleanup passes.
+CACHE_CLEANUP_INTERVAL = 30
+# How long (seconds) a user identity cache entry remains valid.
+USER_CACHE_TTL = 300
+
+# All valid sensor state slugs, used for restored-state validation.
+VALID_STATES = frozenset({
+    STATE_MONITORING, STATE_AUTOMATION, STATE_DEVICE,
+    STATE_UI, STATE_SCENE, STATE_SCRIPT, STATE_SERVICE,
+})
