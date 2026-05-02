@@ -125,6 +125,7 @@ const TRANSLATIONS = {
       schedule: 'Planning',
       agenda: 'Agenda',
       resetAgenda: "Retour à aujourd'hui",
+      openDashboard: 'Ouvrir le tableau de bord',
       calendars: 'Calendriers',
       calendar: 'Calendrier',
       eventTitle: "Titre de l'événement",
@@ -230,6 +231,7 @@ const TRANSLATIONS = {
       schedule: 'Zeitplan',
       agenda: 'Agenda',
       resetAgenda: 'Zu heute springen',
+      openDashboard: 'Dashboard öffnen',
       calendars: 'Kalender',
       calendar: 'Kalender',
       eventTitle: 'Terminname',
@@ -335,6 +337,7 @@ const TRANSLATIONS = {
       schedule: 'Schema',
       agenda: 'Agenda',
       resetAgenda: 'Ga naar vandaag',
+      openDashboard: 'Dashboard openen',
       calendars: "Agenda's",
       calendar: 'agenda',
       eventTitle: 'Afspraak onderwerp',
@@ -531,6 +534,112 @@ const TRANSLATIONS = {
       moreEvents: '+{count} más',
       eventTitleWithStartTime: '{title}, {time}',
       monthWeekPrefix: 'Sem.'
+    }
+  },
+
+  ca: {
+    locale: 'ca-ES',
+    strings: {
+      defaultTitle: 'Calendari Familiar',
+      addEvent: 'Afegir esdeveniment',
+      today: 'Avui',
+      month: 'Mes',
+      week: 'Setmana',
+      schedule: 'Horari',
+      agenda: 'Agenda',
+      resetAgenda: "Anar a avui",
+      openDashboard: 'Obrir tauler',
+      calendars: 'Calendaris',
+      calendar: 'Calendari',
+      eventTitle: "Títol de l'esdeveniment",
+      eventTitlePlaceholder: "Reunió d'equip",
+      allDayEvent: 'Esdeveniment de tot el dia',
+      recurring: 'Recurrent',
+      eventOptions: "Opcions de l'esdeveniment",
+      recurringEventOptions: 'Opcions de recurrència',
+      recurrenceFrequency: 'Repetir',
+      recurrenceEvery: 'Cada',
+      recurrenceIntervalSuffix: 'interval(s)',
+      recurrenceEndsOn: 'Acaba el',
+      recurrenceCount: 'Ocurrències (QUANTITAT)',
+      recurrenceWeekdays: 'Dies de la setmana',
+      recurrenceNoEndDate: "Sense data de finalització (opcional)",
+      recurrenceDaily: 'Diàriament',
+      recurrenceWeekly: 'Setmanalment',
+      recurrenceMonthly: 'Mensualment',
+      recurrenceYearly: 'Anualment',
+      recurrenceNever: 'Mai',
+      recurrenceOn: 'El',
+      recurrenceAfter: 'Després de',
+      recurrenceOccurrences: 'ocurrències',
+      recurrenceSelectWeekday: "Selecciona almenys un dia de la setmana per als esdeveniments recurrents setmanals",
+      start: 'Inici',
+      end: 'Fi',
+      startDate: "Data d'inici",
+      endDate: 'Data de fi',
+      location: 'Ubicació',
+      locationPlaceholder: 'Sala de conferències A',
+      description: 'Descripció',
+      descriptionPlaceholder: "Detalls de l'esdeveniment...",
+      cancel: 'Cancel·lar',
+      createEvent: 'Crear esdeveniment',
+      creating: 'Creant...',
+      editEvent: "Editar esdeveniment",
+      saveChanges: 'Desar canvis',
+      saving: 'Desant...',
+      delete: 'Eliminar',
+      deleting: 'Eliminant...',
+      deleteEventTitle: "Eliminar esdeveniment",
+      deleteRecurringEventTitle: 'Eliminar esdeveniment recurrent',
+      deleteEventConfirm: 'Estàs segur que vols eliminar "{title}"? Aquesta acció no es pot desfer.',
+      deleteRecurringPrompt: '"{title}" és un esdeveniment recurrent. Com vols eliminar-lo?',
+      editRecurringEventTitle: 'Editar esdeveniment recurrent',
+      editRecurringPrompt: '"{title}" és un esdeveniment recurrent. Com vols editar-lo?',
+      editThisOccurrence: 'Editar només aquesta ocurrència',
+      editThisOccurrenceAndFuture: 'Editar aquesta ocurrència i totes les futures',
+      editEntireSeries: 'Editar tota la sèrie recurrent',
+      deleteThisEventOnly: 'Només aquest esdeveniment',
+      deleteThisOccurrence: 'Eliminar només aquesta ocurrència',
+      deleteThisAndFutureEvents: 'Aquest i els esdeveniments futurs',
+      deleteThisOccurrenceAndFuture: 'Eliminar aquesta ocurrència i totes les futures',
+      deleteAllEvents: 'Tots els esdeveniments',
+      deleteEntireSeries: 'Eliminar tota la sèrie recurrent',
+      noEvents: 'No hi ha esdeveniments',
+      allDay: 'Tot el dia',
+      at: 'a les',
+      duration: 'Durada',
+      attendees: 'Assistents',
+      recurrence: 'Recurrència',
+      recurringEvent: 'Esdeveniment recurrent',
+      unknownAttendee: 'Desconegut',
+      googleCalendarLimitationTitle: 'ℹ️ Limitació de Google Calendar:',
+      googleCalendarLimitationBody: "Actualment no es permet l'edició d'esdeveniments de Google Calendar a través de Home Assistant. Pots eliminar esdeveniments des d'aquí, però per editar-los, utilitza l'aplicació o el lloc web de Google Calendar.",
+      cannotModifyTitle: 'ℹ️ No es pot modificar:',
+      cannotModifyBody: "A aquest esdeveniment li falta informació obligatòria (UID) per a la seva edició o eliminació. Potser cal que el tornis a crear.",
+      untitledEvent: 'Esdeveniment sense títol',
+      noWritableCalendars: 'No hi ha calendaris editables disponibles',
+      eventTitleRequired: "El títol de l'esdeveniment és obligatori",
+      startEndDatesRequired: "Les dates d'inici i fi són obligatòries",
+      endDateBeforeStart: "La data de fi no pot ser anterior a la data d'inici",
+      startEndTimesRequired: "Les hores d'inici i fi són obligatòries",
+      endTimeBeforeStart: "L'hora de fi ha de ser posterior a l'hora d'inici",
+      failedCreateEvent: "Error en crear l'esdeveniment. Si us plau, torna-ho a provar.",
+      failedUpdateEvent: "Error en actualitzar l'esdeveniment. Si us plau, torna-ho a provar.",
+      failedDeleteEvent: "Error en eliminar l'esdeveniment. Si us plau, torna-ho a provar.",
+      homeAssistantUnavailable: 'Home Assistant no està disponible',
+      googleCalendarEditError: "Google Calendar no permet l'edició d'esdeveniments a través de Home Assistant. Si us plau, utilitza l'aplicació o el lloc web de Google Calendar.",
+      missingUidError: "A aquest esdeveniment li falta informació obligatòria (UID) i no es pot editar.",
+      calendarNoModifyError: "Aquest calendari no admet modificacions d'esdeveniments. Prova de crear un nou esdeveniment.",
+      createEventServiceError: "Error en crear l'esdeveniment",
+      deleteEventServiceError: "Error en eliminar l'esdeveniment",
+      updateEventServiceError: "Error en actualitzar l'esdeveniment. És possible que el calendari no admeti modificacions.",
+      durationHour: '{count} hora',
+      durationHours: '{count} hores',
+      durationMinute: '{count} minut',
+      durationMinutes: '{count} minuts',
+      moreEvents: '+{count} més',
+      eventTitleWithStartTime: '{title}, {time}',
+      monthWeekPrefix: 'Set.'
     }
   }
 };
@@ -926,7 +1035,8 @@ class SkylightCalendarCard extends HTMLElement {
     const normalizedCalendarColors = this.normalizeColorMap(config.colors || {});
     const normalizedEventFontColors = this.normalizeColorMap(config.event_font_colors || {});
     const normalizedEventStyles = this.normalizeEventStyles(config.event_styles || []);
-    const normalizedDayStyles = this.normalizeDayStyles(config.day_styles || []);
+    const normalizedLocale = resolveLanguage(config.locale || config.language || this._hass?.locale?.language || this._hass?.language);
+    const normalizedDayStyles = this.normalizeDayStyles(config.day_styles || [], normalizedLocale);
     const normalizedHeaderColor = this.normalizeSingleColor(config.header_color);
     const normalizedHeaderTextColor = this.normalizeSingleColor(config.header_text_color);
     const hasConfiguredHeaderBackgroundOpacity = config.header_background_opacity !== undefined && config.header_background_opacity !== null && config.header_background_opacity !== '';
@@ -1324,7 +1434,7 @@ class SkylightCalendarCard extends HTMLElement {
       .filter(Boolean);
   }
 
-  normalizeDayStyles(rawRules) {
+  normalizeDayStyles(rawRules, localeOverride = null) {
     if (!Array.isArray(rawRules)) return [];
 
     return rawRules
@@ -1338,7 +1448,7 @@ class SkylightCalendarCard extends HTMLElement {
         const condition = isNegatedCondition ? rawCondition.slice(1) : rawCondition;
         if (!condition) return null;
 
-        if (!['today', 'past', 'future', 'weekend', 'weekday', 'has_event'].includes(condition)) {
+        if (!['today', 'past', 'future', 'weekend', 'weekday', 'day_of_week', 'has_event'].includes(condition)) {
           return null;
         }
 
@@ -1346,12 +1456,17 @@ class SkylightCalendarCard extends HTMLElement {
           return null;
         }
 
+        const normalized = { condition };
+        if (isNegatedCondition) normalized.negate = true;
+
         if (condition === 'has_event' && (!rule.calendar || !String(rule.calendar).trim())) {
           return null;
         }
-
-        const normalized = { condition };
-        if (isNegatedCondition) normalized.negate = true;
+        if (condition === 'day_of_week') {
+          const dayOfWeek = this.normalizeDayOfWeekRule(rule.day_of_week ?? rule.day ?? rule.days, localeOverride);
+          if (!dayOfWeek.length) return null;
+          normalized.day_of_week = dayOfWeek;
+        }
 
         const normalizedBackground = String(rule.background || '').trim().toLowerCase() === 'auto'
           ? 'auto'
@@ -1414,6 +1529,78 @@ class SkylightCalendarCard extends HTMLElement {
     }
 
     return null;
+  }
+
+  normalizeDayOfWeekRule(value, localeOverride = null) {
+    const dayMap = new Map([
+      ['sun', 0], ['sunday', 0], ['0', 0],
+      ['mon', 1], ['monday', 1], ['1', 1],
+      ['tue', 2], ['tues', 2], ['tuesday', 2], ['2', 2],
+      ['wed', 3], ['weds', 3], ['wednesday', 3], ['3', 3],
+      ['thu', 4], ['thur', 4], ['thurs', 4], ['thursday', 4], ['4', 4],
+      ['fri', 5], ['friday', 5], ['5', 5],
+      ['sat', 6], ['saturday', 6], ['6', 6]
+    ]);
+    this.getLocalizedWeekdayMap(localeOverride).forEach((dayIndexes, token) => {
+      if (!dayMap.has(token)) {
+        dayMap.set(token, dayIndexes.length === 1 ? dayIndexes[0] : dayIndexes);
+      }
+    });
+
+    const values = Array.isArray(value) ? value : [value];
+    const normalizedDays = [];
+
+    values.forEach((entry) => {
+      if (entry === undefined || entry === null || entry === '') return;
+
+      if (typeof entry === 'number' && Number.isInteger(entry) && entry >= 0 && entry <= 6) {
+        normalizedDays.push(entry);
+        return;
+      }
+
+      const normalizedEntry = String(entry).trim().toLowerCase();
+      if (!normalizedEntry) return;
+      if (dayMap.has(normalizedEntry)) {
+        const mappedValue = dayMap.get(normalizedEntry);
+        if (Array.isArray(mappedValue)) {
+          normalizedDays.push(...mappedValue);
+        } else {
+          normalizedDays.push(mappedValue);
+        }
+      }
+    });
+
+    return Array.from(new Set(normalizedDays));
+  }
+
+  getLocalizedWeekdayMap(localeOverride = null) {
+    const locale = resolveLanguage(localeOverride || this.getLocale());
+    const cacheKey = locale || 'default';
+    if (!this._localizedWeekdayMapCache) this._localizedWeekdayMapCache = new Map();
+    if (this._localizedWeekdayMapCache.has(cacheKey)) return this._localizedWeekdayMapCache.get(cacheKey);
+
+    const map = new Map();
+    const formats = ['long', 'short', 'narrow'];
+    const anchorSunday = new Date(Date.UTC(2024, 0, 7)); // Sunday
+
+    formats.forEach((weekdayFormat) => {
+      for (let dayIndex = 0; dayIndex < 7; dayIndex += 1) {
+        const date = new Date(anchorSunday);
+        date.setUTCDate(anchorSunday.getUTCDate() + dayIndex);
+        const localizedName = new Intl.DateTimeFormat(locale, { weekday: weekdayFormat, timeZone: 'UTC' }).format(date);
+        const normalizedName = String(localizedName || '').trim().toLowerCase();
+        if (!normalizedName) continue;
+        if (!map.has(normalizedName)) {
+          map.set(normalizedName, [dayIndex]);
+          continue;
+        }
+        const existingDayIndexes = map.get(normalizedName);
+        if (!existingDayIndexes.includes(dayIndex)) existingDayIndexes.push(dayIndex);
+      }
+    });
+
+    this._localizedWeekdayMapCache.set(cacheKey, map);
+    return map;
   }
 
   normalizeEventStyleBlock(style = {}) {
@@ -1651,6 +1838,7 @@ class SkylightCalendarCard extends HTMLElement {
       if (rule.condition === 'future') matches = dayStart.getTime() > todayStart.getTime();
       if (rule.condition === 'weekend') matches = dayStart.getDay() === 0 || dayStart.getDay() === 6;
       if (rule.condition === 'weekday') matches = dayStart.getDay() !== 0 && dayStart.getDay() !== 6;
+      if (rule.condition === 'day_of_week') matches = Array.isArray(rule.day_of_week) && rule.day_of_week.includes(dayStart.getDay());
       if (rule.condition === 'has_event') {
         matchedEvent = this.findMatchingDayStyleEvent(rule, dayEvents);
         matches = !!matchedEvent;
