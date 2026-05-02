@@ -1,0 +1,15 @@
+{
+  "domain": "armadarr",
+  "name": "Armadarr",
+  "codeowners": [
+    "@totaldebug"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/totaldebug/armadarr",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/totaldebug/armadarr/issues",
+  "requirements": [
+    "pyarr>=6.6.0"
+  ],
+  "version": "0.2.0"
+}

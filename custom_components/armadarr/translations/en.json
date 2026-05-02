@@ -1,0 +1,41 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Configure Armadarr to connect to your *Arr application.",
+                "data": {
+                    "app_type": "App Type",
+                    "url": "URL",
+                    "api_key": "API Key",
+                    "verify_ssl": "Verify SSL"
+                }
+            },
+            "options": {
+                "description": "Configure media limits. High values may increase database size.",
+                "data": {
+                    "upcoming_days": "Upcoming Days",
+                    "wanted_count": "Wanted Count"
+                }
+            }
+        },
+        "error": {
+            "auth": "Invalid API Key.",
+            "connection": "Unable to connect to the server.",
+            "unknown": "Unknown error occurred."
+        },
+        "abort": {
+            "already_configured": "This entry is already configured."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Configure media limits. High values may increase database size.",
+                "data": {
+                    "upcoming_days": "Upcoming Days",
+                    "wanted_count": "Wanted Count"
+                }
+            }
+        }
+    }
+}
