@@ -4,7 +4,6 @@ from typing import Any
 
 import voluptuous as vol
 
-from homeassistant.components.persistent_notification import async_create
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ATTRIBUTION, CONF_NAME
@@ -17,7 +16,7 @@ from homeassistant.util import slugify
 
 from . import TeamTrackerDataUpdateCoordinator
 from .const import (
-    ATTRIBUTION,
+    ATTRIBUTION_ESPN,
     CONF_API_LANGUAGE,
     CONF_CONFERENCE_ID,
     CONF_LEAGUE_ID,
@@ -35,6 +34,10 @@ from .const import (
     LEAGUE_MAP,
     SPORT_ICON_MAP,
     VERSION,
+)
+from .hockeytech import (
+    ATTRIBUTION_HOCKEYTECH,
+    DATA_PROVIDER_HOCKEYTECH,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -76,12 +79,6 @@ async def async_setup_platform(
     except vol.Invalid:
         _LOGGER.warning("%s: `league_id` must be valid (one of %s)", sensor_name, league_ids)
         _LOGGER.error("%s: Support for invalid `league_id` in YAML was deprecated in v0.7.6.  Correct config prior to next upgrade.", sensor_name)
-        async_create(
-            hass,
-            f"{sensor_name} Error: `league_id` must be valid (one of {league_ids})",
-            "Team Tracker",
-            DOMAIN,
-        )
         return
 
     # Raise an exception if the league ID is XXX and the sport or league path is not
@@ -93,7 +90,6 @@ async def async_setup_platform(
             "Must specify sport and league path for custom league (league_id = XXX)"
         )
         _LOGGER.warning("%s: %s", sensor_name, error_msg)
-        async_create(hass, f"{sensor_name} Error: {error_msg}", "Team Tracker", DOMAIN)
         return
 
     league_id = config[CONF_LEAGUE_ID].upper()
@@ -191,87 +187,12 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
                 sport_path,
             )
 
-        self.coordinator = sensor_coordinator
         self._entry_id = entry_id
         self._name = sensor_name
         self._icon = icon
-        self._state = "PRE"
 
-        self._sport = None
-        self._sport_path = None
-        self._league = None
-        self._league_path = None
-        self._league_logo = None
-        self._league_name = None
-        self._season = None
-        self._team_abbr = None
-        self._opponent_abbr = None
+        self.coordinator = sensor_coordinator
 
-        self._event_name = None
-        self._event_url = None
-        self._date = None
-        self._kickoff_in = None
-        self._series_summary = None
-        self._venue = None
-        self._location = None
-        self._tv_network = None
-        self._odds = None
-        self._overunder = None
-
-        self._team_name = None
-        self._team_long_name = None
-        self._team_id = None
-        self._team_record = None
-        self._team_rank = None
-        self._team_conference_id = None
-        self._team_homeaway = None
-        self._team_logo = None
-        self._team_url = None
-        self._team_colors = None
-        self._team_score = None
-        self._team_win_probability = None
-        self._team_winner = None
-        self._team_timeouts = None
-
-        self._opponent_name = None
-        self._opponent_long_name = None
-        self._opponent_id = None
-        self._opponent_record = None
-        self._opponent_rank = None
-        self._opponent_conference_id = None
-        self._opponent_homeaway = None
-        self._opponent_logo = None
-        self._opponent_url = None
-        self._opponent_colors = None
-        self._opponent_score = None
-        self._opponent_win_probability = None
-        self._opponent_winner = None
-        self._opponent_timeouts = None
-
-        self._quarter = None
-        self._clock = None
-        self._possession = None
-        self._last_play = None
-        self._down_distance_text = None
-
-        self._outs = None
-        self._balls = None
-        self._strikes = None
-        self._on_first = None
-        self._on_second = None
-        self._on_third = None
-
-        self._team_shots_on_target = None
-        self._team_total_shots = None
-        self._opponent_shots_on_target = None
-        self._opponent_total_shots = None
-
-        self._team_sets_won = None
-        self._opponent_sets_won = None
-
-        self._last_update = None
-        self._api_message = None
-        self._api_url = None
 
     @property
     def unique_id(self) -> str:
@@ -309,7 +230,10 @@ class TeamTrackerScoresSensor(CoordinatorEntity):
         if self.coordinator.data is None:
             return attrs
 
-        attrs[ATTR_ATTRIBUTION] = ATTRIBUTION
+        if self.coordinator.data_provider == DATA_PROVIDER_HOCKEYTECH:
+            attrs[ATTR_ATTRIBUTION] = ATTRIBUTION_HOCKEYTECH
+        else:
+            attrs[ATTR_ATTRIBUTION] = ATTRIBUTION_ESPN
 
         attrs["sport"] = self.coordinator.data["sport"]
         attrs["sport_path"] = self.coordinator.data["sport_path"]
