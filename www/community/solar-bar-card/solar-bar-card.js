@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.9.6 - Fix Usage stat mirror + show Grid Idle tile when entity configured
+// Version 2.9.7 - GPU performance: disable_animation, CSS dash animation, will-change, prefers-reduced-motion
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -181,6 +181,7 @@ class SolarBarCard extends HTMLElement {
       energy_flow_speed: 2,
       energy_flow_threshold: 0.1,
       energy_flow_origin: "bar_center",
+      disable_animation: false,
       // Header sensors
       header_sensor_1: null,
       header_sensor_2: null,
@@ -576,7 +577,8 @@ class SolarBarCard extends HTMLElement {
       segment_text_solar_ev = null,
       segment_text_battery_charge = null,
       segment_text_export = null,
-      segment_text_ev_potential = null
+      segment_text_ev_potential = null,
+      disable_animation = false
     } = this.config;
 
     // Get colors from palette
@@ -1823,7 +1825,7 @@ class SolarBarCard extends HTMLElement {
         }
 
         .ev-icon.charging {
-          box-shadow: 0 0 10px rgba(251, 191, 36, 0.9), 0 0 22px rgba(251, 191, 36, 0.5);
+          box-shadow: 0 0 12px rgba(251, 191, 36, 0.7);
           opacity: 1;
         }
 
@@ -1992,6 +1994,14 @@ class SolarBarCard extends HTMLElement {
           color: var(--secondary-text-color);
           padding: 20px;
           font-style: italic;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
         }
       </style>
 
@@ -2213,22 +2223,18 @@ class SolarBarCard extends HTMLElement {
               ` : ''}
               ${showBatteryFlow ? `
                 <svg class="flow-line-container" width="100%" height="32" viewBox="0 0 100 32" preserveAspectRatio="xMidYMid slice" style="z-index: 2;">
+                  ${!disable_animation ? `<style>@keyframes batteryDash{to{stroke-dashoffset:8}}#batteryFlowPath{animation:batteryDash 0.6s linear infinite}</style>` : ''}
                   <path id="batteryFlowPath"
                         d="${batteryFlowPath}"
                         stroke="${batteryFlowColor}"
                         stroke-width="4"
                         fill="none"
                         stroke-dasharray="4,4"
+                        stroke-dashoffset="0"
                         opacity="0.7"
-                        vector-effect="non-scaling-stroke">
-                    <animate attributeName="stroke-dashoffset"
-                             from="0"
-                             to="8"
-                             dur="0.6s"
-                             repeatCount="indefinite"/>
-                  </path>
-                  ${[0, 1, 2].map(i => `
-                    <circle class="flow-particle" r="0.6" fill="${batteryFlowColor}">
+                        vector-effect="non-scaling-stroke"/>
+                  ${!disable_animation ? [0, 1, 2].map(i => `
+                    <circle class="flow-particle" r="0.6" fill="${batteryFlowColor}" style="will-change:transform;">
                       <animateMotion dur="${battery_flow_animation_speed}s" repeatCount="indefinite" begin="${i * battery_flow_animation_speed / 3}s">
                         <mpath href="#batteryFlowPath"/>
                       </animateMotion>
@@ -2239,7 +2245,7 @@ class SolarBarCard extends HTMLElement {
                                repeatCount="indefinite"
                                begin="${i * battery_flow_animation_speed / 3}s"/>
                     </circle>
-                  `).join('')}
+                  `).join('') : ''}
                 </svg>
               ` : ''}
               <!-- energy flow SVG is managed separately to preserve animations -->
@@ -2309,8 +2315,8 @@ class SolarBarCard extends HTMLElement {
     // Helper: build a <g> group's inner HTML for a set of flows
     const flowGroupHtml = (flows) => flows.map(f => `
       <path id="path_${f.id}" d="${f.path}" fill="none" stroke="none"/>
-      ${Array.from({length: f.numDots}, (_, i) => `
-        <ellipse rx="${dotRx}" ry="${dotRy}" fill="${f.color}" opacity="0.9">
+      ${disable_animation ? '' : Array.from({length: f.numDots}, (_, i) => `
+        <ellipse rx="${dotRx}" ry="${dotRy}" fill="${f.color}" opacity="0.9" style="will-change:transform;">
           <animateMotion dur="${f.speed}s" repeatCount="indefinite" begin="${i * f.speed / f.numDots}s">
             <mpath href="#path_${f.id}"/>
           </animateMotion>
@@ -2639,6 +2645,7 @@ class SolarBarCardEditor extends HTMLElement {
       show_net_indicator: "Show Net Import/Export Indicator",
       show_house_icon: "Show House Icon",
       show_energy_flow: "Show Energy Flow Lines",
+      disable_animation: "Disable All Animations",
       energy_flow_speed: "Energy Flow Speed",
       energy_flow_threshold: "Energy Flow Threshold",
       energy_flow_origin: "Flow Drop Origin",
@@ -2727,6 +2734,7 @@ class SolarBarCardEditor extends HTMLElement {
       show_net_indicator: "Show colored indicator on import/export tile (green=net exporter, red=net importer)",
       show_house_icon: "Show a house icon to the left of the bar representing home consumption.",
       show_energy_flow: "Show animated flow lines below the bar visualising energy paths between solar, house, grid, and battery.",
+      disable_animation: "Stop all moving animations (flow particles, dashed battery line). The card still updates live — only the motion stops. Use this if the card is causing high GPU usage on your device.",
       energy_flow_speed: "Speed of energy flow animation in seconds (lower is faster).",
       energy_flow_threshold: "Power threshold in kW below which import/export flow is ignored. Prevents flickering when the system is near idle. Default: 0.1 kW.",
       energy_flow_origin: "Where the solar drop line originates: 'bar_center' (middle of the full bar) or 'production_center' (middle of the filled solar output). Default: bar_center.",
@@ -2935,7 +2943,8 @@ class SolarBarCardEditor extends HTMLElement {
             type: "grid",
             schema: [
               { name: "show_house_icon", default: false, selector: { boolean: {} } },
-              { name: "show_energy_flow", default: false, selector: { boolean: {} } }
+              { name: "show_energy_flow", default: false, selector: { boolean: {} } },
+              { name: "disable_animation", default: false, selector: { boolean: {} } }
             ]
           },
           { name: "energy_flow_speed", default: 2, selector: { number: { min: 0.5, max: 10, step: 0.5, mode: "box", unit_of_measurement: "s" } } },
@@ -3143,7 +3152,7 @@ window.customCards.push({
 });
 
 console.info(
-  '%c SOLAR-BAR-CARD %c v2.9.6 ',
+  '%c SOLAR-BAR-CARD %c v2.9.7 ',
   'color:#fff;background:#f57c00;font-weight:700;padding:2px 4px;border-radius:4px 0 0 4px;',
   'color:#f57c00;background:#fff3e0;font-weight:700;padding:2px 4px;border-radius:0 4px 4px 0;'
 );
