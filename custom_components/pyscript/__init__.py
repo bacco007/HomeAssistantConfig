@@ -1,14 +1,17 @@
 """Component to allow running Python scripts."""
 
 import asyncio
+from collections.abc import Awaitable, Callable
 import glob
 import json
 import logging
 import os
+from os import makedirs as os_makedirs
+from os.path import isdir as os_path_isdir
 import shutil
 import time
 import traceback
-from typing import Any, Callable, Dict, List, Set, Union
+from typing import Any
 
 import voluptuous as vol
 from watchdog.events import DirModifiedEvent, FileSystemEvent, FileSystemEventHandler
@@ -22,7 +25,7 @@ from homeassistant.const import (
     EVENT_STATE_CHANGED,
     SERVICE_RELOAD,
 )
-from homeassistant.core import Event as HAEvent, HomeAssistant, ServiceCall
+from homeassistant.core import Event as HAEvent, HomeAssistant, ServiceCall, SupportsResponse
 from homeassistant.exceptions import HomeAssistantError
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.restore_state import DATA_RESTORE_STATE
@@ -32,6 +35,7 @@ from homeassistant.loader import bind_hass
 from .const import (
     CONF_ALLOW_ALL_IMPORTS,
     CONF_HASS_IS_GLOBAL,
+    CONF_LEGACY_DECORATORS,
     CONFIG_ENTRY,
     CONFIG_ENTRY_OLD,
     DOMAIN,
@@ -40,10 +44,10 @@ from .const import (
     REQUIREMENTS_FILE,
     SERVICE_GENERATE_STUBS,
     SERVICE_JUPYTER_KERNEL_START,
-    SERVICE_RESPONSE_ONLY,
     UNSUB_LISTENERS,
     WATCHDOG_TASK,
 )
+from .decorator import DecoratorRegistry
 from .eval import AstEval
 from .event import Event
 from .function import Function
@@ -62,6 +66,7 @@ PYSCRIPT_SCHEMA = vol.Schema(
     {
         vol.Optional(CONF_ALLOW_ALL_IMPORTS, default=False): cv.boolean,
         vol.Optional(CONF_HASS_IS_GLOBAL, default=False): cv.boolean,
+        vol.Optional(CONF_LEGACY_DECORATORS, default=False): cv.boolean,
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -98,7 +103,7 @@ async def update_yaml_config(hass: HomeAssistant, config_entry: ConfigEntry) -> 
         conf = await async_hass_config_yaml(hass)
     except HomeAssistantError as err:
         _LOGGER.error(err)
-        return
+        return False
 
     config = PYSCRIPT_SCHEMA(conf.get(DOMAIN, {}))
 
@@ -114,26 +119,27 @@ async def update_yaml_config(hass: HomeAssistant, config_entry: ConfigEntry) -> 
     # since they affect all scripts
     #
     config_save = {
-        param: config_entry.data.get(param, False) for param in [CONF_HASS_IS_GLOBAL, CONF_ALLOW_ALL_IMPORTS]
+        param: config_entry.data.get(param, False)
+        for param in [CONF_HASS_IS_GLOBAL, CONF_ALLOW_ALL_IMPORTS, CONF_LEGACY_DECORATORS]
     }
     if DOMAIN not in hass.data:
         hass.data.setdefault(DOMAIN, {})
     if CONFIG_ENTRY_OLD in hass.data[DOMAIN]:
         old_entry = hass.data[DOMAIN][CONFIG_ENTRY_OLD]
         hass.data[DOMAIN][CONFIG_ENTRY_OLD] = config_save
-        for param in [CONF_HASS_IS_GLOBAL, CONF_ALLOW_ALL_IMPORTS]:
+        for param in [CONF_HASS_IS_GLOBAL, CONF_ALLOW_ALL_IMPORTS, CONF_LEGACY_DECORATORS]:
             if old_entry.get(param, False) != config_entry.data.get(param, False):
                 return True
     hass.data[DOMAIN][CONFIG_ENTRY_OLD] = config_save
     return False
 
 
-def start_global_contexts(global_ctx_only: str = None) -> None:
+def start_global_contexts(global_ctx_only: str | None = None) -> None:
     """Start all the file and apps global contexts."""
     start_list = []
     for global_ctx_name, global_ctx in GlobalContextMgr.items():
         idx = global_ctx_name.find(".")
-        if idx < 0 or global_ctx_name[0:idx] not in {"file", "apps", "scripts"}:
+        if idx < 0 or global_ctx_name[0:idx] not in {"file", "apps", "modules", "scripts"}:
             continue
         if global_ctx_only is not None and global_ctx_only != "*":
             if global_ctx_name != global_ctx_only and not global_ctx_name.startswith(global_ctx_only + "."):
@@ -145,7 +151,9 @@ def start_global_contexts(global_ctx_only: str = None) -> None:
 
 
 async def watchdog_start(
-    hass: HomeAssistant, pyscript_folder: str, reload_scripts_handler: Callable[[None], None]
+    hass: HomeAssistant,
+    pyscript_folder: str,
+    reload_scripts_handler: Callable[[ServiceCall], Awaitable[None]],
 ) -> None:
     """Start watchdog thread to look for changed files in pyscript_folder."""
     if WATCHDOG_TASK in hass.data[DOMAIN]:
@@ -201,7 +209,7 @@ async def watchdog_start(
             self.process(event)
 
     async def task_watchdog(watchdog_q: asyncio.Queue) -> None:
-        def check_event(event, do_reload: bool) -> bool:
+        def check_event(event: FileSystemEvent, do_reload: bool) -> bool:
             """Check if event should trigger a reload."""
             if event.is_directory:
                 # don't reload if it's just a directory modified
@@ -230,7 +238,7 @@ async def watchdog_start(
                         do_reload = check_event(
                             await asyncio.wait_for(watchdog_q.get(), timeout=0.05), do_reload
                         )
-                    except asyncio.TimeoutError:
+                    except TimeoutError:
                         break
                 if do_reload:
                     await reload_scripts_handler(None)
@@ -270,11 +278,12 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     Webhook.init(hass)
     State.register_functions()
     GlobalContextMgr.init()
+    DecoratorRegistry.init(hass, config_entry)
 
     pyscript_folder = hass.config.path(FOLDER)
-    if not await hass.async_add_executor_job(os.path.isdir, pyscript_folder):
+    if not await hass.async_add_executor_job(os_path_isdir, pyscript_folder):
         _LOGGER.debug("Folder %s not found in configuration folder, creating it", FOLDER)
-        await hass.async_add_executor_job(os.makedirs, pyscript_folder)
+        await hass.async_add_executor_job(os_makedirs, pyscript_folder)
 
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][CONFIG_ENTRY] = config_entry
@@ -304,14 +313,14 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
     hass.services.async_register(DOMAIN, SERVICE_RELOAD, reload_scripts_handler)
 
-    async def generate_stubs_service(call: ServiceCall) -> Dict[str, Any]:
+    async def generate_stubs_service(call: ServiceCall) -> dict[str, Any]:
         """Generate pyscript IDE stub files."""
 
         generator = StubsGenerator(hass)
         generated_body = await generator.build()
         stubs_path = os.path.join(hass.config.path(FOLDER), "modules", "stubs")
 
-        def write_stubs(path) -> dict[str, Any]:
+        def write_stubs(path: str) -> dict[str, Any]:
             res: dict[str, Any] = {}
             try:
                 os.makedirs(path, exist_ok=True)
@@ -342,7 +351,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         return result
 
     hass.services.async_register(
-        DOMAIN, SERVICE_GENERATE_STUBS, generate_stubs_service, supports_response=SERVICE_RESPONSE_ONLY
+        DOMAIN, SERVICE_GENERATE_STUBS, generate_stubs_service, supports_response=SupportsResponse.ONLY
     )
 
     async def jupyter_kernel_start(call: ServiceCall) -> None:
@@ -443,7 +452,7 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> 
     return True
 
 
-async def unload_scripts(global_ctx_only: str = None, unload_all: bool = False) -> None:
+async def unload_scripts(global_ctx_only: str | None = None, unload_all: bool = False) -> None:
     """Unload all scripts from GlobalContextMgr with given name prefixes."""
     ctx_delete = {}
     for global_ctx_name, global_ctx in GlobalContextMgr.items():
@@ -462,7 +471,9 @@ async def unload_scripts(global_ctx_only: str = None, unload_all: bool = False) 
 
 
 @bind_hass
-async def load_scripts(hass: HomeAssistant, config_data: Dict[str, Any], global_ctx_only: str = None):
+async def load_scripts(
+    hass: HomeAssistant, config_data: dict[str, Any], global_ctx_only: str | None = None
+) -> None:
     """Load all python scripts in FOLDER."""
 
     class SourceFile:
@@ -496,8 +507,8 @@ async def load_scripts(hass: HomeAssistant, config_data: Dict[str, Any], global_
     pyscript_dir = hass.config.path(FOLDER)
 
     def glob_read_files(
-        load_paths: List[Set[Union[str, bool]]], apps_config: Dict[str, Any]
-    ) -> Dict[str, SourceFile]:
+        load_paths: list[tuple[str, str, bool, bool]], apps_config: dict[str, Any]
+    ) -> dict[str, SourceFile]:
         """Expand globs and read all the source files."""
         ctx2source = {}
         for path, match, check_config, autoload in load_paths:
@@ -724,6 +735,9 @@ async def load_scripts(hass: HomeAssistant, config_data: Dict[str, Any], global_
             mtime=src_info.mtime,
         )
         reload = src_info.global_ctx_name in ctx_delete
-        await GlobalContextMgr.load_file(
-            global_ctx, src_info.file_path, source=src_info.source, reload=reload
-        )
+        try:
+            await GlobalContextMgr.load_file(
+                global_ctx, src_info.file_path, source=src_info.source, reload=reload
+            )
+        except Exception:
+            _LOGGER.error("Failed to load %s", src_info.file_path)

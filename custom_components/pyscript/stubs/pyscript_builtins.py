@@ -4,7 +4,7 @@ The real implementations are injected by pyscript at runtime; only signatures
 and documentation live here.
 """
 
-# pylint: disable=unnecessary-ellipsis, invalid-name, redefined-outer-name
+# pylint: disable=unnecessary-ellipsis, invalid-name, redefined-outer-name, dangerous-default-value
 from __future__ import annotations
 
 from asyncio import Task
@@ -12,6 +12,7 @@ from collections.abc import Callable
 from datetime import datetime
 from typing import Any, Literal
 
+from homeassistant.components.webhook import SUPPORTED_METHODS
 from homeassistant.core import HomeAssistant
 
 hass: HomeAssistant
@@ -30,7 +31,7 @@ def service(
 
 
 def state_trigger(
-    *str_expr: str,
+    *str_expr: str | list[str] | set[str],
     state_hold: int | float | None = None,
     state_hold_false: int | float | None = None,
     state_check_now: bool = False,
@@ -61,12 +62,12 @@ def state_active(str_expr: str) -> Callable[..., Any]:
     ...
 
 
-def time_trigger(*time_spec: str | None, **kwargs) -> Callable[..., Any]:
+def time_trigger(*time_spec: str | None, kwargs: dict | None = None) -> Callable[..., Any]:
     """Schedule the function using time specifications.
 
     Args:
-        *time_spec: Time expressions such as ``startup``, ``shutdown``, ``once()``, ``period()``, or ``cron()``.
-        **kwargs: Optional trigger keywords merged into each invocation.
+        time_spec: Time expressions such as ``startup``, ``shutdown``, ``once()``, ``period()``, or ``cron()``.
+        kwargs: Optional trigger keywords merged into each invocation.
     """
     ...
 
@@ -81,7 +82,9 @@ def task_unique(name: str, kill_me: bool = False) -> Callable[..., Any]:
     ...
 
 
-def event_trigger(*event_type: str, str_expr: str = None, **kwargs) -> Callable[..., Any]:
+def event_trigger(
+    *event_type: str, str_expr: str | None = None, kwargs: dict | None = None
+) -> Callable[..., Any]:
     """Trigger when a Home Assistant event matches the criteria.
 
     Args:
@@ -105,13 +108,34 @@ def time_active(*time_spec: str, hold_off: int | float | None = None) -> Callabl
     ...
 
 
-def mqtt_trigger(topic: str, str_expr: str | None = None, encoding: str = "utf-8", **kwargs) -> Callable[..., Any]:
+def mqtt_trigger(
+    topic: str, str_expr: str | None = None, encoding: str = "utf-8", kwargs: dict | None = None
+) -> Callable[..., Any]:
     """Trigger when a subscribed MQTT message matches the specification.
 
     Args:
         topic: MQTT topic to monitor; wildcards ``+`` and ``#`` are supported.
         str_expr: Optional expression evaluated against ``payload``, ``payload_obj``, ``retain``, ``topic``, and ``qos``.
         encoding: Character encoding for MQTT payload decoding; defaults to ``"utf-8"``.
+        kwargs: Extra keyword arguments merged into each invocation.
+    """
+    ...
+
+
+def webhook_trigger(
+    webhook_id: str,
+    str_expr: str | None = None,
+    local_only: bool = True,
+    methods: set[SUPPORTED_METHODS] | list[SUPPORTED_METHODS] = {"POST", "PUT"},
+    kwargs: dict | None = None,
+) -> Callable[..., Any]:
+    """Trigger when a request is made to a webhook endpoint.
+
+    Args:
+        webhook_id: Webhook id to listen to.
+        str_expr: Optional expression evaluated against ``trigger_type``, ``webhook_id``, and ``payload``.
+        local_only: If False, allow requests from anywhere on the internet.
+        methods: HTTP methods to allow.
         kwargs: Extra keyword arguments merged into each invocation.
     """
     ...
@@ -421,7 +445,7 @@ class task:
         mqtt_trigger_encoding: str | None = None,
         webhook_trigger: str | list[str] | None = None,
         webhook_local_only: bool = True,
-        webhook_methods: list[str] = ("POST", "PUT"),
+        webhook_methods: list[SUPPORTED_METHODS] = ("POST", "PUT"),
         timeout: int | float | None = None,
         state_check_now: bool = True,
         state_hold: int | float | None = None,

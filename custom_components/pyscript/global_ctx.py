@@ -1,14 +1,19 @@
 """Global context handling."""
 
+import ast
+from collections.abc import Awaitable, Callable
 import logging
 import os
+from os.path import isfile as os_path_isfile
 from types import ModuleType
-from typing import Any, Callable, Dict, List, Optional, Set, Union
+from typing import Any, ClassVar
 
 from homeassistant.config_entries import ConfigEntry
 
 from .const import CONF_HASS_IS_GLOBAL, CONFIG_ENTRY, DOMAIN, FOLDER, LOGGER_PATH
-from .eval import AstEval, EvalFunc
+from .decorator import DecoratorRegistry, FunctionDecoratorManager
+from .decorator_abc import Decorator, DecoratorManagerStatus
+from .eval import AstEval, EvalFunc, EvalFuncVar, SymTable
 from .function import Function
 from .trigger import TrigInfo
 
@@ -20,29 +25,31 @@ class GlobalContext:
 
     def __init__(
         self,
-        name,
-        global_sym_table: Dict[str, Any] = None,
-        manager=None,
-        rel_import_path: str = None,
-        app_config: Dict[str, Any] = None,
-        source: str = None,
-        mtime: float = None,
+        name: str,
+        global_sym_table: SymTable | None = None,
+        manager: type["GlobalContextMgr"] | None = None,
+        rel_import_path: str | None = None,
+        app_config: dict[str, Any] | None = None,
+        source: str | None = None,
+        mtime: float | None = None,
     ) -> None:
         """Initialize GlobalContext."""
         self.name: str = name
-        self.global_sym_table: Dict[str, Any] = global_sym_table if global_sym_table else {}
-        self.triggers: Set[EvalFunc] = set()
-        self.triggers_delay_start: Set[EvalFunc] = set()
+        self.global_sym_table: SymTable = global_sym_table if global_sym_table else {}
+        self.triggers: set[EvalFunc] = set()
+        self.triggers_delay_start: set[EvalFunc] = set()
+        self.dms: set[FunctionDecoratorManager] = set()
+        self.dms_delay_start: set[FunctionDecoratorManager] = set()
         self.logger: logging.Logger = logging.getLogger(LOGGER_PATH + "." + name)
-        self.manager: GlobalContextMgr = manager
+        self.manager = manager
         self.auto_start: bool = False
-        self.module: ModuleType = None
+        self.module: ModuleType | None = None
         self.rel_import_path: str = rel_import_path
         self.source: str = source
-        self.file_path: str = None
+        self.file_path: str | None = None
         self.mtime: float = mtime
-        self.app_config: Dict[str, Any] = app_config
-        self.imports: Set[str] = set()
+        self.app_config = app_config
+        self.imports: set[str] = set()
         config_entry: ConfigEntry = Function.hass.data.get(DOMAIN, {}).get(CONFIG_ENTRY, {})
         if config_entry.data.get(CONF_HASS_IS_GLOBAL, False):
             #
@@ -60,6 +67,30 @@ class GlobalContext:
         self.triggers_delay_start.add(func)
         return False
 
+    async def get_decorator_by_expr(self, ast_ctx: AstEval, dec: ast.expr) -> Decorator | None:
+        """Return decorator instance from an AST decorator expression."""
+        return await DecoratorRegistry.get_decorator_by_expr(ast_ctx, dec)
+
+    async def create_decorator_manager(
+        self, decs: list[Decorator], ast_ctx: AstEval, func_var: EvalFuncVar
+    ) -> None:
+        """Create decorator manager from an AST decorator expression."""
+        dm = FunctionDecoratorManager(ast_ctx, func_var)
+        for dec in decs:
+            dm.add(dec)
+
+        try:
+            await dm.validate()
+            if dm.status is DecoratorManagerStatus.VALIDATED:
+                self.dms.add(dm)
+
+                if self.auto_start:
+                    await dm.start()
+                else:
+                    self.dms_delay_start.add(dm)
+        except Exception as exc:
+            ast_ctx.log_exception(exc)
+
     def trigger_unregister(self, func: EvalFunc) -> None:
         """Unregister a trigger function."""
         self.triggers.discard(func)
@@ -75,23 +106,31 @@ class GlobalContext:
             func.trigger_start()
         self.triggers_delay_start = set()
 
+        for dm in self.dms_delay_start:
+            Function.hass.async_create_task(dm.start())
+        self.dms_delay_start = set()
+
     def stop(self) -> None:
         """Stop all triggers and auto_start."""
         for func in self.triggers:
             func.trigger_stop()
         self.triggers = set()
         self.triggers_delay_start = set()
+        for dm in self.dms:
+            Function.hass.async_create_task(dm.stop())
+        self.dms = set()
+        self.dms_delay_start = set()
         self.set_auto_start(False)
 
     def get_name(self) -> str:
         """Return the global context name."""
         return self.name
 
-    def set_logger_name(self, name) -> None:
+    def set_logger_name(self, name: str) -> None:
         """Set the global context logging name."""
         self.logger = logging.getLogger(LOGGER_PATH + "." + name)
 
-    def get_global_sym_table(self) -> Dict[str, Any]:
+    def get_global_sym_table(self) -> dict[str, Any]:
         """Return the global symbol table."""
         return self.global_sym_table
 
@@ -99,7 +138,7 @@ class GlobalContext:
         """Return the source code."""
         return self.source
 
-    def get_app_config(self) -> Dict[str, Any]:
+    def get_app_config(self) -> dict[str, Any]:
         """Return the app config."""
         return self.app_config
 
@@ -111,25 +150,25 @@ class GlobalContext:
         """Return the file path."""
         return self.file_path
 
-    def get_imports(self) -> Set[str]:
+    def get_imports(self) -> set[str]:
         """Return the imports."""
         return self.imports
 
-    def get_trig_info(self, name: str, trig_args: Dict[str, Any]) -> TrigInfo:
+    def get_trig_info(self, name: str, trig_args: dict[str, Any]) -> TrigInfo:
         """Return a new trigger info instance with the given args."""
         return TrigInfo(name, trig_args, self)
 
-    async def module_import(self, module_name: str, import_level: int) -> List[Optional[str]]:
+    async def module_import(self, module_name: str, import_level: int) -> ModuleType | None:
         """Import a pyscript module from the pyscript/modules or apps folder."""
 
         pyscript_dir = Function.hass.config.path(FOLDER)
         module_path = module_name.replace(".", "/")
         file_paths = []
 
-        def find_first_file(file_paths: List[Set[str]]) -> List[Optional[Union[str, ModuleType]]]:
+        def find_first_file(file_paths: list[list[str]]) -> list[str] | None:
             for ctx_name, path, rel_path in file_paths:
                 abs_path = os.path.join(pyscript_dir, path)
-                if os.path.isfile(abs_path):
+                if os_path_isfile(abs_path):
                     return [ctx_name, abs_path, rel_path]
             return None
 
@@ -173,14 +212,14 @@ class GlobalContext:
             mod_ctx = self.manager.get(ctx_name)
             if mod_ctx and mod_ctx.module:
                 self.imports.add(mod_ctx.get_name())
-                return [mod_ctx.module, None]
+                return mod_ctx.module
 
         #
         # not loaded already, so try to find and import it
         #
         file_info = await Function.hass.async_add_executor_job(find_first_file, file_paths)
         if not file_info:
-            return [None, None]
+            return None
 
         [ctx_name, file_path, rel_import_path] = file_info
 
@@ -188,19 +227,21 @@ class GlobalContext:
         global_ctx = GlobalContext(
             ctx_name, global_sym_table=mod.__dict__, manager=self.manager, rel_import_path=rel_import_path
         )
-        global_ctx.set_auto_start(True)
-        _, error_ctx = await self.manager.load_file(global_ctx, file_path)
-        if error_ctx:
+        global_ctx.set_auto_start(self.auto_start)
+        try:
+            await self.manager.load_file(global_ctx, file_path)
+        except Exception:
             _LOGGER.error(
                 "module_import: failed to load module %s, ctx = %s, path = %s",
                 module_name,
                 ctx_name,
                 file_path,
             )
-            return [None, error_ctx]
+            global_ctx.stop()
+            raise
         global_ctx.module = mod
         self.imports.add(ctx_name)
-        return [mod, None]
+        return mod
 
 
 class GlobalContextMgr:
@@ -209,12 +250,12 @@ class GlobalContextMgr:
     #
     # map of context names to contexts
     #
-    contexts = {}
+    contexts: ClassVar[dict[str, GlobalContext]] = {}
 
     #
     # sequence number for sessions
     #
-    name_seq = 0
+    name_seq: ClassVar[int] = 0
 
     def __init__(self) -> None:
         """Report an error if GlobalContextMgr in instantiated."""
@@ -224,29 +265,29 @@ class GlobalContextMgr:
     def init(cls) -> None:
         """Initialize GlobalContextMgr."""
 
-        def get_global_ctx_factory(ast_ctx: AstEval) -> Callable[[], str]:
+        def get_global_ctx_factory(ast_ctx: AstEval) -> Callable[[], Awaitable[str]]:
             """Generate a pyscript.get_global_ctx() function with given ast_ctx."""
 
-            async def get_global_ctx():
+            async def get_global_ctx() -> str:
                 return ast_ctx.get_global_ctx_name()
 
             return get_global_ctx
 
-        def list_global_ctx_factory(ast_ctx: AstEval) -> Callable[[], List[str]]:
+        def list_global_ctx_factory(ast_ctx: AstEval) -> Callable[[], Awaitable[list[str]]]:
             """Generate a pyscript.list_global_ctx() function with given ast_ctx."""
 
-            async def list_global_ctx():
+            async def list_global_ctx() -> list[str]:
                 ctx_names = set(cls.contexts.keys())
                 curr_ctx_name = ast_ctx.get_global_ctx_name()
                 ctx_names.discard(curr_ctx_name)
-                return [curr_ctx_name] + sorted(sorted(ctx_names))
+                return [curr_ctx_name, *sorted(ctx_names)]
 
             return list_global_ctx
 
-        def set_global_ctx_factory(ast_ctx: AstEval) -> Callable[[str], None]:
+        def set_global_ctx_factory(ast_ctx: AstEval) -> Callable[[str], Awaitable[None]]:
             """Generate a pyscript.set_global_ctx() function with given ast_ctx."""
 
-            async def set_global_ctx(name):
+            async def set_global_ctx(name: str) -> None:
                 global_ctx = cls.get(name)
                 if global_ctx is None:
                     raise NameError(f"global context '{name}' does not exist")
@@ -264,7 +305,7 @@ class GlobalContextMgr:
         Function.register_ast(ast_funcs)
 
     @classmethod
-    def get(cls, name: str) -> Optional[str]:
+    def get(cls, name: str) -> GlobalContext | None:
         """Return the GlobalContext given a name."""
         return cls.contexts.get(name, None)
 
@@ -274,7 +315,7 @@ class GlobalContextMgr:
         cls.contexts[name] = global_ctx
 
     @classmethod
-    def items(cls) -> List[Set[Union[str, GlobalContext]]]:
+    def items(cls) -> list[tuple[str, GlobalContext]]:
         """Return all the global context items."""
         return sorted(cls.contexts.items())
 
@@ -297,14 +338,14 @@ class GlobalContextMgr:
 
     @classmethod
     async def load_file(
-        cls, global_ctx: GlobalContext, file_path: str, source: str = None, reload: bool = False
-    ) -> Set[Union[bool, AstEval]]:
-        """Load, parse and run the given script file; returns error ast_ctx on error, or None if ok."""
+        cls, global_ctx: GlobalContext, file_path: str, source: str | None = None, reload: bool = False
+    ) -> None:
+        """Load, parse and run the given script file."""
 
         mtime = None
         if source is None:
 
-            def read_file(path: str) -> Set[Union[str, float]]:
+            def read_file(path: str) -> tuple[str | None, float]:
                 try:
                     with open(path, encoding="utf-8") as file_desc:
                         source = file_desc.read()
@@ -316,7 +357,7 @@ class GlobalContextMgr:
             source, mtime = await Function.hass.async_add_executor_job(read_file, file_path)
 
         if source is None:
-            return False, None
+            return
 
         ctx_curr = cls.get(global_ctx.get_name())
         if ctx_curr:
@@ -329,24 +370,17 @@ class GlobalContextMgr:
         #
         ast_ctx = AstEval(global_ctx.get_name(), global_ctx)
         Function.install_ast_funcs(ast_ctx)
-
-        if not ast_ctx.parse(source, filename=file_path):
-            exc = ast_ctx.get_exception_long()
-            ast_ctx.get_logger().error(exc)
-            global_ctx.stop()
-            return False, ast_ctx
-        await ast_ctx.eval()
-        exc = ast_ctx.get_exception_long()
-        if exc is not None:
-            ast_ctx.get_logger().error(exc)
-            global_ctx.stop()
-            return False, ast_ctx
         global_ctx.source = source
         global_ctx.file_path = file_path
         if mtime is not None:
             global_ctx.mtime = mtime
+        try:
+            ast_ctx.parse(source, filename=file_path)
+            await ast_ctx.eval()
+        except Exception as e:
+            global_ctx.stop()
+            ast_ctx.log_exception(e)
+            raise
         cls.set(global_ctx.get_name(), global_ctx)
 
         _LOGGER.info("%s %s", "Reloaded" if reload else "Loaded", file_path)
-
-        return True, None

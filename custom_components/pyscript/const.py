@@ -1,20 +1,5 @@
 """Define pyscript-wide constants."""
 
-#
-# 2023.7 supports service response; handle older versions by defaulting enum
-# Should eventually deprecate this and just use SupportsResponse import
-#
-try:
-    from homeassistant.core import SupportsResponse
-
-    SERVICE_RESPONSE_NONE = SupportsResponse.NONE
-    SERVICE_RESPONSE_OPTIONAL = SupportsResponse.OPTIONAL
-    SERVICE_RESPONSE_ONLY = SupportsResponse.ONLY
-except ImportError:
-    SERVICE_RESPONSE_NONE = None
-    SERVICE_RESPONSE_OPTIONAL = None
-    SERVICE_RESPONSE_ONLY = None
-
 DOMAIN = "pyscript"
 
 CONFIG_ENTRY = "config_entry"
@@ -32,6 +17,7 @@ ATTR_VERSION = "version"
 CONF_ALLOW_ALL_IMPORTS = "allow_all_imports"
 CONF_HASS_IS_GLOBAL = "hass_is_global"
 CONF_INSTALLED_PACKAGES = "_installed_packages"
+CONF_LEGACY_DECORATORS = "legacy_decorators"
 
 SERVICE_JUPYTER_KERNEL_START = "jupyter_kernel_start"
 SERVICE_GENERATE_STUBS = "generate_stubs"

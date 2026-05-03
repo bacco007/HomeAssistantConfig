@@ -13,11 +13,14 @@ import logging
 import sys
 import time
 import traceback
+from types import TracebackType
+from typing import TYPE_CHECKING, Any
 import weakref
 
 import yaml
 
 from homeassistant.const import SERVICE_RELOAD
+from homeassistant.core import SupportsResponse
 from homeassistant.helpers.service import async_set_service_schema
 
 from .const import (
@@ -27,10 +30,14 @@ from .const import (
     DOMAIN,
     LOGGER_PATH,
     SERVICE_JUPYTER_KERNEL_START,
-    SERVICE_RESPONSE_NONE,
 )
 from .function import Function
 from .state import State
+
+if TYPE_CHECKING:
+    from .global_ctx import GlobalContext
+
+type SymTable = dict[str, Any]
 
 _LOGGER = logging.getLogger(LOGGER_PATH + ".eval")
 
@@ -94,8 +101,6 @@ def ast_eval_exec_factory(ast_ctx, mode):
     async def eval_func(arg_str, eval_globals=None, eval_locals=None):
         eval_ast = AstEval(ast_ctx.name, ast_ctx.global_ctx)
         eval_ast.parse(arg_str, f"{mode}()", mode=mode)
-        if eval_ast.exception_obj:
-            raise eval_ast.exception_obj
         eval_ast.local_sym_table = ast_ctx.local_sym_table
         if eval_globals is not None:
             eval_ast.global_sym_table = eval_globals
@@ -123,17 +128,7 @@ def ast_eval_exec_factory(ast_ctx, mode):
                     del eval_ast.sym_table[var]
 
         eval_ast.curr_func = None
-        try:
-            eval_result = await eval_ast.aeval(eval_ast.ast)
-        except Exception as err:
-            ast_ctx.exception_obj = err
-            ast_ctx.exception = f"Exception in {ast_ctx.filename} line {ast_ctx.lineno} column {ast_ctx.col_offset}: {eval_ast.exception}"
-            ast_ctx.exception_long = (
-                ast_ctx.format_exc(err, ast_ctx.lineno, ast_ctx.col_offset, short=True)
-                + "\n"
-                + eval_ast.exception_long
-            )
-            raise
+        eval_result = await eval_ast.aeval(eval_ast.ast)
         #
         # save variables only in the locals scope
         #
@@ -315,7 +310,14 @@ class EvalAttrSet:
 class EvalFunc:
     """Class for a callable pyscript function."""
 
-    def __init__(self, func_def, code_list, code_str, global_ctx, async_func=False):
+    def __init__(
+        self,
+        func_def: ast.FunctionDef,
+        code_list: list[str],
+        code_str: str,
+        global_ctx: "GlobalContext",
+        async_func: bool = False,
+    ) -> None:
         """Initialize a function calling context."""
         self.func_def = func_def
         self.name = func_def.name
@@ -325,6 +327,7 @@ class EvalFunc:
         self.defaults = []
         self.kw_defaults = []
         self.decorators = []
+        self.dm_decorators = []
         self.global_names = set()
         self.nonlocal_names = set()
         self.local_names = None
@@ -334,9 +337,6 @@ class EvalFunc:
         self.num_posn_arg = self.num_posonly_arg + len(self.func_def.args.args) - len(self.defaults)
         self.code_list = code_list
         self.code_str = code_str
-        self.exception = None
-        self.exception_obj = None
-        self.exception_long = None
         self.trigger = []
         self.trigger_service = set()
         self.has_closure = False
@@ -511,10 +511,11 @@ class EvalFunc:
                         func_args.update(call.data)
 
                         async def do_service_call(func, ast_ctx, data):
-                            retval = await func.call(ast_ctx, **data)
-                            if ast_ctx.get_exception_obj():
-                                ast_ctx.get_logger().error(ast_ctx.get_exception_long())
-                            return retval
+                            try:
+                                return await func.call(ast_ctx, **data)
+                            except Exception as exc:
+                                ast_ctx.log_exception(exc)
+                            return None
 
                         task = Function.create_task(do_service_call(func, ast_ctx, func_args))
                         await task
@@ -533,7 +534,7 @@ class EvalFunc:
                         domain,
                         name,
                         pyscript_service_factory(func_name, self),
-                        dec_kwargs.get("supports_response", SERVICE_RESPONSE_NONE),
+                        dec_kwargs.get("supports_response", SupportsResponse.NONE),
                     )
                     async_set_service_schema(Function.hass, domain, name, service_desc)
                     self.trigger_service.add(srv_name)
@@ -613,8 +614,11 @@ class EvalFunc:
 
         dec_other = []
         dec_trig = []
+        dec_dm = []
         for dec in self.func_def.decorator_list:
-            if (
+            if known_dec := await ast_ctx.global_ctx.get_decorator_by_expr(ast_ctx, dec):
+                dec_dm.append(known_dec)
+            elif (
                 isinstance(dec, ast.Call)
                 and isinstance(dec.func, ast.Name)
                 and dec.func.id in TRIG_SERV_DECORATORS
@@ -628,7 +632,7 @@ class EvalFunc:
                 dec_other.append(await ast_ctx.aeval(dec))
 
         ast_ctx.code_str, ast_ctx.code_list = code_str, code_list
-        return dec_trig, reversed(dec_other)
+        return dec_trig, reversed(dec_other), dec_dm
 
     async def resolve_nonlocals(self, ast_ctx):
         """Tag local variables and resolve nonlocals."""
@@ -699,16 +703,6 @@ class EvalFunc:
         for arg in self.func_def.args.posonlyargs + self.func_def.args.args:
             args.append(arg.arg)
         return args
-
-    async def try_aeval(self, ast_ctx, arg):
-        """Call self.aeval and capture exceptions."""
-        try:
-            return await ast_ctx.aeval(arg)
-        except asyncio.CancelledError:
-            raise
-        except Exception as err:
-            if ast_ctx.exception_long is None:
-                ast_ctx.exception_long = ast_ctx.format_exc(err, arg.lineno, arg.col_offset)
 
     async def call(self, ast_ctx, *args, **kwargs):
         """Call the function with the given context and arguments."""
@@ -794,36 +788,31 @@ class EvalFunc:
         ast_ctx.sym_table = sym_table
         code_str, code_list = ast_ctx.code_str, ast_ctx.code_list
         ast_ctx.code_str, ast_ctx.code_list = self.code_str, self.code_list
-        self.exception = None
-        self.exception_obj = None
-        self.exception_long = None
         prev_func = ast_ctx.curr_func
         save_user_locals = ast_ctx.user_locals
         ast_ctx.user_locals = {}
         ast_ctx.curr_func = self
         del args, kwargs
-        for arg1 in self.func_def.body:
-            val = await self.try_aeval(ast_ctx, arg1)
-            if isinstance(val, EvalReturn):
-                val = val.value
-                break
+        try:
+            for arg1 in self.func_def.body:
+                val = await ast_ctx.aeval(arg1)
+                if isinstance(val, EvalReturn):
+                    return val.value
             # return None at end if there isn't a return
-            val = None
-            if ast_ctx.get_exception_obj():
-                break
-        ast_ctx.curr_func = prev_func
-        ast_ctx.user_locals = save_user_locals
-        ast_ctx.code_str, ast_ctx.code_list = code_str, code_list
-        if prev_sym_table is not None:
-            (
-                ast_ctx.global_sym_table,
-                ast_ctx.sym_table,
-                ast_ctx.sym_table_stack,
-                ast_ctx.global_ctx,
-            ) = prev_sym_table
-        else:
-            ast_ctx.sym_table = ast_ctx.sym_table_stack.pop()
-        return val
+            return None
+        finally:
+            ast_ctx.curr_func = prev_func
+            ast_ctx.user_locals = save_user_locals
+            ast_ctx.code_str, ast_ctx.code_list = code_str, code_list
+            if prev_sym_table is not None:
+                (
+                    ast_ctx.global_sym_table,
+                    ast_ctx.sym_table,
+                    ast_ctx.sym_table_stack,
+                    ast_ctx.global_ctx,
+                ) = prev_sym_table
+            else:
+                ast_ctx.sym_table = ast_ctx.sym_table_stack.pop()
 
     async def check_for_closure(self, arg):
         """Recursively check ast tree arg and return True if there is an inner function or class."""
@@ -838,12 +827,12 @@ class EvalFunc:
 class EvalFuncVar:
     """Class for a callable pyscript function."""
 
-    def __init__(self, func):
+    def __init__(self, func: EvalFunc) -> None:
         """Initialize instance with given EvalFunc function."""
         self.func = func
-        self.ast_ctx = None
+        self.ast_ctx: AstEval | None = None
 
-    def get_func(self):
+    def get_func(self) -> EvalFunc:
         """Return the EvalFunc function."""
         return self.func
 
@@ -873,6 +862,15 @@ class EvalFuncVar:
         """Return the ast context."""
         return self.ast_ctx
 
+    def __get__(self, obj, objtype=None):
+        """Support descriptor protocol so class attributes bind to instances."""
+        if obj is None:
+            return self
+        # we use weak references when we bind the method calls to the instance inst;
+        # otherwise these self references cause the object to not be deleted until
+        # it is later garbage collected
+        return EvalFuncVarClassInst(self.func, self.ast_ctx, weakref.ref(obj))
+
     def __del__(self):
         """On deletion, stop any triggers for this function."""
         if self.func:
@@ -886,7 +884,7 @@ class EvalFuncVar:
 class EvalFuncVarClassInst(EvalFuncVar):
     """Class for a callable pyscript class instance function."""
 
-    def __init__(self, func, ast_ctx, class_inst_weak):
+    def __init__(self, func: EvalFunc, ast_ctx: "AstEval", class_inst_weak: weakref.ReferenceType) -> None:
         """Initialize instance with given EvalFunc function."""
         super().__init__(func)
         self.ast_ctx = ast_ctx
@@ -904,27 +902,21 @@ class EvalFuncVarClassInst(EvalFuncVar):
 class AstEval:
     """Python interpreter AST object evaluator."""
 
-    def __init__(self, name, global_ctx, logger_name=None):
+    def __init__(self, name: str, global_ctx: "GlobalContext", logger_name: str | None = None) -> None:
         """Initialize an interpreter execution context."""
         self.name = name
         self.str = None
         self.ast = None
         self.global_ctx = global_ctx
-        self.global_sym_table = global_ctx.get_global_sym_table() if global_ctx else {}
-        self.sym_table_stack = []
+        self.global_sym_table: SymTable = global_ctx.get_global_sym_table() if global_ctx else {}
+        self.sym_table_stack: list[SymTable] = []
         self.sym_table = self.global_sym_table
-        self.local_sym_table = {}
-        self.user_locals = {}
-        self.curr_func = None
+        self.local_sym_table: SymTable = {}
+        self.user_locals: SymTable = {}
+        self.curr_func: EvalFunc | None = None
         self.filename = name
-        self.code_str = None
-        self.code_list = None
-        self.exception = None
-        self.exception_obj = None
-        self.exception_long = None
-        self.exception_curr = None
-        self.lineno = 1
-        self.col_offset = 0
+        self.code_str: str | None = None
+        self.code_list: list[str] | None = None
         self.logger_handlers = set()
         self.logger = None
         self.set_logger_name(logger_name if logger_name is not None else self.name)
@@ -939,21 +931,10 @@ class AstEval:
     async def aeval(self, arg, undefined_check=True):
         """Vector to specific function based on ast class type."""
         name = "ast_" + arg.__class__.__name__.lower()
-        try:
-            if hasattr(arg, "lineno"):
-                self.lineno = arg.lineno
-                self.col_offset = arg.col_offset
-            val = await getattr(self, name, self.ast_not_implemented)(arg)
-            if undefined_check and isinstance(val, EvalName):
-                raise NameError(f"name '{val.name}' is not defined")
-            return val
-        except Exception as err:
-            if not self.exception_obj:
-                func_name = self.curr_func.get_name() + "(), " if self.curr_func else ""
-                self.exception_obj = err
-                self.exception = f"Exception in {func_name}{self.filename} line {self.lineno} column {self.col_offset}: {err}"
-                self.exception_long = self.format_exc(err, self.lineno, self.col_offset)
-            raise
+        val = await getattr(self, name, self.ast_not_implemented)(arg)
+        if undefined_check and isinstance(val, EvalName):
+            raise NameError(f"name '{val.name}' is not defined")
+        return val
 
     # Statements return NONE, EvalBreak, EvalContinue, EvalReturn
     async def ast_module(self, arg):
@@ -970,12 +951,7 @@ class AstEval:
     async def ast_import(self, arg):
         """Execute import."""
         for imp in arg.names:
-            mod, error_ctx = await self.global_ctx.module_import(imp.name, 0)
-            if error_ctx:
-                self.exception_obj = error_ctx.exception_obj
-                self.exception = error_ctx.exception
-                self.exception_long = error_ctx.exception_long
-                raise self.exception_obj
+            mod = await self.global_ctx.module_import(imp.name, 0)
             if not mod:
                 if (
                     not self.config_entry.data.get(CONF_ALLOW_ALL_IMPORTS, False)
@@ -993,12 +969,7 @@ class AstEval:
         if arg.module is None:
             # handle: "from . import xyz"
             for imp in arg.names:
-                mod, error_ctx = await self.global_ctx.module_import(imp.name, arg.level)
-                if error_ctx:
-                    self.exception_obj = error_ctx.exception_obj
-                    self.exception = error_ctx.exception
-                    self.exception_long = error_ctx.exception_long
-                    raise self.exception_obj
+                mod = await self.global_ctx.module_import(imp.name, arg.level)
                 if not mod:
                     raise ModuleNotFoundError(f"module '{imp.name}' not found")
                 self.sym_table[imp.name if imp.asname is None else imp.asname] = mod
@@ -1011,12 +982,7 @@ class AstEval:
                     )
             _LOGGER.debug("Skipping stubs import %s", arg.module)
             return
-        mod, error_ctx = await self.global_ctx.module_import(arg.module, arg.level)
-        if error_ctx:
-            self.exception_obj = error_ctx.exception_obj
-            self.exception = error_ctx.exception
-            self.exception_long = error_ctx.exception_long
-            raise self.exception_obj
+        mod = await self.global_ctx.module_import(arg.module, arg.level)
         if not mod:
             if (
                 not self.config_entry.data.get(CONF_ALLOW_ALL_IMPORTS, False)
@@ -1166,7 +1132,7 @@ class AstEval:
 
             func = self.sym_table[arg.name]
             if dec_name == "pyscript_executor":
-                if not asyncio.iscoroutinefunction(func):
+                if not inspect.iscoroutinefunction(func):
 
                     def executor_wrap_factory(func):
                         async def executor_wrap(*args, **kwargs):
@@ -1188,7 +1154,7 @@ class AstEval:
         await func.eval_defaults(self)
         await func.resolve_nonlocals(self)
         name = func.get_name()
-        dec_trig, dec_other = await func.eval_decorators(self)
+        dec_trig, dec_other, dec_dm = await func.eval_decorators(self)
         self.dec_eval_depth += 1
         for dec_func in dec_other:
             func = await self.call_func(dec_func, None, func)
@@ -1197,16 +1163,24 @@ class AstEval:
                 func.set_name(name)
                 func = func.remove_func()
                 dec_trig += func.decorators
+                dec_dm += func.dm_decorators
             elif isinstance(func, EvalFunc):
                 func.set_name(name)
         self.dec_eval_depth -= 1
         if isinstance(func, EvalFunc):
             func.decorators = dec_trig
+            func.dm_decorators = dec_dm
             if self.dec_eval_depth == 0:
                 func.trigger_stop()
-                await func.trigger_init(self.global_ctx, name)
+                try:
+                    await func.trigger_init(self.global_ctx, name)
+                except Exception as e:
+                    self.log_exception(e)
                 func_var = EvalFuncVar(func)
                 func_var.set_ast_ctx(self)
+
+                if len(dec_dm) > 0:
+                    await self.get_global_ctx().create_decorator_manager(dec_dm, self, func_var)
             else:
                 func_var = EvalFuncVar(func)
                 func_var.set_ast_ctx(self)
@@ -1231,7 +1205,7 @@ class AstEval:
                 body=[ast.Return(value=arg.body, lineno=arg.body.lineno, col_offset=arg.body.col_offset)],
                 name=name,
                 decorator_list=[ast.Name(id="pyscript_compile", ctx=ast.Load())],
-                lineno=arg.col_offset,
+                lineno=arg.lineno,
                 col_offset=arg.col_offset,
             )
         )
@@ -1250,11 +1224,7 @@ class AstEval:
                 val = await self.aeval(arg1)
                 if isinstance(val, EvalStopFlow):
                     return val
-                if self.exception_obj is not None:
-                    raise self.exception_obj
         except Exception as err:
-            curr_exc = self.exception_curr
-            self.exception_curr = err
             for handler in arg.handlers:
                 match = False
                 if handler.type:
@@ -1268,12 +1238,6 @@ class AstEval:
                 else:
                     match = True
                 if match:
-                    save_obj = self.exception_obj
-                    save_exc_long = self.exception_long
-                    save_exc = self.exception
-                    self.exception_obj = None
-                    self.exception = None
-                    self.exception_long = None
                     if handler.name is not None:
                         if handler.name in self.sym_table and isinstance(
                             self.sym_table[handler.name], EvalLocalVar
@@ -1281,34 +1245,16 @@ class AstEval:
                             self.sym_table[handler.name].set(err)
                         else:
                             self.sym_table[handler.name] = err
-                    for arg1 in handler.body:
-                        try:
+                    try:
+                        for arg1 in handler.body:
                             val = await self.aeval(arg1)
                             if isinstance(val, EvalStopFlow):
-                                if handler.name is not None:
-                                    del self.sym_table[handler.name]
-                                self.exception_curr = curr_exc
                                 return val
-                        except Exception:
-                            if self.exception_obj is not None:
-                                if handler.name is not None:
-                                    del self.sym_table[handler.name]
-                                self.exception_curr = curr_exc
-                                if self.exception_obj == save_obj:
-                                    self.exception_long = save_exc_long
-                                    self.exception = save_exc
-                                else:
-                                    self.exception_long = (
-                                        save_exc_long
-                                        + "\n\nDuring handling of the above exception, another exception occurred:\n\n"
-                                        + self.exception_long
-                                    )
-                                raise self.exception_obj  # pylint: disable=raise-missing-from
-                    if handler.name is not None:
-                        del self.sym_table[handler.name]
+                    finally:
+                        if handler.name is not None:
+                            del self.sym_table[handler.name]
                     break
             else:
-                self.exception_curr = curr_exc
                 raise err
         else:
             for arg1 in arg.orelse:
@@ -1324,18 +1270,13 @@ class AstEval:
 
     async def ast_raise(self, arg):
         """Execute raise statement."""
-        if not arg.exc:
-            if not self.exception_curr:
-                raise RuntimeError("No active exception to reraise")
-            exc = self.exception_curr
-        else:
+        if arg.exc:
             exc = await self.aeval(arg.exc)
-        if self.exception_curr:
-            exc.__cause__ = self.exception_curr
-        if arg.cause:
-            cause = await self.aeval(arg.cause)
-            raise exc from cause
-        raise exc
+            if arg.cause:
+                cause = await self.aeval(arg.cause)
+                raise exc from cause
+            raise exc
+        raise  # pylint: disable=misplaced-bare-raise
 
     async def ast_with(self, arg, async_attr=""):
         """Execute with statement."""
@@ -1453,16 +1394,7 @@ class AstEval:
                     val_idx += 1
         elif isinstance(lhs, ast.Subscript):
             var = await self.aeval(lhs.value)
-            if isinstance(lhs.slice, ast.Index):
-                ind = await self.aeval(lhs.slice.value)
-                var[ind] = val
-            elif isinstance(lhs.slice, ast.Slice):
-                lower = await self.aeval(lhs.slice.lower) if lhs.slice.lower else None
-                upper = await self.aeval(lhs.slice.upper) if lhs.slice.upper else None
-                step = await self.aeval(lhs.slice.step) if lhs.slice.step else None
-                var[slice(lower, upper, step)] = val
-            else:
-                var[await self.aeval(lhs.slice)] = val
+            var[await self.aeval(lhs.slice)] = val
         else:
             var_name = await self.aeval(lhs)
             if isinstance(var_name, EvalAttrSet):
@@ -1523,21 +1455,7 @@ class AstEval:
         for arg1 in arg.targets:
             if isinstance(arg1, ast.Subscript):
                 var = await self.aeval(arg1.value)
-                if isinstance(arg1.slice, ast.Index):
-                    ind = await self.aeval(arg1.slice.value)
-                    for elt in ind if isinstance(ind, list) else [ind]:
-                        del var[elt]
-                elif isinstance(arg1.slice, ast.Slice):
-                    lower, upper, step = None, None, None
-                    if arg1.slice.lower:
-                        lower = await self.aeval(arg1.slice.lower)
-                    if arg1.slice.upper:
-                        upper = await self.aeval(arg1.slice.upper)
-                    if arg1.slice.step:
-                        step = await self.aeval(arg1.slice.step)
-                    del var[slice(lower, upper, step)]
-                else:
-                    del var[await self.aeval(arg1.slice)]
+                del var[await self.aeval(arg1.slice)]
             elif isinstance(arg1, ast.Name):
                 if self.curr_func and arg1.id in self.curr_func.global_names:
                     if arg1.id in self.global_sym_table:
@@ -1925,13 +1843,6 @@ class AstEval:
         """Evaluate subscript."""
         var = await self.aeval(arg.value)
         if isinstance(arg.ctx, ast.Load):
-            if isinstance(arg.slice, ast.Index):
-                return var[await self.aeval(arg.slice)]
-            if isinstance(arg.slice, ast.Slice):
-                lower = (await self.aeval(arg.slice.lower)) if arg.slice.lower else None
-                upper = (await self.aeval(arg.slice.upper)) if arg.slice.upper else None
-                step = (await self.aeval(arg.slice.step)) if arg.slice.step else None
-                return var[slice(lower, upper, step)]
             return var[await self.aeval(arg.slice)]
         return None
 
@@ -1941,7 +1852,10 @@ class AstEval:
 
     async def ast_slice(self, arg):
         """Evaluate slice."""
-        return await self.aeval(arg.value)
+        lower = (await self.aeval(arg.lower)) if arg.lower else None
+        upper = (await self.aeval(arg.upper)) if arg.upper else None
+        step = (await self.aeval(arg.step)) if arg.step else None
+        return slice(lower, upper, step)
 
     async def ast_call(self, arg):
         """Evaluate function call."""
@@ -1983,36 +1897,18 @@ class AstEval:
         if inspect.isclass(func) and hasattr(func, "__init__evalfunc_wrap__"):
             has_init_wrapper = getattr(func, "__init__evalfunc_wrap__") is not None
             inst = func(*args, **kwargs) if not has_init_wrapper else func()
-            #
-            # we use weak references when we bind the method calls to the instance inst;
-            # otherwise these self references cause the object to not be deleted until
-            # it is later garbage collected
-            #
-            inst_weak = weakref.ref(inst)
-            for name in dir(inst):
-                try:
-                    value = getattr(inst, name)
-                except AttributeError:
-                    # same effect as hasattr (which also catches AttributeError)
-                    # dir() may list names that aren't actually accessible attributes
-                    continue
-                if type(value) is not EvalFuncVar:
-                    continue
-                setattr(inst, name, EvalFuncVarClassInst(value.get_func(), value.get_ast_ctx(), inst_weak))
             if has_init_wrapper:
                 #
                 # since our __init__ function is async, call the renamed one
                 #
                 await inst.__init__evalfunc_wrap__.call(self, *args, **kwargs)
             return inst
-        if asyncio.iscoroutinefunction(func):
+        if inspect.iscoroutinefunction(func):
             return await func(*args, **kwargs)
         if callable(func):
             if func == time.sleep:  # pylint: disable=comparison-with-callable
                 _LOGGER.warning(
-                    "%s line %s calls blocking time.sleep(); replaced with asyncio.sleep()",
-                    self.filename,
-                    self.lineno,
+                    "%s calls blocking time.sleep(); replaced with asyncio.sleep()", self.filename
                 )
                 return await asyncio.sleep(*args, **kwargs)
             return func(*args, **kwargs)
@@ -2166,79 +2062,34 @@ class AstEval:
             await self.get_names_set(this_ast, names, nonlocal_names, global_names, local_names)
         return names
 
-    def parse(self, code_str, filename=None, mode="exec"):
+    def parse(self, code_str: str | list[str], filename: str | None = None, mode: str = "exec") -> None:
         """Parse the code_str source code into an AST tree."""
-        self.exception = None
-        self.exception_obj = None
-        self.exception_long = None
         self.ast = None
         if filename is not None:
             self.filename = filename
-        try:
-            if isinstance(code_str, list):
-                self.code_list = code_str
-                self.code_str = "\n".join(code_str)
-            elif isinstance(code_str, str):
-                self.code_str = code_str
-                self.code_list = code_str.split("\n")
-            else:
-                self.code_str = code_str
-                self.code_list = []
-            self.ast = ast.parse(self.code_str, filename=self.filename, mode=mode)
-            return True
-        except SyntaxError as err:
-            self.exception_obj = err
-            self.lineno = err.lineno
-            self.col_offset = err.offset - 1
-            self.exception = f"syntax error {err}"
-            if err.filename == self.filename:
-                self.exception_long = self.format_exc(err, self.lineno, self.col_offset)
-            else:
-                self.exception_long = self.format_exc(err, 1, self.col_offset, code_list=[err.text])
-            return False
-        except asyncio.CancelledError:
-            raise
-        except Exception as err:
-            self.exception_obj = err
-            self.lineno = 1
-            self.col_offset = 0
-            self.exception = f"parsing error {err}"
-            self.exception_long = self.format_exc(err)
-            return False
-
-    def format_exc(self, exc, lineno=None, col_offset=None, short=False, code_list=None):
-        """Format an multi-line exception message using lineno if available."""
-        if code_list is None:
-            code_list = self.code_list
-        if lineno is not None and lineno <= len(code_list):
-            if short:
-                mesg = f"In <{self.filename}> line {lineno}:\n"
-                mesg += "    " + code_list[lineno - 1]
-            else:
-                mesg = f"Exception in <{self.filename}> line {lineno}:\n"
-                mesg += "    " + code_list[lineno - 1] + "\n"
-                if col_offset is not None:
-                    mesg += "    " + " " * col_offset + "^\n"
-                mesg += f"{type(exc).__name__}: {exc}"
+        if isinstance(code_str, list):
+            self.code_list = code_str
+            self.code_str = "\n".join(code_str)
+        elif isinstance(code_str, str):
+            self.code_str = code_str
+            self.code_list = code_str.split("\n")
         else:
-            mesg = f"Exception in <{self.filename}>:\n"
-            mesg += f"{type(exc).__name__}: {exc}"
+            self.code_str = code_str
+            self.code_list = []
+        self.ast = ast.parse(self.code_str, filename=self.filename, mode=mode)
 
-        if _LOGGER.isEnabledFor(logging.DEBUG):
-            mesg += "\n" + traceback.format_exc()
-        return mesg
+    def log_exception(self, exc: Exception) -> None:
+        """Log eval exception."""
+        try:
+            fmt = EvalExceptionFormatter(exc)
+            msg = "\n" + "".join(fmt.format())
+            self.get_logger().error(msg)
 
-    def get_exception(self):
-        """Return the last exception str."""
-        return self.exception
-
-    def get_exception_obj(self):
-        """Return the last exception object."""
-        return self.exception_obj
-
-    def get_exception_long(self):
-        """Return the last exception in a longer str form."""
-        return self.exception_long
+            if _LOGGER.isEnabledFor(logging.DEBUG):
+                msg = "\n" + "".join(traceback.format_tb(exc.__traceback__))
+                _LOGGER.error(msg)
+        except Exception:
+            _LOGGER.exception("Error while formatting ast exception")
 
     def set_local_sym_table(self, sym_table):
         """Set the local symbol table."""
@@ -2305,7 +2156,7 @@ class AstEval:
                     for attr in var.__dict__:
                         if attr.lower().startswith(attr_root) and (attr_root != "" or attr[0:1] != "_"):
                             words.add(f"{name}.{attr}")
-                except Exception:
+                except Exception:  # noqa: S110
                     pass
         for keyw in set(keyword.kwlist) - {"yield"}:
             if keyw.lower().startswith(root):
@@ -2320,28 +2171,168 @@ class AstEval:
                 words.add(name)
         return words
 
-    async def eval(self, new_state_vars=None, merge_local=False):
+    async def eval(self, new_state_vars: dict[str, Any] | None = None, merge_local: bool = False) -> None:
         """Execute parsed code, with the optional state variables added to the scope."""
-        self.exception = None
-        self.exception_obj = None
-        self.exception_long = None
         if new_state_vars:
             if not merge_local:
                 self.local_sym_table = {}
             self.local_sym_table.update(new_state_vars)
         if self.ast:
-            try:
-                val = await self.aeval(self.ast)
-                if isinstance(val, EvalStopFlow):
-                    return None
-                return val
-            except asyncio.CancelledError:
-                raise
-            except Exception as err:
-                if self.exception_long is None:
-                    self.exception_long = self.format_exc(err, self.lineno, self.col_offset)
+            val = await self.aeval(self.ast)
+            if isinstance(val, EvalStopFlow):
+                return None
+            return val
         return None
 
     def dump(self, this_ast=None):
         """Dump the AST tree for debugging."""
         return ast.dump(this_ast if this_ast else self.ast)
+
+
+class EvalExceptionFormatter:
+    """Format exceptions using pyscript-aware traceback frames."""
+
+    def __init__(self, exc: BaseException) -> None:
+        """Initialize exception formatter state."""
+        self.exc = exc
+
+        self.current_func: str | None = None
+        self.current_code_list: list[str] | None = None
+        self.current_filename: str | None = None
+        self.last_eval_frame: traceback.FrameSummary | None = None
+        self.lineno: int = 1
+        self.col_offset: int = 0
+        self.end_col_offset: int = 0
+
+        self.stack = traceback.StackSummary()
+        self._build_stack()
+        self.chained_msg: str | None = None
+        self.chained_exc: EvalExceptionFormatter | None = None
+        if exc.__cause__ is not None:
+            self.chained_msg = traceback._cause_message
+            self.chained_exc = EvalExceptionFormatter(exc.__cause__)
+        elif exc.__context__ is not None and not exc.__suppress_context__:
+            self.chained_msg = traceback._context_message
+            self.chained_exc = EvalExceptionFormatter(exc.__context__)
+
+    def format(self) -> list[str]:
+        """Return formatted traceback lines for this exception."""
+        result = []
+
+        if self.chained_msg and self.chained_exc:
+            result.extend(self.chained_exc.format())
+            result.append(self.chained_msg)
+
+        result.extend(self.stack.format())
+        if isinstance(self.exc, SyntaxError):
+            format_exc = [f"{type(self.exc).__name__}: {self.exc.msg}\n"]
+        else:
+            format_exc = traceback.format_exception_only(self.exc)
+        result.extend(format_exc)
+
+        return result
+
+    def _build_stack(self) -> None:
+        """Build stack summary from traceback frames."""
+        current_tb = self.exc.__traceback__
+
+        while current_tb:
+            frame = current_tb.tb_frame
+            code = frame.f_code
+
+            if code.co_filename == __file__:
+                if code.co_qualname == EvalFunc.call.__qualname__:
+                    eval_func = frame.f_locals.get("self")
+                    if isinstance(eval_func, EvalFunc):
+                        self.current_func = eval_func.get_name()
+                        self.current_code_list = eval_func.code_list
+                        self.current_filename = eval_func.global_ctx.get_file_path()
+                elif code.co_qualname == AstEval.call_func.__qualname__ and self.current_func is None:
+                    self.current_func = frame.f_locals.get("func_name", None)
+                elif code.co_qualname == AstEval.parse.__qualname__ and isinstance(self.exc, SyntaxError):
+                    ctx = frame.f_locals.get("self")
+                    self.current_code_list = ctx.code_list
+                    self.current_filename = ctx.global_ctx.get_file_path() or ctx.filename
+                    self.lineno = self.exc.lineno
+                    self.col_offset = self.exc.offset - 1
+                    self.end_col_offset = self.exc.end_offset - 1
+                    self.ast_frame(ctx)
+                    # cancel frames from ast.py
+                    return
+                elif code.co_qualname in [AstEval.aeval.__qualname__, AstEval.recurse_assign.__qualname__]:
+                    ctx = frame.f_locals.get("self")
+                    if not self.current_filename:
+                        self.current_filename = ctx.global_ctx.get_file_path() or ctx.filename
+                    if not self.current_code_list:
+                        self.current_code_list = ctx.code_list
+
+                    for val in frame.f_locals.values():
+                        if isinstance(val, (ast.expr, ast.stmt)) and hasattr(val, "lineno"):
+                            self.lineno = getattr(val, "lineno", self.lineno)
+                            self.col_offset = getattr(val, "col_offset", self.col_offset)
+                            self.end_col_offset = getattr(val, "end_col_offset", self.col_offset)
+                            self.ast_frame(ctx)
+                            break
+            else:
+                self.real_frame(current_tb)
+
+            current_tb = current_tb.tb_next
+
+    def ast_frame(self, ctx: AstEval) -> None:
+        """Add or replace a frame that points to AST source."""
+        source = ctx.get_global_ctx().source or ""
+        code_list = self.current_code_list or source.splitlines()
+        if code_list and self.lineno <= len(code_list):
+            codeline = code_list[self.lineno - 1]
+        else:
+            _LOGGER.error("Source code is unavailable for %s.", self.current_filename)
+            codeline = None
+
+        func = self.current_func
+        if not func and self.current_filename != ctx.name:
+            func = ctx.name
+
+        new_frame = traceback.FrameSummary(
+            filename=self.current_filename,
+            lineno=self.lineno,
+            name=func,
+            colno=self.col_offset,
+            line=codeline,
+            lookup_line=False,
+            end_lineno=self.lineno,
+            end_colno=self.end_col_offset,
+        )
+
+        last_frame = self.stack[-1] if self.stack else None
+        if last_frame and new_frame.filename == last_frame.filename and new_frame.name == last_frame.name:
+            # Replace with more detailed (deeper) data
+            self.stack[-1] = new_frame
+        else:
+            self.stack.append(new_frame)
+        self.last_eval_frame = new_frame
+
+    def real_frame(self, tb: TracebackType) -> None:
+        """Add a regular Python traceback frame."""
+        lineno = tb.tb_lineno
+        end_lineno = colno = end_colno = None
+        frame = tb.tb_frame
+        code = frame.f_code
+
+        if tb.tb_lasti >= 0:
+            target = tb.tb_lasti // 2
+            for idx, pos in enumerate(code.co_positions()):
+                if idx == target:
+                    if pos[0] is not None:
+                        lineno = pos[0]
+                    end_lineno, colno, end_colno = pos[1:]
+                    break
+        self.stack.append(
+            traceback.FrameSummary(
+                filename=code.co_filename,
+                lineno=lineno,
+                name=code.co_name,
+                end_lineno=end_lineno,
+                colno=colno,
+                end_colno=end_colno,
+            )
+        )
