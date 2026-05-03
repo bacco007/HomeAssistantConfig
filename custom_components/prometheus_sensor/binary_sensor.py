@@ -31,7 +31,13 @@ if TYPE_CHECKING:
 
     from . import QueryResult
 
-from .const import CONF_EXPR, CONF_QUERIES, DEFAULT_URL, SCAN_INTERVAL as SCAN_INTERVAL
+from .const import (
+    CONF_EXPR,
+    CONF_HEADERS,
+    CONF_QUERIES,
+    DEFAULT_URL,
+    SCAN_INTERVAL as SCAN_INTERVAL,
+)
 
 _QUERY_SCHEMA: Final = vol.Schema(
     {
@@ -46,6 +52,7 @@ _QUERY_SCHEMA: Final = vol.Schema(
 PLATFORM_SCHEMA: Final = BINARY_SENSOR_PLATFORM_SCHEMA.extend(
     {
         vol.Optional(CONF_URL, default=DEFAULT_URL): cv.string,
+        vol.Optional(CONF_HEADERS): vol.Schema({cv.string: cv.string}),
         vol.Required(CONF_QUERIES): [_QUERY_SCHEMA],
     }
 )
@@ -60,7 +67,8 @@ async def async_setup_platform(
     """Set up the sensor platform."""
     session = async_get_clientsession(hass)
     url = config[CONF_URL]
-    prometheus = Prometheus(url, session)
+    headers = config.get(CONF_HEADERS)
+    prometheus = Prometheus(url, session, headers)
 
     async_add_entities(
         new_entities=[
