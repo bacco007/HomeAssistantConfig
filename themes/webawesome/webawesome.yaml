@@ -1,0 +1,226 @@
+WebAwesome:
+  # ----------------------------------------------------------------------------
+  #  WEB AWESOME THEME
+  #  Inspiration: https://webawesome.com/docs/color-palettes
+  #  By: Atlas
+  # ----------------------------------------------------------------------------
+  modes:
+    light:
+      # Bakgrunder
+      primary-background-color: "#f8fafc"  # Slate 50
+      secondary-background-color: "#f1f5f9"  # Slate 100
+      card-background-color: "#ffffff"     # Vit
+
+      # Text
+      primary-text-color: "#0f172a"        # Slate 900
+      secondary-text-color: "#64748b"      # Slate 500
+      text-primary-color: "#ffffff"        # Text på primärfärg
+
+      # 2026 Semantic Form Variables (WebAwesome Migration)
+      ha-color-form-background: "#ffffff"
+      ha-color-form-background-hover: "#f8fafc"
+      ha-color-form-background-disabled: "#e2e8f0"
+
+      # Linjer och Gränser
+      divider-color: "rgba(15, 23, 42, 0.08)"
+
+      # Klimatfärger (Vibrant för ikoner)
+      state-climate-heat-color: "var(--wa-warning)"
+      state-climate-cool-color: "var(--wa-info)"
+      state-climate-auto-color: "var(--wa-success)"
+      state-climate-dry-color: "var(--wa-purple)"
+      state-climate-fan_only-color: "var(--wa-info)"
+
+      # Dynamisk transparens och skuggor (Nordic-stil)
+      wa-chip-opacity: 0.15
+      ha-card-box-shadow: "0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.05)"
+
+    dark:
+      # Bakgrunder
+      primary-background-color: "#0f172a"  # Slate 900
+      secondary-background-color: "#020617"  # Slate 950
+      card-background-color: "#1e293b"     # Slate 800
+
+      # Text
+      primary-text-color: "#f8fafc"        # Slate 50
+      secondary-text-color: "#94a3b8"      # Slate 400
+      text-primary-color: "#ffffff"        # Text på primärfärg
+
+      # 2026 Semantic Form Variables
+      ha-color-form-background: "#334155"  # Slate 700
+      ha-color-form-background-hover: "#475569"  # Slate 600
+      ha-color-form-background-disabled: "#1e293b"
+
+      # Linjer och Gränser
+      divider-color: "rgba(248, 250, 252, 0.08)"
+
+      # Klimatfärger (Klara färger för mörkt läge)
+      state-climate-heat-color: "var(--wa-warning)"
+      state-climate-cool-color: "var(--wa-info)"
+      state-climate-auto-color: "var(--wa-success)"
+      state-climate-dry-color: "var(--wa-purple)"
+      state-climate-fan_only-color: "var(--wa-info)"
+
+      # Dynamisk transparens och skuggor (Nordic-stil)
+      wa-chip-opacity: 0.25
+      ha-card-box-shadow: "0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3)"
+
+  # ----------------------------------------------------------------------------
+  #  GLOBAL VARIABLES (Gäller både Ljus och Mörk)
+  # ----------------------------------------------------------------------------
+
+  # Brand Colors (WebAwesome Sky Palette)
+  primary-color: "#0ea5e9"       # Brand Blue
+  accent-color: "#f59e0b"        # Amber
+
+  # Semantic WebAwesome Colors (Använd dessa i dina kort!)
+  wa-success: "#10b981"          # Emerald
+  wa-warning: "#f59e0b"          # Amber
+  wa-danger: "#ef4444"           # Red
+  wa-info: "#0ea5e9"             # Sky Blue
+  wa-neutral: "#64748b"          # Slate
+  wa-purple: "#8b5cf6"           # Violet
+  wa-brown: "#92400e"            # Amber 800 (Coffee Brown)
+
+  # State Colors
+  state-icon-color: "var(--secondary-text-color)"
+  state-icon-active-color: "var(--primary-color)"
+  state-light-active-color: "var(--wa-warning)"
+  state-switch-active-color: "var(--wa-success)"
+  state-binary_sensor-active-color: "var(--wa-info)"
+
+  # Typografi
+  ha-font-family-body: "'Inter', system-ui, -apple-system, sans-serif"
+  ha-font-family-heading: "'Inter', system-ui, -apple-system, sans-serif"
+
+  # Hörn & Radie (WebAwesome använder lite mjukare hörn än default HA)
+  ha-card-border-radius: "12px"
+  ha-dialog-border-radius: "16px"
+
+  # ----------------------------------------------------------------------------
+  #  CARD-MOD STYLING (Kräver thomasloven/lovelace-card-mod)
+  # ----------------------------------------------------------------------------
+  card-mod-theme: WebAwesome
+  card-mod-card-yaml: |
+    .: |
+      /* Smidig övergång när musen hovrar över alla vanliga kort */
+      ha-card {
+        transition: box-shadow 0.2s ease, transform 0.2s ease !important;
+      }
+      ha-card:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1) !important;
+        transform: translateY(-1px);
+      }
+
+      /* Specifikt för Mushroom Chips-kort: Rundare hörn och extra padding */
+      :host(mushroom-chips-card) ha-card {
+        border-radius: 12px !important;
+        padding-left: 6px !important;
+        padding-bottom: 6px !important;
+      }
+
+      /* WebAwesome Background Variables (Beräknas dynamiskt baserat på ljust/mörkt läge) */
+      :host {
+        --wa-bg-success: color-mix(in srgb, var(--wa-success) calc(var(--wa-chip-opacity) * 100%), transparent);
+        --wa-bg-warning: color-mix(in srgb, var(--wa-warning) calc(var(--wa-chip-opacity) * 150%), transparent);
+        --wa-bg-danger: color-mix(in srgb, var(--wa-danger) calc(var(--wa-chip-opacity) * 100%), transparent);
+        --wa-bg-info: color-mix(in srgb, var(--wa-info) calc(var(--wa-chip-opacity) * 100%), transparent);
+        --wa-bg-purple: color-mix(in srgb, var(--wa-purple) calc(var(--wa-chip-opacity) * 100%), transparent);
+        --wa-bg-neutral: color-mix(in srgb, var(--wa-neutral) calc(var(--wa-chip-opacity) * 100%), transparent);
+        --wa-bg-brown: color-mix(in srgb, var(--wa-brown) calc(var(--wa-chip-opacity) * 150%), transparent);
+      }
+
+      /* Dynamiska Ping-klasser (Med dashed border) */
+      ha-card.wa-chip-danger {
+        --chip-background: color-mix(in srgb, var(--wa-danger) 20%, transparent) !important;
+        --chip-border-color: var(--wa-danger) !important;
+        --chip-border-width: 2px !important;
+        --chip-border-style: solid !important;
+        --chip-icon-color: var(--wa-danger) !important;
+        color: var(--primary-text-color) !important;
+        animation: wa-ping-danger 2s infinite;
+      }
+      @keyframes wa-ping-danger {
+        0% {box-shadow: 0 0 0 0 color-mix(in srgb, var(--wa-danger) 70%, transparent);}
+        70% {box-shadow: 0 0 0 10px transparent;}
+        100% {box-shadow: 0 0 0 0 transparent;}
+      }
+
+      ha-card.wa-chip-danger-solid {
+        --chip-background: var(--wa-danger) !important;
+        --chip-border-width: 2px !important;
+        --chip-border-style: solid !important;
+        --chip-border-color: var(--wa-danger) !important;
+        --chip-icon-color: #ffffff !important;
+        color: #ffffff !important;
+        font-weight: bold;
+        animation: wa-ping-danger-solid 2s infinite;
+      }
+      @keyframes wa-ping-danger-solid {
+        0% {box-shadow: 0 0 0 0 color-mix(in srgb, var(--wa-danger) 70%, transparent);}
+        70% {box-shadow: 0 0 0 10px transparent;}
+        100% {box-shadow: 0 0 0 0 transparent;}
+      }
+
+      ha-card.wa-chip-warning {
+        --chip-background: color-mix(in srgb, var(--wa-warning) 30%, transparent) !important;
+        --chip-border-color: var(--wa-warning) !important;
+        --chip-border-width: 2px !important;
+        --chip-border-style: solid !important;
+        --chip-icon-color: var(--wa-warning) !important;
+        color: var(--primary-text-color) !important;
+        animation: wa-ping-warning 2s infinite;
+      }
+      @keyframes wa-ping-warning {
+        0% {box-shadow: 0 0 0 0 color-mix(in srgb, var(--wa-warning) 70%, transparent);}
+        70% {box-shadow: 0 0 0 10px transparent;}
+        100% {box-shadow: 0 0 0 0 transparent;}
+      }
+
+      ha-card.wa-chip-info {
+        --chip-background: color-mix(in srgb, var(--wa-info) 20%, transparent) !important;
+        --chip-border-color: var(--wa-info) !important;
+        --chip-border-width: 2px !important;
+        --chip-border-style: solid !important;
+        --chip-icon-color: var(--wa-info) !important;
+        color: var(--primary-text-color) !important;
+        animation: wa-ping-info 2s infinite;
+      }
+
+      ha-card.wa-chip-success {
+        --chip-background: color-mix(in srgb, var(--wa-success) 20%, transparent) !important;
+        --chip-border-color: var(--wa-success) !important;
+        --chip-border-width: 2px !important;
+        --chip-border-style: solid !important;
+        --chip-icon-color: var(--wa-success) !important;
+        color: var(--primary-text-color) !important;
+        animation: wa-ping-success 2s infinite;
+      }
+      @keyframes wa-ping-success {
+        0% {box-shadow: 0 0 0 0 color-mix(in srgb, var(--wa-success) 70%, transparent);}
+        70% {box-shadow: 0 0 0 10px transparent;}
+        100% {box-shadow: 0 0 0 0 transparent;}
+      }
+      @keyframes wa-ping-info {
+        0% {box-shadow: 0 0 0 0 color-mix(in srgb, var(--wa-info) 70%, transparent);}
+        70% {box-shadow: 0 0 0 10px transparent;}
+        100% {box-shadow: 0 0 0 0 transparent;}
+      }
+
+    "ha-switch":
+      $: |
+        /* WebAwesome-inspirerad focus ring för switchar */
+        .mdc-switch:focus-within .mdc-switch__track {
+          outline: 2px solid var(--primary-color);
+          outline-offset: 2px;
+        }
+    "ha-input":
+      $: |
+        /* Anpassning för 2026 WebAwesome inputs */
+        .mdc-text-field {
+          border-radius: 8px !important;
+        }
+        .mdc-text-field:focus-within {
+          outline: 2px solid var(--primary-color) !important;
+          outline-offset: -1px;
+        }
