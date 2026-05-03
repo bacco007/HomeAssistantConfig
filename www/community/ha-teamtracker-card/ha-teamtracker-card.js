@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.15.0";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.17.0";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -920,6 +920,7 @@ class $de5768471e29ae80$export$c622f67f045f310d extends (0, $ab210b2da7b39b9d$ex
 const $044e49bbd03ccfb1$export$2fa162a495d26869 = {
     "common": {
         "api_error": "API Error",
+        "field_not_set": "Qualifying nicht abgeschlossen",
         "no_upcoming_games": "Keine anstehenden Spiele bis %s",
         "finalTerm": "%s - Endergebnis",
         "byeTerm": "BYE",
@@ -1070,6 +1071,7 @@ const $044e49bbd03ccfb1$export$2fa162a495d26869 = {
 const $e5e336768a089693$export$c3da0dad1b44eea9 = {
     "common": {
         "api_error": "\u03A3\u03C6\u03AC\u03BB\u03BC\u03B1 API",
+        "field_not_set": "\u039F\u03B9 \u03BA\u03B1\u03C4\u03B1\u03C4\u03B1\u03BA\u03C4\u03AE\u03C1\u03B9\u03B5\u03C2 \u03B4\u03BF\u03BA\u03B9\u03BC\u03AD\u03C2 \u03B4\u03B5\u03BD \u03AD\u03C7\u03BF\u03C5\u03BD \u03BF\u03BB\u03BF\u03BA\u03BB\u03B7\u03C1\u03C9\u03B8\u03B5\u03AF",
         "no_upcoming_games": "\u0394\u03B5\u03BD \u03C5\u03C0\u03AC\u03C1\u03C7\u03BF\u03C5\u03BD \u03C0\u03C1\u03BF\u03C3\u03B5\u03C7\u03B5\u03AF\u03C2 \u03B1\u03B3\u03CE\u03BD\u03B5\u03C2 \u03AD\u03C9\u03C2 %s",
         "finalTerm": "%s - \u03A4\u03B5\u03BB\u03B9\u03BA\u03CC\u03C2",
         "byeTerm": "\u0391\u039D\u0391\u03A0\u0391\u03A5\u03A3\u0397",
@@ -1220,6 +1222,7 @@ const $e5e336768a089693$export$c3da0dad1b44eea9 = {
 const $9bf8d9821f43b5a3$export$84584c2a98eb6753 = {
     "common": {
         "api_error": "API Error",
+        "field_not_set": "Qualifying not Complete",
         "no_upcoming_games": "No upcoming games through %s",
         "finalTerm": "%s - Final",
         "byeTerm": "BYE",
@@ -1370,6 +1373,7 @@ const $9bf8d9821f43b5a3$export$84584c2a98eb6753 = {
 const $738479ced03534bd$export$25dc44e90bc68e13 = {
     "common": {
         "api_error": "API Error",
+        "field_not_set": "Qualifying not Complete",
         "no_upcoming_games": "No upcoming games through %s",
         "finalTerm": "%s - Final",
         "byeTerm": "BYE",
@@ -1520,6 +1524,7 @@ const $738479ced03534bd$export$25dc44e90bc68e13 = {
 const $fa59b11c3970eda2$export$ca5e4045a55e76d2 = {
     "common": {
         "api_error": "Error de API",
+        "field_not_set": "La clasificaci\xf3n no ha finalizado",
         "no_upcoming_games": "No hay pr\xf3ximos juegos hasta el %s",
         "finalTerm": "%s - Final",
         "byeTerm": "DESCANSO",
@@ -1670,6 +1675,7 @@ const $fa59b11c3970eda2$export$ca5e4045a55e76d2 = {
 const $b35902dfc88d0d3b$export$13aa9a2e371cd2fd = {
     "common": {
         "api_error": "Error de API",
+        "field_not_set": "La clasificaci\xf3n no ha finalizado",
         "no_upcoming_games": "No hay pr\xf3ximos juegos hasta el %s",
         "finalTerm": "%s - Final",
         "byeTerm": "DESCANSO",
@@ -1820,6 +1826,7 @@ const $b35902dfc88d0d3b$export$13aa9a2e371cd2fd = {
 const $4f808b6be6c4ddc7$export$acb2a88f7d552ebf = {
     "common": {
         "api_error": "Erreur API",
+        "field_not_set": "Les qualifications ne sont pas termin\xe9es",
         "no_upcoming_games": "Aucun match pr\xe9vu pour l'instant %s",
         "finalTerm": "%s - Terminer",
         "byeTerm": "Au revoir",
@@ -1970,6 +1977,7 @@ const $4f808b6be6c4ddc7$export$acb2a88f7d552ebf = {
 const $d573fc5554189e19$export$3486a10f30cf1ee4 = {
     "common": {
         "api_error": "API Error",
+        "field_not_set": "Le qualifiche non sono concluse",
         "no_upcoming_games": "Nessun Match imminente %s",
         "finalTerm": "%s - Finale",
         "byeTerm": "Ciao",
@@ -2120,6 +2128,7 @@ const $d573fc5554189e19$export$3486a10f30cf1ee4 = {
 const $48e4764806fa7a6b$export$9c64ee4d84d79ce1 = {
     "common": {
         "api_error": "API Fout",
+        "field_not_set": "Kwalificatie niet afgerond",
         "no_upcoming_games": "Geen aanstaande wedstrijden t/m %s",
         "finalTerm": "Einduitslag - %s",
         "byeTerm": "D\xe1\xe1\xe1g!",
@@ -2270,6 +2279,7 @@ const $48e4764806fa7a6b$export$9c64ee4d84d79ce1 = {
 const $60a4d35e5022a9df$export$9dc8766c8c230075 = {
     "common": {
         "api_error": "Erro de API",
+        "field_not_set": "A classifica\xe7\xe3o n\xe3o foi conclu\xedda",
         "no_upcoming_games": "Sem pr\xf3ximos jogos %s",
         "finalTerm": "%s - Final",
         "byeTerm": "DESCANSO",
@@ -2362,6 +2372,7 @@ const $60a4d35e5022a9df$export$9dc8766c8c230075 = {
 const $06041e2b1c26c877$export$d608fa5b5bfd2021 = {
     "common": {
         "api_error": "Chyba API",
+        "field_not_set": "Kvalifik\xe1cia nie je dokon\u010Den\xe1",
         "no_upcoming_games": "\u017Diadn\xfd nadch\xe1dzaj\xfaci z\xe1pas do %s",
         "finalTerm": "%s - Koniec",
         "byeTerm": "Vo\u013Eno",
@@ -2512,6 +2523,7 @@ const $06041e2b1c26c877$export$d608fa5b5bfd2021 = {
 const $125926858f90b59c$export$b2bcf639de11a4af = {
     "common": {
         "api_error": "Chyba API",
+        "field_not_set": "Kvalifik\xe1cia nie je dokon\u010Den\xe1",
         "no_upcoming_games": "\u017Diadn\xfd nadch\xe1dzaj\xfaci z\xe1pas do %s",
         "finalTerm": "%s - Koniec",
         "byeTerm": "Vo\u013Eno",
@@ -2662,6 +2674,7 @@ const $125926858f90b59c$export$b2bcf639de11a4af = {
 const $f594c62d0c6e32a5$export$65540e5f7f6e7dce = {
     "common": {
         "api_error": "API Error",
+        "field_not_set": "Kvalificeringen \xe4r inte avslutad",
         "no_upcoming_games": "Inga kommande matcher %s",
         "finalTerm": "%s - Final",
         "byeTerm": "BYE",
@@ -3463,6 +3476,7 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
     c.notFoundTerm2 = "NOT_FOUND";
     if (stateObj.attributes.api_message) {
         c.notFoundTerm2 = t.translate("common.api_error");
+        if (stateObj.attributes.api_message.includes("qualifying not complete")) c.notFoundTerm2 = t.translate("common.field_not_set");
         var apiTail = stateObj.attributes.api_message.substring(stateObj.attributes.api_message.length - 17);
         if (apiTail.slice(-1) == "Z") {
             var lastDateForm = new Date(apiTail);
