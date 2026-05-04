@@ -10,8 +10,8 @@ from homeassistant.helpers.translation import _TranslationCache, TRANSLATION_FLA
 from .const import (DOMAIN, CUSTOM_TEMPLATES_SCHEMA, CONF_PRELOAD_TRANSLATIONS, CONST_EVAL_FUNCTION_NAME,
                     CONST_STATE_TRANSLATED_FUNCTION_NAME, CONST_STATE_ATTR_TRANSLATED_FUNCTION_NAME,
                     CONST_TRANSLATED_FUNCTION_NAME, CONST_ALL_TRANSLATIONS_FUNCTION_NAME,
-                    CONST_IS_AVAILABLE_FUNCTION_NAME,
-                    CONST_DICT_MERGE_FUNCTION_NAME)
+                    CONST_IS_AVAILABLE_FUNCTION_NAME, CONST_DICT_MERGE_FUNCTION_NAME, CONST_ENTITY_ATTR_FUNCTION_NAME,
+                    CONST_ENTITY_ATTRS_FUNCTION_NAME)
 from .templates.all_translations import AllTranslations
 from .templates.dict_merge import DictMerge
 from .templates.eval_template import EvalTemplate
@@ -19,6 +19,7 @@ from .templates.is_available import IsAvailable
 from .templates.state_attr_translated import StateAttrTranslated
 from .templates.state_translated import StateTranslated
 from .templates.translated import Translated
+from .templates.entity_attr import EntityAttr, EntityAttrs
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -55,11 +56,14 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
     eval_template = pass_context(EvalTemplate(hass))
     is_available_template = IsAvailable(hass)
     dict_merge_template = DictMerge(hass)
+    entity_attr_template = EntityAttr(hass)
+    entity_attrs_template = EntityAttrs(hass)
 
     def is_safe_callable(self: TemplateEnvironment, obj) -> bool:
         # noinspection PyUnresolvedReferences
         return (isinstance(obj, (
-            StateTranslated, StateAttrTranslated, EvalTemplate, Translated, AllTranslations, IsAvailable, DictMerge))
+            StateTranslated, StateAttrTranslated, EvalTemplate, Translated, AllTranslations, IsAvailable, DictMerge,
+            EntityAttr, EntityAttrs))
                 or self.ct_original_is_safe_callable(obj))
 
     def patch_environment(env: TemplateEnvironment) -> None:
@@ -70,12 +74,16 @@ def setup(hass: HomeAssistant, config: ConfigType) -> bool:
         env.globals[CONST_EVAL_FUNCTION_NAME] = eval_template
         env.globals[CONST_IS_AVAILABLE_FUNCTION_NAME] = is_available_template
         env.globals[CONST_DICT_MERGE_FUNCTION_NAME] = dict_merge_template
+        env.globals[CONST_ENTITY_ATTR_FUNCTION_NAME] = entity_attr_template
+        env.globals[CONST_ENTITY_ATTRS_FUNCTION_NAME] = entity_attrs_template
         env.filters[CONST_STATE_TRANSLATED_FUNCTION_NAME] = state_translated_template
         env.filters[CONST_STATE_ATTR_TRANSLATED_FUNCTION_NAME] = state_attr_translated_template
         env.filters[CONST_TRANSLATED_FUNCTION_NAME] = translated_template
         env.filters[CONST_EVAL_FUNCTION_NAME] = eval_template
         env.filters[CONST_IS_AVAILABLE_FUNCTION_NAME] = is_available_template
         env.filters[CONST_DICT_MERGE_FUNCTION_NAME] = dict_merge_template
+        env.filters[CONST_ENTITY_ATTR_FUNCTION_NAME] = entity_attr_template
+        env.filters[CONST_ENTITY_ATTRS_FUNCTION_NAME] = entity_attrs_template
 
     def patched_init(
             self: TemplateEnvironment,

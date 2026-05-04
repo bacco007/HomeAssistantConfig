@@ -2,6 +2,21 @@ from homeassistant.const import STATE_UNAVAILABLE, STATE_UNKNOWN
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.translation import async_get_cached_translations
 
+try:
+    from homeassistant.helpers.template.states import (
+        _get_state_if_valid,
+        TemplateState,
+        _RESERVED_NAMES,
+    )
+except ImportError:
+    # For HA before 2026.5
+    from homeassistant.helpers.template import (
+        _get_state_if_valid,
+        TemplateState,
+        _RESERVED_NAMES,
+    )
+
+PATCHED_RESERVED_NAMES = _RESERVED_NAMES
 
 @callback
 def async_translate_state(
@@ -71,3 +86,6 @@ def async_translate_state_attribute(
     if localize_key in translations_entity_component:
         return str(translations_entity_component[localize_key])
     return attribute_value
+
+def patched_get_state_if_valid(hass: HomeAssistant, entity_id: str) -> TemplateState | None:
+    return _get_state_if_valid(hass, entity_id)

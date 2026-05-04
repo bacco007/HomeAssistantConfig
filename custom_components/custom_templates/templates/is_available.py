@@ -1,8 +1,8 @@
 from homeassistant.core import HomeAssistant, valid_entity_id
 from homeassistant.exceptions import TemplateError
-from homeassistant.helpers.template import _get_state_if_valid, _RESERVED_NAMES
 
 from ..const import DEFAULT_UNAVAILABLE_STATES
+from .utils import patched_get_state_if_valid, PATCHED_RESERVED_NAMES
 
 
 class IsAvailable:
@@ -14,9 +14,9 @@ class IsAvailable:
         unavailable_states = [s.lower() if type(s) is str else s for s in unavailable_states]
         state = None
         if "." in entity_id:
-            state = _get_state_if_valid(self._hass, entity_id)
+            state = patched_get_state_if_valid(self._hass, entity_id)
         else:
-            if entity_id in _RESERVED_NAMES:
+            if entity_id in PATCHED_RESERVED_NAMES:
                 return None
             if not valid_entity_id(f"{entity_id}.entity"):
                 raise TemplateError(f"Invalid domain name '{entity_id}'")
