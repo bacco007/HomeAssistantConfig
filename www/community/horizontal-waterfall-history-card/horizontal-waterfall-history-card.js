@@ -136,6 +136,7 @@ const DEFAULTS = {
     color_unknown: '#FF9800', // Orange
     color_unavailable: '#9E9E9E', // Gray
     interval_value: 'last',
+    cell_gap: 1, // px gap between bar segments; set to 0 to disable
 };
 
 class WaterfallHistoryCard extends i {
@@ -164,9 +165,8 @@ class WaterfallHistoryCard extends i {
         };
     }
     setConfig(config) {
-        if (!config.entities || !Array.isArray(config.entities) || config.entities.length === 0) {
-            throw new Error('Please define a list of entities.');
-        }
+        // Use empty array as fallback - auto-entities calls setConfig without entities on first render
+        const entities = Array.isArray(config.entities) ? config.entities : [];
         const globalConfig = {
             title: config.title || 'History',
             hours: config.hours || DEFAULTS.hours,
@@ -198,11 +198,12 @@ class WaterfallHistoryCard extends i {
             state_unknown: config.state_unknown || DEFAULTS.state_unknown,
             state_unavailable: config.state_unavailable || DEFAULTS.state_unavailable,
             interval_value: config.interval_value || DEFAULTS.interval_value,
+            cell_gap: config.cell_gap ?? DEFAULTS.cell_gap,
         };
         this.config = {
             type: 'custom:waterfall-history-card',
             ...globalConfig,
-            entities: config.entities.map(entityConfig => {
+            entities: entities.map(entityConfig => {
                 if (typeof entityConfig === 'string') {
                     return { entity: entityConfig };
                 }
@@ -221,6 +222,7 @@ class WaterfallHistoryCard extends i {
         this.style.setProperty('--entity-name-font-size', this.config.compact ? '10px' : '11px');
         this.style.setProperty('--waterfall-height', `${this.config.height}px`);
         this.style.setProperty('--labels-margin-top', this.config.compact ? '2px' : '5px');
+        this.style.setProperty('--waterfall-cell-gap', `${this.config.cell_gap ?? DEFAULTS.cell_gap}px`);
     }
     shouldUpdate(changedProps) {
         if (!this.config || !this.hass) {
@@ -895,8 +897,8 @@ WaterfallHistoryCard.styles = i$3 `
       border-radius: 3px;
       overflow: hidden;
       display: flex;
-      gap: 1px;
-      background: rgba(0,0,0,0.35);
+      gap: var(--waterfall-cell-gap, 1px);
+      background: var(--divider-color, rgba(0,0,0,0.35));
     }
 
     .bar-segment {
@@ -1053,7 +1055,7 @@ window.customCards.push({
     name: 'Waterfall History Card',
     description: 'A horizontal waterfall display for historical sensor data with visual editor'
 });
-console.info(`%c WATERFALL-HISTORY-CARD %c v4.5.1 `, 'color: black; background: #F2720C; font-weight: 600;', 'color: black; background: #00a5c9; font-weight: 600;');
+console.info(`%c WATERFALL-HISTORY-CARD %c v4.5.2 `, 'color: black; background: #F2720C; font-weight: 600;', 'color: black; background: #00a5c9; font-weight: 600;');
 
 var NumberFormat;
 (function (NumberFormat) {
@@ -1388,6 +1390,16 @@ class WaterfallHistoryCardEditor extends i {
             @change=${(ev) => this._configValueChanged('gradient', ev.target.checked)}
           ></ha-switch>
         </div>
+
+        <ha-textfield
+          label="Cell Gap (pixels)"
+          type="number"
+          min="0"
+          max="10"
+          .value=${this._config.cell_gap ?? DEFAULTS.cell_gap}
+          @input=${(ev) => this._configValueChanged('cell_gap', Number(ev.target.value))}
+          helper-text="Gap between bar segments in pixels (0 = no gaps, default 1)"
+        ></ha-textfield>
       </div>
     `;
     }
