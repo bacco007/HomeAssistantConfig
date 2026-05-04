@@ -1364,7 +1364,7 @@ function delay(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.126.0/helpers/decorate.js
+//#region \0@oxc-project+runtime@0.127.0/helpers/decorate.js
 function __decorate$1(decorators, target, key, desc) {
 	var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -2252,9 +2252,7 @@ var MusicAssistantService = class {
 	* Returns the first found mass_queue integration ID, or null if not found
 	*/
 	async discoverMassQueueConfigEntryId() {
-		const massQueue = (await this.hass.callWS({ type: "config_entries/get" })).find((entry) => entry.domain === "mass_queue" && entry.state === "loaded");
-		if (!massQueue?.entry_id) throw new Error(MASS_QUEUE_NOT_INSTALLED);
-		return massQueue.entry_id;
+		return (await this.hass.callWS({ type: "config_entries/get" })).find((entry) => entry.domain === "mass_queue" && entry.state === "loaded")?.entry_id ?? null;
 	}
 	/**
 	* Get favorites from Music Assistant library
@@ -8855,7 +8853,7 @@ var HaMediaPlayerBrowse = class HaMediaPlayerBrowse extends i$5 {
 		}
 		if (!error) return;
 		this._closeDialogAction();
-		this, this.hass.localize("ui.components.media-browser.media_browsing_error"), this._renderError(error);
+		this.hass.localize("ui.components.media-browser.media_browsing_error"), this._renderError(error);
 	}
 	_renderError(err) {
 		if (err.message === "Media directory does not exist.") return x`
@@ -11492,6 +11490,11 @@ async function handleItemPlayAction(ctrl, itemIndex, action) {
 		await ctrl.store.mediaControlService.playQueue(ctrl.activePlayer, itemIndex, item.queueItemId);
 		return;
 	}
+	if (action.enqueue === "next") {
+		await ctrl.store.mediaControlService.moveQueueItemAfterCurrent(ctrl.activePlayer, item, itemIndex, ctrl.selectedQueueIndex);
+		await refreshAfterOperation(ctrl, true);
+		return;
+	}
 	await ctrl.store.mediaControlService.playMedia(ctrl.activePlayer, item, action.enqueue);
 }
 async function clearQueue(ctrl) {
@@ -12086,10 +12089,6 @@ var SearchService = class {
 			});
 			return;
 		}
-		this.updateHost({
-			loading: true,
-			results: []
-		});
 		this.debounceTimer = setTimeout(() => this.execute(searchText, mediaTypes, libraryFilter, config), autoSearchDebounceMs);
 	}
 	async execute(searchText, mediaTypes, libraryFilter, config) {
@@ -12826,23 +12825,23 @@ var SearchResults = class extends i$5 {
 		return x`
       <div class="list" ?hidden=${!hasContent}>
         <mwc-list multi>
-          ${this.results.map((item, index) => {
+          ${c(this.results, (item) => item.uri, (item, index) => {
 			return x`
-              <sonos-media-row
-                @click=${() => this.onItemClick(index)}
-                .item=${toMediaPlayerItem(item)}
-                .showCheckbox=${this.selectMode}
-                .checked=${this.selectedIndices.has(index)}
-                .isFavorite=${item.favorite ?? null}
-                .favoriteLoading=${this.favoriteLoadingIndices.has(index)}
-                .isInLibrary=${item.inLibrary ?? null}
-                .libraryLoading=${this.libraryLoadingIndices.has(index)}
-                @checkbox-change=${(e) => this.onCheckboxChange(index, e.detail.checked)}
-                @favorite-toggle=${() => this.toggleItemState(index, "favorite")}
-                @library-toggle=${() => this.toggleItemState(index, "library")}
-                .store=${this.store}
-              ></sonos-media-row>
-            `;
+                <sonos-media-row
+                  @click=${() => this.onItemClick(index)}
+                  .item=${toMediaPlayerItem(item)}
+                  .showCheckbox=${this.selectMode}
+                  .checked=${this.selectedIndices.has(index)}
+                  .isFavorite=${item.favorite ?? null}
+                  .favoriteLoading=${this.favoriteLoadingIndices.has(index)}
+                  .isInLibrary=${item.inLibrary ?? null}
+                  .libraryLoading=${this.libraryLoadingIndices.has(index)}
+                  @checkbox-change=${(e) => this.onCheckboxChange(index, e.detail.checked)}
+                  @favorite-toggle=${() => this.toggleItemState(index, "favorite")}
+                  @library-toggle=${() => this.toggleItemState(index, "library")}
+                  .store=${this.store}
+                ></sonos-media-row>
+              `;
 		})}
         </mwc-list>
       </div>
@@ -12853,23 +12852,23 @@ var SearchResults = class extends i$5 {
 		return x`
       <div class="grid-scroll" ?hidden=${!hasContent}>
         <div class="grid" style="grid-template-columns: repeat(${columns}, minmax(0, 1fr))">
-          ${this.results.map((item, index) => {
+          ${c(this.results, (item) => item.uri, (item, index) => {
 			const selected = this.selectedIndices.has(index);
 			return x`
-              <div class="grid-tile ${selected ? "selected" : ""}" @click=${() => this.onItemClick(index)}>
-                ${this.selectMode ? x`<ha-checkbox
-                      class="grid-checkbox"
-                      .checked=${selected}
-                      @change=${(e) => this.onCheckboxChange(index, e.target.checked)}
-                      @click=${(e) => e.stopPropagation()}
-                    ></ha-checkbox>` : ""}
-                ${item.imageUrl ? x`<img class="grid-img" src="${item.imageUrl}" alt="${item.title}" loading="lazy" />` : x`<div class="grid-placeholder"><ha-svg-icon .path=${getMediaTypeIcon(item.mediaType)}></ha-svg-icon></div>`}
-                <div class="grid-info">
-                  <div class="grid-title">${item.title}</div>
-                  ${item.subtitle ? x`<div class="grid-subtitle">${item.subtitle}</div>` : ""}
+                <div class="grid-tile ${selected ? "selected" : ""}" @click=${() => this.onItemClick(index)}>
+                  ${this.selectMode ? x`<ha-checkbox
+                        class="grid-checkbox"
+                        .checked=${selected}
+                        @change=${(e) => this.onCheckboxChange(index, e.target.checked)}
+                        @click=${(e) => e.stopPropagation()}
+                      ></ha-checkbox>` : ""}
+                  ${item.imageUrl ? x`<img class="grid-img" src="${item.imageUrl}" alt="${item.title}" loading="lazy" />` : x`<div class="grid-placeholder"><ha-svg-icon .path=${getMediaTypeIcon(item.mediaType)}></ha-svg-icon></div>`}
+                  <div class="grid-info">
+                    <div class="grid-title">${item.title}</div>
+                    ${item.subtitle ? x`<div class="grid-subtitle">${item.subtitle}</div>` : ""}
+                  </div>
                 </div>
-              </div>
-            `;
+              `;
 		})}
         </div>
       </div>
@@ -13109,11 +13108,11 @@ var SearchBrowseView = class extends i$5 {
         <span class="browse-title" title=${this.item.title}>${this.item.title}</span>
         <sonos-icon-button .path=${typeIcon} disabled class="type-indicator"></sonos-icon-button>
       </div>
-      <div class="loading" ?hidden=${!this.browseLoading}><ha-spinner></ha-spinner></div>
+      <div class="loading" ?hidden=${!this.browseLoading || this.browseResults.length > 0}><ha-spinner></ha-spinner></div>
       <div class="no-results" ?hidden=${this.browseLoading || this.browseResults.length > 0}>No items found</div>
-      <div class="list" ?hidden=${this.browseLoading || this.browseResults.length === 0}>
+      <div class="list" ?hidden=${this.browseResults.length === 0}>
         <mwc-list multi>
-          ${this.browseResults.map((browseItem, index) => {
+          ${c(this.browseResults, (browseItem) => browseItem.uri, (browseItem, index) => {
 			return x` <sonos-media-row @click=${() => this.onBrowseItemClick(index)} .item=${toMediaPlayerItem(browseItem)} .store=${this.store}></sonos-media-row> `;
 		})}
         </mwc-list>
@@ -13122,7 +13121,6 @@ var SearchBrowseView = class extends i$5 {
 	}
 	async loadCollection() {
 		this.browseLoading = true;
-		this.browseResults = [];
 		try {
 			this.browseResults = await this.musicAssistantService.getCollectionItems(this.item.uri, this.item.mediaType, this.massQueueConfigEntryId);
 		} catch (e) {
@@ -13254,7 +13252,7 @@ var Search = class extends i$5 {
 	async discoverConfigEntry() {
 		const { massConfigEntryId: configuredId } = this.searchConfig;
 		this.massConfigEntryId = configuredId ?? await this.musicAssistantService.discoverConfigEntryId();
-		this.massQueueConfigEntryId = await this.musicAssistantService.discoverMassQueueConfigEntryId();
+		this.massQueueConfigEntryId = await this.musicAssistantService.discoverMassQueueConfigEntryId() ?? "";
 		this.discoveryComplete = true;
 		if (this.searchText && this.massConfigEntryId) this.searchService.execute(this.searchText, this.mediaTypes, this.libraryFilter, this.searchConfig);
 	}
