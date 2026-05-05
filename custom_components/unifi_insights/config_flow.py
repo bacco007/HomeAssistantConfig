@@ -27,6 +27,7 @@ from .api import (
     LocalAuth,
     UniFiAuthenticationError,
     UniFiConnectionError,
+    UniFiNotFoundError,
     UniFiTimeoutError,
 )
 from .api.network import UniFiNetworkClient
@@ -234,6 +235,14 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = "cannot_connect"
             except UniFiTimeoutError:
                 errors["base"] = "cannot_connect"
+            except UniFiNotFoundError:
+                _LOGGER.exception(
+                    "UniFi controller returned 404 for the integration API. "
+                    "This typically means the controller does not expose the "
+                    "official Network Integration API (e.g. self-hosted "
+                    "Network application installs without UniFi OS)."
+                )
+                errors["base"] = "api_unsupported"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
@@ -277,6 +286,12 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = "cannot_connect"
             except UniFiTimeoutError:
                 errors["base"] = "cannot_connect"
+            except UniFiNotFoundError:
+                _LOGGER.exception(
+                    "UniFi cloud returned 404 while discovering consoles. "
+                    "The Site Manager API may be unavailable for this account."
+                )
+                errors["base"] = "api_unsupported"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
@@ -328,6 +343,13 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = "cannot_connect"
             except UniFiTimeoutError:
                 errors["base"] = "cannot_connect"
+            except UniFiNotFoundError:
+                _LOGGER.exception(
+                    "UniFi cloud returned 404 while accessing the selected "
+                    "console. The console may not expose the Network "
+                    "Integration API."
+                )
+                errors["base"] = "api_unsupported"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception during console selection")
                 errors["base"] = "unknown"
@@ -429,6 +451,12 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = "cannot_connect"
             except UniFiTimeoutError:
                 errors["base"] = "cannot_connect"
+            except UniFiNotFoundError:
+                _LOGGER.exception(
+                    "UniFi controller returned 404 during reauth. The "
+                    "controller may not expose the Network Integration API."
+                )
+                errors["base"] = "api_unsupported"
             except Exception:
                 errors["base"] = "unknown"
 
@@ -521,6 +549,13 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = "cannot_connect"
             except UniFiTimeoutError:
                 errors["base"] = "cannot_connect"
+            except UniFiNotFoundError:
+                _LOGGER.exception(
+                    "UniFi controller returned 404 during reconfiguration. "
+                    "The controller may not expose the Network Integration "
+                    "API."
+                )
+                errors["base"] = "api_unsupported"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception during reconfiguration")
                 errors["base"] = "unknown"

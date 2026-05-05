@@ -1394,14 +1394,12 @@ class UnifiPortSensor(UnifiInsightsEntity, SensorEntity):
 
         # Use port label (e.g. "SFP+ 1") or fall back to "Port {idx}"
         label = port_label or f"Port {port_idx}"
-        # Replace "Port {port_idx}" placeholder in the description name
-        # with the actual port label
-        base = description.name if isinstance(description.name, str) else ""
-        if "{port_idx}" in base:
-            # e.g. "Port {port_idx} Speed" → "SFP+ 1 Speed"
-            self._attr_name = base.replace("Port {port_idx}", label)
-        else:
-            self._attr_name = f"{label} {base}"
+
+        # Provide the {port_label} placeholder used in the per-port translation
+        # strings (e.g. "{port_label} TX"). This produces unique, descriptive
+        # names per metric (e.g. "Port 1 TX", "Port 1 RX") instead of every
+        # sensor for a port sharing the same name.
+        self._attr_translation_placeholders = {"port_label": label}
 
         # Create unique ID with port index (stable, doesn't change with rename)
         self._attr_unique_id = f"{device_id}_{description.key}_{port_idx}"

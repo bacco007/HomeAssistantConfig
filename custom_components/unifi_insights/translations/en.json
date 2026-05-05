@@ -68,6 +68,7 @@
       "invalid_auth": "Invalid authentication",
       "invalid_console_id": "The selected console could not be accessed with this API key.",
       "no_remote_consoles": "No remote UniFi consoles were found for this API key.",
+      "api_unsupported": "The UniFi controller did not respond to the official Network Integration API (HTTP 404). This integration requires UniFi OS (e.g. UDM, UDR, Cloud Key Gen2+, UCG) or UniFi Cloud access. Self-hosted UniFi Network installations (Linux/Docker/Proxmox) do not expose this API.",
       "unknown": "Unexpected error"
     },
     "abort": {
@@ -156,11 +157,68 @@
       "storage_available": {
         "name": "Storage Available"
       },
+      "storage_total": {
+        "name": "Storage Total"
+      },
+      "storage_used_percent": {
+        "name": "Storage Used Percentage"
+      },
+      "poe_total_power": {
+        "name": "Total PoE Power"
+      },
+      "firmware_version": {
+        "name": "Firmware Version"
+      },
+      "wired_clients": {
+        "name": "Wired Clients"
+      },
+      "wireless_clients": {
+        "name": "Wireless Clients"
+      },
+      "port_poe_power": {
+        "name": "{port_label} PoE Power"
+      },
+      "port_speed": {
+        "name": "{port_label} Speed"
+      },
+      "port_tx_bytes": {
+        "name": "{port_label} TX"
+      },
+      "port_rx_bytes": {
+        "name": "{port_label} RX"
+      },
       "port_tx_rate": {
         "name": "{port_label} TX Rate"
       },
       "port_rx_rate": {
         "name": "{port_label} RX Rate"
+      },
+      "port_sfp_module": {
+        "name": "{port_label} SFP Module"
+      },
+      "port_sfp_vendor": {
+        "name": "{port_label} SFP Vendor"
+      },
+      "port_sfp_compliance": {
+        "name": "{port_label} SFP Type"
+      },
+      "port_sfp_serial": {
+        "name": "{port_label} SFP Serial"
+      },
+      "wan_ip": {
+        "name": "WAN IP Address"
+      },
+      "wan_uptime": {
+        "name": "WAN Uptime"
+      },
+      "site_total_clients": {
+        "name": "Total Clients"
+      },
+      "site_wired_clients": {
+        "name": "Wired Clients"
+      },
+      "site_wireless_clients": {
+        "name": "Wireless Clients"
       }
     },
     "binary_sensor": {
