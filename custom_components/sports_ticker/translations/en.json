@@ -1,0 +1,14 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Sports Ticker",
+        "description": "Create sports ticker sensors using ESPN scoreboard data.",
+        "data": {
+          "sports": "Sport (league key, e.g. mlb)",
+          "poll_interval": "Poll interval (seconds)"
+        }
+      }
+    }
+  }
+}
