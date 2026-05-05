@@ -1,0 +1,24 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to EmergencyAPI",
+        "description": "Enter your EmergencyAPI key. Get a free key at emergencyapi.com/signup",
+        "data": {
+          "api_key": "API Key",
+          "radius": "Monitoring radius (km)",
+          "scan_interval": "Update interval (minutes)"
+        },
+        "data_description": {
+          "api_key": "Your EmergencyAPI key from the dashboard"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid API key. Check your key at the EmergencyAPI dashboard."
+    },
+    "abort": {
+      "already_configured": "This API key is already configured"
+    }
+  }
+}
