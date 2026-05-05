@@ -519,6 +519,7 @@ nordic-blue:
       # State colors
       # ─────────────────────────────────────────────────────────────────────────────
       state-active-color: var(--contrast-yellow-color)
+      state-device_tracker-home-color: var(--contrast-yellow-color)
       state-inactive-color: var(--polar-light-gray)
       state-light-on-color: var(--contrast-yellow-color)
       state-light-off-color: var(--polar-bright-gray)
@@ -1110,6 +1111,7 @@ nordic-blue:
       # State colors
       # ─────────────────────────────────────────────────────────────────────────────
       state-active-color: var(--aurora-yellow)
+      state-device_tracker-home-color: var(--aurora-yellow)
       state-inactive-color: var(--frost-sky-blue)
       state-light-on-color: var(--aurora-yellow)
       state-light-off-color: var(--frost-sky-blue)
