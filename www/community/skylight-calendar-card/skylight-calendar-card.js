@@ -55,6 +55,12 @@ const TRANSLATIONS = {
       cancel: 'Cancel',
       createEvent: 'Create Event',
       creating: 'Creating...',
+      forwardEvent: 'Forward Event',
+      forwardEventTitle: 'Forward Event',
+      forwardEventPrompt: 'Select one or more new calendars to forward this event to.',
+      forwardEventAlreadyExists: 'Already has this event',
+      forwardEventNoNewCalendars: 'Select at least one new calendar to forward this event to.',
+      continue: 'Continue',
       editEvent: 'Edit Event',
       saveChanges: 'Save Changes',
       saving: 'Saving...',
@@ -161,6 +167,12 @@ const TRANSLATIONS = {
       cancel: 'Annuler',
       createEvent: 'Créer un événement',
       creating: 'Création...',
+      forwardEvent: "Transférer l'événement",
+      forwardEventTitle: "Transférer l'événement",
+      forwardEventPrompt: 'Sélectionnez un ou plusieurs nouveaux calendriers vers lesquels transférer cet événement.',
+      forwardEventAlreadyExists: 'Contient déjà cet événement',
+      forwardEventNoNewCalendars: 'Sélectionnez au moins un nouveau calendrier vers lequel transférer cet événement.',
+      continue: 'Continuer',
       editEvent: "Modifier l'événement",
       saveChanges: 'Enregistrer les modifications',
       saving: 'Enregistrement...',
@@ -267,6 +279,12 @@ const TRANSLATIONS = {
       cancel: 'Abbrechen',
       createEvent: 'Termin erstellen',
       creating: 'Wird erstellt...',
+      forwardEvent: 'Termin weiterleiten',
+      forwardEventTitle: 'Termin weiterleiten',
+      forwardEventPrompt: 'Wählen Sie einen oder mehrere neue Kalender aus, an die dieser Termin weitergeleitet werden soll.',
+      forwardEventAlreadyExists: 'Enthält diesen Termin bereits',
+      forwardEventNoNewCalendars: 'Wählen Sie mindestens einen neuen Kalender aus, an den dieser Termin weitergeleitet werden soll.',
+      continue: 'Weiter',
       editEvent: 'Termin bearbeiten',
       saveChanges: 'Änderungen speichern',
       saving: 'Wird gespeichert...',
@@ -373,6 +391,12 @@ const TRANSLATIONS = {
       cancel: 'Annuleren',
       createEvent: 'Afspraak toevoegen',
       creating: 'Aanmaken...',
+      forwardEvent: 'Afspraak doorsturen',
+      forwardEventTitle: 'Afspraak doorsturen',
+      forwardEventPrompt: 'Selecteer een of meer nieuwe agenda’s waarnaar deze afspraak moet worden doorgestuurd.',
+      forwardEventAlreadyExists: 'Bevat deze afspraak al',
+      forwardEventNoNewCalendars: 'Selecteer minstens één nieuwe agenda om deze afspraak naar door te sturen.',
+      continue: 'Doorgaan',
       editEvent: 'Afspraak bewerken',
       saveChanges: 'Wijzigingen opslaan',
       saving: 'Opslaan...',
@@ -478,6 +502,12 @@ const TRANSLATIONS = {
       cancel: 'Cancelar',
       createEvent: 'Crear evento',
       creating: 'Creando...',
+      forwardEvent: 'Reenviar evento',
+      forwardEventTitle: 'Reenviar evento',
+      forwardEventPrompt: 'Selecciona uno o más calendarios nuevos a los que reenviar este evento.',
+      forwardEventAlreadyExists: 'Ya contiene este evento',
+      forwardEventNoNewCalendars: 'Selecciona al menos un calendario nuevo al que reenviar este evento.',
+      continue: 'Continuar',
       editEvent: 'Editar evento',
       saveChanges: 'Guardar cambios',
       saving: 'Guardando...',
@@ -584,6 +614,12 @@ const TRANSLATIONS = {
       cancel: 'Cancel·lar',
       createEvent: 'Crear esdeveniment',
       creating: 'Creant...',
+      forwardEvent: "Reenviar esdeveniment",
+      forwardEventTitle: "Reenviar esdeveniment",
+      forwardEventPrompt: 'Selecciona un o més calendaris nous als quals reenviar aquest esdeveniment.',
+      forwardEventAlreadyExists: 'Ja conté aquest esdeveniment',
+      forwardEventNoNewCalendars: 'Selecciona almenys un calendari nou al qual reenviar aquest esdeveniment.',
+      continue: 'Continuar',
       editEvent: "Editar esdeveniment",
       saveChanges: 'Desar canvis',
       saving: 'Desant...',
@@ -1058,6 +1094,17 @@ class SkylightCalendarCard extends HTMLElement {
       : 23;
     const normalizedEventTitlePrefix = this.normalizeEventTitlePrefixMode(config.event_title_prefix);
 
+    const rawCombineWidth = Number(config.combine_calendars_width);
+    const rawEventBarWidth = Number(config.event_color_bar_width);
+    const hasCombineWidth = Number.isFinite(rawCombineWidth) && rawCombineWidth > 0;
+    const hasEventBarWidth = Number.isFinite(rawEventBarWidth) && rawEventBarWidth > 0;
+    const normalizedCombineWidth = hasCombineWidth
+      ? rawCombineWidth
+      : (hasEventBarWidth ? rawEventBarWidth : 18);
+    const normalizedEventBarWidth = hasEventBarWidth
+      ? rawEventBarWidth
+      : normalizedCombineWidth;
+
     this._config = {
       title: this._hasCustomTitle ? config.title : translate(language, 'defaultTitle'),
       entities: config.entities,
@@ -1124,7 +1171,11 @@ class SkylightCalendarCard extends HTMLElement {
       combine_calendars: config.combine_calendars ?? false, // Combine exact duplicate events across calendars with zebra striping
       combine_style: this.normalizeCombineStyle(config.combine_style ?? 'bars'), // Visual treatment for merged calendar events
       combine_background: this.normalizeCombineBackground(config.combine_background ?? 'primary'), // Background for merged events: neutral, primary, or hex
-      combine_calendars_width: config.combine_calendars_width ?? 18, // Stripe width in pixels for combined calendar zebra styling
+      combine_calendars_width: normalizedCombineWidth, // Stripe width in pixels for combined calendar zebra styling
+      event_color_bar_width: normalizedEventBarWidth, // Left accent width for split event color modes
+      event_color_mode: this.normalizeEventColorMode(config.event_color_mode ?? 'classic'), // Event color rendering mode
+      event_neutral_background: this.normalizeSingleColor(config.event_neutral_background) || '#F8F3E9', // Neutral background for split color event mode
+      event_tint_opacity: this.normalizeBackgroundOpacity(config.event_tint_opacity, 80), // Tint transparency for split color event mode (0=opaque, 100=transparent)
       enable_event_management: config.enable_event_management !== false, // Enable create/edit/delete
       readonly_calendars: config.readonly_calendars || [], // Calendars that should not allow modifications
       hide_badge_calendars: config.hide_badge_calendars || [], // Calendars whose badges should be hidden from the header
@@ -1151,6 +1202,12 @@ class SkylightCalendarCard extends HTMLElement {
       agenda_compact_events: config.agenda_compact_events ?? false,
       event_styles: normalizedEventStyles,
       day_styles: normalizedDayStyles
+      ,
+      event_color_mode: this.normalizeEventColorMode(config.event_color_mode ?? 'classic'),
+      event_neutral_background: this.normalizeSingleColor(config.event_neutral_background) || '#F8F3E9',
+      event_tint_opacity: this.normalizeBackgroundOpacity(config.event_tint_opacity, 80),
+      combine_calendars_width: normalizedCombineWidth,
+      event_color_bar_width: normalizedEventBarWidth
     };
     if (!Object.prototype.hasOwnProperty.call(config, 'use_24hr_schedule')) {
       delete this._config.use_24hr_schedule; // Preserve locale-based hour cycle defaults when unset
@@ -1355,6 +1412,7 @@ class SkylightCalendarCard extends HTMLElement {
     return this.resolveComputedCssColorToRgb(normalizedColor);
   }
 
+
   resolveComputedCssColorToRgb(color) {
     if (typeof color !== 'string' || typeof window === 'undefined' || typeof document === 'undefined') {
       return null;
@@ -1391,9 +1449,28 @@ class SkylightCalendarCard extends HTMLElement {
     return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${clamped})`;
   }
 
+  blendRgb(top, bottom, topAlpha = 1) {
+    if (!top && !bottom) return null;
+    if (!top) return bottom;
+    if (!bottom) return top;
+    const clampedAlpha = Math.max(0, Math.min(1, topAlpha));
+    return {
+      r: Math.round((top.r * clampedAlpha) + (bottom.r * (1 - clampedAlpha))),
+      g: Math.round((top.g * clampedAlpha) + (bottom.g * (1 - clampedAlpha))),
+      b: Math.round((top.b * clampedAlpha) + (bottom.b * (1 - clampedAlpha)))
+    };
+  }
+
+
   normalizeCombineStyle(styleValue) {
     const normalized = String(styleValue || '').trim().toLowerCase();
     return ['stripes', 'bars', 'dots'].includes(normalized) ? normalized : 'bars';
+  }
+
+  normalizeEventColorMode(modeValue) {
+    const normalized = String(modeValue || '').trim().toLowerCase();
+    if (normalized === 'left-neutral' || normalized === 'left-tint') return normalized;
+    return 'classic';
   }
 
   normalizeCombineBackground(backgroundValue) {
@@ -3907,7 +3984,7 @@ class SkylightCalendarCard extends HTMLElement {
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        color: var(--skylight-calendar-filter-icon-color, white);
         font-size: 11px;
         font-weight: 600;
         overflow: hidden;
@@ -3915,6 +3992,7 @@ class SkylightCalendarCard extends HTMLElement {
 
       .calendar-badge-icon ha-icon {
         --mdc-icon-size: 14px;
+        color: inherit;
       }
 
       .calendar-badge-photo img {
@@ -4660,6 +4738,15 @@ class SkylightCalendarCard extends HTMLElement {
         background: #f3f4f6;
       }
 
+      .recurring-option.disabled-option {
+        cursor: not-allowed;
+        opacity: 0.72;
+      }
+
+      .recurring-option.disabled-option:hover {
+        background: transparent;
+      }
+
       .recurring-option:last-child {
         margin-bottom: 0;
       }
@@ -4878,6 +4965,10 @@ class SkylightCalendarCard extends HTMLElement {
       .calendar-container.dark-mode .modal-close:hover,
       .calendar-container.dark-mode .btn-secondary:hover {
         background: #3f4752;
+      }
+
+      .calendar-container.dark-mode .recurring-option.disabled-option:hover {
+        background: transparent;
       }
 
       .calendar-container.dark-mode .day-cell.other-month {
@@ -7029,11 +7120,43 @@ class SkylightCalendarCard extends HTMLElement {
     return option;
   }
 
+  getEventNeutralBackgroundColor() {
+    const normalized = this.normalizeSingleColor(this._config?.event_neutral_background);
+    return normalized || '#F8F3E9';
+  }
+
+  getEventTintBackgroundColor(primaryColor) {
+    const tintTransparency = this.normalizeBackgroundOpacity(this._config?.event_tint_opacity, 80);
+    const tintOpacity = 1 - (tintTransparency / 100);
+    const baseRgb = this._isDarkMode
+      ? { r: 42, g: 47, b: 54 }
+      : { r: 255, g: 255, b: 255 };
+    const primaryRgb = this.colorToRgb(primaryColor);
+    if (!primaryRgb) return this.colorWithAlpha(primaryColor, tintOpacity);
+    const composed = this.blendRgb(primaryRgb, baseRgb, tintOpacity);
+    return `rgb(${composed.r}, ${composed.g}, ${composed.b})`;
+  }
+
+  getEventColorBarWidth() {
+    const configuredWidth = Number(this._config?.event_color_bar_width);
+    if (Number.isFinite(configuredWidth) && configuredWidth > 0) return configuredWidth;
+    const combineWidth = Number(this._config?.combine_calendars_width);
+    if (Number.isFinite(combineWidth) && combineWidth > 0) return combineWidth;
+    return 18;
+  }
+
   getEventBackgroundColor(event) {
     const visibleColors = this.getVisibleCalendarColorsForEvent(event);
     const primaryColor = visibleColors[0] || event?.color || '#3b82f6';
+    const eventColorMode = this.normalizeEventColorMode(this._config?.event_color_mode);
 
     if (visibleColors.length <= 1) {
+      if (eventColorMode === 'left-neutral') {
+        return this.getEventNeutralBackgroundColor();
+      }
+      if (eventColorMode === 'left-tint') {
+        return this.getEventTintBackgroundColor(primaryColor);
+      }
       return primaryColor;
     }
 
@@ -7077,7 +7200,16 @@ class SkylightCalendarCard extends HTMLElement {
       ? `border-left: 4px solid ${primaryColor};`
       : 'border-left: none;';
 
+    const eventColorMode = this.normalizeEventColorMode(this._config?.event_color_mode);
     if (visibleColors.length <= 1) {
+      if (eventColorMode === 'left-neutral') {
+        const barWidth = this.getEventColorBarWidth();
+        return `--combine-left-offset: ${barWidth}px; background-color: ${this.getEventNeutralBackgroundColor()}; background-image: linear-gradient(to right, ${primaryColor} 0 ${barWidth}px, transparent ${barWidth}px); background-size: ${barWidth}px 100%; background-position: left top; background-repeat: no-repeat; background-clip: padding-box; ${borderStyle}`;
+      }
+      if (eventColorMode === 'left-tint') {
+        const barWidth = this.getEventColorBarWidth();
+        return `--combine-left-offset: ${barWidth}px; background-color: ${this.getEventTintBackgroundColor(primaryColor)}; background-image: linear-gradient(to right, ${primaryColor} 0 ${barWidth}px, transparent ${barWidth}px); background-size: ${barWidth}px 100%; background-position: left top; background-repeat: no-repeat; background-clip: padding-box; ${borderStyle}`;
+      }
       return `background-color: ${primaryColor}; background-image: none; background-clip: padding-box; ${borderStyle}`;
     }
 
@@ -7830,7 +7962,7 @@ class SkylightCalendarCard extends HTMLElement {
     };
   }
 
-  showCreateEventModal(defaultDate = null, defaultTime = null) {
+  showCreateEventModal(defaultDate = null, defaultTime = null, options = {}) {
 
     const modal = this.getRootElementById('event-modal');
     const content = this.getRootElementById('modal-content');
@@ -7841,11 +7973,16 @@ class SkylightCalendarCard extends HTMLElement {
       return;
     }
 
+    const prefill = options?.prefill || null;
+    const selectedCalendarIds = Array.isArray(options?.selectedCalendarIds)
+      ? options.selectedCalendarIds.filter((entityId) => writableCalendars.includes(entityId))
+      : [];
+
     // Set defaults
     const now = new Date();
-    const startDate = defaultDate ? new Date(defaultDate) : now;
-    const hasExplicitDefaultTime = defaultTime instanceof Date;
-    const startTime = hasExplicitDefaultTime ? new Date(defaultTime) : new Date(startDate);
+    const startDate = prefill?.startDate ? new Date(prefill.startDate) : (defaultDate ? new Date(defaultDate) : now);
+    const hasExplicitDefaultTime = defaultTime instanceof Date || !!prefill?.startDate;
+    const startTime = hasExplicitDefaultTime ? new Date(prefill?.startDate || defaultTime) : new Date(startDate);
 
     // Round to next half hour for timed events
     if (!hasExplicitDefaultTime && (!defaultDate || defaultDate.getHours() !== 0)) {
@@ -7861,11 +7998,16 @@ class SkylightCalendarCard extends HTMLElement {
     startTime.setMilliseconds(0);
 
     // End time is 1 hour after start (for timed events)
-    const endTime = new Date(startTime);
-    endTime.setHours(endTime.getHours() + 1);
+    const endTime = prefill?.endDate ? new Date(prefill.endDate) : new Date(startTime);
+    if (!prefill?.endDate) {
+      endTime.setHours(endTime.getHours() + 1);
+    }
 
     // For all-day events, show same day to user (we'll add +1 when submitting)
-    const endDate = new Date(startDate);
+    const endDate = prefill?.endDate ? new Date(prefill.endDate) : new Date(startDate);
+    const recurrenceData = this.parseRRule(prefill?.rrule || '');
+    const isPrefilledRecurring = !!prefill?.rrule;
+    const isPrefilledAllDay = !!prefill?.isAllDay;
 
     // Format for datetime-local input
     const formatDateTimeLocal = (date) => {
@@ -7903,7 +8045,7 @@ class SkylightCalendarCard extends HTMLElement {
                       type="checkbox"
                       class="form-checkbox create-event-calendar"
                       value="${entityId}"
-                      ${index === 0 ? 'checked' : ''}
+                      ${(selectedCalendarIds.length > 0 ? selectedCalendarIds.includes(entityId) : index === 0) ? 'checked' : ''}
                     />
                     <span class="form-checkbox-label">${this.escapeHtml(this.getCalendarName(entityId))}</span>
                   </label>
@@ -7917,7 +8059,7 @@ class SkylightCalendarCard extends HTMLElement {
               <label class="form-label">
                 ${this.t('eventTitle')}<span class="form-required">*</span>
               </label>
-              <input type="text" class="form-input" id="event-title" placeholder="${this.t('eventTitlePlaceholder')}" required />
+              <input type="text" class="form-input" id="event-title" placeholder="${this.escapeHtmlAttribute(this.t('eventTitlePlaceholder'))}" value="${this.escapeHtmlAttribute(prefill?.summary || '')}" required />
             </div>
           </div>
 
@@ -7927,14 +8069,14 @@ class SkylightCalendarCard extends HTMLElement {
               <div class="form-checkbox-row">
                 <div class="form-group">
                   <div class="form-checkbox-group">
-                    <input type="checkbox" class="form-checkbox" id="event-all-day" />
+                    <input type="checkbox" class="form-checkbox" id="event-all-day" ${isPrefilledAllDay ? 'checked' : ''} />
                     <label class="form-checkbox-label" for="event-all-day">${this.t('allDayEvent')}</label>
                   </div>
                 </div>
 
                 <div class="form-group">
                   <div class="form-checkbox-group">
-                    <input type="checkbox" class="form-checkbox" id="event-recurring" />
+                    <input type="checkbox" class="form-checkbox" id="event-recurring" ${isPrefilledRecurring ? 'checked' : ''} />
                     <label class="form-checkbox-label" for="event-recurring">${this.t('recurring')}</label>
                   </div>
                 </div>
@@ -7942,32 +8084,32 @@ class SkylightCalendarCard extends HTMLElement {
             </div>
           </div>
 
-          <div id="recurring-event-fields" style="display: none;">
+          <div id="recurring-event-fields" style="display: ${isPrefilledRecurring ? 'block' : 'none'};">
             <div class="form-row">
               <div class="form-group form-group-inline">
                 <div class="form-inline-row">
                   <label class="form-label">${this.t('recurrenceFrequency')}</label>
                   <select class="form-select" id="event-recurrence-frequency">
-                  <option value="DAILY">${this.t('recurrenceDaily')}</option>
-                  <option value="WEEKLY">${this.t('recurrenceWeekly')}</option>
-                  <option value="MONTHLY">${this.t('recurrenceMonthly')}</option>
-                  <option value="YEARLY">${this.t('recurrenceYearly')}</option>
+                  <option value="DAILY" ${recurrenceData.frequency === 'DAILY' ? 'selected' : ''}>${this.t('recurrenceDaily')}</option>
+                  <option value="WEEKLY" ${recurrenceData.frequency === 'WEEKLY' ? 'selected' : ''}>${this.t('recurrenceWeekly')}</option>
+                  <option value="MONTHLY" ${recurrenceData.frequency === 'MONTHLY' ? 'selected' : ''}>${this.t('recurrenceMonthly')}</option>
+                  <option value="YEARLY" ${recurrenceData.frequency === 'YEARLY' ? 'selected' : ''}>${this.t('recurrenceYearly')}</option>
                   </select>
                 </div>
               </div>
               <div class="form-group form-group-inline">
                 <div class="form-inline-row">
                   <label class="form-label">${this.t('recurrenceEvery')}</label>
-                  <input type="number" class="form-input" id="event-recurrence-interval" min="1" value="1" />
+                  <input type="number" class="form-input" id="event-recurrence-interval" min="1" value="${this.escapeHtmlAttribute(recurrenceData.interval || '1')}" />
                 </div>
               </div>
             </div>
-            <div class="form-group" id="event-recurrence-weekdays-group" style="display: none;">
+            <div class="form-group" id="event-recurrence-weekdays-group" style="display: ${isPrefilledRecurring && recurrenceData.frequency === 'WEEKLY' ? 'block' : 'none'};">
               <label class="form-label">${this.t('recurrenceWeekdays')}</label>
               <div class="form-checkbox-group" style="flex-wrap: wrap; gap: 10px;">
                 ${this.getRecurrenceWeekdayOptions().map(day => `
                   <label class="form-checkbox-label" style="display:flex;align-items:center;gap:6px;">
-                    <input type="checkbox" class="form-checkbox event-recurrence-weekday" value="${day.key}" />
+                    <input type="checkbox" class="form-checkbox event-recurrence-weekday" value="${day.key}" ${recurrenceData.byDay.includes(day.key) ? 'checked' : ''} />
                     <span>${day.label}</span>
                   </label>
                 `).join('')}
@@ -7977,32 +8119,32 @@ class SkylightCalendarCard extends HTMLElement {
               <label class="form-label recurrence-ends-label">${this.t('recurrenceEndsOn')}</label>
               <div class="recurrence-end-row">
                 <label class="recurrence-end-option" for="event-recurrence-end-never">
-                  <input type="radio" name="event-recurrence-end-mode" id="event-recurrence-end-never" value="never" checked />
+                  <input type="radio" name="event-recurrence-end-mode" id="event-recurrence-end-never" value="never" ${this.getRecurrenceEndMode(recurrenceData) === 'never' ? 'checked' : ''} />
                   <span>${this.t('recurrenceNever')}</span>
                 </label>
                 <div></div>
               </div>
               <div class="recurrence-end-row">
                 <label class="recurrence-end-option" for="event-recurrence-end-on">
-                  <input type="radio" name="event-recurrence-end-mode" id="event-recurrence-end-on" value="on" />
+                  <input type="radio" name="event-recurrence-end-mode" id="event-recurrence-end-on" value="on" ${this.getRecurrenceEndMode(recurrenceData) === 'on' ? 'checked' : ''} />
                   <span>${this.t('recurrenceOn')}</span>
                 </label>
-                <input type="date" class="form-input" id="event-recurrence-until" disabled />
+                <input type="date" class="form-input" id="event-recurrence-until" value="${this.escapeHtmlAttribute(recurrenceData.untilDate || '')}" ${this.getRecurrenceEndMode(recurrenceData) === 'on' ? '' : 'disabled'} />
               </div>
               <div class="recurrence-end-row">
                 <label class="recurrence-end-option" for="event-recurrence-end-after">
-                  <input type="radio" name="event-recurrence-end-mode" id="event-recurrence-end-after" value="after" />
+                  <input type="radio" name="event-recurrence-end-mode" id="event-recurrence-end-after" value="after" ${this.getRecurrenceEndMode(recurrenceData) === 'after' ? 'checked' : ''} />
                   <span>${this.t('recurrenceAfter')}</span>
                 </label>
                 <div class="recurrence-after-input">
-                  <input type="number" class="form-input" id="event-recurrence-count" min="1" placeholder="13" disabled />
+                  <input type="number" class="form-input" id="event-recurrence-count" min="1" placeholder="13" value="${this.escapeHtmlAttribute(recurrenceData.count || '')}" ${this.getRecurrenceEndMode(recurrenceData) === 'after' ? '' : 'disabled'} />
                   <span>${this.t('recurrenceOccurrences')}</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div id="timed-event-fields">
+          <div id="timed-event-fields" style="display: ${isPrefilledAllDay ? 'none' : 'block'};">
             <div class="form-group form-group-inline">
               <div class="form-inline-row">
                 <label class="form-label">${this.t('start')}</label>
@@ -8020,7 +8162,7 @@ class SkylightCalendarCard extends HTMLElement {
             </div>
           </div>
 
-          <div id="all-day-event-fields" style="display: none;">
+          <div id="all-day-event-fields" style="display: ${isPrefilledAllDay ? 'block' : 'none'};">
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">${this.t('startDate')}</label>
@@ -8039,13 +8181,13 @@ class SkylightCalendarCard extends HTMLElement {
           <div class="form-group form-group-inline">
             <div class="form-inline-row">
               <label class="form-label">${this.t('location')}</label>
-              <input type="text" class="form-input" id="event-location" placeholder="${this.t('locationPlaceholder')}" />
+              <input type="text" class="form-input" id="event-location" placeholder="${this.escapeHtmlAttribute(this.t('locationPlaceholder'))}" value="${this.escapeHtmlAttribute(prefill?.location || '')}" />
             </div>
           </div>
 
           <div class="form-group">
             <label class="form-label">${this.t('description')}</label>
-            <textarea class="form-textarea" id="event-description" placeholder="${this.t('descriptionPlaceholder')}"></textarea>
+            <textarea class="form-textarea" id="event-description" placeholder="${this.escapeHtmlAttribute(this.t('descriptionPlaceholder'))}">${this.escapeHtml(prefill?.description || '')}</textarea>
           </div>
 
           <div id="form-error" class="error-message" style="display: none;"></div>
@@ -8303,8 +8445,8 @@ class SkylightCalendarCard extends HTMLElement {
                 ${this.t('eventTitle')}<span class="form-required">*</span>
               </label>
               <input type="text" class="form-input" id="event-title"
-                     placeholder="${this.t('eventTitlePlaceholder')}"
-                     value="${this.escapeHtml(event.summary || '')}" required />
+                     placeholder="${this.escapeHtmlAttribute(this.t('eventTitlePlaceholder'))}"
+                     value="${this.escapeHtmlAttribute(event.summary || '')}" required />
             </div>
           </div>
 
@@ -8345,7 +8487,7 @@ class SkylightCalendarCard extends HTMLElement {
               <div class="form-group form-group-inline">
                 <div class="form-inline-row">
                   <label class="form-label">${this.t('recurrenceEvery')}</label>
-                  <input type="number" class="form-input" id="event-recurrence-interval" min="1" value="${this.escapeHtml(recurrenceData.interval || '1')}" />
+                  <input type="number" class="form-input" id="event-recurrence-interval" min="1" value="${this.escapeHtmlAttribute(recurrenceData.interval || '1')}" />
                 </div>
               </div>
             </div>
@@ -8374,7 +8516,7 @@ class SkylightCalendarCard extends HTMLElement {
                   <input type="radio" name="event-recurrence-end-mode" id="event-recurrence-end-on" value="on" ${this.getRecurrenceEndMode(recurrenceData) === 'on' ? 'checked' : ''} />
                   <span>${this.t('recurrenceOn')}</span>
                 </label>
-                <input type="date" class="form-input" id="event-recurrence-until" value="${this.escapeHtml(recurrenceData.untilDate || '')}" ${this.getRecurrenceEndMode(recurrenceData) === 'on' ? '' : 'disabled'} />
+                <input type="date" class="form-input" id="event-recurrence-until" value="${this.escapeHtmlAttribute(recurrenceData.untilDate || '')}" ${this.getRecurrenceEndMode(recurrenceData) === 'on' ? '' : 'disabled'} />
               </div>
               <div class="recurrence-end-row">
                 <label class="recurrence-end-option" for="event-recurrence-end-after">
@@ -8382,7 +8524,7 @@ class SkylightCalendarCard extends HTMLElement {
                   <span>${this.t('recurrenceAfter')}</span>
                 </label>
                 <div class="recurrence-after-input">
-                  <input type="number" class="form-input" id="event-recurrence-count" min="1" placeholder="13" value="${this.escapeHtml(recurrenceData.count || '')}" ${this.getRecurrenceEndMode(recurrenceData) === 'after' ? '' : 'disabled'} />
+                  <input type="number" class="form-input" id="event-recurrence-count" min="1" placeholder="13" value="${this.escapeHtmlAttribute(recurrenceData.count || '')}" ${this.getRecurrenceEndMode(recurrenceData) === 'after' ? '' : 'disabled'} />
                   <span>${this.t('recurrenceOccurrences')}</span>
                 </div>
               </div>
@@ -8427,14 +8569,14 @@ class SkylightCalendarCard extends HTMLElement {
             <div class="form-inline-row">
               <label class="form-label">${this.t('location')}</label>
               <input type="text" class="form-input" id="event-location"
-                     placeholder="${this.t('locationPlaceholder')}"
-                     value="${this.escapeHtml(event.location || '')}" />
+                     placeholder="${this.escapeHtmlAttribute(this.t('locationPlaceholder'))}"
+                     value="${this.escapeHtmlAttribute(event.location || '')}" />
             </div>
           </div>
 
           <div class="form-group">
             <label class="form-label">${this.t('description')}</label>
-            <textarea class="form-textarea" id="event-description" placeholder="${this.t('descriptionPlaceholder')}">${this.escapeHtml(event.description || '')}</textarea>
+            <textarea class="form-textarea" id="event-description" placeholder="${this.escapeHtmlAttribute(this.t('descriptionPlaceholder'))}">${this.escapeHtml(event.description || '')}</textarea>
           </div>
 
           <div id="form-error" class="error-message" style="display: none;"></div>
@@ -8914,6 +9056,101 @@ class SkylightCalendarCard extends HTMLElement {
   }
 
 
+  getForwardExistingCalendarIds(event) {
+    const existingCalendarIds = new Set();
+
+    if (event?.entityId) existingCalendarIds.add(event.entityId);
+    if (Array.isArray(event?.sourceEntityIds)) {
+      event.sourceEntityIds.forEach((entityId) => entityId && existingCalendarIds.add(entityId));
+    }
+    if (Array.isArray(event?.sourceEvents)) {
+      event.sourceEvents.forEach((sourceEvent) => sourceEvent?.entityId && existingCalendarIds.add(sourceEvent.entityId));
+    }
+
+    const eventKey = this.getEventExactMatchKey(event);
+    (this._events || []).forEach((candidateEvent) => {
+      if (candidateEvent?.entityId && this.getEventExactMatchKey(candidateEvent) === eventKey) {
+        existingCalendarIds.add(candidateEvent.entityId);
+      }
+    });
+
+    return existingCalendarIds;
+  }
+
+  showForwardEventModal(event, startDate, endDate, isAllDay) {
+    const modal = this.getRootElementById('event-modal');
+    const content = this.getRootElementById('modal-content');
+    const writableCalendars = this.getWritableCalendars();
+    const existingCalendarIds = this.getForwardExistingCalendarIds(event);
+
+    if (writableCalendars.length === 0) {
+      this.showError(this.t('noWritableCalendars'));
+      return;
+    }
+
+    content.innerHTML = `
+      <div class="confirm-dialog">
+        <h3 class="confirm-title">${this.t('forwardEventTitle')}</h3>
+        <p class="confirm-message">${this.t('forwardEventPrompt')}</p>
+
+        <div class="recurring-options forward-calendar-options">
+          ${writableCalendars.map((entityId) => {
+            const alreadyExists = existingCalendarIds.has(entityId);
+            return `
+              <label class="recurring-option ${alreadyExists ? 'disabled-option' : ''}">
+                <input type="checkbox" class="forward-calendar-option" value="${entityId}" ${alreadyExists ? 'checked disabled' : ''} />
+                <div class="recurring-option-label">
+                  <div class="recurring-option-title">${this.escapeHtml(this.getCalendarName(entityId))}</div>
+                  <div class="recurring-option-description">${alreadyExists ? this.t('forwardEventAlreadyExists') : this.escapeHtml(entityId)}</div>
+                </div>
+              </label>
+            `;
+          }).join('')}
+        </div>
+
+        <div id="form-error" class="error-message" style="display: none;"></div>
+
+        <div class="confirm-actions">
+          <button class="btn btn-secondary" id="cancel-forward-event-btn">${this.t('cancel')}</button>
+          <button class="btn btn-primary" id="confirm-forward-event-btn">${this.t('continue')}</button>
+        </div>
+      </div>
+    `;
+
+    modal.classList.add('show');
+
+    this.getRootElementById('cancel-forward-event-btn')?.addEventListener('click', () => {
+      modal.classList.remove('show');
+      this.showEventModal(event);
+    });
+
+    this.getRootElementById('confirm-forward-event-btn')?.addEventListener('click', () => {
+      const selectedCalendarIds = Array.from(this._root.querySelectorAll('.forward-calendar-option:checked'))
+        .map((input) => input.value)
+        .filter((entityId) => writableCalendars.includes(entityId) && !existingCalendarIds.has(entityId));
+      const errorDiv = this.getRootElementById('form-error');
+
+      if (selectedCalendarIds.length === 0) {
+        this.showFormError(errorDiv, this.t('forwardEventNoNewCalendars'));
+        return;
+      }
+
+      modal.classList.remove('show');
+      this.showCreateEventModal(null, null, {
+        selectedCalendarIds,
+        prefill: {
+          summary: event.summary || '',
+          startDate,
+          endDate,
+          isAllDay,
+          location: event.location || '',
+          description: event.description || '',
+          rrule: event.rrule || ''
+        }
+      });
+    });
+  }
+
   showEditConfirmation(event, startDate, endDate, isAllDay, selectedEvents = null) {
     const modal = this.getRootElementById('event-modal');
     const content = this.getRootElementById('modal-content');
@@ -9307,6 +9544,7 @@ class SkylightCalendarCard extends HTMLElement {
     // WebSocket delete works for Google Calendar and other integrations
     const canEdit = canModify;
     const canDelete = canModify; // WebSocket delete works for all calendars including Google
+    const canForward = !!this._config.enable_event_management && this.getWritableCalendars().length > 0;
 
     content.innerHTML = `
       <div class="modal-header">
@@ -9374,12 +9612,13 @@ class SkylightCalendarCard extends HTMLElement {
           </div>
         ` : ''}
 
-        ${(canEdit || canDelete) ? `
+        ${(canEdit || canDelete || canForward) ? `
           <div class="modal-actions">
             <div class="modal-actions-left">
               ${canDelete ? `<button class="btn btn-danger" id="delete-event-btn">${this.t('delete')}</button>` : ''}
             </div>
             <div class="modal-actions-right">
+              ${canForward ? `<button class="btn btn-secondary" id="forward-event-btn">${this.t('forwardEvent')}</button>` : ''}
               ${canEdit ? `<button class="btn btn-primary" id="edit-event-btn">${this.t('editEvent')}</button>` : ''}
             </div>
           </div>
@@ -9410,6 +9649,14 @@ class SkylightCalendarCard extends HTMLElement {
         return;
       }
       this.showEditConfirmation(event, startDate, endDate, isAllDay);
+    });
+
+
+    // Forward button
+    this.getRootElementById('forward-event-btn')?.addEventListener('click', () => {
+      this._activeModalBackHandler = null;
+      modal.classList.remove('show');
+      this.showForwardEventModal(event, startDate, endDate, isAllDay);
     });
 
     // Delete button
@@ -9902,6 +10149,17 @@ class SkylightCalendarCard extends HTMLElement {
     return div.innerHTML;
   }
 
+  escapeHtmlAttribute(text) {
+    const replacements = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    };
+    return String(text ?? '').replace(/[&<>"']/g, (char) => replacements[char]);
+  }
+
   normalizeBackgroundImageUrl(url) {
     if (!url) return null;
 
@@ -9953,6 +10211,10 @@ class SkylightCalendarCard extends HTMLElement {
       event_title_prefix: 'none',
       combine_style: 'bars',
       combine_background: 'primary',
+      event_color_mode: 'classic',
+      event_neutral_background: '#F8F3E9',
+      event_tint_opacity: 80,
+      event_color_bar_width: 18,
       hide_calendars: false,
       hide_year: false,
       hide_controls: false,
@@ -10148,6 +10410,8 @@ class SkylightCalendarCardEditor extends HTMLElement {
       event_time_font_size: 9,
       event_location_font_size: 9,
       combine_calendars_width: 18,
+      event_color_bar_width: 18,
+      event_tint_opacity: 80,
       max_events: 0,
       first_day_of_week: 0,
       header_background_opacity: 0,
@@ -10254,6 +10518,9 @@ class SkylightCalendarCardEditor extends HTMLElement {
 
   emitConfigChanged(nextConfig) {
     this._config = nextConfig;
+    if (field === 'event_color_mode') {
+      this.render();
+    }
     this.dispatchEvent(
       new CustomEvent('config-changed', {
         detail: { config: nextConfig },
@@ -10714,6 +10981,40 @@ class SkylightCalendarCardEditor extends HTMLElement {
           </select>
         </div>
       </div>
+      <div class="field-row">
+        <div class="field field-inline">
+          <label for="event_color_mode">Event color style</label>
+          <select id="event_color_mode" data-field="event_color_mode">
+            <option value="classic" ${this._config.event_color_mode === 'classic' ? 'selected' : ''}>Classic</option>
+            <option value="left-neutral" ${this._config.event_color_mode === 'left-neutral' ? 'selected' : ''}>Bar + Neutral</option>
+            <option value="left-tint" ${this._config.event_color_mode === 'left-tint' ? 'selected' : ''}>Bar + Tint</option>
+          </select>
+        </div>
+      </div>
+      ${this._config.event_color_mode === 'left-neutral' ? `
+      <div class="field-row">
+        <div class="field field-inline">
+          <label for="event_neutral_background">Neutral event background color</label>
+          ${this.renderColorInputControl({ id: 'event_neutral_background', field: 'event_neutral_background', value: this._config.event_neutral_background || '#F8F3E9' })}
+        </div>
+      </div>
+      ` : ''}
+      ${this._config.event_color_mode === 'left-tint' ? `
+      <div class="field-row">
+        <div class="field field-inline">
+          <label for="event_tint_opacity">Tint opacity</label>
+          <input id="event_tint_opacity" data-field="event_tint_opacity" data-type="number" type="number" min="0" max="100" step="1" value="${Number(this._config.event_tint_opacity ?? 80)}">
+        </div>
+      </div>
+      ` : ''}
+      ${this._config.event_color_mode !== 'classic' ? `
+      <div class="field-row">
+        <div class="field field-inline">
+          <label for="event_color_bar_width">Event color bar width (px)</label>
+          <input id="event_color_bar_width" data-field="event_color_bar_width" data-type="number" type="number" min="1" value="${Number(this._config.event_color_bar_width ?? this._config.combine_calendars_width ?? 18)}">
+        </div>
+      </div>
+      ` : ''}
       ${this.renderSubSection('Hide times for calendars', `<div class="list-checkbox-grid">${this.renderCalendarListCheckboxes('hide_times_for_calendars', { label: 'hidden times calendars' })}</div>`)}
       <div class="boolean-list">
         <label><input type="checkbox" data-field="show_current_time_bar" ${this._config.show_current_time_bar ? 'checked' : ''}> Show current time bar</label>
@@ -11554,6 +11855,8 @@ class SkylightCalendarCardEditor extends HTMLElement {
         } else if (field === 'background_opacity') {
           nextConfig.background_opacity = this.normalizeBackgroundOpacity(parsedValue, 0);
           nextConfig.background_transparent = nextConfig.background_opacity >= 100;
+        } else if (field === 'event_tint_opacity') {
+          nextConfig.event_tint_opacity = this.normalizeBackgroundOpacity(parsedValue, 80);
         } else {
           nextConfig[field] = parsedValue;
         }
@@ -11569,6 +11872,18 @@ class SkylightCalendarCardEditor extends HTMLElement {
       nextConfig[field] = this.parseList(event.target.value);
     } else {
       nextConfig[field] = event.target.value;
+      if (field === 'event_color_mode') {
+        this._config = nextConfig;
+        this.render();
+        this.dispatchEvent(
+          new CustomEvent('config-changed', {
+            detail: { config: nextConfig },
+            bubbles: true,
+            composed: true
+          })
+        );
+        return;
+      }
     }
 
     this._config = nextConfig;
