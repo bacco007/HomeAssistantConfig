@@ -246,9 +246,12 @@ class FunctionDecoratorManager(DecoratorManager):
         # Store HASS Context for this Task
         Function.store_hass_context(data.hass_context)
 
-        result = await data.call_ast_ctx.call_func(self.eval_func, None, **data.func_args)
-        for result_handler_dec in result_handlers:
-            await result_handler_dec.handle_call_result(data, result)
+        try:
+            result = await data.call_ast_ctx.call_func(self.eval_func, None, **data.func_args)
+            for result_handler_dec in result_handlers:
+                await result_handler_dec.handle_call_result(data, result)
+        except Exception as e:
+            await self.handle_exception(e)
 
     async def dispatch(self, data: DispatchData) -> None:
         """Handle a trigger dispatch: run guards, create a context, and invoke the function."""
