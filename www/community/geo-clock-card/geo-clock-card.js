@@ -1,42 +1,42 @@
-function t(t,e,i,s){var o,n=arguments.length,r=n<3?e:null===s?s=Object.getOwnPropertyDescriptor(e,i):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)r=Reflect.decorate(t,e,i,s);else for(var a=t.length-1;a>=0;a--)(o=t[a])&&(r=(n<3?o(r):n>3?o(e,i,r):o(e,i))||r);return n>3&&r&&Object.defineProperty(e,i,r),r}"function"==typeof SuppressedError&&SuppressedError;
+function e(e,t,i,o){var r,s=arguments.length,n=s<3?t:null===o?o=Object.getOwnPropertyDescriptor(t,i):o;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)n=Reflect.decorate(e,t,i,o);else for(var a=e.length-1;a>=0;a--)(r=e[a])&&(n=(s<3?r(n):s>3?r(t,i,n):r(t,i))||n);return s>3&&n&&Object.defineProperty(t,i,n),n}"function"==typeof SuppressedError&&SuppressedError;
 /**
  * @license
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const e=globalThis,i=e.ShadowRoot&&(void 0===e.ShadyCSS||e.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s=Symbol(),o=new WeakMap;let n=class{constructor(t,e,i){if(this._$cssResult$=!0,i!==s)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e}get styleSheet(){let t=this.o;const e=this.t;if(i&&void 0===t){const i=void 0!==e&&1===e.length;i&&(t=o.get(e)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),i&&o.set(e,t))}return t}toString(){return this.cssText}};const r=(t,...e)=>{const i=1===t.length?t[0]:e.reduce((e,i,s)=>e+(t=>{if(!0===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+t[s+1],t[0]);return new n(i,t,s)},a=i?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const i of t.cssRules)e+=i.cssText;return(t=>new n("string"==typeof t?t:t+"",void 0,s))(e)})(t):t,{is:h,defineProperty:l,getOwnPropertyDescriptor:c,getOwnPropertyNames:d,getOwnPropertySymbols:p,getPrototypeOf:u}=Object,f=globalThis,m=f.trustedTypes,g=m?m.emptyScript:"",v=f.reactiveElementPolyfillSupport,y=(t,e)=>t,$={toAttribute(t,e){switch(e){case Boolean:t=t?g:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t)}return t},fromAttribute(t,e){let i=t;switch(e){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t)}catch(t){i=null}}return i}},w=(t,e)=>!h(t,e),b={attribute:!0,type:String,converter:$,reflect:!1,useDefault:!1,hasChanged:w};
+const t=globalThis,i=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,o=Symbol(),r=new WeakMap;let s=class{constructor(e,t,i){if(this._$cssResult$=!0,i!==o)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e,this.t=t}get styleSheet(){let e=this.o;const t=this.t;if(i&&void 0===e){const i=void 0!==t&&1===t.length;i&&(e=r.get(t)),void 0===e&&((this.o=e=new CSSStyleSheet).replaceSync(this.cssText),i&&r.set(t,e))}return e}toString(){return this.cssText}};const n=(e,...t)=>{const i=1===e.length?e[0]:t.reduce((t,i,o)=>t+(e=>{if(!0===e._$cssResult$)return e.cssText;if("number"==typeof e)return e;throw Error("Value passed to 'css' function must be a 'css' function result: "+e+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+e[o+1],e[0]);return new s(i,e,o)},a=i?e=>e:e=>e instanceof CSSStyleSheet?(e=>{let t="";for(const i of e.cssRules)t+=i.cssText;return(e=>new s("string"==typeof e?e:e+"",void 0,o))(t)})(e):e,{is:l,defineProperty:h,getOwnPropertyDescriptor:c,getOwnPropertyNames:d,getOwnPropertySymbols:p,getPrototypeOf:u}=Object,m=globalThis,f=m.trustedTypes,g=f?f.emptyScript:"",v=m.reactiveElementPolyfillSupport,y=(e,t)=>e,b={toAttribute(e,t){switch(t){case Boolean:e=e?g:null;break;case Object:case Array:e=null==e?e:JSON.stringify(e)}return e},fromAttribute(e,t){let i=e;switch(t){case Boolean:i=null!==e;break;case Number:i=null===e?null:Number(e);break;case Object:case Array:try{i=JSON.parse(e)}catch(e){i=null}}return i}},$=(e,t)=>!l(e,t),w={attribute:!0,type:String,converter:b,reflect:!1,useDefault:!1,hasChanged:$};
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */Symbol.metadata??=Symbol("metadata"),f.litPropertyMetadata??=new WeakMap;let _=class extends HTMLElement{static addInitializer(t){this._$Ei(),(this.l??=[]).push(t)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(t,e=b){if(e.state&&(e.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(t)&&((e=Object.create(e)).wrapped=!0),this.elementProperties.set(t,e),!e.noAccessor){const i=Symbol(),s=this.getPropertyDescriptor(t,i,e);void 0!==s&&l(this.prototype,t,s)}}static getPropertyDescriptor(t,e,i){const{get:s,set:o}=c(this.prototype,t)??{get(){return this[e]},set(t){this[e]=t}};return{get:s,set(e){const n=s?.call(this);o?.call(this,e),this.requestUpdate(t,n,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(t){return this.elementProperties.get(t)??b}static _$Ei(){if(this.hasOwnProperty(y("elementProperties")))return;const t=u(this);t.finalize(),void 0!==t.l&&(this.l=[...t.l]),this.elementProperties=new Map(t.elementProperties)}static finalize(){if(this.hasOwnProperty(y("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(y("properties"))){const t=this.properties,e=[...d(t),...p(t)];for(const i of e)this.createProperty(i,t[i])}const t=this[Symbol.metadata];if(null!==t){const e=litPropertyMetadata.get(t);if(void 0!==e)for(const[t,i]of e)this.elementProperties.set(t,i)}this._$Eh=new Map;for(const[t,e]of this.elementProperties){const i=this._$Eu(t,e);void 0!==i&&this._$Eh.set(i,t)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(t){const e=[];if(Array.isArray(t)){const i=new Set(t.flat(1/0).reverse());for(const t of i)e.unshift(a(t))}else void 0!==t&&e.push(a(t));return e}static _$Eu(t,e){const i=e.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof t?t.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(t=>this.enableUpdating=t),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(t=>t(this))}addController(t){(this._$EO??=new Set).add(t),void 0!==this.renderRoot&&this.isConnected&&t.hostConnected?.()}removeController(t){this._$EO?.delete(t)}_$E_(){const t=new Map,e=this.constructor.elementProperties;for(const i of e.keys())this.hasOwnProperty(i)&&(t.set(i,this[i]),delete this[i]);t.size>0&&(this._$Ep=t)}createRenderRoot(){const t=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return((t,s)=>{if(i)t.adoptedStyleSheets=s.map(t=>t instanceof CSSStyleSheet?t:t.styleSheet);else for(const i of s){const s=document.createElement("style"),o=e.litNonce;void 0!==o&&s.setAttribute("nonce",o),s.textContent=i.cssText,t.appendChild(s)}})(t,this.constructor.elementStyles),t}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(t=>t.hostConnected?.())}enableUpdating(t){}disconnectedCallback(){this._$EO?.forEach(t=>t.hostDisconnected?.())}attributeChangedCallback(t,e,i){this._$AK(t,i)}_$ET(t,e){const i=this.constructor.elementProperties.get(t),s=this.constructor._$Eu(t,i);if(void 0!==s&&!0===i.reflect){const o=(void 0!==i.converter?.toAttribute?i.converter:$).toAttribute(e,i.type);this._$Em=t,null==o?this.removeAttribute(s):this.setAttribute(s,o),this._$Em=null}}_$AK(t,e){const i=this.constructor,s=i._$Eh.get(t);if(void 0!==s&&this._$Em!==s){const t=i.getPropertyOptions(s),o="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==t.converter?.fromAttribute?t.converter:$;this._$Em=s;const n=o.fromAttribute(e,t.type);this[s]=n??this._$Ej?.get(s)??n,this._$Em=null}}requestUpdate(t,e,i,s=!1,o){if(void 0!==t){const n=this.constructor;if(!1===s&&(o=this[t]),i??=n.getPropertyOptions(t),!((i.hasChanged??w)(o,e)||i.useDefault&&i.reflect&&o===this._$Ej?.get(t)&&!this.hasAttribute(n._$Eu(t,i))))return;this.C(t,e,i)}!1===this.isUpdatePending&&(this._$ES=this._$EP())}C(t,e,{useDefault:i,reflect:s,wrapped:o},n){i&&!(this._$Ej??=new Map).has(t)&&(this._$Ej.set(t,n??e??this[t]),!0!==o||void 0!==n)||(this._$AL.has(t)||(this.hasUpdated||i||(e=void 0),this._$AL.set(t,e)),!0===s&&this._$Em!==t&&(this._$Eq??=new Set).add(t))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(t){Promise.reject(t)}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[t,e]of this._$Ep)this[t]=e;this._$Ep=void 0}const t=this.constructor.elementProperties;if(t.size>0)for(const[e,i]of t){const{wrapped:t}=i,s=this[e];!0!==t||this._$AL.has(e)||void 0===s||this.C(e,void 0,i,s)}}let t=!1;const e=this._$AL;try{t=this.shouldUpdate(e),t?(this.willUpdate(e),this._$EO?.forEach(t=>t.hostUpdate?.()),this.update(e)):this._$EM()}catch(e){throw t=!1,this._$EM(),e}t&&this._$AE(e)}willUpdate(t){}_$AE(t){this._$EO?.forEach(t=>t.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(t)),this.updated(t)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(t){return!0}update(t){this._$Eq&&=this._$Eq.forEach(t=>this._$ET(t,this[t])),this._$EM()}updated(t){}firstUpdated(t){}};_.elementStyles=[],_.shadowRootOptions={mode:"open"},_[y("elementProperties")]=new Map,_[y("finalized")]=new Map,v?.({ReactiveElement:_}),(f.reactiveElementVersions??=[]).push("2.1.2");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const z=globalThis,A=t=>t,x=z.trustedTypes,T=x?x.createPolicy("lit-html",{createHTML:t=>t}):void 0,C="$lit$",S=`lit$${Math.random().toFixed(9).slice(2)}$`,k="?"+S,E=`<${k}>`,P=document,M=()=>P.createComment(""),U=t=>null===t||"object"!=typeof t&&"function"!=typeof t,O=Array.isArray,I="[ \t\n\f\r]",N=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,D=/-->/g,L=/>/g,H=RegExp(`>|${I}(?:([^\\s"'>=/]+)(${I}*=${I}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),B=/'/g,R=/"/g,j=/^(?:script|style|textarea|title)$/i,F=t=>(e,...i)=>({_$litType$:t,strings:e,values:i}),V=F(1),Z=F(2),W=Symbol.for("lit-noChange"),q=Symbol.for("lit-nothing"),G=new WeakMap,J=P.createTreeWalker(P,129);function Y(t,e){if(!O(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==T?T.createHTML(e):e}const K=(t,e)=>{const i=t.length-1,s=[];let o,n=2===e?"<svg>":3===e?"<math>":"",r=N;for(let e=0;e<i;e++){const i=t[e];let a,h,l=-1,c=0;for(;c<i.length&&(r.lastIndex=c,h=r.exec(i),null!==h);)c=r.lastIndex,r===N?"!--"===h[1]?r=D:void 0!==h[1]?r=L:void 0!==h[2]?(j.test(h[2])&&(o=RegExp("</"+h[2],"g")),r=H):void 0!==h[3]&&(r=H):r===H?">"===h[0]?(r=o??N,l=-1):void 0===h[1]?l=-2:(l=r.lastIndex-h[2].length,a=h[1],r=void 0===h[3]?H:'"'===h[3]?R:B):r===R||r===B?r=H:r===D||r===L?r=N:(r=H,o=void 0);const d=r===H&&t[e+1].startsWith("/>")?" ":"";n+=r===N?i+E:l>=0?(s.push(a),i.slice(0,l)+C+i.slice(l)+S+d):i+S+(-2===l?e:d)}return[Y(t,n+(t[i]||"<?>")+(2===e?"</svg>":3===e?"</math>":"")),s]};class X{constructor({strings:t,_$litType$:e},i){let s;this.parts=[];let o=0,n=0;const r=t.length-1,a=this.parts,[h,l]=K(t,e);if(this.el=X.createElement(h,i),J.currentNode=this.el.content,2===e||3===e){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes)}for(;null!==(s=J.nextNode())&&a.length<r;){if(1===s.nodeType){if(s.hasAttributes())for(const t of s.getAttributeNames())if(t.endsWith(C)){const e=l[n++],i=s.getAttribute(t).split(S),r=/([.?@])?(.*)/.exec(e);a.push({type:1,index:o,name:r[2],strings:i,ctor:"."===r[1]?st:"?"===r[1]?ot:"@"===r[1]?nt:it}),s.removeAttribute(t)}else t.startsWith(S)&&(a.push({type:6,index:o}),s.removeAttribute(t));if(j.test(s.tagName)){const t=s.textContent.split(S),e=t.length-1;if(e>0){s.textContent=x?x.emptyScript:"";for(let i=0;i<e;i++)s.append(t[i],M()),J.nextNode(),a.push({type:2,index:++o});s.append(t[e],M())}}}else if(8===s.nodeType)if(s.data===k)a.push({type:2,index:o});else{let t=-1;for(;-1!==(t=s.data.indexOf(S,t+1));)a.push({type:7,index:o}),t+=S.length-1}o++}}static createElement(t,e){const i=P.createElement("template");return i.innerHTML=t,i}}function Q(t,e,i=t,s){if(e===W)return e;let o=void 0!==s?i._$Co?.[s]:i._$Cl;const n=U(e)?void 0:e._$litDirective$;return o?.constructor!==n&&(o?._$AO?.(!1),void 0===n?o=void 0:(o=new n(t),o._$AT(t,i,s)),void 0!==s?(i._$Co??=[])[s]=o:i._$Cl=o),void 0!==o&&(e=Q(t,o._$AS(t,e.values),o,s)),e}class tt{constructor(t,e){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=e}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:e},parts:i}=this._$AD,s=(t?.creationScope??P).importNode(e,!0);J.currentNode=s;let o=J.nextNode(),n=0,r=0,a=i[0];for(;void 0!==a;){if(n===a.index){let e;2===a.type?e=new et(o,o.nextSibling,this,t):1===a.type?e=new a.ctor(o,a.name,a.strings,this,t):6===a.type&&(e=new rt(o,this,t)),this._$AV.push(e),a=i[++r]}n!==a?.index&&(o=J.nextNode(),n++)}return J.currentNode=P,s}p(t){let e=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(t,i,e),e+=i.strings.length-2):i._$AI(t[e])),e++}}class et{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,e,i,s){this.type=2,this._$AH=q,this._$AN=void 0,this._$AA=t,this._$AB=e,this._$AM=i,this.options=s,this._$Cv=s?.isConnected??!0}get parentNode(){let t=this._$AA.parentNode;const e=this._$AM;return void 0!==e&&11===t?.nodeType&&(t=e.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,e=this){t=Q(this,t,e),U(t)?t===q||null==t||""===t?(this._$AH!==q&&this._$AR(),this._$AH=q):t!==this._$AH&&t!==W&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):(t=>O(t)||"function"==typeof t?.[Symbol.iterator])(t)?this.k(t):this._(t)}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t))}_(t){this._$AH!==q&&U(this._$AH)?this._$AA.nextSibling.data=t:this.T(P.createTextNode(t)),this._$AH=t}$(t){const{values:e,_$litType$:i}=t,s="number"==typeof i?this._$AC(t):(void 0===i.el&&(i.el=X.createElement(Y(i.h,i.h[0]),this.options)),i);if(this._$AH?._$AD===s)this._$AH.p(e);else{const t=new tt(s,this),i=t.u(this.options);t.p(e),this.T(i),this._$AH=t}}_$AC(t){let e=G.get(t.strings);return void 0===e&&G.set(t.strings,e=new X(t)),e}k(t){O(this._$AH)||(this._$AH=[],this._$AR());const e=this._$AH;let i,s=0;for(const o of t)s===e.length?e.push(i=new et(this.O(M()),this.O(M()),this,this.options)):i=e[s],i._$AI(o),s++;s<e.length&&(this._$AR(i&&i._$AB.nextSibling,s),e.length=s)}_$AR(t=this._$AA.nextSibling,e){for(this._$AP?.(!1,!0,e);t!==this._$AB;){const e=A(t).nextSibling;A(t).remove(),t=e}}setConnected(t){void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t))}}class it{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,e,i,s,o){this.type=1,this._$AH=q,this._$AN=void 0,this.element=t,this.name=e,this._$AM=s,this.options=o,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=q}_$AI(t,e=this,i,s){const o=this.strings;let n=!1;if(void 0===o)t=Q(this,t,e,0),n=!U(t)||t!==this._$AH&&t!==W,n&&(this._$AH=t);else{const s=t;let r,a;for(t=o[0],r=0;r<o.length-1;r++)a=Q(this,s[i+r],e,r),a===W&&(a=this._$AH[r]),n||=!U(a)||a!==this._$AH[r],a===q?t=q:t!==q&&(t+=(a??"")+o[r+1]),this._$AH[r]=a}n&&!s&&this.j(t)}j(t){t===q?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"")}}class st extends it{constructor(){super(...arguments),this.type=3}j(t){this.element[this.name]=t===q?void 0:t}}class ot extends it{constructor(){super(...arguments),this.type=4}j(t){this.element.toggleAttribute(this.name,!!t&&t!==q)}}class nt extends it{constructor(t,e,i,s,o){super(t,e,i,s,o),this.type=5}_$AI(t,e=this){if((t=Q(this,t,e,0)??q)===W)return;const i=this._$AH,s=t===q&&i!==q||t.capture!==i.capture||t.once!==i.once||t.passive!==i.passive,o=t!==q&&(i===q||s);s&&this.element.removeEventListener(this.name,this,i),o&&this.element.addEventListener(this.name,this,t),this._$AH=t}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t)}}class rt{constructor(t,e,i){this.element=t,this.type=6,this._$AN=void 0,this._$AM=e,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(t){Q(this,t)}}const at=z.litHtmlPolyfillSupport;at?.(X,et),(z.litHtmlVersions??=[]).push("3.3.2");const ht=globalThis;
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */class lt extends _{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const t=super.createRenderRoot();return this.renderOptions.renderBefore??=t.firstChild,t}update(t){const e=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=((t,e,i)=>{const s=i?.renderBefore??e;let o=s._$litPart$;if(void 0===o){const t=i?.renderBefore??null;s._$litPart$=o=new et(e.insertBefore(M(),t),t,void 0,i??{})}return o._$AI(t),o})(e,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return W}}lt._$litElement$=!0,lt.finalized=!0,ht.litElementHydrateSupport?.({LitElement:lt});const ct=ht.litElementPolyfillSupport;ct?.({LitElement:lt}),(ht.litElementVersions??=[]).push("4.2.2");
+ */Symbol.metadata??=Symbol("metadata"),m.litPropertyMetadata??=new WeakMap;let k=class extends HTMLElement{static addInitializer(e){this._$Ei(),(this.l??=[]).push(e)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(e,t=w){if(t.state&&(t.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(e)&&((t=Object.create(t)).wrapped=!0),this.elementProperties.set(e,t),!t.noAccessor){const i=Symbol(),o=this.getPropertyDescriptor(e,i,t);void 0!==o&&h(this.prototype,e,o)}}static getPropertyDescriptor(e,t,i){const{get:o,set:r}=c(this.prototype,e)??{get(){return this[t]},set(e){this[t]=e}};return{get:o,set(t){const s=o?.call(this);r?.call(this,t),this.requestUpdate(e,s,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)??w}static _$Ei(){if(this.hasOwnProperty(y("elementProperties")))return;const e=u(this);e.finalize(),void 0!==e.l&&(this.l=[...e.l]),this.elementProperties=new Map(e.elementProperties)}static finalize(){if(this.hasOwnProperty(y("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(y("properties"))){const e=this.properties,t=[...d(e),...p(e)];for(const i of t)this.createProperty(i,e[i])}const e=this[Symbol.metadata];if(null!==e){const t=litPropertyMetadata.get(e);if(void 0!==t)for(const[e,i]of t)this.elementProperties.set(e,i)}this._$Eh=new Map;for(const[e,t]of this.elementProperties){const i=this._$Eu(e,t);void 0!==i&&this._$Eh.set(i,e)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(e){const t=[];if(Array.isArray(e)){const i=new Set(e.flat(1/0).reverse());for(const e of i)t.unshift(a(e))}else void 0!==e&&t.push(a(e));return t}static _$Eu(e,t){const i=t.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof e?e.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(e=>this.enableUpdating=e),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(e=>e(this))}addController(e){(this._$EO??=new Set).add(e),void 0!==this.renderRoot&&this.isConnected&&e.hostConnected?.()}removeController(e){this._$EO?.delete(e)}_$E_(){const e=new Map,t=this.constructor.elementProperties;for(const i of t.keys())this.hasOwnProperty(i)&&(e.set(i,this[i]),delete this[i]);e.size>0&&(this._$Ep=e)}createRenderRoot(){const e=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return((e,o)=>{if(i)e.adoptedStyleSheets=o.map(e=>e instanceof CSSStyleSheet?e:e.styleSheet);else for(const i of o){const o=document.createElement("style"),r=t.litNonce;void 0!==r&&o.setAttribute("nonce",r),o.textContent=i.cssText,e.appendChild(o)}})(e,this.constructor.elementStyles),e}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(e=>e.hostConnected?.())}enableUpdating(e){}disconnectedCallback(){this._$EO?.forEach(e=>e.hostDisconnected?.())}attributeChangedCallback(e,t,i){this._$AK(e,i)}_$ET(e,t){const i=this.constructor.elementProperties.get(e),o=this.constructor._$Eu(e,i);if(void 0!==o&&!0===i.reflect){const r=(void 0!==i.converter?.toAttribute?i.converter:b).toAttribute(t,i.type);this._$Em=e,null==r?this.removeAttribute(o):this.setAttribute(o,r),this._$Em=null}}_$AK(e,t){const i=this.constructor,o=i._$Eh.get(e);if(void 0!==o&&this._$Em!==o){const e=i.getPropertyOptions(o),r="function"==typeof e.converter?{fromAttribute:e.converter}:void 0!==e.converter?.fromAttribute?e.converter:b;this._$Em=o;const s=r.fromAttribute(t,e.type);this[o]=s??this._$Ej?.get(o)??s,this._$Em=null}}requestUpdate(e,t,i,o=!1,r){if(void 0!==e){const s=this.constructor;if(!1===o&&(r=this[e]),i??=s.getPropertyOptions(e),!((i.hasChanged??$)(r,t)||i.useDefault&&i.reflect&&r===this._$Ej?.get(e)&&!this.hasAttribute(s._$Eu(e,i))))return;this.C(e,t,i)}!1===this.isUpdatePending&&(this._$ES=this._$EP())}C(e,t,{useDefault:i,reflect:o,wrapped:r},s){i&&!(this._$Ej??=new Map).has(e)&&(this._$Ej.set(e,s??t??this[e]),!0!==r||void 0!==s)||(this._$AL.has(e)||(this.hasUpdated||i||(t=void 0),this._$AL.set(e,t)),!0===o&&this._$Em!==e&&(this._$Eq??=new Set).add(e))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(e){Promise.reject(e)}const e=this.scheduleUpdate();return null!=e&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[e,t]of this._$Ep)this[e]=t;this._$Ep=void 0}const e=this.constructor.elementProperties;if(e.size>0)for(const[t,i]of e){const{wrapped:e}=i,o=this[t];!0!==e||this._$AL.has(t)||void 0===o||this.C(t,void 0,i,o)}}let e=!1;const t=this._$AL;try{e=this.shouldUpdate(t),e?(this.willUpdate(t),this._$EO?.forEach(e=>e.hostUpdate?.()),this.update(t)):this._$EM()}catch(t){throw e=!1,this._$EM(),t}e&&this._$AE(t)}willUpdate(e){}_$AE(e){this._$EO?.forEach(e=>e.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(e){return!0}update(e){this._$Eq&&=this._$Eq.forEach(e=>this._$ET(e,this[e])),this._$EM()}updated(e){}firstUpdated(e){}};k.elementStyles=[],k.shadowRootOptions={mode:"open"},k[y("elementProperties")]=new Map,k[y("finalized")]=new Map,v?.({ReactiveElement:k}),(m.reactiveElementVersions??=[]).push("2.1.2");
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const dt=t=>(e,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(t,e)}):customElements.define(t,e)},pt={attribute:!0,type:String,converter:$,reflect:!1,hasChanged:w},ut=(t=pt,e,i)=>{const{kind:s,metadata:o}=i;let n=globalThis.litPropertyMetadata.get(o);if(void 0===n&&globalThis.litPropertyMetadata.set(o,n=new Map),"setter"===s&&((t=Object.create(t)).wrapped=!0),n.set(i.name,t),"accessor"===s){const{name:s}=i;return{set(i){const o=e.get.call(this);e.set.call(this,i),this.requestUpdate(s,o,t,!0,i)},init(e){return void 0!==e&&this.C(s,void 0,t,e),e}}}if("setter"===s){const{name:s}=i;return function(i){const o=this[s];e.call(this,i),this.requestUpdate(s,o,t,!0,i)}}throw Error("Unsupported decorator location: "+s)};
+const _=globalThis,x=e=>e,z=_.trustedTypes,A=z?z.createPolicy("lit-html",{createHTML:e=>e}):void 0,T="$lit$",S=`lit$${Math.random().toFixed(9).slice(2)}$`,C="?"+S,M=`<${C}>`,E=document,P=()=>E.createComment(""),L=e=>null===e||"object"!=typeof e&&"function"!=typeof e,D=Array.isArray,O="[ \t\n\f\r]",I=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,H=/-->/g,N=/>/g,U=RegExp(`>|${O}(?:([^\\s"'>=/]+)(${O}*=${O}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),B=/'/g,R=/"/g,F=/^(?:script|style|textarea|title)$/i,j=e=>(t,...i)=>({_$litType$:e,strings:t,values:i}),V=j(1),Z=j(2),W=Symbol.for("lit-noChange"),G=Symbol.for("lit-nothing"),q=new WeakMap,K=E.createTreeWalker(E,129);function X(e,t){if(!D(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==A?A.createHTML(t):t}const Y=(e,t)=>{const i=e.length-1,o=[];let r,s=2===t?"<svg>":3===t?"<math>":"",n=I;for(let t=0;t<i;t++){const i=e[t];let a,l,h=-1,c=0;for(;c<i.length&&(n.lastIndex=c,l=n.exec(i),null!==l);)c=n.lastIndex,n===I?"!--"===l[1]?n=H:void 0!==l[1]?n=N:void 0!==l[2]?(F.test(l[2])&&(r=RegExp("</"+l[2],"g")),n=U):void 0!==l[3]&&(n=U):n===U?">"===l[0]?(n=r??I,h=-1):void 0===l[1]?h=-2:(h=n.lastIndex-l[2].length,a=l[1],n=void 0===l[3]?U:'"'===l[3]?R:B):n===R||n===B?n=U:n===H||n===N?n=I:(n=U,r=void 0);const d=n===U&&e[t+1].startsWith("/>")?" ":"";s+=n===I?i+M:h>=0?(o.push(a),i.slice(0,h)+T+i.slice(h)+S+d):i+S+(-2===h?t:d)}return[X(e,s+(e[i]||"<?>")+(2===t?"</svg>":3===t?"</math>":"")),o]};class J{constructor({strings:e,_$litType$:t},i){let o;this.parts=[];let r=0,s=0;const n=e.length-1,a=this.parts,[l,h]=Y(e,t);if(this.el=J.createElement(l,i),K.currentNode=this.el.content,2===t||3===t){const e=this.el.content.firstChild;e.replaceWith(...e.childNodes)}for(;null!==(o=K.nextNode())&&a.length<n;){if(1===o.nodeType){if(o.hasAttributes())for(const e of o.getAttributeNames())if(e.endsWith(T)){const t=h[s++],i=o.getAttribute(e).split(S),n=/([.?@])?(.*)/.exec(t);a.push({type:1,index:r,name:n[2],strings:i,ctor:"."===n[1]?oe:"?"===n[1]?re:"@"===n[1]?se:ie}),o.removeAttribute(e)}else e.startsWith(S)&&(a.push({type:6,index:r}),o.removeAttribute(e));if(F.test(o.tagName)){const e=o.textContent.split(S),t=e.length-1;if(t>0){o.textContent=z?z.emptyScript:"";for(let i=0;i<t;i++)o.append(e[i],P()),K.nextNode(),a.push({type:2,index:++r});o.append(e[t],P())}}}else if(8===o.nodeType)if(o.data===C)a.push({type:2,index:r});else{let e=-1;for(;-1!==(e=o.data.indexOf(S,e+1));)a.push({type:7,index:r}),e+=S.length-1}r++}}static createElement(e,t){const i=E.createElement("template");return i.innerHTML=e,i}}function Q(e,t,i=e,o){if(t===W)return t;let r=void 0!==o?i._$Co?.[o]:i._$Cl;const s=L(t)?void 0:t._$litDirective$;return r?.constructor!==s&&(r?._$AO?.(!1),void 0===s?r=void 0:(r=new s(e),r._$AT(e,i,o)),void 0!==o?(i._$Co??=[])[o]=r:i._$Cl=r),void 0!==r&&(t=Q(e,r._$AS(e,t.values),r,o)),t}class ee{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){const{el:{content:t},parts:i}=this._$AD,o=(e?.creationScope??E).importNode(t,!0);K.currentNode=o;let r=K.nextNode(),s=0,n=0,a=i[0];for(;void 0!==a;){if(s===a.index){let t;2===a.type?t=new te(r,r.nextSibling,this,e):1===a.type?t=new a.ctor(r,a.name,a.strings,this,e):6===a.type&&(t=new ne(r,this,e)),this._$AV.push(t),a=i[++n]}s!==a?.index&&(r=K.nextNode(),s++)}return K.currentNode=E,o}p(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class te{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(e,t,i,o){this.type=2,this._$AH=G,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=o,this._$Cv=o?.isConnected??!0}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===e?.nodeType&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Q(this,e,t),L(e)?e===G||null==e||""===e?(this._$AH!==G&&this._$AR(),this._$AH=G):e!==this._$AH&&e!==W&&this._(e):void 0!==e._$litType$?this.$(e):void 0!==e.nodeType?this.T(e):(e=>D(e)||"function"==typeof e?.[Symbol.iterator])(e)?this.k(e):this._(e)}O(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}T(e){this._$AH!==e&&(this._$AR(),this._$AH=this.O(e))}_(e){this._$AH!==G&&L(this._$AH)?this._$AA.nextSibling.data=e:this.T(E.createTextNode(e)),this._$AH=e}$(e){const{values:t,_$litType$:i}=e,o="number"==typeof i?this._$AC(e):(void 0===i.el&&(i.el=J.createElement(X(i.h,i.h[0]),this.options)),i);if(this._$AH?._$AD===o)this._$AH.p(t);else{const e=new ee(o,this),i=e.u(this.options);e.p(t),this.T(i),this._$AH=e}}_$AC(e){let t=q.get(e.strings);return void 0===t&&q.set(e.strings,t=new J(e)),t}k(e){D(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,o=0;for(const r of e)o===t.length?t.push(i=new te(this.O(P()),this.O(P()),this,this.options)):i=t[o],i._$AI(r),o++;o<t.length&&(this._$AR(i&&i._$AB.nextSibling,o),t.length=o)}_$AR(e=this._$AA.nextSibling,t){for(this._$AP?.(!1,!0,t);e!==this._$AB;){const t=x(e).nextSibling;x(e).remove(),e=t}}setConnected(e){void 0===this._$AM&&(this._$Cv=e,this._$AP?.(e))}}class ie{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(e,t,i,o,r){this.type=1,this._$AH=G,this._$AN=void 0,this.element=e,this.name=t,this._$AM=o,this.options=r,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=G}_$AI(e,t=this,i,o){const r=this.strings;let s=!1;if(void 0===r)e=Q(this,e,t,0),s=!L(e)||e!==this._$AH&&e!==W,s&&(this._$AH=e);else{const o=e;let n,a;for(e=r[0],n=0;n<r.length-1;n++)a=Q(this,o[i+n],t,n),a===W&&(a=this._$AH[n]),s||=!L(a)||a!==this._$AH[n],a===G?e=G:e!==G&&(e+=(a??"")+r[n+1]),this._$AH[n]=a}s&&!o&&this.j(e)}j(e){e===G?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,e??"")}}class oe extends ie{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===G?void 0:e}}class re extends ie{constructor(){super(...arguments),this.type=4}j(e){this.element.toggleAttribute(this.name,!!e&&e!==G)}}class se extends ie{constructor(e,t,i,o,r){super(e,t,i,o,r),this.type=5}_$AI(e,t=this){if((e=Q(this,e,t,0)??G)===W)return;const i=this._$AH,o=e===G&&i!==G||e.capture!==i.capture||e.once!==i.once||e.passive!==i.passive,r=e!==G&&(i===G||o);o&&this.element.removeEventListener(this.name,this,i),r&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,e):this._$AH.handleEvent(e)}}class ne{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){Q(this,e)}}const ae=_.litHtmlPolyfillSupport;ae?.(J,te),(_.litHtmlVersions??=[]).push("3.3.2");const le=globalThis;
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */function ft(t){return(e,i)=>"object"==typeof i?ut(t,e,i):((t,e,i)=>{const s=e.hasOwnProperty(i);return e.constructor.createProperty(i,t),s?Object.getOwnPropertyDescriptor(e,i):void 0})(t,e,i)}
+ */class he extends k{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{const o=i?.renderBefore??t;let r=o._$litPart$;if(void 0===r){const e=i?.renderBefore??null;o._$litPart$=r=new te(t.insertBefore(P(),e),e,void 0,i??{})}return r._$AI(e),r})(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return W}}he._$litElement$=!0,he.finalized=!0,le.litElementHydrateSupport?.({LitElement:he});const ce=le.litElementPolyfillSupport;ce?.({LitElement:he}),(le.litElementVersions??=[]).push("4.2.2");
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */function mt(t){return ft({...t,state:!0,attribute:!1})}const gt=Math.PI/180,vt=180/Math.PI,yt=Date.UTC(2e3,0,1,12,0,0),$t=t=>((t+180)%360+360)%360-180;function wt(t){const e=(t.getTime()-yt)/864e5,i=280.46+.9856474*e,s=(357.528+.9856003*e)*gt,o=(i+1.915*Math.sin(s)+.02*Math.sin(2*s))*gt,n=(23.439-4e-7*e)*gt,r=Math.asin(Math.sin(n)*Math.sin(o))*vt,a=Math.atan2(Math.cos(n)*Math.sin(o),Math.cos(o))*vt,h=$t(i-a),l=t.getUTCHours()+t.getUTCMinutes()/60+t.getUTCSeconds()/3600+t.getUTCMilliseconds()/36e5;return{lat:r,lon:$t(-15*(l-12)-h)}}const bt=Math.PI/180,_t=180/Math.PI,zt=1e-4;function At(t,e={}){const i=e.stepDeg??1,s=(e.centerLon??180)-180;let o=t.lat;Math.abs(o)<zt&&(o=o>=0?zt:-1e-4);const n=Math.tan(o*bt),r=[];for(let e=0;e<=360;e+=i){const i=(s+e-t.lon)*bt,o=Math.atan(-Math.cos(i)/n)*_t;r.push([e,o])}return r}function xt(t,e,i){const s=[];for(const[o,n]of t){const t=o/360*e,r=(90-n)/180*i;s.push(`${t.toFixed(2)},${r.toFixed(2)}`)}return s.join(" ")}const Tt=44;let Ct=null,St=null;function kt(t,e,i,s=180){if(t.length<3)return"";const o=s-180,n=[];let r=null,a=1/0,h=-1/0;for(const[s,l]of t){let t=((s-o)%360+360)%360;if(null!==r){for(;t-r>180;)t-=360;for(;t-r<-180;)t+=360}r=t;const c=t/360*e,d=(90-l)/180*i;n.push([c,d]),c<a&&(a=c),c>h&&(h=c)}const l=n,c=t=>{let e="";for(let i=0;i<l.length;i++){const[s,o]=l[i];e+=`${0===i?"M":"L"}${(s+t).toFixed(1)},${o.toFixed(1)}`}return e+"Z"};let d=c(0);return h>e&&(d+=c(-e)),a<0&&(d+=c(e)),d}function Et(t){const e=t.split("/");return e.length<2?t:e[e.length-1].replace(/_/g," ")}const Pt=new Map;function Mt(t,e,i){const s=function(t,e){const i=`${t}|${Array.isArray(e)?e.join(","):""}`;let s=Pt.get(i);return s||(s={time:new Intl.DateTimeFormat(e,{timeZone:t,hour:"numeric",minute:"2-digit",second:"2-digit"}),date:new Intl.DateTimeFormat(e,{timeZone:t,weekday:"short",month:"short",day:"numeric"}),zoneName:new Intl.DateTimeFormat("en-US",{timeZone:t,hour:"numeric",timeZoneName:"long"}),offset:new Intl.DateTimeFormat("en-US",{timeZone:t,timeZoneName:"longOffset"})},Pt.set(i,s)),s}(e,i),o=(t,e)=>t.find(t=>t.type===e)?.value??"",n=s.zoneName.formatToParts(t),r=s.offset.formatToParts(t);return{time:s.time.format(t),date:s.date.format(t),name:o(n,"timeZoneName"),offset:o(r,"timeZoneName").replace(/^GMT/,"UTC")}}let Ut=null,Ot=null;function It(t,e){if(e&&/^UTC[+−\-]\d/.test(e))return e;const i=t>=0?"+":"-",s=Math.abs(t);return`UTC${i}${String(Math.trunc(s)).padStart(2,"0")}:${String(Math.round(60*(s-Math.trunc(s)))).padStart(2,"0")}`}function Nt(t){const e=t.trim();return e.length<=80?e:e.slice(0,77)+"…"}var Dt;const Lt=2048,Ht=1024;let Bt=class extends lt{constructor(){super(...arguments),this.displayNow=new Date,this.mapNow=new Date,this.tzPolygons=null,this.tzIanaPolygons=null,this.tzPolygonsCenterLon=null,this.tzData=null,this.tzIanaData=null,this.hoveredIana=null,this.hoveredOffset=null,this.hoverPos=null,this.isCardVisible=!0,this.intersecting=!0,this.onIanaEnter=(t,e)=>{this.clearDismissTimer(),this.hoveredIana=e,this.updateHoverPos(t)},this.onIanaLeave=t=>{"touch"!==t.pointerType?(this.hoveredIana=null,this.hoveredOffset||(this.hoverPos=null)):this.scheduleTouchDismiss(()=>{this.hoveredIana=null,this.hoveredOffset||(this.hoverPos=null)})},this.onOffsetEnter=(t,e)=>{this.clearDismissTimer(),this.hoveredOffset=e,this.updateHoverPos(t)},this.onOffsetLeave=t=>{"touch"!==t.pointerType?(this.hoveredOffset=null,this.hoveredIana||(this.hoverPos=null)):this.scheduleTouchDismiss(()=>{this.hoveredOffset=null,this.hoveredIana||(this.hoverPos=null)})},this.onZoneMove=t=>{this.updateHoverPos(t)}}static{Dt=this}static{this.styles=r`
+ */
+const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}):customElements.define(e,t)},pe={attribute:!0,type:String,converter:b,reflect:!1,hasChanged:$},ue=(e=pe,t,i)=>{const{kind:o,metadata:r}=i;let s=globalThis.litPropertyMetadata.get(r);if(void 0===s&&globalThis.litPropertyMetadata.set(r,s=new Map),"setter"===o&&((e=Object.create(e)).wrapped=!0),s.set(i.name,e),"accessor"===o){const{name:o}=i;return{set(i){const r=t.get.call(this);t.set.call(this,i),this.requestUpdate(o,r,e,!0,i)},init(t){return void 0!==t&&this.C(o,void 0,e,t),t}}}if("setter"===o){const{name:o}=i;return function(i){const r=this[o];t.call(this,i),this.requestUpdate(o,r,e,!0,i)}}throw Error("Unsupported decorator location: "+o)};
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */function me(e){return(t,i)=>"object"==typeof i?ue(e,t,i):((e,t,i)=>{const o=t.hasOwnProperty(i);return t.constructor.createProperty(i,e),o?Object.getOwnPropertyDescriptor(t,i):void 0})(e,t,i)}
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */function fe(e){return me({...e,state:!0,attribute:!1})}const ge=Math.PI/180,ve=180/Math.PI,ye=Date.UTC(2e3,0,1,12,0,0),be=e=>((e+180)%360+360)%360-180;function $e(e){const t=(e.getTime()-ye)/864e5,i=280.46+.9856474*t,o=(357.528+.9856003*t)*ge,r=(i+1.915*Math.sin(o)+.02*Math.sin(2*o))*ge,s=(23.439-4e-7*t)*ge,n=Math.asin(Math.sin(s)*Math.sin(r))*ve,a=Math.atan2(Math.cos(s)*Math.sin(r),Math.cos(r))*ve,l=be(i-a),h=e.getUTCHours()+e.getUTCMinutes()/60+e.getUTCSeconds()/3600+e.getUTCMilliseconds()/36e5;return{lat:n,lon:be(-15*(h-12)-l)}}const we=Math.PI/180,ke=180/Math.PI,_e=1e-4;function xe(e,t={}){const i=t.stepDeg??1,o=(t.centerLon??180)-180;let r=e.lat;Math.abs(r)<_e&&(r=r>=0?_e:-1e-4);const s=Math.tan(r*we),n=[];for(let t=0;t<=360;t+=i){const i=(o+t-e.lon)*we,r=Math.atan(-Math.cos(i)/s)*ke;n.push([t,r])}return n}function ze(e,t,i,o,r=180){return{x:((t-(r-180))%360+360)%360/360*i,y:(90-e)/180*o}}function Ae(e,t,i){const o=[];for(const[r,s]of e){const e=r/360*t,n=(90-s)/180*i;o.push(`${e.toFixed(2)},${n.toFixed(2)}`)}return o.join(" ")}const Te=44;let Se=null,Ce=null;function Me(e,t,i,o=180){if(e.length<3)return"";const r=o-180,s=[];let n=null,a=1/0,l=-1/0;for(const[o,h]of e){let e=((o-r)%360+360)%360;if(null!==n){for(;e-n>180;)e-=360;for(;e-n<-180;)e+=360}n=e;const c=e/360*t,d=(90-h)/180*i;s.push([c,d]),c<a&&(a=c),c>l&&(l=c)}const h=s,c=e=>{let t="";for(let i=0;i<h.length;i++){const[o,r]=h[i];t+=`${0===i?"M":"L"}${(o+e).toFixed(1)},${r.toFixed(1)}`}return t+"Z"};let d=c(0);return l>t&&(d+=c(-t)),a<0&&(d+=c(t)),d}function Ee(e,t,i){if("number"!=typeof t||"number"!=typeof i||!Number.isFinite(t)||!Number.isFinite(i))return null;for(const o of e.features){const e="Polygon"===o.geometry.type?[o.geometry.coordinates]:o.geometry.coordinates;for(const r of e)if(0!==r.length&&Pe(r[0],i,t))return o.properties.tzid}return null}function Pe(e,t,i){let o=!1;for(let r=0,s=e.length-1;r<e.length;s=r++){const n=e[r][0],a=e[r][1],l=e[s][0],h=e[s][1];a>i!=h>i&&t<(l-n)*(i-a)/(h-a||Number.EPSILON)+n&&(o=!o)}return o}function Le(e){const t=e.split("/");return t.length<2?e:t[t.length-1].replace(/_/g," ")}const De=new Map;function Oe(e,t,i){const o=function(e,t){const i=`${e}|${Array.isArray(t)?t.join(","):""}`;let o=De.get(i);return o||(o={time:new Intl.DateTimeFormat(t,{timeZone:e,hour:"numeric",minute:"2-digit",second:"2-digit"}),date:new Intl.DateTimeFormat(t,{timeZone:e,weekday:"short",month:"short",day:"numeric"}),zoneName:new Intl.DateTimeFormat("en-US",{timeZone:e,hour:"numeric",timeZoneName:"long"}),offset:new Intl.DateTimeFormat("en-US",{timeZone:e,timeZoneName:"longOffset"})},De.set(i,o)),o}(t,i),r=(e,t)=>e.find(e=>e.type===t)?.value??"",s=o.zoneName.formatToParts(e),n=o.offset.formatToParts(e);return{time:o.time.format(e),date:o.date.format(e),name:r(s,"timeZoneName"),offset:r(n,"timeZoneName").replace(/^GMT/,"UTC")}}let Ie=null,He=null;function Ne(e,t){if(t&&/^UTC[+−\-]\d/.test(t))return t;const i=e>=0?"+":"-",o=Math.abs(e);return`UTC${i}${String(Math.trunc(o)).padStart(2,"0")}:${String(Math.round(60*(o-Math.trunc(o)))).padStart(2,"0")}`}function Ue(e){const t=e.trim();return t.length<=80?t:t.slice(0,77)+"…"}var Be;const Re=2048,Fe=1024;let je=class extends he{constructor(){super(...arguments),this.displayNow=new Date,this.mapNow=new Date,this.tzPolygons=null,this.tzIanaPolygons=null,this.tzPolygonsCenterLon=null,this.tzData=null,this.tzIanaData=null,this.hoveredIana=null,this.hoveredOffset=null,this.hoveredMarker=null,this.hoverPos=null,this.isCardVisible=!0,this.intersecting=!0,this.warnedFallback="",this.onIanaEnter=(e,t)=>{this.clearDismissTimer(),this.hoveredIana=t,this.updateHoverPos(e)},this.onIanaLeave=e=>{"touch"!==e.pointerType?(this.hoveredIana=null,this.hoveredOffset||(this.hoverPos=null)):this.scheduleTouchDismiss(()=>{this.hoveredIana=null,this.hoveredOffset||(this.hoverPos=null)})},this.onOffsetEnter=(e,t)=>{this.clearDismissTimer(),this.hoveredOffset=t,this.updateHoverPos(e)},this.onOffsetLeave=e=>{"touch"!==e.pointerType?(this.hoveredOffset=null,this.hoveredIana||(this.hoverPos=null)):this.scheduleTouchDismiss(()=>{this.hoveredOffset=null,this.hoveredIana||(this.hoverPos=null)})},this.onZoneMove=e=>{this.updateHoverPos(e)},this.onMarkerEnter=(e,t)=>{this.clearDismissTimer(),this.hoveredMarker=t,this.updateHoverPos(e)},this.onMarkerLeave=e=>{"touch"!==e.pointerType?(this.hoveredMarker=null,this.hoveredIana||this.hoveredOffset||(this.hoverPos=null)):this.scheduleTouchDismiss(()=>{this.hoveredMarker=null,this.hoveredIana||this.hoveredOffset||(this.hoverPos=null)})}}static{Be=this}static{this.styles=n`
     :host {
       display: block;
       background: var(--ha-card-background, var(--card-background-color, #111));
@@ -51,6 +51,7 @@ const dt=t=>(e,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(t,e)}
       --geo-tz-line: rgba(255, 255, 255, 0.18);
       --geo-tz-line-width: 1;
       --geo-home-marker: var(--accent-color, #ff7a3d);
+      --geo-marker-color: #3da9fc;
       --geo-day-brightness: 1.15;
       --geo-night-contrast: 1;
       --geo-twilight-color: #463701;
@@ -168,17 +169,98 @@ const dt=t=>(e,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(t,e)}
       stroke: rgba(255, 255, 255, 0.65);
       stroke-width: 1.5;
     }
-    /* Home marker — small filled dot at hass.config lat/lon. */
-    .home-marker-dot {
-      fill: var(--geo-home-marker);
-      stroke: rgba(0, 0, 0, 0.6);
-      stroke-width: 1.2;
-      pointer-events: none;
+    /* Home marker — overlay sibling of the SVG, same shape/CSS as
+       a regular marker but coloured via the home-specific theme
+       variable so users can restyle without touching card config.
+       The selector specificity (.home-marker .marker-halo /
+       .marker-dot) beats the bare .marker-halo / .marker-dot rules
+       above, so the home marker uses --geo-home-marker rather than
+       --geo-marker-color. The dot is non-interactive (no popup);
+       the label is rendered inline when showHomeMarkerLabel is true. */
+    .home-marker .marker-halo,
+    .home-marker .marker-dot {
+      background: var(--geo-home-marker);
     }
-    .home-marker-halo {
-      fill: var(--geo-home-marker);
-      opacity: 0.25;
+    .home-marker .marker-dot {
       pointer-events: none;
+      cursor: default;
+    }
+    /* User-configured location markers. Rendered as HTML overlay
+       (not SVG) so their dot, halo, and label keep a constant CSS
+       pixel size regardless of the card's rendered width — SVG
+       <text> and circle radii live in viewBox units and shrink
+       linearly with the card, which made labels illegible at any
+       size below full-screen. The marker container itself is
+       positioned in percent (so it tracks the map's drift) but
+       its children are sized in px. */
+    .marker {
+      position: absolute;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+      z-index: 3;
+    }
+    .marker-halo {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      left: -18px;
+      top: -18px;
+      border-radius: 50%;
+      opacity: 0.22;
+      pointer-events: none;
+      /* Default fill — themes override via --geo-marker-color, and
+         per-marker overrides via inline style still win because the
+         element-level style attribute beats a host-scope variable. */
+      background: var(--geo-marker-color);
+    }
+    .marker-dot {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      left: -7px;
+      top: -7px;
+      border-radius: 50%;
+      border: 1.2px solid rgba(0, 0, 0, 0.7);
+      box-sizing: border-box;
+      pointer-events: auto;
+      cursor: default;
+      transition: transform 120ms ease;
+      background: var(--geo-marker-color);
+    }
+    .marker.is-active .marker-dot {
+      transform: scale(1.3);
+    }
+    .marker-text {
+      position: absolute;
+      top: 9px;
+      left: 0;
+      transform: translateX(-50%);
+      text-align: center;
+      white-space: nowrap;
+      pointer-events: none;
+      font-family: var(--paper-font-headline_-_font-family, system-ui, sans-serif);
+      /* Multi-direction shadow gives a readable outline against
+         either bright daylight or dark city-lights imagery without
+         the cost of a true SVG paint-order stroke. */
+      text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.95),
+        0 0 3px rgba(0, 0, 0, 0.85),
+        0 0 6px rgba(0, 0, 0, 0.6);
+      color: #fff;
+    }
+    .marker-label {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.15;
+    }
+    .marker-time {
+      font-size: 12px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+      line-height: 1.15;
+      margin-top: 1px;
     }
     /* Custom popup. Positioned via inline transform from JS so it
        follows the cursor; ignores its own pointer events so it never
@@ -231,10 +313,10 @@ const dt=t=>(e,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(t,e)}
       margin-top: 3px;
       line-height: 1.3;
     }
-  `}setConfig(t){if(!t)throw new Error("geo-clock-card: missing config");const e=t.imageryBase??new URL(".",import.meta.url).href,i=function(t){if(null==t)return;const e=t instanceof Date?t:new Date(t);return Number.isFinite(e.getTime())?e:void 0}(t.now);this.config={twilightDegrees:Rt(t.twilightDegrees??8,1,18),updateInterval:Rt(t.updateInterval??1,1,600),showUTC:t.showUTC??!0,showTimezoneBand:t.showTimezoneBand??!0,showTimezoneBoundaries:t.showTimezoneBoundaries??!0,showTimezonePopup:t.showTimezonePopup??!0,timezoneLineColor:jt(t.timezoneLineColor)??"rgba(255, 255, 255, 0.18)",dayBrightness:Rt(t.dayBrightness??1.15,0,5),nightContrast:Rt(t.nightContrast??1,0,5),twilightColor:jt(t.twilightColor)??"#463701",twilightOpacity:Rt(t.twilightOpacity??.26,0,1),imageryBase:e.endsWith("/")?e:e+"/",center:t.center??"sun",centerLongitude:"number"==typeof t.centerLongitude?Rt(t.centerLongitude,-180,180):void 0,centerEntity:t.centerEntity,showHomeMarker:t.showHomeMarker??!1,frozenNow:i};const s=i??new Date;this.displayNow=s,this.mapNow=s,this.tzPolygons=null,this.tzIanaPolygons=null,this.tzPolygonsCenterLon=null,this.restartTimer(),this.maybeLoadTimezones(),this.maybeLoadIanaTimezones()}connectedCallback(){if(super.connectedCallback(),!this.config?.frozenNow){const t=new Date;this.displayNow=t,this.mapNow=t}this.attachVisibilityObservers(),this.restartTimer(),this.maybeLoadTimezones(),this.maybeLoadIanaTimezones()}disconnectedCallback(){super.disconnectedCallback(),this.stopTimer(),this.clearDismissTimer(),this.detachVisibilityObservers()}attachVisibilityObservers(){"undefined"==typeof IntersectionObserver||this.intersectionObserver||(this.intersectionObserver=new IntersectionObserver(t=>{const e=t[t.length-1];this.intersecting=!e||e.isIntersecting,this.recomputeVisibility()},{threshold:0}),this.intersectionObserver.observe(this)),"undefined"==typeof document||this.onTabVisibility||(this.onTabVisibility=()=>this.recomputeVisibility(),document.addEventListener("visibilitychange",this.onTabVisibility))}detachVisibilityObservers(){this.intersectionObserver?.disconnect(),this.intersectionObserver=void 0,this.onTabVisibility&&"undefined"!=typeof document&&document.removeEventListener("visibilitychange",this.onTabVisibility),this.onTabVisibility=void 0}recomputeVisibility(){const t="undefined"==typeof document||"hidden"!==document.visibilityState,e=this.intersecting&&t;if(e!==this.isCardVisible){if(this.isCardVisible=e,e){const t=new Date;this.displayNow=t,this.mapNow=t}this.restartTimer()}}restartTimer(){if(this.stopTimer(),!this.config||!this.isConnected)return;if(this.config.frozenNow)return;const t=this.isCardVisible?1e3*this.config.updateInterval:18e5;this.timer=setInterval(()=>this.tick(),t)}tick(){const t=new Date;this.displayNow=t,t.getTime()-this.mapNow.getTime()>=10546.875&&(this.mapNow=t)}stopTimer(){void 0!==this.timer&&(clearInterval(this.timer),this.timer=void 0)}maybeLoadTimezones(){if(!this.config?.showTimezoneBoundaries||null!==this.tzData)return;(function(t){return Ut&&Ot===t||(Ot=t,Ut=fetch(t).then(t=>{if(!t.ok)throw new Error(`tz fetch failed: ${t.status}`);return t.json()})),Ut})(this.config.imageryBase+"timezones.json").then(t=>{this.tzData=t,this.requestUpdate()}).catch(t=>{console.warn("geo-clock-card: timezone overlay failed to load:",t)})}maybeLoadIanaTimezones(){if(!this.config?.showTimezoneBoundaries||null!==this.tzIanaData)return;(function(t){return Ct&&St===t||(St=t,Ct=fetch(t).then(t=>{if(!t.ok)throw new Error(`iana tz fetch failed: ${t.status}`);return t.json()})),Ct})(this.config.imageryBase+"timezones-iana.json").then(t=>{this.tzIanaData=t,this.requestUpdate()}).catch(t=>{console.warn("geo-clock-card: IANA timezone overlay failed to load:",t)})}resolveCenterLon(t){if(!this.config)return wt(t).lon;switch(this.config.center){case"home":{const e=this.hass?.config?.longitude;return"number"==typeof e?e:wt(t).lon}case"longitude":return"number"==typeof this.config.centerLongitude?this.config.centerLongitude:wt(t).lon;case"entity":{const e=this.config.centerEntity,i=e?this.hass?.states?.[e]?.attributes?.longitude:void 0;return"number"==typeof i?i:wt(t).lon}default:return wt(t).lon}}resolveHomeLatLon(){const t=this.hass?.config?.latitude,e=this.hass?.config?.longitude;return"number"!=typeof t||"number"!=typeof e?null:{lat:t,lon:e}}render(){if(!this.config)return V``;const t=this.config.frozenNow??this.mapNow,e=this.config.frozenNow??this.displayNow,i=this.resolveCenterLon(t),s=wt(t),o=At(s,{centerLon:i}),n=function(t,e={}){const i=At(t,e);let s=t.lat;Math.abs(s)<zt&&(s=s>=0?zt:-1e-4);const o=s>0?-90:90;return[...i,[360,o],[0,o]]}(s,{centerLon:i}),r=xt(n,Lt,Ht),a=xt(o,Lt,Ht),h=2*this.config.twilightDegrees*Ht/180,l=Math.max(.5,h/8),c=Math.max(4,.55*h),d=Math.max(1,h/5),p=this.config.imageryBase+function(t){const e=t.getUTCDate();let i,s=t.getUTCMonth()+1;return e<8?i="start":e<23?i="mid":(i="start",s=12===s?1:s+1),`blue-marble-${String(s).padStart(2,"0")}-${i}-2048.jpg`}(t),u=this.config.imageryBase+"black-marble-2048.jpg",f=(-i/360*Lt%Lt+Lt)%Lt;if(this.config.showTimezoneBoundaries){const t=this.tzPolygonsCenterLon!==i;this.tzData&&(t||null===this.tzPolygons)&&(this.tzPolygons=function(t,e,i,s=180){const o=[];for(const n of t.features){const t="Polygon"===n.geometry.type?[n.geometry.coordinates]:n.geometry.coordinates;let r="";for(const o of t)0!==o.length&&(r+=kt(o[0],e,i,s));r&&o.push({offset:n.properties.zone,offsetLabel:It(n.properties.zone,n.properties.time_zone),name:n.properties.name??null,places:Nt(n.properties.places??""),d:r})}return o}(this.tzData,Lt,Ht,i)),this.tzIanaData&&(t||null===this.tzIanaPolygons)&&(this.tzIanaPolygons=function(t){const e=t=>{let e=1/0,i=1/0,s=-1/0,o=-1/0;const n=/[ML]([\d.\-]+),([\d.\-]+)/g;let r;for(;r=n.exec(t);){const t=parseFloat(r[1]),n=parseFloat(r[2]);t<e&&(e=t),t>s&&(s=t),n<i&&(i=n),n>o&&(o=n)}return isFinite(e)?(s-e)*(o-i):0};return[...t].sort((t,i)=>e(i.d)-e(t.d))}(function(t,e,i,s=180){const o=[];for(const n of t.features){const t="Polygon"===n.geometry.type?[n.geometry.coordinates]:n.geometry.coordinates;let r="";for(const o of t)0!==o.length&&(r+=kt(o[0],e,i,s));r&&o.push({tzid:n.properties.tzid,cityLabel:Et(n.properties.tzid),d:r})}return o}(this.tzIanaData,Lt,Ht,i))),this.tzPolygonsCenterLon=i}const m=function(t){return t.toLocaleTimeString(void 0,{hour:"numeric",minute:"2-digit",second:"2-digit",timeZoneName:"short"})}(e),g=function(t){const e=String(t.getUTCHours()).padStart(2,"0"),i=String(t.getUTCMinutes()).padStart(2,"0"),s=String(t.getUTCSeconds()).padStart(2,"0");return`${e}:${i}:${s} UTC`}(e),v=function(t){return t.toLocaleDateString(void 0,{weekday:"short",month:"short",day:"numeric",year:"numeric"})}(e),y=this.config.showTimezoneBand,$=y?-44:0,w=y?1068:Ht,b=`aspect-ratio: 2048 / ${w}; --geo-day-brightness: ${this.config.dayBrightness}; --geo-night-contrast: ${this.config.nightContrast}; --geo-twilight-color: ${this.config.twilightColor}; --geo-twilight-opacity: ${this.config.twilightOpacity}; --geo-tz-line: ${this.config.timezoneLineColor};`;return V`
-      <div class="frame" style="${b}">
+  `}setConfig(e){if(!e)throw new Error("geo-clock-card: missing config");const t=e.imageryBase??new URL(".",import.meta.url).href,i=function(e){if(null==e)return;const t=e instanceof Date?e:new Date(e);return Number.isFinite(t.getTime())?t:void 0}(e.now);this.config={twilightDegrees:Ve(e.twilightDegrees??8,1,18),updateInterval:Ve(e.updateInterval??1,1,600),showUTC:e.showUTC??!0,showTimezoneBand:e.showTimezoneBand??!0,showTimezoneBoundaries:e.showTimezoneBoundaries??!0,showTimezonePopup:e.showTimezonePopup??!0,timezoneLineColor:Ze(e.timezoneLineColor)??"rgba(255, 255, 255, 0.18)",dayBrightness:Ve(e.dayBrightness??1.15,0,5),nightContrast:Ve(e.nightContrast??1,0,5),twilightColor:Ze(e.twilightColor)??"#463701",twilightOpacity:Ve(e.twilightOpacity??.26,0,1),imageryBase:t.endsWith("/")?t:t+"/",center:e.center??"sun",centerLongitude:"number"==typeof e.centerLongitude?Ve(e.centerLongitude,-180,180):void 0,centerEntity:e.centerEntity,showHomeMarker:e.showHomeMarker??!1,showHomeMarkerLabel:e.showHomeMarkerLabel??!1,markers:Ge(e.markers),markerLabelMode:"hover"===e.markerLabelMode?"hover":"always",markerColor:Ze(e.markerColor),markerShowDay:e.markerShowDay??!0,mainTimeSource:qe(e.mainTimeSource),mainTimeEntity:e.mainTimeEntity,frozenNow:i};const o=i??new Date;this.displayNow=o,this.mapNow=o,this.tzPolygons=null,this.tzIanaPolygons=null,this.tzPolygonsCenterLon=null,this.restartTimer(),this.maybeLoadTimezones(),this.maybeLoadIanaTimezones()}connectedCallback(){if(super.connectedCallback(),!this.config?.frozenNow){const e=new Date;this.displayNow=e,this.mapNow=e}this.attachVisibilityObservers(),this.restartTimer(),this.maybeLoadTimezones(),this.maybeLoadIanaTimezones()}disconnectedCallback(){super.disconnectedCallback(),this.stopTimer(),this.clearDismissTimer(),this.detachVisibilityObservers()}attachVisibilityObservers(){"undefined"==typeof IntersectionObserver||this.intersectionObserver||(this.intersectionObserver=new IntersectionObserver(e=>{const t=e[e.length-1];this.intersecting=!t||t.isIntersecting,this.recomputeVisibility()},{threshold:0}),this.intersectionObserver.observe(this)),"undefined"==typeof document||this.onTabVisibility||(this.onTabVisibility=()=>this.recomputeVisibility(),document.addEventListener("visibilitychange",this.onTabVisibility))}detachVisibilityObservers(){this.intersectionObserver?.disconnect(),this.intersectionObserver=void 0,this.onTabVisibility&&"undefined"!=typeof document&&document.removeEventListener("visibilitychange",this.onTabVisibility),this.onTabVisibility=void 0}recomputeVisibility(){const e="undefined"==typeof document||"hidden"!==document.visibilityState,t=this.intersecting&&e;if(t!==this.isCardVisible){if(this.isCardVisible=t,t){const e=new Date;this.displayNow=e,this.mapNow=e}this.restartTimer()}}restartTimer(){if(this.stopTimer(),!this.config||!this.isConnected)return;if(this.config.frozenNow)return;const e=this.isCardVisible?1e3*this.config.updateInterval:18e5;this.timer=setInterval(()=>this.tick(),e)}tick(){const e=new Date;this.displayNow=e,e.getTime()-this.mapNow.getTime()>=10546.875&&(this.mapNow=e)}stopTimer(){void 0!==this.timer&&(clearInterval(this.timer),this.timer=void 0)}maybeLoadTimezones(){if(!this.config?.showTimezoneBoundaries||null!==this.tzData)return;(function(e){return Ie&&He===e||(He=e,Ie=fetch(e).then(e=>{if(!e.ok)throw new Error(`tz fetch failed: ${e.status}`);return e.json()})),Ie})(this.config.imageryBase+"timezones.json").then(e=>{this.tzData=e,this.requestUpdate()}).catch(e=>{console.warn("geo-clock-card: timezone overlay failed to load:",e)})}maybeLoadIanaTimezones(){if(!this.config||null!==this.tzIanaData)return;const e=this.config.markers.length>0,t="entity"===this.config.mainTimeSource,i="home"===this.config.mainTimeSource&&"string"!=typeof this.hass?.config?.time_zone;if(!(this.config.showTimezoneBoundaries||e||t||i))return;(function(e){return Se&&Ce===e||(Ce=e,Se=fetch(e).then(e=>{if(!e.ok)throw new Error(`iana tz fetch failed: ${e.status}`);return e.json()})),Se})(this.config.imageryBase+"timezones-iana.json").then(e=>{this.tzIanaData=e,this.requestUpdate()}).catch(e=>{console.warn("geo-clock-card: IANA timezone overlay failed to load:",e)})}static{this.FALLBACK_CENTER_LON=0}resolveCenterLon(e){if(!this.config)return $e(e).lon;switch(this.config.center){case"home":{const e=this.hass?.config?.longitude;return"number"==typeof e?e:(this.warnFallback("home","hass.config.longitude is not set; falling back to Greenwich (0°)"),Be.FALLBACK_CENTER_LON)}case"longitude":return"number"==typeof this.config.centerLongitude?this.config.centerLongitude:(this.warnFallback("longitude","centerLongitude not set; falling back to Greenwich (0°)"),Be.FALLBACK_CENTER_LON);case"entity":{const e=this.config.centerEntity,t=e?this.hass?.states?.[e]:void 0,i=t?.attributes?.longitude;return"number"==typeof i?i:(this.warnFallback("entity",e?`entity '${e}' has no numeric longitude attribute; falling back to Greenwich (0°)`:"centerEntity not set; falling back to Greenwich (0°)"),Be.FALLBACK_CENTER_LON)}default:return $e(e).lon}}warnFallback(e,t){const i=`${e}|${t}`;this.warnedFallback!==i&&(this.warnedFallback=i,console.warn(`geo-clock-card: center mode '${e}' — ${t}`))}resolveHomeLatLon(){const e=this.hass?.config?.latitude,t=this.hass?.config?.longitude;return"number"!=typeof e||"number"!=typeof t?null:{lat:e,lon:t}}resolveMainTimezone(){if(this.config)switch(this.config.mainTimeSource){case"device":return;case"home":{const e=this.hass?.config?.time_zone;if("string"==typeof e&&e)return e;const t=this.resolveHomeLatLon();return t&&this.tzIanaData?Ee(this.tzIanaData,t.lat,t.lon)??void 0:void 0}case"entity":{const e=this.config.mainTimeEntity,t=e?this.hass?.states?.[e]:void 0,i=t?.attributes?.latitude,o=t?.attributes?.longitude;return"number"==typeof i&&"number"==typeof o&&this.tzIanaData?Ee(this.tzIanaData,i,o)??void 0:void 0}}}resolveMarkers(){if(!this.config||0===this.config.markers.length)return[];const e=[];for(const t of this.config.markers){const i=this.hass?.states?.[t.entity];if(!i)continue;const o=i.attributes?.latitude,r=i.attributes?.longitude;if("number"!=typeof o||"number"!=typeof r)continue;const s="string"==typeof i.attributes?.friendly_name?i.attributes.friendly_name:t.entity,n="string"==typeof t.label&&t.label.trim()||s,a=this.tzIanaData?Ee(this.tzIanaData,o,r):null;e.push({entity:t.entity,label:n,color:Ze(t.color)??this.config.markerColor,lat:o,lon:r,tzid:a})}return e}render(){if(!this.config)return V``;const e=this.config.frozenNow??this.mapNow,t=this.config.frozenNow??this.displayNow,i=this.resolveCenterLon(e),o=$e(e),r=xe(o,{centerLon:i}),s=function(e,t={}){const i=xe(e,t);let o=e.lat;Math.abs(o)<_e&&(o=o>=0?_e:-1e-4);const r=o>0?-90:90;return[...i,[360,r],[0,r]]}(o,{centerLon:i}),n=Ae(s,Re,Fe),a=Ae(r,Re,Fe),l=2*this.config.twilightDegrees*Fe/180,h=Math.max(.5,l/8),c=Math.max(4,.55*l),d=Math.max(1,l/5),p=this.config.imageryBase+function(e){const t=e.getUTCDate();let i,o=e.getUTCMonth()+1;return t<8?i="start":t<23?i="mid":(i="start",o=12===o?1:o+1),`blue-marble-${String(o).padStart(2,"0")}-${i}-2048.jpg`}(e),u=this.config.imageryBase+"black-marble-2048.jpg",m=(-i/360*Re%Re+Re)%Re;if(this.config.showTimezoneBoundaries){const e=this.tzPolygonsCenterLon!==i;this.tzData&&(e||null===this.tzPolygons)&&(this.tzPolygons=function(e,t,i,o=180){const r=[];for(const s of e.features){const e="Polygon"===s.geometry.type?[s.geometry.coordinates]:s.geometry.coordinates;let n="";for(const r of e)0!==r.length&&(n+=Me(r[0],t,i,o));n&&r.push({offset:s.properties.zone,offsetLabel:Ne(s.properties.zone,s.properties.time_zone),name:s.properties.name??null,places:Ue(s.properties.places??""),d:n})}return r}(this.tzData,Re,Fe,i)),this.tzIanaData&&(e||null===this.tzIanaPolygons)&&(this.tzIanaPolygons=function(e){const t=e=>{let t=1/0,i=1/0,o=-1/0,r=-1/0;const s=/[ML]([\d.\-]+),([\d.\-]+)/g;let n;for(;n=s.exec(e);){const e=parseFloat(n[1]),s=parseFloat(n[2]);e<t&&(t=e),e>o&&(o=e),s<i&&(i=s),s>r&&(r=s)}return isFinite(t)?(o-t)*(r-i):0};return[...e].sort((e,i)=>t(i.d)-t(e.d))}(function(e,t,i,o=180){const r=[];for(const s of e.features){const e="Polygon"===s.geometry.type?[s.geometry.coordinates]:s.geometry.coordinates;let n="";for(const r of e)0!==r.length&&(n+=Me(r[0],t,i,o));n&&r.push({tzid:s.properties.tzid,cityLabel:Le(s.properties.tzid),d:n})}return r}(this.tzIanaData,Re,Fe,i))),this.tzPolygonsCenterLon=i}const f=this.resolveMainTimezone(),g=function(e,t){return e.toLocaleTimeString(void 0,{hour:"numeric",minute:"2-digit",second:"2-digit",timeZoneName:"short",...t?{timeZone:t}:{}})}(t,f),v=function(e){const t=String(e.getUTCHours()).padStart(2,"0"),i=String(e.getUTCMinutes()).padStart(2,"0"),o=String(e.getUTCSeconds()).padStart(2,"0");return`${t}:${i}:${o} UTC`}(t),y=function(e,t){return e.toLocaleDateString(void 0,{weekday:"short",month:"short",day:"numeric",year:"numeric",...t?{timeZone:t}:{}})}(t,f),b=this.resolveMarkers(),$=this.config.showTimezoneBand,w=$?-44:0,k=$?1068:Fe,_=`aspect-ratio: 2048 / ${k}; --geo-day-brightness: ${this.config.dayBrightness}; --geo-night-contrast: ${this.config.nightContrast}; --geo-twilight-color: ${this.config.twilightColor}; --geo-twilight-opacity: ${this.config.twilightOpacity}; --geo-tz-line: ${this.config.timezoneLineColor};`;return V`
+      <div class="frame" style="${_}">
         <svg
-          viewBox="0 ${$} ${Lt} ${w}"
+          viewBox="0 ${w} ${Re} ${k}"
           preserveAspectRatio="xMidYMid slice"
           aria-label="World map with current day/night terminator"
         >
@@ -247,18 +329,18 @@ const dt=t=>(e,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(t,e)}
               height="110%"
               filterUnits="objectBoundingBox"
             >
-              <feGaussianBlur stdDeviation="${l}" />
+              <feGaussianBlur stdDeviation="${h}" />
             </filter>
             <mask
               id="night-mask"
               maskUnits="userSpaceOnUse"
               x="0"
               y="0"
-              width="${Lt}"
-              height="${Ht}"
+              width="${Re}"
+              height="${Fe}"
             >
-              <rect width="${Lt}" height="${Ht}" fill="black" />
-              <polygon points="${r}" fill="white" filter="url(#feather)" />
+              <rect width="${Re}" height="${Fe}" fill="black" />
+              <polygon points="${n}" fill="white" filter="url(#feather)" />
             </mask>
             <filter
               id="twilight-blur"
@@ -273,21 +355,21 @@ const dt=t=>(e,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(t,e)}
           </defs>
 
           <image class="day-image" href="${p}"
-                 x="${f-Lt}" y="0"
-                 width="${Lt}" height="${Ht}"
+                 x="${m-Re}" y="0"
+                 width="${Re}" height="${Fe}"
                  preserveAspectRatio="none"/>
           <image class="day-image" href="${p}"
-                 x="${f}" y="0"
-                 width="${Lt}" height="${Ht}"
+                 x="${m}" y="0"
+                 width="${Re}" height="${Fe}"
                  preserveAspectRatio="none"/>
           <image class="night-image" href="${u}"
-                 x="${f-Lt}" y="0"
-                 width="${Lt}" height="${Ht}"
+                 x="${m-Re}" y="0"
+                 width="${Re}" height="${Fe}"
                  preserveAspectRatio="none"
                  mask="url(#night-mask)"/>
           <image class="night-image" href="${u}"
-                 x="${f}" y="0"
-                 width="${Lt}" height="${Ht}"
+                 x="${m}" y="0"
+                 width="${Re}" height="${Fe}"
                  preserveAspectRatio="none"
                  mask="url(#night-mask)"/>
 
@@ -296,62 +378,105 @@ const dt=t=>(e,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(t,e)}
                     stroke-width="${c}"
                     filter="url(#twilight-blur)"/>
 
-          ${this.tzPolygons&&this.config.showTimezoneBoundaries?this.tzPolygons.map(t=>Z`<path class="tz-region" d="${t.d}"
-                                 @pointerenter=${e=>this.onOffsetEnter(e,t)}
+          ${this.tzPolygons&&this.config.showTimezoneBoundaries?this.tzPolygons.map(e=>Z`<path class="tz-region" d="${e.d}"
+                                 @pointerenter=${t=>this.onOffsetEnter(t,e)}
                                  @pointermove=${this.onZoneMove}
                                  @pointerleave=${this.onOffsetLeave}/>`):""}
-          ${this.tzIanaPolygons&&this.config.showTimezoneBoundaries?this.tzIanaPolygons.map(t=>Z`<path class="tz-iana-region${this.hoveredIana===t?" is-active":""}" d="${t.d}"
-                                 @pointerenter=${e=>this.onIanaEnter(e,t)}
+          ${this.tzIanaPolygons&&this.config.showTimezoneBoundaries?this.tzIanaPolygons.map(e=>Z`<path class="tz-iana-region${this.hoveredIana===e?" is-active":""}" d="${e.d}"
+                                 @pointerenter=${t=>this.onIanaEnter(t,e)}
                                  @pointermove=${this.onZoneMove}
                                  @pointerleave=${this.onIanaLeave}/>`):""}
 
-          ${this.config.showHomeMarker?this.renderHomeMarker(i):""}
-
-          ${y?function(t,e,i=180){const s=function(t,e,i=180){const s=t.getUTCHours()+t.getUTCMinutes()/60+t.getUTCSeconds()/3600,o=e/24,n=i-180,r=[];for(let t=0;t<=24;t++){const e=n+15*t;let i=e/15;for(;i>12;)i-=24;for(;i<=-12;)i+=24;const a=((s+e/15)%24+24)%24|0;r.push({offset:i,realLon:e,centerX:t*o,hour12:(a+11)%12+1,isNoon:12===a,isMidnight:0===a})}return r}(t,e,i),o=e/24,n=[];for(let t=1;t<24;t++)n.push(t*o);return Z`
+          ${$?function(e,t,i=180){const o=function(e,t,i=180){const o=e.getUTCHours()+e.getUTCMinutes()/60+e.getUTCSeconds()/3600,r=t/24,s=i-180,n=[];for(let e=0;e<=24;e++){const t=s+15*e;let i=t/15;for(;i>12;)i-=24;for(;i<=-12;)i+=24;const a=((o+t/15)%24+24)%24|0;n.push({offset:i,realLon:t,centerX:e*r,hour12:(a+11)%12+1,isNoon:12===a,isMidnight:0===a})}return n}(e,t,i),r=t/24,s=[];for(let e=1;e<24;e++)s.push(e*r);return Z`
     <g class="tz-band">
       <rect class="tz-bg"
             x="0" y="${-44}"
-            width="${e}" height="${Tt}"/>
+            width="${t}" height="${Te}"/>
 
-      ${s.map(t=>Z`
-        <text class="tz-hour${t.isNoon?" noon":""}${t.isMidnight?" mid":""}"
-              x="${t.centerX}" y="${-21}"
-              text-anchor="middle" dominant-baseline="central">${t.hour12}</text>`)}
+      ${o.map(e=>Z`
+        <text class="tz-hour${e.isNoon?" noon":""}${e.isMidnight?" mid":""}"
+              x="${e.centerX}" y="${-21}"
+              text-anchor="middle" dominant-baseline="central">${e.hour12}</text>`)}
 
-      ${n.map(t=>Z`
+      ${s.map(e=>Z`
         <line class="tz-tick"
-              x1="${t}" y1="${0}"
-              x2="${t}" y2="${12}"/>`)}
+              x1="${e}" y1="${0}"
+              x2="${e}" y2="${12}"/>`)}
     </g>
-  `}(t,Lt,i):""}
+  `}(e,Re,i):""}
         </svg>
+        ${this.config.showHomeMarker?this.renderHomeMarkerOverlay(t,i,w,k):""}
+        ${b.length>0?this.renderMarkerOverlay(b,t,i,w,k):""}
         <div class="readout">
-          <div class="local-time">${m}</div>
-          ${this.config.showUTC?V`<div class="utc-time">${g}</div>`:""}
+          <div class="local-time">${g}</div>
+          ${this.config.showUTC?V`<div class="utc-time">${v}</div>`:""}
         </div>
-        <div class="date">${v}</div>
-        ${this.renderPopup(e)}
+        <div class="date">${y}</div>
+        ${this.renderPopup(t)}
       </div>
-    `}getCardSize(){return 4}static async getConfigElement(){return await Promise.resolve().then(function(){return Vt}),document.createElement("geo-clock-card-editor")}static getStubConfig(){return{type:"custom:geo-clock-card",center:"sun"}}static{this.TOUCH_DISMISS_MS=2500}clearDismissTimer(){void 0!==this.dismissTimer&&(clearTimeout(this.dismissTimer),this.dismissTimer=void 0)}scheduleTouchDismiss(t){this.clearDismissTimer(),this.dismissTimer=setTimeout(()=>{this.dismissTimer=void 0,t()},Dt.TOUCH_DISMISS_MS)}updateHoverPos(t){const e=t.currentTarget.closest(".frame");if(!e)return;const i=e.getBoundingClientRect();this.hoverPos={x:t.clientX-i.left,y:t.clientY-i.top}}renderHomeMarker(t){const e=this.resolveHomeLatLon();if(!e)return"";const{x:i,y:s}=function(t,e,i,s,o=180){return{x:((e-(o-180))%360+360)%360/360*i,y:(90-t)/180*s}}(e.lat,e.lon,Lt,Ht,t);return Z`
-      <circle class="home-marker-halo" cx="${i}" cy="${s}" r="22"/>
-      <circle class="home-marker-dot"  cx="${i}" cy="${s}" r="7"/>
-    `}renderPopup(t){if(!this.hoverPos)return V``;if(!1===this.config?.showTimezonePopup)return V``;const e=this.shadowRoot?.querySelector(".frame"),i=e?.clientWidth??1280,s=e?.clientHeight??720,o=this.hoverPos.x>.55*i,n=this.hoverPos.y>.5*s,r=o?-260:14,a=n?-14:14,h=n?" translateY(-100%)":"",l=`transform: translate(${this.hoverPos.x+r}px, ${this.hoverPos.y+a}px)${h};`;if(this.hoveredIana){const e=this.hoveredIana,i=Mt(t,e.tzid);return V`
-        <div class="tz-popup" style=${l}>
+    `}getCardSize(){return 4}static async getConfigElement(){return await Promise.resolve().then(function(){return Ye}),document.createElement("geo-clock-card-editor")}static getStubConfig(){return{type:"custom:geo-clock-card",center:"sun"}}static{this.TOUCH_DISMISS_MS=2500}clearDismissTimer(){void 0!==this.dismissTimer&&(clearTimeout(this.dismissTimer),this.dismissTimer=void 0)}scheduleTouchDismiss(e){this.clearDismissTimer(),this.dismissTimer=setTimeout(()=>{this.dismissTimer=void 0,e()},Be.TOUCH_DISMISS_MS)}updateHoverPos(e){const t=e.currentTarget.closest(".frame");if(!t)return;const i=t.getBoundingClientRect();this.hoverPos={x:e.clientX-i.left,y:e.clientY-i.top}}renderHomeMarkerOverlay(e,t,i,o){const r=this.resolveHomeLatLon();if(!r)return"";if(!this.config)return"";const{x:s,y:n}=ze(r.lat,r.lon,Re,Fe,t),a=s/Re*100,l=(n-i)/o*100,h=this.config.showHomeMarkerLabel,c=this.resolveHomeTimezone(),d=this.hass?.config?.location_name&&"string"==typeof this.hass.config.location_name?this.hass.config.location_name:"Home",p=c?We(e,c,this.config.markerShowDay):"";return V`
+      <div
+        class="marker home-marker"
+        style="left: ${a}%; top: ${l}%;"
+      >
+        <div class="marker-halo"></div>
+        <div class="marker-dot"></div>
+        ${h?V`
+              <div class="marker-text">
+                <div class="marker-label">${d}</div>
+                ${p?V`<div class="marker-time">${p}</div>`:""}
+              </div>
+            `:""}
+      </div>
+    `}resolveHomeTimezone(){const e=this.hass?.config?.time_zone;if("string"==typeof e&&e)return e;const t=this.resolveHomeLatLon();return t&&this.tzIanaData?Ee(this.tzIanaData,t.lat,t.lon)??void 0:void 0}renderMarkerOverlay(e,t,i,o,r){if(!this.config)return"";const s=this.config.markerLabelMode;return e.map(e=>{const{x:n,y:a}=ze(e.lat,e.lon,Re,Fe,i),l=n/Re*100,h=(a-o)/r*100,c=e.tzid?We(t,e.tzid,this.config.markerShowDay):"",d=this.hoveredMarker?.entity===e.entity,p=e.color?`background: ${e.color};`:"";return V`
+        <div
+          class="marker${d?" is-active":""}"
+          style="left: ${l}%; top: ${h}%;"
+        >
+          <div class="marker-halo" style=${p}></div>
+          <div
+            class="marker-dot"
+            style=${p}
+            @pointerenter=${t=>this.onMarkerEnter(t,e)}
+            @pointermove=${this.onZoneMove}
+            @pointerleave=${this.onMarkerLeave}
+          ></div>
+          ${"always"===s?V`
+                <div class="marker-text">
+                  <div class="marker-label">${e.label}</div>
+                  ${c?V`<div class="marker-time">${c}</div>`:""}
+                </div>
+              `:""}
+        </div>
+      `})}renderPopup(e){if(!this.hoverPos)return V``;if(!1===this.config?.showTimezonePopup)return V``;const t=this.shadowRoot?.querySelector(".frame"),i=t?.clientWidth??1280,o=t?.clientHeight??720,r=this.hoverPos.x>.55*i,s=this.hoverPos.y>.5*o,n=r?-260:14,a=s?-14:14,l=s?" translateY(-100%)":"",h=`transform: translate(${this.hoverPos.x+n}px, ${this.hoverPos.y+a}px)${l};`;if(this.hoveredMarker){const t=this.hoveredMarker;if(t.tzid){const i=Oe(e,t.tzid);return V`
+          <div class="tz-popup" style=${h}>
+            <div class="tz-popup-time">${i.time}</div>
+            <div class="tz-popup-date">${i.date}</div>
+            <div class="tz-popup-name">${t.label}</div>
+            <div class="tz-popup-offset">${i.offset} · ${t.tzid}</div>
+          </div>
+        `}return V`
+        <div class="tz-popup" style=${h}>
+          <div class="tz-popup-name">${t.label}</div>
+          <div class="tz-popup-offset">${t.entity}</div>
+        </div>
+      `}if(this.hoveredIana){const t=this.hoveredIana,i=Oe(e,t.tzid);return V`
+        <div class="tz-popup" style=${h}>
           <div class="tz-popup-time">${i.time}</div>
           <div class="tz-popup-date">${i.date}</div>
           <div class="tz-popup-name">${i.name}</div>
-          <div class="tz-popup-city">${e.cityLabel}</div>
-          <div class="tz-popup-offset">${i.offset} · ${e.tzid}</div>
+          <div class="tz-popup-city">${t.cityLabel}</div>
+          <div class="tz-popup-offset">${i.offset} · ${t.tzid}</div>
         </div>
-      `}if(this.hoveredOffset){const e=this.hoveredOffset,i=function(t,e){const i=new Date(t.getTime()+36e5*e),s=new Intl.DateTimeFormat(void 0,{timeZone:"UTC",hour:"numeric",minute:"2-digit",second:"2-digit"}).format(i),o=new Intl.DateTimeFormat(void 0,{timeZone:"UTC",weekday:"short",month:"short",day:"numeric"}).format(i);return{time:s,date:o}}(t,e.offset);return V`
-        <div class="tz-popup" style=${l}>
+      `}if(this.hoveredOffset){const t=this.hoveredOffset,i=function(e,t){const i=new Date(e.getTime()+36e5*t),o=new Intl.DateTimeFormat(void 0,{timeZone:"UTC",hour:"numeric",minute:"2-digit",second:"2-digit"}).format(i),r=new Intl.DateTimeFormat(void 0,{timeZone:"UTC",weekday:"short",month:"short",day:"numeric"}).format(i);return{time:o,date:r}}(e,t.offset);return V`
+        <div class="tz-popup" style=${h}>
           <div class="tz-popup-time">${i.time}</div>
           <div class="tz-popup-date">${i.date}</div>
-          ${e.name?V`<div class="tz-popup-name">${e.name}</div>`:""}
-          <div class="tz-popup-offset">${e.offsetLabel}</div>
-          ${e.places?V`<div class="tz-popup-places">${e.places}</div>`:""}
+          ${t.name?V`<div class="tz-popup-name">${t.name}</div>`:""}
+          <div class="tz-popup-offset">${t.offsetLabel}</div>
+          ${t.places?V`<div class="tz-popup-places">${t.places}</div>`:""}
         </div>
-      `}return V``}};function Rt(t,e,i){return Math.max(e,Math.min(i,t))}function jt(t){if("string"!=typeof t)return;const e=t.trim();return/^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(e)||/^(?:rgb|rgba|hsl|hsla)\([\d.,%\s/]+\)$/i.test(e)||/^[a-z]+$/i.test(e)?e:void 0}t([ft({attribute:!1})],Bt.prototype,"hass",void 0),t([mt()],Bt.prototype,"displayNow",void 0),t([mt()],Bt.prototype,"mapNow",void 0),t([mt()],Bt.prototype,"tzPolygons",void 0),t([mt()],Bt.prototype,"tzIanaPolygons",void 0),t([mt()],Bt.prototype,"hoveredIana",void 0),t([mt()],Bt.prototype,"hoveredOffset",void 0),t([mt()],Bt.prototype,"hoverPos",void 0),Bt=Dt=t([dt("geo-clock-card")],Bt),window.customCards=window.customCards||[],window.customCards.push({type:"geo-clock-card",name:"Geo Clock Card",description:"World map with a live day/night terminator (NASA Blue/Black Marble).",preview:!0});let Ft=class extends lt{setConfig(t){this._config=t}static{this.styles=r`
+      `}return V``}};function Ve(e,t,i){return Math.max(t,Math.min(i,e))}function Ze(e){if("string"!=typeof e)return;const t=e.trim();return/^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(t)||/^(?:rgb|rgba|hsl|hsla)\([\d.,%\s/]+\)$/i.test(t)||/^[a-z]+$/i.test(t)?t:void 0}function We(e,t,i){const o={hour:"numeric",minute:"2-digit",...t?{timeZone:t}:{}},r=new Intl.DateTimeFormat(void 0,o).format(e);if(!i)return r;const s={weekday:"long",...t?{timeZone:t}:{}};return`${r} ${new Intl.DateTimeFormat(void 0,s).format(e)}`}function Ge(e){if(!Array.isArray(e))return[];const t=[];for(const i of e){if(!i||"string"!=typeof i.entity)continue;const e=i.entity.trim();e&&t.push({entity:e,label:"string"==typeof i.label&&""!==i.label.trim()?i.label:void 0,color:"string"==typeof i.color?i.color:void 0})}return t}function qe(e){return"device"===e||"entity"===e?e:"home"}var Ke;e([me({attribute:!1})],je.prototype,"hass",void 0),e([fe()],je.prototype,"displayNow",void 0),e([fe()],je.prototype,"mapNow",void 0),e([fe()],je.prototype,"tzPolygons",void 0),e([fe()],je.prototype,"tzIanaPolygons",void 0),e([fe()],je.prototype,"hoveredIana",void 0),e([fe()],je.prototype,"hoveredOffset",void 0),e([fe()],je.prototype,"hoveredMarker",void 0),e([fe()],je.prototype,"hoverPos",void 0),je=Be=e([de("geo-clock-card")],je),window.customCards=window.customCards||[],window.customCards.push({type:"geo-clock-card",name:"Geo Clock Card",description:"World map with a live day/night terminator (NASA Blue/Black Marble).",preview:!0});let Xe=class extends he{static{Ke=this}setConfig(e){this._config=e,this.loadCardHelpers()}async loadCardHelpers(){if(!this._helpers)try{const e=window.loadCardHelpers;if("function"!=typeof e)return void(this._helpers={});this._helpers=await e()}catch(e){console.warn("geo-clock-card editor: loadCardHelpers failed",e),this._helpers={}}}static{this.styles=n`
     :host {
       display: block;
     }
@@ -376,8 +501,7 @@ const dt=t=>(e,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(t,e)}
       margin-top: -6px;
     }
     ha-textfield,
-    ha-select,
-    ha-entity-picker {
+    ha-select {
       width: 100%;
     }
     ha-formfield {
@@ -403,77 +527,199 @@ const dt=t=>(e,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(t,e)}
       cursor: pointer;
       background: transparent;
     }
-  `}fire(t,e){if(!this._config)return;const i={...this._config};void 0===e||""===e||null===e?delete i[t]:i[t]=e,JSON.stringify(i)!==JSON.stringify(this._config)&&this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:i},bubbles:!0,composed:!0}))}numField(t){return e=>{const i=e.target.value;this.fire(t,""===i?void 0:Number(i))}}strField(t){return e=>{const i=e.target.value;this.fire(t,i)}}toggle(t){return e=>{this.fire(t,e.target.checked)}}select(t){return e=>{const i=e.target.value;this.fire(t,i)}}render(){if(!this._config)return V``;const t=this._config,e=t.center??"sun";return V`
+    /* Native select styled to match HA's input look. We use this for
+       the center-mode dropdown because ha-select's selected event
+       has been fragile across HA frontend versions. */
+    .native-select {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .native-select label {
+      font-size: 0.85rem;
+      color: var(--secondary-text-color, #666);
+    }
+    .native-select select {
+      width: 100%;
+      padding: 12px 8px;
+      font-size: 1rem;
+      color: var(--primary-text-color, #000);
+      background: var(--card-background-color, #fff);
+      border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.2));
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    /* Marker rows: each gets entity picker + label + color + remove. */
+    .marker-row {
+      border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+      border-radius: 6px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+    .marker-row .row-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .marker-row .row-head .row-title {
+      flex: 1;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .marker-row button.remove {
+      background: transparent;
+      border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.2));
+      color: var(--primary-text-color, #000);
+      border-radius: 4px;
+      padding: 4px 10px;
+      cursor: pointer;
+    }
+    .add-marker {
+      align-self: flex-start;
+      padding: 6px 14px;
+      border: 1px solid var(--primary-color, #03a9f4);
+      background: transparent;
+      color: var(--primary-color, #03a9f4);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .breaking-note {
+      font-size: 0.8rem;
+      color: var(--warning-color, #f4a700);
+      margin-top: -4px;
+    }
+    ha-selector {
+      display: block;
+      width: 100%;
+    }
+  `}fire(e,t){if(!this._config)return;const i={...this._config};void 0===t||""===t||null===t?delete i[e]:i[e]=t,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:i},bubbles:!0,composed:!0}))}numField(e){return t=>{const i=t.target.value;this.fire(e,""===i?void 0:Number(i))}}strField(e){return t=>{const i=t.target.value;this.fire(e,i)}}toggle(e){return t=>{this.fire(e,t.target.checked)}}static{this.CENTER_MODES=["sun","home","longitude","entity"]}static{this.MAIN_TIME_SOURCES=["home","device","entity"]}updateMarkers(e){0===e.length?this.fire("markers",void 0):this.fire("markers",e)}addMarker(){const e=[...this._config?.markers??[]];e.push({entity:""}),this.updateMarkers(e)}removeMarker(e){const t=[...this._config?.markers??[]];t.splice(e,1),this.updateMarkers(t)}renderEntitySelector(e){return V`
+      <ha-selector
+        .hass=${this.hass}
+        .selector=${{entity:{filter:[{domain:"zone"},{domain:"person"},{domain:"device_tracker"}]}}}
+        .value=${e.value}
+        .label=${e.label}
+        @value-changed=${t=>e.onChange(t.detail?.value??"")}
+      ></ha-selector>
+    `}patchMarker(e,t){const i=[...this._config?.markers??[]];if(!i[e])return;const o={...i[e],...t};void 0!==t.label&&""===(t.label??"")&&delete o.label,void 0!==t.color&&""===(t.color??"")&&delete o.color,i[e]=o,this.updateMarkers(i)}render(){if(!this._config)return V``;if(!this._helpers)return V``;const e=this._config,t=e.center??"sun";return V`
       <div class="section">
         <div class="section-title">Map centering</div>
-        <ha-select
-          label="Center on"
-          .value=${e}
-          @selected=${this.select("center")}
-          @closed=${t=>t.stopPropagation()}
-        >
-          <mwc-list-item value="sun">Sun (subsolar point — drifts with daylight)</mwc-list-item>
-          <mwc-list-item value="home">Home (Home Assistant location)</mwc-list-item>
-          <mwc-list-item value="longitude">Specific longitude</mwc-list-item>
-          <mwc-list-item value="entity">Follow an entity</mwc-list-item>
-        </ha-select>
+        <div class="native-select">
+          <label for="geo-center-mode">Center on</label>
+          <select
+            id="geo-center-mode"
+            .value=${t}
+            @change=${e=>{const t=e.target.value;Ke.CENTER_MODES.includes(t)&&this.fire("center",t)}}
+          >
+            <option value="sun" ?selected=${"sun"===t}>
+              Sun (subsolar point — drifts with daylight)
+            </option>
+            <option value="home" ?selected=${"home"===t}>
+              Home (Home Assistant location)
+            </option>
+            <option value="longitude" ?selected=${"longitude"===t}>
+              Specific longitude
+            </option>
+            <option value="entity" ?selected=${"entity"===t}>
+              Follow an entity
+            </option>
+          </select>
+        </div>
 
-        ${"longitude"===e?V`
+        ${"longitude"===t?V`
               <ha-textfield
                 label="Longitude (-180 to 180)"
                 type="number"
                 min="-180"
                 max="180"
                 step="0.1"
-                .value=${null==t.centerLongitude?"":String(t.centerLongitude)}
-                @input=${this.numField("centerLongitude")}
+                .value=${null==e.centerLongitude?"":String(e.centerLongitude)}
+                @change=${this.numField("centerLongitude")}
               ></ha-textfield>
             `:""}
-        ${"entity"===e?V`
-              <ha-entity-picker
-                .hass=${this.hass}
-                label="Entity to follow"
-                .value=${t.centerEntity??""}
-                .includeDomains=${["zone","person","device_tracker"]}
-                @value-changed=${t=>this.fire("centerEntity",t.detail.value)}
-              ></ha-entity-picker>
+        ${"entity"===t?V`
+              ${this.renderEntitySelector({label:"Entity to follow",value:e.centerEntity??"",onChange:e=>this.fire("centerEntity",e)})}
               <div class="help">
-                Entity must expose a <code>longitude</code> attribute (zones,
-                persons, and most device trackers do).
+                Filtered to zone / person / device_tracker entities.
+                Entities without numeric <code>longitude</code> /
+                <code>latitude</code> attributes fall back to the sun
+                centering at runtime.
               </div>
             `:""}
 
         <ha-formfield label="Show home marker on map">
           <ha-switch
-            ?checked=${t.showHomeMarker??!1}
+            ?checked=${e.showHomeMarker??!1}
             @change=${this.toggle("showHomeMarker")}
           ></ha-switch>
         </ha-formfield>
+        ${e.showHomeMarker?V`
+              <ha-formfield label="Show home name and current time under the marker">
+                <ha-switch
+                  ?checked=${e.showHomeMarkerLabel??!1}
+                  @change=${this.toggle("showHomeMarkerLabel")}
+                ></ha-switch>
+              </ha-formfield>
+            `:""}
+      </div>
+
+      <div class="section">
+        <div class="section-title">Main clock</div>
+        <div class="native-select">
+          <label for="geo-main-time-source">Time source</label>
+          <select
+            id="geo-main-time-source"
+            .value=${e.mainTimeSource??"home"}
+            @change=${e=>{const t=e.target.value;Ke.MAIN_TIME_SOURCES.includes(t)&&this.fire("mainTimeSource",t)}}
+          >
+            <option
+              value="home"
+              ?selected=${"home"===(e.mainTimeSource??"home")}
+            >
+              Home (Home Assistant time zone) — default
+            </option>
+            <option value="device" ?selected=${"device"===e.mainTimeSource}>
+              Device (this browser's time zone)
+            </option>
+            <option value="entity" ?selected=${"entity"===e.mainTimeSource}>
+              Follow an entity
+            </option>
+          </select>
+        </div>
+        <div class="breaking-note">
+          Default changed in v0.2.0 — pre-0.2.0 cards behaved like “Device”.
+          Switch back if the wall-clock readout should keep matching the
+          viewing device rather than your HA location.
+        </div>
+        ${"entity"===e.mainTimeSource?this.renderEntitySelector({label:"Time-source entity",value:e.mainTimeEntity??"",onChange:e=>this.fire("mainTimeEntity",e)}):""}
       </div>
 
       <div class="section">
         <div class="section-title">Display</div>
         <ha-formfield label="Show UTC time">
           <ha-switch
-            ?checked=${t.showUTC??!0}
+            ?checked=${e.showUTC??!0}
             @change=${this.toggle("showUTC")}
           ></ha-switch>
         </ha-formfield>
         <ha-formfield label="Show hour-of-day band">
           <ha-switch
-            ?checked=${t.showTimezoneBand??!0}
+            ?checked=${e.showTimezoneBand??!0}
             @change=${this.toggle("showTimezoneBand")}
           ></ha-switch>
         </ha-formfield>
         <ha-formfield label="Show time-zone overlay">
           <ha-switch
-            ?checked=${t.showTimezoneBoundaries??!0}
+            ?checked=${e.showTimezoneBoundaries??!0}
             @change=${this.toggle("showTimezoneBoundaries")}
           ></ha-switch>
         </ha-formfield>
         <ha-formfield label="Show hover popup (live time at the pointed-to zone)">
           <ha-switch
-            ?checked=${t.showTimezonePopup??!0}
+            ?checked=${e.showTimezonePopup??!0}
             @change=${this.toggle("showTimezonePopup")}
           ></ha-switch>
         </ha-formfield>
@@ -487,14 +733,93 @@ const dt=t=>(e,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(t,e)}
           min="1"
           max="600"
           step="1"
-          .value=${String(t.updateInterval??1)}
-          @input=${this.numField("updateInterval")}
+          .value=${String(e.updateInterval??1)}
+          @change=${this.numField("updateInterval")}
         ></ha-textfield>
         <div class="help">
           The map itself auto-throttles separately — it only re-renders
           when the subsolar point has shifted enough to be visible at 4K.
         </div>
       </div>
+
+      <ha-expansion-panel
+        outlined
+        header="Location markers"
+        secondary="Pin extra entities on the map with their current local time"
+      >
+        <div class="section panel-body">
+          <div class="native-select">
+            <label for="geo-marker-label-mode">Label visibility</label>
+            <select
+              id="geo-marker-label-mode"
+              .value=${e.markerLabelMode??"always"}
+              @change=${e=>{const t=e.target.value;this.fire("markerLabelMode","hover"===t?"hover":"always")}}
+            >
+              <option
+                value="always"
+                ?selected=${"always"===(e.markerLabelMode??"always")}
+              >
+                Always visible — name + time under each marker
+              </option>
+              <option value="hover" ?selected=${"hover"===e.markerLabelMode}>
+                Hover / tap only — popup like the time-zone overlay
+              </option>
+            </select>
+          </div>
+          <ha-formfield label="Show weekday after the time (e.g. 12:22 PM Friday)">
+            <ha-switch
+              ?checked=${e.markerShowDay??!0}
+              @change=${this.toggle("markerShowDay")}
+            ></ha-switch>
+          </ha-formfield>
+          <div class="color-row">
+            <label for="marker-color">Default marker color</label>
+            <input
+              id="marker-color"
+              type="color"
+              .value=${this.colorAsHex(e.markerColor,"#3da9fc")}
+              @change=${this.strField("markerColor")}
+            />
+          </div>
+
+          ${(e.markers??[]).map((t,i)=>V`
+              <div class="marker-row">
+                <div class="row-head">
+                  <span class="row-title">Marker ${i+1}</span>
+                  <button
+                    class="remove"
+                    type="button"
+                    @click=${()=>this.removeMarker(i)}
+                  >
+                    Remove
+                  </button>
+                </div>
+                ${this.renderEntitySelector({label:"Entity",value:t.entity??"",onChange:e=>this.patchMarker(i,{entity:e})})}
+                <ha-textfield
+                  label="Label (optional — defaults to entity friendly_name)"
+                  .value=${t.label??""}
+                  @change=${e=>this.patchMarker(i,{label:e.target.value})}
+                ></ha-textfield>
+                <div class="color-row">
+                  <label for="marker-color-${i}">Marker color (optional)</label>
+                  <input
+                    id="marker-color-${i}"
+                    type="color"
+                    .value=${this.colorAsHex(t.color,this.colorAsHex(e.markerColor,"#3da9fc"))}
+                    @change=${e=>this.patchMarker(i,{color:e.target.value})}
+                  />
+                </div>
+              </div>
+            `)}
+          <button
+            class="add-marker"
+            type="button"
+            @click=${()=>this.addMarker()}
+          >
+            + Add marker
+          </button>
+        </div>
+      </ha-expansion-panel>
 
       <ha-expansion-panel
         outlined
@@ -508,8 +833,8 @@ const dt=t=>(e,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(t,e)}
             min="0.5"
             max="2"
             step="0.05"
-            .value=${String(t.dayBrightness??1.15)}
-            @input=${this.numField("dayBrightness")}
+            .value=${String(e.dayBrightness??1.15)}
+            @change=${this.numField("dayBrightness")}
           ></ha-textfield>
           <ha-textfield
             label="Night contrast (0.5–3.0)"
@@ -517,8 +842,8 @@ const dt=t=>(e,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(t,e)}
             min="0.5"
             max="3"
             step="0.05"
-            .value=${String(t.nightContrast??1)}
-            @input=${this.numField("nightContrast")}
+            .value=${String(e.nightContrast??1)}
+            @change=${this.numField("nightContrast")}
           ></ha-textfield>
           <ha-textfield
             label="Twilight band (1–18 sun-elevation degrees)"
@@ -526,16 +851,16 @@ const dt=t=>(e,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(t,e)}
             min="1"
             max="18"
             step="1"
-            .value=${String(t.twilightDegrees??8)}
-            @input=${this.numField("twilightDegrees")}
+            .value=${String(e.twilightDegrees??8)}
+            @change=${this.numField("twilightDegrees")}
           ></ha-textfield>
           <div class="color-row">
             <label for="twilight-color">Twilight color</label>
             <input
               id="twilight-color"
               type="color"
-              .value=${t.twilightColor??"#463701"}
-              @input=${this.strField("twilightColor")}
+              .value=${e.twilightColor??"#463701"}
+              @change=${this.strField("twilightColor")}
             />
           </div>
           <ha-textfield
@@ -544,16 +869,16 @@ const dt=t=>(e,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(t,e)}
             min="0"
             max="1"
             step="0.02"
-            .value=${String(t.twilightOpacity??.26)}
-            @input=${this.numField("twilightOpacity")}
+            .value=${String(e.twilightOpacity??.26)}
+            @change=${this.numField("twilightOpacity")}
           ></ha-textfield>
           <div class="color-row">
             <label for="tz-line-color">Time-zone line color</label>
             <input
               id="tz-line-color"
               type="color"
-              .value=${this.tzLineColorAsHex(t.timezoneLineColor)}
-              @input=${this.strField("timezoneLineColor")}
+              .value=${this.tzLineColorAsHex(e.timezoneLineColor)}
+              @change=${this.strField("timezoneLineColor")}
             />
           </div>
           <div class="help">
@@ -562,5 +887,5 @@ const dt=t=>(e,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(t,e)}
           </div>
         </div>
       </ha-expansion-panel>
-    `}tzLineColorAsHex(t){return t&&/^#[0-9a-f]{6,8}$/i.test(t)?t.slice(0,7):"#ffffff"}};t([ft({attribute:!1})],Ft.prototype,"hass",void 0),t([mt()],Ft.prototype,"_config",void 0),Ft=t([dt("geo-clock-card-editor")],Ft);var Vt=Object.freeze({__proto__:null,get GeoClockCardEditor(){return Ft}});export{Bt as GeoClockCard};
+    `}tzLineColorAsHex(e){return this.colorAsHex(e,"#ffffff")}colorAsHex(e,t){return e&&/^#[0-9a-f]{6,8}$/i.test(e)?e.slice(0,7):t}};e([me({attribute:!1})],Xe.prototype,"hass",void 0),e([fe()],Xe.prototype,"_config",void 0),e([fe()],Xe.prototype,"_helpers",void 0),Xe=Ke=e([de("geo-clock-card-editor")],Xe);var Ye=Object.freeze({__proto__:null,get GeoClockCardEditor(){return Xe}});export{je as GeoClockCard};
 //# sourceMappingURL=geo-clock-card.js.map
