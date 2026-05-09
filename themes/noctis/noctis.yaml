@@ -223,6 +223,21 @@ noctis:
   switch-checked-color: 'var(--paper-toggle-button-checked-button-color)'
   switch-unchecked-button-color: 'var(--disabled-text-color)'
 
+  ha-switch-background-color: 'var(--background-color)'
+  ha-switch-background-color-hover: 'var(--ha-switch-background-color)'
+  ha-switch-border-color: 'rgba(0,0,0,0)'
+  ha-switch-thumb-background-color: 'var(--disabled-text-color)'
+  ha-switch-thumb-background-color-hover: 'var(--text-medium-color)'
+  ha-switch-thumb-border-color: 'var(--disabled-text-color)'
+  ha-switch-thumb-border-color-hover: 'var(--text-medium-color)'
+  ha-switch-checked-background-color: 'var(--ha-switch-background-color)'
+  ha-switch-checked-background-color-hover: 'var(--ha-switch-checked-background-color)'
+  ha-switch-checked-border-color: 'var(--ha-switch-border-color)'
+  ha-switch-checked-thumb-background-color: 'var(--accent-color)'
+  ha-switch-checked-thumb-background-color-hover: '#6fa2de'
+  ha-switch-checked-thumb-border-color: 'var(--accent-color)'
+  ha-switch-checked-thumb-border-color-hover: 'var(--ha-switch-checked-thumb-background-color-hover)'
+
   # Radio Button
   paper-radio-button-checked-color: 'var(--accent-color)'
 
