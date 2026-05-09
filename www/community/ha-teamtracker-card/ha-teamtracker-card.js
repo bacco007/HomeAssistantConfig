@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.17.0";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.17.1";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -3006,6 +3006,9 @@ function $654f96c20a3bcd40$export$3f4c9efb42c5bfd8(c) {
     <ha-card>
         <div class="card">
             <div class="title">${c.title}</div>
+            <div class="subtitle" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+        '--subtitle-display': c.subtitleDisplay
+    })}>${c.subtitle}</div>
             <img class="team-bg" src="${c.logoBG[1]}"
                 onerror="this.onerror=null; this.src='${c.logoBGAlternate[1]}';" />
             <img class="opponent-bg" src="${c.logoBG[2]}"
@@ -3171,12 +3174,16 @@ function $654f96c20a3bcd40$export$3f4c9efb42c5bfd8(c) {
 
 
 
+
 function $5cc9eebd21270610$export$cbe2629e62de17f0(c) {
     // Render the HTML template using the provided object `c`
     const htmlTemplate = (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`
         <ha-card>
             <div class="card">
                 <div class="title">${c.title}</div>
+                <div class="subtitle" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+        '--subtitle-display': c.subtitleDisplay
+    })}>${c.subtitle}</div>
                 <img class="team-bg" src="${c.notFoundLogoBG}" />
                 <div class="card-content">
                     <div class="team">
@@ -3204,6 +3211,9 @@ function $ba84a5acf45954c4$export$823f4865e91cfbff(c) {
     <ha-card>
         <div class="card">
             <div class="title">${c.title}</div>
+            <div class="subtitle" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+        '--subtitle-display': c.subtitleDisplay
+    })}>${c.subtitle}</div>
             <img class="team-bg" src="${c.logoBG[1]}"
                 onerror="this.onerror=null; this.src='${c.logoBGAlternate[1]}';" />
             <img class="opponent-bg" src="${c.logoBG[2]}"
@@ -3269,6 +3279,9 @@ function $32e2f72be859b718$export$d6bad15bd473a528(c) {
     <ha-card>
         <div class="card">
             <div class="title">${c.title}</div>
+            <div class="subtitle" style=${(0, $19f464fcda7d2482$export$1e5b4ce2fa884e6a)({
+        '--subtitle-display': c.subtitleDisplay
+    })}>${c.subtitle}</div>
             <img class="team-bg" src="${c.logoBG[1]}"
                 onerror="this.onerror=null; this.src='${c.logoBGAlternate[1]}';" />
             <img class="opponent-bg" src="${c.logoBG[2]}"
@@ -3371,6 +3384,7 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
     else c.bottomURL = o.bottomURL || stateObj.attributes.event_url;
     if (o.show_timeouts == false) c.timeoutsDisplay = 'none';
     if (o.show_rank == false) c.rankDisplay = 'none';
+    c.subtitleDisplay = "none";
     c.onFirstOp = 0.2;
     c.onSecondOp = 0.2;
     c.onThirdOp = 0.2;
@@ -3380,6 +3394,7 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
     // Set Title data
     c.title = o.cardTitle;
     if (o.showLeague) c.title = c.title || stateObj.attributes.league_name;
+    c.subtitle = "";
     // Set Scoreboard data
     c.logo[team] = stateObj.attributes.team_logo;
     c.logoAlternate[team] = stateObj.attributes.team_logo;
@@ -3659,6 +3674,10 @@ function $8d10daf0cda71373$export$b95402321280aab2(t, stateObj, c, team, oppo) {
 }
 function $8d10daf0cda71373$export$75a82cd3fb272a60(t, stateObj, c, team, oppo) {
     c.title = c.title || stateObj.attributes.event_name;
+    if (stateObj.attributes.date) {
+        c.subtitle = c.gameDatePOST;
+        c.subtitleDisplay = "block";
+    }
     if (stateObj.attributes.quarter) {
         c.pre1 = stateObj.attributes.quarter;
         c.in1 = stateObj.attributes.quarter;
@@ -3745,6 +3764,7 @@ function $8d10daf0cda71373$export$ae478c65328ff5a5(t, stateObj, c, team, oppo) {
 const $1a7c5d625ead7579$export$c579ff79a032fc68 = (0, $def2de46b9306e8a$export$dbf350e5966cf602)`
 .card { position: relative; overflow: hidden; padding: 16px 16px 20px; font-weight: 400; border-radius: var(--ha-card-border-radius, 10px); }
 .title { text-align: center; font-size: 1.2em; font-weight: 500; }
+.subtitle { display: var(--subtitle-display, block); font-size: 1.1em; line-height: 1.1em; text-align: center; width: 100%; margin-bottom: 4px; }
 .team-bg { opacity: 0.08; position: absolute; top: -20%; left: -20%; width: 58%; z-index: 0; }
 .opponent-bg { opacity: 0.08; position: absolute; top: -20%; right: -20%; width: 58%; z-index: 0; }
 .card-content { display: flex; justify-content: space-evenly; align-items: center; text-align: center; position: relative; z-index: 1; }
