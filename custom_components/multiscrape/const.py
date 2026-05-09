@@ -40,13 +40,8 @@ DEFAULT_EXTRACT = "text"
 
 CONF_FIELDS = "fields"
 
-SCRAPER_IDX = "scraper_idx"
-PLATFORM_IDX = "platform_idx"
-
-COORDINATOR = "coordinator"
-SCRAPER = "scraper"
-
-SCRAPER_DATA = "scraper"
+SCRAPER_ID = "scraper_id"
+ENTITY_KEY = "entity_key"
 
 METHODS = ["POST", "GET", "PUT"]
 DEFAULT_SEPARATOR = ","
@@ -67,3 +62,7 @@ LOG_LEVELS = {
 
 DEFAULT_ON_ERROR_LOG = LOG_ERROR
 DEFAULT_ON_ERROR_VALUE = CONF_ON_ERROR_VALUE_NONE
+
+# Retry configuration
+MAX_RETRIES = 3
+RETRY_DELAY_SECONDS = 30

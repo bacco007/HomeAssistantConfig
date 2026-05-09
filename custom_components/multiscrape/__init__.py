@@ -6,22 +6,22 @@ import logging
 import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (CONF_NAME, CONF_RESOURCE,
-                                 CONF_RESOURCE_TEMPLATE, SERVICE_RELOAD,
+                                 CONF_RESOURCE_TEMPLATE,
+                                 EVENT_HOMEASSISTANT_STOP, SERVICE_RELOAD,
                                  Platform)
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import discovery
 from homeassistant.helpers.reload import (async_integration_yaml_config,
                                           async_reload_integration_platforms)
+from homeassistant.util import slugify
 
-from .const import (CONF_FORM_SUBMIT, CONF_LOG_RESPONSE, CONF_PARSER,
-                    COORDINATOR, DOMAIN, PLATFORM_IDX, SCRAPER, SCRAPER_DATA,
-                    SCRAPER_IDX)
+from .const import CONF_LOG_RESPONSE, DOMAIN, ENTITY_KEY, SCRAPER_ID
 from .coordinator import (create_content_request_manager,
                           create_multiscrape_coordinator)
 from .file import create_file_manager
-from .form import create_form_submitter
-from .http import create_http_wrapper
+from .http_session import create_http_session
+from .registry import ScraperInstance, ScraperRegistry
 from .schema import COMBINED_SCHEMA, CONFIG_SCHEMA  # noqa: F401
 from .scraper import create_scraper
 from .service import setup_config_services, setup_integration_services
@@ -66,8 +66,8 @@ async def async_setup(hass: HomeAssistant, entry: ConfigEntry):
 
 
 def _async_setup_shared_data(hass: HomeAssistant):
-    """Create shared data for platform config and scraper coordinators."""
-    hass.data[DOMAIN] = {key: [] for key in [SCRAPER_DATA, *PLATFORMS]}
+    """Create a fresh ScraperRegistry for platform config and scraper coordinators."""
+    hass.data[DOMAIN] = ScraperRegistry()
 
 
 async def _async_process_config(hass: HomeAssistant, config) -> bool:
@@ -77,37 +77,29 @@ async def _async_process_config(hass: HomeAssistant, config) -> bool:
 
     refresh_tasks = []
     load_tasks = []
+    registry: ScraperRegistry = hass.data[DOMAIN]
 
     for scraper_idx, conf in enumerate(config[DOMAIN]):
         config_name = conf.get(CONF_NAME)
         if config_name is None:
-            config_name = f"Scraper_noname_{scraper_idx}"
+            resource = conf.get(CONF_RESOURCE) or ""
+            config_name = (
+                f"scraper_{slugify(resource)}" if resource else f"scraper_unnamed_{scraper_idx}"
+            )
             _LOGGER.debug(
-                "# Found no name for scraper, generated a unique name: %s", config_name
+                "# Found no name for scraper, generated name: %s", config_name
             )
 
         _LOGGER.debug(
             "%s # Setting up multiscrape with config:\n %s", config_name, conf
         )
 
-        file_manager = await create_file_manager(hass, config_name, conf.get(CONF_LOG_RESPONSE))
-        form_submit_config = conf.get(CONF_FORM_SUBMIT)
-        form_submitter = None
-        if form_submit_config:
-            parser = conf.get(CONF_PARSER)
-            form_http = create_http_wrapper(config_name, form_submit_config, hass, file_manager)
-            form_submitter = create_form_submitter(
-                config_name,
-                form_submit_config,
-                hass,
-                form_http,
-                file_manager,
-                parser,
-            )
+        scraper_id = _deduplicate_id(registry, config_name)
 
-        http = create_http_wrapper(config_name, conf, hass, file_manager)
+        file_manager = await create_file_manager(hass, config_name, conf.get(CONF_LOG_RESPONSE))
+        session = create_http_session(config_name, conf, hass, file_manager)
         scraper = create_scraper(config_name, conf, hass, file_manager)
-        request_manager = create_content_request_manager(config_name, conf, hass, http, form_submitter)
+        request_manager = create_content_request_manager(config_name, conf, hass, session)
         coordinator = create_multiscrape_coordinator(
             config_name,
             conf,
@@ -118,9 +110,17 @@ async def _async_process_config(hass: HomeAssistant, config) -> bool:
         )
         await coordinator.async_register_shutdown()
 
-        hass.data[DOMAIN][SCRAPER_DATA].append(
-            {SCRAPER: scraper, COORDINATOR: coordinator}
+        async def _shutdown_session(_event, _session=session):
+            await _session.async_close()
+
+        hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, _shutdown_session)
+
+        instance = ScraperInstance(
+            scraper_id=scraper_id,
+            scraper=scraper,
+            coordinator=coordinator,
         )
+        registry.register(instance)
 
         await setup_config_services(hass, coordinator, config_name)
 
@@ -129,14 +129,18 @@ async def _async_process_config(hass: HomeAssistant, config) -> bool:
                 continue
 
             for platform_conf in conf[platform_domain]:
-                hass.data[DOMAIN][platform_domain].append(platform_conf)
-                platform_idx = len(hass.data[DOMAIN][platform_domain]) - 1
+                entity_name = platform_conf.get(CONF_NAME, "")
+                entity_key = slugify(entity_name) if entity_name else f"entity_{id(platform_conf)}"
+
+                platform_dict = instance.platform_configs.setdefault(platform_domain, {})
+                entity_key = _deduplicate_entity_key(platform_dict, entity_key)
+                platform_dict[entity_key] = platform_conf
 
                 load = discovery.async_load_platform(
                     hass,
                     platform_domain,
                     DOMAIN,
-                    {SCRAPER_IDX: scraper_idx, PLATFORM_IDX: platform_idx},
+                    {SCRAPER_ID: scraper_id, ENTITY_KEY: entity_key},
                     config,
                 )
                 load_tasks.append(load)
@@ -151,10 +155,37 @@ async def _async_process_config(hass: HomeAssistant, config) -> bool:
     return True
 
 
+def _deduplicate_id(registry: ScraperRegistry, base_id: str) -> str:
+    """Return a unique scraper ID, appending a suffix if needed."""
+    if not registry.contains(base_id):
+        return base_id
+    suffix = 2
+    while registry.contains(f"{base_id}_{suffix}"):
+        suffix += 1
+    deduped = f"{base_id}_{suffix}"
+    _LOGGER.warning(
+        "Duplicate scraper name '%s', using '%s' instead", base_id, deduped
+    )
+    return deduped
+
+
+def _deduplicate_entity_key(platform_dict: dict, base_key: str) -> str:
+    """Return a unique entity key within a platform, appending a suffix if needed."""
+    if base_key not in platform_dict:
+        return base_key
+    suffix = 2
+    while f"{base_key}_{suffix}" in platform_dict:
+        suffix += 1
+    deduped = f"{base_key}_{suffix}"
+    _LOGGER.warning(
+        "Duplicate entity name '%s', using '%s' instead", base_key, deduped
+    )
+    return deduped
+
+
 async def async_get_config_and_coordinator(hass, platform_domain, discovery_info):
     """Get the config and coordinator for the platform from discovery."""
-    shared_data = hass.data[DOMAIN][SCRAPER_DATA][discovery_info[SCRAPER_IDX]]
-    conf = hass.data[DOMAIN][platform_domain][discovery_info[PLATFORM_IDX]]
-    coordinator = shared_data[COORDINATOR]
-    scraper = shared_data[SCRAPER]
-    return conf, coordinator, scraper
+    registry: ScraperRegistry = hass.data[DOMAIN]
+    instance = registry.get(discovery_info[SCRAPER_ID])
+    conf = instance.platform_configs[platform_domain][discovery_info[ENTITY_KEY]]
+    return conf, instance.coordinator, instance.scraper

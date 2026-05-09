@@ -1,20 +1,23 @@
 """Coordinator class for multiscrape integration."""
+from __future__ import annotations
+
 import logging
 from collections.abc import Callable
 from datetime import timedelta
 
+import httpx
 from homeassistant.const import (CONF_RESOURCE, CONF_RESOURCE_TEMPLATE,
                                  CONF_SCAN_INTERVAL,
                                  EVENT_HOMEASSISTANT_STARTED)
 from homeassistant.core import Event, HomeAssistant
-from homeassistant.helpers.update_coordinator import (DataUpdateCoordinator,
-                                                      event)
+from homeassistant.helpers.update_coordinator import (
+    TimestampDataUpdateCoordinator, event)
 from homeassistant.util.dt import utcnow
 
-from .const import DOMAIN
+from .const import DOMAIN, MAX_RETRIES, RETRY_DELAY_SECONDS
 from .file import LoggingFileManager
-from .form import FormSubmitter
-from .http import HttpWrapper
+from .http_session import HttpSession
+from .scrape_context import ScrapeContext
 from .scraper import Scraper
 from .util import create_renderer
 
@@ -24,7 +27,7 @@ DEFAULT_SCAN_INTERVAL = timedelta(seconds=60)
 
 
 def create_content_request_manager(
-    config_name, config, hass: HomeAssistant, http, form_submitter
+    config_name, config, hass: HomeAssistant, session
 ):
     """Create a content request manager instance."""
     _LOGGER.debug("%s # Creating ContentRequestManager", config_name)
@@ -32,67 +35,75 @@ def create_content_request_manager(
     resource_template = config.get(CONF_RESOURCE_TEMPLATE)
 
     if resource_template is not None:
-        resource_renderer = create_renderer(hass, resource_template)
+        resource_renderer = create_renderer(hass, resource_template, "resource URL template")
     else:
-        resource_renderer = create_renderer(hass, resource)
-    return ContentRequestManager(config_name, http, resource_renderer, form_submitter)
+        resource_renderer = create_renderer(hass, resource, "resource URL")
+    return ContentRequestManager(config_name, session, resource_renderer)
 
 
 class ContentRequestManager:
-    """Responsible for orchestrating all request required to retrieve the desired content."""
+    """Responsible for orchestrating all requests required to retrieve the desired content."""
 
     def __init__(
         self,
         config_name: str,
-        http: HttpWrapper,
+        session: HttpSession,
         resource_renderer: Callable,
-        form: FormSubmitter = None,
     ) -> None:
         """Initialize ContentRequestManager."""
         self._config_name = config_name
-        self._http = http
-        self._form_submitter = form
+        self._session = session
         self._resource_renderer = resource_renderer
-        self._cookies = None
-        self._form_variables = {}
 
-    def notify_scrape_exception(self):
-        """Notify the form_submitter of an exception so it will re-submit next trigger."""
-        if self._form_submitter:
-            self._form_submitter.notify_scrape_exception()
-
-    async def get_content(self) -> str:
+    async def get_content(self, force_reauth: bool = False) -> str:
         """Retrieve the content of a url and first submit a form if required."""
+        if force_reauth:
+            self._session.invalidate_auth()
+
         resource = self._resource_renderer()
 
-        if self._form_submitter:
-            try:
-                if self._form_submitter.should_submit is True:
-                    result, self._cookies = await self._form_submitter.async_submit(resource)
-                    self._form_variables = self._form_submitter.scrape_variables()
-
-                    if result:
-                        _LOGGER.debug(
-                            "%s # Using response from form-submit as content for scraping.",
-                            self._config_name,
-                        )
-                        return result
-                else:
-                    _LOGGER.debug("%s # Skip submitting form", self._config_name)
-            except Exception as ex:
-                _LOGGER.error(
-                    "%s # Exception in form-submit feature. Will continue trying to scrape target page.\n%s",
+        try:
+            result = await self._session.ensure_authenticated(resource)
+            if result:
+                _LOGGER.debug(
+                    "%s # Using response from form-submit as content for scraping.",
                     self._config_name,
+                )
+                return result
+        except httpx.HTTPStatusError as ex:
+            if ex.response.status_code in (401, 403):
+                _LOGGER.error(
+                    "%s # Authentication rejected with HTTP %s. "
+                    "Not falling through to target page as data would be unreliable.\n%s",
+                    self._config_name,
+                    ex.response.status_code,
                     ex,
                 )
+                raise
+            _LOGGER.error(
+                "%s # HTTP error during form-submit (status %s). "
+                "Will continue trying to scrape target page.\n%s",
+                self._config_name,
+                ex.response.status_code,
+                ex,
+            )
+        except Exception as ex:
+            _LOGGER.error(
+                "%s # Exception in form-submit feature. Will continue trying to scrape target page.\n%s",
+                self._config_name,
+                ex,
+            )
 
-        response = await self._http.async_request("page", resource, cookies=self._cookies, variables=self._form_variables)
+        scrape_ctx = ScrapeContext(form_variables=self._session.form_variables)
+        response = await self._session.async_request(
+            "page", resource, scrape_context=scrape_ctx
+        )
         return response.text
 
     @property
     def form_variables(self):
         """Return the form variables."""
-        return self._form_variables
+        return self._session.form_variables
 
 
 def create_multiscrape_coordinator(
@@ -113,7 +124,7 @@ def create_multiscrape_coordinator(
     )
 
 
-class MultiscrapeDataUpdateCoordinator(DataUpdateCoordinator):
+class MultiscrapeDataUpdateCoordinator(TimestampDataUpdateCoordinator[None]):
     """Multiscrape coordinator class."""
 
     def __init__(
@@ -133,7 +144,8 @@ class MultiscrapeDataUpdateCoordinator(DataUpdateCoordinator):
         self._update_interval = update_interval
         self.update_error = False
         self._resource = None
-        self._retry: int = 0
+        self._retry_count: int = 0
+        self._force_reauth: bool = False
 
         if self._update_interval == timedelta(seconds=0):
             self._update_interval = None
@@ -141,6 +153,13 @@ class MultiscrapeDataUpdateCoordinator(DataUpdateCoordinator):
         _LOGGER.debug(
             "%s # Scan interval is %s", self._config_name, self._update_interval
         )
+
+        if self._update_interval and self._update_interval > timedelta(days=1):
+            _LOGGER.warning(
+                "%s # Scan interval is very long: %s. This may cause delays in data updates.",
+                self._config_name,
+                self._update_interval,
+            )
 
         super().__init__(
             hass, _LOGGER, name=DOMAIN, update_interval=self._update_interval
@@ -154,23 +173,27 @@ class MultiscrapeDataUpdateCoordinator(DataUpdateCoordinator):
 
         hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, _on_hass_start)
 
-    def notify_scrape_exception(self):
-        """Notify the ContentRequestManager of a scrape exception so it can notify the FormSubmitter."""
-        self._request_manager.notify_scrape_exception()
+    def request_reauth(self) -> None:
+        """Flag that re-authentication is needed on the next update cycle."""
+        self._force_reauth = True
 
-    async def _async_update_data(self):
+    async def _async_update_data(self) -> None:
         await self._prepare_new_run()
 
         try:
-            response = await self._request_manager.get_content()
+            response = await self._request_manager.get_content(
+                force_reauth=self._force_reauth
+            )
+            self._force_reauth = False
             await self._scraper.set_content(response)
             _LOGGER.debug(
                 "%s # Data successfully refreshed. Sensors will now start scraping to update.",
                 self._config_name,
             )
-            self._retry = 0
+            self._retry_count = 0
 
         except Exception as ex:
+            self._force_reauth = True
             _LOGGER.error(
                 "%s # Updating failed with exception: %s",
                 self._config_name,
@@ -180,26 +203,29 @@ class MultiscrapeDataUpdateCoordinator(DataUpdateCoordinator):
             self.update_error = True
             if self._update_interval is None:
                 self._async_unsub_refresh()
-                if self._retry < 3:
+                self._retry_count += 1
+                if self._retry_count <= MAX_RETRIES:
                     self._unsub_refresh = event.async_track_point_in_utc_time(
                         self.hass,
                         self._job,
                         utcnow().replace(microsecond=self._microsecond)
-                        + timedelta(seconds=30),
+                        + timedelta(seconds=RETRY_DELAY_SECONDS),
                     )
                     _LOGGER.warning(
-                        "%s # Since updating failed and scan_interval = 0, retry %s of 3 will be scheduled in 30 seconds",
+                        "%s # Since updating failed and scan_interval = 0, retry %s of %s will be scheduled in %s seconds",
                         self._config_name,
-                        self._retry + 1,
+                        self._retry_count,
+                        MAX_RETRIES,
+                        RETRY_DELAY_SECONDS,
                     )
-                    self._retry = self._retry + 1
                 else:
                     _LOGGER.error(
-                        "%s # Updating and 3 retries failed and scan_interval = 0, please manually retry with trigger service.",
+                        "%s # Updating and %s retries failed and scan_interval = 0, please manually retry with trigger service.",
                         self._config_name,
+                        MAX_RETRIES,
                     )
 
-    async def _prepare_new_run(self):
+    async def _prepare_new_run(self) -> None:
         _LOGGER.debug(
             "%s # New run: start (re)loading data from resource", self._config_name
         )
@@ -220,6 +246,6 @@ class MultiscrapeDataUpdateCoordinator(DataUpdateCoordinator):
         self._scraper.reset()
 
     @property
-    def form_variables(self):
-        """Return the form variables."""
-        return self._request_manager.form_variables
+    def scrape_context(self) -> ScrapeContext:
+        """Return the current scrape context with form variables."""
+        return ScrapeContext(form_variables=self._request_manager.form_variables)
