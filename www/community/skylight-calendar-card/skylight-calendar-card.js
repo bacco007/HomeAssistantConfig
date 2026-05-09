@@ -677,6 +677,112 @@ const TRANSLATIONS = {
       eventTitleWithStartTime: '{title}, {time}',
       monthWeekPrefix: 'Set.'
     }
+  },
+	
+  sv: {
+    locale: 'sv-SE',
+    strings: {
+      defaultTitle: 'Familjekalender',
+      addEvent: 'Ny händelse',
+      today: 'Idag',
+      month: 'Månad',
+      week: 'Vecka',
+      schedule: 'Schema',
+      agenda: 'Agenda',
+      resetAgenda: 'Gå till idag',
+      openDashboard: 'Öppna översikt',
+      calendars: 'Kalendrar',
+      calendar: 'Kalender',
+      eventTitle: 'Händelsetitel',
+      eventTitlePlaceholder: 'Teams-möte',
+      allDayEvent: 'Hela dagen',
+      recurring: 'Återkommande',
+      eventOptions: 'Alternativ',
+      recurringEventOptions: 'Återkommande alternativ',
+      recurrenceFrequency: 'Upprepa',
+      recurrenceEvery: 'Varje',
+      recurrenceIntervalSuffix: 'intervall(er)',
+      recurrenceEndsOn: 'Slutar',
+      recurrenceCount: 'Upprepningar (COUNT)',
+      recurrenceWeekdays: 'Veckodagar',
+      recurrenceNoEndDate: 'Inget slutdatum (valfritt)',
+      recurrenceDaily: 'Dagligen',
+      recurrenceWeekly: 'Veckovis',
+      recurrenceMonthly: 'Månadsvis',
+      recurrenceYearly: 'Årligen',
+      recurrenceNever: 'Aldrig',
+      recurrenceOn: 'På',
+      recurrenceAfter: 'Efter',
+      recurrenceOccurrences: 'Upprepningar',
+      recurrenceSelectWeekday: 'Välj minst en veckodag för återkommande händelser.',
+      start: 'Start',
+      end: 'Slut',
+      startDate: 'Startdatum',
+      endDate: 'Slutdatum',
+      location: 'Plats',
+      locationPlaceholder: 'Konferensrum A',
+      description: 'Beskrivning',
+      descriptionPlaceholder: 'Händelsebeskrivning...',
+      cancel: 'Avbryt',
+      createEvent: 'Skapa händelse',
+      creating: 'Skapar...',
+      editEvent: 'Redigera händelse',
+      saveChanges: 'Spara ändringar',
+      saving: 'Sparar...',
+      delete: 'Ta bort',
+      deleting: 'Tar bort...',
+      deleteEventTitle: 'Ta bort händelse',
+      deleteRecurringEventTitle: 'Ta bort återkommande händelser',
+      deleteEventConfirm: 'Är du säker på att du vill radera "{title}"? Detta går inte att ångra.',
+      deleteRecurringPrompt: '"{title}" är en återkommande händelse. Hur vill du ta bort den?',
+      editRecurringEventTitle: 'Redigera återkommande händelse',
+      editRecurringPrompt: '"{title}" är en återkommande händelse. Hur vill du redigera den?',
+      editThisOccurrence: 'Redigera enbart den här händelsen i serien',
+      editThisOccurrenceAndFuture: 'Redigera den här och alla återkommande händelser i serien',
+      editEntireSeries: 'Redigera alla händelser i serien',
+      deleteThisEventOnly: 'Den här händelsen enbart',
+      deleteThisOccurrence: 'Ta bort enbart den här händelsen',
+      deleteThisAndFutureEvents: 'Den här och framtida händelser',
+      deleteThisOccurrenceAndFuture: 'Ta bort den här och alla framtida händelser i den här serien.',
+      deleteAllEvents: 'Alla händelser',
+      deleteEntireSeries: 'Ta bort alla händelser i serien.',
+      noEvents: 'Inga händelser',
+      allDay: 'Hela dagen',
+      at: 'vid',
+      duration: 'Varaktighet',
+      attendees: 'Deltagare',
+      recurrence: 'Upprepningar',
+      recurringEvent: 'Återkommande händelse',
+      unknownAttendee: 'Okänt',
+      googleCalendarLimitationTitle: 'ℹ️ Begränsning i Google Kalender',
+      googleCalendarLimitationBody: 'Redigering av händelser stöds inte för Google Kalender via Home Assistant. Du kan ta bort händelser, men för att redigera dem måste du använda Google Kalender-appen eller webbplatsen.',
+      cannotModifyTitle: 'ℹ️ Kan inte ändra:',
+      cannotModifyBody: 'Den här händelsen saknar nödvändig information (UID) för redigering eller borttagning. Du kan behöva skapa den på nytt.',
+      untitledEvent: 'Ingen rubrik',
+      noWritableCalendars: 'Inga tillgängliga kalendrar',
+      eventTitleRequired: 'Händelserubrik saknas',
+      startEndDatesRequired: 'Fyll i start- och slutdatum',
+      endDateBeforeStart: 'Slutdatum måste vara efter startdatum',
+      startEndTimesRequired: 'Fyll i start- och sluttider',
+      endTimeBeforeStart: 'Sluttid måste vara efter starttid',
+      failedCreateEvent: 'Misslyckades att skapa händelse. Försök igen.',
+      failedUpdateEvent: 'Misslyckades att uppdatera händelse. Försök igen.',
+      failedDeleteEvent: 'Misslyckades att radera händelse. Försök igen.',
+      homeAssistantUnavailable: 'Home Assistant är inte tillgängligt',
+      googleCalendarEditError: 'Redigering av händelser stöds inte för Google Kalender via Home Assistant. Använd Google Kalender-appen eller webbplatsen i stället.',
+      missingUidError: 'Den här händelsen saknar nödvändig information (UID) och kan inte redigeras',
+      calendarNoModifyError: 'Den här kalendern stöder inte ändringar av händelser. Försök skapa en ny händelse.',
+      createEventServiceError: 'Skapa händelse misslyckades',
+      deleteEventServiceError: 'Ta bort händelse misslyckades',
+      updateEventServiceError: 'Uppdatera händelse misslyckades. Kalendern kanske inte har stöd för ändringar.',
+      durationHour: '{count} timme',
+      durationHours: '{count} timmar',
+      durationMinute: '{count} minut',
+      durationMinutes: '{count} minuter',
+      moreEvents: '+{count} fler',
+      eventTitleWithStartTime: '{title}, {time}',
+      monthWeekPrefix: 'v.'
+    }
   }
 };
 
@@ -2867,6 +2973,7 @@ class SkylightCalendarCard extends HTMLElement {
   getStyles() {
     return `
       :host,
+      daylight-calendar-card,
       skylight-calendar-card {
         display: block;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -7542,6 +7649,23 @@ class SkylightCalendarCard extends HTMLElement {
       });
     });
 
+    // Day row click handlers (agenda view)
+    this._root.querySelectorAll('.agenda-day-row').forEach(rowEl => {
+      rowEl.addEventListener('click', (e) => {
+        // Don't open if clicking on an event
+        if (e.target.classList.contains('agenda-event') || e.target.closest('.agenda-event')) {
+          return;
+        }
+
+        if (!this._config.enable_event_management || this.getWritableCalendars().length === 0) {
+          return;
+        }
+
+        const date = new Date(rowEl.getAttribute('data-date'));
+        this.showCreateEventModal(date);
+      });
+    });
+
     // Time slot click handlers (schedule view)
     this._root.querySelectorAll('.day-time-slot').forEach(slotEl => {
       slotEl.addEventListener('click', (e) => {
@@ -8364,7 +8488,7 @@ class SkylightCalendarCard extends HTMLElement {
 
         // Refresh events
         this._lastFetch = null;
-        await this.updateEvents();
+        await this.updateEvents({ preserveScroll: this._viewMode === 'agenda' });
       } catch (error) {
         console.error('Failed to create event:', error);
         this.showFormError(errorDiv, error.message || this.t('failedCreateEvent'));
@@ -8756,7 +8880,7 @@ class SkylightCalendarCard extends HTMLElement {
 
         // Refresh events
         this._lastFetch = null;
-        await this.updateEvents();
+        await this.updateEvents({ preserveScroll: this._viewMode === 'agenda' });
       } catch (error) {
         console.error('Failed to update event:', error);
 
@@ -8768,7 +8892,7 @@ class SkylightCalendarCard extends HTMLElement {
             await this.deleteEvent(event.entityId, event.uid, event.recurrence_id);
             modal.classList.remove('show');
             this._lastFetch = null;
-            await this.updateEvents();
+            await this.updateEvents({ preserveScroll: this._viewMode === 'agenda' });
             return;
           } catch (fallbackError) {
             console.error('Safety-net create+delete fallback failed:', fallbackError);
@@ -9454,7 +9578,7 @@ class SkylightCalendarCard extends HTMLElement {
 
         // Refresh events
         this._lastFetch = null;
-        await this.updateEvents();
+        await this.updateEvents({ preserveScroll: this._viewMode === 'agenda' });
       } catch (error) {
         console.error('Failed to delete event:', error);
         this._combinedDeleteTargets = null;
@@ -10232,7 +10356,7 @@ class SkylightCalendarCard extends HTMLElement {
   }
 
   static async getConfigElement() {
-    return document.createElement('skylight-calendar-card-editor');
+    return document.createElement('daylight-calendar-card-editor');
   }
 }
 
@@ -11897,14 +12021,19 @@ class SkylightCalendarCardEditor extends HTMLElement {
   }
 }
 
-customElements.define('skylight-calendar-card', SkylightCalendarCard);
-customElements.define('skylight-calendar-card-editor', SkylightCalendarCardEditor);
+class LegacySkylightCalendarCard extends SkylightCalendarCard {}
+class LegacySkylightCalendarCardEditor extends SkylightCalendarCardEditor {}
+
+customElements.define('daylight-calendar-card', SkylightCalendarCard);
+customElements.define('daylight-calendar-card-editor', SkylightCalendarCardEditor);
+customElements.define('skylight-calendar-card', LegacySkylightCalendarCard);
+customElements.define('skylight-calendar-card-editor', LegacySkylightCalendarCardEditor);
 
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: 'skylight-calendar-card',
-  name: 'Skylight Calendar Card',
-  description: 'A beautiful calendar card inspired by Skylight Calendar',
+  type: 'daylight-calendar-card',
+  name: 'Daylight Calendar Card',
+  description: 'A bright, family-friendly calendar card for Home Assistant dashboards.',
   preview: true,
-  documentationURL: 'https://github.com/superdingo101/skylight-calendar-card'
+  documentationURL: 'https://github.com/superdingo101/daylight-calendar-card'
 });
