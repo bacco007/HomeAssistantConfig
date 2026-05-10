@@ -1,3 +1,27 @@
+let $d15fe90fb16b0188$var$_helpersPromise;
+function $d15fe90fb16b0188$export$daa799244477bc22() {
+    $d15fe90fb16b0188$var$_helpersPromise = undefined;
+    Reflect.deleteProperty(globalThis, 'poatCardHelpers');
+}
+function $d15fe90fb16b0188$export$a2591249c0f38d1f(helpers) {
+    globalThis.poatCardHelpers = helpers;
+}
+function $d15fe90fb16b0188$export$1570ac5d2d462ce6() {
+    return globalThis.poatCardHelpers;
+}
+function $d15fe90fb16b0188$export$d59f9ebe88d50829(loader) {
+    const existing = $d15fe90fb16b0188$export$1570ac5d2d462ce6();
+    if (existing) return Promise.resolve(existing);
+    if ($d15fe90fb16b0188$var$_helpersPromise !== undefined) return $d15fe90fb16b0188$var$_helpersPromise;
+    if (!loader) return Promise.reject(new Error('[device-card] helpers: missing globalThis.loadCardHelpers'));
+    $d15fe90fb16b0188$var$_helpersPromise = loader().then((helpers)=>{
+        $d15fe90fb16b0188$export$a2591249c0f38d1f(helpers);
+        return helpers;
+    });
+    return $d15fe90fb16b0188$var$_helpersPromise;
+}
+
+
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -537,329 +561,96 @@ var $24c52f343453d62d$export$2e2bcd8739ae039 = {
 };
 
 
-const $216640a6cb8d8606$export$19efda5681568302 = (superClass)=>{
-    class HassUpdateClass extends superClass {
-        get hass() {
-            return this.__hassValue;
-        }
-        set hass(value) {
-            this.__hassValue = value;
-        }
-        connectedCallback() {
-            super.connectedCallback();
-            globalThis.addEventListener('hass-update', this._boundHassUpdateHandler);
-        }
-        disconnectedCallback() {
-            super.disconnectedCallback();
-            globalThis.removeEventListener('hass-update', this._boundHassUpdateHandler);
-        }
-        _handleHassUpdate(event) {
-            const { detail: { hass: hass } } = event;
-            this.hass = hass;
-        }
-        constructor(...args){
-            super(...args), this._boundHassUpdateHandler = this._handleHassUpdate.bind(this);
-        }
-    }
-    return HassUpdateClass;
+/**
+ * @file device-section.ts
+ * @description Section ordering for the device card
+ */ var $9a28a77a5af263d9$exports = {};
+$9a28a77a5af263d9$exports = JSON.parse("{\"card\":{\"device_name\":\"Device Name\",\"expand\":\"Expand\",\"collapse\":\"Collapse\",\"loading\":\"Loading...\",\"no_devices_found\":\"No devices found for integration:\",\"device_card_name\":\"Device Card\",\"device_card_description\":\"A card to summarize the status of a Device.\",\"integration_card_name\":\"Integration Card\",\"integration_card_description\":\"A card to display all devices from a specific integration.\"},\"sections\":{\"controls\":\"Controls\",\"configuration\":\"Configuration\",\"sensors\":\"Sensors\",\"diagnostic\":\"Diagnostic\"}}");
+
+
+var $a8bf67e13c48de4e$exports = {};
+$a8bf67e13c48de4e$exports = JSON.parse('{"card":{"device_name":"Nom de l\'appareil","expand":"D\xe9velopper","collapse":"R\xe9duire","loading":"Chargement...","no_devices_found":"Aucun appareil trouv\xe9 pour l\'int\xe9gration :","device_card_name":"Carte d\'Appareil","device_card_description":"Une carte pour r\xe9sumer le statut d\'un Appareil.","integration_card_name":"Carte d\'Int\xe9gration","integration_card_description":"Une carte pour afficher tous les appareils d\'une int\xe9gration sp\xe9cifique."},"sections":{"controls":"Contr\xf4les","configuration":"Configuration","sensors":"Capteurs","diagnostic":"Diagnostic"}}');
+
+
+var $736e6599d6bbd3bf$exports = {};
+$736e6599d6bbd3bf$exports = JSON.parse('{"card":{"device_name":"Nome do Dispositivo","expand":"Expandir","collapse":"Recolher","loading":"Carregando...","no_devices_found":"Nenhum dispositivo encontrado para a integra\xe7\xe3o:","device_card_name":"Cart\xe3o de Dispositivo","device_card_description":"Um cart\xe3o para resumir o status de um Dispositivo.","integration_card_name":"Cart\xe3o de Integra\xe7\xe3o","integration_card_description":"Um cart\xe3o para exibir todos os dispositivos de uma integra\xe7\xe3o espec\xedfica."},"sections":{"controls":"Controles","configuration":"Configura\xe7\xe3o","sensors":"Sensores","diagnostic":"Diagn\xf3stico"}}');
+
+
+var $9d8ca0c26d9d22c3$exports = {};
+$9d8ca0c26d9d22c3$exports = JSON.parse('{"card":{"device_name":"\u041D\u0430\u0437\u0432\u0430\u043D\u0438\u0435 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0430","expand":"\u0420\u0430\u0437\u0432\u0435\u0440\u043D\u0443\u0442\u044C","collapse":"\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C","loading":"\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430...","no_devices_found":"\u041D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u043E \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432 \u0438\u0437 \u0438\u043D\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u0438:","device_card_name":"\u041A\u0430\u0440\u0442\u043E\u0447\u043A\u0430 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0430","device_card_description":"\u041A\u0430\u0440\u0442\u043E\u0447\u043A\u0430 \u0434\u043B\u044F \u043E\u0431\u043E\u0431\u0449\u0435\u043D\u0438\u044F \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u044F \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0430.","integration_card_name":"\u041A\u0430\u0440\u0442\u043E\u0447\u043A\u0430 \u0438\u043D\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u0438","integration_card_description":"\u041A\u0430\u0440\u0442\u043E\u0447\u043A\u0430 \u0434\u043B\u044F \u043E\u0442\u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u044F \u0432\u0441\u0435\u0445 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432 \u0438\u0437 \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u043D\u043E\u0439 \u0438\u043D\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u0438."},"sections":{"controls":"\u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435","configuration":"\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438","sensors":"\u0421\u0435\u043D\u0441\u043E\u0440\u044B","diagnostic":"\u0414\u0438\u0430\u0433\u043D\u043E\u0441\u0442\u0438\u043A\u0430"}}');
+
+
+// Import other languages as needed above this line and in order
+// Define supported languages
+const $623ffaa3e77fea87$var$languages = {
+    en: $9a28a77a5af263d9$exports,
+    fr: $a8bf67e13c48de4e$exports,
+    pt: $736e6599d6bbd3bf$exports,
+    ru: $9d8ca0c26d9d22c3$exports
 };
-
-
-/**
- * Configuration utilities for feature flag management
- */ const $a64cd1666b27644b$export$805ddaeeece0413e = (config, feature)=>!config || config.features?.includes(feature) || false;
-
-
-/**
- * @file handle-expand-event.ts
- * @description Handles expand/collapse events for entity rows in the device card
- */ const $e0b9cfe4671c52ff$export$1a8cd32250c148d8 = (ev, expansions, updateExpansions)=>{
-    const entityId = ev.detail?.device_card?.entity_id;
-    if (ev.detail?.device_card?.expand && entityId) {
-        ev.stopPropagation();
-        updateExpansions({
-            ...expansions,
-            expandedEntities: {
-                ...expansions.expandedEntities,
-                [entityId]: !expansions.expandedEntities[entityId]
-            }
-        });
-    }
+const $623ffaa3e77fea87$export$b3bd0bc58e36cd63 = (hass, key, search = '', replace = '')=>{
+    let translated;
+    translated = $623ffaa3e77fea87$var$getNestedTranslation($623ffaa3e77fea87$var$languages[hass.language], key) ?? $623ffaa3e77fea87$var$getNestedTranslation($623ffaa3e77fea87$var$languages.en, key) ?? key;
+    // Replace placeholders
+    if (search !== '' && replace !== '') translated = translated.replace(search, replace);
+    return translated;
 };
-
-
-/**
- * Checks if a string matches a pattern which can be:
- * - Exact match
- * - Wildcard pattern with * (e.g., "sensor_*")
- * - Regex pattern enclosed in /.../ (e.g., "/sensor\\.(temp|humid)/")
- *
- * @param str - The string to check
- * @param pattern - The pattern to match against
- * @returns True if the string matches the pattern
- */ const $8e9091561798c377$export$78e968efcca6b7ef = (str, pattern)=>{
-    if (str === null) return false;
-    // Check if it's a regex pattern (enclosed in slashes)
-    const regexPattern = /^\/(.+)\/$/;
-    const regexMatch = regexPattern.exec(pattern);
-    if (regexMatch) try {
-        const regex = new RegExp(regexMatch[1]);
-        return regex.test(str);
-    } catch (e) {
-        // If regex is invalid, fall back to treating it as a literal string
-        console.warn(`Invalid regex pattern: ${pattern}`, e);
-        return str === pattern;
+// Helper function to safely navigate nested objects
+function $623ffaa3e77fea87$var$getNestedTranslation(obj, path) {
+    if (!obj) return undefined;
+    const keys = path.split('.');
+    let result = obj;
+    for (const key of keys){
+        if (result === undefined || result === null || typeof result !== 'object') return undefined;
+        result = result[key];
     }
-    // Check if it's a wildcard pattern (contains *)
-    if (pattern.includes('*')) {
-        // Convert wildcard pattern to regex
-        const regexPattern = pattern.replaceAll(/[.+?^${}()|[\]\\]/g, String.raw`\$&`) // Escape special regex chars
-        .replaceAll('*', '.*'); // Convert * to .*
-        const regex = new RegExp(`^${regexPattern}$`, 'i');
-        return regex.test(str);
-    }
-    // Default to exact match
-    return str === pattern;
-};
-const $8e9091561798c377$export$74ca6da3809e132c = (deviceId, deviceName, nameByUser, patterns)=>{
-    if (!patterns?.length) return false;
-    return patterns.some((p)=>$8e9091561798c377$export$78e968efcca6b7ef(deviceId, p) || $8e9091561798c377$export$78e968efcca6b7ef(deviceName, p) || $8e9091561798c377$export$78e968efcca6b7ef(nameByUser ?? null, p));
-};
-
-
-const $5bd3a7e1f19a6de3$export$30c823bc834d6ab4 = (hass, deviceId)=>hass.devices[deviceId];
-
-
-const $e6782818bfcf779d$export$fcf7c33d7fd02301 = (hass, entityId)=>hass.entities[entityId];
-
-
-const $e24dedcf9e480b2d$export$50fdfeece43146fd = (hass, entityId, fakeState = false)=>{
-    if (!entityId) return undefined;
-    const state = hass.states[entityId] ?? (fakeState ? {
-        entity_id: entityId,
-        state: 'off',
-        attributes: {}
-    } : undefined);
-    if (!state) return undefined;
-    return {
-        state: state.state,
-        attributes: state.attributes,
-        entity_id: state.entity_id
-    };
-};
-
-
-/**
- * https://github.com/home-assistant/frontend/blob/dev/src/common/entity/compute_domain.ts
- */ const $e7dc90bb09bfe22d$export$2044bdc9670769ab = (entityId)=>entityId.substring(0, entityId.indexOf('.'));
-
-
-/**
- * https://github.com/home-assistant/frontend/blob/dev/src/common/const.ts
- */ const $ca52414a81fa2740$export$f4a7f73c0fdd46d5 = [
-    'sensor',
-    'binary_sensor',
-    'calendar',
-    'camera',
-    'device_tracker',
-    'image',
-    'weather'
-];
-
-
-
-/**
- * https://github.com/home-assistant/frontend/blob/dev/src/common/entity/state_active.ts
- */ /**
- * https://github.com/home-assistant/frontend/blob/dev/src/data/entity/entity.ts
- */ /**
- * https://github.com/home-assistant/frontend/blob/dev/src/common/array/literal-includes.ts#L6
- */ /**
- * Creates a type predicate function for determining if an array literal includes a given value
- * @param array - The array to check
- * @returns A type predicate function
- */ const $2dcc326b5e422db7$export$2fff862a498eed4d = (array)=>(searchElement, fromIndex)=>array.includes(searchElement, fromIndex);
-
-
-const $ae715937da4da853$export$f2d101b977a134fd = 'unavailable';
-const $ae715937da4da853$export$78244dbb77cfa6b6 = 'unknown';
-const $ae715937da4da853$export$8a4b4288adcd729e = 'on';
-const $ae715937da4da853$export$173de64b5ad0d5b4 = 'off';
-const $ae715937da4da853$export$565a86226f245f0b = [
-    $ae715937da4da853$export$f2d101b977a134fd,
-    $ae715937da4da853$export$78244dbb77cfa6b6
-];
-const $ae715937da4da853$export$8ccd97e727a09c65 = [
-    $ae715937da4da853$export$f2d101b977a134fd,
-    $ae715937da4da853$export$78244dbb77cfa6b6,
-    $ae715937da4da853$export$173de64b5ad0d5b4
-];
-const $ae715937da4da853$export$dea4173a348a2153 = (0, $2dcc326b5e422db7$export$2fff862a498eed4d)($ae715937da4da853$export$565a86226f245f0b);
-const $ae715937da4da853$export$3473ff6928139ced = (0, $2dcc326b5e422db7$export$2fff862a498eed4d)($ae715937da4da853$export$8ccd97e727a09c65);
-
-
-
-function $043ab5348dd51237$export$c0e85c3982a3daa6(stateObj, state) {
-    const domain = (0, $e7dc90bb09bfe22d$export$2044bdc9670769ab)(stateObj.entity_id);
-    // Intentional: SonarQube cleanup - using ?? instead of explicit check
-    const compareState = state ?? stateObj?.state;
-    if ([
-        'button',
-        'event',
-        'input_button',
-        'scene'
-    ].includes(domain)) return compareState !== (0, $ae715937da4da853$export$f2d101b977a134fd);
-    if ((0, $ae715937da4da853$export$dea4173a348a2153)(compareState)) return false;
-    // The "off" check is relevant for most domains, but there are exceptions
-    // such as "alert" where "off" is still a somewhat active state and
-    // therefore gets a custom color and "idle" is instead the state that
-    // matches what most other domains consider inactive.
-    if (compareState === (0, $ae715937da4da853$export$173de64b5ad0d5b4) && domain !== 'alert') return false;
-    // Custom cases
-    switch(domain){
-        case 'alarm_control_panel':
-            return compareState !== 'disarmed';
-        case 'alert':
-            // "on" and "off" are active, as "off" just means alert was acknowledged but is still active
-            return compareState !== 'idle';
-        case 'cover':
-            return compareState !== 'closed';
-        case 'device_tracker':
-        case 'person':
-            return compareState !== 'not_home';
-        case 'lawn_mower':
-            return [
-                'mowing',
-                'error'
-            ].includes(compareState);
-        case 'lock':
-            return compareState !== 'locked';
-        case 'media_player':
-            return compareState !== 'standby';
-        case 'vacuum':
-            return ![
-                'idle',
-                'docked',
-                'paused'
-            ].includes(compareState);
-        case 'valve':
-            return compareState !== 'closed';
-        case 'plant':
-            return compareState === 'problem';
-        case 'group':
-            return [
-                'on',
-                'home',
-                'open',
-                'locked',
-                'problem'
-            ].includes(compareState);
-        case 'timer':
-            return compareState === 'active';
-        case 'camera':
-            return compareState === 'streaming';
-    }
-    return true;
+    return typeof result === 'string' ? result : undefined;
 }
 
 
-const $093edc2594769ee5$export$c6a2d06cc40e579 = (hass, config, deviceId, deviceName)=>{
-    const includeHidden = config.features?.includes('show_hidden_entities');
-    const deviceEntities = Object.values(hass.entities).filter((entity)=>entity.device_id === deviceId && (includeHidden || !entity.hidden)).map((entity)=>{
-        const state = (0, $e24dedcf9e480b2d$export$50fdfeece43146fd)(hass, entity.entity_id);
-        if (state === undefined) return;
-        // convenience
-        const name = state.attributes.friendly_name === deviceName ? deviceName : state.attributes.friendly_name.replace(deviceName, '').trim();
-        const active = (0, $043ab5348dd51237$export$c0e85c3982a3daa6)(state);
-        return {
-            name: name,
-            ...state,
-            category: entity.entity_category,
-            translation_key: entity.translation_key,
-            isProblemEntity: state.attributes.device_class === 'problem',
-            isActive: active,
-            config: {
-                tap_action: config.tap_action || {
-                    action: 'fire-dom-event',
-                    device_card: {
-                        expand: true,
-                        entity_id: entity.entity_id
-                    }
-                },
-                hold_action: config.hold_action || {
-                    action: 'more-info'
-                },
-                double_tap_action: config.double_tap_action
-            }
-        };
-    }).filter((e)=>e !== undefined);
-    return deviceEntities;
+const $e92876f5a6849818$export$b6b5fe522e6ef18a = (hass, config, device)=>{
+    const sectionConfig = [
+        {
+            name: (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'sections.controls'),
+            key: 'controls',
+            entities: device.controls
+        },
+        {
+            name: (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'sections.configuration'),
+            key: 'configurations',
+            entities: device.configurations
+        },
+        {
+            name: (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'sections.sensors'),
+            key: 'sensors',
+            entities: device.sensors
+        },
+        {
+            name: (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'sections.diagnostic'),
+            key: 'diagnostics',
+            entities: device.diagnostics
+        }
+    ];
+    let orderedSections = [];
+    if (config.section_order && config.section_order.length > 0) {
+        orderedSections = config.section_order.map((section)=>sectionConfig.find((s)=>s.key === section)).filter((section)=>section !== undefined);
+        sectionConfig.forEach((section)=>{
+            if (!orderedSections.some((s)=>s.key === section.key)) orderedSections.push(section);
+        });
+    } else // default order
+    orderedSections = sectionConfig;
+    return orderedSections.filter((s)=>s.entities && s.entities.length > 0);
 };
 
 
-const $562e4e067cd81a2b$export$30c823bc834d6ab4 = (hass, config)=>{
-    const entityId = config.entity ?? config.entity_id;
-    const device = {
-        sensors: [],
-        controls: [],
-        diagnostics: [],
-        configurations: [],
-        entity: (0, $e24dedcf9e480b2d$export$50fdfeece43146fd)(hass, entityId)
-    };
-    // Determine device_id from config.device_id or by resolving config.entity/config.entity_id
-    const deviceId = config.device_id ?? (entityId ? (0, $e6782818bfcf779d$export$fcf7c33d7fd02301)(hass, entityId)?.device_id : undefined);
-    if (!deviceId) return undefined;
-    const hassDevice = (0, $5bd3a7e1f19a6de3$export$30c823bc834d6ab4)(hass, deviceId);
-    if (!hassDevice) return undefined;
-    device.name = hassDevice.name_by_user ?? hassDevice.name ?? 'Device';
-    device.model = [
-        hassDevice.manufacturer,
-        hassDevice.model,
-        hassDevice.model_id
-    ].filter(Boolean).join(' ');
-    const entities = (0, $093edc2594769ee5$export$c6a2d06cc40e579)(hass, config, hassDevice.id, device.name);
-    entities.forEach((entity)=>{
-        if ($562e4e067cd81a2b$var$shouldSkipEntity(entity, config)) return;
-        $562e4e067cd81a2b$var$addEntityToDevice(entity, device, config);
-    });
-    return device;
-};
-/**
- * Determines if an entity should be skipped based on configuration
- * @param entity - The entity to check
- * @param config - The configuration object containing exclusion rules
- * @returns True if the entity should be skipped, false otherwise
- */ const $562e4e067cd81a2b$var$shouldSkipEntity = (entity, config)=>{
-    if (!config.exclude_entities?.length) return false;
-    // Check if any exclusion pattern matches the entity ID
-    return config.exclude_entities.some((pattern)=>(0, $8e9091561798c377$export$78e968efcca6b7ef)(entity.entity_id, pattern));
-};
-/**
- * Adds an entity to the appropriate category in the device object
- * based on entity type and configuration exclusion rules
- * @param entity - The entity to categorize and add
- * @param device - The device object to update
- * @param config - The configuration object containing exclusion rules
- */ const $562e4e067cd81a2b$var$addEntityToDevice = (entity, device, config)=>{
-    if (entity.category === 'diagnostic') {
-        if (!config.exclude_sections?.includes('diagnostics')) device.diagnostics.push(entity);
-    } else if (entity.category === 'config') {
-        if (!config.exclude_sections?.includes('configurations')) device.configurations.push(entity);
-    } else {
-        const domain = (0, $e7dc90bb09bfe22d$export$2044bdc9670769ab)(entity.entity_id);
-        const isSensor = (0, $ca52414a81fa2740$export$f4a7f73c0fdd46d5).includes(domain);
-        if (isSensor && !config.exclude_sections?.includes('sensors')) device.sensors.push(entity);
-        else if (!config.exclude_sections?.includes('controls')) device.controls.push(entity);
+
+
+
+const $42d40446c41f747a$export$66a0a6f05155b9e9 = (superClass)=>{
+    class HassConfigClass extends superClass {
     }
+    return HassConfigClass;
 };
-
-
-const $8dc66e7a4cb4d971$export$3b8a32145ce395a1 = (unit)=>unit ? [
-        ...unit.controls,
-        ...unit.sensors,
-        ...unit.diagnostics,
-        ...unit.configurations
-    ].some((entity)=>entity.isProblemEntity && entity.isActive) : false;
 
 
 /**
@@ -1479,447 +1270,6 @@ const $ab210b2da7b39b9d$export$f5c524615a7708d6 = {
 
 
 
-const $fc7b5ec53f835fd3$export$9dd6ff9ea0189349 = (0, $def2de46b9306e8a$export$dbf350e5966cf602)`
-  :host {
-    --icon-color: var(--primary-text-color);
-    --section-color: var(--secondary-text-color);
-    --row-height: 40px;
-  }
-
-  ha-card {
-    padding: 16px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .card-header {
-    padding: 0px 0px 10px 16px;
-    line-height: 35px;
-    border-bottom: 1px solid var(--divider-color);
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  /* Remove bottom border when collapsed */
-  .card-header.collapsed {
-    border-bottom: none;
-    margin-bottom: 0;
-  }
-
-  .card-header:hover {
-    background-color: var(--secondary-background-color);
-  }
-
-  .title {
-    font-size: 1.5rem;
-    font-weight: 500;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .title-stack {
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Entity state in header */
-  .entity-state {
-    font-size: 1.5rem;
-    font-weight: 500;
-    margin-right: 16px;
-    display: flex;
-    align-items: center;
-  }
-
-  /* For when header is hidden but entity state is shown */
-  .entity-state-only {
-    font-size: 1.5rem;
-    font-weight: 500;
-    text-align: right;
-    margin-right: 16px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--divider-color);
-    margin-bottom: 8px;
-  }
-
-  /* Style for when card is on fire */
-  .problem::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: var(--ha-card-border-radius, 12px);
-    background: var(--error-color);
-    opacity: 0.08;
-    z-index: -1;
-  }
-
-  /* Section header with expand/collapse functionality */
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-  }
-
-  .section-title {
-    font-weight: 500;
-    color: var(--section-color);
-    padding: 4px 0 4px 0; /* Reduced top padding for all sections */
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    letter-spacing: 0.5px;
-  }
-
-  .section-chevron {
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    color: var(--secondary-text-color);
-    display: flex;
-    align-items: center;
-  }
-
-  .section-footer {
-    text-align: center;
-    padding: 4px 0;
-  }
-
-  .show-more {
-    color: var(--primary-color);
-    cursor: pointer;
-    font-size: 0.9rem;
-    padding: 4px 0;
-  }
-
-  .show-more:hover {
-    text-decoration: underline;
-  }
-
-  .model {
-    font-size: 0.9rem;
-    color: var(--secondary-text-color);
-  }
-
-  /* Base section spacing */
-  .section {
-    margin-bottom: 16px;
-  }
-
-  /* Apply larger margin only to expanded sections or those with fewer than 5 items */
-  .section.expanded:not(:last-child):not(.compact),
-  .section.few-items:not(:last-child):not(.compact) {
-    margin-bottom: 40px;
-  }
-
-  ha-icon {
-    color: var(--icon-color);
-    width: 22px;
-    height: 22px;
-  }
-
-  /* Container for a row */
-  .row {
-    position: relative;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-
-  .row:hover {
-    background-color: var(--secondary-background-color);
-  }
-
-  .row.expanded-row {
-    margin-bottom: 8px;
-  }
-
-  /* Style for the status colors */
-  .row.status-ok {
-    border-left: 2px solid var(--success-color);
-  }
-  .status-ok {
-    --primary-text-color: var(--success-color);
-  }
-
-  .row.status-warning {
-    border-left: 2px solid var(--warning-color);
-  }
-  .status-warning {
-    --primary-text-color: var(--warning-color);
-  }
-
-  .row.status-error {
-    border-left: 2px solid var(--error-color);
-  }
-  .status-error {
-    --primary-text-color: var(--error-color);
-  }
-
-  /* Style for the percentage bar that goes below the hui-generic-entity-row */
-  .percent-gauge {
-    position: absolute;
-    bottom: 1px;
-    left: 10px;
-    width: 98%;
-    height: 4px;
-    background-color: var(--divider-color, #333);
-    overflow: hidden;
-    border-radius: 0 0 4px 4px;
-  }
-
-  /* The colored fill part of the gauge */
-  .percent-gauge-fill {
-    height: 100%;
-    background-color: var(--primary-color);
-    transition:
-      width 0.3s ease,
-      background-color 0.3s ease;
-  }
-
-  /* Color variations based on percentage */
-  .percent-gauge-fill.high {
-    background-color: var(--success-color, #4caf50);
-  }
-
-  .percent-gauge-fill.medium {
-    background-color: var(--warning-color, #ffc107);
-  }
-
-  .percent-gauge-fill.low {
-    background-color: var(--error-color, #f44336);
-  }
-
-  /* Entity attributes section */
-  .entity-attributes {
-    padding: 4px 16px 8px;
-    margin: 0 0 4px 50px;
-    font-size: 0.9rem;
-    border-left: 1px solid var(--divider-color);
-  }
-
-  .entity-attributes-empty {
-    padding: 4px 16px 8px;
-    margin: 0 0 4px 50px;
-    color: var(--secondary-text-color);
-    font-style: italic;
-    font-size: 0.9rem;
-  }
-
-  .attribute-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 2px 0;
-    border-bottom: 1px dotted var(--divider-color);
-  }
-
-  .attribute-row:last-child {
-    border-bottom: none;
-  }
-
-  .attribute-key {
-    font-weight: 500;
-    color: var(--secondary-text-color);
-    flex: 1;
-  }
-
-  .attribute-value {
-    color: var(--primary-text-color);
-    flex: 2;
-    text-align: right;
-    overflow-wrap: break-word;
-    word-break: break-word;
-  }
-
-  /* Kitty pics */
-  .portrait {
-    background: none;
-  }
-
-  .portrait img {
-    width: 100%;
-    border-radius: var(--ha-card-border-radius, 12px);
-  }
-
-  .portrait .title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-`;
-
-
-
-var $9a28a77a5af263d9$exports = {};
-$9a28a77a5af263d9$exports = JSON.parse("{\"card\":{\"device_name\":\"Device Name\",\"expand\":\"Expand\",\"collapse\":\"Collapse\",\"loading\":\"Loading...\",\"no_devices_found\":\"No devices found for integration:\",\"device_card_name\":\"Device Card\",\"device_card_description\":\"A card to summarize the status of a Device.\",\"integration_card_name\":\"Integration Card\",\"integration_card_description\":\"A card to display all devices from a specific integration.\"},\"sections\":{\"controls\":\"Controls\",\"configuration\":\"Configuration\",\"sensors\":\"Sensors\",\"diagnostic\":\"Diagnostic\"}}");
-
-
-var $a8bf67e13c48de4e$exports = {};
-$a8bf67e13c48de4e$exports = JSON.parse('{"card":{"device_name":"Nom de l\'appareil","expand":"D\xe9velopper","collapse":"R\xe9duire","loading":"Chargement...","no_devices_found":"Aucun appareil trouv\xe9 pour l\'int\xe9gration :","device_card_name":"Carte d\'Appareil","device_card_description":"Une carte pour r\xe9sumer le statut d\'un Appareil.","integration_card_name":"Carte d\'Int\xe9gration","integration_card_description":"Une carte pour afficher tous les appareils d\'une int\xe9gration sp\xe9cifique."},"sections":{"controls":"Contr\xf4les","configuration":"Configuration","sensors":"Capteurs","diagnostic":"Diagnostic"}}');
-
-
-var $736e6599d6bbd3bf$exports = {};
-$736e6599d6bbd3bf$exports = JSON.parse('{"card":{"device_name":"Nome do Dispositivo","expand":"Expandir","collapse":"Recolher","loading":"Carregando...","no_devices_found":"Nenhum dispositivo encontrado para a integra\xe7\xe3o:","device_card_name":"Cart\xe3o de Dispositivo","device_card_description":"Um cart\xe3o para resumir o status de um Dispositivo.","integration_card_name":"Cart\xe3o de Integra\xe7\xe3o","integration_card_description":"Um cart\xe3o para exibir todos os dispositivos de uma integra\xe7\xe3o espec\xedfica."},"sections":{"controls":"Controles","configuration":"Configura\xe7\xe3o","sensors":"Sensores","diagnostic":"Diagn\xf3stico"}}');
-
-
-var $9d8ca0c26d9d22c3$exports = {};
-$9d8ca0c26d9d22c3$exports = JSON.parse('{"card":{"device_name":"\u041D\u0430\u0437\u0432\u0430\u043D\u0438\u0435 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0430","expand":"\u0420\u0430\u0437\u0432\u0435\u0440\u043D\u0443\u0442\u044C","collapse":"\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C","loading":"\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430...","no_devices_found":"\u041D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u043E \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432 \u0438\u0437 \u0438\u043D\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u0438:","device_card_name":"\u041A\u0430\u0440\u0442\u043E\u0447\u043A\u0430 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0430","device_card_description":"\u041A\u0430\u0440\u0442\u043E\u0447\u043A\u0430 \u0434\u043B\u044F \u043E\u0431\u043E\u0431\u0449\u0435\u043D\u0438\u044F \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u044F \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0430.","integration_card_name":"\u041A\u0430\u0440\u0442\u043E\u0447\u043A\u0430 \u0438\u043D\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u0438","integration_card_description":"\u041A\u0430\u0440\u0442\u043E\u0447\u043A\u0430 \u0434\u043B\u044F \u043E\u0442\u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u044F \u0432\u0441\u0435\u0445 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432 \u0438\u0437 \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u043D\u043E\u0439 \u0438\u043D\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u0438."},"sections":{"controls":"\u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435","configuration":"\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438","sensors":"\u0421\u0435\u043D\u0441\u043E\u0440\u044B","diagnostic":"\u0414\u0438\u0430\u0433\u043D\u043E\u0441\u0442\u0438\u043A\u0430"}}');
-
-
-// Import other languages as needed above this line and in order
-// Define supported languages
-const $623ffaa3e77fea87$var$languages = {
-    en: $9a28a77a5af263d9$exports,
-    fr: $a8bf67e13c48de4e$exports,
-    pt: $736e6599d6bbd3bf$exports,
-    ru: $9d8ca0c26d9d22c3$exports
-};
-const $623ffaa3e77fea87$export$b3bd0bc58e36cd63 = (hass, key, search = '', replace = '')=>{
-    let translated;
-    translated = $623ffaa3e77fea87$var$getNestedTranslation($623ffaa3e77fea87$var$languages[hass.language], key) ?? $623ffaa3e77fea87$var$getNestedTranslation($623ffaa3e77fea87$var$languages.en, key) ?? key;
-    // Replace placeholders
-    if (search !== '' && replace !== '') translated = translated.replace(search, replace);
-    return translated;
-};
-// Helper function to safely navigate nested objects
-function $623ffaa3e77fea87$var$getNestedTranslation(obj, path) {
-    if (!obj) return undefined;
-    const keys = path.split('.');
-    let result = obj;
-    for (const key of keys){
-        if (result === undefined || result === null || typeof result !== 'object') return undefined;
-        result = result[key];
-    }
-    return typeof result === 'string' ? result : undefined;
-}
-
-
-
-const $b7f3e24f44369f7c$export$3b502e1826736bc0 = (params)=>{
-    const { config: config, device: device, hass: hass, collapse: collapse, onCollapseToggle: onCollapseToggle, entity: entity } = params;
-    const hideTitle = (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'hide_title');
-    const hideDeviceModel = (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'hide_device_model');
-    const hideHeader = hideTitle && hideDeviceModel;
-    if (!hideHeader) return $b7f3e24f44369f7c$var$renderFullHeader({
-        config: config,
-        device: device,
-        hass: hass,
-        collapse: collapse,
-        onCollapseToggle: onCollapseToggle,
-        entity: entity,
-        hideTitle: hideTitle,
-        hideDeviceModel: hideDeviceModel,
-        hideIcon: (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'hide_icon')
-    });
-    if (entity && entity !== (0, $f58f44579a4747ac$export$45b790e32b2810ee)) return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div class="entity-state-only">${entity}</div>`;
-    return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
-};
-function $b7f3e24f44369f7c$var$renderFullHeader(params) {
-    const { config: config, device: device, hass: hass, collapse: collapse, onCollapseToggle: onCollapseToggle, entity: entity, hideTitle: hideTitle, hideDeviceModel: hideDeviceModel, hideIcon: hideIcon } = params;
-    const titleContent = hideTitle ? (0, $f58f44579a4747ac$export$45b790e32b2810ee) : (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<span>${config.title ?? device.name}</span>`;
-    const modelContent = hideDeviceModel ? (0, $f58f44579a4747ac$export$45b790e32b2810ee) : (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<span class="model">${device.model}</span>`;
-    let iconContent;
-    if (hideIcon) iconContent = (0, $f58f44579a4747ac$export$45b790e32b2810ee);
-    else if (device.entity) iconContent = (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<ha-state-icon
-      .hass=${hass}
-      .stateObj=${device.entity}
-      .icon=${config.icon}
-    ></ha-state-icon>`;
-    else if (config.icon) iconContent = (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<ha-icon .icon=${config.icon}></ha-icon>`;
-    else iconContent = (0, $f58f44579a4747ac$export$45b790e32b2810ee);
-    const collapseLabel = collapse ? (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'card.expand') : (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'card.collapse');
-    return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`
-    <div
-      class="card-header ${collapse ? 'collapsed' : ''}"
-      @click="${onCollapseToggle}"
-      title="${collapseLabel}"
-    >
-      <div class="title">
-        ${iconContent}
-        <div class="title-stack">${titleContent} ${modelContent}</div>
-      </div>
-      ${entity}
-    </div>
-  `;
-}
-
-
-/**
- * @file section.ts
- * @description Section rendering for the device card
- * This file handles the rendering of collapsible sections within the device card,
- * organizing entities by their type (sensors, controls, etc.) and managing
- * expandable/collapsible behavior.
- */ 
-
-/**
- * @file section.ts
- * @description Section rendering for the device card
- * This file handles the rendering of collapsible sections within the device card,
- * organizing entities by their type (sensors, controls, etc.) and managing
- * expandable/collapsible behavior.
- */ // src/delegates/utils/sort-entities.ts
-
-const $e1ab409cd148a528$export$4742c54ffa379383 = (entities, sortConfig)=>{
-    if (!sortConfig || !entities.length) return entities;
-    const { type: type, direction: direction = 'asc' } = sortConfig;
-    const isReverse = direction === 'desc';
-    // Create a copy to avoid mutating the original array
-    const result = [
-        ...entities
-    ];
-    // Apply the sorting
-    result.sort((a, b)=>{
-        let valueA;
-        let valueB;
-        switch(type){
-            case 'domain':
-                valueA = (0, $e7dc90bb09bfe22d$export$2044bdc9670769ab)(a.entity_id);
-                valueB = (0, $e7dc90bb09bfe22d$export$2044bdc9670769ab)(b.entity_id);
-                break;
-            case 'entity_id':
-                valueA = a.entity_id;
-                valueB = b.entity_id;
-                break;
-            case 'name':
-                valueA = a.attributes.friendly_name ?? a.entity_id;
-                valueB = b.attributes.friendly_name ?? b.entity_id;
-                break;
-            case 'state':
-                valueA = a.state;
-                valueB = b.state;
-                break;
-            default:
-                return 0;
-        }
-        // Handle null or undefined values
-        valueA ??= '';
-        valueB ??= '';
-        // Standard string comparison
-        if (valueA < valueB) return isReverse ? 1 : -1;
-        if (valueA > valueB) return isReverse ? -1 : 1;
-        return 0;
-    });
-    return result;
-};
-
-
-
-
-/**
- * @file row.ts
- * @description Entity row rendering for the device card
- * This file handles the rendering of individual entity rows within the device card,
- * including their state content, percentage bars, and expandable attribute details.
- */ 
-
 const $5cc8c88379d13dba$export$16bd37df0047a29c = (attributes)=>{
     // Filter out common attributes that are less interesting or already shown
     const filteredAttributes = {
@@ -2060,9 +1410,12 @@ const $a6a6434f1848f426$export$40075bc608c4544e = (entity, inverseEntities = [])
 
 
 
-const $91384c06f34fa41f$export$535a09426ee2ea59 = async (hass, entity, className)=>{
-    // Load the card helpers
-    const helpers = await globalThis.loadCardHelpers();
+
+const $91384c06f34fa41f$export$535a09426ee2ea59 = (hass, entity, className)=>{
+    const helpers = (0, $d15fe90fb16b0188$export$1570ac5d2d462ce6)();
+    if (!helpers) // Card is responsible for gating rendering until helpers are resolved.
+    // If this happens, it indicates a misuse (e.g., calling stateContent too early).
+    return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
     // Create the row configuration - HA's row handles actions using our config.
     const config = {
         entity: entity.entity_id,
@@ -2077,282 +1430,8 @@ const $91384c06f34fa41f$export$535a09426ee2ea59 = async (hass, entity, className
     element.hass = hass;
     // Apply the class name if provided
     if (className) element.className = className;
-    return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`${element}`;
+    return element;
 };
-
-
-const $68e7242076c3e34e$export$120ff0929b202a6d = async (hass, entity, expansions, config)=>{
-    let statusClassName;
-    // Determine status class based on problem state
-    if (entity.isProblemEntity) // Add color to problem class based on state
-    statusClassName = entity.isActive ? 'status-error' : 'status-ok';
-    // Determine if we should show a percentage bar
-    // Show bar for any entity with % unit (including variations like "% available") and numeric state value
-    const showBar = entity.attributes.unit_of_measurement?.includes('%') && !Number.isNaN(Number(entity.state));
-    // Check if this entity's details are expanded
-    const isEntityExpanded = expansions.expandedEntities[entity.entity_id] || false;
-    const stateContentResult = await (0, $91384c06f34fa41f$export$535a09426ee2ea59)(hass, entity, statusClassName);
-    // Get inverse_percent entities from config, default to empty array
-    const inverseEntities = config?.inverse_percent || [];
-    return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)` <div
-    class="${[
-        'row',
-        statusClassName,
-        isEntityExpanded ? 'expanded-row' : ''
-    ].join(' ')}"
-  >
-    <div class="row-content">
-      ${stateContentResult}
-      ${showBar ? (0, $a6a6434f1848f426$export$40075bc608c4544e)(entity, inverseEntities) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
-    </div>
-    ${isEntityExpanded ? (0, $5cc8c88379d13dba$export$16bd37df0047a29c)(entity.attributes) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
-  </div>`;
-};
-
-
-/**
- * @file show-more.ts
- * @description UI components for expandable section toggling in the device card
- * This file contains components for the chevron icon and "show more" buttons that
- * allow sections to be expanded and collapsed.
- */ 
-/**
- * Toggles the expanded state of a section in the device card
- *
- * @param {Expansions} expansions - The expansion state of the card
- * @param {string} sectionTitle - The title of the section to toggle
- * @param {Event} e - The click event that triggered the toggle
- */ const $2ae7b32fc5b69f7f$var$toggleSection = (expansions, sectionTitle, e, updateExpansions)=>{
-    const expandedSections = expansions.expandedSections;
-    updateExpansions({
-        ...expansions,
-        expandedSections: {
-            ...expandedSections,
-            [sectionTitle]: !expandedSections[sectionTitle]
-        }
-    });
-};
-const $2ae7b32fc5b69f7f$export$980c1089c0604ea3 = (expansions, title, isExpanded, updateExpansions)=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div
-    class="section-chevron ${isExpanded ? 'expanded' : ''}"
-    @click=${(e)=>$2ae7b32fc5b69f7f$var$toggleSection(expansions, title, e, updateExpansions)}
-  >
-    <ha-icon icon="mdi:chevron-${isExpanded ? 'up' : 'down'}"></ha-icon>
-  </div>`;
-const $2ae7b32fc5b69f7f$export$ae9a281c4379b144 = (expansion, title, entities, isExpanded, size, updateExpansions)=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div class="section-footer">
-    ${isExpanded ? (0, $f58f44579a4747ac$export$45b790e32b2810ee) : (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`
-          <div
-            class="show-more"
-            @click=${(e)=>$2ae7b32fc5b69f7f$var$toggleSection(expansion, title, e, updateExpansions)}
-          >
-            Show ${entities.length - size} more...
-          </div>
-        `}
-  </div>`;
-
-
-const $9b8ea5fddc8bd48e$export$4c0287abd2ec956e = async (expansions, hass, config, title, entities, updateExpansions)=>{
-    // Don't render anything if there are no entities to display
-    if (!entities || entities.length === 0) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
-    // Determine how many entities to preview based on config
-    const size = config.preview_count ?? 3;
-    // Check if this section needs collapsible functionality
-    const needsExpansion = entities.length > size;
-    // Get the current expanded state
-    const isExpanded = expansions.expandedSections[title] || false;
-    // Sort and filter entities based on expanded state
-    const sortedEntities = (0, $e1ab409cd148a528$export$4742c54ffa379383)(entities, config.sort);
-    const displayEntities = needsExpansion && !isExpanded ? sortedEntities.slice(0, size) : sortedEntities;
-    // Determine section class based on expanded state, number of items, and compact feature
-    const isCompact = (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'compact');
-    const sectionClass = `section ${isExpanded ? 'expanded' : ''} ${needsExpansion ? '' : 'few-items'} ${isCompact ? 'compact' : ''}`;
-    // Render all rows asynchronously
-    const rowPromises = displayEntities.map((entity)=>(0, $68e7242076c3e34e$export$120ff0929b202a6d)(hass, entity, expansions, config));
-    const rowResults = await Promise.all(rowPromises);
-    return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div class="${sectionClass}">
-    <div class="section-header">
-      <div class="section-title">${title}</div>
-      ${needsExpansion ? (0, $2ae7b32fc5b69f7f$export$980c1089c0604ea3)(expansions, title, isExpanded, updateExpansions) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
-    </div>
-    ${rowResults}
-    ${needsExpansion && !isCompact ? (0, $2ae7b32fc5b69f7f$export$ae9a281c4379b144)(expansions, title, entities, isExpanded, size, updateExpansions) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
-  </div>`;
-};
-
-
-const $10f7eb590266dd05$export$7dcefa9ef83b8269 = async (expansions, hass, config, device, updateExpansions)=>{
-    const sectionConfig = [
-        {
-            name: (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'sections.controls'),
-            key: 'controls',
-            entities: device.controls
-        },
-        {
-            name: (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'sections.configuration'),
-            key: 'configurations',
-            entities: device.configurations
-        },
-        {
-            name: (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'sections.sensors'),
-            key: 'sensors',
-            entities: device.sensors
-        },
-        {
-            name: (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'sections.diagnostic'),
-            key: 'diagnostics',
-            entities: device.diagnostics
-        }
-    ];
-    let orderedSections = [];
-    // if custom order is provided, reorder the sections
-    if (config.section_order && config.section_order.length > 0) {
-        orderedSections = config.section_order.map((section)=>sectionConfig.find((s)=>s.key === section)).filter((section)=>section !== undefined);
-        sectionConfig.forEach((section)=>{
-            if (!orderedSections.some((s)=>s?.key === section.key)) orderedSections.push(section);
-        });
-    } else // default order
-    orderedSections = sectionConfig;
-    const sectionPromises = orderedSections.map((section)=>(0, $9b8ea5fddc8bd48e$export$4c0287abd2ec956e)(expansions, hass, config, section.name, section.entities, updateExpansions));
-    const sectionResults = await Promise.all(sectionPromises);
-    return sectionResults.filter((result)=>result !== (0, $f58f44579a4747ac$export$45b790e32b2810ee));
-};
-
-
-
-const $856d8633325a4fe5$export$1188214e9d38144e = (device)=>{
-    const entity = device.sensors.find((sensor)=>sensor.attributes.entity_picture !== undefined);
-    if (!entity) return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<ha-alert alert-type="error"
-      >No entity picture found!</ha-alert
-    >`;
-    return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<ha-card class="portrait">
-    <img src=${entity.attributes.entity_picture} />
-    <div class="title">
-      <span>${device.name}</span>
-    </div>
-  </ha-card>`;
-};
-
-
-
-
-
-
-const $1ed74ce23f0ef067$export$c18c768bbe3223b7 = (hass, entity)=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<state-display .hass=${hass} .stateObj=${entity}></state-display>`;
-
-
-const $da09c6fad515207c$export$69836945d4c6961f = (hass, config)=>{
-    // Check if the hide_entity_state feature is enabled
-    if ((0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'hide_entity_state')) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
-    const entityId = config.entity ?? config.entity_id;
-    if (!entityId) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
-    const state = (0, $e24dedcf9e480b2d$export$50fdfeece43146fd)(hass, entityId);
-    if (!state) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
-    return (0, $1ed74ce23f0ef067$export$c18c768bbe3223b7)(hass, state);
-};
-
-
-
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */ const $1dfff43fc77cdecb$export$61db76a97f26b7e1 = {
-    INITIAL: 0,
-    PENDING: 1,
-    COMPLETE: 2,
-    ERROR: 3
-}, $1dfff43fc77cdecb$export$d4c72bab9d6cc13a = Symbol();
-class $1dfff43fc77cdecb$export$2dea7024bcdd7731 {
-    get taskComplete() {
-        return this.t || (1 === this.i ? this.t = new Promise((t, s)=>{
-            this.o = t, this.h = s;
-        }) : 3 === this.i ? this.t = Promise.reject(this.l) : this.t = Promise.resolve(this.u)), this.t;
-    }
-    constructor(t, s, i){
-        this.p = 0, this.i = 0, (this._ = t).addController(this);
-        const h = "object" == typeof s ? s : {
-            task: s,
-            args: i
-        };
-        this.v = h.task, this.j = h.args, this.m = h.argsEqual ?? $1dfff43fc77cdecb$export$41b40a0c6412e2a2, this.k = h.onComplete, this.A = h.onError, this.autoRun = h.autoRun ?? !0, "initialValue" in h && (this.u = h.initialValue, this.i = 2, this.O = this.T?.());
-    }
-    hostUpdate() {
-        !0 === this.autoRun && this.S();
-    }
-    hostUpdated() {
-        "afterUpdate" === this.autoRun && this.S();
-    }
-    T() {
-        if (void 0 === this.j) return;
-        const t = this.j();
-        if (!Array.isArray(t)) throw Error("The args function must return an array");
-        return t;
-    }
-    async S() {
-        const t = this.T(), s = this.O;
-        this.O = t, t === s || void 0 === t || void 0 !== s && this.m(s, t) || await this.run(t);
-    }
-    async run(t) {
-        let s, h;
-        t ??= this.T(), this.O = t, 1 === this.i ? this.q?.abort() : (this.t = void 0, this.o = void 0, this.h = void 0), this.i = 1, "afterUpdate" === this.autoRun ? queueMicrotask(()=>this._.requestUpdate()) : this._.requestUpdate();
-        const r = ++this.p;
-        this.q = new AbortController;
-        let e = !1;
-        try {
-            s = await this.v(t, {
-                signal: this.q.signal
-            });
-        } catch (t) {
-            e = !0, h = t;
-        }
-        if (this.p === r) {
-            if (s === $1dfff43fc77cdecb$export$d4c72bab9d6cc13a) this.i = 0;
-            else {
-                if (!1 === e) {
-                    try {
-                        this.k?.(s);
-                    } catch  {}
-                    this.i = 2, this.o?.(s);
-                } else {
-                    try {
-                        this.A?.(h);
-                    } catch  {}
-                    this.i = 3, this.h?.(h);
-                }
-                this.u = s, this.l = h;
-            }
-            this._.requestUpdate();
-        }
-    }
-    abort(t) {
-        1 === this.i && this.q?.abort(t);
-    }
-    get value() {
-        return this.u;
-    }
-    get error() {
-        return this.l;
-    }
-    get status() {
-        return this.i;
-    }
-    render(t) {
-        switch(this.i){
-            case 0:
-                return t.initial?.();
-            case 1:
-                return t.pending?.();
-            case 2:
-                return t.complete?.(this.value);
-            case 3:
-                return t.error?.(this.error);
-            default:
-                throw Error("Unexpected status: " + this.i);
-        }
-    }
-}
-const $1dfff43fc77cdecb$export$41b40a0c6412e2a2 = (s, i)=>s === i || s.length === i.length && s.every((s, h)=>!(0, $19fe8e3abedf4df0$export$53a6892c50694894)(s, i[h]));
-
-
 
 
 
@@ -2545,6 +1624,921 @@ function $ed34c589b230c255$export$dcd0d083aa86c355(r) {
 
 
 
+
+const $424623214c66460e$export$9dd6ff9ea0189349 = (0, $def2de46b9306e8a$export$dbf350e5966cf602)`
+  :host {
+    display: block;
+  }
+
+  ha-icon {
+    color: var(--icon-color, var(--primary-text-color));
+    width: 22px;
+    height: 22px;
+  }
+
+  /* Container for a row */
+  .row {
+    position: relative;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .row:hover {
+    background-color: var(--secondary-background-color);
+  }
+
+  .row.expanded-row {
+    margin-bottom: 8px;
+  }
+
+  /* Style for the status colors */
+  .row.status-ok {
+    border-left: 2px solid var(--success-color);
+  }
+  .status-ok {
+    --primary-text-color: var(--success-color);
+  }
+
+  .row.status-warning {
+    border-left: 2px solid var(--warning-color);
+  }
+  .status-warning {
+    --primary-text-color: var(--warning-color);
+  }
+
+  .row.status-error {
+    border-left: 2px solid var(--error-color);
+  }
+  .status-error {
+    --primary-text-color: var(--error-color);
+  }
+
+  /* Style for the percentage bar that goes below the hui-generic-entity-row */
+  .percent-gauge {
+    position: absolute;
+    bottom: 1px;
+    left: 10px;
+    width: 98%;
+    height: 4px;
+    background-color: var(--divider-color, #333);
+    overflow: hidden;
+    border-radius: 0 0 4px 4px;
+  }
+
+  /* The colored fill part of the gauge */
+  .percent-gauge-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    transition:
+      width 0.3s ease,
+      background-color 0.3s ease;
+  }
+
+  /* Color variations based on percentage */
+  .percent-gauge-fill.high {
+    background-color: var(--success-color, #4caf50);
+  }
+
+  .percent-gauge-fill.medium {
+    background-color: var(--warning-color, #ffc107);
+  }
+
+  .percent-gauge-fill.low {
+    background-color: var(--error-color, #f44336);
+  }
+
+  /* Entity attributes section */
+  .entity-attributes {
+    padding: 4px 16px 8px;
+    margin: 0 0 4px 50px;
+    font-size: 0.9rem;
+    border-left: 1px solid var(--divider-color);
+  }
+
+  .entity-attributes-empty {
+    padding: 4px 16px 8px;
+    margin: 0 0 4px 50px;
+    color: var(--secondary-text-color);
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+
+  .attribute-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+    border-bottom: 1px dotted var(--divider-color);
+  }
+
+  .attribute-row:last-child {
+    border-bottom: none;
+  }
+
+  .attribute-key {
+    font-weight: 500;
+    color: var(--secondary-text-color);
+    flex: 1;
+  }
+
+  .attribute-value {
+    color: var(--primary-text-color);
+    flex: 2;
+    text-align: right;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+`;
+
+
+class $a56ca3d5ac1672a8$export$c22534166de5f0ff extends (0, $42d40446c41f747a$export$66a0a6f05155b9e9)((0, $ab210b2da7b39b9d$export$3f2f9f5909897157)) {
+    connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener('ll-custom', this._onLlCustom);
+        (0, $d15fe90fb16b0188$export$d59f9ebe88d50829)(globalThis.loadCardHelpers).then((helpers)=>{
+            this._cardHelpers = helpers;
+        });
+    }
+    disconnectedCallback() {
+        this.removeEventListener('ll-custom', this._onLlCustom);
+        super.disconnectedCallback();
+    }
+    /**
+   * Returns the component's styles
+   */ static get styles() {
+        return 0, $424623214c66460e$export$9dd6ff9ea0189349;
+    }
+    /**
+   * renders the lit element card
+   * @returns {TemplateResult} The rendered HTML template
+   */ render() {
+        // Avoid rendering sections until helpers are resolved; this keeps all downstream rendering sync.
+        if (!this._cardHelpers) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
+        let statusClassName;
+        if (this.entity.isProblemEntity) statusClassName = this.entity.isActive ? 'status-error' : 'status-ok';
+        const showBar = this.entity.attributes.unit_of_measurement?.includes('%') && !Number.isNaN(Number(this.entity.state));
+        const inverseEntities = this.config?.inverse_percent || [];
+        return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div
+      class="${[
+            'row',
+            statusClassName,
+            this._expanded ? 'expanded-row' : ''
+        ].join(' ')}"
+    >
+      <div class="row-content">
+        ${(0, $91384c06f34fa41f$export$535a09426ee2ea59)(this.hass, this.entity, statusClassName)}
+        ${showBar ? (0, $a6a6434f1848f426$export$40075bc608c4544e)(this.entity, inverseEntities) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
+      </div>
+      ${this._expanded ? (0, $5cc8c88379d13dba$export$16bd37df0047a29c)(this.entity.attributes) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
+    </div>`;
+    }
+    constructor(...args){
+        super(...args), /** Attribute-detail expansion for this row only (tap action `fire-dom-event`). */ this._expanded = false, /**
+   * Handles the ll-custom expand event to toggle entity attribute visibility.
+   * Entity ID comes from ev.detail.device_card.entity_id.
+   *
+   * @param ev - The CustomEvent with detail.device_card.expand and detail.device_card.entity_id
+   */ this._onLlCustom = (ev)=>{
+            const ce = ev;
+            const dc = ce.detail?.device_card;
+            if (!dc?.expand || dc.entity_id !== this.entity?.entity_id) return;
+            ev.stopPropagation();
+            this._expanded = !this._expanded;
+        };
+    }
+}
+(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+    (0, $9cd908ed2625c047$export$d541bacb2bda4494)({
+        attribute: false
+    })
+], $a56ca3d5ac1672a8$export$c22534166de5f0ff.prototype, "entity", void 0);
+(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+    (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
+], $a56ca3d5ac1672a8$export$c22534166de5f0ff.prototype, "_expanded", void 0);
+(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+    (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
+], $a56ca3d5ac1672a8$export$c22534166de5f0ff.prototype, "_cardHelpers", void 0);
+$a56ca3d5ac1672a8$export$c22534166de5f0ff = (0, $24c52f343453d62d$export$29e00dfd3077644b)([
+    (0, $14742f68afc766d6$export$da64fc29f17f9d0e)('device-card-row')
+], $a56ca3d5ac1672a8$export$c22534166de5f0ff);
+
+
+
+/**
+ * Configuration utilities for feature flag management
+ */ const $a64cd1666b27644b$export$805ddaeeece0413e = (config, feature)=>!config || config.features?.includes(feature) || false;
+
+
+
+
+/**
+ * @file section.ts
+ * @description Section rendering for the device card
+ * This file handles the rendering of collapsible sections within the device card,
+ * organizing entities by their type (sensors, controls, etc.) and managing
+ * expandable/collapsible behavior.
+ */ 
+// src/delegates/utils/sort-entities.ts
+/**
+ * https://github.com/home-assistant/frontend/blob/dev/src/common/entity/compute_domain.ts
+ */ const $e7dc90bb09bfe22d$export$2044bdc9670769ab = (entityId)=>entityId.substring(0, entityId.indexOf('.'));
+
+
+const $e1ab409cd148a528$export$4742c54ffa379383 = (entities, sortConfig)=>{
+    if (!sortConfig || !entities.length) return entities;
+    const { type: type, direction: direction = 'asc' } = sortConfig;
+    const isReverse = direction === 'desc';
+    // Create a copy to avoid mutating the original array
+    const result = [
+        ...entities
+    ];
+    // Apply the sorting
+    result.sort((a, b)=>{
+        let valueA;
+        let valueB;
+        switch(type){
+            case 'domain':
+                valueA = (0, $e7dc90bb09bfe22d$export$2044bdc9670769ab)(a.entity_id);
+                valueB = (0, $e7dc90bb09bfe22d$export$2044bdc9670769ab)(b.entity_id);
+                break;
+            case 'entity_id':
+                valueA = a.entity_id;
+                valueB = b.entity_id;
+                break;
+            case 'name':
+                valueA = a.attributes.friendly_name ?? a.entity_id;
+                valueB = b.attributes.friendly_name ?? b.entity_id;
+                break;
+            case 'state':
+                valueA = a.state;
+                valueB = b.state;
+                break;
+            default:
+                return 0;
+        }
+        // Handle null or undefined values
+        valueA ??= '';
+        valueB ??= '';
+        // Standard string comparison
+        if (valueA < valueB) return isReverse ? 1 : -1;
+        if (valueA > valueB) return isReverse ? -1 : 1;
+        return 0;
+    });
+    return result;
+};
+
+
+
+
+/**
+ * @file show-more.ts
+ * @description UI components for expandable section toggling in the device card
+ * This file contains components for the chevron icon and "show more" buttons that
+ * allow sections to be expanded and collapsed.
+ */ 
+const $2ae7b32fc5b69f7f$export$980c1089c0604ea3 = (isExpanded, onToggleSection)=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div
+    class="section-chevron ${isExpanded ? 'expanded' : ''}"
+    @click=${onToggleSection}
+  >
+    <ha-icon icon="mdi:chevron-${isExpanded ? 'up' : 'down'}"></ha-icon>
+  </div>`;
+const $2ae7b32fc5b69f7f$export$ae9a281c4379b144 = (entities, isExpanded, size, onToggleSection)=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div class="section-footer">
+    ${isExpanded ? (0, $f58f44579a4747ac$export$45b790e32b2810ee) : (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`
+          <div class="show-more" @click=${onToggleSection}>
+            Show ${entities.length - size} more...
+          </div>
+        `}
+  </div>`;
+
+
+const $9b8ea5fddc8bd48e$export$4c0287abd2ec956e = (hass, config, section, sectionExpanded, onToggleSection)=>{
+    const { name: name, entities: entities } = section;
+    // Don't render anything if there are no entities to display
+    if (!entities || entities.length === 0) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
+    // Determine how many entities to preview based on config
+    const size = config.preview_count ?? 3;
+    // Check if this section needs collapsible functionality
+    const needsExpansion = entities.length > size;
+    const isExpanded = sectionExpanded;
+    // Sort and filter entities based on expanded state
+    const sortedEntities = (0, $e1ab409cd148a528$export$4742c54ffa379383)(entities, config.sort);
+    const displayEntities = needsExpansion && !isExpanded ? sortedEntities.slice(0, size) : sortedEntities;
+    // Determine section class based on expanded state, number of items, and compact feature
+    const isCompact = (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'compact');
+    const sectionClass = `section ${isExpanded ? 'expanded' : ''} ${needsExpansion ? '' : 'few-items'} ${isCompact ? 'compact' : ''}`;
+    const rowTemplates = displayEntities.map((entity)=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<device-card-row
+        .hass=${hass}
+        .entity=${entity}
+        .config=${config}
+      ></device-card-row>`);
+    return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div class="${sectionClass}">
+    <div class="section-header">
+      <div class="section-title">${name}</div>
+      ${needsExpansion ? (0, $2ae7b32fc5b69f7f$export$980c1089c0604ea3)(isExpanded, onToggleSection) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
+    </div>
+    ${rowTemplates}
+    ${needsExpansion && !isCompact ? (0, $2ae7b32fc5b69f7f$export$ae9a281c4379b144)(entities, isExpanded, size, onToggleSection) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
+  </div>`;
+};
+
+
+
+const $4d3593396bde49c5$export$9dd6ff9ea0189349 = (0, $def2de46b9306e8a$export$dbf350e5966cf602)`
+  :host {
+    --icon-color: var(--primary-text-color);
+    --section-color: var(--secondary-text-color);
+    --row-height: 40px;
+  }
+
+  /* Section header with expand/collapse functionality */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .section-title {
+    font-weight: 500;
+    color: var(--section-color);
+    padding: 4px 0 4px 0;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
+
+  .section-chevron {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    color: var(--secondary-text-color);
+    display: flex;
+    align-items: center;
+  }
+
+  .section-footer {
+    text-align: center;
+    padding: 4px 0;
+  }
+
+  .show-more {
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 4px 0;
+  }
+
+  .show-more:hover {
+    text-decoration: underline;
+  }
+
+  /* Base section spacing */
+  .section {
+    margin-bottom: 16px;
+  }
+
+  /* Apply larger margin only to expanded sections or those with fewer than 5 items */
+  .section.expanded:not(:last-child):not(.compact),
+  .section.few-items:not(:last-child):not(.compact) {
+    margin-bottom: 40px;
+  }
+`;
+
+
+class $2264182dc78b4841$export$da5a23a47e25d1ad extends (0, $42d40446c41f747a$export$66a0a6f05155b9e9)((0, $ab210b2da7b39b9d$export$3f2f9f5909897157)) {
+    get _sectionExpanded() {
+        const defaultExpanded = (0, $a64cd1666b27644b$export$805ddaeeece0413e)(this.config, 'expanded');
+        return this._sectionExpandedUser ?? defaultExpanded;
+    }
+    /**
+   * Returns the component's styles
+   */ static get styles() {
+        return 0, $4d3593396bde49c5$export$9dd6ff9ea0189349;
+    }
+    /**
+   * renders the lit element card
+   * @returns {TemplateResult} The rendered HTML template
+   */ render() {
+        return (0, $9b8ea5fddc8bd48e$export$4c0287abd2ec956e)(this.hass, this.config, this.section, this._sectionExpanded, this._toggleSection);
+    }
+    constructor(...args){
+        super(...args), this._toggleSection = ()=>{
+            const next = !this._sectionExpanded;
+            this._sectionExpandedUser = next;
+        };
+    }
+}
+(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+    (0, $9cd908ed2625c047$export$d541bacb2bda4494)({
+        attribute: false
+    })
+], $2264182dc78b4841$export$da5a23a47e25d1ad.prototype, "section", void 0);
+(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+    (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
+], $2264182dc78b4841$export$da5a23a47e25d1ad.prototype, "_sectionExpandedUser", void 0);
+$2264182dc78b4841$export$da5a23a47e25d1ad = (0, $24c52f343453d62d$export$29e00dfd3077644b)([
+    (0, $14742f68afc766d6$export$da64fc29f17f9d0e)('device-card-section')
+], $2264182dc78b4841$export$da5a23a47e25d1ad);
+
+
+const $216640a6cb8d8606$export$19efda5681568302 = (superClass)=>{
+    class HassUpdateClass extends superClass {
+        get hass() {
+            return this.__hassValue;
+        }
+        set hass(value) {
+            this.__hassValue = value;
+        }
+        connectedCallback() {
+            super.connectedCallback();
+            globalThis.addEventListener('hass-update', this._boundHassUpdateHandler);
+        }
+        disconnectedCallback() {
+            super.disconnectedCallback();
+            globalThis.removeEventListener('hass-update', this._boundHassUpdateHandler);
+        }
+        _handleHassUpdate(event) {
+            const { detail: { hass: hass } } = event;
+            this.hass = hass;
+        }
+        constructor(...args){
+            super(...args), this._boundHassUpdateHandler = this._handleHassUpdate.bind(this);
+        }
+    }
+    return HassUpdateClass;
+};
+
+
+
+/**
+ * Checks if a string matches a pattern which can be:
+ * - Exact match
+ * - Wildcard pattern with * (e.g., "sensor_*")
+ * - Regex pattern enclosed in /.../ (e.g., "/sensor\\.(temp|humid)/")
+ *
+ * @param str - The string to check
+ * @param pattern - The pattern to match against
+ * @returns True if the string matches the pattern
+ */ const $8e9091561798c377$export$78e968efcca6b7ef = (str, pattern)=>{
+    if (str === null) return false;
+    // Check if it's a regex pattern (enclosed in slashes)
+    const regexPattern = /^\/(.+)\/$/;
+    const regexMatch = regexPattern.exec(pattern);
+    if (regexMatch) try {
+        const regex = new RegExp(regexMatch[1]);
+        return regex.test(str);
+    } catch (e) {
+        // If regex is invalid, fall back to treating it as a literal string
+        console.warn(`Invalid regex pattern: ${pattern}`, e);
+        return str === pattern;
+    }
+    // Check if it's a wildcard pattern (contains *)
+    if (pattern.includes('*')) {
+        // Convert wildcard pattern to regex
+        const regexPattern = pattern.replaceAll(/[.+?^${}()|[\]\\]/g, String.raw`\$&`) // Escape special regex chars
+        .replaceAll('*', '.*'); // Convert * to .*
+        const regex = new RegExp(`^${regexPattern}$`, 'i');
+        return regex.test(str);
+    }
+    // Default to exact match
+    return str === pattern;
+};
+const $8e9091561798c377$export$74ca6da3809e132c = (deviceId, deviceName, nameByUser, patterns)=>{
+    if (!patterns?.length) return false;
+    return patterns.some((p)=>$8e9091561798c377$export$78e968efcca6b7ef(deviceId, p) || $8e9091561798c377$export$78e968efcca6b7ef(deviceName, p) || $8e9091561798c377$export$78e968efcca6b7ef(nameByUser ?? null, p));
+};
+
+
+const $5bd3a7e1f19a6de3$export$30c823bc834d6ab4 = (hass, deviceId)=>hass.devices[deviceId];
+
+
+const $e6782818bfcf779d$export$fcf7c33d7fd02301 = (hass, entityId)=>hass.entities[entityId];
+
+
+const $e24dedcf9e480b2d$export$50fdfeece43146fd = (hass, entityId, fakeState = false)=>{
+    if (!entityId) return undefined;
+    const state = hass.states[entityId] ?? (fakeState ? {
+        entity_id: entityId,
+        state: 'off',
+        attributes: {}
+    } : undefined);
+    if (!state) return undefined;
+    return {
+        state: state.state,
+        attributes: state.attributes,
+        entity_id: state.entity_id
+    };
+};
+
+
+
+/**
+ * https://github.com/home-assistant/frontend/blob/dev/src/common/const.ts
+ */ const $ca52414a81fa2740$export$f4a7f73c0fdd46d5 = [
+    'sensor',
+    'binary_sensor',
+    'calendar',
+    'camera',
+    'device_tracker',
+    'image',
+    'weather'
+];
+
+
+
+/**
+ * https://github.com/home-assistant/frontend/blob/dev/src/common/entity/state_active.ts
+ */ /**
+ * https://github.com/home-assistant/frontend/blob/dev/src/data/entity/entity.ts
+ */ /**
+ * https://github.com/home-assistant/frontend/blob/dev/src/common/array/literal-includes.ts#L6
+ */ /**
+ * Creates a type predicate function for determining if an array literal includes a given value
+ * @param array - The array to check
+ * @returns A type predicate function
+ */ const $2dcc326b5e422db7$export$2fff862a498eed4d = (array)=>(searchElement, fromIndex)=>array.includes(searchElement, fromIndex);
+
+
+const $ae715937da4da853$export$f2d101b977a134fd = 'unavailable';
+const $ae715937da4da853$export$78244dbb77cfa6b6 = 'unknown';
+const $ae715937da4da853$export$8a4b4288adcd729e = 'on';
+const $ae715937da4da853$export$173de64b5ad0d5b4 = 'off';
+const $ae715937da4da853$export$565a86226f245f0b = [
+    $ae715937da4da853$export$f2d101b977a134fd,
+    $ae715937da4da853$export$78244dbb77cfa6b6
+];
+const $ae715937da4da853$export$8ccd97e727a09c65 = [
+    $ae715937da4da853$export$f2d101b977a134fd,
+    $ae715937da4da853$export$78244dbb77cfa6b6,
+    $ae715937da4da853$export$173de64b5ad0d5b4
+];
+const $ae715937da4da853$export$dea4173a348a2153 = (0, $2dcc326b5e422db7$export$2fff862a498eed4d)($ae715937da4da853$export$565a86226f245f0b);
+const $ae715937da4da853$export$3473ff6928139ced = (0, $2dcc326b5e422db7$export$2fff862a498eed4d)($ae715937da4da853$export$8ccd97e727a09c65);
+
+
+
+function $043ab5348dd51237$export$c0e85c3982a3daa6(stateObj, state) {
+    const domain = (0, $e7dc90bb09bfe22d$export$2044bdc9670769ab)(stateObj.entity_id);
+    // Intentional: SonarQube cleanup - using ?? instead of explicit check
+    const compareState = state ?? stateObj?.state;
+    if ([
+        'button',
+        'event',
+        'input_button',
+        'scene'
+    ].includes(domain)) return compareState !== (0, $ae715937da4da853$export$f2d101b977a134fd);
+    if ((0, $ae715937da4da853$export$dea4173a348a2153)(compareState)) return false;
+    // The "off" check is relevant for most domains, but there are exceptions
+    // such as "alert" where "off" is still a somewhat active state and
+    // therefore gets a custom color and "idle" is instead the state that
+    // matches what most other domains consider inactive.
+    if (compareState === (0, $ae715937da4da853$export$173de64b5ad0d5b4) && domain !== 'alert') return false;
+    // Custom cases
+    switch(domain){
+        case 'alarm_control_panel':
+            return compareState !== 'disarmed';
+        case 'alert':
+            // "on" and "off" are active, as "off" just means alert was acknowledged but is still active
+            return compareState !== 'idle';
+        case 'cover':
+            return compareState !== 'closed';
+        case 'device_tracker':
+        case 'person':
+            return compareState !== 'not_home';
+        case 'lawn_mower':
+            return [
+                'mowing',
+                'error'
+            ].includes(compareState);
+        case 'lock':
+            return compareState !== 'locked';
+        case 'media_player':
+            return compareState !== 'standby';
+        case 'vacuum':
+            return ![
+                'idle',
+                'docked',
+                'paused'
+            ].includes(compareState);
+        case 'valve':
+            return compareState !== 'closed';
+        case 'plant':
+            return compareState === 'problem';
+        case 'group':
+            return [
+                'on',
+                'home',
+                'open',
+                'locked',
+                'problem'
+            ].includes(compareState);
+        case 'timer':
+            return compareState === 'active';
+        case 'camera':
+            return compareState === 'streaming';
+    }
+    return true;
+}
+
+
+const $093edc2594769ee5$export$c6a2d06cc40e579 = (hass, config, deviceId, deviceName)=>{
+    const includeHidden = config.features?.includes('show_hidden_entities');
+    const deviceEntities = Object.values(hass.entities).filter((entity)=>entity.device_id === deviceId && (includeHidden || !entity.hidden)).map((entity)=>{
+        const state = (0, $e24dedcf9e480b2d$export$50fdfeece43146fd)(hass, entity.entity_id);
+        if (state === undefined) return;
+        // convenience
+        const name = state.attributes.friendly_name === deviceName ? deviceName : state.attributes.friendly_name.replace(deviceName, '').trim();
+        const active = (0, $043ab5348dd51237$export$c0e85c3982a3daa6)(state);
+        return {
+            name: name,
+            ...state,
+            category: entity.entity_category,
+            translation_key: entity.translation_key,
+            isProblemEntity: state.attributes.device_class === 'problem',
+            isActive: active,
+            config: {
+                tap_action: config.tap_action || {
+                    action: 'fire-dom-event',
+                    device_card: {
+                        expand: true,
+                        entity_id: entity.entity_id
+                    }
+                },
+                hold_action: config.hold_action || {
+                    action: 'more-info'
+                },
+                double_tap_action: config.double_tap_action
+            }
+        };
+    }).filter((e)=>e !== undefined);
+    return deviceEntities;
+};
+
+
+const $562e4e067cd81a2b$export$30c823bc834d6ab4 = (hass, config)=>{
+    const entityId = config.entity ?? config.entity_id;
+    const device = {
+        sensors: [],
+        controls: [],
+        diagnostics: [],
+        configurations: [],
+        entity: (0, $e24dedcf9e480b2d$export$50fdfeece43146fd)(hass, entityId)
+    };
+    // Determine device_id from config.device_id or by resolving config.entity/config.entity_id
+    const deviceId = config.device_id ?? (entityId ? (0, $e6782818bfcf779d$export$fcf7c33d7fd02301)(hass, entityId)?.device_id : undefined);
+    if (!deviceId) return undefined;
+    const hassDevice = (0, $5bd3a7e1f19a6de3$export$30c823bc834d6ab4)(hass, deviceId);
+    if (!hassDevice) return undefined;
+    device.name = hassDevice.name_by_user ?? hassDevice.name ?? 'Device';
+    device.model = [
+        hassDevice.manufacturer,
+        hassDevice.model,
+        hassDevice.model_id
+    ].filter(Boolean).join(' ');
+    const entities = (0, $093edc2594769ee5$export$c6a2d06cc40e579)(hass, config, hassDevice.id, device.name);
+    entities.forEach((entity)=>{
+        if ($562e4e067cd81a2b$var$shouldSkipEntity(entity, config)) return;
+        $562e4e067cd81a2b$var$addEntityToDevice(entity, device, config);
+    });
+    return device;
+};
+/**
+ * Determines if an entity should be skipped based on configuration
+ * @param entity - The entity to check
+ * @param config - The configuration object containing exclusion rules
+ * @returns True if the entity should be skipped, false otherwise
+ */ const $562e4e067cd81a2b$var$shouldSkipEntity = (entity, config)=>{
+    if (!config.exclude_entities?.length) return false;
+    // Check if any exclusion pattern matches the entity ID
+    return config.exclude_entities.some((pattern)=>(0, $8e9091561798c377$export$78e968efcca6b7ef)(entity.entity_id, pattern));
+};
+/**
+ * Adds an entity to the appropriate category in the device object
+ * based on entity type and configuration exclusion rules
+ * @param entity - The entity to categorize and add
+ * @param device - The device object to update
+ * @param config - The configuration object containing exclusion rules
+ */ const $562e4e067cd81a2b$var$addEntityToDevice = (entity, device, config)=>{
+    if (entity.category === 'diagnostic') {
+        if (!config.exclude_sections?.includes('diagnostics')) device.diagnostics.push(entity);
+    } else if (entity.category === 'config') {
+        if (!config.exclude_sections?.includes('configurations')) device.configurations.push(entity);
+    } else {
+        const domain = (0, $e7dc90bb09bfe22d$export$2044bdc9670769ab)(entity.entity_id);
+        const isSensor = (0, $ca52414a81fa2740$export$f4a7f73c0fdd46d5).includes(domain);
+        if (isSensor && !config.exclude_sections?.includes('sensors')) device.sensors.push(entity);
+        else if (!config.exclude_sections?.includes('controls')) device.controls.push(entity);
+    }
+};
+
+
+const $8dc66e7a4cb4d971$export$3b8a32145ce395a1 = (unit)=>unit ? [
+        ...unit.controls,
+        ...unit.sensors,
+        ...unit.diagnostics,
+        ...unit.configurations
+    ].some((entity)=>entity.isProblemEntity && entity.isActive) : false;
+
+
+
+const $fc7b5ec53f835fd3$export$9dd6ff9ea0189349 = (0, $def2de46b9306e8a$export$dbf350e5966cf602)`
+  :host {
+    --icon-color: var(--primary-text-color);
+    --section-color: var(--secondary-text-color);
+    --row-height: 40px;
+  }
+
+  ha-card {
+    padding: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .card-header {
+    padding: 0px 0px 10px 16px;
+    line-height: 35px;
+    border-bottom: 1px solid var(--divider-color);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Remove bottom border when collapsed */
+  .card-header.collapsed {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  .card-header:hover {
+    background-color: var(--secondary-background-color);
+  }
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .title-stack {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Entity state in header */
+  .entity-state {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-right: 16px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* For when header is hidden but entity state is shown */
+  .entity-state-only {
+    font-size: 1.5rem;
+    font-weight: 500;
+    text-align: right;
+    margin-right: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--divider-color);
+    margin-bottom: 8px;
+  }
+
+  /* Style for when card is on fire */
+  .problem::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: var(--ha-card-border-radius, 12px);
+    background: var(--error-color);
+    opacity: 0.08;
+    z-index: -1;
+  }
+
+  .model {
+    font-size: 0.9rem;
+    color: var(--secondary-text-color);
+  }
+
+  ha-icon {
+    color: var(--icon-color);
+    width: 22px;
+    height: 22px;
+  }
+
+  /* Kitty pics */
+  .portrait {
+    background: none;
+  }
+
+  .portrait img {
+    width: 100%;
+    border-radius: var(--ha-card-border-radius, 12px);
+  }
+
+  .portrait .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+
+
+
+
+const $b7f3e24f44369f7c$export$3b502e1826736bc0 = (params)=>{
+    const { config: config, device: device, hass: hass, collapse: collapse, onCollapseToggle: onCollapseToggle, entity: entity } = params;
+    const hideTitle = (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'hide_title');
+    const hideDeviceModel = (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'hide_device_model');
+    const hideHeader = hideTitle && hideDeviceModel;
+    if (!hideHeader) return $b7f3e24f44369f7c$var$renderFullHeader({
+        config: config,
+        device: device,
+        hass: hass,
+        collapse: collapse,
+        onCollapseToggle: onCollapseToggle,
+        entity: entity,
+        hideTitle: hideTitle,
+        hideDeviceModel: hideDeviceModel,
+        hideIcon: (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'hide_icon')
+    });
+    if (entity && entity !== (0, $f58f44579a4747ac$export$45b790e32b2810ee)) return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div class="entity-state-only">${entity}</div>`;
+    return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
+};
+function $b7f3e24f44369f7c$var$renderFullHeader(params) {
+    const { config: config, device: device, hass: hass, collapse: collapse, onCollapseToggle: onCollapseToggle, entity: entity, hideTitle: hideTitle, hideDeviceModel: hideDeviceModel, hideIcon: hideIcon } = params;
+    const titleContent = hideTitle ? (0, $f58f44579a4747ac$export$45b790e32b2810ee) : (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<span>${config.title ?? device.name}</span>`;
+    const modelContent = hideDeviceModel ? (0, $f58f44579a4747ac$export$45b790e32b2810ee) : (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<span class="model">${device.model}</span>`;
+    let iconContent;
+    if (hideIcon) iconContent = (0, $f58f44579a4747ac$export$45b790e32b2810ee);
+    else if (device.entity) iconContent = (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<ha-state-icon
+      .hass=${hass}
+      .stateObj=${device.entity}
+      .icon=${config.icon}
+    ></ha-state-icon>`;
+    else if (config.icon) iconContent = (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<ha-icon .icon=${config.icon}></ha-icon>`;
+    else iconContent = (0, $f58f44579a4747ac$export$45b790e32b2810ee);
+    const collapseLabel = collapse ? (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'card.expand') : (0, $623ffaa3e77fea87$export$b3bd0bc58e36cd63)(hass, 'card.collapse');
+    return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`
+    <div
+      class="card-header ${collapse ? 'collapsed' : ''}"
+      @click="${onCollapseToggle}"
+      title="${collapseLabel}"
+    >
+      <div class="title">
+        ${iconContent}
+        <div class="title-stack">${titleContent} ${modelContent}</div>
+      </div>
+      ${entity}
+    </div>
+  `;
+}
+
+
+
+const $856d8633325a4fe5$export$1188214e9d38144e = (device)=>{
+    const entity = device.sensors.find((sensor)=>sensor.attributes.entity_picture !== undefined);
+    if (!entity) return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<ha-alert alert-type="error"
+      >No entity picture found!</ha-alert
+    >`;
+    return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<ha-card class="portrait">
+    <img src=${entity.attributes.entity_picture} />
+    <div class="title">
+      <span>${device.name}</span>
+    </div>
+  </ha-card>`;
+};
+
+
+
+
+
+
+const $1ed74ce23f0ef067$export$c18c768bbe3223b7 = (hass, entity)=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<state-display .hass=${hass} .stateObj=${entity}></state-display>`;
+
+
+const $da09c6fad515207c$export$69836945d4c6961f = (hass, config)=>{
+    // Check if the hide_entity_state feature is enabled
+    if ((0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'hide_entity_state')) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
+    const entityId = config.entity ?? config.entity_id;
+    if (!entityId) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
+    const state = (0, $e24dedcf9e480b2d$export$50fdfeece43146fd)(hass, entityId);
+    if (!state) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
+    return (0, $1ed74ce23f0ef067$export$c18c768bbe3223b7)(hass, state);
+};
+
+
+
+
 var $30856da572fd852b$exports = {};
 'use strict';
 // do not edit .js files directly - edit src/index.jst
@@ -2636,43 +2630,20 @@ class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $216640a6cb8d8606$ex
             entity: entity
         });
         return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`
-      <ha-card
-        class="${problem ? 'problem' : ''}"
-        @ll-custom=${(ev)=>(0, $e0b9cfe4671c52ff$export$1a8cd32250c148d8)(ev, this._expansions, (e)=>this._expansions = e)}
-      >
+      <ha-card class="${problem ? 'problem' : ''}">
         ${headerContent}
-        ${this.collapse ? (0, $f58f44579a4747ac$export$45b790e32b2810ee) : this._renderSectionsTask.render({
-            initial: ()=>(0, $f58f44579a4747ac$export$45b790e32b2810ee),
-            pending: ()=>(0, $f58f44579a4747ac$export$45b790e32b2810ee),
-            complete: (sections)=>sections,
-            error: (error)=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div>Error rendering sections: ${error}</div>`
-        })}
+        ${this.collapse ? (0, $f58f44579a4747ac$export$45b790e32b2810ee) : (0, $e92876f5a6849818$export$b6b5fe522e6ef18a)(this._hass, this._config, this._device).map((s)=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<device-card-section
+                  .hass=${this._hass}
+                  .config=${this._config}
+                  .section=${s}
+                ></device-card-section>`)}
       </ha-card>
     `;
     }
     constructor(...args){
         super(...args), /**
-   * Track the card's expanded state
-   */ this._expansions = {
-            expandedSections: {},
-            expandedEntities: {}
-        }, /**
    * Internal collapsed state, separate from the config
-   */ this.collapse = false, /**
-   * Task that renders sections asynchronously
-   */ this._renderSectionsTask = new (0, $1dfff43fc77cdecb$export$2dea7024bcdd7731)(this, {
-            task: async ([device, config, hass, expansions])=>{
-                if (!device || !config || !hass) return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)``;
-                const sections = await (0, $10f7eb590266dd05$export$7dcefa9ef83b8269)(expansions, hass, config, device, (e)=>this._expansions = e);
-                return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`${sections}`;
-            },
-            args: ()=>[
-                    this._device,
-                    this._config,
-                    this._hass,
-                    this._expansions
-                ]
-        });
+   */ this.collapse = false;
     }
 }
 (0, $24c52f343453d62d$export$29e00dfd3077644b)([
@@ -2681,9 +2652,6 @@ class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $216640a6cb8d8606$ex
 (0, $24c52f343453d62d$export$29e00dfd3077644b)([
     (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
 ], $76efc5be730c974a$export$cee8aa229c046b5e.prototype, "_device", void 0);
-(0, $24c52f343453d62d$export$29e00dfd3077644b)([
-    (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
-], $76efc5be730c974a$export$cee8aa229c046b5e.prototype, "_expansions", void 0);
 (0, $24c52f343453d62d$export$29e00dfd3077644b)([
     (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
 ], $76efc5be730c974a$export$cee8aa229c046b5e.prototype, "collapse", void 0);
@@ -3049,6 +3017,10 @@ const $84451a3e48ae541f$var$featuresSchema = (integration, entities)=>{
                             {
                                 label: 'Compact Layout',
                                 value: 'compact'
+                            },
+                            {
+                                label: 'Expand Sections by Default',
+                                value: 'expanded'
                             },
                             {
                                 label: 'Start Collapsed',
@@ -3563,6 +3535,110 @@ class $3bda94c4eb71d8c0$export$ad4bbebd033175bb extends (0, $ab210b2da7b39b9d$ex
 
 
 
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */ const $1dfff43fc77cdecb$export$61db76a97f26b7e1 = {
+    INITIAL: 0,
+    PENDING: 1,
+    COMPLETE: 2,
+    ERROR: 3
+}, $1dfff43fc77cdecb$export$d4c72bab9d6cc13a = Symbol();
+class $1dfff43fc77cdecb$export$2dea7024bcdd7731 {
+    get taskComplete() {
+        return this.t || (1 === this.i ? this.t = new Promise((t, s)=>{
+            this.o = t, this.h = s;
+        }) : 3 === this.i ? this.t = Promise.reject(this.l) : this.t = Promise.resolve(this.u)), this.t;
+    }
+    constructor(t, s, i){
+        this.p = 0, this.i = 0, (this._ = t).addController(this);
+        const h = "object" == typeof s ? s : {
+            task: s,
+            args: i
+        };
+        this.v = h.task, this.j = h.args, this.m = h.argsEqual ?? $1dfff43fc77cdecb$export$41b40a0c6412e2a2, this.k = h.onComplete, this.A = h.onError, this.autoRun = h.autoRun ?? !0, "initialValue" in h && (this.u = h.initialValue, this.i = 2, this.O = this.T?.());
+    }
+    hostUpdate() {
+        !0 === this.autoRun && this.S();
+    }
+    hostUpdated() {
+        "afterUpdate" === this.autoRun && this.S();
+    }
+    T() {
+        if (void 0 === this.j) return;
+        const t = this.j();
+        if (!Array.isArray(t)) throw Error("The args function must return an array");
+        return t;
+    }
+    async S() {
+        const t = this.T(), s = this.O;
+        this.O = t, t === s || void 0 === t || void 0 !== s && this.m(s, t) || await this.run(t);
+    }
+    async run(t) {
+        let s, h;
+        t ??= this.T(), this.O = t, 1 === this.i ? this.q?.abort() : (this.t = void 0, this.o = void 0, this.h = void 0), this.i = 1, "afterUpdate" === this.autoRun ? queueMicrotask(()=>this._.requestUpdate()) : this._.requestUpdate();
+        const r = ++this.p;
+        this.q = new AbortController;
+        let e = !1;
+        try {
+            s = await this.v(t, {
+                signal: this.q.signal
+            });
+        } catch (t) {
+            e = !0, h = t;
+        }
+        if (this.p === r) {
+            if (s === $1dfff43fc77cdecb$export$d4c72bab9d6cc13a) this.i = 0;
+            else {
+                if (!1 === e) {
+                    try {
+                        this.k?.(s);
+                    } catch  {}
+                    this.i = 2, this.o?.(s);
+                } else {
+                    try {
+                        this.A?.(h);
+                    } catch  {}
+                    this.i = 3, this.h?.(h);
+                }
+                this.u = s, this.l = h;
+            }
+            this._.requestUpdate();
+        }
+    }
+    abort(t) {
+        1 === this.i && this.q?.abort(t);
+    }
+    get value() {
+        return this.u;
+    }
+    get error() {
+        return this.l;
+    }
+    get status() {
+        return this.i;
+    }
+    render(t) {
+        switch(this.i){
+            case 0:
+                return t.initial?.();
+            case 1:
+                return t.pending?.();
+            case 2:
+                return t.complete?.(this.value);
+            case 3:
+                return t.error?.(this.error);
+            default:
+                throw Error("Unexpected status: " + this.i);
+        }
+    }
+}
+const $1dfff43fc77cdecb$export$41b40a0c6412e2a2 = (s, i)=>s === i || s.length === i.length && s.every((s, h)=>!(0, $19fe8e3abedf4df0$export$53a6892c50694894)(s, i[h]));
+
+
+
+
 
 
 class $bb372a36f92bd9c9$export$9e322cdd8735282 extends (0, $ab210b2da7b39b9d$export$3f2f9f5909897157) {
@@ -3637,9 +3713,11 @@ class $bb372a36f92bd9c9$export$9e322cdd8735282 extends (0, $ab210b2da7b39b9d$exp
 
 
 var $b06602ab53bd58a3$exports = {};
-$b06602ab53bd58a3$exports = JSON.parse("{\"name\":\"device-card\",\"version\":\"0.18.0\",\"author\":\"Patrick Masters\",\"license\":\"ISC\",\"description\":\"Custom Home Assistant card to show info about your devices.\",\"source\":\"src/index.ts\",\"module\":\"dist/device-card.js\",\"targets\":{\"module\":{\"includeNodeModules\":true}},\"scripts\":{\"watch\":\"parcel watch\",\"build\":\"parcel build\",\"format\":\"prettier --write .\",\"test\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha\",\"test:coverage\":\"nyc yarn test\",\"test:watch\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha --watch\",\"update\":\"npx npm-check-updates -u && yarn install\"},\"devDependencies\":{\"@istanbuljs/nyc-config-typescript\":\"^1.0.2\",\"@open-wc/testing\":\"^4.0.0\",\"@parcel/transformer-inline-string\":\"^2.15.4\",\"@testing-library/dom\":\"^10.4.1\",\"@trivago/prettier-plugin-sort-imports\":\"^5.2.2\",\"@types/chai\":\"^5.2.2\",\"@types/jsdom\":\"^21.1.7\",\"@types/mocha\":\"^10.0.10\",\"@types/sinon\":\"^17.0.4\",\"chai\":\"^5.2.1\",\"jsdom\":\"^26.1.0\",\"mocha\":\"^11.7.1\",\"nyc\":\"^17.1.0\",\"parcel\":\"^2.15.4\",\"prettier\":\"3.6.2\",\"prettier-plugin-organize-imports\":\"^4.2.0\",\"proxyquire\":\"^2.1.3\",\"sinon\":\"^21.0.0\",\"ts-node\":\"^10.9.2\",\"tsconfig-paths\":\"^4.2.0\",\"typescript\":\"^5.9.2\"},\"dependencies\":{\"@lit/task\":\"^1.0.3\",\"fast-deep-equal\":\"^3.1.3\",\"lit\":\"^3.3.1\"}}");
+$b06602ab53bd58a3$exports = JSON.parse("{\"name\":\"device-card\",\"version\":\"0.19.0\",\"author\":\"Patrick Masters\",\"license\":\"ISC\",\"description\":\"Custom Home Assistant card to show info about your devices.\",\"source\":\"src/index.ts\",\"module\":\"dist/device-card.js\",\"targets\":{\"module\":{\"includeNodeModules\":true}},\"scripts\":{\"watch\":\"parcel watch\",\"build\":\"parcel build\",\"format\":\"prettier --write .\",\"test\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha\",\"test:coverage\":\"nyc yarn test\",\"test:watch\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha --watch\",\"update\":\"npx npm-check-updates -u && yarn install\"},\"devDependencies\":{\"@istanbuljs/nyc-config-typescript\":\"^1.0.2\",\"@open-wc/testing\":\"^4.0.0\",\"@parcel/transformer-inline-string\":\"^2.15.4\",\"@testing-library/dom\":\"^10.4.1\",\"@trivago/prettier-plugin-sort-imports\":\"^5.2.2\",\"@types/chai\":\"^5.2.2\",\"@types/jsdom\":\"^21.1.7\",\"@types/mocha\":\"^10.0.10\",\"@types/sinon\":\"^17.0.4\",\"chai\":\"^5.2.1\",\"jsdom\":\"^26.1.0\",\"mocha\":\"^11.7.1\",\"nyc\":\"^17.1.0\",\"parcel\":\"^2.15.4\",\"prettier\":\"3.6.2\",\"prettier-plugin-organize-imports\":\"^4.2.0\",\"proxyquire\":\"^2.1.3\",\"sinon\":\"^21.0.0\",\"ts-node\":\"^10.9.2\",\"tsconfig-paths\":\"^4.2.0\",\"typescript\":\"^5.9.2\"},\"dependencies\":{\"@lit/task\":\"^1.0.3\",\"fast-deep-equal\":\"^3.1.3\",\"lit\":\"^3.3.1\"}}");
 
 
+// Kick off HA card helper resolution once when the bundle loads
+(0, $d15fe90fb16b0188$export$d59f9ebe88d50829)(globalThis.loadCardHelpers);
 // Register the custom elements with the browser
 customElements.define('device-card', (0, $76efc5be730c974a$export$cee8aa229c046b5e));
 customElements.define('device-card-editor', (0, $4d8f78da09198f60$export$eb3c6eb92a4f4397));
