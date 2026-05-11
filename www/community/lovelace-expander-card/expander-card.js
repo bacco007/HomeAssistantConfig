@@ -5033,7 +5033,7 @@ customElements.define("expander-card", Xa(ad, { hass: {}, preview: {}, config: {
     this.config = { ...Oi, ...n };
   }
 }));
-const od = "7.0.7";
+const od = "7.1.0";
 /**
  * @license
  * Copyright 2019 Google LLC

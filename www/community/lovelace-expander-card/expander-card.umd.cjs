@@ -51,7 +51,7 @@ ${i}
      --card-background:${(p(o)&&p(d)!=="closing"&&r()["expander-card-background-expanded"]?r()["expander-card-background-expanded"]:r()["expander-card-background"])??""};
      --background-animation-duration:${p(b)??""}s;
      --expander-card-overlay-height:${p(m)?`${p(m)}px`:"auto"};
-    `)}),Ne(t,Mn),ii(Nd)}Pl(["click"]),customElements.define("expander-card",ha(ka,{hass:{},preview:{},config:{}},[],[],{mode:"open"},t=>class extends t{constructor(){super(...arguments);U(this,"config")}static async getConfigElement(){return await To(),document.createElement("expander-card-editor")}static getStubConfig(){return{type:"custom:expander-card",title:"Expander Card",cards:[]}}setConfig(n={}){this.config={...Pi,...n}}}));const Hc="7.0.7";/**
+    `)}),Ne(t,Mn),ii(Nd)}Pl(["click"]),customElements.define("expander-card",ha(ka,{hass:{},preview:{},config:{}},[],[],{mode:"open"},t=>class extends t{constructor(){super(...arguments);U(this,"config")}static async getConfigElement(){return await To(),document.createElement("expander-card-editor")}static getStubConfig(){return{type:"custom:expander-card",title:"Expander Card",cards:[]}}setConfig(n={}){this.config={...Pi,...n}}}));const Hc="7.1.0";/**
  * @license
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
