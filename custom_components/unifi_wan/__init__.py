@@ -106,21 +106,78 @@ class UnifiWanClient:
         return await self.post_json("cmd/devmgr", payload)
 
 
+def _log_raw_payload(payload: dict[str, Any] | None, devices: list[dict]) -> None:
+    """Emit a debug log that surfaces the gateway fields relevant to the
+    IPv6 / speedtest_interface sensors so users can see what the controller
+    is actually returning. Enable with:
+        logger:
+          default: warning
+          logs:
+            custom_components.unifi_wan: debug
+    """
+    if not _LOGGER.isEnabledFor(logging.DEBUG):
+        return
+    gw = None
+    for t in GATEWAY_DEVICES:
+        for d in devices:
+            if isinstance(d, dict) and d.get("type") == t:
+                gw = d
+                break
+        if gw:
+            break
+    if not gw:
+        _LOGGER.debug("UniFi raw payload: no gateway device found in %d devices", len(devices))
+        return
+    uplink = gw.get("uplink") or {}
+    wan_keys = [k for k in gw.keys() if k == "wan" or (k.startswith("wan") and k[3:].isdigit())]
+    wan_dump = {k: gw.get(k) for k in wan_keys}
+    _LOGGER.debug(
+        "UniFi raw gateway debug: uplink_keys=%s uplink.ip=%s uplink.ip6=%s "
+        "uplink.speedtest_interface=%s wan_blocks=%s last_wan_interfaces=%s",
+        sorted(uplink.keys()),
+        uplink.get("ip"),
+        uplink.get("ip6"),
+        uplink.get("speedtest_interface"),
+        wan_dump,
+        gw.get("last_wan_interfaces"),
+    )
+
+
+def _is_routable_ipv6(addr: str | None) -> bool:
+    """True only for public/ULA IPv6 addresses worth exposing as a WAN IP.
+    Skips link-local (fe80::/10), loopback (::1), unspecified (::) and
+    obvious junk so we don't mislead users into thinking they have IPv6
+    when their ISP only auto-assigned a link-local.
+    """
+    if not addr or not isinstance(addr, str):
+        return False
+    a = addr.strip().lower().split("%", 1)[0].split("/", 1)[0]
+    if not a or ":" not in a:
+        return False
+    if a in ("::", "::1"):
+        return False
+    if a.startswith("fe8") or a.startswith("fe9") or a.startswith("fea") or a.startswith("feb"):
+        return False
+    return True
+
+
 def _get_ip6_from(data: dict[str, Any]) -> str | None:
-    """Extract an IPv6 address from a data dict, trying multiple field names and formats."""
+    """Extract a routable IPv6 address from a data dict, trying multiple
+    field names and formats. Link-local addresses are ignored.
+    """
     for key in ("ip6", "ip6_address", "ipv6_address"):
         val = data.get(key)
-        if val and isinstance(val, str):
+        if isinstance(val, str) and _is_routable_ipv6(val):
             return val
-    for key in ("ip6_addresses", "ipv6_addresses"):
+    for key in ("ipv6", "ip6_addresses", "ipv6_addresses"):
         val = data.get(key)
         if val and isinstance(val, list):
             for entry in val:
-                if isinstance(entry, str) and entry:
+                if isinstance(entry, str) and _is_routable_ipv6(entry):
                     return entry
                 if isinstance(entry, dict):
                     addr = entry.get("address") or entry.get("ip6") or entry.get("ip")
-                    if addr and isinstance(addr, str):
+                    if isinstance(addr, str) and _is_routable_ipv6(addr):
                         return addr
     return None
 
@@ -130,6 +187,8 @@ def _extract_wan_data(payload: dict[str, Any] | None) -> UniFiWanData:
     devices = []
     if isinstance(payload, dict):
         devices = payload.get("data", []) or []
+
+    _log_raw_payload(payload, devices)
     
     gateway = None
     for t in GATEWAY_DEVICES:
