@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   if (customElements.get('haca-panel')) return; // already loaded, skip entirely
-  const HACA_VERSION = '1.6.4'; // build marker
+  const HACA_VERSION = '1.7.3'; // build marker
 
   // Dans l'iframe (embed_iframe:true), ha-icon n'est pas enregistré.
   // On copie la définition depuis le document parent où HA l'a déjà défini.
@@ -119,6 +119,7 @@
     'sort-descending': 'M19 7H22L18 3L14 7H17V21H19M2 17H12V19H2M6 5V7H2V5M2 11H9V13H2V11Z',
     'page-first': 'M18.41 16.59L13.82 12L18.41 7.41L17 6L11 12L17 18L18.41 16.59M6 6H8V18H6V6Z',
     'page-last':  'M5.59 7.41L10.18 12L5.59 16.59L7 18L13 12L7 6L5.59 7.41M16 6H18V18H16V6Z',
+    'pause-circle-outline': 'M13,16V8H15V16H13M9,16V8H11V16H9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z',
     'cog-outline': 'M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10M10,22C9.75,22 9.54,21.82 9.5,21.58L9.13,18.93C8.5,18.68 7.96,18.34 7.44,17.94L4.95,18.95C4.73,19.03 4.46,18.95 4.34,18.73L2.34,15.27C2.21,15.05 2.27,14.78 2.46,14.63L4.57,12.97L4.5,12L4.57,11L2.46,9.37C2.27,9.22 2.21,8.95 2.34,8.73L4.34,5.27C4.46,5.05 4.73,4.96 4.95,5.05L7.44,6.05C7.96,5.66 8.5,5.32 9.13,5.07L9.5,2.42C9.54,2.18 9.75,2 10,2H14C14.25,2 14.46,2.18 14.5,2.42L14.87,5.07C15.5,5.32 16.04,5.66 16.56,6.05L19.05,5.05C19.27,4.96 19.54,5.05 19.66,5.27L21.66,8.73C21.79,8.95 21.73,9.22 21.54,9.37L19.43,11L19.5,12L19.43,13L21.54,14.63C21.73,14.78 21.79,15.05 21.66,15.27L19.66,18.73C19.54,18.95 19.27,19.04 19.05,18.95L16.56,17.95C16.04,18.34 15.5,18.68 14.87,18.93L14.5,21.58C14.46,21.82 14.25,22 14,22H10M11.25,4L10.88,6.61C9.68,6.86 8.62,7.5 7.85,8.39L5.44,7.35L4.69,8.65L6.8,10.2C6.4,11.37 6.4,12.64 6.8,13.8L4.68,15.36L5.43,16.66L7.86,15.62C8.63,16.5 9.68,17.14 10.87,17.38L11.24,20H12.76L13.13,17.39C14.32,17.14 15.37,16.5 16.14,15.62L18.57,16.66L19.32,15.36L17.2,13.81C17.6,12.64 17.6,11.37 17.2,10.2L19.31,8.65L18.56,7.35L16.15,8.39C15.38,7.5 14.32,6.86 13.12,6.62L12.75,4H11.25Z',
     'menu': 'M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z',
   };
@@ -1274,7 +1275,7 @@
             <div class="stat-value" id="security-count">0</div>
             <div class="stat-desc">${this.t('stats.security_desc')}</div>
           </div>
-          <div class="stat-card" data-category="automations">
+          <div class="stat-card" data-category="automations" style="border-left: 5px solid #ffa726;">
             <div class="stat-header">
                 <span class="stat-label">${this.t('stats.automations')}</span>
                 ${_icon("robot-confused")}
@@ -1282,7 +1283,7 @@
             <div class="stat-value" id="auto-count">0</div>
             <div class="stat-desc">${this.t('stats.automations_desc')}</div>
           </div>
-          <div class="stat-card" data-category="scripts">
+          <div class="stat-card" data-category="scripts" style="border-left: 5px solid #4caf50;">
             <div class="stat-header">
                 <span class="stat-label">${this.t('stats.scripts')}</span>
                 ${_icon("script-text")}
@@ -1290,7 +1291,7 @@
             <div class="stat-value" id="script-count">0</div>
             <div class="stat-desc">${this.t('stats.scripts_desc')}</div>
           </div>
-          <div class="stat-card" data-category="scenes">
+          <div class="stat-card" data-category="scenes" style="border-left: 5px solid #29b6f6;">
             <div class="stat-header">
                 <span class="stat-label">${this.t('stats.scenes')}</span>
                 ${_icon("palette")}
@@ -1298,7 +1299,7 @@
             <div class="stat-value" id="scene-count">0</div>
             <div class="stat-desc">${this.t('stats.scenes_desc')}</div>
           </div>
-          <div class="stat-card" data-category="entities">
+          <div class="stat-card" data-category="entities" style="border-left: 5px solid #2196f3;">
             <div class="stat-header">
                 <span class="stat-label">${this.t('stats.entities')}</span>
                 ${_icon("lightning-bolt")}
@@ -1306,7 +1307,7 @@
             <div class="stat-value" id="entity-count">0</div>
             <div class="stat-desc">${this.t('stats.entities_desc')}</div>
           </div>
-          <div class="stat-card" data-category="helpers">
+          <div class="stat-card" data-category="helpers" style="border-left: 5px solid #ab47bc;">
             <div class="stat-header">
                 <span class="stat-label">${this.t('stats.helpers')}</span>
                 ${_icon("cog-outline")}
@@ -1314,7 +1315,7 @@
             <div class="stat-value" id="helper-count">0</div>
             <div class="stat-desc">${this.t('stats.helpers_desc')}</div>
           </div>
-          <div class="stat-card" data-category="performance">
+          <div class="stat-card" data-category="performance" style="border-left: 5px solid #ff5722;">
             <div class="stat-header">
                 <span class="stat-label">${this.t('stats.performance')}</span>
                 ${_icon("speedometer-slow")}
@@ -1330,7 +1331,7 @@
             <div class="stat-value" id="blueprint-count">0</div>
             <div class="stat-desc">${this.t('stats.blueprints_desc')}</div>
           </div>
-          <div class="stat-card" data-category="dashboards" style="border-top: 3px solid var(--primary-color);">
+          <div class="stat-card" data-category="dashboards" style="border-left: 5px solid var(--primary-color);">
             <div class="stat-header">
                 <span class="stat-label">${this.t('stats.dashboards')}</span>
                 ${_icon("view-dashboard-outline")}
@@ -1338,7 +1339,7 @@
             <div class="stat-value" id="dashboard-count">0</div>
             <div class="stat-desc">${this.t('stats.dashboards_desc')}</div>
           </div>
-          <div class="stat-card" id="recorder-stat-btn" style="border-top: 3px solid #ff7043; cursor:pointer;">
+          <div class="stat-card" id="recorder-stat-btn" style="border-left: 5px solid #ff7043; cursor:pointer;">
             <div class="stat-header">
                 <span class="stat-label">${this.t('stats.recorder_orphans')}</span>
                 ${_icon("database-alert-outline")}
@@ -1365,6 +1366,7 @@
             <button class="tab" data-tab="recorder" title="${this.t('tab_tooltips.recorder')}">
               ${_icon("database-alert-outline")}
               <span class="tab-label">${this.t('tabs.recorder')}</span>
+              <span id="tab-badge-recorder" class="tab-badge-wrap" style="display:none;"></span>
             </button>
             <button class="tab" data-tab="history" title="${this.t('tab_tooltips.history')}">
               ${_icon("chart-timeline-variant")}
@@ -1565,7 +1567,7 @@
                       <th style="padding:6px 10px;text-align:center;color:var(--secondary-text-color);font-weight:600;"></th>
                     </tr></thead>
                     <tbody id="script-complexity-tbody">
-                      <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--secondary-text-color);">${this.t('misc.run_scan_scores')}</td></tr>
+                      <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--secondary-text-color);">${this.t('misc.run_scan_scores')}</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -1864,7 +1866,7 @@
                   </tr>
                 </thead>
                 <tbody id="history-tbody">
-                  <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--secondary-text-color);">${this.t('misc.loading')}</td></tr>
+                  <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--secondary-text-color);">${this.t('misc.loading')}</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1995,6 +1997,23 @@
 
             <!-- SubTab: Monitor -->
             <div class="subtab-content active" id="subtab-battery-monitor">
+              <!-- Battery Notes info banner — shown when Battery Notes is NOT installed -->
+              <div id="battery-notes-banner" style="display:none;margin:12px 20px 0;padding:10px 14px;border-radius:10px;background:rgba(33,150,243,0.06);border:1px solid rgba(33,150,243,0.2);font-size:12px;color:var(--secondary-text-color);line-height:1.6;">
+                <div style="display:flex;align-items:flex-start;gap:8px;">
+                  ${_icon('information-outline', 16)}
+                  <div style="flex:1;">
+                    <div style="font-weight:600;color:var(--primary-text-color);margin-bottom:4px;">${this.t('battery.bn_banner_title')}</div>
+                    <div>${this.t('battery.bn_banner_body')}</div>
+                    <div style="margin-top:6px;font-size:11px;opacity:0.85;">
+                      <a href="https://github.com/andrew-codechimp/HA-Battery-Notes" target="_blank" rel="noopener" style="color:var(--primary-color);text-decoration:none;">${this.t('battery.bn_banner_install_link')}</a>
+                      &nbsp;·&nbsp;
+                      <a href="#" id="battery-notes-banner-edit" style="color:var(--primary-color);text-decoration:none;">${this.t('battery.bn_banner_edit_link')}</a>
+                    </div>
+                  </div>
+                  <button id="battery-notes-banner-close" style="background:none;border:none;cursor:pointer;color:var(--secondary-text-color);font-size:16px;padding:0;" title="${this.t('actions.close')}">×</button>
+                </div>
+              </div>
+
               <div class="section-header">
                 <div class="section-header-btns" style="display:flex;align-items:center;gap:10px;">
                   <span id="bat-summary-text" style="font-size:13px;color:var(--secondary-text-color);"></span>
@@ -2014,12 +2033,15 @@
                   <thead>
                     <tr style="border-bottom:2px solid var(--divider-color);">
                       <th style="padding:8px 10px;text-align:left;color:var(--secondary-text-color);font-weight:600;">${this.t('tables.device')}</th>
+                      <th style="padding:8px 10px;text-align:left;color:var(--secondary-text-color);font-weight:600;min-width:130px;">${this.t('battery.manufacturer_col')}</th>
                       <th style="padding:8px 10px;text-align:center;color:var(--secondary-text-color);font-weight:600;min-width:120px;">${this.t('tables.level_col')}</th>
+                      <th style="padding:8px 10px;text-align:center;color:var(--secondary-text-color);font-weight:600;min-width:80px;" title="${this.t('battery.battery_notes_tooltip')}">${this.t('battery.type_col')} ${_icon('battery-unknown',12)}</th>
+                      <th style="padding:8px 10px;text-align:center;color:var(--secondary-text-color);font-weight:600;min-width:100px;" title="${this.t('battery.last_replaced_col')}">${this.t('battery.last_replaced_col')} ${_icon('calendar-check',12)}</th>
                       <th style="padding:8px 10px;text-align:center;color:var(--secondary-text-color);font-weight:600;min-width:90px;">${this.t('tables.status_col')}</th>
                     </tr>
                   </thead>
                   <tbody id="bat-tbody">
-                    <tr><td colspan="3" style="text-align:center;padding:24px;color:var(--secondary-text-color);">${this.t('battery.run_scan')}</td></tr>
+                    <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--secondary-text-color);">${this.t('battery.run_scan')}</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -2240,6 +2262,23 @@
 
       // "Vue complète" in batteries mini-panel → go to batteries tab
       this.shadowRoot.querySelector('#goto-batteries-tab')?.addEventListener('click', () => this.switchTab('batteries'));
+
+      // ── Battery Notes banner: close + edit-library modal ─────────────
+      this.shadowRoot.querySelector('#battery-notes-banner-close')?.addEventListener('click', () => {
+        this._bnBannerDismissed = true;
+        const banner = this.shadowRoot.querySelector('#battery-notes-banner');
+        if (banner) banner.style.display = 'none';
+      });
+      this.shadowRoot.querySelector('#battery-notes-banner-edit')?.addEventListener('click', async (e) => {
+        e.preventDefault();
+        let info = { seed_path: '', user_path: '' };
+        try {
+          info = await this.hass.callWS({ type: 'haca/get_battery_library_info' });
+        } catch (err) {
+          // ignore — modal still works without the paths
+        }
+        this._showBatteryLibraryModal(info);
+      });
 
       // Integrations stat card → go to integrations tab
       this.shadowRoot.querySelector('#integrations-stat-btn')?.addEventListener('click', () => this.switchTab('integrations'));
@@ -2708,11 +2747,16 @@
       this.shadowRoot.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
       this.shadowRoot.querySelector(`.tabs .tab[data-tab="${tabName}"]`)?.classList.add('active');
       this.shadowRoot.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      this.shadowRoot.querySelector(`#tab-${tabName}`)?.classList.add('active');
+      const tabEl = this.shadowRoot.querySelector(`#tab-${tabName}`);
+      tabEl?.classList.add('active');
       this._activeTab = tabName;
       if (tabName === 'config') this.loadConfigTab();
       if (tabName === 'compliance') this.loadComplianceTab();
       if (tabName === 'integrations') this.loadIntegrations();
+      // Scroll tab content into view on small screens where it may be hidden below the fold
+      if (tabEl) {
+        requestAnimationFrame(() => tabEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }));
+      }
     }
 
     // Ouvre le tab Chat, pré-remplit et envoie automatiquement le message
@@ -2745,6 +2789,83 @@
       this.shadowRoot.querySelectorAll('#tab-issues .subtab-content').forEach(c => c.classList.remove('active'));
       this.shadowRoot.querySelector(`#subtab-${subtabName}`)?.classList.add('active');
     }
+
+    _showBatteryLibraryModal(info) {
+      const seedPath = (info && info.seed_path) || '<config>/custom_components/config_auditor/data/battery_library_seed.json';
+      const newEntryExample = JSON.stringify(
+        { manufacturer: "Aqara", model: "Door and Window Sensor", battery_type: "CR1632", battery_quantity: 1 },
+        null, 2
+      );
+
+      // Remove any existing modal
+      this.shadowRoot.querySelector('#haca-bn-edit-modal')?.remove();
+
+      const modal = document.createElement('div');
+      modal.id = 'haca-bn-edit-modal';
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+      modal.innerHTML = `
+        <div style="background:var(--card-background-color);border-radius:12px;max-width:720px;width:100%;max-height:90vh;overflow-y:auto;padding:20px 24px;box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            ${_icon('book-open-variant', 22)}
+            <h3 style="margin:0;flex:1;font-size:17px;color:var(--primary-text-color);">${this.t('battery.bn_edit_modal_title')}</h3>
+            <button id="haca-bn-modal-close" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--secondary-text-color);padding:0 4px;">×</button>
+          </div>
+
+          <div style="font-size:13px;line-height:1.7;color:var(--primary-text-color);margin-bottom:18px;">
+            ${this.escapeHtml(this.t('battery.bn_edit_modal_body'))}
+          </div>
+
+          <div style="font-size:13px;font-weight:700;color:var(--primary-text-color);margin-bottom:6px;">1. ${this.t('battery.bn_step1_title')}</div>
+          <div style="font-size:12px;color:var(--secondary-text-color);margin-bottom:6px;">${this.t('battery.bn_step1_detail')}</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;">
+            <code id="haca-bn-seed-path" style="flex:1;background:var(--secondary-background-color);padding:8px 12px;border-radius:8px;font-size:12px;word-break:break-all;color:var(--primary-text-color);">${this.escapeHtml(seedPath)}</code>
+            <button class="haca-bn-copy-btn" data-target="path" style="background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:6px;padding:6px 8px;cursor:pointer;color:var(--primary-text-color);" title="${this.t('mcp.copy')}">${_icon('content-copy', 14)}</button>
+          </div>
+
+          <div style="font-size:13px;font-weight:700;color:var(--primary-text-color);margin-bottom:6px;">2. ${this.t('battery.bn_step2_title')}</div>
+          <div style="font-size:12px;color:var(--secondary-text-color);margin-bottom:6px;">${this.t('battery.bn_step2_detail')}</div>
+          <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:6px;">
+            <pre id="haca-bn-example" style="flex:1;background:var(--secondary-background-color);padding:10px 14px;border-radius:8px;font-size:11px;line-height:1.5;overflow-x:auto;color:var(--primary-text-color);margin:0;">${this.escapeHtml(newEntryExample)}</pre>
+            <button class="haca-bn-copy-btn" data-target="example" style="background:var(--secondary-background-color);border:1px solid var(--divider-color);border-radius:6px;padding:6px 8px;cursor:pointer;color:var(--primary-text-color);flex-shrink:0;" title="${this.t('mcp.copy')}">${_icon('content-copy', 14)}</button>
+          </div>
+
+          <div style="font-size:11px;color:var(--secondary-text-color);margin-top:8px;line-height:1.6;">
+            <div style="margin-bottom:4px;"><strong>${this.t('battery.bn_fields_label')}</strong></div>
+            <div>• <code>manufacturer</code>, <code>model</code>: ${this.t('battery.bn_field_mfr_help')}</div>
+            <div>• <code>battery_type</code>: ${this.t('battery.bn_field_type_help')}</div>
+            <div>• <code>battery_quantity</code>: ${this.t('battery.bn_field_qty_help')}</div>
+            <div>• <code>model_match_method</code>: ${this.t('battery.bn_field_match_help')}</div>
+          </div>
+
+          <div style="font-size:13px;font-weight:700;color:var(--primary-text-color);margin:18px 0 6px;">3. ${this.t('battery.bn_step3_title')}</div>
+          <div style="font-size:12px;color:var(--secondary-text-color);margin-bottom:14px;">${this.t('battery.bn_step3_detail')}</div>
+
+          <div style="font-size:11px;color:#ff9800;margin-top:14px;font-style:italic;border-top:1px solid var(--divider-color);padding-top:10px;">
+            ⚠️ ${this.t('battery.bn_warning_overwrite')}
+          </div>
+        </div>
+      `;
+      this.shadowRoot.appendChild(modal);
+
+      modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+      modal.querySelector('#haca-bn-modal-close')?.addEventListener('click', () => modal.remove());
+
+      // Wire copy buttons
+      modal.querySelectorAll('.haca-bn-copy-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const target = btn.dataset.target;
+          const text = target === 'path' ? seedPath : newEntryExample;
+          try {
+            window._hacaCopy ? window._hacaCopy(text) : await navigator.clipboard.writeText(text);
+            this._showToast(this.t('notifications.copied') || 'Copied');
+          } catch {
+            this._showToast(this.t('notifications.copy_failed') || 'Copy failed', 'error');
+          }
+        });
+      });
+    }
+
+
 
     // ─── Onglet Configuration ──────────────────────────────────────────────
 
@@ -3212,11 +3333,14 @@
         hsCard.style.borderLeft = `5px solid ${col}`;
       }
 
-      // Update Issues tab badge with total issue count
-      const totalIssues = (data.automation_issues || 0) + (data.script_issues || 0)
-        + (data.scene_issues || 0) + (data.entity_issues || 0) + (data.helper_issues || 0)
-        + (data.performance_issues || 0)
-        + (data.security_issues || 0) + (data.blueprint_issues || 0) + (data.dashboard_issues || 0);
+      // Stat cards + Issues tab badge — read directly from the per-category
+      // counts the backend reports.
+      const totalIssues =
+        (data.automation_issues || 0) + (data.script_issues || 0)
+        + (data.scene_issues || 0) + (data.entity_issues || 0)
+        + (data.helper_issues || 0) + (data.performance_issues || 0)
+        + (data.security_issues || 0) + (data.blueprint_issues || 0)
+        + (data.dashboard_issues || 0);
       const issuesTab = this.shadowRoot.querySelector('.tabs .tab[data-tab="issues"]');
       if (issuesTab) {
         const existingBadge = issuesTab.querySelector('.tab-badge-wrap');
@@ -3231,17 +3355,18 @@
 
       // Load sparkline (async, non-blocking)
       this._loadSparkline();
-      safeSetText('auto-count', data.automation_issues || 0);
-      safeSetText('script-count', data.script_issues || 0);
-      safeSetText('scene-count', data.scene_issues || 0);
-      safeSetText('entity-count', data.entity_issues || 0);
-      safeSetText('helper-count', data.helper_issues || 0);
-      safeSetText('perf-count', data.performance_issues || 0);
+      safeSetText('auto-count',     data.automation_issues || 0);
+      safeSetText('script-count',   data.script_issues || 0);
+      safeSetText('scene-count',    data.scene_issues || 0);
+      safeSetText('entity-count',   data.entity_issues || 0);
+      safeSetText('helper-count',   data.helper_issues || 0);
+      safeSetText('perf-count',     data.performance_issues || 0);
       safeSetText('security-count', data.security_issues || 0);
-      safeSetText('blueprint-count', data.blueprint_issues || 0);
-      safeSetText('dashboard-count', data.dashboard_issues || 0);
+      safeSetText('blueprint-count',data.blueprint_issues || 0);
+      safeSetText('dashboard-count',data.dashboard_issues || 0);
 
       // ── Recorder orphans ──────────────────────────────────────────────
+      this._lastScanData = data;
       this._updateRecorderOrphans(data);
 
       // ── Complexity / stats tables ─────────────────────────────────────
@@ -3333,9 +3458,20 @@
         if (!dbOk) {
           badge.textContent = this.t('recorder.unavailable_badge'); badge.style.display = '';
         } else if (count > 0) {
-          badge.textContent = `${count} orphelin(s) · ~${mb} MB`; badge.style.display = '';
+          badge.textContent = this.t('recorder.orphan_badge', { count, mb }); badge.style.display = '';
         } else {
           badge.style.display = 'none';
+        }
+      }
+
+      // Badge on tab button
+      const tabBadge = this.shadowRoot.querySelector('#tab-badge-recorder');
+      if (tabBadge) {
+        if (dbOk && count > 0) {
+          tabBadge.textContent = count > 99 ? '99+' : String(count);
+          tabBadge.style.display = '';
+        } else {
+          tabBadge.style.display = 'none';
         }
       }
 
@@ -3369,8 +3505,28 @@
       // Render table with pagination
       const PAG_ID = 'recorder-orphan-list';
       listEl._allOrphans = orphans;
+
+      // Sort state (default: size descending)
+      if (!listEl._sortKey) { listEl._sortKey = 'size'; listEl._sortDir = 'desc'; }
+      const sortKey = listEl._sortKey;
+      const sortDir = listEl._sortDir;
+
+      const sorted = [...orphans].sort((a, b) => {
+        const v = sortKey === 'size'
+          ? (a.est_mb - b.est_mb)
+          : a.entity_id.localeCompare(b.entity_id);
+        return sortDir === 'desc' ? -v : v;
+      });
+
       const st = this._pagState(PAG_ID);
-      const pagedOrphans = this._pagSlice(orphans, st.page, st.pageSize);
+      const pagedOrphans = this._pagSlice(sorted, st.page, st.pageSize);
+
+      const sortArrow = (key) => sortKey === key ? (sortDir === 'desc' ? ' ▼' : ' ▲') : '';
+      const sortBtn = (key, label) =>
+        `<button class="orphan-sort-btn" data-sort="${key}"
+          style="background:none;border:none;cursor:pointer;font-size:12px;font-weight:700;
+                 color:${sortKey===key?'var(--primary-color)':'var(--secondary-text-color)'};padding:0;">
+          ${label}${sortArrow(key)}</button>`;
 
       listEl.innerHTML = `
       <table style="width:100%;border-collapse:collapse;margin-top:8px;font-size:13px;">
@@ -3379,10 +3535,10 @@
             <th style="padding:8px 12px;width:32px;">
               <input type="checkbox" id="recorder-select-all" title="${this.t('recorder.select_all')}">
             </th>
-            <th style="padding:8px 12px;">${this.t('tables.entity_id_col')}</th>
+            <th style="padding:8px 12px;">${sortBtn('name', this.t('tables.entity_id_col'))}</th>
             <th style="padding:8px 12px;text-align:right;">${this.t('recorder.states_col')}</th>
             <th style="padding:8px 12px;text-align:right;">${this.t('tables.stats_col')}</th>
-            <th style="padding:8px 12px;text-align:right;">${this.t('recorder.size_col')}</th>
+            <th style="padding:8px 12px;text-align:right;">${sortBtn('size', this.t('recorder.size_col'))}</th>
             <th style="padding:8px 12px;text-align:center;">${this.t('tables.action_col')}</th>
           </tr>
         </thead>
@@ -3418,6 +3574,20 @@
           ${_icon("delete-sweep-outline", 15)} ${this.t('misc.purge_selection')}
         </button>
       </div>`;
+
+      // Wire up sort buttons
+      listEl.querySelectorAll('.orphan-sort-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.sort;
+          if (listEl._sortKey === key) {
+            listEl._sortDir = listEl._sortDir === 'desc' ? 'asc' : 'desc';
+          } else {
+            listEl._sortKey = key;
+            listEl._sortDir = 'desc';
+          }
+          this._updateRecorderOrphans(this._lastScanData || {});
+        });
+      });
 
       // Wire up select-all
       const selectAll = listEl.querySelector('#recorder-select-all');

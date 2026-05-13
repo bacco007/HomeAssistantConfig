@@ -123,8 +123,23 @@ class RefactoringAssistant:
         self._automations_file = Path(hass.config.config_dir) / "automations.yaml"
         self._scripts_file = Path(hass.config.config_dir) / "scripts.yaml"
 
-    async def preview_device_id_fix(self, automation_id: str) -> dict[str, Any]:
-        """Preview device_id to entity_id conversion without applying."""
+    async def preview_device_id_fix(self, automation_id: str, location: str | None = None) -> dict[str, Any]:
+        """Preview device_id to entity_id conversion without applying.
+
+        When *location* is provided (e.g. ``"action[0]"`` or ``"trigger[2]"``),
+        only the matching section/index is inspected so the preview stays
+        scoped to the single reported issue instead of fixing the whole automation.
+        """
+        import re as _re
+
+        # Parse optional location filter → (section, index)
+        _loc_section: str | None = None
+        _loc_index: int | None = None
+        if location:
+            m = _re.match(r'^(trigger|condition|action)\[(\d+)\]', location)
+            if m:
+                _loc_section = m.group(1)
+                _loc_index = int(m.group(2))
         
         # Load automation config
         automation_config = await self._load_automation_by_id(automation_id)
@@ -145,6 +160,11 @@ class RefactoringAssistant:
         
         for idx, trigger in enumerate(triggers):
             if not isinstance(trigger, dict):
+                continue
+            # Location filter: skip if we're scoped to a different section/index
+            if _loc_section and _loc_section != 'trigger':
+                continue
+            if _loc_index is not None and idx != _loc_index:
                 continue
             if "device_id" not in trigger:
                 continue
@@ -195,6 +215,11 @@ class RefactoringAssistant:
         
         for idx, condition in enumerate(conditions):
             if not isinstance(condition, dict):
+                continue
+            # Location filter
+            if _loc_section and _loc_section != 'condition':
+                continue
+            if _loc_index is not None and idx != _loc_index:
                 continue
             if "device_id" not in condition:
                 continue
@@ -251,6 +276,11 @@ class RefactoringAssistant:
         for idx, action in enumerate(actions):
             if not isinstance(action, dict):
                 continue
+            # Location filter
+            if _loc_section and _loc_section != 'action':
+                continue
+            if _loc_index is not None and idx != _loc_index:
+                continue
 
             # Case 1 : device_id directly on the action (device_action platform)
             if "device_id" in action:
@@ -269,9 +299,20 @@ class RefactoringAssistant:
                         "action": service,
                         "target": {"entity_id": resolved_entity}
                     }
-                    if "data" in action:
-                        new_action["data"] = action["data"]
-                    
+                    # Merge explicit data dict + any extra top-level fields that are not
+                    # device-action metadata (device_id, domain, entity_id UUID, type, id)
+                    _DEVICE_META = {"device_id", "domain", "entity_id", "type", "id"}
+                    _CONTROL_FIELDS = {"continue_on_error", "enabled", "alias"}
+                    extra_data = {k: v for k, v in action.items()
+                                  if k not in _DEVICE_META and k not in _CONTROL_FIELDS and k != "data"}
+                    merged_data = {**(action.get("data") or {}), **extra_data}
+                    if merged_data:
+                        new_action["data"] = merged_data
+                    # Preserve action-level control fields
+                    for _field in _CONTROL_FIELDS:
+                        if _field in action:
+                            new_action[_field] = action[_field]
+
                     changes.append({
                         "section": "action",
                         "index": idx,
@@ -1222,10 +1263,14 @@ class RefactoringAssistant:
         # Build the full YAML block from triggers + actions parts
         yaml_block = (triggers_yaml + "\n" + actions_yaml).strip()[:4000] or "(YAML non disponible)"
 
-        _lang = self.hass.data.get("config_auditor", {}).get("user_language") or self.hass.config.language or "en"
-        import json as _j; from pathlib import Path as _pp
+        # Read the AI-prompt section from the in-memory translation cache —
+        # never block the event loop with file I/O.
+        from .translation_utils import resolve_notification_language
+        _lang = resolve_notification_language(self.hass)
         try:
-            _ap = _j.loads((_pp(__file__).parent / "translations" / f"{_lang}.json").read_text(encoding="utf-8")).get("ai_prompts", {})
+            from . import _TS_CACHE  # noqa: PLC0415
+            _cache = _TS_CACHE.get(_lang) or _TS_CACHE.get("en") or {}
+            _ap = _cache.get("ai_prompts", {})
         except Exception:
             _ap = {}
         prompt = _ap.get("description_suggest_system", "Suggest a short description for: {yaml}").format(yaml=yaml_block)

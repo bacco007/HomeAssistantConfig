@@ -388,7 +388,8 @@ async def _async_call_ai(hass: HomeAssistant, prompt: str, task_name: str = "HAC
 async def explain_issue_ai(hass: HomeAssistant, issue_data: dict[str, Any]) -> str:
     """Explain a HACA issue using the best available AI provider."""
     import json as _json
-    _lang = hass.data.get("config_auditor", {}).get("user_language") or hass.config.language or "en"
+    from .translation_utils import resolve_notification_language
+    _lang = resolve_notification_language(hass)
     _th = TranslationHelper(hass)
     await _th.async_load_language_section(_lang, "ai_prompts")
     prompt = _th.t("explain_issue_system").format(
@@ -411,7 +412,8 @@ def _get_local_fallback_explanation(hass: HomeAssistant, issue_data: dict) -> st
     Reads from the in-memory _TS_CACHE (pre-loaded at setup) instead of
     hitting the filesystem, to avoid blocking I/O in the event loop.
     """
-    _lang = hass.data.get("config_auditor", {}).get("user_language") or hass.config.language or "en"
+    from .translation_utils import resolve_notification_language
+    _lang = resolve_notification_language(hass)
     try:
         from . import _TS_CACHE  # noqa: PLC0415
         _all = _TS_CACHE.get(_lang) or _TS_CACHE.get("en") or {}
@@ -488,7 +490,8 @@ async def analyze_complexity_ai(hass: HomeAssistant, row: dict) -> dict:
         f" | TOTAL={score}"
     )
 
-    _cplx_lang = hass.data.get("config_auditor", {}).get("user_language") or hass.config.language or "en"
+    from .translation_utils import resolve_notification_language
+    _cplx_lang = resolve_notification_language(hass)
     try:
         from . import _TS_CACHE  # noqa: PLC0415
         _cache_data = _TS_CACHE.get(_cplx_lang) or _TS_CACHE.get("en") or {}

@@ -68,6 +68,9 @@ def async_register_websocket_handlers(hass: HomeAssistant) -> None:
     websocket_api.async_register_command(hass, handle_chat)
     websocket_api.async_register_command(hass, handle_get_options)
     websocket_api.async_register_command(hass, handle_save_options)
+    websocket_api.async_register_command(hass, handle_recorder_exclude_entity)
+    websocket_api.async_register_command(hass, handle_mark_battery_replaced)
+    websocket_api.async_register_command(hass, handle_get_battery_library_info)
     websocket_api.async_register_command(hass, handle_set_log_level)
     # ── v1.4.0 ─────────────────────────────────────────────────────────────
     websocket_api.async_register_command(hass, handle_mcp_status)
@@ -786,9 +789,35 @@ async def handle_get_translations(
     try:
         # Language comes from the frontend (= user profile language, not system language)
         language = msg.get("language") or hass.config.language or "en"
-        # Store so all backend components use the same language
+        # Store so panel-targeted WebSocket responses can stay in this user's
+        # language for the duration of the connection.
         hass.data.setdefault(DOMAIN, {})["user_language"] = language
         _LOGGER.debug("HACA: user language = %s", language)
+
+        # Persist the panel user's profile language to the entry options under
+        # ``notification_language_auto``. This makes server-emitted text
+        # (persistent notifications, HA Repairs, scan messages) follow the
+        # frontend profile language WITHOUT relying on the volatile per-panel
+        # slot. The auto-tracked value is used by ``resolve_notification_language``
+        # only when no explicit ``notification_language`` override is set, so a
+        # user who pinned a notification language via the Configuration tab
+        # is never overwritten.
+        # Updated only when the value changes to avoid spamming entry writes.
+        try:
+            entries = hass.config_entries.async_entries(DOMAIN)
+            if entries:
+                entry = entries[0]
+                current_auto = (entry.options or {}).get("notification_language_auto")
+                if current_auto != language:
+                    new_options = dict(entry.options or {})
+                    new_options["notification_language_auto"] = language
+                    hass.config_entries.async_update_entry(entry, options=new_options)
+                    _LOGGER.info(
+                        "[HACA] Tracked panel profile language for notifications: %s",
+                        language,
+                    )
+        except Exception as exc:
+            _LOGGER.debug("HACA: could not persist auto-tracked language: %s", exc)
         
         # Build path to translations file
         integration_path = Path(__file__).parent
@@ -810,7 +839,7 @@ async def handle_get_translations(
             except Exception as e:
                 _LOGGER.error("Error loading translations: %s", e)
         
-        # Extract panel translations
+        # Return the panel translations section (the JS navigates from panel.* root)
         panel_translations = translations.get("panel", {})
         
         connection.send_result(
@@ -1244,6 +1273,7 @@ async def handle_save_options(
         "notify_high_severity",    # true (default) — persistent notification for HIGH issues
         "notify_medium_severity",  # false (default) — persistent notification for MEDIUM issues
         "notify_low_severity",     # false (default) — persistent notification for LOW issues
+        "battery_last_replaced",   # dict {entity_id: ISO datetime} — battery replacement tracking
     }
     for key, value in incoming.items():
         if key in ALLOWED_KEYS and value is not None:  # ignorer les None (token non modifié)
@@ -1282,6 +1312,104 @@ async def handle_save_options(
 
     _LOGGER.info("[HACA] Options saved via panel: %s", list(incoming.keys()))
     connection.send_result(msg["id"], {"success": True, "options": new_options})
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "haca/recorder_exclude_entity",
+        vol.Required("entity_id"): str,
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def handle_recorder_exclude_entity(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Add an entity to ``recorder.exclude.entities`` in configuration.yaml.
+
+    Behaviour (per the in-app contract documented next to the button):
+      - configuration.yaml is backed up to ``<config>/.haca_backups/`` first
+      - ruamel.yaml round-trip preserves comments and formatting
+      - the result is validated via ``homeassistant.check_config``; on failure
+        the file is restored from the backup
+      - the change becomes effective at the next HACA scan (and the live
+        recorder filter only honours it after the user restarts HA)
+
+    Reply schema mirrors ``recorder_yaml_editor.async_add_entity_to_recorder_exclude``.
+    """
+    from .recorder_yaml_editor import async_add_entity_to_recorder_exclude
+    entity_id: str = msg["entity_id"]
+    try:
+        result = await async_add_entity_to_recorder_exclude(hass, entity_id)
+    except Exception as exc:
+        _LOGGER.error("[HACA] recorder_exclude_entity failed: %s", exc, exc_info=True)
+        connection.send_error(msg["id"], "exclude_failed", str(exc))
+        return
+    connection.send_result(msg["id"], result)
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "haca/mark_battery_replaced",
+        vol.Required("entity_id"): str,
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def handle_mark_battery_replaced(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Record today's date as last battery replacement for an entity."""
+    from datetime import datetime
+    entry, _ = _get_entry_data(hass)
+    if not entry:
+        connection.send_error(msg["id"], "not_found", "HACA entry not found")
+        return
+
+    eid: str = msg["entity_id"]
+    today_iso = datetime.utcnow().isoformat(timespec="seconds") + "Z"
+
+    current = dict(entry.options.get("battery_last_replaced", {}) or {})
+    current[eid] = today_iso
+
+    new_options = dict(entry.options)
+    new_options["battery_last_replaced"] = current
+    hass.config_entries.async_update_entry(entry, options=new_options)
+
+    connection.send_result(msg["id"], {"success": True, "entity_id": eid, "date": today_iso})
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "haca/get_battery_library_info",
+    }
+)
+@websocket_api.require_admin
+@websocket_api.async_response
+async def handle_get_battery_library_info(
+    hass: HomeAssistant,
+    connection: websocket_api.ActiveConnection,
+    msg: dict[str, Any],
+) -> None:
+    """Return absolute path of HACA battery library seed file."""
+    seed_path = ""
+    size = 0
+    try:
+        lib = hass.data.get("haca_battery_library")
+        if lib is not None:
+            seed_path = lib.seed_path
+            size = lib.size
+    except Exception as exc:
+        _LOGGER.debug("[HACA] battery_library_info: %s", exc)
+
+    connection.send_result(msg["id"], {
+        "seed_path": seed_path,
+        "size": size,
+    })
 
 
 @websocket_api.websocket_command(

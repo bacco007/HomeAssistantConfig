@@ -74,10 +74,9 @@ class DashboardAnalyzer:
 
     async def analyze_all(self) -> list[dict[str, Any]]:
         self.issues = []
-        language = self.hass.data.get("config_auditor", {}).get("user_language") or self.hass.config.language or "en"
+        from .translation_utils import resolve_notification_language, async_get_haca_ignored_entity_ids
+        language = resolve_notification_language(self.hass)
         await self._translator.async_load_language(language)
-        # Load haca_ignore label (entity + device level)
-        from .translation_utils import async_get_haca_ignored_entity_ids
         self._haca_ignored = await async_get_haca_ignored_entity_ids(self.hass)
 
         known = await self._build_known_entities()

@@ -40,11 +40,47 @@
     return null;
   }
 
+  // Mark a noisy_entity issue card as excluded after a successful recorder-exclude.
+  // Disables all buttons inside the card, fades it out, then removes it from the
+  // DOM after a short transition. The next scan will drop the issue from the
+  // underlying data, so removing it from the rendered list keeps the panel in
+  // sync without waiting for that round-trip.
+  _markIssueExcluded(triggerEl) {
+    if (!triggerEl) return;
+    const card = triggerEl.closest('.issue-item');
+    if (!card) return;
+    // Disable interaction immediately
+    card.querySelectorAll('button, a').forEach(el => {
+      el.setAttribute('disabled', 'true');
+      el.style.pointerEvents = 'none';
+      el.tabIndex = -1;
+    });
+    card.style.transition = 'opacity 320ms ease, transform 320ms ease, margin 320ms ease, max-height 320ms ease';
+    card.style.pointerEvents = 'none';
+    card.style.opacity = '0.45';
+    // Fade out fully, then collapse the slot it occupied
+    setTimeout(() => {
+      const h = card.offsetHeight;
+      card.style.maxHeight = h + 'px';
+      // next frame: collapse
+      requestAnimationFrame(() => {
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.98)';
+        card.style.maxHeight = '0px';
+        card.style.marginTop = '0';
+        card.style.marginBottom = '0';
+        card.style.paddingTop = '0';
+        card.style.paddingBottom = '0';
+        card.style.overflow = 'hidden';
+      });
+      setTimeout(() => { card.remove(); }, 350);
+    }, 250);
+  }
+
   renderIssues(issues, containerId, severityFilter) {
     const container = this.shadowRoot.querySelector(`#${containerId}`);
     if (!container) return;
 
-    // Store full list on container for filtering/export
     container._allIssues = issues;
 
     // ── Extended filter: type-based shortcuts ────────────────────────────
@@ -173,9 +209,16 @@
                 </button>` : ''}
                 ${isFixable ? `<button class="fix-btn" data-idx="${idx}">${_icon("magic-staff")} ${this.t('actions.fix')}</button>` : ''}
                 ${isBlueprintCandidate ? `<button class="blueprint-ai-btn" data-idx="${idx}" style="background:linear-gradient(135deg,#0ea5e9,#6366f1);color:white;border:none;display:flex;align-items:center;gap:4px;" title="${this.t('actions.generate_blueprint')}">${_icon("robot", 15)} ${this.t('actions.generate_blueprint')}</button>` : ''}
+                ${i.type === 'noisy_entity' && i.entity_id ? `<button class="recorder-exclude-btn" data-entity-id="${this.escapeHtml(i.entity_id)}" title="${this.t('actions.recorder_exclude_title')}" style="background:linear-gradient(135deg,#16a34a,#15803d);color:white;border:none;display:flex;align-items:center;gap:4px;">${_icon('database-off-outline', 15)} ${this.t('actions.recorder_exclude')}</button>` : ''}
             </div>
         </div>
         <div class="issue-message">${this.escapeHtml(i.message || '')}</div>
+        ${i.type === 'noisy_entity' && i.entity_id ? `
+        <div class="recorder-exclude-hint" style="margin-top:8px;padding:8px 10px;border-left:3px solid #16a34a;background:rgba(22,163,74,0.08);border-radius:4px;font-size:11px;color:var(--secondary-text-color);line-height:1.45;">
+          <div>${_icon('shield-check-outline', 12)} ${this.t('issues.recorder_exclude_explanation')}</div>
+          <div style="margin-top:4px;">${_icon('information-outline', 12)} ${this.t('issues.recorder_exclude_effective')}</div>
+          <div style="margin-top:4px;">${_icon('file-edit-outline', 12)} ${this.t('issues.recorder_exclude_to_revert')}</div>
+        </div>` : ''}
         ${(() => { const hk = 'issue_types.hints.' + (i.type || ''); const hv = this.t(hk); return (hv && hv !== hk) ? `<div style="font-size:11px;color:var(--secondary-text-color);margin-top:4px;font-style:italic;opacity:0.85;">${this.escapeHtml(hv)}</div>` : ''; })()}
         ${i.complexity_detail ? `
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">
@@ -244,6 +287,55 @@
         const idx = parseInt(e.currentTarget.dataset.idx, 10);
         const issue = container._renderedIssues[idx];
         if (issue) this.showFixPreview(issue);
+      });
+    });
+
+    // ── Recorder-exclude button (noisy_entity issues only) ───────────────
+    // Adds the entity to recorder.exclude.entities in configuration.yaml.
+    // Backend handles backup + check_config; we just surface the result.
+    container.querySelectorAll('.recorder-exclude-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const entityId = e.currentTarget.dataset.entityId;
+        if (!entityId) return;
+        const confirmMsg = this.t('actions.recorder_exclude_confirm', {entity: entityId});
+        if (!window.confirm(confirmMsg)) return;
+        btn.disabled = true;
+        const orig = btn.innerHTML;
+        btn.innerHTML = `${_icon('loading', 14)} ${this.t('actions.recorder_exclude_pending') || '...'}`;
+        try {
+          const res = await this.hass.callWS({
+            type: 'haca/recorder_exclude_entity',
+            entity_id: entityId,
+          });
+          if (res?.success && res.code === 'already') {
+            this._showToast?.(
+              this.t('actions.recorder_exclude_already', {entity: entityId}),
+              'info',
+            );
+            this._markIssueExcluded?.(btn);
+          } else if (res?.success) {
+            this._showToast?.(
+              this.t('actions.recorder_exclude_success', {entity: entityId}),
+              'success',
+            );
+            this._markIssueExcluded?.(btn);
+          } else {
+            const detail = (res?.errors && res.errors.length)
+              ? res.errors.join('; ')
+              : (res?.message || 'unknown');
+            this._showToast?.(
+              this.t('actions.recorder_exclude_error') + ': ' + detail,
+              'error',
+            );
+          }
+        } catch (err) {
+          const msg = (err && (err.message || err.code || JSON.stringify(err))) || 'unknown';
+          this._showToast?.(this.t('actions.recorder_exclude_error') + ': ' + msg, 'error');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = orig;
+        }
       });
     });
 

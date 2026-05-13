@@ -79,8 +79,12 @@ class AutomationAnalyzer:
         self.scene_stats = []
         self.blueprint_stats = []
         
-        # Load language for translations
-        language = self.hass.data.get("config_auditor", {}).get("user_language") or self.hass.config.language or "en"
+        # Load language for translations.
+        # Issue messages tagged here surface in coordinator.data and are
+        # surfaced via persistent_notification + Repairs as well as the panel,
+        # so we use the same resolver as the notification pipeline.
+        from .translation_utils import resolve_notification_language
+        language = resolve_notification_language(self.hass)
         await self._translator.async_load_language(language)
         
         # P0: pre-load registries for service / area / floor / label checks

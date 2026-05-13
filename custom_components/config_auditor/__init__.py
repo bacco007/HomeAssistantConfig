@@ -130,12 +130,14 @@ _TS_CACHE: dict[str, dict] = {}   # {lang: {section: {key: value}}}
 def _ts(hass, section: str, key: str, **kwargs) -> str:
     """Get a translation string from in-memory cache (never does file I/O).
 
-    Uses the HA system language (hass.config.language), NOT the last panel
-    user's browser language.  Notifications are server-side and must use
-    the system locale — the user_language key is reserved for panel WS
-    responses.
+    Notifications are server-side and must use a stable, system-wide locale.
+    Resolution is delegated to ``translation_utils.resolve_notification_language``
+    so the per-entry ``notification_language`` option (if set) takes precedence
+    over the HA system language. The volatile per-panel ``user_language`` slot
+    is never consulted here.
     """
-    lang = hass.config.language or "en"
+    from .translation_utils import resolve_notification_language
+    lang = resolve_notification_language(hass)
     data = _TS_CACHE.get(lang) or _TS_CACHE.get("en") or {}
     val = data.get(section, {}).get(key, key)
     try:
@@ -252,7 +254,30 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         new_options = {**entry.options, "excluded_issue_types": new_excluded}
         hass.config_entries.async_update_entry(entry, options=new_options)
         _LOGGER.info("Migrated excluded_issue_types: added %s", missing_defaults)
-    
+
+    # ── Refresh ``notification_language_auto`` from the owner's frontend
+    # profile language. The panel handshake also writes this option, but
+    # it can lag behind a profile change (the user must re-open the panel
+    # to trigger a handshake). Reading directly from ``.storage/frontend.user_data_*``
+    # at startup ensures notifications use the current profile language
+    # even before the panel is mounted again. Only an explicit
+    # ``notification_language`` (set by the user from Configuration) takes
+    # precedence over this auto value.
+    try:
+        from .translation_utils import async_detect_frontend_user_language
+        detected_lang = await async_detect_frontend_user_language(hass)
+        if detected_lang:
+            cur_auto = entry.options.get("notification_language_auto")
+            if cur_auto != detected_lang:
+                new_options = {**entry.options, "notification_language_auto": detected_lang}
+                hass.config_entries.async_update_entry(entry, options=new_options)
+                _LOGGER.info(
+                    "[HACA] notification_language_auto refreshed from frontend storage: %s -> %s",
+                    cur_auto, detected_lang,
+                )
+    except Exception as exc:
+        _LOGGER.debug("[HACA] could not refresh notification language at startup: %s", exc)
+
     if entry.entry_id in hass.data[DOMAIN]:
         _LOGGER.warning("H.A.C.A already set up for this entry")
         return True
@@ -434,15 +459,24 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             security_issues        = _filter(security_issues)
             dashboard_issues       = _filter(dashboard_issues)
 
-        # ── Tag each issue with haca_id for frontend display ──────────────
+        # ── Tag each issue with a stable haca_id for frontend display ─────
+        # Built from invariant fields only (entity_id/alias, type, location)
+        # so the same logical issue keeps the same id across scans and
+        # language switches. The id is used for click-to-copy badges in the
+        # panel and to identify issues in the AI explain / redundancy /
+        # compliance views — it is NOT used to drive any dismissal feature.
         import hashlib as _hl
+
         def _tag_ids(issue_list: list, cat_code: str) -> list:
             for issue in issue_list:
                 eid = issue.get("entity_id") or issue.get("alias") or "unknown"
                 itype = (issue.get("type") or "unknown").upper()
-                h = _hl.md5(eid.encode()).hexdigest()[:6]
+                loc = issue.get("location") or ""
+                signature = f"{eid}|{itype}|{loc}"
+                h = _hl.md5(signature.encode("utf-8", "replace")).hexdigest()[:8]
                 issue["haca_id"] = f"HACA-{cat_code}-{itype}-{h}"
             return issue_list
+
         _tag_ids(automation_only_issues, "AUTO")
         _tag_ids(script_issues, "SCRIPT")
         _tag_ids(scene_issues, "SCENE")
@@ -453,47 +487,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _tag_ids(security_issues, "SEC")
         _tag_ids(dashboard_issues, "DASH")
         _tag_ids(compliance_issues, "COMPL")
-        
-        total_entities     = len(hass.states.async_all())
-        total_automations  = len(automation_analyzer.automation_configs) + len(automation_analyzer.script_configs)
-        health_score = calculate_health_score(
-            automation_only_issues, entity_issues, performance_issues, security_issues, dashboard_issues,
-            total_entities=total_entities,
-            total_automations=total_automations,
-            helper_issues=helper_issues,
-            compliance_issues=compliance_issues,
-            script_issues=script_issues,
-            scene_issues=scene_issues,
-            blueprint_issues=blueprint_issues,
-        )        
-        _LOGGER.info(
-            "Health Score Calculation: Automation=%d, Scripts=%d, Blueprints=%d, Entities=%d, Helpers=%d, Performance=%d, Dashboard=%d. Score=%d%%",
-            len(automation_only_issues), len(script_issues), len(blueprint_issues),
-            len(entity_issues), len(helper_issues), len(performance_issues), len(dashboard_issues), health_score
-        )
- 
-        # ── Save audit snapshot to history ───────────────────────────────
-        scan_result = {
-            "health_score":    health_score,
-            "total_issues":    len(automation_only_issues) + len(script_issues) + len(scene_issues)
-                             + len(blueprint_issues) + len(entity_issues) + len(helper_issues)
-                             + len(performance_issues) + len(security_issues)
-                             + len(dashboard_issues),
-            "automation_issues":   len(automation_only_issues),
-            "script_issues":       len(script_issues),
-            "scene_issues":        len(scene_issues),
-            "entity_issues":       len(entity_issues),
-            "helper_issues":       len(helper_issues),
-            "performance_issues":  len(performance_issues),
-            "security_issues":     len(security_issues),
-            "blueprint_issues":    len(blueprint_issues),
-            "dashboard_issues":    len(dashboard_issues),
-        }
-        if history_manager:
-            try:
-                await history_manager.async_save_scan(scan_result)
-            except Exception as hist_err:
-                _LOGGER.warning("HACA History save error: %s", hist_err)
 
         # ── v1.5.0 — Battery prediction ───────────────────────────────────
         battery_predictions: list = []
@@ -551,7 +544,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             redundancy_issue_list.append(item)
         _tag_ids(redundancy_issue_list, "REDUND")
 
-        # ── v1.5.0 — Recorder impact analysis ────────────────────────────
+        # Build recorder-impact data BEFORE the ignore-marking pass so its
+        # exclude_suggestions can also be tagged and dismissed individually.
         recorder_impact_data: dict = {}
         if recorder_impact_analyzer:
             try:
@@ -561,6 +555,50 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 )
             except Exception as ri_err:
                 _LOGGER.warning("Recorder impact analyzer error: %s", ri_err)
+
+        # ── Health score, stat-card counts, history snapshot ─────────────
+        total_entities     = len(hass.states.async_all())
+        total_automations  = len(automation_analyzer.automation_configs) + len(automation_analyzer.script_configs)
+        health_score = calculate_health_score(
+            automation_only_issues, entity_issues,
+            performance_issues, security_issues, dashboard_issues,
+            total_entities=total_entities,
+            total_automations=total_automations,
+            helper_issues=helper_issues,
+            compliance_issues=compliance_issues,
+            script_issues=script_issues,
+            scene_issues=scene_issues,
+            blueprint_issues=blueprint_issues,
+        )
+        _LOGGER.info(
+            "Health Score Calculation: Automation=%d, Scripts=%d, Blueprints=%d, Entities=%d, Helpers=%d, Performance=%d, Dashboard=%d. Score=%d%%",
+            len(automation_only_issues), len(script_issues), len(blueprint_issues),
+            len(entity_issues), len(helper_issues),
+            len(performance_issues), len(dashboard_issues), health_score,
+        )
+
+        scan_result = {
+            "health_score":        health_score,
+            "total_issues":        len(automation_only_issues) + len(script_issues)
+                                 + len(scene_issues) + len(blueprint_issues)
+                                 + len(entity_issues) + len(helper_issues)
+                                 + len(performance_issues) + len(security_issues)
+                                 + len(dashboard_issues),
+            "automation_issues":   len(automation_only_issues),
+            "script_issues":       len(script_issues),
+            "scene_issues":        len(scene_issues),
+            "entity_issues":       len(entity_issues),
+            "helper_issues":       len(helper_issues),
+            "performance_issues":  len(performance_issues),
+            "security_issues":     len(security_issues),
+            "blueprint_issues":    len(blueprint_issues),
+            "dashboard_issues":    len(dashboard_issues),
+        }
+        if history_manager:
+            try:
+                await history_manager.async_save_scan(scan_result)
+            except Exception as hist_err:
+                _LOGGER.warning("HACA History save error: %s", hist_err)
 
         # Build dependency graph
         dependency_graph = {"nodes": [], "edges": []}
@@ -584,18 +622,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         return {
             "health_score": health_score,
             "automation_issues": len(automation_only_issues),
-            "script_issues": len(script_issues),
-            "scene_issues": len(scene_issues),
-            "blueprint_issues": len(blueprint_issues),
-            "entity_issues": len(entity_issues),
-            "helper_issues": len(helper_issues),
+            "script_issues":     len(script_issues),
+            "scene_issues":      len(scene_issues),
+            "blueprint_issues":  len(blueprint_issues),
+            "entity_issues":     len(entity_issues),
+            "helper_issues":     len(helper_issues),
             "performance_issues": len(performance_issues),
-            "security_issues": len(security_issues),
-            "dashboard_issues": len(dashboard_issues),
-            "total_issues": len(automation_only_issues) + len(script_issues) + len(scene_issues)
-                          + len(blueprint_issues) + len(entity_issues) + len(helper_issues)
-                          + len(performance_issues) + len(security_issues)
-                          + len(dashboard_issues) + len(compliance_issues),
+            "security_issues":   len(security_issues),
+            "dashboard_issues":  len(dashboard_issues),
+            "total_issues":      len(automation_only_issues) + len(script_issues)
+                               + len(scene_issues) + len(blueprint_issues)
+                               + len(entity_issues) + len(helper_issues)
+                               + len(performance_issues) + len(security_issues)
+                               + len(dashboard_issues) + len(compliance_issues),
             "compliance_issues": len(compliance_issues),
             "compliance_issue_list": compliance_issues,
             "automation_issue_list": automation_only_issues,
@@ -643,6 +682,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         update_interval=timedelta(minutes=scan_interval) if scan_interval > 0 else None,
     )
     
+    # In-memory state-change counter — see noisy_tracker.py for why this
+    # exists. Listens to EVENT_STATE_CHANGED so HACA can flag noisy
+    # entities even when HA's recorder is currently filtering them
+    # (otherwise the SQL query has nothing to find for ~24h after the
+    # user un-excludes an entity in configuration.yaml).
+    from .noisy_tracker import NoisyEntityTracker
+    noisy_tracker = NoisyEntityTracker(hass)
+    noisy_tracker.start()
+
     hass.data[DOMAIN][entry.entry_id] = {
         "coordinator": coordinator,
         "entry": entry,
@@ -659,6 +707,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "automation_optimizer": automation_optimizer,
         "compliance_analyzer": compliance_analyzer,
         "integration_analyzer": integration_analyzer,
+        "noisy_tracker": noisy_tracker,
     }
     
     device_registry = dr.async_get(hass)
@@ -840,10 +889,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         if not enabled_severities:
             return
 
-        # Stable identifier for each issue
+        # Stable identifier for each issue. Dismissed issues are skipped so
+        # the post-scan notification never re-surfaces something the user has
+        # explicitly chosen to ignore.
         current_issues: dict[str, dict] = {}
         for lst in all_lists:
             for issue in lst:
+                if issue.get("ignored"):
+                    continue
                 sev = issue.get("severity", "low")
                 if sev in enabled_severities:
                     key = "|".join([
@@ -875,7 +928,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         body = "\n".join(lines)
 
-        # Single translation system — reads from JSON using user_language
+        # _ts resolves the language via resolve_notification_language() —
+        # i.e. the per-entry notification_language option, then HA system locale.
         title   = _ts(hass, "notifications", "new_issues_title", count=count)
         header  = _ts(hass, "notifications", "new_issues_header", score=score)
         footer  = _ts(hass, "notifications", "new_issues_footer")
@@ -951,6 +1005,15 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 _apis.pop(HACA_LLM_API_ID, None)
     except Exception:
         pass
+
+    # Stop the in-memory state-change tracker (releases the bus listener).
+    entry_data = hass.data.get(DOMAIN, {}).get(entry.entry_id) or {}
+    tracker = entry_data.get("noisy_tracker")
+    if tracker is not None:
+        try:
+            tracker.stop()
+        except Exception:
+            pass
 
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 

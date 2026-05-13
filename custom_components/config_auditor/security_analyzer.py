@@ -39,12 +39,10 @@ class SecurityAnalyzer:
         """Run all security checks."""
         self.issues = []
         
-        # Load language for translations
-        language = self.hass.data.get("config_auditor", {}).get("user_language") or self.hass.config.language or "en"
+        # Load language for translations — server-emitted, see analyzer rationale.
+        from .translation_utils import resolve_notification_language, async_get_haca_ignored_entity_ids
+        language = resolve_notification_language(self.hass)
         await self._translator.async_load_language(language)
-
-        # Load haca_ignore label (entity + device level)
-        from .translation_utils import async_get_haca_ignored_entity_ids
         _ignored = await async_get_haca_ignored_entity_ids(self.hass)
         
         # Filter out ignored automations from configs

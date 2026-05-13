@@ -103,7 +103,7 @@
       }
 
       if (automation_id) {
-        serviceData = { automation_id: automation_id };
+        serviceData = { automation_id: automation_id, location: issue.location || null };
       } else {
         this.showHANotification(this.t('fix.cannot_find_automation'), issue.entity_id || '', 'haca_error');
         return;
@@ -144,7 +144,32 @@
       const response = result.response || result;
 
       if (response.success) {
-        this.renderDiffModal(modal, response, issue, service, serviceData);
+        if (!response.changes_count) {
+          // Entity could not be resolved — show informative message instead of empty diff
+          modal._updateContent(`
+            <div style="padding:24px;">
+              <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;border-bottom:1px solid var(--divider-color);padding-bottom:16px;">
+                ${_icon("alert-circle-outline", 36)}
+                <div>
+                  <h2 style="margin:0;">${this.t('modals.cannot_auto_fix')}</h2>
+                  <div style="font-size:13px;opacity:0.7;">${issue.entity_id}</div>
+                </div>
+              </div>
+              <div style="background:rgba(255,167,38,0.1);padding:16px;border-radius:10px;border-left:4px solid var(--warning-color,#ffa726);margin-bottom:20px;font-size:14px;line-height:1.6;">
+                ${this.t('fix.cannot_resolve_entity')}
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:12px;">
+                <button style="background:var(--secondary-background-color);color:var(--primary-text-color);border:1px solid var(--divider-color);border-radius:8px;padding:8px 18px;cursor:pointer;"
+                  onclick="this.closest('.haca-modal').remove()">${this.t('actions.close')}</button>
+                ${this.getHAEditUrl(issue.entity_id) ? `<a href="${this.getHAEditUrl(issue.entity_id)}" target="_blank" style="text-decoration:none;">
+                  <button style="background:var(--primary-color);color:#fff;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;">
+                    ${_icon('pencil')} ${this.t('modals.open_editor')}
+                  </button></a>` : ''}
+              </div>
+            </div>`);
+        } else {
+          this.renderDiffModal(modal, response, issue, service, serviceData);
+        }
       } else {
         modal._updateContent(`<div style="padding:20px;color:red">${this.t('notifications.error')}: ${response.error || this.t('fix.error_unknown')}</div>`);
         setTimeout(() => modal._closeModal && modal._closeModal(), 3000);

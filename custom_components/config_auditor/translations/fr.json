@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Auditeur de configuration Home Assistant",
-    "version": "v1.7.2",
+    "version": "v1.7.3",
     "buttons": {
       "scan_all": "Scan Complet",
       "automations": "Automatisations",
@@ -220,7 +220,14 @@
       "purge_all_orphans": "Purger tous les orphelins",
       "open_entity": "Ouvrir l'entité",
       "view_entities_list": "Voir les entités",
-      "generate_blueprint": "Générer Blueprint"
+      "generate_blueprint": "Générer Blueprint",
+      "recorder_exclude": "Exclure du Recorder",
+      "recorder_exclude_title": "Ajouter cette entité à recorder.exclude.entities dans configuration.yaml",
+      "recorder_exclude_pending": "Ajout en cours…",
+      "recorder_exclude_confirm": "Ajouter {entity} à recorder.exclude.entities dans configuration.yaml ? Une sauvegarde sera créée et le fichier validé.",
+      "recorder_exclude_success": "{entity} ajoutée à recorder.exclude.entities. Le changement prendra effet au prochain scan HACA.",
+      "recorder_exclude_already": "{entity} est déjà exclue.",
+      "recorder_exclude_error": "Impossible d'exclure l'entité"
     },
     "messages": {
       "no_issues": "Aucun problème détecté dans cette catégorie",
@@ -337,7 +344,8 @@
       "success": "Correction Appliquée !",
       "error_call": "Erreur d'appel de service",
       "error_unknown": "Erreur inconnue",
-      "cannot_find_automation": "Impossible de trouver l'ID de l'automatisation"
+      "cannot_find_automation": "Impossible de trouver l'ID de l'automatisation",
+      "cannot_resolve_entity": "L'entité référencée par cet appareil n'a pas pu être résolue automatiquement. L'appareil a peut-être été ré-ajouté avec un nouvel identifiant. Veuillez corriger manuellement via l'éditeur."
     },
     "instructions": {
       "open_yaml_editor": "Ouvrez l'automatisation dans l'éditeur YAML",
@@ -415,7 +423,7 @@
       "filter_critical": "🔴 Critique (<5 %)",
       "filter_low": "🟡 Faible (5–15 %)",
       "filter_watch": "🔵 À surveiller (15–25 %)",
-      "filter_ok": "✅ OK (≥25 %)",
+      "filter_ok": "✅ OK (≥25%)",
       "detected_title": "Batteries détectées — vue rapide",
       "view_full": "Vue complète",
       "level_col": "Niveau",
@@ -423,7 +431,33 @@
       "entity_placeholder": "ex: light.evier_new",
       "subtab_monitor": "Moniteur",
       "subtab_predict": "Prédictions",
-      "monitor_title": "Moniteur de Batteries"
+      "monitor_title": "Moniteur de Batteries",
+      "type_col": "Type de pile",
+      "battery_notes_tooltip": "Type de pile via Battery Notes",
+      "last_replaced_col": "Dernier remplacement",
+      "never_replaced": "Jamais",
+      "manufacturer_col": "Fabricant / Modèle",
+      "mark_replaced": "Marquer remplacée",
+      "mark_replaced_tooltip": "Cliquez pour enregistrer aujourd'hui comme dernier remplacement de pile pour ce device",
+      "mark_replaced_done": "Pile marquée comme remplacée",
+      "bn_banner_title": "Plus d'infos sur les piles ?",
+      "bn_banner_body": "HACA utilise sa propre bibliothèque embarquée pour détecter les types de piles. Pour une couverture plus large des appareils et un suivi des dates de remplacement avec événements en un clic, installez l'intégration Battery Notes — HACA utilisera ses données automatiquement. Sinon, vous pouvez étendre la bibliothèque embarquée de HACA en ajoutant des entrées dans son fichier JSON.",
+      "bn_banner_install_link": "📦 Installer Battery Notes",
+      "bn_banner_edit_link": "✏️ Éditer la bibliothèque HACA",
+      "bn_edit_modal_title": "Étendre la bibliothèque de piles HACA",
+      "bn_edit_modal_body": "HACA inclut un fichier de bibliothèque de piles intégré. Ouvrez-le dans un éditeur de texte (via l'add-on File Editor, SSH ou Studio Code Server), puis ajoutez une nouvelle entrée dans le tableau « devices ».",
+      "bn_step1_title": "Ouvrir le fichier de bibliothèque",
+      "bn_step1_detail": "Ouvrez ce fichier existant dans l'éditeur de votre choix — il contient déjà toutes les entrées seed :",
+      "bn_step2_title": "Ajouter un nouvel appareil au tableau « devices »",
+      "bn_step2_detail": "Insérez un nouvel objet JSON dans le tableau « devices » (n'oubliez pas la virgule entre les entrées). Trouvez le fabricant et le modèle exact de votre appareil dans HA : Paramètres → Appareils et services → cliquez sur votre appareil. Exemple à copier :",
+      "bn_step3_title": "Redémarrer Home Assistant",
+      "bn_step3_detail": "Après redémarrage, HACA chargera votre fichier utilisateur en plus du seed et l'utilisera pour la détection des types de piles. Les nouvelles entrées apparaissent immédiatement au prochain scan des piles.",
+      "bn_fields_label": "Référence des champs :",
+      "bn_field_mfr_help": "doit correspondre exactement à ce que HA affiche pour l'appareil (sensible à la casse)",
+      "bn_field_type_help": "ex : \"AA\", \"AAA\", \"CR2032\", \"CR2450\", \"Rechargeable\", \"Mains\", \"Irreplaceable\"",
+      "bn_field_qty_help": "entier, nombre de piles (1, 2, 3, ...) — omettre si 1",
+      "bn_field_match_help": "optionnel : \"exact\" (défaut), \"startswith\", \"endswith\" ou \"contains\" — utile pour les variantes de modèle",
+      "bn_warning_overwrite": "Important : ce fichier sera écrasé lors de la mise à jour de HACA. Conservez une sauvegarde de vos ajouts, et envisagez de soumettre les appareils populaires à la bibliothèque publique Battery Notes pour qu'ils soient partagés."
     },
     "issues": {
       "open_dashboard": "Ouvrir le dashboard",
@@ -445,7 +479,14 @@
       "click_to_copy_id": "Cliquer pour copier cet ID",
       "id_copied": "ID {id} copié dans le presse-papiers",
       "fixable": "Corrigible",
-      "not_fixable": "Non corrigible"
+      "not_fixable": "Non corrigible",
+      "generic_high_issue": {
+        "title": "HACA : {type} — {entity}",
+        "description": "{message}\n\nOuvrez le panneau HACA pour les détails et correctifs disponibles."
+      },
+      "recorder_exclude_effective": "La prise en compte ne sera effective qu'au prochain scan de HACA.",
+      "recorder_exclude_to_revert": "Pour rendre cette issue de nouveau visible, supprimez l'entité du fichier configuration.yaml.",
+      "recorder_exclude_explanation": "Pour exclure cette issue du Recorder, vous pouvez soit modifier configuration.yaml manuellement (faites d'abord une sauvegarde) soit cliquer sur le bouton Exclure du Recorder. Dans ce cas, HACA modifiera votre fichier configuration.yaml mais créera une sauvegarde avant la modification."
     },
     "zombie": {
       "searching": "Recherche de suggestions…",
@@ -494,7 +535,8 @@
       "states_col": "États",
       "estimated_total": "Total estimé : ~{mb} MB sur {count} entité(s)",
       "subtab_orphans": "Orphelins DB",
-      "subtab_impact": "Impact DB"
+      "subtab_impact": "Impact DB",
+      "orphan_badge": "{count} orphelin(s) · ~{mb} MB"
     },
     "graph": {
       "title": "Graphe de Dépendances",
@@ -699,8 +741,8 @@
       "ha_repairs": "Synchronisation Réparations HA",
       "ha_repairs_hint": "Envoyer les issues HIGH vers Paramètres → Réparations",
       "manual_only": "Manuel uniquement",
-      "battery_notifications": "Notifications batterie",
-      "battery_notifications_hint": "Notifications persistantes pour batterie faible",
+      "battery_notifications": "Notifications de batterie",
+      "battery_notifications_hint": "Notifications persistantes en cas de batterie faible",
       "startup_scan": "Scan au démarrage",
       "startup_scan_hint": "Lancer un scan complet au démarrage de Home Assistant",
       "severity_filters_title": "Filtres de notifications",
@@ -711,7 +753,7 @@
       "severity_medium_hint": "Notifier pour les problèmes importants à examiner",
       "severity_low": "Sévérité basse",
       "severity_low_hint": "Notifier pour les problèmes mineurs et suggestions d'amélioration",
-      "dashboard_section_title": "Dashboard HACA",
+      "dashboard_section_title": "Tableau de bord HACA",
       "dashboard_section_hint": "Générer automatiquement un dashboard HACA complet dans la barre latérale. Tous les capteurs HACA seront affichés avec des jauges, compteurs et historique. Si le dashboard existe déjà, il sera mis à jour.",
       "dashboard_created": "Dashboard créé avec succès ! Redirection..."
     },
@@ -951,7 +993,7 @@
       "sort_entity": "Entité",
       "col_actions": "Actions",
       "btn_open": "Ouvrir",
-      "filter_label": "Filtrer :",
+      "filter_label": "Filtre :",
       "btn_moreinfo": "Détails",
       "btn_open_config": "Ouvrir les paramètres",
       "area_limit_notice": "Seules les 150 premières entités sans zone sont affichées. Assignez des zones via Paramètres → Appareils & Services → Appareils pour résoudre ces problèmes."
@@ -1004,7 +1046,23 @@
       "fix_ref_ex2": "Corrige toutes les issues de conformité de type no_description avec sévérité basse",
       "fix_ref_ex3": "Corrige toutes les issues device_id_in_trigger",
       "fix_ref_ex4": "Montre-moi le catalogue d'issues",
-      "fix_ref_ex5": "Corrige toutes les issues corrigibles de sévérité haute"
+      "fix_ref_ex5": "Corrige toutes les issues corrigibles de sévérité haute",
+      "openrouter_free_models": "Modèles gratuits populaires",
+      "openrouter_free_model_note": "Définissez le modèle sur openrouter/auto:free dans les paramètres OpenRouter pour utiliser le niveau gratuit",
+      "cat_audit": "Audit HACA",
+      "cat_discovery": "Recherche et découverte",
+      "cat_control": "Contrôle",
+      "cat_automations": "Automatisations et scripts",
+      "cat_blueprints": "Blueprints",
+      "cat_scenes": "Scènes",
+      "cat_dashboard": "Tableaux de bord",
+      "cat_monitoring": "Surveillance et historique",
+      "cat_helpers": "Helpers et zones",
+      "cat_config": "Fichiers de configuration",
+      "cat_safety": "Sécurité et validation",
+      "fix_ref_high": "HAUTE",
+      "fix_ref_medium": "MOYENNE",
+      "fix_ref_low": "BASSE"
     },
     "agent": {
       "title": "Agent IA Proactif",
@@ -1144,7 +1202,9 @@
       "col_size": "Taille/an",
       "col_freq": "Fréq. Trigger",
       "copy_yaml": "Copier YAML",
-      "copied": "Copié !"
+      "copied": "Copié !",
+      "unit_day": "/j",
+      "unit_year": "/an"
     },
     "diag_prompts": {
       "marker": "[HACA_DIAGNOSTIC]",
@@ -1653,6 +1713,27 @@
     "backup_restored_extra": "⚠️ Redémarrez Home Assistant si des configurations ont changé.",
     "backup_deleted_title": "🗑️ Sauvegarde supprimée"
   },
+  "proactive_agent": {
+    "weekly_report_notification_title": "H.A.C.A — Rapport hebdomadaire (score : {score}/100)",
+    "weekly_report_header": "## 📊 Rapport H.A.C.A — {date}",
+    "weekly_report_summary": "**Score de santé : {score}/100** | {total} problème(s) détecté(s)",
+    "severity_section": "### Répartition par sévérité",
+    "severity_high": "- 🔴 Critique : {count}",
+    "severity_medium": "- 🟡 Modéré : {count}",
+    "severity_low": "- 🟢 Faible : {count}",
+    "category_section": "### Par catégorie",
+    "category_automation": "- Automations : {count}",
+    "category_entity": "- Entités : {count}",
+    "category_performance": "- Performance : {count}",
+    "category_security": "- Sécurité : {count}",
+    "critical_section": "### 🔴 Problèmes critiques à traiter en priorité",
+    "correlations_section": "### 🔗 Corrélations détectées",
+    "correlation_broken_device": "Le device « {device_id} » est référencé dans {count} automations mais semble cassé. Le corriger résoudrait tous ces problèmes.",
+    "correlation_unavailable_entity": "L'entité « {entity_id} » est référencée dans {count} automations mais n'est pas disponible. La corriger résoudrait {count} problèmes.",
+    "ai_section": "### 🤖 Analyse IA",
+    "report_footer": "_Rapport généré par H.A.C.A. Ouvrez le panneau pour plus de détails._",
+    "ai_prompt": "[Rapport hebdomadaire HACA]\nScore : {score}/100 | {total} problèmes | Critiques : {high}, Modérés : {medium}, Faibles : {low}\nTop 5 :\n{top5}\n\nEn 3-4 phrases max, donne les tendances clés et la recommandation principale pour améliorer la santé de la config HA cette semaine."
+  },
   "websocket": {
     "no_ai_service": "⚠️ Aucun service IA (ai_task) n'est configuré dans Home Assistant.\n\nRendez-vous dans **Paramètres → Général → Suggestion de l'IA** pour en activer un.",
     "no_issue_detected": "  Aucune issue détectée.",
@@ -1716,12 +1797,6 @@
     "helper_no_icon": "Le helper '{name}' n'a pas d'icône. Ajoutez-en une dans Paramètres → Helpers.",
     "helper_no_area": "Le helper '{name}' n'a pas de zone. Assignez-en une dans Paramètres → Helpers.",
     "entity_no_area": "L'entité '{name}' ({entity_id}) n'a pas de zone. Assignez via Paramètres → Appareils."
-  },
-  "issues": {
-    "generic_high_issue": {
-      "title": "HACA : {type} — {entity}",
-      "description": "{message}\n\nOuvrez le panneau HACA pour les détails et correctifs disponibles."
-    }
   },
   "llm_prompt": {
     "system_role": "Tu es HACA, assistant expert en configuration Home Assistant.",

@@ -586,9 +586,9 @@ function renderMcpSection(mcpStatus, agentStatus, t) {
           _i('alert-circle-outline',14) + ' ' + _t('mcp.fix_ref_severities', 'Severity Levels') +
         '</div>' +
         '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
-          '<span style="font-size:11px;background:var(--error-color,#ef5350);color:white;border-radius:5px;padding:3px 10px;font-weight:600;">HIGH</span>' +
-          '<span style="font-size:11px;background:var(--warning-color,#ff9800);color:white;border-radius:5px;padding:3px 10px;font-weight:600;">MEDIUM</span>' +
-          '<span style="font-size:11px;background:var(--info-color,#2196f3);color:white;border-radius:5px;padding:3px 10px;font-weight:600;">LOW</span>' +
+          '<span style="font-size:11px;background:var(--error-color,#ef5350);color:white;border-radius:5px;padding:3px 10px;font-weight:600;">' + _t('mcp.fix_ref_high', 'HIGH') + '</span>' +
+          '<span style="font-size:11px;background:var(--warning-color,#ff9800);color:white;border-radius:5px;padding:3px 10px;font-weight:600;">' + _t('mcp.fix_ref_medium', 'MEDIUM') + '</span>' +
+          '<span style="font-size:11px;background:var(--info-color,#2196f3);color:white;border-radius:5px;padding:3px 10px;font-weight:600;">' + _t('mcp.fix_ref_low', 'LOW') + '</span>' +
         '</div>' +
       '</div>' +
 

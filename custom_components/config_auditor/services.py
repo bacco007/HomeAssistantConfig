@@ -101,8 +101,13 @@ def _ts(hass, section: str, key: str, **kwargs) -> str:
 
     Reads from _TS_CACHE which is pre-loaded at integration setup time
     via _async_preload_ts_cache(). Never touches the filesystem.
+
+    Service handlers emit persistent notifications and reports — server-side
+    text — so we resolve the language via ``resolve_notification_language``
+    instead of the volatile per-panel ``user_language`` slot.
     """
-    lang = hass.data.get("config_auditor", {}).get("user_language") or hass.config.language or "en"
+    from .translation_utils import resolve_notification_language
+    lang = resolve_notification_language(hass)
     try:
         from . import _TS_CACHE  # noqa: PLC0415
         data = _TS_CACHE.get(lang) or _TS_CACHE.get("en") or {}
@@ -279,8 +284,11 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry) -> None:
             coordinator = data["coordinator"]
             report_gen = data["report_generator"]
             
-            # Get the current language from Home Assistant
-            language = hass.data.get("config_auditor", {}).get("user_language") or hass.config.language or "en"
+            # Get the current language from Home Assistant.
+            # Reports are server-emitted artifacts — use the same resolver as
+            # notifications (option override → system → en).
+            from .translation_utils import resolve_notification_language
+            language = resolve_notification_language(hass)
             
             summary = {
                 "health_score": coordinator.data.get("health_score", 0),
@@ -354,11 +362,12 @@ async def async_setup_services(hass: HomeAssistant, entry: ConfigEntry) -> None:
         async def handle_preview_device_id(call: ServiceCall) -> dict:
             """Handle preview_device_id service."""
             automation_id = call.data.get("automation_id")
-            
+            location = call.data.get("location")  # optional: scope fix to a single issue
+
             data = hass.data[DOMAIN][entry.entry_id]
             refactoring = data["refactoring_assistant"]
-            
-            result = await refactoring.preview_device_id_fix(automation_id)
+
+            result = await refactoring.preview_device_id_fix(automation_id, location=location)
             
             await _haca_notify(
                 hass,

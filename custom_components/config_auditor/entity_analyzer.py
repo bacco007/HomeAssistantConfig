@@ -75,8 +75,9 @@ class EntityAnalyzer:
         """Analyze all entities."""
         self.issues = []
         
-        # Load language for translations
-        language = self.hass.data.get("config_auditor", {}).get("user_language") or self.hass.config.language or "en"
+        # Load language for translations — see automation_analyzer for the rationale.
+        from .translation_utils import resolve_notification_language
+        language = resolve_notification_language(self.hass)
         await self._translator.async_load_language(language)
         
         # Load ignored entities (haca_ignore label) — MUST be first, before any analysis

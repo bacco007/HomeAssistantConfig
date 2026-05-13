@@ -134,9 +134,11 @@ class HacaLLMAPI(llm.API):
         hass = self.hass
 
         # ── Load prompt translations ─────────────────────────────────────
-        from .translation_utils import TranslationHelper
+        # The LLM API surface is global to the HA instance (other AI agents
+        # invoke it server-side), so we use the system-resolved language.
+        from .translation_utils import TranslationHelper, resolve_notification_language
         th = TranslationHelper(hass)
-        lang = hass.data.get(DOMAIN, {}).get("user_language") or hass.config.language or "en"
+        lang = resolve_notification_language(hass)
         await th.async_load_language_section(lang, "llm_prompt")
         p = th.t  # shortcut
 

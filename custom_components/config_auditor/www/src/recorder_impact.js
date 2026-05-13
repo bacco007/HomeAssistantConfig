@@ -42,7 +42,7 @@
         </div>
         ${mbSaved > 0 ? `<div style="background:rgba(76,175,80,0.1);border-radius:8px;padding:8px 14px;flex:1;min-width:140px;border:1px solid rgba(76,175,80,0.3);">
           <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#4caf50;letter-spacing:0.5px;">${this.t('recorder_impact.potential_saved')}</div>
-          <div style="font-size:22px;font-weight:800;color:#4caf50;">${mbSaved} MB/an</div>
+          <div style="font-size:22px;font-weight:800;color:#4caf50;">${mbSaved} MB${this.t('recorder_impact.unit_year')}</div>
         </div>` : ''}
       </div>`;
 
@@ -60,9 +60,9 @@
             <div style="width:${barPct}%;height:100%;background:${i < 3 ? '#ef5350' : '#ffa726'};border-radius:2px;"></div>
           </div>
         </td>
-        <td style="padding:8px 10px;text-align:center;font-weight:700;">${a.writes_per_day}/j</td>
-        <td style="padding:8px 10px;text-align:center;font-size:12px;color:var(--secondary-text-color);">${a.mb_per_year} MB/an</td>
-        <td style="padding:8px 10px;text-align:center;font-size:12px;">${a.trigger_freq}/j</td>
+        <td style="padding:8px 10px;text-align:center;font-weight:700;">${a.writes_per_day}${this.t('recorder_impact.unit_day')}</td>
+        <td style="padding:8px 10px;text-align:center;font-size:12px;color:var(--secondary-text-color);">${a.mb_per_year} MB${this.t('recorder_impact.unit_year')}</td>
+        <td style="padding:8px 10px;text-align:center;font-size:12px;">${a.trigger_freq}${this.t('recorder_impact.unit_day')}</td>
       </tr>`;
     }).join('');
 
@@ -76,8 +76,8 @@
           <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--divider-color);">
             ${_icon('code-tags', 14, '#4caf50')}
             <code style="flex:1;font-size:12px;">${this.escapeHtml(s.entity_id)}</code>
-            <span style="font-size:12px;color:var(--secondary-text-color);">${s.writes_per_day}/j</span>
-            <span style="font-size:12px;color:#4caf50;font-weight:600;">−${s.mb_saved_per_year} MB/an</span>
+            <span style="font-size:12px;color:var(--secondary-text-color);">${s.writes_per_day}${this.t('recorder_impact.unit_day')}</span>
+            <span style="font-size:12px;color:#4caf50;font-weight:600;">−${s.mb_saved_per_year} MB${this.t('recorder_impact.unit_year')}</span>
           </div>`).join('')}
         <div style="margin-top:12px;">
           <button id="copy-recorder-yaml-btn" style="background:var(--primary-color);color:#fff;border:none;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;">

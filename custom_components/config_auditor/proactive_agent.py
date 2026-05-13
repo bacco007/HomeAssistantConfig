@@ -24,6 +24,29 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
+
+def _pa_t(hass: HomeAssistant, key: str, **kwargs) -> str:
+    """Read a ``proactive_agent.<key>`` translation from the in-memory cache.
+
+    Uses ``resolve_notification_language`` so the weekly report follows the
+    same language policy as every other server-emitted text — explicit
+    ``notification_language`` option, then auto-tracked panel profile language,
+    then HA system locale, then English fallback.
+    """
+    from .translation_utils import resolve_notification_language
+    lang = resolve_notification_language(hass)
+    try:
+        from . import _TS_CACHE  # noqa: PLC0415
+        data = _TS_CACHE.get(lang) or _TS_CACHE.get("en") or {}
+    except Exception:
+        data = {}
+    val = data.get("proactive_agent", {}).get(key, key)
+    try:
+        return val.format(**kwargs) if kwargs else val
+    except Exception:
+        return val
+
+
 # Clé dans hass.data pour stocker l'état de l'agent
 _AGENT_STATE_KEY = f"{DOMAIN}_proactive_agent"
 _PREFS_KEY = "user_preferences"  # sous hass.data[DOMAIN][entry_id]
@@ -102,13 +125,12 @@ class UserPreferences:
 
 # ─── Corrélation d'issues ──────────────────────────────────────────────────
 
-def _correlate_issues(cdata: dict) -> list[dict[str, Any]]:
-    """Identifie les groupes d'issues liées entre elles.
+def _correlate_issues(hass: HomeAssistant, cdata: dict) -> list[dict[str, Any]]:
+    """Identify groups of related issues.
 
-    Exemples de corrélations :
-    - Même device_id cassé référencé dans N automations
-    - Même entité unavailable utilisée dans M automations/scènes
-    - Pattern de nommage similaire dans des issues distinctes
+    Examples:
+    - Same broken device_id referenced in N automations
+    - Same unavailable entity used in M automations/scenes
     """
     correlations: list[dict] = []
 
@@ -118,7 +140,7 @@ def _correlate_issues(cdata: dict) -> list[dict[str, Any]]:
         + list(cdata.get("performance_issue_list", []))
     )
 
-    # Grouper par device_id cassé
+    # Group by broken device_id
     device_issues: dict[str, list] = {}
     for issue in all_issues:
         ctx = issue.get("context", {}) or {}
@@ -134,13 +156,13 @@ def _correlate_issues(cdata: dict) -> list[dict[str, Any]]:
                 "affected_count": len(issues),
                 "affected_entities": list({i.get("entity_id", "") for i in issues})[:10],
                 "severity": "high" if len(issues) >= 5 else "medium",
-                "message": (
-                    f"Le device '{device_id}' est référencé dans {len(issues)} automations "
-                    f"mais semble cassé. Corriger ce device résoudrait toutes ces issues."
+                "message": _pa_t(
+                    hass, "correlation_broken_device",
+                    device_id=device_id, count=len(issues),
                 ),
             })
 
-    # Grouper par entité unavailable référencée dans plusieurs automations
+    # Group by unavailable entity referenced in multiple automations
     entity_refs: dict[str, list] = {}
     for issue in all_issues:
         if issue.get("type") in ("zombie_entity_reference", "entity_unavailable"):
@@ -155,9 +177,9 @@ def _correlate_issues(cdata: dict) -> list[dict[str, Any]]:
                 "entity_id": entity_id,
                 "affected_count": len(issues),
                 "severity": "medium",
-                "message": (
-                    f"L'entité '{entity_id}' est référencée dans {len(issues)} automations "
-                    f"but is not available. Fixing this entity would resolve {len(issues)} issues."
+                "message": _pa_t(
+                    hass, "correlation_unavailable_entity",
+                    entity_id=entity_id, count=len(issues),
                 ),
             })
 
@@ -200,27 +222,29 @@ async def _generate_weekly_report(
         key=lambda i: i.get("type", ""),
     )[:3]
 
-    correlations = _correlate_issues(cdata)
+    correlations = _correlate_issues(hass, cdata)
 
+    # Localized via the proactive_agent translation section. Placeholders are
+    # filled by _pa_t (str.format under the hood).
     report_lines = [
-        f"## 📊 Rapport H.A.C.A — {datetime.now().strftime('%d/%m/%Y')}",
+        _pa_t(hass, "weekly_report_header", date=datetime.now().strftime("%Y-%m-%d")),
         "",
-        f"**Score de santé : {score}/100** | {total} issue(s) détectée(s)",
+        _pa_t(hass, "weekly_report_summary", score=score, total=total),
         "",
-        "### Répartition par sévérité",
-        f"- 🔴 Critique : {high_count}",
-        f"- 🟡 Modéré : {medium_count}",
-        f"- 🟢 Faible : {low_count}",
+        _pa_t(hass, "severity_section"),
+        _pa_t(hass, "severity_high", count=high_count),
+        _pa_t(hass, "severity_medium", count=medium_count),
+        _pa_t(hass, "severity_low", count=low_count),
         "",
-        "### Par catégorie",
-        f"- Automations : {auto_issues}",
-        f"- Entités : {entity_issues}",
-        f"- Performance : {perf_issues}",
-        f"- Sécurité : {security_issues}",
+        _pa_t(hass, "category_section"),
+        _pa_t(hass, "category_automation", count=auto_issues),
+        _pa_t(hass, "category_entity", count=entity_issues),
+        _pa_t(hass, "category_performance", count=perf_issues),
+        _pa_t(hass, "category_security", count=security_issues),
     ]
 
     if critical:
-        report_lines += ["", "### 🔴 Issues critiques à traiter en priorité"]
+        report_lines += ["", _pa_t(hass, "critical_section")]
         for issue in critical:
             report_lines.append(
                 f"- **{issue.get('entity_id', issue.get('alias', '?'))}** "
@@ -228,35 +252,33 @@ async def _generate_weekly_report(
             )
 
     if correlations:
-        report_lines += ["", "### 🔗 Corrélations détectées"]
+        report_lines += ["", _pa_t(hass, "correlations_section")]
         for corr in correlations[:3]:
             report_lines.append(f"- {corr['message']}")
 
-    # Enrichissement IA si disponible
+    # AI enrichment if available
     if use_ai and total > 0 and all_issues:
         try:
             top5_txt = "\n".join(
                 f"  [{i.get('severity','?').upper()}] {i.get('entity_id','?')}: {i.get('message','')[:100]}"
                 for i in sorted(all_issues, key=lambda x: {"high":0,"medium":1,"low":2}.get(x.get("severity","low"),2))[:5]
             )
-            ai_prompt = (
-                f"[HACA Rapport Hebdomadaire]\n"
-                f"Score: {score}/100 | {total} issues | "
-                f"High: {high_count}, Medium: {medium_count}, Low: {low_count}\n"
-                f"Top 5 issues:\n{top5_txt}\n\n"
-                f"En 3-4 phrases max, donne les tendances clés et la recommandation "
-                f"principale pour améliorer la santé de la config HA cette semaine."
+            ai_prompt = _pa_t(
+                hass, "ai_prompt",
+                score=score, total=total,
+                high=high_count, medium=medium_count, low=low_count,
+                top5=top5_txt,
             )
             ai_insight = await _async_call_ai(hass, ai_prompt, "HACA Weekly Report")
             if ai_insight:
-                report_lines += ["", "### 🤖 Analyse IA", ai_insight]
+                report_lines += ["", _pa_t(hass, "ai_section"), ai_insight]
         except Exception as exc:
             _LOGGER.debug("[HACA Agent] AI weekly insight error: %s", exc)
 
     report_lines += [
         "",
         "---",
-        "_Rapport généré par H.A.C.A. Ouvrez le panel pour plus de détails._",
+        _pa_t(hass, "report_footer"),
     ]
 
     return "\n".join(report_lines)
@@ -376,13 +398,19 @@ class ProactiveAgent:
                 use_ai=self._entry.options.get("proactive_agent_ai", True),
             )
 
-            # Envoyer notification HA
+            # Envoyer notification HA — titre localisé via la même politique
+            # que le corps du rapport (resolve_notification_language).
+            notif_title = _pa_t(
+                self._hass,
+                "weekly_report_notification_title",
+                score=cdata.get("health_score", "?"),
+            )
             await self._hass.services.async_call(
                 "persistent_notification",
                 "create",
                 {
                     "notification_id": f"{DOMAIN}_weekly_report",
-                    "title": f"H.A.C.A — Rapport hebdomadaire (score: {cdata.get('health_score', '?')}/100)",
+                    "title": notif_title,
                     "message": report_body,
                 },
                 blocking=False,

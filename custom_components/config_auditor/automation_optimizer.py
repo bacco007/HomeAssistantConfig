@@ -281,7 +281,8 @@ class AutomationOptimizer:
             for bp in blueprints
         ) if blueprints else "  (aucun blueprint installé)"
 
-        _lang = self.hass.data.get("config_auditor", {}).get("user_language") or self.hass.config.language or "en"
+        from .translation_utils import resolve_notification_language
+        _lang = resolve_notification_language(self.hass)
         try:
             from . import _TS_CACHE  # noqa: PLC0415
             _cache = _TS_CACHE.get(_lang) or _TS_CACHE.get("en") or {}

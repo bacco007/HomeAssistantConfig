@@ -36,12 +36,12 @@ class PerformanceAnalyzer:
         """Analyze performance of all automations."""
         self.issues = []
         
-        # Load language for translations
-        language = self.hass.data.get("config_auditor", {}).get("user_language") or self.hass.config.language or "en"
+        # Load language for translations — server-emitted messages, see analyzer rationale.
+        from .translation_utils import resolve_notification_language, async_get_haca_ignored_entity_ids
+        language = resolve_notification_language(self.hass)
         await self._translator.async_load_language(language)
 
         # Load haca_ignore label (entity + device level)
-        from .translation_utils import async_get_haca_ignored_entity_ids
         _ignored = await async_get_haca_ignored_entity_ids(self.hass)
         
         automation_configs = automation_configs or {}
@@ -319,9 +319,73 @@ class PerformanceAnalyzer:
             noisy_results = await self.hass.async_add_executor_job(_query_noisy, instance)
         except Exception as exc:
             _LOGGER.debug("Noisy entity detection error: %s", exc)
-            return
+            noisy_results = []
 
-        # Check recorder exclusion filter
+        # Augment SQL results with the in-memory state-change tracker.
+        # The tracker observes EVENT_STATE_CHANGED directly, so it sees
+        # entities that HA's recorder is currently filtering (and therefore
+        # has no rows in the DB for). Without this merge, removing an
+        # entity from ``recorder.exclude.entities`` would not bring the
+        # issue back until the user *also* restarts HA and waits ~24h.
+        try:
+            from .const import DOMAIN
+            tracker = None
+            domain_data = self.hass.data.get(DOMAIN) or {}
+            for entry_data in domain_data.values():
+                if isinstance(entry_data, dict) and entry_data.get("noisy_tracker"):
+                    tracker = entry_data["noisy_tracker"]
+                    break
+            if tracker is not None and tracker.has_warmed_up():
+                mem_results = tracker.get_noisy(THRESHOLD_MEDIUM)
+                sql_ids = {eid for eid, _ in noisy_results}
+                # Merge in entities we know are noisy in-memory but the
+                # recorder has been filtering. Keep SQL's count when both
+                # see the same entity — SQL spans a true rolling 24h, the
+                # tracker only has data since HA started.
+                noisy_results = list(noisy_results) + [
+                    (eid, cnt) for eid, cnt in mem_results if eid not in sql_ids
+                ]
+                _LOGGER.info(
+                    "[HACA] noisy detection: %d from SQL + %d from in-memory tracker (warmed up: %s)",
+                    len(sql_ids),
+                    len(noisy_results) - len(sql_ids),
+                    tracker.stats(),
+                )
+        except Exception as exc:
+            _LOGGER.debug("[HACA] noisy in-memory tracker merge failed: %s", exc)
+
+        # Read configuration.yaml as the **authoritative** source for
+        # recorder excludes. When the YAML reader can fully understand the
+        # recorder section (it's a plain in-line mapping, not loaded via
+        # !include), we trust it exclusively — this is what makes
+        # "remove an entity from configuration.yaml + rescan" actually
+        # bring the issue back without an HA restart. When the YAML
+        # reader can't decide (file missing, parse error, !include used),
+        # we fall back to the live recorder filter, which reflects the
+        # state HA loaded at startup.
+        _yaml_excluded: set[str] = set()
+        _yaml_authoritative = False
+        try:
+            from .recorder_yaml_editor import async_get_recorder_excluded_entities
+            _yaml_excluded, _yaml_authoritative = (
+                await async_get_recorder_excluded_entities(self.hass)
+            )
+        except Exception as exc:
+            _LOGGER.warning(
+                "[HACA] recorder YAML read failed: %s — falling back to is_entity_recorded",
+                exc,
+            )
+            _yaml_excluded, _yaml_authoritative = set(), False
+
+        # Visible (INFO) log so the user can confirm what HACA sees on each
+        # scan — essential when diagnosing "I removed the entity from the
+        # YAML but the issue still doesn't reappear".
+        _LOGGER.info(
+            "[HACA] recorder excludes from configuration.yaml: %s (authoritative=%s)",
+            sorted(_yaml_excluded) if _yaml_excluded else "<empty>",
+            _yaml_authoritative,
+        )
+
         try:
             from homeassistant.components.recorder import is_entity_recorded
             _has_recorder_filter = True
@@ -335,13 +399,23 @@ class PerformanceAnalyzer:
             if entity_id.startswith("sensor.h_a_c_a_"):
                 continue
 
-            # Skip entities already excluded from recorder
-            if _has_recorder_filter:
-                try:
-                    if not is_entity_recorded(self.hass, entity_id):
-                        continue
-                except Exception:
-                    pass
+            if _yaml_authoritative:
+                # YAML is the single source of truth. Skip if-and-only-if
+                # the entity is in recorder.exclude.entities right now.
+                if entity_id in _yaml_excluded:
+                    continue
+            else:
+                # YAML couldn't tell us authoritatively. Honour both the
+                # in-list check (still useful when YAML is partial) and
+                # the runtime recorder filter (HA's startup view).
+                if entity_id in _yaml_excluded:
+                    continue
+                if _has_recorder_filter:
+                    try:
+                        if not is_entity_recorded(self.hass, entity_id):
+                            continue
+                    except Exception:
+                        pass
 
             if count >= THRESHOLD_HIGH:
                 severity = "medium"

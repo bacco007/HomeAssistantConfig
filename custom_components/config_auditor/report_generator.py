@@ -17,7 +17,23 @@ import json as _json
 from pathlib import Path as _Path
 
 def _load_translations_from_json(language: str) -> dict:
-    """Load report translations from JSON files. Falls back to English."""
+    """Return the ``report`` translation section for the given language.
+
+    Reads from the in-memory ``_TS_CACHE`` populated at integration setup;
+    falls back to disk only when the cache has not been populated (early
+    bootstrap or unit tests). Falls back to English when the requested
+    language is missing.
+    """
+    # Cache-first path
+    try:
+        from . import _TS_CACHE  # noqa: PLC0415
+        cache = _TS_CACHE.get(language) or _TS_CACHE.get("en")
+        if cache:
+            return cache.get("report", {})
+    except Exception:
+        pass
+
+    # Disk fallback (cold path)
     base = _Path(__file__).parent / "translations"
     path = base / f"{language}.json"
     if not path.exists():
@@ -25,10 +41,6 @@ def _load_translations_from_json(language: str) -> dict:
         path = base / "en.json"
     try:
         data = _json.loads(path.read_text(encoding="utf-8")).get("report", {})
-        _LOGGER.info(
-            "HACA v1.3.0 translations: path=%s keys=%d script_section=%s",
-            path, len(data), data.get("script_issues_section", "MISSING"),
-        )
         return data
     except Exception as exc:
         _LOGGER.error("HACA translations load error: %s", exc)

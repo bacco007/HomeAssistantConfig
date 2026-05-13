@@ -116,7 +116,6 @@ async def async_update_repairs(
                 description_parts.append(message_text)
             if recommendation:
                 description_parts.append(f"Recommendation: {recommendation}")
-            description_parts.append("Open the HACA panel for details and available fixes.")
 
             ir.async_create_issue(
                 hass,

@@ -9,25 +9,157 @@ from typing import Any
 _LOGGER = logging.getLogger(__name__)
 
 
+async def async_detect_frontend_user_language(hass) -> str | None:
+    """Best-effort: read the owner user's profile language from HA storage.
+
+    The HA frontend persists each user's locale under
+    ``.storage/frontend.user_data_<user_id>`` (key ``language.language``).
+    This helper opens that store via ``homeassistant.helpers.storage.Store``
+    so the path stays in sync with however HA layers wrap it.
+
+    Returns the language string (``"fr"``, ``"da"`` …) or ``None`` if no
+    owner exists, no language is recorded, or any I/O error occurs. The
+    function is async because the storage helper performs disk I/O.
+    """
+    try:
+        users = await hass.auth.async_get_users()
+    except Exception:
+        return None
+    owner = next((u for u in users if getattr(u, "is_owner", False)), None)
+    # Some installs have no explicit owner; pick the first admin user instead.
+    if owner is None:
+        owner = next(
+            (u for u in users
+             if getattr(u, "is_active", True)
+             and not getattr(u, "system_generated", False)),
+            None,
+        )
+    if owner is None:
+        return None
+    try:
+        from homeassistant.helpers.storage import Store
+        store = Store(hass, 1, f"frontend.user_data_{owner.id}")
+        data = await store.async_load()
+    except Exception:
+        return None
+    if not isinstance(data, dict):
+        return None
+    # Across HA versions the language is stored as either
+    # ``{"language": "fr"}`` (string) or ``{"language": {"language": "fr"}}``
+    # (nested object alongside other locale prefs).  Cover both shapes.
+    raw = data.get("language")
+    if isinstance(raw, str) and raw:
+        return raw
+    if isinstance(raw, dict):
+        nested = raw.get("language") or raw.get("value")
+        if isinstance(nested, str) and nested:
+            return nested
+    return None
+
+
+def resolve_notification_language(hass) -> str:
+    """Resolve the language for server-emitted text.
+
+    Server-emitted = persistent notifications, HA Repairs descriptions,
+    background scans (battery alerts, weekly reports, regression warnings,
+    issue messages stored in coordinator.data).
+
+    Resolution order:
+        1. Per-entry option ``notification_language`` (explicit override
+           saved by the user from the Configuration tab).
+        2. Per-entry option ``notification_language_auto`` (last panel
+           profile language seen by ``handle_get_translations``).
+        3. Home Assistant system language (``hass.config.language``).
+        4. ``"en"`` fallback.
+
+    The volatile ``hass.data[DOMAIN]["user_language"]`` slot is *intentionally*
+    ignored here — it is set by the last user who opened the HACA panel and
+    must only influence WebSocket responses targeted at that user. Using it
+    for server-emitted text causes notifications to flip language whenever
+    a different user opens the panel.
+
+    The auto-tracked value persists across HA restarts, so a user who switches
+    their profile language only needs to open the panel once for subsequent
+    server-side notifications to follow the new language.
+    """
+    # Local import to avoid a hard dependency cycle (const → translation_utils
+    # is fine, but we keep this lazy in case const is restructured).
+    try:
+        from .const import DOMAIN
+        for entry in hass.config_entries.async_entries(DOMAIN):
+            opts = entry.options or {}
+            explicit = opts.get("notification_language")
+            if explicit:
+                return explicit
+            auto = opts.get("notification_language_auto")
+            if auto:
+                return auto
+    except Exception:
+        pass
+    return hass.config.language or "en"
+
+
 class TranslationHelper:
-    """Helper class for translations in analyzers."""
-    
+    """Translation helper for HACA analyzers.
+
+    Reads translations from ``custom_components.config_auditor._TS_CACHE``
+    (pre-loaded once at integration setup by ``_async_preload_ts_cache``).
+    Disk I/O is used only as a fallback when the cache is empty — typically
+    during unit tests or before integration setup completes.
+
+    The cache stores each language as a flat dict where every root-level
+    section of the JSON file (``analyzer``, ``ai_prompts``, ``llm_prompt``,
+    ``proactive_agent``, ``notifications``, …) is preserved, and ``panel.*``
+    sub-sections are overlaid on top. So ``cache[lang][section]`` returns
+    the same content as ``raw_json[section]`` would.
+    """
+
     def __init__(self, hass) -> None:
         """Initialize translation helper."""
         self.hass = hass
         self._language = "en"
         self._translations: dict[str, str] = {}
-    
+
+    # ── Cache-first loaders (no I/O) ──────────────────────────────────────
+
+    def _try_load_from_cache(self, language: str, section: str) -> bool:
+        """Populate ``self._translations`` from ``_TS_CACHE`` if possible.
+
+        Returns True on a successful cache hit. Falls back to English when
+        the requested language is missing but ``en`` is cached. Returns
+        False only when the cache is empty for every language (cold path
+        before integration setup or under unit-test isolation).
+        """
+        try:
+            from . import _TS_CACHE  # noqa: PLC0415  (local import: avoid cycle on module load)
+        except Exception:
+            return False
+        cache = _TS_CACHE.get(language) or _TS_CACHE.get("en")
+        if not cache:
+            return False
+        self._language = language
+        self._translations = cache.get(section, {})
+        return True
+
+    # ── Public API (unchanged signatures) ─────────────────────────────────
+
     async def async_load_language(self, language: str) -> None:
-        """Load translations asynchronously (runs file I/O in executor to avoid blocking)."""
+        """Load the analyzer section for *language* into the helper."""
+        if self._try_load_from_cache(language, "analyzer"):
+            return
+        # Cold path: read from disk in the executor so we never block the loop.
         await self.hass.async_add_executor_job(self.load_language, language)
 
     async def async_load_language_section(self, language: str, section: str) -> None:
-        """Load a specific top-level JSON section (e.g. 'ai_prompts') instead of 'analyzer'."""
+        """Load any top-level JSON section (``ai_prompts``, ``llm_prompt``…)."""
+        if self._try_load_from_cache(language, section):
+            return
         await self.hass.async_add_executor_job(self._load_section, language, section)
 
     def _load_section(self, language: str, section: str) -> None:
-        """Synchronously load a named section from the JSON translation file."""
+        """Disk fallback for ``async_load_language_section``."""
+        if self._try_load_from_cache(language, section):
+            return
         import json as _json
         from pathlib import Path as _Path
         base = _Path(__file__).parent / "translations"
@@ -40,30 +172,32 @@ class TranslationHelper:
             self._translations = {}
 
     def load_language(self, language: str) -> None:
-        """Load translations for the specified language from JSON files (sync, for executor use only)."""
+        """Disk fallback for ``async_load_language``.
+
+        Synchronous; safe to call from a thread (executor) or from tests.
+        """
+        if self._try_load_from_cache(language, "analyzer"):
+            return
+
         self._language = language
-        
-        # Determine the translation file path
         translations_dir = Path(__file__).parent / "translations"
         translation_file = translations_dir / f"{language}.json"
-        
-        # Fallback to English if the language file doesn't exist
         if not translation_file.exists():
             translation_file = translations_dir / "en.json"
             _LOGGER.debug("Translation file for '%s' not found, falling back to English", language)
-        
+
         try:
             with open(translation_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
-            
-            # Extract analyzer translations from the JSON structure
             self._translations = data.get("analyzer", {})
-            _LOGGER.debug("Loaded %d analyzer translations for language '%s'", len(self._translations), language)
-            
+            _LOGGER.debug(
+                "Loaded %d analyzer translations for language '%s' (disk fallback)",
+                len(self._translations), language,
+            )
         except (FileNotFoundError, json.JSONDecodeError) as e:
             _LOGGER.warning("Error loading translations from %s: %s", translation_file, e)
             self._translations = {}
-    
+
     def t(self, key: str, **kwargs) -> str:
         """Get translation with parameter substitution."""
         template = self._translations.get(key, key)
