@@ -756,6 +756,9 @@
         "name": "app-shortcut"
     },
     {
+        "name": "app-spark"
+    },
+    {
         "name": "apparel"
     },
     {
@@ -1386,22 +1389,40 @@
         "name": "battery-charging-20"
     },
     {
+        "name": "battery-charging-20-2"
+    },
+    {
         "name": "battery-charging-30"
+    },
+    {
+        "name": "battery-charging-30-2"
     },
     {
         "name": "battery-charging-50"
     },
     {
+        "name": "battery-charging-50-2"
+    },
+    {
         "name": "battery-charging-60"
     },
     {
+        "name": "battery-charging-60-2"
+    },
+    {
         "name": "battery-charging-80"
+    },
+    {
+        "name": "battery-charging-80-2"
     },
     {
         "name": "battery-charging-90"
     },
     {
         "name": "battery-charging-full"
+    },
+    {
+        "name": "battery-charging-full-2"
     },
     {
         "name": "battery-error"
@@ -1509,6 +1530,9 @@
         "name": "biotech"
     },
     {
+        "name": "bitbucket"
+    },
+    {
         "name": "blanket"
     },
     {
@@ -1519,6 +1543,12 @@
     },
     {
         "name": "blinds"
+    },
+    {
+        "name": "blinds-2"
+    },
+    {
+        "name": "blinds-2-closed"
     },
     {
         "name": "blinds-closed"
@@ -1585,6 +1615,9 @@
     },
     {
         "name": "bolt"
+    },
+    {
+        "name": "bolt-boost"
     },
     {
         "name": "bomb"
@@ -2038,6 +2071,9 @@
     },
     {
         "name": "car-fan-recirculate"
+    },
+    {
+        "name": "car-fan-recirculate-2"
     },
     {
         "name": "car-gear"
@@ -4644,6 +4680,9 @@
         "name": "frame-source"
     },
     {
+        "name": "frame-spark"
+    },
+    {
         "name": "free-cancellation"
     },
     {
@@ -4776,6 +4815,9 @@
         "name": "garage-door"
     },
     {
+        "name": "garage-door-open"
+    },
+    {
         "name": "garage-home"
     },
     {
@@ -4837,6 +4879,9 @@
     },
     {
         "name": "gite"
+    },
+    {
+        "name": "gitlab"
     },
     {
         "name": "glass-cup"
@@ -5361,6 +5406,9 @@
         "name": "home-storage"
     },
     {
+        "name": "home-storage-gear"
+    },
+    {
         "name": "home-work"
     },
     {
@@ -5596,6 +5644,9 @@
     },
     {
         "name": "ink-highlighter-move"
+    },
+    {
+        "name": "ink-highlighter-off"
     },
     {
         "name": "ink-marker"
@@ -6000,6 +6051,9 @@
         "name": "light-group"
     },
     {
+        "name": "light-group-2"
+    },
+    {
         "name": "light-mode"
     },
     {
@@ -6016,6 +6070,9 @@
     },
     {
         "name": "lightning-stand"
+    },
+    {
+        "name": "lightstrip"
     },
     {
         "name": "line-axis"
@@ -6100,6 +6157,9 @@
     },
     {
         "name": "list-alt-check"
+    },
+    {
+        "name": "list-arrow"
     },
     {
         "name": "lists"
@@ -6970,6 +7030,9 @@
     },
     {
         "name": "movie-edit"
+    },
+    {
+        "name": "movie-edit-off"
     },
     {
         "name": "movie-filter"
@@ -8055,7 +8118,13 @@
         "name": "pin-end"
     },
     {
+        "name": "pin-history"
+    },
+    {
         "name": "pin-invoke"
+    },
+    {
+        "name": "pin-road"
     },
     {
         "name": "pinboard"
@@ -9084,6 +9153,9 @@
         "name": "sell"
     },
     {
+        "name": "sell-cloud"
+    },
+    {
         "name": "send"
     },
     {
@@ -9270,6 +9342,12 @@
         "name": "severe-cold"
     },
     {
+        "name": "shades"
+    },
+    {
+        "name": "shades-closed"
+    },
+    {
         "name": "shadow"
     },
     {
@@ -9330,6 +9408,9 @@
         "name": "shield"
     },
     {
+        "name": "shield-card"
+    },
+    {
         "name": "shield-lock"
     },
     {
@@ -9343,6 +9424,9 @@
     },
     {
         "name": "shield-question"
+    },
+    {
+        "name": "shield-radar"
     },
     {
         "name": "shield-spark"
@@ -9690,6 +9774,9 @@
         "name": "sound-sensing"
     },
     {
+        "name": "soundbar"
+    },
+    {
         "name": "soup-kitchen"
     },
     {
@@ -9736,6 +9823,9 @@
     },
     {
         "name": "speaker"
+    },
+    {
+        "name": "speaker-2"
     },
     {
         "name": "speaker-group"
@@ -9801,7 +9891,16 @@
         "name": "speed-1-7x"
     },
     {
+        "name": "speed-2"
+    },
+    {
         "name": "speed-2x"
+    },
+    {
+        "name": "speed-3"
+    },
+    {
+        "name": "speed-4"
     },
     {
         "name": "speed-camera"
@@ -10212,6 +10311,9 @@
         "name": "subway-walk"
     },
     {
+        "name": "subwoofer"
+    },
+    {
         "name": "summarize"
     },
     {
@@ -10330,6 +10432,9 @@
     },
     {
         "name": "switch-left"
+    },
+    {
+        "name": "switch-off"
     },
     {
         "name": "switch-right"
@@ -10710,6 +10815,12 @@
         "name": "tile-small"
     },
     {
+        "name": "tilt-arrow-down"
+    },
+    {
+        "name": "tilt-arrow-up"
+    },
+    {
         "name": "time-auto"
     },
     {
@@ -10860,6 +10971,9 @@
         "name": "touch-double"
     },
     {
+        "name": "touch-double-2"
+    },
+    {
         "name": "touch-long"
     },
     {
@@ -10953,7 +11067,13 @@
         "name": "translate"
     },
     {
+        "name": "translate-cc"
+    },
+    {
         "name": "translate-indic"
+    },
+    {
+        "name": "translate-subtitles"
     },
     {
         "name": "transportation"
@@ -11203,6 +11323,12 @@
     },
     {
         "name": "vacuum"
+    },
+    {
+        "name": "vacuum-2"
+    },
+    {
+        "name": "vacuum-2-on"
     },
     {
         "name": "valve"
@@ -11529,6 +11655,9 @@
         "name": "watch-arrow-down"
     },
     {
+        "name": "watch-button"
+    },
+    {
         "name": "watch-button-press"
     },
     {
@@ -11626,6 +11755,9 @@
     },
     {
         "name": "wb-twilight"
+    },
+    {
+        "name": "wb-twilight-2"
     },
     {
         "name": "wc"
@@ -11734,6 +11866,9 @@
     },
     {
         "name": "wifi-channel"
+    },
+    {
+        "name": "wifi-device"
     },
     {
         "name": "wifi-find"

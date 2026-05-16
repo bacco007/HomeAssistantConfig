@@ -702,22 +702,40 @@
         "name": "battery-charging-20"
     },
     {
+        "name": "battery-charging-20-2"
+    },
+    {
         "name": "battery-charging-30"
+    },
+    {
+        "name": "battery-charging-30-2"
     },
     {
         "name": "battery-charging-50"
     },
     {
+        "name": "battery-charging-50-2"
+    },
+    {
         "name": "battery-charging-60"
     },
     {
+        "name": "battery-charging-60-2"
+    },
+    {
         "name": "battery-charging-80"
+    },
+    {
+        "name": "battery-charging-80-2"
     },
     {
         "name": "battery-charging-90"
     },
     {
         "name": "battery-charging-full"
+    },
+    {
+        "name": "battery-charging-full-2"
     },
     {
         "name": "battery-error"
@@ -1114,6 +1132,12 @@
     },
     {
         "name": "car-fan-mid-right"
+    },
+    {
+        "name": "car-fan-recirculate"
+    },
+    {
+        "name": "car-fan-recirculate-2"
     },
     {
         "name": "car-gear"
@@ -2511,6 +2535,9 @@
         "name": "frame-source"
     },
     {
+        "name": "frame-spark"
+    },
+    {
         "name": "free-cancellation"
     },
     {
@@ -2781,6 +2808,9 @@
         "name": "home-storage"
     },
     {
+        "name": "home-storage-gear"
+    },
+    {
         "name": "host"
     },
     {
@@ -2899,6 +2929,9 @@
     },
     {
         "name": "ink-highlighter-move"
+    },
+    {
+        "name": "ink-highlighter-off"
     },
     {
         "name": "ink-marker"
@@ -3091,6 +3124,9 @@
     },
     {
         "name": "lightbulb-2"
+    },
+    {
+        "name": "lightstrip"
     },
     {
         "name": "linked-camera"
@@ -3673,6 +3709,9 @@
     },
     {
         "name": "movie-edit"
+    },
+    {
+        "name": "movie-edit-off"
     },
     {
         "name": "movie-filter"
@@ -4791,6 +4830,9 @@
         "name": "sell"
     },
     {
+        "name": "sell-cloud"
+    },
+    {
         "name": "send-time-extension"
     },
     {
@@ -4872,9 +4914,6 @@
         "name": "shapes"
     },
     {
-        "name": "share-location"
-    },
-    {
         "name": "share-reviews"
     },
     {
@@ -4893,10 +4932,16 @@
         "name": "shelf-position"
     },
     {
+        "name": "shield-card"
+    },
+    {
         "name": "shield-lock"
     },
     {
         "name": "shield-locked"
+    },
+    {
+        "name": "shield-radar"
     },
     {
         "name": "shoe-cleats"
@@ -5052,6 +5097,9 @@
         "name": "sound-detection-loud-sound"
     },
     {
+        "name": "soundbar"
+    },
+    {
         "name": "source-notes"
     },
     {
@@ -5065,6 +5113,9 @@
     },
     {
         "name": "speaker"
+    },
+    {
+        "name": "speaker-2"
     },
     {
         "name": "speaker-group"
@@ -5124,7 +5175,16 @@
         "name": "speed-1-7x"
     },
     {
+        "name": "speed-2"
+    },
+    {
         "name": "speed-2x"
+    },
+    {
+        "name": "speed-3"
+    },
+    {
+        "name": "speed-4"
     },
     {
         "name": "speed-camera"
@@ -5316,6 +5376,9 @@
         "name": "subtitles-off"
     },
     {
+        "name": "subwoofer"
+    },
+    {
         "name": "summarize"
     },
     {
@@ -5374,6 +5437,9 @@
     },
     {
         "name": "switch-camera"
+    },
+    {
+        "name": "switch-off"
     },
     {
         "name": "switch-video"
@@ -5562,6 +5628,12 @@
         "name": "thumbs-up-down"
     },
     {
+        "name": "tilt-arrow-down"
+    },
+    {
+        "name": "tilt-arrow-up"
+    },
+    {
         "name": "timer-10"
     },
     {
@@ -5634,6 +5706,9 @@
         "name": "touch-double"
     },
     {
+        "name": "touch-double-2"
+    },
+    {
         "name": "touch-long"
     },
     {
@@ -5680,6 +5755,12 @@
     },
     {
         "name": "transition-slide"
+    },
+    {
+        "name": "translate-cc"
+    },
+    {
+        "name": "translate-subtitles"
     },
     {
         "name": "transportation"
@@ -6070,6 +6151,9 @@
     },
     {
         "name": "wifi-calling-bar-3"
+    },
+    {
+        "name": "wifi-device"
     },
     {
         "name": "wifi-lock"
