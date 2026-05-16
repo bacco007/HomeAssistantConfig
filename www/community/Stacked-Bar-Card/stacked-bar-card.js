@@ -1,8 +1,6 @@
-// Stacked Bar Card - A stacked bar (horizontal or vertical) for Home Assistant
-// Repository: https://github.com/kattcrazy/Stacked-Bar-Card
-// Add type="module" to your resource:
-//   - url: /local/stacked-bar-card.js
-//     type: module
+/** Stacked Bar Card — Lovelace custom card (stacked horizontal/vertical bar by entity value). */
+// Resource: url /local/stacked-bar-card.js, type module.
+// https://github.com/kattcrazy/Stacked-Bar-Card
 //
 import { html, css, LitElement, nothing } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/core/lit-core.min.js';
 
@@ -22,6 +20,15 @@ function isHardcodedNumber(v) {
   if (v == null) return false;
   const s = String(v).trim();
   return s !== '' && !isNaN(Number(s));
+}
+
+/** Safe fragment for `color:` / CSS custom property value (blocks obvious injection). */
+function sanitizeBarTextColor(raw) {
+  if (raw == null) return '';
+  const s = String(raw).trim();
+  if (!s) return '';
+  if (/[;{}<]/.test(s) || /\burl\s*\(/i.test(s)) return '';
+  return s;
 }
 
 function getAtPath(obj, path) {
@@ -70,16 +77,22 @@ class StackedHorizontalBarCard extends LitElement {
     return document.createElement('stacked-bar-card-editor');
   }
 
-  static getStubConfig() {
+  static getStubConfig(hass, entities, entitiesFallback) {
+    const pool = [...(entities || []), ...(entitiesFallback || [])];
+    const pick = pool.find((eid) => {
+      const st = hass?.states?.[eid];
+      if (!st) return false;
+      const n = parseFloat(String(st.state));
+      return !Number.isNaN(n);
+    });
     return {
-      type: 'custom:stacked-bar-card',
-      entities: [],
-      sort: 'highest',
-      show_title: true,
+      entities: pick ? [{ entity: pick }] : [],
       show_legend: true,
-      show_state: 'legend',
       show_name: 'legend',
+      show_state: 'legend',
+      show_title: true,
       show_unit: 'none',
+      sort: 'highest',
       unit_source: 'automatic',
     };
   }
@@ -271,6 +284,9 @@ class StackedHorizontalBarCard extends LitElement {
     const renderLegendStrip = showInLegend || showNameInLegend || showUnitInLegend;
     const alignment = this._resolve('alignment') ?? this._resolve('title_alignment') ?? this._resolve('legend_alignment') ?? 'left';
 
+    const barTextColorResolved = sanitizeBarTextColor(this._resolve('bar_text_color'));
+    const barTextColorCss = barTextColorResolved ? `--stacked-bar-bar-text:${barTextColorResolved}` : '';
+
     if (segments.length === 0 || total <= 0) {
       const noBg = fillCard;
       return html`
@@ -300,19 +316,19 @@ class StackedHorizontalBarCard extends LitElement {
       const sizeProp = isVertical ? 'height' : 'width';
       const unitStr = showUnitOnBar || showUnitInLegend ? this._getDisplayUnit(seg) : '';
       const tip = unitStr ? `${seg.name}: ${seg.value} ${unitStr}` : `${seg.name}: ${seg.value}`;
-      const minPctBar =
-        showNameOnBar && showOnBar ? 14 : showNameOnBar ? 12 : 8;
-      const showBarBlock = (showNameOnBar || showOnBar) && pct > minPctBar;
-      const barLabel = showBarBlock
-        ? html`<div class="segment-inner">
-            ${showNameOnBar ? html`<span class="segment-name">${seg.name}</span>` : nothing}
-            ${showOnBar
-              ? html`<span class="segment-value">${seg.value}${showUnitOnBar && unitStr ? ` ${unitStr}` : ''}</span>`
-              : nothing}
-          </div>`
-        : nothing;
+      const showValueOnBar = showOnBar && pct > 8;
+      const showNameOnBarSegment = showNameOnBar && pct > (showOnBar ? 12 : 10);
+      const barLabel =
+        showValueOnBar || showNameOnBarSegment
+          ? html`<div class="segment-inner">
+              ${showNameOnBarSegment ? html`<span class="segment-name">${seg.name}</span>` : nothing}
+              ${showValueOnBar
+                ? html`<span class="segment-value">${seg.value}${showUnitOnBar && unitStr ? ` ${unitStr}` : ''}</span>`
+                : nothing}
+            </div>`
+          : nothing;
       return html`
-        <div class="segment" style="${sizeProp}:${pct}%;background:${bg};border-radius:${radius}" title="${tip}">
+        <div class="segment" style="${sizeProp}:${pct}%;background:${bg};border-radius:${radius}${barTextColorCss ? `;${barTextColorCss}` : ''}" title="${tip}">
           ${barLabel}
         </div>
       `;
@@ -496,7 +512,7 @@ class StackedHorizontalBarCard extends LitElement {
     .segment-name {
       font-size: calc(var(--ha-font-size-s, 12px) - 1px);
       font-weight: 500;
-      color: rgba(0, 0, 0, 0.65);
+      color: var(--stacked-bar-bar-text, rgba(0, 0, 0, 0.65));
       text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
       white-space: nowrap;
       overflow: hidden;
@@ -508,7 +524,7 @@ class StackedHorizontalBarCard extends LitElement {
     .segment-value {
       font-size: var(--ha-font-size-m);
       font-weight: var(--ha-font-weight-body);
-      color: rgba(0, 0, 0, 0.7);
+      color: var(--stacked-bar-bar-text, rgba(0, 0, 0, 0.7));
       text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
       white-space: nowrap;
       overflow: hidden;
@@ -547,6 +563,7 @@ customElements.define('stacked-bar-card', StackedHorizontalBarCard);
 class StackedHorizontalBarCardEditor extends LitElement {
   static properties = {
     hass: { type: Object, attribute: false },
+    lovelace: { type: Object, attribute: false },
     _config: { type: Object, state: true },
     _expandedEntities: { type: Object, state: true },
   };
@@ -554,8 +571,19 @@ class StackedHorizontalBarCardEditor extends LitElement {
   constructor() {
     super();
     this.hass = null;
+    this.lovelace = null;
     this._config = {};
     this._expandedEntities = {};
+  }
+
+  configChanged(newConfig) {
+    this.dispatchEvent(
+      new CustomEvent('config-changed', {
+        bubbles: true,
+        composed: true,
+        detail: { config: newConfig },
+      })
+    );
   }
 
   _toggleEntityExpand(i) {
@@ -569,12 +597,7 @@ class StackedHorizontalBarCardEditor extends LitElement {
     if (!Array.isArray(this._config.entities)) {
       this._config.entities = [];
     }
-  }
-
-  _fire(type, detail) {
-    const event = new Event(type, { bubbles: true, cancelable: false, composed: true });
-    event.detail = detail;
-    this.dispatchEvent(event);
+    this.requestUpdate();
   }
 
   _valueChanged(field, value) {
@@ -585,7 +608,7 @@ class StackedHorizontalBarCardEditor extends LitElement {
       cfg[field] = value;
     }
     this._config = cfg;
-    this._fire('config-changed', { config: cfg });
+    this.configChanged(cfg);
   }
 
   _entityChanged(index, field, value) {
@@ -627,6 +650,15 @@ class StackedHorizontalBarCardEditor extends LitElement {
     const fillCard = !!(c.fill_card || c.remove_background);
     const showTitle = c.show_title !== false;
     const showLegend = c.show_legend !== false;
+
+    const barTextColorStr = (c.bar_text_color ?? '').trim();
+    let barTextSwatchBg = '';
+    if (/^#[0-9A-Fa-f]{6}$/i.test(barTextColorStr)) barTextSwatchBg = barTextColorStr;
+    else if (/^#[0-9A-Fa-f]{3}$/i.test(barTextColorStr)) {
+      const h = barTextColorStr.slice(1);
+      barTextSwatchBg = `#${h[0]}${h[0]}${h[1]}${h[1]}${h[2]}${h[2]}`;
+    }
+    const barTextHex6 = /^#[0-9A-Fa-f]{6}$/i.test(barTextColorStr) ? `#${barTextColorStr.slice(1).toLowerCase()}` : null;
 
     return html`
       <div class="editor">
@@ -708,6 +740,34 @@ class StackedHorizontalBarCardEditor extends LitElement {
             : nothing}
           <div class="option-row section-subheader">Options</div>
           <div class="option-row">
+            <label class="option-label">Bar label color</label>
+            <div class="option-help">Name, value, and unit on bar segments only; legend keeps theme colors.</div>
+            <div class="bar-label-color-wrap">
+              <span
+                class="color-swatch ${barTextSwatchBg ? '' : 'color-swatch-empty'}"
+                style="${barTextSwatchBg ? `background:${barTextSwatchBg}` : ''}"
+              ></span>
+              ${barTextHex6
+                ? html`<input
+                    type="color"
+                    class="bar-text-color-native"
+                    .value=${barTextHex6}
+                    @input=${(e) => this._valueChanged('bar_text_color', e.target.value)}
+                  />`
+                : nothing}
+              <input
+                type="text"
+                class="input bar-text-color-text"
+                .value=${c.bar_text_color ?? ''}
+                placeholder="#333333 or var(--primary-text-color)"
+                @input=${(e) => {
+                  const v = e.target.value.trim();
+                  this._valueChanged('bar_text_color', v === '' ? undefined : v);
+                }}
+              />
+            </div>
+          </div>
+          <div class="option-row">
             <label class="option-label">Show name</label>
             <select
               class="select"
@@ -748,29 +808,33 @@ class StackedHorizontalBarCardEditor extends LitElement {
                     <option value="none">Neither</option>
                   </select>
                 </div>
-                <div class="option-row">
-                  <label class="option-label">Unit source</label>
-                  <select
-                    class="select"
-                    .value=${c.unit_source ?? 'automatic'}
-                    @change=${(e) => this._valueChanged('unit_source', e.target.value)}
-                  >
-                    <option value="automatic">Automatic</option>
-                    <option value="custom">Custom</option>
-                  </select>
-                </div>
-                ${(c.unit_source ?? 'automatic') === 'custom'
+                ${(c.show_unit ?? 'none') !== 'none'
                   ? html`
                       <div class="option-row">
-                        <label class="option-label">Custom unit</label>
-                        <input
-                          type="text"
-                          class="input"
-                          .value=${c.unit_custom ?? ''}
-                          placeholder="e.g. kWh, %"
-                          @input=${(e) => this._valueChanged('unit_custom', e.target.value)}
-                        />
+                        <label class="option-label">Unit source</label>
+                        <select
+                          class="select"
+                          .value=${c.unit_source ?? 'automatic'}
+                          @change=${(e) => this._valueChanged('unit_source', e.target.value)}
+                        >
+                          <option value="automatic">Automatic</option>
+                          <option value="custom">Custom</option>
+                        </select>
                       </div>
+                      ${(c.unit_source ?? 'automatic') === 'custom'
+                        ? html`
+                            <div class="option-row">
+                              <label class="option-label">Custom unit</label>
+                              <input
+                                type="text"
+                                class="input"
+                                .value=${c.unit_custom ?? ''}
+                                placeholder="e.g. kWh, %"
+                                @input=${(e) => this._valueChanged('unit_custom', e.target.value)}
+                              />
+                            </div>
+                          `
+                        : nothing}
                     `
                   : nothing}
               `
@@ -1154,6 +1218,36 @@ class StackedHorizontalBarCardEditor extends LitElement {
       flex-shrink: 0;
       border: 1px solid var(--divider-color, rgba(255,255,255,0.2));
     }
+    .color-swatch-empty {
+      background: var(--disabled-color, rgba(127, 127, 127, 0.35));
+    }
+    .bar-label-color-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+    .bar-label-color-wrap .color-swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+    }
+    .bar-text-color-native {
+      width: 48px;
+      height: 40px;
+      padding: 2px;
+      border: 1px solid var(--divider-color, rgba(255, 255, 255, 0.12));
+      border-radius: 10px;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      background: var(--card-background-color, transparent);
+    }
+    .bar-text-color-text {
+      flex: 1;
+      min-width: 0;
+      width: auto;
+    }
     .entity-options-row .color-input {
       min-width: 80px;
       max-width: 120px;
@@ -1225,3 +1319,18 @@ class StackedHorizontalBarCardEditor extends LitElement {
 }
 
 customElements.define('stacked-bar-card-editor', StackedHorizontalBarCardEditor);
+
+/** Lovelace YAML type is `custom:stacked-bar-card`; picker registry omits the `custom:` prefix. */
+const STACKED_BAR_CARD_PICKER = {
+  type: 'stacked-bar-card',
+  name: 'Stacked Bar Card',
+  preview: true,
+  description:
+    'Stacked horizontal or vertical bar that displays entity values in a grid-friendly graph.',
+  documentationURL: 'https://github.com/kattcrazy/Stacked-Bar-Card',
+};
+
+window.customCards = window.customCards || [];
+if (!window.customCards.some((c) => c.type === STACKED_BAR_CARD_PICKER.type)) {
+  window.customCards.push(STACKED_BAR_CARD_PICKER);
+}
