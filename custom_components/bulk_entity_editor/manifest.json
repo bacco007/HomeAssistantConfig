@@ -1,0 +1,13 @@
+{
+  "domain": "bulk_entity_editor",
+  "name": "Bulk Entity Editor",
+  "codeowners": ["@delgusto"],
+  "config_flow": true,
+  "dependencies": ["frontend", "http"],
+  "documentation": "https://github.com/delgusto/ha-bulk-entity-editor",
+  "integration_type": "service",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/delgusto/ha-bulk-entity-editor/issues",
+  "requirements": [],
+  "version": "0.2.0"
+}

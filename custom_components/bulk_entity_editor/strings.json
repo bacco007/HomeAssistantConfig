@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add Bulk Entity Editor",
+        "description": "This adds a 'Bulk Editor' panel to your sidebar for bulk editing entities. No configuration required."
+      }
+    },
+    "abort": {
+      "already_configured": "Bulk Entity Editor is already set up."
+    }
+  }
+}
