@@ -207,6 +207,68 @@ WebAwesome:
         100% {box-shadow: 0 0 0 0 transparent;}
       }
 
+      /* Statiska transparenta klasser (utan blink) */
+      ha-card.wa-chip-danger-static {
+        --chip-background: color-mix(in srgb, var(--wa-danger) 20%, transparent) !important;
+        --chip-border-color: var(--wa-danger) !important;
+        --chip-border-width: 2px !important;
+        --chip-border-style: solid !important;
+        --chip-icon-color: var(--wa-danger) !important;
+        color: var(--primary-text-color) !important;
+      }
+
+      ha-card.wa-chip-warning-static {
+        --chip-background: color-mix(in srgb, var(--wa-warning) 30%, transparent) !important;
+        --chip-border-color: var(--wa-warning) !important;
+        --chip-border-width: 2px !important;
+        --chip-border-style: solid !important;
+        --chip-icon-color: var(--wa-warning) !important;
+        color: var(--primary-text-color) !important;
+      }
+
+      ha-card.wa-chip-info-static {
+        --chip-background: color-mix(in srgb, var(--wa-info) 20%, transparent) !important;
+        --chip-border-color: var(--wa-info) !important;
+        --chip-border-width: 2px !important;
+        --chip-border-style: solid !important;
+        --chip-icon-color: var(--wa-info) !important;
+        color: var(--primary-text-color) !important;
+      }
+
+      ha-card.wa-chip-success-static {
+        --chip-background: color-mix(in srgb, var(--wa-success) 20%, transparent) !important;
+        --chip-border-color: var(--wa-success) !important;
+        --chip-border-width: 2px !important;
+        --chip-border-style: solid !important;
+        --chip-icon-color: var(--wa-success) !important;
+        color: var(--primary-text-color) !important;
+      }
+
+      /* Highlight Cards (Standard-kort med accentfärg och vänster-border) */
+      ha-card.wa-card-danger {
+        --icon-color: var(--wa-danger) !important;
+        background: color-mix(in srgb, var(--wa-danger) 5%, var(--card-background-color)) !important;
+        border-left: 4px solid var(--wa-danger) !important;
+      }
+
+      ha-card.wa-card-warning {
+        --icon-color: var(--wa-warning) !important;
+        background: color-mix(in srgb, var(--wa-warning) 5%, var(--card-background-color)) !important;
+        border-left: 4px solid var(--wa-warning) !important;
+      }
+
+      ha-card.wa-card-success {
+        --icon-color: var(--wa-success) !important;
+        background: color-mix(in srgb, var(--wa-success) 5%, var(--card-background-color)) !important;
+        border-left: 4px solid var(--wa-success) !important;
+      }
+
+      ha-card.wa-card-info {
+        --icon-color: var(--wa-info) !important;
+        background: color-mix(in srgb, var(--wa-info) 5%, var(--card-background-color)) !important;
+        border-left: 4px solid var(--wa-info) !important;
+      }
+
     "ha-switch":
       $: |
         /* WebAwesome-inspirerad focus ring för switchar */
