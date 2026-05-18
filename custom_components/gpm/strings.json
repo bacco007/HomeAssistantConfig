@@ -20,11 +20,22 @@
         "data": {
           "download_url": "[%key:common::config_flow::data::url%]"
         }
+      },
+      "zip_resource": {
+        "title": "Fill in zip resource details",
+        "description": "Specify the path of the main JS file within the zip archive.\n\nExamples:\n\n```\n{example_path_1}\n{example_path_2}\n{example_path_3}\n```",
+        "data": {
+          "resource_path": "Resource path within zip"
+        },
+        "data_description": {
+          "resource_path": "Path to the main JS / CSS file inside the zip, relative to its containing directory, e.g. `dist/my-card.js` or just `my-card.js` for top-level files."
+        }
       }
     },
     "error": {
       "invalid_url": "The URL is invalid.",
       "invalid_template": "The template is invalid.",
+      "invalid_resource_path": "The resource path is invalid.",
       "unknown": "[%key:common::config_flow::error::unknown%]"
     },
     "abort": {

@@ -8,6 +8,7 @@
         },
         "error": {
             "invalid_template": "The template is invalid.",
+            "invalid_resource_path": "The resource path is invalid.",
             "invalid_url": "The URL is invalid.",
             "unknown": "Unexpected error"
         },
@@ -18,6 +19,16 @@
                 },
                 "description": "Frontend resources require URL from where to download compiled JS / CSS files when changes are detected within the repository.\n\nVariable `'{{version}}'` will be replaced with the corresponding GIT repository tag / commit hash (as configured in previous step).\n\nExamples:\n\n```\n{example_url_1}\n{example_url_2}\n{example_url_3}\n```",
                 "title": "Fill in resource details"
+            },
+            "zip_resource": {
+                "data": {
+                    "resource_path": "Resource path within zip"
+                },
+                "data_description": {
+                    "resource_path": "Path to the main JS / CSS file inside the zip, relative to its containing directory, e.g. `dist/my-card.js` or just `my-card.js` for top-level files."
+                },
+                "description": "Specify the path of the main JS file within the zip archive.\n\nExamples:\n\n```\n{example_path_1}\n{example_path_2}\n{example_path_3}\n```",
+                "title": "Fill in zip resource details"
             },
             "user": {
                 "data": {

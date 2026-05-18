@@ -7,10 +7,11 @@ import contextlib
 import functools
 import logging
 import shutil
+import zipfile
 from abc import abstractmethod
 from collections.abc import AsyncGenerator, Callable, Iterable
 from enum import StrEnum, auto
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 from urllib.parse import urlparse
 
@@ -598,6 +599,142 @@ class ResourceRepositoryManager(RepositoryManager):
     async def get_title(self) -> str:
         """Return the title of the repository."""
         return self.slug
+
+
+class ZipResourceRepositoryManager(ResourceRepositoryManager):
+    """Manage a HA resource distributed as a zip archive.
+
+    Unlike ResourceRepositoryManager which downloads a single JS file, this
+    class downloads a zip file, extracts the relevant files to a directory and
+    registers the specified entry-point JS file as a Lovelace resource.
+    """
+
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        repo_url: str,
+        update_strategy: UpdateStrategy,
+        download_url: str,
+        resource_path: str,
+    ) -> None:
+        super().__init__(hass, repo_url, update_strategy, download_url)
+        self._resource_path = Template(resource_path, self.hass)
+
+    async def _get_rendered_resource_path(self) -> str:
+        """Return resource_path rendered with the current version."""
+        return self._resource_path.async_render(
+            version=await self.get_current_version()
+        )
+
+    @RepositoryManager.ensure_cloned
+    async def _get_resource_dir_name(self) -> str:
+        """Return the versioned install-directory name for this zip resource."""
+        rendered = await self._get_rendered_resource_path()
+        version = slugify(await self.get_current_version())
+        return f"{Path(rendered).stem}_{version}"
+
+    async def get_install_path(self) -> Path:
+        """Return the path to the installed resource directory."""
+        return self.install_basedir / await self._get_resource_dir_name()
+
+    async def get_resource_url(self) -> str:
+        """Return the URL of the installed resource entry-point."""
+        dir_name = await self._get_resource_dir_name()
+        filename = Path(await self._get_rendered_resource_path()).name
+        return f"{URL_BASE}/{dir_name}/{filename}"
+
+    async def _download_resource(self) -> None:
+        """Download the zip and extract its contents to the install directory."""
+        download_url = await self._get_download_url()
+        install_path = await self.get_install_path()
+        await self.hass.async_add_executor_job(
+            lambda: install_path.parent.mkdir(parents=True, exist_ok=True)
+        )
+        tmp_zip = install_path.parent / f"_tmp_{self.slug}.zip"
+        _LOGGER.info("Downloading zip %s", download_url)
+        try:
+            await async_download(self.hass, download_url, tmp_zip)
+            _LOGGER.info("Extracting zip to %s", install_path)
+            rendered_path = await self._get_rendered_resource_path()
+            await self.hass.async_add_executor_job(
+                self._extract_zip, tmp_zip, install_path, rendered_path
+            )
+        except (ClientError, OSError) as e:
+            raise ResourceInstallError from e
+        finally:
+            await self.hass.async_add_executor_job(
+                lambda: tmp_zip.unlink(missing_ok=True)
+            )
+
+    def _extract_zip(
+        self, zip_path: Path, install_dir: Path, resource_path: str
+    ) -> None:
+        """Extract relevant files from zip_path into install_dir.
+
+        Files extracted are those whose zip path starts with the parent
+        directory of resource_path.  The prefix is stripped so that
+        the extracted files are placed flat inside install_dir.
+
+        If resource_path has no parent (top-level file), only zip entries
+        without any directory component are extracted.
+        """
+        resource_posix = PurePosixPath(resource_path)
+        zip_prefix = str(resource_posix.parent)
+        if zip_prefix == ".":
+            zip_prefix = ""
+        else:
+            zip_prefix += "/"
+
+        install_dir.mkdir(parents=True, exist_ok=True)
+
+        with zipfile.ZipFile(zip_path, "r") as zf:
+            for member in zf.infolist():
+                name = member.filename
+                if name.endswith("/"):
+                    continue
+                if zip_prefix:
+                    if not name.startswith(zip_prefix):
+                        continue
+                    relative = name[len(zip_prefix) :]
+                else:
+                    if "/" in name:
+                        continue
+                    relative = name
+                if not relative:
+                    continue
+                target = install_dir / relative
+                if not target.resolve().is_relative_to(install_dir.resolve()):
+                    _LOGGER.warning("Skipping unsafe zip entry: %s", name)
+                    continue
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(zf.read(member))
+
+    @RepositoryManager.ensure_installed
+    async def uninstall(self) -> None:
+        """Uninstall the zip resource."""
+        resource_url = await self.get_resource_url()
+        install_path = await self.get_install_path()
+        _LOGGER.info("Uninstalling resource %s, path %s", resource_url, install_path)
+        await self._remove_resource(resource_url)
+        await self.hass.async_add_executor_job(shutil.rmtree, install_path)
+        await self._refresh_frontend()
+
+    @RepositoryManager.ensure_installed
+    async def update(self, version: str) -> None:
+        """Update / downgrade the zip resource."""
+        _LOGGER.info("Updating to %s", version)
+        current_version = await self.get_current_version()
+        if current_version == version:
+            raise VersionAlreadyInstalledError(version)
+        old_resource_url = await self.get_resource_url()
+        old_install_path = await self.get_install_path()
+        # checkout first - in case it fails, we don't want to remove the resource
+        await self.checkout(version)
+        await self.hass.async_add_executor_job(shutil.rmtree, old_install_path)
+        await self._download_resource()
+        new_resource_url = await self.get_resource_url()
+        await self._update_resource(old_resource_url, new_resource_url)
+        await self._refresh_frontend()
 
 
 class GPMError(Exception):

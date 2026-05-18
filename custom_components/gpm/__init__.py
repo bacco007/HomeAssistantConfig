@@ -18,9 +18,11 @@ from ._manager import (
     RepositoryType,
     ResourceRepositoryManager,
     UpdateStrategy,
+    ZipResourceRepositoryManager,
 )
 from .const import (
     CONF_DOWNLOAD_URL,
+    CONF_RESOURCE_PATH,
     CONF_UPDATE_STRATEGY,
     DOMAIN,
     PATH_RESOURCE_INSTALL_BASEDIR,
@@ -59,6 +61,7 @@ CONFIG_SCHEMA = vol.Schema(
                                 CONF_UPDATE_STRATEGY, default=UpdateStrategy.LATEST_TAG
                             ): vol.In(UpdateStrategy),
                             vol.Required(CONF_DOWNLOAD_URL): cv.template,
+                            vol.Optional(CONF_RESOURCE_PATH): cv.string,
                         }
                     ),
                 )
@@ -79,6 +82,14 @@ def get_manager(hass: HomeAssistant, data: Mapping[str, str]) -> RepositoryManag
     if RepositoryType(data[CONF_TYPE]) == RepositoryType.INTEGRATION:
         return IntegrationRepositoryManager(
             hass, data[CONF_URL], UpdateStrategy(data[CONF_UPDATE_STRATEGY])
+        )
+    if CONF_RESOURCE_PATH in data:
+        return ZipResourceRepositoryManager(
+            hass,
+            data[CONF_URL],
+            UpdateStrategy(data[CONF_UPDATE_STRATEGY]),
+            data[CONF_DOWNLOAD_URL],
+            data[CONF_RESOURCE_PATH],
         )
     return ResourceRepositoryManager(
         hass,

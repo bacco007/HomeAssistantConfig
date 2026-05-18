@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import re
+from pathlib import Path
 from typing import Any
 
 import homeassistant.helpers.config_validation as cv
@@ -22,7 +23,7 @@ from ._manager import (
     RepositoryType,
     UpdateStrategy,
 )
-from .const import CONF_DOWNLOAD_URL, CONF_UPDATE_STRATEGY, DOMAIN
+from .const import CONF_DOWNLOAD_URL, CONF_RESOURCE_PATH, CONF_UPDATE_STRATEGY, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -49,6 +50,12 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
 STEP_RESOURCE_DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_DOWNLOAD_URL): str,
+    }
+)
+
+STEP_ZIP_RESOURCE_DATA_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_RESOURCE_PATH): str,
     }
 )
 
@@ -121,6 +128,8 @@ class GPMConfigFlow(ConfigFlow, domain=DOMAIN):
             try:
                 cv.template(user_input[CONF_DOWNLOAD_URL])
                 self._user_input[CONF_DOWNLOAD_URL] = user_input[CONF_DOWNLOAD_URL]
+                if user_input[CONF_DOWNLOAD_URL].strip().lower().endswith(".zip"):
+                    return await self.async_step_zip_resource()
                 return await self.async_step_install()
             except vol.Invalid:
                 _LOGGER.exception("Invalid template")
@@ -142,6 +151,36 @@ class GPMConfigFlow(ConfigFlow, domain=DOMAIN):
             },
         )
 
+    async def async_step_zip_resource(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Handle the zip resource step."""
+        errors: dict[str, str] = {}
+        assert self._user_input is not None
+        if user_input is not None:
+            path = user_input[CONF_RESOURCE_PATH].strip()
+            _base = Path("/validate")
+            if not path or not (_base / path).resolve().is_relative_to(_base):
+                errors[CONF_RESOURCE_PATH] = "invalid_resource_path"
+            else:
+                self._user_input[CONF_RESOURCE_PATH] = path
+                return await self.async_step_install()
+
+        default_value = self._get_zip_resource_defaults(self._user_input)
+        data_schema = self.add_suggested_values_to_schema(
+            STEP_ZIP_RESOURCE_DATA_SCHEMA, user_input or default_value
+        )
+        return self.async_show_form(
+            step_id="zip_resource",
+            data_schema=data_schema,
+            errors=errors,
+            description_placeholders={
+                "example_path_1": "dist/advanced-camera-card.js",
+                "example_path_2": "advanced-camera-card.js",
+                "example_path_3": "release/lovelace-card.js",
+            },
+        )
+
     def _get_resource_defaults(self, user_input: dict[str, Any]) -> dict[str, Any]:
         """Get default values for resource step."""
         raw_url = user_input[CONF_URL].rstrip(" /").removesuffix(".git")
@@ -160,6 +199,14 @@ class GPMConfigFlow(ConfigFlow, domain=DOMAIN):
         return {
             CONF_DOWNLOAD_URL: expected_download_url,
         }
+
+    def _get_zip_resource_defaults(self, user_input: dict[str, Any]) -> dict[str, Any]:
+        """Get default values for zip resource step."""
+        download_url = user_input.get(CONF_DOWNLOAD_URL, "")
+        url_filename = download_url.rsplit("/", 1)[-1]
+        if url_filename.lower().endswith(".zip"):
+            return {CONF_RESOURCE_PATH: url_filename[:-4] + ".js"}
+        return {}
 
     async def async_step_install(
         self, user_input: dict[str, Any] | None = None

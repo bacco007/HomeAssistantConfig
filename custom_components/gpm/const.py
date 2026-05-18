@@ -4,6 +4,7 @@ DOMAIN = "gpm"
 
 CONF_UPDATE_STRATEGY = "update_strategy"
 CONF_DOWNLOAD_URL = "download_url"
+CONF_RESOURCE_PATH = "resource_path"
 
 PATH_CLONE_BASEDIR = DOMAIN
 PATH_INTEGRATION_INSTALL_BASEDIR = "custom_components"
