@@ -2,70 +2,56 @@
 
 import logging
 
+from .models import TeamTrackerValues
 from .utils import async_get_value
 
 _LOGGER = logging.getLogger(__name__)
 
+class SetVolleyballMixin:
+    _sensor_name: str
+    _values: TeamTrackerValues
 
-async def async_set_volleyball_values(
-    new_values, event, competition_index, team_index, sensor_name
-) -> bool:
-    """Set volleyball specific values"""
+    async def _async_set_volleyball_values(
+        self, 
+        event, competition_index, team_index
+    ) -> bool:
+        """Set volleyball specific values"""
 
-    oppo_index = 1 - team_index
-    competition = await async_get_value(event, "competitions", competition_index)
-    competitor = await async_get_value(competition, "competitors", team_index)
-    opponent = await async_get_value(competition, "competitors", oppo_index)
+        oppo_index = 1 - team_index
+        competition = await async_get_value(event, "competitions", competition_index)
+        competitor = await async_get_value(competition, "competitors", team_index)
+        opponent = await async_get_value(competition, "competitors", oppo_index)
 
-    if competition is None or competitor is None or opponent is None:
-        _LOGGER.debug(
-            "%s: async_set_volleyball_values() 0: %s", sensor_name, sensor_name
-        )
-        return False
-
-    new_values["clock"] = await async_get_value(
-        event, "status", "type", "detail"
-    )  # Set
-    new_values["team_sets_won"] = new_values["team_score"]
-    new_values["opponent_sets_won"] = new_values["opponent_score"]
-
-    if new_values["state"] == "IN":
-        new_values["team_score"] = await async_get_value(
-            competitor, "linescores", -1, "value", default=0
-        )
-        new_values["opponent_score"] = await async_get_value(
-            opponent, "linescores", -1, "value", default=0
-        )
-
-    new_values["last_play"] = ""
-    sets = len(await async_get_value(competitor, "linescores", default=[]))
-
-    for x in range(0, sets):
-        new_values["last_play"] = new_values["last_play"] + " Set " + str(x + 1) + ": "
-        new_values["last_play"] = (
-            new_values["last_play"] + new_values["team_abbr"] + " "
-        )
-        new_values["last_play"] = (
-            new_values["last_play"]
-            + str(
-                int(
-                    await async_get_value(
-                        competitor, "linescores", x, "value", default=0
-                    )
-                )
+        if competition is None or competitor is None or opponent is None:
+            _LOGGER.debug(
+                "%s: async_set_volleyball_values() 0: %s", self._sensor_name, self._sensor_name
             )
-            + " "
-        )
-        new_values["last_play"] = (
-            new_values["last_play"] + new_values["opponent_abbr"] + " "
-        )
-        new_values["last_play"] = (
-            new_values["last_play"]
-            + str(
-                int(
-                    await async_get_value(opponent, "linescores", x, "value", default=0)
-                )
+            return False
+
+        self._values.clock = await async_get_value(
+            event, "status", "type", "detail"
+        )  # Set
+        self._values.team_sets_won = self._values.team_score
+        self._values.opponent_sets_won = self._values.opponent_score
+
+        if self._values.state == "IN":
+            self._values.team_score = await async_get_value(
+                competitor, "linescores", -1, "value", default=0
             )
-            + "; "
-        )
-    return True
+            self._values.opponent_score = await async_get_value(
+                opponent, "linescores", -1, "value", default=0
+            )
+
+        last_play = ""
+        linescores = await async_get_value(competitor, "linescores", default=[])
+        sets_count = len(linescores)
+
+        for x in range(0, sets_count):
+            t_val = int(await async_get_value(competitor, "linescores", x, "value", default=0))
+            o_val = int(await async_get_value(opponent, "linescores", x, "value", default=0))
+            
+            last_play += f" Set {x + 1}: {self._values.team_abbr} {t_val} {self._values.opponent_abbr} {o_val}; "
+
+        self._values.last_play = last_play
+
+        return True

@@ -9,7 +9,7 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.const import CONF_NAME
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 
 from .const import (
@@ -21,14 +21,10 @@ from .const import (
     CONF_TEAM_ID,
     DOMAIN,
     INDIVIDUAL_SPORTS,
-    LEAGUE_MAP,
+    NATIVE_LEAGUES,
 )
-from .hockeytech import (
-    async_fetch_hockeytech_team_data,
-    DATA_PROVIDER_HOCKEYTECH,
-)
-
-from .utils import async_call_espn_api
+from .provider_base import BaseSportProvider
+from .provider_factory import get_provider
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -96,99 +92,6 @@ SPORT_OPTIONS: dict[str, str] = {
     **{k: v[0] for k, v in _SPORT_GROUPS.items()}
 }
 
-#
-# Return a list of team dictionaries
-#  [{
-#   "id": team_id,
-#   "displayName": Long Team Name
-#   "location": City, State, Country of team
-#    "conference_id": Conference for the team (NCAA Only)
-#  }]
-#
-async def async_call_teams_apis(hass: HomeAssistant, league_id: str, sport_path: str, league_path: str) -> list[dict]:
-    """Fetch teams from any API for a given league."""
-
-    if sport_path.lower() == DATA_PROVIDER_HOCKEYTECH.lower():
-        response = await async_fetch_hockeytech_team_data(hass, league_path.upper())
-    elif (league_path == "all"):
-        response = {"data": None}
-    else:
-        response = await async_fetch_espn_team_data(hass, league_id, sport_path, league_path)
-
-    return response["data"]
-
-#
-# Return a list of team dictionaries
-#  [{
-#   "id": team_id,
-#   "displayName": Long Team Name
-#   "location": City, State, Country of team
-#    "conference_id": Conference for the team (NCAA Only)
-#  }]
-#
-
-async def async_fetch_espn_team_data(hass: HomeAssistant, league_id: str, sport_path: str, league_path: str) -> dict:
-    """Fetch teams from any API for a given league."""
-    if league_id not in LEAGUE_MAP:
-        sport = sport_path
-        league = league_path
-    else:
-        paths = LEAGUE_MAP[league_id]
-        sport = paths[CONF_SPORT_PATH]
-        league = paths[CONF_LEAGUE_PATH]
-    url = (
-        f"https://site.api.espn.com/apis/site/v2/sports"
-        f"/{sport}/{league}/teams"
-    )
-    url_parms = {"limit": 1000}
-    response = await async_call_espn_api(hass, url, url_parms, "ConfigFlow-teams", league)
-    data = response["data"]
-    url = response["url"]
-    if data:
-        raw = (
-            data.get("sports", [{}])[0]
-            .get("leagues", [{}])[0]
-            .get("teams", [])
-        )
-    else:
-        raw = []
-
-    # Build the teams data
-    teams = []
-    for entry in raw:
-        t = entry.get("team", {})
-        teams.append({
-            "id":            t.get("id", ""),
-            "abbreviation":  t.get("abbreviation", ""),
-            "displayName":   t.get("displayName", t.get("name", "")),
-            "location":      t.get("location", ""),
-            "conference_id": (t.get("groups") or {}).get("id", ""),
-        })
-    return {"data": teams, "url": url}
-
-
-async def _fetch_team_conference_id(
-    hass: HomeAssistant, league_id: str, team_id: str, sport_path: str, league_path: str
-) -> str:
-    """Fetch conference/group ID for a single team from the ESPN team detail API."""
-    if league_id not in LEAGUE_MAP:
-        sport = sport_path
-        league = league_path
-    else:
-        paths = LEAGUE_MAP[league_id]
-        sport = paths[CONF_SPORT_PATH]
-        league = paths[CONF_LEAGUE_PATH]
-    url = (
-        f"https://site.api.espn.com/apis/site/v2/sports"
-        f"/{sport}/{league}/teams/{team_id}"
-    )
-    response = await async_call_espn_api(hass, url, None, "ConfigFlow-teamGroup", team_id)
-    data = response["data"]
-    if data:
-        groups = data.get("team", {}).get("groups") or {}
-        return str(groups.get("id", ""))
-    return str("")
-
 
 def _get_path_schema(
     user_input: dict[str, Any] | None,
@@ -229,6 +132,7 @@ class TeamTrackerScoresFlowHandler(config_entries.ConfigFlow, domain=DOMAIN): # 
         self._team_meta: dict[str, dict] = {}
         self._errors: dict[str, str] = {}
         self._entry_data: dict[str, Any] = {}
+        self._provider: BaseSportProvider | None= None
 
     # ------------------------------------------------------------------ #
     #  Step 1: choose sport group                                         #
@@ -248,6 +152,9 @@ class TeamTrackerScoresFlowHandler(config_entries.ConfigFlow, domain=DOMAIN): # 
             if len(leagues) == 1:
                 # Only one league for this sport — skip league step
                 self._league_id = next(iter(leagues))
+                self._sport_path = NATIVE_LEAGUES.get(self._league_id, {}).get(CONF_SPORT_PATH, "")
+                self._league_path = NATIVE_LEAGUES.get(self._league_id, {}).get(CONF_LEAGUE_PATH, "")
+
                 return await self.async_step_search()
             return await self.async_step_league()
 
@@ -299,6 +206,9 @@ class TeamTrackerScoresFlowHandler(config_entries.ConfigFlow, domain=DOMAIN): # 
 
         if user_input is not None:
             self._league_id = user_input[CONF_LEAGUE_ID]
+            self._sport_path = NATIVE_LEAGUES.get(self._league_id, {}).get(CONF_SPORT_PATH, "")
+            self._league_path = NATIVE_LEAGUES.get(self._league_id, {}).get(CONF_LEAGUE_PATH, "")
+
             return await self.async_step_search()
 
         league_options = _SPORT_GROUPS[self._sport_key][1]
@@ -324,15 +234,15 @@ class TeamTrackerScoresFlowHandler(config_entries.ConfigFlow, domain=DOMAIN): # 
 
         # Individual sports (golf, mma, tennis) have athletes, not teams —
         # the ESPN teams API returns nothing useful, so skip straight to manual.
-        sport_path = LEAGUE_MAP.get(self._league_id, {}).get(CONF_SPORT_PATH, "")
-        if user_input is None and sport_path in INDIVIDUAL_SPORTS:
+        if user_input is None and self._sport_path in INDIVIDUAL_SPORTS:
             return await self.async_step_manual_athlete(user_input=None)
 
         if user_input is not None:
+            self._provider = get_provider(self._sport_path, self._league_path)
             search_term = user_input.get("search_team", "").strip().lower()
-
             if search_term:
-                self._all_teams = await async_call_teams_apis(self.hass, self._league_id, self._sport_path, self._league_path)
+                response = await self._provider.async_fetch_team_data(self.hass, self._sport_path, self._league_path)
+                self._all_teams = response["data"]
                 if not self._all_teams:
                     self._errors["base"] = "cannot_fetch_teams"
                 else:
@@ -383,14 +293,6 @@ class TeamTrackerScoresFlowHandler(config_entries.ConfigFlow, domain=DOMAIN): # 
             t_id = user_input["team_selection"]
             meta = self._team_meta.get(t_id, {})
 
-            if self._league_id == "XXX":
-                sport_path = self._sport_path
-                league_path = self._league_path
-            else:
-                paths = LEAGUE_MAP.get(self._league_id, {})
-                sport_path = paths.get(CONF_SPORT_PATH, "")
-                league_path = paths.get(CONF_LEAGUE_PATH, "")
-
             self._team_name = meta.get("displayName", t_id)
             name = user_input.get(CONF_NAME, "").strip() or meta.get("displayName", t_id)
             team_id = meta.get("id", t_id)
@@ -399,11 +301,11 @@ class TeamTrackerScoresFlowHandler(config_entries.ConfigFlow, domain=DOMAIN): # 
                     CONF_NAME:          name,
                     CONF_LEAGUE_ID:     self._league_id,
                     CONF_TEAM_ID:       team_id,
-                    CONF_SPORT_PATH:    sport_path,
-                    CONF_LEAGUE_PATH:   league_path,
+                    CONF_SPORT_PATH:    self._sport_path,
+                    CONF_LEAGUE_PATH:   self._league_path,
                 }
-            if "college" in league_path:
-                conf_id = await _fetch_team_conference_id(self.hass, self._league_id, team_id, sport_path, league_path)
+            if "college" in self._league_path and self._provider:
+                conf_id = await self._provider.async_fetch_team_conference_id(self.hass, self._sport_path, self._league_path, team_id)
                 self._entry_data[CONF_CONFERENCE_ID] = conf_id
 
             return await self.async_step_finalize()
@@ -433,13 +335,8 @@ class TeamTrackerScoresFlowHandler(config_entries.ConfigFlow, domain=DOMAIN): # 
         """Handle manual team ID entry."""
 
         if user_input is not None:
-            if self._league_id == "XXX":
-                sport_path = self._sport_path
-                league_path = self._league_path
-            else:
-                paths = LEAGUE_MAP.get(self._league_id, {})
-                sport_path = paths.get(CONF_SPORT_PATH, "")
-                league_path = paths.get(CONF_LEAGUE_PATH, "")
+            sport_path = self._sport_path
+            league_path = self._league_path
             self._team_name = user_input[CONF_TEAM_ID]
             name = user_input.get(CONF_NAME) or user_input[CONF_TEAM_ID]
             team_id = user_input[CONF_TEAM_ID]
@@ -450,8 +347,8 @@ class TeamTrackerScoresFlowHandler(config_entries.ConfigFlow, domain=DOMAIN): # 
                 CONF_SPORT_PATH:    sport_path,
                 CONF_LEAGUE_PATH:   league_path,
             }
-            if "college" in league_path:
-                conf_id = await _fetch_team_conference_id(self.hass, self._league_id, team_id, sport_path, league_path)
+            if "college" in league_path and self._provider:
+                conf_id = await self._provider.async_fetch_team_conference_id(self.hass, sport_path, league_path, team_id)
                 self._entry_data[CONF_CONFERENCE_ID] = conf_id
 
             return await self.async_step_finalize()
@@ -482,15 +379,14 @@ class TeamTrackerScoresFlowHandler(config_entries.ConfigFlow, domain=DOMAIN): # 
     ) -> config_entries.FlowResult:
         """Handle manual team ID entry."""
         if user_input is not None:
-            paths = LEAGUE_MAP[self._league_id]
             name = user_input.get(CONF_NAME) or user_input[CONF_TEAM_ID]
             self._team_name = user_input[CONF_TEAM_ID]
             self._entry_data = {
                 CONF_NAME:          name,
                 CONF_LEAGUE_ID:     self._league_id,
                 CONF_TEAM_ID:       user_input[CONF_TEAM_ID],
-                CONF_SPORT_PATH:    paths[CONF_SPORT_PATH],
-                CONF_LEAGUE_PATH:   paths[CONF_LEAGUE_PATH],
+                CONF_SPORT_PATH:    self._sport_path,
+                CONF_LEAGUE_PATH:   self._league_path,
             }
 
             return await self.async_step_finalize()
