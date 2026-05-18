@@ -1270,29 +1270,39 @@ const $ab210b2da7b39b9d$export$f5c524615a7708d6 = {
 
 
 
-const $5cc8c88379d13dba$export$16bd37df0047a29c = (attributes)=>{
+/**
+ * @license
+ * Copyright 2021 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */ function* $4db75f38ad0d35fe$export$871de8747c9eaa88(o, f) {
+    if (void 0 !== o) {
+        let i = 0;
+        for (const t of o)yield f(t, i++);
+    }
+}
+
+
+
+
+// List of attributes to exclude
+const $5cc8c88379d13dba$var$EXCLUDE_LIST = [
+    'icon',
+    'friendly_name',
+    'entity_picture',
+    'supported_features',
+    'assumed_state',
+    'attribution',
+    'hidden'
+];
+const $5cc8c88379d13dba$export$16bd37df0047a29c = (entity)=>{
     // Filter out common attributes that are less interesting or already shown
-    const filteredAttributes = {
-        ...attributes
-    };
-    // List of attributes to exclude
-    const excludeList = [
-        'icon',
-        'friendly_name',
-        'entity_picture',
-        'supported_features',
-        'assumed_state',
-        'attribution',
-        'hidden'
-    ];
-    excludeList.forEach((attr)=>delete filteredAttributes[attr]);
-    const attributeEntries = Object.entries(filteredAttributes);
-    if (attributeEntries.length === 0) return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div class="entity-attributes-empty">
-      No additional attributes
-    </div>`;
+    const attributes = Object.entries({
+        ...entity.attributes,
+        entity_id: entity.entity_id
+    }).filter(([key])=>!$5cc8c88379d13dba$var$EXCLUDE_LIST.includes(key));
     return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`
     <div class="entity-attributes">
-      ${attributeEntries.map(([key, value])=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`
+      ${(0, $4db75f38ad0d35fe$export$871de8747c9eaa88)(attributes, ([key, value])=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`
           <div class="attribute-row">
             <span class="attribute-key">${key}:</span>
             <span class="attribute-value"
@@ -1789,7 +1799,7 @@ class $a56ca3d5ac1672a8$export$c22534166de5f0ff extends (0, $42d40446c41f747a$ex
         ${(0, $91384c06f34fa41f$export$535a09426ee2ea59)(this.hass, this.entity, statusClassName)}
         ${showBar ? (0, $a6a6434f1848f426$export$40075bc608c4544e)(this.entity, inverseEntities) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
       </div>
-      ${this._expanded ? (0, $5cc8c88379d13dba$export$16bd37df0047a29c)(this.entity.attributes) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
+      ${this._expanded ? (0, $5cc8c88379d13dba$export$16bd37df0047a29c)(this.entity) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
     </div>`;
     }
     constructor(...args){
@@ -1919,13 +1929,12 @@ const $9b8ea5fddc8bd48e$export$4c0287abd2ec956e = (hass, config, section, sectio
     const size = config.preview_count ?? 3;
     // Check if this section needs collapsible functionality
     const needsExpansion = entities.length > size;
-    const isExpanded = sectionExpanded;
     // Sort and filter entities based on expanded state
     const sortedEntities = (0, $e1ab409cd148a528$export$4742c54ffa379383)(entities, config.sort);
-    const displayEntities = needsExpansion && !isExpanded ? sortedEntities.slice(0, size) : sortedEntities;
+    const displayEntities = needsExpansion && !sectionExpanded ? sortedEntities.slice(0, size) : sortedEntities;
     // Determine section class based on expanded state, number of items, and compact feature
     const isCompact = (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'compact');
-    const sectionClass = `section ${isExpanded ? 'expanded' : ''} ${needsExpansion ? '' : 'few-items'} ${isCompact ? 'compact' : ''}`;
+    const sectionClass = `section ${sectionExpanded ? 'expanded' : ''} ${needsExpansion ? '' : 'few-items'} ${isCompact ? 'compact' : ''}`;
     const rowTemplates = displayEntities.map((entity)=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<device-card-row
         .hass=${hass}
         .entity=${entity}
@@ -1934,10 +1943,10 @@ const $9b8ea5fddc8bd48e$export$4c0287abd2ec956e = (hass, config, section, sectio
     return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div class="${sectionClass}">
     <div class="section-header">
       <div class="section-title">${name}</div>
-      ${needsExpansion ? (0, $2ae7b32fc5b69f7f$export$980c1089c0604ea3)(isExpanded, onToggleSection) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
+      ${needsExpansion ? (0, $2ae7b32fc5b69f7f$export$980c1089c0604ea3)(sectionExpanded, onToggleSection) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
     </div>
     ${rowTemplates}
-    ${needsExpansion && !isCompact ? (0, $2ae7b32fc5b69f7f$export$ae9a281c4379b144)(entities, isExpanded, size, onToggleSection) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
+    ${needsExpansion && !isCompact ? (0, $2ae7b32fc5b69f7f$export$ae9a281c4379b144)(entities, sectionExpanded, size, onToggleSection) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
   </div>`;
 };
 
@@ -3713,7 +3722,7 @@ class $bb372a36f92bd9c9$export$9e322cdd8735282 extends (0, $ab210b2da7b39b9d$exp
 
 
 var $b06602ab53bd58a3$exports = {};
-$b06602ab53bd58a3$exports = JSON.parse("{\"name\":\"device-card\",\"version\":\"0.19.0\",\"author\":\"Patrick Masters\",\"license\":\"ISC\",\"description\":\"Custom Home Assistant card to show info about your devices.\",\"source\":\"src/index.ts\",\"module\":\"dist/device-card.js\",\"targets\":{\"module\":{\"includeNodeModules\":true}},\"scripts\":{\"watch\":\"parcel watch\",\"build\":\"parcel build\",\"format\":\"prettier --write .\",\"test\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha\",\"test:coverage\":\"nyc yarn test\",\"test:watch\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha --watch\",\"update\":\"npx npm-check-updates -u && yarn install\"},\"devDependencies\":{\"@istanbuljs/nyc-config-typescript\":\"^1.0.2\",\"@open-wc/testing\":\"^4.0.0\",\"@parcel/transformer-inline-string\":\"^2.15.4\",\"@testing-library/dom\":\"^10.4.1\",\"@trivago/prettier-plugin-sort-imports\":\"^5.2.2\",\"@types/chai\":\"^5.2.2\",\"@types/jsdom\":\"^21.1.7\",\"@types/mocha\":\"^10.0.10\",\"@types/sinon\":\"^17.0.4\",\"chai\":\"^5.2.1\",\"jsdom\":\"^26.1.0\",\"mocha\":\"^11.7.1\",\"nyc\":\"^17.1.0\",\"parcel\":\"^2.15.4\",\"prettier\":\"3.6.2\",\"prettier-plugin-organize-imports\":\"^4.2.0\",\"proxyquire\":\"^2.1.3\",\"sinon\":\"^21.0.0\",\"ts-node\":\"^10.9.2\",\"tsconfig-paths\":\"^4.2.0\",\"typescript\":\"^5.9.2\"},\"dependencies\":{\"@lit/task\":\"^1.0.3\",\"fast-deep-equal\":\"^3.1.3\",\"lit\":\"^3.3.1\"}}");
+$b06602ab53bd58a3$exports = JSON.parse("{\"name\":\"device-card\",\"version\":\"0.20.0\",\"author\":{\"name\":\"Patrick Masters\",\"url\":\"https://curiouscat.consulting/projects/ha-device-card\"},\"license\":\"ISC\",\"description\":\"Custom Home Assistant card to show info about your devices.\",\"homepage\":\"https://homeassistant-extras.github.io/device-card/\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/homeassistant-extras/device-card.git\"},\"bugs\":{\"url\":\"https://github.com/homeassistant-extras/device-card/issues\"},\"source\":\"src/index.ts\",\"module\":\"dist/device-card.js\",\"targets\":{\"module\":{\"includeNodeModules\":true}},\"scripts\":{\"watch\":\"parcel watch\",\"build\":\"parcel build\",\"format\":\"prettier --write .\",\"test\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha\",\"test:coverage\":\"nyc yarn test\",\"test:watch\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha --watch\",\"update\":\"npx npm-check-updates -u && yarn install\"},\"devDependencies\":{\"@istanbuljs/nyc-config-typescript\":\"^1.0.2\",\"@open-wc/testing\":\"^4.0.0\",\"@parcel/transformer-inline-string\":\"^2.16.4\",\"@testing-library/dom\":\"^10.4.1\",\"@trivago/prettier-plugin-sort-imports\":\"^6.0.2\",\"@types/chai\":\"^5.2.3\",\"@types/jsdom\":\"^28.0.3\",\"@types/mocha\":\"^10.0.10\",\"@types/sinon\":\"^21.0.1\",\"chai\":\"^6.2.2\",\"jsdom\":\"^29.1.1\",\"mocha\":\"^11.7.5\",\"nyc\":\"^18.0.0\",\"parcel\":\"^2.16.4\",\"prettier\":\"3.8.3\",\"prettier-plugin-organize-imports\":\"^4.3.0\",\"proxyquire\":\"^2.1.3\",\"sinon\":\"^22.0.0\",\"ts-node\":\"^10.9.2\",\"tsconfig-paths\":\"^4.2.0\",\"typescript\":\"^6.0.3\"},\"dependencies\":{\"@lit/task\":\"^1.0.3\",\"fast-deep-equal\":\"^3.1.3\",\"lit\":\"^3.3.3\"}}");
 
 
 // Kick off HA card helper resolution once when the bundle loads
