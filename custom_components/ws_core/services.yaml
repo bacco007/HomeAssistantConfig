@@ -1,0 +1,53 @@
+reset_rain_baseline:
+  name: Reset rain baseline
+  description: >-
+    Resets the internal rain total baseline used to compute rain rate.
+    Useful if your station resets the cumulative precipitation counter.
+  fields:
+    entry_id:
+      name: Config entry ID (optional)
+      description: >-
+        If provided, only resets that specific WS Station config entry.
+        If omitted, resets all WS Station entries.
+      example: "abcd1234efgh5678"
+      selector:
+        text:
+
+reset_learning_state:
+  name: Reset learning state
+  description: >-
+    Resets some or all of the integration's persistent learned state
+    (solar lux factor, forecast skill outcomes, dry/heat/frost streaks).
+  fields:
+    entry_id:
+      name: Config entry ID (optional)
+      description: >-
+        If provided, only resets that specific WS Station config entry.
+        If omitted, resets all WS Station entries.
+      example: "abcd1234efgh5678"
+      selector:
+        text:
+    target:
+      name: Reset target
+      description: Which learned state to reset
+      default: all
+      selector:
+        select:
+          options:
+            - "all"
+            - "solar"
+            - "forecast"
+            - "streaks"
+
+export_learning_state:
+  name: Export learning state
+  description: >-
+    Logs the current learning state to the HA log (for diagnostics).
+  fields:
+    entry_id:
+      name: Config entry ID (optional)
+      description: >-
+        If provided, only exports that specific WS Station config entry.
+      example: "abcd1234efgh5678"
+      selector:
+        text:
