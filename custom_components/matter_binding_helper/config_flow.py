@@ -43,7 +43,7 @@ class MatterBindingHelperConfigFlow(ConfigFlow, domain=DOMAIN):
         self._abort_if_unique_id_configured()
 
         # Require Matter integration to be configured
-        if MATTER_DOMAIN not in self.hass.data:
+        if not self.hass.config_entries.async_entries(MATTER_DOMAIN):
             return self.async_abort(reason="matter_not_configured")
 
         if user_input is not None:

@@ -49,7 +49,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     from .const import CONF_DEMO_MODE, DEFAULT_DEMO_MODE
 
     demo_mode = entry.options.get(CONF_DEMO_MODE, DEFAULT_DEMO_MODE)
-    if not demo_mode and MATTER_DOMAIN not in hass.data:
+    if not demo_mode and not hass.config_entries.async_entries(MATTER_DOMAIN):
         _LOGGER.error("Matter integration is not set up")
         return False
 
@@ -106,15 +106,18 @@ async def _async_register_panel(hass: HomeAssistant) -> None:
     # Register the panel serving the frontend
     from homeassistant.components.http import StaticPathConfig
 
-    await hass.http.async_register_static_paths(
-        [
-            StaticPathConfig(
-                url_path="/matter_binding_helper/frontend",
-                path=hass.config.path(f"custom_components/{DOMAIN}/frontend"),
-                cache_headers=False,
-            )
-        ]
-    )
+    try:
+        await hass.http.async_register_static_paths(
+            [
+                StaticPathConfig(
+                    url_path="/matter_binding_helper/frontend",
+                    path=hass.config.path(f"custom_components/{DOMAIN}/frontend"),
+                    cache_headers=False,
+                )
+            ]
+        )
+    except RuntimeError:
+        pass  # Already registered (e.g. on reload)
 
     await panel_custom.async_register_panel(
         hass,

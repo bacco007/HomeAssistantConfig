@@ -150,23 +150,29 @@ def get_raw_matter_client(hass: HomeAssistant) -> "RealMatterServerClient | None
     except ImportError:
         return None
 
-    if MATTER_DOMAIN not in hass.data:
-        return None
+    # Modern HA: data lives on entry.runtime_data (typed config entry pattern, HA >= ~2024.7)
+    for entry in hass.config_entries.async_entries(MATTER_DOMAIN):
+        runtime_data = getattr(entry, "runtime_data", None)
+        if runtime_data is None:
+            continue
+        # Current HA structure: runtime_data.adapter.matter_client
+        adapter = getattr(runtime_data, "adapter", None)
+        if adapter and hasattr(adapter, "matter_client"):
+            return adapter.matter_client
+        # Possible variant: matter_client directly on runtime_data
+        if hasattr(runtime_data, "matter_client"):
+            return runtime_data.matter_client
 
-    # Get the first Matter entry data
+    # Legacy fallback: hass.data[MATTER_DOMAIN] (HA < ~2024.7)
     matter_data = hass.data.get(MATTER_DOMAIN)
-    if not matter_data:
-        return None
-
-    # Matter stores data by config entry ID
-    for entry_data in matter_data.values():
-        if hasattr(entry_data, "matter_client"):
-            return entry_data.matter_client
-        # Fallback for different HA versions
-        if hasattr(entry_data, "adapter") and hasattr(
-            entry_data.adapter, "matter_client"
-        ):
-            return entry_data.adapter.matter_client
+    if matter_data:
+        for entry_data in matter_data.values():
+            if hasattr(entry_data, "matter_client"):
+                return entry_data.matter_client
+            if hasattr(entry_data, "adapter") and hasattr(
+                entry_data.adapter, "matter_client"
+            ):
+                return entry_data.adapter.matter_client
 
     return None
 
