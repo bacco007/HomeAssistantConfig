@@ -51,11 +51,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         entities.append(UniFiGenericBinary(device, host, site, devname, meta, desc))
 
     for wan_number in wan_numbers:
+        # The controller's last_wan_interfaces "alive" flag can stay stale for a
+        # WAN whose cable is unplugged, so a WAN with no physical link is never
+        # treated as having internet regardless of the reported alive state.
         internet = UniFiBinaryEntityDescription(
             key=f"wan{wan_number}_internet",
             name=f"UniFi WAN{wan_number} Internet",
             device_class=BinarySensorDeviceClass.CONNECTIVITY,
-            value_fn=lambda d, wn=wan_number: d.wan_alive.get(wn, bool(d.wan.get(wn, {}).get("ip"))),
+            value_fn=lambda d, wn=wan_number: bool(d.wan.get(wn, {}).get("up")) and d.wan_alive.get(wn, bool(d.wan.get(wn, {}).get("ip"))),
         )
         entities.append(UniFiGenericBinary(device, host, site, devname, meta, internet))
         link = UniFiBinaryEntityDescription(
