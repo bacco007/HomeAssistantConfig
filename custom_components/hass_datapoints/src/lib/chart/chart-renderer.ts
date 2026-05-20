@@ -982,7 +982,11 @@ export class ChartRenderer {
     return null;
   }
 
-  _interpolateValue(seriesPoints: ChartPoint[], t: number): Nullable<number> {
+  _interpolateValue(
+    seriesPoints: ChartPoint[],
+    t: number,
+    stepped = false
+  ): Nullable<number> {
     const len = seriesPoints.length;
     if (!len) {
       return null;
@@ -993,7 +997,7 @@ export class ChartRenderer {
     if (t > seriesPoints[len - 1][0]) {
       return null;
     }
-    // Binary search for the rightmost index whose timestamp <= t, then interpolate.
+    // Binary search for the rightmost index whose timestamp <= t.
     let lo = 0;
     let hi = len - 1;
     while (lo + 1 < hi) {
@@ -1007,6 +1011,8 @@ export class ChartRenderer {
     const [t0, v0] = seriesPoints[lo];
     const [t1, v1] = seriesPoints[hi];
     if (t0 === t1) return v0;
+    // Stepped series hold the previous value until the next data point.
+    if (stepped) return v0;
     return v0 + (v1 - v0) * ((t - t0) / (t1 - t0));
   }
 

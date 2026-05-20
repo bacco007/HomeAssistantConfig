@@ -13,10 +13,13 @@
  */
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
 import { html, type TemplateResult } from "lit";
-import { HassRecordsSensorCard } from "../sensor";
+import { HassDatapointsSensorCard } from "../sensor";
 
 if (!customElements.get("hass-datapoints-sensor-card")) {
-  customElements.define("hass-datapoints-sensor-card", HassRecordsSensorCard);
+  customElements.define(
+    "hass-datapoints-sensor-card",
+    HassDatapointsSensorCard
+  );
 }
 
 type Story = StoryObj;
@@ -199,7 +202,7 @@ async function setupCard(
 ) {
   const card = canvasElement.querySelector(
     "hass-datapoints-sensor-card"
-  ) as HassRecordsSensorCard;
+  ) as HassDatapointsSensorCard;
   card.setConfig(config);
   if (hass) {
     card.hass = hass as any;

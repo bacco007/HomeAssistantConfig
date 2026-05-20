@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createMockHass } from "@/test-support/mock-hass";
-import { HassRecordsQuickCard } from "../quick";
+import { HassDatapointsQuickCard } from "../quick";
 
 if (!customElements.get("hass-datapoints-quick-card")) {
-  customElements.define("hass-datapoints-quick-card", HassRecordsQuickCard);
+  customElements.define("hass-datapoints-quick-card", HassDatapointsQuickCard);
 }
 
 function createCard(config: RecordWithUnknownValues = {}) {
@@ -105,7 +105,7 @@ describe("quick", () => {
   describe("GIVEN a quick card with static config methods", () => {
     describe("WHEN getStubConfig is called", () => {
       it("THEN it returns default config", () => {
-        expect(HassRecordsQuickCard.getStubConfig()).toEqual({
+        expect(HassDatapointsQuickCard.getStubConfig()).toEqual({
           title: "Quick Record",
         });
       });
@@ -113,7 +113,7 @@ describe("quick", () => {
 
     describe("WHEN getConfigElement is called", () => {
       it("THEN it returns the editor element tag", () => {
-        const editorEl = HassRecordsQuickCard.getConfigElement();
+        const editorEl = HassDatapointsQuickCard.getConfigElement();
         expect(editorEl.tagName.toLowerCase()).toBe(
           "hass-datapoints-quick-card-editor"
         );

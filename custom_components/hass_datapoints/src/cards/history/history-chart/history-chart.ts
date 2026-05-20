@@ -15,9 +15,6 @@ import {
   binaryOffLabel,
   binaryOnLabel,
   getAxisValueExtent,
-  getHistoryStatesForEntity,
-  mergeNumericHistoryWithStatistics,
-  normalizeNumericHistory,
   normalizeStatisticsHistory,
   SAMPLE_INTERVAL_MS,
 } from "../history-data";
@@ -31,6 +28,7 @@ import {
   type AnomalyRegion,
   attachLineChartHover,
   attachLineChartRangeZoom,
+  ANOMALY_METHOD_LABELS,
   buildAnomalyTooltipContent,
   type ChartEventRecord,
   dispatchLineChartHover,
@@ -43,7 +41,7 @@ import {
   showLineChartCrosshair,
   showLineChartTooltip,
 } from "@/lib/chart/chart-interaction";
-import { entityName } from "@/lib/ha/entity-name";
+import { disambiguateEntityNames, entityName } from "@/lib/ha/entity-name";
 import {
   type BackendAnomalyConfig,
   fetchAnomaliesFromBackend,
@@ -72,24 +70,44 @@ import type { ChartAggregate } from "@/lib/workers/chart-data.worker";
 import type {
   ComparisonWindowAnalysis,
   ComputeHistoryAnalysisPayload,
-  WorkerSeriesAnalysis,
 } from "@/lib/workers/history-analysis.worker";
 import { logger } from "@/lib/logger";
 import type { HassLike } from "@/lib/types";
-import {
-  buildDeltaPoints,
-  buildEmaTrend,
-  buildLinearTrend,
-  buildLowessTrend,
-  buildPolynomialTrend,
-  buildRateOfChangePoints,
-  buildRollingAverageTrend,
-  buildSummaryStats,
-  getEmaAlpha,
-  getLowessBandwidth,
-  getTrendWindowMs,
-} from "../analysis";
 import { navigateToDataPointsHistory } from "@/lib/ha/navigation";
+import { buildBackendAnomalyConfig } from "@/lib/chart/chart-anomaly-config";
+import {
+  buildBinaryStateSpans,
+  buildEntityStateList,
+  filterEvents,
+} from "@/lib/chart/chart-data-prep";
+import {
+  filterAnnotatedAnomalyClusters,
+  filterClustersByCorrelatedSpans,
+  buildCorrelatedAnomalySpans,
+  getComparisonAnomalyCacheKey,
+  getComparisonWindowLineStyle,
+  resolveAnomalyClusterDisplay,
+  shiftComparisonAnomalyClusters,
+} from "@/lib/chart/chart-comparison";
+import {
+  buildAnalysisCacheKey,
+  buildDelta,
+  buildHistoryAnalysisPayload,
+  buildRateOfChange,
+  buildSeriesAnalysisMap,
+  buildSummary,
+  buildTrendPoints,
+  getTrendRenderOptions,
+  seriesHasActiveAnalysis,
+  seriesShouldHideSource,
+} from "@/lib/chart/chart-analysis";
+import { summarizeAnomalyClusterForAiBrief } from "@/lib/history-page/ai-query-brief";
+import { calculateViewportScrollPosition } from "@/lib/chart/chart-scroll";
+import {
+  splitSeriesByGaps,
+  buildGapBridgeColor,
+  filterDrawableComparisonResults,
+} from "@/lib/chart/chart-series-gaps";
 import { styles } from "./history-chart.styles";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -121,6 +139,25 @@ interface AnalysisResult {
     string,
     Record<string, ComparisonWindowAnalysis>
   >;
+}
+
+interface AiQueryBriefAnomalySnapshot {
+  available: boolean;
+  current_range_label: string;
+  chart_anomaly_overlap_mode: string;
+  show_correlated_anomalies: boolean;
+  correlated_anomaly_spans: Array<{
+    start_time: string;
+    end_time: string;
+    entity_ids: string[];
+  }>;
+  entity_findings: Array<{
+    entity_id: string;
+    all_detected_clusters: ReturnType<
+      typeof summarizeAnomalyClusterForAiBrief
+    >[];
+    displayed_clusters: ReturnType<typeof summarizeAnomalyClusterForAiBrief>[];
+  }>;
 }
 
 type DrawArgs = [
@@ -231,12 +268,141 @@ export class HistoryChart extends HTMLElement {
   // ── Public API — set by parent card after construction ──────────────────────
   private _hass: Nullable<HassLike> = null;
 
+  private _lastAiQueryBriefAnomalySnapshot: Nullable<AiQueryBriefAnomalySnapshot> =
+    null;
+
   get hass(): Nullable<HassLike> {
     return this._hass;
   }
 
   set hass(value: Nullable<HassLike>) {
     this._hass = value;
+  }
+
+  getAiQueryBriefAnomalySnapshot(): Nullable<AiQueryBriefAnomalySnapshot> {
+    if (!this._lastAiQueryBriefAnomalySnapshot) {
+      return null;
+    }
+    return JSON.parse(JSON.stringify(this._lastAiQueryBriefAnomalySnapshot));
+  }
+
+  private _clusterIntersectsSpan(
+    cluster: Nullable<AnomalyCluster>,
+    span: { start: number; end: number }
+  ): boolean {
+    if (!Array.isArray(cluster?.points) || cluster.points.length === 0) {
+      return false;
+    }
+    const startTime = Number(cluster.points[0]?.timeMs ?? Number.NaN);
+    const endTime = Number(
+      cluster.points[cluster.points.length - 1]?.timeMs ?? Number.NaN
+    );
+    if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) {
+      return false;
+    }
+    const clusterStart = Math.min(startTime, endTime);
+    const clusterEnd = Math.max(startTime, endTime);
+    return clusterEnd >= span.start && clusterStart <= span.end;
+  }
+
+  private _setAiQueryBriefAnomalySnapshot(
+    visibleSeries: SeriesItem[],
+    analysisMap: Map<string, unknown>,
+    anomalyClustersMap: Map<string, unknown[]>,
+    correlatedSpans: Array<{ start: number; end: number }>,
+    renderT0: number,
+    renderT1: number
+  ): void {
+    const entityFindings = visibleSeries
+      .map((seriesItem) => {
+        const analysis =
+          analysisMap.get(seriesItem.entityId) ||
+          normalizeHistorySeriesAnalysis(null);
+        if ((analysis as SeriesAnalysis).show_anomalies !== true) {
+          return null;
+        }
+        const allDetectedClusters =
+          (anomalyClustersMap.get(seriesItem.entityId) as AnomalyCluster[]) ||
+          [];
+        const displayedClusters = this._resolveAnomalyClusterDisplay(
+          allDetectedClusters,
+          (analysis as SeriesAnalysis).anomaly_overlap_mode,
+          correlatedSpans
+        ).baseClusters;
+        return {
+          entity_id: seriesItem.entityId,
+          all_detected_clusters: allDetectedClusters.map((cluster) =>
+            summarizeAnomalyClusterForAiBrief(cluster)
+          ),
+          displayed_clusters: displayedClusters.map((cluster) =>
+            summarizeAnomalyClusterForAiBrief(cluster)
+          ),
+        };
+      })
+      .filter(
+        (
+          finding
+        ): finding is {
+          entity_id: string;
+          all_detected_clusters: ReturnType<
+            typeof summarizeAnomalyClusterForAiBrief
+          >[];
+          displayed_clusters: ReturnType<
+            typeof summarizeAnomalyClusterForAiBrief
+          >[];
+        } => finding != null
+      );
+
+    const correlatedAnomalySpans = correlatedSpans
+      .map((span) => {
+        const entityIds = entityFindings
+          .filter((finding) =>
+            finding.all_detected_clusters.some((cluster) =>
+              this._clusterIntersectsSpan(
+                {
+                  points: cluster.points.map(
+                    (point: { time: string; value: number }) => ({
+                      timeMs: Date.parse(point.time),
+                      value: point.value,
+                    })
+                  ),
+                },
+                span
+              )
+            )
+          )
+          .map((finding) => finding.entity_id);
+        if (entityIds.length < 2) {
+          return null;
+        }
+        return {
+          start_time: new Date(span.start).toISOString(),
+          end_time: new Date(span.end).toISOString(),
+          entity_ids: entityIds,
+        };
+      })
+      .filter(
+        (
+          span
+        ): span is {
+          start_time: string;
+          end_time: string;
+          entity_ids: string[];
+        } => span != null
+      );
+
+    this._lastAiQueryBriefAnomalySnapshot = {
+      available: true,
+      current_range_label: `${new Date(renderT0).toISOString()} -> ${new Date(renderT1).toISOString()}`,
+      chart_anomaly_overlap_mode:
+        ((this._config as RecordWithUnknownValues)
+          ?.anomaly_overlap_mode as string) || "all",
+      show_correlated_anomalies:
+        (this._config as RecordWithUnknownValues)?.show_correlated_anomalies ===
+        true,
+      correlated_anomaly_spans: correlatedAnomalySpans,
+      entity_findings: entityFindings,
+    };
   }
 
   /** True when the current user may create a data point via the chart + button. */
@@ -440,7 +606,6 @@ export class HistoryChart extends HTMLElement {
     const scrollViewport = this._el(
       "chart-scroll-viewport"
     ) as Nullable<HTMLElement>;
-    const wrap = this as HTMLElement;
 
     const cardHeight = card?.clientHeight || 0;
     const occupiedHeight =
@@ -451,12 +616,17 @@ export class HistoryChart extends HTMLElement {
       ? Math.max(0, cardHeight - occupiedHeight)
       : 0;
     const viewportHeight = scrollViewport?.clientHeight || 0;
-    const wrapHeight = wrap?.clientHeight || 0;
 
-    return Math.max(
-      minChartHeight,
-      cardDerivedHeight || viewportHeight || wrapHeight || 0
-    );
+    // Avoid using the host element height as a fallback. The host height can
+    // include previous chart sizing + padding, causing a feedback loop:
+    // ResizeObserver -> redraw -> measure host height -> grow -> resize -> …
+    if (cardDerivedHeight) {
+      return Math.max(minChartHeight, cardDerivedHeight);
+    }
+    if (viewportHeight) {
+      return Math.max(minChartHeight, viewportHeight);
+    }
+    return minChartHeight;
   }
 
   _syncTopSlotOffset(): void {
@@ -596,67 +766,7 @@ export class HistoryChart extends HTMLElement {
   _buildBackendAnomalyConfig(
     analysis: RecordWithUnknownValues
   ): BackendAnomalyConfig {
-    const config: BackendAnomalyConfig = {
-      anomaly_methods: Array.isArray(analysis.anomaly_methods)
-        ? (analysis.anomaly_methods as string[])
-        : undefined,
-      anomaly_sensitivity:
-        typeof analysis.anomaly_sensitivity === "string"
-          ? analysis.anomaly_sensitivity
-          : undefined,
-      anomaly_overlap_mode:
-        typeof analysis.anomaly_overlap_mode === "string"
-          ? analysis.anomaly_overlap_mode
-          : undefined,
-      anomaly_rate_window:
-        typeof analysis.anomaly_rate_window === "string"
-          ? analysis.anomaly_rate_window
-          : undefined,
-      anomaly_zscore_window:
-        typeof analysis.anomaly_zscore_window === "string"
-          ? analysis.anomaly_zscore_window
-          : undefined,
-      anomaly_persistence_window:
-        typeof analysis.anomaly_persistence_window === "string"
-          ? analysis.anomaly_persistence_window
-          : undefined,
-      trend_method: (() => {
-        if (
-          typeof analysis.anomaly_trend_method === "string" &&
-          analysis.anomaly_trend_method
-        ) {
-          return analysis.anomaly_trend_method;
-        }
-        return typeof analysis.trend_method === "string"
-          ? analysis.trend_method
-          : undefined;
-      })(),
-      trend_window: (() => {
-        if (
-          typeof analysis.anomaly_trend_method === "string" &&
-          analysis.anomaly_trend_method &&
-          typeof analysis.anomaly_trend_window === "string" &&
-          analysis.anomaly_trend_window
-        ) {
-          return analysis.anomaly_trend_window;
-        }
-        return typeof analysis.trend_window === "string"
-          ? analysis.trend_window
-          : undefined;
-      })(),
-      anomaly_use_sampled_data: analysis.anomaly_use_sampled_data !== false,
-    };
-    if (analysis.anomaly_use_sampled_data !== false) {
-      config.sample_interval =
-        typeof analysis.sample_interval === "string"
-          ? analysis.sample_interval
-          : null;
-      config.sample_aggregate =
-        typeof analysis.sample_aggregate === "string"
-          ? analysis.sample_aggregate
-          : null;
-    }
-    return config;
+    return buildBackendAnomalyConfig(analysis);
   }
 
   // ── Instance method stubs — implemented by the parent card / JS layer ────────
@@ -671,14 +781,7 @@ export class HistoryChart extends HTMLElement {
       this._seriesSettings
         ?.map((seriesSetting: { entity_id: string }) => seriesSetting.entity_id)
         .filter(Boolean) ?? [];
-    const historyStates = getHistoryStatesForEntity(
-      histResult,
-      entityId,
-      entityIds
-    );
-    const rawHistory = normalizeNumericHistory(entityId, historyStates);
-    const statsHistory = normalizeStatisticsHistory(entityId, statsResult);
-    return mergeNumericHistoryWithStatistics(rawHistory, statsHistory);
+    return buildEntityStateList(entityId, histResult, statsResult, entityIds);
   }
 
   /** Build binary state spans from a state list. */
@@ -687,24 +790,7 @@ export class HistoryChart extends HTMLElement {
     t0: number,
     t1: number
   ): Array<{ start: number; end: number; state: string }> {
-    const spans: Array<{ start: number; end: number; state: string }> = [];
-    if (!stateList.length) return spans;
-    let current = stateList[0];
-    for (let i = 1; i < stateList.length; i++) {
-      const next = stateList[i];
-      const start = Math.max(current.lu * 1000, t0);
-      const end = Math.min(next.lu * 1000, t1);
-      if (end > start) {
-        spans.push({ start, end, state: current.s });
-      }
-      current = next;
-    }
-    // Last span extends to t1
-    const lastStart = Math.max(current.lu * 1000, t0);
-    if (t1 > lastStart) {
-      spans.push({ start: lastStart, end: t1, state: current.s });
-    }
-    return spans;
+    return buildBinaryStateSpans(stateList, t0, t1);
   }
 
   /** Return the "on" label for a binary_sensor entity. */
@@ -819,22 +905,10 @@ export class HistoryChart extends HTMLElement {
       return;
     }
 
-    // Split pts into continuous segments separated by gaps.
-    const segments: [number, number][][] = [];
-    const gapBridges: [[number, number], [number, number]][] = [];
-    let current: [number, number][] = [pts[0]];
-
-    for (let i = 1; i < pts.length; i++) {
-      const dt = pts[i][0] - pts[i - 1][0];
-      if (dt > gapThresholdMs) {
-        segments.push(current);
-        gapBridges.push([pts[i - 1], pts[i]]);
-        current = [pts[i]];
-      } else {
-        current.push(pts[i]);
-      }
-    }
-    segments.push(current);
+    const { segments, gapBridges, boundaryPoints } = splitSeriesByGaps(
+      pts,
+      gapThresholdMs
+    );
 
     // No gaps found — draw normally.
     if (segments.length === 1) {
@@ -848,9 +922,7 @@ export class HistoryChart extends HTMLElement {
     }
 
     // Draw dashed bridge lines through each gap.
-    const gapColor = color.startsWith("rgba")
-      ? color.replace(/[\d.]+\)$/, "0.35)")
-      : `${color}59`;
+    const gapColor = buildGapBridgeColor(color);
     for (const [lastPt, firstPt] of gapBridges) {
       r.drawLine([lastPt, firstPt], gapColor, t0, t1, min, max, {
         dashed: true,
@@ -860,10 +932,6 @@ export class HistoryChart extends HTMLElement {
     }
 
     // Draw boundary markers at gap edges.
-    const boundaryPoints: [number, number][] = gapBridges.flatMap(([a, b]) => [
-      a,
-      b,
-    ]);
     r.drawGapMarkers(boundaryPoints, color, t0, t1, min, max);
   }
 
@@ -882,7 +950,11 @@ export class HistoryChart extends HTMLElement {
       yOf(v: number, min: number, max: number): number;
       pad: { top: number; left: number };
       ch: number;
-      _interpolateValue(pts: [number, number][], t: number): Nullable<number>;
+      _interpolateValue(
+        pts: [number, number][],
+        t: number,
+        stepped?: boolean
+      ): Nullable<number>;
     };
     const series = _visibleSeries as Array<{
       entityId: string;
@@ -1125,26 +1197,11 @@ export class HistoryChart extends HTMLElement {
     dashPattern?: number[];
     hoverOpacity: number;
   } {
-    if (isHovered) {
-      return {
-        lineOpacity: 1,
-        dashed: false,
-        hoverOpacity: 0.85,
-      };
-    }
-    if (hoveringDifferentComparison && isSelected) {
-      return {
-        lineOpacity: 0.25,
-        lineWidth: 1.25,
-        dashed: false,
-        hoverOpacity: 0.25,
-      };
-    }
-    return {
-      lineOpacity: 0.85,
-      dashed: false,
-      hoverOpacity: 0.85,
-    };
+    return getComparisonWindowLineStyle(
+      isHovered,
+      isSelected,
+      hoveringDifferentComparison
+    );
   }
 
   /** Sync chart viewport scroll to the current zoom range. */
@@ -1173,24 +1230,14 @@ export class HistoryChart extends HTMLElement {
       this._skipNextScrollViewportSync = false;
       return;
     }
-    const viewportWidth = viewport.clientWidth;
-    const totalMs = Math.max(1, _t1 - _t0);
-    const visibleSpanMs =
-      totalMs *
-      Math.min(1, viewportWidth / Math.max(_canvasWidth, viewportWidth));
-    const maxScrollLeft = Math.max(
-      0,
-      Math.max(_canvasWidth, viewportWidth) - viewportWidth
-    );
-    const maxStartOffsetMs = Math.max(0, totalMs - visibleSpanMs);
-    const clampedStart = clampChartValue(
-      this._zoomRange.start,
+    const nextLeft = calculateViewportScrollPosition(
       _t0,
-      _t1 - visibleSpanMs
+      _t1,
+      _canvasWidth,
+      viewport.clientWidth,
+      this._zoomRange.start,
+      this._zoomRange.end
     );
-    const ratio =
-      maxStartOffsetMs > 0 ? (clampedStart - _t0) / maxStartOffsetMs : 0;
-    const nextLeft = ratio * maxScrollLeft;
     const currentLeft = viewport.scrollLeft;
     if (Math.abs(currentLeft - nextLeft) < 2) {
       return;
@@ -1288,8 +1335,28 @@ export class HistoryChart extends HTMLElement {
     const content = buildAnomalyTooltipContent(regions);
     const firstRegion = regions[0];
     const entityId = firstRegion?.relatedEntityId ?? null;
+
+    // Short message: method label for a single method, generic label for multi
+    const methods = [
+      ...new Set(
+        regions
+          .map((r) => r?.cluster?.anomalyMethod)
+          .filter((m): m is string => Boolean(m))
+      ),
+    ];
+    const message =
+      methods.length === 1
+        ? `${ANOMALY_METHOD_LABELS[methods[0] as keyof typeof ANOMALY_METHOD_LABELS] ?? methods[0]} anomaly`
+        : "Multi-method anomaly";
+
+    // Full detail goes in the annotation field
+    const annotation = content
+      ? `${content.description}\n\n${content.alert}`
+      : "";
+
     return {
-      message: content ? `${content.description}\n${content.alert}` : "",
+      message,
+      annotation,
       icon: "mdi:alert-circle",
       linkedTarget: entityId ? { entity_id: [entityId] } : null,
     };
@@ -1434,33 +1501,16 @@ export class HistoryChart extends HTMLElement {
 
   /** Filter events list by hidden IDs and message filter. */
   _filterEvents(_events: unknown[]): unknown[] {
-    const events = _events as Array<{
-      id?: string;
-      message?: string;
-      annotation?: string;
-      entity_ids?: string[];
-    }>;
-    const query = String(
-      (this._config as RecordWithUnknownValues)?.message_filter || ""
-    )
-      .trim()
-      .toLowerCase();
-    const visibleEvents = events.filter(
-      (event) => !this._hiddenEventIds.has(event?.id ?? "")
+    return filterEvents(
+      _events as Array<{
+        id?: string;
+        message?: string;
+        annotation?: string;
+        entity_ids?: string[];
+      }>,
+      this._hiddenEventIds,
+      String((this._config as RecordWithUnknownValues)?.message_filter || "")
     );
-    if (!query) {
-      return visibleEvents;
-    }
-    return visibleEvents.filter((event) => {
-      const haystack = [
-        event?.message || "",
-        event?.annotation || "",
-        ...(event?.entity_ids || []).filter(Boolean),
-      ]
-        .join("\n")
-        .toLowerCase();
-      return haystack.includes(query);
-    });
   }
 
   /** Build correlated anomaly spans across series. */
@@ -1469,102 +1519,14 @@ export class HistoryChart extends HTMLElement {
     _anomalyClustersMap: Map<string, unknown>,
     _analysisMap: Map<string, unknown>
   ): Array<{ start: number; end: number }> {
-    const visibleSeries = _visibleSeries as Array<{
-      entityId: string;
-      pts: [number, number][];
-    }>;
-    const anomalyClustersMap = _anomalyClustersMap as Map<
-      string,
-      Array<{ points: Array<{ timeMs: number }> }>
-    >;
-
-    const seriesIntervals: Array<{
-      entityId: string;
-      intervals: Array<{ start: number; end: number }>;
-    }> = [];
-    for (const seriesItem of visibleSeries) {
-      const analysis = _analysisMap.get(seriesItem.entityId) as
-        | RecordWithUnknownValues
-        | undefined;
-      if (analysis?.show_anomalies !== true) continue;
-      const clusters = anomalyClustersMap.get(seriesItem.entityId) || [];
-      if (!clusters.length) continue;
-
-      const pts = seriesItem.pts;
-      let tolerance = 60000;
-      if (Array.isArray(pts) && pts.length >= 2) {
-        const intervals: number[] = [];
-        for (let i = 1; i < pts.length; i++) {
-          const diff = pts[i][0] - pts[i - 1][0];
-          if (diff > 0) intervals.push(diff);
-        }
-        if (intervals.length) {
-          intervals.sort((a, b) => a - b);
-          const mid = Math.floor(intervals.length / 2);
-          tolerance =
-            intervals.length % 2 === 0
-              ? (intervals[mid - 1] + intervals[mid]) / 2
-              : intervals[mid];
-          tolerance = Math.max(tolerance, 1000);
-        }
-      }
-
-      const entityIntervals: Array<{ start: number; end: number }> = [];
-      for (const cluster of clusters) {
-        if (!Array.isArray(cluster.points) || cluster.points.length === 0)
-          continue;
-        const startTime = cluster.points[0]?.timeMs;
-        const endTime = cluster.points[cluster.points.length - 1]?.timeMs;
-        if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) continue;
-        entityIntervals.push({
-          start: Math.min(startTime, endTime) - tolerance,
-          end: Math.max(startTime, endTime) + tolerance,
-        });
-      }
-      if (entityIntervals.length) {
-        seriesIntervals.push({
-          entityId: seriesItem.entityId,
-          intervals: entityIntervals,
-        });
-      }
-    }
-
-    if (seriesIntervals.length < 2) return [];
-
-    const events: Array<{ time: number; delta: number; entityId: string }> = [];
-    for (const { entityId, intervals } of seriesIntervals) {
-      for (const { start, end } of intervals) {
-        events.push({ time: start, delta: 1, entityId });
-        events.push({ time: end, delta: -1, entityId });
-      }
-    }
-    events.sort((a, b) => a.time - b.time || a.delta - b.delta);
-
-    const activeCounts = new Map<string, number>();
-    const spans: Array<{ start: number; end: number }> = [];
-    let spanStart: Nullable<number> = null;
-
-    for (const event of events) {
-      const prev = activeCounts.get(event.entityId) || 0;
-      const next = prev + event.delta;
-      if (next <= 0) {
-        activeCounts.delete(event.entityId);
-      } else {
-        activeCounts.set(event.entityId, next);
-      }
-      const activeCount = activeCounts.size;
-      if (spanStart === null && activeCount >= 2) {
-        spanStart = event.time;
-      } else if (spanStart !== null && activeCount < 2) {
-        spans.push({ start: spanStart, end: event.time });
-        spanStart = null;
-      }
-    }
-    if (spanStart !== null && events.length > 0) {
-      spans.push({ start: spanStart, end: events[events.length - 1].time });
-    }
-
-    return spans;
+    return buildCorrelatedAnomalySpans(
+      _visibleSeries as Array<{ entityId: string; pts: [number, number][] }>,
+      _anomalyClustersMap as Map<
+        string,
+        Array<{ points: Array<{ timeMs: number }> }>
+      >,
+      _analysisMap
+    );
   }
 
   /** Filter out annotated anomaly clusters. */
@@ -1572,49 +1534,10 @@ export class HistoryChart extends HTMLElement {
     _seriesItem: unknown,
     _events: AnnotationEvent[]
   ): AnomalyCluster[] {
-    const seriesItem = _seriesItem as {
-      entityId: string;
-      anomalyClusters?: AnomalyCluster[];
-    };
-    if (
-      !Array.isArray(seriesItem?.anomalyClusters) ||
-      seriesItem.anomalyClusters.length === 0
-    ) {
-      return [];
-    }
-    const visibleEvents = Array.isArray(_events) ? _events : [];
-    if (visibleEvents.length === 0) {
-      return seriesItem.anomalyClusters;
-    }
-
-    const getClusterRange = (cluster: AnomalyCluster) => {
-      if (!Array.isArray(cluster.points) || cluster.points.length === 0)
-        return null;
-      const startTime = cluster.points[0]?.timeMs;
-      const endTime = cluster.points[cluster.points.length - 1]?.timeMs;
-      if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) return null;
-      return {
-        startTime: Math.min(startTime, endTime),
-        endTime: Math.max(startTime, endTime),
-      };
-    };
-
-    return seriesItem.anomalyClusters.filter((cluster): boolean => {
-      const clusterRange = getClusterRange(cluster);
-      if (!clusterRange) return true;
-      return !visibleEvents.some((event) => {
-        const eventEntityIds = Array.isArray(event.entity_ids)
-          ? (event.entity_ids as string[]).filter(Boolean)
-          : [];
-        if (!eventEntityIds.includes(seriesItem.entityId)) return false;
-        const eventTime = new Date(event.timestamp).getTime();
-        if (!Number.isFinite(eventTime)) return false;
-        return (
-          eventTime >= clusterRange.startTime &&
-          eventTime <= clusterRange.endTime
-        );
-      });
-    });
+    return filterAnnotatedAnomalyClusters(
+      _seriesItem as { entityId: string; anomalyClusters?: AnomalyCluster[] },
+      _events
+    );
   }
 
   _fireComparisonBackendAnomalyRequests(
@@ -1842,12 +1765,8 @@ export class HistoryChart extends HTMLElement {
     statsResult: unknown;
     label?: string;
   }> {
-    const drawableComparisonWindowIds = new Set(
-      this._comparisonWindows
-        .map((window) =>
-          String((window as Nullable<RecordWithUnknownValues>)?.id || "")
-        )
-        .filter((id) => id.length > 0)
+    const comparisonWindowIds = this._comparisonWindows.map((window) =>
+      String((window as Nullable<RecordWithUnknownValues>)?.id || "")
     );
     const selectedComparisonWindowId = String(
       ((this._config as RecordWithUnknownValues)
@@ -1857,17 +1776,11 @@ export class HistoryChart extends HTMLElement {
       ((this._config as RecordWithUnknownValues)
         ?.hovered_comparison_window_id as string) || ""
     );
-    if (selectedComparisonWindowId) {
-      drawableComparisonWindowIds.add(selectedComparisonWindowId);
-    }
-    if (hoveredComparisonWindowId) {
-      drawableComparisonWindowIds.add(hoveredComparisonWindowId);
-    }
-    if (drawableComparisonWindowIds.size === 0) {
-      return [];
-    }
-    return comparisonResults.filter((window) =>
-      drawableComparisonWindowIds.has(String(window.id || ""))
+    return filterDrawableComparisonResults(
+      comparisonResults,
+      comparisonWindowIds,
+      selectedComparisonWindowId,
+      hoveredComparisonWindowId
     );
   }
 
@@ -1880,84 +1793,29 @@ export class HistoryChart extends HTMLElement {
     regionClusters: AnomalyCluster[];
     showCorrelatedSpans: boolean;
   } {
-    const normalClusters = anomalyClusters.filter(
-      (c) => !(c as { isOverlap?: boolean }).isOverlap
+    return resolveAnomalyClusterDisplay(
+      anomalyClusters,
+      overlapMode,
+      correlatedSpans
     );
-    const overlapClusters = anomalyClusters.filter(
-      (c) => (c as { isOverlap?: boolean }).isOverlap === true
-    );
-
-    if (overlapMode === "only") {
-      const overlapOnlyClusters = this._filterClustersByCorrelatedSpans(
-        anomalyClusters,
-        correlatedSpans
-      );
-      return {
-        baseClusters: overlapOnlyClusters,
-        regionClusters: overlapOnlyClusters,
-        showCorrelatedSpans: true,
-      };
-    }
-
-    return {
-      baseClusters: [...normalClusters, ...overlapClusters],
-      regionClusters: [...normalClusters, ...overlapClusters],
-      showCorrelatedSpans: false,
-    };
   }
 
   _filterClustersByCorrelatedSpans(
     anomalyClusters: AnomalyCluster[],
     correlatedSpans: Array<{ start: number; end: number }>
   ): AnomalyCluster[] {
-    if (!Array.isArray(anomalyClusters) || anomalyClusters.length === 0) {
-      return [];
-    }
-    if (!Array.isArray(correlatedSpans) || correlatedSpans.length === 0) {
-      return [];
-    }
-
-    return anomalyClusters.filter((cluster) => {
-      const points = (cluster as { points?: Array<{ timeMs: number }> }).points;
-      if (!Array.isArray(points) || points.length === 0) {
-        return false;
-      }
-      const startTime = Number(points[0]?.timeMs);
-      const endTime = Number(points[points.length - 1]?.timeMs);
-      if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) {
-        return false;
-      }
-      const clusterStart = Math.min(startTime, endTime);
-      const clusterEnd = Math.max(startTime, endTime);
-
-      return correlatedSpans.some((span) => {
-        const spanStart = Number(span.start);
-        const spanEnd = Number(span.end);
-        if (!Number.isFinite(spanStart) || !Number.isFinite(spanEnd)) {
-          return false;
-        }
-        return clusterEnd >= spanStart && clusterStart <= spanEnd;
-      });
-    });
+    return filterClustersByCorrelatedSpans(anomalyClusters, correlatedSpans);
   }
 
   _getComparisonAnomalyCacheKey(windowId: string, entityId: string): string {
-    return `${windowId}:${entityId}`;
+    return getComparisonAnomalyCacheKey(windowId, entityId);
   }
 
   _shiftComparisonAnomalyClusters(
     clusters: AnomalyCluster[],
     timeOffsetMs: number
   ): AnomalyCluster[] {
-    return (Array.isArray(clusters) ? clusters : []).map((cluster) => ({
-      ...cluster,
-      points: Array.isArray(cluster.points)
-        ? cluster.points.map((point) => ({
-            ...point,
-            timeMs: Number(point.timeMs) - timeOffsetMs,
-          }))
-        : [],
-    }));
+    return shiftComparisonAnomalyClusters(clusters, timeOffsetMs);
   }
 
   async _resolveComparisonWindowPoints(
@@ -2347,6 +2205,9 @@ export class HistoryChart extends HTMLElement {
     this._scrollZoomApplyTimer = setTimeout(() => {
       this._scrollZoomApplyTimer = null;
       if (!this._zoomRange) return;
+      // Prevent _syncChartViewportScroll from snapping the viewport back to a
+      // slightly different position when the zoom-apply re-render fires.
+      this._skipNextScrollViewportSync = true;
       this.dispatchEvent(
         new CustomEvent("hass-datapoints-zoom-apply", {
           bubbles: true,
@@ -2424,6 +2285,7 @@ export class HistoryChart extends HTMLElement {
       color: string;
       axisKey: string;
       axis?: unknown;
+      stepped?: boolean;
     }> = [];
     const axes: Array<{
       key: string;
@@ -2474,6 +2336,11 @@ export class HistoryChart extends HTMLElement {
       hoveredComparisonWindowId !== selectedComparisonWindowId;
     const hasSelectedComparisonWindow = !!selectedComparisonWindowId;
 
+    const entityLabelMap = disambiguateEntityNames(
+      this._hass,
+      (seriesSettings as Array<{ entity_id: string }>).map((s) => s.entity_id)
+    );
+
     seriesSettings.forEach((seriesSetting, i) => {
       const entityId = seriesSetting.entity_id;
       const domain = entityId.split(".")[0];
@@ -2487,7 +2354,7 @@ export class HistoryChart extends HTMLElement {
         if (spans.length) {
           binaryBackgrounds.push({
             entityId,
-            label: entityName(this._hass, entityId) || entityId,
+            label: entityLabelMap.get(entityId) || entityId,
             color: seriesSetting.color || COLORS[i % COLORS.length],
             onLabel: this._binaryOnLabel(entityId),
             offLabel: this._binaryOffLabel(entityId),
@@ -2531,14 +2398,17 @@ export class HistoryChart extends HTMLElement {
         }
       }
       if (pts.length) {
+        const seriesAnalysis =
+          analysisMap.get(entityId) || normalizeHistorySeriesAnalysis(null);
         series.push({
           entityId,
           legendEntityId: entityId,
-          label: entityName(this._hass, entityId) || entityId,
+          label: entityLabelMap.get(entityId) || entityId,
           unit,
           pts,
           color: seriesSetting.color || COLORS[i % COLORS.length],
           axisKey,
+          stepped: (seriesAnalysis as SeriesAnalysis).stepped_series === true,
         });
       }
     });
@@ -2797,7 +2667,7 @@ export class HistoryChart extends HTMLElement {
         }
         selectedComparisonSeriesMap.set(entityId, {
           entityId,
-          label: entityName(this._hass, entityId) || entityId,
+          label: entityLabelMap.get(entityId) || entityId,
           unit,
           color: seriesSetting.color || COLORS[index % COLORS.length],
           pts: points,
@@ -3034,10 +2904,20 @@ export class HistoryChart extends HTMLElement {
       chartStage.style.width = `${canvasWidth}px`;
       chartStage.style.height = `${availableHeight}px`;
     }
-    // Restore default vertical overflow in non-split mode (split mode may have set it to auto).
+    // Restore defaults in non-split mode (split mode may have overridden these).
     if (scrollViewport) {
       scrollViewport.style.overflowY = "";
+      scrollViewport.style.minHeight = "";
     }
+    this.style.height = "";
+    this.style.minHeight = "";
+    const _haCard = this.closest("ha-card") as HTMLElement | null;
+    if (_haCard) {
+      _haCard.style.height = "";
+      _haCard.style.minHeight = "";
+    }
+    // Reset chart element height so the pane's height: 100% takes over again.
+    wrap.style.height = "";
     const { w, h } = (
       setupCanvas as (
         canvas: HTMLCanvasElement,
@@ -3385,6 +3265,14 @@ export class HistoryChart extends HTMLElement {
           analysisMap
         )
       : [];
+    this._setAiQueryBriefAnomalySnapshot(
+      visibleSeries,
+      analysisMap,
+      anomalyClustersMap,
+      correlatedSpans,
+      renderT0,
+      renderT1
+    );
     if (shouldDrawCorrelatedSpans) {
       if (correlatedSpans.length) {
         renderer.drawStateBands(
@@ -4380,59 +4268,14 @@ export class HistoryChart extends HTMLElement {
     t0: number,
     t1: number
   ): string {
-    const ANALYSIS_FIELDS = [
-      "show_trend_lines",
-      "trend_method",
-      "trend_window",
-      "show_rate_of_change",
-      "rate_window",
-      "show_delta_analysis",
-      "show_summary_stats",
-      "show_anomalies",
-      "anomaly_methods",
-      "anomaly_sensitivity",
-      "anomaly_overlap_mode",
-      "anomaly_rate_window",
-      "anomaly_zscore_window",
-      "anomaly_persistence_window",
-      "anomaly_comparison_window_id",
-      "anomaly_use_sampled_data",
-      "anomaly_trend_method",
-      "anomaly_trend_window",
-    ] as const;
-
-    const seriesPart = visibleSeries
-      .map((s) => {
-        const a =
-          analysisMap.get(s.entityId) || normalizeHistorySeriesAnalysis(null);
-        const first = s.pts[0]?.[0] ?? 0;
-        const last = s.pts[s.pts.length - 1]?.[0] ?? 0;
-        const aKey = ANALYSIS_FIELDS.map((f) => JSON.stringify(a[f])).join(",");
-        return `${s.entityId}:${s.pts.length}:${first}:${last}:${aKey}`;
-      })
-      .join("|");
-
-    const cmpPart = Array.from(selectedComparisonSeriesMap.values())
-      .map((s) => {
-        const first = s.pts[0]?.[0] ?? 0;
-        const last = s.pts[s.pts.length - 1]?.[0] ?? 0;
-        return `${s.entityId}:${s.pts.length}:${first}:${last}`;
-      })
-      .sort()
-      .join("|");
-
-    const allCmpPart = Object.entries(allComparisonWindowsData)
-      .flatMap(([windowId, entities]) =>
-        Object.entries(entities).map(([entityId, pts]) => {
-          const first = pts[0]?.[0] ?? 0;
-          const last = pts[pts.length - 1]?.[0] ?? 0;
-          return `${windowId}:${entityId}:${pts.length}:${first}:${last}`;
-        })
-      )
-      .sort()
-      .join("|");
-
-    return `${t0}:${t1}|${seriesPart}|${cmpPart}|${allCmpPart}`;
+    return buildAnalysisCacheKey(
+      visibleSeries,
+      selectedComparisonSeriesMap,
+      analysisMap,
+      allComparisonWindowsData,
+      t0,
+      t1
+    );
   }
 
   /**
@@ -4449,36 +4292,13 @@ export class HistoryChart extends HTMLElement {
       Record<string, [number, number][]>
     > = {}
   ): ComputeHistoryAnalysisPayload {
-    const defaultAnalysis = normalizeHistorySeriesAnalysis(null);
-    const series: ComputeHistoryAnalysisPayload["series"] = visibleSeries.map(
-      (seriesItem) => ({
-        entityId: seriesItem.entityId,
-        pts: seriesItem.pts,
-        analysis: analysisMap.get(seriesItem.entityId) || defaultAnalysis,
-      })
+    return buildHistoryAnalysisPayload(
+      visibleSeries,
+      selectedComparisonSeriesMap,
+      analysisMap,
+      hasSelectedComparisonWindow,
+      allComparisonWindowsData
     );
-    const comparisonSeries: ComputeHistoryAnalysisPayload["comparisonSeries"] =
-      Array.from(selectedComparisonSeriesMap.values()).map((seriesItem) => ({
-        entityId: seriesItem.entityId,
-        pts: seriesItem.pts,
-      }));
-
-    const seriesAnalysisConfigs: Record<
-      string,
-      Partial<WorkerSeriesAnalysis>
-    > = {};
-    for (const seriesItem of visibleSeries) {
-      seriesAnalysisConfigs[seriesItem.entityId] =
-        analysisMap.get(seriesItem.entityId) || defaultAnalysis;
-    }
-
-    return {
-      series,
-      comparisonSeries,
-      hasSelectedComparisonWindow: hasSelectedComparisonWindow === true,
-      allComparisonWindowsData,
-      seriesAnalysisConfigs,
-    };
   }
 
   /**
@@ -4692,23 +4512,7 @@ export class HistoryChart extends HTMLElement {
     _method?: string,
     _window?: string
   ): [number, number][] {
-    if (!Array.isArray(_pts) || _pts.length < 2) {
-      return [];
-    }
-    const method = _method || "rolling_average";
-    const window = _window || "24h";
-    switch (method) {
-      case "linear_trend":
-        return buildLinearTrend(_pts);
-      case "ema":
-        return buildEmaTrend(_pts, getEmaAlpha(window));
-      case "polynomial_trend":
-        return buildPolynomialTrend(_pts);
-      case "lowess":
-        return buildLowessTrend(_pts, getLowessBandwidth(window, _pts));
-      default:
-        return buildRollingAverageTrend(_pts, getTrendWindowMs(window));
-    }
+    return buildTrendPoints(_pts, _method, _window);
   }
 
   /** Build rate-of-change points from raw series data. */
@@ -4716,10 +4520,7 @@ export class HistoryChart extends HTMLElement {
     _pts: [number, number][],
     _window?: string
   ): [number, number][] {
-    if (!Array.isArray(_pts) || _pts.length < 2) {
-      return [];
-    }
-    return buildRateOfChangePoints(_pts, _window || "1h");
+    return buildRateOfChange(_pts, _window);
   }
 
   /** Build delta points (main vs comparison series). */
@@ -4727,7 +4528,7 @@ export class HistoryChart extends HTMLElement {
     _pts: [number, number][],
     _comparisonPts: [number, number][]
   ): [number, number][] {
-    return buildDeltaPoints(_pts, _comparisonPts);
+    return buildDelta(_pts, _comparisonPts);
   }
 
   /** Build summary statistics from raw series data. */
@@ -4736,7 +4537,7 @@ export class HistoryChart extends HTMLElement {
     max: number;
     mean: number;
   } {
-    return buildSummaryStats(_pts) ?? { min: 0, max: 0, mean: 0 };
+    return buildSummary(_pts);
   }
 
   // ── Series analysis helpers ─────────────────────────────────────────────────
@@ -4752,14 +4553,7 @@ export class HistoryChart extends HTMLElement {
           analysis?: Nullable<PartialHistorySeriesAnalysis>;
         }>)
       : [];
-    return new Map(
-      seriesSettings
-        .filter((entry) => entry?.entity_id != null)
-        .map((entry) => [
-          entry.entity_id as string,
-          normalizeHistorySeriesAnalysis(entry?.analysis),
-        ])
-    );
+    return buildSeriesAnalysisMap(seriesSettings);
   }
 
   /**
@@ -4782,29 +4576,14 @@ export class HistoryChart extends HTMLElement {
     analysis: SeriesAnalysis,
     hasSelectedComparisonWindow = false
   ): boolean {
-    return !!(
-      analysis.show_trend_lines ||
-      analysis.show_summary_stats ||
-      analysis.show_rate_of_change ||
-      analysis.show_threshold_analysis ||
-      analysis.show_anomalies ||
-      (analysis.show_delta_analysis && hasSelectedComparisonWindow)
-    );
+    return seriesHasActiveAnalysis(analysis, hasSelectedComparisonWindow);
   }
 
-  /**
-   * Returns true if the source series should be hidden (replaced by its
-   * analysis overlay series).
-   * Ported from _seriesShouldHideSource in card-history.js.
-   */
   _seriesShouldHideSource(
     analysis: SeriesAnalysis,
     hasSelectedComparisonWindow = false
   ): boolean {
-    return (
-      analysis.hide_source_series === true &&
-      this._seriesHasActiveAnalysis(analysis, hasSelectedComparisonWindow)
-    );
+    return seriesShouldHideSource(analysis, hasSelectedComparisonWindow);
   }
 
   /**
@@ -4821,49 +4600,7 @@ export class HistoryChart extends HTMLElement {
     dashed: boolean;
     dotted: boolean;
   } {
-    if (method === "linear_trend") {
-      return {
-        colorAlpha: hideRawData ? 0.94 : 0.88,
-        lineOpacity: hideRawData ? 0.86 : 0.74,
-        lineWidth: 2.1,
-        dashed: true,
-        dotted: false,
-      };
-    }
-    if (method === "ema") {
-      return {
-        colorAlpha: hideRawData ? 0.92 : 0.84,
-        lineOpacity: hideRawData ? 0.86 : 0.65,
-        lineWidth: 2.0,
-        dashed: false,
-        dotted: true,
-      };
-    }
-    if (method === "polynomial_trend") {
-      return {
-        colorAlpha: hideRawData ? 0.94 : 0.86,
-        lineOpacity: hideRawData ? 0.86 : 0.72,
-        lineWidth: 2.0,
-        dashed: true,
-        dotted: false,
-      };
-    }
-    if (method === "lowess") {
-      return {
-        colorAlpha: hideRawData ? 0.9 : 0.82,
-        lineOpacity: hideRawData ? 0.84 : 0.6,
-        lineWidth: 1.8,
-        dashed: false,
-        dotted: false,
-      };
-    }
-    return {
-      colorAlpha: hideRawData ? 0.9 : 0.82,
-      lineOpacity: hideRawData ? 0.84 : 0.62,
-      lineWidth: 2.2,
-      dashed: false,
-      dotted: true,
-    };
+    return getTrendRenderOptions(method, hideRawData);
   }
 
   // ── Split-view chart rendering ───────────────────────────────────────────────
@@ -4915,8 +4652,15 @@ export class HistoryChart extends HTMLElement {
     }
 
     const N = (visibleSeries as unknown[]).length;
-    const MIN_ROW_HEIGHT = 140;
-    const rowHeight = Math.max(MIN_ROW_HEIGHT, Math.floor(availableHeight / N));
+    const MIN_ROW_HEIGHT = 200;
+    const minTotalHeight = MIN_ROW_HEIGHT * N;
+    // When the minimum required height exceeds the available space, use the
+    // minimum per-series height and let the page scroll rather than clipping
+    // rows into an internal scrollable area.
+    const usePageScroll = minTotalHeight > availableHeight;
+    const rowHeight = usePageScroll
+      ? MIN_ROW_HEIGHT
+      : Math.max(MIN_ROW_HEIGHT, Math.floor(availableHeight / N));
     const totalHeight = rowHeight * N;
 
     if (chartStage) {
@@ -4924,12 +4668,40 @@ export class HistoryChart extends HTMLElement {
       chartStage.style.height = `${totalHeight}px`;
     }
 
-    // Enable vertical scrolling in the viewport when the split rows don't all
-    // fit within the available height (e.g. many series with a small panel).
+    // When the split rows exceed the available height, expand the chart element
+    // itself so the parent pane (.pane-first) can scroll vertically — giving a
+    // natural page-level scroll rather than a small internal viewport scroll.
     const splitScrollViewport = this.querySelector("#chart-scroll-viewport");
-    if (splitScrollViewport) {
-      (splitScrollViewport as HTMLElement).style.overflowY =
-        totalHeight > availableHeight ? "auto" : "hidden";
+    if (totalHeight > availableHeight) {
+      wrap.style.height = `${totalHeight}px`;
+      // Keep the viewport non-scrolling vertically; the pane container scrolls.
+      if (splitScrollViewport) {
+        (splitScrollViewport as HTMLElement).style.overflowY = "hidden";
+      }
+    } else {
+      wrap.style.height = "";
+      if (splitScrollViewport) {
+        (splitScrollViewport as HTMLElement).style.overflowY = "hidden";
+      }
+    }
+
+    // When page-scroll is needed, release the height constraints on the card
+    // so the layout can grow taller than the viewport.
+    const haCard = this.closest("ha-card") as HTMLElement | null;
+    if (usePageScroll) {
+      this.style.height = "auto";
+      this.style.minHeight = "100%";
+      if (haCard) {
+        haCard.style.height = "auto";
+        haCard.style.minHeight = "100%";
+      }
+    } else {
+      this.style.height = "";
+      this.style.minHeight = "";
+      if (haCard) {
+        haCard.style.height = "";
+        haCard.style.minHeight = "";
+      }
     }
 
     this._setChartLoading(!!(options as RecordWithUnknownValues).loading);
@@ -5833,7 +5605,8 @@ export class HistoryChart extends HTMLElement {
             trackRenderer as InstanceType<typeof ChartRenderer>
           )._interpolateValue(
             (series as RecordWithUnknownValues).pts as ChartPoint[],
-            timeMs
+            timeMs,
+            !!(series as RecordWithUnknownValues).stepped
           );
           if (value == null) {
             return {

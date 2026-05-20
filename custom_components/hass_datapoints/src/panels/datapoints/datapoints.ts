@@ -1,5 +1,5 @@
-import { COLORS, DOMAIN } from "@/constants";
-import { entityName } from "@/lib/ha/entity-name";
+import { DOMAIN } from "@/constants";
+import { disambiguateEntityNames, entityName } from "@/lib/ha/entity-name";
 import { msg, syncFrontendLocale } from "@/lib/i18n/localize";
 import {
   confirmDestructiveAction,
@@ -20,6 +20,30 @@ import {
 } from "@/lib/domain/target-selection";
 import { parseDateValue } from "@/lib/domain/chart-zoom";
 import {
+  formatComparisonLabel,
+  formatDateWindowInputValue,
+  getRoundedDateWindowUnit,
+  parseDateWindowInputValue,
+  shiftDateWindowByUnit,
+} from "@/lib/domain/date-window";
+import {
+  addSeriesRows,
+  computeNextAnalysis,
+  copyAnalysisToAll,
+  mergeSavedSeriesRows,
+  removeSeriesRow,
+  toggleSeriesAnalysisExpanded,
+  updateSeriesRowColor,
+  updateSeriesRowVisibility,
+} from "@/lib/domain/series-rows";
+import {
+  applyDateWindowShortcut,
+  getActiveComparisonWindow,
+  getComparisonPreviewOverlay,
+  getPreloadComparisonWindows,
+  getPreviewComparisonWindows,
+} from "@/lib/domain/comparison-windows";
+import {
   buildHistoryPagePreferencesPayload,
   buildHistoryPageSessionState,
   type HistoryPageSessionState,
@@ -28,30 +52,41 @@ import {
   PANEL_HISTORY_PREFERENCES_KEY,
 } from "@/lib/history-page/history-session-state";
 import {
+  buildAiQueryBrief,
+  type AiQueryBriefAnomalySnapshot,
+  type AiQueryBriefMonitorContext,
+} from "@/lib/history-page/ai-query-brief";
+import type { AnomalyMonitor } from "@/lib/data/monitors-api";
+import {
   type NormalizedHistoryDateWindow,
   makeDateWindowId,
   normalizeDateWindows,
 } from "@/lib/history-page/history-url-state";
 import {
-  addUnit,
   clampNumber,
-  DAY_MS,
+  computeZoomLevelForSpan,
+  deriveRangeBounds,
   endOfUnit,
+  getEffectiveSnapUnit,
+  getSnapSpanMs,
   extractRangeValue,
   HOUR_MS,
   MINUTE_MS,
   RANGE_AUTO_ZOOM_DEBOUNCE_MS,
   RANGE_AUTO_ZOOM_SELECTION_PADDING_RATIO,
-  RANGE_FUTURE_BUFFER_YEARS,
   RANGE_SLIDER_MIN_SPAN_MS,
   RANGE_SLIDER_WINDOW_MS,
   RANGE_SNAP_OPTIONS,
   RANGE_ZOOM_CONFIGS,
   RANGE_ZOOM_OPTIONS,
   type RangeUnit,
-  SECOND_MS,
   startOfUnit,
 } from "@/lib/timeline/timeline-scale";
+import {
+  attachPopupDismissListeners,
+  computePopupPosition,
+  type DismissCleanup,
+} from "@/lib/util/popup";
 import { logger } from "@/lib/logger";
 import type { HassLike } from "@/lib/types";
 
@@ -61,21 +96,27 @@ import "@/molecules/sidebar-options/sidebar-options";
 import "@/molecules/collapsed-options-menu/collapsed-options-menu";
 import "@/molecules/comparison-tab-rail/comparison-tab-rail";
 import "@/molecules/date-window-dialog/date-window-dialog";
+import "@/molecules/anomaly-monitor-wizard/anomaly-monitor-wizard";
+import "@/molecules/anomaly-monitors-panel/anomaly-monitors-panel";
 import "@/atoms/interactive/resizable-panes/resizable-panes";
 import "@/molecules/history-chart/history-chart";
 import "@/panels/datapoints/components/panel-shell/panel-shell";
+import "@/panels/datapoints/components/ai-query-brief-dialog/ai-query-brief-dialog";
 import "@/panels/datapoints/components/history-targets/history-targets";
 import "@/panels/datapoints/components/range-toolbar/range-toolbar";
 import { createHistoryPageContext } from "@/panels/datapoints/context/create-history-page-context";
 import type {
   HistoryPageContext,
-  HistoryComparisonWindowState,
   HistoryTargetRowState,
 } from "@/panels/datapoints/context/types";
 import {
   PANEL_HISTORY_LOADING_STYLE,
   PANEL_HISTORY_STYLE,
 } from "./datapoints.styles";
+
+/** Module-level set of all currently-connected panel instances.
+ *  Used by the orphan-recovery guard to avoid disrupting a live replacement. */
+const _liveInstances = new Set<object>();
 
 const DATA_GAP_THRESHOLD_OPTIONS = [
   { value: "auto", label: "Auto-detect" },
@@ -115,6 +156,7 @@ type RowListElement = HTMLElement & {
   computingEntityIds: Set<string>;
   analysisProgress: number;
   computingMethodsByEntity: Map<string, unknown>;
+  labelMap: Map<string, string>;
 };
 
 type TargetPickerElement = HTMLElement & {
@@ -216,6 +258,13 @@ type DateWindowDialogElement = HTMLElement & {
   zoomLevel: string;
   dateSnapping: string;
 };
+
+type AiQueryBriefDialogElement = HTMLElement & {
+  open: boolean;
+  heading: string;
+  text: string;
+};
+
 type CollapsedOptionsMenuElement = HTMLElement & {
   datapointScope: string;
   showIcons: boolean;
@@ -235,6 +284,7 @@ type HistoryCardElement = HTMLElement & {
   hass?: unknown;
   setConfig(config: RecordWithUnknownValues): void;
   setExternalZoomRange?(range: Nullable<{ start: number; end: number }>): void;
+  getAiQueryBriefAnomalySnapshot?(): Nullable<AiQueryBriefAnomalySnapshot>;
   _adjustComparisonAxisScale?: boolean;
 };
 
@@ -256,7 +306,7 @@ type ResizablePanesElement = HTMLElement & {
 
 // Shared timeline, domain, and history-page helpers now live in dedicated subsystem files.
 
-export class HassRecordsHistoryPanel extends HTMLElement {
+export class HassDatapointsHistoryPanel extends HTMLElement {
   [key: string]: unknown;
 
   // Explicit declarations take precedence over the index signature so TypeScript
@@ -453,6 +503,9 @@ export class HassRecordsHistoryPanel extends HTMLElement {
 
   declare _pendingPreferencesSaveTimer: Nullable<number>;
 
+  /** Timer ID for the orphan-recovery guard set in disconnectedCallback. */
+  declare _orphanRecoveryTimer: Nullable<number>;
+
   declare _recordsSearchQuery: string;
 
   declare _hiddenEventIds: string[];
@@ -487,13 +540,9 @@ export class HassRecordsHistoryPanel extends HTMLElement {
 
   declare _collapsedPopupAnchorEl: Nullable<HTMLElement>;
 
-  declare _collapsedPopupOutsideClickHandler: Nullable<EventListener>;
+  declare _collapsedPopupDismiss: Nullable<DismissCleanup>;
 
-  declare _collapsedPopupKeyHandler: Nullable<(ev: KeyboardEvent) => void>;
-
-  declare _collapsedOptionsOutsideClickHandler: Nullable<EventListener>;
-
-  declare _collapsedOptionsKeyHandler: Nullable<(ev: KeyboardEvent) => void>;
+  declare _collapsedOptionsDismiss: Nullable<DismissCleanup>;
 
   declare _collapsedOptionsPopupOpen: boolean;
 
@@ -503,6 +552,15 @@ export class HassRecordsHistoryPanel extends HTMLElement {
    *  actual locale changes so we can avoid a full re-render on routine hass
    *  updates where the locale hasn't changed. */
   declare _lastSyncedLocale: string;
+
+  /** Whether the anomaly monitors management panel is currently shown. */
+  declare _showMonitorsPanel: boolean;
+
+  /** Imperative wizard element appended to the shadow root. */
+  declare _monitorWizardComp: Nullable<HTMLElement>;
+
+  /** Imperative AI brief dialog element appended to the shadow root. */
+  declare _aiQueryBriefDialogComp: Nullable<AiQueryBriefDialogElement>;
 
   constructor() {
     super();
@@ -603,6 +661,10 @@ export class HassRecordsHistoryPanel extends HTMLElement {
     this._hasPageStateInUrl = false;
     this._localPageStateDirty = false;
     this._pendingPreferencesSaveTimer = null;
+    this._orphanRecoveryTimer = null;
+    this._showMonitorsPanel = false;
+    this._monitorWizardComp = null;
+    this._aiQueryBriefDialogComp = null;
     this._recordsSearchQuery = "";
     this._hiddenEventIds = [];
     this._hoveredEventIds = [];
@@ -850,6 +912,12 @@ export class HassRecordsHistoryPanel extends HTMLElement {
           this._rowListEl.hass = this._hass ?? null;
           this._rowListEl.states =
             (this._hass?.states as RecordWithUnknownValues) ?? {};
+          this._rowListEl.labelMap = disambiguateEntityNames(
+            this._hass,
+            (this._seriesRows ?? []).map(
+              (r: { entity_id: string }) => r.entity_id
+            )
+          );
         }
         if (this._rangeToolbarComp) {
           this._rangeToolbarComp.hass = this._hass ?? null;
@@ -886,10 +954,32 @@ export class HassRecordsHistoryPanel extends HTMLElement {
         .catch(() => {});
     }
     if (!this._rendered) {
+      logger.warn(
+        "[dp-lifecycle] set hass: first hass — transitioning to rendered",
+        {
+          isConnected: this.isConnected,
+          hadUiReadyPromise: !!this._uiReadyPromise,
+          shellBuilt: this._shellBuilt,
+        }
+      );
       this._rendered = true;
       this._initFromContext();
       if (this.isConnected) {
         this._buildLoadingShell();
+        // _ensureUiComponentsReady() may have already resolved (all HA components
+        // were already registered) before hass arrived and set _rendered = true.
+        // In that case its callback bailed out early and the shell was never built.
+        // Reset the promise so the call below creates a fresh one and runs the
+        // shell-build logic now that _rendered is true.
+        logger.warn(
+          "[dp-lifecycle] set hass: resetting uiReadyPromise and re-running ensureUiComponentsReady"
+        );
+        this._uiReadyPromise = null;
+        this._ensureUiComponentsReady();
+      } else {
+        logger.warn(
+          "[dp-lifecycle] set hass: not connected — skipping shell build"
+        );
       }
     }
     if (
@@ -933,6 +1023,22 @@ export class HassRecordsHistoryPanel extends HTMLElement {
   }
 
   connectedCallback() {
+    // Cancel any pending orphan-recovery dispatch from a previous disconnect.
+    if (this._orphanRecoveryTimer) {
+      window.clearTimeout(this._orphanRecoveryTimer);
+      this._orphanRecoveryTimer = null;
+    }
+    _liveInstances.add(this);
+    logger.warn("[dp-lifecycle] connectedCallback", {
+      rendered: this._rendered,
+      shellBuilt: this._shellBuilt,
+      uiReadyPromise: !!this._uiReadyPromise,
+      uiReadyApplied: this._uiReadyApplied,
+      entityCount: this._entities?.length ?? 0,
+      contentKey: this._contentKey,
+      hasContentHostEl: !!this._contentHostEl,
+      hasShellEl: !!this._shellEl,
+    });
     this._mqTablet.addEventListener("change", this._onLayoutChange);
     this._mqMobile.addEventListener("change", this._onLayoutChange);
     this._updateLayoutMode();
@@ -984,15 +1090,33 @@ export class HassRecordsHistoryPanel extends HTMLElement {
       "hass-datapoints-analysis-method-result",
       this._onAnalysisMethodResult
     );
+    this.addEventListener("dp-anomaly-save-monitor", (ev: Event) => {
+      const detail = (ev as CustomEvent).detail ?? {};
+      const entityId: string = detail.entityId ?? "";
+      const analysis = detail.analysis ?? null;
+      this._openMonitorWizardFromChartAnalysis(entityId, analysis);
+    });
     if (this._rendered && !this._shellBuilt) {
+      logger.warn(
+        "[dp-lifecycle] connectedCallback: rendered but no shell — building loading shell"
+      );
       this._buildLoadingShell();
     }
     this._ensureUiComponentsReady();
     if (this._rendered && this._shellBuilt) {
+      logger.warn(
+        "[dp-lifecycle] connectedCallback: shell already built — scheduling reconnect RAF render"
+      );
       window.requestAnimationFrame(() => {
         if (!this.isConnected) {
+          logger.warn(
+            "[dp-lifecycle] connectedCallback RAF: aborted (not connected)"
+          );
           return;
         }
+        logger.warn(
+          "[dp-lifecycle] connectedCallback RAF: calling syncControls + renderContent"
+        );
         this._syncControls();
         this._renderContent();
         if (this._restoredFromSession) {
@@ -1000,10 +1124,16 @@ export class HassRecordsHistoryPanel extends HTMLElement {
           this._updateUrl({ push: false });
         }
       });
+    } else {
+      logger.warn("[dp-lifecycle] connectedCallback: no RAF scheduled", {
+        rendered: this._rendered,
+        shellBuilt: this._shellBuilt,
+      });
     }
   }
 
   disconnectedCallback() {
+    _liveInstances.delete(this);
     this._mqTablet.removeEventListener("change", this._onLayoutChange);
     this._mqMobile.removeEventListener("change", this._onLayoutChange);
     if (this._onOverlayKeydown) {
@@ -1067,11 +1197,46 @@ export class HassRecordsHistoryPanel extends HTMLElement {
       window.clearTimeout(this._chartZoomStateCommitTimer);
       this._chartZoomStateCommitTimer = null;
     }
+    if (this._orphanRecoveryTimer) {
+      window.clearTimeout(this._orphanRecoveryTimer);
+      this._orphanRecoveryTimer = null;
+    }
     this._hideCollapsedTargetPopup();
     this._hideCollapsedOptionsPopup();
+    logger.warn("[dp-lifecycle] disconnectedCallback", {
+      rendered: this._rendered,
+      shellBuilt: this._shellBuilt,
+      uiReadyApplied: this._uiReadyApplied,
+      entityCount: this._entities?.length ?? 0,
+    });
     this._uiReadyPromise = null;
     this._uiReadyApplied = false;
     this._context.orchestration.cancelChartResizeRedraw();
+
+    // Orphan-recovery guard: HA's WebSocket reconnect flow can remove this
+    // element without ever re-adding it (connectedCallback never fires again),
+    // leaving the panel area blank.  If we are still detached after a grace
+    // period, fire a synthetic location-changed so HA's router re-evaluates
+    // the current URL and re-mounts the panel.
+    this._orphanRecoveryTimer = window.setTimeout(() => {
+      this._orphanRecoveryTimer = null;
+      if (!this.isConnected) {
+        // Don't fire if another instance is already live — would disrupt it.
+        const hasLiveInstance = [..._liveInstances].some((i) => i !== this);
+        if (hasLiveInstance) {
+          logger.warn(
+            "[dp-lifecycle] orphan recovery: another instance already live — skipping location-changed"
+          );
+          return;
+        }
+        logger.warn(
+          "[dp-lifecycle] orphan recovery: still detached after grace period — dispatching location-changed"
+        );
+        window.dispatchEvent(
+          new CustomEvent("location-changed", { bubbles: true })
+        );
+      }
+    }, 3000);
   }
 
   _initFromContext() {
@@ -1392,6 +1557,11 @@ export class HassRecordsHistoryPanel extends HTMLElement {
   }
 
   _buildLoadingShell() {
+    logger.warn("[dp-lifecycle] _buildLoadingShell called", {
+      rendered: this._rendered,
+      shellBuilt: this._shellBuilt,
+      isConnected: this.isConnected,
+    });
     this._shellBuilt = false;
     const loadingLabel = msg("Loading Datapoints…");
     const root = this.shadowRoot;
@@ -1410,6 +1580,11 @@ export class HassRecordsHistoryPanel extends HTMLElement {
   }
 
   _buildShell() {
+    logger.warn("[dp-lifecycle] _buildShell called", {
+      rendered: this._rendered,
+      isConnected: this.isConnected,
+      entityCount: this._entities?.length ?? 0,
+    });
     this._shellBuilt = true;
     const root = this.shadowRoot;
     if (!root) {
@@ -1439,6 +1614,11 @@ export class HassRecordsHistoryPanel extends HTMLElement {
     shell.addEventListener("dp-shell-menu-download", () =>
       this._downloadSpreadsheet()
     );
+    shell.addEventListener("dp-shell-menu-ai-brief", () => {
+      this._openAiQueryBriefDialog().catch((error: unknown) => {
+        logger.warn("[hass-datapoints] failed to open AI query brief:", error);
+      });
+    });
     shell.addEventListener("dp-shell-menu-save", () => this._savePageState());
     shell.addEventListener("dp-shell-menu-restore", () =>
       this._restorePageState()
@@ -1446,6 +1626,10 @@ export class HassRecordsHistoryPanel extends HTMLElement {
     shell.addEventListener("dp-shell-menu-clear", () =>
       this._clearSavedPageState()
     );
+    shell.addEventListener("dp-shell-menu-monitors", () => {
+      this._showMonitorsPanel = true;
+      this._renderContent();
+    });
     shell.addEventListener("dp-shell-sidebar-toggle", () =>
       this._toggleSidebarCollapsed()
     );
@@ -1477,8 +1661,16 @@ export class HassRecordsHistoryPanel extends HTMLElement {
 
   _bootstrapAfterShellBuilt() {
     if (!this._shellBuilt) {
+      logger.warn(
+        "[dp-lifecycle] _bootstrapAfterShellBuilt: skipped — shell not built"
+      );
       return;
     }
+    logger.warn("[dp-lifecycle] _bootstrapAfterShellBuilt: running", {
+      rendered: this._rendered,
+      entityCount: this._entities?.length ?? 0,
+      contentKey: this._contentKey,
+    });
     this._ensureHistoryBounds();
     this._ensureUserPreferences();
     this._loadSavedPageIndicator();
@@ -1492,8 +1684,24 @@ export class HassRecordsHistoryPanel extends HTMLElement {
 
   _ensureUiComponentsReady() {
     if (this._uiReadyPromise) {
+      logger.warn(
+        "[dp-lifecycle] _ensureUiComponentsReady: promise already exists — returning cached",
+        {
+          rendered: this._rendered,
+          shellBuilt: this._shellBuilt,
+          uiReadyApplied: this._uiReadyApplied,
+        }
+      );
       return this._uiReadyPromise;
     }
+    logger.warn(
+      "[dp-lifecycle] _ensureUiComponentsReady: creating new promise",
+      {
+        rendered: this._rendered,
+        shellBuilt: this._shellBuilt,
+        isConnected: this.isConnected,
+      }
+    );
     const componentTags = [
       "ha-top-app-bar-fixed",
       "ha-menu-button",
@@ -1502,16 +1710,44 @@ export class HassRecordsHistoryPanel extends HTMLElement {
       "ha-tooltip",
       "ha-target-picker",
       "ha-date-range-picker",
+      "ha-entity-picker",
     ];
     this._uiReadyPromise = ensureHaComponents(componentTags)
       .then((results) => results)
       .then(() => {
         if (!this.isConnected || !this._rendered) {
+          // hass hasn't arrived yet (or element disconnected).  Clear the stored
+          // promise so that the next call — triggered once hass sets _rendered=true
+          // or connectedCallback fires again — will create a fresh one and actually
+          // build the shell.
+          logger.warn(
+            "[dp-lifecycle] _ensureUiComponentsReady: components ready but bailing early",
+            {
+              isConnected: this.isConnected,
+              rendered: this._rendered,
+              shellBuilt: this._shellBuilt,
+            }
+          );
+          this._uiReadyPromise = null;
           return;
         }
+        logger.warn(
+          "[dp-lifecycle] _ensureUiComponentsReady: components ready — scheduling double RAF",
+          {
+            shellBuilt: this._shellBuilt,
+            uiReadyApplied: this._uiReadyApplied,
+          }
+        );
         window.requestAnimationFrame(() => {
           window.requestAnimationFrame(() => {
             if (!this.isConnected || !this._rendered) {
+              logger.warn(
+                "[dp-lifecycle] _ensureUiComponentsReady double RAF: aborted",
+                {
+                  isConnected: this.isConnected,
+                  rendered: this._rendered,
+                }
+              );
               return;
             }
             this._uiReadyApplied = true;
@@ -1520,8 +1756,18 @@ export class HassRecordsHistoryPanel extends HTMLElement {
               // navigation, _shellBuilt is already true so we skip this; tearing
               // down root.innerHTML while connectedCallback's RAF is mid-flight
               // was the root cause of the crash-on-return bug.
+              logger.warn(
+                "[dp-lifecycle] _ensureUiComponentsReady double RAF: calling _buildShell"
+              );
               this._buildShell();
+            } else {
+              logger.warn(
+                "[dp-lifecycle] _ensureUiComponentsReady double RAF: shell already built — skipping _buildShell"
+              );
             }
+            logger.warn(
+              "[dp-lifecycle] _ensureUiComponentsReady double RAF: calling syncControls + bootstrapAfterShellBuilt"
+            );
             this._syncControls();
             this._bootstrapAfterShellBuilt();
           });
@@ -1584,26 +1830,7 @@ export class HassRecordsHistoryPanel extends HTMLElement {
   }
 
   _mergeSavedSeriesRows(rows: unknown, savedRows: unknown) {
-    const normalizedRows = normalizeHistorySeriesRows(rows);
-    const normalizedSavedRows = normalizeHistorySeriesRows(savedRows);
-    if (!normalizedSavedRows.length) {
-      return normalizedRows;
-    }
-    const savedRowMap = new Map(
-      normalizedSavedRows.map((row) => [row.entity_id, row])
-    );
-    return normalizedRows.map((row) => {
-      const savedRow = savedRowMap.get(row.entity_id);
-      if (!savedRow) {
-        return row;
-      }
-      return {
-        ...row,
-        color: savedRow.color,
-        visible: savedRow.visible,
-        analysis: savedRow.analysis,
-      };
-    });
+    return mergeSavedSeriesRows(rows, savedRows);
   }
 
   _syncHassBindings() {
@@ -1693,193 +1920,55 @@ export class HassRecordsHistoryPanel extends HTMLElement {
   }
 
   _formatComparisonLabel(start: Date, end: Date) {
-    const fmt = (d: Date) =>
-      d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-    const fmtYear = (d: Date) =>
-      d.toLocaleDateString(undefined, {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
-    const sameYear = start.getFullYear() === end.getFullYear();
-    return sameYear
-      ? `${fmt(start)} – ${fmt(end)}`
-      : `${fmtYear(start)} – ${fmtYear(end)}`;
+    return formatComparisonLabel(start, end);
   }
 
   _getComparisonPreviewOverlay() {
-    const comparisonWindow = this._getActiveComparisonWindow();
-    if (!comparisonWindow || !this._startTime || !this._endTime) {
-      return null;
-    }
-    const windowStart = parseDateValue(comparisonWindow.start_time);
-    const windowEnd = parseDateValue(comparisonWindow.end_time);
-    if (!windowStart || !windowEnd) {
-      return null;
-    }
-    const actualSpanMs = this._endTime.getTime() - this._startTime.getTime();
-    if (!Number.isFinite(actualSpanMs) || actualSpanMs <= 0) {
-      return null;
-    }
-    const actualStart = new Date(windowStart.getTime());
-    const actualEnd = new Date(windowStart.getTime() + actualSpanMs);
-    const windowRangeLabel = this._formatComparisonLabel(
-      windowStart,
-      windowEnd
+    return getComparisonPreviewOverlay(
+      this._getActiveComparisonWindow(),
+      this._startTime,
+      this._endTime
     );
-    const actualRangeLabel = this._formatComparisonLabel(
-      actualStart,
-      actualEnd
-    );
-    if (windowRangeLabel === actualRangeLabel) {
-      return null;
-    }
-    return {
-      label: comparisonWindow.label || "Preview",
-      window_range_label: windowRangeLabel,
-      actual_range_label: actualRangeLabel,
-    };
   }
 
   _getPreviewComparisonWindows() {
-    const comparisonIds = [];
-    if (this._selectedComparisonWindowId) {
-      comparisonIds.push(this._selectedComparisonWindowId);
-    }
-    if (
-      this._hoveredComparisonWindowId &&
-      !comparisonIds.includes(this._hoveredComparisonWindowId)
-    ) {
-      comparisonIds.push(this._hoveredComparisonWindowId);
-    }
-    if (!comparisonIds.length) {
-      return [];
-    }
-    if (!this._startTime || !this._endTime) {
-      return [];
-    }
-    const startTime = this._startTime!;
-    const previewWindows = comparisonIds
-      .map(
-        (id: string) => this._comparisonWindows.find((w) => w.id === id) ?? null
-      )
-      .filter((w): w is HistoryComparisonWindowState => w !== null)
-      .map((window) => ({
-        ...window,
-        time_offset_ms:
-          new Date(window.start_time).getTime() - startTime.getTime(),
-      }));
-    return previewWindows;
+    return getPreviewComparisonWindows(
+      this._comparisonWindows,
+      this._selectedComparisonWindowId,
+      this._hoveredComparisonWindowId,
+      this._startTime
+    );
   }
 
   _getPreloadComparisonWindows() {
-    if (!this._startTime || !this._endTime) {
-      return [];
-    }
-    const startTime = this._startTime!;
-    const preloadWindows = this._comparisonWindows
-      .map((window) => ({
-        ...window,
-        time_offset_ms:
-          new Date(window.start_time).getTime() - startTime.getTime(),
-      }))
-      .filter((window) => Number.isFinite(window.time_offset_ms));
-    return preloadWindows;
+    return getPreloadComparisonWindows(
+      this._comparisonWindows,
+      this._startTime
+    );
   }
 
   _getActiveComparisonWindow() {
-    if (this._hoveredComparisonWindowId) {
-      return (
-        this._comparisonWindows.find(
-          (window: NormalizedHistoryDateWindow) =>
-            window.id === this._hoveredComparisonWindowId
-        ) || null
-      );
-    }
-    if (this._selectedComparisonWindowId) {
-      return (
-        this._comparisonWindows.find(
-          (window: NormalizedHistoryDateWindow) =>
-            window.id === this._selectedComparisonWindowId
-        ) || null
-      );
-    }
-    return null;
+    return getActiveComparisonWindow(
+      this._comparisonWindows,
+      this._hoveredComparisonWindowId,
+      this._selectedComparisonWindowId
+    );
   }
 
   _formatDateWindowInputValue(date: Nullable<Date>) {
-    if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
-      return "";
-    }
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
+    return formatDateWindowInputValue(date);
   }
 
   _parseDateWindowInputValue(value: Nullable<string> | undefined) {
-    if (!value || typeof value !== "string") {
-      return null;
-    }
-    const match = value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
-    if (!match) {
-      return null;
-    }
-    const [, year, month, day, hour, minute] = match;
-    const parsed = new Date(
-      Number(year),
-      Number(month) - 1,
-      Number(day),
-      Number(hour),
-      Number(minute),
-      0,
-      0
-    );
-    if (Number.isNaN(parsed.getTime())) {
-      return null;
-    }
-    return parsed;
+    return parseDateWindowInputValue(value);
   }
 
   _shiftDateWindowByUnit(date: Date, unit: RangeUnit, amount: number) {
-    const shifted = new Date(date);
-    if (unit === "day") {
-      shifted.setDate(shifted.getDate() + amount);
-      return shifted;
-    }
-    if (unit === "week") {
-      shifted.setDate(shifted.getDate() + amount * 7);
-      return shifted;
-    }
-    if (unit === "month") {
-      shifted.setMonth(shifted.getMonth() + amount);
-      return shifted;
-    }
-    if (unit === "year") {
-      shifted.setFullYear(shifted.getFullYear() + amount);
-      return shifted;
-    }
-    return shifted;
+    return shiftDateWindowByUnit(date, unit, amount);
   }
 
   _getRoundedDateWindowUnit(start: Date, end: Date): Nullable<RangeUnit> {
-    if (!(start instanceof Date) || !(end instanceof Date) || !(start < end)) {
-      return null;
-    }
-    const supportedUnits: RangeUnit[] = ["day", "week", "month", "year"];
-    for (const unit of supportedUnits) {
-      const roundedStart = startOfUnit(start, unit);
-      const roundedEnd = endOfUnit(start, unit);
-      if (
-        roundedStart?.getTime?.() === start.getTime() &&
-        roundedEnd?.getTime?.() === end.getTime()
-      ) {
-        return unit;
-      }
-    }
-    return null;
+    return getRoundedDateWindowUnit(start, end);
   }
 
   _syncDateWindowDialogInputs() {
@@ -1919,32 +2008,17 @@ export class HassRecordsHistoryPanel extends HTMLElement {
   }
 
   _applyDateWindowShortcut(direction: number) {
-    if (this._editingDateWindowId) {
-      return;
-    }
-    const start = this._dateWindowDialogDraftRange?.start;
-    const end = this._dateWindowDialogDraftRange?.end;
-    if (!(start instanceof Date) || !(end instanceof Date) || !(start < end)) {
-      return;
-    }
-    const roundedUnit = this._getRoundedDateWindowUnit(start, end);
-    let nextStart;
-    let nextEnd;
-    if (roundedUnit) {
-      nextStart = startOfUnit(
-        this._shiftDateWindowByUnit(start, roundedUnit, direction),
-        roundedUnit
-      );
-      nextEnd = endOfUnit(nextStart, roundedUnit);
-    } else {
-      const spanMs = end.getTime() - start.getTime();
-      nextStart = new Date(start.getTime() + direction * spanMs);
-      nextEnd = new Date(end.getTime() + direction * spanMs);
-    }
-    this._dateWindowDialogDraftRange = {
-      start: nextStart,
-      end: nextEnd,
-    };
+    if (this._editingDateWindowId) return;
+    const result = applyDateWindowShortcut(
+      this._dateWindowDialogDraftRange,
+      direction,
+      (s, e) => this._getRoundedDateWindowUnit(s, e),
+      (d, u, a) => this._shiftDateWindowByUnit(d, u as RangeUnit, a),
+      (d, u) => startOfUnit(d, u as RangeUnit),
+      (d, u) => endOfUnit(d, u as RangeUnit)
+    );
+    if (!result) return;
+    this._dateWindowDialogDraftRange = result;
     this._syncDateWindowDialogInputs();
   }
 
@@ -2728,6 +2802,8 @@ export class HassRecordsHistoryPanel extends HTMLElement {
     this._mountRangeToolbarControl();
     this._mountSidebarOptionsControl();
     this._mountDateWindowDialogControl();
+    this._mountMonitorWizard();
+    this._mountAiQueryBriefDialogControl();
     this._syncControls();
   }
 
@@ -3067,6 +3143,92 @@ export class HassRecordsHistoryPanel extends HTMLElement {
     }
   }
 
+  _mountMonitorWizard() {
+    if (!this.shadowRoot || this._monitorWizardComp) return;
+    const wizard = document.createElement(
+      "anomaly-monitor-wizard"
+    ) as HTMLElement & {
+      hass: unknown;
+      open: boolean;
+      prefillEntityIds: string[];
+      prefillAnalysis: unknown;
+      editMonitor: unknown;
+      suggestedEntityIds: string[];
+      allSeriesEntityIds: string[];
+    };
+    wizard.hass = this._hass;
+    wizard.open = false;
+    wizard.suggestedEntityIds = [];
+    wizard.allSeriesEntityIds = [];
+    wizard.addEventListener("dp-monitor-wizard-close", () => {
+      wizard.open = false;
+    });
+    wizard.addEventListener("dp-monitor-wizard-saved", () => {
+      wizard.open = false;
+    });
+    this.shadowRoot.appendChild(wizard);
+    this._monitorWizardComp = wizard as HTMLElement;
+  }
+
+  _openMonitorWizardFromChartAnalysis(entityId: string, analysis: unknown) {
+    const suggestedIds: string[] = (this._seriesRows ?? [])
+      .filter(
+        (r: {
+          entity_id: string;
+          analysis?: { show_anomalies?: boolean; anomaly_methods?: string[] };
+        }) =>
+          r.analysis?.show_anomalies === true &&
+          Array.isArray(r.analysis.anomaly_methods) &&
+          r.analysis.anomaly_methods.length > 0 &&
+          !r.entity_id.startsWith("binary_sensor.") &&
+          r.entity_id !== entityId
+      )
+      .map((r: { entity_id: string }) => r.entity_id);
+    const allSeriesIds: string[] = (this._seriesRows ?? [])
+      .filter(
+        (r: { entity_id: string }) => !r.entity_id.startsWith("binary_sensor.")
+      )
+      .map((r: { entity_id: string }) => r.entity_id);
+
+    this._openMonitorWizard(
+      entityId ? [entityId] : [],
+      analysis,
+      null,
+      suggestedIds,
+      allSeriesIds
+    );
+  }
+
+  _openMonitorWizard(
+    entityIds: string[],
+    analysis: unknown,
+    editMonitor: unknown = null,
+    suggestedEntityIds: string[] = [],
+    allSeriesEntityIds: string[] = []
+  ) {
+    if (!this.shadowRoot) return;
+    if (!this._monitorWizardComp) {
+      this._mountMonitorWizard();
+    }
+    const wizard = this._monitorWizardComp as HTMLElement & {
+      hass: unknown;
+      open: boolean;
+      prefillEntityIds: string[];
+      prefillAnalysis: unknown;
+      editMonitor: unknown;
+      suggestedEntityIds: string[];
+      allSeriesEntityIds: string[];
+    };
+    if (!wizard) return;
+    wizard.hass = this._hass;
+    wizard.editMonitor = editMonitor;
+    wizard.prefillEntityIds = entityIds;
+    wizard.prefillAnalysis = analysis;
+    wizard.suggestedEntityIds = suggestedEntityIds;
+    wizard.allSeriesEntityIds = allSeriesEntityIds;
+    wizard.open = true;
+  }
+
   _mountDateWindowDialogControl() {
     if (this.shadowRoot) {
       const dialogComp = document.createElement(
@@ -3109,6 +3271,92 @@ export class HassRecordsHistoryPanel extends HTMLElement {
     }
   }
 
+  _mountAiQueryBriefDialogControl() {
+    if (!this.shadowRoot) {
+      return;
+    }
+    const dialogComp = document.createElement(
+      "ai-query-brief-dialog"
+    ) as AiQueryBriefDialogElement;
+    dialogComp.addEventListener("dp-ai-query-brief-close", () => {
+      if (this._aiQueryBriefDialogComp) {
+        this._aiQueryBriefDialogComp.open = false;
+      }
+    });
+    this.shadowRoot.appendChild(dialogComp);
+    this._aiQueryBriefDialogComp = dialogComp;
+  }
+
+  async _resolveAiQueryBriefMonitorContext(): Promise<AiQueryBriefMonitorContext> {
+    if (!this._hass) {
+      return {
+        access: "unavailable",
+        monitors: [],
+        note: "Monitor context could not be included because Home Assistant is not currently available.",
+      };
+    }
+    if (this._hass.user?.is_admin !== true) {
+      return {
+        access: "not_admin",
+        monitors: [],
+        note: "Monitor context could not be included because the current Home Assistant user is not an admin.",
+      };
+    }
+    try {
+      const result = (await this._hass.connection.sendMessagePromise({
+        type: `${DOMAIN}/monitors/list`,
+      })) as {
+        monitors?: AnomalyMonitor[];
+      };
+      const monitors = Array.isArray(result?.monitors) ? result.monitors : [];
+      return {
+        access: "loaded",
+        monitors,
+        note: monitors.length
+          ? ""
+          : "No persisted anomaly monitors are currently configured.",
+      };
+    } catch {
+      return {
+        access: "unavailable",
+        monitors: [],
+        note: "Monitor context could not be included because the monitor list request failed.",
+      };
+    }
+  }
+
+  async _openAiQueryBriefDialog() {
+    if (!this.shadowRoot) {
+      return;
+    }
+    if (!this._aiQueryBriefDialogComp) {
+      this._mountAiQueryBriefDialogControl();
+    }
+    if (!this._aiQueryBriefDialogComp) {
+      return;
+    }
+    const monitorContext = await this._resolveAiQueryBriefMonitorContext();
+    const brief = buildAiQueryBrief({
+      hass: this._hass,
+      entities: [...this._entities],
+      targetSelectionRaw: this._targetSelectionRaw,
+      seriesRows: this._seriesRows,
+      datapointScope: this._datapointScope,
+      startTime: this._startTime,
+      endTime: this._endTime,
+      committedZoomRange: this._chartZoomCommittedRange,
+      comparisonWindows: this._comparisonWindows,
+      selectedComparisonWindowId: this._selectedComparisonWindowId,
+      chartAnomalyOverlapMode: this._chartAnomalyOverlapMode,
+      monitorContext,
+      anomalySnapshot:
+        this._chartEl?.getAiQueryBriefAnomalySnapshot?.() ?? null,
+    });
+    this._aiQueryBriefDialogComp.heading = msg("AI query brief");
+    this._aiQueryBriefDialogComp.text = brief.plainText;
+    this._aiQueryBriefDialogComp.open = true;
+  }
+
   _renderTargetRows() {
     if (!this._historyTargetsComp) {
       return;
@@ -3129,6 +3377,10 @@ export class HassRecordsHistoryPanel extends HTMLElement {
       this._rowListEl.rows = this._seriesRows;
       this._rowListEl.states = this._hass?.states ?? {};
       this._rowListEl.hass = this._hass ?? null;
+      this._rowListEl.labelMap = disambiguateEntityNames(
+        this._hass,
+        (this._seriesRows ?? []).map((r: { entity_id: string }) => r.entity_id)
+      );
       this._rowListEl.canShowDeltaAnalysis = !!this._selectedComparisonWindowId;
       this._rowListEl.comparisonWindows = this._comparisonWindows;
     }
@@ -3137,48 +3389,19 @@ export class HassRecordsHistoryPanel extends HTMLElement {
   }
 
   _addSeriesRows(entityIds: string[] | string) {
-    const merged = new Map<string, HistoryTargetRowState>(
-      this._seriesRows.map((row) => [row.entity_id, row])
+    this._seriesRows = addSeriesRows(
+      this._seriesRows,
+      normalizeEntityIds(entityIds),
+      this._preferredSeriesColors
     );
-    normalizeEntityIds(entityIds).forEach((entityId, index) => {
-      if (merged.has(entityId)) {
-        return;
-      }
-      merged.set(entityId, {
-        entity_id: entityId,
-        color:
-          this._preferredSeriesColors?.[entityId] &&
-          /^#[0-9a-f]{6}$/i.test(this._preferredSeriesColors[entityId])
-            ? this._preferredSeriesColors[entityId]
-            : COLORS[(merged.size + index) % COLORS.length],
-        visible: true,
-        analysis: normalizeHistorySeriesAnalysis(null),
-      });
-    });
-    this._seriesRows = [...merged.values()];
     this._syncSeriesState();
     this._renderTargetRows();
   }
 
   _updateSeriesRowColor(index: number | undefined, color: string | undefined) {
-    if (
-      !Number.isInteger(index) ||
-      index === undefined ||
-      index < 0 ||
-      index >= this._seriesRows.length
-    ) {
-      return;
-    }
-    if (!/^#[0-9a-f]{6}$/i.test(color || "")) {
-      return;
-    }
-    if (this._seriesRows[index].color === color) {
-      return;
-    }
-    this._seriesRows[index] = {
-      ...this._seriesRows[index],
-      color: color as string,
-    };
+    const next = updateSeriesRowColor(this._seriesRows, index, color);
+    if (!next) return;
+    this._seriesRows = next;
     this._saveUserPreferences();
     this._saveSessionState();
     this._updateUrl({ push: false });
@@ -3187,21 +3410,9 @@ export class HassRecordsHistoryPanel extends HTMLElement {
   }
 
   _updateSeriesRowVisibility(index: number | undefined, visible: unknown) {
-    if (
-      !Number.isInteger(index) ||
-      index === undefined ||
-      index < 0 ||
-      index >= this._seriesRows.length
-    ) {
-      return;
-    }
-    if (this._seriesRows[index].visible === !!visible) {
-      return;
-    }
-    this._seriesRows[index] = {
-      ...this._seriesRows[index],
-      visible: !!visible,
-    };
+    const next = updateSeriesRowVisibility(this._seriesRows, index, visible);
+    if (!next) return;
+    this._seriesRows = next;
     this._saveSessionState();
     this._updateUrl({ push: false });
     this._renderTargetRows();
@@ -3293,54 +3504,26 @@ export class HassRecordsHistoryPanel extends HTMLElement {
     );
     popup.appendChild(targetRow);
 
-    // Position the popup to the right of the anchor button.
-    // max-height is set dynamically so the popup never extends below the viewport,
-    // and overflow-y: auto allows scrolling if content exceeds the available space.
     popup.removeAttribute("hidden");
     if (!anchorEl) {
       return;
     }
     const anchorRect = anchorEl.getBoundingClientRect();
-    const popupHeight = popup.offsetHeight;
-    const top = Math.max(
-      8,
-      Math.min(anchorRect.top, window.innerHeight - popupHeight - 16)
+    const pos = computePopupPosition(
+      anchorRect,
+      popup.offsetHeight,
+      window.innerHeight
     );
-    popup.style.top = `${top}px`;
-    popup.style.left = `${anchorRect.right + 8}px`;
-    popup.style.maxHeight = `${window.innerHeight - top - 16}px`;
+    popup.style.top = `${pos.top}px`;
+    popup.style.left = `${pos.left}px`;
+    popup.style.maxHeight = `${pos.maxHeight}px`;
 
-    // Dismiss on outside click (uses composedPath to handle shadow DOM)
-    if (this._collapsedPopupOutsideClickHandler) {
-      document.removeEventListener(
-        "click",
-        this._collapsedPopupOutsideClickHandler,
-        true
-      );
-    }
-    this._collapsedPopupOutsideClickHandler = (ev: Event) => {
-      const path = ev.composedPath();
-      if (!path.includes(popup) && !path.includes(anchorEl)) {
-        this._hideCollapsedTargetPopup();
-      }
-    };
-    document.addEventListener(
-      "click",
-      this._collapsedPopupOutsideClickHandler,
-      true
+    this._collapsedPopupDismiss?.destroy();
+    this._collapsedPopupDismiss = attachPopupDismissListeners(
+      popup,
+      anchorEl,
+      () => this._hideCollapsedTargetPopup()
     );
-
-    // Dismiss on Escape key
-    if (this._collapsedPopupKeyHandler) {
-      document.removeEventListener("keydown", this._collapsedPopupKeyHandler);
-    }
-    this._collapsedPopupKeyHandler = (ev: KeyboardEvent) => {
-      if (ev.key === "Escape") {
-        this._hideCollapsedTargetPopup();
-        anchorEl.focus();
-      }
-    };
-    document.addEventListener("keydown", this._collapsedPopupKeyHandler);
   }
 
   /** Close the collapsed-sidebar target popup and clean up all listeners. */
@@ -3350,18 +3533,8 @@ export class HassRecordsHistoryPanel extends HTMLElement {
       popup.setAttribute("hidden", "");
       popup.innerHTML = "";
     }
-    if (this._collapsedPopupOutsideClickHandler) {
-      document.removeEventListener(
-        "click",
-        this._collapsedPopupOutsideClickHandler,
-        true
-      );
-      this._collapsedPopupOutsideClickHandler = null;
-    }
-    if (this._collapsedPopupKeyHandler) {
-      document.removeEventListener("keydown", this._collapsedPopupKeyHandler);
-      this._collapsedPopupKeyHandler = null;
-    }
+    this._collapsedPopupDismiss?.destroy();
+    this._collapsedPopupDismiss = null;
     this._collapsedPopupEntityId = null;
     this._collapsedPopupAnchorEl = null;
   }
@@ -3465,43 +3638,20 @@ export class HassRecordsHistoryPanel extends HTMLElement {
 
     popup.removeAttribute("hidden");
     const anchorRect = anchorEl.getBoundingClientRect();
-    const popupHeight = popup.offsetHeight;
-    const top = Math.max(
-      8,
-      Math.min(anchorRect.top, window.innerHeight - popupHeight - 16)
+    const pos = computePopupPosition(
+      anchorRect,
+      popup.offsetHeight,
+      window.innerHeight
     );
-    popup.style.top = `${top}px`;
-    popup.style.left = `${anchorRect.right + 8}px`;
+    popup.style.top = `${pos.top}px`;
+    popup.style.left = `${pos.left}px`;
 
-    if (this._collapsedOptionsOutsideClickHandler) {
-      document.removeEventListener(
-        "click",
-        this._collapsedOptionsOutsideClickHandler,
-        true
-      );
-    }
-    this._collapsedOptionsOutsideClickHandler = (ev: Event) => {
-      const path = ev.composedPath();
-      if (!path.includes(popup) && !path.includes(anchorEl)) {
-        this._hideCollapsedOptionsPopup();
-      }
-    };
-    document.addEventListener(
-      "click",
-      this._collapsedOptionsOutsideClickHandler,
-      true
+    this._collapsedOptionsDismiss?.destroy();
+    this._collapsedOptionsDismiss = attachPopupDismissListeners(
+      popup,
+      anchorEl,
+      () => this._hideCollapsedOptionsPopup()
     );
-
-    if (this._collapsedOptionsKeyHandler) {
-      document.removeEventListener("keydown", this._collapsedOptionsKeyHandler);
-    }
-    this._collapsedOptionsKeyHandler = (ev: KeyboardEvent) => {
-      if (ev.key === "Escape") {
-        this._hideCollapsedOptionsPopup();
-        anchorEl.focus();
-      }
-    };
-    document.addEventListener("keydown", this._collapsedOptionsKeyHandler);
   }
 
   /** Close the collapsed-sidebar options popup and clean up all listeners. */
@@ -3510,18 +3660,8 @@ export class HassRecordsHistoryPanel extends HTMLElement {
     if (popup) {
       popup.setAttribute("hidden", "");
     }
-    if (this._collapsedOptionsOutsideClickHandler) {
-      document.removeEventListener(
-        "click",
-        this._collapsedOptionsOutsideClickHandler,
-        true
-      );
-      this._collapsedOptionsOutsideClickHandler = null;
-    }
-    if (this._collapsedOptionsKeyHandler) {
-      document.removeEventListener("keydown", this._collapsedOptionsKeyHandler);
-      this._collapsedOptionsKeyHandler = null;
-    }
+    this._collapsedOptionsDismiss?.destroy();
+    this._collapsedOptionsDismiss = null;
     this._collapsedOptionsPopupOpen = false;
     this._collapsedOptionsAnchorEl = null;
   }
@@ -3583,25 +3723,13 @@ export class HassRecordsHistoryPanel extends HTMLElement {
 
   _toggleSeriesAnalysisExpanded(entityId: unknown) {
     const normalizedEntityId = String(entityId || "").trim();
-    if (!normalizedEntityId) {
-      return;
-    }
-    const index = this._seriesRows.findIndex(
-      (row: { entity_id: string }) => row.entity_id === normalizedEntityId
+    if (!normalizedEntityId) return;
+    const next = toggleSeriesAnalysisExpanded(
+      this._seriesRows,
+      normalizedEntityId
     );
-    if (index === -1) {
-      return;
-    }
-    const row = this._seriesRows[index];
-    const currentAnalysis = normalizeHistorySeriesAnalysis(row.analysis);
-    const nextAnalysis = normalizeHistorySeriesAnalysis({
-      ...row.analysis,
-      expanded: !currentAnalysis.expanded,
-    });
-    this._seriesRows[index] = {
-      ...row,
-      analysis: nextAnalysis,
-    };
+    if (!next) return;
+    this._seriesRows = next;
     this._saveSessionState();
     this._updateUrl({ push: false });
     this._renderTargetRows();
@@ -3610,9 +3738,7 @@ export class HassRecordsHistoryPanel extends HTMLElement {
   _setSeriesAnalysisOption(entityId: unknown, key: unknown, value: unknown) {
     const normalizedEntityId = String(entityId || "").trim();
     const normalizedKey = String(key || "").trim();
-    if (!normalizedEntityId || !normalizedKey) {
-      return;
-    }
+    if (!normalizedEntityId || !normalizedKey) return;
     if (
       normalizedKey === "anomaly_comparison_window_id" &&
       value === "__add_new__"
@@ -3624,61 +3750,12 @@ export class HassRecordsHistoryPanel extends HTMLElement {
     const index = this._seriesRows.findIndex(
       (row: { entity_id: string }) => row.entity_id === normalizedEntityId
     );
-    if (index === -1) {
-      return;
-    }
+    if (index === -1) return;
     const row = this._seriesRows[index];
     const analysis = normalizeHistorySeriesAnalysis(row.analysis);
-
-    // Handle method toggle: add/remove a method from anomaly_methods array
-    let nextKey = normalizedKey;
-    let nextValue = value;
-    if (nextKey.startsWith("anomaly_method_toggle_")) {
-      const method = nextKey.slice("anomaly_method_toggle_".length);
-      const currentMethods = analysis.anomaly_methods;
-      const nextMethods =
-        nextValue === true
-          ? [...new Set([...currentMethods, method])]
-          : currentMethods.filter((m) => m !== method);
-      nextKey = "anomaly_methods";
-      nextValue = nextMethods;
-    }
-
-    const nextSource: RecordWithUnknownValues = {
-      ...analysis,
-      [nextKey]: nextValue,
-    };
-    if (nextKey === "show_trend_lines" && nextValue !== true) {
-      nextSource.show_trend_crosshairs = false;
-    }
-    if (nextKey === "show_threshold_analysis" && nextValue !== true) {
-      nextSource.show_threshold_shading = false;
-    }
-    if (nextKey === "show_delta_analysis" && nextValue !== true) {
-      nextSource.show_delta_tooltip = true;
-      nextSource.show_delta_lines = false;
-    }
-    if (
-      nextKey === "show_anomalies" &&
-      nextValue === true &&
-      (!Array.isArray(analysis.anomaly_methods) ||
-        analysis.anomaly_methods.length === 0)
-    ) {
-      // Default to trend_residual so anomalies appear immediately on first enable.
-      nextSource.anomaly_methods = ["trend_residual"];
-    }
-    const nextAnalysis = normalizeHistorySeriesAnalysis({
-      ...nextSource,
-      expanded: true,
-    });
-    const unchanged = JSON.stringify(nextAnalysis) === JSON.stringify(analysis);
-    if (unchanged) {
-      return;
-    }
-    this._seriesRows[index] = {
-      ...row,
-      analysis: nextAnalysis,
-    };
+    const nextAnalysis = computeNextAnalysis(analysis, normalizedKey, value);
+    if (!nextAnalysis) return;
+    this._seriesRows[index] = { ...row, analysis: nextAnalysis };
     this._saveSessionState();
     this._updateUrl({ push: false });
     this._renderTargetRows();
@@ -3688,32 +3765,13 @@ export class HassRecordsHistoryPanel extends HTMLElement {
 
   _copyAnalysisToAll(sourceEntityId: unknown, sourceAnalysis: unknown) {
     const normalizedEntityId = String(sourceEntityId || "").trim();
-    if (!normalizedEntityId || !sourceAnalysis) {
-      return;
-    }
-    let changed = false;
-    this._seriesRows = this._seriesRows.map((row) => {
-      if (row.entity_id === normalizedEntityId) {
-        return row;
-      }
-      const currentAnalysis = normalizeHistorySeriesAnalysis(row.analysis);
-      const nextAnalysis = normalizeHistorySeriesAnalysis({
-        ...sourceAnalysis,
-        // Preserve per-row state that shouldn't be overwritten
-        expanded: currentAnalysis.expanded,
-        // Don't copy anomaly_comparison_window_id — it's entity-specific
-        anomaly_comparison_window_id:
-          currentAnalysis.anomaly_comparison_window_id,
-      });
-      if (JSON.stringify(nextAnalysis) === JSON.stringify(currentAnalysis)) {
-        return row;
-      }
-      changed = true;
-      return { ...row, analysis: nextAnalysis };
-    });
-    if (!changed) {
-      return;
-    }
+    const next = copyAnalysisToAll(
+      this._seriesRows,
+      normalizedEntityId,
+      sourceAnalysis
+    );
+    if (!next) return;
+    this._seriesRows = next;
     this._saveSessionState();
     this._updateUrl({ push: false });
     this._renderTargetRows();
@@ -3721,17 +3779,9 @@ export class HassRecordsHistoryPanel extends HTMLElement {
   }
 
   _removeSeriesRow(index: number | undefined) {
-    if (
-      !Number.isInteger(index) ||
-      index === undefined ||
-      index < 0 ||
-      index >= this._seriesRows.length
-    ) {
-      return;
-    }
-    this._seriesRows = this._seriesRows.filter(
-      (_row: unknown, rowIndex: number) => rowIndex !== index
-    );
+    const next = removeSeriesRow(this._seriesRows, index);
+    if (!next) return;
+    this._seriesRows = next;
     this._syncSeriesState();
     this._saveSessionState();
     this._renderTargetRows();
@@ -3913,93 +3963,33 @@ export class HassRecordsHistoryPanel extends HTMLElement {
   }
 
   _computeZoomLevelForSpan(spanMs: number) {
-    const normalizedSpanMs = Math.max(spanMs, RANGE_SLIDER_MIN_SPAN_MS);
-    if (normalizedSpanMs >= 180 * DAY_MS) {
-      return "quarterly";
-    }
-    if (normalizedSpanMs >= 120 * DAY_MS) {
-      return "month_compressed";
-    }
-    if (normalizedSpanMs >= 60 * DAY_MS) {
-      return "month_short";
-    }
-    if (normalizedSpanMs >= 21 * DAY_MS) {
-      return "month_expanded";
-    }
-    if (normalizedSpanMs >= 7 * DAY_MS) {
-      return "week_compressed";
-    }
-    if (normalizedSpanMs >= 2 * DAY_MS) {
-      return "week_expanded";
-    }
-    return "day";
+    return computeZoomLevelForSpan(spanMs);
   }
 
   _getEffectiveSnapUnit() {
-    if (this._dateSnapping !== "auto") {
-      return this._dateSnapping;
-    }
-    switch (this._getEffectiveZoomLevel()) {
-      case "quarterly":
-      case "month_compressed":
-        return "month";
-      case "month_short":
-      case "month_expanded":
-      case "week_compressed":
-        return "week";
-      case "week_expanded":
-        return "day";
-      case "day":
-        return "hour";
-      default:
-        return "day";
-    }
+    return getEffectiveSnapUnit(
+      this._getEffectiveZoomLevel(),
+      this._dateSnapping
+    );
   }
 
   _getSnapSpanMs(reference = this._startTime || new Date()) {
     const snapUnit = this._getEffectiveSnapUnit() as RangeUnit;
-    const start = startOfUnit(reference, snapUnit);
-    const end = endOfUnit(reference, snapUnit);
-    return Math.max(SECOND_MS, end.getTime() - start.getTime());
+    return getSnapSpanMs(snapUnit, reference);
   }
 
   _deriveRangeBounds() {
     const config = this._getZoomConfig();
     const startMs = this._startTime?.getTime() || Date.now() - 24 * HOUR_MS;
     const endMs = this._endTime?.getTime() || Date.now();
-    const historyStartMs = this._historyStartTime?.getTime();
-    const historyEndMs = this._historyEndTime?.getTime();
-    const maxLookAheadMs = addUnit(new Date(), "month", 3).getTime();
-
-    // Anchor left bound to history start (if loaded) or selection start.
-    // Also guarantee enough left context before the selection for centering —
-    // take whichever is earlier: the natural anchor or (startMs - 30% baseline).
-    const anchorMs = historyStartMs ?? startMs;
-    const naturalMin = startOfUnit(
-      new Date(anchorMs),
-      config.boundsUnit
-    ).getTime();
-    const paddedMin = startOfUnit(
-      new Date(startMs - config.baselineMs * 0.3),
-      config.boundsUnit
-    ).getTime();
-    const min = Math.min(naturalMin, paddedMin);
-
-    const futureReference = addUnit(
-      new Date(historyEndMs ?? endMs),
-      "year",
-      RANGE_FUTURE_BUFFER_YEARS
-    ).getTime();
-    const maxReference = Math.min(
-      maxLookAheadMs,
-      Math.max(
-        futureReference,
-        endMs,
-        startMs + this._getSnapSpanMs(this._startTime || new Date())
-      )
+    return deriveRangeBounds(
+      config,
+      startMs,
+      endMs,
+      this._historyStartTime?.getTime(),
+      this._historyEndTime?.getTime(),
+      this._getSnapSpanMs(this._startTime || new Date())
     );
-    const max = endOfUnit(new Date(maxReference), config.boundsUnit).getTime();
-    return { min, max: Math.max(max, min + SECOND_MS), config };
   }
 
   _syncRangeControl() {
@@ -4518,7 +4508,41 @@ export class HassRecordsHistoryPanel extends HTMLElement {
   _renderContent() {
     const content = this._contentHostEl;
     if (!content) {
+      logger.warn("[dp-lifecycle] _renderContent: aborted — no contentHostEl", {
+        rendered: this._rendered,
+        shellBuilt: this._shellBuilt,
+        entityCount: this._entities?.length ?? 0,
+      });
       return;
+    }
+
+    // Monitors panel overlay — replaces normal content area when active
+    if (this._showMonitorsPanel) {
+      this._contentKey = "__monitors__";
+      this._chartEl = null;
+      this._listEl = null;
+      content.innerHTML = "";
+      const panel = document.createElement(
+        "anomaly-monitors-panel"
+      ) as HTMLElement & {
+        hass: unknown;
+      };
+      panel.hass = this._hass;
+      panel.addEventListener("dp-monitors-panel-close", () => {
+        this._showMonitorsPanel = false;
+        this._contentKey = "";
+        this._renderContent();
+      });
+      panel.addEventListener("dp-monitors-panel-new", () => {
+        this._openMonitorWizard([], null);
+      });
+      content.appendChild(panel);
+      return;
+    }
+
+    // Clear monitors panel sentinel when returning to normal content
+    if (this._contentKey === "__monitors__") {
+      this._contentKey = "";
     }
 
     if (!this._entities.length) {
@@ -4526,6 +4550,9 @@ export class HassRecordsHistoryPanel extends HTMLElement {
       if (this._contentKey === "__empty__") {
         return;
       }
+      logger.warn(
+        "[dp-lifecycle] _renderContent: rendering empty state (no entities)"
+      );
       this._chartHoverTimeMs = null;
       this._updateChartHoverIndicator();
       this._chartZoomRange = null;
@@ -4571,6 +4598,18 @@ export class HassRecordsHistoryPanel extends HTMLElement {
         this._listEl.isConnected &&
         content.contains(this._listEl)
       );
+
+    logger.warn("[dp-lifecycle] _renderContent: key check", {
+      keyMatch: this._contentKey === contentKey,
+      chartMounted,
+      listMounted,
+      hasChartEl: !!this._chartEl,
+      chartElConnected: this._chartEl?.isConnected,
+      contentContainsChart: this._chartEl
+        ? content.contains(this._chartEl)
+        : false,
+      entityCount: this._entities.length,
+    });
 
     if (this._contentKey !== contentKey || !chartMounted || !listMounted) {
       this._chartHoverTimeMs = null;
@@ -4705,6 +4744,9 @@ export class HassRecordsHistoryPanel extends HTMLElement {
       this._contentKey = contentKey;
       this._chartConfigKey = "";
       this._listConfigKey = "";
+      logger.warn("[dp-lifecycle] _renderContent: full render complete", {
+        entityCount: this._entities.length,
+      });
     }
 
     content.classList.toggle("datapoints-hidden", !showRecordsPanel);

@@ -1,6 +1,12 @@
-export const styles = `
-  :host { display: block; }
-  ha-card { padding: 16px; }
+import { css } from "lit";
+
+export const styles = css`
+  :host {
+    display: block;
+  }
+  ha-card {
+    padding: 16px;
+  }
   .card-header {
     font-size: 1.1em;
     font-weight: 500;
@@ -37,7 +43,7 @@ export const styles = `
     display: flex;
     align-items: center;
     padding: 10px 14px;
-    background: var(--secondary-background-color, rgba(0,0,0,0.04));
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
     border-radius: 8px;
     margin-bottom: 10px;
   }

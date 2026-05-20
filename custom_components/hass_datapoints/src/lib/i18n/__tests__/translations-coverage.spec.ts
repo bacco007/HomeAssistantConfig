@@ -76,6 +76,51 @@ const UNTRANSLATED_WHITELIST = new Set<string>([
   // Spanish
   "General", // Spanish "General"
   "Color", // Spanish "color" (same spelling)
+  "no", // Spanish/Portuguese "no" is identical to English "no"
+
+  // Format string templates — language-independent identifiers used verbatim
+  "entity_id={0}",
+  "device_id={0}",
+  "area_id={0}",
+  "label_id={0}",
+  "Monitor: {0} ({1})", // "Monitor" untranslated in de/es/pt
+
+  // AI query brief instruction strings — intentionally kept in English across
+  // all locales because this brief is consumed by AI systems (LLMs) that
+  // process instructions most reliably in English.
+  "If raw recorder history is incomplete or unavailable, fetch Home Assistant statistics for continuity and call out the retention boundary explicitly.",
+  "The requested window spans about {0} days. Short-retention raw history may not fully cover this range, so use Home Assistant statistics for older or missing portions and do not infer 'no anomalies' from retention gaps.",
+  "Use raw recorder history first for this range. If raw history is incomplete or unavailable, fetch Home Assistant statistics and explain any retention or recorder gaps.",
+  "CURRENT RANGE ANOMALY FINDINGS",
+  "Current anomaly findings are not available from the active chart state, so use the query inputs below to fetch and inspect anomaly clusters directly.",
+  "No entity-level anomaly findings are currently available from the active chart snapshot.",
+  "If your Home Assistant tooling requires explicit baseline range inputs, use the same start/end range as the main anomaly query unless a more specific monitor or MCP tool requires otherwise.",
+  "Fetch the underlying Home Assistant history or statistics, entity metadata, and hass_datapoints anomaly detail needed to inspect the currently selected datapoints. Do not treat this brief as the raw data itself.",
+  "- Resolve entity metadata context for each selected entity.",
+  "- Fetch raw or best-available historical coverage for the requested range.",
+  "- Reproduce hass_datapoints anomaly queries with the exact panel settings below.",
+  "- Review current-range anomaly findings from this integration, including cross-entity correlated anomaly periods when present.",
+  "- Call out any retention, sampling, permission, or monitor-lookup limitations.",
+  "1. Resolve entity metadata first so area, device, platform, labels, and unit context are known before interpretation.",
+  "2. Fetch raw recorder history for the requested range where available.",
+  "3. If raw history is incomplete, unavailable, or truncated by retention, fetch Home Assistant statistics for continuity.",
+  "4. Reproduce the hass_datapoints anomaly queries exactly as listed below.",
+  "5. Because anomaly analysis may use sampled data, compare raw history for ground truth against sampled series for anomaly reproduction.",
+  "6. Review the current anomaly findings already found by this integration in the active range and use them to guide deeper inspection.",
+  "7. If monitor context is available, fetch relevant monitor anomaly output for additional persisted monitor detail.",
+  "- Use UTC timestamps exactly as written for retrieval.",
+  "- Convert to the Home Assistant local timezone only when interpreting daily or weekly behavior patterns.",
+  "- Do not infer 'no anomaly' from missing raw history when retention may be limited.",
+  "- If anomaly queries below use sampled data, inspect both raw history and the sampled representation.",
+  "- For long ranges, remember HA history pagination and retention constraints can change what raw coverage is available.",
+  "No selected entities are currently available in the panel state.",
+  "- Resolved metadata per selected entity, including unit, device class, state class, area, device, labels, and platform when available.",
+  "- Coverage status of raw history versus statistics, including any retention or pagination limits encountered.",
+  "- Detailed anomaly findings per entity for the requested range, using the current integration findings above plus any fetched raw cluster detail.",
+  "- If anomalies indicate some type of event, zoom out and look for answers in the related area/group/labels or across other entities in the panel. If anomalies are unexpected, look for any subtle metadata clues that could explain them, such as a device class or state class that implies a different expected behavior pattern than initially assumed.",
+  "- Correlated anomaly periods across the selected datapoints, if any are present, including which entities participate and when the overlap occurs.",
+  "- Any monitor-access, permission, sampling, comparison-window, or data-coverage limitations that materially affect interpretation.",
+  "Comparison window detail: the configured comparison window is not currently selected, so use the window id above to resolve the saved date window before querying.",
 ]);
 
 // ── Glob all component-level i18n files ───────────────────────────────────────

@@ -31,6 +31,7 @@ const BLANK_ANALYSIS: NormalizedAnalysis = {
   anomaly_zscore_window: "24h",
   anomaly_persistence_window: "1h",
   anomaly_comparison_window_id: null,
+  anomaly_comparison_entity_id: null,
   show_delta_analysis: false,
   show_delta_tooltip: true,
   show_delta_lines: false,

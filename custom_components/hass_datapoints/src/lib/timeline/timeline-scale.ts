@@ -557,6 +557,92 @@ function addUnit(value: Date, unit: RangeUnit, amount = 1): Date {
   return result;
 }
 
+function getEffectiveSnapUnit(
+  zoomLevel: string,
+  dateSnapping: string
+): RangeUnit {
+  if (dateSnapping !== "auto") {
+    return dateSnapping as RangeUnit;
+  }
+  switch (zoomLevel) {
+    case "quarterly":
+    case "month_compressed":
+      return "month";
+    case "month_short":
+    case "month_expanded":
+    case "week_compressed":
+      return "week";
+    case "week_expanded":
+      return "day";
+    case "day":
+      return "hour";
+    default:
+      return "day";
+  }
+}
+
+function getSnapSpanMs(snapUnit: RangeUnit, reference: Date): number {
+  const start = startOfUnit(reference, snapUnit);
+  const end = endOfUnit(reference, snapUnit);
+  return Math.max(SECOND_MS, end.getTime() - start.getTime());
+}
+
+function deriveRangeBounds(
+  config: RangeZoomConfig,
+  startMs: number,
+  endMs: number,
+  historyStartMs: number | undefined,
+  historyEndMs: number | undefined,
+  snapSpanMs: number
+): { min: number; max: number; config: RangeZoomConfig } {
+  const maxLookAheadMs = addUnit(new Date(), "month", 3).getTime();
+  const anchorMs = historyStartMs ?? startMs;
+  const naturalMin = startOfUnit(
+    new Date(anchorMs),
+    config.boundsUnit
+  ).getTime();
+  const paddedMin = startOfUnit(
+    new Date(startMs - config.baselineMs * 0.3),
+    config.boundsUnit
+  ).getTime();
+  const min = Math.min(naturalMin, paddedMin);
+
+  const futureReference = addUnit(
+    new Date(historyEndMs ?? endMs),
+    "year",
+    RANGE_FUTURE_BUFFER_YEARS
+  ).getTime();
+  const maxReference = Math.min(
+    maxLookAheadMs,
+    Math.max(futureReference, endMs, startMs + snapSpanMs)
+  );
+  const max = endOfUnit(new Date(maxReference), config.boundsUnit).getTime();
+  return { min, max: Math.max(max, min + SECOND_MS), config };
+}
+
+function computeZoomLevelForSpan(spanMs: number): string {
+  const normalizedSpanMs = Math.max(spanMs, RANGE_SLIDER_MIN_SPAN_MS);
+  if (normalizedSpanMs >= 180 * DAY_MS) {
+    return "quarterly";
+  }
+  if (normalizedSpanMs >= 120 * DAY_MS) {
+    return "month_compressed";
+  }
+  if (normalizedSpanMs >= 60 * DAY_MS) {
+    return "month_short";
+  }
+  if (normalizedSpanMs >= 21 * DAY_MS) {
+    return "month_expanded";
+  }
+  if (normalizedSpanMs >= 7 * DAY_MS) {
+    return "week_compressed";
+  }
+  if (normalizedSpanMs >= 2 * DAY_MS) {
+    return "week_expanded";
+  }
+  return "day";
+}
+
 function snapDateToUnit(value: Date, unit: RangeUnit): Date {
   const start = startOfUnit(value, unit);
   const end = endOfUnit(value, unit);
@@ -567,6 +653,10 @@ function snapDateToUnit(value: Date, unit: RangeUnit): Date {
 
 export {
   addUnit,
+  computeZoomLevelForSpan,
+  deriveRangeBounds,
+  getEffectiveSnapUnit,
+  getSnapSpanMs,
   endOfLocalDay,
   endOfLocalHour,
   endOfLocalMinute,

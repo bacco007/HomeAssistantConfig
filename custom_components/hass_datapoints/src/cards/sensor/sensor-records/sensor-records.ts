@@ -1,5 +1,5 @@
 import { html, LitElement, PropertyValues } from "lit";
-import { property, state } from "lit/decorators.js";
+import { property, query, state } from "lit/decorators.js";
 import type { EventRecordFull } from "@/lib/types";
 import { styles } from "./sensor-records.styles";
 import "@/atoms/interactive/pagination/pagination";
@@ -21,6 +21,12 @@ export class SensorRecords extends LitElement {
   accessor showFullMessage: boolean = true;
 
   @state() accessor _page: number = 0;
+
+  @query("pagination-nav")
+  accessor _paginationEl: Nullable<HTMLElement> = null;
+
+  @query(".ann-list")
+  accessor _annListEl: Nullable<HTMLElement> = null;
 
   static styles = styles;
 
@@ -47,10 +53,8 @@ export class SensorRecords extends LitElement {
       }
       this._paginationNotifyRaf = window.requestAnimationFrame(() => {
         this._paginationNotifyRaf = null;
-        const paginationEl =
-          this.shadowRoot?.querySelector<HTMLElement>("pagination-nav");
         const paginationHeight =
-          paginationEl?.getBoundingClientRect().height ?? 0;
+          this._paginationEl?.getBoundingClientRect().height ?? 0;
         this.dispatchEvent(
           new CustomEvent("dp-sensor-pagination-visibility-change", {
             detail: {
@@ -123,7 +127,7 @@ export class SensorRecords extends LitElement {
                 label="records"
                 @dp-page-change=${(e: CustomEvent<{ page: number }>) => {
                   this._page = e.detail.page;
-                  this.shadowRoot?.querySelector(".ann-list")?.scrollTo(0, 0);
+                  this._annListEl?.scrollTo(0, 0);
                 }}
               ></pagination-nav>
             `

@@ -1,17 +1,18 @@
-/* eslint-disable no-console */
-import { HassRecordsActionCard } from "@/cards/action/action";
-import { HassRecordsActionCardEditor } from "@/cards/action/editor";
-import { HassRecordsDevToolCard } from "@/cards/dev-tool/dev-tool";
-import { HassRecordsDevToolCardEditor } from "@/cards/dev-tool/editor";
-import { HassRecordsHistoryCard } from "@/cards/history/history";
-import { HassRecordsHistoryCardEditor } from "@/cards/history/editor";
-import { HassRecordsHistoryPanel } from "@/panels/datapoints/datapoints";
-import { HassRecordsListCard } from "@/cards/list/list";
-import { HassRecordsListCardEditor } from "@/cards/list/editor";
-import { HassRecordsQuickCard } from "@/cards/quick/quick";
-import { HassRecordsQuickCardEditor } from "@/cards/quick/editor";
-import { HassRecordsSensorCard } from "@/cards/sensor/sensor";
-import { HassRecordsSensorCardEditor } from "@/cards/sensor/editor";
+/* eslint-disable no-console, max-classes-per-file */
+import { HassDatapointsActionCard } from "@/cards/action/action";
+import { HassDatapointsActionCardEditor } from "@/cards/action/editor";
+import { HassDatapointsDevToolCard } from "@/cards/dev-tool/dev-tool";
+import { HassDatapointsDevToolCardEditor } from "@/cards/dev-tool/editor";
+import { HassDatapointsHistoryCard } from "@/cards/history/history";
+import { HassDatapointsHistoryCardEditor } from "@/cards/history/editor";
+import { HassDatapointsHistoryPanel } from "@/panels/datapoints/datapoints";
+import { HassDatapointsListCard } from "@/cards/list/list";
+import { HassDatapointsListCardEditor } from "@/cards/list/editor";
+import { HassDatapointsQuickCard } from "@/cards/quick/quick";
+import { HassDatapointsQuickCardEditor } from "@/cards/quick/editor";
+import { HassDatapointsSensorCard } from "@/cards/sensor/sensor";
+import { HassDatapointsSensorCardEditor } from "@/cards/sensor/editor";
+import type { CardConfig } from "@/lib/types";
 
 interface LovelaceCardRegistration {
   type: string;
@@ -30,32 +31,204 @@ declare global {
  * Register all custom elements and advertise them to the Lovelace card picker.
  */
 
+// ── Deprecated element aliases (backwards compat) ───────────────────────────
+
+const _warnOnceKey = "__HASS_DATAPOINTS_DEPRECATED_TAG_WARNED__";
+function _warnDeprecatedTag(oldTag: string, newTag: string): void {
+  const win = window as unknown as Record<string, unknown>;
+  if (!win[_warnOnceKey]) {
+    win[_warnOnceKey] = {};
+  }
+  const warned = win[_warnOnceKey] as Record<string, boolean>;
+  if (warned[oldTag]) {
+    return;
+  }
+  warned[oldTag] = true;
+
+  console.warn(
+    `[hass-datapoints] deprecated card tag "${oldTag}" in use; migrate to "${newTag}".`
+  );
+}
+
+function _defineDeprecatedAlias<T extends CustomElementConstructor>({
+  oldTag,
+  newTag,
+  base,
+}: {
+  oldTag: string;
+  newTag: string;
+  base: T;
+}): void {
+  if (customElements.get(oldTag)) {
+    return;
+  }
+
+  class DeprecatedAlias extends (base as unknown as CustomElementConstructor) {
+    constructor() {
+      super();
+      _warnDeprecatedTag(oldTag, newTag);
+    }
+  }
+  customElements.define(oldTag, DeprecatedAlias);
+}
+
+class HassDatapointsRemovedStatisticsCard extends HTMLElement {
+  private _config: CardConfig = {};
+
+  setConfig(config: CardConfig): void {
+    this._config = config ?? {};
+    this._render();
+  }
+
+  set hass(_hass: import("@/lib/types").HassLike) {
+    // noop; exists so HA doesn't error when assigning hass.
+  }
+
+  connectedCallback(): void {
+    this._render();
+  }
+
+  private _render(): void {
+    const title =
+      ((this._config as unknown as Record<string, unknown>)?.title as
+        | string
+        | undefined) || "Statistics card";
+    this.innerHTML = `
+      <ha-card>
+        <div class="card-header">${title}</div>
+        <div class="card-content">
+          <p>
+            Datapoints statistics card removed.
+            Use <code>custom:hass-datapoints-history-card</code> instead.
+          </p>
+          <p>
+            Deprecated types: <code>custom:hass-datapoints-statistics-card</code>,
+            <code>custom:hass-records-statistics-card</code>.
+          </p>
+        </div>
+      </ha-card>
+    `;
+  }
+}
+
+class HassDatapointsRemovedStatisticsCardEditor extends HTMLElement {
+  setConfig(_config: CardConfig): void {
+    this._render();
+  }
+
+  set hass(_hass: import("@/lib/types").HassLike) {
+    // noop
+  }
+
+  connectedCallback(): void {
+    this._render();
+  }
+
+  private _render(): void {
+    this.innerHTML = `
+      <ha-card>
+        <div class="card-content">
+          <p>
+            Datapoints statistics card removed.
+            Replace with <code>custom:hass-datapoints-history-card</code>.
+          </p>
+        </div>
+      </ha-card>
+    `;
+  }
+}
+
 // ── Card elements ──────────────────────────────────────────────────────────
 if (!customElements.get("hass-datapoints-action-card")) {
-  customElements.define("hass-datapoints-action-card", HassRecordsActionCard);
+  customElements.define(
+    "hass-datapoints-action-card",
+    HassDatapointsActionCard
+  );
 }
 if (!customElements.get("hass-datapoints-quick-card")) {
-  customElements.define("hass-datapoints-quick-card", HassRecordsQuickCard);
+  customElements.define("hass-datapoints-quick-card", HassDatapointsQuickCard);
 }
 if (!customElements.get("hass-datapoints-history-card")) {
-  customElements.define("hass-datapoints-history-card", HassRecordsHistoryCard);
+  customElements.define(
+    "hass-datapoints-history-card",
+    HassDatapointsHistoryCard
+  );
 }
 if (!customElements.get("hass-datapoints-sensor-card")) {
-  customElements.define("hass-datapoints-sensor-card", HassRecordsSensorCard);
+  customElements.define(
+    "hass-datapoints-sensor-card",
+    HassDatapointsSensorCard
+  );
 }
 if (!customElements.get("hass-datapoints-list-card")) {
-  customElements.define("hass-datapoints-list-card", HassRecordsListCard);
+  customElements.define("hass-datapoints-list-card", HassDatapointsListCard);
 }
 if (!customElements.get("hass-datapoints-history-panel")) {
   customElements.define(
     "hass-datapoints-history-panel",
-    HassRecordsHistoryPanel
+    HassDatapointsHistoryPanel
   );
 }
 if (!customElements.get("hass-datapoints-dev-tool-card")) {
   customElements.define(
     "hass-datapoints-dev-tool-card",
-    HassRecordsDevToolCard
+    HassDatapointsDevToolCard
+  );
+}
+
+// ── Backwards compat: hass-records-* tags ───────────────────────────────────
+// These were used by Hass Records versions; keep working for existing dashboards.
+_defineDeprecatedAlias({
+  oldTag: "hass-records-action-card",
+  newTag: "hass-datapoints-action-card",
+  base: HassDatapointsActionCard,
+});
+_defineDeprecatedAlias({
+  oldTag: "hass-records-quick-card",
+  newTag: "hass-datapoints-quick-card",
+  base: HassDatapointsQuickCard,
+});
+_defineDeprecatedAlias({
+  oldTag: "hass-records-history-card",
+  newTag: "hass-datapoints-history-card",
+  base: HassDatapointsHistoryCard,
+});
+_defineDeprecatedAlias({
+  oldTag: "hass-records-sensor-card",
+  newTag: "hass-datapoints-sensor-card",
+  base: HassDatapointsSensorCard,
+});
+_defineDeprecatedAlias({
+  oldTag: "hass-records-list-card",
+  newTag: "hass-datapoints-list-card",
+  base: HassDatapointsListCard,
+});
+_defineDeprecatedAlias({
+  oldTag: "hass-records-dev-tool-card",
+  newTag: "hass-datapoints-dev-tool-card",
+  base: HassDatapointsDevToolCard,
+});
+
+// ── Backwards compat: removed statistics card ───────────────────────────────
+if (!customElements.get("hass-datapoints-statistics-card")) {
+  customElements.define(
+    "hass-datapoints-statistics-card",
+    HassDatapointsRemovedStatisticsCard
+  );
+}
+if (!customElements.get("hass-records-statistics-card")) {
+  class HassRecordsRemovedStatisticsCard extends HassDatapointsRemovedStatisticsCard {
+    constructor() {
+      super();
+      _warnDeprecatedTag(
+        "hass-records-statistics-card",
+        "hass-datapoints-history-card"
+      );
+    }
+  }
+  customElements.define(
+    "hass-records-statistics-card",
+    HassRecordsRemovedStatisticsCard
   );
 }
 
@@ -63,37 +236,92 @@ if (!customElements.get("hass-datapoints-dev-tool-card")) {
 if (!customElements.get("hass-datapoints-action-card-editor")) {
   customElements.define(
     "hass-datapoints-action-card-editor",
-    HassRecordsActionCardEditor
+    HassDatapointsActionCardEditor
   );
 }
 if (!customElements.get("hass-datapoints-quick-card-editor")) {
   customElements.define(
     "hass-datapoints-quick-card-editor",
-    HassRecordsQuickCardEditor
+    HassDatapointsQuickCardEditor
   );
 }
 if (!customElements.get("hass-datapoints-history-card-editor")) {
   customElements.define(
     "hass-datapoints-history-card-editor",
-    HassRecordsHistoryCardEditor
+    HassDatapointsHistoryCardEditor
   );
 }
 if (!customElements.get("hass-datapoints-sensor-card-editor")) {
   customElements.define(
     "hass-datapoints-sensor-card-editor",
-    HassRecordsSensorCardEditor
+    HassDatapointsSensorCardEditor
   );
 }
 if (!customElements.get("hass-datapoints-list-card-editor")) {
   customElements.define(
     "hass-datapoints-list-card-editor",
-    HassRecordsListCardEditor
+    HassDatapointsListCardEditor
   );
 }
 if (!customElements.get("hass-datapoints-dev-tool-card-editor")) {
   customElements.define(
     "hass-datapoints-dev-tool-card-editor",
-    HassRecordsDevToolCardEditor
+    HassDatapointsDevToolCardEditor
+  );
+}
+
+// ── Backwards compat editors: hass-records-* ────────────────────────────────
+_defineDeprecatedAlias({
+  oldTag: "hass-records-action-card-editor",
+  newTag: "hass-datapoints-action-card-editor",
+  base: HassDatapointsActionCardEditor,
+});
+_defineDeprecatedAlias({
+  oldTag: "hass-records-quick-card-editor",
+  newTag: "hass-datapoints-quick-card-editor",
+  base: HassDatapointsQuickCardEditor,
+});
+_defineDeprecatedAlias({
+  oldTag: "hass-records-history-card-editor",
+  newTag: "hass-datapoints-history-card-editor",
+  base: HassDatapointsHistoryCardEditor,
+});
+_defineDeprecatedAlias({
+  oldTag: "hass-records-sensor-card-editor",
+  newTag: "hass-datapoints-sensor-card-editor",
+  base: HassDatapointsSensorCardEditor,
+});
+_defineDeprecatedAlias({
+  oldTag: "hass-records-list-card-editor",
+  newTag: "hass-datapoints-list-card-editor",
+  base: HassDatapointsListCardEditor,
+});
+_defineDeprecatedAlias({
+  oldTag: "hass-records-dev-tool-card-editor",
+  newTag: "hass-datapoints-dev-tool-card-editor",
+  base: HassDatapointsDevToolCardEditor,
+});
+
+// ── Backwards compat editor: removed statistics card ────────────────────────
+if (!customElements.get("hass-datapoints-statistics-card-editor")) {
+  customElements.define(
+    "hass-datapoints-statistics-card-editor",
+    HassDatapointsRemovedStatisticsCardEditor
+  );
+}
+if (!customElements.get("hass-records-statistics-card-editor")) {
+  class HassRecordsRemovedStatisticsCardEditor extends HassDatapointsRemovedStatisticsCardEditor {
+    constructor() {
+      super();
+      _warnDeprecatedTag(
+        "hass-records-statistics-card-editor",
+        "hass-datapoints-history-card"
+      );
+    }
+  }
+  customElements.define(
+    "hass-records-statistics-card-editor",
+    HassRecordsRemovedStatisticsCardEditor
   );
 }
 
@@ -103,42 +331,42 @@ const registeredTypes = new Set(window.customCards.map((card) => card.type));
 const cardsToAdd: LovelaceCardRegistration[] = [
   {
     type: "hass-datapoints-action-card",
-    name: "Hass Records – Action Card",
+    name: "Datapoints – Action Card",
     description:
       "Full form to record a custom event with message, annotation, icon, colour and entity association.",
     preview: false,
   },
   {
     type: "hass-datapoints-quick-card",
-    name: "Hass Records – Quick Card",
+    name: "Datapoints – Quick Card",
     description:
       "Simple one-field card to quickly record a note with a bookmark icon.",
     preview: false,
   },
   {
     type: "hass-datapoints-history-card",
-    name: "Hass Records – History Card",
+    name: "Datapoints – History Card",
     description:
       "History line chart with coloured annotation markers for recorded events.",
     preview: false,
   },
   {
     type: "hass-datapoints-sensor-card",
-    name: "Hass Records – Sensor Card",
+    name: "Datapoints – Sensor Card",
     description:
       "Sensor card with line chart — annotations shown as icons on the data line.",
     preview: false,
   },
   {
     type: "hass-datapoints-list-card",
-    name: "Hass Records – List Card",
+    name: "Datapoints – List Card",
     description:
       "Activity-style datagrid to browse, search, edit and delete all recorded events.",
     preview: false,
   },
   {
     type: "hass-datapoints-dev-tool-card",
-    name: "Hass Records – Dev Tool",
+    name: "Datapoints – Dev Tool",
     description:
       "Generate demo datapoints from HA history and bulk-delete dev-flagged events.",
     preview: false,

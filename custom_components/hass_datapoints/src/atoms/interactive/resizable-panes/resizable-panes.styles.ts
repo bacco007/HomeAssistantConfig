@@ -43,7 +43,8 @@ export const styles = css`
     flex-direction: column;
     min-width: 0;
     min-height: 0;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: var(--dp-panes-first-overflow-y, hidden);
   }
 
   .pane-second {

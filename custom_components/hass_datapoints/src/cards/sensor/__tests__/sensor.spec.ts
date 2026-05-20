@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createMockHass } from "@/test-support/mock-hass";
-import { HassRecordsSensorCard } from "../sensor.ts";
+import { HassDatapointsSensorCard } from "../sensor.ts";
 import type { EventRecord } from "@/lib/types";
 
 import { fetchEvents } from "@/lib/data/events-api";
@@ -51,7 +51,10 @@ vi.mock("@/lib/data/events-api", async (importOriginal) => {
 });
 
 if (!customElements.get("hass-datapoints-sensor-card")) {
-  customElements.define("hass-datapoints-sensor-card", HassRecordsSensorCard);
+  customElements.define(
+    "hass-datapoints-sensor-card",
+    HassDatapointsSensorCard
+  );
 }
 
 const mockEvents: EventRecord[] = [
@@ -277,14 +280,14 @@ describe("sensor", () => {
   describe("GIVEN the static config methods", () => {
     describe("WHEN getStubConfig is called", () => {
       it("THEN it returns a config with an entity", () => {
-        const cfg = HassRecordsSensorCard.getStubConfig();
+        const cfg = HassDatapointsSensorCard.getStubConfig();
         expect(cfg).toHaveProperty("entity");
       });
     });
 
     describe("WHEN getConfigElement is called", () => {
       it("THEN it returns the editor element tag", () => {
-        const editorEl = HassRecordsSensorCard.getConfigElement();
+        const editorEl = HassDatapointsSensorCard.getConfigElement();
         expect(editorEl.tagName.toLowerCase()).toBe(
           "hass-datapoints-sensor-card-editor"
         );

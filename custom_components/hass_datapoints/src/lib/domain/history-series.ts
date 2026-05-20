@@ -33,6 +33,7 @@ export interface HistorySeriesAnalysis {
   anomaly_zscore_window: string;
   anomaly_persistence_window: string;
   anomaly_comparison_window_id: Nullable<string>;
+  anomaly_comparison_entity_id: Nullable<string>;
   anomaly_trend_method: string;
   anomaly_trend_window: string;
   show_delta_analysis: boolean;
@@ -63,6 +64,7 @@ const VALID_ANOMALY_METHODS = [
   "rolling_zscore",
   "persistence",
   "comparison_window",
+  "similar_entity",
 ];
 
 const VALID_SAMPLE_INTERVALS = [
@@ -177,6 +179,11 @@ export function normalizeHistorySeriesAnalysis(
       typeof source.anomaly_comparison_window_id === "string" &&
       source.anomaly_comparison_window_id
         ? source.anomaly_comparison_window_id
+        : null,
+    anomaly_comparison_entity_id:
+      typeof source.anomaly_comparison_entity_id === "string" &&
+      source.anomaly_comparison_entity_id
+        ? source.anomaly_comparison_entity_id
         : null,
     anomaly_trend_method:
       typeof source.anomaly_trend_method === "string"

@@ -7,11 +7,11 @@ export const styles = css`
   }
 
   .subopts {
-    padding-left: calc(var(--spacing, 8px) * 1.5);
+    padding-left: calc(var(--spacing, 8px) * 1.25);
+    padding-top: 2px;
     display: grid;
-    gap: var(--dp-spacing-sm);
+    gap: calc(var(--dp-spacing-sm) * 0.75);
     justify-items: start;
-    border-left: 3px solid var(--primary-color);
-    margin-left: 5px;
+    margin-left: 1px;
   }
 `;

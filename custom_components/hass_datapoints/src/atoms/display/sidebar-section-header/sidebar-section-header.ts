@@ -1,7 +1,11 @@
 import { LitElement, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
+import type { I18nMap } from "@/lib/i18n/i18n-prop";
+import { createDefaultI18n, t } from "@/lib/i18n/i18n-prop";
 import { styles } from "./sidebar-section-header.styles";
+
+const DEFAULT_I18N = createDefaultI18n(["Collapse", "Expand"]);
 
 export class SidebarSectionHeader extends LitElement {
   @property({ type: String }) accessor title: string = "";
@@ -12,7 +16,13 @@ export class SidebarSectionHeader extends LitElement {
 
   @property({ type: Boolean }) accessor open: boolean = true;
 
+  @property({ attribute: false }) accessor i18n: I18nMap = DEFAULT_I18N;
+
   static styles = styles;
+
+  private _t(key: string): string {
+    return t(this.i18n, key);
+  }
 
   private _emitToggle() {
     this.dispatchEvent(
@@ -65,8 +75,9 @@ export class SidebarSectionHeader extends LitElement {
                 <button
                   type="button"
                   class="sidebar-section-toggle ${this.open ? "is-open" : ""}"
-                  aria-label="${this.open ? "Collapse" : "Expand"} ${this
-                    .title}"
+                  aria-label="${this._t(
+                    this.open ? "Collapse" : "Expand"
+                  )} ${this.title}"
                   aria-expanded=${this.open}
                   @click=${this._onButtonClick}
                 >

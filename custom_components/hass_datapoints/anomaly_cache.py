@@ -28,7 +28,6 @@ CREATE INDEX IF NOT EXISTS idx_created ON anomaly_cache (created_at);
 """
 
 _TTL_DAYS = 30
-_LIVE_EDGE_SECONDS = 3600  # ranges ending within the last hour are not cached
 _MAX_CACHE_ENTRY_BYTES = 5 * 1024 * 1024  # 5 MB per entry — guards against DoS
 
 

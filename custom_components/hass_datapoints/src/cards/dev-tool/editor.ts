@@ -2,7 +2,7 @@ import { CSSResultGroup, html } from "lit";
 import { msg } from "@/lib/i18n/localize";
 import { EditorBase } from "@/molecules/editor-base/editor-base";
 
-export class HassRecordsDevToolCardEditor extends EditorBase {
+export class HassDatapointsDevToolCardEditor extends EditorBase {
   static styles: CSSResultGroup = [EditorBase.styles];
 
   render() {

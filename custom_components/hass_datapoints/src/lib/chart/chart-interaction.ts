@@ -135,6 +135,7 @@ export interface HoverSeriesLike {
   spans?: Array<{ start: number; end: number }>;
   onLabel?: string;
   offLabel?: string;
+  stepped?: boolean;
 }
 
 export interface HoverValueEntry {
@@ -1697,7 +1698,11 @@ export function attachLineChartHover(
     const x = renderer.xOf(timeMs, t0, t1);
 
     const values = resolvedSeries.map((seriesItem) => {
-      const value = renderer._interpolateValue(seriesItem.pts || [], timeMs);
+      const value = renderer._interpolateValue(
+        seriesItem.pts || [],
+        timeMs,
+        seriesItem.stepped
+      );
       const axis = resolveHoverAxis(seriesItem);
       return buildHoverValueEntry(
         seriesItem,
@@ -1712,7 +1717,11 @@ export function attachLineChartHover(
     });
 
     const comparisonValues = comparisonSeries.map((seriesItem) => {
-      const value = renderer._interpolateValue(seriesItem.pts || [], timeMs);
+      const value = renderer._interpolateValue(
+        seriesItem.pts || [],
+        timeMs,
+        seriesItem.stepped
+      );
       const axis = resolveHoverAxis(seriesItem);
       return buildHoverValueEntry(
         seriesItem,

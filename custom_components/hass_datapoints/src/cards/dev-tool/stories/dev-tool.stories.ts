@@ -2,12 +2,12 @@ import type { Meta, StoryObj } from "@storybook/web-components-vite";
 import { expect } from "@storybook/test";
 import { html } from "lit";
 import { createMockHass } from "@/test-support/mock-hass";
-import { HassRecordsDevToolCard } from "../dev-tool";
+import { HassDatapointsDevToolCard } from "../dev-tool";
 
 if (!customElements.get("hass-datapoints-dev-tool-card")) {
   customElements.define(
     "hass-datapoints-dev-tool-card",
-    HassRecordsDevToolCard
+    HassDatapointsDevToolCard
   );
 }
 
@@ -20,10 +20,10 @@ const meta: Meta = {
 
 export default meta;
 
-function getCard(canvasElement: HTMLElement): HassRecordsDevToolCard {
+function getCard(canvasElement: HTMLElement): HassDatapointsDevToolCard {
   return canvasElement.querySelector(
     "hass-datapoints-dev-tool-card"
-  ) as HassRecordsDevToolCard;
+  ) as HassDatapointsDevToolCard;
 }
 
 function makeMockHass() {
@@ -87,7 +87,7 @@ export const WithResults: Story = {
   render: () =>
     html`<hass-datapoints-dev-tool-card></hass-datapoints-dev-tool-card>`,
   play: async ({ canvasElement }) => {
-    const card = getCard(canvasElement) as HassRecordsDevToolCard & {
+    const card = getCard(canvasElement) as HassDatapointsDevToolCard & {
       _entities: string[];
       _analyzeHistory: () => Promise<void>;
     };

@@ -704,7 +704,7 @@ describe("hass-datapoints-history-chart", () => {
 
         el._syncChartViewportScroll(0, 1000, 1001);
 
-        expect(viewport.scrollLeft).toBe(300.3);
+        expect(viewport.scrollLeft).toBe(300.5);
         expect(el._skipNextScrollViewportSync).toBe(false);
       });
     });

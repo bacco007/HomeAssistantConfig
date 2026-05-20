@@ -2,10 +2,10 @@ import type { Meta, StoryObj } from "@storybook/web-components-vite";
 import { expect } from "@storybook/test";
 import { html } from "lit";
 import { createMockHass } from "@/test-support/mock-hass";
-import { HassRecordsListCard } from "../list";
+import { HassDatapointsListCard } from "../list";
 
 if (!customElements.get("hass-datapoints-list-card")) {
-  customElements.define("hass-datapoints-list-card", HassRecordsListCard);
+  customElements.define("hass-datapoints-list-card", HassDatapointsListCard);
 }
 
 type Story = StoryObj;
@@ -17,10 +17,10 @@ const meta: Meta = {
 
 export default meta;
 
-function getCard(canvasElement: HTMLElement): HassRecordsListCard {
+function getCard(canvasElement: HTMLElement): HassDatapointsListCard {
   return canvasElement.querySelector(
     "hass-datapoints-list-card"
-  ) as HassRecordsListCard;
+  ) as HassDatapointsListCard;
 }
 
 function makeMockHass() {
@@ -80,7 +80,7 @@ function makeMockHass() {
 export const Default: Story = {
   render: () => html`<hass-datapoints-list-card></hass-datapoints-list-card>`,
   play: async ({ canvasElement }) => {
-    const card = getCard(canvasElement) as HassRecordsListCard & {
+    const card = getCard(canvasElement) as HassDatapointsListCard & {
       updateComplete: Promise<void>;
       _load: () => Promise<void>;
     };
@@ -96,7 +96,7 @@ export const Default: Story = {
 export const WithoutSearch: Story = {
   render: () => html`<hass-datapoints-list-card></hass-datapoints-list-card>`,
   play: async ({ canvasElement }) => {
-    const card = getCard(canvasElement) as HassRecordsListCard & {
+    const card = getCard(canvasElement) as HassDatapointsListCard & {
       updateComplete: Promise<void>;
       _load: () => Promise<void>;
     };

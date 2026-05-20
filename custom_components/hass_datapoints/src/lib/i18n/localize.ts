@@ -114,3 +114,5 @@ export function msg(
 }
 
 export { getLocale, localized };
+
+export { interpolatePlaceholders } from "./interpolate";

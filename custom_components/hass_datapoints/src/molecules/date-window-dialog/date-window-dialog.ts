@@ -1,5 +1,6 @@
 import { html, LitElement, nothing } from "lit";
-import { property } from "lit/decorators.js";
+import { property, query, state } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
 import { localized, msg } from "@/lib/i18n/localize";
 
 import { styles } from "./date-window-dialog.styles";
@@ -64,21 +65,31 @@ export class DateWindowDialog extends LitElement {
   @property({ type: String, attribute: "date-snapping" })
   accessor dateSnapping: string = "hour";
 
+  // DOM refs via @query
+  @query("ha-dialog") accessor _dialogEl: Nullable<HTMLElement> = null;
+
+  @query("#date-window-name")
+  accessor _nameInput: Nullable<HTMLInputElement> = null;
+
+  @query("#date-window-start")
+  accessor _startInput: Nullable<HTMLInputElement> = null;
+
+  @query("#date-window-end")
+  accessor _endInput: Nullable<HTMLInputElement> = null;
+
+  @state() accessor _shaking: boolean = false;
+
   /** Shake the dialog — call this when the parent detects a validation error. */
   shake() {
-    const dialog = this.shadowRoot?.querySelector(
-      "ha-dialog"
-    ) as Nullable<HTMLElement>;
-    if (!dialog) return;
-    dialog.classList.remove("dp-shaking");
+    if (!this._dialogEl) return;
+    this._shaking = false;
     // eslint-disable-next-line no-void
-    void dialog.offsetWidth; // force reflow to restart animation
-    dialog.classList.add("dp-shaking");
-    dialog.addEventListener(
-      "animationend",
-      () => dialog.classList.remove("dp-shaking"),
-      { once: true }
-    );
+    void this._dialogEl.offsetWidth; // force reflow to restart animation
+    this._shaking = true;
+  }
+
+  private _onShakeEnd() {
+    this._shaking = false;
   }
 
   private _emit(name: string, detail: RecordWithUnknownValues = {}) {
@@ -100,18 +111,12 @@ export class DateWindowDialog extends LitElement {
   }
 
   private _onSubmit() {
-    const nameInput =
-      this.shadowRoot?.querySelector<HTMLInputElement>("#date-window-name");
-    const startInput =
-      this.shadowRoot?.querySelector<HTMLInputElement>("#date-window-start");
-    const endInput =
-      this.shadowRoot?.querySelector<HTMLInputElement>("#date-window-end");
     const nameVal =
-      (nameInput as HTMLElement & { value?: string })?.value ?? this.name;
+      (this._nameInput as HTMLElement & { value?: string })?.value ?? this.name;
     this._emit("dp-window-submit", {
       name: String(nameVal ?? "").trim(),
-      start: startInput?.value ?? this.startValue,
-      end: endInput?.value ?? this.endValue,
+      start: this._startInput?.value ?? this.startValue,
+      end: this._endInput?.value ?? this.endValue,
     });
   }
 
@@ -128,13 +133,9 @@ export class DateWindowDialog extends LitElement {
   }
 
   private _onDateChange() {
-    const startInput =
-      this.shadowRoot?.querySelector<HTMLInputElement>("#date-window-start");
-    const endInput =
-      this.shadowRoot?.querySelector<HTMLInputElement>("#date-window-end");
     this._emit("dp-window-date-change", {
-      start: startInput?.value ?? "",
-      end: endInput?.value ?? "",
+      start: this._startInput?.value ?? "",
+      end: this._endInput?.value ?? "",
     });
   }
 
@@ -150,12 +151,8 @@ export class DateWindowDialog extends LitElement {
     const startStr = fmt(start);
     const endStr = fmt(end);
     // Update the datetime-local inputs directly so they reflect the slider commit
-    const startInput =
-      this.shadowRoot?.querySelector<HTMLInputElement>("#date-window-start");
-    const endInput =
-      this.shadowRoot?.querySelector<HTMLInputElement>("#date-window-end");
-    if (startInput) startInput.value = startStr;
-    if (endInput) endInput.value = endStr;
+    if (this._startInput) this._startInput.value = startStr;
+    if (this._endInput) this._endInput.value = endStr;
     this._emit("dp-window-date-change", { start: startStr, end: endStr });
   }
 
@@ -169,11 +166,13 @@ export class DateWindowDialog extends LitElement {
   render() {
     return html`
       <ha-dialog
+        class=${classMap({ "dp-shaking": this._shaking })}
         ?open=${this.open}
         hideActions
         .scrimClickAction=${"close"}
         .escapeKeyAction=${"close"}
         @closed=${this._onDialogClosed}
+        @animationend=${this._onShakeEnd}
       >
         <span slot="heading">${this.heading}</span>
         <div class="date-window-dialog-content">

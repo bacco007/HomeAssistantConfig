@@ -87,10 +87,10 @@ describe("range-timeline", () => {
       it("THEN renders start and end tooltip elements", () => {
         expect.assertions(2);
         expect(
-          el.shadowRoot!.getElementById("range-tooltip-start")
+          el.shadowRoot!.querySelector('range-tooltip[side="start"]')
         ).not.toBeNull();
         expect(
-          el.shadowRoot!.getElementById("range-tooltip-end")
+          el.shadowRoot!.querySelector('range-tooltip[side="end"]')
         ).not.toBeNull();
       });
 
@@ -195,10 +195,14 @@ describe("range-timeline", () => {
         expect(timeline.style.width).not.toBe("");
       });
 
-      it("THEN the range-selection element has inline left and width styles set", () => {
+      it("THEN the range-selection element has inline left and width styles set", async () => {
         expect.assertions(2);
-        const selection = el.shadowRoot!.getElementById(
-          "range-selection"
+        const trackEl = el.shadowRoot!.getElementById(
+          "range-track"
+        ) as HTMLElement & { updateComplete: Promise<boolean> };
+        await trackEl.updateComplete;
+        const selection = trackEl.shadowRoot!.querySelector(
+          ".range-selection"
         ) as HTMLElement;
         expect(selection.style.left).not.toBe("");
         expect(selection.style.width).not.toBe("");
@@ -246,12 +250,8 @@ describe("range-timeline", () => {
     });
 
     describe("WHEN disconnectedCallback runs", () => {
-      it("THEN it clears timers, removes scroll listeners, and disconnects the observer", () => {
-        expect.assertions(4);
-        const viewport = el.shadowRoot!.getElementById(
-          "range-scroll-viewport"
-        ) as HTMLElement;
-        const removeSpy = vi.spyOn(viewport, "removeEventListener");
+      it("THEN it clears timers and disconnects the observer", () => {
+        expect.assertions(3);
         const clearSpy = vi.spyOn(window, "clearTimeout");
         const observer = (
           el as HTMLElement & { _resizeObserver: { disconnect: () => void } }
@@ -272,7 +272,6 @@ describe("range-timeline", () => {
 
         el.disconnectedCallback();
 
-        expect(removeSpy).toHaveBeenCalledWith("scroll", expect.any(Function));
         expect(clearSpy).toHaveBeenCalled();
         expect(disconnectSpy).toHaveBeenCalledTimes(1);
         expect(
@@ -288,6 +287,8 @@ describe("range-timeline", () => {
   // ---------------------------------------------------------------------------
 
   describe("GIVEN rangeBounds with start/end times so scale renders period buttons", () => {
+    let scaleEl: HTMLElement;
+
     beforeEach(async () => {
       el = createElement({
         rangeBounds: SAMPLE_BOUNDS,
@@ -295,6 +296,9 @@ describe("range-timeline", () => {
         endTime: new Date(JAN_15 + 3600_000),
       });
       await el.updateComplete;
+      scaleEl = el.shadowRoot!.querySelector("range-scale")! as HTMLElement;
+      await (scaleEl as HTMLElement & { updateComplete: Promise<boolean> })
+        .updateComplete;
     });
 
     describe("WHEN a period button is hovered", () => {
@@ -302,11 +306,11 @@ describe("range-timeline", () => {
         expect.assertions(1);
         const handler = vi.fn();
         el.addEventListener("dp-range-period-hover", handler);
-        const button = el.shadowRoot!.querySelector<HTMLButtonElement>(
+        const button = scaleEl.shadowRoot!.querySelector<HTMLButtonElement>(
           ".range-period-button"
         );
         button?.dispatchEvent(
-          new PointerEvent("pointerenter", { bubbles: true })
+          new PointerEvent("pointerenter", { bubbles: true, composed: true })
         );
         expect(handler).toHaveBeenCalledOnce();
       });
@@ -319,15 +323,15 @@ describe("range-timeline", () => {
         const leaveHandler = vi.fn();
         el.addEventListener("dp-range-period-hover", hoverHandler);
         el.addEventListener("dp-range-period-leave", leaveHandler);
-        const button = el.shadowRoot!.querySelector<HTMLButtonElement>(
+        const button = scaleEl.shadowRoot!.querySelector<HTMLButtonElement>(
           ".range-period-button"
         );
         // hover first so the internal _hoveredPeriodRange is set
         button?.dispatchEvent(
-          new PointerEvent("pointerenter", { bubbles: true })
+          new PointerEvent("pointerenter", { bubbles: true, composed: true })
         );
         button?.dispatchEvent(
-          new PointerEvent("pointerleave", { bubbles: true })
+          new PointerEvent("pointerleave", { bubbles: true, composed: true })
         );
         expect(leaveHandler).toHaveBeenCalledOnce();
       });
@@ -338,10 +342,12 @@ describe("range-timeline", () => {
         expect.assertions(2);
         const handler = vi.fn();
         el.addEventListener("dp-range-period-select", handler);
-        const button = el.shadowRoot!.querySelector<HTMLButtonElement>(
+        const button = scaleEl.shadowRoot!.querySelector<HTMLButtonElement>(
           ".range-period-button"
         );
-        button?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+        button?.dispatchEvent(
+          new MouseEvent("click", { bubbles: true, composed: true })
+        );
         expect(handler).toHaveBeenCalledOnce();
         expect(handler.mock.calls[0][0].detail).toMatchObject({
           unit: expect.any(String),
@@ -353,10 +359,12 @@ describe("range-timeline", () => {
         expect.assertions(1);
         const handler = vi.fn();
         el.addEventListener("dp-range-commit", handler);
-        const button = el.shadowRoot!.querySelector<HTMLButtonElement>(
+        const button = scaleEl.shadowRoot!.querySelector<HTMLButtonElement>(
           ".range-period-button"
         );
-        button?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+        button?.dispatchEvent(
+          new MouseEvent("click", { bubbles: true, composed: true })
+        );
         expect(handler).toHaveBeenCalledOnce();
       });
     });
@@ -384,8 +392,11 @@ describe("range-timeline", () => {
         startHandle.dispatchEvent(
           new CustomEvent("dp-handle-hover", { bubbles: true, composed: true })
         );
-        const tooltip = el.shadowRoot!.getElementById("range-tooltip-start")!;
-        expect(tooltip.classList.contains("visible")).toBe(true);
+        await el.updateComplete;
+        const tooltip = el.shadowRoot!.querySelector(
+          'range-tooltip[side="start"]'
+        )!;
+        expect(tooltip.hasAttribute("visible")).toBe(true);
       });
     });
 
@@ -396,13 +407,16 @@ describe("range-timeline", () => {
         endHandle.dispatchEvent(
           new CustomEvent("dp-handle-hover", { bubbles: true, composed: true })
         );
-        const tooltip = el.shadowRoot!.getElementById("range-tooltip-end")!;
-        expect(tooltip.classList.contains("visible")).toBe(true);
+        await el.updateComplete;
+        const tooltip = el.shadowRoot!.querySelector(
+          'range-tooltip[side="end"]'
+        )!;
+        expect(tooltip.hasAttribute("visible")).toBe(true);
       });
     });
 
     describe("WHEN dp-handle-leave fires after dp-handle-hover on the start handle", () => {
-      it("THEN the start tooltip is no longer visible", () => {
+      it("THEN the start tooltip is no longer visible", async () => {
         expect.assertions(1);
         const startHandle =
           el.shadowRoot!.getElementById("range-start-handle")!;
@@ -412,8 +426,11 @@ describe("range-timeline", () => {
         startHandle.dispatchEvent(
           new CustomEvent("dp-handle-leave", { bubbles: true, composed: true })
         );
-        const tooltip = el.shadowRoot!.getElementById("range-tooltip-start")!;
-        expect(tooltip.classList.contains("visible")).toBe(false);
+        await el.updateComplete;
+        const tooltip = el.shadowRoot!.querySelector(
+          'range-tooltip[side="start"]'
+        )!;
+        expect(tooltip.hasAttribute("visible")).toBe(false);
       });
     });
   });

@@ -49,6 +49,7 @@ const DEFAULT_ANALYSIS = {
   anomaly_zscore_window: "24h",
   anomaly_persistence_window: "1h",
   anomaly_comparison_window_id: null,
+  anomaly_comparison_entity_id: null,
   anomaly_trend_method: "",
   anomaly_trend_window: "24h",
   show_delta_analysis: false,

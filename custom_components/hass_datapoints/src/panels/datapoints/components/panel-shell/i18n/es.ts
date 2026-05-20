@@ -4,6 +4,7 @@ export const translations: ComponentTranslations = {
   "Loading Datapoints…": "Cargando puntos de datos…",
   Datapoints: "Puntos de datos",
   "Page options": "Opciones de la página",
+  "AI query brief": "Resumen de consulta para IA",
   "Download spreadsheet": "Descargar hoja de cálculo",
   "Save page state": "Guardar estado de la página",
   "Restore saved page": "Restaurar página guardada",

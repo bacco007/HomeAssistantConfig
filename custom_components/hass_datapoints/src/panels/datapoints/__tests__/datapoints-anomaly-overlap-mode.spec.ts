@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { HassRecordsHistoryPanel } from "../datapoints";
+import { HassDatapointsHistoryPanel } from "../datapoints";
 import { normalizeHistorySeriesAnalysis } from "@/lib/domain/history-series";
 
-describe("HassRecordsHistoryPanel anomaly overlap mode config", () => {
+describe("HassDatapointsHistoryPanel anomaly overlap mode config", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
@@ -76,7 +76,7 @@ describe("HassRecordsHistoryPanel anomaly overlap mode config", () => {
           _hass: null,
         };
 
-        HassRecordsHistoryPanel.prototype._renderContent.call(panel);
+        HassDatapointsHistoryPanel.prototype._renderContent.call(panel);
 
         expect(setConfig).toHaveBeenCalledTimes(1);
         expect(setConfig.mock.calls[0][0].anomaly_overlap_mode).toBe("only");

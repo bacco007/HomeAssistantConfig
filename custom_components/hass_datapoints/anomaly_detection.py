@@ -284,6 +284,23 @@ def _build_rate_pts(pts: list, rate_window: str) -> list:
     """Build rate-of-change points [[timeMs, rate_per_hour], ...]."""
     if len(pts) < 2:
         return []
+
+    # point_to_point: compare each reading to its immediate predecessor.
+    # Mirrors buildRateOfChangePoints() in series.ts.
+    if rate_window == "point_to_point":
+        rate_pts = []
+        for i in range(1, len(pts)):
+            t, v = pts[i]
+            comp_t, comp_v = pts[i - 1]
+            delta_ms = t - comp_t
+            if not (delta_ms > 0 and math.isfinite(delta_ms)):
+                continue
+            delta_h = delta_ms / 3_600_000.0
+            rate = (v - comp_v) / delta_h
+            if math.isfinite(rate):
+                rate_pts.append([t, rate])
+        return rate_pts
+
     window_ms = _trend_window_ms(rate_window)
     rate_pts = []
     for i in range(1, len(pts)):
@@ -782,7 +799,10 @@ VALID_ANOMALY_METHODS = frozenset(
 
 
 def run_anomaly_detection(
-    pts: list, config: dict, comparison_pts: list | None = None
+    pts: list,
+    config: dict,
+    comparison_pts: list | None = None,
+    cancel=None,
 ) -> list[dict]:
     """Run all requested anomaly detection methods and apply overlap mode.
 
@@ -824,30 +844,48 @@ def run_anomaly_detection(
 
     clusters_by_method: dict[str, list[dict]] = {}
 
+    if cancel and cancel.is_set():
+        return []
+
     if "trend_residual" in methods:
         result = detect_trend_residual(pts, sensitivity, trend_method, trend_window)
         if result:
             clusters_by_method["trend_residual"] = result
+
+    if cancel and cancel.is_set():
+        return []
 
     if "rate_of_change" in methods:
         result = detect_rate_of_change(pts, sensitivity, rate_window)
         if result:
             clusters_by_method["rate_of_change"] = result
 
+    if cancel and cancel.is_set():
+        return []
+
     if "iqr" in methods:
         result = detect_iqr(pts, sensitivity)
         if result:
             clusters_by_method["iqr"] = result
+
+    if cancel and cancel.is_set():
+        return []
 
     if "rolling_zscore" in methods:
         result = detect_rolling_zscore(pts, sensitivity, zscore_seconds)
         if result:
             clusters_by_method["rolling_zscore"] = result
 
+    if cancel and cancel.is_set():
+        return []
+
     if "persistence" in methods:
         result = detect_persistence(pts, sensitivity, persistence_seconds)
         if result:
             clusters_by_method["persistence"] = result
+
+    if cancel and cancel.is_set():
+        return []
 
     if "comparison_window" in methods and comparison_pts and len(comparison_pts) >= 3:
         result = detect_comparison_window(

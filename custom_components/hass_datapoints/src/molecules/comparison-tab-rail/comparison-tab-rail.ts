@@ -1,5 +1,5 @@
 import { LitElement, html } from "lit";
-import { property } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 
 import { classMap } from "lit/directives/class-map.js";
 import { repeat } from "lit/directives/repeat.js";
@@ -44,6 +44,12 @@ export class ComparisonTabRail extends LitElement {
   /** Whether the rail is overflowing horizontally (collapses "Add" button to icon only). */
   @property({ type: Boolean }) accessor overflowing: boolean = false;
 
+  @query(".chart-tabs-shell")
+  accessor _shellEl: Nullable<HTMLElement> = null;
+
+  @query(".chart-tabs-rail")
+  accessor _railEl: Nullable<HTMLElement> = null;
+
   private _resizeObserver?: ResizeObserver;
 
   connectedCallback() {
@@ -56,11 +62,8 @@ export class ComparisonTabRail extends LitElement {
       if (!this.isConnected || !this._resizeObserver) {
         return;
       }
-      const shell = this.shadowRoot?.querySelector(
-        ".chart-tabs-shell"
-      ) as Nullable<HTMLElement>;
-      if (shell) {
-        this._resizeObserver.observe(shell);
+      if (this._shellEl) {
+        this._resizeObserver.observe(this._shellEl);
       }
     });
   }
@@ -72,19 +75,10 @@ export class ComparisonTabRail extends LitElement {
   }
 
   private _checkOverflow() {
-    const shell = this.shadowRoot?.querySelector(
-      ".chart-tabs-shell"
-    ) as Nullable<HTMLElement>;
-    if (!shell) {
+    if (!this._railEl) {
       return;
     }
-    const rail = shell.querySelector(
-      ".chart-tabs-rail"
-    ) as Nullable<HTMLElement>;
-    if (!rail) {
-      return;
-    }
-    this.overflowing = rail.scrollWidth > rail.clientWidth;
+    this.overflowing = this._railEl.scrollWidth > this._railEl.clientWidth;
   }
 
   private _onAddClick() {

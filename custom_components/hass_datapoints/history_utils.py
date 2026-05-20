@@ -8,6 +8,8 @@ import math
 import statistics
 from datetime import UTC, datetime
 
+from .const import ANOMALY_MAX_PTS
+
 _LOGGER = logging.getLogger(__name__)
 
 INTERVAL_SECONDS: dict[str, int] = {
@@ -147,6 +149,9 @@ def fetch_entity_pts(
             except Exception:  # noqa: BLE001
                 continue
         pts.append([ts_ms, value])
+
+    if len(pts) > ANOMALY_MAX_PTS:
+        pts = pts[-ANOMALY_MAX_PTS:]
 
     _LOGGER.debug(
         "hass_datapoints: fetch_entity_pts %s → %d pts (%d states)",

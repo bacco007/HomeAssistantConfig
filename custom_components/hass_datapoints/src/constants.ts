@@ -1,5 +1,5 @@
 /**
- * Shared constants used by all Hass Records cards.
+ * Shared constants used by all Hass Datapoints cards.
  */
 
 export const DOMAIN = "hass_datapoints";

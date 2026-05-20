@@ -22,7 +22,6 @@ export class FloatingMenu extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this._onPointerDown = this._onPointerDown.bind(this);
     window.addEventListener("pointerdown", this._onPointerDown, true);
   }
 
@@ -31,7 +30,7 @@ export class FloatingMenu extends LitElement {
     window.removeEventListener("pointerdown", this._onPointerDown, true);
   }
 
-  private _onPointerDown(e: PointerEvent) {
+  private _onPointerDown = (e: PointerEvent) => {
     if (!this.open) {
       return;
     }
@@ -46,7 +45,7 @@ export class FloatingMenu extends LitElement {
         })
       );
     }
-  }
+  };
 
   render() {
     return html`

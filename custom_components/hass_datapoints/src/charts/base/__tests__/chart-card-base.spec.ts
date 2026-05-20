@@ -284,4 +284,85 @@ describe("card-chart-base", () => {
       });
     });
   });
+
+  describe("GIVEN disconnectedCallback fires before subscribeEvents resolves", () => {
+    describe("WHEN the subscription promise eventually resolves", () => {
+      it("THEN the subscription is immediately unsubscribed", async () => {
+        expect.assertions(1);
+        let resolveUnsub!: (unsub: () => void) => void;
+        const subscribePromise = new Promise<() => void>((resolve) => {
+          resolveUnsub = resolve;
+        });
+        const subscribeSpy = vi.fn().mockReturnValue(subscribePromise);
+
+        const el = document.createElement("test-chart-card") as InstanceType<
+          typeof TestChartCardCtor
+        >;
+        el.setConfig({});
+        el.hass = createMockHass(subscribeSpy) as any;
+        document.body.appendChild(el);
+        await el.updateComplete;
+
+        // Disconnect BEFORE resolving the subscribeEvents promise
+        document.body.removeChild(el);
+
+        const unsub = vi.fn();
+        resolveUnsub(unsub);
+
+        // Allow the .then() handler to run
+        await Promise.resolve();
+        await Promise.resolve();
+
+        expect(unsub).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("GIVEN the unsubscribe function rejects (Subscription not found)", () => {
+    describe("WHEN disconnectedCallback calls cleanup", () => {
+      it("THEN the rejection is swallowed and does not become an unhandled promise rejection", async () => {
+        expect.assertions(1);
+        const notFoundErr = Object.assign(
+          new Error("Subscription not found."),
+          { code: "not_found" }
+        );
+        const unsub = vi.fn().mockReturnValue(Promise.reject(notFoundErr));
+        const subscribeSpy = vi.fn().mockResolvedValue(unsub);
+        const el = await setupCard(raf, {}, createMockHass(subscribeSpy));
+
+        // Allow subscribeEvents .then() to run so _unsubscribe is set
+        await Promise.resolve();
+        await Promise.resolve();
+
+        // Should not throw or leave an unhandled rejection
+        await expect(
+          new Promise<void>((resolve) => {
+            document.body.removeChild(el);
+            // Give the promise a tick to reject (or not)
+            Promise.resolve()
+              .then(() => Promise.resolve())
+              .then(resolve);
+          })
+        ).resolves.toBeUndefined();
+      });
+    });
+  });
+
+  describe("GIVEN the unsubscribe function throws synchronously", () => {
+    describe("WHEN disconnectedCallback calls cleanup", () => {
+      it("THEN the error is swallowed", async () => {
+        expect.assertions(1);
+        const unsub = vi.fn().mockImplementation(() => {
+          throw new Error("sync error from unsub");
+        });
+        const subscribeSpy = vi.fn().mockResolvedValue(unsub);
+        const el = await setupCard(raf, {}, createMockHass(subscribeSpy));
+
+        await Promise.resolve();
+        await Promise.resolve();
+
+        expect(() => document.body.removeChild(el)).not.toThrow();
+      });
+    });
+  });
 });

@@ -40,7 +40,7 @@ type AnalysisChangeDetail = {
   value?: unknown;
 };
 
-export class HassRecordsHistoryCardEditor extends EditorBase {
+export class HassDatapointsHistoryCardEditor extends EditorBase {
   static styles: CSSResultGroup = [EditorBase.styles, styles];
 
   private _configTarget(): TargetPickerValue {

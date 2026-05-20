@@ -512,6 +512,9 @@ export class HistoryAnnotationDialogController {
         .context-form-label { font-size: 0.9rem; font-weight: 600; color: var(--primary-text-color); }
         .context-form-help { font-size: 0.8rem; color: var(--secondary-text-color); line-height: 1.45; }
         .context-form-help-inline { display: inline-flex; align-items: center; gap: 6px; }
+        .context-text-input { width: 100%; min-height: 52px; box-sizing: border-box; padding: 14px 16px; border: 1px solid var(--input-outlined-idle-border-color, var(--divider-color, #9e9e9e)); border-radius: 12px; background: var(--card-background-color, var(--primary-background-color, #fff)); color: var(--primary-text-color); font: inherit; line-height: 1.25; }
+        .context-text-input::placeholder { color: var(--secondary-text-color); }
+        .context-text-input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 1px var(--primary-color); }
         .context-annotation-input { width: 100%; min-height: 120px; box-sizing: border-box; resize: vertical; padding: 12px; border: 1px solid var(--input-outlined-idle-border-color, var(--divider-color, #9e9e9e)); border-radius: 12px; background: var(--card-background-color, var(--primary-background-color, #fff)); color: var(--primary-text-color); font: inherit; line-height: 1.45; }
         .context-annotation-input::placeholder { color: var(--secondary-text-color); }
         .context-annotation-input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 1px var(--primary-color); }
@@ -543,12 +546,12 @@ export class HistoryAnnotationDialogController {
               <div class="context-form-field">
                 <label class="context-form-label" for="chart-context-message">Message</label>
                 <div class="context-form-help">Use a short title that will be shown in the chart tooltip and records list.</div>
-                <ha-textfield id="chart-context-message" placeholder="What happened?" style="width:100%"></ha-textfield>
+                <input id="chart-context-message" class="context-text-input" type="text" placeholder="What happened?">
               </div>
               <div class="context-form-field">
                 <label class="context-form-label" for="chart-context-date">Date and time</label>
                 <div class="context-form-help">The annotation will be placed at this exact moment on the chart.</div>
-                <ha-textfield id="chart-context-date" class="context-date-input" type="datetime-local" value="${esc(this.formatDate(hover.timeMs))}"></ha-textfield>
+                <input id="chart-context-date" class="context-text-input context-date-input" type="datetime-local" value="${esc(this.formatDate(hover.timeMs))}">
               </div>
             </div>
             <!-- Row 2: Annotation -->

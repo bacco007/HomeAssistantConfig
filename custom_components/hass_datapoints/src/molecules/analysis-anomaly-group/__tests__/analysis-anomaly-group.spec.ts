@@ -30,12 +30,17 @@ function makeAnalysis(
     anomaly_zscore_window: "24h",
     anomaly_persistence_window: "1h",
     anomaly_comparison_window_id: null,
+    anomaly_comparison_entity_id: null,
     anomaly_trend_method: "",
     anomaly_trend_window: "24h",
     show_delta_analysis: false,
     show_delta_tooltip: false,
     show_delta_lines: false,
     hide_source_series: false,
+    sample_interval: "raw",
+    sample_aggregate: "mean",
+    stepped_series: false,
+    anomaly_use_sampled_data: false,
     ...overrides,
   };
 }
@@ -45,17 +50,20 @@ function createElement(
     analysis?: Partial<NormalizedAnalysis>;
     entityId?: string;
     comparisonWindows?: ComparisonWindow[];
+    hideSaveMonitorCta?: boolean;
   } = {}
 ) {
   const el = document.createElement("analysis-anomaly-group") as HTMLElement & {
     analysis: NormalizedAnalysis;
     entityId: string;
     comparisonWindows: ComparisonWindow[];
+    hideSaveMonitorCta: boolean;
     updateComplete: Promise<boolean>;
   };
   el.analysis = makeAnalysis(props.analysis);
   el.entityId = props.entityId ?? "sensor.test";
   el.comparisonWindows = props.comparisonWindows ?? [];
+  el.hideSaveMonitorCta = props.hideSaveMonitorCta ?? false;
   document.body.appendChild(el);
   return el;
 }
@@ -112,6 +120,30 @@ describe("analysis-anomaly-group", () => {
         expect(trigger?.textContent?.trim()).toBe("?");
         expect(tooltip).toBeTruthy();
         expect(tooltip?.textContent?.trim()).toContain("interquartile range");
+      });
+
+      it("THEN it renders the save monitor CTA by default", () => {
+        expect.assertions(1);
+        const button = el.shadowRoot!.querySelector(".save-monitor-btn");
+        expect(button).toBeTruthy();
+      });
+    });
+  });
+
+  describe("GIVEN hideSaveMonitorCta=true", () => {
+    beforeEach(async () => {
+      el = createElement({
+        hideSaveMonitorCta: true,
+        analysis: { show_anomalies: true, anomaly_methods: ["iqr"] },
+      });
+      await el.updateComplete;
+    });
+
+    describe("WHEN rendered", () => {
+      it("THEN it does not render the save monitor CTA", () => {
+        expect.assertions(1);
+        const button = el.shadowRoot!.querySelector(".save-monitor-btn");
+        expect(button).toBeNull();
       });
     });
   });

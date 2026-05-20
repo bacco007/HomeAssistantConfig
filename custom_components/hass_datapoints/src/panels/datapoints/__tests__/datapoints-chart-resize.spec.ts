@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { HassRecordsHistoryPanel } from "../datapoints";
+import { HassDatapointsHistoryPanel } from "../datapoints";
 
-describe("HassRecordsHistoryPanel", () => {
+describe("HassDatapointsHistoryPanel", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
@@ -39,7 +39,9 @@ describe("HassRecordsHistoryPanel", () => {
           },
         };
 
-        HassRecordsHistoryPanel.prototype._requestChartResizeRedraw.call(panel);
+        HassDatapointsHistoryPanel.prototype._requestChartResizeRedraw.call(
+          panel
+        );
 
         expect(rafSpy).toHaveBeenCalledOnce();
         expect(drawSpy).toHaveBeenCalledOnce();
@@ -65,7 +67,9 @@ describe("HassRecordsHistoryPanel", () => {
           _chartEl: null,
         };
 
-        HassRecordsHistoryPanel.prototype._requestChartResizeRedraw.call(panel);
+        HassDatapointsHistoryPanel.prototype._requestChartResizeRedraw.call(
+          panel
+        );
 
         expect(requestChartResizeRedraw).toHaveBeenCalledWith(null);
       });

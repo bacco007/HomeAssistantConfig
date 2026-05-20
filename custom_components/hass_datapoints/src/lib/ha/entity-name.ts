@@ -21,7 +21,7 @@ interface HassWithLabels {
   labels?: Record<string, { name?: string }>;
   states?: Record<string, HassState>;
   entities?: Record<string, RegistryEntryWithIcon>;
-  devices?: Record<string, { name?: string }>;
+  devices?: Record<string, { name?: string; area_id?: Nullable<string> }>;
   areas?: Record<string, { name?: string }>;
 }
 
@@ -154,6 +154,62 @@ export function areaIcon(
     (entry) => (entry.area_id || entry.areaId) === areaId
   );
   return entityId ? entityIcon(hass, entityId) : "mdi:floor-plan";
+}
+
+/**
+ * Returns a Map of entityId → display label. When multiple entity IDs share
+ * the same friendly name, duplicates are prefixed with the best available
+ * qualifier in order: area name → device name → last segment of entity_id.
+ */
+export function disambiguateEntityNames(
+  hass: Nullable<HassWithLabels> | undefined,
+  entityIds: string[]
+): Map<string, string> {
+  const labels = new Map<string, string>();
+  if (!entityIds.length) return labels;
+
+  // First pass: collect raw friendly names
+  for (const entityId of entityIds) {
+    labels.set(entityId, entityName(hass, entityId) || entityId);
+  }
+
+  // Find names that appear more than once
+  const nameCounts = new Map<string, number>();
+  for (const label of labels.values()) {
+    nameCounts.set(label, (nameCounts.get(label) ?? 0) + 1);
+  }
+
+  // Second pass: qualify duplicates
+  for (const entityId of entityIds) {
+    const name = labels.get(entityId)!;
+    if ((nameCounts.get(name) ?? 0) <= 1) continue;
+
+    const entry = hass?.entities?.[entityId] as
+      | RegistryEntryWithIcon
+      | undefined;
+    const deviceId = entry?.device_id || entry?.deviceId;
+    // Area can be set directly on the entity, or inherited from its parent device
+    const areaId =
+      entry?.area_id ||
+      entry?.areaId ||
+      (deviceId ? hass?.devices?.[deviceId]?.area_id : null);
+
+    let qualifier;
+    if (areaId) {
+      qualifier = areaName(hass, areaId);
+    } else if (deviceId) {
+      qualifier = deviceName(hass, deviceId);
+    } else {
+      // Fall back to the unique part of the entity_id (segment after the dot)
+      qualifier = entityId.split(".")[1] ?? entityId;
+    }
+
+    if (qualifier && qualifier !== name) {
+      labels.set(entityId, `${qualifier} · ${name}`);
+    }
+  }
+
+  return labels;
 }
 
 export function labelName(

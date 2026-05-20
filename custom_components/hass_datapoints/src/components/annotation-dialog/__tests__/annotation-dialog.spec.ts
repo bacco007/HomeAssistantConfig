@@ -173,6 +173,19 @@ describe("HistoryAnnotationDialogController", () => {
         expect(row?.querySelector("#chart-context-date")).not.toBeNull();
       });
 
+      it("THEN message and date render as native inputs", () => {
+        expect.assertions(2);
+        const panel = host.shadowRoot.querySelector(
+          "#chart-context-dialog-panel"
+        );
+        expect(panel?.querySelector("#chart-context-message")?.tagName).toBe(
+          "INPUT"
+        );
+        expect(panel?.querySelector("#chart-context-date")?.tagName).toBe(
+          "INPUT"
+        );
+      });
+
       it("THEN icon and color fields share the icon-color row", () => {
         const panel = host.shadowRoot.querySelector(
           "#chart-context-dialog-panel"

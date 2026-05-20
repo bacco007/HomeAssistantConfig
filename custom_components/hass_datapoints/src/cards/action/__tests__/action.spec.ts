@@ -1,9 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createMockHass } from "@/test-support/mock-hass";
-import { HassRecordsActionCard } from "../action.ts";
+import { HassDatapointsActionCard } from "../action.ts";
 
 if (!customElements.get("hass-datapoints-action-card")) {
-  customElements.define("hass-datapoints-action-card", HassRecordsActionCard);
+  customElements.define(
+    "hass-datapoints-action-card",
+    HassDatapointsActionCard
+  );
 }
 
 function createCard(config: RecordWithUnknownValues = {}) {
@@ -227,7 +230,7 @@ describe("action", () => {
   describe("GIVEN the static config methods", () => {
     describe("WHEN getStubConfig is called", () => {
       it("THEN it returns default config", () => {
-        expect(HassRecordsActionCard.getStubConfig()).toEqual({
+        expect(HassDatapointsActionCard.getStubConfig()).toEqual({
           title: "Record Event",
         });
       });
@@ -235,7 +238,7 @@ describe("action", () => {
 
     describe("WHEN getConfigElement is called", () => {
       it("THEN it returns the editor element tag", () => {
-        const editorEl = HassRecordsActionCard.getConfigElement();
+        const editorEl = HassDatapointsActionCard.getConfigElement();
         expect(editorEl.tagName.toLowerCase()).toBe(
           "hass-datapoints-action-card-editor"
         );

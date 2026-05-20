@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { HassRecordsHistoryPanel } from "../datapoints";
+import { HassDatapointsHistoryPanel } from "../datapoints";
 
-describe("HassRecordsHistoryPanel updateUrl", () => {
+describe("HassDatapointsHistoryPanel updateUrl", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
@@ -56,10 +56,10 @@ describe("HassRecordsHistoryPanel updateUrl", () => {
           _hiddenEventIds: [],
           _selectedComparisonWindowId: null,
           _seriesColorQueryKey:
-            HassRecordsHistoryPanel.prototype._seriesColorQueryKey,
+            HassDatapointsHistoryPanel.prototype._seriesColorQueryKey,
         };
 
-        HassRecordsHistoryPanel.prototype._updateUrl.call(panel, {
+        HassDatapointsHistoryPanel.prototype._updateUrl.call(panel, {
           push: false,
         });
 

@@ -1,4 +1,5 @@
 import { html, LitElement } from "lit";
+import { query } from "lit/decorators.js";
 
 import { styles } from "./sensor.styles";
 import { DOMAIN } from "@/constants";
@@ -16,7 +17,7 @@ import "./sensor-records/sensor-records";
  * hass-datapoints-sensor-card – Sensor card with inline annotation icons.
  * Canvas rendering is delegated to sensor-chart; annotation list to sensor-records.
  */
-export class HassRecordsSensorCard extends LitElement {
+export class HassDatapointsSensorCard extends LitElement {
   static properties = {
     _config: { state: true },
     _hass: { state: true },
@@ -34,6 +35,12 @@ export class HassRecordsSensorCard extends LitElement {
   declare _hiddenEventIds: Set<string>;
 
   declare _recordsFooterHeight: number;
+
+  @query(".card-shell")
+  accessor _cardShellEl: Nullable<HTMLElement> = null;
+
+  @query("sensor-chart")
+  accessor _sensorChartEl: Nullable<SensorChart> = null;
 
   private _initialized = false;
 
@@ -130,7 +137,7 @@ export class HassRecordsSensorCard extends LitElement {
   }
 
   private _applyLayoutSizing() {
-    const shell = this.shadowRoot?.querySelector<HTMLElement>(".card-shell");
+    const shell = this._cardShellEl;
     if (!shell) return;
     const gridRows = this._gridRows();
     if (!this._config?.show_records) {
@@ -287,7 +294,7 @@ export class HassRecordsSensorCard extends LitElement {
     this._lastT1 = t1;
     this._annEvents = events;
 
-    const chartEl = this.shadowRoot?.querySelector<SensorChart>("sensor-chart");
+    const chartEl = this._sensorChartEl;
     if (!chartEl) return;
 
     chartEl.hass = this.hass;

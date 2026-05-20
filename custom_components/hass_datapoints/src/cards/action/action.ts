@@ -1,4 +1,5 @@
 import { LitElement, html } from "lit";
+import { query } from "lit/decorators.js";
 
 import { styles } from "./action.styles";
 import { DOMAIN } from "@/constants";
@@ -21,7 +22,7 @@ import { logger } from "@/lib/logger";
  *   - A ha-selector (target schema) lets the user add extra items per recording.
  *   - On submit both are merged; the selector resets to empty afterwards.
  */
-export class HassRecordsActionCard extends LitElement {
+export class HassDatapointsActionCard extends LitElement {
   static properties = {
     _config: { state: true },
     _hass: { state: true },
@@ -42,6 +43,26 @@ export class HassRecordsActionCard extends LitElement {
   declare _feedbackText: string;
 
   declare _feedbackVisible: boolean;
+
+  @query("#msg")
+  accessor _msgEl: Nullable<
+    HTMLElement & { value: string; focus: () => void }
+  > = null;
+
+  @query("#btn")
+  accessor _btnEl: Nullable<HTMLElement & { disabled: boolean }> = null;
+
+  @query("#ann") accessor _annEl: Nullable<HTMLTextAreaElement> = null;
+
+  @query("#icon-picker")
+  accessor _iconPickerEl: Nullable<HTMLElement & { value: string }> = null;
+
+  @query("#date")
+  accessor _dateEl: Nullable<HTMLElement & { value: string }> = null;
+
+  @query("action-targets")
+  accessor _targetsEl: Nullable<HTMLElement & { resetSelection?: () => void }> =
+    null;
 
   private _userTarget: PartialTargetMap = {};
 
@@ -137,38 +158,26 @@ export class HassRecordsActionCard extends LitElement {
   }
 
   async _record() {
-    const msgEl = this.shadowRoot!.querySelector<
-      HTMLElement & { value: string }
-    >("#msg");
+    const msgEl = this._msgEl;
     const message = (msgEl?.value || "").trim();
     if (!message) {
       msgEl?.focus();
       return;
     }
 
-    const btn = this.shadowRoot!.querySelector<
-      HTMLElement & { disabled: boolean }
-    >("#btn");
-    if (btn) btn.disabled = true;
+    if (this._btnEl) this._btnEl.disabled = true;
 
     const data: RecordWithUnknownValues = { message };
 
-    const annEl = this.shadowRoot!.querySelector<HTMLTextAreaElement>("#ann");
-    const ann = (annEl?.value || "").trim();
+    const ann = (this._annEl?.value || "").trim();
     if (ann) data.annotation = ann;
 
-    const iconPicker = this.shadowRoot!.querySelector<
-      HTMLElement & { value: string }
-    >("#icon-picker");
-    const icon = iconPicker?.value;
+    const icon = this._iconPickerEl?.value;
     if (icon) data.icon = icon;
 
     data.color = this._color;
 
-    const dateEl = this.shadowRoot!.querySelector<
-      HTMLElement & { value: string }
-    >("#date");
-    const dateVal = (dateEl?.value || "").trim();
+    const dateVal = (this._dateEl?.value || "").trim();
     if (dateVal) data.date = dateVal;
 
     const merged = this._mergeTargets(this._configTarget(), this._userTarget);
@@ -187,16 +196,14 @@ export class HassRecordsActionCard extends LitElement {
           detail: { ...data },
         })
       );
-      if (msgEl) msgEl.value = "";
-      if (annEl) annEl.value = "";
-      if (dateEl)
-        dateEl.value = (this._config.default_date as string) || this._nowStr();
+      if (this._msgEl) this._msgEl.value = "";
+      if (this._annEl) this._annEl.value = "";
+      if (this._dateEl)
+        this._dateEl.value =
+          (this._config.default_date as string) || this._nowStr();
       this._userTarget = {};
-      const targets = this.shadowRoot!.querySelector<
-        HTMLElement & { resetSelection?: () => void }
-      >("action-targets");
-      if (targets?.resetSelection) {
-        targets.resetSelection();
+      if (this._targetsEl?.resetSelection) {
+        this._targetsEl.resetSelection();
       }
       this._feedbackClass = "ok";
       this._feedbackText = "Event recorded!";
@@ -213,7 +220,7 @@ export class HassRecordsActionCard extends LitElement {
       logger.error("[hass-datapoints action-card]", e);
     }
 
-    if (btn) btn.disabled = false;
+    if (this._btnEl) this._btnEl.disabled = false;
   }
 
   private _onColorChange(e: CustomEvent<{ color: string }>) {

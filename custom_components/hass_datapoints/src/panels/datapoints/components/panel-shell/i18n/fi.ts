@@ -4,6 +4,7 @@ export const translations: ComponentTranslations = {
   "Loading Datapoints…": "Ladataan Datapoints…",
   Datapoints: "Datapoints",
   "Page options": "Sivun asetukset",
+  "AI query brief": "AI-kyselytiivistelma",
   "Download spreadsheet": "Lataa taulukko",
   "Save page state": "Tallenna sivun tila",
   "Restore saved page": "Palauta tallennettu sivu",

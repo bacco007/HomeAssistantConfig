@@ -36,12 +36,12 @@ export const styles = css`
 
   .method-list {
     display: grid;
-    gap: var(--dp-spacing-sm, 8px);
+    gap: calc(var(--dp-spacing-sm, 8px) * 0.75);
   }
 
   .method-item {
     display: grid;
-    gap: var(--dp-spacing-sm, 8px);
+    gap: 6px;
   }
 
   ha-tooltip {
@@ -75,5 +75,63 @@ export const styles = css`
   .method-help:focus-visible {
     outline: 2px solid var(--primary-color, #03a9f4);
     outline-offset: 2px;
+  }
+
+  .entity-picker-wrap {
+    overflow: hidden;
+    height: 32px;
+    border-radius: 6px;
+  }
+
+  ha-entity-picker {
+    display: block;
+    margin-top: -14px;
+  }
+
+  .save-monitor-btn {
+    display: inline-block;
+    width: fit-content;
+    gap: 4px;
+    padding: 4px 8px;
+    border: 0;
+    border-radius: var(--wa-form-control-border-radius);
+    font: inherit;
+    font-size: 0.82rem;
+    color: var(--primary-color, #3b82f6);
+    background: color-mix(
+      in srgb,
+      var(--primary-color, #3b82f6) 14%,
+      transparent
+    );
+    cursor: pointer;
+    --mdc-icon-size: 16px;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: background 120ms ease;
+  }
+
+  .field {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .field-label {
+    min-width: 112px;
+    padding-top: 4px;
+  }
+
+  .option {
+    align-items: center;
+    gap: 8px;
+  }
+
+  .save-monitor-btn:hover,
+  .save-monitor-btn:focus-visible {
+    background: color-mix(
+      in srgb,
+      var(--primary-color, #3b82f6) 22%,
+      transparent
+    );
+    outline: none;
   }
 `;

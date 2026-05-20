@@ -4,6 +4,25 @@ import type { CardConfig, HassLike } from "@/lib/types";
 import { logger } from "@/lib/logger";
 
 /**
+ * Call an HA unsubscribe function, swallowing any synchronous error or async
+ * rejection (e.g. `{code: 'not_found'}` after a WebSocket reconnect invalidated
+ * the subscription server-side).
+ */
+function _safeUnsub(unsub: () => void | PromiseLike<unknown>): void {
+  try {
+    const result = unsub();
+    if (
+      result != null &&
+      typeof (result as PromiseLike<unknown>).then === "function"
+    ) {
+      (result as Promise<unknown>).catch(() => {});
+    }
+  } catch {
+    // synchronous throw — ignore
+  }
+}
+
+/**
  * ChartCardBase – shared LitElement base class for history and statistics
  * chart cards.
  *
@@ -144,7 +163,14 @@ export abstract class ChartCardBase extends LitElement {
         this._scheduleLoad();
       }, `${DOMAIN}_event_recorded`)
       .then((unsub) => {
-        this._unsubscribe = unsub as () => void;
+        const unsubFn = unsub as () => void;
+        if (!this.isConnected) {
+          // disconnectedCallback already ran before the subscription resolved —
+          // _cleanup() had nothing to unsubscribe. Do it now.
+          _safeUnsub(unsubFn);
+        } else {
+          this._unsubscribe = unsubFn;
+        }
       })
       .catch(() => {});
 
@@ -181,7 +207,7 @@ export abstract class ChartCardBase extends LitElement {
       this._loadRaf = null;
     }
     if (this._unsubscribe) {
-      this._unsubscribe();
+      _safeUnsub(this._unsubscribe);
       this._unsubscribe = null;
     }
     if (this._windowListener) {

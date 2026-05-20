@@ -1,4 +1,5 @@
 import { LitElement, html } from "lit";
+import { query } from "lit/decorators.js";
 import { styles } from "./quick.styles";
 import { AMBER, DOMAIN } from "@/constants";
 import { logger } from "@/lib/logger";
@@ -7,7 +8,7 @@ import type { HassLike } from "@/lib/types";
 import "@/atoms/display/feedback-banner/feedback-banner";
 import "@/cards/quick/quick-annotation/quick-annotation";
 
-export class HassRecordsQuickCard extends LitElement {
+export class HassDatapointsQuickCard extends LitElement {
   static properties = {
     _config: { type: Object, state: true },
     _hass: { type: Object, state: true },
@@ -31,6 +32,15 @@ export class HassRecordsQuickCard extends LitElement {
 
   declare _annotation: string;
 
+  @query("#msg")
+  accessor _msgEl: Nullable<
+    HTMLElement & { value: string; focus: () => void }
+  > = null;
+
+  @query("#btn") accessor _btnEl: Nullable<
+    HTMLElement & { disabled: boolean }
+  > = null;
+
   constructor() {
     super();
     this._config = {};
@@ -53,35 +63,22 @@ export class HassRecordsQuickCard extends LitElement {
     return this._hass;
   }
 
-  firstUpdated() {
-    const msgEl = this.shadowRoot?.querySelector<
-      HTMLElement & {
-        addEventListener(type: string, listener: EventListener): void;
-      }
-    >("#msg");
-    if (msgEl) {
-      msgEl.addEventListener("keydown", (event: KeyboardEvent) => {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          this._record();
-        }
-      });
+  private _onMsgKeydown = (event: KeyboardEvent) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      this._record();
     }
-  }
+  };
 
   async _record() {
-    const msgEl = this.shadowRoot?.querySelector<
-      HTMLElement & { value: string; focus: () => void }
-    >("#msg");
+    const msgEl = this._msgEl;
     const message = (msgEl?.value || "").trim();
     if (!message) {
       msgEl?.focus();
       return;
     }
 
-    const btn = this.shadowRoot?.querySelector<
-      HTMLElement & { disabled: boolean }
-    >("#btn");
+    const btn = this._btnEl;
     if (btn) {
       btn.disabled = true;
     }
@@ -122,8 +119,8 @@ export class HassRecordsQuickCard extends LitElement {
       }
       await hass.callService(DOMAIN, "record", data);
       window.dispatchEvent(new CustomEvent("hass-datapoints-event-recorded"));
-      if (msgEl) {
-        msgEl.value = "";
+      if (this._msgEl) {
+        this._msgEl.value = "";
       }
       this._annotation = "";
       this._feedbackClass = "ok";
@@ -142,8 +139,8 @@ export class HassRecordsQuickCard extends LitElement {
       logger.error("[hass-datapoints quick-card]", e);
     }
 
-    if (btn) {
-      btn.disabled = false;
+    if (this._btnEl) {
+      this._btnEl.disabled = false;
     }
   }
 
@@ -168,6 +165,7 @@ export class HassRecordsQuickCard extends LitElement {
                   <ha-textfield
                     id="msg"
                     .placeholder=${cfg.placeholder || "Note something…"}
+                    @keydown=${this._onMsgKeydown}
                   ></ha-textfield>
                   <ha-button
                     id="btn"

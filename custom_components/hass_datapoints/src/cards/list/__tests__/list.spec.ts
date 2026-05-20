@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createMockHass } from "@/test-support/mock-hass";
-import { HassRecordsListCard } from "../list.ts";
+import { HassDatapointsListCard } from "../list.ts";
 import type { EventRecord } from "@/lib/types";
 
 import { fetchEvents } from "@/lib/data/events-api";
@@ -25,7 +25,7 @@ vi.mock("@/lib/data/events-api", async (importOriginal) => {
 });
 
 if (!customElements.get("hass-datapoints-list-card")) {
-  customElements.define("hass-datapoints-list-card", HassRecordsListCard);
+  customElements.define("hass-datapoints-list-card", HassDatapointsListCard);
 }
 
 const mockEvents: EventRecord[] = [
@@ -279,13 +279,13 @@ describe("list", () => {
   describe("GIVEN the static config methods", () => {
     describe("WHEN getStubConfig is called", () => {
       it("THEN it returns empty config", () => {
-        expect(HassRecordsListCard.getStubConfig()).toEqual({});
+        expect(HassDatapointsListCard.getStubConfig()).toEqual({});
       });
     });
 
     describe("WHEN getConfigElement is called", () => {
       it("THEN it returns the editor element tag", () => {
-        const editorEl = HassRecordsListCard.getConfigElement();
+        const editorEl = HassDatapointsListCard.getConfigElement();
         expect(editorEl.tagName.toLowerCase()).toBe(
           "hass-datapoints-list-card-editor"
         );

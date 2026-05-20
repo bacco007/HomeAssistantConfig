@@ -98,6 +98,7 @@ describe("target-selection", () => {
               label_ids: ["power"],
             },
           },
+          devices: {},
         };
 
         expect(
@@ -108,6 +109,47 @@ describe("target-selection", () => {
             label_id: ["power"],
           })
         ).toEqual(["sensor.direct", "sensor.alpha", "sensor.beta"]);
+      });
+
+      it("THEN it includes entities whose device is assigned to the selected area", () => {
+        expect.assertions(1);
+
+        // sensor.via_device has no area_id of its own — its device is in "lounge"
+        const hass = {
+          entities: {
+            "sensor.direct_area": {
+              device_id: null,
+              area_id: "lounge",
+              labels: [],
+            },
+            "sensor.via_device": {
+              device_id: "device.shelf",
+              area_id: null,
+              labels: [],
+            },
+            "sensor.other_area": {
+              device_id: "device.other",
+              area_id: "kitchen",
+              labels: [],
+            },
+          },
+          devices: {
+            "device.shelf": {
+              id: "device.shelf",
+              name: "Shelf",
+              area_id: "lounge",
+            },
+            "device.other": {
+              id: "device.other",
+              name: "Other",
+              area_id: "kitchen",
+            },
+          },
+        };
+
+        expect(
+          resolveEntityIdsFromTarget(hass, { area_id: ["lounge"] })
+        ).toEqual(["sensor.direct_area", "sensor.via_device"]);
       });
     });
   });

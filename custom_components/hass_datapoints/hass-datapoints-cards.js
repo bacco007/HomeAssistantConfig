@@ -18,7 +18,7 @@
 	* Copyright 2019 Google LLC
 	* SPDX-License-Identifier: BSD-3-Clause
 	*/
-	var t$4 = globalThis, e$5 = t$4.ShadowRoot && (void 0 === t$4.ShadyCSS || t$4.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, s$3 = Symbol(), o$4 = /* @__PURE__ */ new WeakMap();
+	var t$6 = globalThis, e$8 = t$6.ShadowRoot && (void 0 === t$6.ShadyCSS || t$6.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, s$3 = Symbol(), o$4 = /* @__PURE__ */ new WeakMap();
 	var n$4 = class {
 		constructor(t, e, o) {
 			if (this._$cssResult$ = !0, o !== s$3) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
@@ -27,7 +27,7 @@
 		get styleSheet() {
 			let t = this.o;
 			const s = this.t;
-			if (e$5 && void 0 === t) {
+			if (e$8 && void 0 === t) {
 				const e = void 0 !== s && 1 === s.length;
 				e && (t = o$4.get(s)), void 0 === t && ((this.o = t = new CSSStyleSheet()).replaceSync(this.cssText), e && o$4.set(s, t));
 			}
@@ -37,22 +37,22 @@
 			return this.cssText;
 		}
 	};
-	var r$5 = (t) => new n$4("string" == typeof t ? t : t + "", void 0, s$3), i$5 = (t, ...e) => {
+	var r$6 = (t) => new n$4("string" == typeof t ? t : t + "", void 0, s$3), i$5 = (t, ...e) => {
 		return new n$4(1 === t.length ? t[0] : e.reduce((e, s, o) => e + ((t) => {
 			if (!0 === t._$cssResult$) return t.cssText;
 			if ("number" == typeof t) return t;
 			throw Error("Value passed to 'css' function must be a 'css' function result: " + t + ". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.");
 		})(s) + t[o + 1], t[0]), t, s$3);
 	}, S$1 = (s, o) => {
-		if (e$5) s.adoptedStyleSheets = o.map((t) => t instanceof CSSStyleSheet ? t : t.styleSheet);
+		if (e$8) s.adoptedStyleSheets = o.map((t) => t instanceof CSSStyleSheet ? t : t.styleSheet);
 		else for (const e of o) {
-			const o = document.createElement("style"), n = t$4.litNonce;
+			const o = document.createElement("style"), n = t$6.litNonce;
 			void 0 !== n && o.setAttribute("nonce", n), o.textContent = e.cssText, s.appendChild(o);
 		}
-	}, c$4 = e$5 ? (t) => t : (t) => t instanceof CSSStyleSheet ? ((t) => {
+	}, c$4 = e$8 ? (t) => t : (t) => t instanceof CSSStyleSheet ? ((t) => {
 		let e = "";
 		for (const s of t.cssRules) e += s.cssText;
-		return r$5(e);
+		return r$6(e);
 	})(t) : t;
 	//#endregion
 	//#region node_modules/.pnpm/@lit+reactive-element@2.1.2/node_modules/@lit/reactive-element/reactive-element.js
@@ -60,7 +60,7 @@
 	* @license
 	* Copyright 2017 Google LLC
 	* SPDX-License-Identifier: BSD-3-Clause
-	*/ var { is: i$4, defineProperty: e$4, getOwnPropertyDescriptor: h$2, getOwnPropertyNames: r$4, getOwnPropertySymbols: o$3, getPrototypeOf: n$3 } = Object, a$1 = globalThis, c$3 = a$1.trustedTypes, l$2 = c$3 ? c$3.emptyScript : "", p$2 = a$1.reactiveElementPolyfillSupport, d$2 = (t, s) => t, u$3 = {
+	*/ var { is: i$4, defineProperty: e$7, getOwnPropertyDescriptor: h$2, getOwnPropertyNames: r$5, getOwnPropertySymbols: o$3, getPrototypeOf: n$3 } = Object, a$1 = globalThis, c$3 = a$1.trustedTypes, l$2 = c$3 ? c$3.emptyScript : "", p$2 = a$1.reactiveElementPolyfillSupport, d$2 = (t, s) => t, u$3 = {
 		toAttribute(t, s) {
 			switch (s) {
 				case Boolean:
@@ -108,7 +108,7 @@
 		static createProperty(t, s = b$1) {
 			if (s.state && (s.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(t) && ((s = Object.create(s)).wrapped = !0), this.elementProperties.set(t, s), !s.noAccessor) {
 				const i = Symbol(), h = this.getPropertyDescriptor(t, i, s);
-				void 0 !== h && e$4(this.prototype, t, h);
+				void 0 !== h && e$7(this.prototype, t, h);
 			}
 		}
 		static getPropertyDescriptor(t, s, i) {
@@ -141,7 +141,7 @@
 		static finalize() {
 			if (this.hasOwnProperty(d$2("finalized"))) return;
 			if (this.finalized = !0, this._$Ei(), this.hasOwnProperty(d$2("properties"))) {
-				const t = this.properties, s = [...r$4(t), ...o$3(t)];
+				const t = this.properties, s = [...r$5(t), ...o$3(t)];
 				for (const i of s) this.createProperty(i, t[i]);
 			}
 			const t = this[Symbol.metadata];
@@ -291,7 +291,7 @@
 	* Copyright 2017 Google LLC
 	* SPDX-License-Identifier: BSD-3-Clause
 	*/
-	var t$3 = globalThis, i$3 = (t) => t, s$2 = t$3.trustedTypes, e$3 = s$2 ? s$2.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, h$1 = "$lit$", o$2 = `lit$${Math.random().toFixed(9).slice(2)}$`, n$2 = "?" + o$2, r$3 = `<${n$2}>`, l$1 = document, c$2 = () => l$1.createComment(""), a = (t) => null === t || "object" != typeof t && "function" != typeof t, u$2 = Array.isArray, d$1 = (t) => u$2(t) || "function" == typeof t?.[Symbol.iterator], f$1 = "[ 	\n\f\r]", v$1 = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, _ = /-->/g, m$1 = />/g, p$1 = RegExp(`>|${f$1}(?:([^\\s"'>=/]+)(${f$1}*=${f$1}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), g = /'/g, $ = /"/g, y = /^(?:script|style|textarea|title)$/i, x = (t) => (i, ...s) => ({
+	var t$5 = globalThis, i$3 = (t) => t, s$2 = t$5.trustedTypes, e$6 = s$2 ? s$2.createPolicy("lit-html", { createHTML: (t) => t }) : void 0, h$1 = "$lit$", o$2 = `lit$${Math.random().toFixed(9).slice(2)}$`, n$2 = "?" + o$2, r$4 = `<${n$2}>`, l$1 = document, c$2 = () => l$1.createComment(""), a = (t) => null === t || "object" != typeof t && "function" != typeof t, u$2 = Array.isArray, d$1 = (t) => u$2(t) || "function" == typeof t?.[Symbol.iterator], f$1 = "[ 	\n\f\r]", v$1 = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, _ = /-->/g, m$1 = />/g, p$1 = RegExp(`>|${f$1}(?:([^\\s"'>=/]+)(${f$1}*=${f$1}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), g = /'/g, $ = /"/g, y = /^(?:script|style|textarea|title)$/i, x = (t) => (i, ...s) => ({
 		_$litType$: t,
 		strings: i,
 		values: s
@@ -301,7 +301,7 @@
 	var E = Symbol.for("lit-noChange"), A = Symbol.for("lit-nothing"), C = /* @__PURE__ */ new WeakMap(), P = l$1.createTreeWalker(l$1, 129);
 	function V(t, i) {
 		if (!u$2(t) || !t.hasOwnProperty("raw")) throw Error("invalid template strings array");
-		return void 0 !== e$3 ? e$3.createHTML(i) : i;
+		return void 0 !== e$6 ? e$6.createHTML(i) : i;
 	}
 	var N = (t, i) => {
 		const s = t.length - 1, e = [];
@@ -311,7 +311,7 @@
 			let a, u, d = -1, f = 0;
 			for (; f < s.length && (c.lastIndex = f, u = c.exec(s), null !== u);) f = c.lastIndex, c === v$1 ? "!--" === u[1] ? c = _ : void 0 !== u[1] ? c = m$1 : void 0 !== u[2] ? (y.test(u[2]) && (n = RegExp("</" + u[2], "g")), c = p$1) : void 0 !== u[3] && (c = p$1) : c === p$1 ? ">" === u[0] ? (c = n ?? v$1, d = -1) : void 0 === u[1] ? d = -2 : (d = c.lastIndex - u[2].length, a = u[1], c = void 0 === u[3] ? p$1 : "\"" === u[3] ? $ : g) : c === $ || c === g ? c = p$1 : c === _ || c === m$1 ? c = v$1 : (c = p$1, n = void 0);
 			const x = c === p$1 && t[i + 1].startsWith("/>") ? " " : "";
-			l += c === v$1 ? s + r$3 : d >= 0 ? (e.push(a), s.slice(0, d) + h$1 + s.slice(d) + o$2 + x) : s + o$2 + (-2 === d ? i : x);
+			l += c === v$1 ? s + r$4 : d >= 0 ? (e.push(a), s.slice(0, d) + h$1 + s.slice(d) + o$2 + x) : s + o$2 + (-2 === d ? i : x);
 		}
 		return [V(t, l + (t[s] || "<?>") + (2 === i ? "</svg>" : 3 === i ? "</math>" : "")), e];
 	};
@@ -543,8 +543,8 @@
 		U: z,
 		B: I,
 		F: Z
-	}, B = t$3.litHtmlPolyfillSupport;
-	B?.(S, k), (t$3.litHtmlVersions ??= []).push("3.3.2");
+	}, B = t$5.litHtmlPolyfillSupport;
+	B?.(S, k), (t$5.litHtmlVersions ??= []).push("3.3.2");
 	var D = (t, i, s) => {
 		const e = s?.renderBefore ?? i;
 		let h = e._$litPart$;
@@ -588,8 +588,115 @@
 	o$1?.({ LitElement: i$2 });
 	(s$1.litElementVersions ??= []).push("4.2.2");
 	//#endregion
+	//#region node_modules/.pnpm/@lit+reactive-element@2.1.2/node_modules/@lit/reactive-element/decorators/property.js
+	/**
+	* @license
+	* Copyright 2017 Google LLC
+	* SPDX-License-Identifier: BSD-3-Clause
+	*/ var o = {
+		attribute: !0,
+		type: String,
+		converter: u$3,
+		reflect: !1,
+		hasChanged: f$2
+	}, r$3 = (t = o, e, r) => {
+		const { kind: n, metadata: i } = r;
+		let s = globalThis.litPropertyMetadata.get(i);
+		if (void 0 === s && globalThis.litPropertyMetadata.set(i, s = /* @__PURE__ */ new Map()), "setter" === n && ((t = Object.create(t)).wrapped = !0), s.set(r.name, t), "accessor" === n) {
+			const { name: o } = r;
+			return {
+				set(r) {
+					const n = e.get.call(this);
+					e.set.call(this, r), this.requestUpdate(o, n, t, !0, r);
+				},
+				init(e) {
+					return void 0 !== e && this.C(o, void 0, t, e), e;
+				}
+			};
+		}
+		if ("setter" === n) {
+			const { name: o } = r;
+			return function(r) {
+				const n = this[o];
+				e.call(this, r), this.requestUpdate(o, n, t, !0, r);
+			};
+		}
+		throw Error("Unsupported decorator location: " + n);
+	};
+	function n$1(t) {
+		return (e, o) => "object" == typeof o ? r$3(t, e, o) : ((t, e, o) => {
+			const r = e.hasOwnProperty(o);
+			return e.constructor.createProperty(o, t), r ? Object.getOwnPropertyDescriptor(e, o) : void 0;
+		})(t, e, o);
+	}
+	//#endregion
+	//#region node_modules/.pnpm/@lit+reactive-element@2.1.2/node_modules/@lit/reactive-element/decorators/state.js
+	/**
+	* @license
+	* Copyright 2017 Google LLC
+	* SPDX-License-Identifier: BSD-3-Clause
+	*/ function r$2(r) {
+		return n$1({
+			...r,
+			state: !0,
+			attribute: !1
+		});
+	}
+	//#endregion
+	//#region node_modules/.pnpm/@lit+reactive-element@2.1.2/node_modules/@lit/reactive-element/decorators/base.js
+	/**
+	* @license
+	* Copyright 2017 Google LLC
+	* SPDX-License-Identifier: BSD-3-Clause
+	*/
+	var e$5 = (e, t, c) => (c.configurable = !0, c.enumerable = !0, Reflect.decorate && "object" != typeof t && Object.defineProperty(e, t, c), c);
+	//#endregion
+	//#region node_modules/.pnpm/@lit+reactive-element@2.1.2/node_modules/@lit/reactive-element/decorators/query.js
+	/**
+	* @license
+	* Copyright 2017 Google LLC
+	* SPDX-License-Identifier: BSD-3-Clause
+	*/ function e$4(e, r) {
+		return (n, s, i) => {
+			const o = (t) => t.renderRoot?.querySelector(e) ?? null;
+			if (r) {
+				const { get: e, set: r } = "object" == typeof s ? n : i ?? (() => {
+					const t = Symbol();
+					return {
+						get() {
+							return this[t];
+						},
+						set(e) {
+							this[t] = e;
+						}
+					};
+				})();
+				return e$5(n, s, { get() {
+					let t = e.call(this);
+					return void 0 === t && (t = o(this), (null !== t || this.hasUpdated) && r.call(this, t)), t;
+				} });
+			}
+			return e$5(n, s, { get() {
+				return o(this);
+			} });
+		};
+	}
+	//#endregion
+	//#region node_modules/.pnpm/@lit+reactive-element@2.1.2/node_modules/@lit/reactive-element/decorators/query-all.js
+	/**
+	* @license
+	* Copyright 2017 Google LLC
+	* SPDX-License-Identifier: BSD-3-Clause
+	*/
+	var e$3;
+	function r$1(r) {
+		return (n, o) => e$5(n, o, { get() {
+			return (this.renderRoot ?? (e$3 ??= document.createDocumentFragment())).querySelectorAll(r);
+		} });
+	}
+	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/action/action.styles.ts
-	var styles$71 = i$5`
+	var styles$77 = i$5`
   :host {
     display: block;
   }
@@ -684,7 +791,7 @@
 	//#endregion
 	//#region custom_components/hass_datapoints/src/constants.ts
 	/**
-	* Shared constants used by all Hass Records cards.
+	* Shared constants used by all Hass Datapoints cards.
 	*/
 	var DOMAIN = "hass_datapoints";
 	var PANEL_URL_PATH = "hass-datapoints-history";
@@ -697,63 +804,8 @@
 		"#ec4899"
 	];
 	//#endregion
-	//#region node_modules/.pnpm/@lit+reactive-element@2.1.2/node_modules/@lit/reactive-element/decorators/property.js
-	/**
-	* @license
-	* Copyright 2017 Google LLC
-	* SPDX-License-Identifier: BSD-3-Clause
-	*/ var o = {
-		attribute: !0,
-		type: String,
-		converter: u$3,
-		reflect: !1,
-		hasChanged: f$2
-	}, r$2 = (t = o, e, r) => {
-		const { kind: n, metadata: i } = r;
-		let s = globalThis.litPropertyMetadata.get(i);
-		if (void 0 === s && globalThis.litPropertyMetadata.set(i, s = /* @__PURE__ */ new Map()), "setter" === n && ((t = Object.create(t)).wrapped = !0), s.set(r.name, t), "accessor" === n) {
-			const { name: o } = r;
-			return {
-				set(r) {
-					const n = e.get.call(this);
-					e.set.call(this, r), this.requestUpdate(o, n, t, !0, r);
-				},
-				init(e) {
-					return void 0 !== e && this.C(o, void 0, t, e), e;
-				}
-			};
-		}
-		if ("setter" === n) {
-			const { name: o } = r;
-			return function(r) {
-				const n = this[o];
-				e.call(this, r), this.requestUpdate(o, n, t, !0, r);
-			};
-		}
-		throw Error("Unsupported decorator location: " + n);
-	};
-	function n$1(t) {
-		return (e, o) => "object" == typeof o ? r$2(t, e, o) : ((t, e, o) => {
-			const r = e.hasOwnProperty(o);
-			return e.constructor.createProperty(o, t), r ? Object.getOwnPropertyDescriptor(e, o) : void 0;
-		})(t, e, o);
-	}
-	//#endregion
-	//#region node_modules/.pnpm/@lit+reactive-element@2.1.2/node_modules/@lit/reactive-element/decorators/state.js
-	/**
-	* @license
-	* Copyright 2017 Google LLC
-	* SPDX-License-Identifier: BSD-3-Clause
-	*/ function r$1(r) {
-		return n$1({
-			...r,
-			state: !0,
-			attribute: !1
-		});
-	}
-	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/display/color-swatch/color-swatch.styles.ts
-	var styles$70 = i$5`
+	var styles$76 = i$5`
   :host {
     display: block;
   }
@@ -873,12 +925,12 @@
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/display/color-swatch/color-swatch.ts
 	var _color_accessor_storage$2 = /* @__PURE__ */ new WeakMap();
-	var _label_accessor_storage$14 = /* @__PURE__ */ new WeakMap();
+	var _label_accessor_storage$15 = /* @__PURE__ */ new WeakMap();
 	var ColorSwatch = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _color_accessor_storage$2, "#ff9800");
-			_classPrivateFieldInitSpec(this, _label_accessor_storage$14, "");
+			_classPrivateFieldInitSpec(this, _label_accessor_storage$15, "");
 		}
 		get color() {
 			return _classPrivateFieldGet2(_color_accessor_storage$2, this);
@@ -887,10 +939,10 @@
 			_classPrivateFieldSet2(_color_accessor_storage$2, this, value);
 		}
 		get label() {
-			return _classPrivateFieldGet2(_label_accessor_storage$14, this);
+			return _classPrivateFieldGet2(_label_accessor_storage$15, this);
 		}
 		set label(value) {
-			_classPrivateFieldSet2(_label_accessor_storage$14, this, value);
+			_classPrivateFieldSet2(_label_accessor_storage$15, this, value);
 		}
 		_onInput(e) {
 			const newColor = e.target.value;
@@ -915,13 +967,13 @@
     `;
 		}
 	};
-	_defineProperty(ColorSwatch, "styles", styles$70);
+	_defineProperty(ColorSwatch, "styles", styles$76);
 	__decorate([n$1({ type: String })], ColorSwatch.prototype, "color", null);
 	__decorate([n$1({ type: String })], ColorSwatch.prototype, "label", null);
 	customElements.define("color-swatch", ColorSwatch);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/display/feedback-banner/feedback-banner.styles.ts
-	var styles$69 = i$5`
+	var styles$75 = i$5`
   :host {
     display: block;
   }
@@ -951,15 +1003,15 @@
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/display/feedback-banner/feedback-banner.ts
 	var _kind_accessor_storage = /* @__PURE__ */ new WeakMap();
-	var _text_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
-	var _visible_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
+	var _text_accessor_storage$2 = /* @__PURE__ */ new WeakMap();
+	var _visible_accessor_storage$2 = /* @__PURE__ */ new WeakMap();
 	var _variant_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var FeedbackBanner = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _kind_accessor_storage, "");
-			_classPrivateFieldInitSpec(this, _text_accessor_storage$1, "");
-			_classPrivateFieldInitSpec(this, _visible_accessor_storage$1, false);
+			_classPrivateFieldInitSpec(this, _text_accessor_storage$2, "");
+			_classPrivateFieldInitSpec(this, _visible_accessor_storage$2, false);
 			_classPrivateFieldInitSpec(this, _variant_accessor_storage, "default");
 		}
 		get kind() {
@@ -969,16 +1021,16 @@
 			_classPrivateFieldSet2(_kind_accessor_storage, this, value);
 		}
 		get text() {
-			return _classPrivateFieldGet2(_text_accessor_storage$1, this);
+			return _classPrivateFieldGet2(_text_accessor_storage$2, this);
 		}
 		set text(value) {
-			_classPrivateFieldSet2(_text_accessor_storage$1, this, value);
+			_classPrivateFieldSet2(_text_accessor_storage$2, this, value);
 		}
 		get visible() {
-			return _classPrivateFieldGet2(_visible_accessor_storage$1, this);
+			return _classPrivateFieldGet2(_visible_accessor_storage$2, this);
 		}
 		set visible(value) {
-			_classPrivateFieldSet2(_visible_accessor_storage$1, this, value);
+			_classPrivateFieldSet2(_visible_accessor_storage$2, this, value);
 		}
 		get variant() {
 			return _classPrivateFieldGet2(_variant_accessor_storage, this);
@@ -998,7 +1050,7 @@
     `;
 		}
 	};
-	_defineProperty(FeedbackBanner, "styles", styles$69);
+	_defineProperty(FeedbackBanner, "styles", styles$75);
 	__decorate([n$1({ type: String })], FeedbackBanner.prototype, "kind", null);
 	__decorate([n$1({ type: String })], FeedbackBanner.prototype, "text", null);
 	__decorate([n$1({ type: Boolean })], FeedbackBanner.prototype, "visible", null);
@@ -1006,7 +1058,7 @@
 	customElements.define("feedback-banner", FeedbackBanner);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/action/action-targets/action-targets.styles.ts
-	var styles$68 = i$5`
+	var styles$74 = i$5`
   :host {
     display: block;
   }
@@ -1018,7 +1070,7 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/chip-group/chip-group.styles.ts
-	var styles$67 = i$5`
+	var styles$73 = i$5`
   :host {
     display: block;
   }
@@ -1035,7 +1087,7 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/form/entity-chip/entity-chip.styles.ts
-	var styles$66 = i$5`
+	var styles$72 = i$5`
   :host {
     display: inline-flex;
   }
@@ -1064,18 +1116,41 @@
   }
 `;
 	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/i18n/interpolate.ts
+	function interpolatePlaceholders(template, values) {
+		let result = template;
+		values.forEach((value, index) => {
+			result = result.replace(new RegExp(`\\{${index}\\}`, "g"), String(value));
+		});
+		return result;
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/i18n/i18n-prop.ts
+	var EMPTY_I18N = Object.freeze({});
+	function createDefaultI18n(keys) {
+		const entries = {};
+		for (const key of keys) entries[key] = key;
+		return Object.freeze(entries);
+	}
+	function t$4(i18n, key, ...values) {
+		return interpolatePlaceholders(i18n && Object.hasOwn(i18n, key) ? i18n[key] : key, values);
+	}
+	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/form/entity-chip/entity-chip.ts
+	var DEFAULT_I18N$7 = createDefaultI18n(["Remove"]);
 	var _type_accessor_storage$2 = /* @__PURE__ */ new WeakMap();
 	var _itemId_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
-	var _hass_accessor_storage$14 = /* @__PURE__ */ new WeakMap();
+	var _hass_accessor_storage$18 = /* @__PURE__ */ new WeakMap();
 	var _removable_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
+	var _i18n_accessor_storage$8 = /* @__PURE__ */ new WeakMap();
 	var EntityChip = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _type_accessor_storage$2, "entity");
 			_classPrivateFieldInitSpec(this, _itemId_accessor_storage$1, "");
-			_classPrivateFieldInitSpec(this, _hass_accessor_storage$14, null);
+			_classPrivateFieldInitSpec(this, _hass_accessor_storage$18, null);
 			_classPrivateFieldInitSpec(this, _removable_accessor_storage$1, false);
+			_classPrivateFieldInitSpec(this, _i18n_accessor_storage$8, DEFAULT_I18N$7);
 		}
 		get type() {
 			return _classPrivateFieldGet2(_type_accessor_storage$2, this);
@@ -1090,16 +1165,25 @@
 			_classPrivateFieldSet2(_itemId_accessor_storage$1, this, value);
 		}
 		get hass() {
-			return _classPrivateFieldGet2(_hass_accessor_storage$14, this);
+			return _classPrivateFieldGet2(_hass_accessor_storage$18, this);
 		}
 		set hass(value) {
-			_classPrivateFieldSet2(_hass_accessor_storage$14, this, value);
+			_classPrivateFieldSet2(_hass_accessor_storage$18, this, value);
 		}
 		get removable() {
 			return _classPrivateFieldGet2(_removable_accessor_storage$1, this);
 		}
 		set removable(value) {
 			_classPrivateFieldSet2(_removable_accessor_storage$1, this, value);
+		}
+		get i18n() {
+			return _classPrivateFieldGet2(_i18n_accessor_storage$8, this);
+		}
+		set i18n(value) {
+			_classPrivateFieldSet2(_i18n_accessor_storage$8, this, value);
+		}
+		_t(key) {
+			return t$4(this.i18n, key);
 		}
 		_getName() {
 			if (!this.hass || !this.itemId) return this.itemId || "";
@@ -1128,13 +1212,13 @@
               class="remove"
               data-action="remove"
               @click=${this._onRemove}
-              aria-label="Remove"
+              aria-label=${this._t("Remove")}
             ></button>` : ""}
       </span>
     `;
 		}
 	};
-	_defineProperty(EntityChip, "styles", styles$66);
+	_defineProperty(EntityChip, "styles", styles$72);
 	__decorate([n$1({ type: String })], EntityChip.prototype, "type", null);
 	__decorate([n$1({
 		type: String,
@@ -1142,20 +1226,21 @@
 	})], EntityChip.prototype, "itemId", null);
 	__decorate([n$1({ type: Object })], EntityChip.prototype, "hass", null);
 	__decorate([n$1({ type: Boolean })], EntityChip.prototype, "removable", null);
+	__decorate([n$1({ attribute: false })], EntityChip.prototype, "i18n", null);
 	customElements.define("entity-chip", EntityChip);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/chip-group/chip-group.ts
 	var _items_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
-	var _hass_accessor_storage$13 = /* @__PURE__ */ new WeakMap();
+	var _hass_accessor_storage$17 = /* @__PURE__ */ new WeakMap();
 	var _removable_accessor_storage = /* @__PURE__ */ new WeakMap();
-	var _label_accessor_storage$13 = /* @__PURE__ */ new WeakMap();
+	var _label_accessor_storage$14 = /* @__PURE__ */ new WeakMap();
 	var ChipGroup = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _items_accessor_storage$1, []);
-			_classPrivateFieldInitSpec(this, _hass_accessor_storage$13, null);
+			_classPrivateFieldInitSpec(this, _hass_accessor_storage$17, null);
 			_classPrivateFieldInitSpec(this, _removable_accessor_storage, false);
-			_classPrivateFieldInitSpec(this, _label_accessor_storage$13, "");
+			_classPrivateFieldInitSpec(this, _label_accessor_storage$14, "");
 		}
 		get items() {
 			return _classPrivateFieldGet2(_items_accessor_storage$1, this);
@@ -1164,10 +1249,10 @@
 			_classPrivateFieldSet2(_items_accessor_storage$1, this, value);
 		}
 		get hass() {
-			return _classPrivateFieldGet2(_hass_accessor_storage$13, this);
+			return _classPrivateFieldGet2(_hass_accessor_storage$17, this);
 		}
 		set hass(value) {
-			_classPrivateFieldSet2(_hass_accessor_storage$13, this, value);
+			_classPrivateFieldSet2(_hass_accessor_storage$17, this, value);
 		}
 		get removable() {
 			return _classPrivateFieldGet2(_removable_accessor_storage, this);
@@ -1176,10 +1261,10 @@
 			_classPrivateFieldSet2(_removable_accessor_storage, this, value);
 		}
 		get label() {
-			return _classPrivateFieldGet2(_label_accessor_storage$13, this);
+			return _classPrivateFieldGet2(_label_accessor_storage$14, this);
 		}
 		set label(value) {
-			_classPrivateFieldSet2(_label_accessor_storage$13, this, value);
+			_classPrivateFieldSet2(_label_accessor_storage$14, this, value);
 		}
 		_onRemove(e) {
 			const { type, itemId } = e.detail;
@@ -1207,7 +1292,7 @@
     `;
 		}
 	};
-	_defineProperty(ChipGroup, "styles", styles$67);
+	_defineProperty(ChipGroup, "styles", styles$73);
 	__decorate([n$1({ type: Array })], ChipGroup.prototype, "items", null);
 	__decorate([n$1({ type: Object })], ChipGroup.prototype, "hass", null);
 	__decorate([n$1({ type: Boolean })], ChipGroup.prototype, "removable", null);
@@ -1215,7 +1300,7 @@
 	customElements.define("chip-group", ChipGroup);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/action/action-targets/action-targets.ts
-	var _hass_accessor_storage$12 = /* @__PURE__ */ new WeakMap();
+	var _hass_accessor_storage$16 = /* @__PURE__ */ new WeakMap();
 	var _showConfigTargets_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _showTargetPicker_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _configChips_accessor_storage = /* @__PURE__ */ new WeakMap();
@@ -1223,17 +1308,17 @@
 	var CardActionTargets = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
-			_classPrivateFieldInitSpec(this, _hass_accessor_storage$12, null);
+			_classPrivateFieldInitSpec(this, _hass_accessor_storage$16, null);
 			_classPrivateFieldInitSpec(this, _showConfigTargets_accessor_storage, true);
 			_classPrivateFieldInitSpec(this, _showTargetPicker_accessor_storage, true);
 			_classPrivateFieldInitSpec(this, _configChips_accessor_storage, []);
 			_classPrivateFieldInitSpec(this, _targetValue_accessor_storage, {});
 		}
 		get hass() {
-			return _classPrivateFieldGet2(_hass_accessor_storage$12, this);
+			return _classPrivateFieldGet2(_hass_accessor_storage$16, this);
 		}
 		set hass(value) {
-			_classPrivateFieldSet2(_hass_accessor_storage$12, this, value);
+			_classPrivateFieldSet2(_hass_accessor_storage$16, this, value);
 		}
 		get showConfigTargets() {
 			return _classPrivateFieldGet2(_showConfigTargets_accessor_storage, this);
@@ -1294,7 +1379,7 @@
     `;
 		}
 	};
-	_defineProperty(CardActionTargets, "styles", styles$68);
+	_defineProperty(CardActionTargets, "styles", styles$74);
 	__decorate([n$1({ attribute: false })], CardActionTargets.prototype, "hass", null);
 	__decorate([n$1({
 		type: Boolean,
@@ -1305,7 +1390,7 @@
 		attribute: "show-target-picker"
 	})], CardActionTargets.prototype, "showTargetPicker", null);
 	__decorate([n$1({ attribute: false })], CardActionTargets.prototype, "configChips", null);
-	__decorate([r$1()], CardActionTargets.prototype, "_targetValue", null);
+	__decorate([r$2()], CardActionTargets.prototype, "_targetValue", null);
 	customElements.define("action-targets", CardActionTargets);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/logger.ts
@@ -1335,6 +1420,12 @@
 	};
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/action/action.ts
+	var _msgEl_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
+	var _btnEl_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
+	var _annEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _iconPickerEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _dateEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _targetsEl_accessor_storage = /* @__PURE__ */ new WeakMap();
 	/**
 	* hass-datapoints-action-card – Full form to record a custom event.
 	*
@@ -1343,9 +1434,51 @@
 	*   - A ha-selector (target schema) lets the user add extra items per recording.
 	*   - On submit both are merged; the selector resets to empty afterwards.
 	*/
-	var HassRecordsActionCard = class extends i$2 {
+	var HassDatapointsActionCard = class extends i$2 {
+		get _msgEl() {
+			return _classPrivateFieldGet2(_msgEl_accessor_storage$1, this);
+		}
+		set _msgEl(value) {
+			_classPrivateFieldSet2(_msgEl_accessor_storage$1, this, value);
+		}
+		get _btnEl() {
+			return _classPrivateFieldGet2(_btnEl_accessor_storage$1, this);
+		}
+		set _btnEl(value) {
+			_classPrivateFieldSet2(_btnEl_accessor_storage$1, this, value);
+		}
+		get _annEl() {
+			return _classPrivateFieldGet2(_annEl_accessor_storage, this);
+		}
+		set _annEl(value) {
+			_classPrivateFieldSet2(_annEl_accessor_storage, this, value);
+		}
+		get _iconPickerEl() {
+			return _classPrivateFieldGet2(_iconPickerEl_accessor_storage, this);
+		}
+		set _iconPickerEl(value) {
+			_classPrivateFieldSet2(_iconPickerEl_accessor_storage, this, value);
+		}
+		get _dateEl() {
+			return _classPrivateFieldGet2(_dateEl_accessor_storage, this);
+		}
+		set _dateEl(value) {
+			_classPrivateFieldSet2(_dateEl_accessor_storage, this, value);
+		}
+		get _targetsEl() {
+			return _classPrivateFieldGet2(_targetsEl_accessor_storage, this);
+		}
+		set _targetsEl(value) {
+			_classPrivateFieldSet2(_targetsEl_accessor_storage, this, value);
+		}
 		constructor() {
 			super();
+			_classPrivateFieldInitSpec(this, _msgEl_accessor_storage$1, null);
+			_classPrivateFieldInitSpec(this, _btnEl_accessor_storage$1, null);
+			_classPrivateFieldInitSpec(this, _annEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _iconPickerEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _dateEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _targetsEl_accessor_storage, null);
 			_defineProperty(this, "_userTarget", {});
 			this._config = {};
 			this._hass = null;
@@ -1428,23 +1561,20 @@
 			};
 		}
 		async _record() {
-			const msgEl = this.shadowRoot.querySelector("#msg");
+			const msgEl = this._msgEl;
 			const message = (msgEl?.value || "").trim();
 			if (!message) {
 				msgEl?.focus();
 				return;
 			}
-			const btn = this.shadowRoot.querySelector("#btn");
-			if (btn) btn.disabled = true;
+			if (this._btnEl) this._btnEl.disabled = true;
 			const data = { message };
-			const annEl = this.shadowRoot.querySelector("#ann");
-			const ann = (annEl?.value || "").trim();
+			const ann = (this._annEl?.value || "").trim();
 			if (ann) data.annotation = ann;
-			const icon = this.shadowRoot.querySelector("#icon-picker")?.value;
+			const icon = this._iconPickerEl?.value;
 			if (icon) data.icon = icon;
 			data.color = this._color;
-			const dateEl = this.shadowRoot.querySelector("#date");
-			const dateVal = (dateEl?.value || "").trim();
+			const dateVal = (this._dateEl?.value || "").trim();
 			if (dateVal) data.date = dateVal;
 			const merged = this._mergeTargets(this._configTarget(), this._userTarget);
 			if (merged.entity_id.length) data.entity_ids = merged.entity_id;
@@ -1459,12 +1589,11 @@
 					composed: true,
 					detail: { ...data }
 				}));
-				if (msgEl) msgEl.value = "";
-				if (annEl) annEl.value = "";
-				if (dateEl) dateEl.value = this._config.default_date || this._nowStr();
+				if (this._msgEl) this._msgEl.value = "";
+				if (this._annEl) this._annEl.value = "";
+				if (this._dateEl) this._dateEl.value = this._config.default_date || this._nowStr();
 				this._userTarget = {};
-				const targets = this.shadowRoot.querySelector("action-targets");
-				if (targets?.resetSelection) targets.resetSelection();
+				if (this._targetsEl?.resetSelection) this._targetsEl.resetSelection();
 				this._feedbackClass = "ok";
 				this._feedbackText = "Event recorded!";
 				this._feedbackVisible = true;
@@ -1478,7 +1607,7 @@
 				this._feedbackVisible = true;
 				logger$1.error("[hass-datapoints action-card]", e);
 			}
-			if (btn) btn.disabled = false;
+			if (this._btnEl) this._btnEl.disabled = false;
 		}
 		_onColorChange(e) {
 			this._color = e.detail.color;
@@ -1605,7 +1734,7 @@
 			return this._config?.show_annotation !== false ? 10 : 7;
 		}
 	};
-	_defineProperty(HassRecordsActionCard, "properties", {
+	_defineProperty(HassDatapointsActionCard, "properties", {
 		_config: { state: true },
 		_hass: { state: true },
 		_color: { state: true },
@@ -1613,7 +1742,13 @@
 		_feedbackText: { state: true },
 		_feedbackVisible: { state: true }
 	});
-	_defineProperty(HassRecordsActionCard, "styles", styles$71);
+	_defineProperty(HassDatapointsActionCard, "styles", styles$77);
+	__decorate([e$4("#msg")], HassDatapointsActionCard.prototype, "_msgEl", null);
+	__decorate([e$4("#btn")], HassDatapointsActionCard.prototype, "_btnEl", null);
+	__decorate([e$4("#ann")], HassDatapointsActionCard.prototype, "_annEl", null);
+	__decorate([e$4("#icon-picker")], HassDatapointsActionCard.prototype, "_iconPickerEl", null);
+	__decorate([e$4("#date")], HassDatapointsActionCard.prototype, "_dateEl", null);
+	__decorate([e$4("action-targets")], HassDatapointsActionCard.prototype, "_targetsEl", null);
 	//#endregion
 	//#region node_modules/.pnpm/@lit+localize@0.12.2/node_modules/@lit/localize/internal/locale-status-event.js
 	/**
@@ -2014,24 +2149,11 @@
 		"zh-Hans"
 	];
 	//#endregion
-	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/i18n/fi.ts
-	var fi_exports$25 = /* @__PURE__ */ __exportAll({ translations: () => translations$149 });
-	var translations$149;
-	var init_fi$25 = __esmMin((() => {
-		translations$149 = {
-			"Updates with new data": "Päivittyy uusilla tiedoilla",
-			"Scroll to selected range": "Siirry valittuun alueeseen",
-			"Start date and time": "Alkamispäivä ja -aika",
-			"End date and time": "Päättymispäivä ja -aika",
-			Select: "Valitse"
-		};
-	}));
-	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/action/i18n/fi.ts
-	var fi_exports$24 = /* @__PURE__ */ __exportAll({ translations: () => translations$148 });
-	var translations$148;
-	var init_fi$24 = __esmMin((() => {
-		translations$148 = {
+	var fi_exports$27 = /* @__PURE__ */ __exportAll({ translations: () => translations$161 });
+	var translations$161;
+	var init_fi$27 = __esmMin((() => {
+		translations$161 = {
 			General: "Yleiset",
 			"Related items": "Liittyvät kohteet",
 			"Datapoint Appearance": "Datapisteen ulkoasu",
@@ -2048,20 +2170,20 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/history-chart/i18n/fi.ts
-	var fi_exports$23 = /* @__PURE__ */ __exportAll({ translations: () => translations$147 });
-	var translations$147;
-	var init_fi$23 = __esmMin((() => {
-		translations$147 = {
+	var fi_exports$26 = /* @__PURE__ */ __exportAll({ translations: () => translations$160 });
+	var translations$160;
+	var init_fi$26 = __esmMin((() => {
+		translations$160 = {
 			"Date window:": "Aikaikkuna:",
 			"Actual:": "Todellinen:"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/i18n/fi.ts
-	var fi_exports$22 = /* @__PURE__ */ __exportAll({ translations: () => translations$146 });
-	var translations$146;
-	var init_fi$22 = __esmMin((() => {
-		translations$146 = {
+	var fi_exports$25 = /* @__PURE__ */ __exportAll({ translations: () => translations$159 });
+	var translations$159;
+	var init_fi$25 = __esmMin((() => {
+		translations$159 = {
 			General: "Yleiset",
 			Entity: "Entiteetti",
 			"Multiple entities": "Useita entiteettejä",
@@ -2075,10 +2197,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/list/i18n/fi.ts
-	var fi_exports$21 = /* @__PURE__ */ __exportAll({ translations: () => translations$145 });
-	var translations$145;
-	var init_fi$21 = __esmMin((() => {
-		translations$145 = {
+	var fi_exports$24 = /* @__PURE__ */ __exportAll({ translations: () => translations$158 });
+	var translations$158;
+	var init_fi$24 = __esmMin((() => {
+		translations$158 = {
 			"Search datapoints…": "Hae datapisteitä…",
 			"Delete record": "Poista tietue",
 			Delete: "Poista",
@@ -2096,10 +2218,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/quick/i18n/fi.ts
-	var fi_exports$20 = /* @__PURE__ */ __exportAll({ translations: () => translations$144 });
-	var translations$144;
-	var init_fi$20 = __esmMin((() => {
-		translations$144 = {
+	var fi_exports$23 = /* @__PURE__ */ __exportAll({ translations: () => translations$157 });
+	var translations$157;
+	var init_fi$23 = __esmMin((() => {
+		translations$157 = {
 			General: "Yleiset",
 			"Icon & colour": "Kuvake ja väri",
 			"Related items": "Liittyvät kohteet",
@@ -2117,10 +2239,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/sensor/i18n/fi.ts
-	var fi_exports$19 = /* @__PURE__ */ __exportAll({ translations: () => translations$143 });
-	var translations$143;
-	var init_fi$19 = __esmMin((() => {
-		translations$143 = {
+	var fi_exports$22 = /* @__PURE__ */ __exportAll({ translations: () => translations$156 });
+	var translations$156;
+	var init_fi$22 = __esmMin((() => {
+		translations$156 = {
 			Entity: "Entiteetti",
 			Display: "Näyttö",
 			"Records list": "Tietueiden luettelo",
@@ -2140,10 +2262,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/chart/i18n/fi.ts
-	var fi_exports$18 = /* @__PURE__ */ __exportAll({ translations: () => translations$142 });
-	var translations$142;
-	var init_fi$18 = __esmMin((() => {
-		translations$142 = {
+	var fi_exports$21 = /* @__PURE__ */ __exportAll({ translations: () => translations$155 });
+	var translations$155;
+	var init_fi$21 = __esmMin((() => {
+		translations$155 = {
 			"⚠️ Anomaly Insight": "⚠️ Poikkeavuushavainto",
 			"⚠️ Multi-method Anomaly": "⚠️ Monimenetelmäinen poikkeavuus",
 			"Click the highlighted circle to add an annotation.": "Klikkaa korostettua ympyrää lisätäksesi huomautuksen.",
@@ -2178,10 +2300,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/ha/i18n/fi.ts
-	var fi_exports$17 = /* @__PURE__ */ __exportAll({ translations: () => translations$141 });
-	var translations$141;
-	var init_fi$17 = __esmMin((() => {
-		translations$141 = {
+	var fi_exports$20 = /* @__PURE__ */ __exportAll({ translations: () => translations$154 });
+	var translations$154;
+	var init_fi$20 = __esmMin((() => {
+		translations$154 = {
 			"Confirm delete": "Vahvista poisto",
 			"Are you sure you want to delete this item?": "Oletko varma, että haluat poistaa tämän kohteen?",
 			Cancel: "Peruuta",
@@ -2195,21 +2317,122 @@
 		};
 	}));
 	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/history-page/i18n/fi.ts
+	var fi_exports$19 = /* @__PURE__ */ __exportAll({ translations: () => translations$153 });
+	var translations$153;
+	var init_fi$19 = __esmMin((() => {
+		translations$153 = {
+			"entity_id={0}": "entity_id={0}",
+			"device_id={0}": "device_id={0}",
+			"area_id={0}": "area_id={0}",
+			"label_id={0}": "label_id={0}",
+			none: "ei mitään",
+			"If raw recorder history is incomplete or unavailable, fetch Home Assistant statistics for continuity and call out the retention boundary explicitly.": "Jos raakarekisterihistoria on puutteellinen tai ei saatavilla, hae jatkuvuuden varmistamiseksi Home Assistantin tilastot ja kerro säilytysrajan vaikutuksesta selkeästi.",
+			"The requested window spans about {0} days. Short-retention raw history may not fully cover this range, so use Home Assistant statistics for older or missing portions and do not infer 'no anomalies' from retention gaps.": "Pyydetty aikaväli kattaa noin {0} päivää. Lyhyt raakadatansäilytys ei välttämättä kata tätä aluetta kokonaan, joten käytä vanhempiin tai puuttuviin osuuksiin Home Assistantin tilastoja äläkä päättele säilytyskatkoista, ettei poikkeamia olisi.",
+			"Use raw recorder history first for this range. If raw history is incomplete or unavailable, fetch Home Assistant statistics and explain any retention or recorder gaps.": "Käytä tällä aikavälillä ensisijaisesti raakaa recorder-historiaa. Jos raakadata on puutteellista tai ei saatavilla, hae Home Assistantin tilastot ja selitä mahdolliset säilytys- tai recorder-katkokset.",
+			"Entity metadata:": "Entiteetin metatiedot:",
+			"CURRENT RANGE ANOMALY FINDINGS": "NYKYISEN AJANJAKSON POIKKEAMALÖYDÖKSET",
+			"Current anomaly findings are not available from the active chart state, so use the query inputs below to fetch and inspect anomaly clusters directly.": "Nykyisiä poikkeamalöydöksiä ei ole saatavilla aktiivisen kaavion tilasta, joten hae ja tarkastele poikkeamaklustereita suoraan alla olevilla kyselysyötteillä.",
+			"Snapshot range label:": "Tilannekuvan aikavälin nimi:",
+			"main range": "pääaikaväli",
+			"Correlated anomaly highlighting enabled in chart:": "Korrelatiivisten poikkeamien korostus kaaviossa käytössä:",
+			yes: "kyllä",
+			no: "ei",
+			"Current anomaly overlap mode:": "Nykyinen poikkeamien päällekkäisyystila:",
+			"Correlated anomaly periods across the selected datapoints:": "Korrelatiiviset poikkeamajaksot valittujen datapisteiden välillä:",
+			"No entity-level anomaly findings are currently available from the active chart snapshot.": "Aktiivisen kaaviotilannekuvan perusteella ei ole tällä hetkellä saatavilla entiteettikohtaisia poikkeamalöydöksiä.",
+			"Entity findings:": "Entiteetin löydökset:",
+			"Detected clusters in current range:": "Havaitut klusterit nykyisellä aikavälillä:",
+			"Displayed clusters under the current overlap/correlation mode:": "Näytetyt klusterit nykyisessä päällekkäisyys-/korrelaatiotilassa:",
+			"All detected anomaly cluster details:": "Kaikkien havaittujen poikkeamaklustereiden tiedot:",
+			"Displayed anomaly cluster details:": "Näytettyjen poikkeamaklustereiden tiedot:",
+			"Entity:": "Entiteetti:",
+			"Display name:": "Näyttönimi:",
+			"Visible in panel:": "Näkyvissä paneelissa:",
+			"Anomaly analysis: disabled in the current panel configuration.": "Poikkeama-analyysi: pois käytöstä nykyisessä paneelikokoonpanossa.",
+			"Anomaly analysis: enabled.": "Poikkeama-analyysi: käytössä.",
+			"Backend anomaly query inputs:": "Taustajärjestelmän poikkeamakyselyn syötteet:",
+			"Raw history query inputs:": "Raakahistorian kyselysyötteet:",
+			"Comparison window reference:": "Vertailuikkunan viite:",
+			"Comparison window raw history query inputs:": "Vertailuikkunan raakahistorian kyselysyötteet:",
+			"Comparison window anomaly query inputs:": "Vertailuikkunan poikkeamakyselyn syötteet:",
+			"Comparison window detail: the configured comparison window is not currently selected, so use the window id above to resolve the saved date window before querying.": "Vertailuikkunan yksityiskohta: määritettyä vertailuikkunaa ei ole tällä hetkellä valittu, joten ratkaise tallennettu päivämääräikkuna yllä olevan ikkunatunnuksen avulla ennen kyselyä.",
+			"Baseline comparison entity:": "Vertailun peruslinjan entiteetti:",
+			"If your Home Assistant tooling requires explicit baseline range inputs, use the same start/end range as the main anomaly query unless a more specific monitor or MCP tool requires otherwise.": "Jos Home Assistant -työkalusi vaatii erilliset peruslinjan aikavälisyötteet, käytä samaa alku-/loppuväliä kuin pääpoikkeamakyselyssä, ellei tarkempi monitori- tai MCP-työkalu vaadi muuta.",
+			"RELEVANT PERSISTED MONITORS": "OLENNAISET TALLENNETUT MONITORIT",
+			"No persisted anomaly monitors intersect the currently selected entities.": "Yksikään tallennettu poikkeamamonitori ei leikkaa tällä hetkellä valittuja entiteettejä.",
+			"Monitor: {0} ({1})": "Monitori: {0} ({1})",
+			"Type:": "Tyyppi:",
+			"Enabled:": "Käytössä:",
+			"Entities:": "Entiteetit:",
+			"Monitor anomaly query inputs:": "Monitorin poikkeamakyselyn syötteet:",
+			"AI QUERY BRIEF: HOME ASSISTANT DATAPOINTS PANEL": "AI-KYSELYTIIVISTELMÄ: HOME ASSISTANT DATAPOINTS -PANEELI",
+			OBJECTIVE: "TAVOITE",
+			"Fetch the underlying Home Assistant history or statistics, entity metadata, and hass_datapoints anomaly detail needed to inspect the currently selected datapoints. Do not treat this brief as the raw data itself.": "Hae valittujen datapisteiden tutkimiseen tarvittava Home Assistantin historia tai tilastot, entiteettien metatiedot sekä hass_datapoints-poikkeamayksityiskohdat. Älä käsittele tätä tiivistelmää itse raakadatana.",
+			"SUCCESS CRITERIA": "ONNISTUMISKRITEERIT",
+			"- Resolve entity metadata context for each selected entity.": "- Ratkaise jokaiselle valitulle entiteetille metatietokonteksti.",
+			"- Fetch raw or best-available historical coverage for the requested range.": "- Hae pyydetylle aikavälille raakadata tai paras saatavilla oleva historiallinen kattavuus.",
+			"- Reproduce hass_datapoints anomaly queries with the exact panel settings below.": "- Toista hass_datapoints-poikkeamakyselyt alla olevilla täsmällisillä paneeliasetuksilla.",
+			"- Review current-range anomaly findings from this integration, including cross-entity correlated anomaly periods when present.": "- Tarkista tämän integraation nykyisen aikavälin poikkeamalöydökset, mukaan lukien entiteettien väliset korreloivat poikkeamajaksot, kun niitä on.",
+			"- Call out any retention, sampling, permission, or monitor-lookup limitations.": "- Kerro mahdollisista säilytys-, näytteistys-, käyttöoikeus- tai monitorihakurajoituksista.",
+			"RETRIEVAL PRIORITY": "HAAUN PRIORITEETTI",
+			"1. Resolve entity metadata first so area, device, platform, labels, and unit context are known before interpretation.": "1. Ratkaise ensin entiteetin metatiedot, jotta alue-, laite-, alusta-, tunniste- ja yksikkökonteksti ovat tiedossa ennen tulkintaa.",
+			"2. Fetch raw recorder history for the requested range where available.": "2. Hae pyydetylle aikavälille raaka recorder-historia siellä, missä sitä on saatavilla.",
+			"3. If raw history is incomplete, unavailable, or truncated by retention, fetch Home Assistant statistics for continuity.": "3. Jos raakadata on puutteellista, ei saatavilla tai säilytyksen takia katkennutta, hae jatkuvuuden varmistamiseksi Home Assistantin tilastot.",
+			"4. Reproduce the hass_datapoints anomaly queries exactly as listed below.": "4. Toista hass_datapoints-poikkeamakyselyt täsmälleen alla kuvatulla tavalla.",
+			"5. Because anomaly analysis may use sampled data, compare raw history for ground truth against sampled series for anomaly reproduction.": "5. Koska poikkeama-analyysi voi käyttää näytteistettyä dataa, vertaa raakadataa näytteistettyyn sarjaan poikkeamien toistamiseksi.",
+			"6. Review the current anomaly findings already found by this integration in the active range and use them to guide deeper inspection.": "6. Tarkista integraation aktiivisella aikavälillä jo löytämät poikkeamat ja käytä niitä syvemmän tutkimisen ohjaamiseen.",
+			"7. If monitor context is available, fetch relevant monitor anomaly output for additional persisted monitor detail.": "7. Jos monitorikonteksti on saatavilla, hae olennaisten monitorien poikkeamaulostulo lisätietoja varten.",
+			"PANEL CONTEXT": "PANEELIN KONTEKSTI",
+			"Selected entity ids:": "Valitut entiteettitunnukset:",
+			"(none selected)": "(ei valittuja)",
+			"Raw target selection summary:": "Raakatavoitevalinnan yhteenveto:",
+			"Datapoint scope:": "Datapisteiden laajuus:",
+			"Main range start_time:": "Pääaikavälin start_time:",
+			"(not set)": "(ei asetettu)",
+			"Main range end_time:": "Pääaikavälin end_time:",
+			"Committed zoom start_time:": "Vahvistetun zoomin start_time:",
+			"Committed zoom end_time:": "Vahvistetun zoomin end_time:",
+			"Selected comparison window id:": "Valitun vertailuikkunan tunnus:",
+			"(none)": "(ei mitään)",
+			"Comparison windows:": "Vertailuikkunoita:",
+			"Chart anomaly overlap mode:": "Kaavion poikkeamien päällekkäisyystila:",
+			"RANGE / RETENTION NOTE": "AIKAVÄLI / SÄILYTYS -HUOMIO",
+			"QUERY RULES": "KYSELYSÄÄNNÖT",
+			"- Use UTC timestamps exactly as written for retrieval.": "- Käytä haussa UTC-aikaleimoja täsmälleen kirjoitetussa muodossa.",
+			"- Convert to the Home Assistant local timezone only when interpreting daily or weekly behavior patterns.": "- Muunna Home Assistantin paikalliseen aikavyöhykkeeseen vasta päivittäisiä tai viikoittaisia käyttäytymismalleja tulkittaessa.",
+			"- Do not infer 'no anomaly' from missing raw history when retention may be limited.": "- Älä päättele puuttuvasta raakadatasta, ettei poikkeamia ole, jos säilytys voi olla rajallinen.",
+			"- If anomaly queries below use sampled data, inspect both raw history and the sampled representation.": "- Jos alla olevat poikkeamakyselyt käyttävät näytteistettyä dataa, tarkista sekä raakadata että näytteistetty esitys.",
+			"- For long ranges, remember HA history pagination and retention constraints can change what raw coverage is available.": "- Pitkillä aikaväleillä muista, että HA-historian sivutus ja säilytysrajoitukset voivat muuttaa saatavilla olevan raakakattavuuden määrää.",
+			"RAW TARGET SELECTION OBJECT": "RAAKA TAVOITEVALINTAOLIO",
+			"AVAILABLE COMPARISON WINDOWS": "SAATAVILLA OLEVAT VERTAILUIKKUNAT",
+			"PER-ENTITY QUERY DETAILS": "ENTITEETTIKOHTAISET KYSELYTIEDOT",
+			"No selected entities are currently available in the panel state.": "Paneelin tilassa ei ole tällä hetkellä saatavilla valittuja entiteettejä.",
+			"RECOMMENDED OUTPUT": "SUOSITELTU TULOSTE",
+			"- Resolved metadata per selected entity, including unit, device class, state class, area, device, labels, and platform when available.": "- Ratkaistut metatiedot valittua entiteettiä kohden, mukaan lukien yksikkö, laiteluokka, tilaluokka, alue, laite, tunnisteet ja alusta, kun ne ovat saatavilla.",
+			"- Coverage status of raw history versus statistics, including any retention or pagination limits encountered.": "- Raakadatan ja tilastojen kattavuustila, mukaan lukien mahdolliset vastaan tulleet säilytys- tai sivutusrajoitukset.",
+			"- Detailed anomaly findings per entity for the requested range, using the current integration findings above plus any fetched raw cluster detail.": "- Yksityiskohtaiset poikkeamalöydökset entiteettiä kohden pyydetyllä aikavälillä käyttäen yllä olevia integraation nykyhavaintoja sekä mahdollisia haettuja raakoja klusteritietoja.",
+			"- If anomalies indicate some type of event, zoom out and look for answers in the related area/group/labels or across other entities in the panel. If anomalies are unexpected, look for any subtle metadata clues that could explain them, such as a device class or state class that implies a different expected behavior pattern than initially assumed.": "- Jos poikkeamat viittaavat jonkinlaiseen tapahtumaan, zoomaa ulos ja etsi selityksiä liittyvästä alueesta/ryhmästä/tunnisteista tai paneelin muista entiteeteistä. Jos poikkeamat ovat odottamattomia, etsi hienovaraisia metatietovihjeitä, kuten laite- tai tilaluokka, jotka voivat selittää tilanteen.",
+			"- Correlated anomaly periods across the selected datapoints, if any are present, including which entities participate and when the overlap occurs.": "- Korrelatiiviset poikkeamajaksot valittujen datapisteiden välillä, jos niitä on, mukaan lukien osallistuvat entiteetit ja ajankohta, jolloin päällekkäisyys tapahtuu.",
+			"- Any monitor-access, permission, sampling, comparison-window, or data-coverage limitations that materially affect interpretation.": "- Kaikki monitoripääsyn, käyttöoikeuksien, näytteistyksen, vertailuikkunoiden tai datakattavuuden rajoitteet, jotka vaikuttavat tulkintaan olennaisesti."
+		};
+	}));
+	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/timeline/i18n/fi.ts
-	var fi_exports$16 = /* @__PURE__ */ __exportAll({ translations: () => translations$140 });
-	var translations$140;
-	var init_fi$16 = __esmMin((() => {
-		translations$140 = {
+	var fi_exports$18 = /* @__PURE__ */ __exportAll({ translations: () => translations$152 });
+	var translations$152;
+	var init_fi$18 = __esmMin((() => {
+		translations$152 = {
 			Wk: "Vk",
 			"Week of": "Viikko"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-anomaly-group/i18n/fi.ts
-	var fi_exports$15 = /* @__PURE__ */ __exportAll({ translations: () => translations$139 });
-	var translations$139;
-	var init_fi$15 = __esmMin((() => {
-		translations$139 = {
+	var fi_exports$17 = /* @__PURE__ */ __exportAll({ translations: () => translations$151 });
+	var translations$151;
+	var init_fi$17 = __esmMin((() => {
+		translations$151 = {
 			"Show anomalies": "Näytä poikkeamat",
 			Sensitivity: "Herkkyys",
 			"Use downsampled data for detection": "Käytä alasnäytteistettyä dataa havaitsemiseen",
@@ -2251,10 +2474,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-delta-group/i18n/fi.ts
-	var fi_exports$14 = /* @__PURE__ */ __exportAll({ translations: () => translations$138 });
-	var translations$138;
-	var init_fi$14 = __esmMin((() => {
-		translations$138 = {
+	var fi_exports$16 = /* @__PURE__ */ __exportAll({ translations: () => translations$150 });
+	var translations$150;
+	var init_fi$16 = __esmMin((() => {
+		translations$150 = {
 			"Show delta vs selected date window": "Näytä delta vs. valittu aikaikkuna",
 			"Select a date window tab to enable delta analysis.": "Valitse aikaikkuna-välilehti ottaaksesi delta-analyysin käyttöön.",
 			"Show delta in tooltip": "Näytä delta työkaluvihjeessä",
@@ -2263,10 +2486,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-rate-group/i18n/fi.ts
-	var fi_exports$13 = /* @__PURE__ */ __exportAll({ translations: () => translations$137 });
-	var translations$137;
-	var init_fi$13 = __esmMin((() => {
-		translations$137 = {
+	var fi_exports$15 = /* @__PURE__ */ __exportAll({ translations: () => translations$149 });
+	var translations$149;
+	var init_fi$15 = __esmMin((() => {
+		translations$149 = {
 			"Show rate of change": "Näytä muutosnopeus",
 			"Show rate of change crosshairs": "Näytä muutosnopeuden tähtäin",
 			"Rate window": "Muutosikkuna",
@@ -2278,10 +2501,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-sample-group/i18n/fi.ts
-	var fi_exports$12 = /* @__PURE__ */ __exportAll({ translations: () => translations$136 });
-	var translations$136;
-	var init_fi$12 = __esmMin((() => {
-		translations$136 = {
+	var fi_exports$14 = /* @__PURE__ */ __exportAll({ translations: () => translations$148 });
+	var translations$148;
+	var init_fi$14 = __esmMin((() => {
+		translations$148 = {
 			Downsampling: "Alasnäytteistys",
 			Interval: "Väli",
 			Aggregate: "Kooste",
@@ -2313,20 +2536,20 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-summary-group/i18n/fi.ts
-	var fi_exports$11 = /* @__PURE__ */ __exportAll({ translations: () => translations$135 });
-	var translations$135;
-	var init_fi$11 = __esmMin((() => {
-		translations$135 = {
+	var fi_exports$13 = /* @__PURE__ */ __exportAll({ translations: () => translations$147 });
+	var translations$147;
+	var init_fi$13 = __esmMin((() => {
+		translations$147 = {
 			"Show min / max / mean": "Näytä min / max / keskiarvo",
 			"Show range shading": "Näytä aluevarjostus"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-threshold-group/i18n/fi.ts
-	var fi_exports$10 = /* @__PURE__ */ __exportAll({ translations: () => translations$134 });
-	var translations$134;
-	var init_fi$10 = __esmMin((() => {
-		translations$134 = {
+	var fi_exports$12 = /* @__PURE__ */ __exportAll({ translations: () => translations$146 });
+	var translations$146;
+	var init_fi$12 = __esmMin((() => {
+		translations$146 = {
 			"Show threshold analysis": "Näytä kynnysanalyysi",
 			"Shade threshold area": "Varjosta kynnysalue",
 			Threshold: "Kynnys",
@@ -2337,10 +2560,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-trend-group/i18n/fi.ts
-	var fi_exports$9 = /* @__PURE__ */ __exportAll({ translations: () => translations$133 });
-	var translations$133;
-	var init_fi$9 = __esmMin((() => {
-		translations$133 = {
+	var fi_exports$11 = /* @__PURE__ */ __exportAll({ translations: () => translations$145 });
+	var translations$145;
+	var init_fi$11 = __esmMin((() => {
+		translations$145 = {
 			"Show trend lines": "Näytä trendiviivat",
 			"Show trend crosshairs": "Näytä trenditähtäin",
 			"Trend method": "Trendimenetelmä",
@@ -2357,18 +2580,31 @@
 		};
 	}));
 	//#endregion
+	//#region custom_components/hass_datapoints/src/molecules/anomaly-monitor-wizard/i18n/fi.ts
+	var fi_exports$10 = /* @__PURE__ */ __exportAll({ translations: () => translations$144 });
+	var translations$144;
+	var init_fi$10 = __esmMin((() => {
+		translations$144 = {
+			"Add all series from chart": "Lisää kaikki sarjat kaaviosta",
+			"Add from current chart": "Lisää nykyisestä kaaviosta",
+			"Create anomaly monitor": "Luo poikkeamamonitori",
+			"Unable to save anomaly monitor.": "Poikkeamamonitoria ei voitu tallentaa.",
+			"anomaly monitors": "poikkeamamonitoria"
+		};
+	}));
+	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/comparison-tab-rail/i18n/fi.ts
-	var fi_exports$8 = /* @__PURE__ */ __exportAll({ translations: () => translations$132 });
-	var translations$132;
-	var init_fi$8 = __esmMin((() => {
-		translations$132 = { "Add date window": "Lisää aikaikkuna" };
+	var fi_exports$9 = /* @__PURE__ */ __exportAll({ translations: () => translations$143 });
+	var translations$143;
+	var init_fi$9 = __esmMin((() => {
+		translations$143 = { "Add date window": "Lisää aikaikkuna" };
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/date-window-dialog/i18n/fi.ts
-	var fi_exports$7 = /* @__PURE__ */ __exportAll({ translations: () => translations$131 });
-	var translations$131;
-	var init_fi$7 = __esmMin((() => {
-		translations$131 = {
+	var fi_exports$8 = /* @__PURE__ */ __exportAll({ translations: () => translations$142 });
+	var translations$142;
+	var init_fi$8 = __esmMin((() => {
+		translations$142 = {
 			"A date window saves a named date range as a tab, so you can quickly preview it against the selected range or jump the chart back to it later.": "Aikaikkuna tallentaa nimetyn päivävälin välilehteksi, jotta voit nopeasti esikatsella sitä suhteessa valittuun alueeseen tai palata kaavion kyseiseen ajanjaksoon.",
 			Name: "Nimi",
 			"e.g. Heating season start": "esim. Lämmityskausi alkaa",
@@ -2383,10 +2619,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/sidebar-options/sections/i18n/fi.ts
-	var fi_exports$6 = /* @__PURE__ */ __exportAll({ translations: () => translations$130 });
-	var translations$130;
-	var init_fi$6 = __esmMin((() => {
-		translations$130 = {
+	var fi_exports$7 = /* @__PURE__ */ __exportAll({ translations: () => translations$141 });
+	var translations$141;
+	var init_fi$7 = __esmMin((() => {
+		translations$141 = {
 			Datapoints: "Datapisteet",
 			"Choose which annotation datapoints appear on the chart.": "Valitse, mitkä huomautusten datapisteet näkyvät kaaviossa.",
 			"Linked to selected targets": "Linkitetty valittuihin kohteisiin",
@@ -2396,10 +2632,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row/i18n/fi.ts
-	var fi_exports$5 = /* @__PURE__ */ __exportAll({ translations: () => translations$129 });
-	var translations$129;
-	var init_fi$5 = __esmMin((() => {
-		translations$129 = {
+	var fi_exports$6 = /* @__PURE__ */ __exportAll({ translations: () => translations$140 });
+	var translations$140;
+	var init_fi$6 = __esmMin((() => {
+		translations$140 = {
 			"Analysis configured": "Analyysi määritetty",
 			"Configure analysis": "Määritä analyysi",
 			"Stepped series": "Porrastettu sarja",
@@ -2411,17 +2647,32 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row-list/i18n/fi.ts
-	var fi_exports$4 = /* @__PURE__ */ __exportAll({ translations: () => translations$128 });
-	var translations$128;
+	var fi_exports$5 = /* @__PURE__ */ __exportAll({ translations: () => translations$139 });
+	var translations$139;
+	var init_fi$5 = __esmMin((() => {
+		translations$139 = {};
+	}));
+	//#endregion
+	//#region custom_components/hass_datapoints/src/panels/datapoints/components/ai-query-brief-dialog/i18n/fi.ts
+	var fi_exports$4 = /* @__PURE__ */ __exportAll({ translations: () => translations$138 });
+	var translations$138;
 	var init_fi$4 = __esmMin((() => {
-		translations$128 = {};
+		translations$138 = {
+			"AI query brief": "AI-kyselytiivistelma",
+			"This brief is intended for another AI to fetch raw Home Assistant history and hass_datapoints anomaly details. Review it, then copy it into your AI tool of choice.": "Tama tiivistelma on tarkoitettu toiselle AI:lle Home Assistantin raakadat historian ja hass_datapointsin poikkeamien lisatietojen hakemista varten. Tarkista se ja kopioi sitten haluamaasi AI-tyokaluun.",
+			"Copy-ready brief": "Kopiointivalmis tiivistelma",
+			Close: "Sulje",
+			"Copy brief": "Kopioi tiivistelma",
+			"Copied to clipboard.": "Kopioitu leikepoydalle.",
+			"Clipboard write failed. The text is selected so you can copy it manually.": "Leikepoydalle kirjoittaminen epaonnistui. Teksti on valittuna, joten voit kopioida sen kasin."
+		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/history-targets/i18n/fi.ts
-	var fi_exports$3 = /* @__PURE__ */ __exportAll({ translations: () => translations$127 });
-	var translations$127;
+	var fi_exports$3 = /* @__PURE__ */ __exportAll({ translations: () => translations$137 });
+	var translations$137;
 	var init_fi$3 = __esmMin((() => {
-		translations$127 = {
+		translations$137 = {
 			Targets: "Kohteet",
 			"Each row controls one chart series.": "Jokainen rivi ohjaa yhtä kaaviosarjaa.",
 			"Add target": "Lisää kohde",
@@ -2430,13 +2681,14 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/panel-shell/i18n/fi.ts
-	var fi_exports$2 = /* @__PURE__ */ __exportAll({ translations: () => translations$126 });
-	var translations$126;
+	var fi_exports$2 = /* @__PURE__ */ __exportAll({ translations: () => translations$136 });
+	var translations$136;
 	var init_fi$2 = __esmMin((() => {
-		translations$126 = {
+		translations$136 = {
 			"Loading Datapoints…": "Ladataan Datapoints…",
 			Datapoints: "Datapoints",
 			"Page options": "Sivun asetukset",
+			"AI query brief": "AI-kyselytiivistelma",
 			"Download spreadsheet": "Lataa taulukko",
 			"Save page state": "Tallenna sivun tila",
 			"Restore saved page": "Palauta tallennettu sivu",
@@ -2447,10 +2699,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/range-toolbar/i18n/fi.ts
-	var fi_exports$1 = /* @__PURE__ */ __exportAll({ translations: () => translations$125 });
-	var translations$125;
+	var fi_exports$1 = /* @__PURE__ */ __exportAll({ translations: () => translations$135 });
+	var translations$135;
 	var init_fi$1 = __esmMin((() => {
-		translations$125 = {
+		translations$135 = {
 			"Toggle sidebar": "Vaihda sivupalkki",
 			Start: "Alku",
 			End: "Loppu",
@@ -2478,6 +2730,8 @@
 	var fi_exports = /* @__PURE__ */ __exportAll({ templates: () => templates$5 });
 	var modules$5, merged$5, templates$5;
 	var init_fi = __esmMin((() => {
+		init_fi$27();
+		init_fi$26();
 		init_fi$25();
 		init_fi$24();
 		init_fi$23();
@@ -2504,28 +2758,30 @@
 		init_fi$2();
 		init_fi$1();
 		modules$5 = /* @__PURE__ */ Object.assign({
-			"../../../atoms/interactive/range-timeline/i18n/fi.ts": fi_exports$25,
-			"../../../cards/action/i18n/fi.ts": fi_exports$24,
-			"../../../cards/history/history-chart/i18n/fi.ts": fi_exports$23,
-			"../../../cards/history/i18n/fi.ts": fi_exports$22,
-			"../../../cards/list/i18n/fi.ts": fi_exports$21,
-			"../../../cards/quick/i18n/fi.ts": fi_exports$20,
-			"../../../cards/sensor/i18n/fi.ts": fi_exports$19,
-			"../../chart/i18n/fi.ts": fi_exports$18,
-			"../../ha/i18n/fi.ts": fi_exports$17,
-			"../../timeline/i18n/fi.ts": fi_exports$16,
-			"../../../molecules/analysis-anomaly-group/i18n/fi.ts": fi_exports$15,
-			"../../../molecules/analysis-delta-group/i18n/fi.ts": fi_exports$14,
-			"../../../molecules/analysis-rate-group/i18n/fi.ts": fi_exports$13,
-			"../../../molecules/analysis-sample-group/i18n/fi.ts": fi_exports$12,
-			"../../../molecules/analysis-summary-group/i18n/fi.ts": fi_exports$11,
-			"../../../molecules/analysis-threshold-group/i18n/fi.ts": fi_exports$10,
-			"../../../molecules/analysis-trend-group/i18n/fi.ts": fi_exports$9,
-			"../../../molecules/comparison-tab-rail/i18n/fi.ts": fi_exports$8,
-			"../../../molecules/date-window-dialog/i18n/fi.ts": fi_exports$7,
-			"../../../molecules/sidebar-options/sections/i18n/fi.ts": fi_exports$6,
-			"../../../molecules/target-row/i18n/fi.ts": fi_exports$5,
-			"../../../molecules/target-row-list/i18n/fi.ts": fi_exports$4,
+			"../../../cards/action/i18n/fi.ts": fi_exports$27,
+			"../../../cards/history/history-chart/i18n/fi.ts": fi_exports$26,
+			"../../../cards/history/i18n/fi.ts": fi_exports$25,
+			"../../../cards/list/i18n/fi.ts": fi_exports$24,
+			"../../../cards/quick/i18n/fi.ts": fi_exports$23,
+			"../../../cards/sensor/i18n/fi.ts": fi_exports$22,
+			"../../chart/i18n/fi.ts": fi_exports$21,
+			"../../ha/i18n/fi.ts": fi_exports$20,
+			"../../history-page/i18n/fi.ts": fi_exports$19,
+			"../../timeline/i18n/fi.ts": fi_exports$18,
+			"../../../molecules/analysis-anomaly-group/i18n/fi.ts": fi_exports$17,
+			"../../../molecules/analysis-delta-group/i18n/fi.ts": fi_exports$16,
+			"../../../molecules/analysis-rate-group/i18n/fi.ts": fi_exports$15,
+			"../../../molecules/analysis-sample-group/i18n/fi.ts": fi_exports$14,
+			"../../../molecules/analysis-summary-group/i18n/fi.ts": fi_exports$13,
+			"../../../molecules/analysis-threshold-group/i18n/fi.ts": fi_exports$12,
+			"../../../molecules/analysis-trend-group/i18n/fi.ts": fi_exports$11,
+			"../../../molecules/anomaly-monitor-wizard/i18n/fi.ts": fi_exports$10,
+			"../../../molecules/comparison-tab-rail/i18n/fi.ts": fi_exports$9,
+			"../../../molecules/date-window-dialog/i18n/fi.ts": fi_exports$8,
+			"../../../molecules/sidebar-options/sections/i18n/fi.ts": fi_exports$7,
+			"../../../molecules/target-row/i18n/fi.ts": fi_exports$6,
+			"../../../molecules/target-row-list/i18n/fi.ts": fi_exports$5,
+			"../../../panels/datapoints/components/ai-query-brief-dialog/i18n/fi.ts": fi_exports$4,
 			"../../../panels/datapoints/components/history-targets/i18n/fi.ts": fi_exports$3,
 			"../../../panels/datapoints/components/panel-shell/i18n/fi.ts": fi_exports$2,
 			"../../../panels/datapoints/components/range-toolbar/i18n/fi.ts": fi_exports$1
@@ -2535,24 +2791,11 @@
 		templates$5 = merged$5;
 	}));
 	//#endregion
-	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/i18n/fr.ts
-	var fr_exports$25 = /* @__PURE__ */ __exportAll({ translations: () => translations$124 });
-	var translations$124;
-	var init_fr$25 = __esmMin((() => {
-		translations$124 = {
-			"Updates with new data": "Se met à jour avec de nouvelles données",
-			"Scroll to selected range": "Faire défiler jusqu’à la plage sélectionnée",
-			"Start date and time": "Date et heure de début",
-			"End date and time": "Date et heure de fin",
-			Select: "Sélectionner"
-		};
-	}));
-	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/action/i18n/fr.ts
-	var fr_exports$24 = /* @__PURE__ */ __exportAll({ translations: () => translations$123 });
-	var translations$123;
-	var init_fr$24 = __esmMin((() => {
-		translations$123 = {
+	var fr_exports$27 = /* @__PURE__ */ __exportAll({ translations: () => translations$134 });
+	var translations$134;
+	var init_fr$27 = __esmMin((() => {
+		translations$134 = {
 			General: "Général",
 			"Related items": "Éléments liés",
 			"Datapoint Appearance": "Apparence du point de données",
@@ -2569,20 +2812,20 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/history-chart/i18n/fr.ts
-	var fr_exports$23 = /* @__PURE__ */ __exportAll({ translations: () => translations$122 });
-	var translations$122;
-	var init_fr$23 = __esmMin((() => {
-		translations$122 = {
+	var fr_exports$26 = /* @__PURE__ */ __exportAll({ translations: () => translations$133 });
+	var translations$133;
+	var init_fr$26 = __esmMin((() => {
+		translations$133 = {
 			"Date window:": "Fenêtre de dates :",
 			"Actual:": "Réel :"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/i18n/fr.ts
-	var fr_exports$22 = /* @__PURE__ */ __exportAll({ translations: () => translations$121 });
-	var translations$121;
-	var init_fr$22 = __esmMin((() => {
-		translations$121 = {
+	var fr_exports$25 = /* @__PURE__ */ __exportAll({ translations: () => translations$132 });
+	var translations$132;
+	var init_fr$25 = __esmMin((() => {
+		translations$132 = {
 			General: "Général",
 			Entity: "Entité",
 			"Multiple entities": "Plusieurs entités",
@@ -2596,10 +2839,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/list/i18n/fr.ts
-	var fr_exports$21 = /* @__PURE__ */ __exportAll({ translations: () => translations$120 });
-	var translations$120;
-	var init_fr$21 = __esmMin((() => {
-		translations$120 = {
+	var fr_exports$24 = /* @__PURE__ */ __exportAll({ translations: () => translations$131 });
+	var translations$131;
+	var init_fr$24 = __esmMin((() => {
+		translations$131 = {
 			"Search datapoints…": "Rechercher des points de données…",
 			"Delete record": "Supprimer l’enregistrement",
 			Delete: "Supprimer",
@@ -2617,10 +2860,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/quick/i18n/fr.ts
-	var fr_exports$20 = /* @__PURE__ */ __exportAll({ translations: () => translations$119 });
-	var translations$119;
-	var init_fr$20 = __esmMin((() => {
-		translations$119 = {
+	var fr_exports$23 = /* @__PURE__ */ __exportAll({ translations: () => translations$130 });
+	var translations$130;
+	var init_fr$23 = __esmMin((() => {
+		translations$130 = {
 			General: "Général",
 			"Icon & colour": "Icône et couleur",
 			"Related items": "Éléments liés",
@@ -2638,10 +2881,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/sensor/i18n/fr.ts
-	var fr_exports$19 = /* @__PURE__ */ __exportAll({ translations: () => translations$118 });
-	var translations$118;
-	var init_fr$19 = __esmMin((() => {
-		translations$118 = {
+	var fr_exports$22 = /* @__PURE__ */ __exportAll({ translations: () => translations$129 });
+	var translations$129;
+	var init_fr$22 = __esmMin((() => {
+		translations$129 = {
 			Entity: "Entité",
 			Display: "Affichage",
 			"Records list": "Liste des enregistrements",
@@ -2661,10 +2904,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/chart/i18n/fr.ts
-	var fr_exports$18 = /* @__PURE__ */ __exportAll({ translations: () => translations$117 });
-	var translations$117;
-	var init_fr$18 = __esmMin((() => {
-		translations$117 = {
+	var fr_exports$21 = /* @__PURE__ */ __exportAll({ translations: () => translations$128 });
+	var translations$128;
+	var init_fr$21 = __esmMin((() => {
+		translations$128 = {
 			"⚠️ Anomaly Insight": "⚠️ Analyse d’anomalie",
 			"⚠️ Multi-method Anomaly": "⚠️ Anomalie multi-méthodes",
 			"Click the highlighted circle to add an annotation.": "Cliquez sur le cercle en surbrillance pour ajouter une annotation.",
@@ -2699,10 +2942,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/ha/i18n/fr.ts
-	var fr_exports$17 = /* @__PURE__ */ __exportAll({ translations: () => translations$116 });
-	var translations$116;
-	var init_fr$17 = __esmMin((() => {
-		translations$116 = {
+	var fr_exports$20 = /* @__PURE__ */ __exportAll({ translations: () => translations$127 });
+	var translations$127;
+	var init_fr$20 = __esmMin((() => {
+		translations$127 = {
 			"Confirm delete": "Confirmer la suppression",
 			"Are you sure you want to delete this item?": "Voulez-vous vraiment supprimer cet élément ?",
 			Cancel: "Annuler",
@@ -2716,21 +2959,122 @@
 		};
 	}));
 	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/history-page/i18n/fr.ts
+	var fr_exports$19 = /* @__PURE__ */ __exportAll({ translations: () => translations$126 });
+	var translations$126;
+	var init_fr$19 = __esmMin((() => {
+		translations$126 = {
+			"entity_id={0}": "entity_id={0}",
+			"device_id={0}": "device_id={0}",
+			"area_id={0}": "area_id={0}",
+			"label_id={0}": "label_id={0}",
+			none: "aucun",
+			"Entity metadata:": "Métadonnées de l'entité :",
+			"Snapshot range label:": "Libellé de la plage de l’instantané :",
+			"main range": "plage principale",
+			"Correlated anomaly highlighting enabled in chart:": "Mise en évidence des anomalies corrélées activée dans le graphique :",
+			yes: "oui",
+			no: "non",
+			"Current anomaly overlap mode:": "Mode actuel de chevauchement des anomalies :",
+			"Correlated anomaly periods across the selected datapoints:": "Périodes d’anomalies corrélées sur les points de données sélectionnés :",
+			"Entity findings:": "Constatations pour l'entité :",
+			"Detected clusters in current range:": "Clusters détectés dans la plage actuelle :",
+			"Displayed clusters under the current overlap/correlation mode:": "Clusters affichés avec le mode actuel de chevauchement/corrélation :",
+			"All detected anomaly cluster details:": "Détails de tous les clusters d’anomalies détectés :",
+			"Displayed anomaly cluster details:": "Détails des clusters d’anomalies affichés :",
+			"Entity:": "Entité :",
+			"Display name:": "Nom affiché :",
+			"Visible in panel:": "Visible dans le panneau :",
+			"Anomaly analysis: disabled in the current panel configuration.": "Analyse des anomalies : désactivée dans la configuration actuelle du panneau.",
+			"Anomaly analysis: enabled.": "Analyse des anomalies : activée.",
+			"Backend anomaly query inputs:": "Entrées de requête des anomalies côté backend :",
+			"Raw history query inputs:": "Entrées de requête de l’historique brut :",
+			"Comparison window reference:": "Référence de la fenêtre de comparaison :",
+			"Comparison window raw history query inputs:": "Entrées de requête de l’historique brut de la fenêtre de comparaison :",
+			"Comparison window anomaly query inputs:": "Entrées de requête des anomalies de la fenêtre de comparaison :",
+			"Baseline comparison entity:": "Entité de comparaison de base :",
+			"RELEVANT PERSISTED MONITORS": "MONITEURS PERSISTÉS PERTINENTS",
+			"No persisted anomaly monitors intersect the currently selected entities.": "Aucun moniteur d’anomalies persisté ne recoupe les entités actuellement sélectionnées.",
+			"Monitor: {0} ({1})": "Moniteur : {0} ({1})",
+			"Type:": "Type :",
+			"Enabled:": "Activé :",
+			"Entities:": "Entités :",
+			"Monitor anomaly query inputs:": "Entrées de requête des anomalies du moniteur :",
+			"AI QUERY BRIEF: HOME ASSISTANT DATAPOINTS PANEL": "RÉSUMÉ DE REQUÊTE IA : PANNEAU DATAPOINTS HOME ASSISTANT",
+			OBJECTIVE: "OBJECTIF",
+			"SUCCESS CRITERIA": "CRITÈRES DE RÉUSSITE",
+			"RETRIEVAL PRIORITY": "PRIORITÉ DE RÉCUPÉRATION",
+			"PANEL CONTEXT": "CONTEXTE DU PANNEAU",
+			"Selected entity ids:": "IDs des entités sélectionnées :",
+			"(none selected)": "(aucune sélectionnée)",
+			"Raw target selection summary:": "Résumé de la sélection cible brute :",
+			"Datapoint scope:": "Portée des points de données :",
+			"Main range start_time:": "start_time de la plage principale :",
+			"(not set)": "(non défini)",
+			"Main range end_time:": "end_time de la plage principale :",
+			"Committed zoom start_time:": "start_time du zoom validé :",
+			"Committed zoom end_time:": "end_time du zoom validé :",
+			"Selected comparison window id:": "ID de la fenêtre de comparaison sélectionnée :",
+			"(none)": "(aucune)",
+			"Comparison windows:": "Fenêtres de comparaison :",
+			"Chart anomaly overlap mode:": "Mode de chevauchement des anomalies du graphique :",
+			"RANGE / RETENTION NOTE": "NOTE SUR LA PLAGE / LA RÉTENTION",
+			"QUERY RULES": "RÈGLES DE REQUÊTE",
+			"RAW TARGET SELECTION OBJECT": "OBJET BRUT DE SÉLECTION DE CIBLE",
+			"AVAILABLE COMPARISON WINDOWS": "FENÊTRES DE COMPARAISON DISPONIBLES",
+			"PER-ENTITY QUERY DETAILS": "DÉTAILS DE REQUÊTE PAR ENTITÉ",
+			"RECOMMENDED OUTPUT": "SORTIE RECOMMANDÉE",
+			"Comparison window detail: the configured comparison window is not currently selected, so use the window id above to resolve the saved date window before querying.": "Comparison window detail: the configured comparison window is not currently selected, so use the window id above to resolve the saved date window before querying.",
+			"If raw recorder history is incomplete or unavailable, fetch Home Assistant statistics for continuity and call out the retention boundary explicitly.": "If raw recorder history is incomplete or unavailable, fetch Home Assistant statistics for continuity and call out the retention boundary explicitly.",
+			"The requested window spans about {0} days. Short-retention raw history may not fully cover this range, so use Home Assistant statistics for older or missing portions and do not infer 'no anomalies' from retention gaps.": "The requested window spans about {0} days. Short-retention raw history may not fully cover this range, so use Home Assistant statistics for older or missing portions and do not infer 'no anomalies' from retention gaps.",
+			"Use raw recorder history first for this range. If raw history is incomplete or unavailable, fetch Home Assistant statistics and explain any retention or recorder gaps.": "Use raw recorder history first for this range. If raw history is incomplete or unavailable, fetch Home Assistant statistics and explain any retention or recorder gaps.",
+			"CURRENT RANGE ANOMALY FINDINGS": "CURRENT RANGE ANOMALY FINDINGS",
+			"Current anomaly findings are not available from the active chart state, so use the query inputs below to fetch and inspect anomaly clusters directly.": "Current anomaly findings are not available from the active chart state, so use the query inputs below to fetch and inspect anomaly clusters directly.",
+			"No entity-level anomaly findings are currently available from the active chart snapshot.": "No entity-level anomaly findings are currently available from the active chart snapshot.",
+			"If your Home Assistant tooling requires explicit baseline range inputs, use the same start/end range as the main anomaly query unless a more specific monitor or MCP tool requires otherwise.": "If your Home Assistant tooling requires explicit baseline range inputs, use the same start/end range as the main anomaly query unless a more specific monitor or MCP tool requires otherwise.",
+			"Fetch the underlying Home Assistant history or statistics, entity metadata, and hass_datapoints anomaly detail needed to inspect the currently selected datapoints. Do not treat this brief as the raw data itself.": "Fetch the underlying Home Assistant history or statistics, entity metadata, and hass_datapoints anomaly detail needed to inspect the currently selected datapoints. Do not treat this brief as the raw data itself.",
+			"- Resolve entity metadata context for each selected entity.": "- Resolve entity metadata context for each selected entity.",
+			"- Fetch raw or best-available historical coverage for the requested range.": "- Fetch raw or best-available historical coverage for the requested range.",
+			"- Reproduce hass_datapoints anomaly queries with the exact panel settings below.": "- Reproduce hass_datapoints anomaly queries with the exact panel settings below.",
+			"- Review current-range anomaly findings from this integration, including cross-entity correlated anomaly periods when present.": "- Review current-range anomaly findings from this integration, including cross-entity correlated anomaly periods when present.",
+			"- Call out any retention, sampling, permission, or monitor-lookup limitations.": "- Call out any retention, sampling, permission, or monitor-lookup limitations.",
+			"1. Resolve entity metadata first so area, device, platform, labels, and unit context are known before interpretation.": "1. Resolve entity metadata first so area, device, platform, labels, and unit context are known before interpretation.",
+			"2. Fetch raw recorder history for the requested range where available.": "2. Fetch raw recorder history for the requested range where available.",
+			"3. If raw history is incomplete, unavailable, or truncated by retention, fetch Home Assistant statistics for continuity.": "3. If raw history is incomplete, unavailable, or truncated by retention, fetch Home Assistant statistics for continuity.",
+			"4. Reproduce the hass_datapoints anomaly queries exactly as listed below.": "4. Reproduce the hass_datapoints anomaly queries exactly as listed below.",
+			"5. Because anomaly analysis may use sampled data, compare raw history for ground truth against sampled series for anomaly reproduction.": "5. Because anomaly analysis may use sampled data, compare raw history for ground truth against sampled series for anomaly reproduction.",
+			"6. Review the current anomaly findings already found by this integration in the active range and use them to guide deeper inspection.": "6. Review the current anomaly findings already found by this integration in the active range and use them to guide deeper inspection.",
+			"7. If monitor context is available, fetch relevant monitor anomaly output for additional persisted monitor detail.": "7. If monitor context is available, fetch relevant monitor anomaly output for additional persisted monitor detail.",
+			"- Use UTC timestamps exactly as written for retrieval.": "- Use UTC timestamps exactly as written for retrieval.",
+			"- Convert to the Home Assistant local timezone only when interpreting daily or weekly behavior patterns.": "- Convert to the Home Assistant local timezone only when interpreting daily or weekly behavior patterns.",
+			"- Do not infer 'no anomaly' from missing raw history when retention may be limited.": "- Do not infer 'no anomaly' from missing raw history when retention may be limited.",
+			"- If anomaly queries below use sampled data, inspect both raw history and the sampled representation.": "- If anomaly queries below use sampled data, inspect both raw history and the sampled representation.",
+			"- For long ranges, remember HA history pagination and retention constraints can change what raw coverage is available.": "- For long ranges, remember HA history pagination and retention constraints can change what raw coverage is available.",
+			"No selected entities are currently available in the panel state.": "No selected entities are currently available in the panel state.",
+			"- Resolved metadata per selected entity, including unit, device class, state class, area, device, labels, and platform when available.": "- Resolved metadata per selected entity, including unit, device class, state class, area, device, labels, and platform when available.",
+			"- Coverage status of raw history versus statistics, including any retention or pagination limits encountered.": "- Coverage status of raw history versus statistics, including any retention or pagination limits encountered.",
+			"- Detailed anomaly findings per entity for the requested range, using the current integration findings above plus any fetched raw cluster detail.": "- Detailed anomaly findings per entity for the requested range, using the current integration findings above plus any fetched raw cluster detail.",
+			"- If anomalies indicate some type of event, zoom out and look for answers in the related area/group/labels or across other entities in the panel. If anomalies are unexpected, look for any subtle metadata clues that could explain them, such as a device class or state class that implies a different expected behavior pattern than initially assumed.": "- If anomalies indicate some type of event, zoom out and look for answers in the related area/group/labels or across other entities in the panel. If anomalies are unexpected, look for any subtle metadata clues that could explain them, such as a device class or state class that implies a different expected behavior pattern than initially assumed.",
+			"- Correlated anomaly periods across the selected datapoints, if any are present, including which entities participate and when the overlap occurs.": "- Correlated anomaly periods across the selected datapoints, if any are present, including which entities participate and when the overlap occurs.",
+			"- Any monitor-access, permission, sampling, comparison-window, or data-coverage limitations that materially affect interpretation.": "- Any monitor-access, permission, sampling, comparison-window, or data-coverage limitations that materially affect interpretation."
+		};
+	}));
+	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/timeline/i18n/fr.ts
-	var fr_exports$16 = /* @__PURE__ */ __exportAll({ translations: () => translations$115 });
-	var translations$115;
-	var init_fr$16 = __esmMin((() => {
-		translations$115 = {
+	var fr_exports$18 = /* @__PURE__ */ __exportAll({ translations: () => translations$125 });
+	var translations$125;
+	var init_fr$18 = __esmMin((() => {
+		translations$125 = {
 			Wk: "Sem.",
 			"Week of": "Semaine du"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-anomaly-group/i18n/fr.ts
-	var fr_exports$15 = /* @__PURE__ */ __exportAll({ translations: () => translations$114 });
-	var translations$114;
-	var init_fr$15 = __esmMin((() => {
-		translations$114 = {
+	var fr_exports$17 = /* @__PURE__ */ __exportAll({ translations: () => translations$124 });
+	var translations$124;
+	var init_fr$17 = __esmMin((() => {
+		translations$124 = {
 			"Show anomalies": "Afficher les anomalies",
 			Sensitivity: "Sensibilité",
 			"Use downsampled data for detection": "Utiliser les données rééchantillonnées pour la détection",
@@ -2772,10 +3116,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-delta-group/i18n/fr.ts
-	var fr_exports$14 = /* @__PURE__ */ __exportAll({ translations: () => translations$113 });
-	var translations$113;
-	var init_fr$14 = __esmMin((() => {
-		translations$113 = {
+	var fr_exports$16 = /* @__PURE__ */ __exportAll({ translations: () => translations$123 });
+	var translations$123;
+	var init_fr$16 = __esmMin((() => {
+		translations$123 = {
 			"Show delta vs selected date window": "Afficher le delta par rapport à la fenêtre de dates sélectionnée",
 			"Select a date window tab to enable delta analysis.": "Sélectionnez un onglet de fenêtre de dates pour activer l’analyse delta.",
 			"Show delta in tooltip": "Afficher le delta dans l’infobulle",
@@ -2784,10 +3128,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-rate-group/i18n/fr.ts
-	var fr_exports$13 = /* @__PURE__ */ __exportAll({ translations: () => translations$112 });
-	var translations$112;
-	var init_fr$13 = __esmMin((() => {
-		translations$112 = {
+	var fr_exports$15 = /* @__PURE__ */ __exportAll({ translations: () => translations$122 });
+	var translations$122;
+	var init_fr$15 = __esmMin((() => {
+		translations$122 = {
 			"Show rate of change": "Afficher le taux de variation",
 			"Show rate of change crosshairs": "Afficher les repères du taux de variation",
 			"Rate window": "Fenêtre de variation",
@@ -2799,10 +3143,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-sample-group/i18n/fr.ts
-	var fr_exports$12 = /* @__PURE__ */ __exportAll({ translations: () => translations$111 });
-	var translations$111;
-	var init_fr$12 = __esmMin((() => {
-		translations$111 = {
+	var fr_exports$14 = /* @__PURE__ */ __exportAll({ translations: () => translations$121 });
+	var translations$121;
+	var init_fr$14 = __esmMin((() => {
+		translations$121 = {
 			Downsampling: "Rééchantillonnage",
 			Interval: "Intervalle",
 			Aggregate: "Agrégat",
@@ -2834,20 +3178,20 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-summary-group/i18n/fr.ts
-	var fr_exports$11 = /* @__PURE__ */ __exportAll({ translations: () => translations$110 });
-	var translations$110;
-	var init_fr$11 = __esmMin((() => {
-		translations$110 = {
+	var fr_exports$13 = /* @__PURE__ */ __exportAll({ translations: () => translations$120 });
+	var translations$120;
+	var init_fr$13 = __esmMin((() => {
+		translations$120 = {
 			"Show min / max / mean": "Afficher min / max / moyenne",
 			"Show range shading": "Afficher l’ombrage de la plage"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-threshold-group/i18n/fr.ts
-	var fr_exports$10 = /* @__PURE__ */ __exportAll({ translations: () => translations$109 });
-	var translations$109;
-	var init_fr$10 = __esmMin((() => {
-		translations$109 = {
+	var fr_exports$12 = /* @__PURE__ */ __exportAll({ translations: () => translations$119 });
+	var translations$119;
+	var init_fr$12 = __esmMin((() => {
+		translations$119 = {
 			"Show threshold analysis": "Afficher l’analyse de seuil",
 			"Shade threshold area": "Ombrer la zone du seuil",
 			Threshold: "Seuil",
@@ -2858,10 +3202,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-trend-group/i18n/fr.ts
-	var fr_exports$9 = /* @__PURE__ */ __exportAll({ translations: () => translations$108 });
-	var translations$108;
-	var init_fr$9 = __esmMin((() => {
-		translations$108 = {
+	var fr_exports$11 = /* @__PURE__ */ __exportAll({ translations: () => translations$118 });
+	var translations$118;
+	var init_fr$11 = __esmMin((() => {
+		translations$118 = {
 			"Show trend lines": "Afficher les lignes de tendance",
 			"Show trend crosshairs": "Afficher les repères de tendance",
 			"Trend method": "Méthode de tendance",
@@ -2878,18 +3222,31 @@
 		};
 	}));
 	//#endregion
+	//#region custom_components/hass_datapoints/src/molecules/anomaly-monitor-wizard/i18n/fr.ts
+	var fr_exports$10 = /* @__PURE__ */ __exportAll({ translations: () => translations$117 });
+	var translations$117;
+	var init_fr$10 = __esmMin((() => {
+		translations$117 = {
+			"Add all series from chart": "Ajouter toutes les séries du graphique",
+			"Add from current chart": "Ajouter depuis le graphique actuel",
+			"Create anomaly monitor": "Créer un moniteur d'anomalies",
+			"Unable to save anomaly monitor.": "Impossible d'enregistrer le moniteur d'anomalies.",
+			"anomaly monitors": "moniteurs d'anomalies"
+		};
+	}));
+	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/comparison-tab-rail/i18n/fr.ts
-	var fr_exports$8 = /* @__PURE__ */ __exportAll({ translations: () => translations$107 });
-	var translations$107;
-	var init_fr$8 = __esmMin((() => {
-		translations$107 = { "Add date window": "Ajouter une fenêtre de dates" };
+	var fr_exports$9 = /* @__PURE__ */ __exportAll({ translations: () => translations$116 });
+	var translations$116;
+	var init_fr$9 = __esmMin((() => {
+		translations$116 = { "Add date window": "Ajouter une fenêtre de dates" };
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/date-window-dialog/i18n/fr.ts
-	var fr_exports$7 = /* @__PURE__ */ __exportAll({ translations: () => translations$106 });
-	var translations$106;
-	var init_fr$7 = __esmMin((() => {
-		translations$106 = {
+	var fr_exports$8 = /* @__PURE__ */ __exportAll({ translations: () => translations$115 });
+	var translations$115;
+	var init_fr$8 = __esmMin((() => {
+		translations$115 = {
 			"A date window saves a named date range as a tab, so you can quickly preview it against the selected range or jump the chart back to it later.": "Une fenêtre de dates enregistre une plage de dates nommée comme onglet afin que vous puissiez la prévisualiser rapidement par rapport à la plage sélectionnée ou y revenir plus tard dans le graphique.",
 			Name: "Nom",
 			"e.g. Heating season start": "ex. Début de la saison de chauffe",
@@ -2904,10 +3261,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/sidebar-options/sections/i18n/fr.ts
-	var fr_exports$6 = /* @__PURE__ */ __exportAll({ translations: () => translations$105 });
-	var translations$105;
-	var init_fr$6 = __esmMin((() => {
-		translations$105 = {
+	var fr_exports$7 = /* @__PURE__ */ __exportAll({ translations: () => translations$114 });
+	var translations$114;
+	var init_fr$7 = __esmMin((() => {
+		translations$114 = {
 			Datapoints: "Points de données",
 			"Choose which annotation datapoints appear on the chart.": "Choisissez quels points de données d’annotation apparaissent sur le graphique.",
 			"Linked to selected targets": "Liés aux cibles sélectionnées",
@@ -2917,10 +3274,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row/i18n/fr.ts
-	var fr_exports$5 = /* @__PURE__ */ __exportAll({ translations: () => translations$104 });
-	var translations$104;
-	var init_fr$5 = __esmMin((() => {
-		translations$104 = {
+	var fr_exports$6 = /* @__PURE__ */ __exportAll({ translations: () => translations$113 });
+	var translations$113;
+	var init_fr$6 = __esmMin((() => {
+		translations$113 = {
 			"Analysis configured": "Analyse configurée",
 			"Configure analysis": "Configurer l’analyse",
 			"Stepped series": "Série en escalier",
@@ -2932,17 +3289,32 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row-list/i18n/fr.ts
-	var fr_exports$4 = /* @__PURE__ */ __exportAll({ translations: () => translations$103 });
-	var translations$103;
+	var fr_exports$5 = /* @__PURE__ */ __exportAll({ translations: () => translations$112 });
+	var translations$112;
+	var init_fr$5 = __esmMin((() => {
+		translations$112 = {};
+	}));
+	//#endregion
+	//#region custom_components/hass_datapoints/src/panels/datapoints/components/ai-query-brief-dialog/i18n/fr.ts
+	var fr_exports$4 = /* @__PURE__ */ __exportAll({ translations: () => translations$111 });
+	var translations$111;
 	var init_fr$4 = __esmMin((() => {
-		translations$103 = {};
+		translations$111 = {
+			"AI query brief": "Brief de requete IA",
+			"This brief is intended for another AI to fetch raw Home Assistant history and hass_datapoints anomaly details. Review it, then copy it into your AI tool of choice.": "Ce brief est destine a une autre IA afin de recuperer l'historique brut de Home Assistant et les details d'anomalie de hass_datapoints. Relisez-le, puis copiez-le dans l'outil IA de votre choix.",
+			"Copy-ready brief": "Brief pret a copier",
+			Close: "Fermer",
+			"Copy brief": "Copier le brief",
+			"Copied to clipboard.": "Copie dans le presse-papiers.",
+			"Clipboard write failed. The text is selected so you can copy it manually.": "L'ecriture dans le presse-papiers a echoue. Le texte est selectionne afin que vous puissiez le copier manuellement."
+		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/history-targets/i18n/fr.ts
-	var fr_exports$3 = /* @__PURE__ */ __exportAll({ translations: () => translations$102 });
-	var translations$102;
+	var fr_exports$3 = /* @__PURE__ */ __exportAll({ translations: () => translations$110 });
+	var translations$110;
 	var init_fr$3 = __esmMin((() => {
-		translations$102 = {
+		translations$110 = {
 			Targets: "Cibles",
 			"Each row controls one chart series.": "Chaque ligne contrôle une série du graphique.",
 			"Add target": "Ajouter une cible",
@@ -2951,13 +3323,14 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/panel-shell/i18n/fr.ts
-	var fr_exports$2 = /* @__PURE__ */ __exportAll({ translations: () => translations$101 });
-	var translations$101;
+	var fr_exports$2 = /* @__PURE__ */ __exportAll({ translations: () => translations$109 });
+	var translations$109;
 	var init_fr$2 = __esmMin((() => {
-		translations$101 = {
+		translations$109 = {
 			"Loading Datapoints…": "Chargement des points de données…",
 			Datapoints: "Points de données",
 			"Page options": "Options de la page",
+			"AI query brief": "Brief de requete IA",
 			"Download spreadsheet": "Télécharger la feuille de calcul",
 			"Save page state": "Enregistrer l’état de la page",
 			"Restore saved page": "Restaurer la page enregistrée",
@@ -2968,10 +3341,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/range-toolbar/i18n/fr.ts
-	var fr_exports$1 = /* @__PURE__ */ __exportAll({ translations: () => translations$100 });
-	var translations$100;
+	var fr_exports$1 = /* @__PURE__ */ __exportAll({ translations: () => translations$108 });
+	var translations$108;
 	var init_fr$1 = __esmMin((() => {
-		translations$100 = {
+		translations$108 = {
 			"Toggle sidebar": "Basculer la barre latérale",
 			Start: "Début",
 			End: "Fin",
@@ -2999,6 +3372,8 @@
 	var fr_exports = /* @__PURE__ */ __exportAll({ templates: () => templates$4 });
 	var modules$4, merged$4, templates$4;
 	var init_fr = __esmMin((() => {
+		init_fr$27();
+		init_fr$26();
 		init_fr$25();
 		init_fr$24();
 		init_fr$23();
@@ -3025,28 +3400,30 @@
 		init_fr$2();
 		init_fr$1();
 		modules$4 = /* @__PURE__ */ Object.assign({
-			"../../../atoms/interactive/range-timeline/i18n/fr.ts": fr_exports$25,
-			"../../../cards/action/i18n/fr.ts": fr_exports$24,
-			"../../../cards/history/history-chart/i18n/fr.ts": fr_exports$23,
-			"../../../cards/history/i18n/fr.ts": fr_exports$22,
-			"../../../cards/list/i18n/fr.ts": fr_exports$21,
-			"../../../cards/quick/i18n/fr.ts": fr_exports$20,
-			"../../../cards/sensor/i18n/fr.ts": fr_exports$19,
-			"../../chart/i18n/fr.ts": fr_exports$18,
-			"../../ha/i18n/fr.ts": fr_exports$17,
-			"../../timeline/i18n/fr.ts": fr_exports$16,
-			"../../../molecules/analysis-anomaly-group/i18n/fr.ts": fr_exports$15,
-			"../../../molecules/analysis-delta-group/i18n/fr.ts": fr_exports$14,
-			"../../../molecules/analysis-rate-group/i18n/fr.ts": fr_exports$13,
-			"../../../molecules/analysis-sample-group/i18n/fr.ts": fr_exports$12,
-			"../../../molecules/analysis-summary-group/i18n/fr.ts": fr_exports$11,
-			"../../../molecules/analysis-threshold-group/i18n/fr.ts": fr_exports$10,
-			"../../../molecules/analysis-trend-group/i18n/fr.ts": fr_exports$9,
-			"../../../molecules/comparison-tab-rail/i18n/fr.ts": fr_exports$8,
-			"../../../molecules/date-window-dialog/i18n/fr.ts": fr_exports$7,
-			"../../../molecules/sidebar-options/sections/i18n/fr.ts": fr_exports$6,
-			"../../../molecules/target-row/i18n/fr.ts": fr_exports$5,
-			"../../../molecules/target-row-list/i18n/fr.ts": fr_exports$4,
+			"../../../cards/action/i18n/fr.ts": fr_exports$27,
+			"../../../cards/history/history-chart/i18n/fr.ts": fr_exports$26,
+			"../../../cards/history/i18n/fr.ts": fr_exports$25,
+			"../../../cards/list/i18n/fr.ts": fr_exports$24,
+			"../../../cards/quick/i18n/fr.ts": fr_exports$23,
+			"../../../cards/sensor/i18n/fr.ts": fr_exports$22,
+			"../../chart/i18n/fr.ts": fr_exports$21,
+			"../../ha/i18n/fr.ts": fr_exports$20,
+			"../../history-page/i18n/fr.ts": fr_exports$19,
+			"../../timeline/i18n/fr.ts": fr_exports$18,
+			"../../../molecules/analysis-anomaly-group/i18n/fr.ts": fr_exports$17,
+			"../../../molecules/analysis-delta-group/i18n/fr.ts": fr_exports$16,
+			"../../../molecules/analysis-rate-group/i18n/fr.ts": fr_exports$15,
+			"../../../molecules/analysis-sample-group/i18n/fr.ts": fr_exports$14,
+			"../../../molecules/analysis-summary-group/i18n/fr.ts": fr_exports$13,
+			"../../../molecules/analysis-threshold-group/i18n/fr.ts": fr_exports$12,
+			"../../../molecules/analysis-trend-group/i18n/fr.ts": fr_exports$11,
+			"../../../molecules/anomaly-monitor-wizard/i18n/fr.ts": fr_exports$10,
+			"../../../molecules/comparison-tab-rail/i18n/fr.ts": fr_exports$9,
+			"../../../molecules/date-window-dialog/i18n/fr.ts": fr_exports$8,
+			"../../../molecules/sidebar-options/sections/i18n/fr.ts": fr_exports$7,
+			"../../../molecules/target-row/i18n/fr.ts": fr_exports$6,
+			"../../../molecules/target-row-list/i18n/fr.ts": fr_exports$5,
+			"../../../panels/datapoints/components/ai-query-brief-dialog/i18n/fr.ts": fr_exports$4,
 			"../../../panels/datapoints/components/history-targets/i18n/fr.ts": fr_exports$3,
 			"../../../panels/datapoints/components/panel-shell/i18n/fr.ts": fr_exports$2,
 			"../../../panels/datapoints/components/range-toolbar/i18n/fr.ts": fr_exports$1
@@ -3056,24 +3433,11 @@
 		templates$4 = merged$4;
 	}));
 	//#endregion
-	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/i18n/de.ts
-	var de_exports$25 = /* @__PURE__ */ __exportAll({ translations: () => translations$99 });
-	var translations$99;
-	var init_de$25 = __esmMin((() => {
-		translations$99 = {
-			"Updates with new data": "Aktualisiert sich mit neuen Daten",
-			"Scroll to selected range": "Zum ausgewählten Bereich scrollen",
-			"Start date and time": "Startdatum und -zeit",
-			"End date and time": "Enddatum und -zeit",
-			Select: "Auswählen"
-		};
-	}));
-	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/action/i18n/de.ts
-	var de_exports$24 = /* @__PURE__ */ __exportAll({ translations: () => translations$98 });
-	var translations$98;
-	var init_de$24 = __esmMin((() => {
-		translations$98 = {
+	var de_exports$27 = /* @__PURE__ */ __exportAll({ translations: () => translations$107 });
+	var translations$107;
+	var init_de$27 = __esmMin((() => {
+		translations$107 = {
 			General: "Allgemein",
 			"Related items": "Verknüpfte Elemente",
 			"Datapoint Appearance": "Darstellung des Datenpunkts",
@@ -3090,20 +3454,20 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/history-chart/i18n/de.ts
-	var de_exports$23 = /* @__PURE__ */ __exportAll({ translations: () => translations$97 });
-	var translations$97;
-	var init_de$23 = __esmMin((() => {
-		translations$97 = {
+	var de_exports$26 = /* @__PURE__ */ __exportAll({ translations: () => translations$106 });
+	var translations$106;
+	var init_de$26 = __esmMin((() => {
+		translations$106 = {
 			"Date window:": "Datumsfenster:",
 			"Actual:": "Tatsächlich:"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/i18n/de.ts
-	var de_exports$22 = /* @__PURE__ */ __exportAll({ translations: () => translations$96 });
-	var translations$96;
-	var init_de$22 = __esmMin((() => {
-		translations$96 = {
+	var de_exports$25 = /* @__PURE__ */ __exportAll({ translations: () => translations$105 });
+	var translations$105;
+	var init_de$25 = __esmMin((() => {
+		translations$105 = {
 			General: "Allgemein",
 			Entity: "Entität",
 			"Multiple entities": "Mehrere Entitäten",
@@ -3117,10 +3481,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/list/i18n/de.ts
-	var de_exports$21 = /* @__PURE__ */ __exportAll({ translations: () => translations$95 });
-	var translations$95;
-	var init_de$21 = __esmMin((() => {
-		translations$95 = {
+	var de_exports$24 = /* @__PURE__ */ __exportAll({ translations: () => translations$104 });
+	var translations$104;
+	var init_de$24 = __esmMin((() => {
+		translations$104 = {
 			"Search datapoints…": "Datenpunkte suchen…",
 			"Delete record": "Eintrag löschen",
 			Delete: "Löschen",
@@ -3138,10 +3502,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/quick/i18n/de.ts
-	var de_exports$20 = /* @__PURE__ */ __exportAll({ translations: () => translations$94 });
-	var translations$94;
-	var init_de$20 = __esmMin((() => {
-		translations$94 = {
+	var de_exports$23 = /* @__PURE__ */ __exportAll({ translations: () => translations$103 });
+	var translations$103;
+	var init_de$23 = __esmMin((() => {
+		translations$103 = {
 			General: "Allgemein",
 			"Icon & colour": "Symbol und Farbe",
 			"Related items": "Verknüpfte Elemente",
@@ -3159,10 +3523,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/sensor/i18n/de.ts
-	var de_exports$19 = /* @__PURE__ */ __exportAll({ translations: () => translations$93 });
-	var translations$93;
-	var init_de$19 = __esmMin((() => {
-		translations$93 = {
+	var de_exports$22 = /* @__PURE__ */ __exportAll({ translations: () => translations$102 });
+	var translations$102;
+	var init_de$22 = __esmMin((() => {
+		translations$102 = {
 			Entity: "Entität",
 			Display: "Anzeige",
 			"Records list": "Eintragsliste",
@@ -3182,10 +3546,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/chart/i18n/de.ts
-	var de_exports$18 = /* @__PURE__ */ __exportAll({ translations: () => translations$92 });
-	var translations$92;
-	var init_de$18 = __esmMin((() => {
-		translations$92 = {
+	var de_exports$21 = /* @__PURE__ */ __exportAll({ translations: () => translations$101 });
+	var translations$101;
+	var init_de$21 = __esmMin((() => {
+		translations$101 = {
 			"⚠️ Anomaly Insight": "⚠️ Anomalie-Einblick",
 			"⚠️ Multi-method Anomaly": "⚠️ Anomalie mit mehreren Methoden",
 			"Click the highlighted circle to add an annotation.": "Klicken Sie auf den hervorgehobenen Kreis, um eine Anmerkung hinzuzufügen.",
@@ -3220,10 +3584,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/ha/i18n/de.ts
-	var de_exports$17 = /* @__PURE__ */ __exportAll({ translations: () => translations$91 });
-	var translations$91;
-	var init_de$17 = __esmMin((() => {
-		translations$91 = {
+	var de_exports$20 = /* @__PURE__ */ __exportAll({ translations: () => translations$100 });
+	var translations$100;
+	var init_de$20 = __esmMin((() => {
+		translations$100 = {
 			"Confirm delete": "Löschen bestätigen",
 			"Are you sure you want to delete this item?": "Möchten Sie dieses Element wirklich löschen?",
 			Cancel: "Abbrechen",
@@ -3237,21 +3601,122 @@
 		};
 	}));
 	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/history-page/i18n/de.ts
+	var de_exports$19 = /* @__PURE__ */ __exportAll({ translations: () => translations$99 });
+	var translations$99;
+	var init_de$19 = __esmMin((() => {
+		translations$99 = {
+			"entity_id={0}": "entity_id={0}",
+			"device_id={0}": "device_id={0}",
+			"area_id={0}": "area_id={0}",
+			"label_id={0}": "label_id={0}",
+			none: "keine",
+			"Entity metadata:": "Entitätsmetadaten:",
+			"Snapshot range label:": "Bezeichnung des Snapshot-Bereichs:",
+			"main range": "Hauptbereich",
+			"Correlated anomaly highlighting enabled in chart:": "Hervorhebung korrelierter Anomalien im Diagramm aktiviert:",
+			yes: "ja",
+			no: "nein",
+			"Current anomaly overlap mode:": "Aktueller Anomalie-Überlappungsmodus:",
+			"Correlated anomaly periods across the selected datapoints:": "Korrelierte Anomaliezeiträume über die ausgewählten Datenpunkte hinweg:",
+			"Entity findings:": "Entitätsbefunde:",
+			"Detected clusters in current range:": "Erkannte Cluster im aktuellen Bereich:",
+			"Displayed clusters under the current overlap/correlation mode:": "Angezeigte Cluster im aktuellen Überlappungs-/Korrelationsmodus:",
+			"All detected anomaly cluster details:": "Details aller erkannten Anomaliecluster:",
+			"Displayed anomaly cluster details:": "Details der angezeigten Anomaliecluster:",
+			"Entity:": "Entität:",
+			"Display name:": "Anzeigename:",
+			"Visible in panel:": "Im Panel sichtbar:",
+			"Anomaly analysis: disabled in the current panel configuration.": "Anomalieanalyse: in der aktuellen Panel-Konfiguration deaktiviert.",
+			"Anomaly analysis: enabled.": "Anomalieanalyse: aktiviert.",
+			"Backend anomaly query inputs:": "Eingaben für die Backend-Anomalieabfrage:",
+			"Raw history query inputs:": "Eingaben für die Rohverlaufsabfrage:",
+			"Comparison window reference:": "Referenz des Vergleichsfensters:",
+			"Comparison window raw history query inputs:": "Eingaben für die Rohverlaufsabfrage des Vergleichsfensters:",
+			"Comparison window anomaly query inputs:": "Eingaben für die Anomalieabfrage des Vergleichsfensters:",
+			"Comparison window detail: the configured comparison window is not currently selected, so use the window id above to resolve the saved date window before querying.": "Detail zum Vergleichsfenster: Das konfigurierte Vergleichsfenster ist derzeit nicht ausgewählt. Verwende daher vor der Abfrage die oben genannte Fenster-ID, um das gespeicherte Datumsfenster aufzulösen.",
+			"Baseline comparison entity:": "Entität für den Basisvergleich:",
+			"RELEVANT PERSISTED MONITORS": "RELEVANTE GESPEICHERTE MONITORE",
+			"No persisted anomaly monitors intersect the currently selected entities.": "Keine gespeicherten Anomaliemonitore überschneiden sich mit den aktuell ausgewählten Entitäten.",
+			"Monitor: {0} ({1})": "Monitor: {0} ({1})",
+			"Type:": "Typ:",
+			"Enabled:": "Aktiviert:",
+			"Entities:": "Entitäten:",
+			"Monitor anomaly query inputs:": "Eingaben für die Monitor-Anomalieabfrage:",
+			"AI QUERY BRIEF: HOME ASSISTANT DATAPOINTS PANEL": "KI-ABFRAGEKURZFASSUNG: HOME ASSISTANT DATAPOINTS PANEL",
+			OBJECTIVE: "ZIEL",
+			"SUCCESS CRITERIA": "ERFOLGSKRITERIEN",
+			"RETRIEVAL PRIORITY": "ABRUFPRIORITÄT",
+			"PANEL CONTEXT": "PANELKONTEXT",
+			"Selected entity ids:": "Ausgewählte Entitäts-IDs:",
+			"(none selected)": "(keine ausgewählt)",
+			"Raw target selection summary:": "Zusammenfassung der rohen Zielauswahl:",
+			"Datapoint scope:": "Datenpunktbereich:",
+			"Main range start_time:": "start_time des Hauptbereichs:",
+			"(not set)": "(nicht gesetzt)",
+			"Main range end_time:": "end_time des Hauptbereichs:",
+			"Committed zoom start_time:": "start_time des bestätigten Zooms:",
+			"Committed zoom end_time:": "end_time des bestätigten Zooms:",
+			"Selected comparison window id:": "ID des ausgewählten Vergleichsfensters:",
+			"(none)": "(keines)",
+			"Comparison windows:": "Vergleichsfenster:",
+			"Chart anomaly overlap mode:": "Anomalie-Überlappungsmodus des Diagramms:",
+			"RANGE / RETENTION NOTE": "HINWEIS ZU BEREICH / AUFBEWAHRUNG",
+			"QUERY RULES": "ABFRAGEREGELN",
+			"RAW TARGET SELECTION OBJECT": "ROHES ZIELAUSWAHLOBJEKT",
+			"AVAILABLE COMPARISON WINDOWS": "VERFÜGBARE VERGLEICHSFENSTER",
+			"PER-ENTITY QUERY DETAILS": "ABFRAGEDETAILS PRO ENTITÄT",
+			"RECOMMENDED OUTPUT": "EMPFOHLENE AUSGABE",
+			"If raw recorder history is incomplete or unavailable, fetch Home Assistant statistics for continuity and call out the retention boundary explicitly.": "If raw recorder history is incomplete or unavailable, fetch Home Assistant statistics for continuity and call out the retention boundary explicitly.",
+			"The requested window spans about {0} days. Short-retention raw history may not fully cover this range, so use Home Assistant statistics for older or missing portions and do not infer 'no anomalies' from retention gaps.": "The requested window spans about {0} days. Short-retention raw history may not fully cover this range, so use Home Assistant statistics for older or missing portions and do not infer 'no anomalies' from retention gaps.",
+			"Use raw recorder history first for this range. If raw history is incomplete or unavailable, fetch Home Assistant statistics and explain any retention or recorder gaps.": "Use raw recorder history first for this range. If raw history is incomplete or unavailable, fetch Home Assistant statistics and explain any retention or recorder gaps.",
+			"CURRENT RANGE ANOMALY FINDINGS": "CURRENT RANGE ANOMALY FINDINGS",
+			"Current anomaly findings are not available from the active chart state, so use the query inputs below to fetch and inspect anomaly clusters directly.": "Current anomaly findings are not available from the active chart state, so use the query inputs below to fetch and inspect anomaly clusters directly.",
+			"No entity-level anomaly findings are currently available from the active chart snapshot.": "No entity-level anomaly findings are currently available from the active chart snapshot.",
+			"If your Home Assistant tooling requires explicit baseline range inputs, use the same start/end range as the main anomaly query unless a more specific monitor or MCP tool requires otherwise.": "If your Home Assistant tooling requires explicit baseline range inputs, use the same start/end range as the main anomaly query unless a more specific monitor or MCP tool requires otherwise.",
+			"Fetch the underlying Home Assistant history or statistics, entity metadata, and hass_datapoints anomaly detail needed to inspect the currently selected datapoints. Do not treat this brief as the raw data itself.": "Fetch the underlying Home Assistant history or statistics, entity metadata, and hass_datapoints anomaly detail needed to inspect the currently selected datapoints. Do not treat this brief as the raw data itself.",
+			"- Resolve entity metadata context for each selected entity.": "- Resolve entity metadata context for each selected entity.",
+			"- Fetch raw or best-available historical coverage for the requested range.": "- Fetch raw or best-available historical coverage for the requested range.",
+			"- Reproduce hass_datapoints anomaly queries with the exact panel settings below.": "- Reproduce hass_datapoints anomaly queries with the exact panel settings below.",
+			"- Review current-range anomaly findings from this integration, including cross-entity correlated anomaly periods when present.": "- Review current-range anomaly findings from this integration, including cross-entity correlated anomaly periods when present.",
+			"- Call out any retention, sampling, permission, or monitor-lookup limitations.": "- Call out any retention, sampling, permission, or monitor-lookup limitations.",
+			"1. Resolve entity metadata first so area, device, platform, labels, and unit context are known before interpretation.": "1. Resolve entity metadata first so area, device, platform, labels, and unit context are known before interpretation.",
+			"2. Fetch raw recorder history for the requested range where available.": "2. Fetch raw recorder history for the requested range where available.",
+			"3. If raw history is incomplete, unavailable, or truncated by retention, fetch Home Assistant statistics for continuity.": "3. If raw history is incomplete, unavailable, or truncated by retention, fetch Home Assistant statistics for continuity.",
+			"4. Reproduce the hass_datapoints anomaly queries exactly as listed below.": "4. Reproduce the hass_datapoints anomaly queries exactly as listed below.",
+			"5. Because anomaly analysis may use sampled data, compare raw history for ground truth against sampled series for anomaly reproduction.": "5. Because anomaly analysis may use sampled data, compare raw history for ground truth against sampled series for anomaly reproduction.",
+			"6. Review the current anomaly findings already found by this integration in the active range and use them to guide deeper inspection.": "6. Review the current anomaly findings already found by this integration in the active range and use them to guide deeper inspection.",
+			"7. If monitor context is available, fetch relevant monitor anomaly output for additional persisted monitor detail.": "7. If monitor context is available, fetch relevant monitor anomaly output for additional persisted monitor detail.",
+			"- Use UTC timestamps exactly as written for retrieval.": "- Use UTC timestamps exactly as written for retrieval.",
+			"- Convert to the Home Assistant local timezone only when interpreting daily or weekly behavior patterns.": "- Convert to the Home Assistant local timezone only when interpreting daily or weekly behavior patterns.",
+			"- Do not infer 'no anomaly' from missing raw history when retention may be limited.": "- Do not infer 'no anomaly' from missing raw history when retention may be limited.",
+			"- If anomaly queries below use sampled data, inspect both raw history and the sampled representation.": "- If anomaly queries below use sampled data, inspect both raw history and the sampled representation.",
+			"- For long ranges, remember HA history pagination and retention constraints can change what raw coverage is available.": "- For long ranges, remember HA history pagination and retention constraints can change what raw coverage is available.",
+			"No selected entities are currently available in the panel state.": "No selected entities are currently available in the panel state.",
+			"- Resolved metadata per selected entity, including unit, device class, state class, area, device, labels, and platform when available.": "- Resolved metadata per selected entity, including unit, device class, state class, area, device, labels, and platform when available.",
+			"- Coverage status of raw history versus statistics, including any retention or pagination limits encountered.": "- Coverage status of raw history versus statistics, including any retention or pagination limits encountered.",
+			"- Detailed anomaly findings per entity for the requested range, using the current integration findings above plus any fetched raw cluster detail.": "- Detailed anomaly findings per entity for the requested range, using the current integration findings above plus any fetched raw cluster detail.",
+			"- If anomalies indicate some type of event, zoom out and look for answers in the related area/group/labels or across other entities in the panel. If anomalies are unexpected, look for any subtle metadata clues that could explain them, such as a device class or state class that implies a different expected behavior pattern than initially assumed.": "- If anomalies indicate some type of event, zoom out and look for answers in the related area/group/labels or across other entities in the panel. If anomalies are unexpected, look for any subtle metadata clues that could explain them, such as a device class or state class that implies a different expected behavior pattern than initially assumed.",
+			"- Correlated anomaly periods across the selected datapoints, if any are present, including which entities participate and when the overlap occurs.": "- Correlated anomaly periods across the selected datapoints, if any are present, including which entities participate and when the overlap occurs.",
+			"- Any monitor-access, permission, sampling, comparison-window, or data-coverage limitations that materially affect interpretation.": "- Any monitor-access, permission, sampling, comparison-window, or data-coverage limitations that materially affect interpretation."
+		};
+	}));
+	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/timeline/i18n/de.ts
-	var de_exports$16 = /* @__PURE__ */ __exportAll({ translations: () => translations$90 });
-	var translations$90;
-	var init_de$16 = __esmMin((() => {
-		translations$90 = {
+	var de_exports$18 = /* @__PURE__ */ __exportAll({ translations: () => translations$98 });
+	var translations$98;
+	var init_de$18 = __esmMin((() => {
+		translations$98 = {
 			Wk: "KW",
 			"Week of": "Woche von"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-anomaly-group/i18n/de.ts
-	var de_exports$15 = /* @__PURE__ */ __exportAll({ translations: () => translations$89 });
-	var translations$89;
-	var init_de$15 = __esmMin((() => {
-		translations$89 = {
+	var de_exports$17 = /* @__PURE__ */ __exportAll({ translations: () => translations$97 });
+	var translations$97;
+	var init_de$17 = __esmMin((() => {
+		translations$97 = {
 			"Show anomalies": "Anomalien anzeigen",
 			Sensitivity: "Empfindlichkeit",
 			"Use downsampled data for detection": "Heruntergesampelte Daten für die Erkennung verwenden",
@@ -3293,10 +3758,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-delta-group/i18n/de.ts
-	var de_exports$14 = /* @__PURE__ */ __exportAll({ translations: () => translations$88 });
-	var translations$88;
-	var init_de$14 = __esmMin((() => {
-		translations$88 = {
+	var de_exports$16 = /* @__PURE__ */ __exportAll({ translations: () => translations$96 });
+	var translations$96;
+	var init_de$16 = __esmMin((() => {
+		translations$96 = {
 			"Show delta vs selected date window": "Delta gegenüber dem ausgewählten Datumsfenster anzeigen",
 			"Select a date window tab to enable delta analysis.": "Wählen Sie einen Tab für ein Datumsfenster, um die Delta-Analyse zu aktivieren.",
 			"Show delta in tooltip": "Delta im Tooltip anzeigen",
@@ -3305,10 +3770,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-rate-group/i18n/de.ts
-	var de_exports$13 = /* @__PURE__ */ __exportAll({ translations: () => translations$87 });
-	var translations$87;
-	var init_de$13 = __esmMin((() => {
-		translations$87 = {
+	var de_exports$15 = /* @__PURE__ */ __exportAll({ translations: () => translations$95 });
+	var translations$95;
+	var init_de$15 = __esmMin((() => {
+		translations$95 = {
 			"Show rate of change": "Änderungsrate anzeigen",
 			"Show rate of change crosshairs": "Fadenkreuz für Änderungsrate anzeigen",
 			"Rate window": "Ratenfenster",
@@ -3320,10 +3785,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-sample-group/i18n/de.ts
-	var de_exports$12 = /* @__PURE__ */ __exportAll({ translations: () => translations$86 });
-	var translations$86;
-	var init_de$12 = __esmMin((() => {
-		translations$86 = {
+	var de_exports$14 = /* @__PURE__ */ __exportAll({ translations: () => translations$94 });
+	var translations$94;
+	var init_de$14 = __esmMin((() => {
+		translations$94 = {
 			Downsampling: "Downsampling",
 			Interval: "Intervall",
 			Aggregate: "Aggregation",
@@ -3355,20 +3820,20 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-summary-group/i18n/de.ts
-	var de_exports$11 = /* @__PURE__ */ __exportAll({ translations: () => translations$85 });
-	var translations$85;
-	var init_de$11 = __esmMin((() => {
-		translations$85 = {
+	var de_exports$13 = /* @__PURE__ */ __exportAll({ translations: () => translations$93 });
+	var translations$93;
+	var init_de$13 = __esmMin((() => {
+		translations$93 = {
 			"Show min / max / mean": "Min / Max / Mittelwert anzeigen",
 			"Show range shading": "Bereichsschattierung anzeigen"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-threshold-group/i18n/de.ts
-	var de_exports$10 = /* @__PURE__ */ __exportAll({ translations: () => translations$84 });
-	var translations$84;
-	var init_de$10 = __esmMin((() => {
-		translations$84 = {
+	var de_exports$12 = /* @__PURE__ */ __exportAll({ translations: () => translations$92 });
+	var translations$92;
+	var init_de$12 = __esmMin((() => {
+		translations$92 = {
 			"Show threshold analysis": "Schwellwertanalyse anzeigen",
 			"Shade threshold area": "Schwellwertbereich schattieren",
 			Threshold: "Schwellenwert",
@@ -3379,10 +3844,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-trend-group/i18n/de.ts
-	var de_exports$9 = /* @__PURE__ */ __exportAll({ translations: () => translations$83 });
-	var translations$83;
-	var init_de$9 = __esmMin((() => {
-		translations$83 = {
+	var de_exports$11 = /* @__PURE__ */ __exportAll({ translations: () => translations$91 });
+	var translations$91;
+	var init_de$11 = __esmMin((() => {
+		translations$91 = {
 			"Show trend lines": "Trendlinien anzeigen",
 			"Show trend crosshairs": "Fadenkreuz für Trend anzeigen",
 			"Trend method": "Trendmethode",
@@ -3399,18 +3864,31 @@
 		};
 	}));
 	//#endregion
+	//#region custom_components/hass_datapoints/src/molecules/anomaly-monitor-wizard/i18n/de.ts
+	var de_exports$10 = /* @__PURE__ */ __exportAll({ translations: () => translations$90 });
+	var translations$90;
+	var init_de$10 = __esmMin((() => {
+		translations$90 = {
+			"Add all series from chart": "Alle Reihen aus dem Diagramm hinzufügen",
+			"Add from current chart": "Aus aktuellem Diagramm hinzufügen",
+			"Create anomaly monitor": "Anomaliemonitor erstellen",
+			"Unable to save anomaly monitor.": "Anomaliemonitor konnte nicht gespeichert werden.",
+			"anomaly monitors": "Anomaliemonitore"
+		};
+	}));
+	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/comparison-tab-rail/i18n/de.ts
-	var de_exports$8 = /* @__PURE__ */ __exportAll({ translations: () => translations$82 });
-	var translations$82;
-	var init_de$8 = __esmMin((() => {
-		translations$82 = { "Add date window": "Datumsfenster hinzufügen" };
+	var de_exports$9 = /* @__PURE__ */ __exportAll({ translations: () => translations$89 });
+	var translations$89;
+	var init_de$9 = __esmMin((() => {
+		translations$89 = { "Add date window": "Datumsfenster hinzufügen" };
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/date-window-dialog/i18n/de.ts
-	var de_exports$7 = /* @__PURE__ */ __exportAll({ translations: () => translations$81 });
-	var translations$81;
-	var init_de$7 = __esmMin((() => {
-		translations$81 = {
+	var de_exports$8 = /* @__PURE__ */ __exportAll({ translations: () => translations$88 });
+	var translations$88;
+	var init_de$8 = __esmMin((() => {
+		translations$88 = {
 			"A date window saves a named date range as a tab, so you can quickly preview it against the selected range or jump the chart back to it later.": "Ein Datumsfenster speichert einen benannten Datumsbereich als Registerkarte, damit Sie ihn schnell mit dem ausgewählten Bereich vergleichen oder später im Diagramm wieder dorthin springen können.",
 			Name: "Name",
 			"e.g. Heating season start": "z. B. Beginn der Heizsaison",
@@ -3425,10 +3903,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/sidebar-options/sections/i18n/de.ts
-	var de_exports$6 = /* @__PURE__ */ __exportAll({ translations: () => translations$80 });
-	var translations$80;
-	var init_de$6 = __esmMin((() => {
-		translations$80 = {
+	var de_exports$7 = /* @__PURE__ */ __exportAll({ translations: () => translations$87 });
+	var translations$87;
+	var init_de$7 = __esmMin((() => {
+		translations$87 = {
 			Datapoints: "Datenpunkte",
 			"Choose which annotation datapoints appear on the chart.": "Wählen Sie aus, welche Anmerkungs-Datenpunkte im Diagramm angezeigt werden.",
 			"Linked to selected targets": "Mit ausgewählten Zielen verknüpft",
@@ -3438,10 +3916,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row/i18n/de.ts
-	var de_exports$5 = /* @__PURE__ */ __exportAll({ translations: () => translations$79 });
-	var translations$79;
-	var init_de$5 = __esmMin((() => {
-		translations$79 = {
+	var de_exports$6 = /* @__PURE__ */ __exportAll({ translations: () => translations$86 });
+	var translations$86;
+	var init_de$6 = __esmMin((() => {
+		translations$86 = {
 			"Analysis configured": "Analyse konfiguriert",
 			"Configure analysis": "Analyse konfigurieren",
 			"Stepped series": "Stufenserie",
@@ -3453,17 +3931,32 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row-list/i18n/de.ts
-	var de_exports$4 = /* @__PURE__ */ __exportAll({ translations: () => translations$78 });
-	var translations$78;
+	var de_exports$5 = /* @__PURE__ */ __exportAll({ translations: () => translations$85 });
+	var translations$85;
+	var init_de$5 = __esmMin((() => {
+		translations$85 = {};
+	}));
+	//#endregion
+	//#region custom_components/hass_datapoints/src/panels/datapoints/components/ai-query-brief-dialog/i18n/de.ts
+	var de_exports$4 = /* @__PURE__ */ __exportAll({ translations: () => translations$84 });
+	var translations$84;
 	var init_de$4 = __esmMin((() => {
-		translations$78 = {};
+		translations$84 = {
+			"AI query brief": "KI-Abfragebriefing",
+			"This brief is intended for another AI to fetch raw Home Assistant history and hass_datapoints anomaly details. Review it, then copy it into your AI tool of choice.": "Dieses Briefing ist fuer eine andere KI gedacht, damit sie rohe Home-Assistant-Verlaeufe und hass_datapoints-Anomaliedetails abrufen kann. Pruefe es und kopiere es dann in dein KI-Werkzeug deiner Wahl.",
+			"Copy-ready brief": "Kopierfertiges Briefing",
+			Close: "Schliessen",
+			"Copy brief": "Briefing kopieren",
+			"Copied to clipboard.": "In die Zwischenablage kopiert.",
+			"Clipboard write failed. The text is selected so you can copy it manually.": "Das Schreiben in die Zwischenablage ist fehlgeschlagen. Der Text ist markiert, sodass du ihn manuell kopieren kannst."
+		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/history-targets/i18n/de.ts
-	var de_exports$3 = /* @__PURE__ */ __exportAll({ translations: () => translations$77 });
-	var translations$77;
+	var de_exports$3 = /* @__PURE__ */ __exportAll({ translations: () => translations$83 });
+	var translations$83;
 	var init_de$3 = __esmMin((() => {
-		translations$77 = {
+		translations$83 = {
 			Targets: "Ziele",
 			"Each row controls one chart series.": "Jede Zeile steuert eine Diagrammserie.",
 			"Add target": "Ziel hinzufügen",
@@ -3472,13 +3965,14 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/panel-shell/i18n/de.ts
-	var de_exports$2 = /* @__PURE__ */ __exportAll({ translations: () => translations$76 });
-	var translations$76;
+	var de_exports$2 = /* @__PURE__ */ __exportAll({ translations: () => translations$82 });
+	var translations$82;
 	var init_de$2 = __esmMin((() => {
-		translations$76 = {
+		translations$82 = {
 			"Loading Datapoints…": "Datenpunkte werden geladen…",
 			Datapoints: "Datenpunkte",
 			"Page options": "Seitenoptionen",
+			"AI query brief": "KI-Abfragebriefing",
 			"Download spreadsheet": "Tabellenblatt herunterladen",
 			"Save page state": "Seitenstatus speichern",
 			"Restore saved page": "Gespeicherte Seite wiederherstellen",
@@ -3489,10 +3983,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/range-toolbar/i18n/de.ts
-	var de_exports$1 = /* @__PURE__ */ __exportAll({ translations: () => translations$75 });
-	var translations$75;
+	var de_exports$1 = /* @__PURE__ */ __exportAll({ translations: () => translations$81 });
+	var translations$81;
 	var init_de$1 = __esmMin((() => {
-		translations$75 = {
+		translations$81 = {
 			"Toggle sidebar": "Seitenleiste umschalten",
 			Start: "Start",
 			End: "Ende",
@@ -3520,6 +4014,8 @@
 	var de_exports = /* @__PURE__ */ __exportAll({ templates: () => templates$3 });
 	var modules$3, merged$3, templates$3;
 	var init_de = __esmMin((() => {
+		init_de$27();
+		init_de$26();
 		init_de$25();
 		init_de$24();
 		init_de$23();
@@ -3546,28 +4042,30 @@
 		init_de$2();
 		init_de$1();
 		modules$3 = /* @__PURE__ */ Object.assign({
-			"../../../atoms/interactive/range-timeline/i18n/de.ts": de_exports$25,
-			"../../../cards/action/i18n/de.ts": de_exports$24,
-			"../../../cards/history/history-chart/i18n/de.ts": de_exports$23,
-			"../../../cards/history/i18n/de.ts": de_exports$22,
-			"../../../cards/list/i18n/de.ts": de_exports$21,
-			"../../../cards/quick/i18n/de.ts": de_exports$20,
-			"../../../cards/sensor/i18n/de.ts": de_exports$19,
-			"../../chart/i18n/de.ts": de_exports$18,
-			"../../ha/i18n/de.ts": de_exports$17,
-			"../../timeline/i18n/de.ts": de_exports$16,
-			"../../../molecules/analysis-anomaly-group/i18n/de.ts": de_exports$15,
-			"../../../molecules/analysis-delta-group/i18n/de.ts": de_exports$14,
-			"../../../molecules/analysis-rate-group/i18n/de.ts": de_exports$13,
-			"../../../molecules/analysis-sample-group/i18n/de.ts": de_exports$12,
-			"../../../molecules/analysis-summary-group/i18n/de.ts": de_exports$11,
-			"../../../molecules/analysis-threshold-group/i18n/de.ts": de_exports$10,
-			"../../../molecules/analysis-trend-group/i18n/de.ts": de_exports$9,
-			"../../../molecules/comparison-tab-rail/i18n/de.ts": de_exports$8,
-			"../../../molecules/date-window-dialog/i18n/de.ts": de_exports$7,
-			"../../../molecules/sidebar-options/sections/i18n/de.ts": de_exports$6,
-			"../../../molecules/target-row/i18n/de.ts": de_exports$5,
-			"../../../molecules/target-row-list/i18n/de.ts": de_exports$4,
+			"../../../cards/action/i18n/de.ts": de_exports$27,
+			"../../../cards/history/history-chart/i18n/de.ts": de_exports$26,
+			"../../../cards/history/i18n/de.ts": de_exports$25,
+			"../../../cards/list/i18n/de.ts": de_exports$24,
+			"../../../cards/quick/i18n/de.ts": de_exports$23,
+			"../../../cards/sensor/i18n/de.ts": de_exports$22,
+			"../../chart/i18n/de.ts": de_exports$21,
+			"../../ha/i18n/de.ts": de_exports$20,
+			"../../history-page/i18n/de.ts": de_exports$19,
+			"../../timeline/i18n/de.ts": de_exports$18,
+			"../../../molecules/analysis-anomaly-group/i18n/de.ts": de_exports$17,
+			"../../../molecules/analysis-delta-group/i18n/de.ts": de_exports$16,
+			"../../../molecules/analysis-rate-group/i18n/de.ts": de_exports$15,
+			"../../../molecules/analysis-sample-group/i18n/de.ts": de_exports$14,
+			"../../../molecules/analysis-summary-group/i18n/de.ts": de_exports$13,
+			"../../../molecules/analysis-threshold-group/i18n/de.ts": de_exports$12,
+			"../../../molecules/analysis-trend-group/i18n/de.ts": de_exports$11,
+			"../../../molecules/anomaly-monitor-wizard/i18n/de.ts": de_exports$10,
+			"../../../molecules/comparison-tab-rail/i18n/de.ts": de_exports$9,
+			"../../../molecules/date-window-dialog/i18n/de.ts": de_exports$8,
+			"../../../molecules/sidebar-options/sections/i18n/de.ts": de_exports$7,
+			"../../../molecules/target-row/i18n/de.ts": de_exports$6,
+			"../../../molecules/target-row-list/i18n/de.ts": de_exports$5,
+			"../../../panels/datapoints/components/ai-query-brief-dialog/i18n/de.ts": de_exports$4,
 			"../../../panels/datapoints/components/history-targets/i18n/de.ts": de_exports$3,
 			"../../../panels/datapoints/components/panel-shell/i18n/de.ts": de_exports$2,
 			"../../../panels/datapoints/components/range-toolbar/i18n/de.ts": de_exports$1
@@ -3577,24 +4075,11 @@
 		templates$3 = merged$3;
 	}));
 	//#endregion
-	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/i18n/es.ts
-	var es_exports$25 = /* @__PURE__ */ __exportAll({ translations: () => translations$74 });
-	var translations$74;
-	var init_es$25 = __esmMin((() => {
-		translations$74 = {
-			"Updates with new data": "Se actualiza con datos nuevos",
-			"Scroll to selected range": "Desplazarse al rango seleccionado",
-			"Start date and time": "Fecha y hora de inicio",
-			"End date and time": "Fecha y hora de fin",
-			Select: "Seleccionar"
-		};
-	}));
-	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/action/i18n/es.ts
-	var es_exports$24 = /* @__PURE__ */ __exportAll({ translations: () => translations$73 });
-	var translations$73;
-	var init_es$24 = __esmMin((() => {
-		translations$73 = {
+	var es_exports$27 = /* @__PURE__ */ __exportAll({ translations: () => translations$80 });
+	var translations$80;
+	var init_es$27 = __esmMin((() => {
+		translations$80 = {
 			General: "General",
 			"Related items": "Elementos relacionados",
 			"Datapoint Appearance": "Apariencia del punto de datos",
@@ -3611,20 +4096,20 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/history-chart/i18n/es.ts
-	var es_exports$23 = /* @__PURE__ */ __exportAll({ translations: () => translations$72 });
-	var translations$72;
-	var init_es$23 = __esmMin((() => {
-		translations$72 = {
+	var es_exports$26 = /* @__PURE__ */ __exportAll({ translations: () => translations$79 });
+	var translations$79;
+	var init_es$26 = __esmMin((() => {
+		translations$79 = {
 			"Date window:": "Ventana de fechas:",
 			"Actual:": "Real:"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/i18n/es.ts
-	var es_exports$22 = /* @__PURE__ */ __exportAll({ translations: () => translations$71 });
-	var translations$71;
-	var init_es$22 = __esmMin((() => {
-		translations$71 = {
+	var es_exports$25 = /* @__PURE__ */ __exportAll({ translations: () => translations$78 });
+	var translations$78;
+	var init_es$25 = __esmMin((() => {
+		translations$78 = {
 			General: "General",
 			Entity: "Entidad",
 			"Multiple entities": "Varias entidades",
@@ -3638,10 +4123,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/list/i18n/es.ts
-	var es_exports$21 = /* @__PURE__ */ __exportAll({ translations: () => translations$70 });
-	var translations$70;
-	var init_es$21 = __esmMin((() => {
-		translations$70 = {
+	var es_exports$24 = /* @__PURE__ */ __exportAll({ translations: () => translations$77 });
+	var translations$77;
+	var init_es$24 = __esmMin((() => {
+		translations$77 = {
 			"Search datapoints…": "Buscar puntos de datos…",
 			"Delete record": "Eliminar registro",
 			Delete: "Eliminar",
@@ -3659,10 +4144,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/quick/i18n/es.ts
-	var es_exports$20 = /* @__PURE__ */ __exportAll({ translations: () => translations$69 });
-	var translations$69;
-	var init_es$20 = __esmMin((() => {
-		translations$69 = {
+	var es_exports$23 = /* @__PURE__ */ __exportAll({ translations: () => translations$76 });
+	var translations$76;
+	var init_es$23 = __esmMin((() => {
+		translations$76 = {
 			General: "General",
 			"Icon & colour": "Icono y color",
 			"Related items": "Elementos relacionados",
@@ -3680,10 +4165,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/sensor/i18n/es.ts
-	var es_exports$19 = /* @__PURE__ */ __exportAll({ translations: () => translations$68 });
-	var translations$68;
-	var init_es$19 = __esmMin((() => {
-		translations$68 = {
+	var es_exports$22 = /* @__PURE__ */ __exportAll({ translations: () => translations$75 });
+	var translations$75;
+	var init_es$22 = __esmMin((() => {
+		translations$75 = {
 			Entity: "Entidad",
 			Display: "Visualización",
 			"Records list": "Lista de registros",
@@ -3703,10 +4188,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/chart/i18n/es.ts
-	var es_exports$18 = /* @__PURE__ */ __exportAll({ translations: () => translations$67 });
-	var translations$67;
-	var init_es$18 = __esmMin((() => {
-		translations$67 = {
+	var es_exports$21 = /* @__PURE__ */ __exportAll({ translations: () => translations$74 });
+	var translations$74;
+	var init_es$21 = __esmMin((() => {
+		translations$74 = {
 			"⚠️ Anomaly Insight": "⚠️ Información de anomalía",
 			"⚠️ Multi-method Anomaly": "⚠️ Anomalía multimétodo",
 			"Click the highlighted circle to add an annotation.": "Haz clic en el círculo resaltado para añadir una anotación.",
@@ -3741,10 +4226,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/ha/i18n/es.ts
-	var es_exports$17 = /* @__PURE__ */ __exportAll({ translations: () => translations$66 });
-	var translations$66;
-	var init_es$17 = __esmMin((() => {
-		translations$66 = {
+	var es_exports$20 = /* @__PURE__ */ __exportAll({ translations: () => translations$73 });
+	var translations$73;
+	var init_es$20 = __esmMin((() => {
+		translations$73 = {
 			"Confirm delete": "Confirmar eliminación",
 			"Are you sure you want to delete this item?": "¿Seguro que quieres eliminar este elemento?",
 			Cancel: "Cancelar",
@@ -3758,21 +4243,122 @@
 		};
 	}));
 	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/history-page/i18n/es.ts
+	var es_exports$19 = /* @__PURE__ */ __exportAll({ translations: () => translations$72 });
+	var translations$72;
+	var init_es$19 = __esmMin((() => {
+		translations$72 = {
+			"entity_id={0}": "entity_id={0}",
+			"device_id={0}": "device_id={0}",
+			"area_id={0}": "area_id={0}",
+			"label_id={0}": "label_id={0}",
+			none: "ninguno",
+			"Entity metadata:": "Metadatos de la entidad:",
+			"Snapshot range label:": "Etiqueta del rango de la instantánea:",
+			"main range": "rango principal",
+			"Correlated anomaly highlighting enabled in chart:": "Resaltado de anomalías correlacionadas activado en el gráfico:",
+			yes: "sí",
+			no: "no",
+			"Current anomaly overlap mode:": "Modo actual de superposición de anomalías:",
+			"Correlated anomaly periods across the selected datapoints:": "Periodos de anomalías correlacionadas entre los datapoints seleccionados:",
+			"Entity findings:": "Hallazgos de la entidad:",
+			"Detected clusters in current range:": "Clústeres detectados en el rango actual:",
+			"Displayed clusters under the current overlap/correlation mode:": "Clústeres mostrados con el modo actual de superposición/correlación:",
+			"All detected anomaly cluster details:": "Detalles de todos los clústeres de anomalías detectados:",
+			"Displayed anomaly cluster details:": "Detalles de los clústeres de anomalías mostrados:",
+			"Entity:": "Entidad:",
+			"Display name:": "Nombre visible:",
+			"Visible in panel:": "Visible en el panel:",
+			"Anomaly analysis: disabled in the current panel configuration.": "Análisis de anomalías: desactivado en la configuración actual del panel.",
+			"Anomaly analysis: enabled.": "Análisis de anomalías: activado.",
+			"Backend anomaly query inputs:": "Entradas de la consulta de anomalías del backend:",
+			"Raw history query inputs:": "Entradas de la consulta del historial bruto:",
+			"Comparison window reference:": "Referencia de la ventana de comparación:",
+			"Comparison window raw history query inputs:": "Entradas de la consulta del historial bruto de la ventana de comparación:",
+			"Comparison window anomaly query inputs:": "Entradas de la consulta de anomalías de la ventana de comparación:",
+			"Baseline comparison entity:": "Entidad base de comparación:",
+			"RELEVANT PERSISTED MONITORS": "MONITORES PERSISTIDOS RELEVANTES",
+			"No persisted anomaly monitors intersect the currently selected entities.": "Ningún monitor de anomalías persistido coincide con las entidades seleccionadas actualmente.",
+			"Monitor: {0} ({1})": "Monitor: {0} ({1})",
+			"Type:": "Tipo:",
+			"Enabled:": "Activado:",
+			"Entities:": "Entidades:",
+			"Monitor anomaly query inputs:": "Entradas de la consulta de anomalías del monitor:",
+			"AI QUERY BRIEF: HOME ASSISTANT DATAPOINTS PANEL": "RESUMEN DE CONSULTA DE IA: PANEL DATAPOINTS DE HOME ASSISTANT",
+			OBJECTIVE: "OBJETIVO",
+			"SUCCESS CRITERIA": "CRITERIOS DE ÉXITO",
+			"RETRIEVAL PRIORITY": "PRIORIDAD DE OBTENCIÓN",
+			"PANEL CONTEXT": "CONTEXTO DEL PANEL",
+			"Selected entity ids:": "IDs de entidades seleccionadas:",
+			"(none selected)": "(ninguna seleccionada)",
+			"Raw target selection summary:": "Resumen de la selección de destino sin procesar:",
+			"Datapoint scope:": "Ámbito del datapoint:",
+			"Main range start_time:": "start_time del rango principal:",
+			"(not set)": "(sin establecer)",
+			"Main range end_time:": "end_time del rango principal:",
+			"Committed zoom start_time:": "start_time del zoom confirmado:",
+			"Committed zoom end_time:": "end_time del zoom confirmado:",
+			"Selected comparison window id:": "ID de la ventana de comparación seleccionada:",
+			"(none)": "(ninguna)",
+			"Comparison windows:": "Ventanas de comparación:",
+			"Chart anomaly overlap mode:": "Modo de superposición de anomalías del gráfico:",
+			"RANGE / RETENTION NOTE": "NOTA DE RANGO / RETENCIÓN",
+			"QUERY RULES": "REGLAS DE CONSULTA",
+			"RAW TARGET SELECTION OBJECT": "OBJETO DE SELECCIÓN DE DESTINO SIN PROCESAR",
+			"AVAILABLE COMPARISON WINDOWS": "VENTANAS DE COMPARACIÓN DISPONIBLES",
+			"PER-ENTITY QUERY DETAILS": "DETALLES DE CONSULTA POR ENTIDAD",
+			"RECOMMENDED OUTPUT": "SALIDA RECOMENDADA",
+			"Comparison window detail: the configured comparison window is not currently selected, so use the window id above to resolve the saved date window before querying.": "Comparison window detail: the configured comparison window is not currently selected, so use the window id above to resolve the saved date window before querying.",
+			"If raw recorder history is incomplete or unavailable, fetch Home Assistant statistics for continuity and call out the retention boundary explicitly.": "If raw recorder history is incomplete or unavailable, fetch Home Assistant statistics for continuity and call out the retention boundary explicitly.",
+			"The requested window spans about {0} days. Short-retention raw history may not fully cover this range, so use Home Assistant statistics for older or missing portions and do not infer 'no anomalies' from retention gaps.": "The requested window spans about {0} days. Short-retention raw history may not fully cover this range, so use Home Assistant statistics for older or missing portions and do not infer 'no anomalies' from retention gaps.",
+			"Use raw recorder history first for this range. If raw history is incomplete or unavailable, fetch Home Assistant statistics and explain any retention or recorder gaps.": "Use raw recorder history first for this range. If raw history is incomplete or unavailable, fetch Home Assistant statistics and explain any retention or recorder gaps.",
+			"CURRENT RANGE ANOMALY FINDINGS": "CURRENT RANGE ANOMALY FINDINGS",
+			"Current anomaly findings are not available from the active chart state, so use the query inputs below to fetch and inspect anomaly clusters directly.": "Current anomaly findings are not available from the active chart state, so use the query inputs below to fetch and inspect anomaly clusters directly.",
+			"No entity-level anomaly findings are currently available from the active chart snapshot.": "No entity-level anomaly findings are currently available from the active chart snapshot.",
+			"If your Home Assistant tooling requires explicit baseline range inputs, use the same start/end range as the main anomaly query unless a more specific monitor or MCP tool requires otherwise.": "If your Home Assistant tooling requires explicit baseline range inputs, use the same start/end range as the main anomaly query unless a more specific monitor or MCP tool requires otherwise.",
+			"Fetch the underlying Home Assistant history or statistics, entity metadata, and hass_datapoints anomaly detail needed to inspect the currently selected datapoints. Do not treat this brief as the raw data itself.": "Fetch the underlying Home Assistant history or statistics, entity metadata, and hass_datapoints anomaly detail needed to inspect the currently selected datapoints. Do not treat this brief as the raw data itself.",
+			"- Resolve entity metadata context for each selected entity.": "- Resolve entity metadata context for each selected entity.",
+			"- Fetch raw or best-available historical coverage for the requested range.": "- Fetch raw or best-available historical coverage for the requested range.",
+			"- Reproduce hass_datapoints anomaly queries with the exact panel settings below.": "- Reproduce hass_datapoints anomaly queries with the exact panel settings below.",
+			"- Review current-range anomaly findings from this integration, including cross-entity correlated anomaly periods when present.": "- Review current-range anomaly findings from this integration, including cross-entity correlated anomaly periods when present.",
+			"- Call out any retention, sampling, permission, or monitor-lookup limitations.": "- Call out any retention, sampling, permission, or monitor-lookup limitations.",
+			"1. Resolve entity metadata first so area, device, platform, labels, and unit context are known before interpretation.": "1. Resolve entity metadata first so area, device, platform, labels, and unit context are known before interpretation.",
+			"2. Fetch raw recorder history for the requested range where available.": "2. Fetch raw recorder history for the requested range where available.",
+			"3. If raw history is incomplete, unavailable, or truncated by retention, fetch Home Assistant statistics for continuity.": "3. If raw history is incomplete, unavailable, or truncated by retention, fetch Home Assistant statistics for continuity.",
+			"4. Reproduce the hass_datapoints anomaly queries exactly as listed below.": "4. Reproduce the hass_datapoints anomaly queries exactly as listed below.",
+			"5. Because anomaly analysis may use sampled data, compare raw history for ground truth against sampled series for anomaly reproduction.": "5. Because anomaly analysis may use sampled data, compare raw history for ground truth against sampled series for anomaly reproduction.",
+			"6. Review the current anomaly findings already found by this integration in the active range and use them to guide deeper inspection.": "6. Review the current anomaly findings already found by this integration in the active range and use them to guide deeper inspection.",
+			"7. If monitor context is available, fetch relevant monitor anomaly output for additional persisted monitor detail.": "7. If monitor context is available, fetch relevant monitor anomaly output for additional persisted monitor detail.",
+			"- Use UTC timestamps exactly as written for retrieval.": "- Use UTC timestamps exactly as written for retrieval.",
+			"- Convert to the Home Assistant local timezone only when interpreting daily or weekly behavior patterns.": "- Convert to the Home Assistant local timezone only when interpreting daily or weekly behavior patterns.",
+			"- Do not infer 'no anomaly' from missing raw history when retention may be limited.": "- Do not infer 'no anomaly' from missing raw history when retention may be limited.",
+			"- If anomaly queries below use sampled data, inspect both raw history and the sampled representation.": "- If anomaly queries below use sampled data, inspect both raw history and the sampled representation.",
+			"- For long ranges, remember HA history pagination and retention constraints can change what raw coverage is available.": "- For long ranges, remember HA history pagination and retention constraints can change what raw coverage is available.",
+			"No selected entities are currently available in the panel state.": "No selected entities are currently available in the panel state.",
+			"- Resolved metadata per selected entity, including unit, device class, state class, area, device, labels, and platform when available.": "- Resolved metadata per selected entity, including unit, device class, state class, area, device, labels, and platform when available.",
+			"- Coverage status of raw history versus statistics, including any retention or pagination limits encountered.": "- Coverage status of raw history versus statistics, including any retention or pagination limits encountered.",
+			"- Detailed anomaly findings per entity for the requested range, using the current integration findings above plus any fetched raw cluster detail.": "- Detailed anomaly findings per entity for the requested range, using the current integration findings above plus any fetched raw cluster detail.",
+			"- If anomalies indicate some type of event, zoom out and look for answers in the related area/group/labels or across other entities in the panel. If anomalies are unexpected, look for any subtle metadata clues that could explain them, such as a device class or state class that implies a different expected behavior pattern than initially assumed.": "- If anomalies indicate some type of event, zoom out and look for answers in the related area/group/labels or across other entities in the panel. If anomalies are unexpected, look for any subtle metadata clues that could explain them, such as a device class or state class that implies a different expected behavior pattern than initially assumed.",
+			"- Correlated anomaly periods across the selected datapoints, if any are present, including which entities participate and when the overlap occurs.": "- Correlated anomaly periods across the selected datapoints, if any are present, including which entities participate and when the overlap occurs.",
+			"- Any monitor-access, permission, sampling, comparison-window, or data-coverage limitations that materially affect interpretation.": "- Any monitor-access, permission, sampling, comparison-window, or data-coverage limitations that materially affect interpretation."
+		};
+	}));
+	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/timeline/i18n/es.ts
-	var es_exports$16 = /* @__PURE__ */ __exportAll({ translations: () => translations$65 });
-	var translations$65;
-	var init_es$16 = __esmMin((() => {
-		translations$65 = {
+	var es_exports$18 = /* @__PURE__ */ __exportAll({ translations: () => translations$71 });
+	var translations$71;
+	var init_es$18 = __esmMin((() => {
+		translations$71 = {
 			Wk: "Sem.",
 			"Week of": "Semana del"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-anomaly-group/i18n/es.ts
-	var es_exports$15 = /* @__PURE__ */ __exportAll({ translations: () => translations$64 });
-	var translations$64;
-	var init_es$15 = __esmMin((() => {
-		translations$64 = {
+	var es_exports$17 = /* @__PURE__ */ __exportAll({ translations: () => translations$70 });
+	var translations$70;
+	var init_es$17 = __esmMin((() => {
+		translations$70 = {
 			"Show anomalies": "Mostrar anomalías",
 			Sensitivity: "Sensibilidad",
 			"Use downsampled data for detection": "Usar datos submuestreados para la detección",
@@ -3814,10 +4400,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-delta-group/i18n/es.ts
-	var es_exports$14 = /* @__PURE__ */ __exportAll({ translations: () => translations$63 });
-	var translations$63;
-	var init_es$14 = __esmMin((() => {
-		translations$63 = {
+	var es_exports$16 = /* @__PURE__ */ __exportAll({ translations: () => translations$69 });
+	var translations$69;
+	var init_es$16 = __esmMin((() => {
+		translations$69 = {
 			"Show delta vs selected date window": "Mostrar delta frente a la ventana de fechas seleccionada",
 			"Select a date window tab to enable delta analysis.": "Selecciona una pestaña de ventana de fechas para habilitar el análisis delta.",
 			"Show delta in tooltip": "Mostrar delta en la información sobre herramientas",
@@ -3826,10 +4412,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-rate-group/i18n/es.ts
-	var es_exports$13 = /* @__PURE__ */ __exportAll({ translations: () => translations$62 });
-	var translations$62;
-	var init_es$13 = __esmMin((() => {
-		translations$62 = {
+	var es_exports$15 = /* @__PURE__ */ __exportAll({ translations: () => translations$68 });
+	var translations$68;
+	var init_es$15 = __esmMin((() => {
+		translations$68 = {
 			"Show rate of change": "Mostrar tasa de cambio",
 			"Show rate of change crosshairs": "Mostrar guías de la tasa de cambio",
 			"Rate window": "Ventana de tasa",
@@ -3841,10 +4427,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-sample-group/i18n/es.ts
-	var es_exports$12 = /* @__PURE__ */ __exportAll({ translations: () => translations$61 });
-	var translations$61;
-	var init_es$12 = __esmMin((() => {
-		translations$61 = {
+	var es_exports$14 = /* @__PURE__ */ __exportAll({ translations: () => translations$67 });
+	var translations$67;
+	var init_es$14 = __esmMin((() => {
+		translations$67 = {
 			Downsampling: "Submuestreo",
 			Interval: "Intervalo",
 			Aggregate: "Agregado",
@@ -3876,20 +4462,20 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-summary-group/i18n/es.ts
-	var es_exports$11 = /* @__PURE__ */ __exportAll({ translations: () => translations$60 });
-	var translations$60;
-	var init_es$11 = __esmMin((() => {
-		translations$60 = {
+	var es_exports$13 = /* @__PURE__ */ __exportAll({ translations: () => translations$66 });
+	var translations$66;
+	var init_es$13 = __esmMin((() => {
+		translations$66 = {
 			"Show min / max / mean": "Mostrar mín. / máx. / media",
 			"Show range shading": "Mostrar sombreado del rango"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-threshold-group/i18n/es.ts
-	var es_exports$10 = /* @__PURE__ */ __exportAll({ translations: () => translations$59 });
-	var translations$59;
-	var init_es$10 = __esmMin((() => {
-		translations$59 = {
+	var es_exports$12 = /* @__PURE__ */ __exportAll({ translations: () => translations$65 });
+	var translations$65;
+	var init_es$12 = __esmMin((() => {
+		translations$65 = {
 			"Show threshold analysis": "Mostrar análisis de umbral",
 			"Shade threshold area": "Sombrear área del umbral",
 			Threshold: "Umbral",
@@ -3900,10 +4486,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-trend-group/i18n/es.ts
-	var es_exports$9 = /* @__PURE__ */ __exportAll({ translations: () => translations$58 });
-	var translations$58;
-	var init_es$9 = __esmMin((() => {
-		translations$58 = {
+	var es_exports$11 = /* @__PURE__ */ __exportAll({ translations: () => translations$64 });
+	var translations$64;
+	var init_es$11 = __esmMin((() => {
+		translations$64 = {
 			"Show trend lines": "Mostrar líneas de tendencia",
 			"Show trend crosshairs": "Mostrar guías de tendencia",
 			"Trend method": "Método de tendencia",
@@ -3920,18 +4506,31 @@
 		};
 	}));
 	//#endregion
+	//#region custom_components/hass_datapoints/src/molecules/anomaly-monitor-wizard/i18n/es.ts
+	var es_exports$10 = /* @__PURE__ */ __exportAll({ translations: () => translations$63 });
+	var translations$63;
+	var init_es$10 = __esmMin((() => {
+		translations$63 = {
+			"Add all series from chart": "Añadir todas las series del gráfico",
+			"Add from current chart": "Añadir desde el gráfico actual",
+			"Create anomaly monitor": "Crear monitor de anomalías",
+			"Unable to save anomaly monitor.": "No se pudo guardar el monitor de anomalías.",
+			"anomaly monitors": "monitores de anomalías"
+		};
+	}));
+	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/comparison-tab-rail/i18n/es.ts
-	var es_exports$8 = /* @__PURE__ */ __exportAll({ translations: () => translations$57 });
-	var translations$57;
-	var init_es$8 = __esmMin((() => {
-		translations$57 = { "Add date window": "Añadir ventana de fechas" };
+	var es_exports$9 = /* @__PURE__ */ __exportAll({ translations: () => translations$62 });
+	var translations$62;
+	var init_es$9 = __esmMin((() => {
+		translations$62 = { "Add date window": "Añadir ventana de fechas" };
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/date-window-dialog/i18n/es.ts
-	var es_exports$7 = /* @__PURE__ */ __exportAll({ translations: () => translations$56 });
-	var translations$56;
-	var init_es$7 = __esmMin((() => {
-		translations$56 = {
+	var es_exports$8 = /* @__PURE__ */ __exportAll({ translations: () => translations$61 });
+	var translations$61;
+	var init_es$8 = __esmMin((() => {
+		translations$61 = {
 			"A date window saves a named date range as a tab, so you can quickly preview it against the selected range or jump the chart back to it later.": "Una ventana de fechas guarda un rango de fechas con nombre como pestaña, para que puedas previsualizarlo rápidamente frente al rango seleccionado o volver más tarde a él en el gráfico.",
 			Name: "Nombre",
 			"e.g. Heating season start": "p. ej., inicio de la temporada de calefacción",
@@ -3946,10 +4545,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/sidebar-options/sections/i18n/es.ts
-	var es_exports$6 = /* @__PURE__ */ __exportAll({ translations: () => translations$55 });
-	var translations$55;
-	var init_es$6 = __esmMin((() => {
-		translations$55 = {
+	var es_exports$7 = /* @__PURE__ */ __exportAll({ translations: () => translations$60 });
+	var translations$60;
+	var init_es$7 = __esmMin((() => {
+		translations$60 = {
 			Datapoints: "Puntos de datos",
 			"Choose which annotation datapoints appear on the chart.": "Elige qué puntos de datos de anotación aparecen en el gráfico.",
 			"Linked to selected targets": "Vinculados a los objetivos seleccionados",
@@ -3959,10 +4558,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row/i18n/es.ts
-	var es_exports$5 = /* @__PURE__ */ __exportAll({ translations: () => translations$54 });
-	var translations$54;
-	var init_es$5 = __esmMin((() => {
-		translations$54 = {
+	var es_exports$6 = /* @__PURE__ */ __exportAll({ translations: () => translations$59 });
+	var translations$59;
+	var init_es$6 = __esmMin((() => {
+		translations$59 = {
 			"Analysis configured": "Análisis configurado",
 			"Configure analysis": "Configurar análisis",
 			"Stepped series": "Serie escalonada",
@@ -3974,17 +4573,32 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row-list/i18n/es.ts
-	var es_exports$4 = /* @__PURE__ */ __exportAll({ translations: () => translations$53 });
-	var translations$53;
+	var es_exports$5 = /* @__PURE__ */ __exportAll({ translations: () => translations$58 });
+	var translations$58;
+	var init_es$5 = __esmMin((() => {
+		translations$58 = {};
+	}));
+	//#endregion
+	//#region custom_components/hass_datapoints/src/panels/datapoints/components/ai-query-brief-dialog/i18n/es.ts
+	var es_exports$4 = /* @__PURE__ */ __exportAll({ translations: () => translations$57 });
+	var translations$57;
 	var init_es$4 = __esmMin((() => {
-		translations$53 = {};
+		translations$57 = {
+			"AI query brief": "Resumen de consulta para IA",
+			"This brief is intended for another AI to fetch raw Home Assistant history and hass_datapoints anomaly details. Review it, then copy it into your AI tool of choice.": "Este resumen esta pensado para que otra IA obtenga el historial sin procesar de Home Assistant y los detalles de anomalias de hass_datapoints. Revisalo y luego copialo en la herramienta de IA que prefieras.",
+			"Copy-ready brief": "Resumen listo para copiar",
+			Close: "Cerrar",
+			"Copy brief": "Copiar resumen",
+			"Copied to clipboard.": "Copiado al portapapeles.",
+			"Clipboard write failed. The text is selected so you can copy it manually.": "La escritura en el portapapeles fallo. El texto esta seleccionado para que puedas copiarlo manualmente."
+		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/history-targets/i18n/es.ts
-	var es_exports$3 = /* @__PURE__ */ __exportAll({ translations: () => translations$52 });
-	var translations$52;
+	var es_exports$3 = /* @__PURE__ */ __exportAll({ translations: () => translations$56 });
+	var translations$56;
 	var init_es$3 = __esmMin((() => {
-		translations$52 = {
+		translations$56 = {
 			Targets: "Objetivos",
 			"Each row controls one chart series.": "Cada fila controla una serie del gráfico.",
 			"Add target": "Añadir objetivo",
@@ -3993,13 +4607,14 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/panel-shell/i18n/es.ts
-	var es_exports$2 = /* @__PURE__ */ __exportAll({ translations: () => translations$51 });
-	var translations$51;
+	var es_exports$2 = /* @__PURE__ */ __exportAll({ translations: () => translations$55 });
+	var translations$55;
 	var init_es$2 = __esmMin((() => {
-		translations$51 = {
+		translations$55 = {
 			"Loading Datapoints…": "Cargando puntos de datos…",
 			Datapoints: "Puntos de datos",
 			"Page options": "Opciones de la página",
+			"AI query brief": "Resumen de consulta para IA",
 			"Download spreadsheet": "Descargar hoja de cálculo",
 			"Save page state": "Guardar estado de la página",
 			"Restore saved page": "Restaurar página guardada",
@@ -4010,10 +4625,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/range-toolbar/i18n/es.ts
-	var es_exports$1 = /* @__PURE__ */ __exportAll({ translations: () => translations$50 });
-	var translations$50;
+	var es_exports$1 = /* @__PURE__ */ __exportAll({ translations: () => translations$54 });
+	var translations$54;
 	var init_es$1 = __esmMin((() => {
-		translations$50 = {
+		translations$54 = {
 			"Toggle sidebar": "Alternar barra lateral",
 			Start: "Inicio",
 			End: "Fin",
@@ -4041,6 +4656,8 @@
 	var es_exports = /* @__PURE__ */ __exportAll({ templates: () => templates$2 });
 	var modules$2, merged$2, templates$2;
 	var init_es = __esmMin((() => {
+		init_es$27();
+		init_es$26();
 		init_es$25();
 		init_es$24();
 		init_es$23();
@@ -4067,28 +4684,30 @@
 		init_es$2();
 		init_es$1();
 		modules$2 = /* @__PURE__ */ Object.assign({
-			"../../../atoms/interactive/range-timeline/i18n/es.ts": es_exports$25,
-			"../../../cards/action/i18n/es.ts": es_exports$24,
-			"../../../cards/history/history-chart/i18n/es.ts": es_exports$23,
-			"../../../cards/history/i18n/es.ts": es_exports$22,
-			"../../../cards/list/i18n/es.ts": es_exports$21,
-			"../../../cards/quick/i18n/es.ts": es_exports$20,
-			"../../../cards/sensor/i18n/es.ts": es_exports$19,
-			"../../chart/i18n/es.ts": es_exports$18,
-			"../../ha/i18n/es.ts": es_exports$17,
-			"../../timeline/i18n/es.ts": es_exports$16,
-			"../../../molecules/analysis-anomaly-group/i18n/es.ts": es_exports$15,
-			"../../../molecules/analysis-delta-group/i18n/es.ts": es_exports$14,
-			"../../../molecules/analysis-rate-group/i18n/es.ts": es_exports$13,
-			"../../../molecules/analysis-sample-group/i18n/es.ts": es_exports$12,
-			"../../../molecules/analysis-summary-group/i18n/es.ts": es_exports$11,
-			"../../../molecules/analysis-threshold-group/i18n/es.ts": es_exports$10,
-			"../../../molecules/analysis-trend-group/i18n/es.ts": es_exports$9,
-			"../../../molecules/comparison-tab-rail/i18n/es.ts": es_exports$8,
-			"../../../molecules/date-window-dialog/i18n/es.ts": es_exports$7,
-			"../../../molecules/sidebar-options/sections/i18n/es.ts": es_exports$6,
-			"../../../molecules/target-row/i18n/es.ts": es_exports$5,
-			"../../../molecules/target-row-list/i18n/es.ts": es_exports$4,
+			"../../../cards/action/i18n/es.ts": es_exports$27,
+			"../../../cards/history/history-chart/i18n/es.ts": es_exports$26,
+			"../../../cards/history/i18n/es.ts": es_exports$25,
+			"../../../cards/list/i18n/es.ts": es_exports$24,
+			"../../../cards/quick/i18n/es.ts": es_exports$23,
+			"../../../cards/sensor/i18n/es.ts": es_exports$22,
+			"../../chart/i18n/es.ts": es_exports$21,
+			"../../ha/i18n/es.ts": es_exports$20,
+			"../../history-page/i18n/es.ts": es_exports$19,
+			"../../timeline/i18n/es.ts": es_exports$18,
+			"../../../molecules/analysis-anomaly-group/i18n/es.ts": es_exports$17,
+			"../../../molecules/analysis-delta-group/i18n/es.ts": es_exports$16,
+			"../../../molecules/analysis-rate-group/i18n/es.ts": es_exports$15,
+			"../../../molecules/analysis-sample-group/i18n/es.ts": es_exports$14,
+			"../../../molecules/analysis-summary-group/i18n/es.ts": es_exports$13,
+			"../../../molecules/analysis-threshold-group/i18n/es.ts": es_exports$12,
+			"../../../molecules/analysis-trend-group/i18n/es.ts": es_exports$11,
+			"../../../molecules/anomaly-monitor-wizard/i18n/es.ts": es_exports$10,
+			"../../../molecules/comparison-tab-rail/i18n/es.ts": es_exports$9,
+			"../../../molecules/date-window-dialog/i18n/es.ts": es_exports$8,
+			"../../../molecules/sidebar-options/sections/i18n/es.ts": es_exports$7,
+			"../../../molecules/target-row/i18n/es.ts": es_exports$6,
+			"../../../molecules/target-row-list/i18n/es.ts": es_exports$5,
+			"../../../panels/datapoints/components/ai-query-brief-dialog/i18n/es.ts": es_exports$4,
 			"../../../panels/datapoints/components/history-targets/i18n/es.ts": es_exports$3,
 			"../../../panels/datapoints/components/panel-shell/i18n/es.ts": es_exports$2,
 			"../../../panels/datapoints/components/range-toolbar/i18n/es.ts": es_exports$1
@@ -4098,24 +4717,11 @@
 		templates$2 = merged$2;
 	}));
 	//#endregion
-	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/i18n/pt.ts
-	var pt_exports$25 = /* @__PURE__ */ __exportAll({ translations: () => translations$49 });
-	var translations$49;
-	var init_pt$25 = __esmMin((() => {
-		translations$49 = {
-			"Updates with new data": "Atualiza com novos dados",
-			"Scroll to selected range": "Deslocar para o intervalo selecionado",
-			"Start date and time": "Data e hora de início",
-			"End date and time": "Data e hora de fim",
-			Select: "Selecionar"
-		};
-	}));
-	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/action/i18n/pt.ts
-	var pt_exports$24 = /* @__PURE__ */ __exportAll({ translations: () => translations$48 });
-	var translations$48;
-	var init_pt$24 = __esmMin((() => {
-		translations$48 = {
+	var pt_exports$27 = /* @__PURE__ */ __exportAll({ translations: () => translations$53 });
+	var translations$53;
+	var init_pt$27 = __esmMin((() => {
+		translations$53 = {
 			General: "Geral",
 			"Related items": "Itens relacionados",
 			"Datapoint Appearance": "Aspeto do ponto de dados",
@@ -4132,20 +4738,20 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/history-chart/i18n/pt.ts
-	var pt_exports$23 = /* @__PURE__ */ __exportAll({ translations: () => translations$47 });
-	var translations$47;
-	var init_pt$23 = __esmMin((() => {
-		translations$47 = {
+	var pt_exports$26 = /* @__PURE__ */ __exportAll({ translations: () => translations$52 });
+	var translations$52;
+	var init_pt$26 = __esmMin((() => {
+		translations$52 = {
 			"Date window:": "Janela de datas:",
 			"Actual:": "Real:"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/i18n/pt.ts
-	var pt_exports$22 = /* @__PURE__ */ __exportAll({ translations: () => translations$46 });
-	var translations$46;
-	var init_pt$22 = __esmMin((() => {
-		translations$46 = {
+	var pt_exports$25 = /* @__PURE__ */ __exportAll({ translations: () => translations$51 });
+	var translations$51;
+	var init_pt$25 = __esmMin((() => {
+		translations$51 = {
 			General: "Geral",
 			Entity: "Entidade",
 			"Multiple entities": "Múltiplas entidades",
@@ -4159,10 +4765,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/list/i18n/pt.ts
-	var pt_exports$21 = /* @__PURE__ */ __exportAll({ translations: () => translations$45 });
-	var translations$45;
-	var init_pt$21 = __esmMin((() => {
-		translations$45 = {
+	var pt_exports$24 = /* @__PURE__ */ __exportAll({ translations: () => translations$50 });
+	var translations$50;
+	var init_pt$24 = __esmMin((() => {
+		translations$50 = {
 			"Search datapoints…": "Pesquisar pontos de dados…",
 			"Delete record": "Eliminar registo",
 			Delete: "Eliminar",
@@ -4180,10 +4786,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/quick/i18n/pt.ts
-	var pt_exports$20 = /* @__PURE__ */ __exportAll({ translations: () => translations$44 });
-	var translations$44;
-	var init_pt$20 = __esmMin((() => {
-		translations$44 = {
+	var pt_exports$23 = /* @__PURE__ */ __exportAll({ translations: () => translations$49 });
+	var translations$49;
+	var init_pt$23 = __esmMin((() => {
+		translations$49 = {
 			General: "Geral",
 			"Icon & colour": "Ícone e cor",
 			"Related items": "Itens relacionados",
@@ -4201,10 +4807,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/sensor/i18n/pt.ts
-	var pt_exports$19 = /* @__PURE__ */ __exportAll({ translations: () => translations$43 });
-	var translations$43;
-	var init_pt$19 = __esmMin((() => {
-		translations$43 = {
+	var pt_exports$22 = /* @__PURE__ */ __exportAll({ translations: () => translations$48 });
+	var translations$48;
+	var init_pt$22 = __esmMin((() => {
+		translations$48 = {
 			Entity: "Entidade",
 			Display: "Visualização",
 			"Records list": "Lista de registos",
@@ -4224,10 +4830,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/chart/i18n/pt.ts
-	var pt_exports$18 = /* @__PURE__ */ __exportAll({ translations: () => translations$42 });
-	var translations$42;
-	var init_pt$18 = __esmMin((() => {
-		translations$42 = {
+	var pt_exports$21 = /* @__PURE__ */ __exportAll({ translations: () => translations$47 });
+	var translations$47;
+	var init_pt$21 = __esmMin((() => {
+		translations$47 = {
 			"⚠️ Anomaly Insight": "⚠️ Informação de anomalia",
 			"⚠️ Multi-method Anomaly": "⚠️ Anomalia multimétodo",
 			"Click the highlighted circle to add an annotation.": "Clique no círculo destacado para adicionar uma anotação.",
@@ -4262,10 +4868,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/ha/i18n/pt.ts
-	var pt_exports$17 = /* @__PURE__ */ __exportAll({ translations: () => translations$41 });
-	var translations$41;
-	var init_pt$17 = __esmMin((() => {
-		translations$41 = {
+	var pt_exports$20 = /* @__PURE__ */ __exportAll({ translations: () => translations$46 });
+	var translations$46;
+	var init_pt$20 = __esmMin((() => {
+		translations$46 = {
 			"Confirm delete": "Confirmar eliminação",
 			"Are you sure you want to delete this item?": "Tem a certeza de que pretende eliminar este item?",
 			Cancel: "Cancelar",
@@ -4279,21 +4885,122 @@
 		};
 	}));
 	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/history-page/i18n/pt.ts
+	var pt_exports$19 = /* @__PURE__ */ __exportAll({ translations: () => translations$45 });
+	var translations$45;
+	var init_pt$19 = __esmMin((() => {
+		translations$45 = {
+			"entity_id={0}": "entity_id={0}",
+			"device_id={0}": "device_id={0}",
+			"area_id={0}": "area_id={0}",
+			"label_id={0}": "label_id={0}",
+			none: "nenhum",
+			"Entity metadata:": "Metadados da entidade:",
+			"Snapshot range label:": "Rótulo do intervalo do snapshot:",
+			"main range": "intervalo principal",
+			"Correlated anomaly highlighting enabled in chart:": "Realce de anomalias correlacionadas ativado no gráfico:",
+			yes: "sim",
+			no: "não",
+			"Current anomaly overlap mode:": "Modo atual de sobreposição de anomalias:",
+			"Correlated anomaly periods across the selected datapoints:": "Períodos de anomalias correlacionadas entre os datapoints selecionados:",
+			"Entity findings:": "Constatações da entidade:",
+			"Detected clusters in current range:": "Clusters detetados no intervalo atual:",
+			"Displayed clusters under the current overlap/correlation mode:": "Clusters mostrados no modo atual de sobreposição/correlação:",
+			"All detected anomaly cluster details:": "Detalhes de todos os clusters de anomalias detetados:",
+			"Displayed anomaly cluster details:": "Detalhes dos clusters de anomalias mostrados:",
+			"Entity:": "Entidade:",
+			"Display name:": "Nome apresentado:",
+			"Visible in panel:": "Visível no painel:",
+			"Anomaly analysis: disabled in the current panel configuration.": "Análise de anomalias: desativada na configuração atual do painel.",
+			"Anomaly analysis: enabled.": "Análise de anomalias: ativada.",
+			"Backend anomaly query inputs:": "Entradas da consulta de anomalias do backend:",
+			"Raw history query inputs:": "Entradas da consulta do histórico bruto:",
+			"Comparison window reference:": "Referência da janela de comparação:",
+			"Comparison window raw history query inputs:": "Entradas da consulta do histórico bruto da janela de comparação:",
+			"Comparison window anomaly query inputs:": "Entradas da consulta de anomalias da janela de comparação:",
+			"Baseline comparison entity:": "Entidade de comparação de base:",
+			"RELEVANT PERSISTED MONITORS": "MONITORES PERSISTIDOS RELEVANTES",
+			"No persisted anomaly monitors intersect the currently selected entities.": "Nenhum monitor de anomalias persistido intersecta as entidades atualmente selecionadas.",
+			"Monitor: {0} ({1})": "Monitor: {0} ({1})",
+			"Type:": "Tipo:",
+			"Enabled:": "Ativado:",
+			"Entities:": "Entidades:",
+			"Monitor anomaly query inputs:": "Entradas da consulta de anomalias do monitor:",
+			"AI QUERY BRIEF: HOME ASSISTANT DATAPOINTS PANEL": "RESUMO DE CONSULTA DE IA: PAINEL HOME ASSISTANT DATAPOINTS",
+			OBJECTIVE: "OBJETIVO",
+			"SUCCESS CRITERIA": "CRITÉRIOS DE SUCESSO",
+			"RETRIEVAL PRIORITY": "PRIORIDADE DE OBTENÇÃO",
+			"PANEL CONTEXT": "CONTEXTO DO PAINEL",
+			"Selected entity ids:": "IDs das entidades selecionadas:",
+			"(none selected)": "(nenhuma selecionada)",
+			"Raw target selection summary:": "Resumo da seleção bruta de destino:",
+			"Datapoint scope:": "Âmbito do datapoint:",
+			"Main range start_time:": "start_time do intervalo principal:",
+			"(not set)": "(não definido)",
+			"Main range end_time:": "end_time do intervalo principal:",
+			"Committed zoom start_time:": "start_time do zoom confirmado:",
+			"Committed zoom end_time:": "end_time do zoom confirmado:",
+			"Selected comparison window id:": "ID da janela de comparação selecionada:",
+			"(none)": "(nenhuma)",
+			"Comparison windows:": "Janelas de comparação:",
+			"Chart anomaly overlap mode:": "Modo de sobreposição de anomalias do gráfico:",
+			"RANGE / RETENTION NOTE": "NOTA SOBRE INTERVALO / RETENÇÃO",
+			"QUERY RULES": "REGRAS DE CONSULTA",
+			"RAW TARGET SELECTION OBJECT": "OBJETO BRUTO DE SELEÇÃO DE DESTINO",
+			"AVAILABLE COMPARISON WINDOWS": "JANELAS DE COMPARAÇÃO DISPONÍVEIS",
+			"PER-ENTITY QUERY DETAILS": "DETALHES DE CONSULTA POR ENTIDADE",
+			"RECOMMENDED OUTPUT": "SAÍDA RECOMENDADA",
+			"Comparison window detail: the configured comparison window is not currently selected, so use the window id above to resolve the saved date window before querying.": "Comparison window detail: the configured comparison window is not currently selected, so use the window id above to resolve the saved date window before querying.",
+			"If raw recorder history is incomplete or unavailable, fetch Home Assistant statistics for continuity and call out the retention boundary explicitly.": "If raw recorder history is incomplete or unavailable, fetch Home Assistant statistics for continuity and call out the retention boundary explicitly.",
+			"The requested window spans about {0} days. Short-retention raw history may not fully cover this range, so use Home Assistant statistics for older or missing portions and do not infer 'no anomalies' from retention gaps.": "The requested window spans about {0} days. Short-retention raw history may not fully cover this range, so use Home Assistant statistics for older or missing portions and do not infer 'no anomalies' from retention gaps.",
+			"Use raw recorder history first for this range. If raw history is incomplete or unavailable, fetch Home Assistant statistics and explain any retention or recorder gaps.": "Use raw recorder history first for this range. If raw history is incomplete or unavailable, fetch Home Assistant statistics and explain any retention or recorder gaps.",
+			"CURRENT RANGE ANOMALY FINDINGS": "CURRENT RANGE ANOMALY FINDINGS",
+			"Current anomaly findings are not available from the active chart state, so use the query inputs below to fetch and inspect anomaly clusters directly.": "Current anomaly findings are not available from the active chart state, so use the query inputs below to fetch and inspect anomaly clusters directly.",
+			"No entity-level anomaly findings are currently available from the active chart snapshot.": "No entity-level anomaly findings are currently available from the active chart snapshot.",
+			"If your Home Assistant tooling requires explicit baseline range inputs, use the same start/end range as the main anomaly query unless a more specific monitor or MCP tool requires otherwise.": "If your Home Assistant tooling requires explicit baseline range inputs, use the same start/end range as the main anomaly query unless a more specific monitor or MCP tool requires otherwise.",
+			"Fetch the underlying Home Assistant history or statistics, entity metadata, and hass_datapoints anomaly detail needed to inspect the currently selected datapoints. Do not treat this brief as the raw data itself.": "Fetch the underlying Home Assistant history or statistics, entity metadata, and hass_datapoints anomaly detail needed to inspect the currently selected datapoints. Do not treat this brief as the raw data itself.",
+			"- Resolve entity metadata context for each selected entity.": "- Resolve entity metadata context for each selected entity.",
+			"- Fetch raw or best-available historical coverage for the requested range.": "- Fetch raw or best-available historical coverage for the requested range.",
+			"- Reproduce hass_datapoints anomaly queries with the exact panel settings below.": "- Reproduce hass_datapoints anomaly queries with the exact panel settings below.",
+			"- Review current-range anomaly findings from this integration, including cross-entity correlated anomaly periods when present.": "- Review current-range anomaly findings from this integration, including cross-entity correlated anomaly periods when present.",
+			"- Call out any retention, sampling, permission, or monitor-lookup limitations.": "- Call out any retention, sampling, permission, or monitor-lookup limitations.",
+			"1. Resolve entity metadata first so area, device, platform, labels, and unit context are known before interpretation.": "1. Resolve entity metadata first so area, device, platform, labels, and unit context are known before interpretation.",
+			"2. Fetch raw recorder history for the requested range where available.": "2. Fetch raw recorder history for the requested range where available.",
+			"3. If raw history is incomplete, unavailable, or truncated by retention, fetch Home Assistant statistics for continuity.": "3. If raw history is incomplete, unavailable, or truncated by retention, fetch Home Assistant statistics for continuity.",
+			"4. Reproduce the hass_datapoints anomaly queries exactly as listed below.": "4. Reproduce the hass_datapoints anomaly queries exactly as listed below.",
+			"5. Because anomaly analysis may use sampled data, compare raw history for ground truth against sampled series for anomaly reproduction.": "5. Because anomaly analysis may use sampled data, compare raw history for ground truth against sampled series for anomaly reproduction.",
+			"6. Review the current anomaly findings already found by this integration in the active range and use them to guide deeper inspection.": "6. Review the current anomaly findings already found by this integration in the active range and use them to guide deeper inspection.",
+			"7. If monitor context is available, fetch relevant monitor anomaly output for additional persisted monitor detail.": "7. If monitor context is available, fetch relevant monitor anomaly output for additional persisted monitor detail.",
+			"- Use UTC timestamps exactly as written for retrieval.": "- Use UTC timestamps exactly as written for retrieval.",
+			"- Convert to the Home Assistant local timezone only when interpreting daily or weekly behavior patterns.": "- Convert to the Home Assistant local timezone only when interpreting daily or weekly behavior patterns.",
+			"- Do not infer 'no anomaly' from missing raw history when retention may be limited.": "- Do not infer 'no anomaly' from missing raw history when retention may be limited.",
+			"- If anomaly queries below use sampled data, inspect both raw history and the sampled representation.": "- If anomaly queries below use sampled data, inspect both raw history and the sampled representation.",
+			"- For long ranges, remember HA history pagination and retention constraints can change what raw coverage is available.": "- For long ranges, remember HA history pagination and retention constraints can change what raw coverage is available.",
+			"No selected entities are currently available in the panel state.": "No selected entities are currently available in the panel state.",
+			"- Resolved metadata per selected entity, including unit, device class, state class, area, device, labels, and platform when available.": "- Resolved metadata per selected entity, including unit, device class, state class, area, device, labels, and platform when available.",
+			"- Coverage status of raw history versus statistics, including any retention or pagination limits encountered.": "- Coverage status of raw history versus statistics, including any retention or pagination limits encountered.",
+			"- Detailed anomaly findings per entity for the requested range, using the current integration findings above plus any fetched raw cluster detail.": "- Detailed anomaly findings per entity for the requested range, using the current integration findings above plus any fetched raw cluster detail.",
+			"- If anomalies indicate some type of event, zoom out and look for answers in the related area/group/labels or across other entities in the panel. If anomalies are unexpected, look for any subtle metadata clues that could explain them, such as a device class or state class that implies a different expected behavior pattern than initially assumed.": "- If anomalies indicate some type of event, zoom out and look for answers in the related area/group/labels or across other entities in the panel. If anomalies are unexpected, look for any subtle metadata clues that could explain them, such as a device class or state class that implies a different expected behavior pattern than initially assumed.",
+			"- Correlated anomaly periods across the selected datapoints, if any are present, including which entities participate and when the overlap occurs.": "- Correlated anomaly periods across the selected datapoints, if any are present, including which entities participate and when the overlap occurs.",
+			"- Any monitor-access, permission, sampling, comparison-window, or data-coverage limitations that materially affect interpretation.": "- Any monitor-access, permission, sampling, comparison-window, or data-coverage limitations that materially affect interpretation."
+		};
+	}));
+	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/timeline/i18n/pt.ts
-	var pt_exports$16 = /* @__PURE__ */ __exportAll({ translations: () => translations$40 });
-	var translations$40;
-	var init_pt$16 = __esmMin((() => {
-		translations$40 = {
+	var pt_exports$18 = /* @__PURE__ */ __exportAll({ translations: () => translations$44 });
+	var translations$44;
+	var init_pt$18 = __esmMin((() => {
+		translations$44 = {
 			Wk: "Sem.",
 			"Week of": "Semana de"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-anomaly-group/i18n/pt.ts
-	var pt_exports$15 = /* @__PURE__ */ __exportAll({ translations: () => translations$39 });
-	var translations$39;
-	var init_pt$15 = __esmMin((() => {
-		translations$39 = {
+	var pt_exports$17 = /* @__PURE__ */ __exportAll({ translations: () => translations$43 });
+	var translations$43;
+	var init_pt$17 = __esmMin((() => {
+		translations$43 = {
 			"Show anomalies": "Mostrar anomalias",
 			Sensitivity: "Sensibilidade",
 			"Use downsampled data for detection": "Usar dados reamostrados para deteção",
@@ -4335,10 +5042,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-delta-group/i18n/pt.ts
-	var pt_exports$14 = /* @__PURE__ */ __exportAll({ translations: () => translations$38 });
-	var translations$38;
-	var init_pt$14 = __esmMin((() => {
-		translations$38 = {
+	var pt_exports$16 = /* @__PURE__ */ __exportAll({ translations: () => translations$42 });
+	var translations$42;
+	var init_pt$16 = __esmMin((() => {
+		translations$42 = {
 			"Show delta vs selected date window": "Mostrar delta face à janela de datas selecionada",
 			"Select a date window tab to enable delta analysis.": "Selecione um separador de janela de datas para ativar a análise delta.",
 			"Show delta in tooltip": "Mostrar delta na dica",
@@ -4347,10 +5054,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-rate-group/i18n/pt.ts
-	var pt_exports$13 = /* @__PURE__ */ __exportAll({ translations: () => translations$37 });
-	var translations$37;
-	var init_pt$13 = __esmMin((() => {
-		translations$37 = {
+	var pt_exports$15 = /* @__PURE__ */ __exportAll({ translations: () => translations$41 });
+	var translations$41;
+	var init_pt$15 = __esmMin((() => {
+		translations$41 = {
 			"Show rate of change": "Mostrar taxa de variação",
 			"Show rate of change crosshairs": "Mostrar guias da taxa de variação",
 			"Rate window": "Janela da taxa",
@@ -4362,10 +5069,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-sample-group/i18n/pt.ts
-	var pt_exports$12 = /* @__PURE__ */ __exportAll({ translations: () => translations$36 });
-	var translations$36;
-	var init_pt$12 = __esmMin((() => {
-		translations$36 = {
+	var pt_exports$14 = /* @__PURE__ */ __exportAll({ translations: () => translations$40 });
+	var translations$40;
+	var init_pt$14 = __esmMin((() => {
+		translations$40 = {
 			Downsampling: "Reamostragem",
 			Interval: "Intervalo",
 			Aggregate: "Agregado",
@@ -4397,20 +5104,20 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-summary-group/i18n/pt.ts
-	var pt_exports$11 = /* @__PURE__ */ __exportAll({ translations: () => translations$35 });
-	var translations$35;
-	var init_pt$11 = __esmMin((() => {
-		translations$35 = {
+	var pt_exports$13 = /* @__PURE__ */ __exportAll({ translations: () => translations$39 });
+	var translations$39;
+	var init_pt$13 = __esmMin((() => {
+		translations$39 = {
 			"Show min / max / mean": "Mostrar mín. / máx. / média",
 			"Show range shading": "Mostrar sombreamento do intervalo"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-threshold-group/i18n/pt.ts
-	var pt_exports$10 = /* @__PURE__ */ __exportAll({ translations: () => translations$34 });
-	var translations$34;
-	var init_pt$10 = __esmMin((() => {
-		translations$34 = {
+	var pt_exports$12 = /* @__PURE__ */ __exportAll({ translations: () => translations$38 });
+	var translations$38;
+	var init_pt$12 = __esmMin((() => {
+		translations$38 = {
 			"Show threshold analysis": "Mostrar análise de limiar",
 			"Shade threshold area": "Sombrear área do limiar",
 			Threshold: "Limiar",
@@ -4421,10 +5128,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-trend-group/i18n/pt.ts
-	var pt_exports$9 = /* @__PURE__ */ __exportAll({ translations: () => translations$33 });
-	var translations$33;
-	var init_pt$9 = __esmMin((() => {
-		translations$33 = {
+	var pt_exports$11 = /* @__PURE__ */ __exportAll({ translations: () => translations$37 });
+	var translations$37;
+	var init_pt$11 = __esmMin((() => {
+		translations$37 = {
 			"Show trend lines": "Mostrar linhas de tendência",
 			"Show trend crosshairs": "Mostrar guias da tendência",
 			"Trend method": "Método de tendência",
@@ -4441,18 +5148,31 @@
 		};
 	}));
 	//#endregion
+	//#region custom_components/hass_datapoints/src/molecules/anomaly-monitor-wizard/i18n/pt.ts
+	var pt_exports$10 = /* @__PURE__ */ __exportAll({ translations: () => translations$36 });
+	var translations$36;
+	var init_pt$10 = __esmMin((() => {
+		translations$36 = {
+			"Add all series from chart": "Adicionar todas as séries do gráfico",
+			"Add from current chart": "Adicionar do gráfico atual",
+			"Create anomaly monitor": "Criar monitor de anomalias",
+			"Unable to save anomaly monitor.": "Não foi possível guardar o monitor de anomalias.",
+			"anomaly monitors": "monitores de anomalias"
+		};
+	}));
+	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/comparison-tab-rail/i18n/pt.ts
-	var pt_exports$8 = /* @__PURE__ */ __exportAll({ translations: () => translations$32 });
-	var translations$32;
-	var init_pt$8 = __esmMin((() => {
-		translations$32 = { "Add date window": "Adicionar janela de datas" };
+	var pt_exports$9 = /* @__PURE__ */ __exportAll({ translations: () => translations$35 });
+	var translations$35;
+	var init_pt$9 = __esmMin((() => {
+		translations$35 = { "Add date window": "Adicionar janela de datas" };
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/date-window-dialog/i18n/pt.ts
-	var pt_exports$7 = /* @__PURE__ */ __exportAll({ translations: () => translations$31 });
-	var translations$31;
-	var init_pt$7 = __esmMin((() => {
-		translations$31 = {
+	var pt_exports$8 = /* @__PURE__ */ __exportAll({ translations: () => translations$34 });
+	var translations$34;
+	var init_pt$8 = __esmMin((() => {
+		translations$34 = {
 			"A date window saves a named date range as a tab, so you can quickly preview it against the selected range or jump the chart back to it later.": "Uma janela de datas guarda um intervalo de datas com nome como separador, para que possa pré-visualizá-lo rapidamente face ao intervalo selecionado ou regressar mais tarde a ele no gráfico.",
 			Name: "Nome",
 			"e.g. Heating season start": "ex.: início da época de aquecimento",
@@ -4467,10 +5187,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/sidebar-options/sections/i18n/pt.ts
-	var pt_exports$6 = /* @__PURE__ */ __exportAll({ translations: () => translations$30 });
-	var translations$30;
-	var init_pt$6 = __esmMin((() => {
-		translations$30 = {
+	var pt_exports$7 = /* @__PURE__ */ __exportAll({ translations: () => translations$33 });
+	var translations$33;
+	var init_pt$7 = __esmMin((() => {
+		translations$33 = {
 			Datapoints: "Pontos de dados",
 			"Choose which annotation datapoints appear on the chart.": "Escolha quais os pontos de dados de anotação que aparecem no gráfico.",
 			"Linked to selected targets": "Ligados aos alvos selecionados",
@@ -4480,10 +5200,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row/i18n/pt.ts
-	var pt_exports$5 = /* @__PURE__ */ __exportAll({ translations: () => translations$29 });
-	var translations$29;
-	var init_pt$5 = __esmMin((() => {
-		translations$29 = {
+	var pt_exports$6 = /* @__PURE__ */ __exportAll({ translations: () => translations$32 });
+	var translations$32;
+	var init_pt$6 = __esmMin((() => {
+		translations$32 = {
 			"Analysis configured": "Análise configurada",
 			"Configure analysis": "Configurar análise",
 			"Stepped series": "Série em degraus",
@@ -4495,17 +5215,32 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row-list/i18n/pt.ts
-	var pt_exports$4 = /* @__PURE__ */ __exportAll({ translations: () => translations$28 });
-	var translations$28;
+	var pt_exports$5 = /* @__PURE__ */ __exportAll({ translations: () => translations$31 });
+	var translations$31;
+	var init_pt$5 = __esmMin((() => {
+		translations$31 = {};
+	}));
+	//#endregion
+	//#region custom_components/hass_datapoints/src/panels/datapoints/components/ai-query-brief-dialog/i18n/pt.ts
+	var pt_exports$4 = /* @__PURE__ */ __exportAll({ translations: () => translations$30 });
+	var translations$30;
 	var init_pt$4 = __esmMin((() => {
-		translations$28 = {};
+		translations$30 = {
+			"AI query brief": "Resumo de consulta para IA",
+			"This brief is intended for another AI to fetch raw Home Assistant history and hass_datapoints anomaly details. Review it, then copy it into your AI tool of choice.": "Este resumo foi feito para outra IA obter o historico bruto do Home Assistant e os detalhes de anomalias do hass_datapoints. Revise-o e depois copie-o para a ferramenta de IA de sua escolha.",
+			"Copy-ready brief": "Resumo pronto para copiar",
+			Close: "Fechar",
+			"Copy brief": "Copiar resumo",
+			"Copied to clipboard.": "Copiado para a area de transferencia.",
+			"Clipboard write failed. The text is selected so you can copy it manually.": "A gravacao na area de transferencia falhou. O texto esta selecionado para que voce possa copia-lo manualmente."
+		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/history-targets/i18n/pt.ts
-	var pt_exports$3 = /* @__PURE__ */ __exportAll({ translations: () => translations$27 });
-	var translations$27;
+	var pt_exports$3 = /* @__PURE__ */ __exportAll({ translations: () => translations$29 });
+	var translations$29;
 	var init_pt$3 = __esmMin((() => {
-		translations$27 = {
+		translations$29 = {
 			Targets: "Alvos",
 			"Each row controls one chart series.": "Cada linha controla uma série do gráfico.",
 			"Add target": "Adicionar alvo",
@@ -4514,13 +5249,14 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/panel-shell/i18n/pt.ts
-	var pt_exports$2 = /* @__PURE__ */ __exportAll({ translations: () => translations$26 });
-	var translations$26;
+	var pt_exports$2 = /* @__PURE__ */ __exportAll({ translations: () => translations$28 });
+	var translations$28;
 	var init_pt$2 = __esmMin((() => {
-		translations$26 = {
+		translations$28 = {
 			"Loading Datapoints…": "A carregar pontos de dados…",
 			Datapoints: "Pontos de dados",
 			"Page options": "Opções da página",
+			"AI query brief": "Resumo de consulta para IA",
 			"Download spreadsheet": "Transferir folha de cálculo",
 			"Save page state": "Guardar estado da página",
 			"Restore saved page": "Restaurar página guardada",
@@ -4531,10 +5267,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/range-toolbar/i18n/pt.ts
-	var pt_exports$1 = /* @__PURE__ */ __exportAll({ translations: () => translations$25 });
-	var translations$25;
+	var pt_exports$1 = /* @__PURE__ */ __exportAll({ translations: () => translations$27 });
+	var translations$27;
 	var init_pt$1 = __esmMin((() => {
-		translations$25 = {
+		translations$27 = {
 			"Toggle sidebar": "Alternar barra lateral",
 			Start: "Início",
 			End: "Fim",
@@ -4562,6 +5298,8 @@
 	var pt_exports = /* @__PURE__ */ __exportAll({ templates: () => templates$1 });
 	var modules$1, merged$1, templates$1;
 	var init_pt = __esmMin((() => {
+		init_pt$27();
+		init_pt$26();
 		init_pt$25();
 		init_pt$24();
 		init_pt$23();
@@ -4588,28 +5326,30 @@
 		init_pt$2();
 		init_pt$1();
 		modules$1 = /* @__PURE__ */ Object.assign({
-			"../../../atoms/interactive/range-timeline/i18n/pt.ts": pt_exports$25,
-			"../../../cards/action/i18n/pt.ts": pt_exports$24,
-			"../../../cards/history/history-chart/i18n/pt.ts": pt_exports$23,
-			"../../../cards/history/i18n/pt.ts": pt_exports$22,
-			"../../../cards/list/i18n/pt.ts": pt_exports$21,
-			"../../../cards/quick/i18n/pt.ts": pt_exports$20,
-			"../../../cards/sensor/i18n/pt.ts": pt_exports$19,
-			"../../chart/i18n/pt.ts": pt_exports$18,
-			"../../ha/i18n/pt.ts": pt_exports$17,
-			"../../timeline/i18n/pt.ts": pt_exports$16,
-			"../../../molecules/analysis-anomaly-group/i18n/pt.ts": pt_exports$15,
-			"../../../molecules/analysis-delta-group/i18n/pt.ts": pt_exports$14,
-			"../../../molecules/analysis-rate-group/i18n/pt.ts": pt_exports$13,
-			"../../../molecules/analysis-sample-group/i18n/pt.ts": pt_exports$12,
-			"../../../molecules/analysis-summary-group/i18n/pt.ts": pt_exports$11,
-			"../../../molecules/analysis-threshold-group/i18n/pt.ts": pt_exports$10,
-			"../../../molecules/analysis-trend-group/i18n/pt.ts": pt_exports$9,
-			"../../../molecules/comparison-tab-rail/i18n/pt.ts": pt_exports$8,
-			"../../../molecules/date-window-dialog/i18n/pt.ts": pt_exports$7,
-			"../../../molecules/sidebar-options/sections/i18n/pt.ts": pt_exports$6,
-			"../../../molecules/target-row/i18n/pt.ts": pt_exports$5,
-			"../../../molecules/target-row-list/i18n/pt.ts": pt_exports$4,
+			"../../../cards/action/i18n/pt.ts": pt_exports$27,
+			"../../../cards/history/history-chart/i18n/pt.ts": pt_exports$26,
+			"../../../cards/history/i18n/pt.ts": pt_exports$25,
+			"../../../cards/list/i18n/pt.ts": pt_exports$24,
+			"../../../cards/quick/i18n/pt.ts": pt_exports$23,
+			"../../../cards/sensor/i18n/pt.ts": pt_exports$22,
+			"../../chart/i18n/pt.ts": pt_exports$21,
+			"../../ha/i18n/pt.ts": pt_exports$20,
+			"../../history-page/i18n/pt.ts": pt_exports$19,
+			"../../timeline/i18n/pt.ts": pt_exports$18,
+			"../../../molecules/analysis-anomaly-group/i18n/pt.ts": pt_exports$17,
+			"../../../molecules/analysis-delta-group/i18n/pt.ts": pt_exports$16,
+			"../../../molecules/analysis-rate-group/i18n/pt.ts": pt_exports$15,
+			"../../../molecules/analysis-sample-group/i18n/pt.ts": pt_exports$14,
+			"../../../molecules/analysis-summary-group/i18n/pt.ts": pt_exports$13,
+			"../../../molecules/analysis-threshold-group/i18n/pt.ts": pt_exports$12,
+			"../../../molecules/analysis-trend-group/i18n/pt.ts": pt_exports$11,
+			"../../../molecules/anomaly-monitor-wizard/i18n/pt.ts": pt_exports$10,
+			"../../../molecules/comparison-tab-rail/i18n/pt.ts": pt_exports$9,
+			"../../../molecules/date-window-dialog/i18n/pt.ts": pt_exports$8,
+			"../../../molecules/sidebar-options/sections/i18n/pt.ts": pt_exports$7,
+			"../../../molecules/target-row/i18n/pt.ts": pt_exports$6,
+			"../../../molecules/target-row-list/i18n/pt.ts": pt_exports$5,
+			"../../../panels/datapoints/components/ai-query-brief-dialog/i18n/pt.ts": pt_exports$4,
 			"../../../panels/datapoints/components/history-targets/i18n/pt.ts": pt_exports$3,
 			"../../../panels/datapoints/components/panel-shell/i18n/pt.ts": pt_exports$2,
 			"../../../panels/datapoints/components/range-toolbar/i18n/pt.ts": pt_exports$1
@@ -4619,24 +5359,11 @@
 		templates$1 = merged$1;
 	}));
 	//#endregion
-	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/i18n/zh-hans.ts
-	var zh_hans_exports$25 = /* @__PURE__ */ __exportAll({ translations: () => translations$24 });
-	var translations$24;
-	var init_zh_hans$25 = __esmMin((() => {
-		translations$24 = {
-			"Updates with new data": "使用新数据更新",
-			"Scroll to selected range": "滚动到选定范围",
-			"Start date and time": "开始日期和时间",
-			"End date and time": "结束日期和时间",
-			Select: "选择"
-		};
-	}));
-	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/action/i18n/zh-hans.ts
-	var zh_hans_exports$24 = /* @__PURE__ */ __exportAll({ translations: () => translations$23 });
-	var translations$23;
-	var init_zh_hans$24 = __esmMin((() => {
-		translations$23 = {
+	var zh_hans_exports$27 = /* @__PURE__ */ __exportAll({ translations: () => translations$26 });
+	var translations$26;
+	var init_zh_hans$27 = __esmMin((() => {
+		translations$26 = {
 			General: "常规",
 			"Related items": "关联项",
 			"Datapoint Appearance": "数据点外观",
@@ -4653,20 +5380,20 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/history-chart/i18n/zh-hans.ts
-	var zh_hans_exports$23 = /* @__PURE__ */ __exportAll({ translations: () => translations$22 });
-	var translations$22;
-	var init_zh_hans$23 = __esmMin((() => {
-		translations$22 = {
+	var zh_hans_exports$26 = /* @__PURE__ */ __exportAll({ translations: () => translations$25 });
+	var translations$25;
+	var init_zh_hans$26 = __esmMin((() => {
+		translations$25 = {
 			"Date window:": "日期窗口：",
 			"Actual:": "实际："
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/i18n/zh-hans.ts
-	var zh_hans_exports$22 = /* @__PURE__ */ __exportAll({ translations: () => translations$21 });
-	var translations$21;
-	var init_zh_hans$22 = __esmMin((() => {
-		translations$21 = {
+	var zh_hans_exports$25 = /* @__PURE__ */ __exportAll({ translations: () => translations$24 });
+	var translations$24;
+	var init_zh_hans$25 = __esmMin((() => {
+		translations$24 = {
 			General: "常规",
 			Entity: "实体",
 			"Multiple entities": "多个实体",
@@ -4680,10 +5407,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/list/i18n/zh-hans.ts
-	var zh_hans_exports$21 = /* @__PURE__ */ __exportAll({ translations: () => translations$20 });
-	var translations$20;
-	var init_zh_hans$21 = __esmMin((() => {
-		translations$20 = {
+	var zh_hans_exports$24 = /* @__PURE__ */ __exportAll({ translations: () => translations$23 });
+	var translations$23;
+	var init_zh_hans$24 = __esmMin((() => {
+		translations$23 = {
 			"Search datapoints…": "搜索数据点…",
 			"Delete record": "删除记录",
 			Delete: "删除",
@@ -4701,10 +5428,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/quick/i18n/zh-hans.ts
-	var zh_hans_exports$20 = /* @__PURE__ */ __exportAll({ translations: () => translations$19 });
-	var translations$19;
-	var init_zh_hans$20 = __esmMin((() => {
-		translations$19 = {
+	var zh_hans_exports$23 = /* @__PURE__ */ __exportAll({ translations: () => translations$22 });
+	var translations$22;
+	var init_zh_hans$23 = __esmMin((() => {
+		translations$22 = {
 			General: "常规",
 			"Icon & colour": "图标和颜色",
 			"Related items": "关联项",
@@ -4722,10 +5449,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/sensor/i18n/zh-hans.ts
-	var zh_hans_exports$19 = /* @__PURE__ */ __exportAll({ translations: () => translations$18 });
-	var translations$18;
-	var init_zh_hans$19 = __esmMin((() => {
-		translations$18 = {
+	var zh_hans_exports$22 = /* @__PURE__ */ __exportAll({ translations: () => translations$21 });
+	var translations$21;
+	var init_zh_hans$22 = __esmMin((() => {
+		translations$21 = {
 			Entity: "实体",
 			Display: "显示",
 			"Records list": "记录列表",
@@ -4745,10 +5472,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/chart/i18n/zh-hans.ts
-	var zh_hans_exports$18 = /* @__PURE__ */ __exportAll({ translations: () => translations$17 });
-	var translations$17;
-	var init_zh_hans$18 = __esmMin((() => {
-		translations$17 = {
+	var zh_hans_exports$21 = /* @__PURE__ */ __exportAll({ translations: () => translations$20 });
+	var translations$20;
+	var init_zh_hans$21 = __esmMin((() => {
+		translations$20 = {
 			"⚠️ Anomaly Insight": "⚠️ 异常洞察",
 			"⚠️ Multi-method Anomaly": "⚠️ 多方法异常",
 			"Click the highlighted circle to add an annotation.": "点击高亮圆圈以添加注释。",
@@ -4783,10 +5510,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/ha/i18n/zh-hans.ts
-	var zh_hans_exports$17 = /* @__PURE__ */ __exportAll({ translations: () => translations$16 });
-	var translations$16;
-	var init_zh_hans$17 = __esmMin((() => {
-		translations$16 = {
+	var zh_hans_exports$20 = /* @__PURE__ */ __exportAll({ translations: () => translations$19 });
+	var translations$19;
+	var init_zh_hans$20 = __esmMin((() => {
+		translations$19 = {
 			"Confirm delete": "确认删除",
 			"Are you sure you want to delete this item?": "确定要删除此项目吗？",
 			Cancel: "取消",
@@ -4800,21 +5527,122 @@
 		};
 	}));
 	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/history-page/i18n/zh-hans.ts
+	var zh_hans_exports$19 = /* @__PURE__ */ __exportAll({ translations: () => translations$18 });
+	var translations$18;
+	var init_zh_hans$19 = __esmMin((() => {
+		translations$18 = {
+			"entity_id={0}": "entity_id={0}",
+			"device_id={0}": "device_id={0}",
+			"area_id={0}": "area_id={0}",
+			"label_id={0}": "label_id={0}",
+			none: "无",
+			"Entity metadata:": "实体元数据：",
+			"Snapshot range label:": "快照范围标签：",
+			"main range": "主范围",
+			"Correlated anomaly highlighting enabled in chart:": "图表中的相关异常高亮已启用：",
+			yes: "是",
+			no: "否",
+			"Current anomaly overlap mode:": "当前异常重叠模式：",
+			"Correlated anomaly periods across the selected datapoints:": "所选数据点之间的相关异常时间段：",
+			"Entity findings:": "实体发现：",
+			"Detected clusters in current range:": "当前范围内检测到的聚类：",
+			"Displayed clusters under the current overlap/correlation mode:": "在当前重叠/相关模式下显示的聚类：",
+			"All detected anomaly cluster details:": "所有检测到的异常聚类详情：",
+			"Displayed anomaly cluster details:": "已显示的异常聚类详情：",
+			"Entity:": "实体：",
+			"Display name:": "显示名称：",
+			"Visible in panel:": "在面板中可见：",
+			"Anomaly analysis: disabled in the current panel configuration.": "异常分析：在当前面板配置中已禁用。",
+			"Anomaly analysis: enabled.": "异常分析：已启用。",
+			"Backend anomaly query inputs:": "后端异常查询输入：",
+			"Raw history query inputs:": "原始历史查询输入：",
+			"Comparison window reference:": "比较窗口参考：",
+			"Comparison window raw history query inputs:": "比较窗口原始历史查询输入：",
+			"Comparison window anomaly query inputs:": "比较窗口异常查询输入：",
+			"Baseline comparison entity:": "基线比较实体：",
+			"RELEVANT PERSISTED MONITORS": "相关的持久化监视器",
+			"No persisted anomaly monitors intersect the currently selected entities.": "没有持久化的异常监视器与当前选中的实体相交。",
+			"Monitor: {0} ({1})": "监视器：{0}（{1}）",
+			"Type:": "类型：",
+			"Enabled:": "已启用：",
+			"Entities:": "实体：",
+			"Monitor anomaly query inputs:": "监视器异常查询输入：",
+			"AI QUERY BRIEF: HOME ASSISTANT DATAPOINTS PANEL": "AI 查询摘要：HOME ASSISTANT DATAPOINTS 面板",
+			OBJECTIVE: "目标",
+			"SUCCESS CRITERIA": "成功标准",
+			"RETRIEVAL PRIORITY": "获取优先级",
+			"PANEL CONTEXT": "面板上下文",
+			"Selected entity ids:": "已选实体 ID：",
+			"(none selected)": "（未选择）",
+			"Raw target selection summary:": "原始目标选择摘要：",
+			"Datapoint scope:": "数据点范围：",
+			"Main range start_time:": "主范围 start_time：",
+			"(not set)": "（未设置）",
+			"Main range end_time:": "主范围 end_time：",
+			"Committed zoom start_time:": "已提交缩放的 start_time：",
+			"Committed zoom end_time:": "已提交缩放的 end_time：",
+			"Selected comparison window id:": "所选比较窗口 ID：",
+			"(none)": "（无）",
+			"Comparison windows:": "比较窗口：",
+			"Chart anomaly overlap mode:": "图表异常重叠模式：",
+			"RANGE / RETENTION NOTE": "范围 / 保留说明",
+			"QUERY RULES": "查询规则",
+			"RAW TARGET SELECTION OBJECT": "原始目标选择对象",
+			"AVAILABLE COMPARISON WINDOWS": "可用的比较窗口",
+			"PER-ENTITY QUERY DETAILS": "按实体划分的查询详情",
+			"RECOMMENDED OUTPUT": "建议输出",
+			"Comparison window detail: the configured comparison window is not currently selected, so use the window id above to resolve the saved date window before querying.": "Comparison window detail: the configured comparison window is not currently selected, so use the window id above to resolve the saved date window before querying.",
+			"If raw recorder history is incomplete or unavailable, fetch Home Assistant statistics for continuity and call out the retention boundary explicitly.": "If raw recorder history is incomplete or unavailable, fetch Home Assistant statistics for continuity and call out the retention boundary explicitly.",
+			"The requested window spans about {0} days. Short-retention raw history may not fully cover this range, so use Home Assistant statistics for older or missing portions and do not infer 'no anomalies' from retention gaps.": "The requested window spans about {0} days. Short-retention raw history may not fully cover this range, so use Home Assistant statistics for older or missing portions and do not infer 'no anomalies' from retention gaps.",
+			"Use raw recorder history first for this range. If raw history is incomplete or unavailable, fetch Home Assistant statistics and explain any retention or recorder gaps.": "Use raw recorder history first for this range. If raw history is incomplete or unavailable, fetch Home Assistant statistics and explain any retention or recorder gaps.",
+			"CURRENT RANGE ANOMALY FINDINGS": "CURRENT RANGE ANOMALY FINDINGS",
+			"Current anomaly findings are not available from the active chart state, so use the query inputs below to fetch and inspect anomaly clusters directly.": "Current anomaly findings are not available from the active chart state, so use the query inputs below to fetch and inspect anomaly clusters directly.",
+			"No entity-level anomaly findings are currently available from the active chart snapshot.": "No entity-level anomaly findings are currently available from the active chart snapshot.",
+			"If your Home Assistant tooling requires explicit baseline range inputs, use the same start/end range as the main anomaly query unless a more specific monitor or MCP tool requires otherwise.": "If your Home Assistant tooling requires explicit baseline range inputs, use the same start/end range as the main anomaly query unless a more specific monitor or MCP tool requires otherwise.",
+			"Fetch the underlying Home Assistant history or statistics, entity metadata, and hass_datapoints anomaly detail needed to inspect the currently selected datapoints. Do not treat this brief as the raw data itself.": "Fetch the underlying Home Assistant history or statistics, entity metadata, and hass_datapoints anomaly detail needed to inspect the currently selected datapoints. Do not treat this brief as the raw data itself.",
+			"- Resolve entity metadata context for each selected entity.": "- Resolve entity metadata context for each selected entity.",
+			"- Fetch raw or best-available historical coverage for the requested range.": "- Fetch raw or best-available historical coverage for the requested range.",
+			"- Reproduce hass_datapoints anomaly queries with the exact panel settings below.": "- Reproduce hass_datapoints anomaly queries with the exact panel settings below.",
+			"- Review current-range anomaly findings from this integration, including cross-entity correlated anomaly periods when present.": "- Review current-range anomaly findings from this integration, including cross-entity correlated anomaly periods when present.",
+			"- Call out any retention, sampling, permission, or monitor-lookup limitations.": "- Call out any retention, sampling, permission, or monitor-lookup limitations.",
+			"1. Resolve entity metadata first so area, device, platform, labels, and unit context are known before interpretation.": "1. Resolve entity metadata first so area, device, platform, labels, and unit context are known before interpretation.",
+			"2. Fetch raw recorder history for the requested range where available.": "2. Fetch raw recorder history for the requested range where available.",
+			"3. If raw history is incomplete, unavailable, or truncated by retention, fetch Home Assistant statistics for continuity.": "3. If raw history is incomplete, unavailable, or truncated by retention, fetch Home Assistant statistics for continuity.",
+			"4. Reproduce the hass_datapoints anomaly queries exactly as listed below.": "4. Reproduce the hass_datapoints anomaly queries exactly as listed below.",
+			"5. Because anomaly analysis may use sampled data, compare raw history for ground truth against sampled series for anomaly reproduction.": "5. Because anomaly analysis may use sampled data, compare raw history for ground truth against sampled series for anomaly reproduction.",
+			"6. Review the current anomaly findings already found by this integration in the active range and use them to guide deeper inspection.": "6. Review the current anomaly findings already found by this integration in the active range and use them to guide deeper inspection.",
+			"7. If monitor context is available, fetch relevant monitor anomaly output for additional persisted monitor detail.": "7. If monitor context is available, fetch relevant monitor anomaly output for additional persisted monitor detail.",
+			"- Use UTC timestamps exactly as written for retrieval.": "- Use UTC timestamps exactly as written for retrieval.",
+			"- Convert to the Home Assistant local timezone only when interpreting daily or weekly behavior patterns.": "- Convert to the Home Assistant local timezone only when interpreting daily or weekly behavior patterns.",
+			"- Do not infer 'no anomaly' from missing raw history when retention may be limited.": "- Do not infer 'no anomaly' from missing raw history when retention may be limited.",
+			"- If anomaly queries below use sampled data, inspect both raw history and the sampled representation.": "- If anomaly queries below use sampled data, inspect both raw history and the sampled representation.",
+			"- For long ranges, remember HA history pagination and retention constraints can change what raw coverage is available.": "- For long ranges, remember HA history pagination and retention constraints can change what raw coverage is available.",
+			"No selected entities are currently available in the panel state.": "No selected entities are currently available in the panel state.",
+			"- Resolved metadata per selected entity, including unit, device class, state class, area, device, labels, and platform when available.": "- Resolved metadata per selected entity, including unit, device class, state class, area, device, labels, and platform when available.",
+			"- Coverage status of raw history versus statistics, including any retention or pagination limits encountered.": "- Coverage status of raw history versus statistics, including any retention or pagination limits encountered.",
+			"- Detailed anomaly findings per entity for the requested range, using the current integration findings above plus any fetched raw cluster detail.": "- Detailed anomaly findings per entity for the requested range, using the current integration findings above plus any fetched raw cluster detail.",
+			"- If anomalies indicate some type of event, zoom out and look for answers in the related area/group/labels or across other entities in the panel. If anomalies are unexpected, look for any subtle metadata clues that could explain them, such as a device class or state class that implies a different expected behavior pattern than initially assumed.": "- If anomalies indicate some type of event, zoom out and look for answers in the related area/group/labels or across other entities in the panel. If anomalies are unexpected, look for any subtle metadata clues that could explain them, such as a device class or state class that implies a different expected behavior pattern than initially assumed.",
+			"- Correlated anomaly periods across the selected datapoints, if any are present, including which entities participate and when the overlap occurs.": "- Correlated anomaly periods across the selected datapoints, if any are present, including which entities participate and when the overlap occurs.",
+			"- Any monitor-access, permission, sampling, comparison-window, or data-coverage limitations that materially affect interpretation.": "- Any monitor-access, permission, sampling, comparison-window, or data-coverage limitations that materially affect interpretation."
+		};
+	}));
+	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/timeline/i18n/zh-hans.ts
-	var zh_hans_exports$16 = /* @__PURE__ */ __exportAll({ translations: () => translations$15 });
-	var translations$15;
-	var init_zh_hans$16 = __esmMin((() => {
-		translations$15 = {
+	var zh_hans_exports$18 = /* @__PURE__ */ __exportAll({ translations: () => translations$17 });
+	var translations$17;
+	var init_zh_hans$18 = __esmMin((() => {
+		translations$17 = {
 			Wk: "周",
 			"Week of": "所在周"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-anomaly-group/i18n/zh-hans.ts
-	var zh_hans_exports$15 = /* @__PURE__ */ __exportAll({ translations: () => translations$14 });
-	var translations$14;
-	var init_zh_hans$15 = __esmMin((() => {
-		translations$14 = {
+	var zh_hans_exports$17 = /* @__PURE__ */ __exportAll({ translations: () => translations$16 });
+	var translations$16;
+	var init_zh_hans$17 = __esmMin((() => {
+		translations$16 = {
 			"Show anomalies": "显示异常",
 			Sensitivity: "灵敏度",
 			"Use downsampled data for detection": "检测时使用降采样数据",
@@ -4856,10 +5684,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-delta-group/i18n/zh-hans.ts
-	var zh_hans_exports$14 = /* @__PURE__ */ __exportAll({ translations: () => translations$13 });
-	var translations$13;
-	var init_zh_hans$14 = __esmMin((() => {
-		translations$13 = {
+	var zh_hans_exports$16 = /* @__PURE__ */ __exportAll({ translations: () => translations$15 });
+	var translations$15;
+	var init_zh_hans$16 = __esmMin((() => {
+		translations$15 = {
 			"Show delta vs selected date window": "显示相对于所选日期窗口的差值",
 			"Select a date window tab to enable delta analysis.": "选择一个日期窗口标签以启用差值分析。",
 			"Show delta in tooltip": "在提示中显示差值",
@@ -4868,10 +5696,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-rate-group/i18n/zh-hans.ts
-	var zh_hans_exports$13 = /* @__PURE__ */ __exportAll({ translations: () => translations$12 });
-	var translations$12;
-	var init_zh_hans$13 = __esmMin((() => {
-		translations$12 = {
+	var zh_hans_exports$15 = /* @__PURE__ */ __exportAll({ translations: () => translations$14 });
+	var translations$14;
+	var init_zh_hans$15 = __esmMin((() => {
+		translations$14 = {
 			"Show rate of change": "显示变化率",
 			"Show rate of change crosshairs": "显示变化率准星",
 			"Rate window": "变化率窗口",
@@ -4883,10 +5711,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-sample-group/i18n/zh-hans.ts
-	var zh_hans_exports$12 = /* @__PURE__ */ __exportAll({ translations: () => translations$11 });
-	var translations$11;
-	var init_zh_hans$12 = __esmMin((() => {
-		translations$11 = {
+	var zh_hans_exports$14 = /* @__PURE__ */ __exportAll({ translations: () => translations$13 });
+	var translations$13;
+	var init_zh_hans$14 = __esmMin((() => {
+		translations$13 = {
 			Downsampling: "降采样",
 			Interval: "间隔",
 			Aggregate: "聚合",
@@ -4918,20 +5746,20 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-summary-group/i18n/zh-hans.ts
-	var zh_hans_exports$11 = /* @__PURE__ */ __exportAll({ translations: () => translations$10 });
-	var translations$10;
-	var init_zh_hans$11 = __esmMin((() => {
-		translations$10 = {
+	var zh_hans_exports$13 = /* @__PURE__ */ __exportAll({ translations: () => translations$12 });
+	var translations$12;
+	var init_zh_hans$13 = __esmMin((() => {
+		translations$12 = {
 			"Show min / max / mean": "显示最小 / 最大 / 平均值",
 			"Show range shading": "显示范围阴影"
 		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-threshold-group/i18n/zh-hans.ts
-	var zh_hans_exports$10 = /* @__PURE__ */ __exportAll({ translations: () => translations$9 });
-	var translations$9;
-	var init_zh_hans$10 = __esmMin((() => {
-		translations$9 = {
+	var zh_hans_exports$12 = /* @__PURE__ */ __exportAll({ translations: () => translations$11 });
+	var translations$11;
+	var init_zh_hans$12 = __esmMin((() => {
+		translations$11 = {
 			"Show threshold analysis": "显示阈值分析",
 			"Shade threshold area": "为阈值区域着色",
 			Threshold: "阈值",
@@ -4942,10 +5770,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-trend-group/i18n/zh-hans.ts
-	var zh_hans_exports$9 = /* @__PURE__ */ __exportAll({ translations: () => translations$8 });
-	var translations$8;
-	var init_zh_hans$9 = __esmMin((() => {
-		translations$8 = {
+	var zh_hans_exports$11 = /* @__PURE__ */ __exportAll({ translations: () => translations$10 });
+	var translations$10;
+	var init_zh_hans$11 = __esmMin((() => {
+		translations$10 = {
 			"Show trend lines": "显示趋势线",
 			"Show trend crosshairs": "显示趋势准星",
 			"Trend method": "趋势方法",
@@ -4962,18 +5790,31 @@
 		};
 	}));
 	//#endregion
+	//#region custom_components/hass_datapoints/src/molecules/anomaly-monitor-wizard/i18n/zh-hans.ts
+	var zh_hans_exports$10 = /* @__PURE__ */ __exportAll({ translations: () => translations$9 });
+	var translations$9;
+	var init_zh_hans$10 = __esmMin((() => {
+		translations$9 = {
+			"Add all series from chart": "添加图表中的所有序列",
+			"Add from current chart": "从当前图表添加",
+			"Create anomaly monitor": "创建异常监视器",
+			"Unable to save anomaly monitor.": "无法保存异常监视器。",
+			"anomaly monitors": "异常监视器"
+		};
+	}));
+	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/comparison-tab-rail/i18n/zh-hans.ts
-	var zh_hans_exports$8 = /* @__PURE__ */ __exportAll({ translations: () => translations$7 });
-	var translations$7;
-	var init_zh_hans$8 = __esmMin((() => {
-		translations$7 = { "Add date window": "添加日期窗口" };
+	var zh_hans_exports$9 = /* @__PURE__ */ __exportAll({ translations: () => translations$8 });
+	var translations$8;
+	var init_zh_hans$9 = __esmMin((() => {
+		translations$8 = { "Add date window": "添加日期窗口" };
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/date-window-dialog/i18n/zh-hans.ts
-	var zh_hans_exports$7 = /* @__PURE__ */ __exportAll({ translations: () => translations$6 });
-	var translations$6;
-	var init_zh_hans$7 = __esmMin((() => {
-		translations$6 = {
+	var zh_hans_exports$8 = /* @__PURE__ */ __exportAll({ translations: () => translations$7 });
+	var translations$7;
+	var init_zh_hans$8 = __esmMin((() => {
+		translations$7 = {
 			"A date window saves a named date range as a tab, so you can quickly preview it against the selected range or jump the chart back to it later.": "日期窗口会将一个命名的日期范围保存为标签页，这样你就可以快速将其与所选范围进行预览对比，或稍后在图表中跳回该范围。",
 			Name: "名称",
 			"e.g. Heating season start": "例如：供暖季开始",
@@ -4988,10 +5829,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/sidebar-options/sections/i18n/zh-hans.ts
-	var zh_hans_exports$6 = /* @__PURE__ */ __exportAll({ translations: () => translations$5 });
-	var translations$5;
-	var init_zh_hans$6 = __esmMin((() => {
-		translations$5 = {
+	var zh_hans_exports$7 = /* @__PURE__ */ __exportAll({ translations: () => translations$6 });
+	var translations$6;
+	var init_zh_hans$7 = __esmMin((() => {
+		translations$6 = {
 			Datapoints: "数据点",
 			"Choose which annotation datapoints appear on the chart.": "选择哪些注释数据点显示在图表上。",
 			"Linked to selected targets": "关联到所选目标",
@@ -5001,10 +5842,10 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row/i18n/zh-hans.ts
-	var zh_hans_exports$5 = /* @__PURE__ */ __exportAll({ translations: () => translations$4 });
-	var translations$4;
-	var init_zh_hans$5 = __esmMin((() => {
-		translations$4 = {
+	var zh_hans_exports$6 = /* @__PURE__ */ __exportAll({ translations: () => translations$5 });
+	var translations$5;
+	var init_zh_hans$6 = __esmMin((() => {
+		translations$5 = {
 			"Analysis configured": "分析已配置",
 			"Configure analysis": "配置分析",
 			"Stepped series": "阶梯序列",
@@ -5016,10 +5857,25 @@
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row-list/i18n/zh-hans.ts
+	var zh_hans_exports$5 = /* @__PURE__ */ __exportAll({ translations: () => translations$4 });
+	var translations$4;
+	var init_zh_hans$5 = __esmMin((() => {
+		translations$4 = {};
+	}));
+	//#endregion
+	//#region custom_components/hass_datapoints/src/panels/datapoints/components/ai-query-brief-dialog/i18n/zh-hans.ts
 	var zh_hans_exports$4 = /* @__PURE__ */ __exportAll({ translations: () => translations$3 });
 	var translations$3;
 	var init_zh_hans$4 = __esmMin((() => {
-		translations$3 = {};
+		translations$3 = {
+			"AI query brief": "AI 查询简报",
+			"This brief is intended for another AI to fetch raw Home Assistant history and hass_datapoints anomaly details. Review it, then copy it into your AI tool of choice.": "此简报用于让另一个 AI 获取 Home Assistant 原始历史数据以及 hass_datapoints 的异常详情。请先检查内容，然后复制到你选择的 AI 工具中。",
+			"Copy-ready brief": "可直接复制的简报",
+			Close: "关闭",
+			"Copy brief": "复制简报",
+			"Copied to clipboard.": "已复制到剪贴板。",
+			"Clipboard write failed. The text is selected so you can copy it manually.": "写入剪贴板失败。文本已被选中，你可以手动复制。"
+		};
 	}));
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/history-targets/i18n/zh-hans.ts
@@ -5042,6 +5898,7 @@
 			"Loading Datapoints…": "正在加载数据点…",
 			Datapoints: "数据点",
 			"Page options": "页面选项",
+			"AI query brief": "AI 查询简报",
 			"Download spreadsheet": "下载电子表格",
 			"Save page state": "保存页面状态",
 			"Restore saved page": "恢复已保存页面",
@@ -5083,6 +5940,8 @@
 	var zh_hans_exports = /* @__PURE__ */ __exportAll({ templates: () => templates });
 	var modules, merged, templates;
 	var init_zh_hans = __esmMin((() => {
+		init_zh_hans$27();
+		init_zh_hans$26();
 		init_zh_hans$25();
 		init_zh_hans$24();
 		init_zh_hans$23();
@@ -5109,28 +5968,30 @@
 		init_zh_hans$2();
 		init_zh_hans$1();
 		modules = /* @__PURE__ */ Object.assign({
-			"../../../atoms/interactive/range-timeline/i18n/zh-hans.ts": zh_hans_exports$25,
-			"../../../cards/action/i18n/zh-hans.ts": zh_hans_exports$24,
-			"../../../cards/history/history-chart/i18n/zh-hans.ts": zh_hans_exports$23,
-			"../../../cards/history/i18n/zh-hans.ts": zh_hans_exports$22,
-			"../../../cards/list/i18n/zh-hans.ts": zh_hans_exports$21,
-			"../../../cards/quick/i18n/zh-hans.ts": zh_hans_exports$20,
-			"../../../cards/sensor/i18n/zh-hans.ts": zh_hans_exports$19,
-			"../../chart/i18n/zh-hans.ts": zh_hans_exports$18,
-			"../../ha/i18n/zh-hans.ts": zh_hans_exports$17,
-			"../../timeline/i18n/zh-hans.ts": zh_hans_exports$16,
-			"../../../molecules/analysis-anomaly-group/i18n/zh-hans.ts": zh_hans_exports$15,
-			"../../../molecules/analysis-delta-group/i18n/zh-hans.ts": zh_hans_exports$14,
-			"../../../molecules/analysis-rate-group/i18n/zh-hans.ts": zh_hans_exports$13,
-			"../../../molecules/analysis-sample-group/i18n/zh-hans.ts": zh_hans_exports$12,
-			"../../../molecules/analysis-summary-group/i18n/zh-hans.ts": zh_hans_exports$11,
-			"../../../molecules/analysis-threshold-group/i18n/zh-hans.ts": zh_hans_exports$10,
-			"../../../molecules/analysis-trend-group/i18n/zh-hans.ts": zh_hans_exports$9,
-			"../../../molecules/comparison-tab-rail/i18n/zh-hans.ts": zh_hans_exports$8,
-			"../../../molecules/date-window-dialog/i18n/zh-hans.ts": zh_hans_exports$7,
-			"../../../molecules/sidebar-options/sections/i18n/zh-hans.ts": zh_hans_exports$6,
-			"../../../molecules/target-row/i18n/zh-hans.ts": zh_hans_exports$5,
-			"../../../molecules/target-row-list/i18n/zh-hans.ts": zh_hans_exports$4,
+			"../../../cards/action/i18n/zh-hans.ts": zh_hans_exports$27,
+			"../../../cards/history/history-chart/i18n/zh-hans.ts": zh_hans_exports$26,
+			"../../../cards/history/i18n/zh-hans.ts": zh_hans_exports$25,
+			"../../../cards/list/i18n/zh-hans.ts": zh_hans_exports$24,
+			"../../../cards/quick/i18n/zh-hans.ts": zh_hans_exports$23,
+			"../../../cards/sensor/i18n/zh-hans.ts": zh_hans_exports$22,
+			"../../chart/i18n/zh-hans.ts": zh_hans_exports$21,
+			"../../ha/i18n/zh-hans.ts": zh_hans_exports$20,
+			"../../history-page/i18n/zh-hans.ts": zh_hans_exports$19,
+			"../../timeline/i18n/zh-hans.ts": zh_hans_exports$18,
+			"../../../molecules/analysis-anomaly-group/i18n/zh-hans.ts": zh_hans_exports$17,
+			"../../../molecules/analysis-delta-group/i18n/zh-hans.ts": zh_hans_exports$16,
+			"../../../molecules/analysis-rate-group/i18n/zh-hans.ts": zh_hans_exports$15,
+			"../../../molecules/analysis-sample-group/i18n/zh-hans.ts": zh_hans_exports$14,
+			"../../../molecules/analysis-summary-group/i18n/zh-hans.ts": zh_hans_exports$13,
+			"../../../molecules/analysis-threshold-group/i18n/zh-hans.ts": zh_hans_exports$12,
+			"../../../molecules/analysis-trend-group/i18n/zh-hans.ts": zh_hans_exports$11,
+			"../../../molecules/anomaly-monitor-wizard/i18n/zh-hans.ts": zh_hans_exports$10,
+			"../../../molecules/comparison-tab-rail/i18n/zh-hans.ts": zh_hans_exports$9,
+			"../../../molecules/date-window-dialog/i18n/zh-hans.ts": zh_hans_exports$8,
+			"../../../molecules/sidebar-options/sections/i18n/zh-hans.ts": zh_hans_exports$7,
+			"../../../molecules/target-row/i18n/zh-hans.ts": zh_hans_exports$6,
+			"../../../molecules/target-row-list/i18n/zh-hans.ts": zh_hans_exports$5,
+			"../../../panels/datapoints/components/ai-query-brief-dialog/i18n/zh-hans.ts": zh_hans_exports$4,
 			"../../../panels/datapoints/components/history-targets/i18n/zh-hans.ts": zh_hans_exports$3,
 			"../../../panels/datapoints/components/panel-shell/i18n/zh-hans.ts": zh_hans_exports$2,
 			"../../../panels/datapoints/components/range-toolbar/i18n/zh-hans.ts": zh_hans_exports$1
@@ -5186,7 +6047,7 @@
 	}
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/action/editor.styles.ts
-	var styles$65 = i$5`
+	var styles$71 = i$5`
   .note {
     font-size: 0.78rem;
     color: var(--secondary-text-color);
@@ -5194,7 +6055,7 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/editor-base/editor-base.styles.ts
-	var styles$64 = i$5`
+	var styles$70 = i$5`
   :host {
     display: block;
   }
@@ -5207,24 +6068,24 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/editor-base/editor-base.ts
-	var _EditorBase, _config_accessor_storage, _hass_accessor_storage$11;
-	var EditorBase = (_config_accessor_storage = /* @__PURE__ */ new WeakMap(), _hass_accessor_storage$11 = /* @__PURE__ */ new WeakMap(), _EditorBase = class EditorBase extends i$2 {
+	var _EditorBase, _config_accessor_storage$1, _hass_accessor_storage$15;
+	var EditorBase = (_config_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _hass_accessor_storage$15 = /* @__PURE__ */ new WeakMap(), _EditorBase = class EditorBase extends i$2 {
 		constructor(..._args) {
 			super(..._args);
-			_classPrivateFieldInitSpec(this, _config_accessor_storage, {});
-			_classPrivateFieldInitSpec(this, _hass_accessor_storage$11, null);
+			_classPrivateFieldInitSpec(this, _config_accessor_storage$1, {});
+			_classPrivateFieldInitSpec(this, _hass_accessor_storage$15, null);
 		}
 		get _config() {
-			return _classPrivateFieldGet2(_config_accessor_storage, this);
+			return _classPrivateFieldGet2(_config_accessor_storage$1, this);
 		}
 		set _config(value) {
-			_classPrivateFieldSet2(_config_accessor_storage, this, value);
+			_classPrivateFieldSet2(_config_accessor_storage$1, this, value);
 		}
 		get hass() {
-			return _classPrivateFieldGet2(_hass_accessor_storage$11, this);
+			return _classPrivateFieldGet2(_hass_accessor_storage$15, this);
 		}
 		set hass(value) {
-			_classPrivateFieldSet2(_hass_accessor_storage$11, this, value);
+			_classPrivateFieldSet2(_hass_accessor_storage$15, this, value);
 		}
 		setConfig(config) {
 			this._config = { ...config };
@@ -5243,8 +6104,8 @@
 			this._config = cfg;
 			this._fire(cfg);
 		}
-	}, _defineProperty(_EditorBase, "styles", styles$64), _EditorBase);
-	__decorate([r$1()], EditorBase.prototype, "_config", null);
+	}, _defineProperty(_EditorBase, "styles", styles$70), _EditorBase);
+	__decorate([r$2()], EditorBase.prototype, "_config", null);
 	__decorate([n$1({ type: Object })], EditorBase.prototype, "hass", null);
 	EditorBase = __decorate([localized()], EditorBase);
 	customElements.define("editor-base", EditorBase);
@@ -5298,6 +6159,7 @@
 		const target = normalizeTargetSelection(targetValue);
 		const resolved = new Set(normalizeEntityIds(target.entity_id));
 		const entityRegistry = hass?.entities || {};
+		const deviceRegistry = hass?.devices || {};
 		const selectedDevices = new Set(normalizeEntityIds(target.device_id));
 		const selectedAreas = new Set(normalizeEntityIds(target.area_id));
 		const selectedLabels = new Set(normalizeEntityIds(target.label_id));
@@ -5305,7 +6167,9 @@
 			const entityEntry = entry;
 			if (!entityEntry || typeof entityEntry !== "object") return;
 			const deviceId = entityEntry.device_id || entityEntry.deviceId || null;
-			const areaId = entityEntry.area_id || entityEntry.areaId || null;
+			const entityAreaId = entityEntry.area_id || entityEntry.areaId || null;
+			const deviceAreaId = !entityAreaId && deviceId ? deviceRegistry[deviceId]?.area_id ?? null : null;
+			const areaId = entityAreaId || deviceAreaId;
 			const labels = [...Array.isArray(entityEntry.labels) ? entityEntry.labels : [], ...Array.isArray(entityEntry.label_ids) ? entityEntry.label_ids : []];
 			if (deviceId && selectedDevices.has(deviceId) || areaId && selectedAreas.has(areaId) || labels.some((labelId) => selectedLabels.has(labelId))) resolved.add(entityId);
 		});
@@ -5318,7 +6182,7 @@
 	}
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/display/section-heading/section-heading.styles.ts
-	var styles$63 = i$5`
+	var styles$69 = i$5`
   :host {
     display: block;
   }
@@ -5332,28 +6196,28 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/display/section-heading/section-heading.ts
-	var _text_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _text_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
 	var SectionHeading = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
-			_classPrivateFieldInitSpec(this, _text_accessor_storage, "");
+			_classPrivateFieldInitSpec(this, _text_accessor_storage$1, "");
 		}
 		get text() {
-			return _classPrivateFieldGet2(_text_accessor_storage, this);
+			return _classPrivateFieldGet2(_text_accessor_storage$1, this);
 		}
 		set text(value) {
-			_classPrivateFieldSet2(_text_accessor_storage, this, value);
+			_classPrivateFieldSet2(_text_accessor_storage$1, this, value);
 		}
 		render() {
 			return b`<div class="heading">${this.text}</div>`;
 		}
 	};
-	_defineProperty(SectionHeading, "styles", styles$63);
+	_defineProperty(SectionHeading, "styles", styles$69);
 	__decorate([n$1({ type: String })], SectionHeading.prototype, "text", null);
 	customElements.define("section-heading", SectionHeading);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/form/editor-text-field/editor-text-field.styles.ts
-	var styles$62 = i$5`
+	var styles$68 = i$5`
   :host {
     display: block;
   }
@@ -5364,7 +6228,7 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/form/editor-text-field/editor-text-field.ts
-	var _label_accessor_storage$12 = /* @__PURE__ */ new WeakMap();
+	var _label_accessor_storage$13 = /* @__PURE__ */ new WeakMap();
 	var _value_accessor_storage$8 = /* @__PURE__ */ new WeakMap();
 	var _type_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
 	var _placeholder_accessor_storage$2 = /* @__PURE__ */ new WeakMap();
@@ -5372,17 +6236,17 @@
 	var EditorTextField = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
-			_classPrivateFieldInitSpec(this, _label_accessor_storage$12, "");
+			_classPrivateFieldInitSpec(this, _label_accessor_storage$13, "");
 			_classPrivateFieldInitSpec(this, _value_accessor_storage$8, "");
 			_classPrivateFieldInitSpec(this, _type_accessor_storage$1, "text");
 			_classPrivateFieldInitSpec(this, _placeholder_accessor_storage$2, "");
 			_classPrivateFieldInitSpec(this, _suffix_accessor_storage, "");
 		}
 		get label() {
-			return _classPrivateFieldGet2(_label_accessor_storage$12, this);
+			return _classPrivateFieldGet2(_label_accessor_storage$13, this);
 		}
 		set label(value) {
-			_classPrivateFieldSet2(_label_accessor_storage$12, this, value);
+			_classPrivateFieldSet2(_label_accessor_storage$13, this, value);
 		}
 		get value() {
 			return _classPrivateFieldGet2(_value_accessor_storage$8, this);
@@ -5408,22 +6272,6 @@
 		set suffix(value) {
 			_classPrivateFieldSet2(_suffix_accessor_storage, this, value);
 		}
-		firstUpdated() {
-			const field = this.shadowRoot.querySelector("ha-textfield");
-			if (field) {
-				field.label = this.label;
-				field.value = this.value;
-				if (this.type) field.type = this.type;
-				if (this.placeholder) field.placeholder = this.placeholder;
-				if (this.suffix) field.suffix = this.suffix;
-			}
-		}
-		updated(changedProps) {
-			const field = this.shadowRoot.querySelector("ha-textfield");
-			if (!field) return;
-			if (changedProps.has("value")) field.value = this.value;
-			if (changedProps.has("label")) field.label = this.label;
-		}
 		_onInput(e) {
 			const rawValue = e.target.value;
 			const value = this.type === "number" ? parseFloat(rawValue) : rawValue;
@@ -5434,10 +6282,17 @@
 			}));
 		}
 		render() {
-			return b`<ha-textfield @input=${this._onInput}></ha-textfield>`;
+			return b`<ha-textfield
+      .label=${this.label}
+      .value=${this.value}
+      .type=${this.type}
+      .placeholder=${this.placeholder}
+      .suffix=${this.suffix}
+      @input=${this._onInput}
+    ></ha-textfield>`;
 		}
 	};
-	_defineProperty(EditorTextField, "styles", styles$62);
+	_defineProperty(EditorTextField, "styles", styles$68);
 	__decorate([n$1({ type: String })], EditorTextField.prototype, "label", null);
 	__decorate([n$1({ type: String })], EditorTextField.prototype, "value", null);
 	__decorate([n$1({ type: String })], EditorTextField.prototype, "type", null);
@@ -5446,7 +6301,7 @@
 	customElements.define("editor-text-field", EditorTextField);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/form/editor-switch/editor-switch.styles.ts
-	var styles$61 = i$5`
+	var styles$67 = i$5`
   :host {
     display: block;
   }
@@ -5487,21 +6342,21 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/form/editor-switch/editor-switch.ts
-	var _label_accessor_storage$11 = /* @__PURE__ */ new WeakMap();
+	var _label_accessor_storage$12 = /* @__PURE__ */ new WeakMap();
 	var _checked_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
 	var _tooltip_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var EditorSwitch = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
-			_classPrivateFieldInitSpec(this, _label_accessor_storage$11, "");
+			_classPrivateFieldInitSpec(this, _label_accessor_storage$12, "");
 			_classPrivateFieldInitSpec(this, _checked_accessor_storage$1, false);
 			_classPrivateFieldInitSpec(this, _tooltip_accessor_storage, "");
 		}
 		get label() {
-			return _classPrivateFieldGet2(_label_accessor_storage$11, this);
+			return _classPrivateFieldGet2(_label_accessor_storage$12, this);
 		}
 		set label(value) {
-			_classPrivateFieldSet2(_label_accessor_storage$11, this, value);
+			_classPrivateFieldSet2(_label_accessor_storage$12, this, value);
 		}
 		get checked() {
 			return _classPrivateFieldGet2(_checked_accessor_storage$1, this);
@@ -5515,22 +6370,6 @@
 		set tooltip(value) {
 			_classPrivateFieldSet2(_tooltip_accessor_storage, this, value);
 		}
-		firstUpdated() {
-			const ff = this.shadowRoot.querySelector("ha-formfield");
-			if (ff) ff.label = this.label;
-			const sw = this.shadowRoot.querySelector("ha-switch");
-			if (sw) sw.checked = this.checked;
-		}
-		updated(changedProps) {
-			if (changedProps.has("checked")) {
-				const sw = this.shadowRoot.querySelector("ha-switch");
-				if (sw) sw.checked = this.checked;
-			}
-			if (changedProps.has("label")) {
-				const ff = this.shadowRoot.querySelector("ha-formfield");
-				if (ff) ff.label = this.label;
-			}
-		}
 		_onChange(e) {
 			this.dispatchEvent(new CustomEvent("dp-switch-change", {
 				detail: { checked: e.target.checked },
@@ -5541,8 +6380,11 @@
 		render() {
 			return b`
       <div class="switch-row">
-        <ha-formfield>
-          <ha-switch @change=${this._onChange}></ha-switch>
+        <ha-formfield .label=${this.label}>
+          <ha-switch
+            .checked=${this.checked}
+            @change=${this._onChange}
+          ></ha-switch>
         </ha-formfield>
         ${this.tooltip ? b`
               <span class="help-icon">
@@ -5554,14 +6396,14 @@
     `;
 		}
 	};
-	_defineProperty(EditorSwitch, "styles", styles$61);
+	_defineProperty(EditorSwitch, "styles", styles$67);
 	__decorate([n$1({ type: String })], EditorSwitch.prototype, "label", null);
 	__decorate([n$1({ type: Boolean })], EditorSwitch.prototype, "checked", null);
 	__decorate([n$1({ type: String })], EditorSwitch.prototype, "tooltip", null);
 	customElements.define("editor-switch", EditorSwitch);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/form/editor-icon-picker/editor-icon-picker.styles.ts
-	var styles$60 = i$5`
+	var styles$66 = i$5`
   :host {
     display: block;
   }
@@ -5572,21 +6414,21 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/form/editor-icon-picker/editor-icon-picker.ts
-	var _label_accessor_storage$10 = /* @__PURE__ */ new WeakMap();
+	var _label_accessor_storage$11 = /* @__PURE__ */ new WeakMap();
 	var _value_accessor_storage$7 = /* @__PURE__ */ new WeakMap();
-	var _hass_accessor_storage$10 = /* @__PURE__ */ new WeakMap();
+	var _hass_accessor_storage$14 = /* @__PURE__ */ new WeakMap();
 	var EditorIconPicker = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
-			_classPrivateFieldInitSpec(this, _label_accessor_storage$10, "");
+			_classPrivateFieldInitSpec(this, _label_accessor_storage$11, "");
 			_classPrivateFieldInitSpec(this, _value_accessor_storage$7, "mdi:bookmark");
-			_classPrivateFieldInitSpec(this, _hass_accessor_storage$10, null);
+			_classPrivateFieldInitSpec(this, _hass_accessor_storage$14, null);
 		}
 		get label() {
-			return _classPrivateFieldGet2(_label_accessor_storage$10, this);
+			return _classPrivateFieldGet2(_label_accessor_storage$11, this);
 		}
 		set label(value) {
-			_classPrivateFieldSet2(_label_accessor_storage$10, this, value);
+			_classPrivateFieldSet2(_label_accessor_storage$11, this, value);
 		}
 		get value() {
 			return _classPrivateFieldGet2(_value_accessor_storage$7, this);
@@ -5595,24 +6437,10 @@
 			_classPrivateFieldSet2(_value_accessor_storage$7, this, value);
 		}
 		get hass() {
-			return _classPrivateFieldGet2(_hass_accessor_storage$10, this);
+			return _classPrivateFieldGet2(_hass_accessor_storage$14, this);
 		}
 		set hass(value) {
-			_classPrivateFieldSet2(_hass_accessor_storage$10, this, value);
-		}
-		firstUpdated() {
-			const el = this.shadowRoot.querySelector("ha-icon-picker");
-			if (el) {
-				el.label = this.label;
-				if (this.hass) el.hass = this.hass;
-				el.value = this.value;
-			}
-		}
-		updated(changedProps) {
-			const el = this.shadowRoot.querySelector("ha-icon-picker");
-			if (!el) return;
-			if (changedProps.has("value")) el.value = this.value;
-			if (changedProps.has("hass") && this.hass) el.hass = this.hass;
+			_classPrivateFieldSet2(_hass_accessor_storage$14, this, value);
 		}
 		_onValueChanged(e) {
 			this.dispatchEvent(new CustomEvent("dp-icon-change", {
@@ -5623,26 +6451,47 @@
 		}
 		render() {
 			return b`<ha-icon-picker
+      .label=${this.label}
+      .hass=${this.hass}
+      .value=${this.value}
       @value-changed=${this._onValueChanged}
     ></ha-icon-picker>`;
 		}
 	};
-	_defineProperty(EditorIconPicker, "styles", styles$60);
+	_defineProperty(EditorIconPicker, "styles", styles$66);
 	__decorate([n$1({ type: String })], EditorIconPicker.prototype, "label", null);
 	__decorate([n$1({ type: String })], EditorIconPicker.prototype, "value", null);
 	__decorate([n$1({ type: Object })], EditorIconPicker.prototype, "hass", null);
 	customElements.define("editor-icon-picker", EditorIconPicker);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/action/editor.ts
-	var HassRecordsActionCardEditor = class extends EditorBase {
+	var _targetPickerEl_accessor_storage$2 = /* @__PURE__ */ new WeakMap();
+	var _selectorEls_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var HassDatapointsActionCardEditor = class extends EditorBase {
+		constructor(..._args) {
+			super(..._args);
+			_classPrivateFieldInitSpec(this, _targetPickerEl_accessor_storage$2, null);
+			_classPrivateFieldInitSpec(this, _selectorEls_accessor_storage, void 0);
+		}
+		get _targetPickerEl() {
+			return _classPrivateFieldGet2(_targetPickerEl_accessor_storage$2, this);
+		}
+		set _targetPickerEl(value) {
+			_classPrivateFieldSet2(_targetPickerEl_accessor_storage$2, this, value);
+		}
+		get _selectorEls() {
+			return _classPrivateFieldGet2(_selectorEls_accessor_storage, this);
+		}
+		set _selectorEls(value) {
+			_classPrivateFieldSet2(_selectorEls_accessor_storage, this, value);
+		}
 		_configTarget() {
 			return normalizeTargetValue(this._config.target ?? { entity_id: Array.isArray(this._config.entities) && this._config.entities.length ? this._config.entities : this._config.entity }) ?? {};
 		}
 		_syncTargetPicker() {
-			const tp = this.shadowRoot?.querySelector("#target-picker");
-			if (!tp) return;
-			if (this.hass) tp.hass = this.hass;
-			tp.value = this._configTarget();
+			if (!this._targetPickerEl) return;
+			if (this.hass) this._targetPickerEl.hass = this.hass;
+			this._targetPickerEl.value = this._configTarget();
 		}
 		_setTargetConfig(target) {
 			const cfg = { ...this._config };
@@ -5660,9 +6509,8 @@
 		}
 		updated(changedProps) {
 			if (changedProps.has("hass") || changedProps.has("_config")) this._syncTargetPicker();
-			if (changedProps.has("hass") && this.hass) this.shadowRoot?.querySelectorAll("ha-selector").forEach((el) => {
-				const selectorEl = el;
-				selectorEl.hass = this.hass;
+			if (changedProps.has("hass") && this.hass) this._selectorEls?.forEach((el) => {
+				el.hass = this.hass;
 			});
 		}
 		render() {
@@ -5727,7 +6575,9 @@
     `;
 		}
 	};
-	_defineProperty(HassRecordsActionCardEditor, "styles", [EditorBase.styles, styles$65]);
+	_defineProperty(HassDatapointsActionCardEditor, "styles", [EditorBase.styles, styles$71]);
+	__decorate([e$4("#target-picker")], HassDatapointsActionCardEditor.prototype, "_targetPickerEl", null);
+	__decorate([r$1("ha-selector")], HassDatapointsActionCardEditor.prototype, "_selectorEls", null);
 	//#endregion
 	//#region node_modules/.pnpm/@kipk+load-ha-components@1.0.3/node_modules/@kipk/load-ha-components/dist/load-ha-components.js
 	/**
@@ -5969,9 +6819,13 @@
 	}
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/dev-tool/dev-tool.styles.ts
-	var styles$59 = `
-  :host { display: block; }
-  ha-card { padding: 16px; }
+	var styles$65 = i$5`
+  :host {
+    display: block;
+  }
+  ha-card {
+    padding: 16px;
+  }
   .card-header {
     font-size: 1.1em;
     font-weight: 500;
@@ -6008,7 +6862,7 @@
     display: flex;
     align-items: center;
     padding: 10px 14px;
-    background: var(--secondary-background-color, rgba(0,0,0,0.04));
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.04));
     border-radius: 8px;
     margin-bottom: 10px;
   }
@@ -6026,7 +6880,7 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/dev-tool/editor.ts
-	var HassRecordsDevToolCardEditor = class extends EditorBase {
+	var HassDatapointsDevToolCardEditor = class extends EditorBase {
 		render() {
 			return b`
       <div class="ed">
@@ -6037,10 +6891,10 @@
     `;
 		}
 	};
-	_defineProperty(HassRecordsDevToolCardEditor, "styles", [EditorBase.styles]);
+	_defineProperty(HassDatapointsDevToolCardEditor, "styles", [EditorBase.styles]);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/dev-tool/dev-tool-results/dev-tool-results.styles.ts
-	var styles$58 = i$5`
+	var styles$64 = i$5`
   :host {
     display: block;
     margin-top: 18px;
@@ -6199,7 +7053,7 @@
 	}
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/dev-tool/dev-tool-results/dev-tool-results.ts
-	var _results_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _results_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
 	var _isAdmin_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _statusKind_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _statusText_accessor_storage = /* @__PURE__ */ new WeakMap();
@@ -6208,7 +7062,7 @@
 	var CardDevToolResults = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
-			_classPrivateFieldInitSpec(this, _results_accessor_storage, []);
+			_classPrivateFieldInitSpec(this, _results_accessor_storage$1, []);
 			_classPrivateFieldInitSpec(this, _isAdmin_accessor_storage, false);
 			_classPrivateFieldInitSpec(this, _statusKind_accessor_storage, "");
 			_classPrivateFieldInitSpec(this, _statusText_accessor_storage, "");
@@ -6216,10 +7070,10 @@
 			_classPrivateFieldInitSpec(this, _collapsedWindowIds_accessor_storage, []);
 		}
 		get results() {
-			return _classPrivateFieldGet2(_results_accessor_storage, this);
+			return _classPrivateFieldGet2(_results_accessor_storage$1, this);
 		}
 		set results(value) {
-			_classPrivateFieldSet2(_results_accessor_storage, this, value);
+			_classPrivateFieldSet2(_results_accessor_storage$1, this, value);
 		}
 		get isAdmin() {
 			return _classPrivateFieldGet2(_isAdmin_accessor_storage, this);
@@ -6407,17 +7261,17 @@
     `;
 		}
 	};
-	_defineProperty(CardDevToolResults, "styles", styles$58);
+	_defineProperty(CardDevToolResults, "styles", styles$64);
 	__decorate([n$1({ attribute: false })], CardDevToolResults.prototype, "results", null);
 	__decorate([n$1({ type: Boolean })], CardDevToolResults.prototype, "isAdmin", null);
 	__decorate([n$1({ type: String })], CardDevToolResults.prototype, "statusKind", null);
 	__decorate([n$1({ type: String })], CardDevToolResults.prototype, "statusText", null);
 	__decorate([n$1({ type: Boolean })], CardDevToolResults.prototype, "statusVisible", null);
-	__decorate([r$1()], CardDevToolResults.prototype, "_collapsedWindowIds", null);
+	__decorate([r$2()], CardDevToolResults.prototype, "_collapsedWindowIds", null);
 	customElements.define("dev-tool-results", CardDevToolResults);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/dev-tool/dev-tool-windows/dev-tool-windows.styles.ts
-	var styles$57 = i$5`
+	var styles$63 = i$5`
   :host {
     display: block;
   }
@@ -6660,133 +7514,196 @@
     `;
 		}
 	};
-	_defineProperty(CardDevToolWindows, "styles", styles$57);
+	_defineProperty(CardDevToolWindows, "styles", styles$63);
 	__decorate([n$1({ attribute: false })], CardDevToolWindows.prototype, "windows", null);
-	__decorate([r$1()], CardDevToolWindows.prototype, "_nextWindowId", null);
+	__decorate([r$2()], CardDevToolWindows.prototype, "_nextWindowId", null);
 	customElements.define("dev-tool-windows", CardDevToolWindows);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/dev-tool/dev-tool.ts
-	var HassRecordsDevToolCard = class extends HTMLElement {
-		constructor() {
-			super();
-			_defineProperty(this, "_config", {});
-			_defineProperty(this, "_hass", null);
-			_defineProperty(this, "_rendered", false);
-			_defineProperty(this, "_entities", []);
-			_defineProperty(this, "_suppressEntityChange", false);
-			_defineProperty(this, "_results", []);
-			this.attachShadow({ mode: "open" });
+	var _config_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _hass_accessor_storage$13 = /* @__PURE__ */ new WeakMap();
+	var _entities_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _results_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _analyzing_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _deleting_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _devCount_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _analyzeStatusKind_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _analyzeStatusText_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _analyzeStatusVisible_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _deleteStatusKind_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _deleteStatusText_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _deleteStatusVisible_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _resultsStatusKind_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _resultsStatusText_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _resultsStatusVisible_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _windowsEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var HassDatapointsDevToolCard = class extends i$2 {
+		constructor(..._args) {
+			super(..._args);
+			_classPrivateFieldInitSpec(this, _config_accessor_storage, {});
+			_classPrivateFieldInitSpec(this, _hass_accessor_storage$13, null);
+			_classPrivateFieldInitSpec(this, _entities_accessor_storage, []);
+			_classPrivateFieldInitSpec(this, _results_accessor_storage, []);
+			_classPrivateFieldInitSpec(this, _analyzing_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _deleting_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _devCount_accessor_storage, 0);
+			_classPrivateFieldInitSpec(this, _analyzeStatusKind_accessor_storage, "");
+			_classPrivateFieldInitSpec(this, _analyzeStatusText_accessor_storage, "");
+			_classPrivateFieldInitSpec(this, _analyzeStatusVisible_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _deleteStatusKind_accessor_storage, "");
+			_classPrivateFieldInitSpec(this, _deleteStatusText_accessor_storage, "");
+			_classPrivateFieldInitSpec(this, _deleteStatusVisible_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _resultsStatusKind_accessor_storage, "");
+			_classPrivateFieldInitSpec(this, _resultsStatusText_accessor_storage, "");
+			_classPrivateFieldInitSpec(this, _resultsStatusVisible_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _windowsEl_accessor_storage, null);
+			_defineProperty(this, "_initialized", false);
+		}
+		get _config() {
+			return _classPrivateFieldGet2(_config_accessor_storage, this);
+		}
+		set _config(value) {
+			_classPrivateFieldSet2(_config_accessor_storage, this, value);
+		}
+		get _hass() {
+			return _classPrivateFieldGet2(_hass_accessor_storage$13, this);
+		}
+		set _hass(value) {
+			_classPrivateFieldSet2(_hass_accessor_storage$13, this, value);
+		}
+		get _entities() {
+			return _classPrivateFieldGet2(_entities_accessor_storage, this);
+		}
+		set _entities(value) {
+			_classPrivateFieldSet2(_entities_accessor_storage, this, value);
+		}
+		get _results() {
+			return _classPrivateFieldGet2(_results_accessor_storage, this);
+		}
+		set _results(value) {
+			_classPrivateFieldSet2(_results_accessor_storage, this, value);
+		}
+		get _analyzing() {
+			return _classPrivateFieldGet2(_analyzing_accessor_storage, this);
+		}
+		set _analyzing(value) {
+			_classPrivateFieldSet2(_analyzing_accessor_storage, this, value);
+		}
+		get _deleting() {
+			return _classPrivateFieldGet2(_deleting_accessor_storage, this);
+		}
+		set _deleting(value) {
+			_classPrivateFieldSet2(_deleting_accessor_storage, this, value);
+		}
+		get _devCount() {
+			return _classPrivateFieldGet2(_devCount_accessor_storage, this);
+		}
+		set _devCount(value) {
+			_classPrivateFieldSet2(_devCount_accessor_storage, this, value);
+		}
+		get _analyzeStatusKind() {
+			return _classPrivateFieldGet2(_analyzeStatusKind_accessor_storage, this);
+		}
+		set _analyzeStatusKind(value) {
+			_classPrivateFieldSet2(_analyzeStatusKind_accessor_storage, this, value);
+		}
+		get _analyzeStatusText() {
+			return _classPrivateFieldGet2(_analyzeStatusText_accessor_storage, this);
+		}
+		set _analyzeStatusText(value) {
+			_classPrivateFieldSet2(_analyzeStatusText_accessor_storage, this, value);
+		}
+		get _analyzeStatusVisible() {
+			return _classPrivateFieldGet2(_analyzeStatusVisible_accessor_storage, this);
+		}
+		set _analyzeStatusVisible(value) {
+			_classPrivateFieldSet2(_analyzeStatusVisible_accessor_storage, this, value);
+		}
+		get _deleteStatusKind() {
+			return _classPrivateFieldGet2(_deleteStatusKind_accessor_storage, this);
+		}
+		set _deleteStatusKind(value) {
+			_classPrivateFieldSet2(_deleteStatusKind_accessor_storage, this, value);
+		}
+		get _deleteStatusText() {
+			return _classPrivateFieldGet2(_deleteStatusText_accessor_storage, this);
+		}
+		set _deleteStatusText(value) {
+			_classPrivateFieldSet2(_deleteStatusText_accessor_storage, this, value);
+		}
+		get _deleteStatusVisible() {
+			return _classPrivateFieldGet2(_deleteStatusVisible_accessor_storage, this);
+		}
+		set _deleteStatusVisible(value) {
+			_classPrivateFieldSet2(_deleteStatusVisible_accessor_storage, this, value);
+		}
+		get _resultsStatusKind() {
+			return _classPrivateFieldGet2(_resultsStatusKind_accessor_storage, this);
+		}
+		set _resultsStatusKind(value) {
+			_classPrivateFieldSet2(_resultsStatusKind_accessor_storage, this, value);
+		}
+		get _resultsStatusText() {
+			return _classPrivateFieldGet2(_resultsStatusText_accessor_storage, this);
+		}
+		set _resultsStatusText(value) {
+			_classPrivateFieldSet2(_resultsStatusText_accessor_storage, this, value);
+		}
+		get _resultsStatusVisible() {
+			return _classPrivateFieldGet2(_resultsStatusVisible_accessor_storage, this);
+		}
+		set _resultsStatusVisible(value) {
+			_classPrivateFieldSet2(_resultsStatusVisible_accessor_storage, this, value);
+		}
+		get _windowsEl() {
+			return _classPrivateFieldGet2(_windowsEl_accessor_storage, this);
+		}
+		set _windowsEl(value) {
+			_classPrivateFieldSet2(_windowsEl_accessor_storage, this, value);
 		}
 		setConfig(config) {
 			this._config = config || {};
 		}
 		set hass(hass) {
 			this._hass = hass;
-			if (!this._rendered) {
-				this._render();
+			if (!this._initialized) {
+				this._initialized = true;
 				this._refreshDevCount();
 			}
-			this._updateHassOnChildren();
 		}
-		_updateHassOnChildren() {
-			if (!this.shadowRoot || !this._hass) return;
-			const entityPicker = this.shadowRoot.getElementById("entity-picker");
-			if (!entityPicker) return;
-			this._suppressEntityChange = true;
-			entityPicker.hass = this._hass;
-			entityPicker.value = this._entities;
-			setTimeout(() => {
-				this._suppressEntityChange = false;
-			}, 100);
-			const resultsEl = this.shadowRoot.getElementById("results-container");
-			if (resultsEl) resultsEl.isAdmin = this._hass.user?.is_admin === true;
+		get hass() {
+			return this._hass;
 		}
-		_render() {
-			this._rendered = true;
-			const cfg = this._config;
-			if (!this.shadowRoot.adoptedStyleSheets.length) {
-				const sheet = new CSSStyleSheet();
-				sheet.replaceSync(styles$59);
-				this.shadowRoot.adoptedStyleSheets = [sheet];
-			}
-			D(b`
-        <ha-card>
-          ${cfg.title ? b`<div class="card-header">${cfg.title}</div>` : ""}
-          <div class="section-title">Analyze HA History</div>
-          <div class="form-group">
-            <ha-selector
-              id="entity-picker"
-              label="Entities to analyze"
-            ></ha-selector>
-          </div>
-          <dev-tool-windows id="windows-editor"></dev-tool-windows>
-          <div class="analyze-row">
-            <ha-button id="analyze-btn" class="analyze-btn" raised
-              >Analyze all windows</ha-button
-            >
-          </div>
-          <feedback-banner id="analyze-status"></feedback-banner>
-          <dev-tool-results id="results-container"></dev-tool-results>
-          <hr class="divider" />
-          <div class="dev-section">
-            <div class="section-title">Dev Datapoints</div>
-            <div class="dev-summary">
-              <span class="dev-count-label"
-                >Currently recorded:&nbsp;<span
-                  class="dev-count-num"
-                  id="dev-count"
-                  >—</span
-                >&nbsp;dev data point<span id="dev-count-plural">s</span></span
-              >
-            </div>
-            <ha-button class="delete-btn" id="delete-dev-btn"
-              >Delete all dev datapoints</ha-button
-            >
-            <feedback-banner id="delete-status"></feedback-banner>
-          </div>
-        </ha-card>
-      `, this.shadowRoot);
-			const entityPicker = this.shadowRoot.getElementById("entity-picker");
-			if (entityPicker) {
-				entityPicker.selector = { entity: { multiple: true } };
-				entityPicker.value = [];
-				this._entities = [];
-				this._suppressEntityChange = false;
-				entityPicker.addEventListener("value-changed", (event) => {
-					if (this._suppressEntityChange) return;
-					const value = event.detail.value;
-					if (Array.isArray(value)) this._entities = value;
-					else if (value) this._entities = [value];
-					else this._entities = [];
-				});
-			}
-			this.shadowRoot.getElementById("analyze-btn").addEventListener("click", () => {
-				this._analyzeHistory();
-			});
-			this.shadowRoot.getElementById("delete-dev-btn").addEventListener("click", () => {
-				this._deleteAllDev();
-			});
-			this.shadowRoot.getElementById("results-container").addEventListener("dp-record-selected-request", (event) => {
-				const detail = event.detail;
-				this._recordSelected(detail.items);
-			});
+		get _isAdmin() {
+			return this._hass?.user?.is_admin === true;
+		}
+		_onEntitiesChanged(event) {
+			const value = event.detail.value;
+			if (Array.isArray(value)) this._entities = value;
+			else if (value) this._entities = [value];
+			else this._entities = [];
 		}
 		_readWindowConfigs() {
-			return this.shadowRoot.getElementById("windows-editor").getWindowConfigs().map((windowConfig, index) => ({
+			const windowsEl = this._windowsEl;
+			if (!windowsEl) return [];
+			return windowsEl.getWindowConfigs().map((windowConfig, index) => ({
 				...windowConfig,
 				label: windowConfig.label.trim() || `Window ${index + 1}`
 			}));
 		}
 		async _analyzeHistory() {
 			if (!this._entities.length) {
-				this._showFeedback("analyze-status", "err", "Please select at least one entity.");
+				this._analyzeStatusKind = "err";
+				this._analyzeStatusText = "Please select at least one entity.";
+				this._analyzeStatusVisible = true;
 				return;
 			}
 			const windowConfigs = this._readWindowConfigs();
-			const button = this.shadowRoot.getElementById("analyze-btn");
-			button.disabled = true;
+			this._analyzing = true;
 			this._results = [];
-			this._showFeedback("analyze-status", "ok", `Fetching history for ${windowConfigs.length} window${windowConfigs.length === 1 ? "" : "s"}…`);
+			this._analyzeStatusKind = "ok";
+			this._analyzeStatusText = `Fetching history for ${windowConfigs.length} window${windowConfigs.length === 1 ? "" : "s"}…`;
+			this._analyzeStatusVisible = true;
 			try {
 				const now = /* @__PURE__ */ new Date();
 				this._results = await Promise.all(windowConfigs.map(async (windowConfig) => {
@@ -6811,13 +7728,17 @@
 						selected: changes.map((_, index) => index)
 					};
 				}));
-				this._renderResults();
-				this._hideFeedback("analyze-status");
+				this._resultsStatusKind = "";
+				this._resultsStatusText = "";
+				this._resultsStatusVisible = false;
+				this._analyzeStatusVisible = false;
 			} catch (err) {
-				this._showFeedback("analyze-status", "err", `Error: ${err.message || "Failed to fetch history"}`);
+				this._analyzeStatusKind = "err";
+				this._analyzeStatusText = `Error: ${err.message || "Failed to fetch history"}`;
+				this._analyzeStatusVisible = true;
 				logger$1.error("[hass-datapoints dev-tool]", err);
 			}
-			button.disabled = false;
+			this._analyzing = false;
 		}
 		_detectChanges(histResult) {
 			const changes = [];
@@ -6830,15 +7751,15 @@
 				const friendlyName = entityState?.attributes?.friendly_name || entityId;
 				const unit = entityState?.attributes?.unit_of_measurement || "";
 				for (let i = 0; i < states.length; i += 1) {
-					const state = states[i];
+					const stateEntry = states[i];
 					const previous = i > 0 ? states[i - 1] : null;
-					const currentValue = state.s;
+					const currentValue = stateEntry.s;
 					const previousValue = previous?.s ?? null;
 					if (currentValue === "unavailable" || currentValue === "unknown") continue;
 					if (previous && previousValue === currentValue) {
 						if (domain !== "climate") continue;
 					}
-					const timestampRaw = state.lc ?? state.lu;
+					const timestampRaw = stateEntry.lc ?? stateEntry.lu;
 					const timestamp = timestampRaw != null ? (/* @__PURE__ */ new Date(timestampRaw * 1e3)).toISOString() : (/* @__PURE__ */ new Date()).toISOString();
 					let message;
 					let icon;
@@ -6867,7 +7788,7 @@
 						icon = currentValue === "open" || currentValue === "opening" ? "mdi:garage-open" : "mdi:garage";
 						color = currentValue === "open" ? "#4caf50" : "#795548";
 					} else if (domain === "climate") {
-						const stateAttributes = state.a;
+						const stateAttributes = stateEntry.a;
 						const previousAttributes = previous?.a;
 						const currentTemperature = stateAttributes?.temperature;
 						const previousTemperature = previousAttributes?.temperature;
@@ -6928,8 +7849,8 @@
 			changes.sort((a, b) => a.timestamp < b.timestamp ? -1 : 1);
 			return changes;
 		}
-		_binaryLabel(deviceClass, state) {
-			const on = state === "on";
+		_binaryLabel(deviceClass, value) {
+			const on = value === "on";
 			const pair = {
 				door: ["opened", "closed"],
 				window: ["opened", "closed"],
@@ -6957,19 +7878,19 @@
 			if (pair) return on ? pair[0] : pair[1];
 			return on ? "on" : "off";
 		}
-		_renderResults() {
-			const resultsContainer = this.shadowRoot.getElementById("results-container");
-			resultsContainer.results = [...this._results];
-			resultsContainer.statusKind = "";
-			resultsContainer.statusText = "";
-			resultsContainer.statusVisible = false;
+		_onRecordSelectedRequest(event) {
+			this._recordSelected(event.detail.items);
 		}
 		async _recordSelected(items) {
 			if (!items.length) {
-				this._showResultsStatus("err", "No items selected.");
+				this._resultsStatusKind = "err";
+				this._resultsStatusText = "No items selected.";
+				this._resultsStatusVisible = true;
 				return;
 			}
-			this._showResultsStatus("ok", `Recording ${items.length} data point${items.length === 1 ? "" : "s"}…`);
+			this._resultsStatusKind = "ok";
+			this._resultsStatusText = `Recording ${items.length} data point${items.length === 1 ? "" : "s"}…`;
+			this._resultsStatusVisible = true;
 			const results = await Promise.allSettled(items.map((item) => this._hass.callService(DOMAIN, "record", {
 				message: item.message,
 				entity_ids: [item.entity_id],
@@ -6980,63 +7901,121 @@
 			})));
 			const ok = results.filter((result) => result.status === "fulfilled").length;
 			const fail = results.filter((result) => result.status === "rejected").length;
-			if (fail) this._showResultsStatus("err", `Recorded ${ok}, failed ${fail}.`);
-			else this._showResultsStatus("ok", `Recorded ${ok} dev data point${ok === 1 ? "" : "s"}!`);
+			if (fail) {
+				this._resultsStatusKind = "err";
+				this._resultsStatusText = `Recorded ${ok}, failed ${fail}.`;
+			} else {
+				this._resultsStatusKind = "ok";
+				this._resultsStatusText = `Recorded ${ok} dev data point${ok === 1 ? "" : "s"}!`;
+			}
+			this._resultsStatusVisible = true;
 			await this._refreshDevCount();
 			window.dispatchEvent(new CustomEvent("hass-datapoints-event-recorded"));
 		}
 		async _deleteAllDev() {
-			const devCountEl = this.shadowRoot.getElementById("dev-count");
-			const count = parseInt(devCountEl?.textContent ?? "0", 10) || 0;
-			if (count === 0) {
-				this._showFeedback("delete-status", "err", "No dev datapoints to delete.");
+			if (this._devCount === 0) {
+				this._deleteStatusKind = "err";
+				this._deleteStatusText = "No dev datapoints to delete.";
+				this._deleteStatusVisible = true;
 				return;
 			}
 			if (!await confirmDestructiveAction(this, {
 				title: "Delete dev datapoints",
-				message: `Delete all ${count} dev data point${count === 1 ? "" : "s"}?`,
+				message: `Delete all ${this._devCount} dev data point${this._devCount === 1 ? "" : "s"}?`,
 				confirmLabel: "Delete all"
 			})) return;
-			const button = this.shadowRoot.getElementById("delete-dev-btn");
-			button.disabled = true;
+			this._deleting = true;
 			try {
 				const deleted = (await this._hass.connection.sendMessagePromise({ type: `${DOMAIN}/events/delete_dev` })).deleted;
-				this._showFeedback("delete-status", "ok", `Deleted ${deleted} dev data point${deleted === 1 ? "" : "s"}.`);
+				this._deleteStatusKind = "ok";
+				this._deleteStatusText = `Deleted ${deleted} dev data point${deleted === 1 ? "" : "s"}.`;
+				this._deleteStatusVisible = true;
 				await this._refreshDevCount();
 				window.dispatchEvent(new CustomEvent("hass-datapoints-event-recorded"));
 			} catch (err) {
-				this._showFeedback("delete-status", "err", `Error: ${err.message || "failed"}`);
+				this._deleteStatusKind = "err";
+				this._deleteStatusText = `Error: ${err.message || "failed"}`;
+				this._deleteStatusVisible = true;
 			}
-			button.disabled = false;
+			this._deleting = false;
 		}
 		async _refreshDevCount() {
 			try {
-				const count = ((await this._hass.connection.sendMessagePromise({ type: `hass_datapoints/events` })).events || []).filter((event) => event.dev).length;
-				const countEl = this.shadowRoot.getElementById("dev-count");
-				const pluralEl = this.shadowRoot.getElementById("dev-count-plural");
-				if (countEl) countEl.textContent = String(count);
-				if (pluralEl) pluralEl.textContent = count === 1 ? "" : "s";
+				this._devCount = ((await this._hass.connection.sendMessagePromise({ type: `hass_datapoints/events` })).events || []).filter((event) => event.dev).length;
 			} catch (error) {
 				logger$1.warn("[hass-datapoints dev-tool] refresh dev count failed", error);
 			}
 		}
-		_showFeedback(id, kind, text) {
-			const el = this.shadowRoot.getElementById(id);
-			if (!el) return;
-			el.kind = kind;
-			el.text = text;
-			el.visible = true;
-		}
-		_hideFeedback(id) {
-			const el = this.shadowRoot.getElementById(id);
-			if (!el) return;
-			el.visible = false;
-		}
-		_showResultsStatus(kind, text) {
-			const el = this.shadowRoot.getElementById("results-container");
-			el.statusKind = kind;
-			el.statusText = text;
-			el.statusVisible = true;
+		render() {
+			const cfg = this._config;
+			return b`
+      <ha-card>
+        ${cfg.title ? b`<div class="card-header">${cfg.title}</div>` : ""}
+        <div class="section-title">Analyze HA History</div>
+        <div class="form-group">
+          <ha-selector
+            id="entity-picker"
+            label="Entities to analyze"
+            .hass=${this._hass}
+            .selector=${{ entity: { multiple: true } }}
+            .value=${this._entities}
+            @value-changed=${this._onEntitiesChanged}
+          ></ha-selector>
+        </div>
+        <dev-tool-windows id="windows-editor"></dev-tool-windows>
+        <div class="analyze-row">
+          <ha-button
+            id="analyze-btn"
+            class="analyze-btn"
+            raised
+            .disabled=${this._analyzing}
+            @click=${this._analyzeHistory}
+          >
+            Analyze all windows
+          </ha-button>
+        </div>
+        <feedback-banner
+          id="analyze-status"
+          .kind=${this._analyzeStatusKind}
+          .text=${this._analyzeStatusText}
+          .visible=${this._analyzeStatusVisible}
+        ></feedback-banner>
+        <dev-tool-results
+          id="results-container"
+          .results=${this._results}
+          .isAdmin=${this._isAdmin}
+          .statusKind=${this._resultsStatusKind}
+          .statusText=${this._resultsStatusText}
+          .statusVisible=${this._resultsStatusVisible}
+          @dp-record-selected-request=${this._onRecordSelectedRequest}
+        ></dev-tool-results>
+        <hr class="divider" />
+        <div class="dev-section">
+          <div class="section-title">Dev Datapoints</div>
+          <div class="dev-summary">
+            <span class="dev-count-label"
+              >Currently recorded:&nbsp;<span class="dev-count-num"
+                >${this._devCount}</span
+              >&nbsp;dev data point${this._devCount === 1 ? "" : "s"}</span
+            >
+          </div>
+          <ha-button
+            class="delete-btn"
+            id="delete-dev-btn"
+            .disabled=${this._deleting}
+            @click=${this._deleteAllDev}
+          >
+            Delete all dev datapoints
+          </ha-button>
+          <feedback-banner
+            id="delete-status"
+            .kind=${this._deleteStatusKind}
+            .text=${this._deleteStatusText}
+            .visible=${this._deleteStatusVisible}
+          ></feedback-banner>
+        </div>
+      </ha-card>
+    `;
 		}
 		static getStubConfig() {
 			return { title: "Dev Tool" };
@@ -7045,8 +8024,37 @@
 			return document.createElement("hass-datapoints-dev-tool-card-editor");
 		}
 	};
+	_defineProperty(HassDatapointsDevToolCard, "styles", styles$65);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_config", null);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_hass", null);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_entities", null);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_results", null);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_analyzing", null);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_deleting", null);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_devCount", null);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_analyzeStatusKind", null);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_analyzeStatusText", null);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_analyzeStatusVisible", null);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_deleteStatusKind", null);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_deleteStatusText", null);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_deleteStatusVisible", null);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_resultsStatusKind", null);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_resultsStatusText", null);
+	__decorate([r$2()], HassDatapointsDevToolCard.prototype, "_resultsStatusVisible", null);
+	__decorate([e$4("dev-tool-windows")], HassDatapointsDevToolCard.prototype, "_windowsEl", null);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/charts/base/chart-card-base.ts
+	/**
+	* Call an HA unsubscribe function, swallowing any synchronous error or async
+	* rejection (e.g. `{code: 'not_found'}` after a WebSocket reconnect invalidated
+	* the subscription server-side).
+	*/
+	function _safeUnsub(unsub) {
+		try {
+			const result = unsub();
+			if (result != null && typeof result.then === "function") result.catch(() => {});
+		} catch {}
+	}
 	/**
 	* ChartCardBase – shared LitElement base class for history and statistics
 	* chart cards.
@@ -7147,7 +8155,9 @@
 			this._hass.connection.subscribeEvents(() => {
 				this._scheduleLoad();
 			}, `${DOMAIN}_event_recorded`).then((unsub) => {
-				this._unsubscribe = unsub;
+				const unsubFn = unsub;
+				if (!this.isConnected) _safeUnsub(unsubFn);
+				else this._unsubscribe = unsubFn;
 			}).catch(() => {});
 			this._windowListener = () => {
 				this._scheduleLoad();
@@ -7169,7 +8179,7 @@
 				this._loadRaf = null;
 			}
 			if (this._unsubscribe) {
-				this._unsubscribe();
+				_safeUnsub(this._unsubscribe);
 				this._unsubscribe = null;
 			}
 			if (this._windowListener) {
@@ -7187,7 +8197,7 @@
 	};
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/history.styles.ts
-	var styles$56 = i$5`
+	var styles$62 = i$5`
   :host {
     display: block;
     height: 100%;
@@ -7333,6 +8343,21 @@
 	}
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/data/history-normalization.ts
+	/**
+	* Normalises a raw binary sensor state list from the HA history API into a
+	* sorted array of `{ lu, s }` records.
+	*/
+	function normalizeBinaryHistory(_entityId, histStates) {
+		return (Array.isArray(histStates) ? histStates : []).map((state) => {
+			const rawTimestamp = state?.lu;
+			const timeSec = typeof rawTimestamp === "number" ? rawTimestamp : new Date(state?.last_changed || state?.lu || 0).getTime() / 1e3;
+			if (!Number.isFinite(timeSec)) return null;
+			return {
+				lu: Math.round(timeSec * 1e3) / 1e3,
+				s: String(state?.s ?? state?.state ?? "")
+			};
+		}).filter((entry) => entry !== null).sort((a, b) => a.lu - b.lu);
+	}
 	/**
 	* Normalises a raw numeric sensor state list from the HA history API into an
 	* array of `{ lu, s }` records (non-finite values filtered out).
@@ -8060,7 +9085,7 @@
 			}
 			return null;
 		}
-		_interpolateValue(seriesPoints, t) {
+		_interpolateValue(seriesPoints, t, stepped = false) {
 			const len = seriesPoints.length;
 			if (!len) return null;
 			if (t < seriesPoints[0][0]) return null;
@@ -8075,6 +9100,7 @@
 			const [t0, v0] = seriesPoints[lo];
 			const [t1, v1] = seriesPoints[hi];
 			if (t0 === t1) return v0;
+			if (stepped) return v0;
 			return v0 + (v1 - v0) * ((t - t0) / (t1 - t0));
 		}
 		/**
@@ -8604,6 +9630,31 @@
 		const entityId = firstRelatedEntityId(hass, (entry) => (entry.area_id || entry.areaId) === areaId);
 		return entityId ? entityIcon(hass, entityId) : "mdi:floor-plan";
 	}
+	/**
+	* Returns a Map of entityId → display label. When multiple entity IDs share
+	* the same friendly name, duplicates are prefixed with the best available
+	* qualifier in order: area name → device name → last segment of entity_id.
+	*/
+	function disambiguateEntityNames(hass, entityIds) {
+		const labels = /* @__PURE__ */ new Map();
+		if (!entityIds.length) return labels;
+		for (const entityId of entityIds) labels.set(entityId, entityName(hass, entityId) || entityId);
+		const nameCounts = /* @__PURE__ */ new Map();
+		for (const label of labels.values()) nameCounts.set(label, (nameCounts.get(label) ?? 0) + 1);
+		for (const entityId of entityIds) {
+			const name = labels.get(entityId);
+			if ((nameCounts.get(name) ?? 0) <= 1) continue;
+			const entry = hass?.entities?.[entityId];
+			const deviceId = entry?.device_id || entry?.deviceId;
+			const areaId = entry?.area_id || entry?.areaId || (deviceId ? hass?.devices?.[deviceId]?.area_id : null);
+			let qualifier;
+			if (areaId) qualifier = areaName(hass, areaId);
+			else if (deviceId) qualifier = deviceName(hass, deviceId);
+			else qualifier = entityId.split(".")[1] ?? entityId;
+			if (qualifier && qualifier !== name) labels.set(entityId, `${qualifier} · ${name}`);
+		}
+		return labels;
+	}
 	function labelName(hass, labelId) {
 		if (!hass || !labelId) return labelId || "";
 		return hass.labels?.[labelId]?.name ?? labelId;
@@ -8645,7 +9696,7 @@
 		if (!Number.isFinite(timeMs)) return "";
 		return fmtDateTime(new Date(timeMs).toISOString());
 	}
-	function t$2(key, ...values) {
+	function t$3(key, ...values) {
 		let s = msg(key);
 		values.forEach((v, i) => {
 			s = s.replace(new RegExp(`\\{${i}\\}`, "g"), v);
@@ -8662,6 +9713,14 @@
 			comparison_window: msg("Comparison window")
 		};
 	}
+	var ANOMALY_METHOD_LABELS = {
+		trend_residual: "Trend deviation",
+		rate_of_change: "Sudden change",
+		iqr: "Statistical outlier (IQR)",
+		rolling_zscore: "Rolling Z-score",
+		persistence: "Flat-line / stuck",
+		comparison_window: "Comparison window"
+	};
 	function buildAnomalyMethodSection(region) {
 		if (!region?.cluster?.points?.length) return null;
 		const points = region.cluster.points;
@@ -8678,25 +9737,25 @@
 		let alert;
 		if (method === "rate_of_change") {
 			const rateUnit = unit ? `${unit}/h` : "units/h";
-			description = t$2("{0} shows an unusual rate of change between {1} and {2}.", label, formatTooltipDateTimeFromMs(startPoint.timeMs), formatTooltipDateTimeFromMs(endPoint.timeMs));
-			alert = t$2("Peak rate deviation: {0} from a typical rate of {1} at {2}.", formatTooltipValue(peakPoint.residual, rateUnit), formatTooltipValue(peakPoint.baselineValue, rateUnit), formatTooltipDateTimeFromMs(peakPoint.timeMs));
+			description = t$3("{0} shows an unusual rate of change between {1} and {2}.", label, formatTooltipDateTimeFromMs(startPoint.timeMs), formatTooltipDateTimeFromMs(endPoint.timeMs));
+			alert = t$3("Peak rate deviation: {0} from a typical rate of {1} at {2}.", formatTooltipValue(peakPoint.residual, rateUnit), formatTooltipValue(peakPoint.baselineValue, rateUnit), formatTooltipDateTimeFromMs(peakPoint.timeMs));
 		} else if (method === "iqr") {
-			description = t$2("{0} contains statistical outliers between {1} and {2}.", label, formatTooltipDateTimeFromMs(startPoint.timeMs), formatTooltipDateTimeFromMs(endPoint.timeMs));
-			alert = t$2("Peak value: {0}, deviating {1} from the median at {2}.", formatTooltipValue(peakPoint.value, unit), formatTooltipValue(Math.abs(peakPoint.residual), unit), formatTooltipDateTimeFromMs(peakPoint.timeMs));
+			description = t$3("{0} contains statistical outliers between {1} and {2}.", label, formatTooltipDateTimeFromMs(startPoint.timeMs), formatTooltipDateTimeFromMs(endPoint.timeMs));
+			alert = t$3("Peak value: {0}, deviating {1} from the median at {2}.", formatTooltipValue(peakPoint.value, unit), formatTooltipValue(Math.abs(peakPoint.residual), unit), formatTooltipDateTimeFromMs(peakPoint.timeMs));
 		} else if (method === "rolling_zscore") {
-			description = t$2("{0} shows statistically unusual values between {1} and {2}.", label, formatTooltipDateTimeFromMs(startPoint.timeMs), formatTooltipDateTimeFromMs(endPoint.timeMs));
-			alert = t$2("Peak deviation: {0} from a rolling mean of {1} at {2}.", formatTooltipValue(peakPoint.residual, unit), formatTooltipValue(peakPoint.baselineValue, unit), formatTooltipDateTimeFromMs(peakPoint.timeMs));
+			description = t$3("{0} shows statistically unusual values between {1} and {2}.", label, formatTooltipDateTimeFromMs(startPoint.timeMs), formatTooltipDateTimeFromMs(endPoint.timeMs));
+			alert = t$3("Peak deviation: {0} from a rolling mean of {1} at {2}.", formatTooltipValue(peakPoint.residual, unit), formatTooltipValue(peakPoint.baselineValue, unit), formatTooltipDateTimeFromMs(peakPoint.timeMs));
 		} else if (method === "persistence") {
 			const flatRange = typeof cluster.flatRange === "number" ? cluster.flatRange : null;
-			const rangeStr = flatRange !== null ? t$2(" (range: {0})", formatTooltipValue(flatRange, unit)) : "";
-			description = t$2("{0} appears stuck or flat between {1} and {2}{3}.", label, formatTooltipDateTimeFromMs(startPoint.timeMs), formatTooltipDateTimeFromMs(endPoint.timeMs), rangeStr);
-			alert = t$2("Value remained near {0} for an unusually long period.", formatTooltipValue(peakPoint.baselineValue, unit));
+			const rangeStr = flatRange !== null ? t$3(" (range: {0})", formatTooltipValue(flatRange, unit)) : "";
+			description = t$3("{0} appears stuck or flat between {1} and {2}{3}.", label, formatTooltipDateTimeFromMs(startPoint.timeMs), formatTooltipDateTimeFromMs(endPoint.timeMs), rangeStr);
+			alert = t$3("Value remained near {0} for an unusually long period.", formatTooltipValue(peakPoint.baselineValue, unit));
 		} else if (method === "comparison_window") {
-			description = t$2("{0} deviates significantly from the comparison window between {1} and {2}.", label, formatTooltipDateTimeFromMs(startPoint.timeMs), formatTooltipDateTimeFromMs(endPoint.timeMs));
-			alert = t$2("Peak deviation from comparison: {0} at {1}.", formatTooltipValue(peakPoint.residual, unit), formatTooltipDateTimeFromMs(peakPoint.timeMs));
+			description = t$3("{0} deviates significantly from the comparison window between {1} and {2}.", label, formatTooltipDateTimeFromMs(startPoint.timeMs), formatTooltipDateTimeFromMs(endPoint.timeMs));
+			alert = t$3("Peak deviation from comparison: {0} at {1}.", formatTooltipValue(peakPoint.residual, unit), formatTooltipDateTimeFromMs(peakPoint.timeMs));
 		} else {
-			description = t$2("{0} deviates from its expected trend between {1} and {2}.", label, formatTooltipDateTimeFromMs(startPoint.timeMs), formatTooltipDateTimeFromMs(endPoint.timeMs));
-			alert = t$2("Peak deviation: {0} from a baseline of {1} at {2}.", formatTooltipValue(peakPoint.residual, unit), formatTooltipValue(peakPoint.baselineValue, unit), formatTooltipDateTimeFromMs(peakPoint.timeMs));
+			description = t$3("{0} deviates from its expected trend between {1} and {2}.", label, formatTooltipDateTimeFromMs(startPoint.timeMs), formatTooltipDateTimeFromMs(endPoint.timeMs));
+			alert = t$3("Peak deviation: {0} from a baseline of {1} at {2}.", formatTooltipValue(peakPoint.residual, unit), formatTooltipValue(peakPoint.baselineValue, unit), formatTooltipDateTimeFromMs(peakPoint.timeMs));
 		}
 		return {
 			methodLabel,
@@ -9374,14 +10433,14 @@
 			const timeMs = resolveLineChartHoverTime(resolvedSeries, t0 + (renderer.cw ? (localX - renderer.pad.left) / renderer.cw : 0) * (t1 - t0), options.hoverSnapMode || "follow_series");
 			const x = renderer.xOf(timeMs, t0, t1);
 			const values = resolvedSeries.map((seriesItem) => {
-				const value = renderer._interpolateValue(seriesItem.pts || [], timeMs);
+				const value = renderer._interpolateValue(seriesItem.pts || [], timeMs, seriesItem.stepped);
 				return buildHoverValueEntry(seriesItem, value, resolveHoverAxis(seriesItem), {}, {
 					includePosition: value != null,
 					x
 				});
 			});
 			const comparisonValues = comparisonSeries.map((seriesItem) => {
-				const value = renderer._interpolateValue(seriesItem.pts || [], timeMs);
+				const value = renderer._interpolateValue(seriesItem.pts || [], timeMs, seriesItem.stepped);
 				return buildHoverValueEntry(seriesItem, value, resolveHoverAxis(seriesItem), { comparison: true }, {
 					includePosition: value != null,
 					x
@@ -9777,6 +10836,32 @@
 		};
 	}
 	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/data/cancel-api.ts
+	/**
+	* Tracks in-flight cancellable requests and provides helpers to cancel them.
+	*
+	* A "slot key" identifies a logical request slot (e.g. entity + time range).
+	* Before sending a new request for the same slot, call cancelPending() to abort
+	* any previous request still running on the backend.
+	*/
+	var inFlightRequests = /* @__PURE__ */ new Map();
+	function trackRequest(slotKey, requestId) {
+		inFlightRequests.set(slotKey, requestId);
+	}
+	async function cancelPending(hass, slotKey) {
+		const prevId = inFlightRequests.get(slotKey);
+		if (prevId) {
+			inFlightRequests.delete(slotKey);
+			await hass.connection.sendMessagePromise({
+				type: "hass_datapoints/cancel",
+				request_id: prevId
+			});
+		}
+	}
+	function clearRequest(slotKey) {
+		inFlightRequests.delete(slotKey);
+	}
+	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/data/cache.ts
 	/**
 	* Shared cache utilities for history/statistics/event lookups.
@@ -9831,6 +10916,25 @@
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/data/history-api.ts
 	var MAX_DOWNSAMPLED_HISTORY_RANGE_MS = 2160 * 60 * 60 * 1e3;
+	function createRequestId() {
+		const cryptoApi = globalThis.crypto;
+		if (typeof cryptoApi?.randomUUID === "function") return cryptoApi.randomUUID();
+		if (typeof cryptoApi?.getRandomValues === "function") {
+			const bytes = new Uint8Array(16);
+			cryptoApi.getRandomValues(bytes);
+			bytes[6] = bytes[6] % 16 + 64;
+			bytes[8] = bytes[8] % 64 + 128;
+			const hex = [...bytes].map((byte) => byte.toString(16).padStart(2, "0"));
+			return [
+				hex.slice(0, 4).join(""),
+				hex.slice(4, 6).join(""),
+				hex.slice(6, 8).join(""),
+				hex.slice(8, 10).join(""),
+				hex.slice(10, 16).join("")
+			].join("-");
+		}
+		return `req-${Date.now().toString(16)}-${Math.random().toString(16).slice(2, 10)}`;
+	}
 	function parseIsoTimeMs(value) {
 		const timeMs = Date.parse(value);
 		if (!Number.isFinite(timeMs)) return null;
@@ -9857,31 +10961,45 @@
 		return chunks;
 	}
 	function fetchDownsampledHistory(hass, entityId, startTime, endTime, interval, aggregate) {
-		return withStableRangeCache(JSON.stringify({
+		const cacheKey = JSON.stringify({
 			type: "hass_datapoints/history",
 			entity_id: entityId,
 			start_time: startTime,
 			end_time: endTime,
 			interval,
 			aggregate
-		}), endTime, async () => {
-			const chunks = buildDownsampledHistoryChunks(startTime, endTime);
-			const mergedPoints = (await Promise.all(chunks.map(async (chunk) => hass.connection.sendMessagePromise({
-				type: "hass_datapoints/history",
-				entity_id: entityId,
-				start_time: chunk.startTime,
-				end_time: chunk.endTime,
-				interval,
-				aggregate
-			})))).flatMap((result) => result.pts || []);
-			if (!mergedPoints.length) return [];
-			const dedupedPoints = /* @__PURE__ */ new Map();
-			for (const point of mergedPoints) if (Array.isArray(point) && point.length > 0) dedupedPoints.set(String(point[0]), point);
-			else dedupedPoints.set(JSON.stringify(point), point);
-			return [...dedupedPoints.values()];
+		});
+		const slotKey = `history:${entityId}:${startTime}:${endTime}:${interval}:${aggregate}`;
+		cancelPending(hass, slotKey);
+		const requestId = createRequestId();
+		trackRequest(slotKey, requestId);
+		return withStableRangeCache(cacheKey, endTime, async () => {
+			try {
+				const chunks = buildDownsampledHistoryChunks(startTime, endTime);
+				const mergedPoints = (await Promise.all(chunks.map(async (chunk) => hass.connection.sendMessagePromise({
+					type: "hass_datapoints/history",
+					entity_id: entityId,
+					start_time: chunk.startTime,
+					end_time: chunk.endTime,
+					interval,
+					aggregate,
+					request_id: requestId
+				})))).flatMap((result) => result.pts || []);
+				if (!mergedPoints.length) return [];
+				const dedupedPoints = /* @__PURE__ */ new Map();
+				for (const point of mergedPoints) if (Array.isArray(point) && point.length > 0) dedupedPoints.set(String(point[0]), point);
+				else dedupedPoints.set(JSON.stringify(point), point);
+				return [...dedupedPoints.values()];
+			} finally {
+				clearRequest(slotKey);
+			}
 		});
 	}
 	function fetchAnomaliesFromBackend(hass, entityId, startTime, endTime, config) {
+		const slotKey = `anomalies:${entityId}:${startTime}:${endTime}`;
+		cancelPending(hass, slotKey);
+		const requestId = createRequestId();
+		trackRequest(slotKey, requestId);
 		return hass.connection.sendMessagePromise({
 			type: "hass_datapoints/anomalies",
 			entity_id: entityId,
@@ -9895,6 +11013,7 @@
 			anomaly_persistence_window: config.anomaly_persistence_window || "1h",
 			trend_method: config.trend_method || "rolling_average",
 			trend_window: config.trend_window || "24h",
+			request_id: requestId,
 			...config.anomaly_use_sampled_data !== false && config.sample_interval && config.sample_interval !== "raw" ? {
 				sample_interval: config.sample_interval,
 				sample_aggregate: config.sample_aggregate || "mean"
@@ -9905,7 +11024,13 @@
 				comparison_end_time: config.comparison_end_time,
 				comparison_time_offset_ms: config.comparison_time_offset_ms || 0
 			} : {}
-		}).then((result) => result.anomaly_clusters || []);
+		}).then((result) => {
+			clearRequest(slotKey);
+			return result.anomaly_clusters || [];
+		}, (err) => {
+			clearRequest(slotKey);
+			throw err;
+		});
 	}
 	async function fetchHistoryDuringPeriod(hass, startTime, endTime, entityIds, options = {}) {
 		const normalizedEntityIds = normalizeCacheIdList(entityIds);
@@ -9935,7 +11060,8 @@
 		"iqr",
 		"rolling_zscore",
 		"persistence",
-		"comparison_window"
+		"comparison_window",
+		"similar_entity"
 	];
 	var VALID_SAMPLE_INTERVALS = [
 		"raw",
@@ -10001,6 +11127,7 @@
 			anomaly_zscore_window: typeof source.anomaly_zscore_window === "string" && source.anomaly_zscore_window ? source.anomaly_zscore_window : "24h",
 			anomaly_persistence_window: typeof source.anomaly_persistence_window === "string" && source.anomaly_persistence_window ? source.anomaly_persistence_window : "1h",
 			anomaly_comparison_window_id: typeof source.anomaly_comparison_window_id === "string" && source.anomaly_comparison_window_id ? source.anomaly_comparison_window_id : null,
+			anomaly_comparison_entity_id: typeof source.anomaly_comparison_entity_id === "string" && source.anomaly_comparison_entity_id ? source.anomaly_comparison_entity_id : null,
 			anomaly_trend_method: typeof source.anomaly_trend_method === "string" ? source.anomaly_trend_method : "",
 			anomaly_trend_window: typeof source.anomaly_trend_window === "string" && source.anomaly_trend_window ? source.anomaly_trend_window : "24h",
 			show_delta_analysis: source.show_delta_analysis === true,
@@ -10209,6 +11336,385 @@
 					intervalMs,
 					aggregate
 				}
+			});
+		});
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/domain/chart-zoom.ts
+	/**
+	* Date parsing and zoom state helpers shared by chart/timeline subsystems.
+	*/
+	function parseDateValue(value) {
+		if (!value) return null;
+		if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
+		const parsed = new Date(value);
+		return Number.isNaN(parsed.getTime()) ? null : parsed;
+	}
+	function createChartZoomRange(startValue, endValue) {
+		const startDate = parseDateValue(startValue);
+		const endDate = parseDateValue(endValue);
+		const start = startDate?.getTime();
+		const end = endDate?.getTime();
+		if (typeof start === "number" && Number.isFinite(start) && typeof end === "number" && Number.isFinite(end) && start < end) return {
+			start,
+			end
+		};
+		return null;
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/history-page/history-url-state.ts
+	function makeDateWindowId(label, existingIds = /* @__PURE__ */ new Set()) {
+		const base = slugifySeriesName(label) || "date-window";
+		let candidate = base;
+		let suffix = 2;
+		while (existingIds.has(candidate)) {
+			candidate = `${base}-${suffix}`;
+			suffix += 1;
+		}
+		return candidate;
+	}
+	function normalizeDateWindows(windows) {
+		if (!Array.isArray(windows)) return [];
+		const seen = /* @__PURE__ */ new Set();
+		const normalized = [];
+		windows.forEach((window, index) => {
+			const label = String(window?.label || window?.name || "").trim();
+			const start = parseDateValue(window?.start_time || window?.start);
+			const end = parseDateValue(window?.end_time || window?.end);
+			if (!label || !start || !end || start >= end) return;
+			const id = String(window?.id || "").trim() || makeDateWindowId(`${label}-${index + 1}`, seen);
+			if (seen.has(id)) return;
+			seen.add(id);
+			normalized.push({
+				id,
+				label,
+				start_time: start.toISOString(),
+				end_time: end.toISOString()
+			});
+		});
+		return normalized;
+	}
+	function parseDateWindowsParam(value) {
+		if (!value || typeof value !== "string") return [];
+		return normalizeDateWindows(value.split("|").map((entry) => {
+			const [rawId, rawLabel, rawStart, rawEnd] = String(entry).split("~");
+			return {
+				id: decodeURIComponent(rawId || ""),
+				label: decodeURIComponent(rawLabel || ""),
+				start_time: decodeURIComponent(rawStart || ""),
+				end_time: decodeURIComponent(rawEnd || "")
+			};
+		}));
+	}
+	function serializeDateWindowsParam(windows) {
+		const normalized = normalizeDateWindows(windows);
+		if (!normalized.length) return "";
+		return normalized.map((window) => [
+			encodeURIComponent(window.id),
+			encodeURIComponent(window.label ?? ""),
+			encodeURIComponent(window.start_time),
+			encodeURIComponent(window.end_time)
+		].join("~")).join("|");
+	}
+	function parseHistoryPageStateParam(value) {
+		if (!value || typeof value !== "string") return null;
+		try {
+			const parsed = JSON.parse(value);
+			return parsed && typeof parsed === "object" ? parsed : null;
+		} catch {
+			return null;
+		}
+	}
+	function serializeHistoryPageStateParam(state) {
+		if (!state || typeof state !== "object") return "";
+		try {
+			return JSON.stringify(state);
+		} catch {
+			return "";
+		}
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/ha/navigation.ts
+	function buildDataPointsHistoryPath(target = {}, options = {}) {
+		const normalizedTarget = {
+			entity_id: [...new Set((target.entity_id || []).filter(Boolean))],
+			device_id: [...new Set((target.device_id || []).filter(Boolean))],
+			area_id: [...new Set((target.area_id || []).filter(Boolean))],
+			label_id: [...new Set((target.label_id || []).filter(Boolean))]
+		};
+		const params = new URLSearchParams();
+		if (normalizedTarget.entity_id.length) params.set("entity_id", normalizedTarget.entity_id.join(","));
+		if (normalizedTarget.device_id.length) params.set("device_id", normalizedTarget.device_id.join(","));
+		if (normalizedTarget.area_id.length) params.set("area_id", normalizedTarget.area_id.join(","));
+		if (normalizedTarget.label_id.length) params.set("label_id", normalizedTarget.label_id.join(","));
+		if (options.datapoint_scope === "all") params.set("datapoints_scope", "all");
+		const start = options.start_time ? new Date(options.start_time) : null;
+		const end = options.end_time ? new Date(options.end_time) : null;
+		if (start && end && Number.isFinite(start.getTime()) && Number.isFinite(end.getTime()) && start < end) {
+			params.set("start_time", start.toISOString());
+			params.set("end_time", end.toISOString());
+			params.set("hours_to_show", String(Math.max(1, Math.round((end.getTime() - start.getTime()) / 36e5))));
+		}
+		const zoomStart = options.zoom_start_time ? new Date(options.zoom_start_time) : null;
+		const zoomEnd = options.zoom_end_time ? new Date(options.zoom_end_time) : null;
+		if (zoomStart && zoomEnd && Number.isFinite(zoomStart.getTime()) && Number.isFinite(zoomEnd.getTime()) && zoomStart < zoomEnd) {
+			params.set("zoom_start_time", zoomStart.toISOString());
+			params.set("zoom_end_time", zoomEnd.toISOString());
+		}
+		const pageStateParam = serializeHistoryPageStateParam(options.page_state);
+		if (pageStateParam) params.set("page_state", pageStateParam);
+		return `/${PANEL_URL_PATH}?${params.toString()}`;
+	}
+	function navigateToDataPointsHistory(_card, target = {}, options = {}) {
+		const path = buildDataPointsHistoryPath(target, options);
+		if (window.history && window.history.pushState) {
+			window.history.pushState(null, "", path);
+			window.dispatchEvent(new Event("location-changed"));
+			return;
+		}
+		window.location.assign(path);
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/chart/chart-anomaly-config.ts
+	function buildBackendAnomalyConfig(analysis) {
+		const rawMethods = Array.isArray(analysis.anomaly_methods) ? analysis.anomaly_methods : [];
+		const hasSimilarEntity = rawMethods.includes("similar_entity");
+		const backendMethods = hasSimilarEntity ? [...new Set(rawMethods.map((m) => m === "similar_entity" ? "comparison_window" : m))] : rawMethods;
+		const config = {
+			anomaly_methods: backendMethods.length > 0 ? backendMethods : void 0,
+			anomaly_sensitivity: typeof analysis.anomaly_sensitivity === "string" ? analysis.anomaly_sensitivity : void 0,
+			anomaly_overlap_mode: typeof analysis.anomaly_overlap_mode === "string" ? analysis.anomaly_overlap_mode : void 0,
+			anomaly_rate_window: typeof analysis.anomaly_rate_window === "string" ? analysis.anomaly_rate_window : void 0,
+			anomaly_zscore_window: typeof analysis.anomaly_zscore_window === "string" ? analysis.anomaly_zscore_window : void 0,
+			anomaly_persistence_window: typeof analysis.anomaly_persistence_window === "string" ? analysis.anomaly_persistence_window : void 0,
+			trend_method: (() => {
+				if (typeof analysis.anomaly_trend_method === "string" && analysis.anomaly_trend_method) return analysis.anomaly_trend_method;
+				return typeof analysis.trend_method === "string" ? analysis.trend_method : void 0;
+			})(),
+			trend_window: (() => {
+				if (typeof analysis.anomaly_trend_method === "string" && analysis.anomaly_trend_method && typeof analysis.anomaly_trend_window === "string" && analysis.anomaly_trend_window) return analysis.anomaly_trend_window;
+				return typeof analysis.trend_window === "string" ? analysis.trend_window : void 0;
+			})(),
+			anomaly_use_sampled_data: analysis.anomaly_use_sampled_data !== false,
+			comparison_entity_id: hasSimilarEntity && typeof analysis.anomaly_comparison_entity_id === "string" && analysis.anomaly_comparison_entity_id ? analysis.anomaly_comparison_entity_id : null
+		};
+		if (analysis.anomaly_use_sampled_data !== false) {
+			config.sample_interval = typeof analysis.sample_interval === "string" ? analysis.sample_interval : null;
+			config.sample_aggregate = typeof analysis.sample_aggregate === "string" ? analysis.sample_aggregate : null;
+		}
+		return config;
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/chart/chart-data-prep.ts
+	/**
+	* Pure data preparation utilities extracted from history-chart.ts.
+	*
+	* All functions are stateless data transformations with no DOM dependency.
+	*/
+	function buildBinaryStateSpans(stateList, t0, t1) {
+		const spans = [];
+		if (!stateList.length) return spans;
+		let current = stateList[0];
+		for (let i = 1; i < stateList.length; i++) {
+			const next = stateList[i];
+			const start = Math.max(current.lu * 1e3, t0);
+			const end = Math.min(next.lu * 1e3, t1);
+			if (end > start) spans.push({
+				start,
+				end,
+				state: current.s
+			});
+			current = next;
+		}
+		const lastStart = Math.max(current.lu * 1e3, t0);
+		if (t1 > lastStart) spans.push({
+			start: lastStart,
+			end: t1,
+			state: current.s
+		});
+		return spans;
+	}
+	function buildEntityStateList(entityId, histResult, statsResult, entityIds) {
+		const historyStates = getHistoryStatesForEntity$1(histResult, entityId, entityIds);
+		return mergeNumericHistoryWithStatistics(entityId.split(".")[0] === "binary_sensor" ? normalizeBinaryHistory(entityId, historyStates) : normalizeNumericHistory(entityId, historyStates), normalizeStatisticsHistory(entityId, statsResult));
+	}
+	function filterEvents$1(events, hiddenEventIds, messageFilter) {
+		const query = String(messageFilter || "").trim().toLowerCase();
+		const visibleEvents = events.filter((event) => !hiddenEventIds.has(event?.id ?? ""));
+		if (!query) return visibleEvents;
+		return visibleEvents.filter((event) => {
+			return [
+				event?.message || "",
+				event?.annotation || "",
+				...(event?.entity_ids || []).filter(Boolean)
+			].join("\n").toLowerCase().includes(query);
+		});
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/chart/chart-comparison.ts
+	function getComparisonWindowLineStyle(isHovered, isSelected, hoveringDifferentComparison) {
+		if (isHovered) return {
+			lineOpacity: 1,
+			dashed: false,
+			hoverOpacity: .85
+		};
+		if (hoveringDifferentComparison && isSelected) return {
+			lineOpacity: .25,
+			lineWidth: 1.25,
+			dashed: false,
+			hoverOpacity: .25
+		};
+		return {
+			lineOpacity: .85,
+			dashed: false,
+			hoverOpacity: .85
+		};
+	}
+	function getComparisonAnomalyCacheKey(windowId, entityId) {
+		return `${windowId}:${entityId}`;
+	}
+	function shiftComparisonAnomalyClusters(clusters, timeOffsetMs) {
+		return (Array.isArray(clusters) ? clusters : []).map((cluster) => ({
+			...cluster,
+			points: Array.isArray(cluster.points) ? cluster.points.map((point) => ({
+				...point,
+				timeMs: Number(point.timeMs) - timeOffsetMs
+			})) : []
+		}));
+	}
+	function filterClustersByCorrelatedSpans(anomalyClusters, correlatedSpans) {
+		if (!Array.isArray(anomalyClusters) || anomalyClusters.length === 0) return [];
+		if (!Array.isArray(correlatedSpans) || correlatedSpans.length === 0) return [];
+		return anomalyClusters.filter((cluster) => {
+			const points = cluster.points;
+			if (!Array.isArray(points) || points.length === 0) return false;
+			const startTime = Number(points[0]?.timeMs);
+			const endTime = Number(points[points.length - 1]?.timeMs);
+			if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) return false;
+			const clusterStart = Math.min(startTime, endTime);
+			const clusterEnd = Math.max(startTime, endTime);
+			return correlatedSpans.some((span) => {
+				const spanStart = Number(span.start);
+				const spanEnd = Number(span.end);
+				if (!Number.isFinite(spanStart) || !Number.isFinite(spanEnd)) return false;
+				return clusterEnd >= spanStart && clusterStart <= spanEnd;
+			});
+		});
+	}
+	function resolveAnomalyClusterDisplay(anomalyClusters, overlapMode, correlatedSpans = []) {
+		const normalClusters = anomalyClusters.filter((c) => !c.isOverlap);
+		const overlapClusters = anomalyClusters.filter((c) => c.isOverlap === true);
+		if (overlapMode === "only") {
+			const overlapOnlyClusters = filterClustersByCorrelatedSpans(anomalyClusters, correlatedSpans);
+			return {
+				baseClusters: overlapOnlyClusters,
+				regionClusters: overlapOnlyClusters,
+				showCorrelatedSpans: true
+			};
+		}
+		return {
+			baseClusters: [...normalClusters, ...overlapClusters],
+			regionClusters: [...normalClusters, ...overlapClusters],
+			showCorrelatedSpans: false
+		};
+	}
+	function buildCorrelatedAnomalySpans(visibleSeries, anomalyClustersMap, analysisMap) {
+		const seriesIntervals = [];
+		for (const seriesItem of visibleSeries) {
+			if (analysisMap.get(seriesItem.entityId)?.show_anomalies !== true) continue;
+			const clusters = anomalyClustersMap.get(seriesItem.entityId) || [];
+			if (!clusters.length) continue;
+			const pts = seriesItem.pts;
+			let tolerance = 6e4;
+			if (Array.isArray(pts) && pts.length >= 2) {
+				const intervals = [];
+				for (let i = 1; i < pts.length; i++) {
+					const diff = pts[i][0] - pts[i - 1][0];
+					if (diff > 0) intervals.push(diff);
+				}
+				if (intervals.length) {
+					intervals.sort((a, b) => a - b);
+					const mid = Math.floor(intervals.length / 2);
+					tolerance = intervals.length % 2 === 0 ? (intervals[mid - 1] + intervals[mid]) / 2 : intervals[mid];
+					tolerance = Math.max(tolerance, 1e3);
+				}
+			}
+			const entityIntervals = [];
+			for (const cluster of clusters) {
+				if (!Array.isArray(cluster.points) || cluster.points.length === 0) continue;
+				const startTime = cluster.points[0]?.timeMs;
+				const endTime = cluster.points[cluster.points.length - 1]?.timeMs;
+				if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) continue;
+				entityIntervals.push({
+					start: Math.min(startTime, endTime) - tolerance,
+					end: Math.max(startTime, endTime) + tolerance
+				});
+			}
+			if (entityIntervals.length) seriesIntervals.push({
+				entityId: seriesItem.entityId,
+				intervals: entityIntervals
+			});
+		}
+		if (seriesIntervals.length < 2) return [];
+		const events = [];
+		for (const { entityId, intervals } of seriesIntervals) for (const { start, end } of intervals) {
+			events.push({
+				time: start,
+				delta: 1,
+				entityId
+			});
+			events.push({
+				time: end,
+				delta: -1,
+				entityId
+			});
+		}
+		events.sort((a, b) => a.time - b.time || a.delta - b.delta);
+		const activeCounts = /* @__PURE__ */ new Map();
+		const spans = [];
+		let spanStart = null;
+		for (const event of events) {
+			const next = (activeCounts.get(event.entityId) || 0) + event.delta;
+			if (next <= 0) activeCounts.delete(event.entityId);
+			else activeCounts.set(event.entityId, next);
+			const activeCount = activeCounts.size;
+			if (spanStart === null && activeCount >= 2) spanStart = event.time;
+			else if (spanStart !== null && activeCount < 2) {
+				spans.push({
+					start: spanStart,
+					end: event.time
+				});
+				spanStart = null;
+			}
+		}
+		if (spanStart !== null && events.length > 0) spans.push({
+			start: spanStart,
+			end: events[events.length - 1].time
+		});
+		return spans;
+	}
+	function filterAnnotatedAnomalyClusters(seriesItem, events) {
+		if (!Array.isArray(seriesItem?.anomalyClusters) || seriesItem.anomalyClusters.length === 0) return [];
+		const visibleEvents = Array.isArray(events) ? events : [];
+		if (visibleEvents.length === 0) return seriesItem.anomalyClusters;
+		const getClusterRange = (cluster) => {
+			if (!Array.isArray(cluster.points) || cluster.points.length === 0) return null;
+			const startTime = cluster.points[0]?.timeMs;
+			const endTime = cluster.points[cluster.points.length - 1]?.timeMs;
+			if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) return null;
+			return {
+				startTime: Math.min(startTime, endTime),
+				endTime: Math.max(startTime, endTime)
+			};
+		};
+		return seriesItem.anomalyClusters.filter((cluster) => {
+			const clusterRange = getClusterRange(cluster);
+			if (!clusterRange) return true;
+			return !visibleEvents.some((event) => {
+				if (!(Array.isArray(event.entity_ids) ? event.entity_ids.filter(Boolean) : []).includes(seriesItem.entityId)) return false;
+				const eventTime = new Date(event.timestamp).getTime();
+				if (!Number.isFinite(eventTime)) return false;
+				return eventTime >= clusterRange.startTime && eventTime <= clusterRange.endTime;
 			});
 		});
 	}
@@ -10466,143 +11972,570 @@
 		};
 	}
 	//#endregion
-	//#region custom_components/hass_datapoints/src/lib/domain/chart-zoom.ts
+	//#region custom_components/hass_datapoints/src/lib/chart/chart-analysis.ts
 	/**
-	* Date parsing and zoom state helpers shared by chart/timeline subsystems.
+	* Pure analysis utilities extracted from history-chart.ts.
+	*
+	* All functions are stateless data transformations with no DOM dependency.
 	*/
-	function parseDateValue(value) {
-		if (!value) return null;
-		if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
-		const parsed = new Date(value);
-		return Number.isNaN(parsed.getTime()) ? null : parsed;
+	var ANALYSIS_FIELDS = [
+		"show_trend_lines",
+		"trend_method",
+		"trend_window",
+		"show_rate_of_change",
+		"rate_window",
+		"show_delta_analysis",
+		"show_summary_stats",
+		"show_anomalies",
+		"anomaly_methods",
+		"anomaly_sensitivity",
+		"anomaly_overlap_mode",
+		"anomaly_rate_window",
+		"anomaly_zscore_window",
+		"anomaly_persistence_window",
+		"anomaly_comparison_window_id",
+		"anomaly_use_sampled_data",
+		"anomaly_trend_method",
+		"anomaly_trend_window"
+	];
+	function buildAnalysisCacheKey(visibleSeries, selectedComparisonSeriesMap, analysisMap, allComparisonWindowsData, t0, t1) {
+		return `${t0}:${t1}|${visibleSeries.map((s) => {
+			const a = analysisMap.get(s.entityId) || normalizeHistorySeriesAnalysis(null);
+			const first = s.pts[0]?.[0] ?? 0;
+			const last = s.pts[s.pts.length - 1]?.[0] ?? 0;
+			const aKey = ANALYSIS_FIELDS.map((f) => JSON.stringify(a[f])).join(",");
+			return `${s.entityId}:${s.pts.length}:${first}:${last}:${aKey}`;
+		}).join("|")}|${Array.from(selectedComparisonSeriesMap.values()).map((s) => {
+			const first = s.pts[0]?.[0] ?? 0;
+			const last = s.pts[s.pts.length - 1]?.[0] ?? 0;
+			return `${s.entityId}:${s.pts.length}:${first}:${last}`;
+		}).sort().join("|")}|${Object.entries(allComparisonWindowsData).flatMap(([windowId, entities]) => Object.entries(entities).map(([entityId, pts]) => {
+			const first = pts[0]?.[0] ?? 0;
+			const last = pts[pts.length - 1]?.[0] ?? 0;
+			return `${windowId}:${entityId}:${pts.length}:${first}:${last}`;
+		})).sort().join("|")}`;
 	}
-	function createChartZoomRange(startValue, endValue) {
-		const startDate = parseDateValue(startValue);
-		const endDate = parseDateValue(endValue);
-		const start = startDate?.getTime();
-		const end = endDate?.getTime();
-		if (typeof start === "number" && Number.isFinite(start) && typeof end === "number" && Number.isFinite(end) && start < end) return {
-			start,
-			end
-		};
-		return null;
-	}
-	//#endregion
-	//#region custom_components/hass_datapoints/src/lib/history-page/history-url-state.ts
-	function makeDateWindowId(label, existingIds = /* @__PURE__ */ new Set()) {
-		const base = slugifySeriesName(label) || "date-window";
-		let candidate = base;
-		let suffix = 2;
-		while (existingIds.has(candidate)) {
-			candidate = `${base}-${suffix}`;
-			suffix += 1;
-		}
-		return candidate;
-	}
-	function normalizeDateWindows(windows) {
-		if (!Array.isArray(windows)) return [];
-		const seen = /* @__PURE__ */ new Set();
-		const normalized = [];
-		windows.forEach((window, index) => {
-			const label = String(window?.label || window?.name || "").trim();
-			const start = parseDateValue(window?.start_time || window?.start);
-			const end = parseDateValue(window?.end_time || window?.end);
-			if (!label || !start || !end || start >= end) return;
-			const id = String(window?.id || "").trim() || makeDateWindowId(`${label}-${index + 1}`, seen);
-			if (seen.has(id)) return;
-			seen.add(id);
-			normalized.push({
-				id,
-				label,
-				start_time: start.toISOString(),
-				end_time: end.toISOString()
-			});
-		});
-		return normalized;
-	}
-	function parseDateWindowsParam(value) {
-		if (!value || typeof value !== "string") return [];
-		return normalizeDateWindows(value.split("|").map((entry) => {
-			const [rawId, rawLabel, rawStart, rawEnd] = String(entry).split("~");
-			return {
-				id: decodeURIComponent(rawId || ""),
-				label: decodeURIComponent(rawLabel || ""),
-				start_time: decodeURIComponent(rawStart || ""),
-				end_time: decodeURIComponent(rawEnd || "")
-			};
+	function buildHistoryAnalysisPayload(visibleSeries, selectedComparisonSeriesMap, analysisMap, hasSelectedComparisonWindow, allComparisonWindowsData = {}) {
+		const defaultAnalysis = normalizeHistorySeriesAnalysis(null);
+		const series = visibleSeries.map((seriesItem) => ({
+			entityId: seriesItem.entityId,
+			pts: seriesItem.pts,
+			analysis: analysisMap.get(seriesItem.entityId) || defaultAnalysis
 		}));
+		const comparisonSeries = Array.from(selectedComparisonSeriesMap.values()).map((seriesItem) => ({
+			entityId: seriesItem.entityId,
+			pts: seriesItem.pts
+		}));
+		const seriesAnalysisConfigs = {};
+		for (const seriesItem of visibleSeries) seriesAnalysisConfigs[seriesItem.entityId] = analysisMap.get(seriesItem.entityId) || defaultAnalysis;
+		return {
+			series,
+			comparisonSeries,
+			hasSelectedComparisonWindow: hasSelectedComparisonWindow === true,
+			allComparisonWindowsData,
+			seriesAnalysisConfigs
+		};
 	}
-	function serializeDateWindowsParam(windows) {
-		const normalized = normalizeDateWindows(windows);
-		if (!normalized.length) return "";
-		return normalized.map((window) => [
-			encodeURIComponent(window.id),
-			encodeURIComponent(window.label ?? ""),
-			encodeURIComponent(window.start_time),
-			encodeURIComponent(window.end_time)
-		].join("~")).join("|");
-	}
-	function parseHistoryPageStateParam(value) {
-		if (!value || typeof value !== "string") return null;
-		try {
-			const parsed = JSON.parse(value);
-			return parsed && typeof parsed === "object" ? parsed : null;
-		} catch {
-			return null;
+	function buildTrendPoints(pts, method, window) {
+		if (!Array.isArray(pts) || pts.length < 2) return [];
+		const m = method || "rolling_average";
+		const w = window || "24h";
+		switch (m) {
+			case "linear_trend": return buildLinearTrend(pts);
+			case "ema": return buildEmaTrend(pts, getEmaAlpha(w));
+			case "polynomial_trend": return buildPolynomialTrend(pts);
+			case "lowess": return buildLowessTrend(pts, getLowessBandwidth(w, pts));
+			default: return buildRollingAverageTrend(pts, getTrendWindowMs(w));
 		}
 	}
-	function serializeHistoryPageStateParam(state) {
-		if (!state || typeof state !== "object") return "";
-		try {
-			return JSON.stringify(state);
-		} catch {
-			return "";
-		}
+	function buildRateOfChange(pts, window) {
+		if (!Array.isArray(pts) || pts.length < 2) return [];
+		return buildRateOfChangePoints(pts, window || "1h");
+	}
+	function buildDelta(pts, comparisonPts) {
+		return buildDeltaPoints(pts, comparisonPts);
+	}
+	function buildSummary(pts) {
+		return buildSummaryStats(pts) ?? {
+			min: 0,
+			max: 0,
+			mean: 0
+		};
+	}
+	function seriesHasActiveAnalysis(analysis, hasSelectedComparisonWindow = false) {
+		return !!(analysis.show_trend_lines || analysis.show_summary_stats || analysis.show_rate_of_change || analysis.show_threshold_analysis || analysis.show_anomalies || analysis.show_delta_analysis && hasSelectedComparisonWindow);
+	}
+	function seriesShouldHideSource(analysis, hasSelectedComparisonWindow = false) {
+		return analysis.hide_source_series === true && seriesHasActiveAnalysis(analysis, hasSelectedComparisonWindow);
+	}
+	function getTrendRenderOptions(method = "rolling_average", hideRawData = false) {
+		if (method === "linear_trend") return {
+			colorAlpha: hideRawData ? .94 : .88,
+			lineOpacity: hideRawData ? .86 : .74,
+			lineWidth: 2.1,
+			dashed: true,
+			dotted: false
+		};
+		if (method === "ema") return {
+			colorAlpha: hideRawData ? .92 : .84,
+			lineOpacity: hideRawData ? .86 : .65,
+			lineWidth: 2,
+			dashed: false,
+			dotted: true
+		};
+		if (method === "polynomial_trend") return {
+			colorAlpha: hideRawData ? .94 : .86,
+			lineOpacity: hideRawData ? .86 : .72,
+			lineWidth: 2,
+			dashed: true,
+			dotted: false
+		};
+		if (method === "lowess") return {
+			colorAlpha: hideRawData ? .9 : .82,
+			lineOpacity: hideRawData ? .84 : .6,
+			lineWidth: 1.8,
+			dashed: false,
+			dotted: false
+		};
+		return {
+			colorAlpha: hideRawData ? .9 : .82,
+			lineOpacity: hideRawData ? .84 : .62,
+			lineWidth: 2.2,
+			dashed: false,
+			dotted: true
+		};
+	}
+	function buildSeriesAnalysisMap(seriesSettings) {
+		return new Map(seriesSettings.filter((entry) => entry?.entity_id != null).map((entry) => [entry.entity_id, normalizeHistorySeriesAnalysis(entry?.analysis)]));
 	}
 	//#endregion
-	//#region custom_components/hass_datapoints/src/lib/ha/navigation.ts
-	function buildDataPointsHistoryPath(target = {}, options = {}) {
-		const normalizedTarget = {
-			entity_id: [...new Set((target.entity_id || []).filter(Boolean))],
-			device_id: [...new Set((target.device_id || []).filter(Boolean))],
-			area_id: [...new Set((target.area_id || []).filter(Boolean))],
-			label_id: [...new Set((target.label_id || []).filter(Boolean))]
-		};
-		const params = new URLSearchParams();
-		if (normalizedTarget.entity_id.length) params.set("entity_id", normalizedTarget.entity_id.join(","));
-		if (normalizedTarget.device_id.length) params.set("device_id", normalizedTarget.device_id.join(","));
-		if (normalizedTarget.area_id.length) params.set("area_id", normalizedTarget.area_id.join(","));
-		if (normalizedTarget.label_id.length) params.set("label_id", normalizedTarget.label_id.join(","));
-		if (options.datapoint_scope === "all") params.set("datapoints_scope", "all");
-		const start = options.start_time ? new Date(options.start_time) : null;
-		const end = options.end_time ? new Date(options.end_time) : null;
-		if (start && end && Number.isFinite(start.getTime()) && Number.isFinite(end.getTime()) && start < end) {
-			params.set("start_time", start.toISOString());
-			params.set("end_time", end.toISOString());
-			params.set("hours_to_show", String(Math.max(1, Math.round((end.getTime() - start.getTime()) / 36e5))));
-		}
-		const zoomStart = options.zoom_start_time ? new Date(options.zoom_start_time) : null;
-		const zoomEnd = options.zoom_end_time ? new Date(options.zoom_end_time) : null;
-		if (zoomStart && zoomEnd && Number.isFinite(zoomStart.getTime()) && Number.isFinite(zoomEnd.getTime()) && zoomStart < zoomEnd) {
-			params.set("zoom_start_time", zoomStart.toISOString());
-			params.set("zoom_end_time", zoomEnd.toISOString());
-		}
-		const pageStateParam = serializeHistoryPageStateParam(options.page_state);
-		if (pageStateParam) params.set("page_state", pageStateParam);
-		return `/${PANEL_URL_PATH}?${params.toString()}`;
+	//#region custom_components/hass_datapoints/src/lib/data/monitors-api.ts
+	/** Return all entity IDs associated with a monitor (works for both types). */
+	function monitorEntityIds(monitor) {
+		if (monitor.type === "combined") return monitor.entity_ids;
+		return [monitor.entity_id];
 	}
-	function navigateToDataPointsHistory(_card, target = {}, options = {}) {
-		const path = buildDataPointsHistoryPath(target, options);
-		if (window.history && window.history.pushState) {
-			window.history.pushState(null, "", path);
-			window.dispatchEvent(new Event("location-changed"));
-			return;
+	async function fetchMonitors(hass) {
+		try {
+			return (await hass.connection.sendMessagePromise({ type: `hass_datapoints/monitors/list` })).monitors ?? [];
+		} catch (err) {
+			logger.warn("[hass-datapoints] fetchMonitors failed:", err);
+			return [];
 		}
-		window.location.assign(path);
+	}
+	async function createMonitor(hass, payload) {
+		const result = await hass.connection.sendMessagePromise({
+			type: `${DOMAIN}/monitors/create`,
+			...payload
+		});
+		if (!result.monitor) throw new Error("createMonitor: no monitor in response");
+		return result.monitor;
+	}
+	async function updateMonitor(hass, payload) {
+		const result = await hass.connection.sendMessagePromise({
+			type: `${DOMAIN}/monitors/update`,
+			...payload
+		});
+		if (!result.monitor) throw new Error("updateMonitor: no monitor in response");
+		return result.monitor;
+	}
+	async function deleteMonitor(hass, monitorId) {
+		await hass.connection.sendMessagePromise({
+			type: `${DOMAIN}/monitors/delete`,
+			monitor_id: monitorId
+		});
+	}
+	async function fetchMonitorAnomalies(hass, monitorId) {
+		return await hass.connection.sendMessagePromise({
+			type: `${DOMAIN}/monitors/anomalies`,
+			monitor_id: monitorId
+		});
+	}
+	/**
+	* Dismiss an anomaly cluster window.
+	* @param expiresAt ISO datetime string for expiry, or null for permanent, or
+	*   undefined to use the server default (2× look_back_hours).
+	*/
+	async function dismissMonitorAnomaly(hass, monitorId, startMs, endMs, expiresAt) {
+		const payload = {
+			type: `${DOMAIN}/monitors/dismiss`,
+			monitor_id: monitorId,
+			start_ms: startMs,
+			end_ms: endMs
+		};
+		if (expiresAt !== void 0) payload.expires_at = expiresAt;
+		const result = await hass.connection.sendMessagePromise(payload);
+		if (!result.monitor) throw new Error("dismissMonitorAnomaly: no monitor in response");
+		return result.monitor;
+	}
+	async function undismissMonitorAnomaly(hass, monitorId, windowId) {
+		const result = await hass.connection.sendMessagePromise({
+			type: `${DOMAIN}/monitors/undismiss`,
+			monitor_id: monitorId,
+			window_id: windowId
+		});
+		if (!result.monitor) throw new Error("undismissMonitorAnomaly: no monitor in response");
+		return result.monitor;
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/history-page/ai-query-brief.ts
+	function toIso(value) {
+		if (value == null) return null;
+		const date = value instanceof Date ? value : new Date(value);
+		if (Number.isNaN(date.getTime())) return null;
+		return date.toISOString();
+	}
+	function stringifyJson(value) {
+		try {
+			return JSON.stringify(value, null, 2);
+		} catch {
+			return String(value);
+		}
+	}
+	function t$2(template, ...values) {
+		return interpolatePlaceholders(msg(template), values);
+	}
+	function buildTargetSelectionSummary(targetSelectionRaw) {
+		const normalized = normalizeTargetSelection(targetSelectionRaw || {});
+		const parts = [];
+		if (normalized.entity_id.length) parts.push(t$2("entity_id={0}", normalized.entity_id.length));
+		if (normalized.device_id.length) parts.push(t$2("device_id={0}", normalized.device_id.length));
+		if (normalized.area_id.length) parts.push(t$2("area_id={0}", normalized.area_id.length));
+		if (normalized.label_id.length) parts.push(t$2("label_id={0}", normalized.label_id.length));
+		return {
+			normalized,
+			summary: parts.length ? parts.join(", ") : msg("none")
+		};
+	}
+	function buildRangeRetentionNote(mainStartIso, mainEndIso) {
+		const startMs = mainStartIso ? Date.parse(mainStartIso) : NaN;
+		const endMs = mainEndIso ? Date.parse(mainEndIso) : NaN;
+		if (!Number.isFinite(startMs) || !Number.isFinite(endMs) || endMs <= startMs) return msg("If raw recorder history is incomplete or unavailable, fetch Home Assistant statistics for continuity and call out the retention boundary explicitly.");
+		const spanDays = (endMs - startMs) / (1440 * 60 * 1e3);
+		if (spanDays > 10) return t$2("The requested window spans about {0} days. Short-retention raw history may not fully cover this range, so use Home Assistant statistics for older or missing portions and do not infer 'no anomalies' from retention gaps.", Math.round(spanDays));
+		return msg("Use raw recorder history first for this range. If raw history is incomplete or unavailable, fetch Home Assistant statistics and explain any retention or recorder gaps.");
+	}
+	function buildEntityMetadataLines(hass, entityId) {
+		const hassWithLabels = hass;
+		const stateObj = hass?.states?.[entityId];
+		const entityEntry = hass?.entities?.[entityId];
+		const deviceId = entityEntry?.device_id ?? null;
+		const inheritedAreaId = entityEntry?.area_id ?? (deviceId ? (hass?.devices?.[deviceId])?.area_id ?? null : null);
+		const areaName = inheritedAreaId && hass?.areas?.[inheritedAreaId] ? hass.areas[inheritedAreaId].name ?? inheritedAreaId : inheritedAreaId;
+		const deviceName = deviceId && hass?.devices?.[deviceId] ? hass.devices[deviceId].name ?? deviceId : deviceId;
+		const labelNames = [...Array.isArray(entityEntry?.labels) ? entityEntry.labels : [], ...Array.isArray(entityEntry?.label_ids) ? entityEntry.label_ids ?? [] : []].map((labelId) => {
+			return (hassWithLabels?.labels?.[labelId])?.name || labelId;
+		});
+		return [msg("Entity metadata:"), stringifyJson({
+			unit_of_measurement: stateObj?.attributes?.unit_of_measurement ?? null,
+			device_class: stateObj?.attributes?.device_class ?? null,
+			state_class: stateObj?.attributes?.state_class ?? null,
+			current_state: stateObj?.state ?? null,
+			area_id: inheritedAreaId,
+			area_name: areaName ?? null,
+			device_id: deviceId,
+			device_name: deviceName ?? null,
+			labels: labelNames,
+			platform: entityEntry?.platform ?? null,
+			hidden: entityEntry?.hidden === true || entityEntry?.hidden_by != null,
+			enabled: entityEntry?.enabled != null ? entityEntry.enabled : entityEntry?.disabled_by == null
+		})];
+	}
+	function buildCurrentRangeAnomalyFindingsSection(context, selectedEntityIds) {
+		const snapshot = context.anomalySnapshot;
+		const lines = ["CURRENT RANGE ANOMALY FINDINGS"];
+		if (!snapshot?.available) {
+			lines.push(msg("Current anomaly findings are not available from the active chart state, so use the query inputs below to fetch and inspect anomaly clusters directly."));
+			return lines;
+		}
+		lines.push(`${msg("Snapshot range label:")} ${snapshot.current_range_label || msg("main range")}`);
+		lines.push(`${msg("Correlated anomaly highlighting enabled in chart:")} ${snapshot.show_correlated_anomalies ? msg("yes") : msg("no")}`);
+		lines.push(`${msg("Current anomaly overlap mode:")} ${snapshot.chart_anomaly_overlap_mode}`);
+		lines.push(msg("Correlated anomaly periods across the selected datapoints:"));
+		if (snapshot.correlated_anomaly_spans.length) lines.push(stringifyJson(snapshot.correlated_anomaly_spans));
+		else lines.push("[]");
+		const entityFindings = snapshot.entity_findings.filter((finding) => selectedEntityIds.includes(finding.entity_id));
+		if (!entityFindings.length) {
+			lines.push(msg("No entity-level anomaly findings are currently available from the active chart snapshot."));
+			return lines;
+		}
+		entityFindings.forEach((finding) => {
+			lines.push(`${msg("Entity findings:")} ${finding.entity_id}`);
+			lines.push(`${msg("Detected clusters in current range:")} ${finding.all_detected_clusters.length}`);
+			lines.push(`${msg("Displayed clusters under the current overlap/correlation mode:")} ${finding.displayed_clusters.length}`);
+			lines.push(msg("All detected anomaly cluster details:"));
+			lines.push(stringifyJson(finding.all_detected_clusters));
+			lines.push(msg("Displayed anomaly cluster details:"));
+			lines.push(stringifyJson(finding.displayed_clusters));
+		});
+		return lines;
+	}
+	function buildEntitySection(context, row, selectedComparisonWindow) {
+		const analysis = normalizeHistorySeriesAnalysis({
+			...row.analysis || {},
+			anomaly_overlap_mode: context.chartAnomalyOverlapMode || "all"
+		});
+		const backendConfig = buildBackendAnomalyConfig(analysis);
+		const displayName = entityName(context.hass, row.entity_id)?.trim() || row.entity_id;
+		const mainStartIso = toIso(context.startTime);
+		const mainEndIso = toIso(context.endTime);
+		const anomalyEnabled = analysis.show_anomalies === true && Array.isArray(backendConfig?.anomaly_methods) && backendConfig.anomaly_methods.length > 0;
+		const lines = [
+			`${msg("Entity:")} ${row.entity_id}`,
+			`${msg("Display name:")} ${displayName}`,
+			`${msg("Visible in panel:")} ${row.visible !== false ? msg("yes") : msg("no")}`
+		];
+		lines.push(...buildEntityMetadataLines(context.hass, row.entity_id));
+		if (!anomalyEnabled) lines.push(msg("Anomaly analysis: disabled in the current panel configuration."));
+		else {
+			lines.push(msg("Anomaly analysis: enabled."));
+			lines.push(msg("Backend anomaly query inputs:"));
+			lines.push(stringifyJson({
+				type: "hass_datapoints/anomalies",
+				entity_id: row.entity_id,
+				start_time: mainStartIso,
+				end_time: mainEndIso,
+				...backendConfig
+			}));
+		}
+		lines.push(msg("Raw history query inputs:"));
+		lines.push(stringifyJson({
+			entity_id: row.entity_id,
+			start_time: mainStartIso,
+			end_time: mainEndIso,
+			prefer_raw_history: true
+		}));
+		if (analysis.anomaly_methods.includes("comparison_window") && analysis.anomaly_comparison_window_id) {
+			lines.push(`${msg("Comparison window reference:")} ${analysis.anomaly_comparison_window_id}`);
+			if (selectedComparisonWindow) {
+				lines.push(msg("Comparison window raw history query inputs:"));
+				lines.push(stringifyJson({
+					entity_id: row.entity_id,
+					start_time: selectedComparisonWindow.start_time,
+					end_time: selectedComparisonWindow.end_time,
+					prefer_raw_history: true
+				}));
+				if (anomalyEnabled) {
+					lines.push(msg("Comparison window anomaly query inputs:"));
+					lines.push(stringifyJson({
+						type: "hass_datapoints/anomalies",
+						entity_id: row.entity_id,
+						start_time: selectedComparisonWindow.start_time,
+						end_time: selectedComparisonWindow.end_time,
+						...backendConfig
+					}));
+				}
+			} else lines.push(msg("Comparison window detail: the configured comparison window is not currently selected, so use the window id above to resolve the saved date window before querying."));
+		}
+		if (backendConfig?.comparison_entity_id) {
+			lines.push(`${msg("Baseline comparison entity:")} ${String(backendConfig.comparison_entity_id)}`);
+			lines.push(msg("If your Home Assistant tooling requires explicit baseline range inputs, use the same start/end range as the main anomaly query unless a more specific monitor or MCP tool requires otherwise."));
+		}
+		return {
+			lines,
+			metadata: {
+				entityId: row.entity_id,
+				displayName,
+				anomalyEnabled,
+				backendConfig: backendConfig || {},
+				comparisonWindowId: analysis.anomaly_comparison_window_id
+			}
+		};
+	}
+	function buildMonitorSection(context, selectedEntityIds) {
+		const relevantMonitors = context.monitorContext.monitors.filter((monitor) => monitorEntityIds(monitor).some((entityId) => selectedEntityIds.includes(entityId)));
+		if (!relevantMonitors.length) return {
+			lines: [msg("RELEVANT PERSISTED MONITORS"), context.monitorContext.note || msg("No persisted anomaly monitors intersect the currently selected entities.")],
+			relevantMonitorIds: []
+		};
+		const lines = [msg("RELEVANT PERSISTED MONITORS")];
+		relevantMonitors.forEach((monitor) => {
+			lines.push(t$2("Monitor: {0} ({1})", monitor.name, monitor.id));
+			lines.push(`${msg("Type:")} ${monitor.type}`);
+			lines.push(`${msg("Enabled:")} ${monitor.enabled ? msg("yes") : msg("no")}`);
+			lines.push(`${msg("Entities:")} ${monitorEntityIds(monitor).join(", ")}`);
+			lines.push(msg("Monitor anomaly query inputs:"));
+			lines.push(stringifyJson({
+				type: "hass_datapoints/monitors/anomalies",
+				monitor_id: monitor.id
+			}));
+		});
+		return {
+			lines,
+			relevantMonitorIds: relevantMonitors.map((monitor) => monitor.id)
+		};
+	}
+	function summarizeAnomalyClusterForAiBrief(cluster) {
+		const points = Array.isArray(cluster?.points) ? cluster.points : [];
+		const numericValues = points.map((point) => Number(point.value)).filter((value) => Number.isFinite(value));
+		const minValue = numericValues.length ? Math.min(...numericValues) : null;
+		const maxValue = numericValues.length ? Math.max(...numericValues) : null;
+		const startTimeMs = points.length > 0 ? Number(points[0]?.timeMs ?? NaN) : NaN;
+		const endTimeMs = points.length > 0 ? Number(points[points.length - 1]?.timeMs ?? NaN) : NaN;
+		return {
+			point_count: points.length,
+			start_time: Number.isFinite(startTimeMs) ? new Date(startTimeMs).toISOString() : null,
+			end_time: Number.isFinite(endTimeMs) ? new Date(endTimeMs).toISOString() : null,
+			min_value: minValue,
+			max_value: maxValue,
+			is_overlap: cluster?.isOverlap === true,
+			points: points.map((point) => {
+				const timeMs = Number(point.timeMs);
+				const value = Number(point.value);
+				if (!Number.isFinite(timeMs) || !Number.isFinite(value)) return null;
+				return {
+					time: new Date(timeMs).toISOString(),
+					value
+				};
+			}).filter((point) => point != null)
+		};
+	}
+	function buildAiQueryBrief(context) {
+		const selectedEntityIds = Array.isArray(context.entities) ? [...context.entities] : [];
+		const { normalized, summary } = buildTargetSelectionSummary(context.targetSelectionRaw);
+		const selectedComparisonWindow = context.comparisonWindows.find((window) => window.id === context.selectedComparisonWindowId) || null;
+		const mainStartIso = toIso(context.startTime);
+		const mainEndIso = toIso(context.endTime);
+		const zoomStartIso = toIso(context.committedZoomRange?.start ?? null);
+		const zoomEndIso = toIso(context.committedZoomRange?.end ?? null);
+		const entitySections = context.seriesRows ? normalizeHistorySeriesRows(context.seriesRows).filter((row) => selectedEntityIds.includes(row.entity_id)).map((row) => buildEntitySection(context, row, selectedComparisonWindow)) : [];
+		const monitorSection = buildMonitorSection(context, selectedEntityIds);
+		const lines = [
+			msg("AI QUERY BRIEF: HOME ASSISTANT DATAPOINTS PANEL"),
+			"",
+			msg("OBJECTIVE"),
+			msg("Fetch the underlying Home Assistant history or statistics, entity metadata, and hass_datapoints anomaly detail needed to inspect the currently selected datapoints. Do not treat this brief as the raw data itself."),
+			"",
+			msg("SUCCESS CRITERIA"),
+			msg("- Resolve entity metadata context for each selected entity."),
+			msg("- Fetch raw or best-available historical coverage for the requested range."),
+			msg("- Reproduce hass_datapoints anomaly queries with the exact panel settings below."),
+			msg("- Review current-range anomaly findings from this integration, including cross-entity correlated anomaly periods when present."),
+			msg("- Call out any retention, sampling, permission, or monitor-lookup limitations."),
+			"",
+			msg("RETRIEVAL PRIORITY"),
+			msg("1. Resolve entity metadata first so area, device, platform, labels, and unit context are known before interpretation."),
+			msg("2. Fetch raw recorder history for the requested range where available."),
+			msg("3. If raw history is incomplete, unavailable, or truncated by retention, fetch Home Assistant statistics for continuity."),
+			msg("4. Reproduce the hass_datapoints anomaly queries exactly as listed below."),
+			msg("5. Because anomaly analysis may use sampled data, compare raw history for ground truth against sampled series for anomaly reproduction."),
+			msg("6. Review the current anomaly findings already found by this integration in the active range and use them to guide deeper inspection."),
+			msg("7. If monitor context is available, fetch relevant monitor anomaly output for additional persisted monitor detail."),
+			"",
+			msg("PANEL CONTEXT"),
+			`${msg("Selected entity ids:")} ${selectedEntityIds.length ? selectedEntityIds.join(", ") : msg("(none selected)")}`,
+			`${msg("Raw target selection summary:")} ${summary}`,
+			`${msg("Datapoint scope:")} ${context.datapointScope}`,
+			`${msg("Main range start_time:")} ${mainStartIso ?? msg("(not set)")}`,
+			`${msg("Main range end_time:")} ${mainEndIso ?? msg("(not set)")}`,
+			`${msg("Committed zoom start_time:")} ${zoomStartIso ?? msg("(not set)")}`,
+			`${msg("Committed zoom end_time:")} ${zoomEndIso ?? msg("(not set)")}`,
+			`${msg("Selected comparison window id:")} ${context.selectedComparisonWindowId ?? msg("(none)")}`,
+			`${msg("Comparison windows:")} ${context.comparisonWindows.length}`,
+			`${msg("Chart anomaly overlap mode:")} ${context.chartAnomalyOverlapMode}`,
+			"",
+			msg("RANGE / RETENTION NOTE"),
+			buildRangeRetentionNote(mainStartIso, mainEndIso),
+			"",
+			msg("QUERY RULES"),
+			msg("- Use UTC timestamps exactly as written for retrieval."),
+			msg("- Convert to the Home Assistant local timezone only when interpreting daily or weekly behavior patterns."),
+			msg("- Do not infer 'no anomaly' from missing raw history when retention may be limited."),
+			msg("- If anomaly queries below use sampled data, inspect both raw history and the sampled representation."),
+			msg("- For long ranges, remember HA history pagination and retention constraints can change what raw coverage is available."),
+			"",
+			msg("RAW TARGET SELECTION OBJECT"),
+			stringifyJson(context.targetSelectionRaw || {}),
+			"",
+			msg("AVAILABLE COMPARISON WINDOWS"),
+			context.comparisonWindows.length ? stringifyJson(context.comparisonWindows.map((window) => ({
+				id: window.id,
+				label: window.label ?? "",
+				start_time: window.start_time,
+				end_time: window.end_time
+			}))) : "[]",
+			"",
+			...buildCurrentRangeAnomalyFindingsSection(context, selectedEntityIds),
+			"",
+			msg("PER-ENTITY QUERY DETAILS")
+		];
+		if (!entitySections.length) lines.push(msg("No selected entities are currently available in the panel state."));
+		else entitySections.forEach((section, index) => {
+			if (index > 0) lines.push("");
+			lines.push(...section.lines);
+		});
+		lines.push("");
+		lines.push(...monitorSection.lines);
+		lines.push("");
+		lines.push(msg("RECOMMENDED OUTPUT"));
+		lines.push(msg("- Resolved metadata per selected entity, including unit, device class, state class, area, device, labels, and platform when available."));
+		lines.push(msg("- Coverage status of raw history versus statistics, including any retention or pagination limits encountered."));
+		lines.push(msg("- Detailed anomaly findings per entity for the requested range, using the current integration findings above plus any fetched raw cluster detail."));
+		lines.push(msg("- If anomalies indicate some type of event, zoom out and look for answers in the related area/group/labels or across other entities in the panel. If anomalies are unexpected, look for any subtle metadata clues that could explain them, such as a device class or state class that implies a different expected behavior pattern than initially assumed."));
+		lines.push(msg("- Correlated anomaly periods across the selected datapoints, if any are present, including which entities participate and when the overlap occurs."));
+		lines.push(msg("- Any monitor-access, permission, sampling, comparison-window, or data-coverage limitations that materially affect interpretation."));
+		return {
+			plainText: lines.join("\n"),
+			metadata: {
+				entityIds: selectedEntityIds,
+				relevantMonitorIds: monitorSection.relevantMonitorIds,
+				selectedComparisonWindowId: context.selectedComparisonWindowId,
+				normalizedTargetSelection: normalized,
+				entitySummaries: entitySections.map((section) => section.metadata),
+				monitorAccess: context.monitorContext.access,
+				anomalySnapshotAvailable: context.anomalySnapshot?.available === true
+			}
+		};
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/chart/chart-scroll.ts
+	/**
+	* Pure scroll position calculation extracted from history-chart.ts.
+	*/
+	function calculateViewportScrollPosition(t0, t1, canvasWidth, viewportWidth, zoomStart, zoomEnd) {
+		const totalMs = Math.max(1, t1 - t0);
+		const spanMs = Math.max(1, zoomEnd - zoomStart);
+		const maxScrollLeft = Math.max(0, Math.max(canvasWidth, viewportWidth) - viewportWidth);
+		const maxStartOffsetMs = Math.max(0, totalMs - spanMs);
+		const clampedStart = clampChartValue(zoomStart, t0, t1 - spanMs);
+		return (maxStartOffsetMs > 0 ? (clampedStart - t0) / maxStartOffsetMs : 0) * maxScrollLeft;
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/chart/chart-series-gaps.ts
+	function splitSeriesByGaps(pts, gapThresholdMs) {
+		if (pts.length < 2 || !Number.isFinite(gapThresholdMs)) return {
+			segments: [pts],
+			gapBridges: [],
+			boundaryPoints: []
+		};
+		const segments = [];
+		const gapBridges = [];
+		let current = [pts[0]];
+		for (let i = 1; i < pts.length; i++) if (pts[i][0] - pts[i - 1][0] > gapThresholdMs) {
+			segments.push(current);
+			gapBridges.push([pts[i - 1], pts[i]]);
+			current = [pts[i]];
+		} else current.push(pts[i]);
+		segments.push(current);
+		return {
+			segments,
+			gapBridges,
+			boundaryPoints: gapBridges.flatMap(([a, b]) => [a, b])
+		};
+	}
+	function buildGapBridgeColor(color) {
+		return color.startsWith("rgba") ? color.replace(/[\d.]+\)$/, "0.35)") : `${color}59`;
+	}
+	function filterDrawableComparisonResults(comparisonResults, comparisonWindowIds, selectedWindowId, hoveredWindowId) {
+		const drawableIds = new Set(comparisonWindowIds.filter((id) => id.length > 0));
+		if (selectedWindowId) drawableIds.add(selectedWindowId);
+		if (hoveredWindowId) drawableIds.add(hoveredWindowId);
+		if (drawableIds.size === 0) return [];
+		return comparisonResults.filter((window) => drawableIds.has(String(window.id || "")));
 	}
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/history-chart/history-chart.styles.ts
-	var styles$55 = `
+	var styles$61 = `
   hass-datapoints-history-chart {
     position: relative;
     display: flex;
@@ -11231,6 +13164,7 @@
 		constructor(..._args) {
 			super(..._args);
 			_defineProperty(this, "_hass", null);
+			_defineProperty(this, "_lastAiQueryBriefAnomalySnapshot", null);
 			_defineProperty(this, "_config", {});
 			_defineProperty(
 				this,
@@ -11438,6 +13372,7 @@
 					this._scrollZoomApplyTimer = setTimeout(() => {
 						this._scrollZoomApplyTimer = null;
 						if (!this._zoomRange) return;
+						this._skipNextScrollViewportSync = true;
 						this.dispatchEvent(new CustomEvent("hass-datapoints-zoom-apply", {
 							bubbles: true,
 							composed: true,
@@ -11502,7 +13437,7 @@
 		connectedCallback() {
 			this.style.cssText = "position:relative;display:flex;flex-direction:column;height:100%;min-height:0;padding:var(--dp-spacing-sm,8px) var(--dp-spacing-md,12px) var(--dp-spacing-md,12px);box-sizing:border-box;overflow:visible;isolation:isolate;z-index:3;";
 			if (this.querySelector("#chart")) return;
-			this.innerHTML = `<style>${styles$55}</style>
+			this.innerHTML = `<style>${styles$61}</style>
       <div class="chart-top-slot" id="chart-top-slot" hidden></div>
       <div class="chart-preview-overlay" id="chart-preview-overlay" hidden></div>
       <div class="chart-scroll-viewport" id="chart-scroll-viewport">
@@ -11578,6 +13513,51 @@
 		set hass(value) {
 			this._hass = value;
 		}
+		getAiQueryBriefAnomalySnapshot() {
+			if (!this._lastAiQueryBriefAnomalySnapshot) return null;
+			return JSON.parse(JSON.stringify(this._lastAiQueryBriefAnomalySnapshot));
+		}
+		_clusterIntersectsSpan(cluster, span) {
+			if (!Array.isArray(cluster?.points) || cluster.points.length === 0) return false;
+			const startTime = Number(cluster.points[0]?.timeMs ?? NaN);
+			const endTime = Number(cluster.points[cluster.points.length - 1]?.timeMs ?? NaN);
+			if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) return false;
+			const clusterStart = Math.min(startTime, endTime);
+			return Math.max(startTime, endTime) >= span.start && clusterStart <= span.end;
+		}
+		_setAiQueryBriefAnomalySnapshot(visibleSeries, analysisMap, anomalyClustersMap, correlatedSpans, renderT0, renderT1) {
+			const entityFindings = visibleSeries.map((seriesItem) => {
+				const analysis = analysisMap.get(seriesItem.entityId) || normalizeHistorySeriesAnalysis(null);
+				if (analysis.show_anomalies !== true) return null;
+				const allDetectedClusters = anomalyClustersMap.get(seriesItem.entityId) || [];
+				const displayedClusters = this._resolveAnomalyClusterDisplay(allDetectedClusters, analysis.anomaly_overlap_mode, correlatedSpans).baseClusters;
+				return {
+					entity_id: seriesItem.entityId,
+					all_detected_clusters: allDetectedClusters.map((cluster) => summarizeAnomalyClusterForAiBrief(cluster)),
+					displayed_clusters: displayedClusters.map((cluster) => summarizeAnomalyClusterForAiBrief(cluster))
+				};
+			}).filter((finding) => finding != null);
+			const correlatedAnomalySpans = correlatedSpans.map((span) => {
+				const entityIds = entityFindings.filter((finding) => finding.all_detected_clusters.some((cluster) => this._clusterIntersectsSpan({ points: cluster.points.map((point) => ({
+					timeMs: Date.parse(point.time),
+					value: point.value
+				})) }, span))).map((finding) => finding.entity_id);
+				if (entityIds.length < 2) return null;
+				return {
+					start_time: new Date(span.start).toISOString(),
+					end_time: new Date(span.end).toISOString(),
+					entity_ids: entityIds
+				};
+			}).filter((span) => span != null);
+			this._lastAiQueryBriefAnomalySnapshot = {
+				available: true,
+				current_range_label: `${new Date(renderT0).toISOString()} -> ${new Date(renderT1).toISOString()}`,
+				chart_anomaly_overlap_mode: this._config?.anomaly_overlap_mode || "all",
+				show_correlated_anomalies: this._config?.show_correlated_anomalies === true,
+				correlated_anomaly_spans: correlatedAnomalySpans,
+				entity_findings: entityFindings
+			};
+		}
 		/** True when the current user may create a data point via the chart + button. */
 		get _canAddAnnotation() {
 			return this._config.show_add_annotation_button !== false && this._hass?.user?.is_admin === true;
@@ -11650,13 +13630,13 @@
 			const topSlot = this._el("chart-top-slot");
 			const legend = this._el("legend");
 			const scrollViewport = this._el("chart-scroll-viewport");
-			const wrap = this;
 			const cardHeight = card?.clientHeight || 0;
 			const occupiedHeight = (header?.offsetHeight || 0) + (topSlot && !topSlot.hidden ? topSlot.offsetHeight || 0 : 0) + (legend?.offsetHeight || 0);
 			const cardDerivedHeight = cardHeight ? Math.max(0, cardHeight - occupiedHeight) : 0;
 			const viewportHeight = scrollViewport?.clientHeight || 0;
-			const wrapHeight = wrap?.clientHeight || 0;
-			return Math.max(minChartHeight, cardDerivedHeight || viewportHeight || wrapHeight || 0);
+			if (cardDerivedHeight) return Math.max(minChartHeight, cardDerivedHeight);
+			if (viewportHeight) return Math.max(minChartHeight, viewportHeight);
+			return minChartHeight;
 		}
 		_syncTopSlotOffset() {
 			const topSlot = this._el("chart-top-slot");
@@ -11743,56 +13723,15 @@
 			this._queueDrawChart(histResult, statsResult, events, t0, t1, options);
 		}
 		_buildBackendAnomalyConfig(analysis) {
-			const config = {
-				anomaly_methods: Array.isArray(analysis.anomaly_methods) ? analysis.anomaly_methods : void 0,
-				anomaly_sensitivity: typeof analysis.anomaly_sensitivity === "string" ? analysis.anomaly_sensitivity : void 0,
-				anomaly_overlap_mode: typeof analysis.anomaly_overlap_mode === "string" ? analysis.anomaly_overlap_mode : void 0,
-				anomaly_rate_window: typeof analysis.anomaly_rate_window === "string" ? analysis.anomaly_rate_window : void 0,
-				anomaly_zscore_window: typeof analysis.anomaly_zscore_window === "string" ? analysis.anomaly_zscore_window : void 0,
-				anomaly_persistence_window: typeof analysis.anomaly_persistence_window === "string" ? analysis.anomaly_persistence_window : void 0,
-				trend_method: (() => {
-					if (typeof analysis.anomaly_trend_method === "string" && analysis.anomaly_trend_method) return analysis.anomaly_trend_method;
-					return typeof analysis.trend_method === "string" ? analysis.trend_method : void 0;
-				})(),
-				trend_window: (() => {
-					if (typeof analysis.anomaly_trend_method === "string" && analysis.anomaly_trend_method && typeof analysis.anomaly_trend_window === "string" && analysis.anomaly_trend_window) return analysis.anomaly_trend_window;
-					return typeof analysis.trend_window === "string" ? analysis.trend_window : void 0;
-				})(),
-				anomaly_use_sampled_data: analysis.anomaly_use_sampled_data !== false
-			};
-			if (analysis.anomaly_use_sampled_data !== false) {
-				config.sample_interval = typeof analysis.sample_interval === "string" ? analysis.sample_interval : null;
-				config.sample_aggregate = typeof analysis.sample_aggregate === "string" ? analysis.sample_aggregate : null;
-			}
-			return config;
+			return buildBackendAnomalyConfig(analysis);
 		}
 		/** Build normalised state list for an entity from histResult/statsResult. Overridden by parent. */
 		_buildEntityStateList(entityId, histResult, statsResult) {
-			return mergeNumericHistoryWithStatistics(normalizeNumericHistory(entityId, getHistoryStatesForEntity$1(histResult, entityId, this._seriesSettings?.map((seriesSetting) => seriesSetting.entity_id).filter(Boolean) ?? [])), normalizeStatisticsHistory(entityId, statsResult));
+			return buildEntityStateList(entityId, histResult, statsResult, this._seriesSettings?.map((seriesSetting) => seriesSetting.entity_id).filter(Boolean) ?? []);
 		}
 		/** Build binary state spans from a state list. */
 		_buildBinaryStateSpans(stateList, t0, t1) {
-			const spans = [];
-			if (!stateList.length) return spans;
-			let current = stateList[0];
-			for (let i = 1; i < stateList.length; i++) {
-				const next = stateList[i];
-				const start = Math.max(current.lu * 1e3, t0);
-				const end = Math.min(next.lu * 1e3, t1);
-				if (end > start) spans.push({
-					start,
-					end,
-					state: current.s
-				});
-				current = next;
-			}
-			const lastStart = Math.max(current.lu * 1e3, t0);
-			if (t1 > lastStart) spans.push({
-				start: lastStart,
-				end: t1,
-				state: current.s
-			});
-			return spans;
+			return buildBinaryStateSpans(stateList, t0, t1);
 		}
 		/** Return the "on" label for a binary_sensor entity. */
 		_binaryOnLabel(entityId) {
@@ -11845,27 +13784,18 @@
 				r.drawLine(pts, color, t0, t1, min, max, opts);
 				return;
 			}
-			const segments = [];
-			const gapBridges = [];
-			let current = [pts[0]];
-			for (let i = 1; i < pts.length; i++) if (pts[i][0] - pts[i - 1][0] > gapThresholdMs) {
-				segments.push(current);
-				gapBridges.push([pts[i - 1], pts[i]]);
-				current = [pts[i]];
-			} else current.push(pts[i]);
-			segments.push(current);
+			const { segments, gapBridges, boundaryPoints } = splitSeriesByGaps(pts, gapThresholdMs);
 			if (segments.length === 1) {
 				r.drawLine(pts, color, t0, t1, min, max, opts);
 				return;
 			}
 			for (const seg of segments) r.drawLine(seg, color, t0, t1, min, max, opts);
-			const gapColor = color.startsWith("rgba") ? color.replace(/[\d.]+\)$/, "0.35)") : `${color}59`;
+			const gapColor = buildGapBridgeColor(color);
 			for (const [lastPt, firstPt] of gapBridges) r.drawLine([lastPt, firstPt], gapColor, t0, t1, min, max, {
 				dashed: true,
 				lineWidth: 1.2,
 				lineOpacity: .5
 			});
-			const boundaryPoints = gapBridges.flatMap(([a, b]) => [a, b]);
 			r.drawGapMarkers(boundaryPoints, color, t0, t1, min, max);
 		}
 		/** Draw event point icons onto the renderer. */
@@ -12002,22 +13932,7 @@
 			return getAxisValueExtent(values);
 		}
 		_getComparisonWindowLineStyle(isHovered, isSelected, hoveringDifferentComparison) {
-			if (isHovered) return {
-				lineOpacity: 1,
-				dashed: false,
-				hoverOpacity: .85
-			};
-			if (hoveringDifferentComparison && isSelected) return {
-				lineOpacity: .25,
-				lineWidth: 1.25,
-				dashed: false,
-				hoverOpacity: .25
-			};
-			return {
-				lineOpacity: .85,
-				dashed: false,
-				hoverOpacity: .85
-			};
+			return getComparisonWindowLineStyle(isHovered, isSelected, hoveringDifferentComparison);
 		}
 		/** Sync chart viewport scroll to the current zoom range. */
 		_syncChartViewportScroll(_t0, _t1, _canvasWidth) {
@@ -12038,13 +13953,7 @@
 				this._skipNextScrollViewportSync = false;
 				return;
 			}
-			const viewportWidth = viewport.clientWidth;
-			const totalMs = Math.max(1, _t1 - _t0);
-			const visibleSpanMs = totalMs * Math.min(1, viewportWidth / Math.max(_canvasWidth, viewportWidth));
-			const maxScrollLeft = Math.max(0, Math.max(_canvasWidth, viewportWidth) - viewportWidth);
-			const maxStartOffsetMs = Math.max(0, totalMs - visibleSpanMs);
-			const clampedStart = clampChartValue(this._zoomRange.start, _t0, _t1 - visibleSpanMs);
-			const nextLeft = (maxStartOffsetMs > 0 ? (clampedStart - _t0) / maxStartOffsetMs : 0) * maxScrollLeft;
+			const nextLeft = calculateViewportScrollPosition(_t0, _t1, _canvasWidth, viewport.clientWidth, this._zoomRange.start, this._zoomRange.end);
 			const currentLeft = viewport.scrollLeft;
 			if (Math.abs(currentLeft - nextLeft) < 2) return;
 			this._scrollSyncSuspended = true;
@@ -12094,8 +14003,10 @@
 			if (!regions?.length) return {};
 			const content = buildAnomalyTooltipContent(regions);
 			const entityId = regions[0]?.relatedEntityId ?? null;
+			const methods = [...new Set(regions.map((r) => r?.cluster?.anomalyMethod).filter((m) => Boolean(m)))];
 			return {
-				message: content ? `${content.description}\n${content.alert}` : "",
+				message: methods.length === 1 ? `${ANOMALY_METHOD_LABELS[methods[0]] ?? methods[0]} anomaly` : "Multi-method anomaly",
+				annotation: content ? `${content.description}\n\n${content.alert}` : "",
 				icon: "mdi:alert-circle",
 				linkedTarget: entityId ? { entity_id: [entityId] } : null
 			};
@@ -12197,122 +14108,15 @@
 		}
 		/** Filter events list by hidden IDs and message filter. */
 		_filterEvents(_events) {
-			const events = _events;
-			const query = String(this._config?.message_filter || "").trim().toLowerCase();
-			const visibleEvents = events.filter((event) => !this._hiddenEventIds.has(event?.id ?? ""));
-			if (!query) return visibleEvents;
-			return visibleEvents.filter((event) => {
-				return [
-					event?.message || "",
-					event?.annotation || "",
-					...(event?.entity_ids || []).filter(Boolean)
-				].join("\n").toLowerCase().includes(query);
-			});
+			return filterEvents$1(_events, this._hiddenEventIds, String(this._config?.message_filter || ""));
 		}
 		/** Build correlated anomaly spans across series. */
 		_buildCorrelatedAnomalySpans(_visibleSeries, _anomalyClustersMap, _analysisMap) {
-			const visibleSeries = _visibleSeries;
-			const anomalyClustersMap = _anomalyClustersMap;
-			const seriesIntervals = [];
-			for (const seriesItem of visibleSeries) {
-				if (_analysisMap.get(seriesItem.entityId)?.show_anomalies !== true) continue;
-				const clusters = anomalyClustersMap.get(seriesItem.entityId) || [];
-				if (!clusters.length) continue;
-				const pts = seriesItem.pts;
-				let tolerance = 6e4;
-				if (Array.isArray(pts) && pts.length >= 2) {
-					const intervals = [];
-					for (let i = 1; i < pts.length; i++) {
-						const diff = pts[i][0] - pts[i - 1][0];
-						if (diff > 0) intervals.push(diff);
-					}
-					if (intervals.length) {
-						intervals.sort((a, b) => a - b);
-						const mid = Math.floor(intervals.length / 2);
-						tolerance = intervals.length % 2 === 0 ? (intervals[mid - 1] + intervals[mid]) / 2 : intervals[mid];
-						tolerance = Math.max(tolerance, 1e3);
-					}
-				}
-				const entityIntervals = [];
-				for (const cluster of clusters) {
-					if (!Array.isArray(cluster.points) || cluster.points.length === 0) continue;
-					const startTime = cluster.points[0]?.timeMs;
-					const endTime = cluster.points[cluster.points.length - 1]?.timeMs;
-					if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) continue;
-					entityIntervals.push({
-						start: Math.min(startTime, endTime) - tolerance,
-						end: Math.max(startTime, endTime) + tolerance
-					});
-				}
-				if (entityIntervals.length) seriesIntervals.push({
-					entityId: seriesItem.entityId,
-					intervals: entityIntervals
-				});
-			}
-			if (seriesIntervals.length < 2) return [];
-			const events = [];
-			for (const { entityId, intervals } of seriesIntervals) for (const { start, end } of intervals) {
-				events.push({
-					time: start,
-					delta: 1,
-					entityId
-				});
-				events.push({
-					time: end,
-					delta: -1,
-					entityId
-				});
-			}
-			events.sort((a, b) => a.time - b.time || a.delta - b.delta);
-			const activeCounts = /* @__PURE__ */ new Map();
-			const spans = [];
-			let spanStart = null;
-			for (const event of events) {
-				const next = (activeCounts.get(event.entityId) || 0) + event.delta;
-				if (next <= 0) activeCounts.delete(event.entityId);
-				else activeCounts.set(event.entityId, next);
-				const activeCount = activeCounts.size;
-				if (spanStart === null && activeCount >= 2) spanStart = event.time;
-				else if (spanStart !== null && activeCount < 2) {
-					spans.push({
-						start: spanStart,
-						end: event.time
-					});
-					spanStart = null;
-				}
-			}
-			if (spanStart !== null && events.length > 0) spans.push({
-				start: spanStart,
-				end: events[events.length - 1].time
-			});
-			return spans;
+			return buildCorrelatedAnomalySpans(_visibleSeries, _anomalyClustersMap, _analysisMap);
 		}
 		/** Filter out annotated anomaly clusters. */
 		_filterAnnotatedAnomalyClusters(_seriesItem, _events) {
-			const seriesItem = _seriesItem;
-			if (!Array.isArray(seriesItem?.anomalyClusters) || seriesItem.anomalyClusters.length === 0) return [];
-			const visibleEvents = Array.isArray(_events) ? _events : [];
-			if (visibleEvents.length === 0) return seriesItem.anomalyClusters;
-			const getClusterRange = (cluster) => {
-				if (!Array.isArray(cluster.points) || cluster.points.length === 0) return null;
-				const startTime = cluster.points[0]?.timeMs;
-				const endTime = cluster.points[cluster.points.length - 1]?.timeMs;
-				if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) return null;
-				return {
-					startTime: Math.min(startTime, endTime),
-					endTime: Math.max(startTime, endTime)
-				};
-			};
-			return seriesItem.anomalyClusters.filter((cluster) => {
-				const clusterRange = getClusterRange(cluster);
-				if (!clusterRange) return true;
-				return !visibleEvents.some((event) => {
-					if (!(Array.isArray(event.entity_ids) ? event.entity_ids.filter(Boolean) : []).includes(seriesItem.entityId)) return false;
-					const eventTime = new Date(event.timestamp).getTime();
-					if (!Number.isFinite(eventTime)) return false;
-					return eventTime >= clusterRange.startTime && eventTime <= clusterRange.endTime;
-				});
-			});
+			return filterAnnotatedAnomalyClusters(_seriesItem, _events);
 		}
 		_fireComparisonBackendAnomalyRequests(drawableComparisonResults, analysisMap, renderT0, renderT1) {
 			if (!drawableComparisonResults.length || !this._hass) return;
@@ -12412,61 +14216,19 @@
 			return Array.isArray(this._config?.comparison_windows) ? this._config.comparison_windows : [];
 		}
 		_getDrawableComparisonResults(comparisonResults) {
-			const drawableComparisonWindowIds = new Set(this._comparisonWindows.map((window) => String(window?.id || "")).filter((id) => id.length > 0));
-			const selectedComparisonWindowId = String(this._config?.selected_comparison_window_id || "");
-			const hoveredComparisonWindowId = String(this._config?.hovered_comparison_window_id || "");
-			if (selectedComparisonWindowId) drawableComparisonWindowIds.add(selectedComparisonWindowId);
-			if (hoveredComparisonWindowId) drawableComparisonWindowIds.add(hoveredComparisonWindowId);
-			if (drawableComparisonWindowIds.size === 0) return [];
-			return comparisonResults.filter((window) => drawableComparisonWindowIds.has(String(window.id || "")));
+			return filterDrawableComparisonResults(comparisonResults, this._comparisonWindows.map((window) => String(window?.id || "")), String(this._config?.selected_comparison_window_id || ""), String(this._config?.hovered_comparison_window_id || ""));
 		}
 		_resolveAnomalyClusterDisplay(anomalyClusters, overlapMode, correlatedSpans = []) {
-			const normalClusters = anomalyClusters.filter((c) => !c.isOverlap);
-			const overlapClusters = anomalyClusters.filter((c) => c.isOverlap === true);
-			if (overlapMode === "only") {
-				const overlapOnlyClusters = this._filterClustersByCorrelatedSpans(anomalyClusters, correlatedSpans);
-				return {
-					baseClusters: overlapOnlyClusters,
-					regionClusters: overlapOnlyClusters,
-					showCorrelatedSpans: true
-				};
-			}
-			return {
-				baseClusters: [...normalClusters, ...overlapClusters],
-				regionClusters: [...normalClusters, ...overlapClusters],
-				showCorrelatedSpans: false
-			};
+			return resolveAnomalyClusterDisplay(anomalyClusters, overlapMode, correlatedSpans);
 		}
 		_filterClustersByCorrelatedSpans(anomalyClusters, correlatedSpans) {
-			if (!Array.isArray(anomalyClusters) || anomalyClusters.length === 0) return [];
-			if (!Array.isArray(correlatedSpans) || correlatedSpans.length === 0) return [];
-			return anomalyClusters.filter((cluster) => {
-				const points = cluster.points;
-				if (!Array.isArray(points) || points.length === 0) return false;
-				const startTime = Number(points[0]?.timeMs);
-				const endTime = Number(points[points.length - 1]?.timeMs);
-				if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) return false;
-				const clusterStart = Math.min(startTime, endTime);
-				const clusterEnd = Math.max(startTime, endTime);
-				return correlatedSpans.some((span) => {
-					const spanStart = Number(span.start);
-					const spanEnd = Number(span.end);
-					if (!Number.isFinite(spanStart) || !Number.isFinite(spanEnd)) return false;
-					return clusterEnd >= spanStart && clusterStart <= spanEnd;
-				});
-			});
+			return filterClustersByCorrelatedSpans(anomalyClusters, correlatedSpans);
 		}
 		_getComparisonAnomalyCacheKey(windowId, entityId) {
-			return `${windowId}:${entityId}`;
+			return getComparisonAnomalyCacheKey(windowId, entityId);
 		}
 		_shiftComparisonAnomalyClusters(clusters, timeOffsetMs) {
-			return (Array.isArray(clusters) ? clusters : []).map((cluster) => ({
-				...cluster,
-				points: Array.isArray(cluster.points) ? cluster.points.map((point) => ({
-					...point,
-					timeMs: Number(point.timeMs) - timeOffsetMs
-				})) : []
-			}));
+			return shiftComparisonAnomalyClusters(clusters, timeOffsetMs);
 		}
 		async _resolveComparisonWindowPoints(entityId, comparisonWindow, analysis, renderT0, renderT1) {
 			const stateList = this._buildEntityStateList(entityId, comparisonWindow.histResult, comparisonWindow.statsResult || {});
@@ -12631,6 +14393,7 @@
 			const autoAdjustHoveredComparisonAxis = comparisonPreviewActive && !!hoveredComparisonWindowId && !this._zoomRange && !this._chartZoomDragging;
 			const hoveringDifferentComparison = !!hoveredComparisonWindowId && !!selectedComparisonWindowId && hoveredComparisonWindowId !== selectedComparisonWindowId;
 			const hasSelectedComparisonWindow = !!selectedComparisonWindowId;
+			const entityLabelMap = disambiguateEntityNames(this._hass, seriesSettings.map((s) => s.entity_id));
 			seriesSettings.forEach((seriesSetting, i) => {
 				const entityId = seriesSetting.entity_id;
 				if (entityId.split(".")[0] === "binary_sensor") {
@@ -12638,7 +14401,7 @@
 					const spans = this._buildBinaryStateSpans(stateList, t0, t1);
 					if (spans.length) binaryBackgrounds.push({
 						entityId,
-						label: entityName(this._hass, entityId) || entityId,
+						label: entityLabelMap.get(entityId) || entityId,
 						color: seriesSetting.color || COLORS[i % COLORS.length],
 						onLabel: this._binaryOnLabel(entityId),
 						offLabel: this._binaryOffLabel(entityId),
@@ -12669,15 +14432,19 @@
 						axis.values.push(v);
 					}
 				}
-				if (pts.length) series.push({
-					entityId,
-					legendEntityId: entityId,
-					label: entityName(this._hass, entityId) || entityId,
-					unit,
-					pts,
-					color: seriesSetting.color || COLORS[i % COLORS.length],
-					axisKey
-				});
+				if (pts.length) {
+					const seriesAnalysis = analysisMap.get(entityId) || normalizeHistorySeriesAnalysis(null);
+					series.push({
+						entityId,
+						legendEntityId: entityId,
+						label: entityLabelMap.get(entityId) || entityId,
+						unit,
+						pts,
+						color: seriesSetting.color || COLORS[i % COLORS.length],
+						axisKey,
+						stepped: seriesAnalysis.stepped_series === true
+					});
+				}
 			});
 			const _startIso = new Date(t0).toISOString();
 			const _endIso = new Date(t1).toISOString();
@@ -12801,7 +14568,7 @@
 				if (!points.length) continue;
 				selectedComparisonSeriesMap.set(entityId, {
 					entityId,
-					label: entityName(this._hass, entityId) || entityId,
+					label: entityLabelMap.get(entityId) || entityId,
 					unit,
 					color: seriesSetting.color || COLORS[index % COLORS.length],
 					pts: points
@@ -12915,7 +14682,18 @@
 				chartStage.style.width = `${canvasWidth}px`;
 				chartStage.style.height = `${availableHeight}px`;
 			}
-			if (scrollViewport) scrollViewport.style.overflowY = "";
+			if (scrollViewport) {
+				scrollViewport.style.overflowY = "";
+				scrollViewport.style.minHeight = "";
+			}
+			this.style.height = "";
+			this.style.minHeight = "";
+			const _haCard = this.closest("ha-card");
+			if (_haCard) {
+				_haCard.style.height = "";
+				_haCard.style.minHeight = "";
+			}
+			wrap.style.height = "";
 			const { w, h } = setupCanvas(canvas, chartStage || wrap, availableHeight, canvasWidth);
 			const renderer = new ChartRenderer(canvas, w, h);
 			renderer.labelColor = resolveChartLabelColor(this);
@@ -13083,6 +14861,7 @@
 			const shouldUseCorrelatedSpans = this._config?.show_correlated_anomalies === true || this._config?.anomaly_overlap_mode === "only";
 			const shouldDrawCorrelatedSpans = this._config?.show_correlated_anomalies === true;
 			const correlatedSpans = shouldUseCorrelatedSpans ? this._buildCorrelatedAnomalySpans(visibleSeries, anomalyClustersMap, analysisMap) : [];
+			this._setAiQueryBriefAnomalySnapshot(visibleSeries, analysisMap, anomalyClustersMap, correlatedSpans, renderT0, renderT1);
 			if (shouldDrawCorrelatedSpans) {
 				if (correlatedSpans.length) renderer.drawStateBands(correlatedSpans, renderT0, renderT1, "#ef4444", .1);
 			}
@@ -13581,66 +15360,14 @@
 		* Ported from _buildAnalysisCacheKey in card-history.js.
 		*/
 		_buildAnalysisCacheKey(visibleSeries, selectedComparisonSeriesMap, analysisMap, allComparisonWindowsData, t0, t1) {
-			const ANALYSIS_FIELDS = [
-				"show_trend_lines",
-				"trend_method",
-				"trend_window",
-				"show_rate_of_change",
-				"rate_window",
-				"show_delta_analysis",
-				"show_summary_stats",
-				"show_anomalies",
-				"anomaly_methods",
-				"anomaly_sensitivity",
-				"anomaly_overlap_mode",
-				"anomaly_rate_window",
-				"anomaly_zscore_window",
-				"anomaly_persistence_window",
-				"anomaly_comparison_window_id",
-				"anomaly_use_sampled_data",
-				"anomaly_trend_method",
-				"anomaly_trend_window"
-			];
-			return `${t0}:${t1}|${visibleSeries.map((s) => {
-				const a = analysisMap.get(s.entityId) || normalizeHistorySeriesAnalysis(null);
-				const first = s.pts[0]?.[0] ?? 0;
-				const last = s.pts[s.pts.length - 1]?.[0] ?? 0;
-				const aKey = ANALYSIS_FIELDS.map((f) => JSON.stringify(a[f])).join(",");
-				return `${s.entityId}:${s.pts.length}:${first}:${last}:${aKey}`;
-			}).join("|")}|${Array.from(selectedComparisonSeriesMap.values()).map((s) => {
-				const first = s.pts[0]?.[0] ?? 0;
-				const last = s.pts[s.pts.length - 1]?.[0] ?? 0;
-				return `${s.entityId}:${s.pts.length}:${first}:${last}`;
-			}).sort().join("|")}|${Object.entries(allComparisonWindowsData).flatMap(([windowId, entities]) => Object.entries(entities).map(([entityId, pts]) => {
-				const first = pts[0]?.[0] ?? 0;
-				const last = pts[pts.length - 1]?.[0] ?? 0;
-				return `${windowId}:${entityId}:${pts.length}:${first}:${last}`;
-			})).sort().join("|")}`;
+			return buildAnalysisCacheKey(visibleSeries, selectedComparisonSeriesMap, analysisMap, allComparisonWindowsData, t0, t1);
 		}
 		/**
 		* Build the serialisable payload sent to the history-analysis worker.
 		* Ported from _buildHistoryAnalysisPayload in card-history.js.
 		*/
 		_buildHistoryAnalysisPayload(visibleSeries, selectedComparisonSeriesMap, analysisMap, hasSelectedComparisonWindow, allComparisonWindowsData = {}) {
-			const defaultAnalysis = normalizeHistorySeriesAnalysis(null);
-			const series = visibleSeries.map((seriesItem) => ({
-				entityId: seriesItem.entityId,
-				pts: seriesItem.pts,
-				analysis: analysisMap.get(seriesItem.entityId) || defaultAnalysis
-			}));
-			const comparisonSeries = Array.from(selectedComparisonSeriesMap.values()).map((seriesItem) => ({
-				entityId: seriesItem.entityId,
-				pts: seriesItem.pts
-			}));
-			const seriesAnalysisConfigs = {};
-			for (const seriesItem of visibleSeries) seriesAnalysisConfigs[seriesItem.entityId] = analysisMap.get(seriesItem.entityId) || defaultAnalysis;
-			return {
-				series,
-				comparisonSeries,
-				hasSelectedComparisonWindow: hasSelectedComparisonWindow === true,
-				allComparisonWindowsData,
-				seriesAnalysisConfigs
-			};
+			return buildHistoryAnalysisPayload(visibleSeries, selectedComparisonSeriesMap, analysisMap, hasSelectedComparisonWindow, allComparisonWindowsData);
 		}
 		/**
 		* Run or cache the history analysis computation.
@@ -13720,41 +15447,26 @@
 		}
 		/** Build trend points from raw series data. */
 		_buildTrendPoints(_pts, _method, _window) {
-			if (!Array.isArray(_pts) || _pts.length < 2) return [];
-			const method = _method || "rolling_average";
-			const window = _window || "24h";
-			switch (method) {
-				case "linear_trend": return buildLinearTrend(_pts);
-				case "ema": return buildEmaTrend(_pts, getEmaAlpha(window));
-				case "polynomial_trend": return buildPolynomialTrend(_pts);
-				case "lowess": return buildLowessTrend(_pts, getLowessBandwidth(window, _pts));
-				default: return buildRollingAverageTrend(_pts, getTrendWindowMs(window));
-			}
+			return buildTrendPoints(_pts, _method, _window);
 		}
 		/** Build rate-of-change points from raw series data. */
 		_buildRateOfChangePoints(_pts, _window) {
-			if (!Array.isArray(_pts) || _pts.length < 2) return [];
-			return buildRateOfChangePoints(_pts, _window || "1h");
+			return buildRateOfChange(_pts, _window);
 		}
 		/** Build delta points (main vs comparison series). */
 		_buildDeltaPoints(_pts, _comparisonPts) {
-			return buildDeltaPoints(_pts, _comparisonPts);
+			return buildDelta(_pts, _comparisonPts);
 		}
 		/** Build summary statistics from raw series data. */
 		_buildSummaryStats(_pts) {
-			return buildSummaryStats(_pts) ?? {
-				min: 0,
-				max: 0,
-				mean: 0
-			};
+			return buildSummary(_pts);
 		}
 		/**
 		* Build a Map of entityId → normalised analysis settings from config.
 		* Ported from _getSeriesAnalysisMap in card-history.js.
 		*/
 		_getSeriesAnalysisMap() {
-			const seriesSettings = Array.isArray(this._config?.series_settings) ? this._config.series_settings : [];
-			return new Map(seriesSettings.filter((entry) => entry?.entity_id != null).map((entry) => [entry.entity_id, normalizeHistorySeriesAnalysis(entry?.analysis)]));
+			return buildSeriesAnalysisMap(Array.isArray(this._config?.series_settings) ? this._config.series_settings : []);
 		}
 		/**
 		* Get the normalised analysis settings for a single entity.
@@ -13768,68 +15480,53 @@
 		* Ported from _seriesHasActiveAnalysis in card-history.js.
 		*/
 		_seriesHasActiveAnalysis(analysis, hasSelectedComparisonWindow = false) {
-			return !!(analysis.show_trend_lines || analysis.show_summary_stats || analysis.show_rate_of_change || analysis.show_threshold_analysis || analysis.show_anomalies || analysis.show_delta_analysis && hasSelectedComparisonWindow);
+			return seriesHasActiveAnalysis(analysis, hasSelectedComparisonWindow);
 		}
-		/**
-		* Returns true if the source series should be hidden (replaced by its
-		* analysis overlay series).
-		* Ported from _seriesShouldHideSource in card-history.js.
-		*/
 		_seriesShouldHideSource(analysis, hasSelectedComparisonWindow = false) {
-			return analysis.hide_source_series === true && this._seriesHasActiveAnalysis(analysis, hasSelectedComparisonWindow);
+			return seriesShouldHideSource(analysis, hasSelectedComparisonWindow);
 		}
 		/**
 		* Return ChartRenderer render options for the active trend method.
 		* Ported from _getTrendRenderOptions in card-history.js.
 		*/
 		_getTrendRenderOptions(method = "rolling_average", hideRawData = false) {
-			if (method === "linear_trend") return {
-				colorAlpha: hideRawData ? .94 : .88,
-				lineOpacity: hideRawData ? .86 : .74,
-				lineWidth: 2.1,
-				dashed: true,
-				dotted: false
-			};
-			if (method === "ema") return {
-				colorAlpha: hideRawData ? .92 : .84,
-				lineOpacity: hideRawData ? .86 : .65,
-				lineWidth: 2,
-				dashed: false,
-				dotted: true
-			};
-			if (method === "polynomial_trend") return {
-				colorAlpha: hideRawData ? .94 : .86,
-				lineOpacity: hideRawData ? .86 : .72,
-				lineWidth: 2,
-				dashed: true,
-				dotted: false
-			};
-			if (method === "lowess") return {
-				colorAlpha: hideRawData ? .9 : .82,
-				lineOpacity: hideRawData ? .84 : .6,
-				lineWidth: 1.8,
-				dashed: false,
-				dotted: false
-			};
-			return {
-				colorAlpha: hideRawData ? .9 : .82,
-				lineOpacity: hideRawData ? .84 : .62,
-				lineWidth: 2.2,
-				dashed: false,
-				dotted: true
-			};
+			return getTrendRenderOptions(method, hideRawData);
 		}
 		async _drawSplitChart({ visibleSeries, binaryBackgrounds, events, renderT0, renderT1, canvasWidth, availableHeight, chartStage, canvas, wrap, options, drawableComparisonResults, selectedComparisonWindowId, hoveredComparisonWindowId, comparisonPreviewActive, hoveringDifferentComparison, analysisResult, analysisMap, hasSelectedComparisonWindow }) {
 			if (canvas) canvas.style.display = "none";
 			const N = visibleSeries.length;
-			const rowHeight = Math.max(140, Math.floor(availableHeight / N));
+			const MIN_ROW_HEIGHT = 200;
+			const usePageScroll = MIN_ROW_HEIGHT * N > availableHeight;
+			const rowHeight = usePageScroll ? MIN_ROW_HEIGHT : Math.max(MIN_ROW_HEIGHT, Math.floor(availableHeight / N));
 			const totalHeight = rowHeight * N;
 			if (chartStage) {
 				chartStage.style.width = `${canvasWidth}px`;
 				chartStage.style.height = `${totalHeight}px`;
 			}
 			const splitScrollViewport = this.querySelector("#chart-scroll-viewport");
-			if (splitScrollViewport) splitScrollViewport.style.overflowY = totalHeight > availableHeight ? "auto" : "hidden";
+			if (totalHeight > availableHeight) {
+				wrap.style.height = `${totalHeight}px`;
+				if (splitScrollViewport) splitScrollViewport.style.overflowY = "hidden";
+			} else {
+				wrap.style.height = "";
+				if (splitScrollViewport) splitScrollViewport.style.overflowY = "hidden";
+			}
+			const haCard = this.closest("ha-card");
+			if (usePageScroll) {
+				this.style.height = "auto";
+				this.style.minHeight = "100%";
+				if (haCard) {
+					haCard.style.height = "auto";
+					haCard.style.minHeight = "100%";
+				}
+			} else {
+				this.style.height = "";
+				this.style.minHeight = "";
+				if (haCard) {
+					haCard.style.height = "";
+					haCard.style.minHeight = "";
+				}
+			}
 			this._setChartLoading(!!options.loading);
 			this._setChartMessage("");
 			const iconOverlay = this.querySelector("#chart-icon-overlay");
@@ -14179,7 +15876,7 @@
 				const x = primaryRenderer.xOf(timeMs, t0, t1);
 				const values = tracks.map((trackItem) => {
 					const { renderer: trackRenderer, series, axis, rowOffset } = trackItem;
-					const value = trackRenderer._interpolateValue(series.pts, timeMs);
+					const value = trackRenderer._interpolateValue(series.pts, timeMs, !!series.stepped);
 					if (value == null) return {
 						entityId: String(series.entityId || ""),
 						label: String(series.label || ""),
@@ -14879,7 +16576,7 @@
 	});
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/annotation-chip-row/annotation-chip-row.styles.ts
-	var styles$54 = i$5`
+	var styles$60 = i$5`
   :host {
     display: block;
   }
@@ -14910,7 +16607,7 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/interactive/annotation-chip/annotation-chip.styles.ts
-	var styles$53 = i$5`
+	var styles$59 = i$5`
   :host {
     display: inline-flex;
   }
@@ -14973,23 +16670,26 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/interactive/annotation-chip/annotation-chip.ts
+	var DEFAULT_I18N$6 = createDefaultI18n(["Remove {0}"]);
 	var _type_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _itemId_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _icon_accessor_storage$2 = /* @__PURE__ */ new WeakMap();
-	var _name_accessor_storage$3 = /* @__PURE__ */ new WeakMap();
+	var _name_accessor_storage$4 = /* @__PURE__ */ new WeakMap();
 	var _secondaryText_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _stateObj_accessor_storage$2 = /* @__PURE__ */ new WeakMap();
-	var _hass_accessor_storage$9 = /* @__PURE__ */ new WeakMap();
+	var _hass_accessor_storage$12 = /* @__PURE__ */ new WeakMap();
+	var _i18n_accessor_storage$7 = /* @__PURE__ */ new WeakMap();
 	var AnnotationChip = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _type_accessor_storage, "");
 			_classPrivateFieldInitSpec(this, _itemId_accessor_storage, "");
 			_classPrivateFieldInitSpec(this, _icon_accessor_storage$2, "");
-			_classPrivateFieldInitSpec(this, _name_accessor_storage$3, "");
+			_classPrivateFieldInitSpec(this, _name_accessor_storage$4, "");
 			_classPrivateFieldInitSpec(this, _secondaryText_accessor_storage, "");
 			_classPrivateFieldInitSpec(this, _stateObj_accessor_storage$2, null);
-			_classPrivateFieldInitSpec(this, _hass_accessor_storage$9, null);
+			_classPrivateFieldInitSpec(this, _hass_accessor_storage$12, null);
+			_classPrivateFieldInitSpec(this, _i18n_accessor_storage$7, DEFAULT_I18N$6);
 		}
 		get type() {
 			return _classPrivateFieldGet2(_type_accessor_storage, this);
@@ -15010,10 +16710,10 @@
 			_classPrivateFieldSet2(_icon_accessor_storage$2, this, value);
 		}
 		get name() {
-			return _classPrivateFieldGet2(_name_accessor_storage$3, this);
+			return _classPrivateFieldGet2(_name_accessor_storage$4, this);
 		}
 		set name(value) {
-			_classPrivateFieldSet2(_name_accessor_storage$3, this, value);
+			_classPrivateFieldSet2(_name_accessor_storage$4, this, value);
 		}
 		get secondaryText() {
 			return _classPrivateFieldGet2(_secondaryText_accessor_storage, this);
@@ -15028,10 +16728,19 @@
 			_classPrivateFieldSet2(_stateObj_accessor_storage$2, this, value);
 		}
 		get hass() {
-			return _classPrivateFieldGet2(_hass_accessor_storage$9, this);
+			return _classPrivateFieldGet2(_hass_accessor_storage$12, this);
 		}
 		set hass(value) {
-			_classPrivateFieldSet2(_hass_accessor_storage$9, this, value);
+			_classPrivateFieldSet2(_hass_accessor_storage$12, this, value);
+		}
+		get i18n() {
+			return _classPrivateFieldGet2(_i18n_accessor_storage$7, this);
+		}
+		set i18n(value) {
+			_classPrivateFieldSet2(_i18n_accessor_storage$7, this, value);
+		}
+		_t(key, ...values) {
+			return t$4(this.i18n, key, ...values);
 		}
 		_onRemove() {
 			this.dispatchEvent(new CustomEvent("dp-chip-remove", {
@@ -15059,7 +16768,7 @@
         <button
           class="context-chip-remove"
           type="button"
-          aria-label="Remove ${this.name}"
+          aria-label=${this._t("Remove {0}", this.name)}
           @click=${this._onRemove}
         >
           <ha-icon icon="mdi:close"></ha-icon>
@@ -15068,7 +16777,7 @@
     `;
 		}
 	};
-	_defineProperty(AnnotationChip, "styles", styles$53);
+	_defineProperty(AnnotationChip, "styles", styles$59);
 	__decorate([n$1({ type: String })], AnnotationChip.prototype, "type", null);
 	__decorate([n$1({
 		type: String,
@@ -15088,12 +16797,13 @@
 		type: Object,
 		attribute: false
 	})], AnnotationChip.prototype, "hass", null);
+	__decorate([n$1({ attribute: false })], AnnotationChip.prototype, "i18n", null);
 	customElements.define("annotation-chip", AnnotationChip);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/annotation-chip-row/annotation-chip-row.ts
 	var _chips_accessor_storage = /* @__PURE__ */ new WeakMap();
-	var _hass_accessor_storage$8 = /* @__PURE__ */ new WeakMap();
-	var _label_accessor_storage$9 = /* @__PURE__ */ new WeakMap();
+	var _hass_accessor_storage$11 = /* @__PURE__ */ new WeakMap();
+	var _label_accessor_storage$10 = /* @__PURE__ */ new WeakMap();
 	var _helpText_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _emptyText_accessor_storage = /* @__PURE__ */ new WeakMap();
 	/**
@@ -15107,8 +16817,8 @@
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _chips_accessor_storage, []);
-			_classPrivateFieldInitSpec(this, _hass_accessor_storage$8, null);
-			_classPrivateFieldInitSpec(this, _label_accessor_storage$9, "Linked targets");
+			_classPrivateFieldInitSpec(this, _hass_accessor_storage$11, null);
+			_classPrivateFieldInitSpec(this, _label_accessor_storage$10, "Linked targets");
 			_classPrivateFieldInitSpec(this, _helpText_accessor_storage, "These targets will be associated with the new data point by default. Remove any that should not be linked.");
 			_classPrivateFieldInitSpec(this, _emptyText_accessor_storage, "No linked targets will be associated with this data point.");
 		}
@@ -15119,16 +16829,16 @@
 			_classPrivateFieldSet2(_chips_accessor_storage, this, value);
 		}
 		get hass() {
-			return _classPrivateFieldGet2(_hass_accessor_storage$8, this);
+			return _classPrivateFieldGet2(_hass_accessor_storage$11, this);
 		}
 		set hass(value) {
-			_classPrivateFieldSet2(_hass_accessor_storage$8, this, value);
+			_classPrivateFieldSet2(_hass_accessor_storage$11, this, value);
 		}
 		get label() {
-			return _classPrivateFieldGet2(_label_accessor_storage$9, this);
+			return _classPrivateFieldGet2(_label_accessor_storage$10, this);
 		}
 		set label(value) {
-			_classPrivateFieldSet2(_label_accessor_storage$9, this, value);
+			_classPrivateFieldSet2(_label_accessor_storage$10, this, value);
 		}
 		get helpText() {
 			return _classPrivateFieldGet2(_helpText_accessor_storage, this);
@@ -15182,7 +16892,7 @@
     `;
 		}
 	};
-	_defineProperty(AnnotationChipRow, "styles", styles$54);
+	_defineProperty(AnnotationChipRow, "styles", styles$60);
 	__decorate([n$1({ type: Array })], AnnotationChipRow.prototype, "chips", null);
 	__decorate([n$1({
 		type: Object,
@@ -15467,6 +17177,9 @@
         .context-form-label { font-size: 0.9rem; font-weight: 600; color: var(--primary-text-color); }
         .context-form-help { font-size: 0.8rem; color: var(--secondary-text-color); line-height: 1.45; }
         .context-form-help-inline { display: inline-flex; align-items: center; gap: 6px; }
+        .context-text-input { width: 100%; min-height: 52px; box-sizing: border-box; padding: 14px 16px; border: 1px solid var(--input-outlined-idle-border-color, var(--divider-color, #9e9e9e)); border-radius: 12px; background: var(--card-background-color, var(--primary-background-color, #fff)); color: var(--primary-text-color); font: inherit; line-height: 1.25; }
+        .context-text-input::placeholder { color: var(--secondary-text-color); }
+        .context-text-input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 1px var(--primary-color); }
         .context-annotation-input { width: 100%; min-height: 120px; box-sizing: border-box; resize: vertical; padding: 12px; border: 1px solid var(--input-outlined-idle-border-color, var(--divider-color, #9e9e9e)); border-radius: 12px; background: var(--card-background-color, var(--primary-background-color, #fff)); color: var(--primary-text-color); font: inherit; line-height: 1.45; }
         .context-annotation-input::placeholder { color: var(--secondary-text-color); }
         .context-annotation-input:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 1px var(--primary-color); }
@@ -15498,12 +17211,12 @@
               <div class="context-form-field">
                 <label class="context-form-label" for="chart-context-message">Message</label>
                 <div class="context-form-help">Use a short title that will be shown in the chart tooltip and records list.</div>
-                <ha-textfield id="chart-context-message" placeholder="What happened?" style="width:100%"></ha-textfield>
+                <input id="chart-context-message" class="context-text-input" type="text" placeholder="What happened?">
               </div>
               <div class="context-form-field">
                 <label class="context-form-label" for="chart-context-date">Date and time</label>
                 <div class="context-form-help">The annotation will be placed at this exact moment on the chart.</div>
-                <ha-textfield id="chart-context-date" class="context-date-input" type="datetime-local" value="${esc(this.formatDate(hover.timeMs))}"></ha-textfield>
+                <input id="chart-context-date" class="context-text-input context-date-input" type="datetime-local" value="${esc(this.formatDate(hover.timeMs))}">
               </div>
             </div>
             <!-- Row 2: Annotation -->
@@ -15586,6 +17299,129 @@
 			types: normalizedTypes,
 			units: options.units || {}
 		}));
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/cards/history/history-config-diff.ts
+	/** Build a stable JSON key for data-affecting config fields. */
+	function buildDataKey(config) {
+		return JSON.stringify({
+			target: config.target || null,
+			entities: config.entities,
+			entity: config.entity,
+			series_entities: Array.isArray(config.series_settings) ? config.series_settings.map((entry) => entry?.entity_id || entry?.entity || entry?.entityId || null) : null,
+			datapoint_scope: config.datapoint_scope,
+			hours_to_show: config.hours_to_show,
+			start_time: config.start_time,
+			end_time: config.end_time
+		});
+	}
+	/** Build a stable JSON key for view/rendering config fields. */
+	function buildViewKey(config) {
+		return JSON.stringify({
+			series_settings: config.series_settings || [],
+			zoom_start_time: config.zoom_start_time,
+			zoom_end_time: config.zoom_end_time,
+			message_filter: config.message_filter || "",
+			hidden_event_ids: config.hidden_event_ids || [],
+			hovered_event_ids: config.hovered_event_ids || [],
+			show_event_markers: config.show_event_markers !== false,
+			show_event_lines: config.show_event_lines !== false,
+			show_tooltips: config.show_tooltips !== false,
+			emphasize_hover_guides: config.emphasize_hover_guides === true,
+			hover_snap_mode: config.hover_snap_mode || "follow_series",
+			show_correlated_anomalies: config.show_correlated_anomalies === true,
+			show_trend_lines: config.show_trend_lines === true,
+			show_summary_stats: config.show_summary_stats === true,
+			show_rate_of_change: config.show_rate_of_change === true,
+			show_threshold_analysis: config.show_threshold_analysis === true,
+			show_threshold_shading: config.show_threshold_shading === true,
+			show_anomalies: config.show_anomalies === true,
+			hide_raw_data: config.hide_raw_data === true,
+			show_trend_crosshairs: config.show_trend_crosshairs === true,
+			trend_method: config.trend_method || "rolling_average",
+			trend_window: config.trend_window || "24h",
+			rate_window: config.rate_window || "1h",
+			anomaly_sensitivity: config.anomaly_sensitivity || "medium",
+			threshold_values: config.threshold_values || {},
+			threshold_directions: config.threshold_directions || {},
+			show_delta_analysis: config.show_delta_analysis === true,
+			show_delta_tooltip: config.show_delta_tooltip !== false,
+			show_delta_lines: config.show_delta_lines === true,
+			hide_delta_source_series: config.hide_delta_source_series === true,
+			delink_y_axis: config.delink_y_axis === true,
+			split_view: config.split_view === true,
+			show_data_gaps: config.show_data_gaps !== false,
+			data_gap_threshold: config.data_gap_threshold || "2h",
+			comparison_hover_active: config.comparison_hover_active === true,
+			selected_comparison_window_id: config.selected_comparison_window_id || null,
+			hovered_comparison_window_id: config.hovered_comparison_window_id || null
+		});
+	}
+	/** Build a stable JSON key for comparison window config fields. */
+	function buildComparisonKey(config) {
+		return JSON.stringify(config.comparison_windows || []);
+	}
+	/** Build a stable JSON key for preload comparison window config. */
+	function buildPreloadComparisonKey(config) {
+		return JSON.stringify(config.preload_comparison_windows || []);
+	}
+	/** Build a stable JSON key for comparison overlay config. */
+	function buildComparisonOverlayKey(config) {
+		return JSON.stringify(config.comparison_preview_overlay || null);
+	}
+	/**
+	* Compare two card configs and return which aspects changed.
+	*/
+	function diffCardConfig(currentConfig, nextConfig) {
+		return {
+			dataChanged: buildDataKey(currentConfig) !== buildDataKey(nextConfig),
+			viewChanged: buildViewKey(currentConfig) !== buildViewKey(nextConfig),
+			comparisonChanged: buildComparisonKey(currentConfig) !== buildComparisonKey(nextConfig),
+			preloadComparisonChanged: buildPreloadComparisonKey(currentConfig) !== buildPreloadComparisonKey(nextConfig),
+			comparisonOverlayChanged: buildComparisonOverlayKey(currentConfig) !== buildComparisonOverlayKey(nextConfig)
+		};
+	}
+	/**
+	* Check if any entity has drawable history or statistics data.
+	*/
+	function hasDrawableHistoryData(entityIds, histResult, statsResult) {
+		return entityIds.some((entityId) => {
+			const histData = histResult[entityId];
+			const statsData = statsResult[entityId];
+			const histPoints = Array.isArray(histData) ? histData.length : 0;
+			const statsPoints = Array.isArray(statsData) ? statsData.length : 0;
+			return histPoints > 0 || statsPoints > 0;
+		});
+	}
+	/**
+	* Compute a quality descriptor for drawable data, used to avoid
+	* downgrading a high-resolution draw with a lower-resolution one.
+	*/
+	function getDrawableHistoryQuality(entityIds, histResult, statsResult) {
+		let totalPoints = 0;
+		for (const entityId of entityIds) {
+			const histData = histResult[entityId];
+			const statsData = statsResult[entityId];
+			totalPoints += Array.isArray(histData) ? histData.length : 0;
+			totalPoints += Array.isArray(statsData) ? statsData.length : 0;
+		}
+		return { totalPoints };
+	}
+	/**
+	* Filter events by visibility and optional message search query.
+	*/
+	function filterEvents(events, hiddenEventIds, messageFilter) {
+		const query = String(messageFilter || "").trim().toLowerCase();
+		const visibleEvents = events.filter((event) => !hiddenEventIds.has(event?.id ?? ""));
+		if (!query) return visibleEvents;
+		return visibleEvents.filter((event) => {
+			const ev = event;
+			return [
+				ev?.message || "",
+				ev?.annotation || "",
+				...(ev?.entity_ids || []).filter(Boolean)
+			].join("\n").toLowerCase().includes(query);
+		});
 	}
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/history-page/history-session-state.ts
@@ -15710,7 +17546,7 @@
 	}
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/history.ts
-	var HassRecordsHistoryCard = class extends ChartCardBase {
+	var HassDatapointsHistoryCard = class extends ChartCardBase {
 		constructor() {
 			super();
 			_defineProperty(this, "_hiddenSeries", /* @__PURE__ */ new Set());
@@ -15824,123 +17660,14 @@
 				show_data_gaps: config.show_data_gaps !== false,
 				data_gap_threshold: config.data_gap_threshold || "2h"
 			};
-			const currentConfig = this._config || {};
-			const currentDataKey = JSON.stringify({
-				target: currentConfig.target || null,
-				entities: currentConfig.entities,
-				entity: currentConfig.entity,
-				series_entities: Array.isArray(currentConfig.series_settings) ? currentConfig.series_settings.map((entry) => entry?.entity_id || entry?.entity || entry?.entityId || null) : null,
-				datapoint_scope: currentConfig.datapoint_scope,
-				hours_to_show: currentConfig.hours_to_show,
-				start_time: currentConfig.start_time,
-				end_time: currentConfig.end_time
-			});
-			const nextDataKey = JSON.stringify({
-				target: nextConfig.target || null,
-				entities: nextConfig.entities,
-				entity: nextConfig.entity,
-				series_entities: Array.isArray(nextConfig.series_settings) ? nextConfig.series_settings.map((entry) => entry?.entity_id || entry?.entity || entry?.entityId || null) : null,
-				datapoint_scope: nextConfig.datapoint_scope,
-				hours_to_show: nextConfig.hours_to_show,
-				start_time: nextConfig.start_time,
-				end_time: nextConfig.end_time
-			});
-			const currentViewKey = JSON.stringify({
-				series_settings: currentConfig.series_settings || [],
-				zoom_start_time: currentConfig.zoom_start_time,
-				zoom_end_time: currentConfig.zoom_end_time,
-				message_filter: currentConfig.message_filter || "",
-				hidden_event_ids: currentConfig.hidden_event_ids || [],
-				hovered_event_ids: currentConfig.hovered_event_ids || [],
-				show_event_markers: currentConfig.show_event_markers !== false,
-				show_event_lines: currentConfig.show_event_lines !== false,
-				show_tooltips: currentConfig.show_tooltips !== false,
-				emphasize_hover_guides: currentConfig.emphasize_hover_guides === true,
-				hover_snap_mode: currentConfig.hover_snap_mode || "follow_series",
-				show_correlated_anomalies: currentConfig.show_correlated_anomalies === true,
-				show_trend_lines: currentConfig.show_trend_lines === true,
-				show_summary_stats: currentConfig.show_summary_stats === true,
-				show_rate_of_change: currentConfig.show_rate_of_change === true,
-				show_threshold_analysis: currentConfig.show_threshold_analysis === true,
-				show_threshold_shading: currentConfig.show_threshold_shading === true,
-				show_anomalies: currentConfig.show_anomalies === true,
-				hide_raw_data: currentConfig.hide_raw_data === true,
-				show_trend_crosshairs: currentConfig.show_trend_crosshairs === true,
-				trend_method: currentConfig.trend_method || "rolling_average",
-				trend_window: currentConfig.trend_window || "24h",
-				rate_window: currentConfig.rate_window || "1h",
-				anomaly_sensitivity: currentConfig.anomaly_sensitivity || "medium",
-				threshold_values: currentConfig.threshold_values || {},
-				threshold_directions: currentConfig.threshold_directions || {},
-				show_delta_analysis: currentConfig.show_delta_analysis === true,
-				show_delta_tooltip: currentConfig.show_delta_tooltip !== false,
-				show_delta_lines: currentConfig.show_delta_lines === true,
-				hide_delta_source_series: currentConfig.hide_delta_source_series === true,
-				delink_y_axis: currentConfig.delink_y_axis === true,
-				split_view: currentConfig.split_view === true,
-				show_data_gaps: currentConfig.show_data_gaps !== false,
-				data_gap_threshold: currentConfig.data_gap_threshold || "2h",
-				comparison_hover_active: currentConfig.comparison_hover_active === true,
-				selected_comparison_window_id: currentConfig.selected_comparison_window_id || null,
-				hovered_comparison_window_id: currentConfig.hovered_comparison_window_id || null
-			});
-			const nextViewKey = JSON.stringify({
-				series_settings: nextConfig.series_settings || [],
-				zoom_start_time: nextConfig.zoom_start_time,
-				zoom_end_time: nextConfig.zoom_end_time,
-				message_filter: nextConfig.message_filter || "",
-				hidden_event_ids: nextConfig.hidden_event_ids || [],
-				hovered_event_ids: nextConfig.hovered_event_ids || [],
-				show_event_markers: nextConfig.show_event_markers !== false,
-				show_event_lines: nextConfig.show_event_lines !== false,
-				show_tooltips: nextConfig.show_tooltips !== false,
-				emphasize_hover_guides: nextConfig.emphasize_hover_guides === true,
-				hover_snap_mode: nextConfig.hover_snap_mode || "follow_series",
-				show_correlated_anomalies: nextConfig.show_correlated_anomalies === true,
-				show_trend_lines: nextConfig.show_trend_lines === true,
-				show_summary_stats: nextConfig.show_summary_stats === true,
-				show_rate_of_change: nextConfig.show_rate_of_change === true,
-				show_threshold_analysis: nextConfig.show_threshold_analysis === true,
-				show_threshold_shading: nextConfig.show_threshold_shading === true,
-				show_anomalies: nextConfig.show_anomalies === true,
-				hide_raw_data: nextConfig.hide_raw_data === true,
-				show_trend_crosshairs: nextConfig.show_trend_crosshairs === true,
-				trend_method: nextConfig.trend_method || "rolling_average",
-				trend_window: nextConfig.trend_window || "24h",
-				rate_window: nextConfig.rate_window || "1h",
-				anomaly_sensitivity: nextConfig.anomaly_sensitivity || "medium",
-				threshold_values: nextConfig.threshold_values || {},
-				threshold_directions: nextConfig.threshold_directions || {},
-				show_delta_analysis: nextConfig.show_delta_analysis === true,
-				show_delta_tooltip: nextConfig.show_delta_tooltip !== false,
-				show_delta_lines: nextConfig.show_delta_lines === true,
-				hide_delta_source_series: nextConfig.hide_delta_source_series === true,
-				delink_y_axis: nextConfig.delink_y_axis === true,
-				split_view: nextConfig.split_view === true,
-				show_data_gaps: nextConfig.show_data_gaps !== false,
-				data_gap_threshold: nextConfig.data_gap_threshold || "2h",
-				comparison_hover_active: nextConfig.comparison_hover_active === true,
-				selected_comparison_window_id: nextConfig.selected_comparison_window_id || null,
-				hovered_comparison_window_id: nextConfig.hovered_comparison_window_id || null
-			});
-			const currentComparisonKey = JSON.stringify(currentConfig.comparison_windows || []);
-			const nextComparisonKey = JSON.stringify(nextConfig.comparison_windows || []);
-			const currentPreloadComparisonKey = JSON.stringify(currentConfig.preload_comparison_windows || []);
-			const nextPreloadComparisonKey = JSON.stringify(nextConfig.preload_comparison_windows || []);
-			const currentComparisonOverlayKey = JSON.stringify(currentConfig.comparison_preview_overlay || null);
-			const nextComparisonOverlayKey = JSON.stringify(nextConfig.comparison_preview_overlay || null);
-			const dataChanged = currentDataKey !== nextDataKey;
-			const viewChanged = currentViewKey !== nextViewKey;
-			const comparisonChanged = currentComparisonKey !== nextComparisonKey;
-			const preloadComparisonChanged = currentPreloadComparisonKey !== nextPreloadComparisonKey;
-			const comparisonOverlayChanged = currentComparisonOverlayKey !== nextComparisonOverlayKey;
-			if (!dataChanged && !viewChanged && !comparisonChanged && !preloadComparisonChanged && !comparisonOverlayChanged && this._configKey) return;
+			const diff = diffCardConfig(this._config || {}, nextConfig);
+			if (!diff.dataChanged && !diff.viewChanged && !diff.comparisonChanged && !diff.preloadComparisonChanged && !diff.comparisonOverlayChanged && this._configKey) return;
 			this._config = nextConfig;
 			this._configKey = JSON.stringify(nextConfig);
 			this._hiddenSeries = createHiddenSeriesSet(nextConfig.series_settings);
 			this._hiddenEventIds = createHiddenEventIdSet(nextConfig.hidden_event_ids);
 			this._zoomRange = createChartZoomRange(nextConfig.zoom_start_time, nextConfig.zoom_end_time);
-			if (dataChanged || comparisonChanged || preloadComparisonChanged) {
+			if (diff.dataChanged || diff.comparisonChanged || diff.preloadComparisonChanged) {
 				this._pruneComparisonDataCache(nextConfig);
 				this._lastComparisonResults = null;
 			}
@@ -15952,26 +17679,26 @@
 				chartEl._hiddenEventIds = this._hiddenEventIds;
 				chartEl._zoomRange = this._zoomRange;
 				chartEl._lastComparisonResults = this._getResolvedComparisonResults();
-				if (comparisonOverlayChanged && typeof chartEl._renderComparisonPreviewOverlay === "function") chartEl._renderComparisonPreviewOverlay();
+				if (diff.comparisonOverlayChanged && typeof chartEl._renderComparisonPreviewOverlay === "function") chartEl._renderComparisonPreviewOverlay();
 			}
-			if (dataChanged || !Array.isArray(nextConfig.comparison_windows) || !nextConfig.comparison_windows.length) this._adjustComparisonAxisScale = false;
-			if (this._hass && dataChanged) {
+			if (diff.dataChanged || !Array.isArray(nextConfig.comparison_windows) || !nextConfig.comparison_windows.length) this._adjustComparisonAxisScale = false;
+			if (this._hass && diff.dataChanged) {
 				this._load();
 				return;
 			}
-			if (this._hass && comparisonChanged) {
+			if (this._hass && diff.comparisonChanged) {
 				this._loadComparisonWindows({
 					redraw: true,
 					showLoading: true
 				});
 				return;
 			}
-			if (this._hass && preloadComparisonChanged) this._preloadComparisonWindows().catch(() => {});
-			if (this._hass && comparisonOverlayChanged && this._lastHistResult && this._lastEvents) {
+			if (this._hass && diff.preloadComparisonChanged) this._preloadComparisonWindows().catch(() => {});
+			if (this._hass && diff.comparisonOverlayChanged && this._lastHistResult && this._lastEvents) {
 				this._queueDrawChart(this._lastHistResult, this._lastStatsResult || {}, this._lastEvents, this._lastT0, this._lastT1);
 				return;
 			}
-			if (this._hass && viewChanged && this._lastHistResult && this._lastEvents) this._queueDrawChart(this._lastHistResult, this._lastStatsResult || {}, this._lastEvents, this._lastT0, this._lastT1);
+			if (this._hass && diff.viewChanged && this._lastHistResult && this._lastEvents) this._queueDrawChart(this._lastHistResult, this._lastStatsResult || {}, this._lastEvents, this._lastT0, this._lastT1);
 		}
 		get _entityIds() {
 			if (Array.isArray(this._config.series_settings)) {
@@ -16353,6 +18080,11 @@
 		_chartEl() {
 			return this.shadowRoot?.querySelector("hass-datapoints-history-chart") ?? null;
 		}
+		getAiQueryBriefAnomalySnapshot() {
+			const chartEl = this._chartEl();
+			if (!chartEl?.getAiQueryBriefAnomalySnapshot) return null;
+			return chartEl.getAiQueryBriefAnomalySnapshot();
+		}
 		/**
 		* Queue a draw cycle. Delegates to hass-datapoints-history-chart and also records last
 		* draw args so the base-class ResizeObserver can replay via _drawChart().
@@ -16403,40 +18135,13 @@
 		* in either the history or statistics result.
 		*/
 		_hasDrawableHistoryData(histResult, statsResult) {
-			return this._entityIds.some((entityId) => {
-				const histData = histResult[entityId];
-				const statsData = statsResult[entityId];
-				const histPoints = Array.isArray(histData) ? histData.length : 0;
-				const statsPoints = Array.isArray(statsData) ? statsData.length : 0;
-				return histPoints > 0 || statsPoints > 0;
-			});
+			return hasDrawableHistoryData(this._entityIds, histResult, statsResult);
 		}
-		/**
-		* Returns a quality descriptor for the current drawable data — used to
-		* avoid downgrading a high-resolution draw with a lower-resolution one.
-		*/
 		_getDrawableHistoryQuality(histResult, statsResult) {
-			let totalPoints = 0;
-			for (const entityId of this._entityIds) {
-				const histData = histResult[entityId];
-				const statsData = statsResult[entityId];
-				totalPoints += Array.isArray(histData) ? histData.length : 0;
-				totalPoints += Array.isArray(statsData) ? statsData.length : 0;
-			}
-			return { totalPoints };
+			return getDrawableHistoryQuality(this._entityIds, histResult, statsResult);
 		}
 		_filterEvents(events) {
-			const query = String(this._config?.message_filter || "").trim().toLowerCase();
-			const visibleEvents = events.filter((event) => !this._hiddenEventIds.has(event?.id ?? ""));
-			if (!query) return visibleEvents;
-			return visibleEvents.filter((event) => {
-				const ev = event;
-				return [
-					ev?.message || "",
-					ev?.annotation || "",
-					...(ev?.entity_ids || []).filter(Boolean)
-				].join("\n").toLowerCase().includes(query);
-			});
+			return filterEvents(events, this._hiddenEventIds, String(this._config?.message_filter || ""));
 		}
 		_buildNavigationPageState() {
 			const range = this._getRange();
@@ -16596,11 +18301,11 @@
 			return document.createElement("hass-datapoints-history-card-editor");
 		}
 	};
-	_defineProperty(HassRecordsHistoryCard, "styles", styles$56);
-	customElements.define("hass-datapoints-history-card", HassRecordsHistoryCard);
+	_defineProperty(HassDatapointsHistoryCard, "styles", styles$62);
+	customElements.define("hass-datapoints-history-card", HassDatapointsHistoryCard);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/editor.styles.ts
-	var styles$52 = i$5``;
+	var styles$58 = i$5``;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-group-shared/analysis-group-shared.styles.ts
 	var sharedStyles = i$5`
@@ -16668,10 +18373,10 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-sample-group/analysis-sample-group.styles.ts
-	var styles$51 = i$5``;
+	var styles$57 = i$5``;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/analysis/analysis-group/analysis-group.styles.ts
-	var styles$50 = i$5`
+	var styles$56 = i$5`
   :host {
     display: block;
     --dp-spacing-xs: calc(var(--spacing, 8px) * 0.5);
@@ -16682,17 +18387,17 @@
 
   .group {
     display: grid;
-    gap: var(--dp-spacing-sm);
+    gap: calc(var(--dp-spacing-sm) * 0.75);
     border-radius: 6px;
   }
 
   .group-body {
     display: grid;
-    gap: var(--dp-spacing-sm);
-    padding: var(--dp-spacing-sm);
+    gap: calc(var(--dp-spacing-sm) * 0.75);
+    padding: calc(var(--dp-spacing-sm) * 0.75);
     border-left: 3px solid var(--primary-color);
     margin-left: 5px;
-    padding-left: var(--dp-spacing-md);
+    padding-left: calc(var(--dp-spacing-md) - 2px);
   }
 
   .option {
@@ -16728,23 +18433,23 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/analysis/analysis-group/analysis-group.ts
-	var _label_accessor_storage$8 = /* @__PURE__ */ new WeakMap();
+	var _label_accessor_storage$9 = /* @__PURE__ */ new WeakMap();
 	var _checked_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _disabled_accessor_storage$2 = /* @__PURE__ */ new WeakMap();
 	var _alignTop_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var AnalysisGroup = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
-			_classPrivateFieldInitSpec(this, _label_accessor_storage$8, "");
+			_classPrivateFieldInitSpec(this, _label_accessor_storage$9, "");
 			_classPrivateFieldInitSpec(this, _checked_accessor_storage, false);
 			_classPrivateFieldInitSpec(this, _disabled_accessor_storage$2, false);
 			_classPrivateFieldInitSpec(this, _alignTop_accessor_storage, false);
 		}
 		get label() {
-			return _classPrivateFieldGet2(_label_accessor_storage$8, this);
+			return _classPrivateFieldGet2(_label_accessor_storage$9, this);
 		}
 		set label(value) {
-			_classPrivateFieldSet2(_label_accessor_storage$8, this, value);
+			_classPrivateFieldSet2(_label_accessor_storage$9, this, value);
 		}
 		get checked() {
 			return _classPrivateFieldGet2(_checked_accessor_storage, this);
@@ -16800,7 +18505,7 @@
     `;
 		}
 	};
-	_defineProperty(AnalysisGroup, "styles", styles$50);
+	_defineProperty(AnalysisGroup, "styles", styles$56);
 	__decorate([n$1({ type: String })], AnalysisGroup.prototype, "label", null);
 	__decorate([n$1({ type: Boolean })], AnalysisGroup.prototype, "checked", null);
 	__decorate([n$1({ type: Boolean })], AnalysisGroup.prototype, "disabled", null);
@@ -16811,7 +18516,7 @@
 	customElements.define("analysis-group", AnalysisGroup);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/form/inline-select/inline-select.styles.ts
-	var styles$49 = i$5`
+	var styles$55 = i$5`
   :host {
     display: inline-block;
   }
@@ -16888,7 +18593,7 @@
     `;
 		}
 	};
-	_defineProperty(InlineSelect, "styles", styles$49);
+	_defineProperty(InlineSelect, "styles", styles$55);
 	__decorate([n$1({ type: String })], InlineSelect.prototype, "value", null);
 	__decorate([n$1({ type: Array })], InlineSelect.prototype, "options", null);
 	__decorate([n$1({ type: Boolean })], InlineSelect.prototype, "disabled", null);
@@ -17066,7 +18771,7 @@
       </analysis-group>
     `;
 		}
-	}, _defineProperty(_AnalysisSampleGroup, "styles", [sharedStyles, styles$51]), _AnalysisSampleGroup);
+	}, _defineProperty(_AnalysisSampleGroup, "styles", [sharedStyles, styles$57]), _AnalysisSampleGroup);
 	__decorate([n$1({ type: Object })], AnalysisSampleGroup.prototype, "analysis", null);
 	__decorate([n$1({
 		type: String,
@@ -17076,7 +18781,7 @@
 	customElements.define("analysis-sample-group", AnalysisSampleGroup);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-trend-group/analysis-trend-group.styles.ts
-	var styles$48 = i$5``;
+	var styles$54 = i$5``;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-trend-group/analysis-trend-group.ts
 	var _AnalysisTrendGroup, _analysis_accessor_storage$6, _entityId_accessor_storage$6;
@@ -17226,7 +18931,7 @@
       </analysis-group>
     `;
 		}
-	}, _defineProperty(_AnalysisTrendGroup, "styles", [sharedStyles, styles$48]), _AnalysisTrendGroup);
+	}, _defineProperty(_AnalysisTrendGroup, "styles", [sharedStyles, styles$54]), _AnalysisTrendGroup);
 	__decorate([n$1({ type: Object })], AnalysisTrendGroup.prototype, "analysis", null);
 	__decorate([n$1({
 		type: String,
@@ -17236,7 +18941,7 @@
 	customElements.define("analysis-trend-group", AnalysisTrendGroup);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-summary-group/analysis-summary-group.styles.ts
-	var styles$47 = i$5``;
+	var styles$53 = i$5``;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-summary-group/analysis-summary-group.ts
 	var _AnalysisSummaryGroup, _analysis_accessor_storage$5, _entityId_accessor_storage$5;
@@ -17294,7 +18999,7 @@
       </analysis-group>
     `;
 		}
-	}, _defineProperty(_AnalysisSummaryGroup, "styles", [sharedStyles, styles$47]), _AnalysisSummaryGroup);
+	}, _defineProperty(_AnalysisSummaryGroup, "styles", [sharedStyles, styles$53]), _AnalysisSummaryGroup);
 	__decorate([n$1({ type: Object })], AnalysisSummaryGroup.prototype, "analysis", null);
 	__decorate([n$1({
 		type: String,
@@ -17304,7 +19009,7 @@
 	customElements.define("analysis-summary-group", AnalysisSummaryGroup);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-rate-group/analysis-rate-group.styles.ts
-	var styles$46 = i$5``;
+	var styles$52 = i$5``;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-rate-group/analysis-rate-group.ts
 	var _AnalysisRateGroup, _analysis_accessor_storage$4, _entityId_accessor_storage$4;
@@ -17314,8 +19019,20 @@
 			label: "Point to point"
 		},
 		{
+			value: "30m",
+			label: "30 minutes"
+		},
+		{
 			value: "1h",
 			label: "1 hour"
+		},
+		{
+			value: "2h",
+			label: "2 hours"
+		},
+		{
+			value: "3h",
+			label: "3 hours"
 		},
 		{
 			value: "6h",
@@ -17324,6 +19041,10 @@
 		{
 			value: "24h",
 			label: "24 hours"
+		},
+		{
+			value: "7d",
+			label: "7 days"
 		}
 	];
 	var AnalysisRateGroup = (_analysis_accessor_storage$4 = /* @__PURE__ */ new WeakMap(), _entityId_accessor_storage$4 = /* @__PURE__ */ new WeakMap(), _AnalysisRateGroup = class AnalysisRateGroup extends i$2 {
@@ -17394,7 +19115,7 @@
       </analysis-group>
     `;
 		}
-	}, _defineProperty(_AnalysisRateGroup, "styles", [sharedStyles, styles$46]), _AnalysisRateGroup);
+	}, _defineProperty(_AnalysisRateGroup, "styles", [sharedStyles, styles$52]), _AnalysisRateGroup);
 	__decorate([n$1({ type: Object })], AnalysisRateGroup.prototype, "analysis", null);
 	__decorate([n$1({
 		type: String,
@@ -17404,7 +19125,7 @@
 	customElements.define("analysis-rate-group", AnalysisRateGroup);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-threshold-group/analysis-threshold-group.styles.ts
-	var styles$45 = i$5``;
+	var styles$51 = i$5``;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-threshold-group/analysis-threshold-group.ts
 	var _AnalysisThresholdGroup, _analysis_accessor_storage$3, _entityId_accessor_storage$3, _unit_accessor_storage$1;
@@ -17509,7 +19230,7 @@
       </analysis-group>
     `;
 		}
-	}, _defineProperty(_AnalysisThresholdGroup, "styles", [sharedStyles, styles$45]), _AnalysisThresholdGroup);
+	}, _defineProperty(_AnalysisThresholdGroup, "styles", [sharedStyles, styles$51]), _AnalysisThresholdGroup);
 	__decorate([n$1({ type: Object })], AnalysisThresholdGroup.prototype, "analysis", null);
 	__decorate([n$1({
 		type: String,
@@ -17520,7 +19241,7 @@
 	customElements.define("analysis-threshold-group", AnalysisThresholdGroup);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-anomaly-group/analysis-anomaly-group.styles.ts
-	var styles$44 = i$5`
+	var styles$50 = i$5`
   .method-computing-indicator {
     display: inline-flex;
     align-items: center;
@@ -17556,12 +19277,12 @@
 
   .method-list {
     display: grid;
-    gap: var(--dp-spacing-sm, 8px);
+    gap: calc(var(--dp-spacing-sm, 8px) * 0.75);
   }
 
   .method-item {
     display: grid;
-    gap: var(--dp-spacing-sm, 8px);
+    gap: 6px;
   }
 
   ha-tooltip {
@@ -17596,22 +19317,80 @@
     outline: 2px solid var(--primary-color, #03a9f4);
     outline-offset: 2px;
   }
+
+  .entity-picker-wrap {
+    overflow: hidden;
+    height: 32px;
+    border-radius: 6px;
+  }
+
+  ha-entity-picker {
+    display: block;
+    margin-top: -14px;
+  }
+
+  .save-monitor-btn {
+    display: inline-block;
+    width: fit-content;
+    gap: 4px;
+    padding: 4px 8px;
+    border: 0;
+    border-radius: var(--wa-form-control-border-radius);
+    font: inherit;
+    font-size: 0.82rem;
+    color: var(--primary-color, #3b82f6);
+    background: color-mix(
+      in srgb,
+      var(--primary-color, #3b82f6) 14%,
+      transparent
+    );
+    cursor: pointer;
+    --mdc-icon-size: 16px;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: background 120ms ease;
+  }
+
+  .field {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .field-label {
+    min-width: 112px;
+    padding-top: 4px;
+  }
+
+  .option {
+    align-items: center;
+    gap: 8px;
+  }
+
+  .save-monitor-btn:hover,
+  .save-monitor-btn:focus-visible {
+    background: color-mix(
+      in srgb,
+      var(--primary-color, #3b82f6) 22%,
+      transparent
+    );
+    outline: none;
+  }
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/analysis/analysis-method-subopts/analysis-method-subopts.styles.ts
-	var styles$43 = i$5`
+	var styles$49 = i$5`
   :host {
     display: block;
     --dp-spacing-sm: var(--spacing, 8px);
   }
 
   .subopts {
-    padding-left: calc(var(--spacing, 8px) * 1.5);
+    padding-left: calc(var(--spacing, 8px) * 1.25);
+    padding-top: 2px;
     display: grid;
-    gap: var(--dp-spacing-sm);
+    gap: calc(var(--dp-spacing-sm) * 0.75);
     justify-items: start;
-    border-left: 3px solid var(--primary-color);
-    margin-left: 5px;
+    margin-left: 1px;
   }
 `;
 	//#endregion
@@ -17621,11 +19400,11 @@
 			return b`<div class="subopts"><slot></slot></div>`;
 		}
 	};
-	_defineProperty(AnalysisMethodSubopts, "styles", styles$43);
+	_defineProperty(AnalysisMethodSubopts, "styles", styles$49);
 	customElements.define("analysis-method-subopts", AnalysisMethodSubopts);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-anomaly-group/analysis-anomaly-group.ts
-	var _AnalysisAnomalyGroup, _analysis_accessor_storage$2, _entityId_accessor_storage$2, _comparisonWindows_accessor_storage$3, _computing_accessor_storage$1, _computingProgress_accessor_storage$1, _computingMethods_accessor_storage$1;
+	var _AnalysisAnomalyGroup, _analysis_accessor_storage$2, _entityId_accessor_storage$2, _comparisonWindows_accessor_storage$3, _hass_accessor_storage$10, _computing_accessor_storage$1, _computingProgress_accessor_storage$1, _computingMethods_accessor_storage$1, _hideSaveMonitorCta_accessor_storage;
 	var ANALYSIS_ANOMALY_SENSITIVITY_OPTIONS = [
 		{
 			value: "low",
@@ -17670,12 +19449,33 @@
 			value: "comparison_window",
 			label: "Comparison window deviation",
 			help: "Compares the current period to a reference date window. Highlights differences from an expected historical pattern, such as last week or the same day last year."
+		},
+		{
+			value: "similar_entity",
+			label: "Similar entity deviation",
+			help: "Compares the current entity against another HA entity over the same period. Highlights readings that diverge from what a reference sensor is reporting."
 		}
 	];
 	var ANALYSIS_ANOMALY_RATE_WINDOW_OPTIONS = [
 		{
+			value: "point_to_point",
+			label: "Point to point"
+		},
+		{
+			value: "30m",
+			label: "30 minutes"
+		},
+		{
 			value: "1h",
 			label: "1 hour"
+		},
+		{
+			value: "2h",
+			label: "2 hours"
+		},
+		{
+			value: "3h",
+			label: "3 hours"
 		},
 		{
 			value: "6h",
@@ -17684,6 +19484,10 @@
 		{
 			value: "24h",
 			label: "24 hours"
+		},
+		{
+			value: "7d",
+			label: "7 days"
 		}
 	];
 	var ANALYSIS_ANOMALY_ZSCORE_WINDOW_OPTIONS = [
@@ -17737,15 +19541,17 @@
 		value: "only",
 		label: "Overlaps only"
 	}];
-	var AnalysisAnomalyGroup = (_analysis_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _entityId_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _comparisonWindows_accessor_storage$3 = /* @__PURE__ */ new WeakMap(), _computing_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _computingProgress_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _computingMethods_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _AnalysisAnomalyGroup = class AnalysisAnomalyGroup extends i$2 {
+	var AnalysisAnomalyGroup = (_analysis_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _entityId_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _comparisonWindows_accessor_storage$3 = /* @__PURE__ */ new WeakMap(), _hass_accessor_storage$10 = /* @__PURE__ */ new WeakMap(), _computing_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _computingProgress_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _computingMethods_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _hideSaveMonitorCta_accessor_storage = /* @__PURE__ */ new WeakMap(), _AnalysisAnomalyGroup = class AnalysisAnomalyGroup extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _analysis_accessor_storage$2, {});
 			_classPrivateFieldInitSpec(this, _entityId_accessor_storage$2, "");
 			_classPrivateFieldInitSpec(this, _comparisonWindows_accessor_storage$3, []);
+			_classPrivateFieldInitSpec(this, _hass_accessor_storage$10, null);
 			_classPrivateFieldInitSpec(this, _computing_accessor_storage$1, false);
 			_classPrivateFieldInitSpec(this, _computingProgress_accessor_storage$1, 0);
 			_classPrivateFieldInitSpec(this, _computingMethods_accessor_storage$1, /* @__PURE__ */ new Set());
+			_classPrivateFieldInitSpec(this, _hideSaveMonitorCta_accessor_storage, false);
 		}
 		get analysis() {
 			return _classPrivateFieldGet2(_analysis_accessor_storage$2, this);
@@ -17765,6 +19571,12 @@
 		set comparisonWindows(value) {
 			_classPrivateFieldSet2(_comparisonWindows_accessor_storage$3, this, value);
 		}
+		get hass() {
+			return _classPrivateFieldGet2(_hass_accessor_storage$10, this);
+		}
+		set hass(value) {
+			_classPrivateFieldSet2(_hass_accessor_storage$10, this, value);
+		}
 		get computing() {
 			return _classPrivateFieldGet2(_computing_accessor_storage$1, this);
 		}
@@ -17782,6 +19594,32 @@
 		}
 		set computingMethods(value) {
 			_classPrivateFieldSet2(_computingMethods_accessor_storage$1, this, value);
+		}
+		get hideSaveMonitorCta() {
+			return _classPrivateFieldGet2(_hideSaveMonitorCta_accessor_storage, this);
+		}
+		set hideSaveMonitorCta(value) {
+			_classPrivateFieldSet2(_hideSaveMonitorCta_accessor_storage, this, value);
+		}
+		/**
+		* Build an entity filter for the comparison entity picker that matches the
+		* current entity's device class, then unit of measurement, then domain.
+		*/
+		_buildEntityFilter() {
+			if (!this.hass || !this.entityId) return void 0;
+			const sourceState = this.hass.states[this.entityId];
+			if (!sourceState) return void 0;
+			const attrs = sourceState.attributes;
+			const deviceClass = attrs.device_class;
+			const unit = attrs.unit_of_measurement;
+			const domain = this.entityId.split(".")[0];
+			return (state) => {
+				if (state.entity_id === this.entityId) return false;
+				const a = state.attributes;
+				if (deviceClass) return a.device_class === deviceClass;
+				if (unit) return a.unit_of_measurement === unit;
+				return state.entity_id.split(".")[0] === domain;
+			};
 		}
 		_emit(key, value) {
 			this.dispatchEvent(new CustomEvent("dp-group-analysis-change", {
@@ -17900,6 +19738,25 @@
         </analysis-method-subopts>
       `;
 			}
+			if (opt.value === "similar_entity") {
+				const entityFilter = this._buildEntityFilter();
+				return b`
+        <analysis-method-subopts>
+          <label class="field">
+            <span class="field-label">${msg("Compare to entity")}</span>
+            <div class="entity-picker-wrap">
+              <ha-entity-picker
+                .hass=${this.hass}
+                .value=${a.anomaly_comparison_entity_id ?? ""}
+                .entityFilter=${entityFilter}
+                allow-custom-entity
+                @value-changed=${(e) => this._emit("anomaly_comparison_entity_id", e.detail.value || null)}
+              ></ha-entity-picker>
+            </div>
+          </label>
+        </analysis-method-subopts>
+      `;
+			}
 			return A;
 		}
 		render() {
@@ -17992,10 +19849,26 @@
                 ></inline-select>
               </label>
             ` : A}
+        ${a.show_anomalies && Array.isArray(a.anomaly_methods) && a.anomaly_methods.length > 0 && !this.hideSaveMonitorCta ? b`
+              <button class="save-monitor-btn" @click=${this._onSaveAsMonitor}>
+                <ha-icon icon="mdi:bell-plus-outline"></ha-icon>
+                ${msg("Save as anomaly monitor")}
+              </button>
+            ` : A}
       </analysis-group>
     `;
 		}
-	}, _defineProperty(_AnalysisAnomalyGroup, "styles", [sharedStyles, styles$44]), _AnalysisAnomalyGroup);
+		_onSaveAsMonitor() {
+			this.dispatchEvent(new CustomEvent("dp-anomaly-save-monitor", {
+				detail: {
+					entityId: this.entityId,
+					analysis: this.analysis
+				},
+				bubbles: true,
+				composed: true
+			}));
+		}
+	}, _defineProperty(_AnalysisAnomalyGroup, "styles", [sharedStyles, styles$50]), _AnalysisAnomalyGroup);
 	__decorate([n$1({ type: Object })], AnalysisAnomalyGroup.prototype, "analysis", null);
 	__decorate([n$1({
 		type: String,
@@ -18005,6 +19878,10 @@
 		type: Array,
 		attribute: "comparison-windows"
 	})], AnalysisAnomalyGroup.prototype, "comparisonWindows", null);
+	__decorate([n$1({
+		type: Object,
+		attribute: false
+	})], AnalysisAnomalyGroup.prototype, "hass", null);
 	__decorate([n$1({
 		type: Boolean,
 		attribute: false
@@ -18017,11 +19894,15 @@
 		type: Object,
 		attribute: false
 	})], AnalysisAnomalyGroup.prototype, "computingMethods", null);
+	__decorate([n$1({
+		type: Boolean,
+		attribute: "hide-save-monitor-cta"
+	})], AnalysisAnomalyGroup.prototype, "hideSaveMonitorCta", null);
 	AnalysisAnomalyGroup = __decorate([localized()], AnalysisAnomalyGroup);
 	customElements.define("analysis-anomaly-group", AnalysisAnomalyGroup);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/analysis-delta-group/analysis-delta-group.styles.ts
-	var styles$42 = i$5`
+	var styles$48 = i$5`
   .help-text {
     display: inline-block;
     color: var(--secondary-text-color);
@@ -18111,7 +19992,7 @@
       </analysis-group>
     `;
 		}
-	}, _defineProperty(_AnalysisDeltaGroup, "styles", [sharedStyles, styles$42]), _AnalysisDeltaGroup);
+	}, _defineProperty(_AnalysisDeltaGroup, "styles", [sharedStyles, styles$48]), _AnalysisDeltaGroup);
 	__decorate([n$1({ type: Object })], AnalysisDeltaGroup.prototype, "analysis", null);
 	__decorate([n$1({
 		type: String,
@@ -18125,14 +20006,14 @@
 	customElements.define("analysis-delta-group", AnalysisDeltaGroup);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/sidebar-options/sections/sidebar-datapoints-section.styles.ts
-	var styles$41 = i$5`
+	var styles$47 = i$5`
   :host {
     display: block;
   }
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/display/sidebar-options-section/sidebar-options-section.styles.ts
-	var styles$40 = i$5`
+	var styles$46 = i$5`
   :host {
     display: block;
     --dp-spacing-xs: calc(var(--spacing, 8px) * 0.5);
@@ -18146,7 +20027,7 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/display/sidebar-section-header/sidebar-section-header.styles.ts
-	var styles$39 = i$5`
+	var styles$45 = i$5`
   :host {
     display: block;
   }
@@ -18206,17 +20087,20 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/display/sidebar-section-header/sidebar-section-header.ts
+	var DEFAULT_I18N$5 = createDefaultI18n(["Collapse", "Expand"]);
 	var _title_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
 	var _subtitle_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
 	var _collapsible_accessor_storage$5 = /* @__PURE__ */ new WeakMap();
-	var _open_accessor_storage$7 = /* @__PURE__ */ new WeakMap();
+	var _open_accessor_storage$9 = /* @__PURE__ */ new WeakMap();
+	var _i18n_accessor_storage$6 = /* @__PURE__ */ new WeakMap();
 	var SidebarSectionHeader = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _title_accessor_storage$1, "");
 			_classPrivateFieldInitSpec(this, _subtitle_accessor_storage$1, "");
 			_classPrivateFieldInitSpec(this, _collapsible_accessor_storage$5, false);
-			_classPrivateFieldInitSpec(this, _open_accessor_storage$7, true);
+			_classPrivateFieldInitSpec(this, _open_accessor_storage$9, true);
+			_classPrivateFieldInitSpec(this, _i18n_accessor_storage$6, DEFAULT_I18N$5);
 		}
 		get title() {
 			return _classPrivateFieldGet2(_title_accessor_storage$1, this);
@@ -18237,10 +20121,19 @@
 			_classPrivateFieldSet2(_collapsible_accessor_storage$5, this, value);
 		}
 		get open() {
-			return _classPrivateFieldGet2(_open_accessor_storage$7, this);
+			return _classPrivateFieldGet2(_open_accessor_storage$9, this);
 		}
 		set open(value) {
-			_classPrivateFieldSet2(_open_accessor_storage$7, this, value);
+			_classPrivateFieldSet2(_open_accessor_storage$9, this, value);
+		}
+		get i18n() {
+			return _classPrivateFieldGet2(_i18n_accessor_storage$6, this);
+		}
+		set i18n(value) {
+			_classPrivateFieldSet2(_i18n_accessor_storage$6, this, value);
+		}
+		_t(key) {
+			return t$4(this.i18n, key);
 		}
 		_emitToggle() {
 			this.dispatchEvent(new CustomEvent("dp-section-toggle", {
@@ -18278,7 +20171,7 @@
                 <button
                   type="button"
                   class="sidebar-section-toggle ${this.open ? "is-open" : ""}"
-                  aria-label="${this.open ? "Collapse" : "Expand"} ${this.title}"
+                  aria-label="${this._t(this.open ? "Collapse" : "Expand")} ${this.title}"
                   aria-expanded=${this.open}
                   @click=${this._onButtonClick}
                 >
@@ -18291,25 +20184,28 @@
     `;
 		}
 	};
-	_defineProperty(SidebarSectionHeader, "styles", styles$39);
+	_defineProperty(SidebarSectionHeader, "styles", styles$45);
 	__decorate([n$1({ type: String })], SidebarSectionHeader.prototype, "title", null);
 	__decorate([n$1({ type: String })], SidebarSectionHeader.prototype, "subtitle", null);
 	__decorate([n$1({ type: Boolean })], SidebarSectionHeader.prototype, "collapsible", null);
 	__decorate([n$1({ type: Boolean })], SidebarSectionHeader.prototype, "open", null);
+	__decorate([n$1({ attribute: false })], SidebarSectionHeader.prototype, "i18n", null);
 	customElements.define("sidebar-section-header", SidebarSectionHeader);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/display/sidebar-options-section/sidebar-options-section.ts
 	var _title_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _subtitle_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _collapsible_accessor_storage$4 = /* @__PURE__ */ new WeakMap();
-	var _open_accessor_storage$6 = /* @__PURE__ */ new WeakMap();
+	var _open_accessor_storage$8 = /* @__PURE__ */ new WeakMap();
+	var _i18n_accessor_storage$5 = /* @__PURE__ */ new WeakMap();
 	var SidebarOptionsSection = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _title_accessor_storage, "");
 			_classPrivateFieldInitSpec(this, _subtitle_accessor_storage, "");
 			_classPrivateFieldInitSpec(this, _collapsible_accessor_storage$4, false);
-			_classPrivateFieldInitSpec(this, _open_accessor_storage$6, true);
+			_classPrivateFieldInitSpec(this, _open_accessor_storage$8, true);
+			_classPrivateFieldInitSpec(this, _i18n_accessor_storage$5, EMPTY_I18N);
 		}
 		get title() {
 			return _classPrivateFieldGet2(_title_accessor_storage, this);
@@ -18330,10 +20226,16 @@
 			_classPrivateFieldSet2(_collapsible_accessor_storage$4, this, value);
 		}
 		get open() {
-			return _classPrivateFieldGet2(_open_accessor_storage$6, this);
+			return _classPrivateFieldGet2(_open_accessor_storage$8, this);
 		}
 		set open(value) {
-			_classPrivateFieldSet2(_open_accessor_storage$6, this, value);
+			_classPrivateFieldSet2(_open_accessor_storage$8, this, value);
+		}
+		get i18n() {
+			return _classPrivateFieldGet2(_i18n_accessor_storage$5, this);
+		}
+		set i18n(value) {
+			_classPrivateFieldSet2(_i18n_accessor_storage$5, this, value);
 		}
 		_onToggle(e) {
 			e.stopPropagation();
@@ -18352,6 +20254,7 @@
           .subtitle=${this.subtitle}
           .collapsible=${this.collapsible}
           .open=${this.open}
+          .i18n=${this.i18n}
           @dp-section-toggle=${this._onToggle}
         ></sidebar-section-header>
         ${this.collapsible && !this.open ? A : b`<slot></slot>`}
@@ -18359,15 +20262,16 @@
     `;
 		}
 	};
-	_defineProperty(SidebarOptionsSection, "styles", styles$40);
+	_defineProperty(SidebarOptionsSection, "styles", styles$46);
 	__decorate([n$1({ type: String })], SidebarOptionsSection.prototype, "title", null);
 	__decorate([n$1({ type: String })], SidebarOptionsSection.prototype, "subtitle", null);
 	__decorate([n$1({ type: Boolean })], SidebarOptionsSection.prototype, "collapsible", null);
 	__decorate([n$1({ type: Boolean })], SidebarOptionsSection.prototype, "open", null);
+	__decorate([n$1({ attribute: false })], SidebarOptionsSection.prototype, "i18n", null);
 	customElements.define("sidebar-options-section", SidebarOptionsSection);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/form/radio-group/radio-group.styles.ts
-	var styles$38 = i$5`
+	var styles$44 = i$5`
   :host {
     display: block;
   }
@@ -18394,21 +20298,21 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/form/radio-group/radio-group.ts
-	var _name_accessor_storage$2 = /* @__PURE__ */ new WeakMap();
+	var _name_accessor_storage$3 = /* @__PURE__ */ new WeakMap();
 	var _value_accessor_storage$5 = /* @__PURE__ */ new WeakMap();
 	var _options_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
 	var RadioGroup = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
-			_classPrivateFieldInitSpec(this, _name_accessor_storage$2, "");
+			_classPrivateFieldInitSpec(this, _name_accessor_storage$3, "");
 			_classPrivateFieldInitSpec(this, _value_accessor_storage$5, "");
 			_classPrivateFieldInitSpec(this, _options_accessor_storage$1, []);
 		}
 		get name() {
-			return _classPrivateFieldGet2(_name_accessor_storage$2, this);
+			return _classPrivateFieldGet2(_name_accessor_storage$3, this);
 		}
 		set name(value) {
-			_classPrivateFieldSet2(_name_accessor_storage$2, this, value);
+			_classPrivateFieldSet2(_name_accessor_storage$3, this, value);
 		}
 		get value() {
 			return _classPrivateFieldGet2(_value_accessor_storage$5, this);
@@ -18451,14 +20355,14 @@
     `;
 		}
 	};
-	_defineProperty(RadioGroup, "styles", styles$38);
+	_defineProperty(RadioGroup, "styles", styles$44);
 	__decorate([n$1({ type: String })], RadioGroup.prototype, "name", null);
 	__decorate([n$1({ type: String })], RadioGroup.prototype, "value", null);
 	__decorate([n$1({ type: Array })], RadioGroup.prototype, "options", null);
 	customElements.define("radio-group", RadioGroup);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/sidebar-options/sections/sidebar-datapoints-section.ts
-	var _SidebarDatapointsSection, _datapointScope_accessor_storage$2, _collapsible_accessor_storage$3, _open_accessor_storage$5;
+	var _SidebarDatapointsSection, _datapointScope_accessor_storage$2, _collapsible_accessor_storage$3, _open_accessor_storage$7;
 	var DATAPOINT_SCOPE_OPTIONS = [
 		{
 			value: "linked",
@@ -18473,12 +20377,12 @@
 			label: "Hide datapoints"
 		}
 	];
-	var SidebarDatapointsSection = (_datapointScope_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _collapsible_accessor_storage$3 = /* @__PURE__ */ new WeakMap(), _open_accessor_storage$5 = /* @__PURE__ */ new WeakMap(), _SidebarDatapointsSection = class SidebarDatapointsSection extends i$2 {
+	var SidebarDatapointsSection = (_datapointScope_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _collapsible_accessor_storage$3 = /* @__PURE__ */ new WeakMap(), _open_accessor_storage$7 = /* @__PURE__ */ new WeakMap(), _SidebarDatapointsSection = class SidebarDatapointsSection extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _datapointScope_accessor_storage$2, "linked");
 			_classPrivateFieldInitSpec(this, _collapsible_accessor_storage$3, false);
-			_classPrivateFieldInitSpec(this, _open_accessor_storage$5, true);
+			_classPrivateFieldInitSpec(this, _open_accessor_storage$7, true);
 		}
 		get datapointScope() {
 			return _classPrivateFieldGet2(_datapointScope_accessor_storage$2, this);
@@ -18493,10 +20397,10 @@
 			_classPrivateFieldSet2(_collapsible_accessor_storage$3, this, value);
 		}
 		get open() {
-			return _classPrivateFieldGet2(_open_accessor_storage$5, this);
+			return _classPrivateFieldGet2(_open_accessor_storage$7, this);
 		}
 		set open(value) {
-			_classPrivateFieldSet2(_open_accessor_storage$5, this, value);
+			_classPrivateFieldSet2(_open_accessor_storage$7, this, value);
 		}
 		_onScopeChange(e) {
 			this.dispatchEvent(new CustomEvent("dp-scope-change", {
@@ -18528,7 +20432,7 @@
       </sidebar-options-section>
     `;
 		}
-	}, _defineProperty(_SidebarDatapointsSection, "styles", styles$41), _SidebarDatapointsSection);
+	}, _defineProperty(_SidebarDatapointsSection, "styles", styles$47), _SidebarDatapointsSection);
 	__decorate([n$1({
 		type: String,
 		attribute: "datapoint-scope"
@@ -18539,14 +20443,14 @@
 	customElements.define("sidebar-datapoints-section", SidebarDatapointsSection);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/sidebar-options/sections/sidebar-datapoint-display-section.styles.ts
-	var styles$37 = i$5`
+	var styles$43 = i$5`
   :host {
     display: block;
   }
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/form/checkbox-list/checkbox-list.styles.ts
-	var styles$36 = i$5`
+	var styles$42 = i$5`
   :host {
     display: block;
   }
@@ -18609,19 +20513,19 @@
     `;
 		}
 	};
-	_defineProperty(CheckboxList, "styles", styles$36);
+	_defineProperty(CheckboxList, "styles", styles$42);
 	__decorate([n$1({ type: Array })], CheckboxList.prototype, "items", null);
 	customElements.define("checkbox-list", CheckboxList);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/sidebar-options/sections/sidebar-datapoint-display-section.ts
-	var _SidebarDatapointDisplaySection, _showIcons_accessor_storage$2, _showLines_accessor_storage$2, _collapsible_accessor_storage$2, _open_accessor_storage$4;
-	var SidebarDatapointDisplaySection = (_showIcons_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _showLines_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _collapsible_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _open_accessor_storage$4 = /* @__PURE__ */ new WeakMap(), _SidebarDatapointDisplaySection = class SidebarDatapointDisplaySection extends i$2 {
+	var _SidebarDatapointDisplaySection, _showIcons_accessor_storage$2, _showLines_accessor_storage$2, _collapsible_accessor_storage$2, _open_accessor_storage$6;
+	var SidebarDatapointDisplaySection = (_showIcons_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _showLines_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _collapsible_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _open_accessor_storage$6 = /* @__PURE__ */ new WeakMap(), _SidebarDatapointDisplaySection = class SidebarDatapointDisplaySection extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _showIcons_accessor_storage$2, true);
 			_classPrivateFieldInitSpec(this, _showLines_accessor_storage$2, true);
 			_classPrivateFieldInitSpec(this, _collapsible_accessor_storage$2, false);
-			_classPrivateFieldInitSpec(this, _open_accessor_storage$4, true);
+			_classPrivateFieldInitSpec(this, _open_accessor_storage$6, true);
 		}
 		get showIcons() {
 			return _classPrivateFieldGet2(_showIcons_accessor_storage$2, this);
@@ -18642,10 +20546,10 @@
 			_classPrivateFieldSet2(_collapsible_accessor_storage$2, this, value);
 		}
 		get open() {
-			return _classPrivateFieldGet2(_open_accessor_storage$4, this);
+			return _classPrivateFieldGet2(_open_accessor_storage$6, this);
 		}
 		set open(value) {
-			_classPrivateFieldSet2(_open_accessor_storage$4, this, value);
+			_classPrivateFieldSet2(_open_accessor_storage$6, this, value);
 		}
 		_onCheckboxChange(e) {
 			const { name, checked } = e.detail;
@@ -18681,7 +20585,7 @@
       </sidebar-options-section>
     `;
 		}
-	}, _defineProperty(_SidebarDatapointDisplaySection, "styles", styles$37), _SidebarDatapointDisplaySection);
+	}, _defineProperty(_SidebarDatapointDisplaySection, "styles", styles$43), _SidebarDatapointDisplaySection);
 	__decorate([n$1({
 		type: Boolean,
 		attribute: "show-icons"
@@ -18696,7 +20600,7 @@
 	customElements.define("sidebar-datapoint-display-section", SidebarDatapointDisplaySection);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/sidebar-options/sections/sidebar-analysis-section.styles.ts
-	var styles$35 = i$5`
+	var styles$41 = i$5`
   :host {
     display: block;
   }
@@ -18724,7 +20628,7 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/sidebar-options/sections/sidebar-analysis-section.ts
-	var _SidebarAnalysisSection, _anomalyOverlapMode_accessor_storage$2, _showCorrelatedAnomal_accessor_storage$2, _anyAnomaliesEnabled_accessor_storage$2, _collapsible_accessor_storage$1, _open_accessor_storage$3;
+	var _SidebarAnalysisSection, _anomalyOverlapMode_accessor_storage$2, _showCorrelatedAnomal_accessor_storage$2, _anyAnomaliesEnabled_accessor_storage$2, _collapsible_accessor_storage$1, _open_accessor_storage$5;
 	var ANALYSIS_ANOMALY_OVERLAP_MODE_OPTIONS$1 = [{
 		value: "all",
 		label: "Show all anomalies"
@@ -18732,14 +20636,14 @@
 		value: "only",
 		label: "Overlaps only"
 	}];
-	var SidebarAnalysisSection = (_anomalyOverlapMode_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _showCorrelatedAnomal_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _anyAnomaliesEnabled_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _collapsible_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _open_accessor_storage$3 = /* @__PURE__ */ new WeakMap(), _SidebarAnalysisSection = class SidebarAnalysisSection extends i$2 {
+	var SidebarAnalysisSection = (_anomalyOverlapMode_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _showCorrelatedAnomal_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _anyAnomaliesEnabled_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _collapsible_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _open_accessor_storage$5 = /* @__PURE__ */ new WeakMap(), _SidebarAnalysisSection = class SidebarAnalysisSection extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _anomalyOverlapMode_accessor_storage$2, "all");
 			_classPrivateFieldInitSpec(this, _showCorrelatedAnomal_accessor_storage$2, false);
 			_classPrivateFieldInitSpec(this, _anyAnomaliesEnabled_accessor_storage$2, false);
 			_classPrivateFieldInitSpec(this, _collapsible_accessor_storage$1, false);
-			_classPrivateFieldInitSpec(this, _open_accessor_storage$3, true);
+			_classPrivateFieldInitSpec(this, _open_accessor_storage$5, true);
 		}
 		get anomalyOverlapMode() {
 			return _classPrivateFieldGet2(_anomalyOverlapMode_accessor_storage$2, this);
@@ -18766,10 +20670,10 @@
 			_classPrivateFieldSet2(_collapsible_accessor_storage$1, this, value);
 		}
 		get open() {
-			return _classPrivateFieldGet2(_open_accessor_storage$3, this);
+			return _classPrivateFieldGet2(_open_accessor_storage$5, this);
 		}
 		set open(value) {
-			_classPrivateFieldSet2(_open_accessor_storage$3, this, value);
+			_classPrivateFieldSet2(_open_accessor_storage$5, this, value);
 		}
 		_localizedOptions(options) {
 			return options.map((opt) => ({
@@ -18832,7 +20736,7 @@
       </sidebar-options-section>
     `;
 		}
-	}, _defineProperty(_SidebarAnalysisSection, "styles", styles$35), _SidebarAnalysisSection);
+	}, _defineProperty(_SidebarAnalysisSection, "styles", styles$41), _SidebarAnalysisSection);
 	__decorate([n$1({
 		type: String,
 		attribute: "anomaly-overlap-mode"
@@ -18851,7 +20755,7 @@
 	customElements.define("sidebar-analysis-section", SidebarAnalysisSection);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/sidebar-options/sections/sidebar-chart-display-section.styles.ts
-	var styles$34 = i$5`
+	var styles$40 = i$5`
   :host {
     display: block;
     --dp-spacing-sm: var(--spacing, 8px);
@@ -18895,7 +20799,7 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/sidebar-options/sections/sidebar-chart-display-section.ts
-	var _SidebarChartDisplaySection, _showTooltips_accessor_storage$2, _showHoverGuides_accessor_storage$2, _showDataGaps_accessor_storage$2, _dataGapThreshold_accessor_storage$2, _yAxisMode_accessor_storage$2, _hoverSnapMode_accessor_storage$2, _collapsible_accessor_storage, _open_accessor_storage$2;
+	var _SidebarChartDisplaySection, _showTooltips_accessor_storage$2, _showHoverGuides_accessor_storage$2, _showDataGaps_accessor_storage$2, _dataGapThreshold_accessor_storage$2, _yAxisMode_accessor_storage$2, _hoverSnapMode_accessor_storage$2, _collapsible_accessor_storage, _open_accessor_storage$4;
 	var DATA_GAP_THRESHOLD_OPTIONS$1 = [
 		{
 			value: "auto",
@@ -18955,7 +20859,7 @@
 		value: "snap_to_data_points",
 		label: "Snap to data points"
 	}];
-	var SidebarChartDisplaySection = (_showTooltips_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _showHoverGuides_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _showDataGaps_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _dataGapThreshold_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _yAxisMode_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _hoverSnapMode_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _collapsible_accessor_storage = /* @__PURE__ */ new WeakMap(), _open_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _SidebarChartDisplaySection = class SidebarChartDisplaySection extends i$2 {
+	var SidebarChartDisplaySection = (_showTooltips_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _showHoverGuides_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _showDataGaps_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _dataGapThreshold_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _yAxisMode_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _hoverSnapMode_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _collapsible_accessor_storage = /* @__PURE__ */ new WeakMap(), _open_accessor_storage$4 = /* @__PURE__ */ new WeakMap(), _SidebarChartDisplaySection = class SidebarChartDisplaySection extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _showTooltips_accessor_storage$2, true);
@@ -18965,7 +20869,7 @@
 			_classPrivateFieldInitSpec(this, _yAxisMode_accessor_storage$2, "combined");
 			_classPrivateFieldInitSpec(this, _hoverSnapMode_accessor_storage$2, "follow_series");
 			_classPrivateFieldInitSpec(this, _collapsible_accessor_storage, false);
-			_classPrivateFieldInitSpec(this, _open_accessor_storage$2, true);
+			_classPrivateFieldInitSpec(this, _open_accessor_storage$4, true);
 		}
 		get showTooltips() {
 			return _classPrivateFieldGet2(_showTooltips_accessor_storage$2, this);
@@ -19010,10 +20914,10 @@
 			_classPrivateFieldSet2(_collapsible_accessor_storage, this, value);
 		}
 		get open() {
-			return _classPrivateFieldGet2(_open_accessor_storage$2, this);
+			return _classPrivateFieldGet2(_open_accessor_storage$4, this);
 		}
 		set open(value) {
-			_classPrivateFieldSet2(_open_accessor_storage$2, this, value);
+			_classPrivateFieldSet2(_open_accessor_storage$4, this, value);
 		}
 		_localizedOptions(options) {
 			return options.map((opt) => ({
@@ -19100,7 +21004,7 @@
       </sidebar-options-section>
     `;
 		}
-	}, _defineProperty(_SidebarChartDisplaySection, "styles", styles$34), _SidebarChartDisplaySection);
+	}, _defineProperty(_SidebarChartDisplaySection, "styles", styles$40), _SidebarChartDisplaySection);
 	__decorate([n$1({
 		type: Boolean,
 		attribute: "show-tooltips"
@@ -19131,7 +21035,7 @@
 	customElements.define("sidebar-chart-display-section", SidebarChartDisplaySection);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/history/editor.ts
-	var HassRecordsHistoryCardEditor = class extends EditorBase {
+	var HassDatapointsHistoryCardEditor = class extends EditorBase {
 		constructor(..._args) {
 			super(..._args);
 			_defineProperty(this, "_onTargetChanged", (e) => {
@@ -19451,7 +21355,7 @@
     `;
 		}
 	};
-	_defineProperty(HassRecordsHistoryCardEditor, "styles", [EditorBase.styles, styles$52]);
+	_defineProperty(HassDatapointsHistoryCardEditor, "styles", [EditorBase.styles, styles$58]);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/lib/data/preferences-api.ts
 	/** HA user-data key for the saved history page. Stored via frontend/set_user_data. */
@@ -19863,14 +21767,359 @@
 		}
 		return result;
 	}
+	function getEffectiveSnapUnit(zoomLevel, dateSnapping) {
+		if (dateSnapping !== "auto") return dateSnapping;
+		switch (zoomLevel) {
+			case "quarterly":
+			case "month_compressed": return "month";
+			case "month_short":
+			case "month_expanded":
+			case "week_compressed": return "week";
+			case "week_expanded": return "day";
+			case "day": return "hour";
+			default: return "day";
+		}
+	}
+	function getSnapSpanMs(snapUnit, reference) {
+		const start = startOfUnit(reference, snapUnit);
+		const end = endOfUnit(reference, snapUnit);
+		return Math.max(SECOND_MS, end.getTime() - start.getTime());
+	}
+	function deriveRangeBounds(config, startMs, endMs, historyStartMs, historyEndMs, snapSpanMs) {
+		const maxLookAheadMs = addUnit(/* @__PURE__ */ new Date(), "month", 3).getTime();
+		const naturalMin = startOfUnit(new Date(historyStartMs ?? startMs), config.boundsUnit).getTime();
+		const paddedMin = startOfUnit(/* @__PURE__ */ new Date(startMs - config.baselineMs * .3), config.boundsUnit).getTime();
+		const min = Math.min(naturalMin, paddedMin);
+		const futureReference = addUnit(new Date(historyEndMs ?? endMs), "year", 1).getTime();
+		const maxReference = Math.min(maxLookAheadMs, Math.max(futureReference, endMs, startMs + snapSpanMs));
+		const max = endOfUnit(new Date(maxReference), config.boundsUnit).getTime();
+		return {
+			min,
+			max: Math.max(max, min + SECOND_MS),
+			config
+		};
+	}
+	function computeZoomLevelForSpan(spanMs) {
+		const normalizedSpanMs = Math.max(spanMs, RANGE_SLIDER_MIN_SPAN_MS);
+		if (normalizedSpanMs >= 180 * 864e5) return "quarterly";
+		if (normalizedSpanMs >= 120 * 864e5) return "month_compressed";
+		if (normalizedSpanMs >= 60 * 864e5) return "month_short";
+		if (normalizedSpanMs >= 21 * 864e5) return "month_expanded";
+		if (normalizedSpanMs >= 7 * 864e5) return "week_compressed";
+		if (normalizedSpanMs >= 2 * 864e5) return "week_expanded";
+		return "day";
+	}
 	function snapDateToUnit(value, unit) {
 		const start = startOfUnit(value, unit);
 		const end = endOfUnit(value, unit);
 		return value.getTime() - start.getTime() < end.getTime() - value.getTime() ? start : end;
 	}
 	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/domain/date-window.ts
+	/**
+	* Pure date-window utilities extracted from datapoints.ts.
+	*
+	* All functions are stateless data transformations with no DOM dependency.
+	*/
+	function formatComparisonLabel(start, end) {
+		const fmt = (d) => d.toLocaleDateString(void 0, {
+			month: "short",
+			day: "numeric"
+		});
+		const fmtYear = (d) => d.toLocaleDateString(void 0, {
+			month: "short",
+			day: "numeric",
+			year: "numeric"
+		});
+		return start.getFullYear() === end.getFullYear() ? `${fmt(start)} – ${fmt(end)}` : `${fmtYear(start)} – ${fmtYear(end)}`;
+	}
+	function shiftDateWindowByUnit(date, unit, amount) {
+		const shifted = new Date(date);
+		if (unit === "day") {
+			shifted.setDate(shifted.getDate() + amount);
+			return shifted;
+		}
+		if (unit === "week") {
+			shifted.setDate(shifted.getDate() + amount * 7);
+			return shifted;
+		}
+		if (unit === "month") {
+			shifted.setMonth(shifted.getMonth() + amount);
+			return shifted;
+		}
+		if (unit === "year") {
+			shifted.setFullYear(shifted.getFullYear() + amount);
+			return shifted;
+		}
+		return shifted;
+	}
+	function getRoundedDateWindowUnit(start, end) {
+		if (!(start instanceof Date) || !(end instanceof Date) || !(start < end)) return null;
+		for (const unit of [
+			"day",
+			"week",
+			"month",
+			"year"
+		]) {
+			const roundedStart = startOfUnit(start, unit);
+			const roundedEnd = endOfUnit(start, unit);
+			if (roundedStart?.getTime?.() === start.getTime() && roundedEnd?.getTime?.() === end.getTime()) return unit;
+		}
+		return null;
+	}
+	function formatDateWindowInputValue(date) {
+		if (!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
+		return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}T${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+	}
+	function parseDateWindowInputValue(value) {
+		if (!value || typeof value !== "string") return null;
+		const match = value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
+		if (!match) return null;
+		const [, year, month, day, hour, minute] = match;
+		const parsed = new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute), 0, 0);
+		if (Number.isNaN(parsed.getTime())) return null;
+		return parsed;
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/domain/series-rows.ts
+	/**
+	* Pure series-row utilities extracted from datapoints.ts.
+	*
+	* All functions are stateless data transformations with no DOM dependency.
+	*/
+	var HEX_COLOR_RE = /^#[0-9a-f]{6}$/i;
+	function isValidRowIndex(index, length) {
+		return index !== void 0 && Number.isInteger(index) && index >= 0 && index < length;
+	}
+	function mergeSavedSeriesRows(rows, savedRows) {
+		const normalizedRows = normalizeHistorySeriesRows(rows);
+		const normalizedSavedRows = normalizeHistorySeriesRows(savedRows);
+		if (!normalizedSavedRows.length) return normalizedRows;
+		const savedRowMap = new Map(normalizedSavedRows.map((row) => [row.entity_id, row]));
+		return normalizedRows.map((row) => {
+			const savedRow = savedRowMap.get(row.entity_id);
+			if (!savedRow) return row;
+			return {
+				...row,
+				color: savedRow.color,
+				visible: savedRow.visible,
+				analysis: savedRow.analysis
+			};
+		});
+	}
+	function addSeriesRows(existingRows, entityIds, preferredColors) {
+		const merged = new Map(existingRows.map((row) => [row.entity_id, row]));
+		entityIds.forEach((entityId, index) => {
+			if (merged.has(entityId)) return;
+			const preferred = preferredColors?.[entityId];
+			merged.set(entityId, {
+				entity_id: entityId,
+				color: preferred && HEX_COLOR_RE.test(preferred) ? preferred : COLORS[(merged.size + index) % COLORS.length],
+				visible: true,
+				analysis: normalizeHistorySeriesAnalysis(null)
+			});
+		});
+		return [...merged.values()];
+	}
+	function updateSeriesRowColor(rows, index, color) {
+		if (!isValidRowIndex(index, rows.length)) return null;
+		if (typeof color !== "string" || !HEX_COLOR_RE.test(color)) return null;
+		if (rows[index].color === color) return null;
+		return rows.map((row, i) => i === index ? {
+			...row,
+			color
+		} : row);
+	}
+	function updateSeriesRowVisibility(rows, index, visible) {
+		if (!isValidRowIndex(index, rows.length)) return null;
+		if (rows[index].visible === !!visible) return null;
+		return rows.map((row, i) => i === index ? {
+			...row,
+			visible: !!visible
+		} : row);
+	}
+	function toggleSeriesAnalysisExpanded(rows, entityId) {
+		const index = rows.findIndex((r) => r.entity_id === entityId);
+		if (index === -1) return null;
+		const row = rows[index];
+		const current = normalizeHistorySeriesAnalysis(row.analysis);
+		const next = normalizeHistorySeriesAnalysis({
+			...row.analysis,
+			expanded: !current.expanded
+		});
+		return rows.map((r, i) => i === index ? {
+			...r,
+			analysis: next
+		} : r);
+	}
+	function computeNextAnalysis(currentAnalysis, key, value) {
+		let nextKey = key;
+		let nextValue = value;
+		if (nextKey.startsWith("anomaly_method_toggle_")) {
+			const method = nextKey.slice(22);
+			const currentMethods = currentAnalysis.anomaly_methods;
+			nextKey = "anomaly_methods";
+			nextValue = nextValue === true ? [...new Set([...currentMethods, method])] : currentMethods.filter((m) => m !== method);
+		}
+		const nextSource = {
+			...currentAnalysis,
+			[nextKey]: nextValue
+		};
+		if (nextKey === "show_trend_lines" && nextValue !== true) nextSource.show_trend_crosshairs = false;
+		if (nextKey === "show_threshold_analysis" && nextValue !== true) nextSource.show_threshold_shading = false;
+		if (nextKey === "show_delta_analysis" && nextValue !== true) {
+			nextSource.show_delta_tooltip = true;
+			nextSource.show_delta_lines = false;
+		}
+		if (nextKey === "show_anomalies" && nextValue === true && (!Array.isArray(currentAnalysis.anomaly_methods) || currentAnalysis.anomaly_methods.length === 0)) nextSource.anomaly_methods = ["trend_residual"];
+		const next = normalizeHistorySeriesAnalysis({
+			...nextSource,
+			expanded: true
+		});
+		if (JSON.stringify(next) === JSON.stringify(currentAnalysis)) return null;
+		return next;
+	}
+	function copyAnalysisToAll(rows, sourceEntityId, sourceAnalysis) {
+		if (!sourceEntityId || !sourceAnalysis) return null;
+		let changed = false;
+		const result = rows.map((row) => {
+			if (row.entity_id === sourceEntityId) return row;
+			const current = normalizeHistorySeriesAnalysis(row.analysis);
+			const next = normalizeHistorySeriesAnalysis({
+				...sourceAnalysis,
+				expanded: current.expanded,
+				anomaly_comparison_window_id: current.anomaly_comparison_window_id,
+				anomaly_comparison_entity_id: current.anomaly_comparison_entity_id
+			});
+			if (JSON.stringify(next) === JSON.stringify(current)) return row;
+			changed = true;
+			return {
+				...row,
+				analysis: next
+			};
+		});
+		return changed ? result : null;
+	}
+	function removeSeriesRow(rows, index) {
+		if (!isValidRowIndex(index, rows.length)) return null;
+		return rows.filter((_row, i) => i !== index);
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/domain/comparison-windows.ts
+	function getActiveComparisonWindow(windows, hoveredId, selectedId) {
+		if (hoveredId) return windows.find((w) => w.id === hoveredId) || null;
+		if (selectedId) return windows.find((w) => w.id === selectedId) || null;
+		return null;
+	}
+	function getComparisonPreviewOverlay(activeWindow, startTime, endTime) {
+		if (!activeWindow || !startTime || !endTime) return null;
+		const windowStart = parseDateValue(activeWindow.start_time);
+		const windowEnd = parseDateValue(activeWindow.end_time);
+		if (!windowStart || !windowEnd) return null;
+		const actualSpanMs = endTime.getTime() - startTime.getTime();
+		if (!Number.isFinite(actualSpanMs) || actualSpanMs <= 0) return null;
+		const actualStart = new Date(windowStart.getTime());
+		const actualEnd = new Date(windowStart.getTime() + actualSpanMs);
+		const windowRangeLabel = formatComparisonLabel(windowStart, windowEnd);
+		const actualRangeLabel = formatComparisonLabel(actualStart, actualEnd);
+		if (windowRangeLabel === actualRangeLabel) return null;
+		return {
+			label: activeWindow.label || "Preview",
+			window_range_label: windowRangeLabel,
+			actual_range_label: actualRangeLabel
+		};
+	}
+	function addTimeOffsets(windows, startMs) {
+		return windows.map((w) => ({
+			...w,
+			time_offset_ms: new Date(w.start_time).getTime() - startMs
+		})).filter((w) => Number.isFinite(w.time_offset_ms));
+	}
+	function getPreviewComparisonWindows(windows, selectedId, hoveredId, startTime) {
+		if (!startTime) return [];
+		const ids = [];
+		if (selectedId) ids.push(selectedId);
+		if (hoveredId && !ids.includes(hoveredId)) ids.push(hoveredId);
+		if (!ids.length) return [];
+		return addTimeOffsets(ids.map((id) => windows.find((w) => w.id === id) ?? null).filter((w) => w !== null), startTime.getTime());
+	}
+	function getPreloadComparisonWindows(windows, startTime) {
+		if (!startTime) return [];
+		return addTimeOffsets(windows, startTime.getTime());
+	}
+	/**
+	* Compute the next draft range after applying a shortcut shift.
+	*
+	* If the range aligns to a unit boundary, shifts by one unit in `direction`.
+	* Otherwise, shifts by the raw span duration.
+	*
+	* Returns `null` if the input range is invalid.
+	*/
+	function applyDateWindowShortcut(draftRange, direction, getRoundedUnit, shiftByUnit, startOfUnitFn, endOfUnitFn) {
+		if (!draftRange) return null;
+		const { start, end } = draftRange;
+		if (!(start instanceof Date) || !(end instanceof Date) || !(start < end)) return null;
+		const roundedUnit = getRoundedUnit(start, end);
+		if (roundedUnit) {
+			const nextStart = startOfUnitFn(shiftByUnit(start, roundedUnit, direction), roundedUnit);
+			return {
+				start: nextStart,
+				end: endOfUnitFn(nextStart, roundedUnit)
+			};
+		}
+		const spanMs = end.getTime() - start.getTime();
+		return {
+			start: new Date(start.getTime() + direction * spanMs),
+			end: new Date(end.getTime() + direction * spanMs)
+		};
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/lib/util/popup.ts
+	/**
+	* Compute absolute position for a popup anchored to the right of an element.
+	*
+	* Keeps the popup within the viewport with 8px margin on all sides.
+	*/
+	function computePopupPosition(anchorRect, popupHeight, viewportHeight, gap = 8) {
+		const margin = gap;
+		const top = Math.max(margin, Math.min(anchorRect.top, viewportHeight - popupHeight - margin * 2));
+		return {
+			top,
+			left: anchorRect.right + gap,
+			maxHeight: viewportHeight - top - margin * 2
+		};
+	}
+	/**
+	* Attach outside-click and Escape-key dismiss handlers for a popup.
+	*
+	* Returns a cleanup object whose `destroy()` removes all listeners.
+	*
+	* @param popupEl     The popup container element.
+	* @param anchorEl    The element that triggered the popup (excluded from outside-click).
+	* @param onDismiss   Called when the user clicks outside or presses Escape.
+	* @param focusOnEscape  Element to focus after Escape (defaults to anchorEl).
+	*/
+	function attachPopupDismissListeners(popupEl, anchorEl, onDismiss, focusOnEscape) {
+		const outsideClickHandler = (ev) => {
+			const path = ev.composedPath();
+			if (!path.includes(popupEl) && !path.includes(anchorEl)) onDismiss();
+		};
+		const keyHandler = (ev) => {
+			if (ev.key === "Escape") {
+				onDismiss();
+				(focusOnEscape ?? anchorEl).focus();
+			}
+		};
+		document.addEventListener("click", outsideClickHandler, true);
+		document.addEventListener("keydown", keyHandler);
+		return { destroy() {
+			document.removeEventListener("click", outsideClickHandler, true);
+			document.removeEventListener("keydown", keyHandler);
+		} };
+	}
+	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row/target-row.styles.ts
-	var styles$33 = i$5`
+	var styles$39 = i$5`
   :host {
     display: block;
     --dp-spacing-xs: calc(var(--spacing, 8px) * 0.5);
@@ -20364,7 +22613,7 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row/target-row.ts
-	var _TargetRow, _color_accessor_storage$1, _visible_accessor_storage, _analysis_accessor_storage, _index_accessor_storage, _entityId_accessor_storage, _canShowDeltaAnalysis_accessor_storage$2, _stateObj_accessor_storage$1, _hass_accessor_storage$7, _comparisonWindows_accessor_storage$2, _computing_accessor_storage, _computingProgress_accessor_storage, _computingMethods_accessor_storage, _rowCount_accessor_storage, _allAnalysisSame_accessor_storage, _hideDragHandle_accessor_storage;
+	var _TargetRow, _color_accessor_storage$1, _visible_accessor_storage$1, _analysis_accessor_storage, _index_accessor_storage, _entityId_accessor_storage, _canShowDeltaAnalysis_accessor_storage$2, _stateObj_accessor_storage$1, _hass_accessor_storage$9, _comparisonWindows_accessor_storage$2, _computing_accessor_storage, _computingProgress_accessor_storage, _computingMethods_accessor_storage, _rowCount_accessor_storage, _allAnalysisSame_accessor_storage, _hideDragHandle_accessor_storage, _label_accessor_storage$8;
 	function deriveSwatchIconColor(color) {
 		const hex = String(color || "").trim();
 		const normalizedHex = /^#([0-9a-f]{6})$/i.test(hex) ? hex : null;
@@ -20388,17 +22637,17 @@
 	function _hasActiveAnalysis(a, hasComparisonWindow) {
 		return a.show_trend_lines || a.show_summary_stats || a.show_rate_of_change || a.show_threshold_analysis || a.show_anomalies || a.show_delta_analysis && hasComparisonWindow;
 	}
-	var TargetRow = (_color_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _visible_accessor_storage = /* @__PURE__ */ new WeakMap(), _analysis_accessor_storage = /* @__PURE__ */ new WeakMap(), _index_accessor_storage = /* @__PURE__ */ new WeakMap(), _entityId_accessor_storage = /* @__PURE__ */ new WeakMap(), _canShowDeltaAnalysis_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _stateObj_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _hass_accessor_storage$7 = /* @__PURE__ */ new WeakMap(), _comparisonWindows_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _computing_accessor_storage = /* @__PURE__ */ new WeakMap(), _computingProgress_accessor_storage = /* @__PURE__ */ new WeakMap(), _computingMethods_accessor_storage = /* @__PURE__ */ new WeakMap(), _rowCount_accessor_storage = /* @__PURE__ */ new WeakMap(), _allAnalysisSame_accessor_storage = /* @__PURE__ */ new WeakMap(), _hideDragHandle_accessor_storage = /* @__PURE__ */ new WeakMap(), _TargetRow = class TargetRow extends i$2 {
+	var TargetRow = (_color_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _visible_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _analysis_accessor_storage = /* @__PURE__ */ new WeakMap(), _index_accessor_storage = /* @__PURE__ */ new WeakMap(), _entityId_accessor_storage = /* @__PURE__ */ new WeakMap(), _canShowDeltaAnalysis_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _stateObj_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _hass_accessor_storage$9 = /* @__PURE__ */ new WeakMap(), _comparisonWindows_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _computing_accessor_storage = /* @__PURE__ */ new WeakMap(), _computingProgress_accessor_storage = /* @__PURE__ */ new WeakMap(), _computingMethods_accessor_storage = /* @__PURE__ */ new WeakMap(), _rowCount_accessor_storage = /* @__PURE__ */ new WeakMap(), _allAnalysisSame_accessor_storage = /* @__PURE__ */ new WeakMap(), _hideDragHandle_accessor_storage = /* @__PURE__ */ new WeakMap(), _label_accessor_storage$8 = /* @__PURE__ */ new WeakMap(), _TargetRow = class TargetRow extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _color_accessor_storage$1, "#03a9f4");
-			_classPrivateFieldInitSpec(this, _visible_accessor_storage, true);
+			_classPrivateFieldInitSpec(this, _visible_accessor_storage$1, true);
 			_classPrivateFieldInitSpec(this, _analysis_accessor_storage, {});
 			_classPrivateFieldInitSpec(this, _index_accessor_storage, 0);
 			_classPrivateFieldInitSpec(this, _entityId_accessor_storage, "");
 			_classPrivateFieldInitSpec(this, _canShowDeltaAnalysis_accessor_storage$2, false);
 			_classPrivateFieldInitSpec(this, _stateObj_accessor_storage$1, null);
-			_classPrivateFieldInitSpec(this, _hass_accessor_storage$7, null);
+			_classPrivateFieldInitSpec(this, _hass_accessor_storage$9, null);
 			_classPrivateFieldInitSpec(this, _comparisonWindows_accessor_storage$2, []);
 			_classPrivateFieldInitSpec(this, _computing_accessor_storage, false);
 			_classPrivateFieldInitSpec(this, _computingProgress_accessor_storage, 0);
@@ -20406,6 +22655,7 @@
 			_classPrivateFieldInitSpec(this, _rowCount_accessor_storage, 1);
 			_classPrivateFieldInitSpec(this, _allAnalysisSame_accessor_storage, false);
 			_classPrivateFieldInitSpec(this, _hideDragHandle_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _label_accessor_storage$8, null);
 		}
 		get color() {
 			return _classPrivateFieldGet2(_color_accessor_storage$1, this);
@@ -20414,10 +22664,10 @@
 			_classPrivateFieldSet2(_color_accessor_storage$1, this, value);
 		}
 		get visible() {
-			return _classPrivateFieldGet2(_visible_accessor_storage, this);
+			return _classPrivateFieldGet2(_visible_accessor_storage$1, this);
 		}
 		set visible(value) {
-			_classPrivateFieldSet2(_visible_accessor_storage, this, value);
+			_classPrivateFieldSet2(_visible_accessor_storage$1, this, value);
 		}
 		get analysis() {
 			return _classPrivateFieldGet2(_analysis_accessor_storage, this);
@@ -20450,10 +22700,10 @@
 			_classPrivateFieldSet2(_stateObj_accessor_storage$1, this, value);
 		}
 		get hass() {
-			return _classPrivateFieldGet2(_hass_accessor_storage$7, this);
+			return _classPrivateFieldGet2(_hass_accessor_storage$9, this);
 		}
 		set hass(value) {
-			_classPrivateFieldSet2(_hass_accessor_storage$7, this, value);
+			_classPrivateFieldSet2(_hass_accessor_storage$9, this, value);
 		}
 		get comparisonWindows() {
 			return _classPrivateFieldGet2(_comparisonWindows_accessor_storage$2, this);
@@ -20497,12 +22747,19 @@
 		set hideDragHandle(value) {
 			_classPrivateFieldSet2(_hideDragHandle_accessor_storage, this, value);
 		}
+		get label() {
+			return _classPrivateFieldGet2(_label_accessor_storage$8, this);
+		}
+		set label(value) {
+			_classPrivateFieldSet2(_label_accessor_storage$8, this, value);
+		}
 		/** Entity ID — from HA state when available, else from the config prop. */
 		get _entityId() {
 			return this.stateObj?.entity_id ?? this.entityId ?? "";
 		}
-		/** Display name derived from the HA state object, falling back to the entity ID. */
+		/** Display name: uses the explicit label override when provided, otherwise derives from the HA state object. */
 		get _entityName() {
+			if (this.label) return this.label;
 			return (this.stateObj?.attributes)?.friendly_name ?? this._entityId;
 		}
 		/** Unit of measurement derived from the HA state object. */
@@ -20591,6 +22848,7 @@
                 class="history-target-color"
                 .value=${this.color}
                 aria-label="Line color for ${this._entityId}"
+                @input=${this._onColorChange}
                 @change=${this._onColorChange}
               />
               <span class="history-target-color-icon" aria-hidden="true">
@@ -20687,6 +22945,7 @@
                   <analysis-anomaly-group
                     .analysis=${a}
                     .entityId=${this._entityId}
+                    .hass=${this.hass}
                     .comparisonWindows=${this.comparisonWindows}
                     .computing=${this.computing}
                     .computingProgress=${this.computingProgress}
@@ -20730,7 +22989,7 @@
       </div>
     `;
 		}
-	}, _defineProperty(_TargetRow, "styles", styles$33), _TargetRow);
+	}, _defineProperty(_TargetRow, "styles", styles$39), _TargetRow);
 	__decorate([n$1({ type: String })], TargetRow.prototype, "color", null);
 	__decorate([n$1({ type: Boolean })], TargetRow.prototype, "visible", null);
 	__decorate([n$1({ type: Object })], TargetRow.prototype, "analysis", null);
@@ -20779,11 +23038,15 @@
 		type: Boolean,
 		attribute: "hide-drag-handle"
 	})], TargetRow.prototype, "hideDragHandle", null);
+	__decorate([n$1({
+		type: String,
+		attribute: false
+	})], TargetRow.prototype, "label", null);
 	TargetRow = __decorate([localized()], TargetRow);
 	customElements.define("target-row", TargetRow);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row-list/target-row-list.styles.ts
-	var styles$32 = i$5`
+	var styles$38 = i$5`
   :host {
     display: block;
     --dp-spacing-xs: calc(var(--spacing, 8px) * 0.5);
@@ -20857,7 +23120,7 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/target-row-list/target-row-list.ts
-	var _TargetRowList, _rows_accessor_storage$1, _states_accessor_storage$1, _hass_accessor_storage$6, _canShowDeltaAnalysis_accessor_storage$1, _comparisonWindows_accessor_storage$1, _computingEntityIds_accessor_storage, _analysisProgress_accessor_storage, _computingMethodsByEn_accessor_storage;
+	var _TargetRowList, _rows_accessor_storage$1, _states_accessor_storage$1, _hass_accessor_storage$8, _canShowDeltaAnalysis_accessor_storage$1, _comparisonWindows_accessor_storage$1, _computingEntityIds_accessor_storage, _analysisProgress_accessor_storage, _computingMethodsByEn_accessor_storage, _labelMap_accessor_storage, _targetRows_accessor_storage;
 	var _DURATION_SECONDS = {
 		raw: 0,
 		"5s": 5,
@@ -20893,14 +23156,22 @@
 			"28d"
 		],
 		rate_window: [
+			"30m",
 			"1h",
+			"2h",
+			"3h",
 			"6h",
-			"24h"
+			"24h",
+			"7d"
 		],
 		anomaly_rate_window: [
+			"30m",
 			"1h",
+			"2h",
+			"3h",
 			"6h",
-			"24h"
+			"24h",
+			"7d"
 		],
 		anomaly_zscore_window: [
 			"1h",
@@ -20931,17 +23202,19 @@
 		}
 		return updates;
 	}
-	var TargetRowList = (_rows_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _states_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _hass_accessor_storage$6 = /* @__PURE__ */ new WeakMap(), _canShowDeltaAnalysis_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _comparisonWindows_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _computingEntityIds_accessor_storage = /* @__PURE__ */ new WeakMap(), _analysisProgress_accessor_storage = /* @__PURE__ */ new WeakMap(), _computingMethodsByEn_accessor_storage = /* @__PURE__ */ new WeakMap(), _TargetRowList = class TargetRowList extends i$2 {
+	var TargetRowList = (_rows_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _states_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _hass_accessor_storage$8 = /* @__PURE__ */ new WeakMap(), _canShowDeltaAnalysis_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _comparisonWindows_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _computingEntityIds_accessor_storage = /* @__PURE__ */ new WeakMap(), _analysisProgress_accessor_storage = /* @__PURE__ */ new WeakMap(), _computingMethodsByEn_accessor_storage = /* @__PURE__ */ new WeakMap(), _labelMap_accessor_storage = /* @__PURE__ */ new WeakMap(), _targetRows_accessor_storage = /* @__PURE__ */ new WeakMap(), _TargetRowList = class TargetRowList extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _rows_accessor_storage$1, []);
 			_classPrivateFieldInitSpec(this, _states_accessor_storage$1, {});
-			_classPrivateFieldInitSpec(this, _hass_accessor_storage$6, null);
+			_classPrivateFieldInitSpec(this, _hass_accessor_storage$8, null);
 			_classPrivateFieldInitSpec(this, _canShowDeltaAnalysis_accessor_storage$1, false);
 			_classPrivateFieldInitSpec(this, _comparisonWindows_accessor_storage$1, []);
 			_classPrivateFieldInitSpec(this, _computingEntityIds_accessor_storage, /* @__PURE__ */ new Set());
 			_classPrivateFieldInitSpec(this, _analysisProgress_accessor_storage, 0);
 			_classPrivateFieldInitSpec(this, _computingMethodsByEn_accessor_storage, /* @__PURE__ */ new Map());
+			_classPrivateFieldInitSpec(this, _labelMap_accessor_storage, /* @__PURE__ */ new Map());
+			_classPrivateFieldInitSpec(this, _targetRows_accessor_storage, void 0);
 			_defineProperty(
 				this,
 				/** Index of the row currently being dragged, or null when not dragging. */
@@ -21034,10 +23307,10 @@
 			_classPrivateFieldSet2(_states_accessor_storage$1, this, value);
 		}
 		get hass() {
-			return _classPrivateFieldGet2(_hass_accessor_storage$6, this);
+			return _classPrivateFieldGet2(_hass_accessor_storage$8, this);
 		}
 		set hass(value) {
-			_classPrivateFieldSet2(_hass_accessor_storage$6, this, value);
+			_classPrivateFieldSet2(_hass_accessor_storage$8, this, value);
 		}
 		get canShowDeltaAnalysis() {
 			return _classPrivateFieldGet2(_canShowDeltaAnalysis_accessor_storage$1, this);
@@ -21069,6 +23342,18 @@
 		set computingMethodsByEntity(value) {
 			_classPrivateFieldSet2(_computingMethodsByEn_accessor_storage, this, value);
 		}
+		get labelMap() {
+			return _classPrivateFieldGet2(_labelMap_accessor_storage, this);
+		}
+		set labelMap(value) {
+			_classPrivateFieldSet2(_labelMap_accessor_storage, this, value);
+		}
+		get _targetRows() {
+			return _classPrivateFieldGet2(_targetRows_accessor_storage, this);
+		}
+		set _targetRows(value) {
+			_classPrivateFieldSet2(_targetRows_accessor_storage, this, value);
+		}
 		render() {
 			if (!this.rows.length) return b``;
 			const firstAnalysis = JSON.stringify(this.rows[0]?.analysis ?? {});
@@ -21093,6 +23378,7 @@
                 entity-id=${row.entity_id}
                 .canShowDeltaAnalysis=${this.canShowDeltaAnalysis}
                 .stateObj=${this.states?.[row.entity_id] ?? null}
+                .label=${this.labelMap.get(row.entity_id) ?? null}
                 .hass=${this.hass ?? null}
                 .comparisonWindows=${this.comparisonWindows}
                 .computing=${this.computingEntityIds?.has(row.entity_id) ?? false}
@@ -21177,11 +23463,11 @@
 			return null;
 		}
 		_clearDropIndicators() {
-			this.shadowRoot?.querySelectorAll("target-row").forEach((r) => {
+			this._targetRows?.forEach((r) => {
 				r.classList.remove("is-drag-over-before", "is-drag-over-after");
 			});
 		}
-	}, _defineProperty(_TargetRowList, "styles", styles$32), _TargetRowList);
+	}, _defineProperty(_TargetRowList, "styles", styles$38), _TargetRowList);
 	__decorate([n$1({ type: Array })], TargetRowList.prototype, "rows", null);
 	__decorate([n$1({
 		type: Object,
@@ -21211,11 +23497,16 @@
 		type: Object,
 		attribute: false
 	})], TargetRowList.prototype, "computingMethodsByEntity", null);
+	__decorate([n$1({
+		type: Object,
+		attribute: false
+	})], TargetRowList.prototype, "labelMap", null);
+	__decorate([r$1("target-row")], TargetRowList.prototype, "_targetRows", null);
 	TargetRowList = __decorate([localized()], TargetRowList);
 	customElements.define("target-row-list", TargetRowList);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/sidebar-options/sidebar-options.styles.ts
-	var styles$31 = i$5`
+	var styles$37 = i$5`
   :host {
     display: block;
     --dp-spacing-lg: calc(var(--spacing, 8px) * 2);
@@ -21427,7 +23718,7 @@
     `;
 		}
 	};
-	_defineProperty(SidebarOptions, "styles", styles$31);
+	_defineProperty(SidebarOptions, "styles", styles$37);
 	__decorate([n$1({
 		type: String,
 		attribute: "datapoint-scope"
@@ -21476,7 +23767,7 @@
 		type: Boolean,
 		attribute: false
 	})], SidebarOptions.prototype, "anyAnomaliesEnabled", null);
-	__decorate([r$1()], SidebarOptions.prototype, "targetsOpen", null);
+	__decorate([r$2()], SidebarOptions.prototype, "targetsOpen", null);
 	__decorate([n$1({
 		type: Boolean,
 		attribute: "datapoints-open"
@@ -21492,7 +23783,7 @@
 	customElements.define("sidebar-options", SidebarOptions);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/collapsed-options-menu/collapsed-options-menu.styles.ts
-	var styles$30 = i$5`
+	var styles$36 = i$5`
   :host {
     display: block;
   }
@@ -21816,7 +24107,7 @@
     `;
 		}
 	};
-	_defineProperty(CollapsedOptionsMenu, "styles", styles$30);
+	_defineProperty(CollapsedOptionsMenu, "styles", styles$36);
 	__decorate([n$1({ type: String })], CollapsedOptionsMenu.prototype, "datapointScope", null);
 	__decorate([n$1({ type: Boolean })], CollapsedOptionsMenu.prototype, "showIcons", null);
 	__decorate([n$1({ type: Boolean })], CollapsedOptionsMenu.prototype, "showLines", null);
@@ -21829,7 +24120,7 @@
 	__decorate([n$1({ type: String })], CollapsedOptionsMenu.prototype, "hoverSnapMode", null);
 	__decorate([n$1({ type: String })], CollapsedOptionsMenu.prototype, "anomalyOverlapMode", null);
 	__decorate([n$1({ type: Boolean })], CollapsedOptionsMenu.prototype, "anyAnomaliesEnabled", null);
-	__decorate([r$1()], CollapsedOptionsMenu.prototype, "activeSection", null);
+	__decorate([r$2()], CollapsedOptionsMenu.prototype, "activeSection", null);
 	customElements.define("collapsed-options-menu", CollapsedOptionsMenu);
 	//#endregion
 	//#region node_modules/.pnpm/lit-html@3.3.2/node_modules/lit-html/directives/class-map.js
@@ -21861,7 +24152,7 @@
 	});
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/comparison-tab-rail/comparison-tab-rail.styles.ts
-	var styles$29 = i$5`
+	var styles$35 = i$5`
   :host {
     display: block;
   }
@@ -21958,7 +24249,7 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/comparison-tab/comparison-tab.styles.ts
-	var styles$28 = i$5`
+	var styles$34 = i$5`
   :host {
     display: contents;
   }
@@ -22176,7 +24467,7 @@
 	var _detail_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _active_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _previewing_accessor_storage = /* @__PURE__ */ new WeakMap();
-	var _loading_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _loading_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
 	var _editable_accessor_storage = /* @__PURE__ */ new WeakMap();
 	/**
 	* `comparison-tab` renders a single comparison date-window tab in the chart
@@ -22196,7 +24487,7 @@
 			_classPrivateFieldInitSpec(this, _detail_accessor_storage, "");
 			_classPrivateFieldInitSpec(this, _active_accessor_storage, false);
 			_classPrivateFieldInitSpec(this, _previewing_accessor_storage, false);
-			_classPrivateFieldInitSpec(this, _loading_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _loading_accessor_storage$1, false);
 			_classPrivateFieldInitSpec(this, _editable_accessor_storage, false);
 		}
 		get tabId() {
@@ -22230,10 +24521,10 @@
 			_classPrivateFieldSet2(_previewing_accessor_storage, this, value);
 		}
 		get loading() {
-			return _classPrivateFieldGet2(_loading_accessor_storage, this);
+			return _classPrivateFieldGet2(_loading_accessor_storage$1, this);
 		}
 		set loading(value) {
-			_classPrivateFieldSet2(_loading_accessor_storage, this, value);
+			_classPrivateFieldSet2(_loading_accessor_storage$1, this, value);
 		}
 		get editable() {
 			return _classPrivateFieldGet2(_editable_accessor_storage, this);
@@ -22330,7 +24621,7 @@
     `;
 		}
 	};
-	_defineProperty(ComparisonTab, "styles", styles$28);
+	_defineProperty(ComparisonTab, "styles", styles$34);
 	__decorate([n$1({
 		type: String,
 		attribute: "tab-id"
@@ -22344,14 +24635,16 @@
 	customElements.define("comparison-tab", ComparisonTab);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/comparison-tab-rail/comparison-tab-rail.ts
-	var _ComparisonTabRail, _tabs_accessor_storage, _loadingIds_accessor_storage, _hoveredId_accessor_storage, _overflowing_accessor_storage;
-	var ComparisonTabRail = (_tabs_accessor_storage = /* @__PURE__ */ new WeakMap(), _loadingIds_accessor_storage = /* @__PURE__ */ new WeakMap(), _hoveredId_accessor_storage = /* @__PURE__ */ new WeakMap(), _overflowing_accessor_storage = /* @__PURE__ */ new WeakMap(), _ComparisonTabRail = class ComparisonTabRail extends i$2 {
+	var _ComparisonTabRail, _tabs_accessor_storage, _loadingIds_accessor_storage, _hoveredId_accessor_storage, _overflowing_accessor_storage, _shellEl_accessor_storage, _railEl_accessor_storage;
+	var ComparisonTabRail = (_tabs_accessor_storage = /* @__PURE__ */ new WeakMap(), _loadingIds_accessor_storage = /* @__PURE__ */ new WeakMap(), _hoveredId_accessor_storage = /* @__PURE__ */ new WeakMap(), _overflowing_accessor_storage = /* @__PURE__ */ new WeakMap(), _shellEl_accessor_storage = /* @__PURE__ */ new WeakMap(), _railEl_accessor_storage = /* @__PURE__ */ new WeakMap(), _ComparisonTabRail = class ComparisonTabRail extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _tabs_accessor_storage, []);
 			_classPrivateFieldInitSpec(this, _loadingIds_accessor_storage, []);
 			_classPrivateFieldInitSpec(this, _hoveredId_accessor_storage, "");
 			_classPrivateFieldInitSpec(this, _overflowing_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _shellEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _railEl_accessor_storage, null);
 			_defineProperty(this, "_resizeObserver", void 0);
 		}
 		get tabs() {
@@ -22378,14 +24671,25 @@
 		set overflowing(value) {
 			_classPrivateFieldSet2(_overflowing_accessor_storage, this, value);
 		}
+		get _shellEl() {
+			return _classPrivateFieldGet2(_shellEl_accessor_storage, this);
+		}
+		set _shellEl(value) {
+			_classPrivateFieldSet2(_shellEl_accessor_storage, this, value);
+		}
+		get _railEl() {
+			return _classPrivateFieldGet2(_railEl_accessor_storage, this);
+		}
+		set _railEl(value) {
+			_classPrivateFieldSet2(_railEl_accessor_storage, this, value);
+		}
 		connectedCallback() {
 			super.connectedCallback();
 			if (this._resizeObserver) return;
 			this._resizeObserver = new ResizeObserver(() => this._checkOverflow());
 			this.updateComplete.then(() => {
 				if (!this.isConnected || !this._resizeObserver) return;
-				const shell = this.shadowRoot?.querySelector(".chart-tabs-shell");
-				if (shell) this._resizeObserver.observe(shell);
+				if (this._shellEl) this._resizeObserver.observe(this._shellEl);
 			});
 		}
 		disconnectedCallback() {
@@ -22394,11 +24698,8 @@
 			this._resizeObserver = void 0;
 		}
 		_checkOverflow() {
-			const shell = this.shadowRoot?.querySelector(".chart-tabs-shell");
-			if (!shell) return;
-			const rail = shell.querySelector(".chart-tabs-rail");
-			if (!rail) return;
-			this.overflowing = rail.scrollWidth > rail.clientWidth;
+			if (!this._railEl) return;
+			this.overflowing = this._railEl.scrollWidth > this._railEl.clientWidth;
 		}
 		_onAddClick() {
 			this.dispatchEvent(new CustomEvent("dp-tab-add", {
@@ -22435,7 +24736,7 @@
       </div>
     `;
 		}
-	}, _defineProperty(_ComparisonTabRail, "styles", styles$29), _ComparisonTabRail);
+	}, _defineProperty(_ComparisonTabRail, "styles", styles$35), _ComparisonTabRail);
 	__decorate([n$1({ type: Array })], ComparisonTabRail.prototype, "tabs", null);
 	__decorate([n$1({
 		type: Array,
@@ -22446,11 +24747,13 @@
 		attribute: "hovered-id"
 	})], ComparisonTabRail.prototype, "hoveredId", null);
 	__decorate([n$1({ type: Boolean })], ComparisonTabRail.prototype, "overflowing", null);
+	__decorate([e$4(".chart-tabs-shell")], ComparisonTabRail.prototype, "_shellEl", null);
+	__decorate([e$4(".chart-tabs-rail")], ComparisonTabRail.prototype, "_railEl", null);
 	ComparisonTabRail = __decorate([localized()], ComparisonTabRail);
 	customElements.define("comparison-tab-rail", ComparisonTabRail);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/date-window-dialog/date-window-dialog.styles.ts
-	var styles$27 = i$5`
+	var styles$33 = i$5`
   :host {
     --dp-spacing-xs: calc(var(--spacing, 8px) * 0.5);
     --dp-spacing-sm: var(--spacing, 8px);
@@ -22606,7 +24909,7 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/range-timeline.styles.ts
-	var styles$26 = i$5`
+	var styles$32 = i$5`
   :host {
     display: block;
     position: relative;
@@ -22717,233 +25020,139 @@
     min-width: 100%;
     touch-action: pan-y;
   }
-
-  .range-context-layer,
-  .range-label-layer,
-  .range-tick-layer {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-
-  .range-scale-label {
-    position: absolute;
-    bottom: 0;
-    opacity: 0.7;
-    transform: translateX(-50%);
-    font-size: 0.76rem;
-    line-height: 1;
-    color: var(--secondary-text-color);
-    white-space: nowrap;
-  }
-
-  .range-period-button {
-    padding: calc(var(--spacing, 8px) * 0.25) var(--dp-spacing-sm);
-    border: 0;
-    border-radius: 999px;
-    background: none;
-    font: inherit;
-    color: inherit;
-    pointer-events: auto;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    user-select: none;
-    -webkit-user-select: none;
-    transition:
-      background-color 120ms ease,
-      box-shadow 120ms ease,
-      color 120ms ease;
-  }
-
-  .range-period-button:hover {
-    color: var(--primary-text-color);
-    background: color-mix(
-      in srgb,
-      var(--primary-text-color, #111) 7%,
-      var(--card-background-color, #fff)
-    );
-    box-shadow: inset 0 0 0 1px
-      color-mix(
-        in srgb,
-        var(--divider-color, rgba(0, 0, 0, 0.12)) 88%,
-        transparent
-      );
-  }
-
-  .range-period-button:focus-visible {
-    outline: 2px solid
-      color-mix(in srgb, var(--primary-color, #03a9f4) 24%, transparent);
-    outline-offset: 2px;
-    background: color-mix(
-      in srgb,
-      var(--primary-text-color, #111) 7%,
-      var(--card-background-color, #fff)
-    );
-    box-shadow: inset 0 0 0 1px
-      color-mix(
-        in srgb,
-        var(--divider-color, rgba(0, 0, 0, 0.12)) 88%,
-        transparent
-      );
-  }
-
-  .range-track {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 26px;
-    transform: translateY(-50%);
-    height: 4px;
-    border-radius: 999px;
-    background: transparent;
-  }
-
-  .range-selection {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    z-index: 1;
-    border-radius: 999px;
-    background: color-mix(
-      in srgb,
-      var(--primary-text-color, #111) 82%,
-      transparent
-    );
-    cursor: grab;
-  }
-
-  .range-selection.dragging {
-    cursor: grabbing;
-  }
-
-  .range-tick {
-    position: absolute;
-    top: 14px;
-    height: 14px;
-    width: 1px;
-    transform: translateX(-50%);
-    background: color-mix(
-      in srgb,
-      var(--primary-text-color, #111) 16%,
-      transparent
-    );
-  }
-
-  .range-tick.major {
-    top: 20px;
-    height: 18px;
-    background: color-mix(
-      in srgb,
-      var(--primary-text-color, #111) 24%,
-      transparent
-    );
-  }
-
-  .range-tick.fine {
-    top: 18px;
-    height: 8px;
-    background: color-mix(
-      in srgb,
-      var(--primary-text-color, #111) 14%,
-      transparent
-    );
-  }
-
-  .range-tick.context {
-    top: 2px;
-    height: 34px;
-    background: color-mix(
-      in srgb,
-      var(--primary-text-color, #111) 38%,
-      transparent
-    );
-  }
-
-  .range-divider {
-    position: absolute;
-    top: 8px;
-    bottom: 22px;
-    width: 2px;
-    transform: translateX(-50%);
-    background: color-mix(
-      in srgb,
-      var(--primary-text-color, #111) 42%,
-      transparent
-    );
-  }
-
-  .range-context-label {
-    font-weight: bold !important;
-    position: absolute;
-    top: 0;
-    transform: translateX(8px);
-    font-size: 0.92rem;
-    line-height: 1;
-    color: var(--primary-text-color);
-    white-space: nowrap;
-  }
-
-  .range-tooltip {
-    position: absolute;
-    top: 43px;
-    left: 0;
-    transform: translate(-50%, 0);
-    padding: calc(var(--dp-spacing-sm) + 2px) calc(var(--dp-spacing-md) + 2px);
-    border-radius: 10px;
-    background: color-mix(in srgb, #0f1218 96%, transparent);
-    color: rgba(255, 255, 255, 0.96);
-    border: 1px solid color-mix(in srgb, #ffffff 14%, transparent);
-    font-size: 0.86rem;
-    line-height: 1.1;
-    white-space: nowrap;
-    pointer-events: none;
-    user-select: none;
-    -webkit-user-select: none;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity 120ms ease,
-      visibility 120ms ease;
-    z-index: 8;
-  }
-
-  .range-tooltip-live-hint {
-    display: block;
-    font-size: 0.78rem;
-    opacity: 0.72;
-    margin-top: 4px;
-  }
-
-  .range-tooltip::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 0;
-    width: 10px;
-    height: 10px;
-    background: inherit;
-    transform: translate(-50%, -50%) rotate(45deg);
-    border-radius: 2px;
-  }
-
-  .range-tooltip.visible {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .range-tooltip.start {
-    z-index: 8;
-  }
-
-  .range-tooltip.end {
-    z-index: 9;
-  }
 `;
 	//#endregion
-	//#region custom_components/hass_datapoints/src/atoms/interactive/range-handle/range-handle.styles.ts
-	var styles$25 = i$5`
+	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/lib/range-pointer-math.ts
+	/**
+	* Convert a horizontal client coordinate to a timeline timestamp.
+	*
+	* Returns `null` when the track rectangle has no width.
+	*/
+	function timestampFromClientPosition(clientX, rectLeft, rectWidth, boundsMin, boundsMax) {
+		if (!rectWidth) return null;
+		return boundsMin + clampNumber((clientX - rectLeft) / rectWidth, 0, 1) * (boundsMax - boundsMin);
+	}
+	/**
+	* Calculate the snapped time delta for a selection drag.
+	*/
+	function computeSelectionDragDelta(currentTimestamp, startTimestamp, snapUnit) {
+		if (!snapUnit) return currentTimestamp - startTimestamp;
+		const snappedStart = snapDateToUnit(new Date(startTimestamp), snapUnit).getTime();
+		return snapDateToUnit(new Date(currentTimestamp), snapUnit).getTime() - snappedStart;
+	}
+	/**
+	* Compute the new draft range after moving a single handle to `timestamp`.
+	*
+	* The timestamp is snapped and clamped to bounds, and the opposing handle
+	* is preserved with a minimum separation of one snap span.
+	*/
+	function computeDraftRangeForHandle(handle, timestamp, currentStartMs, currentEndMs, boundsMin, boundsMax, snapUnit, snapSpanMs) {
+		let snappedTimestampMs = timestamp;
+		if (snapUnit !== null) snappedTimestampMs = snapDateToUnit(new Date(timestamp), snapUnit).getTime();
+		const snapped = clampNumber(snappedTimestampMs, boundsMin, boundsMax);
+		const minSpan = Math.max(snapSpanMs, SECOND_MS);
+		let startMs = currentStartMs;
+		let endMs = currentEndMs;
+		if (handle === "start") startMs = clampNumber(snapped, boundsMin, endMs - minSpan);
+		else endMs = clampNumber(snapped, startMs + minSpan, boundsMax);
+		return {
+			startMs,
+			endMs
+		};
+	}
+	/**
+	* Shift both handles by `deltaMs`, clamped so neither exceeds bounds.
+	*/
+	function computeShiftedDraftRange(deltaMs, dragStartMs, dragEndMs, boundsMin, boundsMax) {
+		const clamped = clampNumber(deltaMs, boundsMin - dragStartMs, boundsMax - dragEndMs);
+		return {
+			startMs: dragStartMs + clamped,
+			endMs: dragEndMs + clamped
+		};
+	}
+	/**
+	* Compute the draft range from an interval selection (two pointer positions
+	* snapped to unit boundaries).
+	*
+	* Returns `null` when the resulting range is empty.
+	*/
+	function computeIntervalSelectionRange(startTimestamp, endTimestamp, unit, boundsMin, boundsMax) {
+		const startValue = Math.min(startTimestamp, endTimestamp);
+		const endValue = Math.max(startTimestamp, endTimestamp);
+		const rangeStart = clampNumber(startOfUnit(new Date(startValue), unit).getTime(), boundsMin, boundsMax);
+		const rangeEnd = clampNumber(endOfUnit(new Date(endValue), unit).getTime(), boundsMin, boundsMax);
+		if (rangeStart >= rangeEnd) return null;
+		return {
+			startMs: rangeStart,
+			endMs: rangeEnd
+		};
+	}
+	/**
+	* Calculate the scroll delta for edge-proximity auto-scrolling during drag.
+	*
+	* Returns 0 when no scrolling is needed.
+	*/
+	function computeAutoScrollDelta(clientX, viewportLeft, viewportRight) {
+		const leftDistance = clientX - viewportLeft;
+		const rightDistance = viewportRight - clientX;
+		if (leftDistance < 48) {
+			const ratio = clampNumber((48 - leftDistance) / 48, 0, 1);
+			return -Math.max(1, Math.round(ratio * 28));
+		}
+		if (rightDistance < 48) {
+			const ratio = clampNumber((48 - rightDistance) / 48, 0, 1);
+			return Math.max(1, Math.round(ratio * 28));
+		}
+		return 0;
+	}
+	/**
+	* Determine which handle (`"start"` or `"end"`) is closer to the given timestamp.
+	*/
+	function resolveCloserHandle(timestamp, startMs, endMs) {
+		return Math.abs(timestamp - startMs) <= Math.abs(timestamp - endMs) ? "start" : "end";
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/lib/range-scroll-math.ts
+	/**
+	* Pure math functions for range-timeline scroll management.
+	*
+	* All functions are stateless data transformations — no DOM dependency.
+	*/
+	/**
+	* Determine whether the left/right "jump to selection" arrows should be shown.
+	*
+	* The left arrow is shown when the selection end is scrolled off the left edge;
+	* the right arrow when the selection start is scrolled off the right edge.
+	*/
+	function computeSelectionJumpVisibility(scrollLeft, viewportWidth, contentWidth, startTimeMs, endTimeMs, boundsMin, boundsMax) {
+		const total = Math.max(1, boundsMax - boundsMin);
+		const currentRight = scrollLeft + viewportWidth;
+		const startPx = (startTimeMs - boundsMin) / total * contentWidth;
+		return {
+			showLeft: (endTimeMs - boundsMin) / total * contentWidth < scrollLeft,
+			showRight: startPx > currentRight
+		};
+	}
+	/**
+	* Compute the target scrollLeft to bring a time range into view.
+	*
+	* With `center: true`, the midpoint of the range is centered in the viewport.
+	* With `center: false`, the range start is aligned to the viewport start.
+	*
+	* Returns `null` when scrolling is not possible (viewport wider than content).
+	*/
+	function computeScrollPositionForRange(rangeStartMs, rangeEndMs, boundsMin, boundsMax, contentWidth, viewportWidth, center) {
+		if (!viewportWidth || contentWidth <= viewportWidth) return null;
+		const totalMs = Math.max(1, boundsMax - boundsMin);
+		const visibleSpanMs = totalMs * Math.min(1, viewportWidth / contentWidth);
+		const maxScrollLeft = Math.max(0, contentWidth - viewportWidth);
+		const viewportRangeMs = Math.max(0, totalMs - visibleSpanMs);
+		if (viewportRangeMs <= 0) return null;
+		return clampNumber(((center ? clampNumber((rangeStartMs + rangeEndMs) / 2 - visibleSpanMs / 2, boundsMin, boundsMax - visibleSpanMs) : clampNumber(rangeStartMs, boundsMin, boundsMax - visibleSpanMs)) - boundsMin) / viewportRangeMs * maxScrollLeft, 0, maxScrollLeft);
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/range-handle.styles.ts
+	var styles$31 = i$5`
   :host {
     position: absolute;
     top: 26px;
@@ -22996,10 +25205,11 @@
   }
 `;
 	//#endregion
-	//#region custom_components/hass_datapoints/src/atoms/interactive/range-handle/range-handle.ts
-	var _position_accessor_storage = /* @__PURE__ */ new WeakMap();
+	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/range-handle.ts
+	var _position_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
 	var _label_accessor_storage$6 = /* @__PURE__ */ new WeakMap();
 	var _live_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _zIndex_accessor_storage = /* @__PURE__ */ new WeakMap();
 	/**
 	* `range-handle` is a circular drag-handle button for a timeline range slider.
 	*
@@ -23017,15 +25227,16 @@
 	var RangeHandle = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
-			_classPrivateFieldInitSpec(this, _position_accessor_storage, 0);
+			_classPrivateFieldInitSpec(this, _position_accessor_storage$1, 0);
 			_classPrivateFieldInitSpec(this, _label_accessor_storage$6, "");
 			_classPrivateFieldInitSpec(this, _live_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _zIndex_accessor_storage, 3);
 		}
 		get position() {
-			return _classPrivateFieldGet2(_position_accessor_storage, this);
+			return _classPrivateFieldGet2(_position_accessor_storage$1, this);
 		}
 		set position(value) {
-			_classPrivateFieldSet2(_position_accessor_storage, this, value);
+			_classPrivateFieldSet2(_position_accessor_storage$1, this, value);
 		}
 		get label() {
 			return _classPrivateFieldGet2(_label_accessor_storage$6, this);
@@ -23039,8 +25250,15 @@
 		set live(value) {
 			_classPrivateFieldSet2(_live_accessor_storage, this, value);
 		}
+		get zIndex() {
+			return _classPrivateFieldGet2(_zIndex_accessor_storage, this);
+		}
+		set zIndex(value) {
+			_classPrivateFieldSet2(_zIndex_accessor_storage, this, value);
+		}
 		updated(changed) {
 			if (changed.has("position")) this.style.left = `${this.position}%`;
+			if (changed.has("zIndex")) this.style.zIndex = `${this.zIndex}`;
 		}
 		_onPointerDown(e) {
 			e.preventDefault();
@@ -23114,15 +25332,715 @@
     `;
 		}
 	};
-	_defineProperty(RangeHandle, "styles", styles$25);
+	_defineProperty(RangeHandle, "styles", styles$31);
 	__decorate([n$1({ type: Number })], RangeHandle.prototype, "position", null);
 	__decorate([n$1({ type: String })], RangeHandle.prototype, "label", null);
 	__decorate([n$1({ type: Boolean })], RangeHandle.prototype, "live", null);
+	__decorate([n$1({ type: Number })], RangeHandle.prototype, "zIndex", null);
 	customElements.define("range-handle", RangeHandle);
 	//#endregion
+	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/range-scale.styles.ts
+	var styles$30 = i$5`
+  :host {
+    display: contents;
+  }
+
+  .range-context-layer,
+  .range-label-layer,
+  .range-tick-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .range-scale-label {
+    position: absolute;
+    bottom: 0;
+    opacity: 0.7;
+    transform: translateX(-50%);
+    font-size: 0.76rem;
+    line-height: 1;
+    color: var(--secondary-text-color);
+    white-space: nowrap;
+  }
+
+  .range-period-button {
+    padding: calc(var(--spacing, 8px) * 0.25) var(--dp-spacing-sm);
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    font: inherit;
+    color: inherit;
+    pointer-events: auto;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    user-select: none;
+    -webkit-user-select: none;
+    transition:
+      background-color 120ms ease,
+      box-shadow 120ms ease,
+      color 120ms ease;
+  }
+
+  .range-period-button:hover {
+    color: var(--primary-text-color);
+    background: color-mix(
+      in srgb,
+      var(--primary-text-color, #111) 7%,
+      var(--card-background-color, #fff)
+    );
+    box-shadow: inset 0 0 0 1px
+      color-mix(
+        in srgb,
+        var(--divider-color, rgba(0, 0, 0, 0.12)) 88%,
+        transparent
+      );
+  }
+
+  .range-period-button:focus-visible {
+    outline: 2px solid
+      color-mix(in srgb, var(--primary-color, #03a9f4) 24%, transparent);
+    outline-offset: 2px;
+    background: color-mix(
+      in srgb,
+      var(--primary-text-color, #111) 7%,
+      var(--card-background-color, #fff)
+    );
+    box-shadow: inset 0 0 0 1px
+      color-mix(
+        in srgb,
+        var(--divider-color, rgba(0, 0, 0, 0.12)) 88%,
+        transparent
+      );
+  }
+
+  .range-tick {
+    position: absolute;
+    top: 14px;
+    height: 14px;
+    width: 1px;
+    transform: translateX(-50%);
+    background: color-mix(
+      in srgb,
+      var(--primary-text-color, #111) 16%,
+      transparent
+    );
+  }
+
+  .range-tick.major {
+    top: 20px;
+    height: 18px;
+    background: color-mix(
+      in srgb,
+      var(--primary-text-color, #111) 24%,
+      transparent
+    );
+  }
+
+  .range-tick.fine {
+    top: 18px;
+    height: 8px;
+    background: color-mix(
+      in srgb,
+      var(--primary-text-color, #111) 14%,
+      transparent
+    );
+  }
+
+  .range-tick.context {
+    top: 2px;
+    height: 34px;
+    background: color-mix(
+      in srgb,
+      var(--primary-text-color, #111) 38%,
+      transparent
+    );
+  }
+
+  .range-divider {
+    position: absolute;
+    top: 8px;
+    bottom: 22px;
+    width: 2px;
+    transform: translateX(-50%);
+    background: color-mix(
+      in srgb,
+      var(--primary-text-color, #111) 42%,
+      transparent
+    );
+  }
+
+  .range-context-label {
+    font-weight: bold !important;
+    position: absolute;
+    top: 0;
+    transform: translateX(8px);
+    font-size: 0.92rem;
+    line-height: 1;
+    color: var(--primary-text-color);
+    white-space: nowrap;
+  }
+`;
+	//#endregion
+	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/lib/range-scale-math.ts
+	/**
+	* Pure scale computation utilities extracted from range-timeline.ts.
+	*
+	* All functions are stateless data transformations with no DOM dependency.
+	*/
+	function estimateRangeLabelWidth(text, className, minGap) {
+		const basePadding = className === "range-context-label" ? 20 : 14;
+		const charWidth = className === "range-context-label" ? 8.2 : 7.2;
+		return String(text).length * charWidth + basePadding + minGap;
+	}
+	function computeRangeLabelStride(boundsMin, boundsMax, contentWidth, unit, formatter, className, minGap) {
+		if (!contentWidth) return 1;
+		const total = Math.max(1, boundsMax - boundsMin);
+		let current = startOfUnit(new Date(boundsMin), unit);
+		let previousMs = null;
+		let minSpacingPx = Infinity;
+		let maxLabelWidthPx = 0;
+		let samples = 0;
+		while (current.getTime() < boundsMax && samples < 24) {
+			const currentMs = Math.max(current.getTime(), boundsMin);
+			const text = formatter(current);
+			maxLabelWidthPx = Math.max(maxLabelWidthPx, estimateRangeLabelWidth(text, className, minGap));
+			if (previousMs != null) {
+				const spacingPx = (currentMs - previousMs) / total * contentWidth;
+				if (spacingPx > 0) minSpacingPx = Math.min(minSpacingPx, spacingPx);
+			}
+			previousMs = currentMs;
+			current = addUnit(current, unit, 1);
+			samples += 1;
+		}
+		if (!Number.isFinite(minSpacingPx) || minSpacingPx <= 0) return 1;
+		return Math.max(1, Math.ceil(maxLabelWidthPx / minSpacingPx));
+	}
+	function getRangeUnitAnchorMs(startTime, unit, boundsMin, boundsMax, anchor = "auto") {
+		const unitStart = Math.max(startOfUnit(new Date(startTime), unit).getTime(), boundsMin);
+		const unitEnd = Math.min(endOfUnit(new Date(startTime), unit).getTime(), boundsMax);
+		let resolvedAnchor = anchor;
+		if (resolvedAnchor === "auto") resolvedAnchor = unit === "day" || unit === "week" ? "center" : "start";
+		if (resolvedAnchor === "center") return unitStart + Math.max(0, (unitEnd - unitStart) / 2);
+		return unitStart;
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/range-scale.ts
+	var DEFAULT_I18N$4 = createDefaultI18n(["Select"]);
+	var _i18n_accessor_storage$4 = /* @__PURE__ */ new WeakMap();
+	var _rangeBounds_accessor_storage$4 = /* @__PURE__ */ new WeakMap();
+	var _zoomLevel_accessor_storage$4 = /* @__PURE__ */ new WeakMap();
+	var _contentWidth_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _locale_accessor_storage$2 = /* @__PURE__ */ new WeakMap();
+	/**
+	* `range-scale` renders the tick marks, scale labels, and context dividers
+	* for a range-timeline. All rendering is declarative via Lit templates.
+	*
+	* @fires dp-scale-period-select - `{ unit, startTime, originalEvent }` period button clicked
+	* @fires dp-scale-period-hover  - `{ unit, start, end }` period button hovered/focused
+	* @fires dp-scale-period-leave  - `{ unit, start, end }` period button left/blurred
+	*/
+	var RangeScale = class extends i$2 {
+		constructor(..._args) {
+			super(..._args);
+			_classPrivateFieldInitSpec(this, _i18n_accessor_storage$4, DEFAULT_I18N$4);
+			_classPrivateFieldInitSpec(this, _rangeBounds_accessor_storage$4, null);
+			_classPrivateFieldInitSpec(this, _zoomLevel_accessor_storage$4, "day");
+			_classPrivateFieldInitSpec(this, _contentWidth_accessor_storage, 0);
+			_classPrivateFieldInitSpec(this, _locale_accessor_storage$2, "");
+		}
+		get i18n() {
+			return _classPrivateFieldGet2(_i18n_accessor_storage$4, this);
+		}
+		set i18n(value) {
+			_classPrivateFieldSet2(_i18n_accessor_storage$4, this, value);
+		}
+		get rangeBounds() {
+			return _classPrivateFieldGet2(_rangeBounds_accessor_storage$4, this);
+		}
+		set rangeBounds(value) {
+			_classPrivateFieldSet2(_rangeBounds_accessor_storage$4, this, value);
+		}
+		get zoomLevel() {
+			return _classPrivateFieldGet2(_zoomLevel_accessor_storage$4, this);
+		}
+		set zoomLevel(value) {
+			_classPrivateFieldSet2(_zoomLevel_accessor_storage$4, this, value);
+		}
+		get contentWidth() {
+			return _classPrivateFieldGet2(_contentWidth_accessor_storage, this);
+		}
+		set contentWidth(value) {
+			_classPrivateFieldSet2(_contentWidth_accessor_storage, this, value);
+		}
+		get locale() {
+			return _classPrivateFieldGet2(_locale_accessor_storage$2, this);
+		}
+		set locale(value) {
+			_classPrivateFieldSet2(_locale_accessor_storage$2, this, value);
+		}
+		_t(key, ...values) {
+			return t$4(this.i18n, key, ...values);
+		}
+		render() {
+			if (!this.rangeBounds) return A;
+			const ticks = this._computeTicks();
+			const labels = this._computeLabels();
+			const { dividers, contextLabels } = this._computeContext();
+			return b`
+      <div class="range-context-layer">
+        ${dividers.map((d) => b`<span class="range-divider" style="left:${d.leftPct}%"></span>`)}
+        ${contextLabels.map((b) => this._renderPeriodButton(b))}
+      </div>
+      <div class="range-tick-layer">
+        ${ticks.map((t) => b`<span
+              class="range-tick ${t.className}"
+              style="left:${t.leftPct}%"
+            ></span>`)}
+      </div>
+      <div class="range-label-layer">
+        ${labels.map((b) => this._renderPeriodButton(b))}
+      </div>
+    `;
+		}
+		_renderPeriodButton(b$2) {
+			return b`<button
+      type="button"
+      class="range-period-button ${b$2.className}"
+      style="left:${b$2.leftPct}%"
+      title=${b$2.title}
+      aria-label=${b$2.title}
+      @click=${(ev) => this._onPeriodSelect(b$2, ev)}
+      @pointerenter=${() => this._onPeriodHover(b$2)}
+      @pointerleave=${() => this._onPeriodLeave(b$2)}
+      @focus=${() => this._onPeriodHover(b$2)}
+      @blur=${() => this._onPeriodLeave(b$2)}
+    >
+      ${b$2.text}
+    </button>`;
+		}
+		_getScaleLabelZoomLevel() {
+			if (this.zoomLevel === "quarterly" || this.zoomLevel === "month_short") return this.zoomLevel;
+			return "";
+		}
+		_computeTicksForUnit(unit, className, total, step = 1) {
+			if (!this.rangeBounds) return [];
+			const marks = [];
+			let markerTime = addUnit(startOfUnit(new Date(this.rangeBounds.min), unit), unit, 0);
+			if (markerTime.getTime() < this.rangeBounds.min) markerTime = addUnit(markerTime, unit, step);
+			while (markerTime.getTime() < this.rangeBounds.max) {
+				marks.push({
+					leftPct: (markerTime.getTime() - this.rangeBounds.min) / total * 100,
+					className
+				});
+				markerTime = addUnit(markerTime, unit, step);
+			}
+			return marks;
+		}
+		_computeTicks() {
+			if (!this.rangeBounds) return [];
+			const total = Math.max(1, this.rangeBounds.max - this.rangeBounds.min);
+			const { config } = this.rangeBounds;
+			const ticks = [];
+			if (config.detailUnit && config.detailUnit !== config.minorUnit && config.detailUnit !== config.majorUnit) ticks.push(...this._computeTicksForUnit(config.detailUnit, "fine", total, config.detailStep || 1));
+			if (config.minorUnit !== config.majorUnit) ticks.push(...this._computeTicksForUnit(config.minorUnit, "", total));
+			ticks.push(...this._computeTicksForUnit(config.majorUnit, "major", total));
+			return ticks;
+		}
+		_computeLabelStride(unit, formatter, className, minGap) {
+			if (!this.rangeBounds || !this.contentWidth) return 1;
+			return computeRangeLabelStride(this.rangeBounds.min, this.rangeBounds.max, this.contentWidth, unit, formatter, className, minGap);
+		}
+		_computeLabels() {
+			if (!this.rangeBounds) return [];
+			const total = Math.max(1, this.rangeBounds.max - this.rangeBounds.min);
+			const { config } = this.rangeBounds;
+			const scaleLabelZoomLevel = this._getScaleLabelZoomLevel();
+			const locale = this.locale || void 0;
+			const stride = config.labelUnit === "month" || config.labelUnit === "day" ? 1 : this._computeLabelStride(config.labelUnit, (value) => formatScaleLabel(value, config.labelUnit, scaleLabelZoomLevel, locale), "range-scale-label", 10);
+			const buttons = [];
+			let ref = startOfUnit(new Date(this.rangeBounds.min), config.labelUnit);
+			let index = 0;
+			while (ref.getTime() < this.rangeBounds.max) {
+				if (index % stride === 0) {
+					const leftValue = getRangeUnitAnchorMs(ref, config.labelUnit, this.rangeBounds.min, this.rangeBounds.max, "auto");
+					const text = formatScaleLabel(ref, config.labelUnit, scaleLabelZoomLevel, locale);
+					const selectionLabel = formatPeriodSelectionLabel(ref, config.labelUnit, locale);
+					buttons.push({
+						leftPct: (leftValue - this.rangeBounds.min) / total * 100,
+						text,
+						title: `${this._t("Select")} ${selectionLabel}`,
+						className: "range-scale-label",
+						unit: config.labelUnit,
+						startTime: new Date(ref)
+					});
+				}
+				ref = addUnit(ref, config.labelUnit, 1);
+				index += 1;
+			}
+			return buttons;
+		}
+		_computeContext() {
+			if (!this.rangeBounds) return {
+				dividers: [],
+				contextLabels: []
+			};
+			const total = Math.max(1, this.rangeBounds.max - this.rangeBounds.min);
+			const { config } = this.rangeBounds;
+			const locale = this.locale || void 0;
+			const stride = config.contextUnit === "month" || config.contextUnit === "day" ? 1 : this._computeLabelStride(config.contextUnit, (value) => formatContextLabel(value, config.contextUnit, locale), "range-context-label", 14);
+			const dividers = [];
+			const contextLabels = [];
+			let ref = startOfUnit(new Date(this.rangeBounds.min), config.contextUnit);
+			if (ref.getTime() < this.rangeBounds.min) ref = addUnit(ref, config.contextUnit, 1);
+			let index = 0;
+			while (ref.getTime() < this.rangeBounds.max) {
+				const leftPct = (ref.getTime() - this.rangeBounds.min) / total * 100;
+				dividers.push({ leftPct });
+				if (index % stride === 0) {
+					const text = formatContextLabel(ref, config.contextUnit, locale);
+					const selectionLabel = formatPeriodSelectionLabel(ref, config.contextUnit, locale);
+					contextLabels.push({
+						leftPct,
+						text,
+						title: `${this._t("Select")} ${selectionLabel}`,
+						className: "range-context-label",
+						unit: config.contextUnit,
+						startTime: new Date(ref)
+					});
+				}
+				ref = addUnit(ref, config.contextUnit, 1);
+				index += 1;
+			}
+			return {
+				dividers,
+				contextLabels
+			};
+		}
+		_onPeriodSelect(b, ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			this.dispatchEvent(new CustomEvent("dp-scale-period-select", {
+				detail: {
+					unit: b.unit,
+					startTime: b.startTime,
+					originalEvent: ev
+				},
+				bubbles: true,
+				composed: true
+			}));
+		}
+		_onPeriodHover(b) {
+			this.dispatchEvent(new CustomEvent("dp-scale-period-hover", {
+				detail: {
+					unit: b.unit,
+					startTime: b.startTime
+				},
+				bubbles: true,
+				composed: true
+			}));
+		}
+		_onPeriodLeave(b) {
+			this.dispatchEvent(new CustomEvent("dp-scale-period-leave", {
+				detail: {
+					unit: b.unit,
+					startTime: b.startTime
+				},
+				bubbles: true,
+				composed: true
+			}));
+		}
+	};
+	_defineProperty(RangeScale, "styles", styles$30);
+	__decorate([n$1({ attribute: false })], RangeScale.prototype, "i18n", null);
+	__decorate([n$1({ type: Object })], RangeScale.prototype, "rangeBounds", null);
+	__decorate([n$1({ type: String })], RangeScale.prototype, "zoomLevel", null);
+	__decorate([n$1({ type: Number })], RangeScale.prototype, "contentWidth", null);
+	__decorate([n$1({ type: String })], RangeScale.prototype, "locale", null);
+	customElements.define("range-scale", RangeScale);
+	//#endregion
+	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/range-tooltip.styles.ts
+	var styles$29 = i$5`
+  :host {
+    position: absolute;
+    top: 43px;
+    left: 0;
+    transform: translate(-50%, 0);
+    padding: calc(var(--dp-spacing-sm) + 2px) calc(var(--dp-spacing-md) + 2px);
+    border-radius: 10px;
+    background: color-mix(in srgb, #0f1218 96%, transparent);
+    color: rgba(255, 255, 255, 0.96);
+    border: 1px solid color-mix(in srgb, #ffffff 14%, transparent);
+    font-size: 0.86rem;
+    line-height: 1.1;
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 120ms ease,
+      visibility 120ms ease;
+    z-index: 8;
+  }
+
+  :host([visible]) {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  :host([side="end"]) {
+    z-index: 9;
+  }
+
+  :host::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 10px;
+    height: 10px;
+    background: inherit;
+    transform: translate(-50%, -50%) rotate(45deg);
+    border-radius: 2px;
+  }
+
+  .live-hint {
+    display: block;
+    font-size: 0.78rem;
+    opacity: 0.72;
+    margin-top: 4px;
+  }
+`;
+	//#endregion
+	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/range-tooltip.ts
+	var _content_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _visible_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _position_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _isLive_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _liveHint_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _side_accessor_storage = /* @__PURE__ */ new WeakMap();
+	/**
+	* `range-tooltip` is a pure display component for showing a formatted
+	* date/time tooltip anchored to a handle on the range-timeline.
+	*
+	* Visibility is controlled by the `visible` attribute (reflected property).
+	* Position is set via the `position` property (pixels from left of viewport).
+	*/
+	var RangeTooltip = class extends i$2 {
+		constructor(..._args) {
+			super(..._args);
+			_classPrivateFieldInitSpec(this, _content_accessor_storage, "");
+			_classPrivateFieldInitSpec(this, _visible_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _position_accessor_storage, 0);
+			_classPrivateFieldInitSpec(this, _isLive_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _liveHint_accessor_storage, "");
+			_classPrivateFieldInitSpec(this, _side_accessor_storage, "start");
+		}
+		get content() {
+			return _classPrivateFieldGet2(_content_accessor_storage, this);
+		}
+		set content(value) {
+			_classPrivateFieldSet2(_content_accessor_storage, this, value);
+		}
+		get visible() {
+			return _classPrivateFieldGet2(_visible_accessor_storage, this);
+		}
+		set visible(value) {
+			_classPrivateFieldSet2(_visible_accessor_storage, this, value);
+		}
+		get position() {
+			return _classPrivateFieldGet2(_position_accessor_storage, this);
+		}
+		set position(value) {
+			_classPrivateFieldSet2(_position_accessor_storage, this, value);
+		}
+		get isLive() {
+			return _classPrivateFieldGet2(_isLive_accessor_storage, this);
+		}
+		set isLive(value) {
+			_classPrivateFieldSet2(_isLive_accessor_storage, this, value);
+		}
+		get liveHint() {
+			return _classPrivateFieldGet2(_liveHint_accessor_storage, this);
+		}
+		set liveHint(value) {
+			_classPrivateFieldSet2(_liveHint_accessor_storage, this, value);
+		}
+		get side() {
+			return _classPrivateFieldGet2(_side_accessor_storage, this);
+		}
+		set side(value) {
+			_classPrivateFieldSet2(_side_accessor_storage, this, value);
+		}
+		updated(changed) {
+			if (changed.has("position")) this.style.left = `${this.position}px`;
+			this.setAttribute("aria-hidden", this.visible ? "false" : "true");
+		}
+		render() {
+			return b`${this.content}${this.isLive ? b`<span class="live-hint">${this.liveHint}</span>` : A}`;
+		}
+	};
+	_defineProperty(RangeTooltip, "styles", styles$29);
+	__decorate([n$1({ type: String })], RangeTooltip.prototype, "content", null);
+	__decorate([n$1({
+		type: Boolean,
+		reflect: true
+	})], RangeTooltip.prototype, "visible", null);
+	__decorate([n$1({ type: Number })], RangeTooltip.prototype, "position", null);
+	__decorate([n$1({ type: Boolean })], RangeTooltip.prototype, "isLive", null);
+	__decorate([n$1({ type: String })], RangeTooltip.prototype, "liveHint", null);
+	__decorate([n$1({
+		type: String,
+		reflect: true
+	})], RangeTooltip.prototype, "side", null);
+	customElements.define("range-tooltip", RangeTooltip);
+	//#endregion
+	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/range-track.styles.ts
+	var styles$28 = i$5`
+  :host {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 26px;
+    transform: translateY(-50%);
+    height: 4px;
+    border-radius: 999px;
+    background: transparent;
+    display: block;
+  }
+
+  .range-selection {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    border-radius: 999px;
+    background: color-mix(
+      in srgb,
+      var(--primary-text-color, #111) 82%,
+      transparent
+    );
+    cursor: grab;
+  }
+
+  .range-selection.dragging {
+    cursor: grabbing;
+  }
+`;
+	//#endregion
+	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/range-track.ts
+	var _selectionLeftPct_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
+	var _selectionWidthPct_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
+	var _selectionDragging_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
+	/**
+	* `range-track` renders the track bar with a positioned selection highlight.
+	*
+	* Pure display component — receives percentage positions as props.
+	* The parent positions handles and owns drag logic.
+	*/
+	var RangeTrack = class extends i$2 {
+		constructor(..._args) {
+			super(..._args);
+			_classPrivateFieldInitSpec(this, _selectionLeftPct_accessor_storage$1, 0);
+			_classPrivateFieldInitSpec(this, _selectionWidthPct_accessor_storage$1, 0);
+			_classPrivateFieldInitSpec(this, _selectionDragging_accessor_storage$1, false);
+		}
+		get selectionLeftPct() {
+			return _classPrivateFieldGet2(_selectionLeftPct_accessor_storage$1, this);
+		}
+		set selectionLeftPct(value) {
+			_classPrivateFieldSet2(_selectionLeftPct_accessor_storage$1, this, value);
+		}
+		get selectionWidthPct() {
+			return _classPrivateFieldGet2(_selectionWidthPct_accessor_storage$1, this);
+		}
+		set selectionWidthPct(value) {
+			_classPrivateFieldSet2(_selectionWidthPct_accessor_storage$1, this, value);
+		}
+		get selectionDragging() {
+			return _classPrivateFieldGet2(_selectionDragging_accessor_storage$1, this);
+		}
+		set selectionDragging(value) {
+			_classPrivateFieldSet2(_selectionDragging_accessor_storage$1, this, value);
+		}
+		render() {
+			return b`
+      <slot name="track-overlays"></slot>
+      <div
+        class="range-selection ${this.selectionDragging ? "dragging" : ""}"
+        style="left:${this.selectionLeftPct}%;width:${this.selectionWidthPct}%"
+      ></div>
+    `;
+		}
+	};
+	_defineProperty(RangeTrack, "styles", styles$28);
+	__decorate([n$1({ type: Number })], RangeTrack.prototype, "selectionLeftPct", null);
+	__decorate([n$1({ type: Number })], RangeTrack.prototype, "selectionWidthPct", null);
+	__decorate([n$1({ type: Boolean })], RangeTrack.prototype, "selectionDragging", null);
+	customElements.define("range-track", RangeTrack);
+	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/interactive/range-timeline/range-timeline.ts
-	var _RangeTimeline, _startTime_accessor_storage$2, _endTime_accessor_storage$2, _rangeBounds_accessor_storage$3, _zoomLevel_accessor_storage$3, _dateSnapping_accessor_storage$3, _isLiveEdge_accessor_storage$2, _locale_accessor_storage$1;
-	var RangeTimeline = (_startTime_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _endTime_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _rangeBounds_accessor_storage$3 = /* @__PURE__ */ new WeakMap(), _zoomLevel_accessor_storage$3 = /* @__PURE__ */ new WeakMap(), _dateSnapping_accessor_storage$3 = /* @__PURE__ */ new WeakMap(), _isLiveEdge_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _locale_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _RangeTimeline = class RangeTimeline extends i$2 {
+	var DEFAULT_I18N$3 = createDefaultI18n([
+		"Updates with new data",
+		"Scroll to selected range",
+		"Start date and time",
+		"End date and time"
+	]);
+	var _startTime_accessor_storage$2 = /* @__PURE__ */ new WeakMap();
+	var _endTime_accessor_storage$2 = /* @__PURE__ */ new WeakMap();
+	var _rangeBounds_accessor_storage$3 = /* @__PURE__ */ new WeakMap();
+	var _zoomLevel_accessor_storage$3 = /* @__PURE__ */ new WeakMap();
+	var _dateSnapping_accessor_storage$3 = /* @__PURE__ */ new WeakMap();
+	var _isLiveEdge_accessor_storage$2 = /* @__PURE__ */ new WeakMap();
+	var _locale_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
+	var _i18n_accessor_storage$3 = /* @__PURE__ */ new WeakMap();
+	var _rangeContentWidth_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _startTooltipVisible_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _startTooltipLeftPx_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _startTooltipContent_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _endTooltipVisible_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _endTooltipLeftPx_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _endTooltipContent_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _endTooltipIsLive_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _endTooltipLiveHint_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _selectionLeftPct_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _selectionWidthPct_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _scrollbarVisible_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _viewportDragging_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _selectionDragging_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _startHandlePosition_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _endHandlePosition_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _startHandleZIndex_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _endHandleZIndex_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _rangeScrollViewportE_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _rangeTrackEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _rangeStartHandleEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _rangeEndHandleEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _rangeJumpLeftEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _rangeJumpRightEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	/**
+	* `range-timeline` is a scrollable, interactive time range slider atom.
+	*
+	* The parent provides `startTime`, `endTime`, `rangeBounds` (pre-derived), the
+	* effective `zoomLevel` (already resolved from "auto"), and `dateSnapping`.
+	* Panel-specific overlays (hover preview, comparison preview, chart hover lines)
+	* are injected via named slots:
+	*
+	* - `timeline-overlays` — inside `.range-timeline`, for chart hover lines / event dots
+	* - `track-overlays`    — inside `.range-track`, for comparison/zoom/hover highlights
+	*
+	* @fires dp-range-draft         - `{ start, end }` fired on each drag frame for auto-zoom
+	* @fires dp-range-commit        - `{ start, end, push }` fired when range is committed
+	* @fires dp-range-period-select - `{ unit, startTime }` period button clicked
+	* @fires dp-range-period-hover  - `{ start, end }` period button hovered
+	* @fires dp-range-period-leave  - `{}` period button left
+	* @fires dp-range-scroll        - `{}` timeline scrolled
+	*/
+	var RangeTimeline = class extends i$2 {
 		get startTime() {
 			return _classPrivateFieldGet2(_startTime_accessor_storage$2, this);
 		}
@@ -23165,6 +26083,159 @@
 		set locale(value) {
 			_classPrivateFieldSet2(_locale_accessor_storage$1, this, value);
 		}
+		get i18n() {
+			return _classPrivateFieldGet2(_i18n_accessor_storage$3, this);
+		}
+		set i18n(value) {
+			_classPrivateFieldSet2(_i18n_accessor_storage$3, this, value);
+		}
+		_t(key, ...values) {
+			return t$4(this.i18n, key, ...values);
+		}
+		get _rangeContentWidth() {
+			return _classPrivateFieldGet2(_rangeContentWidth_accessor_storage, this);
+		}
+		set _rangeContentWidth(value) {
+			_classPrivateFieldSet2(_rangeContentWidth_accessor_storage, this, value);
+		}
+		get _startTooltipVisible() {
+			return _classPrivateFieldGet2(_startTooltipVisible_accessor_storage, this);
+		}
+		set _startTooltipVisible(value) {
+			_classPrivateFieldSet2(_startTooltipVisible_accessor_storage, this, value);
+		}
+		get _startTooltipLeftPx() {
+			return _classPrivateFieldGet2(_startTooltipLeftPx_accessor_storage, this);
+		}
+		set _startTooltipLeftPx(value) {
+			_classPrivateFieldSet2(_startTooltipLeftPx_accessor_storage, this, value);
+		}
+		get _startTooltipContent() {
+			return _classPrivateFieldGet2(_startTooltipContent_accessor_storage, this);
+		}
+		set _startTooltipContent(value) {
+			_classPrivateFieldSet2(_startTooltipContent_accessor_storage, this, value);
+		}
+		get _endTooltipVisible() {
+			return _classPrivateFieldGet2(_endTooltipVisible_accessor_storage, this);
+		}
+		set _endTooltipVisible(value) {
+			_classPrivateFieldSet2(_endTooltipVisible_accessor_storage, this, value);
+		}
+		get _endTooltipLeftPx() {
+			return _classPrivateFieldGet2(_endTooltipLeftPx_accessor_storage, this);
+		}
+		set _endTooltipLeftPx(value) {
+			_classPrivateFieldSet2(_endTooltipLeftPx_accessor_storage, this, value);
+		}
+		get _endTooltipContent() {
+			return _classPrivateFieldGet2(_endTooltipContent_accessor_storage, this);
+		}
+		set _endTooltipContent(value) {
+			_classPrivateFieldSet2(_endTooltipContent_accessor_storage, this, value);
+		}
+		get _endTooltipIsLive() {
+			return _classPrivateFieldGet2(_endTooltipIsLive_accessor_storage, this);
+		}
+		set _endTooltipIsLive(value) {
+			_classPrivateFieldSet2(_endTooltipIsLive_accessor_storage, this, value);
+		}
+		get _endTooltipLiveHint() {
+			return _classPrivateFieldGet2(_endTooltipLiveHint_accessor_storage, this);
+		}
+		set _endTooltipLiveHint(value) {
+			_classPrivateFieldSet2(_endTooltipLiveHint_accessor_storage, this, value);
+		}
+		get _selectionLeftPct() {
+			return _classPrivateFieldGet2(_selectionLeftPct_accessor_storage, this);
+		}
+		set _selectionLeftPct(value) {
+			_classPrivateFieldSet2(_selectionLeftPct_accessor_storage, this, value);
+		}
+		get _selectionWidthPct() {
+			return _classPrivateFieldGet2(_selectionWidthPct_accessor_storage, this);
+		}
+		set _selectionWidthPct(value) {
+			_classPrivateFieldSet2(_selectionWidthPct_accessor_storage, this, value);
+		}
+		get _scrollbarVisible() {
+			return _classPrivateFieldGet2(_scrollbarVisible_accessor_storage, this);
+		}
+		set _scrollbarVisible(value) {
+			_classPrivateFieldSet2(_scrollbarVisible_accessor_storage, this, value);
+		}
+		get _viewportDragging() {
+			return _classPrivateFieldGet2(_viewportDragging_accessor_storage, this);
+		}
+		set _viewportDragging(value) {
+			_classPrivateFieldSet2(_viewportDragging_accessor_storage, this, value);
+		}
+		get _selectionDragging() {
+			return _classPrivateFieldGet2(_selectionDragging_accessor_storage, this);
+		}
+		set _selectionDragging(value) {
+			_classPrivateFieldSet2(_selectionDragging_accessor_storage, this, value);
+		}
+		get _startHandlePosition() {
+			return _classPrivateFieldGet2(_startHandlePosition_accessor_storage, this);
+		}
+		set _startHandlePosition(value) {
+			_classPrivateFieldSet2(_startHandlePosition_accessor_storage, this, value);
+		}
+		get _endHandlePosition() {
+			return _classPrivateFieldGet2(_endHandlePosition_accessor_storage, this);
+		}
+		set _endHandlePosition(value) {
+			_classPrivateFieldSet2(_endHandlePosition_accessor_storage, this, value);
+		}
+		get _startHandleZIndex() {
+			return _classPrivateFieldGet2(_startHandleZIndex_accessor_storage, this);
+		}
+		set _startHandleZIndex(value) {
+			_classPrivateFieldSet2(_startHandleZIndex_accessor_storage, this, value);
+		}
+		get _endHandleZIndex() {
+			return _classPrivateFieldGet2(_endHandleZIndex_accessor_storage, this);
+		}
+		set _endHandleZIndex(value) {
+			_classPrivateFieldSet2(_endHandleZIndex_accessor_storage, this, value);
+		}
+		get _rangeScrollViewportEl() {
+			return _classPrivateFieldGet2(_rangeScrollViewportE_accessor_storage, this);
+		}
+		set _rangeScrollViewportEl(value) {
+			_classPrivateFieldSet2(_rangeScrollViewportE_accessor_storage, this, value);
+		}
+		get _rangeTrackEl() {
+			return _classPrivateFieldGet2(_rangeTrackEl_accessor_storage, this);
+		}
+		set _rangeTrackEl(value) {
+			_classPrivateFieldSet2(_rangeTrackEl_accessor_storage, this, value);
+		}
+		get _rangeStartHandleEl() {
+			return _classPrivateFieldGet2(_rangeStartHandleEl_accessor_storage, this);
+		}
+		set _rangeStartHandleEl(value) {
+			_classPrivateFieldSet2(_rangeStartHandleEl_accessor_storage, this, value);
+		}
+		get _rangeEndHandleEl() {
+			return _classPrivateFieldGet2(_rangeEndHandleEl_accessor_storage, this);
+		}
+		set _rangeEndHandleEl(value) {
+			_classPrivateFieldSet2(_rangeEndHandleEl_accessor_storage, this, value);
+		}
+		get _rangeJumpLeftEl() {
+			return _classPrivateFieldGet2(_rangeJumpLeftEl_accessor_storage, this);
+		}
+		set _rangeJumpLeftEl(value) {
+			_classPrivateFieldSet2(_rangeJumpLeftEl_accessor_storage, this, value);
+		}
+		get _rangeJumpRightEl() {
+			return _classPrivateFieldGet2(_rangeJumpRightEl_accessor_storage, this);
+		}
+		set _rangeJumpRightEl(value) {
+			_classPrivateFieldSet2(_rangeJumpRightEl_accessor_storage, this, value);
+		}
 		constructor() {
 			super();
 			_classPrivateFieldInitSpec(this, _startTime_accessor_storage$2, null);
@@ -23174,6 +26245,7 @@
 			_classPrivateFieldInitSpec(this, _dateSnapping_accessor_storage$3, "auto");
 			_classPrivateFieldInitSpec(this, _isLiveEdge_accessor_storage$2, false);
 			_classPrivateFieldInitSpec(this, _locale_accessor_storage$1, "");
+			_classPrivateFieldInitSpec(this, _i18n_accessor_storage$3, DEFAULT_I18N$3);
 			_defineProperty(this, "_draftStartTime", null);
 			_defineProperty(this, "_draftEndTime", null);
 			_defineProperty(this, "_activeRangeHandle", null);
@@ -23182,8 +26254,25 @@
 			_defineProperty(this, "_hoveredPeriodRange", null);
 			_defineProperty(this, "_rangePointerId", null);
 			_defineProperty(this, "_rangeInteractionActive", false);
-			_defineProperty(this, "_rangeContentWidth", 0);
+			_classPrivateFieldInitSpec(this, _rangeContentWidth_accessor_storage, 0);
 			_defineProperty(this, "_rangeCommitTimer", null);
+			_classPrivateFieldInitSpec(this, _startTooltipVisible_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _startTooltipLeftPx_accessor_storage, 0);
+			_classPrivateFieldInitSpec(this, _startTooltipContent_accessor_storage, "");
+			_classPrivateFieldInitSpec(this, _endTooltipVisible_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _endTooltipLeftPx_accessor_storage, 0);
+			_classPrivateFieldInitSpec(this, _endTooltipContent_accessor_storage, "");
+			_classPrivateFieldInitSpec(this, _endTooltipIsLive_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _endTooltipLiveHint_accessor_storage, "");
+			_classPrivateFieldInitSpec(this, _selectionLeftPct_accessor_storage, 0);
+			_classPrivateFieldInitSpec(this, _selectionWidthPct_accessor_storage, 0);
+			_classPrivateFieldInitSpec(this, _scrollbarVisible_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _viewportDragging_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _selectionDragging_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _startHandlePosition_accessor_storage, 0);
+			_classPrivateFieldInitSpec(this, _endHandlePosition_accessor_storage, 0);
+			_classPrivateFieldInitSpec(this, _startHandleZIndex_accessor_storage, 3);
+			_classPrivateFieldInitSpec(this, _endHandleZIndex_accessor_storage, 4);
 			_defineProperty(this, "_isProgrammaticScroll", false);
 			_defineProperty(this, "_scrollbarHideTimer", null);
 			_defineProperty(this, "_timelinePointerId", null);
@@ -23196,19 +26285,12 @@
 			_defineProperty(this, "_timelineDragStartZoomRange", null);
 			_defineProperty(this, "_timelinePointerMoved", false);
 			_defineProperty(this, "_timelineTrackClickPending", false);
-			_defineProperty(this, "_rangeScrollViewportEl", null);
-			_defineProperty(this, "_rangeTimelineEl", null);
-			_defineProperty(this, "_rangeTrackEl", null);
-			_defineProperty(this, "_rangeTickLayerEl", null);
-			_defineProperty(this, "_rangeLabelLayerEl", null);
-			_defineProperty(this, "_rangeContextLayerEl", null);
-			_defineProperty(this, "_rangeSelectionEl", null);
-			_defineProperty(this, "_rangeStartHandleEl", null);
-			_defineProperty(this, "_rangeEndHandleEl", null);
-			_defineProperty(this, "_rangeStartTooltipEl", null);
-			_defineProperty(this, "_rangeEndTooltipEl", null);
-			_defineProperty(this, "_rangeJumpLeftEl", null);
-			_defineProperty(this, "_rangeJumpRightEl", null);
+			_classPrivateFieldInitSpec(this, _rangeScrollViewportE_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _rangeTrackEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _rangeStartHandleEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _rangeEndHandleEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _rangeJumpLeftEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _rangeJumpRightEl_accessor_storage, null);
 			_defineProperty(this, "_resizeObserver", null);
 			_defineProperty(this, "_onRangeScroll", void 0);
 			_defineProperty(this, "_onRangePointerMove", void 0);
@@ -23221,7 +26303,6 @@
 			this._onTimelinePointerUp = (ev) => this._finishTimelinePointerInteraction(ev);
 			this._onRangeScroll = () => {
 				this._updateSelectionJumpControls();
-				this._syncVisibleRangeLabels();
 				this._updateRangeTooltip();
 				this.dispatchEvent(new CustomEvent("dp-range-scroll", {
 					bubbles: true,
@@ -23232,7 +26313,6 @@
 		}
 		disconnectedCallback() {
 			super.disconnectedCallback();
-			if (this._rangeScrollViewportEl) this._rangeScrollViewportEl.removeEventListener("scroll", this._onRangeScroll);
 			this._detachRangePointerListeners();
 			this._detachTimelinePointerListeners();
 			if (this._rangeCommitTimer) {
@@ -23249,26 +26329,10 @@
 			}
 		}
 		firstUpdated() {
-			const sr = this.shadowRoot;
-			this._rangeScrollViewportEl = sr.getElementById("range-scroll-viewport");
-			this._rangeTimelineEl = sr.getElementById("range-timeline");
-			this._rangeTrackEl = sr.getElementById("range-track");
-			this._rangeTickLayerEl = sr.getElementById("range-tick-layer");
-			this._rangeLabelLayerEl = sr.getElementById("range-label-layer");
-			this._rangeContextLayerEl = sr.getElementById("range-context-layer");
-			this._rangeSelectionEl = sr.getElementById("range-selection");
-			this._rangeStartHandleEl = sr.getElementById("range-start-handle");
-			this._rangeEndHandleEl = sr.getElementById("range-end-handle");
-			this._rangeStartTooltipEl = sr.getElementById("range-tooltip-start");
-			this._rangeEndTooltipEl = sr.getElementById("range-tooltip-end");
-			this._rangeJumpLeftEl = sr.getElementById("range-jump-left");
-			this._rangeJumpRightEl = sr.getElementById("range-jump-right");
-			this._rangeScrollViewportEl?.addEventListener("scroll", this._onRangeScroll);
 			if (typeof ResizeObserver !== "undefined") {
 				this._resizeObserver = new ResizeObserver(() => {
 					this._syncTimelineWidth();
 					this._updateSelectionJumpControls();
-					this._syncVisibleRangeLabels();
 					this._revealSelectionInTimeline("auto");
 				});
 				if (this._rangeScrollViewportEl) this._resizeObserver.observe(this._rangeScrollViewportEl);
@@ -23284,17 +26348,12 @@
 				"dateSnapping"
 			].some((p) => changed.has(p))) this._syncRangeControl();
 		}
-		_pctForTime(time) {
-			if (!time || !this.rangeBounds) return 0;
-			const { min, max } = this.rangeBounds;
-			return Math.max(0, Math.min(100, (time.getTime() - min) / (max - min) * 100));
-		}
 		render() {
 			return b`
       <ha-icon-button
         id="range-jump-left"
         class="range-selection-jump left"
-        .label=${msg("Scroll to selected range")}
+        .label=${this._t("Scroll to selected range")}
         hidden
         @click=${() => this._revealSelectionInTimeline("smooth")}
       >
@@ -23303,7 +26362,7 @@
       <ha-icon-button
         id="range-jump-right"
         class="range-selection-jump right"
-        .label=${msg("Scroll to selected range")}
+        .label=${this._t("Scroll to selected range")}
         hidden
         @click=${() => this._revealSelectionInTimeline("smooth")}
       >
@@ -23311,24 +26370,42 @@
       </ha-icon-button>
       <div
         id="range-scroll-viewport"
-        class="range-scroll-viewport"
+        class="range-scroll-viewport ${this._scrollbarVisible ? "scrollbar-visible" : ""} ${this._viewportDragging ? "dragging" : ""}"
+        @scroll=${this._onRangeScroll}
         @pointerdown=${this._handleTimelinePointerDown}
         @pointermove=${this._handleRangeViewportPointerMove}
         @pointerleave=${this._handleRangeViewportPointerLeave}
       >
-        <div id="range-timeline" class="range-timeline">
+        <div
+          id="range-timeline"
+          class="range-timeline"
+          style="width:${this._rangeContentWidth}px"
+        >
           <slot name="timeline-overlays"></slot>
-          <div id="range-context-layer" class="range-context-layer"></div>
-          <div id="range-tick-layer" class="range-tick-layer"></div>
-          <div id="range-track" class="range-track">
-            <slot name="track-overlays"></slot>
-            <div id="range-selection" class="range-selection"></div>
-          </div>
-          <div id="range-label-layer" class="range-label-layer"></div>
+          <range-scale
+            .rangeBounds=${this.rangeBounds}
+            .zoomLevel=${this.zoomLevel}
+            .contentWidth=${this._rangeContentWidth}
+            .locale=${this.locale}
+            .i18n=${this.i18n}
+            @dp-scale-period-select=${this._handleScalePeriodSelect}
+            @dp-scale-period-hover=${this._handleScalePeriodHover}
+            @dp-scale-period-leave=${this._handleScalePeriodLeave}
+          ></range-scale>
+          <range-track
+            id="range-track"
+            .selectionLeftPct=${this._selectionLeftPct}
+            .selectionWidthPct=${this._selectionWidthPct}
+            .selectionDragging=${this._selectionDragging}
+          >
+            <slot name="track-overlays" slot="track-overlays"></slot>
+          </range-track>
           <range-handle
             id="range-start-handle"
-            .label=${msg("Start date and time")}
-            .position=${this._pctForTime(this.startTime)}
+            .label=${this._t("Start date and time")}
+            .position=${this._startHandlePosition}
+            .zIndex=${this._startHandleZIndex}
+            .i18n=${this.i18n}
             @dp-handle-drag-start=${(e) => this._beginRangePointerInteraction("start", e.detail.pointerId, e.detail.clientX)}
             @dp-handle-keydown=${(e) => this._handleRangeHandleKeyDown("start", e.detail)}
             @dp-handle-hover=${() => this._setRangeTooltipHoverHandle("start")}
@@ -23338,9 +26415,11 @@
           ></range-handle>
           <range-handle
             id="range-end-handle"
-            .label=${msg("End date and time")}
-            .position=${this._pctForTime(this.endTime)}
+            .label=${this._t("End date and time")}
+            .position=${this._endHandlePosition}
             .live=${this.isLiveEdge}
+            .zIndex=${this._endHandleZIndex}
+            .i18n=${this.i18n}
             @dp-handle-drag-start=${(e) => this._beginRangePointerInteraction("end", e.detail.pointerId, e.detail.clientX)}
             @dp-handle-keydown=${(e) => this._handleRangeHandleKeyDown("end", e.detail)}
             @dp-handle-hover=${() => this._setRangeTooltipHoverHandle("end")}
@@ -23350,16 +26429,20 @@
           ></range-handle>
         </div>
       </div>
-      <div
-        id="range-tooltip-start"
-        class="range-tooltip start"
-        aria-hidden="true"
-      ></div>
-      <div
-        id="range-tooltip-end"
-        class="range-tooltip end"
-        aria-hidden="true"
-      ></div>
+      <range-tooltip
+        side="start"
+        .content=${this._startTooltipContent}
+        .visible=${this._startTooltipVisible}
+        .position=${this._startTooltipLeftPx}
+      ></range-tooltip>
+      <range-tooltip
+        side="end"
+        .content=${this._endTooltipContent}
+        .visible=${this._endTooltipVisible}
+        .position=${this._endTooltipLeftPx}
+        .isLive=${this._endTooltipIsLive}
+        .liveHint=${this._endTooltipLiveHint}
+      ></range-tooltip>
     `;
 		}
 		_getZoomConfig() {
@@ -23377,10 +26460,6 @@
 				case "day": return "hour";
 				default: return "day";
 			}
-		}
-		_getScaleLabelZoomLevel() {
-			if (this.zoomLevel === "quarterly" || this.zoomLevel === "month_short") return this.zoomLevel;
-			return "";
 		}
 		_getSnapSpanMs(reference = /* @__PURE__ */ new Date()) {
 			const snapUnit = this._getEffectiveSnapUnit();
@@ -23410,157 +26489,30 @@
 			this._draftEndTime = this.endTime ? new Date(this.endTime) : null;
 			this._syncTimelineWidth();
 			this._updateHandleStacking();
-			this._renderRangeScale();
 			this._updateRangePreview();
 			this._updateSelectionJumpControls();
 			this._revealSelectionInTimeline("auto");
 		}
 		_syncTimelineWidth() {
-			if (!this.rangeBounds || !this._rangeTimelineEl) return;
+			if (!this.rangeBounds) return;
 			const { config } = this.rangeBounds;
 			const viewportWidth = Math.max(this._rangeScrollViewportEl?.clientWidth || 0, 320);
 			const unitCount = this._countUnitsInRange(this.rangeBounds.min, this.rangeBounds.max, config.majorUnit);
-			const contentWidth = Math.max(viewportWidth, unitCount * (config.pixelsPerUnit || 60));
-			this._rangeContentWidth = contentWidth;
-			this._rangeTimelineEl.style.width = `${contentWidth}px`;
-		}
-		_renderScaleMarkers(fragment, unit, className, total, step = 1) {
-			if (!this.rangeBounds) return;
-			let markerTime = addUnit(startOfUnit(new Date(this.rangeBounds.min), unit), unit, 0);
-			if (markerTime.getTime() < this.rangeBounds.min) markerTime = addUnit(markerTime, unit, step);
-			while (markerTime.getTime() < this.rangeBounds.max) {
-				const tick = document.createElement("span");
-				tick.className = `range-tick ${className}`;
-				tick.style.left = `${(markerTime.getTime() - this.rangeBounds.min) / total * 100}%`;
-				fragment.appendChild(tick);
-				markerTime = addUnit(markerTime, unit, step);
-			}
-		}
-		_buildRangePeriodButton(className, leftValue, total, text, unit, startTime) {
-			if (!this.rangeBounds) return document.createElement("button");
-			const button = document.createElement("button");
-			button.type = "button";
-			button.className = `range-period-button ${className}`;
-			button.style.left = `${(leftValue - this.rangeBounds.min) / total * 100}%`;
-			button.textContent = text;
-			const selectionLabel = formatPeriodSelectionLabel(startTime, unit, this.locale || void 0);
-			const selectTitle = `${msg("Select")} ${selectionLabel}`;
-			button.title = selectTitle;
-			button.setAttribute("aria-label", selectTitle);
-			button.addEventListener("click", (ev) => this._handleRangePeriodSelect(unit, startTime, ev));
-			button.addEventListener("pointerenter", () => this._setHoveredPeriodRange(unit, startTime));
-			button.addEventListener("pointerleave", () => this._clearHoveredPeriodRange(unit, startTime));
-			button.addEventListener("focus", () => this._setHoveredPeriodRange(unit, startTime));
-			button.addEventListener("blur", () => this._clearHoveredPeriodRange(unit, startTime));
-			return button;
-		}
-		_getRangeUnitAnchorMs(startTime, unit, anchor = "auto") {
-			const unitStart = Math.max(startOfUnit(new Date(startTime), unit).getTime(), this.rangeBounds?.min ?? -Infinity);
-			const unitEnd = Math.min(endOfUnit(new Date(startTime), unit).getTime(), this.rangeBounds?.max ?? Infinity);
-			let resolvedAnchor = anchor;
-			if (resolvedAnchor === "auto") resolvedAnchor = unit === "day" || unit === "week" ? "center" : "start";
-			if (resolvedAnchor === "center") return unitStart + Math.max(0, (unitEnd - unitStart) / 2);
-			return unitStart;
-		}
-		_estimateRangeLabelWidth(text, className, minGap) {
-			const basePadding = className === "range-context-label" ? 20 : 14;
-			const charWidth = className === "range-context-label" ? 8.2 : 7.2;
-			return String(text).length * charWidth + basePadding + minGap;
-		}
-		_computeRangeLabelStride(unit, formatter, className, minGap) {
-			if (!this.rangeBounds || !this._rangeContentWidth) return 1;
-			const total = Math.max(1, this.rangeBounds.max - this.rangeBounds.min);
-			let current = startOfUnit(new Date(this.rangeBounds.min), unit);
-			let previousMs = null;
-			let minSpacingPx = Infinity;
-			let maxLabelWidthPx = 0;
-			let samples = 0;
-			while (current.getTime() < this.rangeBounds.max && samples < 24) {
-				const currentMs = Math.max(current.getTime(), this.rangeBounds.min);
-				const text = formatter(current);
-				maxLabelWidthPx = Math.max(maxLabelWidthPx, this._estimateRangeLabelWidth(text, className, minGap));
-				if (previousMs != null) {
-					const spacingPx = (currentMs - previousMs) / total * this._rangeContentWidth;
-					if (spacingPx > 0) minSpacingPx = Math.min(minSpacingPx, spacingPx);
-				}
-				previousMs = currentMs;
-				current = addUnit(current, unit, 1);
-				samples += 1;
-			}
-			if (!Number.isFinite(minSpacingPx) || minSpacingPx <= 0) return 1;
-			return Math.max(1, Math.ceil(maxLabelWidthPx / minSpacingPx));
-		}
-		_syncVisibleRangeLabels() {}
-		_renderRangeScale() {
-			if (!this.rangeBounds || !this._rangeTickLayerEl || !this._rangeLabelLayerEl || !this._rangeContextLayerEl) return;
-			this._rangeTickLayerEl.innerHTML = "";
-			this._rangeLabelLayerEl.innerHTML = "";
-			this._rangeContextLayerEl.innerHTML = "";
-			const total = Math.max(1, this.rangeBounds.max - this.rangeBounds.min);
-			const { config } = this.rangeBounds;
-			const tickFragment = document.createDocumentFragment();
-			const labelFragment = document.createDocumentFragment();
-			const contextFragment = document.createDocumentFragment();
-			const scaleLabelZoomLevel = this._getScaleLabelZoomLevel();
-			const scaleLabelStride = config.labelUnit === "month" || config.labelUnit === "day" ? 1 : this._computeRangeLabelStride(config.labelUnit, (value) => formatScaleLabel(value, config.labelUnit, scaleLabelZoomLevel, this.locale || void 0), "range-scale-label", 10);
-			const contextLabelStride = config.contextUnit === "month" || config.contextUnit === "day" ? 1 : this._computeRangeLabelStride(config.contextUnit, (value) => formatContextLabel(value, config.contextUnit, this.locale || void 0), "range-context-label", 14);
-			if (config.detailUnit && config.detailUnit !== config.minorUnit && config.detailUnit !== config.majorUnit) this._renderScaleMarkers(tickFragment, config.detailUnit, "fine", total, config.detailStep || 1);
-			if (config.minorUnit !== config.majorUnit) this._renderScaleMarkers(tickFragment, config.minorUnit, "", total);
-			this._renderScaleMarkers(tickFragment, config.majorUnit, "major", total);
-			let labelRef = startOfUnit(new Date(this.rangeBounds.min), config.labelUnit);
-			let labelIndex = 0;
-			while (labelRef.getTime() < this.rangeBounds.max) {
-				if (labelIndex % scaleLabelStride === 0) {
-					const leftValue = this._getRangeUnitAnchorMs(labelRef, config.labelUnit, "auto");
-					const label = this._buildRangePeriodButton("range-scale-label", leftValue, total, formatScaleLabel(labelRef, config.labelUnit, scaleLabelZoomLevel, this.locale || void 0), config.labelUnit, labelRef);
-					labelFragment.appendChild(label);
-				}
-				labelRef = addUnit(labelRef, config.labelUnit, 1);
-				labelIndex += 1;
-			}
-			let contextRef = startOfUnit(new Date(this.rangeBounds.min), config.contextUnit);
-			if (contextRef.getTime() < this.rangeBounds.min) contextRef = addUnit(contextRef, config.contextUnit, 1);
-			let contextIndex = 0;
-			while (contextRef.getTime() < this.rangeBounds.max) {
-				const left = `${(contextRef.getTime() - this.rangeBounds.min) / total * 100}%`;
-				const divider = document.createElement("span");
-				divider.className = "range-divider";
-				divider.style.left = left;
-				contextFragment.appendChild(divider);
-				if (contextIndex % contextLabelStride === 0) {
-					const label = this._buildRangePeriodButton("range-context-label", contextRef.getTime(), total, formatContextLabel(contextRef, config.contextUnit, this.locale || void 0), config.contextUnit, contextRef);
-					contextFragment.appendChild(label);
-				}
-				contextRef = addUnit(contextRef, config.contextUnit, 1);
-				contextIndex += 1;
-			}
-			this._rangeTickLayerEl.appendChild(tickFragment);
-			this._rangeLabelLayerEl.appendChild(labelFragment);
-			this._rangeContextLayerEl.appendChild(contextFragment);
-			this._syncVisibleRangeLabels();
+			this._rangeContentWidth = Math.max(viewportWidth, unitCount * (config.pixelsPerUnit || 60));
 		}
 		_updateHandleStacking(activeHandle = this._activeRangeHandle) {
-			if (!this._rangeStartHandleEl || !this._rangeEndHandleEl) return;
-			this._rangeStartHandleEl.style.zIndex = activeHandle === "start" ? "5" : "3";
-			this._rangeEndHandleEl.style.zIndex = activeHandle === "end" ? "5" : "4";
+			this._startHandleZIndex = activeHandle === "start" ? 5 : 3;
+			this._endHandleZIndex = activeHandle === "end" ? 5 : 4;
 		}
 		_updateRangePreview() {
 			if (!this.rangeBounds || !this._draftStartTime || !this._draftEndTime) return;
 			const total = Math.max(1, this.rangeBounds.max - this.rangeBounds.min);
 			const startPct = (this._draftStartTime.getTime() - this.rangeBounds.min) / total * 100;
 			const endPct = (this._draftEndTime.getTime() - this.rangeBounds.min) / total * 100;
-			if (this._rangeSelectionEl) {
-				this._rangeSelectionEl.style.left = `${startPct}%`;
-				this._rangeSelectionEl.style.width = `${Math.max(0, endPct - startPct)}%`;
-			}
-			if (this._rangeStartHandleEl) {
-				this._rangeStartHandleEl.style.left = `${startPct}%`;
-				this._rangeStartHandleEl.setAttribute("aria-valuetext", formatRangeDateTime(this._draftStartTime, this.locale || void 0));
-			}
-			if (this._rangeEndHandleEl) {
-				this._rangeEndHandleEl.style.left = `${endPct}%`;
-				this._rangeEndHandleEl.setAttribute("aria-valuetext", formatRangeDateTime(this._draftEndTime, this.locale || void 0));
-			}
+			this._selectionLeftPct = startPct;
+			this._selectionWidthPct = Math.max(0, endPct - startPct);
+			this._startHandlePosition = startPct;
+			this._endHandlePosition = endPct;
 			this._updateRangeTooltip();
 		}
 		_getVisibleRangeTooltipHandles() {
@@ -23593,34 +26545,42 @@
 			this._updateRangeTooltipForHandle("end", visibleHandles.has("end"));
 		}
 		_updateRangeTooltipForHandle(handle, visible) {
-			const tooltip = handle === "start" ? this._rangeStartTooltipEl : this._rangeEndTooltipEl;
-			if (!tooltip) return;
-			if (!visible) {
-				tooltip.classList.remove("visible");
-				tooltip.setAttribute("aria-hidden", "true");
-				return;
-			}
 			const value = handle === "start" ? this._draftStartTime : this._draftEndTime;
-			if (!value || !this.rangeBounds || !this._rangeScrollViewportEl) {
-				tooltip.classList.remove("visible");
-				tooltip.setAttribute("aria-hidden", "true");
+			if (!visible || !value || !this.rangeBounds || !this._rangeScrollViewportEl) {
+				if (handle === "start") this._startTooltipVisible = false;
+				else {
+					this._endTooltipVisible = false;
+					this._endTooltipIsLive = false;
+				}
 				return;
 			}
 			const total = Math.max(1, this.rangeBounds.max - this.rangeBounds.min);
 			const contentWidth = Math.max(this._rangeContentWidth || 0, this._rangeScrollViewportEl.clientWidth || 0, 1);
 			const clampedX = clampNumber((value.getTime() - this.rangeBounds.min) / total * contentWidth - this._rangeScrollViewportEl.scrollLeft, 0, this._rangeScrollViewportEl.clientWidth);
-			if (handle === "end" && this.isLiveEdge) {
-				const dateEl = document.createElement("span");
-				dateEl.textContent = formatRangeDateTime(value, this.locale || void 0);
-				const hintEl = document.createElement("span");
-				hintEl.className = "range-tooltip-live-hint";
-				hintEl.textContent = msg("Updates with new data");
-				tooltip.textContent = "";
-				tooltip.append(dateEl, hintEl);
-			} else tooltip.textContent = formatRangeDateTime(value, this.locale || void 0);
-			tooltip.style.left = `${clampedX}px`;
-			tooltip.classList.add("visible");
-			tooltip.setAttribute("aria-hidden", "false");
+			const content = formatRangeDateTime(value, this.locale || void 0);
+			if (handle === "start") {
+				this._startTooltipVisible = true;
+				this._startTooltipLeftPx = clampedX;
+				this._startTooltipContent = content;
+			} else {
+				this._endTooltipVisible = true;
+				this._endTooltipLeftPx = clampedX;
+				this._endTooltipContent = content;
+				this._endTooltipIsLive = this.isLiveEdge;
+				this._endTooltipLiveHint = this.isLiveEdge ? this._t("Updates with new data") : "";
+			}
+		}
+		_handleScalePeriodSelect(e) {
+			const { unit, startTime, originalEvent } = e.detail;
+			this._handleRangePeriodSelect(unit, startTime, originalEvent);
+		}
+		_handleScalePeriodHover(e) {
+			const { unit, startTime } = e.detail;
+			this._setHoveredPeriodRange(unit, startTime);
+		}
+		_handleScalePeriodLeave(e) {
+			const { unit, startTime } = e.detail;
+			this._clearHoveredPeriodRange(unit, startTime);
 		}
 		_handleRangePeriodSelect(unit, startTime, ev) {
 			ev.preventDefault();
@@ -23679,25 +26639,14 @@
 				if (this._rangeJumpRightEl) this._rangeJumpRightEl.hidden = true;
 				return;
 			}
-			const total = Math.max(1, this.rangeBounds.max - this.rangeBounds.min);
-			const viewportWidth = this._rangeScrollViewportEl.clientWidth;
-			const currentLeft = this._rangeScrollViewportEl.scrollLeft;
-			const currentRight = currentLeft + viewportWidth;
-			const startPx = (this.startTime.getTime() - this.rangeBounds.min) / total * this._rangeContentWidth;
-			const endPx = (this.endTime.getTime() - this.rangeBounds.min) / total * this._rangeContentWidth;
-			if (this._rangeJumpLeftEl) this._rangeJumpLeftEl.hidden = !(endPx < currentLeft);
-			if (this._rangeJumpRightEl) this._rangeJumpRightEl.hidden = !(startPx > currentRight);
+			const { showLeft, showRight } = computeSelectionJumpVisibility(this._rangeScrollViewportEl.scrollLeft, this._rangeScrollViewportEl.clientWidth, this._rangeContentWidth, this.startTime.getTime(), this.endTime.getTime(), this.rangeBounds.min, this.rangeBounds.max);
+			if (this._rangeJumpLeftEl) this._rangeJumpLeftEl.hidden = !showLeft;
+			if (this._rangeJumpRightEl) this._rangeJumpRightEl.hidden = !showRight;
 		}
 		_scrollTimelineToRange(range, behavior = "auto", { center = false } = {}) {
 			if (!this._rangeScrollViewportEl || !this.rangeBounds || !this._rangeContentWidth || !range) return;
-			const viewportWidth = this._rangeScrollViewportEl.clientWidth;
-			if (!viewportWidth || this._rangeContentWidth <= viewportWidth) return;
-			const totalMs = Math.max(1, this.rangeBounds.max - this.rangeBounds.min);
-			const visibleSpanMs = totalMs * Math.min(1, viewportWidth / this._rangeContentWidth);
-			const maxScrollLeft = Math.max(0, this._rangeContentWidth - viewportWidth);
-			const viewportRangeMs = Math.max(0, totalMs - visibleSpanMs);
-			if (viewportRangeMs <= 0) return;
-			const nextLeft = clampNumber(((center ? clampNumber((range.start + range.end) / 2 - visibleSpanMs / 2, this.rangeBounds.min, this.rangeBounds.max - visibleSpanMs) : clampNumber(range.start, this.rangeBounds.min, this.rangeBounds.max - visibleSpanMs)) - this.rangeBounds.min) / viewportRangeMs * maxScrollLeft, 0, maxScrollLeft);
+			const nextLeft = computeScrollPositionForRange(range.start, range.end, this.rangeBounds.min, this.rangeBounds.max, this._rangeContentWidth, this._rangeScrollViewportEl.clientWidth, center);
+			if (nextLeft == null) return;
 			this._rangeScrollViewportEl.scrollTo({
 				left: nextLeft,
 				behavior
@@ -23718,37 +26667,29 @@
 			}, 50);
 		}
 		_showScrollbar() {
-			if (!this._rangeScrollViewportEl) return;
-			this._rangeScrollViewportEl.classList.add("scrollbar-visible");
+			this._scrollbarVisible = true;
 			if (this._scrollbarHideTimer) window.clearTimeout(this._scrollbarHideTimer);
 			this._scrollbarHideTimer = window.setTimeout(() => {
 				this._scrollbarHideTimer = null;
-				this._rangeScrollViewportEl?.classList.remove("scrollbar-visible");
+				this._scrollbarVisible = false;
 			}, 1500);
 		}
 		_timestampFromClientX(clientX) {
 			if (!this.rangeBounds || !this._rangeTrackEl) return null;
 			const rect = this._rangeTrackEl.getBoundingClientRect();
-			if (!rect.width) return null;
-			const ratio = clampNumber((clientX - rect.left) / rect.width, 0, 1);
-			return this.rangeBounds.min + ratio * (this.rangeBounds.max - this.rangeBounds.min);
+			return timestampFromClientPosition(clientX, rect.left, rect.width, this.rangeBounds.min, this.rangeBounds.max);
 		}
 		_getTimelineSelectionDragDeltaMs(timestamp) {
 			if (timestamp == null || this._timelinePointerStartTimestamp == null) return 0;
-			const snapUnit = this._getEffectiveSnapUnit();
-			if (!snapUnit) return timestamp - this._timelinePointerStartTimestamp;
-			const snappedStart = snapDateToUnit(new Date(this._timelinePointerStartTimestamp), snapUnit).getTime();
-			return snapDateToUnit(new Date(timestamp), snapUnit).getTime() - snappedStart;
+			return computeSelectionDragDelta(timestamp, this._timelinePointerStartTimestamp, this._getEffectiveSnapUnit());
 		}
 		_setDraftRangeFromTimestamp(handle, timestamp) {
 			if (!this.rangeBounds) return;
+			const currentStartMs = this._draftStartTime?.getTime() ?? this.startTime?.getTime() ?? this.rangeBounds.min;
+			const currentEndMs = this._draftEndTime?.getTime() ?? this.endTime?.getTime() ?? this.rangeBounds.max;
 			const snapUnit = this._getEffectiveSnapUnit();
-			let startMs = this._draftStartTime?.getTime() ?? this.startTime?.getTime() ?? this.rangeBounds.min;
-			let endMs = this._draftEndTime?.getTime() ?? this.endTime?.getTime() ?? this.rangeBounds.max;
-			const snapped = clampNumber(snapDateToUnit(new Date(timestamp), snapUnit).getTime(), this.rangeBounds.min, this.rangeBounds.max);
-			const minSpan = Math.max(this._getSnapSpanMs(new Date(snapped)), SECOND_MS);
-			if (handle === "start") startMs = clampNumber(snapped, this.rangeBounds.min, endMs - minSpan);
-			else endMs = clampNumber(snapped, startMs + minSpan, this.rangeBounds.max);
+			const snapSpanMs = this._getSnapSpanMs(new Date(snapDateToUnit(new Date(timestamp), snapUnit).getTime()));
+			const { startMs, endMs } = computeDraftRangeForHandle(handle, timestamp, currentStartMs, currentEndMs, this.rangeBounds.min, this.rangeBounds.max, snapUnit, snapSpanMs);
 			this._draftStartTime = new Date(startMs);
 			this._draftEndTime = new Date(endMs);
 			this._updateHandleStacking(handle);
@@ -23758,25 +26699,19 @@
 		}
 		_shiftDraftRangeByDelta(deltaMs) {
 			if (!this.rangeBounds) return;
-			const startMs = this._timelineDragStartRangeMs;
-			const endMs = this._timelineDragEndRangeMs;
-			const clampedDelta = clampNumber(deltaMs, this.rangeBounds.min - startMs, this.rangeBounds.max - endMs);
-			this._draftStartTime = new Date(startMs + clampedDelta);
-			this._draftEndTime = new Date(endMs + clampedDelta);
+			const { startMs, endMs } = computeShiftedDraftRange(deltaMs, this._timelineDragStartRangeMs, this._timelineDragEndRangeMs, this.rangeBounds.min, this.rangeBounds.max);
+			this._draftStartTime = new Date(startMs);
+			this._draftEndTime = new Date(endMs);
 			this._updateRangePreview();
 			this._fireDraftEvent();
 			this._scheduleRangeCommit();
 		}
 		_setDraftRangeFromIntervalSelection(startTimestamp, endTimestamp) {
 			if (!this.rangeBounds) return;
-			const unit = this.rangeBounds.config?.labelUnit || this._getEffectiveSnapUnit();
-			const startValue = Math.min(startTimestamp, endTimestamp);
-			const endValue = Math.max(startTimestamp, endTimestamp);
-			const rangeStart = clampNumber(startOfUnit(new Date(startValue), unit).getTime(), this.rangeBounds.min, this.rangeBounds.max);
-			const rangeEnd = clampNumber(endOfUnit(new Date(endValue), unit).getTime(), this.rangeBounds.min, this.rangeBounds.max);
-			if (rangeStart >= rangeEnd) return;
-			this._draftStartTime = new Date(rangeStart);
-			this._draftEndTime = new Date(rangeEnd);
+			const result = computeIntervalSelectionRange(startTimestamp, endTimestamp, this.rangeBounds.config?.labelUnit || this._getEffectiveSnapUnit(), this.rangeBounds.min, this.rangeBounds.max);
+			if (!result) return;
+			this._draftStartTime = new Date(result.startMs);
+			this._draftEndTime = new Date(result.endMs);
 			this._updateRangePreview();
 		}
 		_fireDraftEvent() {
@@ -23834,16 +26769,7 @@
 			if (!rect.width) return;
 			const maxScrollLeft = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
 			if (maxScrollLeft <= 0) return;
-			let delta = 0;
-			const leftDistance = clientX - rect.left;
-			const rightDistance = rect.right - clientX;
-			if (leftDistance < 48) {
-				const ratio = clampNumber((48 - leftDistance) / 48, 0, 1);
-				delta = -Math.max(1, Math.round(ratio * 28));
-			} else if (rightDistance < 48) {
-				const ratio = clampNumber((48 - rightDistance) / 48, 0, 1);
-				delta = Math.max(1, Math.round(ratio * 28));
-			}
+			const delta = computeAutoScrollDelta(clientX, rect.left, rect.right);
 			if (!delta) return;
 			viewport.scrollLeft = clampNumber(viewport.scrollLeft + delta, 0, maxScrollLeft);
 		}
@@ -23902,7 +26828,7 @@
 			if (ev.composedPath().some((node) => node instanceof Element && (node.tagName === "RANGE-HANDLE" || node.closest?.("range-handle")))) return;
 			if (ev.target?.closest?.(".range-period-button")) return;
 			if (!this._rangeScrollViewportEl) return;
-			const isSelectionDrag = !!ev.target?.closest?.(".range-selection");
+			const isSelectionDrag = ev.composedPath().some((el) => el instanceof Element && el.classList?.contains?.("range-selection"));
 			const trackRect = this._rangeTrackEl?.getBoundingClientRect();
 			const isTrackRegion = !!trackRect && ev.clientY >= trackRect.top - 6 && ev.clientY <= trackRect.bottom + 6;
 			const isIntervalSelect = !isSelectionDrag && !isTrackRegion;
@@ -23922,9 +26848,9 @@
 			this._timelineDragStartRangeMs = this._draftStartTime?.getTime() ?? this.startTime?.getTime() ?? 0;
 			this._timelineDragEndRangeMs = this._draftEndTime?.getTime() ?? this.endTime?.getTime() ?? 0;
 			this._timelinePointerMoved = false;
-			this._timelineTrackClickPending = !isSelectionDrag && !isIntervalSelect && !!ev.target?.closest?.(".range-track");
-			this._rangeScrollViewportEl.classList.remove("dragging");
-			this._rangeSelectionEl?.classList.toggle("dragging", isSelectionDrag);
+			this._timelineTrackClickPending = !isSelectionDrag && !isIntervalSelect && !!ev.target?.closest?.("range-track");
+			this._viewportDragging = false;
+			this._selectionDragging = isSelectionDrag;
 			window.addEventListener("pointermove", this._onTimelinePointerMove);
 			window.addEventListener("pointerup", this._onTimelinePointerUp);
 			window.addEventListener("pointercancel", this._onTimelinePointerUp);
@@ -23933,8 +26859,8 @@
 			window.removeEventListener("pointermove", this._onTimelinePointerMove);
 			window.removeEventListener("pointerup", this._onTimelinePointerUp);
 			window.removeEventListener("pointercancel", this._onTimelinePointerUp);
-			if (this._rangeScrollViewportEl) this._rangeScrollViewportEl.classList.remove("dragging");
-			this._rangeSelectionEl?.classList.remove("dragging");
+			this._viewportDragging = false;
+			this._selectionDragging = false;
 			this._timelinePointerId = null;
 			this._timelinePointerStartTimestamp = null;
 			this._timelinePointerMode = null;
@@ -23968,7 +26894,7 @@
 			if (!this._timelinePointerMoved && Math.abs(deltaX) < 4) return;
 			this._timelinePointerMoved = true;
 			this._timelineTrackClickPending = false;
-			this._rangeScrollViewportEl.classList.add("dragging");
+			this._viewportDragging = true;
 			const maxScrollLeft = Math.max(0, this._rangeScrollViewportEl.scrollWidth - this._rangeScrollViewportEl.clientWidth);
 			this._rangeScrollViewportEl.scrollLeft = clampNumber(this._timelinePointerStartScrollLeft - deltaX, 0, maxScrollLeft);
 			ev.preventDefault();
@@ -24001,14 +26927,14 @@
 			const startMs = this._draftStartTime?.getTime() ?? this.startTime?.getTime() ?? this.rangeBounds?.min;
 			const endMs = this._draftEndTime?.getTime() ?? this.endTime?.getTime() ?? this.rangeBounds?.max;
 			if (startMs == null || endMs == null) return;
-			const handle = Math.abs(timestamp - startMs) <= Math.abs(timestamp - endMs) ? "start" : "end";
+			const handle = resolveCloserHandle(timestamp, startMs, endMs);
 			this._setDraftRangeFromTimestamp(handle, timestamp);
 		}
 		_handleRangeViewportPointerMove(ev) {
 			if (this._timelinePointerId != null || this._rangePointerId != null) return;
 			if (ev.composedPath().some((el) => el.tagName === "DP-RANGE-HANDLE")) return;
 			if (ev.target?.closest?.(".range-period-button")) return;
-			if (ev.target?.closest?.(".range-selection")) return;
+			if (ev.composedPath().some((el) => el instanceof Element && el.classList?.contains?.("range-selection"))) return;
 			const timestamp = this._timestampFromClientX(ev.clientX);
 			if (timestamp == null || !this.rangeBounds) return;
 			const unit = this.rangeBounds.config?.labelUnit || this._getEffectiveSnapUnit();
@@ -24025,7 +26951,8 @@
 				}));
 			}
 		}
-	}, _defineProperty(_RangeTimeline, "styles", styles$26), _RangeTimeline);
+	};
+	_defineProperty(RangeTimeline, "styles", styles$32);
 	__decorate([n$1({ type: Object })], RangeTimeline.prototype, "startTime", null);
 	__decorate([n$1({ type: Object })], RangeTimeline.prototype, "endTime", null);
 	__decorate([n$1({ type: Object })], RangeTimeline.prototype, "rangeBounds", null);
@@ -24033,17 +26960,41 @@
 	__decorate([n$1({ type: String })], RangeTimeline.prototype, "dateSnapping", null);
 	__decorate([n$1({ type: Boolean })], RangeTimeline.prototype, "isLiveEdge", null);
 	__decorate([n$1({ type: String })], RangeTimeline.prototype, "locale", null);
-	RangeTimeline = __decorate([localized()], RangeTimeline);
+	__decorate([n$1({ attribute: false })], RangeTimeline.prototype, "i18n", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_rangeContentWidth", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_startTooltipVisible", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_startTooltipLeftPx", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_startTooltipContent", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_endTooltipVisible", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_endTooltipLeftPx", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_endTooltipContent", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_endTooltipIsLive", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_endTooltipLiveHint", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_selectionLeftPct", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_selectionWidthPct", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_scrollbarVisible", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_viewportDragging", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_selectionDragging", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_startHandlePosition", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_endHandlePosition", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_startHandleZIndex", null);
+	__decorate([r$2()], RangeTimeline.prototype, "_endHandleZIndex", null);
+	__decorate([e$4("#range-scroll-viewport")], RangeTimeline.prototype, "_rangeScrollViewportEl", null);
+	__decorate([e$4("#range-track")], RangeTimeline.prototype, "_rangeTrackEl", null);
+	__decorate([e$4("#range-start-handle")], RangeTimeline.prototype, "_rangeStartHandleEl", null);
+	__decorate([e$4("#range-end-handle")], RangeTimeline.prototype, "_rangeEndHandleEl", null);
+	__decorate([e$4("#range-jump-left")], RangeTimeline.prototype, "_rangeJumpLeftEl", null);
+	__decorate([e$4("#range-jump-right")], RangeTimeline.prototype, "_rangeJumpRightEl", null);
 	customElements.define("range-timeline", RangeTimeline);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/date-window-dialog/date-window-dialog.ts
-	var _DateWindowDialog, _open_accessor_storage$1, _heading_accessor_storage, _name_accessor_storage$1, _startValue_accessor_storage, _endValue_accessor_storage, _showDelete_accessor_storage, _showShortcuts_accessor_storage, _submitLabel_accessor_storage, _rangeBounds_accessor_storage$2, _zoomLevel_accessor_storage$2, _dateSnapping_accessor_storage$2;
-	var DateWindowDialog = (_open_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _heading_accessor_storage = /* @__PURE__ */ new WeakMap(), _name_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _startValue_accessor_storage = /* @__PURE__ */ new WeakMap(), _endValue_accessor_storage = /* @__PURE__ */ new WeakMap(), _showDelete_accessor_storage = /* @__PURE__ */ new WeakMap(), _showShortcuts_accessor_storage = /* @__PURE__ */ new WeakMap(), _submitLabel_accessor_storage = /* @__PURE__ */ new WeakMap(), _rangeBounds_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _zoomLevel_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _dateSnapping_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _DateWindowDialog = class DateWindowDialog extends i$2 {
+	var _DateWindowDialog, _open_accessor_storage$3, _heading_accessor_storage$1, _name_accessor_storage$2, _startValue_accessor_storage, _endValue_accessor_storage, _showDelete_accessor_storage, _showShortcuts_accessor_storage, _submitLabel_accessor_storage, _rangeBounds_accessor_storage$2, _zoomLevel_accessor_storage$2, _dateSnapping_accessor_storage$2, _dialogEl_accessor_storage, _nameInput_accessor_storage, _startInput_accessor_storage, _endInput_accessor_storage, _shaking_accessor_storage;
+	var DateWindowDialog = (_open_accessor_storage$3 = /* @__PURE__ */ new WeakMap(), _heading_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _name_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _startValue_accessor_storage = /* @__PURE__ */ new WeakMap(), _endValue_accessor_storage = /* @__PURE__ */ new WeakMap(), _showDelete_accessor_storage = /* @__PURE__ */ new WeakMap(), _showShortcuts_accessor_storage = /* @__PURE__ */ new WeakMap(), _submitLabel_accessor_storage = /* @__PURE__ */ new WeakMap(), _rangeBounds_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _zoomLevel_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _dateSnapping_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _dialogEl_accessor_storage = /* @__PURE__ */ new WeakMap(), _nameInput_accessor_storage = /* @__PURE__ */ new WeakMap(), _startInput_accessor_storage = /* @__PURE__ */ new WeakMap(), _endInput_accessor_storage = /* @__PURE__ */ new WeakMap(), _shaking_accessor_storage = /* @__PURE__ */ new WeakMap(), _DateWindowDialog = class DateWindowDialog extends i$2 {
 		constructor(..._args) {
 			super(..._args);
-			_classPrivateFieldInitSpec(this, _open_accessor_storage$1, false);
-			_classPrivateFieldInitSpec(this, _heading_accessor_storage, "Add date window");
-			_classPrivateFieldInitSpec(this, _name_accessor_storage$1, "");
+			_classPrivateFieldInitSpec(this, _open_accessor_storage$3, false);
+			_classPrivateFieldInitSpec(this, _heading_accessor_storage$1, "Add date window");
+			_classPrivateFieldInitSpec(this, _name_accessor_storage$2, "");
 			_classPrivateFieldInitSpec(this, _startValue_accessor_storage, "");
 			_classPrivateFieldInitSpec(this, _endValue_accessor_storage, "");
 			_classPrivateFieldInitSpec(this, _showDelete_accessor_storage, false);
@@ -24052,24 +27003,29 @@
 			_classPrivateFieldInitSpec(this, _rangeBounds_accessor_storage$2, null);
 			_classPrivateFieldInitSpec(this, _zoomLevel_accessor_storage$2, "auto");
 			_classPrivateFieldInitSpec(this, _dateSnapping_accessor_storage$2, "hour");
+			_classPrivateFieldInitSpec(this, _dialogEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _nameInput_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _startInput_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _endInput_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _shaking_accessor_storage, false);
 		}
 		get open() {
-			return _classPrivateFieldGet2(_open_accessor_storage$1, this);
+			return _classPrivateFieldGet2(_open_accessor_storage$3, this);
 		}
 		set open(value) {
-			_classPrivateFieldSet2(_open_accessor_storage$1, this, value);
+			_classPrivateFieldSet2(_open_accessor_storage$3, this, value);
 		}
 		get heading() {
-			return _classPrivateFieldGet2(_heading_accessor_storage, this);
+			return _classPrivateFieldGet2(_heading_accessor_storage$1, this);
 		}
 		set heading(value) {
-			_classPrivateFieldSet2(_heading_accessor_storage, this, value);
+			_classPrivateFieldSet2(_heading_accessor_storage$1, this, value);
 		}
 		get name() {
-			return _classPrivateFieldGet2(_name_accessor_storage$1, this);
+			return _classPrivateFieldGet2(_name_accessor_storage$2, this);
 		}
 		set name(value) {
-			_classPrivateFieldSet2(_name_accessor_storage$1, this, value);
+			_classPrivateFieldSet2(_name_accessor_storage$2, this, value);
 		}
 		get startValue() {
 			return _classPrivateFieldGet2(_startValue_accessor_storage, this);
@@ -24119,14 +27075,45 @@
 		set dateSnapping(value) {
 			_classPrivateFieldSet2(_dateSnapping_accessor_storage$2, this, value);
 		}
+		get _dialogEl() {
+			return _classPrivateFieldGet2(_dialogEl_accessor_storage, this);
+		}
+		set _dialogEl(value) {
+			_classPrivateFieldSet2(_dialogEl_accessor_storage, this, value);
+		}
+		get _nameInput() {
+			return _classPrivateFieldGet2(_nameInput_accessor_storage, this);
+		}
+		set _nameInput(value) {
+			_classPrivateFieldSet2(_nameInput_accessor_storage, this, value);
+		}
+		get _startInput() {
+			return _classPrivateFieldGet2(_startInput_accessor_storage, this);
+		}
+		set _startInput(value) {
+			_classPrivateFieldSet2(_startInput_accessor_storage, this, value);
+		}
+		get _endInput() {
+			return _classPrivateFieldGet2(_endInput_accessor_storage, this);
+		}
+		set _endInput(value) {
+			_classPrivateFieldSet2(_endInput_accessor_storage, this, value);
+		}
+		get _shaking() {
+			return _classPrivateFieldGet2(_shaking_accessor_storage, this);
+		}
+		set _shaking(value) {
+			_classPrivateFieldSet2(_shaking_accessor_storage, this, value);
+		}
 		/** Shake the dialog — call this when the parent detects a validation error. */
 		shake() {
-			const dialog = this.shadowRoot?.querySelector("ha-dialog");
-			if (!dialog) return;
-			dialog.classList.remove("dp-shaking");
-			dialog.offsetWidth;
-			dialog.classList.add("dp-shaking");
-			dialog.addEventListener("animationend", () => dialog.classList.remove("dp-shaking"), { once: true });
+			if (!this._dialogEl) return;
+			this._shaking = false;
+			this._dialogEl.offsetWidth;
+			this._shaking = true;
+		}
+		_onShakeEnd() {
+			this._shaking = false;
 		}
 		_emit(name, detail = {}) {
 			this.dispatchEvent(new CustomEvent(name, {
@@ -24142,14 +27129,11 @@
 			this._emit("dp-window-close");
 		}
 		_onSubmit() {
-			const nameInput = this.shadowRoot?.querySelector("#date-window-name");
-			const startInput = this.shadowRoot?.querySelector("#date-window-start");
-			const endInput = this.shadowRoot?.querySelector("#date-window-end");
-			const nameVal = nameInput?.value ?? this.name;
+			const nameVal = this._nameInput?.value ?? this.name;
 			this._emit("dp-window-submit", {
 				name: String(nameVal ?? "").trim(),
-				start: startInput?.value ?? this.startValue,
-				end: endInput?.value ?? this.endValue
+				start: this._startInput?.value ?? this.startValue,
+				end: this._endInput?.value ?? this.endValue
 			});
 		}
 		_onDelete() {
@@ -24162,11 +27146,9 @@
 			this._emit("dp-window-shortcut", { direction: 1 });
 		}
 		_onDateChange() {
-			const startInput = this.shadowRoot?.querySelector("#date-window-start");
-			const endInput = this.shadowRoot?.querySelector("#date-window-end");
 			this._emit("dp-window-date-change", {
-				start: startInput?.value ?? "",
-				end: endInput?.value ?? ""
+				start: this._startInput?.value ?? "",
+				end: this._endInput?.value ?? ""
 			});
 		}
 		_onRangeCommit(ev) {
@@ -24179,10 +27161,8 @@
 			};
 			const startStr = fmt(start);
 			const endStr = fmt(end);
-			const startInput = this.shadowRoot?.querySelector("#date-window-start");
-			const endInput = this.shadowRoot?.querySelector("#date-window-end");
-			if (startInput) startInput.value = startStr;
-			if (endInput) endInput.value = endStr;
+			if (this._startInput) this._startInput.value = startStr;
+			if (this._endInput) this._endInput.value = endStr;
 			this._emit("dp-window-date-change", {
 				start: startStr,
 				end: endStr
@@ -24197,11 +27177,13 @@
 		render() {
 			return b`
       <ha-dialog
+        class=${e({ "dp-shaking": this._shaking })}
         ?open=${this.open}
         hideActions
         .scrimClickAction=${"close"}
         .escapeKeyAction=${"close"}
         @closed=${this._onDialogClosed}
+        @animationend=${this._onShakeEnd}
       >
         <span slot="heading">${this.heading}</span>
         <div class="date-window-dialog-content">
@@ -24295,7 +27277,7 @@
       </ha-dialog>
     `;
 		}
-	}, _defineProperty(_DateWindowDialog, "styles", styles$27), _DateWindowDialog);
+	}, _defineProperty(_DateWindowDialog, "styles", styles$33), _DateWindowDialog);
 	__decorate([n$1({ type: Boolean })], DateWindowDialog.prototype, "open", null);
 	__decorate([n$1({ type: String })], DateWindowDialog.prototype, "heading", null);
 	__decorate([n$1({ type: String })], DateWindowDialog.prototype, "name", null);
@@ -24328,11 +27310,1886 @@
 		type: String,
 		attribute: "date-snapping"
 	})], DateWindowDialog.prototype, "dateSnapping", null);
+	__decorate([e$4("ha-dialog")], DateWindowDialog.prototype, "_dialogEl", null);
+	__decorate([e$4("#date-window-name")], DateWindowDialog.prototype, "_nameInput", null);
+	__decorate([e$4("#date-window-start")], DateWindowDialog.prototype, "_startInput", null);
+	__decorate([e$4("#date-window-end")], DateWindowDialog.prototype, "_endInput", null);
+	__decorate([r$2()], DateWindowDialog.prototype, "_shaking", null);
 	DateWindowDialog = __decorate([localized()], DateWindowDialog);
 	customElements.define("date-window-dialog", DateWindowDialog);
 	//#endregion
+	//#region custom_components/hass_datapoints/src/molecules/anomaly-monitor-wizard/anomaly-monitor-wizard.styles.ts
+	var styles$27 = i$5`
+  /* ---- Dialog content wrapper ---- */
+
+  .wizard-shell {
+    display: flex;
+    flex-direction: column;
+    min-width: min(480px, 90vw);
+    max-height: 70vh;
+  }
+
+  .wizard-header {
+    flex: 0 0 auto;
+    background: var(--card-background-color, #fff);
+    padding: 0 2px;
+  }
+
+  .wizard-content {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 0 2px 6px;
+  }
+
+  /* ---- Step indicator bar ---- */
+
+  .step-bar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 0 0 10px;
+    border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+    background: var(--card-background-color, #fff);
+  }
+
+  .step {
+    font-size: 0.82rem;
+    color: var(--secondary-text-color);
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .step.active {
+    color: var(--primary-color);
+    font-weight: 600;
+    background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+  }
+
+  .step-sep {
+    --mdc-icon-size: 14px;
+    color: var(--divider-color, rgba(0, 0, 0, 0.2));
+    flex-shrink: 0;
+  }
+
+  /* ---- Generic sections ---- */
+
+  .wizard-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .wizard-section-label {
+    margin: 0;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--secondary-text-color);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* ---- Entity chips ---- */
+
+  .wizard-entity-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .quick-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 999px;
+    background: color-mix(
+      in srgb,
+      var(--primary-color, #3b82f6) 18%,
+      transparent
+    );
+    color: var(--primary-color, #3b82f6);
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 500;
+    cursor: pointer;
+    --mdc-icon-size: 16px;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: background 120ms ease;
+  }
+
+  .quick-add-btn:hover,
+  .quick-add-btn:focus-visible {
+    background: color-mix(
+      in srgb,
+      var(--primary-color, #3b82f6) 26%,
+      transparent
+    );
+    outline: none;
+  }
+
+  /* ---- Step 2: Entity tabs ---- */
+
+  .entity-tabs {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: thin;
+    border-bottom: 2px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+  }
+
+  .entity-tab {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 14px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    border-radius: 6px 6px 0 0;
+    background: transparent;
+    color: var(--secondary-text-color);
+    font: inherit;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition:
+      color 120ms ease,
+      border-color 120ms ease,
+      background 120ms ease;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .entity-tab:hover {
+    color: var(--primary-color);
+    background: color-mix(in srgb, var(--primary-color) 5%, transparent);
+  }
+
+  .entity-tab.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    font-weight: 500;
+  }
+
+  .entity-tab-panel {
+    border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* ---- Step 2: Analysis sections ---- */
+
+  .wizard-analysis-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+    border-radius: 8px;
+  }
+
+  .wizard-analysis-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .wizard-analysis-subopts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 20px;
+    border-left: 2px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+    margin-left: 4px;
+  }
+
+  /* ---- Method list ---- */
+
+  .method-list {
+    display: grid;
+    gap: 8px;
+  }
+
+  .method-item {
+    display: grid;
+    gap: 6px;
+  }
+
+  /* ---- Form elements ---- */
+
+  .field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .field-label {
+    font-size: 0.82rem;
+    color: var(--secondary-text-color);
+    flex-shrink: 0;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  /* ---- Step 3 ---- */
+
+  .wizard-inline-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .wizard-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  ha-textfield {
+    width: 100%;
+  }
+
+  /* ---- Notice ---- */
+
+  .wizard-notice {
+    margin: 4px 0 0;
+    font-size: 0.8rem;
+    color: var(--secondary-text-color);
+  }
+
+  .wizard-notice-info {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--info-color, #2196f3);
+    background: color-mix(in srgb, var(--info-color, #2196f3) 8%, transparent);
+    font-size: 0.84rem;
+    color: var(--primary-text-color);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ---- Error ---- */
+
+  .wizard-error {
+    color: var(--error-color, #f44336);
+    font-size: 0.84rem;
+    padding: 6px 0;
+  }
+
+  /* ---- Footer actions ---- */
+
+  .dialog-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+    padding-top: 8px;
+    border-top: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+    margin-top: 6px;
+  }
+
+  .dialog-spacer {
+    flex: 1;
+  }
+`;
+	//#endregion
+	//#region custom_components/hass_datapoints/src/molecules/anomaly-monitor-wizard/monitor-wizard-logic.ts
+	var LOOK_BACK_OPTIONS = [
+		{
+			value: 6,
+			label: "6 hours"
+		},
+		{
+			value: 12,
+			label: "12 hours"
+		},
+		{
+			value: 24,
+			label: "24 hours"
+		},
+		{
+			value: 48,
+			label: "48 hours"
+		},
+		{
+			value: 168,
+			label: "7 days"
+		}
+	];
+	var SCAN_INTERVAL_OPTIONS = [
+		{
+			value: 15,
+			label: "15 minutes"
+		},
+		{
+			value: 30,
+			label: "30 minutes"
+		},
+		{
+			value: 60,
+			label: "1 hour"
+		},
+		{
+			value: 120,
+			label: "2 hours"
+		},
+		{
+			value: 360,
+			label: "6 hours"
+		}
+	];
+	function defaultEntityConfig(prefill) {
+		return {
+			anomaly_methods: prefill?.anomaly_methods?.length ? [...prefill.anomaly_methods] : ["trend_residual"],
+			anomaly_overlap_mode: prefill?.anomaly_overlap_mode ?? "all",
+			anomaly_sensitivity: prefill?.anomaly_sensitivity ?? "medium",
+			anomaly_rate_window: prefill?.anomaly_rate_window ?? "1h",
+			anomaly_zscore_window: prefill?.anomaly_zscore_window ?? "24h",
+			anomaly_persistence_window: prefill?.anomaly_persistence_window ?? "1h",
+			anomaly_comparison_window_id: prefill?.anomaly_comparison_window_id ?? null,
+			anomaly_comparison_entity_id: prefill?.anomaly_comparison_entity_id ?? null,
+			anomaly_trend_method: prefill?.anomaly_trend_method || "rolling_average",
+			anomaly_trend_window: prefill?.anomaly_trend_window ?? "24h",
+			sample_interval: prefill?.sample_interval ?? "raw",
+			sample_aggregate: prefill?.sample_aggregate ?? "mean",
+			anomaly_use_sampled_data: prefill?.anomaly_use_sampled_data ?? false,
+			baseline_entity_id: null,
+			baseline_time_offset_hours: 0
+		};
+	}
+	function configFromMonitor(m) {
+		const baselineEntityId = m.baseline_entity_id ?? null;
+		return {
+			anomaly_methods: [...m.anomaly_methods].map((method) => {
+				if (method === "comparison_window" && baselineEntityId) return "similar_entity";
+				return method;
+			}),
+			anomaly_overlap_mode: m.anomaly_overlap_mode ?? "all",
+			anomaly_sensitivity: m.anomaly_sensitivity,
+			anomaly_rate_window: m.anomaly_rate_window,
+			anomaly_zscore_window: m.anomaly_zscore_window,
+			anomaly_persistence_window: m.anomaly_persistence_window,
+			anomaly_comparison_window_id: null,
+			anomaly_comparison_entity_id: baselineEntityId,
+			anomaly_trend_method: m.anomaly_trend_method,
+			anomaly_trend_window: m.anomaly_trend_window,
+			sample_interval: m.sample_interval ?? "raw",
+			sample_aggregate: m.sample_aggregate ?? "mean",
+			anomaly_use_sampled_data: m.anomaly_use_sampled_data ?? false,
+			baseline_entity_id: baselineEntityId,
+			baseline_time_offset_hours: m.baseline_time_offset_hours ?? 0
+		};
+	}
+	function entityConfigToAnalysis(cfg) {
+		return {
+			show_anomalies: true,
+			anomaly_methods: [...cfg.anomaly_methods],
+			anomaly_overlap_mode: cfg.anomaly_overlap_mode,
+			anomaly_sensitivity: cfg.anomaly_sensitivity,
+			anomaly_rate_window: cfg.anomaly_rate_window,
+			anomaly_zscore_window: cfg.anomaly_zscore_window,
+			anomaly_persistence_window: cfg.anomaly_persistence_window,
+			anomaly_comparison_window_id: cfg.anomaly_comparison_window_id,
+			anomaly_comparison_entity_id: cfg.anomaly_comparison_entity_id,
+			anomaly_trend_method: cfg.anomaly_trend_method,
+			anomaly_trend_window: cfg.anomaly_trend_window,
+			anomaly_use_sampled_data: cfg.anomaly_use_sampled_data,
+			sample_interval: cfg.sample_interval,
+			sample_aggregate: cfg.sample_aggregate,
+			show_trend_lines: false,
+			trend_method: "rolling_average",
+			trend_window: "24h",
+			show_trend_crosshairs: false,
+			show_summary_stats: false,
+			show_summary_stats_shading: false,
+			show_rate_of_change: false,
+			show_rate_crosshairs: false,
+			rate_window: "1h",
+			show_threshold_analysis: false,
+			show_threshold_shading: false,
+			threshold_value: "0",
+			threshold_direction: "above",
+			show_delta_analysis: false,
+			show_delta_tooltip: false,
+			show_delta_lines: false,
+			hide_source_series: false,
+			stepped_series: false,
+			expanded: true
+		};
+	}
+	function toggleMethod(config, method, checked) {
+		const methods = checked ? [...config.anomaly_methods, method] : config.anomaly_methods.filter((m) => m !== method);
+		return {
+			...config,
+			anomaly_methods: methods
+		};
+	}
+	function buildConfigPayload(config) {
+		const backendMethods = config.anomaly_methods.includes("similar_entity") ? [...new Set(config.anomaly_methods.map((method) => method === "similar_entity" ? "comparison_window" : method))] : [...config.anomaly_methods];
+		const baselineEntityId = config.anomaly_comparison_entity_id ?? config.baseline_entity_id;
+		const base = {
+			anomaly_methods: backendMethods,
+			anomaly_overlap_mode: config.anomaly_overlap_mode,
+			anomaly_sensitivity: config.anomaly_sensitivity,
+			anomaly_rate_window: config.anomaly_rate_window,
+			anomaly_zscore_window: config.anomaly_zscore_window,
+			anomaly_persistence_window: config.anomaly_persistence_window,
+			anomaly_trend_method: config.anomaly_trend_method || "rolling_average",
+			anomaly_trend_window: config.anomaly_trend_window || "24h"
+		};
+		if (config.sample_interval && config.sample_interval !== "raw") {
+			base.sample_interval = config.sample_interval;
+			base.sample_aggregate = config.sample_aggregate;
+			base.anomaly_use_sampled_data = true;
+		}
+		if (baselineEntityId) {
+			base.baseline_entity_id = baselineEntityId;
+			base.baseline_time_offset_hours = config.baseline_time_offset_hours;
+		}
+		return base;
+	}
+	function validateStep1(entityIds) {
+		if (entityIds.length === 0) return {
+			valid: false,
+			error: "Select at least one entity."
+		};
+		return { valid: true };
+	}
+	function validateStep2(entityIds, getConfig) {
+		if (entityIds.some((id) => getConfig(id).anomaly_methods.length === 0)) return {
+			valid: false,
+			error: "Each entity needs at least one detection method."
+		};
+		if (entityIds.some((id) => {
+			const cfg = getConfig(id);
+			return cfg.anomaly_methods.includes("similar_entity") && !cfg.anomaly_comparison_entity_id;
+		})) return {
+			valid: false,
+			error: "Select a comparison entity for the Similar entity method."
+		};
+		return { valid: true };
+	}
+	//#endregion
+	//#region custom_components/hass_datapoints/src/molecules/anomaly-monitor-wizard/anomaly-monitor-wizard.ts
+	var _AnomalyMonitorWizard, _hass_accessor_storage$7, _open_accessor_storage$2, _prefillEntityIds_accessor_storage, _prefillAnalysis_accessor_storage, _editMonitor_accessor_storage$1, _suggestedEntityIds_accessor_storage, _allSeriesEntityIds_accessor_storage, _step_accessor_storage, _target_accessor_storage, _entityIds_accessor_storage, _entityConfigs_accessor_storage, _activeEntityId_accessor_storage, _name_accessor_storage$1, _lookBackHours_accessor_storage, _scanIntervalMinutes_accessor_storage, _monitorType_accessor_storage, _overlapMode_accessor_storage, _error_accessor_storage, _saving_accessor_storage;
+	var AnomalyMonitorWizard = (_hass_accessor_storage$7 = /* @__PURE__ */ new WeakMap(), _open_accessor_storage$2 = /* @__PURE__ */ new WeakMap(), _prefillEntityIds_accessor_storage = /* @__PURE__ */ new WeakMap(), _prefillAnalysis_accessor_storage = /* @__PURE__ */ new WeakMap(), _editMonitor_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _suggestedEntityIds_accessor_storage = /* @__PURE__ */ new WeakMap(), _allSeriesEntityIds_accessor_storage = /* @__PURE__ */ new WeakMap(), _step_accessor_storage = /* @__PURE__ */ new WeakMap(), _target_accessor_storage = /* @__PURE__ */ new WeakMap(), _entityIds_accessor_storage = /* @__PURE__ */ new WeakMap(), _entityConfigs_accessor_storage = /* @__PURE__ */ new WeakMap(), _activeEntityId_accessor_storage = /* @__PURE__ */ new WeakMap(), _name_accessor_storage$1 = /* @__PURE__ */ new WeakMap(), _lookBackHours_accessor_storage = /* @__PURE__ */ new WeakMap(), _scanIntervalMinutes_accessor_storage = /* @__PURE__ */ new WeakMap(), _monitorType_accessor_storage = /* @__PURE__ */ new WeakMap(), _overlapMode_accessor_storage = /* @__PURE__ */ new WeakMap(), _error_accessor_storage = /* @__PURE__ */ new WeakMap(), _saving_accessor_storage = /* @__PURE__ */ new WeakMap(), _AnomalyMonitorWizard = class AnomalyMonitorWizard extends i$2 {
+		constructor(..._args) {
+			super(..._args);
+			_classPrivateFieldInitSpec(this, _hass_accessor_storage$7, null);
+			_classPrivateFieldInitSpec(this, _open_accessor_storage$2, false);
+			_classPrivateFieldInitSpec(this, _prefillEntityIds_accessor_storage, []);
+			_classPrivateFieldInitSpec(this, _prefillAnalysis_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _editMonitor_accessor_storage$1, null);
+			_classPrivateFieldInitSpec(this, _suggestedEntityIds_accessor_storage, []);
+			_classPrivateFieldInitSpec(this, _allSeriesEntityIds_accessor_storage, []);
+			_classPrivateFieldInitSpec(this, _step_accessor_storage, 1);
+			_classPrivateFieldInitSpec(this, _target_accessor_storage, {});
+			_classPrivateFieldInitSpec(this, _entityIds_accessor_storage, []);
+			_classPrivateFieldInitSpec(this, _entityConfigs_accessor_storage, /* @__PURE__ */ new Map());
+			_classPrivateFieldInitSpec(this, _activeEntityId_accessor_storage, "");
+			_classPrivateFieldInitSpec(this, _name_accessor_storage$1, "");
+			_classPrivateFieldInitSpec(this, _lookBackHours_accessor_storage, 24);
+			_classPrivateFieldInitSpec(this, _scanIntervalMinutes_accessor_storage, 30);
+			_classPrivateFieldInitSpec(this, _monitorType_accessor_storage, "individual");
+			_classPrivateFieldInitSpec(this, _overlapMode_accessor_storage, "all");
+			_classPrivateFieldInitSpec(this, _error_accessor_storage, "");
+			_classPrivateFieldInitSpec(this, _saving_accessor_storage, false);
+		}
+		get hass() {
+			return _classPrivateFieldGet2(_hass_accessor_storage$7, this);
+		}
+		set hass(value) {
+			_classPrivateFieldSet2(_hass_accessor_storage$7, this, value);
+		}
+		get open() {
+			return _classPrivateFieldGet2(_open_accessor_storage$2, this);
+		}
+		set open(value) {
+			_classPrivateFieldSet2(_open_accessor_storage$2, this, value);
+		}
+		get prefillEntityIds() {
+			return _classPrivateFieldGet2(_prefillEntityIds_accessor_storage, this);
+		}
+		set prefillEntityIds(value) {
+			_classPrivateFieldSet2(_prefillEntityIds_accessor_storage, this, value);
+		}
+		get prefillAnalysis() {
+			return _classPrivateFieldGet2(_prefillAnalysis_accessor_storage, this);
+		}
+		set prefillAnalysis(value) {
+			_classPrivateFieldSet2(_prefillAnalysis_accessor_storage, this, value);
+		}
+		get editMonitor() {
+			return _classPrivateFieldGet2(_editMonitor_accessor_storage$1, this);
+		}
+		set editMonitor(value) {
+			_classPrivateFieldSet2(_editMonitor_accessor_storage$1, this, value);
+		}
+		get suggestedEntityIds() {
+			return _classPrivateFieldGet2(_suggestedEntityIds_accessor_storage, this);
+		}
+		set suggestedEntityIds(value) {
+			_classPrivateFieldSet2(_suggestedEntityIds_accessor_storage, this, value);
+		}
+		get allSeriesEntityIds() {
+			return _classPrivateFieldGet2(_allSeriesEntityIds_accessor_storage, this);
+		}
+		set allSeriesEntityIds(value) {
+			_classPrivateFieldSet2(_allSeriesEntityIds_accessor_storage, this, value);
+		}
+		get _step() {
+			return _classPrivateFieldGet2(_step_accessor_storage, this);
+		}
+		set _step(value) {
+			_classPrivateFieldSet2(_step_accessor_storage, this, value);
+		}
+		get _target() {
+			return _classPrivateFieldGet2(_target_accessor_storage, this);
+		}
+		set _target(value) {
+			_classPrivateFieldSet2(_target_accessor_storage, this, value);
+		}
+		get _entityIds() {
+			return _classPrivateFieldGet2(_entityIds_accessor_storage, this);
+		}
+		set _entityIds(value) {
+			_classPrivateFieldSet2(_entityIds_accessor_storage, this, value);
+		}
+		get _entityConfigs() {
+			return _classPrivateFieldGet2(_entityConfigs_accessor_storage, this);
+		}
+		set _entityConfigs(value) {
+			_classPrivateFieldSet2(_entityConfigs_accessor_storage, this, value);
+		}
+		get _activeEntityId() {
+			return _classPrivateFieldGet2(_activeEntityId_accessor_storage, this);
+		}
+		set _activeEntityId(value) {
+			_classPrivateFieldSet2(_activeEntityId_accessor_storage, this, value);
+		}
+		get _name() {
+			return _classPrivateFieldGet2(_name_accessor_storage$1, this);
+		}
+		set _name(value) {
+			_classPrivateFieldSet2(_name_accessor_storage$1, this, value);
+		}
+		get _lookBackHours() {
+			return _classPrivateFieldGet2(_lookBackHours_accessor_storage, this);
+		}
+		set _lookBackHours(value) {
+			_classPrivateFieldSet2(_lookBackHours_accessor_storage, this, value);
+		}
+		get _scanIntervalMinutes() {
+			return _classPrivateFieldGet2(_scanIntervalMinutes_accessor_storage, this);
+		}
+		set _scanIntervalMinutes(value) {
+			_classPrivateFieldSet2(_scanIntervalMinutes_accessor_storage, this, value);
+		}
+		get _monitorType() {
+			return _classPrivateFieldGet2(_monitorType_accessor_storage, this);
+		}
+		set _monitorType(value) {
+			_classPrivateFieldSet2(_monitorType_accessor_storage, this, value);
+		}
+		get _overlapMode() {
+			return _classPrivateFieldGet2(_overlapMode_accessor_storage, this);
+		}
+		set _overlapMode(value) {
+			_classPrivateFieldSet2(_overlapMode_accessor_storage, this, value);
+		}
+		get _error() {
+			return _classPrivateFieldGet2(_error_accessor_storage, this);
+		}
+		set _error(value) {
+			_classPrivateFieldSet2(_error_accessor_storage, this, value);
+		}
+		get _saving() {
+			return _classPrivateFieldGet2(_saving_accessor_storage, this);
+		}
+		set _saving(value) {
+			_classPrivateFieldSet2(_saving_accessor_storage, this, value);
+		}
+		connectedCallback() {
+			super.connectedCallback();
+			this._initFromProps();
+		}
+		updated(changed) {
+			if (changed.has("open") && this.open) this._initFromProps();
+			if (changed.has("editMonitor") && this.editMonitor) this._initFromProps();
+		}
+		_initFromProps() {
+			if (this.editMonitor) {
+				const m = this.editMonitor;
+				const ids = m.type === "combined" ? [...m.entity_ids] : [m.entity_id];
+				const cfg = configFromMonitor(m);
+				const configs = /* @__PURE__ */ new Map();
+				for (const id of ids) configs.set(id, { ...cfg });
+				this._step = 2;
+				this._entityIds = ids;
+				this._entityConfigs = configs;
+				this._activeEntityId = ids[0] ?? "";
+				this._name = m.name;
+				this._lookBackHours = m.look_back_hours;
+				this._scanIntervalMinutes = m.scan_interval_minutes;
+				this._monitorType = m.type;
+				this._overlapMode = m.type === "combined" ? m.overlap_mode ?? "all" : "all";
+			} else {
+				const ids = [...this.prefillEntityIds ?? []];
+				const configs = /* @__PURE__ */ new Map();
+				for (const id of ids) configs.set(id, defaultEntityConfig(this.prefillAnalysis));
+				this._step = 1;
+				this._target = ids.length ? { entity_id: ids } : {};
+				this._entityIds = ids;
+				this._entityConfigs = configs;
+				this._activeEntityId = ids[0] ?? "";
+				this._name = "";
+				this._lookBackHours = 24;
+				this._scanIntervalMinutes = 30;
+				this._monitorType = "individual";
+				this._overlapMode = "all";
+			}
+			this._error = "";
+			this._saving = false;
+		}
+		_getEntityConfig(entityId) {
+			return this._entityConfigs.get(entityId) ?? defaultEntityConfig();
+		}
+		_updateEntityConfig(entityId, key, value) {
+			const current = this._getEntityConfig(entityId);
+			const updated = new Map(this._entityConfigs);
+			updated.set(entityId, {
+				...current,
+				[key]: value
+			});
+			this._entityConfigs = updated;
+		}
+		_toggleMethod(entityId, method, checked) {
+			const updated = toggleMethod(this._getEntityConfig(entityId), method, checked);
+			this._updateEntityConfig(entityId, "anomaly_methods", updated.anomaly_methods);
+		}
+		/** Convert the wizard's slim EntityAnalysisConfig into a full NormalizedAnalysis
+		*  so it can be passed directly into analysis-anomaly-group / analysis-sample-group. */
+		_entityConfigToAnalysis(cfg) {
+			return entityConfigToAnalysis(cfg);
+		}
+		/** Handle dp-group-analysis-change events bubbled from the embedded analysis components. */
+		_onAnalysisGroupChange(entityId, e) {
+			e.stopPropagation();
+			const { key, value } = e.detail;
+			if (key.startsWith("anomaly_method_toggle_")) {
+				const method = key.replace("anomaly_method_toggle_", "");
+				this._toggleMethod(entityId, method, value);
+				return;
+			}
+			const configKey = {
+				anomaly_overlap_mode: "anomaly_overlap_mode",
+				anomaly_sensitivity: "anomaly_sensitivity",
+				anomaly_rate_window: "anomaly_rate_window",
+				anomaly_zscore_window: "anomaly_zscore_window",
+				anomaly_persistence_window: "anomaly_persistence_window",
+				anomaly_comparison_window_id: "anomaly_comparison_window_id",
+				anomaly_comparison_entity_id: "anomaly_comparison_entity_id",
+				anomaly_trend_method: "anomaly_trend_method",
+				anomaly_trend_window: "anomaly_trend_window",
+				anomaly_use_sampled_data: "anomaly_use_sampled_data",
+				sample_interval: "sample_interval",
+				sample_aggregate: "sample_aggregate"
+			}[key];
+			if (configKey !== void 0) this._updateEntityConfig(entityId, configKey, value);
+		}
+		_onTargetChanged(ev) {
+			this._target = normalizeTargetValue(ev.detail?.value ?? {});
+		}
+		_resolvedTargetEntityIds() {
+			return resolveEntityIdsFromTarget(this.hass, this._target);
+		}
+		_setExplicitTargetEntityIds(entityIds) {
+			this._target = entityIds.length > 0 ? { entity_id: entityIds } : {};
+		}
+		_mergeResolvedTargetEntityIds(entityIdsToAdd) {
+			const merged = [...this._resolvedTargetEntityIds()];
+			for (const entityId of entityIdsToAdd) if (!merged.includes(entityId)) merged.push(entityId);
+			this._setExplicitTargetEntityIds(merged);
+		}
+		_addSuggestedEntity(entityId) {
+			if (!this._resolvedTargetEntityIds().includes(entityId)) this._mergeResolvedTargetEntityIds([entityId]);
+		}
+		_addAllSeriesFromChart() {
+			const current = this._resolvedTargetEntityIds();
+			const toAdd = this.allSeriesEntityIds.filter((id) => !current.includes(id));
+			if (toAdd.length > 0) this._mergeResolvedTargetEntityIds(toAdd);
+		}
+		_emit(name, detail = {}) {
+			this.dispatchEvent(new CustomEvent(name, {
+				detail,
+				bubbles: true,
+				composed: true
+			}));
+		}
+		_onClose() {
+			this._emit("dp-monitor-wizard-close");
+		}
+		_onDialogClosed() {
+			this._emit("dp-monitor-wizard-close");
+		}
+		_onBack() {
+			if (this._step === 3) this._step = 2;
+			else if (this._step === 2 && !this.editMonitor) {
+				this._target = this._entityIds.length ? { entity_id: [...this._entityIds] } : {};
+				this._step = 1;
+			}
+			this._error = "";
+		}
+		_onNext() {
+			if (this._step === 1) {
+				const resolved = resolveEntityIdsFromTarget(this.hass, this._target);
+				const v1 = validateStep1(resolved);
+				if (!v1.valid) {
+					this._error = msg(v1.error);
+					return;
+				}
+				const newConfigs = new Map(this._entityConfigs);
+				for (const id of resolved) if (!newConfigs.has(id)) newConfigs.set(id, defaultEntityConfig(this.prefillAnalysis));
+				for (const id of [...newConfigs.keys()]) if (!resolved.includes(id)) newConfigs.delete(id);
+				this._entityIds = resolved;
+				this._entityConfigs = newConfigs;
+				this._activeEntityId = resolved[0] ?? "";
+				this._error = "";
+				this._step = 2;
+			} else if (this._step === 2) {
+				const v2 = validateStep2(this._entityIds, (id) => this._getEntityConfig(id));
+				if (!v2.valid) {
+					this._error = msg(v2.error);
+					return;
+				}
+				if (!this._name) {
+					const firstId = this._entityIds[0] ?? "";
+					const baseName = firstId.split(".").pop() ?? firstId;
+					this._name = this._entityIds.length > 1 ? msg("Anomaly monitor") : `${baseName} ${msg("anomalies")}`;
+				}
+				this._error = "";
+				this._step = 3;
+			}
+		}
+		_configPayload(entityId) {
+			return buildConfigPayload(this._getEntityConfig(entityId));
+		}
+		_extractErrorMessage(err) {
+			if (typeof err === "string" && err.trim()) return err;
+			if (err instanceof Error && err.message.trim()) return err.message;
+			if (typeof err === "object" && err !== null) {
+				const nestedError = err.error;
+				if (nestedError && typeof nestedError.message === "string" && nestedError.message.trim()) return nestedError.message;
+				const directMessage = err.message;
+				if (typeof directMessage === "string" && directMessage.trim()) return directMessage;
+			}
+			return msg("Unable to save anomaly monitor.");
+		}
+		async _onSubmit() {
+			if (!this.hass) return;
+			if (!this._name.trim()) {
+				this._error = msg("Name is required.");
+				return;
+			}
+			this._saving = true;
+			this._error = "";
+			try {
+				const saved = [];
+				if (this.editMonitor) {
+					const cfgEntityId = this._activeEntityId || this._entityIds[0] || "";
+					const result = await updateMonitor(this.hass, {
+						monitor_id: this.editMonitor.id,
+						name: this._name.trim(),
+						look_back_hours: this._lookBackHours,
+						scan_interval_minutes: this._scanIntervalMinutes,
+						...this.editMonitor.type === "combined" ? { overlap_mode: this._overlapMode } : {},
+						...this._configPayload(cfgEntityId)
+					});
+					saved.push(result);
+				} else if (this._monitorType === "combined" || this._entityIds.length === 1) {
+					const primaryId = this._entityIds[0] ?? "";
+					const payload = {
+						monitor_type: this._entityIds.length > 1 ? "combined" : "individual",
+						name: this._name.trim(),
+						look_back_hours: this._lookBackHours,
+						scan_interval_minutes: this._scanIntervalMinutes,
+						...this._configPayload(primaryId)
+					};
+					if (this._entityIds.length === 1) payload.entity_id = this._entityIds[0];
+					else {
+						payload.entity_ids = [...this._entityIds];
+						payload.overlap_mode = this._overlapMode;
+					}
+					saved.push(await createMonitor(this.hass, payload));
+				} else {
+					const results = await Promise.all(this._entityIds.map((entityId) => {
+						const baseName = entityId.split(".").pop() ?? entityId;
+						return createMonitor(this.hass, {
+							monitor_type: "individual",
+							name: `${baseName} ${msg("anomalies")}`,
+							entity_id: entityId,
+							look_back_hours: this._lookBackHours,
+							scan_interval_minutes: this._scanIntervalMinutes,
+							...this._configPayload(entityId)
+						});
+					}));
+					saved.push(...results);
+				}
+				this._emit("dp-monitor-wizard-saved", { monitors: saved });
+			} catch (err) {
+				this._error = this._extractErrorMessage(err);
+			} finally {
+				this._saving = false;
+			}
+		}
+		_entityName(entityId) {
+			if (!this.hass) return entityId;
+			return this.hass.states[entityId]?.attributes?.friendly_name ?? entityId.split(".").pop() ?? entityId;
+		}
+		/** Returns disambiguated labels for all current entity IDs. */
+		_entityDisplayNames() {
+			return disambiguateEntityNames(this.hass, this._entityIds);
+		}
+		_overlapOptions() {
+			const n = this._entityIds.length;
+			const opts = [];
+			opts.push({
+				value: "all",
+				label: n <= 2 ? msg("All anomalies overlap") : `${msg("All")} ${n} ${msg("anomalies overlap")}`
+			});
+			if (n > 2) for (let i = n - 1; i >= 2; i--) opts.push({
+				value: `any_${i}`,
+				label: `${msg("Any")} ${i}+ ${msg("entities overlap")}`
+			});
+			opts.push({
+				value: "any",
+				label: msg("Any anomaly from any series")
+			});
+			return opts;
+		}
+		_saveLabel() {
+			if (this._saving) return msg("Saving…");
+			if (this.editMonitor) return msg("Save changes");
+			const count = this._monitorType === "combined" || this._entityIds.length <= 1 ? 1 : this._entityIds.length;
+			return count === 1 ? msg("Create anomaly monitor") : `${msg("Create")} ${count} ${msg("anomaly monitors")}`;
+		}
+		_renderStepBar() {
+			if (!!this.editMonitor) return b`
+        <div class="step-bar">
+          <span class=${`step${this._step === 2 ? " active" : ""}`}
+            >1. ${msg("Analysis")}</span
+          >
+          <ha-icon icon="mdi:chevron-right" class="step-sep"></ha-icon>
+          <span class=${`step${this._step === 3 ? " active" : ""}`}
+            >2. ${msg("Schedule")}</span
+          >
+        </div>
+      `;
+			return b`
+      <div class="step-bar">
+        <span class=${`step${this._step === 1 ? " active" : ""}`}
+          >1. ${msg("Entities")}</span
+        >
+        <ha-icon icon="mdi:chevron-right" class="step-sep"></ha-icon>
+        <span class=${`step${this._step === 2 ? " active" : ""}`}
+          >2. ${msg("Analysis")}</span
+        >
+        <ha-icon icon="mdi:chevron-right" class="step-sep"></ha-icon>
+        <span class=${`step${this._step === 3 ? " active" : ""}`}
+          >3. ${msg("Schedule")}</span
+        >
+      </div>
+    `;
+		}
+		_renderStep1() {
+			const selectedEntityIds = this._resolvedTargetEntityIds();
+			const suggestions = this.suggestedEntityIds.filter((id) => !selectedEntityIds.includes(id));
+			const hasUnaddedSeries = this.allSeriesEntityIds.some((id) => !selectedEntityIds.includes(id));
+			const hasQuickAddOptions = suggestions.length > 0 || hasUnaddedSeries;
+			return b`
+      <div class="wizard-section">
+        <ha-target-picker
+          .hass=${this.hass}
+          .value=${this._target}
+          @value-changed=${this._onTargetChanged}
+        ></ha-target-picker>
+      </div>
+
+      ${hasQuickAddOptions ? b`
+            <div class="wizard-section">
+              <p class="wizard-section-label">
+                ${msg("Add from current chart")}
+              </p>
+              <div class="wizard-entity-chips">
+                ${hasUnaddedSeries ? b`
+                      <button
+                        class="quick-add-btn"
+                        type="button"
+                        @click=${this._addAllSeriesFromChart}
+                      >
+                        <ha-icon icon="mdi:plus"></ha-icon>
+                        <span>${msg("Add all series from chart")}</span>
+                      </button>
+                    ` : A}
+                ${suggestions.map((id) => b`
+                    <button
+                      class="quick-add-btn"
+                      type="button"
+                      @click=${() => this._addSuggestedEntity(id)}
+                    >
+                      <ha-icon icon="mdi:plus"></ha-icon>
+                      <span>${this._entityName(id)}</span>
+                    </button>
+                  `)}
+              </div>
+            </div>
+          ` : A}
+    `;
+		}
+		_renderStep2() {
+			const showTabs = this._entityIds.length > 1;
+			const activeId = this._activeEntityId || this._entityIds[0] || "";
+			const displayNames = this._entityDisplayNames();
+			return b`
+      ${showTabs ? b`
+            <div class="entity-tabs">
+              ${this._entityIds.map((id) => b`
+                  <button
+                    class=${`entity-tab${id === activeId ? " active" : ""}`}
+                    @click=${() => {
+				this._activeEntityId = id;
+			}}
+                  >
+                    ${displayNames.get(id) ?? this._entityName(id)}
+                  </button>
+                `)}
+            </div>
+          ` : A}
+      <div class=${showTabs ? "entity-tab-panel" : ""}>
+        ${activeId ? this._renderEntityAnalysis(activeId) : A}
+      </div>
+    `;
+		}
+		_renderEntityAnalysis(entityId) {
+			const cfg = this._getEntityConfig(entityId);
+			const analysis = this._entityConfigToAnalysis(cfg);
+			return b`
+      <analysis-sample-group
+        .analysis=${analysis}
+        entity-id=${entityId}
+        @dp-group-analysis-change=${(e) => this._onAnalysisGroupChange(entityId, e)}
+      ></analysis-sample-group>
+      <analysis-anomaly-group
+        .analysis=${analysis}
+        entity-id=${entityId}
+        .hass=${this.hass}
+        .hideSaveMonitorCta=${true}
+        @dp-group-analysis-change=${(e) => this._onAnalysisGroupChange(entityId, e)}
+      ></analysis-anomaly-group>
+    `;
+		}
+		_renderStep3() {
+			const isMulti = this._entityIds.length > 1;
+			return b`
+      ${!this.editMonitor ? b`
+            <div class="wizard-notice wizard-notice-info">
+              ${msg("Creating a monitor adds a new device to the HASS Datapoints integration. Each device includes sensors and a switch that expose anomaly data and can be used in automations.")}
+            </div>
+          ` : A}
+
+      <div class="wizard-section">
+        <ha-textfield
+          label=${msg("Monitor name")}
+          .value=${this._name}
+          @input=${(e) => {
+				this._name = e.target.value;
+			}}
+        ></ha-textfield>
+      </div>
+
+      <div class="wizard-inline-row">
+        <div class="wizard-field">
+          <label class="field-label">${msg("Look-back period")}</label>
+          <inline-select
+            .value=${String(this._lookBackHours)}
+            .options=${LOOK_BACK_OPTIONS.map((o) => ({
+				value: String(o.value),
+				label: msg(o.label)
+			}))}
+            @dp-select-change=${(e) => {
+				const val = e.detail?.value;
+				if (val) this._lookBackHours = parseInt(val, 10);
+			}}
+          ></inline-select>
+        </div>
+        <div class="wizard-field">
+          <label class="field-label">${msg("Scan interval")}</label>
+          <inline-select
+            .value=${String(this._scanIntervalMinutes)}
+            .options=${SCAN_INTERVAL_OPTIONS.map((o) => ({
+				value: String(o.value),
+				label: msg(o.label)
+			}))}
+            @dp-select-change=${(e) => {
+				const val = e.detail?.value;
+				if (val) this._scanIntervalMinutes = parseInt(val, 10);
+			}}
+          ></inline-select>
+        </div>
+      </div>
+
+      ${isMulti && !this.editMonitor ? b`
+            <div class="wizard-field">
+              <label class="field-label">${msg("Sensor type")}</label>
+              <inline-select
+                .value=${this._monitorType}
+                .options=${[{
+				value: "individual",
+				label: msg("Individual sensors")
+			}, {
+				value: "combined",
+				label: msg("Combined sensor")
+			}]}
+                @dp-select-change=${(e) => {
+				const val = e.detail?.value;
+				this._monitorType = val;
+				if (val === "combined") this._overlapMode = "all";
+			}}
+              ></inline-select>
+            </div>
+          ` : A}
+      ${(isMulti || this.editMonitor?.type === "combined") && (this._monitorType === "combined" || this.editMonitor?.type === "combined") ? b`
+            <div class="wizard-field">
+              <label class="field-label">${msg("Overlap mode")}</label>
+              <inline-select
+                .value=${this._overlapMode}
+                .options=${this._overlapOptions()}
+                @dp-select-change=${(e) => {
+				const val = e.detail?.value;
+				if (val) this._overlapMode = val;
+			}}
+              ></inline-select>
+            </div>
+          ` : A}
+    `;
+		}
+		render() {
+			const isEdit = !!this.editMonitor;
+			const canGoBack = this._step > 1 && !isEdit || this._step === 3 && isEdit;
+			return b`
+      <ha-dialog
+        ?open=${this.open}
+        hideActions
+        .scrimClickAction=${"close"}
+        .escapeKeyAction=${"close"}
+        @closed=${this._onDialogClosed}
+      >
+        <span slot="heading">
+          ${isEdit ? msg("Edit Anomaly Monitor") : msg("Create Anomaly Monitor")}
+        </span>
+
+        <div class="wizard-shell">
+          <div class="wizard-header">${this._renderStepBar()}</div>
+          <div class="wizard-content">
+            ${this._step === 1 ? this._renderStep1() : A}
+            ${this._step === 2 ? this._renderStep2() : A}
+            ${this._step === 3 ? this._renderStep3() : A}
+            ${this._error ? b`<div class="wizard-error">${this._error}</div>` : A}
+          </div>
+          <div class="dialog-actions">
+            <ha-button @click=${this._onClose}>${msg("Cancel")}</ha-button>
+            <span class="dialog-spacer"></span>
+            ${canGoBack ? b`<ha-button @click=${this._onBack}
+                  >${msg("Back")}</ha-button
+                >` : A}
+            ${this._step < 3 ? b`<ha-button raised @click=${this._onNext}
+                  >${msg("Next")}</ha-button
+                >` : b`<ha-button
+                  raised
+                  .disabled=${this._saving}
+                  @click=${this._onSubmit}
+                  >${this._saveLabel()}</ha-button
+                >`}
+          </div>
+        </div>
+      </ha-dialog>
+    `;
+		}
+	}, _defineProperty(_AnomalyMonitorWizard, "styles", styles$27), _AnomalyMonitorWizard);
+	__decorate([n$1({ type: Object })], AnomalyMonitorWizard.prototype, "hass", null);
+	__decorate([n$1({ type: Boolean })], AnomalyMonitorWizard.prototype, "open", null);
+	__decorate([n$1({ type: Array })], AnomalyMonitorWizard.prototype, "prefillEntityIds", null);
+	__decorate([n$1({ type: Object })], AnomalyMonitorWizard.prototype, "prefillAnalysis", null);
+	__decorate([n$1({ type: Object })], AnomalyMonitorWizard.prototype, "editMonitor", null);
+	__decorate([n$1({ type: Array })], AnomalyMonitorWizard.prototype, "suggestedEntityIds", null);
+	__decorate([n$1({ type: Array })], AnomalyMonitorWizard.prototype, "allSeriesEntityIds", null);
+	__decorate([r$2()], AnomalyMonitorWizard.prototype, "_step", null);
+	__decorate([r$2()], AnomalyMonitorWizard.prototype, "_target", null);
+	__decorate([r$2()], AnomalyMonitorWizard.prototype, "_entityIds", null);
+	__decorate([r$2()], AnomalyMonitorWizard.prototype, "_entityConfigs", null);
+	__decorate([r$2()], AnomalyMonitorWizard.prototype, "_activeEntityId", null);
+	__decorate([r$2()], AnomalyMonitorWizard.prototype, "_name", null);
+	__decorate([r$2()], AnomalyMonitorWizard.prototype, "_lookBackHours", null);
+	__decorate([r$2()], AnomalyMonitorWizard.prototype, "_scanIntervalMinutes", null);
+	__decorate([r$2()], AnomalyMonitorWizard.prototype, "_monitorType", null);
+	__decorate([r$2()], AnomalyMonitorWizard.prototype, "_overlapMode", null);
+	__decorate([r$2()], AnomalyMonitorWizard.prototype, "_error", null);
+	__decorate([r$2()], AnomalyMonitorWizard.prototype, "_saving", null);
+	AnomalyMonitorWizard = __decorate([localized()], AnomalyMonitorWizard);
+	customElements.define("anomaly-monitor-wizard", AnomalyMonitorWizard);
+	//#endregion
+	//#region custom_components/hass_datapoints/src/molecules/anomaly-monitors-panel/anomaly-monitors-panel.styles.ts
+	var styles$26 = i$5`
+  :host {
+    --dp-spacing-xs: calc(var(--spacing, 8px) * 0.5);
+    --dp-spacing-sm: var(--spacing, 8px);
+    --dp-spacing-md: calc(var(--spacing, 8px) * 1.5);
+    --dp-spacing-lg: calc(var(--spacing, 8px) * 2);
+    display: block;
+  }
+
+  .monitors-panel {
+    padding: var(--dp-spacing-sm);
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .monitors-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--dp-spacing-md);
+  }
+
+  .monitors-header h2 {
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: 500;
+  }
+
+  .monitors-empty {
+    text-align: center;
+    color: var(--secondary-text-color);
+    padding: var(--dp-spacing-lg);
+  }
+
+  .monitors-grid {
+    display: grid;
+    gap: var(--dp-spacing-sm);
+  }
+
+  .monitor-card {
+    background: var(--card-background-color, var(--secondary-background-color));
+    border-radius: 8px;
+    padding: var(--dp-spacing-sm) var(--dp-spacing-md);
+    box-shadow: var(--ha-card-box-shadow, none);
+    display: grid;
+    gap: var(--dp-spacing-xs);
+    transition: opacity 200ms ease;
+    opacity: 1;
+  }
+
+  .monitor-card[data-enabled="false"] {
+    opacity: 0.65;
+  }
+
+  .monitor-card[data-enabled="false"]:hover {
+    opacity: 0.85;
+  }
+
+  .monitor-card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--dp-spacing-sm);
+    flex-wrap: wrap;
+  }
+
+  .monitor-name {
+    font-weight: 500;
+    flex: 1;
+  }
+
+  .monitor-anomaly-indicator {
+    font-size: 0.78em;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+    background: var(--error-color, #db4437);
+    color: white;
+  }
+
+  .monitor-toggle-btn {
+    background: none;
+    border: none;
+    padding: 2px;
+    cursor: pointer;
+    color: var(--secondary-text-color);
+    display: inline-flex;
+    align-items: center;
+    border-radius: 4px;
+    transition: color 120ms ease;
+    --mdc-icon-size: 28px;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .monitor-card[data-enabled="true"] .monitor-toggle-btn {
+    color: var(--primary-color, #03a9f4);
+  }
+
+  .monitor-toggle-btn:hover {
+    color: var(--primary-color, #03a9f4);
+  }
+
+  .monitor-entities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .monitor-overlap-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .overlap-op {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--secondary-text-color);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0 2px;
+  }
+
+  .overlap-prefix {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--secondary-text-color);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .monitor-stats {
+    display: flex;
+    gap: var(--dp-spacing-md);
+    align-items: center;
+    flex-wrap: wrap;
+    color: var(--secondary-text-color);
+    font-size: 0.85em;
+  }
+
+  .monitor-sparkline {
+    flex: 0 0 auto;
+  }
+
+  .monitor-actions {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: var(--dp-spacing-xs);
+    border-top: 1px solid var(--divider-color);
+    padding-top: var(--dp-spacing-xs);
+  }
+
+  .monitor-actions-spacer {
+    flex: 1;
+  }
+
+  a.device-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.85em;
+    color: var(--primary-color);
+    text-decoration: none;
+    padding: 0 4px;
+  }
+
+  a.device-link:hover {
+    text-decoration: underline;
+  }
+
+  a.device-link ha-icon {
+    --mdc-icon-size: 16px;
+  }
+
+  /* ---- Small action buttons (edit/delete) ---- */
+
+  .small-btn {
+    --mdc-button-height: 28px;
+    font-size: 0.78rem;
+    --mdc-layout-grid-margin-desktop: 8px;
+  }
+
+  .delete-btn {
+    --mdc-theme-primary: var(--error-color, #db4437);
+  }
+
+  /* ---- "New monitor" button ---- */
+
+  .new-monitor-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 0;
+    border-radius: 6px;
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--primary-color, #3b82f6);
+    background: color-mix(
+      in srgb,
+      var(--primary-color, #3b82f6) 14%,
+      transparent
+    );
+    cursor: pointer;
+    --mdc-icon-size: 18px;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: background 120ms ease;
+  }
+
+  .new-monitor-btn:hover,
+  .new-monitor-btn:focus-visible {
+    background: color-mix(
+      in srgb,
+      var(--primary-color, #3b82f6) 22%,
+      transparent
+    );
+    outline: none;
+  }
+`;
+	//#endregion
+	//#region custom_components/hass_datapoints/src/molecules/anomaly-monitors-panel/anomaly-monitors-panel.ts
+	var _AnomalyMonitorsPanel, _hass_accessor_storage$6, _monitors_accessor_storage, _loading_accessor_storage, _editMonitor_accessor_storage, _wizardOpen_accessor_storage, _monitorClusters_accessor_storage, _loadingClusters_accessor_storage, _dismissPickerKey_accessor_storage;
+	var AnomalyMonitorsPanel = (_hass_accessor_storage$6 = /* @__PURE__ */ new WeakMap(), _monitors_accessor_storage = /* @__PURE__ */ new WeakMap(), _loading_accessor_storage = /* @__PURE__ */ new WeakMap(), _editMonitor_accessor_storage = /* @__PURE__ */ new WeakMap(), _wizardOpen_accessor_storage = /* @__PURE__ */ new WeakMap(), _monitorClusters_accessor_storage = /* @__PURE__ */ new WeakMap(), _loadingClusters_accessor_storage = /* @__PURE__ */ new WeakMap(), _dismissPickerKey_accessor_storage = /* @__PURE__ */ new WeakMap(), _AnomalyMonitorsPanel = class AnomalyMonitorsPanel extends i$2 {
+		constructor(..._args) {
+			super(..._args);
+			_classPrivateFieldInitSpec(this, _hass_accessor_storage$6, null);
+			_classPrivateFieldInitSpec(this, _monitors_accessor_storage, []);
+			_classPrivateFieldInitSpec(this, _loading_accessor_storage, true);
+			_classPrivateFieldInitSpec(this, _editMonitor_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _wizardOpen_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _monitorClusters_accessor_storage, /* @__PURE__ */ new Map());
+			_classPrivateFieldInitSpec(this, _loadingClusters_accessor_storage, /* @__PURE__ */ new Set());
+			_classPrivateFieldInitSpec(this, _dismissPickerKey_accessor_storage, null);
+			_defineProperty(this, "_pollInterval", null);
+			_defineProperty(this, "_monitorsEventUnsubscribe", null);
+			_defineProperty(this, "_monitorsSubscriptionToken", 0);
+		}
+		get hass() {
+			return _classPrivateFieldGet2(_hass_accessor_storage$6, this);
+		}
+		set hass(value) {
+			_classPrivateFieldSet2(_hass_accessor_storage$6, this, value);
+		}
+		get _monitors() {
+			return _classPrivateFieldGet2(_monitors_accessor_storage, this);
+		}
+		set _monitors(value) {
+			_classPrivateFieldSet2(_monitors_accessor_storage, this, value);
+		}
+		get _loading() {
+			return _classPrivateFieldGet2(_loading_accessor_storage, this);
+		}
+		set _loading(value) {
+			_classPrivateFieldSet2(_loading_accessor_storage, this, value);
+		}
+		get _editMonitor() {
+			return _classPrivateFieldGet2(_editMonitor_accessor_storage, this);
+		}
+		set _editMonitor(value) {
+			_classPrivateFieldSet2(_editMonitor_accessor_storage, this, value);
+		}
+		get _wizardOpen() {
+			return _classPrivateFieldGet2(_wizardOpen_accessor_storage, this);
+		}
+		set _wizardOpen(value) {
+			_classPrivateFieldSet2(_wizardOpen_accessor_storage, this, value);
+		}
+		get _monitorClusters() {
+			return _classPrivateFieldGet2(_monitorClusters_accessor_storage, this);
+		}
+		set _monitorClusters(value) {
+			_classPrivateFieldSet2(_monitorClusters_accessor_storage, this, value);
+		}
+		get _loadingClusters() {
+			return _classPrivateFieldGet2(_loadingClusters_accessor_storage, this);
+		}
+		set _loadingClusters(value) {
+			_classPrivateFieldSet2(_loadingClusters_accessor_storage, this, value);
+		}
+		get _dismissPickerKey() {
+			return _classPrivateFieldGet2(_dismissPickerKey_accessor_storage, this);
+		}
+		set _dismissPickerKey(value) {
+			_classPrivateFieldSet2(_dismissPickerKey_accessor_storage, this, value);
+		}
+		connectedCallback() {
+			super.connectedCallback();
+			if (this.hasUpdated) {
+				this._scheduleLoad();
+				this._scheduleMonitorSubscription();
+			}
+			this._pollInterval = setInterval(() => this._load(), 3e4);
+		}
+		disconnectedCallback() {
+			super.disconnectedCallback();
+			if (this._pollInterval !== null) {
+				clearInterval(this._pollInterval);
+				this._pollInterval = null;
+			}
+			this._teardownMonitorSubscription();
+		}
+		updated(changedProperties) {
+			if (changedProperties.has("hass")) {
+				this._teardownMonitorSubscription();
+				this._scheduleMonitorSubscription();
+				this._scheduleLoad();
+			}
+		}
+		_scheduleLoad() {
+			this._load().catch(() => {});
+		}
+		_scheduleMonitorSubscription() {
+			this._ensureMonitorSubscription().catch(() => {});
+		}
+		async _ensureMonitorSubscription() {
+			if (!this.hass?.connection || this._monitorsEventUnsubscribe) return;
+			const token = ++this._monitorsSubscriptionToken;
+			try {
+				const unsubscribe = await this.hass.connection.subscribeEvents(() => {
+					this._scheduleLoad();
+				}, `${DOMAIN}_monitors_updated`);
+				if (!this.isConnected || token !== this._monitorsSubscriptionToken) {
+					unsubscribe();
+					return;
+				}
+				this._monitorsEventUnsubscribe = unsubscribe;
+			} catch {}
+		}
+		_teardownMonitorSubscription() {
+			this._monitorsSubscriptionToken += 1;
+			if (this._monitorsEventUnsubscribe) {
+				this._monitorsEventUnsubscribe();
+				this._monitorsEventUnsubscribe = null;
+			}
+		}
+		async _load() {
+			if (!this.hass) return;
+			try {
+				this._monitors = await fetchMonitors(this.hass);
+			} catch {} finally {
+				this._loading = false;
+			}
+		}
+		_emit(name, detail = {}) {
+			this.dispatchEvent(new CustomEvent(name, {
+				detail,
+				bubbles: true,
+				composed: true
+			}));
+		}
+		_onNewMonitor() {
+			this._editMonitor = null;
+			this._wizardOpen = true;
+		}
+		_onClose() {
+			this._emit("dp-monitors-panel-close");
+		}
+		_onEdit(monitor) {
+			this._editMonitor = monitor;
+			this._wizardOpen = true;
+		}
+		_onWizardClose() {
+			this._wizardOpen = false;
+			this._editMonitor = null;
+		}
+		async _onWizardSaved() {
+			this._wizardOpen = false;
+			this._editMonitor = null;
+			await this._load();
+		}
+		async _onToggleEnabled(monitor) {
+			if (!this.hass) return;
+			await updateMonitor(this.hass, {
+				monitor_id: monitor.id,
+				enabled: !monitor.enabled
+			});
+			await this._load();
+		}
+		async _onDelete(monitor) {
+			if (!this.hass) return;
+			if (!await confirmDestructiveAction(this, {
+				title: msg(`Delete "${monitor.name}"?`),
+				message: msg("This cannot be undone. The monitor device and all its sensors will be removed."),
+				confirmLabel: msg("Delete")
+			})) return;
+			await deleteMonitor(this.hass, monitor.id);
+			await this._load();
+		}
+		async _loadClusters(monitorId) {
+			if (!this.hass || this._loadingClusters.has(monitorId)) return;
+			this._loadingClusters = new Set([...this._loadingClusters, monitorId]);
+			try {
+				const result = await fetchMonitorAnomalies(this.hass, monitorId);
+				const updated = new Map(this._monitorClusters);
+				updated.set(monitorId, result.anomaly_clusters);
+				this._monitorClusters = updated;
+			} catch {} finally {
+				const next = new Set(this._loadingClusters);
+				next.delete(monitorId);
+				this._loadingClusters = next;
+			}
+		}
+		async _onDismiss(monitor, cluster, expiresAt) {
+			if (!this.hass) return;
+			const times = cluster.points.map((p) => p.timeMs);
+			const startMs = Math.min(...times);
+			const endMs = Math.max(...times);
+			await dismissMonitorAnomaly(this.hass, monitor.id, startMs, endMs, expiresAt);
+			this._dismissPickerKey = null;
+			const updated = new Map(this._monitorClusters);
+			updated.delete(monitor.id);
+			this._monitorClusters = updated;
+			await this._load();
+		}
+		async _onUndismiss(monitor, windowId) {
+			if (!this.hass) return;
+			await undismissMonitorAnomaly(this.hass, monitor.id, windowId);
+			await this._load();
+		}
+		_formatClusterRange(cluster) {
+			const times = cluster.points.map((p) => p.timeMs);
+			if (times.length === 0) return "—";
+			const start = new Date(Math.min(...times)).toLocaleString();
+			const end = new Date(Math.max(...times)).toLocaleString();
+			return start === end ? start : `${start} – ${end}`;
+		}
+		_renderDismissExpiry(monitor, cluster, clusterIndex) {
+			const pickerKey = `${monitor.id}:${clusterIndex}`;
+			const isOpen = this._dismissPickerKey === pickerKey;
+			const lookBackHours = monitor.look_back_hours ?? 24;
+			if (!isOpen) return b`
+        <ha-button
+          class="dismiss-btn"
+          @click=${() => {
+				this._dismissPickerKey = pickerKey;
+			}}
+          >${msg("Dismiss")}</ha-button
+        >
+      `;
+			const autoLabel = lookBackHours < 48 ? `${lookBackHours * 2}h` : `${Math.round(lookBackHours / 12)}d`;
+			return b`
+      <div class="dismiss-picker">
+        <span class="dismiss-picker-label">${msg("Dismiss until:")}</span>
+        <ha-button @click=${() => this._onDismiss(monitor, cluster, void 0)}>
+          ${msg("Auto")} (${autoLabel})
+        </ha-button>
+        <ha-button
+          @click=${() => {
+				const d = /* @__PURE__ */ new Date();
+				d.setDate(d.getDate() + 1);
+				this._onDismiss(monitor, cluster, d.toISOString());
+			}}
+          >${msg("1 day")}</ha-button
+        >
+        <ha-button
+          @click=${() => {
+				const d = /* @__PURE__ */ new Date();
+				d.setDate(d.getDate() + 7);
+				this._onDismiss(monitor, cluster, d.toISOString());
+			}}
+          >${msg("1 week")}</ha-button
+        >
+        <ha-button @click=${() => this._onDismiss(monitor, cluster, null)}>
+          ${msg("Permanent")}
+        </ha-button>
+        <ha-button
+          @click=${() => {
+				this._dismissPickerKey = null;
+			}}
+        >
+          ${msg("Cancel")}
+        </ha-button>
+      </div>
+    `;
+		}
+		_renderClusterList(monitor) {
+			const clusters = this._monitorClusters.get(monitor.id);
+			if (this._loadingClusters.has(monitor.id)) return b`<div class="clusters-loading">
+        ${msg("Loading anomaly details…")}
+      </div>`;
+			if (!clusters) return A;
+			if (clusters.length === 0) return b`<div class="clusters-empty">
+        ${msg("No active anomaly clusters after dismissals.")}
+      </div>`;
+			return b`
+      <div class="cluster-list">
+        ${clusters.map((cluster, i) => b`
+            <div class="cluster-item">
+              <span class="cluster-method">${cluster.anomalyMethod}</span>
+              <span class="cluster-range"
+                >${this._formatClusterRange(cluster)}</span
+              >
+              ${this._renderDismissExpiry(monitor, cluster, i)}
+            </div>
+          `)}
+      </div>
+    `;
+		}
+		_renderDismissedWindows(monitor) {
+			const windows = monitor.dismissed_windows ?? [];
+			if (windows.length === 0) return A;
+			return b`
+      <details class="dismissed-windows">
+        <summary>${msg("Dismissed")} (${windows.length})</summary>
+        <div class="dismissed-list">
+          ${windows.map((w) => {
+				const start = new Date(w.start_ms).toLocaleString();
+				const end = new Date(w.end_ms).toLocaleString();
+				const expiry = w.expires_at ? new Date(w.expires_at).toLocaleString() : msg("Permanent");
+				return b`
+              <div class="dismissed-item">
+                <span class="dismissed-range">${start} – ${end}</span>
+                <span class="dismissed-expiry"
+                  >${msg("Expires:")} ${expiry}</span
+                >
+                <ha-button
+                  class="undismiss-btn"
+                  @click=${() => this._onUndismiss(monitor, w.id)}
+                  >${msg("Remove")}</ha-button
+                >
+              </div>
+            `;
+			})}
+        </div>
+      </details>
+    `;
+		}
+		_renderSparkline(history) {
+			const W = 120;
+			const H = 28;
+			const PAD = 2;
+			const counts = history.map((e) => e.count);
+			if (counts.length < 2) return b`<svg width=${W} height=${H}></svg>`;
+			const max = Math.max(...counts, 1);
+			return b`<svg
+      class="monitor-sparkline"
+      width=${W}
+      height=${H}
+      aria-hidden="true"
+    >
+      <polyline
+        points=${counts.map((c, i) => {
+				const x = PAD + i / Math.max(counts.length - 1, 1) * (W - PAD * 2);
+				const y = H - PAD - c / max * (H - PAD * 2);
+				return `${x.toFixed(1)},${y.toFixed(1)}`;
+			}).join(" ")}
+        fill="none"
+        stroke="var(--primary-color)"
+        stroke-width="1.5"
+      />
+    </svg>`;
+		}
+		_renderEntityDisplay(monitor) {
+			const entityIds = monitorEntityIds(monitor);
+			if (monitor.type === "individual" || entityIds.length <= 1) return b`
+        <div class="monitor-entities">
+          ${entityIds.map((eid) => b`
+              <entity-chip
+                .hass=${this.hass}
+                type="entity"
+                .itemId=${eid}
+              ></entity-chip>
+            `)}
+        </div>
+      `;
+			const mode = monitor.overlap_mode ?? "all";
+			if (mode === "any") return b`
+        <div class="monitor-overlap-row">
+          ${entityIds.map((eid, i) => b`
+              ${i > 0 ? b`<span class="overlap-op">OR</span>` : A}
+              <entity-chip
+                .hass=${this.hass}
+                type="entity"
+                .itemId=${eid}
+              ></entity-chip>
+            `)}
+        </div>
+      `;
+			const anyMatch = /^any_(\d+)$/.exec(mode) ?? (mode === "any_two_plus" ? ["", "2"] : null);
+			if (anyMatch) {
+				const n = parseInt(anyMatch[1], 10);
+				return b`
+        <div class="monitor-overlap-row">
+          <span class="overlap-prefix"
+            >${msg("AT LEAST")} ${n} ${msg("OF")}</span
+          >
+          ${entityIds.map((eid) => b`
+              <entity-chip
+                .hass=${this.hass}
+                type="entity"
+                .itemId=${eid}
+              ></entity-chip>
+            `)}
+        </div>
+      `;
+			}
+			return b`
+      <div class="monitor-overlap-row">
+        ${entityIds.map((eid, i) => b`
+            ${i > 0 ? b`<span class="overlap-op">AND</span>` : A}
+            <entity-chip
+              .hass=${this.hass}
+              type="entity"
+              .itemId=${eid}
+            ></entity-chip>
+          `)}
+      </div>
+    `;
+		}
+		_renderMonitorCard(monitor) {
+			const clusterCount = monitor.last_cluster_count ?? 0;
+			const hasAnomaly = !!monitor.enabled && clusterCount > 0;
+			const history = monitor.scan_history ?? [];
+			let consecutive = 0;
+			for (let i = history.length - 1; i >= 0; i--) if ((history[i].count ?? 0) > 0) consecutive++;
+			else break;
+			if (hasAnomaly && !this._monitorClusters.has(monitor.id)) this._loadClusters(monitor.id);
+			return b`
+      <div class="monitor-card" data-enabled=${monitor.enabled}>
+        <div class="monitor-card-header">
+          <span class="monitor-name">${monitor.name}</span>
+          ${hasAnomaly ? b`<span class="monitor-anomaly-indicator"
+                >${msg("Anomaly detected")}</span
+              >` : A}
+          <button
+            class="monitor-toggle-btn"
+            title=${monitor.enabled ? msg("Disable monitor") : msg("Enable monitor")}
+            @click=${() => this._onToggleEnabled(monitor)}
+          >
+            <ha-icon
+              icon=${monitor.enabled ? "mdi:toggle-switch" : "mdi:toggle-switch-off-outline"}
+            ></ha-icon>
+          </button>
+        </div>
+
+        ${this._renderEntityDisplay(monitor)}
+
+        <div class="monitor-stats">
+          ${this._renderSparkline(history)}
+          <span>
+            ${clusterCount} ${msg("cluster(s)")}
+            ${consecutive > 0 ? b`· ${msg(`persistent for ${consecutive} scans`)}` : A}
+          </span>
+          ${monitor.last_scan_at ? b`<span
+                >${msg("Last scan:")}
+                ${new Date(monitor.last_scan_at).toLocaleString()}</span
+              >` : A}
+        </div>
+
+        ${hasAnomaly ? this._renderClusterList(monitor) : A}
+        ${this._renderDismissedWindows(monitor)}
+
+        <div class="monitor-actions">
+          <ha-button class="small-btn" @click=${() => this._onEdit(monitor)}
+            >${msg("Edit")}</ha-button
+          >
+          ${monitor.device_id ? b`<a
+                class="device-link"
+                href=${`/config/devices/device/${monitor.device_id}`}
+                title=${msg("View device")}
+              >
+                <ha-icon icon="mdi:chip"></ha-icon>
+                ${msg("Device")}
+              </a>` : A}
+          <div class="monitor-actions-spacer"></div>
+          <ha-button
+            class="small-btn delete-btn"
+            @click=${() => this._onDelete(monitor)}
+            >${msg("Delete")}</ha-button
+          >
+        </div>
+      </div>
+    `;
+		}
+		_renderMonitorList() {
+			if (this._loading) return b`<div class="monitors-empty">${msg("Loading…")}</div>`;
+			if (this._monitors.length === 0) return b`<div class="monitors-empty">
+        ${msg("No monitors configured. Click \"New monitor\" to get started.")}
+      </div>`;
+			return b`<div class="monitors-grid">
+      ${this._monitors.map((m) => this._renderMonitorCard(m))}
+    </div>`;
+		}
+		render() {
+			return b`
+      <div class="monitors-panel">
+        <div class="monitors-header">
+          <ha-icon-button label=${msg("Back")} @click=${this._onClose}>
+            <ha-icon icon="mdi:arrow-left"></ha-icon>
+          </ha-icon-button>
+          <h2>${msg("Anomaly monitors")}</h2>
+          <button class="new-monitor-btn" @click=${this._onNewMonitor}>
+            <ha-icon icon="mdi:bell-plus-outline"></ha-icon>
+            ${msg("New monitor")}
+          </button>
+        </div>
+
+        ${this._renderMonitorList()}
+      </div>
+
+      <anomaly-monitor-wizard
+        .hass=${this.hass}
+        .open=${this._wizardOpen}
+        .editMonitor=${this._editMonitor}
+        @dp-monitor-wizard-close=${this._onWizardClose}
+        @dp-monitor-wizard-saved=${this._onWizardSaved}
+      ></anomaly-monitor-wizard>
+    `;
+		}
+	}, _defineProperty(_AnomalyMonitorsPanel, "styles", styles$26), _AnomalyMonitorsPanel);
+	__decorate([n$1({ type: Object })], AnomalyMonitorsPanel.prototype, "hass", null);
+	__decorate([r$2()], AnomalyMonitorsPanel.prototype, "_monitors", null);
+	__decorate([r$2()], AnomalyMonitorsPanel.prototype, "_loading", null);
+	__decorate([r$2()], AnomalyMonitorsPanel.prototype, "_editMonitor", null);
+	__decorate([r$2()], AnomalyMonitorsPanel.prototype, "_wizardOpen", null);
+	__decorate([r$2()], AnomalyMonitorsPanel.prototype, "_monitorClusters", null);
+	__decorate([r$2()], AnomalyMonitorsPanel.prototype, "_loadingClusters", null);
+	__decorate([r$2()], AnomalyMonitorsPanel.prototype, "_dismissPickerKey", null);
+	AnomalyMonitorsPanel = __decorate([localized()], AnomalyMonitorsPanel);
+	customElements.define("anomaly-monitors-panel", AnomalyMonitorsPanel);
+	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/interactive/resizable-panes/resizable-panes.styles.ts
-	var styles$24 = i$5`
+	var styles$25 = i$5`
   :host {
     display: grid;
     overflow: hidden;
@@ -24375,7 +29232,8 @@
     flex-direction: column;
     min-width: 0;
     min-height: 0;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: var(--dp-panes-first-overflow-y, hidden);
   }
 
   .pane-second {
@@ -24462,11 +29320,14 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/interactive/resizable-panes/resizable-panes.ts
+	var DEFAULT_I18N$2 = createDefaultI18n(["Resize panes"]);
+	var _i18n_accessor_storage$2 = /* @__PURE__ */ new WeakMap();
 	var _direction_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _ratio_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _min_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _max_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _secondHidden_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _splitterEl_accessor_storage = /* @__PURE__ */ new WeakMap();
 	/**
 	* `resizable-panes` is a two-pane layout atom with a draggable splitter.
 	*
@@ -24483,13 +29344,14 @@
 	var ResizablePanes = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
+			_classPrivateFieldInitSpec(this, _i18n_accessor_storage$2, DEFAULT_I18N$2);
 			_classPrivateFieldInitSpec(this, _direction_accessor_storage, "vertical");
 			_classPrivateFieldInitSpec(this, _ratio_accessor_storage, .5);
 			_classPrivateFieldInitSpec(this, _min_accessor_storage, .25);
 			_classPrivateFieldInitSpec(this, _max_accessor_storage, .75);
 			_classPrivateFieldInitSpec(this, _secondHidden_accessor_storage, false);
 			_defineProperty(this, "_pointerId", null);
-			_defineProperty(this, "_splitterEl", null);
+			_classPrivateFieldInitSpec(this, _splitterEl_accessor_storage, null);
 			_defineProperty(this, "_onPointerDown", (ev) => {
 				if (ev.button !== 0) return;
 				ev.preventDefault();
@@ -24532,6 +29394,12 @@
 				}));
 			});
 		}
+		get i18n() {
+			return _classPrivateFieldGet2(_i18n_accessor_storage$2, this);
+		}
+		set i18n(value) {
+			_classPrivateFieldSet2(_i18n_accessor_storage$2, this, value);
+		}
 		get direction() {
 			return _classPrivateFieldGet2(_direction_accessor_storage, this);
 		}
@@ -24562,8 +29430,13 @@
 		set secondHidden(value) {
 			_classPrivateFieldSet2(_secondHidden_accessor_storage, this, value);
 		}
+		get _splitterEl() {
+			return _classPrivateFieldGet2(_splitterEl_accessor_storage, this);
+		}
+		set _splitterEl(value) {
+			_classPrivateFieldSet2(_splitterEl_accessor_storage, this, value);
+		}
 		firstUpdated() {
-			this._splitterEl = this.shadowRoot?.querySelector(".pane-splitter") ?? null;
 			this._applyRatio();
 		}
 		disconnectedCallback() {
@@ -24582,6 +29455,9 @@
 		_applyRatio() {
 			this.style.setProperty("--dp-panes-top-size", `${Math.round(this.ratio * 1e3) / 10}%`);
 		}
+		_t(key) {
+			return t$4(this.i18n, key);
+		}
 		render() {
 			return b`
       <div class="pane-first"><slot name="first"></slot></div>
@@ -24589,7 +29465,7 @@
             <button
               class="pane-splitter"
               type="button"
-              aria-label="Resize panes"
+              aria-label=${this._t("Resize panes")}
               @pointerdown=${this._onPointerDown}
             ></button>
             <div class="pane-second"><slot name="second"></slot></div>
@@ -24597,7 +29473,8 @@
     `;
 		}
 	};
-	_defineProperty(ResizablePanes, "styles", styles$24);
+	_defineProperty(ResizablePanes, "styles", styles$25);
+	__decorate([n$1({ attribute: false })], ResizablePanes.prototype, "i18n", null);
 	__decorate([n$1({
 		type: String,
 		reflect: true
@@ -24610,6 +29487,7 @@
 		attribute: "second-hidden",
 		reflect: true
 	})], ResizablePanes.prototype, "secondHidden", null);
+	__decorate([e$4(".pane-splitter")], ResizablePanes.prototype, "_splitterEl", null);
 	customElements.define("resizable-panes", ResizablePanes);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/history-chart/history-chart.ts
@@ -24667,7 +29545,7 @@
 	customElements.define("history-chart", HistoryChart);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/panel-shell/panel-shell.styles.ts
-	var styles$23 = i$5`
+	var styles$24 = i$5`
   :host {
     display: block;
     height: 100%;
@@ -24892,6 +29770,7 @@
   .content > ::slotted(*[is-panes]) {
     flex: 1 1 0;
     min-height: 0;
+    --dp-panes-first-overflow-y: auto;
   }
 
   .control-date {
@@ -25085,7 +29964,7 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/floating-menu/floating-menu.styles.ts
-	var styles$22 = i$5`
+	var styles$23 = i$5`
   :host {
     display: contents;
   }
@@ -25119,7 +29998,7 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/molecules/floating-menu/floating-menu.ts
-	var _open_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _open_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
 	/**
 	* `floating-menu` renders a positioned floating overlay panel.
 	*
@@ -25134,30 +30013,29 @@
 	var FloatingMenu = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
-			_classPrivateFieldInitSpec(this, _open_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _open_accessor_storage$1, false);
+			_defineProperty(this, "_onPointerDown", (e) => {
+				if (!this.open) return;
+				if (!e.composedPath().some((node) => node === this)) this.dispatchEvent(new CustomEvent("dp-menu-close", {
+					detail: {},
+					bubbles: true,
+					composed: true
+				}));
+			});
 		}
 		get open() {
-			return _classPrivateFieldGet2(_open_accessor_storage, this);
+			return _classPrivateFieldGet2(_open_accessor_storage$1, this);
 		}
 		set open(value) {
-			_classPrivateFieldSet2(_open_accessor_storage, this, value);
+			_classPrivateFieldSet2(_open_accessor_storage$1, this, value);
 		}
 		connectedCallback() {
 			super.connectedCallback();
-			this._onPointerDown = this._onPointerDown.bind(this);
 			window.addEventListener("pointerdown", this._onPointerDown, true);
 		}
 		disconnectedCallback() {
 			super.disconnectedCallback();
 			window.removeEventListener("pointerdown", this._onPointerDown, true);
-		}
-		_onPointerDown(e) {
-			if (!this.open) return;
-			if (!e.composedPath().some((node) => node === this)) this.dispatchEvent(new CustomEvent("dp-menu-close", {
-				detail: {},
-				bubbles: true,
-				composed: true
-			}));
 		}
 		render() {
 			return b`
@@ -25167,7 +30045,7 @@
     `;
 		}
 	};
-	_defineProperty(FloatingMenu, "styles", styles$22);
+	_defineProperty(FloatingMenu, "styles", styles$23);
 	__decorate([n$1({
 		type: Boolean,
 		reflect: true
@@ -25175,7 +30053,7 @@
 	customElements.define("floating-menu", FloatingMenu);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/interactive/page-menu-item/page-menu-item.styles.ts
-	var styles$21 = i$5`
+	var styles$22 = i$5`
   :host {
     display: block;
   }
@@ -25262,7 +30140,7 @@
     `;
 		}
 	};
-	_defineProperty(PageMenuItem, "styles", styles$21);
+	_defineProperty(PageMenuItem, "styles", styles$22);
 	__decorate([n$1({ type: String })], PageMenuItem.prototype, "icon", null);
 	__decorate([n$1({ type: String })], PageMenuItem.prototype, "label", null);
 	__decorate([n$1({ type: Boolean })], PageMenuItem.prototype, "disabled", null);
@@ -25386,6 +30264,10 @@
 			this._togglePageMenu(false);
 			this._emit("dp-shell-menu-download");
 		}
+		_onMenuAiBrief() {
+			this._togglePageMenu(false);
+			this._emit("dp-shell-menu-ai-brief");
+		}
 		_onMenuSave() {
 			this._togglePageMenu(false);
 			this._emit("dp-shell-menu-save");
@@ -25397,6 +30279,10 @@
 		_onMenuClear() {
 			this._togglePageMenu(false);
 			this._emit("dp-shell-menu-clear");
+		}
+		_onMenuMonitors() {
+			this._togglePageMenu(false);
+			this._emit("dp-shell-menu-monitors");
 		}
 		_onSidebarToggle() {
 			this._emit("dp-shell-sidebar-toggle");
@@ -25434,6 +30320,16 @@
               .open=${this._pageMenuOpen}
               @dp-menu-close=${this._onPageMenuClose}
             >
+              <page-menu-item
+                icon="mdi:bell-alert-outline"
+                label=${msg("Anomaly monitors")}
+                @dp-menu-action=${this._onMenuMonitors}
+              ></page-menu-item>
+              <page-menu-item
+                icon="mdi:robot-outline"
+                label=${msg("AI query brief")}
+                @dp-menu-action=${this._onMenuAiBrief}
+              ></page-menu-item>
               <page-menu-item
                 icon="mdi:file-excel-outline"
                 label=${msg("Download spreadsheet")}
@@ -25526,7 +30422,7 @@
       </ha-top-app-bar-fixed>
     `;
 		}
-	}, _defineProperty(_PanelShell, "styles", styles$23), _PanelShell);
+	}, _defineProperty(_PanelShell, "styles", styles$24), _PanelShell);
 	__decorate([n$1({ type: Object })], PanelShell.prototype, "hass", null);
 	__decorate([n$1({ type: Boolean })], PanelShell.prototype, "narrow", null);
 	__decorate([n$1({
@@ -25541,9 +30437,236 @@
 		type: String,
 		attribute: "layout-mode"
 	})], PanelShell.prototype, "layoutMode", null);
-	__decorate([r$1()], PanelShell.prototype, "_pageMenuOpen", null);
+	__decorate([r$2()], PanelShell.prototype, "_pageMenuOpen", null);
 	PanelShell = __decorate([localized()], PanelShell);
 	customElements.define("panel-shell", PanelShell);
+	//#endregion
+	//#region custom_components/hass_datapoints/src/panels/datapoints/components/ai-query-brief-dialog/ai-query-brief-dialog.styles.ts
+	var styles$21 = i$5`
+  :host {
+    --dp-spacing-xs: calc(var(--spacing, 8px) * 0.5);
+    --dp-spacing-sm: var(--spacing, 8px);
+    --dp-spacing-md: calc(var(--spacing, 8px) * 1.5);
+    --dp-spacing-lg: calc(var(--spacing, 8px) * 2);
+  }
+
+  .ai-query-brief-dialog-content {
+    display: grid;
+    gap: var(--dp-spacing-md);
+    padding: var(--dp-spacing-sm) 0 0;
+  }
+
+  .ai-query-brief-dialog-body {
+    color: var(--secondary-text-color);
+    line-height: 1.5;
+  }
+
+  .ai-query-brief-dialog-field {
+    display: grid;
+    gap: var(--dp-spacing-xs);
+  }
+
+  .ai-query-brief-dialog-field label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary-text-color);
+  }
+
+  .ai-query-brief-dialog-textarea {
+    width: 100%;
+    min-height: 320px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid
+      color-mix(
+        in srgb,
+        var(--divider-color, rgba(0, 0, 0, 0.12)) 92%,
+        transparent
+      );
+    background: color-mix(
+      in srgb,
+      var(--card-background-color, #fff) 94%,
+      var(--primary-background-color, #f7f7f7)
+    );
+    color: var(--primary-text-color);
+    font:
+      0.88rem/1.5 ui-monospace,
+      SFMono-Regular,
+      SF Mono,
+      Menlo,
+      Consolas,
+      monospace;
+    resize: vertical;
+    box-sizing: border-box;
+  }
+
+  .ai-query-brief-dialog-textarea:focus {
+    outline: 2px solid
+      color-mix(in srgb, var(--primary-color, #03a9f4) 36%, transparent);
+    outline-offset: 1px;
+    border-color: color-mix(
+      in srgb,
+      var(--primary-color, #03a9f4) 55%,
+      transparent
+    );
+  }
+
+  .ai-query-brief-dialog-status {
+    min-height: 1.25rem;
+    color: var(--secondary-text-color);
+    font-size: 0.84rem;
+  }
+
+  .ai-query-brief-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--dp-spacing-sm);
+  }
+
+  .ai-query-brief-dialog-copy {
+    --mdc-theme-primary: var(--primary-color, #03a9f4);
+  }
+
+  .ai-query-brief-dialog-close {
+    --mdc-theme-primary: var(--primary-text-color);
+  }
+`;
+	//#endregion
+	//#region custom_components/hass_datapoints/src/panels/datapoints/components/ai-query-brief-dialog/ai-query-brief-dialog.ts
+	var _AiQueryBriefDialog, _open_accessor_storage, _heading_accessor_storage, _text_accessor_storage, _textareaEl_accessor_storage, _statusMessage_accessor_storage;
+	var AiQueryBriefDialog = (_open_accessor_storage = /* @__PURE__ */ new WeakMap(), _heading_accessor_storage = /* @__PURE__ */ new WeakMap(), _text_accessor_storage = /* @__PURE__ */ new WeakMap(), _textareaEl_accessor_storage = /* @__PURE__ */ new WeakMap(), _statusMessage_accessor_storage = /* @__PURE__ */ new WeakMap(), _AiQueryBriefDialog = class AiQueryBriefDialog extends i$2 {
+		constructor(..._args) {
+			super(..._args);
+			_classPrivateFieldInitSpec(this, _open_accessor_storage, false);
+			_classPrivateFieldInitSpec(this, _heading_accessor_storage, "AI query brief");
+			_classPrivateFieldInitSpec(this, _text_accessor_storage, "");
+			_classPrivateFieldInitSpec(this, _textareaEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _statusMessage_accessor_storage, "");
+		}
+		get open() {
+			return _classPrivateFieldGet2(_open_accessor_storage, this);
+		}
+		set open(value) {
+			_classPrivateFieldSet2(_open_accessor_storage, this, value);
+		}
+		get heading() {
+			return _classPrivateFieldGet2(_heading_accessor_storage, this);
+		}
+		set heading(value) {
+			_classPrivateFieldSet2(_heading_accessor_storage, this, value);
+		}
+		get text() {
+			return _classPrivateFieldGet2(_text_accessor_storage, this);
+		}
+		set text(value) {
+			_classPrivateFieldSet2(_text_accessor_storage, this, value);
+		}
+		get _textareaEl() {
+			return _classPrivateFieldGet2(_textareaEl_accessor_storage, this);
+		}
+		set _textareaEl(value) {
+			_classPrivateFieldSet2(_textareaEl_accessor_storage, this, value);
+		}
+		get _statusMessage() {
+			return _classPrivateFieldGet2(_statusMessage_accessor_storage, this);
+		}
+		set _statusMessage(value) {
+			_classPrivateFieldSet2(_statusMessage_accessor_storage, this, value);
+		}
+		updated(changedProperties) {
+			if (changedProperties.has("open") && this.open) window.requestAnimationFrame(() => {
+				this._selectAllText();
+			});
+		}
+		_emit(name) {
+			this.dispatchEvent(new CustomEvent(name, {
+				bubbles: true,
+				composed: true
+			}));
+		}
+		_selectAllText() {
+			if (!this._textareaEl) return;
+			this._textareaEl.focus();
+			this._textareaEl.select();
+			this._textareaEl.setSelectionRange(0, this._textareaEl.value.length);
+		}
+		_onDialogClosed() {
+			this._statusMessage = "";
+			this._emit("dp-ai-query-brief-close");
+		}
+		_onClose() {
+			this._emit("dp-ai-query-brief-close");
+		}
+		async _onCopy() {
+			this._selectAllText();
+			const text = this._textareaEl?.value || this.text;
+			try {
+				await navigator.clipboard.writeText(text);
+				this._statusMessage = msg("Copied to clipboard.");
+			} catch {
+				this._statusMessage = msg("Clipboard write failed. The text is selected so you can copy it manually.");
+			}
+		}
+		_onTextareaFocus() {
+			this._selectAllText();
+		}
+		render() {
+			return b`
+      <ha-dialog
+        ?open=${this.open}
+        hideActions
+        .scrimClickAction=${"close"}
+        .escapeKeyAction=${"close"}
+        @closed=${this._onDialogClosed}
+      >
+        <span slot="heading">${this.heading}</span>
+        <div class="ai-query-brief-dialog-content">
+          <div class="ai-query-brief-dialog-body">
+            ${msg("This brief is intended for another AI to fetch raw Home Assistant history and hass_datapoints anomaly details. Review it, then copy it into your AI tool of choice.")}
+          </div>
+
+          <div class="ai-query-brief-dialog-field">
+            <label for="ai-query-brief-textarea"
+              >${msg("Copy-ready brief")}</label
+            >
+            <textarea
+              id="ai-query-brief-textarea"
+              class="ai-query-brief-dialog-textarea"
+              readonly
+              .value=${this.text}
+              @focus=${this._onTextareaFocus}
+            ></textarea>
+          </div>
+
+          <div class="ai-query-brief-dialog-status" aria-live="polite">
+            ${this._statusMessage}
+          </div>
+
+          <div class="ai-query-brief-dialog-actions">
+            <ha-button
+              class="ai-query-brief-dialog-close"
+              @click=${this._onClose}
+              >${msg("Close")}</ha-button
+            >
+            <ha-button
+              class="ai-query-brief-dialog-copy"
+              raised
+              @click=${this._onCopy}
+              >${msg("Copy brief")}</ha-button
+            >
+          </div>
+        </div>
+      </ha-dialog>
+    `;
+		}
+	}, _defineProperty(_AiQueryBriefDialog, "styles", styles$21), _AiQueryBriefDialog);
+	__decorate([n$1({ type: Boolean })], AiQueryBriefDialog.prototype, "open", null);
+	__decorate([n$1({ type: String })], AiQueryBriefDialog.prototype, "heading", null);
+	__decorate([n$1({ type: String })], AiQueryBriefDialog.prototype, "text", null);
+	__decorate([e$4("#ai-query-brief-textarea")], AiQueryBriefDialog.prototype, "_textareaEl", null);
+	__decorate([r$2()], AiQueryBriefDialog.prototype, "_statusMessage", null);
+	AiQueryBriefDialog = __decorate([localized()], AiQueryBriefDialog);
+	customElements.define("ai-query-brief-dialog", AiQueryBriefDialog);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/components/history-targets/history-targets.styles.ts
 	var styles$20 = i$5`
@@ -25932,7 +31055,7 @@
 		attribute: "sidebar-collapsed",
 		reflect: true
 	})], HistoryTargets.prototype, "sidebarCollapsed", null);
-	__decorate([r$1()], HistoryTargets.prototype, "_collapsedSummaryKey", null);
+	__decorate([r$2()], HistoryTargets.prototype, "_collapsedSummaryKey", null);
 	HistoryTargets = __decorate([localized()], HistoryTargets);
 	customElements.define("history-targets", HistoryTargets);
 	//#endregion
@@ -26397,6 +31520,14 @@
 	var _chartHoverTimeMs_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
 	var _chartHoverWindowTime_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
 	var _events_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
+	var _rangeHoverPreviewEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _rangeComparisonPrevi_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _rangeZoomHighlightEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _rangeZoomWindowHighl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _rangeChartHoverLineE_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _rangeChartHoverWindo_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _rangeEventLayerEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _rangeTimelineEl_accessor_storage = /* @__PURE__ */ new WeakMap();
 	/**
 	* `panel-timeline` is a panel-history-specific wrapper around `range-timeline`.
 	*
@@ -26430,13 +31561,14 @@
 			_classPrivateFieldInitSpec(this, _chartHoverTimeMs_accessor_storage$1, null);
 			_classPrivateFieldInitSpec(this, _chartHoverWindowTime_accessor_storage$1, null);
 			_classPrivateFieldInitSpec(this, _events_accessor_storage$1, []);
-			_defineProperty(this, "_rangeHoverPreviewEl", null);
-			_defineProperty(this, "_rangeComparisonPreviewEl", null);
-			_defineProperty(this, "_rangeZoomHighlightEl", null);
-			_defineProperty(this, "_rangeZoomWindowHighlightEl", null);
-			_defineProperty(this, "_rangeChartHoverLineEl", null);
-			_defineProperty(this, "_rangeChartHoverWindowLineEl", null);
-			_defineProperty(this, "_rangeEventLayerEl", null);
+			_classPrivateFieldInitSpec(this, _rangeHoverPreviewEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _rangeComparisonPrevi_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _rangeZoomHighlightEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _rangeZoomWindowHighl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _rangeChartHoverLineE_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _rangeChartHoverWindo_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _rangeEventLayerEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _rangeTimelineEl_accessor_storage, null);
 			_defineProperty(this, "_liveZoomRange", void 0);
 			_defineProperty(this, "_liveZoomWindowRange", void 0);
 		}
@@ -26524,15 +31656,55 @@
 		set events(value) {
 			_classPrivateFieldSet2(_events_accessor_storage$1, this, value);
 		}
+		get _rangeHoverPreviewEl() {
+			return _classPrivateFieldGet2(_rangeHoverPreviewEl_accessor_storage, this);
+		}
+		set _rangeHoverPreviewEl(value) {
+			_classPrivateFieldSet2(_rangeHoverPreviewEl_accessor_storage, this, value);
+		}
+		get _rangeComparisonPreviewEl() {
+			return _classPrivateFieldGet2(_rangeComparisonPrevi_accessor_storage, this);
+		}
+		set _rangeComparisonPreviewEl(value) {
+			_classPrivateFieldSet2(_rangeComparisonPrevi_accessor_storage, this, value);
+		}
+		get _rangeZoomHighlightEl() {
+			return _classPrivateFieldGet2(_rangeZoomHighlightEl_accessor_storage, this);
+		}
+		set _rangeZoomHighlightEl(value) {
+			_classPrivateFieldSet2(_rangeZoomHighlightEl_accessor_storage, this, value);
+		}
+		get _rangeZoomWindowHighlightEl() {
+			return _classPrivateFieldGet2(_rangeZoomWindowHighl_accessor_storage, this);
+		}
+		set _rangeZoomWindowHighlightEl(value) {
+			_classPrivateFieldSet2(_rangeZoomWindowHighl_accessor_storage, this, value);
+		}
+		get _rangeChartHoverLineEl() {
+			return _classPrivateFieldGet2(_rangeChartHoverLineE_accessor_storage, this);
+		}
+		set _rangeChartHoverLineEl(value) {
+			_classPrivateFieldSet2(_rangeChartHoverLineE_accessor_storage, this, value);
+		}
+		get _rangeChartHoverWindowLineEl() {
+			return _classPrivateFieldGet2(_rangeChartHoverWindo_accessor_storage, this);
+		}
+		set _rangeChartHoverWindowLineEl(value) {
+			_classPrivateFieldSet2(_rangeChartHoverWindo_accessor_storage, this, value);
+		}
+		get _rangeEventLayerEl() {
+			return _classPrivateFieldGet2(_rangeEventLayerEl_accessor_storage, this);
+		}
+		set _rangeEventLayerEl(value) {
+			_classPrivateFieldSet2(_rangeEventLayerEl_accessor_storage, this, value);
+		}
+		get _rangeTimelineEl() {
+			return _classPrivateFieldGet2(_rangeTimelineEl_accessor_storage, this);
+		}
+		set _rangeTimelineEl(value) {
+			_classPrivateFieldSet2(_rangeTimelineEl_accessor_storage, this, value);
+		}
 		firstUpdated() {
-			const sr = this.shadowRoot;
-			this._rangeHoverPreviewEl = sr.getElementById("range-hover-preview");
-			this._rangeComparisonPreviewEl = sr.getElementById("range-comparison-preview");
-			this._rangeZoomHighlightEl = sr.getElementById("range-zoom-highlight");
-			this._rangeZoomWindowHighlightEl = sr.getElementById("range-zoom-window-highlight");
-			this._rangeChartHoverLineEl = sr.getElementById("range-chart-hover-line");
-			this._rangeChartHoverWindowLineEl = sr.getElementById("range-chart-hover-window-line");
-			this._rangeEventLayerEl = sr.getElementById("range-event-layer");
 			this._syncAllOverlays();
 		}
 		updated(changed) {
@@ -26617,7 +31789,7 @@
 			return (ms - this.rangeBounds.min) / total * 100;
 		}
 		revealSelection() {
-			(this.shadowRoot?.querySelector("range-timeline"))?.revealSelection?.();
+			this._rangeTimelineEl?.revealSelection?.();
 		}
 		syncZoomHighlights(zoomRange, zoomWindowRange) {
 			this._liveZoomRange = zoomRange ? { ...zoomRange } : null;
@@ -26702,13 +31874,21 @@
 	__decorate([n$1({ type: String })], PanelTimeline.prototype, "dateSnapping", null);
 	__decorate([n$1({ type: Boolean })], PanelTimeline.prototype, "isLiveEdge", null);
 	__decorate([n$1({ type: String })], PanelTimeline.prototype, "locale", null);
-	__decorate([r$1()], PanelTimeline.prototype, "hoveredPeriodRange", null);
+	__decorate([r$2()], PanelTimeline.prototype, "hoveredPeriodRange", null);
 	__decorate([n$1({ type: Object })], PanelTimeline.prototype, "comparisonPreview", null);
 	__decorate([n$1({ type: Object })], PanelTimeline.prototype, "zoomRange", null);
 	__decorate([n$1({ type: Object })], PanelTimeline.prototype, "zoomWindowRange", null);
 	__decorate([n$1({ type: Number })], PanelTimeline.prototype, "chartHoverTimeMs", null);
 	__decorate([n$1({ type: Number })], PanelTimeline.prototype, "chartHoverWindowTimeMs", null);
 	__decorate([n$1({ type: Array })], PanelTimeline.prototype, "events", null);
+	__decorate([e$4("#range-hover-preview")], PanelTimeline.prototype, "_rangeHoverPreviewEl", null);
+	__decorate([e$4("#range-comparison-preview")], PanelTimeline.prototype, "_rangeComparisonPreviewEl", null);
+	__decorate([e$4("#range-zoom-highlight")], PanelTimeline.prototype, "_rangeZoomHighlightEl", null);
+	__decorate([e$4("#range-zoom-window-highlight")], PanelTimeline.prototype, "_rangeZoomWindowHighlightEl", null);
+	__decorate([e$4("#range-chart-hover-line")], PanelTimeline.prototype, "_rangeChartHoverLineEl", null);
+	__decorate([e$4("#range-chart-hover-window-line")], PanelTimeline.prototype, "_rangeChartHoverWindowLineEl", null);
+	__decorate([e$4("#range-event-layer")], PanelTimeline.prototype, "_rangeEventLayerEl", null);
+	__decorate([e$4("range-timeline")], PanelTimeline.prototype, "_rangeTimelineEl", null);
 	customElements.define("panel-timeline", PanelTimeline);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/form/date-time-input/date-time-input.styles.ts
@@ -27322,9 +32502,9 @@
 		type: Number,
 		attribute: false
 	})], RangeToolbar.prototype, "chartHoverWindowTimeMs", null);
-	__decorate([r$1()], RangeToolbar.prototype, "_optionsView", null);
-	__decorate([r$1()], RangeToolbar.prototype, "_optionsOpen", null);
-	__decorate([r$1()], RangeToolbar.prototype, "_pickerOpen", null);
+	__decorate([r$2()], RangeToolbar.prototype, "_optionsView", null);
+	__decorate([r$2()], RangeToolbar.prototype, "_optionsOpen", null);
+	__decorate([r$2()], RangeToolbar.prototype, "_pickerOpen", null);
 	RangeToolbar = __decorate([localized()], RangeToolbar);
 	customElements.define("range-toolbar", RangeToolbar);
 	//#endregion
@@ -30418,6 +35598,9 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/panels/datapoints/datapoints.ts
+	/** Module-level set of all currently-connected panel instances.
+	*  Used by the orphan-recovery guard to avoid disrupting a live replacement. */
+	var _liveInstances = /* @__PURE__ */ new Set();
 	var DATA_GAP_THRESHOLD_OPTIONS = [
 		{
 			value: "auto",
@@ -30466,7 +35649,7 @@
 	/**
 	* hass-datapoints-history-panel – Sidebar panel for annotated history exploration.
 	*/
-	var HassRecordsHistoryPanel = class extends HTMLElement {
+	var HassDatapointsHistoryPanel = class extends HTMLElement {
 		constructor() {
 			super();
 			this.attachShadow({ mode: "open" });
@@ -30566,6 +35749,10 @@
 			this._hasPageStateInUrl = false;
 			this._localPageStateDirty = false;
 			this._pendingPreferencesSaveTimer = null;
+			this._orphanRecoveryTimer = null;
+			this._showMonitorsPanel = false;
+			this._monitorWizardComp = null;
+			this._aiQueryBriefDialogComp = null;
 			this._recordsSearchQuery = "";
 			this._hiddenEventIds = [];
 			this._hoveredEventIds = [];
@@ -30748,6 +35935,7 @@
 					if (this._rowListEl) {
 						this._rowListEl.hass = this._hass ?? null;
 						this._rowListEl.states = this._hass?.states ?? {};
+						this._rowListEl.labelMap = disambiguateEntityNames(this._hass, (this._seriesRows ?? []).map((r) => r.entity_id));
 					}
 					if (this._rangeToolbarComp) this._rangeToolbarComp.hass = this._hass ?? null;
 					this.shadowRoot?.querySelectorAll("[data-series-icon-entity-id], [data-series-collapsed-icon-entity-id]").forEach((iconEl) => {
@@ -30763,9 +35951,19 @@
 				this._haEventUnsubscribe = unsub;
 			}).catch(() => {});
 			if (!this._rendered) {
+				logger$1.warn("[dp-lifecycle] set hass: first hass — transitioning to rendered", {
+					isConnected: this.isConnected,
+					hadUiReadyPromise: !!this._uiReadyPromise,
+					shellBuilt: this._shellBuilt
+				});
 				this._rendered = true;
 				this._initFromContext();
-				if (this.isConnected) this._buildLoadingShell();
+				if (this.isConnected) {
+					this._buildLoadingShell();
+					logger$1.warn("[dp-lifecycle] set hass: resetting uiReadyPromise and re-running ensureUiComponentsReady");
+					this._uiReadyPromise = null;
+					this._ensureUiComponentsReady();
+				} else logger$1.warn("[dp-lifecycle] set hass: not connected — skipping shell build");
 			}
 			if (!this._seriesRows.length && Object.keys(this._targetSelection || {}).length) this._seriesRows = buildHistorySeriesRows(resolveEntityIdsFromTarget(this._hass, this._targetSelection));
 			this._syncSeriesState();
@@ -30786,6 +35984,21 @@
 			this._narrow = value;
 		}
 		connectedCallback() {
+			if (this._orphanRecoveryTimer) {
+				window.clearTimeout(this._orphanRecoveryTimer);
+				this._orphanRecoveryTimer = null;
+			}
+			_liveInstances.add(this);
+			logger$1.warn("[dp-lifecycle] connectedCallback", {
+				rendered: this._rendered,
+				shellBuilt: this._shellBuilt,
+				uiReadyPromise: !!this._uiReadyPromise,
+				uiReadyApplied: this._uiReadyApplied,
+				entityCount: this._entities?.length ?? 0,
+				contentKey: this._contentKey,
+				hasContentHostEl: !!this._contentHostEl,
+				hasShellEl: !!this._shellEl
+			});
 			this._mqTablet.addEventListener("change", this._onLayoutChange);
 			this._mqMobile.addEventListener("change", this._onLayoutChange);
 			this._updateLayoutMode();
@@ -30807,19 +36020,39 @@
 			this.addEventListener("hass-datapoints-comparison-loading", this._onComparisonLoading);
 			this.addEventListener("hass-datapoints-analysis-computing", this._onAnalysisComputing);
 			this.addEventListener("hass-datapoints-analysis-method-result", this._onAnalysisMethodResult);
-			if (this._rendered && !this._shellBuilt) this._buildLoadingShell();
+			this.addEventListener("dp-anomaly-save-monitor", (ev) => {
+				const detail = ev.detail ?? {};
+				const entityId = detail.entityId ?? "";
+				const analysis = detail.analysis ?? null;
+				this._openMonitorWizardFromChartAnalysis(entityId, analysis);
+			});
+			if (this._rendered && !this._shellBuilt) {
+				logger$1.warn("[dp-lifecycle] connectedCallback: rendered but no shell — building loading shell");
+				this._buildLoadingShell();
+			}
 			this._ensureUiComponentsReady();
-			if (this._rendered && this._shellBuilt) window.requestAnimationFrame(() => {
-				if (!this.isConnected) return;
-				this._syncControls();
-				this._renderContent();
-				if (this._restoredFromSession) {
-					this._restoredFromSession = false;
-					this._updateUrl({ push: false });
-				}
+			if (this._rendered && this._shellBuilt) {
+				logger$1.warn("[dp-lifecycle] connectedCallback: shell already built — scheduling reconnect RAF render");
+				window.requestAnimationFrame(() => {
+					if (!this.isConnected) {
+						logger$1.warn("[dp-lifecycle] connectedCallback RAF: aborted (not connected)");
+						return;
+					}
+					logger$1.warn("[dp-lifecycle] connectedCallback RAF: calling syncControls + renderContent");
+					this._syncControls();
+					this._renderContent();
+					if (this._restoredFromSession) {
+						this._restoredFromSession = false;
+						this._updateUrl({ push: false });
+					}
+				});
+			} else logger$1.warn("[dp-lifecycle] connectedCallback: no RAF scheduled", {
+				rendered: this._rendered,
+				shellBuilt: this._shellBuilt
 			});
 		}
 		disconnectedCallback() {
+			_liveInstances.delete(this);
 			this._mqTablet.removeEventListener("change", this._onLayoutChange);
 			this._mqMobile.removeEventListener("change", this._onLayoutChange);
 			if (this._onOverlayKeydown) window.removeEventListener("keydown", this._onOverlayKeydown);
@@ -30857,11 +36090,32 @@
 				window.clearTimeout(this._chartZoomStateCommitTimer);
 				this._chartZoomStateCommitTimer = null;
 			}
+			if (this._orphanRecoveryTimer) {
+				window.clearTimeout(this._orphanRecoveryTimer);
+				this._orphanRecoveryTimer = null;
+			}
 			this._hideCollapsedTargetPopup();
 			this._hideCollapsedOptionsPopup();
+			logger$1.warn("[dp-lifecycle] disconnectedCallback", {
+				rendered: this._rendered,
+				shellBuilt: this._shellBuilt,
+				uiReadyApplied: this._uiReadyApplied,
+				entityCount: this._entities?.length ?? 0
+			});
 			this._uiReadyPromise = null;
 			this._uiReadyApplied = false;
 			this._context.orchestration.cancelChartResizeRedraw();
+			this._orphanRecoveryTimer = window.setTimeout(() => {
+				this._orphanRecoveryTimer = null;
+				if (!this.isConnected) {
+					if ([..._liveInstances].some((i) => i !== this)) {
+						logger$1.warn("[dp-lifecycle] orphan recovery: another instance already live — skipping location-changed");
+						return;
+					}
+					logger$1.warn("[dp-lifecycle] orphan recovery: still detached after grace period — dispatching location-changed");
+					window.dispatchEvent(new CustomEvent("location-changed", { bubbles: true }));
+				}
+			}, 3e3);
 		}
 		_initFromContext() {
 			const { entityFromUrl, deviceFromUrl, areaFromUrl, labelFromUrl, datapointsScopeFromUrl, startFromUrl, endFromUrl, zoomStartFromUrl, zoomEndFromUrl, seriesColorsFromUrl, dateWindowsFromUrl, hoursFromUrl, hasTargetInUrl, hasRangeInUrl, pageStateFromUrl, sessionState } = this._context.navigation.readStateFromLocation();
@@ -31002,6 +36256,11 @@
 			}
 		}
 		_buildLoadingShell() {
+			logger$1.warn("[dp-lifecycle] _buildLoadingShell called", {
+				rendered: this._rendered,
+				shellBuilt: this._shellBuilt,
+				isConnected: this.isConnected
+			});
 			this._shellBuilt = false;
 			const loadingLabel = msg("Loading Datapoints…");
 			const root = this.shadowRoot;
@@ -31017,6 +36276,11 @@
     `;
 		}
 		_buildShell() {
+			logger$1.warn("[dp-lifecycle] _buildShell called", {
+				rendered: this._rendered,
+				isConnected: this.isConnected,
+				entityCount: this._entities?.length ?? 0
+			});
 			this._shellBuilt = true;
 			const root = this.shadowRoot;
 			if (!root) return;
@@ -31034,9 +36298,18 @@
 			shell.appendChild(contentHost);
 			this._contentHostEl = contentHost;
 			shell.addEventListener("dp-shell-menu-download", () => this._downloadSpreadsheet());
+			shell.addEventListener("dp-shell-menu-ai-brief", () => {
+				this._openAiQueryBriefDialog().catch((error) => {
+					logger$1.warn("[hass-datapoints] failed to open AI query brief:", error);
+				});
+			});
 			shell.addEventListener("dp-shell-menu-save", () => this._savePageState());
 			shell.addEventListener("dp-shell-menu-restore", () => this._restorePageState());
 			shell.addEventListener("dp-shell-menu-clear", () => this._clearSavedPageState());
+			shell.addEventListener("dp-shell-menu-monitors", () => {
+				this._showMonitorsPanel = true;
+				this._renderContent();
+			});
 			shell.addEventListener("dp-shell-sidebar-toggle", () => this._toggleSidebarCollapsed());
 			shell.addEventListener("dp-shell-scrim-click", () => {
 				if (!this._sidebarCollapsed) this._toggleSidebarCollapsed();
@@ -31056,7 +36329,15 @@
 			this._shellEl?.syncLayoutHeight();
 		}
 		_bootstrapAfterShellBuilt() {
-			if (!this._shellBuilt) return;
+			if (!this._shellBuilt) {
+				logger$1.warn("[dp-lifecycle] _bootstrapAfterShellBuilt: skipped — shell not built");
+				return;
+			}
+			logger$1.warn("[dp-lifecycle] _bootstrapAfterShellBuilt: running", {
+				rendered: this._rendered,
+				entityCount: this._entities?.length ?? 0,
+				contentKey: this._contentKey
+			});
 			this._ensureHistoryBounds();
 			this._ensureUserPreferences();
 			this._loadSavedPageIndicator();
@@ -31068,7 +36349,19 @@
 			}
 		}
 		_ensureUiComponentsReady() {
-			if (this._uiReadyPromise) return this._uiReadyPromise;
+			if (this._uiReadyPromise) {
+				logger$1.warn("[dp-lifecycle] _ensureUiComponentsReady: promise already exists — returning cached", {
+					rendered: this._rendered,
+					shellBuilt: this._shellBuilt,
+					uiReadyApplied: this._uiReadyApplied
+				});
+				return this._uiReadyPromise;
+			}
+			logger$1.warn("[dp-lifecycle] _ensureUiComponentsReady: creating new promise", {
+				rendered: this._rendered,
+				shellBuilt: this._shellBuilt,
+				isConnected: this.isConnected
+			});
 			this._uiReadyPromise = ensureHaComponents([
 				"ha-top-app-bar-fixed",
 				"ha-menu-button",
@@ -31076,14 +36369,37 @@
 				"ha-dialog",
 				"ha-tooltip",
 				"ha-target-picker",
-				"ha-date-range-picker"
+				"ha-date-range-picker",
+				"ha-entity-picker"
 			]).then((results) => results).then(() => {
-				if (!this.isConnected || !this._rendered) return;
+				if (!this.isConnected || !this._rendered) {
+					logger$1.warn("[dp-lifecycle] _ensureUiComponentsReady: components ready but bailing early", {
+						isConnected: this.isConnected,
+						rendered: this._rendered,
+						shellBuilt: this._shellBuilt
+					});
+					this._uiReadyPromise = null;
+					return;
+				}
+				logger$1.warn("[dp-lifecycle] _ensureUiComponentsReady: components ready — scheduling double RAF", {
+					shellBuilt: this._shellBuilt,
+					uiReadyApplied: this._uiReadyApplied
+				});
 				window.requestAnimationFrame(() => {
 					window.requestAnimationFrame(() => {
-						if (!this.isConnected || !this._rendered) return;
+						if (!this.isConnected || !this._rendered) {
+							logger$1.warn("[dp-lifecycle] _ensureUiComponentsReady double RAF: aborted", {
+								isConnected: this.isConnected,
+								rendered: this._rendered
+							});
+							return;
+						}
 						this._uiReadyApplied = true;
-						if (!this._shellBuilt) this._buildShell();
+						if (!this._shellBuilt) {
+							logger$1.warn("[dp-lifecycle] _ensureUiComponentsReady double RAF: calling _buildShell");
+							this._buildShell();
+						} else logger$1.warn("[dp-lifecycle] _ensureUiComponentsReady double RAF: shell already built — skipping _buildShell");
+						logger$1.warn("[dp-lifecycle] _ensureUiComponentsReady double RAF: calling syncControls + bootstrapAfterShellBuilt");
 						this._syncControls();
 						this._bootstrapAfterShellBuilt();
 					});
@@ -31124,20 +36440,7 @@
 			});
 		}
 		_mergeSavedSeriesRows(rows, savedRows) {
-			const normalizedRows = normalizeHistorySeriesRows(rows);
-			const normalizedSavedRows = normalizeHistorySeriesRows(savedRows);
-			if (!normalizedSavedRows.length) return normalizedRows;
-			const savedRowMap = new Map(normalizedSavedRows.map((row) => [row.entity_id, row]));
-			return normalizedRows.map((row) => {
-				const savedRow = savedRowMap.get(row.entity_id);
-				if (!savedRow) return row;
-				return {
-					...row,
-					color: savedRow.color,
-					visible: savedRow.visible,
-					analysis: savedRow.analysis
-				};
-			});
+			return mergeSavedSeriesRows(rows, savedRows);
 		}
 		_syncHassBindings() {
 			if (this._shellEl) {
@@ -31189,107 +36492,31 @@
 			this._refreshCollapsedOptionsPopup();
 		}
 		_formatComparisonLabel(start, end) {
-			const fmt = (d) => d.toLocaleDateString(void 0, {
-				month: "short",
-				day: "numeric"
-			});
-			const fmtYear = (d) => d.toLocaleDateString(void 0, {
-				month: "short",
-				day: "numeric",
-				year: "numeric"
-			});
-			return start.getFullYear() === end.getFullYear() ? `${fmt(start)} – ${fmt(end)}` : `${fmtYear(start)} – ${fmtYear(end)}`;
+			return formatComparisonLabel(start, end);
 		}
 		_getComparisonPreviewOverlay() {
-			const comparisonWindow = this._getActiveComparisonWindow();
-			if (!comparisonWindow || !this._startTime || !this._endTime) return null;
-			const windowStart = parseDateValue(comparisonWindow.start_time);
-			const windowEnd = parseDateValue(comparisonWindow.end_time);
-			if (!windowStart || !windowEnd) return null;
-			const actualSpanMs = this._endTime.getTime() - this._startTime.getTime();
-			if (!Number.isFinite(actualSpanMs) || actualSpanMs <= 0) return null;
-			const actualStart = new Date(windowStart.getTime());
-			const actualEnd = new Date(windowStart.getTime() + actualSpanMs);
-			const windowRangeLabel = this._formatComparisonLabel(windowStart, windowEnd);
-			const actualRangeLabel = this._formatComparisonLabel(actualStart, actualEnd);
-			if (windowRangeLabel === actualRangeLabel) return null;
-			return {
-				label: comparisonWindow.label || "Preview",
-				window_range_label: windowRangeLabel,
-				actual_range_label: actualRangeLabel
-			};
+			return getComparisonPreviewOverlay(this._getActiveComparisonWindow(), this._startTime, this._endTime);
 		}
 		_getPreviewComparisonWindows() {
-			const comparisonIds = [];
-			if (this._selectedComparisonWindowId) comparisonIds.push(this._selectedComparisonWindowId);
-			if (this._hoveredComparisonWindowId && !comparisonIds.includes(this._hoveredComparisonWindowId)) comparisonIds.push(this._hoveredComparisonWindowId);
-			if (!comparisonIds.length) return [];
-			if (!this._startTime || !this._endTime) return [];
-			const startTime = this._startTime;
-			return comparisonIds.map((id) => this._comparisonWindows.find((w) => w.id === id) ?? null).filter((w) => w !== null).map((window) => ({
-				...window,
-				time_offset_ms: new Date(window.start_time).getTime() - startTime.getTime()
-			}));
+			return getPreviewComparisonWindows(this._comparisonWindows, this._selectedComparisonWindowId, this._hoveredComparisonWindowId, this._startTime);
 		}
 		_getPreloadComparisonWindows() {
-			if (!this._startTime || !this._endTime) return [];
-			const startTime = this._startTime;
-			return this._comparisonWindows.map((window) => ({
-				...window,
-				time_offset_ms: new Date(window.start_time).getTime() - startTime.getTime()
-			})).filter((window) => Number.isFinite(window.time_offset_ms));
+			return getPreloadComparisonWindows(this._comparisonWindows, this._startTime);
 		}
 		_getActiveComparisonWindow() {
-			if (this._hoveredComparisonWindowId) return this._comparisonWindows.find((window) => window.id === this._hoveredComparisonWindowId) || null;
-			if (this._selectedComparisonWindowId) return this._comparisonWindows.find((window) => window.id === this._selectedComparisonWindowId) || null;
-			return null;
+			return getActiveComparisonWindow(this._comparisonWindows, this._hoveredComparisonWindowId, this._selectedComparisonWindowId);
 		}
 		_formatDateWindowInputValue(date) {
-			if (!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
-			return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}T${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+			return formatDateWindowInputValue(date);
 		}
 		_parseDateWindowInputValue(value) {
-			if (!value || typeof value !== "string") return null;
-			const match = value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
-			if (!match) return null;
-			const [, year, month, day, hour, minute] = match;
-			const parsed = new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute), 0, 0);
-			if (Number.isNaN(parsed.getTime())) return null;
-			return parsed;
+			return parseDateWindowInputValue(value);
 		}
 		_shiftDateWindowByUnit(date, unit, amount) {
-			const shifted = new Date(date);
-			if (unit === "day") {
-				shifted.setDate(shifted.getDate() + amount);
-				return shifted;
-			}
-			if (unit === "week") {
-				shifted.setDate(shifted.getDate() + amount * 7);
-				return shifted;
-			}
-			if (unit === "month") {
-				shifted.setMonth(shifted.getMonth() + amount);
-				return shifted;
-			}
-			if (unit === "year") {
-				shifted.setFullYear(shifted.getFullYear() + amount);
-				return shifted;
-			}
-			return shifted;
+			return shiftDateWindowByUnit(date, unit, amount);
 		}
 		_getRoundedDateWindowUnit(start, end) {
-			if (!(start instanceof Date) || !(end instanceof Date) || !(start < end)) return null;
-			for (const unit of [
-				"day",
-				"week",
-				"month",
-				"year"
-			]) {
-				const roundedStart = startOfUnit(start, unit);
-				const roundedEnd = endOfUnit(start, unit);
-				if (roundedStart?.getTime?.() === start.getTime() && roundedEnd?.getTime?.() === end.getTime()) return unit;
-			}
-			return null;
+			return getRoundedDateWindowUnit(start, end);
 		}
 		_syncDateWindowDialogInputs() {
 			const startVal = this._formatDateWindowInputValue(this._dateWindowDialogDraftRange?.start || null);
@@ -31316,24 +36543,9 @@
 		}
 		_applyDateWindowShortcut(direction) {
 			if (this._editingDateWindowId) return;
-			const start = this._dateWindowDialogDraftRange?.start;
-			const end = this._dateWindowDialogDraftRange?.end;
-			if (!(start instanceof Date) || !(end instanceof Date) || !(start < end)) return;
-			const roundedUnit = this._getRoundedDateWindowUnit(start, end);
-			let nextStart;
-			let nextEnd;
-			if (roundedUnit) {
-				nextStart = startOfUnit(this._shiftDateWindowByUnit(start, roundedUnit, direction), roundedUnit);
-				nextEnd = endOfUnit(nextStart, roundedUnit);
-			} else {
-				const spanMs = end.getTime() - start.getTime();
-				nextStart = new Date(start.getTime() + direction * spanMs);
-				nextEnd = new Date(end.getTime() + direction * spanMs);
-			}
-			this._dateWindowDialogDraftRange = {
-				start: nextStart,
-				end: nextEnd
-			};
+			const result = applyDateWindowShortcut(this._dateWindowDialogDraftRange, direction, (s, e) => this._getRoundedDateWindowUnit(s, e), (d, u, a) => this._shiftDateWindowByUnit(d, u, a), (d, u) => startOfUnit(d, u), (d, u) => endOfUnit(d, u));
+			if (!result) return;
+			this._dateWindowDialogDraftRange = result;
 			this._syncDateWindowDialogInputs();
 		}
 		_ensureDateWindowDialog() {
@@ -31820,6 +37032,8 @@
 			this._mountRangeToolbarControl();
 			this._mountSidebarOptionsControl();
 			this._mountDateWindowDialogControl();
+			this._mountMonitorWizard();
+			this._mountAiQueryBriefDialogControl();
 			this._syncControls();
 		}
 		_mountHistoryTargetsControl() {
@@ -32013,6 +37227,40 @@
 				this._sidebarOptionsComp = sidebarComp;
 			}
 		}
+		_mountMonitorWizard() {
+			if (!this.shadowRoot || this._monitorWizardComp) return;
+			const wizard = document.createElement("anomaly-monitor-wizard");
+			wizard.hass = this._hass;
+			wizard.open = false;
+			wizard.suggestedEntityIds = [];
+			wizard.allSeriesEntityIds = [];
+			wizard.addEventListener("dp-monitor-wizard-close", () => {
+				wizard.open = false;
+			});
+			wizard.addEventListener("dp-monitor-wizard-saved", () => {
+				wizard.open = false;
+			});
+			this.shadowRoot.appendChild(wizard);
+			this._monitorWizardComp = wizard;
+		}
+		_openMonitorWizardFromChartAnalysis(entityId, analysis) {
+			const suggestedIds = (this._seriesRows ?? []).filter((r) => r.analysis?.show_anomalies === true && Array.isArray(r.analysis.anomaly_methods) && r.analysis.anomaly_methods.length > 0 && !r.entity_id.startsWith("binary_sensor.") && r.entity_id !== entityId).map((r) => r.entity_id);
+			const allSeriesIds = (this._seriesRows ?? []).filter((r) => !r.entity_id.startsWith("binary_sensor.")).map((r) => r.entity_id);
+			this._openMonitorWizard(entityId ? [entityId] : [], analysis, null, suggestedIds, allSeriesIds);
+		}
+		_openMonitorWizard(entityIds, analysis, editMonitor = null, suggestedEntityIds = [], allSeriesEntityIds = []) {
+			if (!this.shadowRoot) return;
+			if (!this._monitorWizardComp) this._mountMonitorWizard();
+			const wizard = this._monitorWizardComp;
+			if (!wizard) return;
+			wizard.hass = this._hass;
+			wizard.editMonitor = editMonitor;
+			wizard.prefillEntityIds = entityIds;
+			wizard.prefillAnalysis = analysis;
+			wizard.suggestedEntityIds = suggestedEntityIds;
+			wizard.allSeriesEntityIds = allSeriesEntityIds;
+			wizard.open = true;
+		}
 		_mountDateWindowDialogControl() {
 			if (this.shadowRoot) {
 				const dialogComp = document.createElement("date-window-dialog");
@@ -32037,6 +37285,66 @@
 				this._dateWindowDialogComp = dialogComp;
 			}
 		}
+		_mountAiQueryBriefDialogControl() {
+			if (!this.shadowRoot) return;
+			const dialogComp = document.createElement("ai-query-brief-dialog");
+			dialogComp.addEventListener("dp-ai-query-brief-close", () => {
+				if (this._aiQueryBriefDialogComp) this._aiQueryBriefDialogComp.open = false;
+			});
+			this.shadowRoot.appendChild(dialogComp);
+			this._aiQueryBriefDialogComp = dialogComp;
+		}
+		async _resolveAiQueryBriefMonitorContext() {
+			if (!this._hass) return {
+				access: "unavailable",
+				monitors: [],
+				note: "Monitor context could not be included because Home Assistant is not currently available."
+			};
+			if (this._hass.user?.is_admin !== true) return {
+				access: "not_admin",
+				monitors: [],
+				note: "Monitor context could not be included because the current Home Assistant user is not an admin."
+			};
+			try {
+				const result = await this._hass.connection.sendMessagePromise({ type: `${DOMAIN}/monitors/list` });
+				const monitors = Array.isArray(result?.monitors) ? result.monitors : [];
+				return {
+					access: "loaded",
+					monitors,
+					note: monitors.length ? "" : "No persisted anomaly monitors are currently configured."
+				};
+			} catch {
+				return {
+					access: "unavailable",
+					monitors: [],
+					note: "Monitor context could not be included because the monitor list request failed."
+				};
+			}
+		}
+		async _openAiQueryBriefDialog() {
+			if (!this.shadowRoot) return;
+			if (!this._aiQueryBriefDialogComp) this._mountAiQueryBriefDialogControl();
+			if (!this._aiQueryBriefDialogComp) return;
+			const monitorContext = await this._resolveAiQueryBriefMonitorContext();
+			const brief = buildAiQueryBrief({
+				hass: this._hass,
+				entities: [...this._entities],
+				targetSelectionRaw: this._targetSelectionRaw,
+				seriesRows: this._seriesRows,
+				datapointScope: this._datapointScope,
+				startTime: this._startTime,
+				endTime: this._endTime,
+				committedZoomRange: this._chartZoomCommittedRange,
+				comparisonWindows: this._comparisonWindows,
+				selectedComparisonWindowId: this._selectedComparisonWindowId,
+				chartAnomalyOverlapMode: this._chartAnomalyOverlapMode,
+				monitorContext,
+				anomalySnapshot: this._chartEl?.getAiQueryBriefAnomalySnapshot?.() ?? null
+			});
+			this._aiQueryBriefDialogComp.heading = msg("AI query brief");
+			this._aiQueryBriefDialogComp.text = brief.plainText;
+			this._aiQueryBriefDialogComp.open = true;
+		}
 		_renderTargetRows() {
 			if (!this._historyTargetsComp) return;
 			this._historyTargetsComp.rows = this._seriesRows;
@@ -32049,34 +37357,21 @@
 				this._rowListEl.rows = this._seriesRows;
 				this._rowListEl.states = this._hass?.states ?? {};
 				this._rowListEl.hass = this._hass ?? null;
+				this._rowListEl.labelMap = disambiguateEntityNames(this._hass, (this._seriesRows ?? []).map((r) => r.entity_id));
 				this._rowListEl.canShowDeltaAnalysis = !!this._selectedComparisonWindowId;
 				this._rowListEl.comparisonWindows = this._comparisonWindows;
 			}
 			this._refreshCollapsedTargetPopup();
 		}
 		_addSeriesRows(entityIds) {
-			const merged = new Map(this._seriesRows.map((row) => [row.entity_id, row]));
-			normalizeEntityIds(entityIds).forEach((entityId, index) => {
-				if (merged.has(entityId)) return;
-				merged.set(entityId, {
-					entity_id: entityId,
-					color: this._preferredSeriesColors?.[entityId] && /^#[0-9a-f]{6}$/i.test(this._preferredSeriesColors[entityId]) ? this._preferredSeriesColors[entityId] : COLORS[(merged.size + index) % COLORS.length],
-					visible: true,
-					analysis: normalizeHistorySeriesAnalysis(null)
-				});
-			});
-			this._seriesRows = [...merged.values()];
+			this._seriesRows = addSeriesRows(this._seriesRows, normalizeEntityIds(entityIds), this._preferredSeriesColors);
 			this._syncSeriesState();
 			this._renderTargetRows();
 		}
 		_updateSeriesRowColor(index, color) {
-			if (!Number.isInteger(index) || index === void 0 || index < 0 || index >= this._seriesRows.length) return;
-			if (!/^#[0-9a-f]{6}$/i.test(color || "")) return;
-			if (this._seriesRows[index].color === color) return;
-			this._seriesRows[index] = {
-				...this._seriesRows[index],
-				color
-			};
+			const next = updateSeriesRowColor(this._seriesRows, index, color);
+			if (!next) return;
+			this._seriesRows = next;
 			this._saveUserPreferences();
 			this._saveSessionState();
 			this._updateUrl({ push: false });
@@ -32084,12 +37379,9 @@
 			this._renderContent();
 		}
 		_updateSeriesRowVisibility(index, visible) {
-			if (!Number.isInteger(index) || index === void 0 || index < 0 || index >= this._seriesRows.length) return;
-			if (this._seriesRows[index].visible === !!visible) return;
-			this._seriesRows[index] = {
-				...this._seriesRows[index],
-				visible: !!visible
-			};
+			const next = updateSeriesRowVisibility(this._seriesRows, index, visible);
+			if (!next) return;
+			this._seriesRows = next;
 			this._saveSessionState();
 			this._updateUrl({ push: false });
 			this._renderTargetRows();
@@ -32143,26 +37435,12 @@
 			popup.appendChild(targetRow);
 			popup.removeAttribute("hidden");
 			if (!anchorEl) return;
-			const anchorRect = anchorEl.getBoundingClientRect();
-			const popupHeight = popup.offsetHeight;
-			const top = Math.max(8, Math.min(anchorRect.top, window.innerHeight - popupHeight - 16));
-			popup.style.top = `${top}px`;
-			popup.style.left = `${anchorRect.right + 8}px`;
-			popup.style.maxHeight = `${window.innerHeight - top - 16}px`;
-			if (this._collapsedPopupOutsideClickHandler) document.removeEventListener("click", this._collapsedPopupOutsideClickHandler, true);
-			this._collapsedPopupOutsideClickHandler = (ev) => {
-				const path = ev.composedPath();
-				if (!path.includes(popup) && !path.includes(anchorEl)) this._hideCollapsedTargetPopup();
-			};
-			document.addEventListener("click", this._collapsedPopupOutsideClickHandler, true);
-			if (this._collapsedPopupKeyHandler) document.removeEventListener("keydown", this._collapsedPopupKeyHandler);
-			this._collapsedPopupKeyHandler = (ev) => {
-				if (ev.key === "Escape") {
-					this._hideCollapsedTargetPopup();
-					anchorEl.focus();
-				}
-			};
-			document.addEventListener("keydown", this._collapsedPopupKeyHandler);
+			const pos = computePopupPosition(anchorEl.getBoundingClientRect(), popup.offsetHeight, window.innerHeight);
+			popup.style.top = `${pos.top}px`;
+			popup.style.left = `${pos.left}px`;
+			popup.style.maxHeight = `${pos.maxHeight}px`;
+			this._collapsedPopupDismiss?.destroy();
+			this._collapsedPopupDismiss = attachPopupDismissListeners(popup, anchorEl, () => this._hideCollapsedTargetPopup());
 		}
 		/** Close the collapsed-sidebar target popup and clean up all listeners. */
 		_hideCollapsedTargetPopup() {
@@ -32171,14 +37449,8 @@
 				popup.setAttribute("hidden", "");
 				popup.innerHTML = "";
 			}
-			if (this._collapsedPopupOutsideClickHandler) {
-				document.removeEventListener("click", this._collapsedPopupOutsideClickHandler, true);
-				this._collapsedPopupOutsideClickHandler = null;
-			}
-			if (this._collapsedPopupKeyHandler) {
-				document.removeEventListener("keydown", this._collapsedPopupKeyHandler);
-				this._collapsedPopupKeyHandler = null;
-			}
+			this._collapsedPopupDismiss?.destroy();
+			this._collapsedPopupDismiss = null;
 			this._collapsedPopupEntityId = null;
 			this._collapsedPopupAnchorEl = null;
 		}
@@ -32233,38 +37505,18 @@
 			this._collapsedOptionsPopupOpen = true;
 			this._collapsedOptionsAnchorEl = anchorEl;
 			popup.removeAttribute("hidden");
-			const anchorRect = anchorEl.getBoundingClientRect();
-			const popupHeight = popup.offsetHeight;
-			const top = Math.max(8, Math.min(anchorRect.top, window.innerHeight - popupHeight - 16));
-			popup.style.top = `${top}px`;
-			popup.style.left = `${anchorRect.right + 8}px`;
-			if (this._collapsedOptionsOutsideClickHandler) document.removeEventListener("click", this._collapsedOptionsOutsideClickHandler, true);
-			this._collapsedOptionsOutsideClickHandler = (ev) => {
-				const path = ev.composedPath();
-				if (!path.includes(popup) && !path.includes(anchorEl)) this._hideCollapsedOptionsPopup();
-			};
-			document.addEventListener("click", this._collapsedOptionsOutsideClickHandler, true);
-			if (this._collapsedOptionsKeyHandler) document.removeEventListener("keydown", this._collapsedOptionsKeyHandler);
-			this._collapsedOptionsKeyHandler = (ev) => {
-				if (ev.key === "Escape") {
-					this._hideCollapsedOptionsPopup();
-					anchorEl.focus();
-				}
-			};
-			document.addEventListener("keydown", this._collapsedOptionsKeyHandler);
+			const pos = computePopupPosition(anchorEl.getBoundingClientRect(), popup.offsetHeight, window.innerHeight);
+			popup.style.top = `${pos.top}px`;
+			popup.style.left = `${pos.left}px`;
+			this._collapsedOptionsDismiss?.destroy();
+			this._collapsedOptionsDismiss = attachPopupDismissListeners(popup, anchorEl, () => this._hideCollapsedOptionsPopup());
 		}
 		/** Close the collapsed-sidebar options popup and clean up all listeners. */
 		_hideCollapsedOptionsPopup() {
 			const popup = this._shellEl?.getOptionsPopupEl();
 			if (popup) popup.setAttribute("hidden", "");
-			if (this._collapsedOptionsOutsideClickHandler) {
-				document.removeEventListener("click", this._collapsedOptionsOutsideClickHandler, true);
-				this._collapsedOptionsOutsideClickHandler = null;
-			}
-			if (this._collapsedOptionsKeyHandler) {
-				document.removeEventListener("keydown", this._collapsedOptionsKeyHandler);
-				this._collapsedOptionsKeyHandler = null;
-			}
+			this._collapsedOptionsDismiss?.destroy();
+			this._collapsedOptionsDismiss = null;
 			this._collapsedOptionsPopupOpen = false;
 			this._collapsedOptionsAnchorEl = null;
 		}
@@ -32303,18 +37555,9 @@
 		_toggleSeriesAnalysisExpanded(entityId) {
 			const normalizedEntityId = String(entityId || "").trim();
 			if (!normalizedEntityId) return;
-			const index = this._seriesRows.findIndex((row) => row.entity_id === normalizedEntityId);
-			if (index === -1) return;
-			const row = this._seriesRows[index];
-			const currentAnalysis = normalizeHistorySeriesAnalysis(row.analysis);
-			const nextAnalysis = normalizeHistorySeriesAnalysis({
-				...row.analysis,
-				expanded: !currentAnalysis.expanded
-			});
-			this._seriesRows[index] = {
-				...row,
-				analysis: nextAnalysis
-			};
+			const next = toggleSeriesAnalysisExpanded(this._seriesRows, normalizedEntityId);
+			if (!next) return;
+			this._seriesRows = next;
 			this._saveSessionState();
 			this._updateUrl({ push: false });
 			this._renderTargetRows();
@@ -32331,32 +37574,8 @@
 			const index = this._seriesRows.findIndex((row) => row.entity_id === normalizedEntityId);
 			if (index === -1) return;
 			const row = this._seriesRows[index];
-			const analysis = normalizeHistorySeriesAnalysis(row.analysis);
-			let nextKey = normalizedKey;
-			let nextValue = value;
-			if (nextKey.startsWith("anomaly_method_toggle_")) {
-				const method = nextKey.slice(22);
-				const currentMethods = analysis.anomaly_methods;
-				const nextMethods = nextValue === true ? [...new Set([...currentMethods, method])] : currentMethods.filter((m) => m !== method);
-				nextKey = "anomaly_methods";
-				nextValue = nextMethods;
-			}
-			const nextSource = {
-				...analysis,
-				[nextKey]: nextValue
-			};
-			if (nextKey === "show_trend_lines" && nextValue !== true) nextSource.show_trend_crosshairs = false;
-			if (nextKey === "show_threshold_analysis" && nextValue !== true) nextSource.show_threshold_shading = false;
-			if (nextKey === "show_delta_analysis" && nextValue !== true) {
-				nextSource.show_delta_tooltip = true;
-				nextSource.show_delta_lines = false;
-			}
-			if (nextKey === "show_anomalies" && nextValue === true && (!Array.isArray(analysis.anomaly_methods) || analysis.anomaly_methods.length === 0)) nextSource.anomaly_methods = ["trend_residual"];
-			const nextAnalysis = normalizeHistorySeriesAnalysis({
-				...nextSource,
-				expanded: true
-			});
-			if (JSON.stringify(nextAnalysis) === JSON.stringify(analysis)) return;
+			const nextAnalysis = computeNextAnalysis(normalizeHistorySeriesAnalysis(row.analysis), normalizedKey, value);
+			if (!nextAnalysis) return;
 			this._seriesRows[index] = {
 				...row,
 				analysis: nextAnalysis
@@ -32369,32 +37588,18 @@
 		}
 		_copyAnalysisToAll(sourceEntityId, sourceAnalysis) {
 			const normalizedEntityId = String(sourceEntityId || "").trim();
-			if (!normalizedEntityId || !sourceAnalysis) return;
-			let changed = false;
-			this._seriesRows = this._seriesRows.map((row) => {
-				if (row.entity_id === normalizedEntityId) return row;
-				const currentAnalysis = normalizeHistorySeriesAnalysis(row.analysis);
-				const nextAnalysis = normalizeHistorySeriesAnalysis({
-					...sourceAnalysis,
-					expanded: currentAnalysis.expanded,
-					anomaly_comparison_window_id: currentAnalysis.anomaly_comparison_window_id
-				});
-				if (JSON.stringify(nextAnalysis) === JSON.stringify(currentAnalysis)) return row;
-				changed = true;
-				return {
-					...row,
-					analysis: nextAnalysis
-				};
-			});
-			if (!changed) return;
+			const next = copyAnalysisToAll(this._seriesRows, normalizedEntityId, sourceAnalysis);
+			if (!next) return;
+			this._seriesRows = next;
 			this._saveSessionState();
 			this._updateUrl({ push: false });
 			this._renderTargetRows();
 			this._renderContent();
 		}
 		_removeSeriesRow(index) {
-			if (!Number.isInteger(index) || index === void 0 || index < 0 || index >= this._seriesRows.length) return;
-			this._seriesRows = this._seriesRows.filter((_row, rowIndex) => rowIndex !== index);
+			const next = removeSeriesRow(this._seriesRows, index);
+			if (!next) return;
+			this._seriesRows = next;
 			this._syncSeriesState();
 			this._saveSessionState();
 			this._renderTargetRows();
@@ -32511,52 +37716,16 @@
 			return RANGE_ZOOM_CONFIGS[this._getEffectiveZoomLevel()] || RANGE_ZOOM_CONFIGS.month_short;
 		}
 		_computeZoomLevelForSpan(spanMs) {
-			const normalizedSpanMs = Math.max(spanMs, RANGE_SLIDER_MIN_SPAN_MS);
-			if (normalizedSpanMs >= 180 * 864e5) return "quarterly";
-			if (normalizedSpanMs >= 120 * 864e5) return "month_compressed";
-			if (normalizedSpanMs >= 60 * 864e5) return "month_short";
-			if (normalizedSpanMs >= 21 * 864e5) return "month_expanded";
-			if (normalizedSpanMs >= 7 * 864e5) return "week_compressed";
-			if (normalizedSpanMs >= 2 * 864e5) return "week_expanded";
-			return "day";
+			return computeZoomLevelForSpan(spanMs);
 		}
 		_getEffectiveSnapUnit() {
-			if (this._dateSnapping !== "auto") return this._dateSnapping;
-			switch (this._getEffectiveZoomLevel()) {
-				case "quarterly":
-				case "month_compressed": return "month";
-				case "month_short":
-				case "month_expanded":
-				case "week_compressed": return "week";
-				case "week_expanded": return "day";
-				case "day": return "hour";
-				default: return "day";
-			}
+			return getEffectiveSnapUnit(this._getEffectiveZoomLevel(), this._dateSnapping);
 		}
 		_getSnapSpanMs(reference = this._startTime || /* @__PURE__ */ new Date()) {
-			const snapUnit = this._getEffectiveSnapUnit();
-			const start = startOfUnit(reference, snapUnit);
-			const end = endOfUnit(reference, snapUnit);
-			return Math.max(SECOND_MS, end.getTime() - start.getTime());
+			return getSnapSpanMs(this._getEffectiveSnapUnit(), reference);
 		}
 		_deriveRangeBounds() {
-			const config = this._getZoomConfig();
-			const startMs = this._startTime?.getTime() || Date.now() - 24 * 36e5;
-			const endMs = this._endTime?.getTime() || Date.now();
-			const historyStartMs = this._historyStartTime?.getTime();
-			const historyEndMs = this._historyEndTime?.getTime();
-			const maxLookAheadMs = addUnit(/* @__PURE__ */ new Date(), "month", 3).getTime();
-			const naturalMin = startOfUnit(new Date(historyStartMs ?? startMs), config.boundsUnit).getTime();
-			const paddedMin = startOfUnit(/* @__PURE__ */ new Date(startMs - config.baselineMs * .3), config.boundsUnit).getTime();
-			const min = Math.min(naturalMin, paddedMin);
-			const futureReference = addUnit(new Date(historyEndMs ?? endMs), "year", 1).getTime();
-			const maxReference = Math.min(maxLookAheadMs, Math.max(futureReference, endMs, startMs + this._getSnapSpanMs(this._startTime || /* @__PURE__ */ new Date())));
-			const max = endOfUnit(new Date(maxReference), config.boundsUnit).getTime();
-			return {
-				min,
-				max: Math.max(max, min + SECOND_MS),
-				config
-			};
+			return deriveRangeBounds(this._getZoomConfig(), this._startTime?.getTime() || Date.now() - 24 * 36e5, this._endTime?.getTime() || Date.now(), this._historyStartTime?.getTime(), this._historyEndTime?.getTime(), this._getSnapSpanMs(this._startTime || /* @__PURE__ */ new Date()));
 		}
 		_syncRangeControl() {
 			if (!this._rangeToolbarComp) return;
@@ -32869,9 +38038,36 @@
 		}
 		_renderContent() {
 			const content = this._contentHostEl;
-			if (!content) return;
+			if (!content) {
+				logger$1.warn("[dp-lifecycle] _renderContent: aborted — no contentHostEl", {
+					rendered: this._rendered,
+					shellBuilt: this._shellBuilt,
+					entityCount: this._entities?.length ?? 0
+				});
+				return;
+			}
+			if (this._showMonitorsPanel) {
+				this._contentKey = "__monitors__";
+				this._chartEl = null;
+				this._listEl = null;
+				content.innerHTML = "";
+				const panel = document.createElement("anomaly-monitors-panel");
+				panel.hass = this._hass;
+				panel.addEventListener("dp-monitors-panel-close", () => {
+					this._showMonitorsPanel = false;
+					this._contentKey = "";
+					this._renderContent();
+				});
+				panel.addEventListener("dp-monitors-panel-new", () => {
+					this._openMonitorWizard([], null);
+				});
+				content.appendChild(panel);
+				return;
+			}
+			if (this._contentKey === "__monitors__") this._contentKey = "";
 			if (!this._entities.length) {
 				if (this._contentKey === "__empty__") return;
+				logger$1.warn("[dp-lifecycle] _renderContent: rendering empty state (no entities)");
 				this._chartHoverTimeMs = null;
 				this._updateChartHoverIndicator();
 				this._chartZoomRange = null;
@@ -32901,6 +38097,15 @@
 			const showRecordsPanel = this._datapointScope !== "hidden";
 			const chartMounted = !!(this._chartEl && this._chartEl.isConnected && content.contains(this._chartEl));
 			const listMounted = !showRecordsPanel || !!(this._listEl && this._listEl.isConnected && content.contains(this._listEl));
+			logger$1.warn("[dp-lifecycle] _renderContent: key check", {
+				keyMatch: this._contentKey === contentKey,
+				chartMounted,
+				listMounted,
+				hasChartEl: !!this._chartEl,
+				chartElConnected: this._chartEl?.isConnected,
+				contentContainsChart: this._chartEl ? content.contains(this._chartEl) : false,
+				entityCount: this._entities.length
+			});
 			if (this._contentKey !== contentKey || !chartMounted || !listMounted) {
 				this._chartHoverTimeMs = null;
 				this._updateChartHoverIndicator();
@@ -33004,6 +38209,7 @@
 				this._contentKey = contentKey;
 				this._chartConfigKey = "";
 				this._listConfigKey = "";
+				logger$1.warn("[dp-lifecycle] _renderContent: full render complete", { entityCount: this._entities.length });
 			}
 			content.classList.toggle("datapoints-hidden", !showRecordsPanel);
 			const resizablePanesEl = content.querySelector("#content-resizable-panes");
@@ -33180,13 +38386,16 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/interactive/search-bar/search-bar.ts
+	var DEFAULT_I18N$1 = createDefaultI18n(["Search..."]);
 	var _query_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _placeholder_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
+	var _i18n_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
 	var SearchBar = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _query_accessor_storage, "");
-			_classPrivateFieldInitSpec(this, _placeholder_accessor_storage$1, "Search...");
+			_classPrivateFieldInitSpec(this, _placeholder_accessor_storage$1, "");
+			_classPrivateFieldInitSpec(this, _i18n_accessor_storage$1, DEFAULT_I18N$1);
 		}
 		get query() {
 			return _classPrivateFieldGet2(_query_accessor_storage, this);
@@ -33200,6 +38409,15 @@
 		set placeholder(value) {
 			_classPrivateFieldSet2(_placeholder_accessor_storage$1, this, value);
 		}
+		get i18n() {
+			return _classPrivateFieldGet2(_i18n_accessor_storage$1, this);
+		}
+		set i18n(value) {
+			_classPrivateFieldSet2(_i18n_accessor_storage$1, this, value);
+		}
+		_t(key) {
+			return t$4(this.i18n, key);
+		}
 		_onInput(e) {
 			this.dispatchEvent(new CustomEvent("dp-search", {
 				detail: { query: e.target.value },
@@ -33208,12 +38426,13 @@
 			}));
 		}
 		render() {
+			const placeholder = this.placeholder || this._t("Search...");
 			return b`
       <div class="search-wrap">
         <input
           type="text"
           .value=${this.query}
-          placeholder=${this.placeholder}
+          placeholder=${placeholder}
           @input=${this._onInput}
         />
       </div>
@@ -33223,6 +38442,7 @@
 	_defineProperty(SearchBar, "styles", styles$15);
 	__decorate([n$1({ type: String })], SearchBar.prototype, "query", null);
 	__decorate([n$1({ type: String })], SearchBar.prototype, "placeholder", null);
+	__decorate([n$1({ attribute: false })], SearchBar.prototype, "i18n", null);
 	customElements.define("search-bar", SearchBar);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/interactive/pagination/pagination.styles.ts
@@ -33266,17 +38486,25 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/atoms/interactive/pagination/pagination.ts
+	var DEFAULT_I18N = createDefaultI18n([
+		"Previous page",
+		"Next page",
+		"Page {0} of {1}",
+		"records"
+	]);
 	var _page_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
 	var _totalPages_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _totalItems_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _label_accessor_storage$3 = /* @__PURE__ */ new WeakMap();
+	var _i18n_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var Pagination = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
 			_classPrivateFieldInitSpec(this, _page_accessor_storage$1, 0);
 			_classPrivateFieldInitSpec(this, _totalPages_accessor_storage, 1);
 			_classPrivateFieldInitSpec(this, _totalItems_accessor_storage, 0);
-			_classPrivateFieldInitSpec(this, _label_accessor_storage$3, "records");
+			_classPrivateFieldInitSpec(this, _label_accessor_storage$3, "");
+			_classPrivateFieldInitSpec(this, _i18n_accessor_storage, DEFAULT_I18N);
 		}
 		get page() {
 			return _classPrivateFieldGet2(_page_accessor_storage$1, this);
@@ -33302,6 +38530,15 @@
 		set label(value) {
 			_classPrivateFieldSet2(_label_accessor_storage$3, this, value);
 		}
+		get i18n() {
+			return _classPrivateFieldGet2(_i18n_accessor_storage, this);
+		}
+		set i18n(value) {
+			_classPrivateFieldSet2(_i18n_accessor_storage, this, value);
+		}
+		_t(key, ...values) {
+			return t$4(this.i18n, key, ...values);
+		}
 		_onPrev() {
 			if (this.page > 0) this.dispatchEvent(new CustomEvent("dp-page-change", {
 				detail: { page: this.page - 1 },
@@ -33317,27 +38554,30 @@
 			}));
 		}
 		render() {
+			const label = this.label || this._t("records");
 			return b`
       <button
         type="button"
         data-action="prev"
         ?disabled=${this.page <= 0}
         @click=${this._onPrev}
-        aria-label="Previous page"
+        aria-label=${this._t("Previous page")}
       >
         ‹
       </button>
       <span class="info">
-        <span>Page ${this.page + 1} of ${this.totalPages}</span>
+        <span
+          >${this._t("Page {0} of {1}", this.page + 1, this.totalPages)}</span
+        >
         <span class="sep" aria-hidden="true">•</span>
-        <span>${this.totalItems} ${this.label}</span>
+        <span>${this.totalItems} ${label}</span>
       </span>
       <button
         type="button"
         data-action="next"
         ?disabled=${this.page >= this.totalPages - 1}
         @click=${this._onNext}
-        aria-label="Next page"
+        aria-label=${this._t("Next page")}
       >
         ›
       </button>
@@ -33349,6 +38589,7 @@
 	__decorate([n$1({ type: Number })], Pagination.prototype, "totalPages", null);
 	__decorate([n$1({ type: Number })], Pagination.prototype, "totalItems", null);
 	__decorate([n$1({ type: String })], Pagination.prototype, "label", null);
+	__decorate([n$1({ attribute: false })], Pagination.prototype, "i18n", null);
 	customElements.define("pagination-nav", Pagination);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/list/list-event-item/list-event-item.styles.ts
@@ -33849,9 +39090,9 @@
 	__decorate([n$1({ attribute: false })], CardListEditForm.prototype, "hass", null);
 	__decorate([n$1({ type: String })], CardListEditForm.prototype, "color", null);
 	__decorate([n$1({ attribute: false })], CardListEditForm.prototype, "language", null);
-	__decorate([r$1()], CardListEditForm.prototype, "_message", null);
-	__decorate([r$1()], CardListEditForm.prototype, "_annotation", null);
-	__decorate([r$1()], CardListEditForm.prototype, "_icon", null);
+	__decorate([r$2()], CardListEditForm.prototype, "_message", null);
+	__decorate([r$2()], CardListEditForm.prototype, "_annotation", null);
+	__decorate([r$2()], CardListEditForm.prototype, "_icon", null);
 	customElements.define("list-edit-form", CardListEditForm);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/list/list-event-item/list-event-item.ts
@@ -34122,14 +39363,21 @@
 	_defineProperty(CardListEventItem, "styles", styles$13);
 	__decorate([n$1({ attribute: false })], CardListEventItem.prototype, "eventRecord", null);
 	__decorate([n$1({ attribute: false })], CardListEventItem.prototype, "context", null);
-	__decorate([r$1()], CardListEventItem.prototype, "_annotationExpanded", null);
+	__decorate([r$2()], CardListEventItem.prototype, "_annotationExpanded", null);
 	customElements.define("list-event-item", CardListEventItem);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/list/list.ts
-	var _HassRecordsListCard;
-	var HassRecordsListCard = (_HassRecordsListCard = class HassRecordsListCard extends i$2 {
+	var _HassDatapointsListCard, _listScrollEl_accessor_storage;
+	var HassDatapointsListCard = (_listScrollEl_accessor_storage = /* @__PURE__ */ new WeakMap(), _HassDatapointsListCard = class HassDatapointsListCard extends i$2 {
+		get _listScrollEl() {
+			return _classPrivateFieldGet2(_listScrollEl_accessor_storage, this);
+		}
+		set _listScrollEl(value) {
+			_classPrivateFieldSet2(_listScrollEl_accessor_storage, this, value);
+		}
 		constructor() {
 			super();
+			_classPrivateFieldInitSpec(this, _listScrollEl_accessor_storage, null);
 			_defineProperty(this, "_pageSize", 15);
 			_defineProperty(this, "_configKey", "");
 			_defineProperty(this, "_unsubscribe", null);
@@ -34229,7 +39477,7 @@
 		}
 		_onPageChange(e) {
 			this._page = e.detail.page;
-			this.shadowRoot?.querySelector(".list-scroll")?.scrollTo(0, 0);
+			this._listScrollEl?.scrollTo(0, 0);
 		}
 		_navigateToEventHistory(ev) {
 			const range = this._getNavigationContextForEvent(ev);
@@ -34452,7 +39700,7 @@
 				min_rows: rows
 			};
 		}
-	}, _defineProperty(_HassRecordsListCard, "properties", {
+	}, _defineProperty(_HassDatapointsListCard, "properties", {
 		_config: { state: true },
 		_hass: { state: true },
 		_allEvents: { state: true },
@@ -34460,30 +39708,38 @@
 		_page: { state: true },
 		_editingId: { state: true },
 		_editColor: { state: true }
-	}), _defineProperty(_HassRecordsListCard, "styles", styles$16), _HassRecordsListCard);
-	HassRecordsListCard = __decorate([localized()], HassRecordsListCard);
+	}), _defineProperty(_HassDatapointsListCard, "styles", styles$16), _HassDatapointsListCard);
+	__decorate([e$4(".list-scroll")], HassDatapointsListCard.prototype, "_listScrollEl", null);
+	HassDatapointsListCard = __decorate([localized()], HassDatapointsListCard);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/list/editor.styles.ts
 	var styles$11 = i$5``;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/list/editor.ts
-	var HassRecordsListCardEditor = class extends EditorBase {
+	var _targetPickerEl_accessor_storage$1 = /* @__PURE__ */ new WeakMap();
+	var HassDatapointsListCardEditor = class extends EditorBase {
 		constructor(..._args) {
 			super(..._args);
+			_classPrivateFieldInitSpec(this, _targetPickerEl_accessor_storage$1, null);
 			_defineProperty(this, "_onTargetChanged", (e) => {
 				const val = e.detail.value;
 				const isEmpty = !val || Object.values(val).every((value) => !value?.length);
 				this._setTargetConfig(isEmpty ? void 0 : val);
 			});
 		}
+		get _targetPickerEl() {
+			return _classPrivateFieldGet2(_targetPickerEl_accessor_storage$1, this);
+		}
+		set _targetPickerEl(value) {
+			_classPrivateFieldSet2(_targetPickerEl_accessor_storage$1, this, value);
+		}
 		_configTarget() {
 			return normalizeTargetValue(this._config.target ?? { entity_id: Array.isArray(this._config.entities) && this._config.entities.length ? this._config.entities : this._config.entity }) ?? {};
 		}
 		_syncTargetPicker() {
-			const tp = this.shadowRoot?.querySelector("#target-picker");
-			if (!tp) return;
-			if (this.hass) tp.hass = this.hass;
-			tp.value = this._configTarget();
+			if (!this._targetPickerEl) return;
+			if (this.hass) this._targetPickerEl.hass = this.hass;
+			this._targetPickerEl.value = this._configTarget();
 		}
 		_setTargetConfig(target) {
 			const cfg = { ...this._config };
@@ -34563,7 +39819,8 @@
     `;
 		}
 	};
-	_defineProperty(HassRecordsListCardEditor, "styles", [EditorBase.styles, styles$11]);
+	_defineProperty(HassDatapointsListCardEditor, "styles", [EditorBase.styles, styles$11]);
+	__decorate([e$4("#target-picker")], HassDatapointsListCardEditor.prototype, "_targetPickerEl", null);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/quick/quick.styles.ts
 	var styles$10 = i$5`
@@ -34717,9 +39974,31 @@
 	customElements.define("quick-annotation", CardQuickAnnotation);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/quick/quick.ts
-	var HassRecordsQuickCard = class extends i$2 {
+	var _msgEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _btnEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var HassDatapointsQuickCard = class extends i$2 {
+		get _msgEl() {
+			return _classPrivateFieldGet2(_msgEl_accessor_storage, this);
+		}
+		set _msgEl(value) {
+			_classPrivateFieldSet2(_msgEl_accessor_storage, this, value);
+		}
+		get _btnEl() {
+			return _classPrivateFieldGet2(_btnEl_accessor_storage, this);
+		}
+		set _btnEl(value) {
+			_classPrivateFieldSet2(_btnEl_accessor_storage, this, value);
+		}
 		constructor() {
 			super();
+			_classPrivateFieldInitSpec(this, _msgEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _btnEl_accessor_storage, null);
+			_defineProperty(this, "_onMsgKeydown", (event) => {
+				if (event.key === "Enter") {
+					event.preventDefault();
+					this._record();
+				}
+			});
 			this._config = {};
 			this._hass = null;
 			this._feedbackClass = "";
@@ -34736,23 +40015,14 @@
 		get hass() {
 			return this._hass;
 		}
-		firstUpdated() {
-			const msgEl = this.shadowRoot?.querySelector("#msg");
-			if (msgEl) msgEl.addEventListener("keydown", (event) => {
-				if (event.key === "Enter") {
-					event.preventDefault();
-					this._record();
-				}
-			});
-		}
 		async _record() {
-			const msgEl = this.shadowRoot?.querySelector("#msg");
+			const msgEl = this._msgEl;
 			const message = (msgEl?.value || "").trim();
 			if (!message) {
 				msgEl?.focus();
 				return;
 			}
-			const btn = this.shadowRoot?.querySelector("#btn");
+			const btn = this._btnEl;
 			if (btn) btn.disabled = true;
 			const cfg = this._config;
 			const data = {
@@ -34773,7 +40043,7 @@
 				if (!hass) return;
 				await hass.callService(DOMAIN, "record", data);
 				window.dispatchEvent(new CustomEvent("hass-datapoints-event-recorded"));
-				if (msgEl) msgEl.value = "";
+				if (this._msgEl) this._msgEl.value = "";
 				this._annotation = "";
 				this._feedbackClass = "ok";
 				this._feedbackText = "Recorded!";
@@ -34788,7 +40058,7 @@
 				this._feedbackVisible = true;
 				logger$1.error("[hass-datapoints quick-card]", e);
 			}
-			if (btn) btn.disabled = false;
+			if (this._btnEl) this._btnEl.disabled = false;
 		}
 		get _isAdmin() {
 			return this._hass?.user?.is_admin === true;
@@ -34808,6 +40078,7 @@
                   <ha-textfield
                     id="msg"
                     .placeholder=${cfg.placeholder || "Note something…"}
+                    @keydown=${this._onMsgKeydown}
                   ></ha-textfield>
                   <ha-button
                     id="btn"
@@ -34864,7 +40135,7 @@
 			return this._config?.title ? baseRows + 1 : baseRows;
 		}
 	};
-	_defineProperty(HassRecordsQuickCard, "properties", {
+	_defineProperty(HassDatapointsQuickCard, "properties", {
 		_config: {
 			type: Object,
 			state: true
@@ -34890,7 +40161,9 @@
 			state: true
 		}
 	});
-	_defineProperty(HassRecordsQuickCard, "styles", styles$10);
+	_defineProperty(HassDatapointsQuickCard, "styles", styles$10);
+	__decorate([e$4("#msg")], HassDatapointsQuickCard.prototype, "_msgEl", null);
+	__decorate([e$4("#btn")], HassDatapointsQuickCard.prototype, "_btnEl", null);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/quick/editor.styles.ts
 	var styles$8 = i$5`
@@ -34901,23 +40174,30 @@
 `;
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/quick/editor.ts
-	var HassRecordsQuickCardEditor = class extends EditorBase {
+	var _targetPickerEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var HassDatapointsQuickCardEditor = class extends EditorBase {
 		constructor(..._args) {
 			super(..._args);
+			_classPrivateFieldInitSpec(this, _targetPickerEl_accessor_storage, null);
 			_defineProperty(this, "_onTargetChanged", (e) => {
 				const val = e.detail.value;
 				const isEmpty = !val || Object.values(val).every((value) => !value?.length);
 				this._setTargetConfig(isEmpty ? void 0 : val);
 			});
 		}
+		get _targetPickerEl() {
+			return _classPrivateFieldGet2(_targetPickerEl_accessor_storage, this);
+		}
+		set _targetPickerEl(value) {
+			_classPrivateFieldSet2(_targetPickerEl_accessor_storage, this, value);
+		}
 		_configTarget() {
 			return normalizeTargetValue(this._config.target ?? { entity_id: Array.isArray(this._config.entities) && this._config.entities.length ? this._config.entities : this._config.entity }) ?? {};
 		}
 		_syncTargetPicker() {
-			const tp = this.shadowRoot?.querySelector("#target-picker");
-			if (!tp) return;
-			if (this.hass) tp.hass = this.hass;
-			tp.value = this._configTarget();
+			if (!this._targetPickerEl) return;
+			if (this.hass) this._targetPickerEl.hass = this.hass;
+			this._targetPickerEl.value = this._configTarget();
 		}
 		_setTargetConfig(target) {
 			const cfg = { ...this._config };
@@ -34983,7 +40263,8 @@
     `;
 		}
 	};
-	_defineProperty(HassRecordsQuickCardEditor, "styles", [EditorBase.styles, styles$8]);
+	_defineProperty(HassDatapointsQuickCardEditor, "styles", [EditorBase.styles, styles$8]);
+	__decorate([e$4("#target-picker")], HassDatapointsQuickCardEditor.prototype, "_targetPickerEl", null);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/sensor/sensor.styles.ts
 	var styles$7 = i$5`
@@ -36018,7 +41299,7 @@
 		type: Boolean,
 		attribute: "show-full-message"
 	})], SensorRecordItem.prototype, "showFullMessage", null);
-	__decorate([r$1()], SensorRecordItem.prototype, "_noteExpanded", null);
+	__decorate([r$2()], SensorRecordItem.prototype, "_noteExpanded", null);
 	customElements.define("sensor-record-item", SensorRecordItem);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/sensor/sensor-records/sensor-records.ts
@@ -36028,6 +41309,8 @@
 	var _limit_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _showFullMessage_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var _page_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _paginationEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _annListEl_accessor_storage = /* @__PURE__ */ new WeakMap();
 	var SensorRecords = class extends i$2 {
 		constructor(..._args) {
 			super(..._args);
@@ -36037,6 +41320,8 @@
 			_classPrivateFieldInitSpec(this, _limit_accessor_storage, null);
 			_classPrivateFieldInitSpec(this, _showFullMessage_accessor_storage, true);
 			_classPrivateFieldInitSpec(this, _page_accessor_storage, 0);
+			_classPrivateFieldInitSpec(this, _paginationEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _annListEl_accessor_storage, null);
 			_defineProperty(this, "_paginationNotifyRaf", null);
 		}
 		get events() {
@@ -36075,6 +41360,18 @@
 		set _page(value) {
 			_classPrivateFieldSet2(_page_accessor_storage, this, value);
 		}
+		get _paginationEl() {
+			return _classPrivateFieldGet2(_paginationEl_accessor_storage, this);
+		}
+		set _paginationEl(value) {
+			_classPrivateFieldSet2(_paginationEl_accessor_storage, this, value);
+		}
+		get _annListEl() {
+			return _classPrivateFieldGet2(_annListEl_accessor_storage, this);
+		}
+		set _annListEl(value) {
+			_classPrivateFieldSet2(_annListEl_accessor_storage, this, value);
+		}
 		updated(changedProps) {
 			if (changedProps.has("events") || changedProps.has("pageSize") || changedProps.has("limit") || changedProps.has("_page")) {
 				const sorted = [...this.events].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
@@ -36083,7 +41380,7 @@
 				if (this._paginationNotifyRaf !== null) window.cancelAnimationFrame(this._paginationNotifyRaf);
 				this._paginationNotifyRaf = window.requestAnimationFrame(() => {
 					this._paginationNotifyRaf = null;
-					const paginationHeight = (this.shadowRoot?.querySelector("pagination-nav"))?.getBoundingClientRect().height ?? 0;
+					const paginationHeight = this._paginationEl?.getBoundingClientRect().height ?? 0;
 					this.dispatchEvent(new CustomEvent("dp-sensor-pagination-visibility-change", {
 						detail: {
 							visible: totalPages > 1,
@@ -36137,7 +41434,7 @@
                 label="records"
                 @dp-page-change=${(e) => {
 				this._page = e.detail.page;
-				this.shadowRoot?.querySelector(".ann-list")?.scrollTo(0, 0);
+				this._annListEl?.scrollTo(0, 0);
 			}}
               ></pagination-nav>
             ` : ""}
@@ -36163,17 +41460,35 @@
 		type: Boolean,
 		attribute: "show-full-message"
 	})], SensorRecords.prototype, "showFullMessage", null);
-	__decorate([r$1()], SensorRecords.prototype, "_page", null);
+	__decorate([r$2()], SensorRecords.prototype, "_page", null);
+	__decorate([e$4("pagination-nav")], SensorRecords.prototype, "_paginationEl", null);
+	__decorate([e$4(".ann-list")], SensorRecords.prototype, "_annListEl", null);
 	customElements.define("sensor-records", SensorRecords);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/sensor/sensor.ts
+	var _cardShellEl_accessor_storage = /* @__PURE__ */ new WeakMap();
+	var _sensorChartEl_accessor_storage = /* @__PURE__ */ new WeakMap();
 	/**
 	* hass-datapoints-sensor-card – Sensor card with inline annotation icons.
 	* Canvas rendering is delegated to sensor-chart; annotation list to sensor-records.
 	*/
-	var HassRecordsSensorCard = class extends i$2 {
+	var HassDatapointsSensorCard = class extends i$2 {
+		get _cardShellEl() {
+			return _classPrivateFieldGet2(_cardShellEl_accessor_storage, this);
+		}
+		set _cardShellEl(value) {
+			_classPrivateFieldSet2(_cardShellEl_accessor_storage, this, value);
+		}
+		get _sensorChartEl() {
+			return _classPrivateFieldGet2(_sensorChartEl_accessor_storage, this);
+		}
+		set _sensorChartEl(value) {
+			_classPrivateFieldSet2(_sensorChartEl_accessor_storage, this, value);
+		}
 		constructor() {
 			super();
+			_classPrivateFieldInitSpec(this, _cardShellEl_accessor_storage, null);
+			_classPrivateFieldInitSpec(this, _sensorChartEl_accessor_storage, null);
 			_defineProperty(this, "_initialized", false);
 			_defineProperty(this, "_lastHistResult", null);
 			_defineProperty(this, "_lastEvents", []);
@@ -36243,7 +41558,7 @@
 			this._resizeObserver.observe(this);
 		}
 		_applyLayoutSizing() {
-			const shell = this.shadowRoot?.querySelector(".card-shell");
+			const shell = this._cardShellEl;
 			if (!shell) return;
 			const gridRows = this._gridRows();
 			if (!this._config?.show_records) {
@@ -36338,7 +41653,7 @@
 			this._lastT0 = t0;
 			this._lastT1 = t1;
 			this._annEvents = events;
-			const chartEl = this.shadowRoot?.querySelector("sensor-chart");
+			const chartEl = this._sensorChartEl;
 			if (!chartEl) return;
 			chartEl.hass = this.hass;
 			const entityId = this._config.entity;
@@ -36422,14 +41737,16 @@
 			};
 		}
 	};
-	_defineProperty(HassRecordsSensorCard, "properties", {
+	_defineProperty(HassDatapointsSensorCard, "properties", {
 		_config: { state: true },
 		_hass: { state: true },
 		_annEvents: { state: true },
 		_hiddenEventIds: { state: true },
 		_recordsFooterHeight: { state: true }
 	});
-	_defineProperty(HassRecordsSensorCard, "styles", styles$7);
+	_defineProperty(HassDatapointsSensorCard, "styles", styles$7);
+	__decorate([e$4(".card-shell")], HassDatapointsSensorCard.prototype, "_cardShellEl", null);
+	__decorate([e$4("sensor-chart")], HassDatapointsSensorCard.prototype, "_sensorChartEl", null);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/sensor/editor.styles.ts
 	var styles$2 = i$5``;
@@ -36474,21 +41791,6 @@
 		set hass(value) {
 			_classPrivateFieldSet2(_hass_accessor_storage, this, value);
 		}
-		firstUpdated() {
-			const el = this.shadowRoot.querySelector("ha-selector");
-			if (el) {
-				el.label = this.label;
-				el.selector = { entity: {} };
-				if (this.hass) el.hass = this.hass;
-				el.value = this.value;
-			}
-		}
-		updated(changedProps) {
-			const el = this.shadowRoot.querySelector("ha-selector");
-			if (!el) return;
-			if (changedProps.has("value")) el.value = this.value;
-			if (changedProps.has("hass") && this.hass) el.hass = this.hass;
-		}
 		_onValueChanged(e) {
 			this.dispatchEvent(new CustomEvent("dp-entity-change", {
 				detail: { value: e.detail.value },
@@ -36498,6 +41800,10 @@
 		}
 		render() {
 			return b`<ha-selector
+      .label=${this.label}
+      .selector=${{ entity: {} }}
+      .hass=${this.hass}
+      .value=${this.value}
       @value-changed=${this._onValueChanged}
     ></ha-selector>`;
 		}
@@ -36548,20 +41854,6 @@
 		set options(value) {
 			_classPrivateFieldSet2(_options_accessor_storage, this, value);
 		}
-		firstUpdated() {
-			const el = this.shadowRoot.querySelector("ha-selector");
-			if (el) {
-				el.label = this.label;
-				el.selector = { select: { options: this.options } };
-				el.value = this.value;
-			}
-		}
-		updated(changedProps) {
-			const el = this.shadowRoot.querySelector("ha-selector");
-			if (!el) return;
-			if (changedProps.has("value")) el.value = this.value;
-			if (changedProps.has("options")) el.selector = { select: { options: this.options } };
-		}
 		_onValueChanged(e) {
 			this.dispatchEvent(new CustomEvent("dp-select-change", {
 				detail: { value: e.detail.value },
@@ -36571,6 +41863,9 @@
 		}
 		render() {
 			return b`<ha-selector
+      .label=${this.label}
+      .selector=${{ select: { options: this.options } }}
+      .value=${this.value}
       @value-changed=${this._onValueChanged}
     ></ha-selector>`;
 		}
@@ -36582,7 +41877,7 @@
 	customElements.define("editor-select", EditorSelect);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/cards/sensor/editor.ts
-	var HassRecordsSensorCardEditor = class extends EditorBase {
+	var HassDatapointsSensorCardEditor = class extends EditorBase {
 		render() {
 			const c = this._config;
 			const showRecords = !!c.show_records;
@@ -36659,61 +41954,212 @@
     `;
 		}
 	};
-	_defineProperty(HassRecordsSensorCardEditor, "styles", [EditorBase.styles, styles$2]);
+	_defineProperty(HassDatapointsSensorCardEditor, "styles", [EditorBase.styles, styles$2]);
 	//#endregion
 	//#region custom_components/hass_datapoints/src/register.ts
 	/**
 	* Register all custom elements and advertise them to the Lovelace card picker.
 	*/
-	if (!customElements.get("hass-datapoints-action-card")) customElements.define("hass-datapoints-action-card", HassRecordsActionCard);
-	if (!customElements.get("hass-datapoints-quick-card")) customElements.define("hass-datapoints-quick-card", HassRecordsQuickCard);
-	if (!customElements.get("hass-datapoints-history-card")) customElements.define("hass-datapoints-history-card", HassRecordsHistoryCard);
-	if (!customElements.get("hass-datapoints-sensor-card")) customElements.define("hass-datapoints-sensor-card", HassRecordsSensorCard);
-	if (!customElements.get("hass-datapoints-list-card")) customElements.define("hass-datapoints-list-card", HassRecordsListCard);
-	if (!customElements.get("hass-datapoints-history-panel")) customElements.define("hass-datapoints-history-panel", HassRecordsHistoryPanel);
-	if (!customElements.get("hass-datapoints-dev-tool-card")) customElements.define("hass-datapoints-dev-tool-card", HassRecordsDevToolCard);
-	if (!customElements.get("hass-datapoints-action-card-editor")) customElements.define("hass-datapoints-action-card-editor", HassRecordsActionCardEditor);
-	if (!customElements.get("hass-datapoints-quick-card-editor")) customElements.define("hass-datapoints-quick-card-editor", HassRecordsQuickCardEditor);
-	if (!customElements.get("hass-datapoints-history-card-editor")) customElements.define("hass-datapoints-history-card-editor", HassRecordsHistoryCardEditor);
-	if (!customElements.get("hass-datapoints-sensor-card-editor")) customElements.define("hass-datapoints-sensor-card-editor", HassRecordsSensorCardEditor);
-	if (!customElements.get("hass-datapoints-list-card-editor")) customElements.define("hass-datapoints-list-card-editor", HassRecordsListCardEditor);
-	if (!customElements.get("hass-datapoints-dev-tool-card-editor")) customElements.define("hass-datapoints-dev-tool-card-editor", HassRecordsDevToolCardEditor);
+	var _warnOnceKey = "__HASS_DATAPOINTS_DEPRECATED_TAG_WARNED__";
+	function _warnDeprecatedTag(oldTag, newTag) {
+		const win = window;
+		if (!win[_warnOnceKey]) win[_warnOnceKey] = {};
+		const warned = win[_warnOnceKey];
+		if (warned[oldTag]) return;
+		warned[oldTag] = true;
+		console.warn(`[hass-datapoints] deprecated card tag "${oldTag}" in use; migrate to "${newTag}".`);
+	}
+	function _defineDeprecatedAlias({ oldTag, newTag, base }) {
+		if (customElements.get(oldTag)) return;
+		class DeprecatedAlias extends base {
+			constructor() {
+				super();
+				_warnDeprecatedTag(oldTag, newTag);
+			}
+		}
+		customElements.define(oldTag, DeprecatedAlias);
+	}
+	var HassDatapointsRemovedStatisticsCard = class extends HTMLElement {
+		constructor(..._args) {
+			super(..._args);
+			_defineProperty(this, "_config", {});
+		}
+		setConfig(config) {
+			this._config = config ?? {};
+			this._render();
+		}
+		set hass(_hass) {}
+		connectedCallback() {
+			this._render();
+		}
+		_render() {
+			this.innerHTML = `
+      <ha-card>
+        <div class="card-header">${this._config?.title || "Statistics card"}</div>
+        <div class="card-content">
+          <p>
+            Datapoints statistics card removed.
+            Use <code>custom:hass-datapoints-history-card</code> instead.
+          </p>
+          <p>
+            Deprecated types: <code>custom:hass-datapoints-statistics-card</code>,
+            <code>custom:hass-records-statistics-card</code>.
+          </p>
+        </div>
+      </ha-card>
+    `;
+		}
+	};
+	var HassDatapointsRemovedStatisticsCardEditor = class extends HTMLElement {
+		setConfig(_config) {
+			this._render();
+		}
+		set hass(_hass) {}
+		connectedCallback() {
+			this._render();
+		}
+		_render() {
+			this.innerHTML = `
+      <ha-card>
+        <div class="card-content">
+          <p>
+            Datapoints statistics card removed.
+            Replace with <code>custom:hass-datapoints-history-card</code>.
+          </p>
+        </div>
+      </ha-card>
+    `;
+		}
+	};
+	if (!customElements.get("hass-datapoints-action-card")) customElements.define("hass-datapoints-action-card", HassDatapointsActionCard);
+	if (!customElements.get("hass-datapoints-quick-card")) customElements.define("hass-datapoints-quick-card", HassDatapointsQuickCard);
+	if (!customElements.get("hass-datapoints-history-card")) customElements.define("hass-datapoints-history-card", HassDatapointsHistoryCard);
+	if (!customElements.get("hass-datapoints-sensor-card")) customElements.define("hass-datapoints-sensor-card", HassDatapointsSensorCard);
+	if (!customElements.get("hass-datapoints-list-card")) customElements.define("hass-datapoints-list-card", HassDatapointsListCard);
+	if (!customElements.get("hass-datapoints-history-panel")) customElements.define("hass-datapoints-history-panel", HassDatapointsHistoryPanel);
+	if (!customElements.get("hass-datapoints-dev-tool-card")) customElements.define("hass-datapoints-dev-tool-card", HassDatapointsDevToolCard);
+	_defineDeprecatedAlias({
+		oldTag: "hass-records-action-card",
+		newTag: "hass-datapoints-action-card",
+		base: HassDatapointsActionCard
+	});
+	_defineDeprecatedAlias({
+		oldTag: "hass-records-quick-card",
+		newTag: "hass-datapoints-quick-card",
+		base: HassDatapointsQuickCard
+	});
+	_defineDeprecatedAlias({
+		oldTag: "hass-records-history-card",
+		newTag: "hass-datapoints-history-card",
+		base: HassDatapointsHistoryCard
+	});
+	_defineDeprecatedAlias({
+		oldTag: "hass-records-sensor-card",
+		newTag: "hass-datapoints-sensor-card",
+		base: HassDatapointsSensorCard
+	});
+	_defineDeprecatedAlias({
+		oldTag: "hass-records-list-card",
+		newTag: "hass-datapoints-list-card",
+		base: HassDatapointsListCard
+	});
+	_defineDeprecatedAlias({
+		oldTag: "hass-records-dev-tool-card",
+		newTag: "hass-datapoints-dev-tool-card",
+		base: HassDatapointsDevToolCard
+	});
+	if (!customElements.get("hass-datapoints-statistics-card")) customElements.define("hass-datapoints-statistics-card", HassDatapointsRemovedStatisticsCard);
+	if (!customElements.get("hass-records-statistics-card")) {
+		class HassRecordsRemovedStatisticsCard extends HassDatapointsRemovedStatisticsCard {
+			constructor() {
+				super();
+				_warnDeprecatedTag("hass-records-statistics-card", "hass-datapoints-history-card");
+			}
+		}
+		customElements.define("hass-records-statistics-card", HassRecordsRemovedStatisticsCard);
+	}
+	if (!customElements.get("hass-datapoints-action-card-editor")) customElements.define("hass-datapoints-action-card-editor", HassDatapointsActionCardEditor);
+	if (!customElements.get("hass-datapoints-quick-card-editor")) customElements.define("hass-datapoints-quick-card-editor", HassDatapointsQuickCardEditor);
+	if (!customElements.get("hass-datapoints-history-card-editor")) customElements.define("hass-datapoints-history-card-editor", HassDatapointsHistoryCardEditor);
+	if (!customElements.get("hass-datapoints-sensor-card-editor")) customElements.define("hass-datapoints-sensor-card-editor", HassDatapointsSensorCardEditor);
+	if (!customElements.get("hass-datapoints-list-card-editor")) customElements.define("hass-datapoints-list-card-editor", HassDatapointsListCardEditor);
+	if (!customElements.get("hass-datapoints-dev-tool-card-editor")) customElements.define("hass-datapoints-dev-tool-card-editor", HassDatapointsDevToolCardEditor);
+	_defineDeprecatedAlias({
+		oldTag: "hass-records-action-card-editor",
+		newTag: "hass-datapoints-action-card-editor",
+		base: HassDatapointsActionCardEditor
+	});
+	_defineDeprecatedAlias({
+		oldTag: "hass-records-quick-card-editor",
+		newTag: "hass-datapoints-quick-card-editor",
+		base: HassDatapointsQuickCardEditor
+	});
+	_defineDeprecatedAlias({
+		oldTag: "hass-records-history-card-editor",
+		newTag: "hass-datapoints-history-card-editor",
+		base: HassDatapointsHistoryCardEditor
+	});
+	_defineDeprecatedAlias({
+		oldTag: "hass-records-sensor-card-editor",
+		newTag: "hass-datapoints-sensor-card-editor",
+		base: HassDatapointsSensorCardEditor
+	});
+	_defineDeprecatedAlias({
+		oldTag: "hass-records-list-card-editor",
+		newTag: "hass-datapoints-list-card-editor",
+		base: HassDatapointsListCardEditor
+	});
+	_defineDeprecatedAlias({
+		oldTag: "hass-records-dev-tool-card-editor",
+		newTag: "hass-datapoints-dev-tool-card-editor",
+		base: HassDatapointsDevToolCardEditor
+	});
+	if (!customElements.get("hass-datapoints-statistics-card-editor")) customElements.define("hass-datapoints-statistics-card-editor", HassDatapointsRemovedStatisticsCardEditor);
+	if (!customElements.get("hass-records-statistics-card-editor")) {
+		class HassRecordsRemovedStatisticsCardEditor extends HassDatapointsRemovedStatisticsCardEditor {
+			constructor() {
+				super();
+				_warnDeprecatedTag("hass-records-statistics-card-editor", "hass-datapoints-history-card");
+			}
+		}
+		customElements.define("hass-records-statistics-card-editor", HassRecordsRemovedStatisticsCardEditor);
+	}
 	window.customCards = window.customCards || [];
 	var registeredTypes = new Set(window.customCards.map((card) => card.type));
 	[
 		{
 			type: "hass-datapoints-action-card",
-			name: "Hass Records – Action Card",
+			name: "Datapoints – Action Card",
 			description: "Full form to record a custom event with message, annotation, icon, colour and entity association.",
 			preview: false
 		},
 		{
 			type: "hass-datapoints-quick-card",
-			name: "Hass Records – Quick Card",
+			name: "Datapoints – Quick Card",
 			description: "Simple one-field card to quickly record a note with a bookmark icon.",
 			preview: false
 		},
 		{
 			type: "hass-datapoints-history-card",
-			name: "Hass Records – History Card",
+			name: "Datapoints – History Card",
 			description: "History line chart with coloured annotation markers for recorded events.",
 			preview: false
 		},
 		{
 			type: "hass-datapoints-sensor-card",
-			name: "Hass Records – Sensor Card",
+			name: "Datapoints – Sensor Card",
 			description: "Sensor card with line chart — annotations shown as icons on the data line.",
 			preview: false
 		},
 		{
 			type: "hass-datapoints-list-card",
-			name: "Hass Records – List Card",
+			name: "Datapoints – List Card",
 			description: "Activity-style datagrid to browse, search, edit and delete all recorded events.",
 			preview: false
 		},
 		{
 			type: "hass-datapoints-dev-tool-card",
-			name: "Hass Records – Dev Tool",
+			name: "Datapoints – Dev Tool",
 			description: "Generate demo datapoints from HA history and bulk-delete dev-flagged events.",
 			preview: false
 		}

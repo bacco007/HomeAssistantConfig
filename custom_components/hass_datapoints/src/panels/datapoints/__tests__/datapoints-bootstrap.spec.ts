@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { HassRecordsHistoryPanel } from "../datapoints";
+import { HassDatapointsHistoryPanel } from "../datapoints";
 import { normalizeHistorySeriesAnalysis } from "@/lib/domain/history-series";
 
-describe("HassRecordsHistoryPanel bootstrap", () => {
+describe("HassDatapointsHistoryPanel bootstrap", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
@@ -28,7 +28,9 @@ describe("HassRecordsHistoryPanel bootstrap", () => {
           _updateUrl: updateUrl,
         };
 
-        HassRecordsHistoryPanel.prototype._bootstrapAfterShellBuilt.call(panel);
+        HassDatapointsHistoryPanel.prototype._bootstrapAfterShellBuilt.call(
+          panel
+        );
 
         expect(ensureHistoryBounds).toHaveBeenCalledTimes(1);
         expect(ensureUserPreferences).toHaveBeenCalledTimes(1);
@@ -60,14 +62,15 @@ describe("HassRecordsHistoryPanel bootstrap", () => {
             },
           ],
           _applyPreferredSeriesColors:
-            HassRecordsHistoryPanel.prototype._applyPreferredSeriesColors,
+            HassDatapointsHistoryPanel.prototype._applyPreferredSeriesColors,
           _mergeSavedSeriesRows:
-            HassRecordsHistoryPanel.prototype._mergeSavedSeriesRows,
-          _syncSeriesState: HassRecordsHistoryPanel.prototype._syncSeriesState,
+            HassDatapointsHistoryPanel.prototype._mergeSavedSeriesRows,
+          _syncSeriesState:
+            HassDatapointsHistoryPanel.prototype._syncSeriesState,
           _seriesColorQueryKey: () => "temperature",
         };
 
-        HassRecordsHistoryPanel.prototype._applyPreferencePageState.call(
+        HassDatapointsHistoryPanel.prototype._applyPreferencePageState.call(
           panel,
           {
             series_rows: [
@@ -117,7 +120,7 @@ describe("HassRecordsHistoryPanel bootstrap", () => {
           ],
           _seriesColorQueryKey: () => "temperature",
           _applyPreferredSeriesColors:
-            HassRecordsHistoryPanel.prototype._applyPreferredSeriesColors,
+            HassDatapointsHistoryPanel.prototype._applyPreferredSeriesColors,
           _applyPreferencePageState: applyPreferencePageState,
           _saveUserPreferences: saveUserPreferences,
           _rendered: true,
@@ -149,7 +152,7 @@ describe("HassRecordsHistoryPanel bootstrap", () => {
           },
         };
 
-        return HassRecordsHistoryPanel.prototype._ensureUserPreferences
+        return HassDatapointsHistoryPanel.prototype._ensureUserPreferences
           .call(panel)
           .then(() => {
             expect(applyPreferencePageState).not.toHaveBeenCalled();
@@ -207,7 +210,7 @@ describe("HassRecordsHistoryPanel bootstrap", () => {
           },
         };
 
-        HassRecordsHistoryPanel.prototype.disconnectedCallback.call(panel);
+        HassDatapointsHistoryPanel.prototype.disconnectedCallback.call(panel);
 
         expect(tabletMq.removeEventListener).toHaveBeenCalledTimes(1);
         expect(mobileMq.removeEventListener).toHaveBeenCalledTimes(1);

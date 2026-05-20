@@ -4,6 +4,7 @@ import { property } from "lit/decorators.js";
 import { sharedStyles } from "../analysis-group-shared/analysis-group-shared.styles";
 import { styles } from "./analysis-anomaly-group.styles";
 import { localized, msg } from "@/lib/i18n/localize";
+import type { HassLike } from "@/lib/types";
 import type {
   ComparisonWindow,
   NormalizedAnalysis,
@@ -53,12 +54,22 @@ export const ANALYSIS_ANOMALY_METHOD_OPTIONS = [
     label: "Comparison window deviation",
     help: "Compares the current period to a reference date window. Highlights differences from an expected historical pattern, such as last week or the same day last year.",
   },
+  {
+    value: "similar_entity",
+    label: "Similar entity deviation",
+    help: "Compares the current entity against another HA entity over the same period. Highlights readings that diverge from what a reference sensor is reporting.",
+  },
 ];
 
 export const ANALYSIS_ANOMALY_RATE_WINDOW_OPTIONS = [
+  { value: "point_to_point", label: "Point to point" },
+  { value: "30m", label: "30 minutes" },
   { value: "1h", label: "1 hour" },
+  { value: "2h", label: "2 hours" },
+  { value: "3h", label: "3 hours" },
   { value: "6h", label: "6 hours" },
   { value: "24h", label: "24 hours" },
+  { value: "7d", label: "7 days" },
 ];
 
 export const ANALYSIS_ANOMALY_ZSCORE_WINDOW_OPTIONS = [
@@ -93,6 +104,9 @@ export class AnalysisAnomalyGroup extends LitElement {
   @property({ type: Array, attribute: "comparison-windows" })
   accessor comparisonWindows: ComparisonWindow[] = [];
 
+  @property({ type: Object, attribute: false })
+  accessor hass: Nullable<HassLike> = null;
+
   /** Whether analysis is currently being computed in the worker for this entity. */
   @property({ type: Boolean, attribute: false }) accessor computing: boolean =
     false;
@@ -105,7 +119,37 @@ export class AnalysisAnomalyGroup extends LitElement {
   @property({ type: Object, attribute: false })
   accessor computingMethods: Set<string> = new Set();
 
+  @property({ type: Boolean, attribute: "hide-save-monitor-cta" })
+  accessor hideSaveMonitorCta: boolean = false;
+
   static styles = [sharedStyles, styles];
+
+  /**
+   * Build an entity filter for the comparison entity picker that matches the
+   * current entity's device class, then unit of measurement, then domain.
+   */
+  private _buildEntityFilter():
+    | ((state: {
+        attributes: Record<string, unknown>;
+        entity_id: string;
+      }) => boolean)
+    | undefined {
+    if (!this.hass || !this.entityId) return undefined;
+    const sourceState = this.hass.states[this.entityId];
+    if (!sourceState) return undefined;
+    const attrs = sourceState.attributes as Record<string, unknown>;
+    const deviceClass = attrs.device_class as string | undefined;
+    const unit = attrs.unit_of_measurement as string | undefined;
+    const domain = this.entityId.split(".")[0];
+    return (state) => {
+      if (state.entity_id === this.entityId) return false;
+      const a = state.attributes;
+      if (deviceClass)
+        return (a.device_class as string | undefined) === deviceClass;
+      if (unit) return (a.unit_of_measurement as string | undefined) === unit;
+      return state.entity_id.split(".")[0] === domain;
+    };
+  }
 
   private _emit(key: string, value: unknown) {
     this.dispatchEvent(
@@ -277,6 +321,29 @@ export class AnalysisAnomalyGroup extends LitElement {
         </analysis-method-subopts>
       `;
     }
+    if (opt.value === "similar_entity") {
+      const entityFilter = this._buildEntityFilter();
+      return html`
+        <analysis-method-subopts>
+          <label class="field">
+            <span class="field-label">${msg("Compare to entity")}</span>
+            <div class="entity-picker-wrap">
+              <ha-entity-picker
+                .hass=${this.hass}
+                .value=${a.anomaly_comparison_entity_id ?? ""}
+                .entityFilter=${entityFilter}
+                allow-custom-entity
+                @value-changed=${(e: CustomEvent<{ value: string }>) =>
+                  this._emit(
+                    "anomaly_comparison_entity_id",
+                    e.detail.value || null
+                  )}
+              ></ha-entity-picker>
+            </div>
+          </label>
+        </analysis-method-subopts>
+      `;
+    }
     return nothing;
   }
 
@@ -403,8 +470,29 @@ export class AnalysisAnomalyGroup extends LitElement {
               </label>
             `
           : nothing}
+        ${a.show_anomalies &&
+        Array.isArray(a.anomaly_methods) &&
+        a.anomaly_methods.length > 0 &&
+        !this.hideSaveMonitorCta
+          ? html`
+              <button class="save-monitor-btn" @click=${this._onSaveAsMonitor}>
+                <ha-icon icon="mdi:bell-plus-outline"></ha-icon>
+                ${msg("Save as anomaly monitor")}
+              </button>
+            `
+          : nothing}
       </analysis-group>
     `;
+  }
+
+  private _onSaveAsMonitor() {
+    this.dispatchEvent(
+      new CustomEvent("dp-anomaly-save-monitor", {
+        detail: { entityId: this.entityId, analysis: this.analysis },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 }
 

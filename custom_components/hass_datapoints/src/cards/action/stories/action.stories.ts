@@ -2,10 +2,13 @@ import type { Meta, StoryObj } from "@storybook/web-components-vite";
 import { expect } from "@storybook/test";
 import { html } from "lit";
 import { createMockHass } from "@/test-support/mock-hass";
-import { HassRecordsActionCard } from "../action";
+import { HassDatapointsActionCard } from "../action";
 
 if (!customElements.get("hass-datapoints-action-card")) {
-  customElements.define("hass-datapoints-action-card", HassRecordsActionCard);
+  customElements.define(
+    "hass-datapoints-action-card",
+    HassDatapointsActionCard
+  );
 }
 
 type Story = StoryObj;
@@ -17,10 +20,10 @@ const meta: Meta = {
 
 export default meta;
 
-function getCard(canvasElement: HTMLElement): HassRecordsActionCard {
+function getCard(canvasElement: HTMLElement): HassDatapointsActionCard {
   return canvasElement.querySelector(
     "hass-datapoints-action-card"
-  ) as HassRecordsActionCard;
+  ) as HassDatapointsActionCard;
 }
 
 const mockHass = createMockHass();
@@ -29,7 +32,7 @@ export const Default: Story = {
   render: () =>
     html`<hass-datapoints-action-card></hass-datapoints-action-card>`,
   play: async ({ canvasElement }) => {
-    const card = getCard(canvasElement) as HassRecordsActionCard & {
+    const card = getCard(canvasElement) as HassDatapointsActionCard & {
       updateComplete: Promise<void>;
     };
     card.setConfig({ title: "Record Event" });
@@ -44,7 +47,7 @@ export const WithTargetsAndAnnotation: Story = {
   render: () =>
     html`<hass-datapoints-action-card></hass-datapoints-action-card>`,
   play: async ({ canvasElement }) => {
-    const card = getCard(canvasElement) as HassRecordsActionCard & {
+    const card = getCard(canvasElement) as HassDatapointsActionCard & {
       updateComplete: Promise<void>;
     };
     card.setConfig({

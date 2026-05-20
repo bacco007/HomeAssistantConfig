@@ -11,17 +11,17 @@ export const styles = css`
 
   .group {
     display: grid;
-    gap: var(--dp-spacing-sm);
+    gap: calc(var(--dp-spacing-sm) * 0.75);
     border-radius: 6px;
   }
 
   .group-body {
     display: grid;
-    gap: var(--dp-spacing-sm);
-    padding: var(--dp-spacing-sm);
+    gap: calc(var(--dp-spacing-sm) * 0.75);
+    padding: calc(var(--dp-spacing-sm) * 0.75);
     border-left: 3px solid var(--primary-color);
     margin-left: 5px;
-    padding-left: var(--dp-spacing-md);
+    padding-left: calc(var(--dp-spacing-md) - 2px);
   }
 
   .option {

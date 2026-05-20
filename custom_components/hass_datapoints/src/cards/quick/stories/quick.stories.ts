@@ -2,10 +2,10 @@ import type { Meta, StoryObj } from "@storybook/web-components-vite";
 import { expect } from "@storybook/test";
 import { html } from "lit";
 import { createMockHass } from "@/test-support/mock-hass";
-import { HassRecordsQuickCard } from "../quick";
+import { HassDatapointsQuickCard } from "../quick";
 
 if (!customElements.get("hass-datapoints-quick-card")) {
-  customElements.define("hass-datapoints-quick-card", HassRecordsQuickCard);
+  customElements.define("hass-datapoints-quick-card", HassDatapointsQuickCard);
 }
 
 type Story = StoryObj;
@@ -17,10 +17,10 @@ const meta: Meta = {
 
 export default meta;
 
-function getCard(canvasElement: HTMLElement): HassRecordsQuickCard {
+function getCard(canvasElement: HTMLElement): HassDatapointsQuickCard {
   return canvasElement.querySelector(
     "hass-datapoints-quick-card"
-  ) as HassRecordsQuickCard;
+  ) as HassDatapointsQuickCard;
 }
 
 const mockHass = createMockHass();
@@ -28,7 +28,7 @@ const mockHass = createMockHass();
 export const Default: Story = {
   render: () => html`<hass-datapoints-quick-card></hass-datapoints-quick-card>`,
   play: async ({ canvasElement }) => {
-    const card = getCard(canvasElement) as HassRecordsQuickCard & {
+    const card = getCard(canvasElement) as HassDatapointsQuickCard & {
       updateComplete: Promise<void>;
     };
     card.setConfig({ title: "Quick Record" });
@@ -42,7 +42,7 @@ export const Default: Story = {
 export const WithAnnotation: Story = {
   render: () => html`<hass-datapoints-quick-card></hass-datapoints-quick-card>`,
   play: async ({ canvasElement }) => {
-    const card = getCard(canvasElement) as HassRecordsQuickCard & {
+    const card = getCard(canvasElement) as HassDatapointsQuickCard & {
       updateComplete: Promise<void>;
     };
     card.setConfig({ title: "Quick Record", show_annotation: true });

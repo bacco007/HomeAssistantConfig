@@ -137,6 +137,14 @@ export class TargetRow extends LitElement {
   @property({ type: Boolean, attribute: "hide-drag-handle" })
   accessor hideDragHandle: boolean = false;
 
+  /**
+   * Optional override label. When set, replaces the friendly name derived from
+   * the HA state object. Used to show disambiguated names when multiple
+   * entities share the same friendly name.
+   */
+  @property({ type: String, attribute: false })
+  accessor label: Nullable<string> = null;
+
   static styles = styles;
 
   /** Entity ID — from HA state when available, else from the config prop. */
@@ -144,8 +152,9 @@ export class TargetRow extends LitElement {
     return (this.stateObj?.entity_id as string) ?? this.entityId ?? "";
   }
 
-  /** Display name derived from the HA state object, falling back to the entity ID. */
+  /** Display name: uses the explicit label override when provided, otherwise derives from the HA state object. */
   private get _entityName(): string {
+    if (this.label) return this.label;
     return (
       ((this.stateObj?.attributes as RecordWithUnknownValues | undefined)
         ?.friendly_name as string) ?? this._entityId
@@ -259,6 +268,7 @@ export class TargetRow extends LitElement {
                 class="history-target-color"
                 .value=${this.color}
                 aria-label="Line color for ${this._entityId}"
+                @input=${this._onColorChange}
                 @change=${this._onColorChange}
               />
               <span class="history-target-color-icon" aria-hidden="true">
@@ -371,6 +381,7 @@ export class TargetRow extends LitElement {
                   <analysis-anomaly-group
                     .analysis=${a}
                     .entityId=${this._entityId}
+                    .hass=${this.hass}
                     .comparisonWindows=${this.comparisonWindows}
                     .computing=${this.computing}
                     .computingProgress=${this.computingProgress}

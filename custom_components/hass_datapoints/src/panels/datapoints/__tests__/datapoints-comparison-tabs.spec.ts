@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import { HassRecordsHistoryPanel } from "../datapoints";
+import { HassDatapointsHistoryPanel } from "../datapoints";
 import { createHistoryPageOrchestrationContext } from "../context/orchestration-context";
 
-describe("HassRecordsHistoryPanel comparison tabs", () => {
+describe("HassDatapointsHistoryPanel comparison tabs", () => {
   describe("GIVEN the history card wraps an inner namespaced chart element", () => {
     describe("WHEN rendering comparison tabs", () => {
       it("THEN it mounts the tab rail into the inner chart top slot", () => {
@@ -43,7 +43,7 @@ describe("HassRecordsHistoryPanel comparison tabs", () => {
           _deleteDateWindow: vi.fn(),
         };
 
-        HassRecordsHistoryPanel.prototype._renderComparisonTabs.call(panel);
+        HassDatapointsHistoryPanel.prototype._renderComparisonTabs.call(panel);
 
         expect(panel._comparisonTabsHostEl).toBe(topSlot);
         expect(topSlot.hidden).toBe(false);
@@ -89,7 +89,7 @@ describe("HassRecordsHistoryPanel comparison tabs", () => {
           _deleteDateWindow: vi.fn(),
         };
 
-        HassRecordsHistoryPanel.prototype._renderComparisonTabs.call(panel);
+        HassDatapointsHistoryPanel.prototype._renderComparisonTabs.call(panel);
 
         expect(panel._comparisonTabsHostEl).toBe(topSlot);
         expect(topSlot.hidden).toBe(false);

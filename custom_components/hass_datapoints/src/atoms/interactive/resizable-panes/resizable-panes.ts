@@ -1,7 +1,11 @@
 import { html, LitElement } from "lit";
-import { property } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 
+import type { I18nMap } from "@/lib/i18n/i18n-prop";
+import { createDefaultI18n, t } from "@/lib/i18n/i18n-prop";
 import { styles } from "./resizable-panes.styles";
+
+const DEFAULT_I18N = createDefaultI18n(["Resize panes"]);
 
 /**
  * `resizable-panes` is a two-pane layout atom with a draggable splitter.
@@ -18,6 +22,8 @@ import { styles } from "./resizable-panes.styles";
  */
 export class ResizablePanes extends LitElement {
   static styles = styles;
+
+  @property({ attribute: false }) accessor i18n: I18nMap = DEFAULT_I18N;
 
   /** Layout direction: "vertical" (default) or "horizontal". */
   @property({ type: String, reflect: true }) accessor direction:
@@ -41,12 +47,12 @@ export class ResizablePanes extends LitElement {
 
   private _pointerId: Nullable<number> = null;
 
-  private _splitterEl: Nullable<HTMLButtonElement> = null;
+  @query(".pane-splitter")
+  accessor _splitterEl: Nullable<HTMLButtonElement> = null;
 
   // ── Lifecycle ──────────────────────────────────────────────────────────────
 
   firstUpdated() {
-    this._splitterEl = this.shadowRoot?.querySelector(".pane-splitter") ?? null;
     this._applyRatio();
   }
 
@@ -83,8 +89,14 @@ export class ResizablePanes extends LitElement {
 
   // ── Pointer handling ───────────────────────────────────────────────────────
 
+  private _t(key: string): string {
+    return t(this.i18n, key);
+  }
+
   private _onPointerDown = (ev: PointerEvent) => {
-    if (ev.button !== 0) return;
+    if (ev.button !== 0) {
+      return;
+    }
     ev.preventDefault();
     this._pointerId = ev.pointerId;
     this._splitterEl?.classList.add("dragging");
@@ -94,13 +106,17 @@ export class ResizablePanes extends LitElement {
   };
 
   private _onPointerMove = (ev: PointerEvent) => {
-    if (this._pointerId == null || ev.pointerId !== this._pointerId) return;
+    if (this._pointerId == null || ev.pointerId !== this._pointerId) {
+      return;
+    }
     ev.preventDefault();
 
     const rect = this.getBoundingClientRect();
     const totalSize =
       this.direction === "horizontal" ? rect.width : rect.height;
-    if (!totalSize) return;
+    if (!totalSize) {
+      return;
+    }
 
     const pointerOffset =
       this.direction === "horizontal"
@@ -124,7 +140,9 @@ export class ResizablePanes extends LitElement {
   };
 
   private _onPointerUp = (ev: PointerEvent) => {
-    if (this._pointerId == null || ev.pointerId !== this._pointerId) return;
+    if (this._pointerId == null || ev.pointerId !== this._pointerId) {
+      return;
+    }
     this._pointerId = null;
     this._splitterEl?.classList.remove("dragging");
     window.removeEventListener("pointermove", this._onPointerMove);
@@ -151,7 +169,7 @@ export class ResizablePanes extends LitElement {
             <button
               class="pane-splitter"
               type="button"
-              aria-label="Resize panes"
+              aria-label=${this._t("Resize panes")}
               @pointerdown=${this._onPointerDown}
             ></button>
             <div class="pane-second"><slot name="second"></slot></div>

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { HassRecordsHistoryPanel } from "../datapoints";
+import { HassDatapointsHistoryPanel } from "../datapoints";
 
-describe("HassRecordsHistoryPanel", () => {
+describe("HassDatapointsHistoryPanel", () => {
   describe("GIVEN a hidden event id list", () => {
     describe("WHEN toggling an already-hidden event", () => {
       it("THEN it removes the event id from the hidden list", () => {
@@ -11,7 +11,7 @@ describe("HassRecordsHistoryPanel", () => {
           _renderContent: vi.fn(),
         };
 
-        HassRecordsHistoryPanel.prototype._handleToggleEventVisibility.call(
+        HassDatapointsHistoryPanel.prototype._handleToggleEventVisibility.call(
           panel,
           {
             detail: { eventId: "evt-1" },
@@ -33,7 +33,7 @@ describe("HassRecordsHistoryPanel", () => {
           _renderContent: vi.fn(),
         };
 
-        HassRecordsHistoryPanel.prototype._handleToggleEventVisibility.call(
+        HassDatapointsHistoryPanel.prototype._handleToggleEventVisibility.call(
           panel,
           {
             detail: { eventId: "evt-2" },
@@ -55,9 +55,12 @@ describe("HassRecordsHistoryPanel", () => {
           _renderContent: vi.fn(),
         };
 
-        HassRecordsHistoryPanel.prototype._handleHoverEventRecord.call(panel, {
-          detail: { eventId: "evt-3", hovered: true },
-        });
+        HassDatapointsHistoryPanel.prototype._handleHoverEventRecord.call(
+          panel,
+          {
+            detail: { eventId: "evt-3", hovered: true },
+          }
+        );
 
         expect(panel._hoveredEventIds).toEqual(["evt-3"]);
         expect(panel._renderContent).toHaveBeenCalledOnce();
@@ -72,9 +75,12 @@ describe("HassRecordsHistoryPanel", () => {
           _renderContent: vi.fn(),
         };
 
-        HassRecordsHistoryPanel.prototype._handleHoverEventRecord.call(panel, {
-          detail: { eventId: "evt-3", hovered: false },
-        });
+        HassDatapointsHistoryPanel.prototype._handleHoverEventRecord.call(
+          panel,
+          {
+            detail: { eventId: "evt-3", hovered: false },
+          }
+        );
 
         expect(panel._hoveredEventIds).toEqual([]);
         expect(panel._renderContent).toHaveBeenCalledOnce();

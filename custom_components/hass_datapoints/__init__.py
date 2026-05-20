@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import asyncio
+import concurrent.futures
+import logging
 from pathlib import Path
 
 import voluptuous as vol
@@ -29,6 +32,13 @@ from .const import (
     DOMAIN,
     EVENT_RECORDED,
     FRONTEND_URL,
+    KEY_ADD_BINARY_SENSOR_ENTITIES,
+    KEY_ADD_SENSOR_ENTITIES,
+    KEY_ADD_SWITCH_ENTITIES,
+    KEY_MONITOR_BINARY_SENSORS,
+    KEY_MONITOR_SENSORS,
+    KEY_MONITOR_SWITCHES,
+    MONITOR_DEFAULT_SCAN_INTERVAL_MINUTES,
     PANEL_COMPONENT,
     PANEL_ICON,
     PANEL_TITLE,
@@ -37,11 +47,13 @@ from .const import (
 )
 from .store import DatapointsStore
 
+_LOGGER = logging.getLogger(__name__)
+
 CONFIG_SCHEMA = cv.empty_config_schema(__name__)
 
 type DatapointsConfigEntry = ConfigEntry[DatapointsStore]
 
-PLATFORMS: list[Platform] = [Platform.SENSOR]
+PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.SWITCH]
 
 
 def _find_automation_id(hass: HomeAssistant, context) -> str | None:
@@ -136,13 +148,53 @@ async def async_setup_entry(hass: HomeAssistant, entry: DatapointsConfigEntry) -
     store = DatapointsStore(hass)
     await store.async_load()
 
+    # Warn if monitors are configured aggressively (low-spec device safeguard).
+    aggressive = [
+        m
+        for m in store.get_monitors()
+        if m.get("enabled", True)
+        and m.get("scan_interval_minutes", MONITOR_DEFAULT_SCAN_INTERVAL_MINUTES) < 10
+    ]
+    if len(aggressive) > 2:
+        _LOGGER.warning(
+            "hass_datapoints: %d monitors have scan_interval < 10 min — "
+            "may cause slowdowns on low-spec hardware",
+            len(aggressive),
+        )
+    for m in store.get_monitors():
+        if m.get("type") == "combined" and len(m.get("entity_ids", [])) > 5:
+            _LOGGER.warning(
+                "hass_datapoints: combined monitor '%s' has %d entities — "
+                "detection may be slow on low-spec hardware",
+                m.get("name", m.get("id", "")),
+                len(m.get("entity_ids", [])),
+            )
+
     hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN]["store"] = store
+    hass.data[DOMAIN]["store"] = store  # also referenced via KEY_STORE = "store"
+
+    # Dedicated thread pool for CPU-bound detection and cache I/O.
+    # Kept separate from HA's shared executor so detection work never starves
+    # HA's own state-write and integration callbacks.
+    pool = concurrent.futures.ThreadPoolExecutor(
+        max_workers=3, thread_name_prefix="datapoints"
+    )
+    hass.data[DOMAIN]["executor"] = pool
+    entry.async_on_unload(lambda: pool.shutdown(wait=False))
+
+    # Semaphore limiting concurrent background monitor scans.
+    hass.data[DOMAIN]["scan_semaphore"] = asyncio.Semaphore(2)
+
+    # Registry mapping request_id → threading.Event for cooperative cancellation.
+    hass.data[DOMAIN]["in_flight"] = {}
 
     # Initialise anomaly result cache (SQLite, run in executor).
     db_path = hass.config.path(".storage", "hass_datapoints_cache.db")
     cache = AnomalyCache(db_path)
-    await hass.async_add_executor_job(cache.purge_old)
+    await hass.loop.run_in_executor(pool, cache.purge_old)
+    await hass.loop.run_in_executor(
+        pool, lambda: cache._connect().execute("PRAGMA optimize").connection.commit()
+    )
     hass.data[DOMAIN]["anomaly_cache"] = cache
 
     # Register the record service
@@ -189,6 +241,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: DatapointsConfigEntry) -
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
+    # Warm anomaly cache in background after sensors are set up (best-effort).
+    from .sensor import async_warm_cache  # noqa: PLC0415
+
+    hass.async_create_background_task(
+        async_warm_cache(hass, store, pool, hass.data[DOMAIN]["in_flight"]),
+        "datapoints_cache_warmup",
+    )
+
     return True
 
 
@@ -198,4 +258,14 @@ async def async_unload_entry(hass: HomeAssistant, entry: DatapointsConfigEntry) 
     hass.services.async_remove(DOMAIN, SERVICE_RECORD)
     hass.data[DOMAIN].pop("store", None)
     hass.data[DOMAIN].pop("anomaly_cache", None)
+    hass.data[DOMAIN].pop("in_flight", None)
+    hass.data[DOMAIN].pop("scan_semaphore", None)
+    if pool := hass.data[DOMAIN].pop("executor", None):
+        pool.shutdown(wait=False)
+    hass.data[DOMAIN].pop(KEY_ADD_SENSOR_ENTITIES, None)
+    hass.data[DOMAIN].pop(KEY_ADD_BINARY_SENSOR_ENTITIES, None)
+    hass.data[DOMAIN].pop(KEY_ADD_SWITCH_ENTITIES, None)
+    hass.data[DOMAIN].pop(KEY_MONITOR_SENSORS, None)
+    hass.data[DOMAIN].pop(KEY_MONITOR_BINARY_SENSORS, None)
+    hass.data[DOMAIN].pop(KEY_MONITOR_SWITCHES, None)
     return unload_ok

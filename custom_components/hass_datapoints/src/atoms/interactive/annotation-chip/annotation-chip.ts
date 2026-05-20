@@ -3,6 +3,10 @@ import { property } from "lit/decorators.js";
 
 import { styles } from "./annotation-chip.styles";
 import type { HassLike, HassState } from "@/lib/types";
+import type { I18nMap } from "@/lib/i18n/i18n-prop";
+import { createDefaultI18n, t } from "@/lib/i18n/i18n-prop";
+
+const DEFAULT_I18N = createDefaultI18n(["Remove {0}"]);
 
 export class AnnotationChip extends LitElement {
   @property({ type: String }) accessor type: string = "";
@@ -23,7 +27,13 @@ export class AnnotationChip extends LitElement {
   @property({ type: Object, attribute: false })
   accessor hass: Nullable<HassLike> = null;
 
+  @property({ attribute: false }) accessor i18n: I18nMap = DEFAULT_I18N;
+
   static styles = styles;
+
+  private _t(key: string, ...values: Array<string | number>): string {
+    return t(this.i18n, key, ...values);
+  }
 
   _onRemove() {
     this.dispatchEvent(
@@ -55,7 +65,7 @@ export class AnnotationChip extends LitElement {
         <button
           class="context-chip-remove"
           type="button"
-          aria-label="Remove ${this.name}"
+          aria-label=${this._t("Remove {0}", this.name)}
           @click=${this._onRemove}
         >
           <ha-icon icon="mdi:close"></ha-icon>

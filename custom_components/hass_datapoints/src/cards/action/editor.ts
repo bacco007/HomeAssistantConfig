@@ -1,4 +1,5 @@
 import { CSSResultGroup, html, PropertyValues } from "lit";
+import { query, queryAll } from "lit/decorators.js";
 import { msg } from "@/lib/i18n/localize";
 import { styles } from "./editor.styles";
 import { EditorBase } from "@/molecules/editor-base/editor-base";
@@ -16,8 +17,14 @@ type TargetPickerElement = Element & {
   value?: TargetPickerValue;
 };
 
-export class HassRecordsActionCardEditor extends EditorBase {
+export class HassDatapointsActionCardEditor extends EditorBase {
   static styles: CSSResultGroup = [EditorBase.styles, styles];
+
+  @query("#target-picker")
+  accessor _targetPickerEl: Nullable<TargetPickerElement> = null;
+
+  @queryAll("ha-selector")
+  accessor _selectorEls!: NodeListOf<TargetPickerElement>;
 
   private _configTarget(): TargetPickerValue {
     return (
@@ -33,16 +40,13 @@ export class HassRecordsActionCardEditor extends EditorBase {
   }
 
   private _syncTargetPicker(): void {
-    const tp = this.shadowRoot?.querySelector(
-      "#target-picker"
-    ) as Nullable<TargetPickerElement>;
-    if (!tp) {
+    if (!this._targetPickerEl) {
       return;
     }
     if (this.hass) {
-      tp.hass = this.hass;
+      this._targetPickerEl.hass = this.hass;
     }
-    tp.value = this._configTarget();
+    this._targetPickerEl.value = this._configTarget();
   }
 
   private _setTargetConfig(target: TargetPickerValue | undefined): void {
@@ -69,9 +73,8 @@ export class HassRecordsActionCardEditor extends EditorBase {
       this._syncTargetPicker();
     }
     if (changedProps.has("hass") && this.hass) {
-      this.shadowRoot?.querySelectorAll("ha-selector").forEach((el) => {
-        const selectorEl = el as TargetPickerElement;
-        selectorEl.hass = this.hass;
+      this._selectorEls?.forEach((el) => {
+        el.hass = this.hass;
       });
     }
   }

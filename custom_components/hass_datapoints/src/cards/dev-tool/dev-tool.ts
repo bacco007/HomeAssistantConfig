@@ -1,4 +1,5 @@
-import { html, render } from "lit";
+import { LitElement, html } from "lit";
+import { query, state } from "lit/decorators.js";
 import { DOMAIN } from "@/constants";
 import { confirmDestructiveAction } from "@/lib/ha/ha-components";
 import type { HassLike } from "@/lib/types";
@@ -9,28 +10,52 @@ import type {
   WindowConfig,
   WindowResult,
 } from "@/cards/dev-tool/types";
-import { HassRecordsDevToolCardEditor } from "./editor";
+import { HassDatapointsDevToolCardEditor } from "./editor";
 import "@/atoms/display/feedback-banner/feedback-banner";
 import "@/cards/dev-tool/dev-tool-results/dev-tool-results";
 import "@/cards/dev-tool/dev-tool-windows/dev-tool-windows";
 
-export class HassRecordsDevToolCard extends HTMLElement {
-  _config: RecordWithUnknownValues = {};
+export class HassDatapointsDevToolCard extends LitElement {
+  static styles = styles;
 
-  _hass: Nullable<HassLike> = null;
+  @state() accessor _config: RecordWithUnknownValues = {};
 
-  _rendered = false;
+  @state() accessor _hass: Nullable<HassLike> = null;
 
-  _entities: string[] = [];
+  @state() accessor _entities: string[] = [];
 
-  _suppressEntityChange = false;
+  @state() accessor _results: WindowResult[] = [];
 
-  _results: WindowResult[] = [];
+  @state() accessor _analyzing: boolean = false;
 
-  constructor() {
-    super();
-    this.attachShadow({ mode: "open" });
-  }
+  @state() accessor _deleting: boolean = false;
+
+  @state() accessor _devCount: number = 0;
+
+  @state() accessor _analyzeStatusKind: string = "";
+
+  @state() accessor _analyzeStatusText: string = "";
+
+  @state() accessor _analyzeStatusVisible: boolean = false;
+
+  @state() accessor _deleteStatusKind: string = "";
+
+  @state() accessor _deleteStatusText: string = "";
+
+  @state() accessor _deleteStatusVisible: boolean = false;
+
+  @state() accessor _resultsStatusKind: string = "";
+
+  @state() accessor _resultsStatusText: string = "";
+
+  @state() accessor _resultsStatusVisible: boolean = false;
+
+  @query("dev-tool-windows")
+  accessor _windowsEl: Nullable<
+    HTMLElement & { getWindowConfigs: () => WindowConfig[] }
+  > = null;
+
+  private _initialized: boolean = false;
 
   setConfig(config: RecordWithUnknownValues) {
     this._config = config || {};
@@ -38,142 +63,37 @@ export class HassRecordsDevToolCard extends HTMLElement {
 
   set hass(hass: HassLike) {
     this._hass = hass;
-    if (!this._rendered) {
-      this._render();
+    if (!this._initialized) {
+      this._initialized = true;
       this._refreshDevCount();
     }
-    this._updateHassOnChildren();
   }
 
-  _updateHassOnChildren() {
-    if (!this.shadowRoot || !this._hass) {
-      return;
-    }
-
-    const entityPicker = this.shadowRoot.getElementById(
-      "entity-picker"
-    ) as Nullable<HTMLElement & RecordWithUnknownValues>;
-    if (!entityPicker) {
-      return;
-    }
-
-    this._suppressEntityChange = true;
-    entityPicker.hass = this._hass;
-    entityPicker.value = this._entities;
-    setTimeout(() => {
-      this._suppressEntityChange = false;
-    }, 100);
-
-    const resultsEl = this.shadowRoot.getElementById(
-      "results-container"
-    ) as Nullable<HTMLElement & RecordWithUnknownValues>;
-    if (resultsEl) {
-      resultsEl.isAdmin = this._hass.user?.is_admin === true;
-    }
+  get hass(): Nullable<HassLike> {
+    return this._hass;
   }
 
-  _render() {
-    this._rendered = true;
-    const cfg = this._config;
-    if (!this.shadowRoot!.adoptedStyleSheets.length) {
-      const sheet = new CSSStyleSheet();
-      sheet.replaceSync(styles);
-      this.shadowRoot!.adoptedStyleSheets = [sheet];
-    }
-    render(
-      html`
-        <ha-card>
-          ${cfg.title
-            ? html`<div class="card-header">${cfg.title as string}</div>`
-            : ""}
-          <div class="section-title">Analyze HA History</div>
-          <div class="form-group">
-            <ha-selector
-              id="entity-picker"
-              label="Entities to analyze"
-            ></ha-selector>
-          </div>
-          <dev-tool-windows id="windows-editor"></dev-tool-windows>
-          <div class="analyze-row">
-            <ha-button id="analyze-btn" class="analyze-btn" raised
-              >Analyze all windows</ha-button
-            >
-          </div>
-          <feedback-banner id="analyze-status"></feedback-banner>
-          <dev-tool-results id="results-container"></dev-tool-results>
-          <hr class="divider" />
-          <div class="dev-section">
-            <div class="section-title">Dev Datapoints</div>
-            <div class="dev-summary">
-              <span class="dev-count-label"
-                >Currently recorded:&nbsp;<span
-                  class="dev-count-num"
-                  id="dev-count"
-                  >—</span
-                >&nbsp;dev data point<span id="dev-count-plural">s</span></span
-              >
-            </div>
-            <ha-button class="delete-btn" id="delete-dev-btn"
-              >Delete all dev datapoints</ha-button
-            >
-            <feedback-banner id="delete-status"></feedback-banner>
-          </div>
-        </ha-card>
-      `,
-      this.shadowRoot!
-    );
+  private get _isAdmin(): boolean {
+    return this._hass?.user?.is_admin === true;
+  }
 
-    const entityPicker = this.shadowRoot!.getElementById(
-      "entity-picker"
-    ) as Nullable<HTMLElement & RecordWithUnknownValues>;
-    if (entityPicker) {
-      entityPicker.selector = { entity: { multiple: true } };
-      entityPicker.value = [];
+  private _onEntitiesChanged(event: CustomEvent<{ value: unknown }>) {
+    const value = event.detail.value;
+    if (Array.isArray(value)) {
+      this._entities = value as string[];
+    } else if (value) {
+      this._entities = [value as string];
+    } else {
       this._entities = [];
-      this._suppressEntityChange = false;
-      entityPicker.addEventListener("value-changed", (event: Event) => {
-        if (this._suppressEntityChange) {
-          return;
-        }
-        const value = (event as CustomEvent<{ value: unknown }>).detail.value;
-        if (Array.isArray(value)) {
-          this._entities = value as string[];
-        } else if (value) {
-          this._entities = [value as string];
-        } else {
-          this._entities = [];
-        }
-      });
     }
-
-    this.shadowRoot!.getElementById("analyze-btn")!.addEventListener(
-      "click",
-      () => {
-        this._analyzeHistory();
-      }
-    );
-    this.shadowRoot!.getElementById("delete-dev-btn")!.addEventListener(
-      "click",
-      () => {
-        this._deleteAllDev();
-      }
-    );
-    this.shadowRoot!.getElementById("results-container")!.addEventListener(
-      "dp-record-selected-request",
-      (event: Event) => {
-        const detail = (event as CustomEvent<{ items: ChangeItem[] }>).detail;
-        this._recordSelected(detail.items);
-      }
-    );
   }
 
   _readWindowConfigs(): WindowConfig[] {
-    const windowsEditor = this.shadowRoot!.getElementById(
-      "windows-editor"
-    ) as HTMLElement & {
-      getWindowConfigs: () => WindowConfig[];
-    };
-    return windowsEditor.getWindowConfigs().map((windowConfig, index) => ({
+    const windowsEl = this._windowsEl;
+    if (!windowsEl) {
+      return [];
+    }
+    return windowsEl.getWindowConfigs().map((windowConfig, index) => ({
       ...windowConfig,
       label: windowConfig.label.trim() || `Window ${index + 1}`,
     }));
@@ -181,25 +101,18 @@ export class HassRecordsDevToolCard extends HTMLElement {
 
   async _analyzeHistory() {
     if (!this._entities.length) {
-      this._showFeedback(
-        "analyze-status",
-        "err",
-        "Please select at least one entity."
-      );
+      this._analyzeStatusKind = "err";
+      this._analyzeStatusText = "Please select at least one entity.";
+      this._analyzeStatusVisible = true;
       return;
     }
 
     const windowConfigs = this._readWindowConfigs();
-    const button = this.shadowRoot!.getElementById(
-      "analyze-btn"
-    ) as HTMLButtonElement;
-    button.disabled = true;
+    this._analyzing = true;
     this._results = [];
-    this._showFeedback(
-      "analyze-status",
-      "ok",
-      `Fetching history for ${windowConfigs.length} window${windowConfigs.length === 1 ? "" : "s"}…`
-    );
+    this._analyzeStatusKind = "ok";
+    this._analyzeStatusText = `Fetching history for ${windowConfigs.length} window${windowConfigs.length === 1 ? "" : "s"}…`;
+    this._analyzeStatusVisible = true;
 
     try {
       const now = new Date();
@@ -231,18 +144,18 @@ export class HassRecordsDevToolCard extends HTMLElement {
           };
         })
       );
-      this._renderResults();
-      this._hideFeedback("analyze-status");
+      this._resultsStatusKind = "";
+      this._resultsStatusText = "";
+      this._resultsStatusVisible = false;
+      this._analyzeStatusVisible = false;
     } catch (err) {
-      this._showFeedback(
-        "analyze-status",
-        "err",
-        `Error: ${(err as Error).message || "Failed to fetch history"}`
-      );
+      this._analyzeStatusKind = "err";
+      this._analyzeStatusText = `Error: ${(err as Error).message || "Failed to fetch history"}`;
+      this._analyzeStatusVisible = true;
       logger.error("[hass-datapoints dev-tool]", err);
     }
 
-    button.disabled = false;
+    this._analyzing = false;
   }
 
   _detectChanges(histResult: RecordWithUnknownValues): ChangeItem[] {
@@ -266,9 +179,9 @@ export class HassRecordsDevToolCard extends HTMLElement {
         "";
 
       for (let i = 0; i < states.length; i += 1) {
-        const state = states[i];
+        const stateEntry = states[i];
         const previous = i > 0 ? states[i - 1] : null;
-        const currentValue = state.s as string;
+        const currentValue = stateEntry.s as string;
         const previousValue = (previous?.s as string | undefined) ?? null;
 
         if (currentValue === "unavailable" || currentValue === "unknown") {
@@ -281,7 +194,9 @@ export class HassRecordsDevToolCard extends HTMLElement {
           }
         }
 
-        const timestampRaw = (state.lc ?? state.lu) as number | undefined;
+        const timestampRaw = (stateEntry.lc ?? stateEntry.lu) as
+          | number
+          | undefined;
         const timestamp =
           timestampRaw != null
             ? new Date(timestampRaw * 1000).toISOString()
@@ -324,7 +239,7 @@ export class HassRecordsDevToolCard extends HTMLElement {
               : "mdi:garage";
           color = currentValue === "open" ? "#4caf50" : "#795548";
         } else if (domain === "climate") {
-          const stateAttributes = state.a as
+          const stateAttributes = stateEntry.a as
             | RecordWithUnknownValues
             | undefined;
           const previousAttributes = previous?.a as
@@ -426,8 +341,8 @@ export class HassRecordsDevToolCard extends HTMLElement {
     return changes;
   }
 
-  _binaryLabel(deviceClass: string, state: string): string {
-    const on = state === "on";
+  _binaryLabel(deviceClass: string, value: string): string {
+    const on = value === "on";
     const map: Record<string, [string, string]> = {
       door: ["opened", "closed"],
       window: ["opened", "closed"],
@@ -459,31 +374,24 @@ export class HassRecordsDevToolCard extends HTMLElement {
     return on ? "on" : "off";
   }
 
-  _renderResults() {
-    const resultsContainer = this.shadowRoot!.getElementById(
-      "results-container"
-    ) as HTMLElement & {
-      results: WindowResult[];
-      statusKind: string;
-      statusText: string;
-      statusVisible: boolean;
-    };
-    resultsContainer.results = [...this._results];
-    resultsContainer.statusKind = "";
-    resultsContainer.statusText = "";
-    resultsContainer.statusVisible = false;
+  private _onRecordSelectedRequest(
+    event: CustomEvent<{ items: ChangeItem[] }>
+  ) {
+    this._recordSelected(event.detail.items);
   }
 
   async _recordSelected(items: ChangeItem[]) {
     if (!items.length) {
-      this._showResultsStatus("err", "No items selected.");
+      this._resultsStatusKind = "err";
+      this._resultsStatusText = "No items selected.";
+      this._resultsStatusVisible = true;
       return;
     }
 
-    this._showResultsStatus(
-      "ok",
-      `Recording ${items.length} data point${items.length === 1 ? "" : "s"}…`
-    );
+    this._resultsStatusKind = "ok";
+    this._resultsStatusText = `Recording ${items.length} data point${items.length === 1 ? "" : "s"}…`;
+    this._resultsStatusVisible = true;
+
     const results = await Promise.allSettled(
       items.map((item) =>
         this._hass!.callService(DOMAIN as string, "record", {
@@ -501,62 +409,51 @@ export class HassRecordsDevToolCard extends HTMLElement {
       (result) => result.status === "rejected"
     ).length;
     if (fail) {
-      this._showResultsStatus("err", `Recorded ${ok}, failed ${fail}.`);
+      this._resultsStatusKind = "err";
+      this._resultsStatusText = `Recorded ${ok}, failed ${fail}.`;
     } else {
-      this._showResultsStatus(
-        "ok",
-        `Recorded ${ok} dev data point${ok === 1 ? "" : "s"}!`
-      );
+      this._resultsStatusKind = "ok";
+      this._resultsStatusText = `Recorded ${ok} dev data point${ok === 1 ? "" : "s"}!`;
     }
+    this._resultsStatusVisible = true;
     await this._refreshDevCount();
     window.dispatchEvent(new CustomEvent("hass-datapoints-event-recorded"));
   }
 
   async _deleteAllDev() {
-    const devCountEl = this.shadowRoot!.getElementById("dev-count");
-    const count = parseInt(devCountEl?.textContent ?? "0", 10) || 0;
-    if (count === 0) {
-      this._showFeedback(
-        "delete-status",
-        "err",
-        "No dev datapoints to delete."
-      );
+    if (this._devCount === 0) {
+      this._deleteStatusKind = "err";
+      this._deleteStatusText = "No dev datapoints to delete.";
+      this._deleteStatusVisible = true;
       return;
     }
 
     const confirmed = await confirmDestructiveAction(this, {
       title: "Delete dev datapoints",
-      message: `Delete all ${count} dev data point${count === 1 ? "" : "s"}?`,
+      message: `Delete all ${this._devCount} dev data point${this._devCount === 1 ? "" : "s"}?`,
       confirmLabel: "Delete all",
     });
     if (!confirmed) {
       return;
     }
 
-    const button = this.shadowRoot!.getElementById(
-      "delete-dev-btn"
-    ) as HTMLButtonElement;
-    button.disabled = true;
+    this._deleting = true;
     try {
       const result = (await this._hass!.connection.sendMessagePromise({
         type: `${DOMAIN}/events/delete_dev`,
       })) as RecordWithUnknownValues;
       const deleted = result.deleted as number;
-      this._showFeedback(
-        "delete-status",
-        "ok",
-        `Deleted ${deleted} dev data point${deleted === 1 ? "" : "s"}.`
-      );
+      this._deleteStatusKind = "ok";
+      this._deleteStatusText = `Deleted ${deleted} dev data point${deleted === 1 ? "" : "s"}.`;
+      this._deleteStatusVisible = true;
       await this._refreshDevCount();
       window.dispatchEvent(new CustomEvent("hass-datapoints-event-recorded"));
     } catch (err) {
-      this._showFeedback(
-        "delete-status",
-        "err",
-        `Error: ${(err as Error).message || "failed"}`
-      );
+      this._deleteStatusKind = "err";
+      this._deleteStatusText = `Error: ${(err as Error).message || "failed"}`;
+      this._deleteStatusVisible = true;
     }
-    button.disabled = false;
+    this._deleting = false;
   }
 
   async _refreshDevCount() {
@@ -565,55 +462,84 @@ export class HassRecordsDevToolCard extends HTMLElement {
         type: `${DOMAIN}/events`,
       })) as RecordWithUnknownValues;
       const events = (result.events as Array<RecordWithUnknownValues>) || [];
-      const count = events.filter((event) => event.dev).length;
-      const countEl = this.shadowRoot!.getElementById("dev-count");
-      const pluralEl = this.shadowRoot!.getElementById("dev-count-plural");
-      if (countEl) {
-        countEl.textContent = String(count);
-      }
-      if (pluralEl) {
-        pluralEl.textContent = count === 1 ? "" : "s";
-      }
+      this._devCount = events.filter((event) => event.dev).length;
     } catch (error) {
       logger.warn("[hass-datapoints dev-tool] refresh dev count failed", error);
     }
   }
 
-  _showFeedback(id: string, kind: "ok" | "err", text: string) {
-    const el = this.shadowRoot!.getElementById(id) as HTMLElement & {
-      kind: string;
-      text: string;
-      visible: boolean;
-    };
-    if (!el) {
-      return;
-    }
-    el.kind = kind;
-    el.text = text;
-    el.visible = true;
-  }
-
-  _hideFeedback(id: string) {
-    const el = this.shadowRoot!.getElementById(id) as HTMLElement & {
-      visible: boolean;
-    };
-    if (!el) {
-      return;
-    }
-    el.visible = false;
-  }
-
-  _showResultsStatus(kind: "ok" | "err", text: string) {
-    const el = this.shadowRoot!.getElementById(
-      "results-container"
-    ) as HTMLElement & {
-      statusKind: string;
-      statusText: string;
-      statusVisible: boolean;
-    };
-    el.statusKind = kind;
-    el.statusText = text;
-    el.statusVisible = true;
+  render() {
+    const cfg = this._config;
+    return html`
+      <ha-card>
+        ${cfg.title
+          ? html`<div class="card-header">${cfg.title as string}</div>`
+          : ""}
+        <div class="section-title">Analyze HA History</div>
+        <div class="form-group">
+          <ha-selector
+            id="entity-picker"
+            label="Entities to analyze"
+            .hass=${this._hass}
+            .selector=${{ entity: { multiple: true } }}
+            .value=${this._entities}
+            @value-changed=${this._onEntitiesChanged}
+          ></ha-selector>
+        </div>
+        <dev-tool-windows id="windows-editor"></dev-tool-windows>
+        <div class="analyze-row">
+          <ha-button
+            id="analyze-btn"
+            class="analyze-btn"
+            raised
+            .disabled=${this._analyzing}
+            @click=${this._analyzeHistory}
+          >
+            Analyze all windows
+          </ha-button>
+        </div>
+        <feedback-banner
+          id="analyze-status"
+          .kind=${this._analyzeStatusKind}
+          .text=${this._analyzeStatusText}
+          .visible=${this._analyzeStatusVisible}
+        ></feedback-banner>
+        <dev-tool-results
+          id="results-container"
+          .results=${this._results}
+          .isAdmin=${this._isAdmin}
+          .statusKind=${this._resultsStatusKind}
+          .statusText=${this._resultsStatusText}
+          .statusVisible=${this._resultsStatusVisible}
+          @dp-record-selected-request=${this._onRecordSelectedRequest}
+        ></dev-tool-results>
+        <hr class="divider" />
+        <div class="dev-section">
+          <div class="section-title">Dev Datapoints</div>
+          <div class="dev-summary">
+            <span class="dev-count-label"
+              >Currently recorded:&nbsp;<span class="dev-count-num"
+                >${this._devCount}</span
+              >&nbsp;dev data point${this._devCount === 1 ? "" : "s"}</span
+            >
+          </div>
+          <ha-button
+            class="delete-btn"
+            id="delete-dev-btn"
+            .disabled=${this._deleting}
+            @click=${this._deleteAllDev}
+          >
+            Delete all dev datapoints
+          </ha-button>
+          <feedback-banner
+            id="delete-status"
+            .kind=${this._deleteStatusKind}
+            .text=${this._deleteStatusText}
+            .visible=${this._deleteStatusVisible}
+          ></feedback-banner>
+        </div>
+      </ha-card>
+    `;
   }
 
   static getStubConfig() {
@@ -625,4 +551,4 @@ export class HassRecordsDevToolCard extends HTMLElement {
   }
 }
 
-export { HassRecordsDevToolCardEditor };
+export { HassDatapointsDevToolCardEditor };

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createMockHass } from "@/test-support/mock-hass";
-import { HassRecordsDevToolCard } from "../dev-tool.ts";
+import { HassDatapointsDevToolCard } from "../dev-tool.ts";
 
 vi.mock("@/helpers.js", async (importOriginal) => {
   const mod = (await importOriginal()) as RecordWithUnknownValues;
@@ -14,7 +14,7 @@ vi.mock("@/helpers.js", async (importOriginal) => {
 if (!customElements.get("hass-datapoints-dev-tool-card")) {
   customElements.define(
     "hass-datapoints-dev-tool-card",
-    HassRecordsDevToolCard
+    HassDatapointsDevToolCard
   );
 }
 
@@ -186,14 +186,16 @@ describe("dev-tool", () => {
     describe("WHEN getStubConfig is called", () => {
       it("THEN it returns default config", () => {
         expect.assertions(1);
-        expect(HassRecordsDevToolCard.getStubConfig()).toHaveProperty("title");
+        expect(HassDatapointsDevToolCard.getStubConfig()).toHaveProperty(
+          "title"
+        );
       });
     });
 
     describe("WHEN getConfigElement is called", () => {
       it("THEN it returns the dev-tool editor element tag", () => {
         expect.assertions(1);
-        const editorEl = HassRecordsDevToolCard.getConfigElement();
+        const editorEl = HassDatapointsDevToolCard.getConfigElement();
         expect(editorEl.tagName.toLowerCase()).toBe(
           "hass-datapoints-dev-tool-card-editor"
         );

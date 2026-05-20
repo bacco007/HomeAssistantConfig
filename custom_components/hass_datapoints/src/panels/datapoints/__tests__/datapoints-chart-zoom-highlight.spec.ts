@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { HassRecordsHistoryPanel } from "../datapoints";
+import { HassDatapointsHistoryPanel } from "../datapoints";
 
-describe("HassRecordsHistoryPanel chart zoom highlight", () => {
+describe("HassDatapointsHistoryPanel chart zoom highlight", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
@@ -82,7 +82,7 @@ describe("HassRecordsHistoryPanel chart zoom highlight", () => {
           }
         );
 
-        HassRecordsHistoryPanel.prototype._renderContent.call(panel);
+        HassDatapointsHistoryPanel.prototype._renderContent.call(panel);
 
         expect(panel._chartZoomCommittedRange).toEqual(zoomRange);
         expect(updateChartZoomHighlight).toHaveBeenCalled();
@@ -117,7 +117,7 @@ describe("HassRecordsHistoryPanel chart zoom highlight", () => {
           _renderComparisonTabs: renderComparisonTabs,
         };
 
-        HassRecordsHistoryPanel.prototype._handleChartZoom.call(panel, {
+        HassDatapointsHistoryPanel.prototype._handleChartZoom.call(panel, {
           detail: {
             startTime: 100,
             endTime: 200,

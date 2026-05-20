@@ -25,6 +25,7 @@ export interface NormalizedAnalysis {
   anomaly_zscore_window: string;
   anomaly_persistence_window: string;
   anomaly_comparison_window_id: Nullable<string>;
+  anomaly_comparison_entity_id: Nullable<string>;
   anomaly_trend_method: string;
   anomaly_trend_window: string;
   show_delta_analysis: boolean;

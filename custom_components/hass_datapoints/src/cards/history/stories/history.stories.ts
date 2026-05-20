@@ -8,11 +8,14 @@
  */
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
 import { html } from "lit";
-import { HassRecordsHistoryCard } from "../history";
+import { HassDatapointsHistoryCard } from "../history";
 
 // Self-registers if not already defined (guards against HMR double-registration).
 if (!customElements.get("hass-datapoints-history-card")) {
-  customElements.define("hass-datapoints-history-card", HassRecordsHistoryCard);
+  customElements.define(
+    "hass-datapoints-history-card",
+    HassDatapointsHistoryCard
+  );
 }
 
 type Story = StoryObj;

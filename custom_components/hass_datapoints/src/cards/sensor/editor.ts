@@ -10,7 +10,7 @@ import "@/atoms/form/editor-switch/editor-switch";
 import "@/atoms/form/editor-entity-picker/editor-entity-picker";
 import "@/atoms/form/editor-select/editor-select";
 
-export class HassRecordsSensorCardEditor extends EditorBase {
+export class HassDatapointsSensorCardEditor extends EditorBase {
   static styles: CSSResultGroup = [EditorBase.styles, styles];
 
   render() {

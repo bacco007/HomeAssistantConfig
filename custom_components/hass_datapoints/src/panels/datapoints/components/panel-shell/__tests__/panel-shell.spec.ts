@@ -94,12 +94,13 @@ describe("panel-shell", () => {
         expect(labels).not.toContain("Clear saved page");
       });
 
-      it("THEN shows Download and Save menu items", () => {
-        expect.assertions(2);
+      it("THEN shows AI brief, Download, and Save menu items", () => {
+        expect.assertions(3);
         const menu = el.shadowRoot!.querySelector("#page-menu");
         const labels = Array.from(menu!.querySelectorAll("page-menu-item")).map(
           (i) => i.getAttribute("label")
         );
+        expect(labels).toContain("AI query brief");
         expect(labels).toContain("Download spreadsheet");
         expect(labels).toContain("Save page state");
       });
@@ -252,7 +253,7 @@ describe("panel-shell", () => {
 
     describe("WHEN rendered", () => {
       it("THEN uses the provided localized labels", () => {
-        expect.assertions(4);
+        expect.assertions(5);
         const title = el.shadowRoot!.querySelector('[slot="title"]');
         const menuButton = el.shadowRoot!.querySelector("#page-menu-button");
         const labels = Array.from(
@@ -262,6 +263,7 @@ describe("panel-shell", () => {
 
         expect(title?.textContent).toBe("Datapoints");
         expect(menuButton?.getAttribute("label")).toBe("Sivun asetukset");
+        expect(labels).toContain("AI-kyselytiivistelma");
         expect(labels).toContain("Lataa taulukko");
         expect(sidebarToggle?.getAttribute("label")).toBe(
           "Kutista kohteiden sivupalkki"
@@ -306,6 +308,22 @@ describe("panel-shell", () => {
         const item = Array.from(
           el.shadowRoot!.querySelectorAll("page-menu-item")
         ).find((i) => i.getAttribute("label") === "Download spreadsheet");
+        item!.dispatchEvent(
+          new CustomEvent("dp-menu-action", { bubbles: true, composed: true })
+        );
+        await el.updateComplete;
+        expect(events.length).toBe(1);
+      });
+    });
+
+    describe("WHEN AI query brief menu item fires dp-menu-action", () => {
+      it("THEN fires dp-shell-menu-ai-brief event", async () => {
+        expect.assertions(1);
+        const events: Event[] = [];
+        el.addEventListener("dp-shell-menu-ai-brief", (ev) => events.push(ev));
+        const item = Array.from(
+          el.shadowRoot!.querySelectorAll("page-menu-item")
+        ).find((i) => i.getAttribute("label") === "AI query brief");
         item!.dispatchEvent(
           new CustomEvent("dp-menu-action", { bubbles: true, composed: true })
         );

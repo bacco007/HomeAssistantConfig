@@ -18,6 +18,12 @@ import { fetchStatisticsDuringPeriod } from "@/lib/data/statistics-api";
 import { fetchEvents } from "@/lib/data/events-api";
 import { logger } from "@/lib/logger";
 import type { CardConfig } from "@/lib/types";
+import {
+  diffCardConfig,
+  hasDrawableHistoryData,
+  getDrawableHistoryQuality,
+  filterEvents,
+} from "./history-config-diff";
 import { navigateToDataPointsHistory } from "@/lib/ha/navigation";
 import { buildHistoryPageSessionState } from "@/lib/history-page/history-session-state";
 
@@ -69,7 +75,7 @@ interface PartialLoadState {
 
 // ── Card ──────────────────────────────────────────────────────────────────────
 
-export class HassRecordsHistoryCard extends ChartCardBase {
+export class HassDatapointsHistoryCard extends ChartCardBase {
   static styles = styles;
 
   // ── State ──────────────────────────────────────────────────────────────────
@@ -292,178 +298,17 @@ export class HassRecordsHistoryCard extends ChartCardBase {
 
     const currentConfig = this._config || {};
 
-    const currentDataKey = JSON.stringify({
-      target: (currentConfig as CardConfig).target || null,
-      entities: (currentConfig as CardConfig).entities,
-      entity: (currentConfig as CardConfig).entity,
-      series_entities: Array.isArray(
-        (currentConfig as CardConfig).series_settings
-      )
-        ? (
-            (currentConfig as CardConfig)
-              .series_settings as SeriesSettingEntry[]
-          ).map(
-            (entry) =>
-              entry?.entity_id || entry?.entity || entry?.entityId || null
-          )
-        : null,
-      datapoint_scope: (currentConfig as CardConfig).datapoint_scope,
-      hours_to_show: (currentConfig as CardConfig).hours_to_show,
-      start_time: (currentConfig as CardConfig).start_time,
-      end_time: (currentConfig as CardConfig).end_time,
-    });
-    const nextDataKey = JSON.stringify({
-      target: nextConfig.target || null,
-      entities: nextConfig.entities,
-      entity: nextConfig.entity,
-      series_entities: Array.isArray(nextConfig.series_settings)
-        ? (nextConfig.series_settings as SeriesSettingEntry[]).map(
-            (entry) =>
-              entry?.entity_id || entry?.entity || entry?.entityId || null
-          )
-        : null,
-      datapoint_scope: nextConfig.datapoint_scope,
-      hours_to_show: nextConfig.hours_to_show,
-      start_time: nextConfig.start_time,
-      end_time: nextConfig.end_time,
-    });
-
-    const currentViewKey = JSON.stringify({
-      series_settings: (currentConfig as CardConfig).series_settings || [],
-      zoom_start_time: (currentConfig as CardConfig).zoom_start_time,
-      zoom_end_time: (currentConfig as CardConfig).zoom_end_time,
-      message_filter: (currentConfig as CardConfig).message_filter || "",
-      hidden_event_ids: (currentConfig as CardConfig).hidden_event_ids || [],
-      hovered_event_ids: (currentConfig as CardConfig).hovered_event_ids || [],
-      show_event_markers:
-        (currentConfig as CardConfig).show_event_markers !== false,
-      show_event_lines:
-        (currentConfig as CardConfig).show_event_lines !== false,
-      show_tooltips: (currentConfig as CardConfig).show_tooltips !== false,
-      emphasize_hover_guides:
-        (currentConfig as CardConfig).emphasize_hover_guides === true,
-      hover_snap_mode:
-        (currentConfig as CardConfig).hover_snap_mode || "follow_series",
-      show_correlated_anomalies:
-        (currentConfig as CardConfig).show_correlated_anomalies === true,
-      show_trend_lines: (currentConfig as CardConfig).show_trend_lines === true,
-      show_summary_stats:
-        (currentConfig as CardConfig).show_summary_stats === true,
-      show_rate_of_change:
-        (currentConfig as CardConfig).show_rate_of_change === true,
-      show_threshold_analysis:
-        (currentConfig as CardConfig).show_threshold_analysis === true,
-      show_threshold_shading:
-        (currentConfig as CardConfig).show_threshold_shading === true,
-      show_anomalies: (currentConfig as CardConfig).show_anomalies === true,
-      hide_raw_data: (currentConfig as CardConfig).hide_raw_data === true,
-      show_trend_crosshairs:
-        (currentConfig as CardConfig).show_trend_crosshairs === true,
-      trend_method:
-        (currentConfig as CardConfig).trend_method || "rolling_average",
-      trend_window: (currentConfig as CardConfig).trend_window || "24h",
-      rate_window: (currentConfig as CardConfig).rate_window || "1h",
-      anomaly_sensitivity:
-        (currentConfig as CardConfig).anomaly_sensitivity || "medium",
-      threshold_values: (currentConfig as CardConfig).threshold_values || {},
-      threshold_directions:
-        (currentConfig as CardConfig).threshold_directions || {},
-      show_delta_analysis:
-        (currentConfig as CardConfig).show_delta_analysis === true,
-      show_delta_tooltip:
-        (currentConfig as CardConfig).show_delta_tooltip !== false,
-      show_delta_lines: (currentConfig as CardConfig).show_delta_lines === true,
-      hide_delta_source_series:
-        (currentConfig as CardConfig).hide_delta_source_series === true,
-      delink_y_axis: (currentConfig as CardConfig).delink_y_axis === true,
-      split_view: (currentConfig as CardConfig).split_view === true,
-      show_data_gaps: (currentConfig as CardConfig).show_data_gaps !== false,
-      data_gap_threshold:
-        (currentConfig as CardConfig).data_gap_threshold || "2h",
-      comparison_hover_active:
-        (currentConfig as CardConfig).comparison_hover_active === true,
-      selected_comparison_window_id:
-        (currentConfig as CardConfig).selected_comparison_window_id || null,
-      hovered_comparison_window_id:
-        (currentConfig as CardConfig).hovered_comparison_window_id || null,
-    });
-    const nextViewKey = JSON.stringify({
-      series_settings: nextConfig.series_settings || [],
-      zoom_start_time: nextConfig.zoom_start_time,
-      zoom_end_time: nextConfig.zoom_end_time,
-      message_filter: nextConfig.message_filter || "",
-      hidden_event_ids: nextConfig.hidden_event_ids || [],
-      hovered_event_ids: nextConfig.hovered_event_ids || [],
-      show_event_markers: nextConfig.show_event_markers !== false,
-      show_event_lines: nextConfig.show_event_lines !== false,
-      show_tooltips: nextConfig.show_tooltips !== false,
-      emphasize_hover_guides: nextConfig.emphasize_hover_guides === true,
-      hover_snap_mode:
-        (nextConfig.hover_snap_mode as string) || "follow_series",
-      show_correlated_anomalies: nextConfig.show_correlated_anomalies === true,
-      show_trend_lines: nextConfig.show_trend_lines === true,
-      show_summary_stats: nextConfig.show_summary_stats === true,
-      show_rate_of_change: nextConfig.show_rate_of_change === true,
-      show_threshold_analysis: nextConfig.show_threshold_analysis === true,
-      show_threshold_shading: nextConfig.show_threshold_shading === true,
-      show_anomalies: nextConfig.show_anomalies === true,
-      hide_raw_data: nextConfig.hide_raw_data === true,
-      show_trend_crosshairs: nextConfig.show_trend_crosshairs === true,
-      trend_method: (nextConfig.trend_method as string) || "rolling_average",
-      trend_window: (nextConfig.trend_window as string) || "24h",
-      rate_window: (nextConfig.rate_window as string) || "1h",
-      anomaly_sensitivity:
-        (nextConfig.anomaly_sensitivity as string) || "medium",
-      threshold_values: nextConfig.threshold_values || {},
-      threshold_directions: nextConfig.threshold_directions || {},
-      show_delta_analysis: nextConfig.show_delta_analysis === true,
-      show_delta_tooltip: nextConfig.show_delta_tooltip !== false,
-      show_delta_lines: nextConfig.show_delta_lines === true,
-      hide_delta_source_series: nextConfig.hide_delta_source_series === true,
-      delink_y_axis: nextConfig.delink_y_axis === true,
-      split_view: nextConfig.split_view === true,
-      show_data_gaps: nextConfig.show_data_gaps !== false,
-      data_gap_threshold: (nextConfig.data_gap_threshold as string) || "2h",
-      comparison_hover_active: nextConfig.comparison_hover_active === true,
-      selected_comparison_window_id:
-        nextConfig.selected_comparison_window_id || null,
-      hovered_comparison_window_id:
-        nextConfig.hovered_comparison_window_id || null,
-    });
-
-    const currentComparisonKey = JSON.stringify(
-      (currentConfig as CardConfig).comparison_windows || []
+    const diff = diffCardConfig(
+      currentConfig as Partial<CardConfig>,
+      nextConfig
     );
-    const nextComparisonKey = JSON.stringify(
-      nextConfig.comparison_windows || []
-    );
-    const currentPreloadComparisonKey = JSON.stringify(
-      (currentConfig as CardConfig).preload_comparison_windows || []
-    );
-    const nextPreloadComparisonKey = JSON.stringify(
-      nextConfig.preload_comparison_windows || []
-    );
-    const currentComparisonOverlayKey = JSON.stringify(
-      (currentConfig as CardConfig).comparison_preview_overlay || null
-    );
-    const nextComparisonOverlayKey = JSON.stringify(
-      nextConfig.comparison_preview_overlay || null
-    );
-
-    const dataChanged = currentDataKey !== nextDataKey;
-    const viewChanged = currentViewKey !== nextViewKey;
-    const comparisonChanged = currentComparisonKey !== nextComparisonKey;
-    const preloadComparisonChanged =
-      currentPreloadComparisonKey !== nextPreloadComparisonKey;
-    const comparisonOverlayChanged =
-      currentComparisonOverlayKey !== nextComparisonOverlayKey;
 
     if (
-      !dataChanged &&
-      !viewChanged &&
-      !comparisonChanged &&
-      !preloadComparisonChanged &&
-      !comparisonOverlayChanged &&
+      !diff.dataChanged &&
+      !diff.viewChanged &&
+      !diff.comparisonChanged &&
+      !diff.preloadComparisonChanged &&
+      !diff.comparisonOverlayChanged &&
       this._configKey
     ) {
       return;
@@ -481,7 +326,11 @@ export class HassRecordsHistoryCard extends ChartCardBase {
       nextConfig.zoom_start_time as never,
       nextConfig.zoom_end_time as never
     ) as Nullable<{ start: number; end: number }>;
-    if (dataChanged || comparisonChanged || preloadComparisonChanged) {
+    if (
+      diff.dataChanged ||
+      diff.comparisonChanged ||
+      diff.preloadComparisonChanged
+    ) {
       // Comparison payloads can be large and are keyed by range/window.
       // Prune stale entries on range/entity/window changes so a long-lived page
       // does not retain every historical fetch for the whole session while
@@ -498,7 +347,7 @@ export class HassRecordsHistoryCard extends ChartCardBase {
       chartEl._zoomRange = this._zoomRange;
       chartEl._lastComparisonResults = this._getResolvedComparisonResults();
       if (
-        comparisonOverlayChanged &&
+        diff.comparisonOverlayChanged &&
         typeof chartEl._renderComparisonPreviewOverlay === "function"
       ) {
         (chartEl._renderComparisonPreviewOverlay as () => void)();
@@ -506,27 +355,27 @@ export class HassRecordsHistoryCard extends ChartCardBase {
     }
 
     if (
-      dataChanged ||
+      diff.dataChanged ||
       !Array.isArray(nextConfig.comparison_windows) ||
       !(nextConfig.comparison_windows as unknown[]).length
     ) {
       this._adjustComparisonAxisScale = false;
     }
 
-    if (this._hass && dataChanged) {
+    if (this._hass && diff.dataChanged) {
       this._load();
       return;
     }
-    if (this._hass && comparisonChanged) {
+    if (this._hass && diff.comparisonChanged) {
       this._loadComparisonWindows({ redraw: true, showLoading: true });
       return;
     }
-    if (this._hass && preloadComparisonChanged) {
+    if (this._hass && diff.preloadComparisonChanged) {
       this._preloadComparisonWindows().catch(() => {});
     }
     if (
       this._hass &&
-      comparisonOverlayChanged &&
+      diff.comparisonOverlayChanged &&
       this._lastHistResult &&
       this._lastEvents
     ) {
@@ -539,7 +388,12 @@ export class HassRecordsHistoryCard extends ChartCardBase {
       );
       return;
     }
-    if (this._hass && viewChanged && this._lastHistResult && this._lastEvents) {
+    if (
+      this._hass &&
+      diff.viewChanged &&
+      this._lastHistResult &&
+      this._lastEvents
+    ) {
       this._queueDrawChart(
         this._lastHistResult,
         this._lastStatsResult || {},
@@ -1280,6 +1134,18 @@ export class HassRecordsHistoryCard extends ChartCardBase {
     );
   }
 
+  getAiQueryBriefAnomalySnapshot(): Nullable<RecordWithUnknownValues> {
+    const chartEl = this._chartEl() as Nullable<
+      HTMLElement & {
+        getAiQueryBriefAnomalySnapshot?: () => Nullable<RecordWithUnknownValues>;
+      }
+    >;
+    if (!chartEl?.getAiQueryBriefAnomalySnapshot) {
+      return null;
+    }
+    return chartEl.getAiQueryBriefAnomalySnapshot();
+  }
+
   /**
    * Queue a draw cycle. Delegates to hass-datapoints-history-chart and also records last
    * draw args so the base-class ResizeObserver can replay via _drawChart().
@@ -1355,60 +1221,24 @@ export class HassRecordsHistoryCard extends ChartCardBase {
     histResult: RecordWithUnknownValues,
     statsResult: RecordWithUnknownValues
   ): boolean {
-    return this._entityIds.some((entityId) => {
-      const histData = histResult[entityId];
-      const statsData = statsResult[entityId];
-      const histPoints = Array.isArray(histData) ? histData.length : 0;
-      const statsPoints = Array.isArray(statsData) ? statsData.length : 0;
-      return histPoints > 0 || statsPoints > 0;
-    });
+    return hasDrawableHistoryData(this._entityIds, histResult, statsResult);
   }
 
-  /**
-   * Returns a quality descriptor for the current drawable data — used to
-   * avoid downgrading a high-resolution draw with a lower-resolution one.
-   */
   private _getDrawableHistoryQuality(
     histResult: RecordWithUnknownValues,
     statsResult: RecordWithUnknownValues
   ): { totalPoints: number } {
-    let totalPoints = 0;
-    for (const entityId of this._entityIds) {
-      const histData = histResult[entityId];
-      const statsData = statsResult[entityId];
-      totalPoints += Array.isArray(histData) ? histData.length : 0;
-      totalPoints += Array.isArray(statsData) ? statsData.length : 0;
-    }
-    return { totalPoints };
+    return getDrawableHistoryQuality(this._entityIds, histResult, statsResult);
   }
 
   // ── Event filtering ────────────────────────────────────────────────────────
 
   private _filterEvents(events: unknown[]): unknown[] {
-    const query = String(this._config?.message_filter || "")
-      .trim()
-      .toLowerCase();
-    const visibleEvents = events.filter(
-      (event) => !this._hiddenEventIds.has((event as { id?: string })?.id ?? "")
+    return filterEvents(
+      events,
+      this._hiddenEventIds,
+      String(this._config?.message_filter || "")
     );
-    if (!query) {
-      return visibleEvents;
-    }
-    return visibleEvents.filter((event) => {
-      const ev = event as {
-        message?: string;
-        annotation?: string;
-        entity_ids?: string[];
-      };
-      const haystack = [
-        ev?.message || "",
-        ev?.annotation || "",
-        ...(ev?.entity_ids || []).filter(Boolean),
-      ]
-        .join("\n")
-        .toLowerCase();
-      return haystack.includes(query);
-    });
   }
 
   private _buildNavigationPageState(): RecordWithUnknownValues {
@@ -1641,4 +1471,7 @@ export class HassRecordsHistoryCard extends ChartCardBase {
   }
 }
 
-customElements.define("hass-datapoints-history-card", HassRecordsHistoryCard);
+customElements.define(
+  "hass-datapoints-history-card",
+  HassDatapointsHistoryCard
+);

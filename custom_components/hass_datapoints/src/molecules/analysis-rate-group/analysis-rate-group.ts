@@ -10,9 +10,13 @@ import "@/atoms/form/inline-select/inline-select";
 
 export const ANALYSIS_RATE_WINDOW_OPTIONS = [
   { value: "point_to_point", label: "Point to point" },
+  { value: "30m", label: "30 minutes" },
   { value: "1h", label: "1 hour" },
+  { value: "2h", label: "2 hours" },
+  { value: "3h", label: "3 hours" },
   { value: "6h", label: "6 hours" },
   { value: "24h", label: "24 hours" },
+  { value: "7d", label: "7 days" },
 ];
 
 @localized()

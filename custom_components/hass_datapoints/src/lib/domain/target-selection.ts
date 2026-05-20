@@ -122,12 +122,13 @@ export function mergeTargetSelections(
 }
 
 export function resolveEntityIdsFromTarget(
-  hass: Nullable<Pick<HassLike, "entities">> | undefined,
+  hass: Nullable<Pick<HassLike, "entities" | "devices">> | undefined,
   targetValue: TargetSelectionValue
 ): string[] {
   const target = normalizeTargetSelection(targetValue);
   const resolved = new Set(normalizeEntityIds(target.entity_id));
   const entityRegistry = hass?.entities || {};
+  const deviceRegistry = hass?.devices || {};
   const selectedDevices = new Set(normalizeEntityIds(target.device_id));
   const selectedAreas = new Set(normalizeEntityIds(target.area_id));
   const selectedLabels = new Set(normalizeEntityIds(target.label_id));
@@ -139,7 +140,15 @@ export function resolveEntityIdsFromTarget(
     }
 
     const deviceId = entityEntry.device_id || entityEntry.deviceId || null;
-    const areaId = entityEntry.area_id || entityEntry.areaId || null;
+    // Entity area takes priority; fall back to the device's area (HA assigns
+    // entities to an area via their device when no entity-level override exists)
+    const entityAreaId = entityEntry.area_id || entityEntry.areaId || null;
+    const deviceAreaId =
+      !entityAreaId && deviceId
+        ? ((deviceRegistry[deviceId] as Nullable<{ area_id?: string }>)
+            ?.area_id ?? null)
+        : null;
+    const areaId = entityAreaId || deviceAreaId;
     const labels = [
       ...(Array.isArray(entityEntry.labels) ? entityEntry.labels : []),
       ...(Array.isArray(entityEntry.label_ids) ? entityEntry.label_ids : []),

@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { HassRecordsHistoryPanel } from "../datapoints";
+import { HassDatapointsHistoryPanel } from "../datapoints";
 import { normalizeHistorySeriesAnalysis } from "@/lib/domain/history-series";
 
-describe("HassRecordsHistoryPanel URL sync", () => {
+describe("HassDatapointsHistoryPanel URL sync", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
@@ -23,7 +23,7 @@ describe("HassRecordsHistoryPanel URL sync", () => {
           _renderContent: renderContent,
         };
 
-        HassRecordsHistoryPanel.prototype._setChartDatapointDisplayOption.call(
+        HassDatapointsHistoryPanel.prototype._setChartDatapointDisplayOption.call(
           panel,
           "hover_guides",
           true
@@ -61,7 +61,9 @@ describe("HassRecordsHistoryPanel URL sync", () => {
           isConnected: true,
         };
 
-        HassRecordsHistoryPanel.prototype._toggleSidebarCollapsed.call(panel);
+        HassDatapointsHistoryPanel.prototype._toggleSidebarCollapsed.call(
+          panel
+        );
 
         expect(panel._sidebarCollapsed).toBe(true);
         expect(updateUrl).toHaveBeenCalledWith({ push: false });
@@ -95,7 +97,7 @@ describe("HassRecordsHistoryPanel URL sync", () => {
           _renderContent: renderContent,
         };
 
-        HassRecordsHistoryPanel.prototype._setSeriesAnalysisOption.call(
+        HassDatapointsHistoryPanel.prototype._setSeriesAnalysisOption.call(
           panel,
           "sensor.temp",
           "show_trend_lines",

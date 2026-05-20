@@ -225,6 +225,7 @@ export const styles = css`
   .content > ::slotted(*[is-panes]) {
     flex: 1 1 0;
     min-height: 0;
+    --dp-panes-first-overflow-y: auto;
   }
 
   .control-date {

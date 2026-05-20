@@ -1,5 +1,5 @@
 import { LitElement, html } from "lit";
-import { property, state } from "lit/decorators.js";
+import { property, query, state } from "lit/decorators.js";
 
 import { styles } from "./panel-timeline.styles";
 import type { EventMarker } from "./types";
@@ -69,20 +69,30 @@ export class PanelTimeline extends LitElement {
 
   static styles = styles;
 
-  // Cached overlay DOM refs (set in firstUpdated)
-  _rangeHoverPreviewEl: Nullable<HTMLElement> = null;
+  // DOM refs via @query (resolved from shadow DOM)
+  @query("#range-hover-preview")
+  accessor _rangeHoverPreviewEl: Nullable<HTMLElement> = null;
 
-  _rangeComparisonPreviewEl: Nullable<HTMLElement> = null;
+  @query("#range-comparison-preview")
+  accessor _rangeComparisonPreviewEl: Nullable<HTMLElement> = null;
 
-  _rangeZoomHighlightEl: Nullable<HTMLElement> = null;
+  @query("#range-zoom-highlight")
+  accessor _rangeZoomHighlightEl: Nullable<HTMLElement> = null;
 
-  _rangeZoomWindowHighlightEl: Nullable<HTMLElement> = null;
+  @query("#range-zoom-window-highlight")
+  accessor _rangeZoomWindowHighlightEl: Nullable<HTMLElement> = null;
 
-  _rangeChartHoverLineEl: Nullable<HTMLElement> = null;
+  @query("#range-chart-hover-line")
+  accessor _rangeChartHoverLineEl: Nullable<HTMLElement> = null;
 
-  _rangeChartHoverWindowLineEl: Nullable<HTMLElement> = null;
+  @query("#range-chart-hover-window-line")
+  accessor _rangeChartHoverWindowLineEl: Nullable<HTMLElement> = null;
 
-  _rangeEventLayerEl: Nullable<HTMLElement> = null;
+  @query("#range-event-layer")
+  accessor _rangeEventLayerEl: Nullable<HTMLElement> = null;
+
+  @query("range-timeline")
+  accessor _rangeTimelineEl: Nullable<HTMLElement> = null;
 
   private _liveZoomRange: Nullable<{ start: number; end: number }> | undefined =
     undefined;
@@ -92,21 +102,6 @@ export class PanelTimeline extends LitElement {
     | undefined = undefined;
 
   firstUpdated() {
-    const sr = this.shadowRoot!;
-    this._rangeHoverPreviewEl = sr.getElementById("range-hover-preview");
-    this._rangeComparisonPreviewEl = sr.getElementById(
-      "range-comparison-preview"
-    );
-    this._rangeZoomHighlightEl = sr.getElementById("range-zoom-highlight");
-    this._rangeZoomWindowHighlightEl = sr.getElementById(
-      "range-zoom-window-highlight"
-    );
-    this._rangeChartHoverLineEl = sr.getElementById("range-chart-hover-line");
-    this._rangeChartHoverWindowLineEl = sr.getElementById(
-      "range-chart-hover-window-line"
-    );
-    this._rangeEventLayerEl = sr.getElementById("range-event-layer");
-
     this._syncAllOverlays();
   }
 
@@ -211,10 +206,11 @@ export class PanelTimeline extends LitElement {
   // ---------------------------------------------------------------------------
 
   revealSelection() {
-    const timeline = this.shadowRoot?.querySelector(
-      "range-timeline"
-    ) as HTMLElement & { revealSelection?: () => void };
-    timeline?.revealSelection?.();
+    (
+      this._rangeTimelineEl as HTMLElement & {
+        revealSelection?: () => void;
+      }
+    )?.revealSelection?.();
   }
 
   syncZoomHighlights(

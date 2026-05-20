@@ -1,18 +1,18 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { createMockHass } from "@/test-support/mock-hass";
-import { HassRecordsHistoryCardEditor } from "../editor";
+import { HassDatapointsHistoryCardEditor } from "../editor";
 
 if (!customElements.get("hass-datapoints-history-card-editor")) {
   customElements.define(
     "hass-datapoints-history-card-editor",
-    HassRecordsHistoryCardEditor
+    HassDatapointsHistoryCardEditor
   );
 }
 
 function createEditor() {
   const el = document.createElement(
     "hass-datapoints-history-card-editor"
-  ) as HassRecordsHistoryCardEditor;
+  ) as HassDatapointsHistoryCardEditor;
   document.body.appendChild(el);
   el.hass = createMockHass();
   el.setConfig({
@@ -34,7 +34,7 @@ function createEditor() {
 }
 
 describe("history editor", () => {
-  let el: Nullable<HassRecordsHistoryCardEditor> = null;
+  let el: Nullable<HassDatapointsHistoryCardEditor> = null;
 
   afterEach(() => {
     el?.remove();

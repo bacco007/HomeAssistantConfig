@@ -1,5 +1,5 @@
 import { html, LitElement } from "lit";
-import { property } from "lit/decorators.js";
+import { property, queryAll } from "lit/decorators.js";
 import { localized } from "@/lib/i18n/localize";
 
 import { styles } from "./target-row-list.styles";
@@ -45,8 +45,8 @@ const _DURATION_SECONDS: RecordWithNumericValues = {
 // "point_to_point" is always valid so it is excluded (never needs clamping).
 const _WINDOW_OPTIONS: Record<string, string[]> = {
   trend_window: ["1h", "6h", "24h", "7d", "14d", "21d", "28d"],
-  rate_window: ["1h", "6h", "24h"],
-  anomaly_rate_window: ["1h", "6h", "24h"],
+  rate_window: ["30m", "1h", "2h", "3h", "6h", "24h", "7d"],
+  anomaly_rate_window: ["30m", "1h", "2h", "3h", "6h", "24h", "7d"],
   anomaly_zscore_window: ["1h", "6h", "24h", "7d"],
   anomaly_persistence_window: ["30m", "1h", "3h", "6h", "12h", "24h"],
 };
@@ -134,6 +134,17 @@ export class TargetRowList extends LitElement {
   /** Map of entityId → Set of anomaly method names that are still in-flight in the worker. */
   @property({ type: Object, attribute: false })
   accessor computingMethodsByEntity: Map<string, Set<string>> = new Map();
+
+  /**
+   * Optional map of entityId → disambiguated display label. When provided,
+   * each target-row uses this label instead of its state's friendly_name.
+   * Used when multiple entities share the same friendly name.
+   */
+  @property({ type: Object, attribute: false })
+  accessor labelMap: Map<string, string> = new Map();
+
+  @queryAll("target-row")
+  accessor _targetRows!: NodeListOf<Element>;
 
   /** Index of the row currently being dragged, or null when not dragging. */
   private _dragSourceIndex: Nullable<number> = null;
@@ -245,6 +256,7 @@ export class TargetRowList extends LitElement {
                 entity-id=${row.entity_id}
                 .canShowDeltaAnalysis=${this.canShowDeltaAnalysis}
                 .stateObj=${this.states?.[row.entity_id] ?? null}
+                .label=${this.labelMap.get(row.entity_id) ?? null}
                 .hass=${this.hass ?? null}
                 .comparisonWindows=${this.comparisonWindows}
                 .computing=${this.computingEntityIds?.has(row.entity_id) ??
@@ -393,7 +405,7 @@ export class TargetRowList extends LitElement {
   }
 
   private _clearDropIndicators() {
-    this.shadowRoot?.querySelectorAll("target-row").forEach((r) => {
+    this._targetRows?.forEach((r) => {
       r.classList.remove("is-drag-over-before", "is-drag-over-after");
     });
   }

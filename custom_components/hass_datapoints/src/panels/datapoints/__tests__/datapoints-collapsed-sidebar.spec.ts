@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { HassRecordsHistoryPanel } from "../datapoints";
+import { HassDatapointsHistoryPanel } from "../datapoints";
 
-describe("HassRecordsHistoryPanel collapsed sidebar interactions", () => {
+describe("HassDatapointsHistoryPanel collapsed sidebar interactions", () => {
   let panel: RecordWithUnknownValues;
 
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe("HassRecordsHistoryPanel collapsed sidebar interactions", () => {
     describe("WHEN the collapsed rail background is clicked", () => {
       it("THEN it does not toggle the sidebar", () => {
         expect.assertions(1);
-        HassRecordsHistoryPanel.prototype._handleCollapsedSidebarClick.call(
+        HassDatapointsHistoryPanel.prototype._handleCollapsedSidebarClick.call(
           panel,
           {
             composedPath: () => [
@@ -41,7 +41,7 @@ describe("HassRecordsHistoryPanel collapsed sidebar interactions", () => {
     describe("WHEN the collapsed add button is clicked", () => {
       it("THEN it does not toggle the sidebar", () => {
         expect.assertions(1);
-        HassRecordsHistoryPanel.prototype._handleCollapsedSidebarClick.call(
+        HassDatapointsHistoryPanel.prototype._handleCollapsedSidebarClick.call(
           panel,
           {
             composedPath: () => [
@@ -76,7 +76,10 @@ describe("HassRecordsHistoryPanel collapsed sidebar interactions", () => {
           },
         };
 
-        HassRecordsHistoryPanel.prototype._openTargetPicker.call(panel, null);
+        HassDatapointsHistoryPanel.prototype._openTargetPicker.call(
+          panel,
+          null
+        );
 
         expect(openTargetPicker).toHaveBeenCalledWith(
           panel._targetControl,
@@ -104,7 +107,10 @@ describe("HassRecordsHistoryPanel collapsed sidebar interactions", () => {
           },
         };
 
-        HassRecordsHistoryPanel.prototype._openTargetPicker.call(panel, null);
+        HassDatapointsHistoryPanel.prototype._openTargetPicker.call(
+          panel,
+          null
+        );
 
         expect(openTargetPicker).toHaveBeenCalledWith(
           panel._targetControl,

@@ -1,5 +1,5 @@
 /**
- * history.spec.ts — GIVEN/WHEN/THEN tests for HassRecordsHistoryCard.
+ * history.spec.ts — GIVEN/WHEN/THEN tests for HassDatapointsHistoryCard.
  *
  * We test the public API surface: setConfig validation/normalisation,
  * _entityIds getter, static helpers, and basic rendering.
@@ -55,10 +55,10 @@ vi.mock("@/lib/ha/navigation", async (importOriginal) => {
 });
 
 // Import the card AFTER mocks are set up
-let HassRecordsHistoryCard: typeof import("../history.ts").HassRecordsHistoryCard;
+let HassDatapointsHistoryCard: typeof import("../history.ts").HassDatapointsHistoryCard;
 
 beforeAll(async () => {
-  ({ HassRecordsHistoryCard } = await import("../history.ts"));
+  ({ HassDatapointsHistoryCard } = await import("../history.ts"));
 });
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -86,7 +86,7 @@ function createMockHass(overrides = {}) {
 function createCard(
   config: RecordWithUnknownValues = { entity: "sensor.example" }
 ) {
-  const el = new HassRecordsHistoryCard();
+  const el = new HassDatapointsHistoryCard();
   el.setConfig(config);
   return el;
 }
@@ -104,7 +104,7 @@ describe("history", () => {
     describe("WHEN setConfig is called", () => {
       it("THEN it throws an error", () => {
         expect.assertions(1);
-        const el = new HassRecordsHistoryCard();
+        const el = new HassDatapointsHistoryCard();
         expect(() => el.setConfig({})).toThrow();
       });
     });
@@ -418,7 +418,7 @@ describe("history", () => {
     describe("WHEN getStubConfig is called", () => {
       it("THEN it returns an object with entity and hours_to_show", () => {
         expect.assertions(2);
-        const stub = HassRecordsHistoryCard.getStubConfig();
+        const stub = HassDatapointsHistoryCard.getStubConfig();
         expect(stub).toHaveProperty("entity");
         expect(stub).toHaveProperty("hours_to_show");
       });
@@ -427,7 +427,7 @@ describe("history", () => {
     describe("WHEN getConfigElement is called", () => {
       it("THEN it returns the editor element tag name", () => {
         expect.assertions(1);
-        const editor = HassRecordsHistoryCard.getConfigElement();
+        const editor = HassDatapointsHistoryCard.getConfigElement();
         expect(editor.tagName.toLowerCase()).toBe(
           "hass-datapoints-history-card-editor"
         );
@@ -438,7 +438,7 @@ describe("history", () => {
   // ── Rendering ────────────────────────────────────────────────────────────
 
   describe("GIVEN a card connected to the DOM with hass", () => {
-    let el: HassRecordsHistoryCard;
+    let el: HassDatapointsHistoryCard;
 
     beforeEach(async () => {
       el = createCard({ entity: "sensor.example", title: "Test Chart" });
