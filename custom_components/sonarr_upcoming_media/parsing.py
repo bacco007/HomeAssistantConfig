@@ -1,9 +1,12 @@
+import logging
 import time
 from datetime import date, datetime
 from pytz import timezone
 import requests
 
 from .const import DEFAULT_PARSE_DICT
+
+_LOGGER = logging.getLogger(__name__)
 
 TMDB_BASE_URL = 'http://api.tmdb.org/3/search/tv?api_key=1f7708bb9a218ab891a5d438b1b63992&query={}'
 TMDB_DETAILS_URL = 'http://api.tmdb.org/3/tv/{}?api_key=1f7708bb9a218ab891a5d438b1b63992&append_to_response=videos'
@@ -26,6 +29,10 @@ def parse_data(data, tz, host, port, ssl, url_base=None):
     attributes = {}
     card_json = []
     card_json.append(DEFAULT_PARSE_DICT)
+
+    session = requests.Session()
+    session.headers.update({"Accept-Encoding": "identity"})
+
     for show in data:
         card_item = {}
         if 'series' not in show:
@@ -66,19 +73,18 @@ def parse_data(data, tz, host, port, ssl, url_base=None):
             card_item['genres'] = ''
         card_item['tmdb_id'] = ''
         card_item['summary'] = show.get('overview', '')
-        
+
         if 'title' in show['series']:
-            session = requests.Session()
             try:
                 search_url = TMDB_BASE_URL.format(requests.utils.quote(show['series']['title'].split('(')[0].strip()))
-                tmdb_url = session.get(search_url)
+                tmdb_url = session.get(search_url, timeout=10)
                 tmdb_json = tmdb_url.json()
 
                 if tmdb_json['results']:
                     tmdb_id = tmdb_json['results'][0]['id']
                     card_item['tmdb_id'] = tmdb_id
                     details_url = TMDB_DETAILS_URL.format(tmdb_id)
-                    details_response = session.get(details_url)
+                    details_response = session.get(details_url, timeout=10)
                     details_json = details_response.json()
 
                     if 'videos' in details_json and details_json['videos']['results']:
@@ -97,10 +103,15 @@ def parse_data(data, tz, host, port, ssl, url_base=None):
                         card_item['fanart'] = TMDB_BASE_IMAGE_URL.format('780', tmdb_json['results'][0]['backdrop_path'])
                 else:
                     card_item['trailer'] = ''
-            except:
+            except Exception as err:
+                _LOGGER.warning(
+                    "TMDB lookup failed for %r: %s",
+                    show['series'].get('title'),
+                    err,
+                )
                 card_item['trailer'] = ''
-                raise TMDBApiNotResponding
-        
+                raise TMDBApiNotResponding from err
+
         try:
             for img in show['series']['images']:
                 if img['coverType'] == 'poster':
