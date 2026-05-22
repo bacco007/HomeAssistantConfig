@@ -17,7 +17,7 @@ async def get_tmdb_trailer_url(hass, title, media_type):
 
     title = re.sub(r'\s*\(.*?\)', '', title).strip()
 
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(headers={"Accept-Encoding": "identity"}) as session:
         # Search for the movie or TV show
         search_url = TMDB_SEARCH_URL.format(media_type=media_type, api_key=TMDB_API_KEY, query=title)
         async with session.get(search_url) as response:
