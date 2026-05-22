@@ -15,6 +15,10 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
 
 from .const import (
+    CONF_CAL_HUMIDITY,
+    CONF_CAL_PRESSURE_HPA,
+    CONF_CAL_TEMP_C,
+    CONF_CAL_WIND_MS,
     CONF_CLIMATE_REGION,
     CONF_HEMISPHERE,
     CONFIG_VERSION,
@@ -35,6 +39,7 @@ if TYPE_CHECKING:
 SERVICE_RESET_RAIN = "reset_rain_baseline"
 SERVICE_RESET_LEARNING = "reset_learning_state"
 SERVICE_EXPORT_LEARNING = "export_learning_state"
+SERVICE_APPLY_CALIBRATION = "apply_calibration"
 ATTR_ENTRY_ID = "entry_id"
 
 SERVICE_RESET_RAIN_SCHEMA = vol.Schema({vol.Optional(ATTR_ENTRY_ID): cv.string})
@@ -231,6 +236,55 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if not hass.services.has_service(DOMAIN, SERVICE_EXPORT_LEARNING):
         hass.services.async_register(
             DOMAIN, SERVICE_EXPORT_LEARNING, _export_learning, schema=SERVICE_EXPORT_LEARNING_SCHEMA
+        )
+
+    # ── Apply calibration service ────────────────────────────────────────
+    SERVICE_APPLY_CALIBRATION_SCHEMA = vol.Schema(
+        {
+            vol.Optional(ATTR_ENTRY_ID): cv.string,
+            vol.Optional(CONF_CAL_TEMP_C): vol.Coerce(float),
+            vol.Optional(CONF_CAL_HUMIDITY): vol.Coerce(float),
+            vol.Optional(CONF_CAL_PRESSURE_HPA): vol.Coerce(float),
+            vol.Optional(CONF_CAL_WIND_MS): vol.Coerce(float),
+        }
+    )
+
+    async def _apply_calibration(call: ServiceCall) -> None:
+        """Write calibration offsets into config entry options and reload."""
+        entry_id = call.data.get(ATTR_ENTRY_ID)
+        targets: list[ConfigEntry] = []
+
+        if entry_id:
+            entry = hass.config_entries.async_get_entry(entry_id)
+            if entry and entry.domain == DOMAIN:
+                targets = [entry]
+        else:
+            targets = [e for e in hass.config_entries.async_entries(DOMAIN)]
+
+        offsets = {
+            k: call.data[k]
+            for k in (CONF_CAL_TEMP_C, CONF_CAL_HUMIDITY, CONF_CAL_PRESSURE_HPA, CONF_CAL_WIND_MS)
+            if k in call.data
+        }
+        if not offsets:
+            _LOGGER.warning("ws_core apply_calibration: no offsets provided, nothing to do")
+            return
+
+        for entry in targets:
+            new_options = dict(entry.options)
+            for key, val in offsets.items():
+                new_options[key] = val
+            hass.config_entries.async_update_entry(entry, options=new_options)
+            await hass.config_entries.async_reload(entry.entry_id)
+            _LOGGER.info(
+                "ws_core: calibration applied to %s: %s",
+                entry.entry_id,
+                {k: v for k, v in offsets.items()},
+            )
+
+    if not hass.services.has_service(DOMAIN, SERVICE_APPLY_CALIBRATION):
+        hass.services.async_register(
+            DOMAIN, SERVICE_APPLY_CALIBRATION, _apply_calibration, schema=SERVICE_APPLY_CALIBRATION_SCHEMA
         )
 
     return True

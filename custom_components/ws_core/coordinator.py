@@ -1,4 +1,4 @@
-"""Coordinator for Weather Station Core -- v0.3.0.
+"""Coordinator for Weather Station Core -- v1.6.0.
 
 The _compute() method is broken into focused sub-methods:
   _compute_raw_readings()          Unit conversion of all source sensors
@@ -24,8 +24,10 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import json as _json
 import logging
 import math
+import pathlib as _pathlib
 from collections import deque
 from dataclasses import dataclass, field
 from datetime import timedelta
@@ -45,13 +47,23 @@ from .algorithms import (
     KalmanFilter,
     aqi_level,
     beaufort_description,
+    calculate_absolute_humidity,
     calculate_apparent_temperature,
+    calculate_clearness_index,
+    calculate_delta_t,
     calculate_dew_point,
     calculate_frost_point,
+    calculate_heat_index,
+    calculate_humidex,
     calculate_moon_illumination,
     calculate_rain_probability,
+    calculate_thsw_index,
+    calculate_thw_index,
     calculate_us_aqi,
+    calculate_vpd,
     calculate_wet_bulb,
+    calculate_wind_chill,
+    clearness_to_cloud_cover,
     combine_rain_probability,
     compute_fwi,
     cross_sensor_consistency_flags,
@@ -80,9 +92,13 @@ from .algorithms import (
 )
 from .const import (
     CONF_AQI_INTERVAL_MIN,
+    CONF_CHILL_HOUR_BASE_C,
+    CONF_CHILL_SEASON_RESET_DAY,
+    CONF_CHILL_SEASON_RESET_MONTH,
     CONF_CLIMATE_REGION,
     CONF_ELEVATION_M,
     CONF_ENABLE_AIR_QUALITY,
+    CONF_ENABLE_COMFORT_INDICES,
     CONF_ENABLE_FIRE_RISK,
     # v0.6.0 new
     # v0.5.0 new
@@ -92,6 +108,8 @@ from .const import (
     CONF_ENABLE_SEA_TEMP,
     CONF_ENABLE_SOLAR_FORECAST,
     CONF_ENABLE_THUNDERSTORM,
+    CONF_ENABLE_VIGICRUES,
+    CONF_ENABLE_VIGILANCE_METEO,
     CONF_ENABLE_WUNDERGROUND,
     CONF_FORECAST_API_KEY,
     CONF_FORECAST_ENABLED,
@@ -111,20 +129,29 @@ from .const import (
     CONF_SOLAR_PEAK_KW,
     CONF_SOURCES,
     CONF_STALENESS_S,
+    CONF_THRESH_FREEZE_C,
     CONF_THRESH_HEAT_DAY_C,
+    CONF_THRESH_RAIN_RATE_MMPH,
+    CONF_THRESH_WIND_GUST_MS,
     CONF_UNITS_MODE,
     CONF_WU_API_KEY,
     CONF_WU_INTERVAL_MIN,
     CONF_WU_STATION_ID,
     DEFAULT_AQI_INTERVAL_MIN,
+    DEFAULT_CHILL_HOUR_BASE_C,
+    DEFAULT_CHILL_SEASON_RESET_DAY,
+    DEFAULT_CHILL_SEASON_RESET_MONTH,
     DEFAULT_CLIMATE_REGION,
     DEFAULT_ENABLE_AIR_QUALITY,
+    DEFAULT_ENABLE_COMFORT_INDICES,
     DEFAULT_ENABLE_FIRE_RISK,
     DEFAULT_ENABLE_FOG,
     DEFAULT_ENABLE_MOON,
     DEFAULT_ENABLE_POLLEN,
     DEFAULT_ENABLE_SOLAR_FORECAST,
     DEFAULT_ENABLE_THUNDERSTORM,
+    DEFAULT_ENABLE_VIGICRUES,
+    DEFAULT_ENABLE_VIGILANCE_METEO,
     DEFAULT_ENABLE_WUNDERGROUND,
     DEFAULT_FORECAST_INTERVAL_MIN,
     DEFAULT_FORECAST_PROVIDER,
@@ -136,10 +163,24 @@ from .const import (
     DEFAULT_SOLAR_PANEL_TILT,
     DEFAULT_SOLAR_PEAK_KW,
     DEFAULT_STALENESS_S,
+    DEFAULT_THRESH_FREEZE_C,
     DEFAULT_THRESH_HEAT_DAY_C,
+    DEFAULT_THRESH_RAIN_RATE_MMPH,
+    DEFAULT_THRESH_WIND_GUST_MS,
     DEFAULT_WU_INTERVAL_MIN,
+    DRIFT_R_SQ_THRESH,
+    DRIFT_SLOPE_HUMIDITY_PCT_H,
+    DRIFT_SLOPE_PRESSURE_HPA_H,
+    DRIFT_SLOPE_TEMP_C_H,
+    DRIFT_STUCK_BUCKET_MIN_RATE,
+    DRIFT_STUCK_BUCKET_SAMPLES,
+    DRIFT_STUCK_RATE_RANGE_MAX,
+    FORECAST_AGREEMENT_ALIGNED_PP,
+    FORECAST_AGREEMENT_CONFLICT_PP,
     FORECAST_MAX_RETRY_S,
     FORECAST_MIN_RETRY_S,
+    # v1.5.0
+    KEY_ABSOLUTE_HUMIDITY,
     KEY_ALERT_MESSAGE,
     KEY_ALERT_STATE,
     # v0.7.0
@@ -147,10 +188,15 @@ from .const import (
     KEY_AQI_LEVEL,
     KEY_BATTERY_DISPLAY,
     KEY_BATTERY_PCT,
+    KEY_CHILL_HOURS_SEASON,
+    KEY_CHILL_HOURS_TODAY,
+    KEY_CLEARNESS_INDEX,
     KEY_CLIMATOLOGY_30D,
+    KEY_CLOUD_COVER_PCT,
     KEY_CONSISTENCY_FLAGS,
     KEY_CURRENT_CONDITION,
     KEY_DATA_QUALITY,
+    KEY_DELTA_T,
     KEY_DEW_POINT_C,
     KEY_DRY_STREAK,
     KEY_ET0_DAILY_MM,
@@ -173,7 +219,9 @@ from .const import (
     KEY_FWI_FFMC,
     KEY_FWI_ISI,
     KEY_HEALTH_DISPLAY,
+    KEY_HEAT_INDEX,
     KEY_HEAT_STREAK,
+    KEY_HUMIDEX,
     KEY_HUMIDITY_LEVEL_DISPLAY,
     KEY_LUX,
     KEY_MOON_AGE_DAYS,
@@ -211,6 +259,7 @@ from .const import (
     KEY_RAIN_PROBABILITY_COMBINED,
     KEY_RAIN_RATE_FILT,
     KEY_RAIN_TODAY_MM,
+    KEY_RIVER_LEVEL_M,
     KEY_SEA_LEVEL_PRESSURE_HPA,
     KEY_SEA_SURFACE_TEMP,
     KEY_SENSOR_DRIFT_FLAGS,
@@ -225,15 +274,21 @@ from .const import (
     KEY_TEMP_DISPLAY,
     KEY_TEMP_HIGH_24H,
     KEY_TEMP_LOW_24H,
+    KEY_THSW_INDEX,
     KEY_THUNDERSTORM_RISK,
+    KEY_THW_INDEX,
     KEY_UV,
     KEY_UV_LEVEL_DISPLAY,
+    KEY_VIGILANCE_MAX_LEVEL,
+    KEY_VPD,
     KEY_WET_BULB_C,
     KEY_WIND_BEAUFORT,
     KEY_WIND_BEAUFORT_DESC,
+    KEY_WIND_CHILL,
     KEY_WIND_DIR_SMOOTH_DEG,
     KEY_WIND_GUST_MAX_24H,
     KEY_WIND_QUADRANT,
+    KEY_WIND_RUN_KM,
     KEY_WU_STATUS,
     KEY_ZAMBRETTI_FORECAST,
     KEY_ZAMBRETTI_NUMBER,
@@ -272,6 +327,10 @@ except ImportError:
     HAS_REPAIRS = False
 
 _LOGGER = logging.getLogger(__name__)
+
+_INTEGRATION_VERSION: str = _json.loads(
+    (_pathlib.Path(__file__).parent / "manifest.json").read_text(encoding="utf-8")
+).get("version", "unknown")
 
 
 # ---------------------------------------------------------------------------
@@ -393,7 +452,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.wu_api_key: str = str(_get(CONF_WU_API_KEY, "") or "")
         self.wu_interval_min = int(_get(CONF_WU_INTERVAL_MIN, DEFAULT_WU_INTERVAL_MIN))
         self._wu_last_upload: Any = None
-        self._wu_status: str = "Disabled"
+        self._wu_status: str = "disabled"
 
         # Air Quality + Pollen (Open-Meteo Air Quality API, single fetch)
         self.aqi_enabled = bool(_get(CONF_ENABLE_AIR_QUALITY, DEFAULT_ENABLE_AIR_QUALITY))
@@ -418,6 +477,34 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # Risk feature toggles (all default-off, opt-in via wizard)
         self.fog_enabled = bool(_get(CONF_ENABLE_FOG, DEFAULT_ENABLE_FOG))
         self.thunderstorm_enabled = bool(_get(CONF_ENABLE_THUNDERSTORM, DEFAULT_ENABLE_THUNDERSTORM))
+
+        # v1.5.0 Comfort indices + agrometeorological sensors
+        self.comfort_indices_enabled = bool(_get(CONF_ENABLE_COMFORT_INDICES, DEFAULT_ENABLE_COMFORT_INDICES))
+        self._chill_hour_base_c = float(_get(CONF_CHILL_HOUR_BASE_C, DEFAULT_CHILL_HOUR_BASE_C))
+        self._chill_season_reset_month = int(_get(CONF_CHILL_SEASON_RESET_MONTH, DEFAULT_CHILL_SEASON_RESET_MONTH))
+        self._chill_season_reset_day = int(_get(CONF_CHILL_SEASON_RESET_DAY, DEFAULT_CHILL_SEASON_RESET_DAY))
+
+        # v1.6.0 French regional sources
+        self.vigilance_meteo_enabled = bool(_get(CONF_ENABLE_VIGILANCE_METEO, DEFAULT_ENABLE_VIGILANCE_METEO))
+        self._vigilance_cache: dict[str, Any] | None = None
+
+        self.vigicrues_enabled = bool(_get(CONF_ENABLE_VIGICRUES, DEFAULT_ENABLE_VIGICRUES))
+        self._vigicrues_cache: dict[str, Any] | None = None
+        self._vigicrues_station_code: str | None = None
+        self._vigicrues_station_name: str | None = None
+        self._vigicrues_river_name: str | None = None
+
+        # Wind run accumulator — resets at local midnight (like rain_today)
+        self._wind_run_km: float = 0.0
+        self._wind_run_date: str = ""
+        self._wind_run_last_ts: Any = None
+
+        # Chill hour accumulators
+        self._chill_hours_today: float = 0.0
+        self._chill_hours_today_date: str = ""
+        self._chill_hours_season: float = 0.0
+        self._chill_hours_season_date: str = ""  # date of last season-reset check
+        self._chill_hours_last_ts: Any = None
 
         # Streak threshold (kept; was previously bundled with degree days)
         self.thresh_heat_day_c = float(_get(CONF_THRESH_HEAT_DAY_C, DEFAULT_THRESH_HEAT_DAY_C))
@@ -562,6 +649,44 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     _LOGGER.warning("ws_core: deferred solar forecast fetch failed (will retry): %s", err)
 
             self.hass.async_create_task(_deferred_solar())
+
+        # Météo Vigilance periodic fetch (every 30 min; alerts rarely change faster)
+        if self.vigilance_meteo_enabled and self.forecast_lat is not None and self.forecast_lon is not None:
+            self._unsubs.append(
+                async_track_time_interval(
+                    self.hass,
+                    lambda _now: self.hass.async_create_task(self._async_fetch_vigilance()),
+                    timedelta(minutes=30),
+                )
+            )
+
+            async def _deferred_vigilance():
+                await asyncio.sleep(45)
+                try:
+                    await self._async_fetch_vigilance()
+                except Exception as err:  # noqa: BLE001
+                    _LOGGER.warning("ws_core: deferred vigilance fetch failed (will retry): %s", err)
+
+            self.hass.async_create_task(_deferred_vigilance())
+
+        # Vigicrues periodic fetch (every 15 min; river levels update frequently)
+        if self.vigicrues_enabled and self.forecast_lat is not None and self.forecast_lon is not None:
+            self._unsubs.append(
+                async_track_time_interval(
+                    self.hass,
+                    lambda _now: self.hass.async_create_task(self._async_fetch_vigicrues()),
+                    timedelta(minutes=15),
+                )
+            )
+
+            async def _deferred_vigicrues():
+                await asyncio.sleep(60)
+                try:
+                    await self._async_fetch_vigicrues()
+                except Exception as err:  # noqa: BLE001
+                    _LOGGER.warning("ws_core: deferred Vigicrues fetch failed (will retry): %s", err)
+
+            self.hass.async_create_task(_deferred_vigicrues())
 
         # Defer first refresh by 5s so config entry creation completes before any network calls.
         async def _deferred_refresh():
@@ -864,6 +989,23 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if uv_val is not None:
             data[KEY_UV_LEVEL_DISPLAY] = uv_level(float(uv_val))
 
+        # --- v1.5.0 comfort / humidity / vapour indices ---
+        if self.comfort_indices_enabled and tc is not None and rh is not None:
+            data[KEY_HEAT_INDEX] = calculate_heat_index(float(tc), float(rh))
+            data[KEY_VPD] = calculate_vpd(float(tc), float(rh))
+            data[KEY_ABSOLUTE_HUMIDITY] = calculate_absolute_humidity(float(tc), float(rh))
+            if dew_c is not None:
+                data[KEY_HUMIDEX] = calculate_humidex(float(tc), float(dew_c))
+            if wind_ms is not None:
+                data[KEY_WIND_CHILL] = calculate_wind_chill(float(tc), float(wind_ms))
+                data[KEY_THW_INDEX] = calculate_thw_index(float(tc), float(rh), float(wind_ms))
+                solar_rad = self._get_solar_radiation()
+                if solar_rad is not None:
+                    data[KEY_THSW_INDEX] = calculate_thsw_index(float(tc), float(rh), float(wind_ms), float(solar_rad))
+            wet_bulb = data.get(KEY_WET_BULB_C)
+            if wet_bulb is not None:
+                data[KEY_DELTA_T] = calculate_delta_t(float(tc), float(wet_bulb))
+
         return dew_c
 
     def _compute_derived_pressure(
@@ -1138,9 +1280,9 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         api_precip_prob = float(api_precip_prob)
         delta = abs(z_rain_pct - api_precip_prob)
 
-        if delta < 20:
+        if delta < FORECAST_AGREEMENT_ALIGNED_PP:
             state = "aligned"
-        elif delta < 40:
+        elif delta < FORECAST_AGREEMENT_CONFLICT_PP:
             state = "diverging"
         else:
             state = "conflict"
@@ -1244,9 +1386,9 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         data[KEY_DATA_QUALITY] = dq
 
         # Configurable alerts
-        gust_thr = float(self.entry_options.get("thresh_wind_gust_ms", 17.0))
-        rain_thr = float(self.entry_options.get("thresh_rain_rate_mmph", 20.0))
-        freeze_thr = float(self.entry_options.get("thresh_freeze_c", 0.0))
+        gust_thr = float(self.entry_options.get(CONF_THRESH_WIND_GUST_MS, DEFAULT_THRESH_WIND_GUST_MS))
+        rain_thr = float(self.entry_options.get(CONF_THRESH_RAIN_RATE_MMPH, DEFAULT_THRESH_RAIN_RATE_MMPH))
+        freeze_thr = float(self.entry_options.get(CONF_THRESH_FREEZE_C, DEFAULT_THRESH_FREEZE_C))
 
         gust_ms = data.get(KEY_NORM_WIND_GUST_MS)
         rain_rate = data.get(KEY_RAIN_RATE_FILT) or 0.0
@@ -1439,7 +1581,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # Daily update (once per calendar day)
         if date_str != self._learning_last_daily_update and t_high is not None and t_low is not None:
             rain_today = float(data.get("_rain_today_mm", 0.0))
-            thresh_freeze = float(self.entry_options.get("thresh_freeze_c", 0.0))
+            thresh_freeze = float(self.entry_options.get(CONF_THRESH_FREEZE_C, DEFAULT_THRESH_FREEZE_C))
             update_daily_streaks(
                 self._learning_state,
                 date_str,
@@ -1461,7 +1603,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         data[KEY_HEAT_STREAK] = self._learning_state.heat_streak_days
         data["_heat_streak_threshold_c"] = self.thresh_heat_day_c
         data[KEY_FROST_STREAK] = self._learning_state.frost_streak_days
-        data["_frost_streak_threshold_c"] = float(self.entry_options.get("thresh_freeze_c", 0.0))
+        data["_frost_streak_threshold_c"] = float(self.entry_options.get(CONF_THRESH_FREEZE_C, DEFAULT_THRESH_FREEZE_C))
 
     # ------------------------------------------------------------------
     # v1.2.0 — 30-day rolling climatology
@@ -1535,17 +1677,17 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     }
                 )
 
-        _check_slope(self._drift_temp, 0.1, 0.85, "temperature", "°C/h")
-        _check_slope(self._drift_humidity, 0.5, 0.85, "humidity", "%/h")
-        _check_slope(self._drift_pressure, 1.5, 0.85, "pressure", "hPa/h")
+        _check_slope(self._drift_temp, DRIFT_SLOPE_TEMP_C_H, DRIFT_R_SQ_THRESH, "temperature", "°C/h")
+        _check_slope(self._drift_humidity, DRIFT_SLOPE_HUMIDITY_PCT_H, DRIFT_R_SQ_THRESH, "humidity", "%/h")
+        _check_slope(self._drift_pressure, DRIFT_SLOPE_PRESSURE_HPA_H, DRIFT_R_SQ_THRESH, "pressure", "hPa/h")
 
         # Stuck rain bucket: rain_rate non-zero but constant at same non-zero value for >4h
-        if len(self._drift_rain_rate) >= 240:
-            recent_rates = [v for _, v in list(self._drift_rain_rate)[-240:]]
-            nonzero = [r for r in recent_rates if r > 0.1]
-            if len(nonzero) >= 240 * 0.8:
+        if len(self._drift_rain_rate) >= DRIFT_STUCK_BUCKET_SAMPLES:
+            recent_rates = [v for _, v in list(self._drift_rain_rate)[-DRIFT_STUCK_BUCKET_SAMPLES:]]
+            nonzero = [r for r in recent_rates if r > DRIFT_STUCK_BUCKET_MIN_RATE]
+            if len(nonzero) >= DRIFT_STUCK_BUCKET_SAMPLES * 0.8:
                 rate_range = max(nonzero) - min(nonzero)
-                if rate_range < 0.1 and len(nonzero) > 50:
+                if rate_range < DRIFT_STUCK_RATE_RANGE_MAX and len(nonzero) > 50:
                     flags.append(
                         {
                             "sensor": "rain_rate",
@@ -1887,10 +2029,9 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             data["_sea_temp_grid_lon"] = self._sea_temp_cache.get("grid_lon")
             data["_sea_temp_disclaimer"] = self._sea_temp_cache.get("disclaimer")
 
-        # v0.3.0 cleanup: removed METAR cross-validation, CWOP/export status blocks.
-        # Weather Underground status retained but disabled-by-default for v0.6 roadmap.
         if self.wu_enabled:
             data[KEY_WU_STATUS] = self._wu_status
+            data["_wu_last_upload"] = self._wu_last_upload.isoformat() if self._wu_last_upload else None
 
         # Air Quality (Open-Meteo Air Quality API)
         if self.aqi_enabled and self._aqi_cache:
@@ -1909,6 +2050,23 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             data[KEY_POLLEN_TREE] = pol.get("tree_index")
             data[KEY_POLLEN_WEED] = pol.get("weed_index")
             data[KEY_POLLEN_OVERALL] = pol.get("overall_level")
+
+        # v1.6.0 — Météo Vigilance (France only, no API key)
+        if self.vigilance_meteo_enabled and self._vigilance_cache:
+            vc = self._vigilance_cache
+            data[KEY_VIGILANCE_MAX_LEVEL] = vc.get("max_color")
+            data["_vigilance_phenomena"] = vc.get("phenomena", {})
+            data["_vigilance_dept"] = vc.get("dept")
+            data["_vigilance_fetched_at"] = vc.get("fetched_at")
+
+        # v1.6.0 — Vigicrues (France only, no API key)
+        if self.vigicrues_enabled and self._vigicrues_cache:
+            vr = self._vigicrues_cache
+            data[KEY_RIVER_LEVEL_M] = vr.get("level_m")
+            data["_river_station_name"] = vr.get("station_name")
+            data["_river_name"] = vr.get("river_name")
+            data["_river_obs_time"] = vr.get("obs_time")
+            data["_river_station_code"] = vr.get("station_code")
 
         # Moon (pure calculation, no external API)
         if self.moon_enabled:
@@ -1954,6 +2112,12 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     day_of_year=doy,
                 )
                 data[KEY_ET0_PM_DAILY_MM] = et0_pm
+
+        # --- v1.5.0 wind run, chill hours, clearness index ---
+        if self.comfort_indices_enabled:
+            self._compute_wind_run(data, now)
+            self._compute_chill_hours(data, now)
+            self._compute_clearness_and_cloud(data)
 
         self.runtime.last_compute_ms = round((time.monotonic() - t0) * 1000, 1)
         return data
@@ -2238,7 +2402,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "rainin": _mm_to_in(rain_1h),
             "dailyrainin": _mm_to_in(rain_24h),
             "action": "updateraw",
-            "softwaretype": "ws_core_0.6.0",
+            "softwaretype": f"ws_core_{_INTEGRATION_VERSION}",
         }
         if temp_c is not None:
             params["tempf"] = _c_to_f(float(temp_c))
@@ -2256,21 +2420,93 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 body = await resp.text()
                 if resp.status == 200 and "success" in body.lower():
                     self._wu_last_upload = now_utc
-                    self._wu_status = f"OK {self._wu_last_upload.strftime('%H:%M')}"
+                    self._wu_status = "ok"
                     _LOGGER.debug("WUnderground upload OK")
                 else:
-                    self._wu_status = f"Error HTTP {resp.status}: {body[:60]}"
+                    self._wu_status = "error_http"
                     _LOGGER.warning("WUnderground upload failed HTTP %d: %s", resp.status, body[:120])
         except (aiohttp.ClientError, TimeoutError) as exc:
-            self._wu_status = f"Error: {exc}"
+            self._wu_status = "error_network"
             _LOGGER.warning("WUnderground upload error: %s", exc)
         except Exception as exc:
-            self._wu_status = f"Error: {exc}"
+            self._wu_status = "error"
             _LOGGER.error("WUnderground upload unexpected error: %s", exc, exc_info=True)
 
     # ------------------------------------------------------------------
     # CSV / JSON export  (v0.6.0)
     # ------------------------------------------------------------------
+
+    # ------------------------------------------------------------------
+    # v1.5.0 — Wind run, chill hours, clearness / cloud cover
+    # ------------------------------------------------------------------
+
+    def _compute_wind_run(self, data: dict, now: Any) -> None:
+        """Accumulate daily wind run (km).  Resets at local midnight."""
+        local_now = dt_util.now()
+        date_str = local_now.strftime("%Y-%m-%d")
+
+        if date_str != self._wind_run_date:
+            self._wind_run_km = 0.0
+            self._wind_run_date = date_str
+            self._wind_run_last_ts = None
+
+        wind_ms = data.get(KEY_NORM_WIND_SPEED_MS)
+        if wind_ms is not None and self._wind_run_last_ts is not None:
+            dt_s = (now - self._wind_run_last_ts).total_seconds()
+            self._wind_run_km += float(wind_ms) * dt_s / 1000.0  # m/s * s → m → km
+        if wind_ms is not None:
+            self._wind_run_last_ts = now
+
+        data[KEY_WIND_RUN_KM] = round(self._wind_run_km, 2)
+
+    def _compute_chill_hours(self, data: dict, now: Any) -> None:
+        """Accumulate chill hours today and season.
+
+        A chill hour is one hour spent at or below ``_chill_hour_base_c``.
+        Fractional hours are accumulated using actual elapsed seconds.
+        Season counter resets on ``_chill_season_reset_month``/``_chill_season_reset_day``.
+        """
+        local_now = dt_util.now()
+        date_str = local_now.strftime("%Y-%m-%d")
+        season_reset_key = f"{local_now.year}-{self._chill_season_reset_month:02d}-{self._chill_season_reset_day:02d}"
+
+        # Daily reset
+        if date_str != self._chill_hours_today_date:
+            self._chill_hours_today = 0.0
+            self._chill_hours_today_date = date_str
+
+        # Season reset (once per year on the configured date)
+        if season_reset_key != self._chill_hours_season_date and date_str == season_reset_key:
+            self._chill_hours_season = 0.0
+            self._chill_hours_season_date = season_reset_key
+
+        tc = data.get(KEY_NORM_TEMP_C)
+        if tc is not None and self._chill_hours_last_ts is not None:
+            dt_h = (now - self._chill_hours_last_ts).total_seconds() / 3600.0
+            if float(tc) <= self._chill_hour_base_c:
+                self._chill_hours_today += dt_h
+                self._chill_hours_season += dt_h
+        if tc is not None:
+            self._chill_hours_last_ts = now
+
+        data[KEY_CHILL_HOURS_TODAY] = round(self._chill_hours_today, 2)
+        data[KEY_CHILL_HOURS_SEASON] = round(self._chill_hours_season, 1)
+
+    def _compute_clearness_and_cloud(self, data: dict) -> None:
+        """Compute clearness index Kt and approximate cloud cover %."""
+        solar_rad = self._get_solar_radiation()
+        if solar_rad is None:
+            return
+
+        sun_state = self.hass.states.get("sun.sun")
+        if sun_state is None:
+            return
+        sun_elev = float(sun_state.attributes.get("elevation", 0))
+
+        kt = calculate_clearness_index(float(solar_rad), sun_elev)
+        if kt is not None:
+            data[KEY_CLEARNESS_INDEX] = kt
+            data[KEY_CLOUD_COVER_PCT] = clearness_to_cloud_cover(kt)
 
     # ------------------------------------------------------------------
     # v0.9.0 — Solar radiation source helper
@@ -2468,3 +2704,194 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             _LOGGER.error("ws_core solar forecast unexpected error: %s", exc, exc_info=True)
             if self._solar_cache:
                 self._solar_cache["status"] = f"Error: {exc}"
+
+    # ------------------------------------------------------------------
+    # v1.6.0 — Météo Vigilance (France, OpenDataSoft, no key)
+    # ------------------------------------------------------------------
+
+    async def _async_fetch_vigilance(self) -> None:
+        """Fetch Météo-France Vigilance alerts for the configured department.
+
+        Uses the OpenDataSoft public dataset (no API key required).
+        Extracts the worst alert level across all phenomena and stores
+        per-phenomenon levels as attributes.
+        """
+        if not (self.forecast_lat is not None and self.forecast_lon is not None):
+            return
+
+        lat = self.forecast_lat
+        lon = self.forecast_lon
+
+        # Step 1: reverse-geocode to French department code via BAN API
+        ban_url = f"https://api-adresse.data.gouv.fr/reverse/?lon={lon}&lat={lat}"
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(ban_url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                    if resp.status != 200:
+                        _LOGGER.debug("ws_core vigilance: BAN geocode failed HTTP %s", resp.status)
+                        return
+                    geo = await resp.json()
+        except (aiohttp.ClientError, TimeoutError) as exc:
+            _LOGGER.debug("ws_core vigilance: BAN geocode error: %s", exc)
+            return
+
+        features = geo.get("features", [])
+        if not features:
+            _LOGGER.debug("ws_core vigilance: no BAN result for lat=%s lon=%s (not in France?)", lat, lon)
+            return
+
+        # context = "75, Paris, Ile-de-France" — dept is the first token
+        context = features[0].get("properties", {}).get("context", "")
+        dept = context.split(",")[0].strip() if context else None
+        if not dept:
+            _LOGGER.debug("ws_core vigilance: could not extract dept from context=%r", context)
+            return
+
+        # Step 2: query Météo Vigilance dataset for today's alerts (echeance=J)
+        ods_url = (
+            "https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/"
+            "weatherref-france-vigilance-meteo-departement/records"
+            f"?where=domain_id%3D%22{dept}%22%20AND%20echeance%3D%22J%22"
+            "&limit=20&select=phenomenon_id,phenomenon,color_id,color"
+        )
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(ods_url, timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                    if resp.status != 200:
+                        _LOGGER.warning("ws_core vigilance: ODS fetch failed HTTP %s", resp.status)
+                        return
+                    raw = await resp.json()
+        except (aiohttp.ClientError, TimeoutError, ValueError) as exc:
+            _LOGGER.warning("ws_core vigilance: ODS fetch error: %s", exc)
+            return
+
+        records = raw.get("results", [])
+        if not records:
+            _LOGGER.debug("ws_core vigilance: no records for dept=%s (may be outside France)", dept)
+            return
+
+        # color_id: 1=vert, 2=jaune, 3=orange, 4=rouge
+        _COLOR_RANK = {"vert": 1, "jaune": 2, "orange": 3, "rouge": 4}
+        phenomena: dict[str, str] = {}
+        max_rank = 1
+        max_color = "vert"
+        for rec in records:
+            ph = (rec.get("phenomenon") or "").strip()
+            color = (rec.get("color") or "vert").strip()
+            rank = rec.get("color_id") or _COLOR_RANK.get(color, 1)
+            if ph:
+                phenomena[ph] = color
+            if rank > max_rank:
+                max_rank = rank
+                max_color = color
+
+        self._vigilance_cache = {
+            "max_color": max_color,
+            "max_rank": max_rank,
+            "phenomena": phenomena,
+            "dept": dept,
+            "fetched_at": dt_util.utcnow().isoformat(),
+        }
+        _LOGGER.debug(
+            "ws_core vigilance fetched: dept=%s max=%s phenomena=%s",
+            dept,
+            max_color,
+            list(phenomena.keys()),
+        )
+        await self.async_request_refresh()
+
+    # ------------------------------------------------------------------
+    # v1.6.0 — Vigicrues (Hub'Eau v2, France, no key)
+    # ------------------------------------------------------------------
+
+    async def _async_fetch_vigicrues(self) -> None:
+        """Fetch real-time water level from the nearest Hub'Eau hydrometric station.
+
+        Two-step:
+          1. Find nearest active station within 50 km (cached after first successful lookup)
+          2. Fetch latest H-observation (water level in mm; stored as m for display)
+        """
+        if not (self.forecast_lat is not None and self.forecast_lon is not None):
+            return
+
+        lat = self.forecast_lat
+        lon = self.forecast_lon
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                # Step 1: find nearest station (only if not yet cached)
+                if not self._vigicrues_station_code:
+                    stations_url = (
+                        "https://hubeau.eaufrance.fr/api/v2/hydrometrie/referentiel/stations"
+                        f"?format=json&longitude={lon}&latitude={lat}&distance=50"
+                        "&en_service=true&size=1"
+                        "&fields=code_station,libelle_station,longitude_station,latitude_station"
+                        ",code_cours_eau,libelle_cours_eau"
+                    )
+                    async with session.get(stations_url, timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                        if resp.status != 200:
+                            _LOGGER.warning("ws_core Vigicrues: station lookup HTTP %s", resp.status)
+                            return
+                        sdata = await resp.json()
+                    stations = sdata.get("data", [])
+                    if not stations:
+                        _LOGGER.debug("ws_core Vigicrues: no station found within 50 km (not in France?)")
+                        return
+                    st = stations[0]
+                    self._vigicrues_station_code = st.get("code_station")
+                    self._vigicrues_station_name = st.get("libelle_station") or self._vigicrues_station_code
+                    self._vigicrues_river_name = st.get("libelle_cours_eau") or ""
+                    _LOGGER.debug(
+                        "ws_core Vigicrues: nearest station %s (%s) on %s",
+                        self._vigicrues_station_code,
+                        self._vigicrues_station_name,
+                        self._vigicrues_river_name,
+                    )
+
+                if not self._vigicrues_station_code:
+                    return
+
+                # Step 2: fetch latest water level (grandeur_hydro=H)
+                obs_url = (
+                    "https://hubeau.eaufrance.fr/api/v2/hydrometrie/observations_tr"
+                    f"?format=json&code_entite={self._vigicrues_station_code}"
+                    "&grandeur_hydro=H&size=1"
+                    "&fields=code_station,date_obs,resultat_obs"
+                )
+                async with session.get(obs_url, timeout=aiohttp.ClientTimeout(total=15)) as resp:
+                    if resp.status != 200:
+                        _LOGGER.warning("ws_core Vigicrues: observations HTTP %s", resp.status)
+                        return
+                    odata = await resp.json()
+
+        except (aiohttp.ClientError, TimeoutError, ValueError) as exc:
+            _LOGGER.warning("ws_core Vigicrues fetch error: %s", exc)
+            return
+        except Exception as exc:
+            _LOGGER.error("ws_core Vigicrues unexpected error: %s", exc, exc_info=True)
+            return
+
+        observations = odata.get("data", [])
+        if not observations:
+            _LOGGER.debug("ws_core Vigicrues: no observations for station %s", self._vigicrues_station_code)
+            return
+
+        obs = observations[0]
+        raw_mm = obs.get("resultat_obs")  # Hub'Eau returns mm for H
+        level_m = round(float(raw_mm) / 1000.0, 3) if raw_mm is not None else None
+
+        self._vigicrues_cache = {
+            "level_m": level_m,
+            "station_code": self._vigicrues_station_code,
+            "station_name": self._vigicrues_station_name,
+            "river_name": self._vigicrues_river_name,
+            "obs_time": obs.get("date_obs"),
+            "fetched_at": dt_util.utcnow().isoformat(),
+        }
+        _LOGGER.debug(
+            "ws_core Vigicrues: %s level=%.3f m at %s",
+            self._vigicrues_station_name,
+            level_m or 0,
+            obs.get("date_obs"),
+        )
+        await self.async_request_refresh()

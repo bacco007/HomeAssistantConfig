@@ -37,48 +37,22 @@ CONF_THRESH_RAIN_RATE_MMPH = "thresh_rain_rate_mmph"
 CONF_THRESH_FREEZE_C = "thresh_freeze_c"
 CONF_RAIN_FILTER_ALPHA = "rain_filter_alpha"
 CONF_PRESSURE_TREND_WINDOW_H = "pressure_trend_window_h"
-CONF_ENABLE_ACTIVITY_SCORES = "enable_activity_scores"
-CONF_ENABLE_EXTENDED_SENSORS = "enable_extended_sensors"
 
-# Granular feature toggles (override the coarse group toggles above)
+# Feature toggles
 CONF_ENABLE_ZAMBRETTI = "enable_zambretti"
 CONF_ENABLE_DISPLAY_SENSORS = "enable_display_sensors"
-CONF_ENABLE_LAUNDRY = "enable_laundry_score"
-CONF_ENABLE_STARGAZING = "enable_stargazing_score"
 CONF_ENABLE_FIRE_RISK = "enable_fire_risk_score"
-CONF_ENABLE_RUNNING = "enable_running_score"
 CONF_ENABLE_SEA_TEMP = "enable_sea_temp"
 CONF_SEA_TEMP_LAT = "sea_temp_lat"
 CONF_SEA_TEMP_LON = "sea_temp_lon"
 CONF_RAIN_PENALTY_LIGHT_MMPH = "rain_penalty_light_mmph"
 CONF_RAIN_PENALTY_HEAVY_MMPH = "rain_penalty_heavy_mmph"
 
-# Degree days (v0.5.0)
-CONF_ENABLE_DEGREE_DAYS = "enable_degree_days"
-CONF_DEGREE_DAY_BASE_C = "degree_day_base_c"
-
-# METAR cross-validation (v0.5.0)
-CONF_ENABLE_METAR = "enable_metar"
-CONF_METAR_ICAO = "metar_icao"
-CONF_METAR_INTERVAL_MIN = "metar_interval_min"
-
-# v0.6.0 CWOP upload
-CONF_ENABLE_CWOP = "enable_cwop"
-CONF_CWOP_CALLSIGN = "cwop_callsign"
-CONF_CWOP_PASSCODE = "cwop_passcode"
-CONF_CWOP_INTERVAL_MIN = "cwop_interval_min"
-
-# v0.6.0 Weather Underground upload
+# Weather Underground upload
 CONF_ENABLE_WUNDERGROUND = "enable_wunderground"
 CONF_WU_STATION_ID = "wu_station_id"
 CONF_WU_API_KEY = "wu_api_key"
 CONF_WU_INTERVAL_MIN = "wu_interval_min"
-
-# v0.6.0 CSV/JSON export
-CONF_ENABLE_EXPORT = "enable_export"
-CONF_EXPORT_PATH = "export_path"
-CONF_EXPORT_FORMAT = "export_format"
-CONF_EXPORT_INTERVAL_MIN = "export_interval_min"
 
 # Calibration offsets (applied after unit conversion, in canonical metric units)
 CONF_CAL_TEMP_C = "cal_temp_c"
@@ -105,35 +79,15 @@ DEFAULT_THRESH_RAIN_RATE_MMPH = 20.0
 DEFAULT_THRESH_FREEZE_C = 0.0
 DEFAULT_RAIN_FILTER_ALPHA = 0.7
 DEFAULT_PRESSURE_TREND_WINDOW_H = 3
-DEFAULT_ENABLE_ACTIVITY_SCORES = False
-DEFAULT_ENABLE_EXTENDED_SENSORS = True
-
 DEFAULT_ENABLE_ZAMBRETTI = True
 DEFAULT_ENABLE_DISPLAY_SENSORS = True
-DEFAULT_ENABLE_LAUNDRY = False
-DEFAULT_ENABLE_STARGAZING = False
 DEFAULT_ENABLE_FIRE_RISK = False
-DEFAULT_ENABLE_RUNNING = False
 DEFAULT_ENABLE_SEA_TEMP = False
 DEFAULT_RAIN_PENALTY_LIGHT_MMPH = 0.2
 DEFAULT_RAIN_PENALTY_HEAVY_MMPH = 5.0
 
-# Degree days defaults
-DEFAULT_ENABLE_DEGREE_DAYS = False
-DEFAULT_DEGREE_DAY_BASE_C = 18.0
-
-# METAR defaults
-DEFAULT_ENABLE_METAR = False
-DEFAULT_METAR_INTERVAL_MIN = 60
-
-# v0.6.0 defaults
-DEFAULT_ENABLE_CWOP = False
-DEFAULT_CWOP_INTERVAL_MIN = 10
 DEFAULT_ENABLE_WUNDERGROUND = False
 DEFAULT_WU_INTERVAL_MIN = 5
-DEFAULT_ENABLE_EXPORT = False
-DEFAULT_EXPORT_FORMAT = "csv"
-DEFAULT_EXPORT_INTERVAL_MIN = 60
 
 DEFAULT_CAL_TEMP_C = 0.0
 DEFAULT_CAL_HUMIDITY = 0.0
@@ -342,6 +296,21 @@ ZAMBRETTI_LOWER_PRESSURE: float = 950.0
 FORECAST_MIN_RETRY_S: int = 300
 FORECAST_MAX_RETRY_S: int = 3600
 
+# Forecast agreement thresholds (percentage points)
+FORECAST_AGREEMENT_ALIGNED_PP: int = 20  # delta < 20 pp  -> aligned
+FORECAST_AGREEMENT_CONFLICT_PP: int = 40  # delta >= 40 pp -> conflict
+
+# Sensor drift detection — slope thresholds (per hour) and R² floor
+DRIFT_SLOPE_TEMP_C_H: float = 0.1  # °C/h monotonic drift flag
+DRIFT_SLOPE_HUMIDITY_PCT_H: float = 0.5  # %/h
+DRIFT_SLOPE_PRESSURE_HPA_H: float = 1.5  # hPa/h
+DRIFT_R_SQ_THRESH: float = 0.85  # minimum R² to flag as drift
+
+# Stuck rain-bucket detection (samples at ~1 min intervals)
+DRIFT_STUCK_BUCKET_SAMPLES: int = 240  # 4-hour rolling window
+DRIFT_STUCK_BUCKET_MIN_RATE: float = 0.1  # mm/h minimum to count as non-zero
+DRIFT_STUCK_RATE_RANGE_MAX: float = 0.1  # mm/h max spread to flag as stuck
+
 CONFIG_VERSION = 2
 
 # ---------------------------------------------------------------------------
@@ -479,6 +448,78 @@ KEY_FWI_ISI = "fwi_isi"
 KEY_FWI_BUI = "fwi_bui"
 KEY_FWI = "fwi"
 KEY_FWI_DSR = "fwi_dsr"
+
+# ---------------------------------------------------------------------------
+# v1.5.0 — Extended comfort / agrometeorological sensors
+# ---------------------------------------------------------------------------
+
+# Config keys
+CONF_ENABLE_COMFORT_INDICES = "enable_comfort_indices"
+CONF_CHILL_HOUR_BASE_C = "chill_hour_base_c"
+CONF_CHILL_SEASON_RESET_MONTH = "chill_season_reset_month"
+CONF_CHILL_SEASON_RESET_DAY = "chill_season_reset_day"
+
+# Defaults
+DEFAULT_ENABLE_COMFORT_INDICES = False
+DEFAULT_CHILL_HOUR_BASE_C = 7.2  # standard base for apple/pear chill models
+DEFAULT_CHILL_SEASON_RESET_MONTH = 7  # July 1 for Northern Hemisphere
+DEFAULT_CHILL_SEASON_RESET_DAY = 1
+
+# Data keys — heat / cold stress indices
+KEY_HEAT_INDEX = "heat_index_c"
+KEY_WIND_CHILL = "wind_chill_c"
+KEY_HUMIDEX = "humidex"
+
+# Data keys — humidity / vapour
+KEY_VPD = "vpd_kpa"
+KEY_ABSOLUTE_HUMIDITY = "absolute_humidity_gm3"
+
+# Data keys — agrometeorological
+KEY_DELTA_T = "delta_t_c"
+KEY_WIND_RUN_KM = "wind_run_km"
+KEY_CHILL_HOURS_TODAY = "chill_hours_today"
+KEY_CHILL_HOURS_SEASON = "chill_hours_season"
+
+# Data keys — Davis comfort indices
+KEY_THW_INDEX = "thw_index_c"
+KEY_THSW_INDEX = "thsw_index_c"
+
+# Data keys — solar / cloud
+KEY_CLEARNESS_INDEX = "clearness_index_kt"
+KEY_CLOUD_COVER_PCT = "cloud_cover_pct"
+
+# ---------------------------------------------------------------------------
+# v1.6.0 — French regional data sources (no API key required)
+# ---------------------------------------------------------------------------
+
+# Feature toggles
+CONF_ENABLE_VIGILANCE_METEO = "enable_vigilance_meteo"
+CONF_ENABLE_VIGICRUES = "enable_vigicrues"
+
+# Defaults
+DEFAULT_ENABLE_VIGILANCE_METEO = False
+DEFAULT_ENABLE_VIGICRUES = False
+
+# Data keys — Météo-France Vigilance (department-level weather alerts)
+KEY_VIGILANCE_MAX_LEVEL = "vigilance_max_level"  # overall worst: vert/jaune/orange/rouge
+
+# Data keys — Vigicrues (real-time river level via Hub'Eau v2)
+KEY_RIVER_LEVEL_M = "river_level_m"
+
+# ---------------------------------------------------------------------------
+# v1.6.2 — Opt-in toggles for previously disabled-by-default sensor groups
+# ---------------------------------------------------------------------------
+# Replaces the old _DISABLED_BY_DEFAULT mechanism (which created dead entities
+# that had to be manually enabled). These toggles gate entity creation instead:
+# off = not created (no clutter, no recorder cost); on = created and working.
+CONF_ENABLE_DIAGNOSTICS = (
+    "enable_diagnostics"  # drift/consistency/quality, forecast skill/agreement, solar lux factor, climatology 30d
+)
+CONF_ENABLE_FWI_COMPONENTS = "enable_fwi_components"  # FWI intermediate codes (FFMC/DMC/DC/ISI/BUI); needs fire risk
+CONF_ENABLE_ADVANCED_SENSORS = "enable_advanced_sensors"  # Zambretti number, ET0 hourly, wind direction smoothed
+DEFAULT_ENABLE_DIAGNOSTICS = False
+DEFAULT_ENABLE_FWI_COMPONENTS = False
+DEFAULT_ENABLE_ADVANCED_SENSORS = False
 
 # ---------------------------------------------------------------------------
 # Migration — v0.3.0 deprecated entity keys and config keys

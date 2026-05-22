@@ -1,4 +1,4 @@
-"""Sensors for Weather Station Core -- v0.5.0."""
+"""Sensors for Weather Station Core -- v1.6.2."""
 
 from __future__ import annotations
 
@@ -15,12 +15,20 @@ from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
+    # v1.6.2
+    CONF_ENABLE_ADVANCED_SENSORS,
     # v0.7.0
     CONF_ENABLE_AIR_QUALITY,
+    # v1.5.0
+    CONF_ENABLE_COMFORT_INDICES,
+    # v1.6.2
+    CONF_ENABLE_DIAGNOSTICS,
     CONF_ENABLE_DISPLAY_SENSORS,
     CONF_ENABLE_FIRE_RISK,
     # v1.2.0
     CONF_ENABLE_FOG,
+    # v1.6.2
+    CONF_ENABLE_FWI_COMPONENTS,
     # v0.8.0
     CONF_ENABLE_MOON,
     CONF_ENABLE_POLLEN,
@@ -28,19 +36,29 @@ from .const import (
     # v0.9.0
     CONF_ENABLE_SOLAR_FORECAST,
     CONF_ENABLE_THUNDERSTORM,
+    CONF_ENABLE_VIGICRUES,
+    # v1.6.0
+    CONF_ENABLE_VIGILANCE_METEO,
     CONF_PREFIX,
     DEFAULT_PREFIX,
     DOMAIN,
+    # v1.5.0
+    KEY_ABSOLUTE_HUMIDITY,
     KEY_ALERT_MESSAGE,
     KEY_ALERT_STATE,
     # v0.7.0
     KEY_AQI,
     KEY_AQI_LEVEL,
     KEY_BATTERY_PCT,
+    KEY_CHILL_HOURS_SEASON,
+    KEY_CHILL_HOURS_TODAY,
+    KEY_CLEARNESS_INDEX,
     KEY_CLIMATOLOGY_30D,
+    KEY_CLOUD_COVER_PCT,
     KEY_CONSISTENCY_FLAGS,
     KEY_CURRENT_CONDITION,
     KEY_DATA_QUALITY,
+    KEY_DELTA_T,
     KEY_DEW_POINT_C,
     KEY_DRY_STREAK,
     # v0.6.0
@@ -64,7 +82,9 @@ from .const import (
     KEY_FWI_FFMC,
     KEY_FWI_ISI,
     KEY_HEALTH_DISPLAY,
+    KEY_HEAT_INDEX,
     KEY_HEAT_STREAK,
+    KEY_HUMIDEX,
     KEY_HUMIDITY_LEVEL_DISPLAY,
     KEY_LUX,
     KEY_MOON_AGE_DAYS,
@@ -101,6 +121,7 @@ from .const import (
     KEY_RAIN_PROBABILITY_COMBINED,
     KEY_RAIN_RATE_FILT,
     KEY_RAIN_TODAY_MM,
+    KEY_RIVER_LEVEL_M,
     KEY_SEA_LEVEL_PRESSURE_HPA,
     KEY_SEA_SURFACE_TEMP,
     KEY_SENSOR_DRIFT_FLAGS,
@@ -115,15 +136,21 @@ from .const import (
     KEY_TEMP_DISPLAY,
     KEY_TEMP_HIGH_24H,
     KEY_TEMP_LOW_24H,
+    KEY_THSW_INDEX,
     KEY_THUNDERSTORM_RISK,
+    KEY_THW_INDEX,
     KEY_UV,
     KEY_UV_LEVEL_DISPLAY,
+    KEY_VIGILANCE_MAX_LEVEL,
+    KEY_VPD,
     KEY_WET_BULB_C,
     KEY_WIND_BEAUFORT,
     KEY_WIND_BEAUFORT_DESC,
+    KEY_WIND_CHILL,
     KEY_WIND_DIR_SMOOTH_DEG,
     KEY_WIND_GUST_MAX_24H,
     KEY_WIND_QUADRANT,
+    KEY_WIND_RUN_KM,
     KEY_WU_STATUS,
     KEY_ZAMBRETTI_FORECAST,
     KEY_ZAMBRETTI_NUMBER,
@@ -381,6 +408,178 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit=UNIT_TEMP_C,
         state_class=SensorStateClass.MEASUREMENT,
+    ),
+    # =========================================================================
+    # v1.5.0 COMFORT / COMFORT STRESS INDICES
+    # =========================================================================
+    # NWS Heat Index (Rothfusz, valid T >= 27 C and RH >= 40 %)
+    WSSensorDescription(
+        key=KEY_HEAT_INDEX,
+        translation_key="heat_index",
+        name="WS Heat Index",
+        icon="mdi:thermometer-high",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    # WMO / NWS Wind Chill (2001, valid T <= 10 C and wind > 1.34 m/s)
+    WSSensorDescription(
+        key=KEY_WIND_CHILL,
+        translation_key="wind_chill",
+        name="WS Wind Chill",
+        icon="mdi:thermometer-minus",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    # Canadian Humidex
+    WSSensorDescription(
+        key=KEY_HUMIDEX,
+        translation_key="humidex",
+        name="WS Humidex",
+        icon="mdi:water-thermometer",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    # Vapour Pressure Deficit (kPa)
+    WSSensorDescription(
+        key=KEY_VPD,
+        translation_key="vpd",
+        name="WS Vapour Pressure Deficit",
+        icon="mdi:water-percent-alert",
+        native_unit="kPa",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    # Absolute Humidity (g/m³)
+    WSSensorDescription(
+        key=KEY_ABSOLUTE_HUMIDITY,
+        translation_key="absolute_humidity",
+        name="WS Absolute Humidity",
+        icon="mdi:water",
+        native_unit="g/m³",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    # Delta-T (dry-bulb minus wet-bulb)
+    WSSensorDescription(
+        key=KEY_DELTA_T,
+        translation_key="delta_t",
+        name="WS Delta-T",
+        icon="mdi:thermometer-lines",
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "spray_suitability": (
+                "unsuitable_too_low"
+                if (d.get(KEY_DELTA_T) or 0) < 2.0
+                else "ideal"
+                if (d.get(KEY_DELTA_T) or 0) <= 8.0
+                else "unsuitable_too_high"
+            )
+        },
+    ),
+    # Davis THW Index (Heat Index + wind cooling)
+    WSSensorDescription(
+        key=KEY_THW_INDEX,
+        translation_key="thw_index",
+        name="WS THW Index",
+        icon="mdi:thermometer-lines",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    # Davis THSW Index (THW + solar radiation)
+    WSSensorDescription(
+        key=KEY_THSW_INDEX,
+        translation_key="thsw_index",
+        name="WS THSW Index",
+        icon="mdi:sun-thermometer",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    # =========================================================================
+    # v1.5.0 AGROMETEOROLOGICAL / ACCUMULATION SENSORS
+    # =========================================================================
+    # Wind Run (daily km accumulator)
+    WSSensorDescription(
+        key=KEY_WIND_RUN_KM,
+        translation_key="wind_run",
+        name="WS Wind Run",
+        icon="mdi:weather-windy",
+        native_unit="km",
+        state_class=SensorStateClass.TOTAL_INCREASING,
+    ),
+    # Chill Hours Today
+    WSSensorDescription(
+        key=KEY_CHILL_HOURS_TODAY,
+        translation_key="chill_hours_today",
+        name="WS Chill Hours Today",
+        icon="mdi:snowflake",
+        native_unit="h",
+        state_class=SensorStateClass.TOTAL_INCREASING,
+    ),
+    # Chill Hours Season
+    WSSensorDescription(
+        key=KEY_CHILL_HOURS_SEASON,
+        translation_key="chill_hours_season",
+        name="WS Chill Hours Season",
+        icon="mdi:snowflake-variant",
+        native_unit="h",
+        state_class=SensorStateClass.TOTAL_INCREASING,
+    ),
+    # =========================================================================
+    # v1.5.0 SOLAR / CLOUD SENSORS
+    # =========================================================================
+    # Clearness Index (Kt) — requires solar radiation sensor
+    WSSensorDescription(
+        key=KEY_CLEARNESS_INDEX,
+        translation_key="clearness_index",
+        name="WS Clearness Index",
+        icon="mdi:white-balance-sunny",
+        native_unit=None,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    # Cloud Cover Percent — derived from clearness index
+    WSSensorDescription(
+        key=KEY_CLOUD_COVER_PCT,
+        translation_key="cloud_cover",
+        name="WS Cloud Cover",
+        icon="mdi:cloud-percent",
+        native_unit="%",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    # =========================================================================
+    # v1.6.0 FRENCH REGIONAL SENSORS (Météo Vigilance + Vigicrues)
+    # =========================================================================
+    # Météo-France Vigilance — worst alert level for the station's department
+    WSSensorDescription(
+        key=KEY_VIGILANCE_MAX_LEVEL,
+        translation_key="vigilance_max_level",
+        name="WS Vigilance Météo",
+        icon="mdi:alert-octagon",
+        state_class=None,
+        native_unit=None,
+        attrs_fn=lambda d: {
+            "phenomena": d.get("_vigilance_phenomena", {}),
+            "department": d.get("_vigilance_dept"),
+            "fetched_at": d.get("_vigilance_fetched_at"),
+        },
+    ),
+    # Vigicrues — real-time water level at nearest hydrometric station
+    WSSensorDescription(
+        key=KEY_RIVER_LEVEL_M,
+        translation_key="river_level",
+        name="WS River Level",
+        icon="mdi:waves",
+        native_unit="m",
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "station": d.get("_river_station_name"),
+            "river": d.get("_river_name"),
+            "station_code": d.get("_river_station_code"),
+            "observed_at": d.get("_river_obs_time"),
+        },
     ),
     # Zambretti barometric forecast
     WSSensorDescription(
@@ -804,6 +1003,7 @@ SENSORS: list[WSSensorDescription] = [
         name="WS Weather Underground Status",
         icon="mdi:weather-cloudy-clock",
         entity_category=EntityCategory.DIAGNOSTIC,
+        attrs_fn=lambda d: {"last_upload": d.get("_wu_last_upload")},
     ),
     # ---------------------------------------------------------------
     # Air Quality  (v0.7.0, Open-Meteo AQI API)
@@ -1065,6 +1265,7 @@ SENSORS: list[WSSensorDescription] = [
         translation_key="temperature_anomaly_30d",
         name="WS Temperature Anomaly (30-day)",
         icon="mdi:thermometer-alert",
+        device_class=SensorDeviceClass.TEMPERATURE,
         native_unit=UNIT_TEMP_C,
         state_class=SensorStateClass.MEASUREMENT,
         attrs_fn=lambda d: {"normal_30d_c": d.get("_temp_normal_30d")},
@@ -1074,6 +1275,7 @@ SENSORS: list[WSSensorDescription] = [
         translation_key="rain_anomaly_30d",
         name="WS Rain Anomaly (30-day)",
         icon="mdi:water-percent-alert",
+        device_class=SensorDeviceClass.PRECIPITATION,
         native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.MEASUREMENT,
         attrs_fn=lambda d: {"normal_30d_avg_mm": d.get("_rain_normal_30d_avg")},
@@ -1133,15 +1335,17 @@ _FEATURE_TOGGLE_MAP: dict[str, str] = {
     KEY_PRESSURE_TREND_DISPLAY: CONF_ENABLE_DISPLAY_SENSORS,
     KEY_HEALTH_DISPLAY: CONF_ENABLE_DISPLAY_SENSORS,
     KEY_FORECAST_TILES: CONF_ENABLE_DISPLAY_SENSORS,
-    # Risk sensors (fire)
+    # Risk sensors (fire). FWI composite + DSR are primary outputs (with fire
+    # risk); the 5 intermediate codes are gated separately (v1.6.2) and need
+    # fire risk enabled to produce data.
     KEY_FIRE_RISK_SCORE: CONF_ENABLE_FIRE_RISK,
-    KEY_FWI_FFMC: CONF_ENABLE_FIRE_RISK,
-    KEY_FWI_DMC: CONF_ENABLE_FIRE_RISK,
-    KEY_FWI_DC: CONF_ENABLE_FIRE_RISK,
-    KEY_FWI_ISI: CONF_ENABLE_FIRE_RISK,
-    KEY_FWI_BUI: CONF_ENABLE_FIRE_RISK,
     KEY_FWI: CONF_ENABLE_FIRE_RISK,
     KEY_FWI_DSR: CONF_ENABLE_FIRE_RISK,
+    KEY_FWI_FFMC: CONF_ENABLE_FWI_COMPONENTS,
+    KEY_FWI_DMC: CONF_ENABLE_FWI_COMPONENTS,
+    KEY_FWI_DC: CONF_ENABLE_FWI_COMPONENTS,
+    KEY_FWI_ISI: CONF_ENABLE_FWI_COMPONENTS,
+    KEY_FWI_BUI: CONF_ENABLE_FWI_COMPONENTS,
     # Sea temperature
     KEY_SEA_SURFACE_TEMP: CONF_ENABLE_SEA_TEMP,
     # Air Quality  (v0.7.0)
@@ -1168,6 +1372,35 @@ _FEATURE_TOGGLE_MAP: dict[str, str] = {
     # v1.3.0: streaks are ungated (always on, no switch required)
     # KEY_GDD_TODAY, KEY_GDD_SEASON removed (degree days cut in v1.3.0)
     # KEY_LEARNED_*, KEY_CAL_SUGGESTION_* removed (METAR cut in v1.3.0)
+    # v1.5.0 — comfort indices + agrometeorological sensors
+    KEY_HEAT_INDEX: CONF_ENABLE_COMFORT_INDICES,
+    KEY_WIND_CHILL: CONF_ENABLE_COMFORT_INDICES,
+    KEY_HUMIDEX: CONF_ENABLE_COMFORT_INDICES,
+    KEY_VPD: CONF_ENABLE_COMFORT_INDICES,
+    KEY_ABSOLUTE_HUMIDITY: CONF_ENABLE_COMFORT_INDICES,
+    KEY_DELTA_T: CONF_ENABLE_COMFORT_INDICES,
+    KEY_THW_INDEX: CONF_ENABLE_COMFORT_INDICES,
+    KEY_THSW_INDEX: CONF_ENABLE_COMFORT_INDICES,
+    KEY_WIND_RUN_KM: CONF_ENABLE_COMFORT_INDICES,
+    KEY_CHILL_HOURS_TODAY: CONF_ENABLE_COMFORT_INDICES,
+    KEY_CHILL_HOURS_SEASON: CONF_ENABLE_COMFORT_INDICES,
+    KEY_CLEARNESS_INDEX: CONF_ENABLE_COMFORT_INDICES,
+    KEY_CLOUD_COVER_PCT: CONF_ENABLE_COMFORT_INDICES,
+    # v1.6.0 French regional
+    KEY_VIGILANCE_MAX_LEVEL: CONF_ENABLE_VIGILANCE_METEO,
+    KEY_RIVER_LEVEL_M: CONF_ENABLE_VIGICRUES,
+    # v1.6.2 — station diagnostics (opt-in)
+    KEY_SENSOR_DRIFT_FLAGS: CONF_ENABLE_DIAGNOSTICS,
+    KEY_CONSISTENCY_FLAGS: CONF_ENABLE_DIAGNOSTICS,
+    KEY_SENSOR_QUALITY_FLAGS: CONF_ENABLE_DIAGNOSTICS,
+    KEY_FORECAST_SKILL: CONF_ENABLE_DIAGNOSTICS,
+    KEY_FORECAST_AGREEMENT: CONF_ENABLE_DIAGNOSTICS,
+    KEY_SOLAR_LUX_FACTOR: CONF_ENABLE_DIAGNOSTICS,
+    KEY_CLIMATOLOGY_30D: CONF_ENABLE_DIAGNOSTICS,
+    # v1.6.2 — advanced / derived representations (opt-in)
+    KEY_ZAMBRETTI_NUMBER: CONF_ENABLE_ADVANCED_SENSORS,
+    KEY_ET0_HOURLY_MM: CONF_ENABLE_ADVANCED_SENSORS,
+    KEY_WIND_DIR_SMOOTH_DEG: CONF_ENABLE_ADVANCED_SENSORS,
 }
 
 
@@ -1208,41 +1441,16 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
         KEY_RAIN_ACCUM_1H,
         KEY_RAIN_ACCUM_24H,
         # v1.3.0: removed cut keys (HDD/CDD/METAR) from restore set
+        # v1.5.0: accumulation sensors
+        KEY_WIND_RUN_KM,
+        KEY_CHILL_HOURS_TODAY,
+        KEY_CHILL_HOURS_SEASON,
     }
 
-    _DISABLED_BY_DEFAULT = {
-        KEY_TEMP_DISPLAY,
-        KEY_WIND_DIR_SMOOTH_DEG,
-        KEY_SENSOR_QUALITY_FLAGS,
-        KEY_ZAMBRETTI_NUMBER,
-        KEY_ET0_HOURLY_MM,
-        # v0.7.0 diagnostic sub-pollutants
-        KEY_PM2_5,
-        KEY_PM10,
-        KEY_POLLEN_GRASS,
-        KEY_POLLEN_TREE,
-        KEY_POLLEN_WEED,
-        # v0.8.0
-        KEY_MOON_ILLUMINATION_PCT,
-        # v0.9.0
-        KEY_SOLAR_FORECAST_TOMORROW_KWH,
-        KEY_ET0_PM_DAILY_MM,
-        # v1.2.0 — diagnostic learning sensors hidden by default
-        KEY_FORECAST_AGREEMENT,
-        KEY_FORECAST_SKILL,
-        KEY_SOLAR_LUX_FACTOR,
-        KEY_CLIMATOLOGY_30D,
-        KEY_SENSOR_DRIFT_FLAGS,
-        KEY_CONSISTENCY_FLAGS,
-        # v1.3.0 — FWI component sensors (disabled by default; main score via KEY_FIRE_RISK_SCORE)
-        KEY_FWI_FFMC,
-        KEY_FWI_DMC,
-        KEY_FWI_DC,
-        KEY_FWI_ISI,
-        KEY_FWI_BUI,
-        KEY_FWI,
-        KEY_FWI_DSR,
-    }
+    # v1.6.2: _DISABLED_BY_DEFAULT removed. Previously-disabled sensors are now
+    # gated by opt-in feature toggles (enable_diagnostics, enable_fwi_components,
+    # enable_advanced_sensors) via _FEATURE_TOGGLE_MAP, so they are created and
+    # working when their group is enabled rather than created in a dead state.
 
     def __init__(self, coordinator, entry: ConfigEntry, desc: WSSensorDescription, prefix: str):
         super().__init__(coordinator)
@@ -1263,8 +1471,6 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
         self._attr_state_class = desc.state_class
         if desc.entity_category is not None:
             self._attr_entity_category = desc.entity_category
-        if desc.key in self._DISABLED_BY_DEFAULT:
-            self._attr_entity_registry_enabled_default = False
 
     @property
     def device_info(self):
@@ -1383,6 +1589,22 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             KEY_FWI_BUI: "fwi_bui",
             KEY_FWI: "fwi",
             KEY_FWI_DSR: "fwi_dsr",
+            # v1.5.0 — comfort indices + agrometeorological
+            KEY_HEAT_INDEX: "heat_index",
+            KEY_WIND_CHILL: "wind_chill",
+            KEY_HUMIDEX: "humidex",
+            KEY_VPD: "vpd",
+            KEY_ABSOLUTE_HUMIDITY: "absolute_humidity",
+            KEY_DELTA_T: "delta_t",
+            KEY_THW_INDEX: "thw_index",
+            KEY_THSW_INDEX: "thsw_index",
+            KEY_WIND_RUN_KM: "wind_run",
+            KEY_CHILL_HOURS_TODAY: "chill_hours_today",
+            KEY_CHILL_HOURS_SEASON: "chill_hours_season",
+            KEY_CLEARNESS_INDEX: "clearness_index",
+            KEY_CLOUD_COVER_PCT: "cloud_cover",
+            KEY_VIGILANCE_MAX_LEVEL: "vigilance",
+            KEY_RIVER_LEVEL_M: "river_level",
         }
         if key in overrides:
             return overrides[key]

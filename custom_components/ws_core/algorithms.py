@@ -105,6 +105,163 @@ def calculate_wet_bulb(temp_c: float, humidity: float) -> float:
 
 
 # ---------------------------------------------------------------------------
+# Heat / cold / humidity comfort indices
+# ---------------------------------------------------------------------------
+
+
+def calculate_heat_index(tc: float, rh: float) -> float | None:
+    """NWS Heat Index (Rothfusz regression).
+
+    Returns apparent temperature in °C, or None when outside valid range.
+    Valid range: T >= 27 °C and RH >= 40 %.
+    Reference: NWS Technical Attachment SR 90-23 (Rothfusz 1990).
+    """
+    if tc < 27.0 or rh < 40.0:
+        return None
+    tf = tc * 9 / 5 + 32
+    hi_f = (
+        -42.379
+        + 2.04901523 * tf
+        + 10.14333127 * rh
+        - 0.22475541 * tf * rh
+        - 0.00683783 * tf**2
+        - 0.05481717 * rh**2
+        + 0.00122874 * tf**2 * rh
+        + 0.00085282 * tf * rh**2
+        - 0.00000199 * tf**2 * rh**2
+    )
+    return round((hi_f - 32) * 5 / 9, 1)
+
+
+def calculate_wind_chill(tc: float, wind_ms: float) -> float | None:
+    """WMO / NWS Wind Chill Index (2001 formula).
+
+    Returns apparent temperature in °C, or None when outside valid range.
+    Valid range: T <= 10 °C and wind speed > 1.34 m/s (4.8 km/h).
+    Reference: Environment Canada / NWS Joint Wind Chill Index (2001).
+    """
+    if tc > 10.0 or wind_ms <= 1.34:
+        return None
+    wind_kmh = wind_ms * 3.6
+    wc = 13.12 + 0.6215 * tc - 11.37 * wind_kmh**0.16 + 0.3965 * tc * wind_kmh**0.16
+    return round(wc, 1)
+
+
+def calculate_humidex(tc: float, dew_c: float) -> float | None:
+    """Canadian Humidex (Environment Canada).
+
+    Returns the humidex value (°C) or None when humidex <= ambient temperature
+    (i.e., no perceived increase in discomfort).
+    Reference: Masterson & Richardson 1979.
+    """
+    e = 6.1078 * math.exp(5417.7530 * (1.0 / 273.16 - 1.0 / (273.16 + dew_c)))
+    humidex = tc + 0.5555 * (e - 10.0)
+    return round(humidex, 1) if humidex > tc else None
+
+
+def calculate_vpd(tc: float, rh: float) -> float:
+    """Vapour Pressure Deficit (kPa).
+
+    VPD = saturation vapour pressure minus actual vapour pressure.
+    Used extensively in plant physiology, greenhouse control, and irrigation.
+    Reference: Tetens formula (Allen et al. 1998, FAO-56).
+    """
+    es = 0.6108 * math.exp(17.27 * tc / (tc + 237.3))
+    ea = es * rh / 100.0
+    return round(max(0.0, es - ea), 3)
+
+
+def calculate_absolute_humidity(tc: float, rh: float) -> float:
+    """Absolute humidity (g/m³).
+
+    Mass of water vapour per unit volume of moist air.
+    Uses the Tetens approximation for saturation vapour pressure.
+    """
+    es_pa = 611.2 * math.exp(17.67 * tc / (tc + 243.5))
+    ah = (es_pa * rh / 100.0) / (461.5 * (tc + 273.15)) * 1000.0
+    return round(ah, 2)
+
+
+def calculate_delta_t(tc: float, tw_c: float) -> float:
+    """Delta-T index (dry-bulb minus wet-bulb temperature, °C).
+
+    Used as a spray application suitability index in agriculture:
+    Delta-T < 2 °C  -> unsuitable (rapid evaporation, drift risk)
+    Delta-T 2-8 °C  -> ideal spray window
+    Delta-T > 8 °C  -> unsuitable (rapid evaporation, poor coverage)
+    Reference: Australian Pesticides and Veterinary Medicines Authority.
+    """
+    return round(tc - tw_c, 1)
+
+
+# ---------------------------------------------------------------------------
+# Davis THW / THSW indices
+# ---------------------------------------------------------------------------
+
+
+def calculate_thw_index(tc: float, rh: float, wind_ms: float) -> float | None:
+    """Davis THW (Temperature-Humidity-Wind) Index.
+
+    Extends the NWS Heat Index by adding a wind-cooling adjustment.
+    Returns None when heat index preconditions are not met (T < 27 °C or RH < 40 %).
+    Reference: Davis Instruments WeatherLink documentation.
+    """
+    hi_c = calculate_heat_index(tc, rh)
+    if hi_c is None:
+        return None
+    hi_f = hi_c * 9 / 5 + 32
+    wind_mph = wind_ms * 2.23694
+    thw_f = hi_f - (1.072 * wind_mph)
+    return round((thw_f - 32) * 5 / 9, 1)
+
+
+def calculate_thsw_index(tc: float, rh: float, wind_ms: float, solar_rad_wm2: float) -> float | None:
+    """Davis THSW (Temperature-Humidity-Sun-Wind) Index.
+
+    Extends THW by adding solar radiation heating.  Requires a solar radiation
+    sensor; returns None when THW preconditions are not met.
+    Reference: Davis Instruments WeatherLink documentation.
+    """
+    thw_c = calculate_thw_index(tc, rh, wind_ms)
+    if thw_c is None:
+        return None
+    thw_f = thw_c * 9 / 5 + 32
+    solar_term_f = 0.01 * solar_rad_wm2
+    thsw_f = thw_f + solar_term_f
+    return round((thsw_f - 32) * 5 / 9, 1)
+
+
+# ---------------------------------------------------------------------------
+# Solar / cloud indices
+# ---------------------------------------------------------------------------
+
+
+def calculate_clearness_index(solar_rad_wm2: float, sun_elev_deg: float) -> float | None:
+    """Clearness index Kt = observed solar / theoretical clear-sky solar radiation.
+
+    Returns a dimensionless ratio in [0, 1] (values near 1 -> clear sky,
+    values near 0 -> overcast).  Returns None when sun elevation < 5° to
+    avoid noise near the horizon.
+    Reference: Duffie & Beckman (2006), Solar Engineering of Thermal Processes.
+    """
+    if sun_elev_deg < 5.0:
+        return None
+    sun_elev_rad = math.radians(sun_elev_deg)
+    rs_max = 1361.0 * math.sin(sun_elev_rad) * 0.75  # clear-sky fraction ~0.75
+    if rs_max <= 0:
+        return None
+    return round(min(1.0, solar_rad_wm2 / rs_max), 3)
+
+
+def clearness_to_cloud_cover(kt: float) -> int:
+    """Convert clearness index to approximate cloud cover percentage (0-100).
+
+    Linear inversion: cloud_cover = (1 - Kt) * 100, clamped to [0, 100].
+    """
+    return max(0, min(100, round((1.0 - kt) * 100)))
+
+
+# ---------------------------------------------------------------------------
 # Sea-level pressure
 # ---------------------------------------------------------------------------
 

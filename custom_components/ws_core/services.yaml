@@ -51,3 +51,62 @@ export_learning_state:
       example: "abcd1234efgh5678"
       selector:
         text:
+
+apply_calibration:
+  name: Apply calibration offsets
+  description: >-
+    Writes calibration offsets directly into the integration's options and
+    reloads. Use this to correct known sensor bias — compare your station
+    against a trusted reference (calibrated instrument, nearby ASOS/MADIS
+    station) and enter the difference here. Offsets are additive: a positive
+    temperature offset means your sensor reads low. All units are metric
+    (°C, %, hPa, m/s).
+  fields:
+    entry_id:
+      name: Config entry ID (optional)
+      description: >-
+        If provided, only updates that specific WS Station config entry.
+        If omitted, updates all WS Station entries.
+      example: "abcd1234efgh5678"
+      selector:
+        text:
+    cal_temp_c:
+      name: Temperature offset (°C)
+      description: Additive offset applied to raw temperature after unit conversion.
+      example: -0.5
+      selector:
+        number:
+          min: -10
+          max: 10
+          step: 0.1
+          unit_of_measurement: "°C"
+    cal_humidity:
+      name: Humidity offset (%)
+      description: Additive offset applied to raw relative humidity.
+      example: 3.0
+      selector:
+        number:
+          min: -20
+          max: 20
+          step: 0.5
+          unit_of_measurement: "%"
+    cal_pressure_hpa:
+      name: Pressure offset (hPa)
+      description: Additive offset applied to raw station pressure.
+      example: 1.2
+      selector:
+        number:
+          min: -20
+          max: 20
+          step: 0.1
+          unit_of_measurement: "hPa"
+    cal_wind_ms:
+      name: Wind speed offset (m/s)
+      description: Additive offset applied to raw wind speed.
+      example: -0.3
+      selector:
+        number:
+          min: -5
+          max: 5
+          step: 0.1
+          unit_of_measurement: "m/s"

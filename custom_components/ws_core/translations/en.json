@@ -90,8 +90,6 @@
           "staleness_s": "Sensor staleness timeout",
           "rain_filter_alpha": "Rain-rate Kalman filter smoothing",
           "pressure_trend_window_h": "Pressure trend window",
-          "rain_penalty_light_mmph": "Rain penalty start threshold",
-          "rain_penalty_heavy_mmph": "Rain penalty maximum threshold",
           "_go_back": "← Go back to previous step"
         }
       },
@@ -109,7 +107,13 @@
           "enable_solar_forecast": "Solar PV generation forecast (forecast.solar, free)",
           "_go_back": "← Go back to previous step",
           "enable_fog": "Fog probability sensor",
-          "enable_thunderstorm_risk": "Thunderstorm risk sensor (heuristic; many false positives)"
+          "enable_thunderstorm_risk": "Thunderstorm risk sensor (heuristic; many false positives)",
+          "enable_comfort_indices": "Comfort indices (heat index, wind chill, humidex, VPD, delta-T, wind run, chill hours, cloud cover)",
+          "enable_vigilance_meteo": "Meteo Vigilance alerts (France, no API key)",
+          "enable_vigicrues": "Vigicrues river level (France, no API key)",
+          "enable_diagnostics": "Station diagnostics (sensor drift, consistency, quality flags, forecast skill/agreement, solar lux factor, 30-day climatology)",
+          "enable_fwi_components": "FWI components (FFMC, DMC, DC, ISI, BUI — requires Fire Risk enabled)",
+          "enable_advanced_sensors": "Advanced/derived sensors (Zambretti number, ET₀ hourly, smoothed wind direction)"
         }
       },
       "sea_temp": {
@@ -194,8 +198,6 @@
           "staleness_s": "Sensor staleness timeout",
           "rain_filter_alpha": "Rain-rate filter smoothing",
           "pressure_trend_window_h": "Pressure trend window",
-          "rain_penalty_light_mmph": "Rain penalty start",
-          "rain_penalty_heavy_mmph": "Rain penalty maximum",
           "cal_temp_c": "Temperature calibration offset",
           "cal_humidity": "Humidity calibration offset",
           "cal_pressure_hpa": "Pressure calibration offset",
@@ -229,8 +231,6 @@
           "staleness_s": "Sensor staleness timeout",
           "rain_filter_alpha": "Rain-rate filter smoothing",
           "pressure_trend_window_h": "Pressure trend window",
-          "rain_penalty_light_mmph": "Rain penalty start",
-          "rain_penalty_heavy_mmph": "Rain penalty maximum",
           "cal_temp_c": "Temperature calibration offset",
           "cal_humidity": "Humidity calibration offset",
           "cal_pressure_hpa": "Pressure calibration offset",
@@ -269,7 +269,13 @@
           "enable_moon": "Moon phase & illumination",
           "enable_solar_forecast": "Solar PV forecast (forecast.solar)",
           "enable_fog": "Fog probability sensor",
-          "enable_thunderstorm_risk": "Thunderstorm risk sensor (heuristic; many false positives)"
+          "enable_thunderstorm_risk": "Thunderstorm risk sensor (heuristic; many false positives)",
+          "enable_comfort_indices": "Comfort indices (heat index, wind chill, humidex, VPD, delta-T, wind run, chill hours, cloud cover)",
+          "enable_vigilance_meteo": "Meteo Vigilance alerts (France, no API key)",
+          "enable_vigicrues": "Vigicrues river level (France, no API key)",
+          "enable_diagnostics": "Station diagnostics (drift, consistency, quality, forecast skill)",
+          "enable_fwi_components": "FWI components (needs Fire Risk)",
+          "enable_advanced_sensors": "Advanced/derived sensors"
         },
         "data_description": {
           "enable_display_sensors": "Display sensors (levels, trends, health)",
@@ -281,7 +287,13 @@
           "enable_moon": "Moon phase & illumination",
           "enable_solar_forecast": "Solar PV forecast (forecast.solar)",
           "enable_fog": "Enables fog probability sensor (dew-point depression model)",
-          "enable_thunderstorm_risk": "Enables thunderstorm risk sensor (surface heuristic)"
+          "enable_thunderstorm_risk": "Enables thunderstorm risk sensor (surface heuristic)",
+          "enable_comfort_indices": "Enables comfort indices and agrometeorological sensors",
+          "enable_vigilance_meteo": "Enables Meteo-France departmental weather alerts (Vigilance Meteo)",
+          "enable_vigicrues": "Enables nearest river level from Vigicrues (Hub'Eau v2)",
+          "enable_diagnostics": "Sensor drift, cross-sensor consistency, quality flags, forecast skill/agreement, solar lux factor, 30-day climatology",
+          "enable_fwi_components": "FWI intermediate codes (FFMC/DMC/DC/ISI/BUI). Requires Fire Risk enabled to produce data",
+          "enable_advanced_sensors": "Zambretti number (numeric form), hourly ET₀, smoothed wind direction"
         }
       },
       "sea_temp_opt": {
@@ -428,6 +440,41 @@
       },
       "wet_bulb_temperature": { "name": "Wet-Bulb Temperature" },
       "frost_point": { "name": "Frost Point" },
+      "heat_index": { "name": "Heat Index" },
+      "wind_chill": { "name": "Wind Chill" },
+      "humidex": { "name": "Humidex" },
+      "vpd": { "name": "Vapour Pressure Deficit" },
+      "absolute_humidity": { "name": "Absolute Humidity" },
+      "delta_t": {
+        "name": "Delta-T",
+        "state_attributes": {
+          "spray_suitability": {
+            "name": "Spray suitability",
+            "state": {
+              "unsuitable_too_low": "Unsuitable (too humid)",
+              "ideal": "Ideal spray window",
+              "unsuitable_too_high": "Unsuitable (too dry)"
+            }
+          }
+        }
+      },
+      "thw_index": { "name": "THW Index" },
+      "thsw_index": { "name": "THSW Index" },
+      "wind_run": { "name": "Wind Run" },
+      "chill_hours_today": { "name": "Chill Hours Today" },
+      "chill_hours_season": { "name": "Chill Hours Season" },
+      "clearness_index": { "name": "Clearness Index" },
+      "cloud_cover": { "name": "Cloud Cover" },
+      "vigilance_max_level": {
+        "name": "Meteo Vigilance",
+        "state": {
+          "vert": "Green (no hazard)",
+          "jaune": "Yellow (be attentive)",
+          "orange": "Orange (be on alert)",
+          "rouge": "Red (absolute vigilance required)"
+        }
+      },
+      "river_level": { "name": "River Level" },
       "zambretti_forecast": {
         "name": "Zambretti Forecast",
         "state": {
@@ -702,7 +749,19 @@
         }
       },
       "et0_hourly": { "name": "ET₀ (Hourly)" },
-      "wu_status": { "name": "Weather Underground Status" },
+      "wu_status": {
+        "name": "Weather Underground Status",
+        "state": {
+          "disabled": "Disabled",
+          "ok": "OK",
+          "error_http": "HTTP Error",
+          "error_network": "Network Error",
+          "error": "Error"
+        },
+        "state_attributes": {
+          "last_upload": { "name": "Last successful upload" }
+        }
+      },
       "aqi": {
         "name": "Air Quality Index",
         "state_attributes": {
@@ -908,6 +967,24 @@
       },
       "ws_enable_thunderstorm_risk": {
         "name": "Feature: Thunderstorm Risk"
+      },
+      "ws_enable_comfort_indices": {
+        "name": "Feature: Comfort Indices"
+      },
+      "ws_enable_vigilance_meteo": {
+        "name": "Feature: Meteo Vigilance"
+      },
+      "ws_enable_vigicrues": {
+        "name": "Feature: Vigicrues River Level"
+      },
+      "ws_enable_diagnostics": {
+        "name": "Feature: Station Diagnostics"
+      },
+      "ws_enable_fwi_components": {
+        "name": "Feature: FWI Components"
+      },
+      "ws_enable_advanced_sensors": {
+        "name": "Feature: Advanced Sensors"
       }
     },
     "number": {
@@ -940,12 +1017,6 @@
       },
       "ws_pressure_trend_window": {
         "name": "Tuning: Pressure Trend Window"
-      },
-      "ws_rain_penalty_light": {
-        "name": "Tuning: Rain Penalty Start"
-      },
-      "ws_rain_penalty_heavy": {
-        "name": "Tuning: Rain Penalty Maximum"
       }
     },
     "binary_sensor": {

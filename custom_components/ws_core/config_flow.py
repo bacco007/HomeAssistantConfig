@@ -31,19 +31,22 @@ from .const import (
     CONF_CAL_WIND_MS,
     CONF_CLIMATE_REGION,
     CONF_ELEVATION_M,
+    CONF_ENABLE_ADVANCED_SENSORS,
     # v0.7.0
     CONF_ENABLE_AIR_QUALITY,
+    CONF_ENABLE_COMFORT_INDICES,
+    CONF_ENABLE_DIAGNOSTICS,
     CONF_ENABLE_DISPLAY_SENSORS,
     CONF_ENABLE_FIRE_RISK,
-    # v1.2.0
     CONF_ENABLE_FOG,
-    # v0.8.0
+    CONF_ENABLE_FWI_COMPONENTS,
     CONF_ENABLE_MOON,
     CONF_ENABLE_POLLEN,
     CONF_ENABLE_SEA_TEMP,
-    # v0.9.0
     CONF_ENABLE_SOLAR_FORECAST,
     CONF_ENABLE_THUNDERSTORM,
+    CONF_ENABLE_VIGICRUES,
+    CONF_ENABLE_VIGILANCE_METEO,
     CONF_ENABLE_WUNDERGROUND,
     CONF_ENABLE_ZAMBRETTI,
     CONF_FORECAST_API_KEY,
@@ -83,15 +86,21 @@ from .const import (
     DEFAULT_CAL_WIND_MS,
     DEFAULT_CLIMATE_REGION,
     DEFAULT_ELEVATION_M,
+    DEFAULT_ENABLE_ADVANCED_SENSORS,
     DEFAULT_ENABLE_AIR_QUALITY,
+    DEFAULT_ENABLE_COMFORT_INDICES,
+    DEFAULT_ENABLE_DIAGNOSTICS,
     DEFAULT_ENABLE_DISPLAY_SENSORS,
     DEFAULT_ENABLE_FIRE_RISK,
     DEFAULT_ENABLE_FOG,
+    DEFAULT_ENABLE_FWI_COMPONENTS,
     DEFAULT_ENABLE_MOON,
     DEFAULT_ENABLE_POLLEN,
     DEFAULT_ENABLE_SEA_TEMP,
     DEFAULT_ENABLE_SOLAR_FORECAST,
     DEFAULT_ENABLE_THUNDERSTORM,
+    DEFAULT_ENABLE_VIGICRUES,
+    DEFAULT_ENABLE_VIGILANCE_METEO,
     DEFAULT_ENABLE_WUNDERGROUND,
     DEFAULT_FORECAST_ENABLED,
     DEFAULT_FORECAST_INTERVAL_MIN,
@@ -715,6 +724,14 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self._data[CONF_ENABLE_POLLEN] = bool(user_input.get(CONF_ENABLE_POLLEN, False))
             self._data[CONF_ENABLE_MOON] = bool(user_input.get(CONF_ENABLE_MOON, False))
             self._data[CONF_ENABLE_SOLAR_FORECAST] = bool(user_input.get(CONF_ENABLE_SOLAR_FORECAST, False))
+            self._data[CONF_ENABLE_COMFORT_INDICES] = bool(
+                user_input.get(CONF_ENABLE_COMFORT_INDICES, DEFAULT_ENABLE_COMFORT_INDICES)
+            )
+            self._data[CONF_ENABLE_VIGILANCE_METEO] = bool(user_input.get(CONF_ENABLE_VIGILANCE_METEO, False))
+            self._data[CONF_ENABLE_VIGICRUES] = bool(user_input.get(CONF_ENABLE_VIGICRUES, False))
+            self._data[CONF_ENABLE_DIAGNOSTICS] = bool(user_input.get(CONF_ENABLE_DIAGNOSTICS, False))
+            self._data[CONF_ENABLE_FWI_COMPONENTS] = bool(user_input.get(CONF_ENABLE_FWI_COMPONENTS, False))
+            self._data[CONF_ENABLE_ADVANCED_SENSORS] = bool(user_input.get(CONF_ENABLE_ADVANCED_SENSORS, False))
             if self._data[CONF_ENABLE_SEA_TEMP]:
                 return await self.async_step_sea_temp()
             if self._data[CONF_ENABLE_WUNDERGROUND]:
@@ -750,6 +767,22 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Optional(CONF_ENABLE_MOON, default=DEFAULT_ENABLE_MOON): selector.BooleanSelector(),
                     vol.Optional(
                         CONF_ENABLE_SOLAR_FORECAST, default=DEFAULT_ENABLE_SOLAR_FORECAST
+                    ): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_COMFORT_INDICES, default=DEFAULT_ENABLE_COMFORT_INDICES
+                    ): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_VIGILANCE_METEO, default=DEFAULT_ENABLE_VIGILANCE_METEO
+                    ): selector.BooleanSelector(),
+                    vol.Optional(CONF_ENABLE_VIGICRUES, default=DEFAULT_ENABLE_VIGICRUES): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_DIAGNOSTICS, default=DEFAULT_ENABLE_DIAGNOSTICS
+                    ): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_FWI_COMPONENTS, default=DEFAULT_ENABLE_FWI_COMPONENTS
+                    ): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_ADVANCED_SENSORS, default=DEFAULT_ENABLE_ADVANCED_SENSORS
                     ): selector.BooleanSelector(),
                 }
             ),
@@ -996,12 +1029,6 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._data[CONF_RAIN_FILTER_ALPHA] = float(user_input[CONF_RAIN_FILTER_ALPHA])
                 self._data[CONF_PRESSURE_TREND_WINDOW_H] = int(user_input[CONF_PRESSURE_TREND_WINDOW_H])
                 self._data[CONF_STALENESS_S] = int(user_input[CONF_STALENESS_S])
-                self._data[CONF_RAIN_PENALTY_LIGHT_MMPH] = _convert_rain_to_mmph(
-                    float(user_input[CONF_RAIN_PENALTY_LIGHT_MMPH]), imperial
-                )
-                self._data[CONF_RAIN_PENALTY_HEAVY_MMPH] = _convert_rain_to_mmph(
-                    float(user_input[CONF_RAIN_PENALTY_HEAVY_MMPH]), imperial
-                )
 
                 title = self._data.get(CONF_NAME, DEFAULT_NAME)
                 return self.async_create_entry(title=title, data=self._data)
@@ -1046,18 +1073,6 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         CONF_PRESSURE_TREND_WINDOW_H, default=DEFAULT_PRESSURE_TREND_WINDOW_H
                     ): selector.NumberSelector(
                         selector.NumberSelectorConfig(min=1, max=12, step=1, mode="box", unit_of_measurement="h")
-                    ),
-                    vol.Optional(
-                        CONF_RAIN_PENALTY_LIGHT_MMPH,
-                        default=round(_convert_rain_to_display(DEFAULT_RAIN_PENALTY_LIGHT_MMPH, imperial), 2),
-                    ): selector.NumberSelector(
-                        selector.NumberSelectorConfig(min=0, max=5, step=0.1, mode="box", unit_of_measurement=rain_u)
-                    ),
-                    vol.Optional(
-                        CONF_RAIN_PENALTY_HEAVY_MMPH,
-                        default=round(_convert_rain_to_display(DEFAULT_RAIN_PENALTY_HEAVY_MMPH, imperial), 1),
-                    ): selector.NumberSelector(
-                        selector.NumberSelectorConfig(min=0.1, max=50, step=0.5, mode="box", unit_of_measurement=rain_u)
                     ),
                 }
             ),
@@ -1147,8 +1162,6 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
         cur_gust_ms = float(g(CONF_THRESH_WIND_GUST_MS, DEFAULT_THRESH_WIND_GUST_MS))
         cur_rain_mmph = float(g(CONF_THRESH_RAIN_RATE_MMPH, DEFAULT_THRESH_RAIN_RATE_MMPH))
         cur_freeze_c = float(g(CONF_THRESH_FREEZE_C, DEFAULT_THRESH_FREEZE_C))
-        cur_light_mmph = float(g(CONF_RAIN_PENALTY_LIGHT_MMPH, DEFAULT_RAIN_PENALTY_LIGHT_MMPH))
-        cur_heavy_mmph = float(g(CONF_RAIN_PENALTY_HEAVY_MMPH, DEFAULT_RAIN_PENALTY_HEAVY_MMPH))
         return vol.Schema(
             {
                 vol.Optional(CONF_PREFIX, default=g(CONF_PREFIX, DEFAULT_PREFIX)): str,
@@ -1245,16 +1258,6 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                 ): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=1, max=12, step=1, mode="box", unit_of_measurement="h")
                 ),
-                vol.Optional(
-                    CONF_RAIN_PENALTY_LIGHT_MMPH, default=round(_convert_rain_to_display(cur_light_mmph, imperial), 2)
-                ): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0, max=5, step=0.1, mode="box", unit_of_measurement=rain_u)
-                ),
-                vol.Optional(
-                    CONF_RAIN_PENALTY_HEAVY_MMPH, default=round(_convert_rain_to_display(cur_heavy_mmph, imperial), 1)
-                ): selector.NumberSelector(
-                    selector.NumberSelectorConfig(min=0.1, max=50, step=0.5, mode="box", unit_of_measurement=rain_u)
-                ),
                 vol.Optional(CONF_CAL_TEMP_C, default=g(CONF_CAL_TEMP_C, DEFAULT_CAL_TEMP_C)): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=-10, max=10, step=0.1, mode="box", unit_of_measurement="°C")
                 ),
@@ -1334,6 +1337,30 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                     vol.Optional(
                         CONF_ENABLE_SOLAR_FORECAST,
                         default=g(CONF_ENABLE_SOLAR_FORECAST, DEFAULT_ENABLE_SOLAR_FORECAST),
+                    ): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_COMFORT_INDICES,
+                        default=g(CONF_ENABLE_COMFORT_INDICES, DEFAULT_ENABLE_COMFORT_INDICES),
+                    ): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_VIGILANCE_METEO,
+                        default=g(CONF_ENABLE_VIGILANCE_METEO, DEFAULT_ENABLE_VIGILANCE_METEO),
+                    ): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_VIGICRUES,
+                        default=g(CONF_ENABLE_VIGICRUES, DEFAULT_ENABLE_VIGICRUES),
+                    ): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_DIAGNOSTICS,
+                        default=g(CONF_ENABLE_DIAGNOSTICS, DEFAULT_ENABLE_DIAGNOSTICS),
+                    ): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_FWI_COMPONENTS,
+                        default=g(CONF_ENABLE_FWI_COMPONENTS, DEFAULT_ENABLE_FWI_COMPONENTS),
+                    ): selector.BooleanSelector(),
+                    vol.Optional(
+                        CONF_ENABLE_ADVANCED_SENSORS,
+                        default=g(CONF_ENABLE_ADVANCED_SENSORS, DEFAULT_ENABLE_ADVANCED_SENSORS),
                     ): selector.BooleanSelector(),
                 }
             ),
