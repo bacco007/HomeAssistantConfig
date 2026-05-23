@@ -107,7 +107,7 @@ describe('Protocol adapter deep round-trip contracts', () => {
             darkMode: false,
             currentPageIndex: 0,
             settings: {
-                opendisplayEntityId: 'opendisplay.0011223344556677',
+                opendisplayDeviceId: '95b2d0433f2c26d08088d6296a00a70d',
                 opendisplayDither: 3,
                 opendisplayTtl: 45
             },
@@ -122,6 +122,8 @@ describe('Protocol adapter deep round-trip contracts', () => {
         };
 
         const gen1 = await adapter.generate(initialLayout);
+        expect(gen1).toContain('action: opendisplay.drawcustom');
+        expect(gen1).toContain('device_id: 95b2d0433f2c26d08088d6296a00a70d');
         const imported = await parseSnippetYamlOffline(gen1);
         const gen2 = await adapter.generate({
             ...initialLayout,
@@ -134,5 +136,25 @@ describe('Protocol adapter deep round-trip contracts', () => {
         expect(payload2).toEqual(payload1);
         expect(payload2).toHaveLength(1);
         expect(payload2[0].value).toBe('Hello ODP');
+    });
+
+    it('preserves OpenDisplay portrait rotation as imported layout orientation', async () => {
+        const adapter = new OpenDisplayAdapter();
+        const generated = await adapter.generate({
+            orientation: 'portrait',
+            darkMode: false,
+            currentPageIndex: 0,
+            settings: {
+                opendisplayDeviceId: '95b2d0433f2c26d08088d6296a00a70d'
+            },
+            pages: [{
+                dark_mode: 'inherit',
+                widgets: [{ id: 'w_1', type: 'text', x: 5, y: 6, props: { text: 'Portrait ODP' } }]
+            }]
+        });
+
+        const imported = await parseSnippetYamlOffline(generated);
+
+        expect(imported.settings.orientation).toBe('portrait');
     });
 });

@@ -62,6 +62,7 @@ export class SnippetManager {
         this.highlighter = new YamlHighlighter();
         this.suppressSnippetUpdate = false;
         this.snippetDebounceTimer = null;
+        this.generationCounter = 0;
         this.lastGeneratedYaml = "";
         this.hasPendingManualSnippetChanges = false;
 
@@ -140,9 +141,17 @@ export class SnippetManager {
      * @returns {Promise<void>}
      */
     async syncGeneratedSnippetBaseline() {
+        const generationId = ++this.generationCounter;
         try {
-            this.lastGeneratedYaml = await this.generateCurrentSnippetYaml();
+            const generatedYaml = await this.generateCurrentSnippetYaml();
+            if (generationId !== this.generationCounter) {
+                return;
+            }
+            this.lastGeneratedYaml = generatedYaml;
         } catch (error) {
+            if (generationId !== this.generationCounter) {
+                return;
+            }
             Logger.warn('[SnippetManager] Failed to rebuild generated YAML baseline after import.', error);
         }
     }
@@ -215,6 +224,49 @@ export class SnippetManager {
     }
 
     /**
+     * @param {string} yamlText
+     * @returns {string}
+     */
+    getLeadingSnippetPreamble(yamlText) {
+        const [firstBlock] = this.parseTopLevelSnippetBlocks(yamlText);
+        if (!firstBlock || firstBlock.type !== 'preamble') {
+            return '';
+        }
+
+        return this.normalizeSnippetText(firstBlock.text).trimEnd();
+    }
+
+    /**
+     * @param {string} blockText
+     * @param {string} generatedPreamble
+     * @returns {string}
+     */
+    stripGeneratedPreamble(blockText, generatedPreamble) {
+        const normalizedBlock = this.normalizeSnippetText(blockText).trimEnd();
+        const normalizedGenerated = this.normalizeSnippetText(generatedPreamble).trimEnd();
+
+        if (!normalizedGenerated.trim()) {
+            return normalizedBlock;
+        }
+
+        if (normalizedBlock.includes(normalizedGenerated)) {
+            let stripped = normalizedBlock;
+            while (stripped.includes(normalizedGenerated)) {
+                stripped = stripped.replace(normalizedGenerated, '');
+            }
+            return stripped
+                .replace(/^\n+|\n+$/g, '')
+                .trimEnd();
+        }
+
+        if (normalizedBlock.trim() === normalizedGenerated.trim()) {
+            return '';
+        }
+
+        return normalizedBlock;
+    }
+
+    /**
      * @param {...string} yamlTexts
      * @returns {Set<string>}
      */
@@ -250,6 +302,8 @@ export class SnippetManager {
             return null;
         }
 
+        const lastGeneratedPreamble = this.getLeadingSnippetPreamble(lastGeneratedYaml);
+
         const manualBlocks = this.parseTopLevelSnippetBlocks(manualYamlOverride);
         const containsManagedSections = manualBlocks.some((block) => block.type === 'section' && block.key && managedSectionKeys.has(block.key));
         if (!containsManagedSections) {
@@ -263,10 +317,19 @@ export class SnippetManager {
         manualBlocks.forEach((block) => {
             const isManagedSection = block.type === 'section' && block.key && managedSectionKeys.has(block.key);
             if (!isManagedSection) {
+                let blockText = block.text;
+                if (!seenManagedSection && block.type === 'preamble') {
+                    blockText = this.stripGeneratedPreamble(block.text, lastGeneratedPreamble);
+                }
+
+                if (!blockText.trim()) {
+                    return;
+                }
+
                 if (seenManagedSection) {
-                    suffixBlocks.push(block.text);
+                    suffixBlocks.push(blockText);
                 } else {
-                    prefixBlocks.push(block.text);
+                    prefixBlocks.push(blockText);
                 }
             }
 
@@ -627,8 +690,13 @@ export class SnippetManager {
         if (snippetBox) {
             // Debounce the update
             if (this.snippetDebounceTimer) clearTimeout(this.snippetDebounceTimer);
+            const generationId = ++this.generationCounter;
 
             this.snippetDebounceTimer = setTimeout(() => {
+                if (generationId !== this.generationCounter) {
+                    return;
+                }
+
                 // Double-check suppression flag inside callback
                 if (this.suppressSnippetUpdate) {
                     return;
@@ -650,6 +718,9 @@ export class SnippetManager {
 
                     // IMPORTANT: Deep clone to prevent mutating AppState
                     this.generateCurrentSnippetYaml().then((/** @type {string} */ normalizedGeneratedYaml) => {
+                        if (generationId !== this.generationCounter) {
+                            return;
+                        }
                         const nextSnippet = this.reconcileManualSnippetOverride(normalizedGeneratedYaml, manualYamlOverride);
 
                         this.lastGeneratedYaml = normalizedGeneratedYaml;
@@ -674,6 +745,9 @@ export class SnippetManager {
                             highlightWidgetInSnippet(selectedIds);
                         }
                     }).catch((/** @type {unknown} */ e) => {
+                        if (generationId !== this.generationCounter) {
+                            return;
+                        }
                         Logger.error("Error generating snippet via adapter:", e);
                         this.setSnippetText("# Error generating YAML (adapter): " + getErrorMessage(e));
                         if (this.isHighlighted) this.updateHighlightLayer();

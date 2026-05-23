@@ -34,6 +34,9 @@ describe('yaml_generator_sections', () => {
         expect(lines).toContain('Framework: Arduino (Default)');
         expect(lines).toContain('Power Strategy: Manual Refresh Only');
         expect(lines).toContain('Deep Sleep Stay Awake Entity: input_boolean.panel_awake');
+        expect(lines).toContain('Layout Signature:');
+        expect(lines).toContain('Layout Summary: mode=direct pages=0 widgets=0');
+        expect(lines).toContain('Boot Log Hint: Compare the runtime build signature with this header to spot OTA rollbacks.');
     });
 
     it('generates commented coreink system sections and un-commented deep sleep for epaper layouts', () => {
@@ -82,5 +85,33 @@ describe('yaml_generator_sections', () => {
             deepSleepEnabled: true,
             deepSleepFirmwareGuard: false
         })).toEqual([]);
+    });
+
+    it('documents ESP32-P4 setup guidance and emits the required variant block', () => {
+        const header = generateInstructionHeader({
+            id: 'waveshare_p4',
+            name: 'Waveshare P4',
+            chip: 'esp32-p4',
+            features: { lcd: true, psram: true }
+        }, {
+            orientation: 'landscape',
+            darkMode: false,
+            refreshInterval: 60,
+            manualRefreshOnly: false,
+            deepSleepEnabled: false,
+            deepSleepStayAwakeSwitch: false,
+            deepSleepFirmwareGuard: false
+        }).join('\n');
+        const system = generateSystemSections({
+            chip: 'esp32-p4',
+            features: { lcd: true }
+        }, {}).join('\n');
+
+        expect(header).toContain('Select: ESP32-P4');
+        expect(header).toContain('Framework: ESP-IDF (Required)');
+        expect(system).toContain('#   board: esp32-p4-evboard');
+        expect(system).toContain('#   variant: esp32p4');
+        expect(system).toContain('#     advanced:');
+        expect(system).toContain('#       enable_idf_experimental_features: true');
     });
 });

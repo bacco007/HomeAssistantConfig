@@ -2,6 +2,10 @@ import { AppState } from '../core/state';
 import { Logger } from '../utils/logger.js';
 import { DEVICE_PROFILES } from './devices.js';
 import * as yaml from 'js-yaml';
+import {
+    DESIGNER_STATE_TRIGGER_MARKER,
+    HA_BINARY_DOMAINS
+} from './adapters/entity_dedup.js';
 
 import { parseSettings } from './yaml_parsers/settings_parser.js';
 import { parseDisplayBlocks } from './yaml_parsers/display_parser.js';
@@ -40,11 +44,19 @@ export interface ParsedLayout {
     protocol_hardware?: Record<string, any>;
     manualYamlOverride?: string;
     manual_yaml_override?: string;
+    importWarnings?: string[];
     pages?: ParsedPage[];
     data?: {
         devices?: Record<string, any>;
     };
     [key: string]: any;
+}
+
+interface RawTriggerBlock {
+    entityId: string;
+    triggerName: 'on_state' | 'on_value';
+    actionsText: string;
+    widgetId: string | null;
 }
 
 const SNAKE_CASE_SETTING_MAP: Record<string, string> = {
@@ -71,6 +83,7 @@ const SNAKE_CASE_SETTING_MAP: Record<string, string> = {
     extended_latin_glyphs: 'extendedLatinGlyphs',
     oepl_entity_id: 'oeplEntityId',
     oepl_dither: 'oeplDither',
+    opendisplay_device_id: 'opendisplayDeviceId',
     opendisplay_entity_id: 'opendisplayEntityId',
     opendisplay_dither: 'opendisplayDither',
     opendisplay_ttl: 'opendisplayTtl'
@@ -93,6 +106,21 @@ function normalizeImportedSettings(settings: Record<string, any>): Record<string
             normalized[mappedKey] = value;
         }
     });
+
+    const deviceId = typeof normalized.opendisplayDeviceId === 'string'
+        ? normalized.opendisplayDeviceId.trim()
+        : '';
+    const legacyEntityId = typeof normalized.opendisplayEntityId === 'string'
+        ? normalized.opendisplayEntityId.trim()
+        : '';
+
+    if (!normalized.opendisplayEntityId && deviceId) {
+        normalized.opendisplayEntityId = deviceId;
+    }
+
+    if (!deviceId && legacyEntityId && !legacyEntityId.includes('.') && !/\s/.test(legacyEntityId)) {
+        normalized.opendisplayDeviceId = legacyEntityId;
+    }
 
     return normalized;
 }
@@ -133,7 +161,7 @@ function getESPHomeSchema(): yaml.Schema | null {
  * @returns {any[] | null}
  */
 function extractServicePayloadArray(yamlText: string): any[] | null {
-    const serviceMatch = yamlText.match(/^\s*service:\s*([^\n]+)\s*$/m);
+    const serviceMatch = yamlText.match(/^\s*(?:service|action):\s*([^\n]+)\s*$/m);
     if (!serviceMatch) {
         return null;
     }
@@ -144,11 +172,12 @@ function extractServicePayloadArray(yamlText: string): any[] | null {
     }
 
     const lines = yamlText.split(/\r?\n/);
-    const payloadStart = lines.findIndex((line) => /^\s*payload:\s*\|-/.test(line));
+    const payloadStart = lines.findIndex((line) => /^\s*payload:\s*(?:\|-)?\s*$/.test(line));
     if (payloadStart === -1) {
         return null;
     }
 
+    const payloadIndent = getLineIndent(lines[payloadStart]);
     const payloadLines: string[] = [];
     for (let index = payloadStart + 1; index < lines.length; index += 1) {
         const line = lines[index];
@@ -157,11 +186,11 @@ function extractServicePayloadArray(yamlText: string): any[] | null {
             continue;
         }
 
-        if (!line.startsWith('    ')) {
+        if (getLineIndent(line) <= payloadIndent) {
             break;
         }
 
-        payloadLines.push(line.slice(4));
+        payloadLines.push(line.slice(payloadIndent + 2));
     }
 
     if (payloadLines.length === 0) {
@@ -176,6 +205,207 @@ function extractServicePayloadArray(yamlText: string): any[] | null {
         Logger.warn('[extractServicePayloadArray] Failed to parse payload block', e);
         return null;
     }
+}
+
+function applyProtocolRotation(layout: ParsedLayout | null, rotate: unknown): ParsedLayout | null {
+    if (!layout) return layout;
+    const numericRotate = Number(rotate);
+    if (!Number.isFinite(numericRotate)) return layout;
+
+    const normalizedRotate = ((numericRotate % 360) + 360) % 360;
+    layout.settings = {
+        ...(layout.settings || {}),
+        orientation: (normalizedRotate === 90 || normalizedRotate === 270) ? 'portrait' : 'landscape'
+    };
+    return layout;
+}
+
+function getLineIndent(line: string): number {
+    return (line.match(/^\s*/) || [''])[0].length;
+}
+
+function extractMarkedWidgetId(actionLines: string[]): string | null {
+    const markerLine = actionLines.find((line) => line.trim().startsWith(DESIGNER_STATE_TRIGGER_MARKER));
+    if (!markerLine) {
+        return null;
+    }
+
+    return markerLine.trim().slice(DESIGNER_STATE_TRIGGER_MARKER.length).trim() || null;
+}
+
+function stripStateTriggerMarker(actionLines: string[]): string[] {
+    return actionLines.filter((line) => !line.trim().startsWith(DESIGNER_STATE_TRIGGER_MARKER));
+}
+
+function isKnownGeneratedStateTrigger(actionsText: string): boolean {
+    const normalized = actionsText.trim();
+    if (!normalized) return true;
+
+    if (/^- lvgl\.widget\.refresh:\s+[A-Za-z0-9_:-]+\s*$/m.test(normalized)) {
+        return true;
+    }
+
+    return /- lvgl\.widget\.update:\s*\n\s+id:\s*[A-Za-z0-9_:-]+\s*\n\s+state:\s*\n\s+checked:\s*!lambda return x;?\s*$/m.test(normalized);
+}
+
+function extractRawTriggerBlocks(rawLines: string[]): RawTriggerBlock[] {
+    const sections = ['sensor:', 'text_sensor:', 'binary_sensor:'];
+    /** @type {RawTriggerBlock[]} */
+    const blocks: RawTriggerBlock[] = [];
+
+    for (let sectionIndex = 0; sectionIndex < rawLines.length; sectionIndex += 1) {
+        const sectionLine = rawLines[sectionIndex];
+        if (!sections.includes(sectionLine.trim())) continue;
+
+        const sectionIndent = getLineIndent(sectionLine);
+        let sectionEnd = rawLines.length;
+        for (let lineIndex = sectionIndex + 1; lineIndex < rawLines.length; lineIndex += 1) {
+            const line = rawLines[lineIndex];
+            if (!line.trim()) continue;
+            if (getLineIndent(line) <= sectionIndent) {
+                sectionEnd = lineIndex;
+                break;
+            }
+        }
+
+        for (let itemStart = sectionIndex + 1; itemStart < sectionEnd; itemStart += 1) {
+            const itemLine = rawLines[itemStart];
+            if (!itemLine.trim().startsWith('- ') || getLineIndent(itemLine) !== sectionIndent + 2) {
+                continue;
+            }
+
+            let itemEnd = sectionEnd;
+            for (let lineIndex = itemStart + 1; lineIndex < sectionEnd; lineIndex += 1) {
+                const line = rawLines[lineIndex];
+                if (line.trim().startsWith('- ') && getLineIndent(line) === sectionIndent + 2) {
+                    itemEnd = lineIndex;
+                    break;
+                }
+            }
+
+            const itemLines = rawLines.slice(itemStart, itemEnd);
+            const entityLine = itemLines.find((line) => /^\s*entity_id:\s*/.test(line));
+            if (!entityLine) {
+                itemStart = itemEnd - 1;
+                continue;
+            }
+
+            const entityMatch = entityLine.match(/^\s*entity_id:\s*["']?([^"'\s#]+)["']?/);
+            const entityId = entityMatch?.[1]?.trim();
+            if (!entityId) {
+                itemStart = itemEnd - 1;
+                continue;
+            }
+
+            (['on_state', 'on_value'] as const).forEach((triggerName) => {
+                const triggerIndex = itemLines.findIndex((line) => line.trim() === `${triggerName}:`);
+                if (triggerIndex === -1) return;
+
+                const triggerIndent = getLineIndent(itemLines[triggerIndex]);
+                const thenIndex = itemLines.findIndex((line, index) => index > triggerIndex && line.trim() === 'then:');
+                if (thenIndex === -1 || getLineIndent(itemLines[thenIndex]) <= triggerIndent) return;
+
+                let baseIndent: number | null = null;
+                const actionLines: string[] = [];
+
+                for (let lineIndex = thenIndex + 1; lineIndex < itemLines.length; lineIndex += 1) {
+                    const line = itemLines[lineIndex];
+                    if (!line.trim()) {
+                        if (baseIndent !== null) actionLines.push('');
+                        continue;
+                    }
+
+                    const indent = getLineIndent(line);
+                    if (indent <= getLineIndent(itemLines[thenIndex])) {
+                        break;
+                    }
+
+                    if (baseIndent === null) {
+                        baseIndent = indent;
+                    }
+
+                    actionLines.push(line.slice(baseIndent));
+                }
+
+                if (actionLines.length === 0) return;
+
+                const widgetId = extractMarkedWidgetId(actionLines);
+                const strippedActionLines = stripStateTriggerMarker(actionLines);
+                const actionsText = strippedActionLines.join('\n').trim();
+                if (!actionsText) return;
+
+                blocks.push({
+                    entityId,
+                    triggerName,
+                    actionsText,
+                    widgetId
+                });
+            });
+
+            itemStart = itemEnd - 1;
+        }
+    }
+
+    return blocks;
+}
+
+export function recoverDesignerStateTriggers(layout: ParsedLayout | null, rawLines: string[]): ParsedLayout | null {
+    if (!layout?.pages?.length) {
+        return layout;
+    }
+
+    const widgets = layout.pages.flatMap((page) => page.widgets || []);
+    const widgetById = new Map(
+        widgets
+            .filter((widget) => widget.id)
+            .map((widget) => [String(widget.id), widget])
+    );
+
+    if (widgetById.size === 0) {
+        return layout;
+    }
+
+    const triggerBlocks = extractRawTriggerBlocks(rawLines);
+    if (triggerBlocks.length === 0) {
+        return layout;
+    }
+
+    let recoveredBlocks = 0;
+    let unsupportedBlocks = 0;
+
+    triggerBlocks.forEach((block) => {
+        const targetWidget = block.widgetId ? widgetById.get(block.widgetId) : null;
+        if (!targetWidget) {
+            if (!isKnownGeneratedStateTrigger(block.actionsText)) {
+                unsupportedBlocks += 1;
+            }
+            return;
+        }
+
+        const props = { ...(targetWidget.props || {}) };
+        if (props.state_trigger_entity || props.state_trigger_actions) {
+            unsupportedBlocks += 1;
+            return;
+        }
+
+        props.state_trigger_entity = block.entityId;
+        props.state_trigger_mode = block.triggerName === 'on_state' || HA_BINARY_DOMAINS.some((domain) => block.entityId.startsWith(domain))
+            ? 'on_state'
+            : 'on_value';
+        props.state_trigger_actions = block.actionsText;
+        targetWidget.props = props;
+        recoveredBlocks += 1;
+    });
+
+    if (unsupportedBlocks > 0) {
+        layout.importWarnings = [
+            'Imported visual layout; unsupported custom automations remain raw YAML only.'
+        ];
+    } else if (recoveredBlocks > 0) {
+        layout.importWarnings = [];
+    }
+
+    return layout;
 }
 
 /**
@@ -209,12 +439,13 @@ export function parseSnippetYamlOffline(yamlText: string): ParsedLayout | null {
         return parseOEPLArrayToLayout(doc);
     }
 
-    if (doc && doc.service) {
-        if (['opendisplay.drawcustom', 'open_epaper_link.drawcustom'].includes(doc.service) && doc.data && doc.data.payload) {
+    const actionName = doc?.action || doc?.service;
+    if (actionName) {
+        if (['opendisplay.drawcustom', 'open_epaper_link.drawcustom'].includes(actionName) && doc.data && doc.data.payload) {
             let payload = doc.data.payload;
 
-            // The adapter outputs `payload: |-` (block scalar), so js-yaml parses it as a string.
-            // Re-parse the string into an array of objects.
+            // Older adapters emitted `payload: |-` block scalars while newer ones emit
+            // structured YAML arrays. Re-parse legacy string payloads when needed.
             if (typeof payload === 'string') {
                 try {
                     payload = yaml.load(payload);
@@ -225,7 +456,7 @@ export function parseSnippetYamlOffline(yamlText: string): ParsedLayout | null {
 
             if (Array.isArray(payload)) {
                 Logger.log("[parseSnippetYamlOffline] Detected full ODP/OEPL service call");
-                return parseOEPLArrayToLayout(payload);
+                return applyProtocolRotation(parseOEPLArrayToLayout(payload), doc.data.rotate);
             }
         }
     }
@@ -246,7 +477,7 @@ export function parseSnippetYamlOffline(yamlText: string): ParsedLayout | null {
     const deviceSettings = parseSettings(rawLines, doc);
     const layout = parseDisplayBlocks(lambdaLines, rawLines, deviceSettings, getESPHomeSchema, yaml);
 
-    return layout;
+    return recoverDesignerStateTriggers(layout, rawLines);
 }
 
 /**
@@ -287,6 +518,7 @@ export function loadLayoutIntoState(layout: ParsedLayout | null | undefined): vo
         'deepSleepEnabled', 'deepSleepInterval', 'deepSleepStayAwakeSwitch', 'deepSleepStayAwakeEntityId', 'deepSleepFirmwareGuard',
         'dailyRefreshEnabled', 'dailyRefreshTime',
         'noRefreshStartHour', 'noRefreshEndHour', 'oeplEntityId', 'oeplDither',
+        'opendisplayDeviceId',
         'opendisplayEntityId', 'opendisplayDither', 'opendisplayTtl', 'glyphsets',
         'extendedLatinGlyphs', 'editor_light_mode', 'snapEnabled', 'showGrid',
         'showDebugGrid', 'showRulers', 'gridOpacity'

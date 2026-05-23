@@ -318,7 +318,7 @@ export default {
         const xRight = textAlign.includes("RIGHT");
         const yCenter = textAlign.includes("CENTER") || (!textAlign.includes("TOP") && !textAlign.includes("BOTTOM"));
         const yBottom = textAlign.includes("BOTTOM");
-        const anchor = (yCenter ? "m" : (yBottom ? "b" : "t")) + (xCenter ? "c" : (xRight ? "r" : "l"));
+        const anchor = (xCenter ? "m" : (xRight ? "r" : "l")) + (yCenter ? "m" : (yBottom ? "b" : "t"));
 
         if (format === "time_date") {
             return {

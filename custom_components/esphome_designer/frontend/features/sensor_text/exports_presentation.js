@@ -244,9 +244,9 @@ export const exportOpenDisplay = (w, { layout, _page }) => {
         // Mapping for alignment to ODP anchor
         /** @type {Record<string, string>} */
         const alignMap = {
-            "TOP_LEFT": "lt", "TOP_CENTER": "ct", "TOP_RIGHT": "rt",
-            "CENTER_LEFT": "lm", "CENTER_CENTER": "cm", "CENTER_RIGHT": "rm",
-            "BOTTOM_LEFT": "lb", "BOTTOM_CENTER": "cb", "BOTTOM_RIGHT": "rb"
+            "TOP_LEFT": "lt", "TOP_CENTER": "mt", "TOP_RIGHT": "rt",
+            "CENTER_LEFT": "lm", "CENTER": "mm", "CENTER_RIGHT": "rm",
+            "BOTTOM_LEFT": "lb", "BOTTOM_CENTER": "mb", "BOTTOM_RIGHT": "rb"
         };
         const anchor = alignMap[p.text_align] || "lt";
 

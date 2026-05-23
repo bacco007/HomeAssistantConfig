@@ -2,6 +2,20 @@ import { BaseAdapter } from './base_adapter.js';
 import { Logger } from '../../utils/logger.js';
 import { registry } from '../../core/plugin_registry.js';
 
+const ORIENTATION_ROTATION = {
+    portrait: 90,
+    landscape_inverted: 180,
+    portrait_inverted: 270
+};
+
+/**
+ * @param {string} orientation
+ * @returns {number}
+ */
+function getRotateForOrientation(orientation) {
+    return ORIENTATION_ROTATION[orientation] ?? 0;
+}
+
 /**
  * OpenEpaperLink-specific adapter for generating JSON configuration.
  */
@@ -51,7 +65,7 @@ export class OEPLAdapter extends BaseAdapter {
 
         // Determine rotation based on orientation
         const orientation = layout.orientation || "landscape";
-        const rotate = (orientation === "portrait") ? 90 : 0;
+        const rotate = getRotateForOrientation(orientation);
 
         // Color Mode considerations
         const ph = layout.protocolHardware || {};

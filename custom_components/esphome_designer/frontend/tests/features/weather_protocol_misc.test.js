@@ -53,7 +53,7 @@ describe('weather protocol misc coverage', () => {
         const directOutput = lines.join('\n');
         expect(directOutput).toContain('it.filled_rectangle(0, 0, 40, 40, Color(white));');
         expect(directOutput).toContain('it.rectangle(0 + 0, 0 + 0, 40 - 2 * 0, 40 - 2 * 0, Color(black));');
-        expect(directOutput).toContain('\\U000F0595');
+        expect(directOutput).toContain('\\U000F0625');
 
         const context = {
             lines: [],
@@ -148,6 +148,49 @@ describe('weather protocol misc coverage', () => {
         expect(lvgl.obj.widgets).toHaveLength(3);
         expect(lvgl.obj.layout.flex_flow).toBe('column');
         expect(JSON.stringify(lvgl)).toContain('weather_cond_hplus1');
+        expect(JSON.stringify(lvgl)).toContain('\\U000F0625');
+
+        const fixedHourlyLvgl = exportForecastLVGL({
+            id: 'forecast_hourly_fixed',
+            x: 0,
+            y: 0,
+            width: 180,
+            height: 80,
+            props: {
+                forecast_mode: 'hourly',
+                hourly_mode: 'fixed',
+                hourly_slots: '06,09,12',
+                start_offset: 1
+            }
+        }, {
+            common: { id: 'forecast_hourly_fixed_root' },
+            convertColor: (value) => `COLOR_${String(value).toUpperCase()}`,
+            getLVGLFont: (...args) => args.join('_')
+        });
+
+        const fixedOutput = JSON.stringify(fixedHourlyLvgl);
+        expect(fixedHourlyLvgl.obj.widgets[0].obj.widgets[0].label.text).toContain('09:00');
+        expect(fixedOutput).toContain('weather_cond_h0900');
+        expect(fixedOutput).toContain('weather_high_h0900');
+
+        const dailyLvgl = exportForecastLVGL({
+            id: 'forecast_daily_unknowns',
+            x: 0,
+            y: 0,
+            width: 180,
+            height: 80,
+            props: {
+                forecast_mode: 'daily',
+                days: 1
+            }
+        }, {
+            common: { id: 'forecast_daily_unknowns_root' },
+            convertColor: (value) => `COLOR_${String(value).toUpperCase()}`,
+            getLVGLFont: (...args) => args.join('_')
+        });
+
+        expect(JSON.stringify(dailyLvgl)).toContain('std::isnan(high) && std::isnan(low)');
+        expect(JSON.stringify(dailyLvgl)).toContain('temp_text = \\"--/--\\"');
 
         const localizedDailyLvgl = exportForecastLVGL({
             id: 'forecast_daily_de',
@@ -187,7 +230,25 @@ describe('weather protocol misc coverage', () => {
         });
 
         expect(openDisplay[0].color).toBe('white');
+        expect(openDisplay[0].value).toContain("default('help-circle-outline')");
         expect(openDisplay[1].value).toContain("state_attr('weather.home', 'temperature')");
+
+        const openDisplayNoEntity = exportForecastOpenDisplay({
+            x: 0,
+            y: 0,
+            width: 40,
+            height: 50,
+            entity_id: '',
+            props: {
+                weather_entity: '',
+                color: 'theme_auto'
+            }
+        }, {
+            layout: { darkMode: false },
+            _page: {}
+        });
+
+        expect(openDisplayNoEntity[0].value).toBe('help-circle-outline');
 
         const oepl = exportForecastOEPL({
             x: 1,

@@ -243,7 +243,7 @@ describe('datetime plugin', () => {
             value: "{{ now().strftime('%d.%m.%Y') }}",
             size: 22,
             color: 'black',
-            anchor: 'tl',
+            anchor: 'lt',
             font: 'ppb.ttf'
         });
 

@@ -83,7 +83,7 @@ export const processPackageContent = (packageContent, lambdaContent, touchSensor
         packageContent = packageContent.replace(touchPlaceholderRegex, "");
     }
 
-    packageContent = applyPackageOverrides(packageContent, profile, layout.orientation, hasLvgl, layout);
+    packageContent = applyPackageOverrides(packageContent, profile, layout.orientation || layout.settings?.orientation || 'landscape', hasLvgl, layout);
 
     // Fix: Standardize section merging. We want to avoid double headers like "sensor:"
     // but we MUST NOT filter out content lines like "- platform:" which are shared.

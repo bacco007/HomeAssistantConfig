@@ -33,4 +33,18 @@ describe('Settings Parser (Issue #310 Roundtrip)', () => {
 
         expect(parseSettings(lines, {}).deep_sleep_stay_awake_entity_id).toBe('input_boolean.kitchen_dashboard_awake');
     });
+
+    it('infers portrait orientation from display or LVGL rotation when no generated header is present', () => {
+        expect(parseSettings([], {
+            display: [{ platform: 'rpi_dpi_rgb', rotation: 90 }]
+        }).orientation).toBe('portrait');
+
+        expect(parseSettings([], {
+            lvgl: { rotation: 270 }
+        }).orientation).toBe('portrait');
+
+        expect(parseSettings(['# Orientation: landscape'], {
+            display: [{ rotation: 90 }]
+        }).orientation).toBe('landscape');
+    });
 });

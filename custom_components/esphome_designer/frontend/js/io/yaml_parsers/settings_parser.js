@@ -4,6 +4,7 @@
  * @returns {Record<string, any>}
  */
 export function parseSettings(lines, doc) {
+    let hasExplicitOrientation = false;
     const deviceSettings = /** @type {Record<string, any>} */ ({
         orientation: "landscape",
         dark_mode: false,
@@ -47,7 +48,10 @@ export function parseSettings(lines, doc) {
         if (m) deviceSettings.inverted_colors = (m[1].toLowerCase() === "true");
 
         m = line.match(/Orientation:\s*(landscape|portrait)/i);
-        if (m) deviceSettings.orientation = m[1].toLowerCase();
+        if (m) {
+            deviceSettings.orientation = m[1].toLowerCase();
+            hasExplicitOrientation = true;
+        }
 
         m = line.match(/Dark Mode:\s*(enabled|disabled)/i);
         if (m) deviceSettings.dark_mode = (m[1].toLowerCase() === "enabled");
@@ -109,6 +113,24 @@ export function parseSettings(lines, doc) {
     if (doc) {
         if (doc.esphome && doc.esphome.name && !deviceSettings.name) {
             deviceSettings.name = doc.esphome.name;
+        }
+
+        if (!hasExplicitOrientation) {
+            const displays = Array.isArray(doc.display) ? doc.display : (doc.display ? [doc.display] : []);
+            const displayRotation = displays
+                .map((display) => Number(display?.rotation))
+                .find((rotation) => Number.isFinite(rotation));
+            const lvglRotation = Number(doc.lvgl?.rotation ?? doc.lvgl?.rotate);
+            const inferredRotation = Number.isFinite(displayRotation)
+                ? displayRotation
+                : (Number.isFinite(lvglRotation) ? lvglRotation : null);
+
+            if (inferredRotation !== null) {
+                const normalizedRotation = ((inferredRotation % 360) + 360) % 360;
+                deviceSettings.orientation = (normalizedRotation === 90 || normalizedRotation === 270)
+                    ? "portrait"
+                    : "landscape";
+            }
         }
     }
 

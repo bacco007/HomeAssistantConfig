@@ -32,21 +32,18 @@ describe('Deep Sleep Enhancements (Issue #310)', () => {
             expect(lines.length).toBe(0);
         });
 
-        it('guards deep_sleep.enter with stay_awake_switch in deep_sleep_cycle', () => {
+        it('retries deep_sleep_cycle from a single top-level stay_awake_switch guard', () => {
             const payload = { deepSleepEnabled: true, deepSleepStayAwakeSwitch: true };
             const lines = gen.generateScriptSection(payload, pages, epaperProfile);
             const scriptYaml = lines.join('\n');
 
-            // Keep a single stay-awake guard around the deep_sleep.enter action.
-            expect(scriptYaml).not.toContain('binary_sensor.is_on: stay_awake_switch');
+            expect(scriptYaml).toContain('mode: restart');
             expect(scriptYaml).not.toContain('script.stop: deep_sleep_cycle');
             expect(scriptYaml).not.toContain('- return:');
-            expect((scriptYaml.match(/deep_sleep\.prevent: deep_sleep_control/g) || []).length).toBeGreaterThanOrEqual(1);
-            expect(scriptYaml).toContain('condition:');
-            expect(scriptYaml).toContain('binary_sensor.is_off: stay_awake_switch');
-            // The else block must delay and re-execute
+            expect(scriptYaml).toContain('binary_sensor.is_on: stay_awake_switch');
             expect(scriptYaml).toContain('delay: 60s');
             expect(scriptYaml).toContain('script.execute: deep_sleep_cycle');
+            expect((scriptYaml.match(/binary_sensor\.is_on: stay_awake_switch/g) || []).length).toBe(1);
         });
 
         it('keeps deep sleep blocked when firmware guard is still active', () => {
@@ -87,14 +84,15 @@ describe('Deep Sleep Enhancements (Issue #310)', () => {
             expect(scriptYaml).toContain("lambda: 'return id(is_new_flash);'");
             expect(scriptYaml).toContain('delay: 90s');
             expect(scriptYaml).toContain("lambda: 'id(is_new_flash) = false;'");
+            expect((scriptYaml.match(/New firmware - staying awake 90s to prevent rollback/g) || []).length).toBe(1);
         });
     });
 
     describe('Night-time until-sleep', () => {
-        it('uses until: <hour>:00:00 when sleep hours are configured', () => {
+        it('uses until: <hour>:00:00 in Deep Sleep mode when sleep hours are configured', () => {
             const payload = { 
                 deepSleepEnabled: true, 
-                sleepEnabled: true, 
+                sleepEnabled: false,
                 sleepEndHour: 7,
                 sleepStartHour: 23
             };
@@ -107,7 +105,7 @@ describe('Deep Sleep Enhancements (Issue #310)', () => {
         it('uses the sleep window as the trigger for long overnight sleep', () => {
             const payload = {
                 deepSleepEnabled: true,
-                sleepEnabled: true,
+                sleepEnabled: false,
                 sleepEndHour: 7,
                 sleepStartHour: 23
             };
@@ -118,10 +116,25 @@ describe('Deep Sleep Enhancements (Issue #310)', () => {
             expect(scriptYaml).toContain('component.update: epaper_display');
         });
 
+        it('omits the unused interval and sleep-tracking variables from manage_run_and_sleep in Deep Sleep mode', () => {
+            const payload = {
+                deepSleepEnabled: true,
+                sleepEnabled: false,
+                sleepEndHour: 7,
+                sleepStartHour: 23
+            };
+            const scriptYaml = gen.generateScriptSection(payload, pages, epaperProfile).join('\n');
+
+            expect(scriptYaml).not.toContain('bool is_sleep_time = false;');
+            expect(scriptYaml).not.toContain('int interval = id(page_refresh_default_s);');
+            expect(scriptYaml).not.toContain('id(page_refresh_current_s) = interval;');
+            expect(scriptYaml).toContain('Night-time sleep active, skipping display update.');
+        });
+
         it('does not refresh the display before the overnight until-sleep branch', () => {
             const payload = {
                 deepSleepEnabled: true,
-                sleepEnabled: true,
+                sleepEnabled: false,
                 sleepEndHour: 7,
                 sleepStartHour: 23
             };

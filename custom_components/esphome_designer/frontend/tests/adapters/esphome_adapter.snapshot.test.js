@@ -120,6 +120,27 @@ touchscreen:
       expect(result).not.toContain('mirror_y: true\n      - if:');
     });
 
+    it('injects display rotation when package templates omit a rotation field', () => {
+      const yaml = `
+display:
+  - platform: rpi_dpi_rgb
+    id: my_display
+    update_interval: 1s
+    dimensions:
+      width: 800
+      height: 480
+`;
+      const profile = {
+        name: 'Waveshare Touch LCD 4.3',
+        resolution: { width: 800, height: 480 }
+      };
+
+      const result = applyPackageOverrides(yaml, profile, 'portrait', false, {});
+
+      expect(result).toContain('    rotation: 90');
+      expect(result.indexOf('    rotation: 90')).toBeGreaterThan(result.indexOf('    dimensions:'));
+    });
+
     it('should modify lvgl auto_clear_enabled', () => {
       const yaml = `
 lvgl:
