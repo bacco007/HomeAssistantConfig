@@ -1,4 +1,4 @@
-"""Sensors for Weather Station Core -- v1.6.2."""
+"""Sensors for Weather Station Core -- v1.7.0."""
 
 from __future__ import annotations
 
@@ -31,6 +31,8 @@ from .const import (
     CONF_ENABLE_FWI_COMPONENTS,
     # v0.8.0
     CONF_ENABLE_MOON,
+    # v1.7.0
+    CONF_ENABLE_NOWCAST,
     CONF_ENABLE_POLLEN,
     CONF_ENABLE_SEA_TEMP,
     # v0.9.0
@@ -87,6 +89,8 @@ from .const import (
     KEY_HUMIDEX,
     KEY_HUMIDITY_LEVEL_DISPLAY,
     KEY_LUX,
+    KEY_MINUTES_UNTIL_DRY,
+    KEY_MINUTES_UNTIL_RAIN,
     KEY_MOON_AGE_DAYS,
     KEY_MOON_DISPLAY,
     KEY_MOON_ILLUMINATION_PCT,
@@ -102,6 +106,7 @@ from .const import (
     KEY_NORM_WIND_DIR_DEG,
     KEY_NORM_WIND_GUST_MS,
     KEY_NORM_WIND_SPEED_MS,
+    KEY_NOWCAST_INTENSITY,
     KEY_OZONE,
     KEY_PACKAGE_STATUS,
     KEY_PM2_5,
@@ -117,6 +122,7 @@ from .const import (
     KEY_RAIN_ACCUM_24H,
     KEY_RAIN_ANOMALY_30D,
     KEY_RAIN_DISPLAY,
+    KEY_RAIN_NEXT_60MIN,
     KEY_RAIN_PROBABILITY,
     KEY_RAIN_PROBABILITY_COMBINED,
     KEY_RAIN_RATE_FILT,
@@ -531,7 +537,7 @@ SENSORS: list[WSSensorDescription] = [
     # =========================================================================
     # v1.5.0 SOLAR / CLOUD SENSORS
     # =========================================================================
-    # Clearness Index (Kt) — requires solar radiation sensor
+    # Clearness Index (Kt) - requires solar radiation sensor
     WSSensorDescription(
         key=KEY_CLEARNESS_INDEX,
         translation_key="clearness_index",
@@ -540,7 +546,7 @@ SENSORS: list[WSSensorDescription] = [
         native_unit=None,
         state_class=SensorStateClass.MEASUREMENT,
     ),
-    # Cloud Cover Percent — derived from clearness index
+    # Cloud Cover Percent - derived from clearness index
     WSSensorDescription(
         key=KEY_CLOUD_COVER_PCT,
         translation_key="cloud_cover",
@@ -552,7 +558,7 @@ SENSORS: list[WSSensorDescription] = [
     # =========================================================================
     # v1.6.0 FRENCH REGIONAL SENSORS (Météo Vigilance + Vigicrues)
     # =========================================================================
-    # Météo-France Vigilance — worst alert level for the station's department
+    # Météo-France Vigilance - worst alert level for the station's department
     WSSensorDescription(
         key=KEY_VIGILANCE_MAX_LEVEL,
         translation_key="vigilance_max_level",
@@ -566,7 +572,7 @@ SENSORS: list[WSSensorDescription] = [
             "fetched_at": d.get("_vigilance_fetched_at"),
         },
     ),
-    # Vigicrues — real-time water level at nearest hydrometric station
+    # Vigicrues - real-time water level at nearest hydrometric station
     WSSensorDescription(
         key=KEY_RIVER_LEVEL_M,
         translation_key="river_level",
@@ -579,6 +585,49 @@ SENSORS: list[WSSensorDescription] = [
             "river": d.get("_river_name"),
             "station_code": d.get("_river_station_code"),
             "observed_at": d.get("_river_obs_time"),
+        },
+    ),
+    # v1.7.0 - Precipitation nowcast (Open-Meteo minutely_15)
+    WSSensorDescription(
+        key=KEY_RAIN_NEXT_60MIN,
+        translation_key="rain_next_60min",
+        name="WS Rain Next 60 min",
+        icon="mdi:weather-pouring",
+        native_unit="mm",
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "peak_rate_mmph": d.get("_nowcast_peak_rate_mmph"),
+            "intensity": d.get(KEY_NOWCAST_INTENSITY),
+            "raining_now": d.get("_nowcast_raining_now"),
+            "fetched_at": d.get("_nowcast_fetched_at"),
+        },
+    ),
+    WSSensorDescription(
+        key=KEY_MINUTES_UNTIL_RAIN,
+        translation_key="minutes_until_rain",
+        name="WS Minutes Until Rain",
+        icon="mdi:weather-rainy",
+        native_unit="min",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    WSSensorDescription(
+        key=KEY_MINUTES_UNTIL_DRY,
+        translation_key="minutes_until_dry",
+        name="WS Minutes Until Dry",
+        icon="mdi:weather-partly-rainy",
+        native_unit="min",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    WSSensorDescription(
+        key=KEY_NOWCAST_INTENSITY,
+        translation_key="nowcast_intensity",
+        name="WS Nowcast Intensity",
+        icon="mdi:weather-pouring",
+        state_class=None,
+        native_unit=None,
+        attrs_fn=lambda d: {
+            "peak_rate_mmph": d.get("_nowcast_peak_rate_mmph"),
+            "next_60min_mm": d.get(KEY_RAIN_NEXT_60MIN),
         },
     ),
     # Zambretti barometric forecast
@@ -867,7 +916,7 @@ SENSORS: list[WSSensorDescription] = [
         },
     ),
     # =========================================================================
-    # v1.3.0 — Canadian FWI components (all disabled by default)
+    # v1.3.0 - Canadian FWI components (all disabled by default)
     # =========================================================================
     WSSensorDescription(
         key=KEY_FWI_FFMC,
@@ -1163,7 +1212,7 @@ SENSORS: list[WSSensorDescription] = [
         },
     ),
     # =========================================================================
-    # v1.2.0 — NEW METEOROLOGICAL SENSORS
+    # v1.2.0 - NEW METEOROLOGICAL SENSORS
     # =========================================================================
     # B1 Fog probability
     WSSensorDescription(
@@ -1221,7 +1270,7 @@ SENSORS: list[WSSensorDescription] = [
         attrs_fn=lambda d: {"threshold_c": d.get("_frost_streak_threshold_c")},
     ),
     # =========================================================================
-    # v1.2.0 — STATION INTELLIGENCE
+    # v1.2.0 - STATION INTELLIGENCE
     # =========================================================================
     # C1 Sensor drift detection
     WSSensorDescription(
@@ -1248,7 +1297,7 @@ SENSORS: list[WSSensorDescription] = [
         },
     ),
     # =========================================================================
-    # v1.2.0 — ROLLING CLIMATOLOGY
+    # v1.2.0 - ROLLING CLIMATOLOGY
     # =========================================================================
     # D1 30-day stats
     WSSensorDescription(
@@ -1281,7 +1330,7 @@ SENSORS: list[WSSensorDescription] = [
         attrs_fn=lambda d: {"normal_30d_avg_mm": d.get("_rain_normal_30d_avg")},
     ),
     # =========================================================================
-    # v1.2.0 — SELF-LEARNING SENSORS (METAR-gated + always-on)
+    # v1.2.0 - SELF-LEARNING SENSORS (METAR-gated + always-on)
     # =========================================================================
     # A4 Solar lux factor (always on)
     WSSensorDescription(
@@ -1366,13 +1415,13 @@ _FEATURE_TOGGLE_MAP: dict[str, str] = {
     KEY_SOLAR_FORECAST_TODAY_KWH: CONF_ENABLE_SOLAR_FORECAST,
     KEY_SOLAR_FORECAST_TOMORROW_KWH: CONF_ENABLE_SOLAR_FORECAST,
     KEY_ET0_PM_DAILY_MM: CONF_ENABLE_SOLAR_FORECAST,
-    # v1.2.0 — optional new sensors
+    # v1.2.0 - optional new sensors
     KEY_FOG_PROBABILITY: CONF_ENABLE_FOG,
     KEY_THUNDERSTORM_RISK: CONF_ENABLE_THUNDERSTORM,
     # v1.3.0: streaks are ungated (always on, no switch required)
     # KEY_GDD_TODAY, KEY_GDD_SEASON removed (degree days cut in v1.3.0)
     # KEY_LEARNED_*, KEY_CAL_SUGGESTION_* removed (METAR cut in v1.3.0)
-    # v1.5.0 — comfort indices + agrometeorological sensors
+    # v1.5.0 - comfort indices + agrometeorological sensors
     KEY_HEAT_INDEX: CONF_ENABLE_COMFORT_INDICES,
     KEY_WIND_CHILL: CONF_ENABLE_COMFORT_INDICES,
     KEY_HUMIDEX: CONF_ENABLE_COMFORT_INDICES,
@@ -1389,7 +1438,7 @@ _FEATURE_TOGGLE_MAP: dict[str, str] = {
     # v1.6.0 French regional
     KEY_VIGILANCE_MAX_LEVEL: CONF_ENABLE_VIGILANCE_METEO,
     KEY_RIVER_LEVEL_M: CONF_ENABLE_VIGICRUES,
-    # v1.6.2 — station diagnostics (opt-in)
+    # v1.6.2 - station diagnostics (opt-in)
     KEY_SENSOR_DRIFT_FLAGS: CONF_ENABLE_DIAGNOSTICS,
     KEY_CONSISTENCY_FLAGS: CONF_ENABLE_DIAGNOSTICS,
     KEY_SENSOR_QUALITY_FLAGS: CONF_ENABLE_DIAGNOSTICS,
@@ -1397,10 +1446,15 @@ _FEATURE_TOGGLE_MAP: dict[str, str] = {
     KEY_FORECAST_AGREEMENT: CONF_ENABLE_DIAGNOSTICS,
     KEY_SOLAR_LUX_FACTOR: CONF_ENABLE_DIAGNOSTICS,
     KEY_CLIMATOLOGY_30D: CONF_ENABLE_DIAGNOSTICS,
-    # v1.6.2 — advanced / derived representations (opt-in)
+    # v1.6.2 - advanced / derived representations (opt-in)
     KEY_ZAMBRETTI_NUMBER: CONF_ENABLE_ADVANCED_SENSORS,
     KEY_ET0_HOURLY_MM: CONF_ENABLE_ADVANCED_SENSORS,
     KEY_WIND_DIR_SMOOTH_DEG: CONF_ENABLE_ADVANCED_SENSORS,
+    # v1.7.0 - precipitation nowcast (opt-in)
+    KEY_RAIN_NEXT_60MIN: CONF_ENABLE_NOWCAST,
+    KEY_MINUTES_UNTIL_RAIN: CONF_ENABLE_NOWCAST,
+    KEY_MINUTES_UNTIL_DRY: CONF_ENABLE_NOWCAST,
+    KEY_NOWCAST_INTENSITY: CONF_ENABLE_NOWCAST,
 }
 
 
@@ -1581,7 +1635,7 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             KEY_FORECAST_AGREEMENT: "forecast_agreement",
             KEY_FORECAST_SKILL: "forecast_skill",
             KEY_SOLAR_LUX_FACTOR: "solar_lux_factor",
-            # v1.3.0 — FWI components
+            # v1.3.0 - FWI components
             KEY_FWI_FFMC: "fwi_ffmc",
             KEY_FWI_DMC: "fwi_dmc",
             KEY_FWI_DC: "fwi_dc",
@@ -1589,7 +1643,7 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             KEY_FWI_BUI: "fwi_bui",
             KEY_FWI: "fwi",
             KEY_FWI_DSR: "fwi_dsr",
-            # v1.5.0 — comfort indices + agrometeorological
+            # v1.5.0 - comfort indices + agrometeorological
             KEY_HEAT_INDEX: "heat_index",
             KEY_WIND_CHILL: "wind_chill",
             KEY_HUMIDEX: "humidex",
@@ -1605,6 +1659,7 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             KEY_CLOUD_COVER_PCT: "cloud_cover",
             KEY_VIGILANCE_MAX_LEVEL: "vigilance",
             KEY_RIVER_LEVEL_M: "river_level",
+            KEY_RAIN_NEXT_60MIN: "rain_next_60min",
         }
         if key in overrides:
             return overrides[key]

@@ -17,7 +17,7 @@ References:
 from __future__ import annotations
 
 import math
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # ---------------------------------------------------------------------------
 # Moon phase UI helpers
@@ -451,7 +451,7 @@ def pressure_trend_arrow(trend_3h: float) -> str:
 # ---------------------------------------------------------------------------
 
 # Implied rain-likelihood (%) per Z-number (1-26, index 0-25).
-# Derived from the qualitative text descriptions — used to compare the
+# Derived from the qualitative text descriptions - used to compare the
 # Zambretti local-sensor outlook against the Open-Meteo precip_prob.
 ZAMBRETTI_RAIN_PCT: list[int] = [
     5,  # Z=1  Settled fine
@@ -1099,7 +1099,7 @@ def compute_fwi(
     rain_24h_mm: float,
     month: int,
 ) -> dict:
-    """Canadian Forest Fire Weather Index (FWI) system — Van Wagner 1987.
+    """Canadian Forest Fire Weather Index (FWI) system - Van Wagner 1987.
 
     Computes all seven FWI components from yesterday's moisture codes and
     today's noon weather observations.
@@ -1134,7 +1134,7 @@ def compute_fwi(
     month_i = max(1, min(12, int(month)))
 
     # -----------------------------------------------------------------------
-    # FFMC — Fine Fuel Moisture Code
+    # FFMC - Fine Fuel Moisture Code
     # -----------------------------------------------------------------------
     mo = 147.2 * (101.0 - F0) / (59.5 + F0)
 
@@ -1174,7 +1174,7 @@ def compute_fwi(
     ffmc = max(0.0, min(101.0, ffmc))
 
     # -----------------------------------------------------------------------
-    # DMC — Duff Moisture Code
+    # DMC - Duff Moisture Code
     # -----------------------------------------------------------------------
     # Day-length adjustment factors by month (Northern Hemisphere)
     Le = [6.5, 7.5, 9.0, 12.8, 13.9, 13.9, 12.4, 10.9, 9.4, 8.0, 7.0, 6.0]
@@ -1200,7 +1200,7 @@ def compute_fwi(
     dmc = max(0.0, dmc)
 
     # -----------------------------------------------------------------------
-    # DC — Drought Code
+    # DC - Drought Code
     # -----------------------------------------------------------------------
     # Day-length drying factors by month (Northern Hemisphere)
     Lf = [-1.6, -1.6, -1.6, 0.9, 3.8, 5.8, 6.4, 5.0, 2.4, 0.4, -1.6, -1.6]
@@ -1217,14 +1217,14 @@ def compute_fwi(
     dc = max(0.0, dc)
 
     # -----------------------------------------------------------------------
-    # ISI — Initial Spread Index
+    # ISI - Initial Spread Index
     # -----------------------------------------------------------------------
     fm = 147.2 * (101.0 - ffmc) / (59.5 + ffmc)
     ff = 91.9 * math.exp(-0.1386 * fm) * (1.0 + fm**5.31 / 49300000.0)
     isi = 0.208 * ff * math.exp(0.05039 * W)
 
     # -----------------------------------------------------------------------
-    # BUI — Buildup Index
+    # BUI - Buildup Index
     # -----------------------------------------------------------------------
     if dmc <= 0.4 * dc:
         bui = 0.8 * dmc * dc / (dmc + 0.4 * dc) if (dmc + 0.4 * dc) > 0 else 0.0
@@ -1233,7 +1233,7 @@ def compute_fwi(
     bui = max(0.0, bui)
 
     # -----------------------------------------------------------------------
-    # FWI — Fire Weather Index
+    # FWI - Fire Weather Index
     # -----------------------------------------------------------------------
     fD = 0.626 * bui**0.809 + 2.0 if bui <= 80.0 else 1000.0 / (25.0 + 108.64 * math.exp(-0.023 * bui))
     B = 0.1 * isi * fD
@@ -1241,7 +1241,7 @@ def compute_fwi(
     fwi = S
 
     # -----------------------------------------------------------------------
-    # DSR — Daily Severity Rating
+    # DSR - Daily Severity Rating
     # -----------------------------------------------------------------------
     dsr = 0.0272 * fwi**1.77
 
@@ -1422,7 +1422,7 @@ def et0_hourly_estimate(et0_daily_mm: float, hour_utc: int) -> float:
 
 
 # ===========================================================================
-# v0.7.0 — Air Quality helpers
+# v0.7.0 - Air Quality helpers
 # ===========================================================================
 
 # US EPA AQI breakpoints: (C_low, C_high, AQI_low, AQI_high)
@@ -1456,7 +1456,7 @@ def _aqi_from_breakpoints(c: float, breakpoints: list) -> int | None:
 
 
 def calculate_us_aqi(pm2_5: float | None, pm10: float | None) -> int | None:
-    """US EPA AQI — highest of PM2.5 and PM10 sub-indices.
+    """US EPA AQI - highest of PM2.5 and PM10 sub-indices.
 
     Returns None when both inputs are None.
     Reference: EPA AQI Technical Assistance Document, 2018.
@@ -1520,12 +1520,12 @@ def pollen_overall(grass: int | None, tree: int | None, weed: int | None) -> str
 
 
 # ===========================================================================
-# v0.8.0 — Precise moon illumination
+# v0.8.0 - Precise moon illumination
 # ===========================================================================
 
 
 def calculate_moon_illumination(year: int, month: int, day: int) -> float:
-    """Moon disk illumination fraction (0.0–1.0).
+    """Moon disk illumination fraction (0.0-1.0).
 
     Uses Jean Meeus "Astronomical Algorithms" Chapter 48 (simplified).
     Accuracy: ~1% for illumination percentage.
@@ -1572,7 +1572,7 @@ def calculate_moon_illumination(year: int, month: int, day: int) -> float:
 
 
 def moon_phase_days(year: int, month: int, day: int) -> float:
-    """Days since last new moon (synodic age 0–29.53)."""
+    """Days since last new moon (synodic age 0-29.53)."""
     jd = _julian_day_gregorian(year, month, day) + 0.5
     # Reference new moon: 2000-01-06 18:14 UTC = JD 2451550.259
     synodic = 29.53058867
@@ -1592,7 +1592,7 @@ def moon_next_phase_days(year: int, month: int, day: int, target_age: float) -> 
 
 
 def moon_phase_from_age(age_days: float) -> str:
-    """Determine phase name from synodic age (0–29.53 days)."""
+    """Determine phase name from synodic age (0-29.53 days)."""
     synodic = 29.53058867
     pct = age_days / synodic
     if pct < 0.035 or pct >= 0.965:
@@ -1643,7 +1643,7 @@ def moon_display_string(phase_key: str, illumination_pct: float) -> str:
 
 
 # ===========================================================================
-# v0.9.0 — Penman-Monteith FAO-56 ET₀
+# v0.9.0 - Penman-Monteith FAO-56 ET₀
 # ===========================================================================
 
 
@@ -1681,11 +1681,11 @@ def et0_penman_monteith(
     Returns
     -------
     float
-        ET₀ in mm/day.  Accuracy: ~5–10% vs lysimeter measurements.
+        ET₀ in mm/day.  Accuracy: ~5-10% vs lysimeter measurements.
 
     References
     ----------
-    Allen et al. 1998: "Crop Evapotranspiration — Guidelines for Computing
+    Allen et al. 1998: "Crop Evapotranspiration - Guidelines for Computing
     Crop Water Requirements", FAO Irrigation and Drainage Paper 56.
     """
     if any(v is None for v in (temp_mean_c, humidity, wind_speed_ms, solar_radiation_wm2)):
@@ -1722,7 +1722,7 @@ def et0_penman_monteith(
     Rns = (1 - 0.23) * Rs
 
     # Extraterrestrial radiation Ra for net longwave estimate  FAO56 Eq 21
-    _phi = math.radians(max(-90, min(90, z)))  # use elevation as lat proxy — caller should pass lat
+    _phi = math.radians(max(-90, min(90, z)))  # use elevation as lat proxy - caller should pass lat
     # Simplified Ra (mean for mid-latitudes when lat not separately passed)
     Ra = extraterrestrial_radiation_mj(37.0, doy)  # fallback 37°N
 
@@ -1742,7 +1742,7 @@ def et0_penman_monteith(
     # Wind speed at 2 m height  FAO56 Eq 47 (assuming 10 m sensor)
     u2 = u_z * (4.87 / math.log(67.8 * 10 - 5.42))
 
-    # FAO56 Eq 6 — Penman-Monteith
+    # FAO56 Eq 6 - Penman-Monteith
     numerator = 0.408 * delta * Rn + gamma * (900 / (T + 273)) * u2 * (es - ea)
     denominator = delta + gamma * (1 + 0.34 * u2)
     et0 = numerator / denominator if denominator > 0 else 0.0
@@ -1750,7 +1750,7 @@ def et0_penman_monteith(
 
 
 # =============================================================================
-# v1.2.0 — New meteorological algorithms
+# v1.2.0 - New meteorological algorithms
 # =============================================================================
 
 
@@ -1761,7 +1761,7 @@ def fog_probability(
     rain_rate_mmph: float,
     is_night: bool,
 ) -> tuple[float, str]:
-    """Estimate fog formation probability (0–100 %) and risk level.
+    """Estimate fog formation probability (0-100 %) and risk level.
 
     Based on dew-point depression, wind speed, time of day, and rain.
     Returns (probability_pct, risk_label).
@@ -1809,7 +1809,7 @@ def thunderstorm_risk_index(
     lux_1h_ago: float | None,
     is_day: bool,
 ) -> tuple[int, str, list[str]]:
-    """Surface-proxy thunderstorm risk index (0–100) and level.
+    """Surface-proxy thunderstorm risk index (0-100) and level.
 
     Returns (index, level, contributing_factors_list).
     NOTE: This is a surface heuristic only, not a true stability index.
@@ -1872,7 +1872,7 @@ def thunderstorm_risk_index(
 
 
 # ---------------------------------------------------------------------------
-# Drift detection (C1) — simple linear regression slope
+# Drift detection (C1) - simple linear regression slope
 # ---------------------------------------------------------------------------
 
 
@@ -1883,7 +1883,7 @@ def linear_regression_slope(values: list[float], times_h: list[float]) -> tuple[
         values: observed values (e.g. temperature readings)
         times_h: corresponding elapsed hours from first observation
     Returns:
-        (slope, r_squared) — slope in units/hour
+        (slope, r_squared) - slope in units/hour
     """
     n = len(values)
     if n < 3:
@@ -1906,7 +1906,7 @@ def linear_regression_slope(values: list[float], times_h: list[float]) -> tuple[
 
 
 # ---------------------------------------------------------------------------
-# Cross-sensor consistency checks (C2) — stateless
+# Cross-sensor consistency checks (C2) - stateless
 # ---------------------------------------------------------------------------
 
 
@@ -1975,3 +1975,124 @@ def cross_sensor_consistency_flags(
         )
 
     return flags
+
+
+# ===========================================================================
+# v1.7.0 - Precipitation nowcast (from Open-Meteo 15-minute buckets)
+# ===========================================================================
+
+# Rain-rate intensity bands (mm/h), standard meteorological classification.
+NOWCAST_LIGHT_MMH = 2.5
+NOWCAST_HEAVY_MMH = 7.6
+# A 15-minute bucket counts as "wet" at or above this many mm.
+NOWCAST_BUCKET_THRESHOLD_MM = 0.1
+
+
+def derive_nowcast(
+    times: list[str],
+    precip: list[float | None],
+    now: datetime,
+    threshold_mm: float = NOWCAST_BUCKET_THRESHOLD_MM,
+) -> dict:
+    """Derive a precipitation nowcast from 15-minute buckets.
+
+    Parameters
+    ----------
+    times : list[str]
+        ISO timestamps (local, naive) at the START of each 15-minute bucket,
+        as returned by Open-Meteo ``minutely_15`` with ``timezone=auto``.
+    precip : list[float | None]
+        Precipitation total (mm) for each corresponding bucket.
+    now : datetime
+        Reference time (naive local). Tz-aware values are coerced to naive.
+    threshold_mm : float
+        Minimum mm in a 15-minute bucket to count as rain.
+
+    Returns
+    -------
+    dict with keys:
+        raining_now (bool), minutes_until_rain (int | None),
+        minutes_until_dry (int | None), next_60min_mm (float),
+        peak_rate_mmph (float), intensity (str: none/light/moderate/heavy).
+
+    A None ``minutes_until_*`` means "not within the available window".
+    """
+    if now.tzinfo is not None:
+        now = now.replace(tzinfo=None)
+
+    # Parse buckets into (start_dt, mm) pairs, skipping malformed/missing.
+    buckets: list[tuple[datetime, float]] = []
+    for i, t in enumerate(times or []):
+        if i >= len(precip or []):
+            break
+        p = precip[i]
+        if p is None:
+            p = 0.0
+        try:
+            start = datetime.fromisoformat(str(t))
+        except (ValueError, TypeError):
+            continue
+        if start.tzinfo is not None:
+            start = start.replace(tzinfo=None)
+        buckets.append((start, float(p)))
+
+    result = {
+        "raining_now": False,
+        "minutes_until_rain": None,
+        "minutes_until_dry": None,
+        "next_60min_mm": 0.0,
+        "peak_rate_mmph": 0.0,
+        "intensity": "none",
+    }
+    if not buckets:
+        return result
+
+    BUCKET_MIN = 15
+
+    def _minutes_from_now(dt_: datetime) -> int:
+        return int(round((dt_ - now).total_seconds() / 60.0))
+
+    # Current bucket = the one whose [start, start+15min) window contains now.
+    raining_now = False
+    for start, mm in buckets:
+        if start <= now < start + timedelta(minutes=BUCKET_MIN):
+            raining_now = mm >= threshold_mm
+            break
+    result["raining_now"] = raining_now
+
+    # Future buckets (start at or after now), in chronological order.
+    future = [(s, mm) for (s, mm) in buckets if s >= now - timedelta(minutes=BUCKET_MIN)]
+
+    # next 60 minutes: buckets starting within [now, now+60min)
+    next_hour = [(s, mm) for (s, mm) in buckets if now <= s < now + timedelta(minutes=60)]
+    next_60 = round(sum(mm for _, mm in next_hour), 2)
+    # Only buckets that clear the rain threshold drive intensity, so a trace
+    # (e.g. 0.05 mm) does not register as "light".
+    peak_bucket = max((mm for _, mm in next_hour if mm >= threshold_mm), default=0.0)
+    peak_rate = round(peak_bucket * (60.0 / BUCKET_MIN), 2)  # 15-min mm -> mm/h
+    result["next_60min_mm"] = next_60
+    result["peak_rate_mmph"] = peak_rate
+    if peak_rate <= 0.0:
+        result["intensity"] = "none"
+    elif peak_rate < NOWCAST_LIGHT_MMH:
+        result["intensity"] = "light"
+    elif peak_rate < NOWCAST_HEAVY_MMH:
+        result["intensity"] = "moderate"
+    else:
+        result["intensity"] = "heavy"
+
+    if raining_now:
+        result["minutes_until_rain"] = 0
+        # First future bucket that is dry => when it stops.
+        for start, mm in future:
+            if start >= now and mm < threshold_mm:
+                result["minutes_until_dry"] = max(0, _minutes_from_now(start))
+                break
+    else:
+        # First future bucket that is wet => when it starts.
+        for start, mm in future:
+            if start >= now and mm >= threshold_mm:
+                result["minutes_until_rain"] = max(0, _minutes_from_now(start))
+                break
+
+    return result

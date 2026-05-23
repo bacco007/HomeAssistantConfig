@@ -30,6 +30,7 @@ from .const import (
     CONF_ENABLE_FOG,
     CONF_ENABLE_FWI_COMPONENTS,
     CONF_ENABLE_MOON,
+    CONF_ENABLE_NOWCAST,
     CONF_ENABLE_POLLEN,
     CONF_ENABLE_SEA_TEMP,
     CONF_ENABLE_SOLAR_FORECAST,
@@ -47,6 +48,7 @@ from .const import (
     DEFAULT_ENABLE_FOG,
     DEFAULT_ENABLE_FWI_COMPONENTS,
     DEFAULT_ENABLE_MOON,
+    DEFAULT_ENABLE_NOWCAST,
     DEFAULT_ENABLE_POLLEN,
     DEFAULT_ENABLE_SEA_TEMP,
     DEFAULT_ENABLE_SOLAR_FORECAST,
@@ -177,6 +179,13 @@ FEATURE_SWITCHES: tuple[WSFeatureDesc, ...] = (
         default=DEFAULT_ENABLE_ADVANCED_SENSORS,
         name="Feature: Advanced Sensors",
         icon="mdi:tune-variant",
+    ),
+    # v1.7.0
+    WSFeatureDesc(
+        conf_key=CONF_ENABLE_NOWCAST,
+        default=DEFAULT_ENABLE_NOWCAST,
+        name="Feature: Precipitation Nowcast",
+        icon="mdi:weather-pouring",
     ),
 )
 

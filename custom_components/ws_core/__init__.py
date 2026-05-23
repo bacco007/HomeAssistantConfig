@@ -141,9 +141,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await coordinator.async_start()
     except Exception as err:
         _LOGGER.warning(
-            "ws_core: async_start raised %s — entry will still be created, sensors populate on first tick", err
+            "ws_core: async_start raised %s - entry will still be created, sensors populate on first tick", err
         )
-        # Do NOT re-raise — a failed initial fetch must not block entry creation.
+        # Do NOT re-raise - a failed initial fetch must not block entry creation.
         # The 60s tick scheduler will retry all fetches automatically.
 
     # Create a device for the station

@@ -56,7 +56,7 @@ apply_calibration:
   name: Apply calibration offsets
   description: >-
     Writes calibration offsets directly into the integration's options and
-    reloads. Use this to correct known sensor bias — compare your station
+    reloads. Use this to correct known sensor bias - compare your station
     against a trusted reference (calibrated instrument, nearby ASOS/MADIS
     station) and enter the difference here. Offsets are additive: a positive
     temperature offset means your sensor reads low. All units are metric

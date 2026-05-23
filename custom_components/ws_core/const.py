@@ -70,7 +70,7 @@ DEFAULT_TEMP_UNIT = "auto"
 DEFAULT_ELEVATION_M = 0.0
 DEFAULT_HEMISPHERE = "Northern"
 DEFAULT_CLIMATE_REGION = "Atlantic Europe"
-DEFAULT_STALENESS_S = 7200  # 2 hours — many sensors (humidity, pressure) update slowly
+DEFAULT_STALENESS_S = 7200  # 2 hours - many sensors (humidity, pressure) update slowly
 DEFAULT_FORECAST_ENABLED = True
 DEFAULT_FORECAST_INTERVAL_MIN = 30
 
@@ -300,7 +300,7 @@ FORECAST_MAX_RETRY_S: int = 3600
 FORECAST_AGREEMENT_ALIGNED_PP: int = 20  # delta < 20 pp  -> aligned
 FORECAST_AGREEMENT_CONFLICT_PP: int = 40  # delta >= 40 pp -> conflict
 
-# Sensor drift detection — slope thresholds (per hour) and R² floor
+# Sensor drift detection - slope thresholds (per hour) and R² floor
 DRIFT_SLOPE_TEMP_C_H: float = 0.1  # °C/h monotonic drift flag
 DRIFT_SLOPE_HUMIDITY_PCT_H: float = 0.5  # %/h
 DRIFT_SLOPE_PRESSURE_HPA_H: float = 1.5  # hPa/h
@@ -314,14 +314,14 @@ DRIFT_STUCK_RATE_RANGE_MAX: float = 0.1  # mm/h max spread to flag as stuck
 CONFIG_VERSION = 2
 
 # ---------------------------------------------------------------------------
-# v0.7.0 — Air Quality (Open-Meteo AQI, free/no key)
+# v0.7.0 - Air Quality (Open-Meteo AQI, free/no key)
 # ---------------------------------------------------------------------------
 CONF_ENABLE_AIR_QUALITY = "enable_air_quality"
 CONF_AQI_INTERVAL_MIN = "aqi_interval_min"
 DEFAULT_ENABLE_AIR_QUALITY = False
 DEFAULT_AQI_INTERVAL_MIN = 60
 
-# v0.7.0 — Pollen (Tomorrow.io, free API key required)
+# v0.7.0 - Pollen (Tomorrow.io, free API key required)
 CONF_ENABLE_POLLEN = "enable_pollen"
 CONF_TOMORROW_IO_KEY = "tomorrow_io_key"
 CONF_POLLEN_INTERVAL_MIN = "pollen_interval_min"
@@ -329,13 +329,13 @@ DEFAULT_ENABLE_POLLEN = False
 DEFAULT_POLLEN_INTERVAL_MIN = 360  # 6 h; Tomorrow.io free tier: 500 calls/day
 
 # ---------------------------------------------------------------------------
-# v0.8.0 — Astronomical (Moon)
+# v0.8.0 - Astronomical (Moon)
 # ---------------------------------------------------------------------------
 CONF_ENABLE_MOON = "enable_moon"
 DEFAULT_ENABLE_MOON = False
 
 # ---------------------------------------------------------------------------
-# v0.9.0 — Solar forecast (forecast.solar, free/no key) + Penman-Monteith ET₀
+# v0.9.0 - Solar forecast (forecast.solar, free/no key) + Penman-Monteith ET₀
 # ---------------------------------------------------------------------------
 CONF_ENABLE_SOLAR_FORECAST = "enable_solar_forecast"
 CONF_SOLAR_PEAK_KW = "solar_peak_kw"
@@ -349,7 +349,7 @@ DEFAULT_SOLAR_PANEL_TILT = 30  # degrees from horizontal
 DEFAULT_SOLAR_INTERVAL_MIN = 60
 
 # ---------------------------------------------------------------------------
-# Data keys — v0.7.0 Air Quality
+# Data keys - v0.7.0 Air Quality
 # ---------------------------------------------------------------------------
 KEY_AQI = "air_quality_index"
 KEY_AQI_LEVEL = "air_quality_level"
@@ -359,13 +359,13 @@ KEY_NO2 = "no2_ug_m3"
 KEY_OZONE = "ozone_ug_m3"
 KEY_CO = "co_ug_m3"
 
-# Data keys — v0.7.0 Pollen
+# Data keys - v0.7.0 Pollen
 KEY_POLLEN_GRASS = "pollen_grass_index"
 KEY_POLLEN_TREE = "pollen_tree_index"
 KEY_POLLEN_WEED = "pollen_weed_index"
 KEY_POLLEN_OVERALL = "pollen_overall_level"
 
-# Data keys — v0.8.0 Moon
+# Data keys - v0.8.0 Moon
 KEY_MOON_PHASE = "moon_phase"
 KEY_MOON_ILLUMINATION_PCT = "moon_illumination_pct"
 KEY_MOON_DISPLAY = "moon_display"
@@ -373,23 +373,23 @@ KEY_MOON_AGE_DAYS = "moon_age_days"
 KEY_MOON_NEXT_FULL = "moon_next_full_days"
 KEY_MOON_NEXT_NEW = "moon_next_new_days"
 
-# Data keys — v0.9.0 Solar forecast
+# Data keys - v0.9.0 Solar forecast
 KEY_SOLAR_FORECAST_TODAY_KWH = "solar_forecast_today_kwh"
 KEY_SOLAR_FORECAST_TOMORROW_KWH = "solar_forecast_tomorrow_kwh"
 KEY_SOLAR_FORECAST_STATUS = "solar_forecast_status"
 KEY_ET0_PM_DAILY_MM = "et0_pm_daily_mm"  # Penman-Monteith (when solar available)
 
 # ---------------------------------------------------------------------------
-# v1.2.0 — Self-learning, new met sensors, station intelligence, climatology
+# v1.2.0 - Self-learning, new met sensors, station intelligence, climatology
 # ---------------------------------------------------------------------------
 
-# Config keys — GDD growing season reset
+# Config keys - GDD growing season reset
 CONF_GDD_RESET_MONTH = "gdd_reset_month"
 CONF_GDD_RESET_DAY = "gdd_reset_day"
 CONF_GDD_CAP_C = "gdd_cap_c"
 CONF_THRESH_HEAT_DAY_C = "thresh_heat_day_c"
 
-# Config keys — optional new sensor groups
+# Config keys - optional new sensor groups
 CONF_ENABLE_FOG = "enable_fog"
 CONF_ENABLE_THUNDERSTORM = "enable_thunderstorm_risk"
 
@@ -411,7 +411,7 @@ LEARNING_SOLAR_MIN = 80.0
 LEARNING_SOLAR_MAX = 200.0
 LEARNING_SAVE_INTERVAL_S = 3600  # persist to storage once per hour
 
-# Data keys — v1.2.0 Learning sensors (METAR-gated)
+# Data keys - v1.2.0 Learning sensors (METAR-gated)
 KEY_LEARNED_TEMP_BIAS = "learned_temp_bias"
 KEY_CAL_SUGGESTION_TEMP = "cal_suggestion_temp"
 KEY_LEARNED_PRESSURE_BIAS = "learned_pressure_bias"
@@ -419,7 +419,7 @@ KEY_CAL_SUGGESTION_PRESSURE = "cal_suggestion_pressure"
 KEY_FORECAST_SKILL = "forecast_skill"
 KEY_SOLAR_LUX_FACTOR = "solar_lux_factor"
 
-# Data keys — v1.2.0 New meteorological sensors
+# Data keys - v1.2.0 New meteorological sensors
 KEY_FOG_PROBABILITY = "fog_probability"
 KEY_THUNDERSTORM_RISK = "thunderstorm_risk"
 KEY_PRECIP_TYPE = "precipitation_type"
@@ -429,17 +429,17 @@ KEY_DRY_STREAK = "dry_streak_days"
 KEY_HEAT_STREAK = "heat_streak_days"
 KEY_FROST_STREAK = "frost_streak_days"
 
-# Data keys — v1.2.0 Station intelligence
+# Data keys - v1.2.0 Station intelligence
 KEY_SENSOR_DRIFT_FLAGS = "sensor_drift_flags"
 KEY_CONSISTENCY_FLAGS = "consistency_flags"
 
-# Data keys — v1.2.0 Rolling climatology
+# Data keys - v1.2.0 Rolling climatology
 KEY_CLIMATOLOGY_30D = "climatology_30d"
 KEY_TEMP_ANOMALY_30D = "temp_anomaly_30d"
 KEY_RAIN_ANOMALY_30D = "rain_anomaly_30d"
 
 # ---------------------------------------------------------------------------
-# v1.3.0 — Canadian FWI (Fire Weather Index) system
+# v1.3.0 - Canadian FWI (Fire Weather Index) system
 # ---------------------------------------------------------------------------
 KEY_FWI_FFMC = "fwi_ffmc"
 KEY_FWI_DMC = "fwi_dmc"
@@ -450,7 +450,7 @@ KEY_FWI = "fwi"
 KEY_FWI_DSR = "fwi_dsr"
 
 # ---------------------------------------------------------------------------
-# v1.5.0 — Extended comfort / agrometeorological sensors
+# v1.5.0 - Extended comfort / agrometeorological sensors
 # ---------------------------------------------------------------------------
 
 # Config keys
@@ -465,31 +465,31 @@ DEFAULT_CHILL_HOUR_BASE_C = 7.2  # standard base for apple/pear chill models
 DEFAULT_CHILL_SEASON_RESET_MONTH = 7  # July 1 for Northern Hemisphere
 DEFAULT_CHILL_SEASON_RESET_DAY = 1
 
-# Data keys — heat / cold stress indices
+# Data keys - heat / cold stress indices
 KEY_HEAT_INDEX = "heat_index_c"
 KEY_WIND_CHILL = "wind_chill_c"
 KEY_HUMIDEX = "humidex"
 
-# Data keys — humidity / vapour
+# Data keys - humidity / vapour
 KEY_VPD = "vpd_kpa"
 KEY_ABSOLUTE_HUMIDITY = "absolute_humidity_gm3"
 
-# Data keys — agrometeorological
+# Data keys - agrometeorological
 KEY_DELTA_T = "delta_t_c"
 KEY_WIND_RUN_KM = "wind_run_km"
 KEY_CHILL_HOURS_TODAY = "chill_hours_today"
 KEY_CHILL_HOURS_SEASON = "chill_hours_season"
 
-# Data keys — Davis comfort indices
+# Data keys - Davis comfort indices
 KEY_THW_INDEX = "thw_index_c"
 KEY_THSW_INDEX = "thsw_index_c"
 
-# Data keys — solar / cloud
+# Data keys - solar / cloud
 KEY_CLEARNESS_INDEX = "clearness_index_kt"
 KEY_CLOUD_COVER_PCT = "cloud_cover_pct"
 
 # ---------------------------------------------------------------------------
-# v1.6.0 — French regional data sources (no API key required)
+# v1.6.0 - French regional data sources (no API key required)
 # ---------------------------------------------------------------------------
 
 # Feature toggles
@@ -500,14 +500,14 @@ CONF_ENABLE_VIGICRUES = "enable_vigicrues"
 DEFAULT_ENABLE_VIGILANCE_METEO = False
 DEFAULT_ENABLE_VIGICRUES = False
 
-# Data keys — Météo-France Vigilance (department-level weather alerts)
+# Data keys - Météo-France Vigilance (department-level weather alerts)
 KEY_VIGILANCE_MAX_LEVEL = "vigilance_max_level"  # overall worst: vert/jaune/orange/rouge
 
-# Data keys — Vigicrues (real-time river level via Hub'Eau v2)
+# Data keys - Vigicrues (real-time river level via Hub'Eau v2)
 KEY_RIVER_LEVEL_M = "river_level_m"
 
 # ---------------------------------------------------------------------------
-# v1.6.2 — Opt-in toggles for previously disabled-by-default sensor groups
+# v1.6.2 - Opt-in toggles for previously disabled-by-default sensor groups
 # ---------------------------------------------------------------------------
 # Replaces the old _DISABLED_BY_DEFAULT mechanism (which created dead entities
 # that had to be manually enabled). These toggles gate entity creation instead:
@@ -522,7 +522,24 @@ DEFAULT_ENABLE_FWI_COMPONENTS = False
 DEFAULT_ENABLE_ADVANCED_SENSORS = False
 
 # ---------------------------------------------------------------------------
-# Migration — v0.3.0 deprecated entity keys and config keys
+# v1.7.0 - Precipitation nowcast (Open-Meteo minutely_15, free/no key)
+# ---------------------------------------------------------------------------
+# Independent of the chosen forecast provider: always hits Open-Meteo for
+# 15-minute precipitation buckets to derive "rain starts/stops in N minutes".
+CONF_ENABLE_NOWCAST = "enable_nowcast"
+CONF_NOWCAST_INTERVAL_MIN = "nowcast_interval_min"
+DEFAULT_ENABLE_NOWCAST = False
+DEFAULT_NOWCAST_INTERVAL_MIN = 15
+
+# Data keys - nowcast
+KEY_RAIN_NEXT_60MIN = "rain_next_60min_mm"
+KEY_MINUTES_UNTIL_RAIN = "minutes_until_rain"
+KEY_MINUTES_UNTIL_DRY = "minutes_until_dry"
+KEY_NOWCAST_INTENSITY = "nowcast_intensity"
+KEY_RAIN_EXPECTED_1H = "rain_expected_1h"
+
+# ---------------------------------------------------------------------------
+# Migration - v0.3.0 deprecated entity keys and config keys
 # ---------------------------------------------------------------------------
 DEPRECATED_KEYS_V030 = (
     "metar_validation",

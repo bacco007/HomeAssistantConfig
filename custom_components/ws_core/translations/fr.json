@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Weather Station Core — Créer une station météo",
+        "title": "Weather Station Core - Créer une station météo",
         "description": "Donnez un nom à votre station météo. Le préfixe sera utilisé pour tous les identifiants d'entités (par ex. le préfixe « ws » crée sensor.ws_temperature).",
         "data": {
           "name": "Nom de la station",
@@ -112,8 +112,9 @@
           "enable_vigilance_meteo": "Vigilance Météo (France, sans clé API)",
           "enable_vigicrues": "Niveau de rivière Vigicrues (France, sans clé API)",
           "enable_diagnostics": "Diagnostics de la station (dérive des capteurs, cohérence, indicateurs de qualité, fiabilité des prévisions, facteur lux solaire, climatologie 30 jours)",
-          "enable_fwi_components": "Composantes IFM (FFMC, DMC, DC, ISI, IGI — nécessite le risque d'incendie activé)",
-          "enable_advanced_sensors": "Capteurs avancés/dérivés (numéro Zambretti, ET₀ horaire, direction du vent lissée)"
+          "enable_fwi_components": "Composantes IFM (FFMC, DMC, DC, ISI, IGI - nécessite le risque d'incendie activé)",
+          "enable_advanced_sensors": "Capteurs avancés/dérivés (numéro Zambretti, ET₀ horaire, direction du vent lissée)",
+          "enable_nowcast": "Prévision immédiate des précipitations (minutes avant le début/la fin de la pluie, via Open-Meteo, sans clé API)"
         }
       },
       "sea_temp": {
@@ -129,8 +130,8 @@
         "title": "Envoi vers Weather Underground",
         "description": "Envoie les observations vers votre station Weather Underground. Laissez vide pour ignorer.",
         "data": {
-          "wu_station_id": "ID de station (ex. IATHEN123) — laisser vide pour ignorer",
-          "wu_api_key": "Clé API — laisser vide pour ignorer",
+          "wu_station_id": "ID de station (ex. IATHEN123) - laisser vide pour ignorer",
+          "wu_api_key": "Clé API - laisser vide pour ignorer",
           "wu_interval_min": "Intervalle d'envoi",
           "_go_back": "← Retour à l'étape précédente"
         }
@@ -170,7 +171,7 @@
       "wind_gust_too_high": "Le seuil de rafales dépasse le record physique mondial.",
       "temp_out_of_range": "La température dépasse les limites physiques possibles.",
       "invalid_api_key": "Clé API invalide ou identifiants rejetés.",
-      "cannot_connect": "Impossible de se connecter à l'API — vérifiez le réseau.",
+      "cannot_connect": "Impossible de se connecter à l'API - vérifiez le réseau.",
       "station_not_found": "Station Weather Underground introuvable."
     }
   },
@@ -275,7 +276,8 @@
           "enable_vigicrues": "Niveau de rivière Vigicrues (France, sans clé API)",
           "enable_diagnostics": "Diagnostics (dérive, cohérence, qualité, fiabilité prévisions)",
           "enable_fwi_components": "Composantes IFM (nécessite le risque d'incendie)",
-          "enable_advanced_sensors": "Capteurs avancés/dérivés"
+          "enable_advanced_sensors": "Capteurs avancés/dérivés",
+          "enable_nowcast": "Prévision immédiate des précipitations"
         },
         "data_description": {
           "enable_display_sensors": "Activer l'affichage des capteurs (niveaux, tendances, santé)",
@@ -293,7 +295,8 @@
           "enable_vigicrues": "Active la hauteur d'eau de la rivière la plus proche (Hub'Eau v2)",
           "enable_diagnostics": "Dérive des capteurs, cohérence inter-capteurs, indicateurs de qualité, fiabilité des prévisions, facteur lux solaire, climatologie 30 jours",
           "enable_fwi_components": "Codes intermédiaires IFM (FFMC/DMC/DC/ISI/IGI). Nécessite le risque d'incendie activé pour produire des données",
-          "enable_advanced_sensors": "Numéro Zambretti (forme numérique), ET₀ horaire, direction du vent lissée"
+          "enable_advanced_sensors": "Numéro Zambretti (forme numérique), ET₀ horaire, direction du vent lissée",
+          "enable_nowcast": "Prévision immédiate Open-Meteo (buckets de 15 min) : minutes avant le début/la fin de la pluie, total sur l'heure, intensité. Sans clé API"
         }
       },
       "sea_temp_opt": {
@@ -343,7 +346,7 @@
       "wind_gust_too_high": "Le seuil de rafales dépasse le record physique mondial.",
       "temp_out_of_range": "La température dépasse les limites physiques possibles.",
       "invalid_api_key": "Clé API invalide ou identifiants rejetés.",
-      "cannot_connect": "Impossible de se connecter à l'API — vérifiez le réseau.",
+      "cannot_connect": "Impossible de se connecter à l'API - vérifiez le réseau.",
       "station_not_found": "Station Weather Underground introuvable."
     }
   },
@@ -475,6 +478,13 @@
         }
       },
       "river_level": { "name": "Niveau de rivière" },
+      "rain_next_60min": { "name": "Pluie dans les 60 min" },
+      "minutes_until_rain": { "name": "Minutes avant la pluie" },
+      "minutes_until_dry": { "name": "Minutes avant l'arrêt de la pluie" },
+      "nowcast_intensity": {
+        "name": "Intensité prévue",
+        "state": { "none": "Aucune", "light": "Faible", "moderate": "Modérée", "heavy": "Forte" }
+      },
       "zambretti_forecast": {
         "name": "Prévision locale (algorithme Zambretti)",
         "state": {
@@ -794,9 +804,9 @@
           "weed_level": { "name": "Niveau herbacées" }
         }
       },
-      "pollen_grass": { "name": "Pollen — graminées" },
-      "pollen_tree": { "name": "Pollen — arbres" },
-      "pollen_weed": { "name": "Pollen — herbacées" },
+      "pollen_grass": { "name": "Pollen - graminées" },
+      "pollen_tree": { "name": "Pollen - arbres" },
+      "pollen_weed": { "name": "Pollen - herbacées" },
       "moon": {
         "name": "Lune",
         "state_attributes": {
@@ -985,6 +995,9 @@
       },
       "ws_enable_advanced_sensors": {
         "name": "Fonction : Capteurs avancés"
+      },
+      "ws_enable_nowcast": {
+        "name": "Fonction : Prévision immédiate des précipitations"
       }
     },
     "number": {

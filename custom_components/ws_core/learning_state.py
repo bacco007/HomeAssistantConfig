@@ -35,7 +35,7 @@ class LearningState:
     """All persistent learned state for one ws_core entry.
 
     v0.3.0: removed METAR-related bias EMAs (temp_bias_*, pressure_bias_*)
-    and GDD season tracking (gdd_season_*). Schema bumped to v2 — old
+    and GDD season tracking (gdd_season_*). Schema bumped to v2 - old
     state files are discarded on load.
     """
 
@@ -58,12 +58,15 @@ class LearningState:
     heat_streak_last_hot_date: str = ""
     frost_streak_days: int = 0
     frost_streak_last_frost_date: str = ""
+    # v1.6.6: persisted guard so streaks are counted exactly once per completed
+    # calendar day, surviving restarts/reloads (replaces in-memory guard)
+    streak_last_counted_date: str = ""
 
     # Rolling 30-day climatology buffer
     # Each entry: {date, t_high, t_low, rain_total}
     climatology_days: list = field(default_factory=list)
 
-    # v1.3.0 — Canadian FWI moisture codes (persist across HA restarts)
+    # v1.3.0 - Canadian FWI moisture codes (persist across HA restarts)
     # Standard initial values per Van Wagner 1987 (start-of-season defaults)
     fwi_ffmc: float = 85.0
     fwi_dmc: float = 6.0
@@ -83,7 +86,7 @@ class LearningState:
         version = data.get("schema_version", 0)
         if version != LEARNING_SCHEMA_VERSION:
             _LOGGER.warning(
-                "ws_core learning state schema v%s != current v%s — starting fresh",
+                "ws_core learning state schema v%s != current v%s - starting fresh",
                 version,
                 LEARNING_SCHEMA_VERSION,
             )
@@ -104,7 +107,7 @@ async def async_load_learning(store) -> LearningState:
         data = await store.async_load()
         return LearningState.from_dict(data or {})
     except Exception as exc:
-        _LOGGER.warning("ws_core: failed to load learning state (%s) — starting fresh", exc)
+        _LOGGER.warning("ws_core: failed to load learning state (%s) - starting fresh", exc)
         return LearningState()
 
 
@@ -239,7 +242,7 @@ def update_solar_lux_factor(
     # Implied factor = lux / theoretical_wm2
     implied_factor = lux / theoretical_wm2
     if not (factor_min * 0.5 <= implied_factor <= factor_max * 2.0):
-        return current_factor  # outlier — ignore
+        return current_factor  # outlier - ignore
     new_factor = beta * implied_factor + (1.0 - beta) * current_factor
     return round(max(factor_min, min(factor_max, new_factor)), 2)
 
@@ -250,7 +253,7 @@ def update_solar_lux_factor(
 
 
 # ---------------------------------------------------------------------------
-# Streak & GDD daily update (B4/B5)  — called once per day at midnight
+# Streak & GDD daily update (B4/B5)  - called once per day at midnight
 # ---------------------------------------------------------------------------
 
 
