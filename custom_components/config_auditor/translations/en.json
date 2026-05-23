@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant Config Auditor",
-    "version": "v1.7.3",
+    "version": "v1.7.4",
     "buttons": {
       "scan_all": "Full Scan",
       "automations": "Automations",
@@ -433,17 +433,13 @@
       "subtab_predict": "Predictions",
       "monitor_title": "Battery Monitor",
       "type_col": "Battery Type",
-      "battery_notes_tooltip": "Battery type from Battery Notes integration",
       "last_replaced_col": "Last replaced",
       "never_replaced": "Never",
       "manufacturer_col": "Manufacturer / Model",
       "mark_replaced": "Mark replaced",
       "mark_replaced_tooltip": "Click to record today's date as the last battery replacement for this device",
       "mark_replaced_done": "Battery marked as replaced",
-      "bn_banner_title": "Want richer battery info?",
-      "bn_banner_body": "HACA uses its own embedded battery library to detect battery types. For broader device coverage and replacement-date tracking with one-click events, install the Battery Notes integration — HACA will use its data automatically. Otherwise, you can extend HACA's embedded library by adding entries to its JSON file.",
-      "bn_banner_install_link": "📦 Install Battery Notes",
-      "bn_banner_edit_link": "✏️ Edit HACA library",
+      "edit_library_link": "✏️ Edit HACA library",
       "bn_edit_modal_title": "Extend the HACA battery library",
       "bn_edit_modal_body": "HACA includes a built-in battery library file. Open it in a text editor (via File Editor add-on, SSH, or Studio Code Server), then add a new entry inside the \"devices\" array.",
       "bn_step1_title": "Open the library file",
@@ -451,13 +447,13 @@
       "bn_step2_title": "Add a new device to the \"devices\" array",
       "bn_step2_detail": "Insert a new JSON object inside the \"devices\" array (don't forget the comma between entries). Find your device's exact manufacturer and model in HA: Settings → Devices & Services → click your device. Example entry to copy:",
       "bn_step3_title": "Restart Home Assistant",
-      "bn_step3_detail": "After restart, HACA will load your user file alongside the seed and use it for battery type detection. New entries appear immediately in the next battery scan.",
+      "bn_step3_detail": "After restart, HACA will reload the updated library and use it for battery type detection. New entries appear immediately in the next battery scan.",
       "bn_fields_label": "Field reference:",
       "bn_field_mfr_help": "must match exactly what HA shows for the device (case-sensitive)",
       "bn_field_type_help": "e.g. \"AA\", \"AAA\", \"CR2032\", \"CR2450\", \"Rechargeable\", \"Mains\", \"Irreplaceable\"",
       "bn_field_qty_help": "integer, number of batteries (1, 2, 3, ...) — omit if 1",
       "bn_field_match_help": "optional: \"exact\" (default), \"startswith\", \"endswith\", or \"contains\" — useful for model variants",
-      "bn_warning_overwrite": "Important: this file will be overwritten when HACA is updated. Keep a backup of your additions, and consider submitting popular devices to the public Battery Notes library so they're shared with everyone."
+      "bn_warning_overwrite": "Important: this file is overwritten when HACA is updated. Keep a backup of your additions before upgrading."
     },
     "issues": {
       "open_dashboard": "Open dashboard",

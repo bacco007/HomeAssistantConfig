@@ -6,25 +6,6 @@
     this._batteryList = list;
     this._batteryData = list;
 
-    // ── Battery Notes detection ─────────────────────────────────────────
-    // BN creates dedicated entities: sensor.*_battery_plus, sensor.*_battery_type,
-    // sensor.*_battery_last_replaced. We detect their presence directly.
-    const banner = this.shadowRoot.querySelector('#battery-notes-banner');
-    if (banner && !this._bnBannerDismissed) {
-      let bnInstalled = false;
-      try {
-        const states = (this.hass && this.hass.states) || {};
-        for (const eid of Object.keys(states)) {
-          if (eid.startsWith('sensor.') && (
-            eid.endsWith('_battery_plus') ||
-            eid.endsWith('_battery_last_replaced') ||
-            eid.endsWith('_battery_type')
-          )) { bnInstalled = true; break; }
-        }
-      } catch { /* ignore */ }
-      banner.style.display = bnInstalled ? 'none' : '';
-    }
-
     // ── Stat cards ───────────────────────────────────────────────────────
     const cards = this.shadowRoot.querySelector('#bat-stat-cards');
     if (cards) {
@@ -168,8 +149,7 @@
     const typeCell = btaq
       ? `<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(33,150,243,0.1);
            border:1px solid rgba(33,150,243,0.25);border-radius:6px;padding:2px 7px;font-size:12px;
-           font-weight:700;color:var(--primary-color);white-space:nowrap;"
-           title="${this.t('battery.battery_notes_tooltip')}">
+           font-weight:700;color:var(--primary-color);white-space:nowrap;">
            ${_icon('battery-unknown',12)} ${this.escapeHtml(btaq)}
          </span>`
       : `<span style="font-size:11px;color:var(--secondary-text-color);opacity:0.4;">—</span>`;

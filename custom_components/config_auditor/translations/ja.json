@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant 設定監査ツール",
-    "version": "v1.7.3",
+    "version": "v1.7.4",
     "buttons": {
       "scan_all": "完全スキャン",
       "automations": "オートメーション",
@@ -433,17 +433,13 @@
       "subtab_predict": "予測",
       "monitor_title": "バッテリーモニター",
       "type_col": "電池タイプ",
-      "battery_notes_tooltip": "Battery Notesの電池タイプ",
       "last_replaced_col": "最終交換日",
       "never_replaced": "未交換",
       "manufacturer_col": "メーカー / モデル",
       "mark_replaced": "交換済みとマーク",
       "mark_replaced_tooltip": "今日を最終電池交換日として記録するにはクリック",
       "mark_replaced_done": "電池を交換済みとマークしました",
-      "bn_banner_title": "より詳細な電池情報が必要ですか？",
-      "bn_banner_body": "HACAは独自の組み込み電池ライブラリで電池タイプを検出します。より広いデバイス対応とワンクリックイベントによる交換日追跡には、Battery Notes統合をインストールしてください — HACAが自動的にそのデータを使用します。または、HACAのJSONファイルにエントリを追加してライブラリを拡張できます。",
-      "bn_banner_install_link": "📦 Battery Notesをインストール",
-      "bn_banner_edit_link": "✏️ HACAライブラリを編集",
+      "edit_library_link": "✏️ HACAライブラリを編集",
       "bn_edit_modal_title": "HACA電池ライブラリを拡張",
       "bn_edit_modal_body": "HACA には内蔵の電池ライブラリファイルが含まれています。テキストエディタ (File Editor アドオン、SSH、Studio Code Server) で開き、\"devices\" 配列に新しいエントリを追加します。",
       "bn_step1_title": "ライブラリファイルを開く",
@@ -451,13 +447,13 @@
       "bn_step2_title": "\"devices\" 配列に新しいデバイスを追加",
       "bn_step2_detail": "\"devices\" 配列に新しい JSON オブジェクトを挿入します (エントリ間のカンマを忘れずに)。HA でデバイスの正確なメーカーとモデルを見つけます: 設定 → デバイスとサービス → デバイスをクリック。コピー用のエントリ例:",
       "bn_step3_title": "Home Assistant を再起動",
-      "bn_step3_detail": "再起動後、HACA はユーザーファイルをシードと共に読み込み、電池タイプ検出に使用します。新しいエントリは次の電池スキャン時にすぐに表示されます。",
+      "bn_step3_detail": "再起動後、HACA は更新されたライブラリを再読み込みし、電池タイプの検出に使用します。新しいエントリは次回の電池スキャンですぐに表示されます。",
       "bn_fields_label": "フィールドリファレンス:",
       "bn_field_mfr_help": "HA がデバイスに対して表示する内容と完全に一致する必要があります (大文字と小文字を区別)",
       "bn_field_type_help": "例: \"AA\", \"AAA\", \"CR2032\", \"CR2450\", \"Rechargeable\", \"Mains\", \"Irreplaceable\"",
       "bn_field_qty_help": "整数、電池の数 (1, 2, 3, ...) — 1 の場合は省略",
       "bn_field_match_help": "オプション: \"exact\" (デフォルト)、\"startswith\"、\"endswith\" または \"contains\" — モデルのバリエーションに便利",
-      "bn_warning_overwrite": "重要: このファイルは HACA の更新時に上書きされます。追加分のバックアップを保管し、一般的なデバイスは公開 Battery Notes ライブラリに提出することを検討してください。"
+      "bn_warning_overwrite": "重要: このファイルは HACA の更新時に上書きされます。更新前に追加分のバックアップを保管してください。"
     },
     "issues": {
       "open_dashboard": "ダッシュボードを開く",

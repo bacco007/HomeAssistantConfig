@@ -190,6 +190,7 @@ class DashboardAnalyzer:
         # real browser url_path (e.g. "dashboard-jm"), which can differ from the
         # storage filename suffix (e.g. "lovelace.dashboard_jm" → id "dashboard_jm").
         id_to_url_path: dict[str, str] = {}
+        registry_loaded = False
         dashboards_registry = storage_dir / "lovelace_dashboards"
         if dashboards_registry.exists():
             try:
@@ -198,6 +199,7 @@ class DashboardAnalyzer:
                 for item in reg.get("data", {}).get("items", []):
                     if isinstance(item, dict) and item.get("id") and item.get("url_path"):
                         id_to_url_path[item["id"]] = item["url_path"]
+                registry_loaded = True
                 _LOGGER.warning(
                     "[HACA Dashboard] lovelace_dashboards registry: %s", id_to_url_path
                 )
@@ -205,10 +207,31 @@ class DashboardAnalyzer:
                 _LOGGER.warning("[HACA Dashboard] Failed to read lovelace_dashboards: %s", exc)
 
         # ── Step 2: read each lovelace config file ────────────────────────────
-        lovelace_files = [
-            p for p in storage_dir.iterdir()
-            if p.name == "lovelace" or p.name.startswith("lovelace.")
-        ]
+        # Only scan dashboards that are currently registered in
+        # `.storage/lovelace_dashboards`. Orphan files (renamed, leftover from a
+        # deleted dashboard, manual backups dropped into .storage) would
+        # otherwise generate false-positive "missing entity" issues. The default
+        # dashboard file (`lovelace`, no suffix) is always implicit and kept.
+        # If the registry file could not be read we fall back to scanning all
+        # files to preserve previous behaviour on unusual HA setups.
+        lovelace_files = []
+        skipped_orphans: list[str] = []
+        for p in storage_dir.iterdir():
+            if p.name == "lovelace":
+                lovelace_files.append(p)
+                continue
+            if not p.name.startswith("lovelace."):
+                continue
+            file_id = p.name[len("lovelace."):]
+            if registry_loaded and file_id not in id_to_url_path:
+                skipped_orphans.append(p.name)
+                continue
+            lovelace_files.append(p)
+        if skipped_orphans:
+            _LOGGER.warning(
+                "[HACA Dashboard] Ignored %d orphan .storage file(s) not in lovelace_dashboards: %s",
+                len(skipped_orphans), skipped_orphans,
+            )
         _LOGGER.warning(
             "[HACA Dashboard] Lovelace files in .storage: %s",
             [p.name for p in lovelace_files],

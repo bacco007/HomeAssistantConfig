@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Auditor de Configuração do Home Assistant",
-    "version": "v1.7.3",
+    "version": "v1.7.4",
     "buttons": {
       "scan_all": "Verificação Completa",
       "automations": "Automações",
@@ -433,17 +433,13 @@
       "subtab_predict": "Previsões",
       "monitor_title": "Monitor de baterias",
       "type_col": "Tipo de pilha",
-      "battery_notes_tooltip": "Tipo de pilha do Battery Notes",
       "last_replaced_col": "Última substituição",
       "never_replaced": "Nunca",
       "manufacturer_col": "Fabricante / Modelo",
       "mark_replaced": "Marcar como substituída",
       "mark_replaced_tooltip": "Clique para registrar a data de hoje como última substituição da pilha",
       "mark_replaced_done": "Pilha marcada como substituída",
-      "bn_banner_title": "Quer informações de pilhas mais ricas?",
-      "bn_banner_body": "HACA usa sua própria biblioteca de pilhas embutida para detectar tipos. Para maior cobertura de dispositivos e rastreamento de datas de substituição com eventos de um clique, instale a integração Battery Notes — HACA usará seus dados automaticamente. Caso contrário, você pode estender a biblioteca embutida do HACA adicionando entradas ao seu arquivo JSON.",
-      "bn_banner_install_link": "📦 Instalar Battery Notes",
-      "bn_banner_edit_link": "✏️ Editar biblioteca HACA",
+      "edit_library_link": "✏️ Editar biblioteca HACA",
       "bn_edit_modal_title": "Ampliar a biblioteca de pilhas HACA",
       "bn_edit_modal_body": "HACA inclui um arquivo de biblioteca de pilhas integrado. Abra-o em um editor de texto (via complemento File Editor, SSH ou Studio Code Server) e adicione uma nova entrada no array \"devices\".",
       "bn_step1_title": "Abrir o arquivo de biblioteca",
@@ -451,13 +447,13 @@
       "bn_step2_title": "Adicionar um novo dispositivo ao array \"devices\"",
       "bn_step2_detail": "Insira um novo objeto JSON no array \"devices\" (não esqueça a vírgula entre as entradas). Encontre o fabricante e modelo exatos do seu dispositivo no HA: Configurações → Dispositivos e serviços → clique no seu dispositivo. Entrada de exemplo para copiar:",
       "bn_step3_title": "Reiniciar Home Assistant",
-      "bn_step3_detail": "Após o reinício, HACA carregará seu arquivo de usuário junto com o seed e o usará para detecção de tipos de pilha. Novas entradas aparecem imediatamente na próxima varredura.",
+      "bn_step3_detail": "Após reiniciar, o HACA recarregará a biblioteca atualizada e a usará para detectar tipos de pilhas. As novas entradas aparecem imediatamente no próximo scan.",
       "bn_fields_label": "Referência dos campos:",
       "bn_field_mfr_help": "deve corresponder exatamente ao que o HA mostra para o dispositivo (sensível a maiúsculas)",
       "bn_field_type_help": "ex: \"AA\", \"AAA\", \"CR2032\", \"CR2450\", \"Rechargeable\", \"Mains\", \"Irreplaceable\"",
       "bn_field_qty_help": "inteiro, número de pilhas (1, 2, 3, ...) — omitir se 1",
       "bn_field_match_help": "opcional: \"exact\" (padrão), \"startswith\", \"endswith\" ou \"contains\" — útil para variantes de modelo",
-      "bn_warning_overwrite": "Importante: este arquivo será sobrescrito quando o HACA for atualizado. Mantenha um backup das suas adições e considere enviar dispositivos populares para a biblioteca pública Battery Notes."
+      "bn_warning_overwrite": "Importante: este arquivo é sobrescrito quando o HACA é atualizado. Guarde uma cópia das suas adições antes da atualização."
     },
     "issues": {
       "open_dashboard": "Abrir dashboard",

@@ -7,7 +7,9 @@ the backup is restored automatically when validation fails.
 """
 from __future__ import annotations
 
+import asyncio
 import logging
+import os
 import shutil
 from datetime import datetime
 from pathlib import Path
@@ -18,6 +20,21 @@ from homeassistant.core import HomeAssistant
 from .const import BACKUP_DIR
 
 _LOGGER = logging.getLogger(__name__)
+
+# Serialises all configuration.yaml edits driven by HACA. Without this,
+# two concurrent "Exclude from Recorder" clicks could interleave their
+# read/write windows: `open(file, "w")` truncates immediately, so the
+# second worker could load an empty file, treat it as a fresh config,
+# and overwrite configuration.yaml with just a `recorder:` section.
+# Created lazily so it binds to the running HA event loop.
+_EDIT_LOCK: asyncio.Lock | None = None
+
+
+def _get_edit_lock() -> asyncio.Lock:
+    global _EDIT_LOCK
+    if _EDIT_LOCK is None:
+        _EDIT_LOCK = asyncio.Lock()
+    return _EDIT_LOCK
 
 
 # ── Read helpers ────────────────────────────────────────────────────────────
@@ -167,13 +184,24 @@ def _backup_and_modify_sync(
     # Match HA's default 2-space indent so the diff stays minimal
     yaml.indent(mapping=2, sequence=4, offset=2)
 
+    # Read the current file. If it is empty or missing keys we'd expect a
+    # real HA configuration to have, refuse to write — an empty load is a
+    # strong signal that another writer truncated the file under us (the
+    # `open(file, "w")` truncate window) and we'd otherwise replace the
+    # whole config with a bare `recorder:` section.
     with open(config_file, encoding="utf-8") as f:
-        data = yaml.load(f)
+        raw = f.read()
+    if not raw.strip():
+        return False, False, (
+            "configuration.yaml is empty — refusing to write. "
+            "This usually indicates a concurrent write; please retry."
+        )
+    data = yaml.load(raw)
     if data is None:
-        # Empty file: start a fresh mapping
-        from ruamel.yaml.comments import CommentedMap
-        data = CommentedMap()
-
+        return False, False, (
+            "configuration.yaml parsed as empty — refusing to write to "
+            "avoid overwriting the file with only a recorder section."
+        )
     if not isinstance(data, dict):
         return False, False, "configuration.yaml root is not a YAML mapping"
 
@@ -225,9 +253,22 @@ def _backup_and_modify_sync(
 
     entities.append(entity_id)
 
-    # Write back
-    with open(config_file, "w", encoding="utf-8") as f:
-        yaml.dump(data, f)
+    # Atomic write: dump to a sibling tmp file, then os.replace onto the
+    # target. This way a concurrent reader sees either the old file or
+    # the new file fully — never a truncated/partial state. os.replace
+    # is atomic on POSIX and on Windows.
+    tmp_file = config_file.with_suffix(config_file.suffix + ".haca-tmp")
+    try:
+        with open(tmp_file, "w", encoding="utf-8") as f:
+            yaml.dump(data, f)
+        os.replace(tmp_file, config_file)
+    except Exception:
+        if tmp_file.exists():
+            try:
+                tmp_file.unlink()
+            except OSError:
+                pass
+        raise
 
     return True, False, ""
 
@@ -303,62 +344,66 @@ async def async_add_entity_to_recorder_exclude(
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     backup_path = backups_dir / f"configuration.yaml.{ts}.bak"
 
-    try:
-        modified, already, error = await hass.async_add_executor_job(
-            _backup_and_modify_sync, config_file, backup_path, entity_id,
-        )
-    except Exception as exc:
-        _LOGGER.error("[HACA] configuration.yaml edit failed: %s", exc, exc_info=True)
-        return {
-            "success": False, "already_excluded": False,
-            "backup_path": str(backup_path) if backup_path.exists() else None,
-            "message": str(exc), "errors": [str(exc)], "code": "io_error",
-        }
-
-    if error:
-        # Edit aborted before writing; backup was still taken — that's fine,
-        # users can use it to compare or roll back manually if they want.
-        code = "include_used" if "!include" in error or "included file" in error else "io_error"
-        return {
-            "success": False, "already_excluded": False,
-            "backup_path": str(backup_path) if backup_path.exists() else None,
-            "message": error, "errors": [error], "code": code,
-        }
-
-    if already:
-        return {
-            "success": True, "already_excluded": True,
-            "backup_path": str(backup_path) if backup_path.exists() else None,
-            "message": f"{entity_id} is already in recorder.exclude.entities",
-            "errors": [], "code": "already",
-        }
-
-    # Validate the new file before declaring success
-    valid, errors = await _async_check_config(hass)
-    if not valid:
+    # Serialise the whole edit-and-validate sequence: backup, read, mutate,
+    # atomic write, check_config, restore-on-failure. Concurrent UI clicks
+    # queue here instead of racing on the file.
+    async with _get_edit_lock():
         try:
-            await hass.async_add_executor_job(_restore_sync, backup_path, config_file)
+            modified, already, error = await hass.async_add_executor_job(
+                _backup_and_modify_sync, config_file, backup_path, entity_id,
+            )
         except Exception as exc:
-            _LOGGER.error("[HACA] Could not restore backup: %s", exc, exc_info=True)
-            errors = errors + [f"Backup restore failed: {exc}"]
-        _LOGGER.warning(
-            "[HACA] check_config rejected the recorder edit; restored from %s. Errors: %s",
-            backup_path, "; ".join(errors),
+            _LOGGER.error("[HACA] configuration.yaml edit failed: %s", exc, exc_info=True)
+            return {
+                "success": False, "already_excluded": False,
+                "backup_path": str(backup_path) if backup_path.exists() else None,
+                "message": str(exc), "errors": [str(exc)], "code": "io_error",
+            }
+
+        if error:
+            # Edit aborted before writing; backup was still taken — that's fine,
+            # users can use it to compare or roll back manually if they want.
+            code = "include_used" if "!include" in error or "included file" in error else "io_error"
+            return {
+                "success": False, "already_excluded": False,
+                "backup_path": str(backup_path) if backup_path.exists() else None,
+                "message": error, "errors": [error], "code": code,
+            }
+
+        if already:
+            return {
+                "success": True, "already_excluded": True,
+                "backup_path": str(backup_path) if backup_path.exists() else None,
+                "message": f"{entity_id} is already in recorder.exclude.entities",
+                "errors": [], "code": "already",
+            }
+
+        # Validate the new file before declaring success
+        valid, errors = await _async_check_config(hass)
+        if not valid:
+            try:
+                await hass.async_add_executor_job(_restore_sync, backup_path, config_file)
+            except Exception as exc:
+                _LOGGER.error("[HACA] Could not restore backup: %s", exc, exc_info=True)
+                errors = errors + [f"Backup restore failed: {exc}"]
+            _LOGGER.warning(
+                "[HACA] check_config rejected the recorder edit; restored from %s. Errors: %s",
+                backup_path, "; ".join(errors),
+            )
+            return {
+                "success": False, "already_excluded": False,
+                "backup_path": str(backup_path),
+                "message": "Configuration validation failed — file restored from backup.",
+                "errors": errors, "code": "validation_failed",
+            }
+
+        _LOGGER.info(
+            "[HACA] %s added to recorder.exclude.entities (backup: %s)",
+            entity_id, backup_path,
         )
         return {
-            "success": False, "already_excluded": False,
+            "success": True, "already_excluded": False,
             "backup_path": str(backup_path),
-            "message": "Configuration validation failed — file restored from backup.",
-            "errors": errors, "code": "validation_failed",
+            "message": f"{entity_id} added to recorder.exclude.entities",
+            "errors": [], "code": "ok",
         }
-
-    _LOGGER.info(
-        "[HACA] %s added to recorder.exclude.entities (backup: %s)",
-        entity_id, backup_path,
-    )
-    return {
-        "success": True, "already_excluded": False,
-        "backup_path": str(backup_path),
-        "message": f"{entity_id} added to recorder.exclude.entities",
-        "errors": [], "code": "ok",
-    }

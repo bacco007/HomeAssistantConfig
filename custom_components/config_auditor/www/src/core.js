@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   if (customElements.get('haca-panel')) return; // already loaded, skip entirely
-  const HACA_VERSION = '1.7.3'; // build marker
+  const HACA_VERSION = '1.7.4'; // build marker
 
   // Dans l'iframe (embed_iframe:true), ha-icon n'est pas enregistré.
   // On copie la définition depuis le document parent où HA l'a déjà défini.
@@ -1997,23 +1997,6 @@
 
             <!-- SubTab: Monitor -->
             <div class="subtab-content active" id="subtab-battery-monitor">
-              <!-- Battery Notes info banner — shown when Battery Notes is NOT installed -->
-              <div id="battery-notes-banner" style="display:none;margin:12px 20px 0;padding:10px 14px;border-radius:10px;background:rgba(33,150,243,0.06);border:1px solid rgba(33,150,243,0.2);font-size:12px;color:var(--secondary-text-color);line-height:1.6;">
-                <div style="display:flex;align-items:flex-start;gap:8px;">
-                  ${_icon('information-outline', 16)}
-                  <div style="flex:1;">
-                    <div style="font-weight:600;color:var(--primary-text-color);margin-bottom:4px;">${this.t('battery.bn_banner_title')}</div>
-                    <div>${this.t('battery.bn_banner_body')}</div>
-                    <div style="margin-top:6px;font-size:11px;opacity:0.85;">
-                      <a href="https://github.com/andrew-codechimp/HA-Battery-Notes" target="_blank" rel="noopener" style="color:var(--primary-color);text-decoration:none;">${this.t('battery.bn_banner_install_link')}</a>
-                      &nbsp;·&nbsp;
-                      <a href="#" id="battery-notes-banner-edit" style="color:var(--primary-color);text-decoration:none;">${this.t('battery.bn_banner_edit_link')}</a>
-                    </div>
-                  </div>
-                  <button id="battery-notes-banner-close" style="background:none;border:none;cursor:pointer;color:var(--secondary-text-color);font-size:16px;padding:0;" title="${this.t('actions.close')}">×</button>
-                </div>
-              </div>
-
               <div class="section-header">
                 <div class="section-header-btns" style="display:flex;align-items:center;gap:10px;">
                   <span id="bat-summary-text" style="font-size:13px;color:var(--secondary-text-color);"></span>
@@ -2025,6 +2008,7 @@
                     <option value="low">${this.t('battery.filter_watch')}</option>
                     <option value="ok">${this.t('battery.filter_ok')}</option>
                   </select>
+                  <a href="#" id="battery-edit-library-link" style="font-size:12px;color:var(--primary-color);text-decoration:none;">${this.t('battery.edit_library_link')}</a>
                 </div>
               </div>
               <div id="bat-stat-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;padding:0 20px 16px;"></div>
@@ -2035,7 +2019,7 @@
                       <th style="padding:8px 10px;text-align:left;color:var(--secondary-text-color);font-weight:600;">${this.t('tables.device')}</th>
                       <th style="padding:8px 10px;text-align:left;color:var(--secondary-text-color);font-weight:600;min-width:130px;">${this.t('battery.manufacturer_col')}</th>
                       <th style="padding:8px 10px;text-align:center;color:var(--secondary-text-color);font-weight:600;min-width:120px;">${this.t('tables.level_col')}</th>
-                      <th style="padding:8px 10px;text-align:center;color:var(--secondary-text-color);font-weight:600;min-width:80px;" title="${this.t('battery.battery_notes_tooltip')}">${this.t('battery.type_col')} ${_icon('battery-unknown',12)}</th>
+                      <th style="padding:8px 10px;text-align:center;color:var(--secondary-text-color);font-weight:600;min-width:80px;">${this.t('battery.type_col')} ${_icon('battery-unknown',12)}</th>
                       <th style="padding:8px 10px;text-align:center;color:var(--secondary-text-color);font-weight:600;min-width:100px;" title="${this.t('battery.last_replaced_col')}">${this.t('battery.last_replaced_col')} ${_icon('calendar-check',12)}</th>
                       <th style="padding:8px 10px;text-align:center;color:var(--secondary-text-color);font-weight:600;min-width:90px;">${this.t('tables.status_col')}</th>
                     </tr>
@@ -2263,15 +2247,10 @@
       // "Vue complète" in batteries mini-panel → go to batteries tab
       this.shadowRoot.querySelector('#goto-batteries-tab')?.addEventListener('click', () => this.switchTab('batteries'));
 
-      // ── Battery Notes banner: close + edit-library modal ─────────────
-      this.shadowRoot.querySelector('#battery-notes-banner-close')?.addEventListener('click', () => {
-        this._bnBannerDismissed = true;
-        const banner = this.shadowRoot.querySelector('#battery-notes-banner');
-        if (banner) banner.style.display = 'none';
-      });
-      this.shadowRoot.querySelector('#battery-notes-banner-edit')?.addEventListener('click', async (e) => {
+      // ── Edit-library link in Battery monitor header ──────────────────
+      this.shadowRoot.querySelector('#battery-edit-library-link')?.addEventListener('click', async (e) => {
         e.preventDefault();
-        let info = { seed_path: '', user_path: '' };
+        let info = { seed_path: '', size: 0 };
         try {
           info = await this.hass.callWS({ type: 'haca/get_battery_library_info' });
         } catch (err) {

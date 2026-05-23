@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant configuratie-auditor",
-    "version": "v1.7.3",
+    "version": "v1.7.4",
     "buttons": {
       "scan_all": "Volledige scan",
       "automations": "Automatiseringen",
@@ -433,17 +433,13 @@
       "subtab_predict": "Voorspellingen",
       "monitor_title": "Batterijmonitor",
       "type_col": "Batterijtype",
-      "battery_notes_tooltip": "Batterijtype uit Battery Notes",
       "last_replaced_col": "Laatst vervangen",
       "never_replaced": "Nooit",
       "manufacturer_col": "Fabrikant / Model",
       "mark_replaced": "Markeer als vervangen",
       "mark_replaced_tooltip": "Klik om de datum van vandaag vast te leggen als laatste batterijvervanging",
       "mark_replaced_done": "Batterij gemarkeerd als vervangen",
-      "bn_banner_title": "Meer batterij-info?",
-      "bn_banner_body": "HACA gebruikt zijn eigen ingebouwde batterijbibliotheek om types te detecteren. Voor bredere apparaatdekking en vervangingsdatum-tracking met one-click events, installeer de Battery Notes-integratie — HACA gebruikt de data automatisch. Anders kun je HACA's ingebouwde bibliotheek uitbreiden door entries toe te voegen aan zijn JSON-bestand.",
-      "bn_banner_install_link": "📦 Battery Notes installeren",
-      "bn_banner_edit_link": "✏️ HACA-bibliotheek bewerken",
+      "edit_library_link": "✏️ HACA-bibliotheek bewerken",
       "bn_edit_modal_title": "HACA-batterijbibliotheek uitbreiden",
       "bn_edit_modal_body": "HACA bevat een ingebouwd batterijbibliotheek-bestand. Open het in een teksteditor (via File Editor-add-on, SSH of Studio Code Server) en voeg een nieuwe entry toe in de \"devices\" array.",
       "bn_step1_title": "Open het bibliotheekbestand",
@@ -451,13 +447,13 @@
       "bn_step2_title": "Voeg een nieuw apparaat toe aan de \"devices\" array",
       "bn_step2_detail": "Voeg een nieuw JSON-object toe in de \"devices\" array (vergeet de komma tussen de entries niet). Vind de exacte fabrikant en het model van je apparaat in HA: Instellingen → Apparaten en diensten → klik op je apparaat. Voorbeeld-entry om te kopiëren:",
       "bn_step3_title": "Home Assistant herstarten",
-      "bn_step3_detail": "Na herstart laadt HACA je gebruikersbestand naast de seed en gebruikt het voor batterijtype-detectie. Nieuwe entries verschijnen direct in de volgende batterijscan.",
+      "bn_step3_detail": "Na herstart laadt HACA de bijgewerkte bibliotheek opnieuw en gebruikt deze om batterijtypes te detecteren. Nieuwe items verschijnen direct in de volgende batterijscan.",
       "bn_fields_label": "Veld-referentie:",
       "bn_field_mfr_help": "moet exact overeenkomen met wat HA toont voor het apparaat (hoofdlettergevoelig)",
       "bn_field_type_help": "bv. \"AA\", \"AAA\", \"CR2032\", \"CR2450\", \"Rechargeable\", \"Mains\", \"Irreplaceable\"",
       "bn_field_qty_help": "geheel getal, aantal batterijen (1, 2, 3, ...) — weglaten bij 1",
       "bn_field_match_help": "optioneel: \"exact\" (standaard), \"startswith\", \"endswith\" of \"contains\" — handig voor modelvarianten",
-      "bn_warning_overwrite": "Belangrijk: dit bestand wordt overschreven bij een HACA-update. Bewaar een back-up van je toevoegingen, en overweeg populaire apparaten in te dienen bij de openbare Battery Notes-bibliotheek."
+      "bn_warning_overwrite": "Belangrijk: dit bestand wordt overschreven bij een HACA-update. Bewaar een back-up van je toevoegingen vóór de update."
     },
     "issues": {
       "open_dashboard": "Dashboard openen",

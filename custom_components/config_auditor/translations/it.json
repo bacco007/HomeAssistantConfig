@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Revisore di configurazione Home Assistant",
-    "version": "v1.7.3",
+    "version": "v1.7.4",
     "buttons": {
       "scan_all": "Scansione Completa",
       "automations": "Automazioni",
@@ -433,17 +433,13 @@
       "subtab_predict": "Previsioni",
       "monitor_title": "Monitor batterie",
       "type_col": "Tipo batteria",
-      "battery_notes_tooltip": "Tipo batteria da Battery Notes",
       "last_replaced_col": "Ultima sostituzione",
       "never_replaced": "Mai",
       "manufacturer_col": "Produttore / Modello",
       "mark_replaced": "Segna come sostituita",
       "mark_replaced_tooltip": "Clicca per registrare la data di oggi come ultima sostituzione della batteria",
       "mark_replaced_done": "Batteria contrassegnata come sostituita",
-      "bn_banner_title": "Vuoi info batterie più ricche?",
-      "bn_banner_body": "HACA usa la propria libreria batterie integrata per rilevare i tipi. Per una copertura più ampia di dispositivi e il tracciamento delle date di sostituzione con eventi a un clic, installa l'integrazione Battery Notes — HACA userà i suoi dati automaticamente. Altrimenti, puoi estendere la libreria integrata di HACA aggiungendo voci al suo file JSON.",
-      "bn_banner_install_link": "📦 Installa Battery Notes",
-      "bn_banner_edit_link": "✏️ Modifica libreria HACA",
+      "edit_library_link": "✏️ Modifica libreria HACA",
       "bn_edit_modal_title": "Estendere la libreria batterie HACA",
       "bn_edit_modal_body": "HACA include un file di libreria batterie integrato. Aprilo in un editor di testo (tramite l'add-on File Editor, SSH o Studio Code Server), e aggiungi una nuova voce nell'array \"devices\".",
       "bn_step1_title": "Apri il file della libreria",
@@ -451,13 +447,13 @@
       "bn_step2_title": "Aggiungi un nuovo dispositivo all'array \"devices\"",
       "bn_step2_detail": "Inserisci un nuovo oggetto JSON nell'array \"devices\" (non dimenticare la virgola tra le voci). Trova produttore e modello esatti del tuo dispositivo in HA: Impostazioni → Dispositivi e servizi → clic sul dispositivo. Voce di esempio da copiare:",
       "bn_step3_title": "Riavviare Home Assistant",
-      "bn_step3_detail": "Dopo il riavvio, HACA caricherà il tuo file utente insieme al seed e lo userà per il rilevamento dei tipi di batteria. Le nuove voci appaiono immediatamente nella prossima scansione.",
+      "bn_step3_detail": "Dopo il riavvio, HACA ricaricherà la libreria aggiornata e la userà per rilevare i tipi di batterie. Le nuove voci appaiono subito al prossimo scan.",
       "bn_fields_label": "Riferimento dei campi:",
       "bn_field_mfr_help": "deve corrispondere esattamente a ciò che HA mostra per il dispositivo (case-sensitive)",
       "bn_field_type_help": "es: \"AA\", \"AAA\", \"CR2032\", \"CR2450\", \"Rechargeable\", \"Mains\", \"Irreplaceable\"",
       "bn_field_qty_help": "intero, numero di batterie (1, 2, 3, ...) — omettere se 1",
       "bn_field_match_help": "opzionale: \"exact\" (default), \"startswith\", \"endswith\" o \"contains\" — utile per varianti di modello",
-      "bn_warning_overwrite": "Importante: questo file sarà sovrascritto all'aggiornamento di HACA. Conserva un backup delle tue aggiunte, e considera di inviare i dispositivi popolari alla libreria pubblica Battery Notes."
+      "bn_warning_overwrite": "Importante: questo file viene sovrascritto all'aggiornamento di HACA. Conserva un backup delle tue aggiunte prima dell'aggiornamento."
     },
     "issues": {
       "open_dashboard": "Apri cruscotto",

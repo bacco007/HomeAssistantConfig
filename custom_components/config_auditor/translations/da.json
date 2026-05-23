@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant konfigurations-auditor",
-    "version": "v1.7.3",
+    "version": "v1.7.4",
     "buttons": {
       "scan_all": "Fuld skanning",
       "automations": "Automatiseringer",
@@ -433,17 +433,13 @@
       "subtab_predict": "Forudsigelser",
       "monitor_title": "Batteriovervågning",
       "type_col": "Batteritype",
-      "battery_notes_tooltip": "Batteritype fra Battery Notes",
       "last_replaced_col": "Sidst skiftet",
       "never_replaced": "Aldrig",
       "manufacturer_col": "Producent / Model",
       "mark_replaced": "Marker som skiftet",
       "mark_replaced_tooltip": "Klik for at registrere dagens dato som sidste batteriskift",
       "mark_replaced_done": "Batteri markeret som skiftet",
-      "bn_banner_title": "Vil du have rigere batteri-info?",
-      "bn_banner_body": "HACA bruger sit eget indbyggede batteribibliotek til at detektere typer. For bredere enhedsdækning og sporing af udskiftningsdatoer med ét-klik-events, installer Battery Notes-integrationen — HACA vil bruge dens data automatisk. Ellers kan du udvide HACAs indbyggede bibliotek ved at tilføje poster til dets JSON-fil.",
-      "bn_banner_install_link": "📦 Installer Battery Notes",
-      "bn_banner_edit_link": "✏️ Rediger HACA-biblioteket",
+      "edit_library_link": "✏️ Rediger HACA-biblioteket",
       "bn_edit_modal_title": "Udvid HACA-batteribiblioteket",
       "bn_edit_modal_body": "HACA indeholder en indbygget batteribiblioteksfil. Åbn den i en teksteditor (via File Editor-tilføjelsen, SSH eller Studio Code Server) og tilføj en ny post i \"devices\"-arrayet.",
       "bn_step1_title": "Åbn biblioteksfilen",
@@ -451,13 +447,13 @@
       "bn_step2_title": "Tilføj en ny enhed til \"devices\"-arrayet",
       "bn_step2_detail": "Indsæt et nyt JSON-objekt i \"devices\"-arrayet (glem ikke kommaet mellem poster). Find din enheds nøjagtige producent og model i HA: Indstillinger → Enheder og tjenester → klik på din enhed. Eksempelpost til kopiering:",
       "bn_step3_title": "Genstart Home Assistant",
-      "bn_step3_detail": "Efter genstart indlæser HACA din brugerfil sammen med seedet og bruger den til batteritype-detektion. Nye poster vises straks i næste batteriscanning.",
+      "bn_step3_detail": "Efter genstart genindlæser HACA det opdaterede bibliotek og bruger det til at registrere batterityper. Nye poster vises straks ved næste batteriscan.",
       "bn_fields_label": "Feltreference:",
       "bn_field_mfr_help": "skal matche præcis det, HA viser for enheden (case-sensitive)",
       "bn_field_type_help": "f.eks. \"AA\", \"AAA\", \"CR2032\", \"CR2450\", \"Rechargeable\", \"Mains\", \"Irreplaceable\"",
       "bn_field_qty_help": "heltal, antal batterier (1, 2, 3, ...) — udelad hvis 1",
       "bn_field_match_help": "valgfri: \"exact\" (standard), \"startswith\", \"endswith\" eller \"contains\" — nyttig til modelvarianter",
-      "bn_warning_overwrite": "Vigtigt: Denne fil overskrives når HACA opdateres. Hold en sikkerhedskopi af dine tilføjelser, og overvej at indsende populære enheder til det offentlige Battery Notes-bibliotek."
+      "bn_warning_overwrite": "Vigtigt: Denne fil overskrives ved en HACA-opdatering. Gem en sikkerhedskopi af dine tilføjelser før opdateringen."
     },
     "issues": {
       "open_dashboard": "Åbn dashboard",

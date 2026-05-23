@@ -2,7 +2,7 @@
 
 DOMAIN = "config_auditor"
 NAME = "H.A.C.A"
-VERSION = "1.7.3"
+VERSION = "1.7.4"
 
 # Configuration
 DEFAULT_SCAN_INTERVAL = 60

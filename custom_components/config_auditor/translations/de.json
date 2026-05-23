@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant Konfigurationsprüfer",
-    "version": "v1.7.3",
+    "version": "v1.7.4",
     "buttons": {
       "scan_all": "Vollständiger Scan",
       "automations": "Automatisierungen",
@@ -433,17 +433,13 @@
       "subtab_predict": "Vorhersagen",
       "monitor_title": "Batterie-Monitor",
       "type_col": "Batterietyp",
-      "battery_notes_tooltip": "Batterietyp aus Battery Notes",
       "last_replaced_col": "Zuletzt ersetzt",
       "never_replaced": "Nie",
       "manufacturer_col": "Hersteller / Modell",
       "mark_replaced": "Als ersetzt markieren",
       "mark_replaced_tooltip": "Klicken, um das heutige Datum als letztes Batterie-Ersatzdatum aufzuzeichnen",
       "mark_replaced_done": "Batterie als ersetzt markiert",
-      "bn_banner_title": "Reichhaltigere Batterie-Infos?",
-      "bn_banner_body": "HACA verwendet seine eigene eingebettete Batterie-Bibliothek zur Erkennung von Batterietypen. Für breitere Geräteabdeckung und Ersatzdatum-Verfolgung mit Ein-Klick-Ereignissen installieren Sie die Battery Notes-Integration — HACA wird ihre Daten automatisch nutzen. Andernfalls können Sie HACAs eingebettete Bibliothek durch Hinzufügen von Einträgen in ihre JSON-Datei erweitern.",
-      "bn_banner_install_link": "📦 Battery Notes installieren",
-      "bn_banner_edit_link": "✏️ HACA-Bibliothek bearbeiten",
+      "edit_library_link": "✏️ HACA-Bibliothek bearbeiten",
       "bn_edit_modal_title": "HACA-Batterie-Bibliothek erweitern",
       "bn_edit_modal_body": "HACA enthält eine eingebaute Batterie-Bibliotheksdatei. Öffnen Sie diese in einem Texteditor (per File Editor-Add-on, SSH oder Studio Code Server) und fügen Sie einen neuen Eintrag im \"devices\"-Array hinzu.",
       "bn_step1_title": "Bibliotheksdatei öffnen",
@@ -451,13 +447,13 @@
       "bn_step2_title": "Neues Gerät im \"devices\"-Array hinzufügen",
       "bn_step2_detail": "Fügen Sie ein neues JSON-Objekt im \"devices\"-Array ein (vergessen Sie das Komma zwischen den Einträgen nicht). Den genauen Hersteller und das Modell Ihres Geräts finden Sie in HA: Einstellungen → Geräte & Dienste → Klick auf das Gerät. Beispieleintrag zum Kopieren:",
       "bn_step3_title": "Home Assistant neu starten",
-      "bn_step3_detail": "Nach dem Neustart lädt HACA Ihre Benutzerdatei zusätzlich zur Seed-Datei und verwendet sie zur Batterietyp-Erkennung. Neue Einträge erscheinen sofort beim nächsten Batterie-Scan.",
+      "bn_step3_detail": "Nach dem Neustart lädt HACA die aktualisierte Bibliothek neu und nutzt sie zur Erkennung der Batterietypen. Neue Einträge erscheinen sofort beim nächsten Batterie-Scan.",
       "bn_fields_label": "Feld-Referenz:",
       "bn_field_mfr_help": "muss genau mit dem übereinstimmen, was HA für das Gerät anzeigt (Groß-/Kleinschreibung beachten)",
       "bn_field_type_help": "z.B. \"AA\", \"AAA\", \"CR2032\", \"CR2450\", \"Rechargeable\", \"Mains\", \"Irreplaceable\"",
       "bn_field_qty_help": "Ganzzahl, Anzahl der Batterien (1, 2, 3, ...) — weglassen bei 1",
       "bn_field_match_help": "optional: \"exact\" (Standard), \"startswith\", \"endswith\" oder \"contains\" — nützlich für Modellvarianten",
-      "bn_warning_overwrite": "Wichtig: Diese Datei wird beim HACA-Update überschrieben. Bewahren Sie eine Sicherungskopie Ihrer Zusätze auf und erwägen Sie, beliebte Geräte an die öffentliche Battery Notes-Bibliothek zu übermitteln."
+      "bn_warning_overwrite": "Wichtig: Diese Datei wird beim HACA-Update überschrieben. Bewahren Sie vor dem Update eine Sicherungskopie Ihrer Zusätze auf."
     },
     "issues": {
       "open_dashboard": "Dashboard öffnen",

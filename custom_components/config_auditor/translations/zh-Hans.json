@@ -104,7 +104,7 @@
   "panel": {
     "title": "H.A.C.A",
     "subtitle": "Home Assistant 配置审计器",
-    "version": "v1.7.3",
+    "version": "v1.7.4",
     "buttons": {
       "scan_all": "全面扫描",
       "automations": "自动化",
@@ -433,17 +433,13 @@
       "subtab_predict": "预测",
       "monitor_title": "电池监控",
       "type_col": "电池类型",
-      "battery_notes_tooltip": "来自Battery Notes的电池类型",
       "last_replaced_col": "最近更换",
       "never_replaced": "从未",
       "manufacturer_col": "制造商 / 型号",
       "mark_replaced": "标记为已更换",
       "mark_replaced_tooltip": "点击以记录今天为最后更换电池日期",
       "mark_replaced_done": "电池已标记为已更换",
-      "bn_banner_title": "需要更丰富的电池信息？",
-      "bn_banner_body": "HACA 使用其内置电池库来检测电池类型。要获得更广泛的设备覆盖和带一键事件的更换日期跟踪，请安装 Battery Notes 集成 — HACA 将自动使用其数据。否则，您可以通过向 HACA 的 JSON 文件添加条目来扩展其内置库。",
-      "bn_banner_install_link": "📦 安装 Battery Notes",
-      "bn_banner_edit_link": "✏️ 编辑 HACA 库",
+      "edit_library_link": "✏️ 编辑 HACA 库",
       "bn_edit_modal_title": "扩展 HACA 电池库",
       "bn_edit_modal_body": "HACA 包含内置的电池库文件。在文本编辑器中打开它（通过 File Editor 加载项、SSH 或 Studio Code Server），然后在 \"devices\" 数组中添加新条目。",
       "bn_step1_title": "打开库文件",
@@ -451,13 +447,13 @@
       "bn_step2_title": "将新设备添加到 \"devices\" 数组",
       "bn_step2_detail": "在 \"devices\" 数组中插入新的 JSON 对象（不要忘记条目之间的逗号）。在 HA 中查找您设备的准确制造商和型号：设置 → 设备与服务 → 点击您的设备。复制示例条目：",
       "bn_step3_title": "重启 Home Assistant",
-      "bn_step3_detail": "重启后，HACA 将连同 seed 一起加载您的用户文件，并用于电池类型检测。新条目将立即在下次电池扫描中显示。",
+      "bn_step3_detail": "重启后，HACA 将重新加载更新后的库并用于电池类型检测。新条目会在下次电池扫描时立即出现。",
       "bn_fields_label": "字段参考：",
       "bn_field_mfr_help": "必须与 HA 为设备显示的内容完全匹配（区分大小写）",
       "bn_field_type_help": "例如 \"AA\"、\"AAA\"、\"CR2032\"、\"CR2450\"、\"Rechargeable\"、\"Mains\"、\"Irreplaceable\"",
       "bn_field_qty_help": "整数，电池数量（1、2、3...）— 为 1 时可省略",
       "bn_field_match_help": "可选：\"exact\"（默认）、\"startswith\"、\"endswith\" 或 \"contains\" — 适用于型号变体",
-      "bn_warning_overwrite": "重要：HACA 更新时此文件将被覆盖。保留您添加内容的备份，并考虑将常见设备提交到公共 Battery Notes 库以便共享。"
+      "bn_warning_overwrite": "重要：HACA 更新时此文件将被覆盖。请在更新前保留您添加内容的备份。"
     },
     "issues": {
       "open_dashboard": "打开仪表板",

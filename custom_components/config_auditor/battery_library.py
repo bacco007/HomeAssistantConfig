@@ -1,13 +1,13 @@
-"""HACA Battery Library — autonomous battery-type lookup.
+"""HACA Battery Library — battery-type lookup.
 
 Provides battery_type and battery_quantity for a device given its
 manufacturer/model from the HA device registry.
 
-The seed library is bundled with the integration. Users can extend it
-by editing the seed JSON file directly (path is shown in the panel).
-For the most complete and up-to-date device coverage, users can install
-the Battery Notes integration — HACA will automatically use its data
-when present.
+The library is bundled with the integration and covers ~2000 devices
+(HACA-curated entries + the public Battery Notes library, MIT licence).
+No external integration is required. Users can extend the bundled
+library by editing the seed JSON file directly (path is shown in the
+panel's "Edit library" modal).
 """
 from __future__ import annotations
 

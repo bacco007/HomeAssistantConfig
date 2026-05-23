@@ -85,9 +85,9 @@ class BatteryMonitor:
         except Exception:
             pass
 
-        # ── HACA Battery Library (autonomous) ────────────────────────────────
-        # Loads battery type/quantity from a community-maintained device DB
-        # (Battery Notes library, MIT licence). No external integration required.
+        # ── HACA Battery Library ──────────────────────────────────────────────
+        # Loads battery type/quantity from the bundled device DB
+        # (HACA-curated + Battery Notes public library, MIT licence).
         battery_lib = None
         try:
             from .battery_library import BatteryLibrary
@@ -110,28 +110,6 @@ class BatteryMonitor:
                 break
         except Exception:
             pass
-
-        # ── Battery Notes integration (optional bonus enrichment) ────────────
-        battery_notes_map: dict[str, dict] = {}
-        for _bn_state in self.hass.states.async_all():
-            _bn_eid = _bn_state.entity_id
-            if not _bn_eid.startswith("sensor.") or not _bn_eid.endswith("_battery_plus"):
-                continue
-            _source = (_bn_state.attributes.get("source_entity_id")
-                       or _bn_state.attributes.get("source"))
-            if not _source:
-                continue
-            _btype = _bn_state.attributes.get("battery_type", "")
-            _bqty  = _bn_state.attributes.get("battery_quantity", 1)
-            _btaq  = _bn_state.attributes.get("battery_type_and_quantity", "")
-            _blr   = _bn_state.attributes.get("battery_last_replaced", "")
-            if _btype:
-                battery_notes_map[_source] = {
-                    "battery_type":             _btype,
-                    "battery_quantity":          int(_bqty) if _bqty else 1,
-                    "battery_type_and_quantity": _btaq or _btype,
-                    "battery_last_replaced":     str(_blr) if _blr else "",
-                }
 
         for state in self.hass.states.async_all():
             entity_id = state.entity_id
@@ -188,13 +166,11 @@ class BatteryMonitor:
 
             unit = state.attributes.get("unit_of_measurement", "%")
 
-            bn = battery_notes_map.get(entity_id, {})
             di = device_info_map.get(entity_id, {})
 
             # ── Determine battery type with this priority ────────────────────
-            # 1) Battery Notes integration (richest data, if installed)
-            # 2) HACA autonomous Battery Library (manufacturer + model lookup)
-            # 3) Native attributes on the entity (battery_type, battery_size, ...)
+            # 1) HACA bundled Battery Library (manufacturer + model lookup)
+            # 2) Native attributes on the entity (battery_type, battery_size, ...)
             attrs = state.attributes
             native_type = (
                 attrs.get("battery_type")
@@ -222,23 +198,20 @@ class BatteryMonitor:
                 )
 
             final_type = (
-                bn.get("battery_type")
-                or (lib_hit or {}).get("battery_type")
+                (lib_hit or {}).get("battery_type")
                 or native_type
                 or ""
             )
             final_qty = (
-                bn.get("battery_quantity")
-                or (lib_hit or {}).get("battery_quantity")
+                (lib_hit or {}).get("battery_quantity")
                 or native_qty
                 or 0
             )
-            final_taq = bn.get("battery_type_and_quantity") or (
+            final_taq = (
                 f"{final_qty}× {final_type}" if final_type and final_qty > 1 else final_type
             )
 
-            # Last-replaced date: BN if present, else user-set HACA value
-            final_replaced = bn.get("battery_last_replaced") or replaced_dates.get(entity_id, "")
+            final_replaced = replaced_dates.get(entity_id, "")
 
             self.battery_list.append({
                 "entity_id":                entity_id,
