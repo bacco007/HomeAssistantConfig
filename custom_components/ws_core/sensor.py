@@ -1,4 +1,4 @@
-"""Sensors for Weather Station Core -- v1.7.0."""
+"""Sensors for Weather Station Core -- v1.7.1."""
 
 from __future__ import annotations
 
@@ -1660,6 +1660,9 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             KEY_VIGILANCE_MAX_LEVEL: "vigilance",
             KEY_RIVER_LEVEL_M: "river_level",
             KEY_RAIN_NEXT_60MIN: "rain_next_60min",
+            KEY_MINUTES_UNTIL_RAIN: "minutes_until_rain",
+            KEY_MINUTES_UNTIL_DRY: "minutes_until_dry",
+            KEY_NOWCAST_INTENSITY: "nowcast_intensity",
         }
         if key in overrides:
             return overrides[key]

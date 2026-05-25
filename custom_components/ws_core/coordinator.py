@@ -30,7 +30,7 @@ import math
 import pathlib as _pathlib
 from collections import deque
 from dataclasses import dataclass, field
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import Any
 
 import aiohttp
@@ -536,6 +536,9 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._learning_state: Any = _LS()
         self._learning_store: Any = None
         self._learning_last_save: Any = None
+        # v1.7.1: persist rolling-window history + daily accumulators so they
+        # survive HA restarts/upgrades instead of resetting (issue #16)
+        self._history_store: Any = None
         # v1.6.6: streak once-per-day guard now persisted in LearningState
         # (streak_last_counted_date); the old in-memory guard was lost on
         # restart, causing repeated increments within one day (issue #15).
@@ -611,6 +614,15 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             self._learning_state.solar_factor_n,
             self._learning_state.dry_streak_days,
         )
+
+        # v1.7.1: rehydrate rolling-window history + daily accumulators (issue #16)
+        self._history_store = Store(self.hass, 1, f"ws_core_{entry_id}_history")
+        try:
+            hist = await self._history_store.async_load()
+            if hist:
+                self._restore_history_state(hist)
+        except Exception as err:  # noqa: BLE001
+            _LOGGER.warning("ws_core: failed to restore history state (starting fresh): %s", err)
 
         entity_ids = [eid for eid in self.sources.values() if eid]
         if entity_ids:
@@ -750,6 +762,11 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             from .learning_state import async_save_learning
 
             await async_save_learning(self._learning_store, self._learning_state)
+        # v1.7.1: persist rolling-window history + accumulators (issue #16).
+        # Clean restarts/upgrades go through here, so the windows survive.
+        if self._history_store is not None:
+            with contextlib.suppress(Exception):
+                await self._history_store.async_save(self._dump_history_state())
 
     @callback
     def _handle_source_change(self, event) -> None:
@@ -1899,6 +1916,111 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
             await async_save_learning(self._learning_store, self._learning_state)
             self._learning_last_save = now
+            # Backstop save of history/accumulators on the same cadence, so a
+            # hard crash (no clean async_stop) loses at most one interval.
+            if self._history_store is not None:
+                with contextlib.suppress(Exception):
+                    await self._history_store.async_save(self._dump_history_state())
+
+    # ------------------------------------------------------------------
+    # v1.7.1 - rolling-window history + accumulator persistence (issue #16)
+    # ------------------------------------------------------------------
+    def _dump_history_state(self) -> dict[str, Any]:
+        """Serialize rolling-window deques and daily accumulators for storage."""
+        rt = self.runtime
+
+        def _dq(history) -> list:
+            out = []
+            for ts, v in history:
+                try:
+                    out.append([ts.isoformat(), float(v)])
+                except (AttributeError, TypeError, ValueError):
+                    continue
+            return out
+
+        pts = rt.pressure_history_ts
+        return {
+            "temp_history_24h": _dq(rt.temp_history_24h),
+            "gust_history_24h": _dq(rt.gust_history_24h),
+            "rain_total_history_24h": _dq(rt.rain_total_history_24h),
+            "pressure_history": [float(v) for v in rt.pressure_history],
+            "pressure_history_ts": pts.isoformat() if hasattr(pts, "isoformat") else None,
+            "rain_today_mm": self._rain_today_mm,
+            "rain_today_date": self._rain_today_date,
+            "rain_today_last_total": self._rain_today_last_total,
+            "rain_prev_day_mm": self._rain_prev_day_mm,
+            "rain_prev_day_date": self._rain_prev_day_date,
+            "wind_run_km": self._wind_run_km,
+            "wind_run_date": self._wind_run_date,
+            "chill_hours_today": self._chill_hours_today,
+            "chill_hours_today_date": self._chill_hours_today_date,
+            "chill_hours_season": self._chill_hours_season,
+            "chill_hours_season_date": self._chill_hours_season_date,
+        }
+
+    def _restore_history_state(self, data: dict[str, Any]) -> None:
+        """Rehydrate rolling-window deques and daily accumulators on startup.
+
+        24h deques are pruned to the trailing 24h. Daily accumulators are only
+        restored when their saved date matches today (local), so they continue
+        the current day instead of carrying a stale total into a new one.
+        """
+        if not data:
+            return
+        rt = self.runtime
+        now = dt_util.utcnow()
+        cutoff = now - timedelta(hours=24)
+
+        def _load_dq(key: str) -> deque:
+            out: deque = deque()
+            for item in data.get(key) or []:
+                try:
+                    ts = datetime.fromisoformat(item[0])
+                    v = float(item[1])
+                except (ValueError, TypeError, IndexError):
+                    continue
+                if ts >= cutoff:
+                    out.append((ts, v))
+            return out
+
+        rt.temp_history_24h = _load_dq("temp_history_24h")
+        rt.gust_history_24h = _load_dq("gust_history_24h")
+        rt.rain_total_history_24h = _load_dq("rain_total_history_24h")
+
+        ph: deque = deque(maxlen=PRESSURE_HISTORY_SAMPLES)
+        for v in data.get("pressure_history") or []:
+            try:
+                ph.append(float(v))
+            except (TypeError, ValueError):
+                continue
+        rt.pressure_history = ph
+        pts = data.get("pressure_history_ts")
+        try:
+            rt.pressure_history_ts = datetime.fromisoformat(pts) if pts else None
+        except (ValueError, TypeError):
+            rt.pressure_history_ts = None
+
+        today = dt_util.now().strftime("%Y-%m-%d")
+
+        # Streak day-boundary snapshot (used by _compute_streaks); safe to restore always.
+        self._rain_prev_day_mm = float(data.get("rain_prev_day_mm") or 0.0)
+        self._rain_prev_day_date = data.get("rain_prev_day_date") or ""
+
+        # Daily accumulators: continue only if still the same calendar day.
+        if data.get("rain_today_date") == today:
+            self._rain_today_mm = float(data.get("rain_today_mm") or 0.0)
+            self._rain_today_date = today
+            lt = data.get("rain_today_last_total")
+            self._rain_today_last_total = float(lt) if lt is not None else None
+        if data.get("wind_run_date") == today:
+            self._wind_run_km = float(data.get("wind_run_km") or 0.0)
+            self._wind_run_date = today
+        if data.get("chill_hours_today_date") == today:
+            self._chill_hours_today = float(data.get("chill_hours_today") or 0.0)
+            self._chill_hours_today_date = today
+        # Season chill total persists across days; its own reset logic handles rollover.
+        self._chill_hours_season = float(data.get("chill_hours_season") or 0.0)
+        self._chill_hours_season_date = data.get("chill_hours_season_date") or ""
 
     # ------------------------------------------------------------------
     # Main orchestrator
