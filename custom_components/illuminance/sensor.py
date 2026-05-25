@@ -20,7 +20,6 @@ from astral.location import Location
 import voluptuous as vol
 
 from homeassistant.components.sensor import (
-    PLATFORM_SCHEMA as SENSOR_PLATFORM_SCHEMA,
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
@@ -63,7 +62,6 @@ from homeassistant.core import (
     callback,
 )
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback, EntityPlatform
 from homeassistant.helpers.event import async_track_state_change_event
 import homeassistant.util.dt as dt_util
@@ -144,7 +142,6 @@ ILLUMINANCE_SCHEMA = {
     vol.Optional(CONF_MODE, default=MODES[0]): vol.In(MODES),
     vol.Optional(CONF_FALLBACK): vol.All(vol.Coerce(float), vol.Range(1, 10)),
 }
-PLATFORM_SCHEMA = SENSOR_PLATFORM_SCHEMA.extend(ILLUMINANCE_SCHEMA)
 
 _20_MIN = timedelta(minutes=20)
 _40_MIN = timedelta(minutes=40)
@@ -232,11 +229,6 @@ class IlluminanceSensor(SensorEntity):
     """Illuminance sensor."""
 
     entity_description: IlluminanceSensorEntityDescription
-    _attr_device_info = DeviceInfo(
-        entry_type=DeviceEntryType.SERVICE,
-        identifiers={(DOMAIN, DOMAIN)},
-        translation_key="service",
-    )
     _entity_status = EntityStatus.NOT_SEEN
     _sk_mapping: Sequence[tuple[Num, Sequence[str]]] | None = None
     _sk: Num
