@@ -1,4 +1,4 @@
-let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.17.1";
+let $4fcaa3c95ba349ea$export$a4ad2735b021c132 = "v0.17.2";
 let $4fcaa3c95ba349ea$export$6df7962ea75d9a39 = "https://a.espncdn.com/i/headshots/golf/players/full/";
 let $4fcaa3c95ba349ea$export$7e154a1de2266268 = "https://a.espncdn.com/i/headshots/mma/players/full/";
 let $4fcaa3c95ba349ea$export$c8a00e33d990d0fa = "https://a.espncdn.com/i/headshots/rpm/players/full/";
@@ -3435,15 +3435,16 @@ function $84bc952fd23869d6$export$2e2366488d12e20d(t, lang, stateObj, c, o, spor
     c.scoreOp[2] = .6;
     if (c.winner[team]) c.scoreOp[team] = 1;
     if (c.winner[oppo]) c.scoreOp[oppo] = 1;
-    if (stateObj.attributes.team_homeaway == 'home') {
-        c.color[team] = stateObj.attributes.team_colors[0];
-        c.color[oppo] = stateObj.attributes.opponent_colors[1];
-    } else if (stateObj.attributes.team_homeaway == 'away') {
-        c.color[team] = stateObj.attributes.team_colors[1];
-        c.color[oppo] = stateObj.attributes.opponent_colors[0];
-    } else {
-        c.color[team] = '#ffffff';
-        c.color[oppo] = '#000000';
+    c.color[team] = '#ffffff';
+    c.color[oppo] = '#000000';
+    if (stateObj.attributes.team_colors && stateObj.attributes.opponent_colors) {
+        if (stateObj.attributes.team_homeaway == 'home') {
+            c.color[team] = stateObj.attributes.team_colors[0];
+            c.color[oppo] = stateObj.attributes.opponent_colors[1];
+        } else if (stateObj.attributes.team_homeaway == 'away') {
+            c.color[team] = stateObj.attributes.team_colors[1];
+            c.color[oppo] = stateObj.attributes.opponent_colors[0];
+        }
     }
     c.possessionOp[team] = 0;
     c.possessionOp[oppo] = 0;
