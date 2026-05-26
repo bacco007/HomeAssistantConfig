@@ -13,9 +13,11 @@ import voluptuous as vol
 from homeassistant.config_entries import (
     CONN_CLASS_CLOUD_POLL,
     SOURCE_REAUTH,
+    ConfigEntry,
     ConfigEntryState,
     ConfigFlow,
     ConfigFlowResult,
+    OptionsFlow,
 )
 from homeassistant.const import (
     CONF_BASE,
@@ -28,6 +30,9 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 from homeassistant.helpers.selector import (
+    NumberSelector,
+    NumberSelectorConfig,
+    NumberSelectorMode,
     SelectOptionDict,
     SelectSelector,
     SelectSelectorConfig,
@@ -41,10 +46,14 @@ from . import LGEAuthentication, is_valid_ha_version
 from .const import (
     CONF_LANGUAGE,
     CONF_OAUTH2_URL,
+    CONF_SCAN_INTERVAL,
     CONF_USE_API_V2,
     CONF_USE_HA_SESSION,
     CONF_USE_REDIRECT,
+    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    MAX_SCAN_INTERVAL,
+    MIN_SCAN_INTERVAL,
     __min_ha_version__,
 )
 from .wideq.core_exceptions import AuthenticationError, InvalidCredentialError
@@ -79,6 +88,12 @@ class SmartThinQFlowHandler(ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
     CONNECTION_CLASS = CONN_CLASS_CLOUD_POLL
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlow:
+        """Return the options flow handler."""
+        return SmartThinQOptionsFlowHandler()
 
     def __init__(self) -> None:
         """Initialize flow."""
@@ -391,3 +406,32 @@ def _dict_to_select(opt_dict: dict) -> SelectSelectorConfig:
         options=[SelectOptionDict(value=str(k), label=v) for k, v in opt_dict.items()],
         mode=SelectSelectorMode.DROPDOWN,
     )
+
+
+class SmartThinQOptionsFlowHandler(OptionsFlow):
+    """Handle the SmartThinQ options flow (per-entry configurable settings)."""
+
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Manage the integration options."""
+        if user_input is not None:
+            return self.async_create_entry(title="", data=user_input)
+
+        current = self.config_entry.options.get(
+            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
+        )
+        schema = vol.Schema(
+            {
+                vol.Required(CONF_SCAN_INTERVAL, default=current): NumberSelector(
+                    NumberSelectorConfig(
+                        min=MIN_SCAN_INTERVAL,
+                        max=MAX_SCAN_INTERVAL,
+                        step=1,
+                        mode=NumberSelectorMode.BOX,
+                        unit_of_measurement="s",
+                    )
+                ),
+            }
+        )
+        return self.async_show_form(step_id="init", data_schema=schema)

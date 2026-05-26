@@ -35,8 +35,10 @@ from .const import (
     CLIENT,
     CONF_LANGUAGE,
     CONF_OAUTH2_URL,
+    CONF_SCAN_INTERVAL,
     CONF_USE_API_V2,
     CONF_USE_HA_SESSION,
+    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     LGE_DEVICES,
     LGE_DISCOVERY_NEW,
@@ -68,6 +70,7 @@ SMARTTHINQ_PLATFORMS = [
     Platform.FAN,
     Platform.HUMIDIFIER,
     Platform.LIGHT,
+    Platform.NUMBER,
     Platform.SELECT,
     Platform.SENSOR,
     Platform.SWITCH,
@@ -83,7 +86,6 @@ SIGNAL_RELOAD_ENTRY = f"{DOMAIN}_reload_entry"
 DISCOVERED_DEVICES = "discovered_devices"
 UNSUPPORTED_DEVICES = "unsupported_devices"
 
-SCAN_INTERVAL = timedelta(seconds=30)
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -230,9 +232,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
         return False
 
-    log_info: bool = hass.data.get(DOMAIN, {}).get(SIGNAL_RELOAD_ENTRY, 0) < 2
+    # Forward the scan_interval number entity before any LG call so users can
+    # adjust the polling rate even when the LG cloud is unreachable.
+    hass.data.setdefault(DOMAIN, {})[CONF_SCAN_INTERVAL] = int(
+        entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+    )
+    await hass.config_entries.async_forward_entry_setups(entry, [Platform.NUMBER])
+    entry.async_on_unload(entry.add_update_listener(_options_update_listener))
+
+    log_info: bool = hass.data[DOMAIN].get(SIGNAL_RELOAD_ENTRY, 0) < 2
     if log_info:
-        hass.data[DOMAIN] = {SIGNAL_RELOAD_ENTRY: 2}
+        hass.data[DOMAIN][SIGNAL_RELOAD_ENTRY] = 2
         _LOGGER.info(STARTUP)
         _LOGGER.info(
             "Initializing ThinQ platform with region: %s - language: %s",
@@ -269,12 +279,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             _LOGGER.warning(msg, exc_info=True)
         raise ConfigEntryNotReady(msg) from exc
 
-    except Exception as exc:
+    except Exception as exc:  # pylint: disable=broad-except
         if log_info:
             _LOGGER.warning(
-                "Connection not available. ThinQ platform not ready", exc_info=True
+                "Connection not available. ThinQ platform not ready", exc_info=exc
             )
-        raise ConfigEntryNotReady("ThinQ platform not ready") from exc
+        # Keep the entry loaded so the number entity is usable and the user
+        # can adjust scan_interval; reload the entry once LG is reachable.
+        return True
 
     if not client.has_devices:
         _LOGGER.error("No ThinQ devices found. Component setup aborted")
@@ -286,17 +298,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         lge_devices, unsupported_devices, discovered_devices = await lge_devices_setup(
             hass, client
         )
-    except Exception as exc:
+    except Exception as exc:  # pylint: disable=broad-except
         if log_info:
             _LOGGER.warning(
-                "Connection not available. ThinQ platform not ready", exc_info=True
+                "Connection not available. ThinQ platform not ready", exc_info=exc
             )
         await client.close()
-        raise ConfigEntryNotReady("ThinQ platform not ready") from exc
+        return True
 
     if discovered_devices is None:
         await client.close()
-        raise ConfigEntryNotReady("ThinQ platform not ready: no devices found.")
+        _LOGGER.warning("ThinQ platform not ready: no devices found")
+        return True
 
     # remove device not available anymore
     dev_ids = [v for ids in discovered_devices.values() for v in ids]
@@ -321,29 +334,58 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, _close_lg_client)
     )
 
-    hass.data[DOMAIN] = {
-        CLIENT: client,
-        LGE_DEVICES: lge_devices,
-        UNSUPPORTED_DEVICES: unsupported_devices,
-        DISCOVERED_DEVICES: discovered_devices,
-    }
-    await hass.config_entries.async_forward_entry_setups(entry, SMARTTHINQ_PLATFORMS)
+    # update() (not assignment) preserves the CONF_SCAN_INTERVAL seeded earlier.
+    hass.data[DOMAIN].update(
+        {
+            CLIENT: client,
+            LGE_DEVICES: lge_devices,
+            UNSUPPORTED_DEVICES: unsupported_devices,
+            DISCOVERED_DEVICES: discovered_devices,
+        }
+    )
+    await hass.config_entries.async_forward_entry_setups(
+        entry, [p for p in SMARTTHINQ_PLATFORMS if p is not Platform.NUMBER]
+    )
 
     start_devices_discovery(hass, entry, client)
 
     return True
 
 
+async def _options_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Apply OptionsFlow changes to running coordinators without a reload."""
+    new_interval = int(entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
+    domain_data = hass.data.get(DOMAIN, {})
+    if domain_data.get(CONF_SCAN_INTERVAL) == new_interval:
+        return
+    domain_data[CONF_SCAN_INTERVAL] = new_interval
+    delta = timedelta(seconds=new_interval)
+    for devices in domain_data.get(LGE_DEVICES, {}).values():
+        for lge_device in devices:
+            if lge_device.coordinator is not None:
+                lge_device.coordinator.update_interval = delta
+                # Reschedule so the new interval takes effect immediately
+                # rather than waiting out the old one.
+                if lge_device.coordinator.data is not None:
+                    lge_device.coordinator.async_set_updated_data(
+                        lge_device.coordinator.data
+                    )
+    _LOGGER.info("ThinQ scan interval updated to %d seconds", new_interval)
+
+
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
-    if unload_ok := await hass.config_entries.async_unload_platforms(
-        entry, SMARTTHINQ_PLATFORMS
-    ):
+    # If LG never connected, only the number platform was forwarded; trying to
+    # unload the LG-dependent platforms in that case errors out per-platform.
+    lg_loaded = CLIENT in hass.data.get(DOMAIN, {})
+    platforms = SMARTTHINQ_PLATFORMS if lg_loaded else [Platform.NUMBER]
+    if unload_ok := await hass.config_entries.async_unload_platforms(entry, platforms):
         data = hass.data.pop(DOMAIN)
         reload = data.get(SIGNAL_RELOAD_ENTRY, 0)
         if reload > 0:
             hass.data[DOMAIN] = {SIGNAL_RELOAD_ENTRY: reload}
-        await data[CLIENT].close()
+        if (client := data.get(CLIENT)) is not None:
+            await client.close()
     return unload_ok
 
 
@@ -465,13 +507,16 @@ class LGEDevice:
 
     async def _create_coordinator(self) -> None:
         """Get the coordinator for a specific device."""
+        interval = self._hass.data.get(DOMAIN, {}).get(
+            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
+        )
         coordinator: DataUpdateCoordinator = DataUpdateCoordinator(
             self._hass,
             _LOGGER,
             name=f"{DOMAIN}-{self._name}",
             update_method=self._async_update,
             # Polling interval. Will only be polled if there are subscribers.
-            update_interval=SCAN_INTERVAL,
+            update_interval=timedelta(seconds=interval),
         )
         await coordinator.async_refresh()
         self._coordinator = coordinator
