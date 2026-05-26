@@ -27,12 +27,31 @@
       "unused_frontend": {
         "name": "Unused Frontend Resources"
       }
+    },
+    "todo": {
+      "hacs_update_actions": {
+        "name": "HACS Update Actions"
+      }
     }
   },
   "services": {
     "scan_now": {
       "name": "Custom Component Monitor: manual scan",
       "description": "Trigger an immediate scan of all HACS-installed custom components."
+    },
+    "update_and_action": {
+      "name": "Update and Add Action",
+      "description": "Install the HACS update and add a to-do item to track follow-up actions.",
+      "fields": {
+        "entity_id": {
+          "name": "Update Entity",
+          "description": "The update entity to install (e.g. update.my_integration_update)."
+        },
+        "version": {
+          "name": "Version",
+          "description": "Specific version to install. If omitted, installs the latest version."
+        }
+      }
     }
   }
 }

@@ -2,7 +2,7 @@
  * Custom Component Monitor Card
  * A Lovelace card that displays unused HACS components.
  */
-var CARD_VERSION = "1.2.0";
+var CARD_VERSION = "1.3.0";
 
 var ALL_SECTIONS = ["integrations", "themes", "frontend"];
 
@@ -109,16 +109,17 @@ class CustomComponentMonitorCard extends HTMLElement {
     if (!this._hass) { return; }
 
     var allComponents = this._getSensor("sensor.hacs_installed_components");
-    var totalInstalled = allComponents ? (allComponents.attributes.total_components || 0) : 0;
     var lastScan = allComponents ? (allComponents.attributes.last_scan || "") : "";
 
     var sections = this._getVisibleSections();
 
+    var totalInstalled = 0;
     var totalUnused = 0;
     var totalUsed = 0;
     for (var i = 0; i < sections.length; i++) {
       var s = sections[i];
       if (s.sensor) {
+        totalInstalled += (s.sensor.attributes.total_components || 0);
         totalUnused += parseInt(s.sensor.state, 10) || 0;
         totalUsed += (s.sensor.attributes.used_components || 0);
       }
