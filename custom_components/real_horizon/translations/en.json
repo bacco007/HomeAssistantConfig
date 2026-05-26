@@ -1,0 +1,25 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Real Horizon",
+        "description": "This will fetch a terrain horizon profile from PVGIS for your Home Assistant location:\n\n- Latitude: {latitude}\n- Longitude: {longitude}\n\nClick Submit to add the integration."
+      }
+    },
+    "abort": {
+      "already_configured": "Real Horizon is already set up."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "true_sunrise": { "name": "True sunrise" },
+      "true_sunset": { "name": "True sunset" },
+      "sun_clearance": { "name": "Sun clearance" },
+      "horizon_at_sun": { "name": "Horizon at sun azimuth" },
+      "local_horizon": { "name": "Local horizon profile" }
+    },
+    "binary_sensor": {
+      "above_local_horizon": { "name": "Sun above local horizon" }
+    }
+  }
+}
