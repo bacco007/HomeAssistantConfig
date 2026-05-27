@@ -3,6 +3,7 @@
  */
 import { AppState } from '@core/state';
 import { getWeightsForFont, clampFontWeight } from '@core/font_weights.js';
+import { openDisplayTextPosition } from '../../js/io/adapters/opendisplay_helpers.js';
 
 const getClockMode = (props = {}) => props.clock_mode === '12h' ? '12h' : '24h';
 const getTimeStrftime = (clockMode) => clockMode === '12h' ? '%I:%M %p' : '%H:%M';
@@ -313,20 +314,15 @@ export default {
             color = layout?.darkMode ? "white" : "black";
         }
 
-        // Align Map for ODP anchor
-        const xCenter = textAlign.includes("CENTER") || textAlign === "CENTER";
-        const xRight = textAlign.includes("RIGHT");
-        const yCenter = textAlign.includes("CENTER") || (!textAlign.includes("TOP") && !textAlign.includes("BOTTOM"));
-        const yBottom = textAlign.includes("BOTTOM");
-        const anchor = (xCenter ? "m" : (xRight ? "r" : "l")) + (yCenter ? "m" : (yBottom ? "b" : "t"));
+        const position = openDisplayTextPosition(w, textAlign, "mm");
 
         if (format === "time_date") {
             return {
                 type: "multiline",
                 value: template,
                 delimiter: "\n",
-                x: Math.round(w.x + (xCenter ? w.width / 2 : (xRight ? w.width : 0))),
-                y: Math.round(w.y + (yCenter ? w.height / 2 : (yBottom ? w.height : 0))),
+                x: position.x,
+                y: position.y,
                 offset_y: (p.time_font_size || 28) + 4,
                 size: p.time_font_size || 28,
                 color: color,
@@ -334,14 +330,18 @@ export default {
             };
         }
 
+        const singleLineFontSize = (format === "date_only" || format === "weekday_day_month")
+            ? (p.date_font_size || 16)
+            : (p.time_font_size || 28);
+
         return {
             type: "text",
-            x: Math.round(w.x + (xCenter ? w.width / 2 : (xRight ? w.width : 0))),
-            y: Math.round(w.y + (yCenter ? w.height / 2 : (yBottom ? w.height : 0))),
+            x: position.x,
+            y: position.y,
             value: template,
-            size: p.time_font_size || 28,
+            size: singleLineFontSize,
             color: color,
-            anchor: anchor,
+            anchor: position.anchor,
             font: p.font_family?.includes("Mono") ? "mononoki.ttf" : "ppb.ttf"
         };
     },

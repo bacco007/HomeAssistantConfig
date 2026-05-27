@@ -1,6 +1,7 @@
 import { AppState } from '@core/state';
 import { wordWrap, parseColorMarkup, evaluateTemplatePreview } from '../../js/utils/text_utils.js';
 import { getWeightsForFont, clampFontWeight } from '../../js/core/font_weights.js';
+import { openDisplayTextPosition } from '../../js/io/adapters/opendisplay_helpers.js';
 const render = (el, widget, { getColorStyle }) => {
     const props = widget.props || {};
     el.innerHTML = "";
@@ -243,13 +244,7 @@ export default {
             color = layout?.darkMode ? "white" : "black";
         }
 
-        // Mapping for alignment to ODP anchor
-        const alignMap = {
-            "TOP_LEFT": "lt", "TOP_CENTER": "mt", "TOP_RIGHT": "rt",
-            "CENTER_LEFT": "lm", "CENTER": "mm", "CENTER_RIGHT": "rm",
-            "BOTTOM_LEFT": "lb", "BOTTOM_CENTER": "mb", "BOTTOM_RIGHT": "rb"
-        };
-        const anchor = alignMap[p.text_align] || "lt";
+        const position = openDisplayTextPosition(w, p.text_align, "lt");
 
         if (text.includes('\n') || text.includes('\r')) {
             return {
@@ -286,12 +281,12 @@ export default {
         // Single line - use text
         const result = {
             type: "text",
-            x: Math.round(w.x),
-            y: Math.round(w.y),
+            x: position.x,
+            y: position.y,
             value: text,
             size: fontSize,
             color: color,
-            anchor: anchor,
+            anchor: position.anchor,
             font: fontFamily?.includes("Mono") ? "mononoki.ttf" : "ppb.ttf",
             parse_colors: !!p.parse_colors
         };
