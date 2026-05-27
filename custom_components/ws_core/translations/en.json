@@ -161,12 +161,24 @@
           "solar_interval_min": "Refresh interval",
           "_go_back": "← Go back to previous step"
         }
+      },
+      "vigicrues_station": {
+        "title": "Vigicrues station",
+        "description": "Choose a hydrometric station or leave on 'Auto' to use the nearest one.",
+        "data": {
+          "vigicrues_station_code": "Hydrometric station",
+          "_go_back": "← Go back to previous step"
+        },
+        "data_description": {
+          "vigicrues_station_code": "Select a station or leave on 'Auto (nearest station)' to auto-detect."
+        }
       }
     },
     "error": {
       "entity_not_found": "Entity not found in Home Assistant.",
       "not_numeric": "Entity state is not a numeric value.",
       "required": "This field is required.",
+      "wrong_sensor_type": "This entity's device_class does not match the expected sensor type. Pick a sensor with the correct device_class, or use one without a device_class set.",
       "elevation_out_of_range": "Elevation must be between -500 m and 9000 m.",
       "wind_gust_too_high": "Wind gust threshold exceeds the physical world record.",
       "temp_out_of_range": "Temperature is outside the physically possible range.",
@@ -336,12 +348,23 @@
           "solar_panel_tilt": "Panel tilt",
           "solar_interval_min": "Refresh interval"
         }
+      },
+      "vigicrues_station_opt": {
+        "title": "Vigicrues station",
+        "description": "Choose a hydrometric station or leave on 'Auto' to use the nearest one.",
+        "data": {
+          "vigicrues_station_code": "Hydrometric station"
+        },
+        "data_description": {
+          "vigicrues_station_code": "Select a station or leave on 'Auto (nearest station)' to auto-detect."
+        }
       }
     },
     "error": {
       "entity_not_found": "Entity not found in Home Assistant.",
       "not_numeric": "Entity state is not a numeric value.",
       "required": "This field is required.",
+      "wrong_sensor_type": "This entity's device_class does not match the expected sensor type. Pick a sensor with the correct device_class, or use one without a device_class set.",
       "elevation_out_of_range": "Elevation must be between -500 m and 9000 m.",
       "wind_gust_too_high": "Wind gust threshold exceeds the physical world record.",
       "temp_out_of_range": "Temperature is outside the physically possible range.",
@@ -475,6 +498,20 @@
           "jaune": "Yellow (be attentive)",
           "orange": "Orange (be on alert)",
           "rouge": "Red (absolute vigilance required)"
+        }
+      },
+      "fire_danger_vigilance": {
+        "name": "Fire Danger (Vigilance)",
+        "state": {
+          "vert": "Green (no fire risk)",
+          "jaune": "Yellow (be attentive)",
+          "orange": "Orange (be on alert)",
+          "rouge": "Red (extreme fire danger)"
+        },
+        "state_attributes": {
+          "department": { "name": "Department" },
+          "all_phenomena": { "name": "All active phenomena" },
+          "fetched_at": { "name": "Last updated" }
         }
       },
       "river_level": { "name": "River Level" },

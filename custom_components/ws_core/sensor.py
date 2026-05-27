@@ -68,6 +68,7 @@ from .const import (
     KEY_ET0_HOURLY_MM,
     KEY_ET0_PM_DAILY_MM,
     KEY_FEELS_LIKE_C,
+    KEY_FIRE_DANGER_VIGILANCE,
     KEY_FIRE_RISK_SCORE,
     KEY_FOG_PROBABILITY,
     KEY_FORECAST,
@@ -569,6 +570,17 @@ SENSORS: list[WSSensorDescription] = [
         attrs_fn=lambda d: {
             "phenomena": d.get("_vigilance_phenomena", {}),
             "department": d.get("_vigilance_dept"),
+            "fetched_at": d.get("_vigilance_fetched_at"),
+        },
+    ),
+    WSSensorDescription(
+        key=KEY_FIRE_DANGER_VIGILANCE,
+        translation_key="fire_danger_vigilance",
+        name="WS Fire Danger (Vigilance)",
+        icon="mdi:fire-alert",
+        attrs_fn=lambda d: {
+            "department": d.get("_vigilance_dept"),
+            "all_phenomena": d.get("_vigilance_phenomena"),
             "fetched_at": d.get("_vigilance_fetched_at"),
         },
     ),
@@ -1437,6 +1449,7 @@ _FEATURE_TOGGLE_MAP: dict[str, str] = {
     KEY_CLOUD_COVER_PCT: CONF_ENABLE_COMFORT_INDICES,
     # v1.6.0 French regional
     KEY_VIGILANCE_MAX_LEVEL: CONF_ENABLE_VIGILANCE_METEO,
+    KEY_FIRE_DANGER_VIGILANCE: CONF_ENABLE_VIGILANCE_METEO,
     KEY_RIVER_LEVEL_M: CONF_ENABLE_VIGICRUES,
     # v1.6.2 - station diagnostics (opt-in)
     KEY_SENSOR_DRIFT_FLAGS: CONF_ENABLE_DIAGNOSTICS,

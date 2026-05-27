@@ -161,12 +161,24 @@
           "solar_interval_min": "Intervalle d'actualisation",
           "_go_back": "← Retour à l'étape précédente"
         }
+      },
+      "vigicrues_station": {
+        "title": "Station Vigicrues",
+        "description": "Choisissez une station hydrométrique ou laissez sur « Auto » pour utiliser la plus proche.",
+        "data": {
+          "vigicrues_station_code": "Station hydrométrique",
+          "_go_back": "← Retour à l'étape précédente"
+        },
+        "data_description": {
+          "vigicrues_station_code": "Sélectionnez une station ou laissez sur « Auto (station la plus proche) » pour la détection automatique."
+        }
       }
     },
     "error": {
       "entity_not_found": "Entité introuvable dans Home Assistant.",
       "not_numeric": "La valeur de l'entité n'est pas numérique.",
       "required": "Ce champ est obligatoire.",
+      "wrong_sensor_type": "Le device_class de cette entité ne correspond pas au type de capteur attendu. Choisissez un capteur avec le bon device_class, ou utilisez-en un sans device_class défini.",
       "elevation_out_of_range": "L'altitude doit être comprise entre -500 m et 9000 m.",
       "wind_gust_too_high": "Le seuil de rafales dépasse le record physique mondial.",
       "temp_out_of_range": "La température dépasse les limites physiques possibles.",
@@ -336,12 +348,23 @@
           "solar_panel_tilt": "Inclinaison du panneau",
           "solar_interval_min": "Intervalle d'actualisation"
         }
+      },
+      "vigicrues_station_opt": {
+        "title": "Station Vigicrues",
+        "description": "Choisissez une station hydrométrique ou laissez sur « Auto » pour utiliser la plus proche.",
+        "data": {
+          "vigicrues_station_code": "Station hydrométrique"
+        },
+        "data_description": {
+          "vigicrues_station_code": "Sélectionnez une station ou laissez sur « Auto (station la plus proche) » pour la détection automatique."
+        }
       }
     },
     "error": {
       "entity_not_found": "Entité introuvable dans Home Assistant.",
       "not_numeric": "La valeur de l'entité n'est pas numérique.",
       "required": "Ce champ est obligatoire.",
+      "wrong_sensor_type": "Le device_class de cette entité ne correspond pas au type de capteur attendu. Choisissez un capteur avec le bon device_class, ou utilisez-en un sans device_class défini.",
       "elevation_out_of_range": "L'altitude doit être comprise entre -500 m et 9000 m.",
       "wind_gust_too_high": "Le seuil de rafales dépasse le record physique mondial.",
       "temp_out_of_range": "La température dépasse les limites physiques possibles.",
@@ -475,6 +498,20 @@
           "jaune": "Jaune (soyez attentifs)",
           "orange": "Orange (soyez très vigilants)",
           "rouge": "Rouge (vigilance absolue)"
+        }
+      },
+      "fire_danger_vigilance": {
+        "name": "Risque incendie (Vigilance)",
+        "state": {
+          "vert": "Vert (pas de risque incendie)",
+          "jaune": "Jaune (soyez attentif)",
+          "orange": "Orange (soyez en alerte)",
+          "rouge": "Rouge (danger extrême d'incendie)"
+        },
+        "state_attributes": {
+          "department": { "name": "Département" },
+          "all_phenomena": { "name": "Tous les phénomènes actifs" },
+          "fetched_at": { "name": "Dernière mise à jour" }
         }
       },
       "river_level": { "name": "Niveau de rivière" },

@@ -138,6 +138,9 @@ from .const import (
     CONF_THRESH_RAIN_RATE_MMPH,
     CONF_THRESH_WIND_GUST_MS,
     CONF_UNITS_MODE,
+    CONF_VIGICRUES_RIVER_NAME,
+    CONF_VIGICRUES_STATION_CODE,
+    CONF_VIGICRUES_STATION_NAME,
     CONF_WU_API_KEY,
     CONF_WU_INTERVAL_MIN,
     CONF_WU_STATION_ID,
@@ -209,6 +212,7 @@ from .const import (
     KEY_ET0_HOURLY_MM,
     KEY_ET0_PM_DAILY_MM,
     KEY_FEELS_LIKE_C,
+    KEY_FIRE_DANGER_VIGILANCE,
     KEY_FIRE_RISK_SCORE,
     KEY_FOG_PROBABILITY,
     KEY_FORECAST,
@@ -506,9 +510,12 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         self.vigicrues_enabled = bool(_get(CONF_ENABLE_VIGICRUES, DEFAULT_ENABLE_VIGICRUES))
         self._vigicrues_cache: dict[str, Any] | None = None
-        self._vigicrues_station_code: str | None = None
-        self._vigicrues_station_name: str | None = None
-        self._vigicrues_river_name: str | None = None
+        _conf_code = (_get(CONF_VIGICRUES_STATION_CODE, "") or "").strip()
+        self._vigicrues_station_code: str | None = _conf_code if _conf_code else None
+        self._vigicrues_station_name: str | None = (
+            (_get(CONF_VIGICRUES_STATION_NAME, "") or None) if _conf_code else None
+        )
+        self._vigicrues_river_name: str | None = (_get(CONF_VIGICRUES_RIVER_NAME, "") or None) if _conf_code else None
 
         # v1.7.0 Precipitation nowcast (Open-Meteo minutely_15, independent of provider)
         self.nowcast_enabled = bool(_get(CONF_ENABLE_NOWCAST, DEFAULT_ENABLE_NOWCAST))
@@ -2236,6 +2243,14 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             data["_vigilance_phenomena"] = vc.get("phenomena", {})
             data["_vigilance_dept"] = vc.get("dept")
             data["_vigilance_fetched_at"] = vc.get("fetched_at")
+
+            phenomena: dict[str, str] = vc.get("phenomena", {})
+            fire_color = None
+            for ph_name, color in phenomena.items():
+                if "feux" in ph_name.lower():
+                    fire_color = color
+                    break
+            data[KEY_FIRE_DANGER_VIGILANCE] = fire_color if fire_color else "vert"
 
         # v1.6.0 - Vigicrues (France only, no API key)
         if self.vigicrues_enabled and self._vigicrues_cache:

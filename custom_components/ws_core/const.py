@@ -496,12 +496,22 @@ KEY_CLOUD_COVER_PCT = "cloud_cover_pct"
 CONF_ENABLE_VIGILANCE_METEO = "enable_vigilance_meteo"
 CONF_ENABLE_VIGICRUES = "enable_vigicrues"
 
+# ---------------------------------------------------------------------------
+# v1.8.0 - Vigicrues station picker (issue #13)
+# ---------------------------------------------------------------------------
+CONF_VIGICRUES_STATION_CODE = "vigicrues_station_code"  # "" = auto-detect
+CONF_VIGICRUES_STATION_NAME = "vigicrues_station_name"  # cached for display
+CONF_VIGICRUES_RIVER_NAME = "vigicrues_river_name"  # cached for display
+
 # Defaults
 DEFAULT_ENABLE_VIGILANCE_METEO = False
 DEFAULT_ENABLE_VIGICRUES = False
 
 # Data keys - Météo-France Vigilance (department-level weather alerts)
 KEY_VIGILANCE_MAX_LEVEL = "vigilance_max_level"  # overall worst: vert/jaune/orange/rouge
+
+# v1.8.0 - Fire danger from Vigilance phenomena (issue #13)
+KEY_FIRE_DANGER_VIGILANCE = "fire_danger_vigilance"
 
 # Data keys - Vigicrues (real-time river level via Hub'Eau v2)
 KEY_RIVER_LEVEL_M = "river_level_m"
