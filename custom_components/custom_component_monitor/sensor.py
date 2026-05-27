@@ -731,26 +731,29 @@ class ComponentScanner:
                 continue
             self._extract_card_types(raw, used)
 
-        # Also scan YAML-mode dashboards
+        # Scan YAML-mode dashboards using Home Assistant's native modular loader
         def _read_yaml(path: Path) -> Any:
-            loader = self._make_ha_yaml_loader()
-            with open(path, encoding="utf-8") as fh:
-                return yaml.load(fh, Loader=loader)
+            from homeassistant.util.yaml import load_yaml
+            from homeassistant.exceptions import HomeAssistantError
+            try:
+                # load_yaml resuelve automáticamente los !include y !secret de forma recursiva
+                return load_yaml(str(path))
+            except (HomeAssistantError, OSError) as err:
+                _LOGGER.error("Error processing YAML file %s: %s", path, err)
+                return {}
 
         yaml_dashboards = await self.hass.async_add_executor_job(
             self._list_yaml_dashboard_files
         )
+        
         for yf in yaml_dashboards:
-            try:
-                raw = await self.hass.async_add_executor_job(_read_yaml, yf)
-            except (yaml.YAMLError, OSError):
-                continue
+            raw = await self.hass.async_add_executor_job(_read_yaml, yf)
             if raw:
                 self._extract_card_types(raw, used)
 
         _LOGGER.debug("Used card types (custom): %s", used)
         return used
-
+        
     def _extract_card_types(self, obj: Any, out: set[str]) -> None:
         """Recursively collect custom card types and card_mod usage."""
         if isinstance(obj, dict):
