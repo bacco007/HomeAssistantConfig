@@ -498,10 +498,16 @@ CONF_ENABLE_VIGICRUES = "enable_vigicrues"
 
 # ---------------------------------------------------------------------------
 # v1.8.0 - Vigicrues station picker (issue #13)
+# v1.9.0 - Multi-station support (issue #27)
 # ---------------------------------------------------------------------------
-CONF_VIGICRUES_STATION_CODE = "vigicrues_station_code"  # "" = auto-detect
-CONF_VIGICRUES_STATION_NAME = "vigicrues_station_name"  # cached for display
-CONF_VIGICRUES_RIVER_NAME = "vigicrues_river_name"  # cached for display
+CONF_VIGICRUES_STATION_CODE = "vigicrues_station_code"  # legacy single-station (kept for migration)
+CONF_VIGICRUES_STATION_NAME = "vigicrues_station_name"  # legacy (kept for migration)
+CONF_VIGICRUES_RIVER_NAME = "vigicrues_river_name"  # legacy (kept for migration)
+
+# v1.9.0: replaces the three legacy keys above.  Stored as a list of dicts:
+#   [{"code": "V123456", "name": "Station libellé", "river": "La Seine"}, ...]
+# An empty list means auto-detect the nearest station.
+CONF_VIGICRUES_STATIONS = "vigicrues_stations"
 
 # Defaults
 DEFAULT_ENABLE_VIGILANCE_METEO = False
@@ -514,6 +520,8 @@ KEY_VIGILANCE_MAX_LEVEL = "vigilance_max_level"  # overall worst: vert/jaune/ora
 KEY_FIRE_DANGER_VIGILANCE = "fire_danger_vigilance"
 
 # Data keys - Vigicrues (real-time river level via Hub'Eau v2)
+# v1.9.0: per-station key pattern is f"river_level_m_{code}" where code is the
+# Hub'Eau station code (e.g. "V123456").  KEY_RIVER_LEVEL_M kept for compat.
 KEY_RIVER_LEVEL_M = "river_level_m"
 
 # ---------------------------------------------------------------------------
@@ -540,6 +548,10 @@ CONF_ENABLE_NOWCAST = "enable_nowcast"
 CONF_NOWCAST_INTERVAL_MIN = "nowcast_interval_min"
 DEFAULT_ENABLE_NOWCAST = False
 DEFAULT_NOWCAST_INTERVAL_MIN = 15
+
+# Suppress HA Repairs notifications (issue #20)
+CONF_SUPPRESS_NOTIFICATIONS = "suppress_notifications"
+DEFAULT_SUPPRESS_NOTIFICATIONS = False
 
 # Data keys - nowcast
 KEY_RAIN_NEXT_60MIN = "rain_next_60min_mm"

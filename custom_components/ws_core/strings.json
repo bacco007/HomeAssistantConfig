@@ -163,14 +163,14 @@
         }
       },
       "vigicrues_station": {
-        "title": "Vigicrues station",
-        "description": "Choose a hydrometric station or leave on 'Auto' to use the nearest one.",
+        "title": "Vigicrues stations",
+        "description": "Choose one or more hydrometric stations, or leave empty to auto-detect the nearest one.",
         "data": {
-          "vigicrues_station_code": "Hydrometric station",
+          "vigicrues_stations": "Hydrometric stations",
           "_go_back": "← Go back to previous step"
         },
         "data_description": {
-          "vigicrues_station_code": "Select a station or leave on 'Auto (nearest station)' to auto-detect."
+          "vigicrues_stations": "Select one or more stations. Leave empty to auto-detect the nearest station."
         }
       }
     },
@@ -350,13 +350,13 @@
         }
       },
       "vigicrues_station_opt": {
-        "title": "Vigicrues station",
-        "description": "Choose a hydrometric station or leave on 'Auto' to use the nearest one.",
+        "title": "Vigicrues stations",
+        "description": "Choose one or more hydrometric stations, or leave empty to auto-detect the nearest one.",
         "data": {
-          "vigicrues_station_code": "Hydrometric station"
+          "vigicrues_stations": "Hydrometric stations"
         },
         "data_description": {
-          "vigicrues_station_code": "Select a station or leave on 'Auto (nearest station)' to auto-detect."
+          "vigicrues_stations": "Select one or more stations. Leave empty to auto-detect the nearest station."
         }
       }
     },
@@ -1414,6 +1414,9 @@
       },
       "ws_enable_nowcast": {
         "name": "Feature: Precipitation Nowcast"
+      },
+      "ws_suppress_notifications": {
+        "name": "Setting: Enable HA Notifications"
       }
     },
     "number": {

@@ -42,6 +42,10 @@ from .const import (
     # v1.6.0
     CONF_ENABLE_VIGILANCE_METEO,
     CONF_PREFIX,
+    CONF_VIGICRUES_RIVER_NAME,
+    CONF_VIGICRUES_STATION_CODE,
+    CONF_VIGICRUES_STATION_NAME,
+    CONF_VIGICRUES_STATIONS,
     DEFAULT_PREFIX,
     DOMAIN,
     # v1.5.0
@@ -128,7 +132,6 @@ from .const import (
     KEY_RAIN_PROBABILITY_COMBINED,
     KEY_RAIN_RATE_FILT,
     KEY_RAIN_TODAY_MM,
-    KEY_RIVER_LEVEL_M,
     KEY_SEA_LEVEL_PRESSURE_HPA,
     KEY_SEA_SURFACE_TEMP,
     KEY_SENSOR_DRIFT_FLAGS,
@@ -259,7 +262,7 @@ SENSORS: list[WSSensorDescription] = [
         icon="mdi:compass",
         device_class=SensorDeviceClass.WIND_DIRECTION,
         native_unit="\u00b0",
-        state_class=SensorStateClass.MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT_ANGLE,
     ),
     WSSensorDescription(
         key=KEY_NORM_RAIN_TOTAL_MM,
@@ -584,21 +587,8 @@ SENSORS: list[WSSensorDescription] = [
             "fetched_at": d.get("_vigilance_fetched_at"),
         },
     ),
-    # Vigicrues - real-time water level at nearest hydrometric station
-    WSSensorDescription(
-        key=KEY_RIVER_LEVEL_M,
-        translation_key="river_level",
-        name="WS River Level",
-        icon="mdi:waves",
-        native_unit="m",
-        state_class=SensorStateClass.MEASUREMENT,
-        attrs_fn=lambda d: {
-            "station": d.get("_river_station_name"),
-            "river": d.get("_river_name"),
-            "station_code": d.get("_river_station_code"),
-            "observed_at": d.get("_river_obs_time"),
-        },
-    ),
+    # Vigicrues: sensors are created dynamically per station in async_setup_entry
+    # (v1.9.0 multi-station). No static WSSensorDescription here.
     # v1.7.0 - Precipitation nowcast (Open-Meteo minutely_15)
     WSSensorDescription(
         key=KEY_RAIN_NEXT_60MIN,
@@ -1450,7 +1440,7 @@ _FEATURE_TOGGLE_MAP: dict[str, str] = {
     # v1.6.0 French regional
     KEY_VIGILANCE_MAX_LEVEL: CONF_ENABLE_VIGILANCE_METEO,
     KEY_FIRE_DANGER_VIGILANCE: CONF_ENABLE_VIGILANCE_METEO,
-    KEY_RIVER_LEVEL_M: CONF_ENABLE_VIGICRUES,
+    # KEY_RIVER_LEVEL_M: handled dynamically in async_setup_entry (multi-station)
     # v1.6.2 - station diagnostics (opt-in)
     KEY_SENSOR_DRIFT_FLAGS: CONF_ENABLE_DIAGNOSTICS,
     KEY_CONSISTENCY_FLAGS: CONF_ENABLE_DIAGNOSTICS,
@@ -1484,7 +1474,28 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
             continue
         filtered.append(desc)
 
-    entities: list[WSSensor] = [WSSensor(coordinator, entry, desc, prefix) for desc in filtered]
+    entities: list[SensorEntity] = [WSSensor(coordinator, entry, desc, prefix) for desc in filtered]
+
+    # v1.9.0: dynamic Vigicrues river sensors — one per configured station
+    if opts.get(CONF_ENABLE_VIGICRUES, False):
+        stations: list[dict] = list(opts.get(CONF_VIGICRUES_STATIONS) or [])
+        if not stations:
+            # Migrate legacy single-station config
+            code = (opts.get(CONF_VIGICRUES_STATION_CODE) or "").strip()
+            if code:
+                stations = [
+                    {
+                        "code": code,
+                        "name": opts.get(CONF_VIGICRUES_STATION_NAME) or code,
+                        "river": opts.get(CONF_VIGICRUES_RIVER_NAME) or "",
+                    }
+                ]
+            else:
+                # Auto-detect — use a placeholder; the coordinator will fill the name
+                stations = [{"code": "", "name": "", "river": ""}]
+        for st in stations:
+            entities.append(WSRiverSensor(coordinator, entry, prefix, st))
+
     async_add_entities(entities)
 
 
@@ -1671,7 +1682,7 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             KEY_CLEARNESS_INDEX: "clearness_index",
             KEY_CLOUD_COVER_PCT: "cloud_cover",
             KEY_VIGILANCE_MAX_LEVEL: "vigilance",
-            KEY_RIVER_LEVEL_M: "river_level",
+            # river_level slugs are handled in WSRiverSensor directly
             KEY_RAIN_NEXT_60MIN: "rain_next_60min",
             KEY_MINUTES_UNTIL_RAIN: "minutes_until_rain",
             KEY_MINUTES_UNTIL_DRY: "minutes_until_dry",
@@ -1733,3 +1744,91 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
                 "alert_state": d.get(KEY_ALERT_STATE),
             }
         return {}
+
+
+# ---------------------------------------------------------------------------
+# v1.9.0 - Dynamic river-level sensor (one per Vigicrues station)
+# ---------------------------------------------------------------------------
+
+
+class WSRiverSensor(CoordinatorEntity, SensorEntity):
+    """Real-time water level for a single Vigicrues hydrometric station.
+
+    One entity is created per configured station.  The station code is used as
+    part of the unique_id; the river name (once known) is embedded in the entity
+    name so users can tell stations apart at a glance.
+    """
+
+    _attr_has_entity_name = True
+    _attr_icon = "mdi:waves"
+    _attr_native_unit_of_measurement = "m"
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_device_class = None
+
+    def __init__(
+        self,
+        coordinator,
+        entry: ConfigEntry,
+        prefix: str,
+        station: dict,
+    ) -> None:
+        super().__init__(coordinator)
+        self._entry = entry
+        self._prefix = prefix
+        # station dict: {code, name, river} — code may be "" for auto-detect
+        self._station_code: str = (station.get("code") or "").strip()
+        self._station_name: str = station.get("name") or self._station_code
+        self._river_name: str = station.get("river") or ""
+
+        # Unique ID uses station code; fall back to "auto" for auto-detect mode
+        uid_suffix = self._station_code if self._station_code else "auto"
+        self._attr_unique_id = f"{entry.entry_id}_river_level_{uid_suffix}"
+        slug = f"river_level_{uid_suffix}" if uid_suffix != "auto" else "river_level"
+        self._attr_suggested_object_id = f"{prefix}_{slug}"
+
+    @property
+    def _cache_key(self) -> str:
+        """Coordinator data key prefix for this station."""
+        code = self._station_code
+        if not code:
+            # Auto-detect: use whatever code the coordinator resolved
+            code = (self.coordinator.data or {}).get("_vigicrues_auto_code", "")
+        return code
+
+    def _resolved_code(self) -> str:
+        """Return the actual station code (resolved for auto-detect)."""
+        if self._station_code:
+            return self._station_code
+        return (self.coordinator.data or {}).get("_vigicrues_auto_code", "")
+
+    @property
+    def name(self) -> str:
+        """River name + level, updated once the coordinator has the metadata."""
+        d = self.coordinator.data or {}
+        code = self._resolved_code()
+        river = d.get(f"_river_name_{code}") or self._river_name
+        if river:
+            return f"WS River Level — {river}"
+        station = d.get(f"_river_station_name_{code}") or self._station_name
+        return f"WS River Level — {station}" if station else "WS River Level"
+
+    @property
+    def native_value(self):
+        d = self.coordinator.data or {}
+        code = self._resolved_code()
+        return d.get(f"river_level_m_{code}")
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        d = self.coordinator.data or {}
+        code = self._resolved_code()
+        return {
+            "station": d.get(f"_river_station_name_{code}") or self._station_name,
+            "river": d.get(f"_river_name_{code}") or self._river_name,
+            "station_code": d.get(f"_river_station_code_{code}") or code,
+            "observed_at": d.get(f"_river_obs_time_{code}"),
+        }
+
+    @property
+    def device_info(self) -> dict:
+        return {"identifiers": {(DOMAIN, self._entry.entry_id)}}

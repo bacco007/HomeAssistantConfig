@@ -77,9 +77,8 @@ from .const import (
     CONF_THRESH_RAIN_RATE_MMPH,
     CONF_THRESH_WIND_GUST_MS,
     CONF_UNITS_MODE,
-    CONF_VIGICRUES_RIVER_NAME,
     CONF_VIGICRUES_STATION_CODE,
-    CONF_VIGICRUES_STATION_NAME,
+    CONF_VIGICRUES_STATIONS,
     CONF_WU_API_KEY,
     CONF_WU_INTERVAL_MIN,
     CONF_WU_STATION_ID,
@@ -1115,34 +1114,47 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     # Step 7h: Vigicrues station picker (v1.8.0)
     # ------------------------------------------------------------------
     async def async_step_vigicrues_station(self, user_input: dict[str, Any] | None = None):
-        """Let the user pick a specific hydrometric station or keep auto-detect."""
+        """Let the user pick one or more hydrometric stations (or keep auto-detect)."""
         if user_input is not None:
             back = await self._handle_back(user_input)
             if back:
                 return back
-            code = str(user_input.get(CONF_VIGICRUES_STATION_CODE, "")).strip()
-            self._data[CONF_VIGICRUES_STATION_CODE] = code
-            for opt in getattr(self, "_vigicrues_station_options", []):
-                if opt["value"] == code:
-                    self._data[CONF_VIGICRUES_STATION_NAME] = opt.get("_name", "")
-                    self._data[CONF_VIGICRUES_RIVER_NAME] = opt.get("_river", "")
-                    break
+            selected_codes: list[str] = user_input.get(CONF_VIGICRUES_STATIONS) or []
+            stations: list[dict[str, str]] = []
+            for code in selected_codes:
+                code = code.strip()
+                if not code:
+                    continue
+                for opt in getattr(self, "_vigicrues_station_options", []):
+                    if opt["value"] == code:
+                        stations.append({"code": code, "name": opt.get("_name", code), "river": opt.get("_river", "")})
+                        break
+            # Empty list means auto-detect nearest station
+            self._data[CONF_VIGICRUES_STATIONS] = stations
             return await self.async_step_alerts()
 
         lat = self._data.get(CONF_FORECAST_LAT) or getattr(self.hass.config, "latitude", 0.0) or 0.0
         lon = self._data.get(CONF_FORECAST_LON) or getattr(self.hass.config, "longitude", 0.0) or 0.0
         options = await _fetch_vigicrues_station_options(lat, lon)
         self._vigicrues_station_options = options
-        current_code = self._data.get(CONF_VIGICRUES_STATION_CODE, "")
+
+        # Pre-select previously chosen stations (migrate legacy single-code if needed)
+        existing: list[dict] = self._data.get(CONF_VIGICRUES_STATIONS) or []
+        if not existing:
+            legacy_code = (self._data.get(CONF_VIGICRUES_STATION_CODE) or "").strip()
+            if legacy_code:
+                existing = [{"code": legacy_code}]
+        current_codes = [s["code"] for s in existing if s.get("code")]
 
         return self._show_step(
             step_id="vigicrues_station",
             data_schema=vol.Schema(
                 {
-                    vol.Optional(CONF_VIGICRUES_STATION_CODE, default=current_code): selector.SelectSelector(
+                    vol.Optional(CONF_VIGICRUES_STATIONS, default=current_codes): selector.SelectSelector(
                         selector.SelectSelectorConfig(
                             options=[{"value": o["value"], "label": o["label"]} for o in options],
                             mode="dropdown",
+                            multiple=True,
                         )
                     ),
                 }
@@ -1735,16 +1747,21 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
         )
 
     async def async_step_vigicrues_station_opt(self, user_input: dict[str, Any] | None = None):
-        """Options flow: pick a Vigicrues hydrometric station or keep auto-detect."""
+        """Options flow: pick one or more Vigicrues hydrometric stations or keep auto-detect."""
         g = self._get
         if user_input is not None:
-            code = str(user_input.get(CONF_VIGICRUES_STATION_CODE, "")).strip()
-            self._opt[CONF_VIGICRUES_STATION_CODE] = code
-            for opt in getattr(self, "_vigicrues_station_options_opt", []):
-                if opt["value"] == code:
-                    self._opt[CONF_VIGICRUES_STATION_NAME] = opt.get("_name", "")
-                    self._opt[CONF_VIGICRUES_RIVER_NAME] = opt.get("_river", "")
-                    break
+            selected_codes: list[str] = user_input.get(CONF_VIGICRUES_STATIONS) or []
+            stations: list[dict[str, str]] = []
+            for code in selected_codes:
+                code = code.strip()
+                if not code:
+                    continue
+                for opt in getattr(self, "_vigicrues_station_options_opt", []):
+                    if opt["value"] == code:
+                        stations.append({"code": code, "name": opt.get("_name", code), "river": opt.get("_river", "")})
+                        break
+            # Empty list means auto-detect nearest station
+            self._opt[CONF_VIGICRUES_STATIONS] = stations
             return self.async_create_entry(title="", data=self._opt)
 
         lat = (
@@ -1761,16 +1778,26 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
         )
         options = await _fetch_vigicrues_station_options(lat, lon)
         self._vigicrues_station_options_opt = options
-        current_code = g(CONF_VIGICRUES_STATION_CODE, "")
+
+        # Pre-select previously chosen stations (migrate legacy single-code if needed)
+        existing: list[dict] = self._opt.get(CONF_VIGICRUES_STATIONS) or g(CONF_VIGICRUES_STATIONS, []) or []
+        if not existing:
+            legacy_code = (
+                self._opt.get(CONF_VIGICRUES_STATION_CODE) or g(CONF_VIGICRUES_STATION_CODE, "") or ""
+            ).strip()
+            if legacy_code:
+                existing = [{"code": legacy_code}]
+        current_codes = [s["code"] for s in existing if s.get("code")]
 
         return self.async_show_form(
             step_id="vigicrues_station_opt",
             data_schema=vol.Schema(
                 {
-                    vol.Optional(CONF_VIGICRUES_STATION_CODE, default=current_code): selector.SelectSelector(
+                    vol.Optional(CONF_VIGICRUES_STATIONS, default=current_codes): selector.SelectSelector(
                         selector.SelectSelectorConfig(
                             options=[{"value": o["value"], "label": o["label"]} for o in options],
                             mode="dropdown",
+                            multiple=True,
                         )
                     ),
                 }

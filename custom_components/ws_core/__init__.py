@@ -146,9 +146,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # Do NOT re-raise - a failed initial fetch must not block entry creation.
         # The 60s tick scheduler will retry all fetches automatically.
 
-    # Create a device for the station
+    # Create a device for the station.
+    # Use executor_job so that the manifest.json read does not block the HA
+    # event loop (HA logs "Detected blocking call to read_text" otherwise).
     dev_reg = dr.async_get(hass)
-    _manifest = json.loads((pathlib.Path(__file__).parent / "manifest.json").read_text(encoding="utf-8"))
+    _manifest_path = pathlib.Path(__file__).parent / "manifest.json"
+    _manifest_text = await hass.async_add_executor_job(_manifest_path.read_text, "utf-8")
+    _manifest = json.loads(_manifest_text)
     dev_reg.async_get_or_create(
         config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, entry.entry_id)},
