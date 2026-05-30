@@ -25,11 +25,13 @@ from .const import (
     ATTR_COMPONENTS,
     ATTR_TOTAL_COMPONENTS,
     ATTR_UNUSED_COMPONENTS,
+    ATTR_UPDATES,
     ATTR_USED_COMPONENTS,
     CATEGORY_MAP,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     SENSOR_ALL_COMPONENTS,
+    SENSOR_HACS_UPDATES,
     SENSOR_UNUSED_FRONTEND,
     SENSOR_UNUSED_INTEGRATIONS,
     SENSOR_UNUSED_THEMES,
@@ -1054,6 +1056,85 @@ class ComponentScanner:
         components.sort(key=lambda c: (c["type"], c["name"].lower()))
         return components
 
+    # -- updates -------------------------------------------------------------
+
+    @staticmethod
+    def _pending_update_versions(
+        repo: dict[str, Any]
+    ) -> tuple[str, str] | None:
+        """Return ``(current, available)`` if *repo* has a pending update.
+
+        Mirrors HACS's own logic: repositories tracking releases compare the
+        installed version against the latest available version, while
+        repositories tracking the default branch compare commit hashes. The
+        returned versions always come from the same pair that detected the
+        update, so a branch-tracked repo reports its commits (not a stale
+        ``version_installed`` string) and vice versa.
+        """
+        version_installed = repo.get("version_installed")
+        last_version = repo.get("last_version")
+        if repo.get("releases") and version_installed and last_version:
+            if version_installed != last_version:
+                return version_installed, last_version
+            return None
+
+        installed_commit = repo.get("installed_commit")
+        last_commit = repo.get("last_commit")
+        if installed_commit and last_commit:
+            if installed_commit != last_commit:
+                return installed_commit, last_commit
+            return None
+
+        return None
+
+    async def scan_updates(self) -> dict[str, Any]:
+        """Scan HACS-installed components for pending updates.
+
+        Returns ``{"count": int, "updates": [...]}`` where each update entry
+        lists the component name, type, repository and current/available
+        versions.
+        """
+        hacs_repos = await self._load_hacs_repositories()
+        updates: list[dict[str, Any]] = []
+
+        for _repo_id, repo in hacs_repos.items():
+            if not isinstance(repo, dict):
+                continue
+            if not repo.get("installed", False):
+                continue
+            versions = self._pending_update_versions(repo)
+            if versions is None:
+                continue
+            current_version, available_version = versions
+
+            full_name = repo.get("full_name", "")
+            repo_manifest = repo.get("repository_manifest", {}) or {}
+            name = (
+                repo.get("manifest_name")
+                or repo.get("name")
+                or repo_manifest.get("name")
+                or (full_name.split("/")[-1] if "/" in full_name else full_name)
+            )
+            category = repo.get("category", "")
+
+            updates.append(
+                {
+                    "name": name,
+                    "type": CATEGORY_MAP.get(
+                        category, category.replace("_", " ").title()
+                    ),
+                    "repository": (
+                        f"https://github.com/{full_name}" if full_name else ""
+                    ),
+                    "current_version": current_version,
+                    "available_version": available_version,
+                }
+            )
+
+        # Sort alphabetically by type then name
+        updates.sort(key=lambda c: (c["type"], c["name"].lower()))
+        return {"count": len(updates), "updates": updates}
+
 
 # ---------------------------------------------------------------------------
 # Coordinator
@@ -1107,11 +1188,15 @@ class CustomComponentMonitorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 len(integrations["unused"]),
             )
 
+            updates = await self.scanner.scan_updates()
+            _LOGGER.debug("Update scan: %d pending updates", updates["count"])
+
             return {
                 "all_components": all_components,
                 "themes": themes,
                 "frontend": frontend,
                 "integrations": integrations,
+                "updates": updates,
                 "last_scan": dt_util.now().isoformat(),
             }
         except Exception as exc:
@@ -1144,6 +1229,11 @@ SENSOR_DESCRIPTIONS: list[SensorEntityDescription] = [
         key=SENSOR_UNUSED_FRONTEND,
         name="Unused Frontend Resources",
         icon="mdi:web",
+    ),
+    SensorEntityDescription(
+        key=SENSOR_HACS_UPDATES,
+        name="HACS Updates",
+        icon="mdi:package-up",
     ),
 ]
 
@@ -1221,6 +1311,9 @@ class CustomComponentMonitorSensor(CoordinatorEntity, SensorEntity):
         if key == SENSOR_UNUSED_FRONTEND:
             data = self.coordinator.data.get("frontend", {})
             return len(data.get("unused", []))
+        if key == SENSOR_HACS_UPDATES:
+            data = self.coordinator.data.get("updates", {})
+            return data.get("count", 0)
 
         return 0
 
@@ -1250,6 +1343,10 @@ class CustomComponentMonitorSensor(CoordinatorEntity, SensorEntity):
             attrs[ATTR_TOTAL_COMPONENTS] = data.get("total", 0)
             attrs[ATTR_USED_COMPONENTS] = len(data.get("used", []))
             attrs[ATTR_UNUSED_COMPONENTS] = data.get("unused", [])
+
+        elif key == SENSOR_HACS_UPDATES:
+            data = self.coordinator.data.get("updates", {})
+            attrs[ATTR_UPDATES] = data.get("updates", [])
 
         if "last_scan" in self.coordinator.data:
             attrs["last_scan"] = self.coordinator.data["last_scan"]

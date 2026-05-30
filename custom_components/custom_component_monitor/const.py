@@ -7,12 +7,14 @@ SENSOR_ALL_COMPONENTS = "all_hacs_components"
 SENSOR_UNUSED_INTEGRATIONS = "unused_integrations"
 SENSOR_UNUSED_THEMES = "unused_themes"
 SENSOR_UNUSED_FRONTEND = "unused_frontend"
+SENSOR_HACS_UPDATES = "hacs_updates"
 
 # Sensor attributes
 ATTR_COMPONENTS = "components"
 ATTR_TOTAL_COMPONENTS = "total_components"
 ATTR_USED_COMPONENTS = "used_components"
 ATTR_UNUSED_COMPONENTS = "unused_components"
+ATTR_UPDATES = "updates"
 
 # HACS category to display type mapping
 CATEGORY_MAP = {

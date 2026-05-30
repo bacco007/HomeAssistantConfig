@@ -2,7 +2,7 @@
  * Custom Component Monitor Card
  * A Lovelace card that displays unused HACS components.
  */
-var CARD_VERSION = "1.4.0";
+var CARD_VERSION = "1.5.0";
 
 var ALL_SECTIONS = ["integrations", "themes", "frontend"];
 
@@ -28,12 +28,12 @@ class CustomComponentMonitorCard extends HTMLElement {
   }
 
   static getStubConfig() {
-    return { title: "Custom Component Monitor", sort: "name", sections: ["integrations", "themes", "frontend"] };
+    return { title: "Custom Component Monitor", sort: "name", sections: ["integrations", "themes", "frontend"], collapsed_by_default: false };
   }
 
   setConfig(config) {
     this._config = Object.assign(
-      { title: "Custom Component Monitor", sort: "name", sections: ALL_SECTIONS.slice() },
+      { title: "Custom Component Monitor", sort: "name", sections: ALL_SECTIONS.slice(), collapsed_by_default: false },
       config
     );
     this._sortMode = this._config.sort || "name";
@@ -141,7 +141,10 @@ class CustomComponentMonitorCard extends HTMLElement {
 
     var unusedColor = totalUnused > 0 ? "var(--red)" : "var(--green)";
     var footerHtml = lastScan ? "Last scan: " + this._formatTime(lastScan) : "";
-    var sortLabel = this._sortMode === "days" ? "days installed" : "name";
+    var sortIcon = this._sortMode === "days" ? "mdi:sort-calendar-descending" : "mdi:sort-alphabetical-ascending";
+    var sortTooltip = this._sortMode === "days"
+      ? "Sorted by days installed - click to sort by name"
+      : "Sorted by name - click to sort by days installed";
 
     this.shadowRoot.innerHTML = [
       "<style>",
@@ -155,8 +158,9 @@ class CustomComponentMonitorCard extends HTMLElement {
       "  --orange: var(--label-badge-yellow, #ff9800);",
       "}",
       "ha-card { padding: 16px; }",
-      ".header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }",
-      ".header .title { font-size:1.1em; font-weight:500; color:var(--primary); }",
+      ".header { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px; }",
+      ".header .title { font-size:1.1em; font-weight:500; color:var(--primary); flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }",
+      ".header-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }",
       ".badge { font-size:0.8em; padding:2px 8px; border-radius:12px; font-weight:500; color:#fff; }",
       ".badge.clean { background:var(--green); }",
       ".badge.warn { background:var(--orange); }",
@@ -166,8 +170,10 @@ class CustomComponentMonitorCard extends HTMLElement {
       ".stat { flex:1; min-width:70px; text-align:center; padding:8px 4px; border-radius:8px; background:var(--divider); }",
       ".stat .num { font-size:1.6em; font-weight:600; color:var(--primary); line-height:1.2; }",
       ".stat .label { font-size:0.75em; color:var(--secondary); margin-top:2px; }",
-      ".sort-toggle { font-size:0.75em; color:var(--accent); cursor:pointer; padding:4px 8px; border-radius:4px; white-space:nowrap; user-select:none; }",
+      ".sort-toggle { display:inline-flex; align-items:center; justify-content:center; color:var(--accent); cursor:pointer; padding:4px; border:none; background:none; border-radius:4px; user-select:none; flex-shrink:0; }",
       ".sort-toggle:hover { background:var(--divider); }",
+      ".sort-toggle:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }",
+      ".sort-toggle ha-icon { --mdc-icon-size:20px; }",
       ".section { margin-bottom:12px; }",
       ".section-header { display:flex; align-items:center; gap:6px; padding:6px 0; font-weight:500; font-size:0.95em; color:var(--primary); cursor:pointer; user-select:none; }",
       ".section-header ha-icon { --mdc-icon-size:18px; color:var(--secondary); }",
@@ -191,7 +197,10 @@ class CustomComponentMonitorCard extends HTMLElement {
       "<ha-card>",
       '  <div class="header">',
       '    <span class="title">' + _ccm_escapeHtml(this._config.title) + "</span>",
-      "    " + badgeHtml,
+      '    <div class="header-right">',
+      '      <button type="button" class="sort-toggle" title="' + sortTooltip + '" aria-label="' + sortTooltip + '"><ha-icon icon="' + sortIcon + '"></ha-icon></button>',
+      "      " + badgeHtml,
+      "    </div>",
       "  </div>",
       '  <div class="toolbar">',
       '    <div class="summary">',
@@ -199,7 +208,6 @@ class CustomComponentMonitorCard extends HTMLElement {
       '      <div class="stat"><div class="num">' + totalUsed + '</div><div class="label">Used</div></div>',
       '      <div class="stat"><div class="num" style="color:' + unusedColor + '">' + totalUnused + '</div><div class="label">Unused</div></div>',
       "    </div>",
-      '    <span class="sort-toggle" title="Click to change sort order">Sort: ' + sortLabel + "</span>",
       "  </div>",
       sectionsHtml,
       '  <div class="footer">' + footerHtml + "</div>",
@@ -259,6 +267,8 @@ class CustomComponentMonitorCard extends HTMLElement {
     var isOpen;
     if (this._collapsed.hasOwnProperty(section.key)) {
       isOpen = !this._collapsed[section.key];
+    } else if (this._config.collapsed_by_default) {
+      isOpen = false;
     } else {
       isOpen = unusedCount > 0;
     }
@@ -353,6 +363,7 @@ class CustomComponentMonitorCardEditor extends HTMLElement {
     var chkInteg = secs.indexOf("integrations") !== -1 ? " checked" : "";
     var chkThemes = secs.indexOf("themes") !== -1 ? " checked" : "";
     var chkFront = secs.indexOf("frontend") !== -1 ? " checked" : "";
+    var chkCollapsed = this._config.collapsed_by_default ? " checked" : "";
 
     this.shadowRoot.innerHTML = [
       "<style>",
@@ -381,6 +392,12 @@ class CustomComponentMonitorCardEditor extends HTMLElement {
       '    <label><input type="checkbox" id="sec_themes"' + chkThemes + "> Themes</label>",
       '    <label><input type="checkbox" id="sec_frontend"' + chkFront + "> Frontend</label>",
       "  </div>",
+      "</div>",
+      '<div class="row">',
+      "  <label>Collapse sections by default</label>",
+      '  <div class="ctrl checks">',
+      '    <label><input type="checkbox" id="collapsed_by_default"' + chkCollapsed + "> Start collapsed</label>",
+      "  </div>",
       "</div>"
     ].join("\n");
 
@@ -391,6 +408,10 @@ class CustomComponentMonitorCardEditor extends HTMLElement {
     });
     this.shadowRoot.querySelector("#sort").addEventListener("change", function(ev) {
       self._config = Object.assign({}, self._config, { sort: ev.target.value });
+      self._fire();
+    });
+    this.shadowRoot.querySelector("#collapsed_by_default").addEventListener("change", function(ev) {
+      self._config = Object.assign({}, self._config, { collapsed_by_default: ev.target.checked });
       self._fire();
     });
 
