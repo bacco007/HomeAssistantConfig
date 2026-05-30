@@ -402,6 +402,13 @@ _DEVICE_CLASS_FOR_SOURCE: dict[str, str] = {
     SRC_SOLAR_RADIATION: "irradiance",
 }
 
+# Some source slots accept more than one device_class. The picker shows the
+# primary class only; these extras are also accepted by the validator so that
+# stations which report battery as a voltage (e.g. GW3000A) aren't blocked.
+_EXTRA_DEVICE_CLASSES_FOR_SOURCE: dict[str, set[str]] = {
+    SRC_BATTERY: {"voltage"},
+}
+
 # Human-readable expected unit strings used in validation error messages.
 _EXPECTED_UNITS_FOR_SOURCE: dict[str, str] = {
     SRC_TEMP: "°C / °F",
@@ -505,7 +512,8 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         expected_dc = _DEVICE_CLASS_FOR_SOURCE.get(source_key)
         if expected_dc:
             actual_dc = st.attributes.get("device_class", "")
-            if actual_dc and actual_dc != expected_dc:
+            extras = _EXTRA_DEVICE_CLASSES_FOR_SOURCE.get(source_key, set())
+            if actual_dc and actual_dc != expected_dc and actual_dc not in extras:
                 return "wrong_sensor_type"
         return None
 
