@@ -7,7 +7,7 @@
           "location_name": "Nazwa lokalizacji teleskopu",
           "latitude": "Szerokość geograficzna (-89° do 89°)",
           "longitude": "Długość geograficzna (-180° do 180°)",
-          "elevation": "Wzniesienie (0m do 4000m n.p.m.)",
+          "elevation": "Wzniesienie (-500m do 9000m n.p.m.)",
           "timezone_info": "Strefa czasowa w bazie danych TZ"
         }
       },
@@ -43,7 +43,7 @@
           "location_name": "Nazwa lokalizacji teleskopu",
           "latitude": "Szerokość geograficzna (-89° do 89°)",
           "longitude": "Długość geograficzna (-180° do 180°)",
-          "elevation": "Wzniesienie (0m do 4000m n.p.m.)",
+          "elevation": "Wzniesienie (-500m do 9000m n.p.m.)",
           "timezone_info": "Strefa czasowa w bazie danych TZ"
         }
       },
@@ -67,6 +67,17 @@
           "cloudcover_high_weakening": "Wysokie chmury wpływają (%)",
           "cloudcover_medium_weakening": "Wpływ średnich chmur (%)",
           "cloudcover_low_weakening": "Wpływ niskich chmur (%)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "gfs_supplementary_data": {
+        "name": "Dane uzupełniające GFS",
+        "state": {
+          "on": "Aktywne",
+          "off": "Szacowane"
         }
       }
     }

@@ -43,6 +43,7 @@ from .const import (
     ATTR_FORECAST_TRANSPARENCY_PERCENTAGE,
     ATTR_LOCATION_NAME,
     ATTR_WEATHER_ASTRONOMICAL_DARKNESS,
+    ATTR_WEATHER_GFS_SUPPLEMENTARY_DATA,
     ATTR_WEATHER_CLOUD_AREA_FRACTION,
     ATTR_WEATHER_CLOUD_AREA_FRACTION_HIGH,
     ATTR_WEATHER_CLOUD_AREA_FRACTION_LOW,
@@ -512,6 +513,13 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
         return None
 
     @property
+    def gfs_supplementary_data(self) -> bool:
+        """Return whether GFS supplementary data is in use."""
+        if self._current is not None:
+            return self._current.gfs_supplementary_data
+        return False
+
+    @property
     def forecast(self) -> list[Forecast] | None:
         """Return the forecast array."""
         return self._forecast()
@@ -568,6 +576,7 @@ class AstroWeatherWeather(AstroWeatherEntity, WeatherEntity):
             ATTR_WEATHER_WIND_BEARING: self.wind_bearing,
             ATTR_WEATHER_WIND_SPEED: self.native_wind_speed,
             ATTR_WEATHER_WIND: self.calm_percentage,
+            ATTR_WEATHER_GFS_SUPPLEMENTARY_DATA: self.gfs_supplementary_data,
         }
 
     def get_forecasts(self, index, param):

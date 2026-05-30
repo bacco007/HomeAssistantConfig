@@ -164,7 +164,7 @@ def get_location_schema(hass: HomeAssistant, data: ConfigType) -> Schema:
                 vol.Coerce(float), vol.Range(min=-180, max=180)
             ),
             vol.Required(CONF_ELEVATION, default=DEFAULT_ELEVATION): vol.All(
-                vol.Coerce(int), vol.Range(min=0, max=4000)
+                vol.Coerce(int), vol.Range(min=-500, max=9000)
             ),
             vol.Required(CONF_TIMEZONE_INFO, default=hass.config.time_zone): vol.All(
                 vol.Coerce(str), vol.In(TIMEZONES)
@@ -190,35 +190,35 @@ def get_calculation_schema(hass: HomeAssistant, data: ConfigType) -> Schema:
                 default=data[CONF_CONDITION_CLOUDCOVER_WEIGHT],
             ): vol.All(
                 vol.Coerce(int),
-                vol.Range(min=0, max=100),
+                vol.Range(min=1, max=100),
             ),
             vol.Required(
                 CONF_CONDITION_FOG_WEIGHT,
                 default=data[CONF_CONDITION_FOG_WEIGHT],
             ): vol.All(
                 vol.Coerce(int),
-                vol.Range(min=0, max=100),
+                vol.Range(min=1, max=100),
             ),
             vol.Required(
                 CONF_CONDITION_SEEING_WEIGHT,
                 default=data[CONF_CONDITION_SEEING_WEIGHT],
             ): vol.All(
                 vol.Coerce(int),
-                vol.Range(min=0, max=100),
+                vol.Range(min=1, max=100),
             ),
             vol.Required(
                 CONF_CONDITION_TRANSPARENCY_WEIGHT,
                 default=data[CONF_CONDITION_TRANSPARENCY_WEIGHT],
             ): vol.All(
                 vol.Coerce(int),
-                vol.Range(min=0, max=100),
+                vol.Range(min=1, max=100),
             ),
             vol.Required(
                 CONF_CONDITION_CALM_WEIGHT,
                 default=data[CONF_CONDITION_CALM_WEIGHT],
             ): vol.All(
                 vol.Coerce(int),
-                vol.Range(min=0, max=100),
+                vol.Range(min=1, max=100),
             ),
             vol.Required(CONF_FORECAST_INTERVAL, default=data[CONF_FORECAST_INTERVAL]): vol.All(
                 vol.Coerce(int),

@@ -7,7 +7,7 @@
           "location_name": "Nom de l'emplacement de votre télescope",
           "latitude": "Latitude (-89° à 89°)",
           "longitude": "Longitude (-180° à 180°)",
-          "elevation": "Élévation (0m à 4000m)",
+          "elevation": "Élévation (-500m à 9000m)",
           "timezone_info": "Fuseau horaire dans la base de données TZ"
         }
       },
@@ -43,7 +43,7 @@
           "location_name": "Nom de l'emplacement de votre télescope",
           "latitude": "Latitude (-89° à 89°)",
           "longitude": "Longitude (-180° à 180°)",
-          "elevation": "Élévation (0m à 4000m)",
+          "elevation": "Élévation (-500m à 9000m)",
           "timezone_info": "Fuseau horaire dans la base de données TZ"
         }
       },
@@ -67,6 +67,17 @@
           "cloudcover_high_weakening": "Influence des nuages élevés (%)",
           "cloudcover_medium_weakening": "Influence des nuages moyens (%)",
           "cloudcover_low_weakening": "Influence des nuages bas (%)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "gfs_supplementary_data": {
+        "name": "Données supplémentaires GFS",
+        "state": {
+          "on": "Actif",
+          "off": "Estimé"
         }
       }
     }

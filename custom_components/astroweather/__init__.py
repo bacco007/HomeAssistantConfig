@@ -188,7 +188,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         cloudcover_high_weakening=entry.options.get(CONF_CONDITION_CLOUDCOVER_HIGH_WEAKENING) / 100,
         cloudcover_medium_weakening=entry.options.get(CONF_CONDITION_CLOUDCOVER_MEDIUM_WEAKENING) / 100,
         cloudcover_low_weakening=entry.options.get(CONF_CONDITION_CLOUDCOVER_LOW_WEAKENING) / 100,
-        # fog_weight=entry.options.get(CONF_CONDITION_FOG_WEIGHT),
+        fog_weight=entry.options.get(CONF_CONDITION_FOG_WEIGHT),
         seeing_weight=entry.options.get(CONF_CONDITION_SEEING_WEIGHT),
         transparency_weight=entry.options.get(CONF_CONDITION_TRANSPARENCY_WEIGHT),
         calm_weight=entry.options.get(CONF_CONDITION_CALM_WEIGHT),

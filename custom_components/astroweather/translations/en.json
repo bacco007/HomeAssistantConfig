@@ -7,7 +7,7 @@
           "location_name": "Name for the location of your telescope",
           "latitude": "Latitude (-89° to 89°)",
           "longitude": "Longitude (-180° to 180°)",
-          "elevation": "Elevation (0m to 4000m)",
+          "elevation": "Elevation (-50m to 9000m)",
           "timezone_info": "Timezone in TZ database"
         }
       },
@@ -43,7 +43,7 @@
           "location_name": "Name for the location of your telescope",
           "latitude": "Latitude (-89° to 89°)",
           "longitude": "Longitude (-180° to 180°)",
-          "elevation": "Elevation (0m to 4000m)",
+          "elevation": "Elevation (-50m to 9000m)",
           "timezone_info": "Timezone in TZ database"
         }
       },
@@ -67,6 +67,17 @@
           "cloudcover_high_weakening": "High clouds influence (%)",
           "cloudcover_medium_weakening": "Medium clouds influence (%)",
           "cloudcover_low_weakening": "Low clouds influence (%)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "gfs_supplementary_data": {
+        "name": "GFS Supplementary Data",
+        "state": {
+          "on": "Active",
+          "off": "Estimated"
         }
       }
     }

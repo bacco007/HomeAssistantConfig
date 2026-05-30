@@ -7,7 +7,7 @@
           "location_name": "Názov pre umiestnenie vášho teleskopu",
           "latitude": "Zemepisná šírka (-89° to 89°)",
           "longitude": "Zemepisná dĺžka (-180° to 180°)",
-          "elevation": "Nadmorská výška (0m do 4000m)",
+          "elevation": "Nadmorská výška (-500m do 9000m)",
           "timezone_info": "Časové pásmo v databáze TZ"
         }
       },
@@ -43,7 +43,7 @@
           "location_name": "Názov pre umiestnenie vášho teleskopu",
           "latitude": "Zemepisná šírka (-89° to 89°)",
           "longitude": "Zemepisná dĺžka (-180° to 180°)",
-          "elevation": "Nadmorská výška (0m do 4000m)",
+          "elevation": "Nadmorská výška (-500m do 9000m)",
           "timezone_info": "Časové pásmo v databáze TZ"
         }
       },
@@ -67,6 +67,17 @@
           "cloudcover_high_weakening": "Vplyv vysokej oblačnosti (%)",
           "cloudcover_medium_weakening": "Vplyv strednej oblačnosti (%)",
           "cloudcover_low_weakening": "Vplyv nízkej oblačnosti (%)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "gfs_supplementary_data": {
+        "name": "Doplnkové údaje GFS",
+        "state": {
+          "on": "Aktívne",
+          "off": "Odhadované"
         }
       }
     }

@@ -44,6 +44,12 @@ SENSOR_TYPES = {
         "mdi:arrow-down-bold-circle-outline",
         None,
     ],
+    "gfs_supplementary_data": [
+        "GFS Supplementary Data",
+        None,
+        "mdi:satellite-uplink",
+        None,
+    ],
 }
 
 

@@ -7,7 +7,7 @@
           "location_name": "Name für den Standort Deines Teleskops",
           "latitude": "Breitengrad (-89° bis 89°)",
           "longitude": "Längengrad (-180° bis 180°)",
-          "elevation": "Höhe über dem Meeresspiegel (0m bis 4000m)",
+          "elevation": "Höhe über dem Meeresspiegel (-50m bis 9000m)",
           "timezone_info": "Zeitzone im TZ Datenbankformat"
         }
       },
@@ -43,7 +43,7 @@
           "location_name": "Name für den Standort Deines Teleskops",
           "latitude": "Breitengrad (-89° bis 89°)",
           "longitude": "Längengrad (-180° bis 180°)",
-          "elevation": "Höhe über dem Meeresspiegel (0m bis 4000m)",
+          "elevation": "Höhe über dem Meeresspiegel (-50m bis 9000m)",
           "timezone_info": "Zeitzone im TZ Datenbankformat"
         }
       },
@@ -67,6 +67,17 @@
           "cloudcover_high_weakening": "Einfluss der hohen Wolkenbedeckung (%)",
           "cloudcover_medium_weakening": "Einfluss der mittleren Wolkenbedeckung (%)",
           "cloudcover_low_weakening": "Einfluss der niedrigen Wolkenbedeckung (%)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "gfs_supplementary_data": {
+        "name": "GFS Ergänzungsdaten",
+        "state": {
+          "on": "Aktiv",
+          "off": "Geschätzt"
         }
       }
     }
