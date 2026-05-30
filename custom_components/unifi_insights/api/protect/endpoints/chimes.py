@@ -2,12 +2,17 @@
 
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING, Any
+
+from pydantic import ValidationError
 
 from ..models import Chime
 
 if TYPE_CHECKING:
     from ..client import UniFiProtectClient
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class ChimesEndpoint:
@@ -43,9 +48,20 @@ class ChimesEndpoint:
         data = (
             response.get("data", response) if isinstance(response, dict) else response
         )
-        if isinstance(data, list):
-            return [Chime.model_validate(item) for item in data]
-        return []
+        if not isinstance(data, list):
+            return []
+
+        chimes: list[Chime] = []
+        for item in data:
+            try:
+                chimes.append(Chime.model_validate(item))
+            except ValidationError as err:
+                _LOGGER.warning(
+                    "Skipping chime that failed to parse (id=%s): %s",
+                    item.get("id") if isinstance(item, dict) else "?",
+                    err,
+                )
+        return chimes
 
     async def get(self, chime_id: str, site_id: str | None = None) -> Chime:
         """

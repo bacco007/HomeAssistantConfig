@@ -1220,6 +1220,21 @@ async def async_setup_entry(
             for description in SITE_CLIENT_SENSOR_TYPES
         )
 
+    # Add per-WiFi-network connected client count sensors
+    for site_id, wifi_networks in coordinator.data.get("wifi", {}).items():
+        for wifi_id, wifi_data in wifi_networks.items():
+            wifi_name = wifi_data.get("name") or wifi_data.get("ssid", wifi_id)
+            _LOGGER.debug(
+                "Creating WiFi client count sensor for %s (%s)", wifi_name, wifi_id
+            )
+            entities.append(
+                UnifiWifiClientCountSensor(
+                    coordinator=coordinator,
+                    site_id=site_id,
+                    wifi_id=wifi_id,
+                )
+            )
+
     # Add UniFi Protect sensors if API is available
     if coordinator.protect_client:
         # Add sensors for UniFi Protect sensors
@@ -2033,3 +2048,66 @@ class UnifiSiteClientSensor(CoordinatorEntity[UnifiFacadeCoordinator], SensorEnt
         if not isinstance(clients, dict):
             return 0
         return self.entity_description.value_fn(clients)  # type: ignore[misc]
+
+
+class UnifiWifiClientCountSensor(
+    CoordinatorEntity[UnifiFacadeCoordinator], SensorEntity
+):
+    """Number of clients connected to a specific WiFi network (SSID)."""
+
+    _attr_has_entity_name = True
+    _attr_icon = "mdi:wifi"
+    _attr_state_class = SensorStateClass.MEASUREMENT
+
+    def __init__(
+        self,
+        coordinator: UnifiFacadeCoordinator,
+        site_id: str,
+        wifi_id: str,
+    ) -> None:
+        """Initialize the per-WiFi client count sensor."""
+        super().__init__(coordinator)
+        self._site_id = site_id
+        self._wifi_id = wifi_id
+
+        wifi_data = self._get_wifi_data()
+        wifi_name = wifi_data.get("name") or wifi_data.get("ssid", wifi_id)
+
+        self._attr_unique_id = f"{site_id}_{wifi_id}_client_count"
+        self._attr_name = "Connected clients"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, f"wifi_{wifi_id}")},
+            name=f"WiFi: {wifi_name}",
+            manufacturer=MANUFACTURER,
+            model="WiFi Network",
+        )
+
+    def _get_wifi_data(self) -> dict[str, Any]:
+        """Get WiFi data for this network from the coordinator."""
+        result: dict[str, Any] = (
+            self.coordinator.data.get("wifi", {})
+            .get(self._site_id, {})
+            .get(self._wifi_id, {})
+        )
+        return result
+
+    @property
+    def available(self) -> bool:
+        """Return True if entity is available."""
+        return bool(self.coordinator.last_update_success and self._get_wifi_data())
+
+    @property
+    def native_value(self) -> StateType:
+        """Return the number of connected clients on this WiFi network."""
+        count = self._get_wifi_data().get("num_connected_clients")
+        return count if isinstance(count, int) else 0
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return WiFi network details."""
+        wifi_data = self._get_wifi_data()
+        return {
+            "ssid": wifi_data.get("ssid") or wifi_data.get("name"),
+            "is_guest": wifi_data.get("is_guest", wifi_data.get("isGuest", False)),
+            "enabled": wifi_data.get("enabled", True),
+        }

@@ -2,12 +2,17 @@
 
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING, Any
+
+from pydantic import ValidationError
 
 from ..models.viewer import Viewer
 
 if TYPE_CHECKING:
     from ..client import UniFiProtectClient
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class ViewersEndpoint:
@@ -43,9 +48,20 @@ class ViewersEndpoint:
         data = (
             response.get("data", response) if isinstance(response, dict) else response
         )
-        if isinstance(data, list):
-            return [Viewer.model_validate(item) for item in data]
-        return []
+        if not isinstance(data, list):
+            return []
+
+        viewers: list[Viewer] = []
+        for item in data:
+            try:
+                viewers.append(Viewer.model_validate(item))
+            except ValidationError as err:
+                _LOGGER.warning(
+                    "Skipping viewer that failed to parse (id=%s): %s",
+                    item.get("id") if isinstance(item, dict) else "?",
+                    err,
+                )
+        return viewers
 
     async def get(self, viewer_id: str, site_id: str | None = None) -> Viewer:
         """

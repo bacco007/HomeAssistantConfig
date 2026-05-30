@@ -238,29 +238,87 @@ class UnifiFacadeCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         """Update camera settings (alias for async_update_camera)."""
         await self.async_update_camera(camera_id, **kwargs)
 
+    def _resolve_client_action_target(
+        self, site_id: str, client_id: str
+    ) -> tuple[str, str]:
+        """
+        Resolve the classic site name and client MAC for a client action.
+
+        The official Integration API has no block/unblock/reconnect/forget
+        operations, so these are issued against the classic ``cmd/stamgr``
+        endpoint, which is scoped by the classic site name and identifies the
+        client by MAC address rather than the integration client UUID.
+        """
+        clients = self.data.get("clients", {}).get(site_id, {})
+        client_data = clients.get(client_id, {}) if isinstance(clients, dict) else {}
+        mac = (
+            client_data.get("macAddress")
+            or client_data.get("mac_address")
+            or client_data.get("mac")
+        )
+        if not mac:
+            msg = f"Unable to determine MAC address for client {client_id}"
+            raise HomeAssistantError(msg)
+
+        # Fall back to "default" (the standard single-site name) when the
+        # legacy site mapping has not been resolved yet.
+        site_name = self._device_coordinator.get_legacy_site_name(site_id) or "default"
+        return site_name, mac
+
     async def async_unblock_client(self, site_id: str, client_id: str) -> None:
         """Unblock a network client."""
+        site_name, mac = self._resolve_client_action_target(site_id, client_id)
         await self._async_execute_api_action(
             f"Unable to unblock client {client_id}",
             self.network_client.clients.unblock,
-            site_id,
-            client_id,
+            site_name,
+            mac,
         )
 
     async def async_block_client(self, site_id: str, client_id: str) -> None:
         """Block a network client."""
+        site_name, mac = self._resolve_client_action_target(site_id, client_id)
         await self._async_execute_api_action(
             f"Unable to block client {client_id}",
             self.network_client.clients.block,
-            site_id,
-            client_id,
+            site_name,
+            mac,
         )
 
     async def async_reconnect_client(self, site_id: str, client_id: str) -> None:
         """Reconnect a network client."""
+        site_name, mac = self._resolve_client_action_target(site_id, client_id)
         await self._async_execute_api_action(
             f"Unable to reconnect client {client_id}",
             self.network_client.clients.reconnect,
+            site_name,
+            mac,
+        )
+
+    async def async_forget_client(self, site_id: str, client_id: str) -> None:
+        """Forget/remove a network client."""
+        site_name, mac = self._resolve_client_action_target(site_id, client_id)
+        await self._async_execute_api_action(
+            f"Unable to forget client {client_id}",
+            self.network_client.clients.forget,
+            site_name,
+            mac,
+        )
+
+    async def async_authorize_guest(self, site_id: str, client_id: str) -> None:
+        """Authorize guest access for a network client."""
+        await self._async_execute_api_action(
+            f"Unable to authorize guest client {client_id}",
+            self.network_client.clients.authorize_guest,
+            site_id,
+            client_id,
+        )
+
+    async def async_unauthorize_guest(self, site_id: str, client_id: str) -> None:
+        """Remove guest authorization for a network client."""
+        await self._async_execute_api_action(
+            f"Unable to unauthorize guest client {client_id}",
+            self.network_client.clients.unauthorize_guest,
             site_id,
             client_id,
         )

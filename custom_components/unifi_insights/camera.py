@@ -111,14 +111,13 @@ class UnifiProtectCamera(UnifiProtectEntity, Camera):
     ) -> bytes | None:
         """Return a still image from the camera."""
         _LOGGER.debug("Getting camera image for %s", self._device_id)
+        # The Protect snapshot endpoint does not accept width/height params
+        # (they cause an HTTP 500). HA scales the returned image as needed.
+        _ = (width, height)
 
         try:
-            # Use the correct library API: cameras.get_snapshot()
-            # The library supports width and height parameters
             snapshot = await self.coordinator.protect_client.cameras.get_snapshot(  # type: ignore[union-attr]
                 self._device_id,
-                width=width or 1920,
-                height=height or 1080,
             )
             return snapshot if isinstance(snapshot, bytes) else None
         except Exception:

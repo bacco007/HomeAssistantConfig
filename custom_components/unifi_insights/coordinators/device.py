@@ -61,6 +61,10 @@ class UnifiDeviceCoordinator(UnifiBaseCoordinator):
             update_interval=SCAN_INTERVAL_DEVICE,
         )
         self.config_coordinator = config_coordinator
+        # Map integration site IDs to classic ("legacy") site names used by the
+        # /api/s/{site} endpoints. Populated on each update and reused for
+        # classic-API client actions (block/unblock/reconnect/forget).
+        self._legacy_site_names: dict[str, str] = {}
         # Track previous device IDs for stale device cleanup (Gold requirement)
         self._previous_network_device_ids: set[str] = set()
         # Track previous port byte counts for rate computation
@@ -472,6 +476,16 @@ class UnifiDeviceCoordinator(UnifiBaseCoordinator):
 
             return devices_dict, stats_dict, clients_dict
 
+        except (UniFiConnectionError, UniFiTimeoutError) as err:
+            # Transient controller connectivity issues are common (e.g. the
+            # console rebooting or a brief network blip). Log concisely without
+            # a full traceback to avoid flooding the log.
+            _LOGGER.warning(
+                "Device coordinator: Could not reach controller for site %s: %s",
+                site_id,
+                err,
+            )
+            return None
         except Exception:
             _LOGGER.exception("Device coordinator: Error processing site %s", site_id)
             return None
@@ -497,6 +511,7 @@ class UnifiDeviceCoordinator(UnifiBaseCoordinator):
             try:
                 legacy_sites = await self.network_client.sites.get_legacy_all()
                 legacy_site_names = self._map_legacy_site_names(site_ids, legacy_sites)
+                self._legacy_site_names = legacy_site_names
             except Exception as err:
                 _LOGGER.debug(
                     "Device coordinator: Unable to fetch legacy site mapping: %s",
@@ -662,3 +677,12 @@ class UnifiDeviceCoordinator(UnifiBaseCoordinator):
         """Get all clients for a site."""
         result: dict[str, Any] = self.data.get("clients", {}).get(site_id, {})
         return result
+
+    def get_legacy_site_name(self, site_id: str) -> str | None:
+        """
+        Return the classic ("legacy") site name for an integration site ID.
+
+        Used for classic-API client actions, which are scoped by the site name
+        (for example ``default``) rather than the integration site UUID.
+        """
+        return self._legacy_site_names.get(site_id)

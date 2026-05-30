@@ -758,10 +758,6 @@ class UnifiClientBlockSwitch(CoordinatorEntity["UnifiFacadeCoordinator"], Switch
             f"Unable to allow client {self._client_id}",
             self._site_id,
             self._client_id,
-            fallback_factory=lambda: self.coordinator.network_client.clients.unblock(
-                self._site_id,
-                self._client_id,
-            ),
         )
         _LOGGER.info(
             "Successfully allowed client %s in site %s",
@@ -781,10 +777,6 @@ class UnifiClientBlockSwitch(CoordinatorEntity["UnifiFacadeCoordinator"], Switch
             f"Unable to block client {self._client_id}",
             self._site_id,
             self._client_id,
-            fallback_factory=lambda: self.coordinator.network_client.clients.block(
-                self._site_id,
-                self._client_id,
-            ),
         )
         _LOGGER.info(
             "Successfully blocked client %s in site %s",

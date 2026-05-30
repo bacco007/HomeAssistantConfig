@@ -2,13 +2,18 @@
 
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING, Any
+
+from pydantic import ValidationError
 
 from ..models import Camera, RecordingMode
 from ..models.files import RTSPSStream, TalkbackSession
 
 if TYPE_CHECKING:
     from ..client import UniFiProtectClient
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class CamerasEndpoint:
@@ -44,9 +49,23 @@ class CamerasEndpoint:
         data = (
             response.get("data", response) if isinstance(response, dict) else response
         )
-        if isinstance(data, list):
-            return [Camera.model_validate(item) for item in data]
-        return []
+        if not isinstance(data, list):
+            return []
+
+        cameras: list[Camera] = []
+        for item in data:
+            try:
+                cameras.append(Camera.model_validate(item))
+            except ValidationError as err:
+                # A single malformed/unexpected camera payload (e.g. a new field
+                # shape introduced by a Protect release) must not hide every
+                # other camera. Skip it and keep going.
+                _LOGGER.warning(
+                    "Skipping camera that failed to parse (id=%s): %s",
+                    item.get("id") if isinstance(item, dict) else "?",
+                    err,
+                )
+        return cameras
 
     async def get(self, camera_id: str, site_id: str | None = None) -> Camera:
         """
@@ -121,31 +140,33 @@ class CamerasEndpoint:
     async def get_snapshot(
         self,
         camera_id: str,
-        width: int | None = None,
-        height: int | None = None,
         site_id: str | None = None,
+        *,
+        high_quality: bool = False,
     ) -> bytes:
         """
         Get a snapshot from the camera.
 
+        The Protect Integration API snapshot endpoint does not accept width or
+        height query parameters (sending them returns HTTP 500). It optionally
+        accepts ``highQuality`` for cameras that support a full-HD snapshot.
+
         Args:
             camera_id: The camera ID.
-            width: Optional width for the snapshot.
-            height: Optional height for the snapshot.
             site_id: The site ID (required for REMOTE connections, ignored for LOCAL).
+            high_quality: Request a full-HD snapshot (only supported on some
+                cameras; ignored by the API when unsupported).
 
         Returns:
             The snapshot image bytes.
 
         """
         params: dict[str, Any] = {}
-        if width:
-            params["w"] = width
-        if height:
-            params["h"] = height
+        if high_quality:
+            params["highQuality"] = "true"
 
         path = self._client.build_api_path(f"/cameras/{camera_id}/snapshot", site_id)
-        return await self._client._get_binary(path, params=params)
+        return await self._client._get_binary(path, params=params or None)
 
     async def restart(self, camera_id: str, site_id: str | None = None) -> bool:
         """

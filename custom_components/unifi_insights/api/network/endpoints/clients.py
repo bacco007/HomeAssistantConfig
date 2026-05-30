@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from ...exceptions import UniFiResponseError
 from ..models import Client
 
 if TYPE_CHECKING:
@@ -112,6 +113,34 @@ class ClientsEndpoint:
             return [Client.model_validate(item) for item in data]
         return []
 
+    async def get_active_legacy(self, site_name: str) -> list[dict[str, Any]]:
+        """
+        List active clients from the classic API (includes SSID/essid).
+
+        The official Integration API ``/clients`` endpoint does not populate the
+        ``essid`` field, so per-SSID client counts are derived from the classic
+        ``/stat/sta`` endpoint instead.
+
+        Args:
+            site_name: The classic site name (for example ``default``).
+
+        Returns:
+            List of raw active-client dictionaries.
+
+        """
+        path = self._client.build_legacy_api_path(site_name, "/stat/sta")
+        response = await self._client._get(path)
+
+        if response is None:
+            return []
+
+        data = (
+            response.get("data", response) if isinstance(response, dict) else response
+        )
+        if isinstance(data, list):
+            return [item for item in data if isinstance(item, dict)]
+        return []
+
     async def get(self, site_id: str, client_id: str) -> Client:
         """
         Get a specific client.
@@ -135,100 +164,177 @@ class ClientsEndpoint:
                 return Client.model_validate(data[0])
         raise ValueError(f"Client {client_id} not found")
 
-    async def block(self, site_id: str, client_id: str) -> bool:
+    async def _stamgr_command(
+        self,
+        site_name: str,
+        command: str,
+        mac: str,
+    ) -> bool:
         """
-        Block a client.
+        Run a classic ("legacy") station-manager command for a client.
+
+        The official Network Integration API does not expose block, unblock,
+        reconnect, or forget operations (the client resource is read-only and
+        ``/clients/{id}/actions`` only supports guest authorization). These
+        actions are therefore issued against the classic API endpoint
+        ``/api/s/{site}/cmd/stamgr``, which accepts the client MAC address.
 
         Args:
-            site_id: The site ID.
-            client_id: The client ID.
+            site_name: The classic site name (for example ``default``).
+            command: The stamgr command (``block-sta``, ``unblock-sta``,
+                ``kick-sta``, ``forget-sta``).
+            mac: The client MAC address.
 
         Returns:
             True if successful.
 
         """
-        path = self._client.build_api_path(
-            f"/sites/{site_id}/clients/{client_id}/block"
+        path = self._client.build_legacy_api_path(site_name, "/cmd/stamgr")
+        response = await self._client._post(
+            path, json_data={"cmd": command, "mac": mac}
         )
-        await self._client._post(path)
+        # The classic API can return HTTP 200 with an error in the envelope.
+        if isinstance(response, dict):
+            meta = response.get("meta")
+            if isinstance(meta, dict) and meta.get("rc") == "error":
+                msg = meta.get("msg", "unknown error")
+                raise UniFiResponseError(
+                    f"Classic API command '{command}' failed: {msg}",
+                    status_code=200,
+                    response_body=str(meta),
+                )
         return True
 
-    async def unblock(self, site_id: str, client_id: str) -> bool:
+    async def block(self, site_name: str, mac: str) -> bool:
         """
-        Unblock a client.
+        Block a client (classic API ``block-sta``).
 
         Args:
-            site_id: The site ID.
-            client_id: The client ID.
+            site_name: The classic site name (for example ``default``).
+            mac: The client MAC address.
 
         Returns:
             True if successful.
 
         """
-        path = self._client.build_api_path(
-            f"/sites/{site_id}/clients/{client_id}/unblock"
-        )
-        await self._client._post(path)
-        return True
+        return await self._stamgr_command(site_name, "block-sta", mac)
 
-    async def reconnect(self, site_id: str, client_id: str) -> bool:
+    async def unblock(self, site_name: str, mac: str) -> bool:
         """
-        Force a client to reconnect.
+        Unblock a client (classic API ``unblock-sta``).
 
         Args:
-            site_id: The site ID.
-            client_id: The client ID.
+            site_name: The classic site name (for example ``default``).
+            mac: The client MAC address.
 
         Returns:
             True if successful.
 
         """
-        path = self._client.build_api_path(
-            f"/sites/{site_id}/clients/{client_id}/reconnect"
-        )
-        await self._client._post(path)
-        return True
+        return await self._stamgr_command(site_name, "unblock-sta", mac)
 
-    async def forget(self, site_id: str, client_id: str) -> bool:
+    async def reconnect(self, site_name: str, mac: str) -> bool:
         """
-        Forget/remove a client from the network.
+        Force a client to reconnect (classic API ``kick-sta``).
 
         Args:
-            site_id: The site ID.
-            client_id: The client ID.
+            site_name: The classic site name (for example ``default``).
+            mac: The client MAC address.
 
         Returns:
             True if successful.
 
         """
-        path = self._client.build_api_path(f"/sites/{site_id}/clients/{client_id}")
-        await self._client._delete(path)
-        return True
+        return await self._stamgr_command(site_name, "kick-sta", mac)
+
+    async def forget(self, site_name: str, mac: str) -> bool:
+        """
+        Forget/remove a client from the network (classic API ``forget-sta``).
+
+        Args:
+            site_name: The classic site name (for example ``default``).
+            mac: The client MAC address.
+
+        Returns:
+            True if successful.
+
+        """
+        return await self._stamgr_command(site_name, "forget-sta", mac)
 
     async def execute_action(
         self,
-        site_id: str,
-        client_id: str,
+        site_name: str,
+        mac: str,
         action: str,
     ) -> bool:
         """
-        Execute an action on a client.
+        Execute a client action via the classic station-manager endpoint.
 
         Args:
-            site_id: The site ID.
-            client_id: The client ID.
-            action: The action (block, unblock, reconnect).
+            site_name: The classic site name (for example ``default``).
+            mac: The client MAC address.
+            action: The action (``block``, ``unblock``, ``reconnect``,
+                ``forget``).
 
         Returns:
             True if successful.
 
         """
-        valid_actions = {"block", "unblock", "reconnect"}
-        if action not in valid_actions:
-            raise ValueError(f"Action must be one of: {', '.join(valid_actions)}")
+        command_map = {
+            "block": "block-sta",
+            "unblock": "unblock-sta",
+            "reconnect": "kick-sta",
+            "forget": "forget-sta",
+        }
+        command = command_map.get(action)
+        if command is None:
+            raise ValueError(
+                f"Action must be one of: {', '.join(sorted(command_map))}"
+            )
+        return await self._stamgr_command(site_name, command, mac)
 
+    async def authorize_guest(
+        self,
+        site_id: str,
+        client_id: str,
+    ) -> bool:
+        """
+        Authorize guest access for a client (official Integration API).
+
+        Args:
+            site_id: The integration site ID.
+            client_id: The client ID.
+
+        Returns:
+            True if successful.
+
+        """
         path = self._client.build_api_path(
-            f"/sites/{site_id}/clients/{client_id}/{action}"
+            f"/sites/{site_id}/clients/{client_id}/actions"
         )
-        await self._client._post(path)
+        await self._client._post(path, json_data={"action": "AUTHORIZE_GUEST_ACCESS"})
+        return True
+
+    async def unauthorize_guest(
+        self,
+        site_id: str,
+        client_id: str,
+    ) -> bool:
+        """
+        Remove guest authorization for a client (official Integration API).
+
+        Args:
+            site_id: The integration site ID.
+            client_id: The client ID.
+
+        Returns:
+            True if successful.
+
+        """
+        path = self._client.build_api_path(
+            f"/sites/{site_id}/clients/{client_id}/actions"
+        )
+        await self._client._post(
+            path, json_data={"action": "UNAUTHORIZE_GUEST_ACCESS"}
+        )
         return True

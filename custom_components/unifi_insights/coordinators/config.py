@@ -59,6 +59,140 @@ class UnifiConfigCoordinator(UnifiBaseCoordinator):
             "network_info": {},
         }
 
+    @staticmethod
+    def _map_legacy_site_names(
+        integration_sites: dict[str, dict[str, Any]],
+        legacy_sites: list[dict[str, Any]],
+    ) -> dict[str, str]:
+        """Map integration site IDs to classic ("legacy") site names."""
+
+        def _norm(value: Any) -> str | None:
+            if not isinstance(value, str):
+                return None
+            stripped = value.strip().lower()
+            return stripped or None
+
+        legacy: list[tuple[str, set[str]]] = []
+        for site in legacy_sites:
+            name = site.get("name")
+            if not isinstance(name, str) or not name:
+                continue
+            candidates = {
+                c
+                for c in (
+                    _norm(name),
+                    _norm(site.get("desc")),
+                    _norm(site.get("description")),
+                )
+                if c is not None
+            }
+            legacy.append((name, candidates))
+
+        mappings: dict[str, str] = {}
+        for site_id, site_data in integration_sites.items():
+            candidates = {
+                c
+                for c in (
+                    _norm(site_id),
+                    _norm(site_data.get("name")),
+                    _norm(site_data.get("description")),
+                    _norm(site_data.get("desc")),
+                )
+                if c is not None
+            }
+            for legacy_name, legacy_candidates in legacy:
+                if candidates & legacy_candidates:
+                    mappings[site_id] = legacy_name
+                    break
+            if site_id not in mappings and len(legacy) == 1:
+                mappings[site_id] = legacy[0][0]
+        return mappings
+
+    @staticmethod
+    def _wifi_qr_payload(
+        ssid: str,
+        passphrase: str | None,
+        security: str | None,
+        *,
+        hidden: bool,
+    ) -> str:
+        """
+        Build a standard ``WIFI:`` QR payload string.
+
+        Follows the de-facto WiFi network config QR format consumed by phone
+        cameras: ``WIFI:T:<auth>;S:<ssid>;P:<password>;H:<hidden>;;``.
+        """
+
+        def _escape(value: str) -> str:
+            for char in ("\\", ";", ",", ":", '"'):
+                value = value.replace(char, f"\\{char}")
+            return value
+
+        security_lower = (security or "").lower()
+        if not passphrase or security_lower in ("", "open", "none"):
+            auth = "nopass"
+        elif "wep" in security_lower:
+            auth = "WEP"
+        else:
+            auth = "WPA"
+
+        parts = [f"T:{auth}", f"S:{_escape(ssid)}"]
+        if auth != "nopass" and passphrase:
+            parts.append(f"P:{_escape(passphrase)}")
+        if hidden:
+            parts.append("H:true")
+        return "WIFI:" + ";".join(parts) + ";;"
+
+    @staticmethod
+    def _enrich_wifi(
+        wifi_dict: dict[str, dict[str, Any]],
+        legacy_configs: list[dict[str, Any]],
+        active_clients: list[dict[str, Any]],
+    ) -> None:
+        """
+        Add secrets, per-SSID client counts, and QR payloads to WiFi data.
+
+        Secrets come from the classic ``/rest/wlanconf`` data (the official API
+        redacts them); per-SSID counts are derived from active clients' essid.
+        """
+        configs_by_name = {
+            config.get("name"): config
+            for config in legacy_configs
+            if config.get("name")
+        }
+
+        counts: dict[str, int] = {}
+        for client in active_clients:
+            if client.get("is_wired"):
+                continue
+            essid = client.get("essid")
+            if essid:
+                counts[essid] = counts.get(essid, 0) + 1
+
+        for wifi in wifi_dict.values():
+            ssid = wifi.get("name") or wifi.get("ssid")
+            if not ssid:
+                continue
+
+            wifi["num_connected_clients"] = counts.get(ssid, 0)
+
+            config = configs_by_name.get(ssid)
+            if config is None:
+                continue
+
+            passphrase = config.get("x_passphrase")
+            security = config.get("security")
+            hidden = bool(config.get("hide_ssid"))
+            wifi["ssid"] = ssid
+            wifi["passphrase"] = passphrase
+            wifi["security"] = security
+            wifi["wpa_mode"] = config.get("wpa_mode")
+            wifi["hide_ssid"] = hidden
+            wifi["is_guest"] = config.get("is_guest", wifi.get("isGuest", False))
+            wifi["qr_code"] = UnifiConfigCoordinator._wifi_qr_payload(
+                ssid, passphrase, security, hidden=hidden
+            )
+
     async def _async_update_data(self) -> dict[str, Any]:
         """Fetch configuration data from API."""
         try:
@@ -75,6 +209,20 @@ class UnifiConfigCoordinator(UnifiBaseCoordinator):
                 len(self.data["sites"]),
             )
 
+            # Resolve classic site names so we can enrich WiFi data with secrets
+            # and per-SSID client counts that the official API does not expose.
+            legacy_site_names: dict[str, str] = {}
+            try:
+                legacy_sites = await self.network_client.sites.get_legacy_all()
+                legacy_site_names = self._map_legacy_site_names(
+                    self.data["sites"], legacy_sites
+                )
+            except Exception as err:
+                _LOGGER.debug(
+                    "Config coordinator: Unable to fetch legacy site mapping: %s",
+                    err,
+                )
+
             # Fetch WiFi networks for each site
             # Note: site_id cannot be None here due to dict comprehension filter above
             for site_id in self.data["sites"]:
@@ -90,6 +238,29 @@ class UnifiConfigCoordinator(UnifiBaseCoordinator):
                         wifi_id = wifi.get("id")
                         if wifi_id:
                             wifi_dict[wifi_id] = wifi
+                    # Enrich with classic data (secrets, per-SSID counts, QR).
+                    legacy_name = legacy_site_names.get(site_id)
+                    if legacy_name:
+                        try:
+                            legacy_configs = (
+                                await self.network_client.wifi.get_legacy_configs(
+                                    legacy_name
+                                )
+                            )
+                            active_clients = (
+                                await self.network_client.clients.get_active_legacy(
+                                    legacy_name
+                                )
+                            )
+                            self._enrich_wifi(wifi_dict, legacy_configs, active_clients)
+                        except Exception as err:
+                            _LOGGER.debug(
+                                "Config coordinator: Unable to enrich WiFi data "
+                                "for site %s: %s",
+                                site_id,
+                                err,
+                            )
+
                     self.data["wifi"][site_id] = wifi_dict
                     _LOGGER.debug(
                         "Config coordinator: Successfully fetched %d WiFi networks "

@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import logging
 from enum import Enum
 
 from pydantic import BaseModel, Field
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class ViewerState(str, Enum):
@@ -13,6 +16,13 @@ class ViewerState(str, Enum):
     CONNECTED = "CONNECTED"
     CONNECTING = "CONNECTING"
     DISCONNECTED = "DISCONNECTED"
+    UNKNOWN = "UNKNOWN"
+
+    @classmethod
+    def _missing_(cls, value: object) -> ViewerState:
+        """Map unrecognized states to ``UNKNOWN`` instead of raising."""
+        _LOGGER.debug("Unknown ViewerState value %r; mapping to UNKNOWN", value)
+        return cls.UNKNOWN
 
 
 class Viewer(BaseModel):

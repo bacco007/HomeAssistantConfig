@@ -370,10 +370,6 @@ class UnifiClientReconnectButton(ButtonEntity):
             f"Unable to reconnect client {self._client_id}",
             self._site_id,
             self._client_id,
-            fallback_factory=lambda: self.coordinator.network_client.clients.reconnect(
-                self._site_id,
-                self._client_id,
-            ),
         )
         _LOGGER.info(
             "Successfully reconnected client %s in site %s",

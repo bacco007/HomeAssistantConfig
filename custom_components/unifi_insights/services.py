@@ -245,9 +245,10 @@ AUTHORIZE_GUEST_SCHEMA = vol.Schema(
     {
         vol.Required("site_id"): cv.string,
         vol.Required("client_id"): cv.string,
-        vol.Optional("duration_minutes", default=480): vol.All(
-            vol.Coerce(int), vol.Range(min=1)
-        ),
+        # Note: the official UniFi Integration API authorize action does not
+        # accept duration or bandwidth/data limits. These options are accepted
+        # for backwards compatibility but ignored (a warning is logged).
+        vol.Optional("duration_minutes"): vol.All(vol.Coerce(int), vol.Range(min=1)),
         vol.Optional("upload_limit_kbps"): vol.All(vol.Coerce(int), vol.Range(min=0)),
         vol.Optional("download_limit_kbps"): vol.All(vol.Coerce(int), vol.Range(min=0)),
         vol.Optional("data_limit_mb"): vol.All(vol.Coerce(int), vol.Range(min=0)),
@@ -578,13 +579,38 @@ async def async_setup_services(hass: HomeAssistant) -> None:
 
         await coordinator.async_set_chime_repeat(chime_id, repeat_times)
 
-    async def async_handle_authorize_guest(_call: ServiceCall) -> None:
+    async def async_handle_authorize_guest(call: ServiceCall) -> None:
         """Handle the authorize_guest service call."""
-        msg = (
-            "authorize_guest is not supported by the current UniFi API. "
-            "Use the UniFi controller UI to authorize guests."
-        )
-        raise HomeAssistantError(msg)
+        site_id = call.data["site_id"]
+        client_id = call.data["client_id"]
+
+        # The official Integration API authorize action does not accept the
+        # duration or bandwidth/data limits the legacy guest portal supported;
+        # warn so users understand those fields are ignored.
+        ignored = [
+            key
+            for key in (
+                "duration_minutes",
+                "upload_limit_kbps",
+                "download_limit_kbps",
+                "data_limit_mb",
+            )
+            if call.data.get(key) is not None
+        ]
+        if ignored:
+            _LOGGER.warning(
+                "authorize_guest ignores unsupported option(s) %s; the UniFi "
+                "Integration API authorizes guests using the network's default "
+                "guest policy",
+                ", ".join(ignored),
+            )
+
+        coordinator = _get_first_coordinator(hass)
+        if not coordinator:
+            msg = "No UniFi Insights coordinator found"
+            raise HomeAssistantError(msg)
+
+        await coordinator.async_authorize_guest(site_id, client_id)
 
     async def async_handle_generate_voucher(call: ServiceCall) -> None:
         """Handle the generate_voucher service call."""

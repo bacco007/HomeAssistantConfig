@@ -2,14 +2,32 @@
 
 from __future__ import annotations
 
+import logging
 from datetime import datetime
 from enum import Enum
 from typing import Any
 
 from pydantic import BaseModel, Field
 
+_LOGGER = logging.getLogger(__name__)
 
-class CameraType(str, Enum):
+
+class _TolerantStrEnum(str, Enum):
+    """String enum that maps unknown values to ``UNKNOWN`` instead of raising.
+
+    UniFi Protect periodically introduces new camera states, models, and modes
+    (for example with the 7.1 release). Without this fallback a single
+    unrecognized value would raise a ``ValidationError`` and cause the whole
+    camera/list response to fail parsing, silently hiding every device.
+    """
+
+    @classmethod
+    def _missing_(cls, value: object) -> _TolerantStrEnum:
+        _LOGGER.debug("Unknown %s value %r; mapping to UNKNOWN", cls.__name__, value)
+        return cls.UNKNOWN  # type: ignore[attr-defined,no-any-return]
+
+
+class CameraType(_TolerantStrEnum):
     """Types of UniFi cameras."""
 
     UVC_G3 = "UVC G3"
@@ -33,7 +51,7 @@ class CameraType(str, Enum):
     UNKNOWN = "Unknown"
 
 
-class CameraState(str, Enum):
+class CameraState(_TolerantStrEnum):
     """Camera connection states."""
 
     CONNECTED = "CONNECTED"

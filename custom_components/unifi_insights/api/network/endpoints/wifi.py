@@ -43,6 +43,35 @@ class WifiEndpoint:
         """
         self._client = client
 
+    async def get_legacy_configs(self, site_name: str) -> list[dict[str, Any]]:
+        """
+        List WLAN configurations from the classic API.
+
+        The official Integration API redacts secrets (``ssid``, ``passphrase``,
+        ``security`` are returned as ``null``). The classic ``/rest/wlanconf``
+        endpoint exposes the SSID name, passphrase, and security mode, which are
+        required to build WiFi QR codes.
+
+        Args:
+            site_name: The classic site name (for example ``default``).
+
+        Returns:
+            List of raw WLAN configuration dictionaries.
+
+        """
+        path = self._client.build_legacy_api_path(site_name, "/rest/wlanconf")
+        response = await self._client._get(path)
+
+        if response is None:
+            return []
+
+        data = (
+            response.get("data", response) if isinstance(response, dict) else response
+        )
+        if isinstance(data, list):
+            return [item for item in data if isinstance(item, dict)]
+        return []
+
     async def get_all(
         self,
         site_id: str,

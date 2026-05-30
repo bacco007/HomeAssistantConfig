@@ -7,12 +7,12 @@
   "dependencies": ["ffmpeg", "stream"],
   "dhcp": [],
   "documentation": "https://github.com/ruaan-deysel/ha-unifi-insights",
-  "homeassistant": "2026.4.1",
   "integration_type": "hub",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/ruaan-deysel/ha-unifi-insights/issues",
   "loggers": ["custom_components.unifi_insights"],
+  "requirements": ["segno==1.6.6"],
   "usb": [],
-  "version": "2026.5.0",
+  "version": "2026.6.0",
   "zeroconf": []
 }
