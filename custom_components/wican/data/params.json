@@ -1,0 +1,667 @@
+{
+  "AC_COMP": {
+    "description": "AC Compressor (ON/OFF)",
+    "settings": {
+      "unit": "",
+      "class": "none"
+    }
+  },
+  "AC_C_C": {
+    "description": "AC Charging Current",
+    "settings": {
+      "unit": "A",
+      "class": "battery"
+    }
+  },
+  "AC_C_V": {
+    "description": "AC Charging Voltage",
+    "settings": {
+      "unit": "V",
+      "class": "battery"
+    }
+  },
+  "AC_P": {
+    "description": "AC Phases Connected",
+    "settings": {
+      "unit": "",
+      "class": "none"
+    }
+  },
+  "ALT_DUTY": {
+    "description": "Alternator Duty Cycle",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "BATT_CAPACITY": {
+    "description": "EV Battery Capacity",
+    "settings": {
+      "unit": "Ah",
+      "class": "battery"
+    }
+  },
+  "BATT_TEMP": {
+    "description": "Primary Battery Temperature",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature",
+      "min": "-40",
+      "max": "80"
+    }
+  },
+  "CHARGER_CONNECTED": {
+    "description": "Is the EV charger connected",
+    "settings": {
+      "unit": "",
+      "class": "plug",
+      "type": "binary_sensor"
+    }
+  },
+  "CHARGER_DC_PWR": {
+    "description": "Battery Charger DC Power",
+    "settings": {
+      "unit": "kW",
+      "class": "power"
+    }
+  },
+  "CHARGING": {
+    "description": "Is EV Charging",
+    "settings": {
+      "unit": "",
+      "class": "battery_charging",
+      "type": "binary_sensor"
+    }
+  },
+  "CHARGING_DC": {
+    "description": "Is DC Charger connected",
+    "settings": {
+      "unit": "",
+      "class": "plug",
+      "type": "binary_sensor"
+    }
+  },
+  "COOLANT_TMP": {
+    "description": "Coolant Temperature",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "DIST_SINCE_FULL_CHARGE": {
+    "description": "Distance Traveled Since Last Full Charge",
+    "settings": {
+      "unit": "km",
+      "class": "distance",
+      "min": "0"
+    }
+  },
+  "DRIVE_MODE": {
+    "description": "Drive Mode",
+    "settings": {
+      "unit": "",
+      "class": "none"
+    }
+  },
+  "ENGINE_OIL_PRES": {
+    "description": "Engine Oil Pressure",
+    "settings": {
+      "unit": "KPa",
+      "class": "pressure"
+    }
+  },
+  "ENGINE_OIL_TEMP": {
+    "description": "Engine Oil Temperature",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "ENGINE_RPM": {
+    "description": "Engine RPM",
+    "settings": {
+      "unit": "RPM",
+      "class": "frequency"
+    }
+  },
+  "FUEL": {
+    "description": "Fuel Level",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "FUEL_PRESSURE": {
+    "description": "Fuel Pressure",
+    "settings": {
+      "unit": "kPa",
+      "class": "pressure"
+    }
+  },
+  "FUEL_PRESSURE_D": {
+    "description": "Fuel Pressure Desired",
+    "settings": {
+      "unit": "kPa",
+      "class": "pressure"
+    }
+  },
+  "FUEL_PUMP_DUTY": {
+    "description": "Fuel Pump Duty Cycle",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "FUEL_RATE": {
+    "description": "Fuel Rate",
+    "settings": {
+      "unit": "g/s",
+      "class": "none"
+    }
+  },
+  "FUEL_SYS_STAT": {
+    "description": "Fuel System Status (Open/Closed Loop)",
+    "settings": {
+      "unit": "",
+      "class": "none"
+    }
+  },
+  "GEAR": {
+    "description": "Which gear is the car in",
+    "settings": {
+      "unit": "none",
+      "class": "none"
+    }
+  },
+  "HV_A": {
+    "description": "High Voltage Battery current",
+    "settings": {
+      "unit": "A",
+      "class": "current"
+    }
+  },
+  "HV_AV": {
+    "description": "High Voltage Battery Power Available",
+    "settings": {
+      "unit": "kW",
+      "class": "battery"
+    }
+  },
+  "HV_CAPACITY": {
+    "description": "Capacity of HV battery",
+    "settings": {
+      "unit": "Ah",
+      "class": "battery"
+    }
+  },
+  "HV_CAPACITY_KWH": {
+    "description": "HV Battery capacity in kWh",
+    "settings": {
+      "unit": "kWh",
+      "class": "none"
+    }
+  },
+  "HV_CAPACITY_R": {
+    "description": "HV Battery capacity Remaining",
+    "settings": {
+      "unit": "kWh",
+      "class": "none"
+    }
+  },
+  "HV_C_D_MAX": {
+    "description": "HV Battery max deterioration",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "HV_C_D_MAX_NO": {
+    "description": "HV Battery which cell has highest deterioration",
+    "settings": {
+      "unit": "none",
+      "class": "none"
+    }
+  },
+  "HV_C_D_MIN": {
+    "description": "HV Battery minimum deterioration",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "HV_C_D_MIN_NO": {
+    "description": "HV Battery which cell has lowest deterioration",
+    "settings": {
+      "unit": "none",
+      "class": "none"
+    }
+  },
+  "HV_C_V_MAX": {
+    "description": "HV Battery Highest cell voltage",
+    "settings": {
+      "unit": "V",
+      "class": "voltage"
+    }
+  },
+  "HV_C_V_MAX_NO": {
+    "description": "HV Battery which cell is highest",
+    "settings": {
+      "unit": "none",
+      "class": "none"
+    }
+  },
+  "HV_C_V_MIN": {
+    "description": "HV Battery Lowest cell voltage",
+    "settings": {
+      "unit": "V",
+      "class": "voltage"
+    }
+  },
+  "HV_C_V_MIN_NO": {
+    "description": "HV Battery which cell is lowest",
+    "settings": {
+      "unit": "none",
+      "class": "none"
+    }
+  },
+  "HV_T_1": {
+    "description": "HV Battery Temp Sensor 1",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "HV_T_2": {
+    "description": "HV Battery Temp Sensor 2",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "HV_T_3": {
+    "description": "HV Battery Temp Sensor 3",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "HV_T_4": {
+    "description": "HV Battery Temp Sensor 4",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "HV_T_5": {
+    "description": "HV Battery Temp Sensor 5",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "HV_T_A": {
+    "description": "Average temp reading from HV Battery",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "HV_T_I": {
+    "description": "HV Battery Inlet Temp",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "HV_T_MAX": {
+    "description": "Highest temp reading from HV Battery",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "HV_T_MIN": {
+    "description": "Lowest temp reading from HV Battery",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "HV_V": {
+    "description": "High Voltage Battery Voltage",
+    "settings": {
+      "unit": "V",
+      "class": "voltage",
+      "min": "200",
+      "max": "480"
+    }
+  },
+  "HV_W": {
+    "description": "High Voltage Power in watts",
+    "settings": {
+      "unit": "W",
+      "class": "power"
+    }
+  },
+  "INTAKE_AIR_TEMP_2": {
+    "description": "Air Intake Temperature 2",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "INTAKE_AIR_TMP": {
+    "description": "Air intake Temperature",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "KWH_CHARGED": {
+    "description": "Total kWh Charged",
+    "settings": {
+      "unit": "kwh",
+      "class": "battery"
+    }
+  },
+  "LV_V": {
+    "description": "12v Battery Voltage",
+    "settings": {
+      "unit": "V",
+      "class": "battery"
+    }
+  },
+  "MAF": {
+    "description": "Mass Airflow Sensor",
+    "settings": {
+      "unit": "g/s",
+      "class": "none"
+    }
+  },
+  "OCTANE_RATIO_L": {
+    "description": "Learned Octane Ratio",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "ODOMETER": {
+    "description": "Vehicle odometer",
+    "settings": {
+      "class": "distance",
+      "unit": "km",
+      "min": "0"
+    }
+  },
+  "OILCH_DIS": {
+    "description": "Distance till next oil change",
+    "settings": {
+      "unit": "km",
+      "class": "distance"
+    }
+  },
+  "OIL_LIFE": {
+    "description": "Oil Life",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "PARK_BRAKE": {
+    "description": "Is the park brake on?",
+    "settings": {
+      "unit": "none",
+      "class": "none",
+      "type": "binary_sensor"
+    }
+  },
+  "PCM_Desired_Boost": {
+    "description": "Desired Boost Pressure",
+    "settings": {
+      "unit": "kPa",
+      "class": "pressure",
+      "min": "0",
+      "max": "1000"
+    }
+  },
+  "PCM_Fuel_Rate": {
+    "description": "Fuel Consumption Rate",
+    "settings": {
+      "unit": "g/s",
+      "class": "volume_flow_rate",
+      "min": "0",
+      "max": "255"
+    }
+  },
+  "PCM_Gear": {
+    "description": "Current Transmission Gear",
+    "settings": {
+      "unit": "",
+      "class": "none",
+      "min": "0",
+      "max": "100"
+    }
+  },
+  "PCM_Knock_Count": {
+    "description": "Engine Knock Count",
+    "settings": {
+      "unit": "",
+      "class": "none",
+      "min": "0",
+      "max": "255"
+    }
+  },
+  "PCM_Learned_Octane_Ratio": {
+    "description": "Learned Octane Ratio",
+    "settings": {
+      "unit": "%",
+      "class": "percentage",
+      "min": "-100",
+      "max": "100"
+    }
+  },
+  "PCM_Oil_Life": {
+    "description": "Engine Oil Life Remaining",
+    "settings": {
+      "unit": "%",
+      "class": "percentage",
+      "min": "0",
+      "max": "100"
+    }
+  },
+  "PCM_Transmission_Temp": {
+    "description": "Transmission Temperature",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature",
+      "min": "-40",
+      "max": "200"
+    }
+  },
+  "PCM_Wastegate": {
+    "description": "Wastegate Position",
+    "settings": {
+      "unit": "%",
+      "class": "percentage",
+      "min": "0",
+      "max": "100"
+    }
+  },
+  "POWER_MAX": {
+    "description": "Max power used",
+    "settings": {
+      "unit": "kW",
+      "class": "power"
+    }
+  },
+  "RANGE": {
+    "description": "Current Range",
+    "settings": {
+      "unit": "km",
+      "class": "distance"
+    }
+  },
+  "READY": {
+    "description": "Is the car ready?",
+    "settings": {
+      "unit": "none",
+      "class": "none",
+      "type": "binary_sensor"
+    }
+  },
+  "REGEN_MAX": {
+    "description": "Max regen achieved",
+    "settings": {
+      "unit": "kW",
+      "class": "power"
+    }
+  },
+  "SOC": {
+    "description": "State Of Charge",
+    "settings": {
+      "unit": "%",
+      "class": "battery",
+      "min": "0",
+      "max": "100"
+    }
+  },
+  "SOC_D": {
+    "description": "Displayed State of Charge",
+    "settings": {
+      "unit": "%",
+      "class": "battery"
+    }
+  },
+  "SOC_MAX": {
+    "description": "Max SOC",
+    "settings": {
+      "unit": "%",
+      "class": "battery"
+    }
+  },
+  "SOC_MIN": {
+    "description": "Minimum SOC",
+    "settings": {
+      "unit": "%",
+      "class": "battery"
+    }
+  },
+  "SOH": {
+    "description": "EV Battery State of Health",
+    "settings": {
+      "unit": "%",
+      "class": "none",
+      "min": "0",
+      "max": "105"
+    }
+  },
+  "SPEED": {
+    "description": "Vehicle Speed",
+    "settings": {
+      "unit": "km/h",
+      "class": "speed"
+    }
+  },
+  "STFT": {
+    "description": "Short Term Fuel Trim",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "THROTTLE": {
+    "description": "throttle position",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  },
+  "TMP_A": {
+    "description": "Ambient Temperature",
+    "settings": {
+      "unit": "°C",
+      "class": "none"
+    }
+  },
+  "TRAN_F_TEMP": {
+    "description": "Transmission Fluid TEmp",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "TYRE_P_FL": {
+    "description": "Tyre Pressure Front Left",
+    "settings": {
+      "class": "pressure",
+      "unit": "psi",
+      "min": "0"
+    }
+  },
+  "TYRE_P_FR": {
+    "description": "Tyre Pressure Front Right",
+    "settings": {
+      "class": "pressure",
+      "unit": "psi",
+      "min": "0"
+    }
+  },
+  "TYRE_P_RL": {
+    "description": "Tyre Pressure Rear Left",
+    "settings": {
+      "class": "pressure",
+      "unit": "psi",
+      "min": "0"
+    }
+  },
+  "TYRE_P_RR": {
+    "description": "Tyre Pressure Rear Right",
+    "settings": {
+      "class": "pressure",
+      "unit": "psi",
+      "min": "0"
+    }
+  },
+  "TYRE_T_FL": {
+    "description": "Tyre Temperature Front Left",
+    "settings": {
+      "class": "temperature",
+      "unit": "°C"
+    }
+  },
+  "TYRE_T_FR": {
+    "description": "Tyre Temperature Front Right",
+    "settings": {
+      "class": "temperature",
+      "unit": "°C"
+    }
+  },
+  "TYRE_T_RL": {
+    "description": "Tyre Temperature Rear Left",
+    "settings": {
+      "class": "temperature",
+      "unit": "°C"
+    }
+  },
+  "TYRE_T_RR": {
+    "description": "Tyre Temperature Rear Right",
+    "settings": {
+      "class": "temperature",
+      "unit": "°C"
+    }
+  },
+  "T_CAB": {
+    "description": "Cabin Temp",
+    "settings": {
+      "unit": "°C",
+      "class": "temperature"
+    }
+  },
+  "WASTEGATE": {
+    "description": "Wastegate Control Solenoid Valve",
+    "settings": {
+      "unit": "%",
+      "class": "none"
+    }
+  }
+}
