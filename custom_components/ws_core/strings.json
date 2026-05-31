@@ -1084,7 +1084,15 @@
         "name": "Air Quality Index",
         "state_attributes": {
           "level": {
-            "name": "AQI level"
+            "name": "AQI level",
+            "state": {
+              "good": "Good",
+              "moderate": "Moderate",
+              "unhealthy_sensitive": "Unhealthy for Sensitive Groups",
+              "unhealthy": "Unhealthy",
+              "very_unhealthy": "Very Unhealthy",
+              "hazardous": "Hazardous"
+            }
           },
           "pm2_5_ug_m3": {
             "name": "PM2.5 (µg/m³)"
@@ -1151,7 +1159,17 @@
         "name": "Moon",
         "state_attributes": {
           "phase": {
-            "name": "Moon phase"
+            "name": "Moon phase",
+            "state": {
+              "new_moon": "New Moon",
+              "waxing_crescent": "Waxing Crescent",
+              "first_quarter": "First Quarter",
+              "waxing_gibbous": "Waxing Gibbous",
+              "full_moon": "Full Moon",
+              "waning_gibbous": "Waning Gibbous",
+              "last_quarter": "Last Quarter",
+              "waning_crescent": "Waning Crescent"
+            }
           },
           "illumination_pct": {
             "name": "Illumination (%)"
@@ -1196,7 +1214,13 @@
         "name": "Fog Probability",
         "state_attributes": {
           "risk_level": {
-            "name": "Risk level"
+            "name": "Risk level",
+            "state": {
+              "probable": "Probable",
+              "likely": "Likely",
+              "possible": "Possible",
+              "unlikely": "Unlikely"
+            }
           },
           "dew_point_depression_c": {
             "name": "Dew-point depression (°C)"
@@ -1207,7 +1231,14 @@
         "name": "Thunderstorm Risk",
         "state_attributes": {
           "risk_level": {
-            "name": "Risk level"
+            "name": "Risk level",
+            "state": {
+              "high": "High",
+              "elevated": "Elevated",
+              "moderate": "Moderate",
+              "low": "Low",
+              "negligible": "Negligible"
+            }
           },
           "contributing_factors": {
             "name": "Contributing factors"

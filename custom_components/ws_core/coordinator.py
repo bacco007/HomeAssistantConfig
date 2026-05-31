@@ -2280,6 +2280,9 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             data[KEY_POLLEN_TREE] = pol.get("tree_index")
             data[KEY_POLLEN_WEED] = pol.get("weed_index")
             data[KEY_POLLEN_OVERALL] = pol.get("overall_level")
+            data["_pollen_grass_level"] = pol.get("grass_level")
+            data["_pollen_tree_level"] = pol.get("tree_level")
+            data["_pollen_weed_level"] = pol.get("weed_level")
 
         # v1.6.0 - Météo Vigilance (France only, no API key)
         if self.vigilance_meteo_enabled and self._vigilance_cache:
@@ -2922,7 +2925,8 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 grass_idx = _grains_to_index(grass_grains, "grass")
                 weed_idx = _grains_to_index(weed_grains, "weed")
                 overall_idx = max(tree_idx, grass_idx, weed_idx)
-                level_text = {0: "None", 1: "Very Low", 2: "Low", 3: "Medium", 4: "High", 5: "Very High"}[overall_idx]
+                _idx_to_key = {0: "none", 1: "very_low", 2: "low", 3: "medium", 4: "high", 5: "very_high"}
+                level_text = _idx_to_key[overall_idx]
 
                 self._pollen_cache = {
                     "tree_index": tree_idx,
@@ -2934,6 +2938,9 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     "grass_grains_m3": grass_grains,
                     "weed_grains_m3": weed_grains,
                     "fetched_at": dt_util.utcnow().isoformat(),
+                    "grass_level": _idx_to_key[grass_idx],
+                    "tree_level": _idx_to_key[tree_idx],
+                    "weed_level": _idx_to_key[weed_idx],
                 }
                 _LOGGER.debug("ws_core pollen fetched: overall=%s (%s)", overall_idx, level_text)
 

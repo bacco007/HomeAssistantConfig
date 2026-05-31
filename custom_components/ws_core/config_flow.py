@@ -146,7 +146,6 @@ from .const import (
     SRC_LUX,
     SRC_PRESS,
     SRC_RAIN_TOTAL,
-    SRC_SOLAR_RADIATION,
     SRC_TEMP,
     SRC_UV,
     SRC_WIND,
@@ -382,56 +381,8 @@ def _convert_temp_to_c(val: float, imperial: bool) -> float:
     return (val - 32.0) * 5.0 / 9.0 if imperial else val
 
 
-# ---------------------------------------------------------------------------
-# Entity-selector helpers (issue #23 — filter pickers by device_class)
-# ---------------------------------------------------------------------------
-
-# Maps each source key to the HA device_class value that should appear in the
-# entity picker UI.  Wind fields (wind_speed, wind_gust, wind_direction) are
-# deliberately omitted: many Ecowitt / Froggit sensors pre-date those
-# device_class values and would produce an empty picker.  SRC_UV is also
-# omitted — UV index has no standard HA device_class yet.
-_DEVICE_CLASS_FOR_SOURCE: dict[str, str] = {
-    SRC_TEMP: "temperature",
-    SRC_HUM: "humidity",
-    SRC_PRESS: "atmospheric_pressure",
-    SRC_RAIN_TOTAL: "precipitation",
-    SRC_LUX: "illuminance",
-    SRC_DEW_POINT: "temperature",
-    SRC_BATTERY: "battery",
-    SRC_SOLAR_RADIATION: "irradiance",
-}
-
-# Some source slots accept more than one device_class. The picker shows the
-# primary class only; these extras are also accepted by the validator so that
-# stations which report battery as a voltage (e.g. GW3000A) aren't blocked.
-_EXTRA_DEVICE_CLASSES_FOR_SOURCE: dict[str, set[str]] = {
-    SRC_BATTERY: {"voltage"},
-}
-
-# Human-readable expected unit strings used in validation error messages.
-_EXPECTED_UNITS_FOR_SOURCE: dict[str, str] = {
-    SRC_TEMP: "°C / °F",
-    SRC_HUM: "%",
-    SRC_PRESS: "hPa / mbar / inHg",
-    SRC_WIND: "m/s, km/h, mph or kn",
-    SRC_GUST: "m/s, km/h, mph or kn",
-    SRC_WIND_DIR: "° (0–360)",
-    SRC_RAIN_TOTAL: "mm / in",
-    SRC_LUX: "lx",
-    SRC_UV: "UV index",
-    SRC_DEW_POINT: "°C / °F",
-    SRC_BATTERY: "% or V",
-    SRC_SOLAR_RADIATION: "W/m²",
-}
-
-
-def _build_entity_selector(source_key: str) -> selector.EntitySelector:
-    """Return an EntitySelector filtered by device_class where it is safe to do so."""
-    dc = _DEVICE_CLASS_FOR_SOURCE.get(source_key)
-    if dc:
-        return selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor", device_class=dc))
-    return selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor"))
+# Plain sensor selector — no device_class filter (fixes issue #41: sensors mis-routed into wrong slots)
+_ENTITY_SELECTOR = selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor"))
 
 
 # ---------------------------------------------------------------------------
@@ -489,17 +440,12 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return await handler()
         return None
 
-    def _validate_source_sensor(self, eid: str, source_key: str) -> str | None:
-        """Validate a sensor entity for a given source slot.
+    def _validate_numeric_sensor(self, eid: str) -> str | None:
+        """Validate that a sensor entity exists and has a numeric state.
 
-        Returns an error key string on failure, or ``None`` when the entity is
-        acceptable.  Checks (in order):
-        1. Entity must exist and not be unavailable/unknown.
-        2. Current state must be parseable as a float.
-        3. If the entity declares a ``device_class`` AND that class is known to
-           be wrong for this slot, surface ``wrong_sensor_type``.  Entities
-           without ``device_class`` are always accepted so that older
-           integrations (e.g. Ecowitt) that omit it still work.
+        Returns an error key string on failure, or ``None`` when acceptable.
+        Device-class filtering has been removed (issue #41) — any numeric sensor
+        is accepted regardless of its declared device_class.
         """
         st = self.hass.states.get(eid)
         if st is None or st.state in ("unknown", "unavailable"):
@@ -508,13 +454,6 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             float(st.state)
         except (ValueError, TypeError):
             return "not_numeric"
-        # Soft device_class guard — only block when the class is explicitly wrong.
-        expected_dc = _DEVICE_CLASS_FOR_SOURCE.get(source_key)
-        if expected_dc:
-            actual_dc = st.attributes.get("device_class", "")
-            extras = _EXTRA_DEVICE_CLASSES_FOR_SOURCE.get(source_key, set())
-            if actual_dc and actual_dc != expected_dc and actual_dc not in extras:
-                return "wrong_sensor_type"
         return None
 
     # ------------------------------------------------------------------
@@ -553,7 +492,7 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if not eid:
                     errors[k] = "required"
                 else:
-                    err = self._validate_source_sensor(eid, k)
+                    err = self._validate_numeric_sensor(eid)
                     if err:
                         errors[k] = err
             if not errors:
@@ -561,7 +500,7 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._data[CONF_SOURCES] = sources
                 return await self.async_step_optional_sources()
 
-        fields = {vol.Required(k, default=defaults.get(k)): _build_entity_selector(k) for k in REQUIRED_SOURCES}
+        fields = {vol.Required(k, default=defaults.get(k)): _ENTITY_SELECTOR for k in REQUIRED_SOURCES}
         return self._show_step(
             step_id="required_sources",
             data_schema=vol.Schema(fields),
@@ -585,7 +524,7 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 eid = user_input.get(k)
                 if not eid:
                     continue
-                err = self._validate_source_sensor(eid, k)
+                err = self._validate_numeric_sensor(eid)
                 if err:
                     errors[k] = err
                 else:
@@ -596,7 +535,7 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         # fmt: off
         fields = {
-            (vol.Optional(k, default=defaults[k]) if k in defaults else vol.Optional(k)): _build_entity_selector(k)
+            (vol.Optional(k, default=defaults[k]) if k in defaults else vol.Optional(k)): _ENTITY_SELECTOR
             for k in OPTIONAL_SOURCES
         }
         # fmt: on

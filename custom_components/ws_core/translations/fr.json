@@ -1090,7 +1090,15 @@
         "name": "Indice de qualité de l'air",
         "state_attributes": {
           "level": {
-            "name": "Indice"
+            "name": "Indice",
+            "state": {
+              "good": "Bon",
+              "moderate": "Modéré",
+              "unhealthy_sensitive": "Mauvais pour les groupes sensibles",
+              "unhealthy": "Mauvais",
+              "very_unhealthy": "Très mauvais",
+              "hazardous": "Dangereux"
+            }
           },
           "pm2_5_ug_m3": {
             "name": "PM2,5"
@@ -1157,7 +1165,17 @@
         "name": "Lune",
         "state_attributes": {
           "phase": {
-            "name": "Phase lunaire"
+            "name": "Phase lunaire",
+            "state": {
+              "new_moon": "Nouvelle lune",
+              "waxing_crescent": "Premier croissant",
+              "first_quarter": "Premier quartier",
+              "waxing_gibbous": "Gibbeuse croissante",
+              "full_moon": "Pleine lune",
+              "waning_gibbous": "Gibbeuse décroissante",
+              "last_quarter": "Dernier quartier",
+              "waning_crescent": "Dernier croissant"
+            }
           },
           "illumination_pct": {
             "name": "Illumination (%)"
@@ -1202,7 +1220,13 @@
         "name": "Probabilité de brouillard",
         "state_attributes": {
           "risk_level": {
-            "name": "Niveau de risque"
+            "name": "Niveau de risque",
+            "state": {
+              "probable": "Probable",
+              "likely": "Probable",
+              "possible": "Possible",
+              "unlikely": "Peu probable"
+            }
           },
           "dew_point_depression_c": {
             "name": "Écart au point de rosée"
@@ -1213,7 +1237,14 @@
         "name": "Risque d'orage",
         "state_attributes": {
           "risk_level": {
-            "name": "Niveau de risque"
+            "name": "Niveau de risque",
+            "state": {
+              "high": "Élevé",
+              "elevated": "Modéré-élevé",
+              "moderate": "Modéré",
+              "low": "Faible",
+              "negligible": "Négligeable"
+            }
           },
           "contributing_factors": {
             "name": "Facteurs contributifs"
@@ -1463,6 +1494,25 @@
       },
       "ws_rain_expected_1h": {
         "name": "Pluie prévue (1h)"
+      }
+    }
+  },
+  "selector": {
+    "hemisphere": {
+      "options": {
+        "Northern": "Hémisphère Nord",
+        "Southern": "Hémisphère Sud"
+      }
+    },
+    "climate_region": {
+      "options": {
+        "Mediterranean": "Méditerranée",
+        "Atlantic Europe": "Europe Atlantique",
+        "Continental Europe": "Europe Continentale",
+        "Scandinavia": "Scandinavie",
+        "Australia": "Australie",
+        "North America East": "Amérique du Nord (Est)",
+        "North America West": "Amérique du Nord (Ouest)"
       }
     }
   }

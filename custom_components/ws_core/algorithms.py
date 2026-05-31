@@ -1474,18 +1474,18 @@ def calculate_us_aqi(pm2_5: float | None, pm10: float | None) -> int | None:
 
 
 def aqi_level(aqi: int) -> str:
-    """US EPA AQI category label."""
+    """US EPA AQI category label (i18n key)."""
     if aqi <= 50:
-        return "Good"
+        return "good"
     if aqi <= 100:
-        return "Moderate"
+        return "moderate"
     if aqi <= 150:
-        return "Unhealthy for Sensitive Groups"
+        return "unhealthy_sensitive"
     if aqi <= 200:
-        return "Unhealthy"
+        return "unhealthy"
     if aqi <= 300:
-        return "Very Unhealthy"
-    return "Hazardous"
+        return "very_unhealthy"
+    return "hazardous"
 
 
 def aqi_color(aqi: int) -> str:
@@ -1788,13 +1788,13 @@ def fog_probability(
     prob = max(0.0, min(100.0, base - wind_penalty + night_bonus - rain_penalty))
 
     if prob >= 75.0:
-        label = "Probable"
+        label = "probable"
     elif prob >= 50.0:
-        label = "Likely"
+        label = "likely"
     elif prob >= 20.0:
-        label = "Possible"
+        label = "possible"
     else:
-        label = "Unlikely"
+        label = "unlikely"
 
     return round(prob, 1), label
 
@@ -1858,15 +1858,15 @@ def thunderstorm_risk_index(
     index = max(0, min(100, round(score)))
 
     if index >= 70:
-        level = "High"
+        level = "high"
     elif index >= 45:
-        level = "Elevated"
+        level = "elevated"
     elif index >= 25:
-        level = "Moderate"
+        level = "moderate"
     elif index >= 10:
-        level = "Low"
+        level = "low"
     else:
-        level = "Negligible"
+        level = "negligible"
 
     return index, level, factors
 
