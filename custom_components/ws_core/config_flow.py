@@ -150,7 +150,6 @@ from .const import (
     SRC_UV,
     SRC_WIND,
     SRC_WIND_DIR,
-    TEMP_UNIT_OPTIONS,
     UNITS_MODE_OPTIONS,
     VALID_ELEVATION_MAX_M,
     VALID_ELEVATION_MIN_M,
@@ -630,12 +629,9 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required(CONF_UNITS_MODE, default=default_units): selector.SelectSelector(
                         selector.SelectSelectorConfig(
-                            options=[
-                                {"value": "auto", "label": "Auto (follow Home Assistant)"},
-                                {"value": "metric", "label": "Metric (km/h, mm, hPa)"},
-                                {"value": "imperial", "label": "Imperial (mph, in, inHg)"},
-                            ],
+                            options=["auto", "metric", "imperial"],
                             mode="list",
+                            translation_key="units_mode",
                         )
                     ),
                     vol.Required(CONF_TEMP_UNIT, default=default_temp): selector.SelectSelector(
@@ -688,26 +684,15 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Optional(CONF_FORECAST_PROVIDER, default=DEFAULT_FORECAST_PROVIDER): selector.SelectSelector(
                         selector.SelectSelectorConfig(
                             options=[
-                                selector.SelectOptionDict(
-                                    value=FORECAST_PROVIDER_OPEN_METEO, label="Open-Meteo (free, no key)"
-                                ),
-                                selector.SelectOptionDict(
-                                    value=FORECAST_PROVIDER_MET_NO, label="Met.no (free, no key)"
-                                ),
-                                selector.SelectOptionDict(
-                                    value=FORECAST_PROVIDER_NWS, label="NWS/NOAA (free, no key, US only)"
-                                ),
-                                selector.SelectOptionDict(
-                                    value=FORECAST_PROVIDER_OWM, label="OpenWeatherMap (free tier, API key)"
-                                ),
-                                selector.SelectOptionDict(
-                                    value=FORECAST_PROVIDER_PIRATE, label="Pirate Weather (free tier, API key)"
-                                ),
-                                selector.SelectOptionDict(
-                                    value=FORECAST_PROVIDER_METEO_FRANCE, label="Météo France (free tier, API key)"
-                                ),
+                                FORECAST_PROVIDER_OPEN_METEO,
+                                FORECAST_PROVIDER_MET_NO,
+                                FORECAST_PROVIDER_NWS,
+                                FORECAST_PROVIDER_OWM,
+                                FORECAST_PROVIDER_PIRATE,
+                                FORECAST_PROVIDER_METEO_FRANCE,
                             ],
                             mode=selector.SelectSelectorMode.LIST,
+                            translation_key="forecast_provider",
                         )
                     ),
                 }
@@ -1295,10 +1280,19 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                     )
                 ),
                 vol.Optional(CONF_UNITS_MODE, default=g(CONF_UNITS_MODE, DEFAULT_UNITS_MODE)): selector.SelectSelector(
-                    selector.SelectSelectorConfig(options=UNITS_MODE_OPTIONS, mode="dropdown")
+                    selector.SelectSelectorConfig(
+                        options=UNITS_MODE_OPTIONS, mode="dropdown", translation_key="units_mode"
+                    )
                 ),
                 vol.Optional(CONF_TEMP_UNIT, default=g(CONF_TEMP_UNIT, DEFAULT_TEMP_UNIT)): selector.SelectSelector(
-                    selector.SelectSelectorConfig(options=TEMP_UNIT_OPTIONS, mode="list")
+                    selector.SelectSelectorConfig(
+                        options=[
+                            {"value": "auto", "label": "Auto (follow Home Assistant)"},
+                            {"value": "C", "label": "Celsius (°C)"},
+                            {"value": "F", "label": "Fahrenheit (°F)"},
+                        ],
+                        mode="list",
+                    )
                 ),
                 vol.Optional(
                     CONF_FORECAST_ENABLED, default=g(CONF_FORECAST_ENABLED, DEFAULT_FORECAST_ENABLED)
@@ -1319,24 +1313,15 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                 ): selector.SelectSelector(
                     selector.SelectSelectorConfig(
                         options=[
-                            selector.SelectOptionDict(
-                                value=FORECAST_PROVIDER_OPEN_METEO, label="Open-Meteo (free, no key)"
-                            ),
-                            selector.SelectOptionDict(value=FORECAST_PROVIDER_MET_NO, label="Met.no (free, no key)"),
-                            selector.SelectOptionDict(
-                                value=FORECAST_PROVIDER_NWS, label="NWS/NOAA (free, no key, US only)"
-                            ),
-                            selector.SelectOptionDict(
-                                value=FORECAST_PROVIDER_OWM, label="OpenWeatherMap (free tier, API key)"
-                            ),
-                            selector.SelectOptionDict(
-                                value=FORECAST_PROVIDER_PIRATE, label="Pirate Weather (free tier, API key)"
-                            ),
-                            selector.SelectOptionDict(
-                                value=FORECAST_PROVIDER_METEO_FRANCE, label="Météo France (free tier, API key)"
-                            ),
+                            FORECAST_PROVIDER_OPEN_METEO,
+                            FORECAST_PROVIDER_MET_NO,
+                            FORECAST_PROVIDER_NWS,
+                            FORECAST_PROVIDER_OWM,
+                            FORECAST_PROVIDER_PIRATE,
+                            FORECAST_PROVIDER_METEO_FRANCE,
                         ],
                         mode=selector.SelectSelectorMode.LIST,
+                        translation_key="forecast_provider",
                     )
                 ),
                 vol.Optional(
