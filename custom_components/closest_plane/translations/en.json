@@ -1,0 +1,27 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Location & radius",
+        "description": "Configure where to search for aircraft. Defaults to your Home Assistant home location.",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "radius_km": "Search radius (km)",
+          "refresh_minutes": "Refresh interval (minutes)"
+        }
+      },
+      "apis": {
+        "title": "API keys (optional)",
+        "description": "All fields are optional. OpenSky OAuth increases rate limits. AviationStack provides live departure/arrival times (free tier: 1000 calls/month). AeroDataBox (RapidAPI) provides live route data by ICAO24. Cache dir shares manual overrides from closest-plane-app.",
+        "data": {
+          "opensky_client_id": "OpenSky client ID",
+          "opensky_client_secret": "OpenSky client secret",
+          "aviationstack_api_key": "AviationStack API key",
+          "aerodatabox_api_key": "AeroDataBox RapidAPI key",
+          "cache_dir": "Manual cache directory path"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "domain": "closest_plane",
+  "name": "Closest Plane",
+  "codeowners": ["@bairnhard"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/bairnhard/closest-plane-ha",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/bairnhard/closest-plane-ha/issues",
+  "requirements": [],
+  "version": "1.1.0"
+}
