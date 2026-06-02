@@ -1495,6 +1495,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
                 stations = [{"code": "", "name": "", "river": ""}]
         for st in stations:
             entities.append(WSRiverSensor(coordinator, entry, prefix, st))
+            entities.append(WSRiverFlowSensor(coordinator, entry, prefix, st))
 
     async_add_entities(entities)
 
@@ -1751,6 +1752,15 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
 # ---------------------------------------------------------------------------
 
 
+_RIVER_SLUG_MAP = str.maketrans("éèêëàâäôöùûüîïç", "eeeeaaaoouuuiic")
+
+
+def _river_slug(name: str) -> str:
+    """Return a safe ASCII slug from a river or station name for use in entity IDs."""
+    slug = name.lower().translate(_RIVER_SLUG_MAP).replace(" ", "_").replace("-", "_").replace("'", "")
+    return "".join(c for c in slug if c.isalnum() or c == "_").strip("_")
+
+
 class WSRiverSensor(CoordinatorEntity, SensorEntity):
     """Real-time water level for a single Vigicrues hydrometric station.
 
@@ -1783,7 +1793,12 @@ class WSRiverSensor(CoordinatorEntity, SensorEntity):
         # Unique ID uses station code; fall back to "auto" for auto-detect mode
         uid_suffix = self._station_code if self._station_code else "auto"
         self._attr_unique_id = f"{entry.entry_id}_river_level_{uid_suffix}"
-        slug = f"river_level_{uid_suffix}" if uid_suffix != "auto" else "river_level"
+        name_slug = _river_slug(self._river_name or self._station_name)
+        slug = (
+            f"river_level_{name_slug}"
+            if name_slug
+            else (f"river_level_{uid_suffix}" if uid_suffix != "auto" else "river_level")
+        )
         self._attr_suggested_object_id = f"{prefix}_{slug}"
 
     @property
@@ -1827,6 +1842,80 @@ class WSRiverSensor(CoordinatorEntity, SensorEntity):
             "river": d.get(f"_river_name_{code}") or self._river_name,
             "station_code": d.get(f"_river_station_code_{code}") or code,
             "observed_at": d.get(f"_river_obs_time_{code}"),
+        }
+
+    @property
+    def device_info(self) -> dict:
+        return {"identifiers": {(DOMAIN, self._entry.entry_id)}}
+
+
+class WSRiverFlowSensor(CoordinatorEntity, SensorEntity):
+    """Real-time river flow (discharge) for a single Vigicrues hydrometric station.
+
+    Flow data (grandeur_hydro=Q) is optional — not all stations provide it.
+    The sensor is always created but returns None when the API has no Q data.
+    """
+
+    _attr_has_entity_name = True
+    _attr_icon = "mdi:water-flow"
+    _attr_native_unit_of_measurement = "m³/s"
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_device_class = None
+
+    def __init__(
+        self,
+        coordinator,
+        entry: ConfigEntry,
+        prefix: str,
+        station: dict,
+    ) -> None:
+        super().__init__(coordinator)
+        self._entry = entry
+        self._prefix = prefix
+        self._station_code: str = (station.get("code") or "").strip()
+        self._station_name: str = station.get("name") or self._station_code
+        self._river_name: str = station.get("river") or ""
+
+        uid_suffix = self._station_code if self._station_code else "auto"
+        self._attr_unique_id = f"{entry.entry_id}_river_flow_{uid_suffix}"
+        name_slug = _river_slug(self._river_name or self._station_name)
+        slug = (
+            f"river_flow_{name_slug}"
+            if name_slug
+            else (f"river_flow_{uid_suffix}" if uid_suffix != "auto" else "river_flow")
+        )
+        self._attr_suggested_object_id = f"{prefix}_{slug}"
+
+    @property
+    def _resolved_code(self) -> str:
+        if self._station_code:
+            return self._station_code
+        return (self.coordinator.data or {}).get("_vigicrues_auto_code", "")
+
+    @property
+    def name(self) -> str:
+        d = self.coordinator.data or {}
+        code = self._resolved_code
+        river = d.get(f"_river_name_{code}") or self._river_name
+        if river:
+            return f"WS River Flow — {river}"
+        station = d.get(f"_river_station_name_{code}") or self._station_name
+        return f"WS River Flow — {station}" if station else "WS River Flow"
+
+    @property
+    def native_value(self):
+        d = self.coordinator.data or {}
+        return d.get(f"river_flow_m3s_{self._resolved_code}")
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        d = self.coordinator.data or {}
+        code = self._resolved_code
+        return {
+            "station": d.get(f"_river_station_name_{code}") or self._station_name,
+            "river": d.get(f"_river_name_{code}") or self._river_name,
+            "station_code": d.get(f"_river_station_code_{code}") or code,
+            "observed_at": d.get(f"_river_flow_obs_time_{code}"),
         }
 
     @property

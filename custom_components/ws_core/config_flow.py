@@ -718,7 +718,13 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             FORECAST_PROVIDER_PIRATE: "Pirate Weather",
             FORECAST_PROVIDER_METEO_FRANCE: "Météo France",
         }
+        provider_api_urls = {
+            FORECAST_PROVIDER_OWM: "https://openweathermap.org/api",
+            FORECAST_PROVIDER_PIRATE: "https://pirateweather.net/en/latest/",
+            FORECAST_PROVIDER_METEO_FRANCE: "https://portail-api.meteofrance.fr/",
+        }
         provider_name = provider_labels.get(provider, provider)
+        api_url = provider_api_urls.get(provider, "")
 
         return self._show_step(
             step_id="forecast_api_key",
@@ -731,7 +737,7 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Optional("_go_back", default=False): selector.BooleanSelector(),
                 }
             ),
-            description_placeholders={"provider_name": provider_name},
+            description_placeholders={"provider_name": provider_name, "api_url": api_url},
             last_step=False,
         )
 
@@ -1486,7 +1492,13 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
             FORECAST_PROVIDER_PIRATE: "Pirate Weather",
             FORECAST_PROVIDER_METEO_FRANCE: "Météo France",
         }
+        provider_api_urls = {
+            FORECAST_PROVIDER_OWM: "https://openweathermap.org/api",
+            FORECAST_PROVIDER_PIRATE: "https://pirateweather.net/en/latest/",
+            FORECAST_PROVIDER_METEO_FRANCE: "https://portail-api.meteofrance.fr/",
+        }
         provider_name = provider_labels.get(provider, provider)
+        api_url = provider_api_urls.get(provider, "")
         current_key = self._opt.get(CONF_FORECAST_API_KEY, self._get(CONF_FORECAST_API_KEY, ""))
 
         return self.async_show_form(
@@ -1498,7 +1510,7 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                     ),
                 }
             ),
-            description_placeholders={"provider_name": provider_name},
+            description_placeholders={"provider_name": provider_name, "api_url": api_url},
         )
 
     # ------------------------------------------------------------------

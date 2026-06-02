@@ -71,7 +71,7 @@
       },
       "forecast_api_key": {
         "title": "Clé API du fournisseur de prévisions météo",
-        "description": "Entrez la clé API pour {provider_name}. Vous pouvez obtenir une clé gratuite sur le site du fournisseur.",
+        "description": "Entrez la clé API pour {provider_name}. [Obtenez votre clé API gratuite]({api_url}).",
         "data": {
           "forecast_api_key": "Clé API",
           "_go_back": "← Retour à l'étape précédente"
@@ -261,7 +261,7 @@
       },
       "forecast_api_key_opt": {
         "title": "Clé API du fournisseur de prévisions",
-        "description": "Entrez la clé API pour {provider_name}.",
+        "description": "Entrez la clé API pour {provider_name}. [Obtenez votre clé API gratuite]({api_url}).",
         "data": {
           "forecast_api_key": "Clé API"
         },

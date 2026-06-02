@@ -71,7 +71,7 @@
       },
       "forecast_api_key": {
         "title": "Forecast Provider API Key",
-        "description": "Enter the API key for {provider_name}. You can get a free key from the provider's website.",
+        "description": "Enter the API key for {provider_name}. [Get your free API key]({api_url}).",
         "data": {
           "forecast_api_key": "API Key",
           "_go_back": "← Go back to previous step"
@@ -261,7 +261,7 @@
       },
       "forecast_api_key_opt": {
         "title": "Forecast Provider API Key",
-        "description": "Enter the API key for {provider_name}.",
+        "description": "Enter the API key for {provider_name}. [Get your free API key]({api_url}).",
         "data": {
           "forecast_api_key": "API Key"
         },

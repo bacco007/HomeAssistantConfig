@@ -2307,9 +2307,11 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 data["_vigicrues_auto_code"] = self._vigicrues_auto_code
             for code, vr in self._vigicrues_caches.items():
                 data[f"river_level_m_{code}"] = vr.get("level_m")
+                data[f"river_flow_m3s_{code}"] = vr.get("flow_m3s")
                 data[f"_river_station_name_{code}"] = vr.get("station_name")
                 data[f"_river_name_{code}"] = vr.get("river_name")
                 data[f"_river_obs_time_{code}"] = vr.get("obs_time")
+                data[f"_river_flow_obs_time_{code}"] = vr.get("flow_obs_time")
                 data[f"_river_station_code_{code}"] = vr.get("station_code")
 
         # v1.7.0 - Precipitation nowcast (Open-Meteo minutely_15)
@@ -3206,6 +3208,32 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                         level_m or 0,
                         obs.get("date_obs"),
                     )
+
+                    # Try to fetch flow data (Q) — not all stations provide it
+                    flow_url = (
+                        "https://hubeau.eaufrance.fr/api/v2/hydrometrie/observations_tr"
+                        f"?format=json&code_entite={code}"
+                        "&grandeur_hydro=Q&size=1"
+                        "&fields=code_station,date_obs,resultat_obs"
+                    )
+                    try:
+                        async with session.get(flow_url, timeout=aiohttp.ClientTimeout(total=15)) as fresp:
+                            if fresp.status in (200, 206):
+                                fdata = await fresp.json()
+                                fobs = fdata.get("data", [])
+                                if fobs:
+                                    raw_q = fobs[0].get("resultat_obs")
+                                    flow_m3s = round(float(raw_q), 3) if raw_q is not None else None
+                                    self._vigicrues_caches[code]["flow_m3s"] = flow_m3s
+                                    self._vigicrues_caches[code]["flow_obs_time"] = fobs[0].get("date_obs")
+                                    _LOGGER.debug(
+                                        "ws_core Vigicrues: %s flow=%.3f m³/s",
+                                        code,
+                                        flow_m3s or 0,
+                                    )
+                    except (aiohttp.ClientError, TimeoutError, ValueError):
+                        pass  # Flow data is optional; level data still reported
+
                     need_refresh = True
 
         except (aiohttp.ClientError, TimeoutError, ValueError) as exc:
