@@ -1,27 +1,7 @@
-let $d15fe90fb16b0188$var$_helpersPromise;
-function $d15fe90fb16b0188$export$daa799244477bc22() {
-    $d15fe90fb16b0188$var$_helpersPromise = undefined;
-    Reflect.deleteProperty(globalThis, 'poatCardHelpers');
-}
-function $d15fe90fb16b0188$export$a2591249c0f38d1f(helpers) {
-    globalThis.poatCardHelpers = helpers;
-}
-function $d15fe90fb16b0188$export$1570ac5d2d462ce6() {
-    return globalThis.poatCardHelpers;
-}
-function $d15fe90fb16b0188$export$d59f9ebe88d50829(loader) {
-    const existing = $d15fe90fb16b0188$export$1570ac5d2d462ce6();
-    if (existing) return Promise.resolve(existing);
-    if ($d15fe90fb16b0188$var$_helpersPromise !== undefined) return $d15fe90fb16b0188$var$_helpersPromise;
-    if (!loader) return Promise.reject(new Error('[device-card] helpers: missing globalThis.loadCardHelpers'));
-    $d15fe90fb16b0188$var$_helpersPromise = loader().then((helpers)=>{
-        $d15fe90fb16b0188$export$a2591249c0f38d1f(helpers);
-        return helpers;
-    });
-    return $d15fe90fb16b0188$var$_helpersPromise;
-}
 
-
+function $parcel$interopDefault(a) {
+  return a && a.__esModule ? a.default : a;
+}
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -35,35 +15,35 @@ INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
 LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */ /* global Reflect, Promise, SuppressedError, Symbol, Iterator */ var $24c52f343453d62d$var$extendStatics = function(d, b) {
-    $24c52f343453d62d$var$extendStatics = Object.setPrototypeOf || ({
+***************************************************************************** */ /* global Reflect, Promise, SuppressedError, Symbol, Iterator */ var $e710f43c4558477c$var$extendStatics = function(d, b) {
+    $e710f43c4558477c$var$extendStatics = Object.setPrototypeOf || ({
         __proto__: []
     }) instanceof Array && function(d, b) {
         d.__proto__ = b;
     } || function(d, b) {
         for(var p in b)if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     };
-    return $24c52f343453d62d$var$extendStatics(d, b);
+    return $e710f43c4558477c$var$extendStatics(d, b);
 };
-function $24c52f343453d62d$export$a8ba968b8961cb8a(d, b) {
+function $e710f43c4558477c$export$a8ba968b8961cb8a(d, b) {
     if (typeof b !== "function" && b !== null) throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-    $24c52f343453d62d$var$extendStatics(d, b);
+    $e710f43c4558477c$var$extendStatics(d, b);
     function __() {
         this.constructor = d;
     }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 }
-var $24c52f343453d62d$export$18ce0697a983be9b = function() {
-    $24c52f343453d62d$export$18ce0697a983be9b = Object.assign || function __assign(t) {
+var $e710f43c4558477c$export$18ce0697a983be9b = function() {
+    $e710f43c4558477c$export$18ce0697a983be9b = Object.assign || function __assign(t) {
         for(var s, i = 1, n = arguments.length; i < n; i++){
             s = arguments[i];
             for(var p in s)if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
         }
         return t;
     };
-    return $24c52f343453d62d$export$18ce0697a983be9b.apply(this, arguments);
+    return $e710f43c4558477c$export$18ce0697a983be9b.apply(this, arguments);
 };
-function $24c52f343453d62d$export$3c9a16f847548506(s, e) {
+function $e710f43c4558477c$export$3c9a16f847548506(s, e) {
     var t = {};
     for(var p in s)if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0) t[p] = s[p];
     if (s != null && typeof Object.getOwnPropertySymbols === "function") {
@@ -71,18 +51,18 @@ function $24c52f343453d62d$export$3c9a16f847548506(s, e) {
     }
     return t;
 }
-function $24c52f343453d62d$export$29e00dfd3077644b(decorators, target, key, desc) {
+function $e710f43c4558477c$export$29e00dfd3077644b(decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for(var i = decorators.length - 1; i >= 0; i--)if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 }
-function $24c52f343453d62d$export$d5ad3fd78186038f(paramIndex, decorator) {
+function $e710f43c4558477c$export$d5ad3fd78186038f(paramIndex, decorator) {
     return function(target, key) {
         decorator(target, key, paramIndex);
     };
 }
-function $24c52f343453d62d$export$3a84e1ae4e97e9b0(ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+function $e710f43c4558477c$export$3a84e1ae4e97e9b0(ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
     function accept(f) {
         if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected");
         return f;
@@ -117,25 +97,25 @@ function $24c52f343453d62d$export$3a84e1ae4e97e9b0(ctor, descriptorIn, decorator
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
 }
-function $24c52f343453d62d$export$d831c04e792af3d(thisArg, initializers, value) {
+function $e710f43c4558477c$export$d831c04e792af3d(thisArg, initializers, value) {
     var useValue = arguments.length > 2;
     for(var i = 0; i < initializers.length; i++)value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
     return useValue ? value : void 0;
 }
-function $24c52f343453d62d$export$6a2a36740a146cb8(x) {
+function $e710f43c4558477c$export$6a2a36740a146cb8(x) {
     return typeof x === "symbol" ? x : "".concat(x);
 }
-function $24c52f343453d62d$export$d1a06452d3489bc7(f, name, prefix) {
+function $e710f43c4558477c$export$d1a06452d3489bc7(f, name, prefix) {
     if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
     return Object.defineProperty(f, "name", {
         configurable: true,
         value: prefix ? "".concat(prefix, " ", name) : name
     });
 }
-function $24c52f343453d62d$export$f1db080c865becb9(metadataKey, metadataValue) {
+function $e710f43c4558477c$export$f1db080c865becb9(metadataKey, metadataValue) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
 }
-function $24c52f343453d62d$export$1050f835b63b671e(thisArg, _arguments, P, generator) {
+function $e710f43c4558477c$export$1050f835b63b671e(thisArg, _arguments, P, generator) {
     function adopt(value) {
         return value instanceof P ? value : new P(function(resolve) {
             resolve(value);
@@ -162,7 +142,7 @@ function $24c52f343453d62d$export$1050f835b63b671e(thisArg, _arguments, P, gener
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 }
-function $24c52f343453d62d$export$67ebef60e6f28a6(thisArg, body) {
+function $e710f43c4558477c$export$67ebef60e6f28a6(thisArg, body) {
     var _ = {
         label: 0,
         sent: function() {
@@ -253,7 +233,7 @@ function $24c52f343453d62d$export$67ebef60e6f28a6(thisArg, body) {
         };
     }
 }
-var $24c52f343453d62d$export$45d3717a4c69092e = Object.create ? function(o, m, k, k2) {
+var $e710f43c4558477c$export$45d3717a4c69092e = Object.create ? function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
     if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) desc = {
@@ -267,10 +247,10 @@ var $24c52f343453d62d$export$45d3717a4c69092e = Object.create ? function(o, m, k
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
 };
-function $24c52f343453d62d$export$f33643c0debef087(m, o) {
-    for(var p in m)if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p)) $24c52f343453d62d$export$45d3717a4c69092e(o, m, p);
+function $e710f43c4558477c$export$f33643c0debef087(m, o) {
+    for(var p in m)if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p)) $e710f43c4558477c$export$45d3717a4c69092e(o, m, p);
 }
-function $24c52f343453d62d$export$19a8beecd37a4c45(o) {
+function $e710f43c4558477c$export$19a8beecd37a4c45(o) {
     var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
     if (m) return m.call(o);
     if (o && typeof o.length === "number") return {
@@ -284,7 +264,7 @@ function $24c52f343453d62d$export$19a8beecd37a4c45(o) {
     };
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 }
-function $24c52f343453d62d$export$8d051b38c9118094(o, n) {
+function $e710f43c4558477c$export$8d051b38c9118094(o, n) {
     var m = typeof Symbol === "function" && o[Symbol.iterator];
     if (!m) return o;
     var i = m.call(o), r, ar = [], e;
@@ -303,16 +283,16 @@ function $24c52f343453d62d$export$8d051b38c9118094(o, n) {
     }
     return ar;
 }
-function $24c52f343453d62d$export$afc72e2116322959() {
-    for(var ar = [], i = 0; i < arguments.length; i++)ar = ar.concat($24c52f343453d62d$export$8d051b38c9118094(arguments[i]));
+function $e710f43c4558477c$export$afc72e2116322959() {
+    for(var ar = [], i = 0; i < arguments.length; i++)ar = ar.concat($e710f43c4558477c$export$8d051b38c9118094(arguments[i]));
     return ar;
 }
-function $24c52f343453d62d$export$6388937ca91ccae8() {
+function $e710f43c4558477c$export$6388937ca91ccae8() {
     for(var s = 0, i = 0, il = arguments.length; i < il; i++)s += arguments[i].length;
     for(var r = Array(s), k = 0, i = 0; i < il; i++)for(var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)r[k] = a[j];
     return r;
 }
-function $24c52f343453d62d$export$1216008129fb82ed(to, from, pack) {
+function $e710f43c4558477c$export$1216008129fb82ed(to, from, pack) {
     if (pack || arguments.length === 2) {
         for(var i = 0, l = from.length, ar; i < l; i++)if (ar || !(i in from)) {
             if (!ar) ar = Array.prototype.slice.call(from, 0, i);
@@ -321,10 +301,10 @@ function $24c52f343453d62d$export$1216008129fb82ed(to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 }
-function $24c52f343453d62d$export$10c90e4f7922046c(v) {
-    return this instanceof $24c52f343453d62d$export$10c90e4f7922046c ? (this.v = v, this) : new $24c52f343453d62d$export$10c90e4f7922046c(v);
+function $e710f43c4558477c$export$10c90e4f7922046c(v) {
+    return this instanceof $e710f43c4558477c$export$10c90e4f7922046c ? (this.v = v, this) : new $e710f43c4558477c$export$10c90e4f7922046c(v);
 }
-function $24c52f343453d62d$export$e427f37a30a4de9b(thisArg, _arguments, generator) {
+function $e710f43c4558477c$export$e427f37a30a4de9b(thisArg, _arguments, generator) {
     if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
     var g = generator.apply(thisArg, _arguments || []), i, q = [];
     return i = Object.create((typeof AsyncIterator === "function" ? AsyncIterator : Object).prototype), verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function() {
@@ -358,7 +338,7 @@ function $24c52f343453d62d$export$e427f37a30a4de9b(thisArg, _arguments, generato
         }
     }
     function step(r) {
-        r.value instanceof $24c52f343453d62d$export$10c90e4f7922046c ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r);
+        r.value instanceof $e710f43c4558477c$export$10c90e4f7922046c ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r);
     }
     function fulfill(value) {
         resume("next", value);
@@ -370,7 +350,7 @@ function $24c52f343453d62d$export$e427f37a30a4de9b(thisArg, _arguments, generato
         if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]);
     }
 }
-function $24c52f343453d62d$export$bbd80228419bb833(o) {
+function $e710f43c4558477c$export$bbd80228419bb833(o) {
     var i, p;
     return i = {}, verb("next"), verb("throw", function(e) {
         throw e;
@@ -380,16 +360,16 @@ function $24c52f343453d62d$export$bbd80228419bb833(o) {
     function verb(n, f) {
         i[n] = o[n] ? function(v) {
             return (p = !p) ? {
-                value: $24c52f343453d62d$export$10c90e4f7922046c(o[n](v)),
+                value: $e710f43c4558477c$export$10c90e4f7922046c(o[n](v)),
                 done: false
             } : f ? f(v) : v;
         } : f;
     }
 }
-function $24c52f343453d62d$export$e3b29a3d6162315f(o) {
+function $e710f43c4558477c$export$e3b29a3d6162315f(o) {
     if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
     var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof $24c52f343453d62d$export$19a8beecd37a4c45 === "function" ? $24c52f343453d62d$export$19a8beecd37a4c45(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function() {
+    return m ? m.call(o) : (o = typeof $e710f43c4558477c$export$19a8beecd37a4c45 === "function" ? $e710f43c4558477c$export$19a8beecd37a4c45(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function() {
         return this;
     }, i);
     function verb(n) {
@@ -408,14 +388,14 @@ function $24c52f343453d62d$export$e3b29a3d6162315f(o) {
         }, reject);
     }
 }
-function $24c52f343453d62d$export$4fb47efe1390b86f(cooked, raw) {
+function $e710f43c4558477c$export$4fb47efe1390b86f(cooked, raw) {
     if (Object.defineProperty) Object.defineProperty(cooked, "raw", {
         value: raw
     });
     else cooked.raw = raw;
     return cooked;
 }
-var $24c52f343453d62d$var$__setModuleDefault = Object.create ? function(o, v) {
+var $e710f43c4558477c$var$__setModuleDefault = Object.create ? function(o, v) {
     Object.defineProperty(o, "default", {
         enumerable: true,
         value: v
@@ -423,44 +403,44 @@ var $24c52f343453d62d$var$__setModuleDefault = Object.create ? function(o, v) {
 } : function(o, v) {
     o["default"] = v;
 };
-var $24c52f343453d62d$var$ownKeys = function(o) {
-    $24c52f343453d62d$var$ownKeys = Object.getOwnPropertyNames || function(o) {
+var $e710f43c4558477c$var$ownKeys = function(o) {
+    $e710f43c4558477c$var$ownKeys = Object.getOwnPropertyNames || function(o) {
         var ar = [];
         for(var k in o)if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
         return ar;
     };
-    return $24c52f343453d62d$var$ownKeys(o);
+    return $e710f43c4558477c$var$ownKeys(o);
 };
-function $24c52f343453d62d$export$c21735bcef00d192(mod) {
+function $e710f43c4558477c$export$c21735bcef00d192(mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
     if (mod != null) {
-        for(var k = $24c52f343453d62d$var$ownKeys(mod), i = 0; i < k.length; i++)if (k[i] !== "default") $24c52f343453d62d$export$45d3717a4c69092e(result, mod, k[i]);
+        for(var k = $e710f43c4558477c$var$ownKeys(mod), i = 0; i < k.length; i++)if (k[i] !== "default") $e710f43c4558477c$export$45d3717a4c69092e(result, mod, k[i]);
     }
-    $24c52f343453d62d$var$__setModuleDefault(result, mod);
+    $e710f43c4558477c$var$__setModuleDefault(result, mod);
     return result;
 }
-function $24c52f343453d62d$export$da59b14a69baef04(mod) {
+function $e710f43c4558477c$export$da59b14a69baef04(mod) {
     return mod && mod.__esModule ? mod : {
         default: mod
     };
 }
-function $24c52f343453d62d$export$d5dcaf168c640c35(receiver, state, kind, f) {
+function $e710f43c4558477c$export$d5dcaf168c640c35(receiver, state, kind, f) {
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 }
-function $24c52f343453d62d$export$d40a35129aaff81f(receiver, state, value, kind, f) {
+function $e710f43c4558477c$export$d40a35129aaff81f(receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
 }
-function $24c52f343453d62d$export$81fdc39f203e4e04(state, receiver) {
+function $e710f43c4558477c$export$81fdc39f203e4e04(state, receiver) {
     if (receiver === null || typeof receiver !== "object" && typeof receiver !== "function") throw new TypeError("Cannot use 'in' operator on non-object");
     return typeof state === "function" ? receiver === state : state.has(receiver);
 }
-function $24c52f343453d62d$export$88ac25d8e944e405(env, value, async) {
+function $e710f43c4558477c$export$88ac25d8e944e405(env, value, async) {
     if (value !== null && value !== void 0) {
         if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
         var dispose, inner;
@@ -491,13 +471,13 @@ function $24c52f343453d62d$export$88ac25d8e944e405(env, value, async) {
     });
     return value;
 }
-var $24c52f343453d62d$var$_SuppressedError = typeof SuppressedError === "function" ? SuppressedError : function(error, suppressed, message) {
+var $e710f43c4558477c$var$_SuppressedError = typeof SuppressedError === "function" ? SuppressedError : function(error, suppressed, message) {
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 };
-function $24c52f343453d62d$export$8f076105dc360e92(env) {
+function $e710f43c4558477c$export$8f076105dc360e92(env) {
     function fail(e) {
-        env.error = env.hasError ? new $24c52f343453d62d$var$_SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+        env.error = env.hasError ? new $e710f43c4558477c$var$_SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
         env.hasError = true;
     }
     var r, s = 0;
@@ -519,52 +499,82 @@ function $24c52f343453d62d$export$8f076105dc360e92(env) {
     }
     return next();
 }
-function $24c52f343453d62d$export$889dfb5d17574b0b(path, preserveJsx) {
+function $e710f43c4558477c$export$889dfb5d17574b0b(path, preserveJsx) {
     if (typeof path === "string" && /^\.\.?\//.test(path)) return path.replace(/\.(tsx)$|((?:\.d)?)((?:\.[^./]+?)?)\.([cm]?)ts$/i, function(m, tsx, d, ext, cm) {
         return tsx ? preserveJsx ? ".jsx" : ".js" : d && (!ext || !cm) ? m : d + ext + "." + cm.toLowerCase() + "js";
     });
     return path;
 }
-var $24c52f343453d62d$export$2e2bcd8739ae039 = {
-    __extends: $24c52f343453d62d$export$a8ba968b8961cb8a,
-    __assign: $24c52f343453d62d$export$18ce0697a983be9b,
-    __rest: $24c52f343453d62d$export$3c9a16f847548506,
-    __decorate: $24c52f343453d62d$export$29e00dfd3077644b,
-    __param: $24c52f343453d62d$export$d5ad3fd78186038f,
-    __esDecorate: $24c52f343453d62d$export$3a84e1ae4e97e9b0,
-    __runInitializers: $24c52f343453d62d$export$d831c04e792af3d,
-    __propKey: $24c52f343453d62d$export$6a2a36740a146cb8,
-    __setFunctionName: $24c52f343453d62d$export$d1a06452d3489bc7,
-    __metadata: $24c52f343453d62d$export$f1db080c865becb9,
-    __awaiter: $24c52f343453d62d$export$1050f835b63b671e,
-    __generator: $24c52f343453d62d$export$67ebef60e6f28a6,
-    __createBinding: $24c52f343453d62d$export$45d3717a4c69092e,
-    __exportStar: $24c52f343453d62d$export$f33643c0debef087,
-    __values: $24c52f343453d62d$export$19a8beecd37a4c45,
-    __read: $24c52f343453d62d$export$8d051b38c9118094,
-    __spread: $24c52f343453d62d$export$afc72e2116322959,
-    __spreadArrays: $24c52f343453d62d$export$6388937ca91ccae8,
-    __spreadArray: $24c52f343453d62d$export$1216008129fb82ed,
-    __await: $24c52f343453d62d$export$10c90e4f7922046c,
-    __asyncGenerator: $24c52f343453d62d$export$e427f37a30a4de9b,
-    __asyncDelegator: $24c52f343453d62d$export$bbd80228419bb833,
-    __asyncValues: $24c52f343453d62d$export$e3b29a3d6162315f,
-    __makeTemplateObject: $24c52f343453d62d$export$4fb47efe1390b86f,
-    __importStar: $24c52f343453d62d$export$c21735bcef00d192,
-    __importDefault: $24c52f343453d62d$export$da59b14a69baef04,
-    __classPrivateFieldGet: $24c52f343453d62d$export$d5dcaf168c640c35,
-    __classPrivateFieldSet: $24c52f343453d62d$export$d40a35129aaff81f,
-    __classPrivateFieldIn: $24c52f343453d62d$export$81fdc39f203e4e04,
-    __addDisposableResource: $24c52f343453d62d$export$88ac25d8e944e405,
-    __disposeResources: $24c52f343453d62d$export$8f076105dc360e92,
-    __rewriteRelativeImportExtension: $24c52f343453d62d$export$889dfb5d17574b0b
+var $e710f43c4558477c$export$2e2bcd8739ae039 = {
+    __extends: $e710f43c4558477c$export$a8ba968b8961cb8a,
+    __assign: $e710f43c4558477c$export$18ce0697a983be9b,
+    __rest: $e710f43c4558477c$export$3c9a16f847548506,
+    __decorate: $e710f43c4558477c$export$29e00dfd3077644b,
+    __param: $e710f43c4558477c$export$d5ad3fd78186038f,
+    __esDecorate: $e710f43c4558477c$export$3a84e1ae4e97e9b0,
+    __runInitializers: $e710f43c4558477c$export$d831c04e792af3d,
+    __propKey: $e710f43c4558477c$export$6a2a36740a146cb8,
+    __setFunctionName: $e710f43c4558477c$export$d1a06452d3489bc7,
+    __metadata: $e710f43c4558477c$export$f1db080c865becb9,
+    __awaiter: $e710f43c4558477c$export$1050f835b63b671e,
+    __generator: $e710f43c4558477c$export$67ebef60e6f28a6,
+    __createBinding: $e710f43c4558477c$export$45d3717a4c69092e,
+    __exportStar: $e710f43c4558477c$export$f33643c0debef087,
+    __values: $e710f43c4558477c$export$19a8beecd37a4c45,
+    __read: $e710f43c4558477c$export$8d051b38c9118094,
+    __spread: $e710f43c4558477c$export$afc72e2116322959,
+    __spreadArrays: $e710f43c4558477c$export$6388937ca91ccae8,
+    __spreadArray: $e710f43c4558477c$export$1216008129fb82ed,
+    __await: $e710f43c4558477c$export$10c90e4f7922046c,
+    __asyncGenerator: $e710f43c4558477c$export$e427f37a30a4de9b,
+    __asyncDelegator: $e710f43c4558477c$export$bbd80228419bb833,
+    __asyncValues: $e710f43c4558477c$export$e3b29a3d6162315f,
+    __makeTemplateObject: $e710f43c4558477c$export$4fb47efe1390b86f,
+    __importStar: $e710f43c4558477c$export$c21735bcef00d192,
+    __importDefault: $e710f43c4558477c$export$da59b14a69baef04,
+    __classPrivateFieldGet: $e710f43c4558477c$export$d5dcaf168c640c35,
+    __classPrivateFieldSet: $e710f43c4558477c$export$d40a35129aaff81f,
+    __classPrivateFieldIn: $e710f43c4558477c$export$81fdc39f203e4e04,
+    __addDisposableResource: $e710f43c4558477c$export$88ac25d8e944e405,
+    __disposeResources: $e710f43c4558477c$export$8f076105dc360e92,
+    __rewriteRelativeImportExtension: $e710f43c4558477c$export$889dfb5d17574b0b
 };
 
 
 /**
  * @file device-section.ts
  * @description Section ordering for the device card
- */ var $9a28a77a5af263d9$exports = {};
+ */ var $b5e603aa525763fc$exports = {};
+"use strict";
+Object.defineProperty($b5e603aa525763fc$exports, "__esModule", {
+    value: true
+});
+$b5e603aa525763fc$exports.createLocalize = $b5e603aa525763fc$var$createLocalize;
+/**
+ * Create a localize function bound to a card's translation files.
+ * It will first check if the string exists in the user's language.
+ * If not, it will fall back to the fallback language (default: English).
+ */ function $b5e603aa525763fc$var$createLocalize(languages, fallbackLanguage = 'en') {
+    const fallback = languages[fallbackLanguage];
+    return (hass, key, search = '', replace = '')=>{
+        let translated = $b5e603aa525763fc$var$getNestedTranslation(languages[hass.language], key) ?? $b5e603aa525763fc$var$getNestedTranslation(fallback, key) ?? key;
+        if (search !== '' && replace !== '') translated = translated.replace(search, replace);
+        return translated;
+    };
+}
+function $b5e603aa525763fc$var$getNestedTranslation(obj, path) {
+    if (!obj) return undefined;
+    const keys = path.split('.');
+    let result = obj;
+    for (const key of keys){
+        if (result === undefined || result === null || typeof result !== 'object') return undefined;
+        result = result[key];
+    }
+    return typeof result === 'string' ? result : undefined;
+}
+
+
+var $9a28a77a5af263d9$exports = {};
 $9a28a77a5af263d9$exports = JSON.parse("{\"card\":{\"device_name\":\"Device Name\",\"expand\":\"Expand\",\"collapse\":\"Collapse\",\"loading\":\"Loading...\",\"no_devices_found\":\"No devices found for integration:\",\"device_card_name\":\"Device Card\",\"device_card_description\":\"A card to summarize the status of a Device.\",\"integration_card_name\":\"Integration Card\",\"integration_card_description\":\"A card to display all devices from a specific integration.\"},\"sections\":{\"controls\":\"Controls\",\"configuration\":\"Configuration\",\"sensors\":\"Sensors\",\"diagnostic\":\"Diagnostic\"}}");
 
 
@@ -580,32 +590,12 @@ var $9d8ca0c26d9d22c3$exports = {};
 $9d8ca0c26d9d22c3$exports = JSON.parse('{"card":{"device_name":"\u041D\u0430\u0437\u0432\u0430\u043D\u0438\u0435 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0430","expand":"\u0420\u0430\u0437\u0432\u0435\u0440\u043D\u0443\u0442\u044C","collapse":"\u0421\u0432\u0435\u0440\u043D\u0443\u0442\u044C","loading":"\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430...","no_devices_found":"\u041D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u043E \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432 \u0438\u0437 \u0438\u043D\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u0438:","device_card_name":"\u041A\u0430\u0440\u0442\u043E\u0447\u043A\u0430 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0430","device_card_description":"\u041A\u0430\u0440\u0442\u043E\u0447\u043A\u0430 \u0434\u043B\u044F \u043E\u0431\u043E\u0431\u0449\u0435\u043D\u0438\u044F \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u044F \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u0430.","integration_card_name":"\u041A\u0430\u0440\u0442\u043E\u0447\u043A\u0430 \u0438\u043D\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u0438","integration_card_description":"\u041A\u0430\u0440\u0442\u043E\u0447\u043A\u0430 \u0434\u043B\u044F \u043E\u0442\u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u044F \u0432\u0441\u0435\u0445 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432 \u0438\u0437 \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u043D\u043E\u0439 \u0438\u043D\u0442\u0435\u0433\u0440\u0430\u0446\u0438\u0438."},"sections":{"controls":"\u0423\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435","configuration":"\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438","sensors":"\u0421\u0435\u043D\u0441\u043E\u0440\u044B","diagnostic":"\u0414\u0438\u0430\u0433\u043D\u043E\u0441\u0442\u0438\u043A\u0430"}}');
 
 
-// Import other languages as needed above this line and in order
-// Define supported languages
-const $623ffaa3e77fea87$var$languages = {
+const $623ffaa3e77fea87$export$b3bd0bc58e36cd63 = (0, $b5e603aa525763fc$exports.createLocalize)({
     en: $9a28a77a5af263d9$exports,
     fr: $a8bf67e13c48de4e$exports,
     pt: $736e6599d6bbd3bf$exports,
     ru: $9d8ca0c26d9d22c3$exports
-};
-const $623ffaa3e77fea87$export$b3bd0bc58e36cd63 = (hass, key, search = '', replace = '')=>{
-    let translated;
-    translated = $623ffaa3e77fea87$var$getNestedTranslation($623ffaa3e77fea87$var$languages[hass.language], key) ?? $623ffaa3e77fea87$var$getNestedTranslation($623ffaa3e77fea87$var$languages.en, key) ?? key;
-    // Replace placeholders
-    if (search !== '' && replace !== '') translated = translated.replace(search, replace);
-    return translated;
-};
-// Helper function to safely navigate nested objects
-function $623ffaa3e77fea87$var$getNestedTranslation(obj, path) {
-    if (!obj) return undefined;
-    const keys = path.split('.');
-    let result = obj;
-    for (const key of keys){
-        if (result === undefined || result === null || typeof result !== 'object') return undefined;
-        result = result[key];
-    }
-    return typeof result === 'string' ? result : undefined;
-}
+});
 
 
 const $e92876f5a6849818$export$b6b5fe522e6ef18a = (hass, config, device)=>{
@@ -645,14 +635,45 @@ const $e92876f5a6849818$export$b6b5fe522e6ef18a = (hass, config, device)=>{
 
 
 
+var $7b593e8e2f493f5e$exports = {};
+"use strict";
+Object.defineProperty($7b593e8e2f493f5e$exports, "__esModule", {
+    value: true
+});
+$7b593e8e2f493f5e$exports.resetPoatCardHelpersForTests = $7b593e8e2f493f5e$var$resetPoatCardHelpersForTests;
+$7b593e8e2f493f5e$exports.setPoatCardHelpers = $7b593e8e2f493f5e$var$setPoatCardHelpers;
+$7b593e8e2f493f5e$exports.getPoatCardHelpers = $7b593e8e2f493f5e$var$getPoatCardHelpers;
+$7b593e8e2f493f5e$exports.resolvePoatCardHelpers = $7b593e8e2f493f5e$var$resolvePoatCardHelpers;
+let $7b593e8e2f493f5e$var$_helpersPromise;
+/** Clears singleton state (unit tests only). */ function $7b593e8e2f493f5e$var$resetPoatCardHelpersForTests() {
+    $7b593e8e2f493f5e$var$_helpersPromise = undefined;
+    Reflect.deleteProperty(globalThis, 'poatCardHelpers');
+}
+function $7b593e8e2f493f5e$var$setPoatCardHelpers(helpers) {
+    globalThis.poatCardHelpers = helpers;
+}
+function $7b593e8e2f493f5e$var$getPoatCardHelpers() {
+    return globalThis.poatCardHelpers;
+}
+function $7b593e8e2f493f5e$var$resolvePoatCardHelpers(loader) {
+    const existing = $7b593e8e2f493f5e$var$getPoatCardHelpers();
+    if (existing) return Promise.resolve(existing);
+    if ($7b593e8e2f493f5e$var$_helpersPromise !== undefined) return $7b593e8e2f493f5e$var$_helpersPromise;
+    if (!loader) return Promise.reject(new Error('[custom-card] helpers: missing globalThis.loadCardHelpers'));
+    $7b593e8e2f493f5e$var$_helpersPromise = loader().then((helpers)=>{
+        $7b593e8e2f493f5e$var$setPoatCardHelpers(helpers);
+        return helpers;
+    });
+    return $7b593e8e2f493f5e$var$_helpersPromise;
+}
 
-const $42d40446c41f747a$export$66a0a6f05155b9e9 = (superClass)=>{
-    class HassConfigClass extends superClass {
-    }
-    return HassConfigClass;
-};
 
-
+var $c982213da4aa951b$exports = {};
+"use strict";
+Object.defineProperty($c982213da4aa951b$exports, "__esModule", {
+    value: true
+});
+$c982213da4aa951b$exports.entityRow = void 0;
 /**
  * @license
  * Copyright 2019 Google LLC
@@ -1270,6 +1291,111 @@ const $ab210b2da7b39b9d$export$f5c524615a7708d6 = {
 
 
 
+
+/**
+ * Renders a Lovelace entity row element via {@link getPoatCardHelpers}.
+ * Returns `nothing` when card helpers are not resolved yet.
+ */ const $c982213da4aa951b$var$entityRow = (hass, rowConfig, className)=>{
+    const helpers = (0, $7b593e8e2f493f5e$exports.getPoatCardHelpers)();
+    if (!helpers) return $f58f44579a4747ac$export$45b790e32b2810ee;
+    const element = helpers.createRowElement(rowConfig);
+    element.hass = hass;
+    if (className) element.className = className;
+    return element;
+};
+$c982213da4aa951b$exports.entityRow = $c982213da4aa951b$var$entityRow;
+
+
+var $5af8360155067557$exports = {};
+"use strict";
+Object.defineProperty($5af8360155067557$exports, "__esModule", {
+    value: true
+});
+$5af8360155067557$exports.HassConfigMixin = void 0;
+/**
+ * Provides non-decorated `hass` and `config` fields.
+ *
+ * These are intentionally NOT `@property()` to avoid Lit reactive property
+ * plumbing/attribute semantics.
+ */ const $5af8360155067557$var$HassConfigMixin = (superClass)=>{
+    class HassConfigClass extends superClass {
+    }
+    return HassConfigClass;
+};
+$5af8360155067557$exports.HassConfigMixin = $5af8360155067557$var$HassConfigMixin;
+
+
+var $d2b7651828735a8b$exports = {};
+"use strict";
+Object.defineProperty($d2b7651828735a8b$exports, "__esModule", {
+    value: true
+});
+$d2b7651828735a8b$exports.moreInfo = $d2b7651828735a8b$var$moreInfo;
+var $12a7dbfb4049bb75$exports = {};
+"use strict";
+/**
+ * https://github.com/home-assistant/frontend/blob/dev/src/state/more-info-mixin.ts
+ */ Object.defineProperty($12a7dbfb4049bb75$exports, "__esModule", {
+    value: true
+});
+
+
+var $d8229c453ce2530e$exports = {};
+"use strict";
+Object.defineProperty($d8229c453ce2530e$exports, "__esModule", {
+    value: true
+});
+$d8229c453ce2530e$exports.fireEvent = void 0;
+var $5c300232e2fb99f1$exports = {};
+"use strict";
+Object.defineProperty($5c300232e2fb99f1$exports, "__esModule", {
+    value: true
+});
+
+
+/**
+ * Dispatches a custom event with an optional detail value.
+ *
+ * @param {string} type Name of event type.
+ * @param {*=} detail Detail value containing event-specific
+ *   payload.
+ * @param {{ bubbles: (boolean|undefined),
+ *           cancelable: (boolean|undefined),
+ *           composed: (boolean|undefined) }=}
+ *  options Object specifying options.  These may include:
+ *  `bubbles` (boolean, defaults to `true`),
+ *  `cancelable` (boolean, defaults to false), and
+ *  `node` on which to fire the event (HTMLElement, defaults to `this`).
+ * @return {Event} The new event that was fired.
+ */ const $d8229c453ce2530e$var$fireEvent = (node, type, detail, options)=>{
+    options = options || {};
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- upstream HA
+    // @ts-ignore
+    detail = detail === null || detail === undefined ? {} : detail;
+    const event = new Event(type, {
+        bubbles: options.bubbles === undefined ? true : options.bubbles,
+        cancelable: Boolean(options.cancelable),
+        composed: options.composed === undefined ? true : options.composed
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- upstream HA Event detail
+    event.detail = detail;
+    node.dispatchEvent(event);
+    return event;
+};
+$d8229c453ce2530e$exports.fireEvent = $d8229c453ce2530e$var$fireEvent;
+
+
+/**
+ * Opens the Home Assistant more-info dialog for an entity.
+ */ function $d2b7651828735a8b$var$moreInfo(target, entityId) {
+    if (!entityId) return;
+    (0, $d8229c453ce2530e$exports.fireEvent)(target, 'hass-more-info', {
+        entityId: entityId
+    });
+}
+
+
+
 /**
  * @license
  * Copyright 2021 Google LLC
@@ -1295,13 +1421,20 @@ const $5cc8c88379d13dba$var$EXCLUDE_LIST = [
     'hidden'
 ];
 const $5cc8c88379d13dba$export$16bd37df0047a29c = (entity)=>{
-    // Filter out common attributes that are less interesting or already shown
+    // Filter out common attributes that are less interesting or already shown.
+    // entity_id is listed first as it's logically superior to individual attributes.
     const attributes = Object.entries({
-        ...entity.attributes,
-        entity_id: entity.entity_id
+        entity_id: entity.entity_id,
+        ...entity.attributes
     }).filter(([key])=>!$5cc8c88379d13dba$var$EXCLUDE_LIST.includes(key));
+    // Open the entity's more-info dialog. The event bubbles + is composed by
+    // default, so it reaches HA's more-info handler across the shadow boundary.
+    const openMoreInfo = (ev)=>{
+        ev.stopPropagation();
+        (0, $d2b7651828735a8b$exports.moreInfo)(ev.currentTarget, entity.entity_id);
+    };
     return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`
-    <div class="entity-attributes">
+    <div class="entity-attributes" @click=${openMoreInfo}>
       ${(0, $4db75f38ad0d35fe$export$871de8747c9eaa88)(attributes, ([key, value])=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`
           <div class="attribute-row">
             <span class="attribute-key">${key}:</span>
@@ -1416,31 +1549,6 @@ const $a6a6434f1848f426$export$40075bc608c4544e = (entity, inverseEntities = [])
       ></div>
     </div>
   `;
-};
-
-
-
-
-const $91384c06f34fa41f$export$535a09426ee2ea59 = (hass, entity, className)=>{
-    const helpers = (0, $d15fe90fb16b0188$export$1570ac5d2d462ce6)();
-    if (!helpers) // Card is responsible for gating rendering until helpers are resolved.
-    // If this happens, it indicates a misuse (e.g., calling stateContent too early).
-    return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
-    // Create the row configuration - HA's row handles actions using our config.
-    const config = {
-        entity: entity.entity_id,
-        // our name removes the device name from the friendly name
-        name: entity.name,
-        // add our actions
-        ...entity.config
-    };
-    // Create the row element
-    const element = helpers.createRowElement(config);
-    // Set the hass property
-    element.hass = hass;
-    // Apply the class name if provided
-    if (className) element.className = className;
-    return element;
 };
 
 
@@ -1724,6 +1832,7 @@ const $424623214c66460e$export$9dd6ff9ea0189349 = (0, $def2de46b9306e8a$export$d
     margin: 0 0 4px 50px;
     font-size: 0.9rem;
     border-left: 1px solid var(--divider-color);
+    cursor: pointer;
   }
 
   .entity-attributes-empty {
@@ -1761,11 +1870,11 @@ const $424623214c66460e$export$9dd6ff9ea0189349 = (0, $def2de46b9306e8a$export$d
 `;
 
 
-class $a56ca3d5ac1672a8$export$c22534166de5f0ff extends (0, $42d40446c41f747a$export$66a0a6f05155b9e9)((0, $ab210b2da7b39b9d$export$3f2f9f5909897157)) {
+class $a56ca3d5ac1672a8$export$c22534166de5f0ff extends (0, $5af8360155067557$exports.HassConfigMixin)((0, $ab210b2da7b39b9d$export$3f2f9f5909897157)) {
     connectedCallback() {
         super.connectedCallback();
         this.addEventListener('ll-custom', this._onLlCustom);
-        (0, $d15fe90fb16b0188$export$d59f9ebe88d50829)(globalThis.loadCardHelpers).then((helpers)=>{
+        (0, $7b593e8e2f493f5e$exports.resolvePoatCardHelpers)(globalThis.loadCardHelpers).then((helpers)=>{
             this._cardHelpers = helpers;
         });
     }
@@ -1786,7 +1895,8 @@ class $a56ca3d5ac1672a8$export$c22534166de5f0ff extends (0, $42d40446c41f747a$ex
         if (!this._cardHelpers) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
         let statusClassName;
         if (this.entity.isProblemEntity) statusClassName = this.entity.isActive ? 'status-error' : 'status-ok';
-        const showBar = this.entity.attributes.unit_of_measurement?.includes('%') && !Number.isNaN(Number(this.entity.state));
+        const unitOfMeasurement = this.entity.attributes.unit_of_measurement;
+        const showBar = typeof unitOfMeasurement === 'string' && unitOfMeasurement.includes('%') && !Number.isNaN(Number(this.entity.state));
         const inverseEntities = this.config?.inverse_percent || [];
         return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div
       class="${[
@@ -1796,7 +1906,11 @@ class $a56ca3d5ac1672a8$export$c22534166de5f0ff extends (0, $42d40446c41f747a$ex
         ].join(' ')}"
     >
       <div class="row-content">
-        ${(0, $91384c06f34fa41f$export$535a09426ee2ea59)(this.hass, this.entity, statusClassName)}
+        ${(0, $c982213da4aa951b$exports.entityRow)(this.hass, {
+            entity: this.entity.entity_id,
+            name: this.entity.name,
+            ...this.entity.config
+        }, statusClassName)}
         ${showBar ? (0, $a6a6434f1848f426$export$40075bc608c4544e)(this.entity, inverseEntities) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
       </div>
       ${this._expanded ? (0, $5cc8c88379d13dba$export$16bd37df0047a29c)(this.entity) : (0, $f58f44579a4747ac$export$45b790e32b2810ee)}
@@ -1817,26 +1931,37 @@ class $a56ca3d5ac1672a8$export$c22534166de5f0ff extends (0, $42d40446c41f747a$ex
         };
     }
 }
-(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+(0, $e710f43c4558477c$export$29e00dfd3077644b)([
     (0, $9cd908ed2625c047$export$d541bacb2bda4494)({
         attribute: false
     })
 ], $a56ca3d5ac1672a8$export$c22534166de5f0ff.prototype, "entity", void 0);
-(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+(0, $e710f43c4558477c$export$29e00dfd3077644b)([
     (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
 ], $a56ca3d5ac1672a8$export$c22534166de5f0ff.prototype, "_expanded", void 0);
-(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+(0, $e710f43c4558477c$export$29e00dfd3077644b)([
     (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
 ], $a56ca3d5ac1672a8$export$c22534166de5f0ff.prototype, "_cardHelpers", void 0);
-$a56ca3d5ac1672a8$export$c22534166de5f0ff = (0, $24c52f343453d62d$export$29e00dfd3077644b)([
+$a56ca3d5ac1672a8$export$c22534166de5f0ff = (0, $e710f43c4558477c$export$29e00dfd3077644b)([
     (0, $14742f68afc766d6$export$da64fc29f17f9d0e)('device-card-row')
 ], $a56ca3d5ac1672a8$export$c22534166de5f0ff);
 
 
-
+var $6ba6bcddf6d39f36$exports = {};
+"use strict";
+Object.defineProperty($6ba6bcddf6d39f36$exports, "__esModule", {
+    value: true
+});
+$6ba6bcddf6d39f36$exports.hasFeature = void 0;
 /**
- * Configuration utilities for feature flag management
- */ const $a64cd1666b27644b$export$805ddaeeece0413e = (config, feature)=>!config || config.features?.includes(feature) || false;
+ * Determines if a specified feature is enabled in the provided configuration.
+ *
+ * @param config - The configuration object containing feature flags
+ * @param feature - The specific feature to check for
+ * @returns True if the feature is enabled, false otherwise
+ */ const $6ba6bcddf6d39f36$var$hasFeature = (config, feature)=>!config || config.features?.includes(feature) || false;
+$6ba6bcddf6d39f36$exports.hasFeature = $6ba6bcddf6d39f36$var$hasFeature;
+
 
 
 
@@ -1849,9 +1974,16 @@ $a56ca3d5ac1672a8$export$c22534166de5f0ff = (0, $24c52f343453d62d$export$29e00df
  * expandable/collapsible behavior.
  */ 
 // src/delegates/utils/sort-entities.ts
+var $9be1c046bd0bdc20$exports = {};
+"use strict";
 /**
  * https://github.com/home-assistant/frontend/blob/dev/src/common/entity/compute_domain.ts
- */ const $e7dc90bb09bfe22d$export$2044bdc9670769ab = (entityId)=>entityId.substring(0, entityId.indexOf('.'));
+ */ Object.defineProperty($9be1c046bd0bdc20$exports, "__esModule", {
+    value: true
+});
+$9be1c046bd0bdc20$exports.computeDomain = void 0;
+const $9be1c046bd0bdc20$var$computeDomain = (entityId)=>entityId.substring(0, entityId.indexOf('.'));
+$9be1c046bd0bdc20$exports.computeDomain = $9be1c046bd0bdc20$var$computeDomain;
 
 
 const $e1ab409cd148a528$export$4742c54ffa379383 = (entities, sortConfig)=>{
@@ -1868,17 +2000,21 @@ const $e1ab409cd148a528$export$4742c54ffa379383 = (entities, sortConfig)=>{
         let valueB;
         switch(type){
             case 'domain':
-                valueA = (0, $e7dc90bb09bfe22d$export$2044bdc9670769ab)(a.entity_id);
-                valueB = (0, $e7dc90bb09bfe22d$export$2044bdc9670769ab)(b.entity_id);
+                valueA = (0, $9be1c046bd0bdc20$exports.computeDomain)(a.entity_id);
+                valueB = (0, $9be1c046bd0bdc20$exports.computeDomain)(b.entity_id);
                 break;
             case 'entity_id':
                 valueA = a.entity_id;
                 valueB = b.entity_id;
                 break;
             case 'name':
-                valueA = a.attributes.friendly_name ?? a.entity_id;
-                valueB = b.attributes.friendly_name ?? b.entity_id;
-                break;
+                {
+                    const nameA = a.attributes.friendly_name;
+                    const nameB = b.attributes.friendly_name;
+                    valueA = typeof nameA === 'string' ? nameA : a.entity_id;
+                    valueB = typeof nameB === 'string' ? nameB : b.entity_id;
+                    break;
+                }
             case 'state':
                 valueA = a.state;
                 valueB = b.state;
@@ -1933,7 +2069,7 @@ const $9b8ea5fddc8bd48e$export$4c0287abd2ec956e = (hass, config, section, sectio
     const sortedEntities = (0, $e1ab409cd148a528$export$4742c54ffa379383)(entities, config.sort);
     const displayEntities = needsExpansion && !sectionExpanded ? sortedEntities.slice(0, size) : sortedEntities;
     // Determine section class based on expanded state, number of items, and compact feature
-    const isCompact = (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'compact');
+    const isCompact = (0, $6ba6bcddf6d39f36$exports.hasFeature)(config, 'compact');
     const sectionClass = `section ${sectionExpanded ? 'expanded' : ''} ${needsExpansion ? '' : 'few-items'} ${isCompact ? 'compact' : ''}`;
     const rowTemplates = displayEntities.map((entity)=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<device-card-row
         .hass=${hass}
@@ -2013,9 +2149,9 @@ const $4d3593396bde49c5$export$9dd6ff9ea0189349 = (0, $def2de46b9306e8a$export$d
 `;
 
 
-class $2264182dc78b4841$export$da5a23a47e25d1ad extends (0, $42d40446c41f747a$export$66a0a6f05155b9e9)((0, $ab210b2da7b39b9d$export$3f2f9f5909897157)) {
+class $2264182dc78b4841$export$da5a23a47e25d1ad extends (0, $5af8360155067557$exports.HassConfigMixin)((0, $ab210b2da7b39b9d$export$3f2f9f5909897157)) {
     get _sectionExpanded() {
-        const defaultExpanded = (0, $a64cd1666b27644b$export$805ddaeeece0413e)(this.config, 'expanded');
+        const defaultExpanded = (0, $6ba6bcddf6d39f36$exports.hasFeature)(this.config, 'expanded');
         return this._sectionExpandedUser ?? defaultExpanded;
     }
     /**
@@ -2036,46 +2172,17 @@ class $2264182dc78b4841$export$da5a23a47e25d1ad extends (0, $42d40446c41f747a$ex
         };
     }
 }
-(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+(0, $e710f43c4558477c$export$29e00dfd3077644b)([
     (0, $9cd908ed2625c047$export$d541bacb2bda4494)({
         attribute: false
     })
 ], $2264182dc78b4841$export$da5a23a47e25d1ad.prototype, "section", void 0);
-(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+(0, $e710f43c4558477c$export$29e00dfd3077644b)([
     (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
 ], $2264182dc78b4841$export$da5a23a47e25d1ad.prototype, "_sectionExpandedUser", void 0);
-$2264182dc78b4841$export$da5a23a47e25d1ad = (0, $24c52f343453d62d$export$29e00dfd3077644b)([
+$2264182dc78b4841$export$da5a23a47e25d1ad = (0, $e710f43c4558477c$export$29e00dfd3077644b)([
     (0, $14742f68afc766d6$export$da64fc29f17f9d0e)('device-card-section')
 ], $2264182dc78b4841$export$da5a23a47e25d1ad);
-
-
-const $216640a6cb8d8606$export$19efda5681568302 = (superClass)=>{
-    class HassUpdateClass extends superClass {
-        get hass() {
-            return this.__hassValue;
-        }
-        set hass(value) {
-            this.__hassValue = value;
-        }
-        connectedCallback() {
-            super.connectedCallback();
-            globalThis.addEventListener('hass-update', this._boundHassUpdateHandler);
-        }
-        disconnectedCallback() {
-            super.disconnectedCallback();
-            globalThis.removeEventListener('hass-update', this._boundHassUpdateHandler);
-        }
-        _handleHassUpdate(event) {
-            const { detail: { hass: hass } } = event;
-            this.hass = hass;
-        }
-        constructor(...args){
-            super(...args), this._boundHassUpdateHandler = this._handleHassUpdate.bind(this);
-        }
-    }
-    return HassUpdateClass;
-};
-
 
 
 /**
@@ -2117,32 +2224,15 @@ const $8e9091561798c377$export$74ca6da3809e132c = (deviceId, deviceName, nameByU
 };
 
 
-const $5bd3a7e1f19a6de3$export$30c823bc834d6ab4 = (hass, deviceId)=>hass.devices[deviceId];
-
-
-const $e6782818bfcf779d$export$fcf7c33d7fd02301 = (hass, entityId)=>hass.entities[entityId];
-
-
-const $e24dedcf9e480b2d$export$50fdfeece43146fd = (hass, entityId, fakeState = false)=>{
-    if (!entityId) return undefined;
-    const state = hass.states[entityId] ?? (fakeState ? {
-        entity_id: entityId,
-        state: 'off',
-        attributes: {}
-    } : undefined);
-    if (!state) return undefined;
-    return {
-        state: state.state,
-        attributes: state.attributes,
-        entity_id: state.entity_id
-    };
-};
-
-
-
+var $582ca952b94144dd$exports = {};
+"use strict";
 /**
  * https://github.com/home-assistant/frontend/blob/dev/src/common/const.ts
- */ const $ca52414a81fa2740$export$f4a7f73c0fdd46d5 = [
+ */ Object.defineProperty($582ca952b94144dd$exports, "__esModule", {
+    value: true
+});
+$582ca952b94144dd$exports.SENSOR_ENTITIES = void 0;
+/** Domains grouped as sensor-like entities in device views. */ $582ca952b94144dd$exports.SENSOR_ENTITIES = [
     'sensor',
     'binary_sensor',
     'calendar',
@@ -2154,53 +2244,136 @@ const $e24dedcf9e480b2d$export$50fdfeece43146fd = (hass, entityId, fakeState = f
 
 
 
+var $f14e78138687b521$exports = {};
+"use strict";
+Object.defineProperty($f14e78138687b521$exports, "__esModule", {
+    value: true
+});
+$f14e78138687b521$exports.getDevice = void 0;
+/**
+ * Retrieves a device from `hass.devices`.
+ */ const $f14e78138687b521$var$getDevice = (hass, deviceId)=>{
+    const device = hass.devices[deviceId];
+    if (!device) return undefined;
+    return {
+        id: device.id,
+        config_entries: device.config_entries,
+        identifiers: device.identifiers,
+        manufacturer: device.manufacturer,
+        model: device.model,
+        model_id: device.model_id,
+        name: device.name,
+        name_by_user: device.name_by_user,
+        serial_number: device.serial_number
+    };
+};
+$f14e78138687b521$exports.getDevice = $f14e78138687b521$var$getDevice;
+
+
+var $acba4c6c62d44419$exports = {};
+"use strict";
+Object.defineProperty($acba4c6c62d44419$exports, "__esModule", {
+    value: true
+});
+$acba4c6c62d44419$exports.getEntity = void 0;
+/**
+ * Retrieves an entity registry entry from `hass.entities`.
+ */ const $acba4c6c62d44419$var$getEntity = (hass, entityId)=>{
+    const entity = hass.entities[entityId];
+    if (!entity) return undefined;
+    return {
+        entity_id: entity.entity_id,
+        device_id: entity.device_id,
+        translation_key: entity.translation_key
+    };
+};
+$acba4c6c62d44419$exports.getEntity = $acba4c6c62d44419$var$getEntity;
+
+
+var $c5218a11ead5212e$exports = {};
+"use strict";
+Object.defineProperty($c5218a11ead5212e$exports, "__esModule", {
+    value: true
+});
+$c5218a11ead5212e$exports.getState = void 0;
+/**
+ * Retrieves the state of an entity from `hass.states`.
+ */ const $c5218a11ead5212e$var$getState = (hass, entityId)=>{
+    if (!entityId) return undefined;
+    const state = hass.states[entityId];
+    if (!state) return undefined;
+    return {
+        entity_id: state.entity_id,
+        state: state.state,
+        attributes: state.attributes,
+        last_changed: state.last_changed
+    };
+};
+$c5218a11ead5212e$exports.getState = $c5218a11ead5212e$var$getState;
+
+
+var $46dabcff6df1e992$exports = {};
+"use strict";
 /**
  * https://github.com/home-assistant/frontend/blob/dev/src/common/entity/state_active.ts
- */ /**
+ */ Object.defineProperty($46dabcff6df1e992$exports, "__esModule", {
+    value: true
+});
+$46dabcff6df1e992$exports.stateActive = $46dabcff6df1e992$var$stateActive;
+var $d25e6b86739c3dd6$exports = {};
+"use strict";
+/**
  * https://github.com/home-assistant/frontend/blob/dev/src/data/entity/entity.ts
- */ /**
- * https://github.com/home-assistant/frontend/blob/dev/src/common/array/literal-includes.ts#L6
- */ /**
+ */ Object.defineProperty($d25e6b86739c3dd6$exports, "__esModule", {
+    value: true
+});
+$d25e6b86739c3dd6$exports.isOffState = $d25e6b86739c3dd6$exports.OFF_STATES = $d25e6b86739c3dd6$exports.OFF = $d25e6b86739c3dd6$exports.ON = $d25e6b86739c3dd6$exports.UNKNOWN = $d25e6b86739c3dd6$exports.UNAVAILABLE = void 0;
+var $f4456c331bb6c271$exports = {};
+"use strict";
+/**
+ * https://github.com/home-assistant/frontend/blob/dev/src/common/array/literal-includes.ts
+ */ Object.defineProperty($f4456c331bb6c271$exports, "__esModule", {
+    value: true
+});
+$f4456c331bb6c271$exports.arrayLiteralIncludes = void 0;
+/**
  * Creates a type predicate function for determining if an array literal includes a given value
  * @param array - The array to check
  * @returns A type predicate function
- */ const $2dcc326b5e422db7$export$2fff862a498eed4d = (array)=>(searchElement, fromIndex)=>array.includes(searchElement, fromIndex);
+ */ const $f4456c331bb6c271$var$arrayLiteralIncludes = (array)=>(searchElement, fromIndex)=>array.includes(searchElement, fromIndex);
+$f4456c331bb6c271$exports.arrayLiteralIncludes = $f4456c331bb6c271$var$arrayLiteralIncludes;
 
 
-const $ae715937da4da853$export$f2d101b977a134fd = 'unavailable';
-const $ae715937da4da853$export$78244dbb77cfa6b6 = 'unknown';
-const $ae715937da4da853$export$8a4b4288adcd729e = 'on';
-const $ae715937da4da853$export$173de64b5ad0d5b4 = 'off';
-const $ae715937da4da853$export$565a86226f245f0b = [
-    $ae715937da4da853$export$f2d101b977a134fd,
-    $ae715937da4da853$export$78244dbb77cfa6b6
+$d25e6b86739c3dd6$exports.UNAVAILABLE = 'unavailable';
+$d25e6b86739c3dd6$exports.UNKNOWN = 'unknown';
+$d25e6b86739c3dd6$exports.ON = 'on';
+$d25e6b86739c3dd6$exports.OFF = 'off';
+$d25e6b86739c3dd6$exports.OFF_STATES = [
+    $d25e6b86739c3dd6$exports.UNAVAILABLE,
+    $d25e6b86739c3dd6$exports.UNKNOWN,
+    $d25e6b86739c3dd6$exports.OFF
 ];
-const $ae715937da4da853$export$8ccd97e727a09c65 = [
-    $ae715937da4da853$export$f2d101b977a134fd,
-    $ae715937da4da853$export$78244dbb77cfa6b6,
-    $ae715937da4da853$export$173de64b5ad0d5b4
-];
-const $ae715937da4da853$export$dea4173a348a2153 = (0, $2dcc326b5e422db7$export$2fff862a498eed4d)($ae715937da4da853$export$565a86226f245f0b);
-const $ae715937da4da853$export$3473ff6928139ced = (0, $2dcc326b5e422db7$export$2fff862a498eed4d)($ae715937da4da853$export$8ccd97e727a09c65);
+$d25e6b86739c3dd6$exports.isOffState = (0, $f4456c331bb6c271$exports.arrayLiteralIncludes)($d25e6b86739c3dd6$exports.OFF_STATES);
 
 
 
-function $043ab5348dd51237$export$c0e85c3982a3daa6(stateObj, state) {
-    const domain = (0, $e7dc90bb09bfe22d$export$2044bdc9670769ab)(stateObj.entity_id);
-    // Intentional: SonarQube cleanup - using ?? instead of explicit check
-    const compareState = state ?? stateObj?.state;
+function $46dabcff6df1e992$var$stateActive(stateObj, state) {
+    const domain = (0, $9be1c046bd0bdc20$exports.computeDomain)(stateObj.entity_id);
+    const compareState = state !== undefined ? state : stateObj?.state;
     if ([
         'button',
         'event',
+        'infrared',
         'input_button',
+        'radio_frequency',
         'scene'
-    ].includes(domain)) return compareState !== (0, $ae715937da4da853$export$f2d101b977a134fd);
-    if ((0, $ae715937da4da853$export$dea4173a348a2153)(compareState)) return false;
+    ].includes(domain)) return compareState !== $d25e6b86739c3dd6$exports.UNAVAILABLE;
+    if (compareState === $d25e6b86739c3dd6$exports.UNAVAILABLE || compareState === $d25e6b86739c3dd6$exports.UNKNOWN) return false;
     // The "off" check is relevant for most domains, but there are exceptions
     // such as "alert" where "off" is still a somewhat active state and
     // therefore gets a custom color and "idle" is instead the state that
     // matches what most other domains consider inactive.
-    if (compareState === (0, $ae715937da4da853$export$173de64b5ad0d5b4) && domain !== 'alert') return false;
+    if (compareState === $d25e6b86739c3dd6$exports.OFF && domain !== 'alert') return false;
     // Custom cases
     switch(domain){
         case 'alarm_control_panel':
@@ -2214,9 +2387,9 @@ function $043ab5348dd51237$export$c0e85c3982a3daa6(stateObj, state) {
         case 'person':
             return compareState !== 'not_home';
         case 'lawn_mower':
-            return [
-                'mowing',
-                'error'
+            return ![
+                'docked',
+                'paused'
             ].includes(compareState);
         case 'lock':
             return compareState !== 'locked';
@@ -2249,14 +2422,21 @@ function $043ab5348dd51237$export$c0e85c3982a3daa6(stateObj, state) {
 }
 
 
+
 const $093edc2594769ee5$export$c6a2d06cc40e579 = (hass, config, deviceId, deviceName)=>{
     const includeHidden = config.features?.includes('show_hidden_entities');
     const deviceEntities = Object.values(hass.entities).filter((entity)=>entity.device_id === deviceId && (includeHidden || !entity.hidden)).map((entity)=>{
-        const state = (0, $e24dedcf9e480b2d$export$50fdfeece43146fd)(hass, entity.entity_id);
+        const state = (0, $c5218a11ead5212e$exports.getState)(hass, entity.entity_id);
         if (state === undefined) return;
         // convenience
-        const name = state.attributes.friendly_name === deviceName ? deviceName : state.attributes.friendly_name.replace(deviceName, '').trim();
-        const active = (0, $043ab5348dd51237$export$c0e85c3982a3daa6)(state);
+        const friendlyName = state.attributes.friendly_name;
+        let name;
+        if (typeof friendlyName === 'string') {
+            if (deviceName && friendlyName === deviceName) name = deviceName;
+            else if (deviceName) name = friendlyName.replace(deviceName, '').trim() || entity.entity_id;
+            else name = friendlyName;
+        } else name = entity.entity_id;
+        const active = (0, $46dabcff6df1e992$exports.stateActive)(state);
         return {
             name: name,
             ...state,
@@ -2290,12 +2470,12 @@ const $562e4e067cd81a2b$export$30c823bc834d6ab4 = (hass, config)=>{
         controls: [],
         diagnostics: [],
         configurations: [],
-        entity: (0, $e24dedcf9e480b2d$export$50fdfeece43146fd)(hass, entityId)
+        entity: (0, $c5218a11ead5212e$exports.getState)(hass, entityId)
     };
     // Determine device_id from config.device_id or by resolving config.entity/config.entity_id
-    const deviceId = config.device_id ?? (entityId ? (0, $e6782818bfcf779d$export$fcf7c33d7fd02301)(hass, entityId)?.device_id : undefined);
+    const deviceId = config.device_id ?? (entityId ? (0, $acba4c6c62d44419$exports.getEntity)(hass, entityId)?.device_id : undefined);
     if (!deviceId) return undefined;
-    const hassDevice = (0, $5bd3a7e1f19a6de3$export$30c823bc834d6ab4)(hass, deviceId);
+    const hassDevice = (0, $f14e78138687b521$exports.getDevice)(hass, deviceId);
     if (!hassDevice) return undefined;
     device.name = hassDevice.name_by_user ?? hassDevice.name ?? 'Device';
     device.model = [
@@ -2332,8 +2512,8 @@ const $562e4e067cd81a2b$export$30c823bc834d6ab4 = (hass, config)=>{
     } else if (entity.category === 'config') {
         if (!config.exclude_sections?.includes('configurations')) device.configurations.push(entity);
     } else {
-        const domain = (0, $e7dc90bb09bfe22d$export$2044bdc9670769ab)(entity.entity_id);
-        const isSensor = (0, $ca52414a81fa2740$export$f4a7f73c0fdd46d5).includes(domain);
+        const domain = (0, $9be1c046bd0bdc20$exports.computeDomain)(entity.entity_id);
+        const isSensor = (0, $582ca952b94144dd$exports.SENSOR_ENTITIES).includes(domain);
         if (isSensor && !config.exclude_sections?.includes('sensors')) device.sensors.push(entity);
         else if (!config.exclude_sections?.includes('controls')) device.controls.push(entity);
     }
@@ -2463,11 +2643,52 @@ const $fc7b5ec53f835fd3$export$9dd6ff9ea0189349 = (0, $def2de46b9306e8a$export$d
 
 
 
+var $3c586c3c0c49fb9f$exports = {};
+"use strict";
+Object.defineProperty($3c586c3c0c49fb9f$exports, "__esModule", {
+    value: true
+});
+$3c586c3c0c49fb9f$exports.HassUpdateMixin = void 0;
+/**
+ * Mixin that keeps `hass` in sync with the global `hass-update` event.
+ *
+ * Stacks on `HassConfigMixin`, so the superclass already provides the `hass`
+ * and `config` fields; this mixin just reassigns `hass` whenever a
+ * `hass-update` event is fired on `globalThis`. Use it on children whose parent
+ * skips full Lit updates, so they can react to `hass` changes themselves.
+ *
+ * @param superClass - The base class to mixin
+ */ const $3c586c3c0c49fb9f$var$HassUpdateMixin = (superClass)=>{
+    class HassUpdateClass extends superClass {
+        constructor(){
+            super(...arguments);
+            this._boundHassUpdateHandler = this._handleHassUpdate.bind(this);
+        }
+        connectedCallback() {
+            super.connectedCallback();
+            globalThis.addEventListener('hass-update', this._boundHassUpdateHandler);
+        }
+        disconnectedCallback() {
+            super.disconnectedCallback();
+            globalThis.removeEventListener('hass-update', this._boundHassUpdateHandler);
+        }
+        _handleHassUpdate(event) {
+            const { detail: { hass: hass } } = event;
+            this.hass = hass;
+        }
+    }
+    return HassUpdateClass;
+};
+$3c586c3c0c49fb9f$exports.HassUpdateMixin = $3c586c3c0c49fb9f$var$HassUpdateMixin;
+
+
+
+
 
 const $b7f3e24f44369f7c$export$3b502e1826736bc0 = (params)=>{
     const { config: config, device: device, hass: hass, collapse: collapse, onCollapseToggle: onCollapseToggle, entity: entity } = params;
-    const hideTitle = (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'hide_title');
-    const hideDeviceModel = (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'hide_device_model');
+    const hideTitle = (0, $6ba6bcddf6d39f36$exports.hasFeature)(config, 'hide_title');
+    const hideDeviceModel = (0, $6ba6bcddf6d39f36$exports.hasFeature)(config, 'hide_device_model');
     const hideHeader = hideTitle && hideDeviceModel;
     if (!hideHeader) return $b7f3e24f44369f7c$var$renderFullHeader({
         config: config,
@@ -2478,7 +2699,7 @@ const $b7f3e24f44369f7c$export$3b502e1826736bc0 = (params)=>{
         entity: entity,
         hideTitle: hideTitle,
         hideDeviceModel: hideDeviceModel,
-        hideIcon: (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'hide_icon')
+        hideIcon: (0, $6ba6bcddf6d39f36$exports.hasFeature)(config, 'hide_icon')
     });
     if (entity && entity !== (0, $f58f44579a4747ac$export$45b790e32b2810ee)) return (0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<div class="entity-state-only">${entity}</div>`;
     return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
@@ -2530,22 +2751,33 @@ const $856d8633325a4fe5$export$1188214e9d38144e = (device)=>{
 
 
 
+var $44808dd979c17635$exports = {};
+"use strict";
+Object.defineProperty($44808dd979c17635$exports, "__esModule", {
+    value: true
+});
+$44808dd979c17635$exports.stateDisplay = void 0;
 
+/**
+ * Renders a state display for a given entity.
+ */ const $44808dd979c17635$var$stateDisplay = (hass, entity, content)=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<state-display
+    .hass=${hass}
+    .stateObj=${entity}
+    .content=${content}
+  ></state-display>`;
+$44808dd979c17635$exports.stateDisplay = $44808dd979c17635$var$stateDisplay;
 
-const $1ed74ce23f0ef067$export$c18c768bbe3223b7 = (hass, entity)=>(0, $f58f44579a4747ac$export$c0bb0b647f701bb5)`<state-display .hass=${hass} .stateObj=${entity}></state-display>`;
 
 
 const $da09c6fad515207c$export$69836945d4c6961f = (hass, config)=>{
     // Check if the hide_entity_state feature is enabled
-    if ((0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'hide_entity_state')) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
+    if ((0, $6ba6bcddf6d39f36$exports.hasFeature)(config, 'hide_entity_state')) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
     const entityId = config.entity ?? config.entity_id;
     if (!entityId) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
-    const state = (0, $e24dedcf9e480b2d$export$50fdfeece43146fd)(hass, entityId);
+    const state = (0, $c5218a11ead5212e$exports.getState)(hass, entityId);
     if (!state) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
-    return (0, $1ed74ce23f0ef067$export$c18c768bbe3223b7)(hass, state);
+    return (0, $44808dd979c17635$exports.stateDisplay)(hass, state);
 };
-
-
 
 
 var $30856da572fd852b$exports = {};
@@ -2580,7 +2812,9 @@ $30856da572fd852b$exports = function equal(a, b) {
 };
 
 
-class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $216640a6cb8d8606$export$19efda5681568302)((0, $ab210b2da7b39b9d$export$3f2f9f5909897157)) {
+
+
+class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $3c586c3c0c49fb9f$exports.HassUpdateMixin)((0, $5af8360155067557$exports.HassConfigMixin)((0, $ab210b2da7b39b9d$export$3f2f9f5909897157))) {
     /**
    * Returns the component's styles
    */ static get styles() {
@@ -2590,9 +2824,9 @@ class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $216640a6cb8d8606$ex
    * Sets up the card configuration
    * @param {Config} config - The card configuration
    */ setConfig(config) {
-        if (!$30856da572fd852b$exports(config, this._config)) {
+        if (!(0, (/*@__PURE__*/$parcel$interopDefault($30856da572fd852b$exports)))(config, this._config)) {
             this._config = config;
-            this.collapse = (0, $a64cd1666b27644b$export$805ddaeeece0413e)(config, 'collapse');
+            this.collapse = (0, $6ba6bcddf6d39f36$exports.hasFeature)(config, 'collapse');
         }
     }
     // required for integration card
@@ -2610,13 +2844,13 @@ class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $216640a6cb8d8606$ex
    */ set hass(hass) {
         this._hass = hass;
         const device = (0, $562e4e067cd81a2b$export$30c823bc834d6ab4)(hass, this._config);
-        if (device && !$30856da572fd852b$exports(device, this._device)) this._device = device;
+        if (device && !(0, (/*@__PURE__*/$parcel$interopDefault($30856da572fd852b$exports)))(device, this._device)) this._device = device;
     }
     // card configuration
     static getConfigElement() {
         return document.createElement('device-card-editor');
     }
-    static async getStubConfig(hass) {
+    static getStubConfig(hass) {
         const device = Object.values(hass.devices)[0];
         return {
             device_id: device?.id ?? ''
@@ -2627,7 +2861,7 @@ class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $216640a6cb8d8606$ex
    * @returns {TemplateResult} The rendered HTML template
    */ render() {
         if (!this._device) return 0, $f58f44579a4747ac$export$45b790e32b2810ee;
-        if ((0, $a64cd1666b27644b$export$805ddaeeece0413e)(this._config, 'entity_picture')) return (0, $856d8633325a4fe5$export$1188214e9d38144e)(this._device);
+        if ((0, $6ba6bcddf6d39f36$exports.hasFeature)(this._config, 'entity_picture')) return (0, $856d8633325a4fe5$export$1188214e9d38144e)(this._device);
         const problem = (0, $8dc66e7a4cb4d971$export$3b8a32145ce395a1)(this._device);
         const entity = (0, $da09c6fad515207c$export$69836945d4c6961f)(this._hass, this._config);
         const headerContent = (0, $b7f3e24f44369f7c$export$3b502e1826736bc0)({
@@ -2655,13 +2889,13 @@ class $76efc5be730c974a$export$cee8aa229c046b5e extends (0, $216640a6cb8d8606$ex
    */ this.collapse = false;
     }
 }
-(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+(0, $e710f43c4558477c$export$29e00dfd3077644b)([
     (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
 ], $76efc5be730c974a$export$cee8aa229c046b5e.prototype, "_config", void 0);
-(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+(0, $e710f43c4558477c$export$29e00dfd3077644b)([
     (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
 ], $76efc5be730c974a$export$cee8aa229c046b5e.prototype, "_device", void 0);
-(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+(0, $e710f43c4558477c$export$29e00dfd3077644b)([
     (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
 ], $76efc5be730c974a$export$cee8aa229c046b5e.prototype, "collapse", void 0);
 
@@ -3138,51 +3372,14 @@ const $84451a3e48ae541f$export$da5c1d4caabd4738 = (hass, config)=>{
 };
 
 
+
+var $9e5127734e8a49b8$exports = {};
+"use strict";
 /**
- * https://github.com/home-assistant/frontend/blob/dev/src/common/dom/fire_event.ts
- */ // Polymer legacy event helpers used courtesy of the Polymer project.
-//
-// Copyright (c) 2017 The Polymer Authors. All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are
-// met:
-//
-//    * Redistributions of source code must retain the above copyright
-// notice, this list of conditions and the following disclaimer.
-//    * Redistributions in binary form must reproduce the above
-// copyright notice, this list of conditions and the following disclaimer
-// in the documentation and/or other materials provided with the
-// distribution.
-//    * Neither the name of Google Inc. nor the names of its
-// contributors may be used to endorse or promote products derived from
-// this software without specific prior written permission.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-const $9c83ab07519e6203$export$43835e9acf248a15 = (node, type, detail, options)=>{
-    options = options || {};
-    // @ts-ignore
-    // Intentional: SonarQube cleanup - using ?? instead of explicit check
-    detail = detail ?? {};
-    const event = new Event(type, {
-        bubbles: options.bubbles ?? true,
-        cancelable: Boolean(options.cancelable),
-        composed: options.composed ?? true
-    });
-    event.detail = detail;
-    node.dispatchEvent(event);
-    return event;
-};
+ * https://github.com/home-assistant/frontend/blob/dev/src/panels/lovelace/editor/hui-element-editor.ts
+ */ Object.defineProperty($9e5127734e8a49b8$exports, "__esModule", {
+    value: true
+});
 
 
 
@@ -3216,25 +3413,32 @@ class $4d8f78da09198f60$export$eb3c6eb92a4f4397 extends (0, $ab210b2da7b39b9d$ex
         if (!config.exclude_sections?.length) delete config.exclude_sections;
         if (!config.section_order?.length) delete config.section_order;
         if (!config.inverse_percent?.length) delete config.inverse_percent;
-        // @ts-ignore
-        (0, $9c83ab07519e6203$export$43835e9acf248a15)(this, 'config-changed', {
+        (0, $d8229c453ce2530e$exports.fireEvent)(this, 'config-changed', {
             config: config
         });
     }
 }
-(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+(0, $e710f43c4558477c$export$29e00dfd3077644b)([
     (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
 ], $4d8f78da09198f60$export$eb3c6eb92a4f4397.prototype, "_config", void 0);
 
 
 
 
+
+var $833dbd9f1b7a3b65$exports = {};
+"use strict";
 /**
  * https://github.com/home-assistant/frontend/blob/dev/src/common/string/capitalize-first-letter.ts
- */ const $1409036132f3ee41$export$d07f57595c356899 = (str)=>str.charAt(0).toUpperCase() + str.slice(1);
+ */ Object.defineProperty($833dbd9f1b7a3b65$exports, "__esModule", {
+    value: true
+});
+$833dbd9f1b7a3b65$exports.capitalizeFirstLetter = void 0;
+const $833dbd9f1b7a3b65$var$capitalizeFirstLetter = (str)=>str.charAt(0).toUpperCase() + str.slice(1);
+$833dbd9f1b7a3b65$exports.capitalizeFirstLetter = $833dbd9f1b7a3b65$var$capitalizeFirstLetter;
 
 
-const $68e99829eee639f8$export$26c6f48841fe1a8a = (str)=>str.split('_').map((s)=>(0, $1409036132f3ee41$export$d07f57595c356899)(s)).join(' ');
+const $68e99829eee639f8$export$26c6f48841fe1a8a = (str)=>str.split('_').map((s)=>(0, $833dbd9f1b7a3b65$exports.capitalizeFirstLetter)(s)).join(' ');
 
 
 const $cb8155104ca16d79$export$f093f430ec40add0 = (deviceIds, hass, sortConfig)=>{
@@ -3291,6 +3495,7 @@ async function $21a2be1ad8240bf4$export$75025f85344f722b(hass, params) {
 
 
 
+
 const $5d5dec7c32377406$export$d424543ab4012665 = (0, $def2de46b9306e8a$export$dbf350e5966cf602)`
   :host {
     --card-padding: 16px;
@@ -3331,12 +3536,19 @@ const $5d5dec7c32377406$export$d424543ab4012665 = (0, $def2de46b9306e8a$export$d
 `;
 
 
+var $f980844ff33b0990$exports = {};
+"use strict";
 /**
  * https://github.com/home-assistant/frontend/blob/dev/src/data/ws-templates.ts
- */ const $a93c212e3c25d01e$export$851ba8a4d3782151 = (conn, onChange, params)=>conn.subscribeMessage((msg)=>onChange(msg), {
+ */ Object.defineProperty($f980844ff33b0990$exports, "__esModule", {
+    value: true
+});
+$f980844ff33b0990$exports.subscribeRenderTemplate = void 0;
+const $f980844ff33b0990$var$subscribeRenderTemplate = (conn, onChange, params)=>conn.subscribeMessage((msg)=>onChange(msg), {
         type: 'render_template',
         ...params
     });
+$f980844ff33b0990$exports.subscribeRenderTemplate = $f980844ff33b0990$var$subscribeRenderTemplate;
 
 
 class $70d8f6c18f07ed2a$export$7bf83dadddfc0eda {
@@ -3357,12 +3569,17 @@ class $70d8f6c18f07ed2a$export$7bf83dadddfc0eda {
         // Template changed — clean up old subscription first
         this.disconnect();
         this._subscribedTemplate = template;
-        this._unsub = (0, $a93c212e3c25d01e$export$851ba8a4d3782151)(connection, (result)=>{
+        this._unsub = (0, $f980844ff33b0990$exports.subscribeRenderTemplate)(connection, (result)=>{
             if ('error' in result) {
                 console.error('Integration Card: template error:', result.error);
                 return;
             }
-            this._deviceIds = result.result;
+            const resolved = result.result;
+            if (!Array.isArray(resolved)) {
+                console.error('Integration Card: template must resolve to a list, got:', resolved);
+                return;
+            }
+            this._deviceIds = resolved;
             this._onChange();
         }, {
             template: template
@@ -3379,7 +3596,6 @@ class $70d8f6c18f07ed2a$export$7bf83dadddfc0eda {
 }
 
 
-
 class $3bda94c4eb71d8c0$export$ad4bbebd033175bb extends (0, $ab210b2da7b39b9d$export$3f2f9f5909897157) {
     /**
    * Returns the component's styles
@@ -3394,7 +3610,7 @@ class $3bda94c4eb71d8c0$export$ad4bbebd033175bb extends (0, $ab210b2da7b39b9d$ex
    * Sets up the card configuration
    * @param {Config} config - The card configuration
    */ setConfig(config) {
-        if (!$30856da572fd852b$exports(config, this._config)) {
+        if (!(0, (/*@__PURE__*/$parcel$interopDefault($30856da572fd852b$exports)))(config, this._config)) {
             this._config = config;
             if (typeof config.include_devices !== 'string' || config.include_devices !== this._includeTemplateSub.subscribedTemplate) this._includeTemplateSub.disconnect();
             if (typeof config.exclude_devices !== 'string' || config.exclude_devices !== this._excludeTemplateSub.subscribedTemplate) this._excludeTemplateSub.disconnect();
@@ -3406,7 +3622,7 @@ class $3bda94c4eb71d8c0$export$ad4bbebd033175bb extends (0, $ab210b2da7b39b9d$ex
    */ set hass(hass) {
         this._hass = hass;
         // update children who are subscribed
-        (0, $9c83ab07519e6203$export$43835e9acf248a15)(this, 'hass-update', {
+        (0, $d8229c453ce2530e$exports.fireEvent)(this, 'hass-update', {
             hass: hass
         });
     }
@@ -3450,7 +3666,7 @@ class $3bda94c4eb71d8c0$export$ad4bbebd033175bb extends (0, $ab210b2da7b39b9d$ex
             excludeDevices: effectiveExcludeDevices,
             sortDevices: this._config.sort_devices
         }).then((data)=>{
-            if (!$30856da572fd852b$exports(data, this._integration)) this._integration = data;
+            if (!(0, (/*@__PURE__*/$parcel$interopDefault($30856da572fd852b$exports)))(data, this._integration)) this._integration = data;
         });
     }
     // card configuration
@@ -3460,7 +3676,7 @@ class $3bda94c4eb71d8c0$export$ad4bbebd033175bb extends (0, $ab210b2da7b39b9d$ex
     /**
    * Returns a stub configuration for the card
    * @param {HomeAssistant} hass - The Home Assistant instance
-   */ static async getStubConfig(hass) {
+   */ static getStubConfig(hass) {
         const device = Object.values(hass.devices).find((device)=>device.identifiers && device.identifiers.length > 0);
         const integration = device?.identifiers?.[0]?.[0] ?? '';
         return {
@@ -3532,12 +3748,13 @@ class $3bda94c4eb71d8c0$export$ad4bbebd033175bb extends (0, $ab210b2da7b39b9d$ex
         });
     }
 }
-(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+(0, $e710f43c4558477c$export$29e00dfd3077644b)([
     (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
 ], $3bda94c4eb71d8c0$export$ad4bbebd033175bb.prototype, "_config", void 0);
-(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+(0, $e710f43c4558477c$export$29e00dfd3077644b)([
     (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
 ], $3bda94c4eb71d8c0$export$ad4bbebd033175bb.prototype, "_integration", void 0);
+
 
 
 
@@ -3690,8 +3907,7 @@ class $bb372a36f92bd9c9$export$9e322cdd8735282 extends (0, $ab210b2da7b39b9d$exp
         if (!config.sort_devices?.type) delete config.sort_devices;
         this._cleanupDevicesField(config, 'include_devices');
         this._cleanupDevicesField(config, 'exclude_devices');
-        // @ts-ignore
-        (0, $9c83ab07519e6203$export$43835e9acf248a15)(this, 'config-changed', {
+        (0, $d8229c453ce2530e$exports.fireEvent)(this, 'config-changed', {
             config: config
         });
     }
@@ -3716,17 +3932,17 @@ class $bb372a36f92bd9c9$export$9e322cdd8735282 extends (0, $ab210b2da7b39b9d$exp
         });
     }
 }
-(0, $24c52f343453d62d$export$29e00dfd3077644b)([
+(0, $e710f43c4558477c$export$29e00dfd3077644b)([
     (0, $04c21ea1ce1f6057$export$ca000e230c0caa3e)()
 ], $bb372a36f92bd9c9$export$9e322cdd8735282.prototype, "_config", void 0);
 
 
 var $b06602ab53bd58a3$exports = {};
-$b06602ab53bd58a3$exports = JSON.parse("{\"name\":\"device-card\",\"version\":\"0.20.0\",\"author\":{\"name\":\"Patrick Masters\",\"url\":\"https://curiouscat.consulting/projects/ha-device-card\"},\"license\":\"ISC\",\"description\":\"Custom Home Assistant card to show info about your devices.\",\"homepage\":\"https://homeassistant-extras.github.io/device-card/\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/homeassistant-extras/device-card.git\"},\"bugs\":{\"url\":\"https://github.com/homeassistant-extras/device-card/issues\"},\"source\":\"src/index.ts\",\"module\":\"dist/device-card.js\",\"targets\":{\"module\":{\"includeNodeModules\":true}},\"scripts\":{\"watch\":\"parcel watch\",\"build\":\"parcel build\",\"format\":\"prettier --write .\",\"test\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha\",\"test:coverage\":\"nyc yarn test\",\"test:watch\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha --watch\",\"update\":\"npx npm-check-updates -u && yarn install\"},\"devDependencies\":{\"@istanbuljs/nyc-config-typescript\":\"^1.0.2\",\"@open-wc/testing\":\"^4.0.0\",\"@parcel/transformer-inline-string\":\"^2.16.4\",\"@testing-library/dom\":\"^10.4.1\",\"@trivago/prettier-plugin-sort-imports\":\"^6.0.2\",\"@types/chai\":\"^5.2.3\",\"@types/jsdom\":\"^28.0.3\",\"@types/mocha\":\"^10.0.10\",\"@types/sinon\":\"^21.0.1\",\"chai\":\"^6.2.2\",\"jsdom\":\"^29.1.1\",\"mocha\":\"^11.7.5\",\"nyc\":\"^18.0.0\",\"parcel\":\"^2.16.4\",\"prettier\":\"3.8.3\",\"prettier-plugin-organize-imports\":\"^4.3.0\",\"proxyquire\":\"^2.1.3\",\"sinon\":\"^22.0.0\",\"ts-node\":\"^10.9.2\",\"tsconfig-paths\":\"^4.2.0\",\"typescript\":\"^6.0.3\"},\"dependencies\":{\"@lit/task\":\"^1.0.3\",\"fast-deep-equal\":\"^3.1.3\",\"lit\":\"^3.3.3\"}}");
+$b06602ab53bd58a3$exports = JSON.parse("{\"name\":\"device-card\",\"version\":\"1.0.0\",\"author\":{\"name\":\"Patrick Masters\",\"url\":\"https://curiouscat.consulting/projects/ha-device-card?utm_source=github-device-card&utm_medium=package-metadata&utm_campaign=oss-presence&utm_content=author-url\"},\"license\":\"ISC\",\"prettier\":\"@homeassistant-extras/config/prettier\",\"description\":\"Custom Home Assistant card to show info about your devices.\",\"homepage\":\"https://homeassistant-extras.github.io/device-card/\",\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/homeassistant-extras/device-card.git\"},\"bugs\":{\"url\":\"https://github.com/homeassistant-extras/device-card/issues\"},\"source\":\"src/index.ts\",\"module\":\"dist/device-card.js\",\"targets\":{\"module\":{\"includeNodeModules\":true}},\"@parcel/resolver-default\":{\"packageExports\":true},\"scripts\":{\"watch\":\"parcel watch\",\"build\":\"parcel build\",\"lint\":\"eslint .\",\"lint:fix\":\"eslint . --fix\",\"format\":\"prettier --write .\",\"pass\":\"yarn format && yarn typecheck && yarn lint && yarn test\",\"typecheck\":\"tsc --noEmit && tsc -p tsconfig.test.json --noEmit\",\"test\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha\",\"test:coverage\":\"nyc yarn test\",\"test:watch\":\"TS_NODE_PROJECT='./tsconfig.test.json' mocha --watch\",\"update\":\"npx npm-check-updates -u && yarn install\"},\"devDependencies\":{\"@eslint/js\":\"^10.0.1\",\"@homeassistant-extras/config\":\"^0.2.0\",\"@istanbuljs/nyc-config-typescript\":\"^1.0.2\",\"@open-wc/testing\":\"^4.0.0\",\"@parcel/transformer-inline-string\":\"^2.16.4\",\"@testing-library/dom\":\"^10.4.1\",\"@trivago/prettier-plugin-sort-imports\":\"^6.0.2\",\"@types/chai\":\"^5.2.3\",\"@types/jsdom\":\"^28.0.3\",\"@types/mocha\":\"^10.0.10\",\"@types/node\":\"^25.9.1\",\"@types/sinon\":\"^21.0.1\",\"chai\":\"^6.2.2\",\"eslint\":\"^10.4.1\",\"eslint-plugin-lit\":\"^2.3.1\",\"eslint-plugin-wc\":\"^3.1.0\",\"globals\":\"^17.6.0\",\"jsdom\":\"^29.1.1\",\"mocha\":\"^11.7.6\",\"nyc\":\"^18.0.0\",\"parcel\":\"^2.16.4\",\"prettier\":\"3.8.3\",\"prettier-plugin-organize-imports\":\"^4.3.0\",\"proxyquire\":\"^2.1.3\",\"sinon\":\"^22.0.0\",\"ts-node\":\"^10.9.2\",\"tsconfig-paths\":\"^4.2.0\",\"typescript\":\"^6.0.3\",\"typescript-eslint\":\"^8.60.1\"},\"dependencies\":{\"@homeassistant-extras/hass\":\"^0.4.0\",\"@lit/task\":\"^1.0.3\",\"fast-deep-equal\":\"^3.1.3\",\"lit\":\"^3.3.3\"}}");
 
 
 // Kick off HA card helper resolution once when the bundle loads
-(0, $d15fe90fb16b0188$export$d59f9ebe88d50829)(globalThis.loadCardHelpers);
+(0, $7b593e8e2f493f5e$exports.resolvePoatCardHelpers)(globalThis.loadCardHelpers);
 // Register the custom elements with the browser
 customElements.define('device-card', (0, $76efc5be730c974a$export$cee8aa229c046b5e));
 customElements.define('device-card-editor', (0, $4d8f78da09198f60$export$eb3c6eb92a4f4397));
