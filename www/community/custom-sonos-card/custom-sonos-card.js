@@ -292,10 +292,7 @@ var t$4 = globalThis, i$6 = t$4.trustedTypes, s$4 = i$6 ? i$6.createPolicy("lit-
 	_$litType$: t,
 	strings: i,
 	values: s
-}), x = y(1);
-y(2);
-y(3);
-var T = Symbol.for("lit-noChange"), E = Symbol.for("lit-nothing"), A = /* @__PURE__ */ new WeakMap(), C = r$5.createTreeWalker(r$5, 129);
+}), x = y(1), T = Symbol.for("lit-noChange"), E = Symbol.for("lit-nothing"), A = /* @__PURE__ */ new WeakMap(), C = r$5.createTreeWalker(r$5, 129);
 function P(t, i) {
 	if (!a(t) || !t.hasOwnProperty("raw")) throw Error("invalid template strings array");
 	return void 0 !== s$4 ? s$4.createHTML(i) : i;
@@ -785,7 +782,7 @@ var playerSectionStyles = i$8`
 //#region src/constants.ts
 var dispatchPrefix = "sonos-card-dispatch-event-";
 var ACTIVE_PLAYER_EVENT_INTERNAL = "active-player";
-var ACTIVE_PLAYER_EVENT = dispatchPrefix + ACTIVE_PLAYER_EVENT_INTERNAL;
+var ACTIVE_PLAYER_EVENT = "sonos-card-dispatch-event-active-player";
 var SHOW_SECTION = "show-section";
 var CALL_MEDIA_STARTED = `${dispatchPrefix}call-media-started`;
 var CALL_MEDIA_DONE = `${dispatchPrefix}call-media-done`;
@@ -848,7 +845,7 @@ var i$4 = class {
 * @license
 * Copyright 2018 Google LLC
 * SPDX-License-Identifier: BSD-3-Clause
-*/ var n$4 = "important", i$3 = " !" + n$4, o$1 = e$2(class extends i$4 {
+*/ var n$4 = "important", i$3 = " !important", o$1 = e$2(class extends i$4 {
 	constructor(t) {
 		if (super(t), t.type !== t$1.ATTRIBUTE || "style" !== t.name || t.strings?.length > 2) throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.");
 	}
@@ -926,8 +923,16 @@ var IGNORED_MEDIA_SOURCES = [
 	"media-source://image",
 	"media-source://image_upload"
 ];
-function filterOutIgnoredMediaSources(items) {
-	return items.filter((item) => !IGNORED_MEDIA_SOURCES.some((src) => item.media_content_id?.startsWith(src)));
+function filterOutIgnoredMediaSources(items, filter) {
+	let filtered = items.filter((item) => !IGNORED_MEDIA_SOURCES.some((src) => item.media_content_id?.startsWith(src)));
+	if (filter?.showOnlyItems && filter.showOnlyItems.length > 0) {
+		const showOnlyLower = filter.showOnlyItems.map((s) => s.toLowerCase());
+		filtered = filtered.filter((item) => item.title && showOnlyLower.includes(item.title.toLowerCase()));
+	} else if (filter?.hideItems && filter.hideItems.length > 0) {
+		const hideItemsLower = filter.hideItems.map((s) => s.toLowerCase());
+		filtered = filtered.filter((item) => !item.title || !hideItemsLower.includes(item.title.toLowerCase()));
+	}
+	return filtered;
 }
 function getGridItemSize(_itemsPerRow, isPortrait) {
 	return {
@@ -1364,7 +1369,7 @@ function delay(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.127.0/helpers/decorate.js
+//#region \0@oxc-project+runtime@0.132.0/helpers/decorate.js
 function __decorate$1(decorators, target, key, desc) {
 	var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1745,6 +1750,11 @@ var f = class extends i$4 {
 };
 //#endregion
 //#region node_modules/lit-html/directives/private-async-helpers.js
+/**
+* @license
+* Copyright 2021 Google LLC
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 var s = class {
 	constructor(t) {
 		this.G = t;
@@ -4507,6 +4517,16 @@ var MEDIA_BROWSER_SCHEMA = [
 		selector: { boolean: {} }
 	}
 ];
+var SHOW_ONLY_ITEMS_SCHEMA = [{
+	name: "showOnlyItems",
+	type: "string",
+	help: "Comma-separated whitelist of top-level items to show (e.g., Playlists, Radio stations)"
+}];
+var HIDE_ITEMS_SCHEMA = [{
+	name: "hideItems",
+	type: "string",
+	help: "Comma-separated blacklist of top-level items to hide (e.g., Radio Browser, Audiobooks)"
+}];
 var SHORTCUT_SUB_SCHEMA = [
 	{
 		name: "media_content_id",
@@ -4609,11 +4629,15 @@ var MediaBrowserTab = class extends BaseEditor {
 		super(..._args);
 		this.mediaBrowserChanged = (ev) => {
 			const changed = ev.detail.value;
+			const showOnlyItems = changed.showOnlyItems?.split(/ *, */).filter(Boolean) ?? [];
+			const hideItems = changed.hideItems?.split(/ *, */).filter(Boolean) ?? [];
 			this.config = {
 				...this.config,
 				mediaBrowser: {
 					...this.config.mediaBrowser ?? {},
-					...changed
+					...changed,
+					showOnlyItems: showOnlyItems.length > 0 ? showOnlyItems : void 0,
+					hideItems: showOnlyItems.length > 0 ? void 0 : hideItems.length > 0 ? hideItems : void 0
 				}
 			};
 			this.configChanged();
@@ -4658,13 +4682,21 @@ var MediaBrowserTab = class extends BaseEditor {
 		const shortcutConfig = mediaBrowserConfig.shortcut ?? {};
 		const exclude = favoritesConfig.exclude ?? [];
 		const topItems = favoritesConfig.topItems ?? [];
-		const mediaBrowserData = { ...mediaBrowserConfig };
+		const showOnlyItems = mediaBrowserConfig.showOnlyItems ?? [];
+		const hideItems = mediaBrowserConfig.hideItems ?? [];
+		const mediaBrowserData = {
+			...mediaBrowserConfig,
+			showOnlyItems: showOnlyItems.join(", "),
+			hideItems: hideItems.join(", ")
+		};
 		const favoritesData = {
 			...favoritesConfig,
 			exclude: exclude.join(", "),
 			topItems: topItems.join(", ")
 		};
 		const shortcutData = { ...shortcutConfig };
+		const hasShowOnly = showOnlyItems.length > 0;
+		const hasHideItems = hideItems.length > 0;
 		return x`
       <sonos-card-editor-form
         .schema=${MEDIA_BROWSER_SCHEMA}
@@ -4673,6 +4705,27 @@ var MediaBrowserTab = class extends BaseEditor {
         .data=${mediaBrowserData}
         .changed=${this.mediaBrowserChanged}
       ></sonos-card-editor-form>
+
+      <div class="filter-fields">
+        <div class=${hasHideItems ? "disabled" : ""}>
+          <sonos-card-editor-form
+            .schema=${SHOW_ONLY_ITEMS_SCHEMA}
+            .config=${this.config}
+            .hass=${this.hass}
+            .data=${mediaBrowserData}
+            .changed=${this.mediaBrowserChanged}
+          ></sonos-card-editor-form>
+        </div>
+        <div class=${hasShowOnly ? "disabled" : ""}>
+          <sonos-card-editor-form
+            .schema=${HIDE_ITEMS_SCHEMA}
+            .config=${this.config}
+            .hass=${this.hass}
+            .data=${mediaBrowserData}
+            .changed=${this.mediaBrowserChanged}
+          ></sonos-card-editor-form>
+        </div>
+      </div>
 
       <h3>Shortcut</h3>
       <sonos-card-editor-form
@@ -4715,6 +4768,10 @@ var MediaBrowserTab = class extends BaseEditor {
       }
       .yaml-note {
         margin-top: 20px;
+      }
+      .filter-fields .disabled {
+        opacity: 0.4;
+        pointer-events: none;
       }
     `;
 	}
@@ -4817,7 +4874,7 @@ var Tab = /* @__PURE__ */ function(Tab) {
 var CardEditor = class extends BaseEditor {
 	constructor(..._args) {
 		super(..._args);
-		this.activeTab = Tab.COMMON;
+		this.activeTab = "Common";
 		this.navigatePrev = () => {
 			const idx = this.activeTabIndex;
 			if (idx > 0) {
@@ -4834,7 +4891,7 @@ var CardEditor = class extends BaseEditor {
 		};
 	}
 	get tabs() {
-		return Object.values(Tab).filter((tab) => tab !== Tab.QUEUE || isQueueSupported(this.config));
+		return Object.values(Tab).filter((tab) => tab !== "Queue" || isQueueSupported(this.config));
 	}
 	get activeTabIndex() {
 		return this.tabs.indexOf(this.activeTab);
@@ -4871,14 +4928,14 @@ var CardEditor = class extends BaseEditor {
 		const c = this.config, h = this.hass;
 		const t = (s, sec) => x`<sonos-card-section-tab .schema=${s} .section=${sec} .config=${c} .hass=${h}></sonos-card-section-tab>`;
 		return r(this.activeTab, [
-			[Tab.COMMON, () => x`<sonos-card-common-tab .config=${c} .hass=${h}></sonos-card-common-tab>`],
-			[Tab.PLAYER, () => x`<sonos-card-player-tab .config=${c} .hass=${h}></sonos-card-player-tab>`],
-			[Tab.MEDIA_BROWSER, () => x`<sonos-card-media-browser-tab .config=${c} .hass=${h}></sonos-card-media-browser-tab>`],
-			[Tab.GROUPS, () => t(GROUPS_SCHEMA, "groups")],
-			[Tab.GROUPING, () => t(GROUPING_SCHEMA, "grouping")],
-			[Tab.VOLUMES, () => t(VOLUMES_SCHEMA, "volumes")],
-			[Tab.QUEUE, () => t(QUEUE_SCHEMA, "queue")],
-			[Tab.SEARCH, () => t(SEARCH_SCHEMA, "search")]
+			["Common", () => x`<sonos-card-common-tab .config=${c} .hass=${h}></sonos-card-common-tab>`],
+			["Player", () => x`<sonos-card-player-tab .config=${c} .hass=${h}></sonos-card-player-tab>`],
+			["Media Browser", () => x`<sonos-card-media-browser-tab .config=${c} .hass=${h}></sonos-card-media-browser-tab>`],
+			["Groups", () => t(GROUPS_SCHEMA, "groups")],
+			["Grouping", () => t(GROUPING_SCHEMA, "grouping")],
+			["Volumes", () => t(VOLUMES_SCHEMA, "volumes")],
+			["Queue", () => t(QUEUE_SCHEMA, "queue")],
+			["Search", () => t(SEARCH_SCHEMA, "search")]
 		]);
 	}
 	static get styles() {
@@ -6585,6 +6642,11 @@ var init_BaseLayout = __esmMin((() => {
 //#endregion
 //#region node_modules/@lit-labs/virtualizer/layouts/shared/SizeGapPaddingBaseLayout.js
 init_BaseLayout();
+/**
+* @license
+* Copyright 2021 Google LLC
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 function paddingValueToNumber(v) {
 	if (v === "match-gap") return Infinity;
 	return parseInt(v);
@@ -6835,6 +6897,11 @@ var GridBaseLayout = class extends SizeGapPaddingBaseLayout {
 //#endregion
 //#region node_modules/@lit-labs/virtualizer/layouts/grid.js
 init_BaseLayout();
+/**
+* @license
+* Copyright 2021 Google LLC
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 var grid = (config) => Object.assign({ type: GridLayout }, config);
 var GridLayout = class extends GridBaseLayout {
 	/**
@@ -7289,6 +7356,11 @@ var SizeCache;
 var init_SizeCache = __esmMin((() => {
 	SizeCache = class {
 		constructor(config) {
+			/**
+			* @license
+			* Copyright 2021 Google LLC
+			* SPDX-License-Identifier: BSD-3-Clause
+			*/
 			this._map = /* @__PURE__ */ new Map();
 			this._roundAverageSize = false;
 			this.totalSize = 0;
@@ -7321,6 +7393,11 @@ var flow_exports = /* @__PURE__ */ __exportAll({
 	FlowLayout: () => FlowLayout,
 	flow: () => flow
 });
+/**
+* @license
+* Copyright 2021 Google LLC
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 function leadingMargin(direction) {
 	return direction === "horizontal" ? "marginLeft" : "marginTop";
 }
@@ -8612,7 +8689,11 @@ var HaMediaPlayerBrowse = class HaMediaPlayerBrowse extends i$5 {
 		if (!this._currentItem) return x`<ha-spinner></ha-spinner>`;
 		const currentItem = this._currentItem;
 		const subtitle = this.hass.localize(`ui.components.media-browser.class.${currentItem.media_class}`);
-		let children = filterOutIgnoredMediaSources(currentItem.children || []);
+		const filter = this.navigateIds.length === 1 && !this.navigateIds[0]?.media_content_id ? {
+			showOnlyItems: this.showOnlyItems,
+			hideItems: this.hideItems
+		} : void 0;
+		let children = filterOutIgnoredMediaSources(currentItem.children || [], filter);
 		const canPlayChildren = /* @__PURE__ */ new Set();
 		if (this.accept && children.length > 0) {
 			let checks = [];
@@ -9369,6 +9450,8 @@ __decorate$1([n$5({ attribute: false })], HaMediaPlayerBrowse.prototype, "accept
 __decorate$1([n$5({ attribute: false })], HaMediaPlayerBrowse.prototype, "defaultId", void 0);
 __decorate$1([n$5({ attribute: false })], HaMediaPlayerBrowse.prototype, "defaultType", void 0);
 __decorate$1([n$5({ attribute: false })], HaMediaPlayerBrowse.prototype, "hideContentType", void 0);
+__decorate$1([n$5({ attribute: false })], HaMediaPlayerBrowse.prototype, "showOnlyItems", void 0);
+__decorate$1([n$5({ attribute: false })], HaMediaPlayerBrowse.prototype, "hideItems", void 0);
 __decorate$1([n$5({ attribute: false })], HaMediaPlayerBrowse.prototype, "contentIdHelper", void 0);
 __decorate$1([n$5({
 	type: Boolean,
@@ -9648,6 +9731,8 @@ var MediaBrowserBrowser = class extends i$5 {
           .navigateIds=${this.navigateIds}
           .preferredLayout=${this.layout}
           .itemsPerRow=${config.itemsPerRow}
+          .showOnlyItems=${config.showOnlyItems}
+          .hideItems=${config.hideItems}
           .action=${"play"}
           @media-picked=${this.onMediaPicked}
           @media-browsed=${this.onMediaBrowsed}
@@ -12472,8 +12557,7 @@ var SearchHeader = class extends i$5 {
 			if (this.visibleCount !== total) this.visibleCount = total;
 			return;
 		}
-		const dotsAndSep = ICON_BUTTON_WIDTH + 9;
-		const available = hostWidth - headerPadding - titleMinWidth - fixedButtonsWidth - dotsAndSep;
+		const available = hostWidth - headerPadding - titleMinWidth - fixedButtonsWidth - 57;
 		const count = Math.max(0, Math.min(total, Math.floor(available / ICON_BUTTON_WIDTH)));
 		if (this.visibleCount !== count) this.visibleCount = count;
 	}
