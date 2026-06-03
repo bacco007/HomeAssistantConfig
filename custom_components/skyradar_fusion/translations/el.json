@@ -1,0 +1,48 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Λειτουργία παρακολούθησης",
+        "data": {
+          "tracking_mode": "Επιλογή λειτουργίας παρακολούθησης"
+        }
+      },
+      "zone": {
+        "title": "Ρυθμίσεις ζώνης",
+        "data": {
+          "latitude": "Γεωγραφικό πλάτος",
+          "longitude": "Γεωγραφικό μήκος",
+          "radius": "Ακτίνα (μέτρα)"
+        }
+      },
+      "single": {
+        "title": "Παρακολούθηση στόχου",
+        "data": {
+          "identifier_type": "Τύπος αναγνωριστικού (Κωδικός κλήσης, Reg, Hex)",
+          "identifier": "Αναγνωριστικό αεροσκάφους"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Διαμόρφωση SkyRadar Fusion",
+        "data": {
+          "latitude": "Γεωγραφικό πλάτος (Κέντρο του ραντάρ σας)",
+          "longitude": "Γεωγραφικό μήκος (Κέντρο του ραντάρ σας)",
+          "radius": "Ακτίνα ζώνης (μέτρα)",
+          "fr24_radius": "FR24 Overhead Bubble Radius (meters)",
+          "enable_tracker": "Ενεργοποίηση ιχνηλατών συσκευών χάρτη (αποεπιλέξτε για απόκρυψη)",
+          "global_emergency": "Ενεργοποίηση παγκόσμιου ραντάρ έκτακτης ανάγκης (Squawk 7700)",
+          "global_military": "Ενεργοποίηση παγκόσμιου στρατιωτικού ραντάρ",
+          "enable_fr24_enrichment": "Ενεργοποίηση εμπλουτισμού FlightRadar24 (Φωτογραφίες & διαδρομές)",
+          "fr24_commercial": "Enrich Commercial Flights",
+          "fr24_private": "Enrich Private Aircraft",
+          "fr24_helicopter": "Enrich Helicopters",
+          "advanced_adsb_filter": "Advanced ADS-B Filter (e.g., A3, A5) - Overrides checkboxes"
+        }
+      }
+    }
+  }
+}

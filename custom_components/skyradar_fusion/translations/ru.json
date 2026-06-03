@@ -1,0 +1,48 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Режим отслеживания",
+        "data": {
+          "tracking_mode": "Выберите режим отслеживания"
+        }
+      },
+      "zone": {
+        "title": "Настройки зоны",
+        "data": {
+          "latitude": "Широта",
+          "longitude": "Долгота",
+          "radius": "Радиус (в метрах)"
+        }
+      },
+      "single": {
+        "title": "Трекер цели",
+        "data": {
+          "identifier_type": "Тип идентификатора (Позывной, Регистрация, Hex)",
+          "identifier": "Идентификатор воздушного судна"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Конфигурация SkyRadar Fusion",
+        "data": {
+          "latitude": "Широта (Центр вашего радара)",
+          "longitude": "Долгота (Центр вашего радара)",
+          "radius": "Радиус зоны (в метрах)",
+          "fr24_radius": "FR24 Overhead Bubble Radius (meters)",
+          "enable_tracker": "Включить трекеры устройств на карте (снимите галочку, чтобы скрыть)",
+          "global_emergency": "Включить глобальный аварийный радар (Squawk 7700)",
+          "global_military": "Включить глобальный военный радар",
+          "enable_fr24_enrichment": "Включить обогащение FlightRadar24 (Фотографии и маршруты)",
+          "fr24_commercial": "Enrich Commercial Flights",
+          "fr24_private": "Enrich Private Aircraft",
+          "fr24_helicopter": "Enrich Helicopters",
+          "advanced_adsb_filter": "Advanced ADS-B Filter (e.g., A3, A5) - Overrides checkboxes"
+        }
+      }
+    }
+  }
+}

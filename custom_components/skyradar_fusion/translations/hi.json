@@ -1,0 +1,48 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ट्रैकिंग मोड",
+        "data": {
+          "tracking_mode": "ट्रैकिंग मोड चुनें"
+        }
+      },
+      "zone": {
+        "title": "ज़ोन सेटिंग्स",
+        "data": {
+          "latitude": "अक्षांश",
+          "longitude": "देशांतर",
+          "radius": "त्रिज्या (मीटर)"
+        }
+      },
+      "single": {
+        "title": "लक्ष्य ट्रैकर",
+        "data": {
+          "identifier_type": "पहचानकर्ता प्रकार (कॉलसाइन, रेग, हेक्स)",
+          "identifier": "विमान पहचानकर्ता"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "SkyRadar Fusion कॉन्फ़िगरेशन",
+        "data": {
+          "latitude": "अक्षांश (आपके रडार का केंद्र)",
+          "longitude": "देशांतर (आपके रडार का केंद्र)",
+          "radius": "ज़ोन त्रिज्या (मीटर)",
+          "fr24_radius": "FR24 Overhead Bubble Radius (meters)",
+          "enable_tracker": "मानचित्र डिवाइस ट्रैकर्स सक्षम करें (छिपाने के लिए अनचेक करें)",
+          "global_emergency": "वैश्विक आपातकालीन रडार सक्षम करें (स्क्वॉक 7700)",
+          "global_military": "वैश्विक सैन्य रडार सक्षम करें",
+          "enable_fr24_enrichment": "FlightRadar24 संवर्धन सक्षम करें (तस्वीरें और मार्ग)",
+          "fr24_commercial": "Enrich Commercial Flights",
+          "fr24_private": "Enrich Private Aircraft",
+          "fr24_helicopter": "Enrich Helicopters",
+          "advanced_adsb_filter": "Advanced ADS-B Filter (e.g., A3, A5) - Overrides checkboxes"
+        }
+      }
+    }
+  }
+}

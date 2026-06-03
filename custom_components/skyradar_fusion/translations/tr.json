@@ -1,0 +1,48 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Takip Modu",
+        "data": {
+          "tracking_mode": "Takip Modu Seç"
+        }
+      },
+      "zone": {
+        "title": "Bölge Ayarları",
+        "data": {
+          "latitude": "Enlem",
+          "longitude": "Boylam",
+          "radius": "Yarıçap (metre)"
+        }
+      },
+      "single": {
+        "title": "Hedef Takipçisi",
+        "data": {
+          "identifier_type": "Tanımlayıcı Türü (Çağrı Kodu, Reg, Hex)",
+          "identifier": "Uçak Tanımlayıcı"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "SkyRadar Fusion Yapılandırması",
+        "data": {
+          "latitude": "Enlem (Radarınızın merkezi)",
+          "longitude": "Boylam (Radarınızın merkezi)",
+          "radius": "Bölge Yarıçapı (metre)",
+          "fr24_radius": "FR24 Overhead Bubble Radius (meters)",
+          "enable_tracker": "Harita Cihazı Takipçilerini Etkinleştir (Gizlemek için işareti kaldırın)",
+          "global_emergency": "Küresel Acil Durum Radarını Etkinleştir (Squawk 7700)",
+          "global_military": "Küresel Askeri Radarı Etkinleştir",
+          "enable_fr24_enrichment": "FlightRadar24 Zenginleştirmesini Etkinleştir (Fotoğraflar ve Rotalar)",
+          "fr24_commercial": "Enrich Commercial Flights",
+          "fr24_private": "Enrich Private Aircraft",
+          "fr24_helicopter": "Enrich Helicopters",
+          "advanced_adsb_filter": "Advanced ADS-B Filter (e.g., A3, A5) - Overrides checkboxes"
+        }
+      }
+    }
+  }
+}

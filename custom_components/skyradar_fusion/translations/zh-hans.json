@@ -1,0 +1,48 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "追踪模式",
+        "data": {
+          "tracking_mode": "选择追踪模式"
+        }
+      },
+      "zone": {
+        "title": "区域设置",
+        "data": {
+          "latitude": "纬度",
+          "longitude": "经度",
+          "radius": "半径（米）"
+        }
+      },
+      "single": {
+        "title": "目标追踪器",
+        "data": {
+          "identifier_type": "标识符类型 (呼号, 注册号, 16进制代码)",
+          "identifier": "飞机标识符"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "SkyRadar Fusion 配置",
+        "data": {
+          "latitude": "纬度（雷达中心）",
+          "longitude": "经度（雷达中心）",
+          "radius": "区域半径（米）",
+          "fr24_radius": "FR24 Overhead Bubble Radius (meters)",
+          "enable_tracker": "启用地图设备追踪器（取消勾选以隐藏）",
+          "global_emergency": "启用全球紧急雷达 (Squawk 7700)",
+          "global_military": "启用全球军事雷达",
+          "enable_fr24_enrichment": "启用 FlightRadar24 增强功能（照片和航线）",
+          "fr24_commercial": "Enrich Commercial Flights",
+          "fr24_private": "Enrich Private Aircraft",
+          "fr24_helicopter": "Enrich Helicopters",
+          "advanced_adsb_filter": "Advanced ADS-B Filter (e.g., A3, A5) - Overrides checkboxes"
+        }
+      }
+    }
+  }
+}

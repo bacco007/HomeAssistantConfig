@@ -1,0 +1,48 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Sporingstilstand",
+        "data": {
+          "tracking_mode": "Vælg sporingstilstand"
+        }
+      },
+      "zone": {
+        "title": "Zoneindstillinger",
+        "data": {
+          "latitude": "Breddegrad",
+          "longitude": "Længdegrad",
+          "radius": "Radius (meter)"
+        }
+      },
+      "single": {
+        "title": "Målsporing",
+        "data": {
+          "identifier_type": "Identifikatortype (Kaldesignal, Reg, Hex)",
+          "identifier": "Flyidentifikator"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "SkyRadar Fusion Konfiguration",
+        "data": {
+          "latitude": "Breddegrad (Midten af din radar)",
+          "longitude": "Længdegrad (Midten af din radar)",
+          "radius": "Zoneradius (meter)",
+          "fr24_radius": "FR24 Overhead Bubble Radius (meters)",
+          "enable_tracker": "Aktivér kortenhedssporing (fjern markering for at skjule)",
+          "global_emergency": "Aktivér global nødradar (Squawk 7700)",
+          "global_military": "Aktivér global militær radar",
+          "enable_fr24_enrichment": "Aktivér FlightRadar24-berigelse (Billeder & Ruter)",
+          "fr24_commercial": "Enrich Commercial Flights",
+          "fr24_private": "Enrich Private Aircraft",
+          "fr24_helicopter": "Enrich Helicopters",
+          "advanced_adsb_filter": "Advanced ADS-B Filter (e.g., A3, A5) - Overrides checkboxes"
+        }
+      }
+    }
+  }
+}

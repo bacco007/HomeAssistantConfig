@@ -1,0 +1,48 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Tracking Mode",
+        "data": {
+          "tracking_mode": "Select Tracking Mode"
+        }
+      },
+      "zone": {
+        "title": "Zone Settings",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "radius": "Radius (meters)"
+        }
+      },
+      "single": {
+        "title": "Target Tracker",
+        "data": {
+          "identifier_type": "Identifier Type (Callsign, Reg, Hex)",
+          "identifier": "Aircraft Identifier"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "SkyRadar Fusion Configuration",
+        "data": {
+          "latitude": "Latitude (Center of your radar)",
+          "longitude": "Longitude (Center of your radar)",
+          "radius": "Zone Radius (meters)",
+          "fr24_radius": "FR24 Overhead Bubble Radius (meters)",
+          "enable_tracker": "Enable Map Device Trackers (Uncheck to hide)",
+          "global_emergency": "Enable Global Emergency Radar (Squawk 7700)",
+          "global_military": "Enable Global Military Radar",
+          "enable_fr24_enrichment": "Enable FlightRadar24 Enrichment (Photos & Routes)",
+          "fr24_commercial": "Enrich Commercial Flights",
+          "fr24_private": "Enrich Private Aircraft",
+          "fr24_helicopter": "Enrich Helicopters",
+          "advanced_adsb_filter": "Advanced ADS-B Filter (e.g., A3, A5) - Overrides checkboxes"
+        }
+      }
+    }
+  }
+}

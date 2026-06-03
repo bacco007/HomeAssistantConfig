@@ -1,0 +1,48 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Modo de Rastreio",
+        "data": {
+          "tracking_mode": "Selecionar Modo de Rastreio"
+        }
+      },
+      "zone": {
+        "title": "Definições de Zona",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "radius": "Raio (metros)"
+        }
+      },
+      "single": {
+        "title": "Rastreador de Alvo",
+        "data": {
+          "identifier_type": "Tipo de Identificador (Indicativo, Reg, Hex)",
+          "identifier": "Identificador da Aeronave"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configuração SkyRadar Fusion",
+        "data": {
+          "latitude": "Latitude (Centro do seu radar)",
+          "longitude": "Longitude (Centro do seu radar)",
+          "radius": "Raio da Zona (metros)",
+          "fr24_radius": "FR24 Overhead Bubble Radius (meters)",
+          "enable_tracker": "Ativar Rastreadores de Dispositivos no Mapa (desmarque para ocultar)",
+          "global_emergency": "Ativar Radar de Emergência Global (Squawk 7700)",
+          "global_military": "Ativar Radar Militar Global",
+          "enable_fr24_enrichment": "Ativar Enriquecimento FlightRadar24 (Fotos e Rotas)",
+          "fr24_commercial": "Enrich Commercial Flights",
+          "fr24_private": "Enrich Private Aircraft",
+          "fr24_helicopter": "Enrich Helicopters",
+          "advanced_adsb_filter": "Advanced ADS-B Filter (e.g., A3, A5) - Overrides checkboxes"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "추적 모드",
+        "data": {
+          "tracking_mode": "추적 모드 선택"
+        }
+      },
+      "zone": {
+        "title": "영역 설정",
+        "data": {
+          "latitude": "위도",
+          "longitude": "경도",
+          "radius": "반경(미터)"
+        }
+      },
+      "single": {
+        "title": "목표 추적기",
+        "data": {
+          "identifier_type": "식별자 유형 (콜사인, 등록번호, Hex)",
+          "identifier": "항공기 식별자"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "SkyRadar Fusion 구성",
+        "data": {
+          "latitude": "위도 (레이더의 중심)",
+          "longitude": "경도 (레이더의 중심)",
+          "radius": "영역 반경 (미터)",
+          "fr24_radius": "FR24 Overhead Bubble Radius (meters)",
+          "enable_tracker": "지도 기기 추적기 활성화 (숨기려면 체크 해제)",
+          "global_emergency": "글로벌 비상 레이더 활성화 (Squawk 7700)",
+          "global_military": "글로벌 군사 레이더 활성화",
+          "enable_fr24_enrichment": "FlightRadar24 연동 활성화 (사진 및 경로)",
+          "fr24_commercial": "Enrich Commercial Flights",
+          "fr24_private": "Enrich Private Aircraft",
+          "fr24_helicopter": "Enrich Helicopters",
+          "advanced_adsb_filter": "Advanced ADS-B Filter (e.g., A3, A5) - Overrides checkboxes"
+        }
+      }
+    }
+  }
+}

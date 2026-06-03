@@ -1,0 +1,48 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Verfolgungsmodus",
+        "data": {
+          "tracking_mode": "Verfolgungsmodus auswählen"
+        }
+      },
+      "zone": {
+        "title": "Zoneneinstellungen",
+        "data": {
+          "latitude": "Breitengrad",
+          "longitude": "Längengrad",
+          "radius": "Radius (Meter)"
+        }
+      },
+      "single": {
+        "title": "Zielverfolgung",
+        "data": {
+          "identifier_type": "Identifikatortyp (Rufzeichen, Reg, Hex)",
+          "identifier": "Flugzeugidentifikator"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "SkyRadar Fusion Konfiguration",
+        "data": {
+          "latitude": "Breitengrad (Zentrum Ihres Radars)",
+          "longitude": "Längengrad (Zentrum Ihres Radars)",
+          "radius": "Zonenradius (Meter)",
+          "fr24_radius": "FR24 Overhead Bubble Radius (meters)",
+          "enable_tracker": "Karten-Geräte-Tracker aktivieren (Häkchen entfernen zum Ausblenden)",
+          "global_emergency": "Globales Notfallradar aktivieren (Squawk 7700)",
+          "global_military": "Globales Militärradar aktivieren",
+          "enable_fr24_enrichment": "FlightRadar24-Anreicherung aktivieren (Fotos & Routen)",
+          "fr24_commercial": "Enrich Commercial Flights",
+          "fr24_private": "Enrich Private Aircraft",
+          "fr24_helicopter": "Enrich Helicopters",
+          "advanced_adsb_filter": "Advanced ADS-B Filter (e.g., A3, A5) - Overrides checkboxes"
+        }
+      }
+    }
+  }
+}
