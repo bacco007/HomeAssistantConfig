@@ -157,9 +157,16 @@ SENSOR_TYPES: tuple[FlightRadar24SensorEntityDescription, ...] = (
         translation_key="airport_departures",
         icon="mdi:airplane-takeoff",
         state_class=SensorStateClass.TOTAL,
-        value=lambda coord: len(coord.airport.departures) if coord.airport.departures is not None else None,
-        attributes=lambda coord: ({'flights': coord.airport.departures}
-                                  if coord.airport.departures is not None else None),
+        value=lambda coord: (
+            len(coord.airport.departures)
+            if coord.airport.departures is not None
+            else None
+        ),
+        attributes=lambda coord: (
+            {"flights": coord.airport.departures}
+            if coord.airport.departures is not None
+            else None
+        ),
     ),
 )
 
@@ -170,7 +177,7 @@ RESTORE_SENSOR_TYPES: tuple[FlightRadar24SensorEntityDescription, ...] = (
         icon="mdi:airplane",
         state_class=SensorStateClass.TOTAL,
         value=lambda coord: len(coord.flight.tracked_list),
-        attributes=lambda coord: {'flights': coord.flight.tracked_list},
+        attributes=lambda coord: {"flights": coord.flight.tracked_list},
     ),
 )
 
@@ -204,6 +211,9 @@ class FlightRadar24Sensor(CoordinatorEntity[FlightRadar24Coordinator], SensorEnt
     _attr_has_entity_name = True
     entity_description: FlightRadar24SensorEntityDescription
 
+    # TELL THE RECORDER TO IGNORE THE MASSIVE FLIGHTS ARRAY
+    _unrecorded_attributes = frozenset({"flights"})
+
     def __init__(
             self,
             coordinator: FlightRadar24Coordinator,
@@ -233,6 +243,10 @@ class FlightRadar24Sensor(CoordinatorEntity[FlightRadar24Coordinator], SensorEnt
 
 
 class FlightRadar24RestoreSensor(FlightRadar24Sensor, RestoreSensor):
+
+    # WE MUST RECORD THIS SPECIFIC SENSOR TO RESTORE TRACKED FLIGHTS ON REBOOT
+    _unrecorded_attributes = frozenset()
+
     async def async_added_to_hass(self):
         """Restore state on startup."""
         await super().async_added_to_hass()
