@@ -1,10 +1,11 @@
 """Support for WeatherFlow sensor data."""
+
 from __future__ import annotations
 
 import logging
 
 from dataclasses import dataclass
-from typing import Any
+from datetime import datetime
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -34,10 +35,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
-from homeassistant.helpers.update_coordinator import (
-    CoordinatorEntity,
-    DataUpdateCoordinator,
-)
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util.dt import utc_from_timestamp
 from homeassistant.util.unit_system import METRIC_SYSTEM
 
@@ -60,7 +58,8 @@ from .const import (
     TIMESTAMP_SENSORS,
 )
 
-@dataclass
+
+@dataclass(frozen=True)
 class WeatherFlowSensorEntityDescription(SensorEntityDescription):
     """Describes WeatherFlow sensor entity."""
 
@@ -218,7 +217,7 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
         name="Precipitation last hour",
         native_unit_of_measurement=UnitOfPrecipitationDepth.MILLIMETERS,
         device_class=SensorDeviceClass.PRECIPITATION,
-        state_class=SensorStateClass.TOTAL_INCREASING,
+        state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=1,
     ),
     WeatherFlowSensorEntityDescription(
@@ -226,7 +225,7 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
         name="Precipitation today",
         native_unit_of_measurement=UnitOfPrecipitationDepth.MILLIMETERS,
         device_class=SensorDeviceClass.PRECIPITATION,
-        state_class=SensorStateClass.TOTAL_INCREASING,
+        state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=1,
     ),
     WeatherFlowSensorEntityDescription(
@@ -437,38 +436,56 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
 
 _LOGGER = logging.getLogger(__name__)
 
-async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """WeatherFlow sensor platform."""
-    coordinator: WeatherFlowForecastDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
+    coordinator: WeatherFlowForecastDataUpdateCoordinator = hass.data[DOMAIN][
+        config_entry.entry_id
+    ]
 
     if coordinator.data.sensor_data is None:
         return
 
-    entities: list[WeatherFlowSensor[Any]] = [
+    entities: list[WeatherFlowSensor] = [
         WeatherFlowSensor(coordinator, description, config_entry)
-        for description in SENSOR_TYPES if getattr(coordinator.data.sensor_data, description.key, None) is not None
+        for description in SENSOR_TYPES
+        if getattr(coordinator.data.sensor_data, description.key, None) is not None
     ]
 
     async_add_entities(entities, False)
 
-class WeatherFlowSensor(CoordinatorEntity[DataUpdateCoordinator], SensorEntity):
+
+class WeatherFlowSensor(
+    CoordinatorEntity[WeatherFlowForecastDataUpdateCoordinator], SensorEntity
+):  # type: ignore[misc]
     """A WeatherFlow sensor."""
 
-    entity_description: WeatherFlowSensorEntityDescription
+    entity_description: WeatherFlowSensorEntityDescription  # type: ignore[override]
     _attr_has_entity_name = True
 
     def __init__(
         self,
         coordinator: WeatherFlowForecastDataUpdateCoordinator,
         description: WeatherFlowSensorEntityDescription,
-        config: ConfigEntry
+        config: ConfigEntry,
     ) -> None:
         """Initialize a WeatherFlow sensor."""
         super().__init__(coordinator)
-        self.entity_description = description
+        self.entity_description = description  # type: ignore[override]
         self._config = config
         self._coordinator = coordinator
-        self._hw_version = " - Not Available" if self._coordinator.data.station_data.firmware_revision is None else self._coordinator.data.station_data.firmware_revision
+        station_data = (
+            self._coordinator.data.station_data if self._coordinator.data else None
+        )
+        self._hw_version = (
+            " - Not Available"
+            if station_data is None or station_data.firmware_revision is None
+            else station_data.firmware_revision
+        )
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self._config.data[CONF_STATION_ID])},
@@ -476,69 +493,99 @@ class WeatherFlowSensor(CoordinatorEntity[DataUpdateCoordinator], SensorEntity):
             manufacturer=MANUFACTURER,
             model=MODEL,
             name=f"{self._config.data[CONF_NAME]} Sensors",
-            configuration_url=f"https://tempestwx.com/station/{
-                self._config.data[CONF_STATION_ID]}/grid",
+            configuration_url=f"https://tempestwx.com/station/{self._config.data[CONF_STATION_ID]}/grid",
             hw_version=f"FW V{self._hw_version}",
         )
         self._attr_attribution = ATTR_ATTRIBUTION
         self._attr_unique_id = f"{config.data[CONF_STATION_ID]} {description.key}"
 
     @property
-    def native_unit_of_measurement(self) -> str | None:
+    def native_unit_of_measurement(self) -> str | None:  # type: ignore[override]
         """Return unit of sensor."""
 
         if self.entity_description.key == "air_density":
-            return super().native_unit_of_measurement if self.hass.config.units is METRIC_SYSTEM else CONCENTRATION_POUND_PER_CUBIC_FOOT
+            return (
+                super().native_unit_of_measurement
+                if self.hass.config.units is METRIC_SYSTEM
+                else CONCENTRATION_POUND_PER_CUBIC_FOOT
+            )
         return super().native_unit_of_measurement
 
     @property
-    def native_value(self) -> StateType:
+    def native_value(self) -> StateType | datetime:  # type: ignore[override]
         """Return state of the sensor."""
 
         if self.entity_description.key in TIMESTAMP_SENSORS:
-            raw_data = getattr(self.coordinator.data.sensor_data,
-                               self.entity_description.key) if self.coordinator.data.sensor_data else None
+            raw_data = (
+                getattr(self.coordinator.data.sensor_data, self.entity_description.key)
+                if self.coordinator.data.sensor_data
+                else None
+            )
             return utc_from_timestamp(raw_data) if raw_data else None
 
         if self.entity_description.key == "air_density":
-            raw_data = getattr(self.coordinator.data.sensor_data,
-                               self.entity_description.key) if self.coordinator.data.sensor_data else None
-            return raw_data if self.hass.config.units is METRIC_SYSTEM else (raw_data * 0.06243)
+            raw_data = (
+                getattr(self.coordinator.data.sensor_data, self.entity_description.key)
+                if self.coordinator.data.sensor_data
+                else None
+            )
+            if raw_data is None:
+                return None
+            return (
+                raw_data
+                if self.hass.config.units is METRIC_SYSTEM
+                else (raw_data * 0.06243)
+            )
 
         return (
             getattr(self.coordinator.data.sensor_data, self.entity_description.key)
-            if self.coordinator.data.sensor_data else None
+            if self.coordinator.data.sensor_data
+            else None
         )
 
     @property
-    def extra_state_attributes(self) -> None:
+    def extra_state_attributes(self) -> dict | None:  # type: ignore[override]
         """Return non standard attributes."""
 
         if self.entity_description.key == "power_save_mode":
-            sensor_value = getattr(self.coordinator.data.sensor_data,
-                                   self.entity_description.key) if self.coordinator.data.sensor_data else None
+            sensor_value = (
+                getattr(self.coordinator.data.sensor_data, self.entity_description.key)
+                if self.coordinator.data.sensor_data
+                else None
+            )
             if sensor_value is not None:
                 return {
                     ATTR_DESCRIPTION: BATTERY_MODE_DESCRIPTION[sensor_value],
                 }
 
         if self.entity_description.key == "precip_type":
-            sensor_value = getattr(self.coordinator.data.sensor_data,
-                                   self.entity_description.key) if self.coordinator.data.sensor_data else None
+            sensor_value = (
+                getattr(self.coordinator.data.sensor_data, self.entity_description.key)
+                if self.coordinator.data.sensor_data
+                else None
+            )
             if sensor_value is not None:
                 return {
                     ATTR_DESCRIPTION: PRECIPITATION_TYPE_DESCRIPTION[sensor_value],
                 }
 
         if self.entity_description.key == "station_name":
-            sensor_value = getattr(self.coordinator.data.sensor_data,
-                                   self.entity_description.key) if self.coordinator.data.sensor_data else None
-            if sensor_value is not None:
+            sensor_value = (
+                getattr(self.coordinator.data.sensor_data, self.entity_description.key)
+                if self.coordinator.data.sensor_data
+                else None
+            )
+            station_data = (
+                self._coordinator.data.station_data if self._coordinator.data else None
+            )
+            if sensor_value is not None and station_data is not None:
                 return {
-                    ATTR_HW_FIRMWARE_REVISION: self._coordinator.data.station_data.firmware_revision,
-                    ATTR_HW_SERIAL_NUMBER: self._coordinator.data.station_data.serial_number,
+                    ATTR_HW_FIRMWARE_REVISION: station_data.firmware_revision,
+                    ATTR_HW_SERIAL_NUMBER: station_data.serial_number,
                     ATTR_HW_STATION_ID: str(self._config.data[CONF_STATION_ID]),
                 }
+
+        return None
 
     async def async_added_to_hass(self):
         """When entity is added to hass."""

@@ -1,14 +1,14 @@
 """Config flow to configure WeatherFlow Forecast component."""
+
 from __future__ import annotations
 
 import logging
 import voluptuous as vol
-from typing import Any
+from typing import Any, cast
 from homeassistant import config_entries
 from homeassistant.const import CONF_NAME
 from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
-from homeassistant.helpers.event import async_call_later
 from pyweatherflow_forecast import (
     WeatherFlow,
     WeatherFlowStationData,
@@ -18,7 +18,6 @@ from pyweatherflow_forecast import (
     WeatherFlowForecastUnauthorized,
     WeatherFlowForecastWongStationId,
 )
-from . import async_setup_entry, async_unload_entry
 from .const import (
     DEFAULT_ADD_SENSOR,
     DEFAULT_FORECAST_HOURS,
@@ -33,6 +32,7 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
+
 
 class WeatherFlowForecastHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Config Flow for WeatherFlow Forecast."""
@@ -57,13 +57,21 @@ class WeatherFlowForecastHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         try:
             weatherflow_api = await self.hass.async_add_executor_job(
-                lambda: WeatherFlow(user_input[CONF_STATION_ID],
-                                    user_input[CONF_API_TOKEN], session=session)
+                lambda: WeatherFlow(
+                    user_input[CONF_STATION_ID],
+                    user_input[CONF_API_TOKEN],
+                    session=session,
+                )
             )
 
-            station_data: WeatherFlowStationData = await weatherflow_api.async_get_station()
+            station_data = cast(
+                WeatherFlowStationData, await weatherflow_api.async_get_station()
+            )
             if user_input[CONF_ADD_SENSORS]:
-                sensor_data: WeatherFlowSensorData = await weatherflow_api.async_fetch_sensor_data()
+                sensor_data = cast(
+                    WeatherFlowSensorData,
+                    await weatherflow_api.async_fetch_sensor_data(),
+                )
                 if not sensor_data.data_available:
                     errors["base"] = "offline_error"
                     return await self._show_setup_form(errors)
@@ -100,7 +108,7 @@ class WeatherFlowForecastHandler(config_entries.ConfigFlow, domain=DOMAIN):
             options={
                 CONF_FORECAST_HOURS: user_input[CONF_FORECAST_HOURS],
                 CONF_ADD_SENSORS: user_input[CONF_ADD_SENSORS],
-            }
+            },
         )
 
     async def _show_setup_form(self, errors=None):
@@ -111,12 +119,15 @@ class WeatherFlowForecastHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required(CONF_STATION_ID): str,
                     vol.Required(CONF_API_TOKEN): str,
-                    vol.Optional(CONF_FORECAST_HOURS, default=DEFAULT_FORECAST_HOURS): vol.All(vol.Coerce(int), vol.Range(min=12, max=96)),
+                    vol.Optional(
+                        CONF_FORECAST_HOURS, default=DEFAULT_FORECAST_HOURS
+                    ): vol.All(vol.Coerce(int), vol.Range(min=12, max=96)),
                     vol.Optional(CONF_ADD_SENSORS, default=DEFAULT_ADD_SENSOR): bool,
                 }
             ),
             errors=errors or {},
         )
+
 
 class WeatherFlowForecastOptionsFlowHandler(config_entries.OptionsFlow):
     """Options Flow for WeatherFlow Forecast component."""
@@ -125,29 +136,45 @@ class WeatherFlowForecastOptionsFlowHandler(config_entries.OptionsFlow):
         """Initialize the WeatherFlow Forecast Options Flows."""
         self._config_entry = config_entry
 
-    async def _do_update(
-        self,
-        *args,
-        **kwargs,  # pylint: disable=unused-argument
-    ) -> None:
-        """Update after settings change."""
-        await async_unload_entry(self.hass, self.config_entry)
-        await async_setup_entry(self.hass, self.config_entry)
-
     async def async_step_init(self, user_input: dict[str, Any] | None = None):
         """Configure Options for WeatherFlow Forecast."""
 
         if user_input is not None:
-            async_call_later(self.hass, 2, self._do_update)
-            return self.async_create_entry(title="", data=user_input)
+            self.hass.config_entries.async_update_entry(
+                self._config_entry,
+                data={
+                    **self._config_entry.data,
+                    CONF_API_TOKEN: user_input[CONF_API_TOKEN],
+                },
+            )
+            return self.async_create_entry(
+                title="",
+                data={
+                    CONF_FORECAST_HOURS: user_input[CONF_FORECAST_HOURS],
+                    CONF_ADD_SENSORS: user_input[CONF_ADD_SENSORS],
+                },
+            )
 
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
                 {
-                    vol.Required(CONF_API_TOKEN, default=self._config_entry.data.get(CONF_API_TOKEN, "")): str,
-                    vol.Optional(CONF_FORECAST_HOURS, default=self._config_entry.options.get(CONF_FORECAST_HOURS, DEFAULT_FORECAST_HOURS)): vol.All(vol.Coerce(int), vol.Range(min=12, max=96)),
-                    vol.Optional(CONF_ADD_SENSORS, default=self._config_entry.options.get(CONF_ADD_SENSORS, DEFAULT_ADD_SENSOR)): bool,
+                    vol.Required(
+                        CONF_API_TOKEN,
+                        default=self._config_entry.data.get(CONF_API_TOKEN, ""),
+                    ): str,
+                    vol.Optional(
+                        CONF_FORECAST_HOURS,
+                        default=self._config_entry.options.get(
+                            CONF_FORECAST_HOURS, DEFAULT_FORECAST_HOURS
+                        ),
+                    ): vol.All(vol.Coerce(int), vol.Range(min=12, max=96)),
+                    vol.Optional(
+                        CONF_ADD_SENSORS,
+                        default=self._config_entry.options.get(
+                            CONF_ADD_SENSORS, DEFAULT_ADD_SENSOR
+                        ),
+                    ): bool,
                 }
-            )
+            ),
         )
