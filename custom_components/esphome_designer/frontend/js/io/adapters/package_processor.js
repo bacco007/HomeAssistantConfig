@@ -35,6 +35,32 @@ export const sanitizePackageContent = (yaml) => {
 };
 
 /**
+ * @param {string[]} lines
+ * @returns {string}
+ */
+const extractDeviceSettingsHeader = (lines) => {
+    const titleIndex = lines.findIndex((line) => line.trim() === "# Device Settings");
+    if (titleIndex === -1) return "";
+
+    let start = titleIndex;
+    while (start > 0 && lines[start - 1].trim().startsWith("#")) {
+        start -= 1;
+        if (lines[start].trim() === "# ====================================") break;
+    }
+
+    let end = titleIndex + 1;
+    while (end < lines.length && lines[end].trim().startsWith("#")) {
+        if (end > titleIndex + 1 && lines[end].trim() === "# ====================================") {
+            end += 1;
+            break;
+        }
+        end += 1;
+    }
+
+    return lines.slice(start, end).join('\n').trim();
+};
+
+/**
  * @param {string} packageContent
  * @param {string[]} lambdaContent
  * @param {string[]} touchSensors
@@ -87,7 +113,11 @@ export const processPackageContent = (packageContent, lambdaContent, touchSensor
 
     // Fix: Standardize section merging. We want to avoid double headers like "sensor:"
     // but we MUST NOT filter out content lines like "- platform:" which are shared.
-    const sanitizedPackage = sanitizePackageContent(packageContent);
+    let sanitizedPackage = sanitizePackageContent(packageContent);
+    const deviceSettingsHeader = extractDeviceSettingsHeader(lines);
+    if (deviceSettingsHeader && !sanitizedPackage.includes("# Device Settings")) {
+        sanitizedPackage = `${sanitizedPackage.trimEnd()}\n\n${deviceSettingsHeader}\n`;
+    }
     const extraLines = [];
 
     let inDisplaySection = false;

@@ -105,6 +105,9 @@ export function renderContextToolbar(canvasInstance) {
 
     toolbar.style.left = targetLeft + "px";
     toolbar.style.top = targetTop + "px";
+    const zoom = Number(AppState.zoomLevel) || 1;
+    toolbar.style.transform = `scale(${zoom > 0 ? 1 / zoom : 1})`;
+    toolbar.style.transformOrigin = "top left";
     toolbar.innerHTML = "";
 
     if (selectedIds.length > 1) {

@@ -53,6 +53,7 @@ export function applyZoom(canvasInstance) {
         canvasInstance.canvasContainer.style.transform =
             `translate(${canvasInstance.panX}px, ${canvasInstance.panY}px) scale(${zoom})`;
         canvasInstance.canvasContainer.style.transformOrigin = "0 0";
+        canvasInstance.canvasContainer.style.setProperty('--canvas-ui-scale', String(zoom > 0 ? 1 / zoom : 1));
     }
 
     // Apply grid opacity
@@ -251,6 +252,5 @@ export function updateWidgetDOM(canvasInstance, widget, skipPluginRender = false
         }
     }
 }
-
 
 

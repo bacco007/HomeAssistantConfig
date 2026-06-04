@@ -88,6 +88,23 @@ export class KeyboardHandler {
             return;
         }
 
+        const arrowDelta = {
+            ArrowUp: [0, -1],
+            ArrowDown: [0, 1],
+            ArrowLeft: [-1, 0],
+            ArrowRight: [1, 0]
+        }[ev.key];
+        if (arrowDelta && hasSelection && !ev.ctrlKey && !ev.metaKey && !ev.altKey) {
+            if (isEditableTarget) {
+                return;
+            }
+
+            const delta = ev.shiftKey ? 10 : 1;
+            ev.preventDefault();
+            this.nudgeSelectedWidgets(arrowDelta[0] * delta, arrowDelta[1] * delta);
+            return;
+        }
+
         // Copy: Ctrl+C
         if ((ev.ctrlKey || ev.metaKey) && ev.key && ev.key.toLowerCase() === "c") {
             if (isEditableTarget || hasNativeSelection) {
@@ -249,6 +266,62 @@ export class KeyboardHandler {
         } catch {
             return false;
         }
+    }
+
+    /**
+     * @param {number} dx
+     * @param {number} dy
+     * @returns {boolean}
+     */
+    nudgeSelectedWidgets(dx, dy) {
+        const state = AppState;
+        const page = state.getCurrentPage?.();
+        const selectedIds = new Set(state.selectedWidgetIds);
+        const selectedWidgets = state.getSelectedWidgets();
+        const widgetsToMove = [];
+        for (const widget of selectedWidgets) {
+            if (!widget || widget.locked) continue;
+            widgetsToMove.push(widget);
+            if (widget.type === "group" && page?.widgets) {
+                widgetsToMove.push(...page.widgets.filter((child) => child.parentId === widget.id && !child.locked && !selectedIds.has(child.id)));
+            }
+        }
+
+        if (!widgetsToMove.length) {
+            return false;
+        }
+
+        const dims = /** @type {{ width?: number, height?: number }} */ (state.getCanvasDimensions?.() || {});
+        const maxWidth = Number(dims.width) || Infinity;
+        const maxHeight = Number(dims.height) || Infinity;
+        let changed = false;
+
+        for (const widget of widgetsToMove) {
+            const width = Number(widget.width) || 0;
+            const height = Number(widget.height) || 0;
+            const maxX = Number.isFinite(maxWidth) ? Math.max(0, maxWidth - width) : Infinity;
+            const maxY = Number.isFinite(maxHeight) ? Math.max(0, maxHeight - height) : Infinity;
+            const currentX = Number(widget.x) || 0;
+            const currentY = Number(widget.y) || 0;
+            const nextX = Math.min(maxX, Math.max(0, currentX + dx));
+            const nextY = Math.min(maxY, Math.max(0, currentY + dy));
+
+            if (nextX !== widget.x || nextY !== widget.y) {
+                widget.x = nextX;
+                widget.y = nextY;
+                changed = true;
+            }
+        }
+
+        if (!changed) {
+            return false;
+        }
+
+        if (typeof state.recordHistory === "function") {
+            state.recordHistory();
+        }
+        emit(EVENTS.STATE_CHANGED);
+        return true;
     }
 
     /** @param {any} widgetId */

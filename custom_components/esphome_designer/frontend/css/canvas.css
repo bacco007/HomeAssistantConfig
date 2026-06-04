@@ -276,12 +276,11 @@
 }
 
 .active-page .artboard {
-    /* Active artboard strong glow and lift */
+    /* Active artboard strong glow without shifting the coordinate plane */
     box-shadow:
         0 0 0 2px var(--accent),
         0 35px 80px rgba(0, 0, 0, 0.45),
         0 70px 140px rgba(0, 0, 0, 0.55);
-    transform: translateY(-6px);
 }
 
 .artboard.dark {
@@ -392,16 +391,16 @@
     display: none;
     /* Hidden by default */
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: calc(10px * var(--canvas-ui-scale, 1));
+    height: calc(10px * var(--canvas-ui-scale, 1));
     border-radius: 50%;
     background: var(--white);
-    border: 2px solid var(--accent);
+    border: calc(2px * var(--canvas-ui-scale, 1)) solid var(--accent);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     z-index: 10;
     pointer-events: auto;
     /* Center handles on edges */
-    margin: -5px;
+    margin: calc(-5px * var(--canvas-ui-scale, 1));
 }
 
 .widget.active:not(.locked) .widget-resize-handle {

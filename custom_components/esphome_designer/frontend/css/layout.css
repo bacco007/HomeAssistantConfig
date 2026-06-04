@@ -373,10 +373,9 @@
 
   /* Larger touch targets for widget resize handles on mobile */
   .widget-resize-handle {
-    width: 24px;
-    height: 24px;
-    bottom: -4px;
-    right: -4px;
+    width: calc(24px * var(--canvas-ui-scale, 1));
+    height: calc(24px * var(--canvas-ui-scale, 1));
+    margin: calc(-12px * var(--canvas-ui-scale, 1));
   }
 }
 
@@ -413,9 +412,8 @@
 /* Touch device improvements - larger targets for coarse pointers */
 @media (pointer: coarse) {
   .widget-resize-handle {
-    width: 28px;
-    height: 28px;
-    bottom: -6px;
-    right: -6px;
+    width: calc(28px * var(--canvas-ui-scale, 1));
+    height: calc(28px * var(--canvas-ui-scale, 1));
+    margin: calc(-14px * var(--canvas-ui-scale, 1));
   }
 }

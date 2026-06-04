@@ -110,6 +110,7 @@ touchscreen:
         expect(profiles[0]).toMatchObject({
             id: 'valid',
             hardwarePackage: 'hardware/valid.yaml',
+            isOfflineImport: false,
             shape: 'round',
             chip: 'esp8266'
         });

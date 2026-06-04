@@ -4,6 +4,7 @@ const { mockAppState } = vi.hoisted(() => ({
     mockAppState: {
         currentPageIndex: 0,
         selectedWidgetIds: [],
+        zoomLevel: 1,
         getSelectedWidgets: vi.fn(),
         alignSelectedWidgets: vi.fn(),
         distributeSelectedWidgets: vi.fn(),
@@ -31,6 +32,7 @@ describe('canvas_renderer_ui', () => {
         document.body.innerHTML = '';
         mockAppState.currentPageIndex = 0;
         mockAppState.selectedWidgetIds = [];
+        mockAppState.zoomLevel = 1;
         mockAppState.getSelectedWidgets.mockReturnValue([]);
     });
 
@@ -75,6 +77,7 @@ describe('canvas_renderer_ui', () => {
         expect(toolbar).toBeTruthy();
         expect(toolbar.style.left).toBe('10px');
         expect(toolbar.style.top).toBe('-10px');
+        expect(toolbar.style.transform).toBe('scale(1)');
 
         toolbar.querySelector('button[title="Align Left"]')?.click();
         toolbar.querySelector('button[title="Distribute Horizontally"]')?.click();
@@ -93,6 +96,32 @@ describe('canvas_renderer_ui', () => {
         renderContextToolbar({ canvas, dragState: null, lassoState: null });
         canvas.querySelector('.context-toolbar button[title="Ungroup (Ctrl+Shift+G)"]')?.click();
         expect(mockAppState.ungroupSelection).toHaveBeenCalled();
+    });
+
+    it('keeps the context toolbar visually stable while the canvas is zoomed', () => {
+        document.body.innerHTML = `
+            <div id="canvas">
+                <div class="artboard-wrapper" data-index="0">
+                    <div class="artboard"></div>
+                </div>
+            </div>
+        `;
+        const canvas = document.getElementById('canvas');
+        const artboard = canvas.querySelector('.artboard');
+        Object.defineProperty(artboard, 'offsetTop', { configurable: true, value: 20 });
+
+        mockAppState.zoomLevel = 2;
+        mockAppState.selectedWidgetIds = ['w1', 'w2'];
+        mockAppState.getSelectedWidgets.mockReturnValue([
+            { id: 'w1', x: 10, y: 15, width: 20, height: 10, type: 'text' },
+            { id: 'w2', x: 40, y: 15, width: 20, height: 10, type: 'text' }
+        ]);
+
+        renderContextToolbar({ canvas, dragState: null, lassoState: null });
+
+        const toolbar = canvas.querySelector('.context-toolbar');
+        expect(toolbar.style.transform).toBe('scale(0.5)');
+        expect(toolbar.style.transformOrigin).toBe('top left');
     });
 
     it('removes the context toolbar when selection is empty or interactions are active', () => {

@@ -274,6 +274,31 @@ export const DEVICE_PROFILES = {
     resolution: { width: 320, height: 480 },
     features: { psram: true, buzzer: false, buttons: false, lcd: true, lvgl: true, touch: true }
   },
+  m5stack_tab5: {
+    name: "M5Stack Tab5",
+    displayType: "color",
+    chip: "esp32-p4",
+    board: "esp32-p4-evboard",
+    displayPlatform: "mipi_dsi",
+    displayModel: "M5STACK-TAB5-V2",
+    isPackageBased: true,
+    hardwarePackage: "hardware/m5stack-tab5.yaml",
+    resolution: { width: 1280, height: 720 },
+    features: { psram: true, buzzer: false, buttons: false, lcd: true, lvgl: true, touch: true },
+    touch: { platform: "st7123" }
+  },
+  geekmagic_mini_esp8266: {
+    name: "GeekMagic Mini (ESP8266)",
+    displayType: "color",
+    chip: "esp8266",
+    board: "esp01_1m",
+    displayPlatform: "mipi_spi",
+    displayModel: "ST7789V",
+    isPackageBased: true,
+    hardwarePackage: "hardware/geekmagic-mini-esp8266.yaml",
+    resolution: { width: 240, height: 240 },
+    features: { psram: false, buzzer: false, buttons: false, lcd: true, lvgl: true, touch: false, inverted_colors: false }
+  },
 
   // ========================================================================
   // OTHER DEVICES

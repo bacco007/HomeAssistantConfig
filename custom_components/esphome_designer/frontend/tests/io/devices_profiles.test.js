@@ -56,6 +56,34 @@ describe('built-in device profiles', async () => {
         expect(devices.SUPPORTED_DEVICE_IDS).not.toContain('guition_esp32_jc8048w535');
     });
 
+    it('includes the M5Stack Tab5 and GeekMagic Mini package profiles as supported built-ins', () => {
+        const tab5 = devices.DEVICE_PROFILES.m5stack_tab5;
+        const geekMagic = devices.DEVICE_PROFILES.geekmagic_mini_esp8266;
+
+        expect(tab5).toMatchObject({
+            name: 'M5Stack Tab5',
+            chip: 'esp32-p4',
+            displayPlatform: 'mipi_dsi',
+            displayModel: 'M5STACK-TAB5-V2',
+            hardwarePackage: 'hardware/m5stack-tab5.yaml',
+            resolution: { width: 1280, height: 720 }
+        });
+        expect(tab5.features.touch).toBe(true);
+        expect(devices.SUPPORTED_DEVICE_IDS).toContain('m5stack_tab5');
+
+        expect(geekMagic).toMatchObject({
+            name: 'GeekMagic Mini (ESP8266)',
+            chip: 'esp8266',
+            board: 'esp01_1m',
+            displayPlatform: 'mipi_spi',
+            displayModel: 'ST7789V',
+            hardwarePackage: 'hardware/geekmagic-mini-esp8266.yaml',
+            resolution: { width: 240, height: 240 }
+        });
+        expect(geekMagic.features.touch).toBe(false);
+        expect(devices.SUPPORTED_DEVICE_IDS).toContain('geekmagic_mini_esp8266');
+    });
+
     it('recomputes supported ids after loading external profiles', async () => {
         fetchDynamicHardwareProfilesMock.mockResolvedValueOnce([
             {

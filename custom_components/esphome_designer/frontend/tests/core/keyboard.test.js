@@ -15,7 +15,13 @@ const mockAppState = {
     showDebugGrid: false,
     showRulers: false,
     isUndoRedoInProgress: false,
-    getSelectedWidgets: vi.fn(() => [{ id: 'w1', locked: false }]),
+    currentPage: {
+        widgets: [{ id: 'w1', x: 10, y: 10, width: 20, height: 10, locked: false }]
+    },
+    getSelectedWidgets: vi.fn(),
+    getCurrentPage: vi.fn(() => mockAppState.currentPage),
+    getCanvasDimensions: vi.fn(() => ({ width: 100, height: 100 })),
+    recordHistory: vi.fn(),
     updateWidgets: vi.fn(),
     setShowGrid: vi.fn((v) => { mockAppState.showGrid = v; }),
     setShowDebugGrid: vi.fn((v) => { mockAppState.showDebugGrid = v; }),
@@ -79,6 +85,13 @@ describe('KeyboardHandler', () => {
         mockAppState.showGrid = false;
         mockAppState.showDebugGrid = false;
         mockAppState.showRulers = false;
+        mockAppState.currentPage = {
+            widgets: [{ id: 'w1', x: 10, y: 10, width: 20, height: 10, locked: false }]
+        };
+        mockAppState.getSelectedWidgets.mockImplementation(() => {
+            const selected = new Set(mockAppState.selectedWidgetIds);
+            return mockAppState.currentPage.widgets.filter((widget) => selected.has(widget.id));
+        });
 
         document.body.innerHTML = `
             <button id="gridToggleBtn"></button>
@@ -143,6 +156,63 @@ describe('KeyboardHandler', () => {
 
         expect(ev.preventDefault).not.toHaveBeenCalled();
         expect(mockAppState.deleteWidget).not.toHaveBeenCalled();
+    });
+
+    it('nudges selected widgets by one pixel with arrow keys', async () => {
+        const { KeyboardHandler } = await import('../../js/core/keyboard.js');
+        const handler = new KeyboardHandler();
+
+        const ev = makeKeyEvent({ key: 'ArrowRight', target: document.body });
+        handler.handleKeyDown(ev);
+
+        expect(ev.preventDefault).toHaveBeenCalled();
+        expect(mockAppState.currentPage.widgets[0]).toMatchObject({ x: 11, y: 10 });
+        expect(mockAppState.recordHistory).toHaveBeenCalled();
+        expect(mockEmit).toHaveBeenCalledWith('STATE_CHANGED');
+    });
+
+    it('nudges selected widgets by ten pixels when Shift is held', async () => {
+        const { KeyboardHandler } = await import('../../js/core/keyboard.js');
+        const handler = new KeyboardHandler();
+
+        const ev = makeKeyEvent({ key: 'ArrowDown', shiftKey: true, target: document.body });
+        handler.handleKeyDown(ev);
+
+        expect(ev.preventDefault).toHaveBeenCalled();
+        expect(mockAppState.currentPage.widgets[0]).toMatchObject({ x: 10, y: 20 });
+        expect(mockAppState.recordHistory).toHaveBeenCalled();
+    });
+
+    it('nudges selected groups together with their children', async () => {
+        mockAppState.selectedWidgetIds = ['group_1'];
+        mockAppState.currentPage = {
+            widgets: [
+                { id: 'group_1', type: 'group', x: 20, y: 20, width: 40, height: 40, locked: false },
+                { id: 'child_1', parentId: 'group_1', x: 25, y: 25, width: 10, height: 10, locked: false },
+                { id: 'w2', x: 80, y: 80, width: 10, height: 10, locked: false }
+            ]
+        };
+        const { KeyboardHandler } = await import('../../js/core/keyboard.js');
+        const handler = new KeyboardHandler();
+
+        handler.handleKeyDown(makeKeyEvent({ key: 'ArrowUp', target: document.body }));
+
+        expect(mockAppState.currentPage.widgets[0]).toMatchObject({ x: 20, y: 19 });
+        expect(mockAppState.currentPage.widgets[1]).toMatchObject({ x: 25, y: 24 });
+        expect(mockAppState.currentPage.widgets[2]).toMatchObject({ x: 80, y: 80 });
+    });
+
+    it('leaves arrow key navigation alone inside editable fields', async () => {
+        const { KeyboardHandler } = await import('../../js/core/keyboard.js');
+        const handler = new KeyboardHandler();
+        const input = document.getElementById('inputA');
+
+        const ev = makeKeyEvent({ key: 'ArrowRight', target: input });
+        handler.handleKeyDown(ev);
+
+        expect(ev.preventDefault).not.toHaveBeenCalled();
+        expect(mockAppState.currentPage.widgets[0]).toMatchObject({ x: 10, y: 10 });
+        expect(mockAppState.recordHistory).not.toHaveBeenCalled();
     });
 
     it('leaves native snippet copy and paste alone even when auto-highlight is active', async () => {

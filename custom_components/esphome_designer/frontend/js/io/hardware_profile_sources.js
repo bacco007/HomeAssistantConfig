@@ -101,6 +101,7 @@ export async function fetchDynamicHardwareProfiles() {
             profile.id = filename.replace(/\.yaml$/i, '').replace(/[^a-z0-9]/gi, '_').toLowerCase();
             profile.isPackageBased = true;
             profile.hardwarePackage = `hardware/${filename}`;
+            profile.isOfflineImport = false;
 
             bundledTemplates.push(profile);
         } catch (err) {
