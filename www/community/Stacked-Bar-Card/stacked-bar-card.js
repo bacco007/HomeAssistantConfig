@@ -12,6 +12,31 @@ function parseNumber(val) {
   return isNaN(n) ? 0 : Math.max(0, n);
 }
 
+const NUMERIC_SUGGESTION_DOMAINS = new Set(['sensor', 'number', 'input_number', 'counter']);
+
+function isPositiveNumericEntity(hass, entityId, { requirePositive = false, requireDomain = false } = {}) {
+  if (requireDomain) {
+    const domain = entityId.split('.')[0];
+    if (!NUMERIC_SUGGESTION_DOMAINS.has(domain)) return false;
+  }
+  const state = hass?.states?.[entityId];
+  if (!state || ['unavailable', 'unknown'].includes(state.state)) return false;
+  const n = parseFloat(String(state.state));
+  if (Number.isNaN(n)) return false;
+  if (requirePositive && n <= 0) return false;
+  return true;
+}
+
+const STACKED_BAR_CARD_DEFAULT_CONFIG = {
+  show_legend: true,
+  show_name: 'legend',
+  show_state: 'legend',
+  show_title: true,
+  show_unit: 'none',
+  sort: 'highest',
+  unit_source: 'automatic',
+};
+
 function isTemplate(v) {
   return typeof v === 'string' && v.includes('{{') && v.includes('}}');
 }
@@ -79,21 +104,10 @@ class StackedHorizontalBarCard extends LitElement {
 
   static getStubConfig(hass, entities, entitiesFallback) {
     const pool = [...(entities || []), ...(entitiesFallback || [])];
-    const pick = pool.find((eid) => {
-      const st = hass?.states?.[eid];
-      if (!st) return false;
-      const n = parseFloat(String(st.state));
-      return !Number.isNaN(n);
-    });
+    const pick = pool.find((eid) => isPositiveNumericEntity(hass, eid));
     return {
       entities: pick ? [{ entity: pick }] : [],
-      show_legend: true,
-      show_name: 'legend',
-      show_state: 'legend',
-      show_title: true,
-      show_unit: 'none',
-      sort: 'highest',
-      unit_source: 'automatic',
+      ...STACKED_BAR_CARD_DEFAULT_CONFIG,
     };
   }
 
@@ -968,7 +982,7 @@ class StackedHorizontalBarCardEditor extends LitElement {
                   </div>
                 </div>
                 <button class="remove-btn" @click=${() => this._removeEntity(i)} title="Remove">
-                  <ha-icon icon="mdi:delete"></ha-icon>
+                  <ha-icon icon="mdi:trash-can-outline"></ha-icon>
                 </button>
               </div>
             `;
@@ -1326,8 +1340,20 @@ const STACKED_BAR_CARD_PICKER = {
   name: 'Stacked Bar Card',
   preview: true,
   description:
-    'Stacked horizontal or vertical bar that displays entity values in a grid-friendly graph.',
+    'A horizontal or vertical bar that displays the values of your sensors in colour blocks.',
   documentationURL: 'https://github.com/kattcrazy/Stacked-Bar-Card',
+  getEntitySuggestion: (hass, entityId) => {
+    if (!isPositiveNumericEntity(hass, entityId, { requirePositive: true, requireDomain: true })) {
+      return null;
+    }
+    return {
+      config: {
+        type: 'custom:stacked-bar-card',
+        entities: [{ entity: entityId }],
+        ...STACKED_BAR_CARD_DEFAULT_CONFIG,
+      },
+    };
+  },
 };
 
 window.customCards = window.customCards || [];
