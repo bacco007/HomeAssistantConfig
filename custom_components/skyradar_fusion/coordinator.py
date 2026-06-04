@@ -58,9 +58,9 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
         self.last_update_time = None
         self.photo_cache = {}
         self.fr24_cache = {}
-        self.recent_history = []  # <--- New history
+        self.recent_history = []  # <--- HIER IS JE NIEUWE GEHEUGEN
 
-        # --- NIEUW: prepair for local save (.storage) ---
+        # --- NIEUW: Voorbereiding voor de hardeschijf opslag (.storage) ---
         self.store = Store(hass, 1, f"{DOMAIN}_history_{config_entry.entry_id}")
         self._history_loaded = False
 
@@ -384,11 +384,6 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
                                 closest_distance_meters = dist_meters
                                 closest_aircraft = clean_ac
 
-            if self.previous_hexes is not None:
-                self.entered_area = len(current_hexes - self.previous_hexes)
-                self.exited_area = len(self.previous_hexes - current_hexes)
-            self.previous_hexes = current_hexes
-
             if enable_emergencies:
                 em_raw = await self.api.get_global_emergencies()
 
@@ -563,16 +558,40 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
 
                     self.recent_history.insert(0, ac_copy)
 
-            self.recent_history = self.recent_history[:50]
-            self.store.async_delay_save(lambda: self.recent_history, 60)
-
             # MAX 50 planes (enhanced for dashboard!)
             self.recent_history = self.recent_history[:50]
 
             # Save the list in homeassistant storage.
             # async_delay_save Prevents it from putting too much load on the hard drive.
             self.store.async_delay_save(lambda: self.recent_history, 60)
-            # --- END  MEMORY BUFFER ---
+            # --- EINDE MEMORY BUFFER ---
+
+            # --- START EVENT FIRING ---
+            if self.previous_hexes is not None:
+                new_hexes = current_hexes - self.previous_hexes
+                exited_hexes = self.previous_hexes - current_hexes
+
+                self.entered_area = len(new_hexes)
+                self.exited_area = len(exited_hexes)
+
+                # Vuur een event af voor elk NIEUW vliegtuig in de zone
+                for hex_code in new_hexes:
+                    ac_data = next(
+                        (ac for ac in filtered_aircraft if ac.get("hex") == hex_code),
+                        None,
+                    )
+                    if ac_data:
+                        self.hass.bus.async_fire("skyradar_fusion_entry", ac_data)
+
+                # Vuur een event af voor elk vliegtuig dat de zone VERLAAT
+                for hex_code in exited_hexes:
+                    self.hass.bus.async_fire("skyradar_fusion_exit", {"hex": hex_code})
+            else:
+                self.entered_area = 0
+                self.exited_area = 0
+
+            self.previous_hexes = current_hexes
+            # --- EINDE EVENT FIRING ---
 
             self.consecutive_errors = 0
             self.last_update_status = "Success"
@@ -600,7 +619,9 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
             self.last_update_time = dt_util.now()
 
             if self.data:
-                _LOGGER.debug("API error. using frozen data...")
+                _LOGGER.debug(
+                    "API Fout opgevangen. Gebruik makend van bevroren data..."
+                )
                 return self.data
 
             raise UpdateFailed(f"Error fetching data: {err}")
