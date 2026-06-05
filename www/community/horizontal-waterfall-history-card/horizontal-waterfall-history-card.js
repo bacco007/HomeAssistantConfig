@@ -122,6 +122,8 @@ const DEFAULTS = {
     intervals: 48,
     start_offset: 0, // No offset by default (show recent history ending at "now")
     height: 60,
+    label_count: 1,
+    label_format: 'relative',
     show_min_max: false,
     digits: 1,
     compact: false,
@@ -179,6 +181,8 @@ class WaterfallHistoryCard extends i {
             gradient: config.gradient || DEFAULTS.gradient,
             show_current: config.show_current !== false,
             show_labels: config.show_labels !== false,
+            label_count: typeof config.label_count === 'number' ? config.label_count : DEFAULTS.label_count,
+            label_format: config.label_format || DEFAULTS.label_format,
             show_min_max: config.show_min_max || DEFAULTS.show_min_max,
             show_icons: config.show_icons !== false,
             unit: config.unit ?? undefined,
@@ -453,6 +457,25 @@ class WaterfallHistoryCard extends i {
                 }
             });
         }
+        // For min/max mode: include initialState in bucket 0's extreme comparison.
+        // The pre-window state was active from the start of the window until the first change
+        // in bucket 0, so it must be considered as a candidate extreme for that bucket.
+        if (bucketExtreme !== null && initialState !== null &&
+            initialState !== UNKNOWN_STATE && initialState !== UNAVAILABLE_STATE) {
+            if (bucketExtreme[0] === null) {
+                bucketExtreme[0] = initialState;
+            }
+            else if (intervalValue === 'min' && initialState < bucketExtreme[0]) {
+                bucketExtreme[0] = initialState;
+            }
+            else if (intervalValue === 'max' && initialState > bucketExtreme[0]) {
+                bucketExtreme[0] = initialState;
+            }
+        }
+        // In min/max mode capture a copy of last raw values before overwriting with extremes.
+        // This is used for fill operations so empty buckets get the carry-over state (the value
+        // that was actually active during the gap), not an adjacent bucket's extreme.
+        const fillValues = bucketExtreme !== null ? [...processed] : null;
         // Merge extreme values into processed array.
         // Where a real extreme exists, it replaces the last value for that bucket.
         // Buckets that only had special states (unknown/unavailable) are left as-is.
@@ -466,21 +489,34 @@ class WaterfallHistoryCard extends i {
         // Apply initial state to bucket 0 if it wasn't set by a state change within the window
         if (initialState !== null && !bucket0ExplicitlySet) {
             processed[0] = initialState;
+            if (fillValues !== null)
+                fillValues[0] = initialState;
         }
-        // Forward fill - Propagate all states (including unavailable/unknown) until next actual state change
+        // Forward fill - Propagate all states (including unavailable/unknown) until next actual state change.
+        // In min/max mode, fill from the raw last-value array so empty buckets get the carry-over
+        // state rather than an adjacent bucket's extreme.
+        const fwd = fillValues ?? processed;
         for (let i = 1; i < processed.length; i++) {
-            if (processed[i] === null && processed[i - 1] !== null) {
-                processed[i] = processed[i - 1];
-            }
+            if (fwd[i] === null && fwd[i - 1] !== null)
+                fwd[i] = fwd[i - 1];
+            if (processed[i] === null && fwd[i - 1] !== null)
+                processed[i] = fwd[i - 1];
         }
         // Backward fill - Don't fill FROM unavailable/unknown states
         // Also don't overwrite unavailable/unknown states with normal states
+        const bwd = fillValues ?? processed;
         for (let i = processed.length - 2; i >= 0; i--) {
+            if (bwd[i] === null &&
+                bwd[i + 1] !== null &&
+                bwd[i + 1] !== UNKNOWN_STATE &&
+                bwd[i + 1] !== UNAVAILABLE_STATE) {
+                bwd[i] = bwd[i + 1];
+            }
             if (processed[i] === null &&
-                processed[i + 1] !== null &&
-                processed[i + 1] !== UNKNOWN_STATE &&
-                processed[i + 1] !== UNAVAILABLE_STATE) {
-                processed[i] = processed[i + 1];
+                bwd[i + 1] !== null &&
+                bwd[i + 1] !== UNKNOWN_STATE &&
+                bwd[i + 1] !== UNAVAILABLE_STATE) {
+                processed[i] = bwd[i + 1];
             }
         }
         return processed.map((value, index) => ({
@@ -506,6 +542,10 @@ class WaterfallHistoryCard extends i {
         }
         return [min, max];
     }
+    // Returns the state_colors map for an entity, checking per-entity then global config.
+    getStateColors(entityConfig) {
+        return entityConfig?.state_colors ?? this.config?.state_colors;
+    }
     parseState(state, entityConfig) {
         if (typeof state === 'number')
             return state;
@@ -515,6 +555,15 @@ class WaterfallHistoryCard extends i {
                 return UNKNOWN_STATE;
             if (lowerState === 'unavailable')
                 return UNAVAILABLE_STATE;
+            // Multi-state: check state_colors before binary on/off so that states like 'off'
+            // in an HVAC context map to their configured index rather than binary 0.
+            const stateColors = this.getStateColors(entityConfig);
+            if (stateColors) {
+                const keys = Object.keys(stateColors);
+                const matchIndex = keys.findIndex(k => k.toLowerCase() === lowerState);
+                if (matchIndex !== -1)
+                    return matchIndex;
+            }
             if (lowerState === 'off')
                 return 0;
             if (lowerState === 'on')
@@ -539,6 +588,14 @@ class WaterfallHistoryCard extends i {
         }
         if (state === UNAVAILABLE_STATE) {
             return entityConfig.state_unavailable ?? this.config.state_unavailable ?? DEFAULTS.state_unavailable;
+        }
+        // Multi-state: return the original state name for the given index
+        const stateColors = this.getStateColors(entityConfig);
+        if (stateColors && state !== null) {
+            const keys = Object.keys(stateColors);
+            if (Number.isInteger(state) && state >= 0 && state < keys.length) {
+                return keys[state];
+            }
         }
         // Only treat 0/1 as binary when no thresholds are configured. A numeric sensor whose
         // current reading happens to be 0 or 1 (e.g. PM2.5 = 1.0) must not be shown as On/Off.
@@ -601,6 +658,14 @@ class WaterfallHistoryCard extends i {
         }
         if (value === UNAVAILABLE_STATE) {
             return entityConfig.color_unavailable ?? this.config.color_unavailable ?? DEFAULTS.color_unavailable;
+        }
+        // Multi-state: look up color by index into state_colors keys
+        const stateColors = this.getStateColors(entityConfig);
+        if (stateColors) {
+            const keys = Object.keys(stateColors);
+            if (Number.isInteger(value) && value >= 0 && value < keys.length) {
+                return stateColors[keys[value]] || '#666666';
+            }
         }
         let thresholds = entityConfig.thresholds ?? this.config.thresholds;
         // Check if this is a binary value and apply binary colors
@@ -721,17 +786,30 @@ class WaterfallHistoryCard extends i {
             : [...historyData.map(d => d.value), this.parseState(entity.state, entityObj)];
         const [actualMin, actualMax] = this.getMinMax(history);
         const showLabels = entityObj.show_labels ?? this.config.show_labels;
+        const labelCount = entityObj.label_count ?? this.config.label_count ?? DEFAULTS.label_count;
+        const labelFormat = entityObj.label_format ?? this.config.label_format ?? DEFAULTS.label_format;
         const showMinMax = entityObj.show_min_max ?? this.config.show_min_max;
         const showCurrent = entityObj.show_current ?? this.config.show_current;
         const hours = entityObj.hours ?? this.config.hours;
         const intervals = entityObj.intervals ?? this.config.intervals;
         const current = this.parseState(entity.state, entityObj);
         const inlineLayout = entityObj.inline_layout ?? this.config.inline_layout;
-        // Calculate label text based on offset
-        const startLabelHours = hours + startOffset;
-        const endLabelHours = startOffset;
-        const startLabel = `${startLabelHours}${this.t('hours_ago')}`;
-        const endLabel = startOffset > 0 ? `${endLabelHours}${this.t('hours_ago')}` : this.t('now');
+        // Build evenly-spaced time labels. label_count=1 gives [start, end].
+        // label_count=N gives N+1 labels spaced (hours/N) apart, capped at hours.
+        const segments = Math.max(1, Math.min(Math.round(labelCount), hours));
+        const endTime = Date.now() - startOffset * 60 * 60 * 1000;
+        const timeLabels = Array.from({ length: segments + 1 }, (_, i) => {
+            const hoursAgo = (hours + startOffset) - (i * hours / segments);
+            if (labelFormat === 'relative') {
+                if (hoursAgo <= startOffset && startOffset === 0)
+                    return this.t('now');
+                return `${Math.round(hoursAgo)}${this.t('hours_ago')}`;
+            }
+            const ts = new Date(endTime - (segments - i) * (hours / segments) * 60 * 60 * 1000);
+            return ts.toLocaleTimeString([], labelFormat === '12h'
+                ? { hour: 'numeric', minute: '2-digit', hour12: true }
+                : { hour: '2-digit', minute: '2-digit', hour12: false });
+        });
         // Render waterfall bars
         const waterfallBars = b `
       ${history.map((value, index) => {
@@ -761,8 +839,7 @@ class WaterfallHistoryCard extends i {
             </div>
             ${showLabels ? b `
               <div class="labels">
-                <span>${startLabel}</span>
-                <span>${endLabel}</span>
+                ${timeLabels.map(l => b `<span>${l}</span>`)}
               </div>
             ` : ''}
           </div>
@@ -788,8 +865,7 @@ class WaterfallHistoryCard extends i {
         </div>
         ${showLabels ? b `
           <div class="labels">
-            <span>${startLabel}</span>
-            <span>${endLabel}</span>
+            ${timeLabels.map(l => b `<span>${l}</span>`)}
           </div>
         ` : ''}
         ${showMinMax ? b `
@@ -1055,7 +1131,7 @@ window.customCards.push({
     name: 'Waterfall History Card',
     description: 'A horizontal waterfall display for historical sensor data with visual editor'
 });
-console.info(`%c WATERFALL-HISTORY-CARD %c v4.5.3 `, 'color: black; background: #F2720C; font-weight: 600;', 'color: black; background: #00a5c9; font-weight: 600;');
+console.info(`%c WATERFALL-HISTORY-CARD %c v4.7.0 `, 'color: black; background: #F2720C; font-weight: 600;', 'color: black; background: #00a5c9; font-weight: 600;');
 
 var NumberFormat;
 (function (NumberFormat) {
@@ -1197,6 +1273,66 @@ class WaterfallHistoryCardEditor extends i {
             ...newConfig.thresholds[index],
             [key]: key === 'value' ? Number(value) : value
         };
+        fireEvent(this, 'config-changed', { config: newConfig });
+    }
+    // Global state_colors management
+    _addStateColor() {
+        const entries = Object.entries(this._config.state_colors || {});
+        entries.push(['', '#cccccc']);
+        this._configValueChanged('state_colors', Object.fromEntries(entries));
+    }
+    _removeStateColor(index) {
+        const entries = Object.entries(this._config.state_colors || {});
+        entries.splice(index, 1);
+        this._configValueChanged('state_colors', entries.length > 0 ? Object.fromEntries(entries) : undefined);
+    }
+    _stateColorChanged(index, key, value) {
+        const entries = Object.entries(this._config.state_colors || {});
+        if (key === 'state') {
+            entries[index] = [value, entries[index][1]];
+        }
+        else {
+            entries[index] = [entries[index][0], value];
+        }
+        this._configValueChanged('state_colors', Object.fromEntries(entries));
+    }
+    // Per-entity state_colors management
+    _addEntityStateColor(entityIndex) {
+        const newConfig = { ...this._config };
+        newConfig.entities = [...newConfig.entities];
+        const currentEntity = newConfig.entities[entityIndex];
+        const entityConfig = typeof currentEntity === 'string' ? { entity: currentEntity } : { ...currentEntity };
+        const entries = Object.entries(entityConfig.state_colors || {});
+        entries.push(['', '#cccccc']);
+        entityConfig.state_colors = Object.fromEntries(entries);
+        newConfig.entities[entityIndex] = entityConfig;
+        fireEvent(this, 'config-changed', { config: newConfig });
+    }
+    _removeEntityStateColor(entityIndex, stateIndex) {
+        const newConfig = { ...this._config };
+        newConfig.entities = [...newConfig.entities];
+        const currentEntity = newConfig.entities[entityIndex];
+        const entityConfig = typeof currentEntity === 'string' ? { entity: currentEntity } : { ...currentEntity };
+        const entries = Object.entries(entityConfig.state_colors || {});
+        entries.splice(stateIndex, 1);
+        entityConfig.state_colors = entries.length > 0 ? Object.fromEntries(entries) : undefined;
+        newConfig.entities[entityIndex] = entityConfig;
+        fireEvent(this, 'config-changed', { config: newConfig });
+    }
+    _entityStateColorChanged(entityIndex, stateIndex, key, value) {
+        const newConfig = { ...this._config };
+        newConfig.entities = [...newConfig.entities];
+        const currentEntity = newConfig.entities[entityIndex];
+        const entityConfig = typeof currentEntity === 'string' ? { entity: currentEntity } : { ...currentEntity };
+        const entries = Object.entries(entityConfig.state_colors || {});
+        if (key === 'state') {
+            entries[stateIndex] = [value, entries[stateIndex][1]];
+        }
+        else {
+            entries[stateIndex] = [entries[stateIndex][0], value];
+        }
+        entityConfig.state_colors = Object.fromEntries(entries);
+        newConfig.entities[entityIndex] = entityConfig;
         fireEvent(this, 'config-changed', { config: newConfig });
     }
     // Per-entity threshold management
@@ -1345,6 +1481,30 @@ class WaterfallHistoryCardEditor extends i {
           ></ha-switch>
         </div>
 
+        <ha-selector
+          .hass=${this.hass}
+          .label=${'Label Count'}
+          .value=${this._config.label_count ?? DEFAULTS.label_count}
+          .selector=${{ number: { min: 1, max: 168, mode: 'box', step: 1 } }}
+          @value-changed=${(ev) => this._configValueChanged('label_count', Number(ev.detail.value))}
+        ></ha-selector>
+
+        <ha-selector
+          .hass=${this.hass}
+          .label=${'Label Format'}
+          .selector=${{
+            select: {
+                options: [
+                    { value: 'relative', label: 'Relative (e.g. 24h ago, Now)' },
+                    { value: '24h', label: '24-hour time (e.g. 14:30)' },
+                    { value: '12h', label: '12-hour time (e.g. 2:30 PM)' },
+                ]
+            }
+        }}
+          .value=${this._config.label_format || DEFAULTS.label_format}
+          @value-changed=${(ev) => this._configValueChanged('label_format', ev.detail.value)}
+        ></ha-selector>
+
         <div class="toggle-row">
           <label>Show Current Value</label>
           <ha-switch
@@ -1469,6 +1629,8 @@ class WaterfallHistoryCardEditor extends i {
             .selector=${{ text: {} }}
             @value-changed=${(ev) => this._configValueChanged('state_unavailable', ev.detail.value)}
           ></ha-selector>
+
+          ${this._renderGlobalStateColors()}
         </div>
       </ha-expansion-panel>
     `;
@@ -1617,6 +1779,30 @@ class WaterfallHistoryCardEditor extends i {
             ></ha-switch>
           </div>
 
+          <ha-selector
+            .hass=${this.hass}
+            .label=${'Label Count (override)'}
+            .value=${entityConfig.label_count || ''}
+            .selector=${{ number: { min: 1, max: 168, mode: 'box', step: 1 } }}
+            @value-changed=${(ev) => this._entityChanged(index, 'label_count', ev.detail.value ? Number(ev.detail.value) : undefined)}
+          ></ha-selector>
+
+          <ha-selector
+            .hass=${this.hass}
+            .label=${'Label Format (override)'}
+            .selector=${{
+            select: {
+                options: [
+                    { value: 'relative', label: 'Relative (e.g. 24h ago, Now)' },
+                    { value: '24h', label: '24-hour time (e.g. 14:30)' },
+                    { value: '12h', label: '12-hour time (e.g. 2:30 PM)' },
+                ]
+            }
+        }}
+            .value=${entityConfig.label_format || ''}
+            @value-changed=${(ev) => this._entityChanged(index, 'label_format', ev.detail.value || undefined)}
+          ></ha-selector>
+
           <div class="toggle-row">
             <label>Show Current (override)</label>
             <ha-switch
@@ -1693,9 +1879,95 @@ class WaterfallHistoryCardEditor extends i {
             @value-changed=${(ev) => this._entityChanged(index, 'color_off', ev.detail.value)}
           ></ha-selector>
 
+          ${this._renderEntityStateColors(entityConfig, index)}
           ${this._renderEntityThresholds(entityConfig, index)}
         </div>
       </ha-expansion-panel>
+    `;
+    }
+    _renderGlobalStateColors() {
+        const entries = Object.entries(this._config.state_colors || {});
+        return b `
+      <div class="entity-thresholds">
+        <h4>Multi-State Colors (Global)</h4>
+        <p class="helper-text">
+          Map HA state strings to colors for multi-state entities (e.g. HVAC modes).
+          Add one row per state in the order they should appear. The state name must
+          match the HA state value exactly (case-insensitive).
+        </p>
+
+        ${entries.length === 0 ? b `
+          <p class="info-text">No state colors defined.</p>
+        ` : ''}
+
+        ${entries.map(([stateName, color], index) => b `
+          <div class="threshold-item">
+            <input
+              type="text"
+              placeholder="State name (e.g. cool)"
+              .value=${stateName}
+              style="flex:1;padding:4px 8px;font-size:14px;border:1px solid var(--divider-color,#e0e0e0);border-radius:4px;background:var(--card-background-color,#fff);color:var(--primary-text-color);"
+              @change=${(ev) => this._stateColorChanged(index, 'state', ev.target.value)}
+            >
+            <input
+              type="text"
+              placeholder="e.g., #FF0000"
+              .value=${color}
+              style="flex:1;padding:4px 8px;font-size:14px;border:1px solid var(--divider-color,#e0e0e0);border-radius:4px;background:var(--card-background-color,#fff);color:var(--primary-text-color);"
+              @input=${(ev) => this._stateColorChanged(index, 'color', ev.target.value)}
+            >
+            <mwc-button @click=${() => this._removeStateColor(index)}>
+              Remove
+            </mwc-button>
+          </div>
+        `)}
+
+        <mwc-button @click=${this._addStateColor}>
+          Add State Color
+        </mwc-button>
+      </div>
+    `;
+    }
+    _renderEntityStateColors(entityConfig, entityIndex) {
+        const entries = Object.entries(entityConfig.state_colors || {});
+        return b `
+      <div class="entity-thresholds">
+        <h4>Multi-State Colors (Per-Entity)</h4>
+        <p class="helper-text">
+          Map HA state strings to colors for this entity. Overrides global state colors.
+          Add one row per state in the order they should appear.
+        </p>
+
+        ${entries.length === 0 ? b `
+          <p class="info-text">No entity-specific state colors. Using global state colors.</p>
+        ` : ''}
+
+        ${entries.map(([stateName, color], stateIndex) => b `
+          <div class="threshold-item">
+            <input
+              type="text"
+              placeholder="State name (e.g. cool)"
+              .value=${stateName}
+              style="flex:1;padding:4px 8px;font-size:14px;border:1px solid var(--divider-color,#e0e0e0);border-radius:4px;background:var(--card-background-color,#fff);color:var(--primary-text-color);"
+              @change=${(ev) => this._entityStateColorChanged(entityIndex, stateIndex, 'state', ev.target.value)}
+            >
+            <input
+              type="text"
+              placeholder="e.g., #FF0000"
+              .value=${color}
+              style="flex:1;padding:4px 8px;font-size:14px;border:1px solid var(--divider-color,#e0e0e0);border-radius:4px;background:var(--card-background-color,#fff);color:var(--primary-text-color);"
+              @input=${(ev) => this._entityStateColorChanged(entityIndex, stateIndex, 'color', ev.target.value)}
+            >
+            <mwc-button @click=${() => this._removeEntityStateColor(entityIndex, stateIndex)}>
+              Remove
+            </mwc-button>
+          </div>
+        `)}
+
+        <mwc-button @click=${() => this._addEntityStateColor(entityIndex)}>
+          Add State Color
+        </mwc-button>
+      </div>
     `;
     }
     _renderEntityThresholds(entityConfig, entityIndex) {
