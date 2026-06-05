@@ -11,6 +11,7 @@ from homeassistant.components.button import (
     ButtonEntityDescription,
 )
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.device_registry import DeviceInfo
 
 from .const import (
@@ -18,6 +19,8 @@ from .const import (
     ATTR_CHIME_NAME,
     ATTR_CHIME_RINGTONE_ID,
     CHIME_RINGTONE_DEFAULT,
+    CONF_CLIENT_CONTROL,
+    DEFAULT_CLIENT_CONTROL,
     DEVICE_TYPE_CAMERA,
     DEVICE_TYPE_CHIME,
     DOMAIN,
@@ -64,9 +67,28 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up buttons for UniFi Insights integration."""
-    _ = hass
     coordinator: UnifiFacadeCoordinator = config_entry.runtime_data.coordinator
+    client_control = config_entry.options.get(
+        CONF_CLIENT_CONTROL, DEFAULT_CLIENT_CONTROL
+    )
     entities: list[ButtonEntity] = []
+
+    # Remove orphaned client reconnect buttons when client control is disabled.
+    registry = er.async_get(hass)
+    if not client_control:
+        for reg_entry in er.async_entries_for_config_entry(
+            registry, config_entry.entry_id
+        ):
+            if (
+                reg_entry.domain == "button"
+                and reg_entry.platform == DOMAIN
+                and reg_entry.unique_id.endswith("_reconnect")
+            ):
+                _LOGGER.debug(
+                    "Removing client reconnect button %s (client control disabled)",
+                    reg_entry.entity_id,
+                )
+                registry.async_remove(reg_entry.entity_id)
 
     _LOGGER.debug("Setting up buttons for UniFi Insights")
 
@@ -105,23 +127,24 @@ async def async_setup_entry(
                 for description in BUTTON_TYPES
             )
 
-    # Add reconnect buttons for connected clients
-    for site_id, clients in coordinator.data.get("clients", {}).items():
-        for client_id, client_data in clients.items():
-            client_name = (
-                client_data.get("name")
-                or client_data.get("hostname")
-                or client_data.get("mac", client_id)
-            )
-
-            _LOGGER.debug("Adding reconnect button for client %s", client_name)
-            entities.append(
-                UnifiClientReconnectButton(
-                    coordinator=coordinator,
-                    site_id=site_id,
-                    client_id=client_id,
+    # Add reconnect buttons for connected clients (when client control is enabled)
+    if client_control:
+        for site_id, clients in coordinator.data.get("clients", {}).items():
+            for client_id, client_data in clients.items():
+                client_name = (
+                    client_data.get("name")
+                    or client_data.get("hostname")
+                    or client_data.get("mac", client_id)
                 )
-            )
+
+                _LOGGER.debug("Adding reconnect button for client %s", client_name)
+                entities.append(
+                    UnifiClientReconnectButton(
+                        coordinator=coordinator,
+                        site_id=site_id,
+                        client_id=client_id,
+                    )
+                )
 
     # Add UniFi Protect chime play buttons
     if coordinator.protect_client:

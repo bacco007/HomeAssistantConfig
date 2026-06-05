@@ -6,6 +6,7 @@ import logging
 from typing import TYPE_CHECKING, Any
 
 from homeassistant.components.switch import SwitchEntity
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -17,6 +18,8 @@ from .const import (
     ATTR_MIC_ENABLED,
     ATTR_PRIVACY_MODE,
     ATTR_STATUS_LIGHT,
+    CONF_CLIENT_CONTROL,
+    DEFAULT_CLIENT_CONTROL,
     DEVICE_TYPE_CAMERA,
     DOMAIN,
     MANUFACTURER,
@@ -72,13 +75,31 @@ def _is_predefined_firewall_rule(rule_data: dict[str, Any]) -> bool:
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,  # noqa: ARG001
+    hass: HomeAssistant,
     entry: UnifiInsightsConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up switches for UniFi integration."""
     coordinator: UnifiFacadeCoordinator = entry.runtime_data.coordinator
+    client_control = entry.options.get(CONF_CLIENT_CONTROL, DEFAULT_CLIENT_CONTROL)
     entities: list[SwitchEntity] = []
+
+    # Remove orphaned client block switches when client control is disabled.
+    # This mirrors the device_tracker cleanup pattern so toggling the option
+    # in the UI immediately removes the stale entities on the next reload.
+    registry = er.async_get(hass)
+    if not client_control:
+        for reg_entry in er.async_entries_for_config_entry(registry, entry.entry_id):
+            if (
+                reg_entry.domain == "switch"
+                and reg_entry.platform == DOMAIN
+                and reg_entry.unique_id.endswith("_block_switch")
+            ):
+                _LOGGER.debug(
+                    "Removing client block switch %s (client control disabled)",
+                    reg_entry.entity_id,
+                )
+                registry.async_remove(reg_entry.entity_id)
 
     # Add Protect switches if available
     if coordinator.protect_client:
@@ -110,10 +131,13 @@ async def async_setup_entry(
                     camera_id=camera_id,
                 )
             )
-            # High FPS mode switch (only for cameras that support it)
+            # High FPS mode switch (only for cameras that support it).
+            # Protect ≤6.x used the boolean flag hasHighFpsCapability; v7.1+
+            # removed it in favour of listing "highFps" in featureFlags.videoModes.
             feature_flags = camera_data.get("featureFlags", {})
-            if isinstance(feature_flags, dict) and feature_flags.get(
-                "hasHighFpsCapability", False
+            if isinstance(feature_flags, dict) and (
+                feature_flags.get("hasHighFpsCapability", False)
+                or "highFps" in feature_flags.get("videoModes", [])
             ):
                 entities.append(
                     UnifiProtectHighFPSSwitch(
@@ -122,25 +146,26 @@ async def async_setup_entry(
                     )
                 )
 
-    # Add client block/allow switches for each connected client
-    for site_id, clients in coordinator.data.get("clients", {}).items():
-        for client_id, client_data in clients.items():
-            client_name = (
-                client_data.get("name")
-                or client_data.get("hostname")
-                or client_data.get("mac", client_id)
-            )
-            _LOGGER.debug(
-                "Adding block/allow switch for client %s",
-                client_name,
-            )
-            entities.append(
-                UnifiClientBlockSwitch(
-                    coordinator=coordinator,
-                    site_id=site_id,
-                    client_id=client_id,
+    # Add client block/allow switches for each connected client (when enabled)
+    if client_control:
+        for site_id, clients in coordinator.data.get("clients", {}).items():
+            for client_id, client_data in clients.items():
+                client_name = (
+                    client_data.get("name")
+                    or client_data.get("hostname")
+                    or client_data.get("mac", client_id)
                 )
-            )
+                _LOGGER.debug(
+                    "Adding block/allow switch for client %s",
+                    client_name,
+                )
+                entities.append(
+                    UnifiClientBlockSwitch(
+                        coordinator=coordinator,
+                        site_id=site_id,
+                        client_id=client_id,
+                    )
+                )
 
     # Add WiFi network enable/disable switches
     for site_id, wifi_networks in coordinator.data.get("wifi", {}).items():
@@ -382,8 +407,12 @@ class UnifiProtectMicrophoneSwitch(UnifiProtectEntity, SwitchEntity):
             self._device_id, {}
         )
 
-        # Set state
-        self._attr_is_on = camera_data.get("micEnabled", False)
+        # Protect v7.1+ renamed the field from micEnabled to isMicEnabled.
+        # Try the new name first so both firmware generations work correctly.
+        mic_val = camera_data.get("isMicEnabled")
+        if mic_val is None:
+            mic_val = camera_data.get("micEnabled", False)
+        self._attr_is_on = bool(mic_val)
 
         # Set attributes
         self._attr_extra_state_attributes = {
@@ -402,11 +431,11 @@ class UnifiProtectMicrophoneSwitch(UnifiProtectEntity, SwitchEntity):
             "async_update_camera",
             f"Unable to turn on microphone for camera {self._device_id}",
             self._device_id,
-            fallback_factory=lambda: self.coordinator.protect_client.update_camera(  # type: ignore[union-attr]
-                camera_id=self._device_id,
-                data={"micEnabled": True},
+            fallback_factory=lambda: self.coordinator.protect_client.cameras.update(  # type: ignore[union-attr]
+                self._device_id,
+                isMicEnabled=True,
             ),
-            micEnabled=True,
+            isMicEnabled=True,
         )
         self._attr_is_on = True
         self.async_write_ha_state()
@@ -421,11 +450,11 @@ class UnifiProtectMicrophoneSwitch(UnifiProtectEntity, SwitchEntity):
             "async_update_camera",
             f"Unable to turn off microphone for camera {self._device_id}",
             self._device_id,
-            fallback_factory=lambda: self.coordinator.protect_client.update_camera(  # type: ignore[union-attr]
-                camera_id=self._device_id,
-                data={"micEnabled": False},
+            fallback_factory=lambda: self.coordinator.protect_client.cameras.update(  # type: ignore[union-attr]
+                self._device_id,
+                isMicEnabled=False,
             ),
-            micEnabled=False,
+            isMicEnabled=False,
         )
         self._attr_is_on = False
         self.async_write_ha_state()

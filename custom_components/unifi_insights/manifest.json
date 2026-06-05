@@ -13,6 +13,6 @@
   "loggers": ["custom_components.unifi_insights"],
   "requirements": ["segno==1.6.6"],
   "usb": [],
-  "version": "2026.6.0",
+  "version": "2026.6.1",
   "zeroconf": []
 }

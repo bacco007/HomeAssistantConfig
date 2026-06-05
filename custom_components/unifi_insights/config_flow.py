@@ -32,6 +32,7 @@ from .api import (
 )
 from .api.network import UniFiNetworkClient
 from .const import (
+    CONF_CLIENT_CONTROL,
     CONF_CONNECTION_TYPE,
     CONF_CONSOLE_ID,
     CONF_TRACK_CLIENTS,
@@ -40,6 +41,7 @@ from .const import (
     CONNECTION_TYPE_LOCAL,
     CONNECTION_TYPE_REMOTE,
     DEFAULT_API_HOST,
+    DEFAULT_CLIENT_CONTROL,
     DEFAULT_TRACK_CLIENTS,
     DOMAIN,
 )
@@ -617,6 +619,9 @@ class UnifiInsightsOptionsFlow(OptionsFlowWithConfigEntry):
         default_wired = self.config_entry.options.get(
             CONF_TRACK_WIRED_CLIENTS, old_track_clients
         )
+        default_client_control = self.config_entry.options.get(
+            CONF_CLIENT_CONTROL, DEFAULT_CLIENT_CONTROL
+        )
 
         return self.async_show_form(
             step_id="init",
@@ -629,6 +634,10 @@ class UnifiInsightsOptionsFlow(OptionsFlowWithConfigEntry):
                     vol.Optional(
                         CONF_TRACK_WIRED_CLIENTS,
                         default=default_wired,
+                    ): bool,
+                    vol.Optional(
+                        CONF_CLIENT_CONTROL,
+                        default=default_client_control,
                     ): bool,
                 }
             ),

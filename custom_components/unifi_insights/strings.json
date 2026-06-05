@@ -84,11 +84,13 @@
         "description": "Configure additional options for the UniFi Insights integration.",
         "data": {
           "track_wifi_clients": "Track WiFi Clients",
-          "track_wired_clients": "Track Wired Clients"
+          "track_wired_clients": "Track Wired Clients",
+          "client_control": "Enable Client Control"
         },
         "data_description": {
           "track_wifi_clients": "Create device tracker entities for connected WiFi clients. This may create many entities.",
-          "track_wired_clients": "Create device tracker entities for connected wired (LAN) clients. This may create many entities."
+          "track_wired_clients": "Create device tracker entities for connected wired (LAN) clients. This may create many entities.",
+          "client_control": "Create allow/block switch and reconnect button entities for connected clients. Disable to prevent orphaned entities when clients leave the network."
         }
       }
     }

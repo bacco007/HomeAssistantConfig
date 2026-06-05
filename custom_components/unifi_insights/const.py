@@ -17,9 +17,11 @@ CONNECTION_TYPE_REMOTE: Final = "remote"
 CONF_TRACK_CLIENTS: Final = "track_clients"  # Deprecated, kept for migration
 CONF_TRACK_WIFI_CLIENTS: Final = "track_wifi_clients"
 CONF_TRACK_WIRED_CLIENTS: Final = "track_wired_clients"
+CONF_CLIENT_CONTROL: Final = "client_control"
 DEFAULT_TRACK_CLIENTS: Final = False
 DEFAULT_TRACK_WIFI_CLIENTS: Final = False
 DEFAULT_TRACK_WIRED_CLIENTS: Final = False
+DEFAULT_CLIENT_CONTROL: Final = True
 
 DEFAULT_API_HOST = "https://192.168.10.1"
 
