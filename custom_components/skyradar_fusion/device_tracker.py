@@ -129,6 +129,13 @@ class SkyRadarFusionTracker(CoordinatorEntity, TrackerEntity):
                 "Info": "Radar tracking is disabled or aircraft left the area.",
             }
 
+        # --- NIEUW: Duidelijke Status Indicator ---
+        attrs = {}
+        if ac.get("on_ground"):
+            attrs["Status"] = "Landed / On Ground"
+        else:
+            attrs["Status"] = "Airborne / In Flight"
+
         raw_attrs = {
             "Callsign": ac.get("flight", "Unknown").strip(),
             "Registration": ac.get("r", "Unknown"),
@@ -147,7 +154,10 @@ class SkyRadarFusionTracker(CoordinatorEntity, TrackerEntity):
             "Distance (m)": ac.get("distance_meter", "N/A"),
         }
 
-        attrs = {k: v for k, v in raw_attrs.items() if v is not None and v != "none"}
+        # Combineer de velden
+        for k, v in raw_attrs.items():
+            if v is not None and v != "none":
+                attrs[k] = v
 
         if ac.get("fr24_route") and ac.get("fr24_route") != "N/A - N/A":
             attrs["Route (FR24)"] = ac.get("fr24_route")
@@ -166,7 +176,6 @@ class SkyRadarFusionTracker(CoordinatorEntity, TrackerEntity):
         if ac.get("airport_destination_country_name"):
             attrs["Destination Country"] = ac.get("airport_destination_country_name")
 
-        # De bestaande tijd-velden:
         if ac.get("fr24_scheduled_departure"):
             attrs["Scheduled Departure"] = ac.get("fr24_scheduled_departure")
         if ac.get("fr24_real_departure"):

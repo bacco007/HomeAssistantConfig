@@ -2,7 +2,7 @@
 
 DOMAIN = "skyradar_fusion"
 NAME = "SkyRadar Fusion"
-VERSION = "2.0.3"
+VERSION = "2.0.1"
 
 API_BASE_URL = "https://api.airplanes.live/v2"
 
