@@ -96,6 +96,8 @@ class StackedHorizontalBarCard extends LitElement {
     this._config = null;
     this._templateResults = {};
     this._templateUnsubscribes = {};
+    this._barLabelObserver = null;
+    this._barLabelSyncFrame = null;
   }
 
   static getConfigElement() {
@@ -119,13 +121,58 @@ class StackedHorizontalBarCard extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
+    this._barLabelObserver = new ResizeObserver(() => this._syncBarLabelVisibility());
   }
 
   disconnectedCallback() {
+    if (this._barLabelSyncFrame != null) {
+      cancelAnimationFrame(this._barLabelSyncFrame);
+      this._barLabelSyncFrame = null;
+    }
+    this._barLabelObserver?.disconnect();
+    this._barLabelObserver = null;
     Object.values(this._templateUnsubscribes).forEach((fn) => { try { fn(); } catch (_) {} });
     this._templateUnsubscribes = {};
     this._templateResults = {};
     super.disconnectedCallback();
+  }
+
+  updated(changedProperties) {
+    if (
+      changedProperties.has('_config')
+      || changedProperties.has('hass')
+      || changedProperties.has('_templateResults')
+    ) {
+      this._syncBarLabelVisibility();
+      const bar = this.shadowRoot?.querySelector('.bar');
+      if (bar && this._barLabelObserver) {
+        this._barLabelObserver.disconnect();
+        this._barLabelObserver.observe(bar);
+        bar.querySelectorAll('.segment').forEach((seg) => this._barLabelObserver.observe(seg));
+      }
+    }
+  }
+
+  /** Hide on-bar name/value/unit together when the label does not fit the segment. */
+  _syncBarLabelVisibility() {
+    if (!this.isConnected) return;
+    if (this._barLabelSyncFrame != null) cancelAnimationFrame(this._barLabelSyncFrame);
+    this._barLabelSyncFrame = requestAnimationFrame(() => {
+      this._barLabelSyncFrame = null;
+      this.shadowRoot?.querySelectorAll('.segment').forEach((segEl) => {
+        const inner = segEl.querySelector('.segment-inner');
+        if (!inner) return;
+        inner.classList.remove('label-hidden');
+        const cw = segEl.clientWidth;
+        const ch = segEl.clientHeight;
+        if (cw <= 0 || ch <= 0) {
+          inner.classList.add('label-hidden');
+          return;
+        }
+        const overflows = inner.scrollWidth > cw || inner.scrollHeight > ch;
+        inner.classList.toggle('label-hidden', overflows);
+      });
+    });
   }
 
   willUpdate(changedProperties) {
@@ -330,17 +377,15 @@ class StackedHorizontalBarCard extends LitElement {
       const sizeProp = isVertical ? 'height' : 'width';
       const unitStr = showUnitOnBar || showUnitInLegend ? this._getDisplayUnit(seg) : '';
       const tip = unitStr ? `${seg.name}: ${seg.value} ${unitStr}` : `${seg.name}: ${seg.value}`;
-      const showValueOnBar = showOnBar && pct > 8;
-      const showNameOnBarSegment = showNameOnBar && pct > (showOnBar ? 12 : 10);
-      const barLabel =
-        showValueOnBar || showNameOnBarSegment
-          ? html`<div class="segment-inner">
-              ${showNameOnBarSegment ? html`<span class="segment-name">${seg.name}</span>` : nothing}
-              ${showValueOnBar
-                ? html`<span class="segment-value">${seg.value}${showUnitOnBar && unitStr ? ` ${unitStr}` : ''}</span>`
-                : nothing}
-            </div>`
-          : nothing;
+      const showBarLabel = showNameOnBar || showOnBar;
+      const barLabel = showBarLabel
+        ? html`<div class="segment-inner">
+            ${showNameOnBar ? html`<span class="segment-name">${seg.name}</span>` : nothing}
+            ${showOnBar
+              ? html`<span class="segment-value">${seg.value}${showUnitOnBar && unitStr ? ` ${unitStr}` : ''}</span>`
+              : nothing}
+          </div>`
+        : nothing;
       return html`
         <div class="segment" style="${sizeProp}:${pct}%;background:${bg};border-radius:${radius}${barTextColorCss ? `;${barTextColorCss}` : ''}" title="${tip}">
           ${barLabel}
@@ -522,6 +567,11 @@ class StackedHorizontalBarCard extends LitElement {
       min-width: 0;
       max-width: 100%;
       gap: 2px;
+      padding: 0 4px;
+      box-sizing: border-box;
+    }
+    .segment-inner.label-hidden {
+      display: none;
     }
     .segment-name {
       font-size: calc(var(--ha-font-size-s, 12px) - 1px);
@@ -529,10 +579,6 @@ class StackedHorizontalBarCard extends LitElement {
       color: var(--stacked-bar-bar-text, rgba(0, 0, 0, 0.65));
       text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-      padding: 0 4px;
       line-height: 1.1;
     }
     .segment-value {
@@ -541,10 +587,6 @@ class StackedHorizontalBarCard extends LitElement {
       color: var(--stacked-bar-bar-text, rgba(0, 0, 0, 0.7));
       text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-      padding: 0 4px;
     }
     .legend {
       display: flex;
