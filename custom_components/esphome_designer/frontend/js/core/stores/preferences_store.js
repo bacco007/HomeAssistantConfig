@@ -8,6 +8,7 @@ import { DEFAULT_PREFERENCES } from '../constants';
  * @property {boolean} showGrid
  * @property {boolean} [showDebugGrid]
  * @property {boolean} [showRulers]
+ * @property {boolean} [autoSaveEnabled]
  * @property {number} gridOpacity
  * @property {boolean} editor_light_mode
  * @property {string} [orientation]
@@ -28,6 +29,8 @@ export class PreferencesStore {
     get showDebugGrid() { return !!this.state.showDebugGrid; }
     /** @returns {boolean} */
     get showRulers() { return !!this.state.showRulers; }
+    /** @returns {boolean} */
+    get autoSaveEnabled() { return this.state.autoSaveEnabled !== false; }
     /** @returns {number} */
     get gridOpacity() { return this.state.gridOpacity; }
     /** @returns {boolean} */
@@ -62,5 +65,11 @@ export class PreferencesStore {
     setShowRulers(enabled) {
         this.state.showRulers = enabled;
         emit(EVENTS.SETTINGS_CHANGED, { showRulers: enabled });
+    }
+
+    /** @param {boolean} enabled */
+    setAutoSaveEnabled(enabled) {
+        this.state.autoSaveEnabled = enabled;
+        emit(EVENTS.SETTINGS_CHANGED, { autoSaveEnabled: enabled });
     }
 }

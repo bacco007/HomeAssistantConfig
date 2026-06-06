@@ -11,6 +11,7 @@ describe('PreferencesStore', () => {
     it('should initialize with default states', () => {
         expect(store.snapEnabled).toBe(true);
         expect(store.showGrid).toBe(true);
+        expect(store.autoSaveEnabled).toBe(true);
     });
 
     it('should update multiple settings at once', () => {
@@ -32,5 +33,10 @@ describe('PreferencesStore', () => {
 
         store.setShowRulers(true);
         expect(store.showRulers).toBe(true);
+    });
+
+    it('toggles autosave individually', () => {
+        store.setAutoSaveEnabled(false);
+        expect(store.autoSaveEnabled).toBe(false);
     });
 });

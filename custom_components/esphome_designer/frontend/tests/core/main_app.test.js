@@ -264,6 +264,7 @@ describe('App bootstrap', () => {
         sidebarCtorError = null;
         backendEnabled = true;
         mockAppState.settings.renderingMode = 'direct';
+        mockAppState.settings.autoSaveEnabled = true;
         delete window.ESPHomeDesigner;
         delete globalThis.__ESPHOME_DESIGNER_BOOT_PROMISE__;
         document.body.innerHTML = `
@@ -471,6 +472,26 @@ describe('App bootstrap', () => {
 
         expect(mockSaveLayoutToBackend).not.toHaveBeenCalled();
         expect(mockAppState.saveToLocalStorage).not.toHaveBeenCalled();
+        vi.useRealTimers();
+    });
+
+    it('skips autosave work when the editor preference disables background saves', async () => {
+        vi.useFakeTimers();
+        const { App } = await import('../../js/main.js');
+        const { on, EVENTS } = await import('../../js/core/events.js');
+        const app = new App();
+        mockAppState.settings.autoSaveEnabled = false;
+
+        app.setupAutoSave();
+
+        const stateChangedRegistration = /** @type {any} */ (on).mock.calls.find((call) => call[0] === EVENTS.STATE_CHANGED);
+        const stateChanged = stateChangedRegistration[1];
+        stateChanged();
+        vi.advanceTimersByTime(3000);
+
+        expect(mockSaveLayoutToBackend).not.toHaveBeenCalled();
+        expect(mockAppState.saveToLocalStorage).not.toHaveBeenCalled();
+        mockAppState.settings.autoSaveEnabled = true;
         vi.useRealTimers();
     });
 

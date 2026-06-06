@@ -126,4 +126,96 @@ describe('hardware_generator', () => {
         expect(yaml).toContain('#   mode: hex');
         expect(yaml).toContain('#   speed: 200MHz');
     });
+
+    it('emits MIPI DSI display dimensions without SPI-only control pins', () => {
+        const yaml = generateCustomHardwareYaml({
+            name: 'Tab Panel',
+            chip: 'esp32-p4',
+            tech: 'lcd',
+            resWidth: 1280,
+            resHeight: 720,
+            shape: 'rect',
+            psram: true,
+            displayDriver: 'mipi_dsi',
+            displayModel: 'M5STACK-TAB5-V2',
+            touchTech: 'st7123',
+            pins: {
+                clk: 'GPIO1',
+                mosi: 'GPIO2',
+                cs: 'GPIO3',
+                dc: 'GPIO4',
+                rst: 'GPIO5'
+            }
+        });
+
+        expect(yaml).toContain('platform: mipi_dsi');
+        expect(yaml).toContain('model: "M5STACK-TAB5-V2"');
+        expect(yaml).toContain('dimensions:');
+        expect(yaml).toContain('width: 1280');
+        expect(yaml).toContain('height: 720');
+        expect(yaml).toContain('reset_pin: GPIO5');
+        expect(yaml).not.toContain('spi:');
+        expect(yaml).not.toContain('cs_pin: GPIO3');
+        expect(yaml).not.toContain('dc_pin: GPIO4');
+    });
+
+    it('keeps MIPI SPI on the SPI bus and adds offset-aware dimensions', () => {
+        const yaml = generateCustomHardwareYaml({
+            name: 'Mini Clock',
+            chip: 'esp8266',
+            tech: 'lcd',
+            resWidth: 240,
+            resHeight: 240,
+            shape: 'rect',
+            psram: false,
+            displayDriver: 'mipi_spi',
+            displayModel: 'ST7789V',
+            touchTech: 'none',
+            pins: {
+                clk: 'GPIO14',
+                mosi: 'GPIO13',
+                dc: 'GPIO0',
+                rst: 'GPIO2',
+                backlight: 'GPIO5'
+            }
+        });
+
+        expect(yaml).toContain('spi:');
+        expect(yaml).toContain('clk_pin: GPIO14');
+        expect(yaml).toContain('platform: mipi_spi');
+        expect(yaml).toContain('model: "ST7789V"');
+        expect(yaml).toContain('dimensions:');
+        expect(yaml).toContain('offset_height: 0');
+        expect(yaml).toContain('offset_width: 0');
+        expect(yaml).toContain('dc_pin: GPIO0');
+        expect(yaml).toContain('reset_pin: GPIO2');
+    });
+
+    it('marks RGB-style panels as requiring panel-specific timing pins', () => {
+        const yaml = generateCustomHardwareYaml({
+            name: 'RGB Panel',
+            chip: 'esp32-s3',
+            tech: 'lcd',
+            resWidth: 800,
+            resHeight: 480,
+            shape: 'rect',
+            psram: true,
+            displayDriver: 'mipi_rgb',
+            displayModel: 'ESP32-S3-TOUCH-LCD-7-800X480',
+            touchTech: 'gt911',
+            pins: {
+                rst: 'GPIO3',
+                sda: 'GPIO8',
+                scl: 'GPIO9'
+            }
+        });
+
+        expect(yaml).toContain('platform: mipi_rgb');
+        expect(yaml).toContain('dimensions:');
+        expect(yaml).toContain('width: 800');
+        expect(yaml).toContain('height: 480');
+        expect(yaml).toContain('panel-specific de_pin');
+        expect(yaml).toContain('i2c:');
+        expect(yaml).toContain('platform: gt911');
+    });
 });

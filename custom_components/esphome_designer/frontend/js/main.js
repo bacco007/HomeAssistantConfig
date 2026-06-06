@@ -276,6 +276,11 @@ export class App {
 
             this.refreshAdapter();
 
+            if (AppState.settings.autoSaveEnabled === false) {
+                Logger.log('[AutoSave] Background saving is disabled.');
+                return;
+            }
+
             if (autoSaveTimer) {
                 clearTimeout(autoSaveTimer);
             }

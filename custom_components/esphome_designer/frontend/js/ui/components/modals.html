@@ -384,8 +384,12 @@
             </datalist>
 
             <div class="hardware-group" style="margin-top:12px;">
-              <div class="prop-label" style="font-size:10px; margin-bottom:4px;">Display (SPI)</div>
+              <div class="prop-label" style="font-size:10px; margin-bottom:4px;">Display Interface</div>
               <select id="customDisplayDriver" class="prop-input-sm" style="margin-bottom:8px;">
+                <option value="mipi_dsi">MIPI DSI (ESP32-P4)</option>
+                <option value="mipi_spi">MIPI SPI / DBI</option>
+                <option value="mipi_rgb">MIPI RGB</option>
+                <option value="st7701s">ST7701S (RGB/SPI init)</option>
                 <option value="st7789v">ST7789 (LCD)</option>
                 <option value="ili9341">ILI9341 (LCD)</option>
                 <option value="ili9342">ILI9342 (LCD)</option>
@@ -399,7 +403,7 @@
                 <div class="prop-label" style="font-size:10px;">Display Model</div>
                 <input id="customDisplayModel" class="prop-input-sm" type="text" placeholder="e.g. 7.50inV2"
                   list="waveshare_models" />
-                <div style="font-size:9px; color:var(--muted);">Required for Waveshare E-Paper</div>
+                <div style="font-size:9px; color:var(--muted);">Required for many e-paper and MIPI panels</div>
 
                 <datalist id="waveshare_models">
                   <option value="1.54in">1.54"</option>
@@ -494,6 +498,7 @@
                 <option value="gt911">GT911 (I2C)</option>
                 <option value="cst816">CST816 (I2C)</option>
                 <option value="ft5x06">FT5x06 (I2C)</option>
+                <option value="st7123">ST7123 (I2C)</option>
                 <option value="xpt2046">XPT2046 (SPI)</option>
               </select>
               <div id="touchPinsGrid" style="display:none; grid-template-columns:1fr 1fr; gap:6px;">
@@ -1026,6 +1031,12 @@
             <div class="prop-label">Interface Theme</div>
             <label style="display:flex; align-items:center; gap:8px; cursor: pointer;">
               <input type="checkbox" id="editorLightMode"> <span>Use Light Mode interface</span>
+            </label>
+          </div>
+          <div class="field">
+            <div class="prop-label">Saving</div>
+            <label style="display:flex; align-items:center; gap:8px; cursor: pointer;">
+              <input type="checkbox" id="editorAutoSave" checked> <span>Automatically save layout changes</span>
             </label>
           </div>
         </div>

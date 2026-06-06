@@ -297,6 +297,40 @@ describe('Entity Deduplication & Registration', () => {
             expect(result).toContain('  entity_id: light.living_room');
         });
 
+        it('keeps imported native LVGL buttons as one HA switch definition per entity', () => {
+            const pages = [{
+                widgets: [
+                    {
+                        id: 'w_water_koud_btn',
+                        type: 'lvgl_button',
+                        entity_id: 'switch.overkapping_water_koud_1057',
+                        props: {
+                            entity_id: 'switch.overkapping_water_koud_1057',
+                            sync_state: true
+                        }
+                    },
+                    {
+                        id: 'w_water_warm_btn',
+                        type: 'lvgl_button',
+                        entity_id: 'switch.overkapping_water_warm_1058',
+                        props: {
+                            entity_id: 'switch.overkapping_water_warm_1058',
+                            sync_state: true
+                        }
+                    }
+                ]
+            }];
+
+            const binaryResult = collectBinarySensors(pages, context);
+            const switchResult = collectHomeAssistantSwitches(pages, context);
+            const switchYaml = switchResult.join('\n');
+
+            expect(binaryResult).toEqual([]);
+            expect((switchYaml.match(/entity_id: switch\.overkapping_water_koud_1057/g) || [])).toHaveLength(1);
+            expect((switchYaml.match(/entity_id: switch\.overkapping_water_warm_1058/g) || [])).toHaveLength(1);
+            expect(switchResult.filter((line) => line.trim() === '- platform: homeassistant')).toHaveLength(2);
+        });
+
         it('registers standalone custom on_state trigger switch entities as switches', () => {
             const pages = [{
                 widgets: [{

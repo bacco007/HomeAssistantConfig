@@ -21,6 +21,7 @@ const mockLogger = {
 const mockAppState = {
     settings: {
         editor_light_mode: false,
+        autoSaveEnabled: true,
         grid_opacity: 30,
         glyphsets: ['GF_Latin_Kernel'],
         ai_provider: 'gemini',
@@ -80,6 +81,7 @@ describe('EditorSettings', () => {
             <input id="editorSnapToGrid" type="checkbox" />
             <input id="editorShowGrid" type="checkbox" />
             <input id="editorLightMode" type="checkbox" />
+            <input id="editorAutoSave" type="checkbox" />
             <button id="editorRefreshEntities">Refresh</button>
             <div id="editorEntityCount"></div>
             <input id="editorGridOpacity" type="range" value="20" />
@@ -145,6 +147,7 @@ describe('EditorSettings', () => {
         expect(document.getElementById('haManualUrl').value).toBe('http://ha.local:8123');
         expect(document.getElementById('haLlatToken').value).toBe('token123');
         expect(document.getElementById('editorEntityCount').textContent).toContain('entities cached');
+        expect(document.getElementById('editorAutoSave').checked).toBe(true);
     });
 
     it('handles close actions', () => {
@@ -172,6 +175,11 @@ describe('EditorSettings', () => {
         light.dispatchEvent(new Event('change'));
         expect(mockAppState.updateSettings).toHaveBeenCalledWith({ editor_light_mode: true });
         expect(mockEmit).toHaveBeenCalled();
+
+        const autoSave = document.getElementById('editorAutoSave');
+        autoSave.checked = false;
+        autoSave.dispatchEvent(new Event('change'));
+        expect(mockAppState.updateSettings).toHaveBeenCalledWith({ autoSaveEnabled: false });
     });
 
     it('handles grid opacity and HA settings changes', () => {

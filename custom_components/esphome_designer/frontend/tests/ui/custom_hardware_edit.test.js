@@ -48,6 +48,33 @@ switch:
     id: battery_enable
     pin: GPIO21
             `
+        },
+        'custom_mipi_tab': {
+            id: 'custom_mipi_tab',
+            isCustomProfile: true,
+            name: 'MIPI Tab',
+            chip: 'esp32-p4',
+            shape: 'rect',
+            resolution: { width: 1280, height: 720 },
+            features: {
+                psram: true,
+                epaper: false,
+                lcd: true,
+                touch: true
+            },
+            displayModel: 'M5STACK-TAB5-V2',
+            displayPlatform: 'mipi_dsi',
+            content: `
+display:
+  - platform: mipi_dsi
+    id: my_display
+    model: M5STACK-TAB5-V2
+    dimensions: {width: 1280, height: 720}
+    reset_pin: GPIO5
+touchscreen:
+  - platform: st7123
+    interrupt_pin: GPIO23
+            `
         }
     }
 }));
@@ -60,16 +87,19 @@ describe('CustomHardwarePanel.loadFromProfile', () => {
         document.body.innerHTML = `
             <div id="customHardwareSection"></div>
             <input id="customProfileName" />
-            <select id="customChip"><option value="esp32-s3">esp32-s3</option></select>
+            <select id="customChip"><option value="esp32-s3">esp32-s3</option><option value="esp32-p4">esp32-p4</option></select>
             <select id="customTech"><option value="lcd">lcd</option></select>
             <input id="customRes" />
             <select id="customResPreset"><option value="480x480">480x480</option></select>
             <select id="customShape"><option value="round">round</option></select>
             <input type="checkbox" id="customPsram" />
-            <select id="customDisplayDriver"><option value="st7701s">st7701s</option></select>
+            <select id="customDisplayDriver">
+                <option value="st7701s">st7701s</option>
+                <option value="mipi_dsi">mipi_dsi</option>
+            </select>
             <input id="customDisplayModel" />
             <div id="customDisplayModelField"></div>
-            <select id="customTouchTech"><option value="cst816">cst816</option></select>
+            <select id="customTouchTech"><option value="cst816">cst816</option><option value="st7123">st7123</option></select>
             <div id="touchPinsGrid"></div>
             <div id="customProfileEditIndicator"></div>
             <button id="saveCustomProfileBtn">Save Profile</button>
@@ -152,5 +182,18 @@ output:
         expect(extractYamlPin(yaml, /cs_pin:\s*(GPIO\d+)/i)).toBe('GPIO10');
         expect(extractYamlTopLevelBlock(yaml, 'touchscreen')).toContain('reset_pin: GPIO5');
         expect(extractYamlTopLevelBlock(yaml, 'output')).toContain('pin: GPIO45');
+    });
+
+    it('loads MIPI DSI profiles without flattening them to SPI defaults', () => {
+        panel.loadFromProfile('custom_mipi_tab');
+
+        expect(panel.customChip.value).toBe('esp32-p4');
+        expect(panel.customDisplayDriver.value).toBe('mipi_dsi');
+        expect(panel.customDisplayModel.value).toBe('M5STACK-TAB5-V2');
+        expect(panel.customRes.value).toBe('1280x720');
+        expect(panel.customTouchTech.value).toBe('st7123');
+        expect(document.getElementById('pin_rst').value).toBe('GPIO5');
+        expect(document.getElementById('pin_touch_int').value).toBe('GPIO23');
+        expect(panel.customDisplayModelField.style.display).toBe('block');
     });
 });

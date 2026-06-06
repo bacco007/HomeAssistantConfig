@@ -20,6 +20,9 @@ export function generateCustomHardwareYaml(config) {
     } = config;
 
     const lines = [];
+    const driver = displayDriver || "st7789v";
+    const isMipiDsi = driver === "mipi_dsi";
+    const usesDimensionsBlock = driver === "mipi_dsi" || driver === "mipi_spi" || driver === "mipi_rgb" || driver === "st7701s";
 
     // Metadata Header
     lines.push("# ============================================================================");
@@ -32,7 +35,7 @@ export function generateCustomHardwareYaml(config) {
     const isUnsupported = unsupportedChips.some(c => (chip || "").toLowerCase().includes(c));
     const effectivePsram = psram && !isUnsupported;
 
-    lines.push(`#         - Display Platform: ${displayDriver || "Unknown"}`);
+    lines.push(`#         - Display Platform: ${driver || "Unknown"}`);
     lines.push(`#         - Touchscreen: ${touchTech || "None"}`);
     lines.push(`#         - PSRAM: ${effectivePsram ? 'Yes' : 'No'}`);
     lines.push("# ============================================================================");
@@ -122,7 +125,7 @@ export function generateCustomHardwareYaml(config) {
     }
 
     // SPI Bus (Common for most displays)
-    if (pins.clk && pins.mosi) {
+    if (!isMipiDsi && pins.clk && pins.mosi) {
         lines.push("spi:");
         lines.push(`  clk_pin: ${pins.clk}`);
         lines.push(`  mosi_pin: ${pins.mosi}`);
@@ -144,30 +147,44 @@ export function generateCustomHardwareYaml(config) {
     const isLcdTech = config.tech === 'lcd' || (!config.tech);
     const displayIdValue = isLcdTech ? 'my_display' : 'epaper_display';
     lines.push("display:");
-    lines.push(`  - platform: ${displayDriver}`);
+    lines.push(`  - platform: ${driver}`);
     lines.push(`    id: ${displayIdValue}`);
-    if (pins.cs) lines.push(`    cs_pin: ${pins.cs}`);
-    if (pins.dc) lines.push(`    dc_pin: ${pins.dc}`);
+    if (!isMipiDsi && pins.cs) lines.push(`    cs_pin: ${pins.cs}`);
+    if (!isMipiDsi && pins.dc) lines.push(`    dc_pin: ${pins.dc}`);
     if (pins.rst) lines.push(`    reset_pin: ${pins.rst}`);
-    if (pins.busy) lines.push(`    busy_pin: ${pins.busy}`);
+    if (!isMipiDsi && pins.busy) lines.push(`    busy_pin: ${pins.busy}`);
 
     // Model specific configuration
     if (config.displayModel) {
         lines.push(`    model: "${config.displayModel}"`);
     }
 
+    if (usesDimensionsBlock) {
+        lines.push("    dimensions:");
+        lines.push(`      width: ${resWidth}`);
+        lines.push(`      height: ${resHeight}`);
+        if (driver === "mipi_spi") {
+            lines.push("      offset_height: 0");
+            lines.push("      offset_width: 0");
+        }
+    }
+
     // Resolution specifics (often handled by the designer but useful in template)
     // For many drivers, we need model or specific init
-    if (displayDriver === "st7789v" && !config.displayModel) {
+    if (driver === "st7789v" && !config.displayModel) {
         lines.push("    model: Custom");
         lines.push(`    width: ${resWidth}`);
         lines.push(`    height: ${resHeight}`);
         lines.push("    offset_height: 0");
         lines.push("    offset_width: 0");
-    } else if (displayDriver === "st7789v") {
+    } else if (driver === "st7789v") {
         // If model IS provided for st7789v (rare but possible custom), still might need dims
         lines.push(`    width: ${resWidth}`);
         lines.push(`    height: ${resHeight}`);
+    }
+
+    if (driver === "mipi_rgb" || driver === "st7701s") {
+        lines.push("    # TODO: Add panel-specific de_pin, hsync_pin, vsync_pin, pclk_pin, timings, and data_pins.");
     }
 
     // Rotation Logic
@@ -305,4 +322,3 @@ function getBoardForChip(chip) {
         default: return 'esp32-s3-devkitc-1';
     }
 }
-

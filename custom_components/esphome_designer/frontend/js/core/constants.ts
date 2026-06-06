@@ -72,6 +72,7 @@ export const DEFAULT_PREFERENCES = {
     showGrid: true,
     showDebugGrid: false,
     showRulers: false,
+    autoSaveEnabled: true,
     gridOpacity: 8,
     editor_light_mode: false,
     aiProvider: "gemini",
@@ -143,7 +144,7 @@ export const DEFAULT_CANVAS_HEIGHT = 480;
 
 // Initialize global namespace
 (window as any).ESPHomeDesigner = (window as any).ESPHomeDesigner || {
-    version: "1.0.0-rc.16",
+    version: "1.0.0-rc.19",
     constants: {
         COLORS,
         UI_DEFAULTS,

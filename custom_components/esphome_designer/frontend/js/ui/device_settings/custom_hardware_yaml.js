@@ -88,9 +88,11 @@ export function extractTouchPlatform(yaml) {
  * @returns {string}
  */
 export function resolveProfileDisplayDriver(profile) {
+    const content = profile.content || "";
     let driver = profile.displayPlatform || "st7789v";
-    if (profile.content && profile.content.includes("platform: st7789v")) {
-        driver = "st7789v";
+    const platformMatch = content.match(/display:[\s\S]*?-\s*platform:\s*([a-z0-9_]+)/i);
+    if (platformMatch?.[1]) {
+        driver = platformMatch[1].trim();
     }
     return driver;
 }

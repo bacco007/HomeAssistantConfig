@@ -49,6 +49,7 @@ export class EditorSettings {
         this.snapToGrid = getInput('editorSnapToGrid');
         this.showGrid = getInput('editorShowGrid');
         this.lightMode = getInput('editorLightMode');
+        this.autoSave = getInput('editorAutoSave');
         this.refreshEntitiesBtn = getButton('editorRefreshEntities');
         this.entityCountLabel = getElement('editorEntityCount');
         this.gridOpacity = getInput('editorGridOpacity');
@@ -101,6 +102,10 @@ export class EditorSettings {
 
         if (this.lightMode) {
             this.lightMode.checked = !!settings.editor_light_mode;
+        }
+
+        if (this.autoSave) {
+            this.autoSave.checked = settings.autoSaveEnabled !== false;
         }
 
         if (this.aiProvider) this.aiProvider.value = settings.ai_provider || "gemini";
@@ -200,6 +205,13 @@ export class EditorSettings {
                 AppState.updateSettings({ editor_light_mode: isLight });
                 this.applyEditorTheme(isLight);
                 emit(EVENTS.STATE_CHANGED);
+            });
+        }
+
+        const autoSave = this.autoSave;
+        if (autoSave) {
+            autoSave.addEventListener('change', () => {
+                AppState.updateSettings({ autoSaveEnabled: autoSave.checked });
             });
         }
 

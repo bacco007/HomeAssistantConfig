@@ -1,14 +1,17 @@
 import { AppState } from '../../core/state';
 import { extractProfilePins, extractTouchPlatform, resolveProfileDisplayDriver } from './custom_hardware_yaml.js';
 
+const MIPI_DISPLAY_DRIVERS = new Set(['mipi_dsi', 'mipi_spi', 'mipi_rgb']);
+
 /**
  * @param {any} panel
  * @returns {void}
  */
 export function updateDisplayModelVisibility(panel) {
     if (panel.customDisplayModelField && panel.customDisplayDriver) {
-        const isWaveshare = panel.customDisplayDriver.value === 'waveshare_epaper';
-        panel.customDisplayModelField.style.display = isWaveshare ? 'block' : 'none';
+        const driver = panel.customDisplayDriver.value;
+        const needsModel = driver === 'waveshare_epaper' || MIPI_DISPLAY_DRIVERS.has(driver);
+        panel.customDisplayModelField.style.display = needsModel ? 'block' : 'none';
     }
 }
 
@@ -117,7 +120,9 @@ export function populateCustomHardwareFields(panel, customHardware) {
     }
     if (panel.customShape) panel.customShape.value = customHardware.shape || "rect";
     if (panel.customPsram) panel.customPsram.checked = !!customHardware.psram;
-    if (panel.customDisplayDriver) panel.customDisplayDriver.value = customHardware.displayDriver || "generic_st7789";
+    if (panel.customDisplayDriver) {
+        panel.customDisplayDriver.value = customHardware.displayDriver || "st7789v";
+    }
     if (panel.customDisplayModel) panel.customDisplayModel.value = customHardware.displayModel || "";
 
     updateDisplayModelVisibility(panel);
