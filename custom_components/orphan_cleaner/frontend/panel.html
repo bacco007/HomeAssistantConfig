@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orphan Entity Cleaner</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #f5f6f8;
+    --surface:   #ffffff;
+    --surface2:  #f0f1f3;
+    --border:    rgba(0,0,0,0.10);
+    --border2:   rgba(0,0,0,0.18);
+    --text:      #1a1a1a;
+    --text2:     #5f6368;
+    --text3:     #9aa0a6;
+    --green:     #1D9E75;
+    --green-dk:  #0F6E56;
+    --green-lt:  #E1F5EE;
+    --green-tx:  #085041;
+    --red:       #A32D2D;
+    --red-dk:    #791F1F;
+    --red-lt:    #FCEBEB;
+    --red-tx:    #501313;
+    --amber-lt:  #FAEEDA;
+    --amber-tx:  #633806;
+    --blue-lt:   #E6F1FB;
+    --blue-tx:   #0C447C;
+    --radius:    10px;
+    --radius-sm: 6px;
+    --mono:      'SFMono-Regular','Consolas','Liberation Mono',monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:       #111213;
+      --surface:  #1e1f21;
+      --surface2: #2a2b2d;
+      --border:   rgba(255,255,255,0.09);
+      --border2:  rgba(255,255,255,0.16);
+      --text:     #e8eaed;
+      --text2:    #9aa0a6;
+      --text3:    #5f6368;
+      --green-lt: #04342C;
+      --green-tx: #9FE1CB;
+      --red-lt:   #501313;
+      --red-tx:   #F7C1C1;
+      --amber-lt: #412402;
+      --amber-tx: #FAC775;
+      --blue-lt:  #042C53;
+      --blue-tx:  #B5D4F4;
+    }
+  }
+
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+
+  .topbar { background: var(--surface); border-bottom: 0.5px solid var(--border);
+    padding: 0 20px; height: 52px; display: flex; align-items: center; gap: 10px;
+    position: sticky; top: 0; z-index: 10; }
+  .topbar-icon { width: 30px; height: 30px; background: var(--green); border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .topbar-icon svg { width: 16px; height: 16px; fill: white; }
+  .topbar-title { font-size: 15px; font-weight: 500; }
+  .topbar-sub   { font-size: 11px; color: var(--text2); margin-top: 1px; }
+  .topbar-spacer { flex: 1; }
+
+  .main { padding: 20px; max-width: 980px; margin: 0 auto; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; margin-bottom: 12px; }
+  .stat { background: var(--surface2); border-radius: var(--radius-sm); padding: 7px 14px;
+    display: flex; align-items: center; gap: 10px; }
+  .s-label { font-size: 12px; font-weight: 500; color: var(--primary-text-color, #ffffff);
+    text-transform: uppercase; letter-spacing: 0.03em; flex: 1; }
+  .s-val   { font-size: 22px; font-weight: 700; }
+  .s-danger .s-val { color: var(--red); }
+  .s-ok    .s-val  { color: var(--green); }
+  .s-warn  .s-val  { color: #BA7517; }
+
+  .toolbar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
+  button { font-family: inherit; font-size: 13px; border: 0.5px solid var(--border2);
+    background: var(--surface); color: var(--text); border-radius: var(--radius-sm);
+    padding: 7px 14px; cursor: pointer; white-space: nowrap; transition: background 0.1s; }
+  button:hover:not(:disabled)   { background: var(--surface2); }
+  button:active:not(:disabled)  { transform: scale(0.98); }
+  button:disabled { opacity: 0.38; cursor: default; }
+  .btn-primary { background: var(--green); border-color: var(--green); color: #fff; font-weight: 500; }
+  .btn-primary:hover:not(:disabled) { background: var(--green-dk); }
+  .btn-danger  { background: var(--red);   border-color: var(--red);   color: #fff; font-weight: 500; }
+  .btn-danger:hover:not(:disabled)  { background: var(--red-dk); }
+
+  .search { flex: 1; min-width: 200px; border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 7px 12px; font-size: 13px; font-family: inherit;
+    background: var(--surface); color: var(--text); }
+  .search:focus { outline: none; border-color: var(--border2); }
+  .search::placeholder { color: var(--text3); }
+
+  .card { background: var(--surface); border: 0.5px solid var(--border);
+    border-radius: var(--radius); overflow: hidden; margin-bottom: 14px; }
+  .card-header { padding: 11px 16px; border-bottom: 0.5px solid var(--border);
+    display: flex; align-items: center; gap: 10px; background: var(--surface2); }
+  .ch-title { font-size: 13px; font-weight: 500; flex: 1; }
+  .ch-meta  { font-size: 11px; color: var(--text2); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th { padding: 8px 14px; text-align: left; font-size: 11px; font-weight: 500;
+    color: var(--text2); text-transform: uppercase; letter-spacing: 0.03em;
+    border-bottom: 0.5px solid var(--border); background: var(--surface2); white-space: nowrap; }
+  thead th.sortable { cursor: pointer; user-select: none; }
+  thead th.sortable:hover { color: var(--text1); }
+  thead th.sort-asc::after  { content: ' ↑'; opacity: 0.8; }
+  thead th.sort-desc::after { content: ' ↓'; opacity: 0.8; }
+  .th-chk   { width: 38px; text-align: center; }
+  .th-age   { width: 90px; }
+  .th-method{ width: 170px; }
+  tbody tr  { border-bottom: 0.5px solid var(--border); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface2); }
+  tbody td  { padding: 9px 14px; vertical-align: middle; }
+  .td-chk   { text-align: center; }
+
+  .eid { font-family: var(--mono); font-size: 12px; word-break: break-all; }
+  .platform-badge { display: inline-block; background: var(--surface2); border: 0.5px solid var(--border);
+    border-radius: 4px; padding: 2px 7px; font-size: 11px; color: var(--text2); white-space: nowrap; }
+  .badge { display: inline-block; border-radius: 4px; padding: 2px 8px; font-size: 11px; white-space: nowrap; }
+  .badge-ts        { background: var(--green-lt); color: var(--green-tx); }
+  .badge-heuristic { background: var(--amber-lt); color: var(--amber-tx); }
+  .badge-disabled  { background: var(--blue-lt);  color: var(--blue-tx); margin-left: 4px; }
+  .age-text { font-size: 12px; color: var(--text2); }
+  input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; accent-color: var(--green); }
+
+  .empty { padding: 48px 20px; text-align: center; color: var(--text2); }
+  .empty svg { width: 40px; height: 40px; fill: var(--text3); margin-bottom: 12px; }
+  .empty p    { font-size: 14px; }
+  .empty-hint { font-size: 12px; color: var(--text3); margin-top: 6px; }
+
+  .log-box { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius);
+    padding: 12px 16px; font-family: var(--mono); font-size: 12px; color: var(--text2);
+    max-height: 200px; overflow-y: auto; line-height: 1.8; margin-bottom: 14px; }
+  .log-line.ok   { color: var(--green); }
+  .log-line.err  { color: var(--red); }
+  .log-line.warn { color: #BA7517; }
+  .log-line.info { color: var(--text2); }
+
+  .statusbar { font-size: 11px; color: var(--text3); padding: 0 2px 14px;
+    display: flex; gap: 10px; align-items: center; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
+  .dot.ok  { background: var(--green); }
+  .dot.err { background: var(--red); }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid var(--border2);
+    border-top-color: var(--green); border-radius: 50%; animation: spin 0.7s linear infinite;
+    vertical-align: middle; margin-right: 6px; }
+
+  .overlay-wrap { background: rgba(0,0,0,0.45); display: none; align-items: center;
+    justify-content: center; padding: 40px 20px; min-height: 100vh; position: fixed;
+    inset: 0; z-index: 100; }
+  .overlay-wrap.show { display: flex; }
+  .modal { background: var(--surface); border: 0.5px solid var(--border2);
+    border-radius: var(--radius); padding: 24px 28px; max-width: 420px; width: 100%; }
+  .modal h2 { font-size: 16px; font-weight: 500; margin-bottom: 10px; }
+  .modal p  { font-size: 13px; color: var(--text2); margin-bottom: 20px; line-height: 1.6; }
+  .modal-btns { display: flex; gap: 8px; justify-content: flex-end; }
+
+  .info-card { background: var(--surface); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 16px 20px; margin-bottom: 14px; }
+  .info-card h3 { font-size: 13px; font-weight: 500; margin-bottom: 10px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.04em; }
+  .service-row  { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+  .service-row:last-child { margin-bottom: 0; }
+  .svc-name { font-family: var(--mono); font-size: 12px; background: var(--surface2);
+    border: 0.5px solid var(--border); border-radius: 4px; padding: 3px 8px;
+    white-space: nowrap; flex-shrink: 0; color: var(--green-dk); }
+  @media (prefers-color-scheme: dark) { .svc-name { color: var(--green-tx); } }
+  .svc-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+  .ctrl-bar { display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    background:var(--surface2); border:0.5px solid var(--border);
+    border-radius:var(--radius); padding:10px 16px; margin-bottom:12px;
+    font-size:13px; }
+  .ctrl-bar label { display:flex; align-items:center; gap:5px; cursor:pointer; }
+  .ctrl-sep { width:1px; height:18px; background:var(--border2); }
+  .ctrl-bar input[type=number] { width:62px; border:0.5px solid var(--border2); border-radius:var(--radius-sm); padding:5px 9px; font-size:13px; background:var(--surface); color:var(--text); text-align:center; }
+
+  .ignore-tag { display:inline-flex; align-items:center; gap:4px;
+    background:var(--surface2); border:0.5px solid var(--border2);
+    border-radius:99px; padding:2px 9px; font-size:11px; color:var(--text2); }
+  .ignore-tag-x { cursor:pointer; opacity:0.5; font-size:13px; line-height:1; }
+  .ignore-tag-x:hover { opacity:1; }
+  .ctrl-bar input[type=text] { width:120px; border:0.5px solid var(--border2); border-radius:var(--radius-sm); padding:5px 9px; font-size:13px; background:var(--surface); color:var(--text); }
+  .ctrl-bar button.btn-add { font-size:11px; padding:3px 9px; }
+  tr.ignored { opacity:0.35; pointer-events:none; user-select:none; }
+  .breakdown { display:none; font-size:11px; color:var(--text2); padding:4px 14px 6px;
+    gap:12px; flex-wrap:wrap; }
+  .breakdown.show { display:flex; }
+  .breakdown span { white-space:nowrap; }
+  .bd-dead { color:var(--text2); }
+  .bd-unav { color:#38bdf8; }
+  .bd-ts   { color:#e879f9; }
+  .bd-heur { color:#d4a017; }
+  .diff-banner { display:none; align-items:center; gap:12px; flex-wrap:wrap;
+    background:var(--surface2); border-radius:var(--radius-sm); padding:7px 14px;
+    margin-bottom:8px; font-size:12px; color:var(--text2); }
+  .diff-banner.show { display:flex; }
+  .diff-new  { color:#22c55e; font-weight:600; }
+  .diff-gone { color:#ef4444; font-weight:600; }
+  .diff-same { color:var(--text3); }
+  .badge-new { background:#78350f; color:#fcd34d; border-radius:4px;
+    padding:1px 6px; font-size:10px; margin-left:5px; font-weight:600; }
+  tr.ignored td { color:var(--text3); }
+  .ignore-section { background:var(--surface2); border-radius:var(--radius-sm); margin-bottom:8px; overflow:hidden; }
+  .ignore-header { display:flex; align-items:center; justify-content:space-between;
+    padding:7px 14px; cursor:pointer; user-select:none; font-size:13px; font-weight:500;
+    color:var(--primary-text-color, #ffffff); }
+  .ignore-header:hover { background:rgba(255,255,255,.03); }
+  .ignore-badge { background:rgba(46,204,113,.15); color:#2ecc71; border-radius:99px;
+    font-size:10px; padding:1px 7px; margin-left:6px; }
+  .ignore-arrow { font-size:12px; color:var(--primary-text-color, #ffffff); opacity:0.6; transition:transform .2s; margin-left:auto; }
+  .ignore-arrow.open { transform:rotate(180deg); }
+  .ignore-body { border-top:.5px solid var(--border2); padding:8px 14px 10px; display:none; }
+  .ignore-body.open { display:block; }
+  .ignore-hint { font-size:12px; color:var(--primary-text-color, #ffffff); opacity:0.7; margin-bottom:8px; }
+  .ignore-input-row { display:flex; align-items:center; gap:6px; margin-bottom:7px; }
+  .ignore-input-row input[type=text] { width:150px; border:0.5px solid var(--border2); border-radius:var(--radius-sm); padding:5px 9px; font-size:13px; background:var(--surface); color:var(--text); }
+  .ignore-saved-tags { display:flex; flex-wrap:wrap; gap:5px; min-height:18px; align-items:center; }
+  .tag-saved { background:rgba(46,204,113,.12); border:.5px solid rgba(46,204,113,.3);
+    border-radius:99px; padding:2px 9px; font-size:11px; color:#2ecc71;
+    display:inline-flex; align-items:center; gap:4px; }
+  .btn-save-list { background:rgba(46,204,113,.15); border:.5px solid rgba(46,204,113,.3);
+    border-radius:var(--radius-sm); color:#2ecc71; font-size:11px; padding:3px 10px; cursor:pointer; }
+  .btn-save-list:hover { background:rgba(46,204,113,.25); }
+  .save-ok { font-size:11px; color:#2ecc71; opacity:0; transition:opacity .4s; margin-left:4px; }
+  .dry-run-wrap { display:flex; align-items:center; gap:6px; font-size:12px;
+    color:var(--text2); white-space:nowrap; }
+  .dry-run-wrap input[type=checkbox] { accent-color:#f59e0b; width:14px; height:14px; cursor:pointer; }
+  .dry-banner { display:none; background:rgba(245,158,11,.12); border:.5px solid rgba(245,158,11,.4);
+    border-radius:var(--radius-sm); padding:7px 14px; margin-bottom:8px;
+    font-size:12px; color:#f59e0b; }
+  .dry-banner.show { display:block; }
+  .btn-save-del { background:#7a5200; border:none;
+    border-radius:var(--radius-sm); color:#f5c842; font-size:13px; font-weight:500;
+    padding:7px 13px; cursor:pointer; white-space:nowrap; }
+  .btn-save-del:hover:not(:disabled) { background:#8f6100; }
+  .btn-save-del:disabled { opacity:0.4; cursor:not-allowed; }
+
+  @media (max-width: 600px) {
+    .stat-row { grid-template-columns: 1fr 1fr; }
+    .topbar-sub { display: none; }
+    .th-method, .td-method { display: none; }
+    .th-age,    .td-age    { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+
+<div class="main">
+
+  <!-- Stats -->
+  <div class="stat-row">
+    <div class="stat">          <div class="s-label">Total entities</div>  <div class="s-val" id="s-total">—</div></div>
+    <div class="stat">           <div class="s-label">Orphans found</div>   <div class="s-val" id="s-orphan">—</div></div>
+    <div class="stat">           <div class="s-label">Heuristic</div>       <div class="s-val" id="s-heur">—</div></div>
+    <div class="stat">           <div class="s-label">Selected</div>        <div class="s-val" id="s-sel">—</div></div>
+  </div>
+
+  <!-- Breakdown by detection method -->
+  <div class="breakdown" id="breakdown">
+    <span class="bd-dead" id="bd-dead">0 dead entry</span>
+    <span style="color:var(--text3)">·</span>
+    <span class="bd-unav" id="bd-unav">0 unavailable</span>
+    <span style="color:var(--text3)">·</span>
+    <span class="bd-ts"   id="bd-ts">0 timestamp</span>
+    <span style="color:var(--text3)">·</span>
+    <span class="bd-heur" id="bd-heur">0 heuristic</span>
+  </div>
+
+  <!-- Controls -->
+  <div class="ctrl-bar">
+    <label><input type="checkbox" id="heur-on" onchange="if(allOrphans.length) doScan()"> Heuristic</label>
+    <div class="ctrl-sep"></div>
+    <span style="color:var(--text2)">Min age (h)</span>
+    <input type="number" id="min-age" value="24" min="1" max="720">
+    <div class="ctrl-sep"></div>
+    <span style="color:var(--text2)">Ignore platforms</span>
+    <input type="text" id="ignore-input" placeholder="es. tuya, zha…">
+    <button class="btn-add" onclick="ignoreAdd()">+ Add</button>
+    <div id="ignore-tags" style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;"></div>
+  </div>
+
+  <!-- Default ignore list — persistent -->
+  <div class="ignore-section">
+    <div class="ignore-header" onclick="toggleIgnoreSection()">
+      <span>⚙ Default ignore list</span>
+      <span class="ignore-badge" id="saved-badge">0 saved</span>
+      <span class="ignore-arrow" id="ignore-arrow">▼</span>
+    </div>
+    <div class="ignore-body" id="ignore-body">
+      <div class="ignore-hint">
+        Supports platforms (<code>tuya</code>), platform globs (<code>imou_*</code>) and entity globs (<code>sensor.old_*</code>).
+        Pre-loaded on every scan. <a href="#" onclick="showGlobHelp();return false;" style="color:var(--text3);font-size:10px;">?</a>
+      </div>
+      <div class="ignore-input-row">
+        <input type="text" id="saved-ig-input" placeholder="platform or glob…" />
+        <button class="btn" onclick="savedIgAdd()" style="padding:3px 9px;font-size:11px;">+ Add</button>
+      </div>
+      <div class="ignore-saved-tags" id="saved-ig-tags"></div>
+    </div>
+  </div>
+
+  <!-- Diff banner -->
+  <div class="diff-banner" id="diff-banner">
+    <span>vs previous scan:</span>
+    <span class="diff-new"  id="diff-new">0 new</span>
+    <span class="diff-gone" id="diff-gone">0 gone</span>
+    <span class="diff-same" id="diff-same">0 unchanged</span>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <button class="btn-primary" id="btn-scan" onclick="doScan()">Scan</button>
+    <button id="btn-selall" onclick="selAll()"   disabled>Select all</button>
+    <button id="btn-desel"  onclick="deselAll()" disabled>Deselect</button>
+    <select id="method-filter" onchange="applyFilter()" disabled
+            style="background:var(--surface2);border:.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:13px;padding:6px 8px;cursor:pointer;">
+      <option value="">All methods</option>
+      <option value="dead_entry">Dead entry</option>
+      <option value="unavailable">Unavailable</option>
+      <option value="timestamp">Timestamp</option>
+      <option value="heuristic">Heuristic</option>
+    </select>
+    <input  class="search" type="text" placeholder="Filter by entity_id or platform…"
+            id="filter" oninput="applyFilter()" disabled>
+    <label class="dry-run-wrap" title="Simulate deletion without removing anything">
+      <input type="checkbox" id="dry-run-toggle" onchange="onDryRunToggle()"> Dry run
+    </label>
+    <button class="btn-danger" id="btn-del" onclick="confirmDelete()" disabled>Delete selected</button>
+    <button class="btn-save-del" id="btn-save-del" onclick="confirmSaveDelete()" disabled title="Save a backup JSON before deleting">Save &amp; Delete</button>
+  </div>
+  <div class="dry-banner" id="dry-banner">
+    🔍 <strong>Dry run mode</strong> — deletion will be simulated, nothing will actually be removed.
+  </div>
+
+  <!-- Table card -->
+  <div class="card">
+    <div class="card-header">
+      <span class="ch-title" id="tbl-title">No scan performed yet</span>
+      <span class="ch-meta"  id="tbl-meta"></span>
+    </div>
+    <div id="tbl-wrap">
+      <div class="empty">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <p>Press <strong>Scan</strong> to search for orphan entities.</p>
+        <div class="empty-hint">Scanning is non-destructive: you can review results before deleting.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="statusbar">
+    <div class="dot" id="dot"></div>
+    <span id="status-txt">Waiting for scan</span>
+  </div>
+
+  <!-- Log -->
+  <div class="log-box" id="log-box"></div>
+
+  <!-- Services info -->
+  <div class="info-card">
+    <h3>Available services</h3>
+    <div class="service-row">
+      <span class="svc-name">orphan_cleaner.scan</span>
+      <span class="svc-desc">Runs the scan and fires the <code>orphan_cleaner_orphans_found</code> event — useful in automations.</span>
+    </div>
+    <div class="service-row">
+      <span class="svc-name">orphan_cleaner.delete_orphans</span>
+      <span class="svc-desc">Deletes entities specified in <code>entity_ids</code>, or all orphans if omitted. Supports <code>dry_run: true</code>.</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Confirm modal -->
+<div class="overlay-wrap" id="overlay">
+  <div class="modal">
+    <h2>Confirm deletion</h2>
+    <p id="modal-msg"></p>
+    <div class="modal-btns">
+      <button onclick="closeModal()">Cancel</button>
+      <button class="btn-danger" id="btn-modal-del" onclick="doDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let allOrphans       = [];
+let sortField        = null;   // campo corrente di ordinamento
+let sortDir          = 1;      // 1 = asc, -1 = desc
+let previousOrphans  = [];   // snapshot della scan precedente
+let selected         = new Set();
+let ignorePlatforms  = new Set();
+
+function ignoreAdd() {
+  const inp = document.getElementById('ignore-input');
+  const val = inp.value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+  if (!val) return;
+  if (ignorePlatforms.has(val)) { inp.value = ''; return; }
+  ignorePlatforms.add(val);
+  inp.value = '';
+  renderIgnoreTags();
+  applyIgnore();
+}
+function ignoreRemove(val) {
+  ignorePlatforms.delete(val);
+  renderIgnoreTags();
+  applyIgnore();
+}
+function updateBreakdown() {
+  const active = filteredOrphans().filter(e => !e._ignored);
+  if (!active.length) { document.getElementById('breakdown').classList.remove('show'); return; }
+  document.getElementById('breakdown').classList.add('show');
+  document.getElementById('bd-dead').textContent = active.filter(e=>e.method==='dead_entry').length  + ' dead entry';
+  document.getElementById('bd-unav').textContent = active.filter(e=>e.method==='unavailable').length + ' unavailable';
+  document.getElementById('bd-ts').textContent   = active.filter(e=>e.method==='timestamp').length   + ' timestamp';
+  document.getElementById('bd-heur').textContent = active.filter(e=>e.method==='heuristic').length   + ' heuristic';
+}
+
+function applyIgnore() {
+  const items  = filteredOrphans();
+  const active = items.filter(e => !e._ignored);
+
+  // deseleziona entità che ora sono ignorate
+  items.filter(e => e._ignored).forEach(e => selected.delete(e.entity_id));
+  renderTable(items);
+  if (allOrphans.length) {
+    document.getElementById('s-orphan').textContent = active.length;
+    document.getElementById('tbl-title').textContent =
+      active.length ? active.length + ' orphan entities' : 'No orphan entities found';
+  }
+  updateBreakdown();
+  updateSelCount();
+}
+function renderIgnoreTags() {
+  const c = document.getElementById('ignore-tags');
+  c.innerHTML = [...ignorePlatforms].map(v =>
+    `<span class="ignore-tag">${v} <span class="ignore-tag-x" onclick="ignoreRemove('${v}')">×</span></span>`
+  ).join('');
+}
+
+function addLog(msg, type='info') {
+  const box  = document.getElementById('log-box');
+  const line = document.createElement('div');
+  line.className = 'log-line ' + type;
+  line.textContent = '[' + new Date().toLocaleTimeString('en-GB') + ']  ' + msg;
+  box.appendChild(line);
+  box.scrollTop = box.scrollHeight;
+}
+function setStatus(msg, state='') {
+  document.getElementById('status-txt').textContent = msg;
+  document.getElementById('dot').className = 'dot' + (state ? ' '+state : '');
+}
+function updateSelCount() {
+  document.getElementById('s-sel').textContent = allOrphans.length ? selected.size : '—';
+  document.getElementById('btn-del').disabled      = selected.size === 0;
+  document.getElementById('btn-save-del').disabled = selected.size === 0;
+}
+function sortBy(field) {
+  if (sortField === field) {
+    sortDir = -sortDir;
+  } else {
+    sortField = field;
+    sortDir = 1;
+  }
+  // Aggiorna classi header
+  document.querySelectorAll('thead th.sortable').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+  });
+  const idx = ['entity_id','platform','method','age_hours'].indexOf(field);
+  const ths = document.querySelectorAll('thead th.sortable');
+  if (ths[idx]) ths[idx].classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
+  renderTable(filteredOrphans());
+}
+
+function filteredOrphans() {
+  const q      = (document.getElementById('filter').value || '').toLowerCase();
+  const heur   = document.getElementById('heur-on')?.checked;
+  const method = document.getElementById('method-filter')?.value || '';
+  return allOrphans
+    .filter(e => (heur || e.method !== 'heuristic') &&
+                 (!method || e.method === method) &&
+                 (!q || e.entity_id.includes(q) || e.platform.includes(q)))
+    .map(e => ({ ...e, _ignored: ignorePlatforms.has((e.platform || '').trim().toLowerCase()) }))
+    .sort((a, b) => {
+      if (!sortField) return 0;
+      let va = a[sortField], vb = b[sortField];
+      if (sortField === 'age_hours') { va = va ?? -1; vb = vb ?? -1; }
+      else { va = (va || '').toLowerCase(); vb = (vb || '').toLowerCase(); }
+      return va < vb ? -sortDir : va > vb ? sortDir : 0;
+    });
+}
+function activeOrphans() {
+  return filteredOrphans().filter(e => !e._ignored);
+}
+function selAll()   { activeOrphans().forEach(e => selected.add(e.entity_id)); renderTable(filteredOrphans()); updateSelCount(); }
+function deselAll() { selected.clear(); renderTable(filteredOrphans()); updateSelCount(); }
+function toggleRow(id, chk) { chk ? selected.add(id) : selected.delete(id); updateSelCount(); }
+function applyFilter() {
+  const items = filteredOrphans();
+  renderTable(items);
+  const q = document.getElementById('filter').value;
+  const active = items.filter(e => !e._ignored).length;
+  document.getElementById('tbl-meta').textContent = q ? active+' of '+allOrphans.length : '';
+}
+function renderTable(items) {
+  const wrap = document.getElementById('tbl-wrap');
+  const activeItems = items.filter(e => !e._ignored);
+  if (!items.length) {
+    wrap.innerHTML = `<div class="empty">
+      <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+      <p>No orphan entities found.</p>
+      <div class="empty-hint">The registry is clean with the current settings.</div></div>`;
+    return;
+  }
+  const rows = items.map(e => {
+    if (e._ignored) {
+      const dis = e.disabled_by ? '<span class="badge badge-disabled">disabled</span>' : '';
+      const age = e.age_hours != null ? (e.age_hours >= 24 ? Math.round(e.age_hours/24)+'d' : e.age_hours+'h') : '—';
+      return `<tr class="ignored">
+        <td class="td-chk"></td>
+        <td><span class="eid">${e.entity_id}</span>${dis}</td>
+        <td><span class="platform-badge">${e.platform}</span></td>
+        <td class="td-method"><span style="color:var(--text3)">— ignored</span></td>
+        <td class="td-age"><span class="age-text">—</span></td>
+      </tr>`;
+    }
+    const chk   = selected.has(e.entity_id) ? 'checked' : '';
+    const badge = e.method === 'timestamp'
+      ? '<span class="badge badge-ts">orphaned_timestamp</span>'
+      : e.method === 'dead_entry'
+      ? '<span class="badge badge-dead">dead entry</span>'
+      : e.method === 'unavailable'
+      ? '<span class="badge badge-unavail">unavailable</span>'
+      : '<span class="badge badge-heuristic">heuristic</span>';
+    const dis   = e.disabled_by ? '<span class="badge badge-disabled">disabled</span>' : '';
+    const age   = e.age_hours != null ? (e.age_hours >= 24 ? Math.round(e.age_hours/24)+'d' : e.age_hours+'h') : '—';
+    return `<tr>
+      <td class="td-chk"><input type="checkbox" ${chk} onchange="toggleRow('${e.entity_id}',this.checked)"></td>
+      <td><span class="eid">${e.entity_id}</span>${dis}</td>
+      <td><span class="platform-badge" onclick="selectByPlatform('${e.platform}')" style="cursor:pointer;" title="Select all ${e.platform} entities">${e.platform}</span></td>
+      <td class="td-method">${badge}</td>
+      <td class="td-age"><span class="age-text">${age}</span></td>
+    </tr>`;
+  }).join('');
+  wrap.innerHTML = `<table>
+    <thead><tr>
+      <th class="th-chk"><input type="checkbox" onchange="this.checked?selAll():deselAll()"></th>
+      <th class="sortable" onclick="sortBy('entity_id')">Entity ID</th>
+      <th class="sortable" onclick="sortBy('platform')">Platform</th>
+      <th class="th-method sortable" onclick="sortBy('method')">Detection</th>
+      <th class="th-age sortable" onclick="sortBy('age_hours')">Age</th>
+    </tr></thead>
+    <tbody>${rows}</tbody></table>`;
+}
+
+async function doScan() {
+  const btn = document.getElementById('btn-scan');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Scanning…';
+  setStatus('Contacting Home Assistant…');
+  document.getElementById('log-box').innerHTML = '';
+  selected.clear(); updateSelCount();
+  try {
+    const minAge = document.getElementById('min-age')?.value || 24;
+    const heur   = document.getElementById('heur-on')?.checked ? 1 : 0;
+    const r    = await fetch('/api/orphan_cleaner/scan?min_age='+minAge+'&heuristic='+heur);
+    if (!r.ok) throw new Error('HTTP '+r.status);
+    const data = await r.json();
+    if (data.error) throw new Error(data.error);
+    previousOrphans = allOrphans.slice();   // snapshot prima di aggiornare
+    allOrphans = data.orphans || [];
+    const ts_n = allOrphans.filter(o => o.method === 'timestamp').length;
+    const he_n = allOrphans.filter(o => o.method === 'heuristic').length;
+    document.getElementById('s-total').textContent  = data.total;
+    document.getElementById('s-heur').textContent   = he_n;
+    // Applica colori dopo la prima scan
+    document.getElementById('s-orphan').closest('.stat').className = 'stat s-danger';
+    document.getElementById('s-heur').closest('.stat').className   = 'stat s-warn';
+    document.getElementById('s-sel').closest('.stat').className    = 'stat s-ok';
+    document.getElementById('filter').disabled         = false;
+    document.getElementById('method-filter').disabled  = false;
+    document.getElementById('btn-selall').disabled     = false;
+    document.getElementById('btn-desel').disabled      = false;
+    applyIgnore();
+    showDiff();
+    addLog('Scan complete: '+data.total+' total, '+allOrphans.length+' orphans ('+ts_n+' by timestamp, '+he_n+' heuristic).','ok');
+    setStatus('Last scan: '+new Date().toLocaleTimeString('en-GB'),'ok');
+  } catch(err) {
+    addLog('Error: '+err.message,'err');
+    setStatus('Error — check HA logs','err');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Scan';
+  }
+}
+
+function confirmDelete() {
+  if (!selected.size) return;
+  if (isDryRun()) { doDryRun(); return; }
+  document.getElementById('modal-msg').innerHTML =
+    'You are about to delete <strong>'+selected.size+' entities</strong> from the Home Assistant registry.<br>'
+    +'This operation is <strong>irreversible</strong>. Continue?';
+  document.getElementById('overlay').classList.add('show');
+}
+function onDryRunToggle() {
+  const dry = document.getElementById('dry-run-toggle').checked;
+  document.getElementById('dry-banner').classList.toggle('show', dry);
+  document.getElementById('btn-del').textContent = dry ? 'Simulate' : 'Delete selected';
+  document.getElementById('btn-save-del').style.display = dry ? 'none' : '';
+}
+
+function isDryRun() {
+  return document.getElementById('dry-run-toggle').checked;
+}
+
+async function doDryRun() {
+  const ids = [...selected];
+  addLog('🔍 Dry run: simulating deletion of '+ids.length+' entities…', 'info');
+  setStatus('Dry run complete — nothing was deleted.');
+  addLog('🔍 Dry run complete: '+ids.length+' would be deleted.', 'ok');
+  ids.forEach(id => {
+    document.querySelectorAll('tr').forEach(row => {
+      const eid = row.querySelector('.eid');
+      if (eid && eid.textContent === id) {
+        row.style.outline = '1.5px solid #f59e0b';
+        row.style.opacity = '0.55';
+        if (!row.querySelector('.badge-dry')) {
+          const b = document.createElement('span');
+          b.className = 'badge-dry';
+          b.textContent = 'would delete';
+          b.style.cssText = 'background:#78350f;color:#fcd34d;border-radius:4px;padding:1px 6px;font-size:10px;margin-left:5px;';
+          eid.after(b);
+        }
+      }
+    });
+  });
+  setTimeout(() => {
+    document.querySelectorAll('tr').forEach(row => {
+      row.style.outline = '';
+      row.style.opacity = '';
+      row.querySelectorAll('.badge-dry').forEach(b => b.remove());
+    });
+  }, 6000);
+}
+
+function selectByPlatform(platform) {
+  filteredOrphans().filter(e => !e._ignored && e.platform === platform)
+    .forEach(e => selected.add(e.entity_id));
+  renderTable(filteredOrphans());
+  updateSelCount();
+}
+
+function showDiff() {
+  const banner = document.getElementById('diff-banner');
+  if (!previousOrphans.length) { banner.classList.remove('show'); return; }
+  const prevIds = new Set(previousOrphans.map(e => e.entity_id));
+  const currIds = new Set(allOrphans.map(e => e.entity_id));
+  const newCount  = allOrphans.filter(e => !prevIds.has(e.entity_id)).length;
+  const goneCount = previousOrphans.filter(e => !currIds.has(e.entity_id)).length;
+  const sameCount = allOrphans.filter(e => prevIds.has(e.entity_id)).length;
+  document.getElementById('diff-new').textContent  = newCount  + ' new ⬆';
+  document.getElementById('diff-gone').textContent = goneCount + ' gone ⬇';
+  document.getElementById('diff-same').textContent = sameCount + ' unchanged';
+  banner.classList.toggle('show', newCount > 0 || goneCount > 0);
+  // Aggiungi badge NEW alle righe nuove in tabella
+  if (newCount > 0) {
+    allOrphans.filter(e => !prevIds.has(e.entity_id)).forEach(e => {
+      const rows = document.querySelectorAll('tr');
+      rows.forEach(row => {
+        const eid = row.querySelector('.eid');
+        if (eid && eid.textContent === e.entity_id && !row.querySelector('.badge-new')) {
+          const badge = document.createElement('span');
+          badge.className = 'badge-new';
+          badge.textContent = 'new';
+          eid.after(badge);
+        }
+      });
+    });
+  }
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('btn-modal-del').style.display = '';
+}
+
+function confirmSaveDelete() {
+  if (!selected.size) return;
+  document.getElementById('modal-msg').innerHTML =
+    'You are about to <strong>save a backup</strong> of '+selected.size+' entities to <code>/config/</code> and then <strong>delete</strong> them from the registry.<br>'+
+    'This operation is <strong>irreversible</strong>. Continue?';
+  // Temporaneamente cambia il pulsante Delete del modal per usare doSaveDelete
+  document.getElementById('btn-modal-del').onclick = doSaveDelete;
+  document.getElementById('overlay').classList.add('show');
+}
+
+async function doSaveDelete() {
+  closeModal();
+  // Ripristina onclick originale del pulsante modal
+  document.getElementById('btn-modal-del').onclick = doDelete;
+  const ids = [...selected];
+  document.getElementById('btn-del').disabled     = true;
+  document.getElementById('btn-save-del').disabled = true;
+  addLog('Saving backup of '+ids.length+' entities…','info');
+  setStatus('Saving backup…');
+  try {
+    const er = await fetch('/api/orphan_cleaner/export', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ entity_ids: ids, orphans: allOrphans })
+    });
+    if (!er.ok) throw new Error('Export HTTP '+er.status);
+    const ed = await er.json();
+    if (ed.error) throw new Error(ed.error);
+    addLog('✓ Backup saved: '+ed.filename,'ok');
+  } catch(err) {
+    addLog('✗ Backup failed: '+err.message+' — deletion aborted','err');
+    setStatus('Backup failed — deletion aborted','err');
+    document.getElementById('btn-save-del').disabled = selected.size === 0;
+    document.getElementById('btn-del').disabled      = selected.size === 0;
+    return;
+  }
+  // Procedi con la cancellazione
+  await doDelete();
+}
+
+async function doDelete() {
+  closeModal();
+  const ids = [...selected];
+  document.getElementById('btn-del').disabled = true;
+  addLog('Deleting '+ids.length+' entities…','info');
+  setStatus('Deletion in progress…');
+  try {
+    const r    = await fetch('/api/orphan_cleaner/delete', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({entity_ids: ids})
+    });
+    if (!r.ok) throw new Error('HTTP '+r.status);
+    const data = await r.json();
+    data.deleted.forEach(id => {
+      allOrphans = allOrphans.filter(e => e.entity_id !== id);
+      selected.delete(id);
+      addLog('✓ Deleted: '+id,'ok');
+    });
+    (data.failed||[]).forEach(id => addLog('✗ Failed: '+id,'err'));
+    document.getElementById('s-heur').textContent = allOrphans.filter(o=>o.method==='heuristic').length;
+    applyIgnore();
+    updateSelCount();
+    addLog('Done: '+data.deleted_count+' deleted, '+data.failed_count+' failed.',
+           data.failed_count > 0 ? 'warn' : 'ok');
+    setStatus('Deletion complete — '+new Date().toLocaleTimeString('en-GB'),
+              data.failed_count > 0 ? 'err' : 'ok');
+  } catch(err) {
+    addLog('Error: '+err.message,'err');
+    setStatus('Error — check HA logs','err');
+  } finally {
+    document.getElementById('btn-del').disabled = selected.size === 0;
+  }
+}
+document.addEventListener('keydown', e => { if (e.key==='Escape') closeModal(); });
+
+// ---------------------------------------------------------------------------
+// Default ignore list (persistent)
+// ---------------------------------------------------------------------------
+let savedIgnoreList = [];
+
+async function loadSavedIgnoreList() {
+  try {
+    const r = await fetch('/api/orphan_cleaner/ignore_list');
+    if (!r.ok) return;
+    const d = await r.json();
+    savedIgnoreList = d.ignore_list || [];
+    renderSavedTags();
+  } catch(e) { /* silently fail */ }
+}
+
+function renderSavedTags() {
+  const c = document.getElementById('saved-ig-tags');
+  c.innerHTML = savedIgnoreList.map(v =>
+    `<span class="tag-saved" data-v="${v}">${v} <span class="ignore-tag-x" onclick="savedIgRemove('${v}')" style="cursor:pointer;opacity:.5;font-size:13px;">×</span></span>`
+  ).join('');
+  document.getElementById('saved-badge').textContent = savedIgnoreList.length + ' saved';
+}
+
+async function persistIgnoreList() {
+  try {
+    await fetch('/api/orphan_cleaner/ignore_list', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ ignore_list: savedIgnoreList })
+    });
+  } catch(e) { /* silently fail */ }
+}
+
+function savedIgAdd() {
+  const inp = document.getElementById('saved-ig-input');
+  const val = inp.value.trim();
+  if (!val || savedIgnoreList.includes(val)) { inp.value=''; return; }
+  savedIgnoreList.push(val);
+  inp.value = '';
+  renderSavedTags();
+  applyIgnore();
+  persistIgnoreList();
+}
+
+function savedIgRemove(val) {
+  savedIgnoreList = savedIgnoreList.filter(v => v !== val);
+  renderSavedTags();
+  applyIgnore();
+  persistIgnoreList();
+}
+
+function toggleIgnoreSection() {
+  const body  = document.getElementById('ignore-body');
+  const arrow = document.getElementById('ignore-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function showGlobHelp() {
+  document.getElementById('modal-msg').innerHTML =
+    '<strong>Ignore list syntax</strong><br><br>' +
+    '<b>Platform name</b> — ignores all entities of that platform<br>' +
+    '<code>tuya</code>, <code>shelly</code>, <code>imou_life</code><br><br>' +
+    '<b>Entity glob</b> — ignores entities matching the pattern<br>' +
+    '<code>sensor.old_*</code> — all sensors starting with old_<br>' +
+    '<code>*_deprecated</code> — any entity ending with _deprecated<br>' +
+    '<code>sensor.*_temp</code> — sensors ending with _temp<br><br>' +
+    'Globs use standard Unix fnmatch syntax. <b>*</b> matches any string, <b>?</b> matches one character.';
+  document.getElementById('btn-modal-del').style.display = 'none';
+  document.getElementById('overlay').classList.add('show');
+}
+document.getElementById('ignore-input').addEventListener('keydown', e => { if (e.key==='Enter') ignoreAdd(); });
+document.getElementById('saved-ig-input').addEventListener('keydown', e => { if (e.key==='Enter') savedIgAdd(); });
+loadSavedIgnoreList();
+// Reset contatori a — ad ogni caricamento pagina
+['s-total','s-orphan','s-heur','s-sel'].forEach(id => {
+  document.getElementById(id).textContent = '—';
+});
+document.getElementById('s-orphan').closest('.stat').className = 'stat';
+document.getElementById('s-heur').closest('.stat').className   = 'stat';
+document.getElementById('s-sel').closest('.stat').className    = 'stat';
+</script>
+</body>
+</html>

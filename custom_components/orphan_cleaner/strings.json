@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Orphan Entity Cleaner",
+        "description": "Click Submit to install the integration. Settings are available directly in the panel."
+      }
+    },
+    "abort": {
+      "already_configured": "Integration already configured"
+    }
+  }
+}

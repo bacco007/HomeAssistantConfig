@@ -1,0 +1,34 @@
+scan:
+  name: Scan orphan entities
+  description: >
+    Scans the Home Assistant registry and fires the
+    'orphan_cleaner_orphans_found' event with the list of orphan entities.
+    Useful in automations to detect and notify the presence of orphan entities.
+  fields: {}
+
+delete_orphans:
+  name: Delete orphan entities
+  description: >
+    Deletes orphan entities from the Home Assistant registry.
+    If entity_ids is omitted, all orphans detected with the
+    current integration settings will be deleted.
+  fields:
+    entity_ids:
+      name: Entity IDs
+      description: >
+        List of entity_ids to delete. If omitted, deletes all
+        automatically detected orphan entities.
+      required: false
+      example: "['sensor.old_device', 'binary_sensor.ghost']"
+      selector:
+        entity:
+          multiple: true
+    dry_run:
+      name: Dry run
+      description: >
+        If true, logs the entities that would be deleted
+        without making any changes. Useful for verification before proceeding.
+      required: false
+      default: false
+      selector:
+        boolean:
