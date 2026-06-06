@@ -6,6 +6,7 @@ import logging
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
+from homeassistant.core import callback
 from homeassistant.helpers import device_registry as dr
 
 from custom_components.unifi_insights.api import (
@@ -100,20 +101,25 @@ class UnifiProtectCoordinator(UnifiBaseCoordinator):
             return
 
         try:
+            registered = False
             if hasattr(self.protect_client, "register_device_update_callback"):
                 self.protect_client.register_device_update_callback(
                     self._handle_device_update
                 )
+                registered = True
             if hasattr(self.protect_client, "register_event_update_callback"):
                 self.protect_client.register_event_update_callback(
                     self._handle_event_update
                 )
-            _LOGGER.debug("Protect coordinator: WebSocket callbacks registered")
+                registered = True
+            if registered:
+                _LOGGER.debug("Protect coordinator: WebSocket callbacks registered")
         except Exception as err:
             _LOGGER.debug(
                 "Protect coordinator: WebSocket callbacks not supported: %s", err
             )
 
+    @callback
     def _handle_device_update(
         self, model_key: str, device_data: dict[str, Any]
     ) -> None:
@@ -216,6 +222,7 @@ class UnifiProtectCoordinator(UnifiBaseCoordinator):
 
         return normalized
 
+    @callback
     def _handle_event_update(self, event_type: str, event_data: dict[str, Any]) -> None:
         """Handle event update from WebSocket."""
         event_id = event_data.get("id")

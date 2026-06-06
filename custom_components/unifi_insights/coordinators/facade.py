@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     from .device import UnifiDeviceCoordinator
     from .protect import UnifiProtectCoordinator
 
+from homeassistant.core import callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
@@ -86,6 +87,7 @@ class UnifiFacadeCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 self._handle_coordinator_update
             )
 
+    @callback
     def _handle_coordinator_update(self) -> None:
         """Handle update from any coordinator by refreshing aggregated data."""
         self._aggregate_data()
