@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.9.7 - GPU performance: disable_animation, CSS dash animation, will-change, prefers-reduced-motion
+// Version 2.9.8 - Community Pick: HA 2026.6 card picker suggestions
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -3148,11 +3148,33 @@ window.customCards.push({
   name: 'Solar Bar Card',
   description: 'A visual solar power distribution card with battery support, animated flow visualization, and customizable color palettes',
   preview: false,
-  documentationURL: 'https://github.com/0xAHA/solar-bar-card'
+  documentationURL: 'https://github.com/0xAHA/solar-bar-card',
+  getEntitySuggestion: (hass, entityId) => {
+    if (entityId.split('.')[0] !== 'sensor') return null;
+
+    const state = hass.states[entityId];
+    if (!state) return null;
+
+    const deviceClass = state.attributes?.device_class;
+    if (deviceClass !== 'power' && deviceClass !== 'energy') return null;
+
+    const solarKeywords = ['solar', 'pv', 'photovoltaic', 'production', 'panel'];
+    const entityIdLower = entityId.toLowerCase();
+    const friendlyName = (state.attributes?.friendly_name || '').toLowerCase();
+    const isSolar = solarKeywords.some(kw => entityIdLower.includes(kw) || friendlyName.includes(kw));
+    if (!isSolar) return null;
+
+    return {
+      config: {
+        type: 'custom:solar-bar-card',
+        production_entity: entityId
+      }
+    };
+  }
 });
 
 console.info(
-  '%c SOLAR-BAR-CARD %c v2.9.7 ',
+  '%c SOLAR-BAR-CARD %c v2.9.8 ',
   'color:#fff;background:#f57c00;font-weight:700;padding:2px 4px;border-radius:4px 0 0 4px;',
   'color:#f57c00;background:#fff3e0;font-weight:700;padding:2px 4px;border-radius:0 4px 4px 0;'
 );
