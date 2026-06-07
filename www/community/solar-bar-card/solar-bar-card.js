@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.9.8 - Community Pick: HA 2026.6 card picker suggestions
+// Version 2.9.9 - Three's Company: Consumer 3 as EV slot alternative
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -44,9 +44,11 @@ class SolarBarCard extends HTMLElement {
       this.config.header_sensor_2?.entity,
       this.config.consumer_1_entity,
       this.config.consumer_2_entity,
+      this.config.consumer_3_entity,
       this.config.ev_history_entity,
       this.config.consumer_1_history_entity,
-      this.config.consumer_2_history_entity
+      this.config.consumer_2_history_entity,
+      this.config.consumer_3_history_entity
     ].filter(Boolean);
 
     const shouldUpdate = relevantEntities.some(
@@ -200,6 +202,8 @@ class SolarBarCard extends HTMLElement {
       consumer_1_name: null,
       consumer_2_entity: null,
       consumer_2_name: null,
+      consumer_3_entity: null,
+      consumer_3_name: null,
       show_consumers_when_idle: false,
       // EV idle visibility
       show_ev_when_idle: false,
@@ -207,6 +211,7 @@ class SolarBarCard extends HTMLElement {
       ev_history_entity: null,
       consumer_1_history_entity: null,
       consumer_2_history_entity: null,
+      consumer_3_history_entity: null,
       ev_icon_color: null,
       // Power unit display
       power_unit: 'kW',
@@ -560,6 +565,8 @@ class SolarBarCard extends HTMLElement {
       consumer_1_name = null,
       consumer_2_entity = null,
       consumer_2_name = null,
+      consumer_3_entity = null,
+      consumer_3_name = null,
       show_consumers_when_idle = false,
       // EV idle visibility
       show_ev_when_idle = false,
@@ -567,6 +574,7 @@ class SolarBarCard extends HTMLElement {
       ev_history_entity = null,
       consumer_1_history_entity = null,
       consumer_2_history_entity = null,
+      consumer_3_history_entity = null,
       // Energy flow threshold
       energy_flow_threshold = 0.1,
       // Power unit display
@@ -1413,6 +1421,7 @@ class SolarBarCard extends HTMLElement {
         ${colors.stats_ev_background ? `.stat[data-action-key="ev"] { background: ${colors.stats_ev_background}; }` : ''}
         ${colors.stats_consumer_1_background ? `.stat[data-action-key="consumer_1"] { background: ${colors.stats_consumer_1_background}; }` : ''}
         ${colors.stats_consumer_2_background ? `.stat[data-action-key="consumer_2"] { background: ${colors.stats_consumer_2_background}; }` : ''}
+        ${colors.stats_consumer_3_background ? `.stat[data-action-key="consumer_3"] { background: ${colors.stats_consumer_3_background}; }` : ''}
 
         .battery-container {
           position: relative;
@@ -2053,6 +2062,7 @@ class SolarBarCard extends HTMLElement {
           const evDailyEnergy = ev_history_entity ? this.getSensorValue(ev_history_entity) : null;
           const c1DailyEnergy = consumer_1_history_entity ? this.getSensorValue(consumer_1_history_entity) : null;
           const c2DailyEnergy = consumer_2_history_entity ? this.getSensorValue(consumer_2_history_entity) : null;
+          const c3DailyEnergy = consumer_3_history_entity ? this.getSensorValue(consumer_3_history_entity) : null;
 
           // Core tiles (always present): Solar, Usage, Export/Import
           const coreTiles = [
@@ -2139,6 +2149,19 @@ class SolarBarCard extends HTMLElement {
                   <div class="stat-label">${consumer_2_name || 'Consumer 2'}</div>
                   <div class="stat-value">${fmtPow(c2Power)}${isInline ? renderDetail(c2DetailText) : ''}</div>
                   ${!isInline ? renderDetail(c2DetailText) : ''}
+                </div>
+              `);
+            }
+          }
+          if (consumer_3_entity && !ev_charger_sensor) {
+            const c3Power = this.getSensorValue(consumer_3_entity) || 0;
+            if (c3Power > 0 || show_consumers_when_idle) {
+              const c3DetailText = c3DailyEnergy !== null ? `${c3DailyEnergy.toFixed(decimal_places)} kWh` : null;
+              extraTiles.push(`
+                <div class="stat" data-entity="${consumer_3_entity}" data-action-key="consumer_3" title="${this.getLabel('click_history')}">
+                  <div class="stat-label">${consumer_3_name || 'Consumer 3'}</div>
+                  <div class="stat-value">${fmtPow(c3Power)}${isInline ? renderDetail(c3DetailText) : ''}</div>
+                  ${!isInline ? renderDetail(c3DetailText) : ''}
                 </div>
               `);
             }
@@ -2535,7 +2558,7 @@ class SolarBarCard extends HTMLElement {
       size += 1.2;
       // Extra row possible when multiple extras are configured
       const hasBatteryConfig = this.config.battery_soc_entity && (this.config.battery_power_entity || (this.config.battery_charge_entity && this.config.battery_discharge_entity));
-      const extraCount = (hasBatteryConfig ? 1 : 0) + (this.config.ev_charger_sensor ? 1 : 0) + (this.config.consumer_1_entity ? 1 : 0) + (this.config.consumer_2_entity ? 1 : 0);
+      const extraCount = (hasBatteryConfig ? 1 : 0) + (this.config.ev_charger_sensor ? 1 : 0) + (this.config.consumer_1_entity ? 1 : 0) + (this.config.consumer_2_entity ? 1 : 0) + (this.config.consumer_3_entity && !this.config.ev_charger_sensor ? 1 : 0);
       if (extraCount >= 2) size += 1.0;
     }
     if (this.config.battery_power_entity && this.config.battery_soc_entity) size += 1.5;
@@ -2675,6 +2698,9 @@ class SolarBarCardEditor extends HTMLElement {
       consumer_2_entity: "Consumer 2 Power Sensor",
       consumer_2_name: "Consumer 2 Name",
       consumer_2_history_entity: "Consumer 2 Daily Energy Sensor",
+      consumer_3_entity: "Consumer 3 Power Sensor",
+      consumer_3_name: "Consumer 3 Name",
+      consumer_3_history_entity: "Consumer 3 Daily Energy Sensor",
       show_consumers_when_idle: "Show Consumers When Idle",
       // Individual label fields
       label_solar: "Solar Label",
@@ -2692,7 +2718,8 @@ class SolarBarCardEditor extends HTMLElement {
       tap_action_battery: "Battery Tap Action",
       tap_action_ev: "EV Tap Action",
       tap_action_consumer_1: "Consumer 1 Tap Action",
-      tap_action_consumer_2: "Consumer 2 Tap Action"
+      tap_action_consumer_2: "Consumer 2 Tap Action",
+      tap_action_consumer_3: "Consumer 3 Tap Action"
     };
     return labels[schema.name] || schema.name;
   }
@@ -2762,6 +2789,9 @@ class SolarBarCardEditor extends HTMLElement {
       consumer_2_entity: "Power sensor for a second additional consumer. Shows as a stats tile only.",
       consumer_2_name: "Display name for Consumer 2 (e.g., 'Hot Water', 'AC')",
       consumer_2_history_entity: "Daily energy sensor (kWh) for Consumer 2 - shows daily total on tile when stats detail is enabled.",
+      consumer_3_entity: "Power sensor for a third consumer. Only active when EV Charger Sensor is not configured — if both are set, EV takes priority.",
+      consumer_3_name: "Display name for Consumer 3 (e.g., 'Dryer', 'Pool Heater')",
+      consumer_3_history_entity: "Daily energy sensor (kWh) for Consumer 3 - shows daily total on tile when stats detail is enabled.",
       show_consumers_when_idle: "Always show consumer tiles even when power is 0. When off, tiles only appear while the consumer is actively drawing power.",
       // Individual label helpers
       label_solar: "Custom label for Solar (leave empty to use auto-detected language translation)",
@@ -2779,7 +2809,8 @@ class SolarBarCardEditor extends HTMLElement {
       tap_action_battery: "Action when tapping Battery elements (stats tile, battery bar, legend). Defaults to showing entity history.",
       tap_action_ev: "Action when tapping EV elements (stats tile, legend). Defaults to showing entity history.",
       tap_action_consumer_1: "Action when tapping Consumer 1 stats tile. Defaults to showing entity history.",
-      tap_action_consumer_2: "Action when tapping Consumer 2 stats tile. Defaults to showing entity history."
+      tap_action_consumer_2: "Action when tapping Consumer 2 stats tile. Defaults to showing entity history.",
+      tap_action_consumer_3: "Action when tapping Consumer 3 stats tile. Defaults to showing entity history."
     };
     return helpers[schema.name];
   }
@@ -3042,7 +3073,8 @@ class SolarBarCardEditor extends HTMLElement {
           { name: "tap_action_battery", selector: { "ui-action": {} } },
           { name: "tap_action_ev", selector: { "ui-action": {} } },
           { name: "tap_action_consumer_1", selector: { "ui-action": {} } },
-          { name: "tap_action_consumer_2", selector: { "ui-action": {} } }
+          { name: "tap_action_consumer_2", selector: { "ui-action": {} } },
+          { name: "tap_action_consumer_3", selector: { "ui-action": {} } }
         ]
       },
       // NET PRODUCTION/CONSUMPTION HISTORY
@@ -3113,6 +3145,14 @@ class SolarBarCardEditor extends HTMLElement {
           {
             type: "grid",
             schema: [
+              { name: "consumer_3_entity", selector: { entity: { filter: [{ domain: "sensor", device_class: "power" }] } } },
+              { name: "consumer_3_name", selector: { text: {} } }
+            ]
+          },
+          { name: "consumer_3_history_entity", selector: { entity: { filter: [{ domain: "sensor", device_class: "energy" }, { domain: "sensor", attributes: { unit_of_measurement: ["kWh", "Wh", "MWh"] } }] } } },
+          {
+            type: "grid",
+            schema: [
               { name: "show_ev_when_idle", default: false, selector: { boolean: {} } },
               { name: "show_consumers_when_idle", default: false, selector: { boolean: {} } }
             ]
@@ -3174,7 +3214,7 @@ window.customCards.push({
 });
 
 console.info(
-  '%c SOLAR-BAR-CARD %c v2.9.8 ',
+  '%c SOLAR-BAR-CARD %c v2.9.9 ',
   'color:#fff;background:#f57c00;font-weight:700;padding:2px 4px;border-radius:4px 0 0 4px;',
   'color:#f57c00;background:#fff3e0;font-weight:700;padding:2px 4px;border-radius:0 4px 4px 0;'
 );
