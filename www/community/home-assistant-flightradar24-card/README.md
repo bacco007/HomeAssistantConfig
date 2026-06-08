@@ -205,6 +205,7 @@ radar:
 | `local-features-color`   | Color for local features (runways, locations, outlines)   | Same as `radar-grid-color`      | Must be a valid CSS color                             |
 | `callsign-label-color`   | Color for callsign labels                                 | `var(--primary-background-color)`| Must be a valid CSS color                            |
 | `aircraft-marker-size`   | Size of aircraft markers on the radar                     | `normal`                        | Must be `small`, `normal`, `large`, `x-large`, or `xx-large` |
+| `aircraft-marker`        | Custom image markers per aircraft (see below)             | None                            | Must be a mapping of aircraft identifiers to marker objects |
 | `hide`                   | Option to hide the radar                                  | `false`                         | Must be `true` or `false`                             |
 | `hide_range`           | Option to hide the radar range                       | `false`                           | Must be `true` or `false`                             |
 | `radar_size`             | Size of the radar as percentage of card width             | `70`                            | Number between 30 and 90                              |
@@ -222,6 +223,31 @@ radar:
           comparator: lte
           value: 5000
 ```
+
+##### Custom Aircraft Markers
+
+Replace the default triangle markers with custom PNG images. Images should have a transparent background.
+
+```yaml
+radar:
+    aircraft-marker:
+        default:
+            aircraft-marker-url: https://example.com/marker.png
+            aircraft-marker-rotation: 0
+            aircraft-marker-center: 0,0
+            aircraft-marker-scale: 1
+            aircraft-marker-color-overlay: '#ff0000'
+```
+
+| Name                          | Description                                          | Default Value                    | Constraints                                    |
+| ----------------------------- | ---------------------------------------------------- | -------------------------------- | ---------------------------------------------- |
+| `aircraft-marker-url`         | URL to the PNG marker image                          | None                             | Must be a valid image URL                      |
+| `aircraft-marker-rotation`    | Additional rotation offset (degrees)                 | `0`                              | Number 0-360                                   |
+| `aircraft-marker-center`      | Rotation center offset as `x,y` in px                | `0,0`                            | Two comma-separated numbers                    |
+| `aircraft-marker-scale`       | Scale factor for the marker                          | `1`                              | Positive number                                |
+| `aircraft-marker-color-overlay`| Tint the non-transparent areas of the image         | None (no overlay)                | Must be a valid CSS color                      |
+
+The `aircraft-marker` configuration supports multiple named entries keyed by aircraft identifier (e.g., registration, model, or airline). The `default` entry applies when no specific match is found.
 
 ##### Radar Features
 
