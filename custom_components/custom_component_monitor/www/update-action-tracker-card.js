@@ -2,10 +2,10 @@
  * Update Action Tracker Card
  * Lists HACS integrations with pending updates and provides
  * Skip, Update, and Update & Action buttons.
- * v0.1.1
+ * v1.5.2
  */
 
-const CARD_VERSION = "1.5.0";
+const CARD_VERSION = "1.5.2";
 const UAT_DOMAIN = "custom_component_monitor";
 
 /* -- Helpers -------------------------------------------------- */
@@ -71,6 +71,7 @@ class UpdateActionTrackerCard extends HTMLElement {
     this._actionInProgress = {};
     this._lastStateHash = "";
     this._progressPollTimer = null;
+    this._typeFilter = "all"; // #69: filter updates by component type
   }
 
   /* -- Lovelace lifecycle ------------------------------------- */
@@ -86,6 +87,7 @@ class UpdateActionTrackerCard extends HTMLElement {
   setConfig(config) {
     this._config = Object.assign({ title: "HACS Update Tracker" }, config);
     this._lastStateHash = "";
+    if (config && config.default_filter) this._typeFilter = config.default_filter;
     if (this._hass) this._doRender();
   }
 
@@ -113,7 +115,9 @@ class UpdateActionTrackerCard extends HTMLElement {
       if (eid.startsWith("update.")) {
         const s = this._hass.states[eid];
         const prog = s.attributes.in_progress;
-        parts.push(eid + "=" + s.state + "|" + (s.attributes.installed_version || "") + "|" + (s.attributes.latest_version || "") + "|" + String(prog));
+        // update_percentage drives the determinate progress bar (#66); include
+        // it so percentage changes during an install trigger a re-render.
+        parts.push(eid + "=" + s.state + "|" + (s.attributes.installed_version || "") + "|" + (s.attributes.latest_version || "") + "|" + String(prog) + "|" + String(s.attributes.update_percentage));
       }
     }
     return parts.sort().join("||");
@@ -192,7 +196,53 @@ class UpdateActionTrackerCard extends HTMLElement {
         }
       }
     }
-    return updateEntities.filter((eid) => this._hacsEntities.has(eid));
+    const filtered = updateEntities.filter((eid) => this._hacsEntities.has(eid));
+    // Sort alphabetically by display name, like native HACS (#69).
+    filtered.sort((a, b) => {
+      const na = (this._hass.states[a].attributes.friendly_name || a).toLowerCase();
+      const nb = (this._hass.states[b].attributes.friendly_name || b).toLowerCase();
+      return na.localeCompare(nb);
+    });
+    return filtered;
+  }
+
+  /* -- Type classification (#69) ------------------------------ */
+
+  _repoKey(url) {
+    const m = String(url || "").toLowerCase().match(/github\.com\/([^/]+\/[^/#?]+)/);
+    return m ? m[1].replace(/\.git$/, "") : "";
+  }
+
+  _catOf(typeStr) {
+    const t = String(typeStr || "").toLowerCase();
+    if (t.includes("integration")) return "integration";
+    if (t.includes("theme")) return "theme";
+    if (t.includes("card") || t.includes("frontend") || t.includes("plugin") || t.includes("lovelace")) return "card";
+    return "other";
+  }
+
+  // Build {repoKey|name -> category} from this integration's sensor.hacs_updates,
+  // since the HACS update.* entities themselves carry no type/category.
+  _buildTypeMap() {
+    const byRepo = {}, byName = {};
+    const s = this._hass.states["sensor.hacs_updates"];
+    const updates = (s && s.attributes && s.attributes.updates) || [];
+    for (const u of updates) {
+      const cat = this._catOf(u.type);
+      const rk = this._repoKey(u.repository);
+      if (rk) byRepo[rk] = cat;
+      if (u.name) byName[String(u.name).toLowerCase().trim()] = cat;
+    }
+    return { byRepo, byName };
+  }
+
+  _typeOf(entityId, map) {
+    const a = (this._hass.states[entityId] || {}).attributes || {};
+    const rk = this._repoKey(a.release_url);
+    if (rk && map.byRepo[rk]) return map.byRepo[rk];
+    const name = String(a.friendly_name || "").replace(/ update$/i, "").toLowerCase().trim();
+    if (name && map.byName[name]) return map.byName[name];
+    return "other";
   }
 
   /* -- Progress helper ---------------------------------------- */
@@ -201,14 +251,21 @@ class UpdateActionTrackerCard extends HTMLElement {
     const state = this._hass.states[entityId];
     if (!state) return null;
     const prog = state.attributes.in_progress;
+    // Modern HA reports the real percentage in update_percentage (in_progress
+    // is just a boolean); older entities put the number in in_progress (#66).
+    const pctAttr = state.attributes.update_percentage;
     const actionState = this._actionInProgress[entityId];
 
-    if (prog === true || (actionState && prog !== false)) {
-      return { active: true, percent: null, label: "Installing\u2026" };
+    if (typeof pctAttr === "number") {
+      const pct = Math.min(100, Math.max(0, Math.round(pctAttr)));
+      return { active: true, percent: pct, label: pct + "%" };
     }
     if (typeof prog === "number" && prog >= 0) {
       const pct = Math.min(100, Math.max(0, Math.round(prog)));
       return { active: true, percent: pct, label: pct + "%" };
+    }
+    if (prog === true || (actionState && prog !== false)) {
+      return { active: true, percent: null, label: "Installing\u2026" };
     }
     if (actionState === "skip") {
       return { active: true, percent: null, label: "Skipping\u2026" };
@@ -291,11 +348,44 @@ class UpdateActionTrackerCard extends HTMLElement {
     const entities = await this._getHacsUpdateEntities();
     const title = uatEscapeHtml(this._config.title || "HACS Update Tracker");
 
+    /* Classify each update by component type for the filter chips (#69). */
+    const typeMap = this._buildTypeMap();
+    const cats = {};
+    for (const eid of entities) {
+      const c = this._typeOf(eid, typeMap);
+      (cats[c] = cats[c] || []).push(eid);
+    }
+    const present = Object.keys(cats);
+    // Drop a stale filter (e.g. the last item of that type just updated).
+    if (this._typeFilter !== "all" && !present.includes(this._typeFilter)) {
+      this._typeFilter = "all";
+    }
+    const shown = this._typeFilter === "all" ? entities : (cats[this._typeFilter] || []);
+
     let contentHtml;
     if (entities.length === 0) {
       contentHtml = '<div class="empty"><ha-icon icon="mdi:check-circle-outline"></ha-icon><span>All HACS integrations are up to date!</span></div>';
+    } else if (shown.length === 0) {
+      contentHtml = '<div class="empty"><span>No updates of this type.</span></div>';
     } else {
-      contentHtml = entities.map((eid) => this._renderItem(eid)).join("");
+      contentHtml = shown.map((eid) => this._renderItem(eid)).join("");
+    }
+
+    /* Filter chips - only when there's more than one type to pick between. */
+    let filtersHtml = "";
+    if (entities.length > 0 && present.length > 1) {
+      const labels = { integration: "Integrations", card: "Cards", theme: "Themes", other: "Other" };
+      const order = ["integration", "card", "theme", "other"];
+      const chip = (key, lbl, n) =>
+        '<button class="chip' + (this._typeFilter === key ? " active" : "") + '" data-filter="' + key + '">' +
+        uatEscapeHtml(lbl) + ' <span class="chip-count">' + n + "</span></button>";
+      filtersHtml =
+        '<div class="filters">' +
+        chip("all", "All", entities.length) +
+        order.filter((c) => present.includes(c))
+             .map((c) => chip(c, labels[c] || c, cats[c].length))
+             .join("") +
+        "</div>";
     }
 
     const badgeClass = entities.length > 0 ? "pending" : "clean";
@@ -310,6 +400,7 @@ class UpdateActionTrackerCard extends HTMLElement {
       '<span class="title">' + title + '</span>' +
       '<span class="badge ' + badgeClass + '">' + badgeText + '</span>' +
       '</div>' +
+      filtersHtml +
       '<div class="items">' + contentHtml + '</div>' +
       '</ha-card>';
 
@@ -392,6 +483,47 @@ class UpdateActionTrackerCard extends HTMLElement {
     if (!text) return "";
     let html = uatEscapeHtml(text);
 
+    /* Alerts (#68). Render before the line-based transforms so multi-line
+       bodies survive. uatEscapeHtml escapes < > & but NOT quotes, so the
+       real escaped form is &lt;ha-alert alert-type="warning"&gt;…&lt;/ha-alert&gt;. */
+    const alertClass = (t) => {
+      const k = String(t).toLowerCase();
+      if (k === "warning") return "warning";
+      if (k === "error" || k === "danger" || k === "caution") return "error";
+      if (k === "success" || k === "tip") return "success";
+      return "info"; // note, important, info, hint, default
+    };
+    // HA alert element (any/no quotes around the type, body may span lines).
+    html = html.replace(
+      /&lt;ha-alert\s+alert-type=["']?([a-zA-Z]+)["']?\s*&gt;([\s\S]*?)&lt;\/ha-alert&gt;/g,
+      (_m, type, body) =>
+        '<div class="ha-alert ha-alert-' + alertClass(type) + '">' +
+        body.trim().replace(/\n/g, "<br>") + "</div>"
+    );
+    // GitHub-style alerts: > [!NOTE] / [!TIP] / [!IMPORTANT] / [!WARNING] / [!CAUTION]
+    html = html.replace(
+      /(?:^|\n)&gt;\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\][^\n]*\n((?:&gt;[^\n]*(?:\n|$))*)/g,
+      (_m, type, body) => {
+        const inner = body
+          .split("\n")
+          .map((l) => l.replace(/^&gt;\s?/, ""))
+          .join("<br>")
+          .replace(/(?:<br>)+$/, "")
+          .trim();
+        return '\n<div class="ha-alert ha-alert-' + alertClass(type) + '">' + inner + "</div>\n";
+      }
+    );
+
+    /* Release notes often wrap content in layout-only HTML (e.g.
+       <div align="center">). uatEscapeHtml turned those into &lt;div&gt;, which
+       would show as literal tag text — strip them (the alert <div>s above use
+       unescaped < so they're untouched). Keep <br> as a line break. */
+    html = html.replace(/&lt;br\s*\/?&gt;/gi, "<br>");
+    html = html.replace(
+      /&lt;\/?(?:div|center|p|span|details|summary|figure|picture|sub|sup)\b[^&]*?&gt;/gi,
+      ""
+    );
+
     html = html.replace(/^#### (.+)$/gm, "<h4>$1</h4>");
     html = html.replace(/^### (.+)$/gm, "<h3>$1</h3>");
     html = html.replace(/^## (.+)$/gm, "<h2>$1</h2>");
@@ -406,10 +538,6 @@ class UpdateActionTrackerCard extends HTMLElement {
       /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
       '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
     );
-    html = html.replace(
-      /&lt;ha-alert alert-type=&#039;(.+?)&#039;&gt;(.+?)&lt;\/ha-alert&gt;/g,
-      '<div class="ha-alert ha-alert-$1">$2</div>'
-    );
     html = html.replace(/\n\n/g, "</p><p>");
     html = "<p>" + html + "</p>";
     html = html.replace(/<p>\s*<\/p>/g, "");
@@ -418,6 +546,8 @@ class UpdateActionTrackerCard extends HTMLElement {
     html = html.replace(/<p>(<hr \/>)<\/p>/g, "$1");
     html = html.replace(/<p>(<ul>)/g, "$1");
     html = html.replace(/(<\/ul>)<\/p>/g, "$1");
+    html = html.replace(/<p>(<div class="ha-alert)/g, "$1");
+    html = html.replace(/(<\/div>)<\/p>/g, "$1");
     return html;
   }
 
@@ -437,6 +567,13 @@ class UpdateActionTrackerCard extends HTMLElement {
         if (action === "skip") self._handleSkip(eid);
         else if (action === "update") self._handleUpdate(eid);
         else if (action === "update_action") self._handleUpdateAndAction(eid);
+      });
+    });
+    this.shadowRoot.querySelectorAll(".chip[data-filter]").forEach(function(chip) {
+      chip.addEventListener("click", function(e) {
+        e.stopPropagation();
+        self._typeFilter = chip.getAttribute("data-filter");
+        self._doRender();
       });
     });
   }
@@ -459,6 +596,11 @@ class UpdateActionTrackerCard extends HTMLElement {
       ".badge { font-size:0.8em; padding:2px 10px; border-radius:12px; font-weight:500; color:#fff; }",
       ".badge.clean { background:var(--uat-green); }",
       ".badge.pending { background:var(--uat-orange); }",
+      ".filters { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }",
+      ".chip { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:14px; cursor:pointer; font-size:0.82em; font-family:inherit; color:var(--uat-secondary); background:var(--uat-row-bg, rgba(127,127,127,0.08)); border:1px solid var(--divider-color, rgba(127,127,127,0.2)); }",
+      ".chip:hover { background:var(--uat-row-hover, rgba(127,127,127,0.16)); }",
+      ".chip.active { background:var(--primary-color, #03a9f4); color:#fff; border-color:var(--primary-color, #03a9f4); }",
+      ".chip-count { font-size:0.85em; opacity:0.85; }",
       ".empty { display:flex; align-items:center; gap:8px; padding:16px 0; color:var(--uat-secondary); font-style:italic; }",
       ".empty ha-icon { --mdc-icon-size:24px; color:var(--uat-green); }",
       ".item { border-bottom:1px solid var(--uat-divider); }",
@@ -496,6 +638,8 @@ class UpdateActionTrackerCard extends HTMLElement {
       ".notes-content .ha-alert { padding:8px 12px; border-radius:4px; margin:8px 0; font-size:0.9em; }",
       ".notes-content .ha-alert-warning { background:rgba(255,152,0,0.15); border-left:3px solid var(--uat-orange); }",
       ".notes-content .ha-alert-error { background:rgba(244,67,54,0.15); border-left:3px solid #f44336; }",
+      ".notes-content .ha-alert-info { background:rgba(3,155,229,0.15); border-left:3px solid #039be5; }",
+      ".notes-content .ha-alert-success { background:rgba(76,175,80,0.15); border-left:3px solid #4caf50; }",
       ".release-link { margin:0 0 8px 52px; font-size:0.8em; }",
       ".release-link a { color:var(--uat-accent); text-decoration:none; }",
       ".release-link a:hover { text-decoration:underline; }",
