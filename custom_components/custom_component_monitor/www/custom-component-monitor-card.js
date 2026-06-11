@@ -2,7 +2,7 @@
  * Custom Component Monitor Card
  * A Lovelace card that displays unused HACS components.
  */
-var CARD_VERSION = "1.5.0";
+var CARD_VERSION = "1.6.2";
 
 var ALL_SECTIONS = ["integrations", "themes", "frontend"];
 
@@ -28,15 +28,17 @@ class CustomComponentMonitorCard extends HTMLElement {
   }
 
   static getStubConfig() {
-    return { title: "Custom Component Monitor", sort: "name", sections: ["integrations", "themes", "frontend"], collapsed_by_default: false };
+    return { title: "Custom Component Monitor", sort: "name", show: "unused", sections: ["integrations", "themes", "frontend"], collapsed_by_default: false };
   }
 
   setConfig(config) {
     this._config = Object.assign(
-      { title: "Custom Component Monitor", sort: "name", sections: ALL_SECTIONS.slice(), collapsed_by_default: false },
+      { title: "Custom Component Monitor", sort: "name", show: "unused", sections: ALL_SECTIONS.slice(), collapsed_by_default: false },
       config
     );
     this._sortMode = this._config.sort || "name";
+    // #41: which components to list - "unused" | "all" | "used".
+    this._showMode = ["unused", "all", "used"].indexOf(this._config.show) !== -1 ? this._config.show : "unused";
     this._lastDataJSON = "";
     if (this._hass) { this._render(); }
   }
@@ -146,6 +148,10 @@ class CustomComponentMonitorCard extends HTMLElement {
       ? "Sorted by days installed - click to sort by name"
       : "Sorted by name - click to sort by days installed";
 
+    var showLabels = { unused: "Unused", all: "All", used: "Used" };
+    var showIcons = { unused: "mdi:eye-off-outline", all: "mdi:eye-outline", used: "mdi:eye-check-outline" };
+    var showTip = "Showing: " + showLabels[this._showMode] + " - click to cycle (Unused / All / Used)";
+
     this.shadowRoot.innerHTML = [
       "<style>",
       ":host {",
@@ -174,6 +180,11 @@ class CustomComponentMonitorCard extends HTMLElement {
       ".sort-toggle:hover { background:var(--divider); }",
       ".sort-toggle:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }",
       ".sort-toggle ha-icon { --mdc-icon-size:20px; }",
+      ".show-toggle { display:inline-flex; align-items:center; gap:4px; color:var(--accent); cursor:pointer; padding:4px 6px; border:none; background:none; border-radius:4px; user-select:none; flex-shrink:0; font-family:inherit; font-size:0.8em; }",
+      ".show-toggle:hover { background:var(--divider); }",
+      ".show-toggle:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }",
+      ".show-toggle ha-icon { --mdc-icon-size:18px; }",
+      ".show-label { font-size:0.95em; }",
       ".section { margin-bottom:12px; }",
       ".section-header { display:flex; align-items:center; gap:6px; padding:6px 0; font-weight:500; font-size:0.95em; color:var(--primary); cursor:pointer; user-select:none; }",
       ".section-header ha-icon { --mdc-icon-size:18px; color:var(--secondary); }",
@@ -186,6 +197,7 @@ class CustomComponentMonitorCard extends HTMLElement {
       ".item:last-child { border-bottom:none; }",
       ".dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }",
       ".dot.unused { background:var(--red); }",
+      ".dot.used { background:var(--green); }",
       ".item-info { flex:1; min-width:0; }",
       ".item-name { font-size:0.9em; color:var(--primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }",
       ".item-detail { font-size:0.75em; color:var(--secondary); }",
@@ -198,6 +210,7 @@ class CustomComponentMonitorCard extends HTMLElement {
       '  <div class="header">',
       '    <span class="title">' + _ccm_escapeHtml(this._config.title) + "</span>",
       '    <div class="header-right">',
+      '      <button type="button" class="show-toggle" title="' + showTip + '" aria-label="' + showTip + '"><ha-icon icon="' + showIcons[this._showMode] + '"></ha-icon><span class="show-label">' + showLabels[this._showMode] + "</span></button>",
       '      <button type="button" class="sort-toggle" title="' + sortTooltip + '" aria-label="' + sortTooltip + '"><ha-icon icon="' + sortIcon + '"></ha-icon></button>',
       "      " + badgeHtml,
       "    </div>",
@@ -243,6 +256,46 @@ class CustomComponentMonitorCard extends HTMLElement {
         self._render();
       });
     }
+
+    var showBtn = this.shadowRoot.querySelector(".show-toggle");
+    if (showBtn) {
+      showBtn.addEventListener("click", function() {
+        var order = ["unused", "all", "used"];
+        self._showMode = order[(order.indexOf(self._showMode) + 1) % order.length];
+        self._lastDataJSON = "";
+        self._render();
+      });
+    }
+  }
+
+  _sectionItems(section) {
+    // Items to display for this section per _showMode, each tagged _unused (#41).
+    var sensor = section.sensor;
+    var unused = (sensor && sensor.attributes.unused_components) || [];
+    var unusedByName = {};
+    for (var u = 0; u < unused.length; u++) {
+      unusedByName[(unused[u].name || "").toLowerCase()] = unused[u];
+    }
+    if (this._showMode === "unused") {
+      return unused.map(function(it) { var c = Object.assign({}, it); c._unused = true; return c; });
+    }
+    // "all" / "used": source from the full installed-components sensor, by type.
+    var allSensor = this._getSensor("sensor.hacs_installed_components");
+    var allComps = (allSensor && allSensor.attributes.components) || [];
+    var typeFor = { integrations: "Integration", themes: "Theme", frontend: "Frontend / Card" }[section.key];
+    var items = [];
+    for (var i = 0; i < allComps.length; i++) {
+      var c = allComps[i];
+      if (c.type !== typeFor) { continue; }
+      var key = (c.name || "").toLowerCase();
+      var isUnused = unusedByName.hasOwnProperty(key);
+      if (this._showMode === "used" && isUnused) { continue; }
+      var item = Object.assign({}, c);
+      if (isUnused) { item = Object.assign(item, unusedByName[key]); }
+      item._unused = isUnused;
+      items.push(item);
+    }
+    return items;
   }
 
   _renderSection(section) {
@@ -260,9 +313,10 @@ class CustomComponentMonitorCard extends HTMLElement {
     }
 
     var attrs = sensor.attributes;
-    var unused = attrs.unused_components || [];
     var total = attrs.total_components || 0;
     var unusedCount = parseInt(sensor.state, 10) || 0;
+
+    var sorted = this._sortItems(this._sectionItems(section));
 
     var isOpen;
     if (this._collapsed.hasOwnProperty(section.key)) {
@@ -270,19 +324,22 @@ class CustomComponentMonitorCard extends HTMLElement {
     } else if (this._config.collapsed_by_default) {
       isOpen = false;
     } else {
-      isOpen = unusedCount > 0;
+      isOpen = (this._showMode === "unused") ? unusedCount > 0 : sorted.length > 0;
     }
     var openClass = isOpen ? " open" : "";
 
-    var sorted = this._sortItems(unused);
     var itemsHtml = "";
     if (sorted.length === 0) {
-      itemsHtml = '<div class="empty-msg">No unused items</div>';
+      itemsHtml = '<div class="empty-msg">' + (this._showMode === "unused" ? "No unused items" : "No items") + "</div>";
     } else {
       for (var i = 0; i < sorted.length; i++) {
         itemsHtml += this._renderItem(sorted[i], section.detailKey);
       }
     }
+
+    var counts = (this._showMode === "unused")
+      ? (unusedCount + " unused / " + total + " total")
+      : (sorted.length + " " + this._showMode + " / " + total + " total");
 
     return [
       '<div class="section">',
@@ -290,7 +347,7 @@ class CustomComponentMonitorCard extends HTMLElement {
       '    <span class="arrow' + openClass + '">&#9654;</span>',
       '    <ha-icon icon="' + section.icon + '"></ha-icon>',
       "    " + section.label,
-      '    <span class="counts">' + unusedCount + " unused / " + total + " total</span>",
+      '    <span class="counts">' + counts + "</span>",
       "  </div>",
       '  <div class="items' + openClass + '">',
       itemsHtml,
@@ -318,7 +375,7 @@ class CustomComponentMonitorCard extends HTMLElement {
 
     return [
       '<div class="item">',
-      '  <span class="dot unused"></span>',
+      '  <span class="dot ' + (item._unused ? "unused" : "used") + '"></span>',
       '  <div class="item-info">',
       '    <div class="item-name">' + _ccm_escapeHtml(item.name || "Unknown") + "</div>",
       '    <div class="item-detail">' + _ccm_escapeHtml(detail) + sep1 + repoLink + versionStr + "</div>",

@@ -14,7 +14,11 @@ ATTR_COMPONENTS = "components"
 ATTR_TOTAL_COMPONENTS = "total_components"
 ATTR_USED_COMPONENTS = "used_components"
 ATTR_UNUSED_COMPONENTS = "unused_components"
+ATTR_EXCLUDED_COMPONENTS = "excluded_components"
 ATTR_UPDATES = "updates"
+
+# Options
+CONF_EXCLUDE = "exclude"  # user-maintained list of components to treat as used (#70)
 
 # HACS category to display type mapping
 CATEGORY_MAP = {

@@ -13,6 +13,17 @@
       "single_instance_allowed": "Only a single configuration is allowed."
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Custom Component Monitor options",
+        "description": "Exclude components that are actually in use but get flagged as unused. Pick from the currently-unused list, or type a name/domain for anything else.",
+        "data": {
+          "exclude": "Excluded components"
+        }
+      }
+    }
+  },
   "entity": {
     "sensor": {
       "all_hacs_components": {

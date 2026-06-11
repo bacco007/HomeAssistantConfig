@@ -23,11 +23,13 @@ from homeassistant.util import dt as dt_util
 
 from .const import (
     ATTR_COMPONENTS,
+    ATTR_EXCLUDED_COMPONENTS,
     ATTR_TOTAL_COMPONENTS,
     ATTR_UNUSED_COMPONENTS,
     ATTR_UPDATES,
     ATTR_USED_COMPONENTS,
     CATEGORY_MAP,
+    CONF_EXCLUDE,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     SENSOR_ALL_COMPONENTS,
@@ -104,7 +106,14 @@ class ComponentScanner:
         except (yaml.YAMLError, OSError):
             return []
         lovelace = raw.get("lovelace", {}) or {}
+        # `lovelace:` / `dashboards:` may be a string (e.g. `dashboards: !include
+        # dashboards.yaml`, which our loader represents as a scalar) rather than a
+        # mapping. Guard so the whole scan doesn't abort (#54).
+        if not isinstance(lovelace, dict):
+            return []
         dashboards = lovelace.get("dashboards", {}) or {}
+        if not isinstance(dashboards, dict):
+            dashboards = {}
         paths: list[Path] = []
         for dash_cfg in dashboards.values():
             if not isinstance(dash_cfg, dict):
@@ -507,17 +516,32 @@ class ComponentScanner:
                     stem = js_file.stem.lower()
                     if stem not in names and not stem.endswith(".gz"):
                         names.append(stem)
+                    # Strip common packaging suffixes so e.g.
+                    # "mini-media-player-bundle" → "mini-media-player" (#60).
+                    for suf in ("-bundle", "-min", ".min", "-umd", "-esm"):
+                        if stem.endswith(suf):
+                            base = stem[: -len(suf)]
+                            if base and base not in names:
+                                names.append(base)
                     # Extract actual registered custom element names from JS
                     ce_names = self._extract_custom_elements(js_file)
                     for ce in ce_names:
                         if ce not in names:
                             names.append(ce)
 
+        # 2b) The repo name itself is very commonly the card type, even when the
+        #     main element is registered via a non-literal the JS scan can't see
+        #     (e.g. mini-media-player). Add it (and prefix-stripped form) (#60).
+        repo_name = repo_short.lower()
+        for cand in (repo_name, repo_name[3:] if repo_name.startswith("ha-") else ""):
+            if cand and cand not in names:
+                names.append(cand)
+
         # 3) Add prefix-stripped variants for every name collected so far
         #    (e.g. "lovelace-horizon-card" → "horizon-card")
         stripped_extras: list[str] = []
         for n in names:
-            for prefix in ("lovelace-", "ha-"):
+            for prefix in ("ll-strategy-", "lovelace-", "ha-"):
                 if n.startswith(prefix):
                     stripped = n[len(prefix):]
                     if stripped and stripped not in names and stripped not in stripped_extras:
@@ -527,7 +551,7 @@ class ComponentScanner:
         # 4) Fall back to repo short name if nothing found
         if not names:
             stripped = repo_short.lower()
-            for prefix in ("lovelace-", "ha-"):
+            for prefix in ("ll-strategy-", "lovelace-", "ha-"):
                 if stripped.startswith(prefix):
                     stripped = stripped[len(prefix):]
             names.append(stripped)
@@ -691,6 +715,17 @@ class ComponentScanner:
             _scan_yaml_dashboards
         )
         used |= yaml_prefixes
+
+        # Also scan live entity states: integrations can set a custom icon at
+        # runtime (e.g. thermal_comfort applies `icon: tc:…`), which never lands
+        # in the entity registry on disk but is visible on the entity state (#56).
+        prefix_re = re.compile(r"[a-z][a-z0-9_-]*$")
+        for state in self.hass.states.async_all():
+            icon = state.attributes.get("icon")
+            if isinstance(icon, str) and ":" in icon:
+                prefix = icon.split(":", 1)[0].strip().lower()
+                if prefix and prefix not in builtin and prefix_re.match(prefix):
+                    used.add(prefix)
 
         _LOGGER.debug("Used icon prefixes: %s", used)
         return used
@@ -1144,15 +1179,45 @@ class ComponentScanner:
 class CustomComponentMonitorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Coordinator that drives periodic scans."""
 
-    def __init__(self, hass: HomeAssistant) -> None:
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry | None = None) -> None:
         """Initialize."""
         self.scanner = ComponentScanner(hass)
+        self.entry = entry
         super().__init__(
             hass,
             _LOGGER,
             name=DOMAIN,
             update_interval=SCAN_INTERVAL,
         )
+
+    def _excluded_keys(self) -> set[str]:
+        """Lower-cased set of user-excluded component identifiers (#70)."""
+        raw = (self.entry.options.get(CONF_EXCLUDE, []) if self.entry else []) or []
+        if isinstance(raw, str):
+            raw = [raw]
+        return {str(x).strip().lower() for x in raw if str(x).strip()}
+
+    def _apply_exclusions(self, result: dict[str, Any]) -> dict[str, Any]:
+        """Move user-excluded components out of ``unused`` into ``used`` and
+        record them under ``excluded`` (#70)."""
+        excl = self._excluded_keys()
+        moved: list[dict[str, Any]] = []
+        if excl:
+            kept: list[dict[str, Any]] = []
+            for item in result.get("unused", []):
+                keys = {
+                    str(item.get(k, "")).strip().lower()
+                    for k in ("name", "domain", "card_type")
+                    if item.get(k)
+                }
+                if keys & excl:
+                    moved.append(item)
+                else:
+                    kept.append(item)
+            result["unused"] = kept
+            result["used"] = result.get("used", []) + moved
+        result["excluded"] = moved
+        return result
 
     async def _async_update_data(self) -> dict[str, Any]:
         """Fetch data from HACS storage."""
@@ -1164,7 +1229,7 @@ class CustomComponentMonitorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 "Scanned %d HACS-installed components", len(all_components)
             )
 
-            themes = await self.scanner.scan_themes()
+            themes = self._apply_exclusions(await self.scanner.scan_themes())
             _LOGGER.debug(
                 "Theme scan: %d total, %d used, %d unused",
                 themes["total"],
@@ -1172,7 +1237,7 @@ class CustomComponentMonitorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 len(themes["unused"]),
             )
 
-            frontend = await self.scanner.scan_frontend()
+            frontend = self._apply_exclusions(await self.scanner.scan_frontend())
             _LOGGER.debug(
                 "Frontend scan: %d total, %d used, %d unused",
                 frontend["total"],
@@ -1180,7 +1245,7 @@ class CustomComponentMonitorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 len(frontend["unused"]),
             )
 
-            integrations = await self.scanner.scan_integrations()
+            integrations = self._apply_exclusions(await self.scanner.scan_integrations())
             _LOGGER.debug(
                 "Integration scan: %d total, %d used, %d unused",
                 integrations["total"],
@@ -1249,7 +1314,7 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the sensor platform."""
-    coordinator = CustomComponentMonitorCoordinator(hass)
+    coordinator = CustomComponentMonitorCoordinator(hass, config_entry)
     try:
         await coordinator.async_config_entry_first_refresh()
     except Exception as exc:
@@ -1343,6 +1408,7 @@ class CustomComponentMonitorSensor(CoordinatorEntity, SensorEntity):
             attrs[ATTR_TOTAL_COMPONENTS] = data.get("total", 0)
             attrs[ATTR_USED_COMPONENTS] = len(data.get("used", []))
             attrs[ATTR_UNUSED_COMPONENTS] = data.get("unused", [])
+            attrs[ATTR_EXCLUDED_COMPONENTS] = data.get("excluded", [])
 
         elif key == SENSOR_HACS_UPDATES:
             data = self.coordinator.data.get("updates", {})

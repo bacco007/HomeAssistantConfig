@@ -142,12 +142,20 @@ async def _async_get_release_notes(hass: HomeAssistant, entity_id: str) -> str |
     return None
 
 
+async def _async_options_updated(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Reload the entry so an exclusion-list change re-runs the scan (#70)."""
+    await hass.config_entries.async_reload(entry.entry_id)
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Custom Component Monitor from a config entry."""
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = {}
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+    # Re-scan when the exclusion list (options) changes (#70).
+    entry.async_on_unload(entry.add_update_listener(_async_options_updated))
 
     # --- scan_now service ---
     if not hass.services.has_service(DOMAIN, SERVICE_SCAN_NOW):
