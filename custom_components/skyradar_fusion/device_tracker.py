@@ -1,6 +1,6 @@
 """Device tracker platform for SkyRadar Fusion."""
 
-from homeassistant.components.device_tracker.config_entry import TrackerEntity
+from homeassistant.components.device_tracker import TrackerEntity
 from homeassistant.components.device_tracker.const import SourceType
 from homeassistant.core import callback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity

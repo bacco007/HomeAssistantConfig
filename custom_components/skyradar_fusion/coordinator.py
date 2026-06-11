@@ -131,6 +131,9 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
             "lon",
             "oat",
             "tat",
+            "dbFlags",  # Added new field
+            "ownOp",  # Added new field
+            "year",  # Added new field
         ]
         cleaned = {
             k: ac.get(k)
@@ -615,9 +618,6 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
                                     }
                                 )
 
-                            # --- DE CRUCIALE FIX ---
-                            # Als FR24 het vliegtuig alsnog heeft gevonden en gered, trekken we direct
-                            # het Offline label eraf, zodat hij netjes het geheugen in kan stromen!
                             if target.get("is_offline"):
                                 target.pop("is_offline", None)
                             if target.get("flight") == "Offline":
@@ -629,7 +629,6 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
                     target["gs"] = 0
                     target["baro_rate"] = 0
 
-            # --- START ANTI-FLICKER & COASTING MEMORY ---
             current_time = dt_util.now().timestamp()
 
             for target in filtered_aircraft + list(unique_map_targets):
@@ -639,7 +638,6 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
 
                 is_placeholder = target.get("is_offline", False)
 
-                # 1. Update memory ONLY if we actually received real live data
                 if not is_placeholder:
                     if tid not in self.tracker_memory:
                         self.tracker_memory[tid] = {"data": {}}
@@ -652,14 +650,12 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
                         ):
                             self.tracker_memory[tid]["data"][k] = v
 
-                # 2. Apply Coasting ONLY if memory actually exists and is fresh
                 if tid in self.tracker_memory:
                     time_since_seen = (
                         current_time - self.tracker_memory[tid]["last_seen"]
                     )
 
                     if time_since_seen < 300:
-                        # Revive the placeholder into a tracked aircraft!
                         if is_placeholder:
                             target.pop("is_offline", None)
                             target["flight"] = self.tracker_memory[tid]["data"].get(
@@ -675,7 +671,6 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
                                 "on_ground", False
                             )
 
-                        # Smooth out flickering fields
                         for k, v in self.tracker_memory[tid]["data"].items():
                             if (
                                 target.get(k) is None
@@ -685,16 +680,13 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
                             ):
                                 target[k] = v
 
-            # 3. Garbage Collection for long offline targets
             expired_keys = []
             for tid, mem in self.tracker_memory.items():
                 if current_time - mem["last_seen"] > 300:
                     expired_keys.append(tid)
             for tid in expired_keys:
                 del self.tracker_memory[tid]
-            # --- END ANTI-FLICKER & COASTING MEMORY ---
 
-            # --- START MEMORY BUFFER ---
             for ac in filtered_aircraft:
                 hex_code = ac.get("hex")
                 if hex_code:
@@ -709,9 +701,7 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
 
             self.recent_history = self.recent_history[:50]
             self.store.async_delay_save(lambda: self.recent_history, 60)
-            # --- END MEMORY BUFFER ---
 
-            # --- START EVENT FIRING ---
             if self.previous_hexes is not None:
                 new_hexes = current_hexes - self.previous_hexes
                 exited_hexes = self.previous_hexes - current_hexes
@@ -734,7 +724,6 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
                 self.exited_area = 0
 
             self.previous_hexes = current_hexes
-            # --- END EVENT FIRING ---
 
             self.consecutive_errors = 0
             self.last_update_status = "Success"
