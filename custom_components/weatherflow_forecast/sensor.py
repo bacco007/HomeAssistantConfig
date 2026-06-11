@@ -415,8 +415,8 @@ SENSOR_TYPES: tuple[WeatherFlowSensorEntityDescription, ...] = (
         key="wind_direction",
         name="Wind Direction",
         native_unit_of_measurement=DEGREE,
-        state_class=SensorStateClass.MEASUREMENT,
-        icon="mdi:compass",
+        device_class=SensorDeviceClass.WIND_DIRECTION,
+        state_class=SensorStateClass.MEASUREMENT_ANGLE,
     ),
     WeatherFlowSensorEntityDescription(
         key="wind_gust",
