@@ -66,7 +66,7 @@ describe('weather_forecast export_sensors', () => {
         expect(output).toContain('entity_id: weather.garden');
         expect(output).toContain("name: 'Weather Forecast Hour 0900 High'");
         expect(output).toContain("name: 'Weather Forecast Hour 1200 High'");
-        expect(output).toContain("{{ hit.condition if hit else 'unknown' }}");
+        expect(output).toContain("{{ ns.hit.condition if ns.hit else 'unknown' }}");
     });
 
     it('exports relative hourly template sensors and tracks required fonts/icons', () => {
@@ -89,10 +89,10 @@ describe('weather_forecast export_sensors', () => {
         });
 
         const output = lines.join('\n');
-        expect(output).toContain("name: 'Weather Forecast Plus 2h'");
+        expect(output).toContain("name: 'Weather Forecast Plus 2h High'");
         expect(output).toContain("timedelta(hours=2)");
         expect(output).toContain("weather_forecast_plus_2h_condition");
-        expect(output).toContain("{{ hit.condition if hit else 'unknown' }}");
+        expect(output).toContain("{{ ns.hit.condition if ns.hit else 'unknown' }}");
 
         const addFont = vi.fn();
         const trackIcon = vi.fn();

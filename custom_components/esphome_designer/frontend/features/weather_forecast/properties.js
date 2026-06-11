@@ -103,7 +103,7 @@ template:
                 const relativeCount = parseInt(String(props.relative_count || 5), 10);
                 for (let index = 1; index <= relativeCount; index += 1) {
                     yaml += `
-      - name: 'Weather Forecast Plus ${index}h'
+      - name: 'Weather Forecast Plus ${index}h High'
         unique_id: weather_forecast_plus_${index}h_high
         default_entity_id: sensor.weather_forecast_plus_${index}h_high
         unit_of_measurement: '${unitSymbol}'

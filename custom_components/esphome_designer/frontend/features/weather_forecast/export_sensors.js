@@ -261,39 +261,66 @@ export const onExportTextSensors = (context) => {
 
             sortedSlots.forEach(slot => {
                 if (isRelative) {
-                    lines.push(`#       - name: 'Weather Forecast Plus ${slot}h'`);
+                    lines.push(`#       - name: 'Weather Forecast Plus ${slot}h High'`);
                     lines.push(`#         unique_id: weather_forecast_plus_${slot}h_high`);
                     lines.push(`#         default_entity_id: sensor.weather_forecast_plus_${slot}h_high`);
                     lines.push(`#         unit_of_measurement: '${unitSymbol}'`);
                     lines.push(`#         state: >`);
                     lines.push(`#           {% set fc = hourly['${config.entity}'].forecast %}`);
-                    lines.push(`#           {% set target = (now() + timedelta(hours=${slot})).strftime('%Y-%m-%dT%H:00:00') %}`);
-                    lines.push(`#           {% set hit = fc | selectattr('datetime','search',target) | list | first %}`);
-                    lines.push(`#           {{ hit.temperature if hit else 'N/A' }}`);
+                    lines.push(`#           {% set target = as_timestamp((now() + timedelta(hours=${slot})).replace(minute=0, second=0, microsecond=0)) %}`);
+                    lines.push(`#           {% set ns = namespace(hit=none) %}`);
+                    lines.push(`#           {% for f in fc if ns.hit is none %}`);
+                    lines.push(`#             {% if as_timestamp(f.datetime) == target %}`);
+                    lines.push(`#               {% set ns.hit = f %}`);
+                    lines.push(`#             {% endif %}`);
+                    lines.push(`#           {% endfor %}`);
+                    lines.push(`#           {{ ns.hit.temperature if ns.hit else 'N/A' }}`);
                     lines.push(`#       - name: 'Weather Forecast Plus ${slot}h Condition'`);
                     lines.push(`#         unique_id: weather_forecast_plus_${slot}h_condition`);
                     lines.push(`#         default_entity_id: sensor.weather_forecast_plus_${slot}h_condition`);
                     lines.push(`#         state: >`);
                     lines.push(`#           {% set fc = hourly['${config.entity}'].forecast %}`);
-                    lines.push(`#           {% set target = (now() + timedelta(hours=${slot})).strftime('%Y-%m-%dT%H:00:00') %}`);
-                    lines.push(`#           {% set hit = fc | selectattr('datetime','search',target) | list | first %}`);
-                    lines.push(`#           {{ hit.condition if hit else 'unknown' }}`);
+                    lines.push(`#           {% set target = as_timestamp((now() + timedelta(hours=${slot})).replace(minute=0, second=0, microsecond=0)) %}`);
+                    lines.push(`#           {% set ns = namespace(hit=none) %}`);
+                    lines.push(`#           {% for f in fc if ns.hit is none %}`);
+                    lines.push(`#             {% if as_timestamp(f.datetime) == target %}`);
+                    lines.push(`#               {% set ns.hit = f %}`);
+                    lines.push(`#             {% endif %}`);
+                    lines.push(`#           {% endfor %}`);
+                    lines.push(`#           {{ ns.hit.condition if ns.hit else 'unknown' }}`);
                 } else {
+                    const paddedSlot = String(slot).padStart(2, '0');
                     lines.push(`#       - name: 'Weather Forecast Hour ${slot}00 High'`);
                     lines.push(`#         unique_id: weather_forecast_hour_${slot}00_high`);
                     lines.push(`#         default_entity_id: sensor.weather_forecast_hour_${slot}00_high`);
                     lines.push(`#         unit_of_measurement: '${unitSymbol}'`);
                     lines.push(`#         state: >`);
                     lines.push(`#           {% set fc = hourly['${config.entity}'].forecast %}`);
-                    lines.push(`#           {% set hit = fc | selectattr('datetime','search','T${slot}:') | list | first %}`);
-                    lines.push(`#           {{ hit.temperature if hit else 'N/A' }}`);
+                    lines.push(`#           {% set target = today_at('${paddedSlot}:00') %}`);
+                    lines.push(`#           {% set target = target + timedelta(days=1) if now() > target + timedelta(hours=1) else target %}`);
+                    lines.push(`#           {% set target_ts = as_timestamp(target) %}`);
+                    lines.push(`#           {% set ns = namespace(hit=none) %}`);
+                    lines.push(`#           {% for f in fc if ns.hit is none %}`);
+                    lines.push(`#             {% if as_timestamp(f.datetime) == target_ts %}`);
+                    lines.push(`#               {% set ns.hit = f %}`);
+                    lines.push(`#             {% endif %}`);
+                    lines.push(`#           {% endfor %}`);
+                    lines.push(`#           {{ ns.hit.temperature if ns.hit else 'N/A' }}`);
                     lines.push(`#       - name: 'Weather Forecast Hour ${slot}00 Condition'`);
                     lines.push(`#         unique_id: weather_forecast_hour_${slot}00_condition`);
                     lines.push(`#         default_entity_id: sensor.weather_forecast_hour_${slot}00_condition`);
                     lines.push(`#         state: >`);
                     lines.push(`#           {% set fc = hourly['${config.entity}'].forecast %}`);
-                    lines.push(`#           {% set hit = fc | selectattr('datetime','search','T${slot}:') | list | first %}`);
-                    lines.push(`#           {{ hit.condition if hit else 'unknown' }}`);
+                    lines.push(`#           {% set target = today_at('${paddedSlot}:00') %}`);
+                    lines.push(`#           {% set target = target + timedelta(days=1) if now() > target + timedelta(hours=1) else target %}`);
+                    lines.push(`#           {% set target_ts = as_timestamp(target) %}`);
+                    lines.push(`#           {% set ns = namespace(hit=none) %}`);
+                    lines.push(`#           {% for f in fc if ns.hit is none %}`);
+                    lines.push(`#             {% if as_timestamp(f.datetime) == target_ts %}`);
+                    lines.push(`#               {% set ns.hit = f %}`);
+                    lines.push(`#             {% endif %}`);
+                    lines.push(`#           {% endfor %}`);
+                    lines.push(`#           {{ ns.hit.condition if ns.hit else 'unknown' }}`);
                 }
             });
         } else {

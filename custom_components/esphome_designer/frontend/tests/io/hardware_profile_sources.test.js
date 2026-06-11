@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { parseHardwareRecipeClientSide } from '../../js/io/hardware_profile_sources.js';
 import geekMagicMiniYaml from '../../hardware/geekmagic-mini-esp8266.yaml?raw';
+import guitionP4Yaml from '../../hardware/guition-esp32-p4-jc4880p443.yaml?raw';
+import guitionP4LargeYaml from '../../hardware/guition-esp32-p4-jc8012p4a1c.yaml?raw';
 import m5stackTab5Yaml from '../../hardware/m5stack-tab5.yaml?raw';
 import sunton2432s028Yaml from '../../hardware/sunton-esp32-2432s028.yaml?raw';
 import sunton2432s028RYaml from '../../hardware/sunton-esp32-2432s028R.yaml?raw';
@@ -99,6 +101,54 @@ display:
         expect(profile.board).toBe('esp32-p4-evboard');
         expect(profile.displayPlatform).toBe('mipi_dsi');
         expect(profile.displayModel).toBe('M5STACK-TAB5-V2');
+        expect(profile.features.psram).toBe(true);
+        expect(profile.features.touch).toBe(true);
+        expect(profile.features.lcd).toBe(true);
+    });
+
+    it('parses the Guition JC4880P443 bundled recipe with required ESP32-P4 support blocks', () => {
+        expect(guitionP4Yaml).toContain('esp_ldo:');
+        expect(guitionP4Yaml).toContain('esp32_hosted:');
+        expect(guitionP4Yaml).toContain('mode: hex');
+        expect(guitionP4Yaml).toContain('speed: 200MHz');
+        expect(guitionP4Yaml).toContain('pin: GPIO23');
+        expect(guitionP4Yaml).toContain('id: main_display');
+        expect(guitionP4Yaml).toContain('reset_pin: GPIO27');
+        expect(guitionP4Yaml).toContain('id: device_touchscreen');
+        expect(guitionP4Yaml).toContain('audio_dac:');
+
+        const profile = parseHardwareRecipeClientSide(guitionP4Yaml, 'guition-esp32-p4-jc4880p443.yaml');
+
+        expect(profile.name).toBe('Guition ESP32-P4 JC4880P443');
+        expect(profile.resolution).toEqual({ width: 480, height: 800 });
+        expect(profile.chip).toBe('esp32-p4');
+        expect(profile.board).toBe('esp32-p4-evboard');
+        expect(profile.displayPlatform).toBe('mipi_dsi');
+        expect(profile.displayModel).toBe('JC4880P443');
+        expect(profile.features.psram).toBe(true);
+        expect(profile.features.touch).toBe(true);
+        expect(profile.features.lcd).toBe(true);
+    });
+
+    it('parses the Guition JC8012P4A1C bundled recipe with required ESP32-P4 support blocks', () => {
+        expect(guitionP4LargeYaml).toContain('esp_ldo:');
+        expect(guitionP4LargeYaml).toContain('esp32_hosted:');
+        expect(guitionP4LargeYaml).toContain('mode: hex');
+        expect(guitionP4LargeYaml).toContain('speed: 200MHz');
+        expect(guitionP4LargeYaml).toContain('model: JC8012P4A1');
+        expect(guitionP4LargeYaml).toContain('rotation: 90');
+        expect(guitionP4LargeYaml).toContain('id: main_display');
+        expect(guitionP4LargeYaml).toContain('id: device_touchscreen');
+        expect(guitionP4LargeYaml).toContain('audio_dac:');
+
+        const profile = parseHardwareRecipeClientSide(guitionP4LargeYaml, 'guition-esp32-p4-jc8012p4a1c.yaml');
+
+        expect(profile.name).toBe('Guition ESP32-P4 JC8012P4A1C');
+        expect(profile.resolution).toEqual({ width: 800, height: 1280 });
+        expect(profile.chip).toBe('esp32-p4');
+        expect(profile.board).toBe('esp32-p4-evboard');
+        expect(profile.displayPlatform).toBe('mipi_dsi');
+        expect(profile.displayModel).toBe('JC8012P4A1');
         expect(profile.features.psram).toBe(true);
         expect(profile.features.touch).toBe(true);
         expect(profile.features.lcd).toBe(true);

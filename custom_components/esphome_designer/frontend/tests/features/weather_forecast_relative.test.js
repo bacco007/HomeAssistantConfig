@@ -90,7 +90,7 @@ describe('weather_forecast widget relative hourly mode', () => {
         expect(textOut).toContain('sensor.weather_forecast_plus_2h_condition');
 
         // Check the HA YAML template auto-generation
-        expect(textOut).toContain("name: 'Weather Forecast Plus 1h'");
+        expect(textOut).toContain("name: 'Weather Forecast Plus 1h High'");
         expect(textOut).toContain("timedelta(hours=1)");
     });
 

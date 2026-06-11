@@ -165,6 +165,7 @@ describe('weather_forecast render and properties', () => {
         expect(panel.labels).toContain('Temp Precision');
         expect(navigator.clipboard.writeText).toHaveBeenCalled();
         const copiedText = navigator.clipboard.writeText.mock.calls[0][0];
+        expect(copiedText).toContain("name: 'Weather Forecast Plus 1h High'");
         expect(copiedText).toContain('weather_forecast_plus_1h_high');
         expect(copiedText).toContain('default_entity_id: sensor.weather_forecast_plus_1h_high');
         expect(copiedText).toContain('default_entity_id: sensor.weather_forecast_plus_1h_condition');
