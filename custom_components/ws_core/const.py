@@ -2,7 +2,7 @@
 
 DOMAIN = "ws_core"
 
-PLATFORMS = ["sensor", "binary_sensor", "weather", "select", "switch", "number"]
+PLATFORMS = ["sensor", "binary_sensor", "weather", "select", "switch", "number", "event"]
 
 # ---------------------------------------------------------------------------
 # Configuration keys
@@ -28,8 +28,11 @@ FORECAST_PROVIDER_NWS = "nws_noaa"
 FORECAST_PROVIDER_OWM = "openweathermap"
 FORECAST_PROVIDER_PIRATE = "pirate_weather"
 FORECAST_PROVIDER_METEO_FRANCE = "meteo_france"
+FORECAST_PROVIDER_HA_ENTITY = "ha_weather_entity"
 PROVIDERS_REQUIRING_API_KEY: set[str] = {"openweathermap", "pirate_weather", "meteo_france"}
+PROVIDERS_REQUIRING_ENTITY: set[str] = {"ha_weather_entity"}
 DEFAULT_FORECAST_PROVIDER = FORECAST_PROVIDER_OPEN_METEO
+CONF_FORECAST_ENTITY = "forecast_entity"  # entity_id of the HA weather.* entity used as provider
 
 # Alert & heuristic options (stored in canonical metric units internally)
 CONF_THRESH_WIND_GUST_MS = "thresh_wind_gust_ms"
@@ -167,6 +170,7 @@ KEY_DATA_QUALITY = "data_quality"
 KEY_PACKAGE_STATUS = "package_status"
 KEY_PACKAGE_OK = "package_ok"
 KEY_FORECAST = "forecast"
+KEY_FORECAST_PROVIDER = "forecast_provider"
 
 # Keys for ADVANCED METEOROLOGICAL SENSORS
 KEY_FEELS_LIKE_C = "feels_like_c"
@@ -258,9 +262,27 @@ SRC_UV = "uv_index"
 SRC_DEW_POINT = "dew_point"
 SRC_BATTERY = "battery"
 SRC_SOLAR_RADIATION = "solar_radiation"  # W/m², optional
+# v2.0 optional source inputs (defined here so OPTIONAL_SOURCES can reference
+# them; the v2.0 feature sections below reuse these same names).
+SRC_LIGHTNING_COUNT = "lightning_count"  # cumulative strike count
+SRC_LIGHTNING_DISTANCE = "lightning_dist"  # nearest strike distance (km)
+SRC_INDOOR_TEMP = "indoor_temp"
+SRC_INDOOR_HUMIDITY = "indoor_humidity"
+SRC_INDOOR_CO2 = "indoor_co2"
 
 REQUIRED_SOURCES = [SRC_TEMP, SRC_HUM, SRC_PRESS, SRC_WIND, SRC_GUST, SRC_WIND_DIR, SRC_RAIN_TOTAL]
-OPTIONAL_SOURCES = [SRC_LUX, SRC_UV, SRC_DEW_POINT, SRC_BATTERY, SRC_SOLAR_RADIATION]
+OPTIONAL_SOURCES = [
+    SRC_LUX,
+    SRC_UV,
+    SRC_DEW_POINT,
+    SRC_BATTERY,
+    SRC_SOLAR_RADIATION,
+    SRC_LIGHTNING_COUNT,
+    SRC_LIGHTNING_DISTANCE,
+    SRC_INDOOR_TEMP,
+    SRC_INDOOR_HUMIDITY,
+    SRC_INDOOR_CO2,
+]
 
 # Only these sources trigger staleness warnings. Excluded: rain_total (static
 # when dry), lux/uv (zero at night), dew_point, battery (slow-reporting).
@@ -559,6 +581,215 @@ KEY_MINUTES_UNTIL_RAIN = "minutes_until_rain"
 KEY_MINUTES_UNTIL_DRY = "minutes_until_dry"
 KEY_NOWCAST_INTENSITY = "nowcast_intensity"
 KEY_RAIN_EXPECTED_1H = "rain_expected_1h"
+
+# ---------------------------------------------------------------------------
+# v2.0 - Degree days + leaf wetness (new agrometeorological group)
+# ---------------------------------------------------------------------------
+
+CONF_ENABLE_DEGREE_DAYS = "enable_degree_days"
+CONF_HDD_BASE_C = "hdd_base_c"
+CONF_CDD_BASE_C = "cdd_base_c"
+CONF_GDD_BASE_C = "gdd_base_c"
+CONF_GDD_CAP_C_V2 = "gdd_cap_c_v2"  # renamed to avoid clash with legacy CONF_GDD_CAP_C
+
+DEFAULT_ENABLE_DEGREE_DAYS = False
+DEFAULT_HDD_BASE_C = 18.0  # standard WMO base for heating/cooling degree days
+DEFAULT_CDD_BASE_C = 18.0
+DEFAULT_GDD_BASE_C = 10.0  # standard base for most crops; user can tune
+DEFAULT_GDD_CAP_C_V2 = 30.0
+
+# Data keys - degree days (daily accumulators)
+KEY_HDD_TODAY_MM = "hdd_today_degc"  # Heating Degree Day (today)
+KEY_HDD_SEASON = "hdd_season_degc"  # Heating Degree Day (seasonal total)
+KEY_CDD_TODAY_MM = "cdd_today_degc"  # Cooling Degree Day (today)
+KEY_CDD_SEASON = "cdd_season_degc"  # Cooling Degree Day (seasonal total)
+KEY_GDD_TODAY_V2 = "gdd_today_v2_degc"  # Growing Degree Day (today)
+KEY_GDD_SEASON_V2 = "gdd_season_v2_degc"  # Growing Degree Day (seasonal total)
+KEY_LEAF_WETNESS = "leaf_wetness"  # Leaf wetness indicator (bool→text)
+
+# ---------------------------------------------------------------------------
+# v2.0 - New derived sensors (always-on or comfort-group opt-in)
+# ---------------------------------------------------------------------------
+
+# Always-on advanced met
+KEY_CLOUD_BASE_M = "cloud_base_m"
+KEY_FREEZING_LEVEL_M = "freezing_level_m"
+KEY_WIND_GUST_FACTOR = "wind_gust_factor"
+
+# Solar / agro extensions (comfort indices or solar group)
+KEY_SOLAR_ENERGY_TODAY_WHM2 = "solar_energy_today_whm2"  # Wh/m² — daily accumulation
+KEY_MAX_SOLAR_RADIATION = "max_solar_radiation_wm2"  # Clear-sky theoretical max
+KEY_PEAK_SUN_HOURS = "peak_sun_hours"  # Wh/m² / 1000
+KEY_IRRIGATION_DEFICIT = "irrigation_deficit_mm"  # ET₀ - rain today
+
+# Wind statistics (always-on wind group)
+KEY_DOMINANT_WIND_DIR = "dominant_wind_direction_deg"
+KEY_WIND_DIR_VARIABILITY = "wind_direction_variability_deg"
+KEY_WIND_RUN_MONTH_KM = "wind_run_month_km"  # monthly wind run accumulator
+
+# Fire danger (fire risk group)
+KEY_FFDI = "ffdi"
+KEY_FFWI = "ffwi"
+
+# Human comfort (comfort indices group)
+KEY_UTCI = "utci_c"
+
+# Net radiation (exposed; previously internal to Penman-Monteith ET₀)
+KEY_NET_RADIATION = "net_radiation_wm2"
+
+# ---------------------------------------------------------------------------
+# v2.0 - Lightning sensor integration (new opt-in group)
+# ---------------------------------------------------------------------------
+
+CONF_ENABLE_LIGHTNING = "enable_lightning"
+# SRC_LIGHTNING_COUNT / SRC_LIGHTNING_DISTANCE defined near OPTIONAL_SOURCES above.
+
+DEFAULT_ENABLE_LIGHTNING = False
+DEFAULT_LIGHTNING_PROXIMITY_KM = 15.0  # threshold for proximity alert
+
+CONF_LIGHTNING_PROXIMITY_KM = "lightning_proximity_km"
+
+# ---------------------------------------------------------------------------
+# v2.0 - Additional upload targets
+# ---------------------------------------------------------------------------
+
+# Weathercloud
+CONF_ENABLE_WEATHERCLOUD = "enable_weathercloud"
+CONF_WC_STATION_ID = "wc_station_id"
+CONF_WC_API_KEY = "wc_api_key"
+CONF_WC_INTERVAL_MIN = "wc_interval_min"
+DEFAULT_ENABLE_WEATHERCLOUD = False
+DEFAULT_WC_INTERVAL_MIN = 10
+
+# PWSWeather
+CONF_ENABLE_PWSWEATHER = "enable_pwsweather"
+CONF_PWS_STATION_ID = "pws_station_id"
+CONF_PWS_API_KEY = "pws_api_key"
+CONF_PWS_INTERVAL_MIN = "pws_interval_min"
+DEFAULT_ENABLE_PWSWEATHER = False
+DEFAULT_PWS_INTERVAL_MIN = 10
+
+# WOW (UK Met Office Weather Observations Website)
+CONF_ENABLE_WOW = "enable_wow"
+CONF_WOW_SITE_ID = "wow_site_id"
+CONF_WOW_AUTH_KEY = "wow_auth_key"
+CONF_WOW_INTERVAL_MIN = "wow_interval_min"
+DEFAULT_ENABLE_WOW = False
+DEFAULT_WOW_INTERVAL_MIN = 10
+
+# AWEKAS
+CONF_ENABLE_AWEKAS = "enable_awekas"
+CONF_AWEKAS_USERNAME = "awekas_username"
+CONF_AWEKAS_PASSWORD = "awekas_password"
+CONF_AWEKAS_INTERVAL_MIN = "awekas_interval_min"
+DEFAULT_ENABLE_AWEKAS = False
+DEFAULT_AWEKAS_INTERVAL_MIN = 15
+
+# OpenWeatherMap Stations API (measurement contribution endpoint)
+CONF_ENABLE_OWM_STATIONS = "enable_owm_stations"
+CONF_OWM_STATIONS_API_KEY = "owm_stations_api_key"
+CONF_OWM_STATIONS_STATION_ID = "owm_stations_station_id"  # OWM internal station id
+CONF_OWM_STATIONS_INTERVAL_MIN = "owm_stations_interval_min"
+DEFAULT_ENABLE_OWM_STATIONS = False
+DEFAULT_OWM_STATIONS_INTERVAL_MIN = 10
+
+# Windy.com (Windguru-compatible community upload via stations.windy.com)
+CONF_ENABLE_WINDY = "enable_windy"
+CONF_WINDY_API_KEY = "windy_api_key"
+CONF_WINDY_STATION_ID = "windy_station_id"  # integer station id from windy account
+CONF_WINDY_INTERVAL_MIN = "windy_interval_min"
+DEFAULT_ENABLE_WINDY = False
+DEFAULT_WINDY_INTERVAL_MIN = 10
+
+# Upload status data keys
+KEY_WC_STATUS = "wc_upload_status"
+KEY_PWS_STATUS = "pws_upload_status"
+KEY_WOW_STATUS = "wow_upload_status"
+KEY_AWEKAS_STATUS = "awekas_upload_status"
+KEY_OWM_STATIONS_STATUS = "owm_stations_upload_status"
+KEY_WINDY_STATUS = "windy_upload_status"
+
+# ---------------------------------------------------------------------------
+# v2.0 - Indoor sensor group
+# ---------------------------------------------------------------------------
+
+CONF_ENABLE_INDOOR = "enable_indoor"
+# SRC_INDOOR_TEMP / SRC_INDOOR_HUMIDITY / SRC_INDOOR_CO2 defined near OPTIONAL_SOURCES above.
+DEFAULT_ENABLE_INDOOR = False
+
+KEY_INDOOR_TEMP_C = "indoor_temp_c"
+KEY_INDOOR_HUMIDITY = "indoor_humidity_pct"
+KEY_INDOOR_CO2_PPM = "indoor_co2_ppm"
+KEY_INDOOR_TEMP_DELTA = "indoor_temp_delta_c"
+KEY_INDOOR_HUMIDITY_DELTA = "indoor_humidity_delta_pct"
+KEY_INDOOR_COMFORT = "indoor_comfort"  # composite score
+
+# Multiple indoor rooms: each entry is a temp sensor entity_id; one delta sensor is created per room
+CONF_INDOOR_ROOMS = "indoor_rooms"
+KEY_INDOOR_ROOMS_DATA = "indoor_rooms_data"  # dict[entity_id, {"temp_c": float, "delta_c": float}]
+
+# ---------------------------------------------------------------------------
+# v2.0 - Data quality expansion
+# ---------------------------------------------------------------------------
+
+KEY_SENSOR_STUCK = "sensor_stuck_flags"  # list of stuck sensor names
+KEY_DATA_QUALITY_SCORE = "data_quality_score"  # 0-100 composite
+KEY_NEIGHBOR_QC = "neighbor_qc_flags"  # list of neighbor-comparison flags
+KEY_SENSOR_SPIKE = "sensor_spike_flags"  # list of σ-based step-change flags
+
+# Spike detection thresholds (sigma multiplier + minimum samples)
+SPIKE_SIGMA_THRESHOLD = 3.0  # flag a reading > 3σ from rolling mean
+SPIKE_MIN_SAMPLES = 12  # need at least this many samples to compute σ
+
+# ---------------------------------------------------------------------------
+# v2.0 - CWOP (Citizen Weather Observer Program) upload
+# ---------------------------------------------------------------------------
+
+CONF_ENABLE_CWOP = "enable_cwop"
+CONF_CWOP_CALLSIGN = "cwop_callsign"
+CONF_CWOP_PASSCODE = "cwop_passcode"  # -1 for receive-only; set by CWOP on registration
+CONF_CWOP_SERVER = "cwop_server"  # default: cwop.aprs.net
+CONF_CWOP_PORT = "cwop_port"  # default: 14580
+CONF_CWOP_INTERVAL_MIN = "cwop_interval_min"
+
+DEFAULT_ENABLE_CWOP = False
+DEFAULT_CWOP_SERVER = "cwop.aprs.net"
+DEFAULT_CWOP_PORT = 14580
+DEFAULT_CWOP_INTERVAL_MIN = 15  # CWOP requests no faster than 5 min; 15 is polite
+
+KEY_CWOP_STATUS_V2 = "cwop_upload_status_v2"
+
+# ---------------------------------------------------------------------------
+# v2.0 - MQTT Discovery republishing
+# ---------------------------------------------------------------------------
+
+CONF_ENABLE_MQTT = "enable_mqtt"
+CONF_MQTT_DISCOVERY_PREFIX = "mqtt_discovery_prefix"
+CONF_MQTT_STATE_PREFIX = "mqtt_state_prefix"
+CONF_MQTT_INTERVAL_MIN = "mqtt_interval_min"
+
+DEFAULT_ENABLE_MQTT = False
+DEFAULT_MQTT_DISCOVERY_PREFIX = "homeassistant"
+DEFAULT_MQTT_STATE_PREFIX = "ws_core"
+DEFAULT_MQTT_INTERVAL_MIN = 1
+
+# Data keys
+KEY_LIGHTNING_COUNT_1H = "lightning_count_1h"
+KEY_LIGHTNING_DISTANCE_KM = "lightning_distance_km"
+KEY_LIGHTNING_RATE_1H = "lightning_rate_1h"  # strikes per minute (avg)
+KEY_LIGHTNING_CLEARANCE_MIN = "lightning_clearance_min"  # minutes since last strike
+KEY_LIGHTNING_PROXIMITY = "lightning_proximity"  # binary "near" / "clear"
+
+# Comfort indices group (opt-in via CONF_ENABLE_COMFORT_INDICES)
+KEY_AIR_DENSITY = "air_density_kg_m3"
+KEY_SPECIFIC_HUMIDITY = "specific_humidity_g_kg"
+KEY_WBGT = "wbgt_c"
+
+# Rain accumulators (always-on)
+KEY_RAIN_THIS_WEEK_MM = "rain_this_week_mm"
+KEY_RAIN_THIS_MONTH_MM = "rain_this_month_mm"
+KEY_RAIN_THIS_YEAR_MM = "rain_this_year_mm"
+KEY_RAIN_RATE_MAX_24H = "rain_rate_max_24h_mmph"
 
 # ---------------------------------------------------------------------------
 # Migration - v0.3.0 deprecated entity keys and config keys

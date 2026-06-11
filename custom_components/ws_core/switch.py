@@ -23,39 +23,61 @@ from homeassistant.helpers.restore_state import RestoreEntity
 from .const import (
     CONF_ENABLE_ADVANCED_SENSORS,
     CONF_ENABLE_AIR_QUALITY,
+    CONF_ENABLE_AWEKAS,
     CONF_ENABLE_COMFORT_INDICES,
+    CONF_ENABLE_CWOP,
+    CONF_ENABLE_DEGREE_DAYS,
     CONF_ENABLE_DIAGNOSTICS,
     CONF_ENABLE_DISPLAY_SENSORS,
     CONF_ENABLE_FIRE_RISK,
     CONF_ENABLE_FOG,
     CONF_ENABLE_FWI_COMPONENTS,
+    CONF_ENABLE_INDOOR,
+    CONF_ENABLE_LIGHTNING,
     CONF_ENABLE_MOON,
+    CONF_ENABLE_MQTT,
     CONF_ENABLE_NOWCAST,
+    CONF_ENABLE_OWM_STATIONS,
     CONF_ENABLE_POLLEN,
+    CONF_ENABLE_PWSWEATHER,
     CONF_ENABLE_SEA_TEMP,
     CONF_ENABLE_SOLAR_FORECAST,
     CONF_ENABLE_THUNDERSTORM,
     CONF_ENABLE_VIGICRUES,
     CONF_ENABLE_VIGILANCE_METEO,
+    CONF_ENABLE_WEATHERCLOUD,
+    CONF_ENABLE_WINDY,
+    CONF_ENABLE_WOW,
     CONF_ENABLE_WUNDERGROUND,
     CONF_PREFIX,
     CONF_SUPPRESS_NOTIFICATIONS,
     DEFAULT_ENABLE_ADVANCED_SENSORS,
     DEFAULT_ENABLE_AIR_QUALITY,
+    DEFAULT_ENABLE_AWEKAS,
     DEFAULT_ENABLE_COMFORT_INDICES,
+    DEFAULT_ENABLE_CWOP,
+    DEFAULT_ENABLE_DEGREE_DAYS,
     DEFAULT_ENABLE_DIAGNOSTICS,
     DEFAULT_ENABLE_DISPLAY_SENSORS,
     DEFAULT_ENABLE_FIRE_RISK,
     DEFAULT_ENABLE_FOG,
     DEFAULT_ENABLE_FWI_COMPONENTS,
+    DEFAULT_ENABLE_INDOOR,
+    DEFAULT_ENABLE_LIGHTNING,
     DEFAULT_ENABLE_MOON,
+    DEFAULT_ENABLE_MQTT,
     DEFAULT_ENABLE_NOWCAST,
+    DEFAULT_ENABLE_OWM_STATIONS,
     DEFAULT_ENABLE_POLLEN,
+    DEFAULT_ENABLE_PWSWEATHER,
     DEFAULT_ENABLE_SEA_TEMP,
     DEFAULT_ENABLE_SOLAR_FORECAST,
     DEFAULT_ENABLE_THUNDERSTORM,
     DEFAULT_ENABLE_VIGICRUES,
     DEFAULT_ENABLE_VIGILANCE_METEO,
+    DEFAULT_ENABLE_WEATHERCLOUD,
+    DEFAULT_ENABLE_WINDY,
+    DEFAULT_ENABLE_WOW,
     DEFAULT_ENABLE_WUNDERGROUND,
     DEFAULT_PREFIX,
     DEFAULT_SUPPRESS_NOTIFICATIONS,
@@ -79,6 +101,7 @@ class WSFeatureDesc:
     name: str
     icon: str
     inverted: bool = False
+    description: str | None = None
 
 
 FEATURE_SWITCHES: tuple[WSFeatureDesc, ...] = (
@@ -87,6 +110,7 @@ FEATURE_SWITCHES: tuple[WSFeatureDesc, ...] = (
         default=DEFAULT_ENABLE_DISPLAY_SENSORS,
         name="Feature: Display Sensors",
         icon="mdi:monitor-dashboard",
+        description="Shows display-oriented helper sensors such as humidity level, UV level, pressure trend, station health, and forecast tiles.",
     ),
     # v0.3.0: removed laundry/stargazing/running score switches (cut sensors)
     WSFeatureDesc(
@@ -190,6 +214,74 @@ FEATURE_SWITCHES: tuple[WSFeatureDesc, ...] = (
         name="Feature: Precipitation Nowcast",
         icon="mdi:weather-pouring",
     ),
+    # v2.0
+    WSFeatureDesc(
+        conf_key=CONF_ENABLE_DEGREE_DAYS,
+        default=DEFAULT_ENABLE_DEGREE_DAYS,
+        name="Feature: Degree Days & Leaf Wetness",
+        icon="mdi:sprout",
+    ),
+    WSFeatureDesc(
+        conf_key=CONF_ENABLE_LIGHTNING,
+        default=DEFAULT_ENABLE_LIGHTNING,
+        name="Feature: Lightning Detection",
+        icon="mdi:lightning-bolt",
+    ),
+    WSFeatureDesc(
+        conf_key=CONF_ENABLE_INDOOR,
+        default=DEFAULT_ENABLE_INDOOR,
+        name="Feature: Indoor Sensors",
+        icon="mdi:home-thermometer",
+    ),
+    # v2.0 upload targets
+    WSFeatureDesc(
+        conf_key=CONF_ENABLE_WEATHERCLOUD,
+        default=DEFAULT_ENABLE_WEATHERCLOUD,
+        name="Feature: Weathercloud Upload",
+        icon="mdi:cloud-upload",
+    ),
+    WSFeatureDesc(
+        conf_key=CONF_ENABLE_PWSWEATHER,
+        default=DEFAULT_ENABLE_PWSWEATHER,
+        name="Feature: PWSWeather Upload",
+        icon="mdi:cloud-upload-outline",
+    ),
+    WSFeatureDesc(
+        conf_key=CONF_ENABLE_WOW,
+        default=DEFAULT_ENABLE_WOW,
+        name="Feature: WOW Upload",
+        icon="mdi:cloud-upload",
+    ),
+    WSFeatureDesc(
+        conf_key=CONF_ENABLE_AWEKAS,
+        default=DEFAULT_ENABLE_AWEKAS,
+        name="Feature: AWEKAS Upload",
+        icon="mdi:cloud-upload-outline",
+    ),
+    WSFeatureDesc(
+        conf_key=CONF_ENABLE_MQTT,
+        default=DEFAULT_ENABLE_MQTT,
+        name="Feature: MQTT Discovery",
+        icon="mdi:transit-connection-variant",
+    ),
+    WSFeatureDesc(
+        conf_key=CONF_ENABLE_CWOP,
+        default=DEFAULT_ENABLE_CWOP,
+        name="Feature: CWOP Upload",
+        icon="mdi:radio-tower",
+    ),
+    WSFeatureDesc(
+        conf_key=CONF_ENABLE_OWM_STATIONS,
+        default=DEFAULT_ENABLE_OWM_STATIONS,
+        name="Feature: OpenWeatherMap Upload",
+        icon="mdi:cloud-upload",
+    ),
+    WSFeatureDesc(
+        conf_key=CONF_ENABLE_WINDY,
+        default=DEFAULT_ENABLE_WINDY,
+        name="Feature: Windy Upload",
+        icon="mdi:cloud-upload-outline",
+    ),
     # v1.8.4 (issue #20) — inverted: ON means notifications enabled (suppress=False)
     WSFeatureDesc(
         conf_key=CONF_SUPPRESS_NOTIFICATIONS,
@@ -277,6 +369,13 @@ class WSToggleSwitch(RestoreEntity, SwitchEntity):
         if last_state:
             self._attr_is_on = last_state.state == "on"
 
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        return {
+            "description": "Controls dashboard-only animation behavior; it does not enable or disable weather calculations.",
+            "scope": "dashboard",
+        }
+
     async def async_turn_on(self, **kwargs) -> None:
         self._attr_is_on = True
         self.async_write_ha_state()
@@ -338,6 +437,13 @@ class WSFeatureSwitch(SwitchEntity):
             )
         )
         return (not stored) if self._desc.inverted else stored
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        attrs: dict[str, Any] = {"config_key": self._desc.conf_key}
+        if self._desc.description:
+            attrs["description"] = self._desc.description
+        return attrs
 
     async def async_turn_on(self, **kwargs) -> None:
         """Enable the feature."""

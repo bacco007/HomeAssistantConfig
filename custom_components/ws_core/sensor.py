@@ -19,8 +19,12 @@ from .const import (
     CONF_ENABLE_ADVANCED_SENSORS,
     # v0.7.0
     CONF_ENABLE_AIR_QUALITY,
+    # v2.0
+    CONF_ENABLE_AWEKAS,
     # v1.5.0
     CONF_ENABLE_COMFORT_INDICES,
+    CONF_ENABLE_CWOP,
+    CONF_ENABLE_DEGREE_DAYS,
     # v1.6.2
     CONF_ENABLE_DIAGNOSTICS,
     CONF_ENABLE_DISPLAY_SENSORS,
@@ -29,11 +33,15 @@ from .const import (
     CONF_ENABLE_FOG,
     # v1.6.2
     CONF_ENABLE_FWI_COMPONENTS,
+    CONF_ENABLE_INDOOR,
+    CONF_ENABLE_LIGHTNING,
     # v0.8.0
     CONF_ENABLE_MOON,
     # v1.7.0
     CONF_ENABLE_NOWCAST,
+    CONF_ENABLE_OWM_STATIONS,
     CONF_ENABLE_POLLEN,
+    CONF_ENABLE_PWSWEATHER,
     CONF_ENABLE_SEA_TEMP,
     # v0.9.0
     CONF_ENABLE_SOLAR_FORECAST,
@@ -41,6 +49,11 @@ from .const import (
     CONF_ENABLE_VIGICRUES,
     # v1.6.0
     CONF_ENABLE_VIGILANCE_METEO,
+    CONF_ENABLE_WEATHERCLOUD,
+    CONF_ENABLE_WINDY,
+    CONF_ENABLE_WOW,
+    CONF_ENABLE_WUNDERGROUND,
+    CONF_INDOOR_ROOMS,
     CONF_PREFIX,
     CONF_VIGICRUES_RIVER_NAME,
     CONF_VIGICRUES_STATION_CODE,
@@ -50,35 +63,47 @@ from .const import (
     DOMAIN,
     # v1.5.0
     KEY_ABSOLUTE_HUMIDITY,
+    KEY_AIR_DENSITY,
     KEY_ALERT_MESSAGE,
     KEY_ALERT_STATE,
     # v0.7.0
     KEY_AQI,
     KEY_AQI_LEVEL,
+    KEY_AWEKAS_STATUS,
     KEY_BATTERY_PCT,
+    KEY_CDD_SEASON,
+    KEY_CDD_TODAY_MM,
     KEY_CHILL_HOURS_SEASON,
     KEY_CHILL_HOURS_TODAY,
     KEY_CLEARNESS_INDEX,
     KEY_CLIMATOLOGY_30D,
+    KEY_CLOUD_BASE_M,
     KEY_CLOUD_COVER_PCT,
     KEY_CONSISTENCY_FLAGS,
     KEY_CURRENT_CONDITION,
+    KEY_CWOP_STATUS_V2,
     KEY_DATA_QUALITY,
+    KEY_DATA_QUALITY_SCORE,
     KEY_DELTA_T,
     KEY_DEW_POINT_C,
+    KEY_DOMINANT_WIND_DIR,
     KEY_DRY_STREAK,
     # v0.6.0
     KEY_ET0_DAILY_MM,
     KEY_ET0_HOURLY_MM,
     KEY_ET0_PM_DAILY_MM,
     KEY_FEELS_LIKE_C,
+    KEY_FFDI,
+    KEY_FFWI,
     KEY_FIRE_DANGER_VIGILANCE,
     KEY_FIRE_RISK_SCORE,
     KEY_FOG_PROBABILITY,
     KEY_FORECAST,
     KEY_FORECAST_AGREEMENT,
+    KEY_FORECAST_PROVIDER,
     KEY_FORECAST_SKILL,
     KEY_FORECAST_TILES,
+    KEY_FREEZING_LEVEL_M,
     KEY_FROST_POINT_C,
     KEY_FROST_STREAK,
     KEY_FWI,
@@ -88,12 +113,31 @@ from .const import (
     KEY_FWI_DSR,
     KEY_FWI_FFMC,
     KEY_FWI_ISI,
+    KEY_GDD_SEASON_V2,
+    KEY_GDD_TODAY_V2,
+    KEY_HDD_SEASON,
+    KEY_HDD_TODAY_MM,
     KEY_HEALTH_DISPLAY,
     KEY_HEAT_INDEX,
     KEY_HEAT_STREAK,
     KEY_HUMIDEX,
     KEY_HUMIDITY_LEVEL_DISPLAY,
+    KEY_INDOOR_CO2_PPM,
+    KEY_INDOOR_COMFORT,
+    KEY_INDOOR_HUMIDITY,
+    KEY_INDOOR_HUMIDITY_DELTA,
+    KEY_INDOOR_ROOMS_DATA,
+    KEY_INDOOR_TEMP_C,
+    KEY_INDOOR_TEMP_DELTA,
+    KEY_IRRIGATION_DEFICIT,
+    KEY_LEAF_WETNESS,
+    KEY_LIGHTNING_CLEARANCE_MIN,
+    KEY_LIGHTNING_COUNT_1H,
+    KEY_LIGHTNING_DISTANCE_KM,
+    KEY_LIGHTNING_PROXIMITY,
+    KEY_LIGHTNING_RATE_1H,
     KEY_LUX,
+    KEY_MAX_SOLAR_RADIATION,
     KEY_MINUTES_UNTIL_DRY,
     KEY_MINUTES_UNTIL_RAIN,
     KEY_MOON_AGE_DAYS,
@@ -103,6 +147,8 @@ from .const import (
     KEY_MOON_NEXT_NEW,
     # v0.8.0
     KEY_MOON_PHASE,
+    KEY_NEIGHBOR_QC,
+    KEY_NET_RADIATION,
     KEY_NO2,
     KEY_NORM_HUMIDITY,
     KEY_NORM_PRESSURE_HPA,
@@ -112,8 +158,10 @@ from .const import (
     KEY_NORM_WIND_GUST_MS,
     KEY_NORM_WIND_SPEED_MS,
     KEY_NOWCAST_INTENSITY,
+    KEY_OWM_STATIONS_STATUS,
     KEY_OZONE,
     KEY_PACKAGE_STATUS,
+    KEY_PEAK_SUN_HOURS,
     KEY_PM2_5,
     KEY_PM10,
     KEY_POLLEN_GRASS,
@@ -123,6 +171,7 @@ from .const import (
     KEY_PRESSURE_CHANGE_WINDOW_HPA,
     KEY_PRESSURE_TREND_DISPLAY,
     KEY_PRESSURE_TREND_HPAH,
+    KEY_PWS_STATUS,
     KEY_RAIN_ACCUM_1H,
     KEY_RAIN_ACCUM_24H,
     KEY_RAIN_ANOMALY_30D,
@@ -131,16 +180,24 @@ from .const import (
     KEY_RAIN_PROBABILITY,
     KEY_RAIN_PROBABILITY_COMBINED,
     KEY_RAIN_RATE_FILT,
+    KEY_RAIN_RATE_MAX_24H,
+    KEY_RAIN_THIS_MONTH_MM,
+    KEY_RAIN_THIS_WEEK_MM,
+    KEY_RAIN_THIS_YEAR_MM,
     KEY_RAIN_TODAY_MM,
     KEY_SEA_LEVEL_PRESSURE_HPA,
     KEY_SEA_SURFACE_TEMP,
     KEY_SENSOR_DRIFT_FLAGS,
     KEY_SENSOR_QUALITY_FLAGS,
+    KEY_SENSOR_SPIKE,
+    KEY_SENSOR_STUCK,
+    KEY_SOLAR_ENERGY_TODAY_WHM2,
     KEY_SOLAR_FORECAST_STATUS,
     # v0.9.0
     KEY_SOLAR_FORECAST_TODAY_KWH,
     KEY_SOLAR_FORECAST_TOMORROW_KWH,
     KEY_SOLAR_LUX_FACTOR,
+    KEY_SPECIFIC_HUMIDITY,
     KEY_TEMP_ANOMALY_30D,
     KEY_TEMP_AVG_24H,
     KEY_TEMP_DISPLAY,
@@ -149,18 +206,26 @@ from .const import (
     KEY_THSW_INDEX,
     KEY_THUNDERSTORM_RISK,
     KEY_THW_INDEX,
+    KEY_UTCI,
     KEY_UV,
     KEY_UV_LEVEL_DISPLAY,
     KEY_VIGILANCE_MAX_LEVEL,
     KEY_VPD,
+    KEY_WBGT,
+    KEY_WC_STATUS,
     KEY_WET_BULB_C,
     KEY_WIND_BEAUFORT,
     KEY_WIND_BEAUFORT_DESC,
     KEY_WIND_CHILL,
     KEY_WIND_DIR_SMOOTH_DEG,
+    KEY_WIND_DIR_VARIABILITY,
+    KEY_WIND_GUST_FACTOR,
     KEY_WIND_GUST_MAX_24H,
     KEY_WIND_QUADRANT,
     KEY_WIND_RUN_KM,
+    KEY_WIND_RUN_MONTH_KM,
+    KEY_WINDY_STATUS,
+    KEY_WOW_STATUS,
     KEY_WU_STATUS,
     KEY_ZAMBRETTI_FORECAST,
     KEY_ZAMBRETTI_NUMBER,
@@ -357,6 +422,60 @@ SENSORS: list[WSSensorDescription] = [
             "all_clear": len(d.get(KEY_SENSOR_QUALITY_FLAGS) or []) == 0,
         },
     ),
+    # v2.0 — Stuck-sensor flags (always computed; gated by diagnostics)
+    WSSensorDescription(
+        key=KEY_SENSOR_STUCK,
+        translation_key="sensor_stuck",
+        name="WS Sensor Stuck Flags",
+        icon="mdi:shield-lock-outline",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda d: len(d.get(KEY_SENSOR_STUCK) or []),
+        attrs_fn=lambda d: {
+            "stuck_sensors": d.get(KEY_SENSOR_STUCK) or [],
+            "all_clear": len(d.get(KEY_SENSOR_STUCK) or []) == 0,
+        },
+    ),
+    # v2.0 — Spatial neighbor QC (compare vs Open-Meteo NWP grid)
+    WSSensorDescription(
+        key=KEY_NEIGHBOR_QC,
+        translation_key="neighbor_qc",
+        name="WS Neighbor QC Flags",
+        icon="mdi:map-check-outline",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda d: len(d.get(KEY_NEIGHBOR_QC) or []),
+        attrs_fn=lambda d: {
+            "flags": d.get(KEY_NEIGHBOR_QC) or [],
+            "all_clear": len(d.get(KEY_NEIGHBOR_QC) or []) == 0,
+        },
+    ),
+    # v2.0 — Temporal spike (σ-based step-change) detection
+    WSSensorDescription(
+        key=KEY_SENSOR_SPIKE,
+        translation_key="sensor_spike",
+        name="WS Sensor Spike Flags",
+        icon="mdi:pulse",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda d: len(d.get(KEY_SENSOR_SPIKE) or []),
+        attrs_fn=lambda d: {
+            "flags": d.get(KEY_SENSOR_SPIKE) or [],
+            "all_clear": len(d.get(KEY_SENSOR_SPIKE) or []) == 0,
+        },
+    ),
+    # v2.0 — Overall data quality score (0-100)
+    WSSensorDescription(
+        key=KEY_DATA_QUALITY_SCORE,
+        translation_key="data_quality_score",
+        name="WS Data Quality Score",
+        icon="mdi:star-check-outline",
+        native_unit=None,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        attrs_fn=lambda d: {
+            "quality_flags": len(d.get(KEY_SENSOR_QUALITY_FLAGS) or []),
+            "stuck_flags": len(d.get(KEY_SENSOR_STUCK) or []),
+            "spike_flags": len(d.get(KEY_SENSOR_SPIKE) or []),
+        },
+    ),
     WSSensorDescription(
         key=KEY_ALERT_STATE,
         translation_key="alert_state",
@@ -379,6 +498,17 @@ SENSORS: list[WSSensorDescription] = [
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda d: (d.get(KEY_FORECAST) or {}).get("provider") if d.get(KEY_FORECAST) else None,
         attrs_fn=lambda d: d.get(KEY_FORECAST) or {},
+    ),
+    WSSensorDescription(
+        key=KEY_FORECAST_PROVIDER,
+        translation_key="forecast_provider",
+        name="WS Forecast Provider",
+        icon="mdi:cloud-search",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        attrs_fn=lambda d: {
+            "provider_name": d.get("_forecast_provider_name"),
+            "forecast_enabled": d.get("_forecast_provider_enabled"),
+        },
     ),
     # =========================================================================
     # ADVANCED METEOROLOGICAL SENSORS
@@ -418,6 +548,34 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit=UNIT_TEMP_C,
         state_class=SensorStateClass.MEASUREMENT,
+    ),
+    # v2.0 Cloud base altitude (LCL / Espy formula)
+    WSSensorDescription(
+        key=KEY_CLOUD_BASE_M,
+        translation_key="cloud_base",
+        name="WS Cloud Base",
+        icon="mdi:cloud-arrow-up",
+        native_unit="m",
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "temp_c": d.get(KEY_NORM_TEMP_C),
+            "dew_point_c": d.get(KEY_DEW_POINT_C),
+            "spread_c": round(float(d[KEY_NORM_TEMP_C]) - float(d[KEY_DEW_POINT_C]), 1)
+            if d.get(KEY_NORM_TEMP_C) is not None and d.get(KEY_DEW_POINT_C) is not None
+            else None,
+        },
+    ),
+    # v2.0 Freezing level altitude estimate
+    WSSensorDescription(
+        key=KEY_FREEZING_LEVEL_M,
+        translation_key="freezing_level",
+        name="WS Freezing Level",
+        icon="mdi:snowflake",
+        native_unit="m",
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "temp_c": d.get(KEY_NORM_TEMP_C),
+        },
     ),
     # =========================================================================
     # v1.5.0 COMFORT / COMFORT STRESS INDICES
@@ -508,6 +666,86 @@ SENSORS: list[WSSensorDescription] = [
         native_unit=UNIT_TEMP_C,
         state_class=SensorStateClass.MEASUREMENT,
     ),
+    # v2.0 — Air density (comfort indices group)
+    WSSensorDescription(
+        key=KEY_AIR_DENSITY,
+        translation_key="air_density",
+        name="WS Air Density",
+        icon="mdi:air-humidifier",
+        native_unit="kg/m³",
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "temp_c": d.get(KEY_NORM_TEMP_C),
+            "pressure_hpa": d.get(KEY_NORM_PRESSURE_HPA),
+        },
+    ),
+    # v2.0 — Specific humidity (comfort indices group)
+    WSSensorDescription(
+        key=KEY_SPECIFIC_HUMIDITY,
+        translation_key="specific_humidity",
+        name="WS Specific Humidity",
+        icon="mdi:water-percent",
+        native_unit="g/kg",
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "absolute_humidity_gm3": d.get(KEY_ABSOLUTE_HUMIDITY),
+        },
+    ),
+    # v2.0 — WBGT (comfort indices group; uses outdoor formula when solar available)
+    WSSensorDescription(
+        key=KEY_WBGT,
+        translation_key="wbgt",
+        name="WS WBGT",
+        icon="mdi:sun-thermometer-outline",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "heat_risk": (
+                "extreme"
+                if (d.get(KEY_WBGT) or 0) >= 32
+                else "high"
+                if (d.get(KEY_WBGT) or 0) >= 28
+                else "moderate"
+                if (d.get(KEY_WBGT) or 0) >= 25
+                else "low"
+            ),
+            "wet_bulb_c": d.get(KEY_WET_BULB_C),
+        },
+    ),
+    # v2.0 — UTCI (Universal Thermal Climate Index, Bröde 2012)
+    WSSensorDescription(
+        key=KEY_UTCI,
+        translation_key="utci",
+        name="WS UTCI",
+        icon="mdi:human-handsup",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "stress_category": (
+                "extreme_heat_stress"
+                if (d.get(KEY_UTCI) or -99) >= 46
+                else "very_strong_heat_stress"
+                if (d.get(KEY_UTCI) or -99) >= 38
+                else "strong_heat_stress"
+                if (d.get(KEY_UTCI) or -99) >= 32
+                else "moderate_heat_stress"
+                if (d.get(KEY_UTCI) or -99) >= 26
+                else "no_thermal_stress"
+                if (d.get(KEY_UTCI) or -99) >= 9
+                else "slight_cold_stress"
+                if (d.get(KEY_UTCI) or -99) >= 0
+                else "moderate_cold_stress"
+                if (d.get(KEY_UTCI) or -99) >= -13
+                else "strong_cold_stress"
+                if (d.get(KEY_UTCI) or -99) >= -27
+                else "very_strong_cold_stress"
+                if (d.get(KEY_UTCI) or -99) >= -40
+                else "extreme_cold_stress"
+            ),
+        },
+    ),
     # =========================================================================
     # v1.5.0 AGROMETEOROLOGICAL / ACCUMULATION SENSORS
     # =========================================================================
@@ -516,6 +754,15 @@ SENSORS: list[WSSensorDescription] = [
         key=KEY_WIND_RUN_KM,
         translation_key="wind_run",
         name="WS Wind Run",
+        icon="mdi:weather-windy",
+        native_unit="km",
+        state_class=SensorStateClass.TOTAL_INCREASING,
+    ),
+    # v2.0 Wind Run (monthly km accumulator)
+    WSSensorDescription(
+        key=KEY_WIND_RUN_MONTH_KM,
+        translation_key="wind_run_month",
+        name="WS Wind Run This Month",
         icon="mdi:weather-windy",
         native_unit="km",
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -537,6 +784,70 @@ SENSORS: list[WSSensorDescription] = [
         icon="mdi:snowflake-variant",
         native_unit="h",
         state_class=SensorStateClass.TOTAL_INCREASING,
+    ),
+    # =========================================================================
+    # v2.0 DEGREE DAYS + LEAF WETNESS (opt-in group)
+    # =========================================================================
+    WSSensorDescription(
+        key=KEY_HDD_TODAY_MM,
+        translation_key="hdd_today",
+        name="WS Heating Degree Day",
+        icon="mdi:thermometer-chevron-down",
+        native_unit="°C·d",
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {"base_c": 18.0},
+    ),
+    WSSensorDescription(
+        key=KEY_HDD_SEASON,
+        translation_key="hdd_season",
+        name="WS Heating Degree Days Season",
+        icon="mdi:thermometer-chevron-down",
+        native_unit="°C·d",
+        state_class=SensorStateClass.TOTAL_INCREASING,
+    ),
+    WSSensorDescription(
+        key=KEY_CDD_TODAY_MM,
+        translation_key="cdd_today",
+        name="WS Cooling Degree Day",
+        icon="mdi:thermometer-chevron-up",
+        native_unit="°C·d",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    WSSensorDescription(
+        key=KEY_CDD_SEASON,
+        translation_key="cdd_season",
+        name="WS Cooling Degree Days Season",
+        icon="mdi:thermometer-chevron-up",
+        native_unit="°C·d",
+        state_class=SensorStateClass.TOTAL_INCREASING,
+    ),
+    WSSensorDescription(
+        key=KEY_GDD_TODAY_V2,
+        translation_key="gdd_today",
+        name="WS Growing Degree Day",
+        icon="mdi:sprout",
+        native_unit="°C·d",
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {"base_c": 10.0, "cap_c": 30.0},
+    ),
+    WSSensorDescription(
+        key=KEY_GDD_SEASON_V2,
+        translation_key="gdd_season",
+        name="WS Growing Degree Days Season",
+        icon="mdi:sprout-outline",
+        native_unit="°C·d",
+        state_class=SensorStateClass.TOTAL_INCREASING,
+    ),
+    WSSensorDescription(
+        key=KEY_LEAF_WETNESS,
+        translation_key="leaf_wetness",
+        name="WS Leaf Wetness",
+        icon="mdi:leaf-maple",
+        attrs_fn=lambda d: {
+            "dew_point_c": d.get(KEY_DEW_POINT_C),
+            "humidity_pct": d.get(KEY_NORM_HUMIDITY),
+            "rain_rate_mmph": d.get(KEY_RAIN_RATE_FILT),
+        },
     ),
     # =========================================================================
     # v1.5.0 SOLAR / CLOUD SENSORS
@@ -630,6 +941,61 @@ SENSORS: list[WSSensorDescription] = [
         attrs_fn=lambda d: {
             "peak_rate_mmph": d.get("_nowcast_peak_rate_mmph"),
             "next_60min_mm": d.get(KEY_RAIN_NEXT_60MIN),
+        },
+    ),
+    # =========================================================================
+    # v2.0 - Lightning sensors (opt-in group, enable_lightning)
+    # =========================================================================
+    WSSensorDescription(
+        key=KEY_LIGHTNING_COUNT_1H,
+        translation_key="lightning_count_1h",
+        name="WS Lightning Strikes (1h)",
+        icon="mdi:lightning-bolt",
+        native_unit="strikes",
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "rate_per_min": d.get(KEY_LIGHTNING_RATE_1H),
+        },
+    ),
+    WSSensorDescription(
+        key=KEY_LIGHTNING_DISTANCE_KM,
+        translation_key="lightning_distance",
+        name="WS Lightning Distance",
+        icon="mdi:lightning-bolt-circle",
+        native_unit="km",
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "proximity": d.get(KEY_LIGHTNING_PROXIMITY),
+        },
+    ),
+    WSSensorDescription(
+        key=KEY_LIGHTNING_RATE_1H,
+        translation_key="lightning_rate",
+        name="WS Lightning Rate",
+        icon="mdi:lightning-bolt-outline",
+        native_unit="strikes/min",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    WSSensorDescription(
+        key=KEY_LIGHTNING_CLEARANCE_MIN,
+        translation_key="lightning_clearance",
+        name="WS Lightning Clearance",
+        icon="mdi:shield-check-outline",
+        native_unit="min",
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "safe": (d.get(KEY_LIGHTNING_CLEARANCE_MIN) or 0) >= 30,
+        },
+    ),
+    WSSensorDescription(
+        key=KEY_LIGHTNING_PROXIMITY,
+        translation_key="lightning_proximity",
+        name="WS Lightning Proximity",
+        icon="mdi:lightning-bolt",
+        attrs_fn=lambda d: {
+            "distance_km": d.get(KEY_LIGHTNING_DISTANCE_KM),
+            "clearance_min": d.get(KEY_LIGHTNING_CLEARANCE_MIN),
         },
     ),
     # Zambretti barometric forecast
@@ -776,6 +1142,48 @@ SENSORS: list[WSSensorDescription] = [
         native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.MEASUREMENT,
     ),
+    # v2.0 — Weekly / monthly / yearly rain accumulators.
+    # TOTAL_INCREASING: they accumulate within the period and reset to 0 at the
+    # boundary — HA's statistics engine handles the reset as a new cycle (matches
+    # wind_run / chill_hours_season), whereas MEASUREMENT would compute a
+    # meaningless mean/min/max over a running total.
+    WSSensorDescription(
+        key=KEY_RAIN_THIS_WEEK_MM,
+        translation_key="rain_this_week",
+        name="WS Rain This Week",
+        icon="mdi:calendar-week",
+        device_class=SensorDeviceClass.PRECIPITATION,
+        native_unit=UNIT_RAIN_MM,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+    ),
+    WSSensorDescription(
+        key=KEY_RAIN_THIS_MONTH_MM,
+        translation_key="rain_this_month",
+        name="WS Rain This Month",
+        icon="mdi:calendar-month",
+        device_class=SensorDeviceClass.PRECIPITATION,
+        native_unit=UNIT_RAIN_MM,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+    ),
+    WSSensorDescription(
+        key=KEY_RAIN_THIS_YEAR_MM,
+        translation_key="rain_this_year",
+        name="WS Rain This Year",
+        icon="mdi:calendar",
+        device_class=SensorDeviceClass.PRECIPITATION,
+        native_unit=UNIT_RAIN_MM,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+    ),
+    # v2.0 — Max rain rate in rolling 24h window
+    WSSensorDescription(
+        key=KEY_RAIN_RATE_MAX_24H,
+        translation_key="rain_rate_max_24h",
+        name="WS Rain Rate Max 24h",
+        icon="mdi:weather-pouring",
+        device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
+        native_unit="mm/h",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
     WSSensorDescription(
         key=KEY_PRESSURE_TREND_DISPLAY,
         translation_key="pressure_trend",
@@ -822,7 +1230,7 @@ SENSORS: list[WSSensorDescription] = [
         translation_key="forecast_tiles",
         name="WS Forecast Tiles",
         icon="mdi:calendar-weather",
-        value_fn=lambda d: "available" if d.get(KEY_FORECAST_TILES) else "unavailable",
+        value_fn=lambda d: len(d.get(KEY_FORECAST_TILES) or []),
         attrs_fn=lambda d: {
             "tiles": d.get(KEY_FORECAST_TILES) or [],
             "count": len(d.get(KEY_FORECAST_TILES) or []),
@@ -867,6 +1275,45 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.WIND_SPEED,
         native_unit=UNIT_WIND_MS,
         state_class=SensorStateClass.MEASUREMENT,
+    ),
+    # v2.0 Wind gust factor (gust / mean speed ratio)
+    WSSensorDescription(
+        key=KEY_WIND_GUST_FACTOR,
+        translation_key="wind_gust_factor",
+        name="WS Wind Gust Factor",
+        icon="mdi:weather-windy",
+        native_unit=None,
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "gust_ms": d.get(KEY_NORM_WIND_GUST_MS),
+            "wind_ms": d.get(KEY_NORM_WIND_SPEED_MS),
+        },
+    ),
+    # v2.0 Dominant wind direction (circular mean over 24h).
+    # MEASUREMENT_ANGLE (matches the live wind_direction sensor) so HA computes a
+    # circular mean for statistics — plain MEASUREMENT would average 350°+10° as
+    # 180° instead of 0°.
+    WSSensorDescription(
+        key=KEY_DOMINANT_WIND_DIR,
+        translation_key="dominant_wind_direction",
+        name="WS Dominant Wind Direction",
+        icon="mdi:compass-rose",
+        device_class=SensorDeviceClass.WIND_DIRECTION,
+        native_unit="°",
+        state_class=SensorStateClass.MEASUREMENT_ANGLE,
+        attrs_fn=lambda d: {
+            "variability_deg": d.get(KEY_WIND_DIR_VARIABILITY),
+        },
+    ),
+    # v2.0 Wind direction variability (circular std dev over 24h)
+    WSSensorDescription(
+        key=KEY_WIND_DIR_VARIABILITY,
+        translation_key="wind_direction_variability",
+        name="WS Wind Direction Variability",
+        icon="mdi:compass-outline",
+        native_unit="°",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     # =========================================================================
     # DISPLAY / LEVEL SENSORS
@@ -915,6 +1362,37 @@ SENSORS: list[WSSensorDescription] = [
             "fwi": d.get(KEY_FWI),
             "bui": d.get(KEY_FWI_BUI),
             "isi": d.get(KEY_FWI_ISI),
+        },
+    ),
+    # v2.0 — McArthur FFDI (Australian fire danger index)
+    WSSensorDescription(
+        key=KEY_FFDI,
+        translation_key="ffdi",
+        name="WS Forest Fire Danger Index",
+        icon="mdi:fire-alert",
+        native_unit=None,
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "danger_level": d.get("_ffdi_danger"),
+            "temperature_c": d.get(KEY_NORM_TEMP_C),
+            "humidity_pct": d.get(KEY_NORM_HUMIDITY),
+            "wind_kmh": round(float(d[KEY_NORM_WIND_SPEED_MS]) * 3.6, 1)
+            if d.get(KEY_NORM_WIND_SPEED_MS) is not None
+            else None,
+        },
+    ),
+    # v2.0 — Fosberg FFWI (US/global fire weather index)
+    WSSensorDescription(
+        key=KEY_FFWI,
+        translation_key="ffwi",
+        name="WS Fire Weather Index (Fosberg)",
+        icon="mdi:fire-circle",
+        native_unit=None,
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "temperature_c": d.get(KEY_NORM_TEMP_C),
+            "humidity_pct": d.get(KEY_NORM_HUMIDITY),
+            "wind_ms": d.get(KEY_NORM_WIND_SPEED_MS),
         },
     ),
     # =========================================================================
@@ -1055,6 +1533,133 @@ SENSORS: list[WSSensorDescription] = [
         icon="mdi:weather-cloudy-clock",
         entity_category=EntityCategory.DIAGNOSTIC,
         attrs_fn=lambda d: {"last_upload": d.get("_wu_last_upload")},
+    ),
+    # v2.0 additional upload status sensors
+    WSSensorDescription(
+        key=KEY_WC_STATUS,
+        translation_key="wc_upload_status",
+        name="WS Weathercloud Status",
+        icon="mdi:cloud-upload",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        attrs_fn=lambda d: {"last_upload": d.get("_wc_last_upload")},
+    ),
+    WSSensorDescription(
+        key=KEY_PWS_STATUS,
+        translation_key="pws_upload_status",
+        name="WS PWSWeather Status",
+        icon="mdi:cloud-upload-outline",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        attrs_fn=lambda d: {"last_upload": d.get("_pws_last_upload")},
+    ),
+    WSSensorDescription(
+        key=KEY_WOW_STATUS,
+        translation_key="wow_upload_status",
+        name="WS WOW Status",
+        icon="mdi:cloud-upload",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        attrs_fn=lambda d: {"last_upload": d.get("_wow_last_upload")},
+    ),
+    WSSensorDescription(
+        key=KEY_AWEKAS_STATUS,
+        translation_key="awekas_upload_status",
+        name="WS AWEKAS Status",
+        icon="mdi:cloud-upload-outline",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        attrs_fn=lambda d: {"last_upload": d.get("_awekas_last_upload")},
+    ),
+    WSSensorDescription(
+        key=KEY_CWOP_STATUS_V2,
+        translation_key="cwop_status",
+        name="WS CWOP Status",
+        icon="mdi:radio-tower",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        attrs_fn=lambda d: {"last_upload": d.get("_cwop_last_upload")},
+    ),
+    WSSensorDescription(
+        key=KEY_OWM_STATIONS_STATUS,
+        translation_key="owm_stations_status",
+        name="WS OpenWeatherMap Status",
+        icon="mdi:cloud-upload",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        attrs_fn=lambda d: {"last_upload": d.get("_owm_stations_last_upload")},
+    ),
+    WSSensorDescription(
+        key=KEY_WINDY_STATUS,
+        translation_key="windy_status",
+        name="WS Windy Status",
+        icon="mdi:cloud-upload-outline",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        attrs_fn=lambda d: {"last_upload": d.get("_windy_last_upload")},
+    ),
+    # =========================================================================
+    # v2.0 - Indoor sensor group (opt-in)
+    # =========================================================================
+    WSSensorDescription(
+        key=KEY_INDOOR_TEMP_C,
+        translation_key="indoor_temperature",
+        name="WS Indoor Temperature",
+        icon="mdi:home-thermometer",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "outdoor_temp_c": d.get(KEY_NORM_TEMP_C),
+            "delta_c": d.get(KEY_INDOOR_TEMP_DELTA),
+        },
+    ),
+    WSSensorDescription(
+        key=KEY_INDOOR_HUMIDITY,
+        translation_key="indoor_humidity",
+        name="WS Indoor Humidity",
+        icon="mdi:home-humidity",
+        device_class=SensorDeviceClass.HUMIDITY,
+        native_unit="%",
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "outdoor_humidity_pct": d.get(KEY_NORM_HUMIDITY),
+            "delta_pct": d.get(KEY_INDOOR_HUMIDITY_DELTA),
+        },
+    ),
+    WSSensorDescription(
+        key=KEY_INDOOR_CO2_PPM,
+        translation_key="indoor_co2",
+        name="WS Indoor CO₂",
+        icon="mdi:molecule-co2",
+        device_class=SensorDeviceClass.CO2,
+        native_unit="ppm",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    WSSensorDescription(
+        key=KEY_INDOOR_TEMP_DELTA,
+        translation_key="indoor_temp_delta",
+        name="WS Indoor/Outdoor Temp Delta",
+        icon="mdi:thermometer-lines",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    WSSensorDescription(
+        key=KEY_INDOOR_HUMIDITY_DELTA,
+        translation_key="indoor_humidity_delta",
+        name="WS Indoor/Outdoor Humidity Delta",
+        icon="mdi:water-percent-alert",
+        native_unit="%",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    WSSensorDescription(
+        key=KEY_INDOOR_COMFORT,
+        translation_key="indoor_comfort",
+        name="WS Indoor Comfort Score",
+        icon="mdi:home-heart",
+        native_unit=None,
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "co2_ppm": d.get(KEY_INDOOR_CO2_PPM),
+            "temp_c": d.get(KEY_INDOOR_TEMP_C),
+            "humidity_pct": d.get(KEY_INDOOR_HUMIDITY),
+        },
     ),
     # ---------------------------------------------------------------
     # Air Quality  (v0.7.0, Open-Meteo AQI API)
@@ -1212,6 +1817,63 @@ SENSORS: list[WSSensorDescription] = [
         attrs_fn=lambda d: {
             "hargreaves_et0": d.get(KEY_ET0_DAILY_MM),
         },
+    ),
+    # v2.0 — Irrigation water deficit (ET₀ − rain today)
+    WSSensorDescription(
+        key=KEY_IRRIGATION_DEFICIT,
+        translation_key="irrigation_deficit",
+        name="WS Irrigation Deficit",
+        icon="mdi:water-sync",
+        device_class=SensorDeviceClass.PRECIPITATION,
+        native_unit="mm",
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "et0_daily_mm": d.get(KEY_ET0_DAILY_MM),
+            "rain_today_mm": d.get("_rain_today_mm"),
+        },
+    ),
+    # v2.0 — Max theoretical solar radiation (clear-sky model)
+    WSSensorDescription(
+        key=KEY_MAX_SOLAR_RADIATION,
+        translation_key="max_solar_radiation",
+        name="WS Max Solar Radiation",
+        icon="mdi:sun-wireless",
+        native_unit="W/m²",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    # v2.0 — Daily solar energy accumulation (Wh/m²) — when solar radiation sensor mapped.
+    # NOTE: Wh/m² is solar irradiation density, NOT an HA ENERGY-class unit
+    # (Wh/kWh), so no device_class is set — otherwise HA rejects the unit.
+    WSSensorDescription(
+        key=KEY_SOLAR_ENERGY_TODAY_WHM2,
+        translation_key="solar_energy_today",
+        name="WS Solar Energy Today",
+        icon="mdi:solar-power",
+        native_unit="Wh/m²",
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        attrs_fn=lambda d: {
+            "peak_sun_hours": d.get(KEY_PEAK_SUN_HOURS),
+        },
+    ),
+    # v2.0 — Peak sun hours (Wh/m² / 1000)
+    WSSensorDescription(
+        key=KEY_PEAK_SUN_HOURS,
+        translation_key="peak_sun_hours",
+        name="WS Peak Sun Hours",
+        icon="mdi:weather-sunny",
+        native_unit="h",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    # v2.0 — Net radiation (FAO-56), requires solar radiation sensor
+    WSSensorDescription(
+        key=KEY_NET_RADIATION,
+        translation_key="net_radiation",
+        name="WS Net Radiation",
+        icon="mdi:sun-thermometer",
+        native_unit="W/m²",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     # =========================================================================
     # v1.2.0 - NEW METEOROLOGICAL SENSORS
@@ -1437,6 +2099,56 @@ _FEATURE_TOGGLE_MAP: dict[str, str] = {
     KEY_CHILL_HOURS_SEASON: CONF_ENABLE_COMFORT_INDICES,
     KEY_CLEARNESS_INDEX: CONF_ENABLE_COMFORT_INDICES,
     KEY_CLOUD_COVER_PCT: CONF_ENABLE_COMFORT_INDICES,
+    # v2.0 - comfort indices additions
+    KEY_AIR_DENSITY: CONF_ENABLE_COMFORT_INDICES,
+    KEY_SPECIFIC_HUMIDITY: CONF_ENABLE_COMFORT_INDICES,
+    KEY_WBGT: CONF_ENABLE_COMFORT_INDICES,
+    KEY_UTCI: CONF_ENABLE_COMFORT_INDICES,
+    # v2.0 - fire danger additions (gated by fire risk toggle)
+    KEY_FFDI: CONF_ENABLE_FIRE_RISK,
+    KEY_FFWI: CONF_ENABLE_FIRE_RISK,
+    # v2.0 - lightning sensors
+    KEY_LIGHTNING_COUNT_1H: CONF_ENABLE_LIGHTNING,
+    KEY_LIGHTNING_DISTANCE_KM: CONF_ENABLE_LIGHTNING,
+    KEY_LIGHTNING_RATE_1H: CONF_ENABLE_LIGHTNING,
+    KEY_LIGHTNING_CLEARANCE_MIN: CONF_ENABLE_LIGHTNING,
+    KEY_LIGHTNING_PROXIMITY: CONF_ENABLE_LIGHTNING,
+    # v2.0 - upload status sensors
+    KEY_WU_STATUS: CONF_ENABLE_WUNDERGROUND,
+    KEY_WC_STATUS: CONF_ENABLE_WEATHERCLOUD,
+    KEY_PWS_STATUS: CONF_ENABLE_PWSWEATHER,
+    KEY_WOW_STATUS: CONF_ENABLE_WOW,
+    KEY_AWEKAS_STATUS: CONF_ENABLE_AWEKAS,
+    KEY_CWOP_STATUS_V2: CONF_ENABLE_CWOP,
+    KEY_OWM_STATIONS_STATUS: CONF_ENABLE_OWM_STATIONS,
+    KEY_WINDY_STATUS: CONF_ENABLE_WINDY,
+    # v2.0 - indoor sensor group
+    KEY_INDOOR_TEMP_C: CONF_ENABLE_INDOOR,
+    KEY_INDOOR_HUMIDITY: CONF_ENABLE_INDOOR,
+    KEY_INDOOR_CO2_PPM: CONF_ENABLE_INDOOR,
+    KEY_INDOOR_TEMP_DELTA: CONF_ENABLE_INDOOR,
+    KEY_INDOOR_HUMIDITY_DELTA: CONF_ENABLE_INDOOR,
+    KEY_INDOOR_COMFORT: CONF_ENABLE_INDOOR,
+    # v2.0 - data quality expansion (diagnostics group)
+    KEY_SENSOR_STUCK: CONF_ENABLE_DIAGNOSTICS,
+    KEY_DATA_QUALITY_SCORE: CONF_ENABLE_DIAGNOSTICS,
+    KEY_NEIGHBOR_QC: CONF_ENABLE_DIAGNOSTICS,
+    KEY_SENSOR_SPIKE: CONF_ENABLE_DIAGNOSTICS,
+    # v2.0 - degree days + leaf wetness (new opt-in group)
+    KEY_HDD_TODAY_MM: CONF_ENABLE_DEGREE_DAYS,
+    KEY_HDD_SEASON: CONF_ENABLE_DEGREE_DAYS,
+    KEY_CDD_TODAY_MM: CONF_ENABLE_DEGREE_DAYS,
+    KEY_CDD_SEASON: CONF_ENABLE_DEGREE_DAYS,
+    KEY_GDD_TODAY_V2: CONF_ENABLE_DEGREE_DAYS,
+    KEY_GDD_SEASON_V2: CONF_ENABLE_DEGREE_DAYS,
+    KEY_LEAF_WETNESS: CONF_ENABLE_DEGREE_DAYS,
+    # v2.0 - solar energy (comfort indices group, needs solar radiation sensor)
+    KEY_SOLAR_ENERGY_TODAY_WHM2: CONF_ENABLE_COMFORT_INDICES,
+    KEY_MAX_SOLAR_RADIATION: CONF_ENABLE_COMFORT_INDICES,
+    KEY_PEAK_SUN_HOURS: CONF_ENABLE_COMFORT_INDICES,
+    KEY_IRRIGATION_DEFICIT: CONF_ENABLE_COMFORT_INDICES,
+    KEY_NET_RADIATION: CONF_ENABLE_COMFORT_INDICES,
+    KEY_WIND_RUN_MONTH_KM: CONF_ENABLE_COMFORT_INDICES,
     # v1.6.0 French regional
     KEY_VIGILANCE_MAX_LEVEL: CONF_ENABLE_VIGILANCE_METEO,
     KEY_FIRE_DANGER_VIGILANCE: CONF_ENABLE_VIGILANCE_METEO,
@@ -1475,6 +2187,29 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         filtered.append(desc)
 
     entities: list[SensorEntity] = [WSSensor(coordinator, entry, desc, prefix) for desc in filtered]
+
+    # v2.0.5: dynamic per-room indoor temperature delta sensors
+    if opts.get(CONF_ENABLE_INDOOR, False):
+        room_temps: list[str] = list(opts.get(CONF_INDOOR_ROOMS) or [])
+        for eid in room_temps:
+            slug = eid.split(".", 1)[-1] if "." in eid else eid
+            state = hass.states.get(eid)
+            friendly = (state.attributes.get("friendly_name") if state else None) or slug.replace("_", " ").title()
+            desc = WSSensorDescription(
+                key=f"indoor_room_delta_{slug}",
+                name=f"Temp Delta - {friendly}",
+                icon="mdi:thermometer-lines",
+                device_class=SensorDeviceClass.TEMPERATURE,
+                native_unit=UNIT_TEMP_C,
+                state_class=SensorStateClass.MEASUREMENT,
+                entity_category=EntityCategory.DIAGNOSTIC,
+                value_fn=lambda d, _eid=eid: (d.get(KEY_INDOOR_ROOMS_DATA) or {}).get(_eid, {}).get("delta_c"),
+                attrs_fn=lambda d, _eid=eid: {
+                    "indoor_temp_c": (d.get(KEY_INDOOR_ROOMS_DATA) or {}).get(_eid, {}).get("temp_c"),
+                    "source_entity": _eid,
+                },
+            )
+            entities.append(WSSensor(coordinator, entry, desc, prefix))
 
     # v1.9.0: dynamic Vigicrues river sensors — one per configured station
     if opts.get(CONF_ENABLE_VIGICRUES, False):
@@ -1524,6 +2259,13 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
         KEY_WIND_RUN_KM,
         KEY_CHILL_HOURS_TODAY,
         KEY_CHILL_HOURS_SEASON,
+        # v2.0 accumulators
+        KEY_RAIN_THIS_WEEK_MM,
+        KEY_RAIN_THIS_MONTH_MM,
+        KEY_RAIN_THIS_YEAR_MM,
+        KEY_RAIN_RATE_MAX_24H,
+        KEY_SOLAR_ENERGY_TODAY_WHM2,
+        KEY_PEAK_SUN_HOURS,
     }
 
     # v1.6.2: _DISABLED_BY_DEFAULT removed. Previously-disabled sensors are now
@@ -1688,6 +2430,65 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             KEY_MINUTES_UNTIL_RAIN: "minutes_until_rain",
             KEY_MINUTES_UNTIL_DRY: "minutes_until_dry",
             KEY_NOWCAST_INTENSITY: "nowcast_intensity",
+            # v2.0
+            KEY_CLOUD_BASE_M: "cloud_base",
+            KEY_FREEZING_LEVEL_M: "freezing_level",
+            KEY_WIND_GUST_FACTOR: "wind_gust_factor",
+            KEY_AIR_DENSITY: "air_density",
+            KEY_SPECIFIC_HUMIDITY: "specific_humidity",
+            KEY_WBGT: "wbgt",
+            KEY_RAIN_THIS_WEEK_MM: "rain_this_week",
+            KEY_RAIN_THIS_MONTH_MM: "rain_this_month",
+            KEY_RAIN_THIS_YEAR_MM: "rain_this_year",
+            KEY_RAIN_RATE_MAX_24H: "rain_rate_max_24h",
+            KEY_HDD_TODAY_MM: "hdd_today",
+            KEY_HDD_SEASON: "hdd_season",
+            KEY_CDD_TODAY_MM: "cdd_today",
+            KEY_CDD_SEASON: "cdd_season",
+            KEY_GDD_TODAY_V2: "gdd_today",
+            KEY_GDD_SEASON_V2: "gdd_season",
+            KEY_LEAF_WETNESS: "leaf_wetness",
+            # v2.0 batch 3
+            KEY_DOMINANT_WIND_DIR: "dominant_wind_direction",
+            KEY_WIND_DIR_VARIABILITY: "wind_direction_variability",
+            KEY_SOLAR_ENERGY_TODAY_WHM2: "solar_energy_today",
+            KEY_MAX_SOLAR_RADIATION: "max_solar_radiation",
+            KEY_PEAK_SUN_HOURS: "peak_sun_hours",
+            KEY_IRRIGATION_DEFICIT: "irrigation_deficit",
+            # v2.0 batch 4
+            KEY_FFDI: "ffdi",
+            KEY_FFWI: "ffwi",
+            KEY_UTCI: "utci",
+            # v2.0 batch 5 (lightning)
+            KEY_LIGHTNING_COUNT_1H: "lightning_count_1h",
+            KEY_LIGHTNING_DISTANCE_KM: "lightning_distance",
+            KEY_LIGHTNING_RATE_1H: "lightning_rate",
+            KEY_LIGHTNING_CLEARANCE_MIN: "lightning_clearance",
+            KEY_LIGHTNING_PROXIMITY: "lightning_proximity",
+            # v2.0 upload targets
+            KEY_WC_STATUS: "wc_upload_status",
+            KEY_PWS_STATUS: "pws_upload_status",
+            KEY_WOW_STATUS: "wow_upload_status",
+            KEY_AWEKAS_STATUS: "awekas_upload_status",
+            KEY_CWOP_STATUS_V2: "cwop_upload_status",
+            KEY_OWM_STATIONS_STATUS: "owm_stations_upload_status",
+            KEY_WINDY_STATUS: "windy_upload_status",
+            # v2.0 indoor sensors
+            KEY_INDOOR_TEMP_C: "indoor_temperature",
+            KEY_INDOOR_HUMIDITY: "indoor_humidity",
+            KEY_INDOOR_CO2_PPM: "indoor_co2",
+            KEY_INDOOR_TEMP_DELTA: "indoor_temp_delta",
+            KEY_INDOOR_HUMIDITY_DELTA: "indoor_humidity_delta",
+            KEY_INDOOR_COMFORT: "indoor_comfort",
+            # v2.0 data quality
+            KEY_SENSOR_STUCK: "sensor_stuck",
+            KEY_DATA_QUALITY_SCORE: "data_quality_score",
+            KEY_NEIGHBOR_QC: "neighbor_qc",
+            KEY_SENSOR_SPIKE: "sensor_spike",
+            # v2.0 finishing items
+            KEY_WIND_RUN_MONTH_KM: "wind_run_month",
+            KEY_NET_RADIATION: "net_radiation",
+            KEY_RAIN_TODAY_MM: "rain_today_mm",
         }
         if key in overrides:
             return overrides[key]

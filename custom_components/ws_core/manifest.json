@@ -1,6 +1,9 @@
 {
   "domain": "ws_core",
   "name": "Weather Station Core",
+  "after_dependencies": [
+    "mqtt"
+  ],
   "codeowners": [
     "@kmich"
   ],
@@ -10,5 +13,5 @@
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/kmich/ha_ws_core/issues",
   "requirements": [],
-  "version": "1.11.0"
+  "version": "2.0.6"
 }

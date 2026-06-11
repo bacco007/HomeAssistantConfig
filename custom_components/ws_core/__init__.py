@@ -278,8 +278,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             new_options = dict(entry.options)
             for key, val in offsets.items():
                 new_options[key] = val
+            # Updating the options fires the registered update listener
+            # (async_update_options), which reloads the entry. Do NOT also call
+            # async_reload here — that would reload twice and risk a race
+            # (the anti-pattern HA flagged in the 2026.6 config-entry-listener
+            # deprecation). The listener handles the single reload.
             hass.config_entries.async_update_entry(entry, options=new_options)
-            await hass.config_entries.async_reload(entry.entry_id)
             _LOGGER.info(
                 "ws_core: calibration applied to %s: %s",
                 entry.entry_id,

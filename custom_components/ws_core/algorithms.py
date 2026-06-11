@@ -43,19 +43,15 @@ MOON_ILLUMINATION = {
 
 
 def calculate_dew_point(temp_c: float, humidity: float) -> float:
-    """Magnus-formula dew point (Alduchov & Eskridge 1996).
+    """Magnus-formula dew point over liquid water (Alduchov & Eskridge 1996).
 
-    Uses temperature-dependent constants:
-      Over water (T >= 0): a=17.625, b=243.04
-      Over ice   (T <  0): a=22.587, b=273.86 (Buck 1981)
+    Uses saturation-over-water constants at all temperatures:
+      a=17.625, b=243.04
 
     Valid range: -45 C to +60 C, 1%-100% RH.
-    Max error < 0.1 C across valid range (over water).
+    Max error < 0.1 C across valid range.
     """
-    if temp_c >= 0:
-        a, b = 17.625, 243.04
-    else:
-        a, b = 22.587, 273.86
+    a, b = 17.625, 243.04
     rh_clamped = max(1.0, min(100.0, humidity))
     gamma = (a * temp_c) / (b + temp_c) + math.log(rh_clamped / 100.0)
     return round((b * gamma) / (a - gamma), 2)
@@ -65,13 +61,13 @@ def calculate_frost_point(temp_c: float, humidity: float) -> float:
     """Frost point using Magnus formula with ice constants (Buck 1981).
 
     The frost point is the temperature at which air becomes saturated
-    with respect to ice. Only physically meaningful below 0 C.
-    Above 0 C, returns the standard dew point.
+    with respect to ice. Uses ice constants at all temperatures:
+      a=22.587, b=273.86
 
-    Constants: a=22.587, b=273.86 (saturation over ice).
+    The frost point is always numerically higher (warmer) than the dew
+    point at the same conditions, because ice requires less vapour
+    pressure to saturate than liquid water does.
     """
-    if temp_c >= 0:
-        return calculate_dew_point(temp_c, humidity)
     a, b = 22.587, 273.86
     rh_clamped = max(1.0, min(100.0, humidity))
     gamma = (a * temp_c) / (b + temp_c) + math.log(rh_clamped / 100.0)
@@ -1978,6 +1974,90 @@ def cross_sensor_consistency_flags(
 
 
 # ===========================================================================
+# v2.0 - Cloud base, freezing level, atmospheric density, specific humidity,
+#         wind gust factor, WBGT
+# ===========================================================================
+
+
+def calculate_cloud_base_m(temp_c: float, dew_c: float) -> float:
+    """Lifted Condensation Level (LCL) / estimated cloud base height (m AGL).
+
+    Uses the Espy approximation: h ≈ 125 × (T − Td).
+    Returns 0 when air is saturated (fog / ground-level stratus).
+    Reference: Lawrence (2005), BAMS 86:225-229.
+    """
+    return round(max(0.0, 125.0 * (temp_c - dew_c)))
+
+
+def calculate_freezing_level_m(temp_c: float, elevation_m: float = 0.0) -> float:
+    """Freezing level altitude estimate (m above sea level).
+
+    Uses ISA lapse rate of 6.5°C per 1000 m.
+    Returns station elevation when temp ≤ 0°C (freeze already at surface).
+    """
+    if temp_c <= 0.0:
+        return round(elevation_m)
+    return round(elevation_m + temp_c * 1000.0 / 6.5)
+
+
+def calculate_air_density(temp_c: float, pressure_hpa: float) -> float:
+    """Dry air density (kg/m³).
+
+    ρ = P / (Rd × Tk), where Rd = 287.058 J kg⁻¹ K⁻¹ (ICAO Doc 7488).
+    Moisture correction is negligible (<0.5%) for surface conditions.
+    """
+    return round(pressure_hpa * 100.0 / (287.058 * (temp_c + 273.15)), 4)
+
+
+def calculate_specific_humidity(temp_c: float, humidity: float, pressure_hpa: float) -> float:
+    """Specific humidity (g/kg).
+
+    q = 622 × e / (P − 0.378 × e) where e is actual vapour pressure (hPa).
+    Reference: WMO No. 8 (CIMO Guide), Annex 4.B.
+    """
+    es = 6.108 * math.exp(17.27 * temp_c / (temp_c + 237.3))
+    e = es * max(0.0, min(100.0, humidity)) / 100.0
+    denom = max(pressure_hpa - 0.378 * e, 1.0)
+    return round(0.622 * e / denom * 1000.0, 2)
+
+
+def calculate_wind_gust_factor(gust_ms: float, wind_ms: float) -> float | None:
+    """Wind gust factor (dimensionless ratio: gust / mean wind speed).
+
+    Returns None when wind speed is below 0.5 m/s (ratio becomes meaningless).
+    Typical values: 1.2–1.5 (open terrain), 1.5–2.5+ (gusty or turbulent).
+    """
+    if wind_ms < 0.5:
+        return None
+    return round(gust_ms / wind_ms, 2)
+
+
+def calculate_wbgt_simplified(temp_c: float, wet_bulb_c: float) -> float:
+    """Simplified WBGT (Wet Bulb Globe Temperature) without solar load (°C).
+
+    WBGT_indoor = 0.7 × Twb + 0.3 × Ta
+    Valid for shaded / indoor / overcast conditions. Underestimates heat stress
+    under direct solar radiation — use calculate_wbgt_outdoor when solar data
+    is available.
+    Reference: ISO 7933:2004; Lemke & Kjellstrom (2012), Glob Health Action.
+    """
+    return round(0.7 * wet_bulb_c + 0.3 * temp_c, 1)
+
+
+def calculate_wbgt_outdoor(temp_c: float, wet_bulb_c: float, solar_w_m2: float) -> float:
+    """WBGT with solar correction for outdoor / direct-sun conditions (°C).
+
+    Globe temperature (Tg) is estimated from solar irradiance:
+    Tg ≈ Ta + 0.393 × SR^0.4 − 4.0  (Liljegren simplified)
+    WBGT = 0.7 × Twb + 0.2 × Tg + 0.1 × Ta
+
+    Reference: Liljegren et al. (2008), J Appl Meteor Climatol 47:2983-2995.
+    """
+    tg = temp_c + 0.393 * max(0.0, solar_w_m2) ** 0.4 - 4.0
+    return round(0.7 * wet_bulb_c + 0.2 * tg + 0.1 * temp_c, 1)
+
+
+# ===========================================================================
 # v1.7.0 - Precipitation nowcast (from Open-Meteo 15-minute buckets)
 # ===========================================================================
 
@@ -2096,3 +2176,550 @@ def derive_nowcast(
                 break
 
     return result
+
+
+# ===========================================================================
+# v2.0 - Degree days (HDD / CDD / GDD) and leaf wetness
+# ===========================================================================
+
+
+def calculate_hdd_contribution(temp_c: float, base_c: float = 18.0) -> float:
+    """Heating Degree Day contribution for one observation interval.
+
+    Returns the positive difference between the base temperature and air
+    temperature; zero when temperature is at or above the base.
+    Callers accumulate the daily total and divide by the number of samples
+    to get degree-days.
+    Reference: WMO TD-No. 1500 (2009).
+    """
+    return max(0.0, base_c - temp_c)
+
+
+def calculate_cdd_contribution(temp_c: float, base_c: float = 18.0) -> float:
+    """Cooling Degree Day contribution for one observation interval.
+
+    Returns the positive difference between air temperature and the base;
+    zero when temperature is at or below the base.
+    Reference: WMO TD-No. 1500 (2009).
+    """
+    return max(0.0, temp_c - base_c)
+
+
+def calculate_gdd_contribution(tmax_c: float, tmin_c: float, base_c: float = 10.0, cap_c: float = 30.0) -> float:
+    """Growing Degree Day (GDD) contribution for one day.
+
+    Uses the modified mean method:
+      mean = (min(tmax, cap) + max(tmin, base)) / 2
+      GDD = max(0, mean - base)
+
+    Parameters
+    ----------
+    tmax_c : float
+        Daily maximum temperature (°C).
+    tmin_c : float
+        Daily minimum temperature (°C).
+    base_c : float
+        Base temperature below which growth is negligible (default 10°C).
+    cap_c : float
+        Upper threshold; temperatures above this do not accelerate growth
+        (default 30°C, common for many crops).
+    Reference: McMaster & Wilhelm (1997), Agric Forest Meteorol 87:291-300.
+    """
+    effective_max = min(tmax_c, cap_c)
+    effective_min = max(tmin_c, base_c)
+    if effective_min > effective_max:
+        return 0.0
+    mean = (effective_max + effective_min) / 2.0
+    return max(0.0, mean - base_c)
+
+
+def calculate_leaf_wetness(temp_c: float, dew_c: float, rh: float) -> bool:
+    """Leaf wetness indicator (boolean).
+
+    Leaf wetness occurs when:
+      • Dew-point depression (T − Td) < 2°C AND relative humidity ≥ 90%, OR
+      • Rain is falling (handled by the caller via rain_rate > 0).
+
+    Returns True when leaf surfaces are likely wet (favourable for fungal
+    disease; relevant for spray timing decisions).
+    Reference: Gleason et al. (1994), Plant Disease 78:1099-1103.
+    """
+    depression = temp_c - dew_c
+    return bool(depression < 2.0 and rh >= 90.0)
+
+
+# ===========================================================================
+# v2.0 - Solar energy accumulation, max theoretical solar radiation,
+#         irrigation water deficit, dominant wind direction
+# ===========================================================================
+
+
+def calculate_max_solar_radiation(lat_deg: float, day_of_year: int, elevation_m: float = 0.0) -> float:
+    """Maximum possible (clear-sky) solar radiation at the surface (W/m²).
+
+    Uses the Bras (1990) clear-sky model:
+      Ra = extra-terrestrial radiation * (a + b × n/N)
+    Simplified to use the FAO-56 top-of-atmosphere radiation (Ra) and the
+    empirical Ångström transmittance: Rso ≈ (0.75 + 2×10⁻⁵ × elevation) × Ra.
+
+    Reference: Allen et al. (1998), FAO Irrigation and Drainage Paper 56, §3.
+    """
+    lat_rad = math.radians(lat_deg)
+    dr = 1.0 + 0.033 * math.cos(2.0 * math.pi * day_of_year / 365.0)
+    decl = 0.409 * math.sin(2.0 * math.pi * day_of_year / 365.0 - 1.39)
+    ws = math.acos(-math.tan(lat_rad) * math.tan(decl))
+    # Extra-terrestrial radiation (MJ m⁻² day⁻¹)
+    Gsc = 0.0820  # solar constant (MJ m⁻² min⁻¹)
+    Ra = (
+        (24.0 * 60.0 / math.pi)
+        * Gsc
+        * dr
+        * (ws * math.sin(lat_rad) * math.sin(decl) + math.cos(lat_rad) * math.cos(decl) * math.sin(ws))
+    )
+    # Clear-sky surface radiation (FAO-56 Eq. 37)
+    Rso = (0.75 + 2e-5 * max(0.0, elevation_m)) * Ra
+    # Convert MJ m⁻² day⁻¹ → W m⁻² (divide by 86400 s/day × 10⁻⁶ MJ/J)
+    return round(max(0.0, Rso * 1e6 / 86400.0), 1)
+
+
+def calculate_net_radiation(
+    solar_wm2: float,
+    temp_c: float,
+    humidity: float,
+    max_solar_wm2: float | None = None,
+    albedo: float = 0.23,
+) -> float:
+    """Instantaneous net radiation at the surface (W/m²), FAO-56 method.
+
+    Rn = Rns − Rnl
+      Rns = (1 − albedo) × Rs               (net shortwave)
+      Rnl = σ·T⁴·(0.34 − 0.14·√ea)·(1.35·Rs/Rso − 0.35)   (net longwave)
+
+    Albedo defaults to 0.23 (FAO reference grass). When clear-sky radiation
+    (Rso = max_solar_wm2) is unavailable or zero (night), the longwave
+    cloudiness term falls back to a clear-sky assumption.
+
+    Reference: Allen et al. (1998), FAO-56, Eqs. 38-40.
+    """
+    rns = (1.0 - albedo) * max(0.0, solar_wm2)
+
+    # Actual vapour pressure (kPa)
+    es = 0.6108 * math.exp(17.27 * temp_c / (temp_c + 237.3))
+    ea = es * max(0.0, min(100.0, humidity)) / 100.0
+
+    # Stefan-Boltzmann constant (W m⁻² K⁻⁴)
+    sigma = 5.670374419e-8
+    t_k = temp_c + 273.15
+
+    # Cloudiness factor from Rs/Rso ratio
+    if max_solar_wm2 and max_solar_wm2 > 1.0 and solar_wm2 > 1.0:
+        ratio = min(1.0, solar_wm2 / max_solar_wm2)
+        cloud_term = 1.35 * ratio - 0.35
+    else:
+        cloud_term = 1.0  # daytime clear-sky fallback / night
+
+    rnl = sigma * (t_k**4) * (0.34 - 0.14 * math.sqrt(max(0.0, ea))) * cloud_term
+    return round(rns - rnl, 1)
+
+
+def calculate_irrigation_deficit(et0_daily_mm: float, rain_today_mm: float) -> float:
+    """Irrigation water deficit (mm): crop water need minus rainfall today.
+
+    Positive values indicate irrigation is needed; zero or negative means
+    rainfall alone covers the reference evapotranspiration demand.
+    The deficit accumulates over the day and resets with each new day's rain.
+    """
+    return round(max(0.0, et0_daily_mm - rain_today_mm), 2)
+
+
+def calculate_dominant_wind_direction(directions: list[float]) -> float | None:
+    """Dominant wind direction (°) from a sample of directions.
+
+    Uses circular mean of the sample rather than a simple histogram mode,
+    which avoids the boundary artefact at 0°/360°.
+    Returns None if the sample is empty.
+    Reference: Mardia & Jupp (2000), Directional Statistics.
+    """
+    if not directions:
+        return None
+    rads = [math.radians(d) for d in directions]
+    sin_mean = sum(math.sin(r) for r in rads) / len(rads)
+    cos_mean = sum(math.cos(r) for r in rads) / len(rads)
+    mean_dir = math.degrees(math.atan2(sin_mean, cos_mean)) % 360.0
+    return round(mean_dir, 1)
+
+
+def calculate_wind_direction_variability(directions: list[float]) -> float | None:
+    """Circular standard deviation of wind directions (°).
+
+    Uses the circular standard deviation formula: σ = √(−2 × ln(R̄))
+    where R̄ is the mean resultant length.  A value of 0° means perfectly
+    steady direction; high values (>60°) indicate highly variable/gusty flow.
+    Returns None if fewer than 2 samples are available.
+    Reference: Mardia & Jupp (2000), Directional Statistics.
+    """
+    if len(directions) < 2:
+        return None
+    rads = [math.radians(d) for d in directions]
+    sin_mean = sum(math.sin(r) for r in rads) / len(rads)
+    cos_mean = sum(math.cos(r) for r in rads) / len(rads)
+    r_bar = math.sqrt(sin_mean**2 + cos_mean**2)
+    r_bar = min(r_bar, 1.0 - 1e-9)
+    csd = math.degrees(math.sqrt(-2.0 * math.log(r_bar)))
+    return round(csd, 1)
+
+
+# ===========================================================================
+# v2.0 - McArthur FFDI, Fosberg FFWI, UTCI
+# ===========================================================================
+
+
+def calculate_ffdi(
+    temp_c: float,
+    humidity: float,
+    wind_kmh: float,
+    drought_factor: float = 10.0,
+) -> float:
+    """McArthur Forest Fire Danger Index (FFDI).
+
+    The FFDI is the Australian standard fire danger rating used by the Bureau
+    of Meteorology and fire agencies across Australia and New Zealand.
+
+    Formula: FFDI = 2 × exp(−0.45 + 0.987×ln(DF) − 0.0345×RH + 0.0338×T + 0.0234×V)
+    Where:
+        DF  = Drought Factor (0–10, default 10 = maximum drought)
+        RH  = relative humidity (%)
+        T   = air temperature (°C)
+        V   = wind speed at 10 m (km/h)
+
+    Rating scale: 0–11 Low, 12–24 Moderate, 25–49 High, 50–74 Very High,
+                  75–99 Severe, ≥100 Extreme/Catastrophic.
+
+    Reference: Noble et al. (1980), Aust For 43:131-138.
+    """
+    df = max(0.1, min(10.0, drought_factor))
+    rh = max(1.0, min(100.0, humidity))
+    v = max(0.0, wind_kmh)
+    ffdi = 2.0 * math.exp(-0.45 + 0.987 * math.log(df) - 0.0345 * rh + 0.0338 * temp_c + 0.0234 * v)
+    return round(max(0.0, ffdi), 1)
+
+
+def ffdi_danger_level(ffdi: float) -> str:
+    """Return FFDI danger level string from numeric FFDI value."""
+    if ffdi >= 100:
+        return "catastrophic"
+    if ffdi >= 75:
+        return "extreme"
+    if ffdi >= 50:
+        return "severe"
+    if ffdi >= 25:
+        return "very_high"
+    if ffdi >= 12:
+        return "high"
+    return "low_moderate"
+
+
+def calculate_ffwi(temp_c: float, humidity: float, wind_ms: float) -> float:
+    """Fosberg Fire Weather Index (FFWI).
+
+    Combines temperature, humidity, and wind speed into a single fire danger
+    index used extensively in the US Southwest and internationally.
+
+    Formula uses an equilibrium moisture content (EMC) from temp/humidity,
+    then:
+        η = moisture damping factor = 1 − 2×(m/30) + 1.5×(m/30)² − 0.5×(m/30)³
+        FFWI = η × √(1 + V²) / 0.3002
+    Where m is EMC (%) and V is wind speed in mph.
+
+    Reference: Fosberg (1978), USDA Forest Service General Technical Report WO-10.
+    """
+    # EMC from Fosberg's formula (°F input required)
+    tf = temp_c * 9.0 / 5.0 + 32.0
+    rh = max(1.0, min(99.0, humidity))
+    if rh < 10.0:
+        emc = 0.03229 + 0.281073 * rh - 0.000578 * tf * rh
+    elif rh < 50.0:
+        emc = 2.22749 + 0.160107 * rh - 0.014784 * tf
+    else:
+        emc = 21.0606 + 0.005565 * rh**2 - 0.00035 * tf * rh - 0.483199 * rh
+
+    emc = max(0.0, min(30.0, emc))
+    eta = 1.0 - 2.0 * (emc / 30.0) + 1.5 * (emc / 30.0) ** 2 - 0.5 * (emc / 30.0) ** 3
+    wind_mph = wind_ms * 2.23694
+    ffwi = eta * math.sqrt(1.0 + wind_mph**2) / 0.3002
+    return round(max(0.0, ffwi), 1)
+
+
+def calculate_utci(ta: float, tr: float, va: float, rh: float) -> float | None:
+    """Universal Thermal Climate Index (UTCI) equivalent temperature (°C).
+
+    Uses the Fiala/Bröde 2012 sixth-order polynomial regression (210 terms).
+
+    Parameters
+    ----------
+    ta : float
+        Air temperature (°C). Valid range: −50 to +50°C.
+    tr : float
+        Mean radiant temperature (°C). Use ta for shade/overcast conditions.
+    va : float
+        Wind speed at 10 m (m/s). Clamped to [0.5, 17] m/s.
+    rh : float
+        Relative humidity (%). Used to compute vapour pressure.
+
+    Reference: Bröde et al. (2012), Int J Biometeorol 56:481-494.
+    Official UTCI software: www.utci.org (fiala2012utci.f90).
+    """
+    # Validity range guard
+    if not (-50.0 <= ta <= 50.0):
+        return None
+
+    va = max(0.5, min(17.0, float(va)))
+    d_tmrt = float(tr) - float(ta)
+
+    # Vapour pressure (hPa) from Magnus formula
+    ehpa = 6.105 * math.exp(17.27 * float(ta) / (float(ta) + 237.3)) * float(rh) / 100.0
+    pa = ehpa / 10.0  # hPa → kPa
+
+    # Bröde 2012 polynomial (all 210 coefficients)
+    # Computed as UTCI_offset = f(ta, D_Tmrt, va, Pa); UTCI = ta + offset.
+    utci_approx = (
+        6.07562052e-01
+        + (-2.27712343e-02) * ta
+        + (8.06470249e-04) * ta**2
+        + (-1.54271372e-04) * ta**3
+        + (-3.24651995e-06) * ta**4
+        + (7.32602852e-08) * ta**5
+        + (1.35959073e-09) * ta**6
+        + (-2.25836520e00) * va
+        + (8.80326035e-02) * ta * va
+        + (2.16844454e-03) * ta**2 * va
+        + (-1.53347087e-05) * ta**3 * va
+        + (-5.72983704e-07) * ta**4 * va
+        + (-2.55090145e-09) * ta**5 * va
+        + (-7.51269505e-01) * va**2
+        + (-4.08350271e-03) * ta * va**2
+        + (-5.21670675e-05) * ta**2 * va**2
+        + (1.94544667e-06) * ta**3 * va**2
+        + (1.14099823e-08) * ta**4 * va**2
+        + (1.58137256e-01) * va**3
+        + (-6.57263143e-04) * ta * va**3
+        + (2.22697524e-05) * ta**2 * va**3
+        + (-4.16117031e-08) * ta**3 * va**3
+        + (-1.27762753e-02) * va**4
+        + (9.66891875e-06) * ta * va**4
+        + (2.52785852e-09) * ta**2 * va**4
+        + (4.56306672e-04) * va**5
+        + (-1.74202546e-07) * ta * va**5
+        + (-5.91491269e-06) * va**6
+        + (3.98374273e-01) * d_tmrt
+        + (1.83945314e-04) * ta * d_tmrt
+        + (-1.73754510e-04) * ta**2 * d_tmrt
+        + (-7.60781159e-07) * ta**3 * d_tmrt
+        + (3.77830287e-08) * ta**4 * d_tmrt
+        + (5.43079673e-10) * ta**5 * d_tmrt
+        + (-2.00518269e-02) * va * d_tmrt
+        + (8.92859837e-04) * ta * va * d_tmrt
+        + (3.45433048e-06) * ta**2 * va * d_tmrt
+        + (-3.77925774e-07) * ta**3 * va * d_tmrt
+        + (-1.69699377e-09) * ta**4 * va * d_tmrt
+        + (1.69992415e-04) * va**2 * d_tmrt
+        + (-4.99204314e-05) * ta * va**2 * d_tmrt
+        + (2.47417178e-07) * ta**2 * va**2 * d_tmrt
+        + (1.07596466e-08) * ta**3 * va**2 * d_tmrt
+        + (8.49242932e-05) * va**3 * d_tmrt
+        + (1.35191328e-06) * ta * va**3 * d_tmrt
+        + (-6.21531254e-09) * ta**2 * va**3 * d_tmrt
+        + (-4.99410301e-06) * va**4 * d_tmrt
+        + (-1.89489258e-08) * ta * va**4 * d_tmrt
+        + (8.15300114e-08) * va**5 * d_tmrt
+        + (7.55043090e-04) * d_tmrt**2
+        + (-5.65095215e-05) * ta * d_tmrt**2
+        + (-4.52166564e-07) * ta**2 * d_tmrt**2
+        + (2.46688878e-08) * ta**3 * d_tmrt**2
+        + (2.42674348e-10) * ta**4 * d_tmrt**2
+        + (1.54547250e-04) * va * d_tmrt**2
+        + (5.24110970e-06) * ta * va * d_tmrt**2
+        + (-8.75874982e-08) * ta**2 * va * d_tmrt**2
+        + (-1.50743064e-09) * ta**3 * va * d_tmrt**2
+        + (-1.56236307e-05) * va**2 * d_tmrt**2
+        + (-1.33895614e-07) * ta * va**2 * d_tmrt**2
+        + (2.49709824e-09) * ta**2 * va**2 * d_tmrt**2
+        + (6.51711721e-07) * va**3 * d_tmrt**2
+        + (1.94960053e-09) * ta * va**3 * d_tmrt**2
+        + (-1.00361113e-08) * va**4 * d_tmrt**2
+        + (-1.21206673e-05) * d_tmrt**3
+        + (-2.18203660e-07) * ta * d_tmrt**3
+        + (7.51269482e-09) * ta**2 * d_tmrt**3
+        + (9.79063848e-11) * ta**3 * d_tmrt**3
+        + (1.25301186e-06) * va * d_tmrt**3
+        + (-1.81951053e-08) * ta * va * d_tmrt**3
+        + (-4.35302336e-10) * ta**2 * va * d_tmrt**3
+        + (3.31449696e-08) * va**2 * d_tmrt**3
+        + (1.35394293e-09) * ta * va**2 * d_tmrt**3
+        + (-7.93939155e-10) * va**3 * d_tmrt**3
+        + (-6.71223343e-08) * d_tmrt**4
+        + (-4.73602469e-10) * ta * d_tmrt**4
+        + (3.68098486e-09) * va * d_tmrt**4
+        + (7.98047217e-11) * ta * va * d_tmrt**4
+        + (-1.43483285e-10) * va**2 * d_tmrt**4
+        + (2.24795622e-10) * d_tmrt**5
+        + (-3.44226936e-02) * pa
+        + (-3.81295484e-04) * ta * pa
+        + (-1.65438895e-04) * ta**2 * pa
+        + (2.80726302e-06) * ta**3 * pa
+        + (5.06651184e-08) * ta**4 * pa
+        + (-1.00531455e-07) * ta**5 * pa
+        + (-6.21029965e-03) * va * pa
+        + (-4.22874742e-04) * ta * va * pa
+        + (-2.02798146e-05) * ta**2 * va * pa
+        + (-6.31578975e-07) * ta**3 * va * pa
+        + (-6.42467551e-09) * ta**4 * va * pa
+        + (-3.25409535e-04) * va**2 * pa
+        + (2.19444520e-06) * ta * va**2 * pa
+        + (-1.64769095e-07) * ta**2 * va**2 * pa
+        + (-1.83735115e-09) * ta**3 * va**2 * pa
+        + (5.96485453e-06) * va**3 * pa
+        + (-2.09779476e-07) * ta * va**3 * pa
+        + (2.18810945e-09) * ta**2 * va**3 * pa
+        + (-2.37952267e-07) * va**4 * pa
+        + (5.75797233e-10) * ta * va**4 * pa
+        + (1.52502768e-09) * va**5 * pa
+        + (-2.40912633e-04) * d_tmrt * pa
+        + (-3.44359522e-05) * ta * d_tmrt * pa
+        + (-7.38561421e-07) * ta**2 * d_tmrt * pa
+        + (2.29007177e-08) * ta**3 * d_tmrt * pa
+        + (4.94428380e-10) * ta**4 * d_tmrt * pa
+        + (1.48138664e-05) * va * d_tmrt * pa
+        + (-4.33564272e-07) * ta * va * d_tmrt * pa
+        + (-2.48540975e-09) * ta**2 * va * d_tmrt * pa
+        + (-5.11609742e-09) * ta**3 * va * d_tmrt * pa
+        + (7.07229206e-08) * va**2 * d_tmrt * pa
+        + (-1.10541017e-09) * ta * va**2 * d_tmrt * pa
+        + (-1.80817349e-10) * ta**2 * va**2 * d_tmrt * pa
+        + (-4.50546339e-07) * va**3 * d_tmrt * pa
+        + (-4.99590290e-09) * ta * va**3 * d_tmrt * pa
+        + (8.66420624e-09) * va**4 * d_tmrt * pa
+        + (-2.81205339e-06) * d_tmrt**2 * pa
+        + (-5.67782133e-08) * ta * d_tmrt**2 * pa
+        + (1.46538692e-09) * ta**2 * d_tmrt**2 * pa
+        + (-1.87587520e-09) * ta**3 * d_tmrt**2 * pa
+        + (-2.47780588e-08) * va * d_tmrt**2 * pa
+        + (-1.01660970e-08) * ta * va * d_tmrt**2 * pa
+        + (7.47550718e-10) * ta**2 * va * d_tmrt**2 * pa
+        + (1.04714069e-09) * va**2 * d_tmrt**2 * pa
+        + (6.93503441e-11) * ta * va**2 * d_tmrt**2 * pa
+        + (-2.67804012e-10) * va**3 * d_tmrt**2 * pa
+        + (2.64099611e-09) * d_tmrt**3 * pa
+        + (-1.01509945e-10) * ta * d_tmrt**3 * pa
+        + (-1.12475753e-10) * ta**2 * d_tmrt**3 * pa
+        + (2.49698087e-11) * va * d_tmrt**3 * pa
+        + (-4.33017278e-11) * ta * va * d_tmrt**3 * pa
+        + (-4.82061898e-12) * va**2 * d_tmrt**3 * pa
+        + (-1.28782478e-10) * d_tmrt**4 * pa
+        + (-8.31672664e-12) * ta * d_tmrt**4 * pa
+        + (5.50101843e-12) * va * d_tmrt**4 * pa
+        + (7.55715048e-12) * d_tmrt**5 * pa
+        + (1.28606834e-01) * pa**2
+        + (-8.24576803e-04) * ta * pa**2
+        + (-1.24205861e-05) * ta**2 * pa**2
+        + (-7.55547883e-08) * ta**3 * pa**2
+        + (1.28025651e-08) * ta**4 * pa**2
+        + (-6.79543340e-09) * ta**5 * pa**2
+        + (-3.15285585e-04) * va * pa**2
+        + (5.59960698e-05) * ta * va * pa**2
+        + (-1.88522587e-06) * ta**2 * va * pa**2
+        + (-7.15445745e-08) * ta**3 * va * pa**2
+        + (-3.20517050e-06) * va**2 * pa**2
+        + (-1.46764541e-07) * ta * va**2 * pa**2
+        + (8.95823839e-09) * ta**2 * va**2 * pa**2
+        + (3.65583295e-09) * va**3 * pa**2
+        + (-7.22741127e-09) * ta * va**3 * pa**2
+        + (-4.62259162e-10) * va**4 * pa**2
+        + (-4.35416904e-07) * d_tmrt * pa**2
+        + (1.77229481e-09) * ta * d_tmrt * pa**2
+        + (7.81867055e-10) * ta**2 * d_tmrt * pa**2
+        + (-4.70649093e-09) * ta**3 * d_tmrt * pa**2
+        + (-7.61295073e-09) * va * d_tmrt * pa**2
+        + (-4.14879414e-10) * ta * va * d_tmrt * pa**2
+        + (8.77890765e-11) * ta**2 * va * d_tmrt * pa**2
+        + (5.87289947e-10) * va**2 * d_tmrt * pa**2
+        + (5.87285698e-12) * ta * va**2 * d_tmrt * pa**2
+        + (-9.24782948e-12) * va**3 * d_tmrt * pa**2
+        + (-7.54254983e-10) * d_tmrt**2 * pa**2
+        + (8.64513688e-11) * ta * d_tmrt**2 * pa**2
+        + (-6.16729775e-12) * ta**2 * d_tmrt**2 * pa**2
+        + (-1.09000297e-11) * va * d_tmrt**2 * pa**2
+        + (-3.04059975e-12) * ta * va * d_tmrt**2 * pa**2
+        + (-6.44218994e-13) * va**2 * d_tmrt**2 * pa**2
+        + (-1.93023152e-11) * d_tmrt**3 * pa**2
+        + (-1.63366413e-12) * ta * d_tmrt**3 * pa**2
+        + (-2.14958139e-12) * va * d_tmrt**3 * pa**2
+        + (2.16564764e-12) * d_tmrt**4 * pa**2
+        + (2.14558060e-02) * pa**3
+        + (-1.00915723e-03) * ta * pa**3
+        + (-1.50840938e-06) * ta**2 * pa**3
+        + (2.44047940e-07) * ta**3 * pa**3
+        + (-9.23509440e-09) * ta**4 * pa**3
+        + (2.89988849e-05) * va * pa**3
+        + (-1.19975011e-05) * ta * va * pa**3
+        + (3.74285561e-07) * ta**2 * va * pa**3
+        + (-1.08218558e-08) * ta**3 * va * pa**3
+        + (-2.93791414e-07) * va**2 * pa**3
+        + (2.29419613e-08) * ta * va**2 * pa**3
+        + (-4.48636823e-10) * ta**2 * va**2 * pa**3
+        + (4.01651735e-09) * va**3 * pa**3
+        + (-8.68573095e-10) * ta * va**3 * pa**3
+        + (-3.54861788e-10) * va**4 * pa**3
+        + (-1.18148000e-06) * d_tmrt * pa**3
+        + (-2.25085300e-07) * ta * d_tmrt * pa**3
+        + (-1.28715620e-09) * ta**2 * d_tmrt * pa**3
+        + (6.43929847e-11) * ta**3 * d_tmrt * pa**3
+        + (-8.59676620e-09) * va * d_tmrt * pa**3
+        + (-4.99720085e-10) * ta * va * d_tmrt * pa**3
+        + (2.06640006e-11) * ta**2 * va * d_tmrt * pa**3
+        + (1.02988432e-09) * va**2 * d_tmrt * pa**3
+        + (-4.00690706e-11) * ta * va**2 * d_tmrt * pa**3
+        + (-1.64519340e-10) * va**3 * d_tmrt * pa**3
+        + (-2.03428432e-09) * d_tmrt**2 * pa**3
+        + (-2.71396538e-10) * ta * d_tmrt**2 * pa**3
+        + (3.52047680e-12) * ta**2 * d_tmrt**2 * pa**3
+        + (-2.29082760e-10) * va * d_tmrt**2 * pa**3
+        + (8.45519695e-12) * ta * va * d_tmrt**2 * pa**3
+        + (-1.43949011e-10) * va**2 * d_tmrt**2 * pa**3
+        + (-6.52805617e-11) * d_tmrt**3 * pa**3
+        + (2.19047551e-05) * pa**4
+        + (-2.16344592e-06) * ta * pa**4
+        + (-6.22404429e-08) * ta**2 * pa**4
+        + (5.17220688e-06) * va * pa**4
+        + (-7.69770473e-07) * ta * va * pa**4
+        + (-7.83698278e-09) * ta**2 * va * pa**4
+        + (-1.61395477e-08) * va**2 * pa**4
+        + (1.27165126e-08) * ta * va**2 * pa**4
+        + (-1.19862512e-09) * va**3 * pa**4
+        + (-3.02744888e-08) * d_tmrt * pa**4
+        + (-5.53801984e-09) * ta * d_tmrt * pa**4
+        + (-7.04997999e-10) * ta**2 * d_tmrt * pa**4
+        + (-3.36992841e-10) * va * d_tmrt * pa**4
+        + (-1.02488699e-10) * ta * va * d_tmrt * pa**4
+        + (1.04714000e-10) * va**2 * d_tmrt * pa**4
+        + (-4.64800022e-10) * d_tmrt**2 * pa**4
+        + (-3.37967070e-12) * ta * d_tmrt**2 * pa**4
+        + (-6.55670930e-10) * va * d_tmrt**2 * pa**4
+        + (7.15820367e-06) * pa**5
+        + (3.93046098e-07) * ta * pa**5
+        + (-1.11914300e-07) * ta**2 * pa**5
+        + (-4.73551100e-07) * va * pa**5
+        + (-7.01820440e-08) * ta * va * pa**5
+        + (3.90053440e-08) * va**2 * pa**5
+        + (-1.30478748e-08) * d_tmrt * pa**5
+        + (-4.21541819e-09) * ta * d_tmrt * pa**5
+        + (-2.46399011e-09) * va * d_tmrt * pa**5
+        + (-5.68378441e-10) * d_tmrt**2 * pa**5
+        + (-2.22496428e-07) * pa**6
+        + (2.50012265e-08) * ta * pa**6
+        + (3.61938229e-08) * va * pa**6
+        + (-2.21485498e-09) * d_tmrt * pa**6
+        + (-2.81296309e-09) * pa**7
+    )
+
+    return round(float(ta) + utci_approx, 1)

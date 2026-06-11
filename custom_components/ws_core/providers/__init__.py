@@ -8,6 +8,7 @@ To register a new provider:
 from __future__ import annotations
 
 from .base import ForecastProvider
+from .ha_weather_entity import HaWeatherEntityProvider
 from .met_no import MetNoProvider
 from .meteo_france import MeteoFranceProvider
 from .nws_noaa import NwsNoaaProvider
@@ -17,6 +18,7 @@ from .pirate_weather import PirateWeatherProvider
 
 __all__ = [
     "ForecastProvider",
+    "HaWeatherEntityProvider",
     "OpenMeteoProvider",
     "MetNoProvider",
     "NwsNoaaProvider",
@@ -34,13 +36,17 @@ PROVIDERS: dict[str, type[ForecastProvider]] = {
     OpenWeatherMapProvider.PROVIDER_ID: OpenWeatherMapProvider,
     PirateWeatherProvider.PROVIDER_ID: PirateWeatherProvider,
     MeteoFranceProvider.PROVIDER_ID: MeteoFranceProvider,
+    HaWeatherEntityProvider.PROVIDER_ID: HaWeatherEntityProvider,
 }
 
 
-def get_provider(provider_id: str) -> ForecastProvider:
+def get_provider(provider_id: str, hass: object | None = None) -> ForecastProvider:
     """Return an instantiated ForecastProvider for the given ID.
 
     Falls back to Open-Meteo if the ID is unknown (e.g. after a downgrade).
+    Passes hass to providers that require HA state access (ha_weather_entity).
     """
     cls = PROVIDERS.get(provider_id, OpenMeteoProvider)
+    if hass is not None and provider_id == HaWeatherEntityProvider.PROVIDER_ID:
+        return cls(hass)
     return cls()
