@@ -230,20 +230,39 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def _validate_wu_credentials(station_id: str, api_key: str) -> tuple[bool, str]:
-    """Validate Weather Underground station ID + API key. Returns (valid, error_key)."""
+    """Validate Weather Underground station ID + station key using the upload endpoint.
+
+    The field stored as ``wu_api_key`` is the station key (PASSWORD) used by the PWS
+    upload endpoint, NOT the 32-character read API key used by api.weather.com.
+    Validating against the upload endpoint matches the credential actually stored and
+    used by ``_async_upload_wunderground`` in the coordinator, and avoids two failure
+    modes of the old read-API check that prevented credentials from ever being saved
+    (issue from PR #72):
+
+      * a correct station key returned HTTP 401 from the read API -> "invalid_api_key"
+      * a read API key for a station that never uploaded returned HTTP 204 -> "cannot_connect"
+
+    Returns ``(valid, error_key)``.
+    """
     try:
         import aiohttp
 
-        url = (
-            f"https://api.weather.com/v2/pws/observations/current"
-            f"?stationId={station_id}&format=json&units=m&apiKey={api_key}&numericPrecision=decimal"
-        )
+        url = "https://weatherstation.wunderground.com/weatherstation/updateweatherstation.php"
+        params = {
+            "ID": station_id,
+            "PASSWORD": api_key,
+            "action": "updateraw",
+            "dateutc": "now",
+        }
         async with aiohttp.ClientSession() as session:
-            async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
-                if resp.status == 200:
+            async with session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                body = (await resp.text()).lower().strip()
+                if resp.status == 200 and "success" in body:
                     return True, ""
-                if resp.status == 401 or resp.status == 403:
+                # 401 = bad PASSWORD (station key); 403 = station exists but rejected
+                if resp.status in (401, 403):
                     return False, "invalid_api_key"
+                # station ID not recognised
                 if resp.status == 404:
                     return False, "station_not_found"
                 return False, "cannot_connect"
@@ -449,6 +468,31 @@ _ENTITY_SELECTOR = selector.EntitySelector(selector.EntitySelectorConfig(domain=
 
 
 # ---------------------------------------------------------------------------
+# Shared validation helpers
+# ---------------------------------------------------------------------------
+
+
+def _validate_numeric_sensor(hass: HomeAssistant, eid: str) -> str | None:
+    """Validate that a sensor entity exists and has a numeric state.
+
+    Returns an error key string on failure, or ``None`` when acceptable.
+    Device-class filtering has been removed (issue #41) - any numeric sensor
+    is accepted regardless of its declared device_class.
+
+    Shared by both the config flow and the options flow so source-sensor
+    validation behaves identically in either (issue #70).
+    """
+    st = hass.states.get(eid)
+    if st is None or st.state in ("unknown", "unavailable"):
+        return "entity_not_found"
+    try:
+        float(st.state)
+    except (ValueError, TypeError):
+        return "not_numeric"
+    return None
+
+
+# ---------------------------------------------------------------------------
 # Config Flow
 # ---------------------------------------------------------------------------
 
@@ -504,20 +548,8 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return None
 
     def _validate_numeric_sensor(self, eid: str) -> str | None:
-        """Validate that a sensor entity exists and has a numeric state.
-
-        Returns an error key string on failure, or ``None`` when acceptable.
-        Device-class filtering has been removed (issue #41) — any numeric sensor
-        is accepted regardless of its declared device_class.
-        """
-        st = self.hass.states.get(eid)
-        if st is None or st.state in ("unknown", "unavailable"):
-            return "entity_not_found"
-        try:
-            float(st.state)
-        except (ValueError, TypeError):
-            return "not_numeric"
-        return None
+        """Validate a source sensor (delegates to the shared module-level helper)."""
+        return _validate_numeric_sensor(self.hass, eid)
 
     # ------------------------------------------------------------------
     # Step 1: Name & prefix
@@ -1813,7 +1845,7 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                 if not eid:
                     errors[k] = "required"
                 else:
-                    err = self._validate_numeric_sensor(eid)
+                    err = _validate_numeric_sensor(self.hass, eid)
                     if err:
                         errors[k] = err
                     else:
@@ -1841,7 +1873,7 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                 eid = user_input.get(k)
                 if not eid:
                     continue
-                err = self._validate_numeric_sensor(eid)
+                err = _validate_numeric_sensor(self.hass, eid)
                 if err:
                     errors[k] = err
                 else:
@@ -1938,9 +1970,15 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                         translation_key="forecast_provider",
                     )
                 ),
-                vol.Optional(CONF_FORECAST_ENTITY, default=g(CONF_FORECAST_ENTITY, "")): selector.EntitySelector(
-                    selector.EntitySelectorConfig(domain="weather")
-                ),
+                # Optional weather entity used only by the HA-entity forecast provider.
+                # Must NOT carry a default of "" — an empty string fails the weather
+                # EntitySelector ("Entity is neither a valid entity ID nor a valid UUID")
+                # and blocked the whole options dialog (issue #71). Use a suggested value
+                # so it pre-fills when set but is simply omitted (no validation) when blank.
+                vol.Optional(
+                    CONF_FORECAST_ENTITY,
+                    description={"suggested_value": g(CONF_FORECAST_ENTITY, "") or None},
+                ): selector.EntitySelector(selector.EntitySelectorConfig(domain="weather")),
                 vol.Optional(
                     CONF_THRESH_WIND_GUST_MS, default=round(_convert_gust_to_display(cur_gust_ms, imperial), 1)
                 ): selector.NumberSelector(
