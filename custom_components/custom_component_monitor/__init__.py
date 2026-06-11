@@ -14,12 +14,14 @@ from homeassistant.components.todo import TodoItem, TodoItemStatus
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.typing import ConfigType
 import homeassistant.helpers.config_validation as cv
 
 from .const import (
     DOMAIN,
     SERVICE_UPDATE_AND_ACTION,
+    SERVICE_UPDATE_ALL,
     UAT_CARD_JS,
     UAT_CARD_BASE_PATH,
 )
@@ -222,6 +224,53 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             schema=SERVICE_UPDATE_AND_ACTION_SCHEMA,
         )
 
+    # --- update_all service: install every available HACS update at once ---
+    if not hass.services.has_service(DOMAIN, SERVICE_UPDATE_ALL):
+
+        async def handle_update_all(call: ServiceCall) -> None:
+            create_actions: bool = call.data.get("create_actions", False)
+            registry = er.async_get(hass)
+
+            targets: list[str] = []
+            for state in hass.states.async_all("update"):
+                if state.state != "on":
+                    continue
+                if state.attributes.get("in_progress"):
+                    continue
+                entry_re = registry.async_get(state.entity_id)
+                if entry_re is None or entry_re.platform != "hacs":
+                    continue
+                targets.append(state.entity_id)
+
+            _LOGGER.info(
+                "update_all: %d HACS component(s) with available updates", len(targets)
+            )
+            for entity_id in targets:
+                try:
+                    if create_actions:
+                        await hass.services.async_call(
+                            DOMAIN,
+                            SERVICE_UPDATE_AND_ACTION,
+                            {"entity_id": entity_id},
+                            blocking=True,
+                        )
+                    else:
+                        await hass.services.async_call(
+                            "update",
+                            "install",
+                            {"entity_id": entity_id},
+                            blocking=True,
+                        )
+                except Exception as err:  # noqa: BLE001
+                    _LOGGER.error("update_all: failed to update %s: %s", entity_id, err)
+
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_UPDATE_ALL,
+            handle_update_all,
+            schema=vol.Schema({vol.Optional("create_actions", default=False): cv.boolean}),
+        )
+
     return True
 
 
@@ -236,4 +285,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             hass.services.async_remove(DOMAIN, SERVICE_SCAN_NOW)
         if hass.services.has_service(DOMAIN, SERVICE_UPDATE_AND_ACTION):
             hass.services.async_remove(DOMAIN, SERVICE_UPDATE_AND_ACTION)
+        if hass.services.has_service(DOMAIN, SERVICE_UPDATE_ALL):
+            hass.services.async_remove(DOMAIN, SERVICE_UPDATE_ALL)
     return unload_ok

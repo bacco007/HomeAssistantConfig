@@ -2,10 +2,10 @@
  * Update Action Tracker Card
  * Lists HACS integrations with pending updates and provides
  * Skip, Update, and Update & Action buttons.
- * v1.5.2
+ * v1.6.0
  */
 
-const CARD_VERSION = "1.5.2";
+const CARD_VERSION = "1.6.0";
 const UAT_DOMAIN = "custom_component_monitor";
 
 /* -- Helpers -------------------------------------------------- */
@@ -314,6 +314,25 @@ class UpdateActionTrackerCard extends HTMLElement {
     }
   }
 
+  async _handleUpdateAll() {
+    const entities = await this._getHacsUpdateEntities();
+    if (!entities.length) return;
+    if (!window.confirm(
+      "Install all " + entities.length + " available HACS update" +
+      (entities.length > 1 ? "s" : "") + " now?"
+    )) return;
+    // Mark each row in progress for immediate feedback.
+    entities.forEach((eid) => { this._actionInProgress[eid] = "update"; });
+    this._doRender();
+    this._manageProgressPoll();
+    try {
+      await this._hass.callService(UAT_DOMAIN, "update_all", {});
+    } catch (_err) {
+      entities.forEach((eid) => { delete this._actionInProgress[eid]; });
+      this._doRender();
+    }
+  }
+
   async _fetchReleaseNotes(entityId) {
     if (this._releaseNotes[entityId] || this._loadingNotes[entityId]) return;
     this._loadingNotes[entityId] = true;
@@ -401,6 +420,11 @@ class UpdateActionTrackerCard extends HTMLElement {
       '<span class="badge ' + badgeClass + '">' + badgeText + '</span>' +
       '</div>' +
       filtersHtml +
+      (entities.length > 0
+        ? '<div class="update-all-bar">' +
+          '<button class="btn btn-update-all" data-action="update-all">' +
+          'Update all (' + entities.length + ')</button></div>'
+        : '') +
       '<div class="items">' + contentHtml + '</div>' +
       '</ha-card>';
 
@@ -567,6 +591,7 @@ class UpdateActionTrackerCard extends HTMLElement {
         if (action === "skip") self._handleSkip(eid);
         else if (action === "update") self._handleUpdate(eid);
         else if (action === "update_action") self._handleUpdateAndAction(eid);
+        else if (action === "update-all") self._handleUpdateAll();
       });
     });
     this.shadowRoot.querySelectorAll(".chip[data-filter]").forEach(function(chip) {
@@ -650,6 +675,8 @@ class UpdateActionTrackerCard extends HTMLElement {
       ".btn-skip { background:var(--uat-secondary); }",
       ".btn-update { background:var(--uat-accent); }",
       ".btn-action { background:var(--uat-green); }",
+      ".update-all-bar { display:flex; justify-content:flex-end; margin-bottom:12px; }",
+      ".btn-update-all { background:var(--uat-green); font-weight:600; }",
     ].join("\n");
   }
 }

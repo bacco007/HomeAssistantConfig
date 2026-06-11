@@ -20,3 +20,18 @@ update_and_action:
       description: Specific version to install. If omitted, installs the latest version.
       selector:
         text:
+
+update_all:
+  name: "Update all"
+  description: >-
+    Install every available HACS custom-component update at once (integrations,
+    cards and themes that currently show an update).
+  fields:
+    create_actions:
+      name: "Create action items"
+      description: >-
+        Also add a to-do item for each component (with release notes), the same
+        as "Update & Action". Off by default — just installs.
+      default: false
+      selector:
+        boolean:

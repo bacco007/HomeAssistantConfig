@@ -34,5 +34,6 @@ DEFAULT_SCAN_INTERVAL = 3600  # 1 hour
 STORAGE_KEY = "custom_component_monitor.update_actions"
 STORAGE_VERSION = 1
 SERVICE_UPDATE_AND_ACTION = "update_and_action"
+SERVICE_UPDATE_ALL = "update_all"
 UAT_CARD_JS = "update-action-tracker-card.js"
 UAT_CARD_BASE_PATH = f"/local/{DOMAIN}/{UAT_CARD_JS}"
