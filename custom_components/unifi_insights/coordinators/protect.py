@@ -371,17 +371,21 @@ class UnifiProtectCoordinator(UnifiBaseCoordinator):
 
         _LOGGER.debug("Protect coordinator: Fetching cameras")
         cameras_models = await self.protect_client.cameras.get_all()
+        # Rebuild the dict from the API response so cameras removed from
+        # Protect disappear from coordinator data (enables stale cleanup).
+        cameras: dict[str, Any] = {}
         for camera_model in cameras_models:
             camera = self._normalize_camera_data(self._model_to_dict(camera_model))
             camera_id = camera.get("id")
             if camera_id:
-                self.data["cameras"][camera_id] = camera
+                cameras[camera_id] = camera
 
                 _LOGGER.debug(
                     "Protect coordinator: Camera %s supports smart detection: %s",
                     camera.get("name", camera_id),
                     camera.get("smartDetectTypes", []),
                 )
+        self.data["cameras"] = cameras
 
     async def _fetch_lights(self) -> None:
         """Fetch light data."""
@@ -390,11 +394,13 @@ class UnifiProtectCoordinator(UnifiBaseCoordinator):
 
         _LOGGER.debug("Protect coordinator: Fetching lights")
         lights_models = await self.protect_client.lights.get_all()
+        lights: dict[str, Any] = {}
         for light_model in lights_models:
             light = self._model_to_dict(light_model)
             light_id = light.get("id")
             if light_id:
-                self.data["lights"][light_id] = light
+                lights[light_id] = light
+        self.data["lights"] = lights
 
     async def _fetch_sensors(self) -> None:
         """Fetch sensor data."""
@@ -404,11 +410,13 @@ class UnifiProtectCoordinator(UnifiBaseCoordinator):
         _LOGGER.debug("Protect coordinator: Fetching sensors")
         try:
             sensors_models = await self.protect_client.sensors.get_all()
+            sensors: dict[str, Any] = {}
             for sensor_model in sensors_models:
                 sensor = self._model_to_dict(sensor_model)
                 sensor_id = sensor.get("id")
                 if sensor_id:
-                    self.data["sensors"][sensor_id] = sensor
+                    sensors[sensor_id] = sensor
+            self.data["sensors"] = sensors
             _LOGGER.debug(
                 "Protect coordinator: Successfully fetched %d sensors",
                 len(sensors_models),
@@ -428,7 +436,7 @@ class UnifiProtectCoordinator(UnifiBaseCoordinator):
             if nvr:
                 nvr_id = nvr.get("id")
                 if nvr_id:
-                    self.data["nvrs"][nvr_id] = nvr
+                    self.data["nvrs"] = {nvr_id: nvr}
                     _LOGGER.debug(
                         "Protect coordinator: Successfully fetched NVR: %s", nvr_id
                     )
@@ -443,11 +451,13 @@ class UnifiProtectCoordinator(UnifiBaseCoordinator):
         _LOGGER.debug("Protect coordinator: Fetching chimes")
         try:
             chimes_models = await self.protect_client.chimes.get_all()
+            chimes: dict[str, Any] = {}
             for chime_model in chimes_models:
                 chime = self._model_to_dict(chime_model)
                 chime_id = chime.get("id")
                 if chime_id:
-                    self.data["chimes"][chime_id] = chime
+                    chimes[chime_id] = chime
+            self.data["chimes"] = chimes
             _LOGGER.debug(
                 "Protect coordinator: Successfully fetched %d chimes",
                 len(chimes_models),
@@ -464,11 +474,13 @@ class UnifiProtectCoordinator(UnifiBaseCoordinator):
         try:
             if hasattr(self.protect_client, "viewers"):
                 viewers_models = await self.protect_client.viewers.get_all()
+                viewers: dict[str, Any] = {}
                 for viewer_model in viewers_models:
                     viewer = self._model_to_dict(viewer_model)
                     viewer_id = viewer.get("id")
                     if viewer_id:
-                        self.data["viewers"][viewer_id] = viewer
+                        viewers[viewer_id] = viewer
+                self.data["viewers"] = viewers
                 _LOGGER.debug(
                     "Protect coordinator: Successfully fetched %d viewers",
                     len(viewers_models),
@@ -485,11 +497,13 @@ class UnifiProtectCoordinator(UnifiBaseCoordinator):
         try:
             if hasattr(self.protect_client, "liveviews"):
                 liveviews_models = await self.protect_client.liveviews.get_all()
+                liveviews: dict[str, Any] = {}
                 for liveview_model in liveviews_models:
                     liveview = self._model_to_dict(liveview_model)
                     liveview_id = liveview.get("id")
                     if liveview_id:
-                        self.data["liveviews"][liveview_id] = liveview
+                        liveviews[liveview_id] = liveview
+                self.data["liveviews"] = liveviews
                 _LOGGER.debug(
                     "Protect coordinator: Successfully fetched %d liveviews",
                     len(liveviews_models),

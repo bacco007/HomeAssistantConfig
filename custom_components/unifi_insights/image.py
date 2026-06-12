@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any
 
 import segno
 from homeassistant.components.image import ImageEntity
+from homeassistant.core import callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
@@ -113,6 +114,7 @@ class UnifiWifiQrCodeImage(CoordinatorEntity[UnifiFacadeCoordinator], ImageEntit
         """Return True if entity is available."""
         return bool(self.coordinator.last_update_success and self._current_payload())
 
+    @callback
     def _handle_coordinator_update(self) -> None:
         """Refresh the image timestamp when the connect string changes."""
         payload = self._current_payload()

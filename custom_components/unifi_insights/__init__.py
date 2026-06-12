@@ -39,7 +39,7 @@ from .coordinators import (
     UnifiFacadeCoordinator,
     UnifiProtectCoordinator,
 )
-from .services import async_setup_services, async_unload_services
+from .services import async_setup_services
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -98,6 +98,10 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:  # noqa: ARG001
     """Set up the UniFi Insights component."""
+    # Register service actions at component setup so they are available (and
+    # validatable) even when no config entry is loaded (Quality Scale:
+    # action-setup).
+    await async_setup_services(hass)
     return True
 
 
@@ -294,6 +298,7 @@ async def async_setup_entry(
     await asyncio.gather(*refresh_tasks)
 
     # Create facade coordinator for backward compatibility with entity classes
+    # (it aggregates the initial data from the sub-coordinators on creation)
     _LOGGER.debug("Creating facade coordinator for backward compatibility")
     facade_coordinator = UnifiFacadeCoordinator(
         hass=hass,
@@ -304,8 +309,6 @@ async def async_setup_entry(
         device_coordinator=device_coordinator,
         protect_coordinator=protect_coordinator,
     )
-    # Initial aggregation of data
-    facade_coordinator._aggregate_data()
 
     # Store runtime data in config entry (Gold requirement)
     entry.runtime_data = UnifiInsightsData(
@@ -316,10 +319,6 @@ async def async_setup_entry(
         protect_client=protect_client,
         _facade_coordinator=facade_coordinator,
     )
-
-    # Register services on first entry setup
-    if not hass.services.has_service(DOMAIN, "refresh_data"):
-        await async_setup_services(hass)
 
     # Set up platforms
     _LOGGER.debug("Setting up platforms: %s", PLATFORMS)
@@ -338,8 +337,12 @@ async def async_unload_entry(
     """Unload a config entry."""
     _LOGGER.debug("Unloading UniFi Insights config entry")
 
-    # Close API clients if available
-    if hasattr(entry, "runtime_data") and entry.runtime_data:
+    unload_ok: bool = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+    # Only tear down the API clients once the platforms are gone; closing them
+    # first would leave loaded entities behind with dead clients if a platform
+    # failed to unload.
+    if unload_ok and hasattr(entry, "runtime_data") and entry.runtime_data:
         data = entry.runtime_data
         _LOGGER.debug("Closing API clients")
         if data.protect_client:
@@ -362,20 +365,6 @@ async def async_unload_entry(
                 await data.network_client.close()
             except Exception as err:
                 _LOGGER.debug("Error closing Network client: %s", err)
-
-    unload_ok: bool = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-
-    if unload_ok:
-        # Check if this is the last config entry, unload services
-        remaining_entries = [
-            e
-            for e in hass.config_entries.async_entries(DOMAIN)
-            if e.entry_id != entry.entry_id
-        ]
-        if not remaining_entries:
-            _LOGGER.debug("No more config entries, unloading services")
-            await async_unload_services(hass)
-            _LOGGER.info("UniFi Insights services unloaded")
 
     return unload_ok
 

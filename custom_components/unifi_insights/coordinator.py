@@ -57,12 +57,12 @@ class UnifiInsightsDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         super().__init__(
             hass,
             _LOGGER,
+            config_entry=entry,
             name=DOMAIN,
             update_interval=SCAN_INTERVAL_NORMAL,
         )
         self.network_client = network_client
         self.protect_client = protect_client
-        self.config_entry = entry  # type: ignore[assignment]
         self._available = True
         # Track previous device IDs for stale device cleanup (Gold requirement)
         self._previous_network_device_ids: set[str] = set()

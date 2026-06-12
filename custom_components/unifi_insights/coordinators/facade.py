@@ -63,19 +63,23 @@ class UnifiFacadeCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         super().__init__(
             hass,
             _LOGGER,
+            config_entry=entry,
             name=f"{DOMAIN}_facade",
             # Facade doesn't poll - it aggregates from other coordinators
             update_interval=None,
         )
         self.network_client = network_client
         self.protect_client = protect_client
-        self.config_entry = entry
         self._config_coordinator = config_coordinator
         self._device_coordinator = device_coordinator
         self._protect_coordinator = protect_coordinator
 
         # Register listeners to update when any coordinator updates
         self._setup_listeners()
+
+        # Aggregate the sub-coordinators' current data immediately so that
+        # self.data is never None for entities created right after init.
+        self._aggregate_data()
 
     def _setup_listeners(self) -> None:
         """Set up listeners to aggregate data when coordinators update."""

@@ -124,7 +124,7 @@ class UnifiProtectCamera(UnifiProtectEntity, Camera):
             _LOGGER.debug("Error getting camera snapshot", exc_info=True)
             return None
 
-    async def async_stream_source(self) -> str | None:
+    async def stream_source(self) -> str | None:
         """
         Return the stream source.
 

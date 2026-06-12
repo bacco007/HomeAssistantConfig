@@ -6,7 +6,7 @@ import logging
 from typing import TYPE_CHECKING, Any
 
 import voluptuous as vol
-from homeassistant.exceptions import HomeAssistantError
+from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import config_validation as cv
 
 from .const import (
@@ -321,7 +321,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         if not coordinators:
             _LOGGER.error("No UniFi Insights coordinators found")
             msg = "No UniFi Insights coordinators found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         _LOGGER.info(
             "Refreshing data for %s site%s",
@@ -353,7 +353,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_first_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Insights coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_restart_device(site_id, device_id)
 
@@ -365,7 +365,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_protect_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Protect coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_set_recording_mode(camera_id, mode)
 
@@ -377,7 +377,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_protect_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Protect coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_set_hdr_mode(camera_id, mode)
 
@@ -389,7 +389,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_protect_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Protect coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_set_video_mode(camera_id, mode)
 
@@ -401,7 +401,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_protect_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Protect coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_set_microphone_volume(camera_id, volume)
 
@@ -458,7 +458,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_protect_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Protect coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_set_light_mode(light_id, mode)
 
@@ -470,7 +470,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_protect_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Protect coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_set_light_brightness(light_id, level)
 
@@ -482,7 +482,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_protect_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Protect coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_move_ptz_to_preset(camera_id, preset)
 
@@ -495,7 +495,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_protect_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Protect coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         if action == "start":
             await coordinator.async_start_ptz_patrol(camera_id, slot)
@@ -540,7 +540,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_protect_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Protect coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_set_chime_volume(chime_id, volume)
 
@@ -551,7 +551,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_protect_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Protect coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_play_chime(chime_id)
 
@@ -563,7 +563,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_protect_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Protect coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_set_chime_ringtone(chime_id, ringtone_id)
 
@@ -575,7 +575,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_protect_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Protect coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_set_chime_repeat(chime_id, repeat_times)
 
@@ -608,7 +608,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_first_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Insights coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_authorize_guest(site_id, client_id)
 
@@ -625,7 +625,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_first_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Insights coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_generate_voucher(
             site_id,
@@ -645,7 +645,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_first_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Insights coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_delete_voucher(site_id, voucher_id)
 
@@ -656,7 +656,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_protect_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Protect coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_trigger_alarm(alarm_id)
 
@@ -669,7 +669,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_protect_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Protect coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_create_liveview(
             name=name,
@@ -685,7 +685,7 @@ async def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _get_protect_coordinator(hass)
         if not coordinator:
             msg = "No UniFi Protect coordinator found"
-            raise HomeAssistantError(msg)
+            raise ServiceValidationError(msg)
 
         await coordinator.async_update_viewer(viewer_id, liveview=liveview_id)
 

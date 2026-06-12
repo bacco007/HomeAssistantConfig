@@ -50,6 +50,9 @@
         "description": "The UniFi Insights integration needs to re-authenticate your account.",
         "data": {
           "api_key": "API Key"
+        },
+        "data_description": {
+          "api_key": "A new API key from your UniFi Controller (Settings → Control Plane → API Keys)"
         }
       },
       "reconfigure": {
@@ -60,6 +63,12 @@
           "api_key": "API Key",
           "verify_ssl": "Verify SSL Certificate",
           "console_id": "Console ID"
+        },
+        "data_description": {
+          "host": "The URL of your UniFi device (e.g., https://192.168.1.1)",
+          "api_key": "API key from your UniFi Controller (Settings → Control Plane → API Keys)",
+          "verify_ssl": "Disable for self-signed certificates (common for local devices)",
+          "console_id": "The UniFi cloud console ID this entry connects to"
         }
       }
     },

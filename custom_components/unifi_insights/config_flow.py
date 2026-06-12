@@ -10,7 +10,7 @@ from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
     ConfigFlowResult,
-    OptionsFlowWithConfigEntry,
+    OptionsFlow,
 )
 from homeassistant.const import CONF_API_KEY, CONF_HOST, CONF_VERIFY_SSL
 from homeassistant.core import callback
@@ -63,10 +63,10 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(
-        config_entry: ConfigEntry,
+        config_entry: ConfigEntry,  # noqa: ARG004
     ) -> UnifiInsightsOptionsFlow:
         """Get the options flow for this handler."""
-        return UnifiInsightsOptionsFlow(config_entry)
+        return UnifiInsightsOptionsFlow()
 
     @staticmethod
     def _extract_remote_console_options(hosts: list[dict[str, Any]]) -> dict[str, str]:
@@ -599,7 +599,7 @@ class UnifiInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 
 
-class UnifiInsightsOptionsFlow(OptionsFlowWithConfigEntry):
+class UnifiInsightsOptionsFlow(OptionsFlow):
     """Handle options for UniFi Insights integration."""
 
     async def async_step_init(

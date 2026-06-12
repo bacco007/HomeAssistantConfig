@@ -48,12 +48,12 @@ class UnifiBaseCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         super().__init__(
             hass,
             _LOGGER,
+            config_entry=entry,
             name=f"{DOMAIN}_{name}",
             update_interval=update_interval,
         )
         self.network_client = network_client
         self.protect_client = protect_client
-        self.config_entry = entry
         self._available = True
         self.data: dict[str, Any] = {}
 
