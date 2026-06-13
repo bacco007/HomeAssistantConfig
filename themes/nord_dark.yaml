@@ -177,10 +177,10 @@ Nord Dark:
   input-fill-color: "#2e3440"
   input-ink-color: "#eceff4"
   input-label-ink-color: "#eceff4"
-  input-disabled-fill-color: "#2e3440"
+  input-disabled-fill-color: "#3b4252"
   input-disabled-ink-color: "#4c566a"
   input-disabled-label-ink-color: "#4c566a"
-  input-idle-line-color: "#2e3440"
+  input-idle-line-color: "#4c566a"
   input-dropdown-icon-color: "#d8dee9"
   input-hover-line-color: "#88c0d0"
   input-disabled-line-color: "#4c566a"
@@ -198,7 +198,7 @@ Nord Dark:
 
   # Modern HA form colours
   ha-color-fill-primary-normal-resting: "#2e3440"
-  ha-color-fill-disabled-normal-resting: "#2e3440"
+  ha-color-fill-disabled-normal-resting: "#3b4252"
   ha-color-fill-neutral-quiet-resting: "#323946"
   ha-color-fill-primary-quiet-resting: "#2e3440"
   ha-color-form-background: "#2e3440"
@@ -209,7 +209,7 @@ Nord Dark:
   # Icons
   paper-item-icon-color: "#d8dee9"
   paper-item-icon-active-color: "#88c0d0"
-  paper-item-selected_-_background-color: "#2e3440"
+  paper-item-selected_-_background-color: "#3b4252"
   state-icon-color: "#d8dee9"
   state-icon-active-color: "#ebcb8b"
   state-icon-unavailable-color: "#4c566a"
@@ -391,6 +391,61 @@ Nord Dark:
   st-font-size-sensors: "15px"
   st-spacing: "2px"
   st-mode-background: "#2e3440"
+
+  # Newer HA / Material input fixes
+  mdc-filled-text-field-container-color: "#3b4252"
+  mdc-filled-text-field-focus-active-indicator-color: "#88c0d0"
+  mdc-filled-text-field-hover-active-indicator-color: "#81a1c1"
+  mdc-filled-text-field-input-text-color: "#eceff4"
+  mdc-filled-text-field-label-text-color: "#d8dee9"
+  mdc-filled-text-field-focus-label-text-color: "#88c0d0"
+  mdc-filled-text-field-hover-label-text-color: "#eceff4"
+  mdc-filled-text-field-caret-color: "#88c0d0"
+
+  mdc-outlined-text-field-container-color: "#3b4252"
+  mdc-outlined-text-field-outline-color: "#4c566a"
+  mdc-outlined-text-field-hover-outline-color: "#81a1c1"
+  mdc-outlined-text-field-focus-outline-color: "#88c0d0"
+  mdc-outlined-text-field-input-text-color: "#eceff4"
+  mdc-outlined-text-field-label-text-color: "#d8dee9"
+  mdc-outlined-text-field-focus-label-text-color: "#88c0d0"
+  mdc-outlined-text-field-caret-color: "#88c0d0"
+
+  mdc-select-filled-container-color: "#3b4252"
+  # mdc-select-fill-color: "#3b4252"
+  mdc-select-ink-color: "#eceff4"
+  mdc-select-label-ink-color: "#d8dee9"
+  mdc-select-dropdown-icon-color: "#d8dee9"
+
+  # Web Awesome / newer HA input variables
+  ha-input-container-color: "#3b4252"
+  ha-input-background-color: "#3b4252"
+  ha-input-text-color: "#eceff4"
+  ha-input-label-color: "#d8dee9"
+  ha-input-focus-color: "#88c0d0"
+  ha-input-border-color: "#4c566a"
+  ha-input-border-color-hover: "#81a1c1"
+
+  # Menus, popovers and tooltips
+  mdc-menu-surface-fill-color: "#3b4252"
+  mdc-menu-surface-ink-color: "#eceff4"
+  mdc-theme-surface: "#3b4252"
+  mdc-theme-on-surface: "#eceff4"
+
+  ha-tooltip-background-color: "#3b4252"
+  ha-tooltip-text-color: "#eceff4"
+  paper-tooltip-background: "#3b4252"
+  paper-tooltip-text-color: "#eceff4"
+
+  # Text input hover/focus fixes
+  mdc-filled-text-field-hover-container-color: "#434c5e"
+  mdc-filled-text-field-focus-container-color: "#434c5e"
+  mdc-filled-text-field-disabled-container-color: "#2e3440"
+  mdc-outlined-text-field-hover-container-color: "#434c5e"
+  mdc-outlined-text-field-focus-container-color: "#434c5e"
+  mdc-outlined-text-field-disabled-container-color: "#2e3440"
+  mdc-text-field-hover-fill-color: "#434c5e"
+  mdc-text-field-focused-fill-color: "#434c5e"
 
   # # Card-Mod
   # card-mod-theme: "Nord Dark"
