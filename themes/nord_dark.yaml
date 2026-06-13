@@ -1,0 +1,429 @@
+---
+Nord Dark:
+  # modes:
+  #   dark:
+  #     dummy_variable1: "1"
+
+  # Nord palette
+  nord0: "#2e3440"
+  nord1: "#3b4252"
+  nord2: "#434c5e"
+  nord3: "#4c566a"
+  nord4: "#d8dee9"
+  nord5: "#e5e9f0"
+  nord6: "#eceff4"
+  nord7: "#8fbcbb"
+  nord8: "#88c0d0"
+  nord9: "#81a1c1"
+  nord10: "#5e81ac"
+  nord11: "#bf616a"
+  nord12: "#d08770"
+  nord13: "#ebcb8b"
+  nord14: "#a3be8c"
+  nord15: "#b48ead"
+
+  # Darker Nord base
+  background-color: "#2e3440"
+  primary-background-color: "#2e3440"
+  background-color-2: "#3b4252"
+  secondary-background-color: "#3b4252"
+  card-background-color: "#3b4252"
+  paper-card-background-color: "#3b4252"
+  ha-card-background: "#3b4252"
+
+  # Custom Lovelace colour system
+  tint1: "1"
+  tint2: "0.3"
+  tint3: "0.15"
+
+  black-rgb: "46,52,64"
+  white-rgb: "236,239,244"
+  grey-rgb: "76,86,106"
+  blue-rgb: "136,192,208"
+  ocean-blue-rgb: "129,161,193"
+  dark-blue-rgb: "94,129,172"
+  red-rgb: "191,97,106"
+  gold-rgb: "235,203,139"
+  yellow-rgb: "235,203,139"
+  orange-rgb: "208,135,112"
+  green-rgb: "163,190,140"
+  purple-rgb: "180,142,173"
+
+  blue: "rgb(var(--blue-rgb))"
+  icon-blue: "rgba(var(--blue-rgb),var(--tint1))"
+  img-cell-blue: "rgba(var(--blue-rgb),var(--tint2))"
+  card-blue: "rgba(var(--blue-rgb),var(--tint3))"
+  ocean-blue: "rgb(var(--ocean-blue-rgb))"
+  dark-blue: "rgb(var(--dark-blue-rgb))"
+  scene-blue: "rgba(var(--dark-blue-rgb),0.6)"
+
+  red: "rgb(var(--red-rgb))"
+  icon-red: "rgba(var(--red-rgb),var(--tint1))"
+  img-cell-red: "rgba(var(--red-rgb),var(--tint2))"
+  card-red: "rgba(var(--red-rgb),var(--tint3))"
+  scene-red: "rgba(var(--red-rgb),0.6)"
+
+  yellow: "rgb(var(--yellow-rgb))"
+  icon-yellow: "rgba(var(--yellow-rgb),var(--tint1))"
+  img-cell-yellow: "rgba(var(--yellow-rgb),var(--tint2))"
+  card-yellow: "rgba(var(--yellow-rgb),var(--tint3))"
+  scene-yellow: "rgba(var(--yellow-rgb),0.6)"
+
+  orange: "rgb(var(--orange-rgb))"
+  icon-orange: "rgba(var(--orange-rgb),var(--tint1))"
+  img-cell-orange: "rgba(var(--orange-rgb),var(--tint2))"
+  card-orange: "rgba(var(--orange-rgb),var(--tint3))"
+  scene-orange: "rgba(var(--orange-rgb),0.6)"
+
+  green: "rgb(var(--green-rgb))"
+  icon-green: "rgba(var(--green-rgb),var(--tint1))"
+  img-cell-green: "rgba(var(--green-rgb),var(--tint2))"
+  card-green: "rgba(var(--green-rgb),var(--tint3))"
+  scene-green: "rgba(var(--green-rgb),0.6)"
+
+  purple: "rgb(var(--purple-rgb))"
+  scene-purple: "rgba(var(--purple-rgb),0.4)"
+
+  black: "rgb(var(--black-rgb))"
+  grey: "rgb(var(--grey-rgb))"
+  white: "rgb(var(--white-rgb))"
+
+  title: "rgba(var(--ocean-blue-rgb),var(--tint1))"
+  text-on: "rgba(var(--white-rgb),0.9)"
+  text-off: "rgba(var(--white-rgb),0.6)"
+  icon-on: "rgba(var(--black-rgb),var(--tint1))"
+  icon-off: "rgba(var(--white-rgb),0.6)"
+  img-cell-off: "var(--background-color)"
+  graph-line: "var(--ocean-blue)"
+  notification: "rgba(var(--black-rgb),var(--tint2))"
+
+  card_border: "rgba(216,222,233,0.08)"
+  card_box_shadow: "1px 1px 5px -6px rgba(0,0,0,0.5)"
+  card_box_shadow_color: "1px 1px 2px 0px rgba(191,97,106,0.3)"
+  bar-card-border-radius: "10px"
+
+  # Core
+  primary-color: "#88c0d0"
+  accent-color: "#8fbcbb"
+  accent-medium-color: "#8fbcbb"
+  dark-primary-color: "#5e81ac"
+  light-primary-color: "#81a1c1"
+  clear-background-color: "#88c0d0"
+
+  # Fonts
+  primary-font-family: "Inter, sans-serif"
+  ha-font-family-heading: "var(--primary-font-family)"
+  ha-font-family-body: "var(--primary-font-family)"
+  ha-font-family-code: "JetBrains Mono, monospace"
+  ha-font-family-longform: "var(--primary-font-family)"
+  ha-card-header-font-family: "var(--primary-font-family)"
+  ha-font-weight-heading: 500
+  ha-font-weight-body: 400
+  ha-font-weight-action: 500
+  ha-card-header-font-size: 1.0rem
+
+  # Text
+  text-color: "#eceff4"
+  primary-text-color: "#eceff4"
+  secondary-text-color: "#d8dee9"
+  text-primary-color: "#eceff4"
+  text-light-primary-color: "#eceff4"
+  text-medium-light-color: "#d8dee9"
+  text-medium-color: "#81a1c1"
+  disabled-text-color: "#4c566a"
+
+  # Backgrounds
+  divider-color: "rgba(216, 222, 233, 0.12)"
+  material-background-color: "#2e3440"
+  material-secondary-background-color: "#3b4252"
+  markdown-code-background-color: "#2e3440"
+  code-editor-background-color: "#2e3440"
+
+  # Header
+  app-header-background-color: "#2e3440"
+  app-header-icon-color: "#d8dee9"
+  app-header-text-color: "#d8dee9"
+  app-header-selection-bar-color: "#88c0d0"
+  app-header-selection-color: "#d8dee9"
+  header-height: "40px"
+
+  # Sidebar
+  sidebar-background-color: "#2e3440"
+  sidebar-icon-color: "var(--icon-off)"
+  sidebar-text-color: "var(--icon-off)"
+  sidebar-selected-background-color: "#2e3440"
+  sidebar-selected-icon-color: "#5e81ac"
+  sidebar-selected-text-color: "#5e81ac"
+  paper-listbox-background-color: "#2e3440"
+
+  # Cards
+  ha-card-border-color: "rgba(0,0,0,0)"
+  ha-card-border-width: "0"
+  ha-card-border-radius: "16px"
+  ha-card-box-shadow: "3px 3px 13px -6px rgba(17,35,52,1)"
+  ha-card-header-color: "#eceff4"
+  border-radius: "5px"
+
+  # Dialogs / popups
+  paper-dialog-background-color: "#3b4252"
+  ha-dialog-surface-background: "#3b4252"
+  ha-dialog-border-radius: "10px"
+  popup-border-radius: "5px"
+  more-info-header-background: "#3b4252"
+  ha-dialog-scrim-backdrop-filter: "blur(10px)"
+  mdc-dialog-scrim-color: "rgba(0,0,0,0.6)"
+
+  # Inputs
+  input-fill-color: "#2e3440"
+  input-ink-color: "#eceff4"
+  input-label-ink-color: "#eceff4"
+  input-disabled-fill-color: "#2e3440"
+  input-disabled-ink-color: "#4c566a"
+  input-disabled-label-ink-color: "#4c566a"
+  input-idle-line-color: "#2e3440"
+  input-dropdown-icon-color: "#d8dee9"
+  input-hover-line-color: "#88c0d0"
+  input-disabled-line-color: "#4c566a"
+  input-outlined-idle-border-color: "#4c566a"
+  input-outlined-hover-border-color: "#4c566a"
+  input-outlined-disabled-border-color: "#4c566a"
+  paper-input-container-focus-color: "#88c0d0"
+
+  # MDC inputs
+  mdc-text-field-fill-color: "#2e3440"
+  mdc-text-field-ink-color: "#eceff4"
+  mdc-text-field-label-ink-color: "#d8dee9"
+  mdc-select-fill-color: "#2e3440"
+  mdc-theme-primary: "#88c0d0"
+
+  # Modern HA form colours
+  ha-color-fill-primary-normal-resting: "#2e3440"
+  ha-color-fill-disabled-normal-resting: "#2e3440"
+  ha-color-fill-neutral-quiet-resting: "#323946"
+  ha-color-fill-primary-quiet-resting: "#2e3440"
+  ha-color-form-background: "#2e3440"
+
+  # Code editor
+  codemirror-property: "#88c0d0"
+
+  # Icons
+  paper-item-icon-color: "#d8dee9"
+  paper-item-icon-active-color: "#88c0d0"
+  paper-item-selected_-_background-color: "#2e3440"
+  state-icon-color: "#d8dee9"
+  state-icon-active-color: "#ebcb8b"
+  state-icon-unavailable-color: "#4c566a"
+
+  # RGB States
+  rgb-state-default-color: "136,192,208"
+  rgb-accent-color: "136,192,208"
+
+  # State colours
+  state-active-color: "#88c0d0"
+  state-red-color: "#bf616a"
+  state-green-color: "#a3be8c"
+  state-orange-color: "#d08770"
+  state-yellow-color: "#ebcb8b"
+
+  state-alarm_control_panel-armed_away-color: "#a3be8c"
+  state-alarm_control_panel-armed_custom_bypass-color: "#a3be8c"
+  state-alarm_control_panel-armed_home-color: "#a3be8c"
+  state-alarm_control_panel-armed_night-color: "#a3be8c"
+  state-alarm_control_panel-armed_vacation-color: "#a3be8c"
+  state-alarm_control_panel-arming-color: "#d08770"
+  state-alarm_control_panel-disarming-color: "#d08770"
+  state-alarm_control_panel-pending-color: "#d08770"
+  state-alarm_control_panel-triggered-color: "#bf616a"
+
+  state-alert-off-color: "#d8dee9"
+  state-alert-on-color: "#bf616a"
+
+  state-automation-active-color: "#88c0d0"
+  state-binary_sensor-active-color: "#88c0d0"
+  state-binary_sensor-battery-on-color: "#bf616a"
+  state-binary_sensor-carbon_monoxide-on-color: "#bf616a"
+  state-binary_sensor-gas-on-color: "#bf616a"
+  state-binary_sensor-heat-on-color: "#bf616a"
+  state-binary_sensor-lock-on-color: "#bf616a"
+  state-binary_sensor-moisture-on-color: "#bf616a"
+  state-binary_sensor-problem-on-color: "#bf616a"
+  state-binary_sensor-safety-on-color: "#bf616a"
+  state-binary_sensor-smoke-on-color: "#bf616a"
+  state-binary_sensor-sound-on-color: "#bf616a"
+  state-binary_sensor-tamper-on-color: "#bf616a"
+
+  state-climate-auto-color: "#88c0d0"
+  state-climate-cool-color: "#88c0d0"
+  state-climate-dry-color: "#88c0d0"
+  state-climate-fan_only-color: "#88c0d0"
+  state-climate-heat-color: "#d08770"
+  state-climate-heat-cool-color: "#88c0d0"
+
+  state-cover-active-color: "#88c0d0"
+  state-device_tracker-active-color: "#88c0d0"
+  state-device_tracker-home-color: "#88c0d0"
+  state-fan-active-color: "#88c0d0"
+  state-group-active-color: "#88c0d0"
+  state-humidifier-active-color: "#88c0d0"
+  state-input_boolean-active-color: "#88c0d0"
+  state-light-active-color: "#ebcb8b"
+  state-lock-jammed-color: "#bf616a"
+  state-lock-locked-color: "#88c0d0"
+  state-lock-pending-color: "#d08770"
+  state-lock-unlocked-color: "#d8dee9"
+  state-media_player-active-color: "#88c0d0"
+  state-person-active-color: "#88c0d0"
+  state-person-home-color: "#88c0d0"
+  state-plant-active-color: "#bf616a"
+  state-siren-active-color: "#bf616a"
+  state-sun-above_horizon-color: "#ebcb8b"
+  state-sun-below_horizon-color: "#5e81ac"
+  state-switch-active-color: "#88c0d0"
+  state-update-active-color: "#88c0d0"
+  state-vacuum-active-color: "#88c0d0"
+  state-sensor-battery-high-color: "#a3be8c"
+  state-sensor-battery-medium-color: "#ebcb8b"
+  state-sensor-battery-low-color: "#bf616a"
+
+  # Switches
+  switch-unchecked-color: "#4c566a"
+  switch-checked-button-color: "#88c0d0"
+  switch-unchecked-track-color: "#2e3440"
+  switch-checked-track-color: "#2e3440"
+  switch-checked-color: "#88c0d0"
+  switch-unchecked-button-color: "#4c566a"
+
+  ha-switch-background-color: "#2e3440"
+  ha-switch-background-color-hover: "#2e3440"
+  ha-switch-border-color: "transparent"
+  ha-switch-thumb-background-color: "#4c566a"
+  ha-switch-thumb-background-color-hover: "#81a1c1"
+  ha-switch-thumb-border-color: "#4c566a"
+  ha-switch-checked-background-color: "#2e3440"
+  ha-switch-checked-background-color-hover: "#2e3440"
+  ha-switch-checked-border-color: "transparent"
+  ha-switch-checked-thumb-background-color: "#88c0d0"
+  ha-switch-checked-thumb-background-color-hover: "#8fbcbb"
+  ha-switch-checked-thumb-border-color: "#88c0d0"
+
+  # Toggle buttons
+  paper-toggle-button-checked-bar-color: "#88c0d0"
+  paper-toggle-button-checked-ink-color: "#88c0d0"
+  paper-toggle-button-unchecked-button-color: "#4c566a"
+  paper-toggle-button-unchecked-bar-color: "#4c566a"
+  paper-toggle-button-unchecked-ink-color: "#4c566a"
+
+  # Sliders
+  paper-slider-knob-color: "#88c0d0"
+  paper-slider-active-color: "#88c0d0"
+  paper-slider-container-color: "#2e3440"
+  paper-slider-pin-color: "#2e3440"
+  paper-slider-secondary-color: "#4c566a"
+  paper-slider-disabled-active-color: "#4c566a"
+  paper-slider-disabled-secondary-color: "#4c566a"
+  paper-slider-knob-start-color: "#88c0d0"
+
+  # Radio buttons
+  paper-radio-button-checked-color: "#88c0d0"
+
+  # Status colours
+  error-color: "#bf616a"
+  warning-color: "#ebcb8b"
+  success-color: "#a3be8c"
+  info-color: "#88c0d0"
+
+  # Tables / lists
+  table-row-background-color: "#3b4252"
+  table-row-alternative-background-color: "#434c5e"
+
+  # Badges
+  label-badge-background-color: "#3b4252"
+  label-badge-text-color: "#eceff4"
+  label-badge-red: "#bf616a"
+  label-badge-blue: "#88c0d0"
+  label-badge-green: "#a3be8c"
+  label-badge-yellow: "#ebcb8b"
+
+  # Calendar / Lumo
+  lumo-primary-text-color: "#88c0d0"
+  lumo-secondary-text-color: "#88c0d0"
+  lumo-primary-color: "#88c0d0"
+  lumo-body-text-color: "#81a1c1"
+  lumo-base-color: "#2e3440"
+  lumo-header-text-color: "#81a1c1"
+  lumo-tertiary-text-color: "#81a1c1"
+  lumo-shade: "#2e3440"
+  lumo-shade-90pct: "rgba(37,43,54,.9)"
+  lumo-shade-80pct: "rgba(37,43,54,.8)"
+  lumo-shade-70pct: "rgba(37,43,54,.7)"
+  lumo-shade-60pct: "rgba(37,43,54,.6)"
+  lumo-shade-50pct: "rgba(37,43,54,.5)"
+  lumo-shade-40pct: "rgba(37,43,54,.4)"
+  lumo-shade-30pct: "rgba(37,43,54,.3)"
+  lumo-shade-20pct: "rgba(37,43,54,.2)"
+  lumo-shade-10pct: "rgba(37,43,54,.1)"
+  lumo-shade-5pct: "rgba(37,43,54,.05)"
+  lumo-tint-5pct: "#2e3440"
+
+  # Custom Header
+  ch-background: "#2e3440"
+  ch-active-tab-color: "#88c0d0"
+  ch-notification-dot-color: "#bf616a"
+  ch-all-tabs-color: "#d8dee9"
+  ch-tab-indicator-color: "#88c0d0"
+
+  # Mini Media Player
+  mini-media-player-base-color: "#eceff4"
+  mini-media-player-accent-color: "#88c0d0"
+  mini-media-player-button-color: "#3b4252"
+
+  # Alarm
+  alarm-color-armed: "#a3be8c"
+
+  # Valetudo
+  valetudo-map-floor-color: "#4c566a"
+  valetudo-map-wall-color: "#bf616a"
+
+  # Streamline Card
+  st-font-size-xl: "24px"
+  st-font-size-m: "20px"
+  st-font-size-title: "20px"
+  st-font-size-sensors: "15px"
+  st-spacing: "2px"
+  st-mode-background: "#2e3440"
+
+  # # Card-Mod
+  # card-mod-theme: "Nord Dark"
+  # card-mod-more-info-yaml: |
+  #   $: |
+  #     .mdc-dialog .mdc-dialog__scrim {
+  #       backdrop-filter: blur(15px);
+  #       -webkit-backdrop-filter: blur(15px);
+  #       background: rgba(0,0,0,0.1);
+  #     }
+  #     .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
+  #       box-shadow: none !important;
+  #       border-radius: var(--ha-card-border-radius);
+  #     }
+  #   .: |
+  #     :host {
+  #       --ha-card-box-shadow: none;
+  #     }
+
+  # card-mod-root-yaml: |
+  #   .: |
+  #     @media (min-width: 768px) {
+  #       hui-sections-view {
+  #         padding-left: 100px !important;
+  #       }
+  #     }
+
+  #     @media (max-width: 767px) {
+  #       hui-sections-view:after {
+  #         content: "";
+  #         display: block;
+  #         height: 80px;
+  #         width: 100%;
+  #         background-color: transparent;
+  #       }
+  #     }
