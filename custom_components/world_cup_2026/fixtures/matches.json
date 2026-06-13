@@ -1,0 +1,174 @@
+{
+  "matches": [
+    {
+      "_comment": "Group stage - FINISHED - BTTS true, over 2.5, HT goals, clean comeback scenario",
+      "id": 1001,
+      "utcDate": "2026-06-12T18:00:00Z",
+      "status": "FINISHED",
+      "minute": null,
+      "stage": "GROUP_STAGE",
+      "group": "GROUP_A",
+      "homeTeam": { "id": 1, "name": "Brazil", "shortName": "Brazil" },
+      "awayTeam": { "id": 2, "name": "Mexico", "shortName": "Mexico" },
+      "score": {
+        "winner": "HOME_TEAM",
+        "duration": "REGULAR",
+        "fullTime": { "home": 3, "away": 1 },
+        "halfTime": { "home": 1, "away": 1 }
+      }
+    },
+    {
+      "_comment": "Group stage - FINISHED - BTTS false, under 2.5, clean sheet for away",
+      "id": 1002,
+      "utcDate": "2026-06-12T21:00:00Z",
+      "status": "FINISHED",
+      "minute": null,
+      "stage": "GROUP_STAGE",
+      "group": "GROUP_A",
+      "homeTeam": { "id": 3, "name": "Argentina", "shortName": "Argentina" },
+      "awayTeam": { "id": 4, "name": "South Korea", "shortName": "South Korea" },
+      "score": {
+        "winner": "HOME_TEAM",
+        "duration": "REGULAR",
+        "fullTime": { "home": 1, "away": 0 },
+        "halfTime": { "home": 0, "away": 0 }
+      }
+    },
+    {
+      "_comment": "Group stage - FINISHED - 0-0 draw. BTTS=false, draw=true, clean sheet for both",
+      "id": 1003,
+      "utcDate": "2026-06-13T18:00:00Z",
+      "status": "FINISHED",
+      "minute": null,
+      "stage": "GROUP_STAGE",
+      "group": "GROUP_B",
+      "homeTeam": { "id": 5, "name": "France", "shortName": "France" },
+      "awayTeam": { "id": 6, "name": "Germany", "shortName": "Germany" },
+      "score": {
+        "winner": "DRAW",
+        "duration": "REGULAR",
+        "fullTime": { "home": 0, "away": 0 },
+        "halfTime": { "home": 0, "away": 0 }
+      }
+    },
+    {
+      "_comment": "Group stage - FINISHED - BTTS true, 2-2 draw. Comeback: Germany was 0-1 down at HT",
+      "id": 1004,
+      "utcDate": "2026-06-13T21:00:00Z",
+      "status": "FINISHED",
+      "minute": null,
+      "stage": "GROUP_STAGE",
+      "group": "GROUP_B",
+      "homeTeam": { "id": 7, "name": "Spain", "shortName": "Spain" },
+      "awayTeam": { "id": 8, "name": "England", "shortName": "England" },
+      "score": {
+        "winner": "DRAW",
+        "duration": "REGULAR",
+        "fullTime": { "home": 2, "away": 2 },
+        "halfTime": { "home": 2, "away": 0 }
+      }
+    },
+    {
+      "_comment": "Group stage - FINISHED - comeback. Away was 0-1 down, came back to win 2-1",
+      "id": 1005,
+      "utcDate": "2026-06-14T18:00:00Z",
+      "status": "FINISHED",
+      "minute": null,
+      "stage": "GROUP_STAGE",
+      "group": "GROUP_C",
+      "homeTeam": { "id": 9, "name": "Portugal", "shortName": "Portugal" },
+      "awayTeam": { "id": 10, "name": "Netherlands", "shortName": "Netherlands" },
+      "score": {
+        "winner": "AWAY_TEAM",
+        "duration": "REGULAR",
+        "fullTime": { "home": 1, "away": 2 },
+        "halfTime": { "home": 1, "away": 0 }
+      }
+    },
+    {
+      "_comment": "Group stage - FINISHED - high scoring. Over 2.5. BTTS. No comeback (level HT).",
+      "id": 1006,
+      "utcDate": "2026-06-15T18:00:00Z",
+      "status": "FINISHED",
+      "minute": null,
+      "stage": "GROUP_STAGE",
+      "group": "GROUP_D",
+      "homeTeam": { "id": 11, "name": "Belgium", "shortName": "Belgium" },
+      "awayTeam": { "id": 12, "name": "Croatia", "shortName": "Croatia" },
+      "score": {
+        "winner": "HOME_TEAM",
+        "duration": "REGULAR",
+        "fullTime": { "home": 4, "away": 2 },
+        "halfTime": { "home": 2, "away": 1 }
+      }
+    },
+    {
+      "_comment": "Group stage - IN_PLAY - used for adaptive polling + live minute test",
+      "id": 1007,
+      "utcDate": "2026-06-16T18:00:00Z",
+      "status": "IN_PLAY",
+      "minute": 67,
+      "stage": "GROUP_STAGE",
+      "group": "GROUP_E",
+      "homeTeam": { "id": 13, "name": "Italy", "shortName": "Italy" },
+      "awayTeam": { "id": 14, "name": "Japan", "shortName": "Japan" },
+      "score": {
+        "winner": null,
+        "duration": "REGULAR",
+        "fullTime": { "home": 1, "away": 1 },
+        "halfTime": { "home": 0, "away": 1 }
+      }
+    },
+    {
+      "_comment": "Group stage - TIMED - upcoming match",
+      "id": 1008,
+      "utcDate": "2026-06-17T21:00:00Z",
+      "status": "TIMED",
+      "minute": null,
+      "stage": "GROUP_STAGE",
+      "group": "GROUP_F",
+      "homeTeam": { "id": 15, "name": "USA", "shortName": "USA" },
+      "awayTeam": { "id": 16, "name": "Iran", "shortName": "Iran" },
+      "score": {
+        "winner": null,
+        "duration": "REGULAR",
+        "fullTime": { "home": null, "away": null },
+        "halfTime": { "home": null, "away": null }
+      }
+    },
+    {
+      "_comment": "Knockout - QUARTER_FINALS - FINISHED - went to EXTRA_TIME. Score was level at 90 min.",
+      "id": 2001,
+      "utcDate": "2026-07-04T18:00:00Z",
+      "status": "FINISHED",
+      "minute": null,
+      "stage": "QUARTER_FINALS",
+      "group": null,
+      "homeTeam": { "id": 1, "name": "Brazil", "shortName": "Brazil" },
+      "awayTeam": { "id": 7, "name": "Spain", "shortName": "Spain" },
+      "score": {
+        "winner": "HOME_TEAM",
+        "duration": "EXTRA_TIME",
+        "fullTime": { "home": 1, "away": 1 },
+        "halfTime": { "home": 0, "away": 1 }
+      }
+    },
+    {
+      "_comment": "Knockout - SEMI_FINALS - FINISHED - went to PENALTY_SHOOTOUT. 0-0 at 90 min.",
+      "id": 2002,
+      "utcDate": "2026-07-08T21:00:00Z",
+      "status": "FINISHED",
+      "minute": null,
+      "stage": "SEMI_FINALS",
+      "group": null,
+      "homeTeam": { "id": 3, "name": "Argentina", "shortName": "Argentina" },
+      "awayTeam": { "id": 5, "name": "France", "shortName": "France" },
+      "score": {
+        "winner": "AWAY_TEAM",
+        "duration": "PENALTY_SHOOTOUT",
+        "fullTime": { "home": 1, "away": 1 },
+        "halfTime": { "home": 0, "away": 0 }
+      }
+    }
+  ]
+}

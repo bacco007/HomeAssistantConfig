@@ -1,0 +1,180 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "World Cup 2026",
+        "description": "Enter your football-data.org API key. A free key is available at https://www.football-data.org/client/register",
+        "data": {
+          "api_key": "API Key"
+        },
+        "data_description": {
+          "api_key": "Your personal API key from football-data.org. The free tier is sufficient."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to football-data.org. Check your network and try again.",
+      "invalid_auth": "Invalid API key. Check the key on your football-data.org account page.",
+      "unknown": "An unexpected error occurred. Check the Home Assistant logs for details."
+    },
+    "abort": {
+      "already_configured": "World Cup 2026 is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "World Cup 2026 — Settings",
+        "description": "Configure integration behaviour.",
+        "data": {
+          "demo_mode": "Demo mode"
+        },
+        "data_description": {
+          "demo_mode": "Load fixture data instead of calling the live API. Useful for dashboard development when no tournament is active. The integration will reload automatically when you save."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "fixtures": {
+        "name": "Calendrier"
+      },
+      "standings": {
+        "name": "Classements"
+      },
+      "next_match": {
+        "name": "Prochain match"
+      },
+      "live_matches": {
+        "name": "Matchs en direct"
+      },
+      "today_matches": {
+        "name": "Matchs du jour"
+      },
+      "tomorrow_matches": {
+        "name": "Matchs de demain"
+      },
+      "completed_matches": {
+        "name": "Matchs terminés"
+      },
+      "group_fixtures": {
+        "name": "{group}"
+      },
+      "stage_fixtures": {
+        "name": "{stage}"
+      },
+      "total_matches_played": {
+        "name": "Matchs joués"
+      },
+      "matches_remaining": {
+        "name": "Matchs restants"
+      },
+      "progress": {
+        "name": "Progression"
+      },
+      "total_goals": {
+        "name": "Total des buts"
+      },
+      "goals_per_match": {
+        "name": "Buts par match"
+      },
+      "teams_remaining": {
+        "name": "Équipes restantes"
+      },
+      "current_stage": {
+        "name": "Phase actuelle"
+      },
+      "top_scorers": {
+        "name": "Meilleurs buteurs"
+      },
+      "top_scorer": {
+        "name": "Meilleur buteur"
+      },
+      "top_assists": {
+        "name": "Meilleurs passeurs"
+      },
+      "top_assist": {
+        "name": "Meilleur passeur"
+      },
+      "biggest_win": {
+        "name": "Plus large victoire"
+      },
+      "highest_scoring_match": {
+        "name": "Match le plus prolifique"
+      },
+      "latest_result": {
+        "name": "Dernier résultat"
+      },
+      "top_scoring_team": {
+        "name": "Équipe la plus prolifique"
+      },
+      "best_defence": {
+        "name": "Meilleure défense"
+      },
+      "eliminated_teams": {
+        "name": "Équipes éliminées"
+      },
+      "live_goals": {
+        "name": "Buts en direct"
+      },
+      "countdown": {
+        "name": "Compte à rebours"
+      },
+      "days_until_final": {
+        "name": "Jours avant la finale"
+      },
+      "stadiums": {
+        "name": "Stades"
+      },
+      "host_cities": {
+        "name": "Villes hôtes"
+      },
+      "final_venue": {
+        "name": "Lieu de la finale"
+      },
+      "group_leaders": {
+        "name": "Leaders de groupe"
+      },
+      "extra_time_matches": {
+        "name": "Matchs en prolongation"
+      },
+      "penalty_shootouts": {
+        "name": "Tirs au but"
+      },
+      "top_scorer_no_penalties": {
+        "name": "Meilleur buteur hors penalties"
+      },
+      "goal_contributions": {
+        "name": "Contributions aux buts"
+      },
+      "penalty_goals": {
+        "name": "Buts sur penalty"
+      },
+      "btts_rate": {
+        "name": "Taux BTTS"
+      },
+      "over_2_5_goals_rate": {
+        "name": "Taux plus de 2,5 buts"
+      },
+      "draw_rate": {
+        "name": "Taux de nuls"
+      },
+      "clean_sheets": {
+        "name": "Clean sheets"
+      },
+      "unbeaten_teams": {
+        "name": "Équipes invaincues"
+      },
+      "comebacks": {
+        "name": "Remontées"
+      },
+      "first_half_goals": {
+        "name": "Buts en première mi-temps"
+      },
+      "second_half_goals": {
+        "name": "Buts en seconde mi-temps"
+      }
+    }
+  }
+}

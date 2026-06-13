@@ -1,0 +1,146 @@
+[
+  {
+    "name": "Atlanta Stadium",
+    "real_name": "Mercedes-Benz Stadium",
+    "city": "Atlanta",
+    "country": "USA",
+    "capacity": 75000,
+    "matches": 8,
+    "image": "images/stadiums/atlanta.jpg"
+  },
+  {
+    "name": "Boston Stadium",
+    "real_name": "Gillette Stadium",
+    "city": "Foxborough",
+    "country": "USA",
+    "capacity": 65000,
+    "matches": 7,
+    "image": "images/stadiums/boston.jpg"
+  },
+  {
+    "name": "Dallas Stadium",
+    "real_name": "AT&T Stadium",
+    "city": "Arlington",
+    "country": "USA",
+    "capacity": 94000,
+    "matches": 9,
+    "image": "images/stadiums/dallas.jpg"
+  },
+  {
+    "name": "Estadio Guadalajara",
+    "real_name": "Estadio Akron",
+    "city": "Guadalajara",
+    "country": "Mexico",
+    "capacity": 48000,
+    "matches": 4,
+    "image": "images/stadiums/guadalajara.jpg"
+  },
+  {
+    "name": "Houston Stadium",
+    "real_name": "NRG Stadium",
+    "city": "Houston",
+    "country": "USA",
+    "capacity": 72000,
+    "matches": 7,
+    "image": "images/stadiums/houston.jpg"
+  },
+  {
+    "name": "Kansas City Stadium",
+    "real_name": "GEHA Field at Arrowhead Stadium",
+    "city": "Kansas City",
+    "country": "USA",
+    "capacity": 73000,
+    "matches": 6,
+    "image": "images/stadiums/kansas-city.jpg"
+  },
+  {
+    "name": "Los Angeles Stadium",
+    "real_name": "SoFi Stadium",
+    "city": "Inglewood",
+    "country": "USA",
+    "capacity": 70000,
+    "matches": 8,
+    "image": "images/stadiums/los-angeles.jpg"
+  },
+  {
+    "name": "Mexico City Stadium",
+    "real_name": "Estadio Azteca",
+    "city": "Mexico City",
+    "country": "Mexico",
+    "capacity": 87500,
+    "matches": 5,
+    "image": "images/stadiums/mexico-city.jpg"
+  },
+  {
+    "name": "Miami Stadium",
+    "real_name": "Hard Rock Stadium",
+    "city": "Miami Gardens",
+    "country": "USA",
+    "capacity": 65000,
+    "matches": 7,
+    "image": "images/stadiums/miami.jpg"
+  },
+  {
+    "name": "Estadio Monterrey",
+    "real_name": "Estadio BBVA",
+    "city": "Guadalupe",
+    "country": "Mexico",
+    "capacity": 53500,
+    "matches": 4,
+    "image": "images/stadiums/monterrey.jpg"
+  },
+  {
+    "name": "New York New Jersey Stadium",
+    "real_name": "MetLife Stadium",
+    "city": "East Rutherford",
+    "country": "USA",
+    "capacity": 82500,
+    "matches": 8,
+    "image": "images/stadiums/new-york-new-jersey.jpg"
+  },
+  {
+    "name": "Philadelphia Stadium",
+    "real_name": "Lincoln Financial Field",
+    "city": "Philadelphia",
+    "country": "USA",
+    "capacity": 69000,
+    "matches": 6,
+    "image": "images/stadiums/philadelphia.jpg"
+  },
+  {
+    "name": "San Francisco Bay Area Stadium",
+    "real_name": "Levi's Stadium",
+    "city": "Santa Clara",
+    "country": "USA",
+    "capacity": 71000,
+    "matches": 6,
+    "image": "images/stadiums/san-francisco-bay-area.jpg"
+  },
+  {
+    "name": "Seattle Stadium",
+    "real_name": "Lumen Field",
+    "city": "Seattle",
+    "country": "USA",
+    "capacity": 69000,
+    "matches": 6,
+    "image": "images/stadiums/seattle.jpg"
+  },
+  {
+    "name": "Toronto Stadium",
+    "real_name": "BMO Field",
+    "city": "Toronto",
+    "country": "Canada",
+    "capacity": 45000,
+    "matches": 6,
+    "image": "images/stadiums/toronto.jpg"
+  },
+  {
+    "name": "BC Place Vancouver",
+    "real_name": "BC Place",
+    "city": "Vancouver",
+    "country": "Canada",
+    "capacity": 54500,
+    "matches": 7,
+    "image": "images/stadiums/vancouver.jpg"
+  }
+]

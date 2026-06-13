@@ -1,0 +1,133 @@
+{
+  "count": 8,
+  "scorers": [
+    {
+      "_comment": "Pure scorer — all goals are open play, no pens",
+      "player": {
+        "id": 1001,
+        "name": "Erling Haaland",
+        "firstName": "Erling",
+        "lastName": "Haaland",
+        "dateOfBirth": "2000-07-21",
+        "nationality": "Norway",
+        "position": "Attacker"
+      },
+      "team": { "id": 1, "name": "Norway", "shortName": "Norway" },
+      "goals": 4,
+      "assists": 2,
+      "penalties": 0
+    },
+    {
+      "_comment": "Pen scorer — 3 goals but 2 from spot. Non-pen = 1. Should rank below Haaland in no-pen list",
+      "player": {
+        "id": 1002,
+        "name": "Kylian Mbappé",
+        "firstName": "Kylian",
+        "lastName": "Mbappé",
+        "dateOfBirth": "1998-12-20",
+        "nationality": "France",
+        "position": "Attacker"
+      },
+      "team": { "id": 5, "name": "France", "shortName": "France" },
+      "goals": 3,
+      "assists": 1,
+      "penalties": 2
+    },
+    {
+      "_comment": "All goals from the spot — should be excluded from no-pen scorer list",
+      "player": {
+        "id": 1003,
+        "name": "Cristiano Ronaldo",
+        "firstName": "Cristiano",
+        "lastName": "Ronaldo",
+        "dateOfBirth": "1985-02-05",
+        "nationality": "Portugal",
+        "position": "Attacker"
+      },
+      "team": { "id": 9, "name": "Portugal", "shortName": "Portugal" },
+      "goals": 2,
+      "assists": 0,
+      "penalties": 2
+    },
+    {
+      "_comment": "High assists provider — great for G+A test",
+      "player": {
+        "id": 1004,
+        "name": "Kevin De Bruyne",
+        "firstName": "Kevin",
+        "lastName": "De Bruyne",
+        "dateOfBirth": "1991-06-28",
+        "nationality": "Belgium",
+        "position": "Midfielder"
+      },
+      "team": { "id": 11, "name": "Belgium", "shortName": "Belgium" },
+      "goals": 1,
+      "assists": 4,
+      "penalties": 0
+    },
+    {
+      "_comment": "Midfielder goal scorer with assists",
+      "player": {
+        "id": 1005,
+        "name": "Luka Modric",
+        "firstName": "Luka",
+        "lastName": "Modric",
+        "dateOfBirth": "1985-09-09",
+        "nationality": "Croatia",
+        "position": "Midfielder"
+      },
+      "team": { "id": 12, "name": "Croatia", "shortName": "Croatia" },
+      "goals": 2,
+      "assists": 1,
+      "penalties": 0
+    },
+    {
+      "_comment": "No goals yet, only assists — should appear in assists list but not scorer list",
+      "player": {
+        "id": 1006,
+        "name": "Neymar Jr.",
+        "firstName": "Neymar",
+        "lastName": "Jr.",
+        "dateOfBirth": "1992-02-05",
+        "nationality": "Brazil",
+        "position": "Attacker"
+      },
+      "team": { "id": 1, "name": "Brazil", "shortName": "Brazil" },
+      "goals": 0,
+      "assists": 3,
+      "penalties": 0
+    },
+    {
+      "_comment": "Player with null dateOfBirth — tests null handling in age computation",
+      "player": {
+        "id": 1007,
+        "name": "Unknown Player",
+        "firstName": null,
+        "lastName": null,
+        "dateOfBirth": null,
+        "nationality": null,
+        "position": null
+      },
+      "team": { "id": 2, "name": "Mexico", "shortName": "Mexico" },
+      "goals": 1,
+      "assists": 0,
+      "penalties": 0
+    },
+    {
+      "_comment": "Mixed: 1 pen, 2 open play, 2 assists. Tests both non-pen and G+A rankings",
+      "player": {
+        "id": 1008,
+        "name": "Lionel Messi",
+        "firstName": "Lionel",
+        "lastName": "Messi",
+        "dateOfBirth": "1987-06-24",
+        "nationality": "Argentina",
+        "position": "Attacker"
+      },
+      "team": { "id": 3, "name": "Argentina", "shortName": "Argentina" },
+      "goals": 3,
+      "assists": 2,
+      "penalties": 1
+    }
+  ]
+}

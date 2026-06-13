@@ -1,0 +1,256 @@
+{
+  "standings": [
+    {
+      "group": "GROUP_A",
+      "stage": "GROUP_STAGE",
+      "table": [
+        {
+          "position": 1,
+          "team": { "id": 1, "name": "Brazil", "shortName": "Brazil" },
+          "playedGames": 2,
+          "form": "W,W",
+          "won": 2, "draw": 0, "lost": 0,
+          "points": 6,
+          "goalsFor": 5, "goalsAgainst": 1, "goalDifference": 4
+        },
+        {
+          "position": 2,
+          "team": { "id": 2, "name": "Mexico", "shortName": "Mexico" },
+          "playedGames": 2,
+          "form": "W,L",
+          "won": 1, "draw": 0, "lost": 1,
+          "points": 3,
+          "goalsFor": 3, "goalsAgainst": 4, "goalDifference": -1
+        },
+        {
+          "position": 3,
+          "team": { "id": 17, "name": "Morocco", "shortName": "Morocco" },
+          "playedGames": 2,
+          "form": "L,W",
+          "won": 1, "draw": 0, "lost": 1,
+          "points": 3,
+          "goalsFor": 2, "goalsAgainst": 2, "goalDifference": 0
+        },
+        {
+          "position": 4,
+          "team": { "id": 18, "name": "South Africa", "shortName": "S. Africa" },
+          "playedGames": 2,
+          "form": "L,L",
+          "won": 0, "draw": 0, "lost": 2,
+          "points": 0,
+          "goalsFor": 1, "goalsAgainst": 4, "goalDifference": -3
+        }
+      ]
+    },
+    {
+      "group": "GROUP_B",
+      "stage": "GROUP_STAGE",
+      "table": [
+        {
+          "position": 1,
+          "team": { "id": 5, "name": "France", "shortName": "France" },
+          "playedGames": 2,
+          "form": "D,W",
+          "won": 1, "draw": 1, "lost": 0,
+          "points": 4,
+          "goalsFor": 3, "goalsAgainst": 1, "goalDifference": 2
+        },
+        {
+          "position": 2,
+          "team": { "id": 6, "name": "Germany", "shortName": "Germany" },
+          "playedGames": 2,
+          "form": "D,W",
+          "won": 1, "draw": 1, "lost": 0,
+          "points": 4,
+          "goalsFor": 3, "goalsAgainst": 2, "goalDifference": 1
+        },
+        {
+          "position": 3,
+          "team": { "id": 19, "name": "Senegal", "shortName": "Senegal" },
+          "playedGames": 2,
+          "form": "L,D",
+          "won": 0, "draw": 1, "lost": 1,
+          "points": 1,
+          "goalsFor": 1, "goalsAgainst": 2, "goalDifference": -1
+        },
+        {
+          "position": 4,
+          "team": { "id": 20, "name": "Switzerland", "shortName": "Switzerland" },
+          "playedGames": 2,
+          "form": "L,L",
+          "won": 0, "draw": 0, "lost": 2,
+          "points": 0,
+          "goalsFor": 0, "goalsAgainst": 2, "goalDifference": -2
+        }
+      ]
+    },
+    {
+      "group": "GROUP_C",
+      "stage": "GROUP_STAGE",
+      "table": [
+        {
+          "position": 1,
+          "team": { "id": 10, "name": "Netherlands", "shortName": "Netherlands" },
+          "playedGames": 1,
+          "form": "W",
+          "won": 1, "draw": 0, "lost": 0,
+          "points": 3,
+          "goalsFor": 2, "goalsAgainst": 1, "goalDifference": 1
+        },
+        {
+          "position": 2,
+          "team": { "id": 9, "name": "Portugal", "shortName": "Portugal" },
+          "playedGames": 1,
+          "form": "L",
+          "won": 0, "draw": 0, "lost": 1,
+          "points": 0,
+          "goalsFor": 1, "goalsAgainst": 2, "goalDifference": -1
+        },
+        {
+          "position": 3,
+          "team": { "id": 21, "name": "Ecuador", "shortName": "Ecuador" },
+          "playedGames": 0,
+          "form": "",
+          "won": 0, "draw": 0, "lost": 0,
+          "points": 0,
+          "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0
+        },
+        {
+          "position": 4,
+          "team": { "id": 22, "name": "Canada", "shortName": "Canada" },
+          "playedGames": 0,
+          "form": "",
+          "won": 0, "draw": 0, "lost": 0,
+          "points": 0,
+          "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0
+        }
+      ]
+    },
+    {
+      "group": "GROUP_D",
+      "stage": "GROUP_STAGE",
+      "table": [
+        {
+          "position": 1,
+          "team": { "id": 11, "name": "Belgium", "shortName": "Belgium" },
+          "playedGames": 1,
+          "form": "W",
+          "won": 1, "draw": 0, "lost": 0,
+          "points": 3,
+          "goalsFor": 4, "goalsAgainst": 2, "goalDifference": 2
+        },
+        {
+          "position": 2,
+          "team": { "id": 23, "name": "Uruguay", "shortName": "Uruguay" },
+          "playedGames": 1,
+          "form": "W",
+          "won": 1, "draw": 0, "lost": 0,
+          "points": 3,
+          "goalsFor": 2, "goalsAgainst": 0, "goalDifference": 2
+        },
+        {
+          "position": 3,
+          "team": { "id": 12, "name": "Croatia", "shortName": "Croatia" },
+          "playedGames": 1,
+          "form": "L",
+          "won": 0, "draw": 0, "lost": 1,
+          "points": 0,
+          "goalsFor": 2, "goalsAgainst": 4, "goalDifference": -2
+        },
+        {
+          "position": 4,
+          "team": { "id": 24, "name": "Australia", "shortName": "Australia" },
+          "playedGames": 1,
+          "form": "L",
+          "won": 0, "draw": 0, "lost": 1,
+          "points": 0,
+          "goalsFor": 0, "goalsAgainst": 2, "goalDifference": -2
+        }
+      ]
+    },
+    {
+      "group": "GROUP_E",
+      "stage": "GROUP_STAGE",
+      "table": [
+        {
+          "position": 1,
+          "team": { "id": 13, "name": "Italy", "shortName": "Italy" },
+          "playedGames": 0,
+          "form": "",
+          "won": 0, "draw": 0, "lost": 0,
+          "points": 0,
+          "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0
+        },
+        {
+          "position": 2,
+          "team": { "id": 14, "name": "Japan", "shortName": "Japan" },
+          "playedGames": 0,
+          "form": "",
+          "won": 0, "draw": 0, "lost": 0,
+          "points": 0,
+          "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0
+        },
+        {
+          "position": 3,
+          "team": { "id": 25, "name": "Poland", "shortName": "Poland" },
+          "playedGames": 0,
+          "form": "",
+          "won": 0, "draw": 0, "lost": 0,
+          "points": 0,
+          "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0
+        },
+        {
+          "position": 4,
+          "team": { "id": 26, "name": "Tunisia", "shortName": "Tunisia" },
+          "playedGames": 0,
+          "form": "",
+          "won": 0, "draw": 0, "lost": 0,
+          "points": 0,
+          "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0
+        }
+      ]
+    },
+    {
+      "group": "GROUP_F",
+      "stage": "GROUP_STAGE",
+      "table": [
+        {
+          "position": 1,
+          "team": { "id": 15, "name": "USA", "shortName": "USA" },
+          "playedGames": 0,
+          "form": "",
+          "won": 0, "draw": 0, "lost": 0,
+          "points": 0,
+          "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0
+        },
+        {
+          "position": 2,
+          "team": { "id": 16, "name": "Iran", "shortName": "Iran" },
+          "playedGames": 0,
+          "form": "",
+          "won": 0, "draw": 0, "lost": 0,
+          "points": 0,
+          "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0
+        },
+        {
+          "position": 3,
+          "team": { "id": 27, "name": "Wales", "shortName": "Wales" },
+          "playedGames": 0,
+          "form": "",
+          "won": 0, "draw": 0, "lost": 0,
+          "points": 0,
+          "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0
+        },
+        {
+          "position": 4,
+          "team": { "id": 28, "name": "Saudi Arabia", "shortName": "Saudi Arabia" },
+          "playedGames": 0,
+          "form": "",
+          "won": 0, "draw": 0, "lost": 0,
+          "points": 0,
+          "goalsFor": 0, "goalsAgainst": 0, "goalDifference": 0
+        }
+      ]
+    }
+  ]
+}

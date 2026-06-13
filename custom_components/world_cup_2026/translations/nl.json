@@ -1,0 +1,180 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "World Cup 2026",
+        "description": "Enter your football-data.org API key. A free key is available at https://www.football-data.org/client/register",
+        "data": {
+          "api_key": "API Key"
+        },
+        "data_description": {
+          "api_key": "Your personal API key from football-data.org. The free tier is sufficient."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to football-data.org. Check your network and try again.",
+      "invalid_auth": "Invalid API key. Check the key on your football-data.org account page.",
+      "unknown": "An unexpected error occurred. Check the Home Assistant logs for details."
+    },
+    "abort": {
+      "already_configured": "World Cup 2026 is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "World Cup 2026 — Settings",
+        "description": "Configure integration behaviour.",
+        "data": {
+          "demo_mode": "Demo mode"
+        },
+        "data_description": {
+          "demo_mode": "Load fixture data instead of calling the live API. Useful for dashboard development when no tournament is active. The integration will reload automatically when you save."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "fixtures": {
+        "name": "Wedstrijden"
+      },
+      "standings": {
+        "name": "Standen"
+      },
+      "next_match": {
+        "name": "Volgende wedstrijd"
+      },
+      "live_matches": {
+        "name": "Live wedstrijden"
+      },
+      "today_matches": {
+        "name": "Wedstrijden vandaag"
+      },
+      "tomorrow_matches": {
+        "name": "Wedstrijden morgen"
+      },
+      "completed_matches": {
+        "name": "Afgelopen wedstrijden"
+      },
+      "group_fixtures": {
+        "name": "{group}"
+      },
+      "stage_fixtures": {
+        "name": "{stage}"
+      },
+      "total_matches_played": {
+        "name": "Gespeelde wedstrijden"
+      },
+      "matches_remaining": {
+        "name": "Resterende wedstrijden"
+      },
+      "progress": {
+        "name": "Voortgang"
+      },
+      "total_goals": {
+        "name": "Totaal doelpunten"
+      },
+      "goals_per_match": {
+        "name": "Doelpunten per wedstrijd"
+      },
+      "teams_remaining": {
+        "name": "Resterende teams"
+      },
+      "current_stage": {
+        "name": "Huidige fase"
+      },
+      "top_scorers": {
+        "name": "Topscorers"
+      },
+      "top_scorer": {
+        "name": "Topscorer"
+      },
+      "top_assists": {
+        "name": "Meeste assists"
+      },
+      "top_assist": {
+        "name": "Beste aangever"
+      },
+      "biggest_win": {
+        "name": "Grootste overwinning"
+      },
+      "highest_scoring_match": {
+        "name": "Wedstrijd met meeste doelpunten"
+      },
+      "latest_result": {
+        "name": "Laatste uitslag"
+      },
+      "top_scoring_team": {
+        "name": "Meest scorende team"
+      },
+      "best_defence": {
+        "name": "Beste verdediging"
+      },
+      "eliminated_teams": {
+        "name": "Uitgeschakelde teams"
+      },
+      "live_goals": {
+        "name": "Live doelpunten"
+      },
+      "countdown": {
+        "name": "Aftellen"
+      },
+      "days_until_final": {
+        "name": "Dagen tot de finale"
+      },
+      "stadiums": {
+        "name": "Stadions"
+      },
+      "host_cities": {
+        "name": "Gaststeden"
+      },
+      "final_venue": {
+        "name": "Finalelocatie"
+      },
+      "group_leaders": {
+        "name": "Groepsleiders"
+      },
+      "extra_time_matches": {
+        "name": "Verlengingen"
+      },
+      "penalty_shootouts": {
+        "name": "Strafschoppenseries"
+      },
+      "top_scorer_no_penalties": {
+        "name": "Topscorer zonder penalties"
+      },
+      "goal_contributions": {
+        "name": "Doelbijdragen"
+      },
+      "penalty_goals": {
+        "name": "Penaltydoelpunten"
+      },
+      "btts_rate": {
+        "name": "BTTS-percentage"
+      },
+      "over_2_5_goals_rate": {
+        "name": "Meer dan 2,5 goals percentage"
+      },
+      "draw_rate": {
+        "name": "Gelijkspelpercentage"
+      },
+      "clean_sheets": {
+        "name": "Clean sheets"
+      },
+      "unbeaten_teams": {
+        "name": "Ongeslagen teams"
+      },
+      "comebacks": {
+        "name": "Comebacks"
+      },
+      "first_half_goals": {
+        "name": "Doelpunten eerste helft"
+      },
+      "second_half_goals": {
+        "name": "Doelpunten tweede helft"
+      }
+    }
+  }
+}
