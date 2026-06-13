@@ -34,22 +34,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     # v2.0: per-sensor problem binary sensors (gated by diagnostics toggle)
     if opts.get(CONF_ENABLE_DIAGNOSTICS, DEFAULT_ENABLE_DIAGNOSTICS):
         problem_sensors = [
-            ("_temp_stuck", "temperature_stuck", "Temperature Sensor Stuck", "mdi:thermometer-alert"),
-            ("_humidity_stuck", "humidity_stuck", "Humidity Sensor Stuck", "mdi:water-percent-alert"),
-            ("_pressure_stuck", "pressure_stuck", "Pressure Sensor Stuck", "mdi:gauge-empty"),
-            ("_temp_out_of_range", "temperature_out_of_range", "Temperature Out of Range", "mdi:thermometer-off"),
-            ("_humidity_out_of_range", "humidity_out_of_range", "Humidity Out of Range", "mdi:water-alert"),
-            ("_pressure_out_of_range", "pressure_out_of_range", "Pressure Out of Range", "mdi:gauge-low"),
-            (
-                "_wind_gust_below_wind",
-                "wind_gust_below_wind",
-                "Wind Gust Below Wind Speed",
-                "mdi:weather-windy-variant",
-            ),
-            ("_dew_exceeds_temp", "dew_exceeds_temp", "Dew Point Exceeds Temperature", "mdi:water-thermometer"),
+            ("_temp_stuck", "temperature_stuck", "mdi:thermometer-alert"),
+            ("_humidity_stuck", "humidity_stuck", "mdi:water-percent-alert"),
+            ("_pressure_stuck", "pressure_stuck", "mdi:gauge-empty"),
+            ("_temp_out_of_range", "temperature_out_of_range", "mdi:thermometer-off"),
+            ("_humidity_out_of_range", "humidity_out_of_range", "mdi:water-alert"),
+            ("_pressure_out_of_range", "pressure_out_of_range", "mdi:gauge-low"),
+            ("_wind_gust_below_wind", "wind_gust_below_wind", "mdi:weather-windy-variant"),
+            ("_dew_exceeds_temp", "dew_exceeds_temp", "mdi:water-thermometer"),
         ]
-        for data_key, slug, name, icon in problem_sensors:
-            entities.append(WSProblemBinarySensor(coordinator, entry, prefix, data_key, slug, name, icon))
+        for data_key, slug, icon in problem_sensors:
+            entities.append(WSProblemBinarySensor(coordinator, entry, prefix, data_key, slug, icon))
 
     async_add_entities(entities)
 
@@ -137,7 +132,6 @@ class WSProblemBinarySensor(CoordinatorEntity, BinarySensorEntity):
         prefix: str,
         data_key: str,
         slug: str,
-        name: str,
         icon: str,
     ):
         super().__init__(coordinator)
@@ -145,7 +139,7 @@ class WSProblemBinarySensor(CoordinatorEntity, BinarySensorEntity):
         self._data_key = data_key
         self._attr_unique_id = f"{entry.entry_id}_{slug}"
         self._attr_suggested_object_id = f"{prefix}_{slug}"
-        self._attr_name = name
+        self._attr_translation_key = f"ws_{slug}"
         self._attr_icon = icon
 
     @property

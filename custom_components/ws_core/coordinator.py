@@ -982,73 +982,87 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         # Weather Underground periodic upload (kept disabled-by-default for v0.6 roadmap)
         if self.wu_enabled and self.wu_station_id and self.wu_api_key:
-            self._unsubs.append(
-                async_track_time_interval(
-                    self.hass,
-                    lambda _now: self.hass.async_create_task(self._async_upload_wunderground()),
-                    timedelta(minutes=self.wu_interval_min),
-                )
-            )
+
+            async def _wu_upload_loop() -> None:
+                await asyncio.sleep(self.wu_interval_min * 60)
+                while True:
+                    await self._async_upload_wunderground()
+                    await asyncio.sleep(self.wu_interval_min * 60)
+
+            _wu_task = self.hass.async_create_background_task(_wu_upload_loop(), "ws_core_wu_upload")
+            self._unsubs.append(_wu_task.cancel)
 
         # v2.0: Weathercloud upload
         if self.weathercloud_enabled and self.wc_station_id and self.wc_api_key:
-            self._unsubs.append(
-                async_track_time_interval(
-                    self.hass,
-                    lambda _now: self.hass.async_create_task(self._async_upload_weathercloud()),
-                    timedelta(minutes=self.wc_interval_min),
-                )
-            )
+
+            async def _wc_upload_loop() -> None:
+                await asyncio.sleep(self.wc_interval_min * 60)
+                while True:
+                    await self._async_upload_weathercloud()
+                    await asyncio.sleep(self.wc_interval_min * 60)
+
+            _wc_task = self.hass.async_create_background_task(_wc_upload_loop(), "ws_core_wc_upload")
+            self._unsubs.append(_wc_task.cancel)
 
         # v2.0: PWSWeather upload
         if self.pwsweather_enabled and self.pws_station_id and self.pws_api_key:
-            self._unsubs.append(
-                async_track_time_interval(
-                    self.hass,
-                    lambda _now: self.hass.async_create_task(self._async_upload_pwsweather()),
-                    timedelta(minutes=self.pws_interval_min),
-                )
-            )
+
+            async def _pws_upload_loop() -> None:
+                await asyncio.sleep(self.pws_interval_min * 60)
+                while True:
+                    await self._async_upload_pwsweather()
+                    await asyncio.sleep(self.pws_interval_min * 60)
+
+            _pws_task = self.hass.async_create_background_task(_pws_upload_loop(), "ws_core_pws_upload")
+            self._unsubs.append(_pws_task.cancel)
 
         # v2.0: WOW (UK Met Office) upload
         if self.wow_enabled and self.wow_site_id and self.wow_auth_key:
-            self._unsubs.append(
-                async_track_time_interval(
-                    self.hass,
-                    lambda _now: self.hass.async_create_task(self._async_upload_wow()),
-                    timedelta(minutes=self.wow_interval_min),
-                )
-            )
+
+            async def _wow_upload_loop() -> None:
+                await asyncio.sleep(self.wow_interval_min * 60)
+                while True:
+                    await self._async_upload_wow()
+                    await asyncio.sleep(self.wow_interval_min * 60)
+
+            _wow_task = self.hass.async_create_background_task(_wow_upload_loop(), "ws_core_wow_upload")
+            self._unsubs.append(_wow_task.cancel)
 
         # v2.0: AWEKAS upload
         if self.awekas_enabled and self.awekas_username and self.awekas_password:
-            self._unsubs.append(
-                async_track_time_interval(
-                    self.hass,
-                    lambda _now: self.hass.async_create_task(self._async_upload_awekas()),
-                    timedelta(minutes=self.awekas_interval_min),
-                )
-            )
+
+            async def _awekas_upload_loop() -> None:
+                await asyncio.sleep(self.awekas_interval_min * 60)
+                while True:
+                    await self._async_upload_awekas()
+                    await asyncio.sleep(self.awekas_interval_min * 60)
+
+            _awekas_task = self.hass.async_create_background_task(_awekas_upload_loop(), "ws_core_awekas_upload")
+            self._unsubs.append(_awekas_task.cancel)
 
         # v2.0: OpenWeatherMap Stations API upload
         if self.owm_stations_enabled and self.owm_stations_api_key and self.owm_stations_station_id:
-            self._unsubs.append(
-                async_track_time_interval(
-                    self.hass,
-                    lambda _now: self.hass.async_create_task(self._async_upload_owm_stations()),
-                    timedelta(minutes=self.owm_stations_interval_min),
-                )
-            )
+
+            async def _owm_upload_loop() -> None:
+                await asyncio.sleep(self.owm_stations_interval_min * 60)
+                while True:
+                    await self._async_upload_owm_stations()
+                    await asyncio.sleep(self.owm_stations_interval_min * 60)
+
+            _owm_task = self.hass.async_create_background_task(_owm_upload_loop(), "ws_core_owm_upload")
+            self._unsubs.append(_owm_task.cancel)
 
         # v2.0: Windy.com upload
         if self.windy_enabled and self.windy_api_key:
-            self._unsubs.append(
-                async_track_time_interval(
-                    self.hass,
-                    lambda _now: self.hass.async_create_task(self._async_upload_windy()),
-                    timedelta(minutes=self.windy_interval_min),
-                )
-            )
+
+            async def _windy_upload_loop() -> None:
+                await asyncio.sleep(self.windy_interval_min * 60)
+                while True:
+                    await self._async_upload_windy()
+                    await asyncio.sleep(self.windy_interval_min * 60)
+
+            _windy_task = self.hass.async_create_background_task(_windy_upload_loop(), "ws_core_windy_upload")
+            self._unsubs.append(_windy_task.cancel)
 
         # Air quality + pollen periodic fetch (Open-Meteo Air Quality API, single call)
         if (
@@ -1056,13 +1070,15 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             and self.forecast_lat is not None
             and self.forecast_lon is not None
         ):
-            self._unsubs.append(
-                async_track_time_interval(
-                    self.hass,
-                    lambda _now: self.hass.async_create_task(self._async_fetch_aqi()),
-                    timedelta(minutes=self.aqi_interval_min),
-                )
-            )
+
+            async def _aqi_fetch_loop() -> None:
+                await asyncio.sleep(self.aqi_interval_min * 60)
+                while True:
+                    await self._async_fetch_aqi()
+                    await asyncio.sleep(self.aqi_interval_min * 60)
+
+            _aqi_task = self.hass.async_create_background_task(_aqi_fetch_loop(), "ws_core_aqi_fetch")
+            self._unsubs.append(_aqi_task.cancel)
 
             async def _deferred_aqi():
                 await asyncio.sleep(10)
@@ -1075,13 +1091,15 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         # Solar forecast periodic fetch
         if self.solar_forecast_enabled and self.forecast_lat is not None and self.forecast_lon is not None:
-            self._unsubs.append(
-                async_track_time_interval(
-                    self.hass,
-                    lambda _now: self.hass.async_create_task(self._async_fetch_solar_forecast()),
-                    timedelta(minutes=self.solar_interval_min),
-                )
-            )
+
+            async def _solar_fetch_loop() -> None:
+                await asyncio.sleep(self.solar_interval_min * 60)
+                while True:
+                    await self._async_fetch_solar_forecast()
+                    await asyncio.sleep(self.solar_interval_min * 60)
+
+            _solar_task = self.hass.async_create_background_task(_solar_fetch_loop(), "ws_core_solar_fetch")
+            self._unsubs.append(_solar_task.cancel)
 
             async def _deferred_solar():
                 await asyncio.sleep(30)
@@ -1094,13 +1112,15 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         # Météo Vigilance periodic fetch (every 30 min; alerts rarely change faster)
         if self.vigilance_meteo_enabled and self.forecast_lat is not None and self.forecast_lon is not None:
-            self._unsubs.append(
-                async_track_time_interval(
-                    self.hass,
-                    lambda _now: self.hass.async_create_task(self._async_fetch_vigilance()),
-                    timedelta(minutes=30),
-                )
-            )
+
+            async def _vigilance_fetch_loop() -> None:
+                await asyncio.sleep(30 * 60)
+                while True:
+                    await self._async_fetch_vigilance()
+                    await asyncio.sleep(30 * 60)
+
+            _vigilance_task = self.hass.async_create_background_task(_vigilance_fetch_loop(), "ws_core_vigilance_fetch")
+            self._unsubs.append(_vigilance_task.cancel)
 
             async def _deferred_vigilance():
                 await asyncio.sleep(45)
@@ -1113,13 +1133,15 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         # Vigicrues periodic fetch (every 15 min; river levels update frequently)
         if self.vigicrues_enabled and self.forecast_lat is not None and self.forecast_lon is not None:
-            self._unsubs.append(
-                async_track_time_interval(
-                    self.hass,
-                    lambda _now: self.hass.add_job(self._async_fetch_vigicrues),
-                    timedelta(minutes=15),
-                )
-            )
+
+            async def _vigicrues_fetch_loop() -> None:
+                await asyncio.sleep(15 * 60)
+                while True:
+                    await self._async_fetch_vigicrues()
+                    await asyncio.sleep(15 * 60)
+
+            _vigicrues_task = self.hass.async_create_background_task(_vigicrues_fetch_loop(), "ws_core_vigicrues_fetch")
+            self._unsubs.append(_vigicrues_task.cancel)
 
             async def _deferred_vigicrues():
                 await asyncio.sleep(60)
@@ -1132,13 +1154,15 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         # v1.7.0 Precipitation nowcast (Open-Meteo minutely_15; refresh often)
         if self.nowcast_enabled and self.forecast_lat is not None and self.forecast_lon is not None:
-            self._unsubs.append(
-                async_track_time_interval(
-                    self.hass,
-                    lambda _now: self.hass.async_create_task(self._async_fetch_nowcast()),
-                    timedelta(minutes=self.nowcast_interval_min),
-                )
-            )
+
+            async def _nowcast_fetch_loop() -> None:
+                await asyncio.sleep(self.nowcast_interval_min * 60)
+                while True:
+                    await self._async_fetch_nowcast()
+                    await asyncio.sleep(self.nowcast_interval_min * 60)
+
+            _nowcast_task = self.hass.async_create_background_task(_nowcast_fetch_loop(), "ws_core_nowcast_fetch")
+            self._unsubs.append(_nowcast_task.cancel)
 
             async def _deferred_nowcast():
                 await asyncio.sleep(20)
@@ -1152,13 +1176,17 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # v2.0: spatial neighbor QC (hourly fetch from Open-Meteo)
         self._neighbor_qc_cache: dict | None = None
         if self.forecast_lat is not None and self.forecast_lon is not None:
-            self._unsubs.append(
-                async_track_time_interval(
-                    self.hass,
-                    lambda _now: self.hass.async_create_task(self._async_fetch_neighbor_qc()),
-                    timedelta(hours=1),
-                )
+
+            async def _neighbor_qc_fetch_loop() -> None:
+                await asyncio.sleep(60 * 60)
+                while True:
+                    await self._async_fetch_neighbor_qc()
+                    await asyncio.sleep(60 * 60)
+
+            _neighbor_qc_task = self.hass.async_create_background_task(
+                _neighbor_qc_fetch_loop(), "ws_core_neighbor_qc_fetch"
             )
+            self._unsubs.append(_neighbor_qc_task.cancel)
 
             async def _deferred_neighbor_qc():
                 await asyncio.sleep(60)
@@ -1171,23 +1199,27 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         # v2.0: CWOP upload
         if self.cwop_enabled and self.cwop_callsign:
-            self._unsubs.append(
-                async_track_time_interval(
-                    self.hass,
-                    lambda _now: self.hass.async_create_task(self._async_upload_cwop()),
-                    timedelta(minutes=self.cwop_interval_min),
-                )
-            )
+
+            async def _cwop_upload_loop() -> None:
+                await asyncio.sleep(self.cwop_interval_min * 60)
+                while True:
+                    await self._async_upload_cwop()
+                    await asyncio.sleep(self.cwop_interval_min * 60)
+
+            _cwop_task = self.hass.async_create_background_task(_cwop_upload_loop(), "ws_core_cwop_upload")
+            self._unsubs.append(_cwop_task.cancel)
 
         # v2.0: MQTT Discovery periodic state publishing
         if self.mqtt_enabled:
-            self._unsubs.append(
-                async_track_time_interval(
-                    self.hass,
-                    lambda _now: self.hass.async_create_task(self._async_mqtt_publish()),
-                    timedelta(minutes=self._mqtt_interval_min),
-                )
-            )
+
+            async def _mqtt_publish_loop() -> None:
+                await asyncio.sleep(self._mqtt_interval_min * 60)
+                while True:
+                    await self._async_mqtt_publish()
+                    await asyncio.sleep(self._mqtt_interval_min * 60)
+
+            _mqtt_task = self.hass.async_create_background_task(_mqtt_publish_loop(), "ws_core_mqtt_publish")
+            self._unsubs.append(_mqtt_task.cancel)
 
             async def _deferred_mqtt_discovery():
                 await asyncio.sleep(15)
@@ -2313,6 +2345,11 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         """Derive lightning sensors from optional strike count + distance inputs.  (v2.0)"""
         if not self.lightning_enabled:
             return
+
+        # Retry Blitzortung discovery on every tick until both sources are found;
+        # the initial __init__ call may run before Blitzortung has registered its entities.
+        if len(self._blitzortung_sources) < 2:
+            self._discover_blitzortung()
 
         # Use physical sensor if mapped; fall back to auto-detected Blitzortung entity
         count_raw = self._num(
