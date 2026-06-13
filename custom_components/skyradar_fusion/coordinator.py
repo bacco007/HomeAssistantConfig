@@ -131,9 +131,9 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
             "lon",
             "oat",
             "tat",
-            "dbFlags",  # Added new field
-            "ownOp",  # Added new field
-            "year",  # Added new field
+            "dbFlags",
+            "ownOp",
+            "year",
         ]
         cleaned = {
             k: ac.get(k)
@@ -560,6 +560,9 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
                             )
                         )
 
+            current_time = dt_util.now().timestamp()
+            formatted_now = dt_util.now().strftime("%Y-%m-%d %H:%M:%S")
+
             for target in filtered_aircraft + list(unique_map_targets):
                 reg = target.get("r") or "Unknown"
                 hex_code = target.get("raw_hex") or target.get("hex") or "Unknown"
@@ -629,8 +632,7 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
                     target["gs"] = 0
                     target["baro_rate"] = 0
 
-            current_time = dt_util.now().timestamp()
-
+            # --- START ANTI-FLICKER & LOCAL TELEMETRY MEMORY ---
             for target in filtered_aircraft + list(unique_map_targets):
                 tid = target.get("raw_hex") or target.get("hex")
                 if not tid or tid == "Unknown":
@@ -640,8 +642,31 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
 
                 if not is_placeholder:
                     if tid not in self.tracker_memory:
-                        self.tracker_memory[tid] = {"data": {}}
+                        self.tracker_memory[tid] = {
+                            "data": {},
+                            "local_actual_departure": None,
+                            "local_actual_arrival": None,
+                        }
+
                     self.tracker_memory[tid]["last_seen"] = current_time
+
+                    # Log Local Departure if Airborne
+                    if (
+                        not target.get("on_ground")
+                        and not self.tracker_memory[tid]["local_actual_departure"]
+                    ):
+                        self.tracker_memory[tid]["local_actual_departure"] = (
+                            formatted_now
+                        )
+
+                    # Log Local Arrival if On Ground
+                    if (
+                        target.get("on_ground")
+                        and self.tracker_memory[tid]["local_actual_departure"]
+                        and not self.tracker_memory[tid]["local_actual_arrival"]
+                    ):
+                        self.tracker_memory[tid]["local_actual_arrival"] = formatted_now
+
                     for k, v in target.items():
                         if (
                             v is not None
@@ -680,12 +705,21 @@ class SkyRadarFusionCoordinator(DataUpdateCoordinator):
                             ):
                                 target[k] = v
 
+                        # Attach Local Telemetry for device_tracker.py
+                        target["local_actual_departure"] = self.tracker_memory[tid][
+                            "local_actual_departure"
+                        ]
+                        target["local_actual_arrival"] = self.tracker_memory[tid][
+                            "local_actual_arrival"
+                        ]
+
             expired_keys = []
             for tid, mem in self.tracker_memory.items():
                 if current_time - mem["last_seen"] > 300:
                     expired_keys.append(tid)
             for tid in expired_keys:
                 del self.tracker_memory[tid]
+            # --- END ANTI-FLICKER & LOCAL TELEMETRY MEMORY ---
 
             for ac in filtered_aircraft:
                 hex_code = ac.get("hex")

@@ -129,7 +129,6 @@ class SkyRadarFusionTracker(CoordinatorEntity, TrackerEntity):
                 "Info": "Radar tracking is disabled or aircraft left the area.",
             }
 
-        # --- NIEUW: Duidelijke Status Indicator ---
         attrs = {}
         if ac.get("on_ground"):
             attrs["Status"] = "Landed / On Ground"
@@ -139,6 +138,8 @@ class SkyRadarFusionTracker(CoordinatorEntity, TrackerEntity):
         raw_attrs = {
             "Callsign": ac.get("flight", "Unknown").strip(),
             "Registration": ac.get("r", "Unknown"),
+            "Owner / Operator": ac.get("ownOp"),
+            "Year Built": ac.get("year"),
             "Type": ac.get("t", "Unknown"),
             "Description": ac.get("desc"),
             "Category": ac.get("air_category"),
@@ -152,9 +153,9 @@ class SkyRadarFusionTracker(CoordinatorEntity, TrackerEntity):
             "Emergency": ac.get("emergency"),
             "Outside Temp (C)": ac.get("oat"),
             "Distance (m)": ac.get("distance_meter", "N/A"),
+            "Database Flags": ac.get("dbFlags"),
         }
 
-        # Combineer de velden
         for k, v in raw_attrs.items():
             if v is not None and v != "none":
                 attrs[k] = v
@@ -178,11 +179,28 @@ class SkyRadarFusionTracker(CoordinatorEntity, TrackerEntity):
 
         if ac.get("fr24_scheduled_departure"):
             attrs["Scheduled Departure"] = ac.get("fr24_scheduled_departure")
-        if ac.get("fr24_real_departure"):
-            attrs["Actual Departure"] = ac.get("fr24_real_departure")
         if ac.get("fr24_scheduled_arrival"):
             attrs["Scheduled Arrival"] = ac.get("fr24_scheduled_arrival")
         if ac.get("fr24_estimated_arrival"):
             attrs["Estimated Arrival (ETA)"] = ac.get("fr24_estimated_arrival")
+
+        # --- LOCAL TELEMETRY LOGIC ---
+        # First try to use the official FR24 Actual Departure time.
+        actual_dep = ac.get("fr24_real_departure")
+        if actual_dep:
+            attrs["Actual Departure"] = actual_dep
+        # If FR24 is empty, but our tracker caught it locally, show the Local Approx.
+        elif ac.get("local_actual_departure"):
+            attrs["Actual Departure"] = (
+                f"{ac.get('local_actual_departure')} (Local Appx.)"
+            )
+
+        # First try to use the official FR24 Actual Arrival time.
+        # But wait, FR24 rarely sets this. So if it landed, show the Local Approx Arrival!
+        actual_arr = ac.get("fr24_real_arrival")
+        if actual_arr:
+            attrs["Actual Arrival"] = actual_arr
+        elif ac.get("on_ground") and ac.get("local_actual_arrival"):
+            attrs["Actual Arrival"] = f"{ac.get('local_actual_arrival')} (Local Appx.)"
 
         return attrs
