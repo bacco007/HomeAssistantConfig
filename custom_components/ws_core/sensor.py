@@ -43,6 +43,8 @@ from .const import (
     CONF_ENABLE_POLLEN,
     CONF_ENABLE_PWSWEATHER,
     CONF_ENABLE_SEA_TEMP,
+    # v2.1
+    CONF_ENABLE_SOIL,
     # v0.9.0
     CONF_ENABLE_SOLAR_FORECAST,
     CONF_ENABLE_THUNDERSTORM,
@@ -79,6 +81,7 @@ from .const import (
     KEY_CLIMATOLOGY_30D,
     KEY_CLOUD_BASE_M,
     KEY_CLOUD_COVER_PCT,
+    KEY_CONDITIONS_SUMMARY,
     KEY_CONSISTENCY_FLAGS,
     KEY_CURRENT_CONDITION,
     KEY_CWOP_STATUS_V2,
@@ -100,6 +103,9 @@ from .const import (
     KEY_FOG_PROBABILITY,
     KEY_FORECAST,
     KEY_FORECAST_AGREEMENT,
+    KEY_FORECAST_BLEND_WEIGHT_LOCAL,
+    KEY_FORECAST_BRIER_API,
+    KEY_FORECAST_BRIER_LOCAL,
     KEY_FORECAST_PROVIDER,
     KEY_FORECAST_SKILL,
     KEY_FORECAST_TILES,
@@ -130,6 +136,8 @@ from .const import (
     KEY_INDOOR_TEMP_C,
     KEY_INDOOR_TEMP_DELTA,
     KEY_IRRIGATION_DEFICIT,
+    KEY_IRRIGATION_NEED,
+    KEY_IRRIGATION_NEED_SCORE,
     KEY_LEAF_WETNESS,
     KEY_LIGHTNING_CLEARANCE_MIN,
     KEY_LIGHTNING_COUNT_1H,
@@ -157,6 +165,7 @@ from .const import (
     KEY_NORM_WIND_DIR_DEG,
     KEY_NORM_WIND_GUST_MS,
     KEY_NORM_WIND_SPEED_MS,
+    KEY_NOWCAST_CONFIDENCE,
     KEY_NOWCAST_INTENSITY,
     KEY_OWM_STATIONS_STATUS,
     KEY_OZONE,
@@ -175,6 +184,7 @@ from .const import (
     KEY_RAIN_ACCUM_1H,
     KEY_RAIN_ACCUM_24H,
     KEY_RAIN_ANOMALY_30D,
+    KEY_RAIN_ANOMALY_90D,
     KEY_RAIN_DISPLAY,
     KEY_RAIN_NEXT_60MIN,
     KEY_RAIN_PROBABILITY,
@@ -191,6 +201,9 @@ from .const import (
     KEY_SENSOR_QUALITY_FLAGS,
     KEY_SENSOR_SPIKE,
     KEY_SENSOR_STUCK,
+    KEY_SOIL_MOISTURE,
+    KEY_SOIL_MOISTURE_DEFICIT,
+    KEY_SOIL_TEMP_C,
     KEY_SOLAR_ENERGY_TODAY_WHM2,
     KEY_SOLAR_FORECAST_STATUS,
     # v0.9.0
@@ -199,6 +212,7 @@ from .const import (
     KEY_SOLAR_LUX_FACTOR,
     KEY_SPECIFIC_HUMIDITY,
     KEY_TEMP_ANOMALY_30D,
+    KEY_TEMP_ANOMALY_90D,
     KEY_TEMP_AVG_24H,
     KEY_TEMP_DISPLAY,
     KEY_TEMP_HIGH_24H,
@@ -249,6 +263,7 @@ class WSSensorDescription:
     translation_key: str | None = None
     native_unit: str | None = None
     state_class: SensorStateClass | None = None
+    suggested_display_precision: int | None = None
     value_fn: Callable[[dict[str, Any]], Any] | None = None
     attrs_fn: Callable[[dict[str, Any]], dict[str, Any]] | None = None
 
@@ -265,6 +280,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit=UNIT_TEMP_C,
         state_class=SensorStateClass.MEASUREMENT,  # FIX: was TOTAL_INCREASING
+        suggested_display_precision=1,
     ),
     WSSensorDescription(
         key=KEY_DEW_POINT_C,
@@ -274,6 +290,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit=UNIT_TEMP_C,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
     ),
     WSSensorDescription(
         key=KEY_NORM_HUMIDITY,
@@ -346,6 +363,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
         native_unit="mm/h",
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
     ),
     WSSensorDescription(
         key=KEY_LUX,
@@ -521,6 +539,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit=UNIT_TEMP_C,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
         attrs_fn=lambda d: {
             "wind_contribution_ms": round(-0.70 * float(d[KEY_NORM_WIND_SPEED_MS]), 1)
             if d.get(KEY_NORM_WIND_SPEED_MS) is not None
@@ -538,6 +557,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit=UNIT_TEMP_C,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
     ),
     # Frost point (below 0 C uses ice constants)
     WSSensorDescription(
@@ -548,6 +568,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit=UNIT_TEMP_C,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
     ),
     # v2.0 Cloud base altitude (LCL / Espy formula)
     WSSensorDescription(
@@ -943,6 +964,15 @@ SENSORS: list[WSSensorDescription] = [
             "next_60min_mm": d.get(KEY_RAIN_NEXT_60MIN),
         },
     ),
+    WSSensorDescription(
+        key=KEY_NOWCAST_CONFIDENCE,
+        translation_key="nowcast_confidence",
+        name="WS Nowcast Confidence",
+        icon="mdi:weather-partly-rainy",
+        state_class=None,
+        native_unit=None,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
     # =========================================================================
     # v2.0 - Lightning sensors (opt-in group, enable_lightning)
     # =========================================================================
@@ -1123,6 +1153,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.PRECIPITATION,
         native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
     ),
     WSSensorDescription(
         key=KEY_RAIN_ACCUM_24H,
@@ -1132,6 +1163,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.PRECIPITATION,
         native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
     ),
     WSSensorDescription(
         key=KEY_RAIN_TODAY_MM,
@@ -1141,6 +1173,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.PRECIPITATION,
         native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
     ),
     # v2.0 — Weekly / monthly / yearly rain accumulators.
     # TOTAL_INCREASING: they accumulate within the period and reset to 0 at the
@@ -1155,6 +1188,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.PRECIPITATION,
         native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.TOTAL_INCREASING,
+        suggested_display_precision=1,
     ),
     WSSensorDescription(
         key=KEY_RAIN_THIS_MONTH_MM,
@@ -1164,6 +1198,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.PRECIPITATION,
         native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.TOTAL_INCREASING,
+        suggested_display_precision=1,
     ),
     WSSensorDescription(
         key=KEY_RAIN_THIS_YEAR_MM,
@@ -1173,6 +1208,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.PRECIPITATION,
         native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.TOTAL_INCREASING,
+        suggested_display_precision=1,
     ),
     # v2.0 — Max rain rate in rolling 24h window
     WSSensorDescription(
@@ -1247,6 +1283,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit=UNIT_TEMP_C,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
     ),
     WSSensorDescription(
         key=KEY_TEMP_LOW_24H,
@@ -1256,6 +1293,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit=UNIT_TEMP_C,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
     ),
     WSSensorDescription(
         key=KEY_TEMP_AVG_24H,
@@ -1265,6 +1303,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit=UNIT_TEMP_C,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     WSSensorDescription(
@@ -1661,6 +1700,60 @@ SENSORS: list[WSSensorDescription] = [
             "humidity_pct": d.get(KEY_INDOOR_HUMIDITY),
         },
     ),
+    # =========================================================================
+    # v2.1 - Soil sensor group (opt-in)
+    # =========================================================================
+    WSSensorDescription(
+        key=KEY_SOIL_MOISTURE,
+        translation_key="soil_moisture",
+        name="WS Soil Moisture",
+        icon="mdi:water-percent",
+        device_class=SensorDeviceClass.MOISTURE,
+        native_unit="%",
+        state_class=SensorStateClass.MEASUREMENT,
+        attrs_fn=lambda d: {
+            "deficit_pct": d.get(KEY_SOIL_MOISTURE_DEFICIT),
+        },
+    ),
+    WSSensorDescription(
+        key=KEY_SOIL_TEMP_C,
+        translation_key="soil_temperature",
+        name="WS Soil Temperature",
+        icon="mdi:thermometer",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    WSSensorDescription(
+        key=KEY_SOIL_MOISTURE_DEFICIT,
+        translation_key="soil_moisture_deficit",
+        name="WS Soil Moisture Deficit",
+        icon="mdi:water-minus",
+        native_unit="%",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    WSSensorDescription(
+        key=KEY_IRRIGATION_NEED,
+        translation_key="irrigation_need",
+        name="WS Irrigation Need",
+        icon="mdi:sprinkler",
+        native_unit=None,
+        state_class=None,
+        attrs_fn=lambda d: {
+            "score": d.get(KEY_IRRIGATION_NEED_SCORE),
+            "soil_moisture_pct": d.get(KEY_SOIL_MOISTURE),
+            "soil_moisture_deficit_pct": d.get(KEY_SOIL_MOISTURE_DEFICIT),
+        },
+    ),
+    WSSensorDescription(
+        key=KEY_IRRIGATION_NEED_SCORE,
+        translation_key="irrigation_need_score",
+        name="WS Irrigation Need Score",
+        icon="mdi:sprinkler-variant",
+        native_unit="%",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
     # ---------------------------------------------------------------
     # Air Quality  (v0.7.0, Open-Meteo AQI API)
     # ---------------------------------------------------------------
@@ -1993,6 +2086,26 @@ SENSORS: list[WSSensorDescription] = [
         state_class=SensorStateClass.MEASUREMENT,
         attrs_fn=lambda d: {"normal_30d_avg_mm": d.get("_rain_normal_30d_avg")},
     ),
+    # 90-day seasonal anomaly sensors
+    WSSensorDescription(
+        key=KEY_TEMP_ANOMALY_90D,
+        translation_key="temp_anomaly_90d",
+        name="WS Temperature Anomaly (90d)",
+        icon="mdi:thermometer-alert",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    WSSensorDescription(
+        key=KEY_RAIN_ANOMALY_90D,
+        translation_key="rain_anomaly_90d",
+        name="WS Rain Anomaly (90d)",
+        icon="mdi:weather-rainy",
+        native_unit="mm/d",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
     # =========================================================================
     # v1.2.0 - SELF-LEARNING SENSORS (METAR-gated + always-on)
     # =========================================================================
@@ -2034,6 +2147,50 @@ SENSORS: list[WSSensorDescription] = [
             "blend_local": d.get("_forecast_blend_local"),
             "blend_openmeteo": d.get("_forecast_blend_openmeteo"),
             "n_outcomes": d.get("_forecast_skill_n_outcomes", 0),
+        },
+    ),
+    # A3a Individual Brier score — local rain probability model
+    # Lower Brier score = better calibration (0 = perfect, 0.25 = naive)
+    WSSensorDescription(
+        key=KEY_FORECAST_BRIER_LOCAL,
+        translation_key="forecast_brier_local",
+        name="WS Forecast Brier Score (Local)",
+        icon="mdi:chart-scatter-plot",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    # A3b Individual Brier score — API (Open-Meteo) model
+    WSSensorDescription(
+        key=KEY_FORECAST_BRIER_API,
+        translation_key="forecast_brier_api",
+        name="WS Forecast Brier Score (API)",
+        icon="mdi:chart-scatter-plot-hexbin",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    # A3c Blend weight allocated to the local model (0–100%)
+    WSSensorDescription(
+        key=KEY_FORECAST_BLEND_WEIGHT_LOCAL,
+        translation_key="forecast_blend_weight_local",
+        name="WS Forecast Blend Weight (Local)",
+        icon="mdi:scale-balance",
+        native_unit="%",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    # Current conditions text summary (always-on, voice/Lovelace)
+    WSSensorDescription(
+        key=KEY_CONDITIONS_SUMMARY,
+        translation_key="conditions_summary",
+        name="WS Current Conditions",
+        icon="mdi:weather-partly-cloudy",
+        attrs_fn=lambda d: {
+            "temperature_c": d.get("norm_temperature_c"),
+            "feels_like_c": d.get("feels_like_c"),
+            "rain_rate_mmph": d.get("rain_rate_mmph_filtered"),
+            "wind_speed_ms": d.get("norm_wind_speed_ms"),
+            "wind_direction": d.get("wind_quadrant"),
+            "condition": d.get("current_condition"),
         },
     ),
 ]
@@ -2129,6 +2286,12 @@ _FEATURE_TOGGLE_MAP: dict[str, str] = {
     KEY_INDOOR_TEMP_DELTA: CONF_ENABLE_INDOOR,
     KEY_INDOOR_HUMIDITY_DELTA: CONF_ENABLE_INDOOR,
     KEY_INDOOR_COMFORT: CONF_ENABLE_INDOOR,
+    # v2.1 - soil sensor group
+    KEY_SOIL_MOISTURE: CONF_ENABLE_SOIL,
+    KEY_SOIL_TEMP_C: CONF_ENABLE_SOIL,
+    KEY_SOIL_MOISTURE_DEFICIT: CONF_ENABLE_SOIL,
+    KEY_IRRIGATION_NEED: CONF_ENABLE_SOIL,
+    KEY_IRRIGATION_NEED_SCORE: CONF_ENABLE_SOIL,
     # v2.0 - data quality expansion (diagnostics group)
     KEY_SENSOR_STUCK: CONF_ENABLE_DIAGNOSTICS,
     KEY_DATA_QUALITY_SCORE: CONF_ENABLE_DIAGNOSTICS,
@@ -2158,9 +2321,14 @@ _FEATURE_TOGGLE_MAP: dict[str, str] = {
     KEY_CONSISTENCY_FLAGS: CONF_ENABLE_DIAGNOSTICS,
     KEY_SENSOR_QUALITY_FLAGS: CONF_ENABLE_DIAGNOSTICS,
     KEY_FORECAST_SKILL: CONF_ENABLE_DIAGNOSTICS,
+    KEY_FORECAST_BRIER_LOCAL: CONF_ENABLE_DIAGNOSTICS,
+    KEY_FORECAST_BRIER_API: CONF_ENABLE_DIAGNOSTICS,
+    KEY_FORECAST_BLEND_WEIGHT_LOCAL: CONF_ENABLE_DIAGNOSTICS,
     KEY_FORECAST_AGREEMENT: CONF_ENABLE_DIAGNOSTICS,
     KEY_SOLAR_LUX_FACTOR: CONF_ENABLE_DIAGNOSTICS,
     KEY_CLIMATOLOGY_30D: CONF_ENABLE_DIAGNOSTICS,
+    KEY_TEMP_ANOMALY_90D: CONF_ENABLE_DIAGNOSTICS,
+    KEY_RAIN_ANOMALY_90D: CONF_ENABLE_DIAGNOSTICS,
     # v1.6.2 - advanced / derived representations (opt-in)
     KEY_ZAMBRETTI_NUMBER: CONF_ENABLE_ADVANCED_SENSORS,
     KEY_ET0_HOURLY_MM: CONF_ENABLE_ADVANCED_SENSORS,
@@ -2170,6 +2338,7 @@ _FEATURE_TOGGLE_MAP: dict[str, str] = {
     KEY_MINUTES_UNTIL_RAIN: CONF_ENABLE_NOWCAST,
     KEY_MINUTES_UNTIL_DRY: CONF_ENABLE_NOWCAST,
     KEY_NOWCAST_INTENSITY: CONF_ENABLE_NOWCAST,
+    KEY_NOWCAST_CONFIDENCE: CONF_ENABLE_NOWCAST,
 }
 
 
@@ -2290,6 +2459,8 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
         self._attr_device_class = desc.device_class
         self._attr_native_unit_of_measurement = desc.native_unit
         self._attr_state_class = desc.state_class
+        if desc.suggested_display_precision is not None:
+            self._attr_suggested_display_precision = desc.suggested_display_precision
         if desc.entity_category is not None:
             self._attr_entity_category = desc.entity_category
 
@@ -2399,8 +2570,13 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             KEY_CLIMATOLOGY_30D: "climatology_30d",
             KEY_TEMP_ANOMALY_30D: "temperature_anomaly_30d",
             KEY_RAIN_ANOMALY_30D: "rain_anomaly_30d",
+            KEY_TEMP_ANOMALY_90D: "temp_anomaly_90d",
+            KEY_RAIN_ANOMALY_90D: "rain_anomaly_90d",
             KEY_FORECAST_AGREEMENT: "forecast_agreement",
             KEY_FORECAST_SKILL: "forecast_skill",
+            KEY_FORECAST_BRIER_LOCAL: "forecast_brier_local",
+            KEY_FORECAST_BRIER_API: "forecast_brier_api",
+            KEY_FORECAST_BLEND_WEIGHT_LOCAL: "forecast_blend_weight_local",
             KEY_SOLAR_LUX_FACTOR: "solar_lux_factor",
             # v1.3.0 - FWI components
             KEY_FWI_FFMC: "fwi_ffmc",
@@ -2489,6 +2665,7 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             KEY_WIND_RUN_MONTH_KM: "wind_run_month",
             KEY_NET_RADIATION: "net_radiation",
             KEY_RAIN_TODAY_MM: "rain_today_mm",
+            KEY_CONDITIONS_SUMMARY: "conditions_summary",
         }
         if key in overrides:
             return overrides[key]

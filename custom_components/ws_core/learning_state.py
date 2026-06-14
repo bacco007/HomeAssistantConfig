@@ -1,7 +1,7 @@
 """Persistent learning state for ws_core v1.2.0.
 
 Stores long-running adaptive calibration biases, forecast skill scores,
-growing degree day season totals, streak counters, and 30-day climatology.
+growing degree day season totals, streak counters, and 90-day climatology.
 All data is persisted to HA storage so it survives restarts.
 
 Design principles:
@@ -62,7 +62,7 @@ class LearningState:
     # calendar day, surviving restarts/reloads (replaces in-memory guard)
     streak_last_counted_date: str = ""
 
-    # Rolling 30-day climatology buffer
+    # Rolling 90-day climatology buffer
     # Each entry: {date, t_high, t_low, rain_total}
     climatology_days: list = field(default_factory=list)
 
@@ -301,7 +301,7 @@ def update_daily_streaks(
 # Climatology (D1)
 # ---------------------------------------------------------------------------
 
-CLIMATOLOGY_WINDOW = 30
+CLIMATOLOGY_WINDOW = 90
 
 
 def update_climatology(
@@ -311,7 +311,7 @@ def update_climatology(
     t_low: float | None,
     rain_today_mm: float,
 ) -> None:
-    """Add or update today's climatology record; prune to 30 days."""
+    """Add or update today's climatology record; prune to 90 days."""
     if t_high is None or t_low is None:
         return
     # Replace today's entry if already present; otherwise append
@@ -327,8 +327,13 @@ def update_climatology(
 
 
 def climatology_stats(state: LearningState) -> dict[str, Any] | None:
-    """Compute rolling 30-day statistics from stored climatology records."""
-    days = state.climatology_days
+    """Compute rolling statistics from all stored climatology records."""
+    return climatology_stats_by_window(state, len(state.climatology_days))
+
+
+def climatology_stats_by_window(state: LearningState, window_days: int) -> dict[str, Any] | None:
+    """Compute rolling statistics for the most recent window_days of data."""
+    days = state.climatology_days[-window_days:] if window_days > 0 else []
     if len(days) < 2:
         return None
     highs = [d["t_high"] for d in days if d.get("t_high") is not None]
@@ -336,14 +341,15 @@ def climatology_stats(state: LearningState) -> dict[str, Any] | None:
     rains = [d["rain_total"] for d in days if d.get("rain_total") is not None]
     if not highs:
         return None
+    n = len(days)
     return {
-        "n_days": len(days),
+        "n_days": n,
         "temp_high_avg": round(sum(highs) / len(highs), 1),
         "temp_low_avg": round(sum(lows) / len(lows), 1) if lows else None,
         "temp_high_record": round(max(highs), 1),
         "temp_low_record": round(min(lows), 1) if lows else None,
         "rain_total_avg_day": round(sum(rains) / len(rains), 1) if rains else None,
-        "rain_total_30d": round(sum(rains), 1) if rains else None,
+        "rain_total_period": round(sum(rains), 1) if rains else None,
         "days_with_rain": sum(1 for r in rains if r >= 1.0),
         "first_date": days[0].get("date"),
         "last_date": days[-1].get("date"),

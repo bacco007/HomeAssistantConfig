@@ -116,6 +116,8 @@ from .algorithms import (
     zambretti_forecast,
 )
 from .const import (
+    ALERT_DEBOUNCE_OFF_TICKS,
+    ALERT_DEBOUNCE_ON_TICKS,
     CONF_AQI_INTERVAL_MIN,
     CONF_AWEKAS_INTERVAL_MIN,
     CONF_AWEKAS_PASSWORD,
@@ -149,6 +151,7 @@ from .const import (
     CONF_ENABLE_POLLEN,
     CONF_ENABLE_PWSWEATHER,
     CONF_ENABLE_SEA_TEMP,
+    CONF_ENABLE_SOIL,
     CONF_ENABLE_SOLAR_FORECAST,
     CONF_ENABLE_THUNDERSTORM,
     CONF_ENABLE_VIGICRUES,
@@ -238,6 +241,7 @@ from .const import (
     DEFAULT_ENABLE_OWM_STATIONS,
     DEFAULT_ENABLE_POLLEN,
     DEFAULT_ENABLE_PWSWEATHER,
+    DEFAULT_ENABLE_SOIL,
     DEFAULT_ENABLE_SOLAR_FORECAST,
     DEFAULT_ENABLE_THUNDERSTORM,
     DEFAULT_ENABLE_VIGICRUES,
@@ -304,8 +308,10 @@ from .const import (
     KEY_CHILL_HOURS_TODAY,
     KEY_CLEARNESS_INDEX,
     KEY_CLIMATOLOGY_30D,
+    KEY_CLIMATOLOGY_90D,
     KEY_CLOUD_BASE_M,
     KEY_CLOUD_COVER_PCT,
+    KEY_CONDITIONS_SUMMARY,
     KEY_CONSISTENCY_FLAGS,
     KEY_CURRENT_CONDITION,
     KEY_CWOP_STATUS_V2,
@@ -326,6 +332,9 @@ from .const import (
     KEY_FOG_PROBABILITY,
     KEY_FORECAST,
     KEY_FORECAST_AGREEMENT,
+    KEY_FORECAST_BLEND_WEIGHT_LOCAL,
+    KEY_FORECAST_BRIER_API,
+    KEY_FORECAST_BRIER_LOCAL,
     KEY_FORECAST_PROVIDER,
     KEY_FORECAST_SKILL,
     KEY_FORECAST_TILES,
@@ -356,6 +365,8 @@ from .const import (
     KEY_INDOOR_TEMP_C,
     KEY_INDOOR_TEMP_DELTA,
     KEY_IRRIGATION_DEFICIT,
+    KEY_IRRIGATION_NEED,
+    KEY_IRRIGATION_NEED_SCORE,
     KEY_LEAF_WETNESS,
     KEY_LIGHTNING_CLEARANCE_MIN,
     KEY_LIGHTNING_COUNT_1H,
@@ -383,6 +394,7 @@ from .const import (
     KEY_NORM_WIND_DIR_DEG,
     KEY_NORM_WIND_GUST_MS,
     KEY_NORM_WIND_SPEED_MS,
+    KEY_NOWCAST_CONFIDENCE,
     KEY_NOWCAST_INTENSITY,
     KEY_OWM_STATIONS_STATUS,
     KEY_OZONE,
@@ -402,6 +414,7 @@ from .const import (
     KEY_RAIN_ACCUM_1H,
     KEY_RAIN_ACCUM_24H,
     KEY_RAIN_ANOMALY_30D,
+    KEY_RAIN_ANOMALY_90D,
     KEY_RAIN_DISPLAY,
     KEY_RAIN_EXPECTED_1H,
     KEY_RAIN_NEXT_60MIN,
@@ -419,6 +432,9 @@ from .const import (
     KEY_SENSOR_QUALITY_FLAGS,
     KEY_SENSOR_SPIKE,
     KEY_SENSOR_STUCK,
+    KEY_SOIL_MOISTURE,
+    KEY_SOIL_MOISTURE_DEFICIT,
+    KEY_SOIL_TEMP_C,
     KEY_SOLAR_ENERGY_TODAY_WHM2,
     KEY_SOLAR_FORECAST_STATUS,
     # v0.9.0
@@ -427,6 +443,7 @@ from .const import (
     KEY_SOLAR_LUX_FACTOR,
     KEY_SPECIFIC_HUMIDITY,
     KEY_TEMP_ANOMALY_30D,
+    KEY_TEMP_ANOMALY_90D,
     KEY_TEMP_AVG_24H,
     KEY_TEMP_DISPLAY,
     KEY_TEMP_HIGH_24H,
@@ -476,6 +493,8 @@ from .const import (
     SRC_LUX,
     SRC_PRESS,
     SRC_RAIN_TOTAL,
+    SRC_SOIL_MOISTURE,
+    SRC_SOIL_TEMP,
     SRC_TEMP,
     SRC_UV,
     SRC_WIND,
@@ -489,6 +508,7 @@ from .const import (
     VALID_TEMP_MIN_C,
     WIND_SMOOTH_ALPHA,
 )
+from .models import WsData
 from .providers import get_provider
 
 try:
@@ -842,6 +862,11 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         # v1.8.4 Suppress HA Repairs notifications (issue #20)
         self.suppress_notifications = bool(_get(CONF_SUPPRESS_NOTIFICATIONS, DEFAULT_SUPPRESS_NOTIFICATIONS))
+
+        # Alert hysteresis: count consecutive ticks above/below threshold
+        self._alert_debounce_raw: dict[str, int] = {}  # ticks above threshold
+        self._alert_debounce_clear: dict[str, int] = {}  # ticks below threshold
+        self._alert_active: dict[str, bool] = {}  # hysteresis state
 
         # Wind run accumulator - resets at local midnight (like rain_today)
         self._wind_run_km: float = 0.0
@@ -1483,6 +1508,18 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if dp_ext is not None:
             dp_c = round(self._to_celsius(dp_ext, self._uom(hass, self.sources.get(SRC_DEW_POINT))), 2)
             data[KEY_DEW_POINT_C] = dp_c
+
+        # Optional: soil moisture sensor (normalize 0-1 volumetric to 0-100%)
+        soil_m_raw = num(SRC_SOIL_MOISTURE)
+        if soil_m_raw is not None:
+            soil_pct = float(soil_m_raw) if float(soil_m_raw) > 1.0 else float(soil_m_raw) * 100.0
+            data[KEY_SOIL_MOISTURE] = round(soil_pct, 2)
+
+        # Optional: soil temperature sensor (unit-detected conversion to °C)
+        soil_t_raw = num(SRC_SOIL_TEMP)
+        if soil_t_raw is not None:
+            soil_tc = round(self._to_celsius(float(soil_t_raw), self._uom(hass, self.sources.get(SRC_SOIL_TEMP))), 2)
+            data[KEY_SOIL_TEMP_C] = soil_tc
 
         return tc, rh, pressure_hpa, wind_ms, gust_ms, wind_dir, rain_total_mm, lux, uv
 
@@ -2177,6 +2214,41 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             if rooms:
                 data[KEY_INDOOR_ROOMS_DATA] = rooms
 
+    def _compute_soil(self, data: dict) -> None:
+        """Derive irrigation need from soil moisture, ET₀, and recent rain.  (v2.1)"""
+        if not self.entry_options.get(CONF_ENABLE_SOIL, DEFAULT_ENABLE_SOIL):
+            return
+
+        soil_pct = data.get(KEY_SOIL_MOISTURE)
+        if soil_pct is None:
+            return
+
+        # Field capacity ~40% is typical for loam soil
+        FIELD_CAPACITY = 40.0
+        deficit = round(max(0.0, FIELD_CAPACITY - float(soil_pct)), 1)
+        data[KEY_SOIL_MOISTURE_DEFICIT] = deficit
+
+        # Irrigation need: combine deficit with ET₀ and rain today
+        et0 = data.get(KEY_ET0_DAILY_MM) or data.get(KEY_ET0_PM_DAILY_MM) or 0.0
+        rain_today = data.get(KEY_RAIN_TODAY_MM) or 0.0
+        net_demand = max(0.0, float(et0) - float(rain_today))
+
+        # Score 0-100: weighted soil deficit + net ET₀ demand
+        score = min(100, deficit * 1.5 + net_demand * 5)
+        data[KEY_IRRIGATION_NEED_SCORE] = round(score, 0)
+
+        if score < 10:
+            need_label = "None"
+        elif score < 25:
+            need_label = "Low"
+        elif score < 50:
+            need_label = "Moderate"
+        elif score < 75:
+            need_label = "High"
+        else:
+            need_label = "Critical"
+        data[KEY_IRRIGATION_NEED] = need_label
+
     async def _async_fetch_neighbor_qc(self) -> None:
         """Fetch Open-Meteo current weather as a spatial QC reference.  (v2.0)
 
@@ -2450,7 +2522,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             dq = "ok"
         data[KEY_DATA_QUALITY] = dq
 
-        # Configurable alerts
+        # Configurable alerts with hysteresis to prevent chatty automations
         gust_thr = float(self.entry_options.get(CONF_THRESH_WIND_GUST_MS, DEFAULT_THRESH_WIND_GUST_MS))
         rain_thr = float(self.entry_options.get(CONF_THRESH_RAIN_RATE_MMPH, DEFAULT_THRESH_RAIN_RATE_MMPH))
         freeze_thr = float(self.entry_options.get(CONF_THRESH_FREEZE_C, DEFAULT_THRESH_FREEZE_C))
@@ -2459,38 +2531,51 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         rain_rate = data.get(KEY_RAIN_RATE_FILT) or 0.0
         tc = data.get(KEY_NORM_TEMP_C)
 
-        active_alerts: list[dict] = []
-
+        # Raw trigger flags \u2014 one per alert type (before hysteresis)
+        raw_triggers: dict[str, dict] = {}
         if gust_ms is not None and float(gust_ms) >= gust_thr:
-            active_alerts.append(
-                {
-                    "type": "wind",
-                    "severity": "warning",
-                    "message": f"Extreme wind: {float(gust_ms):.1f} m/s",
-                    "icon": "mdi:weather-windy",
-                    "color": "rgba(239,68,68,0.9)",
-                }
-            )
+            raw_triggers["wind"] = {
+                "type": "wind",
+                "severity": "warning",
+                "message": f"Extreme wind: {float(gust_ms):.1f} m/s",
+                "icon": "mdi:weather-windy",
+                "color": "rgba(239,68,68,0.9)",
+            }
         if float(rain_rate) >= rain_thr:
-            active_alerts.append(
-                {
-                    "type": "rain",
-                    "severity": "warning",
-                    "message": f"Heavy rain: {float(rain_rate):.1f} mm/h",
-                    "icon": "mdi:weather-pouring",
-                    "color": "rgba(59,130,246,0.9)",
-                }
-            )
+            raw_triggers["rain"] = {
+                "type": "rain",
+                "severity": "warning",
+                "message": f"Heavy rain: {float(rain_rate):.1f} mm/h",
+                "icon": "mdi:weather-pouring",
+                "color": "rgba(59,130,246,0.9)",
+            }
         if tc is not None and float(tc) <= freeze_thr:
-            active_alerts.append(
-                {
-                    "type": "freeze",
-                    "severity": "advisory",
-                    "message": f"Freeze risk: {float(tc):.1f}\u00b0C",
-                    "icon": "mdi:snowflake-alert",
-                    "color": "rgba(147,197,253,0.9)",
-                }
-            )
+            raw_triggers["freeze"] = {
+                "type": "freeze",
+                "severity": "advisory",
+                "message": f"Freeze risk: {float(tc):.1f}\u00b0C",
+                "icon": "mdi:snowflake-alert",
+                "color": "rgba(147,197,253,0.9)",
+            }
+
+        # Apply hysteresis: alert fires after ALERT_DEBOUNCE_ON_TICKS consecutive
+        # ticks above threshold and clears after ALERT_DEBOUNCE_OFF_TICKS consecutive
+        # ticks below threshold.  This prevents chatty automations from sensor noise.
+        for alert_type in ("wind", "rain", "freeze"):
+            if alert_type in raw_triggers:
+                self._alert_debounce_raw[alert_type] = self._alert_debounce_raw.get(alert_type, 0) + 1
+                self._alert_debounce_clear[alert_type] = 0
+                if self._alert_debounce_raw[alert_type] >= ALERT_DEBOUNCE_ON_TICKS:
+                    self._alert_active[alert_type] = True
+            else:
+                self._alert_debounce_clear[alert_type] = self._alert_debounce_clear.get(alert_type, 0) + 1
+                self._alert_debounce_raw[alert_type] = 0
+                if self._alert_debounce_clear[alert_type] >= ALERT_DEBOUNCE_OFF_TICKS:
+                    self._alert_active[alert_type] = False
+
+        active_alerts: list[dict] = [
+            info for alert_type, info in raw_triggers.items() if self._alert_active.get(alert_type, False)
+        ]
 
         if active_alerts:
             # Highest severity wins for state; warnings > advisories
@@ -2520,6 +2605,8 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 ir.async_delete_issue(self.hass, DOMAIN, "missing_source_entities")
                 ir.async_delete_issue(self.hass, DOMAIN, "stale_sensors")
                 ir.async_delete_issue(self.hass, DOMAIN, "forecast_api_failures")
+                ir.async_delete_issue(self.hass, DOMAIN, "stuck_sensors")
+                ir.async_delete_issue(self.hass, DOMAIN, "sensor_drift_detected")
             else:
                 if missing_entities:
                     ir.async_create_issue(
@@ -2563,6 +2650,38 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     )
                 else:
                     ir.async_delete_issue(self.hass, DOMAIN, "forecast_api_failures")
+
+                # Stuck sensors (data quality; gated on CONF_ENABLE_DIAGNOSTICS not
+                # required — hardware failures affect all users)
+                stuck_flags = data.get(KEY_SENSOR_STUCK) or []
+                if stuck_flags:
+                    ir.async_create_issue(
+                        self.hass,
+                        DOMAIN,
+                        "stuck_sensors",
+                        is_fixable=False,
+                        severity=ir.IssueSeverity.WARNING,
+                        translation_key="stuck_sensors",
+                        translation_placeholders={"sensors": ", ".join(str(s) for s in stuck_flags)},
+                    )
+                else:
+                    ir.async_delete_issue(self.hass, DOMAIN, "stuck_sensors")
+
+                # Drifting sensors
+                drift_status = data.get(KEY_SENSOR_DRIFT_FLAGS)
+                drift_details = data.get("_drift_details") or []
+                if drift_status == "warning" and drift_details:
+                    ir.async_create_issue(
+                        self.hass,
+                        DOMAIN,
+                        "sensor_drift_detected",
+                        is_fixable=False,
+                        severity=ir.IssueSeverity.WARNING,
+                        translation_key="sensor_drift_detected",
+                        translation_placeholders={"sensors": ", ".join(str(s) for s in drift_details)},
+                    )
+                else:
+                    ir.async_delete_issue(self.hass, DOMAIN, "sensor_drift_detected")
 
     # ------------------------------------------------------------------
     # v1.2.0 - Fog, precipitation type, thunderstorm index
@@ -2694,7 +2813,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     def _compute_climatology(self, data: dict) -> None:
         """Publish rolling 30-day stats and today-vs-normal anomalies."""
-        from .learning_state import climatology_stats
+        from .learning_state import climatology_stats, climatology_stats_by_window
 
         stats = climatology_stats(self._learning_state)
         if stats is None:
@@ -2718,6 +2837,35 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if rain_today is not None and rain_avg is not None:
             data[KEY_RAIN_ANOMALY_30D] = round(float(rain_today) - float(rain_avg), 1)
             data["_rain_normal_30d_avg"] = rain_avg
+
+        # 90-day anomaly (requires ≥60 days of data for meaningful stats)
+        if len(self._learning_state.climatology_days) >= 60:
+            stats_90d = climatology_stats_by_window(self._learning_state, 90)
+            if stats_90d:
+                data[KEY_CLIMATOLOGY_90D] = stats_90d
+                # Anomaly = current 30d mean vs 90d "normal" baseline
+                stats_baseline = stats_90d  # full 90d as normal
+                stats_recent = climatology_stats_by_window(self._learning_state, 30)  # last 30d
+                if stats_recent and stats_baseline:
+                    baseline_high = stats_baseline.get("temp_high_avg")
+                    baseline_low = stats_baseline.get("temp_low_avg")
+                    recent_high = stats_recent.get("temp_high_avg")
+                    recent_low = stats_recent.get("temp_low_avg")
+                    if (
+                        baseline_high is not None
+                        and baseline_low is not None
+                        and recent_high is not None
+                        and recent_low is not None
+                    ):
+                        data[KEY_TEMP_ANOMALY_90D] = round(
+                            (float(recent_high) + float(recent_low)) / 2
+                            - (float(baseline_high) + float(baseline_low)) / 2,
+                            1,
+                        )
+                    baseline_rain = stats_baseline.get("rain_total_avg_day")
+                    recent_rain = stats_recent.get("rain_total_avg_day")
+                    if baseline_rain is not None and recent_rain is not None:
+                        data[KEY_RAIN_ANOMALY_90D] = round(float(recent_rain) - float(baseline_rain), 1)
 
     # ------------------------------------------------------------------
     # v1.2.0 - Sensor drift detection (C1)
@@ -2844,6 +2992,51 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         data["_consistency_details"] = flags
 
     # ------------------------------------------------------------------
+    # Conditions summary — human-readable text for voice assistants
+    # ------------------------------------------------------------------
+
+    def _compute_conditions_summary(self, data: dict) -> None:
+        """Compose a single-line current conditions string.
+
+        Combines temperature, feels-like (when meaningfully different), rain,
+        and wind into a terse sentence suitable for Alexa/Google/HA Assist and
+        Lovelace display cards.
+        """
+        parts: list[str] = []
+        tc = data.get(KEY_NORM_TEMP_C)
+        feels = data.get(KEY_FEELS_LIKE_C)
+        wind_ms = data.get(KEY_NORM_WIND_SPEED_MS)
+        gust_ms = data.get(KEY_NORM_WIND_GUST_MS)
+        wind_dir = data.get(KEY_WIND_QUADRANT)
+        rain_rate = data.get(KEY_RAIN_RATE_FILT) or 0.0
+        humidity = data.get(KEY_NORM_HUMIDITY)
+        zambretti = data.get(KEY_ZAMBRETTI_FORECAST)
+
+        if tc is not None:
+            parts.append(f"{float(tc):.1f}°C")
+            if feels is not None and abs(float(feels) - float(tc)) >= 2.0:
+                parts.append(f"feels like {float(feels):.1f}°C")
+
+        if float(rain_rate) > 0:
+            parts.append(f"{float(rain_rate):.1f} mm/h rain")
+        elif zambretti and zambretti not in ("Settled fine", "Fine", "Becoming fine"):
+            # Only include forecast if it's not obviously sunny
+            pass  # zambretti already in forecast_tiles
+
+        if wind_ms is not None and float(wind_ms) >= 1.0:
+            wind_str = f"{float(wind_ms):.0f} m/s"
+            if wind_dir:
+                wind_str += f" {wind_dir}"
+            if gust_ms is not None and float(gust_ms) >= float(wind_ms) * 1.5 and float(gust_ms) >= 5.0:
+                wind_str += f" gusting {float(gust_ms):.0f}"
+            parts.append(wind_str)
+
+        if humidity is not None:
+            parts.append(f"RH {float(humidity):.0f}%")
+
+        data[KEY_CONDITIONS_SUMMARY] = ", ".join(parts) if parts else "No data"
+
+    # ------------------------------------------------------------------
     # v1.2.0 - Learning sensors: publish EMA results into data dict
     # ------------------------------------------------------------------
 
@@ -2870,6 +3063,10 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             data["_forecast_blend_local"] = wl
             data["_forecast_blend_openmeteo"] = wa
             data["_forecast_skill_n_outcomes"] = len(outcomes)
+            # Individual sensor keys (Task A)
+            data[KEY_FORECAST_BRIER_LOCAL] = bs_local
+            data[KEY_FORECAST_BRIER_API] = bs_api
+            data[KEY_FORECAST_BLEND_WEIGHT_LOCAL] = round(wl * 100, 1)
 
         # Solar lux factor (always published)
         data[KEY_SOLAR_LUX_FACTOR] = self._learning_state.solar_lux_factor
@@ -3124,7 +3321,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         import time
 
         t0 = time.monotonic()
-        data: dict[str, Any] = {}
+        data: WsData = WsData()
         now = dt_util.utcnow()
 
         missing = [k for k in REQUIRED_SOURCES if not self.sources.get(k)]
@@ -3230,6 +3427,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._compute_degree_days(data, now, tc, dew_c, rh)
         self._compute_lightning(data, now)
         self._compute_indoor(data)
+        self._compute_soil(data)
         self._compute_neighbor_qc(data)
         self._compute_data_quality_score(data)
         self._compute_health(data, now, missing, missing_entities)
@@ -3245,6 +3443,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._compute_drift_detection(data, now)
         self._compute_consistency_checks(data, now)
         self._compute_learning_sensors(data)
+        self._compute_conditions_summary(data)
 
         # Solar lux factor learning (A4): update on clear days near solar noon
         if lux is not None and self._learning_state.solar_lux_factor:
@@ -3401,13 +3600,57 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # v1.7.0 - Precipitation nowcast (Open-Meteo minutely_15)
         if self.nowcast_enabled and self._nowcast_cache:
             nc = self._nowcast_cache
-            data[KEY_RAIN_NEXT_60MIN] = nc.get("next_60min_mm")
-            data[KEY_MINUTES_UNTIL_RAIN] = nc.get("minutes_until_rain")
-            data[KEY_MINUTES_UNTIL_DRY] = nc.get("minutes_until_dry")
-            data[KEY_NOWCAST_INTENSITY] = nc.get("intensity")
-            data[KEY_RAIN_EXPECTED_1H] = nc.get("rain_expected_1h")
-            data["_nowcast_peak_rate_mmph"] = nc.get("peak_rate_mmph")
-            data["_nowcast_raining_now"] = nc.get("raining_now")
+
+            # Local rain rate blending for the first 2 x 15-min buckets (0–30 min window)
+            # Local gauge is ground truth for current conditions; NWP leads at t+30min+
+            raw_times = nc.get("_raw_times")
+            raw_precip = nc.get("_raw_precip")
+            if raw_times and raw_precip and len(raw_precip) >= 2:
+                local_rate_mmph = float(data.get(KEY_RAIN_RATE_FILT) or 0.0)
+                local_rate_per_15min = local_rate_mmph / 4.0  # mm/h → mm per 15-min bucket
+
+                # Work on a mutable copy — never mutate the cached NWP data
+                blended_precip = list(raw_precip)
+                nwp_bucket_0 = blended_precip[0]
+                nwp_bucket_1 = blended_precip[1]
+
+                if local_rate_per_15min > 0.05:
+                    # Local gauge confirms rain: 70% local / 30% NWP for bucket 0,
+                    # 50/50 for bucket 1 (gauge influence fades at t+30 min)
+                    blended_precip[0] = round(0.7 * local_rate_per_15min + 0.3 * nwp_bucket_0, 2)
+                    blended_precip[1] = round(0.5 * local_rate_per_15min + 0.5 * nwp_bucket_1, 2)
+                    nowcast_confidence = "high"
+                elif local_rate_per_15min == 0.0 and nwp_bucket_0 > 0.1:
+                    # Gauge is dry but NWP says rain is here — low confidence
+                    nowcast_confidence = "low"
+                else:
+                    # Gauge and NWP broadly agree
+                    nowcast_confidence = "high" if abs(local_rate_per_15min - nwp_bucket_0) < 0.2 else "medium"
+
+                # Re-derive nowcast from the blended bucket list
+                nc_blended = derive_nowcast(raw_times, blended_precip, dt_util.now())
+                nc_blended["rain_expected_1h"] = bool(
+                    nc_blended.get("next_60min_mm", 0.0) >= NOWCAST_BUCKET_THRESHOLD_MM
+                )
+
+                data[KEY_RAIN_NEXT_60MIN] = nc_blended.get("next_60min_mm")
+                data[KEY_MINUTES_UNTIL_RAIN] = nc_blended.get("minutes_until_rain")
+                data[KEY_MINUTES_UNTIL_DRY] = nc_blended.get("minutes_until_dry")
+                data[KEY_NOWCAST_INTENSITY] = nc_blended.get("intensity")
+                data[KEY_RAIN_EXPECTED_1H] = nc_blended.get("rain_expected_1h")
+                data["_nowcast_peak_rate_mmph"] = nc_blended.get("peak_rate_mmph")
+                data["_nowcast_raining_now"] = nc_blended.get("raining_now")
+                data[KEY_NOWCAST_CONFIDENCE] = nowcast_confidence
+            else:
+                # No raw buckets available — fall back to cached derived values as-is
+                data[KEY_RAIN_NEXT_60MIN] = nc.get("next_60min_mm")
+                data[KEY_MINUTES_UNTIL_RAIN] = nc.get("minutes_until_rain")
+                data[KEY_MINUTES_UNTIL_DRY] = nc.get("minutes_until_dry")
+                data[KEY_NOWCAST_INTENSITY] = nc.get("intensity")
+                data[KEY_RAIN_EXPECTED_1H] = nc.get("rain_expected_1h")
+                data["_nowcast_peak_rate_mmph"] = nc.get("peak_rate_mmph")
+                data["_nowcast_raining_now"] = nc.get("raining_now")
+
             data["_nowcast_fetched_at"] = nc.get("fetched_at")
 
         # Moon (pure calculation, no external API)
@@ -3761,6 +4004,9 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             nc = derive_nowcast(times, precip, dt_util.now())
             nc["rain_expected_1h"] = bool(nc.get("next_60min_mm", 0.0) >= NOWCAST_BUCKET_THRESHOLD_MM)
             nc["fetched_at"] = dt_util.now().isoformat()
+            # Store raw NWP buckets so _compute() can apply local-gauge blending
+            nc["_raw_times"] = list(times)
+            nc["_raw_precip"] = [float(p) if p is not None else 0.0 for p in precip]
             self._nowcast_cache = nc
             self.async_set_updated_data(self._compute())
 

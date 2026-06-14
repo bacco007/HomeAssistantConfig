@@ -14,6 +14,7 @@ except Exception:  # pragma: no cover
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_ATTRIBUTION,
+    UnitOfPrecipitationDepth,
     UnitOfPressure,
     UnitOfSpeed,
     UnitOfTemperature,
@@ -94,6 +95,8 @@ class WSStationWeather(CoordinatorEntity, WeatherEntity):
     _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_native_pressure_unit = UnitOfPressure.HPA
     _attr_native_wind_speed_unit = UnitOfSpeed.METERS_PER_SECOND
+    _attr_native_precipitation_unit = UnitOfPrecipitationDepth.MILLIMETERS
+    _attr_suggested_display_precision = 1
 
     def __init__(self, coordinator, entry: ConfigEntry, prefix: str) -> None:
         super().__init__(coordinator)
@@ -161,11 +164,11 @@ class WSStationWeather(CoordinatorEntity, WeatherEntity):
         return (self.coordinator.data or {}).get(KEY_UV)
 
     @property
-    def attribution(self) -> str | None:
+    def attribution(self) -> str:
         fc = (self.coordinator.data or {}).get(KEY_FORECAST) or {}
         if fc.get("provider") == "open-meteo":
-            return "Forecast by Open-Meteo"
-        return None
+            return "Local station data processed by Weather Station Core – forecast by Open-Meteo"
+        return "Local station data processed by Weather Station Core"
 
     _LOCAL_CONDITION_MAP = {
         "sunny": "sunny",

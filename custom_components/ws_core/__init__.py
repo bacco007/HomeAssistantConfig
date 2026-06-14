@@ -13,6 +13,7 @@ from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import issue_registry as ir
 
 from .const import (
     CONF_CAL_HUMIDITY,
@@ -243,13 +244,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
 
     # ── Apply calibration service ────────────────────────────────────────
+    # Calibration bounds must match number.py entity limits.
+    # Threshold for the "large offset" Repairs advisory is 50 % of each max.
+    _CAL_LARGE_THRESHOLD = {
+        CONF_CAL_TEMP_C: 5.0,  # 50 % of 10.0
+        CONF_CAL_HUMIDITY: 10.0,  # 50 % of 20.0
+        CONF_CAL_PRESSURE_HPA: 5.0,  # 50 % of 10.0
+        CONF_CAL_WIND_MS: 2.5,  # 50 % of 5.0
+    }
+
     SERVICE_APPLY_CALIBRATION_SCHEMA = vol.Schema(
         {
             vol.Optional(ATTR_ENTRY_ID): cv.string,
-            vol.Optional(CONF_CAL_TEMP_C): vol.Coerce(float),
-            vol.Optional(CONF_CAL_HUMIDITY): vol.Coerce(float),
-            vol.Optional(CONF_CAL_PRESSURE_HPA): vol.Coerce(float),
-            vol.Optional(CONF_CAL_WIND_MS): vol.Coerce(float),
+            vol.Optional(CONF_CAL_TEMP_C): vol.All(vol.Coerce(float), vol.Range(min=-10.0, max=10.0)),
+            vol.Optional(CONF_CAL_HUMIDITY): vol.All(vol.Coerce(float), vol.Range(min=-20.0, max=20.0)),
+            vol.Optional(CONF_CAL_PRESSURE_HPA): vol.All(vol.Coerce(float), vol.Range(min=-10.0, max=10.0)),
+            vol.Optional(CONF_CAL_WIND_MS): vol.All(vol.Coerce(float), vol.Range(min=-5.0, max=5.0)),
         }
     )
 
@@ -274,6 +284,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             _LOGGER.warning("ws_core apply_calibration: no offsets provided, nothing to do")
             return
 
+        # Determine the effective offsets after applying (merge with existing options)
+        # so we can evaluate all four fields, not just the ones in this call.
+        _CAL_FIELDS = (CONF_CAL_TEMP_C, CONF_CAL_HUMIDITY, CONF_CAL_PRESSURE_HPA, CONF_CAL_WIND_MS)
+
         for entry in targets:
             new_options = dict(entry.options)
             for key, val in offsets.items():
@@ -289,6 +303,32 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 entry.entry_id,
                 {k: v for k, v in offsets.items()},
             )
+
+            # ── Repairs advisory for large calibration offsets ──────────────
+            # Check all four calibration fields in the merged options.
+            large_fields = []
+            for field in _CAL_FIELDS:
+                current_val = new_options.get(field, 0.0)
+                if abs(current_val) > _CAL_LARGE_THRESHOLD[field]:
+                    large_fields.append((field, current_val))
+
+            if large_fields:
+                # Report the first/largest offending field in the issue.
+                field, value = max(large_fields, key=lambda x: abs(x[1]))
+                ir.async_create_issue(
+                    hass,
+                    DOMAIN,
+                    "large_calibration_offset",
+                    is_fixable=False,
+                    severity=ir.IssueSeverity.WARNING,
+                    translation_key="large_calibration_offset",
+                    translation_placeholders={
+                        "value": f"{value:+.2f}",
+                        "field": field,
+                    },
+                )
+            else:
+                ir.async_delete_issue(hass, DOMAIN, "large_calibration_offset")
 
     if not hass.services.has_service(DOMAIN, SERVICE_APPLY_CALIBRATION):
         hass.services.async_register(
