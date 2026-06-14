@@ -21,6 +21,7 @@ class WorldCup2026Panel extends HTMLElement {
       live: [],
       fixtures: [],
       results: [],
+      apiResultsTest: [],
       groups: [],
       scorers: [],
       statistics: {},
@@ -249,7 +250,7 @@ class WorldCup2026Panel extends HTMLElement {
         noVenueData: "No venue data available.",
         scheduled: "Upcoming",
         liveStatus: "Live",
-        manualTimerNotice: 'Live scores update automatically. Goal times use the manual match clock and may differ from official times by a few minutes.',
+        manualTimerNotice: 'Live scores, match clock and goal times update from the live API. The clock counts locally between refreshes and re-syncs on each pull.',
         paused: "Paused",
         fullTime: "Full Time",
         aet: "After Extra Time",
@@ -7366,12 +7367,371 @@ class WorldCup2026Panel extends HTMLElement {
     }
   }
 
+
+
+  async loadPublicGoalEvents() {
+    const urls = [
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/world_cup_2026_goal_events.json?t=" + Date.now(),
+      "/local/worldcup/world_cup_2026_goal_events.json?t=" + Date.now(),
+      "/local/world_cup_2026_goal_events.json?t=" + Date.now(),
+      "/world_cup_2026_frontend/data/world_cup_2026_goal_events.json?t=" + Date.now(),
+    ];
+
+    for (const url of urls) {
+      try {
+        const response = await fetch(url, { cache: "no-store" });
+        if (!response.ok) continue;
+        const data = await response.json();
+        if (data && typeof data === "object" && !Array.isArray(data)) return data;
+      } catch (err) {
+        // Try the next goal-events path.
+      }
+    }
+
+    return {};
+  }
+
+
+  async loadPublicGithubMatches() {
+    const urls = [
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/matches.json?v=2?t=" + Date.now(),
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/worldcup/matches.json?t=" + Date.now(),
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/www/worldcup/matches.json?t=" + Date.now(),
+    ];
+
+    for (const url of urls) {
+      try {
+        const response = await fetch(url, { cache: "no-store" });
+        if (!response.ok) continue;
+        const data = await response.json();
+        const matches = Array.isArray(data) ? data : (Array.isArray(data?.matches) ? data.matches : []);
+        if (matches.length) return matches;
+      } catch (err) {
+        // Try the next public GitHub path.
+      }
+    }
+
+    return [];
+  }
+
+
+  async loadPublicGithubResults() {
+    const urls = [
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/worldcup/world_cup_2026_results.json?t=" + Date.now(),
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/world_cup_2026_results.json?t=" + Date.now(),
+      "/local/worldcup/world_cup_2026_results.json?t=" + Date.now(),
+      "/local/world_cup_2026_results.json?t=" + Date.now(),
+      "/world_cup_2026_frontend/data/world_cup_2026_results.json?t=" + Date.now(),
+    ];
+
+    for (const url of urls) {
+      try {
+        const response = await fetch(url, { cache: "no-store" });
+        if (!response.ok) continue;
+        const data = await response.json();
+        const results = Array.isArray(data)
+          ? data
+          : (Array.isArray(data?.results) ? data.results : (Array.isArray(data?.matches) ? data.matches : []));
+        if (results.length) return results;
+      } catch (err) {
+        // Try the next public results path.
+      }
+    }
+
+    return [];
+  }
+
+  publicMatchKey(match) {
+    if (!match) return "";
+    if (match.id !== null && match.id !== undefined) return `id:${match.id}`;
+    const utc = match.utcDate || match.date || "";
+    const home = this.fixtureTeamKey(this.getHomeTeam(match));
+    const away = this.fixtureTeamKey(this.getAwayTeam(match));
+    return `${utc}|${home}|${away}`;
+  }
+
+  mergeGithubMatchData(localMatches, publicMatches) {
+    const local = Array.isArray(localMatches) ? localMatches : [];
+    const pub = Array.isArray(publicMatches) ? publicMatches : [];
+    if (!pub.length) return local;
+
+    const publicByKey = new Map();
+    pub.forEach((match) => {
+      const key = this.publicMatchKey(match);
+      if (key) publicByKey.set(key, match);
+    });
+
+    const mergedKeys = new Set();
+    const merged = local.map((match) => {
+      const publicMatch = publicByKey.get(this.publicMatchKey(match));
+      if (!publicMatch) return match;
+      mergedKeys.add(this.publicMatchKey(publicMatch));
+
+      const rawPublicGoalEvents = Array.isArray(publicMatch.goalEvents) ? publicMatch.goalEvents : [];
+      const rawPublicEvents = Array.isArray(publicMatch.events) ? publicMatch.events : [];
+      const publicGoalEvents = this.dedupeGoalEvents(rawPublicGoalEvents.length ? rawPublicGoalEvents : rawPublicEvents);
+      const publicHasEvents = publicGoalEvents.length > 0;
+
+      return {
+        ...match,
+        status: publicMatch.status || match.status,
+        score: publicMatch.score || match.score,
+        homeScore: publicMatch.homeScore ?? match.homeScore,
+        awayScore: publicMatch.awayScore ?? match.awayScore,
+        home_score: publicMatch.home_score ?? match.home_score,
+        away_score: publicMatch.away_score ?? match.away_score,
+        scoreSource: publicMatch.scoreSource || match.scoreSource,
+        minute: publicMatch.minute ?? match.minute,
+        lastUpdated: publicMatch.lastUpdated || match.lastUpdated,
+        manualClock: publicMatch.manualClock || match.manualClock,
+        fallbackClock: publicMatch.fallbackClock ?? match.fallbackClock,
+        fallbackClockText: publicMatch.fallbackClockText || match.fallbackClockText,
+        manualClockText: publicMatch.manualClockText || match.manualClockText,
+        displayMinute: publicMatch.displayMinute || match.displayMinute,
+        clockSeconds: publicMatch.clockSeconds ?? match.clockSeconds,
+        goalEvents: publicHasEvents ? publicGoalEvents : match.goalEvents,
+        cardEvents: Array.isArray(publicMatch.cardEvents) && publicMatch.cardEvents.length ? publicMatch.cardEvents : match.cardEvents,
+        substitutionEvents: Array.isArray(publicMatch.substitutionEvents) && publicMatch.substitutionEvents.length ? publicMatch.substitutionEvents : match.substitutionEvents,
+        events: Array.isArray(publicMatch.events) && publicMatch.events.length ? publicMatch.events : (publicHasEvents ? publicGoalEvents : match.events),
+        referees: Array.isArray(publicMatch.referees) && publicMatch.referees.length ? publicMatch.referees : match.referees,
+        referee: publicMatch.referee || match.referee,
+        attendance: publicMatch.attendance ?? match.attendance,
+        publicGithubSynced: true,
+      };
+    });
+
+    pub.forEach((match) => {
+      const key = this.publicMatchKey(match);
+      if (key && !mergedKeys.has(key)) merged.push({ ...match, publicGithubSynced: true });
+    });
+
+    return merged;
+  }
+
+  liveMatchesFromGithub(publicMatches) {
+    const liveStatuses = new Set(["IN_PLAY", "LIVE", "PAUSED", "HT", "HALF_TIME", "1H", "2H"]);
+    return (Array.isArray(publicMatches) ? publicMatches : [])
+      .filter((match) => liveStatuses.has(String(match?.status || "").toUpperCase()))
+      .map((match) => ({ ...match, publicGithubSynced: true }));
+  }
+
+
+
+
+  mergeUniqueMatches(primary = [], extras = []) {
+    const merged = [];
+    const seen = new Set();
+
+    const add = (match) => {
+      if (!match) return;
+      const key = this.publicMatchKey(match) || this.matchStorageId(match) || JSON.stringify([
+        match.id,
+        match.matchId,
+        match.matchNumber,
+        match.utcDate,
+        this.fixtureTeamKey(this.getHomeTeam(match)),
+        this.fixtureTeamKey(this.getAwayTeam(match)),
+      ]);
+      if (seen.has(key)) return;
+      seen.add(key);
+      merged.push(match);
+    };
+
+    (Array.isArray(primary) ? primary : []).forEach(add);
+    (Array.isArray(extras) ? extras : []).forEach(add);
+    return merged;
+  }
+
+  goalEventStoreToMatches(goalEventStore) {
+    const store = goalEventStore && typeof goalEventStore === "object" && !Array.isArray(goalEventStore)
+      ? goalEventStore
+      : {};
+
+    return Object.entries(store)
+      .map(([key, extra]) => {
+        if (!extra || typeof extra !== "object" || Array.isArray(extra)) return null;
+        const homeTeam = extra.homeTeam || extra.home_team || extra.home || extra.homeName;
+        const awayTeam = extra.awayTeam || extra.away_team || extra.away || extra.awayName;
+        if (!homeTeam || !awayTeam) return null;
+
+        const homeScore = extra.homeScore ?? extra.home_score ?? extra.score?.fullTime?.home ?? null;
+        const awayScore = extra.awayScore ?? extra.away_score ?? extra.score?.fullTime?.away ?? null;
+        const hasScore = homeScore !== null && homeScore !== undefined && awayScore !== null && awayScore !== undefined;
+        const status = extra.status || (hasScore ? "FINISHED" : "TIMED");
+        const utcDate = extra.utcDate || extra.date || extra.kickoff || extra.startTime || null;
+        const events = Array.isArray(extra.events) ? extra.events : [];
+        const goalEvents = Array.isArray(extra.goalEvents) ? extra.goalEvents : events.filter((event) => {
+          const typeText = String(event?.type || event?.rawType || event?.eventType || "").toLowerCase();
+          const detailText = String(event?.detail || event?.comments || "").toLowerCase();
+          return typeText.includes("goal") || detailText.includes("goal");
+        });
+
+        return {
+          id: extra.id || extra.matchId || extra.matchNumber || key,
+          matchId: extra.matchId || extra.id || key,
+          matchNumber: extra.matchNumber || extra.fifaMatchNumber || (String(key).match(/\d+/)?.[0] ? Number(String(key).match(/\d+/)[0]) : undefined),
+          fifaMatchNumber: extra.fifaMatchNumber || extra.matchNumber,
+          status,
+          utcDate,
+          date: utcDate,
+          homeTeam: typeof homeTeam === "object" ? homeTeam : { name: String(homeTeam) },
+          awayTeam: typeof awayTeam === "object" ? awayTeam : { name: String(awayTeam) },
+          homeScore,
+          awayScore,
+          home_score: homeScore,
+          away_score: awayScore,
+          score: extra.score || { fullTime: { home: homeScore, away: awayScore } },
+          goalEvents,
+          events: events.length ? events : goalEvents,
+          cardEvents: Array.isArray(extra.cardEvents) ? extra.cardEvents : [],
+          substitutionEvents: Array.isArray(extra.substitutionEvents) ? extra.substitutionEvents : [],
+          referees: Array.isArray(extra.referees) ? extra.referees : [],
+          referee: extra.referee || "",
+          venue: extra.venue || extra.stadium || extra.venueName || "",
+          stadium: extra.stadium || extra.venue || extra.venueName || "",
+          group: extra.group || "",
+          stage: extra.stage || "",
+          publicGoalEventsStoreOnly: true,
+        };
+      })
+      .filter(Boolean);
+  }
+
+  mergeResultsAndFinishedFixtures(resultsFeed = [], fixtures = []) {
+    const finishedFromFixtures = (Array.isArray(fixtures) ? fixtures : []).filter((match) => this.isFinishedMatch(match));
+    return this.mergeUniqueMatches(Array.isArray(resultsFeed) ? resultsFeed : [], finishedFromFixtures)
+      .filter((match) => this.isFinishedMatch(match));
+  }
+
+
+  apiOnlyFinishedResults(resultsFeed = []) {
+    return (Array.isArray(resultsFeed) ? resultsFeed : [])
+      .filter((match) => this.isFinishedMatch(match))
+      .map((match) => this.stripManualStoredDetails(match))
+      .filter(Boolean);
+  }
+
+  stripManualStoredDetails(match) {
+    if (!match || typeof match !== "object") return match;
+
+    const isManualEvent = (event) => {
+      const source = String(event?.source || event?.eventSource || event?.origin || "").toLowerCase();
+      return source === "manual" || source.includes("manual");
+    };
+
+    const cleanArray = (value) => Array.isArray(value) ? value.filter((event) => !isManualEvent(event)) : value;
+
+    const cleaned = {
+      ...match,
+      goalEvents: cleanArray(match.goalEvents),
+      events: cleanArray(match.events),
+      cardEvents: cleanArray(match.cardEvents),
+      substitutionEvents: cleanArray(match.substitutionEvents),
+      apiFootballEvents: cleanArray(match.apiFootballEvents),
+      publicGoalEventsSynced: false,
+    };
+
+    // If the whole match only came from a manual/local store, do not show it on
+    // the API test page. That page must prove what the backend API really returns.
+    const source = String(match.source || match.origin || match.feedSource || "").toLowerCase();
+    if (source === "manual" || source.includes("goal_event_store") || source.includes("public_goal")) {
+      return null;
+    }
+
+    return cleaned;
+  }
+
+  mergePublicGoalEventStore(matches, goalEventStore) {
+    const list = Array.isArray(matches) ? matches : [];
+    const store = goalEventStore && typeof goalEventStore === "object" && !Array.isArray(goalEventStore)
+      ? goalEventStore
+      : {};
+
+    return list.map((match) => {
+      if (!match) return match;
+
+      const matchId = match.id ?? match.matchId ?? match.matchNumber;
+      const extra = matchId !== null && matchId !== undefined ? store[String(matchId)] : null;
+
+      if (!extra || typeof extra !== "object" || Array.isArray(extra)) {
+        return match;
+      }
+
+      const rawGoalEvents = Array.isArray(extra.goalEvents) ? extra.goalEvents : [];
+      const rawEvents = Array.isArray(extra.events) ? extra.events : [];
+      const goalEvents = this.dedupeGoalEvents(rawGoalEvents.length ? rawGoalEvents : rawEvents);
+      const cardEvents = Array.isArray(extra.cardEvents) ? extra.cardEvents : [];
+      const substitutionEvents = Array.isArray(extra.substitutionEvents)
+        ? extra.substitutionEvents
+        : rawEvents.filter((event) => {
+            const typeText = String(event?.type || event?.rawType || event?.eventType || "").toLowerCase();
+            const detailText = String(event?.detail || event?.comments || "").toLowerCase();
+            return typeText.includes("subst") || typeText.includes("substitution") || detailText.includes("substitution");
+          });
+      const referees = Array.isArray(extra.referees) ? extra.referees : [];
+
+      return {
+        ...match,
+        status: extra.status || match.status,
+        homeScore: extra.homeScore ?? match.homeScore,
+        awayScore: extra.awayScore ?? match.awayScore,
+        home_score: extra.homeScore ?? extra.home_score ?? match.home_score,
+        away_score: extra.awayScore ?? extra.away_score ?? match.away_score,
+        minute: extra.minute ?? match.minute,
+        manualClock: extra.manualClock || match.manualClock,
+        fallbackClock: extra.fallbackClock ?? extra.clock_seconds ?? match.fallbackClock,
+        fallbackClockText: extra.fallbackClockText || match.fallbackClockText,
+        manualClockText: extra.manualClockText || match.manualClockText,
+        displayMinute: extra.displayMinute || match.displayMinute,
+        clockSeconds: extra.clockSeconds ?? extra.clock_seconds ?? match.clockSeconds,
+        goalEvents: goalEvents.length ? goalEvents : (Array.isArray(match.goalEvents) ? match.goalEvents : []),
+        events: rawEvents.length ? rawEvents : (goalEvents.length ? goalEvents : (Array.isArray(match.events) ? match.events : [])),
+        cardEvents: cardEvents.length ? cardEvents : (Array.isArray(match.cardEvents) ? match.cardEvents : []),
+        substitutionEvents: substitutionEvents.length ? substitutionEvents : (Array.isArray(match.substitutionEvents) ? match.substitutionEvents : []),
+        referees: referees.length ? referees : (Array.isArray(match.referees) ? match.referees : []),
+        referee: extra.referee || match.referee,
+        apiFootballFixtureId: extra.apiFootballFixtureId || match.apiFootballFixtureId,
+        publicGoalEventsSynced: true,
+      };
+    });
+  }
+
   async loadAll() {
     try {
+      // MASTER MODE: this panel must read tournament data from the Home Assistant
+      // backend only. The backend is the only place that should talk to your
+      // football-data.org API and then export JSON for public/GitHub viewers.
+      // Do not let GitHub/public JSON override this live panel, otherwise your
+      // own dashboard can end up showing stale public data instead of your API pull.
       this._data.overview = await this.callApi("world_cup_2026/get_overview");
-      this._data.live = await this.callApi("world_cup_2026/get_live_matches");
-      this._data.fixtures = this.completeOfficialFixtures(await this.callApi("world_cup_2026/get_fixtures"));
-      this._data.results = this.completeOfficialFixtures(await this.safeCall("world_cup_2026/get_results", []));
+
+      const apiLive = await this.callApi("world_cup_2026/get_live_matches");
+      const apiFixtures = this.completeOfficialFixtures(await this.callApi("world_cup_2026/get_fixtures"));
+      const apiResults = await this.safeCall("world_cup_2026/get_results", []);
+
+      // Pure backend/API-only test feed. Do not merge GitHub or goal_events here.
+      // Use BOTH backend results and backend fixtures, because some finished games
+      // can stay in fixtures before they appear in get_results. This keeps Canada
+      // and similar finished games visible without using made-up/manual file data.
+      this._data.apiResultsTest = this.apiOnlyFinishedResults(
+        this.mergeResultsAndFinishedFixtures(apiResults, apiFixtures)
+      );
+
+      const publicGoalEvents = await this.loadPublicGoalEvents();
+      const publicResults = await this.loadPublicGithubResults();
+
+      const storeMatches = this.goalEventStoreToMatches(publicGoalEvents);
+      const fixturesWithStore = this.mergePublicGoalEventStore(apiFixtures, publicGoalEvents);
+      const apiResultsWithStore = this.mergePublicGoalEventStore(Array.isArray(apiResults) ? apiResults : [], publicGoalEvents);
+      const publicResultsWithStore = this.mergePublicGoalEventStore(publicResults, publicGoalEvents);
+      const combinedResults = this.mergeUniqueMatches(apiResultsWithStore, publicResultsWithStore);
+
+      this._data.live = this.mergePublicGoalEventStore(
+        (Array.isArray(apiLive) ? apiLive : []).filter((match) => this.isLiveMatch(match)),
+        publicGoalEvents
+      );
+      this._data.fixtures = this.mergeUniqueMatches(fixturesWithStore, storeMatches);
+      this._data.results = this.mergeResultsAndFinishedFixtures(combinedResults, this._data.fixtures);
       this._data.groups = await this.callApi("world_cup_2026/get_groups");
       this._data.scorers = await this.safeCall("world_cup_2026/get_scorers", []);
       this._data.statistics = await this.safeCall("world_cup_2026/get_statistics", {});
@@ -7513,16 +7873,22 @@ class WorldCup2026Panel extends HTMLElement {
     return String(match?.id || match?.matchId || `${match?.utcDate || match?.date || "unknown"}|${home}|${away}`);
   }
 
+  isLiveMatch(match) {
+    const status = String(match?.status || match?.matchStatus || "").toUpperCase().trim();
+    const liveStatuses = ["IN_PLAY", "LIVE", "PAUSED", "HT", "HALF_TIME", "1H", "2H"];
+    return liveStatuses.includes(status);
+  }
+
   isLiveClockStatus(status) {
-    return ["IN_PLAY", "LIVE", "1H", "2H", "ET", "EXTRA_TIME", "1ET", "2ET"].includes(String(status || ""));
+    return ["IN_PLAY", "LIVE", "1H", "2H", "ET", "EXTRA_TIME", "1ET", "2ET"].includes(String(status || "").toUpperCase().trim());
   }
 
   isHalfTimeClockStatus(status) {
-    return ["PAUSED", "HT", "HALF_TIME", "BREAK", "ET_HT", "EXTRA_TIME_HALF_TIME"].includes(String(status || ""));
+    return ["PAUSED", "HT", "HALF_TIME", "BREAK", "ET_HT", "EXTRA_TIME_HALF_TIME"].includes(String(status || "").toUpperCase().trim());
   }
 
   isFinishedClockStatus(status) {
-    return ["FINISHED", "FT", "AET", "PEN"].includes(String(status || ""));
+    return ["FINISHED", "FT", "AET", "PEN"].includes(String(status || "").toUpperCase().trim());
   }
 
   matchDuration(match) {
@@ -7670,16 +8036,31 @@ class WorldCup2026Panel extends HTMLElement {
 
   allKnownMatches() {
     const matches = [];
-    [this._data.live, this._data.fixtures, this._data.results].forEach((list) => {
-      (Array.isArray(list) ? list : []).forEach((match) => matches.push(match));
+    const seen = new Set();
+
+    // Important: live is first, then results, then fixtures.
+    // Do not process the same match twice, otherwise an old fixture copy can reset
+    // lastHomeScore / lastAwayScore back to 0 and the live page will add the same goal
+    // again every refresh.
+    [this._data.live, this._data.results, this._data.fixtures].forEach((list) => {
+      (Array.isArray(list) ? list : []).forEach((match) => {
+        const id = this.matchStorageId(match);
+        if (seen.has(id)) return;
+        seen.add(id);
+        matches.push(match);
+      });
     });
+
     return matches;
   }
 
   processMatchClockState() {
     const now = Date.now();
     const states = this.loadJsonStorage(this._matchClockStorageKey, {});
-    const goals = this.loadJsonStorage(this._goalEventStorageKey, {});
+    const storedGoals = this.loadJsonStorage(this._goalEventStorageKey, {});
+    // Public/corrected goal JSON must win over local clock placeholders.
+    // This stops live pages from repeatedly showing guessed goals every refresh.
+    const goals = { ...(storedGoals || {}), ...(this._localGoalEvents || {}) };
     let changed = false;
     let goalsChanged = false;
 
@@ -7757,41 +8138,13 @@ class WorldCup2026Panel extends HTMLElement {
       if (hasScores) {
         const lastHome = Number(previous.lastHomeScore);
         const lastAway = Number(previous.lastAwayScore);
-        const hadPreviousScore = Number.isFinite(lastHome) && Number.isFinite(lastAway);
 
-        if (hadPreviousScore && (homeScore > lastHome || awayScore > lastAway)) {
-          const seconds = this.currentClockSeconds(match, state, now) ?? Number(state.offsetSeconds || 0);
-          const timer = this.formatClockSeconds(seconds);
-          const displayMinute = this.displayMinuteFromSeconds(seconds);
-          const eventBucket = Array.isArray(goals[id]) ? goals[id] : [];
-
-          const pushGoal = (team, count) => {
-            for (let i = 0; i < count; i += 1) {
-              eventBucket.push({
-                type: "Goal",
-                source: "local-clock",
-                team,
-                teamName: team,
-                player: "Goal",
-                playerName: "Goal",
-                timer,
-                displayMinute,
-                minute: Math.max(0, Math.floor(Number(seconds || 0) / 60)),
-                second: Math.max(0, Math.floor(Number(seconds || 0))),
-                createdAt: new Date(now).toISOString(),
-              });
-            }
-          };
-
-          if (homeScore > lastHome) pushGoal(homeTeam, homeScore - lastHome);
-          if (awayScore > lastAway) pushGoal(awayTeam, awayScore - lastAway);
-
-          goals[id] = eventBucket;
-          goalsChanged = true;
-        }
-
-        state.lastHomeScore = homeScore;
-        state.lastAwayScore = awayScore;
+        // Do not invent goal scorers or goal times in the browser.
+        // Scores can update before football-data.org has unfolded the goal
+        // events, so the panel must wait for backend goalEvents instead of
+        // saving a guessed local-clock minute.
+        state.lastHomeScore = Math.max(Number.isFinite(lastHome) ? lastHome : 0, homeScore);
+        state.lastAwayScore = Math.max(Number.isFinite(lastAway) ? lastAway : 0, awayScore);
         changed = true;
       }
 
@@ -7874,9 +8227,10 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   storedGoalEventsForMatch(match) {
-    const id = this.matchStorageId(match);
-    const stored = this._localGoalEvents?.[id];
-    return Array.isArray(stored) ? stored : [];
+    // football-data.org/backend goalEvents are the only source of truth.
+    // Old browser localStorage goal times caused devices to disagree, so the
+    // live panel no longer reads locally guessed scorer data.
+    return [];
   }
 
   stageLabel(stage) {
@@ -10831,6 +11185,119 @@ class WorldCup2026Panel extends HTMLElement {
           color: rgba(255,255,255,0.44);
           font-size: 11px;
           font-weight: 800;
+        }
+
+        .match-extra-live-data {
+          grid-column: 1 / -1;
+          width: 100%;
+          display: grid;
+          grid-template-columns: minmax(0, 1.5fr) minmax(220px, 0.8fr);
+          gap: 10px;
+          margin-top: 8px;
+        }
+
+        .match-events-box,
+        .match-officials-box {
+          padding: 10px 12px;
+          border-radius: 13px;
+          background: rgba(0,0,0,0.18);
+          border: 1px solid rgba(255,255,255,0.10);
+        }
+
+        .match-extra-title {
+          margin-bottom: 8px;
+          color: rgba(255,255,255,0.68);
+          font-size: 11px;
+          font-weight: 950;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .match-events-list {
+          display: grid;
+          gap: 6px;
+          max-height: 210px;
+          overflow: auto;
+          padding-right: 2px;
+        }
+
+        .match-event-row {
+          display: grid;
+          grid-template-columns: 42px 26px minmax(0, 1fr);
+          gap: 7px;
+          align-items: start;
+          padding: 7px 8px;
+          border-radius: 11px;
+          background: rgba(255,255,255,0.075);
+          border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .match-event-minute {
+          color: rgba(255,255,255,0.76);
+          font-size: 12px;
+          font-weight: 950;
+          white-space: nowrap;
+        }
+
+        .match-event-icon {
+          font-size: 15px;
+          line-height: 1;
+        }
+
+        .match-event-main {
+          min-width: 0;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: baseline;
+          gap: 4px 7px;
+          color: rgba(255,255,255,0.9);
+          font-size: 12px;
+          font-weight: 850;
+        }
+
+        .match-event-main strong {
+          font-weight: 950;
+        }
+
+        .match-event-main em,
+        .match-event-main small {
+          color: rgba(255,255,255,0.62);
+          font-style: normal;
+          font-size: 11px;
+          font-weight: 800;
+        }
+
+        .match-officials-list {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+        }
+
+        .match-official-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          padding: 6px 8px;
+          border-radius: 999px;
+          background: rgba(255,255,255,0.09);
+          border: 1px solid rgba(255,255,255,0.10);
+          color: rgba(255,255,255,0.88);
+          font-size: 11px;
+          font-weight: 850;
+        }
+
+        .match-official-pill span,
+        .match-official-pill em {
+          color: rgba(255,255,255,0.58);
+          font-style: normal;
+          font-size: 10px;
+          text-transform: uppercase;
+        }
+
+        @media (max-width: 760px) {
+          .match-extra-live-data {
+            grid-template-columns: 1fr;
+          }
         }
 
         @media (max-width: 620px) {
@@ -14750,7 +15217,7 @@ class WorldCup2026Panel extends HTMLElement {
     });
 
     const finishedStatuses = ["FINISHED", "FT", "AET", "PEN"];
-    const liveStatuses = ["IN_PLAY", "LIVE", "PAUSED"];
+    const liveStatuses = ["IN_PLAY", "LIVE", "PAUSED", "HT", "HALF_TIME", "1H", "2H"];
     const upcomingStatuses = ["TIMED", "SCHEDULED"];
 
     const playedCount = o.matches_played ?? sortedFixtures.filter(m => finishedStatuses.includes(m.status)).length;
@@ -14983,83 +15450,441 @@ class WorldCup2026Panel extends HTMLElement {
       });
   }
 
+  goalEventDedupeKey(event) {
+    if (!event) return "";
+    const matchId = String(event.matchId || "").trim();
+    const team = this.fixtureTeamKey(event.team || event.teamName || event.country || "");
+    const player = String(event.player || event.playerName || event.name || "").toLowerCase().trim();
+    const source = String(event.source || "").toLowerCase().trim();
+    const detail = String(event.detail || event.type || "Goal").toLowerCase().trim();
+    const isLocalPlaceholder = source === "local-clock" || !player || player === "goal";
+    if (isLocalPlaceholder) {
+      return `${matchId}|${team}|local-clock|${detail}`;
+    }
+    const time = String(event.timerSeconds ?? event.timer ?? event.displayMinute ?? event.minute ?? "").trim();
+    return `${matchId}|${team}|${player}|${time}|${detail}`;
+  }
+
+  betterGoalEvent(current, next) {
+    if (!current) return next;
+    if (!next) return current;
+    const currentPlayer = String(current.player || current.playerName || current.name || "").trim();
+    const nextPlayer = String(next.player || next.playerName || next.name || "").trim();
+    const currentScore =
+      currentPlayer.length +
+      (current.assist ? 30 : 0) +
+      (String(current.displayMinute || "").includes("+") ? 10 : 0);
+    const nextScore =
+      nextPlayer.length +
+      (next.assist ? 30 : 0) +
+      (String(next.displayMinute || "").includes("+") ? 10 : 0);
+    return nextScore > currentScore ? next : current;
+  }
+
+  dedupeGoalEvents(events) {
+    const source = Array.isArray(events) ? events : [];
+    const byKey = new Map();
+
+    source
+      .filter((event) => String(event?.type || "").toLowerCase() === "goal")
+      .forEach((event) => {
+        const key = this.goalEventDedupeKey(event);
+        if (!key) return;
+        byKey.set(key, this.betterGoalEvent(byKey.get(key), event));
+      });
+
+    return Array.from(byKey.values())
+      .sort((a, b) => Number(a?.timerSeconds ?? a?.minute ?? 0) - Number(b?.timerSeconds ?? b?.minute ?? 0))
+      .map((event, index) => ({ ...event, goalNumber: index + 1 }));
+  }
+
   matchGoalEventsForTeam(match, team) {
     const teamKey = this.fixtureTeamKey(team);
-    const apiEvents = [
-      ...((match && Array.isArray(match.goalEvents)) ? match.goalEvents : []),
-      ...((match && Array.isArray(match.events)) ? match.events : []),
-    ].filter((event) => String(event?.type || "").toLowerCase() === "goal")
-     .filter((event) => this.fixtureTeamKey(event?.team || event?.teamName || event?.country) === teamKey);
-
-    const localEvents = this.storedGoalEventsForMatch(match)
-      .filter((event) => String(event?.type || "").toLowerCase() === "goal")
-      .filter((event) => this.fixtureTeamKey(event?.team || event?.teamName || event?.country) === teamKey);
-
-    const sourceEvents = apiEvents.length ? apiEvents : localEvents;
-    const fallbackScorers = this.matchScorersForTeam(team);
+    const preferredEvents = (match && Array.isArray(match.goalEvents) && match.goalEvents.length)
+      ? match.goalEvents
+      : ((match && Array.isArray(match.events)) ? match.events : []);
     const seen = new Set();
 
-    return sourceEvents
-      .map((event, index) => {
-        const localFallback = localEvents[index] || {};
-        const minute = event?.minute ?? event?.elapsed ?? localFallback?.minute ?? null;
-        const timer = event?.timer || localFallback?.timer || null;
-        const displayMinute = event?.displayMinute || localFallback?.displayMinute || (minute !== null && minute !== undefined && minute !== "" ? `${Number(minute)}'` : "");
-        const rawName = event?.player || event?.playerName || event?.name || localFallback?.player || localFallback?.playerName || "";
-        const fallbackName = fallbackScorers[index]?.name || fallbackScorers[0]?.name || "Goal";
-        const cleanName = String(rawName || "").trim();
-        const name = (!cleanName || cleanName.toLowerCase() === "goal") ? fallbackName : cleanName;
+    return this.dedupeGoalEvents(preferredEvents)
+      .filter((event) => this.fixtureTeamKey(event?.team || event?.teamName || event?.country) === teamKey)
+      .map((event) => {
+        const minute = event?.minute ?? event?.elapsed ?? null;
+        const timer = event?.timer || null;
+        const displayMinute = event?.displayMinute || (minute !== null && minute !== undefined && minute !== "" ? `${Number(minute)}'` : "");
+        const rawName = event?.player || event?.playerName || event?.name || "";
+        const name = String(rawName || "").trim();
+        if (!name || name.toLowerCase() === "goal") return null;
+        const detail = String(event?.detail || event?.type || "");
+        const comments = String(event?.comments || "");
+        const isOwnGoal = /own\s*goal|og|own/i.test(`${detail} ${comments}`);
         return {
           name,
           minute,
-          extra: event?.extra ?? localFallback?.extra ?? null,
+          extra: event?.extra ?? null,
           timer,
           displayMinute,
-          source: event?.source || localFallback?.source || "api",
+          isOwnGoal,
+          detail,
+          source: event?.source || "football-data",
         };
       })
-      .filter((event) => event.name)
+      .filter(Boolean)
       .filter((event) => {
-        const key = `${String(event.name).toLowerCase().trim()}|${event.displayMinute || event.minute || ""}|${event.timer || ""}`;
+        const key = `${teamKey}|${event.name}|${event.timer || event.displayMinute || event.minute || ""}`.toLowerCase().trim();
         if (seen.has(key)) return false;
         seen.add(key);
         return true;
       });
   }
 
+
+  eventMinuteText(event) {
+    if (!event) return "";
+    const display = event.displayMinute || event.display_minute || event.timeDisplay || event.minuteDisplay;
+    if (display !== null && display !== undefined && String(display).trim() !== "") {
+      return String(display).trim();
+    }
+
+    const rawMinute =
+      event.minute ??
+      event.elapsed ??
+      event.time?.elapsed ??
+      event.matchMinute ??
+      event.timerMinute ??
+      null;
+
+    if (rawMinute === null || rawMinute === undefined || rawMinute === "") return "";
+
+    const minute = Number(rawMinute);
+    const extraRaw = event.extra ?? event.time?.extra ?? event.stoppageTime ?? event.injuryTime ?? null;
+    const extra = Number(extraRaw);
+
+    if (Number.isFinite(minute)) {
+      return `${minute}${Number.isFinite(extra) && extra > 0 ? `+${extra}` : ""}'`;
+    }
+
+    return String(rawMinute).includes("'") ? String(rawMinute) : `${String(rawMinute)}'`;
+  }
+
+  eventTimerSeconds(event) {
+    const raw =
+      event?.timerSeconds ??
+      event?.timer_seconds ??
+      event?.seconds ??
+      event?.time?.elapsedSeconds ??
+      null;
+
+    if (raw !== null && raw !== undefined && raw !== "") {
+      const parsed = Number(raw);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+
+    const minuteRaw = event?.minute ?? event?.elapsed ?? event?.time?.elapsed ?? null;
+    const extraRaw = event?.extra ?? event?.time?.extra ?? 0;
+    const minute = Number(minuteRaw);
+    const extra = Number(extraRaw);
+
+    if (Number.isFinite(minute)) return (minute + (Number.isFinite(extra) ? extra : 0)) * 60;
+    return 999999;
+  }
+
+  eventTeamName(event) {
+    const team = event?.team ?? event?.teamName ?? event?.country ?? event?.team_name ?? event?.teamRef;
+    if (team && typeof team === "object") {
+      return team.shortName || team.name || team.tla || "";
+    }
+    return String(team || "").trim();
+  }
+
+  eventPlayerName(event) {
+    const player = event?.player ?? event?.playerName ?? event?.name ?? event?.scorer ?? event?.person;
+    if (player && typeof player === "object") {
+      return player.name || player.shortName || player.displayName || "";
+    }
+    return String(player || "").trim();
+  }
+
+  eventAssistName(event) {
+    const assist = event?.assist ?? event?.assistName ?? event?.assistBy;
+    if (assist && typeof assist === "object") {
+      return assist.name || assist.shortName || assist.displayName || "";
+    }
+    return String(assist || "").trim();
+  }
+
+  eventDetailText(event) {
+    return String(event?.detail || event?.comments || event?.subType || event?.reason || event?.type || "").trim();
+  }
+
+  rawMatchEvents(match) {
+    const combined = [];
+    [
+      match?.events,
+      match?.goalEvents,
+      match?.goals,
+      match?.cardEvents,
+      match?.cards,
+      match?.substitutionEvents,
+      match?.substitutions,
+      match?.apiFootballEvents,
+      match?.timeline,
+      match?.incidents,
+      match?.matchEvents,
+    ].forEach((list) => {
+      if (Array.isArray(list)) combined.push(...list);
+    });
+    return combined.filter((event) => event && typeof event === "object");
+  }
+
+  normalisedMatchEvents(match) {
+    const events = this.rawMatchEvents(match);
+    const byKey = new Map();
+
+    events.forEach((event) => {
+      const typeText = String(event.type || event.eventType || event.kind || "").toLowerCase();
+      const detailText = this.eventDetailText(event).toLowerCase();
+      const player = this.eventPlayerName(event);
+      const team = this.eventTeamName(event);
+      const minuteText = this.eventMinuteText(event);
+      const timerSeconds = this.eventTimerSeconds(event);
+
+      const isGoal = typeText.includes("goal") || detailText.includes("goal") || event.isGoal === true;
+      const isCard = typeText.includes("card") || detailText.includes("yellow") || detailText.includes("red");
+      const isSub = typeText.includes("subst") || detailText.includes("substitution");
+      const isVar = typeText.includes("var") || detailText.includes("var");
+      const isPenalty = detailText.includes("penalty") || detailText.includes("pen");
+      const isMissedPenalty = detailText.includes("missed penalty") || detailText.includes("penalty missed");
+      const isOwnGoal = detailText.includes("own goal") || /\bog\b/i.test(detailText);
+
+      let category = "";
+      if (isGoal) category = "goal";
+      else if (isCard) category = "card";
+      else if (isSub) category = "substitution";
+      else if (isVar) category = "var";
+      else return;
+
+      let icon = "•";
+      if (category === "goal") icon = isOwnGoal ? "🥅" : (isPenalty ? "🎯" : "⚽");
+      if (category === "card") icon = detailText.includes("red") ? "🟥" : "🟨";
+      if (category === "substitution") icon = "🔄";
+      if (category === "var") icon = "📺";
+      if (isMissedPenalty) icon = "❌";
+
+      const key = [
+        category,
+        this.fixtureTeamKey(team),
+        player.toLowerCase(),
+        minuteText || timerSeconds,
+        detailText,
+      ].join("|");
+
+      if (!key.trim() || byKey.has(key)) return;
+
+      byKey.set(key, {
+        ...event,
+        category,
+        icon,
+        team,
+        player,
+        assist: this.eventAssistName(event),
+        minuteText,
+        timerSeconds,
+        detail: this.eventDetailText(event),
+        isOwnGoal,
+        isPenalty,
+        isMissedPenalty,
+      });
+    });
+
+    return Array.from(byKey.values()).sort((a, b) => {
+      const timerDiff = Number(a.timerSeconds || 0) - Number(b.timerSeconds || 0);
+      if (timerDiff !== 0) return timerDiff;
+      return String(a.category).localeCompare(String(b.category));
+    });
+  }
+
+  matchCardEvents(match) {
+    return this.normalisedMatchEvents(match).filter((event) => event.category === "card");
+  }
+
+  matchReferees(match) {
+    const refs = [];
+
+    const addRef = (ref) => {
+      if (!ref) return;
+      if (typeof ref === "string") {
+        const name = ref.trim();
+        if (name) refs.push({ name });
+        return;
+      }
+      if (typeof ref === "object") {
+        const name = ref.name || ref.referee || ref.fullName || ref.displayName;
+        if (!name) return;
+        refs.push({
+          name,
+          type: ref.type || ref.role || "REFEREE",
+          nationality: ref.nationality || ref.country || "",
+        });
+      }
+    };
+
+    addRef(match?.referee);
+    addRef(match?.mainReferee);
+    addRef(match?.official);
+    (Array.isArray(match?.referees) ? match.referees : []).forEach(addRef);
+    (Array.isArray(match?.officials) ? match.officials : []).forEach(addRef);
+
+    const seen = new Set();
+    return refs.filter((ref) => {
+      const key = `${String(ref.name).toLowerCase()}|${String(ref.type || "").toLowerCase()}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  matchOfficialsSection(match) {
+    const refs = this.matchReferees(match);
+    const attendance = match?.attendance ?? match?.crowd ?? match?.spectators ?? null;
+    if (!refs.length && !attendance) return "";
+
+    const refsHtml = refs.length
+      ? refs.map((ref) => {
+          const type = ref.type ? ` <span>${this.esc(String(ref.type).replaceAll("_", " "))}</span>` : "";
+          const nat = ref.nationality ? ` <em>${this.esc(ref.nationality)}</em>` : "";
+          return `<div class="match-official-pill">👨‍⚖️ <strong>${this.esc(ref.name)}</strong>${type}${nat}</div>`;
+        }).join("")
+      : "";
+
+    const attendanceHtml = attendance
+      ? `<div class="match-official-pill">👥 <strong>${this.esc(Number(attendance).toLocaleString(this.locale()))}</strong><span>Attendance</span></div>`
+      : "";
+
+    return `
+      <div class="match-officials-box">
+        <div class="match-extra-title">Match Officials</div>
+        <div class="match-officials-list">${refsHtml}${attendanceHtml}</div>
+      </div>
+    `;
+  }
+
+  matchEventsTimelineSection(match, options = {}) {
+    const includeSubs = options.includeSubs === true;
+    const events = this.normalisedMatchEvents(match)
+      .filter((event) => includeSubs || event.category !== "substitution");
+
+    if (!events.length) return "";
+
+    const rows = events.map((event) => {
+      const detail = event.detail && event.detail.toLowerCase() !== event.category ? event.detail : "";
+      const team = event.team ? ` <em>${this.esc(this.localizedTeamName(event.team))}</em>` : "";
+      const assist = event.assist ? ` <small>Assist: ${this.esc(event.assist)}</small>` : "";
+      const player = event.player || detail || event.category;
+      const minute = event.minuteText || "";
+      const detailHtml = detail && String(detail).toLowerCase() !== String(player).toLowerCase()
+        ? `<small>${this.esc(detail)}</small>`
+        : "";
+
+      return `
+        <div class="match-event-row match-event-${this.esc(event.category)}">
+          <span class="match-event-minute">${this.esc(minute || "-")}</span>
+          <span class="match-event-icon">${this.esc(event.icon)}</span>
+          <span class="match-event-main">
+            <strong>${this.esc(player)}</strong>${team}
+            ${detailHtml}
+            ${assist}
+          </span>
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <div class="match-events-box">
+        <div class="match-extra-title">Match Events</div>
+        <div class="match-events-list">${rows}</div>
+      </div>
+    `;
+  }
+
+  matchExtraLiveDataSection(match) {
+    const eventsHtml = this.matchEventsTimelineSection(match);
+    const officialsHtml = this.matchOfficialsSection(match);
+    if (!eventsHtml && !officialsHtml) return "";
+
+    return `
+      <div class="match-extra-live-data">
+        ${eventsHtml}
+        ${officialsHtml}
+      </div>
+    `;
+  }
+
+  matchResultsFullDetailsSection(match) {
+    // Results page should show every stored event from the API/GitHub feed:
+    // goals, own goals, assists, cards, substitutions, VAR and officials.
+    const eventsHtml = this.matchEventsTimelineSection(match, { includeSubs: true });
+    const officialsHtml = this.matchOfficialsSection(match);
+    if (!eventsHtml && !officialsHtml) return "";
+
+    return `
+      <div class="match-extra-live-data match-results-full-details">
+        ${eventsHtml}
+        ${officialsHtml}
+      </div>
+    `;
+  }
+
+
   matchScorersSection(homeTeam, awayTeam, match = null) {
-    const homeEvents = this.matchGoalEventsForTeam(match, homeTeam);
-    const awayEvents = this.matchGoalEventsForTeam(match, awayTeam);
+    const normalisedGoals = this.normalisedMatchEvents(match).filter((event) => event.category === "goal");
+    const teamEvents = (team) => {
+      const teamKey = this.fixtureTeamKey(team);
+      return normalisedGoals
+        .filter((event) => this.fixtureTeamKey(event.team) === teamKey)
+        .map((event) => ({
+          name: event.player,
+          minute: event.minute ?? event.elapsed ?? event.time?.elapsed ?? null,
+          extra: event.extra ?? event.time?.extra ?? null,
+          timer: event.timer || "",
+          displayMinute: event.minuteText,
+          isOwnGoal: event.isOwnGoal,
+          isPenalty: event.isPenalty,
+          isMissedPenalty: event.isMissedPenalty,
+          detail: event.detail,
+          source: event.source || "",
+        }))
+        .filter((event) => event.name && String(event.name).toLowerCase() !== "goal");
+    };
+
+    const homeEvents = teamEvents(homeTeam);
+    const awayEvents = teamEvents(awayTeam);
     const hasGoalEvents = homeEvents.length || awayEvents.length;
 
-    const homeScorers = hasGoalEvents ? homeEvents : this.matchScorersForTeam(homeTeam);
-    const awayScorers = hasGoalEvents ? awayEvents : this.matchScorersForTeam(awayTeam);
-
-    if (!homeScorers.length && !awayScorers.length) return "";
+    if (!hasGoalEvents) return "";
 
     const namesHtml = (items) => items.length
       ? items.map((item) => {
-          const name = typeof item === "string" ? item : item.name;
-          const displayMinute = typeof item === "object" && item.displayMinute ? String(item.displayMinute) : "";
-          const minute = typeof item === "object" && item.minute !== null && item.minute !== undefined && item.minute !== "" ? Number(item.minute) : null;
-          const extra = typeof item === "object" && item.extra !== null && item.extra !== undefined && item.extra !== "" ? Number(item.extra) : null;
-          const minuteText = displayMinute ? ` ${displayMinute}` : (Number.isFinite(minute) ? ` ${minute}${Number.isFinite(extra) && extra > 0 ? `+${extra}` : ""}'` : "");
-          const title = typeof item === "object" && item.timer ? ` title="${this.esc(item.timer)}"` : "";
-          return `<span class="match-scorer-pill"${title}>⚽ ${this.esc(name)}${this.esc(minuteText)}</span>`;
+          const name = item.name;
+          const minuteText = item.displayMinute ? ` ${item.displayMinute}` : "";
+          const detailText = item.isOwnGoal ? " (OG)" : (item.isPenalty ? " (P)" : "");
+          const icon = item.isOwnGoal ? "🥅" : (item.isPenalty ? "🎯" : "⚽");
+          const titleParts = [item.detail, item.timer].filter(Boolean);
+          const title = titleParts.length ? ` title="${this.esc(titleParts.join(" • "))}"` : "";
+          return `<span class="match-scorer-pill"${title}>${icon} ${this.esc(name)}${this.esc(minuteText)}${this.esc(detailText)}</span>`;
         }).join("")
       : `<span class="match-scorer-empty">-</span>`;
 
     return `
       <div class="match-scorers-box">
-        <div class="match-scorers-title">Scorers${hasGoalEvents ? " & Goal Times" : ""}</div>
+        <div class="match-scorers-title">Scorers & Goal Times</div>
         <div class="match-scorers-grid">
           <div class="match-scorers-team">
             <strong>${this.esc(this.localizedTeamName(homeTeam))}</strong>
-            <div class="match-scorers-names">${namesHtml(homeScorers)}</div>
+            <div class="match-scorers-names">${namesHtml(homeEvents)}</div>
           </div>
           <div class="match-scorers-team">
             <strong>${this.esc(this.localizedTeamName(awayTeam))}</strong>
-            <div class="match-scorers-names">${namesHtml(awayScorers)}</div>
+            <div class="match-scorers-names">${namesHtml(awayEvents)}</div>
           </div>
         </div>
       </div>
@@ -15067,7 +15892,7 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   livePage() {
-    const live = this._data.live || [];
+    const live = (this._data.live || []).filter((match) => this.isLiveMatch(match));
 
     if (!live.length) {
       return `
@@ -15137,6 +15962,48 @@ class WorldCup2026Panel extends HTMLElement {
     `;
   }
 
+  apiResultsTestPage() {
+    const results = (this._data.apiResultsTest || [])
+      .filter(m => this.isFinishedMatch(m))
+      .sort((a, b) => {
+        const aTime = new Date(a.utcDate || a.date || 0).getTime();
+        const bTime = new Date(b.utcDate || b.date || 0).getTime();
+        return bTime - aTime;
+      });
+
+    if (!results.length) {
+      return `
+        <div class="wc-card results-page-card">
+          <div class="results-header">
+            <div>
+              <div class="wc-section-title">🧪 API Results Test</div>
+              <div class="results-subtitle">No finished matches came back from the Home Assistant API feed yet.</div>
+            </div>
+          </div>
+          <div class="wc-empty">This page ignores GitHub and goal_events.json, so it shows only what the backend/API currently provides.</div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="wc-card results-page-card">
+        <div class="results-header">
+          <div>
+            <div class="wc-section-title">🧪 API Results Test</div>
+            <div class="results-subtitle">Direct backend/API finished matches only — no GitHub, no goal_events fallback</div>
+          </div>
+          <div class="results-count-pill">${results.length} API FT</div>
+        </div>
+
+        <div class="wc-live-sync-notice">ℹ️ If Scotland appears here, the API/backend has it and the GitHub export is the problem. If Scotland is missing here too, the backend is no longer receiving it from the API.</div>
+
+        <div class="results-basic-list">
+          ${results.map(m => this.resultBasicRow(m)).join("")}
+        </div>
+      </div>
+    `;
+  }
+
   resultBasicRow(m) {
     const homeTeam = this.getHomeTeam(m);
     const awayTeam = this.getAwayTeam(m);
@@ -15174,6 +16041,7 @@ class WorldCup2026Panel extends HTMLElement {
         <div class="result-basic-status">COMPLETED</div>
 
         ${this.matchScorersSection(homeTeam, awayTeam, m)}
+        ${this.matchResultsFullDetailsSection(m)}
       </div>
     `;
   }
@@ -15439,7 +16307,7 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   fixtureTeamKey(team) {
-    const name = this.localizedTeamName(team);
+    const name = this.teamLabel(team);
     const key = this.normaliseFixtureText(name)
       .replace(/^south korea$/, "korea")
       .replace(/^korea republic$/, "korea")
@@ -15979,6 +16847,7 @@ class WorldCup2026Panel extends HTMLElement {
         </div>
 
         ${this.matchScorersSection(homeTeam, awayTeam, m)}
+        ${this.matchExtraLiveDataSection(m)}
       </div>
     `;
   }
@@ -16731,7 +17600,7 @@ class WorldCup2026Panel extends HTMLElement {
 
 
   headerLivePill() {
-    const live = this._data.live || [];
+    const live = (this._data.live || []).filter((match) => this.isLiveMatch(match));
     const liveCount = live.length;
 
     if (!liveCount) {
@@ -16927,6 +17796,7 @@ class WorldCup2026Panel extends HTMLElement {
     if (this._page === "live") return this.livePage();
     if (this._page === "fixtures") return this.fixturesPage();
     if (this._page === "results") return this.resultsPage();
+    if (this._page === "apiresults") { this._page = "results"; return this.resultsPage(); }
     if (this._page === "groups") return this.groupsPage();
     if (this._page === "knockout") return this.knockoutPage();
     if (this._page === "players") return this.playersPage();

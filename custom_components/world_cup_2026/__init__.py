@@ -24,6 +24,7 @@ PANEL_ICON = "mdi:trophy"
 FRONTEND_URL = f"/{DOMAIN}_frontend"
 
 
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up the World Cup 2026 integration from a config entry."""
     demo_mode: bool = entry.options.get(OPT_DEMO_MODE, DEFAULT_DEMO_MODE)
@@ -66,7 +67,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": "world-cup-2026-panel",
-                "js_url": f"{FRONTEND_URL}/world-cup-2026-panel.js?v=4.1.2",
+                "js_url": f"{FRONTEND_URL}/world-cup-2026-panel.js?v={entry.version}",
                 "embed_iframe": False,
                 "trust_external": False,
             }

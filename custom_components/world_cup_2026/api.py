@@ -31,8 +31,20 @@ class WorldCupAPI:
             return json.load(f)
 
     async def _get(self, url: str) -> dict:
-        """Shared GET helper with auth header and HTTP error raising."""
-        headers = {"X-Auth-Token": self.api_key}
+        """Shared GET helper with auth header and HTTP error raising.
+
+        Tier 2/live detail is requested from football-data.org using the
+        official unfold headers. This keeps the whole integration on the
+        football-data.org API only while allowing goals, bookings, subs and
+        lineups to be present whenever the paid feed provides them.
+        """
+        headers = {
+            "X-Auth-Token": self.api_key,
+            "X-Unfold-Goals": "true",
+            "X-Unfold-Bookings": "true",
+            "X-Unfold-Subs": "true",
+            "X-Unfold-Lineups": "true",
+        }
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=headers) as response:
                 response.raise_for_status()
