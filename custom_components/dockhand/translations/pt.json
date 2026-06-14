@@ -1,0 +1,232 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Conectar ao Dockhand",
+        "description": "Introduza o URL do seu servidor Dockhand. Será solicitado um token de API se a autenticação estiver ativada.",
+        "data": {
+          "api_url": "API URL",
+          "verify_ssl": "Verificar certificado SSL"
+        },
+        "data_description": {
+          "api_url": "O URL base da sua instância Dockhand.",
+          "verify_ssl": "Desmarque para permitir certificados SSL autoassinados ou não confiáveis. Desative apenas se a sua instância Dockhand usar um certificado autoassinado."
+        }
+      },
+      "token": {
+        "title": "Token de API do Dockhand",
+        "description": "Seu servidor Dockhand requer autenticação. Gere um token de API no Dockhand em **Perfil → Tokens de API** e cole-o aqui.",
+        "data": {
+          "api_token": "Token de API"
+        },
+        "data_description": {
+          "api_token": "Um token de API do Dockhand começando com dh_. Gere um em Perfil → Tokens de API na interface do Dockhand."
+        }
+      },
+      "setup_options": {
+        "title": "Configurar sondagem e funcionalidades",
+        "description": "Defina com que frequência sondar o Dockhand e quais grupos de entidades opcionais ativar. Tudo isso pode ser alterado posteriormente através de Configurar.",
+        "data": {
+          "poll_interval": "Intervalo de sondagem rápida (segundos)",
+          "poll_interval_slow": "Intervalo de sondagem lenta (segundos)",
+          "enable_schedules": "Ativar agendamentos",
+          "enable_images": "Ativar imagens",
+          "enable_volumes": "Ativar volumes",
+          "enable_networks": "Ativar redes",
+          "enable_updates": "Ativar atualizações de contentores",
+          "poll_interval_updates": "Intervalo de verificação de atualizações (segundos)"
+        },
+        "data_description": {
+          "poll_interval": "Com que frequência atualizar os estados dos contentores, pilhas e estatísticas do ambiente.",
+          "poll_interval_slow": "Com que frequência atualizar imagens, volumes, redes e agendamentos.",
+          "enable_schedules": "Criar entidades para tarefas agendadas do Dockhand.",
+          "enable_images": "Criar entidades para imagens Docker em cada host.",
+          "enable_volumes": "Criar entidades para volumes Docker em cada host.",
+          "enable_networks": "Criar entidades para redes Docker em cada host.",
+          "enable_updates": "Criar entidades de atualização que mostram a disponibilidade de atualizações de imagens, com suporte de atualização com um clique.",
+          "poll_interval_updates": "Com que frequência verificar registos de contentores para atualizações de imagens. Mantenha com pouca frequência — cada verificação consulta o registo para cada contentor."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reautenticar com o Dockhand",
+        "description": "Seu token de API não é mais válido. Gere um novo token no Dockhand em **Perfil → Tokens de API** e insira-o abaixo.",
+        "data": {
+          "api_token": "Token de API"
+        },
+        "data_description": {
+          "api_token": "Um token de API do Dockhand começando com dh_."
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigurar Dockhand",
+        "description": "Atualize o URL do servidor, a configuração SSL ou o token de API. Para alterar intervalos de sondagem ou sinalizadores de funcionalidades, use Configurar em vez disso.",
+        "data": {
+          "api_url": "API URL",
+          "verify_ssl": "Verificar certificado SSL",
+          "api_token": "Token de API"
+        },
+        "data_description": {
+          "api_url": "O URL base da sua instância Dockhand.",
+          "verify_ssl": "Desmarque para permitir certificados SSL autoassinados ou não confiáveis.",
+          "api_token": "O seu token atual é mostrado mascarado. Limpe-o e guarde para desativar a autenticação (será solicitado novamente se o servidor ainda o exigir). Introduza um novo valor para rodar as credenciais."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Não é possível conectar ao Dockhand. Verifique a URL da API e a conectividade de rede.",
+      "invalid_auth": "Token de API inválido. Certifique-se de que copiou o token completo começando com dh_."
+    },
+    "abort": {
+      "already_configured": "Esta instância do Dockhand já está configurada.",
+      "reauth_successful": "A reautenticação foi bem-sucedida.",
+      "reconfigure_successful": "A reconfiguração foi bem-sucedida."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opções do Dockhand",
+        "description": "Ajuste os intervalos de sondagem e as fontes de dados opcionais. Para alterar o URL, SSL ou token de API, use Reconfigurar em vez disso.",
+        "data": {
+          "poll_interval": "Intervalo de sondagem rápido (segundos) — estatísticas, contêineres e stacks",
+          "poll_interval_slow": "Intervalo de sondagem lento (segundos) — imagens, volumes, redes, agendamentos",
+          "enable_schedules": "Habilitar sensores de agendamento",
+          "enable_images": "Habilitar sensores de imagens",
+          "enable_volumes": "Habilitar sensores de volumes",
+          "enable_networks": "Habilitar sensores de redes",
+          "enable_updates": "Ativar entidades de atualização de contêineres",
+          "poll_interval_updates": "Intervalo de verificação de atualizações (segundos)"
+        },
+        "data_description": {
+          "poll_interval": "Com que frequência atualizar estatísticas. Padrão: 60.",
+          "poll_interval_slow": "Com que frequência atualizar imagens, volumes, redes e agendamentos. Padrão: 600.",
+          "enable_schedules": "Habilita sensores para agendamentos de manutenção do Dockhand.",
+          "enable_images": "Habilita sensores para imagens Docker por ambiente.",
+          "enable_volumes": "Habilita sensores para volumes Docker por ambiente.",
+          "enable_networks": "Habilita sensores para redes Docker por ambiente.",
+          "enable_updates": "Ativa entidades de atualização para cada contêiner mostrando a disponibilidade de atualizações de imagem. Dispara consultas reais ao registro — ver poll_interval_updates.",
+          "poll_interval_updates": "Com que frequência verificar os registros de contêineres em busca de atualizações de imagem (segundos). Cada verificação consulta o registro para cada contêiner. Padrão: 86400 (24 horas)."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "cpu_usage": {
+        "name": "Uso de CPU"
+      },
+      "memory_usage": {
+        "name": "Uso de memória"
+      },
+      "containers": {
+        "name": "Contêineres"
+      },
+      "stacks": {
+        "name": "Stacks"
+      },
+      "image_count": {
+        "name": "Contagem de imagens"
+      },
+      "volume_count": {
+        "name": "Contagem de volumes"
+      },
+      "network_count": {
+        "name": "Contagem de redes"
+      },
+      "containers_disk_usage": {
+        "name": "Uso de disco dos contêineres"
+      },
+      "build_cache_size": {
+        "name": "Tamanho do cache de build"
+      },
+      "activity_events": {
+        "name": "Eventos de atividade"
+      },
+      "state": {
+        "name": "Estado"
+      },
+      "health": {
+        "name": "Saúde"
+      },
+      "status": {
+        "name": "Estado"
+      },
+      "containers_in_stack": {
+        "name": "Contêineres"
+      },
+      "hawser_agent_version": {
+        "name": "Versão do agente Hawser"
+      },
+      "next_run": {
+        "name": "Próxima execução"
+      },
+      "last_status": {
+        "name": "Último status"
+      },
+      "container_cpu_percent": {
+        "name": "Uso de CPU"
+      },
+      "container_memory_usage": {
+        "name": "Uso de memória"
+      },
+      "container_memory_percent": {
+        "name": "Uso de memória %"
+      },
+      "container_memory_limit": {
+        "name": "Limite de memória"
+      },
+      "container_network_rx": {
+        "name": "Rede entrada"
+      },
+      "container_network_tx": {
+        "name": "Rede saída"
+      },
+      "container_block_read": {
+        "name": "Disco leitura"
+      },
+      "container_block_write": {
+        "name": "Disco escrita"
+      }
+    },
+    "binary_sensor": {
+      "online": {
+        "name": "Online"
+      },
+      "activity_logging": {
+        "name": "Registro de atividade"
+      },
+      "metrics_collection": {
+        "name": "Coleta de métricas"
+      },
+      "vulnerability_scanning": {
+        "name": "Verificação de vulnerabilidades"
+      },
+      "update_checks": {
+        "name": "Verificação de atualizações"
+      },
+      "auto_update": {
+        "name": "Atualização automática"
+      },
+      "image_pruning": {
+        "name": "Limpeza de imagens"
+      }
+    },
+    "switch": {},
+    "button": {
+      "check_updates": {
+        "name": "Verificar atualizações de imagens"
+      },
+      "restart": {
+        "name": "Reiniciar"
+      }
+    }
+  },
+  "exceptions": {
+    "action_failed": {
+      "message": "Ação falhou: {error}"
+    },
+    "container_not_found": {
+      "message": "Container não encontrado — pode ter sido removido"
+    }
+  }
+}

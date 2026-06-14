@@ -1,0 +1,232 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Verbinden met Dockhand",
+        "description": "Voer de URL van je Dockhand-server in. Een API-token wordt gevraagd als authenticatie is ingeschakeld.",
+        "data": {
+          "api_url": "API URL",
+          "verify_ssl": "SSL-certificaat verifiëren"
+        },
+        "data_description": {
+          "api_url": "De basis-URL van je Dockhand-instantie.",
+          "verify_ssl": "Uitschakelen om zelfondertekende of niet-vertrouwde SSL-certificaten toe te staan. Alleen uitschakelen als je Dockhand-instantie een zelfondertekend certificaat gebruikt."
+        }
+      },
+      "token": {
+        "title": "Dockhand API-token",
+        "description": "Je Dockhand-server vereist verificatie. Genereer een API-token in Dockhand via **Profiel → API-tokens** en plak het hier.",
+        "data": {
+          "api_token": "API-token"
+        },
+        "data_description": {
+          "api_token": "Een Dockhand API-token dat begint met dh_. Genereer er een via Profiel → API-tokens in de Dockhand-interface."
+        }
+      },
+      "setup_options": {
+        "title": "Polling en functies configureren",
+        "description": "Stel in hoe vaak Dockhand gepolld wordt en welke optionele entiteitsgroepen ingeschakeld worden. Dit kan later worden gewijzigd via Configureren.",
+        "data": {
+          "poll_interval": "Snel polling-interval (seconden)",
+          "poll_interval_slow": "Langzaam polling-interval (seconden)",
+          "enable_schedules": "Schema's inschakelen",
+          "enable_images": "Afbeeldingen inschakelen",
+          "enable_volumes": "Volumes inschakelen",
+          "enable_networks": "Netwerken inschakelen",
+          "enable_updates": "Container-updates inschakelen",
+          "poll_interval_updates": "Controle-interval voor updates (seconden)"
+        },
+        "data_description": {
+          "poll_interval": "Hoe vaak containerstatus, stacks en omgevingsstatistieken worden vernieuwd.",
+          "poll_interval_slow": "Hoe vaak afbeeldingen, volumes, netwerken en schema's worden vernieuwd.",
+          "enable_schedules": "Entiteiten maken voor geplande Dockhand-taken.",
+          "enable_images": "Entiteiten maken voor Docker-afbeeldingen op elke host.",
+          "enable_volumes": "Entiteiten maken voor Docker-volumes op elke host.",
+          "enable_networks": "Entiteiten maken voor Docker-netwerken op elke host.",
+          "enable_updates": "Update-entiteiten maken die de beschikbaarheid van image-updates tonen, met ondersteuning voor updates met één klik.",
+          "poll_interval_updates": "Hoe vaak containerregisters worden gecontroleerd op image-updates. Houd dit zeldzaam — elke controle bevraagt het register voor elke container."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Opnieuw verifiëren met Dockhand",
+        "description": "Je API-token is niet meer geldig. Genereer een nieuw token in Dockhand via **Profiel → API-tokens** en voer het hieronder in.",
+        "data": {
+          "api_token": "API-token"
+        },
+        "data_description": {
+          "api_token": "Een Dockhand API-token dat begint met dh_."
+        }
+      },
+      "reconfigure": {
+        "title": "Dockhand opnieuw configureren",
+        "description": "Werk de server-URL, SSL-instelling of API-token bij. Om pollingintervallen of functievlaggen te wijzigen, gebruik in plaats daarvan Configureren.",
+        "data": {
+          "api_url": "API URL",
+          "verify_ssl": "SSL-certificaat verifiëren",
+          "api_token": "API-token"
+        },
+        "data_description": {
+          "api_url": "De basis-URL van je Dockhand-instantie.",
+          "verify_ssl": "Uitschakelen om zelfondertekende of niet-vertrouwde SSL-certificaten toe te staan.",
+          "api_token": "Je huidige token wordt gemaskeerd weergegeven. Wis het en sla op om authenticatie uit te schakelen (je wordt opnieuw gevraagd als de server het nog vereist). Voer een nieuwe waarde in om referenties te roteren."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kan geen verbinding maken met Dockhand. Controleer de API-URL en netwerkverbinding.",
+      "invalid_auth": "Ongeldig API-token. Zorg ervoor dat je het volledige token hebt gekopieerd dat begint met dh_."
+    },
+    "abort": {
+      "already_configured": "Deze Dockhand-instantie is al geconfigureerd.",
+      "reauth_successful": "Herverificatie was succesvol.",
+      "reconfigure_successful": "Herconfiguratie was succesvol."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Dockhand-opties",
+        "description": "Pas pollingintervallen en optionele gegevensbronnen aan. Om de URL, SSL of API-token te wijzigen, gebruik in plaats daarvan Opnieuw configureren.",
+        "data": {
+          "poll_interval": "Snel pollinginterval (seconden) — statistieken, containers en stacks",
+          "poll_interval_slow": "Langzaam pollinginterval (seconden) — images, volumes, netwerken, planningen",
+          "enable_schedules": "Planningssensoren inschakelen",
+          "enable_images": "Image-sensoren inschakelen",
+          "enable_volumes": "Volume-sensoren inschakelen",
+          "enable_networks": "Netwerksensoren inschakelen",
+          "enable_updates": "Container-update-entiteiten inschakelen",
+          "poll_interval_updates": "Controle-interval voor updates (seconden)"
+        },
+        "data_description": {
+          "poll_interval": "Hoe vaak statistieken worden vernieuwd. Standaard: 60.",
+          "poll_interval_slow": "Hoe vaak images, volumes, netwerken en planningen worden vernieuwd. Standaard: 600.",
+          "enable_schedules": "Schakelt sensoren in voor Dockhand-onderhoudsplanningen.",
+          "enable_images": "Schakelt sensoren in voor Docker-images per omgeving.",
+          "enable_volumes": "Schakelt sensoren in voor Docker-volumes per omgeving.",
+          "enable_networks": "Schakelt sensoren in voor Docker-netwerken per omgeving.",
+          "enable_updates": "Schakelt update-entiteiten in voor elke container die de beschikbaarheid van image-updates weergeeft. Activeert echte registerquery's — zie poll_interval_updates.",
+          "poll_interval_updates": "Hoe vaak containerregisters worden gecontroleerd op image-updates (seconden). Elke controle ondervraagt het register voor elke container. Standaard: 86400 (24 uur)."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "cpu_usage": {
+        "name": "CPU-gebruik"
+      },
+      "memory_usage": {
+        "name": "Geheugengebruik"
+      },
+      "containers": {
+        "name": "Containers"
+      },
+      "stacks": {
+        "name": "Stacks"
+      },
+      "image_count": {
+        "name": "Aantal images"
+      },
+      "volume_count": {
+        "name": "Aantal volumes"
+      },
+      "network_count": {
+        "name": "Aantal netwerken"
+      },
+      "containers_disk_usage": {
+        "name": "Schijfgebruik containers"
+      },
+      "build_cache_size": {
+        "name": "Buildcachegrootte"
+      },
+      "activity_events": {
+        "name": "Activiteitsgebeurtenissen"
+      },
+      "state": {
+        "name": "Toestand"
+      },
+      "health": {
+        "name": "Gezondheid"
+      },
+      "status": {
+        "name": "Status"
+      },
+      "containers_in_stack": {
+        "name": "Containers"
+      },
+      "hawser_agent_version": {
+        "name": "Hawser-agentversie"
+      },
+      "next_run": {
+        "name": "Volgende uitvoering"
+      },
+      "last_status": {
+        "name": "Laatste status"
+      },
+      "container_cpu_percent": {
+        "name": "CPU-gebruik"
+      },
+      "container_memory_usage": {
+        "name": "Geheugengebruik"
+      },
+      "container_memory_percent": {
+        "name": "Geheugengebruik %"
+      },
+      "container_memory_limit": {
+        "name": "Geheugenlimiet"
+      },
+      "container_network_rx": {
+        "name": "Netwerk in"
+      },
+      "container_network_tx": {
+        "name": "Netwerk uit"
+      },
+      "container_block_read": {
+        "name": "Schijf lezen"
+      },
+      "container_block_write": {
+        "name": "Schijf schrijven"
+      }
+    },
+    "binary_sensor": {
+      "online": {
+        "name": "Online"
+      },
+      "activity_logging": {
+        "name": "Activiteitsregistratie"
+      },
+      "metrics_collection": {
+        "name": "Metriekenverzameling"
+      },
+      "vulnerability_scanning": {
+        "name": "Kwetsbaarheidsscan"
+      },
+      "update_checks": {
+        "name": "Updatecontroles"
+      },
+      "auto_update": {
+        "name": "Automatisch bijwerken"
+      },
+      "image_pruning": {
+        "name": "Image-opschoning"
+      }
+    },
+    "switch": {},
+    "button": {
+      "check_updates": {
+        "name": "Controleren op image-updates"
+      },
+      "restart": {
+        "name": "Herstart"
+      }
+    }
+  },
+  "exceptions": {
+    "action_failed": {
+      "message": "Actie mislukt: {error}"
+    },
+    "container_not_found": {
+      "message": "Container niet gevonden — het is mogelijk verwijderd"
+    }
+  }
+}

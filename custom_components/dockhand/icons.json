@@ -1,0 +1,134 @@
+{
+  "entity": {
+    "sensor": {
+      "cpu_usage": {
+        "default": "mdi:cpu-64-bit"
+      },
+      "memory_usage": {
+        "default": "mdi:memory"
+      },
+      "container_cpu_percent": {
+        "default": "mdi:cpu-64-bit"
+      },
+      "container_memory_usage": {
+        "default": "mdi:memory"
+      },
+      "container_memory_percent": {
+        "default": "mdi:memory"
+      },
+      "container_memory_limit": {
+        "default": "mdi:memory-arrow-down"
+      },
+      "container_network_rx": {
+        "default": "mdi:download-network"
+      },
+      "container_network_tx": {
+        "default": "mdi:upload-network"
+      },
+      "container_block_read": {
+        "default": "mdi:harddisk"
+      },
+      "container_block_write": {
+        "default": "mdi:harddisk"
+      },
+      "containers": {
+        "default": "mdi:docker"
+      },
+      "stacks": {
+        "default": "mdi:layers-triple"
+      },
+      "image_count": {
+        "default": "mdi:package-variant-closed"
+      },
+      "volume_count": {
+        "default": "mdi:database"
+      },
+      "containers_disk_usage": {
+        "default": "mdi:harddisk"
+      },
+      "build_cache_size": {
+        "default": "mdi:cached"
+      },
+      "activity_events": {
+        "default": "mdi:timeline-text"
+      },
+      "state": {
+        "default": "mdi:docker",
+        "state": {
+          "running": "mdi:play-circle",
+          "stopped": "mdi:stop-circle",
+          "paused": "mdi:pause-circle",
+          "restarting": "mdi:restart",
+          "exited": "mdi:stop-circle-outline"
+        }
+      },
+      "health": {
+        "default": "mdi:heart-pulse",
+        "state": {
+          "healthy": "mdi:heart",
+          "unhealthy": "mdi:heart-broken",
+          "starting": "mdi:heart-half"
+        }
+      },
+      "status": {
+        "default": "mdi:layers-triple",
+        "state": {
+          "running": "mdi:play-circle",
+          "partial": "mdi:circle-half-full",
+          "stopped": "mdi:stop-circle"
+        }
+      },
+      "containers_in_stack": {
+        "default": "mdi:docker"
+      },
+      "hawser_agent_version": {
+        "default": "mdi:transit-connection-variant"
+      },
+      "next_run": {
+        "default": "mdi:calendar-clock"
+      },
+      "last_status": {
+        "default": "mdi:clipboard-check"
+      },
+      "network_count": {
+        "default": "mdi:lan"
+      }
+    },
+    "binary_sensor": {
+      "online": {
+        "default": "mdi:server-network",
+        "state": {
+          "true": "mdi:server-network",
+          "false": "mdi:server-network-off"
+        }
+      },
+      "activity_logging": {
+        "default": "mdi:clipboard-list"
+      },
+      "metrics_collection": {
+        "default": "mdi:chart-line"
+      },
+      "vulnerability_scanning": {
+        "default": "mdi:shield-search"
+      },
+      "update_checks": {
+        "default": "mdi:update"
+      },
+      "auto_update": {
+        "default": "mdi:arrow-up-circle-outline"
+      },
+      "image_pruning": {
+        "default": "mdi:broom"
+      }
+    },
+    "switch": {},
+    "button": {
+      "check_updates": {
+        "default": "mdi:cloud-search"
+      },
+      "restart": {
+        "default": "mdi:restart"
+      }
+    }
+  }
+}

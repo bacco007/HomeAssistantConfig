@@ -1,0 +1,232 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Koble til Dockhand",
+        "description": "Skriv inn URL-en til Dockhand-serveren din. Et API-token vil bli forespørst hvis autentisering er aktivert.",
+        "data": {
+          "api_url": "API URL",
+          "verify_ssl": "Bekreft SSL-sertifikat"
+        },
+        "data_description": {
+          "api_url": "Basis-URL-en til din Dockhand-instans.",
+          "verify_ssl": "Fjern haken for å tillate selvsignerte eller ikke-klarerte SSL-sertifikater. Deaktiver kun hvis Dockhand-instansen din bruker et selvsignert sertifikat."
+        }
+      },
+      "token": {
+        "title": "Dockhand API-token",
+        "description": "Dockhand-serveren krever autentisering. Generer et API-token i Dockhand under **Profil → API-tokens** og lim det inn her.",
+        "data": {
+          "api_token": "API-token"
+        },
+        "data_description": {
+          "api_token": "Et Dockhand API-token som starter med dh_. Generer ett under Profil → API-tokens i Dockhand-grensesnittet."
+        }
+      },
+      "setup_options": {
+        "title": "Konfigurer polling og funksjoner",
+        "description": "Angi hvor ofte Dockhand skal polles og hvilke valgfrie entitetsgrupper som skal aktiveres. Alt dette kan endres senere via Konfigurer.",
+        "data": {
+          "poll_interval": "Raskt pollingintervall (sekunder)",
+          "poll_interval_slow": "Sakte pollingintervall (sekunder)",
+          "enable_schedules": "Aktiver planlagte oppgaver",
+          "enable_images": "Aktiver bilder",
+          "enable_volumes": "Aktiver volumer",
+          "enable_networks": "Aktiver nettverk",
+          "enable_updates": "Aktiver containeroppdateringer",
+          "poll_interval_updates": "Intervall for oppdateringssjekk (sekunder)"
+        },
+        "data_description": {
+          "poll_interval": "Hvor ofte containertilstander, stabler og miljøstatistikk skal oppdateres.",
+          "poll_interval_slow": "Hvor ofte bilder, volumer, nettverk og planlagte oppgaver skal oppdateres.",
+          "enable_schedules": "Opprett entiteter for planlagte Dockhand-oppgaver.",
+          "enable_images": "Opprett entiteter for Docker-bilder på hver vert.",
+          "enable_volumes": "Opprett entiteter for Docker-volumer på hver vert.",
+          "enable_networks": "Opprett entiteter for Docker-nettverk på hver vert.",
+          "enable_updates": "Opprett oppdateringsentiteter som viser tilgjengelighet av bildeoppdateringer, med støtte for oppdatering med ett klikk.",
+          "poll_interval_updates": "Hvor ofte containerregistre skal sjekkes for bildeoppdateringer. Hold dette sjeldent — hver sjekk spør registeret for hver container."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reautentiser med Dockhand",
+        "description": "API-tokenet ditt er ikke lenger gyldig. Generer et nytt token i Dockhand under **Profil → API-tokens** og skriv det inn nedenfor.",
+        "data": {
+          "api_token": "API-token"
+        },
+        "data_description": {
+          "api_token": "Et Dockhand API-token som starter med dh_."
+        }
+      },
+      "reconfigure": {
+        "title": "Konfigurer Dockhand på nytt",
+        "description": "Oppdater server-URL, SSL-innstilling eller API-token. For å endre pollingintervaller eller funksjonsflagg, bruk Konfigurer i stedet.",
+        "data": {
+          "api_url": "API URL",
+          "verify_ssl": "Bekreft SSL-sertifikat",
+          "api_token": "API-token"
+        },
+        "data_description": {
+          "api_url": "Basis-URL-en til din Dockhand-instans.",
+          "verify_ssl": "Fjern haken for å tillate selvsignerte eller ikke-klarerte SSL-sertifikater.",
+          "api_token": "Ditt nåværende token vises maskert. Tøm det og lagre for å deaktivere autentisering (du blir bedt om det igjen hvis serveren fortsatt krever det). Skriv inn en ny verdi for å rotere legitimasjonen."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kan ikke koble til Dockhand. Sjekk API-URL og nettverkstilkobling.",
+      "invalid_auth": "Ugyldig API-token. Sørg for at du kopierte hele tokenet som starter med dh_."
+    },
+    "abort": {
+      "already_configured": "Denne Dockhand-instansen er allerede konfigurert.",
+      "reauth_successful": "Reautentiseringen var vellykket.",
+      "reconfigure_successful": "Rekonfigurasjonen var vellykket."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Dockhand-alternativer",
+        "description": "Juster pollingintervaller og valgfrie datakilder. For å endre URL, SSL eller API-token, bruk Konfigurer på nytt i stedet.",
+        "data": {
+          "poll_interval": "Raskt pollingintervall (sekunder) — statistikk, beholdere og stacks",
+          "poll_interval_slow": "Langsomt pollingintervall (sekunder) — images, volumer, nettverk, tidsplaner",
+          "enable_schedules": "Aktiver tidsplansensorer",
+          "enable_images": "Aktiver imagesensorer",
+          "enable_volumes": "Aktiver volumsensorer",
+          "enable_networks": "Aktiver nettverkssensorer",
+          "enable_updates": "Aktiver oppdateringsentiteter for containere",
+          "poll_interval_updates": "Intervall for oppdateringssjekk (sekunder)"
+        },
+        "data_description": {
+          "poll_interval": "Hvor ofte statistikk oppdateres. Standard: 60.",
+          "poll_interval_slow": "Hvor ofte images, volumer, nettverk og tidsplaner oppdateres. Standard: 600.",
+          "enable_schedules": "Aktiverer sensorer for Dockhands vedlikeholdsplaner.",
+          "enable_images": "Aktiverer sensorer for Docker-images per miljø.",
+          "enable_volumes": "Aktiverer sensorer for Docker-volumer per miljø.",
+          "enable_networks": "Aktiverer sensorer for Docker-nettverk per miljø.",
+          "enable_updates": "Aktiverer oppdateringsentiteter for hver container som viser tilgjengeligheten av image-oppdateringer. Utløser ekte registerforespørsler — se poll_interval_updates.",
+          "poll_interval_updates": "Hvor ofte containerregistre sjekkes for image-oppdateringer (sekunder). Hver sjekk spør registeret for hver container. Standard: 86400 (24 timer)."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "cpu_usage": {
+        "name": "CPU-bruk"
+      },
+      "memory_usage": {
+        "name": "Minnebruk"
+      },
+      "containers": {
+        "name": "Beholdere"
+      },
+      "stacks": {
+        "name": "Stabler"
+      },
+      "image_count": {
+        "name": "Antall images"
+      },
+      "volume_count": {
+        "name": "Antall volumer"
+      },
+      "network_count": {
+        "name": "Antall nettverk"
+      },
+      "containers_disk_usage": {
+        "name": "Diskbruk for beholdere"
+      },
+      "build_cache_size": {
+        "name": "Build-cachestørrelse"
+      },
+      "activity_events": {
+        "name": "Aktivitetshendelser"
+      },
+      "state": {
+        "name": "Tilstand"
+      },
+      "health": {
+        "name": "Helse"
+      },
+      "status": {
+        "name": "Status"
+      },
+      "containers_in_stack": {
+        "name": "Beholdere"
+      },
+      "hawser_agent_version": {
+        "name": "Hawser-agentversjon"
+      },
+      "next_run": {
+        "name": "Neste kjøring"
+      },
+      "last_status": {
+        "name": "Siste status"
+      },
+      "container_cpu_percent": {
+        "name": "CPU-bruk"
+      },
+      "container_memory_usage": {
+        "name": "Minnebruk"
+      },
+      "container_memory_percent": {
+        "name": "Minnebruk %"
+      },
+      "container_memory_limit": {
+        "name": "Minnegrense"
+      },
+      "container_network_rx": {
+        "name": "Nettverk inn"
+      },
+      "container_network_tx": {
+        "name": "Nettverk ut"
+      },
+      "container_block_read": {
+        "name": "Disk lese"
+      },
+      "container_block_write": {
+        "name": "Disk skrive"
+      }
+    },
+    "binary_sensor": {
+      "online": {
+        "name": "Tilkoblet"
+      },
+      "activity_logging": {
+        "name": "Aktivitetslogging"
+      },
+      "metrics_collection": {
+        "name": "Metrikinnsamling"
+      },
+      "vulnerability_scanning": {
+        "name": "Sårbarhetsskanning"
+      },
+      "update_checks": {
+        "name": "Oppdateringssjekker"
+      },
+      "auto_update": {
+        "name": "Automatisk oppdatering"
+      },
+      "image_pruning": {
+        "name": "Rydding av images"
+      }
+    },
+    "switch": {},
+    "button": {
+      "check_updates": {
+        "name": "Se etter image-oppdateringer"
+      },
+      "restart": {
+        "name": "Start på nytt"
+      }
+    }
+  },
+  "exceptions": {
+    "action_failed": {
+      "message": "Handlingen mislyktes: {error}"
+    },
+    "container_not_found": {
+      "message": "Container ikke funnet — den kan ha blitt fjernet"
+    }
+  }
+}

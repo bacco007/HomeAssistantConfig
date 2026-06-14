@@ -1,0 +1,232 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "连接到 Dockhand",
+        "description": "输入你的 Dockhand 服务器 URL。如果启用了身份验证，将会要求提供 API 令牌。",
+        "data": {
+          "api_url": "API URL",
+          "verify_ssl": "验证 SSL 证书"
+        },
+        "data_description": {
+          "api_url": "你的 Dockhand 实例的基础 URL。",
+          "verify_ssl": "取消勾选以允许自签名或不受信任的 SSL 证书。仅当你的 Dockhand 实例使用自签名证书时才禁用。"
+        }
+      },
+      "token": {
+        "title": "Dockhand API 令牌",
+        "description": "你的 Dockhand 服务器需要身份验证。在 Dockhand 的 **个人资料 → API 令牌** 中生成 API 令牌，然后粘贴到这里。",
+        "data": {
+          "api_token": "API 令牌"
+        },
+        "data_description": {
+          "api_token": "以 dh_ 开头的 Dockhand API 令牌。在 Dockhand 界面的个人资料 → API 令牌下生成一个。"
+        }
+      },
+      "setup_options": {
+        "title": "配置轮询和功能",
+        "description": "设置轮询 Dockhand 的频率以及要启用的可选实体组。所有这些都可以在以后通过“配置”进行更改。",
+        "data": {
+          "poll_interval": "快速轮询间隔（秒）",
+          "poll_interval_slow": "慢速轮询间隔（秒）",
+          "enable_schedules": "启用计划任务",
+          "enable_images": "启用镜像",
+          "enable_volumes": "启用卷",
+          "enable_networks": "启用网络",
+          "enable_updates": "启用容器更新",
+          "poll_interval_updates": "更新检查间隔（秒）"
+        },
+        "data_description": {
+          "poll_interval": "刷新容器状态、堆栈和环境统计的频率。",
+          "poll_interval_slow": "刷新镜像、卷、网络和计划的频率。",
+          "enable_schedules": "为 Dockhand 计划任务创建实体。",
+          "enable_images": "为每个主机上的 Docker 镜像创建实体。",
+          "enable_volumes": "为每个主机上的 Docker 卷创建实体。",
+          "enable_networks": "为每个主机上的 Docker 网络创建实体。",
+          "enable_updates": "创建显示镜像更新可用性的更新实体，支持一键更新。",
+          "poll_interval_updates": "检查容器镜像仓库更新的频率。保持低频率——每次检查都会为每个容器查询镜像仓库。"
+        }
+      },
+      "reauth_confirm": {
+        "title": "重新验证 Dockhand",
+        "description": "你的 API 令牌不再有效。在 Dockhand 的 **个人资料 → API 令牌** 中生成新令牌并在下方输入。",
+        "data": {
+          "api_token": "API 令牌"
+        },
+        "data_description": {
+          "api_token": "以 dh_ 开头的 Dockhand API 令牌。"
+        }
+      },
+      "reconfigure": {
+        "title": "重新配置 Dockhand",
+        "description": "更新服务器 URL、SSL 设置或 API 令牌。要更改轮询间隔或功能标志，请改用“配置”。",
+        "data": {
+          "api_url": "API URL",
+          "verify_ssl": "验证 SSL 证书",
+          "api_token": "API 令牌"
+        },
+        "data_description": {
+          "api_url": "你的 Dockhand 实例的基础 URL。",
+          "verify_ssl": "取消勾选以允许自签名或不受信任的 SSL 证书。",
+          "api_token": "您当前的令牌以掩码形式显示。清除并保存以禁用身份验证（如果服务器仍然需要，将再次提示您）。输入新值以轮换凭据。"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "无法连接到 Dockhand。请检查 API URL 和网络连接。",
+      "invalid_auth": "无效的 API 令牌。请确保复制了以 dh_ 开头的完整令牌。"
+    },
+    "abort": {
+      "already_configured": "此 Dockhand 实例已配置。",
+      "reauth_successful": "重新验证成功。",
+      "reconfigure_successful": "重新配置成功。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Dockhand 选项",
+        "description": "调整轮询间隔和可选数据源。要更改 URL、SSL 或 API 令牌，请改用“重新配置”。",
+        "data": {
+          "poll_interval": "快速轮询间隔（秒）— 统计信息、容器和堆栈",
+          "poll_interval_slow": "慢速轮询间隔（秒）— 镜像、卷、网络、调度",
+          "enable_schedules": "启用调度传感器",
+          "enable_images": "启用镜像传感器",
+          "enable_volumes": "启用卷传感器",
+          "enable_networks": "启用网络传感器",
+          "enable_updates": "启用容器更新实体",
+          "poll_interval_updates": "更新检查间隔（秒）"
+        },
+        "data_description": {
+          "poll_interval": "刷新统计信息的频率。默认值：60。",
+          "poll_interval_slow": "刷新镜像、卷、网络和调度的频率。默认值：600。",
+          "enable_schedules": "启用 Dockhand 维护调度的传感器。",
+          "enable_images": "启用每个环境的 Docker 镜像传感器。",
+          "enable_volumes": "启用每个环境的 Docker 卷传感器。",
+          "enable_networks": "启用每个环境的 Docker 网络传感器。",
+          "enable_updates": "为每个容器启用更新实体，显示镜像更新可用性。将触发对镜像仓库的实际查询——参见 poll_interval_updates。",
+          "poll_interval_updates": "检查容器镜像仓库是否有镜像更新的频率（秒）。每次检查都会查询每个容器的镜像仓库。默认值：86400（24小时）。"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "cpu_usage": {
+        "name": "CPU 使用率"
+      },
+      "memory_usage": {
+        "name": "内存使用率"
+      },
+      "containers": {
+        "name": "容器"
+      },
+      "stacks": {
+        "name": "堆栈"
+      },
+      "image_count": {
+        "name": "镜像数量"
+      },
+      "volume_count": {
+        "name": "卷数量"
+      },
+      "network_count": {
+        "name": "网络数量"
+      },
+      "containers_disk_usage": {
+        "name": "容器磁盘使用量"
+      },
+      "build_cache_size": {
+        "name": "构建缓存大小"
+      },
+      "activity_events": {
+        "name": "活动事件"
+      },
+      "state": {
+        "name": "状态"
+      },
+      "health": {
+        "name": "健康状况"
+      },
+      "status": {
+        "name": "状态"
+      },
+      "containers_in_stack": {
+        "name": "容器"
+      },
+      "hawser_agent_version": {
+        "name": "Hawser 代理版本"
+      },
+      "next_run": {
+        "name": "下次运行"
+      },
+      "last_status": {
+        "name": "上次状态"
+      },
+      "container_cpu_percent": {
+        "name": "CPU使用率"
+      },
+      "container_memory_usage": {
+        "name": "内存使用量"
+      },
+      "container_memory_percent": {
+        "name": "内存使用率"
+      },
+      "container_memory_limit": {
+        "name": "内存限制"
+      },
+      "container_network_rx": {
+        "name": "网络接收"
+      },
+      "container_network_tx": {
+        "name": "网络发送"
+      },
+      "container_block_read": {
+        "name": "磁盘读取"
+      },
+      "container_block_write": {
+        "name": "磁盘写入"
+      }
+    },
+    "binary_sensor": {
+      "online": {
+        "name": "在线"
+      },
+      "activity_logging": {
+        "name": "活动日志记录"
+      },
+      "metrics_collection": {
+        "name": "指标收集"
+      },
+      "vulnerability_scanning": {
+        "name": "漏洞扫描"
+      },
+      "update_checks": {
+        "name": "更新检查"
+      },
+      "auto_update": {
+        "name": "自动更新"
+      },
+      "image_pruning": {
+        "name": "镜像清理"
+      }
+    },
+    "switch": {},
+    "button": {
+      "check_updates": {
+        "name": "检查镜像更新"
+      },
+      "restart": {
+        "name": "重启"
+      }
+    }
+  },
+  "exceptions": {
+    "action_failed": {
+      "message": "操作失败：{error}"
+    },
+    "container_not_found": {
+      "message": "未找到容器 — 它可能已被删除"
+    }
+  }
+}

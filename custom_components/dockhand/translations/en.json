@@ -1,0 +1,232 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Dockhand",
+        "description": "Enter your Dockhand server URL. An API token will be requested if authentication is enabled.",
+        "data": {
+          "api_url": "API URL",
+          "verify_ssl": "Verify SSL certificate"
+        },
+        "data_description": {
+          "api_url": "The base URL of your Dockhand instance.",
+          "verify_ssl": "Uncheck to allow self-signed or untrusted SSL certificates. Only disable if your Dockhand instance uses a self-signed cert."
+        }
+      },
+      "token": {
+        "title": "Dockhand API Token",
+        "description": "Your Dockhand server requires authentication. Generate an API token in Dockhand under **Profile → API tokens**, then paste it here.",
+        "data": {
+          "api_token": "API Token"
+        },
+        "data_description": {
+          "api_token": "A Dockhand API token starting with dh_. Generate one under Profile → API tokens in the Dockhand UI."
+        }
+      },
+      "setup_options": {
+        "title": "Configure polling and features",
+        "description": "Set how often to poll Dockhand and which optional entity groups to enable. All of these can be changed later via Configure.",
+        "data": {
+          "poll_interval": "Fast poll interval (seconds)",
+          "poll_interval_slow": "Slow poll interval (seconds)",
+          "enable_schedules": "Enable schedules",
+          "enable_images": "Enable images",
+          "enable_volumes": "Enable volumes",
+          "enable_networks": "Enable networks",
+          "enable_updates": "Enable container updates",
+          "poll_interval_updates": "Update check interval (seconds)"
+        },
+        "data_description": {
+          "poll_interval": "How often to refresh container states, stacks, and environment stats.",
+          "poll_interval_slow": "How often to refresh images, volumes, networks, and schedules.",
+          "enable_schedules": "Create entities for Dockhand scheduled tasks.",
+          "enable_images": "Create entities for Docker images on each host.",
+          "enable_volumes": "Create entities for Docker volumes on each host.",
+          "enable_networks": "Create entities for Docker networks on each host.",
+          "enable_updates": "Create update entities showing image update availability, with one-click update support.",
+          "poll_interval_updates": "How often to check container registries for image updates. Keep this infrequent — each check queries the registry for every container."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate with Dockhand",
+        "description": "Your API token is no longer valid. Generate a new token in Dockhand under **Profile → API tokens** and enter it below.",
+        "data": {
+          "api_token": "API Token"
+        },
+        "data_description": {
+          "api_token": "A Dockhand API token starting with dh_."
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure Dockhand",
+        "description": "Update the server URL, SSL setting, or API token. To change polling intervals or feature flags, use Configure instead.",
+        "data": {
+          "api_url": "API URL",
+          "verify_ssl": "Verify SSL certificate",
+          "api_token": "API Token"
+        },
+        "data_description": {
+          "api_url": "The base URL of your Dockhand instance.",
+          "verify_ssl": "Uncheck to allow self-signed or untrusted SSL certificates.",
+          "api_token": "Your current token is shown masked. Clear it and save to disable authentication (you will be prompted again if the server still requires it). Enter a new value to rotate credentials."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to Dockhand. Check the API URL and network connectivity.",
+      "invalid_auth": "Invalid API token. Make sure you copied the full token starting with dh_."
+    },
+    "abort": {
+      "already_configured": "This Dockhand instance is already configured.",
+      "reauth_successful": "Re-authentication was successful.",
+      "reconfigure_successful": "Reconfiguration was successful."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Dockhand Options",
+        "description": "Adjust polling intervals and optional data sources. To change the URL, SSL, or API token, use Reconfigure instead.",
+        "data": {
+          "poll_interval": "Fast poll interval (seconds) — stats, containers & stacks",
+          "poll_interval_slow": "Slow poll interval (seconds) — images, volumes, networks, schedules",
+          "enable_schedules": "Enable schedule sensors",
+          "enable_images": "Enable image sensors",
+          "enable_volumes": "Enable volume sensors",
+          "enable_networks": "Enable network sensors",
+          "enable_updates": "Enable container update entities",
+          "poll_interval_updates": "Update check interval (seconds)"
+        },
+        "data_description": {
+          "poll_interval": "How often to refresh container, stack, and environment stats. Default: 60.",
+          "poll_interval_slow": "How often to refresh images, volumes, networks, and schedules. Default: 600.",
+          "enable_schedules": "Enables sensors for Dockhand maintenance schedules.",
+          "enable_images": "Enables sensors for Docker images on each environment.",
+          "enable_volumes": "Enables sensors for Docker volumes on each environment.",
+          "enable_networks": "Enables sensors for Docker networks on each environment.",
+          "enable_updates": "Enables update entities for each container showing image update availability. Triggers real registry queries — see poll_interval_updates.",
+          "poll_interval_updates": "How often to check container registries for image updates (seconds). Default: 86400 (24 hours)."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "cpu_usage": {
+        "name": "CPU usage"
+      },
+      "memory_usage": {
+        "name": "Memory usage"
+      },
+      "containers": {
+        "name": "Containers"
+      },
+      "stacks": {
+        "name": "Stacks"
+      },
+      "image_count": {
+        "name": "Image count"
+      },
+      "volume_count": {
+        "name": "Volume count"
+      },
+      "network_count": {
+        "name": "Network count"
+      },
+      "containers_disk_usage": {
+        "name": "Containers disk usage"
+      },
+      "build_cache_size": {
+        "name": "Build cache size"
+      },
+      "activity_events": {
+        "name": "Activity events"
+      },
+      "state": {
+        "name": "State"
+      },
+      "health": {
+        "name": "Health"
+      },
+      "status": {
+        "name": "Status"
+      },
+      "containers_in_stack": {
+        "name": "Containers"
+      },
+      "hawser_agent_version": {
+        "name": "Hawser agent version"
+      },
+      "next_run": {
+        "name": "Next run"
+      },
+      "last_status": {
+        "name": "Last status"
+      },
+      "container_cpu_percent": {
+        "name": "CPU usage"
+      },
+      "container_memory_usage": {
+        "name": "Memory usage"
+      },
+      "container_memory_percent": {
+        "name": "Memory usage %"
+      },
+      "container_memory_limit": {
+        "name": "Memory limit"
+      },
+      "container_network_rx": {
+        "name": "Network in"
+      },
+      "container_network_tx": {
+        "name": "Network out"
+      },
+      "container_block_read": {
+        "name": "Disk read"
+      },
+      "container_block_write": {
+        "name": "Disk write"
+      }
+    },
+    "binary_sensor": {
+      "online": {
+        "name": "Online"
+      },
+      "activity_logging": {
+        "name": "Activity logging"
+      },
+      "metrics_collection": {
+        "name": "Metrics collection"
+      },
+      "vulnerability_scanning": {
+        "name": "Vulnerability scanning"
+      },
+      "update_checks": {
+        "name": "Update checks"
+      },
+      "auto_update": {
+        "name": "Auto update"
+      },
+      "image_pruning": {
+        "name": "Image pruning"
+      }
+    },
+    "switch": {},
+    "button": {
+      "check_updates": {
+        "name": "Check for image updates"
+      },
+      "restart": {
+        "name": "Restart"
+      }
+    }
+  },
+  "exceptions": {
+    "action_failed": {
+      "message": "Action failed: {error}"
+    },
+    "container_not_found": {
+      "message": "Container not found — it may have been removed"
+    }
+  }
+}
