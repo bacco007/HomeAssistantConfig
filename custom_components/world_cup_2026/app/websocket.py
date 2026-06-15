@@ -11,7 +11,7 @@ from homeassistant.components import websocket_api
 from ..const import DOMAIN
 from ..golden_boot import GoldenBootManager
 
-LIVE_STATUSES = {"IN_PLAY", "PAUSED", "LIVE", "1H", "2H", "HT"}
+LIVE_STATUSES = {"IN_PLAY", "PAUSED", "LIVE", "1H", "2H", "HT", "HALF_TIME", "ET", "BT", "P", "SUSP", "INT"}
 FINISHED_STATUSES = {"FINISHED", "FT", "AET", "PEN", "AWARDED"}
 SCHEDULED_STATUSES = {"SCHEDULED", "TIMED", "POSTPONED", "SUSPENDED"}
 
@@ -279,6 +279,15 @@ def _serialise_match(match):
         "displayMinute": match.get("displayMinute"),
         "goalEvents": match.get("goalEvents") or match.get("events") or [],
         "events": match.get("events") or match.get("goalEvents") or [],
+        "cardEvents": match.get("cardEvents") or [],
+        "substitutionEvents": match.get("substitutionEvents") or [],
+        "referees": match.get("referees") or [],
+        "referee": match.get("referee"),
+        "apiFootballFixtureId": match.get("apiFootballFixtureId"),
+        "apiFootballStatus": match.get("apiFootballStatus"),
+        "apiFootballStatusLong": match.get("apiFootballStatusLong"),
+        "liveSource": match.get("liveSource"),
+        "awaitingLiveApiData": match.get("awaitingLiveApiData"),
         "homeTeam": _match_team_name(home_team),
         "awayTeam": _match_team_name(away_team),
         "homeScore": full_time.get("home") if isinstance(full_time, dict) and full_time.get("home") is not None else _score_value(match, "home"),

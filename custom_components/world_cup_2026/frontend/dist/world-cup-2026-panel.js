@@ -28,6 +28,7 @@ class WorldCup2026Panel extends HTMLElement {
       records: {},
       venues: {},
       supporters: [],
+      premiumSupporters: [],
     };
     this._matchClockStorageKey = "world_cup_2026_match_clock_state_v1";
     this._goalEventStorageKey = "world_cup_2026_goal_event_times_v1";
@@ -250,7 +251,7 @@ class WorldCup2026Panel extends HTMLElement {
         noVenueData: "No venue data available.",
         scheduled: "Upcoming",
         liveStatus: "Live",
-        manualTimerNotice: 'Live scores, match clock and goal times update from the live API. The clock counts locally between refreshes and re-syncs on each pull.',
+        manualTimerNotice: 'Live scores, match clock and goal times sync from the master API feed. Live clock flashes when confirmed live data is active.',
         paused: "Paused",
         fullTime: "Full Time",
         aet: "After Extra Time",
@@ -7261,10 +7262,10 @@ class WorldCup2026Panel extends HTMLElement {
     this.applyHideSidebarFromUrl();
     this.renderLoading();
 
-    // Refresh all dashboard data once per minute.
-    this._refreshInterval = setInterval(() => {
-      this.loadAll();
-    }, 60 * 1000);
+    // Keep this panel synced without hammering GitHub/HA all day.
+    // During live games, viewer devices pull the master GitHub/public feed
+    // every 20 seconds so their clocks match the provider dashboard.
+    this.scheduleNextRefresh(20 * 1000);
 
     this._countdownInterval = setInterval(() => {
       this.updateCountdownDisplay();
@@ -7284,7 +7285,7 @@ class WorldCup2026Panel extends HTMLElement {
     }
 
     if (this._refreshInterval) {
-      clearInterval(this._refreshInterval);
+      clearTimeout(this._refreshInterval);
       this._refreshInterval = null;
     }
 
@@ -7368,6 +7369,57 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
 
+  async loadPremiumSupporters() {
+    const sortSupporters = (supporters) => {
+      return [...supporters].sort((a, b) => {
+        const aDate = new Date(a?.date || "1900-01-01").getTime();
+        const bDate = new Date(b?.date || "1900-01-01").getTime();
+        return bDate - aDate;
+      });
+    };
+
+    const normaliseSupportersPayload = (payload) => {
+      if (Array.isArray(payload)) return sortSupporters(payload);
+      if (payload && Array.isArray(payload.premiumSupporters)) return sortSupporters(payload.premiumSupporters);
+      if (payload && Array.isArray(payload.supporters)) return sortSupporters(payload.supporters);
+      return [];
+    };
+
+    const fetchPremiumSupporters = async (url) => {
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) throw new Error("Premium supporters file not available");
+      return normaliseSupportersPayload(await response.json());
+    };
+
+    const urls = [
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/premium_supporters.json?t=" + Date.now(),
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/premium-supporters.json?t=" + Date.now(),
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/premium-supporters/supporters.json?t=" + Date.now(),
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/premium-supporters/premium_supporters.json?t=" + Date.now(),
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/premium_supporters/supporters.json?t=" + Date.now(),
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/premium_supporters/premium_supporters.json?t=" + Date.now(),
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/premium%20supporters/supporters.json?t=" + Date.now(),
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/premium%20supporters/premium_supporters.json?t=" + Date.now(),
+      "/local/worldcup/premium_supporters.json?t=" + Date.now(),
+      "/local/worldcup/premium-supporters/supporters.json?t=" + Date.now(),
+      "/local/worldcup/premium_supporters/supporters.json?t=" + Date.now(),
+      "/world_cup_2026_frontend/data/premium_supporters.json?t=" + Date.now(),
+    ];
+
+    for (const url of urls) {
+      try {
+        const supporters = await fetchPremiumSupporters(url);
+        if (supporters.length) return supporters;
+      } catch {
+        // Try the next location.
+      }
+    }
+
+    return [];
+  }
+
+
+
 
   async loadPublicGoalEvents() {
     const urls = [
@@ -7392,9 +7444,36 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
 
+  async loadPublicGithubLive() {
+    const urls = [
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/worldcup/world_cup_2026_live.json?t=" + Date.now(),
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/world_cup_2026_live.json?t=" + Date.now(),
+      "/local/worldcup/world_cup_2026_live.json?t=" + Date.now(),
+      "/local/world_cup_2026_live.json?t=" + Date.now(),
+      "/world_cup_2026_frontend/data/world_cup_2026_live.json?t=" + Date.now(),
+    ];
+
+    for (const url of urls) {
+      try {
+        const response = await fetch(url, { cache: "no-store" });
+        if (!response.ok) continue;
+        const data = await response.json();
+        const matches = Array.isArray(data)
+          ? data
+          : (Array.isArray(data?.live) ? data.live : (Array.isArray(data?.matches) ? data.matches : []));
+        if (matches.length) return matches;
+      } catch (err) {
+        // Try the next public live path.
+      }
+    }
+
+    return [];
+  }
+
+
   async loadPublicGithubMatches() {
     const urls = [
-      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/matches.json?v=2?t=" + Date.now(),
+      "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/matches.json?v=2&t=" + Date.now(),
       "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/worldcup/matches.json?t=" + Date.now(),
       "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/www/worldcup/matches.json?t=" + Date.now(),
     ];
@@ -7670,6 +7749,11 @@ class WorldCup2026Panel extends HTMLElement {
           });
       const referees = Array.isArray(extra.referees) ? extra.referees : [];
 
+      const liveApiClockMaster = this.isLiveMatch(match) && (
+        match.minute !== null && match.minute !== undefined && match.minute !== ""
+        || String(match.clockSource || match.manualClock?.source || "").toLowerCase().includes("api")
+      );
+
       return {
         ...match,
         status: extra.status || match.status,
@@ -7677,13 +7761,13 @@ class WorldCup2026Panel extends HTMLElement {
         awayScore: extra.awayScore ?? match.awayScore,
         home_score: extra.homeScore ?? extra.home_score ?? match.home_score,
         away_score: extra.awayScore ?? extra.away_score ?? match.away_score,
-        minute: extra.minute ?? match.minute,
-        manualClock: extra.manualClock || match.manualClock,
-        fallbackClock: extra.fallbackClock ?? extra.clock_seconds ?? match.fallbackClock,
-        fallbackClockText: extra.fallbackClockText || match.fallbackClockText,
-        manualClockText: extra.manualClockText || match.manualClockText,
-        displayMinute: extra.displayMinute || match.displayMinute,
-        clockSeconds: extra.clockSeconds ?? extra.clock_seconds ?? match.clockSeconds,
+        minute: liveApiClockMaster ? match.minute : (extra.minute ?? match.minute),
+        manualClock: liveApiClockMaster ? match.manualClock : (extra.manualClock || match.manualClock),
+        fallbackClock: liveApiClockMaster ? match.fallbackClock : (extra.fallbackClock ?? extra.clock_seconds ?? match.fallbackClock),
+        fallbackClockText: liveApiClockMaster ? match.fallbackClockText : (extra.fallbackClockText || match.fallbackClockText),
+        manualClockText: liveApiClockMaster ? match.manualClockText : (extra.manualClockText || match.manualClockText),
+        displayMinute: liveApiClockMaster ? match.displayMinute : (extra.displayMinute || match.displayMinute),
+        clockSeconds: liveApiClockMaster ? match.clockSeconds : (extra.clockSeconds ?? extra.clock_seconds ?? match.clockSeconds),
         goalEvents: goalEvents.length ? goalEvents : (Array.isArray(match.goalEvents) ? match.goalEvents : []),
         events: rawEvents.length ? rawEvents : (goalEvents.length ? goalEvents : (Array.isArray(match.events) ? match.events : [])),
         cardEvents: cardEvents.length ? cardEvents : (Array.isArray(match.cardEvents) ? match.cardEvents : []),
@@ -7694,6 +7778,95 @@ class WorldCup2026Panel extends HTMLElement {
         publicGoalEventsSynced: true,
       };
     });
+  }
+
+
+  matchKickoffTime(match) {
+    const value = match?.utcDate || match?.date || match?.kickoff || match?.startTime;
+    if (!value) return null;
+    const time = new Date(value).getTime();
+    return Number.isFinite(time) ? time : null;
+  }
+
+  gameToday(matches) {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const end = start + 24 * 60 * 60 * 1000;
+    return (matches || []).some((match) => {
+      const kickoff = this.matchKickoffTime(match);
+      return kickoff && kickoff >= start && kickoff < end;
+    });
+  }
+
+  nextKickoffMs(matches) {
+    const now = Date.now();
+    let next = null;
+    (matches || []).forEach((match) => {
+      if (this.isFinishedMatch(match)) return;
+      const kickoff = this.matchKickoffTime(match);
+      if (!kickoff || kickoff < now) return;
+      if (next === null || kickoff < next) next = kickoff;
+    });
+    return next;
+  }
+
+  refreshDelayMs() {
+    const matches = this.allKnownMatches ? this.allKnownMatches() : [];
+    const hasLive = matches.some((match) => this.isLiveMatch(match));
+    if (hasLive) return 20 * 1000;
+
+    const next = this.nextKickoffMs(matches);
+    if (next !== null) {
+      const until = next - Date.now();
+      if (until <= 30 * 60 * 1000) return 60 * 1000;
+      if (until <= 3 * 60 * 60 * 1000) return 5 * 60 * 1000;
+    }
+
+    if (this.gameToday(matches)) return 5 * 60 * 1000;
+    return 15 * 60 * 1000;
+  }
+
+  scheduleNextRefresh(delay = null) {
+    if (this._refreshInterval) {
+      clearTimeout(this._refreshInterval);
+      this._refreshInterval = null;
+    }
+    const refreshDelay = Number.isFinite(Number(delay)) ? Number(delay) : this.refreshDelayMs();
+    this._refreshInterval = setTimeout(() => {
+      this._refreshInterval = null;
+      this.loadAll();
+    }, Math.max(20 * 1000, refreshDelay));
+  }
+
+  hasUsableMasterClock(match) {
+    if (!match || !this.isLiveMatch(match)) return false;
+    const awaiting = String(match?.displayMinute || match?.manualClockText || match?.manualClock?.displayMinute || "").toLowerCase().includes("awaiting");
+    const minute = match.minute !== undefined && match.minute !== null && match.minute !== "" ? Number(match.minute) : null;
+    if (Number.isFinite(minute) && minute >= 0) return true;
+
+    const display = String(match.displayMinute || match.manualClock?.displayMinute || match.manualClockText || "").trim();
+    if (display && !display.toLowerCase().includes("awaiting")) return true;
+
+    const secondsCandidates = [
+      match.manualClock?.seconds,
+      match.manualClock?.clockSeconds,
+      match.manualClock?.clock_seconds,
+      match.clockSeconds,
+      match.clock_seconds,
+      match.fallbackClock,
+      match.fallback_clock,
+    ];
+    for (const candidate of secondsCandidates) {
+      const value = Number(candidate);
+      if (Number.isFinite(value) && value > 0) return true;
+    }
+
+    const source = String(match?.clockSource || match?.manualClock?.source || "").toLowerCase();
+    return source.includes("api") && !awaiting;
+  }
+
+  backendHasMasterLiveClock(matches) {
+    return (Array.isArray(matches) ? matches : []).some((match) => this.hasUsableMasterClock(match));
   }
 
   async loadAll() {
@@ -7719,29 +7892,49 @@ class WorldCup2026Panel extends HTMLElement {
 
       const publicGoalEvents = await this.loadPublicGoalEvents();
       const publicResults = await this.loadPublicGithubResults();
+      const publicLive = await this.loadPublicGithubLive();
+      const publicMatches = this.mergeUniqueMatches(publicLive, await this.loadPublicGithubMatches());
 
       const storeMatches = this.goalEventStoreToMatches(publicGoalEvents);
       const fixturesWithStore = this.mergePublicGoalEventStore(apiFixtures, publicGoalEvents);
+      const publicMatchesWithStore = this.mergePublicGoalEventStore(publicMatches, publicGoalEvents);
       const apiResultsWithStore = this.mergePublicGoalEventStore(Array.isArray(apiResults) ? apiResults : [], publicGoalEvents);
       const publicResultsWithStore = this.mergePublicGoalEventStore(publicResults, publicGoalEvents);
       const combinedResults = this.mergeUniqueMatches(apiResultsWithStore, publicResultsWithStore);
 
-      this._data.live = this.mergePublicGoalEventStore(
+      const apiLiveWithStore = this.mergePublicGoalEventStore(
         (Array.isArray(apiLive) ? apiLive : []).filter((match) => this.isLiveMatch(match)),
         publicGoalEvents
       );
-      this._data.fixtures = this.mergeUniqueMatches(fixturesWithStore, storeMatches);
-      this._data.results = this.mergeResultsAndFinishedFixtures(combinedResults, this._data.fixtures);
+      const publicLiveWithStore = this.liveMatchesFromGithub(publicMatchesWithStore);
+      const mergedLiveFromGithub = this.mergeGithubMatchData(apiLiveWithStore, publicLiveWithStore).filter((match) => this.isLiveMatch(match));
+      // Main/provider dashboards keep their API clock. Viewer dashboards can have
+      // a local live row with "Awaiting live API data"; merge the GitHub master
+      // live feed so those devices get your exported minute/events every refresh.
+      this._data.live = this.backendHasMasterLiveClock(apiLiveWithStore)
+        ? this.mergeGithubMatchData(apiLiveWithStore, publicLiveWithStore).filter((match) => this.isLiveMatch(match))
+        : mergedLiveFromGithub;
+      this._data.fixtures = this.mergeUniqueMatches(
+        this.mergeGithubMatchData(fixturesWithStore, publicMatchesWithStore),
+        storeMatches
+      );
+      this._data.results = this.mergeResultsAndFinishedFixtures(
+        this.mergeUniqueMatches(combinedResults, publicMatchesWithStore.filter((match) => this.isFinishedMatch(match))),
+        this._data.fixtures
+      );
       this._data.groups = await this.callApi("world_cup_2026/get_groups");
       this._data.scorers = await this.safeCall("world_cup_2026/get_scorers", []);
       this._data.statistics = await this.safeCall("world_cup_2026/get_statistics", {});
       this._data.records = await this.safeCall("world_cup_2026/get_records", {});
       this._data.venues = await this.safeCall("world_cup_2026/get_venues", {});
       this._data.supporters = await this.loadSupporters();
+      this._data.premiumSupporters = await this.loadPremiumSupporters();
       this.processMatchClockState();
       this.render();
     } catch (err) {
       this.renderError(err);
+    } finally {
+      this.scheduleNextRefresh();
     }
   }
 
@@ -7841,6 +8034,10 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   statusLabel(status, match = null) {
+    const displayMinute = String(match?.displayMinute || match?.manualClock?.displayMinute || "").trim();
+    if (displayMinute && displayMinute !== "Awaiting live API data" && ["IN_PLAY", "LIVE", "1H", "2H", "ET"].includes(String(status).toUpperCase())) {
+      return displayMinute;
+    }
     const minute = match && match.minute !== undefined && match.minute !== null && match.minute !== "" ? Number(match.minute) : null;
     if (minute !== null && Number.isFinite(minute) && ["IN_PLAY", "LIVE", "1H", "2H"].includes(String(status))) {
       return `${minute}'`;
@@ -7875,12 +8072,12 @@ class WorldCup2026Panel extends HTMLElement {
 
   isLiveMatch(match) {
     const status = String(match?.status || match?.matchStatus || "").toUpperCase().trim();
-    const liveStatuses = ["IN_PLAY", "LIVE", "PAUSED", "HT", "HALF_TIME", "1H", "2H"];
+    const liveStatuses = ["IN_PLAY", "LIVE", "PAUSED", "HT", "HALF_TIME", "1H", "2H", "ET", "BT", "P", "SUSP", "INT"];
     return liveStatuses.includes(status);
   }
 
   isLiveClockStatus(status) {
-    return ["IN_PLAY", "LIVE", "1H", "2H", "ET", "EXTRA_TIME", "1ET", "2ET"].includes(String(status || "").toUpperCase().trim());
+    return ["IN_PLAY", "LIVE", "1H", "2H", "ET", "EXTRA_TIME", "1ET", "2ET", "P", "SUSP", "INT"].includes(String(status || "").toUpperCase().trim());
   }
 
   isHalfTimeClockStatus(status) {
@@ -7899,6 +8096,16 @@ class WorldCup2026Panel extends HTMLElement {
     if (!match || typeof match !== "object") return null;
 
     const manual = match.manualClock && typeof match.manualClock === "object" ? match.manualClock : null;
+    const status = String(manual?.status || match.status || match.matchStatus || "").toUpperCase().trim();
+
+    let seconds = null;
+    const directMinute = match.minute !== undefined && match.minute !== null && match.minute !== ""
+      ? Number(match.minute)
+      : null;
+    if (Number.isFinite(directMinute)) {
+      seconds = Math.max(0, Math.floor(directMinute * 60));
+    }
+
     const candidates = [
       manual?.seconds,
       manual?.clockSeconds,
@@ -7909,16 +8116,30 @@ class WorldCup2026Panel extends HTMLElement {
       match.fallback_clock,
     ];
 
-    let seconds = null;
-    for (const candidate of candidates) {
-      const value = Number(candidate);
-      if (Number.isFinite(value)) {
-        seconds = Math.max(0, Math.floor(value));
-        break;
+    if (seconds === null) {
+      for (const candidate of candidates) {
+        const value = Number(candidate);
+        if (Number.isFinite(value)) {
+          seconds = Math.max(0, Math.floor(value));
+          break;
+        }
       }
     }
 
     const timer = manual?.timer || match.fallbackClockText || match.clockText || match.timer || null;
+    const displayCandidate = String(match.displayMinute || manual?.displayMinute || match.manualClockText || "").trim();
+    const displayIsUsable = displayCandidate && !displayCandidate.toLowerCase().includes("awaiting");
+
+    if (seconds === null && displayIsUsable) {
+      const stoppage = displayCandidate.match(/^(\d+)\+(\d+)'?$/);
+      const minuteOnly = displayCandidate.match(/^(\d+)'?$/);
+      if (stoppage) {
+        seconds = (Number(stoppage[1]) + Number(stoppage[2])) * 60;
+      } else if (minuteOnly) {
+        seconds = Number(minuteOnly[1]) * 60;
+      }
+    }
+
     if (seconds === null && timer && /^\d+:\d{2}$/.test(String(timer))) {
       const [mins, secs] = String(timer).split(":").map((part) => Number(part));
       if (Number.isFinite(mins) && Number.isFinite(secs)) {
@@ -7928,19 +8149,21 @@ class WorldCup2026Panel extends HTMLElement {
 
     if (seconds === null) return null;
 
-    const status = String(manual?.status || match.status || "").toUpperCase();
     const activeValue = manual?.active ?? match.clock_active ?? match.clockActive ?? null;
-    const active = activeValue === null || activeValue === undefined
-      ? this.isLiveClockStatus(status)
-      : !!activeValue;
+    // Viewer panels seed from the GitHub/master feed, then tick locally between pulls.
+    // Some master feeds export active:false deliberately, so force a running viewer
+    // clock while the match status is an active live phase. HT/FT still freeze.
+    const active = this.isLiveClockStatus(status)
+      ? true
+      : (activeValue === null || activeValue === undefined ? false : !!activeValue);
 
     return {
       seconds,
       timer: timer || this.formatClockSeconds(seconds),
-      displayMinute: manual?.displayMinute || match.displayMinute || this.displayMinuteFromSeconds(seconds),
+      displayMinute: displayIsUsable ? displayCandidate : this.displayMinuteFromSeconds(seconds),
       active,
       status,
-      source: manual?.source || match.clockSource || "exported_manual_clock",
+      source: manual?.source || match.clockSource || (match.publicGithubSynced ? "github_master_clock" : "exported_manual_clock"),
     };
   }
 
@@ -8081,32 +8304,14 @@ class WorldCup2026Panel extends HTMLElement {
 
       if (!exportedSync.exported) {
         if (this.isLiveClockStatus(status)) {
-          const existingSeconds = this.currentClockSeconds(match, state, now);
-          // Manual testing clock: keep this independent from API-Football minutes so both timers can be compared side-by-side.
-          const wasPaused = Number.isFinite(Number(previous.freezeAt));
-          const previousOffset = Number(previous.offsetSeconds || 0);
-          const previousSeconds = Number.isFinite(Number(existingSeconds)) ? Number(existingSeconds) : previousOffset;
-
-          let offsetSeconds;
-          if (wasPaused) {
-            // Restart from the frozen point: 45:00 after HT, 105:00 after ET HT.
-            offsetSeconds = Number(previous.freezeAt || 0);
-          } else if (!previous.startedAt) {
-            // Fresh live start. Extra-time statuses start from 90:00, normal live starts from 00:00.
-            offsetSeconds = this.isExtraTimeMatch(match) ? 90 * 60 : 0;
-          } else {
-            offsetSeconds = previousSeconds;
-          }
-
-          if (this.isExtraTimeMatch(match) && offsetSeconds < 90 * 60) {
-            offsetSeconds = 90 * 60;
-          }
-
+          // No backend/API clock yet. Do not invent a browser timer from
+          // kick-off time; show Awaiting live API data instead.
           state = {
             ...state,
             status,
-            startedAt: now,
-            offsetSeconds: Math.max(0, Math.floor(offsetSeconds)),
+            startedAt: null,
+            offsetSeconds: 0,
+            awaitingLiveApiData: true,
           };
           delete state.freezeAt;
           changed = true;
@@ -8158,22 +8363,87 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   apiClockText(match) {
-    const minute = match && match.minute !== undefined && match.minute !== null && match.minute !== "" ? Number(match.minute) : null;
-    return Number.isFinite(minute) ? `${minute}'` : "--";
+    if (!match) return "Awaiting live API data";
+
+    const status = String(match.status || match.matchStatus || "").toUpperCase().trim();
+
+    if (this.isHalfTimeClockStatus(status)) return "HT";
+    if (status === "SUSP" || status === "SUSPENDED") return "SUSP";
+    if (status === "INT" || status === "INTERRUPTED") return "INT";
+    if (status === "FT" || status === "FINISHED") return "FT";
+    if (status === "AET") return "AET";
+    if (status === "PEN" || status === "PENALTY_SHOOTOUT") return "PEN";
+
+    // Viewer devices must trust the GitHub/master feed clock. Do this before
+    // checking awaitingLiveApiData, because non-provider installs can receive
+    // a local awaiting flag while the public GitHub copy already has the minute.
+    const directMinute = match.minute !== undefined && match.minute !== null && match.minute !== ""
+      ? Number(match.minute)
+      : null;
+    if (Number.isFinite(directMinute)) {
+      const extra = match.extra !== undefined && match.extra !== null && match.extra !== ""
+        ? Number(match.extra)
+        : null;
+
+      // Viewer panels can be between GitHub pulls. Seed from the master minute,
+      // then keep a local display clock moving until the next GitHub refresh.
+      if (this.isLiveClockStatus(status)) {
+        const runningSeconds = this.currentClockSeconds(match);
+        if (Number.isFinite(Number(runningSeconds)) && Number(runningSeconds) > 0) {
+          const runningMinute = Math.max(0, Math.floor(Number(runningSeconds) / 60));
+          return Number.isFinite(extra) && extra > 0 && directMinute >= 90
+            ? `${directMinute}+${extra}'`
+            : `${runningMinute}'`;
+        }
+      }
+
+      // Fallback for feeds that include last sync data before local state exists.
+      const lastSyncRaw = match.lastApiSync || match.manualClock?.lastApiSync || match.apiFootballLastSync;
+      const lastSync = lastSyncRaw ? new Date(lastSyncRaw).getTime() : null;
+      const baseSeconds = Number(match.clockSeconds ?? match.manualClock?.seconds ?? match.fallbackClock);
+      if (lastSync && Number.isFinite(lastSync) && Number.isFinite(baseSeconds) && baseSeconds > 0 && this.isLiveMatch(match)) {
+        const driftSeconds = Math.max(0, Math.min(90, Math.floor((Date.now() - lastSync) / 1000)));
+        const displaySeconds = baseSeconds + driftSeconds;
+        const displayMinute = Math.max(0, Math.floor(displaySeconds / 60));
+        return Number.isFinite(extra) && extra > 0 && directMinute >= 90 ? `${directMinute}+${extra}'` : `${displayMinute}'`;
+      }
+
+      return Number.isFinite(extra) && extra > 0 ? `${directMinute}+${extra}'` : `${directMinute}'`;
+    }
+
+    const apiDisplay = String(match.displayMinute || match.manualClock?.displayMinute || match.manualClockText || "").trim();
+    if (apiDisplay && !apiDisplay.toLowerCase().includes("awaiting")) {
+      if (this.isLiveClockStatus(status)) {
+        const runningSeconds = this.currentClockSeconds(match);
+        if (Number.isFinite(Number(runningSeconds)) && Number(runningSeconds) > 0) {
+          return this.displayMinuteFromSeconds(runningSeconds);
+        }
+      }
+      return apiDisplay;
+    }
+
+    const exported = this.exportedClockState(match);
+    if (exported?.displayMinute && !String(exported.displayMinute).toLowerCase().includes("awaiting")) {
+      return exported.displayMinute;
+    }
+
+    return "Awaiting live API data";
   }
 
   manualClockText(match) {
     const status = String(match?.status || "");
     if (this.isFinishedClockStatus(status)) return "";
 
+    // Keep this as a fallback for old public JSON, but do not use it as the
+    // main live display. The live clock must come from the master API minute.
     const seconds = this.currentClockSeconds(match);
-    if (seconds === null || seconds === undefined) return "--";
+    if (seconds === null || seconds === undefined) return "Awaiting live API data";
 
-    return this.formatClockSeconds(seconds);
+    return this.displayMinuteFromSeconds(seconds);
   }
 
   liveClockText(match) {
-    return this.manualClockText(match);
+    return this.apiClockText(match);
   }
 
   footballClockHtml(match) {
@@ -8181,18 +8451,24 @@ class WorldCup2026Panel extends HTMLElement {
     if (!(this.isLiveClockStatus(status) || this.isHalfTimeClockStatus(status))) return "";
 
     const id = this.matchStorageId(match);
-    const clockText = this.manualClockText(match);
+    const clockText = this.liveClockText(match);
     if (!clockText || clockText === "--") return "";
 
     const label = this.isHalfTimeClockStatus(status)
       ? this.t("paused")
       : (this.isExtraTimeMatch(match) ? this.t("aet") : this.t("liveStatus"));
 
+    const liveClass = this.isLiveClockStatus(status)
+      ? " wc-football-match-clock-wrap-live"
+      : (this.isHalfTimeClockStatus(status) ? " wc-football-match-clock-wrap-paused" : "");
+
     return `
-      <div class="wc-football-match-clock-wrap" title="${this.esc(this.t("manualTimerNotice"))}">
+      <div class="wc-football-match-clock-wrap${liveClass}" title="${this.esc(this.t("manualTimerNotice"))}">
         <span class="wc-football-match-clock-label">${this.esc(label)}</span>
         <span class="wc-football-match-clock" data-match-id="${this.esc(id)}">${this.esc(clockText)}</span>
       </div>
+
+
     `;
   }
 
@@ -8222,7 +8498,7 @@ class WorldCup2026Panel extends HTMLElement {
       const id = clock.getAttribute("data-match-id");
       const match = matchesById.get(id);
       if (!match) return;
-      clock.textContent = this.manualClockText(match);
+      clock.textContent = this.liveClockText(match);
     });
   }
 
@@ -8724,12 +9000,57 @@ class WorldCup2026Panel extends HTMLElement {
     return m.awayTeam || m.away || m.team2 || m.away_team || this.t("tbc");
   }
 
-  getHomeScore(m) {
+  officialHomeScore(m) {
     return m.homeScore ?? m.home_score ?? m.score?.fullTime?.home ?? m.score?.home ?? "-";
   }
 
-  getAwayScore(m) {
+  officialAwayScore(m) {
     return m.awayScore ?? m.away_score ?? m.score?.fullTime?.away ?? m.score?.away ?? "-";
+  }
+
+  provisionalLiveScoreFromEvents(m) {
+    if (!m || !this.isLiveMatch(m)) return null;
+    const homeOfficial = Number(this.officialHomeScore(m));
+    const awayOfficial = Number(this.officialAwayScore(m));
+    if (!Number.isFinite(homeOfficial) || !Number.isFinite(awayOfficial)) return null;
+
+    const events = this.normalisedMatchEvents ? this.normalisedMatchEvents(m) : [];
+    const goalEvents = events.filter((event) => event.category === "goal" && !event.isMissedPenalty);
+    if (!goalEvents.length) return null;
+
+    let homeGoals = 0;
+    let awayGoals = 0;
+    const home = this.fixtureTeamKey(this.getHomeTeam(m));
+    const away = this.fixtureTeamKey(this.getAwayTeam(m));
+
+    goalEvents.forEach((event) => {
+      const teamKey = this.fixtureTeamKey(event.team || "");
+      if (event.isOwnGoal) {
+        if (teamKey === home) awayGoals += 1;
+        else if (teamKey === away) homeGoals += 1;
+        return;
+      }
+      if (teamKey === home) homeGoals += 1;
+      else if (teamKey === away) awayGoals += 1;
+    });
+
+    const officialTotal = homeOfficial + awayOfficial;
+    const eventTotal = homeGoals + awayGoals;
+    if (eventTotal <= officialTotal) return null;
+
+    return { home: homeGoals, away: awayGoals, provisional: true };
+  }
+
+  getHomeScore(m) {
+    const provisional = this.provisionalLiveScoreFromEvents(m);
+    if (provisional) return provisional.home;
+    return this.officialHomeScore(m);
+  }
+
+  getAwayScore(m) {
+    const provisional = this.provisionalLiveScoreFromEvents(m);
+    if (provisional) return provisional.away;
+    return this.officialAwayScore(m);
   }
 
   renderLoading() {
@@ -8748,7 +9069,28 @@ class WorldCup2026Panel extends HTMLElement {
       ${this.styles()}
       <div class="wc-app ">
         <div class="wc-shell">
-          <div class="wc-card">
+          
+      <div class="wc-card wc-premium-highlight" style="text-align:center;max-width:980px;margin:0 auto 14px auto;border:2px solid rgba(255,215,0,0.95);box-shadow:0 0 24px rgba(255,215,0,0.28);background:linear-gradient(135deg,rgba(255,215,0,0.16),rgba(255,255,255,0.04));">
+        <div style="font-size:1.45rem;font-weight:900;letter-spacing:.04em;margin-bottom:8px;">⭐ BECOME A PREMIUM SUPPORTER ⭐</div>
+        <div style="font-size:1.05rem;font-weight:800;margin-bottom:10px;">Want your name shown on the scrolling supporter bar?</div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:12px auto;max-width:820px;">
+          <div class="wc-mini-card" style="padding:12px;border-radius:14px;background:rgba(255,255,255,0.08);">🇬🇧<br><strong>Name + Flag</strong></div>
+          <div class="wc-mini-card" style="padding:12px;border-radius:14px;background:rgba(255,255,255,0.08);">💬<br><strong>Your Message</strong></div>
+          <div class="wc-mini-card" style="padding:12px;border-radius:14px;background:rgba(255,255,255,0.08);">🏆<br><strong>Premium Status</strong></div>
+        </div>
+
+        <p style="font-size:1.15rem;font-weight:900;margin:12px auto;">Premium Support donation: minimum £10</p>
+        <p class="wc-muted" style="max-width:760px;margin:8px auto;">
+          Premium supporters get their name, country flag and optional personal message shown on the Premium Supporters scrolling bar.
+          Funny messages and friendly football banter are welcome, but they must stay clean.
+        </p>
+        <p class="wc-muted" style="max-width:760px;margin:8px auto;font-size:.9rem;">
+          No swearing, insults, abuse, discrimination, political content or negative comments. Unsuitable messages will not be posted.
+        </p>
+      </div>
+
+<div class="wc-card">
             <h1>${this.t("errorTitle")}</h1>
             <p>${this.t("errorText")}</p>
             <pre>${this.esc(JSON.stringify(err, null, 2))}</pre>
@@ -9041,6 +9383,213 @@ class WorldCup2026Panel extends HTMLElement {
           line-height: 1.1;
           margin-top: 1px;
           letter-spacing: 0.15px;
+        }
+
+        .overview-premium-strip {
+          position: relative;
+          display: grid;
+          grid-template-columns: auto minmax(0, 1fr) auto;
+          align-items: center;
+          gap: 12px;
+          min-height: 46px;
+          margin: 0 0 10px 0;
+          padding: 7px 8px 7px 12px;
+          border-radius: 18px;
+          overflow: hidden;
+          background:
+            radial-gradient(circle at 12% 0%, rgba(255, 236, 150, 0.30), transparent 34%),
+            linear-gradient(135deg, rgba(44, 31, 4, 0.74), rgba(13, 16, 34, 0.84) 52%, rgba(42, 26, 5, 0.76));
+          border: 1px solid rgba(255, 220, 120, 0.34);
+          box-shadow:
+            0 12px 34px rgba(0, 0, 0, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.10),
+            0 0 24px rgba(255, 196, 72, 0.13);
+        }
+
+        .overview-premium-glow {
+          position: absolute;
+          inset: -60% auto auto -10%;
+          width: 180px;
+          height: 180px;
+          border-radius: 999px;
+          background: radial-gradient(circle, rgba(255, 226, 121, 0.32), transparent 64%);
+          pointer-events: none;
+          opacity: 0.75;
+        }
+
+        .overview-premium-badge {
+          position: relative;
+          z-index: 1;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          min-width: 178px;
+          padding: 6px 10px;
+          border-radius: 14px;
+          background: rgba(0, 0, 0, 0.24);
+          border: 1px solid rgba(255, 225, 135, 0.22);
+          color: #fff4c7;
+          white-space: nowrap;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+
+        .overview-premium-crown {
+          display: inline-grid;
+          place-items: center;
+          width: 25px;
+          height: 25px;
+          border-radius: 999px;
+          background: linear-gradient(135deg, rgba(255, 231, 134, 0.30), rgba(255, 168, 45, 0.14));
+          border: 1px solid rgba(255, 226, 135, 0.32);
+          filter: drop-shadow(0 0 10px rgba(255, 207, 72, 0.18));
+        }
+
+        .overview-premium-badge strong {
+          display: block;
+          font-size: 12px;
+          line-height: 1;
+          font-weight: 1000;
+          letter-spacing: 0.2px;
+        }
+
+        .overview-premium-badge small {
+          display: block;
+          margin-top: 2px;
+          font-size: 9px;
+          line-height: 1;
+          font-weight: 900;
+          color: rgba(255, 244, 199, 0.66);
+          text-transform: uppercase;
+          letter-spacing: 0.35px;
+        }
+
+        .overview-premium-marquee {
+          position: relative;
+          z-index: 1;
+          min-width: 0;
+          overflow: hidden;
+          mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+          -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+        }
+
+        .overview-premium-track {
+          display: inline-flex;
+          align-items: center;
+          gap: 12px;
+          white-space: nowrap;
+          animation: wc-premium-supporter-scroll 69s linear infinite;
+          will-change: transform;
+        }
+
+        .overview-premium-strip:hover .overview-premium-track {
+          animation-play-state: paused;
+        }
+
+        .premium-ticker-card {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          min-height: 31px;
+          padding: 6px 11px;
+          border-radius: 999px;
+          color: #fff8d8;
+          background:
+            linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.045));
+          border: 1px solid rgba(255, 222, 136, 0.22);
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.08),
+            0 0 14px rgba(255, 203, 78, 0.08);
+          font-size: 13px;
+          font-weight: 950;
+        }
+
+        .premium-ticker-card small {
+          margin-left: 2px;
+          color: rgba(255, 248, 216, 0.62);
+          font-size: 10px;
+          font-weight: 850;
+        }
+
+        .premium-ticker-ad {
+          background: linear-gradient(135deg, rgba(255, 218, 110, 0.18), rgba(255, 255, 255, 0.055));
+          border-color: rgba(255, 222, 136, 0.34);
+        }
+
+        .premium-ticker-star {
+          filter: drop-shadow(0 0 8px rgba(255, 211, 82, 0.22));
+        }
+
+        .premium-ticker-flag {
+          font-size: 16px;
+          line-height: 1;
+        }
+
+        .premium-ticker-name {
+          max-width: 220px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .overview-premium-cta {
+          position: relative;
+          z-index: 1;
+          flex: 0 0 auto;
+          border: 0;
+          cursor: pointer;
+          min-height: 32px;
+          padding: 7px 12px;
+          border-radius: 999px;
+          background: linear-gradient(135deg, rgba(255, 223, 118, 0.30), rgba(255, 168, 44, 0.18));
+          color: #fff3bd;
+          font-size: 11px;
+          font-weight: 1000;
+          white-space: nowrap;
+          border: 1px solid rgba(255, 223, 118, 0.38);
+          box-shadow: 0 0 16px rgba(255, 192, 58, 0.14);
+        }
+
+        @keyframes wc-premium-supporter-scroll {
+          from { transform: translateX(0); }
+          to { transform: translateX(-33.333%); }
+        }
+
+        @media (max-width: 800px) {
+          .overview-premium-strip {
+            grid-template-columns: minmax(0, 1fr) auto;
+            min-height: 42px;
+            padding: 6px 7px;
+            gap: 8px;
+          }
+
+          .overview-premium-badge {
+            display: none;
+          }
+
+          .overview-premium-track {
+            animation-duration: 112s;
+          }
+
+          .premium-ticker-card {
+            min-height: 29px;
+            padding: 5px 9px;
+            font-size: 12px;
+          }
+
+          .premium-ticker-card small {
+            display: none;
+          }
+
+          .overview-premium-cta {
+            padding: 6px 9px;
+            font-size: 10px;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .overview-premium-track {
+            animation: none;
+          }
         }
 
 
@@ -14720,6 +15269,82 @@ class WorldCup2026Panel extends HTMLElement {
           text-shadow: 0 2px 8px rgba(0,0,0,0.9);
         }
 
+        .wc-football-match-clock-wrap-live .wc-football-match-clock-label {
+          color: #ffffff;
+          animation: wc-live-label-pulse 3.8s ease-in-out infinite;
+        }
+
+        .wc-football-match-clock-wrap-live .wc-football-match-clock {
+          position: relative;
+          border: 2px solid rgba(120, 255, 175, 0.62);
+          background: rgba(7, 10, 24, 0.82);
+          color: #ffffff;
+          animation: wc-live-clock-glow 3.8s ease-in-out infinite;
+          box-shadow:
+            0 0 6px rgba(255,255,255,0.22),
+            0 0 14px rgba(0,255,120,0.34),
+            0 0 24px rgba(0,190,80,0.22),
+            inset 0 0 6px rgba(255,255,255,0.12);
+        }
+
+        .wc-football-match-clock-wrap-live .wc-football-match-clock::before {
+          content: "";
+          position: absolute;
+          inset: -7px;
+          border-radius: 12px;
+          border: 1px solid rgba(0, 255, 120, 0.34);
+          opacity: 0.35;
+          pointer-events: none;
+          animation: wc-live-clock-ring 3.8s ease-in-out infinite;
+        }
+
+        @keyframes wc-live-clock-glow {
+          0%, 100% {
+            transform: scale(1);
+            background: rgba(7, 10, 24, 0.82);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 8px rgba(0,255,120,0.30);
+            box-shadow:
+              0 0 6px rgba(255,255,255,0.18),
+              0 0 12px rgba(0,255,120,0.26),
+              0 0 22px rgba(0,190,80,0.18),
+              inset 0 0 6px rgba(255,255,255,0.10);
+          }
+          50% {
+            transform: scale(1.025);
+            background: rgba(0, 58, 28, 0.86);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.85), 0 0 12px rgba(0,255,130,0.48);
+            box-shadow:
+              0 0 8px rgba(255,255,255,0.26),
+              0 0 18px rgba(0,255,120,0.46),
+              0 0 32px rgba(0,210,85,0.34),
+              inset 0 0 9px rgba(255,255,255,0.16);
+          }
+        }
+
+        @keyframes wc-live-clock-ring {
+          0%, 100% {
+            transform: scale(0.98);
+            opacity: 0.18;
+            box-shadow: 0 0 8px rgba(0,255,120,0.20);
+          }
+          50% {
+            transform: scale(1.035);
+            opacity: 0.46;
+            box-shadow: 0 0 16px rgba(0,255,120,0.38), 0 0 28px rgba(0,190,80,0.24);
+          }
+        }
+
+        @keyframes wc-live-label-pulse {
+          0%, 100% {
+            opacity: 0.78;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.75);
+          }
+          50% {
+            opacity: 1;
+            text-shadow: 0 0 8px rgba(255,255,255,0.46), 0 0 16px rgba(0,255,120,0.38);
+          }
+        }
+
         /* Tablet readability fix: use the empty top-right space so the header nav labels stay readable. */
         .wc-app.wc-view-tablet .wc-header {
           padding-right: 0 !important;
@@ -14926,6 +15551,19 @@ class WorldCup2026Panel extends HTMLElement {
             padding-top: 260px;
           }
         }
+
+
+      .wc-premium-explainer,
+      .wc-premium-explainer p,
+      .wc-premium-explainer .wc-muted,
+      .wc-premium-explainer .wc-section-title {
+        text-align: center !important;
+      }
+      .wc-premium-explainer {
+        max-width: 900px;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
 
 </style>
     `;
@@ -15173,6 +15811,66 @@ class WorldCup2026Panel extends HTMLElement {
     `;
   }
 
+
+  overviewSupporterTicker() {
+    const premiumSupporters = Array.isArray(this._data.premiumSupporters)
+      ? this._data.premiumSupporters
+      : [];
+
+    const visibleSupporters = premiumSupporters.slice(0, 30);
+    const supporterItems = visibleSupporters.map((supporter) => {
+      const name = typeof supporter === "string" ? supporter : supporter.name;
+      const country = typeof supporter === "string" ? "" : (supporter.flag || supporter.country || supporter.countryCode || supporter.location);
+      const flag = country ? this.flag(country, true) : (typeof supporter === "object" && supporter.flag ? supporter.flag : "🌟");
+      const label = this.esc(name || this.t("anonymousSupporter"));
+      const message = typeof supporter === "string" ? "" : supporter.message;
+      const shortMessage = message ? `<small>${this.esc(message)}</small>` : "";
+      return `
+        <span class="premium-ticker-card">
+          <span class="premium-ticker-star">⭐</span>
+          <span class="premium-ticker-flag">${flag}</span>
+          <span class="premium-ticker-name">${label}</span>
+          ${shortMessage}
+        </span>
+      `;
+    });
+
+    const heroItems = [
+      `<span class="premium-ticker-card premium-ticker-ad"><span class="premium-ticker-star">🏆</span><span class="premium-ticker-name">Premium Supporters</span><small>Featured on the main dashboard</small></span>`,
+      `<span class="premium-ticker-card premium-ticker-ad"><span class="premium-ticker-star">🍺</span><span class="premium-ticker-name">Support development</span><small>Help with API costs, fixes and live updates</small></span>`,
+      `<span class="premium-ticker-card premium-ticker-ad"><span class="premium-ticker-star">⭐</span><span class="premium-ticker-name">Premium Supporter</span><small>Minimum £10 donation to be featured</small></span>`
+    ];
+
+    const items = supporterItems.length ? [...supporterItems, ...heroItems] : heroItems;
+    const repeatedItems = [...items, ...items, ...items].join("");
+
+    // Keep the marquee position stable across Home Assistant refreshes/re-renders.
+    // Without this, every data refresh rebuilds the DOM and the animation starts again.
+    const animationSeconds = 140;
+    const animationOffset = -((Date.now() / 1000) % animationSeconds).toFixed(2);
+
+    return `
+      <div class="overview-premium-strip" role="region" aria-label="World Cup 2026 premium supporters">
+        <div class="overview-premium-glow"></div>
+        <div class="overview-premium-badge">
+          <span class="overview-premium-crown">👑</span>
+          <span>
+            <strong>Premium Supporters</strong>
+            <small>Main-page featured supporters</small>
+          </span>
+        </div>
+        <div class="overview-premium-marquee">
+          <div class="overview-premium-track" style="animation-delay: ${animationOffset}s;">
+            ${repeatedItems}
+          </div>
+        </div>
+        <button class="overview-premium-cta overview-action-button" data-page="supporters" type="button">
+          🍺 Join
+        </button>
+      </div>
+    `;
+  }
+
   overviewPage() {
     const o = this._data.overview || {};
     const fixtures = this._data.fixtures || [];
@@ -15217,7 +15915,7 @@ class WorldCup2026Panel extends HTMLElement {
     });
 
     const finishedStatuses = ["FINISHED", "FT", "AET", "PEN"];
-    const liveStatuses = ["IN_PLAY", "LIVE", "PAUSED", "HT", "HALF_TIME", "1H", "2H"];
+    const liveStatuses = ["IN_PLAY", "LIVE", "PAUSED", "HT", "HALF_TIME", "1H", "2H", "ET", "BT", "P", "SUSP", "INT"];
     const upcomingStatuses = ["TIMED", "SCHEDULED"];
 
     const playedCount = o.matches_played ?? sortedFixtures.filter(m => finishedStatuses.includes(m.status)).length;
@@ -15241,6 +15939,7 @@ class WorldCup2026Panel extends HTMLElement {
     const supporters = this.sortedSupporters();
     return `
       <div class="overview-pro-page">
+        ${this.overviewSupporterTicker()}
         <div class="overview-hero compact-overview-hero wc-card">
 <div class="overview-hero-main">
             <div class="overview-progress-wrap">
@@ -16122,7 +16821,7 @@ class WorldCup2026Panel extends HTMLElement {
     });
 
     const playedCount = sortedFixtures.filter(m => ["FINISHED", "FT", "AET", "PEN"].includes(m.status)).length;
-    const liveCount = sortedFixtures.filter(m => ["IN_PLAY", "LIVE", "PAUSED"].includes(m.status)).length;
+    const liveCount = sortedFixtures.filter(m => this.isLiveMatch(m)).length;
     const remainingCount = Math.max(sortedFixtures.length - playedCount, 0);
     const nextMatch = sortedFixtures.find(m => ["TIMED", "SCHEDULED"].includes(m.status));
     const dayCount = new Set(sortedFixtures.map(m => this.fixtureDateKey(m))).size;
@@ -17857,73 +18556,207 @@ class WorldCup2026Panel extends HTMLElement {
   statsPage() {
     const a = this.statsHubAnalytics();
     const eventColour = a.dataCoverage >= 80 ? "#22c55e" : (a.dataCoverage >= 40 ? "#f59e0b" : "#ef4444");
-    const statCard = (label, value, sub = "", badge = "") => `
-      <div class="wc-stat" style="min-height:104px;display:flex;flex-direction:column;justify-content:center;gap:5px;background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.045));border:1px solid rgba(255,255,255,.10);">
-        ${badge ? `<div style="font-size:.72rem;font-weight:900;letter-spacing:.08em;color:#93c5fd;text-transform:uppercase;">${this.esc(badge)}</div>` : ""}
-        <strong style="font-size:2rem;line-height:1;">${this.esc(value)}</strong>
-        <span>${this.esc(label)}</span>
-        ${sub ? `<small style="color:rgba(255,255,255,.58);">${this.esc(sub)}</small>` : ""}
+    const safeNumber = (value) => Number.isFinite(Number(value)) ? Number(value) : 0;
+    const pct = (part, total) => total ? Math.round((part / total) * 100) : 0;
+
+    const statCard = (label, value, sub = "", accent = "#93c5fd") => `
+      <div class="wc-stat" style="min-height:106px;display:flex;flex-direction:column;justify-content:center;gap:6px;background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.042));border:1px solid rgba(255,255,255,.105);box-shadow:0 10px 30px rgba(0,0,0,.18);">
+        <strong style="font-size:2rem;line-height:1;color:${accent};">${this.esc(value)}</strong>
+        <span style="font-weight:900;">${this.esc(label)}</span>
+        ${sub ? `<small style="color:rgba(255,255,255,.60);line-height:1.35;">${this.esc(sub)}</small>` : ""}
       </div>
     `;
 
+    const chip = (label, value, accent = "#93c5fd") => `
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);">
+        <span style="color:rgba(255,255,255,.68);font-weight:800;">${this.esc(label)}</span>
+        <strong style="color:${accent};font-size:1.05rem;">${this.esc(value)}</strong>
+      </div>
+    `;
+
+    const extractLineups = (match) => {
+      const candidates = [
+        match?.lineups,
+        match?.lineupsData,
+        match?.teamLineups,
+        match?.apiFootballLineups,
+        match?.matchLineups,
+        match?.matchDetails?.lineups,
+        match?.matchDetails?.lineupsData,
+        match?.details?.lineups,
+        match?.fixture?.lineups,
+      ];
+      for (const candidate of candidates) {
+        if (Array.isArray(candidate) && candidate.length) return candidate;
+        if (candidate && typeof candidate === "object") {
+          const values = Object.values(candidate).filter(Boolean);
+          if (values.length) return values;
+        }
+      }
+      return [];
+    };
+
+    const lineupTeamName = (lineup, fallback = "") => {
+      const team = lineup?.team || lineup?.teamName || lineup?.name || lineup?.side || fallback;
+      if (team && typeof team === "object") return team.name || team.shortName || team.tla || fallback;
+      return team || fallback;
+    };
+
+    const playerName = (player) => {
+      if (!player) return "";
+      if (typeof player === "string") return player;
+      return player.name || player.playerName || player.fullName || player?.player?.name || player?.athlete?.displayName || "";
+    };
+
+    const playerNumber = (player) => {
+      if (!player || typeof player === "string") return "";
+      return player.number || player.shirtNumber || player.jerseyNumber || player?.player?.number || "";
+    };
+
+    const playersFrom = (lineup, keys) => {
+      for (const key of keys) {
+        const value = lineup?.[key];
+        if (Array.isArray(value)) return value;
+        if (value && typeof value === "object" && Array.isArray(value.players)) return value.players;
+      }
+      return [];
+    };
+
+    const lineupMatches = [];
+    const formationMap = new Map();
+    const lineupTeamMap = new Map();
+    const starterMap = new Map();
+    const benchMap = new Map();
+
+    (a.matches || []).forEach((match) => {
+      const lineups = extractLineups(match);
+      if (!lineups.length) return;
+      lineupMatches.push(match);
+      lineups.forEach((lineup, index) => {
+        const fallbackTeam = index === 0 ? this.getHomeTeam(match) : this.getAwayTeam(match);
+        const team = this.localizedTeamName(lineupTeamName(lineup, fallbackTeam));
+        const formation = lineup?.formation || lineup?.system || lineup?.tacticalFormation || lineup?.shape || "Unknown";
+        const starters = playersFrom(lineup, ["startXI", "startingXI", "starters", "starting", "lineup", "players"]);
+        const bench = playersFrom(lineup, ["substitutes", "subs", "bench"]);
+        const key = `${this.fixtureTeamKey(team)}|${formation}`;
+        const teamKey = this.fixtureTeamKey(team);
+
+        formationMap.set(key, {
+          team,
+          formation,
+          count: (formationMap.get(key)?.count || 0) + 1,
+        });
+
+        lineupTeamMap.set(teamKey, {
+          team,
+          matches: (lineupTeamMap.get(teamKey)?.matches || 0) + 1,
+          starters: (lineupTeamMap.get(teamKey)?.starters || 0) + starters.length,
+          bench: (lineupTeamMap.get(teamKey)?.bench || 0) + bench.length,
+        });
+
+        starters.forEach((player) => {
+          const name = playerName(player);
+          if (!name) return;
+          const pkey = `${String(name).toLowerCase()}|${teamKey}`;
+          starterMap.set(pkey, {
+            player: name,
+            number: playerNumber(player),
+            team,
+            starts: (starterMap.get(pkey)?.starts || 0) + 1,
+          });
+        });
+
+        bench.forEach((player) => {
+          const name = playerName(player);
+          if (!name) return;
+          const pkey = `${String(name).toLowerCase()}|${teamKey}`;
+          benchMap.set(pkey, {
+            player: name,
+            number: playerNumber(player),
+            team,
+            bench: (benchMap.get(pkey)?.bench || 0) + 1,
+          });
+        });
+      });
+    });
+
+    const formationRows = Array.from(formationMap.values()).sort((x, y) => y.count - x.count || x.team.localeCompare(y.team)).slice(0, 10);
+    const lineupTeamRows = Array.from(lineupTeamMap.values()).sort((x, y) => y.matches - x.matches || x.team.localeCompare(y.team)).slice(0, 10);
+    const starterRows = Array.from(starterMap.values()).sort((x, y) => y.starts - x.starts || x.player.localeCompare(y.player)).slice(0, 10);
+    const benchRows = Array.from(benchMap.values()).sort((x, y) => y.bench - x.bench || x.player.localeCompare(y.player)).slice(0, 8);
+
+    const totalCards = safeNumber(a.yellowCards) + safeNumber(a.redCards);
+    const eventRate = a.finished.length ? (safeNumber(a.events) / a.finished.length).toFixed(1) : "0.0";
+    const cardsPerMatch = a.finished.length ? (totalCards / a.finished.length).toFixed(1) : "0.0";
+    const goalsPerMatch = a.goalsPerMatch || (a.finished.length ? (safeNumber(a.goals) / a.finished.length).toFixed(2) : "0.00");
+    const lineupCoverage = a.finished.length ? pct(lineupMatches.length, a.finished.length) : 0;
+
+    const teamSnapshotRows = (a.teamRows || []).slice(0, 10).map((row) => ({
+      ...row,
+      gdText: row.gd > 0 ? `+${row.gd}` : row.gd,
+      goalRate: row.played ? (safeNumber(row.gf) / row.played).toFixed(2) : "0.00",
+    }));
+
     return `
-      <div class="wc-card" style="overflow:hidden;position:relative;background:radial-gradient(circle at top left,rgba(56,189,248,.20),transparent 36%),radial-gradient(circle at bottom right,rgba(34,197,94,.14),transparent 38%),rgba(7,12,24,.92);">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <div class="wc-card" style="overflow:hidden;position:relative;background:radial-gradient(circle at top left,rgba(56,189,248,.22),transparent 34%),radial-gradient(circle at bottom right,rgba(250,204,21,.16),transparent 36%),linear-gradient(135deg,rgba(7,12,24,.97),rgba(10,18,35,.94));border:1px solid rgba(147,197,253,.18);">
+        <div style="position:absolute;inset:auto -80px -120px auto;width:260px;height:260px;border-radius:999px;background:rgba(59,130,246,.10);filter:blur(4px);"></div>
+        <div style="position:relative;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;">
           <div>
-            <div style="font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.14em;color:#93c5fd;">Tournament Intelligence</div>
-            <div class="wc-section-title" style="font-size:1.55rem;margin-top:4px;">Stats Hub</div>
-            <p class="wc-muted" style="margin:6px 0 0;">Live tournament analytics built from results, match timelines, cards, substitutions, VAR, referees and team performance.</p>
+            <div style="font-size:.76rem;font-weight:1000;text-transform:uppercase;letter-spacing:.16em;color:#93c5fd;">Tournament Intelligence</div>
+            <div class="wc-section-title" style="font-size:1.7rem;margin-top:5px;">Stats Hub</div>
+            <p class="wc-muted" style="margin:7px 0 0;max-width:760px;line-height:1.5;">A proper tournament stats centre built from results, timelines, cards, substitutions, VAR, referees, player involvement and team lineups already loaded into the integration.</p>
           </div>
-          <div style="min-width:160px;text-align:center;padding:14px;border-radius:18px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.10);">
-            <div style="font-size:2.2rem;font-weight:1000;color:${eventColour};">${a.dataCoverage}%</div>
-            <div style="font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.68);">Event coverage</div>
+          <div style="display:grid;grid-template-columns:repeat(2,minmax(110px,1fr));gap:10px;min-width:260px;">
+            <div style="text-align:center;padding:13px;border-radius:18px;background:rgba(0,0,0,.24);border:1px solid rgba(255,255,255,.10);">
+              <div style="font-size:2rem;font-weight:1000;color:${eventColour};">${a.dataCoverage}%</div>
+              <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.68);">Event Coverage</div>
+            </div>
+            <div style="text-align:center;padding:13px;border-radius:18px;background:rgba(0,0,0,.24);border:1px solid rgba(255,255,255,.10);">
+              <div style="font-size:2rem;font-weight:1000;color:#fde68a;">${lineupCoverage}%</div>
+              <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.68);">Lineup Coverage</div>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="wc-grid">
-        ${statCard(this.t("matchesPlayed"), a.finished.length, `${a.live.length} live • ${a.scheduled} upcoming`, "Matches")}
-        ${statCard(this.t("totalGoals"), a.goals, `${a.goalsPerMatch} per match`, "Goals")}
-        ${statCard("Assists", a.assists, "from match timelines", "Creative")}
-        ${statCard("PEN Goals", a.penalties, `${a.missedPens} missed`, "Penalties")}
-        ${statCard("Own Goals", a.ownGoals, "OG events", "Goals")}
-        ${statCard("VAR", a.varEvents, "video reviews", "Review")}
-        ${statCard("Yellow Cards", a.yellowCards, `${a.redCards} red cards`, "Discipline")}
-        ${statCard("Substitutions", a.substitutions, "all recorded changes", "Benches")}
-        ${statCard("Referees", a.refs, "officials tracked", "Officials")}
-        ${statCard(this.t("progress"), `${a.progress}%`, `${a.finished.length}/${a.matches.length || 104} loaded`, "Tournament")}
-        ${statCard("BTTS", `${a.bttsRate}%`, "both teams scored", "Rates")}
-        ${statCard("Over 2.5", `${a.over25Rate}%`, "3+ goals", "Rates")}
+        ${statCard(this.t("matchesPlayed"), a.finished.length, `${a.live.length} live • ${a.scheduled} upcoming`, "#93c5fd")}
+        ${statCard(this.t("totalGoals"), a.goals, `${goalsPerMatch} goals per match`, "#86efac")}
+        ${statCard("Assists", a.assists, "from match timelines", "#c4b5fd")}
+        ${statCard("PEN", a.penalties, `${a.missedPens} missed pens`, "#fde68a")}
+        ${statCard("OG", a.ownGoals, "own goals", "#fca5a5")}
+        ${statCard("VAR", a.varEvents, "video reviews", "#67e8f9")}
+        ${statCard("Yellow Cards", a.yellowCards, `${a.redCards} red cards`, "#facc15")}
+        ${statCard("Substitutions", a.substitutions, "recorded changes", "#a7f3d0")}
+        ${statCard("Lineups", lineupMatches.length, `${formationRows.length} formations tracked`, "#f0abfc")}
+        ${statCard("Referees", a.refs, "officials tracked", "#fdba74")}
+        ${statCard("Events / Match", eventRate, `${a.events} timeline events`, "#93c5fd")}
+        ${statCard("Cards / Match", cardsPerMatch, `${totalCards} total cards`, "#fbbf24")}
       </div>
 
       <div class="wc-two">
-        <div class="wc-card">
-          <div class="wc-section-title">🔥 Match Records</div>
-          <div style="display:grid;gap:12px;">
-            <div style="padding:12px;border-radius:14px;background:rgba(255,255,255,.06);">
-              <div class="wc-muted">Highest scoring match</div>
-              ${a.highestScoringMatch ? this.matchRow(a.highestScoringMatch) : `<div class="wc-empty">${this.t("noResult")}</div>`}
-            </div>
-            <div style="padding:12px;border-radius:14px;background:rgba(255,255,255,.06);">
-              <div class="wc-muted">Biggest win</div>
-              ${a.biggestWin ? this.matchRow(a.biggestWin) : `<div class="wc-empty">${this.t("noResult")}</div>`}
-            </div>
+        <div class="wc-card" style="background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.04));">
+          <div class="wc-section-title">📊 Tournament Rates</div>
+          <div style="display:grid;gap:10px;">
+            ${chip("Progress", `${a.progress}%`, "#93c5fd")}
+            ${chip("BTTS", `${a.bttsRate}%`, "#86efac")}
+            ${chip("Over 2.5 Goals", `${a.over25Rate}%`, "#fde68a")}
+            ${chip("Draw Rate", `${a.drawRate}%`, "#c4b5fd")}
           </div>
         </div>
 
-        <div class="wc-card">
+        <div class="wc-card" style="background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.04));">
           <div class="wc-section-title">📡 Data Health</div>
           <div style="display:grid;gap:12px;">
-            <div style="height:14px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;">
-              <div style="height:100%;width:${Math.max(0, Math.min(100, a.dataCoverage))}%;background:${eventColour};border-radius:999px;"></div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-weight:900;margin-bottom:6px;"><span>Event timelines</span><span>${a.dataCoverage}%</span></div>
+              <div style="height:13px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;"><div style="height:100%;width:${Math.max(0, Math.min(100, a.dataCoverage))}%;background:${eventColour};border-radius:999px;"></div></div>
             </div>
-            <div class="wc-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));">
-              <div class="wc-stat"><strong>${a.eventMatches}</strong>Matches with events</div>
-              <div class="wc-stat"><strong>${a.events}</strong>Total timeline events</div>
-              <div class="wc-stat"><strong>${a.finished.length - a.eventMatches}</strong>Missing timelines</div>
-              <div class="wc-stat"><strong>${a.refs}</strong>Officials found</div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-weight:900;margin-bottom:6px;"><span>Lineups</span><span>${lineupCoverage}%</span></div>
+              <div style="height:13px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;"><div style="height:100%;width:${Math.max(0, Math.min(100, lineupCoverage))}%;background:#fde68a;border-radius:999px;"></div></div>
             </div>
-            <p class="wc-muted">This uses the data already loaded into the panel. No extra API calls are made by this page.</p>
+            <p class="wc-muted" style="margin:0;line-height:1.45;">Stats Hub only uses data already loaded into the panel. This page does not trigger extra API pulls.</p>
           </div>
         </div>
       </div>
@@ -17931,24 +18764,25 @@ class WorldCup2026Panel extends HTMLElement {
       <div class="wc-two">
         <div class="wc-card">
           <div class="wc-section-title">⚽ Team Performance</div>
-          ${this.statsMiniTable(a.teamRows.slice(0, 12), [
+          ${this.statsMiniTable(teamSnapshotRows, [
             { label: "Team", render: (row) => `${this.flag(row.team, true)} <strong>${this.esc(row.team)}</strong>` },
             { label: "P", key: "played", align: "center" },
             { label: "GF", key: "gf", align: "center" },
             { label: "GA", key: "ga", align: "center" },
-            { label: "GD", render: (row) => row.gd > 0 ? `+${row.gd}` : row.gd, align: "center" },
+            { label: "GD", key: "gdText", align: "center" },
+            { label: "G/M", key: "goalRate", align: "center" },
             { label: "CS", key: "cleanSheets", align: "center" },
           ], "No team stats yet")}
         </div>
 
         <div class="wc-card">
-          <div class="wc-section-title">🧠 Event Leaders</div>
-          ${this.statsMiniTable(a.eventLeaderRows.slice(0, 12), [
+          <div class="wc-section-title">🧠 Team Event Leaders</div>
+          ${this.statsMiniTable((a.eventLeaderRows || []).slice(0, 10), [
             { label: "Team", render: (row) => `${this.flag(row.team, true)} <strong>${this.esc(row.team)}</strong>` },
+            { label: "Events", key: "eventCount", align: "center" },
             { label: "Goals", key: "goals", align: "center" },
             { label: "Ast", key: "assists", align: "center" },
             { label: "PEN", key: "penalties", align: "center" },
-            { label: "OG", key: "ownGoals", align: "center" },
             { label: "VAR", key: "varEvents", align: "center" },
           ], "No event data yet")}
         </div>
@@ -17956,8 +18790,47 @@ class WorldCup2026Panel extends HTMLElement {
 
       <div class="wc-two">
         <div class="wc-card">
+          <div class="wc-section-title">🧩 Lineups & Formations</div>
+          ${this.statsMiniTable(formationRows, [
+            { label: "Team", render: (row) => `${this.flag(row.team, true)} <strong>${this.esc(row.team)}</strong>` },
+            { label: "Formation", render: (row) => `<strong>${this.esc(row.formation)}</strong>`, align: "center" },
+            { label: "Used", key: "count", align: "center" },
+          ], "No lineup data loaded yet")}
+        </div>
+
+        <div class="wc-card">
+          <div class="wc-section-title">👥 Squad Usage</div>
+          ${this.statsMiniTable(lineupTeamRows, [
+            { label: "Team", render: (row) => `${this.flag(row.team, true)} <strong>${this.esc(row.team)}</strong>` },
+            { label: "Lineups", key: "matches", align: "center" },
+            { label: "Starters", key: "starters", align: "center" },
+            { label: "Bench", key: "bench", align: "center" },
+          ], "No squad usage data yet")}
+        </div>
+      </div>
+
+      <div class="wc-two">
+        <div class="wc-card">
+          <div class="wc-section-title">⭐ Player Starts</div>
+          ${this.statsMiniTable(starterRows, [
+            { label: "Player", render: (row) => `<strong>${row.number ? `${this.esc(row.number)} ` : ""}${this.esc(row.player)}</strong><div class="wc-muted">${this.flag(row.team, true)} ${this.esc(row.team)}</div>` },
+            { label: "Starts", key: "starts", align: "center" },
+          ], "No starting XI data yet")}
+        </div>
+
+        <div class="wc-card">
+          <div class="wc-section-title">🪑 Bench Watch</div>
+          ${this.statsMiniTable(benchRows, [
+            { label: "Player", render: (row) => `<strong>${row.number ? `${this.esc(row.number)} ` : ""}${this.esc(row.player)}</strong><div class="wc-muted">${this.flag(row.team, true)} ${this.esc(row.team)}</div>` },
+            { label: "Bench", key: "bench", align: "center" },
+          ], "No bench data yet")}
+        </div>
+      </div>
+
+      <div class="wc-two">
+        <div class="wc-card">
           <div class="wc-section-title">🟨 Discipline Centre</div>
-          ${this.statsMiniTable(a.disciplineRows.slice(0, 12), [
+          ${this.statsMiniTable((a.disciplineRows || []).slice(0, 12), [
             { label: "Team", render: (row) => `${this.flag(row.team, true)} <strong>${this.esc(row.team)}</strong>` },
             { label: "Cards", key: "cards", align: "center" },
             { label: "Yellow", key: "yellowCards", align: "center" },
@@ -17969,7 +18842,7 @@ class WorldCup2026Panel extends HTMLElement {
         <div class="wc-card">
           <div class="wc-section-title">⭐ Player Event Watch</div>
           ${this.statsMiniTable(a.topPlayers, [
-            { label: "Player", render: (row) => `<strong>${this.esc(row.player)}</strong><div class="wc-muted">${this.esc(row.team || "")}</div>` },
+            { label: "Player", render: (row) => `<strong>${this.esc(row.player)}</strong><div class="wc-muted">${this.flag(row.team, true)} ${this.esc(row.team || "")}</div>` },
             { label: "G", key: "goals", align: "center" },
             { label: "A", key: "assists", align: "center" },
             { label: "PEN", key: "penalties", align: "center" },
@@ -17980,20 +18853,24 @@ class WorldCup2026Panel extends HTMLElement {
 
       <div class="wc-two">
         <div class="wc-card">
-          <div class="wc-section-title">👨‍⚖️ Officials</div>
+          <div class="wc-section-title">🧑‍⚖️ Referee Stats</div>
           ${this.statsMiniTable(a.refereeRows, [
-            { label: "Official", render: (row) => `<strong>${this.esc(row.name)}</strong><div class="wc-muted">${this.esc(row.nationality || row.type || "")}</div>` },
+            { label: "Official", render: (row) => `<strong>${this.esc(row.name || "Unknown")}</strong><div class="wc-muted">${this.esc(row.nationality || row.country || "")}</div>` },
             { label: "Matches", key: "matches", align: "center" },
           ], "No referee data yet")}
         </div>
 
         <div class="wc-card">
-          <div class="wc-section-title">📊 Tournament Rates</div>
-          <div class="wc-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));">
-            ${statCard(this.t("drawRate"), `${a.drawRate}%`, `${a.draws} draws`)}
-            ${statCard(this.t("goalsPerMatch"), a.goalsPerMatch, "average")}
-            ${statCard("BTTS", `${a.bttsRate}%`, "both teams scored")}
-            ${statCard("Over 2.5", `${a.over25Rate}%`, "3+ goals")}
+          <div class="wc-section-title">🔥 Match Records</div>
+          <div style="display:grid;gap:12px;">
+            <div style="padding:12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);">
+              <div class="wc-muted" style="font-weight:900;margin-bottom:8px;">Highest scoring match</div>
+              ${a.highestScoringMatch ? this.matchRow(a.highestScoringMatch) : `<div class="wc-empty">${this.t("noResult")}</div>`}
+            </div>
+            <div style="padding:12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);">
+              <div class="wc-muted" style="font-weight:900;margin-bottom:8px;">Biggest win</div>
+              ${a.biggestWin ? this.matchRow(a.biggestWin) : `<div class="wc-empty">${this.t("noResult")}</div>`}
+            </div>
           </div>
         </div>
       </div>
@@ -18194,13 +19071,97 @@ class WorldCup2026Panel extends HTMLElement {
     const allSupporters = supporters;
 
     return `
-      <div class="wc-card">
-        <div class="wc-section-title">${this.t("supportersThankYouTitle")}</div>
-        <p>
-          ${this.t("supportersIntro")}
+      <div class="wc-card wc-support-donate-card" style="text-align:center;">
+        <div class="wc-section-title">${this.t("wantNameAdded")}</div>
+        <p class="wc-muted">${this.t("supportFutureUpdates")}</p>
+        <p class="wc-muted">Support the World Cup 2026 Integration using Ko-fi or PayPal. Every donation helps with future updates, testing and new features.</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
+          <a
+            class="wc-pill wc-donate-button"
+            href="https://ko-fi.com/supportkofi"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="display:inline-flex;text-decoration:none;"
+          >
+            ☕ Support via Ko-fi
+          </a>
+          <a
+            class="wc-pill wc-donate-button"
+            href="https://paypal.me/graffidoodle"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="display:inline-flex;text-decoration:none;"
+          >
+            💳 Support via PayPal
+          </a>
+        </div>
+      </div>
+
+      ${this.overviewSupporterTicker()}
+
+      <div class="wc-card wc-premium-support-info" style="max-width:980px;margin-left:auto;margin-right:auto;">
+        <div class="wc-section-title" style="text-align:center;">${this.t("supportersThankYouTitle")}</div>
+
+        <div style="text-align:center;font-size:18px;font-weight:900;line-height:1.45;margin:8px auto 14px auto;max-width:860px;">
+          ⭐ <strong>Premium Supporters</strong> can have their name, country flag and a personalised message featured in the World Cup 2026 Integration.
+        </div>
+
+        <p class="wc-muted" style="text-align:center;max-width:880px;margin-left:auto;margin-right:auto;">
+          The World Cup 2026 integration has grown from a small personal Home Assistant dashboard into a full tournament system with fixtures, live scores, results, groups, knockout tracking, stadiums, records, Golden Boot data and supporter features.
         </p>
-        <p class="wc-muted">
-          ${this.t("supportersSpecialThanks")}
+
+        <p class="wc-muted" style="text-align:center;max-width:880px;margin-left:auto;margin-right:auto;">
+          Every update takes time to build, test and maintain, and support also helps towards live football data, future improvements, bug fixes and project costs.
+        </p>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:16px;">
+          <div class="wc-stat" style="text-align:left;border:1px solid rgba(255,215,0,0.55);background:linear-gradient(135deg,rgba(255,215,0,0.14),rgba(255,255,255,0.04));">
+            <strong>👑 Premium Supporter</strong>
+            <span style="display:block;margin-top:6px;line-height:1.5;">
+              Donate <b>£10 / $10 / €10 or more</b> to be featured as a Premium Supporter.
+            </span>
+          </div>
+
+          <div class="wc-stat" style="text-align:left;">
+            <strong>🌍 Name & Flag</strong>
+            <span style="display:block;margin-top:6px;line-height:1.5;">
+              Your name or nickname can be shown with your country flag in the integration.
+            </span>
+          </div>
+
+          <div class="wc-stat" style="text-align:left;">
+            <strong>💬 Personal Message</strong>
+            <span style="display:block;margin-top:6px;line-height:1.5;">
+              Premium Supporters can include a short message to appear with their supporter profile.
+            </span>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;padding:14px;border-radius:16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);">
+          <p style="margin:0 0 8px 0;font-weight:900;text-align:center;">
+            ❤️ Every Donation Matters
+          </p>
+          <p class="wc-muted" style="margin:0;text-align:center;max-width:880px;margin-left:auto;margin-right:auto;">
+            Whilst Premium Supporters receive extra recognition, <b>every donation is genuinely appreciated regardless of amount</b>. Anyone who supports the project can still be added to the Supporters page as a thank you.
+          </p>
+        </div>
+
+        <div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">
+          <div class="wc-pill" style="justify-content:center;white-space:normal;line-height:1.4;">⚽ Live data costs</div>
+          <div class="wc-pill" style="justify-content:center;white-space:normal;line-height:1.4;">🛠 Bug fixes & improvements</div>
+          <div class="wc-pill" style="justify-content:center;white-space:normal;line-height:1.4;">🚀 Future features</div>
+          <div class="wc-pill" style="justify-content:center;white-space:normal;line-height:1.4;">🌍 Community development</div>
+        </div>
+
+        <div style="margin-top:16px;text-align:center;">
+          <p style="font-weight:900;margin:0 0 8px 0;">To be added, include your name, country and optional message after donating.</p>
+          <p class="wc-muted" style="margin:0;">
+            Example: 🇬🇧 Adrian Apel — “Creator & Founder” · 🇺🇸 John Smith — “Supporting development from the USA” · 🇩🇪 Klaus Meyer — “Love the integration!”
+          </p>
+        </div>
+
+        <p style="text-align:center;font-weight:900;margin:18px 0 0 0;">
+          Every supporter matters. Every donation helps. Every contribution is appreciated. 🙏
         </p>
       </div>
 
@@ -18247,32 +19208,6 @@ class WorldCup2026Panel extends HTMLElement {
             </div>
           `
       }
-
-      <div class="wc-card" style="text-align:center;">
-        <div class="wc-section-title">${this.t("wantNameAdded")}</div>
-        <p class="wc-muted">${this.t("supportFutureUpdates")}</p>
-        <p class="wc-muted">Support the World Cup 2026 Integration using Ko-fi or PayPal. Every donation helps with future updates, testing and new features.</p>
-        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
-          <a
-            class="wc-pill wc-donate-button"
-            href="https://ko-fi.com/supportkofi"
-            target="_blank"
-            rel="noopener noreferrer"
-            style="display:inline-flex;text-decoration:none;"
-          >
-            ☕ Support via Ko-fi
-          </a>
-          <a
-            class="wc-pill wc-donate-button"
-            href="https://paypal.me/graffidoodle"
-            target="_blank"
-            rel="noopener noreferrer"
-            style="display:inline-flex;text-decoration:none;"
-          >
-            💳 Support via PayPal
-          </a>
-        </div>
-      </div>
     `;
   }
 
