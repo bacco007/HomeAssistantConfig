@@ -657,6 +657,42 @@ class WorldCupCoordinator(DataUpdateCoordinator):
         self._post_match_api_football_last_fetch = None
         self._goal_event_store = {}
         self._goal_event_store_loaded = False
+        self._api_football_backoff_until = None
+        self._api_football_429_logged = False
+        self._api_football_event_lookup_count = 0
+        self._api_football_event_lookup_limit = 8
+
+
+    def _api_football_in_backoff(self):
+        """Return True while API-Football should be left alone after a 429."""
+        if not self._api_football_backoff_until:
+            return False
+        now = datetime.now(timezone.utc)
+        if now < self._api_football_backoff_until:
+            return True
+        self._api_football_backoff_until = None
+        self._api_football_429_logged = False
+        return False
+
+    def _api_football_trigger_backoff(self, reason="rate limit", minutes=10):
+        """Stop API-Football calls for a short cooldown after a rate-limit response."""
+        self._api_football_backoff_until = datetime.now(timezone.utc) + timedelta(minutes=minutes)
+        if not self._api_football_429_logged:
+            _LOGGER.warning(
+                "API-Football rate limited (%s). Pausing API-Football lookups for %s minutes.",
+                reason,
+                minutes,
+            )
+            self._api_football_429_logged = True
+
+    def _api_football_event_lookup_allowed(self):
+        """Limit expensive /fixtures/events calls per coordinator refresh."""
+        if self._api_football_in_backoff():
+            return False
+        if self._api_football_event_lookup_count >= self._api_football_event_lookup_limit:
+            return False
+        self._api_football_event_lookup_count += 1
+        return True
 
 
     def _goal_event_store_path(self):
@@ -1417,13 +1453,27 @@ class WorldCupCoordinator(DataUpdateCoordinator):
         return normalised
 
     async def _fetch_api_football_events_for_fixture(self, session, fixture_id, headers):
-        """Fetch timeline events for one API-Football fixture."""
+        """Fetch timeline events for one API-Football fixture, with hard rate-limit protection."""
+        empty = {"events": [], "goalEvents": [], "cardEvents": [], "substitutionEvents": []}
         if not fixture_id:
-            return {"events": [], "goalEvents": [], "cardEvents": []}
+            return empty
+
+        if not self._api_football_event_lookup_allowed():
+            return empty
 
         url = f"https://v3.football.api-sports.io/fixtures/events?fixture={fixture_id}"
         try:
             async with session.get(url, headers=headers) as response:
+                if response.status == 429:
+                    text = await response.text()
+                    self._api_football_trigger_backoff(f"fixture events {fixture_id}")
+                    _LOGGER.debug(
+                        "API-Football fixture events lookup rate limited for %s: %s",
+                        fixture_id,
+                        text,
+                    )
+                    return empty
+
                 if response.status >= 400:
                     text = await response.text()
                     _LOGGER.warning(
@@ -1432,11 +1482,11 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                         response.status,
                         text,
                     )
-                    return {"events": [], "goalEvents": [], "cardEvents": []}
+                    return empty
                 payload = await response.json()
         except Exception as err:  # pylint: disable=broad-exception-caught
             _LOGGER.warning("API-Football fixture events lookup failed for %s: %s", fixture_id, err)
-            return {"events": [], "goalEvents": [], "cardEvents": []}
+            return empty
 
         raw_events = payload.get("response", []) or []
         all_events = [event for event in (self._normalise_api_football_event(item) for item in raw_events) if event]
@@ -1605,20 +1655,30 @@ class WorldCupCoordinator(DataUpdateCoordinator):
         }
 
     async def _fetch_api_football_fixtures_for_date(self, session, match_date, headers):
-        """Fetch API-Football fixtures for one date and return the raw response list.
+        """Fetch API-Football fixtures for one date, with 429 backoff."""
+        if self._api_football_in_backoff():
+            return []
 
-        The World Cup API-Football league is normally 1. If that filtered lookup
-        returns no fixtures, fall back to the date-only lookup so post-match
-        scorer times can still be recovered if the provider changes league ids.
-        """
         urls = [
             f"https://v3.football.api-sports.io/fixtures?date={match_date}&league=1&season=2026",
             f"https://v3.football.api-sports.io/fixtures?date={match_date}",
         ]
 
         for url in urls:
+            if self._api_football_in_backoff():
+                return []
             try:
                 async with session.get(url, headers=headers) as response:
+                    if response.status == 429:
+                        text = await response.text()
+                        self._api_football_trigger_backoff(f"fixture date {match_date}")
+                        _LOGGER.debug(
+                            "API-Football fixture date lookup rate limited for %s: %s",
+                            match_date,
+                            text,
+                        )
+                        return []
+
                     if response.status >= 400:
                         text = await response.text()
                         _LOGGER.warning(
@@ -1693,6 +1753,12 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             return {}
 
         now = datetime.now(timezone.utc)
+        if self._api_football_in_backoff():
+            return self._post_match_api_football_cache
+
+        # Reset the expensive event endpoint counter once per post-match refresh.
+        self._api_football_event_lookup_count = 0
+
         candidates = [match for match in matches if self._needs_post_match_events(match, now)]
         if not candidates:
             return {}
@@ -1730,6 +1796,15 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                         away = (teams.get("away") or {}).get("name")
 
                         if not home or not away:
+                            continue
+
+                        matched_candidates = [
+                            candidate for candidate in candidates
+                            if _api_football_item_matches_candidate(item, candidate)
+                        ]
+                        if not matched_candidates:
+                            # Do not call /fixtures/events for unrelated fixtures.
+                            # This was causing hundreds of event calls and hitting 429.
                             continue
 
                         goal_events = [
@@ -1820,23 +1895,22 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                         # fixture clearly matches. This fixes provider naming
                         # differences such as Canada v Bosnia-Herzegovina,
                         # Bosnia-H., Bosnia and Herzegovina, etc.
-                        for candidate in candidates:
-                            if _api_football_item_matches_candidate(item, candidate):
-                                candidate_home = _team_name(candidate.get("homeTeam", {}))
-                                candidate_away = _team_name(candidate.get("awayTeam", {}))
-                                post_match_data[_match_key_from_names(candidate_home, candidate_away)] = item_data
-                                post_match_data[_match_key_from_names(candidate_away, candidate_home)] = item_data
-                                _LOGGER.debug(
-                                    "API-Football post-match matched %s v %s to %s v %s fixture=%s goals=%s cards=%s subs=%s",
-                                    candidate_home,
-                                    candidate_away,
-                                    home,
-                                    away,
-                                    fixture_id,
-                                    len(goal_events),
-                                    len(card_events),
-                                    len(substitution_events),
-                                )
+                        for candidate in matched_candidates:
+                            candidate_home = _team_name(candidate.get("homeTeam", {}))
+                            candidate_away = _team_name(candidate.get("awayTeam", {}))
+                            post_match_data[_match_key_from_names(candidate_home, candidate_away)] = item_data
+                            post_match_data[_match_key_from_names(candidate_away, candidate_home)] = item_data
+                            _LOGGER.debug(
+                                "API-Football post-match matched %s v %s to %s v %s fixture=%s goals=%s cards=%s subs=%s",
+                                candidate_home,
+                                candidate_away,
+                                home,
+                                away,
+                                fixture_id,
+                                len(goal_events),
+                                len(card_events),
+                                len(substitution_events),
+                            )
         except Exception as err:  # pylint: disable=broad-exception-caught
             _LOGGER.warning("API-Football post-match events lookup failed: %s", err)
             return self._post_match_api_football_cache

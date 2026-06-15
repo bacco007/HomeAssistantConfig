@@ -15626,6 +15626,12 @@ class WorldCup2026Panel extends HTMLElement {
       match?.cards,
       match?.substitutionEvents,
       match?.substitutions,
+      match?.varEvents,
+      match?.matchDetails?.events,
+      match?.matchDetails?.goalEvents,
+      match?.matchDetails?.cardEvents,
+      match?.matchDetails?.substitutionEvents,
+      match?.matchDetails?.varEvents,
       match?.apiFootballEvents,
       match?.timeline,
       match?.incidents,
@@ -15641,7 +15647,7 @@ class WorldCup2026Panel extends HTMLElement {
     const byKey = new Map();
 
     events.forEach((event) => {
-      const typeText = String(event.type || event.eventType || event.kind || "").toLowerCase();
+      const typeText = String(event.type || event.rawType || event.eventType || event.kind || "").toLowerCase();
       const detailText = this.eventDetailText(event).toLowerCase();
       const player = this.eventPlayerName(event);
       const team = this.eventTeamName(event);
@@ -15651,7 +15657,7 @@ class WorldCup2026Panel extends HTMLElement {
       const isGoal = typeText.includes("goal") || detailText.includes("goal") || event.isGoal === true;
       const isCard = typeText.includes("card") || detailText.includes("yellow") || detailText.includes("red");
       const isSub = typeText.includes("subst") || detailText.includes("substitution");
-      const isVar = typeText.includes("var") || detailText.includes("var");
+      const isVar = typeText.includes("var") || detailText.includes("var") || detailText.includes("video assistant") || detailText.includes("video review") || String(event.rawType || "").toLowerCase().includes("var");
       const isPenalty = detailText.includes("penalty") || detailText.includes("pen");
       const isMissedPenalty = detailText.includes("missed penalty") || detailText.includes("penalty missed");
       const isOwnGoal = detailText.includes("own goal") || /\bog\b/i.test(detailText);
@@ -15664,11 +15670,11 @@ class WorldCup2026Panel extends HTMLElement {
       else return;
 
       let icon = "•";
-      if (category === "goal") icon = isOwnGoal ? "🥅" : (isPenalty ? "🎯" : "⚽");
+      if (category === "goal") icon = isOwnGoal ? "OG" : (isPenalty ? "PEN" : "⚽");
       if (category === "card") icon = detailText.includes("red") ? "🟥" : "🟨";
       if (category === "substitution") icon = "🔄";
-      if (category === "var") icon = "📺";
-      if (isMissedPenalty) icon = "❌";
+      if (category === "var") icon = "VAR";
+      if (isMissedPenalty) icon = "PEN";
 
       const key = [
         category,
@@ -15866,8 +15872,8 @@ class WorldCup2026Panel extends HTMLElement {
       ? items.map((item) => {
           const name = item.name;
           const minuteText = item.displayMinute ? ` ${item.displayMinute}` : "";
-          const detailText = item.isOwnGoal ? " (OG)" : (item.isPenalty ? " (P)" : "");
-          const icon = item.isOwnGoal ? "🥅" : (item.isPenalty ? "🎯" : "⚽");
+          const detailText = item.isOwnGoal ? " (OG)" : (item.isPenalty ? " (PEN)" : "");
+          const icon = item.isOwnGoal ? "OG" : (item.isPenalty ? "PEN" : "⚽");
           const titleParts = [item.detail, item.timer].filter(Boolean);
           const title = titleParts.length ? ` title="${this.esc(titleParts.join(" • "))}"` : "";
           return `<span class="match-scorer-pill"${title}>${icon} ${this.esc(name)}${this.esc(minuteText)}${this.esc(detailText)}</span>`;
@@ -17008,146 +17014,330 @@ class WorldCup2026Panel extends HTMLElement {
 
   playersPage() {
     const rawScorers = Array.isArray(this._data.scorers) ? this._data.scorers : [];
+    const allMatchSources = [
+      ...(Array.isArray(this._data.results) ? this._data.results : []),
+      ...(Array.isArray(this._data.fixtures) ? this._data.fixtures : []),
+      ...(Array.isArray(this._data.live) ? this._data.live : []),
+    ];
+    const seenMatchKeys = new Set();
+    const allMatches = allMatchSources.filter((match) => {
+      const key = String(match?.id || match?.matchId || match?.apiFootballFixtureId || `${match?.utcDate || match?.date || ""}|${this.getHomeTeam(match)}|${this.getAwayTeam(match)}`);
+      if (!key || seenMatchKeys.has(key)) return false;
+      seenMatchKeys.add(key);
+      return true;
+    });
 
-    const scorers = rawScorers
-      .map((s) => {
-        const playerName =
-          typeof s.player === "string"
-            ? s.player
-            : s.player?.name || s.name || this.t("unknown");
+    const playerKey = (name, team) => `${String(name || "").trim().toLowerCase()}|${String(team || "").trim().toLowerCase()}`;
+    const eventText = (event, key) => String(event?.[key] || "").toLowerCase();
+    const isGoalEvent = (event) => {
+      const combined = `${eventText(event, "type")} ${eventText(event, "rawType")} ${eventText(event, "detail")}`;
+      return combined.includes("goal") || combined.includes("penalty");
+    };
+    const isOwnGoal = (event) => `${eventText(event, "type")} ${eventText(event, "detail")}`.includes("own");
+    const isPenalty = (event) => `${eventText(event, "type")} ${eventText(event, "detail")}`.includes("penalty");
+    const eventTeam = (event) => this.localizedTeamName(event?.team || event?.teamName || event?.country || this.t("tbc"));
+    const eventPlayer = (event) => event?.player || event?.playerName || event?.name || "";
+    const getOrCreate = (map, name, team) => {
+      const safeName = String(name || "").trim();
+      const safeTeam = this.localizedTeamName(team || this.t("tbc"));
+      const key = playerKey(safeName, safeTeam);
+      if (!safeName || safeName.toLowerCase() === "goal") return null;
+      if (!map.has(key)) {
+        map.set(key, {
+          name: safeName,
+          team: safeTeam,
+          goals: 0,
+          assists: 0,
+          penalties: 0,
+          ownGoals: 0,
+          totalInvolvements: 0,
+          matches: new Set(),
+          source: "match events",
+        });
+      }
+      return map.get(key);
+    };
 
-        const teamName =
-          typeof s.team === "string"
-            ? s.team
-            : s.team?.shortName || s.team?.name || s.team?.tla || s.nationality || this.t("tbc");
+    const playerMap = new Map();
+    const useOfficialScorers = rawScorers.length > 0;
 
-        return {
-          name: playerName,
-          team: this.localizedTeamName(teamName),
-          goals: this.numberValue(this.resolvedPlayerStat(s, "goals", "scored", "goal_count", "total_goals", "totalGoals")),
-          assists: this.numberValue(this.resolvedPlayerStat(s, "assists", "assist", "assist_count", "total_assists", "totalAssists")),
-          source: s.source || "football-data.org",
-        };
-      })
+    rawScorers.forEach((s) => {
+      const playerName =
+        typeof s.player === "string"
+          ? s.player
+          : s.player?.name || s.name || this.t("unknown");
+      const teamName =
+        typeof s.team === "string"
+          ? s.team
+          : s.team?.shortName || s.team?.name || s.team?.tla || s.nationality || this.t("tbc");
+
+      const row = getOrCreate(playerMap, playerName, teamName);
+      if (!row) return;
+      row.goals = Math.max(row.goals, this.numberValue(this.resolvedPlayerStat(s, "goals", "scored", "goal_count", "total_goals", "totalGoals")));
+      row.assists = Math.max(row.assists, this.numberValue(this.resolvedPlayerStat(s, "assists", "assist", "assist_count", "total_assists", "totalAssists")));
+      row.source = s.source || "football-data.org";
+    });
+
+    const teamTotals = new Map();
+    let eventGoals = 0;
+    let eventAssists = 0;
+    let eventPenalties = 0;
+    let eventOwnGoals = 0;
+    let matchesWithEvents = 0;
+
+    allMatches.forEach((match) => {
+      const details = match?.matchDetails || {};
+      const events = [
+        ...(Array.isArray(match?.events) ? match.events : []),
+        ...(Array.isArray(details.events) ? details.events : []),
+        ...(Array.isArray(match?.goalEvents) ? match.goalEvents : []),
+        ...(Array.isArray(details.goalEvents) ? details.goalEvents : []),
+      ];
+      const seenEvents = new Set();
+      const uniqueEvents = events.filter((event) => {
+        if (!event || typeof event !== "object") return false;
+        if (String(event.source || "").toLowerCase() === "manual") return false;
+        const sig = [event.rawType, event.type, event.team, event.player, event.minute, event.extra, event.detail, event.assist].join("|").toLowerCase();
+        if (seenEvents.has(sig)) return false;
+        seenEvents.add(sig);
+        return true;
+      });
+
+      if (uniqueEvents.length) matchesWithEvents += 1;
+      const matchId = match?.id || match?.matchId || match?.utcDate || "match";
+
+      uniqueEvents.forEach((event) => {
+        const team = eventTeam(event);
+        const player = eventPlayer(event);
+        const assist = event?.assist || event?.assistName || event?.assistBy;
+        if (!teamTotals.has(team)) {
+          teamTotals.set(team, { team, goals: 0, assists: 0, penalties: 0, ownGoals: 0, players: new Set() });
+        }
+        const teamRow = teamTotals.get(team);
+
+        if (isGoalEvent(event)) {
+          eventGoals += 1;
+          teamRow.goals += 1;
+          teamRow.players.add(player);
+          const row = getOrCreate(playerMap, player, team);
+          if (row) {
+            row.matches.add(matchId);
+            if (isOwnGoal(event)) {
+              row.ownGoals += 1;
+              teamRow.ownGoals += 1;
+              eventOwnGoals += 1;
+            } else if (!useOfficialScorers) {
+              // Only count event goals into the Golden Boot table when the
+              // official football-data.org scorers endpoint has not supplied
+              // the table yet. This prevents double-counting the same goal from
+              // both scorer data and match event timelines.
+              row.goals += 1;
+            }
+            if (isPenalty(event)) {
+              row.penalties += 1;
+              teamRow.penalties += 1;
+              eventPenalties += 1;
+            }
+          }
+        }
+
+        if (assist && String(assist).trim()) {
+          eventAssists += 1;
+          teamRow.assists += 1;
+          const assistRow = getOrCreate(playerMap, assist, team);
+          if (assistRow) {
+            assistRow.assists += 1;
+            assistRow.matches.add(matchId);
+          }
+        }
+      });
+    });
+
+    const scorers = Array.from(playerMap.values())
+      .map((player) => ({
+        ...player,
+        totalInvolvements: player.goals + player.assists,
+        matchCount: player.matches?.size || 0,
+      }))
       .filter((player) => player.name && player.name !== this.t("unknown"))
       .sort((a, b) =>
         b.goals - a.goals ||
         b.assists - a.assists ||
+        b.penalties - a.penalties ||
         a.name.localeCompare(b.name)
       )
       .slice(0, 100);
 
-    const hasScorers = scorers.length > 0;
-    const source = hasScorers ? scorers[0].source : "football-data.org";
-    const isFallback = String(source).toLowerCase().includes("fallback") || String(source).toLowerCase().includes("local");
+    const assistLeaders = [...scorers]
+      .filter((player) => player.assists > 0)
+      .sort((a, b) => b.assists - a.assists || b.goals - a.goals || a.name.localeCompare(b.name))
+      .slice(0, 10);
 
+    const involvementLeaders = [...scorers]
+      .filter((player) => player.totalInvolvements > 0)
+      .sort((a, b) => b.totalInvolvements - a.totalInvolvements || b.goals - a.goals || a.name.localeCompare(b.name))
+      .slice(0, 10);
+
+    const penaltyLeaders = [...scorers]
+      .filter((player) => player.penalties > 0)
+      .sort((a, b) => b.penalties - a.penalties || b.goals - a.goals || a.name.localeCompare(b.name))
+      .slice(0, 6);
+
+    const teamAttack = Array.from(teamTotals.values())
+      .sort((a, b) => b.goals - a.goals || b.assists - a.assists || a.team.localeCompare(b.team))
+      .slice(0, 10);
+
+    const hasScorers = scorers.length > 0;
+    const leader = scorers[0];
+    const podium = scorers.slice(0, 3);
+    const source = rawScorers.length ? (rawScorers[0]?.source || "football-data.org scorers") : (eventGoals ? "match event timeline fallback" : "football-data.org");
     const totalGoals = scorers.reduce((total, p) => total + p.goals, 0);
     const totalAssists = scorers.reduce((total, p) => total + p.assists, 0);
-    const leader = scorers[0];
+    const totalPens = scorers.reduce((total, p) => total + p.penalties, 0);
+    const totalOwnGoals = scorers.reduce((total, p) => total + p.ownGoals, 0);
 
     if (!hasScorers) {
       return `
-        <section class="wc-section hero-section players-hero">
-          <div class="section-kicker">${this.t("players")}</div>
-          <h2>${this.t("goldenBootCentre")}</h2>
-          <p>${this.t("goldenBootAutoText")}</p>
+        <section class="wc-section golden-boot-hero">
+          <div>
+            <div class="golden-kicker">${this.t("players")}</div>
+            <h2 class="golden-title">${this.t("goldenBootCentre")}</h2>
+            <p>${this.t("goldenBootAutoText")}</p>
+          </div>
+          <div class="golden-boot-icon">🥾</div>
         </section>
 
         <section class="wc-section">
-          <div class="wc-empty">
-            No Golden Boot scorer data available yet.
-          </div>
+          <div class="wc-empty">No Golden Boot scorer data available yet.</div>
         </section>
       `;
     }
 
+    const miniStat = (value, label) => `
+      <div class="golden-mini-stat">
+        <strong>${this.esc(String(value))}</strong>
+        <span>${this.esc(label)}</span>
+      </div>
+    `;
+
+    const compactRows = (rows, valueKey, emptyText) => rows.length ? rows.map((player, index) => `
+      <div class="golden-mini-stat">
+        <span>${index + 1}. ${this.esc(player.name)}<br><small>${this.flag(player.team, true)} ${this.esc(player.team)}</small></span>
+        <strong>${player[valueKey]}</strong>
+      </div>
+    `).join("") : `<div class="wc-empty">${this.esc(emptyText)}</div>`;
+
     return `
-      <section class="wc-section hero-section players-hero">
-        <div class="section-kicker">${this.t("players")}</div>
-        <h2>${this.t("goldenBootCentre")}</h2>
-        <p>
-          ${isFallback
-            ? "Preview fallback data shown until football-data.org publishes live World Cup scorer data."
-            : "Live Golden Boot data from football-data.org."}
-        </p>
-        <div class="source-pill">
-          ${this.t("source")}: ${this.esc(source)}
+      <section class="wc-section golden-boot-hero golden-boot-clean-hero">
+        <div>
+          <div class="golden-kicker">${this.t("players")}</div>
+          <h2 class="golden-title">${this.t("goldenBootCentre")}</h2>
+          <p>Official scorers first, with match-event data used only for assists, penalties and fallback coverage.</p>
+        </div>
+        <div class="golden-boot-icon">🥾</div>
+      </section>
+
+      <section class="wc-section golden-clean-leader">
+        <div class="golden-card-head">
+          <div>
+            <div class="section-kicker">${this.t("goldenBoot")}</div>
+            <h2>${leader ? this.esc(leader.name) : "TBC"}</h2>
+            <p class="wc-muted">${leader ? `${this.flag(leader.team, true)} ${this.esc(leader.team)}` : "Leader will appear when scorer data is available."}</p>
+          </div>
+          <div class="golden-leader-goals golden-clean-goals">
+            <strong>${leader ? leader.goals : 0}</strong>
+            <span>${this.t("goals")}</span>
+          </div>
+        </div>
+
+        <div class="golden-leader-strip golden-clean-strip">
+          <span><strong>${leader ? leader.assists : 0}</strong>${this.t("assists")}</span>
+          <span><strong>${leader ? leader.totalInvolvements : 0}</strong>G+A</span>
+          <span><strong>${leader ? leader.penalties : 0}</strong>PEN</span>
+          <span><strong>${leader ? leader.matchCount : 0}</strong>${this.t("matchesPlayed")}</span>
         </div>
       </section>
 
-      <div class="stats-layout">
-        <section class="wc-section">
-          <div class="section-header-row">
-            <div>
-              <div class="section-kicker">${this.t("goldenBoot")}</div>
-              <h2>${this.t("playerWatch")}</h2>
-            </div>
-            <div class="mini-pill">${scorers.length} ${this.t("playersTracked")}</div>
+      <section class="wc-section golden-clean-summary">
+        <div class="wc-stat-grid wc-stat-grid-compact">
+          ${miniStat(scorers.length, this.t("playersTracked"))}
+          ${miniStat(totalGoals, this.t("totalGoals"))}
+          ${miniStat(totalAssists, this.t("totalAssists"))}
+          ${miniStat(totalPens, "PEN")}
+          ${miniStat(totalOwnGoals, "OG")}
+          ${miniStat(matchesWithEvents, "event matches")}
+        </div>
+      </section>
+
+      <section class="wc-section golden-clean-podium">
+        <div class="golden-card-head">
+          <div>
+            <div class="section-kicker">Top 3</div>
+            <h2>Podium</h2>
           </div>
+        </div>
+        <div class="golden-podium-grid golden-podium-grid-polished golden-podium-clean">
+          ${[0, 1, 2].map((i) => {
+            const player = podium[i];
+            const medals = ["🥇", "🥈", "🥉"];
+            if (!player) {
+              return `<div class="golden-podium-item golden-empty-podium"><div class="golden-medal">${medals[i]}</div><div class="golden-player-name">TBC</div></div>`;
+            }
+            return `
+              <div class="golden-podium-item ${i === 0 ? "winner" : ""}">
+                <div class="golden-medal">${medals[i]}</div>
+                <div class="golden-player-name">${this.esc(player.name)}</div>
+                <div class="golden-player-team">${this.flag(player.team, true)} ${this.esc(player.team)}</div>
+                <div class="golden-player-stats"><strong>${player.goals}</strong><span>${this.t("goals")}</span></div>
+                <div class="golden-card-stat-row">
+                  <span>${player.assists} ${this.t("assists")}</span>
+                  <span>${player.totalInvolvements} G+A</span>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </section>
 
-          ${leader ? `
-            <div class="leader-strip">
-              <div>
-                <div class="section-kicker">${this.t("leaderSpotlight")}</div>
-                <h3>${this.esc(leader.name)}</h3>
-                <p>${this.flag(leader.team, true)} ${this.esc(leader.team)}</p>
-              </div>
-              <div class="leader-score">
-                <strong>${leader.goals}</strong>
-                <span>${this.t("goals")}</span>
-              </div>
-              <div class="leader-score">
-                <strong>${leader.assists}</strong>
-                <span>${this.t("assists")}</span>
-              </div>
-            </div>
-          ` : ""}
-
-          <div class="table-wrap">
-            <table class="wc-table">
-              <thead>
-                <tr>
-                  <th>${this.t("pos")}</th>
-                  <th>${this.t("player")}</th>
-                  <th>${this.t("team")}</th>
-                  <th>${this.t("goals")}</th>
-                  <th>${this.t("assists")}</th>
+      <section class="wc-section golden-table-card golden-clean-table-card">
+        <div class="golden-card-head">
+          <div>
+            <div class="section-kicker">Leaderboard</div>
+            <h2>Golden Boot Table</h2>
+          </div>
+          <div class="mini-pill">${this.t("source")}: ${this.esc(source)}</div>
+        </div>
+        <div class="table-wrap golden-table-wrap">
+          <table class="wc-table golden-table">
+            <thead>
+              <tr>
+                <th>${this.t("pos")}</th>
+                <th>${this.t("player")}</th>
+                <th>${this.t("team")}</th>
+                <th>${this.t("goals")}</th>
+                <th>${this.t("assists")}</th>
+                <th>G+A</th>
+                <th>PEN</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${scorers.map((player, index) => `
+                <tr class="${index < 3 ? "golden-top-row" : ""}">
+                  <td><span class="golden-rank">${index + 1}</span></td>
+                  <td><strong>${this.esc(player.name)}</strong></td>
+                  <td><div class="group-team-cell">${this.flag(player.team, true)} <span>${this.esc(player.team)}</span></div></td>
+                  <td><strong class="golden-goal-count">${player.goals}</strong></td>
+                  <td>${player.assists}</td>
+                  <td>${player.totalInvolvements}</td>
+                  <td>${player.penalties}</td>
                 </tr>
-              </thead>
-              <tbody>
-                ${scorers.map((player, index) => `
-                  <tr>
-                    <td>${index + 1}</td>
-                    <td><strong>${this.esc(player.name)}</strong></td>
-                    <td>
-                      <div class="group-team-cell">
-                        ${this.flag(player.team, true)}
-                        <span>${this.esc(player.team)}</span>
-                      </div>
-                    </td>
-                    <td><strong>${player.goals}</strong></td>
-                    <td>${player.assists}</td>
-                  </tr>
-                `).join("")}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <aside class="wc-section side-panel">
-          <div class="section-kicker">${this.t("stats")}</div>
-          <h2>${this.t("tournamentIntelligence")}</h2>
-          <div class="stat-list">
-            <div><strong>${scorers.length}</strong><span>${this.t("playersTracked")}</span></div>
-            <div><strong>${totalGoals}</strong><span>${this.t("totalGoals")}</span></div>
-            <div><strong>${totalAssists}</strong><span>${this.t("totalAssists")}</span></div>
-            <div><strong>${this.esc(source)}</strong><span>${this.t("source")}</span></div>
-          </div>
-        </aside>
-      </div>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      </section>
     `;
   }
-
 
   knockoutPage() {
     const fixtures = this._data.fixtures || [];
@@ -17261,63 +17451,551 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   recordsPage() {
-    const r = this._data.records || {};
+    const a = this.statsHubAnalytics();
+    const matches = a.matches || [];
+    const finished = a.finished || [];
+
+    const eventRows = finished.map((match) => {
+      const events = this.normalisedMatchEvents(match);
+      const goals = events.filter((event) => event.category === "goal").length;
+      const cards = events.filter((event) => event.category === "card").length;
+      const reds = events.filter((event) => event.category === "card" && (String(event.icon || "").includes("🟥") || String(event.detail || "").toLowerCase().includes("red"))).length;
+      const subs = events.filter((event) => event.category === "substitution").length;
+      const vars = events.filter((event) => event.category === "var").length;
+      const homeScore = Number(this.getHomeScore(match));
+      const awayScore = Number(this.getAwayScore(match));
+      const totalGoals = Number.isFinite(homeScore) && Number.isFinite(awayScore) ? homeScore + awayScore : goals;
+      const margin = Number.isFinite(homeScore) && Number.isFinite(awayScore) ? Math.abs(homeScore - awayScore) : 0;
+      return { match, events: events.length, goals, cards, reds, subs, vars, totalGoals, margin };
+    });
+
+    const pick = (rows, sortFn) => [...rows].sort(sortFn)[0] || null;
+    const highestScoring = a.highestScoringMatch || pick(eventRows, (x, y) => y.totalGoals - x.totalGoals)?.match;
+    const biggestWin = a.biggestWin || pick(eventRows, (x, y) => y.margin - x.margin)?.match;
+    const mostEventful = pick(eventRows, (x, y) => y.events - x.events || y.goals - x.goals);
+    const cardRecord = pick(eventRows, (x, y) => y.cards - x.cards || y.reds - x.reds);
+    const subRecord = pick(eventRows, (x, y) => y.subs - x.subs);
+    const varRecord = pick(eventRows, (x, y) => y.vars - x.vars);
+
+    const teamRows = a.teamRows || [];
+    const disciplineRows = a.disciplineRows || [];
+    const topAttack = a.topScoringTeam || teamRows[0];
+    const bestDefence = a.bestDefence || [...teamRows].filter((row) => row.played).sort((x, y) => x.ga - y.ga || y.played - x.played)[0];
+    const cleanSheetLeader = [...teamRows].sort((x, y) => (y.cleanSheets || 0) - (x.cleanSheets || 0) || x.team.localeCompare(y.team))[0];
+    const mostCardsTeam = disciplineRows[0];
+    const mostVARTeam = [...teamRows].sort((x, y) => (y.varEvents || 0) - (x.varEvents || 0) || x.team.localeCompare(y.team))[0];
+    const mostSubsTeam = [...teamRows].sort((x, y) => (y.substitutions || 0) - (x.substitutions || 0) || x.team.localeCompare(y.team))[0];
+
+    const statCard = (label, value, sub = "", accent = "#93c5fd") => `
+      <div class="wc-stat" style="min-height:112px;display:flex;flex-direction:column;justify-content:center;gap:5px;background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.045));border:1px solid rgba(255,255,255,.10);">
+        <strong style="font-size:2.1rem;line-height:1;color:${accent};">${this.esc(value ?? 0)}</strong>
+        <span>${this.esc(label)}</span>
+        ${sub ? `<small style="color:rgba(255,255,255,.58);">${this.esc(sub)}</small>` : ""}
+      </div>
+    `;
+
+    const matchRecordCard = (title, rowOrMatch, metric = "") => {
+      const row = rowOrMatch?.match ? rowOrMatch : eventRows.find((item) => item.match === rowOrMatch);
+      const match = rowOrMatch?.match || rowOrMatch;
+      return `
+        <div class="wc-card" style="overflow:hidden;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+            <div class="wc-section-title" style="margin:0;">${this.esc(title)}</div>
+            ${metric ? `<span style="padding:6px 10px;border-radius:999px;background:rgba(59,130,246,.16);border:1px solid rgba(147,197,253,.24);font-weight:900;color:#bfdbfe;">${this.esc(metric)}</span>` : ""}
+          </div>
+          ${match ? `
+            ${this.matchRow(match)}
+            ${row ? `
+              <div class="wc-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));margin-top:12px;gap:8px;">
+                <div class="wc-stat"><strong>${row.events}</strong>Events</div>
+                <div class="wc-stat"><strong>${row.cards}</strong>Cards</div>
+                <div class="wc-stat"><strong>${row.subs}</strong>Subs</div>
+                <div class="wc-stat"><strong>${row.vars}</strong>VAR</div>
+              </div>
+            ` : ""}
+          ` : `<div class="wc-empty">${this.t("noResult")}</div>`}
+        </div>
+      `;
+    };
+
+    const teamRecordCard = (title, row, value, sub = "") => `
+      <div class="wc-stat" style="align-items:flex-start;text-align:left;min-height:112px;">
+        <div style="font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#93c5fd;">${this.esc(title)}</div>
+        ${row ? `
+          <strong style="font-size:1.2rem;">${this.flag(row.team, true)} ${this.esc(this.localizedTeamName(row.team))}</strong>
+          <div style="font-size:1.8rem;font-weight:1000;line-height:1;">${this.esc(value)}</div>
+          ${sub ? `<div class="wc-muted">${this.esc(sub)}</div>` : ""}
+        ` : `<div class="wc-empty">${this.t("notAvailable")}</div>`}
+      </div>
+    `;
+
+    const matchRows = eventRows
+      .filter((row) => row.events || row.totalGoals || row.cards || row.subs || row.vars)
+      .sort((x, y) => y.events - x.events || y.totalGoals - x.totalGoals)
+      .slice(0, 8)
+      .map((row) => ({
+        fixture: `${this.localizedTeamName(this.getHomeTeam(row.match))} v ${this.localizedTeamName(this.getAwayTeam(row.match))}`,
+        score: `${this.getHomeScore(row.match)}-${this.getAwayScore(row.match)}`,
+        events: row.events,
+        goals: row.totalGoals,
+        cards: row.cards,
+        subs: row.subs,
+        vars: row.vars,
+      }));
 
     return `
+      <div class="wc-card" style="overflow:hidden;position:relative;background:radial-gradient(circle at top left,rgba(250,204,21,.18),transparent 34%),radial-gradient(circle at bottom right,rgba(59,130,246,.18),transparent 36%),rgba(7,12,24,.94);">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.14em;color:#fde68a;">Tournament Records</div>
+            <div class="wc-section-title" style="font-size:1.65rem;margin-top:4px;">Records Centre</div>
+            <p class="wc-muted" style="margin:6px 0 0;">Best matches, biggest wins, team leaders, discipline records and timeline event records in one place.</p>
+          </div>
+          <div style="min-width:170px;text-align:center;padding:14px;border-radius:18px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.10);">
+            <div style="font-size:2.25rem;font-weight:1000;color:#fde68a;">${finished.length}</div>
+            <div style="font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.68);">Finished matches</div>
+          </div>
+        </div>
+      </div>
+
       <div class="wc-grid">
-        <div class="wc-stat"><strong>${r.highest_scoring_match?.totalGoals ?? 0}</strong>${this.t("highestMatchGoals")}</div>
-        <div class="wc-stat"><strong>${r.biggest_win?.margin ?? 0}</strong>${this.t("biggestMargin")}</div>
-        <div class="wc-stat"><strong>${r.top_scoring_team?.goalsFor ?? 0}</strong>${this.t("topTeamGoals")}</div>
-        <div class="wc-stat"><strong>${r.best_defence?.goalsAgainst ?? 0}</strong>${this.t("bestDefenceGA")}</div>
+        ${statCard(this.t("highestMatchGoals"), highestScoring?.totalGoals ?? eventRows.find((row) => row.match === highestScoring)?.totalGoals ?? 0, highestScoring ? `${this.getHomeTeam(highestScoring)} v ${this.getAwayTeam(highestScoring)}` : "")}
+        ${statCard(this.t("biggestMargin"), biggestWin?.margin ?? eventRows.find((row) => row.match === biggestWin)?.margin ?? 0, biggestWin ? `${this.getHomeTeam(biggestWin)} v ${this.getAwayTeam(biggestWin)}` : "", "#fca5a5")}
+        ${statCard("Most Events", mostEventful?.events ?? 0, mostEventful ? `${this.getHomeTeam(mostEventful.match)} v ${this.getAwayTeam(mostEventful.match)}` : "", "#86efac")}
+        ${statCard("Most Cards", cardRecord?.cards ?? 0, cardRecord ? `${cardRecord.reds} reds in match` : "", "#facc15")}
+        ${statCard("Most Subs", subRecord?.subs ?? 0, subRecord ? `${this.getHomeTeam(subRecord.match)} v ${this.getAwayTeam(subRecord.match)}` : "", "#c4b5fd")}
+        ${statCard("Most VAR", varRecord?.vars ?? 0, varRecord ? `${this.getHomeTeam(varRecord.match)} v ${this.getAwayTeam(varRecord.match)}` : "", "#93c5fd")}
+      </div>
+
+      <div class="wc-two">
+        ${matchRecordCard(this.t("highestScoringMatch"), highestScoring, highestScoring ? `${highestScoring.totalGoals ?? eventRows.find((row) => row.match === highestScoring)?.totalGoals ?? 0} goals` : "")}
+        ${matchRecordCard(this.t("biggestWin"), biggestWin, biggestWin ? `${biggestWin.margin ?? eventRows.find((row) => row.match === biggestWin)?.margin ?? 0} goal margin` : "")}
+      </div>
+
+      <div class="wc-two">
+        ${matchRecordCard("Most Eventful Match", mostEventful, mostEventful ? `${mostEventful.events} events` : "")}
+        ${matchRecordCard("Discipline Record", cardRecord, cardRecord ? `${cardRecord.cards} cards` : "")}
+      </div>
+
+      <div class="wc-card">
+        <div class="wc-section-title">🏆 Team Records</div>
+        <div class="wc-grid">
+          ${teamRecordCard(this.t("topScoringTeam"), topAttack, `${topAttack?.goalsFor ?? topAttack?.gf ?? 0}`, "goals scored")}
+          ${teamRecordCard(this.t("bestDefence"), bestDefence, `${bestDefence?.goalsAgainst ?? bestDefence?.ga ?? 0}`, this.t("conceded"))}
+          ${teamRecordCard("Clean Sheet Leader", cleanSheetLeader, `${cleanSheetLeader?.cleanSheets ?? 0}`, "clean sheets")}
+          ${teamRecordCard("Most Cards", mostCardsTeam, `${mostCardsTeam?.cards ?? 0}`, `${mostCardsTeam?.redCards ?? 0} red cards`)}
+          ${teamRecordCard("Most Substitutions", mostSubsTeam, `${mostSubsTeam?.substitutions ?? 0}`, "recorded changes")}
+          ${teamRecordCard("Most VAR Events", mostVARTeam, `${mostVARTeam?.varEvents ?? 0}`, "video reviews")}
+        </div>
       </div>
 
       <div class="wc-two">
         <div class="wc-card">
-          <div class="wc-section-title">${this.t("highestScoringMatch")}</div>
-          ${r.highest_scoring_match ? this.matchRow(r.highest_scoring_match) : `<div class="wc-empty">${this.t("noResult")}</div>`}
+          <div class="wc-section-title">📋 Event Record Matches</div>
+          ${this.statsMiniTable(matchRows, [
+            { label: "Match", render: (row) => `<strong>${this.esc(row.fixture)}</strong><div class="wc-muted">${this.esc(row.score)}</div>` },
+            { label: "Events", key: "events", align: "center" },
+            { label: "Goals", key: "goals", align: "center" },
+            { label: "Cards", key: "cards", align: "center" },
+            { label: "Subs", key: "subs", align: "center" },
+            { label: "VAR", key: "vars", align: "center" },
+          ], "No event records yet")}
         </div>
 
         <div class="wc-card">
-          <div class="wc-section-title">${this.t("biggestWin")}</div>
-          ${r.biggest_win ? this.matchRow(r.biggest_win) : `<div class="wc-empty">${this.t("noResult")}</div>`}
-        </div>
-      </div>
-
-      <div class="wc-two">
-        <div class="wc-card">
-          <div class="wc-section-title">${this.t("topScoringTeam")}</div>
-          ${
-            r.top_scoring_team
-              ? `<p><strong>${this.esc(this.localizedTeamName(r.top_scoring_team.team))}</strong></p><p>${r.top_scoring_team.goalsFor} ${this.t("goals").toLowerCase()}</p>`
-              : `<div class="wc-empty">${this.t("noTeamGoalData")}</div>`
-          }
-        </div>
-
-        <div class="wc-card">
-          <div class="wc-section-title">${this.t("bestDefence")}</div>
-          ${
-            r.best_defence
-              ? `<p><strong>${this.esc(this.localizedTeamName(r.best_defence.team))}</strong></p><p>${r.best_defence.goalsAgainst} ${this.t("conceded")}</p>`
-              : `<div class="wc-empty">${this.t("noDefensiveData")}</div>`
-          }
+          <div class="wc-section-title">⚽ Top Event Teams</div>
+          ${this.statsMiniTable((a.eventLeaderRows || []).slice(0, 8), [
+            { label: "Team", render: (row) => `<strong>${this.flag(row.team, true)} ${this.esc(row.team)}</strong>` },
+            { label: "Events", key: "eventCount", align: "center" },
+            { label: "Goals", key: "goals", align: "center" },
+            { label: "Cards", key: "cards", align: "center" },
+            { label: "VAR", key: "varEvents", align: "center" },
+          ], "No team event records yet")}
         </div>
       </div>
     `;
   }
 
-  statsPage() {
+  statsHubAllMatches() {
+    const sources = [
+      this._data.results,
+      this._data.fixtures,
+      this._data.live,
+      this._data.apiResultsTest,
+    ];
+    const byKey = new Map();
+
+    const keyFor = (match) => {
+      const id = match?.id ?? match?.matchId ?? match?.apiFootballFixtureId;
+      if (id !== undefined && id !== null && id !== "") return `id:${id}`;
+      return [
+        this.fixtureTeamKey(this.getHomeTeam(match)),
+        this.fixtureTeamKey(this.getAwayTeam(match)),
+        match?.utcDate || match?.date || "",
+      ].join("|");
+    };
+
+    sources.forEach((source) => {
+      const list = Array.isArray(source) ? source : [];
+      list.forEach((match) => {
+        if (!match || typeof match !== "object") return;
+        const key = keyFor(match);
+        const existing = byKey.get(key) || {};
+        byKey.set(key, {
+          ...existing,
+          ...match,
+          events: Array.isArray(match.events) && match.events.length ? match.events : existing.events,
+          goalEvents: Array.isArray(match.goalEvents) && match.goalEvents.length ? match.goalEvents : existing.goalEvents,
+          cardEvents: Array.isArray(match.cardEvents) && match.cardEvents.length ? match.cardEvents : existing.cardEvents,
+          substitutionEvents: Array.isArray(match.substitutionEvents) && match.substitutionEvents.length ? match.substitutionEvents : existing.substitutionEvents,
+          varEvents: Array.isArray(match.varEvents) && match.varEvents.length ? match.varEvents : existing.varEvents,
+          matchDetails: match.matchDetails || existing.matchDetails,
+          referees: Array.isArray(match.referees) && match.referees.length ? match.referees : existing.referees,
+        });
+      });
+    });
+
+    return Array.from(byKey.values());
+  }
+
+  statsHubAnalytics() {
     const s = this._data.statistics || {};
+    const r = this._data.records || {};
+    const matches = this.statsHubAllMatches();
+    const finished = matches.filter((match) => this.isFinishedMatch(match));
+    const live = matches.filter((match) => this.isLiveMatch(match));
+    const teams = new Map();
+    const players = new Map();
+    const refs = new Map();
+    const eventMatches = new Set();
+
+    const stat = {
+      matches,
+      finished,
+      live,
+      scheduled: matches.filter((match) => !this.isFinishedMatch(match) && !this.isLiveMatch(match)).length,
+      goals: Number(s.total_goals ?? 0) || 0,
+      assists: 0,
+      ownGoals: 0,
+      penalties: 0,
+      missedPens: 0,
+      yellowCards: 0,
+      redCards: 0,
+      cards: 0,
+      substitutions: 0,
+      varEvents: 0,
+      events: 0,
+      eventMatches: 0,
+      refs: 0,
+      topPlayers: [],
+      teamRows: [],
+      disciplineRows: [],
+      refereeRows: [],
+      dataCoverage: 0,
+      progress: s.progress ?? 0,
+      goalsPerMatch: s.goals_per_match ?? 0,
+      draws: s.draws ?? 0,
+      drawRate: s.draw_rate ?? 0,
+      bttsRate: s.btts_rate ?? 0,
+      over25Rate: s.over_25_rate ?? 0,
+      biggestWin: r.biggest_win,
+      highestScoringMatch: r.highest_scoring_match,
+      topScoringTeam: r.top_scoring_team,
+      bestDefence: r.best_defence,
+    };
+
+    const ensureTeam = (team) => {
+      const label = this.localizedTeamName(team || this.t("unknown"));
+      const key = this.fixtureTeamKey(label);
+      if (!teams.has(key)) {
+        teams.set(key, {
+          team: label,
+          played: 0,
+          wins: 0,
+          draws: 0,
+          losses: 0,
+          gf: 0,
+          ga: 0,
+          gd: 0,
+          goals: 0,
+          assists: 0,
+          ownGoals: 0,
+          penalties: 0,
+          yellowCards: 0,
+          redCards: 0,
+          cards: 0,
+          substitutions: 0,
+          varEvents: 0,
+          cleanSheets: 0,
+          eventCount: 0,
+        });
+      }
+      return teams.get(key);
+    };
+
+    const addPlayer = (name, team, field) => {
+      if (!name) return;
+      const key = `${String(name).toLowerCase()}|${this.fixtureTeamKey(team)}`;
+      if (!players.has(key)) {
+        players.set(key, { player: name, team: this.localizedTeamName(team || ""), goals: 0, assists: 0, penalties: 0, ownGoals: 0, cards: 0 });
+      }
+      players.get(key)[field] = (players.get(key)[field] || 0) + 1;
+    };
+
+    finished.forEach((match) => {
+      const home = this.getHomeTeam(match);
+      const away = this.getAwayTeam(match);
+      const homeScore = Number(this.getHomeScore(match));
+      const awayScore = Number(this.getAwayScore(match));
+      const homeRow = ensureTeam(home);
+      const awayRow = ensureTeam(away);
+
+      if (Number.isFinite(homeScore) && Number.isFinite(awayScore)) {
+        homeRow.played += 1;
+        awayRow.played += 1;
+        homeRow.gf += homeScore;
+        homeRow.ga += awayScore;
+        awayRow.gf += awayScore;
+        awayRow.ga += homeScore;
+        if (awayScore === 0) homeRow.cleanSheets += 1;
+        if (homeScore === 0) awayRow.cleanSheets += 1;
+        if (homeScore > awayScore) { homeRow.wins += 1; awayRow.losses += 1; }
+        else if (awayScore > homeScore) { awayRow.wins += 1; homeRow.losses += 1; }
+        else { homeRow.draws += 1; awayRow.draws += 1; }
+      }
+    });
+
+    matches.forEach((match) => {
+      const events = this.normalisedMatchEvents(match);
+      if (events.length) eventMatches.add(match?.id ?? match?.matchId ?? `${this.getHomeTeam(match)}-${this.getAwayTeam(match)}-${match?.utcDate || match?.date || ""}`);
+      stat.events += events.length;
+
+      events.forEach((event) => {
+        const teamRow = ensureTeam(event.team || this.t("unknown"));
+        teamRow.eventCount += 1;
+        if (event.category === "goal") {
+          stat.goals += stat.goals ? 0 : 1;
+          teamRow.goals += 1;
+          addPlayer(event.player, event.team, "goals");
+          if (event.assist) {
+            stat.assists += 1;
+            teamRow.assists += 1;
+            addPlayer(event.assist, event.team, "assists");
+          }
+          if (event.isOwnGoal) { stat.ownGoals += 1; teamRow.ownGoals += 1; addPlayer(event.player, event.team, "ownGoals"); }
+          if (event.isPenalty) { stat.penalties += 1; teamRow.penalties += 1; addPlayer(event.player, event.team, "penalties"); }
+          if (event.isMissedPenalty) stat.missedPens += 1;
+        }
+        if (event.category === "card") {
+          stat.cards += 1;
+          teamRow.cards += 1;
+          addPlayer(event.player, event.team, "cards");
+          if (String(event.icon).includes("🟥") || String(event.detail).toLowerCase().includes("red")) {
+            stat.redCards += 1;
+            teamRow.redCards += 1;
+          } else {
+            stat.yellowCards += 1;
+            teamRow.yellowCards += 1;
+          }
+        }
+        if (event.category === "substitution") {
+          stat.substitutions += 1;
+          teamRow.substitutions += 1;
+        }
+        if (event.category === "var") {
+          stat.varEvents += 1;
+          teamRow.varEvents += 1;
+        }
+      });
+
+      this.matchReferees(match).forEach((ref) => {
+        const key = String(ref.name || "").toLowerCase();
+        if (!key) return;
+        refs.set(key, { ...ref, matches: (refs.get(key)?.matches || 0) + 1 });
+      });
+    });
+
+    // Prefer official/statistics total goals when available, but use timeline totals if the official total is missing.
+    const eventGoalTotal = Array.from(teams.values()).reduce((sum, row) => sum + row.goals, 0);
+    if (!stat.goals && eventGoalTotal) stat.goals = eventGoalTotal;
+
+    teams.forEach((row) => { row.gd = row.gf - row.ga; });
+    stat.eventMatches = eventMatches.size;
+    stat.refs = refs.size;
+    stat.dataCoverage = finished.length ? Math.round((eventMatches.size / finished.length) * 100) : 0;
+    stat.teamRows = Array.from(teams.values()).sort((a, b) => b.gf - a.gf || b.gd - a.gd || a.team.localeCompare(b.team));
+    stat.disciplineRows = Array.from(teams.values()).sort((a, b) => b.cards - a.cards || b.redCards - a.redCards || a.team.localeCompare(b.team));
+    stat.eventLeaderRows = Array.from(teams.values()).sort((a, b) => b.eventCount - a.eventCount || b.goals - a.goals || a.team.localeCompare(b.team));
+    stat.topPlayers = Array.from(players.values())
+      .sort((a, b) => (b.goals + b.assists + b.cards) - (a.goals + a.assists + a.cards) || b.goals - a.goals || a.player.localeCompare(b.player))
+      .slice(0, 10);
+    stat.refereeRows = Array.from(refs.values()).sort((a, b) => b.matches - a.matches || String(a.name).localeCompare(String(b.name))).slice(0, 8);
+
+    return stat;
+  }
+
+  statsMiniTable(rows, columns, emptyText = "No data yet") {
+    if (!rows || !rows.length) return `<div class="wc-empty">${this.esc(emptyText)}</div>`;
+    return `
+      <div style="overflow:auto;">
+        <table style="width:100%;border-collapse:separate;border-spacing:0 8px;font-size:.92rem;">
+          <thead>
+            <tr>${columns.map((col) => `<th style="text-align:${col.align || "left"};color:rgba(255,255,255,.62);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;padding:0 8px;white-space:nowrap;">${this.esc(col.label)}</th>`).join("")}</tr>
+          </thead>
+          <tbody>
+            ${rows.map((row) => `
+              <tr style="background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);">
+                ${columns.map((col, index) => `<td style="padding:10px 8px;text-align:${col.align || "left"};white-space:nowrap;${index === 0 ? "border-radius:12px 0 0 12px;" : ""}${index === columns.length - 1 ? "border-radius:0 12px 12px 0;" : ""}">${col.render ? col.render(row) : this.esc(row[col.key] ?? "-")}</td>`).join("")}
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  statsPage() {
+    const a = this.statsHubAnalytics();
+    const eventColour = a.dataCoverage >= 80 ? "#22c55e" : (a.dataCoverage >= 40 ? "#f59e0b" : "#ef4444");
+    const statCard = (label, value, sub = "", badge = "") => `
+      <div class="wc-stat" style="min-height:104px;display:flex;flex-direction:column;justify-content:center;gap:5px;background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.045));border:1px solid rgba(255,255,255,.10);">
+        ${badge ? `<div style="font-size:.72rem;font-weight:900;letter-spacing:.08em;color:#93c5fd;text-transform:uppercase;">${this.esc(badge)}</div>` : ""}
+        <strong style="font-size:2rem;line-height:1;">${this.esc(value)}</strong>
+        <span>${this.esc(label)}</span>
+        ${sub ? `<small style="color:rgba(255,255,255,.58);">${this.esc(sub)}</small>` : ""}
+      </div>
+    `;
 
     return `
+      <div class="wc-card" style="overflow:hidden;position:relative;background:radial-gradient(circle at top left,rgba(56,189,248,.20),transparent 36%),radial-gradient(circle at bottom right,rgba(34,197,94,.14),transparent 38%),rgba(7,12,24,.92);">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.14em;color:#93c5fd;">Tournament Intelligence</div>
+            <div class="wc-section-title" style="font-size:1.55rem;margin-top:4px;">Stats Hub</div>
+            <p class="wc-muted" style="margin:6px 0 0;">Live tournament analytics built from results, match timelines, cards, substitutions, VAR, referees and team performance.</p>
+          </div>
+          <div style="min-width:160px;text-align:center;padding:14px;border-radius:18px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.10);">
+            <div style="font-size:2.2rem;font-weight:1000;color:${eventColour};">${a.dataCoverage}%</div>
+            <div style="font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.68);">Event coverage</div>
+          </div>
+        </div>
+      </div>
+
       <div class="wc-grid">
-        <div class="wc-stat"><strong>${s.matches_played ?? 0}</strong>${this.t("matchesPlayed")}</div>
-        <div class="wc-stat"><strong>${s.total_goals ?? 0}</strong>${this.t("totalGoals")}</div>
-        <div class="wc-stat"><strong>${s.goals_per_match ?? 0}</strong>${this.t("goalsPerMatch")}</div>
-        <div class="wc-stat"><strong>${s.progress ?? 0}%</strong>${this.t("progress")}</div>
-        <div class="wc-stat"><strong>${s.draws ?? 0}</strong>${this.t("draws")}</div>
-        <div class="wc-stat"><strong>${s.draw_rate ?? 0}%</strong>${this.t("drawRate")}</div>
-        <div class="wc-stat"><strong>${s.btts_rate ?? 0}%</strong>${this.t("bttsRate")}</div>
-        <div class="wc-stat"><strong>${s.over_25_rate ?? 0}%</strong>${this.t("over25Rate")}</div>
+        ${statCard(this.t("matchesPlayed"), a.finished.length, `${a.live.length} live • ${a.scheduled} upcoming`, "Matches")}
+        ${statCard(this.t("totalGoals"), a.goals, `${a.goalsPerMatch} per match`, "Goals")}
+        ${statCard("Assists", a.assists, "from match timelines", "Creative")}
+        ${statCard("PEN Goals", a.penalties, `${a.missedPens} missed`, "Penalties")}
+        ${statCard("Own Goals", a.ownGoals, "OG events", "Goals")}
+        ${statCard("VAR", a.varEvents, "video reviews", "Review")}
+        ${statCard("Yellow Cards", a.yellowCards, `${a.redCards} red cards`, "Discipline")}
+        ${statCard("Substitutions", a.substitutions, "all recorded changes", "Benches")}
+        ${statCard("Referees", a.refs, "officials tracked", "Officials")}
+        ${statCard(this.t("progress"), `${a.progress}%`, `${a.finished.length}/${a.matches.length || 104} loaded`, "Tournament")}
+        ${statCard("BTTS", `${a.bttsRate}%`, "both teams scored", "Rates")}
+        ${statCard("Over 2.5", `${a.over25Rate}%`, "3+ goals", "Rates")}
+      </div>
+
+      <div class="wc-two">
+        <div class="wc-card">
+          <div class="wc-section-title">🔥 Match Records</div>
+          <div style="display:grid;gap:12px;">
+            <div style="padding:12px;border-radius:14px;background:rgba(255,255,255,.06);">
+              <div class="wc-muted">Highest scoring match</div>
+              ${a.highestScoringMatch ? this.matchRow(a.highestScoringMatch) : `<div class="wc-empty">${this.t("noResult")}</div>`}
+            </div>
+            <div style="padding:12px;border-radius:14px;background:rgba(255,255,255,.06);">
+              <div class="wc-muted">Biggest win</div>
+              ${a.biggestWin ? this.matchRow(a.biggestWin) : `<div class="wc-empty">${this.t("noResult")}</div>`}
+            </div>
+          </div>
+        </div>
+
+        <div class="wc-card">
+          <div class="wc-section-title">📡 Data Health</div>
+          <div style="display:grid;gap:12px;">
+            <div style="height:14px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;">
+              <div style="height:100%;width:${Math.max(0, Math.min(100, a.dataCoverage))}%;background:${eventColour};border-radius:999px;"></div>
+            </div>
+            <div class="wc-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));">
+              <div class="wc-stat"><strong>${a.eventMatches}</strong>Matches with events</div>
+              <div class="wc-stat"><strong>${a.events}</strong>Total timeline events</div>
+              <div class="wc-stat"><strong>${a.finished.length - a.eventMatches}</strong>Missing timelines</div>
+              <div class="wc-stat"><strong>${a.refs}</strong>Officials found</div>
+            </div>
+            <p class="wc-muted">This uses the data already loaded into the panel. No extra API calls are made by this page.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="wc-two">
+        <div class="wc-card">
+          <div class="wc-section-title">⚽ Team Performance</div>
+          ${this.statsMiniTable(a.teamRows.slice(0, 12), [
+            { label: "Team", render: (row) => `${this.flag(row.team, true)} <strong>${this.esc(row.team)}</strong>` },
+            { label: "P", key: "played", align: "center" },
+            { label: "GF", key: "gf", align: "center" },
+            { label: "GA", key: "ga", align: "center" },
+            { label: "GD", render: (row) => row.gd > 0 ? `+${row.gd}` : row.gd, align: "center" },
+            { label: "CS", key: "cleanSheets", align: "center" },
+          ], "No team stats yet")}
+        </div>
+
+        <div class="wc-card">
+          <div class="wc-section-title">🧠 Event Leaders</div>
+          ${this.statsMiniTable(a.eventLeaderRows.slice(0, 12), [
+            { label: "Team", render: (row) => `${this.flag(row.team, true)} <strong>${this.esc(row.team)}</strong>` },
+            { label: "Goals", key: "goals", align: "center" },
+            { label: "Ast", key: "assists", align: "center" },
+            { label: "PEN", key: "penalties", align: "center" },
+            { label: "OG", key: "ownGoals", align: "center" },
+            { label: "VAR", key: "varEvents", align: "center" },
+          ], "No event data yet")}
+        </div>
+      </div>
+
+      <div class="wc-two">
+        <div class="wc-card">
+          <div class="wc-section-title">🟨 Discipline Centre</div>
+          ${this.statsMiniTable(a.disciplineRows.slice(0, 12), [
+            { label: "Team", render: (row) => `${this.flag(row.team, true)} <strong>${this.esc(row.team)}</strong>` },
+            { label: "Cards", key: "cards", align: "center" },
+            { label: "Yellow", key: "yellowCards", align: "center" },
+            { label: "Red", key: "redCards", align: "center" },
+            { label: "Subs", key: "substitutions", align: "center" },
+          ], "No discipline data yet")}
+        </div>
+
+        <div class="wc-card">
+          <div class="wc-section-title">⭐ Player Event Watch</div>
+          ${this.statsMiniTable(a.topPlayers, [
+            { label: "Player", render: (row) => `<strong>${this.esc(row.player)}</strong><div class="wc-muted">${this.esc(row.team || "")}</div>` },
+            { label: "G", key: "goals", align: "center" },
+            { label: "A", key: "assists", align: "center" },
+            { label: "PEN", key: "penalties", align: "center" },
+            { label: "Cards", key: "cards", align: "center" },
+          ], "No player event data yet")}
+        </div>
+      </div>
+
+      <div class="wc-two">
+        <div class="wc-card">
+          <div class="wc-section-title">👨‍⚖️ Officials</div>
+          ${this.statsMiniTable(a.refereeRows, [
+            { label: "Official", render: (row) => `<strong>${this.esc(row.name)}</strong><div class="wc-muted">${this.esc(row.nationality || row.type || "")}</div>` },
+            { label: "Matches", key: "matches", align: "center" },
+          ], "No referee data yet")}
+        </div>
+
+        <div class="wc-card">
+          <div class="wc-section-title">📊 Tournament Rates</div>
+          <div class="wc-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));">
+            ${statCard(this.t("drawRate"), `${a.drawRate}%`, `${a.draws} draws`)}
+            ${statCard(this.t("goalsPerMatch"), a.goalsPerMatch, "average")}
+            ${statCard("BTTS", `${a.bttsRate}%`, "both teams scored")}
+            ${statCard("Over 2.5", `${a.over25Rate}%`, "3+ goals")}
+          </div>
+        </div>
       </div>
     `;
   }
