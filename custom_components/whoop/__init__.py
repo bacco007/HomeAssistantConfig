@@ -129,6 +129,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             for i, key in enumerate(keys):
                 result_item = results[i]
                 if isinstance(result_item, Exception):
+                    if isinstance(result_item, ConfigEntryAuthFailed):
+                        raise result_item
                     _LOGGER.error("Error fetching %s: %s", key, result_item)
                 elif result_item is None:
                     _LOGGER.debug(
