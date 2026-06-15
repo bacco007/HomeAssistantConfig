@@ -12,7 +12,7 @@ Module structure:
 - matter/bindings.py: Binding CRUD operations
 - matter/acl.py: Access Control List operations
 - matter/thermostat.py: Thermostat schedule operations
-- matter/groups.py: Group operations (stubs)
+- matter/groups.py: Group operations (not yet supported; honesty gate)
 - matter/proprietary.py: Proprietary attribute operations
 - matter/ha_registry.py: Home Assistant registry integration
 - matter/utils.py: Error handling and utilities
@@ -106,7 +106,7 @@ from .matter.thermostat import (
     supports_thermostat_schedule,
 )
 
-# Groups - group operations (stubs)
+# Groups - group operations (not yet supported; honesty gate)
 from .matter.groups import (
     add_to_group,
     create_group,

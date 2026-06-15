@@ -10,6 +10,7 @@ from homeassistant.core import HomeAssistant
 
 from ..const import (
     ACL_AUTH_MODE_CASE,
+    ACL_AUTH_MODE_GROUP,
     ACL_PRIVILEGE_ADMINISTER,
     ACL_PRIVILEGE_OPERATE,
     ACL_VERIFY_INTERVAL,
@@ -395,6 +396,73 @@ def acl_entry_exists(
             # Check cluster match (None in target = any cluster)
             cluster_match = target.cluster is None or target.cluster == cluster_id
 
+            if endpoint_match and cluster_match:
+                return True
+
+    return False
+
+
+def build_group_acl_entry(
+    group_id: int,
+    cluster_id: int,
+    target_endpoint_id: int | None = None,
+) -> dict[str, Any]:
+    """Build a group-auth ACL entry for a groupcast binding.
+
+    Groupcast traffic is authenticated by group key, so the receiving device must
+    grant access to the *group* (authMode=Group, subject=group_id) — not to a
+    specific source node as the unicast/CASE path does.
+
+    Args:
+        group_id: The group whose members may operate (the ACL subject)
+        cluster_id: The cluster to grant access to
+        target_endpoint_id: Endpoint to restrict to (None = all endpoints)
+    """
+    privilege = get_cluster_privilege(cluster_id)
+    return {
+        "privilege": privilege,
+        "authMode": ACL_AUTH_MODE_GROUP,
+        "subjects": [group_id],
+        "targets": [
+            {
+                "cluster": cluster_id,
+                "endpoint": target_endpoint_id,
+                "deviceType": None,
+            }
+        ],
+        "fabricIndex": 0,
+    }
+
+
+def group_acl_entry_exists(
+    existing_entries: list[ACLEntry],
+    group_id: int,
+    cluster_id: int | None,
+    target_endpoint_id: int | None = None,
+) -> bool:
+    """Check if a group-auth ACL entry already grants the required access.
+
+    Mirrors acl_entry_exists but for authMode=Group with the group id as subject.
+    """
+    required_privilege = (
+        get_cluster_privilege(cluster_id) if cluster_id else ACL_PRIVILEGE_OPERATE
+    )
+
+    for entry in existing_entries:
+        if entry.privilege < required_privilege:
+            continue
+        if entry.auth_mode != ACL_AUTH_MODE_GROUP:
+            continue
+        # Empty subjects = all groups with this auth mode
+        if entry.subjects and group_id not in entry.subjects:
+            continue
+        if not entry.targets:
+            return True
+        for target in entry.targets:
+            endpoint_match = (
+                target.endpoint is None or target.endpoint == target_endpoint_id
+            )
+            cluster_match = target.cluster is None or target.cluster == cluster_id
             if endpoint_match and cluster_match:
                 return True
 
@@ -953,6 +1021,127 @@ async def provision_acl_for_binding(
         target_endpoint_id=target_endpoint_id,
         cluster_id=cluster_id,
     )
+
+
+async def provision_group_acl(
+    hass: HomeAssistant,
+    node_id: int,
+    group_id: int,
+    cluster_id: int,
+    target_endpoint_id: int | None = None,
+) -> ACLProvisioningResult:
+    """Provision a group-auth ACL entry on a groupcast target device.
+
+    Adds an ACL entry granting the group (authMode=Group, subject=group_id)
+    operate access to the cluster, so the device accepts groupcast commands.
+    Idempotent: skips if an equivalent entry already exists. Admin entries are
+    kept first to prevent lockout, mirroring add_acl_entry.
+    """
+    try:
+        current_entries = await get_acl(hass, node_id)
+
+        if group_acl_entry_exists(
+            current_entries, group_id, cluster_id, target_endpoint_id
+        ):
+            _LOGGER.info(
+                "provision_group_acl: group ACL already exists on node %s "
+                "for group %s cluster 0x%04X",
+                node_id,
+                group_id,
+                cluster_id,
+            )
+            return ACLProvisioningResult(
+                success=True,
+                message="Group ACL entry already exists",
+                acl_entries_count=len(current_entries),
+            )
+
+        admin_entries = [
+            e for e in current_entries if e.privilege == ACL_PRIVILEGE_ADMINISTER
+        ]
+        other_entries = [
+            e for e in current_entries if e.privilege != ACL_PRIVILEGE_ADMINISTER
+        ]
+
+        acl_list: list[dict[str, Any]] = [acl_entry_to_dict(e) for e in admin_entries]
+        acl_list.extend(acl_entry_to_dict(e) for e in other_entries)
+        acl_list.append(build_group_acl_entry(group_id, cluster_id, target_endpoint_id))
+
+        _LOGGER.info(
+            "provision_group_acl: adding group ACL on node %s for group %s "
+            "cluster 0x%04X",
+            node_id,
+            group_id,
+            cluster_id,
+        )
+
+        return await write_acl(hass, node_id, acl_list)
+
+    except Exception as err:
+        _LOGGER.error("Error provisioning group ACL: %s", err, exc_info=True)
+        error_type = parse_error_type(err)
+        return ACLProvisioningResult(
+            success=False,
+            message=get_user_friendly_error(error_type, err),
+            error_type=error_type,
+        )
+
+
+async def remove_group_acl(
+    hass: HomeAssistant,
+    node_id: int,
+    group_id: int,
+    cluster_id: int | None = None,
+) -> ACLProvisioningResult:
+    """Remove group-auth ACL entries for a group from a device.
+
+    Admin entries are preserved first to prevent lockout.
+    """
+    try:
+        current_entries = await get_acl(hass, node_id)
+
+        admin_entries: list[ACLEntry] = []
+        kept_entries: list[ACLEntry] = []
+        removed = 0
+
+        for entry in current_entries:
+            if entry.privilege == ACL_PRIVILEGE_ADMINISTER:
+                admin_entries.append(entry)
+                continue
+            is_group_match = (
+                entry.auth_mode == ACL_AUTH_MODE_GROUP
+                and entry.subjects
+                and group_id in entry.subjects
+            )
+            if is_group_match and cluster_id is not None:
+                is_group_match = not entry.targets or any(
+                    t.cluster is None or t.cluster == cluster_id for t in entry.targets
+                )
+            if is_group_match:
+                removed += 1
+            else:
+                kept_entries.append(entry)
+
+        if removed == 0:
+            return ACLProvisioningResult(
+                success=True,
+                message="No matching group ACL entry found to remove",
+                acl_entries_count=len(current_entries),
+            )
+
+        acl_list: list[dict[str, Any]] = [acl_entry_to_dict(e) for e in admin_entries]
+        acl_list.extend(acl_entry_to_dict(e) for e in kept_entries)
+
+        return await write_acl(hass, node_id, acl_list)
+
+    except Exception as err:
+        _LOGGER.error("Error removing group ACL: %s", err, exc_info=True)
+        error_type = parse_error_type(err)
+        return ACLProvisioningResult(
+            success=False,
+            message=get_user_friendly_error(error_type, err),
+            error_type=error_type,
+        )
 
 
 # Backwards compatibility aliases

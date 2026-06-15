@@ -142,6 +142,30 @@ class GroupEntry:
 
 
 @dataclass
+class GroupOperationResult:
+    """Result of a group management operation (create/delete/add/remove member).
+
+    Mirrors ACLProvisioningResult so the WebSocket layer can surface structured
+    success/failure. ``error_code`` is a stable, machine-readable string sent to
+    the frontend (e.g. ``"not_supported"`` while groupcast is unimplemented).
+    """
+
+    success: bool
+    message: str
+    error_code: str | None = None
+    group_id: int | None = None  # the (possibly auto-allocated) group id
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary."""
+        return {
+            "success": self.success,
+            "message": self.message,
+            "error_code": self.error_code,
+            "group_id": self.group_id,
+        }
+
+
+@dataclass
 class ACLTarget:
     """Represents an ACL target restriction."""
 

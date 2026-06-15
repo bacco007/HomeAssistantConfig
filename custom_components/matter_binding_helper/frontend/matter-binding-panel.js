@@ -4,39 +4,39 @@ function e(e,t,i,o){var n,r=arguments.length,s=r<3?t:null===o?o=Object.getOwnPro
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const t=globalThis,i=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,o=Symbol(),n=new WeakMap;let r=class{constructor(e,t,i){if(this._$cssResult$=!0,i!==o)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e,this.t=t}get styleSheet(){let e=this.o;const t=this.t;if(i&&void 0===e){const i=void 0!==t&&1===t.length;i&&(e=n.get(t)),void 0===e&&((this.o=e=new CSSStyleSheet).replaceSync(this.cssText),i&&n.set(t,e))}return e}toString(){return this.cssText}};const s=(e,...t)=>{const i=1===e.length?e[0]:t.reduce((t,i,o)=>t+(e=>{if(!0===e._$cssResult$)return e.cssText;if("number"==typeof e)return e;throw Error("Value passed to 'css' function must be a 'css' function result: "+e+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+e[o+1],e[0]);return new r(i,e,o)},a=i?e=>e:e=>e instanceof CSSStyleSheet?(e=>{let t="";for(const i of e.cssRules)t+=i.cssText;return(e=>new r("string"==typeof e?e:e+"",void 0,o))(t)})(e):e,{is:d,defineProperty:c,getOwnPropertyDescriptor:l,getOwnPropertyNames:p,getOwnPropertySymbols:g,getPrototypeOf:h}=Object,u=globalThis,v=u.trustedTypes,m=v?v.emptyScript:"",b=u.reactiveElementPolyfillSupport,_=(e,t)=>e,f={toAttribute(e,t){switch(t){case Boolean:e=e?m:null;break;case Object:case Array:e=null==e?e:JSON.stringify(e)}return e},fromAttribute(e,t){let i=e;switch(t){case Boolean:i=null!==e;break;case Number:i=null===e?null:Number(e);break;case Object:case Array:try{i=JSON.parse(e)}catch(e){i=null}}return i}},y=(e,t)=>!d(e,t),x={attribute:!0,type:String,converter:f,reflect:!1,useDefault:!1,hasChanged:y};
+const t=globalThis,i=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,o=Symbol(),n=new WeakMap;let r=class{constructor(e,t,i){if(this._$cssResult$=!0,i!==o)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e,this.t=t}get styleSheet(){let e=this.o;const t=this.t;if(i&&void 0===e){const i=void 0!==t&&1===t.length;i&&(e=n.get(t)),void 0===e&&((this.o=e=new CSSStyleSheet).replaceSync(this.cssText),i&&n.set(t,e))}return e}toString(){return this.cssText}};const s=(e,...t)=>{const i=1===e.length?e[0]:t.reduce((t,i,o)=>t+(e=>{if(!0===e._$cssResult$)return e.cssText;if("number"==typeof e)return e;throw Error("Value passed to 'css' function must be a 'css' function result: "+e+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+e[o+1],e[0]);return new r(i,e,o)},a=i?e=>e:e=>e instanceof CSSStyleSheet?(e=>{let t="";for(const i of e.cssRules)t+=i.cssText;return(e=>new r("string"==typeof e?e:e+"",void 0,o))(t)})(e):e,{is:d,defineProperty:l,getOwnPropertyDescriptor:c,getOwnPropertyNames:p,getOwnPropertySymbols:g,getPrototypeOf:u}=Object,h=globalThis,v=h.trustedTypes,m=v?v.emptyScript:"",_=h.reactiveElementPolyfillSupport,b=(e,t)=>e,f={toAttribute(e,t){switch(t){case Boolean:e=e?m:null;break;case Object:case Array:e=null==e?e:JSON.stringify(e)}return e},fromAttribute(e,t){let i=e;switch(t){case Boolean:i=null!==e;break;case Number:i=null===e?null:Number(e);break;case Object:case Array:try{i=JSON.parse(e)}catch(e){i=null}}return i}},y=(e,t)=>!d(e,t),x={attribute:!0,type:String,converter:f,reflect:!1,useDefault:!1,hasChanged:y};
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */Symbol.metadata??=Symbol("metadata"),u.litPropertyMetadata??=new WeakMap;let $=class extends HTMLElement{static addInitializer(e){this._$Ei(),(this.l??=[]).push(e)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(e,t=x){if(t.state&&(t.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(e)&&((t=Object.create(t)).wrapped=!0),this.elementProperties.set(e,t),!t.noAccessor){const i=Symbol(),o=this.getPropertyDescriptor(e,i,t);void 0!==o&&c(this.prototype,e,o)}}static getPropertyDescriptor(e,t,i){const{get:o,set:n}=l(this.prototype,e)??{get(){return this[t]},set(e){this[t]=e}};return{get:o,set(t){const r=o?.call(this);n?.call(this,t),this.requestUpdate(e,r,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)??x}static _$Ei(){if(this.hasOwnProperty(_("elementProperties")))return;const e=h(this);e.finalize(),void 0!==e.l&&(this.l=[...e.l]),this.elementProperties=new Map(e.elementProperties)}static finalize(){if(this.hasOwnProperty(_("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(_("properties"))){const e=this.properties,t=[...p(e),...g(e)];for(const i of t)this.createProperty(i,e[i])}const e=this[Symbol.metadata];if(null!==e){const t=litPropertyMetadata.get(e);if(void 0!==t)for(const[e,i]of t)this.elementProperties.set(e,i)}this._$Eh=new Map;for(const[e,t]of this.elementProperties){const i=this._$Eu(e,t);void 0!==i&&this._$Eh.set(i,e)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(e){const t=[];if(Array.isArray(e)){const i=new Set(e.flat(1/0).reverse());for(const e of i)t.unshift(a(e))}else void 0!==e&&t.push(a(e));return t}static _$Eu(e,t){const i=t.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof e?e.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(e=>this.enableUpdating=e),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(e=>e(this))}addController(e){(this._$EO??=new Set).add(e),void 0!==this.renderRoot&&this.isConnected&&e.hostConnected?.()}removeController(e){this._$EO?.delete(e)}_$E_(){const e=new Map,t=this.constructor.elementProperties;for(const i of t.keys())this.hasOwnProperty(i)&&(e.set(i,this[i]),delete this[i]);e.size>0&&(this._$Ep=e)}createRenderRoot(){const e=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return((e,o)=>{if(i)e.adoptedStyleSheets=o.map(e=>e instanceof CSSStyleSheet?e:e.styleSheet);else for(const i of o){const o=document.createElement("style"),n=t.litNonce;void 0!==n&&o.setAttribute("nonce",n),o.textContent=i.cssText,e.appendChild(o)}})(e,this.constructor.elementStyles),e}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(e=>e.hostConnected?.())}enableUpdating(e){}disconnectedCallback(){this._$EO?.forEach(e=>e.hostDisconnected?.())}attributeChangedCallback(e,t,i){this._$AK(e,i)}_$ET(e,t){const i=this.constructor.elementProperties.get(e),o=this.constructor._$Eu(e,i);if(void 0!==o&&!0===i.reflect){const n=(void 0!==i.converter?.toAttribute?i.converter:f).toAttribute(t,i.type);this._$Em=e,null==n?this.removeAttribute(o):this.setAttribute(o,n),this._$Em=null}}_$AK(e,t){const i=this.constructor,o=i._$Eh.get(e);if(void 0!==o&&this._$Em!==o){const e=i.getPropertyOptions(o),n="function"==typeof e.converter?{fromAttribute:e.converter}:void 0!==e.converter?.fromAttribute?e.converter:f;this._$Em=o;const r=n.fromAttribute(t,e.type);this[o]=r??this._$Ej?.get(o)??r,this._$Em=null}}requestUpdate(e,t,i){if(void 0!==e){const o=this.constructor,n=this[e];if(i??=o.getPropertyOptions(e),!((i.hasChanged??y)(n,t)||i.useDefault&&i.reflect&&n===this._$Ej?.get(e)&&!this.hasAttribute(o._$Eu(e,i))))return;this.C(e,t,i)}!1===this.isUpdatePending&&(this._$ES=this._$EP())}C(e,t,{useDefault:i,reflect:o,wrapped:n},r){i&&!(this._$Ej??=new Map).has(e)&&(this._$Ej.set(e,r??t??this[e]),!0!==n||void 0!==r)||(this._$AL.has(e)||(this.hasUpdated||i||(t=void 0),this._$AL.set(e,t)),!0===o&&this._$Em!==e&&(this._$Eq??=new Set).add(e))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(e){Promise.reject(e)}const e=this.scheduleUpdate();return null!=e&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[e,t]of this._$Ep)this[e]=t;this._$Ep=void 0}const e=this.constructor.elementProperties;if(e.size>0)for(const[t,i]of e){const{wrapped:e}=i,o=this[t];!0!==e||this._$AL.has(t)||void 0===o||this.C(t,void 0,i,o)}}let e=!1;const t=this._$AL;try{e=this.shouldUpdate(t),e?(this.willUpdate(t),this._$EO?.forEach(e=>e.hostUpdate?.()),this.update(t)):this._$EM()}catch(t){throw e=!1,this._$EM(),t}e&&this._$AE(t)}willUpdate(e){}_$AE(e){this._$EO?.forEach(e=>e.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(e){return!0}update(e){this._$Eq&&=this._$Eq.forEach(e=>this._$ET(e,this[e])),this._$EM()}updated(e){}firstUpdated(e){}};$.elementStyles=[],$.shadowRootOptions={mode:"open"},$[_("elementProperties")]=new Map,$[_("finalized")]=new Map,b?.({ReactiveElement:$}),(u.reactiveElementVersions??=[]).push("2.1.1");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const w=globalThis,k=w.trustedTypes,C=k?k.createPolicy("lit-html",{createHTML:e=>e}):void 0,S="$lit$",E=`lit$${Math.random().toFixed(9).slice(2)}$`,z="?"+E,A=`<${z}>`,P=document,T=()=>P.createComment(""),N=e=>null===e||"object"!=typeof e&&"function"!=typeof e,R=Array.isArray,D="[ \t\n\f\r]",I=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,B=/-->/g,M=/>/g,L=RegExp(`>|${D}(?:([^\\s"'>=/]+)(${D}*=${D}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),O=/'/g,W=/"/g,j=/^(?:script|style|textarea|title)$/i,V=(e=>(t,...i)=>({_$litType$:e,strings:t,values:i}))(1),U=Symbol.for("lit-noChange"),F=Symbol.for("lit-nothing"),H=new WeakMap,q=P.createTreeWalker(P,129);function G(e,t){if(!R(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==C?C.createHTML(t):t}const J=(e,t)=>{const i=e.length-1,o=[];let n,r=2===t?"<svg>":3===t?"<math>":"",s=I;for(let t=0;t<i;t++){const i=e[t];let a,d,c=-1,l=0;for(;l<i.length&&(s.lastIndex=l,d=s.exec(i),null!==d);)l=s.lastIndex,s===I?"!--"===d[1]?s=B:void 0!==d[1]?s=M:void 0!==d[2]?(j.test(d[2])&&(n=RegExp("</"+d[2],"g")),s=L):void 0!==d[3]&&(s=L):s===L?">"===d[0]?(s=n??I,c=-1):void 0===d[1]?c=-2:(c=s.lastIndex-d[2].length,a=d[1],s=void 0===d[3]?L:'"'===d[3]?W:O):s===W||s===O?s=L:s===B||s===M?s=I:(s=L,n=void 0);const p=s===L&&e[t+1].startsWith("/>")?" ":"";r+=s===I?i+A:c>=0?(o.push(a),i.slice(0,c)+S+i.slice(c)+E+p):i+E+(-2===c?t:p)}return[G(e,r+(e[i]||"<?>")+(2===t?"</svg>":3===t?"</math>":"")),o]};class K{constructor({strings:e,_$litType$:t},i){let o;this.parts=[];let n=0,r=0;const s=e.length-1,a=this.parts,[d,c]=J(e,t);if(this.el=K.createElement(d,i),q.currentNode=this.el.content,2===t||3===t){const e=this.el.content.firstChild;e.replaceWith(...e.childNodes)}for(;null!==(o=q.nextNode())&&a.length<s;){if(1===o.nodeType){if(o.hasAttributes())for(const e of o.getAttributeNames())if(e.endsWith(S)){const t=c[r++],i=o.getAttribute(e).split(E),s=/([.?@])?(.*)/.exec(t);a.push({type:1,index:n,name:s[2],strings:i,ctor:"."===s[1]?ee:"?"===s[1]?te:"@"===s[1]?ie:Q}),o.removeAttribute(e)}else e.startsWith(E)&&(a.push({type:6,index:n}),o.removeAttribute(e));if(j.test(o.tagName)){const e=o.textContent.split(E),t=e.length-1;if(t>0){o.textContent=k?k.emptyScript:"";for(let i=0;i<t;i++)o.append(e[i],T()),q.nextNode(),a.push({type:2,index:++n});o.append(e[t],T())}}}else if(8===o.nodeType)if(o.data===z)a.push({type:2,index:n});else{let e=-1;for(;-1!==(e=o.data.indexOf(E,e+1));)a.push({type:7,index:n}),e+=E.length-1}n++}}static createElement(e,t){const i=P.createElement("template");return i.innerHTML=e,i}}function Y(e,t,i=e,o){if(t===U)return t;let n=void 0!==o?i._$Co?.[o]:i._$Cl;const r=N(t)?void 0:t._$litDirective$;return n?.constructor!==r&&(n?._$AO?.(!1),void 0===r?n=void 0:(n=new r(e),n._$AT(e,i,o)),void 0!==o?(i._$Co??=[])[o]=n:i._$Cl=n),void 0!==n&&(t=Y(e,n._$AS(e,t.values),n,o)),t}class X{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){const{el:{content:t},parts:i}=this._$AD,o=(e?.creationScope??P).importNode(t,!0);q.currentNode=o;let n=q.nextNode(),r=0,s=0,a=i[0];for(;void 0!==a;){if(r===a.index){let t;2===a.type?t=new Z(n,n.nextSibling,this,e):1===a.type?t=new a.ctor(n,a.name,a.strings,this,e):6===a.type&&(t=new oe(n,this,e)),this._$AV.push(t),a=i[++s]}r!==a?.index&&(n=q.nextNode(),r++)}return q.currentNode=P,o}p(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class Z{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(e,t,i,o){this.type=2,this._$AH=F,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=o,this._$Cv=o?.isConnected??!0}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===e?.nodeType&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Y(this,e,t),N(e)?e===F||null==e||""===e?(this._$AH!==F&&this._$AR(),this._$AH=F):e!==this._$AH&&e!==U&&this._(e):void 0!==e._$litType$?this.$(e):void 0!==e.nodeType?this.T(e):(e=>R(e)||"function"==typeof e?.[Symbol.iterator])(e)?this.k(e):this._(e)}O(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}T(e){this._$AH!==e&&(this._$AR(),this._$AH=this.O(e))}_(e){this._$AH!==F&&N(this._$AH)?this._$AA.nextSibling.data=e:this.T(P.createTextNode(e)),this._$AH=e}$(e){const{values:t,_$litType$:i}=e,o="number"==typeof i?this._$AC(e):(void 0===i.el&&(i.el=K.createElement(G(i.h,i.h[0]),this.options)),i);if(this._$AH?._$AD===o)this._$AH.p(t);else{const e=new X(o,this),i=e.u(this.options);e.p(t),this.T(i),this._$AH=e}}_$AC(e){let t=H.get(e.strings);return void 0===t&&H.set(e.strings,t=new K(e)),t}k(e){R(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,o=0;for(const n of e)o===t.length?t.push(i=new Z(this.O(T()),this.O(T()),this,this.options)):i=t[o],i._$AI(n),o++;o<t.length&&(this._$AR(i&&i._$AB.nextSibling,o),t.length=o)}_$AR(e=this._$AA.nextSibling,t){for(this._$AP?.(!1,!0,t);e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){void 0===this._$AM&&(this._$Cv=e,this._$AP?.(e))}}class Q{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(e,t,i,o,n){this.type=1,this._$AH=F,this._$AN=void 0,this.element=e,this.name=t,this._$AM=o,this.options=n,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=F}_$AI(e,t=this,i,o){const n=this.strings;let r=!1;if(void 0===n)e=Y(this,e,t,0),r=!N(e)||e!==this._$AH&&e!==U,r&&(this._$AH=e);else{const o=e;let s,a;for(e=n[0],s=0;s<n.length-1;s++)a=Y(this,o[i+s],t,s),a===U&&(a=this._$AH[s]),r||=!N(a)||a!==this._$AH[s],a===F?e=F:e!==F&&(e+=(a??"")+n[s+1]),this._$AH[s]=a}r&&!o&&this.j(e)}j(e){e===F?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,e??"")}}class ee extends Q{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===F?void 0:e}}class te extends Q{constructor(){super(...arguments),this.type=4}j(e){this.element.toggleAttribute(this.name,!!e&&e!==F)}}class ie extends Q{constructor(e,t,i,o,n){super(e,t,i,o,n),this.type=5}_$AI(e,t=this){if((e=Y(this,e,t,0)??F)===U)return;const i=this._$AH,o=e===F&&i!==F||e.capture!==i.capture||e.once!==i.once||e.passive!==i.passive,n=e!==F&&(i===F||o);o&&this.element.removeEventListener(this.name,this,i),n&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,e):this._$AH.handleEvent(e)}}class oe{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){Y(this,e)}}const ne=w.litHtmlPolyfillSupport;ne?.(K,Z),(w.litHtmlVersions??=[]).push("3.3.1");const re=globalThis;
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */class se extends ${constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{const o=i?.renderBefore??t;let n=o._$litPart$;if(void 0===n){const e=i?.renderBefore??null;o._$litPart$=n=new Z(t.insertBefore(T(),e),e,void 0,i??{})}return n._$AI(e),n})(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return U}}se._$litElement$=!0,se.finalized=!0,re.litElementHydrateSupport?.({LitElement:se});const ae=re.litElementPolyfillSupport;ae?.({LitElement:se}),(re.litElementVersions??=[]).push("4.2.1");
+ */Symbol.metadata??=Symbol("metadata"),h.litPropertyMetadata??=new WeakMap;let $=class extends HTMLElement{static addInitializer(e){this._$Ei(),(this.l??=[]).push(e)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(e,t=x){if(t.state&&(t.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(e)&&((t=Object.create(t)).wrapped=!0),this.elementProperties.set(e,t),!t.noAccessor){const i=Symbol(),o=this.getPropertyDescriptor(e,i,t);void 0!==o&&l(this.prototype,e,o)}}static getPropertyDescriptor(e,t,i){const{get:o,set:n}=c(this.prototype,e)??{get(){return this[t]},set(e){this[t]=e}};return{get:o,set(t){const r=o?.call(this);n?.call(this,t),this.requestUpdate(e,r,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)??x}static _$Ei(){if(this.hasOwnProperty(b("elementProperties")))return;const e=u(this);e.finalize(),void 0!==e.l&&(this.l=[...e.l]),this.elementProperties=new Map(e.elementProperties)}static finalize(){if(this.hasOwnProperty(b("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(b("properties"))){const e=this.properties,t=[...p(e),...g(e)];for(const i of t)this.createProperty(i,e[i])}const e=this[Symbol.metadata];if(null!==e){const t=litPropertyMetadata.get(e);if(void 0!==t)for(const[e,i]of t)this.elementProperties.set(e,i)}this._$Eh=new Map;for(const[e,t]of this.elementProperties){const i=this._$Eu(e,t);void 0!==i&&this._$Eh.set(i,e)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(e){const t=[];if(Array.isArray(e)){const i=new Set(e.flat(1/0).reverse());for(const e of i)t.unshift(a(e))}else void 0!==e&&t.push(a(e));return t}static _$Eu(e,t){const i=t.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof e?e.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(e=>this.enableUpdating=e),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(e=>e(this))}addController(e){(this._$EO??=new Set).add(e),void 0!==this.renderRoot&&this.isConnected&&e.hostConnected?.()}removeController(e){this._$EO?.delete(e)}_$E_(){const e=new Map,t=this.constructor.elementProperties;for(const i of t.keys())this.hasOwnProperty(i)&&(e.set(i,this[i]),delete this[i]);e.size>0&&(this._$Ep=e)}createRenderRoot(){const e=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return((e,o)=>{if(i)e.adoptedStyleSheets=o.map(e=>e instanceof CSSStyleSheet?e:e.styleSheet);else for(const i of o){const o=document.createElement("style"),n=t.litNonce;void 0!==n&&o.setAttribute("nonce",n),o.textContent=i.cssText,e.appendChild(o)}})(e,this.constructor.elementStyles),e}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(e=>e.hostConnected?.())}enableUpdating(e){}disconnectedCallback(){this._$EO?.forEach(e=>e.hostDisconnected?.())}attributeChangedCallback(e,t,i){this._$AK(e,i)}_$ET(e,t){const i=this.constructor.elementProperties.get(e),o=this.constructor._$Eu(e,i);if(void 0!==o&&!0===i.reflect){const n=(void 0!==i.converter?.toAttribute?i.converter:f).toAttribute(t,i.type);this._$Em=e,null==n?this.removeAttribute(o):this.setAttribute(o,n),this._$Em=null}}_$AK(e,t){const i=this.constructor,o=i._$Eh.get(e);if(void 0!==o&&this._$Em!==o){const e=i.getPropertyOptions(o),n="function"==typeof e.converter?{fromAttribute:e.converter}:void 0!==e.converter?.fromAttribute?e.converter:f;this._$Em=o;const r=n.fromAttribute(t,e.type);this[o]=r??this._$Ej?.get(o)??r,this._$Em=null}}requestUpdate(e,t,i){if(void 0!==e){const o=this.constructor,n=this[e];if(i??=o.getPropertyOptions(e),!((i.hasChanged??y)(n,t)||i.useDefault&&i.reflect&&n===this._$Ej?.get(e)&&!this.hasAttribute(o._$Eu(e,i))))return;this.C(e,t,i)}!1===this.isUpdatePending&&(this._$ES=this._$EP())}C(e,t,{useDefault:i,reflect:o,wrapped:n},r){i&&!(this._$Ej??=new Map).has(e)&&(this._$Ej.set(e,r??t??this[e]),!0!==n||void 0!==r)||(this._$AL.has(e)||(this.hasUpdated||i||(t=void 0),this._$AL.set(e,t)),!0===o&&this._$Em!==e&&(this._$Eq??=new Set).add(e))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(e){Promise.reject(e)}const e=this.scheduleUpdate();return null!=e&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[e,t]of this._$Ep)this[e]=t;this._$Ep=void 0}const e=this.constructor.elementProperties;if(e.size>0)for(const[t,i]of e){const{wrapped:e}=i,o=this[t];!0!==e||this._$AL.has(t)||void 0===o||this.C(t,void 0,i,o)}}let e=!1;const t=this._$AL;try{e=this.shouldUpdate(t),e?(this.willUpdate(t),this._$EO?.forEach(e=>e.hostUpdate?.()),this.update(t)):this._$EM()}catch(t){throw e=!1,this._$EM(),t}e&&this._$AE(t)}willUpdate(e){}_$AE(e){this._$EO?.forEach(e=>e.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(e){return!0}update(e){this._$Eq&&=this._$Eq.forEach(e=>this._$ET(e,this[e])),this._$EM()}updated(e){}firstUpdated(e){}};$.elementStyles=[],$.shadowRootOptions={mode:"open"},$[b("elementProperties")]=new Map,$[b("finalized")]=new Map,_?.({ReactiveElement:$}),(h.reactiveElementVersions??=[]).push("2.1.1");
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}):customElements.define(e,t)},ce={attribute:!0,type:String,converter:f,reflect:!1,hasChanged:y},le=(e=ce,t,i)=>{const{kind:o,metadata:n}=i;let r=globalThis.litPropertyMetadata.get(n);if(void 0===r&&globalThis.litPropertyMetadata.set(n,r=new Map),"setter"===o&&((e=Object.create(e)).wrapped=!0),r.set(i.name,e),"accessor"===o){const{name:o}=i;return{set(i){const n=t.get.call(this);t.set.call(this,i),this.requestUpdate(o,n,e)},init(t){return void 0!==t&&this.C(o,void 0,e,t),t}}}if("setter"===o){const{name:o}=i;return function(i){const n=this[o];t.call(this,i),this.requestUpdate(o,n,e)}}throw Error("Unsupported decorator location: "+o)};
+const w=globalThis,k=w.trustedTypes,C=k?k.createPolicy("lit-html",{createHTML:e=>e}):void 0,S="$lit$",E=`lit$${Math.random().toFixed(9).slice(2)}$`,z="?"+E,A=`<${z}>`,P=document,I=()=>P.createComment(""),T=e=>null===e||"object"!=typeof e&&"function"!=typeof e,N=Array.isArray,D="[ \t\n\f\r]",R=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,B=/-->/g,M=/>/g,L=RegExp(`>|${D}(?:([^\\s"'>=/]+)(${D}*=${D}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),G=/'/g,O=/"/g,W=/^(?:script|style|textarea|title)$/i,j=(e=>(t,...i)=>({_$litType$:e,strings:t,values:i}))(1),V=Symbol.for("lit-noChange"),U=Symbol.for("lit-nothing"),F=new WeakMap,H=P.createTreeWalker(P,129);function q(e,t){if(!N(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==C?C.createHTML(t):t}const J=(e,t)=>{const i=e.length-1,o=[];let n,r=2===t?"<svg>":3===t?"<math>":"",s=R;for(let t=0;t<i;t++){const i=e[t];let a,d,l=-1,c=0;for(;c<i.length&&(s.lastIndex=c,d=s.exec(i),null!==d);)c=s.lastIndex,s===R?"!--"===d[1]?s=B:void 0!==d[1]?s=M:void 0!==d[2]?(W.test(d[2])&&(n=RegExp("</"+d[2],"g")),s=L):void 0!==d[3]&&(s=L):s===L?">"===d[0]?(s=n??R,l=-1):void 0===d[1]?l=-2:(l=s.lastIndex-d[2].length,a=d[1],s=void 0===d[3]?L:'"'===d[3]?O:G):s===O||s===G?s=L:s===B||s===M?s=R:(s=L,n=void 0);const p=s===L&&e[t+1].startsWith("/>")?" ":"";r+=s===R?i+A:l>=0?(o.push(a),i.slice(0,l)+S+i.slice(l)+E+p):i+E+(-2===l?t:p)}return[q(e,r+(e[i]||"<?>")+(2===t?"</svg>":3===t?"</math>":"")),o]};class K{constructor({strings:e,_$litType$:t},i){let o;this.parts=[];let n=0,r=0;const s=e.length-1,a=this.parts,[d,l]=J(e,t);if(this.el=K.createElement(d,i),H.currentNode=this.el.content,2===t||3===t){const e=this.el.content.firstChild;e.replaceWith(...e.childNodes)}for(;null!==(o=H.nextNode())&&a.length<s;){if(1===o.nodeType){if(o.hasAttributes())for(const e of o.getAttributeNames())if(e.endsWith(S)){const t=l[r++],i=o.getAttribute(e).split(E),s=/([.?@])?(.*)/.exec(t);a.push({type:1,index:n,name:s[2],strings:i,ctor:"."===s[1]?ee:"?"===s[1]?te:"@"===s[1]?ie:Q}),o.removeAttribute(e)}else e.startsWith(E)&&(a.push({type:6,index:n}),o.removeAttribute(e));if(W.test(o.tagName)){const e=o.textContent.split(E),t=e.length-1;if(t>0){o.textContent=k?k.emptyScript:"";for(let i=0;i<t;i++)o.append(e[i],I()),H.nextNode(),a.push({type:2,index:++n});o.append(e[t],I())}}}else if(8===o.nodeType)if(o.data===z)a.push({type:2,index:n});else{let e=-1;for(;-1!==(e=o.data.indexOf(E,e+1));)a.push({type:7,index:n}),e+=E.length-1}n++}}static createElement(e,t){const i=P.createElement("template");return i.innerHTML=e,i}}function Y(e,t,i=e,o){if(t===V)return t;let n=void 0!==o?i._$Co?.[o]:i._$Cl;const r=T(t)?void 0:t._$litDirective$;return n?.constructor!==r&&(n?._$AO?.(!1),void 0===r?n=void 0:(n=new r(e),n._$AT(e,i,o)),void 0!==o?(i._$Co??=[])[o]=n:i._$Cl=n),void 0!==n&&(t=Y(e,n._$AS(e,t.values),n,o)),t}class X{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){const{el:{content:t},parts:i}=this._$AD,o=(e?.creationScope??P).importNode(t,!0);H.currentNode=o;let n=H.nextNode(),r=0,s=0,a=i[0];for(;void 0!==a;){if(r===a.index){let t;2===a.type?t=new Z(n,n.nextSibling,this,e):1===a.type?t=new a.ctor(n,a.name,a.strings,this,e):6===a.type&&(t=new oe(n,this,e)),this._$AV.push(t),a=i[++s]}r!==a?.index&&(n=H.nextNode(),r++)}return H.currentNode=P,o}p(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class Z{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(e,t,i,o){this.type=2,this._$AH=U,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=o,this._$Cv=o?.isConnected??!0}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===e?.nodeType&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Y(this,e,t),T(e)?e===U||null==e||""===e?(this._$AH!==U&&this._$AR(),this._$AH=U):e!==this._$AH&&e!==V&&this._(e):void 0!==e._$litType$?this.$(e):void 0!==e.nodeType?this.T(e):(e=>N(e)||"function"==typeof e?.[Symbol.iterator])(e)?this.k(e):this._(e)}O(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}T(e){this._$AH!==e&&(this._$AR(),this._$AH=this.O(e))}_(e){this._$AH!==U&&T(this._$AH)?this._$AA.nextSibling.data=e:this.T(P.createTextNode(e)),this._$AH=e}$(e){const{values:t,_$litType$:i}=e,o="number"==typeof i?this._$AC(e):(void 0===i.el&&(i.el=K.createElement(q(i.h,i.h[0]),this.options)),i);if(this._$AH?._$AD===o)this._$AH.p(t);else{const e=new X(o,this),i=e.u(this.options);e.p(t),this.T(i),this._$AH=e}}_$AC(e){let t=F.get(e.strings);return void 0===t&&F.set(e.strings,t=new K(e)),t}k(e){N(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,o=0;for(const n of e)o===t.length?t.push(i=new Z(this.O(I()),this.O(I()),this,this.options)):i=t[o],i._$AI(n),o++;o<t.length&&(this._$AR(i&&i._$AB.nextSibling,o),t.length=o)}_$AR(e=this._$AA.nextSibling,t){for(this._$AP?.(!1,!0,t);e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){void 0===this._$AM&&(this._$Cv=e,this._$AP?.(e))}}class Q{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(e,t,i,o,n){this.type=1,this._$AH=U,this._$AN=void 0,this.element=e,this.name=t,this._$AM=o,this.options=n,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=U}_$AI(e,t=this,i,o){const n=this.strings;let r=!1;if(void 0===n)e=Y(this,e,t,0),r=!T(e)||e!==this._$AH&&e!==V,r&&(this._$AH=e);else{const o=e;let s,a;for(e=n[0],s=0;s<n.length-1;s++)a=Y(this,o[i+s],t,s),a===V&&(a=this._$AH[s]),r||=!T(a)||a!==this._$AH[s],a===U?e=U:e!==U&&(e+=(a??"")+n[s+1]),this._$AH[s]=a}r&&!o&&this.j(e)}j(e){e===U?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,e??"")}}class ee extends Q{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===U?void 0:e}}class te extends Q{constructor(){super(...arguments),this.type=4}j(e){this.element.toggleAttribute(this.name,!!e&&e!==U)}}class ie extends Q{constructor(e,t,i,o,n){super(e,t,i,o,n),this.type=5}_$AI(e,t=this){if((e=Y(this,e,t,0)??U)===V)return;const i=this._$AH,o=e===U&&i!==U||e.capture!==i.capture||e.once!==i.once||e.passive!==i.passive,n=e!==U&&(i===U||o);o&&this.element.removeEventListener(this.name,this,i),n&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,e):this._$AH.handleEvent(e)}}class oe{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){Y(this,e)}}const ne=w.litHtmlPolyfillSupport;ne?.(K,Z),(w.litHtmlVersions??=[]).push("3.3.1");const re=globalThis;
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */function pe(e){return(t,i)=>"object"==typeof i?le(e,t,i):((e,t,i)=>{const o=t.hasOwnProperty(i);return t.constructor.createProperty(i,e),o?Object.getOwnPropertyDescriptor(t,i):void 0})(e,t,i)}
+ */class se extends ${constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{const o=i?.renderBefore??t;let n=o._$litPart$;if(void 0===n){const e=i?.renderBefore??null;o._$litPart$=n=new Z(t.insertBefore(I(),e),e,void 0,i??{})}return n._$AI(e),n})(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return V}}se._$litElement$=!0,se.finalized=!0,re.litElementHydrateSupport?.({LitElement:se});const ae=re.litElementPolyfillSupport;ae?.({LitElement:se}),(re.litElementVersions??=[]).push("4.2.1");
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */function ge(e){return pe({...e,state:!0,attribute:!1})}const he=319486977,ue={id:he,vendorId:4874,name:"Eve Thermo",description:"Eve thermostat proprietary cluster for schedule and valve data",attributes:[{id:319422464,name:"schedule",type:{type:"blob",parser:"eve.schedule"},access:["R"],description:"Heating schedule binary data. Contains weekly schedule with day entries and time slots.",parser:"eve.schedule"},{id:319422488,name:"valvePosition",type:"uint8",access:["R","S"],description:"Current valve opening position",unit:"%",sensor:{entityType:"sensor",stateClass:"measurement",entityCategory:"diagnostic",icon:"mdi:valve"}},{id:319422480,name:"temperatureOffset",type:"int8",access:["R","W"],description:"Temperature calibration offset. Value in 0.1°C increments.",unit:"°C",sensor:{entityType:"number",deviceClass:"temperature",entityCategory:"config",scale:.1,icon:"mdi:thermometer-plus"}}]},ve=4447,me=291503106,be={id:me,vendorId:ve,name:"Aqara Lock Settings",description:"Aqara proprietary lock settings cluster. Attribute meanings are partially documented.",attributes:[{id:291438609,name:"setting1",type:"uint8",access:["R"],description:"Unknown setting (possibly lock mode). Observed value: 1"},{id:291438610,name:"setting2",type:"uint8",access:["R"],description:"Unknown setting (possibly sound). Observed value: 2"},{id:291438611,name:"setting3",type:"uint8",access:["R"],description:"Unknown setting. Observed value: 0"},{id:291438612,name:"setting4",type:"uint8",access:["R"],description:"Unknown setting. Observed value: 0"},{id:291438613,name:"setting5",type:"uint8",access:["R"],description:"Unknown setting. Observed value: 1"}]},_e={id:323746816,vendorId:ve,name:"Aqara Unknown",description:"Unknown Aqara proprietary cluster found on endpoint 0",attributes:[{id:323682304,name:"unknown",type:"bool",access:["R"],description:"Unknown boolean attribute. Observed value: true"}]},fe=[...[{id:"eve_thermo",fingerprint:{vendorId:4874,requiredClusters:[he],requiredDeviceTypes:[769]},vendor:"Eve Systems",model:"Eve Thermo",description:"Smart radiator valve with Thread/Matter, HomeKit and weekly heating schedules",extends:[{name:"thermostatSchedule",clusters:[ue],uiComponent:"eve-schedule",showInDetails:!0}],productUrl:"https://www.evehome.com/eve-thermo"}],...[{id:"aqara_u200",fingerprint:{vendorId:ve,requiredClusters:[me],requiredDeviceTypes:[10]},vendor:"Aqara",model:"Smart Lock U200",description:"Smart lock with Matter, fingerprint reader, NFC, and smartphone unlock",extends:[{name:"aqaraLockSettings",clusters:[be,_e],showInDetails:!0}],productUrl:"https://www.aqara.com/eu/product/smart-lock-u200"},{id:"aqara_w100",fingerprint:{vendorId:ve,productNamePattern:"W100",requiredDeviceTypes:[770]},vendor:"Aqara",model:"Climate Sensor W100",description:"Temperature and humidity sensor with Matter support. Uses standard clusters only.",productUrl:"https://www.aqara.com/eu/product/temperature-humidity-sensor-w100"}]],ye=[...[ue],...[be,_e]];const xe={4874:"Eve",4447:"Aqara"};function $e(e){return e>=65536}function we(e){const t=function(e){return ye.find(t=>t.id===e)}(e);if(t)return t.name;if($e(e)){const t=function(e){return $e(e)?e>>16&65535:null}(e);if(t){const i=function(e){return xe[e]||`Vendor ${e}`}(t);return`${i} Proprietary (0x${e.toString(16)})`}return`Proprietary (0x${e.toString(16)})`}return`Cluster 0x${e.toString(16).padStart(4,"0")}`}function ke(e,t,i){return function(e,t,i){return fe.find(o=>{const n=o.fingerprint;return n.vendorId===e&&(!(n.requiredClusters&&t&&!n.requiredClusters.every(e=>t.includes(e)))&&!(n.requiredDeviceTypes&&i&&!n.requiredDeviceTypes.every(e=>i.includes(e))))})}(e,t,i)}const Ce=3,Se=4,Ee=5,ze=6,Ae=8,Pe=29,Te=30,Ne=31,Re=40,De=47,Ie=768,Be=513,Me=516,Le=1026,Oe=1027,We=1029,je=1030,Ve=59,Ue={[Ce]:"Identify",[Se]:"Groups",[Ee]:"Scenes",[ze]:"On/Off",[Ae]:"Level Control",[Pe]:"Descriptor",[Te]:"Binding",[Ne]:"Access Control",[Re]:"Basic Information",42:"OTA Update",[De]:"Power Source",48:"General Commissioning",49:"Network Commissioning",50:"Diagnostic Logs",51:"General Diagnostics",52:"Software Diagnostics",53:"Thread Diagnostics",56:"Ethernet Diagnostics",60:"Admin Commissioning",62:"Operational Credentials",63:"Group Key Management",70:"Time Sync",[Ie]:"Color Control",[Be]:"Thermostat",[Me]:"Thermostat UI",514:"Fan Control",[Le]:"Temperature",[Oe]:"Pressure",[We]:"Humidity",[je]:"Occupancy",[Ve]:"Switch"},Fe={15:"Generic Switch",17:"Power Source",18:"OTA Requestor",19:"OTA Provider",20:"Aggregator",22:"Root Node",256:"On/Off Light",257:"Dimmable Light",258:"Color Temperature Light",259:"On/Off Light Switch",260:"Dimmer Switch",261:"Color Dimmer Switch",262:"Light Sensor",263:"Occupancy Sensor",266:"On/Off Plug-in Unit",267:"Dimmable Plug-in Unit",268:"Color Temperature Light",269:"Extended Color Light",769:"Thermostat",770:"Temperature Sensor",771:"Humidity Sensor",772:"Air Quality Sensor",10:"Door Lock",11:"Door Lock Controller",514:"Window Covering",515:"Window Covering Controller",21:"Contact Sensor",38:"Flow Sensor",44:"Smoke/CO Alarm",35:"Casting Video Player",36:"Content App",40:"Basic Video Player",41:"Casting Video Client",43:"Speaker"},He={[ze]:{action:"control the on/off state of",dataType:"on/off commands"},[Ae]:{action:"control the brightness/level of",dataType:"level/dimming commands"},[Ie]:{action:"control the color of",dataType:"color commands"},[Le]:{action:"read temperature data from",dataType:"temperature readings"},[Oe]:{action:"read pressure data from",dataType:"pressure readings"},[We]:{action:"read humidity data from",dataType:"humidity readings"},[je]:{action:"receive occupancy status from",dataType:"occupancy/presence data"},[Be]:{action:"control thermostat settings on",dataType:"thermostat commands"},[Ee]:{action:"trigger scenes on",dataType:"scene commands"},[Se]:{action:"manage group membership on",dataType:"group commands"},[Ve]:{action:"send button events to",dataType:"press/release events"}};function qe(e){return null===e?"Any Cluster":Ue[e]?Ue[e]:we(e)}function Ge(e){return Fe[e]||`Type ${e}`}function Je(e){return null===e?{action:"send all commands to",dataType:"all supported commands"}:He[e]||{action:"communicate with",dataType:`${qe(e)} data`}}const Ke=[{id:"thermostat-contact-window",sourceDeviceTypes:[769],targetDeviceTypes:[21],title:"Turn off heating when window opens",description:"Automatically pause heating/cooling when a window or door is opened to save energy.",why:"This thermostat doesn't have a client cluster for Boolean State (contact sensors). Matter bindings require matching client/server clusters.",icon:"🪟"},{id:"thermostat-occupancy",sourceDeviceTypes:[769],targetDeviceTypes:[263],title:"Adjust temperature based on occupancy",description:"Lower the temperature when room is unoccupied, restore when someone enters.",why:"This thermostat doesn't have a client cluster for Occupancy Sensing. A Home Assistant automation can bridge this gap.",icon:"🚶"},{id:"light-occupancy",sourceDeviceTypes:[256,257,258,268,269],targetDeviceTypes:[263],title:"Turn on light when motion detected",description:"Automatically turn on lights when someone enters the room.",why:"This light is a server (receives commands), not a client. The occupancy sensor reports state but can't send on/off commands to it.",icon:"💡"},{id:"light-contact-door",sourceDeviceTypes:[256,257,258,268,269],targetDeviceTypes:[21],title:"Turn on light when door opens",description:"Automatically turn on lights when a door is opened (e.g., closet light).",why:"This contact sensor reports open/close state but doesn't have client clusters to control lights directly.",icon:"🚪"},{id:"plug-occupancy",sourceDeviceTypes:[266,267],targetDeviceTypes:[263],title:"Control device based on occupancy",description:"Turn on/off a device when room occupancy changes.",why:"This plug is a server (receives commands). The occupancy sensor can't directly control it via Matter binding.",icon:"🔌"},{id:"button-light-toggle",sourceDeviceTypes:[256,257,258,268,269],targetDeviceTypes:[15],title:"Toggle light with button press",description:"Press the button to toggle light on/off. Long press for dimming, double-tap for scenes.",why:"Generic Switch emits button events (press/release/multi-press) rather than state changes. Home Assistant automations can respond to these events to control lights.",icon:"🔘"},{id:"button-plug-toggle",sourceDeviceTypes:[266,267],targetDeviceTypes:[15],title:"Toggle device with button press",description:"Use a physical button to control a smart plug or outlet.",why:"Generic Switch emits button events that need Home Assistant automation to translate into on/off commands for the plug.",icon:"🔘"},{id:"button-scene",sourceDeviceTypes:[256,257,258,266,267,268,269,769],targetDeviceTypes:[15],title:"Trigger scene with button",description:"Assign different scenes to single press, double press, and long press actions.",why:"Matter scenes via binding require specific cluster support. Home Assistant automations offer more flexibility for multi-press actions.",icon:"🎬"},{id:"button-thermostat-adjust",sourceDeviceTypes:[769],targetDeviceTypes:[15],title:"Adjust thermostat with buttons",description:"Use buttons to raise/lower temperature setpoint or switch heating/cooling modes.",why:"Generic Switch button events need Home Assistant automation to adjust thermostat settings. Perfect for climate sensors with built-in buttons.",icon:"🌡️"}],Ye=319486977,Xe=["sunday","monday","tuesday","wednesday","thursday","friday","saturday","away"],Ze=["monday","tuesday","wednesday","thursday","friday"],Qe=["saturday","sunday"];function et(e){const t=e%60;return`${Math.floor(e/60).toString().padStart(2,"0")}:${t.toString().padStart(2,"0")}`}const tt="matter_binding_helper";async function it(e,t,i){return e.callWS({type:`${tt}/list_bindings`,node_id:t,endpoint_id:i})}async function ot(e,t,i,o,n,r,s=!0){return e.callWS({type:`${tt}/delete_binding`,source_node_id:t,source_endpoint_id:i,verify:s,...void 0!==o&&{target_node_id:o},...void 0!==n&&{target_endpoint_id:n},...void 0!==r&&{target_group_id:r}})}async function nt(e,t,i){return e.callWS({type:`${tt}/verify_bindings`,node_id:t,endpoint_id:i})}async function rt(e,t){return e.callWS({type:`${tt}/list_acl`,node_id:t})}async function st(e,t,i,o,n){return e.callWS({type:`${tt}/provision_acl`,target_node_id:t,target_endpoint_id:i,source_node_id:o,...null!==n&&{cluster_id:n}})}async function at(e,t){return e.callWS({type:`${tt}/create_automation`,template_id:t.template_id,source_node_id:t.source_node_id,source_endpoint_id:t.source_endpoint_id,target_node_id:t.target_node_id,target_endpoint_id:t.target_endpoint_id,...t.source_device_types&&{source_device_types:t.source_device_types},...t.target_device_types&&{target_device_types:t.target_device_types},...t.trigger_entity_id&&{trigger_entity_id:t.trigger_entity_id},...t.action_entity_id&&{action_entity_id:t.action_entity_id},...t.alias&&{alias:t.alias},preview_only:t.preview_only??!1})}const dt={sunday:"Sun",monday:"Mon",tuesday:"Tue",wednesday:"Wed",thursday:"Thu",friday:"Fri",saturday:"Sat",away:"Away"};let ct=class extends se{constructor(){super(...arguments),this._loading=!1,this._saving=!1,this._error=null,this._success=null,this._notSupported=!1,this._schedule=null,this._selectedDays=new Set(Ze),this._transitions=[],this._hasChanges=!1}connectedCallback(){super.connectedCallback(),this._loadSchedule()}async _loadSchedule(){this._loading=!0,this._error=null,this._notSupported=!1;const e=(this.endpoint.cluster_commands||{})[513];if(void 0!==e&&!(e?.accepted||[]).includes(2))return this._notSupported=!0,void(this._loading=!1);try{const e=await async function(e,t,i,o,n=!0,r=!1){return e.callWS({type:`${tt}/get_schedule`,node_id:t,endpoint_id:i,...o,heat:n,cool:r})}(this.hass,this.node.node_id,this.endpoint.endpoint_id);e.schedule&&(this._schedule=e.schedule,this._selectedDays=new Set(e.schedule.day_names),this._transitions=[...e.schedule.transitions],this._hasChanges=!1)}catch(e){console.error("Failed to load schedule - full error:",JSON.stringify(e,null,2)),console.error("Failed to load schedule - raw:",e);const t=e;if("schedule_not_supported"===t?.code)return void(this._notSupported=!0);let i;if(e instanceof Error)i=e.message;else if("object"==typeof e&&null!==e){const t=e;i=t.message||t.error||t.code||JSON.stringify(e)}else i=String(e);this._error=`Failed to load schedule: ${i}`}finally{this._loading=!1}}async _saveSchedule(){if(0!==this._selectedDays.size)if(0!==this._transitions.length){this._saving=!0,this._error=null,this._success=null;try{const e=[...this._transitions].sort((e,t)=>e.transition_time-t.transition_time);(await async function(e,t,i,o,n,r=!0,s=!1){return e.callWS({type:`${tt}/set_schedule`,node_id:t,endpoint_id:i,days:o,transitions:n,heat:r,cool:s})}(this.hass,this.node.node_id,this.endpoint.endpoint_id,Array.from(this._selectedDays),e,!0,!1)).success?(this._success="Schedule saved to device",this._hasChanges=!1,setTimeout(()=>this._loadSchedule(),1e3)):this._error="Failed to save schedule"}catch(e){console.error("Failed to save schedule:",e);const t=e instanceof Error?e.message:e?.message||String(e);this._error=`Failed to save schedule: ${t}`}finally{this._saving=!1}}else this._error="Please add at least one time slot";else this._error="Please select at least one day"}async _clearSchedule(){if(confirm("Are you sure you want to clear all schedules from this device?")){this._saving=!0,this._error=null,this._success=null;try{(await async function(e,t,i){return e.callWS({type:`${tt}/clear_schedule`,node_id:t,endpoint_id:i})}(this.hass,this.node.node_id,this.endpoint.endpoint_id)).success?(this._success="Schedule cleared",this._schedule=null,this._transitions=[],this._hasChanges=!1):this._error="Failed to clear schedule"}catch(e){console.error("Failed to clear schedule:",e);const t=e instanceof Error?e.message:e?.message||String(e);this._error=`Failed to clear schedule: ${t}`}finally{this._saving=!1}}}_toggleDay(e){const t=new Set(this._selectedDays);t.has(e)?t.delete(e):t.add(e),this._selectedDays=t,this._hasChanges=!0}_selectPreset(e){switch(e){case"weekdays":this._selectedDays=new Set(Ze);break;case"weekend":this._selectedDays=new Set(Qe);break;case"all":this._selectedDays=new Set(Xe.filter(e=>"away"!==e))}this._hasChanges=!0}_addTransition(){let e=360;if(this._transitions.length>0){const t=Math.max(...this._transitions.map(e=>e.transition_time));e=Math.min(t+60,1380)}this._transitions=[...this._transitions,{transition_time:e,heat_setpoint:20,cool_setpoint:null}],this._hasChanges=!0}_updateTransitionTime(e,t){const i=function(e){const[t,i]=e.split(":").map(Number);return 60*t+i}(t);this._transitions=this._transitions.map((t,o)=>o===e?{...t,transition_time:i}:t),this._hasChanges=!0}_updateTransitionTemp(e,t){const i=parseFloat(t);isNaN(i)||(this._transitions=this._transitions.map((t,o)=>o===e?{...t,heat_setpoint:i}:t),this._hasChanges=!0)}_deleteTransition(e){this._transitions=this._transitions.filter((t,i)=>i!==e),this._hasChanges=!0}_getTimelineSegments(){if(0===this._transitions.length)return[];const e=[...this._transitions].sort((e,t)=>e.transition_time-t.transition_time),t=[],i=e=>`hsl(${240*(1-Math.max(0,Math.min(1,(e-15)/10)))}, 70%, 50%)`;for(let o=0;o<e.length;o++){const n=e[o],r=e[o+1],s=n.heat_setpoint??20;t.push({start:n.transition_time,end:r?r.transition_time:1440,temp:s,color:i(s)})}if(e.length>0&&e[0].transition_time>0){const o=e[e.length-1].heat_setpoint??20;t.unshift({start:0,end:e[0].transition_time,temp:o,color:i(o)})}return t}render(){return this._notSupported?V`
+ */
+const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}):customElements.define(e,t)},le={attribute:!0,type:String,converter:f,reflect:!1,hasChanged:y},ce=(e=le,t,i)=>{const{kind:o,metadata:n}=i;let r=globalThis.litPropertyMetadata.get(n);if(void 0===r&&globalThis.litPropertyMetadata.set(n,r=new Map),"setter"===o&&((e=Object.create(e)).wrapped=!0),r.set(i.name,e),"accessor"===o){const{name:o}=i;return{set(i){const n=t.get.call(this);t.set.call(this,i),this.requestUpdate(o,n,e)},init(t){return void 0!==t&&this.C(o,void 0,e,t),t}}}if("setter"===o){const{name:o}=i;return function(i){const n=this[o];t.call(this,i),this.requestUpdate(o,n,e)}}throw Error("Unsupported decorator location: "+o)};
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */function pe(e){return(t,i)=>"object"==typeof i?ce(e,t,i):((e,t,i)=>{const o=t.hasOwnProperty(i);return t.constructor.createProperty(i,e),o?Object.getOwnPropertyDescriptor(t,i):void 0})(e,t,i)}
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */function ge(e){return pe({...e,state:!0,attribute:!1})}const ue=319486977,he={id:ue,vendorId:4874,name:"Eve Thermo",description:"Eve thermostat proprietary cluster for schedule and valve data",attributes:[{id:319422464,name:"schedule",type:{type:"blob",parser:"eve.schedule"},access:["R"],description:"Heating schedule binary data. Contains weekly schedule with day entries and time slots.",parser:"eve.schedule"},{id:319422488,name:"valvePosition",type:"uint8",access:["R","S"],description:"Current valve opening position",unit:"%",sensor:{entityType:"sensor",stateClass:"measurement",entityCategory:"diagnostic",icon:"mdi:valve"}},{id:319422480,name:"temperatureOffset",type:"int8",access:["R","W"],description:"Temperature calibration offset. Value in 0.1°C increments.",unit:"°C",sensor:{entityType:"number",deviceClass:"temperature",entityCategory:"config",scale:.1,icon:"mdi:thermometer-plus"}}]},ve=4447,me=291503106,_e={id:me,vendorId:ve,name:"Aqara Lock Settings",description:"Aqara proprietary lock settings cluster. Attribute meanings are partially documented.",attributes:[{id:291438609,name:"setting1",type:"uint8",access:["R"],description:"Unknown setting (possibly lock mode). Observed value: 1"},{id:291438610,name:"setting2",type:"uint8",access:["R"],description:"Unknown setting (possibly sound). Observed value: 2"},{id:291438611,name:"setting3",type:"uint8",access:["R"],description:"Unknown setting. Observed value: 0"},{id:291438612,name:"setting4",type:"uint8",access:["R"],description:"Unknown setting. Observed value: 0"},{id:291438613,name:"setting5",type:"uint8",access:["R"],description:"Unknown setting. Observed value: 1"}]},be={id:323746816,vendorId:ve,name:"Aqara Unknown",description:"Unknown Aqara proprietary cluster found on endpoint 0",attributes:[{id:323682304,name:"unknown",type:"bool",access:["R"],description:"Unknown boolean attribute. Observed value: true"}]},fe=[...[{id:"eve_thermo",fingerprint:{vendorId:4874,requiredClusters:[ue],requiredDeviceTypes:[769]},vendor:"Eve Systems",model:"Eve Thermo",description:"Smart radiator valve with Thread/Matter, HomeKit and weekly heating schedules",extends:[{name:"thermostatSchedule",clusters:[he],uiComponent:"eve-schedule",showInDetails:!0}],productUrl:"https://www.evehome.com/eve-thermo"}],...[{id:"aqara_u200",fingerprint:{vendorId:ve,requiredClusters:[me],requiredDeviceTypes:[10]},vendor:"Aqara",model:"Smart Lock U200",description:"Smart lock with Matter, fingerprint reader, NFC, and smartphone unlock",extends:[{name:"aqaraLockSettings",clusters:[_e,be],showInDetails:!0}],productUrl:"https://www.aqara.com/eu/product/smart-lock-u200"},{id:"aqara_w100",fingerprint:{vendorId:ve,productNamePattern:"W100",requiredDeviceTypes:[770]},vendor:"Aqara",model:"Climate Sensor W100",description:"Temperature and humidity sensor with Matter support. Uses standard clusters only.",productUrl:"https://www.aqara.com/eu/product/temperature-humidity-sensor-w100"}]],ye=[...[he],...[_e,be]];const xe={4874:"Eve",4447:"Aqara"};function $e(e){return e>=65536}function we(e){const t=function(e){return ye.find(t=>t.id===e)}(e);if(t)return t.name;if($e(e)){const t=function(e){return $e(e)?e>>16&65535:null}(e);if(t){const i=function(e){return xe[e]||`Vendor ${e}`}(t);return`${i} Proprietary (0x${e.toString(16)})`}return`Proprietary (0x${e.toString(16)})`}return`Cluster 0x${e.toString(16).padStart(4,"0")}`}function ke(e,t,i){return function(e,t,i){return fe.find(o=>{const n=o.fingerprint;return n.vendorId===e&&(!(n.requiredClusters&&t&&!n.requiredClusters.every(e=>t.includes(e)))&&!(n.requiredDeviceTypes&&i&&!n.requiredDeviceTypes.every(e=>i.includes(e))))})}(e,t,i)}const Ce=3,Se=4,Ee=5,ze=6,Ae=8,Pe=29,Ie=30,Te=31,Ne=40,De=47,Re=768,Be=513,Me=516,Le=1026,Ge=1027,Oe=1029,We=1030,je=59,Ve={[Ce]:"Identify",[Se]:"Groups",[Ee]:"Scenes",[ze]:"On/Off",[Ae]:"Level Control",[Pe]:"Descriptor",[Ie]:"Binding",[Te]:"Access Control",[Ne]:"Basic Information",42:"OTA Update",[De]:"Power Source",48:"General Commissioning",49:"Network Commissioning",50:"Diagnostic Logs",51:"General Diagnostics",52:"Software Diagnostics",53:"Thread Diagnostics",56:"Ethernet Diagnostics",60:"Admin Commissioning",62:"Operational Credentials",63:"Group Key Management",70:"Time Sync",[Re]:"Color Control",[Be]:"Thermostat",[Me]:"Thermostat UI",514:"Fan Control",[Le]:"Temperature",[Ge]:"Pressure",[Oe]:"Humidity",[We]:"Occupancy",[je]:"Switch"},Ue={15:"Generic Switch",17:"Power Source",18:"OTA Requestor",19:"OTA Provider",20:"Aggregator",22:"Root Node",256:"On/Off Light",257:"Dimmable Light",258:"Color Temperature Light",259:"On/Off Light Switch",260:"Dimmer Switch",261:"Color Dimmer Switch",262:"Light Sensor",263:"Occupancy Sensor",266:"On/Off Plug-in Unit",267:"Dimmable Plug-in Unit",268:"Color Temperature Light",269:"Extended Color Light",769:"Thermostat",770:"Temperature Sensor",771:"Humidity Sensor",772:"Air Quality Sensor",10:"Door Lock",11:"Door Lock Controller",514:"Window Covering",515:"Window Covering Controller",21:"Contact Sensor",38:"Flow Sensor",44:"Smoke/CO Alarm",35:"Casting Video Player",36:"Content App",40:"Basic Video Player",41:"Casting Video Client",43:"Speaker"},Fe={[ze]:{action:"control the on/off state of",dataType:"on/off commands"},[Ae]:{action:"control the brightness/level of",dataType:"level/dimming commands"},[Re]:{action:"control the color of",dataType:"color commands"},[Le]:{action:"read temperature data from",dataType:"temperature readings"},[Ge]:{action:"read pressure data from",dataType:"pressure readings"},[Oe]:{action:"read humidity data from",dataType:"humidity readings"},[We]:{action:"receive occupancy status from",dataType:"occupancy/presence data"},[Be]:{action:"control thermostat settings on",dataType:"thermostat commands"},[Ee]:{action:"trigger scenes on",dataType:"scene commands"},[Se]:{action:"manage group membership on",dataType:"group commands"},[je]:{action:"send button events to",dataType:"press/release events"}};function He(e){return null===e?"Any Cluster":Ve[e]?Ve[e]:we(e)}function qe(e){return Ue[e]||`Type ${e}`}function Je(e){return null===e?{action:"send all commands to",dataType:"all supported commands"}:Fe[e]||{action:"communicate with",dataType:`${He(e)} data`}}const Ke=[{id:"thermostat-contact-window",sourceDeviceTypes:[769],targetDeviceTypes:[21],title:"Turn off heating when window opens",description:"Automatically pause heating/cooling when a window or door is opened to save energy.",why:"This thermostat doesn't have a client cluster for Boolean State (contact sensors). Matter bindings require matching client/server clusters.",icon:"🪟"},{id:"thermostat-occupancy",sourceDeviceTypes:[769],targetDeviceTypes:[263],title:"Adjust temperature based on occupancy",description:"Lower the temperature when room is unoccupied, restore when someone enters.",why:"This thermostat doesn't have a client cluster for Occupancy Sensing. A Home Assistant automation can bridge this gap.",icon:"🚶"},{id:"light-occupancy",sourceDeviceTypes:[256,257,258,268,269],targetDeviceTypes:[263],title:"Turn on light when motion detected",description:"Automatically turn on lights when someone enters the room.",why:"This light is a server (receives commands), not a client. The occupancy sensor reports state but can't send on/off commands to it.",icon:"💡"},{id:"light-contact-door",sourceDeviceTypes:[256,257,258,268,269],targetDeviceTypes:[21],title:"Turn on light when door opens",description:"Automatically turn on lights when a door is opened (e.g., closet light).",why:"This contact sensor reports open/close state but doesn't have client clusters to control lights directly.",icon:"🚪"},{id:"plug-occupancy",sourceDeviceTypes:[266,267],targetDeviceTypes:[263],title:"Control device based on occupancy",description:"Turn on/off a device when room occupancy changes.",why:"This plug is a server (receives commands). The occupancy sensor can't directly control it via Matter binding.",icon:"🔌"},{id:"button-light-toggle",sourceDeviceTypes:[256,257,258,268,269],targetDeviceTypes:[15],title:"Toggle light with button press",description:"Press the button to toggle light on/off. Long press for dimming, double-tap for scenes.",why:"Generic Switch emits button events (press/release/multi-press) rather than state changes. Home Assistant automations can respond to these events to control lights.",icon:"🔘"},{id:"button-plug-toggle",sourceDeviceTypes:[266,267],targetDeviceTypes:[15],title:"Toggle device with button press",description:"Use a physical button to control a smart plug or outlet.",why:"Generic Switch emits button events that need Home Assistant automation to translate into on/off commands for the plug.",icon:"🔘"},{id:"button-scene",sourceDeviceTypes:[256,257,258,266,267,268,269,769],targetDeviceTypes:[15],title:"Trigger scene with button",description:"Assign different scenes to single press, double press, and long press actions.",why:"Matter scenes via binding require specific cluster support. Home Assistant automations offer more flexibility for multi-press actions.",icon:"🎬"},{id:"button-thermostat-adjust",sourceDeviceTypes:[769],targetDeviceTypes:[15],title:"Adjust thermostat with buttons",description:"Use buttons to raise/lower temperature setpoint or switch heating/cooling modes.",why:"Generic Switch button events need Home Assistant automation to adjust thermostat settings. Perfect for climate sensors with built-in buttons.",icon:"🌡️"}],Ye=319486977,Xe=["sunday","monday","tuesday","wednesday","thursday","friday","saturday","away"],Ze=["monday","tuesday","wednesday","thursday","friday"],Qe=["saturday","sunday"];function et(e){const t=e%60;return`${Math.floor(e/60).toString().padStart(2,"0")}:${t.toString().padStart(2,"0")}`}const tt="matter_binding_helper";async function it(e,t,i){return e.callWS({type:`${tt}/list_bindings`,node_id:t,endpoint_id:i})}async function ot(e,t,i,o,n,r,s,a=!0,d=!0){return e.callWS({type:`${tt}/create_binding`,source_node_id:t,source_endpoint_id:i,cluster_id:o,verify:a,provision_acl:d,...void 0!==n&&{target_node_id:n},...void 0!==r&&{target_endpoint_id:r},...void 0!==s&&{target_group_id:s}})}async function nt(e,t,i,o,n,r,s=!0){return e.callWS({type:`${tt}/delete_binding`,source_node_id:t,source_endpoint_id:i,verify:s,...void 0!==o&&{target_node_id:o},...void 0!==n&&{target_endpoint_id:n},...void 0!==r&&{target_group_id:r}})}async function rt(e,t,i){return e.callWS({type:`${tt}/verify_bindings`,node_id:t,endpoint_id:i})}async function st(e,t){return e.callWS({type:`${tt}/list_acl`,node_id:t})}async function at(e,t,i,o,n){return e.callWS({type:`${tt}/provision_acl`,target_node_id:t,target_endpoint_id:i,source_node_id:o,...null!==n&&{cluster_id:n}})}async function dt(e,t){return e.callWS({type:`${tt}/create_automation`,template_id:t.template_id,source_node_id:t.source_node_id,source_endpoint_id:t.source_endpoint_id,target_node_id:t.target_node_id,target_endpoint_id:t.target_endpoint_id,...t.source_device_types&&{source_device_types:t.source_device_types},...t.target_device_types&&{target_device_types:t.target_device_types},...t.trigger_entity_id&&{trigger_entity_id:t.trigger_entity_id},...t.action_entity_id&&{action_entity_id:t.action_entity_id},...t.alias&&{alias:t.alias},preview_only:t.preview_only??!1})}const lt={sunday:"Sun",monday:"Mon",tuesday:"Tue",wednesday:"Wed",thursday:"Thu",friday:"Fri",saturday:"Sat",away:"Away"};let ct=class extends se{constructor(){super(...arguments),this._loading=!1,this._saving=!1,this._error=null,this._success=null,this._notSupported=!1,this._schedule=null,this._selectedDays=new Set(Ze),this._transitions=[],this._hasChanges=!1}connectedCallback(){super.connectedCallback(),this._loadSchedule()}async _loadSchedule(){this._loading=!0,this._error=null,this._notSupported=!1;const e=(this.endpoint.cluster_commands||{})[513];if(void 0!==e&&!(e?.accepted||[]).includes(2))return this._notSupported=!0,void(this._loading=!1);try{const e=await async function(e,t,i,o,n=!0,r=!1){return e.callWS({type:`${tt}/get_schedule`,node_id:t,endpoint_id:i,...o,heat:n,cool:r})}(this.hass,this.node.node_id,this.endpoint.endpoint_id);e.schedule&&(this._schedule=e.schedule,this._selectedDays=new Set(e.schedule.day_names),this._transitions=[...e.schedule.transitions],this._hasChanges=!1)}catch(e){console.error("Failed to load schedule - full error:",JSON.stringify(e,null,2)),console.error("Failed to load schedule - raw:",e);const t=e;if("schedule_not_supported"===t?.code)return void(this._notSupported=!0);let i;if(e instanceof Error)i=e.message;else if("object"==typeof e&&null!==e){const t=e;i=t.message||t.error||t.code||JSON.stringify(e)}else i=String(e);this._error=`Failed to load schedule: ${i}`}finally{this._loading=!1}}async _saveSchedule(){if(0!==this._selectedDays.size)if(0!==this._transitions.length){this._saving=!0,this._error=null,this._success=null;try{const e=[...this._transitions].sort((e,t)=>e.transition_time-t.transition_time);(await async function(e,t,i,o,n,r=!0,s=!1){return e.callWS({type:`${tt}/set_schedule`,node_id:t,endpoint_id:i,days:o,transitions:n,heat:r,cool:s})}(this.hass,this.node.node_id,this.endpoint.endpoint_id,Array.from(this._selectedDays),e,!0,!1)).success?(this._success="Schedule saved to device",this._hasChanges=!1,setTimeout(()=>this._loadSchedule(),1e3)):this._error="Failed to save schedule"}catch(e){console.error("Failed to save schedule:",e);const t=e instanceof Error?e.message:e?.message||String(e);this._error=`Failed to save schedule: ${t}`}finally{this._saving=!1}}else this._error="Please add at least one time slot";else this._error="Please select at least one day"}async _clearSchedule(){if(confirm("Are you sure you want to clear all schedules from this device?")){this._saving=!0,this._error=null,this._success=null;try{(await async function(e,t,i){return e.callWS({type:`${tt}/clear_schedule`,node_id:t,endpoint_id:i})}(this.hass,this.node.node_id,this.endpoint.endpoint_id)).success?(this._success="Schedule cleared",this._schedule=null,this._transitions=[],this._hasChanges=!1):this._error="Failed to clear schedule"}catch(e){console.error("Failed to clear schedule:",e);const t=e instanceof Error?e.message:e?.message||String(e);this._error=`Failed to clear schedule: ${t}`}finally{this._saving=!1}}}_toggleDay(e){const t=new Set(this._selectedDays);t.has(e)?t.delete(e):t.add(e),this._selectedDays=t,this._hasChanges=!0}_selectPreset(e){switch(e){case"weekdays":this._selectedDays=new Set(Ze);break;case"weekend":this._selectedDays=new Set(Qe);break;case"all":this._selectedDays=new Set(Xe.filter(e=>"away"!==e))}this._hasChanges=!0}_addTransition(){let e=360;if(this._transitions.length>0){const t=Math.max(...this._transitions.map(e=>e.transition_time));e=Math.min(t+60,1380)}this._transitions=[...this._transitions,{transition_time:e,heat_setpoint:20,cool_setpoint:null}],this._hasChanges=!0}_updateTransitionTime(e,t){const i=function(e){const[t,i]=e.split(":").map(Number);return 60*t+i}(t);this._transitions=this._transitions.map((t,o)=>o===e?{...t,transition_time:i}:t),this._hasChanges=!0}_updateTransitionTemp(e,t){const i=parseFloat(t);isNaN(i)||(this._transitions=this._transitions.map((t,o)=>o===e?{...t,heat_setpoint:i}:t),this._hasChanges=!0)}_deleteTransition(e){this._transitions=this._transitions.filter((t,i)=>i!==e),this._hasChanges=!0}_getTimelineSegments(){if(0===this._transitions.length)return[];const e=[...this._transitions].sort((e,t)=>e.transition_time-t.transition_time),t=[],i=e=>`hsl(${240*(1-Math.max(0,Math.min(1,(e-15)/10)))}, 70%, 50%)`;for(let o=0;o<e.length;o++){const n=e[o],r=e[o+1],s=n.heat_setpoint??20;t.push({start:n.transition_time,end:r?r.transition_time:1440,temp:s,color:i(s)})}if(e.length>0&&e[0].transition_time>0){const o=e[e.length-1].heat_setpoint??20;t.unshift({start:0,end:e[0].transition_time,temp:o,color:i(o)})}return t}render(){return this._notSupported?j`
         <div class="not-supported-card">
           <div class="header">
             <ha-icon icon="mdi:calendar-remove"></ha-icon>
@@ -48,13 +48,13 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
             support programmable schedules through Matter.
           </div>
         </div>
-      `:V`
+      `:j`
       <div class="schedule-editor">
         <div class="header">
           <div class="title">
             <ha-icon icon="mdi:calendar-clock"></ha-icon>
             Weekly Schedule
-            ${this._hasChanges?V`<span class="changes-indicator">Unsaved</span>`:F}
+            ${this._hasChanges?j`<span class="changes-indicator">Unsaved</span>`:U}
           </div>
           <div class="actions">
             <button
@@ -84,36 +84,36 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
 
-        ${this._error?V`
+        ${this._error?j`
           <div class="message error">
             <ha-icon icon="mdi:alert-circle"></ha-icon>
             ${this._error}
           </div>
-        `:F}
+        `:U}
 
-        ${this._success?V`
+        ${this._success?j`
           <div class="message success">
             <ha-icon icon="mdi:check-circle"></ha-icon>
             ${this._success}
           </div>
-        `:F}
+        `:U}
 
-        ${this._loading?V`
+        ${this._loading?j`
           <div class="loading">
             <div class="spinner"></div>
             Loading schedule from device...
           </div>
-        `:V`
+        `:j`
           <!-- Day Selection -->
           <div class="section">
             <div class="section-title">Apply to days</div>
             <div class="day-selector">
-              ${Xe.filter(e=>"away"!==e).map(e=>V`
+              ${Xe.filter(e=>"away"!==e).map(e=>j`
                 <div
                   class="day-chip ${this._selectedDays.has(e)?"selected":""}"
                   @click=${()=>this._toggleDay(e)}
                 >
-                  ${dt[e]}
+                  ${lt[e]}
                 </div>
               `)}
             </div>
@@ -134,12 +134,12 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           <div class="section">
             <div class="section-title">Time slots (max 10)</div>
             <div class="transitions-list">
-              ${0===this._transitions.length?V`
+              ${0===this._transitions.length?j`
                 <div class="empty-state">
                   <ha-icon icon="mdi:clock-outline"></ha-icon>
                   <p>No time slots configured.<br>Add a time slot to set temperatures throughout the day.</p>
                 </div>
-              `:this._transitions.map((e,t)=>({...e,index:t})).sort((e,t)=>e.transition_time-t.transition_time).map(e=>V`
+              `:this._transitions.map((e,t)=>({...e,index:t})).sort((e,t)=>e.transition_time-t.transition_time).map(e=>j`
                   <div class="transition-row">
                     <div class="transition-time">
                       <label>Time</label>
@@ -173,17 +173,17 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                   </div>
                 `)}
 
-              ${this._transitions.length<10?V`
+              ${this._transitions.length<10?j`
                 <div class="add-transition" @click=${this._addTransition}>
                   <ha-icon icon="mdi:plus"></ha-icon>
                   Add time slot
                 </div>
-              `:F}
+              `:U}
             </div>
           </div>
 
           <!-- Timeline Visualization -->
-          ${this._transitions.length>0?V`
+          ${this._transitions.length>0?j`
             <div class="section">
               <div class="section-title">Preview</div>
               <div class="timeline">
@@ -195,7 +195,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                   <span>12 AM</span>
                 </div>
                 <div class="timeline-bar">
-                  ${this._getTimelineSegments().map(e=>{const t=e.start/1440*100,i=(e.end-e.start)/1440*100;return V`
+                  ${this._getTimelineSegments().map(e=>{const t=e.start/1440*100,i=(e.end-e.start)/1440*100;return j`
                       <div
                         class="timeline-segment"
                         style="left: ${t}%; width: ${i}%; background: ${e.color};"
@@ -207,10 +207,10 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                 </div>
               </div>
             </div>
-          `:F}
+          `:U}
         `}
       </div>
-    `}};function lt(e){const t=e.endpoints.filter(e=>0!==e.endpoint_id&&e.server_clusters&&e.server_clusters.length>0);return t.length>0?t[0]:null}ct.styles=s`
+    `}};function pt(e){const t=e.endpoints.filter(e=>0!==e.endpoint_id&&e.server_clusters&&e.server_clusters.length>0);return t.length>0?t[0]:null}ct.styles=s`
     :host {
       display: block;
     }
@@ -638,7 +638,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       font-size: 11px;
       font-weight: 500;
     }
-  `,e([pe({attribute:!1})],ct.prototype,"hass",void 0),e([pe({attribute:!1})],ct.prototype,"node",void 0),e([pe({attribute:!1})],ct.prototype,"endpoint",void 0),e([ge()],ct.prototype,"_loading",void 0),e([ge()],ct.prototype,"_saving",void 0),e([ge()],ct.prototype,"_error",void 0),e([ge()],ct.prototype,"_success",void 0),e([ge()],ct.prototype,"_notSupported",void 0),e([ge()],ct.prototype,"_schedule",void 0),e([ge()],ct.prototype,"_selectedDays",void 0),e([ge()],ct.prototype,"_transitions",void 0),e([ge()],ct.prototype,"_hasChanges",void 0),ct=e([de("thermostat-schedule-editor")],ct);const pt=257,gt={[ze]:3,[Ae]:3,[Ie]:3,[Be]:3,[Ee]:3,[pt]:3};function ht(e){return gt[e]??3}const ut=[{value:1,label:"View",description:"Read-only access to device state"},{value:3,label:"Operate",description:"Control the device (on/off, level, etc.)"},{value:4,label:"Manage",description:"Configure device settings"}],vt=s`
+  `,e([pe({attribute:!1})],ct.prototype,"hass",void 0),e([pe({attribute:!1})],ct.prototype,"node",void 0),e([pe({attribute:!1})],ct.prototype,"endpoint",void 0),e([ge()],ct.prototype,"_loading",void 0),e([ge()],ct.prototype,"_saving",void 0),e([ge()],ct.prototype,"_error",void 0),e([ge()],ct.prototype,"_success",void 0),e([ge()],ct.prototype,"_notSupported",void 0),e([ge()],ct.prototype,"_schedule",void 0),e([ge()],ct.prototype,"_selectedDays",void 0),e([ge()],ct.prototype,"_transitions",void 0),e([ge()],ct.prototype,"_hasChanges",void 0),ct=e([de("thermostat-schedule-editor")],ct);const gt=257,ut={[ze]:3,[Ae]:3,[Re]:3,[Be]:3,[Ee]:3,[gt]:3};function ht(e){return ut[e]??3}const vt=[{value:1,label:"View",description:"Read-only access to device state"},{value:3,label:"Operate",description:"Control the device (on/off, level, etc.)"},{value:4,label:"Manage",description:"Configure device settings"}],mt=s`
   .btn {
     padding: 8px 16px;
     border: none;
@@ -734,7 +734,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     background: var(--warning-color, #ff9800);
     color: white;
   }
-`,mt=s`
+`,_t=s`
   .loading {
     display: flex;
     align-items: center;
@@ -844,7 +844,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     outline: none;
     border-color: var(--primary-color);
   }
-`,_t=s`
+`,ft=s`
   .badge {
     display: inline-block;
     font-size: 11px;
@@ -911,7 +911,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     font-size: 12px;
     font-weight: 500;
   }
-`,ft=[vt,mt,bt,_t,s`
+`,yt=[mt,_t,bt,ft,s`
   .flex {
     display: flex;
   }
@@ -976,7 +976,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     color: var(--primary-color);
     text-decoration: underline;
   }
-`],yt=s`
+`],xt=s`
   .card {
     background: var(--card-background-color);
     border-radius: 8px;
@@ -1013,7 +1013,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     padding: 2px 8px;
     border-radius: 4px;
   }
-`,xt=s`
+`,$t=s`
   .binding-list {
     display: flex;
     flex-direction: column;
@@ -1096,7 +1096,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     margin-bottom: 8px;
     width: 100%;
   }
-`,$t=s`
+`,wt=s`
   .acl-list {
     display: flex;
     flex-direction: column;
@@ -1156,7 +1156,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     color: var(--secondary-text-color);
     opacity: 0.7;
   }
-`,wt=s`
+`,kt=s`
   .overview-card {
     background: var(--card-background-color);
     border-radius: 8px;
@@ -1210,16 +1210,16 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     margin-left: 8px;
     vertical-align: middle;
   }
-`,kt=[yt,xt,$t,wt];let Ct=class extends se{constructor(){super(...arguments),this.nodes=[],this.selectedNodeId=null,this.loading=!1,this.title="Matter Devices",this.showEndpointCount=!1}render(){return V`
+`,Ct=[xt,$t,wt,kt];let St=class extends se{constructor(){super(...arguments),this.nodes=[],this.selectedNodeId=null,this.loading=!1,this.title="Matter Devices",this.showEndpointCount=!1}render(){return j`
       <div class="card">
         <div class="card-header">${this.title}</div>
         ${this._renderContent()}
       </div>
-    `}_renderContent(){return this.loading&&0===this.nodes.length?V`<div class="loading">Loading...</div>`:0===this.nodes.length?V`<div class="empty-state">No Matter devices found.</div>`:V`
+    `}_renderContent(){return this.loading&&0===this.nodes.length?j`<div class="loading">Loading...</div>`:0===this.nodes.length?j`<div class="empty-state">No Matter devices found.</div>`:j`
       <ul class="node-list">
         ${this.nodes.map(e=>this._renderNodeItem(e))}
       </ul>
-    `}_renderNodeItem(e){const t=this.selectedNodeId===e.node_id,i=this._getPrimaryDeviceType(e),o=this._hasBindingCluster(e),n=e.endpoints.filter(e=>e.endpoint_id>0);return V`
+    `}_renderNodeItem(e){const t=this.selectedNodeId===e.node_id,i=this._getPrimaryDeviceType(e),o=this._hasBindingCluster(e),n=e.endpoints.filter(e=>e.endpoint_id>0);return j`
       <li>
         <div
           class="node-item ${t?"selected":""}"
@@ -1234,21 +1234,21 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               <span class="node-id">#${e.node_id}</span>
             </span>
             <div class="node-meta">
-              ${i?V`<span class="node-device-type">${i}</span>`:F}
-              ${i&&e.area_name?V`<span class="node-meta-sep">·</span>`:F}
-              ${e.area_name?V`<span class="node-area">${e.area_name}</span>`:F}
-              ${this.showEndpointCount&&n.length>1?V`
-                    ${e.area_name||i?V`<span class="node-meta-sep">·</span>`:F}
+              ${i?j`<span class="node-device-type">${i}</span>`:U}
+              ${i&&e.area_name?j`<span class="node-meta-sep">·</span>`:U}
+              ${e.area_name?j`<span class="node-area">${e.area_name}</span>`:U}
+              ${this.showEndpointCount&&n.length>1?j`
+                    ${e.area_name||i?j`<span class="node-meta-sep">·</span>`:U}
                     <span class="node-endpoints"
                       >${n.length} endpoints</span
                     >
-                  `:F}
-              ${o?V`<span class="binding-badge">Binding</span>`:F}
+                  `:U}
+              ${o?j`<span class="binding-badge">Binding</span>`:U}
             </div>
           </div>
         </div>
       </li>
-    `}_getPrimaryDeviceType(e){const t=e.endpoints.find(e=>1===e.endpoint_id)||e.endpoints.find(e=>e.endpoint_id>0);return t&&t.device_types.length>0?Ge(t.device_types[0].id):null}_hasBindingCluster(e){return e.endpoints.some(e=>e.has_binding_cluster)}_handleNodeClick(e){this.dispatchEvent(new CustomEvent("node-selected",{detail:{node:e},bubbles:!0,composed:!0}))}};Ct.styles=[vt,mt,yt,s`
+    `}_getPrimaryDeviceType(e){const t=e.endpoints.find(e=>1===e.endpoint_id)||e.endpoints.find(e=>e.endpoint_id>0);return t&&t.device_types.length>0?qe(t.device_types[0].id):null}_hasBindingCluster(e){return e.endpoints.some(e=>e.has_binding_cluster)}_handleNodeClick(e){this.dispatchEvent(new CustomEvent("node-selected",{detail:{node:e},bubbles:!0,composed:!0}))}};St.styles=[mt,_t,xt,s`
       :host {
         display: block;
       }
@@ -1365,16 +1365,16 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         font-weight: 600;
         text-transform: uppercase;
       }
-    `],e([pe({attribute:!1})],Ct.prototype,"nodes",void 0),e([pe({type:Number})],Ct.prototype,"selectedNodeId",void 0),e([pe({type:Boolean})],Ct.prototype,"loading",void 0),e([pe({type:String})],Ct.prototype,"title",void 0),e([pe({type:Boolean})],Ct.prototype,"showEndpointCount",void 0),Ct=e([de("matter-node-list")],Ct);let St=class extends se{constructor(){super(...arguments),this.aclMissing=!1,this.aclReason="",this.showRepairButton=!1,this.showVerifyButton=!1,this.repairInProgress=!1,this.verifyInProgress=!1,this.deleteInProgress=!1,this.disabled=!1,this.variant="default"}render(){if(!this.binding)return F;const{binding:e,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:n}=this.binding,r=null!==e.target_group_id,s=qe(e.cluster_id),a=Je(e.cluster_id),d=["binding-card",this.variant,this.aclMissing?"binding-missing-acl":""].filter(Boolean).join(" ");return"readable"===this.variant?this._renderReadableVariant(d,e,t,i,o,r,a):this._renderDefaultVariant(d,e,o,r,s)}_renderDefaultVariant(e,t,i,o,n){const r=i?.ha_device_id,s=o?`Group ${t.target_group_id}`:i?.name||`Node ${t.target_node_id}`;return V`
+    `],e([pe({attribute:!1})],St.prototype,"nodes",void 0),e([pe({type:Number})],St.prototype,"selectedNodeId",void 0),e([pe({type:Boolean})],St.prototype,"loading",void 0),e([pe({type:String})],St.prototype,"title",void 0),e([pe({type:Boolean})],St.prototype,"showEndpointCount",void 0),St=e([de("matter-node-list")],St);let Et=class extends se{constructor(){super(...arguments),this.aclMissing=!1,this.aclReason="",this.showRepairButton=!1,this.showVerifyButton=!1,this.repairInProgress=!1,this.verifyInProgress=!1,this.deleteInProgress=!1,this.disabled=!1,this.variant="default"}render(){if(!this.binding)return U;const{binding:e,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:n}=this.binding,r=null!==e.target_group_id,s=He(e.cluster_id),a=Je(e.cluster_id),d=["binding-card",this.variant,this.aclMissing?"binding-missing-acl":""].filter(Boolean).join(" ");return"readable"===this.variant?this._renderReadableVariant(d,e,t,i,o,r,a):this._renderDefaultVariant(d,e,o,r,s)}_renderDefaultVariant(e,t,i,o,n){const r=i?.ha_device_id,s=o?`Group ${t.target_group_id}`:i?.name||`Node ${t.target_node_id}`;return j`
       <div class=${e}>
-        ${this.aclMissing&&this.aclReason?V`<div class="acl-warning-banner">⚠️ ${this.aclReason}</div>`:F}
+        ${this.aclMissing&&this.aclReason?j`<div class="acl-warning-banner">⚠️ ${this.aclReason}</div>`:U}
         <div class="binding-info">
           <span class="binding-arrow">→</span>
           <div class="binding-target">
             <span class="binding-target-name">
-              ${o?s:V`<span
+              ${o?s:j`<span
                       class="${r?"device-link":""}"
-                      @click=${r?e=>this._handleDeviceClick(e,r):F}
+                      @click=${r?e=>this._handleDeviceClick(e,r):U}
                       >${i?.name||`Node ${t.target_node_id}`}</span
                     >
                     - Endpoint ${t.target_endpoint_id}`}
@@ -1384,36 +1384,36 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         </div>
         ${this._renderActions()}
       </div>
-    `}_renderReadableVariant(e,t,i,o,n,r,s){const a=i.ha_device_id,d=n?.ha_device_id,c=r?`Group ${t.target_group_id}`:n?.name||`Node ${t.target_node_id}`;return V`
+    `}_renderReadableVariant(e,t,i,o,n,r,s){const a=i.ha_device_id,d=n?.ha_device_id,l=r?`Group ${t.target_group_id}`:n?.name||`Node ${t.target_node_id}`;return j`
       <div class=${e}>
-        ${this.aclMissing&&this.aclReason?V`<div class="acl-warning-banner">⚠️ ${this.aclReason}</div>`:F}
+        ${this.aclMissing&&this.aclReason?j`<div class="acl-warning-banner">⚠️ ${this.aclReason}</div>`:U}
         <div class="binding-description">
           <div class="binding-sentence">
-            ${this.aclMissing?V`<span class="acl-warning" title="${this.aclReason}">⚠️</span>`:F}
+            ${this.aclMissing?j`<span class="acl-warning" title="${this.aclReason}">⚠️</span>`:U}
             <strong
               class="${a?"device-link":""}"
-              @click=${a?e=>this._handleDeviceClick(e,a):F}
+              @click=${a?e=>this._handleDeviceClick(e,a):U}
               >${i.name}</strong
             >
             <span class="binding-action">${s.action}</span>
             <strong
               class="${!r&&d?"device-link":""}"
-              @click=${!r&&d?e=>this._handleDeviceClick(e,d):F}
-              >${c}</strong
+              @click=${!r&&d?e=>this._handleDeviceClick(e,d):U}
+              >${l}</strong
             >
           </div>
           <div class="binding-meta">
             #${i.node_id} EP ${o.endpoint_id} →
             ${r?"Group":`#${t.target_node_id} EP ${t.target_endpoint_id}`}
-            ${i.area_name?V` · ${i.area_name}`:F}
-            ${this.aclMissing&&this.aclReason?V`<span class="acl-warning-text"> · ${this.aclReason}</span>`:F}
+            ${i.area_name?j` · ${i.area_name}`:U}
+            ${this.aclMissing&&this.aclReason?j`<span class="acl-warning-text"> · ${this.aclReason}</span>`:U}
           </div>
         </div>
         ${this._renderActions()}
       </div>
-    `}_renderActions(){const e=this.disabled;return V`
+    `}_renderActions(){const e=this.disabled;return j`
       <div class="binding-actions">
-        ${this.aclMissing&&this.showRepairButton?V`
+        ${this.aclMissing&&this.showRepairButton?j`
               <button
                 class="btn-icon repair ${this.repairInProgress?"btn-loading":""}"
                 title="Repair ACL permissions"
@@ -1422,8 +1422,8 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               >
                 ${this.repairInProgress?"⏳":"🔧"}
               </button>
-            `:F}
-        ${this.showVerifyButton?V`
+            `:U}
+        ${this.showVerifyButton?j`
               <button
                 class="btn-icon verify"
                 title="Verify binding on device"
@@ -1432,7 +1432,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               >
                 ✓
               </button>
-            `:F}
+            `:U}
         <button
           class="btn-icon delete ${this.deleteInProgress?"btn-loading":""}"
           title="Delete binding"
@@ -1442,7 +1442,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           ✕
         </button>
       </div>
-    `}_handleDeleteClick(){this.dispatchEvent(new CustomEvent("delete-binding",{detail:{binding:this.binding},bubbles:!0,composed:!0}))}_handleVerifyClick(){this.dispatchEvent(new CustomEvent("verify-binding",{detail:{binding:this.binding},bubbles:!0,composed:!0}))}_handleRepairClick(){this.dispatchEvent(new CustomEvent("repair-acl",{detail:{binding:this.binding},bubbles:!0,composed:!0}))}_handleDeviceClick(e,t){t&&(e.stopPropagation(),this.dispatchEvent(new CustomEvent("navigate-device",{detail:{deviceId:t},bubbles:!0,composed:!0})))}};St.styles=[vt,mt,xt,s`
+    `}_handleDeleteClick(){this.dispatchEvent(new CustomEvent("delete-binding",{detail:{binding:this.binding},bubbles:!0,composed:!0}))}_handleVerifyClick(){this.dispatchEvent(new CustomEvent("verify-binding",{detail:{binding:this.binding},bubbles:!0,composed:!0}))}_handleRepairClick(){this.dispatchEvent(new CustomEvent("repair-acl",{detail:{binding:this.binding},bubbles:!0,composed:!0}))}_handleDeviceClick(e,t){t&&(e.stopPropagation(),this.dispatchEvent(new CustomEvent("navigate-device",{detail:{deviceId:t},bubbles:!0,composed:!0})))}};Et.styles=[mt,_t,$t,s`
       :host {
         display: block;
       }
@@ -1512,7 +1512,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       .btn-loading {
         opacity: 0.5;
       }
-    `],e([pe({attribute:!1})],St.prototype,"binding",void 0),e([pe({type:Boolean})],St.prototype,"aclMissing",void 0),e([pe({type:String})],St.prototype,"aclReason",void 0),e([pe({type:Boolean})],St.prototype,"showRepairButton",void 0),e([pe({type:Boolean})],St.prototype,"showVerifyButton",void 0),e([pe({type:Boolean})],St.prototype,"repairInProgress",void 0),e([pe({type:Boolean})],St.prototype,"verifyInProgress",void 0),e([pe({type:Boolean})],St.prototype,"deleteInProgress",void 0),e([pe({type:Boolean})],St.prototype,"disabled",void 0),e([pe({type:String})],St.prototype,"variant",void 0),St=e([de("matter-binding-card")],St);let Et=class extends se{constructor(){super(...arguments),this.entries=null,this.nodes=[],this.loading=!1}render(){return V`
+    `],e([pe({attribute:!1})],Et.prototype,"binding",void 0),e([pe({type:Boolean})],Et.prototype,"aclMissing",void 0),e([pe({type:String})],Et.prototype,"aclReason",void 0),e([pe({type:Boolean})],Et.prototype,"showRepairButton",void 0),e([pe({type:Boolean})],Et.prototype,"showVerifyButton",void 0),e([pe({type:Boolean})],Et.prototype,"repairInProgress",void 0),e([pe({type:Boolean})],Et.prototype,"verifyInProgress",void 0),e([pe({type:Boolean})],Et.prototype,"deleteInProgress",void 0),e([pe({type:Boolean})],Et.prototype,"disabled",void 0),e([pe({type:String})],Et.prototype,"variant",void 0),Et=e([de("matter-binding-card")],Et);let zt=class extends se{constructor(){super(...arguments),this.entries=null,this.nodes=[],this.loading=!1}render(){return j`
       <div class="device-section">
         <div class="section-header">
           <span>Access Control (ACL)</span>
@@ -1526,17 +1526,17 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         </div>
         ${this._renderContent()}
       </div>
-    `}_renderContent(){return null===this.entries?V`
+    `}_renderContent(){return null===this.entries?j`
         <div class="empty-state-small">
           Click "Load from Device" to read ACL entries.
         </div>
-      `:0===this.entries.length?V`
+      `:0===this.entries.length?j`
         <div class="empty-state-small">No ACL entries found on device.</div>
-      `:V`
+      `:j`
       <div class="acl-list">
         ${this.entries.map((e,t)=>this._renderEntry(e,t))}
       </div>
-    `}_renderEntry(e,t){const i=e.subjects.map(e=>{const t=this.nodes.find(t=>t.node_id===e);return t?`${t.name} (${e})`:`Node ${e}`}),o=e.targets&&e.targets.length>0?e.targets.map(e=>{const t=[];if(null!==e.cluster){const i=Ue[e.cluster]||`0x${e.cluster.toString(16).padStart(4,"0")}`;t.push(i)}return null!==e.endpoint&&t.push(`EP ${e.endpoint}`),null!==e.device_type&&t.push(`DT ${e.device_type}`),t.join(", ")}):["All resources"],n=["acl-entry",5===e.privilege?"acl-admin":"",3===e.privilege?"acl-operate":""].filter(Boolean).join(" ");return V`
+    `}_renderEntry(e,t){const i=e.subjects.map(e=>{const t=this.nodes.find(t=>t.node_id===e);return t?`${t.name} (${e})`:`Node ${e}`}),o=e.targets&&e.targets.length>0?e.targets.map(e=>{const t=[];if(null!==e.cluster){const i=Ve[e.cluster]||`0x${e.cluster.toString(16).padStart(4,"0")}`;t.push(i)}return null!==e.endpoint&&t.push(`EP ${e.endpoint}`),null!==e.device_type&&t.push(`DT ${e.device_type}`),t.join(", ")}):["All resources"],n=["acl-entry",5===e.privilege?"acl-admin":"",3===e.privilege?"acl-operate":""].filter(Boolean).join(" ");return j`
       <div class=${n}>
         <div class="acl-entry-header">
           <span class="acl-index">#${t+1}</span>
@@ -1558,7 +1558,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
       </div>
-    `}_handleLoadClick(){this.dispatchEvent(new CustomEvent("load-acl",{detail:{nodeId:this.node.node_id},bubbles:!0,composed:!0}))}};Et.styles=[vt,mt,yt,$t,s`
+    `}_handleLoadClick(){this.dispatchEvent(new CustomEvent("load-acl",{detail:{nodeId:this.node.node_id},bubbles:!0,composed:!0}))}};zt.styles=[mt,_t,xt,wt,s`
       :host {
         display: block;
       }
@@ -1662,7 +1662,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       .acl-value {
         color: var(--primary-text-color);
       }
-    `],e([pe({attribute:!1})],Et.prototype,"node",void 0),e([pe({attribute:!1})],Et.prototype,"entries",void 0),e([pe({attribute:!1})],Et.prototype,"nodes",void 0),e([pe({type:Boolean})],Et.prototype,"loading",void 0),Et=e([de("matter-acl-section")],Et);const zt=s`
+    `],e([pe({attribute:!1})],zt.prototype,"node",void 0),e([pe({attribute:!1})],zt.prototype,"entries",void 0),e([pe({attribute:!1})],zt.prototype,"nodes",void 0),e([pe({type:Boolean})],zt.prototype,"loading",void 0),zt=e([de("matter-acl-section")],zt);const At=s`
   .dialog-overlay {
     position: fixed;
     top: 0;
@@ -1727,7 +1727,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     font-size: 13px;
     color: var(--primary-text-color);
   }
-`,At=s`
+`,Pt=s`
   .confirm-dialog {
     max-width: 480px;
   }
@@ -1783,7 +1783,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
   .confirm-details dd:last-child {
     margin-bottom: 0;
   }
-`,Pt=s`
+`,It=s`
   .wizard-dialog {
     min-width: 500px;
     max-width: 600px;
@@ -1945,7 +1945,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     background: var(--success-color, #4caf50);
     color: white;
   }
-`,Nt=[zt,At,s`
+`,Nt=[At,Pt,s`
   .verification-loading {
     display: flex;
     flex-direction: column;
@@ -2035,7 +2035,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
   .verification-help li {
     margin-bottom: 4px;
   }
-`,Pt,Tt,s`
+`,It,Tt,s`
   .operation-progress-dialog {
     min-width: 360px;
     text-align: center;
@@ -2067,7 +2067,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     font-size: 13px;
     color: var(--secondary-text-color);
   }
-`];let Rt=class extends se{constructor(){super(...arguments),this.open=!1,this.sourceNode=null,this.sourceEndpoint=null,this.availableNodes=[],this.selectedTargetNodeId=null,this.selectedTargetEndpointId=null,this.loading=!1,this._selectedClusterId=null}render(){return this.open?V`
+`];let Dt=class extends se{constructor(){super(...arguments),this.open=!1,this.sourceNode=null,this.sourceEndpoint=null,this.availableNodes=[],this.selectedTargetNodeId=null,this.selectedTargetEndpointId=null,this.loading=!1,this.availableGroups=[],this._selectedClusterId=null,this._targetType="device",this._selectedGroupId=null}render(){return this.open?j`
       <div class="dialog-overlay" @click=${this._handleOverlayClick}>
         <div class="dialog" @click=${this._handleDialogClick}>
           <form @submit=${this._handleSubmit}>
@@ -2077,23 +2077,78 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </form>
         </div>
       </div>
-    `:F}_renderHeader(){const e=this.sourceNode?.name??"Unknown",t=this.sourceEndpoint?.endpoint_id??0;return V`
+    `:U}_renderHeader(){const e=this.sourceNode?.name??"Unknown",t=this.sourceEndpoint?.endpoint_id??0;return j`
       <div class="dialog-header">
         <span>Create Binding</span>
         <span class="source-info">From: ${e} EP${t}</span>
       </div>
-    `}_renderBody(){const e=0===(this.sourceEndpoint?.client_clusters??[]).length;return V`
+    `}_renderBody(){const e=0===(this.sourceEndpoint?.client_clusters??[]).length;return j`
       <div class="dialog-body">
-        ${e?this._renderNoClientClustersWarning():F}
-        ${this._renderTargetNodeSelect()}
-        ${this.selectedTargetNodeId?this._renderTargetEndpointSelect():F}
-        ${this.selectedTargetNodeId&&this.selectedTargetEndpointId?this._renderClusterSelect():F}
+        ${e?this._renderNoClientClustersWarning():U}
+        ${this.availableGroups.length>0?this._renderTargetTypeToggle():U}
+        ${"group"===this._targetType?this._renderGroupTarget():j`
+              ${this._renderTargetNodeSelect()}
+              ${this.selectedTargetNodeId?this._renderTargetEndpointSelect():U}
+              ${this.selectedTargetNodeId&&this.selectedTargetEndpointId?this._renderClusterSelect():U}
+            `}
       </div>
-    `}_renderNoClientClustersWarning(){return V`
+    `}_renderTargetTypeToggle(){return j`
+      <div class="form-group">
+        <label for="targetType">Target Type</label>
+        <select
+          id="targetType"
+          name="targetType"
+          @change=${this._handleTargetTypeChange}
+          .value=${this._targetType}
+        >
+          <option value="device">Device (unicast)</option>
+          <option value="group">Group (groupcast)</option>
+        </select>
+      </div>
+    `}_renderGroupTarget(){const e=this.sourceEndpoint?.client_clusters??[];return null===this._selectedClusterId&&e.length>0&&(this._selectedClusterId=e[0]),j`
+      <div class="form-group">
+        <label for="targetGroup">Target Group</label>
+        <select
+          id="targetGroup"
+          name="targetGroup"
+          required
+          @change=${this._handleTargetGroupChange}
+          .value=${this._selectedGroupId?.toString()??""}
+        >
+          <option value="" disabled selected>Select a group...</option>
+          ${this.availableGroups.map(e=>j`
+              <option value=${e.group_id}>
+                ${e.name} (ID ${e.group_id})
+              </option>
+            `)}
+        </select>
+      </div>
+      ${e.length>0?j`
+            <div class="form-group">
+              <label for="groupCluster">Cluster</label>
+              <select
+                id="groupCluster"
+                name="groupCluster"
+                required
+                @change=${this._handleClusterChange}
+                .value=${this._selectedClusterId?.toString()??""}
+              >
+                ${e.map(e=>j`
+                    <option value=${e}>
+                      ${He(e)}
+                    </option>
+                  `)}
+              </select>
+              <div class="cluster-info">
+                The source will multicast this cluster's commands to the group.
+              </div>
+            </div>
+          `:U}
+    `}_renderNoClientClustersWarning(){return j`
       <div class="warning-message">
         This endpoint has no client clusters and can't control other devices.
       </div>
-    `}_renderTargetNodeSelect(){return V`
+    `}_renderTargetNodeSelect(){return j`
       <div class="form-group">
         <label for="targetNode">Target Device</label>
         <select
@@ -2104,14 +2159,14 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           .value=${this.selectedTargetNodeId?.toString()??""}
         >
           <option value="">Select a device...</option>
-          ${this.availableNodes.map(e=>V`
+          ${this.availableNodes.map(e=>j`
               <option value=${e.node_id}>
                 ${e.name}${e.area_name?` (${e.area_name})`:""}
               </option>
             `)}
         </select>
       </div>
-    `}_renderTargetEndpointSelect(){const e=this._getSelectedTargetNode();if(!e)return F;const t=e.endpoints.filter(e=>e.endpoint_id>0);return V`
+    `}_renderTargetEndpointSelect(){const e=this._getSelectedTargetNode();if(!e)return U;const t=e.endpoints.filter(e=>e.endpoint_id>0);return j`
       <div class="form-group">
         <label for="targetEndpoint">Target Endpoint</label>
         <select
@@ -2122,18 +2177,18 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           .value=${this.selectedTargetEndpointId?.toString()??""}
         >
           <option value="">Select an endpoint...</option>
-          ${t.map(e=>V`
+          ${t.map(e=>j`
               <option value=${e.endpoint_id}>
                 Endpoint ${e.endpoint_id}${this._getEndpointLabel(e)}
               </option>
             `)}
         </select>
       </div>
-    `}_renderClusterSelect(){const e=this._getCompatibleClusters();return 0===e.length?V`
+    `}_renderClusterSelect(){const e=this._getCompatibleClusters();return 0===e.length?j`
         <div class="warning-message">
           No compatible clusters found between source and target endpoints.
         </div>
-      `:(null===this._selectedClusterId&&e.length>0&&(this._selectedClusterId=e[0]),V`
+      `:(null===this._selectedClusterId&&e.length>0&&(this._selectedClusterId=e[0]),j`
       <div class="form-group">
         <label for="cluster">Cluster</label>
         <select
@@ -2143,15 +2198,15 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           @change=${this._handleClusterChange}
           .value=${this._selectedClusterId?.toString()??""}
         >
-          ${e.map(e=>V`
-              <option value=${e}>${qe(e)}</option>
+          ${e.map(e=>j`
+              <option value=${e}>${He(e)}</option>
             `)}
         </select>
         <div class="cluster-info">
           The binding will allow the source to control this cluster on the target.
         </div>
       </div>
-    `)}_renderActions(){const e=this._getCompatibleClusters(),t=null!==this.selectedTargetNodeId&&null!==this.selectedTargetEndpointId&&e.length>0&&!this.loading;return V`
+    `)}_renderActions(){const e="group"===this._targetType?null!==this._selectedGroupId&&(this.sourceEndpoint?.client_clusters??[]).length>0&&!this.loading:null!==this.selectedTargetNodeId&&null!==this.selectedTargetEndpointId&&this._getCompatibleClusters().length>0&&!this.loading;return j`
       <div class="dialog-actions">
         <button
           type="button"
@@ -2164,12 +2219,12 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         <button
           type="submit"
           class="btn btn-primary ${this.loading?"btn-loading":""}"
-          ?disabled=${!t}
+          ?disabled=${!e}
         >
           Create Binding
         </button>
       </div>
-    `}_getSelectedTargetNode(){return this.selectedTargetNodeId?this.availableNodes.find(e=>e.node_id===this.selectedTargetNodeId)??null:null}_getSelectedTargetEndpoint(){const e=this._getSelectedTargetNode();return e&&this.selectedTargetEndpointId?e.endpoints.find(e=>e.endpoint_id===this.selectedTargetEndpointId)??null:null}_getEndpointLabel(e){return e.device_types&&e.device_types.length>0?` - Device Type ${e.device_types[0].id}`:""}_getCompatibleClusters(){const e=this.sourceEndpoint?.client_clusters??[],t=this._getSelectedTargetEndpoint(),i=t?.server_clusters??[];return e.filter(e=>i.includes(e))}_handleOverlayClick(){this._handleCancel()}_handleDialogClick(e){e.stopPropagation()}_handleTargetNodeChange(e){const t=e.target,i=parseInt(t.value,10);isNaN(i)||(this._selectedClusterId=null,this.dispatchEvent(new CustomEvent("target-node-change",{detail:{nodeId:i},bubbles:!0,composed:!0})))}_handleTargetEndpointChange(e){const t=e.target,i=parseInt(t.value,10);isNaN(i)||(this._selectedClusterId=null,this.dispatchEvent(new CustomEvent("target-endpoint-change",{detail:{endpointId:i},bubbles:!0,composed:!0})))}_handleClusterChange(e){const t=e.target,i=parseInt(t.value,10);isNaN(i)||(this._selectedClusterId=i)}_handleSubmit(e){e.preventDefault();const t=this._getCompatibleClusters(),i=this._selectedClusterId??t[0];null!==this.selectedTargetNodeId&&null!==this.selectedTargetEndpointId&&void 0!==i&&this.dispatchEvent(new CustomEvent("create-binding",{detail:{targetNodeId:this.selectedTargetNodeId,targetEndpointId:this.selectedTargetEndpointId,clusterId:i},bubbles:!0,composed:!0}))}_handleCancel(){this.dispatchEvent(new CustomEvent("cancel",{bubbles:!0,composed:!0}))}};Rt.styles=[vt,mt,bt,zt,s`
+    `}_getSelectedTargetNode(){return this.selectedTargetNodeId?this.availableNodes.find(e=>e.node_id===this.selectedTargetNodeId)??null:null}_getSelectedTargetEndpoint(){const e=this._getSelectedTargetNode();return e&&this.selectedTargetEndpointId?e.endpoints.find(e=>e.endpoint_id===this.selectedTargetEndpointId)??null:null}_getEndpointLabel(e){return e.device_types&&e.device_types.length>0?` - Device Type ${e.device_types[0].id}`:""}_getCompatibleClusters(){const e=this.sourceEndpoint?.client_clusters??[],t=this._getSelectedTargetEndpoint(),i=t?.server_clusters??[];return e.filter(e=>i.includes(e))}_handleOverlayClick(){this._handleCancel()}_handleDialogClick(e){e.stopPropagation()}_handleTargetNodeChange(e){const t=e.target,i=parseInt(t.value,10);isNaN(i)||(this._selectedClusterId=null,this.dispatchEvent(new CustomEvent("target-node-change",{detail:{nodeId:i},bubbles:!0,composed:!0})))}_handleTargetEndpointChange(e){const t=e.target,i=parseInt(t.value,10);isNaN(i)||(this._selectedClusterId=null,this.dispatchEvent(new CustomEvent("target-endpoint-change",{detail:{endpointId:i},bubbles:!0,composed:!0})))}_handleClusterChange(e){const t=e.target,i=parseInt(t.value,10);isNaN(i)||(this._selectedClusterId=i)}_handleSubmit(e){if(e.preventDefault(),"group"===this._targetType){const e=this.sourceEndpoint?.client_clusters??[],t=this._selectedClusterId??e[0];return void(null!==this._selectedGroupId&&void 0!==t&&this.dispatchEvent(new CustomEvent("create-binding",{detail:{targetGroupId:this._selectedGroupId,clusterId:t},bubbles:!0,composed:!0})))}const t=this._getCompatibleClusters(),i=this._selectedClusterId??t[0];null!==this.selectedTargetNodeId&&null!==this.selectedTargetEndpointId&&void 0!==i&&this.dispatchEvent(new CustomEvent("create-binding",{detail:{targetNodeId:this.selectedTargetNodeId,targetEndpointId:this.selectedTargetEndpointId,clusterId:i},bubbles:!0,composed:!0}))}_handleTargetTypeChange(e){this._targetType=e.target.value,this._selectedClusterId=null}_handleTargetGroupChange(e){const t=parseInt(e.target.value,10);isNaN(t)||(this._selectedGroupId=t)}_handleCancel(){this.dispatchEvent(new CustomEvent("cancel",{bubbles:!0,composed:!0}))}};Dt.styles=[mt,_t,bt,At,s`
       :host {
         display: contents;
       }
@@ -2244,17 +2299,267 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         justify-content: flex-end;
         gap: 8px;
       }
-    `],e([pe({type:Boolean})],Rt.prototype,"open",void 0),e([pe({attribute:!1})],Rt.prototype,"sourceNode",void 0),e([pe({attribute:!1})],Rt.prototype,"sourceEndpoint",void 0),e([pe({attribute:!1})],Rt.prototype,"availableNodes",void 0),e([pe({type:Number})],Rt.prototype,"selectedTargetNodeId",void 0),e([pe({type:Number})],Rt.prototype,"selectedTargetEndpointId",void 0),e([pe({type:Boolean})],Rt.prototype,"loading",void 0),e([ge()],Rt.prototype,"_selectedClusterId",void 0),Rt=e([de("matter-create-binding-dialog")],Rt);let Dt=class extends se{constructor(){super(...arguments),this.open=!1,this.title="Confirm",this.message="",this.icon="",this.variant="info",this.confirmLabel="Confirm",this.cancelLabel="Cancel",this.loading=!1}render(){if(!this.open)return F;const e=["dialog","confirm-dialog",`variant-${this.variant}`].join(" ");return V`
+    `],e([pe({type:Boolean})],Dt.prototype,"open",void 0),e([pe({attribute:!1})],Dt.prototype,"sourceNode",void 0),e([pe({attribute:!1})],Dt.prototype,"sourceEndpoint",void 0),e([pe({attribute:!1})],Dt.prototype,"availableNodes",void 0),e([pe({type:Number})],Dt.prototype,"selectedTargetNodeId",void 0),e([pe({type:Number})],Dt.prototype,"selectedTargetEndpointId",void 0),e([pe({type:Boolean})],Dt.prototype,"loading",void 0),e([pe({attribute:!1})],Dt.prototype,"availableGroups",void 0),e([ge()],Dt.prototype,"_selectedClusterId",void 0),e([ge()],Dt.prototype,"_targetType",void 0),e([ge()],Dt.prototype,"_selectedGroupId",void 0),Dt=e([de("matter-create-binding-dialog")],Dt);let Rt=class extends se{constructor(){super(...arguments),this.open=!1,this.loading=!1,this._name="",this._error="",this._advanced=!1,this._groupId=""}render(){return this.open?j`
+      <div class="dialog-overlay" @click=${this._handleCancel}>
+        <div class="dialog" @click=${this._stop}>
+          <div class="dialog-header">Create Group</div>
+          <div class="dialog-body">
+            <div class="field">
+              <label for="group-name">Name</label>
+              <input
+                id="group-name"
+                type="text"
+                .value=${this._name}
+                @input=${this._onName}
+                ?disabled=${this.loading}
+                placeholder="e.g. Living Room Lights"
+              />
+            </div>
+            <label class="advanced-toggle">
+              <input
+                type="checkbox"
+                .checked=${this._advanced}
+                @change=${this._onAdvancedToggle}
+                ?disabled=${this.loading}
+              />
+              Advanced: set group ID manually
+            </label>
+            ${this._advanced?j`
+                  <div class="field">
+                    <label for="group-id">Group ID</label>
+                    <input
+                      id="group-id"
+                      type="number"
+                      min="1"
+                      max="65527"
+                      .value=${this._groupId}
+                      @input=${this._onGroupId}
+                      ?disabled=${this.loading}
+                      placeholder="e.g. 100"
+                    />
+                    <div class="note">
+                      Leave Advanced off to let Home Assistant pick a free ID
+                      automatically. Only set this if you need to match a specific
+                      Matter group ID (1–65527); it must not already be in use.
+                    </div>
+                  </div>
+                `:U}
+            ${this._error?j`<div class="error">${this._error}</div>`:U}
+          </div>
+          <div class="dialog-actions">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              @click=${this._handleCancel}
+              ?disabled=${this.loading}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary ${this.loading?"btn-loading":""}"
+              @click=${this._handleCreate}
+              ?disabled=${this.loading}
+            >
+              Create
+            </button>
+          </div>
+        </div>
+      </div>
+    `:U}_stop(e){e.stopPropagation()}_onName(e){this._name=e.target.value,this._error=""}_onAdvancedToggle(e){this._advanced=e.target.checked,this._error=""}_onGroupId(e){this._groupId=e.target.value,this._error=""}_handleCreate(){if(!this._name.trim())return void(this._error="Name is required.");const e={name:this._name.trim()};if(this._advanced&&""!==this._groupId.trim()){const t=parseInt(this._groupId,10);if(!Number.isInteger(t)||t<1||t>65527)return void(this._error="Group ID must be a whole number between 1 and 65527.");e.groupId=t}this.dispatchEvent(new CustomEvent("create-group",{detail:e,bubbles:!0,composed:!0}))}_handleCancel(){this._name="",this._groupId="",this._advanced=!1,this._error="",this.dispatchEvent(new CustomEvent("cancel",{bubbles:!0,composed:!0}))}};Rt.styles=[mt,_t,At,s`
+      :host {
+        display: contents;
+      }
+      .field {
+        margin-bottom: 16px;
+      }
+      label {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 4px;
+        color: var(--primary-text-color);
+      }
+      input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        border: 1px solid var(--divider-color, #e0e0e0);
+        border-radius: 4px;
+        background: var(--card-background-color);
+        color: var(--primary-text-color);
+        font-size: 14px;
+      }
+      .error {
+        color: var(--error-color, #f44336);
+        font-size: 12px;
+        margin-top: 8px;
+      }
+      .advanced-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 400;
+        cursor: pointer;
+        margin-bottom: 12px;
+      }
+      .advanced-toggle input {
+        width: auto;
+      }
+      .note {
+        font-size: 12px;
+        color: var(--secondary-text-color);
+        margin-top: 6px;
+        line-height: 1.4;
+      }
+    `],e([pe({type:Boolean})],Rt.prototype,"open",void 0),e([pe({type:Boolean})],Rt.prototype,"loading",void 0),e([ge()],Rt.prototype,"_name",void 0),e([ge()],Rt.prototype,"_error",void 0),e([ge()],Rt.prototype,"_advanced",void 0),e([ge()],Rt.prototype,"_groupId",void 0),Rt=e([de("matter-create-group-dialog")],Rt);let Bt=class extends se{constructor(){super(...arguments),this.open=!1,this.group=null,this.availableNodes=[],this.loading=!1,this._selectedNodeId=null,this._selectedEndpointId=null}render(){if(!this.open||!this.group)return U;const e=this.group;return j`
+      <div class="dialog-overlay" @click=${this._handleClose}>
+        <div class="dialog" @click=${this._stop}>
+          <div class="dialog-header">
+            ${e.name} <span class="source-info">Group ${e.group_id}</span>
+          </div>
+          <div class="dialog-body">
+            <div class="section-title">Members</div>
+            ${0===e.members.length?j`<div class="empty">No members yet. Add one below.</div>`:e.members.map(e=>this._renderMember(e.node_id,e.endpoint_id))}
+
+            <div class="section-title">Add member</div>
+            ${this._renderAddRow()}
+          </div>
+          <div class="dialog-actions">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              @click=${this._handleClose}
+              ?disabled=${this.loading}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    `}_endpointLabel(e){const t=e.device_types?.[0]?.id,i=void 0!==t?qe(t):null;return i?`EP ${e.endpoint_id} — ${i}`:`EP ${e.endpoint_id}`}_renderMember(e,t){const i=this.availableNodes.find(t=>t.node_id===e),o=i?.name??`Node ${e}`,n=i?.endpoints.find(e=>e.endpoint_id===t),r=n?this._endpointLabel(n):`EP ${t}`;return j`
+      <div class="member-row">
+        <span class="member-label">${o} — ${r}</span>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          @click=${()=>this._removeMember(e,t)}
+          ?disabled=${this.loading}
+        >
+          Remove
+        </button>
+      </div>
+    `}_renderAddRow(){const e=this.availableNodes.find(e=>e.node_id===this._selectedNodeId),t=(e?.endpoints??[]).filter(e=>0!==e.endpoint_id);return j`
+      <div class="add-row">
+        <div class="add-field">
+          <label for="add-node">Device</label>
+          <select
+            id="add-node"
+            @change=${this._onNodeChange}
+            ?disabled=${this.loading}
+          >
+            <option value="" ?selected=${null===this._selectedNodeId}>
+              Select…
+            </option>
+            ${this.availableNodes.map(e=>j`
+                <option value=${e.node_id} ?selected=${e.node_id===this._selectedNodeId}>
+                  ${e.name} (${e.node_id})
+                </option>
+              `)}
+          </select>
+        </div>
+        <div class="add-field">
+          <label for="add-endpoint">Endpoint</label>
+          <select
+            id="add-endpoint"
+            @change=${this._onEndpointChange}
+            ?disabled=${this.loading||null===this._selectedNodeId}
+          >
+            <option value="" ?selected=${null===this._selectedEndpointId}>
+              Select…
+            </option>
+            ${t.map(e=>j`
+                <option
+                  value=${e.endpoint_id}
+                  ?selected=${e.endpoint_id===this._selectedEndpointId}
+                >
+                  ${this._endpointLabel(e)}
+                </option>
+              `)}
+          </select>
+        </div>
+        <button
+          type="button"
+          class="btn btn-primary"
+          @click=${this._addMember}
+          ?disabled=${this.loading||null===this._selectedNodeId||null===this._selectedEndpointId||this._isAlreadyMember()}
+        >
+          Add
+        </button>
+      </div>
+    `}_isAlreadyMember(){return!(!this.group||null===this._selectedNodeId||null===this._selectedEndpointId)&&this.group.members.some(e=>e.node_id===this._selectedNodeId&&e.endpoint_id===this._selectedEndpointId)}_stop(e){e.stopPropagation()}_onNodeChange(e){const t=e.target.value;this._selectedNodeId=""===t?null:parseInt(t,10),this._selectedEndpointId=null}_onEndpointChange(e){const t=e.target.value;this._selectedEndpointId=""===t?null:parseInt(t,10)}_addMember(){null!==this._selectedNodeId&&null!==this._selectedEndpointId&&this.dispatchEvent(new CustomEvent("add-member",{detail:{nodeId:this._selectedNodeId,endpointId:this._selectedEndpointId},bubbles:!0,composed:!0}))}_removeMember(e,t){this.dispatchEvent(new CustomEvent("remove-member",{detail:{nodeId:e,endpointId:t},bubbles:!0,composed:!0}))}_handleClose(){this._selectedNodeId=null,this._selectedEndpointId=null,this.dispatchEvent(new CustomEvent("close",{bubbles:!0,composed:!0}))}};Bt.styles=[mt,_t,At,s`
+      :host {
+        display: contents;
+      }
+      .section-title {
+        font-size: 13px;
+        font-weight: 600;
+        margin: 16px 0 8px;
+        color: var(--primary-text-color);
+      }
+      .member-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--divider-color, #e0e0e0);
+      }
+      .member-label {
+        font-size: 13px;
+        color: var(--primary-text-color);
+      }
+      .empty {
+        font-size: 13px;
+        color: var(--secondary-text-color);
+        padding: 4px 0 8px;
+      }
+      .add-row {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+      }
+      .add-field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+        min-width: 120px;
+      }
+      .add-field label {
+        font-size: 12px;
+        color: var(--secondary-text-color);
+      }
+      select {
+        padding: 8px;
+        border: 1px solid var(--divider-color, #e0e0e0);
+        border-radius: 4px;
+        background: var(--card-background-color);
+        color: var(--primary-text-color);
+        font-size: 14px;
+      }
+    `],e([pe({type:Boolean})],Bt.prototype,"open",void 0),e([pe({attribute:!1})],Bt.prototype,"group",void 0),e([pe({attribute:!1})],Bt.prototype,"availableNodes",void 0),e([pe({type:Boolean})],Bt.prototype,"loading",void 0),e([ge()],Bt.prototype,"_selectedNodeId",void 0),e([ge()],Bt.prototype,"_selectedEndpointId",void 0),Bt=e([de("matter-manage-group-dialog")],Bt);let Mt=class extends se{constructor(){super(...arguments),this.open=!1,this.title="Confirm",this.message="",this.icon="",this.variant="info",this.confirmLabel="Confirm",this.cancelLabel="Cancel",this.loading=!1}render(){if(!this.open)return U;const e=["dialog","confirm-dialog",`variant-${this.variant}`].join(" ");return j`
       <div class="dialog-overlay" @click=${this._handleOverlayClick}>
         <div class=${e} @click=${this._handleDialogClick}>
           <div class="dialog-header">
-            ${this.icon?V`<span class="confirm-icon">${this.icon}</span>`:F}
+            ${this.icon?j`<span class="confirm-icon">${this.icon}</span>`:U}
             ${this.title}
           </div>
 
           <div class="dialog-body">
             <slot>
-              ${this.message?V`<div class="default-message">${this.message}</div>`:F}
+              ${this.message?j`<div class="default-message">${this.message}</div>`:U}
             </slot>
           </div>
 
@@ -2278,7 +2583,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
       </div>
-    `}_handleOverlayClick(){this._handleCancel()}_handleDialogClick(e){e.stopPropagation()}_handleConfirm(){this.dispatchEvent(new CustomEvent("confirm",{bubbles:!0,composed:!0}))}_handleCancel(){this.dispatchEvent(new CustomEvent("cancel",{bubbles:!0,composed:!0}))}};Dt.styles=[vt,mt,zt,At,s`
+    `}_handleOverlayClick(){this._handleCancel()}_handleDialogClick(e){e.stopPropagation()}_handleConfirm(){this.dispatchEvent(new CustomEvent("confirm",{bubbles:!0,composed:!0}))}_handleCancel(){this.dispatchEvent(new CustomEvent("cancel",{bubbles:!0,composed:!0}))}};Mt.styles=[mt,_t,At,Pt,s`
       :host {
         display: contents;
       }
@@ -2308,7 +2613,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         line-height: 1.5;
         color: var(--primary-text-color);
       }
-    `],e([pe({type:Boolean})],Dt.prototype,"open",void 0),e([pe({type:String})],Dt.prototype,"title",void 0),e([pe({type:String})],Dt.prototype,"message",void 0),e([pe({type:String})],Dt.prototype,"icon",void 0),e([pe({type:String})],Dt.prototype,"variant",void 0),e([pe({type:String})],Dt.prototype,"confirmLabel",void 0),e([pe({type:String})],Dt.prototype,"cancelLabel",void 0),e([pe({type:Boolean})],Dt.prototype,"loading",void 0),Dt=e([de("matter-confirm-dialog")],Dt);const It=s`
+    `],e([pe({type:Boolean})],Mt.prototype,"open",void 0),e([pe({type:String})],Mt.prototype,"title",void 0),e([pe({type:String})],Mt.prototype,"message",void 0),e([pe({type:String})],Mt.prototype,"icon",void 0),e([pe({type:String})],Mt.prototype,"variant",void 0),e([pe({type:String})],Mt.prototype,"confirmLabel",void 0),e([pe({type:String})],Mt.prototype,"cancelLabel",void 0),e([pe({type:Boolean})],Mt.prototype,"loading",void 0),Mt=e([de("matter-confirm-dialog")],Mt);const Lt=s`
   .dialog-overlay.blocking {
     pointer-events: auto;
   }
@@ -2374,7 +2679,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     border-radius: 4px;
     margin-top: 16px;
   }
-`,Bt=[s`
+`,Gt=[s`
   .eve-schedule {
     margin-top: 12px;
     padding: 12px;
@@ -2721,7 +3026,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
   .verification-dismiss:hover {
     opacity: 1;
   }
-`,It,s`
+`,Lt,s`
   .btn-repair {
     background: rgba(255, 152, 0, 0.15);
     color: var(--warning-color, #ff9800);
@@ -2758,31 +3063,31 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       opacity: 0.5;
     }
   }
-`];let Mt=class extends se{constructor(){super(...arguments),this.progress=null,this.open=!1}render(){if(!this.open||!this.progress)return F;const{title:e,steps:t,completed:i,error:o,canCancel:n}=this.progress;return V`
+`];let Ot=class extends se{constructor(){super(...arguments),this.progress=null,this.open=!1}render(){if(!this.open||!this.progress)return U;const{title:e,steps:t,completed:i,error:o,canCancel:n}=this.progress;return j`
       <div class="dialog-overlay blocking">
         <div class="dialog operation-progress-dialog" @click=${e=>e.stopPropagation()}>
           <div class="dialog-header">${e}</div>
           <div class="dialog-content">
             <div class="operation-steps">
-              ${t.map(e=>V`
+              ${t.map(e=>j`
                 <div class="operation-step ${e.status}">
                   <span class="step-icon">
                     ${"in_progress"===e.status?"⏳":"success"===e.status?"✓":"error"===e.status?"✗":"skipped"===e.status?"–":"○"}
                   </span>
                   <span class="step-label">${e.label}</span>
-                  ${e.message?V`<span class="step-message">${e.message}</span>`:F}
+                  ${e.message?j`<span class="step-message">${e.message}</span>`:U}
                 </div>
               `)}
             </div>
-            ${o?V`<div class="operation-error">${o}</div>`:F}
-            ${i?F:V`<div class="operation-hint">Communicating with Matter device...</div>`}
+            ${o?j`<div class="operation-error">${o}</div>`:U}
+            ${i?U:j`<div class="operation-hint">Communicating with Matter device...</div>`}
           </div>
           <div class="dialog-actions">
-            ${i?V`<button class="btn btn-primary" @click=${this._handleClose}>Done</button>`:n?V`<button class="btn btn-secondary" @click=${this._handleCancel}>Cancel</button>`:F}
+            ${i?j`<button class="btn btn-primary" @click=${this._handleClose}>Done</button>`:n?j`<button class="btn btn-secondary" @click=${this._handleCancel}>Cancel</button>`:U}
           </div>
         </div>
       </div>
-    `}_handleClose(){this.dispatchEvent(new CustomEvent("close",{bubbles:!0,composed:!0}))}_handleCancel(){this.dispatchEvent(new CustomEvent("cancel",{bubbles:!0,composed:!0}))}};Mt.styles=[vt,Nt,It,s`
+    `}_handleClose(){this.dispatchEvent(new CustomEvent("close",{bubbles:!0,composed:!0}))}_handleCancel(){this.dispatchEvent(new CustomEvent("cancel",{bubbles:!0,composed:!0}))}};Ot.styles=[mt,Nt,Lt,s`
       :host {
         display: block;
       }
@@ -2891,13 +3196,13 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         border-radius: 4px;
         margin-top: 16px;
       }
-    `],e([pe({attribute:!1})],Mt.prototype,"progress",void 0),e([pe({type:Boolean})],Mt.prototype,"open",void 0),Mt=e([de("matter-operation-progress-dialog")],Mt);let Lt=class extends se{constructor(){super(...arguments),this.open=!1,this._alias="",this._loading=!1,this._created=!1}connectedCallback(){super.connectedCallback()}updated(e){(e.has("open")||e.has("recommendation"))&&this.open&&this.recommendation&&this.hass&&this._fetchPreview(),e.has("open")&&!this.open&&this._resetState()}_resetState(){this._preview=void 0,this._triggerEntityId=void 0,this._actionEntityId=void 0,this._alias="",this._loading=!1,this._error=void 0,this._created=!1,this._createdAutomationId=void 0}async _fetchPreview(){if(this.hass&&this.recommendation){this._loading=!0,this._error=void 0;try{const{template:e,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:n}=this.recommendation,r=await at(this.hass,{template_id:e.id,source_node_id:t.node_id,source_endpoint_id:i.endpoint_id,target_node_id:o.node_id,target_endpoint_id:n.endpoint_id,source_device_types:i.device_types.map(e=>e.id),target_device_types:n.device_types.map(e=>e.id),preview_only:!0});if(this._preview=r,r.available_entities?.trigger?.length){const e=r.available_entities.trigger.find(e=>!e.disabled);this._triggerEntityId=e?.entity_id||r.available_entities.trigger[0].entity_id}if(r.available_entities?.action?.length){const e=r.available_entities.action.find(e=>!e.disabled);this._actionEntityId=e?.entity_id||r.available_entities.action[0].entity_id}}catch(e){this._error=e instanceof Error?e.message:"Failed to load preview"}finally{this._loading=!1}}}async _handleCreate(){if(this.hass&&this.recommendation){this._loading=!0,this._error=void 0;try{const{template:e,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:n}=this.recommendation,r=await at(this.hass,{template_id:e.id,source_node_id:t.node_id,source_endpoint_id:i.endpoint_id,target_node_id:o.node_id,target_endpoint_id:n.endpoint_id,source_device_types:i.device_types.map(e=>e.id),target_device_types:n.device_types.map(e=>e.id),trigger_entity_id:this._triggerEntityId,action_entity_id:this._actionEntityId,alias:this._alias||void 0,preview_only:!1});r.success?(this._created=!0,this._createdAutomationId=r.automation_id,this.dispatchEvent(new CustomEvent("created",{detail:{automation_id:r.automation_id},bubbles:!0,composed:!0}))):this._error=r.message||"Failed to create automation"}catch(e){this._error=e instanceof Error?e.message:"Failed to create automation"}finally{this._loading=!1}}}_handleClose(){this.dispatchEvent(new CustomEvent("close",{bubbles:!0,composed:!0}))}_handleOverlayClick(){this._loading||this._handleClose()}_handleDialogClick(e){e.stopPropagation()}_formatYaml(e){const t=(e,i)=>{const o="  ".repeat(i);return Array.isArray(e)?e.map(e=>{if("object"==typeof e&&null!==e){const i=Object.entries(e).map(([e,i],n)=>`${o}${0===n?"- ":"  "}${e}: ${t(i,0)}`).join("\n");return i}return`${o}- ${e}`}).join("\n"):"object"==typeof e&&null!==e?"\n"+Object.entries(e).map(([e,n])=>`${o}  ${e}: ${t(n,i+1)}`).join("\n"):"string"==typeof e&&e.includes("{{")?`"${e}"`:String(e)};return Object.entries(e).map(([e,i])=>`${e}: ${t(i,0)}`).join("\n")}render(){return this.open?V`
+    `],e([pe({attribute:!1})],Ot.prototype,"progress",void 0),e([pe({type:Boolean})],Ot.prototype,"open",void 0),Ot=e([de("matter-operation-progress-dialog")],Ot);let Wt=class extends se{constructor(){super(...arguments),this.open=!1,this._alias="",this._loading=!1,this._created=!1}connectedCallback(){super.connectedCallback()}updated(e){(e.has("open")||e.has("recommendation"))&&this.open&&this.recommendation&&this.hass&&this._fetchPreview(),e.has("open")&&!this.open&&this._resetState()}_resetState(){this._preview=void 0,this._triggerEntityId=void 0,this._actionEntityId=void 0,this._alias="",this._loading=!1,this._error=void 0,this._created=!1,this._createdAutomationId=void 0}async _fetchPreview(){if(this.hass&&this.recommendation){this._loading=!0,this._error=void 0;try{const{template:e,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:n}=this.recommendation,r=await dt(this.hass,{template_id:e.id,source_node_id:t.node_id,source_endpoint_id:i.endpoint_id,target_node_id:o.node_id,target_endpoint_id:n.endpoint_id,source_device_types:i.device_types.map(e=>e.id),target_device_types:n.device_types.map(e=>e.id),preview_only:!0});if(this._preview=r,r.available_entities?.trigger?.length){const e=r.available_entities.trigger.find(e=>!e.disabled);this._triggerEntityId=e?.entity_id||r.available_entities.trigger[0].entity_id}if(r.available_entities?.action?.length){const e=r.available_entities.action.find(e=>!e.disabled);this._actionEntityId=e?.entity_id||r.available_entities.action[0].entity_id}}catch(e){this._error=e instanceof Error?e.message:"Failed to load preview"}finally{this._loading=!1}}}async _handleCreate(){if(this.hass&&this.recommendation){this._loading=!0,this._error=void 0;try{const{template:e,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:n}=this.recommendation,r=await dt(this.hass,{template_id:e.id,source_node_id:t.node_id,source_endpoint_id:i.endpoint_id,target_node_id:o.node_id,target_endpoint_id:n.endpoint_id,source_device_types:i.device_types.map(e=>e.id),target_device_types:n.device_types.map(e=>e.id),trigger_entity_id:this._triggerEntityId,action_entity_id:this._actionEntityId,alias:this._alias||void 0,preview_only:!1});r.success?(this._created=!0,this._createdAutomationId=r.automation_id,this.dispatchEvent(new CustomEvent("created",{detail:{automation_id:r.automation_id},bubbles:!0,composed:!0}))):this._error=r.message||"Failed to create automation"}catch(e){this._error=e instanceof Error?e.message:"Failed to create automation"}finally{this._loading=!1}}}_handleClose(){this.dispatchEvent(new CustomEvent("close",{bubbles:!0,composed:!0}))}_handleOverlayClick(){this._loading||this._handleClose()}_handleDialogClick(e){e.stopPropagation()}_formatYaml(e){const t=(e,i)=>{const o="  ".repeat(i);return Array.isArray(e)?e.map(e=>{if("object"==typeof e&&null!==e){const i=Object.entries(e).map(([e,i],n)=>`${o}${0===n?"- ":"  "}${e}: ${t(i,0)}`).join("\n");return i}return`${o}- ${e}`}).join("\n"):"object"==typeof e&&null!==e?"\n"+Object.entries(e).map(([e,n])=>`${o}  ${e}: ${t(n,i+1)}`).join("\n"):"string"==typeof e&&e.includes("{{")?`"${e}"`:String(e)};return Object.entries(e).map(([e,i])=>`${e}: ${t(i,0)}`).join("\n")}render(){return this.open?j`
       <div class="dialog-overlay" @click=${this._handleOverlayClick}>
         <div class="dialog automation-dialog" @click=${this._handleDialogClick}>
           ${this._created?this._renderSuccess():this._renderForm()}
         </div>
       </div>
-    `:F}_renderSuccess(){return V`
+    `:U}_renderSuccess(){return j`
       <div class="success-message">
         <div class="success-icon">✓</div>
         <div class="success-title">Automation Created</div>
@@ -2922,7 +3227,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </a>
         </div>
       </div>
-    `}_renderForm(){const{recommendation:e}=this;if(!e)return F;const{template:t,sourceNode:i,targetNode:o}=e;return V`
+    `}_renderForm(){const{recommendation:e}=this;if(!e)return U;const{template:t,sourceNode:i,targetNode:o}=e;return j`
       <div class="dialog-header">
         <span class="header-icon">${t.icon}</span>
         <span>${t.title}</span>
@@ -2940,16 +3245,16 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         </div>
       </div>
 
-      ${this._error?V`<div class="error-message">${this._error}</div>`:F}
+      ${this._error?j`<div class="error-message">${this._error}</div>`:U}
 
-      ${this._loading&&!this._preview?V`
+      ${this._loading&&!this._preview?j`
             <div class="preview-section">
               <div class="loading-spinner"></div>
               Loading preview...
             </div>
-          `:F}
+          `:U}
 
-      ${this._preview?this._renderPreviewForm():F}
+      ${this._preview?this._renderPreviewForm():U}
 
       <div class="info-notice">
         <span class="info-notice-icon">ℹ️</span>
@@ -2974,11 +3279,11 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           @click=${this._handleCreate}
           ?disabled=${this._loading||!this._preview?.success}
         >
-          ${this._loading?V`<span class="loading-spinner"></span>Creating...`:"Create Automation"}
+          ${this._loading?j`<span class="loading-spinner"></span>Creating...`:"Create Automation"}
         </button>
       </div>
-    `}_renderPreviewForm(){const{_preview:e}=this;if(!e)return F;const t=e.available_entities?.trigger||[],i=e.available_entities?.action||[];return V`
-      ${t.length>1?V`
+    `}_renderPreviewForm(){const{_preview:e}=this;if(!e)return U;const t=e.available_entities?.trigger||[],i=e.available_entities?.action||[];return j`
+      ${t.length>1?j`
             <div class="section">
               <div class="section-label">Trigger Entity</div>
               <select
@@ -2986,7 +3291,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                 .value=${this._triggerEntityId||""}
                 @change=${e=>{this._triggerEntityId=e.target.value}}
               >
-                ${t.map(e=>V`
+                ${t.map(e=>j`
                     <option
                       value=${e.entity_id}
                       ?disabled=${e.disabled}
@@ -2997,9 +3302,9 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                   `)}
               </select>
             </div>
-          `:F}
+          `:U}
 
-      ${i.length>1?V`
+      ${i.length>1?j`
             <div class="section">
               <div class="section-label">Action Entity</div>
               <select
@@ -3007,7 +3312,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                 .value=${this._actionEntityId||""}
                 @change=${e=>{this._actionEntityId=e.target.value}}
               >
-                ${i.map(e=>V`
+                ${i.map(e=>j`
                     <option
                       value=${e.entity_id}
                       ?disabled=${e.disabled}
@@ -3018,7 +3323,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                   `)}
               </select>
             </div>
-          `:F}
+          `:U}
 
       <div class="section">
         <div class="section-label">Custom Name (optional)</div>
@@ -3031,7 +3336,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         />
       </div>
 
-      ${e.automation_config?V`
+      ${e.automation_config?j`
             <div class="section">
               <div class="section-label">Preview</div>
               <div class="preview-section">
@@ -3040,8 +3345,8 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                 </div>
               </div>
             </div>
-          `:F}
-    `}};Lt.styles=[vt,mt,zt,s`
+          `:U}
+    `}};Wt.styles=[mt,_t,At,s`
       :host {
         display: contents;
       }
@@ -3237,7 +3542,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         color: var(--secondary-text-color);
         font-size: 20px;
       }
-    `],e([pe({attribute:!1})],Lt.prototype,"hass",void 0),e([pe({type:Boolean})],Lt.prototype,"open",void 0),e([pe({attribute:!1})],Lt.prototype,"recommendation",void 0),e([ge()],Lt.prototype,"_preview",void 0),e([ge()],Lt.prototype,"_triggerEntityId",void 0),e([ge()],Lt.prototype,"_actionEntityId",void 0),e([ge()],Lt.prototype,"_alias",void 0),e([ge()],Lt.prototype,"_loading",void 0),e([ge()],Lt.prototype,"_error",void 0),e([ge()],Lt.prototype,"_created",void 0),e([ge()],Lt.prototype,"_createdAutomationId",void 0),Lt=e([de("matter-create-automation-dialog")],Lt);const Ot=["binding","acl","verify"];let Wt=class extends se{constructor(){super(...arguments),this.open=!1,this.wizardState=null}render(){return this.open&&this.wizardState?V`
+    `],e([pe({attribute:!1})],Wt.prototype,"hass",void 0),e([pe({type:Boolean})],Wt.prototype,"open",void 0),e([pe({attribute:!1})],Wt.prototype,"recommendation",void 0),e([ge()],Wt.prototype,"_preview",void 0),e([ge()],Wt.prototype,"_triggerEntityId",void 0),e([ge()],Wt.prototype,"_actionEntityId",void 0),e([ge()],Wt.prototype,"_alias",void 0),e([ge()],Wt.prototype,"_loading",void 0),e([ge()],Wt.prototype,"_error",void 0),e([ge()],Wt.prototype,"_created",void 0),e([ge()],Wt.prototype,"_createdAutomationId",void 0),Wt=e([de("matter-create-automation-dialog")],Wt);const jt=["binding","acl","verify"];let Vt=class extends se{constructor(){super(...arguments),this.open=!1,this.wizardState=null}render(){return this.open&&this.wizardState?j`
       <div class="dialog-overlay" @click=${this._handleOverlayClick}>
         <div class="dialog" @click=${this._handleDialogClick}>
           <div class="dialog-header">Create Binding</div>
@@ -3251,10 +3556,10 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           ${this._renderActions()}
         </div>
       </div>
-    `:F}_renderStepIndicator(){const e=this.wizardState,t=Ot.indexOf(e.currentStep);return V`
+    `:U}_renderStepIndicator(){const e=this.wizardState,t=jt.indexOf(e.currentStep);return j`
       <div class="wizard-steps">
-        ${Ot.map((e,i)=>{const o=this._isStepCompleted(e,i,t);return V`
-            ${i>0?V`<div class="wizard-connector ${i<=t?"completed":""}"></div>`:F}
+        ${jt.map((e,i)=>{const o=this._isStepCompleted(e,i,t);return j`
+            ${i>0?j`<div class="wizard-connector ${i<=t?"completed":""}"></div>`:U}
             <div class="wizard-step ${i===t?"active":""} ${o?"completed":""}">
               <div class="wizard-step-circle">
                 ${o?"✓":i+1}
@@ -3265,7 +3570,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
             </div>
           `})}
       </div>
-    `}_isStepCompleted(e,t,i){const o=this.wizardState;if(t<i)return!0;if(t===i)switch(e){case"binding":return!0===o.bindingResult?.success;case"acl":return!0===o.aclResult?.success;case"verify":return!0===o.verifyResult?.success}return!1}_getStepLabel(e){switch(e){case"binding":return"Create";case"acl":return"Permissions";case"verify":return"Verify"}}_renderStepContent(){switch(this.wizardState.currentStep){case"binding":return this._renderBindingStep();case"acl":return this._renderACLStep();case"verify":return this._renderVerifyStep()}}_renderBindingStep(){const e=this.wizardState,t=Je(e.clusterId);return V`
+    `}_isStepCompleted(e,t,i){const o=this.wizardState;if(t<i)return!0;if(t===i)switch(e){case"binding":return!0===o.bindingResult?.success;case"acl":return!0===o.aclResult?.success;case"verify":return!0===o.verifyResult?.success}return!1}_getStepLabel(e){switch(e){case"binding":return"Create";case"acl":return"Permissions";case"verify":return"Verify"}}_renderStepContent(){switch(this.wizardState.currentStep){case"binding":return this._renderBindingStep();case"acl":return this._renderACLStep();case"verify":return this._renderVerifyStep()}}_renderBindingStep(){const e=this.wizardState,t=Je(e.clusterId);return j`
       <div class="wizard-step-info">
         <div class="wizard-step-title">Step 1: Create Binding</div>
         <div class="wizard-step-description">
@@ -3279,7 +3584,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           <div class="binding-device-endpoint">Endpoint ${e.sourceEndpoint.endpoint_id}</div>
         </div>
         <div class="binding-arrow-container">
-          <span class="binding-cluster-label">${qe(e.clusterId)}</span>
+          <span class="binding-cluster-label">${He(e.clusterId)}</span>
           <span class="binding-arrow-large">→</span>
         </div>
         <div class="binding-device-card target">
@@ -3295,19 +3600,19 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         </div>
       </div>
 
-      ${e.bindingInProgress?V`
+      ${e.bindingInProgress?j`
             <div class="wizard-progress-note">
               Communicating with Matter device... This may take a few seconds.
             </div>
-          `:F}
+          `:U}
 
-      ${e.bindingResult?V`
+      ${e.bindingResult?j`
             <div class="wizard-result ${e.bindingResult.success?"success":"error"}">
               <span class="wizard-result-icon">${e.bindingResult.success?"✓":"✗"}</span>
               <span class="wizard-result-message">${e.bindingResult.message}</span>
             </div>
-          `:F}
-    `}_renderACLStep(){const e=this.wizardState,t=ht(e.clusterId);return V`
+          `:U}
+    `}_renderACLStep(){const e=this.wizardState,t=ht(e.clusterId);return j`
       <div class="wizard-step-info">
         <div class="wizard-step-title">Step 2: Set Permissions</div>
         <div class="wizard-step-description">
@@ -3317,7 +3622,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       </div>
 
       <div class="privilege-selector">
-        ${ut.map(i=>V`
+        ${vt.map(i=>j`
             <div
               class="privilege-option ${e.selectedPrivilege===i.value?"selected":""}"
               @click=${()=>this._handlePrivilegeChange(i.value)}
@@ -3326,7 +3631,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               <div class="privilege-content">
                 <div class="privilege-label">
                   ${i.label}
-                  ${i.value===t?V`<span class="privilege-badge recommended">Recommended</span>`:F}
+                  ${i.value===t?j`<span class="privilege-badge recommended">Recommended</span>`:U}
                 </div>
                 <div class="privilege-description">${i.description}</div>
               </div>
@@ -3334,37 +3639,37 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           `)}
       </div>
 
-      ${e.aclInProgress?V`
+      ${e.aclInProgress?j`
             <div class="acl-progress-container">
               <div class="acl-progress-message">
                 ${e.aclProgress?.message||`Setting permissions on ${e.targetNode.name}... This may take up to 30 seconds.`}
               </div>
               <div class="acl-progress-bar-container">
-                ${e.aclProgress&&e.aclProgress.max_attempts>0?V`
+                ${e.aclProgress&&e.aclProgress.max_attempts>0?j`
                       <div
                         class="acl-progress-bar"
                         style="width: ${Math.round(e.aclProgress.attempt/e.aclProgress.max_attempts*100)}%"
                       ></div>
-                    `:V`<div class="acl-progress-bar indeterminate"></div>`}
+                    `:j`<div class="acl-progress-bar indeterminate"></div>`}
               </div>
-              ${e.aclProgress?V`
+              ${e.aclProgress?j`
                     <div class="acl-progress-stats">
                       <span class="acl-progress-attempt">
                         Attempt ${e.aclProgress.attempt+1} of ${e.aclProgress.max_attempts}
                       </span>
-                      ${void 0!==e.aclProgress.remaining_seconds?V`<span>${e.aclProgress.remaining_seconds}s remaining</span>`:F}
+                      ${void 0!==e.aclProgress.remaining_seconds?j`<span>${e.aclProgress.remaining_seconds}s remaining</span>`:U}
                     </div>
-                  `:F}
+                  `:U}
             </div>
-          `:F}
+          `:U}
 
-      ${e.aclResult?V`
+      ${e.aclResult?j`
             <div class="wizard-result ${e.aclResult.success?"success":"error"}">
               <span class="wizard-result-icon">${e.aclResult.success?"✓":"✗"}</span>
               <span class="wizard-result-message">${e.aclResult.message}</span>
             </div>
-          `:F}
-    `}_renderVerifyStep(){const e=this.wizardState;return V`
+          `:U}
+    `}_renderVerifyStep(){const e=this.wizardState;return j`
       <div class="wizard-step-info">
         <div class="wizard-step-title">Step 3: Verify Binding</div>
         <div class="wizard-step-description">
@@ -3372,13 +3677,13 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         </div>
       </div>
 
-      ${e.verifyInProgress?V`
+      ${e.verifyInProgress?j`
             <div class="wizard-progress-note">
               Reading bindings from ${e.sourceNode.name}... This may take a few seconds.
             </div>
-          `:F}
+          `:U}
 
-      ${e.verifyResult?V`
+      ${e.verifyResult?j`
             <div class="wizard-result ${e.verifyResult.verified||e.verifyResult.success?"success":"error"}">
               <span class="wizard-result-icon">
                 ${e.verifyResult.verified?"✓":e.verifyResult.success?"⚠":"✗"}
@@ -3386,17 +3691,17 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               <span class="wizard-result-message">${e.verifyResult.message}</span>
             </div>
 
-            ${e.verifyResult.verified?V`
+            ${e.verifyResult.verified?j`
                   <div class="verify-success-message">
                     Binding created and verified successfully!
                   </div>
-                `:F}
-          `:V`
+                `:U}
+          `:j`
             <div class="verify-prompt">
               Click "Verify Binding" to confirm the binding was saved to the device.
             </div>
           `}
-    `}_renderActions(){const e=this.wizardState,t=e.bindingInProgress||e.aclInProgress||e.verifyInProgress,i="verify"===e.currentStep&&e.verifyResult?"Done":"Cancel";return V`
+    `}_renderActions(){const e=this.wizardState,t=e.bindingInProgress||e.aclInProgress||e.verifyInProgress,i="verify"===e.currentStep&&e.verifyResult?"Done":"Cancel";return j`
       <div class="wizard-actions">
         <button
           type="button"
@@ -3409,7 +3714,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
 
         ${this._renderStepActions(e,t)}
       </div>
-    `}_renderStepActions(e,t){switch(e.currentStep){case"binding":return V`
+    `}_renderStepActions(e,t){switch(e.currentStep){case"binding":return j`
           <button
             type="button"
             class="btn btn-primary ${e.bindingInProgress?"btn-loading":""}"
@@ -3418,8 +3723,8 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           >
             Create Binding
           </button>
-        `;case"acl":return V`
-          ${e.bindingResult?.success?V`
+        `;case"acl":return j`
+          ${e.bindingResult?.success?j`
                 <button
                   type="button"
                   class="btn btn-secondary"
@@ -3428,7 +3733,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                 >
                   Skip
                 </button>
-              `:F}
+              `:U}
           <button
             type="button"
             class="btn btn-primary ${e.aclInProgress?"btn-loading":""}"
@@ -3437,7 +3742,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           >
             Set Permissions
           </button>
-        `;case"verify":return e.verifyResult?F:V`
+        `;case"verify":return e.verifyResult?U:j`
             <button
               type="button"
               class="btn btn-primary ${e.verifyInProgress?"btn-loading":""}"
@@ -3446,7 +3751,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
             >
               Verify Binding
             </button>
-          `}}_handleOverlayClick(){this._handleClose()}_handleDialogClick(e){e.stopPropagation()}_handleClose(){this.dispatchEvent(new CustomEvent("close",{bubbles:!0,composed:!0}))}_handleExecuteBinding(){this.dispatchEvent(new CustomEvent("execute-binding",{bubbles:!0,composed:!0}))}_handleExecuteACL(){this.dispatchEvent(new CustomEvent("execute-acl",{bubbles:!0,composed:!0}))}_handleExecuteVerify(){this.dispatchEvent(new CustomEvent("execute-verify",{bubbles:!0,composed:!0}))}_handlePrivilegeChange(e){this.dispatchEvent(new CustomEvent("privilege-change",{detail:{privilege:e},bubbles:!0,composed:!0}))}_handleStepChange(e){this.dispatchEvent(new CustomEvent("step-change",{detail:{step:e},bubbles:!0,composed:!0}))}};Wt.styles=[vt,mt,zt,Pt,Tt,s`
+          `}}_handleOverlayClick(){this._handleClose()}_handleDialogClick(e){e.stopPropagation()}_handleClose(){this.dispatchEvent(new CustomEvent("close",{bubbles:!0,composed:!0}))}_handleExecuteBinding(){this.dispatchEvent(new CustomEvent("execute-binding",{bubbles:!0,composed:!0}))}_handleExecuteACL(){this.dispatchEvent(new CustomEvent("execute-acl",{bubbles:!0,composed:!0}))}_handleExecuteVerify(){this.dispatchEvent(new CustomEvent("execute-verify",{bubbles:!0,composed:!0}))}_handlePrivilegeChange(e){this.dispatchEvent(new CustomEvent("privilege-change",{detail:{privilege:e},bubbles:!0,composed:!0}))}_handleStepChange(e){this.dispatchEvent(new CustomEvent("step-change",{detail:{step:e},bubbles:!0,composed:!0}))}};Vt.styles=[mt,_t,At,It,Tt,s`
       :host {
         display: contents;
       }
@@ -3658,30 +3963,30 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       .acl-progress-attempt {
         font-weight: 500;
       }
-    `],e([pe({type:Boolean})],Wt.prototype,"open",void 0),e([pe({attribute:!1})],Wt.prototype,"wizardState",void 0),Wt=e([de("matter-binding-wizard")],Wt);const jt=[29,30,31,40,42,48,49,50,51,52,53,56,60,62,63,70];let Vt=class extends se{constructor(){super(...arguments),this.endpoints=[],this.selectedEndpointId=null}render(){return V`
+    `],e([pe({type:Boolean})],Vt.prototype,"open",void 0),e([pe({attribute:!1})],Vt.prototype,"wizardState",void 0),Vt=e([de("matter-binding-wizard")],Vt);const Ut=[29,30,31,40,42,48,49,50,51,52,53,56,60,62,63,70];let Ft=class extends se{constructor(){super(...arguments),this.endpoints=[],this.selectedEndpointId=null}render(){return j`
       <div class="section-header">Endpoints</div>
-      ${this.endpoints.length>0?V`
+      ${this.endpoints.length>0?j`
             <div class="endpoint-list">
               ${this.endpoints.map(e=>this._renderEndpointItem(e))}
             </div>
-          `:V`<div class="empty-state">No endpoints found</div>`}
-    `}_renderEndpointItem(e){const t=this.selectedEndpointId===e.endpoint_id,i=e.device_types.map(e=>Ge(e.id)).filter(t=>0!==e.endpoint_id||!t.includes("Root")),o=this._processClusterData(e.server_clusters||[]),n=this._processClusterData(e.client_clusters||[]),r=o.some(e=>e.isProprietary)||n.some(e=>e.isProprietary),s=["endpoint-item",t?"selected":"",e.has_binding_cluster?"":"no-binding"].filter(Boolean).join(" ");return V`
+          `:j`<div class="empty-state">No endpoints found</div>`}
+    `}_renderEndpointItem(e){const t=this.selectedEndpointId===e.endpoint_id,i=e.device_types.map(e=>qe(e.id)).filter(t=>0!==e.endpoint_id||!t.includes("Root")),o=this._processClusterData(e.server_clusters||[]),n=this._processClusterData(e.client_clusters||[]),r=o.some(e=>e.isProprietary)||n.some(e=>e.isProprietary),s=["endpoint-item",t?"selected":"",e.has_binding_cluster?"":"no-binding"].filter(Boolean).join(" ");return j`
       <div class=${s} @click=${()=>this._handleEndpointClick(e)}>
         <div class="endpoint-header">
           <span class="endpoint-id">Endpoint ${e.endpoint_id}</span>
-          ${e.has_binding_cluster?V`<span class="endpoint-badge binding">Binding</span>`:F}
-          ${r?V`<span class="endpoint-badge proprietary">Proprietary</span>`:F}
+          ${e.has_binding_cluster?j`<span class="endpoint-badge binding">Binding</span>`:U}
+          ${r?j`<span class="endpoint-badge proprietary">Proprietary</span>`:U}
         </div>
-        ${i.length>0?V`<div class="endpoint-device-types">${i.join(", ")}</div>`:F}
+        ${i.length>0?j`<div class="endpoint-device-types">${i.join(", ")}</div>`:U}
         ${this._renderClusters(o,n)}
       </div>
-    `}_processClusterData(e){return e.filter(e=>!jt.includes(e)).map(e=>({id:e,name:qe(e),isProprietary:$e(e)}))}_renderClusters(e,t){return 0===e.length&&0===t.length?F:V`
+    `}_processClusterData(e){return e.filter(e=>!Ut.includes(e)).map(e=>({id:e,name:He(e),isProprietary:$e(e)}))}_renderClusters(e,t){return 0===e.length&&0===t.length?U:j`
       <div class="endpoint-clusters">
-        ${e.length>0?V`
+        ${e.length>0?j`
               <div class="cluster-section">
                 <span class="cluster-label">Server:</span>
                 <span class="cluster-list">
-                  ${e.map(e=>V`
+                  ${e.map(e=>j`
                       <span
                         class="cluster-tag ${e.isProprietary?"proprietary":""}"
                         title="${e.name} (0x${e.id.toString(16).toUpperCase()})"
@@ -3691,12 +3996,12 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                     `)}
                 </span>
               </div>
-            `:F}
-        ${t.length>0?V`
+            `:U}
+        ${t.length>0?j`
               <div class="cluster-section">
                 <span class="cluster-label">Client:</span>
                 <span class="cluster-list client">
-                  ${t.map(e=>V`
+                  ${t.map(e=>j`
                       <span
                         class="cluster-tag ${e.isProprietary?"proprietary":""}"
                         title="${e.name} (0x${e.id.toString(16).toUpperCase()})"
@@ -3706,9 +4011,9 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                     `)}
                 </span>
               </div>
-            `:F}
+            `:U}
       </div>
-    `}_handleEndpointClick(e){this.dispatchEvent(new CustomEvent("endpoint-selected",{detail:{endpoint:e},bubbles:!0,composed:!0}))}};Vt.styles=[vt,mt,_t,s`
+    `}_handleEndpointClick(e){this.dispatchEvent(new CustomEvent("endpoint-selected",{detail:{endpoint:e},bubbles:!0,composed:!0}))}};Ft.styles=[mt,_t,ft,s`
       :host {
         display: block;
       }
@@ -3840,7 +4145,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         color: var(--secondary-text-color);
         font-size: 14px;
       }
-    `],e([pe({attribute:!1})],Vt.prototype,"endpoints",void 0),e([pe({type:Number})],Vt.prototype,"selectedEndpointId",void 0),Vt=e([de("matter-endpoint-selector")],Vt);let Ut=class extends se{constructor(){super(...arguments),this.recommendations=[],this.loading=!1,this.actionInProgress=!1,this.title="Recommended Bindings",this.hideCard=!1,this.emptyMessage="No binding recommendations. All compatible endpoints are already bound."}render(){return this.hideCard?this._renderContent():V`
+    `],e([pe({attribute:!1})],Ft.prototype,"endpoints",void 0),e([pe({type:Number})],Ft.prototype,"selectedEndpointId",void 0),Ft=e([de("matter-endpoint-selector")],Ft);let Ht=class extends se{constructor(){super(...arguments),this.recommendations=[],this.loading=!1,this.actionInProgress=!1,this.title="Recommended Bindings",this.hideCard=!1,this.emptyMessage="No binding recommendations. All compatible endpoints are already bound."}render(){return this.hideCard?this._renderContent():j`
       <div class="card overview-card">
         <div class="card-header">
           ${this.title}
@@ -3848,33 +4153,33 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         </div>
         ${this._renderContent()}
       </div>
-    `}_renderContent(){return this.loading?V`<div class="loading">Loading recommendations...</div>`:0===this.recommendations.length?V`
+    `}_renderContent(){return this.loading?j`<div class="loading">Loading recommendations...</div>`:0===this.recommendations.length?j`
         <div class="empty-state">
           ${this.emptyMessage}
         </div>
-      `:V`
+      `:j`
       <div class="recommendation-list">
         ${this.recommendations.map(e=>this._renderRecommendationRow(e))}
       </div>
-    `}_renderRecommendationRow(e){const{sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:n,compatibleClusters:r}=e,s=r.map(e=>Je(e).action.replace(/^(control |read |receive |trigger |manage )/,"")),a=[...new Set(s)],d=a.length>2?`${a.slice(0,2).join(", ")}...`:a.join(", "),c=1===r.length?Je(r[0]).action:`access ${d} from`;return V`
+    `}_renderRecommendationRow(e){const{sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:n,compatibleClusters:r}=e,s=r.map(e=>Je(e).action.replace(/^(control |read |receive |trigger |manage )/,"")),a=[...new Set(s)],d=a.length>2?`${a.slice(0,2).join(", ")}...`:a.join(", "),l=1===r.length?Je(r[0]).action:`access ${d} from`;return j`
       <div class="recommendation-row">
         <div class="binding-description">
           <div class="binding-sentence">
             <strong
               class="${t.ha_device_id?"device-link":""}"
-              @click=${t.ha_device_id?()=>this._handleNavigateDevice(t.ha_device_id):F}
+              @click=${t.ha_device_id?()=>this._handleNavigateDevice(t.ha_device_id):U}
             >
               ${t.name}
             </strong>
-            <span class="binding-action">can ${c}</span>
+            <span class="binding-action">can ${l}</span>
             <strong
               class="${o.ha_device_id?"device-link":""}"
-              @click=${o.ha_device_id?()=>this._handleNavigateDevice(o.ha_device_id):F}
+              @click=${o.ha_device_id?()=>this._handleNavigateDevice(o.ha_device_id):U}
             >
               ${o.name}
             </strong>
             <span class="cluster-badges">
-              ${r.map(e=>{const t=qe(e),i=`${t}: ${Je(e).dataType}`;return V`
+              ${r.map(e=>{const t=He(e),i=`${t}: ${Je(e).dataType}`;return j`
                   <span class="cluster-badge" title="${i}">${t}</span>
                 `})}
             </span>
@@ -3882,7 +4187,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           <div class="binding-meta">
             #${t.node_id} EP ${i.endpoint_id} →
             #${o.node_id} EP ${n.endpoint_id}
-            ${t.area_name?V` · ${t.area_name}`:F}
+            ${t.area_name?j` · ${t.area_name}`:U}
           </div>
         </div>
         <button
@@ -3893,7 +4198,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           Create
         </button>
       </div>
-    `}_handleCreateBinding(e){this.dispatchEvent(new CustomEvent("create-binding",{detail:{recommendation:e},bubbles:!0,composed:!0}))}_handleNavigateDevice(e){e&&this.dispatchEvent(new CustomEvent("navigate-device",{detail:{deviceId:e},bubbles:!0,composed:!0}))}};Ut.styles=[vt,mt,_t,yt,wt,s`
+    `}_handleCreateBinding(e){this.dispatchEvent(new CustomEvent("create-binding",{detail:{recommendation:e},bubbles:!0,composed:!0}))}_handleNavigateDevice(e){e&&this.dispatchEvent(new CustomEvent("navigate-device",{detail:{deviceId:e},bubbles:!0,composed:!0}))}};Ht.styles=[mt,_t,ft,xt,kt,s`
       :host {
         display: block;
       }
@@ -3990,28 +4295,48 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         font-weight: 500;
         margin-left: 8px;
       }
-    `],e([pe({attribute:!1})],Ut.prototype,"recommendations",void 0),e([pe({type:Boolean})],Ut.prototype,"loading",void 0),e([pe({type:Boolean})],Ut.prototype,"actionInProgress",void 0),e([pe({type:String})],Ut.prototype,"title",void 0),e([pe({type:Boolean})],Ut.prototype,"hideCard",void 0),e([pe({type:String})],Ut.prototype,"emptyMessage",void 0),Ut=e([de("matter-recommendation-list")],Ut);let Ft=class extends se{constructor(){super(...arguments),this.groups=[],this.loading=!1}render(){return V`
+    `],e([pe({attribute:!1})],Ht.prototype,"recommendations",void 0),e([pe({type:Boolean})],Ht.prototype,"loading",void 0),e([pe({type:Boolean})],Ht.prototype,"actionInProgress",void 0),e([pe({type:String})],Ht.prototype,"title",void 0),e([pe({type:Boolean})],Ht.prototype,"hideCard",void 0),e([pe({type:String})],Ht.prototype,"emptyMessage",void 0),Ht=e([de("matter-recommendation-list")],Ht);let qt=class extends se{constructor(){super(...arguments),this.groups=[],this.loading=!1}render(){return j`
       <div class="card">
-        <div class="card-header">Matter Groups</div>
-        ${this.loading?V`<div class="loading">Loading...</div>`:this.groups.length>0?this._renderGroupList():V`
+        <div class="card-header">
+          <span>Matter Groups</span>
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click=${this._handleCreateClick}
+          >
+            Create Group
+          </button>
+        </div>
+        ${this.loading?j`<div class="loading">Loading...</div>`:this.groups.length>0?this._renderGroupList():j`
                 <div class="empty-state">
-                  No Matter groups configured. Group management is coming soon.
+                  No Matter groups configured. Create one to get started.
                 </div>
               `}
       </div>
-    `}_renderGroupList(){return V`
+    `}_renderGroupList(){return j`
       <div class="binding-list">
         ${this.groups.map(e=>this._renderGroup(e))}
       </div>
-    `}_renderGroup(e){return V`
+    `}_renderGroup(e){return j`
       <div class="group-card" @click=${()=>this._handleGroupClick(e)}>
-        <div class="group-name">${e.name}</div>
-        <div class="group-meta">
-          Group ID: ${e.group_id} | ${e.members.length} member(s)
+        <div class="group-card-header">
+          <div class="group-info">
+            <div class="group-name">${e.name}</div>
+            <div class="group-meta">
+              Group ID: ${e.group_id} | ${e.members.length} member(s)
+            </div>
+          </div>
+          <button
+            type="button"
+            class="btn btn-secondary btn-delete-group"
+            @click=${t=>this._handleDeleteClick(t,e)}
+          >
+            Delete
+          </button>
         </div>
-        ${e.members.length>0?V`
+        ${e.members.length>0?j`
               <div class="member-list">
-                ${e.members.map(e=>V`
+                ${e.members.map(e=>j`
                     <span class="member-chip">
                       Node ${e.node_id} EP ${e.endpoint_id}
                     </span>
@@ -4019,9 +4344,31 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               </div>
             `:null}
       </div>
-    `}_handleGroupClick(e){this.dispatchEvent(new CustomEvent("group-click",{detail:{group:e},bubbles:!0,composed:!0}))}};Ft.styles=[mt,yt,s`
+    `}_handleGroupClick(e){this.dispatchEvent(new CustomEvent("group-click",{detail:{group:e},bubbles:!0,composed:!0}))}_handleCreateClick(){this.dispatchEvent(new CustomEvent("create-group-click",{bubbles:!0,composed:!0}))}_handleDeleteClick(e,t){e.stopPropagation(),this.dispatchEvent(new CustomEvent("delete-group",{detail:{group:t},bubbles:!0,composed:!0}))}};qt.styles=[_t,mt,xt,s`
       :host {
         display: block;
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .group-card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .group-card-header .group-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .btn-delete-group {
+        flex-shrink: 0;
       }
 
       .binding-list {
@@ -4069,7 +4416,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         border-radius: 12px;
         font-size: 11px;
       }
-    `],e([pe({attribute:!1})],Ft.prototype,"groups",void 0),e([pe({type:Boolean})],Ft.prototype,"loading",void 0),Ft=e([de("matter-groups-tab")],Ft);const Ht=[s`
+    `],e([pe({attribute:!1})],qt.prototype,"groups",void 0),e([pe({type:Boolean})],qt.prototype,"loading",void 0),qt=e([de("matter-groups-tab")],qt);const Jt=[s`
   :host {
     display: block;
     padding: 16px;
@@ -4192,7 +4539,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     opacity: 0.8;
     text-decoration: underline;
   }
-`],qt=[s`
+`],Kt=[s`
   .device-details {
     display: flex;
     flex-direction: column;
@@ -4618,7 +4965,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
   .registry-link:hover {
     text-decoration: underline;
   }
-`],Gt=[s`
+`],Yt=[s`
   .binding-devices {
     display: flex;
     align-items: center;
@@ -4840,47 +5187,47 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     font-style: italic;
     color: var(--secondary-text-color);
   }
-`];let Jt=class extends se{constructor(){super(...arguments),this.narrow=!1,this._nodes=[],this._selectedSourceNode=null,this._selectedSourceEndpoint=null,this._bindings=[],this._groups=[],this._loading=!1,this._error=null,this._activeTab="overview",this._showCreateDialog=!1,this._allBindings=[],this._recommendations=[],this._overviewLoading=!1,this._surveySubmitting=!1,this._surveyResult=null,this._selectedTargetNodeId=null,this._selectedTargetEndpointId=null,this._filterSameAreaOnly=!0,this._actionInProgress=null,this._pendingBindingRecommendation=null,this._selectedClusterForBinding=null,this._pendingManualBinding=null,this._pendingDeleteBinding=null,this._automationRecommendations=[],this._eveSchedules=new Map,this._eveScheduleLoading=new Set,this._verificationInProgress=!1,this._lastVerificationResult=null,this._showVerificationModal=!1,this._verificationModalResult=null,this._aclLoading=!1,this._aclEntries=null,this._targetACLCache=new Map,this._aclLoadingNodes=new Set,this._bindingWizard=null,this._aclRepairInProgress=new Map,this._bulkRepairInProgress=!1,this._bulkRepairResult=null,this._showBulkRepairModal=!1,this._operationProgress=null,this._showAutomationDialog=!1,this._pendingAutomationRecommendation=null}_updateStepStatus(e,t,i){if(!this._operationProgress)return;const o=[...this._operationProgress.steps];o[e]={...o[e],status:t,message:i},this._operationProgress={...this._operationProgress,steps:o,currentStepIndex:e}}_closeOperationProgress(){this._operationProgress=null,this._loadOverviewData()}_extractErrorMessage(e){if("string"==typeof e)return e;if(e&&"object"==typeof e){const t=e;return"string"==typeof t.message?t.message:"string"==typeof t.error?t.error:"string"==typeof t.text?t.text:JSON.stringify(e)}return String(e)}_cancelOperation(){if(!this._operationProgress)return;const e=this._operationProgress.steps.map(e=>"pending"===e.status?{...e,status:"skipped"}:e);this._operationProgress={...this._operationProgress,steps:e,completed:!0,error:"Operation cancelled by user"}}firstUpdated(){this._loadNodes().then(()=>{"overview"===this._activeTab&&this._loadOverviewData()})}async _loadNodes(){this._loading=!0,this._error=null;try{const e=await async function(e){return e.callWS({type:`${tt}/list_nodes`})}(this.hass);this._nodes=e.nodes}catch(e){this._error=`Failed to load nodes: ${this._extractErrorMessage(e)}`}finally{this._loading=!1}}async _loadBindings(){if(this._selectedSourceNode&&this._selectedSourceEndpoint){this._loading=!0;try{const e=await it(this.hass,this._selectedSourceNode.node_id,this._selectedSourceEndpoint.endpoint_id);this._bindings=e.bindings;const t=new Set(e.bindings.filter(e=>null!==e.target_node_id).map(e=>e.target_node_id));Promise.all(Array.from(t).map(e=>this._loadACLForNode(e))).catch(e=>console.error("Failed to load some target ACLs:",e))}catch(e){this._error=`Failed to load bindings: ${this._extractErrorMessage(e)}`}finally{this._loading=!1}}}async _loadGroups(){this._loading=!0;try{const e=await async function(e){return e.callWS({type:`${tt}/list_groups`})}(this.hass);this._groups=e.groups}catch(e){this._error=`Failed to load groups: ${this._extractErrorMessage(e)}`}finally{this._loading=!1}}_isEveDevice(e){return e.endpoints.some(e=>e.server_clusters.includes(Ye))}async _loadEveSchedule(e){if(this._eveSchedules.has(e.node_id)||this._eveScheduleLoading.has(e.node_id))return;const t=e.endpoints.find(e=>e.server_clusters.includes(Ye)&&e.endpoint_id>0);if(t){this._eveScheduleLoading=new Set([...this._eveScheduleLoading,e.node_id]);try{const i=await async function(e,t,i=1){return e.callWS({type:`${tt}/get_eve_schedule`,node_id:t,endpoint_id:i})}(this.hass,e.node_id,t.endpoint_id);i.schedule&&(this._eveSchedules=new Map(this._eveSchedules).set(e.node_id,i.schedule))}catch(t){console.error(`Failed to load Eve schedule for node ${e.node_id}:`,t)}finally{const t=new Set(this._eveScheduleLoading);t.delete(e.node_id),this._eveScheduleLoading=t}}}_renderEveSchedule(e){if(!this._isEveDevice(e))return F;if(this._eveScheduleLoading.has(e.node_id))return V`
+`];let Xt=class extends se{constructor(){super(...arguments),this.narrow=!1,this._nodes=[],this._selectedSourceNode=null,this._selectedSourceEndpoint=null,this._bindings=[],this._groups=[],this._loading=!1,this._error=null,this._activeTab="overview",this._showCreateDialog=!1,this._showCreateGroupDialog=!1,this._manageGroup=null,this._pendingDeleteGroup=null,this._allBindings=[],this._recommendations=[],this._overviewLoading=!1,this._surveySubmitting=!1,this._surveyResult=null,this._selectedTargetNodeId=null,this._selectedTargetEndpointId=null,this._filterSameAreaOnly=!0,this._actionInProgress=null,this._pendingBindingRecommendation=null,this._selectedClusterForBinding=null,this._pendingManualBinding=null,this._pendingDeleteBinding=null,this._automationRecommendations=[],this._eveSchedules=new Map,this._eveScheduleLoading=new Set,this._verificationInProgress=!1,this._lastVerificationResult=null,this._showVerificationModal=!1,this._verificationModalResult=null,this._aclLoading=!1,this._aclEntries=null,this._targetACLCache=new Map,this._aclLoadingNodes=new Set,this._bindingWizard=null,this._aclRepairInProgress=new Map,this._bulkRepairInProgress=!1,this._bulkRepairResult=null,this._showBulkRepairModal=!1,this._operationProgress=null,this._showAutomationDialog=!1,this._pendingAutomationRecommendation=null}_updateStepStatus(e,t,i){if(!this._operationProgress)return;const o=[...this._operationProgress.steps];o[e]={...o[e],status:t,message:i},this._operationProgress={...this._operationProgress,steps:o,currentStepIndex:e}}_closeOperationProgress(){this._operationProgress=null,this._loadOverviewData()}_extractErrorMessage(e){if("string"==typeof e)return e;if(e&&"object"==typeof e){const t=e;return"string"==typeof t.message?t.message:"string"==typeof t.error?t.error:"string"==typeof t.text?t.text:JSON.stringify(e)}return String(e)}_cancelOperation(){if(!this._operationProgress)return;const e=this._operationProgress.steps.map(e=>"pending"===e.status?{...e,status:"skipped"}:e);this._operationProgress={...this._operationProgress,steps:e,completed:!0,error:"Operation cancelled by user"}}firstUpdated(){this._loadNodes().then(()=>{"overview"===this._activeTab&&this._loadOverviewData()})}async _loadNodes(){this._loading=!0,this._error=null;try{const e=await async function(e){return e.callWS({type:`${tt}/list_nodes`})}(this.hass);this._nodes=e.nodes}catch(e){this._error=`Failed to load nodes: ${this._extractErrorMessage(e)}`}finally{this._loading=!1}}async _loadBindings(){if(this._selectedSourceNode&&this._selectedSourceEndpoint){this._loading=!0;try{const e=await it(this.hass,this._selectedSourceNode.node_id,this._selectedSourceEndpoint.endpoint_id);this._bindings=e.bindings;const t=new Set(e.bindings.filter(e=>null!==e.target_node_id).map(e=>e.target_node_id));Promise.all(Array.from(t).map(e=>this._loadACLForNode(e))).catch(e=>console.error("Failed to load some target ACLs:",e))}catch(e){this._error=`Failed to load bindings: ${this._extractErrorMessage(e)}`}finally{this._loading=!1}}}async _loadGroups(){this._loading=!0;try{const e=await async function(e){return e.callWS({type:`${tt}/list_groups`})}(this.hass);this._groups=e.groups}catch(e){this._error=`Failed to load groups: ${this._extractErrorMessage(e)}`}finally{this._loading=!1}}_isEveDevice(e){return e.endpoints.some(e=>e.server_clusters.includes(Ye))}async _loadEveSchedule(e){if(this._eveSchedules.has(e.node_id)||this._eveScheduleLoading.has(e.node_id))return;const t=e.endpoints.find(e=>e.server_clusters.includes(Ye)&&e.endpoint_id>0);if(t){this._eveScheduleLoading=new Set([...this._eveScheduleLoading,e.node_id]);try{const i=await async function(e,t,i=1){return e.callWS({type:`${tt}/get_eve_schedule`,node_id:t,endpoint_id:i})}(this.hass,e.node_id,t.endpoint_id);i.schedule&&(this._eveSchedules=new Map(this._eveSchedules).set(e.node_id,i.schedule))}catch(t){console.error(`Failed to load Eve schedule for node ${e.node_id}:`,t)}finally{const t=new Set(this._eveScheduleLoading);t.delete(e.node_id),this._eveScheduleLoading=t}}}_renderEveSchedule(e){if(!this._isEveDevice(e))return U;if(this._eveScheduleLoading.has(e.node_id))return j`
         <div class="device-section">
           <div class="section-header">Heating Schedule</div>
           <div class="eve-schedule-loading">Loading Eve schedule...</div>
         </div>
-      `;const t=this._eveSchedules.get(e.node_id);if(!t)return F;const i={'"':"Comfort",$:"Eco","%":"Boost","&":"Off","*":"Custom"};return V`
+      `;const t=this._eveSchedules.get(e.node_id);if(!t)return U;const i={'"':"Comfort",$:"Eco","%":"Boost","&":"Off","*":"Custom"};return j`
       <div class="device-section">
         <div class="section-header">
           Heating Schedule
-          ${t.name?V`<span class="section-context">${t.name}</span>`:F}
+          ${t.name?j`<span class="section-context">${t.name}</span>`:U}
         </div>
 
-        ${t.day_assignments.length>0?V`
+        ${t.day_assignments.length>0?j`
               <div class="eve-schedule-grid">
-                ${t.day_assignments.map(e=>V`
+                ${t.day_assignments.map(e=>j`
                     <div class="eve-day-slot">
                       <div class="eve-day-name">${e.day.slice(0,3)}</div>
                       <div class="eve-day-profile">${i[e.profile_id]||e.profile_id}</div>
                     </div>
                   `)}
               </div>
-            `:F}
+            `:U}
 
-        ${t.time_slots.length>0?V`
+        ${t.time_slots.length>0?j`
               <div class="eve-time-slots">
-                ${t.time_slots.map(e=>V`
+                ${t.time_slots.map(e=>j`
                     <div class="eve-time-slot">
                       <span class="eve-time">${e.time}</span>
                       <span class="eve-profile">${i[e.profile_id]||e.profile_id}</span>
                     </div>
                   `)}
               </div>
-            `:F}
+            `:U}
       </div>
-    `}_renderThermostatSchedule(e){if(this._isEveDevice(e))return F;const t=e.endpoints.find(e=>{return(t=e).server_clusters.includes(Be)&&t.device_types.some(e=>769===e.id);var t});return t?V`
+    `}_renderThermostatSchedule(e){if(this._isEveDevice(e))return U;const t=e.endpoints.find(e=>{return(t=e).server_clusters.includes(Be)&&t.device_types.some(e=>769===e.id);var t});return t?j`
       <thermostat-schedule-editor
         .hass=${this.hass}
         .node=${e}
         .endpoint=${t}
       ></thermostat-schedule-editor>
-    `:F}async _loadOverviewData(){this._overviewLoading=!0,this._error=null;try{const e=[];for(const t of this._nodes)for(const i of t.endpoints)if(i.has_binding_cluster)try{const o=await it(this.hass,t.node_id,i.endpoint_id);for(const n of o.bindings){const o=n.target_node_id&&this._nodes.find(e=>e.node_id===n.target_node_id)||null,r=o&&n.target_endpoint_id&&o.endpoints.find(e=>e.endpoint_id===n.target_endpoint_id)||null;e.push({binding:n,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:r})}}catch{}this._allBindings=e;const t=new Set(e.filter(e=>null!==e.binding.target_node_id).map(e=>e.binding.target_node_id));Promise.all(Array.from(t).map(e=>this._loadACLForNode(e))).catch(e=>console.error("Failed to load some target ACLs:",e)),this._recommendations=this._computeRecommendations(),this._automationRecommendations=this._computeAutomationRecommendations()}catch(e){this._error=`Failed to load overview data: ${this._extractErrorMessage(e)}`}finally{this._overviewLoading=!1}}_computeAutomationRecommendations(){const e=[],t=new Set;for(const i of this._nodes)for(const o of i.endpoints){const n=o.device_types.map(e=>e.id);for(const r of this._nodes)if(!i.area_name||!r.area_name||i.area_name===r.area_name)for(const s of r.endpoints){if(i.node_id===r.node_id)continue;const a=s.device_types.map(e=>e.id);for(const d of Ke){const c=d.sourceDeviceTypes.some(e=>n.includes(e)),l=d.targetDeviceTypes.some(e=>a.includes(e));if(c&&l){const n=`${d.id}-${i.node_id}-${r.node_id}`;if(t.has(n))continue;t.add(n),e.push({template:d,sourceNode:i,sourceEndpoint:o,targetNode:r,targetEndpoint:s})}}}}return e}_computeRecommendations(){return function(e,t){const i=[];for(const o of e)for(const n of o.endpoints){const r=n.client_clusters||[];if(0!==r.length&&n.has_binding_cluster)for(const s of e)for(const e of s.endpoints){if(o.node_id===s.node_id&&n.endpoint_id===e.endpoint_id)continue;const a=e.server_clusters||[],d=r.filter(e=>a.includes(e));if(0===d.length)continue;const c=d.filter(i=>!t.some(t=>t.binding.node_id===o.node_id&&t.binding.endpoint_id===n.endpoint_id&&t.binding.target_node_id===s.node_id&&t.binding.target_endpoint_id===e.endpoint_id&&t.binding.cluster_id===i));0!==c.length&&i.push({sourceNode:o,sourceEndpoint:n,targetNode:s,targetEndpoint:e,compatibleClusters:c})}}return i.sort((e,t)=>t.compatibleClusters.length-e.compatibleClusters.length),i}(this._nodes,this._allBindings)}_selectNode(e){this._lastVerificationResult=null,this._aclEntries=null,this._selectedSourceNode?.node_id===e.node_id?(this._selectedSourceNode=null,this._selectedSourceEndpoint=null,this._bindings=[]):(this._selectedSourceNode=e,this._selectedSourceEndpoint=null,this._bindings=[],this._isEveDevice(e)&&this._loadEveSchedule(e))}_selectEndpoint(e,t){e.stopPropagation(),t.has_binding_cluster&&(this._lastVerificationResult=null,this._selectedSourceEndpoint=t,this._loadBindings())}async _deleteBinding(e){if(!confirm("Are you sure you want to delete this binding?"))return;const t=`delete-tab-${e.node_id}-${e.endpoint_id}-${e.target_node_id}-${e.target_endpoint_id}`;this._actionInProgress=t;try{const t=await ot(this.hass,e.node_id,e.endpoint_id,e.target_node_id??void 0,e.target_endpoint_id??void 0,e.target_group_id??void 0);this._lastVerificationResult={success:t.success,verified:t.verified,message:t.message,error_type:t.error_type},await this._loadBindings()}catch(e){this._error=`Failed to delete binding: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}async _verifyBindings(){if(this._selectedSourceNode&&this._selectedSourceEndpoint){this._verificationInProgress=!0,this._lastVerificationResult=null;try{const e=await nt(this.hass,this._selectedSourceNode.node_id,this._selectedSourceEndpoint.endpoint_id);this._lastVerificationResult={success:e.success,verified:e.verified,message:e.message,error_type:e.error_type},await this._loadBindings()}catch(e){this._lastVerificationResult={success:!1,verified:!1,message:`Failed to verify bindings: ${this._extractErrorMessage(e)}`,error_type:"unknown_error"}}finally{this._verificationInProgress=!1}}}async _verifyBindingWithModal(e){const{binding:t}=e;this._verificationInProgress=!0,this._showVerificationModal=!0,this._verificationModalResult=null;try{const i=await nt(this.hass,t.node_id,t.endpoint_id);this._verificationModalResult={success:i.success,verified:i.verified,message:i.message,bindingContext:e}}catch(t){this._verificationModalResult={success:!1,verified:!1,message:`Failed to verify: ${this._extractErrorMessage(t)}`,bindingContext:e}}finally{this._verificationInProgress=!1}}_closeVerificationModal(){this._showVerificationModal=!1,this._verificationModalResult=null}_openCreateDialog(){const e=this._nodes.filter(e=>e.node_id!==this._selectedSourceNode?.node_id);if(e.length>0){this._selectedTargetNodeId=e[0].node_id;const t=lt(e[0]);this._selectedTargetEndpointId=t?.endpoint_id??null}this._showCreateDialog=!0}_closeCreateDialog(){this._showCreateDialog=!1,this._selectedTargetNodeId=null,this._selectedTargetEndpointId=null}_handleCreateDialogTargetNodeChange(e){this._selectedTargetNodeId=e.detail.nodeId;const t=this._nodes.find(e=>e.node_id===this._selectedTargetNodeId);if(t){const e=lt(t);this._selectedTargetEndpointId=e?.endpoint_id??null}}_handleCreateDialogTargetEndpointChange(e){this._selectedTargetEndpointId=e.detail.endpointId}_handleCreateDialogCreateBinding(e){const{targetNodeId:t,targetEndpointId:i,clusterId:o}=e.detail;if(!this._selectedSourceNode||!this._selectedSourceEndpoint)return;const n=this._nodes.find(e=>e.node_id===t),r=n?.endpoints.find(e=>e.endpoint_id===i);n&&r?(this._pendingManualBinding={sourceNode:this._selectedSourceNode,sourceEndpoint:this._selectedSourceEndpoint,targetNode:n,targetEndpoint:r,clusterId:o},this._showCreateDialog=!1):this._error="Invalid target selection"}_handleGroupClick(e){console.log("Group clicked:",e.detail.group)}_confirmManualBinding(){if(!this._pendingManualBinding)return;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:n}=this._pendingManualBinding;this._pendingManualBinding=null,this._startBindingWizard(e,t,i,o,n)}_closeManualBindingConfirmDialog(){this._pendingManualBinding=null}_getNodeName(e){const t=this._nodes.find(t=>t.node_id===e);return t?.name||`Node ${e}`}_getNodeDeviceId(e){const t=this._nodes.find(t=>t.node_id===e);return t?.ha_device_id}_getClusterName(e){return null===e?"Any Cluster":Ue[e]||`Cluster 0x${e.toString(16)}`}async _submitSurvey(){this._surveySubmitting=!0;try{await this.hass.callService("matter_binding_helper","submit_survey",{}),this._surveyResult={success:!0,message:"Survey submitted successfully! Thank you for contributing to Matter device research."}}catch(e){this._surveyResult={success:!1,message:`Failed to submit survey: ${this._extractErrorMessage(e)}`}}finally{this._surveySubmitting=!1}}_closeSurveyResultDialog(){this._surveyResult=null}_renderSurveyResultDialog(){if(!this._surveyResult)return F;const{success:e,message:t}=this._surveyResult;return V`
+    `:U}async _loadOverviewData(){this._overviewLoading=!0,this._error=null;try{const e=[];for(const t of this._nodes)for(const i of t.endpoints)if(i.has_binding_cluster)try{const o=await it(this.hass,t.node_id,i.endpoint_id);for(const n of o.bindings){const o=n.target_node_id&&this._nodes.find(e=>e.node_id===n.target_node_id)||null,r=o&&n.target_endpoint_id&&o.endpoints.find(e=>e.endpoint_id===n.target_endpoint_id)||null;e.push({binding:n,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:r})}}catch{}this._allBindings=e;const t=new Set(e.filter(e=>null!==e.binding.target_node_id).map(e=>e.binding.target_node_id));Promise.all(Array.from(t).map(e=>this._loadACLForNode(e))).catch(e=>console.error("Failed to load some target ACLs:",e)),this._recommendations=this._computeRecommendations(),this._automationRecommendations=this._computeAutomationRecommendations()}catch(e){this._error=`Failed to load overview data: ${this._extractErrorMessage(e)}`}finally{this._overviewLoading=!1}}_computeAutomationRecommendations(){const e=[],t=new Set;for(const i of this._nodes)for(const o of i.endpoints){const n=o.device_types.map(e=>e.id);for(const r of this._nodes)if(!i.area_name||!r.area_name||i.area_name===r.area_name)for(const s of r.endpoints){if(i.node_id===r.node_id)continue;const a=s.device_types.map(e=>e.id);for(const d of Ke){const l=d.sourceDeviceTypes.some(e=>n.includes(e)),c=d.targetDeviceTypes.some(e=>a.includes(e));if(l&&c){const n=`${d.id}-${i.node_id}-${r.node_id}`;if(t.has(n))continue;t.add(n),e.push({template:d,sourceNode:i,sourceEndpoint:o,targetNode:r,targetEndpoint:s})}}}}return e}_computeRecommendations(){return function(e,t){const i=[];for(const o of e)for(const n of o.endpoints){const r=n.client_clusters||[];if(0!==r.length&&n.has_binding_cluster)for(const s of e)for(const e of s.endpoints){if(o.node_id===s.node_id&&n.endpoint_id===e.endpoint_id)continue;const a=e.server_clusters||[],d=r.filter(e=>a.includes(e));if(0===d.length)continue;const l=d.filter(i=>!t.some(t=>t.binding.node_id===o.node_id&&t.binding.endpoint_id===n.endpoint_id&&t.binding.target_node_id===s.node_id&&t.binding.target_endpoint_id===e.endpoint_id&&t.binding.cluster_id===i));0!==l.length&&i.push({sourceNode:o,sourceEndpoint:n,targetNode:s,targetEndpoint:e,compatibleClusters:l})}}return i.sort((e,t)=>t.compatibleClusters.length-e.compatibleClusters.length),i}(this._nodes,this._allBindings)}_selectNode(e){this._lastVerificationResult=null,this._aclEntries=null,this._selectedSourceNode?.node_id===e.node_id?(this._selectedSourceNode=null,this._selectedSourceEndpoint=null,this._bindings=[]):(this._selectedSourceNode=e,this._selectedSourceEndpoint=null,this._bindings=[],this._isEveDevice(e)&&this._loadEveSchedule(e))}_selectEndpoint(e,t){e.stopPropagation(),t.has_binding_cluster&&(this._lastVerificationResult=null,this._selectedSourceEndpoint=t,this._loadBindings())}async _deleteBinding(e){if(!confirm("Are you sure you want to delete this binding?"))return;const t=`delete-tab-${e.node_id}-${e.endpoint_id}-${e.target_node_id}-${e.target_endpoint_id}`;this._actionInProgress=t;try{const t=await nt(this.hass,e.node_id,e.endpoint_id,e.target_node_id??void 0,e.target_endpoint_id??void 0,e.target_group_id??void 0);this._lastVerificationResult={success:t.success,verified:t.verified,message:t.message,error_type:t.error_type},await this._loadBindings()}catch(e){this._error=`Failed to delete binding: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}async _verifyBindings(){if(this._selectedSourceNode&&this._selectedSourceEndpoint){this._verificationInProgress=!0,this._lastVerificationResult=null;try{const e=await rt(this.hass,this._selectedSourceNode.node_id,this._selectedSourceEndpoint.endpoint_id);this._lastVerificationResult={success:e.success,verified:e.verified,message:e.message,error_type:e.error_type},await this._loadBindings()}catch(e){this._lastVerificationResult={success:!1,verified:!1,message:`Failed to verify bindings: ${this._extractErrorMessage(e)}`,error_type:"unknown_error"}}finally{this._verificationInProgress=!1}}}async _verifyBindingWithModal(e){const{binding:t}=e;this._verificationInProgress=!0,this._showVerificationModal=!0,this._verificationModalResult=null;try{const i=await rt(this.hass,t.node_id,t.endpoint_id);this._verificationModalResult={success:i.success,verified:i.verified,message:i.message,bindingContext:e}}catch(t){this._verificationModalResult={success:!1,verified:!1,message:`Failed to verify: ${this._extractErrorMessage(t)}`,bindingContext:e}}finally{this._verificationInProgress=!1}}_closeVerificationModal(){this._showVerificationModal=!1,this._verificationModalResult=null}_openCreateDialog(){const e=this._nodes.filter(e=>e.node_id!==this._selectedSourceNode?.node_id);if(e.length>0){this._selectedTargetNodeId=e[0].node_id;const t=pt(e[0]);this._selectedTargetEndpointId=t?.endpoint_id??null}this._showCreateDialog=!0}_closeCreateDialog(){this._showCreateDialog=!1,this._selectedTargetNodeId=null,this._selectedTargetEndpointId=null}_handleCreateDialogTargetNodeChange(e){this._selectedTargetNodeId=e.detail.nodeId;const t=this._nodes.find(e=>e.node_id===this._selectedTargetNodeId);if(t){const e=pt(t);this._selectedTargetEndpointId=e?.endpoint_id??null}}_handleCreateDialogTargetEndpointChange(e){this._selectedTargetEndpointId=e.detail.endpointId}_handleCreateDialogCreateBinding(e){const{targetNodeId:t,targetEndpointId:i,targetGroupId:o,clusterId:n}=e.detail;if(!this._selectedSourceNode||!this._selectedSourceEndpoint)return;if(void 0!==o)return this._showCreateDialog=!1,void this._createGroupBinding(o,n);const r=this._nodes.find(e=>e.node_id===t),s=r?.endpoints.find(e=>e.endpoint_id===i);r&&s?(this._pendingManualBinding={sourceNode:this._selectedSourceNode,sourceEndpoint:this._selectedSourceEndpoint,targetNode:r,targetEndpoint:s,clusterId:n},this._showCreateDialog=!1):this._error="Invalid target selection"}async _createGroupBinding(e,t){if(!this._selectedSourceNode||!this._selectedSourceEndpoint)return;const i=this._selectedSourceNode,o=this._selectedSourceEndpoint;this._operationProgress={title:"Creating groupcast binding",steps:[{label:"Write binding to source",status:"in_progress"},{label:"Provision group key & access on members",status:"pending"}],currentStepIndex:0,canCancel:!1,completed:!1},this._actionInProgress="create-group-binding";let n=null;try{n=await this.hass.connection.subscribeEvents(t=>{const o=t.data;(function(e,t,i){return e.source_node_id===t&&e.group_id===i})(o,i.node_id,e)&&this._updateStepStatus(1,function(e){switch(e){case"failed":return"error";case"success":return"success";default:return"in_progress"}}(o.status),o.message)},"matter_binding_helper_group_progress");const r=await ot(this.hass,i.node_id,o.endpoint_id,t,void 0,void 0,e);if(this._updateStepStatus(0,"success"),r.success){const e=this._operationProgress?.steps??[];e[1]&&"in_progress"===e[1].status&&this._updateStepStatus(1,"success"),this._operationProgress=this._operationProgress?{...this._operationProgress,completed:!0}:null}else this._operationProgress=this._operationProgress?{...this._operationProgress,completed:!0,error:r.message}:null}catch(e){const t=`Failed to create group binding: ${this._extractErrorMessage(e)}`;this._operationProgress=this._operationProgress?{...this._operationProgress,completed:!0,error:t}:null,this._error=t}finally{n&&n(),this._actionInProgress=null}}_handleGroupClick(e){this._manageGroup=e.detail.group}_closeManageGroupDialog(){this._manageGroup=null}async _handleAddMember(e){if(!this._manageGroup)return;const t=this._manageGroup.group_id,{nodeId:i,endpointId:o}=e.detail;this._actionInProgress="group-member";try{await async function(e,t,i,o){return e.callWS({type:`${tt}/add_to_group`,group_id:t,node_id:i,endpoint_id:o})}(this.hass,t,i,o),await this._refreshManagedGroup(t)}catch(e){this._error=`Failed to add member: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}async _handleRemoveMember(e){if(!this._manageGroup)return;const t=this._manageGroup.group_id,{nodeId:i,endpointId:o}=e.detail;this._actionInProgress="group-member";try{await async function(e,t,i,o){return e.callWS({type:`${tt}/remove_from_group`,group_id:t,node_id:i,endpoint_id:o})}(this.hass,t,i,o),await this._refreshManagedGroup(t)}catch(e){this._error=`Failed to remove member: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}async _refreshManagedGroup(e){await this._loadGroups(),this._manageGroup=this._groups.find(t=>t.group_id===e)??null}_openCreateGroupDialog(){this._showCreateGroupDialog=!0}_closeCreateGroupDialog(){this._showCreateGroupDialog=!1}async _handleCreateGroup(e){const{name:t,groupId:i}=e.detail;this._actionInProgress="create-group";try{await async function(e,t,i){return e.callWS({type:`${tt}/create_group`,name:t,...void 0!==i?{group_id:i}:{}})}(this.hass,t,i),this._showCreateGroupDialog=!1,await this._loadGroups()}catch(e){this._error=`Failed to create group: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}_handleDeleteGroup(e){this._pendingDeleteGroup=e.detail.group}_cancelDeleteGroup(){this._pendingDeleteGroup=null}async _confirmDeleteGroup(){const e=this._pendingDeleteGroup;if(e){this._actionInProgress="delete-group";try{await async function(e,t){return e.callWS({type:`${tt}/delete_group`,group_id:t})}(this.hass,e.group_id),this._pendingDeleteGroup=null,await this._loadGroups()}catch(e){this._error=`Failed to delete group: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}}_confirmManualBinding(){if(!this._pendingManualBinding)return;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:n}=this._pendingManualBinding;this._pendingManualBinding=null,this._startBindingWizard(e,t,i,o,n)}_closeManualBindingConfirmDialog(){this._pendingManualBinding=null}_getNodeName(e){const t=this._nodes.find(t=>t.node_id===e);return t?.name||`Node ${e}`}_getNodeDeviceId(e){const t=this._nodes.find(t=>t.node_id===e);return t?.ha_device_id}_getClusterName(e){return null===e?"Any Cluster":Ve[e]||`Cluster 0x${e.toString(16)}`}async _submitSurvey(){this._surveySubmitting=!0;try{await this.hass.callService("matter_binding_helper","submit_survey",{}),this._surveyResult={success:!0,message:"Survey submitted successfully! Thank you for contributing to Matter device research."}}catch(e){this._surveyResult={success:!1,message:`Failed to submit survey: ${this._extractErrorMessage(e)}`}}finally{this._surveySubmitting=!1}}_closeSurveyResultDialog(){this._surveyResult=null}_renderSurveyResultDialog(){if(!this._surveyResult)return U;const{success:e,message:t}=this._surveyResult;return j`
       <div class="dialog-overlay" @click=${this._closeSurveyResultDialog}>
         <div class="dialog" @click=${e=>e.stopPropagation()}>
           <div class="dialog-header">
@@ -4899,7 +5246,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
       </div>
-    `}_renderFooter(){return V`
+    `}_renderFooter(){return j`
       <div class="footer">
         <div class="footer-content">
           <div class="footer-section">
@@ -4939,7 +5286,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
       </div>
-    `}render(){return V`
+    `}render(){return j`
       <div class="${this.narrow?"narrow":""}">
         <div class="header">
           <h1>Matter Binding Helper</h1>
@@ -4962,7 +5309,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
 
-        ${this._error?V`<div class="error">${this._error}</div>`:F}
+        ${this._error?j`<div class="error">${this._error}</div>`:U}
 
         <div class="tabs">
           <button
@@ -4985,18 +5332,49 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </button>
         </div>
 
-        ${"overview"===this._activeTab?this._renderOverviewTab():"bindings"===this._activeTab?this._renderBindingsTab():V`
+        ${"overview"===this._activeTab?this._renderOverviewTab():"bindings"===this._activeTab?this._renderBindingsTab():j`
                 <matter-groups-tab
                   .groups=${this._groups}
                   .loading=${this._loading}
                   @group-click=${this._handleGroupClick}
+                  @create-group-click=${this._openCreateGroupDialog}
+                  @delete-group=${this._handleDeleteGroup}
                 ></matter-groups-tab>
               `}
+        <matter-create-group-dialog
+          .open=${this._showCreateGroupDialog}
+          .loading=${null!==this._actionInProgress}
+          @create-group=${this._handleCreateGroup}
+          @cancel=${this._closeCreateGroupDialog}
+        ></matter-create-group-dialog>
+        <matter-manage-group-dialog
+          .open=${null!==this._manageGroup}
+          .group=${this._manageGroup}
+          .availableNodes=${this._nodes}
+          .loading=${null!==this._actionInProgress}
+          @add-member=${this._handleAddMember}
+          @remove-member=${this._handleRemoveMember}
+          @close=${this._closeManageGroupDialog}
+        ></matter-manage-group-dialog>
+        ${this._pendingDeleteGroup?j`
+              <matter-confirm-dialog
+                .open=${!0}
+                title="Delete Group"
+                icon="🗑️"
+                variant="danger"
+                confirmLabel="Delete"
+                .loading=${null!==this._actionInProgress}
+                .message=${`Delete group "${this._pendingDeleteGroup.name}" (ID ${this._pendingDeleteGroup.group_id})? This removes its group key and membership from the fabric. Bindings targeting this group will stop working.`}
+                @confirm=${this._confirmDeleteGroup}
+                @cancel=${this._cancelDeleteGroup}
+              ></matter-confirm-dialog>
+            `:U}
         <matter-create-binding-dialog
           .open=${this._showCreateDialog}
           .sourceNode=${this._selectedSourceNode}
           .sourceEndpoint=${this._selectedSourceEndpoint}
           .availableNodes=${this._nodes.filter(e=>e.node_id!==this._selectedSourceNode?.node_id)}
+          .availableGroups=${this._groups}
           .selectedTargetNodeId=${this._selectedTargetNodeId}
           .selectedTargetEndpointId=${this._selectedTargetEndpointId}
           .loading=${null!==this._actionInProgress}
@@ -5008,7 +5386,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         ${this._renderBindingConfirmDialogComponent()}
         ${this._renderManualBindingConfirmDialogComponent()}
         ${this._renderDeleteConfirmDialogComponent()}
-        ${this._showVerificationModal?this._renderVerificationModal():F}
+        ${this._showVerificationModal?this._renderVerificationModal():U}
         <matter-binding-wizard
           .open=${null!==this._bindingWizard}
           .wizardState=${this._bindingWizard}
@@ -5019,7 +5397,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           @step-change=${this._handleWizardStepChange}
           @close=${this._handleWizardClose}
         ></matter-binding-wizard>
-        ${this._showBulkRepairModal?this._renderBulkRepairModal():F}
+        ${this._showBulkRepairModal?this._renderBulkRepairModal():U}
         <matter-operation-progress-dialog
           .open=${null!==this._operationProgress}
           .progress=${this._operationProgress}
@@ -5036,20 +5414,20 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         ${this._renderSurveyResultDialog()}
         ${this._renderFooter()}
       </div>
-    `}_renderOverviewTab(){return V`
+    `}_renderOverviewTab(){return j`
       <div class="overview-content">
-        ${this._overviewLoading?V`<div class="loading">Loading bindings...</div>`:V`
+        ${this._overviewLoading?j`<div class="loading">Loading bindings...</div>`:j`
               ${this._renderEstablishedBindings()}
               ${this._renderRecommendedBindings()}
               ${this._renderRecommendedAutomations()}
             `}
       </div>
-    `}_renderEstablishedBindings(){const e=this._allBindings.filter(e=>{if(null!==e.binding.target_group_id)return!1;return!this._checkBindingACL(e.binding,e.sourceNode.node_id).hasPermission});return V`
+    `}_renderEstablishedBindings(){const e=this._allBindings.filter(e=>{if(null!==e.binding.target_group_id)return!1;return!this._checkBindingACL(e.binding,e.sourceNode.node_id).hasPermission});return j`
       <div class="card overview-card">
         <div class="card-header">
           Established Bindings
           <span class="count-badge">${this._allBindings.length}</span>
-          ${e.length>0?V`
+          ${e.length>0?j`
             <button
               class="btn btn-small btn-repair ${this._bulkRepairInProgress?"btn-loading":""}"
               ?disabled=${this._bulkRepairInProgress}
@@ -5058,37 +5436,37 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
             >
               ${this._bulkRepairInProgress?"Repairing...":`🔧 Repair All (${e.length})`}
             </button>
-          `:F}
+          `:U}
         </div>
-        ${0===this._allBindings.length?V`<div class="empty-state">No bindings configured yet.</div>`:V`
+        ${0===this._allBindings.length?j`<div class="empty-state">No bindings configured yet.</div>`:j`
               <div class="binding-list">
                 ${this._allBindings.map(e=>this._renderEstablishedBindingRow(e))}
               </div>
             `}
       </div>
-    `}_renderEstablishedBindingRow(e){const{binding:t,sourceNode:i,sourceEndpoint:o,targetNode:n}=e,r=n?.name||`Node ${t.target_node_id}`,s=null!==t.target_group_id,a=Je(t.cluster_id),d=s?{hasPermission:!0}:this._checkBindingACL(t,i.node_id);return V`
+    `}_renderEstablishedBindingRow(e){const{binding:t,sourceNode:i,sourceEndpoint:o,targetNode:n}=e,r=n?.name||`Node ${t.target_node_id}`,s=null!==t.target_group_id,a=Je(t.cluster_id),d=s?{hasPermission:!0}:this._checkBindingACL(t,i.node_id);return j`
       <div class="overview-binding-row readable ${d.hasPermission?"":"binding-missing-acl"}">
         <div class="binding-description">
           <div class="binding-sentence">
-            ${d.hasPermission?F:V`<span class="acl-warning" title="${d.reason||"Missing ACL permission"}">⚠️</span>`}
+            ${d.hasPermission?U:j`<span class="acl-warning" title="${d.reason||"Missing ACL permission"}">⚠️</span>`}
             <strong
               class="${i.ha_device_id?"device-link":""}"
-              @click=${i.ha_device_id?()=>this._navigateToDevice(i.ha_device_id):F}
+              @click=${i.ha_device_id?()=>this._navigateToDevice(i.ha_device_id):U}
             >${i.name}</strong>
             <span class="binding-action">${a.action}</span>
             <strong
               class="${!s&&n?.ha_device_id?"device-link":""}"
-              @click=${!s&&n?.ha_device_id?()=>this._navigateToDevice(n.ha_device_id):F}
+              @click=${!s&&n?.ha_device_id?()=>this._navigateToDevice(n.ha_device_id):U}
             >${s?`Group ${t.target_group_id}`:r}</strong>
           </div>
           <div class="binding-meta">
             #${i.node_id} EP ${o.endpoint_id} → ${s?"Group":`#${t.target_node_id} EP ${t.target_endpoint_id}`}
-            ${i.area_name?V` · ${i.area_name}`:F}
-            ${d.hasPermission?F:V`<span class="acl-warning-text"> · ${d.reason}</span>`}
+            ${i.area_name?j` · ${i.area_name}`:U}
+            ${d.hasPermission?U:j`<span class="acl-warning-text"> · ${d.reason}</span>`}
           </div>
         </div>
         <div class="binding-actions">
-          ${d.hasPermission||s?F:V`
+          ${d.hasPermission||s?U:j`
             <span
               class="repair-icon ${this._aclRepairInProgress.get(`${i.node_id}-${o.endpoint_id}-${t.target_node_id}-${t.cluster_id}`)?"loading":""}"
               title="Repair ACL permissions"
@@ -5115,7 +5493,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </button>
         </div>
       </div>
-    `}_renderRecommendedBindings(){const e=this._filterSameAreaOnly?this._recommendations.filter(e=>{const t=e.sourceNode.area_name,i=e.targetNode.area_name;return t&&i&&t===i}):this._recommendations,t=this._recommendations.length-e.length,i=this._filterSameAreaOnly&&this._recommendations.length>0?"No same-area recommendations. Toggle filter to see cross-area bindings.":"No binding recommendations. All compatible endpoints are already bound.";return V`
+    `}_renderRecommendedBindings(){const e=this._filterSameAreaOnly?this._recommendations.filter(e=>{const t=e.sourceNode.area_name,i=e.targetNode.area_name;return t&&i&&t===i}):this._recommendations,t=this._recommendations.length-e.length,i=this._filterSameAreaOnly&&this._recommendations.length>0?"No same-area recommendations. Toggle filter to see cross-area bindings.":"No binding recommendations. All compatible endpoints are already bound.";return j`
       <div class="card overview-card">
         <div class="card-header">
           Recommended Bindings
@@ -5133,7 +5511,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
             </span>
             Same area only
           </label>
-          ${this._filterSameAreaOnly&&t>0?V`<span class="filter-info">(${t} hidden)</span>`:F}
+          ${this._filterSameAreaOnly&&t>0?j`<span class="filter-info">(${t} hidden)</span>`:U}
         </div>
         <matter-recommendation-list
           .recommendations=${e}
@@ -5144,7 +5522,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           @navigate-device=${this._handleRecommendationNavigateDevice}
         ></matter-recommendation-list>
       </div>
-    `}_handleRecommendationCreateBinding(e){this._showBindingConfirmDialog(e.detail.recommendation)}_handleRecommendationNavigateDevice(e){this._navigateToDevice(e.detail.deviceId)}_renderRecommendedAutomations(){return 0===this._automationRecommendations.length?F:V`
+    `}_handleRecommendationCreateBinding(e){this._showBindingConfirmDialog(e.detail.recommendation)}_handleRecommendationNavigateDevice(e){this._navigateToDevice(e.detail.deviceId)}_renderRecommendedAutomations(){return 0===this._automationRecommendations.length?U:j`
       <div class="card overview-card automation-card">
         <div class="card-header">
           <span>💡 Recommended Automations</span>
@@ -5157,24 +5535,24 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           ${this._automationRecommendations.map(e=>this._renderAutomationRow(e))}
         </div>
       </div>
-    `}_renderAutomationRow(e){const{template:t,sourceNode:i,targetNode:o}=e;return V`
+    `}_renderAutomationRow(e){const{template:t,sourceNode:i,targetNode:o}=e;return j`
       <div class="overview-binding-row automation readable">
         <div class="binding-description">
           <div class="automation-title">
             <span class="automation-icon">${t.icon}</span>
             <strong
               class="${i.ha_device_id?"device-link":""}"
-              @click=${i.ha_device_id?()=>this._navigateToDevice(i.ha_device_id):F}
+              @click=${i.ha_device_id?()=>this._navigateToDevice(i.ha_device_id):U}
             >${i.name}</strong> + <strong
               class="${o.ha_device_id?"device-link":""}"
-              @click=${o.ha_device_id?()=>this._navigateToDevice(o.ha_device_id):F}
+              @click=${o.ha_device_id?()=>this._navigateToDevice(o.ha_device_id):U}
             >${o.name}</strong>
           </div>
           <div class="automation-suggestion">${t.title}</div>
           <div class="automation-why">
             <span class="why-label">Why not a binding?</span> ${t.why}
           </div>
-          ${i.area_name?V`<div class="binding-meta">${i.area_name}</div>`:F}
+          ${i.area_name?j`<div class="binding-meta">${i.area_name}</div>`:U}
         </div>
         <button
           class="btn btn-small btn-primary"
@@ -5184,7 +5562,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           Create Automation
         </button>
       </div>
-    `}_openAutomationDialog(e){this._pendingAutomationRecommendation=e,this._showAutomationDialog=!0}_closeAutomationDialog(){this._showAutomationDialog=!1,this._pendingAutomationRecommendation=null}_handleAutomationCreated(){this._closeAutomationDialog()}_toggleAreaFilter(e){const t=e.target;this._filterSameAreaOnly=t.checked}_showDeleteConfirmDialog(e){this._pendingDeleteBinding=e}_closeDeleteConfirmDialog(){this._pendingDeleteBinding=null}async _confirmDeleteBinding(){if(!this._pendingDeleteBinding)return;const e=this._pendingDeleteBinding,{binding:t,sourceNode:i}=e,o=null!==t.target_node_id&&null===t.target_group_id;this._closeDeleteConfirmDialog(),this._operationProgress={title:"Removing Binding",steps:[{label:"Removing binding from device",status:"pending"},...o?[{label:"Cleaning up ACL entry",status:"pending"}]:[]],currentStepIndex:0,canCancel:!1,completed:!1},this._updateStepStatus(0,"in_progress");try{const e=await ot(this.hass,t.node_id,t.endpoint_id,t.target_node_id??void 0,t.target_endpoint_id??void 0,t.target_group_id??void 0);if(!e.success){const t=this._extractErrorMessage(e.message);return this._updateStepStatus(0,"error",t),void(this._operationProgress={...this._operationProgress,completed:!0,error:t})}this._updateStepStatus(0,"success")}catch(e){const t=this._extractErrorMessage(e);return this._updateStepStatus(0,"error",t),void(this._operationProgress={...this._operationProgress,completed:!0,error:t})}if(o&&null!==t.target_node_id&&null!==t.target_endpoint_id){this._updateStepStatus(1,"in_progress");try{const e=await async function(e,t,i,o,n){return e.callWS({type:`${tt}/remove_acl`,target_node_id:t,source_node_id:i,...null!=o&&{target_endpoint_id:o},...null!=n&&{cluster_id:n}})}(this.hass,t.target_node_id,i.node_id,t.target_endpoint_id,t.cluster_id);e.success?(this._updateStepStatus(1,"success"),this._targetACLCache=new Map(this._targetACLCache),this._targetACLCache.delete(t.target_node_id)):this._updateStepStatus(1,"error",this._extractErrorMessage(e.message))}catch(e){const t=this._extractErrorMessage(e);this._updateStepStatus(1,"error",t)}}this._operationProgress={...this._operationProgress,completed:!0}}_showBindingConfirmDialog(e){this._pendingBindingRecommendation=e,this._selectedClusterForBinding=e.compatibleClusters[0]}_closeBindingConfirmDialog(){this._pendingBindingRecommendation=null,this._selectedClusterForBinding=null}_handleClusterSelectChange(e){const t=e.target;this._selectedClusterForBinding=parseInt(t.value,10)}_confirmCreateBinding(){if(!this._pendingBindingRecommendation||!this._selectedClusterForBinding)return;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o}=this._pendingBindingRecommendation,n=this._selectedClusterForBinding;this._closeBindingConfirmDialog(),this._startBindingWizard(e,t,i,o,n)}_renderBindingsTab(){return V`
+    `}_openAutomationDialog(e){this._pendingAutomationRecommendation=e,this._showAutomationDialog=!0}_closeAutomationDialog(){this._showAutomationDialog=!1,this._pendingAutomationRecommendation=null}_handleAutomationCreated(){this._closeAutomationDialog()}_toggleAreaFilter(e){const t=e.target;this._filterSameAreaOnly=t.checked}_showDeleteConfirmDialog(e){this._pendingDeleteBinding=e}_closeDeleteConfirmDialog(){this._pendingDeleteBinding=null}async _confirmDeleteBinding(){if(!this._pendingDeleteBinding)return;const e=this._pendingDeleteBinding,{binding:t,sourceNode:i}=e,o=null!==t.target_node_id&&null===t.target_group_id;this._closeDeleteConfirmDialog(),this._operationProgress={title:"Removing Binding",steps:[{label:"Removing binding from device",status:"pending"},...o?[{label:"Cleaning up ACL entry",status:"pending"}]:[]],currentStepIndex:0,canCancel:!1,completed:!1},this._updateStepStatus(0,"in_progress");try{const e=await nt(this.hass,t.node_id,t.endpoint_id,t.target_node_id??void 0,t.target_endpoint_id??void 0,t.target_group_id??void 0);if(!e.success){const t=this._extractErrorMessage(e.message);return this._updateStepStatus(0,"error",t),void(this._operationProgress={...this._operationProgress,completed:!0,error:t})}this._updateStepStatus(0,"success")}catch(e){const t=this._extractErrorMessage(e);return this._updateStepStatus(0,"error",t),void(this._operationProgress={...this._operationProgress,completed:!0,error:t})}if(o&&null!==t.target_node_id&&null!==t.target_endpoint_id){this._updateStepStatus(1,"in_progress");try{const e=await async function(e,t,i,o,n){return e.callWS({type:`${tt}/remove_acl`,target_node_id:t,source_node_id:i,...null!=o&&{target_endpoint_id:o},...null!=n&&{cluster_id:n}})}(this.hass,t.target_node_id,i.node_id,t.target_endpoint_id,t.cluster_id);e.success?(this._updateStepStatus(1,"success"),this._targetACLCache=new Map(this._targetACLCache),this._targetACLCache.delete(t.target_node_id)):this._updateStepStatus(1,"error",this._extractErrorMessage(e.message))}catch(e){const t=this._extractErrorMessage(e);this._updateStepStatus(1,"error",t)}}this._operationProgress={...this._operationProgress,completed:!0}}_showBindingConfirmDialog(e){this._pendingBindingRecommendation=e,this._selectedClusterForBinding=e.compatibleClusters[0]}_closeBindingConfirmDialog(){this._pendingBindingRecommendation=null,this._selectedClusterForBinding=null}_handleClusterSelectChange(e){const t=e.target;this._selectedClusterForBinding=parseInt(t.value,10)}_confirmCreateBinding(){if(!this._pendingBindingRecommendation||!this._selectedClusterForBinding)return;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o}=this._pendingBindingRecommendation,n=this._selectedClusterForBinding;this._closeBindingConfirmDialog(),this._startBindingWizard(e,t,i,o,n)}_renderBindingsTab(){return j`
       <div class="content">
         <matter-node-list
           .nodes=${this._nodes}
@@ -5194,28 +5572,28 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         ></matter-node-list>
 
         <div class="card device-panel">
-          ${this._selectedSourceNode?this._renderDeviceDetails(this._selectedSourceNode):V`
+          ${this._selectedSourceNode?this._renderDeviceDetails(this._selectedSourceNode):j`
                 <div class="empty-state">
                   Select a device to view details and manage bindings.
                 </div>
               `}
         </div>
       </div>
-    `}_handleNodeSelected(e){this._selectNode(e.detail.node)}_handleBindingCardDelete(e){this._showDeleteConfirmDialog(e.detail.binding)}_handleBindingCardRepairAcl(e){this._repairBindingACL(e.detail.binding)}_handleBindingCardNavigate(e){this._navigateToDevice(e.detail.deviceId)}_handleLoadAcl(e){this._loadACL(e.detail.nodeId)}_handleEndpointSelected(e){e.detail.endpoint.has_binding_cluster&&(this._lastVerificationResult=null,this._selectedSourceEndpoint=e.detail.endpoint,this._loadBindings())}_handleWizardExecuteBinding(){this._executeBindingStep()}_handleWizardExecuteAcl(){this._executeACLStep()}_handleWizardExecuteVerify(){this._executeVerifyStep()}_handleWizardPrivilegeChange(e){this._handlePrivilegeChange(e.detail.privilege)}_handleWizardStepChange(e){this._goToWizardStep(e.detail.step)}_handleWizardClose(){this._closeBindingWizard()}_renderDeviceDetails(e){const t=e.device_info,i=this._getPrimaryDeviceType(e);return e.endpoints.length,V`
+    `}_handleNodeSelected(e){this._selectNode(e.detail.node)}_handleBindingCardDelete(e){this._showDeleteConfirmDialog(e.detail.binding)}_handleBindingCardRepairAcl(e){this._repairBindingACL(e.detail.binding)}_handleBindingCardNavigate(e){this._navigateToDevice(e.detail.deviceId)}_handleLoadAcl(e){this._loadACL(e.detail.nodeId)}_handleEndpointSelected(e){e.detail.endpoint.has_binding_cluster&&(this._lastVerificationResult=null,this._selectedSourceEndpoint=e.detail.endpoint,this._loadBindings())}_handleWizardExecuteBinding(){this._executeBindingStep()}_handleWizardExecuteAcl(){this._executeACLStep()}_handleWizardExecuteVerify(){this._executeVerifyStep()}_handleWizardPrivilegeChange(e){this._handlePrivilegeChange(e.detail.privilege)}_handleWizardStepChange(e){this._goToWizardStep(e.detail.step)}_handleWizardClose(){this._closeBindingWizard()}_renderDeviceDetails(e){const t=e.device_info,i=this._getPrimaryDeviceType(e);return e.endpoints.length,j`
       <div class="device-details">
         <div class="device-header">
           <div class="device-title">
             <h2>${e.name}</h2>
-            ${e.ha_device_id?V`<a
+            ${e.ha_device_id?j`<a
                   class="device-ha-link"
                   href="/config/devices/device/${e.ha_device_id}"
                   title="View in Home Assistant"
-                >↗</a>`:F}
+                >↗</a>`:U}
           </div>
           <div class="device-meta">
-            ${i?V`<span class="device-type-tag">${i}</span>`:F}
-            ${e.area_name?V`<span class="device-area-tag">${e.area_name}</span>`:F}
-            ${t?.software_version?V`<span class="device-version">v${t.software_version}</span>`:F}
+            ${i?j`<span class="device-type-tag">${i}</span>`:U}
+            ${e.area_name?j`<span class="device-area-tag">${e.area_name}</span>`:U}
+            ${t?.software_version?j`<span class="device-version">v${t.software_version}</span>`:U}
           </div>
         </div>
 
@@ -5243,7 +5621,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         <div class="device-section">
           <div class="section-header">
             Bindings
-            ${this._selectedSourceEndpoint?V`
+            ${this._selectedSourceEndpoint?j`
                   <span class="section-context">
                     Endpoint ${this._selectedSourceEndpoint.endpoint_id}
                   </span>
@@ -5261,9 +5639,9 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                   >
                     Add Binding
                   </button>
-                `:F}
+                `:U}
           </div>
-          ${this._lastVerificationResult?V`
+          ${this._lastVerificationResult?j`
                 <div class="verification-result ${this._lastVerificationResult.verified?"verified":this._lastVerificationResult.success?"warning":"error"} ${this._lastVerificationResult.error_type?this._getErrorDisplay(this._lastVerificationResult.error_type).cssClass:""}">
                   <span class="verification-icon">
                     ${this._lastVerificationResult.verified?"✓":this._lastVerificationResult.success?"⚠":this._lastVerificationResult.error_type?this._getErrorDisplay(this._lastVerificationResult.error_type).icon:"✗"}
@@ -5271,10 +5649,10 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                   <span class="verification-message">${this._extractErrorMessage(this._lastVerificationResult.message)}</span>
                   <button class="verification-dismiss" @click=${()=>this._lastVerificationResult=null}>×</button>
                 </div>
-              `:F}
-          ${this._selectedSourceEndpoint?this._bindings.length>0?V`
+              `:U}
+          ${this._selectedSourceEndpoint?this._bindings.length>0?j`
                   <div class="binding-list">
-                    ${this._bindings.map(e=>{const t=this._getBindingContext(e);if(!t)return F;const i=null!==e.target_group_id,o=i?{hasPermission:!0}:this._checkBindingACL(e,this._selectedSourceNode.node_id),n=`delete-tab-${e.node_id}-${e.endpoint_id}-${e.target_node_id}-${e.target_endpoint_id}`;return V`
+                    ${this._bindings.map(e=>{const t=this._getBindingContext(e);if(!t)return U;const i=null!==e.target_group_id,o=i?{hasPermission:!0}:this._checkBindingACL(e,this._selectedSourceNode.node_id),n=`delete-tab-${e.node_id}-${e.endpoint_id}-${e.target_node_id}-${e.target_endpoint_id}`;return j`
                         <matter-binding-card
                           .binding=${t}
                           .aclMissing=${!o.hasPermission}
@@ -5288,22 +5666,22 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                         ></matter-binding-card>
                       `})}
                   </div>
-                `:V`
+                `:j`
                   <div class="empty-state-small">
                     No bindings configured for this endpoint.
                   </div>
-                `:V`
+                `:j`
                 <div class="empty-state-small">
                   Select an endpoint with binding support to manage bindings.
                 </div>
               `}
         </div>
       </div>
-    `}_getPrimaryDeviceType(e){const t=e.endpoints.find(e=>1===e.endpoint_id)||e.endpoints.find(e=>e.endpoint_id>0);return t&&t.device_types.length>0?Ge(t.device_types[0].id):null}async _loadACL(e){this._aclLoading=!0,this._aclEntries=null;try{const t=await rt(this.hass,e);t.success&&(this._aclEntries=t.entries)}catch(e){console.error("Failed to load ACL:",e)}finally{this._aclLoading=!1}}async _loadACLForNode(e){if(!this._targetACLCache.has(e)&&!this._aclLoadingNodes.has(e)){this._aclLoadingNodes=new Set([...this._aclLoadingNodes,e]);try{const t=await rt(this.hass,e);t.success&&(this._targetACLCache=new Map([...this._targetACLCache,[e,t.entries]]))}catch(t){console.error(`Failed to load ACL for node ${e}:`,t)}finally{const t=new Set(this._aclLoadingNodes);t.delete(e),this._aclLoadingNodes=t}}}_getBindingContext(e){if(!this._selectedSourceNode||!this._selectedSourceEndpoint)return null;const t=null!==e.target_node_id&&this._nodes.find(t=>t.node_id===e.target_node_id)||null,i=t&&null!==e.target_endpoint_id&&t.endpoints.find(t=>t.endpoint_id===e.target_endpoint_id)||null;return{binding:e,sourceNode:this._selectedSourceNode,sourceEndpoint:this._selectedSourceEndpoint,targetNode:t,targetEndpoint:i}}_checkBindingACL(e,t){const i=e.target_node_id;if(null===i)return{hasPermission:!0,status:"ok"};if(this._aclLoadingNodes.has(i))return{hasPermission:!0,status:"loading"};const o=this._targetACLCache.get(i);if(void 0===o)return{hasPermission:!0,status:"unknown",reason:"ACL not loaded"};if(0===o.length)return{hasPermission:!1,status:"missing",reason:"No ACL entries on target"};const n=e.cluster_id,r=null===n||[6,8,768,513,514].includes(n)?3:1,s=3===r?"Operate":"View";for(const e of o)if(2===e.auth_mode&&!(e.privilege<r)&&(!(e.subjects.length>0)||e.subjects.includes(t))){if(e.targets.length>0){const t=e.targets.some(e=>null===e.cluster||e.cluster===n);if(!t)continue}return{hasPermission:!0,status:"ok"}}return{hasPermission:!1,status:"missing",reason:`Target missing ${s} permission for source node ${t}`}}_getErrorDisplay(e){switch(e){case"permission_denied":return{icon:"🔒",cssClass:"error-permission"};case"device_unavailable":return{icon:"📴",cssClass:"error-unavailable"};case"device_timeout":return{icon:"⏱️",cssClass:"error-timeout"};case"device_rejected":return{icon:"🚫",cssClass:"error-rejected"};case"invalid_request":return{icon:"⚠️",cssClass:"error-invalid"};default:return{icon:"❌",cssClass:"error-unknown"}}}_renderEntityList(e){const t=e.entities||[];if(0===t.length)return F;const i={light:"💡",switch:"🔌",event:"🔘",sensor:"📊",binary_sensor:"⚡",climate:"🌡️",cover:"🪟",fan:"💨",lock:"🔒",button:"⏺️"};return V`
+    `}_getPrimaryDeviceType(e){const t=e.endpoints.find(e=>1===e.endpoint_id)||e.endpoints.find(e=>e.endpoint_id>0);return t&&t.device_types.length>0?qe(t.device_types[0].id):null}async _loadACL(e){this._aclLoading=!0,this._aclEntries=null;try{const t=await st(this.hass,e);t.success&&(this._aclEntries=t.entries)}catch(e){console.error("Failed to load ACL:",e)}finally{this._aclLoading=!1}}async _loadACLForNode(e){if(!this._targetACLCache.has(e)&&!this._aclLoadingNodes.has(e)){this._aclLoadingNodes=new Set([...this._aclLoadingNodes,e]);try{const t=await st(this.hass,e);t.success&&(this._targetACLCache=new Map([...this._targetACLCache,[e,t.entries]]))}catch(t){console.error(`Failed to load ACL for node ${e}:`,t)}finally{const t=new Set(this._aclLoadingNodes);t.delete(e),this._aclLoadingNodes=t}}}_getBindingContext(e){if(!this._selectedSourceNode||!this._selectedSourceEndpoint)return null;const t=null!==e.target_node_id&&this._nodes.find(t=>t.node_id===e.target_node_id)||null,i=t&&null!==e.target_endpoint_id&&t.endpoints.find(t=>t.endpoint_id===e.target_endpoint_id)||null;return{binding:e,sourceNode:this._selectedSourceNode,sourceEndpoint:this._selectedSourceEndpoint,targetNode:t,targetEndpoint:i}}_checkBindingACL(e,t){const i=e.target_node_id;if(null===i)return{hasPermission:!0,status:"ok"};if(this._aclLoadingNodes.has(i))return{hasPermission:!0,status:"loading"};const o=this._targetACLCache.get(i);if(void 0===o)return{hasPermission:!0,status:"unknown",reason:"ACL not loaded"};if(0===o.length)return{hasPermission:!1,status:"missing",reason:"No ACL entries on target"};const n=e.cluster_id,r=null===n||[6,8,768,513,514].includes(n)?3:1,s=3===r?"Operate":"View";for(const e of o)if(2===e.auth_mode&&!(e.privilege<r)&&(!(e.subjects.length>0)||e.subjects.includes(t))){if(e.targets.length>0){const t=e.targets.some(e=>null===e.cluster||e.cluster===n);if(!t)continue}return{hasPermission:!0,status:"ok"}}return{hasPermission:!1,status:"missing",reason:`Target missing ${s} permission for source node ${t}`}}_getErrorDisplay(e){switch(e){case"permission_denied":return{icon:"🔒",cssClass:"error-permission"};case"device_unavailable":return{icon:"📴",cssClass:"error-unavailable"};case"device_timeout":return{icon:"⏱️",cssClass:"error-timeout"};case"device_rejected":return{icon:"🚫",cssClass:"error-rejected"};case"invalid_request":return{icon:"⚠️",cssClass:"error-invalid"};default:return{icon:"❌",cssClass:"error-unknown"}}}_renderEntityList(e){const t=e.entities||[];if(0===t.length)return U;const i={light:"💡",switch:"🔌",event:"🔘",sensor:"📊",binary_sensor:"⚡",climate:"🌡️",cover:"🪟",fan:"💨",lock:"🔒",button:"⏺️"};return j`
       <div class="device-section">
         <div class="section-header">Home Assistant Entities</div>
         <div class="entity-chips">
-          ${t.filter(e=>!e.disabled).map(e=>V`
+          ${t.filter(e=>!e.disabled).map(e=>j`
                 <button
                   class="entity-chip"
                   @click=${t=>{t.stopPropagation(),this._openEntityMoreInfo(e.entity_id)}}
@@ -5314,7 +5692,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               `)}
         </div>
       </div>
-    `}_openEntityMoreInfo(e){const t=new CustomEvent("hass-more-info",{detail:{entityId:e},bubbles:!0,composed:!0});this.dispatchEvent(t)}_getMatchingDeviceDefinition(e){const t=e.device_info?.vendor_id;if(!t)return;const i=new Set,o=new Set;for(const t of e.endpoints){for(const e of t.server_clusters||[])i.add(e);for(const e of t.device_types)o.add(e.id)}return ke(t,Array.from(i),Array.from(o))}_renderDeviceRegistryInfo(e){const t=this._getMatchingDeviceDefinition(e);if(!t)return F;const i=t.extends&&t.extends.length>0;return V`
+    `}_openEntityMoreInfo(e){const t=new CustomEvent("hass-more-info",{detail:{entityId:e},bubbles:!0,composed:!0});this.dispatchEvent(t)}_getMatchingDeviceDefinition(e){const t=e.device_info?.vendor_id;if(!t)return;const i=new Set,o=new Set;for(const t of e.endpoints){for(const e of t.server_clusters||[])i.add(e);for(const e of t.device_types)o.add(e.id)}return ke(t,Array.from(i),Array.from(o))}_renderDeviceRegistryInfo(e){const t=this._getMatchingDeviceDefinition(e);if(!t)return U;const i=t.extends&&t.extends.length>0;return j`
       <div class="device-section registry-info">
         <div class="section-header">
           Device Database
@@ -5324,14 +5702,14 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           <div class="registry-model">
             <strong>${t.vendor}</strong> ${t.model}
           </div>
-          ${t.description?V`<div class="registry-description">${t.description}</div>`:F}
-          ${i?V`
+          ${t.description?j`<div class="registry-description">${t.description}</div>`:U}
+          ${i?j`
                 <div class="registry-features">
                   <span class="feature-label">Features:</span>
-                  ${t.extends.map(e=>V`<span class="feature-tag">${e.name}</span>`)}
+                  ${t.extends.map(e=>j`<span class="feature-tag">${e.name}</span>`)}
                 </div>
-              `:F}
-          ${t.productUrl?V`
+              `:U}
+          ${t.productUrl?j`
                 <a
                   class="registry-link"
                   href="${t.productUrl}"
@@ -5340,10 +5718,10 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                 >
                   Product Page ↗
                 </a>
-              `:F}
+              `:U}
         </div>
       </div>
-    `}_navigateToDevice(e){e&&(history.pushState(null,"",`/config/devices/device/${e}`),window.dispatchEvent(new CustomEvent("location-changed")))}_renderBindingConfirmDialogComponent(){if(!this._pendingBindingRecommendation||!this._selectedClusterForBinding)return F;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,compatibleClusters:n}=this._pendingBindingRecommendation,r=this._selectedClusterForBinding,s=Je(r);return V`
+    `}_navigateToDevice(e){e&&(history.pushState(null,"",`/config/devices/device/${e}`),window.dispatchEvent(new CustomEvent("location-changed")))}_renderBindingConfirmDialogComponent(){if(!this._pendingBindingRecommendation||!this._selectedClusterForBinding)return U;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,compatibleClusters:n}=this._pendingBindingRecommendation,r=this._selectedClusterForBinding,s=Je(r);return j`
       <matter-confirm-dialog
         .open=${!0}
         title="Create Binding"
@@ -5357,16 +5735,16 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           <div class="binding-device-card source">
             <div class="binding-device-name">${e.name}</div>
             <div class="binding-device-endpoint">Endpoint ${t.endpoint_id}</div>
-            ${e.area_name?V`<div class="binding-device-area">${e.area_name}</div>`:F}
+            ${e.area_name?j`<div class="binding-device-area">${e.area_name}</div>`:U}
           </div>
           <div class="binding-arrow-container">
-            <span class="binding-cluster-label">${qe(r)}</span>
+            <span class="binding-cluster-label">${He(r)}</span>
             <span class="binding-arrow-large">→</span>
           </div>
           <div class="binding-device-card target">
             <div class="binding-device-name">${i.name}</div>
             <div class="binding-device-endpoint">Endpoint ${o.endpoint_id}</div>
-            ${i.area_name?V`<div class="binding-device-area">${i.area_name}</div>`:F}
+            ${i.area_name?j`<div class="binding-device-area">${i.area_name}</div>`:U}
           </div>
         </div>
 
@@ -5378,23 +5756,23 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
 
-        ${n.length>1?V`
+        ${n.length>1?j`
               <div class="cluster-select-group">
                 <label>Select cluster to bind:</label>
                 <select
                   class="form-select"
                   @change=${this._handleClusterSelectChange}
                 >
-                  ${n.map(e=>V`
+                  ${n.map(e=>j`
                       <option value=${e} ?selected=${e===r}>
-                        ${qe(e)} - ${Je(e).dataType}
+                        ${He(e)} - ${Je(e).dataType}
                       </option>
                     `)}
                 </select>
               </div>
-            `:F}
+            `:U}
       </matter-confirm-dialog>
-    `}_renderManualBindingConfirmDialogComponent(){if(!this._pendingManualBinding)return F;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:n}=this._pendingManualBinding,r=Je(n);return V`
+    `}_renderManualBindingConfirmDialogComponent(){if(!this._pendingManualBinding)return U;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:n}=this._pendingManualBinding,r=Je(n);return j`
       <matter-confirm-dialog
         .open=${!0}
         title="Create Binding"
@@ -5408,16 +5786,16 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           <div class="binding-device-card source">
             <div class="binding-device-name">${e.name}</div>
             <div class="binding-device-endpoint">Endpoint ${t.endpoint_id}</div>
-            ${e.area_name?V`<div class="binding-device-area">${e.area_name}</div>`:F}
+            ${e.area_name?j`<div class="binding-device-area">${e.area_name}</div>`:U}
           </div>
           <div class="binding-arrow-container">
-            <span class="binding-cluster-label">${qe(n)}</span>
+            <span class="binding-cluster-label">${He(n)}</span>
             <span class="binding-arrow-large">→</span>
           </div>
           <div class="binding-device-card target">
             <div class="binding-device-name">${i.name}</div>
             <div class="binding-device-endpoint">Endpoint ${o.endpoint_id}</div>
-            ${i.area_name?V`<div class="binding-device-area">${i.area_name}</div>`:F}
+            ${i.area_name?j`<div class="binding-device-area">${i.area_name}</div>`:U}
           </div>
         </div>
 
@@ -5429,7 +5807,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
       </matter-confirm-dialog>
-    `}_renderDeleteConfirmDialogComponent(){if(!this._pendingDeleteBinding)return F;const{binding:e,sourceNode:t,sourceEndpoint:i,targetNode:o}=this._pendingDeleteBinding,n=Je(e.cluster_id),r=o?.name||`Node ${e.target_node_id}`,s=null!==e.target_group_id;return V`
+    `}_renderDeleteConfirmDialogComponent(){if(!this._pendingDeleteBinding)return U;const{binding:e,sourceNode:t,sourceEndpoint:i,targetNode:o}=this._pendingDeleteBinding,n=Je(e.cluster_id),r=o?.name||`Node ${e.target_node_id}`,s=null!==e.target_group_id;return j`
       <matter-confirm-dialog
         .open=${!0}
         title="Remove Binding"
@@ -5444,17 +5822,17 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           <div class="binding-device-card source">
             <div class="binding-device-name">${t.name}</div>
             <div class="binding-device-endpoint">Endpoint ${i.endpoint_id}</div>
-            ${t.area_name?V`<div class="binding-device-area">${t.area_name}</div>`:F}
+            ${t.area_name?j`<div class="binding-device-area">${t.area_name}</div>`:U}
           </div>
           <div class="binding-arrow-container">
-            <span class="binding-cluster-label">${qe(e.cluster_id)}</span>
+            <span class="binding-cluster-label">${He(e.cluster_id)}</span>
             <span class="binding-arrow-large" style="text-decoration: line-through; color: var(--error-color);">→</span>
           </div>
           <div class="binding-device-card target">
-            ${s?V`<div class="binding-device-name">Group ${e.target_group_id}</div>`:V`
+            ${s?j`<div class="binding-device-name">Group ${e.target_group_id}</div>`:j`
                   <div class="binding-device-name">${r}</div>
                   <div class="binding-device-endpoint">Endpoint ${e.target_endpoint_id}</div>
-                  ${o?.area_name?V`<div class="binding-device-area">${o.area_name}</div>`:F}
+                  ${o?.area_name?j`<div class="binding-device-area">${o.area_name}</div>`:U}
                 `}
           </div>
         </div>
@@ -5467,7 +5845,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
       </matter-confirm-dialog>
-    `}_renderVerificationModal(){const e=this._verificationModalResult,t=e?.bindingContext,i=this._verificationInProgress;return V`
+    `}_renderVerificationModal(){const e=this._verificationModalResult,t=e?.bindingContext,i=this._verificationInProgress;return j`
       <div class="dialog-overlay" @click=${this._closeVerificationModal}>
         <div class="dialog confirm-dialog" @click=${e=>e.stopPropagation()}>
           <div class="dialog-header">
@@ -5475,12 +5853,12 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
             Binding Verification
           </div>
 
-          ${i?V`
+          ${i?j`
                 <div class="verification-loading">
                   <div class="loading-spinner"></div>
                   <p>Reading bindings from device...</p>
                 </div>
-              `:e?V`
+              `:e?j`
                   <div class="verification-modal-result ${e.verified?"verified":e.success?"warning":"error"}">
                     <div class="verification-status-icon">
                       ${e.verified?"✓":e.success?"⚠":"✗"}
@@ -5493,15 +5871,15 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                   <div class="verification-details">
                     <p class="verification-message">${this._extractErrorMessage(e.message)}</p>
 
-                    ${t?V`
+                    ${t?j`
                           <div class="verification-binding-info">
                             <strong>${t.sourceNode.name}</strong>
                             <span class="binding-action">${Je(t.binding.cluster_id).action}</span>
                             <strong>${t.targetNode?.name||`Node ${t.binding.target_node_id}`}</strong>
                           </div>
-                        `:F}
+                        `:U}
 
-                    ${!e.verified&&e.success?V`
+                    ${!e.verified&&e.success?j`
                           <div class="verification-help">
                             <strong>What this means:</strong>
                             <p>The binding data was written, but could not be confirmed on the device. This might happen if:</p>
@@ -5511,9 +5889,9 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                               <li>The device is temporarily unavailable</li>
                             </ul>
                           </div>
-                        `:F}
+                        `:U}
                   </div>
-                `:F}
+                `:U}
 
           <div class="dialog-actions">
             <button
@@ -5527,7 +5905,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
       </div>
-    `}_startBindingWizard(e,t,i,o,n){this._bindingWizard={currentStep:"binding",sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:n,selectedPrivilege:ht(n),bindingInProgress:!1,aclInProgress:!1,verifyInProgress:!1}}_closeBindingWizard(){this._bindingWizard=null,this._loadOverviewData()}_goToWizardStep(e){this._bindingWizard&&(this._bindingWizard={...this._bindingWizard,currentStep:e})}_handlePrivilegeChange(e){this._bindingWizard&&(this._bindingWizard={...this._bindingWizard,selectedPrivilege:e})}async _executeBindingStep(){if(!this._bindingWizard)return;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:n}=this._bindingWizard;this._bindingWizard={...this._bindingWizard,bindingInProgress:!0};try{const r=await async function(e,t,i,o,n,r,s,a=!0,d=!0){return e.callWS({type:`${tt}/create_binding`,source_node_id:t,source_endpoint_id:i,cluster_id:o,verify:a,provision_acl:d,...void 0!==n&&{target_node_id:n},...void 0!==r&&{target_endpoint_id:r},...void 0!==s})}(this.hass,e.node_id,t.endpoint_id,n,i.node_id,o.endpoint_id,void 0,!0,!1);this._bindingWizard={...this._bindingWizard,bindingResult:r,bindingInProgress:!1},r.success&&this._goToWizardStep("acl")}catch(e){this._bindingWizard={...this._bindingWizard,bindingResult:{success:!1,verified:!1,message:`Failed to create binding: ${this._extractErrorMessage(e)}`,bindings_found:0,error_type:"unknown_error"},bindingInProgress:!1}}}async _executeACLStep(){if(!this._bindingWizard)return;const{sourceNode:e,targetNode:t,targetEndpoint:i,clusterId:o}=this._bindingWizard;this._bindingWizard={...this._bindingWizard,aclInProgress:!0,aclProgress:void 0};let n=null;try{n=await this.hass.connection.subscribeEvents(i=>{const o=i.data;o.target_node_id===t.node_id&&o.source_node_id===e.node_id&&(this._bindingWizard={...this._bindingWizard,aclProgress:o})},"matter_binding_helper_acl_progress")}catch(e){console.warn("Failed to subscribe to ACL progress events:",e)}try{const n=await st(this.hass,t.node_id,i.endpoint_id,e.node_id,o);this._bindingWizard={...this._bindingWizard,aclResult:n,aclInProgress:!1,aclProgress:void 0},n.success&&this._goToWizardStep("verify")}catch(e){this._bindingWizard={...this._bindingWizard,aclResult:{success:!1,message:`Failed to provision ACL: ${this._extractErrorMessage(e)}`,acl_entries_count:0},aclInProgress:!1,aclProgress:void 0}}finally{n&&n()}}async _executeVerifyStep(){if(!this._bindingWizard)return;const{sourceNode:e,sourceEndpoint:t}=this._bindingWizard;this._bindingWizard={...this._bindingWizard,verifyInProgress:!0};try{const i=await nt(this.hass,e.node_id,t.endpoint_id);this._bindingWizard={...this._bindingWizard,verifyResult:i,verifyInProgress:!1}}catch(e){this._bindingWizard={...this._bindingWizard,verifyResult:{success:!1,verified:!1,message:`Failed to verify bindings: ${this._extractErrorMessage(e)}`,bindings_found:0,error_type:"unknown_error"},verifyInProgress:!1}}}async _repairBindingACL(e){if(null===e.binding.target_node_id||null===e.binding.target_endpoint_id)return;const t=e.binding.target_node_id,i=e.binding.target_endpoint_id,o=this._nodes.find(e=>e.node_id===t),n=o?.name||`Node ${t}`;this._operationProgress={title:"Repairing ACL Permission",steps:[{label:`Provisioning ACL on ${n}`,status:"pending"}],currentStepIndex:0,canCancel:!1,completed:!1},this._updateStepStatus(0,"in_progress");try{const o=await st(this.hass,t,i,e.sourceNode.node_id,e.binding.cluster_id);if(!o.success){const e=this._extractErrorMessage(o.message);return this._updateStepStatus(0,"error",e),void(this._operationProgress={...this._operationProgress,completed:!0,error:e})}this._updateStepStatus(0,"success"),this._targetACLCache=new Map(this._targetACLCache),this._targetACLCache.delete(t)}catch(e){const t=this._extractErrorMessage(e);return this._updateStepStatus(0,"error",t),void(this._operationProgress={...this._operationProgress,completed:!0,error:t})}this._operationProgress={...this._operationProgress,completed:!0}}async _repairAllACLs(){const e=this._allBindings.filter(e=>{if(null!==e.binding.target_group_id)return!1;return!this._checkBindingACL(e.binding,e.sourceNode.node_id).hasPermission});if(0===e.length)return;const t=e.map(e=>{const t=this._nodes.find(t=>t.node_id===e.binding.target_node_id);return{label:`Provisioning ACL on ${t?.name||`Node ${e.binding.target_node_id}`}`,status:"pending"}});this._operationProgress={title:`Repairing ${e.length} ACL Permission${1!==e.length?"s":""}`,steps:t,currentStepIndex:0,canCancel:!0,completed:!1};for(let t=0;t<e.length;t++){if("skipped"===this._operationProgress?.steps[t]?.status)continue;const i=e[t],{binding:o,sourceNode:n}=i;if(null!==o.target_node_id&&null!==o.target_endpoint_id){this._updateStepStatus(t,"in_progress");try{const e=await st(this.hass,o.target_node_id,o.target_endpoint_id,n.node_id,o.cluster_id);e.success?this._updateStepStatus(t,"success"):this._updateStepStatus(t,"error",this._extractErrorMessage(e.message))}catch(e){const i=this._extractErrorMessage(e);this._updateStepStatus(t,"error",i)}}else this._updateStepStatus(t,"skipped","Invalid binding")}this._targetACLCache=new Map,this._operationProgress={...this._operationProgress,completed:!0,canCancel:!1}}_closeBulkRepairModal(){this._showBulkRepairModal=!1,this._bulkRepairResult=null}_renderBulkRepairModal(){if(!this._showBulkRepairModal||!this._bulkRepairResult)return F;const e=this._bulkRepairResult,t=e.total-e.succeeded;return V`
+    `}_startBindingWizard(e,t,i,o,n){this._bindingWizard={currentStep:"binding",sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:n,selectedPrivilege:ht(n),bindingInProgress:!1,aclInProgress:!1,verifyInProgress:!1}}_closeBindingWizard(){this._bindingWizard=null,this._loadOverviewData()}_goToWizardStep(e){this._bindingWizard&&(this._bindingWizard={...this._bindingWizard,currentStep:e})}_handlePrivilegeChange(e){this._bindingWizard&&(this._bindingWizard={...this._bindingWizard,selectedPrivilege:e})}async _executeBindingStep(){if(!this._bindingWizard)return;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:n}=this._bindingWizard;this._bindingWizard={...this._bindingWizard,bindingInProgress:!0};try{const r=await ot(this.hass,e.node_id,t.endpoint_id,n,i.node_id,o.endpoint_id,void 0,!0,!1);this._bindingWizard={...this._bindingWizard,bindingResult:r,bindingInProgress:!1},r.success&&this._goToWizardStep("acl")}catch(e){this._bindingWizard={...this._bindingWizard,bindingResult:{success:!1,verified:!1,message:`Failed to create binding: ${this._extractErrorMessage(e)}`,bindings_found:0,error_type:"unknown_error"},bindingInProgress:!1}}}async _executeACLStep(){if(!this._bindingWizard)return;const{sourceNode:e,targetNode:t,targetEndpoint:i,clusterId:o}=this._bindingWizard;this._bindingWizard={...this._bindingWizard,aclInProgress:!0,aclProgress:void 0};let n=null;try{n=await this.hass.connection.subscribeEvents(i=>{const o=i.data;o.target_node_id===t.node_id&&o.source_node_id===e.node_id&&(this._bindingWizard={...this._bindingWizard,aclProgress:o})},"matter_binding_helper_acl_progress")}catch(e){console.warn("Failed to subscribe to ACL progress events:",e)}try{const n=await at(this.hass,t.node_id,i.endpoint_id,e.node_id,o);this._bindingWizard={...this._bindingWizard,aclResult:n,aclInProgress:!1,aclProgress:void 0},n.success&&this._goToWizardStep("verify")}catch(e){this._bindingWizard={...this._bindingWizard,aclResult:{success:!1,message:`Failed to provision ACL: ${this._extractErrorMessage(e)}`,acl_entries_count:0},aclInProgress:!1,aclProgress:void 0}}finally{n&&n()}}async _executeVerifyStep(){if(!this._bindingWizard)return;const{sourceNode:e,sourceEndpoint:t}=this._bindingWizard;this._bindingWizard={...this._bindingWizard,verifyInProgress:!0};try{const i=await rt(this.hass,e.node_id,t.endpoint_id);this._bindingWizard={...this._bindingWizard,verifyResult:i,verifyInProgress:!1}}catch(e){this._bindingWizard={...this._bindingWizard,verifyResult:{success:!1,verified:!1,message:`Failed to verify bindings: ${this._extractErrorMessage(e)}`,bindings_found:0,error_type:"unknown_error"},verifyInProgress:!1}}}async _repairBindingACL(e){if(null===e.binding.target_node_id||null===e.binding.target_endpoint_id)return;const t=e.binding.target_node_id,i=e.binding.target_endpoint_id,o=this._nodes.find(e=>e.node_id===t),n=o?.name||`Node ${t}`;this._operationProgress={title:"Repairing ACL Permission",steps:[{label:`Provisioning ACL on ${n}`,status:"pending"}],currentStepIndex:0,canCancel:!1,completed:!1},this._updateStepStatus(0,"in_progress");try{const o=await at(this.hass,t,i,e.sourceNode.node_id,e.binding.cluster_id);if(!o.success){const e=this._extractErrorMessage(o.message);return this._updateStepStatus(0,"error",e),void(this._operationProgress={...this._operationProgress,completed:!0,error:e})}this._updateStepStatus(0,"success"),this._targetACLCache=new Map(this._targetACLCache),this._targetACLCache.delete(t)}catch(e){const t=this._extractErrorMessage(e);return this._updateStepStatus(0,"error",t),void(this._operationProgress={...this._operationProgress,completed:!0,error:t})}this._operationProgress={...this._operationProgress,completed:!0}}async _repairAllACLs(){const e=this._allBindings.filter(e=>{if(null!==e.binding.target_group_id)return!1;return!this._checkBindingACL(e.binding,e.sourceNode.node_id).hasPermission});if(0===e.length)return;const t=e.map(e=>{const t=this._nodes.find(t=>t.node_id===e.binding.target_node_id);return{label:`Provisioning ACL on ${t?.name||`Node ${e.binding.target_node_id}`}`,status:"pending"}});this._operationProgress={title:`Repairing ${e.length} ACL Permission${1!==e.length?"s":""}`,steps:t,currentStepIndex:0,canCancel:!0,completed:!1};for(let t=0;t<e.length;t++){if("skipped"===this._operationProgress?.steps[t]?.status)continue;const i=e[t],{binding:o,sourceNode:n}=i;if(null!==o.target_node_id&&null!==o.target_endpoint_id){this._updateStepStatus(t,"in_progress");try{const e=await at(this.hass,o.target_node_id,o.target_endpoint_id,n.node_id,o.cluster_id);e.success?this._updateStepStatus(t,"success"):this._updateStepStatus(t,"error",this._extractErrorMessage(e.message))}catch(e){const i=this._extractErrorMessage(e);this._updateStepStatus(t,"error",i)}}else this._updateStepStatus(t,"skipped","Invalid binding")}this._targetACLCache=new Map,this._operationProgress={...this._operationProgress,completed:!0,canCancel:!1}}_closeBulkRepairModal(){this._showBulkRepairModal=!1,this._bulkRepairResult=null}_renderBulkRepairModal(){if(!this._showBulkRepairModal||!this._bulkRepairResult)return U;const e=this._bulkRepairResult,t=e.total-e.succeeded;return j`
       <div class="dialog-overlay" @click=${this._closeBulkRepairModal}>
         <div class="dialog" style="max-width: 500px;" @click=${e=>e.stopPropagation()}>
           <div class="dialog-header">ACL Repair Results</div>
@@ -5541,30 +5919,30 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               <div class="bulk-repair-stat-value">${e.succeeded}</div>
               <div class="bulk-repair-stat-label">Succeeded</div>
             </div>
-            ${t>0?V`
+            ${t>0?j`
               <div class="bulk-repair-stat failed">
                 <div class="bulk-repair-stat-value">${t}</div>
                 <div class="bulk-repair-stat-label">Failed</div>
               </div>
-            `:F}
+            `:U}
           </div>
 
-          ${e.results.length>0?V`
+          ${e.results.length>0?j`
             <div class="bulk-repair-results">
-              ${e.results.map(e=>{const t=this._nodes.find(t=>t.node_id===e.target_node_id);return V`
+              ${e.results.map(e=>{const t=this._nodes.find(t=>t.node_id===e.target_node_id);return j`
                   <div class="bulk-repair-item">
                     <span class="bulk-repair-item-icon ${e.success?"success":"failed"}">
                       ${e.success?"✓":"✗"}
                     </span>
                     <span>
                       ${t?.name||`Node ${e.target_node_id}`}
-                      (EP ${e.target_endpoint_id}, Cluster ${qe(e.cluster_id)})
-                      ${e.success?F:V`<br><small style="color: var(--error-color);">${this._extractErrorMessage(e.message)}</small>`}
+                      (EP ${e.target_endpoint_id}, Cluster ${He(e.cluster_id)})
+                      ${e.success?U:j`<br><small style="color: var(--error-color);">${this._extractErrorMessage(e.message)}</small>`}
                     </span>
                   </div>
                 `})}
             </div>
-          `:V`
+          `:j`
             <div style="text-align: center; padding: 16px; color: var(--secondary-text-color);">
               No bindings found to repair.
             </div>
@@ -5577,4 +5955,4 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
       </div>
-    `}};Jt.styles=[...Ht,...qt,...Gt,...Bt,...ft,...kt,...Nt],e([pe({attribute:!1})],Jt.prototype,"hass",void 0),e([pe({type:Boolean})],Jt.prototype,"narrow",void 0),e([ge()],Jt.prototype,"_nodes",void 0),e([ge()],Jt.prototype,"_selectedSourceNode",void 0),e([ge()],Jt.prototype,"_selectedSourceEndpoint",void 0),e([ge()],Jt.prototype,"_bindings",void 0),e([ge()],Jt.prototype,"_groups",void 0),e([ge()],Jt.prototype,"_loading",void 0),e([ge()],Jt.prototype,"_error",void 0),e([ge()],Jt.prototype,"_activeTab",void 0),e([ge()],Jt.prototype,"_showCreateDialog",void 0),e([ge()],Jt.prototype,"_allBindings",void 0),e([ge()],Jt.prototype,"_recommendations",void 0),e([ge()],Jt.prototype,"_overviewLoading",void 0),e([ge()],Jt.prototype,"_surveySubmitting",void 0),e([ge()],Jt.prototype,"_surveyResult",void 0),e([ge()],Jt.prototype,"_selectedTargetNodeId",void 0),e([ge()],Jt.prototype,"_selectedTargetEndpointId",void 0),e([ge()],Jt.prototype,"_filterSameAreaOnly",void 0),e([ge()],Jt.prototype,"_actionInProgress",void 0),e([ge()],Jt.prototype,"_pendingBindingRecommendation",void 0),e([ge()],Jt.prototype,"_selectedClusterForBinding",void 0),e([ge()],Jt.prototype,"_pendingManualBinding",void 0),e([ge()],Jt.prototype,"_pendingDeleteBinding",void 0),e([ge()],Jt.prototype,"_automationRecommendations",void 0),e([ge()],Jt.prototype,"_eveSchedules",void 0),e([ge()],Jt.prototype,"_eveScheduleLoading",void 0),e([ge()],Jt.prototype,"_verificationInProgress",void 0),e([ge()],Jt.prototype,"_lastVerificationResult",void 0),e([ge()],Jt.prototype,"_showVerificationModal",void 0),e([ge()],Jt.prototype,"_verificationModalResult",void 0),e([ge()],Jt.prototype,"_aclLoading",void 0),e([ge()],Jt.prototype,"_aclEntries",void 0),e([ge()],Jt.prototype,"_targetACLCache",void 0),e([ge()],Jt.prototype,"_aclLoadingNodes",void 0),e([ge()],Jt.prototype,"_bindingWizard",void 0),e([ge()],Jt.prototype,"_aclRepairInProgress",void 0),e([ge()],Jt.prototype,"_bulkRepairInProgress",void 0),e([ge()],Jt.prototype,"_bulkRepairResult",void 0),e([ge()],Jt.prototype,"_showBulkRepairModal",void 0),e([ge()],Jt.prototype,"_operationProgress",void 0),e([ge()],Jt.prototype,"_showAutomationDialog",void 0),e([ge()],Jt.prototype,"_pendingAutomationRecommendation",void 0),Jt=e([de("matter-binding-helper-panel")],Jt);export{Jt as MatterBindingPanel};
+    `}};Xt.styles=[...Jt,...Kt,...Yt,...Gt,...yt,...Ct,...Nt],e([pe({attribute:!1})],Xt.prototype,"hass",void 0),e([pe({type:Boolean})],Xt.prototype,"narrow",void 0),e([ge()],Xt.prototype,"_nodes",void 0),e([ge()],Xt.prototype,"_selectedSourceNode",void 0),e([ge()],Xt.prototype,"_selectedSourceEndpoint",void 0),e([ge()],Xt.prototype,"_bindings",void 0),e([ge()],Xt.prototype,"_groups",void 0),e([ge()],Xt.prototype,"_loading",void 0),e([ge()],Xt.prototype,"_error",void 0),e([ge()],Xt.prototype,"_activeTab",void 0),e([ge()],Xt.prototype,"_showCreateDialog",void 0),e([ge()],Xt.prototype,"_showCreateGroupDialog",void 0),e([ge()],Xt.prototype,"_manageGroup",void 0),e([ge()],Xt.prototype,"_pendingDeleteGroup",void 0),e([ge()],Xt.prototype,"_allBindings",void 0),e([ge()],Xt.prototype,"_recommendations",void 0),e([ge()],Xt.prototype,"_overviewLoading",void 0),e([ge()],Xt.prototype,"_surveySubmitting",void 0),e([ge()],Xt.prototype,"_surveyResult",void 0),e([ge()],Xt.prototype,"_selectedTargetNodeId",void 0),e([ge()],Xt.prototype,"_selectedTargetEndpointId",void 0),e([ge()],Xt.prototype,"_filterSameAreaOnly",void 0),e([ge()],Xt.prototype,"_actionInProgress",void 0),e([ge()],Xt.prototype,"_pendingBindingRecommendation",void 0),e([ge()],Xt.prototype,"_selectedClusterForBinding",void 0),e([ge()],Xt.prototype,"_pendingManualBinding",void 0),e([ge()],Xt.prototype,"_pendingDeleteBinding",void 0),e([ge()],Xt.prototype,"_automationRecommendations",void 0),e([ge()],Xt.prototype,"_eveSchedules",void 0),e([ge()],Xt.prototype,"_eveScheduleLoading",void 0),e([ge()],Xt.prototype,"_verificationInProgress",void 0),e([ge()],Xt.prototype,"_lastVerificationResult",void 0),e([ge()],Xt.prototype,"_showVerificationModal",void 0),e([ge()],Xt.prototype,"_verificationModalResult",void 0),e([ge()],Xt.prototype,"_aclLoading",void 0),e([ge()],Xt.prototype,"_aclEntries",void 0),e([ge()],Xt.prototype,"_targetACLCache",void 0),e([ge()],Xt.prototype,"_aclLoadingNodes",void 0),e([ge()],Xt.prototype,"_bindingWizard",void 0),e([ge()],Xt.prototype,"_aclRepairInProgress",void 0),e([ge()],Xt.prototype,"_bulkRepairInProgress",void 0),e([ge()],Xt.prototype,"_bulkRepairResult",void 0),e([ge()],Xt.prototype,"_showBulkRepairModal",void 0),e([ge()],Xt.prototype,"_operationProgress",void 0),e([ge()],Xt.prototype,"_showAutomationDialog",void 0),e([ge()],Xt.prototype,"_pendingAutomationRecommendation",void 0),Xt=e([de("matter-binding-helper-panel")],Xt);export{Xt as MatterBindingPanel};

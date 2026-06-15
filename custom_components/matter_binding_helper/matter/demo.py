@@ -20,7 +20,7 @@ from ..const import (
     DEFAULT_DEMO_MODE,
     DOMAIN,
 )
-from .models import ACLEntry, BindingEntry
+from .models import ACLEntry, BindingEntry, GroupEntry
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -326,9 +326,75 @@ def remove_demo_acl_entry(node_id: int, source_node_id: int | None = None) -> bo
     return len(_demo_acl_entries[node_id]) < original_count
 
 
+def _default_demo_groups() -> dict[int, GroupEntry]:
+    """Build the initial demo group set."""
+    return {
+        1: GroupEntry(
+            group_id=1,
+            name="Living Room Lights",
+            members=[{"node_id": 1, "endpoint_id": 1}],
+        ),
+    }
+
+
+# Group storage for demo mode (keyed by group_id)
+_demo_groups: dict[int, GroupEntry] = _default_demo_groups()
+
+
+def get_demo_groups() -> list[GroupEntry]:
+    """Get all demo groups, ordered by group id."""
+    return [_demo_groups[gid] for gid in sorted(_demo_groups)]
+
+
+def create_demo_group(group_id: int | None, name: str) -> int | None:
+    """Create a demo group.
+
+    If ``group_id`` is None, allocate the next free id. Returns the created group
+    id, or None if an explicitly-requested id already exists.
+    """
+    if group_id is None:
+        group_id = (max(_demo_groups) + 1) if _demo_groups else 1
+    elif group_id in _demo_groups:
+        return None
+    _demo_groups[group_id] = GroupEntry(group_id=group_id, name=name, members=[])
+    return group_id
+
+
+def delete_demo_group(group_id: int) -> bool:
+    """Delete a demo group. Returns True if it existed."""
+    return _demo_groups.pop(group_id, None) is not None
+
+
+def add_demo_group_member(group_id: int, node_id: int, endpoint_id: int) -> bool:
+    """Add an endpoint to a demo group (idempotent).
+
+    Returns False if the group does not exist.
+    """
+    group = _demo_groups.get(group_id)
+    if group is None:
+        return False
+    member = {"node_id": node_id, "endpoint_id": endpoint_id}
+    if member not in group.members:
+        group.members.append(member)
+    return True
+
+
+def remove_demo_group_member(group_id: int, node_id: int, endpoint_id: int) -> bool:
+    """Remove an endpoint from a demo group.
+
+    Returns False if the group does not exist.
+    """
+    group = _demo_groups.get(group_id)
+    if group is None:
+        return False
+    member = {"node_id": node_id, "endpoint_id": endpoint_id}
+    group.members = [m for m in group.members if m != member]
+    return True
+
+
 def reset_demo_data() -> None:
     """Reset all demo data to initial state."""
-    global _demo_bindings, _demo_acl_entries
+    global _demo_bindings, _demo_acl_entries, _demo_groups
 
     _demo_bindings = {
         (2, 1): [
@@ -352,3 +418,5 @@ def reset_demo_data() -> None:
     }
 
     _demo_acl_entries = {}
+
+    _demo_groups = _default_demo_groups()

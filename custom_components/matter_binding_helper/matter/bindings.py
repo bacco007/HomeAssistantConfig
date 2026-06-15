@@ -11,6 +11,7 @@ from homeassistant.core import HomeAssistant
 from ..const import CLUSTER_BINDING
 from .acl import provision_acl_for_binding, remove_acl_entry
 from .client import get_raw_matter_client
+from .groups import provision_group_for_binding, teardown_group_for_binding
 from .demo import (
     add_demo_binding,
     get_demo_bindings,
@@ -441,6 +442,7 @@ async def create_binding(
     target_group_id: int | None = None,
     verify: bool = True,
     provision_acl: bool = True,
+    provision_group: bool = True,
 ) -> BindingVerificationResult:
     """Create a new binding with optional verification and ACL provisioning.
 
@@ -454,6 +456,7 @@ async def create_binding(
         target_group_id: Target group ID (for group binding)
         verify: If True, verify the binding was created by reading back
         provision_acl: If True, provision ACL on target device (unicast only)
+        provision_group: If True, provision group key/ACL on members (group only)
 
     Returns:
         BindingVerificationResult with success/verification status
@@ -593,6 +596,28 @@ async def create_binding(
             else:
                 _LOGGER.info("create_binding: ACL provisioned successfully")
 
+        # Provision group key + ACL on members for a groupcast binding
+        elif provision_group and target_group_id is not None:
+            _LOGGER.info(
+                "create_binding: Provisioning groupcast binding source %s -> group %s",
+                source_node_id,
+                target_group_id,
+            )
+            group_result = await provision_group_for_binding(
+                hass=hass,
+                source_node_id=source_node_id,
+                group_id=target_group_id,
+                cluster_id=cluster_id,
+            )
+            if not group_result.success:
+                _LOGGER.warning(
+                    "create_binding: group provisioning failed: %s "
+                    "(binding was still created)",
+                    group_result.message,
+                )
+            else:
+                _LOGGER.info("create_binding: group binding provisioned successfully")
+
         # Verify the binding was created if requested
         if verify:
             _LOGGER.info("create_binding: Verifying binding was written to device...")
@@ -673,6 +698,7 @@ async def delete_binding(
     cluster_id: int | None = None,
     verify: bool = True,
     remove_acl: bool = True,
+    remove_group: bool = True,
 ) -> BindingVerificationResult:
     """Delete a binding with optional verification and ACL cleanup.
 
@@ -841,6 +867,28 @@ async def delete_binding(
                     )
                 else:
                     _LOGGER.info("delete_binding: ACL removed successfully")
+
+        # Tear down group-auth ACL for a deleted groupcast binding
+        elif remove_group and target_group_id is not None and deleted_bindings:
+            group_cluster_id = cluster_id or (
+                deleted_bindings[0].cluster_id if deleted_bindings else None
+            )
+            if group_cluster_id is not None:
+                _LOGGER.info(
+                    "delete_binding: Tearing down groupcast binding to group %s",
+                    target_group_id,
+                )
+                group_result = await teardown_group_for_binding(
+                    hass=hass,
+                    group_id=target_group_id,
+                    cluster_id=group_cluster_id,
+                )
+                if not group_result.success:
+                    _LOGGER.warning(
+                        "delete_binding: group teardown failed: %s "
+                        "(binding was still deleted)",
+                        group_result.message,
+                    )
 
         # Verify the binding was deleted if requested
         if verify:

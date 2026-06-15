@@ -949,6 +949,7 @@ def _serialize_value(value: Any) -> dict[str, Any]:
         vol.Optional("target_group_id"): vol.Coerce(int),
         vol.Optional("verify", default=True): bool,
         vol.Optional("provision_acl", default=True): bool,
+        vol.Optional("provision_group", default=True): bool,
     }
 )
 @websocket_api.async_response
@@ -976,6 +977,7 @@ async def ws_create_binding(
         target_group_id=msg.get("target_group_id"),
         verify=msg.get("verify", True),
         provision_acl=msg.get("provision_acl", True),
+        provision_group=msg.get("provision_group", True),
     )
     _LOGGER.info("ws_create_binding result: %s", result)
     if result.success:
@@ -1190,6 +1192,7 @@ async def ws_provision_acl_for_bindings(
         vol.Optional("cluster_id"): vol.Coerce(int),
         vol.Optional("verify", default=True): bool,
         vol.Optional("remove_acl", default=True): bool,
+        vol.Optional("remove_group", default=True): bool,
     }
 )
 @websocket_api.async_response
@@ -1217,6 +1220,7 @@ async def ws_delete_binding(
         cluster_id=msg.get("cluster_id"),
         verify=msg.get("verify", True),
         remove_acl=msg.get("remove_acl", True),
+        remove_group=msg.get("remove_group", True),
     )
     _LOGGER.info("ws_delete_binding result: %s", result)
     if result.success:
@@ -1248,7 +1252,7 @@ async def ws_list_groups(
 @websocket_api.websocket_command(
     {
         vol.Required("type"): WS_TYPE_CREATE_GROUP,
-        vol.Required("group_id"): vol.Coerce(int),
+        vol.Optional("group_id"): vol.Coerce(int),
         vol.Required("name"): str,
     }
 )
@@ -1258,12 +1262,16 @@ async def ws_create_group(
     connection: websocket_api.ActiveConnection,
     msg: dict[str, Any],
 ) -> None:
-    """Create a new Matter group."""
-    success = await matter_client.create_group(hass, msg["group_id"], msg["name"])
-    if success:
-        connection.send_result(msg["id"], {"success": True})
+    """Create a new Matter group. group_id is optional (auto-allocated if absent)."""
+    result = await matter_client.create_group(hass, msg.get("group_id"), msg["name"])
+    if result.success:
+        connection.send_result(
+            msg["id"], {"success": True, "group_id": result.group_id}
+        )
     else:
-        connection.send_error(msg["id"], "create_failed", "Failed to create group")
+        connection.send_error(
+            msg["id"], result.error_code or "create_failed", result.message
+        )
 
 
 @websocket_api.websocket_command(
@@ -1279,11 +1287,13 @@ async def ws_delete_group(
     msg: dict[str, Any],
 ) -> None:
     """Delete a Matter group."""
-    success = await matter_client.delete_group(hass, msg["group_id"])
-    if success:
+    result = await matter_client.delete_group(hass, msg["group_id"])
+    if result.success:
         connection.send_result(msg["id"], {"success": True})
     else:
-        connection.send_error(msg["id"], "delete_failed", "Failed to delete group")
+        connection.send_error(
+            msg["id"], result.error_code or "delete_failed", result.message
+        )
 
 
 @websocket_api.websocket_command(
@@ -1301,13 +1311,15 @@ async def ws_add_to_group(
     msg: dict[str, Any],
 ) -> None:
     """Add an endpoint to a group."""
-    success = await matter_client.add_to_group(
+    result = await matter_client.add_to_group(
         hass, msg["group_id"], msg["node_id"], msg["endpoint_id"]
     )
-    if success:
+    if result.success:
         connection.send_result(msg["id"], {"success": True})
     else:
-        connection.send_error(msg["id"], "add_failed", "Failed to add to group")
+        connection.send_error(
+            msg["id"], result.error_code or "add_failed", result.message
+        )
 
 
 @websocket_api.websocket_command(
@@ -1325,13 +1337,15 @@ async def ws_remove_from_group(
     msg: dict[str, Any],
 ) -> None:
     """Remove an endpoint from a group."""
-    success = await matter_client.remove_from_group(
+    result = await matter_client.remove_from_group(
         hass, msg["group_id"], msg["node_id"], msg["endpoint_id"]
     )
-    if success:
+    if result.success:
         connection.send_result(msg["id"], {"success": True})
     else:
-        connection.send_error(msg["id"], "remove_failed", "Failed to remove from group")
+        connection.send_error(
+            msg["id"], result.error_code or "remove_failed", result.message
+        )
 
 
 # =============================================================================
