@@ -22,7 +22,8 @@ Key design decisions:
 
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.helpers import selector
+from homeassistant.core import valid_entity_id
+from homeassistant.helpers import entity_registry as er, selector
 from .const import DOMAIN, SUPPORTED_DOMAINS
 
 
@@ -33,6 +34,29 @@ class WhodunnitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     # migrating existing config entries (see async_migrate_entry in HA docs).
     VERSION = 1
 
+    def _validate_target(self, target) -> str | None:
+        """Validate a submitted target entity ID, returning an error key or None.
+
+        The EntitySelector already enforces these rules in the frontend, but
+        selector constraints are client-side only: a raw websocket submission
+        can deliver any string. Without this check, a malformed or
+        unsupported-domain entity ID would create a config entry that can
+        never produce a working sensor.
+        """
+        if not isinstance(target, str) or not valid_entity_id(target):
+            return "invalid_entity"
+        if target.split(".")[0] not in SUPPORTED_DOMAINS:
+            return "invalid_entity"
+        # Accept the entity if it has a state or a registry entry. Checking
+        # both matters: registered-but-disabled entities have no state, and
+        # some state-machine-only entities have no registry entry.
+        if (
+            self.hass.states.get(target) is None
+            and er.async_get(self.hass).async_get(target) is None
+        ):
+            return "invalid_entity"
+        return None
+
     async def async_step_user(self, user_input=None):
         """Handle the initial (and only) setup step.
 
@@ -40,30 +64,36 @@ class WhodunnitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
           1. With user_input=None to render the empty form.
           2. With user_input populated after the user submits the form.
         """
+        errors = {}
         if user_input is not None:
             # The EntitySelector returns a single entity_id string because
             # multiple=False is set in the selector config below.
             target = user_input["targets"]
 
-            # Generate a unique ID for this entry based on the entity being
-            # tracked. This prevents the user from setting up two Whodunnit
-            # instances for the same entity  -  HA will call _abort_if_unique_id_configured
-            # and show the "already_configured" abort message from strings.json.
-            await self.async_set_unique_id(f"whodunnit_{target.replace('.', '_')}")
-            self._abort_if_unique_id_configured()
+            error = self._validate_target(target)
+            if error is None:
+                # Generate a unique ID for this entry based on the entity being
+                # tracked. This prevents the user from setting up two Whodunnit
+                # instances for the same entity  -  HA will call _abort_if_unique_id_configured
+                # and show the "already_configured" abort message from strings.json.
+                await self.async_set_unique_id(
+                    f"whodunnit_{target.replace('.', '_')}"
+                )
+                self._abort_if_unique_id_configured()
 
-            # Wrap the single entity_id in a list. The data model uses a list
-            # to keep the door open for multi-entity tracking in a future version
-            # without requiring a data migration.
-            user_input["targets"] = [target]
+                # Wrap the single entity_id in a list. The data model uses a list
+                # to keep the door open for multi-entity tracking in a future version
+                # without requiring a data migration.
+                user_input["targets"] = [target]
 
-            # Use a slug-derived placeholder as the initial title. The real
-            # friendly name is applied by update_entry_title() in __init__.py
-            # as soon as the entry finishes loading, so this value is transient.
-            return self.async_create_entry(
-                title=target.split(".")[-1].replace("_", " ").title(),
-                data=user_input
-            )
+                # Use a slug-derived placeholder as the initial title. The real
+                # friendly name is applied by update_entry_title() in __init__.py
+                # as soon as the entry finishes loading, so this value is transient.
+                return self.async_create_entry(
+                    title=target.split(".")[-1].replace("_", " ").title(),
+                    data=user_input
+                )
+            errors["targets"] = error
 
         # --- Build and display the form ---
 
@@ -89,4 +119,5 @@ class WhodunnitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     ),
                 ),
             }),
+            errors=errors,
         )

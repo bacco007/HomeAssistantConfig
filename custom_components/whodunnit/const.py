@@ -19,21 +19,16 @@ CONFIDENCE_HIGH = "high"
 CONFIDENCE_MEDIUM = "medium"
 CONFIDENCE_LOW = "low"
 
-# Threshold (seconds): a context cache entry older than this on a hardware
-# platform entity is considered possibly stale (ESPHome context bleed window).
-# ESPHome reuses the last HA-sent context for approximately 5 seconds after
-# receiving a command - empirically verified. Within that 5-second window,
-# a physical button press may inherit the prior HA context and be misclassified.
-# So: cache_age < 5s on an ESPHome entity = CONFIDENCE_LOW (inside bleed window).
-#     cache_age > 5s on an ESPHome entity = CONFIDENCE_HIGH (bleed window passed,
-#     ESPHome will report its own fresh context for any genuine HA-triggered event).
-ESPHOME_BLEED_THRESHOLD = 5.0
-
 # Number of trigger events retained in the history log attribute.
 HISTORY_LOG_SIZE = 25
 
 # Hardware integration platforms whose context may bleed from prior HA commands.
-# ESPHome is the known offender; others can be added here if observed.
+# ESPHome is the known offender (others can be added here if observed): it
+# reuses the last HA-sent context for approximately 5 seconds after receiving
+# a command - empirically verified - so a physical button press inside that
+# window inherits the prior HA context. Sensors on these platforms use the
+# cache entry's "seen" flag to detect a possible bleed and report low
+# confidence (see Step 1 of the detection cascade in sensor.py).
 BLEED_PLATFORMS = frozenset({"esphome"})
 
 # Identity Constants
@@ -42,8 +37,6 @@ NAME_INDIRECT_AUTOMATION = "Automation (Indirect)"
 NAME_DEVICE = "Device"
 NAME_READY = "None"
 NAME_UNKNOWN_USER = "Unknown User"
-NAME_TRACKER_PREFIX = "Whodunnit"
-NAME_SERVICE_ACCOUNT = "Service Account"
 
 # State Slugs (Matching strings.json)
 # These are the values written to the sensor's native_value (the primary state).

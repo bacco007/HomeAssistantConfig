@@ -10,6 +10,9 @@
         }
       }
     },
+    "error": {
+      "invalid_entity": "Select a valid entity from one of the supported domains."
+    },
     "abort": {
       "already_configured": "A tracker for this entity is already set up. You cannot track the same device twice."
     }
