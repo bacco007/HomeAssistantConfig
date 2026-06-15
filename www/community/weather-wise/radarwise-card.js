@@ -1,20 +1,21 @@
 /*
- * WeatherWise Card
+ * RadarWise Card
  * Home Assistant weather dashboard card with forecasts and optional radar.
  */
 
-const CARD_VERSION = "0.4.0";
+const CARD_VERSION = "0.8.1";
 const FORECAST_REFRESH_MS = 15 * 60 * 1000;
-const CARD_TYPES = ["weatherwise-card", "weather-wise-card"];
+const ENVIRONMENT_REFRESH_MS = 60 * 60 * 1000;
+const CARD_TYPES = ["radarwise-card", "radar-wise-card", "weatherwise-card", "weather-wise-card"];
 
-const WEATHERWISE_COUNTRIES = {
+const RADARWISE_COUNTRIES = {
   us: "United States",
   ca: "Canada",
   uk: "United Kingdom",
   global: "Global / other"
 };
 
-const WEATHERWISE_RADAR = {
+const RADARWISE_RADAR = {
   auto: "Auto",
   noaa: "US NOAA radar",
   envcanada: "Environment Canada radar",
@@ -22,25 +23,31 @@ const WEATHERWISE_RADAR = {
   none: "No radar"
 };
 
-const WEATHERWISE_RADAR_STYLES = {
+const RADARWISE_RADAR_STYLES = {
   standard: "Standard",
   vivid: "High contrast",
   soft: "Soft"
 };
 
-const WEATHERWISE_BASEMAPS = {
+const RADARWISE_BASEMAPS = {
   light: "Light map",
   dark: "Dark map",
   osm: "Street map"
 };
 
-const WEATHERWISE_RADAR_TIMELINES = {
+const RADARWISE_RADAR_TIMELINES = {
   loop: "Recent loop",
   latest: "Current frame",
   future: "Future if available"
 };
 
-const WEATHERWISE_LAYOUTS = {
+const RADARWISE_ENVIRONMENT_SOURCES = {
+  sensors: "Home Assistant sensors",
+  open_meteo: "Open-Meteo, no API key",
+  disabled: "Disabled"
+};
+
+const RADARWISE_LAYOUTS = {
   auto: "Auto",
   wide_panel: "Wide panel",
   stacked: "Stacked",
@@ -48,7 +55,22 @@ const WEATHERWISE_LAYOUTS = {
   radar_bottom: "Radar bottom"
 };
 
-const WEATHERWISE_LANGUAGES = {
+const RADARWISE_CONTENT_MODES = {
+  full: "Full dashboard",
+  essentials: "Essentials",
+  forecast: "Forecast only",
+  timeline: "Hourly only",
+  radar: "Radar only",
+  custom: "Custom"
+};
+
+const RADARWISE_DENSITIES = {
+  comfortable: "Comfortable",
+  slim: "Slim",
+  large: "Large"
+};
+
+const RADARWISE_LANGUAGES = {
   auto: "Auto",
   en: "English",
   fr: "Français",
@@ -57,7 +79,7 @@ const WEATHERWISE_LANGUAGES = {
   pt: "Português"
 };
 
-const WEATHERWISE_TEXT = {
+const RADARWISE_TEXT = {
   en: {
     am: "AM",
     pm: "PM",
@@ -73,6 +95,24 @@ const WEATHERWISE_TEXT = {
     dayPeriod: "Day",
     nightPeriod: "Night",
     humidity: "Humidity",
+    dewPoint: "Dew Point",
+    airQuality: "Air Quality",
+    uvIndex: "UV Index",
+    pollen: "Pollen",
+    treePollen: "Tree Pollen",
+    grassPollen: "Grass Pollen",
+    weedPollen: "Weed Pollen",
+    moldPollen: "Mold",
+    good: "Good",
+    low: "Low",
+    moderate: "Moderate",
+    high: "High",
+    veryHigh: "Very High",
+    unhealthySensitive: "Unhealthy for Sensitive Groups",
+    unhealthy: "Unhealthy",
+    veryUnhealthy: "Very Unhealthy",
+    hazardous: "Hazardous",
+    extreme: "Extreme",
     wind: "Wind",
     sunrise: "Sunrise",
     sunset: "Sunset",
@@ -92,6 +132,7 @@ const WEATHERWISE_TEXT = {
     weatherAlert: "Weather alert",
     activeWeatherAlert: "active weather alert",
     nwsAlertTap: "NWS alert - tap for details",
+    nwsAlertsTap: "NWS alerts - tap for details",
     severity: "Severity",
     unknown: "Unknown",
     forecastIntro: "Forecast",
@@ -134,6 +175,24 @@ const WEATHERWISE_TEXT = {
     dayPeriod: "Jour",
     nightPeriod: "Nuit",
     humidity: "Humidité",
+    dewPoint: "Point de rosée",
+    airQuality: "Qualite de l'air",
+    uvIndex: "Indice UV",
+    pollen: "Pollen",
+    treePollen: "Pollen des arbres",
+    grassPollen: "Pollen de graminees",
+    weedPollen: "Pollen de mauvaises herbes",
+    moldPollen: "Moisissures",
+    good: "Bon",
+    low: "Faible",
+    moderate: "Modere",
+    high: "Eleve",
+    veryHigh: "Tres eleve",
+    unhealthySensitive: "Mauvais pour les personnes sensibles",
+    unhealthy: "Mauvais",
+    veryUnhealthy: "Tres mauvais",
+    hazardous: "Dangereux",
+    extreme: "Extreme",
     wind: "Vent",
     sunrise: "Lever du soleil",
     sunset: "Coucher du soleil",
@@ -153,6 +212,7 @@ const WEATHERWISE_TEXT = {
     weatherAlert: "Alerte météo",
     activeWeatherAlert: "alerte météo active",
     nwsAlertTap: "alerte NWS - toucher pour les détails",
+    nwsAlertsTap: "alertes NWS - toucher pour les détails",
     severity: "Gravité",
     unknown: "Inconnue",
     forecastIntro: "Prévisions",
@@ -195,6 +255,24 @@ const WEATHERWISE_TEXT = {
     dayPeriod: "Día",
     nightPeriod: "Noche",
     humidity: "Humedad",
+    dewPoint: "Punto de rocío",
+    airQuality: "Calidad del aire",
+    uvIndex: "Indice UV",
+    pollen: "Polen",
+    treePollen: "Polen de arboles",
+    grassPollen: "Polen de pastos",
+    weedPollen: "Polen de malezas",
+    moldPollen: "Moho",
+    good: "Buena",
+    low: "Bajo",
+    moderate: "Moderado",
+    high: "Alto",
+    veryHigh: "Muy alto",
+    unhealthySensitive: "Dano para grupos sensibles",
+    unhealthy: "Dano",
+    veryUnhealthy: "Muy danino",
+    hazardous: "Peligroso",
+    extreme: "Extremo",
     wind: "Viento",
     sunrise: "Amanecer",
     sunset: "Atardecer",
@@ -214,6 +292,7 @@ const WEATHERWISE_TEXT = {
     weatherAlert: "Alerta meteorológica",
     activeWeatherAlert: "alerta meteorológica activa",
     nwsAlertTap: "alerta NWS - toca para ver detalles",
+    nwsAlertsTap: "alertas NWS - toca para ver detalles",
     severity: "Severidad",
     unknown: "Desconocida",
     forecastIntro: "Pronóstico",
@@ -256,6 +335,24 @@ const WEATHERWISE_TEXT = {
     dayPeriod: "Tag",
     nightPeriod: "Nacht",
     humidity: "Luftfeuchtigkeit",
+    dewPoint: "Taupunkt",
+    airQuality: "Luftqualitat",
+    uvIndex: "UV-Index",
+    pollen: "Pollen",
+    treePollen: "Baumpollen",
+    grassPollen: "Graspollen",
+    weedPollen: "Krautpollen",
+    moldPollen: "Schimmel",
+    good: "Gut",
+    low: "Niedrig",
+    moderate: "Moderat",
+    high: "Hoch",
+    veryHigh: "Sehr hoch",
+    unhealthySensitive: "Ungesund fur empfindliche Gruppen",
+    unhealthy: "Ungesund",
+    veryUnhealthy: "Sehr ungesund",
+    hazardous: "Gefahrlich",
+    extreme: "Extrem",
     wind: "Wind",
     sunrise: "Sonnenaufgang",
     sunset: "Sonnenuntergang",
@@ -275,6 +372,7 @@ const WEATHERWISE_TEXT = {
     weatherAlert: "Wetterwarnung",
     activeWeatherAlert: "aktive Wetterwarnung",
     nwsAlertTap: "NWS-Warnung - für Details antippen",
+    nwsAlertsTap: "NWS-Warnungen - für Details antippen",
     severity: "Schweregrad",
     unknown: "Unbekannt",
     forecastIntro: "Vorhersage",
@@ -317,6 +415,24 @@ const WEATHERWISE_TEXT = {
     dayPeriod: "Dia",
     nightPeriod: "Noite",
     humidity: "Humidade",
+    dewPoint: "Ponto de orvalho",
+    airQuality: "Qualidade do ar",
+    uvIndex: "Indice UV",
+    pollen: "Polen",
+    treePollen: "Polen de arvores",
+    grassPollen: "Polen de graminias",
+    weedPollen: "Polen de ervas",
+    moldPollen: "Bolor",
+    good: "Boa",
+    low: "Baixo",
+    moderate: "Moderado",
+    high: "Alto",
+    veryHigh: "Muito alto",
+    unhealthySensitive: "Mau para grupos sensiveis",
+    unhealthy: "Mau",
+    veryUnhealthy: "Muito mau",
+    hazardous: "Perigoso",
+    extreme: "Extremo",
     wind: "Vento",
     sunrise: "Nascer do sol",
     sunset: "Pôr do sol",
@@ -336,6 +452,7 @@ const WEATHERWISE_TEXT = {
     weatherAlert: "Alerta meteorológico",
     activeWeatherAlert: "alerta meteorológico ativo",
     nwsAlertTap: "alerta NWS - toque para detalhes",
+    nwsAlertsTap: "alertas NWS - toque para detalhes",
     severity: "Severidade",
     unknown: "Desconhecida",
     forecastIntro: "Previsão",
@@ -375,7 +492,7 @@ function _wwEscape(value) {
   }[char]));
 }
 
-function isWeatherWiseHumidityEntity(entityId, state) {
+function isRadarWiseHumidityEntity(entityId, state) {
   if (!entityId) return false;
   const friendly = String(state?.attributes?.friendly_name || "").toLowerCase();
   const deviceClass = String(state?.attributes?.device_class || "").toLowerCase();
@@ -383,7 +500,7 @@ function isWeatherWiseHumidityEntity(entityId, state) {
   return deviceClass === "humidity" || id.includes("humidity") || friendly.includes("humidity");
 }
 
-function isWeatherWiseTemperatureEntity(entityId, state) {
+function isRadarWiseTemperatureEntity(entityId, state) {
   if (!entityId) return false;
   const attrs = state?.attributes || {};
   const friendly = String(attrs.friendly_name || "").toLowerCase();
@@ -393,25 +510,98 @@ function isWeatherWiseTemperatureEntity(entityId, state) {
   return deviceClass === "temperature" || unit.includes("°") || unit === "c" || unit === "f" || id.includes("temp") || friendly.includes("temp");
 }
 
-class WeatherWiseCard extends HTMLElement {
+function isRadarWiseDewPointEntity(entityId, state) {
+  if (!entityId) return false;
+  const attrs = state?.attributes || {};
+  const friendly = String(attrs.friendly_name || "").toLowerCase();
+  const deviceClass = String(attrs.device_class || "").toLowerCase();
+  const unit = String(attrs.unit_of_measurement || attrs.native_unit_of_measurement || "").toLowerCase();
+  const id = String(entityId).toLowerCase();
+  const looksLikeTemperature = deviceClass === "temperature" || unit.includes("°") || unit === "c" || unit === "f";
+  return id.includes("dew_point")
+    || id.includes("dewpoint")
+    || friendly.includes("dew point")
+    || friendly.includes("dewpoint")
+    || (looksLikeTemperature && (id.includes("dew") || friendly.includes("dew")));
+}
+
+function isRadarWiseAirQualityEntity(entityId, state) {
+  if (!entityId) return false;
+  const attrs = state?.attributes || {};
+  const friendly = String(attrs.friendly_name || "").toLowerCase();
+  const deviceClass = String(attrs.device_class || "").toLowerCase();
+  const unit = String(attrs.unit_of_measurement || attrs.native_unit_of_measurement || "").toLowerCase();
+  const id = String(entityId).toLowerCase();
+  const haystack = `${id} ${friendly} ${deviceClass} ${unit}`;
+  return haystack.includes("aqi")
+    || haystack.includes("air_quality")
+    || haystack.includes("air quality")
+    || haystack.includes("pm2.5")
+    || haystack.includes("pm25")
+    || haystack.includes("pm_2_5")
+    || haystack.includes("particulate");
+}
+
+function isRadarWiseUvIndexEntity(entityId, state) {
+  if (!entityId) return false;
+  const attrs = state?.attributes || {};
+  const friendly = String(attrs.friendly_name || "").toLowerCase();
+  const deviceClass = String(attrs.device_class || "").toLowerCase();
+  const unit = String(attrs.unit_of_measurement || attrs.native_unit_of_measurement || "").toLowerCase();
+  const id = String(entityId).toLowerCase();
+  const haystack = `${id} ${friendly} ${deviceClass} ${unit}`;
+  return deviceClass === "uv_index"
+    || haystack.includes("uv_index")
+    || haystack.includes("uv index")
+    || haystack.includes("ultraviolet")
+    || haystack.includes(" uvi");
+}
+
+function isRadarWisePollenEntity(entityId, state, kind = "") {
+  if (!entityId) return false;
+  const attrs = state?.attributes || {};
+  const friendly = String(attrs.friendly_name || "").toLowerCase();
+  const deviceClass = String(attrs.device_class || "").toLowerCase();
+  const unit = String(attrs.unit_of_measurement || attrs.native_unit_of_measurement || "").toLowerCase();
+  const id = String(entityId).toLowerCase();
+  const haystack = `${id} ${friendly} ${deviceClass} ${unit}`;
+  const pollenish = haystack.includes("pollen") || haystack.includes("allergy") || haystack.includes("allergen");
+  if (!kind) return pollenish;
+  const source = String(kind).toLowerCase();
+  return pollenish && (haystack.includes(source) || haystack.includes(`${source}_pollen`) || haystack.includes(`${source} pollen`));
+}
+
+class RadarWiseCard extends HTMLElement {
   static getStubConfig() {
     return {
-      type: "custom:weatherwise-card",
+      type: "custom:radarwise-card",
       entity: "weather.home",
       humidity_entity: "",
       temperature_entity: "",
+      dew_point_entity: "",
+      air_quality_entity: "",
+      uv_index_entity: "",
+      pollen_entity: "",
+      tree_pollen_entity: "",
+      grass_pollen_entity: "",
+      weed_pollen_entity: "",
+      mold_pollen_entity: "",
+      environment_source: "sensors",
       title: "Local Weather",
       country: "us",
       radar_provider: "auto",
-      theme_mode: "weatherwise",
+      theme_mode: "radarwise",
       units: "auto",
       language: "auto",
       layout: "auto",
+      content_mode: "full",
+      density: "comfortable",
       hourly_count: 5,
       forecast_count: 5,
       show_timeline: true,
       show_forecast: true,
       show_forecast_summary: true,
+      show_environment: true,
       show_radar: true,
       show_map_controls: true,
       radar_controls: true,
@@ -434,7 +624,7 @@ class WeatherWiseCard extends HTMLElement {
   }
 
   static getConfigElement() {
-    return document.createElement("weatherwise-card-editor");
+    return document.createElement("radarwise-card-editor");
   }
 
   constructor() {
@@ -445,6 +635,10 @@ class WeatherWiseCard extends HTMLElement {
     this._forecasts = { hourly: [], daily: [], twice_daily: [] };
     this._forecastEntity = null;
     this._lastForecastLoad = 0;
+    this._environmentData = null;
+    this._environmentLastLoad = 0;
+    this._environmentTimer = null;
+    this._environmentKey = "";
     this._lastRenderKey = "";
     this._clockTimer = window.setInterval(() => this._updateClock(), 1000);
     this._forecastRefreshTimer = null;
@@ -470,6 +664,8 @@ class WeatherWiseCard extends HTMLElement {
     if (!this._clockTimer) this._clockTimer = window.setInterval(() => this._updateClock(), 1000);
     this._updateClock();
     this._ensureForecastRefreshTimer();
+    this._ensureEnvironmentRefreshTimer();
+    this._refreshEnvironmentIfStale();
     this._resumeRadarIfNeeded();
   }
 
@@ -478,6 +674,8 @@ class WeatherWiseCard extends HTMLElement {
     this._clockTimer = null;
     window.clearInterval(this._forecastRefreshTimer);
     this._forecastRefreshTimer = null;
+    window.clearInterval(this._environmentTimer);
+    this._environmentTimer = null;
     this._teardownRadar();
     this._stopTimelineScroll();
     this._cardResizeObserver?.disconnect?.();
@@ -504,6 +702,16 @@ class WeatherWiseCard extends HTMLElement {
     ) {
       this._teardownRadar();
     }
+    if (
+      previous.environment_source !== this._config.environment_source ||
+      previous.show_environment !== this._config.show_environment ||
+      previous.latitude !== this._config.latitude ||
+      previous.longitude !== this._config.longitude
+    ) {
+      this._resetEnvironmentData();
+    }
+    this._ensureEnvironmentRefreshTimer();
+    this._refreshEnvironmentIfStale();
     this._lastRenderKey = "";
     this._render();
   }
@@ -519,6 +727,8 @@ class WeatherWiseCard extends HTMLElement {
       this._lastRenderKey = "";
     }
     this._ensureForecastRefreshTimer();
+    this._ensureEnvironmentRefreshTimer();
+    this._refreshEnvironmentIfStale();
     if (entityId && now - this._lastForecastLoad > 5 * 60 * 1000) {
       this._lastForecastLoad = now;
       this._loadForecasts(entityId);
@@ -541,20 +751,199 @@ class WeatherWiseCard extends HTMLElement {
     this._loadForecasts(this._config.entity);
   }
 
+  _environmentEnabled() {
+    return this._config.show_environment !== false && this._config.environment_source === "open_meteo";
+  }
+
+  _ensureEnvironmentRefreshTimer() {
+    if (!this._environmentEnabled()) {
+      window.clearInterval(this._environmentTimer);
+      this._environmentTimer = null;
+      return;
+    }
+    if (this._environmentTimer || !this.isConnected) return;
+    this._environmentTimer = window.setInterval(() => this._refreshEnvironmentIfStale(true), ENVIRONMENT_REFRESH_MS);
+  }
+
+  _resetEnvironmentData() {
+    this._environmentData = null;
+    this._environmentLastLoad = 0;
+    this._environmentKey = "";
+    window.clearInterval(this._environmentTimer);
+    this._environmentTimer = null;
+  }
+
+  _refreshEnvironmentIfStale(force = false) {
+    if (!this._environmentEnabled()) return;
+    const { lat, lon } = this._latLon();
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+    const key = `${lat.toFixed(4)},${lon.toFixed(4)}`;
+    const now = Date.now();
+    if (!force && this._environmentKey === key && now - this._environmentLastLoad < ENVIRONMENT_REFRESH_MS) return;
+    this._environmentKey = key;
+    this._environmentLastLoad = now;
+    this._loadOpenMeteoEnvironment(lat, lon, key);
+  }
+
+  async _loadOpenMeteoEnvironment(lat, lon, requestKey = "") {
+    const [airQualityResult, uvResult] = await Promise.allSettled([
+      this._fetchOpenMeteoAirQuality(lat, lon),
+      this._fetchOpenMeteoUv(lat, lon)
+    ]);
+    if (requestKey && this._environmentKey && requestKey !== this._environmentKey) return;
+    const next = { source: "open_meteo", loaded: Date.now() };
+    const errors = [];
+    if (airQualityResult.status === "fulfilled") Object.assign(next, this._normalizeOpenMeteoEnvironment(airQualityResult.value));
+    else errors.push(airQualityResult.reason?.message || "Open-Meteo air quality unavailable");
+    if (uvResult.status === "fulfilled") next.uv = this._normalizeOpenMeteoUv(uvResult.value);
+    else errors.push(uvResult.reason?.message || "Open-Meteo UV unavailable");
+    if (errors.length) next.error = errors.join("; ");
+    this._environmentData = next;
+    this._lastRenderKey = "";
+    this._render();
+  }
+
+  async _fetchOpenMeteoAirQuality(lat, lon) {
+    const variables = [
+      "us_aqi",
+      "european_aqi",
+      "pm2_5",
+      "pm10",
+      "alder_pollen",
+      "birch_pollen",
+      "grass_pollen",
+      "mugwort_pollen",
+      "olive_pollen",
+      "ragweed_pollen"
+    ].join(",");
+    const params = new URLSearchParams({
+      latitude: String(lat),
+      longitude: String(lon),
+      current: variables,
+      timezone: "auto"
+    });
+    const response = await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?${params.toString()}`, {
+      headers: { Accept: "application/json" }
+    });
+    if (!response.ok) throw new Error(`Open-Meteo air quality returned ${response.status}`);
+    return response.json();
+  }
+
+  async _fetchOpenMeteoUv(lat, lon) {
+    const params = new URLSearchParams({
+      latitude: String(lat),
+      longitude: String(lon),
+      current: "uv_index",
+      hourly: "uv_index",
+      forecast_hours: "24",
+      timezone: "auto"
+    });
+    const response = await fetch(`https://api.open-meteo.com/v1/forecast?${params.toString()}`, {
+      headers: { Accept: "application/json" }
+    });
+    if (!response.ok) throw new Error(`Open-Meteo UV returned ${response.status}`);
+    return response.json();
+  }
+
+  _normalizeOpenMeteoEnvironment(data) {
+    const current = data?.current || {};
+    const units = data?.current_units || {};
+    const numberFor = (key) => this._numberOr(current[key], NaN);
+    const aqiValue = Number.isFinite(numberFor("us_aqi")) ? numberFor("us_aqi") : numberFor("european_aqi");
+    const aqiUnit = Number.isFinite(numberFor("us_aqi")) ? (units.us_aqi || "AQI") : (units.european_aqi || "AQI");
+    const pollenGroups = [
+      { labelKey: "treePollen", keys: ["alder_pollen", "birch_pollen", "olive_pollen"] },
+      { labelKey: "grassPollen", keys: ["grass_pollen"] },
+      { labelKey: "weedPollen", keys: ["mugwort_pollen", "ragweed_pollen"] }
+    ].map((group) => {
+      const sources = group.keys.map((key) => ({
+        key,
+        value: numberFor(key),
+        unit: units[key] || "grains/m3"
+      })).filter((source) => Number.isFinite(source.value));
+      const strongest = sources.sort((a, b) => b.value - a.value)[0] || null;
+      return strongest ? {
+        labelKey: group.labelKey,
+        key: strongest.key,
+        value: strongest.value,
+        unit: strongest.unit,
+        sources
+      } : null;
+    }).filter(Boolean);
+    const strongestPollen = pollenGroups.sort((a, b) => b.value - a.value)[0] || null;
+    const pollenResult = strongestPollen && strongestPollen.value > 0 ? strongestPollen : (
+      pollenGroups.length ? {
+        labelKey: "pollen",
+        key: "none",
+        value: 0,
+        unit: pollenGroups[0].unit || "grains/m3",
+        sources: pollenGroups
+      } : null
+    );
+    return {
+      source: "open_meteo",
+      loaded: Date.now(),
+      aqi: Number.isFinite(aqiValue) ? {
+        value: aqiValue,
+        unit: aqiUnit || "AQI",
+        pm25: numberFor("pm2_5"),
+        pm10: numberFor("pm10")
+      } : null,
+      pollen: pollenResult ? {
+        value: pollenResult.value,
+        unit: pollenResult.unit,
+        labelKey: pollenResult.labelKey,
+        key: pollenResult.key,
+        sources: pollenResult.sources
+      } : null
+    };
+  }
+
+  _normalizeOpenMeteoUv(data) {
+    const current = data?.current || {};
+    const hourly = data?.hourly || {};
+    const unit = data?.current_units?.uv_index || data?.hourly_units?.uv_index || "";
+    const currentUv = this._numberOr(current.uv_index, NaN);
+    const times = Array.isArray(hourly.time) ? hourly.time : [];
+    const values = Array.isArray(hourly.uv_index) ? hourly.uv_index : [];
+    return {
+      current: Number.isFinite(currentUv) ? currentUv : NaN,
+      unit,
+      hourly: times.map((time, index) => ({
+        time,
+        value: this._numberOr(values[index], NaN)
+      })).filter((entry) => entry.time && Number.isFinite(entry.value))
+    };
+  }
+
   getCardSize() {
-    if (this._config.layout === "compact") return this._config.show_radar === false ? 4 : 6;
-    if (this._config.layout === "stacked") return this._config.show_radar === false ? 7 : 9;
-    return this._config.show_radar === false ? 5 : 6;
+    const mode = this._config.content_mode || "full";
+    let size = this._config.show_radar === false ? 5 : 6;
+    if (mode === "radar") size = 4;
+    if (mode === "forecast" || mode === "timeline") size = 4;
+    if (mode === "essentials") size = 3;
+    if (this._config.layout === "compact") size = Math.min(size, this._config.show_radar === false ? 4 : 6);
+    if (this._config.layout === "stacked") size = this._config.show_radar === false ? Math.max(size, 7) : Math.max(size, 9);
+    if (this._config.density === "slim") size = Math.max(3, size - 1);
+    if (this._config.density === "large") size += 1;
+    return size;
   }
 
   getGridOptions() {
     const layout = this._config.layout || "auto";
-    const rows = layout === "stacked" ? 8 : layout === "compact" ? 5 : 6;
+    const mode = this._config.content_mode || "full";
+    const density = this._config.density || "comfortable";
+    let rows = layout === "stacked" ? 8 : layout === "compact" ? 5 : 6;
+    if (mode === "radar") rows = 4;
+    if (mode === "forecast" || mode === "timeline") rows = 4;
+    if (mode === "essentials") rows = 3;
+    if (density === "slim") rows = Math.max(3, rows - 1);
+    if (density === "large") rows += 1;
     const columns = layout === "stacked" ? 12 : 18;
     return {
       rows,
       columns,
-      min_rows: layout === "compact" ? 4 : 5,
+      min_rows: Math.min(rows, layout === "compact" ? 4 : 5),
       min_columns: 8
     };
   }
@@ -562,7 +951,7 @@ class WeatherWiseCard extends HTMLElement {
   _normalizeConfig(config) {
     const country = String(config.country || "us").toLowerCase();
     const radarProvider = String(config.radar_provider || "auto").toLowerCase();
-    const themeMode = String(config.theme_mode || "weatherwise").toLowerCase() === "auto" ? "auto" : "weatherwise";
+    const themeMode = String(config.theme_mode || "radarwise").toLowerCase() === "auto" ? "auto" : "radarwise";
     const units = ["auto", "imperial", "metric"].includes(String(config.units || "auto").toLowerCase())
       ? String(config.units || "auto").toLowerCase()
       : "auto";
@@ -571,12 +960,22 @@ class WeatherWiseCard extends HTMLElement {
     const radarTimeline = String(config.radar_timeline || "loop").toLowerCase();
     const layout = String(config.layout || "auto").toLowerCase();
     const language = String(config.language || config.forecast_summary_language || "auto").toLowerCase();
+    const environmentSource = String(config.environment_source || "sensors").toLowerCase();
     return {
       title: "Local Weather",
       humidity_entity: "",
       temperature_entity: "",
-      country: WEATHERWISE_COUNTRIES[country] ? country : "global",
-      radar_provider: WEATHERWISE_RADAR[radarProvider] ? radarProvider : "auto",
+      dew_point_entity: "",
+      air_quality_entity: "",
+      uv_index_entity: "",
+      pollen_entity: "",
+      tree_pollen_entity: "",
+      grass_pollen_entity: "",
+      weed_pollen_entity: "",
+      mold_pollen_entity: "",
+      environment_source: "sensors",
+      country: RADARWISE_COUNTRIES[country] ? country : "global",
+      radar_provider: RADARWISE_RADAR[radarProvider] ? radarProvider : "auto",
       theme_mode: themeMode,
       units,
       hourly_count: 5,
@@ -584,6 +983,7 @@ class WeatherWiseCard extends HTMLElement {
       show_timeline: true,
       show_forecast: true,
       show_forecast_summary: true,
+      show_environment: true,
       show_radar: true,
       show_map_controls: true,
       radar_controls: true,
@@ -596,11 +996,14 @@ class WeatherWiseCard extends HTMLElement {
       radar_speed: 700,
       debug: { enabled: false, panel: false },
       ...config,
-      radar_style: WEATHERWISE_RADAR_STYLES[radarStyle] ? radarStyle : "standard",
-      radar_basemap: WEATHERWISE_BASEMAPS[radarBasemap] ? radarBasemap : "light",
-      radar_timeline: WEATHERWISE_RADAR_TIMELINES[radarTimeline] ? radarTimeline : "loop",
-      layout: WEATHERWISE_LAYOUTS[layout] ? layout : "auto",
-      language: WEATHERWISE_LANGUAGES[language] ? language : "auto",
+      radar_style: RADARWISE_RADAR_STYLES[radarStyle] ? radarStyle : "standard",
+      radar_basemap: RADARWISE_BASEMAPS[radarBasemap] ? radarBasemap : "light",
+      radar_timeline: RADARWISE_RADAR_TIMELINES[radarTimeline] ? radarTimeline : "loop",
+      layout: RADARWISE_LAYOUTS[layout] ? layout : "auto",
+      content_mode: RADARWISE_CONTENT_MODES[String(config.content_mode || "full").toLowerCase()] ? String(config.content_mode || "full").toLowerCase() : "full",
+      density: RADARWISE_DENSITIES[String(config.density || "comfortable").toLowerCase()] ? String(config.density || "comfortable").toLowerCase() : "comfortable",
+      language: RADARWISE_LANGUAGES[language] ? language : "auto",
+      environment_source: RADARWISE_ENVIRONMENT_SOURCES[environmentSource] ? environmentSource : "sensors",
       latitude: this._numberOr(config.latitude, undefined),
       longitude: this._numberOr(config.longitude, undefined),
       hourly_count: Math.max(1, Math.min(24, Number(config.hourly_count) || 5)),
@@ -608,6 +1011,7 @@ class WeatherWiseCard extends HTMLElement {
       show_timeline: config.show_timeline !== false,
       show_forecast: config.show_forecast !== false,
       show_forecast_summary: config.show_forecast_summary !== false,
+      show_environment: config.show_environment !== false,
       show_radar: config.show_radar !== false,
       show_map_controls: config.show_map_controls !== false,
       radar_controls: config.radar_controls !== false,
@@ -645,12 +1049,38 @@ class WeatherWiseCard extends HTMLElement {
       entity: this._config.entity,
       humidityEntity: this._config.humidity_entity,
       temperatureEntity: this._config.temperature_entity,
+      dewPointEntity: this._config.dew_point_entity,
+      airQualityEntity: this._config.air_quality_entity,
+      uvIndexEntity: this._config.uv_index_entity,
+      pollenEntity: this._config.pollen_entity,
+      treePollenEntity: this._config.tree_pollen_entity,
+      grassPollenEntity: this._config.grass_pollen_entity,
+      weedPollenEntity: this._config.weed_pollen_entity,
+      moldPollenEntity: this._config.mold_pollen_entity,
+      environmentSource: this._config.environment_source,
+      environmentData: this._environmentData ? {
+        loaded: this._environmentData.loaded,
+        error: this._environmentData.error,
+        aqi: this._environmentData.aqi?.value,
+        uv: this._environmentData.uv?.current,
+        pollen: this._environmentData.pollen?.value,
+        pollenKind: this._environmentData.pollen?.labelKey
+      } : null,
       state: stateObj?.state,
       updated: stateObj?.last_updated,
       temp: attrs.temperature,
       temperatureState: this._config.temperature_entity ? this._hass?.states?.[this._config.temperature_entity]?.state : undefined,
       humidity: attrs.humidity,
       humidityState: this._config.humidity_entity ? this._hass?.states?.[this._config.humidity_entity]?.state : undefined,
+      dewPoint: attrs.dew_point ?? attrs.dewpoint ?? attrs.dewPoint,
+      dewPointState: this._config.dew_point_entity ? this._hass?.states?.[this._config.dew_point_entity]?.state : undefined,
+      airQualityState: this._config.air_quality_entity ? this._hass?.states?.[this._config.air_quality_entity]?.state : undefined,
+      uvIndexState: this._config.uv_index_entity ? this._hass?.states?.[this._config.uv_index_entity]?.state : undefined,
+      pollenState: this._config.pollen_entity ? this._hass?.states?.[this._config.pollen_entity]?.state : undefined,
+      treePollenState: this._config.tree_pollen_entity ? this._hass?.states?.[this._config.tree_pollen_entity]?.state : undefined,
+      grassPollenState: this._config.grass_pollen_entity ? this._hass?.states?.[this._config.grass_pollen_entity]?.state : undefined,
+      weedPollenState: this._config.weed_pollen_entity ? this._hass?.states?.[this._config.weed_pollen_entity]?.state : undefined,
+      moldPollenState: this._config.mold_pollen_entity ? this._hass?.states?.[this._config.mold_pollen_entity]?.state : undefined,
       wind: attrs.wind_speed,
       bearing: attrs.wind_bearing,
       forecast: [
@@ -666,6 +1096,8 @@ class WeatherWiseCard extends HTMLElement {
         this._config.radar_basemap,
         this._config.radar_timeline,
         this._config.layout,
+        this._config.content_mode,
+        this._config.density,
         this._config.theme_mode,
         this._config.units,
         this._language(),
@@ -673,6 +1105,7 @@ class WeatherWiseCard extends HTMLElement {
         this._config.show_timeline,
         this._config.show_forecast,
         this._config.show_forecast_summary,
+        this._config.show_environment,
         this._config.radar_controls,
         this._config.show_warning_overlay,
         this._config.hourly_count,
@@ -718,30 +1151,98 @@ class WeatherWiseCard extends HTMLElement {
 
   _language() {
     const configured = String(this._config.language || this._config.forecast_summary_language || "auto").toLowerCase();
-    if (WEATHERWISE_TEXT[configured]) return configured;
+    if (RADARWISE_TEXT[configured]) return configured;
     const browserLanguage = typeof navigator !== "undefined" ? navigator.language : "en";
     const locale = String(this._hass?.locale?.language || this._hass?.language || browserLanguage || "en").toLowerCase();
     const code = locale.split(/[-_]/)[0];
-    return WEATHERWISE_TEXT[code] ? code : "en";
+    return RADARWISE_TEXT[code] ? code : "en";
   }
 
   _texts() {
-    return WEATHERWISE_TEXT[this._language()] || WEATHERWISE_TEXT.en;
+    return RADARWISE_TEXT[this._language()] || RADARWISE_TEXT.en;
   }
 
   _localeCode() {
     const configured = String(this._config.language || "auto").toLowerCase();
-    if (configured !== "auto" && WEATHERWISE_TEXT[configured]) return configured;
+    if (configured !== "auto" && RADARWISE_TEXT[configured]) return configured;
     const browserLanguage = typeof navigator !== "undefined" ? navigator.language : "en";
     return this._hass?.locale?.language || this._hass?.language || browserLanguage || "en";
   }
 
   _t(key) {
-    return this._texts()[key] ?? WEATHERWISE_TEXT.en[key] ?? key;
+    return this._texts()[key] ?? RADARWISE_TEXT.en[key] ?? key;
   }
 
   _template(key, values = {}) {
     return String(this._t(key)).replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
+  }
+
+  _contentVisibility(provider = this._resolvedRadarProvider()) {
+    const radarAllowed = provider !== "none";
+    const base = {
+      mode: this._config.content_mode || "full",
+      clock: true,
+      current: true,
+      stats: true,
+      timeline: this._config.show_timeline !== false,
+      forecast: this._config.show_forecast !== false,
+      forecastSummary: this._config.show_forecast_summary !== false,
+      environment: this._config.show_environment !== false,
+      radar: this._config.show_radar !== false && radarAllowed
+    };
+    const presets = {
+      full: base,
+      custom: base,
+      essentials: {
+        ...base,
+        timeline: false,
+        forecast: false,
+        forecastSummary: false,
+        radar: false
+      },
+      forecast: {
+        ...base,
+        clock: false,
+        current: false,
+        stats: false,
+        timeline: false,
+        forecast: true,
+        forecastSummary: false,
+        environment: false,
+        radar: false
+      },
+      timeline: {
+        ...base,
+        clock: false,
+        current: false,
+        stats: false,
+        forecast: false,
+        forecastSummary: false,
+        environment: false,
+        radar: false
+      },
+      radar: {
+        ...base,
+        clock: false,
+        current: false,
+        stats: false,
+        timeline: false,
+        forecast: false,
+        forecastSummary: false,
+        environment: false,
+        radar: radarAllowed
+      }
+    };
+    const next = { ...(presets[base.mode] || base) };
+    next.left = next.clock || next.timeline || next.forecastSummary || next.environment;
+    next.center = next.current || next.forecast || next.stats;
+    next.right = next.radar;
+    if (!next.left && !next.center && !next.right) {
+      next.center = true;
+      next.current = true;
+    }
+    next.panelCount = [next.left, next.center, next.right].filter(Boolean).length;
+    return next;
   }
 
   _render() {
@@ -755,11 +1256,15 @@ class WeatherWiseCard extends HTMLElement {
     const displayCondition = this._displayCondition(condition, sunStateObj);
     const units = this._unitContext(attrs);
     const temp = this._displayTemp(this._currentTemperature(attrs), units);
-    const humidity = this._humidity(attrs);
     const wind = this._formatWind(attrs, units);
     const hourly = this._forecasts.hourly || [];
     const daily = this._forecasts.daily || [];
     const twiceDaily = this._forecasts.twice_daily || [];
+    const forecastSources = [hourly, twiceDaily, daily];
+    const humidityInfo = this._humidityInfo(attrs, forecastSources);
+    const dewPointInfo = this._dewPointInfo(attrs, units, forecastSources);
+    const humidity = humidityInfo.display;
+    const dewPoint = dewPointInfo.display;
     const timeline = hourly.length ? hourly : twiceDaily.length ? twiceDaily : daily;
     const timelineMode = hourly.length ? "hourly" : twiceDaily.length ? "twice_daily" : daily.length ? "daily" : "hourly";
     const mainPeriods = twiceDaily.length ? twiceDaily : daily.length ? daily : hourly;
@@ -770,13 +1275,18 @@ class WeatherWiseCard extends HTMLElement {
     const unavailable = needsEntity || !stateObj || condition === "unavailable" || condition === "unknown";
     const provider = this._resolvedRadarProvider();
     const layout = this._config.layout || "auto";
+    const density = this._config.density || "comfortable";
+    const content = this._contentVisibility(provider);
     const forecastSummary = this._forecastSummary({ hourly, daily, twiceDaily, units, condition: displayCondition });
+    const environmentTiles = content.environment ? this._renderEnvironmentTiles() : "";
+    const currentUvBadge = this._renderCurrentUv(attrs);
+    if (!content.right) this._teardownRadar();
 
     this.shadowRoot.innerHTML = `
       <style>${this._styles()}</style>
       <ha-card>
         <div class="card-outer">
-          <div class="card-grid layout-${_wwEscape(layout)} ${this._config.show_radar && provider !== "none" ? "" : "no-radar"} ${this._config.show_timeline === false ? "no-timeline" : ""} ${this._config.show_forecast === false ? "no-forecast" : ""}" style="${(() => {
+          <div class="card-grid layout-${_wwEscape(layout)} content-${_wwEscape(content.mode)} density-${_wwEscape(density)} panels-${content.panelCount} ${content.right ? "" : "no-radar"} ${content.timeline ? "" : "no-timeline"} ${content.forecast ? "" : "no-forecast"} ${content.left ? "" : "no-left"} ${content.center ? "" : "no-center"}" style="${(() => {
   const w = this._config.column_widths || [25,50,25];
   const cl = this._sectionOrder('clock');
   const wl = this._sectionOrder('weather');
@@ -784,43 +1294,65 @@ class WeatherWiseCard extends HTMLElement {
   const cb = cl * 10, wb = wl * 10, rb = rl * 10;
   return `--ww-col1:${w[0]}fr;--ww-col2:${w[1]}fr;--ww-col3:${w[2]}fr;--ww-left-order:${cl};--ww-center-order:${wl};--ww-right-order:${rl};--ww-ord-clock-title:${cb+1};--ww-ord-clock-hourly:${cb+2};--ww-ord-weather:${wb+1};--ww-ord-radar:${rb+1};`;
 })()}--ww-hourly-count:${Math.max(1, Math.min(24, Number(this._config.hourly_count) || 5))};--ww-forecast-count:${Math.max(1, Math.min(7, Number(this._config.forecast_count) || 5))}">
-            <section class="left">
-              <div class="clock-panel">
-                <div class="clock-row">
-                  <div class="clock-time" id="clock-time">${this._clockTime(now)}</div>
-                  <div class="clock-ampm" id="clock-ampm">${now.getHours() >= 12 ? this._t("pm") : this._t("am")}</div>
-                </div>
-                <div class="clock-date" id="clock-date">${this._longDate(now)}</div>
-                ${this._config.show_forecast_summary === false ? "" : `<div class="forecast-summary" title="${_wwEscape(forecastSummary)}"><span class="forecast-summary-text">${_wwEscape(forecastSummary)}</span></div>`}
-              </div>
-              ${this._config.show_timeline === false ? "" : `
-                <div class="section-title">${this._timelineTitle(timelineMode)}</div>
-                <div class="hourly-left">${this._renderTimeline(timeline, units, timelineMode)}</div>
-              `}
-            </section>
-            <section class="center">
-              <div class="current-row">
-                <div class="current-icon">${this._icon(displayCondition, 62)}</div>
-                <div class="cond-block">
-                  <div class="current-label">${_wwEscape(text.currentWeather)}</div>
-                  <div class="cond-name">${needsEntity ? _wwEscape(text.selectWeatherEntity) : unavailable ? _wwEscape(text.connectWeather) : _wwEscape(this._conditionLabel(displayCondition))}</div>
-                  <div class="updated-note">${needsEntity ? _wwEscape(text.openEditor) : unavailable ? _wwEscape(text.waitingLive) : `${_wwEscape(text.updated)} ${this._shortTime(now)}`}</div>
-                </div>
-                <div class="temp-block">
-                  <div class="temp-now">${temp}</div>
-                  <div class="temp-hilo">${hiLo}</div>
-                </div>
-              </div>
-              ${this._config.show_forecast === false ? "" : `<div class="daily-strip">${this._renderDaily(mainPeriods, units)}</div>`}
-              <div class="stats-row">
-                ${this._stat("humidity", text.humidity, `${humidity}%`)}
-                ${this._stat("wind", text.wind, wind)}
-                ${this._stat("sunrise", text.sunrise, this._shortTime(sun.next_rising))}
-                ${this._stat("sunset", text.sunset, this._shortTime(sun.next_setting))}
-              </div>
-              ${this._renderDebug({ stateObj, hourly, daily, twiceDaily, provider, units })}
-            </section>
-            ${this._config.show_radar && provider !== "none" ? `
+            ${content.left ? `
+              <section class="left">
+                ${(content.clock || content.environment || content.forecastSummary) ? `
+                  <div class="clock-panel">
+                    ${(content.clock || content.environment) ? `
+                      <div class="clock-context ${environmentTiles ? "" : "no-env"}">
+                        ${content.clock ? `
+                          <div class="clock-main">
+                            <div class="clock-row">
+                              <div class="clock-time" id="clock-time">${this._clockTime(now)}</div>
+                              <div class="clock-ampm" id="clock-ampm">${now.getHours() >= 12 ? this._t("pm") : this._t("am")}</div>
+                            </div>
+                            <div class="clock-date" id="clock-date">${this._longDate(now)}</div>
+                          </div>
+                        ` : ""}
+                        ${environmentTiles ? `<div class="environment-strip">${environmentTiles}</div>` : ""}
+                      </div>
+                    ` : ""}
+                    ${content.forecastSummary ? `<div class="forecast-summary" title="${_wwEscape(forecastSummary)}"><span class="forecast-summary-text">${_wwEscape(forecastSummary)}</span></div>` : ""}
+                  </div>
+                ` : ""}
+                ${content.timeline ? `
+                  <div class="section-title">${this._timelineTitle(timelineMode)}</div>
+                  <div class="hourly-left">${this._renderTimeline(timeline, units, timelineMode)}</div>
+                ` : ""}
+              </section>
+            ` : ""}
+            ${content.center ? `
+              <section class="center">
+                ${content.current ? `
+                  <div class="current-row">
+                    <div class="current-icon">${this._icon(displayCondition, 62)}</div>
+                    <div class="cond-block">
+                      <div class="current-label">${_wwEscape(text.currentWeather)}</div>
+                      <div class="cond-name-row">
+                        <div class="cond-name">${needsEntity ? _wwEscape(text.selectWeatherEntity) : unavailable ? _wwEscape(text.connectWeather) : _wwEscape(this._conditionLabel(displayCondition))}</div>
+                        ${currentUvBadge}
+                      </div>
+                      <div class="updated-note">${needsEntity ? _wwEscape(text.openEditor) : unavailable ? _wwEscape(text.waitingLive) : `${_wwEscape(text.updated)} ${this._shortTime(now)}`}</div>
+                    </div>
+                    <div class="temp-block">
+                      <div class="temp-now">${temp}</div>
+                      <div class="temp-hilo">${hiLo}</div>
+                    </div>
+                  </div>
+                ` : ""}
+                ${content.forecast ? `<div class="daily-strip">${this._renderDaily(mainPeriods, units)}</div>` : ""}
+                ${content.stats ? `
+                  <div class="stats-row">
+                    ${this._stat("humidity", text.humidity, `${humidity}%`)}
+                    ${this._stat("dewpoint", text.dewPoint, dewPoint)}
+                    ${this._stat("wind", text.wind, wind)}
+                    ${this._stat("sunrise", text.sunrise, this._shortTime(sun.next_rising))}
+                    ${this._stat("sunset", text.sunset, this._shortTime(sun.next_setting))}
+                  </div>
+                ` : ""}
+              </section>
+            ` : ""}
+            ${content.right ? `
               <section class="right">
                 <div id="rmap"></div>
                 ${this._config.radar_controls === false ? "" : `
@@ -835,18 +1367,19 @@ class WeatherWiseCard extends HTMLElement {
               </section>
             ` : ""}
           </div>
+          ${this._renderDebug({ stateObj, attrs, hourly, daily, twiceDaily, provider, units, humidityInfo, dewPointInfo })}
         </div>
       </ha-card>
     `;
 
-    if (this._config.show_radar && provider !== "none") {
+    if (content.right) {
       this._teardownRadar();
       this._radarProviderRendered = provider;
       this._wireRadarControls();
       window.requestAnimationFrame(() => this._scheduleRadarInit(provider));
     }
     this._updateClock();
-    if (this._config.timeline_autoscroll && this._config.show_timeline !== false) {
+    if (this._config.timeline_autoscroll && content.timeline) {
       window.setTimeout(() => this._startTimelineScroll(), 400);
     }
     this._setupCardResizeObserver();
@@ -879,15 +1412,72 @@ class WeatherWiseCard extends HTMLElement {
   _renderDebug(data) {
     const debug = this._config.debug;
     if (!debug || debug.enabled !== true || debug.panel !== true) return "";
+    const debugValue = (value) => {
+      if (value === undefined) return "missing";
+      if (value === null) return "null";
+      if (typeof value === "object") {
+        try {
+          return JSON.stringify(value);
+        } catch (err) {
+          return String(value);
+        }
+      }
+      return String(value);
+    };
+    const firstHourly = data.hourly?.[0] || {};
+    const firstTwiceDaily = data.twiceDaily?.[0] || {};
+    const firstDaily = data.daily?.[0] || {};
     const rows = [
       ["Version", CARD_VERSION],
       ["Entity", this._config.entity],
+      ["Temperature entity", this._config.temperature_entity || "auto"],
+      ["Humidity entity", this._config.humidity_entity || "auto"],
+      ["Dew point entity", this._config.dew_point_entity || "auto"],
+      ["Resolved humidity", `${data.humidityInfo?.display ?? "--"}% via ${data.humidityInfo?.source || "missing"}`],
+      ["Resolved humidity raw", debugValue(data.humidityInfo?.raw)],
+      ["Resolved dew point", `${data.dewPointInfo?.display ?? "--"} via ${data.dewPointInfo?.source || "missing"}`],
+      ["Resolved dew point raw", debugValue(data.dewPointInfo?.raw)],
+      ["Weather humidity attrs", debugValue({
+        humidity: data.attrs?.humidity,
+        relative_humidity: data.attrs?.relative_humidity,
+        relativeHumidity: data.attrs?.relativeHumidity,
+        native_humidity: data.attrs?.native_humidity
+      })],
+      ["Weather dew point attrs", debugValue({
+        dew_point: data.attrs?.dew_point,
+        dewpoint: data.attrs?.dewpoint,
+        dewPoint: data.attrs?.dewPoint,
+        native_dew_point: data.attrs?.native_dew_point,
+        dew_point_temperature: data.attrs?.dew_point_temperature
+      })],
+      ["Air quality entity", this._config.air_quality_entity || "none"],
+      ["UV index entity", this._config.uv_index_entity || "auto"],
+      ["Pollen entity", this._config.pollen_entity || "none"],
+      ["Tree pollen entity", this._config.tree_pollen_entity || "none"],
+      ["Grass pollen entity", this._config.grass_pollen_entity || "none"],
+      ["Weed pollen entity", this._config.weed_pollen_entity || "none"],
+      ["Mold pollen entity", this._config.mold_pollen_entity || "none"],
+      ["Environment source", this._config.environment_source || "sensors"],
+      ["Environment updated", this._environmentData?.loaded ? new Date(this._environmentData.loaded).toLocaleString() : "never"],
+      ["Environment error", this._environmentData?.error || "none"],
       ["Country", this._config.country],
       ["Radar", data.provider],
+      ["Content mode", this._config.content_mode],
+      ["Density", this._config.density],
       ["Units", data.units.temperatureUnit],
       ["Hourly count", data.hourly.length],
       ["Daily count", data.daily.length],
       ["Twice daily count", data.twiceDaily.length],
+      ["First hourly keys", Object.keys(firstHourly).sort().join(", ") || "none"],
+      ["First hourly humidity/dew", debugValue({
+        humidity: firstHourly.humidity,
+        relative_humidity: firstHourly.relative_humidity,
+        dew_point: firstHourly.dew_point,
+        dewpoint: firstHourly.dewpoint
+      })],
+      ["First twice daily keys", Object.keys(firstTwiceDaily).sort().join(", ") || "none"],
+      ["First daily keys", Object.keys(firstDaily).sort().join(", ") || "none"],
+      ["Weather attr keys", Object.keys(data.attrs || {}).sort().join(", ") || "none"],
       ["State", data.stateObj?.state || "missing"]
     ];
     return `
@@ -914,6 +1504,89 @@ class WeatherWiseCard extends HTMLElement {
     return this._t("hourly");
   }
 
+  _renderCurrentUv(attrs) {
+    const uv = this._currentUv(attrs);
+    if (!Number.isFinite(uv)) return "";
+    const severity = this._uvSeverity(uv);
+    const value = this._formatUvValue(uv);
+    return `
+      <div class="current-uv uv-${_wwEscape(severity.level)}" title="${_wwEscape(`${this._t("uvIndex")}: ${value} ${this._t(severity.key)}`)}" aria-label="${_wwEscape(`${this._t("uvIndex")}: ${value} ${this._t(severity.key)}`)}">
+        <span>${_wwEscape(this._t("uvIndex"))}</span>
+        <strong>${_wwEscape(value)}</strong>
+        <em>${_wwEscape(this._t(severity.key))}</em>
+      </div>
+    `;
+  }
+
+  _currentUv(attrs = {}) {
+    const entityId = this._config.uv_index_entity;
+    const state = entityId ? this._hass?.states?.[entityId] : null;
+    if (state && isRadarWiseUvIndexEntity(entityId, state)) {
+      const value = this._numberOr(state.state, NaN);
+      if (Number.isFinite(value)) return value;
+    }
+    const attrValue = [
+      attrs.uv_index,
+      attrs.uv,
+      attrs.uvi,
+      attrs.ultraviolet_index
+    ].map((candidate) => this._numberOr(candidate, NaN)).find(Number.isFinite);
+    if (Number.isFinite(attrValue)) return attrValue;
+    const openMeteoUv = this._environmentData?.uv?.current;
+    return Number.isFinite(openMeteoUv) ? openMeteoUv : NaN;
+  }
+
+  _hourlyUv(item, mode = "hourly") {
+    const forecastUv = this._forecastUv(item);
+    if (Number.isFinite(forecastUv)) return forecastUv;
+    if (mode !== "hourly" || this._config.environment_source !== "open_meteo") return NaN;
+    return this._openMeteoUvForTime(item?.datetime);
+  }
+
+  _forecastUv(item) {
+    const value = [
+      item?.uv_index,
+      item?.uv,
+      item?.uvi,
+      item?.ultraviolet_index
+    ].map((candidate) => this._numberOr(candidate, NaN)).find(Number.isFinite);
+    return Number.isFinite(value) ? value : NaN;
+  }
+
+  _openMeteoUvForTime(datetime) {
+    if (!datetime) return NaN;
+    const targetHour = this._hourKey(datetime);
+    if (!targetHour) return NaN;
+    const match = (this._environmentData?.uv?.hourly || []).find((entry) => this._hourKey(entry.time) === targetHour);
+    return Number.isFinite(match?.value) ? match.value : NaN;
+  }
+
+  _hourKey(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hour = String(date.getHours()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hour}`;
+  }
+
+  _formatUvValue(value) {
+    const number = this._numberOr(value, NaN);
+    if (!Number.isFinite(number)) return "--";
+    return String(Math.round(number * 10) / 10).replace(/\.0$/, "");
+  }
+
+  _uvSeverity(value) {
+    const number = this._numberOr(value, NaN);
+    if (!Number.isFinite(number)) return { key: "unknown", level: "neutral", rank: 0 };
+    if (number <= 2) return { key: "low", level: "good", rank: 1 };
+    if (number <= 5) return { key: "moderate", level: "moderate", rank: 2 };
+    if (number <= 7) return { key: "high", level: "unhealthy", rank: 3 };
+    if (number <= 10) return { key: "veryHigh", level: "very-high", rank: 4 };
+    return { key: "extreme", level: "hazardous", rank: 5 };
+  }
+
   _renderTimeline(periods, units, mode = "hourly") {
     if (!periods.length) return `<div class="loading-note">${_wwEscape(this._t("waitingForecast"))}</div>`;
     const slice = periods.slice(0, Number(this._config.hourly_count) || 5);
@@ -924,13 +1597,16 @@ class WeatherWiseCard extends HTMLElement {
     return slice.map((item) => {
       const temp = this._tempValue(item.temperature, units);
       const pct = Number.isFinite(temp) ? Math.max(12, Math.round(((temp - min) / range) * 80 + 12)) : 12;
+      const precip = this._formatPrecip(item, units);
+      const uv = this._hourlyUv(item, mode);
+      const uvText = Number.isFinite(uv) ? `UV ${this._formatUvValue(uv)}` : "";
       return `
         <div class="hour-row">
           <div class="hour-time-left">${this._timelineTime(item, mode)}</div>
           <div class="hour-icon-left">${this._icon(item.condition || item.state, 23)}</div>
           <div class="hour-temp-left">${this._displayTemp(item.temperature, units, false)}</div>
           <div class="hour-bar-wrap" title="${_wwEscape(this._t("relativeTemp"))}"><div class="hour-bar-fill" style="width:${pct}%"></div></div>
-          <div class="hour-precip">${this._formatPrecip(item, units)}</div>
+          <div class="hour-precip">${_wwEscape([precip, uvText].filter(Boolean).join(" · "))}</div>
         </div>
       `;
     }).join("");
@@ -947,6 +1623,7 @@ class WeatherWiseCard extends HTMLElement {
     if (!periods.length) return `<div class="loading-note">${_wwEscape(this._t("waitingForecast"))}</div>`;
     return periods.slice(0, Number(this._config.forecast_count) || 5).map((item) => {
       const period = item.is_daytime === undefined ? "" : item.is_daytime ? this._t("dayPeriod") : this._t("nightPeriod");
+      const range = this._forecastRange(item, units);
       return `
         <div class="fc-slot">
           <div>
@@ -955,10 +1632,18 @@ class WeatherWiseCard extends HTMLElement {
           </div>
           <div class="fc-icon">${this._icon(item.condition || item.state, 48)}</div>
           <div class="fc-temp">${this._displayTemp(item.temperature, units, false)}</div>
+          ${range ? `<div class="fc-range">${_wwEscape(range)}</div>` : ""}
           <div class="fc-precip">${this._formatPrecip(item, units)}</div>
         </div>
       `;
     }).join("");
+  }
+
+  _forecastRange(item, units) {
+    const high = this._tempValue(item?.temperature ?? item?.high_temperature ?? item?.native_temperature, units);
+    const low = this._tempValue(item?.templow ?? item?.low_temperature ?? item?.native_templow, units);
+    if (!Number.isFinite(high) || !Number.isFinite(low)) return "";
+    return `${Math.round(high)}° / ${Math.round(low)}°`;
   }
 
   _forecastSummary({ hourly, daily, twiceDaily, units, condition }) {
@@ -1027,7 +1712,7 @@ class WeatherWiseCard extends HTMLElement {
   _localizedCondition(condition) {
     const value = String(condition || "weather").replace(/[-_]+/g, " ").trim().toLowerCase();
     return this._texts().conditions?.[value]
-      || WEATHERWISE_TEXT.en.conditions[value]
+      || RADARWISE_TEXT.en.conditions[value]
       || value
       || "weather";
   }
@@ -1041,11 +1726,188 @@ class WeatherWiseCard extends HTMLElement {
   _stat(kind, label, value) {
     const icons = {
       humidity: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 3s6 6.1 6 11a6 6 0 1 1-12 0c0-4.9 6-11 6-11Z" fill="#65b8df"/><path d="M9.2 16.4c.7 1.3 1.8 2 3.4 2" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+      dewpoint: `<svg viewBox="0 0 24 24" fill="none"><path d="M8 3s4.5 4.8 4.5 8.4a4.5 4.5 0 1 1-9 0C3.5 7.8 8 3 8 3Z" fill="#65b8df"/><path d="M16.5 4.5v8.2a3.7 3.7 0 1 1-3 0V4.5a1.5 1.5 0 0 1 3 0Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 16.4h.01" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/></svg>`,
       wind: `<svg viewBox="0 0 24 24" fill="none"><path d="M4 8h10.4a3 3 0 1 0-2.6-4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 13h15.4a3 3 0 1 1-2.6 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5 18h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
       sunrise: `<svg viewBox="0 0 24 24" fill="none"><path d="M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 15a5 5 0 0 1 10 0" fill="#fbbf24"/><path d="M12 4v4M5 11l3 1M19 11l-3 1" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/></svg>`,
       sunset: `<svg viewBox="0 0 24 24" fill="none"><path d="M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 15a5 5 0 0 1 10 0" fill="#f59e0b"/><path d="M12 8V4M5 11l3 1M19 11l-3 1" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/></svg>`
     };
     return `<div class="stat"><div class="stat-ico" aria-hidden="true">${icons[kind]}</div><div><div class="stat-lbl">${label}</div><div class="stat-val">${_wwEscape(value || "--")}</div></div></div>`;
+  }
+
+  _renderEnvironmentTiles() {
+    if (this._config.show_environment === false || this._config.environment_source === "disabled") return "";
+    const tiles = [this._airQualityTile(), this._pollenTile()].filter(Boolean);
+    return tiles.map((tile) => `
+      <div class="env-tile env-${_wwEscape(tile.level || "neutral")}">
+        <div class="env-ico" aria-hidden="true">${this._environmentIcon(tile.kind)}</div>
+        <div class="env-copy">
+          <div class="env-lbl">${_wwEscape(tile.label)}</div>
+          <div class="env-val">${_wwEscape(tile.value)}</div>
+          <div class="env-note">${_wwEscape(tile.note)}</div>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  _airQualityTile() {
+    if (this._config.environment_source === "open_meteo") {
+      return this._openMeteoAirQualityTile() || this._sensorAirQualityTile();
+    }
+    return this._sensorAirQualityTile();
+  }
+
+  _sensorAirQualityTile() {
+    const state = this._entityState(this._config.air_quality_entity, isRadarWiseAirQualityEntity);
+    if (!state) return null;
+    const severity = this._airQualitySeverity(state.state);
+    return {
+      kind: "aqi",
+      label: this._t("airQuality"),
+      value: this._formatSensorState(state, "AQI"),
+      note: this._t(severity.key),
+      level: severity.level
+    };
+  }
+
+  _pollenTile() {
+    if (this._config.environment_source === "open_meteo") {
+      return this._openMeteoPollenTile() || this._sensorPollenTile();
+    }
+    return this._sensorPollenTile();
+  }
+
+  _openMeteoAirQualityTile() {
+    const aqi = this._environmentData?.aqi;
+    if (!aqi || !Number.isFinite(aqi.value)) return null;
+    const severity = this._airQualitySeverity(aqi.value);
+    return {
+      kind: "aqi",
+      label: this._t("airQuality"),
+      value: this._formatEnvironmentNumber(aqi.value, aqi.unit || "AQI"),
+      note: this._t(severity.key),
+      level: severity.level
+    };
+  }
+
+  _openMeteoPollenTile() {
+    const pollen = this._environmentData?.pollen;
+    if (!pollen || !Number.isFinite(pollen.value)) return null;
+    const severity = this._pollenSeverity(pollen.value);
+    return {
+      kind: "pollen",
+      label: this._t(pollen.labelKey || "pollen"),
+      value: this._formatEnvironmentNumber(pollen.value, pollen.unit || "grains/m3"),
+      note: this._t(severity.key),
+      level: severity.level
+    };
+  }
+
+  _sensorPollenTile() {
+    const entries = [
+      { configKey: "pollen_entity", labelKey: "pollen", kind: "" },
+      { configKey: "tree_pollen_entity", labelKey: "treePollen", kind: "tree" },
+      { configKey: "grass_pollen_entity", labelKey: "grassPollen", kind: "grass" },
+      { configKey: "weed_pollen_entity", labelKey: "weedPollen", kind: "weed" },
+      { configKey: "mold_pollen_entity", labelKey: "moldPollen", kind: "mold" }
+    ].map((entry) => {
+      const state = this._entityState(this._config[entry.configKey], (entityId, entityState) => isRadarWisePollenEntity(entityId, entityState, entry.kind));
+      if (!state) return null;
+      const severity = this._pollenSeverity(state.state);
+      return {
+        ...entry,
+        state,
+        severity,
+        value: this._formatSensorState(state),
+        rank: severity.rank
+      };
+    }).filter(Boolean);
+
+    if (!entries.length) return null;
+    const generic = entries.find((entry) => entry.configKey === "pollen_entity");
+    const strongestSource = entries
+      .filter((entry) => entry.configKey !== "pollen_entity")
+      .sort((a, b) => b.rank - a.rank)[0];
+    const chosen = generic || strongestSource || entries[0];
+    const sourceNote = generic && strongestSource && strongestSource.rank >= 3
+      ? `${this._t(strongestSource.labelKey)}: ${this._t(strongestSource.severity.key)}`
+      : this._t(chosen.severity.key);
+
+    return {
+      kind: "pollen",
+      label: generic ? this._t("pollen") : this._t(chosen.labelKey),
+      value: chosen.value,
+      note: sourceNote,
+      level: (strongestSource || chosen).severity.level
+    };
+  }
+
+  _formatEnvironmentNumber(value, unit = "") {
+    const number = this._numberOr(value, NaN);
+    if (!Number.isFinite(number)) return "--";
+    const rounded = Math.abs(number) < 10 ? Math.round(number * 10) / 10 : Math.round(number);
+    const unitText = String(unit || "").trim();
+    return `${rounded}${unitText ? ` ${unitText}` : ""}`.trim();
+  }
+
+  _entityState(entityId, predicate) {
+    if (!entityId) return null;
+    const state = this._hass?.states?.[entityId];
+    if (!state || state.state === "unknown" || state.state === "unavailable") return null;
+    return predicate(entityId, state) ? state : null;
+  }
+
+  _formatSensorState(state, fallbackUnit = "") {
+    const raw = state?.state;
+    const unit = state?.attributes?.unit_of_measurement || state?.attributes?.native_unit_of_measurement || fallbackUnit;
+    const number = this._numberOr(raw, NaN);
+    if (Number.isFinite(number)) {
+      const rounded = Math.abs(number) < 10 ? Math.round(number * 10) / 10 : Math.round(number);
+      const unitText = unit ? ` ${unit}` : "";
+      return `${rounded}${unitText}`.trim();
+    }
+    return this._titleCase(raw);
+  }
+
+  _airQualitySeverity(value) {
+    const raw = String(value || "").toLowerCase();
+    const number = this._numberOr(value, NaN);
+    if (Number.isFinite(number)) {
+      if (number <= 50) return { key: "good", level: "good", rank: 1 };
+      if (number <= 100) return { key: "moderate", level: "moderate", rank: 2 };
+      if (number <= 150) return { key: "unhealthySensitive", level: "sensitive", rank: 3 };
+      if (number <= 200) return { key: "unhealthy", level: "unhealthy", rank: 4 };
+      if (number <= 300) return { key: "veryUnhealthy", level: "very-high", rank: 5 };
+      return { key: "hazardous", level: "hazardous", rank: 6 };
+    }
+    if (raw.includes("hazard")) return { key: "hazardous", level: "hazardous", rank: 6 };
+    if (raw.includes("very") && raw.includes("unhealthy")) return { key: "veryUnhealthy", level: "very-high", rank: 5 };
+    if (raw.includes("unhealthy")) return { key: "unhealthy", level: "unhealthy", rank: 4 };
+    if (raw.includes("moderate")) return { key: "moderate", level: "moderate", rank: 2 };
+    if (raw.includes("good")) return { key: "good", level: "good", rank: 1 };
+    return { key: "unknown", level: "neutral", rank: 0 };
+  }
+
+  _pollenSeverity(value) {
+    const raw = String(value || "").toLowerCase();
+    const number = this._numberOr(value, NaN);
+    if (Number.isFinite(number)) {
+      if (number <= 2.4) return { key: "low", level: "good", rank: 1 };
+      if (number <= 4.8) return { key: "moderate", level: "moderate", rank: 2 };
+      if (number <= 7.2) return { key: "high", level: "unhealthy", rank: 3 };
+      return { key: "veryHigh", level: "very-high", rank: 4 };
+    }
+    if (raw.includes("very") || raw.includes("extreme")) return { key: "veryHigh", level: "very-high", rank: 4 };
+    if (raw.includes("high")) return { key: "high", level: "unhealthy", rank: 3 };
+    if (raw.includes("moderate") || raw.includes("medium")) return { key: "moderate", level: "moderate", rank: 2 };
+    if (raw.includes("low")) return { key: "low", level: "good", rank: 1 };
+    return { key: "unknown", level: "neutral", rank: 0 };
+  }
+
+  _environmentIcon(kind) {
+    if (kind === "aqi") {
+      return `<svg viewBox="0 0 24 24" fill="none"><path d="M4 14c2.6-3.2 5.4-3.2 8 0s5.4 3.2 8 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5 9c2.3-2.6 4.7-2.6 7 0s4.7 2.6 7 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".65"/><circle cx="7" cy="18" r="1.6" fill="#65b8df"/><circle cx="13" cy="18" r="1.6" fill="#e8b84b"/><circle cx="19" cy="18" r="1.6" fill="#f97316"/></svg>`;
+    }
+    return `<svg viewBox="0 0 24 24" fill="none"><path d="M12 20c0-7 2.5-12 7-15" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><path d="M12 14C8.5 14 6 11.5 6 8c3.8 0 6 2.5 6 6Z" fill="#7ecb8f"/><path d="M13 12c3.4-.2 5.5-2.2 5.8-5.6-3.2.2-5.4 2.1-5.8 5.6Z" fill="#9bd779"/><path d="M8 18h8" stroke="#e8b84b" stroke-width="2" stroke-linecap="round"/></svg>`;
   }
 
   async _initRadar(provider) {
@@ -1061,8 +1923,7 @@ class WeatherWiseCard extends HTMLElement {
         zoomControl: this._config.show_map_controls !== false,
         attributionControl: true
       });
-      const basemap = this._basemap();
-      window.L.tileLayer(basemap.url, basemap.options).addTo(this._radarMap);
+      this._addBasemapLayer();
       window.L.circleMarker([lat, lon], {
         radius: 5,
         color: "#1a3a50",
@@ -1207,15 +2068,15 @@ class WeatherWiseCard extends HTMLElement {
       }
       return;
     }
-    if (!document.querySelector("link[data-weatherwise-leaflet]")) {
+    if (!document.querySelector("link[data-radarwise-leaflet]")) {
       const link = document.createElement("link");
       link.rel = "stylesheet";
       link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-      link.dataset.weatherwiseLeaflet = "true";
+      link.dataset.radarwiseLeaflet = "true";
       document.head.appendChild(link);
     }
     window.__weatherWiseLeafletPromise = new Promise((resolve, reject) => {
-      const existing = document.querySelector("script[data-weatherwise-leaflet]");
+      const existing = document.querySelector("script[data-radarwise-leaflet]");
       if (existing) {
         const started = Date.now();
         const waitForExisting = () => {
@@ -1228,7 +2089,7 @@ class WeatherWiseCard extends HTMLElement {
       }
         const script = document.createElement("script");
         script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
-        script.dataset.weatherwiseLeaflet = "true";
+        script.dataset.radarwiseLeaflet = "true";
         script.onload = resolve;
         script.onerror = reject;
         document.head.appendChild(script);
@@ -1437,22 +2298,35 @@ class WeatherWiseCard extends HTMLElement {
     return values[this._config.radar_style] ?? values.standard;
   }
 
-  _basemap() {
+  _addBasemapLayer() {
+    const basemap = this._basemap();
+    const fallback = this._basemap("light");
+    let failed = false;
+    const layer = window.L.tileLayer(basemap.url, basemap.options).addTo(this._radarMap);
+    layer.on?.("tileerror", () => {
+      if (failed || !this._radarMap || basemap.url === fallback.url) return;
+      failed = true;
+      layer.remove?.();
+      window.L.tileLayer(fallback.url, fallback.options).addTo(this._radarMap);
+    });
+  }
+
+  _basemap(kind = this._config.radar_basemap) {
     const basemaps = {
       dark: {
         url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
         options: { subdomains: "abcd", maxZoom: 19, attribution: "&copy; OpenStreetMap &copy; CARTO" }
       },
       osm: {
-        url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        options: { maxZoom: 19, attribution: "&copy; OpenStreetMap" }
+        url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+        options: { subdomains: "abcd", maxZoom: 19, attribution: "&copy; OpenStreetMap &copy; CARTO" }
       },
       light: {
         url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
         options: { subdomains: "abcd", maxZoom: 19, attribution: "&copy; OpenStreetMap &copy; CARTO" }
       }
     };
-    return basemaps[this._config.radar_basemap] || basemaps.light;
+    return basemaps[kind] || basemaps.light;
   }
 
   async _loadWarningOverlay() {
@@ -1472,7 +2346,7 @@ class WeatherWiseCard extends HTMLElement {
     try {
       const response = await fetch(`https://api.weather.gov/alerts/active?point=${lat},${lon}`, {
         headers: {
-          "User-Agent": `WeatherWise/${CARD_VERSION} (github.com/TheWillMiller/weather-wise)`,
+          "User-Agent": `RadarWise/${CARD_VERSION} (github.com/TheWillMiller/radar-wise)`,
           Accept: "application/geo+json"
         }
       });
@@ -1490,7 +2364,7 @@ class WeatherWiseCard extends HTMLElement {
         }).addTo(group);
       }
       const headline = features[0]?.properties?.headline || `${features.length} ${this._t("activeWeatherAlert")}${features.length === 1 ? "" : "s"}`;
-      const popupHtml = this._alertPopup(features[0]?.properties || { headline });
+      const popupHtml = this._alertsPopup(features);
       const marker = window.L.circleMarker([lat, lon], {
         radius: 9,
         color: "#b91c1c",
@@ -1516,7 +2390,7 @@ class WeatherWiseCard extends HTMLElement {
         alert.hidden = false;
         alert.setAttribute("role", "button");
         alert.setAttribute("tabindex", "0");
-        alert.textContent = `${features.length} ${this._t("nwsAlertTap")}${features.length === 1 ? "" : "s"}`;
+        alert.textContent = `${features.length} ${this._t(features.length === 1 ? "nwsAlertTap" : "nwsAlertsTap")}`;
         alert.title = headline;
         alert.onclick = (event) => {
           event.stopPropagation();
@@ -1545,11 +2419,29 @@ class WeatherWiseCard extends HTMLElement {
     return { color, fillColor: color, fillOpacity: 0.16, opacity: 0.82, weight: 2 };
   }
 
-  _alertPopup(props) {
+  _alertsPopup(features) {
+    const items = (features || [])
+      .map((feature, index) => this._alertPopup(feature?.properties || {}, index + 1, features.length))
+      .join("");
+    return items ? `<div class="alert-popup-list">${items}</div>` : this._alertPopup({});
+  }
+
+  _alertPopup(props, index = NaN, total = NaN) {
     const event = _wwEscape(props.event || this._t("weatherAlert"));
     const headline = _wwEscape(props.headline || "");
     const severity = _wwEscape(props.severity || this._t("unknown"));
-    return `<strong>${event}</strong><br>${headline}<br>${_wwEscape(this._t("severity"))}: ${severity}`;
+    const alertNumber = Number(index);
+    const alertTotal = Number(total);
+    const count = Number.isFinite(alertNumber) && Number.isFinite(alertTotal) && alertTotal > 1
+      ? `<span class="alert-popup-count">${alertNumber}/${alertTotal}</span>`
+      : "";
+    return `
+      <div class="alert-popup-item">
+        <div class="alert-popup-heading"><strong>${event}</strong>${count}</div>
+        ${headline ? `<div class="alert-popup-headline">${headline}</div>` : ""}
+        <div class="alert-popup-severity">${_wwEscape(this._t("severity"))}: ${severity}</div>
+      </div>
+    `;
   }
 
   _unitContext(attrs) {
@@ -1585,7 +2477,7 @@ class WeatherWiseCard extends HTMLElement {
   _currentTemperature(attrs) {
     const entityId = this._config.temperature_entity;
     const state = entityId ? this._hass?.states?.[entityId] : null;
-    if (state && isWeatherWiseTemperatureEntity(entityId, state)) {
+    if (state && isRadarWiseTemperatureEntity(entityId, state)) {
       return {
         value: state.state,
         unit: state.attributes?.unit_of_measurement || state.attributes?.native_unit_of_measurement || this._hass?.config?.unit_system?.temperature
@@ -1658,18 +2550,103 @@ class WeatherWiseCard extends HTMLElement {
     return `${dir ? `${dir} ` : ""}${speed} ${attrs.wind_speed_unit || units.windSpeedUnit}`;
   }
 
-  _humidity(attrs) {
+  _candidateNumber(value) {
+    if (value && typeof value === "object") {
+      return this._numberOr(value.value ?? value.native_value ?? value.state, NaN);
+    }
+    return this._numberOr(value, NaN);
+  }
+
+  _forecastCandidate(forecastSources, keys) {
+    for (const periods of forecastSources || []) {
+      if (!Array.isArray(periods)) continue;
+      for (const item of periods.slice(0, 12)) {
+        for (const key of keys) {
+          const raw = item?.[key];
+          if (raw === undefined || raw === null || raw === "") continue;
+          const value = this._candidateNumber(raw);
+          if (Number.isFinite(value)) {
+            return { raw, value, source: `forecast.${key}` };
+          }
+        }
+      }
+    }
+    return { raw: undefined, value: NaN, source: "missing" };
+  }
+
+  _humidityInfo(attrs, forecastSources = []) {
     const configuredEntityId = this._config.humidity_entity;
     const configuredState = configuredEntityId ? this._hass?.states?.[configuredEntityId] : null;
-    const configured = isWeatherWiseHumidityEntity(configuredEntityId, configuredState) ? configuredState : null;
-    const values = [
-      configured?.state,
-      attrs.humidity,
-      attrs.relative_humidity,
-      attrs.relativeHumidity
+    const configured = isRadarWiseHumidityEntity(configuredEntityId, configuredState) ? configuredState : null;
+    const candidates = [
+      { raw: configured?.state, source: configuredEntityId ? `entity.${configuredEntityId}` : "entity.auto" },
+      { raw: attrs.humidity, source: "weather.attributes.humidity" },
+      { raw: attrs.relative_humidity, source: "weather.attributes.relative_humidity" },
+      { raw: attrs.relativeHumidity, source: "weather.attributes.relativeHumidity" },
+      { raw: attrs.native_humidity, source: "weather.attributes.native_humidity" }
     ];
-    const value = values.map((item) => this._numberOr(item, NaN)).find(Number.isFinite);
-    return Number.isFinite(value) ? String(Math.round(value)) : "--";
+    for (const candidate of candidates) {
+      const value = this._candidateNumber(candidate.raw);
+      if (Number.isFinite(value)) {
+        return { value, display: String(Math.round(value)), source: candidate.source, raw: candidate.raw };
+      }
+    }
+    const forecast = this._forecastCandidate(forecastSources, ["humidity", "relative_humidity", "relativeHumidity", "native_humidity"]);
+    if (Number.isFinite(forecast.value)) {
+      return { ...forecast, display: String(Math.round(forecast.value)) };
+    }
+    return { value: NaN, display: "--", source: "missing", raw: undefined };
+  }
+
+  _humidity(attrs, forecastSources = []) {
+    return this._humidityInfo(attrs, forecastSources).display;
+  }
+
+  _dewPointInfo(attrs, units, forecastSources = []) {
+    const configuredEntityId = this._config.dew_point_entity;
+    const configuredState = configuredEntityId ? this._hass?.states?.[configuredEntityId] : null;
+    if (configuredState && isRadarWiseDewPointEntity(configuredEntityId, configuredState)) {
+      const value = {
+        value: configuredState.state,
+        unit: configuredState.attributes?.unit_of_measurement || configuredState.attributes?.native_unit_of_measurement || this._hass?.config?.unit_system?.temperature
+      };
+      return {
+        value: this._tempValue(value, units),
+        display: this._displayTemp(value, units, false),
+        source: `entity.${configuredEntityId}`,
+        raw: configuredState.state
+      };
+    }
+    const candidates = [
+      { raw: attrs.dew_point, source: "weather.attributes.dew_point" },
+      { raw: attrs.dewpoint, source: "weather.attributes.dewpoint" },
+      { raw: attrs.dewPoint, source: "weather.attributes.dewPoint" },
+      { raw: attrs.native_dew_point, source: "weather.attributes.native_dew_point" },
+      { raw: attrs.native_dewpoint, source: "weather.attributes.native_dewpoint" },
+      { raw: attrs.dew_point_temperature, source: "weather.attributes.dew_point_temperature" },
+      { raw: attrs.dewpoint_temperature, source: "weather.attributes.dewpoint_temperature" }
+    ];
+    for (const candidate of candidates) {
+      if (candidate.raw === undefined || candidate.raw === null || candidate.raw === "") continue;
+      return {
+        value: this._tempValue(candidate.raw, units),
+        display: this._displayTemp(candidate.raw, units, false),
+        source: candidate.source,
+        raw: candidate.raw
+      };
+    }
+    const forecast = this._forecastCandidate(forecastSources, ["dew_point", "dewpoint", "dewPoint", "native_dew_point", "native_dewpoint", "dew_point_temperature", "dewpoint_temperature"]);
+    if (Number.isFinite(forecast.value)) {
+      return {
+        ...forecast,
+        display: this._displayTemp(forecast.raw, units, false)
+      };
+    }
+    return { value: NaN, display: "--", source: "missing", raw: undefined };
+  }
+
+  _dewPoint(attrs, units, forecastSources = []) {
+    return this._dewPointInfo(attrs, units, forecastSources).display;
   }
 
   _latLon() {
@@ -1775,15 +2752,31 @@ class WeatherWiseCard extends HTMLElement {
       .card-outer{container-type:inline-size;background:rgba(232,246,250,0.74);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:22px;border:1px solid rgba(255,255,255,0.42);box-shadow:0 4px 28px rgba(0,0,0,0.10);position:relative;overflow:hidden}
       :host([theme-mode="auto"]) .card-outer{background:linear-gradient(135deg,color-mix(in srgb,var(--card-background-color,#fff) 88%,transparent),color-mix(in srgb,var(--primary-color,#2a7a94) 14%,var(--card-background-color,#fff)))}
       .card-outer::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--ww-wave) 62%,transparent),transparent)}
-      .card-grid{display:grid;grid-template-columns:minmax(0,var(--ww-col1,1fr)) minmax(0,var(--ww-col2,2fr)) minmax(0,var(--ww-col3,1fr));height:var(--weatherwise-card-height,clamp(450px,24cqw,540px));min-height:0;max-height:var(--weatherwise-card-max-height,580px)}
+      .card-grid{display:grid;grid-template-columns:minmax(0,var(--ww-col1,1fr)) minmax(0,var(--ww-col2,2fr)) minmax(0,var(--ww-col3,1fr));height:var(--radarwise-card-height,clamp(450px,24cqw,540px));min-height:0;max-height:var(--radarwise-card-max-height,580px)}
       .card-grid.no-radar{grid-template-columns:minmax(260px,34%) minmax(0,1fr)}
       .left{min-width:0;display:flex;flex-direction:column;padding:18px 22px 10px;background:linear-gradient(90deg,rgba(255,255,255,0.20),rgba(255,255,255,0.08));border-right:1px solid rgba(255,255,255,0.22);overflow:hidden;order:var(--ww-left-order,1)}
       .center{order:var(--ww-center-order,2)}.right{order:var(--ww-right-order,3)}
       .clock-panel{flex-shrink:0}
+      .clock-context{display:grid;grid-template-columns:minmax(0,1fr) minmax(116px,.82fr);align-items:start;gap:10px;margin-bottom:12px}
+      .clock-context.no-env{display:block;margin-bottom:0}
+      .clock-main{min-width:0}
       .clock-row{display:flex;align-items:baseline;gap:8px;line-height:1}
       .clock-time{font-size:78px;font-weight:550;color:var(--ww-text);letter-spacing:0}
       .clock-ampm{font-size:22px;font-weight:850;color:var(--ww-muted)}
-      .clock-date{font-size:19px;color:var(--ww-muted);font-weight:850;margin-top:10px;margin-bottom:16px}
+      .clock-date{font-size:19px;color:var(--ww-muted);font-weight:850;margin-top:10px;margin-bottom:0}
+      .clock-context.no-env .clock-date{margin-bottom:16px}
+      .environment-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:8px;min-width:0}
+      .env-tile{display:grid;grid-template-columns:25px minmax(0,1fr);align-items:center;gap:8px;min-width:0;min-height:56px;padding:8px 9px;border-radius:12px;background:rgba(255,255,255,.25);border:1px solid var(--ww-line);box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
+      .env-ico{width:25px;height:25px;color:var(--ww-wave);display:grid;place-items:center}
+      .env-ico svg{width:25px;height:25px}
+      .env-copy{min-width:0}
+      .env-lbl{font-size:10px;line-height:1.05;color:var(--ww-muted);font-weight:900;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .env-val{font-size:16px;line-height:1.05;color:var(--ww-text);font-weight:950;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .env-note{font-size:10px;line-height:1.05;color:var(--ww-muted);font-weight:850;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .env-good{border-color:rgba(34,197,94,.24)}.env-good .env-note{color:#166534}
+      .env-moderate{border-color:rgba(234,179,8,.28)}.env-moderate .env-note{color:#854d0e}
+      .env-sensitive,.env-unhealthy,.env-very-high,.env-hazardous{border-color:rgba(185,28,28,.30);background:rgba(254,242,242,.32)}
+      .env-sensitive .env-note,.env-unhealthy .env-note,.env-very-high .env-note,.env-hazardous .env-note{color:#7f1d1d}
       .forecast-summary{container-type:inline-size;margin:0 0 14px;min-height:30px;max-width:100%;overflow:hidden;border:1px solid var(--ww-line);border-radius:999px;background:rgba(255,255,255,.20);box-shadow:inset 0 1px 0 rgba(255,255,255,.20);mask-image:linear-gradient(90deg,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%)}
       .forecast-summary-text{display:inline-block;padding:7px 18px;font-size:13px;line-height:1.15;color:var(--ww-muted);font-weight:900;white-space:nowrap}
       :host([animations]) .forecast-summary-text{animation:ww-summary-drift 34s linear infinite}
@@ -1802,7 +2795,16 @@ class WeatherWiseCard extends HTMLElement {
       .current-row{display:flex;align-items:center;gap:18px;margin-bottom:12px;min-width:0;min-height:86px;overflow:visible}
       .current-icon{width:72px;height:72px;flex-shrink:0;display:grid;place-items:center}
       .cond-block{flex:1;min-width:0}
+      .cond-name-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width:0}
       .cond-name{font-size:36px;font-weight:800;color:var(--ww-text);line-height:1.05;overflow-wrap:anywhere}
+      .current-uv{display:inline-grid;grid-template-columns:auto auto;grid-template-areas:"label value" "note note";align-items:center;column-gap:6px;row-gap:1px;padding:5px 9px;border:1px solid var(--ww-line);border-radius:999px;background:rgba(255,255,255,.24);box-shadow:inset 0 1px 0 rgba(255,255,255,.20);line-height:1;white-space:nowrap}
+      .current-uv span{grid-area:label;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--ww-muted)}
+      .current-uv strong{grid-area:value;font-size:16px;font-weight:950;color:var(--ww-text)}
+      .current-uv em{grid-area:note;font-size:10px;font-style:normal;font-weight:850;color:var(--ww-muted);text-align:right}
+      .uv-good{border-color:rgba(34,197,94,.24)}.uv-good em{color:#166534}
+      .uv-moderate{border-color:rgba(234,179,8,.28)}.uv-moderate em{color:#854d0e}
+      .uv-unhealthy,.uv-very-high,.uv-hazardous{border-color:rgba(185,28,28,.30);background:rgba(254,242,242,.32)}
+      .uv-unhealthy em,.uv-very-high em,.uv-hazardous em{color:#7f1d1d}
       .updated-note{font-size:14px;color:var(--ww-muted);font-weight:850;margin-top:7px;text-transform:uppercase;letter-spacing:.04em}
       .temp-block{text-align:right;flex-shrink:0;min-width:max-content}
       .temp-now{font-size:66px;font-weight:800;color:var(--ww-text);line-height:1.08;letter-spacing:0}
@@ -1814,8 +2816,9 @@ class WeatherWiseCard extends HTMLElement {
       .fc-icon{width:64px;height:64px;margin:4px 0 2px;display:flex;align-items:center;justify-content:center}
       .fc-icon svg{width:60px;height:60px}
       .fc-temp{font-size:48px;font-weight:900;color:var(--ww-text);letter-spacing:0;line-height:.95}
+      .fc-range{font-size:13px;font-weight:900;color:var(--ww-muted);line-height:1;min-height:14px;text-align:center;white-space:nowrap}
       .fc-precip{font-size:12px;font-weight:900;color:var(--ww-muted);line-height:1;min-height:13px;text-align:center;white-space:nowrap}
-      .stats-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:6px;flex-shrink:0}
+      .stats-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:6px;flex-shrink:0}
       .stat{background:var(--ww-panel);border:1px solid var(--ww-line);border-radius:12px;padding:10px 13px;display:flex;align-items:center;gap:11px;min-height:66px;min-width:0}
       .stat>div:last-child{min-width:0}
       .stat-ico{width:27px;height:27px;flex:0 0 27px;color:var(--ww-wave)}
@@ -1887,23 +2890,60 @@ class WeatherWiseCard extends HTMLElement {
       .leaflet-control-attribution{background:rgba(255,255,255,.70)!important;color:rgba(10,30,46,.72)!important}
       .leaflet-popup{position:absolute;text-align:center;margin-bottom:20px}
       .leaflet-popup-content-wrapper{background:rgba(255,255,255,.96);color:#0a1e2e;border-radius:12px;box-shadow:0 4px 18px rgba(10,30,46,.22);border:1px solid rgba(10,30,46,.12);padding:1px;text-align:left}
-      .leaflet-popup-content{font-size:13px;line-height:1.35;margin:12px 14px;min-width:180px;max-width:260px}
+      .leaflet-popup-content{font-size:13px;line-height:1.35;margin:12px 14px;min-width:180px;max-width:320px}
+      .alert-popup-list{display:flex;flex-direction:column;gap:10px;max-height:260px;overflow:auto;overscroll-behavior:contain;padding-right:2px}
+      .alert-popup-item{min-width:0}
+      .alert-popup-item+.alert-popup-item{border-top:1px solid rgba(10,30,46,.12);padding-top:10px}
+      .alert-popup-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:900}
+      .alert-popup-count{font-size:11px;color:#7f1d1d;background:rgba(254,242,242,.86);border:1px solid rgba(185,28,28,.20);border-radius:999px;padding:1px 7px;white-space:nowrap}
+      .alert-popup-headline{margin-top:4px}
+      .alert-popup-severity{margin-top:4px;color:rgba(10,30,46,.74);font-weight:750}
       .leaflet-popup-tip-container{width:40px;height:20px;position:absolute;left:50%;margin-left:-20px;overflow:hidden;pointer-events:none}
       .leaflet-popup-tip{width:14px;height:14px;padding:1px;margin:-8px auto 0;background:rgba(255,255,255,.96);transform:rotate(45deg);box-shadow:0 4px 14px rgba(10,30,46,.18)}
       .leaflet-popup-close-button{position:absolute;top:4px;right:8px;border:0;background:transparent;color:#0a1e2e;text-decoration:none;font-size:18px;font-weight:900;line-height:1;cursor:pointer}
       .loading-note{font-size:12px;color:var(--ww-muted);font-weight:800;opacity:.8;padding:10px}
       .daily-strip>.loading-note{grid-column:1 / -1;align-self:center}
-      .debug-panel{margin-top:10px;background:var(--ww-panel);border:1px solid var(--ww-line);border-radius:12px;padding:8px;font-size:12px;color:var(--ww-muted)}
-      .debug-row{display:flex;justify-content:space-between;gap:12px;padding:3px 0}
-      .debug-row code{color:var(--ww-text)}
+      .debug-panel{margin:10px 18px 18px;background:rgba(255,255,255,.78);border:1px solid var(--ww-line);border-radius:14px;padding:0;font-size:12px;color:var(--ww-muted);max-height:min(420px,52vh);overflow:auto;overscroll-behavior:contain;box-shadow:0 10px 24px rgba(10,30,46,.12)}
+      .debug-panel summary{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:6px;padding:9px 12px;background:rgba(255,255,255,.92);border-bottom:1px solid var(--ww-line);cursor:pointer;font-weight:900;color:var(--ww-text)}
+      .debug-row{display:grid;grid-template-columns:minmax(130px,220px) minmax(0,1fr);gap:12px;padding:7px 12px;border-bottom:1px solid rgba(10,30,46,.07);align-items:start}
+      .debug-row span{font-weight:800;color:var(--ww-muted)}
+      .debug-row code{color:var(--ww-text);white-space:pre-wrap;word-break:break-word;text-align:left;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:11px;line-height:1.35}
       .card-grid.no-forecast .daily-strip{display:none}.card-grid.no-forecast .center{justify-content:center}
-      @container(max-width:1500px){.card-grid{height:var(--weatherwise-card-height,clamp(440px,25cqw,520px))}.left{padding:14px 18px 10px}.center{padding:16px 20px}.clock-time{font-size:70px}.clock-date{font-size:18px;margin-bottom:11px}.forecast-summary{margin-bottom:11px}.forecast-summary-text{font-size:12px}.section-title,.current-label{font-size:15px}.temp-now{font-size:58px}.temp-hilo{font-size:18px}.cond-name{font-size:32px}.updated-note{font-size:13px}.daily-strip{min-height:172px;max-height:212px}.fc-day{font-size:20px}.fc-period{font-size:13px}.fc-icon{width:58px;height:58px}.fc-icon svg{width:54px;height:54px}.fc-temp{font-size:43px}.hour-row{grid-template-columns:50px 24px 42px minmax(52px,1fr) minmax(38px,max-content);gap:7px;min-height:32px}.hour-time-left{font-size:14px}.hour-temp-left{font-size:15px}.hour-precip{font-size:11px}.stat{padding:9px 11px;gap:9px;min-height:62px}.stat-lbl{font-size:11px}.stat-val{font-size:17px}}
-      @container(max-width:980px){.card-grid:not(.layout-wide_panel){height:var(--weatherwise-card-height,clamp(560px,58cqw,680px))}.card-grid:not(.layout-wide_panel) .center{border-right:0}.card-grid:not(.layout-wide_panel) .right{grid-column:1 / -1;height:240px;border-top:1px solid rgba(255,255,255,0.28);border-radius:0 0 22px 22px}.card-grid:not(.layout-wide_panel) #rmap{height:240px}.card-grid:not(.layout-wide_panel) .daily-strip{min-height:150px;max-height:none}}
-      .card-grid.layout-wide_panel{height:var(--weatherwise-card-height,clamp(390px,22cqw,500px))}
+      .card-grid.panels-1{grid-template-columns:1fr}
+      .card-grid.panels-2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+      .card-grid.panels-1 .left,.card-grid.panels-1 .center,.card-grid.panels-1 .right{border-right:0;border-radius:22px}
+      .card-grid.panels-2 .center:last-child,.card-grid.panels-2 .right:last-child{border-right:0;border-radius:0 22px 22px 0}
+      .card-grid.content-radar{height:var(--radarwise-card-height,clamp(310px,20cqw,460px))}
+      .card-grid.content-radar .right{border-radius:22px}
+      .card-grid.content-radar #rmap{height:100%;min-height:260px}
+      .card-grid.content-forecast{height:var(--radarwise-card-height,clamp(260px,18cqw,390px))}
+      .card-grid.content-forecast .center{border-right:0;justify-content:stretch}
+      .card-grid.content-forecast .daily-strip{min-height:0;max-height:none;margin-bottom:0}
+      .card-grid.content-timeline{height:var(--radarwise-card-height,clamp(280px,18cqw,420px))}
+      .card-grid.content-timeline .left{border-right:0}
+      .card-grid.content-essentials{height:var(--radarwise-card-height,clamp(220px,16cqw,320px))}
+      .card-grid.content-essentials .center{border-right:0}
+      .card-grid.content-essentials .current-row{margin-bottom:10px}
+      @container(max-width:1500px){.card-grid{height:var(--radarwise-card-height,clamp(440px,25cqw,520px))}.left{padding:14px 18px 10px}.center{padding:16px 20px}.clock-time{font-size:70px}.clock-date{font-size:18px;margin-bottom:11px}.forecast-summary{margin-bottom:11px}.forecast-summary-text{font-size:12px}.section-title,.current-label{font-size:15px}.temp-now{font-size:58px}.temp-hilo{font-size:18px}.cond-name{font-size:32px}.updated-note{font-size:13px}.daily-strip{min-height:172px;max-height:212px}.fc-day{font-size:20px}.fc-period{font-size:13px}.fc-icon{width:58px;height:58px}.fc-icon svg{width:54px;height:54px}.fc-temp{font-size:43px}.hour-row{grid-template-columns:50px 24px 42px minmax(52px,1fr) minmax(38px,max-content);gap:7px;min-height:32px}.hour-time-left{font-size:14px}.hour-temp-left{font-size:15px}.hour-precip{font-size:11px}.stat{padding:9px 11px;gap:9px;min-height:62px}.stat-lbl{font-size:11px}.stat-val{font-size:17px}}
+      @container(max-width:980px){.card-grid:not(.layout-wide_panel){height:var(--radarwise-card-height,clamp(560px,58cqw,680px))}.card-grid:not(.layout-wide_panel) .center{border-right:0}.card-grid:not(.layout-wide_panel) .right{grid-column:1 / -1;height:240px;border-top:1px solid rgba(255,255,255,0.28);border-radius:0 0 22px 22px}.card-grid:not(.layout-wide_panel) #rmap{height:240px}.card-grid:not(.layout-wide_panel) .daily-strip{min-height:150px;max-height:none}}
+      .card-grid.layout-wide_panel{height:var(--radarwise-card-height,clamp(390px,22cqw,500px))}
       .card-grid.layout-stacked,.card-grid.layout-compact{display:flex;flex-direction:column;height:auto;max-height:none}.card-grid.layout-stacked .left,.card-grid.layout-compact .left{display:contents}.card-grid.layout-stacked .clock-panel,.card-grid.layout-compact .clock-panel{order:1;padding:18px 22px 0;background:linear-gradient(90deg,rgba(255,255,255,0.20),rgba(255,255,255,0.08))}.card-grid.layout-stacked .center,.card-grid.layout-compact .center{order:var(--ww-ord-weather,20);border-right:0;overflow:visible}.card-grid.layout-stacked .left>.section-title,.card-grid.layout-compact .left>.section-title{order:var(--ww-ord-clock-title,12);padding:0 22px;margin-top:4px}.card-grid.layout-stacked .hourly-left,.card-grid.layout-compact .hourly-left{order:var(--ww-ord-clock-hourly,13);flex:none;overflow:visible;padding:0 22px 16px}.card-grid.layout-stacked .right,.card-grid.layout-compact .right{order:var(--ww-ord-radar,30);border-top:1px solid rgba(255,255,255,0.28);border-radius:0 0 22px 22px}.card-grid.layout-stacked .right,.card-grid.layout-stacked #rmap{height:300px;min-height:300px}.card-grid.layout-compact .right,.card-grid.layout-compact #rmap{height:220px;min-height:220px}.card-grid.layout-compact .daily-strip{grid-template-columns:repeat(3,minmax(0,1fr));min-height:150px}.card-grid.layout-compact .fc-slot:nth-child(n+4){display:none}
       @container(max-width:720px){.card-grid:not(.layout-wide_panel),.card-grid.no-radar:not(.layout-wide_panel){display:flex;flex-direction:column;height:auto;max-height:none}.card-grid:not(.layout-wide_panel) .left{display:contents}.card-grid:not(.layout-wide_panel) .clock-panel{order:1;padding:18px 20px 0}.card-grid:not(.layout-wide_panel) .center{order:var(--ww-ord-weather,20);border-right:0;overflow:visible}.card-grid:not(.layout-wide_panel) .left>.section-title{order:var(--ww-ord-clock-title,12);padding:0 20px}.card-grid:not(.layout-wide_panel) .hourly-left{order:var(--ww-ord-clock-hourly,13);flex:none;overflow:visible;padding:0 20px 16px}.card-grid:not(.layout-wide_panel) .right{order:var(--ww-ord-radar,30)}.clock-time{font-size:48px}.current-row{align-items:flex-start;gap:12px;flex-wrap:wrap}.temp-block{text-align:left}.card-grid:not(.layout-wide_panel) .daily-strip{grid-template-columns:repeat(3,minmax(0,1fr));max-height:none}.stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}.right,#rmap{height:300px;min-height:300px}.card-grid.layout-wide_panel{display:grid;grid-template-columns:minmax(120px,24%) minmax(230px,1fr) minmax(150px,28%);height:360px;max-height:360px}.card-grid.layout-wide_panel .left{display:flex;padding:12px 10px}.card-grid.layout-wide_panel .center{padding:12px 10px}.card-grid.layout-wide_panel .clock-time{font-size:38px}.card-grid.layout-wide_panel .clock-date{font-size:12px;margin:5px 0 7px}.card-grid.layout-wide_panel .forecast-summary{min-height:26px;margin-bottom:8px}.card-grid.layout-wide_panel .forecast-summary-text{font-size:11px;padding:6px 14px}.card-grid.layout-wide_panel .current-icon{width:44px;height:44px}.card-grid.layout-wide_panel .cond-name{font-size:21px}.card-grid.layout-wide_panel .temp-now{font-size:38px}.card-grid.layout-wide_panel .daily-strip{grid-template-columns:repeat(var(--ww-forecast-count,5),minmax(70px,1fr));gap:6px;overflow:hidden}.card-grid.layout-wide_panel .fc-temp{font-size:28px}.card-grid.layout-wide_panel .stats-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.card-grid.layout-wide_panel .right,.card-grid.layout-wide_panel #rmap{height:100%;min-height:0}}
+      @container(max-width:720px){.card-grid.layout-wide_panel .clock-context{grid-template-columns:1fr;gap:6px;margin-bottom:8px}.card-grid.layout-wide_panel .environment-strip{grid-template-columns:1fr;gap:5px}.card-grid.layout-wide_panel .env-tile{grid-template-columns:20px minmax(0,1fr);min-height:40px;padding:5px 7px}.card-grid.layout-wide_panel .env-ico,.card-grid.layout-wide_panel .env-ico svg{width:20px;height:20px}.card-grid.layout-wide_panel .env-lbl,.card-grid.layout-wide_panel .env-note{font-size:9px}.card-grid.layout-wide_panel .env-val{font-size:13px}.card-grid.layout-wide_panel .env-note{display:none}}
       @media(max-width:760px){.card-grid:not(.layout-wide_panel),.card-grid.no-radar:not(.layout-wide_panel){display:flex;flex-direction:column;height:auto;max-height:none}.card-grid:not(.layout-wide_panel) .left{display:contents}.card-grid:not(.layout-wide_panel) .clock-panel{order:1;padding:18px 20px 0}.card-grid:not(.layout-wide_panel) .center{order:var(--ww-ord-weather,20);border-right:0;overflow:visible}.card-grid:not(.layout-wide_panel) .left>.section-title{order:var(--ww-ord-clock-title,12);padding:0 20px}.card-grid:not(.layout-wide_panel) .hourly-left{order:var(--ww-ord-clock-hourly,13);flex:none;overflow:visible;padding:0 20px 16px}.card-grid:not(.layout-wide_panel) .right{order:var(--ww-ord-radar,30)}.clock-time{font-size:48px}.current-row{align-items:flex-start;gap:12px;flex-wrap:wrap}.temp-block{text-align:left}.card-grid:not(.layout-wide_panel) .daily-strip{grid-template-columns:repeat(3,minmax(0,1fr));max-height:none}.stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}.right,#rmap{height:300px;min-height:300px}}
       @media(prefers-reduced-motion:reduce){:host([animations]) .ww-sun-rays,:host([animations]) .ww-sun-core,:host([animations]) .ww-cloud,:host([animations]) .ww-rain,:host([animations]) .ww-snow,:host([animations]) .ww-bolt,:host([animations]) .ww-moon,:host([animations]) .ww-moon-glow,:host([animations]) .ww-fog,:host([animations]) .hour-row,:host([animations]) .fc-slot,:host([animations]) .forecast-summary-text{animation:none!important}:host([animations]) .hour-bar-fill{transition:none!important}}
+      .card-grid.content-radar{height:var(--radarwise-card-height,clamp(310px,20cqw,460px));max-height:var(--radarwise-card-max-height,480px)}
+      .card-grid.content-forecast{height:var(--radarwise-card-height,clamp(260px,18cqw,390px));max-height:var(--radarwise-card-max-height,420px)}
+      .card-grid.content-timeline{height:var(--radarwise-card-height,clamp(280px,18cqw,420px));max-height:var(--radarwise-card-max-height,440px)}
+      .card-grid.content-essentials{height:var(--radarwise-card-height,clamp(220px,16cqw,320px));max-height:var(--radarwise-card-max-height,340px)}
+      .card-grid.density-slim{height:var(--radarwise-card-height,clamp(330px,18cqw,430px));max-height:var(--radarwise-card-max-height,450px)}
+      .card-grid.density-slim .left{padding:11px 16px 8px}.card-grid.density-slim .center{padding:12px 18px}.card-grid.density-slim .clock-context{gap:8px;margin-bottom:8px}.card-grid.density-slim .clock-time{font-size:58px}.card-grid.density-slim .clock-ampm{font-size:18px}.card-grid.density-slim .clock-date{font-size:16px;margin-top:7px;margin-bottom:8px}.card-grid.density-slim .environment-strip{gap:6px}.card-grid.density-slim .env-tile{min-height:44px;padding:6px 8px}.card-grid.density-slim .env-ico,.card-grid.density-slim .env-ico svg{width:21px;height:21px}.card-grid.density-slim .env-lbl,.card-grid.density-slim .env-note{font-size:9px}.card-grid.density-slim .env-val{font-size:14px}.card-grid.density-slim .forecast-summary{min-height:25px;margin-bottom:8px}.card-grid.density-slim .forecast-summary-text{font-size:11px;padding:6px 14px}.card-grid.density-slim .section-title,.card-grid.density-slim .current-label{font-size:13px}.card-grid.density-slim .hourly-left{gap:6px}.card-grid.density-slim .hour-row{min-height:28px;max-height:38px;padding:4px 9px;grid-template-columns:46px 22px 38px minmax(45px,1fr) minmax(34px,max-content);gap:6px}.card-grid.density-slim .hour-time-left{font-size:13px}.card-grid.density-slim .hour-temp-left{font-size:14px}.card-grid.density-slim .hour-precip{font-size:10px}.card-grid.density-slim .current-row{min-height:64px;margin-bottom:8px;gap:12px}.card-grid.density-slim .current-icon{width:54px;height:54px}.card-grid.density-slim .cond-name{font-size:27px}.card-grid.density-slim .updated-note{font-size:11px;margin-top:4px}.card-grid.density-slim .temp-now{font-size:48px}.card-grid.density-slim .temp-hilo{font-size:15px;margin-top:4px}.card-grid.density-slim .daily-strip{min-height:130px;max-height:170px;gap:8px;margin-bottom:8px}.card-grid.density-slim .fc-slot{padding:7px 6px}.card-grid.density-slim .fc-day{font-size:17px}.card-grid.density-slim .fc-period{font-size:11px;min-height:12px}.card-grid.density-slim .fc-icon{width:46px;height:46px;margin:2px 0}.card-grid.density-slim .fc-icon svg{width:44px;height:44px}.card-grid.density-slim .fc-temp{font-size:34px}.card-grid.density-slim .fc-range,.card-grid.density-slim .fc-precip{font-size:10px;min-height:11px}.card-grid.density-slim .stats-row{gap:7px}.card-grid.density-slim .stat{min-height:48px;padding:7px 9px;gap:8px}.card-grid.density-slim .stat-ico,.card-grid.density-slim .stat-ico svg{width:22px;height:22px;flex-basis:22px}.card-grid.density-slim .stat-lbl{font-size:10px;margin-bottom:2px}.card-grid.density-slim .stat-val{font-size:15px}
+      .card-grid.density-large{height:var(--radarwise-card-height,clamp(500px,28cqw,620px));max-height:var(--radarwise-card-max-height,660px)}
+      .card-grid.density-large .clock-time{font-size:88px}.card-grid.density-large .clock-date{font-size:22px}.card-grid.density-large .cond-name{font-size:42px}.card-grid.density-large .temp-now{font-size:78px}.card-grid.density-large .daily-strip{min-height:220px;max-height:270px}.card-grid.density-large .fc-temp{font-size:58px}.card-grid.density-large .stat{min-height:76px}.card-grid.density-large .stat-val{font-size:22px}
+      .card-grid.content-radar.density-slim{height:var(--radarwise-card-height,clamp(230px,16cqw,360px))}
+      .card-grid.content-forecast.density-slim{height:var(--radarwise-card-height,clamp(210px,15cqw,320px))}
+      .card-grid.content-timeline.density-slim{height:var(--radarwise-card-height,clamp(220px,15cqw,340px))}
+      .card-grid.content-essentials.density-slim{height:var(--radarwise-card-height,clamp(190px,13cqw,270px))}
 
       .card-grid.layout-radar_bottom{display:grid;grid-template-columns:minmax(310px,28%) minmax(0,1fr);grid-template-rows:clamp(420px,28cqw,540px) 340px;height:auto;max-height:none}
       .card-grid.layout-radar_bottom .left{grid-column:1;grid-row:1;overflow:hidden}
@@ -1912,13 +2952,17 @@ class WeatherWiseCard extends HTMLElement {
       .card-grid.layout-radar_bottom #rmap{height:340px;min-height:340px}
       .card-grid.ww-force-stack:not(.layout-wide_panel),.card-grid.ww-force-stack.no-radar:not(.layout-wide_panel){display:flex;flex-direction:column;height:auto;max-height:none}.card-grid.ww-force-stack:not(.layout-wide_panel) .left{display:contents}.card-grid.ww-force-stack:not(.layout-wide_panel) .clock-panel{order:1;padding:18px 20px 0}.card-grid.ww-force-stack:not(.layout-wide_panel) .center{order:var(--ww-ord-weather,20);border-right:0;overflow:visible}.card-grid.ww-force-stack:not(.layout-wide_panel) .left>.section-title{order:var(--ww-ord-clock-title,12);padding:0 20px}.card-grid.ww-force-stack:not(.layout-wide_panel) .hourly-left{order:var(--ww-ord-clock-hourly,13);flex:none;overflow:visible;padding:0 20px 16px}.card-grid.ww-force-stack:not(.layout-wide_panel) .right{order:var(--ww-ord-radar,30);height:300px;min-height:300px;border-top:1px solid rgba(255,255,255,0.28);border-radius:0 0 22px 22px}.card-grid.ww-force-stack:not(.layout-wide_panel) #rmap{height:300px;min-height:300px}.card-grid.ww-force-stack:not(.layout-wide_panel) .daily-strip{grid-template-columns:repeat(3,minmax(0,1fr));max-height:none}.card-grid.ww-force-stack:not(.layout-wide_panel) .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}
       @container(max-width:720px){.card-grid.layout-radar_bottom{grid-template-columns:1fr;grid-template-rows:auto auto 300px}.card-grid.layout-radar_bottom .left{grid-column:1;grid-row:1}.card-grid.layout-radar_bottom .center{grid-column:1;grid-row:2;border-right:0}.card-grid.layout-radar_bottom .right{grid-column:1;grid-row:3;height:300px;min-height:300px}.card-grid.layout-radar_bottom #rmap{height:300px;min-height:300px}}
-      @container(max-width:600px){.clock-time{font-size:58px}.clock-ampm{font-size:17px}.temp-now{font-size:46px}.temp-hilo{font-size:17px;margin-top:5px}.cond-name{font-size:26px}.current-icon{width:54px;height:54px}.current-row{gap:10px;flex-wrap:wrap}.temp-block{min-width:unset}.center{padding:14px 18px}.updated-note{font-size:12px;margin-top:4px}}
+      .card-grid.content-radar,.card-grid.content-forecast,.card-grid.content-timeline,.card-grid.content-essentials{display:grid;grid-template-columns:1fr;grid-template-rows:1fr}
+      .card-grid.content-radar .right,.card-grid.content-forecast .center,.card-grid.content-timeline .left,.card-grid.content-essentials .center{grid-column:1;grid-row:1;border-right:0;border-radius:22px}
+      .card-grid.content-timeline .left{display:flex;flex-direction:column;padding:18px 22px 14px;overflow:hidden;background:linear-gradient(90deg,rgba(255,255,255,0.20),rgba(255,255,255,0.08))}
+      .card-grid.content-radar .right,.card-grid.content-radar #rmap{height:100%;min-height:0}
+      @container(max-width:600px){.clock-context{grid-template-columns:1fr}.environment-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.clock-time{font-size:58px}.clock-ampm{font-size:17px}.temp-now{font-size:46px}.temp-hilo{font-size:17px;margin-top:5px}.cond-name{font-size:26px}.current-icon{width:54px;height:54px}.current-row{gap:10px;flex-wrap:wrap}.temp-block{min-width:unset}.center{padding:14px 18px}.updated-note{font-size:12px;margin-top:4px}}
       @container(max-width:420px){.clock-time{font-size:48px}.temp-now{font-size:38px}.cond-name{font-size:22px}.current-icon{width:46px;height:46px}}
     `;
   }
 }
 
-class WeatherWiseCardEditor extends HTMLElement {
+class RadarWiseCardEditor extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
@@ -1939,7 +2983,7 @@ class WeatherWiseCardEditor extends HTMLElement {
 
   setConfig(config) {
     this._config = {
-      ...WeatherWiseCard.getStubConfig(),
+      ...RadarWiseCard.getStubConfig(),
       ...(config || {}),
       language: config?.language || config?.forecast_summary_language || "auto"
     };
@@ -1960,17 +3004,47 @@ class WeatherWiseCardEditor extends HTMLElement {
   }
 
   _humidityEntities() {
-    return this._sensorEntities(isWeatherWiseHumidityEntity);
+    return this._sensorEntities(isRadarWiseHumidityEntity);
   }
 
   _temperatureEntities() {
-    return this._sensorEntities(isWeatherWiseTemperatureEntity);
+    return this._sensorEntities(isRadarWiseTemperatureEntity);
+  }
+
+  _dewPointEntities() {
+    return this._sensorEntities(isRadarWiseDewPointEntity);
+  }
+
+  _airQualityEntities() {
+    return this._sensorEntities(isRadarWiseAirQualityEntity);
+  }
+
+  _uvIndexEntities() {
+    return this._sensorEntities(isRadarWiseUvIndexEntity);
+  }
+
+  _pollenEntities(kind = "") {
+    return this._sensorEntities((entityId, state) => isRadarWisePollenEntity(entityId, state, kind));
+  }
+
+  _sensorOptions(sensors, selected) {
+    return sensors.map(([entityId, state]) => {
+      const name = state.attributes?.friendly_name || entityId;
+      return `<option value="${_wwEscape(entityId)}" ${selected === entityId ? "selected" : ""}>${_wwEscape(name)} (${_wwEscape(entityId)})</option>`;
+    }).join("");
+  }
+
+  _configuredSensorOption(entityId, sensors, predicate) {
+    if (!entityId || sensors.some(([candidate]) => candidate === entityId)) return "";
+    return predicate(entityId, this._hass?.states?.[entityId])
+      ? `<option value="${_wwEscape(entityId)}" selected>${_wwEscape(entityId)}</option>`
+      : "";
   }
 
   _editorEntitySignature() {
     const states = this._hass?.states || {};
     return Object.entries(states)
-      .filter(([entityId, state]) => entityId.startsWith("weather.") || isWeatherWiseHumidityEntity(entityId, state) || isWeatherWiseTemperatureEntity(entityId, state))
+      .filter(([entityId, state]) => entityId.startsWith("weather.") || isRadarWiseHumidityEntity(entityId, state) || isRadarWiseTemperatureEntity(entityId, state) || isRadarWiseDewPointEntity(entityId, state) || isRadarWiseAirQualityEntity(entityId, state) || isRadarWiseUvIndexEntity(entityId, state) || isRadarWisePollenEntity(entityId, state))
       .map(([entityId, state]) => `${entityId}:${state.attributes?.friendly_name || ""}:${state.attributes?.device_class || ""}`)
       .sort()
       .join("|");
@@ -1978,11 +3052,15 @@ class WeatherWiseCardEditor extends HTMLElement {
 
   _setValue(key, value) {
     const numberKeys = ["latitude", "longitude", "hourly_count", "forecast_count", "radar_zoom", "radar_speed"];
-    const booleanKeys = ["show_radar", "show_map_controls", "radar_controls", "show_warning_overlay", "show_animations", "show_timeline", "show_forecast", "show_forecast_summary", "timeline_autoscroll"];
+    const booleanKeys = ["show_radar", "show_map_controls", "radar_controls", "show_warning_overlay", "show_animations", "show_timeline", "show_forecast", "show_forecast_summary", "show_environment", "timeline_autoscroll"];
     let nextValue = value;
     if (numberKeys.includes(key)) nextValue = value === "" ? undefined : Number(value);
     if (booleanKeys.includes(key)) nextValue = Boolean(value);
-    this._config = { ...this._config, [key]: nextValue };
+    const switchesToCustom = ["show_radar", "show_timeline", "show_forecast", "show_forecast_summary", "show_environment"].includes(key);
+    const fullPresetDefaults = key === "content_mode" && nextValue === "full"
+      ? { show_radar: true, show_timeline: true, show_forecast: true, show_forecast_summary: true, show_environment: true }
+      : {};
+    this._config = { ...this._config, ...fullPresetDefaults, ...(switchesToCustom ? { content_mode: "custom" } : {}), [key]: nextValue };
     this.dispatchEvent(new CustomEvent("config-changed", {
       detail: { config: this._config },
       bubbles: true,
@@ -1998,30 +3076,54 @@ class WeatherWiseCardEditor extends HTMLElement {
     const entities = this._weatherEntities();
     const humiditySensors = this._humidityEntities();
     const temperatureSensors = this._temperatureEntities();
+    const dewPointSensors = this._dewPointEntities();
+    const airQualitySensors = this._airQualityEntities();
+    const uvIndexSensors = this._uvIndexEntities();
+    const pollenSensors = this._pollenEntities();
+    const treePollenSensors = this._pollenEntities("tree");
+    const grassPollenSensors = this._pollenEntities("grass");
+    const weedPollenSensors = this._pollenEntities("weed");
+    const moldPollenSensors = this._pollenEntities("mold");
     const hasConfiguredEntity = entities.some(([entityId]) => entityId === config.entity);
     const hasConfiguredHumidityEntity = humiditySensors.some(([entityId]) => entityId === config.humidity_entity);
     const hasConfiguredTemperatureEntity = temperatureSensors.some(([entityId]) => entityId === config.temperature_entity);
+    const hasConfiguredDewPointEntity = dewPointSensors.some(([entityId]) => entityId === config.dew_point_entity);
+    const hasConfiguredUvIndexEntity = uvIndexSensors.some(([entityId]) => entityId === config.uv_index_entity);
     const configuredOption = config.entity && !hasConfiguredEntity
       ? `<option value="${_wwEscape(config.entity)}" selected>${_wwEscape(config.entity)}</option>`
       : "";
-    const configuredHumidityOption = config.humidity_entity && !hasConfiguredHumidityEntity && isWeatherWiseHumidityEntity(config.humidity_entity, this._hass?.states?.[config.humidity_entity])
+    const configuredHumidityOption = config.humidity_entity && !hasConfiguredHumidityEntity && isRadarWiseHumidityEntity(config.humidity_entity, this._hass?.states?.[config.humidity_entity])
       ? `<option value="${_wwEscape(config.humidity_entity)}" selected>${_wwEscape(config.humidity_entity)}</option>`
       : "";
-    const configuredTemperatureOption = config.temperature_entity && !hasConfiguredTemperatureEntity && isWeatherWiseTemperatureEntity(config.temperature_entity, this._hass?.states?.[config.temperature_entity])
+    const configuredTemperatureOption = config.temperature_entity && !hasConfiguredTemperatureEntity && isRadarWiseTemperatureEntity(config.temperature_entity, this._hass?.states?.[config.temperature_entity])
       ? `<option value="${_wwEscape(config.temperature_entity)}" selected>${_wwEscape(config.temperature_entity)}</option>`
       : "";
+    const configuredDewPointOption = config.dew_point_entity && !hasConfiguredDewPointEntity && isRadarWiseDewPointEntity(config.dew_point_entity, this._hass?.states?.[config.dew_point_entity])
+      ? `<option value="${_wwEscape(config.dew_point_entity)}" selected>${_wwEscape(config.dew_point_entity)}</option>`
+      : "";
+    const configuredAirQualityOption = this._configuredSensorOption(config.air_quality_entity, airQualitySensors, isRadarWiseAirQualityEntity);
+    const configuredUvIndexOption = config.uv_index_entity && !hasConfiguredUvIndexEntity && isRadarWiseUvIndexEntity(config.uv_index_entity, this._hass?.states?.[config.uv_index_entity])
+      ? `<option value="${_wwEscape(config.uv_index_entity)}" selected>${_wwEscape(config.uv_index_entity)}</option>`
+      : "";
+    const configuredPollenOption = this._configuredSensorOption(config.pollen_entity, pollenSensors, isRadarWisePollenEntity);
+    const configuredTreePollenOption = this._configuredSensorOption(config.tree_pollen_entity, treePollenSensors, (entityId, state) => isRadarWisePollenEntity(entityId, state, "tree"));
+    const configuredGrassPollenOption = this._configuredSensorOption(config.grass_pollen_entity, grassPollenSensors, (entityId, state) => isRadarWisePollenEntity(entityId, state, "grass"));
+    const configuredWeedPollenOption = this._configuredSensorOption(config.weed_pollen_entity, weedPollenSensors, (entityId, state) => isRadarWisePollenEntity(entityId, state, "weed"));
+    const configuredMoldPollenOption = this._configuredSensorOption(config.mold_pollen_entity, moldPollenSensors, (entityId, state) => isRadarWisePollenEntity(entityId, state, "mold"));
     const weatherOptions = entities.map(([entityId, state]) => {
       const name = state.attributes?.friendly_name || entityId;
       return `<option value="${_wwEscape(entityId)}" ${config.entity === entityId ? "selected" : ""}>${_wwEscape(name)} (${_wwEscape(entityId)})</option>`;
     }).join("");
-    const temperatureOptions = temperatureSensors.map(([entityId, state]) => {
-      const name = state.attributes?.friendly_name || entityId;
-      return `<option value="${_wwEscape(entityId)}" ${config.temperature_entity === entityId ? "selected" : ""}>${_wwEscape(name)} (${_wwEscape(entityId)})</option>`;
-    }).join("");
-    const humidityOptions = humiditySensors.map(([entityId, state]) => {
-      const name = state.attributes?.friendly_name || entityId;
-      return `<option value="${_wwEscape(entityId)}" ${config.humidity_entity === entityId ? "selected" : ""}>${_wwEscape(name)} (${_wwEscape(entityId)})</option>`;
-    }).join("");
+    const temperatureOptions = this._sensorOptions(temperatureSensors, config.temperature_entity);
+    const humidityOptions = this._sensorOptions(humiditySensors, config.humidity_entity);
+    const dewPointOptions = this._sensorOptions(dewPointSensors, config.dew_point_entity);
+    const airQualityOptions = this._sensorOptions(airQualitySensors, config.air_quality_entity);
+    const uvIndexOptions = this._sensorOptions(uvIndexSensors, config.uv_index_entity);
+    const pollenOptions = this._sensorOptions(pollenSensors, config.pollen_entity);
+    const treePollenOptions = this._sensorOptions(treePollenSensors, config.tree_pollen_entity);
+    const grassPollenOptions = this._sensorOptions(grassPollenSensors, config.grass_pollen_entity);
+    const weedPollenOptions = this._sensorOptions(weedPollenSensors, config.weed_pollen_entity);
+    const moldPollenOptions = this._sensorOptions(moldPollenSensors, config.mold_pollen_entity);
     this.shadowRoot.innerHTML = `
       <style>
         :host{display:block;font-family:var(--ha-font-family-body,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif);color:var(--primary-text-color,#0a1e28)}
@@ -2084,34 +3186,102 @@ class WeatherWiseCardEditor extends HTMLElement {
               ${humidityOptions}
             </select>
           </label>
-          <div class="hint">WeatherWise reads an existing Home Assistant weather entity and calls Home Assistant's forecast service. Use local temperature or humidity sensors when your weather entity differs from the spot you care about.</div>
+          <label>Dew point entity
+            <select id="dew_point_entity">
+              <option value="">Auto from weather entity</option>
+              ${configuredDewPointOption}
+              ${dewPointOptions}
+            </select>
+          </label>
+          <div class="hint">RadarWise reads an existing Home Assistant weather entity and calls Home Assistant's forecast service. Use local temperature, humidity, or dew point sensors when your weather entity differs from the spot you care about.</div>
+        </div>
+        <div class="section">
+          <div class="section-title">Environment sensors</div>
+          <label style="margin-bottom:10px">Environment source
+            <select id="environment_source">
+              ${Object.entries(RADARWISE_ENVIRONMENT_SOURCES).map(([value, label]) => `<option value="${value}" ${config.environment_source === value ? "selected" : ""}>${label}</option>`).join("")}
+            </select>
+          </label>
+          <div class="grid">
+            <label>Air quality entity
+              <select id="air_quality_entity">
+                <option value="">None</option>
+                ${configuredAirQualityOption}
+                ${airQualityOptions}
+              </select>
+            </label>
+            <label>UV index entity
+              <select id="uv_index_entity">
+                <option value="">Auto / Open-Meteo</option>
+                ${configuredUvIndexOption}
+                ${uvIndexOptions}
+              </select>
+            </label>
+            <label>Pollen entity
+              <select id="pollen_entity">
+                <option value="">None</option>
+                ${configuredPollenOption}
+                ${pollenOptions}
+              </select>
+            </label>
+            <label>Tree pollen entity
+              <select id="tree_pollen_entity">
+                <option value="">None</option>
+                ${configuredTreePollenOption}
+                ${treePollenOptions}
+              </select>
+            </label>
+            <label>Grass pollen entity
+              <select id="grass_pollen_entity">
+                <option value="">None</option>
+                ${configuredGrassPollenOption}
+                ${grassPollenOptions}
+              </select>
+            </label>
+            <label>Weed pollen entity
+              <select id="weed_pollen_entity">
+                <option value="">None</option>
+                ${configuredWeedPollenOption}
+                ${weedPollenOptions}
+              </select>
+            </label>
+            <label>Mold entity
+              <select id="mold_pollen_entity">
+                <option value="">None</option>
+                ${configuredMoldPollenOption}
+                ${moldPollenOptions}
+              </select>
+            </label>
+          </div>
+          <label class="check" style="margin-top:10px"><input id="show_environment" type="checkbox" ${config.show_environment === false ? "" : "checked"}> Show AQI / pollen beside the clock</label>
+          <div class="hint">Use Home Assistant sensors for fully entity-driven data, or Open-Meteo for no-key AQI, UV index, and pollen using the radar latitude/longitude. Open-Meteo does not provide mold; mold remains sensor-only.</div>
         </div>
         <div class="section">
           <div class="section-title">Region and radar</div>
           <div class="grid">
             <label>Country / region
               <select id="country">
-                ${Object.entries(WEATHERWISE_COUNTRIES).map(([value, label]) => `<option value="${value}" ${config.country === value ? "selected" : ""}>${label}</option>`).join("")}
+                ${Object.entries(RADARWISE_COUNTRIES).map(([value, label]) => `<option value="${value}" ${config.country === value ? "selected" : ""}>${label}</option>`).join("")}
               </select>
             </label>
             <label>Radar provider
               <select id="radar_provider">
-                ${Object.entries(WEATHERWISE_RADAR).map(([value, label]) => `<option value="${value}" ${config.radar_provider === value ? "selected" : ""}>${label}</option>`).join("")}
+                ${Object.entries(RADARWISE_RADAR).map(([value, label]) => `<option value="${value}" ${config.radar_provider === value ? "selected" : ""}>${label}</option>`).join("")}
               </select>
             </label>
             <label>Radar style
               <select id="radar_style">
-                ${Object.entries(WEATHERWISE_RADAR_STYLES).map(([value, label]) => `<option value="${value}" ${config.radar_style === value ? "selected" : ""}>${label}</option>`).join("")}
+                ${Object.entries(RADARWISE_RADAR_STYLES).map(([value, label]) => `<option value="${value}" ${config.radar_style === value ? "selected" : ""}>${label}</option>`).join("")}
               </select>
             </label>
             <label>Map style
               <select id="radar_basemap">
-                ${Object.entries(WEATHERWISE_BASEMAPS).map(([value, label]) => `<option value="${value}" ${config.radar_basemap === value ? "selected" : ""}>${label}</option>`).join("")}
+                ${Object.entries(RADARWISE_BASEMAPS).map(([value, label]) => `<option value="${value}" ${config.radar_basemap === value ? "selected" : ""}>${label}</option>`).join("")}
               </select>
             </label>
             <label>Radar timeline
               <select id="radar_timeline">
-                ${Object.entries(WEATHERWISE_RADAR_TIMELINES).map(([value, label]) => `<option value="${value}" ${config.radar_timeline === value ? "selected" : ""}>${label}</option>`).join("")}
+                ${Object.entries(RADARWISE_RADAR_TIMELINES).map(([value, label]) => `<option value="${value}" ${config.radar_timeline === value ? "selected" : ""}>${label}</option>`).join("")}
               </select>
             </label>
           </div>
@@ -2130,18 +3300,41 @@ class WeatherWiseCardEditor extends HTMLElement {
             </label>
             <label>Theme
               <select id="theme_mode">
-                <option value="weatherwise" ${config.theme_mode !== "auto" ? "selected" : ""}>WeatherWise</option>
+                <option value="radarwise" ${config.theme_mode !== "auto" ? "selected" : ""}>RadarWise</option>
                 <option value="auto" ${config.theme_mode === "auto" ? "selected" : ""}>Match Home Assistant theme</option>
               </select>
             </label>
             <label>Language
               <select id="language">
-                ${Object.entries(WEATHERWISE_LANGUAGES).map(([value, label]) => `<option value="${value}" ${(config.language || "auto") === value ? "selected" : ""}>${label}</option>`).join("")}
+                ${Object.entries(RADARWISE_LANGUAGES).map(([value, label]) => `<option value="${value}" ${(config.language || "auto") === value ? "selected" : ""}>${label}</option>`).join("")}
+              </select>
+            </label>
+            <label>Density
+              <select id="density">
+                ${Object.entries(RADARWISE_DENSITIES).map(([value, label]) => `<option value="${value}" ${(config.density || "comfortable") === value ? "selected" : ""}>${label}</option>`).join("")}
               </select>
             </label>
             <label>Forecast list rows <input id="hourly_count" type="number" min="1" max="24" value="${_wwEscape(config.hourly_count || 5)}"></label>
             <label>Forecast cards <input id="forecast_count" type="number" min="1" max="7" value="${_wwEscape(config.forecast_count || 5)}"></label>
           </div>
+          <div class="layout-label">Content focus</div>
+          <div class="layout-picker">
+            ${Object.entries({
+              full: { name: "Full", desc: "Everything", icon: `<svg width="72" height="50" viewBox="0 0 72 50" fill="none"><rect x="1" y="1" width="70" height="48" rx="5" fill="var(--card-background-color,#f4f7f9)" stroke="var(--divider-color,#cdd5da)" stroke-width="1.5"/><rect x="5" y="6" width="17" height="38" rx="3" fill="var(--primary-color,#2a7a94)" opacity=".16"/><rect x="27" y="6" width="20" height="38" rx="3" fill="var(--primary-color,#2a7a94)" opacity=".11"/><rect x="52" y="6" width="15" height="38" rx="3" fill="var(--primary-color,#2a7a94)" opacity=".13"/></svg>` },
+              essentials: { name: "Essentials", desc: "Clock + current", icon: `<svg width="72" height="50" viewBox="0 0 72 50" fill="none"><rect x="1" y="1" width="70" height="48" rx="5" fill="var(--card-background-color,#f4f7f9)" stroke="var(--divider-color,#cdd5da)" stroke-width="1.5"/><circle cx="18" cy="17" r="9" stroke="var(--primary-color,#2a7a94)" stroke-width="2" opacity=".55"/><path d="M18 11v7l5 3" stroke="var(--primary-color,#2a7a94)" stroke-width="2" stroke-linecap="round" opacity=".55"/><circle cx="44" cy="19" r="8" fill="#fbbf24"/><rect x="35" y="32" width="26" height="4" rx="2" fill="var(--primary-color,#2a7a94)" opacity=".25"/></svg>` },
+              forecast: { name: "Forecast", desc: "Daily cards", icon: `<svg width="72" height="50" viewBox="0 0 72 50" fill="none"><rect x="1" y="1" width="70" height="48" rx="5" fill="var(--card-background-color,#f4f7f9)" stroke="var(--divider-color,#cdd5da)" stroke-width="1.5"/><rect x="6" y="8" width="17" height="34" rx="4" fill="var(--primary-color,#2a7a94)" opacity=".12"/><rect x="27" y="8" width="17" height="34" rx="4" fill="var(--primary-color,#2a7a94)" opacity=".12"/><rect x="48" y="8" width="17" height="34" rx="4" fill="var(--primary-color,#2a7a94)" opacity=".12"/><circle cx="15" cy="19" r="4" fill="#fbbf24"/><path d="M33 22c4-4 8-4 12 0" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/><path d="M53 22c4-4 8-4 12 0" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/></svg>` },
+              timeline: { name: "Hourly", desc: "Timeline list", icon: `<svg width="72" height="50" viewBox="0 0 72 50" fill="none"><rect x="1" y="1" width="70" height="48" rx="5" fill="var(--card-background-color,#f4f7f9)" stroke="var(--divider-color,#cdd5da)" stroke-width="1.5"/><rect x="8" y="10" width="56" height="6" rx="3" fill="var(--primary-color,#2a7a94)" opacity=".16"/><rect x="8" y="22" width="56" height="6" rx="3" fill="var(--primary-color,#2a7a94)" opacity=".22"/><rect x="8" y="34" width="56" height="6" rx="3" fill="var(--primary-color,#2a7a94)" opacity=".16"/><rect x="20" y="12" width="30" height="2" rx="1" fill="var(--primary-color,#2a7a94)" opacity=".55"/><rect x="20" y="24" width="38" height="2" rx="1" fill="var(--primary-color,#2a7a94)" opacity=".55"/><rect x="20" y="36" width="24" height="2" rx="1" fill="var(--primary-color,#2a7a94)" opacity=".55"/></svg>` },
+              radar: { name: "Radar", desc: "Map only", icon: `<svg width="72" height="50" viewBox="0 0 72 50" fill="none"><rect x="1" y="1" width="70" height="48" rx="5" fill="var(--card-background-color,#f4f7f9)" stroke="var(--divider-color,#cdd5da)" stroke-width="1.5"/><path d="M8 35Q18 20 30 29T52 18T66 24" stroke="var(--primary-color,#2a7a94)" stroke-width="2" stroke-linecap="round" opacity=".5"/><circle cx="38" cy="25" r="12" stroke="var(--primary-color,#2a7a94)" stroke-width="2" opacity=".45"/><path d="M38 25l10-9" stroke="var(--primary-color,#2a7a94)" stroke-width="2" stroke-linecap="round"/><circle cx="38" cy="25" r="3" fill="var(--primary-color,#2a7a94)"/></svg>` },
+              custom: { name: "Custom", desc: "Use switches", icon: `<svg width="72" height="50" viewBox="0 0 72 50" fill="none"><rect x="1" y="1" width="70" height="48" rx="5" fill="var(--card-background-color,#f4f7f9)" stroke="var(--divider-color,#cdd5da)" stroke-width="1.5"/><path d="M16 14h40M16 25h40M16 36h40" stroke="var(--primary-color,#2a7a94)" stroke-width="2" stroke-linecap="round" opacity=".35"/><circle cx="28" cy="14" r="5" fill="var(--primary-color,#2a7a94)" opacity=".55"/><circle cx="45" cy="25" r="5" fill="var(--primary-color,#2a7a94)" opacity=".55"/><circle cx="23" cy="36" r="5" fill="var(--primary-color,#2a7a94)" opacity=".55"/></svg>` }
+            }).map(([value, meta]) => `
+              <button type="button" class="layout-tile${(config.content_mode || "full") === value ? " selected" : ""}" data-content-mode="${value}" title="${_wwEscape(meta.desc)}">
+                ${meta.icon}
+                <span class="layout-tile-name">${_wwEscape(meta.name)}</span>
+                <span class="layout-tile-desc">${_wwEscape(meta.desc)}</span>
+              </button>
+            `).join("")}
+          </div>
+          <div class="hint" style="margin-top:10px">Use a focus preset for simple cards like radar-only, forecast-only, or hourly-only. Changing an individual visibility switch below moves the card to Custom.</div>
           <div class="layout-label">Card layout</div>
           <div class="layout-picker">
             <button type="button" class="layout-tile${(config.layout || "auto") === "auto" ? " selected" : ""}" data-layout="auto" title="Automatically adapts to screen size">
@@ -2304,14 +3497,17 @@ class WeatherWiseCardEditor extends HTMLElement {
         </div>
       </div>
     `;
-    ["entity", "temperature_entity", "humidity_entity", "country", "radar_provider", "radar_style", "radar_basemap", "radar_timeline", "title", "units", "theme_mode", "language", "latitude", "longitude", "hourly_count", "forecast_count", "radar_zoom", "radar_speed"].forEach((id) => {
+    ["entity", "temperature_entity", "humidity_entity", "dew_point_entity", "air_quality_entity", "uv_index_entity", "pollen_entity", "tree_pollen_entity", "grass_pollen_entity", "weed_pollen_entity", "mold_pollen_entity", "environment_source", "country", "radar_provider", "radar_style", "radar_basemap", "radar_timeline", "title", "units", "theme_mode", "language", "density", "latitude", "longitude", "hourly_count", "forecast_count", "radar_zoom", "radar_speed"].forEach((id) => {
       this.shadowRoot.getElementById(id)?.addEventListener("change", (event) => this._setValue(id, event.target.value));
     });
-    ["show_radar", "show_map_controls", "radar_controls", "show_warning_overlay", "show_animations", "show_timeline", "show_forecast", "show_forecast_summary", "timeline_autoscroll"].forEach((id) => {
+    ["show_radar", "show_map_controls", "radar_controls", "show_warning_overlay", "show_animations", "show_timeline", "show_forecast", "show_forecast_summary", "show_environment", "timeline_autoscroll"].forEach((id) => {
       this.shadowRoot.getElementById(id)?.addEventListener("change", (event) => this._setValue(id, event.target.checked));
     });
-    this.shadowRoot.querySelectorAll(".layout-tile").forEach((tile) => {
+    this.shadowRoot.querySelectorAll("[data-layout]").forEach((tile) => {
       tile.addEventListener("click", () => this._setValue("layout", tile.dataset.layout));
+    });
+    this.shadowRoot.querySelectorAll("[data-content-mode]").forEach((tile) => {
+      tile.addEventListener("click", () => this._setValue("content_mode", tile.dataset.contentMode));
     });
     // Column width +/− buttons
     this.shadowRoot.querySelectorAll(".col-width-step").forEach((btn) => {
@@ -2382,26 +3578,33 @@ class WeatherWiseCardEditor extends HTMLElement {
 
 }
 
-class WeatherWiseDashedCard extends WeatherWiseCard {}
-class WeatherWiseDashedCardEditor extends WeatherWiseCardEditor {}
+class RadarWiseDashedCard extends RadarWiseCard {}
+class RadarWiseDashedCardEditor extends RadarWiseCardEditor {}
+class RadarWiseLegacyCard extends RadarWiseCard {}
+class RadarWiseLegacyDashedCard extends RadarWiseCard {}
+class RadarWiseLegacyCardEditor extends RadarWiseCardEditor {}
+class RadarWiseLegacyDashedCardEditor extends RadarWiseCardEditor {}
 
-if (!customElements.get(CARD_TYPES[0])) customElements.define(CARD_TYPES[0], WeatherWiseCard);
-// Keep the dashed element names as YAML-only legacy aliases for early WeatherWise users.
-if (!customElements.get(CARD_TYPES[1])) customElements.define(CARD_TYPES[1], WeatherWiseDashedCard);
-if (!customElements.get("weatherwise-card-editor")) customElements.define("weatherwise-card-editor", WeatherWiseCardEditor);
-if (!customElements.get("weather-wise-card-editor")) customElements.define("weather-wise-card-editor", WeatherWiseDashedCardEditor);
+if (!customElements.get(CARD_TYPES[0])) customElements.define(CARD_TYPES[0], RadarWiseCard);
+if (!customElements.get(CARD_TYPES[1])) customElements.define(CARD_TYPES[1], RadarWiseDashedCard);
+if (!customElements.get(CARD_TYPES[2])) customElements.define(CARD_TYPES[2], RadarWiseLegacyCard);
+if (!customElements.get(CARD_TYPES[3])) customElements.define(CARD_TYPES[3], RadarWiseLegacyDashedCard);
+if (!customElements.get("radarwise-card-editor")) customElements.define("radarwise-card-editor", RadarWiseCardEditor);
+if (!customElements.get("radar-wise-card-editor")) customElements.define("radar-wise-card-editor", RadarWiseDashedCardEditor);
+if (!customElements.get("weatherwise-card-editor")) customElements.define("weatherwise-card-editor", RadarWiseLegacyCardEditor);
+if (!customElements.get("weather-wise-card-editor")) customElements.define("weather-wise-card-editor", RadarWiseLegacyDashedCardEditor);
 
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: "weatherwise-card",
-  name: "WeatherWise Weather",
+  type: "radarwise-card",
+  name: "RadarWise Weather",
   description: "Weather dashboard card with forecasts, theme support, and optional radar.",
-  documentationURL: "https://github.com/TheWillMiller/weather-wise",
+  documentationURL: "https://github.com/TheWillMiller/radar-wise",
   preview: true
 });
 
 console.info(
-  `%c WEATHERWISE-CARD %c v${CARD_VERSION} `,
+  `%c RADARWISE-CARD %c v${CARD_VERSION} `,
   "background:#0d3a5c;color:#7ecbca;font-weight:bold;padding:2px 4px;border-radius:3px 0 0 3px",
   "background:#7ecbca;color:#0d3a5c;font-weight:bold;padding:2px 4px;border-radius:0 3px 3px 0"
 );
