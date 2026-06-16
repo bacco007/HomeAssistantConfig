@@ -37,6 +37,8 @@
           "indoor_temp": "Capteur de température intérieure",
           "indoor_humidity": "Capteur d'humidité intérieure",
           "indoor_co2": "Capteur de CO₂ intérieur (ppm)",
+          "soil_moisture": "Capteur d'humidité du sol",
+          "soil_temperature": "Capteur de température du sol",
           "_go_back": "← Retour à l'étape précédente"
         }
       },
@@ -134,6 +136,7 @@
           "enable_degree_days": "Calcul des Degrés Jours (Chauffage / Climatisation) et humidité du feuillage",
           "enable_lightning": "Calcul et détection des impacts de foudre (WH57, AS3935 ou autre capteur)",
           "enable_indoor": "Capteurs intérieurs (température, humidité, CO₂)",
+          "enable_soil": "Capteurs de sol (humidité, température, besoin en irrigation)",
           "enable_weathercloud": "Envoi vers Weathercloud",
           "enable_pwsweather": "Envoi vers PWSWeather",
           "enable_wow": "Envoi vers WOW (UK Met Office)",
@@ -405,7 +408,9 @@
           "lightning_dist": "Distance de l'éclair le plus proche (km, ex: via WH57)",
           "indoor_temp": "Capteur de température intérieure",
           "indoor_humidity": "Capteur d'humidité intérieure",
-          "indoor_co2": "Capteur de CO₂ intérieur (ppm)"
+          "indoor_co2": "Capteur de CO₂ intérieur (ppm)",
+          "soil_moisture": "Capteur d'humidité du sol",
+          "soil_temperature": "Capteur de température du sol"
         }
       },
       "features_opt": {
@@ -430,7 +435,8 @@
           "enable_nowcast": "Prévision immédiate des précipitations",
           "enable_degree_days": "Calcul des Degrés-Jours et de l'humidité du feuillage",
           "enable_lightning": "Capteurs de détection de foudre",
-          "enable_indoor": "Prendre en compte les capteurs intérieurs"
+          "enable_indoor": "Prendre en compte les capteurs intérieurs",
+          "enable_soil": "Capteurs de sol (humidité, température, besoin en irrigation)"
         },
         "data_description": {
           "enable_display_sensors": "Capteurs descriptifs",
@@ -610,12 +616,24 @@
       "description": "Les entités de capteurs sources suivantes n'ont pas pu être trouvées dans Home Assistant : {entities}. Vérifiez que les entités existent et ne sont pas désactivées."
     },
     "stale_sensors": {
-      "title": "Les capteurs de la station météo sont inactifs",
+      "title": "Capteur(s) de la station météo inactif()s",
       "description": "Les capteurs suivants n'ont pas été mis à jour pendant le délai d'inactivité autorisé : {sensors}. Vérifiez que les capteurs de votre station météo sont en ligne et connecté."
     },
     "forecast_api_failures": {
       "title": "Échecs de l'API de prévisions Open-Meteo",
       "description": "L'API de prévisions Open-Meteo a échoué {failures} fois consécutives. Les données de prévision peuvent être obsolètes. Vérifiez votre connexion Internet. L'intégration réessaiera automatiquement avec un backoff exponentiel."
+       },
+    "stuck_sensors": {
+      "title": "Capteur(s) de la station météo bloqué(s)",
+      "description": "Les capteurs suivants ont renvoyé la même valeur pendant une période prolongée et peuvent présenter un défaut matériel : {sensors}. Vérifiez les connexions des capteurs et éliminez toute obstruction (par ex. pluviomètre bouché, anémomètre gelé)."
+    },
+    "sensor_drift_detected": {
+      "title": "Perte de précision du capteur détectée",
+      "description": "Une déviation constante et anormale a été détectée sur le(s) capteur(s) suivant(s) : {sensors}. Cela peut indiquer un composant défaillant, un connecteur desserré ou un écart d'étalonnage devenu trop important. Vérifiez votre capteur et envisagez d'appliquer une correction."
+    },
+    "large_calibration_offset": {
+      "title": "Important décalage d'étalonnage appliqué",
+      "description": "Un décalage d'étalonnage de {value} a été appliqué à {field}. Les décalages importants peuvent indiquer une panne matérielle du capteur plutôt qu'une simple dérive d'étalonnage. Envisagez de remplacer le capteur."
     }
   },
   "entity": {
@@ -879,10 +897,18 @@
           "light": "Faible",
           "moderate": "Modérée",
           "heavy": "Forte"
+                  }
+      },
+      "nowcast_confidence": {
+        "name": "Fiabilité de la prévision à court terme",
+        "state": {
+          "high": "Haut",
+          "medium": "Moyen",
+          "low": "Faible"
         }
       },
       "zambretti_forecast": {
-        "name": "Prévision (descriptif)",
+        "name": "Prévision",
         "state": {
           "settled_fine": "Beau temps stable",
           "fine_weather": "Beau temps",
@@ -1053,7 +1079,7 @@
         }
       },
       "rain_display": {
-        "name": "Intensité de la pluie (descriptif)",
+        "name": "Intensité de la pluie",
         "state": {
           "dry": "Pas de pluie",
           "drizzle": "Bruine",
@@ -1063,7 +1089,7 @@
         },
         "state_attributes": {
           "rain_rate": {
-            "name": "Intensité de pluie"
+            "name": "Intensité de la pluie"
           },
           "rain_today": {
             "name": "Pluie (jour)"
@@ -1190,10 +1216,10 @@
         }
       },
       "temperature_display": {
-        "name": "Affichage de la température",
+        "name": "Température (affichage)",
         "state_attributes": {
           "bar_percent": {
-            "name": "Pourcentage de la barre"
+            "name": "Niveau de la jauge"
           },
           "color": {
             "name": "Couleur"
@@ -1213,7 +1239,7 @@
             "name": "Température"
           },
           "humidity_pct": {
-            "name": "Humidité"
+            "name": "Humidité (relative)"
           },
           "wind_ms": {
             "name": "Vitesse du vent"
@@ -1292,7 +1318,7 @@
             "name": "Confort de baignade"
           },
           "hourly_forecast": {
-            "name": "Prévisions horaires"
+            "name": "Prévisions heure par heure "
           },
           "grid_latitude": {
             "name": "Latitude"
@@ -1306,12 +1332,12 @@
         "name": "Évapotranspiration (jour)",
         "state_attributes": {
           "et0_hourly_mm": {
-            "name": "Évapotranspiration horaire"
+            "name": "Évapotranspiration (dernière heure)"
           }
         }
       },
       "et0_hourly": {
-        "name": "Évapotranspiration horaire"
+        "name": "Évapotranspiration (dernière heure)"
       },
       "wu_status": {
         "name": "Statut Weather Underground",
@@ -1554,20 +1580,26 @@
         "name": "Normales de saison (30 j)"
       },
       "temperature_anomaly_30d": {
-        "name": "Écart aux normales (Temp.) (30 j)",
+        "name": "Écart aux normales (Temp.; 30 j)",
         "state_attributes": {
           "normal_30d_c": {
-            "name": "Normale sur 30 jours"
+            "name": "Normale (30 j)"
           }
         }
       },
       "rain_anomaly_30d": {
-        "name": "Écart aux normales (pluie) (30 j)",
+        "name": "Écart aux normales (pluie ; 30 j)",
         "state_attributes": {
           "normal_30d_avg_mm": {
-            "name": "Moyenne sur 30 jours (mm)"
+            "name": "Moyenne (30 j)"
           }
         }
+              },
+      "temp_anomaly_90d": {
+        "name": "Écart aux normales (Temp.; 90 j)"
+      },
+      "rain_anomaly_90d": {
+        "name": "Écart aux normales (pluie ; 90 j)"
       },
       "solar_lux_factor": {
         "name": "Facteur lux solaire",
@@ -1618,6 +1650,38 @@
             "name": "Nombre d'échantillons"
           }
         }
+              },
+      "conditions_summary": {
+        "name": "Conditions actuelles",
+        "state_attributes": {
+          "temperature_c": {
+            "name": "Température"
+          },
+          "feels_like_c": {
+            "name": "Température ressentie"
+          },
+          "rain_rate_mmph": {
+            "name": "Intensité pluvieuse"
+          },
+          "wind_speed_ms": {
+            "name": "Vitesse du vent"
+          },
+          "wind_direction": {
+            "name": "Direction du vent"
+          },
+          "condition": {
+            "name": "Conditions actuelles"
+          }
+        }
+      },
+      "forecast_brier_local": {
+        "name": "Score de Brier des prévisions (Local)"
+      },
+      "forecast_brier_api": {
+        "name": "Score de Brier des prévisions (API)"
+      },
+      "forecast_blend_weight_local": {
+        "name": "Poids du modèle local dans la prévision (Local)"
       },
       "rain_today": {
         "name": "Pluie (jour)"
@@ -1673,7 +1737,7 @@
         }
       },
       "specific_humidity": {
-        "name": "Humidité spécifique",
+        "name": "Humidité (spécifique)",
         "state_attributes": {
           "absolute_humidity_gm3": {
             "name": "Humidité absolue"
@@ -1761,7 +1825,7 @@
         }
       },
       "dominant_wind_direction": {
-        "name": "Direction dominante du vent",
+        "name": "Vent dominant",
         "state_attributes": {
           "variability_deg": {
             "name": "Variabilité de direction"
@@ -1976,7 +2040,7 @@
         }
       },
       "wind_run_month": {
-        "name": "Course du vent du mois"
+        "name": "Course du vent (mois)"
       },
       "net_radiation": {
         "name": "Rayonnement net"
@@ -2036,6 +2100,37 @@
             "name": "Humidité"
           }
         }
+              },
+      "soil_moisture": {
+        "name": "Humidité du sol",
+        "state_attributes": {
+          "deficit_pct": {
+            "name": "Déficit d'humidité (%)"
+          }
+        }
+      },
+      "soil_temperature": {
+        "name": "Température du sol"
+      },
+      "soil_moisture_deficit": {
+        "name": "Déficit en eau du sol"
+      },
+      "irrigation_need": {
+        "name": "Besoin en irrigation",
+        "state_attributes": {
+          "score": {
+            "name": "Besoin en irrigation (score)"
+          },
+          "soil_moisture_pct": {
+            "name": "Humidité du sol (%)"
+          },
+          "soil_moisture_deficit_pct": {
+            "name": "Déficit en eau du sol (%)"
+          }
+        }
+      },
+      "irrigation_need_score": {
+        "name": "Besoin en irrigation (score)"
       },
       "sensor_stuck": {
         "name": "Capteurs figés",
@@ -2060,7 +2155,7 @@
         }
       },
       "neighbor_qc": {
-        "name": "Contrôle qualité voisinage",
+        "name": "Fiabilité (stations voisines)",
         "state_attributes": {
           "flags": {
             "name": "Anomalies détectées"
@@ -2194,6 +2289,9 @@
       },
       "ws_enable_indoor": {
         "name": "Capteurs intérieurs"
+              },
+      "ws_enable_soil": {
+        "name": "Capteurs de sol"
       },
       "ws_enable_weathercloud": {
         "name": "Envoi vers Weathercloud"
@@ -2263,31 +2361,31 @@
         "name": "Station opérationnelle"
       },
       "ws_rain_expected_1h": {
-        "name": "Pluie attendue dans l'heure"
+        "name": "Pluie dans l'heure"
       },
       "ws_temperature_stuck": {
-        "name": "Capteur de température figé"
+        "name": "Statut du capteur de température"
       },
       "ws_humidity_stuck": {
-        "name": "Capteur d'humidité figé"
+        "name": "Statut du capteur d'humidité"
       },
       "ws_pressure_stuck": {
-        "name": "Capteur de pression figé"
+        "name": "Statut du capteur de pression"
       },
       "ws_temperature_out_of_range": {
         "name": "Température hors plage calculable"
       },
       "ws_humidity_out_of_range": {
-        "name": "Humidité hors plage calculable"
+        "name": "Statut du calcul de l'humidité"
       },
       "ws_pressure_out_of_range": {
-        "name": "Pression hors plage calculable"
+        "name": "Statut du calcul de la pression"
       },
       "ws_wind_gust_below_wind": {
-        "name": "Rafale inférieure à la vitesse du vent"
+        "name": "Statut du calcul de la vitesse du vent"
       },
       "ws_dew_exceeds_temp": {
-        "name": "Le Point de rosée dépasse la température"
+        "name": "Statut du calcul du Point de rosée"
       }
     }
   },

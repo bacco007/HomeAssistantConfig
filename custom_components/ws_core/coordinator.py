@@ -2400,12 +2400,13 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         registry = er.async_get(self.hass)
         for entry in registry.entities.values():
-            if entry.platform != "blitzortung":
-                continue
             eid = entry.entity_id
             uid = (entry.unique_id or "").lower()
+            # Match by platform name OR entity_id prefix (covers renamed/forked installs)
+            if entry.platform != "blitzortung" and not eid.startswith("sensor.blitzortung_"):
+                continue
             if SRC_LIGHTNING_COUNT not in self._blitzortung_sources and (
-                "counter" in uid or "count" in uid or "counter" in eid
+                "counter" in uid or "count" in uid or "counter" in eid or "count" in eid
             ):
                 self._blitzortung_sources[SRC_LIGHTNING_COUNT] = eid
                 _LOGGER.debug("Blitzortung lightning counter auto-detected: %s", eid)

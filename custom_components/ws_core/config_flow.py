@@ -1372,6 +1372,12 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return await self.async_step_wow()
             if self._data.get(CONF_ENABLE_AWEKAS):
                 return await self.async_step_awekas()
+            if self._data.get(CONF_ENABLE_OWM_STATIONS):
+                return await self.async_step_owm_stations()
+            if self._data.get(CONF_ENABLE_WINDY):
+                return await self.async_step_windy()
+            if self._data.get(CONF_ENABLE_CWOP):
+                return await self.async_step_cwop()
             if self._data.get(CONF_ENABLE_MQTT):
                 return await self.async_step_mqtt_config()
             return await self.async_step_alerts()
@@ -1415,6 +1421,12 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._data[CONF_WOW_INTERVAL_MIN] = int(user_input.get(CONF_WOW_INTERVAL_MIN, DEFAULT_WOW_INTERVAL_MIN))
             if self._data.get(CONF_ENABLE_AWEKAS):
                 return await self.async_step_awekas()
+            if self._data.get(CONF_ENABLE_OWM_STATIONS):
+                return await self.async_step_owm_stations()
+            if self._data.get(CONF_ENABLE_WINDY):
+                return await self.async_step_windy()
+            if self._data.get(CONF_ENABLE_CWOP):
+                return await self.async_step_cwop()
             if self._data.get(CONF_ENABLE_MQTT):
                 return await self.async_step_mqtt_config()
             return await self.async_step_alerts()
@@ -1462,6 +1474,8 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return await self.async_step_owm_stations()
             if self._data.get(CONF_ENABLE_WINDY):
                 return await self.async_step_windy()
+            if self._data.get(CONF_ENABLE_CWOP):
+                return await self.async_step_cwop()
             if self._data.get(CONF_ENABLE_MQTT):
                 return await self.async_step_mqtt_config()
             return await self.async_step_alerts()
@@ -1507,6 +1521,8 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 )
             if self._data.get(CONF_ENABLE_WINDY):
                 return await self.async_step_windy()
+            if self._data.get(CONF_ENABLE_CWOP):
+                return await self.async_step_cwop()
             if self._data.get(CONF_ENABLE_MQTT):
                 return await self.async_step_mqtt_config()
             return await self.async_step_alerts()
