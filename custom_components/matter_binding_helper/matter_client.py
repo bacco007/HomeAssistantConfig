@@ -82,6 +82,7 @@ from .matter.bindings import (
     delete_binding,
     get_bindings,
     provision_acls_for_existing_bindings,
+    repair_group_bindings,
     verify_bindings,
 )
 
@@ -172,6 +173,7 @@ __all__ = [
     "delete_binding",
     "verify_bindings",
     "provision_acls_for_existing_bindings",
+    "repair_group_bindings",
     # ACL
     "get_acl",
     "write_acl",

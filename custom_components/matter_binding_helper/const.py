@@ -42,6 +42,7 @@ CLUSTER_THERMOSTAT = 0x0201  # Thermostat cluster
 CLUSTER_ACCESS_CONTROL = 0x001F  # Access Control cluster
 CLUSTER_GROUPS = 0x0004  # Groups cluster (per-endpoint group membership)
 CLUSTER_GROUP_KEY_MANAGEMENT = 0x003F  # Group Key Management cluster (root endpoint)
+CLUSTER_OPERATIONAL_CREDENTIALS = 0x003E  # Node Operational Credentials (root endpoint)
 
 # WebSocket commands for thermostat schedules
 WS_TYPE_GET_SCHEDULE = f"{DOMAIN}/get_schedule"
@@ -70,6 +71,7 @@ WS_TYPE_LIST_ACL = f"{DOMAIN}/list_acl"
 WS_TYPE_PROVISION_ACL = f"{DOMAIN}/provision_acl"
 WS_TYPE_REMOVE_ACL = f"{DOMAIN}/remove_acl"
 WS_TYPE_PROVISION_ACL_FOR_BINDINGS = f"{DOMAIN}/provision_acl_for_bindings"
+WS_TYPE_REPAIR_GROUP_BINDINGS = f"{DOMAIN}/repair_group_bindings"
 WS_TYPE_CREATE_AUTOMATION = f"{DOMAIN}/create_automation"
 ATTR_ACL = 0  # ACL attribute ID
 
@@ -100,6 +102,11 @@ GROUP_KEY_SECURITY_POLICY_TRUST_FIRST = 0  # GroupKeySecurityPolicyEnum.kTrustFi
 GROUP_ID_BASE = 1
 # GroupKeyManagement attribute IDs
 ATTR_GROUP_KEY_MAP = 0  # GroupKeyMap (list of GroupId -> GroupKeySetID)
+# OperationalCredentials.CurrentFabricIndex — the index of the accessing fabric on
+# the device. Fabric-scoped writes (GroupKeyMap, ACL, Binding) must carry this
+# index; python-matter-server/chip coerces a 0 to it, but matter.js does not, so
+# AddGroup is rejected (UNSUPPORTED_ACCESS) when the mapping lands on fabric 0.
+ATTR_CURRENT_FABRIC_INDEX = 5
 # epochStartTime0 must be non-zero per spec (and rs-matter rejects 0). The exact
 # value only matters for key rotation, which we don't do — a fixed sentinel is fine.
 GROUP_EPOCH_START_TIME = 1

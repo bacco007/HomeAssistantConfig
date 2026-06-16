@@ -131,6 +131,8 @@ class GroupEntry:
     group_id: int
     name: str
     members: list[dict[str, int]]  # [{"node_id": x, "endpoint_id": y}]
+    # Clusters this group controls (the type authority; empty == untyped).
+    clusters: list[int] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
@@ -138,6 +140,7 @@ class GroupEntry:
             "group_id": self.group_id,
             "name": self.name,
             "members": self.members,
+            "clusters": self.clusters,
         }
 
 

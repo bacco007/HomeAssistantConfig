@@ -1,32 +1,32 @@
-function e(e,t,i,o){var n,r=arguments.length,s=r<3?t:null===o?o=Object.getOwnPropertyDescriptor(t,i):o;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,i,o);else for(var a=e.length-1;a>=0;a--)(n=e[a])&&(s=(r<3?n(s):r>3?n(t,i,s):n(t,i))||s);return r>3&&s&&Object.defineProperty(t,i,s),s}"function"==typeof SuppressedError&&SuppressedError;
+function e(e,t,i,o){var r,n=arguments.length,s=n<3?t:null===o?o=Object.getOwnPropertyDescriptor(t,i):o;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,i,o);else for(var a=e.length-1;a>=0;a--)(r=e[a])&&(s=(n<3?r(s):n>3?r(t,i,s):r(t,i))||s);return n>3&&s&&Object.defineProperty(t,i,s),s}"function"==typeof SuppressedError&&SuppressedError;
 /**
  * @license
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const t=globalThis,i=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,o=Symbol(),n=new WeakMap;let r=class{constructor(e,t,i){if(this._$cssResult$=!0,i!==o)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e,this.t=t}get styleSheet(){let e=this.o;const t=this.t;if(i&&void 0===e){const i=void 0!==t&&1===t.length;i&&(e=n.get(t)),void 0===e&&((this.o=e=new CSSStyleSheet).replaceSync(this.cssText),i&&n.set(t,e))}return e}toString(){return this.cssText}};const s=(e,...t)=>{const i=1===e.length?e[0]:t.reduce((t,i,o)=>t+(e=>{if(!0===e._$cssResult$)return e.cssText;if("number"==typeof e)return e;throw Error("Value passed to 'css' function must be a 'css' function result: "+e+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+e[o+1],e[0]);return new r(i,e,o)},a=i?e=>e:e=>e instanceof CSSStyleSheet?(e=>{let t="";for(const i of e.cssRules)t+=i.cssText;return(e=>new r("string"==typeof e?e:e+"",void 0,o))(t)})(e):e,{is:d,defineProperty:l,getOwnPropertyDescriptor:c,getOwnPropertyNames:p,getOwnPropertySymbols:g,getPrototypeOf:u}=Object,h=globalThis,v=h.trustedTypes,m=v?v.emptyScript:"",_=h.reactiveElementPolyfillSupport,b=(e,t)=>e,f={toAttribute(e,t){switch(t){case Boolean:e=e?m:null;break;case Object:case Array:e=null==e?e:JSON.stringify(e)}return e},fromAttribute(e,t){let i=e;switch(t){case Boolean:i=null!==e;break;case Number:i=null===e?null:Number(e);break;case Object:case Array:try{i=JSON.parse(e)}catch(e){i=null}}return i}},y=(e,t)=>!d(e,t),x={attribute:!0,type:String,converter:f,reflect:!1,useDefault:!1,hasChanged:y};
+const t=globalThis,i=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,o=Symbol(),r=new WeakMap;let n=class{constructor(e,t,i){if(this._$cssResult$=!0,i!==o)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e,this.t=t}get styleSheet(){let e=this.o;const t=this.t;if(i&&void 0===e){const i=void 0!==t&&1===t.length;i&&(e=r.get(t)),void 0===e&&((this.o=e=new CSSStyleSheet).replaceSync(this.cssText),i&&r.set(t,e))}return e}toString(){return this.cssText}};const s=(e,...t)=>{const i=1===e.length?e[0]:t.reduce((t,i,o)=>t+(e=>{if(!0===e._$cssResult$)return e.cssText;if("number"==typeof e)return e;throw Error("Value passed to 'css' function must be a 'css' function result: "+e+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+e[o+1],e[0]);return new n(i,e,o)},a=i?e=>e:e=>e instanceof CSSStyleSheet?(e=>{let t="";for(const i of e.cssRules)t+=i.cssText;return(e=>new n("string"==typeof e?e:e+"",void 0,o))(t)})(e):e,{is:d,defineProperty:l,getOwnPropertyDescriptor:c,getOwnPropertyNames:p,getOwnPropertySymbols:g,getPrototypeOf:u}=Object,h=globalThis,v=h.trustedTypes,m=v?v.emptyScript:"",_=h.reactiveElementPolyfillSupport,b=(e,t)=>e,f={toAttribute(e,t){switch(t){case Boolean:e=e?m:null;break;case Object:case Array:e=null==e?e:JSON.stringify(e)}return e},fromAttribute(e,t){let i=e;switch(t){case Boolean:i=null!==e;break;case Number:i=null===e?null:Number(e);break;case Object:case Array:try{i=JSON.parse(e)}catch(e){i=null}}return i}},y=(e,t)=>!d(e,t),x={attribute:!0,type:String,converter:f,reflect:!1,useDefault:!1,hasChanged:y};
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */Symbol.metadata??=Symbol("metadata"),h.litPropertyMetadata??=new WeakMap;let $=class extends HTMLElement{static addInitializer(e){this._$Ei(),(this.l??=[]).push(e)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(e,t=x){if(t.state&&(t.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(e)&&((t=Object.create(t)).wrapped=!0),this.elementProperties.set(e,t),!t.noAccessor){const i=Symbol(),o=this.getPropertyDescriptor(e,i,t);void 0!==o&&l(this.prototype,e,o)}}static getPropertyDescriptor(e,t,i){const{get:o,set:n}=c(this.prototype,e)??{get(){return this[t]},set(e){this[t]=e}};return{get:o,set(t){const r=o?.call(this);n?.call(this,t),this.requestUpdate(e,r,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)??x}static _$Ei(){if(this.hasOwnProperty(b("elementProperties")))return;const e=u(this);e.finalize(),void 0!==e.l&&(this.l=[...e.l]),this.elementProperties=new Map(e.elementProperties)}static finalize(){if(this.hasOwnProperty(b("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(b("properties"))){const e=this.properties,t=[...p(e),...g(e)];for(const i of t)this.createProperty(i,e[i])}const e=this[Symbol.metadata];if(null!==e){const t=litPropertyMetadata.get(e);if(void 0!==t)for(const[e,i]of t)this.elementProperties.set(e,i)}this._$Eh=new Map;for(const[e,t]of this.elementProperties){const i=this._$Eu(e,t);void 0!==i&&this._$Eh.set(i,e)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(e){const t=[];if(Array.isArray(e)){const i=new Set(e.flat(1/0).reverse());for(const e of i)t.unshift(a(e))}else void 0!==e&&t.push(a(e));return t}static _$Eu(e,t){const i=t.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof e?e.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(e=>this.enableUpdating=e),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(e=>e(this))}addController(e){(this._$EO??=new Set).add(e),void 0!==this.renderRoot&&this.isConnected&&e.hostConnected?.()}removeController(e){this._$EO?.delete(e)}_$E_(){const e=new Map,t=this.constructor.elementProperties;for(const i of t.keys())this.hasOwnProperty(i)&&(e.set(i,this[i]),delete this[i]);e.size>0&&(this._$Ep=e)}createRenderRoot(){const e=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return((e,o)=>{if(i)e.adoptedStyleSheets=o.map(e=>e instanceof CSSStyleSheet?e:e.styleSheet);else for(const i of o){const o=document.createElement("style"),n=t.litNonce;void 0!==n&&o.setAttribute("nonce",n),o.textContent=i.cssText,e.appendChild(o)}})(e,this.constructor.elementStyles),e}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(e=>e.hostConnected?.())}enableUpdating(e){}disconnectedCallback(){this._$EO?.forEach(e=>e.hostDisconnected?.())}attributeChangedCallback(e,t,i){this._$AK(e,i)}_$ET(e,t){const i=this.constructor.elementProperties.get(e),o=this.constructor._$Eu(e,i);if(void 0!==o&&!0===i.reflect){const n=(void 0!==i.converter?.toAttribute?i.converter:f).toAttribute(t,i.type);this._$Em=e,null==n?this.removeAttribute(o):this.setAttribute(o,n),this._$Em=null}}_$AK(e,t){const i=this.constructor,o=i._$Eh.get(e);if(void 0!==o&&this._$Em!==o){const e=i.getPropertyOptions(o),n="function"==typeof e.converter?{fromAttribute:e.converter}:void 0!==e.converter?.fromAttribute?e.converter:f;this._$Em=o;const r=n.fromAttribute(t,e.type);this[o]=r??this._$Ej?.get(o)??r,this._$Em=null}}requestUpdate(e,t,i){if(void 0!==e){const o=this.constructor,n=this[e];if(i??=o.getPropertyOptions(e),!((i.hasChanged??y)(n,t)||i.useDefault&&i.reflect&&n===this._$Ej?.get(e)&&!this.hasAttribute(o._$Eu(e,i))))return;this.C(e,t,i)}!1===this.isUpdatePending&&(this._$ES=this._$EP())}C(e,t,{useDefault:i,reflect:o,wrapped:n},r){i&&!(this._$Ej??=new Map).has(e)&&(this._$Ej.set(e,r??t??this[e]),!0!==n||void 0!==r)||(this._$AL.has(e)||(this.hasUpdated||i||(t=void 0),this._$AL.set(e,t)),!0===o&&this._$Em!==e&&(this._$Eq??=new Set).add(e))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(e){Promise.reject(e)}const e=this.scheduleUpdate();return null!=e&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[e,t]of this._$Ep)this[e]=t;this._$Ep=void 0}const e=this.constructor.elementProperties;if(e.size>0)for(const[t,i]of e){const{wrapped:e}=i,o=this[t];!0!==e||this._$AL.has(t)||void 0===o||this.C(t,void 0,i,o)}}let e=!1;const t=this._$AL;try{e=this.shouldUpdate(t),e?(this.willUpdate(t),this._$EO?.forEach(e=>e.hostUpdate?.()),this.update(t)):this._$EM()}catch(t){throw e=!1,this._$EM(),t}e&&this._$AE(t)}willUpdate(e){}_$AE(e){this._$EO?.forEach(e=>e.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(e){return!0}update(e){this._$Eq&&=this._$Eq.forEach(e=>this._$ET(e,this[e])),this._$EM()}updated(e){}firstUpdated(e){}};$.elementStyles=[],$.shadowRootOptions={mode:"open"},$[b("elementProperties")]=new Map,$[b("finalized")]=new Map,_?.({ReactiveElement:$}),(h.reactiveElementVersions??=[]).push("2.1.1");
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */
-const w=globalThis,k=w.trustedTypes,C=k?k.createPolicy("lit-html",{createHTML:e=>e}):void 0,S="$lit$",E=`lit$${Math.random().toFixed(9).slice(2)}$`,z="?"+E,A=`<${z}>`,P=document,I=()=>P.createComment(""),T=e=>null===e||"object"!=typeof e&&"function"!=typeof e,N=Array.isArray,D="[ \t\n\f\r]",R=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,B=/-->/g,M=/>/g,L=RegExp(`>|${D}(?:([^\\s"'>=/]+)(${D}*=${D}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),G=/'/g,O=/"/g,W=/^(?:script|style|textarea|title)$/i,j=(e=>(t,...i)=>({_$litType$:e,strings:t,values:i}))(1),V=Symbol.for("lit-noChange"),U=Symbol.for("lit-nothing"),F=new WeakMap,H=P.createTreeWalker(P,129);function q(e,t){if(!N(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==C?C.createHTML(t):t}const J=(e,t)=>{const i=e.length-1,o=[];let n,r=2===t?"<svg>":3===t?"<math>":"",s=R;for(let t=0;t<i;t++){const i=e[t];let a,d,l=-1,c=0;for(;c<i.length&&(s.lastIndex=c,d=s.exec(i),null!==d);)c=s.lastIndex,s===R?"!--"===d[1]?s=B:void 0!==d[1]?s=M:void 0!==d[2]?(W.test(d[2])&&(n=RegExp("</"+d[2],"g")),s=L):void 0!==d[3]&&(s=L):s===L?">"===d[0]?(s=n??R,l=-1):void 0===d[1]?l=-2:(l=s.lastIndex-d[2].length,a=d[1],s=void 0===d[3]?L:'"'===d[3]?O:G):s===O||s===G?s=L:s===B||s===M?s=R:(s=L,n=void 0);const p=s===L&&e[t+1].startsWith("/>")?" ":"";r+=s===R?i+A:l>=0?(o.push(a),i.slice(0,l)+S+i.slice(l)+E+p):i+E+(-2===l?t:p)}return[q(e,r+(e[i]||"<?>")+(2===t?"</svg>":3===t?"</math>":"")),o]};class K{constructor({strings:e,_$litType$:t},i){let o;this.parts=[];let n=0,r=0;const s=e.length-1,a=this.parts,[d,l]=J(e,t);if(this.el=K.createElement(d,i),H.currentNode=this.el.content,2===t||3===t){const e=this.el.content.firstChild;e.replaceWith(...e.childNodes)}for(;null!==(o=H.nextNode())&&a.length<s;){if(1===o.nodeType){if(o.hasAttributes())for(const e of o.getAttributeNames())if(e.endsWith(S)){const t=l[r++],i=o.getAttribute(e).split(E),s=/([.?@])?(.*)/.exec(t);a.push({type:1,index:n,name:s[2],strings:i,ctor:"."===s[1]?ee:"?"===s[1]?te:"@"===s[1]?ie:Q}),o.removeAttribute(e)}else e.startsWith(E)&&(a.push({type:6,index:n}),o.removeAttribute(e));if(W.test(o.tagName)){const e=o.textContent.split(E),t=e.length-1;if(t>0){o.textContent=k?k.emptyScript:"";for(let i=0;i<t;i++)o.append(e[i],I()),H.nextNode(),a.push({type:2,index:++n});o.append(e[t],I())}}}else if(8===o.nodeType)if(o.data===z)a.push({type:2,index:n});else{let e=-1;for(;-1!==(e=o.data.indexOf(E,e+1));)a.push({type:7,index:n}),e+=E.length-1}n++}}static createElement(e,t){const i=P.createElement("template");return i.innerHTML=e,i}}function Y(e,t,i=e,o){if(t===V)return t;let n=void 0!==o?i._$Co?.[o]:i._$Cl;const r=T(t)?void 0:t._$litDirective$;return n?.constructor!==r&&(n?._$AO?.(!1),void 0===r?n=void 0:(n=new r(e),n._$AT(e,i,o)),void 0!==o?(i._$Co??=[])[o]=n:i._$Cl=n),void 0!==n&&(t=Y(e,n._$AS(e,t.values),n,o)),t}class X{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){const{el:{content:t},parts:i}=this._$AD,o=(e?.creationScope??P).importNode(t,!0);H.currentNode=o;let n=H.nextNode(),r=0,s=0,a=i[0];for(;void 0!==a;){if(r===a.index){let t;2===a.type?t=new Z(n,n.nextSibling,this,e):1===a.type?t=new a.ctor(n,a.name,a.strings,this,e):6===a.type&&(t=new oe(n,this,e)),this._$AV.push(t),a=i[++s]}r!==a?.index&&(n=H.nextNode(),r++)}return H.currentNode=P,o}p(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class Z{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(e,t,i,o){this.type=2,this._$AH=U,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=o,this._$Cv=o?.isConnected??!0}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===e?.nodeType&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Y(this,e,t),T(e)?e===U||null==e||""===e?(this._$AH!==U&&this._$AR(),this._$AH=U):e!==this._$AH&&e!==V&&this._(e):void 0!==e._$litType$?this.$(e):void 0!==e.nodeType?this.T(e):(e=>N(e)||"function"==typeof e?.[Symbol.iterator])(e)?this.k(e):this._(e)}O(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}T(e){this._$AH!==e&&(this._$AR(),this._$AH=this.O(e))}_(e){this._$AH!==U&&T(this._$AH)?this._$AA.nextSibling.data=e:this.T(P.createTextNode(e)),this._$AH=e}$(e){const{values:t,_$litType$:i}=e,o="number"==typeof i?this._$AC(e):(void 0===i.el&&(i.el=K.createElement(q(i.h,i.h[0]),this.options)),i);if(this._$AH?._$AD===o)this._$AH.p(t);else{const e=new X(o,this),i=e.u(this.options);e.p(t),this.T(i),this._$AH=e}}_$AC(e){let t=F.get(e.strings);return void 0===t&&F.set(e.strings,t=new K(e)),t}k(e){N(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,o=0;for(const n of e)o===t.length?t.push(i=new Z(this.O(I()),this.O(I()),this,this.options)):i=t[o],i._$AI(n),o++;o<t.length&&(this._$AR(i&&i._$AB.nextSibling,o),t.length=o)}_$AR(e=this._$AA.nextSibling,t){for(this._$AP?.(!1,!0,t);e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){void 0===this._$AM&&(this._$Cv=e,this._$AP?.(e))}}class Q{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(e,t,i,o,n){this.type=1,this._$AH=U,this._$AN=void 0,this.element=e,this.name=t,this._$AM=o,this.options=n,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=U}_$AI(e,t=this,i,o){const n=this.strings;let r=!1;if(void 0===n)e=Y(this,e,t,0),r=!T(e)||e!==this._$AH&&e!==V,r&&(this._$AH=e);else{const o=e;let s,a;for(e=n[0],s=0;s<n.length-1;s++)a=Y(this,o[i+s],t,s),a===V&&(a=this._$AH[s]),r||=!T(a)||a!==this._$AH[s],a===U?e=U:e!==U&&(e+=(a??"")+n[s+1]),this._$AH[s]=a}r&&!o&&this.j(e)}j(e){e===U?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,e??"")}}class ee extends Q{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===U?void 0:e}}class te extends Q{constructor(){super(...arguments),this.type=4}j(e){this.element.toggleAttribute(this.name,!!e&&e!==U)}}class ie extends Q{constructor(e,t,i,o,n){super(e,t,i,o,n),this.type=5}_$AI(e,t=this){if((e=Y(this,e,t,0)??U)===V)return;const i=this._$AH,o=e===U&&i!==U||e.capture!==i.capture||e.once!==i.once||e.passive!==i.passive,n=e!==U&&(i===U||o);o&&this.element.removeEventListener(this.name,this,i),n&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,e):this._$AH.handleEvent(e)}}class oe{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){Y(this,e)}}const ne=w.litHtmlPolyfillSupport;ne?.(K,Z),(w.litHtmlVersions??=[]).push("3.3.1");const re=globalThis;
-/**
- * @license
- * Copyright 2017 Google LLC
- * SPDX-License-Identifier: BSD-3-Clause
- */class se extends ${constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{const o=i?.renderBefore??t;let n=o._$litPart$;if(void 0===n){const e=i?.renderBefore??null;o._$litPart$=n=new Z(t.insertBefore(I(),e),e,void 0,i??{})}return n._$AI(e),n})(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return V}}se._$litElement$=!0,se.finalized=!0,re.litElementHydrateSupport?.({LitElement:se});const ae=re.litElementPolyfillSupport;ae?.({LitElement:se}),(re.litElementVersions??=[]).push("4.2.1");
+ */Symbol.metadata??=Symbol("metadata"),h.litPropertyMetadata??=new WeakMap;let $=class extends HTMLElement{static addInitializer(e){this._$Ei(),(this.l??=[]).push(e)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(e,t=x){if(t.state&&(t.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(e)&&((t=Object.create(t)).wrapped=!0),this.elementProperties.set(e,t),!t.noAccessor){const i=Symbol(),o=this.getPropertyDescriptor(e,i,t);void 0!==o&&l(this.prototype,e,o)}}static getPropertyDescriptor(e,t,i){const{get:o,set:r}=c(this.prototype,e)??{get(){return this[t]},set(e){this[t]=e}};return{get:o,set(t){const n=o?.call(this);r?.call(this,t),this.requestUpdate(e,n,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)??x}static _$Ei(){if(this.hasOwnProperty(b("elementProperties")))return;const e=u(this);e.finalize(),void 0!==e.l&&(this.l=[...e.l]),this.elementProperties=new Map(e.elementProperties)}static finalize(){if(this.hasOwnProperty(b("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(b("properties"))){const e=this.properties,t=[...p(e),...g(e)];for(const i of t)this.createProperty(i,e[i])}const e=this[Symbol.metadata];if(null!==e){const t=litPropertyMetadata.get(e);if(void 0!==t)for(const[e,i]of t)this.elementProperties.set(e,i)}this._$Eh=new Map;for(const[e,t]of this.elementProperties){const i=this._$Eu(e,t);void 0!==i&&this._$Eh.set(i,e)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(e){const t=[];if(Array.isArray(e)){const i=new Set(e.flat(1/0).reverse());for(const e of i)t.unshift(a(e))}else void 0!==e&&t.push(a(e));return t}static _$Eu(e,t){const i=t.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof e?e.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(e=>this.enableUpdating=e),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(e=>e(this))}addController(e){(this._$EO??=new Set).add(e),void 0!==this.renderRoot&&this.isConnected&&e.hostConnected?.()}removeController(e){this._$EO?.delete(e)}_$E_(){const e=new Map,t=this.constructor.elementProperties;for(const i of t.keys())this.hasOwnProperty(i)&&(e.set(i,this[i]),delete this[i]);e.size>0&&(this._$Ep=e)}createRenderRoot(){const e=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return((e,o)=>{if(i)e.adoptedStyleSheets=o.map(e=>e instanceof CSSStyleSheet?e:e.styleSheet);else for(const i of o){const o=document.createElement("style"),r=t.litNonce;void 0!==r&&o.setAttribute("nonce",r),o.textContent=i.cssText,e.appendChild(o)}})(e,this.constructor.elementStyles),e}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(e=>e.hostConnected?.())}enableUpdating(e){}disconnectedCallback(){this._$EO?.forEach(e=>e.hostDisconnected?.())}attributeChangedCallback(e,t,i){this._$AK(e,i)}_$ET(e,t){const i=this.constructor.elementProperties.get(e),o=this.constructor._$Eu(e,i);if(void 0!==o&&!0===i.reflect){const r=(void 0!==i.converter?.toAttribute?i.converter:f).toAttribute(t,i.type);this._$Em=e,null==r?this.removeAttribute(o):this.setAttribute(o,r),this._$Em=null}}_$AK(e,t){const i=this.constructor,o=i._$Eh.get(e);if(void 0!==o&&this._$Em!==o){const e=i.getPropertyOptions(o),r="function"==typeof e.converter?{fromAttribute:e.converter}:void 0!==e.converter?.fromAttribute?e.converter:f;this._$Em=o;const n=r.fromAttribute(t,e.type);this[o]=n??this._$Ej?.get(o)??n,this._$Em=null}}requestUpdate(e,t,i){if(void 0!==e){const o=this.constructor,r=this[e];if(i??=o.getPropertyOptions(e),!((i.hasChanged??y)(r,t)||i.useDefault&&i.reflect&&r===this._$Ej?.get(e)&&!this.hasAttribute(o._$Eu(e,i))))return;this.C(e,t,i)}!1===this.isUpdatePending&&(this._$ES=this._$EP())}C(e,t,{useDefault:i,reflect:o,wrapped:r},n){i&&!(this._$Ej??=new Map).has(e)&&(this._$Ej.set(e,n??t??this[e]),!0!==r||void 0!==n)||(this._$AL.has(e)||(this.hasUpdated||i||(t=void 0),this._$AL.set(e,t)),!0===o&&this._$Em!==e&&(this._$Eq??=new Set).add(e))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(e){Promise.reject(e)}const e=this.scheduleUpdate();return null!=e&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[e,t]of this._$Ep)this[e]=t;this._$Ep=void 0}const e=this.constructor.elementProperties;if(e.size>0)for(const[t,i]of e){const{wrapped:e}=i,o=this[t];!0!==e||this._$AL.has(t)||void 0===o||this.C(t,void 0,i,o)}}let e=!1;const t=this._$AL;try{e=this.shouldUpdate(t),e?(this.willUpdate(t),this._$EO?.forEach(e=>e.hostUpdate?.()),this.update(t)):this._$EM()}catch(t){throw e=!1,this._$EM(),t}e&&this._$AE(t)}willUpdate(e){}_$AE(e){this._$EO?.forEach(e=>e.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(e){return!0}update(e){this._$Eq&&=this._$Eq.forEach(e=>this._$ET(e,this[e])),this._$EM()}updated(e){}firstUpdated(e){}};$.elementStyles=[],$.shadowRootOptions={mode:"open"},$[b("elementProperties")]=new Map,$[b("finalized")]=new Map,_?.({ReactiveElement:$}),(h.reactiveElementVersions??=[]).push("2.1.1");
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}):customElements.define(e,t)},le={attribute:!0,type:String,converter:f,reflect:!1,hasChanged:y},ce=(e=le,t,i)=>{const{kind:o,metadata:n}=i;let r=globalThis.litPropertyMetadata.get(n);if(void 0===r&&globalThis.litPropertyMetadata.set(n,r=new Map),"setter"===o&&((e=Object.create(e)).wrapped=!0),r.set(i.name,e),"accessor"===o){const{name:o}=i;return{set(i){const n=t.get.call(this);t.set.call(this,i),this.requestUpdate(o,n,e)},init(t){return void 0!==t&&this.C(o,void 0,e,t),t}}}if("setter"===o){const{name:o}=i;return function(i){const n=this[o];t.call(this,i),this.requestUpdate(o,n,e)}}throw Error("Unsupported decorator location: "+o)};
+const w=globalThis,k=w.trustedTypes,C=k?k.createPolicy("lit-html",{createHTML:e=>e}):void 0,S="$lit$",E=`lit$${Math.random().toFixed(9).slice(2)}$`,z="?"+E,A=`<${z}>`,I=document,P=()=>I.createComment(""),T=e=>null===e||"object"!=typeof e&&"function"!=typeof e,N=Array.isArray,D="[ \t\n\f\r]",R=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,B=/-->/g,M=/>/g,L=RegExp(`>|${D}(?:([^\\s"'>=/]+)(${D}*=${D}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),G=/'/g,O=/"/g,W=/^(?:script|style|textarea|title)$/i,j=(e=>(t,...i)=>({_$litType$:e,strings:t,values:i}))(1),V=Symbol.for("lit-noChange"),U=Symbol.for("lit-nothing"),F=new WeakMap,H=I.createTreeWalker(I,129);function q(e,t){if(!N(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==C?C.createHTML(t):t}const J=(e,t)=>{const i=e.length-1,o=[];let r,n=2===t?"<svg>":3===t?"<math>":"",s=R;for(let t=0;t<i;t++){const i=e[t];let a,d,l=-1,c=0;for(;c<i.length&&(s.lastIndex=c,d=s.exec(i),null!==d);)c=s.lastIndex,s===R?"!--"===d[1]?s=B:void 0!==d[1]?s=M:void 0!==d[2]?(W.test(d[2])&&(r=RegExp("</"+d[2],"g")),s=L):void 0!==d[3]&&(s=L):s===L?">"===d[0]?(s=r??R,l=-1):void 0===d[1]?l=-2:(l=s.lastIndex-d[2].length,a=d[1],s=void 0===d[3]?L:'"'===d[3]?O:G):s===O||s===G?s=L:s===B||s===M?s=R:(s=L,r=void 0);const p=s===L&&e[t+1].startsWith("/>")?" ":"";n+=s===R?i+A:l>=0?(o.push(a),i.slice(0,l)+S+i.slice(l)+E+p):i+E+(-2===l?t:p)}return[q(e,n+(e[i]||"<?>")+(2===t?"</svg>":3===t?"</math>":"")),o]};class K{constructor({strings:e,_$litType$:t},i){let o;this.parts=[];let r=0,n=0;const s=e.length-1,a=this.parts,[d,l]=J(e,t);if(this.el=K.createElement(d,i),H.currentNode=this.el.content,2===t||3===t){const e=this.el.content.firstChild;e.replaceWith(...e.childNodes)}for(;null!==(o=H.nextNode())&&a.length<s;){if(1===o.nodeType){if(o.hasAttributes())for(const e of o.getAttributeNames())if(e.endsWith(S)){const t=l[n++],i=o.getAttribute(e).split(E),s=/([.?@])?(.*)/.exec(t);a.push({type:1,index:r,name:s[2],strings:i,ctor:"."===s[1]?ee:"?"===s[1]?te:"@"===s[1]?ie:Q}),o.removeAttribute(e)}else e.startsWith(E)&&(a.push({type:6,index:r}),o.removeAttribute(e));if(W.test(o.tagName)){const e=o.textContent.split(E),t=e.length-1;if(t>0){o.textContent=k?k.emptyScript:"";for(let i=0;i<t;i++)o.append(e[i],P()),H.nextNode(),a.push({type:2,index:++r});o.append(e[t],P())}}}else if(8===o.nodeType)if(o.data===z)a.push({type:2,index:r});else{let e=-1;for(;-1!==(e=o.data.indexOf(E,e+1));)a.push({type:7,index:r}),e+=E.length-1}r++}}static createElement(e,t){const i=I.createElement("template");return i.innerHTML=e,i}}function Y(e,t,i=e,o){if(t===V)return t;let r=void 0!==o?i._$Co?.[o]:i._$Cl;const n=T(t)?void 0:t._$litDirective$;return r?.constructor!==n&&(r?._$AO?.(!1),void 0===n?r=void 0:(r=new n(e),r._$AT(e,i,o)),void 0!==o?(i._$Co??=[])[o]=r:i._$Cl=r),void 0!==r&&(t=Y(e,r._$AS(e,t.values),r,o)),t}class X{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){const{el:{content:t},parts:i}=this._$AD,o=(e?.creationScope??I).importNode(t,!0);H.currentNode=o;let r=H.nextNode(),n=0,s=0,a=i[0];for(;void 0!==a;){if(n===a.index){let t;2===a.type?t=new Z(r,r.nextSibling,this,e):1===a.type?t=new a.ctor(r,a.name,a.strings,this,e):6===a.type&&(t=new oe(r,this,e)),this._$AV.push(t),a=i[++s]}n!==a?.index&&(r=H.nextNode(),n++)}return H.currentNode=I,o}p(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class Z{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(e,t,i,o){this.type=2,this._$AH=U,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=o,this._$Cv=o?.isConnected??!0}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===e?.nodeType&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Y(this,e,t),T(e)?e===U||null==e||""===e?(this._$AH!==U&&this._$AR(),this._$AH=U):e!==this._$AH&&e!==V&&this._(e):void 0!==e._$litType$?this.$(e):void 0!==e.nodeType?this.T(e):(e=>N(e)||"function"==typeof e?.[Symbol.iterator])(e)?this.k(e):this._(e)}O(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}T(e){this._$AH!==e&&(this._$AR(),this._$AH=this.O(e))}_(e){this._$AH!==U&&T(this._$AH)?this._$AA.nextSibling.data=e:this.T(I.createTextNode(e)),this._$AH=e}$(e){const{values:t,_$litType$:i}=e,o="number"==typeof i?this._$AC(e):(void 0===i.el&&(i.el=K.createElement(q(i.h,i.h[0]),this.options)),i);if(this._$AH?._$AD===o)this._$AH.p(t);else{const e=new X(o,this),i=e.u(this.options);e.p(t),this.T(i),this._$AH=e}}_$AC(e){let t=F.get(e.strings);return void 0===t&&F.set(e.strings,t=new K(e)),t}k(e){N(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,o=0;for(const r of e)o===t.length?t.push(i=new Z(this.O(P()),this.O(P()),this,this.options)):i=t[o],i._$AI(r),o++;o<t.length&&(this._$AR(i&&i._$AB.nextSibling,o),t.length=o)}_$AR(e=this._$AA.nextSibling,t){for(this._$AP?.(!1,!0,t);e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){void 0===this._$AM&&(this._$Cv=e,this._$AP?.(e))}}class Q{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(e,t,i,o,r){this.type=1,this._$AH=U,this._$AN=void 0,this.element=e,this.name=t,this._$AM=o,this.options=r,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=U}_$AI(e,t=this,i,o){const r=this.strings;let n=!1;if(void 0===r)e=Y(this,e,t,0),n=!T(e)||e!==this._$AH&&e!==V,n&&(this._$AH=e);else{const o=e;let s,a;for(e=r[0],s=0;s<r.length-1;s++)a=Y(this,o[i+s],t,s),a===V&&(a=this._$AH[s]),n||=!T(a)||a!==this._$AH[s],a===U?e=U:e!==U&&(e+=(a??"")+r[s+1]),this._$AH[s]=a}n&&!o&&this.j(e)}j(e){e===U?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,e??"")}}class ee extends Q{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===U?void 0:e}}class te extends Q{constructor(){super(...arguments),this.type=4}j(e){this.element.toggleAttribute(this.name,!!e&&e!==U)}}class ie extends Q{constructor(e,t,i,o,r){super(e,t,i,o,r),this.type=5}_$AI(e,t=this){if((e=Y(this,e,t,0)??U)===V)return;const i=this._$AH,o=e===U&&i!==U||e.capture!==i.capture||e.once!==i.once||e.passive!==i.passive,r=e!==U&&(i===U||o);o&&this.element.removeEventListener(this.name,this,i),r&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,e):this._$AH.handleEvent(e)}}class oe{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){Y(this,e)}}const re=w.litHtmlPolyfillSupport;re?.(K,Z),(w.litHtmlVersions??=[]).push("3.3.1");const ne=globalThis;
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */class se extends ${constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{const o=i?.renderBefore??t;let r=o._$litPart$;if(void 0===r){const e=i?.renderBefore??null;o._$litPart$=r=new Z(t.insertBefore(P(),e),e,void 0,i??{})}return r._$AI(e),r})(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return V}}se._$litElement$=!0,se.finalized=!0,ne.litElementHydrateSupport?.({LitElement:se});const ae=ne.litElementPolyfillSupport;ae?.({LitElement:se}),(ne.litElementVersions??=[]).push("4.2.1");
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}):customElements.define(e,t)},le={attribute:!0,type:String,converter:f,reflect:!1,hasChanged:y},ce=(e=le,t,i)=>{const{kind:o,metadata:r}=i;let n=globalThis.litPropertyMetadata.get(r);if(void 0===n&&globalThis.litPropertyMetadata.set(r,n=new Map),"setter"===o&&((e=Object.create(e)).wrapped=!0),n.set(i.name,e),"accessor"===o){const{name:o}=i;return{set(i){const r=t.get.call(this);t.set.call(this,i),this.requestUpdate(o,r,e)},init(t){return void 0!==t&&this.C(o,void 0,e,t),t}}}if("setter"===o){const{name:o}=i;return function(i){const r=this[o];t.call(this,i),this.requestUpdate(o,r,e)}}throw Error("Unsupported decorator location: "+o)};
 /**
  * @license
  * Copyright 2017 Google LLC
@@ -36,7 +36,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */function ge(e){return pe({...e,state:!0,attribute:!1})}const ue=319486977,he={id:ue,vendorId:4874,name:"Eve Thermo",description:"Eve thermostat proprietary cluster for schedule and valve data",attributes:[{id:319422464,name:"schedule",type:{type:"blob",parser:"eve.schedule"},access:["R"],description:"Heating schedule binary data. Contains weekly schedule with day entries and time slots.",parser:"eve.schedule"},{id:319422488,name:"valvePosition",type:"uint8",access:["R","S"],description:"Current valve opening position",unit:"%",sensor:{entityType:"sensor",stateClass:"measurement",entityCategory:"diagnostic",icon:"mdi:valve"}},{id:319422480,name:"temperatureOffset",type:"int8",access:["R","W"],description:"Temperature calibration offset. Value in 0.1°C increments.",unit:"°C",sensor:{entityType:"number",deviceClass:"temperature",entityCategory:"config",scale:.1,icon:"mdi:thermometer-plus"}}]},ve=4447,me=291503106,_e={id:me,vendorId:ve,name:"Aqara Lock Settings",description:"Aqara proprietary lock settings cluster. Attribute meanings are partially documented.",attributes:[{id:291438609,name:"setting1",type:"uint8",access:["R"],description:"Unknown setting (possibly lock mode). Observed value: 1"},{id:291438610,name:"setting2",type:"uint8",access:["R"],description:"Unknown setting (possibly sound). Observed value: 2"},{id:291438611,name:"setting3",type:"uint8",access:["R"],description:"Unknown setting. Observed value: 0"},{id:291438612,name:"setting4",type:"uint8",access:["R"],description:"Unknown setting. Observed value: 0"},{id:291438613,name:"setting5",type:"uint8",access:["R"],description:"Unknown setting. Observed value: 1"}]},be={id:323746816,vendorId:ve,name:"Aqara Unknown",description:"Unknown Aqara proprietary cluster found on endpoint 0",attributes:[{id:323682304,name:"unknown",type:"bool",access:["R"],description:"Unknown boolean attribute. Observed value: true"}]},fe=[...[{id:"eve_thermo",fingerprint:{vendorId:4874,requiredClusters:[ue],requiredDeviceTypes:[769]},vendor:"Eve Systems",model:"Eve Thermo",description:"Smart radiator valve with Thread/Matter, HomeKit and weekly heating schedules",extends:[{name:"thermostatSchedule",clusters:[he],uiComponent:"eve-schedule",showInDetails:!0}],productUrl:"https://www.evehome.com/eve-thermo"}],...[{id:"aqara_u200",fingerprint:{vendorId:ve,requiredClusters:[me],requiredDeviceTypes:[10]},vendor:"Aqara",model:"Smart Lock U200",description:"Smart lock with Matter, fingerprint reader, NFC, and smartphone unlock",extends:[{name:"aqaraLockSettings",clusters:[_e,be],showInDetails:!0}],productUrl:"https://www.aqara.com/eu/product/smart-lock-u200"},{id:"aqara_w100",fingerprint:{vendorId:ve,productNamePattern:"W100",requiredDeviceTypes:[770]},vendor:"Aqara",model:"Climate Sensor W100",description:"Temperature and humidity sensor with Matter support. Uses standard clusters only.",productUrl:"https://www.aqara.com/eu/product/temperature-humidity-sensor-w100"}]],ye=[...[he],...[_e,be]];const xe={4874:"Eve",4447:"Aqara"};function $e(e){return e>=65536}function we(e){const t=function(e){return ye.find(t=>t.id===e)}(e);if(t)return t.name;if($e(e)){const t=function(e){return $e(e)?e>>16&65535:null}(e);if(t){const i=function(e){return xe[e]||`Vendor ${e}`}(t);return`${i} Proprietary (0x${e.toString(16)})`}return`Proprietary (0x${e.toString(16)})`}return`Cluster 0x${e.toString(16).padStart(4,"0")}`}function ke(e,t,i){return function(e,t,i){return fe.find(o=>{const n=o.fingerprint;return n.vendorId===e&&(!(n.requiredClusters&&t&&!n.requiredClusters.every(e=>t.includes(e)))&&!(n.requiredDeviceTypes&&i&&!n.requiredDeviceTypes.every(e=>i.includes(e))))})}(e,t,i)}const Ce=3,Se=4,Ee=5,ze=6,Ae=8,Pe=29,Ie=30,Te=31,Ne=40,De=47,Re=768,Be=513,Me=516,Le=1026,Ge=1027,Oe=1029,We=1030,je=59,Ve={[Ce]:"Identify",[Se]:"Groups",[Ee]:"Scenes",[ze]:"On/Off",[Ae]:"Level Control",[Pe]:"Descriptor",[Ie]:"Binding",[Te]:"Access Control",[Ne]:"Basic Information",42:"OTA Update",[De]:"Power Source",48:"General Commissioning",49:"Network Commissioning",50:"Diagnostic Logs",51:"General Diagnostics",52:"Software Diagnostics",53:"Thread Diagnostics",56:"Ethernet Diagnostics",60:"Admin Commissioning",62:"Operational Credentials",63:"Group Key Management",70:"Time Sync",[Re]:"Color Control",[Be]:"Thermostat",[Me]:"Thermostat UI",514:"Fan Control",[Le]:"Temperature",[Ge]:"Pressure",[Oe]:"Humidity",[We]:"Occupancy",[je]:"Switch"},Ue={15:"Generic Switch",17:"Power Source",18:"OTA Requestor",19:"OTA Provider",20:"Aggregator",22:"Root Node",256:"On/Off Light",257:"Dimmable Light",258:"Color Temperature Light",259:"On/Off Light Switch",260:"Dimmer Switch",261:"Color Dimmer Switch",262:"Light Sensor",263:"Occupancy Sensor",266:"On/Off Plug-in Unit",267:"Dimmable Plug-in Unit",268:"Color Temperature Light",269:"Extended Color Light",769:"Thermostat",770:"Temperature Sensor",771:"Humidity Sensor",772:"Air Quality Sensor",10:"Door Lock",11:"Door Lock Controller",514:"Window Covering",515:"Window Covering Controller",21:"Contact Sensor",38:"Flow Sensor",44:"Smoke/CO Alarm",35:"Casting Video Player",36:"Content App",40:"Basic Video Player",41:"Casting Video Client",43:"Speaker"},Fe={[ze]:{action:"control the on/off state of",dataType:"on/off commands"},[Ae]:{action:"control the brightness/level of",dataType:"level/dimming commands"},[Re]:{action:"control the color of",dataType:"color commands"},[Le]:{action:"read temperature data from",dataType:"temperature readings"},[Ge]:{action:"read pressure data from",dataType:"pressure readings"},[Oe]:{action:"read humidity data from",dataType:"humidity readings"},[We]:{action:"receive occupancy status from",dataType:"occupancy/presence data"},[Be]:{action:"control thermostat settings on",dataType:"thermostat commands"},[Ee]:{action:"trigger scenes on",dataType:"scene commands"},[Se]:{action:"manage group membership on",dataType:"group commands"},[je]:{action:"send button events to",dataType:"press/release events"}};function He(e){return null===e?"Any Cluster":Ve[e]?Ve[e]:we(e)}function qe(e){return Ue[e]||`Type ${e}`}function Je(e){return null===e?{action:"send all commands to",dataType:"all supported commands"}:Fe[e]||{action:"communicate with",dataType:`${He(e)} data`}}const Ke=[{id:"thermostat-contact-window",sourceDeviceTypes:[769],targetDeviceTypes:[21],title:"Turn off heating when window opens",description:"Automatically pause heating/cooling when a window or door is opened to save energy.",why:"This thermostat doesn't have a client cluster for Boolean State (contact sensors). Matter bindings require matching client/server clusters.",icon:"🪟"},{id:"thermostat-occupancy",sourceDeviceTypes:[769],targetDeviceTypes:[263],title:"Adjust temperature based on occupancy",description:"Lower the temperature when room is unoccupied, restore when someone enters.",why:"This thermostat doesn't have a client cluster for Occupancy Sensing. A Home Assistant automation can bridge this gap.",icon:"🚶"},{id:"light-occupancy",sourceDeviceTypes:[256,257,258,268,269],targetDeviceTypes:[263],title:"Turn on light when motion detected",description:"Automatically turn on lights when someone enters the room.",why:"This light is a server (receives commands), not a client. The occupancy sensor reports state but can't send on/off commands to it.",icon:"💡"},{id:"light-contact-door",sourceDeviceTypes:[256,257,258,268,269],targetDeviceTypes:[21],title:"Turn on light when door opens",description:"Automatically turn on lights when a door is opened (e.g., closet light).",why:"This contact sensor reports open/close state but doesn't have client clusters to control lights directly.",icon:"🚪"},{id:"plug-occupancy",sourceDeviceTypes:[266,267],targetDeviceTypes:[263],title:"Control device based on occupancy",description:"Turn on/off a device when room occupancy changes.",why:"This plug is a server (receives commands). The occupancy sensor can't directly control it via Matter binding.",icon:"🔌"},{id:"button-light-toggle",sourceDeviceTypes:[256,257,258,268,269],targetDeviceTypes:[15],title:"Toggle light with button press",description:"Press the button to toggle light on/off. Long press for dimming, double-tap for scenes.",why:"Generic Switch emits button events (press/release/multi-press) rather than state changes. Home Assistant automations can respond to these events to control lights.",icon:"🔘"},{id:"button-plug-toggle",sourceDeviceTypes:[266,267],targetDeviceTypes:[15],title:"Toggle device with button press",description:"Use a physical button to control a smart plug or outlet.",why:"Generic Switch emits button events that need Home Assistant automation to translate into on/off commands for the plug.",icon:"🔘"},{id:"button-scene",sourceDeviceTypes:[256,257,258,266,267,268,269,769],targetDeviceTypes:[15],title:"Trigger scene with button",description:"Assign different scenes to single press, double press, and long press actions.",why:"Matter scenes via binding require specific cluster support. Home Assistant automations offer more flexibility for multi-press actions.",icon:"🎬"},{id:"button-thermostat-adjust",sourceDeviceTypes:[769],targetDeviceTypes:[15],title:"Adjust thermostat with buttons",description:"Use buttons to raise/lower temperature setpoint or switch heating/cooling modes.",why:"Generic Switch button events need Home Assistant automation to adjust thermostat settings. Perfect for climate sensors with built-in buttons.",icon:"🌡️"}],Ye=319486977,Xe=["sunday","monday","tuesday","wednesday","thursday","friday","saturday","away"],Ze=["monday","tuesday","wednesday","thursday","friday"],Qe=["saturday","sunday"];function et(e){const t=e%60;return`${Math.floor(e/60).toString().padStart(2,"0")}:${t.toString().padStart(2,"0")}`}const tt="matter_binding_helper";async function it(e,t,i){return e.callWS({type:`${tt}/list_bindings`,node_id:t,endpoint_id:i})}async function ot(e,t,i,o,n,r,s,a=!0,d=!0){return e.callWS({type:`${tt}/create_binding`,source_node_id:t,source_endpoint_id:i,cluster_id:o,verify:a,provision_acl:d,...void 0!==n&&{target_node_id:n},...void 0!==r&&{target_endpoint_id:r},...void 0!==s&&{target_group_id:s}})}async function nt(e,t,i,o,n,r,s=!0){return e.callWS({type:`${tt}/delete_binding`,source_node_id:t,source_endpoint_id:i,verify:s,...void 0!==o&&{target_node_id:o},...void 0!==n&&{target_endpoint_id:n},...void 0!==r&&{target_group_id:r}})}async function rt(e,t,i){return e.callWS({type:`${tt}/verify_bindings`,node_id:t,endpoint_id:i})}async function st(e,t){return e.callWS({type:`${tt}/list_acl`,node_id:t})}async function at(e,t,i,o,n){return e.callWS({type:`${tt}/provision_acl`,target_node_id:t,target_endpoint_id:i,source_node_id:o,...null!==n&&{cluster_id:n}})}async function dt(e,t){return e.callWS({type:`${tt}/create_automation`,template_id:t.template_id,source_node_id:t.source_node_id,source_endpoint_id:t.source_endpoint_id,target_node_id:t.target_node_id,target_endpoint_id:t.target_endpoint_id,...t.source_device_types&&{source_device_types:t.source_device_types},...t.target_device_types&&{target_device_types:t.target_device_types},...t.trigger_entity_id&&{trigger_entity_id:t.trigger_entity_id},...t.action_entity_id&&{action_entity_id:t.action_entity_id},...t.alias&&{alias:t.alias},preview_only:t.preview_only??!1})}const lt={sunday:"Sun",monday:"Mon",tuesday:"Tue",wednesday:"Wed",thursday:"Thu",friday:"Fri",saturday:"Sat",away:"Away"};let ct=class extends se{constructor(){super(...arguments),this._loading=!1,this._saving=!1,this._error=null,this._success=null,this._notSupported=!1,this._schedule=null,this._selectedDays=new Set(Ze),this._transitions=[],this._hasChanges=!1}connectedCallback(){super.connectedCallback(),this._loadSchedule()}async _loadSchedule(){this._loading=!0,this._error=null,this._notSupported=!1;const e=(this.endpoint.cluster_commands||{})[513];if(void 0!==e&&!(e?.accepted||[]).includes(2))return this._notSupported=!0,void(this._loading=!1);try{const e=await async function(e,t,i,o,n=!0,r=!1){return e.callWS({type:`${tt}/get_schedule`,node_id:t,endpoint_id:i,...o,heat:n,cool:r})}(this.hass,this.node.node_id,this.endpoint.endpoint_id);e.schedule&&(this._schedule=e.schedule,this._selectedDays=new Set(e.schedule.day_names),this._transitions=[...e.schedule.transitions],this._hasChanges=!1)}catch(e){console.error("Failed to load schedule - full error:",JSON.stringify(e,null,2)),console.error("Failed to load schedule - raw:",e);const t=e;if("schedule_not_supported"===t?.code)return void(this._notSupported=!0);let i;if(e instanceof Error)i=e.message;else if("object"==typeof e&&null!==e){const t=e;i=t.message||t.error||t.code||JSON.stringify(e)}else i=String(e);this._error=`Failed to load schedule: ${i}`}finally{this._loading=!1}}async _saveSchedule(){if(0!==this._selectedDays.size)if(0!==this._transitions.length){this._saving=!0,this._error=null,this._success=null;try{const e=[...this._transitions].sort((e,t)=>e.transition_time-t.transition_time);(await async function(e,t,i,o,n,r=!0,s=!1){return e.callWS({type:`${tt}/set_schedule`,node_id:t,endpoint_id:i,days:o,transitions:n,heat:r,cool:s})}(this.hass,this.node.node_id,this.endpoint.endpoint_id,Array.from(this._selectedDays),e,!0,!1)).success?(this._success="Schedule saved to device",this._hasChanges=!1,setTimeout(()=>this._loadSchedule(),1e3)):this._error="Failed to save schedule"}catch(e){console.error("Failed to save schedule:",e);const t=e instanceof Error?e.message:e?.message||String(e);this._error=`Failed to save schedule: ${t}`}finally{this._saving=!1}}else this._error="Please add at least one time slot";else this._error="Please select at least one day"}async _clearSchedule(){if(confirm("Are you sure you want to clear all schedules from this device?")){this._saving=!0,this._error=null,this._success=null;try{(await async function(e,t,i){return e.callWS({type:`${tt}/clear_schedule`,node_id:t,endpoint_id:i})}(this.hass,this.node.node_id,this.endpoint.endpoint_id)).success?(this._success="Schedule cleared",this._schedule=null,this._transitions=[],this._hasChanges=!1):this._error="Failed to clear schedule"}catch(e){console.error("Failed to clear schedule:",e);const t=e instanceof Error?e.message:e?.message||String(e);this._error=`Failed to clear schedule: ${t}`}finally{this._saving=!1}}}_toggleDay(e){const t=new Set(this._selectedDays);t.has(e)?t.delete(e):t.add(e),this._selectedDays=t,this._hasChanges=!0}_selectPreset(e){switch(e){case"weekdays":this._selectedDays=new Set(Ze);break;case"weekend":this._selectedDays=new Set(Qe);break;case"all":this._selectedDays=new Set(Xe.filter(e=>"away"!==e))}this._hasChanges=!0}_addTransition(){let e=360;if(this._transitions.length>0){const t=Math.max(...this._transitions.map(e=>e.transition_time));e=Math.min(t+60,1380)}this._transitions=[...this._transitions,{transition_time:e,heat_setpoint:20,cool_setpoint:null}],this._hasChanges=!0}_updateTransitionTime(e,t){const i=function(e){const[t,i]=e.split(":").map(Number);return 60*t+i}(t);this._transitions=this._transitions.map((t,o)=>o===e?{...t,transition_time:i}:t),this._hasChanges=!0}_updateTransitionTemp(e,t){const i=parseFloat(t);isNaN(i)||(this._transitions=this._transitions.map((t,o)=>o===e?{...t,heat_setpoint:i}:t),this._hasChanges=!0)}_deleteTransition(e){this._transitions=this._transitions.filter((t,i)=>i!==e),this._hasChanges=!0}_getTimelineSegments(){if(0===this._transitions.length)return[];const e=[...this._transitions].sort((e,t)=>e.transition_time-t.transition_time),t=[],i=e=>`hsl(${240*(1-Math.max(0,Math.min(1,(e-15)/10)))}, 70%, 50%)`;for(let o=0;o<e.length;o++){const n=e[o],r=e[o+1],s=n.heat_setpoint??20;t.push({start:n.transition_time,end:r?r.transition_time:1440,temp:s,color:i(s)})}if(e.length>0&&e[0].transition_time>0){const o=e[e.length-1].heat_setpoint??20;t.unshift({start:0,end:e[0].transition_time,temp:o,color:i(o)})}return t}render(){return this._notSupported?j`
+ */function ge(e){return pe({...e,state:!0,attribute:!1})}const ue=319486977,he={id:ue,vendorId:4874,name:"Eve Thermo",description:"Eve thermostat proprietary cluster for schedule and valve data",attributes:[{id:319422464,name:"schedule",type:{type:"blob",parser:"eve.schedule"},access:["R"],description:"Heating schedule binary data. Contains weekly schedule with day entries and time slots.",parser:"eve.schedule"},{id:319422488,name:"valvePosition",type:"uint8",access:["R","S"],description:"Current valve opening position",unit:"%",sensor:{entityType:"sensor",stateClass:"measurement",entityCategory:"diagnostic",icon:"mdi:valve"}},{id:319422480,name:"temperatureOffset",type:"int8",access:["R","W"],description:"Temperature calibration offset. Value in 0.1°C increments.",unit:"°C",sensor:{entityType:"number",deviceClass:"temperature",entityCategory:"config",scale:.1,icon:"mdi:thermometer-plus"}}]},ve=4447,me=291503106,_e={id:me,vendorId:ve,name:"Aqara Lock Settings",description:"Aqara proprietary lock settings cluster. Attribute meanings are partially documented.",attributes:[{id:291438609,name:"setting1",type:"uint8",access:["R"],description:"Unknown setting (possibly lock mode). Observed value: 1"},{id:291438610,name:"setting2",type:"uint8",access:["R"],description:"Unknown setting (possibly sound). Observed value: 2"},{id:291438611,name:"setting3",type:"uint8",access:["R"],description:"Unknown setting. Observed value: 0"},{id:291438612,name:"setting4",type:"uint8",access:["R"],description:"Unknown setting. Observed value: 0"},{id:291438613,name:"setting5",type:"uint8",access:["R"],description:"Unknown setting. Observed value: 1"}]},be={id:323746816,vendorId:ve,name:"Aqara Unknown",description:"Unknown Aqara proprietary cluster found on endpoint 0",attributes:[{id:323682304,name:"unknown",type:"bool",access:["R"],description:"Unknown boolean attribute. Observed value: true"}]},fe=[...[{id:"eve_thermo",fingerprint:{vendorId:4874,requiredClusters:[ue],requiredDeviceTypes:[769]},vendor:"Eve Systems",model:"Eve Thermo",description:"Smart radiator valve with Thread/Matter, HomeKit and weekly heating schedules",extends:[{name:"thermostatSchedule",clusters:[he],uiComponent:"eve-schedule",showInDetails:!0}],productUrl:"https://www.evehome.com/eve-thermo"}],...[{id:"aqara_u200",fingerprint:{vendorId:ve,requiredClusters:[me],requiredDeviceTypes:[10]},vendor:"Aqara",model:"Smart Lock U200",description:"Smart lock with Matter, fingerprint reader, NFC, and smartphone unlock",extends:[{name:"aqaraLockSettings",clusters:[_e,be],showInDetails:!0}],productUrl:"https://www.aqara.com/eu/product/smart-lock-u200"},{id:"aqara_w100",fingerprint:{vendorId:ve,productNamePattern:"W100",requiredDeviceTypes:[770]},vendor:"Aqara",model:"Climate Sensor W100",description:"Temperature and humidity sensor with Matter support. Uses standard clusters only.",productUrl:"https://www.aqara.com/eu/product/temperature-humidity-sensor-w100"}]],ye=[...[he],...[_e,be]];const xe={4874:"Eve",4447:"Aqara"};function $e(e){return e>=65536}function we(e){const t=function(e){return ye.find(t=>t.id===e)}(e);if(t)return t.name;if($e(e)){const t=function(e){return $e(e)?e>>16&65535:null}(e);if(t){const i=function(e){return xe[e]||`Vendor ${e}`}(t);return`${i} Proprietary (0x${e.toString(16)})`}return`Proprietary (0x${e.toString(16)})`}return`Cluster 0x${e.toString(16).padStart(4,"0")}`}function ke(e,t,i){return function(e,t,i){return fe.find(o=>{const r=o.fingerprint;return r.vendorId===e&&(!(r.requiredClusters&&t&&!r.requiredClusters.every(e=>t.includes(e)))&&!(r.requiredDeviceTypes&&i&&!r.requiredDeviceTypes.every(e=>i.includes(e))))})}(e,t,i)}const Ce=3,Se=4,Ee=5,ze=6,Ae=8,Ie=29,Pe=30,Te=31,Ne=40,De=47,Re=768,Be=258,Me=513,Le=516,Ge=1026,Oe=1027,We=1029,je=1030,Ve=59,Ue={[Ce]:"Identify",[Se]:"Groups",[Ee]:"Scenes",[ze]:"On/Off",[Ae]:"Level Control",[Ie]:"Descriptor",[Pe]:"Binding",[Te]:"Access Control",[Ne]:"Basic Information",42:"OTA Update",[De]:"Power Source",48:"General Commissioning",49:"Network Commissioning",50:"Diagnostic Logs",51:"General Diagnostics",52:"Software Diagnostics",53:"Thread Diagnostics",56:"Ethernet Diagnostics",60:"Admin Commissioning",62:"Operational Credentials",63:"Group Key Management",70:"Time Sync",[Re]:"Color Control",[Be]:"Window Covering",[Me]:"Thermostat",[Le]:"Thermostat UI",514:"Fan Control",[Ge]:"Temperature",[Oe]:"Pressure",[We]:"Humidity",[je]:"Occupancy",[Ve]:"Switch"},Fe={15:"Generic Switch",17:"Power Source",18:"OTA Requestor",19:"OTA Provider",20:"Aggregator",22:"Root Node",256:"On/Off Light",257:"Dimmable Light",258:"Color Temperature Light",259:"On/Off Light Switch",260:"Dimmer Switch",261:"Color Dimmer Switch",262:"Light Sensor",263:"Occupancy Sensor",266:"On/Off Plug-in Unit",267:"Dimmable Plug-in Unit",268:"Color Temperature Light",269:"Extended Color Light",769:"Thermostat",770:"Temperature Sensor",771:"Humidity Sensor",772:"Air Quality Sensor",10:"Door Lock",11:"Door Lock Controller",514:"Window Covering",515:"Window Covering Controller",21:"Contact Sensor",38:"Flow Sensor",44:"Smoke/CO Alarm",35:"Casting Video Player",36:"Content App",40:"Basic Video Player",41:"Casting Video Client",43:"Speaker"},He={[ze]:{action:"control the on/off state of",dataType:"on/off commands"},[Ae]:{action:"control the brightness/level of",dataType:"level/dimming commands"},[Re]:{action:"control the color of",dataType:"color commands"},[Ge]:{action:"read temperature data from",dataType:"temperature readings"},[Oe]:{action:"read pressure data from",dataType:"pressure readings"},[We]:{action:"read humidity data from",dataType:"humidity readings"},[je]:{action:"receive occupancy status from",dataType:"occupancy/presence data"},[Me]:{action:"control thermostat settings on",dataType:"thermostat commands"},[Ee]:{action:"trigger scenes on",dataType:"scene commands"},[Se]:{action:"manage group membership on",dataType:"group commands"},[Ve]:{action:"send button events to",dataType:"press/release events"}};function qe(e){return null===e?"Any Cluster":Ue[e]?Ue[e]:we(e)}function Je(e){return Fe[e]||`Type ${e}`}function Ke(e){return null===e?{action:"send all commands to",dataType:"all supported commands"}:He[e]||{action:"communicate with",dataType:`${qe(e)} data`}}const Ye=[{id:"thermostat-contact-window",sourceDeviceTypes:[769],targetDeviceTypes:[21],title:"Turn off heating when window opens",description:"Automatically pause heating/cooling when a window or door is opened to save energy.",why:"This thermostat doesn't have a client cluster for Boolean State (contact sensors). Matter bindings require matching client/server clusters.",icon:"🪟"},{id:"thermostat-occupancy",sourceDeviceTypes:[769],targetDeviceTypes:[263],title:"Adjust temperature based on occupancy",description:"Lower the temperature when room is unoccupied, restore when someone enters.",why:"This thermostat doesn't have a client cluster for Occupancy Sensing. A Home Assistant automation can bridge this gap.",icon:"🚶"},{id:"light-occupancy",sourceDeviceTypes:[256,257,258,268,269],targetDeviceTypes:[263],title:"Turn on light when motion detected",description:"Automatically turn on lights when someone enters the room.",why:"This light is a server (receives commands), not a client. The occupancy sensor reports state but can't send on/off commands to it.",icon:"💡"},{id:"light-contact-door",sourceDeviceTypes:[256,257,258,268,269],targetDeviceTypes:[21],title:"Turn on light when door opens",description:"Automatically turn on lights when a door is opened (e.g., closet light).",why:"This contact sensor reports open/close state but doesn't have client clusters to control lights directly.",icon:"🚪"},{id:"plug-occupancy",sourceDeviceTypes:[266,267],targetDeviceTypes:[263],title:"Control device based on occupancy",description:"Turn on/off a device when room occupancy changes.",why:"This plug is a server (receives commands). The occupancy sensor can't directly control it via Matter binding.",icon:"🔌"},{id:"button-light-toggle",sourceDeviceTypes:[256,257,258,268,269],targetDeviceTypes:[15],title:"Toggle light with button press",description:"Press the button to toggle light on/off. Long press for dimming, double-tap for scenes.",why:"Generic Switch emits button events (press/release/multi-press) rather than state changes. Home Assistant automations can respond to these events to control lights.",icon:"🔘"},{id:"button-plug-toggle",sourceDeviceTypes:[266,267],targetDeviceTypes:[15],title:"Toggle device with button press",description:"Use a physical button to control a smart plug or outlet.",why:"Generic Switch emits button events that need Home Assistant automation to translate into on/off commands for the plug.",icon:"🔘"},{id:"button-scene",sourceDeviceTypes:[256,257,258,266,267,268,269,769],targetDeviceTypes:[15],title:"Trigger scene with button",description:"Assign different scenes to single press, double press, and long press actions.",why:"Matter scenes via binding require specific cluster support. Home Assistant automations offer more flexibility for multi-press actions.",icon:"🎬"},{id:"button-thermostat-adjust",sourceDeviceTypes:[769],targetDeviceTypes:[15],title:"Adjust thermostat with buttons",description:"Use buttons to raise/lower temperature setpoint or switch heating/cooling modes.",why:"Generic Switch button events need Home Assistant automation to adjust thermostat settings. Perfect for climate sensors with built-in buttons.",icon:"🌡️"}],Xe=319486977,Ze=["sunday","monday","tuesday","wednesday","thursday","friday","saturday","away"],Qe=["monday","tuesday","wednesday","thursday","friday"],et=["saturday","sunday"];function tt(e){const t=e%60;return`${Math.floor(e/60).toString().padStart(2,"0")}:${t.toString().padStart(2,"0")}`}const it="matter_binding_helper";async function ot(e,t,i){return e.callWS({type:`${it}/list_bindings`,node_id:t,endpoint_id:i})}async function rt(e,t,i,o,r,n,s,a=!0,d=!0){return e.callWS({type:`${it}/create_binding`,source_node_id:t,source_endpoint_id:i,cluster_id:o,verify:a,provision_acl:d,...void 0!==r&&{target_node_id:r},...void 0!==n&&{target_endpoint_id:n},...void 0!==s&&{target_group_id:s}})}async function nt(e,t,i,o,r,n,s=!0){return e.callWS({type:`${it}/delete_binding`,source_node_id:t,source_endpoint_id:i,verify:s,...void 0!==o&&{target_node_id:o},...void 0!==r&&{target_endpoint_id:r},...void 0!==n&&{target_group_id:n}})}async function st(e,t,i){return e.callWS({type:`${it}/verify_bindings`,node_id:t,endpoint_id:i})}async function at(e,t){return e.callWS({type:`${it}/list_acl`,node_id:t})}async function dt(e,t,i,o,r){return e.callWS({type:`${it}/provision_acl`,target_node_id:t,target_endpoint_id:i,source_node_id:o,...null!==r&&{cluster_id:r}})}async function lt(e,t,i){return e.callWS({type:`${it}/repair_group_bindings`,node_id:t,endpoint_id:i})}async function ct(e,t){return e.callWS({type:`${it}/create_automation`,template_id:t.template_id,source_node_id:t.source_node_id,source_endpoint_id:t.source_endpoint_id,target_node_id:t.target_node_id,target_endpoint_id:t.target_endpoint_id,...t.source_device_types&&{source_device_types:t.source_device_types},...t.target_device_types&&{target_device_types:t.target_device_types},...t.trigger_entity_id&&{trigger_entity_id:t.trigger_entity_id},...t.action_entity_id&&{action_entity_id:t.action_entity_id},...t.alias&&{alias:t.alias},preview_only:t.preview_only??!1})}const pt={sunday:"Sun",monday:"Mon",tuesday:"Tue",wednesday:"Wed",thursday:"Thu",friday:"Fri",saturday:"Sat",away:"Away"};let gt=class extends se{constructor(){super(...arguments),this._loading=!1,this._saving=!1,this._error=null,this._success=null,this._notSupported=!1,this._schedule=null,this._selectedDays=new Set(Qe),this._transitions=[],this._hasChanges=!1}connectedCallback(){super.connectedCallback(),this._loadSchedule()}async _loadSchedule(){this._loading=!0,this._error=null,this._notSupported=!1;const e=(this.endpoint.cluster_commands||{})[513];if(void 0!==e&&!(e?.accepted||[]).includes(2))return this._notSupported=!0,void(this._loading=!1);try{const e=await async function(e,t,i,o,r=!0,n=!1){return e.callWS({type:`${it}/get_schedule`,node_id:t,endpoint_id:i,...o,heat:r,cool:n})}(this.hass,this.node.node_id,this.endpoint.endpoint_id);e.schedule&&(this._schedule=e.schedule,this._selectedDays=new Set(e.schedule.day_names),this._transitions=[...e.schedule.transitions],this._hasChanges=!1)}catch(e){console.error("Failed to load schedule - full error:",JSON.stringify(e,null,2)),console.error("Failed to load schedule - raw:",e);const t=e;if("schedule_not_supported"===t?.code)return void(this._notSupported=!0);let i;if(e instanceof Error)i=e.message;else if("object"==typeof e&&null!==e){const t=e;i=t.message||t.error||t.code||JSON.stringify(e)}else i=String(e);this._error=`Failed to load schedule: ${i}`}finally{this._loading=!1}}async _saveSchedule(){if(0!==this._selectedDays.size)if(0!==this._transitions.length){this._saving=!0,this._error=null,this._success=null;try{const e=[...this._transitions].sort((e,t)=>e.transition_time-t.transition_time);(await async function(e,t,i,o,r,n=!0,s=!1){return e.callWS({type:`${it}/set_schedule`,node_id:t,endpoint_id:i,days:o,transitions:r,heat:n,cool:s})}(this.hass,this.node.node_id,this.endpoint.endpoint_id,Array.from(this._selectedDays),e,!0,!1)).success?(this._success="Schedule saved to device",this._hasChanges=!1,setTimeout(()=>this._loadSchedule(),1e3)):this._error="Failed to save schedule"}catch(e){console.error("Failed to save schedule:",e);const t=e instanceof Error?e.message:e?.message||String(e);this._error=`Failed to save schedule: ${t}`}finally{this._saving=!1}}else this._error="Please add at least one time slot";else this._error="Please select at least one day"}async _clearSchedule(){if(confirm("Are you sure you want to clear all schedules from this device?")){this._saving=!0,this._error=null,this._success=null;try{(await async function(e,t,i){return e.callWS({type:`${it}/clear_schedule`,node_id:t,endpoint_id:i})}(this.hass,this.node.node_id,this.endpoint.endpoint_id)).success?(this._success="Schedule cleared",this._schedule=null,this._transitions=[],this._hasChanges=!1):this._error="Failed to clear schedule"}catch(e){console.error("Failed to clear schedule:",e);const t=e instanceof Error?e.message:e?.message||String(e);this._error=`Failed to clear schedule: ${t}`}finally{this._saving=!1}}}_toggleDay(e){const t=new Set(this._selectedDays);t.has(e)?t.delete(e):t.add(e),this._selectedDays=t,this._hasChanges=!0}_selectPreset(e){switch(e){case"weekdays":this._selectedDays=new Set(Qe);break;case"weekend":this._selectedDays=new Set(et);break;case"all":this._selectedDays=new Set(Ze.filter(e=>"away"!==e))}this._hasChanges=!0}_addTransition(){let e=360;if(this._transitions.length>0){const t=Math.max(...this._transitions.map(e=>e.transition_time));e=Math.min(t+60,1380)}this._transitions=[...this._transitions,{transition_time:e,heat_setpoint:20,cool_setpoint:null}],this._hasChanges=!0}_updateTransitionTime(e,t){const i=function(e){const[t,i]=e.split(":").map(Number);return 60*t+i}(t);this._transitions=this._transitions.map((t,o)=>o===e?{...t,transition_time:i}:t),this._hasChanges=!0}_updateTransitionTemp(e,t){const i=parseFloat(t);isNaN(i)||(this._transitions=this._transitions.map((t,o)=>o===e?{...t,heat_setpoint:i}:t),this._hasChanges=!0)}_deleteTransition(e){this._transitions=this._transitions.filter((t,i)=>i!==e),this._hasChanges=!0}_getTimelineSegments(){if(0===this._transitions.length)return[];const e=[...this._transitions].sort((e,t)=>e.transition_time-t.transition_time),t=[],i=e=>`hsl(${240*(1-Math.max(0,Math.min(1,(e-15)/10)))}, 70%, 50%)`;for(let o=0;o<e.length;o++){const r=e[o],n=e[o+1],s=r.heat_setpoint??20;t.push({start:r.transition_time,end:n?n.transition_time:1440,temp:s,color:i(s)})}if(e.length>0&&e[0].transition_time>0){const o=e[e.length-1].heat_setpoint??20;t.unshift({start:0,end:e[0].transition_time,temp:o,color:i(o)})}return t}render(){return this._notSupported?j`
         <div class="not-supported-card">
           <div class="header">
             <ha-icon icon="mdi:calendar-remove"></ha-icon>
@@ -108,12 +108,12 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           <div class="section">
             <div class="section-title">Apply to days</div>
             <div class="day-selector">
-              ${Xe.filter(e=>"away"!==e).map(e=>j`
+              ${Ze.filter(e=>"away"!==e).map(e=>j`
                 <div
                   class="day-chip ${this._selectedDays.has(e)?"selected":""}"
                   @click=${()=>this._toggleDay(e)}
                 >
-                  ${lt[e]}
+                  ${pt[e]}
                 </div>
               `)}
             </div>
@@ -145,7 +145,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                       <label>Time</label>
                       <input
                         type="time"
-                        .value=${et(e.transition_time)}
+                        .value=${tt(e.transition_time)}
                         @change=${t=>this._updateTransitionTime(e.index,t.target.value)}
                       />
                     </div>
@@ -199,7 +199,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                       <div
                         class="timeline-segment"
                         style="left: ${t}%; width: ${i}%; background: ${e.color};"
-                        title="${et(e.start)} - ${et(e.end)}: ${e.temp}°C"
+                        title="${tt(e.start)} - ${tt(e.end)}: ${e.temp}°C"
                       >
                         ${i>8?`${e.temp}°`:""}
                       </div>
@@ -210,7 +210,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           `:U}
         `}
       </div>
-    `}};function pt(e){const t=e.endpoints.filter(e=>0!==e.endpoint_id&&e.server_clusters&&e.server_clusters.length>0);return t.length>0?t[0]:null}ct.styles=s`
+    `}};function ut(e){const t=e.endpoints.filter(e=>0!==e.endpoint_id&&e.server_clusters&&e.server_clusters.length>0);return t.length>0?t[0]:null}gt.styles=s`
     :host {
       display: block;
     }
@@ -638,7 +638,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       font-size: 11px;
       font-weight: 500;
     }
-  `,e([pe({attribute:!1})],ct.prototype,"hass",void 0),e([pe({attribute:!1})],ct.prototype,"node",void 0),e([pe({attribute:!1})],ct.prototype,"endpoint",void 0),e([ge()],ct.prototype,"_loading",void 0),e([ge()],ct.prototype,"_saving",void 0),e([ge()],ct.prototype,"_error",void 0),e([ge()],ct.prototype,"_success",void 0),e([ge()],ct.prototype,"_notSupported",void 0),e([ge()],ct.prototype,"_schedule",void 0),e([ge()],ct.prototype,"_selectedDays",void 0),e([ge()],ct.prototype,"_transitions",void 0),e([ge()],ct.prototype,"_hasChanges",void 0),ct=e([de("thermostat-schedule-editor")],ct);const gt=257,ut={[ze]:3,[Ae]:3,[Re]:3,[Be]:3,[Ee]:3,[gt]:3};function ht(e){return ut[e]??3}const vt=[{value:1,label:"View",description:"Read-only access to device state"},{value:3,label:"Operate",description:"Control the device (on/off, level, etc.)"},{value:4,label:"Manage",description:"Configure device settings"}],mt=s`
+  `,e([pe({attribute:!1})],gt.prototype,"hass",void 0),e([pe({attribute:!1})],gt.prototype,"node",void 0),e([pe({attribute:!1})],gt.prototype,"endpoint",void 0),e([ge()],gt.prototype,"_loading",void 0),e([ge()],gt.prototype,"_saving",void 0),e([ge()],gt.prototype,"_error",void 0),e([ge()],gt.prototype,"_success",void 0),e([ge()],gt.prototype,"_notSupported",void 0),e([ge()],gt.prototype,"_schedule",void 0),e([ge()],gt.prototype,"_selectedDays",void 0),e([ge()],gt.prototype,"_transitions",void 0),e([ge()],gt.prototype,"_hasChanges",void 0),gt=e([de("thermostat-schedule-editor")],gt);const ht=257,vt={[ze]:3,[Ae]:3,[Re]:3,[Me]:3,[Ee]:3,[ht]:3};function mt(e){return vt[e]??3}const _t=[{value:1,label:"View",description:"Read-only access to device state"},{value:3,label:"Operate",description:"Control the device (on/off, level, etc.)"},{value:4,label:"Manage",description:"Configure device settings"}],bt=s`
   .btn {
     padding: 8px 16px;
     border: none;
@@ -734,7 +734,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     background: var(--warning-color, #ff9800);
     color: white;
   }
-`,_t=s`
+`,ft=s`
   .loading {
     display: flex;
     align-items: center;
@@ -800,7 +800,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     font-style: italic;
     padding: 8px 0;
   }
-`,bt=s`
+`,yt=s`
   .form-group {
     margin-bottom: 16px;
   }
@@ -844,7 +844,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     outline: none;
     border-color: var(--primary-color);
   }
-`,ft=s`
+`,xt=s`
   .badge {
     display: inline-block;
     font-size: 11px;
@@ -911,7 +911,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     font-size: 12px;
     font-weight: 500;
   }
-`,yt=[mt,_t,bt,ft,s`
+`,$t=[bt,ft,yt,xt,s`
   .flex {
     display: flex;
   }
@@ -976,7 +976,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     color: var(--primary-color);
     text-decoration: underline;
   }
-`],xt=s`
+`],wt=s`
   .card {
     background: var(--card-background-color);
     border-radius: 8px;
@@ -1013,7 +1013,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     padding: 2px 8px;
     border-radius: 4px;
   }
-`,$t=s`
+`,kt=s`
   .binding-list {
     display: flex;
     flex-direction: column;
@@ -1096,7 +1096,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     margin-bottom: 8px;
     width: 100%;
   }
-`,wt=s`
+`,Ct=s`
   .acl-list {
     display: flex;
     flex-direction: column;
@@ -1156,7 +1156,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     color: var(--secondary-text-color);
     opacity: 0.7;
   }
-`,kt=s`
+`,St=s`
   .overview-card {
     background: var(--card-background-color);
     border-radius: 8px;
@@ -1210,7 +1210,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     margin-left: 8px;
     vertical-align: middle;
   }
-`,Ct=[xt,$t,wt,kt];let St=class extends se{constructor(){super(...arguments),this.nodes=[],this.selectedNodeId=null,this.loading=!1,this.title="Matter Devices",this.showEndpointCount=!1}render(){return j`
+`,Et=[wt,kt,Ct,St];let zt=class extends se{constructor(){super(...arguments),this.nodes=[],this.selectedNodeId=null,this.loading=!1,this.title="Matter Devices",this.showEndpointCount=!1}render(){return j`
       <div class="card">
         <div class="card-header">${this.title}</div>
         ${this._renderContent()}
@@ -1219,7 +1219,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       <ul class="node-list">
         ${this.nodes.map(e=>this._renderNodeItem(e))}
       </ul>
-    `}_renderNodeItem(e){const t=this.selectedNodeId===e.node_id,i=this._getPrimaryDeviceType(e),o=this._hasBindingCluster(e),n=e.endpoints.filter(e=>e.endpoint_id>0);return j`
+    `}_renderNodeItem(e){const t=this.selectedNodeId===e.node_id,i=this._getPrimaryDeviceType(e),o=this._hasBindingCluster(e),r=e.endpoints.filter(e=>e.endpoint_id>0);return j`
       <li>
         <div
           class="node-item ${t?"selected":""}"
@@ -1237,10 +1237,10 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               ${i?j`<span class="node-device-type">${i}</span>`:U}
               ${i&&e.area_name?j`<span class="node-meta-sep">·</span>`:U}
               ${e.area_name?j`<span class="node-area">${e.area_name}</span>`:U}
-              ${this.showEndpointCount&&n.length>1?j`
+              ${this.showEndpointCount&&r.length>1?j`
                     ${e.area_name||i?j`<span class="node-meta-sep">·</span>`:U}
                     <span class="node-endpoints"
-                      >${n.length} endpoints</span
+                      >${r.length} endpoints</span
                     >
                   `:U}
               ${o?j`<span class="binding-badge">Binding</span>`:U}
@@ -1248,7 +1248,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
       </li>
-    `}_getPrimaryDeviceType(e){const t=e.endpoints.find(e=>1===e.endpoint_id)||e.endpoints.find(e=>e.endpoint_id>0);return t&&t.device_types.length>0?qe(t.device_types[0].id):null}_hasBindingCluster(e){return e.endpoints.some(e=>e.has_binding_cluster)}_handleNodeClick(e){this.dispatchEvent(new CustomEvent("node-selected",{detail:{node:e},bubbles:!0,composed:!0}))}};St.styles=[mt,_t,xt,s`
+    `}_getPrimaryDeviceType(e){const t=e.endpoints.find(e=>1===e.endpoint_id)||e.endpoints.find(e=>e.endpoint_id>0);return t&&t.device_types.length>0?Je(t.device_types[0].id):null}_hasBindingCluster(e){return e.endpoints.some(e=>e.has_binding_cluster)}_handleNodeClick(e){this.dispatchEvent(new CustomEvent("node-selected",{detail:{node:e},bubbles:!0,composed:!0}))}};zt.styles=[bt,ft,wt,s`
       :host {
         display: block;
       }
@@ -1365,7 +1365,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         font-weight: 600;
         text-transform: uppercase;
       }
-    `],e([pe({attribute:!1})],St.prototype,"nodes",void 0),e([pe({type:Number})],St.prototype,"selectedNodeId",void 0),e([pe({type:Boolean})],St.prototype,"loading",void 0),e([pe({type:String})],St.prototype,"title",void 0),e([pe({type:Boolean})],St.prototype,"showEndpointCount",void 0),St=e([de("matter-node-list")],St);let Et=class extends se{constructor(){super(...arguments),this.aclMissing=!1,this.aclReason="",this.showRepairButton=!1,this.showVerifyButton=!1,this.repairInProgress=!1,this.verifyInProgress=!1,this.deleteInProgress=!1,this.disabled=!1,this.variant="default"}render(){if(!this.binding)return U;const{binding:e,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:n}=this.binding,r=null!==e.target_group_id,s=He(e.cluster_id),a=Je(e.cluster_id),d=["binding-card",this.variant,this.aclMissing?"binding-missing-acl":""].filter(Boolean).join(" ");return"readable"===this.variant?this._renderReadableVariant(d,e,t,i,o,r,a):this._renderDefaultVariant(d,e,o,r,s)}_renderDefaultVariant(e,t,i,o,n){const r=i?.ha_device_id,s=o?`Group ${t.target_group_id}`:i?.name||`Node ${t.target_node_id}`;return j`
+    `],e([pe({attribute:!1})],zt.prototype,"nodes",void 0),e([pe({type:Number})],zt.prototype,"selectedNodeId",void 0),e([pe({type:Boolean})],zt.prototype,"loading",void 0),e([pe({type:String})],zt.prototype,"title",void 0),e([pe({type:Boolean})],zt.prototype,"showEndpointCount",void 0),zt=e([de("matter-node-list")],zt);let At=class extends se{constructor(){super(...arguments),this.aclMissing=!1,this.aclReason="",this.showRepairButton=!1,this.showVerifyButton=!1,this.repairInProgress=!1,this.verifyInProgress=!1,this.deleteInProgress=!1,this.disabled=!1,this.variant="default"}render(){if(!this.binding)return U;const{binding:e,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:r}=this.binding,n=null!==e.target_group_id,s=qe(e.cluster_id),a=Ke(e.cluster_id),d=["binding-card",this.variant,this.aclMissing?"binding-missing-acl":""].filter(Boolean).join(" ");return"readable"===this.variant?this._renderReadableVariant(d,e,t,i,o,n,a):this._renderDefaultVariant(d,e,o,n,s)}_renderDefaultVariant(e,t,i,o,r){const n=i?.ha_device_id,s=o?`Group ${t.target_group_id}`:i?.name||`Node ${t.target_node_id}`;return j`
       <div class=${e}>
         ${this.aclMissing&&this.aclReason?j`<div class="acl-warning-banner">⚠️ ${this.aclReason}</div>`:U}
         <div class="binding-info">
@@ -1373,18 +1373,18 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           <div class="binding-target">
             <span class="binding-target-name">
               ${o?s:j`<span
-                      class="${r?"device-link":""}"
-                      @click=${r?e=>this._handleDeviceClick(e,r):U}
+                      class="${n?"device-link":""}"
+                      @click=${n?e=>this._handleDeviceClick(e,n):U}
                       >${i?.name||`Node ${t.target_node_id}`}</span
                     >
                     - Endpoint ${t.target_endpoint_id}`}
             </span>
-            <span class="binding-cluster">${n}</span>
+            <span class="binding-cluster">${r}</span>
           </div>
         </div>
         ${this._renderActions()}
       </div>
-    `}_renderReadableVariant(e,t,i,o,n,r,s){const a=i.ha_device_id,d=n?.ha_device_id,l=r?`Group ${t.target_group_id}`:n?.name||`Node ${t.target_node_id}`;return j`
+    `}_renderReadableVariant(e,t,i,o,r,n,s){const a=i.ha_device_id,d=r?.ha_device_id,l=n?`Group ${t.target_group_id}`:r?.name||`Node ${t.target_node_id}`;return j`
       <div class=${e}>
         ${this.aclMissing&&this.aclReason?j`<div class="acl-warning-banner">⚠️ ${this.aclReason}</div>`:U}
         <div class="binding-description">
@@ -1397,14 +1397,14 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
             >
             <span class="binding-action">${s.action}</span>
             <strong
-              class="${!r&&d?"device-link":""}"
-              @click=${!r&&d?e=>this._handleDeviceClick(e,d):U}
+              class="${!n&&d?"device-link":""}"
+              @click=${!n&&d?e=>this._handleDeviceClick(e,d):U}
               >${l}</strong
             >
           </div>
           <div class="binding-meta">
             #${i.node_id} EP ${o.endpoint_id} →
-            ${r?"Group":`#${t.target_node_id} EP ${t.target_endpoint_id}`}
+            ${n?"Group":`#${t.target_node_id} EP ${t.target_endpoint_id}`}
             ${i.area_name?j` · ${i.area_name}`:U}
             ${this.aclMissing&&this.aclReason?j`<span class="acl-warning-text"> · ${this.aclReason}</span>`:U}
           </div>
@@ -1442,7 +1442,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           ✕
         </button>
       </div>
-    `}_handleDeleteClick(){this.dispatchEvent(new CustomEvent("delete-binding",{detail:{binding:this.binding},bubbles:!0,composed:!0}))}_handleVerifyClick(){this.dispatchEvent(new CustomEvent("verify-binding",{detail:{binding:this.binding},bubbles:!0,composed:!0}))}_handleRepairClick(){this.dispatchEvent(new CustomEvent("repair-acl",{detail:{binding:this.binding},bubbles:!0,composed:!0}))}_handleDeviceClick(e,t){t&&(e.stopPropagation(),this.dispatchEvent(new CustomEvent("navigate-device",{detail:{deviceId:t},bubbles:!0,composed:!0})))}};Et.styles=[mt,_t,$t,s`
+    `}_handleDeleteClick(){this.dispatchEvent(new CustomEvent("delete-binding",{detail:{binding:this.binding},bubbles:!0,composed:!0}))}_handleVerifyClick(){this.dispatchEvent(new CustomEvent("verify-binding",{detail:{binding:this.binding},bubbles:!0,composed:!0}))}_handleRepairClick(){this.dispatchEvent(new CustomEvent("repair-acl",{detail:{binding:this.binding},bubbles:!0,composed:!0}))}_handleDeviceClick(e,t){t&&(e.stopPropagation(),this.dispatchEvent(new CustomEvent("navigate-device",{detail:{deviceId:t},bubbles:!0,composed:!0})))}};At.styles=[bt,ft,kt,s`
       :host {
         display: block;
       }
@@ -1512,7 +1512,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       .btn-loading {
         opacity: 0.5;
       }
-    `],e([pe({attribute:!1})],Et.prototype,"binding",void 0),e([pe({type:Boolean})],Et.prototype,"aclMissing",void 0),e([pe({type:String})],Et.prototype,"aclReason",void 0),e([pe({type:Boolean})],Et.prototype,"showRepairButton",void 0),e([pe({type:Boolean})],Et.prototype,"showVerifyButton",void 0),e([pe({type:Boolean})],Et.prototype,"repairInProgress",void 0),e([pe({type:Boolean})],Et.prototype,"verifyInProgress",void 0),e([pe({type:Boolean})],Et.prototype,"deleteInProgress",void 0),e([pe({type:Boolean})],Et.prototype,"disabled",void 0),e([pe({type:String})],Et.prototype,"variant",void 0),Et=e([de("matter-binding-card")],Et);let zt=class extends se{constructor(){super(...arguments),this.entries=null,this.nodes=[],this.loading=!1}render(){return j`
+    `],e([pe({attribute:!1})],At.prototype,"binding",void 0),e([pe({type:Boolean})],At.prototype,"aclMissing",void 0),e([pe({type:String})],At.prototype,"aclReason",void 0),e([pe({type:Boolean})],At.prototype,"showRepairButton",void 0),e([pe({type:Boolean})],At.prototype,"showVerifyButton",void 0),e([pe({type:Boolean})],At.prototype,"repairInProgress",void 0),e([pe({type:Boolean})],At.prototype,"verifyInProgress",void 0),e([pe({type:Boolean})],At.prototype,"deleteInProgress",void 0),e([pe({type:Boolean})],At.prototype,"disabled",void 0),e([pe({type:String})],At.prototype,"variant",void 0),At=e([de("matter-binding-card")],At);let It=class extends se{constructor(){super(...arguments),this.entries=null,this.nodes=[],this.loading=!1}render(){return j`
       <div class="device-section">
         <div class="section-header">
           <span>Access Control (ACL)</span>
@@ -1536,8 +1536,8 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       <div class="acl-list">
         ${this.entries.map((e,t)=>this._renderEntry(e,t))}
       </div>
-    `}_renderEntry(e,t){const i=e.subjects.map(e=>{const t=this.nodes.find(t=>t.node_id===e);return t?`${t.name} (${e})`:`Node ${e}`}),o=e.targets&&e.targets.length>0?e.targets.map(e=>{const t=[];if(null!==e.cluster){const i=Ve[e.cluster]||`0x${e.cluster.toString(16).padStart(4,"0")}`;t.push(i)}return null!==e.endpoint&&t.push(`EP ${e.endpoint}`),null!==e.device_type&&t.push(`DT ${e.device_type}`),t.join(", ")}):["All resources"],n=["acl-entry",5===e.privilege?"acl-admin":"",3===e.privilege?"acl-operate":""].filter(Boolean).join(" ");return j`
-      <div class=${n}>
+    `}_renderEntry(e,t){const i=e.subjects.map(e=>{const t=this.nodes.find(t=>t.node_id===e);return t?`${t.name} (${e})`:`Node ${e}`}),o=e.targets&&e.targets.length>0?e.targets.map(e=>{const t=[];if(null!==e.cluster){const i=Ue[e.cluster]||`0x${e.cluster.toString(16).padStart(4,"0")}`;t.push(i)}return null!==e.endpoint&&t.push(`EP ${e.endpoint}`),null!==e.device_type&&t.push(`DT ${e.device_type}`),t.join(", ")}):["All resources"],r=["acl-entry",5===e.privilege?"acl-admin":"",3===e.privilege?"acl-operate":""].filter(Boolean).join(" ");return j`
+      <div class=${r}>
         <div class="acl-entry-header">
           <span class="acl-index">#${t+1}</span>
           <span class="acl-privilege ${e.privilege_name.toLowerCase()}"
@@ -1558,7 +1558,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
       </div>
-    `}_handleLoadClick(){this.dispatchEvent(new CustomEvent("load-acl",{detail:{nodeId:this.node.node_id},bubbles:!0,composed:!0}))}};zt.styles=[mt,_t,xt,wt,s`
+    `}_handleLoadClick(){this.dispatchEvent(new CustomEvent("load-acl",{detail:{nodeId:this.node.node_id},bubbles:!0,composed:!0}))}};It.styles=[bt,ft,wt,Ct,s`
       :host {
         display: block;
       }
@@ -1662,7 +1662,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       .acl-value {
         color: var(--primary-text-color);
       }
-    `],e([pe({attribute:!1})],zt.prototype,"node",void 0),e([pe({attribute:!1})],zt.prototype,"entries",void 0),e([pe({attribute:!1})],zt.prototype,"nodes",void 0),e([pe({type:Boolean})],zt.prototype,"loading",void 0),zt=e([de("matter-acl-section")],zt);const At=s`
+    `],e([pe({attribute:!1})],It.prototype,"node",void 0),e([pe({attribute:!1})],It.prototype,"entries",void 0),e([pe({attribute:!1})],It.prototype,"nodes",void 0),e([pe({type:Boolean})],It.prototype,"loading",void 0),It=e([de("matter-acl-section")],It);const Pt=s`
   .dialog-overlay {
     position: fixed;
     top: 0;
@@ -1727,7 +1727,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     font-size: 13px;
     color: var(--primary-text-color);
   }
-`,Pt=s`
+`,Tt=s`
   .confirm-dialog {
     max-width: 480px;
   }
@@ -1783,7 +1783,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
   .confirm-details dd:last-child {
     margin-bottom: 0;
   }
-`,It=s`
+`,Nt=s`
   .wizard-dialog {
     min-width: 500px;
     max-width: 600px;
@@ -1885,7 +1885,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       transform: translateY(0);
     }
   }
-`,Tt=s`
+`,Dt=s`
   .privilege-selector {
     display: flex;
     flex-direction: column;
@@ -1945,7 +1945,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     background: var(--success-color, #4caf50);
     color: white;
   }
-`,Nt=[At,Pt,s`
+`,Rt=[Pt,Tt,s`
   .verification-loading {
     display: flex;
     flex-direction: column;
@@ -2035,7 +2035,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
   .verification-help li {
     margin-bottom: 4px;
   }
-`,It,Tt,s`
+`,Nt,Dt,s`
   .operation-progress-dialog {
     min-width: 360px;
     text-align: center;
@@ -2067,7 +2067,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     font-size: 13px;
     color: var(--secondary-text-color);
   }
-`];let Dt=class extends se{constructor(){super(...arguments),this.open=!1,this.sourceNode=null,this.sourceEndpoint=null,this.availableNodes=[],this.selectedTargetNodeId=null,this.selectedTargetEndpointId=null,this.loading=!1,this.availableGroups=[],this._selectedClusterId=null,this._targetType="device",this._selectedGroupId=null}render(){return this.open?j`
+`],Bt="custom",Mt=[{id:"lights",label:"Lights",description:"On/off, brightness and color control",clusters:[6,8,Re]},{id:"outlets",label:"Outlets & switches",description:"On/off control only",clusters:[6]},{id:"covers",label:"Window coverings",description:"Blinds, shades and shutters",clusters:[258]}];function Lt(e){return e.clusters??[]}function Gt(e){if(0===e.length)return"Any type";const t=Mt.find(t=>t.clusters.length===e.length&&t.clusters.every(t=>e.includes(t)));return t?t.label:e.map(e=>qe(e)).join(", ")}let Ot=class extends se{constructor(){super(...arguments),this.open=!1,this.sourceNode=null,this.sourceEndpoint=null,this.availableNodes=[],this.selectedTargetNodeId=null,this.selectedTargetEndpointId=null,this.loading=!1,this.availableGroups=[],this._selectedClusterId=null,this._targetType="device",this._selectedGroupId=null}render(){return this.open?j`
       <div class="dialog-overlay" @click=${this._handleOverlayClick}>
         <div class="dialog" @click=${this._handleDialogClick}>
           <form @submit=${this._handleSubmit}>
@@ -2105,7 +2105,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           <option value="group">Group (groupcast)</option>
         </select>
       </div>
-    `}_renderGroupTarget(){const e=this.sourceEndpoint?.client_clusters??[];return null===this._selectedClusterId&&e.length>0&&(this._selectedClusterId=e[0]),j`
+    `}_groupClusterChoices(){const e=this.sourceEndpoint?.client_clusters??[],t=this.availableGroups.find(e=>e.group_id===this._selectedGroupId),i=t?Lt(t):[];if(0===i.length)return e;const o=e.filter(e=>i.includes(e));return o.length>0?o:i}_renderGroupTarget(){const e=this._groupClusterChoices(),t=this.availableGroups.find(e=>e.group_id===this._selectedGroupId);if(null===this._selectedClusterId&&e.length>0){const o=t?(i=Lt(t)).length>0?i[0]:null:null;this._selectedClusterId=null!==o&&e.includes(o)?o:e[0]}var i;return j`
       <div class="form-group">
         <label for="targetGroup">Target Group</label>
         <select
@@ -2134,8 +2134,11 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                 .value=${this._selectedClusterId?.toString()??""}
               >
                 ${e.map(e=>j`
-                    <option value=${e}>
-                      ${He(e)}
+                    <option
+                      value=${e}
+                      ?selected=${e===this._selectedClusterId}
+                    >
+                      ${qe(e)}
                     </option>
                   `)}
               </select>
@@ -2199,7 +2202,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           .value=${this._selectedClusterId?.toString()??""}
         >
           ${e.map(e=>j`
-              <option value=${e}>${He(e)}</option>
+              <option value=${e}>${qe(e)}</option>
             `)}
         </select>
         <div class="cluster-info">
@@ -2224,7 +2227,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           Create Binding
         </button>
       </div>
-    `}_getSelectedTargetNode(){return this.selectedTargetNodeId?this.availableNodes.find(e=>e.node_id===this.selectedTargetNodeId)??null:null}_getSelectedTargetEndpoint(){const e=this._getSelectedTargetNode();return e&&this.selectedTargetEndpointId?e.endpoints.find(e=>e.endpoint_id===this.selectedTargetEndpointId)??null:null}_getEndpointLabel(e){return e.device_types&&e.device_types.length>0?` - Device Type ${e.device_types[0].id}`:""}_getCompatibleClusters(){const e=this.sourceEndpoint?.client_clusters??[],t=this._getSelectedTargetEndpoint(),i=t?.server_clusters??[];return e.filter(e=>i.includes(e))}_handleOverlayClick(){this._handleCancel()}_handleDialogClick(e){e.stopPropagation()}_handleTargetNodeChange(e){const t=e.target,i=parseInt(t.value,10);isNaN(i)||(this._selectedClusterId=null,this.dispatchEvent(new CustomEvent("target-node-change",{detail:{nodeId:i},bubbles:!0,composed:!0})))}_handleTargetEndpointChange(e){const t=e.target,i=parseInt(t.value,10);isNaN(i)||(this._selectedClusterId=null,this.dispatchEvent(new CustomEvent("target-endpoint-change",{detail:{endpointId:i},bubbles:!0,composed:!0})))}_handleClusterChange(e){const t=e.target,i=parseInt(t.value,10);isNaN(i)||(this._selectedClusterId=i)}_handleSubmit(e){if(e.preventDefault(),"group"===this._targetType){const e=this.sourceEndpoint?.client_clusters??[],t=this._selectedClusterId??e[0];return void(null!==this._selectedGroupId&&void 0!==t&&this.dispatchEvent(new CustomEvent("create-binding",{detail:{targetGroupId:this._selectedGroupId,clusterId:t},bubbles:!0,composed:!0})))}const t=this._getCompatibleClusters(),i=this._selectedClusterId??t[0];null!==this.selectedTargetNodeId&&null!==this.selectedTargetEndpointId&&void 0!==i&&this.dispatchEvent(new CustomEvent("create-binding",{detail:{targetNodeId:this.selectedTargetNodeId,targetEndpointId:this.selectedTargetEndpointId,clusterId:i},bubbles:!0,composed:!0}))}_handleTargetTypeChange(e){this._targetType=e.target.value,this._selectedClusterId=null}_handleTargetGroupChange(e){const t=parseInt(e.target.value,10);isNaN(t)||(this._selectedGroupId=t)}_handleCancel(){this.dispatchEvent(new CustomEvent("cancel",{bubbles:!0,composed:!0}))}};Dt.styles=[mt,_t,bt,At,s`
+    `}_getSelectedTargetNode(){return this.selectedTargetNodeId?this.availableNodes.find(e=>e.node_id===this.selectedTargetNodeId)??null:null}_getSelectedTargetEndpoint(){const e=this._getSelectedTargetNode();return e&&this.selectedTargetEndpointId?e.endpoints.find(e=>e.endpoint_id===this.selectedTargetEndpointId)??null:null}_getEndpointLabel(e){return e.device_types&&e.device_types.length>0?` - Device Type ${e.device_types[0].id}`:""}_getCompatibleClusters(){const e=this.sourceEndpoint?.client_clusters??[],t=this._getSelectedTargetEndpoint(),i=t?.server_clusters??[];return e.filter(e=>i.includes(e))}_handleOverlayClick(){this._handleCancel()}_handleDialogClick(e){e.stopPropagation()}_handleTargetNodeChange(e){const t=e.target,i=parseInt(t.value,10);isNaN(i)||(this._selectedClusterId=null,this.dispatchEvent(new CustomEvent("target-node-change",{detail:{nodeId:i},bubbles:!0,composed:!0})))}_handleTargetEndpointChange(e){const t=e.target,i=parseInt(t.value,10);isNaN(i)||(this._selectedClusterId=null,this.dispatchEvent(new CustomEvent("target-endpoint-change",{detail:{endpointId:i},bubbles:!0,composed:!0})))}_handleClusterChange(e){const t=e.target,i=parseInt(t.value,10);isNaN(i)||(this._selectedClusterId=i)}_handleSubmit(e){if(e.preventDefault(),"group"===this._targetType){const e=this._selectedClusterId??this._groupClusterChoices()[0];return void(null!==this._selectedGroupId&&void 0!==e&&this.dispatchEvent(new CustomEvent("create-binding",{detail:{targetGroupId:this._selectedGroupId,clusterId:e},bubbles:!0,composed:!0})))}const t=this._getCompatibleClusters(),i=this._selectedClusterId??t[0];null!==this.selectedTargetNodeId&&null!==this.selectedTargetEndpointId&&void 0!==i&&this.dispatchEvent(new CustomEvent("create-binding",{detail:{targetNodeId:this.selectedTargetNodeId,targetEndpointId:this.selectedTargetEndpointId,clusterId:i},bubbles:!0,composed:!0}))}_handleTargetTypeChange(e){this._targetType=e.target.value,this._selectedClusterId=null}_handleTargetGroupChange(e){const t=parseInt(e.target.value,10);isNaN(t)||(this._selectedGroupId=t,this._selectedClusterId=null)}_handleCancel(){this.dispatchEvent(new CustomEvent("cancel",{bubbles:!0,composed:!0}))}};Ot.styles=[bt,ft,yt,Pt,s`
       :host {
         display: contents;
       }
@@ -2299,74 +2302,131 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         justify-content: flex-end;
         gap: 8px;
       }
-    `],e([pe({type:Boolean})],Dt.prototype,"open",void 0),e([pe({attribute:!1})],Dt.prototype,"sourceNode",void 0),e([pe({attribute:!1})],Dt.prototype,"sourceEndpoint",void 0),e([pe({attribute:!1})],Dt.prototype,"availableNodes",void 0),e([pe({type:Number})],Dt.prototype,"selectedTargetNodeId",void 0),e([pe({type:Number})],Dt.prototype,"selectedTargetEndpointId",void 0),e([pe({type:Boolean})],Dt.prototype,"loading",void 0),e([pe({attribute:!1})],Dt.prototype,"availableGroups",void 0),e([ge()],Dt.prototype,"_selectedClusterId",void 0),e([ge()],Dt.prototype,"_targetType",void 0),e([ge()],Dt.prototype,"_selectedGroupId",void 0),Dt=e([de("matter-create-binding-dialog")],Dt);let Rt=class extends se{constructor(){super(...arguments),this.open=!1,this.loading=!1,this._name="",this._error="",this._advanced=!1,this._groupId=""}render(){return this.open?j`
+    `],e([pe({type:Boolean})],Ot.prototype,"open",void 0),e([pe({attribute:!1})],Ot.prototype,"sourceNode",void 0),e([pe({attribute:!1})],Ot.prototype,"sourceEndpoint",void 0),e([pe({attribute:!1})],Ot.prototype,"availableNodes",void 0),e([pe({type:Number})],Ot.prototype,"selectedTargetNodeId",void 0),e([pe({type:Number})],Ot.prototype,"selectedTargetEndpointId",void 0),e([pe({type:Boolean})],Ot.prototype,"loading",void 0),e([pe({attribute:!1})],Ot.prototype,"availableGroups",void 0),e([ge()],Ot.prototype,"_selectedClusterId",void 0),e([ge()],Ot.prototype,"_targetType",void 0),e([ge()],Ot.prototype,"_selectedGroupId",void 0),Ot=e([de("matter-create-binding-dialog")],Ot);const Wt=[6,8,768,258,513].filter(e=>e in Ue);let jt=class extends se{constructor(){super(...arguments),this.open=!1,this.loading=!1,this._step=1,this._categoryId="",this._customCluster="",this._name="",this._error="",this._advanced=!1,this._groupId=""}render(){return this.open?j`
       <div class="dialog-overlay" @click=${this._handleCancel}>
         <div class="dialog" @click=${this._stop}>
           <div class="dialog-header">Create Group</div>
           <div class="dialog-body">
-            <div class="field">
-              <label for="group-name">Name</label>
-              <input
-                id="group-name"
-                type="text"
-                .value=${this._name}
-                @input=${this._onName}
-                ?disabled=${this.loading}
-                placeholder="e.g. Living Room Lights"
-              />
-            </div>
-            <label class="advanced-toggle">
-              <input
-                type="checkbox"
-                .checked=${this._advanced}
-                @change=${this._onAdvancedToggle}
-                ?disabled=${this.loading}
-              />
-              Advanced: set group ID manually
-            </label>
-            ${this._advanced?j`
-                  <div class="field">
-                    <label for="group-id">Group ID</label>
-                    <input
-                      id="group-id"
-                      type="number"
-                      min="1"
-                      max="65527"
-                      .value=${this._groupId}
-                      @input=${this._onGroupId}
-                      ?disabled=${this.loading}
-                      placeholder="e.g. 100"
-                    />
-                    <div class="note">
-                      Leave Advanced off to let Home Assistant pick a free ID
-                      automatically. Only set this if you need to match a specific
-                      Matter group ID (1–65527); it must not already be in use.
-                    </div>
-                  </div>
-                `:U}
+            ${1===this._step?this._renderStep1():this._renderStep2()}
             ${this._error?j`<div class="error">${this._error}</div>`:U}
           </div>
           <div class="dialog-actions">
             <button
               type="button"
               class="btn btn-secondary"
-              @click=${this._handleCancel}
+              @click=${1===this._step?this._handleCancel:this._back}
               ?disabled=${this.loading}
             >
-              Cancel
+              ${1===this._step?"Cancel":"Back"}
             </button>
-            <button
-              type="button"
-              class="btn btn-primary ${this.loading?"btn-loading":""}"
-              @click=${this._handleCreate}
-              ?disabled=${this.loading}
-            >
-              Create
-            </button>
+            ${1===this._step?j`
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    @click=${this._next}
+                  >
+                    Next
+                  </button>
+                `:j`
+                  <button
+                    type="button"
+                    class="btn btn-primary ${this.loading?"btn-loading":""}"
+                    @click=${this._handleCreate}
+                    ?disabled=${this.loading}
+                  >
+                    Create
+                  </button>
+                `}
           </div>
         </div>
       </div>
-    `:U}_stop(e){e.stopPropagation()}_onName(e){this._name=e.target.value,this._error=""}_onAdvancedToggle(e){this._advanced=e.target.checked,this._error=""}_onGroupId(e){this._groupId=e.target.value,this._error=""}_handleCreate(){if(!this._name.trim())return void(this._error="Name is required.");const e={name:this._name.trim()};if(this._advanced&&""!==this._groupId.trim()){const t=parseInt(this._groupId,10);if(!Number.isInteger(t)||t<1||t>65527)return void(this._error="Group ID must be a whole number between 1 and 65527.");e.groupId=t}this.dispatchEvent(new CustomEvent("create-group",{detail:e,bubbles:!0,composed:!0}))}_handleCancel(){this._name="",this._groupId="",this._advanced=!1,this._error="",this.dispatchEvent(new CustomEvent("cancel",{bubbles:!0,composed:!0}))}};Rt.styles=[mt,_t,At,s`
+    `:U}_renderStep1(){return j`
+      <div class="field">
+        <label>What will this group control?</label>
+        <div class="category-list">
+          ${Mt.map(e=>j`
+              <button
+                type="button"
+                class="category-card ${this._categoryId===e.id?"selected":""}"
+                @click=${()=>this._selectCategory(e)}
+              >
+                <div class="category-label">${e.label}</div>
+                <div class="category-desc">${e.description}</div>
+              </button>
+            `)}
+          <button
+            type="button"
+            class="category-card ${this._categoryId===Bt?"selected":""}"
+            @click=${this._selectCustom}
+          >
+            <div class="category-label">Custom</div>
+            <div class="category-desc">Pick a single cluster manually</div>
+          </button>
+        </div>
+        ${this._categoryId===Bt?j`
+              <div class="field" style="margin-top: 12px;">
+                <label for="custom-cluster">Cluster</label>
+                <select
+                  id="custom-cluster"
+                  .value=${this._customCluster}
+                  @change=${this._onCustomCluster}
+                >
+                  <option value="">Select a cluster…</option>
+                  ${Wt.map(e=>j`
+                      <option
+                        value=${e}
+                        ?selected=${this._customCluster===String(e)}
+                      >
+                        ${qe(e)} (0x${e.toString(16).padStart(4,"0")})
+                      </option>
+                    `)}
+                </select>
+              </div>
+            `:U}
+      </div>
+    `}_renderStep2(){const e=this._selectedClusters(),t=this._categoryId===Bt?qe(e[0]):Mt.find(e=>e.id===this._categoryId)?.label??"";return j`
+      <div class="step-summary">Type: ${t}</div>
+      <div class="field">
+        <label for="group-name">Name</label>
+        <input
+          id="group-name"
+          type="text"
+          .value=${this._name}
+          @input=${this._onName}
+          ?disabled=${this.loading}
+          placeholder="e.g. Living Room Lights"
+        />
+      </div>
+      <label class="advanced-toggle">
+        <input
+          type="checkbox"
+          .checked=${this._advanced}
+          @change=${this._onAdvancedToggle}
+          ?disabled=${this.loading}
+        />
+        Advanced: set group ID manually
+      </label>
+      ${this._advanced?j`
+            <div class="field">
+              <label for="group-id">Group ID</label>
+              <input
+                id="group-id"
+                type="number"
+                min="1"
+                max="65527"
+                .value=${this._groupId}
+                @input=${this._onGroupId}
+                ?disabled=${this.loading}
+                placeholder="e.g. 100"
+              />
+              <div class="note">
+                Leave Advanced off to let Home Assistant pick a free ID
+                automatically. Only set this if you need to match a specific
+                Matter group ID (1–65527); it must not already be in use.
+              </div>
+            </div>
+          `:U}
+    `}_selectedClusters(){if(this._categoryId===Bt){const e=parseInt(this._customCluster,10);return Number.isInteger(e)?[e]:[]}const e=Mt.find(e=>e.id===this._categoryId);return e?[...e.clusters]:[]}_stop(e){e.stopPropagation()}_selectCategory(e){this._categoryId=e.id,this._error=""}_selectCustom(){this._categoryId=Bt,this._error=""}_onCustomCluster(e){this._customCluster=e.target.value,this._error=""}_next(){this._categoryId?this._categoryId!==Bt||0!==this._selectedClusters().length?(this._error="",this._step=2):this._error="Select a cluster for the custom group.":this._error="Pick what this group will control."}_back(){this._error="",this._step=1}_onName(e){this._name=e.target.value,this._error=""}_onAdvancedToggle(e){this._advanced=e.target.checked,this._error=""}_onGroupId(e){this._groupId=e.target.value,this._error=""}_handleCreate(){if(!this._name.trim())return void(this._error="Name is required.");const e=this._selectedClusters(),t={name:this._name.trim(),clusters:e};if(this._advanced&&""!==this._groupId.trim()){const e=parseInt(this._groupId,10);if(!Number.isInteger(e)||e<1||e>65527)return void(this._error="Group ID must be a whole number between 1 and 65527.");t.groupId=e}this.dispatchEvent(new CustomEvent("create-group",{detail:t,bubbles:!0,composed:!0}))}_handleCancel(){this._reset(),this.dispatchEvent(new CustomEvent("cancel",{bubbles:!0,composed:!0}))}_reset(){this._step=1,this._categoryId="",this._customCluster="",this._name="",this._groupId="",this._advanced=!1,this._error=""}};jt.styles=[bt,ft,Pt,s`
       :host {
         display: contents;
       }
@@ -2380,7 +2440,8 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         margin-bottom: 4px;
         color: var(--primary-text-color);
       }
-      input {
+      input,
+      select {
         width: 100%;
         box-sizing: border-box;
         padding: 8px;
@@ -2412,11 +2473,51 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         margin-top: 6px;
         line-height: 1.4;
       }
-    `],e([pe({type:Boolean})],Rt.prototype,"open",void 0),e([pe({type:Boolean})],Rt.prototype,"loading",void 0),e([ge()],Rt.prototype,"_name",void 0),e([ge()],Rt.prototype,"_error",void 0),e([ge()],Rt.prototype,"_advanced",void 0),e([ge()],Rt.prototype,"_groupId",void 0),Rt=e([de("matter-create-group-dialog")],Rt);let Bt=class extends se{constructor(){super(...arguments),this.open=!1,this.group=null,this.availableNodes=[],this.loading=!1,this._selectedNodeId=null,this._selectedEndpointId=null}render(){if(!this.open||!this.group)return U;const e=this.group;return j`
+      .category-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .category-card {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 12px 14px;
+        border: 1px solid var(--divider-color, #e0e0e0);
+        border-radius: 8px;
+        background: var(--card-background-color);
+        color: var(--primary-text-color);
+        cursor: pointer;
+        transition: border-color 0.15s, background 0.15s;
+      }
+      .category-card:hover {
+        background: var(--secondary-background-color);
+      }
+      .category-card.selected {
+        border-color: var(--primary-color, #03a9f4);
+      }
+      .category-label {
+        font-weight: 500;
+        margin-bottom: 2px;
+      }
+      .category-desc {
+        font-size: 12px;
+        color: var(--secondary-text-color);
+      }
+      .step-summary {
+        font-size: 12px;
+        color: var(--secondary-text-color);
+        margin-bottom: 12px;
+      }
+    `],e([pe({type:Boolean})],jt.prototype,"open",void 0),e([pe({type:Boolean})],jt.prototype,"loading",void 0),e([ge()],jt.prototype,"_step",void 0),e([ge()],jt.prototype,"_categoryId",void 0),e([ge()],jt.prototype,"_customCluster",void 0),e([ge()],jt.prototype,"_name",void 0),e([ge()],jt.prototype,"_error",void 0),e([ge()],jt.prototype,"_advanced",void 0),e([ge()],jt.prototype,"_groupId",void 0),jt=e([de("matter-create-group-dialog")],jt);let Vt=class extends se{constructor(){super(...arguments),this.open=!1,this.group=null,this.availableNodes=[],this.loading=!1,this._selectedNodeId=null,this._selectedEndpointId=null}render(){if(!this.open||!this.group)return U;const e=this.group;return j`
       <div class="dialog-overlay" @click=${this._handleClose}>
         <div class="dialog" @click=${this._stop}>
           <div class="dialog-header">
-            ${e.name} <span class="source-info">Group ${e.group_id}</span>
+            ${e.name}
+            <span class="source-info">
+              Group ${e.group_id} ·
+              ${Gt(Lt(e))}
+            </span>
           </div>
           <div class="dialog-body">
             <div class="section-title">Members</div>
@@ -2437,9 +2538,9 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
       </div>
-    `}_endpointLabel(e){const t=e.device_types?.[0]?.id,i=void 0!==t?qe(t):null;return i?`EP ${e.endpoint_id} — ${i}`:`EP ${e.endpoint_id}`}_renderMember(e,t){const i=this.availableNodes.find(t=>t.node_id===e),o=i?.name??`Node ${e}`,n=i?.endpoints.find(e=>e.endpoint_id===t),r=n?this._endpointLabel(n):`EP ${t}`;return j`
+    `}_endpointLabel(e){const t=e.device_types?.[0]?.id,i=void 0!==t?Je(t):null;return i?`EP ${e.endpoint_id} — ${i}`:`EP ${e.endpoint_id}`}_renderMember(e,t){const i=this.availableNodes.find(t=>t.node_id===e),o=i?.name??`Node ${e}`,r=i?.endpoints.find(e=>e.endpoint_id===t),n=r?this._endpointLabel(r):`EP ${t}`;return j`
       <div class="member-row">
-        <span class="member-label">${o} — ${r}</span>
+        <span class="member-label">${o} — ${n}</span>
         <button
           type="button"
           class="btn btn-secondary"
@@ -2449,7 +2550,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           Remove
         </button>
       </div>
-    `}_renderAddRow(){const e=this.availableNodes.find(e=>e.node_id===this._selectedNodeId),t=(e?.endpoints??[]).filter(e=>0!==e.endpoint_id);return j`
+    `}_renderAddRow(){const e=this.availableNodes.find(e=>e.node_id===this._selectedNodeId),t=this.group?Lt(this.group):[],i=(e?.endpoints??[]).filter(e=>0!==e.endpoint_id),o=i.filter(e=>function(e,t){return 0===t.length||t.some(t=>e.server_clusters.includes(t))}(e,t)),r=i.length-o.length;return j`
       <div class="add-row">
         <div class="add-field">
           <label for="add-node">Device</label>
@@ -2478,7 +2579,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
             <option value="" ?selected=${null===this._selectedEndpointId}>
               Select…
             </option>
-            ${t.map(e=>j`
+            ${o.map(e=>j`
                 <option
                   value=${e.endpoint_id}
                   ?selected=${e.endpoint_id===this._selectedEndpointId}
@@ -2497,7 +2598,11 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           Add
         </button>
       </div>
-    `}_isAlreadyMember(){return!(!this.group||null===this._selectedNodeId||null===this._selectedEndpointId)&&this.group.members.some(e=>e.node_id===this._selectedNodeId&&e.endpoint_id===this._selectedEndpointId)}_stop(e){e.stopPropagation()}_onNodeChange(e){const t=e.target.value;this._selectedNodeId=""===t?null:parseInt(t,10),this._selectedEndpointId=null}_onEndpointChange(e){const t=e.target.value;this._selectedEndpointId=""===t?null:parseInt(t,10)}_addMember(){null!==this._selectedNodeId&&null!==this._selectedEndpointId&&this.dispatchEvent(new CustomEvent("add-member",{detail:{nodeId:this._selectedNodeId,endpointId:this._selectedEndpointId},bubbles:!0,composed:!0}))}_removeMember(e,t){this.dispatchEvent(new CustomEvent("remove-member",{detail:{nodeId:e,endpointId:t},bubbles:!0,composed:!0}))}_handleClose(){this._selectedNodeId=null,this._selectedEndpointId=null,this.dispatchEvent(new CustomEvent("close",{bubbles:!0,composed:!0}))}};Bt.styles=[mt,_t,At,s`
+      ${null!==this._selectedNodeId&&r>0?j`<div class="empty">
+            ${r} endpoint(s) hidden — they don't support this group's
+            clusters (${Gt(t)}).
+          </div>`:U}
+    `}_isAlreadyMember(){return!(!this.group||null===this._selectedNodeId||null===this._selectedEndpointId)&&this.group.members.some(e=>e.node_id===this._selectedNodeId&&e.endpoint_id===this._selectedEndpointId)}_stop(e){e.stopPropagation()}_onNodeChange(e){const t=e.target.value;this._selectedNodeId=""===t?null:parseInt(t,10),this._selectedEndpointId=null}_onEndpointChange(e){const t=e.target.value;this._selectedEndpointId=""===t?null:parseInt(t,10)}_addMember(){null!==this._selectedNodeId&&null!==this._selectedEndpointId&&this.dispatchEvent(new CustomEvent("add-member",{detail:{nodeId:this._selectedNodeId,endpointId:this._selectedEndpointId},bubbles:!0,composed:!0}))}_removeMember(e,t){this.dispatchEvent(new CustomEvent("remove-member",{detail:{nodeId:e,endpointId:t},bubbles:!0,composed:!0}))}_handleClose(){this._selectedNodeId=null,this._selectedEndpointId=null,this.dispatchEvent(new CustomEvent("close",{bubbles:!0,composed:!0}))}};Vt.styles=[bt,ft,Pt,s`
       :host {
         display: contents;
       }
@@ -2549,7 +2654,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         color: var(--primary-text-color);
         font-size: 14px;
       }
-    `],e([pe({type:Boolean})],Bt.prototype,"open",void 0),e([pe({attribute:!1})],Bt.prototype,"group",void 0),e([pe({attribute:!1})],Bt.prototype,"availableNodes",void 0),e([pe({type:Boolean})],Bt.prototype,"loading",void 0),e([ge()],Bt.prototype,"_selectedNodeId",void 0),e([ge()],Bt.prototype,"_selectedEndpointId",void 0),Bt=e([de("matter-manage-group-dialog")],Bt);let Mt=class extends se{constructor(){super(...arguments),this.open=!1,this.title="Confirm",this.message="",this.icon="",this.variant="info",this.confirmLabel="Confirm",this.cancelLabel="Cancel",this.loading=!1}render(){if(!this.open)return U;const e=["dialog","confirm-dialog",`variant-${this.variant}`].join(" ");return j`
+    `],e([pe({type:Boolean})],Vt.prototype,"open",void 0),e([pe({attribute:!1})],Vt.prototype,"group",void 0),e([pe({attribute:!1})],Vt.prototype,"availableNodes",void 0),e([pe({type:Boolean})],Vt.prototype,"loading",void 0),e([ge()],Vt.prototype,"_selectedNodeId",void 0),e([ge()],Vt.prototype,"_selectedEndpointId",void 0),Vt=e([de("matter-manage-group-dialog")],Vt);let Ut=class extends se{constructor(){super(...arguments),this.open=!1,this.title="Confirm",this.message="",this.icon="",this.variant="info",this.confirmLabel="Confirm",this.cancelLabel="Cancel",this.loading=!1}render(){if(!this.open)return U;const e=["dialog","confirm-dialog",`variant-${this.variant}`].join(" ");return j`
       <div class="dialog-overlay" @click=${this._handleOverlayClick}>
         <div class=${e} @click=${this._handleDialogClick}>
           <div class="dialog-header">
@@ -2583,7 +2688,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
       </div>
-    `}_handleOverlayClick(){this._handleCancel()}_handleDialogClick(e){e.stopPropagation()}_handleConfirm(){this.dispatchEvent(new CustomEvent("confirm",{bubbles:!0,composed:!0}))}_handleCancel(){this.dispatchEvent(new CustomEvent("cancel",{bubbles:!0,composed:!0}))}};Mt.styles=[mt,_t,At,Pt,s`
+    `}_handleOverlayClick(){this._handleCancel()}_handleDialogClick(e){e.stopPropagation()}_handleConfirm(){this.dispatchEvent(new CustomEvent("confirm",{bubbles:!0,composed:!0}))}_handleCancel(){this.dispatchEvent(new CustomEvent("cancel",{bubbles:!0,composed:!0}))}};Ut.styles=[bt,ft,Pt,Tt,s`
       :host {
         display: contents;
       }
@@ -2613,7 +2718,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         line-height: 1.5;
         color: var(--primary-text-color);
       }
-    `],e([pe({type:Boolean})],Mt.prototype,"open",void 0),e([pe({type:String})],Mt.prototype,"title",void 0),e([pe({type:String})],Mt.prototype,"message",void 0),e([pe({type:String})],Mt.prototype,"icon",void 0),e([pe({type:String})],Mt.prototype,"variant",void 0),e([pe({type:String})],Mt.prototype,"confirmLabel",void 0),e([pe({type:String})],Mt.prototype,"cancelLabel",void 0),e([pe({type:Boolean})],Mt.prototype,"loading",void 0),Mt=e([de("matter-confirm-dialog")],Mt);const Lt=s`
+    `],e([pe({type:Boolean})],Ut.prototype,"open",void 0),e([pe({type:String})],Ut.prototype,"title",void 0),e([pe({type:String})],Ut.prototype,"message",void 0),e([pe({type:String})],Ut.prototype,"icon",void 0),e([pe({type:String})],Ut.prototype,"variant",void 0),e([pe({type:String})],Ut.prototype,"confirmLabel",void 0),e([pe({type:String})],Ut.prototype,"cancelLabel",void 0),e([pe({type:Boolean})],Ut.prototype,"loading",void 0),Ut=e([de("matter-confirm-dialog")],Ut);const Ft=s`
   .dialog-overlay.blocking {
     pointer-events: auto;
   }
@@ -2679,7 +2784,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     border-radius: 4px;
     margin-top: 16px;
   }
-`,Gt=[s`
+`,Ht=[s`
   .eve-schedule {
     margin-top: 12px;
     padding: 12px;
@@ -3026,7 +3131,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
   .verification-dismiss:hover {
     opacity: 1;
   }
-`,Lt,s`
+`,Ft,s`
   .btn-repair {
     background: rgba(255, 152, 0, 0.15);
     color: var(--warning-color, #ff9800);
@@ -3063,7 +3168,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       opacity: 0.5;
     }
   }
-`];let Ot=class extends se{constructor(){super(...arguments),this.progress=null,this.open=!1}render(){if(!this.open||!this.progress)return U;const{title:e,steps:t,completed:i,error:o,canCancel:n}=this.progress;return j`
+`];let qt=class extends se{constructor(){super(...arguments),this.progress=null,this.open=!1}render(){if(!this.open||!this.progress)return U;const{title:e,steps:t,completed:i,error:o,canCancel:r}=this.progress;return j`
       <div class="dialog-overlay blocking">
         <div class="dialog operation-progress-dialog" @click=${e=>e.stopPropagation()}>
           <div class="dialog-header">${e}</div>
@@ -3083,11 +3188,11 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
             ${i?U:j`<div class="operation-hint">Communicating with Matter device...</div>`}
           </div>
           <div class="dialog-actions">
-            ${i?j`<button class="btn btn-primary" @click=${this._handleClose}>Done</button>`:n?j`<button class="btn btn-secondary" @click=${this._handleCancel}>Cancel</button>`:U}
+            ${i?j`<button class="btn btn-primary" @click=${this._handleClose}>Done</button>`:r?j`<button class="btn btn-secondary" @click=${this._handleCancel}>Cancel</button>`:U}
           </div>
         </div>
       </div>
-    `}_handleClose(){this.dispatchEvent(new CustomEvent("close",{bubbles:!0,composed:!0}))}_handleCancel(){this.dispatchEvent(new CustomEvent("cancel",{bubbles:!0,composed:!0}))}};Ot.styles=[mt,Nt,Lt,s`
+    `}_handleClose(){this.dispatchEvent(new CustomEvent("close",{bubbles:!0,composed:!0}))}_handleCancel(){this.dispatchEvent(new CustomEvent("cancel",{bubbles:!0,composed:!0}))}};qt.styles=[bt,Rt,Ft,s`
       :host {
         display: block;
       }
@@ -3196,7 +3301,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         border-radius: 4px;
         margin-top: 16px;
       }
-    `],e([pe({attribute:!1})],Ot.prototype,"progress",void 0),e([pe({type:Boolean})],Ot.prototype,"open",void 0),Ot=e([de("matter-operation-progress-dialog")],Ot);let Wt=class extends se{constructor(){super(...arguments),this.open=!1,this._alias="",this._loading=!1,this._created=!1}connectedCallback(){super.connectedCallback()}updated(e){(e.has("open")||e.has("recommendation"))&&this.open&&this.recommendation&&this.hass&&this._fetchPreview(),e.has("open")&&!this.open&&this._resetState()}_resetState(){this._preview=void 0,this._triggerEntityId=void 0,this._actionEntityId=void 0,this._alias="",this._loading=!1,this._error=void 0,this._created=!1,this._createdAutomationId=void 0}async _fetchPreview(){if(this.hass&&this.recommendation){this._loading=!0,this._error=void 0;try{const{template:e,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:n}=this.recommendation,r=await dt(this.hass,{template_id:e.id,source_node_id:t.node_id,source_endpoint_id:i.endpoint_id,target_node_id:o.node_id,target_endpoint_id:n.endpoint_id,source_device_types:i.device_types.map(e=>e.id),target_device_types:n.device_types.map(e=>e.id),preview_only:!0});if(this._preview=r,r.available_entities?.trigger?.length){const e=r.available_entities.trigger.find(e=>!e.disabled);this._triggerEntityId=e?.entity_id||r.available_entities.trigger[0].entity_id}if(r.available_entities?.action?.length){const e=r.available_entities.action.find(e=>!e.disabled);this._actionEntityId=e?.entity_id||r.available_entities.action[0].entity_id}}catch(e){this._error=e instanceof Error?e.message:"Failed to load preview"}finally{this._loading=!1}}}async _handleCreate(){if(this.hass&&this.recommendation){this._loading=!0,this._error=void 0;try{const{template:e,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:n}=this.recommendation,r=await dt(this.hass,{template_id:e.id,source_node_id:t.node_id,source_endpoint_id:i.endpoint_id,target_node_id:o.node_id,target_endpoint_id:n.endpoint_id,source_device_types:i.device_types.map(e=>e.id),target_device_types:n.device_types.map(e=>e.id),trigger_entity_id:this._triggerEntityId,action_entity_id:this._actionEntityId,alias:this._alias||void 0,preview_only:!1});r.success?(this._created=!0,this._createdAutomationId=r.automation_id,this.dispatchEvent(new CustomEvent("created",{detail:{automation_id:r.automation_id},bubbles:!0,composed:!0}))):this._error=r.message||"Failed to create automation"}catch(e){this._error=e instanceof Error?e.message:"Failed to create automation"}finally{this._loading=!1}}}_handleClose(){this.dispatchEvent(new CustomEvent("close",{bubbles:!0,composed:!0}))}_handleOverlayClick(){this._loading||this._handleClose()}_handleDialogClick(e){e.stopPropagation()}_formatYaml(e){const t=(e,i)=>{const o="  ".repeat(i);return Array.isArray(e)?e.map(e=>{if("object"==typeof e&&null!==e){const i=Object.entries(e).map(([e,i],n)=>`${o}${0===n?"- ":"  "}${e}: ${t(i,0)}`).join("\n");return i}return`${o}- ${e}`}).join("\n"):"object"==typeof e&&null!==e?"\n"+Object.entries(e).map(([e,n])=>`${o}  ${e}: ${t(n,i+1)}`).join("\n"):"string"==typeof e&&e.includes("{{")?`"${e}"`:String(e)};return Object.entries(e).map(([e,i])=>`${e}: ${t(i,0)}`).join("\n")}render(){return this.open?j`
+    `],e([pe({attribute:!1})],qt.prototype,"progress",void 0),e([pe({type:Boolean})],qt.prototype,"open",void 0),qt=e([de("matter-operation-progress-dialog")],qt);let Jt=class extends se{constructor(){super(...arguments),this.open=!1,this._alias="",this._loading=!1,this._created=!1}connectedCallback(){super.connectedCallback()}updated(e){(e.has("open")||e.has("recommendation"))&&this.open&&this.recommendation&&this.hass&&this._fetchPreview(),e.has("open")&&!this.open&&this._resetState()}_resetState(){this._preview=void 0,this._triggerEntityId=void 0,this._actionEntityId=void 0,this._alias="",this._loading=!1,this._error=void 0,this._created=!1,this._createdAutomationId=void 0}async _fetchPreview(){if(this.hass&&this.recommendation){this._loading=!0,this._error=void 0;try{const{template:e,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:r}=this.recommendation,n=await ct(this.hass,{template_id:e.id,source_node_id:t.node_id,source_endpoint_id:i.endpoint_id,target_node_id:o.node_id,target_endpoint_id:r.endpoint_id,source_device_types:i.device_types.map(e=>e.id),target_device_types:r.device_types.map(e=>e.id),preview_only:!0});if(this._preview=n,n.available_entities?.trigger?.length){const e=n.available_entities.trigger.find(e=>!e.disabled);this._triggerEntityId=e?.entity_id||n.available_entities.trigger[0].entity_id}if(n.available_entities?.action?.length){const e=n.available_entities.action.find(e=>!e.disabled);this._actionEntityId=e?.entity_id||n.available_entities.action[0].entity_id}}catch(e){this._error=e instanceof Error?e.message:"Failed to load preview"}finally{this._loading=!1}}}async _handleCreate(){if(this.hass&&this.recommendation){this._loading=!0,this._error=void 0;try{const{template:e,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:r}=this.recommendation,n=await ct(this.hass,{template_id:e.id,source_node_id:t.node_id,source_endpoint_id:i.endpoint_id,target_node_id:o.node_id,target_endpoint_id:r.endpoint_id,source_device_types:i.device_types.map(e=>e.id),target_device_types:r.device_types.map(e=>e.id),trigger_entity_id:this._triggerEntityId,action_entity_id:this._actionEntityId,alias:this._alias||void 0,preview_only:!1});n.success?(this._created=!0,this._createdAutomationId=n.automation_id,this.dispatchEvent(new CustomEvent("created",{detail:{automation_id:n.automation_id},bubbles:!0,composed:!0}))):this._error=n.message||"Failed to create automation"}catch(e){this._error=e instanceof Error?e.message:"Failed to create automation"}finally{this._loading=!1}}}_handleClose(){this.dispatchEvent(new CustomEvent("close",{bubbles:!0,composed:!0}))}_handleOverlayClick(){this._loading||this._handleClose()}_handleDialogClick(e){e.stopPropagation()}_formatYaml(e){const t=(e,i)=>{const o="  ".repeat(i);return Array.isArray(e)?e.map(e=>{if("object"==typeof e&&null!==e){const i=Object.entries(e).map(([e,i],r)=>`${o}${0===r?"- ":"  "}${e}: ${t(i,0)}`).join("\n");return i}return`${o}- ${e}`}).join("\n"):"object"==typeof e&&null!==e?"\n"+Object.entries(e).map(([e,r])=>`${o}  ${e}: ${t(r,i+1)}`).join("\n"):"string"==typeof e&&e.includes("{{")?`"${e}"`:String(e)};return Object.entries(e).map(([e,i])=>`${e}: ${t(i,0)}`).join("\n")}render(){return this.open?j`
       <div class="dialog-overlay" @click=${this._handleOverlayClick}>
         <div class="dialog automation-dialog" @click=${this._handleDialogClick}>
           ${this._created?this._renderSuccess():this._renderForm()}
@@ -3346,7 +3451,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               </div>
             </div>
           `:U}
-    `}};Wt.styles=[mt,_t,At,s`
+    `}};Jt.styles=[bt,ft,Pt,s`
       :host {
         display: contents;
       }
@@ -3542,7 +3647,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         color: var(--secondary-text-color);
         font-size: 20px;
       }
-    `],e([pe({attribute:!1})],Wt.prototype,"hass",void 0),e([pe({type:Boolean})],Wt.prototype,"open",void 0),e([pe({attribute:!1})],Wt.prototype,"recommendation",void 0),e([ge()],Wt.prototype,"_preview",void 0),e([ge()],Wt.prototype,"_triggerEntityId",void 0),e([ge()],Wt.prototype,"_actionEntityId",void 0),e([ge()],Wt.prototype,"_alias",void 0),e([ge()],Wt.prototype,"_loading",void 0),e([ge()],Wt.prototype,"_error",void 0),e([ge()],Wt.prototype,"_created",void 0),e([ge()],Wt.prototype,"_createdAutomationId",void 0),Wt=e([de("matter-create-automation-dialog")],Wt);const jt=["binding","acl","verify"];let Vt=class extends se{constructor(){super(...arguments),this.open=!1,this.wizardState=null}render(){return this.open&&this.wizardState?j`
+    `],e([pe({attribute:!1})],Jt.prototype,"hass",void 0),e([pe({type:Boolean})],Jt.prototype,"open",void 0),e([pe({attribute:!1})],Jt.prototype,"recommendation",void 0),e([ge()],Jt.prototype,"_preview",void 0),e([ge()],Jt.prototype,"_triggerEntityId",void 0),e([ge()],Jt.prototype,"_actionEntityId",void 0),e([ge()],Jt.prototype,"_alias",void 0),e([ge()],Jt.prototype,"_loading",void 0),e([ge()],Jt.prototype,"_error",void 0),e([ge()],Jt.prototype,"_created",void 0),e([ge()],Jt.prototype,"_createdAutomationId",void 0),Jt=e([de("matter-create-automation-dialog")],Jt);const Kt=["binding","acl","verify"];let Yt=class extends se{constructor(){super(...arguments),this.open=!1,this.wizardState=null}render(){return this.open&&this.wizardState?j`
       <div class="dialog-overlay" @click=${this._handleOverlayClick}>
         <div class="dialog" @click=${this._handleDialogClick}>
           <div class="dialog-header">Create Binding</div>
@@ -3556,9 +3661,9 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           ${this._renderActions()}
         </div>
       </div>
-    `:U}_renderStepIndicator(){const e=this.wizardState,t=jt.indexOf(e.currentStep);return j`
+    `:U}_renderStepIndicator(){const e=this.wizardState,t=Kt.indexOf(e.currentStep);return j`
       <div class="wizard-steps">
-        ${jt.map((e,i)=>{const o=this._isStepCompleted(e,i,t);return j`
+        ${Kt.map((e,i)=>{const o=this._isStepCompleted(e,i,t);return j`
             ${i>0?j`<div class="wizard-connector ${i<=t?"completed":""}"></div>`:U}
             <div class="wizard-step ${i===t?"active":""} ${o?"completed":""}">
               <div class="wizard-step-circle">
@@ -3570,7 +3675,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
             </div>
           `})}
       </div>
-    `}_isStepCompleted(e,t,i){const o=this.wizardState;if(t<i)return!0;if(t===i)switch(e){case"binding":return!0===o.bindingResult?.success;case"acl":return!0===o.aclResult?.success;case"verify":return!0===o.verifyResult?.success}return!1}_getStepLabel(e){switch(e){case"binding":return"Create";case"acl":return"Permissions";case"verify":return"Verify"}}_renderStepContent(){switch(this.wizardState.currentStep){case"binding":return this._renderBindingStep();case"acl":return this._renderACLStep();case"verify":return this._renderVerifyStep()}}_renderBindingStep(){const e=this.wizardState,t=Je(e.clusterId);return j`
+    `}_isStepCompleted(e,t,i){const o=this.wizardState;if(t<i)return!0;if(t===i)switch(e){case"binding":return!0===o.bindingResult?.success;case"acl":return!0===o.aclResult?.success;case"verify":return!0===o.verifyResult?.success}return!1}_getStepLabel(e){switch(e){case"binding":return"Create";case"acl":return"Permissions";case"verify":return"Verify"}}_renderStepContent(){switch(this.wizardState.currentStep){case"binding":return this._renderBindingStep();case"acl":return this._renderACLStep();case"verify":return this._renderVerifyStep()}}_renderBindingStep(){const e=this.wizardState,t=Ke(e.clusterId);return j`
       <div class="wizard-step-info">
         <div class="wizard-step-title">Step 1: Create Binding</div>
         <div class="wizard-step-description">
@@ -3584,7 +3689,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           <div class="binding-device-endpoint">Endpoint ${e.sourceEndpoint.endpoint_id}</div>
         </div>
         <div class="binding-arrow-container">
-          <span class="binding-cluster-label">${He(e.clusterId)}</span>
+          <span class="binding-cluster-label">${qe(e.clusterId)}</span>
           <span class="binding-arrow-large">→</span>
         </div>
         <div class="binding-device-card target">
@@ -3612,7 +3717,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               <span class="wizard-result-message">${e.bindingResult.message}</span>
             </div>
           `:U}
-    `}_renderACLStep(){const e=this.wizardState,t=ht(e.clusterId);return j`
+    `}_renderACLStep(){const e=this.wizardState,t=mt(e.clusterId);return j`
       <div class="wizard-step-info">
         <div class="wizard-step-title">Step 2: Set Permissions</div>
         <div class="wizard-step-description">
@@ -3622,7 +3727,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       </div>
 
       <div class="privilege-selector">
-        ${vt.map(i=>j`
+        ${_t.map(i=>j`
             <div
               class="privilege-option ${e.selectedPrivilege===i.value?"selected":""}"
               @click=${()=>this._handlePrivilegeChange(i.value)}
@@ -3751,7 +3856,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
             >
               Verify Binding
             </button>
-          `}}_handleOverlayClick(){this._handleClose()}_handleDialogClick(e){e.stopPropagation()}_handleClose(){this.dispatchEvent(new CustomEvent("close",{bubbles:!0,composed:!0}))}_handleExecuteBinding(){this.dispatchEvent(new CustomEvent("execute-binding",{bubbles:!0,composed:!0}))}_handleExecuteACL(){this.dispatchEvent(new CustomEvent("execute-acl",{bubbles:!0,composed:!0}))}_handleExecuteVerify(){this.dispatchEvent(new CustomEvent("execute-verify",{bubbles:!0,composed:!0}))}_handlePrivilegeChange(e){this.dispatchEvent(new CustomEvent("privilege-change",{detail:{privilege:e},bubbles:!0,composed:!0}))}_handleStepChange(e){this.dispatchEvent(new CustomEvent("step-change",{detail:{step:e},bubbles:!0,composed:!0}))}};Vt.styles=[mt,_t,At,It,Tt,s`
+          `}}_handleOverlayClick(){this._handleClose()}_handleDialogClick(e){e.stopPropagation()}_handleClose(){this.dispatchEvent(new CustomEvent("close",{bubbles:!0,composed:!0}))}_handleExecuteBinding(){this.dispatchEvent(new CustomEvent("execute-binding",{bubbles:!0,composed:!0}))}_handleExecuteACL(){this.dispatchEvent(new CustomEvent("execute-acl",{bubbles:!0,composed:!0}))}_handleExecuteVerify(){this.dispatchEvent(new CustomEvent("execute-verify",{bubbles:!0,composed:!0}))}_handlePrivilegeChange(e){this.dispatchEvent(new CustomEvent("privilege-change",{detail:{privilege:e},bubbles:!0,composed:!0}))}_handleStepChange(e){this.dispatchEvent(new CustomEvent("step-change",{detail:{step:e},bubbles:!0,composed:!0}))}};Yt.styles=[bt,ft,Pt,Nt,Dt,s`
       :host {
         display: contents;
       }
@@ -3963,24 +4068,24 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       .acl-progress-attempt {
         font-weight: 500;
       }
-    `],e([pe({type:Boolean})],Vt.prototype,"open",void 0),e([pe({attribute:!1})],Vt.prototype,"wizardState",void 0),Vt=e([de("matter-binding-wizard")],Vt);const Ut=[29,30,31,40,42,48,49,50,51,52,53,56,60,62,63,70];let Ft=class extends se{constructor(){super(...arguments),this.endpoints=[],this.selectedEndpointId=null}render(){return j`
+    `],e([pe({type:Boolean})],Yt.prototype,"open",void 0),e([pe({attribute:!1})],Yt.prototype,"wizardState",void 0),Yt=e([de("matter-binding-wizard")],Yt);const Xt=[29,30,31,40,42,48,49,50,51,52,53,56,60,62,63,70];let Zt=class extends se{constructor(){super(...arguments),this.endpoints=[],this.selectedEndpointId=null}render(){return j`
       <div class="section-header">Endpoints</div>
       ${this.endpoints.length>0?j`
             <div class="endpoint-list">
               ${this.endpoints.map(e=>this._renderEndpointItem(e))}
             </div>
           `:j`<div class="empty-state">No endpoints found</div>`}
-    `}_renderEndpointItem(e){const t=this.selectedEndpointId===e.endpoint_id,i=e.device_types.map(e=>qe(e.id)).filter(t=>0!==e.endpoint_id||!t.includes("Root")),o=this._processClusterData(e.server_clusters||[]),n=this._processClusterData(e.client_clusters||[]),r=o.some(e=>e.isProprietary)||n.some(e=>e.isProprietary),s=["endpoint-item",t?"selected":"",e.has_binding_cluster?"":"no-binding"].filter(Boolean).join(" ");return j`
+    `}_renderEndpointItem(e){const t=this.selectedEndpointId===e.endpoint_id,i=e.device_types.map(e=>Je(e.id)).filter(t=>0!==e.endpoint_id||!t.includes("Root")),o=this._processClusterData(e.server_clusters||[]),r=this._processClusterData(e.client_clusters||[]),n=o.some(e=>e.isProprietary)||r.some(e=>e.isProprietary),s=["endpoint-item",t?"selected":"",e.has_binding_cluster?"":"no-binding"].filter(Boolean).join(" ");return j`
       <div class=${s} @click=${()=>this._handleEndpointClick(e)}>
         <div class="endpoint-header">
           <span class="endpoint-id">Endpoint ${e.endpoint_id}</span>
           ${e.has_binding_cluster?j`<span class="endpoint-badge binding">Binding</span>`:U}
-          ${r?j`<span class="endpoint-badge proprietary">Proprietary</span>`:U}
+          ${n?j`<span class="endpoint-badge proprietary">Proprietary</span>`:U}
         </div>
         ${i.length>0?j`<div class="endpoint-device-types">${i.join(", ")}</div>`:U}
-        ${this._renderClusters(o,n)}
+        ${this._renderClusters(o,r)}
       </div>
-    `}_processClusterData(e){return e.filter(e=>!Ut.includes(e)).map(e=>({id:e,name:He(e),isProprietary:$e(e)}))}_renderClusters(e,t){return 0===e.length&&0===t.length?U:j`
+    `}_processClusterData(e){return e.filter(e=>!Xt.includes(e)).map(e=>({id:e,name:qe(e),isProprietary:$e(e)}))}_renderClusters(e,t){return 0===e.length&&0===t.length?U:j`
       <div class="endpoint-clusters">
         ${e.length>0?j`
               <div class="cluster-section">
@@ -4013,7 +4118,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               </div>
             `:U}
       </div>
-    `}_handleEndpointClick(e){this.dispatchEvent(new CustomEvent("endpoint-selected",{detail:{endpoint:e},bubbles:!0,composed:!0}))}};Ft.styles=[mt,_t,ft,s`
+    `}_handleEndpointClick(e){this.dispatchEvent(new CustomEvent("endpoint-selected",{detail:{endpoint:e},bubbles:!0,composed:!0}))}};Zt.styles=[bt,ft,xt,s`
       :host {
         display: block;
       }
@@ -4145,7 +4250,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         color: var(--secondary-text-color);
         font-size: 14px;
       }
-    `],e([pe({attribute:!1})],Ft.prototype,"endpoints",void 0),e([pe({type:Number})],Ft.prototype,"selectedEndpointId",void 0),Ft=e([de("matter-endpoint-selector")],Ft);let Ht=class extends se{constructor(){super(...arguments),this.recommendations=[],this.loading=!1,this.actionInProgress=!1,this.title="Recommended Bindings",this.hideCard=!1,this.emptyMessage="No binding recommendations. All compatible endpoints are already bound."}render(){return this.hideCard?this._renderContent():j`
+    `],e([pe({attribute:!1})],Zt.prototype,"endpoints",void 0),e([pe({type:Number})],Zt.prototype,"selectedEndpointId",void 0),Zt=e([de("matter-endpoint-selector")],Zt);let Qt=class extends se{constructor(){super(...arguments),this.recommendations=[],this.loading=!1,this.actionInProgress=!1,this.title="Recommended Bindings",this.hideCard=!1,this.emptyMessage="No binding recommendations. All compatible endpoints are already bound."}render(){return this.hideCard?this._renderContent():j`
       <div class="card overview-card">
         <div class="card-header">
           ${this.title}
@@ -4161,7 +4266,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
       <div class="recommendation-list">
         ${this.recommendations.map(e=>this._renderRecommendationRow(e))}
       </div>
-    `}_renderRecommendationRow(e){const{sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:n,compatibleClusters:r}=e,s=r.map(e=>Je(e).action.replace(/^(control |read |receive |trigger |manage )/,"")),a=[...new Set(s)],d=a.length>2?`${a.slice(0,2).join(", ")}...`:a.join(", "),l=1===r.length?Je(r[0]).action:`access ${d} from`;return j`
+    `}_renderRecommendationRow(e){const{sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:r,compatibleClusters:n}=e,s=n.map(e=>Ke(e).action.replace(/^(control |read |receive |trigger |manage )/,"")),a=[...new Set(s)],d=a.length>2?`${a.slice(0,2).join(", ")}...`:a.join(", "),l=1===n.length?Ke(n[0]).action:`access ${d} from`;return j`
       <div class="recommendation-row">
         <div class="binding-description">
           <div class="binding-sentence">
@@ -4179,14 +4284,14 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               ${o.name}
             </strong>
             <span class="cluster-badges">
-              ${r.map(e=>{const t=He(e),i=`${t}: ${Je(e).dataType}`;return j`
+              ${n.map(e=>{const t=qe(e),i=`${t}: ${Ke(e).dataType}`;return j`
                   <span class="cluster-badge" title="${i}">${t}</span>
                 `})}
             </span>
           </div>
           <div class="binding-meta">
             #${t.node_id} EP ${i.endpoint_id} →
-            #${o.node_id} EP ${n.endpoint_id}
+            #${o.node_id} EP ${r.endpoint_id}
             ${t.area_name?j` · ${t.area_name}`:U}
           </div>
         </div>
@@ -4198,7 +4303,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           Create
         </button>
       </div>
-    `}_handleCreateBinding(e){this.dispatchEvent(new CustomEvent("create-binding",{detail:{recommendation:e},bubbles:!0,composed:!0}))}_handleNavigateDevice(e){e&&this.dispatchEvent(new CustomEvent("navigate-device",{detail:{deviceId:e},bubbles:!0,composed:!0}))}};Ht.styles=[mt,_t,ft,xt,kt,s`
+    `}_handleCreateBinding(e){this.dispatchEvent(new CustomEvent("create-binding",{detail:{recommendation:e},bubbles:!0,composed:!0}))}_handleNavigateDevice(e){e&&this.dispatchEvent(new CustomEvent("navigate-device",{detail:{deviceId:e},bubbles:!0,composed:!0}))}};Qt.styles=[bt,ft,xt,wt,St,s`
       :host {
         display: block;
       }
@@ -4295,17 +4400,27 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         font-weight: 500;
         margin-left: 8px;
       }
-    `],e([pe({attribute:!1})],Ht.prototype,"recommendations",void 0),e([pe({type:Boolean})],Ht.prototype,"loading",void 0),e([pe({type:Boolean})],Ht.prototype,"actionInProgress",void 0),e([pe({type:String})],Ht.prototype,"title",void 0),e([pe({type:Boolean})],Ht.prototype,"hideCard",void 0),e([pe({type:String})],Ht.prototype,"emptyMessage",void 0),Ht=e([de("matter-recommendation-list")],Ht);let qt=class extends se{constructor(){super(...arguments),this.groups=[],this.loading=!1}render(){return j`
+    `],e([pe({attribute:!1})],Qt.prototype,"recommendations",void 0),e([pe({type:Boolean})],Qt.prototype,"loading",void 0),e([pe({type:Boolean})],Qt.prototype,"actionInProgress",void 0),e([pe({type:String})],Qt.prototype,"title",void 0),e([pe({type:Boolean})],Qt.prototype,"hideCard",void 0),e([pe({type:String})],Qt.prototype,"emptyMessage",void 0),Qt=e([de("matter-recommendation-list")],Qt);let ei=class extends se{constructor(){super(...arguments),this.groups=[],this.loading=!1}render(){return j`
       <div class="card">
         <div class="card-header">
           <span>Matter Groups</span>
-          <button
-            type="button"
-            class="btn btn-primary"
-            @click=${this._handleCreateClick}
-          >
-            Create Group
-          </button>
+          <span class="header-actions">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              title="Re-provision keys and access for existing groupcast bindings"
+              @click=${this._handleRepairClick}
+            >
+              Repair
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              @click=${this._handleCreateClick}
+            >
+              Create Group
+            </button>
+          </span>
         </div>
         ${this.loading?j`<div class="loading">Loading...</div>`:this.groups.length>0?this._renderGroupList():j`
                 <div class="empty-state">
@@ -4344,7 +4459,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               </div>
             `:null}
       </div>
-    `}_handleGroupClick(e){this.dispatchEvent(new CustomEvent("group-click",{detail:{group:e},bubbles:!0,composed:!0}))}_handleCreateClick(){this.dispatchEvent(new CustomEvent("create-group-click",{bubbles:!0,composed:!0}))}_handleDeleteClick(e,t){e.stopPropagation(),this.dispatchEvent(new CustomEvent("delete-group",{detail:{group:t},bubbles:!0,composed:!0}))}};qt.styles=[_t,mt,xt,s`
+    `}_handleGroupClick(e){this.dispatchEvent(new CustomEvent("group-click",{detail:{group:e},bubbles:!0,composed:!0}))}_handleCreateClick(){this.dispatchEvent(new CustomEvent("create-group-click",{bubbles:!0,composed:!0}))}_handleRepairClick(){this.dispatchEvent(new CustomEvent("repair-groups-click",{bubbles:!0,composed:!0}))}_handleDeleteClick(e,t){e.stopPropagation(),this.dispatchEvent(new CustomEvent("delete-group",{detail:{group:t},bubbles:!0,composed:!0}))}};ei.styles=[ft,bt,wt,s`
       :host {
         display: block;
       }
@@ -4353,6 +4468,11 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         display: flex;
         align-items: center;
         justify-content: space-between;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 8px;
       }
 
       .group-card-header {
@@ -4416,7 +4536,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         border-radius: 12px;
         font-size: 11px;
       }
-    `],e([pe({attribute:!1})],qt.prototype,"groups",void 0),e([pe({type:Boolean})],qt.prototype,"loading",void 0),qt=e([de("matter-groups-tab")],qt);const Jt=[s`
+    `],e([pe({attribute:!1})],ei.prototype,"groups",void 0),e([pe({type:Boolean})],ei.prototype,"loading",void 0),ei=e([de("matter-groups-tab")],ei);const ti=[s`
   :host {
     display: block;
     padding: 16px;
@@ -4539,7 +4659,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     opacity: 0.8;
     text-decoration: underline;
   }
-`],Kt=[s`
+`],ii=[s`
   .device-details {
     display: flex;
     flex-direction: column;
@@ -4965,7 +5085,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
   .registry-link:hover {
     text-decoration: underline;
   }
-`],Yt=[s`
+`],oi=[s`
   .binding-devices {
     display: flex;
     align-items: center;
@@ -5187,7 +5307,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
     font-style: italic;
     color: var(--secondary-text-color);
   }
-`];let Xt=class extends se{constructor(){super(...arguments),this.narrow=!1,this._nodes=[],this._selectedSourceNode=null,this._selectedSourceEndpoint=null,this._bindings=[],this._groups=[],this._loading=!1,this._error=null,this._activeTab="overview",this._showCreateDialog=!1,this._showCreateGroupDialog=!1,this._manageGroup=null,this._pendingDeleteGroup=null,this._allBindings=[],this._recommendations=[],this._overviewLoading=!1,this._surveySubmitting=!1,this._surveyResult=null,this._selectedTargetNodeId=null,this._selectedTargetEndpointId=null,this._filterSameAreaOnly=!0,this._actionInProgress=null,this._pendingBindingRecommendation=null,this._selectedClusterForBinding=null,this._pendingManualBinding=null,this._pendingDeleteBinding=null,this._automationRecommendations=[],this._eveSchedules=new Map,this._eveScheduleLoading=new Set,this._verificationInProgress=!1,this._lastVerificationResult=null,this._showVerificationModal=!1,this._verificationModalResult=null,this._aclLoading=!1,this._aclEntries=null,this._targetACLCache=new Map,this._aclLoadingNodes=new Set,this._bindingWizard=null,this._aclRepairInProgress=new Map,this._bulkRepairInProgress=!1,this._bulkRepairResult=null,this._showBulkRepairModal=!1,this._operationProgress=null,this._showAutomationDialog=!1,this._pendingAutomationRecommendation=null}_updateStepStatus(e,t,i){if(!this._operationProgress)return;const o=[...this._operationProgress.steps];o[e]={...o[e],status:t,message:i},this._operationProgress={...this._operationProgress,steps:o,currentStepIndex:e}}_closeOperationProgress(){this._operationProgress=null,this._loadOverviewData()}_extractErrorMessage(e){if("string"==typeof e)return e;if(e&&"object"==typeof e){const t=e;return"string"==typeof t.message?t.message:"string"==typeof t.error?t.error:"string"==typeof t.text?t.text:JSON.stringify(e)}return String(e)}_cancelOperation(){if(!this._operationProgress)return;const e=this._operationProgress.steps.map(e=>"pending"===e.status?{...e,status:"skipped"}:e);this._operationProgress={...this._operationProgress,steps:e,completed:!0,error:"Operation cancelled by user"}}firstUpdated(){this._loadNodes().then(()=>{"overview"===this._activeTab&&this._loadOverviewData()})}async _loadNodes(){this._loading=!0,this._error=null;try{const e=await async function(e){return e.callWS({type:`${tt}/list_nodes`})}(this.hass);this._nodes=e.nodes}catch(e){this._error=`Failed to load nodes: ${this._extractErrorMessage(e)}`}finally{this._loading=!1}}async _loadBindings(){if(this._selectedSourceNode&&this._selectedSourceEndpoint){this._loading=!0;try{const e=await it(this.hass,this._selectedSourceNode.node_id,this._selectedSourceEndpoint.endpoint_id);this._bindings=e.bindings;const t=new Set(e.bindings.filter(e=>null!==e.target_node_id).map(e=>e.target_node_id));Promise.all(Array.from(t).map(e=>this._loadACLForNode(e))).catch(e=>console.error("Failed to load some target ACLs:",e))}catch(e){this._error=`Failed to load bindings: ${this._extractErrorMessage(e)}`}finally{this._loading=!1}}}async _loadGroups(){this._loading=!0;try{const e=await async function(e){return e.callWS({type:`${tt}/list_groups`})}(this.hass);this._groups=e.groups}catch(e){this._error=`Failed to load groups: ${this._extractErrorMessage(e)}`}finally{this._loading=!1}}_isEveDevice(e){return e.endpoints.some(e=>e.server_clusters.includes(Ye))}async _loadEveSchedule(e){if(this._eveSchedules.has(e.node_id)||this._eveScheduleLoading.has(e.node_id))return;const t=e.endpoints.find(e=>e.server_clusters.includes(Ye)&&e.endpoint_id>0);if(t){this._eveScheduleLoading=new Set([...this._eveScheduleLoading,e.node_id]);try{const i=await async function(e,t,i=1){return e.callWS({type:`${tt}/get_eve_schedule`,node_id:t,endpoint_id:i})}(this.hass,e.node_id,t.endpoint_id);i.schedule&&(this._eveSchedules=new Map(this._eveSchedules).set(e.node_id,i.schedule))}catch(t){console.error(`Failed to load Eve schedule for node ${e.node_id}:`,t)}finally{const t=new Set(this._eveScheduleLoading);t.delete(e.node_id),this._eveScheduleLoading=t}}}_renderEveSchedule(e){if(!this._isEveDevice(e))return U;if(this._eveScheduleLoading.has(e.node_id))return j`
+`];let ri=class extends se{constructor(){super(...arguments),this.narrow=!1,this._nodes=[],this._selectedSourceNode=null,this._selectedSourceEndpoint=null,this._bindings=[],this._groups=[],this._loading=!1,this._error=null,this._activeTab="overview",this._showCreateDialog=!1,this._showCreateGroupDialog=!1,this._manageGroup=null,this._pendingDeleteGroup=null,this._allBindings=[],this._recommendations=[],this._overviewLoading=!1,this._surveySubmitting=!1,this._surveyResult=null,this._selectedTargetNodeId=null,this._selectedTargetEndpointId=null,this._filterSameAreaOnly=!0,this._actionInProgress=null,this._pendingBindingRecommendation=null,this._selectedClusterForBinding=null,this._pendingManualBinding=null,this._pendingDeleteBinding=null,this._automationRecommendations=[],this._eveSchedules=new Map,this._eveScheduleLoading=new Set,this._verificationInProgress=!1,this._lastVerificationResult=null,this._showVerificationModal=!1,this._verificationModalResult=null,this._aclLoading=!1,this._aclEntries=null,this._targetACLCache=new Map,this._aclLoadingNodes=new Set,this._bindingWizard=null,this._aclRepairInProgress=new Map,this._bulkRepairInProgress=!1,this._bulkRepairResult=null,this._showBulkRepairModal=!1,this._operationProgress=null,this._showAutomationDialog=!1,this._pendingAutomationRecommendation=null}_updateStepStatus(e,t,i){if(!this._operationProgress)return;const o=[...this._operationProgress.steps];o[e]={...o[e],status:t,message:i},this._operationProgress={...this._operationProgress,steps:o,currentStepIndex:e}}_closeOperationProgress(){this._operationProgress=null,this._loadOverviewData()}_extractErrorMessage(e){if("string"==typeof e)return e;if(e&&"object"==typeof e){const t=e;return"string"==typeof t.message?t.message:"string"==typeof t.error?t.error:"string"==typeof t.text?t.text:JSON.stringify(e)}return String(e)}_cancelOperation(){if(!this._operationProgress)return;const e=this._operationProgress.steps.map(e=>"pending"===e.status?{...e,status:"skipped"}:e);this._operationProgress={...this._operationProgress,steps:e,completed:!0,error:"Operation cancelled by user"}}firstUpdated(){this._loadNodes().then(()=>{"overview"===this._activeTab&&this._loadOverviewData()})}async _loadNodes(){this._loading=!0,this._error=null;try{const e=await async function(e){return e.callWS({type:`${it}/list_nodes`})}(this.hass);this._nodes=e.nodes}catch(e){this._error=`Failed to load nodes: ${this._extractErrorMessage(e)}`}finally{this._loading=!1}}async _loadBindings(){if(this._selectedSourceNode&&this._selectedSourceEndpoint){this._loading=!0;try{const e=await ot(this.hass,this._selectedSourceNode.node_id,this._selectedSourceEndpoint.endpoint_id);this._bindings=e.bindings;const t=new Set(e.bindings.filter(e=>null!==e.target_node_id).map(e=>e.target_node_id));Promise.all(Array.from(t).map(e=>this._loadACLForNode(e))).catch(e=>console.error("Failed to load some target ACLs:",e))}catch(e){this._error=`Failed to load bindings: ${this._extractErrorMessage(e)}`}finally{this._loading=!1}}}async _loadGroups(){this._loading=!0;try{const e=await async function(e){return e.callWS({type:`${it}/list_groups`})}(this.hass);this._groups=e.groups}catch(e){this._error=`Failed to load groups: ${this._extractErrorMessage(e)}`}finally{this._loading=!1}}_isEveDevice(e){return e.endpoints.some(e=>e.server_clusters.includes(Xe))}async _loadEveSchedule(e){if(this._eveSchedules.has(e.node_id)||this._eveScheduleLoading.has(e.node_id))return;const t=e.endpoints.find(e=>e.server_clusters.includes(Xe)&&e.endpoint_id>0);if(t){this._eveScheduleLoading=new Set([...this._eveScheduleLoading,e.node_id]);try{const i=await async function(e,t,i=1){return e.callWS({type:`${it}/get_eve_schedule`,node_id:t,endpoint_id:i})}(this.hass,e.node_id,t.endpoint_id);i.schedule&&(this._eveSchedules=new Map(this._eveSchedules).set(e.node_id,i.schedule))}catch(t){console.error(`Failed to load Eve schedule for node ${e.node_id}:`,t)}finally{const t=new Set(this._eveScheduleLoading);t.delete(e.node_id),this._eveScheduleLoading=t}}}_renderEveSchedule(e){if(!this._isEveDevice(e))return U;if(this._eveScheduleLoading.has(e.node_id))return j`
         <div class="device-section">
           <div class="section-header">Heating Schedule</div>
           <div class="eve-schedule-loading">Loading Eve schedule...</div>
@@ -5221,13 +5341,13 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               </div>
             `:U}
       </div>
-    `}_renderThermostatSchedule(e){if(this._isEveDevice(e))return U;const t=e.endpoints.find(e=>{return(t=e).server_clusters.includes(Be)&&t.device_types.some(e=>769===e.id);var t});return t?j`
+    `}_renderThermostatSchedule(e){if(this._isEveDevice(e))return U;const t=e.endpoints.find(e=>{return(t=e).server_clusters.includes(Me)&&t.device_types.some(e=>769===e.id);var t});return t?j`
       <thermostat-schedule-editor
         .hass=${this.hass}
         .node=${e}
         .endpoint=${t}
       ></thermostat-schedule-editor>
-    `:U}async _loadOverviewData(){this._overviewLoading=!0,this._error=null;try{const e=[];for(const t of this._nodes)for(const i of t.endpoints)if(i.has_binding_cluster)try{const o=await it(this.hass,t.node_id,i.endpoint_id);for(const n of o.bindings){const o=n.target_node_id&&this._nodes.find(e=>e.node_id===n.target_node_id)||null,r=o&&n.target_endpoint_id&&o.endpoints.find(e=>e.endpoint_id===n.target_endpoint_id)||null;e.push({binding:n,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:r})}}catch{}this._allBindings=e;const t=new Set(e.filter(e=>null!==e.binding.target_node_id).map(e=>e.binding.target_node_id));Promise.all(Array.from(t).map(e=>this._loadACLForNode(e))).catch(e=>console.error("Failed to load some target ACLs:",e)),this._recommendations=this._computeRecommendations(),this._automationRecommendations=this._computeAutomationRecommendations()}catch(e){this._error=`Failed to load overview data: ${this._extractErrorMessage(e)}`}finally{this._overviewLoading=!1}}_computeAutomationRecommendations(){const e=[],t=new Set;for(const i of this._nodes)for(const o of i.endpoints){const n=o.device_types.map(e=>e.id);for(const r of this._nodes)if(!i.area_name||!r.area_name||i.area_name===r.area_name)for(const s of r.endpoints){if(i.node_id===r.node_id)continue;const a=s.device_types.map(e=>e.id);for(const d of Ke){const l=d.sourceDeviceTypes.some(e=>n.includes(e)),c=d.targetDeviceTypes.some(e=>a.includes(e));if(l&&c){const n=`${d.id}-${i.node_id}-${r.node_id}`;if(t.has(n))continue;t.add(n),e.push({template:d,sourceNode:i,sourceEndpoint:o,targetNode:r,targetEndpoint:s})}}}}return e}_computeRecommendations(){return function(e,t){const i=[];for(const o of e)for(const n of o.endpoints){const r=n.client_clusters||[];if(0!==r.length&&n.has_binding_cluster)for(const s of e)for(const e of s.endpoints){if(o.node_id===s.node_id&&n.endpoint_id===e.endpoint_id)continue;const a=e.server_clusters||[],d=r.filter(e=>a.includes(e));if(0===d.length)continue;const l=d.filter(i=>!t.some(t=>t.binding.node_id===o.node_id&&t.binding.endpoint_id===n.endpoint_id&&t.binding.target_node_id===s.node_id&&t.binding.target_endpoint_id===e.endpoint_id&&t.binding.cluster_id===i));0!==l.length&&i.push({sourceNode:o,sourceEndpoint:n,targetNode:s,targetEndpoint:e,compatibleClusters:l})}}return i.sort((e,t)=>t.compatibleClusters.length-e.compatibleClusters.length),i}(this._nodes,this._allBindings)}_selectNode(e){this._lastVerificationResult=null,this._aclEntries=null,this._selectedSourceNode?.node_id===e.node_id?(this._selectedSourceNode=null,this._selectedSourceEndpoint=null,this._bindings=[]):(this._selectedSourceNode=e,this._selectedSourceEndpoint=null,this._bindings=[],this._isEveDevice(e)&&this._loadEveSchedule(e))}_selectEndpoint(e,t){e.stopPropagation(),t.has_binding_cluster&&(this._lastVerificationResult=null,this._selectedSourceEndpoint=t,this._loadBindings())}async _deleteBinding(e){if(!confirm("Are you sure you want to delete this binding?"))return;const t=`delete-tab-${e.node_id}-${e.endpoint_id}-${e.target_node_id}-${e.target_endpoint_id}`;this._actionInProgress=t;try{const t=await nt(this.hass,e.node_id,e.endpoint_id,e.target_node_id??void 0,e.target_endpoint_id??void 0,e.target_group_id??void 0);this._lastVerificationResult={success:t.success,verified:t.verified,message:t.message,error_type:t.error_type},await this._loadBindings()}catch(e){this._error=`Failed to delete binding: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}async _verifyBindings(){if(this._selectedSourceNode&&this._selectedSourceEndpoint){this._verificationInProgress=!0,this._lastVerificationResult=null;try{const e=await rt(this.hass,this._selectedSourceNode.node_id,this._selectedSourceEndpoint.endpoint_id);this._lastVerificationResult={success:e.success,verified:e.verified,message:e.message,error_type:e.error_type},await this._loadBindings()}catch(e){this._lastVerificationResult={success:!1,verified:!1,message:`Failed to verify bindings: ${this._extractErrorMessage(e)}`,error_type:"unknown_error"}}finally{this._verificationInProgress=!1}}}async _verifyBindingWithModal(e){const{binding:t}=e;this._verificationInProgress=!0,this._showVerificationModal=!0,this._verificationModalResult=null;try{const i=await rt(this.hass,t.node_id,t.endpoint_id);this._verificationModalResult={success:i.success,verified:i.verified,message:i.message,bindingContext:e}}catch(t){this._verificationModalResult={success:!1,verified:!1,message:`Failed to verify: ${this._extractErrorMessage(t)}`,bindingContext:e}}finally{this._verificationInProgress=!1}}_closeVerificationModal(){this._showVerificationModal=!1,this._verificationModalResult=null}_openCreateDialog(){const e=this._nodes.filter(e=>e.node_id!==this._selectedSourceNode?.node_id);if(e.length>0){this._selectedTargetNodeId=e[0].node_id;const t=pt(e[0]);this._selectedTargetEndpointId=t?.endpoint_id??null}this._showCreateDialog=!0}_closeCreateDialog(){this._showCreateDialog=!1,this._selectedTargetNodeId=null,this._selectedTargetEndpointId=null}_handleCreateDialogTargetNodeChange(e){this._selectedTargetNodeId=e.detail.nodeId;const t=this._nodes.find(e=>e.node_id===this._selectedTargetNodeId);if(t){const e=pt(t);this._selectedTargetEndpointId=e?.endpoint_id??null}}_handleCreateDialogTargetEndpointChange(e){this._selectedTargetEndpointId=e.detail.endpointId}_handleCreateDialogCreateBinding(e){const{targetNodeId:t,targetEndpointId:i,targetGroupId:o,clusterId:n}=e.detail;if(!this._selectedSourceNode||!this._selectedSourceEndpoint)return;if(void 0!==o)return this._showCreateDialog=!1,void this._createGroupBinding(o,n);const r=this._nodes.find(e=>e.node_id===t),s=r?.endpoints.find(e=>e.endpoint_id===i);r&&s?(this._pendingManualBinding={sourceNode:this._selectedSourceNode,sourceEndpoint:this._selectedSourceEndpoint,targetNode:r,targetEndpoint:s,clusterId:n},this._showCreateDialog=!1):this._error="Invalid target selection"}async _createGroupBinding(e,t){if(!this._selectedSourceNode||!this._selectedSourceEndpoint)return;const i=this._selectedSourceNode,o=this._selectedSourceEndpoint;this._operationProgress={title:"Creating groupcast binding",steps:[{label:"Write binding to source",status:"in_progress"},{label:"Provision group key & access on members",status:"pending"}],currentStepIndex:0,canCancel:!1,completed:!1},this._actionInProgress="create-group-binding";let n=null;try{n=await this.hass.connection.subscribeEvents(t=>{const o=t.data;(function(e,t,i){return e.source_node_id===t&&e.group_id===i})(o,i.node_id,e)&&this._updateStepStatus(1,function(e){switch(e){case"failed":return"error";case"success":return"success";default:return"in_progress"}}(o.status),o.message)},"matter_binding_helper_group_progress");const r=await ot(this.hass,i.node_id,o.endpoint_id,t,void 0,void 0,e);if(this._updateStepStatus(0,"success"),r.success){const e=this._operationProgress?.steps??[];e[1]&&"in_progress"===e[1].status&&this._updateStepStatus(1,"success"),this._operationProgress=this._operationProgress?{...this._operationProgress,completed:!0}:null}else this._operationProgress=this._operationProgress?{...this._operationProgress,completed:!0,error:r.message}:null}catch(e){const t=`Failed to create group binding: ${this._extractErrorMessage(e)}`;this._operationProgress=this._operationProgress?{...this._operationProgress,completed:!0,error:t}:null,this._error=t}finally{n&&n(),this._actionInProgress=null}}_handleGroupClick(e){this._manageGroup=e.detail.group}_closeManageGroupDialog(){this._manageGroup=null}async _handleAddMember(e){if(!this._manageGroup)return;const t=this._manageGroup.group_id,{nodeId:i,endpointId:o}=e.detail;this._actionInProgress="group-member";try{await async function(e,t,i,o){return e.callWS({type:`${tt}/add_to_group`,group_id:t,node_id:i,endpoint_id:o})}(this.hass,t,i,o),await this._refreshManagedGroup(t)}catch(e){this._error=`Failed to add member: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}async _handleRemoveMember(e){if(!this._manageGroup)return;const t=this._manageGroup.group_id,{nodeId:i,endpointId:o}=e.detail;this._actionInProgress="group-member";try{await async function(e,t,i,o){return e.callWS({type:`${tt}/remove_from_group`,group_id:t,node_id:i,endpoint_id:o})}(this.hass,t,i,o),await this._refreshManagedGroup(t)}catch(e){this._error=`Failed to remove member: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}async _refreshManagedGroup(e){await this._loadGroups(),this._manageGroup=this._groups.find(t=>t.group_id===e)??null}_openCreateGroupDialog(){this._showCreateGroupDialog=!0}_closeCreateGroupDialog(){this._showCreateGroupDialog=!1}async _handleCreateGroup(e){const{name:t,groupId:i}=e.detail;this._actionInProgress="create-group";try{await async function(e,t,i){return e.callWS({type:`${tt}/create_group`,name:t,...void 0!==i?{group_id:i}:{}})}(this.hass,t,i),this._showCreateGroupDialog=!1,await this._loadGroups()}catch(e){this._error=`Failed to create group: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}_handleDeleteGroup(e){this._pendingDeleteGroup=e.detail.group}_cancelDeleteGroup(){this._pendingDeleteGroup=null}async _confirmDeleteGroup(){const e=this._pendingDeleteGroup;if(e){this._actionInProgress="delete-group";try{await async function(e,t){return e.callWS({type:`${tt}/delete_group`,group_id:t})}(this.hass,e.group_id),this._pendingDeleteGroup=null,await this._loadGroups()}catch(e){this._error=`Failed to delete group: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}}_confirmManualBinding(){if(!this._pendingManualBinding)return;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:n}=this._pendingManualBinding;this._pendingManualBinding=null,this._startBindingWizard(e,t,i,o,n)}_closeManualBindingConfirmDialog(){this._pendingManualBinding=null}_getNodeName(e){const t=this._nodes.find(t=>t.node_id===e);return t?.name||`Node ${e}`}_getNodeDeviceId(e){const t=this._nodes.find(t=>t.node_id===e);return t?.ha_device_id}_getClusterName(e){return null===e?"Any Cluster":Ve[e]||`Cluster 0x${e.toString(16)}`}async _submitSurvey(){this._surveySubmitting=!0;try{await this.hass.callService("matter_binding_helper","submit_survey",{}),this._surveyResult={success:!0,message:"Survey submitted successfully! Thank you for contributing to Matter device research."}}catch(e){this._surveyResult={success:!1,message:`Failed to submit survey: ${this._extractErrorMessage(e)}`}}finally{this._surveySubmitting=!1}}_closeSurveyResultDialog(){this._surveyResult=null}_renderSurveyResultDialog(){if(!this._surveyResult)return U;const{success:e,message:t}=this._surveyResult;return j`
+    `:U}async _loadOverviewData(){this._overviewLoading=!0,this._error=null;try{const e=[];for(const t of this._nodes)for(const i of t.endpoints)if(i.has_binding_cluster)try{const o=await ot(this.hass,t.node_id,i.endpoint_id);for(const r of o.bindings){const o=r.target_node_id&&this._nodes.find(e=>e.node_id===r.target_node_id)||null,n=o&&r.target_endpoint_id&&o.endpoints.find(e=>e.endpoint_id===r.target_endpoint_id)||null;e.push({binding:r,sourceNode:t,sourceEndpoint:i,targetNode:o,targetEndpoint:n})}}catch{}this._allBindings=e;const t=new Set(e.filter(e=>null!==e.binding.target_node_id).map(e=>e.binding.target_node_id));Promise.all(Array.from(t).map(e=>this._loadACLForNode(e))).catch(e=>console.error("Failed to load some target ACLs:",e)),this._recommendations=this._computeRecommendations(),this._automationRecommendations=this._computeAutomationRecommendations()}catch(e){this._error=`Failed to load overview data: ${this._extractErrorMessage(e)}`}finally{this._overviewLoading=!1}}_computeAutomationRecommendations(){const e=[],t=new Set;for(const i of this._nodes)for(const o of i.endpoints){const r=o.device_types.map(e=>e.id);for(const n of this._nodes)if(!i.area_name||!n.area_name||i.area_name===n.area_name)for(const s of n.endpoints){if(i.node_id===n.node_id)continue;const a=s.device_types.map(e=>e.id);for(const d of Ye){const l=d.sourceDeviceTypes.some(e=>r.includes(e)),c=d.targetDeviceTypes.some(e=>a.includes(e));if(l&&c){const r=`${d.id}-${i.node_id}-${n.node_id}`;if(t.has(r))continue;t.add(r),e.push({template:d,sourceNode:i,sourceEndpoint:o,targetNode:n,targetEndpoint:s})}}}}return e}_computeRecommendations(){return function(e,t){const i=[];for(const o of e)for(const r of o.endpoints){const n=r.client_clusters||[];if(0!==n.length&&r.has_binding_cluster)for(const s of e)for(const e of s.endpoints){if(o.node_id===s.node_id&&r.endpoint_id===e.endpoint_id)continue;const a=e.server_clusters||[],d=n.filter(e=>a.includes(e));if(0===d.length)continue;const l=d.filter(i=>!t.some(t=>t.binding.node_id===o.node_id&&t.binding.endpoint_id===r.endpoint_id&&t.binding.target_node_id===s.node_id&&t.binding.target_endpoint_id===e.endpoint_id&&t.binding.cluster_id===i));0!==l.length&&i.push({sourceNode:o,sourceEndpoint:r,targetNode:s,targetEndpoint:e,compatibleClusters:l})}}return i.sort((e,t)=>t.compatibleClusters.length-e.compatibleClusters.length),i}(this._nodes,this._allBindings)}_selectNode(e){this._lastVerificationResult=null,this._aclEntries=null,this._selectedSourceNode?.node_id===e.node_id?(this._selectedSourceNode=null,this._selectedSourceEndpoint=null,this._bindings=[]):(this._selectedSourceNode=e,this._selectedSourceEndpoint=null,this._bindings=[],this._isEveDevice(e)&&this._loadEveSchedule(e))}_selectEndpoint(e,t){e.stopPropagation(),t.has_binding_cluster&&(this._lastVerificationResult=null,this._selectedSourceEndpoint=t,this._loadBindings())}async _deleteBinding(e){if(!confirm("Are you sure you want to delete this binding?"))return;const t=`delete-tab-${e.node_id}-${e.endpoint_id}-${e.target_node_id}-${e.target_endpoint_id}`;this._actionInProgress=t;try{const t=await nt(this.hass,e.node_id,e.endpoint_id,e.target_node_id??void 0,e.target_endpoint_id??void 0,e.target_group_id??void 0);this._lastVerificationResult={success:t.success,verified:t.verified,message:t.message,error_type:t.error_type},await this._loadBindings()}catch(e){this._error=`Failed to delete binding: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}async _verifyBindings(){if(this._selectedSourceNode&&this._selectedSourceEndpoint){this._verificationInProgress=!0,this._lastVerificationResult=null;try{const e=await st(this.hass,this._selectedSourceNode.node_id,this._selectedSourceEndpoint.endpoint_id);this._lastVerificationResult={success:e.success,verified:e.verified,message:e.message,error_type:e.error_type},await this._loadBindings()}catch(e){this._lastVerificationResult={success:!1,verified:!1,message:`Failed to verify bindings: ${this._extractErrorMessage(e)}`,error_type:"unknown_error"}}finally{this._verificationInProgress=!1}}}async _verifyBindingWithModal(e){const{binding:t}=e;this._verificationInProgress=!0,this._showVerificationModal=!0,this._verificationModalResult=null;try{const i=await st(this.hass,t.node_id,t.endpoint_id);this._verificationModalResult={success:i.success,verified:i.verified,message:i.message,bindingContext:e}}catch(t){this._verificationModalResult={success:!1,verified:!1,message:`Failed to verify: ${this._extractErrorMessage(t)}`,bindingContext:e}}finally{this._verificationInProgress=!1}}_closeVerificationModal(){this._showVerificationModal=!1,this._verificationModalResult=null}_openCreateDialog(){const e=this._nodes.filter(e=>e.node_id!==this._selectedSourceNode?.node_id);if(e.length>0){this._selectedTargetNodeId=e[0].node_id;const t=ut(e[0]);this._selectedTargetEndpointId=t?.endpoint_id??null}this._showCreateDialog=!0}_closeCreateDialog(){this._showCreateDialog=!1,this._selectedTargetNodeId=null,this._selectedTargetEndpointId=null}_handleCreateDialogTargetNodeChange(e){this._selectedTargetNodeId=e.detail.nodeId;const t=this._nodes.find(e=>e.node_id===this._selectedTargetNodeId);if(t){const e=ut(t);this._selectedTargetEndpointId=e?.endpoint_id??null}}_handleCreateDialogTargetEndpointChange(e){this._selectedTargetEndpointId=e.detail.endpointId}_handleCreateDialogCreateBinding(e){const{targetNodeId:t,targetEndpointId:i,targetGroupId:o,clusterId:r}=e.detail;if(!this._selectedSourceNode||!this._selectedSourceEndpoint)return;if(void 0!==o)return this._showCreateDialog=!1,void this._createGroupBinding(o,r);const n=this._nodes.find(e=>e.node_id===t),s=n?.endpoints.find(e=>e.endpoint_id===i);n&&s?(this._pendingManualBinding={sourceNode:this._selectedSourceNode,sourceEndpoint:this._selectedSourceEndpoint,targetNode:n,targetEndpoint:s,clusterId:r},this._showCreateDialog=!1):this._error="Invalid target selection"}async _createGroupBinding(e,t){if(!this._selectedSourceNode||!this._selectedSourceEndpoint)return;const i=this._selectedSourceNode,o=this._selectedSourceEndpoint;this._operationProgress={title:"Creating groupcast binding",steps:[{label:"Write binding to source",status:"in_progress"},{label:"Provision group key & access on members",status:"pending"}],currentStepIndex:0,canCancel:!1,completed:!1},this._actionInProgress="create-group-binding";let r=null;try{r=await this.hass.connection.subscribeEvents(t=>{const o=t.data;(function(e,t,i){return e.source_node_id===t&&e.group_id===i})(o,i.node_id,e)&&this._updateStepStatus(1,function(e){switch(e){case"failed":return"error";case"success":return"success";default:return"in_progress"}}(o.status),o.message)},"matter_binding_helper_group_progress");const n=await rt(this.hass,i.node_id,o.endpoint_id,t,void 0,void 0,e);if(this._updateStepStatus(0,"success"),n.success){const e=this._operationProgress?.steps??[];e[1]&&"in_progress"===e[1].status&&this._updateStepStatus(1,"success"),this._operationProgress=this._operationProgress?{...this._operationProgress,completed:!0}:null}else this._operationProgress=this._operationProgress?{...this._operationProgress,completed:!0,error:n.message}:null}catch(e){const t=`Failed to create group binding: ${this._extractErrorMessage(e)}`;this._operationProgress=this._operationProgress?{...this._operationProgress,completed:!0,error:t}:null,this._error=t}finally{r&&r(),this._actionInProgress=null}}_handleGroupClick(e){this._manageGroup=e.detail.group}_closeManageGroupDialog(){this._manageGroup=null}async _handleAddMember(e){if(!this._manageGroup)return;const t=this._manageGroup.group_id,{nodeId:i,endpointId:o}=e.detail;this._actionInProgress="group-member";try{await async function(e,t,i,o){return e.callWS({type:`${it}/add_to_group`,group_id:t,node_id:i,endpoint_id:o})}(this.hass,t,i,o),await this._refreshManagedGroup(t)}catch(e){this._error=`Failed to add member: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}async _handleRemoveMember(e){if(!this._manageGroup)return;const t=this._manageGroup.group_id,{nodeId:i,endpointId:o}=e.detail;this._actionInProgress="group-member";try{await async function(e,t,i,o){return e.callWS({type:`${it}/remove_from_group`,group_id:t,node_id:i,endpoint_id:o})}(this.hass,t,i,o),await this._refreshManagedGroup(t)}catch(e){this._error=`Failed to remove member: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}async _refreshManagedGroup(e){await this._loadGroups(),this._manageGroup=this._groups.find(t=>t.group_id===e)??null}_openCreateGroupDialog(){this._showCreateGroupDialog=!0}_closeCreateGroupDialog(){this._showCreateGroupDialog=!1}async _handleCreateGroup(e){const{name:t,clusters:i,groupId:o}=e.detail;this._actionInProgress="create-group";try{await async function(e,t,i,o){return e.callWS({type:`${it}/create_group`,name:t,...void 0!==i?{group_id:i}:{},...o&&o.length>0?{clusters:o}:{}})}(this.hass,t,o,i),this._showCreateGroupDialog=!1,await this._loadGroups()}catch(e){this._error=`Failed to create group: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}async _handleRepairGroups(){const e=new Map;for(const t of this._allBindings)if(null!==t.binding.target_group_id){const i=`${t.binding.node_id}/${t.binding.endpoint_id}`;e.set(i,{nodeId:t.binding.node_id,endpointId:t.binding.endpoint_id})}if(0!==e.size){this._actionInProgress="repair-groups";try{let t=0,i=0;for(const{nodeId:o,endpointId:r}of e.values()){const e=await lt(this.hass,o,r);t+=e.total,i+=e.succeeded}this._error=i===t?`Repaired ${t} groupcast binding(s).`:`Repaired ${i}/${t} groupcast binding(s); some failed (check device availability).`,await this._loadOverviewData()}catch(e){this._error=`Failed to repair groups: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}else this._error="No groupcast bindings to repair."}_handleDeleteGroup(e){this._pendingDeleteGroup=e.detail.group}_cancelDeleteGroup(){this._pendingDeleteGroup=null}async _confirmDeleteGroup(){const e=this._pendingDeleteGroup;if(e){this._actionInProgress="delete-group";try{await async function(e,t){return e.callWS({type:`${it}/delete_group`,group_id:t})}(this.hass,e.group_id),this._pendingDeleteGroup=null,await this._loadGroups()}catch(e){this._error=`Failed to delete group: ${this._extractErrorMessage(e)}`}finally{this._actionInProgress=null}}}_confirmManualBinding(){if(!this._pendingManualBinding)return;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:r}=this._pendingManualBinding;this._pendingManualBinding=null,this._startBindingWizard(e,t,i,o,r)}_closeManualBindingConfirmDialog(){this._pendingManualBinding=null}_getNodeName(e){const t=this._nodes.find(t=>t.node_id===e);return t?.name||`Node ${e}`}_getNodeDeviceId(e){const t=this._nodes.find(t=>t.node_id===e);return t?.ha_device_id}_getClusterName(e){return null===e?"Any Cluster":Ue[e]||`Cluster 0x${e.toString(16)}`}async _submitSurvey(){this._surveySubmitting=!0;try{await this.hass.callService("matter_binding_helper","submit_survey",{}),this._surveyResult={success:!0,message:"Survey submitted successfully! Thank you for contributing to Matter device research."}}catch(e){this._surveyResult={success:!1,message:`Failed to submit survey: ${this._extractErrorMessage(e)}`}}finally{this._surveySubmitting=!1}}_closeSurveyResultDialog(){this._surveyResult=null}_renderSurveyResultDialog(){if(!this._surveyResult)return U;const{success:e,message:t}=this._surveyResult;return j`
       <div class="dialog-overlay" @click=${this._closeSurveyResultDialog}>
         <div class="dialog" @click=${e=>e.stopPropagation()}>
           <div class="dialog-header">
@@ -5339,6 +5459,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                   @group-click=${this._handleGroupClick}
                   @create-group-click=${this._openCreateGroupDialog}
                   @delete-group=${this._handleDeleteGroup}
+                  @repair-groups-click=${this._handleRepairGroups}
                 ></matter-groups-tab>
               `}
         <matter-create-group-dialog
@@ -5444,7 +5565,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               </div>
             `}
       </div>
-    `}_renderEstablishedBindingRow(e){const{binding:t,sourceNode:i,sourceEndpoint:o,targetNode:n}=e,r=n?.name||`Node ${t.target_node_id}`,s=null!==t.target_group_id,a=Je(t.cluster_id),d=s?{hasPermission:!0}:this._checkBindingACL(t,i.node_id);return j`
+    `}_renderEstablishedBindingRow(e){const{binding:t,sourceNode:i,sourceEndpoint:o,targetNode:r}=e,n=r?.name||`Node ${t.target_node_id}`,s=null!==t.target_group_id,a=Ke(t.cluster_id),d=s?{hasPermission:!0}:this._checkBindingACL(t,i.node_id);return j`
       <div class="overview-binding-row readable ${d.hasPermission?"":"binding-missing-acl"}">
         <div class="binding-description">
           <div class="binding-sentence">
@@ -5455,9 +5576,9 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
             >${i.name}</strong>
             <span class="binding-action">${a.action}</span>
             <strong
-              class="${!s&&n?.ha_device_id?"device-link":""}"
-              @click=${!s&&n?.ha_device_id?()=>this._navigateToDevice(n.ha_device_id):U}
-            >${s?`Group ${t.target_group_id}`:r}</strong>
+              class="${!s&&r?.ha_device_id?"device-link":""}"
+              @click=${!s&&r?.ha_device_id?()=>this._navigateToDevice(r.ha_device_id):U}
+            >${s?`Group ${t.target_group_id}`:n}</strong>
           </div>
           <div class="binding-meta">
             #${i.node_id} EP ${o.endpoint_id} → ${s?"Group":`#${t.target_node_id} EP ${t.target_endpoint_id}`}
@@ -5562,7 +5683,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           Create Automation
         </button>
       </div>
-    `}_openAutomationDialog(e){this._pendingAutomationRecommendation=e,this._showAutomationDialog=!0}_closeAutomationDialog(){this._showAutomationDialog=!1,this._pendingAutomationRecommendation=null}_handleAutomationCreated(){this._closeAutomationDialog()}_toggleAreaFilter(e){const t=e.target;this._filterSameAreaOnly=t.checked}_showDeleteConfirmDialog(e){this._pendingDeleteBinding=e}_closeDeleteConfirmDialog(){this._pendingDeleteBinding=null}async _confirmDeleteBinding(){if(!this._pendingDeleteBinding)return;const e=this._pendingDeleteBinding,{binding:t,sourceNode:i}=e,o=null!==t.target_node_id&&null===t.target_group_id;this._closeDeleteConfirmDialog(),this._operationProgress={title:"Removing Binding",steps:[{label:"Removing binding from device",status:"pending"},...o?[{label:"Cleaning up ACL entry",status:"pending"}]:[]],currentStepIndex:0,canCancel:!1,completed:!1},this._updateStepStatus(0,"in_progress");try{const e=await nt(this.hass,t.node_id,t.endpoint_id,t.target_node_id??void 0,t.target_endpoint_id??void 0,t.target_group_id??void 0);if(!e.success){const t=this._extractErrorMessage(e.message);return this._updateStepStatus(0,"error",t),void(this._operationProgress={...this._operationProgress,completed:!0,error:t})}this._updateStepStatus(0,"success")}catch(e){const t=this._extractErrorMessage(e);return this._updateStepStatus(0,"error",t),void(this._operationProgress={...this._operationProgress,completed:!0,error:t})}if(o&&null!==t.target_node_id&&null!==t.target_endpoint_id){this._updateStepStatus(1,"in_progress");try{const e=await async function(e,t,i,o,n){return e.callWS({type:`${tt}/remove_acl`,target_node_id:t,source_node_id:i,...null!=o&&{target_endpoint_id:o},...null!=n&&{cluster_id:n}})}(this.hass,t.target_node_id,i.node_id,t.target_endpoint_id,t.cluster_id);e.success?(this._updateStepStatus(1,"success"),this._targetACLCache=new Map(this._targetACLCache),this._targetACLCache.delete(t.target_node_id)):this._updateStepStatus(1,"error",this._extractErrorMessage(e.message))}catch(e){const t=this._extractErrorMessage(e);this._updateStepStatus(1,"error",t)}}this._operationProgress={...this._operationProgress,completed:!0}}_showBindingConfirmDialog(e){this._pendingBindingRecommendation=e,this._selectedClusterForBinding=e.compatibleClusters[0]}_closeBindingConfirmDialog(){this._pendingBindingRecommendation=null,this._selectedClusterForBinding=null}_handleClusterSelectChange(e){const t=e.target;this._selectedClusterForBinding=parseInt(t.value,10)}_confirmCreateBinding(){if(!this._pendingBindingRecommendation||!this._selectedClusterForBinding)return;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o}=this._pendingBindingRecommendation,n=this._selectedClusterForBinding;this._closeBindingConfirmDialog(),this._startBindingWizard(e,t,i,o,n)}_renderBindingsTab(){return j`
+    `}_openAutomationDialog(e){this._pendingAutomationRecommendation=e,this._showAutomationDialog=!0}_closeAutomationDialog(){this._showAutomationDialog=!1,this._pendingAutomationRecommendation=null}_handleAutomationCreated(){this._closeAutomationDialog()}_toggleAreaFilter(e){const t=e.target;this._filterSameAreaOnly=t.checked}_showDeleteConfirmDialog(e){this._pendingDeleteBinding=e}_closeDeleteConfirmDialog(){this._pendingDeleteBinding=null}async _confirmDeleteBinding(){if(!this._pendingDeleteBinding)return;const e=this._pendingDeleteBinding,{binding:t,sourceNode:i}=e,o=null!==t.target_node_id&&null===t.target_group_id;this._closeDeleteConfirmDialog(),this._operationProgress={title:"Removing Binding",steps:[{label:"Removing binding from device",status:"pending"},...o?[{label:"Cleaning up ACL entry",status:"pending"}]:[]],currentStepIndex:0,canCancel:!1,completed:!1},this._updateStepStatus(0,"in_progress");try{const e=await nt(this.hass,t.node_id,t.endpoint_id,t.target_node_id??void 0,t.target_endpoint_id??void 0,t.target_group_id??void 0);if(!e.success){const t=this._extractErrorMessage(e.message);return this._updateStepStatus(0,"error",t),void(this._operationProgress={...this._operationProgress,completed:!0,error:t})}this._updateStepStatus(0,"success")}catch(e){const t=this._extractErrorMessage(e);return this._updateStepStatus(0,"error",t),void(this._operationProgress={...this._operationProgress,completed:!0,error:t})}if(o&&null!==t.target_node_id&&null!==t.target_endpoint_id){this._updateStepStatus(1,"in_progress");try{const e=await async function(e,t,i,o,r){return e.callWS({type:`${it}/remove_acl`,target_node_id:t,source_node_id:i,...null!=o&&{target_endpoint_id:o},...null!=r&&{cluster_id:r}})}(this.hass,t.target_node_id,i.node_id,t.target_endpoint_id,t.cluster_id);e.success?(this._updateStepStatus(1,"success"),this._targetACLCache=new Map(this._targetACLCache),this._targetACLCache.delete(t.target_node_id)):this._updateStepStatus(1,"error",this._extractErrorMessage(e.message))}catch(e){const t=this._extractErrorMessage(e);this._updateStepStatus(1,"error",t)}}this._operationProgress={...this._operationProgress,completed:!0}}_showBindingConfirmDialog(e){this._pendingBindingRecommendation=e,this._selectedClusterForBinding=e.compatibleClusters[0]}_closeBindingConfirmDialog(){this._pendingBindingRecommendation=null,this._selectedClusterForBinding=null}_handleClusterSelectChange(e){const t=e.target;this._selectedClusterForBinding=parseInt(t.value,10)}_confirmCreateBinding(){if(!this._pendingBindingRecommendation||!this._selectedClusterForBinding)return;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o}=this._pendingBindingRecommendation,r=this._selectedClusterForBinding;this._closeBindingConfirmDialog(),this._startBindingWizard(e,t,i,o,r)}_renderBindingsTab(){return j`
       <div class="content">
         <matter-node-list
           .nodes=${this._nodes}
@@ -5652,13 +5773,13 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               `:U}
           ${this._selectedSourceEndpoint?this._bindings.length>0?j`
                   <div class="binding-list">
-                    ${this._bindings.map(e=>{const t=this._getBindingContext(e);if(!t)return U;const i=null!==e.target_group_id,o=i?{hasPermission:!0}:this._checkBindingACL(e,this._selectedSourceNode.node_id),n=`delete-tab-${e.node_id}-${e.endpoint_id}-${e.target_node_id}-${e.target_endpoint_id}`;return j`
+                    ${this._bindings.map(e=>{const t=this._getBindingContext(e);if(!t)return U;const i=null!==e.target_group_id,o=i?{hasPermission:!0}:this._checkBindingACL(e,this._selectedSourceNode.node_id),r=`delete-tab-${e.node_id}-${e.endpoint_id}-${e.target_node_id}-${e.target_endpoint_id}`;return j`
                         <matter-binding-card
                           .binding=${t}
                           .aclMissing=${!o.hasPermission}
                           .aclReason=${o.reason||""}
                           .showRepairButton=${!o.hasPermission&&!i}
-                          .deleteInProgress=${this._actionInProgress===n}
+                          .deleteInProgress=${this._actionInProgress===r}
                           .disabled=${null!==this._actionInProgress}
                           @delete-binding=${this._handleBindingCardDelete}
                           @repair-acl=${this._handleBindingCardRepairAcl}
@@ -5677,7 +5798,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               `}
         </div>
       </div>
-    `}_getPrimaryDeviceType(e){const t=e.endpoints.find(e=>1===e.endpoint_id)||e.endpoints.find(e=>e.endpoint_id>0);return t&&t.device_types.length>0?qe(t.device_types[0].id):null}async _loadACL(e){this._aclLoading=!0,this._aclEntries=null;try{const t=await st(this.hass,e);t.success&&(this._aclEntries=t.entries)}catch(e){console.error("Failed to load ACL:",e)}finally{this._aclLoading=!1}}async _loadACLForNode(e){if(!this._targetACLCache.has(e)&&!this._aclLoadingNodes.has(e)){this._aclLoadingNodes=new Set([...this._aclLoadingNodes,e]);try{const t=await st(this.hass,e);t.success&&(this._targetACLCache=new Map([...this._targetACLCache,[e,t.entries]]))}catch(t){console.error(`Failed to load ACL for node ${e}:`,t)}finally{const t=new Set(this._aclLoadingNodes);t.delete(e),this._aclLoadingNodes=t}}}_getBindingContext(e){if(!this._selectedSourceNode||!this._selectedSourceEndpoint)return null;const t=null!==e.target_node_id&&this._nodes.find(t=>t.node_id===e.target_node_id)||null,i=t&&null!==e.target_endpoint_id&&t.endpoints.find(t=>t.endpoint_id===e.target_endpoint_id)||null;return{binding:e,sourceNode:this._selectedSourceNode,sourceEndpoint:this._selectedSourceEndpoint,targetNode:t,targetEndpoint:i}}_checkBindingACL(e,t){const i=e.target_node_id;if(null===i)return{hasPermission:!0,status:"ok"};if(this._aclLoadingNodes.has(i))return{hasPermission:!0,status:"loading"};const o=this._targetACLCache.get(i);if(void 0===o)return{hasPermission:!0,status:"unknown",reason:"ACL not loaded"};if(0===o.length)return{hasPermission:!1,status:"missing",reason:"No ACL entries on target"};const n=e.cluster_id,r=null===n||[6,8,768,513,514].includes(n)?3:1,s=3===r?"Operate":"View";for(const e of o)if(2===e.auth_mode&&!(e.privilege<r)&&(!(e.subjects.length>0)||e.subjects.includes(t))){if(e.targets.length>0){const t=e.targets.some(e=>null===e.cluster||e.cluster===n);if(!t)continue}return{hasPermission:!0,status:"ok"}}return{hasPermission:!1,status:"missing",reason:`Target missing ${s} permission for source node ${t}`}}_getErrorDisplay(e){switch(e){case"permission_denied":return{icon:"🔒",cssClass:"error-permission"};case"device_unavailable":return{icon:"📴",cssClass:"error-unavailable"};case"device_timeout":return{icon:"⏱️",cssClass:"error-timeout"};case"device_rejected":return{icon:"🚫",cssClass:"error-rejected"};case"invalid_request":return{icon:"⚠️",cssClass:"error-invalid"};default:return{icon:"❌",cssClass:"error-unknown"}}}_renderEntityList(e){const t=e.entities||[];if(0===t.length)return U;const i={light:"💡",switch:"🔌",event:"🔘",sensor:"📊",binary_sensor:"⚡",climate:"🌡️",cover:"🪟",fan:"💨",lock:"🔒",button:"⏺️"};return j`
+    `}_getPrimaryDeviceType(e){const t=e.endpoints.find(e=>1===e.endpoint_id)||e.endpoints.find(e=>e.endpoint_id>0);return t&&t.device_types.length>0?Je(t.device_types[0].id):null}async _loadACL(e){this._aclLoading=!0,this._aclEntries=null;try{const t=await at(this.hass,e);t.success&&(this._aclEntries=t.entries)}catch(e){console.error("Failed to load ACL:",e)}finally{this._aclLoading=!1}}async _loadACLForNode(e){if(!this._targetACLCache.has(e)&&!this._aclLoadingNodes.has(e)){this._aclLoadingNodes=new Set([...this._aclLoadingNodes,e]);try{const t=await at(this.hass,e);t.success&&(this._targetACLCache=new Map([...this._targetACLCache,[e,t.entries]]))}catch(t){console.error(`Failed to load ACL for node ${e}:`,t)}finally{const t=new Set(this._aclLoadingNodes);t.delete(e),this._aclLoadingNodes=t}}}_getBindingContext(e){if(!this._selectedSourceNode||!this._selectedSourceEndpoint)return null;const t=null!==e.target_node_id&&this._nodes.find(t=>t.node_id===e.target_node_id)||null,i=t&&null!==e.target_endpoint_id&&t.endpoints.find(t=>t.endpoint_id===e.target_endpoint_id)||null;return{binding:e,sourceNode:this._selectedSourceNode,sourceEndpoint:this._selectedSourceEndpoint,targetNode:t,targetEndpoint:i}}_checkBindingACL(e,t){const i=e.target_node_id;if(null===i)return{hasPermission:!0,status:"ok"};if(this._aclLoadingNodes.has(i))return{hasPermission:!0,status:"loading"};const o=this._targetACLCache.get(i);if(void 0===o)return{hasPermission:!0,status:"unknown",reason:"ACL not loaded"};if(0===o.length)return{hasPermission:!1,status:"missing",reason:"No ACL entries on target"};const r=e.cluster_id,n=null===r||[6,8,768,513,514].includes(r)?3:1,s=3===n?"Operate":"View";for(const e of o)if(2===e.auth_mode&&!(e.privilege<n)&&(!(e.subjects.length>0)||e.subjects.includes(t))){if(e.targets.length>0){const t=e.targets.some(e=>null===e.cluster||e.cluster===r);if(!t)continue}return{hasPermission:!0,status:"ok"}}return{hasPermission:!1,status:"missing",reason:`Target missing ${s} permission for source node ${t}`}}_getErrorDisplay(e){switch(e){case"permission_denied":return{icon:"🔒",cssClass:"error-permission"};case"device_unavailable":return{icon:"📴",cssClass:"error-unavailable"};case"device_timeout":return{icon:"⏱️",cssClass:"error-timeout"};case"device_rejected":return{icon:"🚫",cssClass:"error-rejected"};case"invalid_request":return{icon:"⚠️",cssClass:"error-invalid"};default:return{icon:"❌",cssClass:"error-unknown"}}}_renderEntityList(e){const t=e.entities||[];if(0===t.length)return U;const i={light:"💡",switch:"🔌",event:"🔘",sensor:"📊",binary_sensor:"⚡",climate:"🌡️",cover:"🪟",fan:"💨",lock:"🔒",button:"⏺️"};return j`
       <div class="device-section">
         <div class="section-header">Home Assistant Entities</div>
         <div class="entity-chips">
@@ -5721,7 +5842,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
               `:U}
         </div>
       </div>
-    `}_navigateToDevice(e){e&&(history.pushState(null,"",`/config/devices/device/${e}`),window.dispatchEvent(new CustomEvent("location-changed")))}_renderBindingConfirmDialogComponent(){if(!this._pendingBindingRecommendation||!this._selectedClusterForBinding)return U;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,compatibleClusters:n}=this._pendingBindingRecommendation,r=this._selectedClusterForBinding,s=Je(r);return j`
+    `}_navigateToDevice(e){e&&(history.pushState(null,"",`/config/devices/device/${e}`),window.dispatchEvent(new CustomEvent("location-changed")))}_renderBindingConfirmDialogComponent(){if(!this._pendingBindingRecommendation||!this._selectedClusterForBinding)return U;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,compatibleClusters:r}=this._pendingBindingRecommendation,n=this._selectedClusterForBinding,s=Ke(n);return j`
       <matter-confirm-dialog
         .open=${!0}
         title="Create Binding"
@@ -5738,7 +5859,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
             ${e.area_name?j`<div class="binding-device-area">${e.area_name}</div>`:U}
           </div>
           <div class="binding-arrow-container">
-            <span class="binding-cluster-label">${He(r)}</span>
+            <span class="binding-cluster-label">${qe(n)}</span>
             <span class="binding-arrow-large">→</span>
           </div>
           <div class="binding-device-card target">
@@ -5756,23 +5877,23 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
 
-        ${n.length>1?j`
+        ${r.length>1?j`
               <div class="cluster-select-group">
                 <label>Select cluster to bind:</label>
                 <select
                   class="form-select"
                   @change=${this._handleClusterSelectChange}
                 >
-                  ${n.map(e=>j`
-                      <option value=${e} ?selected=${e===r}>
-                        ${He(e)} - ${Je(e).dataType}
+                  ${r.map(e=>j`
+                      <option value=${e} ?selected=${e===n}>
+                        ${qe(e)} - ${Ke(e).dataType}
                       </option>
                     `)}
                 </select>
               </div>
             `:U}
       </matter-confirm-dialog>
-    `}_renderManualBindingConfirmDialogComponent(){if(!this._pendingManualBinding)return U;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:n}=this._pendingManualBinding,r=Je(n);return j`
+    `}_renderManualBindingConfirmDialogComponent(){if(!this._pendingManualBinding)return U;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:r}=this._pendingManualBinding,n=Ke(r);return j`
       <matter-confirm-dialog
         .open=${!0}
         title="Create Binding"
@@ -5789,7 +5910,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
             ${e.area_name?j`<div class="binding-device-area">${e.area_name}</div>`:U}
           </div>
           <div class="binding-arrow-container">
-            <span class="binding-cluster-label">${He(n)}</span>
+            <span class="binding-cluster-label">${qe(r)}</span>
             <span class="binding-arrow-large">→</span>
           </div>
           <div class="binding-device-card target">
@@ -5802,12 +5923,12 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         <div class="binding-explanation">
           <div class="binding-explanation-header">What this binding does:</div>
           <div class="binding-explanation-content">
-            <strong>${e.name}</strong> will ${r.action}
-            <strong>${i.name}</strong> using ${r.dataType}.
+            <strong>${e.name}</strong> will ${n.action}
+            <strong>${i.name}</strong> using ${n.dataType}.
           </div>
         </div>
       </matter-confirm-dialog>
-    `}_renderDeleteConfirmDialogComponent(){if(!this._pendingDeleteBinding)return U;const{binding:e,sourceNode:t,sourceEndpoint:i,targetNode:o}=this._pendingDeleteBinding,n=Je(e.cluster_id),r=o?.name||`Node ${e.target_node_id}`,s=null!==e.target_group_id;return j`
+    `}_renderDeleteConfirmDialogComponent(){if(!this._pendingDeleteBinding)return U;const{binding:e,sourceNode:t,sourceEndpoint:i,targetNode:o}=this._pendingDeleteBinding,r=Ke(e.cluster_id),n=o?.name||`Node ${e.target_node_id}`,s=null!==e.target_group_id;return j`
       <matter-confirm-dialog
         .open=${!0}
         title="Remove Binding"
@@ -5825,12 +5946,12 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
             ${t.area_name?j`<div class="binding-device-area">${t.area_name}</div>`:U}
           </div>
           <div class="binding-arrow-container">
-            <span class="binding-cluster-label">${He(e.cluster_id)}</span>
+            <span class="binding-cluster-label">${qe(e.cluster_id)}</span>
             <span class="binding-arrow-large" style="text-decoration: line-through; color: var(--error-color);">→</span>
           </div>
           <div class="binding-device-card target">
             ${s?j`<div class="binding-device-name">Group ${e.target_group_id}</div>`:j`
-                  <div class="binding-device-name">${r}</div>
+                  <div class="binding-device-name">${n}</div>
                   <div class="binding-device-endpoint">Endpoint ${e.target_endpoint_id}</div>
                   ${o?.area_name?j`<div class="binding-device-area">${o.area_name}</div>`:U}
                 `}
@@ -5840,8 +5961,8 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
         <div class="binding-explanation" style="border-left: 3px solid var(--error-color);">
           <div class="binding-explanation-header">After removing this binding:</div>
           <div class="binding-explanation-content">
-            <strong>${t.name}</strong> will stop being able to ${n.action}
-            <strong>${s?`Group ${e.target_group_id}`:r}</strong>.
+            <strong>${t.name}</strong> will stop being able to ${r.action}
+            <strong>${s?`Group ${e.target_group_id}`:n}</strong>.
           </div>
         </div>
       </matter-confirm-dialog>
@@ -5874,7 +5995,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                     ${t?j`
                           <div class="verification-binding-info">
                             <strong>${t.sourceNode.name}</strong>
-                            <span class="binding-action">${Je(t.binding.cluster_id).action}</span>
+                            <span class="binding-action">${Ke(t.binding.cluster_id).action}</span>
                             <strong>${t.targetNode?.name||`Node ${t.binding.target_node_id}`}</strong>
                           </div>
                         `:U}
@@ -5905,7 +6026,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
       </div>
-    `}_startBindingWizard(e,t,i,o,n){this._bindingWizard={currentStep:"binding",sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:n,selectedPrivilege:ht(n),bindingInProgress:!1,aclInProgress:!1,verifyInProgress:!1}}_closeBindingWizard(){this._bindingWizard=null,this._loadOverviewData()}_goToWizardStep(e){this._bindingWizard&&(this._bindingWizard={...this._bindingWizard,currentStep:e})}_handlePrivilegeChange(e){this._bindingWizard&&(this._bindingWizard={...this._bindingWizard,selectedPrivilege:e})}async _executeBindingStep(){if(!this._bindingWizard)return;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:n}=this._bindingWizard;this._bindingWizard={...this._bindingWizard,bindingInProgress:!0};try{const r=await ot(this.hass,e.node_id,t.endpoint_id,n,i.node_id,o.endpoint_id,void 0,!0,!1);this._bindingWizard={...this._bindingWizard,bindingResult:r,bindingInProgress:!1},r.success&&this._goToWizardStep("acl")}catch(e){this._bindingWizard={...this._bindingWizard,bindingResult:{success:!1,verified:!1,message:`Failed to create binding: ${this._extractErrorMessage(e)}`,bindings_found:0,error_type:"unknown_error"},bindingInProgress:!1}}}async _executeACLStep(){if(!this._bindingWizard)return;const{sourceNode:e,targetNode:t,targetEndpoint:i,clusterId:o}=this._bindingWizard;this._bindingWizard={...this._bindingWizard,aclInProgress:!0,aclProgress:void 0};let n=null;try{n=await this.hass.connection.subscribeEvents(i=>{const o=i.data;o.target_node_id===t.node_id&&o.source_node_id===e.node_id&&(this._bindingWizard={...this._bindingWizard,aclProgress:o})},"matter_binding_helper_acl_progress")}catch(e){console.warn("Failed to subscribe to ACL progress events:",e)}try{const n=await at(this.hass,t.node_id,i.endpoint_id,e.node_id,o);this._bindingWizard={...this._bindingWizard,aclResult:n,aclInProgress:!1,aclProgress:void 0},n.success&&this._goToWizardStep("verify")}catch(e){this._bindingWizard={...this._bindingWizard,aclResult:{success:!1,message:`Failed to provision ACL: ${this._extractErrorMessage(e)}`,acl_entries_count:0},aclInProgress:!1,aclProgress:void 0}}finally{n&&n()}}async _executeVerifyStep(){if(!this._bindingWizard)return;const{sourceNode:e,sourceEndpoint:t}=this._bindingWizard;this._bindingWizard={...this._bindingWizard,verifyInProgress:!0};try{const i=await rt(this.hass,e.node_id,t.endpoint_id);this._bindingWizard={...this._bindingWizard,verifyResult:i,verifyInProgress:!1}}catch(e){this._bindingWizard={...this._bindingWizard,verifyResult:{success:!1,verified:!1,message:`Failed to verify bindings: ${this._extractErrorMessage(e)}`,bindings_found:0,error_type:"unknown_error"},verifyInProgress:!1}}}async _repairBindingACL(e){if(null===e.binding.target_node_id||null===e.binding.target_endpoint_id)return;const t=e.binding.target_node_id,i=e.binding.target_endpoint_id,o=this._nodes.find(e=>e.node_id===t),n=o?.name||`Node ${t}`;this._operationProgress={title:"Repairing ACL Permission",steps:[{label:`Provisioning ACL on ${n}`,status:"pending"}],currentStepIndex:0,canCancel:!1,completed:!1},this._updateStepStatus(0,"in_progress");try{const o=await at(this.hass,t,i,e.sourceNode.node_id,e.binding.cluster_id);if(!o.success){const e=this._extractErrorMessage(o.message);return this._updateStepStatus(0,"error",e),void(this._operationProgress={...this._operationProgress,completed:!0,error:e})}this._updateStepStatus(0,"success"),this._targetACLCache=new Map(this._targetACLCache),this._targetACLCache.delete(t)}catch(e){const t=this._extractErrorMessage(e);return this._updateStepStatus(0,"error",t),void(this._operationProgress={...this._operationProgress,completed:!0,error:t})}this._operationProgress={...this._operationProgress,completed:!0}}async _repairAllACLs(){const e=this._allBindings.filter(e=>{if(null!==e.binding.target_group_id)return!1;return!this._checkBindingACL(e.binding,e.sourceNode.node_id).hasPermission});if(0===e.length)return;const t=e.map(e=>{const t=this._nodes.find(t=>t.node_id===e.binding.target_node_id);return{label:`Provisioning ACL on ${t?.name||`Node ${e.binding.target_node_id}`}`,status:"pending"}});this._operationProgress={title:`Repairing ${e.length} ACL Permission${1!==e.length?"s":""}`,steps:t,currentStepIndex:0,canCancel:!0,completed:!1};for(let t=0;t<e.length;t++){if("skipped"===this._operationProgress?.steps[t]?.status)continue;const i=e[t],{binding:o,sourceNode:n}=i;if(null!==o.target_node_id&&null!==o.target_endpoint_id){this._updateStepStatus(t,"in_progress");try{const e=await at(this.hass,o.target_node_id,o.target_endpoint_id,n.node_id,o.cluster_id);e.success?this._updateStepStatus(t,"success"):this._updateStepStatus(t,"error",this._extractErrorMessage(e.message))}catch(e){const i=this._extractErrorMessage(e);this._updateStepStatus(t,"error",i)}}else this._updateStepStatus(t,"skipped","Invalid binding")}this._targetACLCache=new Map,this._operationProgress={...this._operationProgress,completed:!0,canCancel:!1}}_closeBulkRepairModal(){this._showBulkRepairModal=!1,this._bulkRepairResult=null}_renderBulkRepairModal(){if(!this._showBulkRepairModal||!this._bulkRepairResult)return U;const e=this._bulkRepairResult,t=e.total-e.succeeded;return j`
+    `}_startBindingWizard(e,t,i,o,r){this._bindingWizard={currentStep:"binding",sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:r,selectedPrivilege:mt(r),bindingInProgress:!1,aclInProgress:!1,verifyInProgress:!1}}_closeBindingWizard(){this._bindingWizard=null,this._loadOverviewData()}_goToWizardStep(e){this._bindingWizard&&(this._bindingWizard={...this._bindingWizard,currentStep:e})}_handlePrivilegeChange(e){this._bindingWizard&&(this._bindingWizard={...this._bindingWizard,selectedPrivilege:e})}async _executeBindingStep(){if(!this._bindingWizard)return;const{sourceNode:e,sourceEndpoint:t,targetNode:i,targetEndpoint:o,clusterId:r}=this._bindingWizard;this._bindingWizard={...this._bindingWizard,bindingInProgress:!0};try{const n=await rt(this.hass,e.node_id,t.endpoint_id,r,i.node_id,o.endpoint_id,void 0,!0,!1);this._bindingWizard={...this._bindingWizard,bindingResult:n,bindingInProgress:!1},n.success&&this._goToWizardStep("acl")}catch(e){this._bindingWizard={...this._bindingWizard,bindingResult:{success:!1,verified:!1,message:`Failed to create binding: ${this._extractErrorMessage(e)}`,bindings_found:0,error_type:"unknown_error"},bindingInProgress:!1}}}async _executeACLStep(){if(!this._bindingWizard)return;const{sourceNode:e,targetNode:t,targetEndpoint:i,clusterId:o}=this._bindingWizard;this._bindingWizard={...this._bindingWizard,aclInProgress:!0,aclProgress:void 0};let r=null;try{r=await this.hass.connection.subscribeEvents(i=>{const o=i.data;o.target_node_id===t.node_id&&o.source_node_id===e.node_id&&(this._bindingWizard={...this._bindingWizard,aclProgress:o})},"matter_binding_helper_acl_progress")}catch(e){console.warn("Failed to subscribe to ACL progress events:",e)}try{const r=await dt(this.hass,t.node_id,i.endpoint_id,e.node_id,o);this._bindingWizard={...this._bindingWizard,aclResult:r,aclInProgress:!1,aclProgress:void 0},r.success&&this._goToWizardStep("verify")}catch(e){this._bindingWizard={...this._bindingWizard,aclResult:{success:!1,message:`Failed to provision ACL: ${this._extractErrorMessage(e)}`,acl_entries_count:0},aclInProgress:!1,aclProgress:void 0}}finally{r&&r()}}async _executeVerifyStep(){if(!this._bindingWizard)return;const{sourceNode:e,sourceEndpoint:t}=this._bindingWizard;this._bindingWizard={...this._bindingWizard,verifyInProgress:!0};try{const i=await st(this.hass,e.node_id,t.endpoint_id);this._bindingWizard={...this._bindingWizard,verifyResult:i,verifyInProgress:!1}}catch(e){this._bindingWizard={...this._bindingWizard,verifyResult:{success:!1,verified:!1,message:`Failed to verify bindings: ${this._extractErrorMessage(e)}`,bindings_found:0,error_type:"unknown_error"},verifyInProgress:!1}}}async _repairBindingACL(e){if(null===e.binding.target_node_id||null===e.binding.target_endpoint_id)return;const t=e.binding.target_node_id,i=e.binding.target_endpoint_id,o=this._nodes.find(e=>e.node_id===t),r=o?.name||`Node ${t}`;this._operationProgress={title:"Repairing ACL Permission",steps:[{label:`Provisioning ACL on ${r}`,status:"pending"}],currentStepIndex:0,canCancel:!1,completed:!1},this._updateStepStatus(0,"in_progress");try{const o=await dt(this.hass,t,i,e.sourceNode.node_id,e.binding.cluster_id);if(!o.success){const e=this._extractErrorMessage(o.message);return this._updateStepStatus(0,"error",e),void(this._operationProgress={...this._operationProgress,completed:!0,error:e})}this._updateStepStatus(0,"success"),this._targetACLCache=new Map(this._targetACLCache),this._targetACLCache.delete(t)}catch(e){const t=this._extractErrorMessage(e);return this._updateStepStatus(0,"error",t),void(this._operationProgress={...this._operationProgress,completed:!0,error:t})}this._operationProgress={...this._operationProgress,completed:!0}}async _repairAllACLs(){const e=this._allBindings.filter(e=>{if(null!==e.binding.target_group_id)return!1;return!this._checkBindingACL(e.binding,e.sourceNode.node_id).hasPermission});if(0===e.length)return;const t=e.map(e=>{const t=this._nodes.find(t=>t.node_id===e.binding.target_node_id);return{label:`Provisioning ACL on ${t?.name||`Node ${e.binding.target_node_id}`}`,status:"pending"}});this._operationProgress={title:`Repairing ${e.length} ACL Permission${1!==e.length?"s":""}`,steps:t,currentStepIndex:0,canCancel:!0,completed:!1};for(let t=0;t<e.length;t++){if("skipped"===this._operationProgress?.steps[t]?.status)continue;const i=e[t],{binding:o,sourceNode:r}=i;if(null!==o.target_node_id&&null!==o.target_endpoint_id){this._updateStepStatus(t,"in_progress");try{const e=await dt(this.hass,o.target_node_id,o.target_endpoint_id,r.node_id,o.cluster_id);e.success?this._updateStepStatus(t,"success"):this._updateStepStatus(t,"error",this._extractErrorMessage(e.message))}catch(e){const i=this._extractErrorMessage(e);this._updateStepStatus(t,"error",i)}}else this._updateStepStatus(t,"skipped","Invalid binding")}this._targetACLCache=new Map,this._operationProgress={...this._operationProgress,completed:!0,canCancel:!1}}_closeBulkRepairModal(){this._showBulkRepairModal=!1,this._bulkRepairResult=null}_renderBulkRepairModal(){if(!this._showBulkRepairModal||!this._bulkRepairResult)return U;const e=this._bulkRepairResult,t=e.total-e.succeeded;return j`
       <div class="dialog-overlay" @click=${this._closeBulkRepairModal}>
         <div class="dialog" style="max-width: 500px;" @click=${e=>e.stopPropagation()}>
           <div class="dialog-header">ACL Repair Results</div>
@@ -5936,7 +6057,7 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
                     </span>
                     <span>
                       ${t?.name||`Node ${e.target_node_id}`}
-                      (EP ${e.target_endpoint_id}, Cluster ${He(e.cluster_id)})
+                      (EP ${e.target_endpoint_id}, Cluster ${qe(e.cluster_id)})
                       ${e.success?U:j`<br><small style="color: var(--error-color);">${this._extractErrorMessage(e.message)}</small>`}
                     </span>
                   </div>
@@ -5955,4 +6076,4 @@ const de=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}
           </div>
         </div>
       </div>
-    `}};Xt.styles=[...Jt,...Kt,...Yt,...Gt,...yt,...Ct,...Nt],e([pe({attribute:!1})],Xt.prototype,"hass",void 0),e([pe({type:Boolean})],Xt.prototype,"narrow",void 0),e([ge()],Xt.prototype,"_nodes",void 0),e([ge()],Xt.prototype,"_selectedSourceNode",void 0),e([ge()],Xt.prototype,"_selectedSourceEndpoint",void 0),e([ge()],Xt.prototype,"_bindings",void 0),e([ge()],Xt.prototype,"_groups",void 0),e([ge()],Xt.prototype,"_loading",void 0),e([ge()],Xt.prototype,"_error",void 0),e([ge()],Xt.prototype,"_activeTab",void 0),e([ge()],Xt.prototype,"_showCreateDialog",void 0),e([ge()],Xt.prototype,"_showCreateGroupDialog",void 0),e([ge()],Xt.prototype,"_manageGroup",void 0),e([ge()],Xt.prototype,"_pendingDeleteGroup",void 0),e([ge()],Xt.prototype,"_allBindings",void 0),e([ge()],Xt.prototype,"_recommendations",void 0),e([ge()],Xt.prototype,"_overviewLoading",void 0),e([ge()],Xt.prototype,"_surveySubmitting",void 0),e([ge()],Xt.prototype,"_surveyResult",void 0),e([ge()],Xt.prototype,"_selectedTargetNodeId",void 0),e([ge()],Xt.prototype,"_selectedTargetEndpointId",void 0),e([ge()],Xt.prototype,"_filterSameAreaOnly",void 0),e([ge()],Xt.prototype,"_actionInProgress",void 0),e([ge()],Xt.prototype,"_pendingBindingRecommendation",void 0),e([ge()],Xt.prototype,"_selectedClusterForBinding",void 0),e([ge()],Xt.prototype,"_pendingManualBinding",void 0),e([ge()],Xt.prototype,"_pendingDeleteBinding",void 0),e([ge()],Xt.prototype,"_automationRecommendations",void 0),e([ge()],Xt.prototype,"_eveSchedules",void 0),e([ge()],Xt.prototype,"_eveScheduleLoading",void 0),e([ge()],Xt.prototype,"_verificationInProgress",void 0),e([ge()],Xt.prototype,"_lastVerificationResult",void 0),e([ge()],Xt.prototype,"_showVerificationModal",void 0),e([ge()],Xt.prototype,"_verificationModalResult",void 0),e([ge()],Xt.prototype,"_aclLoading",void 0),e([ge()],Xt.prototype,"_aclEntries",void 0),e([ge()],Xt.prototype,"_targetACLCache",void 0),e([ge()],Xt.prototype,"_aclLoadingNodes",void 0),e([ge()],Xt.prototype,"_bindingWizard",void 0),e([ge()],Xt.prototype,"_aclRepairInProgress",void 0),e([ge()],Xt.prototype,"_bulkRepairInProgress",void 0),e([ge()],Xt.prototype,"_bulkRepairResult",void 0),e([ge()],Xt.prototype,"_showBulkRepairModal",void 0),e([ge()],Xt.prototype,"_operationProgress",void 0),e([ge()],Xt.prototype,"_showAutomationDialog",void 0),e([ge()],Xt.prototype,"_pendingAutomationRecommendation",void 0),Xt=e([de("matter-binding-helper-panel")],Xt);export{Xt as MatterBindingPanel};
+    `}};ri.styles=[...ti,...ii,...oi,...Ht,...$t,...Et,...Rt],e([pe({attribute:!1})],ri.prototype,"hass",void 0),e([pe({type:Boolean})],ri.prototype,"narrow",void 0),e([ge()],ri.prototype,"_nodes",void 0),e([ge()],ri.prototype,"_selectedSourceNode",void 0),e([ge()],ri.prototype,"_selectedSourceEndpoint",void 0),e([ge()],ri.prototype,"_bindings",void 0),e([ge()],ri.prototype,"_groups",void 0),e([ge()],ri.prototype,"_loading",void 0),e([ge()],ri.prototype,"_error",void 0),e([ge()],ri.prototype,"_activeTab",void 0),e([ge()],ri.prototype,"_showCreateDialog",void 0),e([ge()],ri.prototype,"_showCreateGroupDialog",void 0),e([ge()],ri.prototype,"_manageGroup",void 0),e([ge()],ri.prototype,"_pendingDeleteGroup",void 0),e([ge()],ri.prototype,"_allBindings",void 0),e([ge()],ri.prototype,"_recommendations",void 0),e([ge()],ri.prototype,"_overviewLoading",void 0),e([ge()],ri.prototype,"_surveySubmitting",void 0),e([ge()],ri.prototype,"_surveyResult",void 0),e([ge()],ri.prototype,"_selectedTargetNodeId",void 0),e([ge()],ri.prototype,"_selectedTargetEndpointId",void 0),e([ge()],ri.prototype,"_filterSameAreaOnly",void 0),e([ge()],ri.prototype,"_actionInProgress",void 0),e([ge()],ri.prototype,"_pendingBindingRecommendation",void 0),e([ge()],ri.prototype,"_selectedClusterForBinding",void 0),e([ge()],ri.prototype,"_pendingManualBinding",void 0),e([ge()],ri.prototype,"_pendingDeleteBinding",void 0),e([ge()],ri.prototype,"_automationRecommendations",void 0),e([ge()],ri.prototype,"_eveSchedules",void 0),e([ge()],ri.prototype,"_eveScheduleLoading",void 0),e([ge()],ri.prototype,"_verificationInProgress",void 0),e([ge()],ri.prototype,"_lastVerificationResult",void 0),e([ge()],ri.prototype,"_showVerificationModal",void 0),e([ge()],ri.prototype,"_verificationModalResult",void 0),e([ge()],ri.prototype,"_aclLoading",void 0),e([ge()],ri.prototype,"_aclEntries",void 0),e([ge()],ri.prototype,"_targetACLCache",void 0),e([ge()],ri.prototype,"_aclLoadingNodes",void 0),e([ge()],ri.prototype,"_bindingWizard",void 0),e([ge()],ri.prototype,"_aclRepairInProgress",void 0),e([ge()],ri.prototype,"_bulkRepairInProgress",void 0),e([ge()],ri.prototype,"_bulkRepairResult",void 0),e([ge()],ri.prototype,"_showBulkRepairModal",void 0),e([ge()],ri.prototype,"_operationProgress",void 0),e([ge()],ri.prototype,"_showAutomationDialog",void 0),e([ge()],ri.prototype,"_pendingAutomationRecommendation",void 0),ri=e([de("matter-binding-helper-panel")],ri);export{ri as MatterBindingPanel};

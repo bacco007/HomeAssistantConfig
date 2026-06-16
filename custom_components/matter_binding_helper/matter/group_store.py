@@ -64,6 +64,11 @@ class GroupRecord:
     key_set_id: int
     epoch_key: str  # hex of EPOCH_KEY_BYTES random bytes
     members: list[dict[str, int]] = field(default_factory=list)
+    # The clusters this group is intended to control. Matter groups are untyped
+    # multicast addresses, so this registry is the *only* type authority: it drives
+    # member-endpoint compatibility filtering and groupcast-binding cluster
+    # defaults. Empty means "untyped" (legacy groups created before this field).
+    clusters: list[int] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         """Serialize for storage."""
@@ -73,6 +78,7 @@ class GroupRecord:
             "key_set_id": self.key_set_id,
             "epoch_key": self.epoch_key,
             "members": self.members,
+            "clusters": self.clusters,
         }
 
     @classmethod
@@ -87,6 +93,7 @@ class GroupRecord:
                 {"node_id": int(m["node_id"]), "endpoint_id": int(m["endpoint_id"])}
                 for m in data.get("members", [])
             ],
+            clusters=[int(c) for c in data.get("clusters", [])],
         )
 
     def has_member(self, node_id: int, endpoint_id: int) -> bool:
@@ -172,11 +179,18 @@ class GroupStore:
         data["next_group_id"] = gid + 1
         return gid
 
-    async def async_create_group(self, group_id: int | None, name: str) -> GroupRecord:
+    async def async_create_group(
+        self,
+        group_id: int | None,
+        name: str,
+        clusters: list[int] | None = None,
+    ) -> GroupRecord:
         """Create a group, allocating a key set id and a fresh epoch key.
 
         If ``group_id`` is None, the next free group id is allocated automatically
         (the common case — users shouldn't have to invent a Matter group id).
+        ``clusters`` records what the group is meant to control (the type authority
+        for member filtering and binding defaults); an empty list means untyped.
         Raises ValueError if an explicitly-requested group already exists.
         """
         data = self._require_loaded()
@@ -195,6 +209,7 @@ class GroupStore:
             key_set_id=key_set_id,
             epoch_key=self._key_factory(),
             members=[],
+            clusters=[int(c) for c in (clusters or [])],
         )
         data["groups"][key] = record.to_dict()
         await self._save()

@@ -309,6 +309,43 @@ def _parse_acl_entry(entry: Any) -> ACLEntry | None:
         return None
 
 
+def _acl_target(
+    cluster: int | None, endpoint: int | None, device_type: int | None = None
+) -> dict[str, Any]:
+    """An ACL target carrying both key spellings the two servers expect.
+
+    python-matter-server deserializes set_acl_entry into chip structs (camelCase
+    ``deviceType``); matter.js reads snake_case ``device_type`` and, when it's
+    absent, builds a bogus DeviceTypeId that collides with ``endpoint`` and the
+    device rejects the write with CONSTRAINT_ERROR. Emitting both keys (each
+    server ignores the one it doesn't know) satisfies both.
+    """
+    return {
+        "cluster": cluster,
+        "endpoint": endpoint,
+        "deviceType": device_type,
+        "device_type": device_type,
+    }
+
+
+def _acl_entry_dict(
+    privilege: int,
+    auth_mode: int,
+    subjects: list[int] | None,
+    targets: list[dict[str, Any]] | None,
+) -> dict[str, Any]:
+    """An ACL entry with both ``authMode`` (chip/python) and ``auth_mode``
+    (matter.js) spellings; see :func:`_acl_target`."""
+    return {
+        "privilege": privilege,
+        "authMode": auth_mode,
+        "auth_mode": auth_mode,
+        "subjects": subjects,
+        "targets": targets,
+        "fabricIndex": 0,  # Device sets this automatically
+    }
+
+
 def build_acl_entry_for_binding(
     source_node_id: int,
     target_endpoint_id: int,
@@ -329,19 +366,12 @@ def build_acl_entry_for_binding(
     """
     privilege = get_cluster_privilege(cluster_id)
 
-    return {
-        "privilege": privilege,
-        "authMode": ACL_AUTH_MODE_CASE,  # Device-to-device communication
-        "subjects": [source_node_id],  # Only this node can use this entry
-        "targets": [
-            {
-                "cluster": cluster_id,
-                "endpoint": target_endpoint_id,
-                "deviceType": None,
-            }
-        ],
-        "fabricIndex": 0,  # Device sets this automatically
-    }
+    return _acl_entry_dict(
+        privilege,
+        ACL_AUTH_MODE_CASE,  # Device-to-device communication
+        [source_node_id],  # Only this node can use this entry
+        [_acl_target(cluster_id, target_endpoint_id)],
+    )
 
 
 def acl_entry_exists(
@@ -419,19 +449,12 @@ def build_group_acl_entry(
         target_endpoint_id: Endpoint to restrict to (None = all endpoints)
     """
     privilege = get_cluster_privilege(cluster_id)
-    return {
-        "privilege": privilege,
-        "authMode": ACL_AUTH_MODE_GROUP,
-        "subjects": [group_id],
-        "targets": [
-            {
-                "cluster": cluster_id,
-                "endpoint": target_endpoint_id,
-                "deviceType": None,
-            }
-        ],
-        "fabricIndex": 0,
-    }
+    return _acl_entry_dict(
+        privilege,
+        ACL_AUTH_MODE_GROUP,
+        [group_id],
+        [_acl_target(cluster_id, target_endpoint_id)],
+    )
 
 
 def group_acl_entry_exists(
@@ -481,21 +504,15 @@ def acl_entry_to_dict(entry: ACLEntry) -> dict[str, Any]:
     targets = None
     if entry.targets:
         targets = [
-            {
-                "cluster": t.cluster,
-                "endpoint": t.endpoint,
-                "deviceType": t.device_type,
-            }
-            for t in entry.targets
+            _acl_target(t.cluster, t.endpoint, t.device_type) for t in entry.targets
         ]
 
-    return {
-        "privilege": entry.privilege,
-        "authMode": entry.auth_mode,
-        "subjects": entry.subjects if entry.subjects else None,
-        "targets": targets,
-        "fabricIndex": 0,  # Device sets this automatically
-    }
+    return _acl_entry_dict(
+        entry.privilege,
+        entry.auth_mode,
+        entry.subjects if entry.subjects else None,
+        targets,
+    )
 
 
 async def write_acl(

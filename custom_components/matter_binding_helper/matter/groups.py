@@ -100,21 +100,31 @@ async def get_groups(hass: HomeAssistant) -> list[GroupEntry]:
     store = get_group_store(hass)
     await store.async_load()
     return [
-        GroupEntry(group_id=r.group_id, name=r.name, members=list(r.members))
+        GroupEntry(
+            group_id=r.group_id,
+            name=r.name,
+            members=list(r.members),
+            clusters=list(r.clusters),
+        )
         for r in store.list_groups()
     ]
 
 
 async def create_group(
-    hass: HomeAssistant, group_id: int | None, name: str
+    hass: HomeAssistant,
+    group_id: int | None,
+    name: str,
+    clusters: list[int] | None = None,
 ) -> GroupOperationResult:
     """Create a new Matter group (allocates a group key set in the registry).
 
     ``group_id`` is optional; when None the next free id is allocated so users
-    don't have to invent a Matter group id.
+    don't have to invent a Matter group id. ``clusters`` records what the group is
+    meant to control — the type authority for member filtering and binding
+    defaults, since Matter groups themselves are untyped.
     """
     if is_demo_mode(hass):
-        assigned = create_demo_group(group_id, name)
+        assigned = create_demo_group(group_id, name, clusters)
         if assigned is None:
             return GroupOperationResult(
                 success=False,
@@ -133,7 +143,7 @@ async def create_group(
             message=f"Group {group_id} already exists",
             error_code=GROUP_ALREADY_EXISTS_CODE,
         )
-    record = await store.async_create_group(group_id, name)
+    record = await store.async_create_group(group_id, name, clusters)
     return GroupOperationResult(
         success=True,
         message=f"Created group {record.group_id}",
