@@ -4,8 +4,9 @@ class WorldCup2026Panel extends HTMLElement {
     super();
     this._hass = null;
     const savedPage = localStorage.getItem("world_cup_2026_last_page") || "overview";
-    const validPages = new Set(["overview", "live", "fixtures", "results", "groups", "knockout", "players", "records", "stats", "venues", "supporters"]);
+    const validPages = new Set(["overview", "live", "fixtures", "results", "groups", "knockout", "players", "records", "stats", "teams", "venues", "supporters"]);
     this._page = validPages.has(savedPage) ? savedPage : "overview";
+    this._selectedTeamKey = localStorage.getItem("world_cup_2026_selected_team") || "";
     this._loaded = false;
     this._refreshInterval = null;
     this._countdownInterval = null;
@@ -273,6 +274,7 @@ class WorldCup2026Panel extends HTMLElement {
         assists: "Assists",
         language: "Dashboard Language",
         viewMode: "Dashboard View",
+        mobileView: "Mobile view",
         tabletView: "Tablet view",
         pcView: "PC view",
         controlCentre: 'World Cup 2026 Control Centre',
@@ -431,6 +433,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Buts",
         assists: "Passes",
         language: "Langue du Tableau de Bord",
+        pcView: "Vue PC",
+        tabletView: "Vue tablette",
+        viewMode: "Vue du tableau de bord",
         controlCentre: 'Centre de Contrôle Coupe du Monde 2026',
         overviewSubtitle: 'Tableau de bord du tournoi avec matchs, résultats, groupes, statistiques joueurs, stades, records et phase finale au même endroit.',
         tournamentIntelligence: 'Analyse du Tournoi',
@@ -588,6 +593,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Tore",
         assists: "Vorlagen",
         language: "Dashboard-Sprache",
+        pcView: "PC-Ansicht",
+        tabletView: "Tablet-Ansicht",
+        viewMode: "Dashboard-Ansicht",
         controlCentre: 'WM 2026 Kontrollzentrum',
         overviewSubtitle: 'Live-Turnierdashboard mit Spielen, Ergebnissen, Gruppen, Spielerstatistiken, Stadien, Rekorden und K.o.-Runde an einem Ort.',
         tournamentIntelligence: 'Turnieranalyse',
@@ -745,6 +753,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Goles",
         assists: "Asistencias",
         language: "Idioma del Panel",
+        pcView: "Vista PC",
+        tabletView: "Vista tablet",
+        viewMode: "Vista del panel",
         controlCentre: 'Centro de Control Mundial 2026',
         overviewSubtitle: 'Panel en vivo del torneo con partidos, resultados, grupos, estadísticas de jugadores, sedes, récords y eliminatorias en un solo lugar.',
         tournamentIntelligence: 'Análisis del Torneo',
@@ -779,6 +790,7 @@ class WorldCup2026Panel extends HTMLElement {
         supportFutureUpdates: "Apoya futuras actualizaciones, correcciones de errores y nuevas funciones del Mundial.",
         donateBuyBeer: "🍺 Donar / Invitarme a una cerveza",
         enjoyingIntegration: "🍺 ¿Disfrutas esta integración?",
+        supportIntegration: "Apoyar esta integraci?n",
         source: "Fuente",
         totalSupporters: "Total de seguidores",
         countries: "Países",
@@ -901,6 +913,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Gol",
         assists: "Assist",
         language: "Lingua Dashboard",
+        pcView: "Vista PC",
+        tabletView: "Vista tablet",
+        viewMode: "Vista dashboard",
         controlCentre: 'Centro di Controllo Mondiale 2026',
         overviewSubtitle: 'Dashboard live del torneo con partite, risultati, gruppi, statistiche giocatori, stadi, record e fase finale in un unico posto.',
         tournamentIntelligence: 'Analisi Torneo',
@@ -1058,6 +1073,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Doelpunten",
         assists: "Assists",
         language: "Dashboardtaal",
+        pcView: "PC-weergave",
+        tabletView: "Tabletweergave",
+        viewMode: "Dashboardweergave",
         controlCentre: 'WK 2026 Controlecentrum',
         overviewSubtitle: 'Live toernooidashboard met wedstrijden, uitslagen, groepen, spelerstatistieken, stadions, records en knock-out in één plek.',
         tournamentIntelligence: 'Toernooi-inzicht',
@@ -1217,6 +1235,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "गोल",
         assists: "असिस्ट",
         language: "डैशबोर्ड भाषा",
+        pcView: "???? ?????",
+        tabletView: "?????? ?????",
+        viewMode: "???????? ?????",
         controlCentre: "विश्व कप 2026 कंट्रोल सेंटर",
         overviewSubtitle: "फिक्स्चर, परिणाम, ग्रुप, खिलाड़ी आँकड़े, वेन्यू, रिकॉर्ड और नॉकआउट ट्रैकिंग के साथ लाइव टूर्नामेंट डैशबोर्ड।",
         tournamentIntelligence: "टूर्नामेंट विश्लेषण",
@@ -1374,6 +1395,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "গোল",
         assists: "অ্যাসিস্ট",
         language: "ড্যাশবোর্ড ভাষা",
+        pcView: "???? ???",
+        tabletView: "???????? ???",
+        viewMode: "?????????? ???",
         controlCentre: "বিশ্বকাপ ২০২৬ কন্ট্রোল সেন্টার",
         overviewSubtitle: "ফিক্সচার, ফলাফল, গ্রুপ, খেলোয়াড় পরিসংখ্যান, ভেন্যু, রেকর্ড ও নকআউট ট্র্যাকিংসহ লাইভ টুর্নামেন্ট ড্যাশবোর্ড।",
         tournamentIntelligence: "টুর্নামেন্ট বিশ্লেষণ",
@@ -1531,6 +1555,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "கோல்கள்",
         assists: "உதவிகள்",
         language: "டாஷ்போர்டு மொழி",
+        pcView: "PC ??????",
+        tabletView: "???????? ??????",
+        viewMode: "?????????? ??????",
         controlCentre: "உலகக் கோப்பை 2026 கட்டுப்பாட்டு மையம்",
         overviewSubtitle: "போட்டிகள், முடிவுகள், குழுக்கள், வீரர் புள்ளிவிவரங்கள், மைதானங்கள், சாதனைகள் மற்றும் நாக்அவுட் கண்காணிப்புடன் நேரலை போட்டி டாஷ்போர்டு.",
         tournamentIntelligence: "போட்டி பகுப்பாய்வு",
@@ -1688,6 +1715,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "గోల్స్",
         assists: "అసిస్ట్లు",
         language: "డ్యాష్‌బోర్డ్ భాష",
+        pcView: "PC ??????",
+        tabletView: "???????? ??????",
+        viewMode: "????????????? ??????",
         controlCentre: "ప్రపంచ కప్ 2026 కంట్రోల్ సెంటర్",
         overviewSubtitle: "फिक्स्चर, परिणाम, ग्रुप, खिलाड़ी आँकड़े, वेन्यू, रिकॉर्ड और नॉकआउट ट्रैकिंग के साथ लाइव टूर्नामेंट डैशबोर्ड।",
         tournamentIntelligence: "టోర్నమెంట్ విశ్లేషణ",
@@ -1845,6 +1875,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "ਗੋਲ",
         assists: "ਅਸਿਸਟ",
         language: "ਡੈਸ਼ਬੋਰਡ ਭਾਸ਼ਾ",
+        pcView: "PC ??????",
+        tabletView: "?????? ??????",
+        viewMode: "???????? ??????",
         controlCentre: "ਵਰਲਡ ਕੱਪ 2026 ਕੰਟਰੋਲ ਸੈਂਟਰ",
         overviewSubtitle: "फिक्स्चर, परिणाम, ग्रुप, खिलाड़ी आँकड़े, वेन्यू, रिकॉर्ड और नॉकआउट ट्रैकिंग के साथ लाइव टूर्नामेंट डैशबोर्ड।",
         tournamentIntelligence: "ਟੂਰਨਾਮੈਂਟ ਵਿਸ਼ਲੇਸ਼ਣ",
@@ -2000,6 +2033,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "الأهداف",
         assists: "التمريرات",
         language: "لغة اللوحة",
+        pcView: "??? ?????????",
+        tabletView: "??? ?????? ??????",
+        viewMode: "??? ???? ??????",
         controlCentre: 'مركز تحكم كأس العالم 2026',
         overviewSubtitle: 'لوحة بطولة مباشرة تشمل المباريات والنتائج والمجموعات وإحصائيات اللاعبين والملاعب والأرقام والأدوار الإقصائية في مكان واحد.',
         tournamentIntelligence: 'تحليل البطولة',
@@ -2157,6 +2193,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Golos",
         assists: "Assistências",
         language: "Idioma do Painel",
+        pcView: "Vista PC",
+        tabletView: "Vista tablet",
+        viewMode: "Vista do painel",
         controlCentre: 'Centro de Controlo Mundial 2026',
         overviewSubtitle: 'Painel ao vivo do torneio com jogos, resultados, grupos, estatísticas de jogadores, estádios, recordes e eliminatórias num só local.',
         tournamentIntelligence: 'Análise do Torneio',
@@ -2314,6 +2353,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Gole",
         assists: "Asysty",
         language: "Język panelu",
+        pcView: "Widok PC",
+        tabletView: "Widok tabletu",
+        viewMode: "Widok panelu",
         controlCentre: "Centrum kontroli World Cup 2026",
         overviewSubtitle: "Panel turniejowy na żywo z meczami, wynikami, grupami, statystykami zawodników, stadionami, rekordami i fazą pucharową w jednym miejscu.",
         tournamentIntelligence: "Analiza turnieju",
@@ -2471,6 +2513,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "得点",
         assists: "アシスト",
         language: "ダッシュボード言語",
+        pcView: "PC??",
+        tabletView: "???????",
+        viewMode: "?????????",
         controlCentre: 'ワールドカップ2026 コントロールセンター',
         overviewSubtitle: '試合、結果、グループ、選手統計、会場、記録、決勝トーナメントを一か所で確認できるライブ大会ダッシュボード。',
         tournamentIntelligence: '大会分析',
@@ -2631,6 +2676,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: '进球',
         assists: '助攻',
         language: '仪表盘语言',
+        pcView: "????",
+        tabletView: "????",
+        viewMode: "?????",
         controlCentre: '2026世界杯控制中心',
         overviewSubtitle: '一个集赛程、结果、小组、球员统计、场馆、纪录和淘汰赛追踪于一体的实时赛事仪表盘。',
         tournamentIntelligence: '赛事分析',
@@ -2767,6 +2815,7 @@ class WorldCup2026Panel extends HTMLElement {
         noVenueData: '暂无场馆数据。',
         scheduled: '即将开始',
         liveStatus: "直播",
+        manualTimerNotice: "????????????????? API ?????????????????????????",
         paused: '暂停',
         fullTime: '全场结束',
         aet: '加时后',
@@ -2787,6 +2836,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: '进球',
         assists: '助攻',
         language: '儀表板語言',
+        pcView: "????",
+        tabletView: "????",
+        viewMode: "?????",
         controlCentre: '2026世界杯控制中心',
         overviewSubtitle: '一个集赛程、结果、小组、球员统计、场馆、纪录和淘汰赛追踪于一体的实时赛事仪表盘。',
         tournamentIntelligence: '赛事分析',
@@ -2944,6 +2996,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: 'ประตู',
         assists: 'แอสซิสต์',
         language: "ภาษาแดชบอร์ด",
+        pcView: "??????????",
+        tabletView: "??????????????",
+        viewMode: "??????????????",
         controlCentre: 'ศูนย์ควบคุมฟุตบอลโลก 2026',
         overviewSubtitle: "แดชบอร์ดการแข่งขันสดพร้อมโปรแกรม ผลการแข่งขัน กลุ่ม สถิติผู้เล่น สนาม สถิติสูงสุด และรอบน็อกเอาต์ในที่เดียว",
         tournamentIntelligence: "การวิเคราะห์ทัวร์นาเมนต์",
@@ -3101,6 +3156,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: 'Bàn thắng',
         assists: 'Kiến tạo',
         language: 'Ngôn ngữ bảng điều khiển',
+        pcView: "Ch? ?? xem PC",
+        tabletView: "Ch? ?? xem m?y t?nh b?ng",
+        viewMode: "Ch? ?? xem b?ng ?i?u khi?n",
         controlCentre: 'Trung tâm điều khiển World Cup 2026',
         overviewSubtitle: "Bảng điều khiển giải đấu trực tiếp với lịch thi đấu, kết quả, bảng đấu, thống kê cầu thủ, sân vận động, kỷ lục và vòng loại trực tiếp ở một nơi.",
         tournamentIntelligence: "Phân tích giải đấu",
@@ -3258,6 +3316,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: 'Gol',
         assists: 'Assist',
         language: 'Bahasa Dashboard',
+        pcView: "Tampilan PC",
+        tabletView: "Tampilan tablet",
+        viewMode: "Tampilan dasbor",
         controlCentre: 'Pusat Kontrol Piala Dunia 2026',
         overviewSubtitle: "Dasbor turnamen langsung dengan jadwal, hasil, grup, statistik pemain, stadion, rekor, dan fase gugur dalam satu tempat.",
         tournamentIntelligence: "Analisis Turnamen",
@@ -3414,6 +3475,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "골",
         assists: "도움",
         language: "대시보드 언어",
+        pcView: "PC ??",
+        tabletView: "??? ??",
+        viewMode: "???? ??",
         controlCentre: '월드컵 2026 컨트롤 센터',
         overviewSubtitle: '경기, 결과, 조별 순위, 선수 통계, 경기장, 기록, 토너먼트를 한곳에서 보는 라이브 대회 대시보드입니다.',
         tournamentIntelligence: '대회 분석',
@@ -3571,6 +3635,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Mål",
         assists: "Assist",
         language: "Dashboard-språk",
+        pcView: "PC-vy",
+        tabletView: "Surfplattevy",
+        viewMode: "Dashboardvy",
         controlCentre: 'VM 2026 Kontrollcenter',
         overviewSubtitle: 'Live turneringspanel med matcher, resultat, grupper, spelarstatistik, arenor, rekord och slutspel på ett ställe.',
         tournamentIntelligence: 'Turneringsanalys',
@@ -3728,6 +3795,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Mål",
         assists: "Målgivende",
         language: "Dashboardspråk",
+        pcView: "PC-visning",
+        tabletView: "Nettbrettvisning",
+        viewMode: "Dashbordvisning",
         controlCentre: 'VM 2026 Kontrollsenter',
         overviewSubtitle: 'Live turneringspanel med kamper, resultater, grupper, spillerstatistikk, arenaer, rekorder og utslagsspill på ett sted.',
         tournamentIntelligence: 'Turneringsanalyse',
@@ -3886,6 +3956,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Gólok",
         assists: "Gólpasszok",
         language: "Műszerfal nyelve",
+        pcView: "PC n?zet",
+        tabletView: "Tablet n?zet",
+        viewMode: "Ir?ny?t?pult n?zet",
         controlCentre: "World Cup 2026 vezérlőközpont",
         overviewSubtitle: "Élő torna-műszerfal mérkőzésekkel, eredményekkel, csoportokkal, játékosstatisztikákkal, stadionokkal, rekordokkal és kieséses ággal egy helyen.",
         tournamentIntelligence: "Tornaelemzés",
@@ -4044,6 +4117,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Goller",
         assists: "Asistler",
         language: "Panel Dili",
+        pcView: "PC g?r?n?m?",
+        tabletView: "Tablet g?r?n?m?",
+        viewMode: "Pano g?r?n?m?",
         controlCentre: "World Cup 2026 Kontrol Merkezi",
         overviewSubtitle: "Maçlar, sonuçlar, gruplar, oyuncu istatistikleri, stadyumlar, rekorlar ve eleme takibini tek yerde sunan canlı turnuva paneli.",
         tournamentIntelligence: "Turnuva Analizi",
@@ -4201,6 +4277,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Góly",
         assists: "Asistence",
         language: "Jazyk panelu",
+        pcView: "Zobrazen? PC",
+        tabletView: "Zobrazen? tabletu",
+        viewMode: "Zobrazen? panelu",
         controlCentre: "Mistrovství světa FIFA 2026 - Control Centre",
         overviewSubtitle: "Živý turnajový panel se zápasy, výsledky, skupinami, statistikami hráčů, stadiony, rekordy a vyřazovací částí na jednom místě.",
         tournamentIntelligence: "Statistiky",
@@ -4358,6 +4437,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Mål",
         assists: "Assists",
         language: "Dashboard-sprog",
+        pcView: "PC-visning",
+        tabletView: "Tabletvisning",
+        viewMode: "Dashboardvisning",
         controlCentre: "FIFA World Cup 2026 - Control Centre",
         overviewSubtitle: "Live turneringsdashboard med kampe, resultater, grupper, spillerstatistik, stadioner, rekorder og knockout-overblik samlet ét sted.",
         tournamentIntelligence: "Statistik",
@@ -4515,6 +4597,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Maalit",
         assists: "Syötöt",
         language: "Kojelaudan kieli",
+        pcView: "PC-n?kym?",
+        tabletView: "Tablettin?kym?",
+        viewMode: "Kojelaudan n?kym?",
         controlCentre: "FIFA World Cup 2026 - Control Centre",
         overviewSubtitle: "Live-turnauspaneeli, jossa ottelut, tulokset, lohkot, pelaajatilastot, stadionit, ennätykset ja pudotuspeliseuranta ovat yhdessä paikassa.",
         tournamentIntelligence: "Tilastot",
@@ -4672,6 +4757,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Γκολ",
         assists: "Ασίστ",
         language: "Γλώσσα πίνακα",
+        pcView: "??????? PC",
+        tabletView: "??????? tablet",
+        viewMode: "??????? ?????? ???????",
         controlCentre: "Κέντρο ελέγχου Παγκοσμίου Κυπέλλου 2026",
         overviewSubtitle: "Ζωντανός πίνακας τουρνουά με αγώνες, αποτελέσματα, ομίλους, στατιστικά παικτών, στάδια, ρεκόρ και νοκ άουτ σε ένα μέρος.",
         tournamentIntelligence: "Στατιστικά",
@@ -4829,6 +4917,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Goluri",
         assists: "Assisturi",
         language: "Limba panoului",
+        pcView: "Vizualizare PC",
+        tabletView: "Vizualizare tablet?",
+        viewMode: "Vizualizare panou",
         controlCentre: "Cupa Mondială FIFA 2026 - Control Centre",
         overviewSubtitle: "Panou live al turneului cu meciuri, rezultate, grupe, statistici ale jucătorilor, stadioane, recorduri și faza eliminatorie într-un singur loc.",
         tournamentIntelligence: "Statistici",
@@ -4986,6 +5077,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Góly",
         assists: "Asistencie",
         language: "Jazyk panela",
+        pcView: "Zobrazenie PC",
+        tabletView: "Zobrazenie tabletu",
+        viewMode: "Zobrazenie panela",
         controlCentre: "Majstrovstvá sveta FIFA 2026 - Control Centre",
         overviewSubtitle: "Živý turnajový panel so zápasmi, výsledkami, skupinami, štatistikami hráčov, štadiónmi, rekordmi a vyraďovacou časťou na jednom mieste.",
         tournamentIntelligence: "Štatistiky",
@@ -5143,6 +5237,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Goli",
         assists: "Asistence",
         language: "Jezik nadzorne plošče",
+        pcView: "Pogled PC",
+        tabletView: "Pogled tablice",
+        viewMode: "Pogled nadzorne plo??e",
         controlCentre: "Svetovno prvenstvo FIFA 2026 - Control Centre",
         overviewSubtitle: "Nadzorna plošča turnirja v živo s tekmami, rezultati, skupinami, statistiko igralcev, stadioni, rekordi in izločilnimi boji na enem mestu.",
         tournamentIntelligence: "Statistika",
@@ -5300,6 +5397,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Golovi",
         assists: "Asistencije",
         language: "Jezik nadzorne ploče",
+        pcView: "Prikaz PC-ja",
+        tabletView: "Prikaz tableta",
+        viewMode: "Prikaz nadzorne plo?e",
         controlCentre: "FIFA Svjetsko prvenstvo 2026 - Control Centre",
         overviewSubtitle: "Nadzorna ploča turnira uživo s utakmicama, rezultatima, skupinama, statistikama igrača, stadionima, rekordima i nokaut fazom na jednom mjestu.",
         tournamentIntelligence: "Statistika",
@@ -5457,6 +5557,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Голови",
         assists: "Асистенције",
         language: "Језик контролне табле",
+        pcView: "Prikaz PC-ja",
+        tabletView: "Prikaz tableta",
+        viewMode: "Prikaz kontrolne table",
         controlCentre: "Контролни центар Светског првенства 2026",
         overviewSubtitle: "Контролна табла турнира уживо са утакмицама, резултатима, групама, статистиком играча, стадионима, рекордима и нокаут фазом на једном месту.",
         tournamentIntelligence: "Статистика",
@@ -5614,6 +5717,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Голове",
         assists: "Асистенции",
         language: "Език на таблото",
+        pcView: "?????? PC",
+        tabletView: "?????? ??????",
+        viewMode: "?????? ?? ???????",
         controlCentre: "Контролен център Световно първенство 2026",
         overviewSubtitle: "Турнирен панел на живо с мачове, резултати, групи, статистики на играчи, стадиони, рекорди и елиминации на едно място.",
         tournamentIntelligence: "Статистика",
@@ -5771,6 +5877,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Голи",
         assists: "Асисти",
         language: "Мова панелі",
+        pcView: "?????? ??",
+        tabletView: "?????? ????????",
+        viewMode: "?????? ??????",
         controlCentre: "Центр керування Чемпіонатом світу 2026",
         overviewSubtitle: "Жива панель турніру з матчами, результатами, групами, статистикою гравців, стадіонами, рекордами та плей-оф в одному місці.",
         tournamentIntelligence: "Статистика",
@@ -5927,6 +6036,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Mörk",
         assists: "Stoðsendingar",
         language: "Tungumál mælaborðs",
+        pcView: "PC-s?n",
+        tabletView: "Spjaldt?lvus?n",
+        viewMode: "Stj?rnbor?ss?n",
         controlCentre: 'HM 2026 stjórnstöð',
         overviewSubtitle: 'Lifandi mælaborð mótsins með leikjum, úrslitum, riðlum, leikmannatölfræði, leikvöngum, metum og útsláttarkeppni á einum stað.',
         tournamentIntelligence: 'Greining mótsins',
@@ -6085,6 +6197,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Mabao",
         assists: "Asisti",
         language: "Lugha ya Dashibodi",
+        pcView: "Mwonekano wa PC",
+        tabletView: "Mwonekano wa tableti",
+        viewMode: "Mwonekano wa dashibodi",
         controlCentre: "Kituo cha Udhibiti Kombe la Dunia 2026",
         overviewSubtitle: "Dashibodi ya moja kwa moja ya mashindano yenye ratiba, matokeo, makundi, takwimu za wachezaji, viwanja, rekodi na mtoano sehemu moja.",
         tournamentIntelligence: "Uchambuzi wa Mashindano",
@@ -6242,6 +6357,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "ጎሎች",
         assists: "አሲስቶች",
         language: "የዳሽቦርድ ቋንቋ",
+        pcView: "?PC ???",
+        tabletView: "????? ???",
+        viewMode: "?????? ???",
         controlCentre: "የዓለም ዋንጫ 2026 መቆጣጠሪያ ማዕከል",
         overviewSubtitle: "ጨዋታዎች፣ ውጤቶች፣ ቡድኖች፣ የተጫዋቾች ስታቲስቲክስ፣ ስታዲየሞች፣ መዝገቦች እና የማስወገድ ዙር በአንድ ቦታ ያለው ቀጥታ የውድድር ዳሽቦርድ።",
         tournamentIntelligence: "የውድድር ትንተና",
@@ -6399,6 +6517,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Doele",
         assists: "Hulpdoele",
         language: "Dashboardtaal",
+        pcView: "PC-aansig",
+        tabletView: "Tablet-aansig",
+        viewMode: "Kontroleskerm-aansig",
         controlCentre: "Wêreldbeker 2026 Beheersentrum",
         overviewSubtitle: "Regstreekse toernooidashboard met wedstryde, uitslae, groepe, spelerstatistieke, stadions, rekords en uitklopspoor op een plek.",
         tournamentIntelligence: "Toernooi-insig",
@@ -6556,6 +6677,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Amagoli",
         assists: "Ama-assist",
         language: "Ulimi Lwedashibhodi",
+        pcView: "Ukubuka i-PC",
+        tabletView: "Ukubuka ithebhulethi",
+        viewMode: "Ukubuka ideshibhodi",
         controlCentre: "Isikhungo Sokulawula iNdebe Yomhlaba 2026",
         overviewSubtitle: "Idashibhodi ebukhoma yomqhudelwano enemidlalo, imiphumela, amaqembu, izibalo zabadlali, izinkundla, amarekhodi nokukhiphana endaweni eyodwa.",
         tournamentIntelligence: "Ukuhlaziywa Komqhudelwano",
@@ -6713,6 +6837,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Kwallaye",
         assists: "Taimako",
         language: "Harshen Dashibodi",
+        pcView: "Kallon PC",
+        tabletView: "Kallon kwamfutar hannu",
+        viewMode: "Kallon dashboard",
         controlCentre: "Cibiyar Gudanarwa Kofin Duniya 2026",
         overviewSubtitle: "Dashibodi kai tsaye na gasa tare da jadawali, sakamako, rukuni, kididdigar ‘yan wasa, filaye, rikodi da fitarwa a wuri guda.",
         tournamentIntelligence: "Binciken Gasa",
@@ -6870,6 +6997,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Golkuna",
         assists: "Yanapakuykuna",
         language: "Panel simi",
+        pcView: "PC qhaway",
+        tabletView: "Tablet qhaway",
+        viewMode: "Panel qhaway",
         controlCentre: "Pachak Tinku 2026 Kamachiy Chawpi",
         overviewSubtitle: "Kawsaypi tinku panel: pukllaykuna, ruraykuna, huñukuna, pukllaq yupaykuna, pukllana wasikuna, yuyay qillqakuna, lluqsichiy mit’a hukllapi.",
         tournamentIntelligence: "Tinku yuyaychay",
@@ -7027,6 +7157,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Gol-kuéra",
         assists: "Asistencia-kuéra",
         language: "Dashboard ñe’ẽ",
+        pcView: "PC jehecha",
+        tabletView: "Tablet jehecha",
+        viewMode: "Tablero jehecha",
         controlCentre: "Yvóra Kópa 2026 Control Centre",
         overviewSubtitle: "Dashboard en vivo torneo rehegua partido, resultado, grupo, jugador estadística, estadio, récord ha eliminatoria peteĩ hendápe.",
         tournamentIntelligence: "Torneo jehesa’ỹijo",
@@ -7184,6 +7317,9 @@ class WorldCup2026Panel extends HTMLElement {
         goals: "Goles",
         assists: "Asistencias",
         language: "Dashboard aru",
+        pcView: "PC u?ja?a",
+        tabletView: "Tablet u?ja?a",
+        viewMode: "Tablero u?ja?a",
         controlCentre: "Uraq Pacha Copa 2026 Control Centre",
         overviewSubtitle: "Torneo dashboard en vivo: anatawinaka, resultados, tamanaka, anatirinaka estadísticas, estadionaka, récords ukhamaraki eliminatoria mä chiqana.",
         tournamentIntelligence: "Torneo amuykipawi",
@@ -7330,6 +7466,14 @@ class WorldCup2026Panel extends HTMLElement {
   async safeCall(type, fallback) {
     try {
       return await this.callApi(type);
+    } catch {
+      return fallback;
+    }
+  }
+
+  async safeAsync(fn, fallback) {
+    try {
+      return await fn();
     } catch {
       return fallback;
     }
@@ -7575,6 +7719,21 @@ class WorldCup2026Panel extends HTMLElement {
         referees: Array.isArray(publicMatch.referees) && publicMatch.referees.length ? publicMatch.referees : match.referees,
         referee: publicMatch.referee || match.referee,
         attendance: publicMatch.attendance ?? match.attendance,
+        liveStatistics: publicMatch.liveStatistics || publicMatch.matchDetails?.liveStatistics || match.liveStatistics,
+        homeCorners: publicMatch.homeCorners ?? publicMatch.matchDetails?.homeCorners ?? match.homeCorners,
+        awayCorners: publicMatch.awayCorners ?? publicMatch.matchDetails?.awayCorners ?? match.awayCorners,
+        homeShotsOnGoal: publicMatch.homeShotsOnGoal ?? publicMatch.matchDetails?.homeShotsOnGoal ?? match.homeShotsOnGoal,
+        awayShotsOnGoal: publicMatch.awayShotsOnGoal ?? publicMatch.matchDetails?.awayShotsOnGoal ?? match.awayShotsOnGoal,
+        homePossession: publicMatch.homePossession ?? publicMatch.matchDetails?.homePossession ?? match.homePossession,
+        awayPossession: publicMatch.awayPossession ?? publicMatch.matchDetails?.awayPossession ?? match.awayPossession,
+        homeFouls: publicMatch.homeFouls ?? publicMatch.matchDetails?.homeFouls ?? match.homeFouls,
+        awayFouls: publicMatch.awayFouls ?? publicMatch.matchDetails?.awayFouls ?? match.awayFouls,
+        homeOffsides: publicMatch.homeOffsides ?? publicMatch.matchDetails?.homeOffsides ?? match.homeOffsides,
+        awayOffsides: publicMatch.awayOffsides ?? publicMatch.matchDetails?.awayOffsides ?? match.awayOffsides,
+        lineups: publicMatch.lineups || publicMatch.lineupsData || publicMatch.matchDetails?.lineups || publicMatch.matchDetails?.lineupsData || match.lineups,
+        lineupsData: publicMatch.lineupsData || publicMatch.lineups || publicMatch.matchDetails?.lineupsData || publicMatch.matchDetails?.lineups || match.lineupsData,
+        weather: publicMatch.weather || publicMatch.matchWeather || publicMatch.matchDetails?.weather || match.weather,
+        matchWeather: publicMatch.matchWeather || publicMatch.weather || publicMatch.matchDetails?.weather || match.matchWeather,
         publicGithubSynced: true,
       };
     });
@@ -7775,6 +7934,21 @@ class WorldCup2026Panel extends HTMLElement {
         referees: referees.length ? referees : (Array.isArray(match.referees) ? match.referees : []),
         referee: extra.referee || match.referee,
         apiFootballFixtureId: extra.apiFootballFixtureId || match.apiFootballFixtureId,
+        liveStatistics: extra.liveStatistics || extra.matchDetails?.liveStatistics || match.liveStatistics,
+        homeCorners: extra.homeCorners ?? extra.matchDetails?.homeCorners ?? match.homeCorners,
+        awayCorners: extra.awayCorners ?? extra.matchDetails?.awayCorners ?? match.awayCorners,
+        homeShotsOnGoal: extra.homeShotsOnGoal ?? extra.matchDetails?.homeShotsOnGoal ?? match.homeShotsOnGoal,
+        awayShotsOnGoal: extra.awayShotsOnGoal ?? extra.matchDetails?.awayShotsOnGoal ?? match.awayShotsOnGoal,
+        homePossession: extra.homePossession ?? extra.matchDetails?.homePossession ?? match.homePossession,
+        awayPossession: extra.awayPossession ?? extra.matchDetails?.awayPossession ?? match.awayPossession,
+        homeFouls: extra.homeFouls ?? extra.matchDetails?.homeFouls ?? match.homeFouls,
+        awayFouls: extra.awayFouls ?? extra.matchDetails?.awayFouls ?? match.awayFouls,
+        homeOffsides: extra.homeOffsides ?? extra.matchDetails?.homeOffsides ?? match.homeOffsides,
+        awayOffsides: extra.awayOffsides ?? extra.matchDetails?.awayOffsides ?? match.awayOffsides,
+        lineups: extra.lineups || extra.lineupsData || extra.matchDetails?.lineups || extra.matchDetails?.lineupsData || match.lineups,
+        lineupsData: extra.lineupsData || extra.lineups || extra.matchDetails?.lineupsData || extra.matchDetails?.lineups || match.lineupsData,
+        weather: extra.weather || extra.matchWeather || extra.matchDetails?.weather || match.weather,
+        matchWeather: extra.matchWeather || extra.weather || extra.matchDetails?.weather || match.matchWeather,
         publicGoalEventsSynced: true,
       };
     });
@@ -7813,7 +7987,7 @@ class WorldCup2026Panel extends HTMLElement {
   refreshDelayMs() {
     const matches = this.allKnownMatches ? this.allKnownMatches() : [];
     const hasLive = matches.some((match) => this.isLiveMatch(match));
-    if (hasLive) return 20 * 1000;
+    if (hasLive) return 10 * 1000;
 
     const next = this.nextKickoffMs(matches);
     if (next !== null) {
@@ -7835,7 +8009,7 @@ class WorldCup2026Panel extends HTMLElement {
     this._refreshInterval = setTimeout(() => {
       this._refreshInterval = null;
       this.loadAll();
-    }, Math.max(20 * 1000, refreshDelay));
+    }, Math.max(10 * 1000, refreshDelay));
   }
 
   hasUsableMasterClock(match) {
@@ -7876,10 +8050,19 @@ class WorldCup2026Panel extends HTMLElement {
       // football-data.org API and then export JSON for public/GitHub viewers.
       // Do not let GitHub/public JSON override this live panel, otherwise your
       // own dashboard can end up showing stale public data instead of your API pull.
-      this._data.overview = await this.callApi("world_cup_2026/get_overview");
+      this._data.overview = await this.safeCall("world_cup_2026/get_overview", {
+        total_matches: 104,
+        played_matches: 0,
+        upcoming_matches: 0,
+        live_matches: 0,
+        total_goals: 0,
+        goals_per_match: 0,
+        groups: 0,
+        scorers: 0,
+      });
 
-      const apiLive = await this.callApi("world_cup_2026/get_live_matches");
-      const apiFixtures = this.completeOfficialFixtures(await this.callApi("world_cup_2026/get_fixtures"));
+      const apiLive = await this.safeCall("world_cup_2026/get_live_matches", []);
+      const apiFixtures = this.completeOfficialFixtures(await this.safeCall("world_cup_2026/get_fixtures", []));
       const apiResults = await this.safeCall("world_cup_2026/get_results", []);
 
       // Pure backend/API-only test feed. Do not merge GitHub or goal_events here.
@@ -7890,10 +8073,10 @@ class WorldCup2026Panel extends HTMLElement {
         this.mergeResultsAndFinishedFixtures(apiResults, apiFixtures)
       );
 
-      const publicGoalEvents = await this.loadPublicGoalEvents();
-      const publicResults = await this.loadPublicGithubResults();
-      const publicLive = await this.loadPublicGithubLive();
-      const publicMatches = this.mergeUniqueMatches(publicLive, await this.loadPublicGithubMatches());
+      const publicGoalEvents = await this.safeAsync(() => this.loadPublicGoalEvents(), {});
+      const publicResults = await this.safeAsync(() => this.loadPublicGithubResults(), []);
+      const publicLive = await this.safeAsync(() => this.loadPublicGithubLive(), []);
+      const publicMatches = this.mergeUniqueMatches(publicLive, await this.safeAsync(() => this.loadPublicGithubMatches(), []));
 
       const storeMatches = this.goalEventStoreToMatches(publicGoalEvents);
       const fixturesWithStore = this.mergePublicGoalEventStore(apiFixtures, publicGoalEvents);
@@ -7922,17 +8105,17 @@ class WorldCup2026Panel extends HTMLElement {
         this.mergeUniqueMatches(combinedResults, publicMatchesWithStore.filter((match) => this.isFinishedMatch(match))),
         this._data.fixtures
       );
-      this._data.groups = await this.callApi("world_cup_2026/get_groups");
+      this._data.groups = await this.safeCall("world_cup_2026/get_groups", []);
       this._data.scorers = await this.safeCall("world_cup_2026/get_scorers", []);
       this._data.statistics = await this.safeCall("world_cup_2026/get_statistics", {});
       this._data.records = await this.safeCall("world_cup_2026/get_records", {});
       this._data.venues = await this.safeCall("world_cup_2026/get_venues", {});
-      this._data.supporters = await this.loadSupporters();
-      this._data.premiumSupporters = await this.loadPremiumSupporters();
+      this._data.supporters = await this.safeAsync(() => this.loadSupporters(), []);
+      this._data.premiumSupporters = await this.safeAsync(() => this.loadPremiumSupporters(), []);
       this.processMatchClockState();
       this.render();
     } catch (err) {
-      this.renderError(err);
+      this.renderError(err, { resetSavedPage: false });
     } finally {
       this.scheduleNextRefresh();
     }
@@ -7944,10 +8127,19 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   changePage(page) {
-    const validPages = new Set(["overview", "live", "fixtures", "results", "groups", "knockout", "players", "records", "stats", "venues", "supporters"]);
+    const validPages = new Set(["overview", "live", "fixtures", "results", "groups", "knockout", "players", "records", "stats", "teams", "venues", "supporters"]);
     if (!validPages.has(page)) page = "overview";
     this._page = page;
     try { localStorage.setItem("world_cup_2026_last_page", page); } catch (e) {}
+    this.render();
+  }
+
+  resetPanelView() {
+    try {
+      localStorage.removeItem("world_cup_2026_last_page");
+      localStorage.removeItem("world_cup_2026_selected_team");
+    } catch (e) {}
+    this._page = "overview";
     this.render();
   }
 
@@ -7958,7 +8150,7 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   changeViewMode(viewMode) {
-    this._viewMode = viewMode === "tablet" ? "tablet" : "pc";
+    this._viewMode = ["pc", "tablet", "mobile"].includes(viewMode) ? viewMode : "pc";
     localStorage.setItem("world_cup_2026_view_mode", this._viewMode);
     this.render();
   }
@@ -9064,40 +9256,38 @@ class WorldCup2026Panel extends HTMLElement {
     `;
   }
 
-  renderError(err) {
+  errorCard(err, title = this.t("errorTitle"), text = this.t("errorText")) {
+    return `
+      <div class="wc-card">
+        <h1>${this.esc(title)}</h1>
+        <p>${this.esc(text)}</p>
+        <button class="wc-pill wc-reset-panel-button" id="wc-reset-panel-button" type="button">Reset panel view</button>
+        <pre>${this.esc(JSON.stringify(err || {}, null, 2))}</pre>
+      </div>
+    `;
+  }
+
+  renderError(err, options = {}) {
+    if (options.resetSavedPage) {
+      try { localStorage.removeItem("world_cup_2026_last_page"); } catch (e) {}
+      this._page = "overview";
+    }
+
     this.innerHTML = `
       ${this.styles()}
-      <div class="wc-app ">
+      <div class="wc-app wc-view-${this._viewMode} wc-page-error">
         <div class="wc-shell">
-          
-      <div class="wc-card wc-premium-highlight" style="text-align:center;max-width:980px;margin:0 auto 14px auto;border:2px solid rgba(255,215,0,0.95);box-shadow:0 0 24px rgba(255,215,0,0.28);background:linear-gradient(135deg,rgba(255,215,0,0.16),rgba(255,255,255,0.04));">
-        <div style="font-size:1.45rem;font-weight:900;letter-spacing:.04em;margin-bottom:8px;">⭐ BECOME A PREMIUM SUPPORTER ⭐</div>
-        <div style="font-size:1.05rem;font-weight:800;margin-bottom:10px;">Want your name shown on the scrolling supporter bar?</div>
-
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:12px auto;max-width:820px;">
-          <div class="wc-mini-card" style="padding:12px;border-radius:14px;background:rgba(255,255,255,0.08);">🇬🇧<br><strong>Name + Flag</strong></div>
-          <div class="wc-mini-card" style="padding:12px;border-radius:14px;background:rgba(255,255,255,0.08);">💬<br><strong>Your Message</strong></div>
-          <div class="wc-mini-card" style="padding:12px;border-radius:14px;background:rgba(255,255,255,0.08);">🏆<br><strong>Premium Status</strong></div>
-        </div>
-
-        <p style="font-size:1.15rem;font-weight:900;margin:12px auto;">Premium Support donation: minimum £10</p>
-        <p class="wc-muted" style="max-width:760px;margin:8px auto;">
-          Premium supporters get their name, country flag and optional personal message shown on the Premium Supporters scrolling bar.
-          Funny messages and friendly football banter are welcome, but they must stay clean.
-        </p>
-        <p class="wc-muted" style="max-width:760px;margin:8px auto;font-size:.9rem;">
-          No swearing, insults, abuse, discrimination, political content or negative comments. Unsuitable messages will not be posted.
-        </p>
-      </div>
-
-<div class="wc-card">
-            <h1>${this.t("errorTitle")}</h1>
-            <p>${this.t("errorText")}</p>
-            <pre>${this.esc(JSON.stringify(err, null, 2))}</pre>
-          </div>
+          ${this.nav()}
+          ${this.errorCard(err)}
         </div>
       </div>
     `;
+
+    const resetButton = this.querySelector("#wc-reset-panel-button");
+    if (resetButton) resetButton.onclick = () => this.resetPanelView();
+    this.querySelectorAll(".wc-nav button").forEach((button) => {
+      button.onclick = () => this.changePage(button.getAttribute("data-page"));
+    });
   }
 
   styles() {
@@ -9828,6 +10018,365 @@ class WorldCup2026Panel extends HTMLElement {
           text-align: center;
         }
 
+
+        .live-premium-page {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+
+        .live-premium-hero {
+          position: relative;
+          overflow: hidden;
+          display: flex;
+          justify-content: space-between;
+          align-items: stretch;
+          gap: 18px;
+          background:
+            radial-gradient(circle at 12% 0%, rgba(239,68,68,.26), transparent 35%),
+            radial-gradient(circle at 88% 8%, rgba(34,197,94,.20), transparent 32%),
+            linear-gradient(135deg, rgba(10,18,35,.98), rgba(6,11,25,.94));
+          border: 1px solid rgba(255,255,255,.12);
+        }
+
+        .live-kicker {
+          font-size: .76rem;
+          font-weight: 1000;
+          text-transform: uppercase;
+          letter-spacing: .14em;
+          color: #86efac;
+          margin-bottom: 5px;
+        }
+
+        .live-premium-hero p {
+          margin: 6px 0 0;
+          max-width: 760px;
+          color: rgba(235,245,255,.72);
+          font-size: .88rem;
+          line-height: 1.35;
+          font-weight: 700;
+        }
+
+        .live-premium-hero-stats {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(72px, 1fr));
+          gap: 8px;
+          min-width: min(440px, 100%);
+        }
+
+        .live-premium-hero-stats div,
+        .live-premium-count {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          min-height: 76px;
+          border-radius: 18px;
+          background: rgba(255,255,255,.07);
+          border: 1px solid rgba(255,255,255,.12);
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,.025);
+        }
+
+        .live-premium-hero-stats strong,
+        .live-premium-count strong {
+          font-size: 1.9rem;
+          line-height: 1;
+          font-weight: 1000;
+          color: #fff;
+        }
+
+        .live-premium-hero-stats span,
+        .live-premium-count span {
+          margin-top: 5px;
+          font-size: .68rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .08em;
+          color: rgba(255,255,255,.62);
+        }
+
+        .live-premium-feed {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(390px, 1fr));
+          gap: 14px;
+          align-items: start;
+        }
+
+        .live-premium-match {
+          overflow: hidden;
+          border-radius: 24px;
+          padding: 14px;
+          background:
+            radial-gradient(circle at top left, rgba(239,68,68,.20), transparent 34%),
+            radial-gradient(circle at bottom right, rgba(59,130,246,.16), transparent 38%),
+            rgba(7,12,24,.94);
+          border: 1px solid rgba(255,255,255,.12);
+          box-shadow: 0 16px 32px rgba(0,0,0,.22);
+        }
+
+        .live-premium-main {
+          grid-column: 1 / -1;
+        }
+
+        .live-premium-topline {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 12px;
+        }
+
+        .live-premium-topline span {
+          padding: 5px 9px;
+          border-radius: 999px;
+          background: rgba(255,255,255,.08);
+          border: 1px solid rgba(255,255,255,.10);
+          color: rgba(255,255,255,.76);
+          font-size: .72rem;
+          font-weight: 900;
+        }
+
+        .live-premium-topline .live-on-air {
+          color: #fecaca;
+          background: rgba(239,68,68,.20);
+          border-color: rgba(248,113,113,.38);
+          animation: wcLivePulse 1.4s infinite;
+        }
+
+        .live-premium-scoreboard {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+          gap: 14px;
+          align-items: center;
+        }
+
+        .live-premium-team {
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+          text-align: center;
+          padding: 12px 10px;
+          border-radius: 20px;
+          background: rgba(255,255,255,.055);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-premium-team img,
+        .live-premium-team .wc-flag {
+          transform: scale(1.35);
+          margin-bottom: 5px;
+        }
+
+        .live-premium-team strong {
+          font-size: clamp(1rem, 2vw, 1.45rem);
+          font-weight: 1000;
+          line-height: 1.05;
+        }
+
+        .live-premium-team small {
+          color: rgba(255,255,255,.66);
+          font-weight: 900;
+        }
+
+        .live-premium-score-centre {
+          min-width: 150px;
+          text-align: center;
+          padding: 10px 12px;
+          border-radius: 22px;
+          background: rgba(0,0,0,.30);
+          border: 1px solid rgba(255,255,255,.12);
+        }
+
+        .live-premium-score {
+          font-size: clamp(2.25rem, 5vw, 4rem);
+          line-height: .95;
+          font-weight: 1000;
+          color: #fff;
+          text-shadow: 0 0 18px rgba(255,255,255,.18);
+        }
+
+        .live-premium-clock {
+          margin: 8px 0;
+          display: flex;
+          justify-content: center;
+        }
+
+        .live-premium-status {
+          font-size: .72rem;
+          font-weight: 1000;
+          color: rgba(255,255,255,.75);
+        }
+
+        .live-premium-scorers {
+          margin-top: 12px;
+        }
+
+        .live-premium-lower-grid {
+          margin-top: 12px;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 10px;
+          align-items: stretch;
+        }
+
+        .live-premium-card,
+        .live-premium-lower-grid .match-events-box,
+        .live-premium-lower-grid .match-officials-box {
+          margin: 0;
+          padding: 11px;
+          border-radius: 17px;
+          background: rgba(255,255,255,.055);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-premium-card-title {
+          font-size: .78rem;
+          font-weight: 1000;
+          text-transform: uppercase;
+          letter-spacing: .08em;
+          color: #bfdbfe;
+          margin-bottom: 9px;
+        }
+
+        .live-stat-bars {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .live-stat-row {
+          display: grid;
+          grid-template-columns: 42px 1fr 42px;
+          gap: 8px;
+          align-items: center;
+          font-weight: 900;
+          font-size: .78rem;
+        }
+
+        .live-stat-row > span:first-child { text-align: right; }
+        .live-stat-row > span:last-child { text-align: left; }
+
+        .live-stat-bar-wrap small {
+          display: block;
+          text-align: center;
+          color: rgba(255,255,255,.62);
+          font-size: .65rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+          margin-bottom: 3px;
+        }
+
+        .live-stat-bar {
+          display: flex;
+          height: 7px;
+          overflow: hidden;
+          border-radius: 999px;
+          background: rgba(255,255,255,.08);
+        }
+
+        .live-stat-bar i,
+        .live-stat-bar b {
+          display: block;
+          min-width: 4px;
+        }
+
+        .live-stat-bar i { background: rgba(34,197,94,.82); }
+        .live-stat-bar b { background: rgba(59,130,246,.82); }
+
+        .live-premium-timeline {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .live-timeline-row {
+          display: grid;
+          grid-template-columns: 38px 34px minmax(0, 1fr);
+          gap: 7px;
+          align-items: center;
+          padding: 7px 8px;
+          border-radius: 12px;
+          background: rgba(0,0,0,.18);
+          font-size: .78rem;
+        }
+
+        .live-timeline-row span {
+          color: #fde68a;
+          font-weight: 1000;
+          text-align: right;
+        }
+
+        .live-timeline-row b {
+          text-align: center;
+        }
+
+        .live-timeline-row strong {
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .live-timeline-row em {
+          grid-column: 3;
+          color: rgba(255,255,255,.55);
+          font-style: normal;
+          font-size: .68rem;
+          margin-top: -5px;
+        }
+
+        .live-discipline-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 8px;
+        }
+
+        .live-discipline-grid div {
+          padding: 10px;
+          border-radius: 13px;
+          background: rgba(0,0,0,.18);
+          text-align: center;
+        }
+
+        .live-discipline-grid strong {
+          display: block;
+          font-size: 1.45rem;
+          line-height: 1;
+          font-weight: 1000;
+        }
+
+        .live-discipline-grid span {
+          display: block;
+          margin-top: 5px;
+          color: rgba(255,255,255,.62);
+          font-size: .68rem;
+          font-weight: 800;
+        }
+
+        @media (max-width: 760px) {
+          .live-premium-hero,
+          .live-premium-scoreboard {
+            grid-template-columns: 1fr;
+            flex-direction: column;
+          }
+
+          .live-premium-hero-stats {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .live-premium-score-centre {
+            order: -1;
+          }
+
+          .live-premium-feed {
+            grid-template-columns: 1fr;
+          }
+        }
+
         @keyframes wcLivePulse {
           0%, 100% {
             box-shadow: 0 0 0 rgba(255,60,60,0);
@@ -10022,6 +10571,52 @@ class WorldCup2026Panel extends HTMLElement {
         .wc-nav button.active {
           background: rgba(45,190,255,0.34);
           border-color: rgba(120,220,255,0.7);
+        }
+
+        .wc-nav button.wc-live-nav-button.is-offline,
+        .wc-app.wc-view-tablet .wc-tablet-header-nav button.wc-live-nav-button.is-offline {
+          background: rgba(231, 76, 60, 0.24);
+          border-color: rgba(231, 76, 60, 0.62);
+          box-shadow: 0 0 14px rgba(231, 76, 60, 0.18);
+          animation: wcLiveNavPulseRed 1.4s ease-in-out infinite;
+        }
+
+        .wc-nav button.wc-live-nav-button.is-live,
+        .wc-app.wc-view-tablet .wc-tablet-header-nav button.wc-live-nav-button.is-live {
+          background: rgba(46, 204, 113, 0.24);
+          border-color: rgba(46, 204, 113, 0.68);
+          box-shadow: 0 0 14px rgba(46, 204, 113, 0.20);
+          animation: wcLiveNavPulseGreen 1.4s ease-in-out infinite;
+        }
+
+        .wc-nav button.wc-live-nav-button.is-offline:hover,
+        .wc-app.wc-view-tablet .wc-tablet-header-nav button.wc-live-nav-button.is-offline:hover {
+          background: rgba(231, 76, 60, 0.34);
+          border-color: rgba(231, 76, 60, 0.82);
+        }
+
+        .wc-nav button.wc-live-nav-button.is-live:hover,
+        .wc-app.wc-view-tablet .wc-tablet-header-nav button.wc-live-nav-button.is-live:hover {
+          background: rgba(46, 204, 113, 0.34);
+          border-color: rgba(46, 204, 113, 0.88);
+        }
+
+        @keyframes wcLiveNavPulseGreen {
+          0%, 100% {
+            box-shadow: 0 0 12px rgba(46, 204, 113, 0.34), 0 0 22px rgba(46, 204, 113, 0.16);
+          }
+          50% {
+            box-shadow: 0 0 24px rgba(46, 204, 113, 0.86), 0 0 46px rgba(46, 204, 113, 0.46), 0 0 70px rgba(46, 204, 113, 0.24);
+          }
+        }
+
+        @keyframes wcLiveNavPulseRed {
+          0%, 100% {
+            box-shadow: 0 0 12px rgba(231, 76, 60, 0.34), 0 0 22px rgba(231, 76, 60, 0.16);
+          }
+          50% {
+            box-shadow: 0 0 24px rgba(231, 76, 60, 0.86), 0 0 46px rgba(231, 76, 60, 0.46), 0 0 70px rgba(231, 76, 60, 0.24);
+          }
         }
 
         .wc-tablet-header-nav {
@@ -10666,6 +11261,207 @@ class WorldCup2026Panel extends HTMLElement {
           .wc-page-knockout .wc-web-round:not(:last-child) .wc-web-match::after {
             right: -7px !important;
             width: 7px !important;
+          }
+        }
+
+        .wc-page-knockout .wc-web-card {
+          overflow-x: auto !important;
+          overflow-y: hidden !important;
+        }
+
+        .wc-page-knockout .wc-knockout-spider {
+          position: relative;
+          z-index: 2;
+          display: grid;
+          grid-template-columns:
+            minmax(210px, 1.28fr)
+            minmax(185px, 1.08fr)
+            minmax(170px, 0.96fr)
+            minmax(160px, 0.88fr)
+            minmax(170px, 0.94fr)
+            minmax(112px, 0.58fr);
+          grid-template-rows: 24px repeat(32, minmax(17px, 1fr));
+          column-gap: 30px;
+          min-width: 1120px;
+          min-height: 690px;
+          padding: 0 8px 10px 0;
+        }
+
+        .wc-page-knockout .wc-spider-round-title {
+          align-self: center;
+          justify-self: stretch;
+          color: rgba(255,255,255,0.94);
+          font-size: 10px;
+          font-weight: 950;
+          letter-spacing: 0.04em;
+          line-height: 1;
+          text-align: center;
+          text-transform: uppercase;
+          text-shadow: 0 2px 7px rgba(0,0,0,0.72);
+        }
+
+        .wc-page-knockout .wc-spider-slot {
+          position: relative;
+          display: flex;
+          align-items: center;
+          min-width: 0;
+        }
+
+        .wc-page-knockout .wc-spider-slot:not(.wc-spider-first)::before {
+          content: "";
+          position: absolute;
+          top: 50%;
+          left: -30px;
+          width: 30px;
+          height: 2px;
+          transform: translateY(-50%);
+          background: linear-gradient(90deg, rgba(255,255,255,0.2), rgba(255,255,255,0.74));
+          border-radius: 999px;
+          pointer-events: none;
+        }
+
+        .wc-page-knockout .wc-spider-slot:not(.wc-spider-first)::after {
+          content: "";
+          position: absolute;
+          top: 12%;
+          bottom: 12%;
+          left: -30px;
+          width: 2px;
+          background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.58), rgba(255,255,255,0.2));
+          border-radius: 999px;
+          pointer-events: none;
+        }
+
+        .wc-page-knockout .wc-spider-match {
+          position: relative;
+          z-index: 1;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) 35px minmax(0, 1fr);
+          align-items: center;
+          gap: 5px;
+          width: 100%;
+          min-height: 36px;
+          padding: 5px 7px;
+          border-radius: 8px;
+          background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.045));
+          border: 1px solid rgba(255,255,255,0.18);
+          box-shadow: 0 5px 13px rgba(0,0,0,0.24);
+        }
+
+        .wc-page-knockout .wc-spider-final .wc-spider-match {
+          border-color: rgba(255,215,90,0.48);
+          background:
+            radial-gradient(circle at top left, rgba(255,215,90,0.18), transparent 45%),
+            linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+        }
+
+        .wc-page-knockout .wc-spider-match-empty {
+          opacity: 0.72;
+          border-style: dashed;
+        }
+
+        .wc-page-knockout .wc-spider-team {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          min-width: 0;
+          color: rgba(255,255,255,0.94);
+          font-size: 10px;
+          font-weight: 900;
+          line-height: 1;
+        }
+
+        .wc-page-knockout .wc-spider-team:last-child {
+          justify-content: flex-end;
+          text-align: right;
+        }
+
+        .wc-page-knockout .wc-spider-team span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .wc-page-knockout .wc-spider-team .group-flag-img,
+        .wc-page-knockout .wc-spider-team .group-flag-missing {
+          width: 14px !important;
+          min-width: 14px !important;
+          height: 10px !important;
+          border-radius: 2px !important;
+          font-size: 7px !important;
+        }
+
+        .wc-page-knockout .wc-spider-vs {
+          color: rgba(255,255,255,0.72);
+          font-size: 8px;
+          font-weight: 950;
+          line-height: 1;
+          text-align: center;
+        }
+
+        .wc-page-knockout .wc-spider-final-label {
+          position: relative;
+          grid-column: 6;
+          grid-row: 2 / span 32;
+          align-self: center;
+          display: grid;
+          gap: 4px;
+          justify-items: center;
+          padding: 10px 8px;
+          border-radius: 8px;
+          color: rgba(255,255,255,0.94);
+          background: linear-gradient(135deg, rgba(255,215,90,0.2), rgba(255,255,255,0.055));
+          border: 1px solid rgba(255,215,90,0.44);
+          box-shadow: 0 8px 20px rgba(0,0,0,0.28);
+          text-align: center;
+        }
+
+        .wc-page-knockout .wc-spider-final-label::before {
+          content: "";
+          position: absolute;
+          top: 50%;
+          left: -30px;
+          width: 30px;
+          height: 2px;
+          transform: translateY(-50%);
+          background: linear-gradient(90deg, rgba(255,255,255,0.25), rgba(255,215,90,0.75));
+          border-radius: 999px;
+        }
+
+        .wc-page-knockout .wc-spider-final-label span {
+          font-size: 10px;
+          font-weight: 950;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+        }
+
+        .wc-page-knockout .wc-spider-final-label strong {
+          font-size: 14px;
+          line-height: 1;
+        }
+
+        @media (max-width: 1400px) {
+          .wc-page-knockout .wc-knockout-spider {
+            grid-template-columns:
+              minmax(196px, 1.22fr)
+              minmax(174px, 1fr)
+              minmax(160px, 0.9fr)
+              minmax(152px, 0.84fr)
+              minmax(160px, 0.9fr)
+              minmax(104px, 0.55fr);
+            column-gap: 24px;
+            min-width: 1040px;
+            min-height: 640px;
+          }
+
+          .wc-page-knockout .wc-spider-slot:not(.wc-spider-first)::before,
+          .wc-page-knockout .wc-spider-final-label::before {
+            left: -24px;
+            width: 24px;
+          }
+
+          .wc-page-knockout .wc-spider-slot:not(.wc-spider-first)::after {
+            left: -24px;
           }
         }
 
@@ -15565,14 +16361,485 @@ class WorldCup2026Panel extends HTMLElement {
         margin-right: auto !important;
       }
 
+      /* Tablet view: keep the same top nav design, but let it wrap instead of overlapping. */
+      .wc-app.wc-view-tablet .wc-header-title-row {
+        align-items: start !important;
+      }
+
+      .wc-app.wc-view-tablet .wc-tablet-header-nav {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        align-items: stretch !important;
+        align-content: start !important;
+        justify-content: flex-start !important;
+        gap: 4px !important;
+        overflow: visible !important;
+        min-height: 44px !important;
+        height: auto !important;
+      }
+
+      .wc-app.wc-view-tablet .wc-tablet-header-nav button {
+        flex: 1 1 calc(16.666% - 4px) !important;
+        min-width: 64px !important;
+        max-width: none !important;
+        min-height: 20px !important;
+        height: 20px !important;
+        padding: 4px 6px !important;
+        font-size: 7px !important;
+        line-height: 1 !important;
+        letter-spacing: 0 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+
+      @media (max-width: 760px) {
+        .wc-app.wc-view-tablet .wc-tablet-header-nav {
+          gap: 3px !important;
+          min-height: 63px !important;
+        }
+
+        .wc-app.wc-view-tablet .wc-tablet-header-nav button {
+          flex-basis: calc(25% - 3px) !important;
+          min-width: 58px !important;
+          min-height: 18px !important;
+          height: 18px !important;
+          padding: 3px 4px !important;
+          font-size: 6px !important;
+        }
+      }
+
+      /* Mobile view: same theme, phone-first spacing and controls. */
+      .wc-app.wc-view-mobile {
+        padding: 8px !important;
+        font-size: 13px !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-shell {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-header {
+        display: grid !important;
+        gap: 8px !important;
+        padding: 10px !important;
+        margin-bottom: 8px !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-header-title-row {
+        display: grid !important;
+        grid-template-columns: 1fr auto !important;
+        gap: 6px !important;
+        align-items: start !important;
+        width: 100% !important;
+        overflow: visible !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-tablet-header-nav {
+        display: none !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-title-stack {
+        grid-column: 1 / -1 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-title {
+        font-size: 24px !important;
+        line-height: 1.05 !important;
+        white-space: normal !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-header-subtitle-inline {
+        max-width: 100% !important;
+        font-size: 10px !important;
+        line-height: 1.25 !important;
+        white-space: normal !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-header-live-pill,
+      .wc-app.wc-view-mobile .wc-header-scheduled-pill {
+        justify-self: start !important;
+        max-width: 100% !important;
+        min-height: 22px !important;
+        padding: 5px 8px !important;
+        font-size: 9px !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-header-countdown-pill {
+        grid-column: 1 / -1 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 34px !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 7px 10px !important;
+        font-size: 18px !important;
+        justify-content: center !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-header-controls {
+        position: static !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        width: 100% !important;
+        margin: 0 !important;
+        justify-content: stretch !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-tablet-top-controls {
+        display: none !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-language-wrap,
+      .wc-app.wc-view-mobile .wc-view-wrap,
+      .wc-app.wc-view-mobile .wc-sidebar-wrap,
+      .wc-app.wc-view-mobile .wc-updated-wrap {
+        width: 100% !important;
+        min-width: 0 !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-language-select,
+      .wc-app.wc-view-mobile .wc-view-select,
+      .wc-app.wc-view-mobile .wc-sidebar-select,
+      .wc-app.wc-view-mobile .wc-updated-pill,
+      .wc-app.wc-view-mobile .wc-header-controls .wc-back-button {
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: 34px !important;
+        height: 34px !important;
+        padding: 7px 8px !important;
+        font-size: 11px !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-nav {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 5px !important;
+        overflow: visible !important;
+        margin: 0 0 8px !important;
+        padding: 0 !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-nav button {
+        min-width: 0 !important;
+        min-height: 34px !important;
+        padding: 6px 4px !important;
+        border-radius: 8px !important;
+        font-size: 10px !important;
+        line-height: 1.05 !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-card,
+      .wc-app.wc-view-mobile .wc-section,
+      .wc-app.wc-view-mobile .overview-panel,
+      .wc-app.wc-view-mobile .overview-donate-card,
+      .wc-app.wc-view-mobile .overview-supporters-card {
+        padding: 10px !important;
+        margin-bottom: 8px !important;
+        border-radius: 8px !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-section-title {
+        font-size: 17px !important;
+        line-height: 1.15 !important;
+      }
+
+      .wc-app.wc-view-mobile .mobile-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 7px !important;
+      }
+
+      .wc-app.wc-view-mobile .mobile-stats-card {
+        min-height: 78px !important;
+        padding: 9px 7px !important;
+        text-align: center !important;
+      }
+
+      .wc-app.wc-view-mobile .mobile-stats-card strong {
+        font-size: 24px !important;
+        line-height: 1 !important;
+      }
+
+      .wc-app.wc-view-mobile .mobile-stats-card span,
+      .wc-app.wc-view-mobile .mobile-stats-card em {
+        font-size: 10px !important;
+        line-height: 1.1 !important;
+      }
+
+      .wc-app.wc-view-mobile .mobile-stats-list {
+        display: grid !important;
+        gap: 6px !important;
+        margin-top: 9px !important;
+      }
+
+      .wc-app.wc-view-mobile .mobile-stats-row {
+        display: grid !important;
+        grid-template-columns: 24px minmax(0, 1fr) auto !important;
+        gap: 7px !important;
+        align-items: center !important;
+        padding: 8px !important;
+        border-radius: 8px !important;
+        background: rgba(255,255,255,0.08) !important;
+        border: 1px solid rgba(255,255,255,0.10) !important;
+      }
+
+      .wc-app.wc-view-mobile .mobile-stats-row strong {
+        min-width: 0 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        font-size: 11px !important;
+      }
+
+      .wc-app.wc-view-mobile .mobile-stats-row em,
+      .wc-app.wc-view-mobile .mobile-stats-row span {
+        font-size: 11px !important;
+        font-weight: 900 !important;
+      }
+
+      .wc-app.wc-view-mobile .overview-main-grid,
+      .wc-app.wc-view-mobile .overview-lower-grid,
+      .wc-app.wc-view-mobile .overview-supporters-layout,
+      .wc-app.wc-view-mobile .wc-grid,
+      .wc-app.wc-view-mobile .fixtures-grid,
+      .wc-app.wc-view-mobile .results-grid,
+      .wc-app.wc-view-mobile .live-grid,
+      .wc-app.wc-view-mobile .venues-grid,
+      .wc-app.wc-view-mobile .supporters-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+      }
+
+      .wc-app.wc-view-mobile .overview-stat-grid,
+      .wc-app.wc-view-mobile .overview-stat-grid.overview-stat-grid-in-progress {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+      }
+
+      .wc-app.wc-view-mobile .overview-stat-tile,
+      .wc-app.wc-view-mobile .overview-progress-wrap .overview-stat-tile {
+        min-height: 74px !important;
+        padding: 8px 6px !important;
+      }
+
+      .wc-app.wc-view-mobile .overview-stat-tile strong,
+      .wc-app.wc-view-mobile .overview-progress-wrap .overview-stat-tile strong {
+        font-size: 22px !important;
+        line-height: 1 !important;
+      }
+
+      .wc-app.wc-view-mobile .overview-stat-tile span,
+      .wc-app.wc-view-mobile .overview-stat-tile em {
+        font-size: 10px !important;
+        line-height: 1.1 !important;
+      }
+
+      .wc-app.wc-view-mobile .fixture-card,
+      .wc-app.wc-view-mobile .wc-bracket-match,
+      .wc-app.wc-view-mobile .live-match-card {
+        padding: 10px !important;
+        border-radius: 8px !important;
+      }
+
+      .wc-app.wc-view-mobile .fixture-teams-big,
+      .wc-app.wc-view-mobile .live-scoreboard,
+      .wc-app.wc-view-mobile .match-scoreboard {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
+        gap: 6px !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-score {
+        font-size: 24px !important;
+        line-height: 1 !important;
+      }
+
+      .wc-app.wc-view-mobile .team-name,
+      .wc-app.wc-view-mobile .fixture-team-name,
+      .wc-app.wc-view-mobile .wc-team-name {
+        font-size: 11px !important;
+        line-height: 1.1 !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-table-wrap,
+      .wc-app.wc-view-mobile .golden-table-wrap,
+      .wc-app.wc-view-mobile .wc-bracket,
+      .wc-app.wc-view-mobile .wc-knockout-spider {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-table {
+        min-width: 620px !important;
+        font-size: 11px !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-table th,
+      .wc-app.wc-view-mobile .wc-table td {
+        padding: 6px 5px !important;
+      }
+
+      .wc-app.wc-view-mobile.wc-page-groups,
+      .wc-app.wc-view-mobile.wc-page-groups .wc-shell,
+      .wc-app.wc-view-mobile.wc-page-groups .wc-groups-grid,
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card,
+      .wc-app.wc-view-mobile.wc-page-groups .wc-table-wrap {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        overflow-x: hidden !important;
+        box-sizing: border-box !important;
+      }
+
+      .wc-app.wc-view-mobile.wc-page-groups .wc-groups-grid {
+        grid-template-columns: 1fr !important;
+      }
+
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card {
+        padding: 8px !important;
+      }
+
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-section-title {
+        font-size: 16px !important;
+        margin-bottom: 7px !important;
+      }
+
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        table-layout: fixed !important;
+        font-size: 8.5px !important;
+      }
+
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table th,
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table td {
+        padding: 4px 1px !important;
+        line-height: 1.05 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table th {
+        font-size: 7px !important;
+        letter-spacing: 0 !important;
+      }
+
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table th:nth-child(1),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table td:nth-child(1) {
+        width: 6% !important;
+      }
+
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table th:nth-child(2),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table td:nth-child(2) {
+        width: 34% !important;
+        padding-left: 2px !important;
+      }
+
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table th:nth-child(3),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table td:nth-child(3),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table th:nth-child(4),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table td:nth-child(4),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table th:nth-child(5),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table td:nth-child(5),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table th:nth-child(6),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table td:nth-child(6),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table th:nth-child(7),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table td:nth-child(7),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table th:nth-child(8),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table td:nth-child(8) {
+        width: 6% !important;
+      }
+
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table th:nth-child(9),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table td:nth-child(9),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table th:nth-child(10),
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .wc-table td:nth-child(10) {
+        width: 8% !important;
+      }
+
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .group-team-cell {
+        gap: 3px !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
+      }
+
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .group-team-cell strong {
+        min-width: 0 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        font-size: 8.5px !important;
+      }
+
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .group-flag-img,
+      .wc-app.wc-view-mobile.wc-page-groups .wc-group-card .group-flag-missing {
+        width: 11px !important;
+        min-width: 11px !important;
+        height: 8px !important;
+        font-size: 6px !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-knockout-spider {
+        min-width: 960px !important;
+        min-height: 600px !important;
+      }
+
+      .wc-app.wc-view-mobile .wc-web-card {
+        overflow-x: auto !important;
+      }
+
+      .wc-app.wc-view-mobile img,
+      .wc-app.wc-view-mobile .fixture-stadium-image {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+
+      @media (max-width: 420px) {
+        .wc-app.wc-view-mobile {
+          padding: 6px !important;
+        }
+
+        .wc-app.wc-view-mobile .wc-title {
+          font-size: 21px !important;
+        }
+
+        .wc-app.wc-view-mobile .wc-header-controls {
+          grid-template-columns: 1fr !important;
+        }
+
+        .wc-app.wc-view-mobile .wc-nav {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+
+        .wc-app.wc-view-mobile .overview-stat-grid,
+        .wc-app.wc-view-mobile .overview-stat-grid.overview-stat-grid-in-progress {
+          grid-template-columns: 1fr !important;
+        }
+      }
+
 </style>
     `;
   }
 
   nav() {
+    const liveNavClass = (this._data.live || []).some((match) => this.isLiveMatch(match)) ? " is-live" : " is-offline";
     const items = [
-      ["overview", this.t("overview")],
       ["live", this.t("live")],
+      ["overview", this.t("overview")],
+      ["teams", "Teams"],
       ["fixtures", this.t("fixtures")],
       ["results", this.t("results")],
       ["groups", this.t("groups")],
@@ -15587,7 +16854,7 @@ class WorldCup2026Panel extends HTMLElement {
     return `
       <div class="wc-nav">
         ${items.map(([key, label]) => `
-          <button class="${this._page === key ? "active" : ""}" data-page="${key}">
+          <button class="${this._page === key ? "active" : ""}${key === "live" ? ` wc-live-nav-button${liveNavClass}` : ""}" data-page="${key}">
             ${this.esc(label)}
           </button>
         `).join("")}
@@ -15596,9 +16863,11 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   tabletHeaderNav() {
+    const liveNavClass = (this._data.live || []).some((match) => this.isLiveMatch(match)) ? " is-live" : " is-offline";
     const items = [
-      ["overview", this.t("overview")],
       ["live", this.t("live")],
+      ["overview", this.t("overview")],
+      ["teams", "Teams"],
       ["fixtures", this.t("fixtures")],
       ["results", this.t("results")],
       ["groups", this.t("groups")],
@@ -15613,7 +16882,7 @@ class WorldCup2026Panel extends HTMLElement {
     return `
       <div class="wc-tablet-header-nav">
         ${items.map(([key, label]) => `
-          <button class="${this._page === key ? "active" : ""}" data-page="${key}" title="${this.esc(label)}">
+          <button class="${this._page === key ? "active" : ""}${key === "live" ? ` wc-live-nav-button${liveNavClass}` : ""}" data-page="${key}" title="${this.esc(label)}">
             ${this.esc(label)}
           </button>
         `).join("")}
@@ -15660,6 +16929,7 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   viewCodeFor(value) {
+    if (value === "mobile") return "MOB";
     return value === "tablet" ? "TAB" : "PC";
   }
 
@@ -15804,6 +17074,7 @@ class WorldCup2026Panel extends HTMLElement {
       <div class="wc-view-wrap">
         <div class="wc-view-label">${this.esc(this.t("viewMode"))}</div>
         <select class="wc-view-select" id="wc-view-select" title="${this.esc(this.t("viewMode"))}">
+          <option value="mobile" ${this._viewMode === "mobile" ? "selected" : ""}>${this.esc(this.t("mobileView"))}</option>
           <option value="tablet" ${this._viewMode === "tablet" ? "selected" : ""}>${this.esc(this.t("tabletView"))}</option>
           <option value="pc" ${this._viewMode === "pc" ? "selected" : ""}>${this.esc(this.t("pcView"))}</option>
         </select>
@@ -16311,8 +17582,77 @@ class WorldCup2026Panel extends HTMLElement {
     return String(assist || "").trim();
   }
 
+  eventSubPlayerName(event, keys) {
+    for (const key of keys) {
+      const value = event?.[key];
+      if (value && typeof value === "object") {
+        const name = value.name || value.shortName || value.displayName || "";
+        if (name) return String(name).trim();
+      }
+      if (value) return String(value).trim();
+    }
+    return "";
+  }
+
   eventDetailText(event) {
     return String(event?.detail || event?.comments || event?.subType || event?.reason || event?.type || "").trim();
+  }
+
+  eventGoalMethod(event) {
+    const text = [
+      event?.detail,
+      event?.comments,
+      event?.reason,
+      event?.subType,
+      event?.type,
+      event?.rawType,
+    ].map((value) => String(value || "").toLowerCase()).join(" ");
+
+    if (event?.isDisallowed) return "Disallowed";
+    if (event?.isMissedPenalty || text.includes("missed penalty") || text.includes("penalty missed")) return "Missed penalty";
+    if (event?.isOwnGoal || text.includes("own goal")) return "Own goal";
+    if (event?.isPenalty || text.includes("penalty")) return "Penalty";
+    if (text.includes("header") || text.includes("headed")) return "Header";
+    if (text.includes("free kick") || text.includes("freekick")) return "Free kick";
+    if (text.includes("left foot")) return "Left foot";
+    if (text.includes("right foot")) return "Right foot";
+
+    const detail = this.eventDetailText(event);
+    if (!detail || /^goal$/i.test(detail)) return "Normal Goal";
+    return detail;
+  }
+
+  eventDetailParts(event) {
+    const parts = [];
+    const detail = this.eventDetailText(event);
+
+    if (event.category === "goal") {
+      const method = this.eventGoalMethod(event);
+      if (method) parts.push(method);
+      if (event.assist) parts.push(`Assist: ${event.assist}`);
+      return parts;
+    }
+
+    if (event.category === "substitution") {
+      if (event.playerOn) parts.push(`On: ${event.playerOn}`);
+      if (event.playerOff) parts.push(`Off: ${event.playerOff}`);
+      return parts;
+    }
+
+    if (event.category === "card") {
+      if (detail && detail.toLowerCase() !== "card") parts.push(detail);
+      return parts;
+    }
+
+    if (event.category === "var") {
+      const reason = event.comments || event.reason || event.subType || "";
+      if (detail) parts.push(detail);
+      if (reason && String(reason).toLowerCase() !== String(detail).toLowerCase()) parts.push(reason);
+      return parts;
+    }
+
+    if (detail) parts.push(detail);
+    return parts;
   }
 
   rawMatchEvents(match) {
@@ -16344,24 +17684,60 @@ class WorldCup2026Panel extends HTMLElement {
   normalisedMatchEvents(match) {
     const events = this.rawMatchEvents(match);
     const byKey = new Map();
+    const disallowedSourceEvents = events.filter((event) => {
+      const sourceText = [
+        event?.type,
+        event?.rawType,
+        this.eventDetailText(event),
+        event?.comments,
+        event?.reason,
+        event?.subType,
+      ].map((value) => String(value || "").toLowerCase()).join(" ");
+      return event?.isDisallowed === true
+        || sourceText.includes("disallowed")
+        || sourceText.includes("disallow")
+        || sourceText.includes("cancelled")
+        || sourceText.includes("canceled")
+        || sourceText.includes("no goal");
+    });
 
     events.forEach((event) => {
       const typeText = String(event.type || event.rawType || event.eventType || event.kind || "").toLowerCase();
       const detailText = this.eventDetailText(event).toLowerCase();
+      const combinedText = [
+        typeText,
+        detailText,
+        event.comments,
+        event.reason,
+        event.subType,
+      ].map((value) => String(value || "").toLowerCase()).join(" ");
       const player = this.eventPlayerName(event);
       const team = this.eventTeamName(event);
       const minuteText = this.eventMinuteText(event);
       const timerSeconds = this.eventTimerSeconds(event);
 
-      const isGoal = typeText.includes("goal") || detailText.includes("goal") || event.isGoal === true;
+      const isDisallowed = event.isDisallowed === true
+        || combinedText.includes("disallowed")
+        || combinedText.includes("disallow")
+        || combinedText.includes("cancelled")
+        || combinedText.includes("canceled")
+        || combinedText.includes("no goal");
+      const hasMatchingDisallowed = !isDisallowed && disallowedSourceEvents.some((other) => {
+        const sameMinute = this.eventTimerSeconds(other) === timerSeconds || this.eventMinuteText(other) === minuteText;
+        const sameTeam = this.fixtureTeamKey(this.eventTeamName(other)) === this.fixtureTeamKey(team);
+        const samePlayer = this.eventPlayerName(other).toLowerCase() === player.toLowerCase();
+        return sameMinute && (sameTeam || samePlayer);
+      });
+      const isGoal = !isDisallowed && (typeText.includes("goal") || detailText.includes("goal") || event.isGoal === true);
       const isCard = typeText.includes("card") || detailText.includes("yellow") || detailText.includes("red");
       const isSub = typeText.includes("subst") || detailText.includes("substitution");
-      const isVar = typeText.includes("var") || detailText.includes("var") || detailText.includes("video assistant") || detailText.includes("video review") || String(event.rawType || "").toLowerCase().includes("var");
+      const isVar = isDisallowed || typeText.includes("var") || detailText.includes("var") || detailText.includes("video assistant") || detailText.includes("video review") || String(event.rawType || "").toLowerCase().includes("var");
       const isPenalty = detailText.includes("penalty") || detailText.includes("pen");
       const isMissedPenalty = detailText.includes("missed penalty") || detailText.includes("penalty missed");
-      const isOwnGoal = detailText.includes("own goal") || /\bog\b/i.test(detailText);
+      const isOwnGoal = !isDisallowed && (detailText.includes("own goal") || /\bog\b/i.test(detailText));
 
       let category = "";
+      if (isGoal && hasMatchingDisallowed) return;
       if (isGoal) category = "goal";
       else if (isCard) category = "card";
       else if (isSub) category = "substitution";
@@ -16392,12 +17768,19 @@ class WorldCup2026Panel extends HTMLElement {
         team,
         player,
         assist: this.eventAssistName(event),
+        playerOn: category === "substitution"
+          ? this.eventSubPlayerName(event, ["playerOn", "playerIn", "in", "on"]) || this.eventAssistName(event)
+          : this.eventSubPlayerName(event, ["playerOn", "playerIn", "in", "on"]),
+        playerOff: category === "substitution"
+          ? this.eventSubPlayerName(event, ["playerOff", "playerOut", "out", "off"]) || player
+          : this.eventSubPlayerName(event, ["playerOff", "playerOut", "out", "off"]),
         minuteText,
         timerSeconds,
         detail: this.eventDetailText(event),
         isOwnGoal,
         isPenalty,
         isMissedPenalty,
+        isDisallowed,
       });
     });
 
@@ -16483,12 +17866,14 @@ class WorldCup2026Panel extends HTMLElement {
     const rows = events.map((event) => {
       const detail = event.detail && event.detail.toLowerCase() !== event.category ? event.detail : "";
       const team = event.team ? ` <em>${this.esc(this.localizedTeamName(event.team))}</em>` : "";
-      const assist = event.assist ? ` <small>Assist: ${this.esc(event.assist)}</small>` : "";
-      const player = event.player || detail || event.category;
+      const detailParts = this.eventDetailParts(event);
+      const detailsHtml = detailParts.length ? ` <small>${this.esc(detailParts.join(" / "))}</small>` : "";
+      const subOn = event.category === "substitution" ? (event.playerOn || event.assist || "") : "";
+      const subOff = event.category === "substitution" ? (event.playerOff || event.player || "") : "";
+      const player = event.category === "substitution"
+        ? (subOn || subOff || detail || event.category)
+        : (event.player || detail || event.category);
       const minute = event.minuteText || "";
-      const detailHtml = detail && String(detail).toLowerCase() !== String(player).toLowerCase()
-        ? `<small>${this.esc(detail)}</small>`
-        : "";
 
       return `
         <div class="match-event-row match-event-${this.esc(event.category)}">
@@ -16496,8 +17881,7 @@ class WorldCup2026Panel extends HTMLElement {
           <span class="match-event-icon">${this.esc(event.icon)}</span>
           <span class="match-event-main">
             <strong>${this.esc(player)}</strong>${team}
-            ${detailHtml}
-            ${assist}
+            ${detailsHtml}
           </span>
         </div>
       `;
@@ -16511,14 +17895,92 @@ class WorldCup2026Panel extends HTMLElement {
     `;
   }
 
+  matchLiveStatisticsSection(match) {
+    const stats = match?.liveStatistics || {};
+    const homeStats = stats.home || {};
+    const awayStats = stats.away || {};
+    const pick = (direct, sideStats, key) => {
+      const value = direct ?? sideStats?.[key];
+      return value === null || value === undefined || value === "" ? "" : value;
+    };
+    const rows = [
+      ["Corners", pick(match?.homeCorners, homeStats, "corners"), pick(match?.awayCorners, awayStats, "corners")],
+      ["Shots on target", pick(match?.homeShotsOnGoal, homeStats, "shotsOnGoal"), pick(match?.awayShotsOnGoal, awayStats, "shotsOnGoal")],
+      ["Possession", pick(match?.homePossession, homeStats, "possession"), pick(match?.awayPossession, awayStats, "possession")],
+      ["Fouls", pick(match?.homeFouls, homeStats, "fouls"), pick(match?.awayFouls, awayStats, "fouls")],
+      ["Offsides", pick(match?.homeOffsides, homeStats, "offsides"), pick(match?.awayOffsides, awayStats, "offsides")],
+    ].filter((row) => row[1] !== "" || row[2] !== "");
+
+    if (!rows.length) return "";
+
+    return `
+      <div class="match-events-box match-live-statistics-box">
+        <div class="match-extra-title">Live Match Stats</div>
+        <div class="match-events-list">
+          ${rows.map(([label, home, away]) => `
+            <div class="match-event-row match-event-stat">
+              <span class="match-event-minute">${this.esc(home || "-")}</span>
+              <span class="match-event-icon">STAT</span>
+              <span class="match-event-main">
+                <strong>${this.esc(label)}</strong>
+                <small>Away: ${this.esc(away || "-")}</small>
+              </span>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  matchWeatherSection(match) {
+    const weather = match?.weather || match?.matchWeather || {};
+    if (!weather || typeof weather !== "object" || !Object.keys(weather).length) return "";
+
+    const temp = weather.temperature !== null && weather.temperature !== undefined && weather.temperature !== ""
+      ? `${weather.temperature}${weather.temperatureUnit || ""}`
+      : "";
+    const condition = weather.condition ? String(weather.condition).replaceAll("_", " ") : "";
+    const wind = weather.windSpeed !== null && weather.windSpeed !== undefined && weather.windSpeed !== ""
+      ? `${weather.windSpeed}${weather.windSpeedUnit ? ` ${weather.windSpeedUnit}` : ""}`
+      : "";
+    const details = [
+      weather.humidity !== null && weather.humidity !== undefined && weather.humidity !== "" ? `Humidity: ${weather.humidity}%` : "",
+      wind ? `Wind: ${wind}` : "",
+      weather.cloudCoverage !== null && weather.cloudCoverage !== undefined && weather.cloudCoverage !== "" ? `Cloud: ${weather.cloudCoverage}%` : "",
+      weather.uvIndex !== null && weather.uvIndex !== undefined && weather.uvIndex !== "" ? `UV: ${weather.uvIndex}` : "",
+    ].filter(Boolean).join(" / ");
+
+    if (!temp && !condition && !details) return "";
+
+    return `
+      <div class="match-events-box match-weather-box">
+        <div class="match-extra-title">Weather</div>
+        <div class="match-events-list">
+          <div class="match-event-row match-event-weather">
+            <span class="match-event-minute">${this.esc(temp || "-")}</span>
+            <span class="match-event-icon">WX</span>
+            <span class="match-event-main">
+              <strong>${this.esc(condition || weather.name || "Forecast Home")}</strong>
+              ${details ? `<small>${this.esc(details)}</small>` : ""}
+            </span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   matchExtraLiveDataSection(match) {
-    const eventsHtml = this.matchEventsTimelineSection(match);
+    const eventsHtml = this.matchEventsTimelineSection(match, { includeSubs: true });
+    const statisticsHtml = this.matchLiveStatisticsSection(match);
+    const weatherHtml = this.matchWeatherSection(match);
     const officialsHtml = this.matchOfficialsSection(match);
-    if (!eventsHtml && !officialsHtml) return "";
+    if (!eventsHtml && !statisticsHtml && !weatherHtml && !officialsHtml) return "";
 
     return `
       <div class="match-extra-live-data">
         ${eventsHtml}
+        ${statisticsHtml}
+        ${weatherHtml}
         ${officialsHtml}
       </div>
     `;
@@ -16556,6 +18018,8 @@ class WorldCup2026Panel extends HTMLElement {
           isPenalty: event.isPenalty,
           isMissedPenalty: event.isMissedPenalty,
           detail: event.detail,
+          method: this.eventGoalMethod(event),
+          assist: event.assist,
           source: event.source || "",
         }))
         .filter((event) => event.name && String(event.name).toLowerCase() !== "goal");
@@ -16573,9 +18037,14 @@ class WorldCup2026Panel extends HTMLElement {
           const minuteText = item.displayMinute ? ` ${item.displayMinute}` : "";
           const detailText = item.isOwnGoal ? " (OG)" : (item.isPenalty ? " (PEN)" : "");
           const icon = item.isOwnGoal ? "OG" : (item.isPenalty ? "PEN" : "⚽");
-          const titleParts = [item.detail, item.timer].filter(Boolean);
+          const visibleParts = [
+            item.method && item.method !== "Own goal" && item.method !== "Penalty" ? item.method : "",
+            item.assist ? `Assist: ${item.assist}` : "",
+          ].filter(Boolean);
+          const detailHtml = visibleParts.length ? ` - ${this.esc(visibleParts.join(" / "))}` : "";
+          const titleParts = [item.detail, item.assist ? `Assist: ${item.assist}` : "", item.timer].filter(Boolean);
           const title = titleParts.length ? ` title="${this.esc(titleParts.join(" • "))}"` : "";
-          return `<span class="match-scorer-pill"${title}>${icon} ${this.esc(name)}${this.esc(minuteText)}${this.esc(detailText)}</span>`;
+          return `<span class="match-scorer-pill"${title}>${icon} ${this.esc(name)}${this.esc(minuteText)}${this.esc(detailText)}${detailHtml}</span>`;
         }).join("")
       : `<span class="match-scorer-empty">-</span>`;
 
@@ -16596,25 +18065,229 @@ class WorldCup2026Panel extends HTMLElement {
     `;
   }
 
+  liveMatchDiscipline(match) {
+    const cards = this.normalisedMatchEvents(match).filter((event) => event.category === "card");
+    const teamCount = (team, colour) => {
+      const key = this.fixtureTeamKey(team);
+      return cards.filter((event) => {
+        const sameTeam = this.fixtureTeamKey(event.team) === key;
+        const detail = `${event.icon || ""} ${event.detail || ""}`.toLowerCase();
+        const isRed = detail.includes("🟥") || detail.includes("red");
+        const isYellow = detail.includes("🟨") || detail.includes("yellow") || !isRed;
+        return sameTeam && (colour === "red" ? isRed : isYellow);
+      }).length;
+    };
+
+    const homeTeam = this.getHomeTeam(match);
+    const awayTeam = this.getAwayTeam(match);
+    return {
+      homeYellow: teamCount(homeTeam, "yellow"),
+      homeRed: teamCount(homeTeam, "red"),
+      awayYellow: teamCount(awayTeam, "yellow"),
+      awayRed: teamCount(awayTeam, "red"),
+      total: cards.length,
+    };
+  }
+
+  liveStatValue(match, side, keys) {
+    const stats = match?.liveStatistics || match?.statistics || match?.stats || {};
+    const sideStats = side === "home" ? (stats.home || stats.homeTeam || {}) : (stats.away || stats.awayTeam || {});
+    const directPrefixes = side === "home" ? ["home", "homeTeam"] : ["away", "awayTeam"];
+
+    for (const key of keys) {
+      for (const prefix of directPrefixes) {
+        const directKey = `${prefix}${key.charAt(0).toUpperCase()}${key.slice(1)}`;
+        if (match?.[directKey] !== null && match?.[directKey] !== undefined && match?.[directKey] !== "") return match[directKey];
+      }
+      if (sideStats?.[key] !== null && sideStats?.[key] !== undefined && sideStats?.[key] !== "") return sideStats[key];
+    }
+    return "";
+  }
+
+  livePossessionPercent(value) {
+    if (value === null || value === undefined || value === "") return null;
+    const match = String(value).match(/\d+(?:\.\d+)?/);
+    if (!match) return null;
+    const num = Number(match[0]);
+    return Number.isFinite(num) ? Math.max(0, Math.min(100, num)) : null;
+  }
+
+  livePremiumStatsBars(match) {
+    const rows = [
+      { label: "Possession", keys: ["possession", "ballPossession"] },
+      { label: "Shots", keys: ["shots", "totalShots", "shotsTotal"] },
+      { label: "On Target", keys: ["shotsOnGoal", "shotsOnTarget", "onTarget"] },
+      { label: "Corners", keys: ["corners", "cornerKicks"] },
+      { label: "Fouls", keys: ["fouls", "foulsCommitted"] },
+    ].map((row) => {
+      const home = this.liveStatValue(match, "home", row.keys);
+      const away = this.liveStatValue(match, "away", row.keys);
+      return { ...row, home, away };
+    }).filter((row) => row.home !== "" || row.away !== "");
+
+    if (!rows.length) return "";
+
+    return `
+      <div class="live-premium-card live-premium-stats-card">
+        <div class="live-premium-card-title">📊 Live Stats</div>
+        <div class="live-stat-bars">
+          ${rows.map((row) => {
+            const homeNum = this.livePossessionPercent(row.home);
+            const awayNum = this.livePossessionPercent(row.away);
+            const total = homeNum !== null && awayNum !== null ? Math.max(homeNum + awayNum, 1) : 0;
+            const left = total ? Math.round((homeNum / total) * 100) : 50;
+            const right = total ? Math.round((awayNum / total) * 100) : 50;
+            return `
+              <div class="live-stat-row">
+                <span>${this.esc(row.home || "-")}</span>
+                <div class="live-stat-bar-wrap">
+                  <small>${this.esc(row.label)}</small>
+                  <div class="live-stat-bar"><i style="width:${left}%"></i><b style="width:${right}%"></b></div>
+                </div>
+                <span>${this.esc(row.away || "-")}</span>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  livePremiumTimeline(match) {
+    const events = this.normalisedMatchEvents(match).slice(-12);
+    if (!events.length) return "";
+    return `
+      <div class="live-premium-card live-premium-timeline-card">
+        <div class="live-premium-card-title">⚡ Live Timeline</div>
+        <div class="live-premium-timeline">
+          ${events.map((event) => `
+            <div class="live-timeline-row live-timeline-${this.esc(event.category)}">
+              <span>${this.esc(event.minuteText || "-")}</span>
+              <b>${this.esc(event.icon || "•")}</b>
+              <strong>${this.esc((event.category === "substitution" ? (event.playerOn || event.playerOff || event.player) : "") || event.player || event.detail || event.category)}</strong>
+              ${(() => {
+                const line = [
+                  event.team ? this.localizedTeamName(event.team) : "",
+                  ...this.eventDetailParts(event),
+                ].filter(Boolean).join(" / ");
+                return line ? `<em>${this.esc(line)}</em>` : "";
+              })()}
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  livePremiumMatchCard(match, index = 0) {
+    const homeTeam = this.getHomeTeam(match);
+    const awayTeam = this.getAwayTeam(match);
+    const homeScore = this.getHomeScore(match);
+    const awayScore = this.getAwayScore(match);
+    const stage = String(match.group || this.stageLabel(match.stage) || "").replaceAll("_", " ");
+    const venueInfo = this.fixtureVenueInfo(match);
+    const date = this.formatDate(match.utcDate || match.date);
+    const discipline = this.liveMatchDiscipline(match);
+    const clock = this.footballClockHtml(match);
+    const scorers = this.matchScorersSection(homeTeam, awayTeam, match);
+    const stats = this.livePremiumStatsBars(match);
+    const timeline = this.livePremiumTimeline(match);
+    const weather = this.matchWeatherSection(match);
+    const officials = this.matchOfficialsSection(match);
+
+    return `
+      <div class="live-premium-match ${index === 0 ? "live-premium-main" : ""}">
+        <div class="live-premium-topline">
+          <span class="live-on-air">● LIVE</span>
+          ${stage ? `<span>${this.esc(stage)}</span>` : ""}
+          ${venueInfo?.name ? `<span>🏟 ${this.esc(venueInfo.name)}</span>` : ""}
+          <span>${this.esc(date)}</span>
+        </div>
+
+        <div class="live-premium-scoreboard">
+          <div class="live-premium-team">
+            ${this.flag(homeTeam, true)}
+            <strong>${this.esc(this.localizedTeamName(homeTeam))}</strong>
+            <small>🟨 ${discipline.homeYellow} &nbsp; 🟥 ${discipline.homeRed}</small>
+          </div>
+
+          <div class="live-premium-score-centre">
+            <div class="live-premium-score">${this.esc(homeScore)} - ${this.esc(awayScore)}</div>
+            <div class="live-premium-clock">${clock}</div>
+            <div class="live-premium-status">${this.statusHtml(match)}</div>
+          </div>
+
+          <div class="live-premium-team">
+            ${this.flag(awayTeam, true)}
+            <strong>${this.esc(this.localizedTeamName(awayTeam))}</strong>
+            <small>🟨 ${discipline.awayYellow} &nbsp; 🟥 ${discipline.awayRed}</small>
+          </div>
+        </div>
+
+        ${scorers ? `<div class="live-premium-scorers">${scorers}</div>` : ""}
+
+        <div class="live-premium-lower-grid">
+          ${stats}
+          ${timeline}
+          ${discipline.total ? `
+            <div class="live-premium-card live-premium-discipline-card">
+              <div class="live-premium-card-title">🟨 Discipline</div>
+              <div class="live-discipline-grid">
+                <div><strong>${discipline.homeYellow}</strong><span>${this.esc(this.localizedTeamName(homeTeam))} yellows</span></div>
+                <div><strong>${discipline.homeRed}</strong><span>${this.esc(this.localizedTeamName(homeTeam))} reds</span></div>
+                <div><strong>${discipline.awayYellow}</strong><span>${this.esc(this.localizedTeamName(awayTeam))} yellows</span></div>
+                <div><strong>${discipline.awayRed}</strong><span>${this.esc(this.localizedTeamName(awayTeam))} reds</span></div>
+              </div>
+            </div>
+          ` : ""}
+          ${weather}
+          ${officials}
+        </div>
+      </div>
+    `;
+  }
+
   livePage() {
     const live = (this._data.live || []).filter((match) => this.isLiveMatch(match));
 
     if (!live.length) {
       return `
-        <div class="wc-card">
-          <div class="wc-section-title">${this.t("live")}</div>
-          <div class="wc-live-sync-notice">ℹ️ ${this.t("manualTimerNotice")}</div>
-          <div class="wc-empty">${this.t("noLiveMatches")}</div>
+        <div class="live-premium-page">
+          <div class="wc-card live-premium-hero live-premium-empty-hero">
+            <div>
+              <div class="live-kicker">⚽ Matchday Control Room</div>
+              <div class="wc-section-title">${this.t("live")}</div>
+              <p>${this.t("manualTimerNotice")}</p>
+            </div>
+            <div class="live-premium-count"><strong>0</strong><span>${this.t("liveNow")}</span></div>
+          </div>
+          <div class="wc-card"><div class="wc-empty">${this.t("noLiveMatches")}</div></div>
         </div>
       `;
     }
 
+    const totalCards = live.reduce((sum, match) => sum + this.liveMatchDiscipline(match).total, 0);
+    const totalGoals = live.reduce((sum, match) => sum + this.normalisedMatchEvents(match).filter((event) => event.category === "goal").length, 0);
+    const totalEvents = live.reduce((sum, match) => sum + this.normalisedMatchEvents(match).length, 0);
+
     return `
-      <div class="wc-card">
-        <div class="wc-section-title">${this.t("live")} <span class="wc-badge wc-live">${this.t("liveStatus")}</span></div>
-        <div class="wc-live-sync-notice">ℹ️ ${this.t("manualTimerNotice")}</div>
-        <div class="wc-list">
-          ${live.map(m => this.matchRow(m)).join("")}
+      <div class="live-premium-page">
+        <div class="wc-card live-premium-hero">
+          <div>
+            <div class="live-kicker">⚽ Matchday Control Room</div>
+            <div class="wc-section-title">${this.t("live")} <span class="wc-badge wc-live">${this.t("liveStatus")}</span></div>
+            <p>${this.t("manualTimerNotice")}</p>
+          </div>
+          <div class="live-premium-hero-stats">
+            <div><strong>${live.length}</strong><span>${this.t("liveNow")}</span></div>
+            <div><strong>${totalGoals}</strong><span>Goals</span></div>
+            <div><strong>${totalCards}</strong><span>Cards</span></div>
+            <div><strong>${totalEvents}</strong><span>Events</span></div>
+          </div>
+        </div>
+
+        <div class="live-premium-feed">
+          ${live.map((m, index) => this.livePremiumMatchCard(m, index)).join("")}
         </div>
       </div>
     `;
@@ -18052,43 +19725,111 @@ class WorldCup2026Panel extends HTMLElement {
       const matches = fixtures
         .filter(m => this.normaliseKnockoutStage(m.stage) === stage)
         .sort((a, b) => {
+          const aSlot = this.knockoutDerivedMatchNumber(stage, -1, a);
+          const bSlot = this.knockoutDerivedMatchNumber(stage, -1, b);
+          if (aSlot && bSlot && aSlot !== bSlot) return aSlot - bSlot;
           const aTime = new Date(a.utcDate || a.date || 0).getTime();
           const bTime = new Date(b.utcDate || b.date || 0).getTime();
-          return aTime - bTime;
-        });
+          if (aTime !== bTime) return aTime - bTime;
+          const aTeams = `${this.fixtureTeamKey(this.getHomeTeam(a))}|${this.fixtureTeamKey(this.getAwayTeam(a))}`;
+          const bTeams = `${this.fixtureTeamKey(this.getHomeTeam(b))}|${this.fixtureTeamKey(this.getAwayTeam(b))}`;
+          return aTeams.localeCompare(bTeams);
+      });
       return { stage, label, matches };
     });
+
+    const spiderCounts = {
+      LAST_32: 16,
+      LAST_16: 8,
+      QUARTER_FINALS: 4,
+      SEMI_FINALS: 2,
+      FINAL: 1,
+    };
+
+    const spiderSlotsForRound = (stage, matches) => {
+      const expected = spiderCounts[stage] || matches.length || 1;
+      const start = this.knockoutRoundStarts()[stage];
+      const slots = Array.from({ length: expected }, () => null);
+      const overflow = [];
+
+      matches.forEach((match, fallbackIndex) => {
+        const matchNumber = this.knockoutDerivedMatchNumber(stage, fallbackIndex, match);
+        const slotIndex = start && matchNumber ? matchNumber - start : fallbackIndex;
+        if (slotIndex >= 0 && slotIndex < expected && !slots[slotIndex]) {
+          slots[slotIndex] = match;
+        } else {
+          overflow.push(match);
+        }
+      });
+
+      overflow.forEach((match) => {
+        const emptyIndex = slots.findIndex((slot) => !slot);
+        if (emptyIndex >= 0) slots[emptyIndex] = match;
+      });
+
+      return slots;
+    };
+
+    const spiderMatch = (match) => {
+      if (!match) {
+        return `
+          <div class="wc-spider-match wc-spider-match-empty">
+            <div class="wc-spider-team"><span>${this.t("tbc")}</span></div>
+            <div class="wc-spider-vs">${this.t("versus")}</div>
+            <div class="wc-spider-team"><span>${this.t("tbc")}</span></div>
+          </div>
+        `;
+      }
+
+      const homeTeam = this.getHomeTeam(match);
+      const awayTeam = this.getAwayTeam(match);
+      const homeScore = this.getHomeScore(match);
+      const awayScore = this.getAwayScore(match);
+      const scoreText = homeScore !== "-" || awayScore !== "-" ? `${homeScore} - ${awayScore}` : this.t("versus");
+
+      return `
+        <div class="wc-spider-match">
+          <div class="wc-spider-team">
+            ${this.flag(homeTeam, true)}
+            <span>${this.esc(this.localizedTeamName(homeTeam))}</span>
+          </div>
+          <div class="wc-spider-vs">${this.esc(scoreText)}</div>
+          <div class="wc-spider-team">
+            ${this.flag(awayTeam, true)}
+            <span>${this.esc(this.localizedTeamName(awayTeam))}</span>
+          </div>
+        </div>
+      `;
+    };
 
     return `
       <div class="wc-card wc-web-card">
         <div class="wc-section-title">Knockout Stage</div>
-        <div class="wc-knockout-web">
-          ${roundMatches.map(({ stage, label, matches }) => `
-            <div class="wc-web-round">
-              <div class="wc-web-round-title">${label}</div>
-              ${matches.length ? matches.map((m) => `
-                <div class="wc-web-match">
-                  <div class="wc-web-team">
-                    ${this.flag(this.getHomeTeam(m), true)}
-                    <span>${this.esc(this.localizedTeamName(this.getHomeTeam(m)))}</span>
-                  </div>
-                  <div class="wc-web-vs">${this.t("versus")}</div>
-                  <div class="wc-web-team">
-                    ${this.flag(this.getAwayTeam(m), true)}
-                    <span>${this.esc(this.localizedTeamName(this.getAwayTeam(m)))}</span>
-                  </div>
-                </div>
-              `).join("") : `<div class="wc-web-match"><div class="wc-web-team"><span>${this.t("tbc")}</span></div><div class="wc-web-vs">${this.t("fixturesNotAvailable")}</div></div>`}
-            </div>
+        <div class="wc-knockout-spider">
+          ${roundMatches.map(({ label }, roundIndex) => `
+            <div class="wc-spider-round-title" style="grid-column:${roundIndex + 1};">${label}</div>
           `).join("")}
-          <div class="wc-web-round wc-web-round-winner">
-            <div class="wc-web-round-title">Winner</div>
-            <div class="wc-web-match wc-web-winner-card">
-              <div class="wc-web-team wc-web-winner-team">
-                <span class="wc-winner-trophy">🏆</span>
-                <span>${this.t("tbc")}</span>
-              </div>
-            </div>
+          ${roundMatches.map(({ stage, matches }, roundIndex) => {
+            const slots = spiderSlotsForRound(stage, matches);
+            const expected = slots.length;
+            const span = 32 / expected;
+            return Array.from({ length: expected }, (_, index) => {
+              const start = (index * span) + 2;
+              const classes = [
+                "wc-spider-slot",
+                roundIndex === 0 ? "wc-spider-first" : "",
+                roundIndex === roundMatches.length - 1 ? "wc-spider-final" : "",
+              ].filter(Boolean).join(" ");
+              return `
+                <div class="${classes}" style="grid-column:${roundIndex + 1};grid-row:${start} / span ${span};">
+                  ${spiderMatch(slots[index])}
+                </div>
+              `;
+            }).join("");
+          }).join("")}
+          <div class="wc-spider-final-label">
+            <span>Winner</span>
+            <strong>${this.t("tbc")}</strong>
           </div>
         </div>
       </div>
@@ -18311,244 +20052,6 @@ class WorldCup2026Panel extends HTMLElement {
             { label: "VAR", key: "varEvents", align: "center" },
           ], "No team event records yet")}
         </div>
-      </div>
-    `;
-  }
-
-  statsHubAllMatches() {
-    const sources = [
-      this._data.results,
-      this._data.fixtures,
-      this._data.live,
-      this._data.apiResultsTest,
-    ];
-    const byKey = new Map();
-
-    const keyFor = (match) => {
-      const id = match?.id ?? match?.matchId ?? match?.apiFootballFixtureId;
-      if (id !== undefined && id !== null && id !== "") return `id:${id}`;
-      return [
-        this.fixtureTeamKey(this.getHomeTeam(match)),
-        this.fixtureTeamKey(this.getAwayTeam(match)),
-        match?.utcDate || match?.date || "",
-      ].join("|");
-    };
-
-    sources.forEach((source) => {
-      const list = Array.isArray(source) ? source : [];
-      list.forEach((match) => {
-        if (!match || typeof match !== "object") return;
-        const key = keyFor(match);
-        const existing = byKey.get(key) || {};
-        byKey.set(key, {
-          ...existing,
-          ...match,
-          events: Array.isArray(match.events) && match.events.length ? match.events : existing.events,
-          goalEvents: Array.isArray(match.goalEvents) && match.goalEvents.length ? match.goalEvents : existing.goalEvents,
-          cardEvents: Array.isArray(match.cardEvents) && match.cardEvents.length ? match.cardEvents : existing.cardEvents,
-          substitutionEvents: Array.isArray(match.substitutionEvents) && match.substitutionEvents.length ? match.substitutionEvents : existing.substitutionEvents,
-          varEvents: Array.isArray(match.varEvents) && match.varEvents.length ? match.varEvents : existing.varEvents,
-          matchDetails: match.matchDetails || existing.matchDetails,
-          referees: Array.isArray(match.referees) && match.referees.length ? match.referees : existing.referees,
-        });
-      });
-    });
-
-    return Array.from(byKey.values());
-  }
-
-  statsHubAnalytics() {
-    const s = this._data.statistics || {};
-    const r = this._data.records || {};
-    const matches = this.statsHubAllMatches();
-    const finished = matches.filter((match) => this.isFinishedMatch(match));
-    const live = matches.filter((match) => this.isLiveMatch(match));
-    const teams = new Map();
-    const players = new Map();
-    const refs = new Map();
-    const eventMatches = new Set();
-
-    const stat = {
-      matches,
-      finished,
-      live,
-      scheduled: matches.filter((match) => !this.isFinishedMatch(match) && !this.isLiveMatch(match)).length,
-      goals: Number(s.total_goals ?? 0) || 0,
-      assists: 0,
-      ownGoals: 0,
-      penalties: 0,
-      missedPens: 0,
-      yellowCards: 0,
-      redCards: 0,
-      cards: 0,
-      substitutions: 0,
-      varEvents: 0,
-      events: 0,
-      eventMatches: 0,
-      refs: 0,
-      topPlayers: [],
-      teamRows: [],
-      disciplineRows: [],
-      refereeRows: [],
-      dataCoverage: 0,
-      progress: s.progress ?? 0,
-      goalsPerMatch: s.goals_per_match ?? 0,
-      draws: s.draws ?? 0,
-      drawRate: s.draw_rate ?? 0,
-      bttsRate: s.btts_rate ?? 0,
-      over25Rate: s.over_25_rate ?? 0,
-      biggestWin: r.biggest_win,
-      highestScoringMatch: r.highest_scoring_match,
-      topScoringTeam: r.top_scoring_team,
-      bestDefence: r.best_defence,
-    };
-
-    const ensureTeam = (team) => {
-      const label = this.localizedTeamName(team || this.t("unknown"));
-      const key = this.fixtureTeamKey(label);
-      if (!teams.has(key)) {
-        teams.set(key, {
-          team: label,
-          played: 0,
-          wins: 0,
-          draws: 0,
-          losses: 0,
-          gf: 0,
-          ga: 0,
-          gd: 0,
-          goals: 0,
-          assists: 0,
-          ownGoals: 0,
-          penalties: 0,
-          yellowCards: 0,
-          redCards: 0,
-          cards: 0,
-          substitutions: 0,
-          varEvents: 0,
-          cleanSheets: 0,
-          eventCount: 0,
-        });
-      }
-      return teams.get(key);
-    };
-
-    const addPlayer = (name, team, field) => {
-      if (!name) return;
-      const key = `${String(name).toLowerCase()}|${this.fixtureTeamKey(team)}`;
-      if (!players.has(key)) {
-        players.set(key, { player: name, team: this.localizedTeamName(team || ""), goals: 0, assists: 0, penalties: 0, ownGoals: 0, cards: 0 });
-      }
-      players.get(key)[field] = (players.get(key)[field] || 0) + 1;
-    };
-
-    finished.forEach((match) => {
-      const home = this.getHomeTeam(match);
-      const away = this.getAwayTeam(match);
-      const homeScore = Number(this.getHomeScore(match));
-      const awayScore = Number(this.getAwayScore(match));
-      const homeRow = ensureTeam(home);
-      const awayRow = ensureTeam(away);
-
-      if (Number.isFinite(homeScore) && Number.isFinite(awayScore)) {
-        homeRow.played += 1;
-        awayRow.played += 1;
-        homeRow.gf += homeScore;
-        homeRow.ga += awayScore;
-        awayRow.gf += awayScore;
-        awayRow.ga += homeScore;
-        if (awayScore === 0) homeRow.cleanSheets += 1;
-        if (homeScore === 0) awayRow.cleanSheets += 1;
-        if (homeScore > awayScore) { homeRow.wins += 1; awayRow.losses += 1; }
-        else if (awayScore > homeScore) { awayRow.wins += 1; homeRow.losses += 1; }
-        else { homeRow.draws += 1; awayRow.draws += 1; }
-      }
-    });
-
-    matches.forEach((match) => {
-      const events = this.normalisedMatchEvents(match);
-      if (events.length) eventMatches.add(match?.id ?? match?.matchId ?? `${this.getHomeTeam(match)}-${this.getAwayTeam(match)}-${match?.utcDate || match?.date || ""}`);
-      stat.events += events.length;
-
-      events.forEach((event) => {
-        const teamRow = ensureTeam(event.team || this.t("unknown"));
-        teamRow.eventCount += 1;
-        if (event.category === "goal") {
-          stat.goals += stat.goals ? 0 : 1;
-          teamRow.goals += 1;
-          addPlayer(event.player, event.team, "goals");
-          if (event.assist) {
-            stat.assists += 1;
-            teamRow.assists += 1;
-            addPlayer(event.assist, event.team, "assists");
-          }
-          if (event.isOwnGoal) { stat.ownGoals += 1; teamRow.ownGoals += 1; addPlayer(event.player, event.team, "ownGoals"); }
-          if (event.isPenalty) { stat.penalties += 1; teamRow.penalties += 1; addPlayer(event.player, event.team, "penalties"); }
-          if (event.isMissedPenalty) stat.missedPens += 1;
-        }
-        if (event.category === "card") {
-          stat.cards += 1;
-          teamRow.cards += 1;
-          addPlayer(event.player, event.team, "cards");
-          if (String(event.icon).includes("🟥") || String(event.detail).toLowerCase().includes("red")) {
-            stat.redCards += 1;
-            teamRow.redCards += 1;
-          } else {
-            stat.yellowCards += 1;
-            teamRow.yellowCards += 1;
-          }
-        }
-        if (event.category === "substitution") {
-          stat.substitutions += 1;
-          teamRow.substitutions += 1;
-        }
-        if (event.category === "var") {
-          stat.varEvents += 1;
-          teamRow.varEvents += 1;
-        }
-      });
-
-      this.matchReferees(match).forEach((ref) => {
-        const key = String(ref.name || "").toLowerCase();
-        if (!key) return;
-        refs.set(key, { ...ref, matches: (refs.get(key)?.matches || 0) + 1 });
-      });
-    });
-
-    // Prefer official/statistics total goals when available, but use timeline totals if the official total is missing.
-    const eventGoalTotal = Array.from(teams.values()).reduce((sum, row) => sum + row.goals, 0);
-    if (!stat.goals && eventGoalTotal) stat.goals = eventGoalTotal;
-
-    teams.forEach((row) => { row.gd = row.gf - row.ga; });
-    stat.eventMatches = eventMatches.size;
-    stat.refs = refs.size;
-    stat.dataCoverage = finished.length ? Math.round((eventMatches.size / finished.length) * 100) : 0;
-    stat.teamRows = Array.from(teams.values()).sort((a, b) => b.gf - a.gf || b.gd - a.gd || a.team.localeCompare(b.team));
-    stat.disciplineRows = Array.from(teams.values()).sort((a, b) => b.cards - a.cards || b.redCards - a.redCards || a.team.localeCompare(b.team));
-    stat.eventLeaderRows = Array.from(teams.values()).sort((a, b) => b.eventCount - a.eventCount || b.goals - a.goals || a.team.localeCompare(b.team));
-    stat.topPlayers = Array.from(players.values())
-      .sort((a, b) => (b.goals + b.assists + b.cards) - (a.goals + a.assists + a.cards) || b.goals - a.goals || a.player.localeCompare(b.player))
-      .slice(0, 10);
-    stat.refereeRows = Array.from(refs.values()).sort((a, b) => b.matches - a.matches || String(a.name).localeCompare(String(b.name))).slice(0, 8);
-
-    return stat;
-  }
-
-  statsMiniTable(rows, columns, emptyText = "No data yet") {
-    if (!rows || !rows.length) return `<div class="wc-empty">${this.esc(emptyText)}</div>`;
-    return `
-      <div style="overflow:auto;">
-        <table style="width:100%;border-collapse:separate;border-spacing:0 8px;font-size:.92rem;">
-          <thead>
-            <tr>${columns.map((col) => `<th style="text-align:${col.align || "left"};color:rgba(255,255,255,.62);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;padding:0 8px;white-space:nowrap;">${this.esc(col.label)}</th>`).join("")}</tr>
-          </thead>
-          <tbody>
-            ${rows.map((row) => `
-              <tr style="background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);">
-                ${columns.map((col, index) => `<td style="padding:10px 8px;text-align:${col.align || "left"};white-space:nowrap;${index === 0 ? "border-radius:12px 0 0 12px;" : ""}${index === columns.length - 1 ? "border-radius:0 12px 12px 0;" : ""}">${col.render ? col.render(row) : this.esc(row[col.key] ?? "-")}</td>`).join("")}
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
       </div>
     `;
   }
@@ -18874,6 +20377,733 @@ class WorldCup2026Panel extends HTMLElement {
           </div>
         </div>
       </div>
+    `;
+  }
+
+  statsHubAllMatches() {
+    const sources = [
+      this._data.results,
+      this._data.fixtures,
+      this._data.live,
+      this._data.apiResultsTest,
+    ];
+    const byKey = new Map();
+
+    const keyFor = (match) => {
+      const id = match?.id ?? match?.matchId ?? match?.apiFootballFixtureId;
+      if (id !== undefined && id !== null && id !== "") return `id:${id}`;
+      return [
+        this.fixtureTeamKey(this.getHomeTeam(match)),
+        this.fixtureTeamKey(this.getAwayTeam(match)),
+        match?.utcDate || match?.date || "",
+      ].join("|");
+    };
+
+    sources.forEach((source) => {
+      const list = Array.isArray(source) ? source : [];
+      list.forEach((match) => {
+        if (!match || typeof match !== "object") return;
+        const key = keyFor(match);
+        const existing = byKey.get(key) || {};
+        byKey.set(key, {
+          ...existing,
+          ...match,
+          events: Array.isArray(match.events) && match.events.length ? match.events : existing.events,
+          goalEvents: Array.isArray(match.goalEvents) && match.goalEvents.length ? match.goalEvents : existing.goalEvents,
+          cardEvents: Array.isArray(match.cardEvents) && match.cardEvents.length ? match.cardEvents : existing.cardEvents,
+          substitutionEvents: Array.isArray(match.substitutionEvents) && match.substitutionEvents.length ? match.substitutionEvents : existing.substitutionEvents,
+          varEvents: Array.isArray(match.varEvents) && match.varEvents.length ? match.varEvents : existing.varEvents,
+          matchDetails: match.matchDetails || existing.matchDetails,
+          referees: Array.isArray(match.referees) && match.referees.length ? match.referees : existing.referees,
+        });
+      });
+    });
+
+    return Array.from(byKey.values());
+  }
+
+  statsHubAnalytics() {
+    const s = this._data.statistics || {};
+    const r = this._data.records || {};
+    const matches = this.statsHubAllMatches();
+    const finished = matches.filter((match) => this.isFinishedMatch(match));
+    const live = matches.filter((match) => this.isLiveMatch(match));
+    const teams = new Map();
+    const players = new Map();
+    const refs = new Map();
+    const eventMatches = new Set();
+
+    const stat = {
+      matches,
+      finished,
+      live,
+      scheduled: matches.filter((match) => !this.isFinishedMatch(match) && !this.isLiveMatch(match)).length,
+      goals: Number(s.total_goals ?? 0) || 0,
+      assists: 0,
+      ownGoals: 0,
+      penalties: 0,
+      missedPens: 0,
+      yellowCards: 0,
+      redCards: 0,
+      cards: 0,
+      substitutions: 0,
+      varEvents: 0,
+      events: 0,
+      eventMatches: 0,
+      refs: 0,
+      topPlayers: [],
+      teamRows: [],
+      disciplineRows: [],
+      refereeRows: [],
+      dataCoverage: 0,
+      progress: s.progress ?? 0,
+      goalsPerMatch: s.goals_per_match ?? 0,
+      draws: s.draws ?? 0,
+      drawRate: s.draw_rate ?? 0,
+      bttsRate: s.btts_rate ?? 0,
+      over25Rate: s.over_25_rate ?? 0,
+      biggestWin: r.biggest_win,
+      highestScoringMatch: r.highest_scoring_match,
+      topScoringTeam: r.top_scoring_team,
+      bestDefence: r.best_defence,
+    };
+
+    const ensureTeam = (team) => {
+      const label = this.localizedTeamName(team || this.t("unknown"));
+      const key = this.fixtureTeamKey(label);
+      if (!teams.has(key)) {
+        teams.set(key, {
+          team: label,
+          played: 0,
+          wins: 0,
+          draws: 0,
+          losses: 0,
+          gf: 0,
+          ga: 0,
+          gd: 0,
+          goals: 0,
+          assists: 0,
+          ownGoals: 0,
+          penalties: 0,
+          yellowCards: 0,
+          redCards: 0,
+          cards: 0,
+          substitutions: 0,
+          varEvents: 0,
+          cleanSheets: 0,
+          eventCount: 0,
+        });
+      }
+      return teams.get(key);
+    };
+
+    const addPlayer = (name, team, field) => {
+      if (!name) return;
+      const key = `${String(name).toLowerCase()}|${this.fixtureTeamKey(team)}`;
+      if (!players.has(key)) {
+        players.set(key, { player: name, team: this.localizedTeamName(team || ""), goals: 0, assists: 0, penalties: 0, ownGoals: 0, cards: 0 });
+      }
+      players.get(key)[field] = (players.get(key)[field] || 0) + 1;
+    };
+
+    finished.forEach((match) => {
+      const home = this.getHomeTeam(match);
+      const away = this.getAwayTeam(match);
+      const homeScore = Number(this.getHomeScore(match));
+      const awayScore = Number(this.getAwayScore(match));
+      const homeRow = ensureTeam(home);
+      const awayRow = ensureTeam(away);
+
+      if (Number.isFinite(homeScore) && Number.isFinite(awayScore)) {
+        homeRow.played += 1;
+        awayRow.played += 1;
+        homeRow.gf += homeScore;
+        homeRow.ga += awayScore;
+        awayRow.gf += awayScore;
+        awayRow.ga += homeScore;
+        if (awayScore === 0) homeRow.cleanSheets += 1;
+        if (homeScore === 0) awayRow.cleanSheets += 1;
+        if (homeScore > awayScore) { homeRow.wins += 1; awayRow.losses += 1; }
+        else if (awayScore > homeScore) { awayRow.wins += 1; homeRow.losses += 1; }
+        else { homeRow.draws += 1; awayRow.draws += 1; }
+      }
+    });
+
+    matches.forEach((match) => {
+      const events = this.normalisedMatchEvents(match);
+      if (events.length) eventMatches.add(match?.id ?? match?.matchId ?? `${this.getHomeTeam(match)}-${this.getAwayTeam(match)}-${match?.utcDate || match?.date || ""}`);
+      stat.events += events.length;
+
+      events.forEach((event) => {
+        const teamRow = ensureTeam(event.team || this.t("unknown"));
+        teamRow.eventCount += 1;
+        if (event.category === "goal") {
+          stat.goals += stat.goals ? 0 : 1;
+          teamRow.goals += 1;
+          addPlayer(event.player, event.team, "goals");
+          if (event.assist) {
+            stat.assists += 1;
+            teamRow.assists += 1;
+            addPlayer(event.assist, event.team, "assists");
+          }
+          if (event.isOwnGoal) { stat.ownGoals += 1; teamRow.ownGoals += 1; addPlayer(event.player, event.team, "ownGoals"); }
+          if (event.isPenalty) { stat.penalties += 1; teamRow.penalties += 1; addPlayer(event.player, event.team, "penalties"); }
+          if (event.isMissedPenalty) stat.missedPens += 1;
+        }
+        if (event.category === "card") {
+          stat.cards += 1;
+          teamRow.cards += 1;
+          addPlayer(event.player, event.team, "cards");
+          if (String(event.icon).includes("🟥") || String(event.detail).toLowerCase().includes("red")) {
+            stat.redCards += 1;
+            teamRow.redCards += 1;
+          } else {
+            stat.yellowCards += 1;
+            teamRow.yellowCards += 1;
+          }
+        }
+        if (event.category === "substitution") {
+          stat.substitutions += 1;
+          teamRow.substitutions += 1;
+        }
+        if (event.category === "var") {
+          stat.varEvents += 1;
+          teamRow.varEvents += 1;
+        }
+      });
+
+      this.matchReferees(match).forEach((ref) => {
+        const key = String(ref.name || "").toLowerCase();
+        if (!key) return;
+        refs.set(key, { ...ref, matches: (refs.get(key)?.matches || 0) + 1 });
+      });
+    });
+
+    // Prefer official/statistics total goals when available, but use timeline totals if the official total is missing.
+    const eventGoalTotal = Array.from(teams.values()).reduce((sum, row) => sum + row.goals, 0);
+    if (!stat.goals && eventGoalTotal) stat.goals = eventGoalTotal;
+
+    teams.forEach((row) => { row.gd = row.gf - row.ga; });
+    stat.eventMatches = eventMatches.size;
+    stat.refs = refs.size;
+    stat.dataCoverage = finished.length ? Math.round((eventMatches.size / finished.length) * 100) : 0;
+    stat.teamRows = Array.from(teams.values()).sort((a, b) => b.gf - a.gf || b.gd - a.gd || a.team.localeCompare(b.team));
+    stat.disciplineRows = Array.from(teams.values()).sort((a, b) => b.cards - a.cards || b.redCards - a.redCards || a.team.localeCompare(b.team));
+    stat.eventLeaderRows = Array.from(teams.values()).sort((a, b) => b.eventCount - a.eventCount || b.goals - a.goals || a.team.localeCompare(b.team));
+    stat.topPlayers = Array.from(players.values())
+      .sort((a, b) => (b.goals + b.assists + b.cards) - (a.goals + a.assists + a.cards) || b.goals - a.goals || a.player.localeCompare(b.player))
+      .slice(0, 10);
+    stat.refereeRows = Array.from(refs.values()).sort((a, b) => b.matches - a.matches || String(a.name).localeCompare(String(b.name))).slice(0, 8);
+
+    return stat;
+  }
+
+  statsMiniTable(rows, columns, emptyText = "No data yet") {
+    if (!rows || !rows.length) return `<div class="wc-empty">${this.esc(emptyText)}</div>`;
+    return `
+      <div style="overflow:auto;">
+        <table style="width:100%;border-collapse:separate;border-spacing:0 8px;font-size:.92rem;">
+          <thead>
+            <tr>${columns.map((col) => `<th style="text-align:${col.align || "left"};color:rgba(255,255,255,.62);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;padding:0 8px;white-space:nowrap;">${this.esc(col.label)}</th>`).join("")}</tr>
+          </thead>
+          <tbody>
+            ${rows.map((row) => `
+              <tr style="background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);">
+                ${columns.map((col, index) => `<td style="padding:10px 8px;text-align:${col.align || "left"};white-space:nowrap;${index === 0 ? "border-radius:12px 0 0 12px;" : ""}${index === columns.length - 1 ? "border-radius:0 12px 12px 0;" : ""}">${col.render ? col.render(row) : this.esc(row[col.key] ?? "-")}</td>`).join("")}
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  teamCentreOptions() {
+    const teams = new Map();
+    const addTeam = (team) => {
+      const label = this.localizedTeamName(team || "");
+      const key = this.fixtureTeamKey(label);
+      if (!key || key === this.fixtureTeamKey(this.t("tbc"))) return;
+      if (!teams.has(key)) teams.set(key, label);
+    };
+
+    this.statsHubAllMatches().forEach((match) => {
+      addTeam(this.getHomeTeam(match));
+      addTeam(this.getAwayTeam(match));
+    });
+
+    (Array.isArray(this._data.standings) ? this._data.standings : []).forEach((group) => {
+      const rows = group?.table || group?.standings || group?.teams || [];
+      (Array.isArray(rows) ? rows : []).forEach((row) => addTeam(row.team || row.name || row));
+    });
+
+    (Array.isArray(this._data.scorers) ? this._data.scorers : []).forEach((scorer) => {
+      addTeam(this.scorerTeamName(scorer));
+    });
+
+    return Array.from(teams.entries())
+      .map(([key, name]) => ({ key, name }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  selectedTeamOption() {
+    const options = this.teamCentreOptions();
+    if (!options.length) return null;
+    const selected = options.find((team) => team.key === this._selectedTeamKey) || options[0];
+    if (selected.key !== this._selectedTeamKey) {
+      this._selectedTeamKey = selected.key;
+      localStorage.setItem("world_cup_2026_selected_team", selected.key);
+    }
+    return selected;
+  }
+
+  teamCentreGroupRow(teamKey) {
+    for (const group of (Array.isArray(this._data.groups) ? this._data.groups : [])) {
+      const rows = group?.table || group?.standings || group?.teams || [];
+      for (const row of (Array.isArray(rows) ? rows : [])) {
+        const team = row.team || row.name || row;
+        if (this.fixtureTeamKey(team) !== teamKey) continue;
+        return {
+          group: group.group || group.name || group.stage || "",
+          pos: row.position ?? row.rank ?? row.pos ?? "",
+          played: row.playedGames ?? row.played ?? row.matchesPlayed ?? "",
+          wins: row.won ?? row.wins ?? "",
+          draws: row.draw ?? row.draws ?? "",
+          losses: row.lost ?? row.losses ?? "",
+          gf: row.goalsFor ?? row.gf ?? "",
+          ga: row.goalsAgainst ?? row.ga ?? "",
+          gd: row.goalDifference ?? row.gd ?? "",
+          points: row.points ?? row.pts ?? "",
+        };
+      }
+    }
+    return null;
+  }
+
+  teamCentreMatchRows(matches, teamKey) {
+    return matches.map((match) => {
+      const home = this.getHomeTeam(match);
+      const away = this.getAwayTeam(match);
+      const isHome = this.fixtureTeamKey(home) === teamKey;
+      const opponent = isHome ? away : home;
+      const homeScore = this.getHomeScore(match);
+      const awayScore = this.getAwayScore(match);
+      const hasScore = homeScore !== "-" || awayScore !== "-";
+      const venue = this.fixtureVenueInfo(match);
+      return {
+        date: this.formatDate(match.utcDate || match.date),
+        opponent: `${isHome ? "v" : "@"} ${this.localizedTeamName(opponent)}`,
+        score: hasScore ? `${homeScore} - ${awayScore}` : this.statusLabel(match.status, match) || this.t("scheduled"),
+        status: this.statusLabel(match.status, match) || "",
+        venue: venue?.name || match.venue || match.stadium || "",
+      };
+    });
+  }
+
+  teamsPage() {
+    const selected = this.selectedTeamOption();
+    const options = this.teamCentreOptions();
+    const a = this.statsHubAnalytics();
+
+    if (!selected) {
+      return `<div class="wc-card"><div class="wc-empty">No teams loaded yet</div></div>`;
+    }
+
+    const teamKey = selected.key;
+    const teamName = selected.name;
+    const matches = this.statsHubAllMatches()
+      .filter((match) => this.fixtureTeamKey(this.getHomeTeam(match)) === teamKey || this.fixtureTeamKey(this.getAwayTeam(match)) === teamKey)
+      .sort((x, y) => new Date(x.utcDate || x.date || 0) - new Date(y.utcDate || y.date || 0));
+    const finished = matches.filter((match) => this.isFinishedMatch(match));
+    const live = matches.filter((match) => this.isLiveMatch(match));
+    const upcoming = matches.filter((match) => !this.isFinishedMatch(match) && !this.isLiveMatch(match));
+    const nextMatch = live[0] || upcoming[0] || null;
+    const recent = finished.slice(-5).reverse();
+    const teamStats = (a.teamRows || []).find((row) => this.fixtureTeamKey(row.team) === teamKey) || {
+      played: finished.length, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0, gd: 0, goals: 0, assists: 0,
+      cards: 0, yellowCards: 0, redCards: 0, substitutions: 0, varEvents: 0, cleanSheets: 0,
+    };
+    const groupRow = this.teamCentreGroupRow(teamKey);
+    const groupRows = (() => {
+      for (const group of (Array.isArray(this._data.groups) ? this._data.groups : [])) {
+        const rows = group?.table || group?.standings || group?.teams || [];
+        const normalised = (Array.isArray(rows) ? rows : []).map((row) => {
+          const team = row.team || row.name || row;
+          return {
+            team: this.localizedTeamName(team),
+            key: this.fixtureTeamKey(team),
+            pos: row.position ?? row.rank ?? row.pos ?? "",
+            played: row.playedGames ?? row.played ?? row.matchesPlayed ?? "",
+            gd: row.goalDifference ?? row.gd ?? "",
+            points: row.points ?? row.pts ?? "",
+          };
+        });
+        if (normalised.some((row) => row.key === teamKey)) return normalised;
+      }
+      return [];
+    })();
+    const events = matches.flatMap((match) => this.normalisedMatchEvents(match).filter((event) => this.fixtureTeamKey(event.team) === teamKey));
+    const goals = events.filter((event) => event.category === "goal").length;
+    const yellowCardsFromEvents = events.filter((event) => event.category === "card" && !(String(event.icon || "").includes("🟥") || String(event.detail || "").toLowerCase().includes("red"))).length;
+    const redCardsFromEvents = events.filter((event) => event.category === "card" && (String(event.icon || "").includes("🟥") || String(event.detail || "").toLowerCase().includes("red"))).length;
+    const cards = yellowCardsFromEvents + redCardsFromEvents;
+    const teamYellowCards = Number(teamStats.yellowCards || 0) || yellowCardsFromEvents;
+    const teamRedCards = Number(teamStats.redCards || 0) || redCardsFromEvents;
+    const subs = events.filter((event) => event.category === "substitution").length;
+    const vars = events.filter((event) => event.category === "var").length;
+    const playerRows = (a.topPlayers || [])
+      .filter((row) => this.fixtureTeamKey(row.team) === teamKey)
+      .map((row) => ({ ...row, total: (row.goals || 0) + (row.assists || 0) + (row.cards || 0) }))
+      .sort((x, y) => (y.total || 0) - (x.total || 0));
+    const spotlightPlayer = playerRows[0];
+
+    const matchStage = (match) => this.stageLabel(match?.stage || match?.round || match?.matchday || match?.group || "") || match?.stage || match?.round || "World Cup Match";
+    const matchDateTime = (match) => {
+      const raw = match?.utcDate || match?.date;
+      const date = this.formatDate(raw);
+      const time = this.formatTime ? this.formatTime(raw) : "";
+      return [date, time].filter(Boolean).join(" • ");
+    };
+    const matchVenue = (match) => {
+      const venue = this.fixtureVenueInfo(match);
+      return venue?.name || match?.venue || match?.stadium || "Venue TBC";
+    };
+    const matchTeams = (match) => {
+      const home = this.localizedTeamName(this.getHomeTeam(match));
+      const away = this.localizedTeamName(this.getAwayTeam(match));
+      return { home, away };
+    };
+    const matchScore = (match) => {
+      const hs = this.getHomeScore(match);
+      const as = this.getAwayScore(match);
+      return hs !== "-" || as !== "-" ? `${hs} - ${as}` : "v";
+    };
+    const matchResultClass = (match) => {
+      if (!this.isFinishedMatch(match)) return this.isLiveMatch(match) ? "LIVE" : "UPCOMING";
+      const homeKey = this.fixtureTeamKey(this.getHomeTeam(match));
+      const hs = Number(this.getHomeScore(match));
+      const as = Number(this.getAwayScore(match));
+      if (!Number.isFinite(hs) || !Number.isFinite(as)) return "FT";
+      if (hs === as) return "DRAW";
+      const teamWon = homeKey === teamKey ? hs > as : as > hs;
+      return teamWon ? "WIN" : "LOSS";
+    };
+    const opponentText = (match) => {
+      const home = this.getHomeTeam(match);
+      const away = this.getAwayTeam(match);
+      const isHome = this.fixtureTeamKey(home) === teamKey;
+      const opponent = this.localizedTeamName(isHome ? away : home);
+      return `${isHome ? "v" : "@"} ${opponent}`;
+    };
+    const statCard = (label, value, sub = "", accent = "#93c5fd") => `
+      <div style="min-height:86px;padding:13px;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.045));border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 38px rgba(0,0,0,.22);display:flex;flex-direction:column;justify-content:center;gap:7px;">
+        <strong style="font-size:1.66rem;line-height:1;color:${accent};font-weight:1000;letter-spacing:-.04em;">${this.esc(value ?? 0)}</strong>
+        <span style="font-size:.72rem;font-weight:1000;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.82);">${this.esc(label)}</span>
+        ${sub ? `<em style="font-size:.74rem;color:rgba(255,255,255,.58);font-style:normal;line-height:1.35;">${this.esc(sub)}</em>` : ""}
+      </div>
+    `;
+    const tinyPill = (text, accent = "#93c5fd") => `<span style="display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;background:${accent}22;border:1px solid ${accent}55;color:rgba(255,255,255,.9);font-size:.72rem;font-weight:1000;text-transform:uppercase;letter-spacing:.04em;">${this.esc(text)}</span>`;
+
+    const nextMatchCard = nextMatch ? (() => {
+      const teams = matchTeams(nextMatch);
+      const status = this.isLiveMatch(nextMatch) ? "LIVE NOW" : "NEXT MATCH";
+      return `
+        <div style="position:relative;overflow:hidden;border-radius:28px;padding:22px;background:radial-gradient(circle at 18% 0%,rgba(34,197,94,.22),transparent 34%),radial-gradient(circle at 96% 8%,rgba(59,130,246,.18),transparent 35%),rgba(4,10,22,.72);border:1px solid rgba(255,255,255,.13);box-shadow:0 22px 46px rgba(0,0,0,.28);">
+          <div style="position:absolute;right:-22px;top:-28px;opacity:.08;font-size:9rem;font-weight:1000;line-height:1;">${this.esc(teamName.slice(0, 3).toUpperCase())}</div>
+          <div style="position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
+            ${tinyPill(status, this.isLiveMatch(nextMatch) ? "#22c55e" : "#60a5fa")}
+            ${tinyPill(matchStage(nextMatch), "#facc15")}
+          </div>
+          <div style="position:relative;display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;">
+            <div style="text-align:right;font-size:1.25rem;font-weight:1000;min-width:0;">${this.flag(teams.home, true)} ${this.esc(teams.home)}</div>
+            <div style="min-width:92px;text-align:center;font-size:2.05rem;font-weight:1000;color:#fff;text-shadow:0 0 18px rgba(255,255,255,.25);">${this.esc(matchScore(nextMatch))}</div>
+            <div style="text-align:left;font-size:1.25rem;font-weight:1000;min-width:0;">${this.flag(teams.away, true)} ${this.esc(teams.away)}</div>
+          </div>
+          <div style="position:relative;margin-top:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;">
+            <div style="padding:11px 13px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);"><strong>🕒 ${this.esc(matchDateTime(nextMatch) || "Time TBC")}</strong></div>
+            <div style="padding:11px 13px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);"><strong>📍 ${this.esc(matchVenue(nextMatch))}</strong></div>
+          </div>
+        </div>
+      `;
+    })() : `<div class="wc-empty">No upcoming match loaded for this team yet</div>`;
+
+    const recentCards = recent.length ? recent.map((match) => {
+      const badge = matchResultClass(match);
+      const accent = badge === "WIN" ? "#22c55e" : badge === "LOSS" ? "#ef4444" : "#facc15";
+      return `
+        <div style="display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;padding:12px 13px;border-radius:17px;background:rgba(255,255,255,.065);border:1px solid rgba(255,255,255,.09);">
+          <span style="min-width:50px;text-align:center;padding:6px 8px;border-radius:999px;background:${accent}24;border:1px solid ${accent}66;color:${accent};font-size:.72rem;font-weight:1000;">${this.esc(badge)}</span>
+          <div style="min-width:0;"><strong>${this.esc(opponentText(match))}</strong><div class="wc-muted">${this.esc(matchDateTime(match))}</div></div>
+          <strong style="font-size:1.08rem;">${this.esc(matchScore(match))}</strong>
+        </div>
+      `;
+    }).join("") : `<div class="wc-empty">No finished results loaded for this team yet</div>`;
+
+    const timeline = matches.length ? matches.map((match, index) => {
+      const status = matchResultClass(match);
+      const isNow = this.isLiveMatch(match);
+      const isDone = this.isFinishedMatch(match);
+      const accent = isNow ? "#22c55e" : isDone ? "#60a5fa" : "#facc15";
+      return `
+        <div style="position:relative;display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:start;padding:0 0 18px;">
+          <div style="position:relative;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:${accent}30;border:1px solid ${accent}88;color:#fff;font-weight:1000;box-shadow:0 0 18px ${accent}33;">${isDone ? "✓" : isNow ? "●" : index + 1}</div>
+          <div style="padding:13px 14px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+              <strong>${this.esc(matchStage(match))}</strong>
+              ${tinyPill(status, accent)}
+            </div>
+            <div style="margin-top:8px;font-size:1rem;font-weight:950;">${this.esc(opponentText(match))} <span style="color:rgba(255,255,255,.55);">${this.esc(matchScore(match))}</span></div>
+            <div class="wc-muted" style="margin-top:5px;">${this.esc(matchDateTime(match))} • ${this.esc(matchVenue(match))}</div>
+          </div>
+        </div>
+      `;
+    }).join("") : `<div class="wc-empty">No fixtures loaded for this team yet</div>`;
+
+    const groupSnapshot = groupRows.length ? groupRows.map((row) => `
+      <div style="display:grid;grid-template-columns:34px 1fr 44px 44px;gap:8px;align-items:center;padding:10px 11px;border-radius:14px;background:${row.key === teamKey ? "rgba(96,165,250,.18)" : "rgba(255,255,255,.055)"};border:1px solid ${row.key === teamKey ? "rgba(96,165,250,.42)" : "rgba(255,255,255,.08)"};">
+        <strong style="text-align:center;color:rgba(255,255,255,.66);">${this.esc(row.pos || "-")}</strong>
+        <strong style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${this.flag(row.team, true)} ${this.esc(row.team)}</strong>
+        <span style="text-align:center;color:rgba(255,255,255,.66);font-weight:900;">${this.esc(row.gd || 0)}</span>
+        <strong style="text-align:center;color:#facc15;">${this.esc(row.points || 0)}</strong>
+      </div>
+    `).join("") : `<div class="wc-empty">No group table loaded for this team yet</div>`;
+
+    const playerSpotlight = spotlightPlayer ? `
+      <div style="padding:18px;border-radius:23px;background:radial-gradient(circle at top left,rgba(250,204,21,.2),transparent 38%),rgba(255,255,255,.06);border:1px solid rgba(250,204,21,.22);">
+        <div style="font-size:.74rem;font-weight:1000;text-transform:uppercase;letter-spacing:.14em;color:#fde68a;">⭐ Player Spotlight</div>
+        <div style="margin-top:10px;font-size:1.35rem;font-weight:1000;">${this.esc(spotlightPlayer.player || "Team Player")}</div>
+        <div class="wc-muted" style="margin-top:4px;">${this.esc(teamName)}</div>
+        <div style="margin-top:15px;display:grid;grid-template-columns:repeat(3,1fr);gap:9px;">
+          ${statCard("Goals", spotlightPlayer.goals || 0, "", "#fde68a")}
+          ${statCard("Assists", spotlightPlayer.assists || 0, "", "#93c5fd")}
+          ${statCard("Cards", spotlightPlayer.cards || 0, "", "#fca5a5")}
+        </div>
+      </div>
+    ` : `<div class="wc-empty">No player event data loaded for this team yet</div>`;
+
+    const resultDots = recent.length ? recent.map((match) => {
+      const result = matchResultClass(match);
+      const accent = result === "WIN" ? "#22c55e" : result === "LOSS" ? "#ef4444" : "#facc15";
+      const label = result === "WIN" ? "W" : result === "LOSS" ? "L" : result === "DRAW" ? "D" : "-";
+      return `<span title="${this.esc(result)}" style="display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:${accent}25;border:1px solid ${accent}77;color:${accent};font-weight:1000;box-shadow:0 0 18px ${accent}22;">${label}</span>`;
+    }).join("") : `<span class="wc-muted">No form data yet</span>`;
+
+    const uniqueVenues = [];
+    matches.forEach((match) => {
+      const venue = matchVenue(match);
+      if (venue && venue !== "Venue TBC" && !uniqueVenues.includes(venue)) uniqueVenues.push(venue);
+    });
+    const nextVenue = nextMatch ? matchVenue(nextMatch) : "Venue TBC";
+    const stadiumTracker = uniqueVenues.length ? uniqueVenues.slice(0, 5).map((venue) => `
+      <div style="padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-weight:900;">🏟 ${this.esc(venue)}</div>
+    `).join("") : `<div class="wc-empty">No stadium data loaded for this team yet</div>`;
+
+    const topPlayerList = playerRows.length ? playerRows.slice(0, 5).map((player, index) => `
+      <div style="display:grid;grid-template-columns:34px 1fr repeat(3,44px);gap:8px;align-items:center;padding:11px 12px;border-radius:15px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);">
+        <strong style="text-align:center;color:#93c5fd;">${index + 1}</strong>
+        <strong style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${this.esc(player.player || "Player")}</strong>
+        <span style="text-align:center;color:#fde68a;font-weight:1000;">${this.esc(player.goals || 0)}</span>
+        <span style="text-align:center;color:#93c5fd;font-weight:1000;">${this.esc(player.assists || 0)}</span>
+        <span style="text-align:center;color:#fca5a5;font-weight:1000;">${this.esc(player.cards || 0)}</span>
+      </div>
+    `).join("") : `<div class="wc-empty">No country player data loaded yet</div>`;
+
+    const upcomingList = upcoming.length ? upcoming.slice(0, 6).map((match) => {
+      const teams = matchTeams(match);
+      return `
+        <div style="padding:13px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);">
+          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+            <strong>${this.flag(teams.home, true)} ${this.esc(teams.home)} <span style="color:rgba(255,255,255,.48);">v</span> ${this.flag(teams.away, true)} ${this.esc(teams.away)}</strong>
+            ${tinyPill(matchStage(match), "#60a5fa")}
+          </div>
+          <div class="wc-muted" style="margin-top:6px;">${this.esc(matchDateTime(match) || "Time TBC")} • ${this.esc(matchVenue(match))}</div>
+        </div>
+      `;
+    }).join("") : `<div class="wc-empty">No upcoming fixtures loaded for this team yet</div>`;
+
+    const resultList = finished.length ? finished.slice(-6).reverse().map((match) => {
+      const teams = matchTeams(match);
+      const badge = matchResultClass(match);
+      const accent = badge === "WIN" ? "#22c55e" : badge === "LOSS" ? "#ef4444" : "#facc15";
+      return `
+        <div style="padding:13px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);">
+          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;">
+            <strong>${this.flag(teams.home, true)} ${this.esc(teams.home)} <span style="color:#fff;">${this.esc(matchScore(match))}</span> ${this.flag(teams.away, true)} ${this.esc(teams.away)}</strong>
+            ${tinyPill(badge, accent)}
+          </div>
+          <div class="wc-muted" style="margin-top:6px;">${this.esc(matchDateTime(match))} • ${this.esc(matchVenue(match))}</div>
+        </div>
+      `;
+    }).join("") : `<div class="wc-empty">No results loaded for this team yet</div>`;
+
+    const stages = ["Group Stage", "Round of 32", "Round of 16", "Quarter Finals", "Semi Finals", "Final"];
+    const stageCards = stages.map((stage) => {
+      const stageKey = this.fixtureTeamKey(stage);
+      const stageMatches = matches.filter((match) => this.fixtureTeamKey(matchStage(match)).includes(stageKey) || this.fixtureTeamKey(match?.stage || match?.round || "").includes(stageKey));
+      const done = stageMatches.some((match) => this.isFinishedMatch(match));
+      const now = stageMatches.some((match) => this.isLiveMatch(match));
+      const future = stageMatches.some((match) => !this.isFinishedMatch(match) && !this.isLiveMatch(match));
+      const accent = done ? "#22c55e" : now ? "#facc15" : future ? "#60a5fa" : "rgba(255,255,255,.22)";
+      const icon = done ? "✓" : now ? "●" : future ? "→" : "";
+      return `<div style="padding:12px;border-radius:16px;background:${done || now || future ? accent + "22" : "rgba(255,255,255,.045)"};border:1px solid ${done || now || future ? accent + "77" : "rgba(255,255,255,.08)"};font-weight:1000;text-align:center;">${icon} ${this.esc(stage)}</div>`;
+    }).join("");
+
+    const countryProfile = `
+      <div style="position:relative;overflow:hidden;padding:20px;border-radius:24px;background:radial-gradient(circle at 8% 0%,rgba(96,165,250,.2),transparent 36%),linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.11);">
+        <div style="position:absolute;right:-10px;bottom:-34px;font-size:7rem;font-weight:1000;opacity:.05;line-height:1;">${this.esc(teamName.slice(0, 3).toUpperCase())}</div>
+        <div style="position:relative;font-size:.74rem;font-weight:1000;text-transform:uppercase;letter-spacing:.14em;color:#93c5fd;">🌍 Country Profile</div>
+        <div style="position:relative;margin-top:9px;font-size:1.45rem;font-weight:1000;">${this.flag(teamName, true)} ${this.esc(teamName)}</div>
+        <div style="position:relative;margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;">
+          ${statCard("Matches", matches.length, "Loaded for team", "#93c5fd")}
+          ${statCard("Group Pos", groupRow?.pos || groupRows.find((row) => row.key === teamKey)?.pos || "-", "Current snapshot", "#fde68a")}
+          ${statCard("Points", groupRow?.points ?? groupRows.find((row) => row.key === teamKey)?.points ?? "-", "Group table", "#86efac")}
+        </div>
+      </div>
+    `;
+
+    const squadOverview = `
+      <div class="wc-card" style="background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.11);">
+        <div class="wc-section-title">👥 Country Players</div>
+        <div class="wc-muted" style="margin-bottom:10px;">Player cards are built from loaded goals, assists and event data.</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:12px;">
+          ${statCard("Players", playerRows.length, "Tracked", "#c4b5fd")}
+          ${statCard("Goals", playerRows.reduce((sum, p) => sum + Number(p.goals || 0), 0), "By players", "#fde68a")}
+          ${statCard("Assists", playerRows.reduce((sum, p) => sum + Number(p.assists || 0), 0), "By players", "#93c5fd")}
+        </div>
+        <div style="display:grid;grid-template-columns:34px 1fr repeat(3,44px);gap:8px;padding:0 12px 8px;color:rgba(255,255,255,.52);font-size:.7rem;font-weight:1000;text-transform:uppercase;letter-spacing:.06em;"><span>#</span><span>Player</span><span style="text-align:center;">G</span><span style="text-align:center;">A</span><span style="text-align:center;">C</span></div>
+        <div style="display:grid;gap:8px;">${topPlayerList}</div>
+      </div>
+    `;
+
+    const compactCardStyle = "background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.11);height:100%;";
+    const disciplineCard = `
+      <div class="wc-card" style="${compactCardStyle}">
+        <div class="wc-section-title">🟨 Team Discipline</div>
+        <div class="wc-muted" style="margin:6px 0 12px;">Cards for ${this.esc(teamName)} from loaded match event data.</div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;">
+          ${statCard("Yellow", teamYellowCards, "Yellow cards", "#fde68a")}
+          ${statCard("Red", teamRedCards, "Red cards", "#fca5a5")}
+          ${statCard("Total", cards || teamStats.cards || 0, "All cards", "#c4b5fd")}
+        </div>
+      </div>
+    `;
+
+    return `
+      <div style="position:relative;overflow:hidden;border-radius:28px;padding:18px;margin-bottom:14px;background:radial-gradient(circle at 12% 0%,rgba(96,165,250,.24),transparent 34%),radial-gradient(circle at 96% 14%,rgba(250,204,21,.18),transparent 35%),linear-gradient(145deg,rgba(8,15,31,.96),rgba(2,6,23,.94));border:1px solid rgba(255,255,255,.13);box-shadow:0 24px 56px rgba(0,0,0,.32);">
+        <div style="position:absolute;right:-18px;bottom:-42px;font-size:11rem;font-weight:1000;opacity:.055;line-height:1;pointer-events:none;">${this.esc(teamName.slice(0, 3).toUpperCase())}</div>
+        <div style="position:relative;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:14px;min-width:250px;">
+            <div style="transform:scale(1.1);transform-origin:left center;">${this.flag(teamName, false)}</div>
+            <div>
+              <div style="font-size:.72rem;font-weight:1000;text-transform:uppercase;letter-spacing:.18em;color:#93c5fd;">Team Command Centre</div>
+              <div class="wc-section-title" style="font-size:1.78rem;margin-top:3px;letter-spacing:-.04em;">${this.esc(teamName)}</div>
+              <p class="wc-muted" style="margin:5px 0 0;max-width:760px;line-height:1.38;">Compact team hub with fixtures, results, cards, players, group table and tournament journey.</p>
+            </div>
+          </div>
+          <select id="wc-team-select" class="wc-language-select" style="min-width:245px;">
+            ${options.map((team) => `<option value="${this.esc(team.key)}" ${team.key === teamKey ? "selected" : ""}>${this.esc(team.name)}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;align-items:stretch;">
+        <div style="grid-column:span 3;">${statCard("Matches", matches.length, `${live.length} live / ${upcoming.length} upcoming`, "#93c5fd")}</div>
+        <div style="grid-column:span 3;">${statCard("Record", `${teamStats.wins || 0}-${teamStats.draws || 0}-${teamStats.losses || 0}`, `${teamStats.played || finished.length} played`, "#86efac")}</div>
+        <div style="grid-column:span 3;">${statCard("Goals", `${teamStats.gf ?? goals}-${teamStats.ga ?? 0}`, `GD ${Number(teamStats.gd || 0) > 0 ? "+" : ""}${teamStats.gd || 0}`, "#fde68a")}</div>
+        <div style="grid-column:span 3;">${statCard("Cards", `${teamYellowCards}Y ${teamRedCards}R`, `${subs} subs / ${vars} VAR`, "#fca5a5")}</div>
+
+        <div style="grid-column:span 7;min-width:0;"><div class="wc-card" style="padding:0;background:transparent;border:0;box-shadow:none;height:100%;">${nextMatchCard}</div></div>
+        <div style="grid-column:span 5;min-width:0;">${countryProfile}</div>
+
+        <div style="grid-column:span 4;min-width:0;">
+          <div class="wc-card" style="${compactCardStyle}">
+            <div class="wc-section-title">🔥 Form Guide</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;">${resultDots}</div>
+            <div style="margin-top:10px;display:grid;gap:8px;">${recentCards}</div>
+          </div>
+        </div>
+        <div style="grid-column:span 4;min-width:0;">${disciplineCard}</div>
+        <div style="grid-column:span 4;min-width:0;">
+          <div class="wc-card" style="${compactCardStyle}">
+            <div class="wc-section-title">Group Snapshot</div>
+            <div style="margin:9px 0 7px;display:grid;grid-template-columns:34px 1fr 44px 44px;gap:8px;padding:0 11px;color:rgba(255,255,255,.52);font-size:.7rem;font-weight:1000;text-transform:uppercase;letter-spacing:.06em;">
+              <span>Pos</span><span>Team</span><span style="text-align:center;">GD</span><span style="text-align:center;">Pts</span>
+            </div>
+            <div style="display:grid;gap:7px;">${groupSnapshot}</div>
+          </div>
+        </div>
+
+        <div style="grid-column:span 8;min-width:0;">
+          <div class="wc-card" style="${compactCardStyle}">
+            <div class="wc-section-title">🏆 Tournament Journey</div>
+            <div style="margin-top:10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;">${stageCards}</div>
+            <div style="margin-top:12px;max-height:520px;overflow:auto;padding-right:4px;">${timeline}</div>
+          </div>
+        </div>
+        <div style="grid-column:span 4;min-width:0;display:grid;gap:12px;">
+          ${playerSpotlight}
+          <div class="wc-card" style="${compactCardStyle}">
+            <div class="wc-section-title">🏟 Stadium Tracker</div>
+            <div class="wc-muted" style="margin:6px 0 9px;">Next: <strong>${this.esc(nextVenue)}</strong></div>
+            <div style="display:grid;gap:7px;">${stadiumTracker}</div>
+          </div>
+        </div>
+
+        <div style="grid-column:span 6;min-width:0;">
+          <div class="wc-card" style="${compactCardStyle}">
+            <div class="wc-section-title">📅 Upcoming Fixtures</div>
+            <div style="display:grid;gap:8px;margin-top:10px;">${upcomingList}</div>
+          </div>
+        </div>
+        <div style="grid-column:span 6;min-width:0;">
+          <div class="wc-card" style="${compactCardStyle}">
+            <div class="wc-section-title">✅ Previous Results</div>
+            <div style="display:grid;gap:8px;margin-top:10px;">${resultList}</div>
+          </div>
+        </div>
+
+        <div style="grid-column:span 7;min-width:0;">${squadOverview}</div>
+        <div style="grid-column:span 5;min-width:0;display:grid;gap:12px;">
+          <div class="wc-card" style="${compactCardStyle}">
+            <div class="wc-section-title">Team Statistics</div>
+            ${this.statsMiniTable([{
+              goals: goals || teamStats.goals || teamStats.gf || 0,
+              assists: teamStats.assists || 0,
+              yellowCards: teamYellowCards,
+              redCards: teamRedCards,
+              substitutions: subs || teamStats.substitutions || 0,
+              varEvents: vars || teamStats.varEvents || 0,
+            }], [
+              { label: "G", key: "goals", align: "center" },
+              { label: "Ast", key: "assists", align: "center" },
+              { label: "YC", key: "yellowCards", align: "center" },
+              { label: "RC", key: "redCards", align: "center" },
+              { label: "Subs", key: "substitutions", align: "center" },
+              { label: "VAR", key: "varEvents", align: "center" },
+            ])}
+          </div>
+          <div class="wc-card" style="${compactCardStyle}">
+            <div class="wc-section-title">⚽ Goals Breakdown</div>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px;">
+              ${statCard("For", teamStats.gf ?? goals ?? 0, "Scored", "#fde68a")}
+              ${statCard("Against", teamStats.ga ?? 0, "Conceded", "#fca5a5")}
+              ${statCard("Clean", teamStats.cleanSheets || 0, "Sheets", "#86efac")}
+              ${statCard("GD", `${Number(teamStats.gd || 0) > 0 ? "+" : ""}${teamStats.gd || 0}`, "Current", "#93c5fd")}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style>
+        @media (max-width: 1100px) {
+          :host div[style*="grid-column:span 7"],
+          :host div[style*="grid-column:span 8"],
+          :host div[style*="grid-column:span 6"],
+          :host div[style*="grid-column:span 5"],
+          :host div[style*="grid-column:span 4"],
+          :host div[style*="grid-column:span 3"] { grid-column: span 12 !important; }
+        }
+      </style>
     `;
   }
 
@@ -19405,19 +21635,30 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   pageContent() {
-    if (this._page === "overview") return this.overviewPage();
-    if (this._page === "live") return this.livePage();
-    if (this._page === "fixtures") return this.fixturesPage();
-    if (this._page === "results") return this.resultsPage();
-    if (this._page === "apiresults") { this._page = "results"; return this.resultsPage(); }
-    if (this._page === "groups") return this.groupsPage();
-    if (this._page === "knockout") return this.knockoutPage();
-    if (this._page === "players") return this.playersPage();
-    if (this._page === "records") return this.recordsPage();
-    if (this._page === "stats") return this.statsPage();
-    if (this._page === "venues") return this.venuesPage();
-    if (this._page === "supporters") return this.supportersPage();
-    return this.overviewPage();
+    const requestedPage = this._page;
+    try {
+      if (this._page === "overview") return this.overviewPage();
+      if (this._page === "live") return this.livePage();
+      if (this._page === "fixtures") return this.fixturesPage();
+      if (this._page === "results") return this.resultsPage();
+      if (this._page === "apiresults") { this._page = "results"; return this.resultsPage(); }
+      if (this._page === "groups") return this.groupsPage();
+      if (this._page === "knockout") return this.knockoutPage();
+      if (this._page === "players") return this.playersPage();
+      if (this._page === "records") return this.recordsPage();
+      if (this._page === "stats") return this.statsPage();
+      if (this._page === "teams") return this.teamsPage();
+      if (this._page === "venues") return this.venuesPage();
+      if (this._page === "supporters") return this.supportersPage();
+      return this.overviewPage();
+    } catch (err) {
+      try { localStorage.removeItem("world_cup_2026_last_page"); } catch (e) {}
+      this._page = "overview";
+      return `
+        ${this.errorCard(err, "Page recovered", `The ${requestedPage || "selected"} page had a problem, so the dashboard has been returned to Overview.`)}
+        ${this.overviewPage()}
+      `;
+    }
   }
 
   render() {
@@ -19447,6 +21688,7 @@ class WorldCup2026Panel extends HTMLElement {
                   <option value="ar" ${this._language === "ar" ? "selected" : ""}>Arabic</option>
                 </select>
                 <select class="wc-view-select wc-view-select-tablet" id="wc-view-select-tablet" title="${this.esc(this.t("viewMode"))}">
+                  <option value="mobile" ${this._viewMode === "mobile" ? "selected" : ""}>${this.esc(this.t("mobileView"))}</option>
                   <option value="tablet" ${this._viewMode === "tablet" ? "selected" : ""}>${this.esc(this.t("tabletView"))}</option>
                   <option value="pc" ${this._viewMode === "pc" ? "selected" : ""}>${this.esc(this.t("pcView"))}</option>
                 </select>
@@ -19499,6 +21741,15 @@ class WorldCup2026Panel extends HTMLElement {
       this.setupViewSelect(viewSelect);
     });
 
+    const teamSelect = this.querySelector("#wc-team-select");
+    if (teamSelect) {
+      teamSelect.onchange = (e) => {
+        this._selectedTeamKey = e.target.value || "";
+        localStorage.setItem("world_cup_2026_selected_team", this._selectedTeamKey);
+        this.render();
+      };
+    }
+
     this.querySelectorAll("#wc-sidebar-select, #wc-sidebar-select-tablet").forEach((sidebarSelect) => {
       this.setupSidebarSelect(sidebarSelect);
     });
@@ -19508,6 +21759,13 @@ class WorldCup2026Panel extends HTMLElement {
         e.preventDefault();
         e.stopPropagation();
         this.goBackToHomeAssistant();
+      };
+    });
+
+    this.querySelectorAll("#wc-reset-panel-button, .wc-reset-panel-button").forEach((resetButton) => {
+      resetButton.onclick = (e) => {
+        e.preventDefault();
+        this.resetPanelView();
       };
     });
   }

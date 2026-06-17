@@ -22,6 +22,7 @@ PANEL_PATH = "world-cup-2026"
 PANEL_TITLE = "🏆 World Cup 2026 ⚽"
 PANEL_ICON = "mdi:trophy"
 FRONTEND_URL = f"/{DOMAIN}_frontend"
+PANEL_FILENAME = "world-cup-2026-panel.js"
 
 
 
@@ -42,6 +43,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     frontend_dir = Path(__file__).parent / "frontend" / "dist"
+    panel_file = frontend_dir / PANEL_FILENAME
+    try:
+        panel_stat = panel_file.stat()
+        panel_version = f"{int(panel_stat.st_mtime)}-{panel_stat.st_size}"
+    except OSError:
+        panel_version = str(entry.version)
 
     await hass.http.async_register_static_paths(
         [
@@ -67,7 +74,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config={
             "_panel_custom": {
                 "name": "world-cup-2026-panel",
-                "js_url": f"{FRONTEND_URL}/world-cup-2026-panel.js?v={entry.version}",
+                "js_url": f"{FRONTEND_URL}/{PANEL_FILENAME}?v={panel_version}",
                 "embed_iframe": False,
                 "trust_external": False,
             }
