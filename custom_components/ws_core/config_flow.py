@@ -2258,6 +2258,8 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                 return await self.async_step_owm_stations_opt()
             if self._opt.get(CONF_ENABLE_WINDY):
                 return await self.async_step_windy_opt()
+            if self._opt.get(CONF_ENABLE_CWOP):
+                return await self.async_step_cwop_opt()
             if self._opt.get(CONF_ENABLE_MQTT):
                 return await self.async_step_mqtt_config_opt()
             return self.async_create_entry(title="", data=self._opt)
@@ -2291,6 +2293,8 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                 return await self.async_step_owm_stations_opt()
             if self._opt.get(CONF_ENABLE_WINDY):
                 return await self.async_step_windy_opt()
+            if self._opt.get(CONF_ENABLE_CWOP):
+                return await self.async_step_cwop_opt()
             if self._opt.get(CONF_ENABLE_MQTT):
                 return await self.async_step_mqtt_config_opt()
             return self.async_create_entry(title="", data=self._opt)
@@ -2322,6 +2326,8 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                 return await self.async_step_owm_stations_opt()
             if self._opt.get(CONF_ENABLE_WINDY):
                 return await self.async_step_windy_opt()
+            if self._opt.get(CONF_ENABLE_CWOP):
+                return await self.async_step_cwop_opt()
             if self._opt.get(CONF_ENABLE_MQTT):
                 return await self.async_step_mqtt_config_opt()
             return self.async_create_entry(title="", data=self._opt)
@@ -2351,6 +2357,8 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                 return await self.async_step_owm_stations_opt()
             if self._opt.get(CONF_ENABLE_WINDY):
                 return await self.async_step_windy_opt()
+            if self._opt.get(CONF_ENABLE_CWOP):
+                return await self.async_step_cwop_opt()
             if self._opt.get(CONF_ENABLE_MQTT):
                 return await self.async_step_mqtt_config_opt()
             return self.async_create_entry(title="", data=self._opt)
@@ -2378,6 +2386,8 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
             self._opt.update(user_input)
             if self._opt.get(CONF_ENABLE_WINDY):
                 return await self.async_step_windy_opt()
+            if self._opt.get(CONF_ENABLE_CWOP):
+                return await self.async_step_cwop_opt()
             if self._opt.get(CONF_ENABLE_MQTT):
                 return await self.async_step_mqtt_config_opt()
             return self.async_create_entry(title="", data=self._opt)
