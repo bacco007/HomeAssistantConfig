@@ -166,10 +166,14 @@ describe('weather_forecast render and properties', () => {
         expect(navigator.clipboard.writeText).toHaveBeenCalled();
         const copiedText = navigator.clipboard.writeText.mock.calls[0][0];
         expect(copiedText).toContain("name: 'Weather Forecast Plus 1h High'");
-        expect(copiedText).toContain('weather_forecast_plus_1h_high');
-        expect(copiedText).toContain('default_entity_id: sensor.weather_forecast_plus_1h_high');
+        expect(copiedText).toContain('unique_id: weather_forecast_plus_1h');
+        expect(copiedText).toContain('default_entity_id: sensor.weather_forecast_plus_1h');
         expect(copiedText).toContain('default_entity_id: sensor.weather_forecast_plus_1h_condition');
         expect(copiedText).toContain('timedelta(hours=1)');
+        expect(copiedText).toContain("as_timestamp((now() + timedelta(hours=1)).replace(minute=0, second=0, microsecond=0))");
+        expect(copiedText).toContain('{% set ns = namespace(hit=none) %}');
+        expect(copiedText).not.toContain('weather_forecast_plus_1h_high');
+        expect(copiedText).not.toContain("selectattr('datetime','search'");
     });
 
     it('copies fixed hourly YAML using the configured slot offset', async () => {
@@ -191,11 +195,15 @@ describe('weather_forecast render and properties', () => {
         await Promise.resolve();
 
         const copiedText = navigator.clipboard.writeText.mock.calls[0][0];
-        expect(copiedText).toContain('weather_forecast_hour_0900_high');
-        expect(copiedText).toContain('default_entity_id: sensor.weather_forecast_hour_0900_high');
+        expect(copiedText).toContain('unique_id: weather_forecast_hour_0900');
+        expect(copiedText).toContain('default_entity_id: sensor.weather_forecast_hour_0900');
         expect(copiedText).toContain('default_entity_id: sensor.weather_forecast_hour_0900_condition');
-        expect(copiedText).toContain('weather_forecast_hour_1200_high');
+        expect(copiedText).toContain('weather_forecast_hour_1200');
+        expect(copiedText).toContain("{% set target = today_at('09:00') %}");
+        expect(copiedText).toContain("{% set target_ts = as_timestamp(target) %}");
         expect(copiedText).not.toContain('weather_forecast_hour_0600_high');
+        expect(copiedText).not.toContain('weather_forecast_hour_0900_high');
+        expect(copiedText).not.toContain("selectattr('datetime','search'");
     });
 
     it('falls back to execCommand copy when the clipboard API is unavailable', () => {
@@ -231,9 +239,9 @@ describe('weather_forecast render and properties', () => {
         vi.setSystemTime(new Date('2026-03-27T10:15:00'));
         mockAppState.entityStates = {
             'sensor.weather_forecast_plus_1h_condition': { state: 'sunny' },
-            'sensor.weather_forecast_plus_1h_high': { state: '14.7' },
+            'sensor.weather_forecast_plus_1h': { state: '14.7' },
             'sensor.weather_forecast_plus_2h_condition': { state: 'rainy' },
-            'sensor.weather_forecast_plus_2h_high': { state: '12.4' }
+            'sensor.weather_forecast_plus_2h': { state: '12.4' }
         };
 
         const el = document.createElement('div');

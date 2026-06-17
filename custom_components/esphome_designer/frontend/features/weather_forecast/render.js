@@ -102,16 +102,18 @@ export const render = (el, widget, { getColorStyle }) => {
 
         if (AppState && AppState.entityStates) {
             const dayIdx = i + startOffset;
-            let condId, highId, lowId;
+            let condId, highId, lowId, legacyHighId;
 
             if (mode === "hourly") {
                 if (hourlyMode === "relative") {
                     condId = `sensor.weather_forecast_plus_${i + 1}h_condition`;
-                    highId = `sensor.weather_forecast_plus_${i + 1}h_high`;
+                    highId = `sensor.weather_forecast_plus_${i + 1}h`;
+                    legacyHighId = `sensor.weather_forecast_plus_${i + 1}h_high`;
                     lowId = `sensor.weather_forecast_plus_${i + 1}h_low`;
                 } else {
                     condId = `sensor.weather_forecast_hour_${actualSlots[i]}00_condition`;
-                    highId = `sensor.weather_forecast_hour_${actualSlots[i]}00_high`;
+                    highId = `sensor.weather_forecast_hour_${actualSlots[i]}00`;
+                    legacyHighId = `sensor.weather_forecast_hour_${actualSlots[i]}00_high`;
                     lowId = `sensor.weather_forecast_hour_${actualSlots[i]}00_low`;
                 }
             } else {
@@ -121,7 +123,7 @@ export const render = (el, widget, { getColorStyle }) => {
             }
 
             const condState = AppState.entityStates[condId];
-            const highState = AppState.entityStates[highId];
+            const highState = AppState.entityStates[highId] || (legacyHighId ? AppState.entityStates[legacyHighId] : null);
             const lowState = AppState.entityStates[lowId];
 
             if (condState && condState.state && condState.state !== "unknown") liveCond = condState.state.toLowerCase();

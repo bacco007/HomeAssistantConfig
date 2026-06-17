@@ -54,7 +54,7 @@ export const onExportNumericSensors = (context) => {
                 prefix = `sensor.weather_forecast_day_${dayIdx}`;
             }
             const sensors = mode === "hourly"
-                ? [`${prefix}_high`, `${prefix}_condition`]
+                ? [prefix, `${prefix}_condition`]
                 : [`${prefix}_high`, `${prefix}_low`, `${prefix}_condition`];
 
             sensors.forEach(sid => {
@@ -84,14 +84,14 @@ export const onExportNumericSensors = (context) => {
 
             if (mode === "hourly") {
                 if (hourlyMode === "relative") {
-                    highSid = `sensor.weather_forecast_plus_${day + 1}h_high`;
+                    highSid = `sensor.weather_forecast_plus_${day + 1}h`;
                     lowSid = `sensor.weather_forecast_plus_${day + 1}h_low`;
                     highId = `weather_high_hplus${day + 1}`;
                     lowId = `weather_low_hplus${day + 1}`;
                     highName = `Weather High Plus ${day + 1}h`;
                     lowName = `Weather Low Plus ${day + 1}h`;
                 } else {
-                    highSid = `sensor.weather_forecast_hour_${actualSlots[day]}00_high`;
+                    highSid = `sensor.weather_forecast_hour_${actualSlots[day]}00`;
                     lowSid = `sensor.weather_forecast_hour_${actualSlots[day]}00_low`;
                     highId = `weather_high_h${actualSlots[day]}00`;
                     lowId = `weather_low_h${actualSlots[day]}00`;
@@ -262,8 +262,8 @@ export const onExportTextSensors = (context) => {
             sortedSlots.forEach(slot => {
                 if (isRelative) {
                     lines.push(`#       - name: 'Weather Forecast Plus ${slot}h High'`);
-                    lines.push(`#         unique_id: weather_forecast_plus_${slot}h_high`);
-                    lines.push(`#         default_entity_id: sensor.weather_forecast_plus_${slot}h_high`);
+                    lines.push(`#         unique_id: weather_forecast_plus_${slot}h`);
+                    lines.push(`#         default_entity_id: sensor.weather_forecast_plus_${slot}h`);
                     lines.push(`#         unit_of_measurement: '${unitSymbol}'`);
                     lines.push(`#         state: >`);
                     lines.push(`#           {% set fc = hourly['${config.entity}'].forecast %}`);
@@ -291,8 +291,8 @@ export const onExportTextSensors = (context) => {
                 } else {
                     const paddedSlot = String(slot).padStart(2, '0');
                     lines.push(`#       - name: 'Weather Forecast Hour ${slot}00 High'`);
-                    lines.push(`#         unique_id: weather_forecast_hour_${slot}00_high`);
-                    lines.push(`#         default_entity_id: sensor.weather_forecast_hour_${slot}00_high`);
+                    lines.push(`#         unique_id: weather_forecast_hour_${slot}00`);
+                    lines.push(`#         default_entity_id: sensor.weather_forecast_hour_${slot}00`);
                     lines.push(`#         unit_of_measurement: '${unitSymbol}'`);
                     lines.push(`#         state: >`);
                     lines.push(`#           {% set fc = hourly['${config.entity}'].forecast %}`);

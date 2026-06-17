@@ -83,7 +83,8 @@ describe('weather_forecast widget relative hourly mode', () => {
 
         const numericOut = numericLines.join('\n');
         expect(numericOut).toContain('weather_high_hplus1');
-        expect(numericOut).toContain('sensor.weather_forecast_plus_1h_high');
+        expect(numericOut).toContain('sensor.weather_forecast_plus_1h');
+        expect(numericOut).not.toContain('sensor.weather_forecast_plus_1h_high');
 
         const textOut = textLines.join('\n');
         expect(textOut).toContain('weather_cond_hplus2');
@@ -91,6 +92,8 @@ describe('weather_forecast widget relative hourly mode', () => {
 
         // Check the HA YAML template auto-generation
         expect(textOut).toContain("name: 'Weather Forecast Plus 1h High'");
+        expect(textOut).toContain('default_entity_id: sensor.weather_forecast_plus_1h');
+        expect(textOut).not.toContain('default_entity_id: sensor.weather_forecast_plus_1h_high');
         expect(textOut).toContain("timedelta(hours=1)");
     });
 

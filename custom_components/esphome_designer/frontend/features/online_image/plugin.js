@@ -79,7 +79,7 @@ const render = (el, widget, { getColorStyle }) => {
     }
 };
 
-const exportLVGL = (w, { common, convertColor }) => {
+const exportLVGL = (w, { common }) => {
     const p = w.props || {};
     const safeId = getSafeId(w);
     return {
@@ -89,8 +89,7 @@ const exportLVGL = (w, { common, convertColor }) => {
             angle: (p.rotation || 0),
             pivot_x: (p.pivot_x || 0),
             pivot_y: (p.pivot_y || 0),
-            image_recolor: convertColor(p.color),
-            image_recolor_opa: "cover"
+            image_recolor_opa: "transp"
         }
     };
 };

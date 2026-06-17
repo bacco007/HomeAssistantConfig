@@ -168,8 +168,7 @@ describe('online_image plugin', () => {
                 angle: 90,
                 pivot_x: 0,
                 pivot_y: 0,
-                image_recolor: '0xundefined',
-                image_recolor_opa: 'cover'
+                image_recolor_opa: 'transp'
             }
         });
 

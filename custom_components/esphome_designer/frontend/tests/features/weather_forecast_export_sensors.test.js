@@ -65,6 +65,8 @@ describe('weather_forecast export_sensors', () => {
         expect(output).toContain('# HOME ASSISTANT TEMPLATE SENSORS (HOURLY)');
         expect(output).toContain('entity_id: weather.garden');
         expect(output).toContain("name: 'Weather Forecast Hour 0900 High'");
+        expect(output).toContain("default_entity_id: sensor.weather_forecast_hour_0900");
+        expect(output).not.toContain("default_entity_id: sensor.weather_forecast_hour_0900_high");
         expect(output).toContain("name: 'Weather Forecast Hour 1200 High'");
         expect(output).toContain("{{ ns.hit.condition if ns.hit else 'unknown' }}");
     });
@@ -90,6 +92,8 @@ describe('weather_forecast export_sensors', () => {
 
         const output = lines.join('\n');
         expect(output).toContain("name: 'Weather Forecast Plus 2h High'");
+        expect(output).toContain("default_entity_id: sensor.weather_forecast_plus_2h");
+        expect(output).not.toContain("default_entity_id: sensor.weather_forecast_plus_2h_high");
         expect(output).toContain("timedelta(hours=2)");
         expect(output).toContain("weather_forecast_plus_2h_condition");
         expect(output).toContain("{{ ns.hit.condition if ns.hit else 'unknown' }}");

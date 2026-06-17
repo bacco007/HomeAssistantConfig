@@ -2407,8 +2407,7 @@ exports[`Plugin Export Smoke Tests > Export for online_image > should export LVG
 {
   "image": {
     "angle": 0,
-    "image_recolor": "Color(black)",
-    "image_recolor_opa": "cover",
+    "image_recolor_opa": "transp",
     "pivot_x": 0,
     "pivot_y": 0,
     "src": "online_img_w_test",

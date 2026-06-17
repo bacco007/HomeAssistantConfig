@@ -54,6 +54,8 @@ describe('display_parser integration', () => {
             'bg_opa: 50%',
             '// widget:text id:text_1 x:10 y:12 w:100 h:24 text:"Hello" font:"Inter" color:"#112233"',
             '  it.print(10, 12, id(font), "skip rendered block");',
+            '// widget:weather_forecast id:weather_1 x:20 y:30 w:370 h:90 entity:weather.home forecast_mode:"hourly" hourly_mode:"relative" relative_count:3 hourly_slots:"06,09" start_offset:1',
+            '  it.printf(20, 30, id(font), "skip weather block");',
             'case 0: interval = 45;',
             '  - id: page_1',
             '    layout: 2x2',
@@ -141,6 +143,18 @@ describe('display_parser integration', () => {
                 color: '#112233'
             }
         });
+        expect(layout.pages[0].widgets[1]).toMatchObject({
+            id: 'weather_1',
+            type: 'weather_forecast',
+            entity_id: 'weather.home',
+            props: {
+                forecast_mode: 'hourly',
+                hourly_mode: 'relative',
+                relative_count: 3,
+                hourly_slots: '06,09',
+                start_offset: 1
+            }
+        });
 
         expect(layout.pages[1]).toMatchObject({
             id: 'page_1',
@@ -213,6 +227,70 @@ describe('display_parser integration', () => {
             y: 2,
             width: 3,
             height: 4
+        });
+    });
+
+    it('imports current and legacy LVGL image widget tags', () => {
+        const yaml = {
+            load: vi.fn((yamlStr) => {
+                if (yamlStr.includes('id: logo_image')) {
+                    return {
+                        id: 'logo_image',
+                        x: 117,
+                        y: 199,
+                        width: 80,
+                        height: 80,
+                        src: 'logo_asset'
+                    };
+                }
+                if (yamlStr.includes('id: old_logo')) {
+                    return {
+                        id: 'old_logo',
+                        x: 1,
+                        y: 2,
+                        width: 10,
+                        height: 12,
+                        src: 'old_logo_asset'
+                    };
+                }
+                return {};
+            })
+        };
+
+        const layout = parseDisplayBlocks([
+            '  - image:',
+            '      id: logo_image',
+            '      x: 117',
+            '      y: 199',
+            '      width: 80',
+            '      height: 80',
+            '      src: logo_asset',
+            '  - img:',
+            '      id: old_logo',
+            '      x: 1',
+            '      y: 2',
+            '      width: 10',
+            '      height: 12',
+            '      src: old_logo_asset'
+        ], [], { device_name: 'Image Import', renderingMode: 'lvgl' }, () => ({}), yaml);
+
+        expect(layout.pages[0].widgets[0]).toMatchObject({
+            id: 'logo_image',
+            type: 'lvgl_img',
+            x: 117,
+            y: 199,
+            width: 80,
+            height: 80,
+            props: {
+                src: 'logo_asset'
+            }
+        });
+        expect(layout.pages[0].widgets[1]).toMatchObject({
+            id: 'old_logo',
+            type: 'lvgl_img',
+            props: {
+                src: 'old_logo_asset'
+            }
         });
     });
 });
