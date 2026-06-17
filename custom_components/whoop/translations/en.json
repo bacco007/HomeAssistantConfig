@@ -8,6 +8,10 @@
         "title": "Reauthenticate WHOOP",
         "description": "Please reauthenticate with your WHOOP account."
       }
+    },
+    "abort": {
+      "reauth_failed": "Reauthentication failed. Please try again.",
+      "wrong_account": "Authenticated WHOOP account does not match the account being reauthenticated."
     }
   },
   "options": {

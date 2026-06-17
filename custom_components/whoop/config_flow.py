@@ -1,6 +1,7 @@
 """Config flow for WHOOP integration."""
 
 import logging
+from collections.abc import Mapping
 from typing import Any, Dict
 
 import voluptuous as vol
@@ -105,35 +106,46 @@ class WhoopConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler):
         api_client = WhoopApiClient(session, access_token)
 
         entry_title_name_part = "User"
-        existing_entry = None
         user_id = None
 
+        # Only the profile fetch may fail benignly. Keep the unique_id /
+        # AbortFlow checks below OUTSIDE this try: AbortFlow subclasses
+        # Exception, so a broad except would swallow it and re-introduce the
+        # duplicate-entry bug.
         try:
             profile = await api_client.get_user_profile_basic()
-            if profile:
-                user_id = profile.get("user_id")
-                first_name = profile.get("first_name")
-
-                if first_name:
-                    entry_title_name_part = first_name
-                elif user_id:
-                    entry_title_name_part = f"User {user_id}"
-
-                if user_id:
-                    existing_entry = await self.async_set_unique_id(str(user_id))
-                    if self.source != config_entries.SOURCE_REAUTH:
-                        self._abort_if_unique_id_configured(updates=data)
-            else:
-                _LOGGER.warning("Could not fetch WHOOP profile to set a dynamic title.")
         except Exception as e:
             _LOGGER.error("Error fetching WHOOP profile for dynamic title: %s", e)
+            profile = None
+
+        if profile:
+            user_id = profile.get("user_id")
+            first_name = profile.get("first_name")
+            if first_name:
+                entry_title_name_part = first_name
+            elif user_id:
+                entry_title_name_part = f"User {user_id}"
+        else:
+            _LOGGER.warning("Could not fetch WHOOP profile to set a dynamic title.")
 
         entry_title = f"{entry_title_name_part}'s WHOOP"
+
         if self.source == config_entries.SOURCE_REAUTH:
             entry = self._get_reauth_entry()
             if not user_id:
                 return self.async_abort(reason="reauth_failed")
-            if str(user_id) != entry.unique_id:
+            if entry.unique_id and str(user_id) != entry.unique_id:
+                return self.async_abort(reason="wrong_account")
+            # Resolve the unique_id only now that we intend to proceed; this also
+            # returns any other entry already claiming this account.
+            existing_entry = await self.async_set_unique_id(str(user_id))
+            if (
+                entry.unique_id is None
+                and existing_entry is not None
+                and existing_entry.entry_id != entry.entry_id
+            ):
+                # Legacy entry that never received a unique_id, but the resolved
+                # account already belongs to another entry - don't duplicate it.
                 return self.async_abort(reason="wrong_account")
             return self.async_update_reload_and_abort(
                 entry,
@@ -141,6 +153,10 @@ class WhoopConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler):
                 title=entry_title,
                 data=data,
             )
+
+        if user_id:
+            await self.async_set_unique_id(str(user_id))
+            self._abort_if_unique_id_configured(updates=data)
 
         _LOGGER.info("Creating config entry with title '%s'", entry_title)
         return self.async_create_entry(
@@ -152,12 +168,14 @@ class WhoopConfigFlow(config_entry_oauth2_flow.AbstractOAuth2FlowHandler):
             },
         )
 
-    async def async_step_reauth(self, entry_data: Dict[str, Any]) -> ConfigFlowResult:
+    async def async_step_reauth(
+        self, entry_data: Mapping[str, Any]
+    ) -> ConfigFlowResult:
         """Perform reauth upon an API authentication error or explicit request."""
         _LOGGER.info(
             "[%s] Starting reauthentication flow based on entry_data.", self.handler
         )
-        return await self.async_step_reauth_confirm(entry_data)
+        return await self.async_step_reauth_confirm()
 
     async def async_step_reauth_confirm(
         self, user_input: Dict[str, Any] | None = None
@@ -222,14 +240,8 @@ class WhoopOptionsFlowHandler(config_entries.OptionsFlow):
                     ): SelectSelector(
                         SelectSelectorConfig(
                             options=[
-                                {
-                                    "value": ENERGY_KILOJOULES,
-                                    "label": "Kilojoules (kJ)",
-                                },
-                                {
-                                    "value": ENERGY_KILOCALORIES,
-                                    "label": "Calories (kcal)",
-                                },
+                                {"value": ENERGY_KILOJOULES, "label": "Kilojoules (kJ)"},
+                                {"value": ENERGY_KILOCALORIES, "label": "Calories (kcal)"},
                             ],
                             mode=SelectSelectorMode.DROPDOWN,
                         )
