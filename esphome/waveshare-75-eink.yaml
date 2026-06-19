@@ -64,6 +64,7 @@ display:
     update_interval: 3min
     id: epaper_display
 
+
     lambda: |-
       const auto COLOR_WHITE = Color(0, 0, 0); // Inverted for e-ink
       const auto COLOR_BLACK = Color(255, 255, 255); // Inverted for e-ink
@@ -94,12 +95,12 @@ display:
         color_on = COLOR_BLACK;
         // widget:shape_rect id:w_mjwdwfq0baz14 type:shape_rect x:0 y:450 w:800 h:30 fill:true border:1 color:black border_color:black 
         it.filled_rectangle(0, 450, 800, 30, COLOR_BLACK);
-        // widget:datetime id:w_mjwdx59gj55fn type:datetime x:6 y:450 w:236 h:30 format:weekday_day_month time_size:28 date_size:21 color:white text_align:CENTER_LEFT italic:false font_family:"Ubuntu" 
+        // widget:datetime id:w_mjwdx59gj55fn type:datetime x:6 y:450 w:236 h:30 format:weekday_day_month time_size:28 date_size:21 color:white text_align:CENTER_LEFT italic:false font_family:"Source Sans Pro" 
         {
           auto now = id(ha_time).now();
-          it.strftime(6, 450, id(font_ubuntu_400_21), COLOR_WHITE, TextAlign::TOP_LEFT, "%A %d %B", now);
+          it.strftime(6, 450, id(font_source_sans_pro_400_21), COLOR_WHITE, TextAlign::TOP_LEFT, "%A %d %B", now);
         }
-        // widget:wifi_signal id:w_mjwdyqavxeyjk type:wifi_signal x:765 y:453 w:24 h:24 entity:wifi_signal_dbm size:24 font_size:12 color:white show_dbm:false local:true 
+        // widget:wifi_signal id:w_mjwdyqavxeyjk type:wifi_signal x:765 y:453 w:24 h:24 entity:wifi_signal_dbm size:24 font_size:12 color:black show_dbm:true local:true 
         {
           const char* wifi_icon = "\U000F092B"; // Default: wifi-strength-alert-outline
           if (id(wifi_signal_dbm).has_state()) {
@@ -111,7 +112,10 @@ display:
             else if (signal >= -100) wifi_icon = "\U000F091F"; // wifi-strength-1 (Weak)
             else wifi_icon = "\U000F092B";                    // wifi-strength-alert-outline
           }
-          it.printf(765, 453, id(font_material_design_icons_400_24), COLOR_WHITE, "%s", wifi_icon);
+          it.printf(765, 453, id(font_material_design_icons_400_24), COLOR_BLACK, "%s", wifi_icon);
+          if (id(wifi_signal_dbm).has_state()) {
+            it.printf(765 + 24/2, 453 + 24 + 2, id(font_roboto_400_12), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0fdB", id(wifi_signal_dbm).state);
+          }
         }
         // widget:weather_icon id:w_mjwdzwcukw4jx type:weather_icon x:744 y:7 w:48 h:48 entity:weather.east_tamworth size:48 color:black 
         {
@@ -134,16 +138,16 @@ display:
           else if (weather_state == "windy-variant") icon = "\U000F059E";
           it.printf(744, 7, id(font_material_design_icons_400_48), COLOR_BLACK, "%s", icon);
         }
-        // widget:sensor_text id:w_mjwe0nzpkn7sj type:sensor_text x:606 y:5 w:131 h:52 ent:sensor.weather_temperature entity_2: title:"[Weather] Temperature" format:value_only label_font:40 value_font:40 color:black label_align:CENTER value_align:CENTER precision:1 unit:"" hide_unit:false prefix:"" postfix:"" separator:"~" local:false text_sensor:false font_family:"Ubuntu" font_weight:700 italic:false 
+        // widget:sensor_text id:w_mjwe0nzpkn7sj type:sensor_text x:613 y:5 w:131 h:52 ent:sensor.weather_temperature entity_2: title:"[Weather] Temperature" format:value_only label_font:40 value_font:40 color:black label_align:TOP_LEFT value_align:TOP_LEFT precision:1 unit:"" hide_unit:false prefix:"" postfix:"" separator:"~" local:false text_sensor:false font_family:"Source Sans Pro" font_weight:700 italic:false 
         {
           char buf1[32];
           snprintf(buf1, sizeof(buf1), "%.1f", id(sensor_weather_temperature).state);
           std::string val1 = buf1;
           std::string sensorValue = val1;
           std::string fullValue = "" + sensorValue + "°C" + "";
-          it.printf(606 + 131/2, 5 + 52/2, id(font_ubuntu_700_40), COLOR_BLACK, TextAlign::CENTER, "%s", fullValue.c_str());
+          it.printf(613, 5, id(font_source_sans_pro_700_40), COLOR_BLACK, TextAlign::TOP_LEFT, "%s", fullValue.c_str());
         }
-        // widget:weather_forecast id:w_mjwe92bggsldj type:weather_forecast x:715 y:59 w:82 h:383 weather_entity:"weather.east_tamworth" layout:vertical show_high_low:true day_font_size:15 temp_font_size:15 icon_size:20 font_family:"Ubuntu" color:black 
+        // widget:weather_forecast id:w_mjwe92bggsldj type:weather_forecast x:715 y:59 w:82 h:383 weather_entity:"weather.east_tamworth" layout:vertical show_high_low:true day_font_size:15 temp_font_size:15 icon_size:20 font_family:"Source Sans Pro" color:black 
         {
           static std::map<std::string, const char*> weather_icons = {
             {"clear-night", "\U000F0594"}, {"cloudy", "\U000F0590"},
@@ -168,155 +172,163 @@ display:
           };
           {
             int dx = 715; int dy = 59;
-            it.printf(dx + 41, dy, id(font_ubuntu_700_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_day_name(0).c_str());
+            it.printf(dx + 41, dy, id(font_source_sans_pro_700_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_day_name(0).c_str());
             std::string cond = id(weather_cond_day0).state;
             it.printf(dx + 41, dy + 19, id(font_material_design_icons_400_20), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_icon(cond));
             float high = id(weather_high_day0).state; float low = id(weather_low_day0).state;
             if (!std::isnan(high) && !std::isnan(low)) {
-              it.printf(dx + 41, dy + 43, id(font_ubuntu_400_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0f/%.0f", high, low);
+              it.printf(dx + 41, dy + 43, id(font_source_sans_pro_400_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0f/%.0f", high, low);
             }
           }
           {
             int dx = 715; int dy = 135;
-            it.printf(dx + 41, dy, id(font_ubuntu_700_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_day_name(1).c_str());
+            it.printf(dx + 41, dy, id(font_source_sans_pro_700_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_day_name(1).c_str());
             std::string cond = id(weather_cond_day1).state;
             it.printf(dx + 41, dy + 19, id(font_material_design_icons_400_20), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_icon(cond));
             float high = id(weather_high_day1).state; float low = id(weather_low_day1).state;
             if (!std::isnan(high) && !std::isnan(low)) {
-              it.printf(dx + 41, dy + 43, id(font_ubuntu_400_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0f/%.0f", high, low);
+              it.printf(dx + 41, dy + 43, id(font_source_sans_pro_400_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0f/%.0f", high, low);
             }
           }
           {
             int dx = 715; int dy = 211;
-            it.printf(dx + 41, dy, id(font_ubuntu_700_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_day_name(2).c_str());
+            it.printf(dx + 41, dy, id(font_source_sans_pro_700_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_day_name(2).c_str());
             std::string cond = id(weather_cond_day2).state;
             it.printf(dx + 41, dy + 19, id(font_material_design_icons_400_20), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_icon(cond));
             float high = id(weather_high_day2).state; float low = id(weather_low_day2).state;
             if (!std::isnan(high) && !std::isnan(low)) {
-              it.printf(dx + 41, dy + 43, id(font_ubuntu_400_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0f/%.0f", high, low);
+              it.printf(dx + 41, dy + 43, id(font_source_sans_pro_400_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0f/%.0f", high, low);
             }
           }
           {
             int dx = 715; int dy = 287;
-            it.printf(dx + 41, dy, id(font_ubuntu_700_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_day_name(3).c_str());
+            it.printf(dx + 41, dy, id(font_source_sans_pro_700_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_day_name(3).c_str());
             std::string cond = id(weather_cond_day3).state;
             it.printf(dx + 41, dy + 19, id(font_material_design_icons_400_20), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_icon(cond));
             float high = id(weather_high_day3).state; float low = id(weather_low_day3).state;
             if (!std::isnan(high) && !std::isnan(low)) {
-              it.printf(dx + 41, dy + 43, id(font_ubuntu_400_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0f/%.0f", high, low);
+              it.printf(dx + 41, dy + 43, id(font_source_sans_pro_400_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0f/%.0f", high, low);
             }
           }
           {
             int dx = 715; int dy = 363;
-            it.printf(dx + 41, dy, id(font_ubuntu_700_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_day_name(4).c_str());
+            it.printf(dx + 41, dy, id(font_source_sans_pro_700_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_day_name(4).c_str());
             std::string cond = id(weather_cond_day4).state;
             it.printf(dx + 41, dy + 19, id(font_material_design_icons_400_20), COLOR_BLACK, TextAlign::TOP_CENTER, "%s", get_icon(cond));
             float high = id(weather_high_day4).state; float low = id(weather_low_day4).state;
             if (!std::isnan(high) && !std::isnan(low)) {
-              it.printf(dx + 41, dy + 43, id(font_ubuntu_400_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0f/%.0f", high, low);
+              it.printf(dx + 41, dy + 43, id(font_source_sans_pro_400_15), COLOR_BLACK, TextAlign::TOP_CENTER, "%.0f/%.0f", high, low);
             }
           }
         }
         // widget:icon id:w_1767329574886_163_33 type:icon x:525 y:107 w:38 h:37 code:F0E02 size:29 color:black 
         it.printf(525, 107, id(font_material_design_icons_400_29), COLOR_BLACK, "%s", "\U000F0E02");
-        // widget:sensor_text id:w_1767329574886_341_94 type:sensor_text x:529 y:111 w:186 h:29 ent:sensor.weather_temperature_today_minimum_display entity_2: title:"[Weather] Temperature Today Maximum" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"" postfix:"" separator:"~" local:false text_sensor:true font_family:"Ubuntu" font_weight:400 italic:false 
+        // widget:sensor_text id:w_1767329574886_341_94 type:sensor_text x:529 y:111 w:186 h:29 ent:sensor.weather_temperature_today_minimum_display entity_2: title:"[Weather] Temperature Today Maximum" format:value_only label_font:14 value_font:20 color:black label_align:TOP_LEFT value_align:TOP_LEFT precision:2 unit:"" hide_unit:false prefix:"" postfix:"" separator:"~" local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
         {
-          std::string val1 = id(sensor_weather_temperature_today_minimum_display_txt).state;
+          char buf1[32];
+          snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_weather_temperature_today_minimum_display).state);
+          std::string val1 = buf1;
           std::string sensorValue = val1;
           std::string fullValue = "" + sensorValue + "" + "";
-          it.printf(529 + 186, 111 + 29/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+          it.printf(529, 111, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::TOP_LEFT, "%s", fullValue.c_str());
         }
-        // widget:sensor_text id:w_1767329616788_743_15 type:sensor_text x:529 y:72 w:186 h:29 ent:sensor.weather_temperature_today_maximum_display entity_2: title:"[Weather] Temperature Today Maximum" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"" postfix:"" separator:"~" local:false text_sensor:true font_family:"Ubuntu" font_weight:400 italic:false 
+        // widget:sensor_text id:w_1767329616788_743_15 type:sensor_text x:529 y:73 w:186 h:29 ent:sensor.weather_temperature_today_maximum_display entity_2: title:"[Weather] Temperature Today Maximum" format:value_only label_font:14 value_font:20 color:black label_align:TOP_LEFT value_align:TOP_LEFT precision:2 unit:"" hide_unit:false prefix:"" postfix:"" separator:"~" local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
         {
-          std::string val1 = id(sensor_weather_temperature_today_maximum_display_txt).state;
+          char buf1[32];
+          snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_weather_temperature_today_maximum_display).state);
+          std::string val1 = buf1;
           std::string sensorValue = val1;
           std::string fullValue = "" + sensorValue + "" + "";
-          it.printf(529 + 186, 72 + 29/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+          it.printf(529, 73, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::TOP_LEFT, "%s", fullValue.c_str());
         }
         // widget:icon id:w_1767329616788_255_91 type:icon x:525 y:69 w:38 h:37 code:F0E03 size:29 color:black 
         it.printf(525, 69, id(font_material_design_icons_400_29), COLOR_BLACK, "%s", "\U000F0E03");
-        // widget:sensor_text id:w_mjwegpk5qny8f type:sensor_text x:597 y:333 w:118 h:35 ent:sensor.weatherflow_rainfall_daily entity_2: title:"" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"T: " postfix:"" separator:"~" local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
+        // widget:sensor_text id:w_mjwegpk5qny8f type:sensor_text x:597 y:333 w:125 h:35 ent:sensor.weatherflow_rainfall_daily entity_2: title:"" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"T:" postfix:"" separator:"~" local:false text_sensor:false font_family:"Source Sans Pro" font_weight:400 italic:false 
         {
           char buf1[32];
           snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_weatherflow_rainfall_daily).state);
           std::string val1 = buf1;
           std::string sensorValue = val1;
-          std::string fullValue = "T: " + sensorValue + "mm" + "";
-          it.printf(597 + 118, 333 + 35/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+          std::string fullValue = "T:" + sensorValue + "mm" + "";
+          it.printf(597 + 125, 333 + 35/2, id(font_source_sans_pro_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
         }
-        // widget:sensor_text id:w_1767329800554_894_94 type:sensor_text x:597 y:355 w:118 h:35 ent:sensor.weatherflow_rainfall_weekly entity_2: title:"Weatherflow Rainfall (Weekly)" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"W: " postfix:"" separator:"~" local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
+        // widget:sensor_text id:w_1767329800554_894_94 type:sensor_text x:597 y:356 w:125 h:35 ent:sensor.weatherflow_rainfall_weekly entity_2: title:"Weatherflow Rainfall (Weekly)" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"W:" postfix:"" separator:"~" local:false text_sensor:false font_family:"Source Sans Pro" font_weight:400 italic:false 
         {
           char buf1[32];
           snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_weatherflow_rainfall_weekly).state);
           std::string val1 = buf1;
           std::string sensorValue = val1;
-          std::string fullValue = "W: " + sensorValue + "mm" + "";
-          it.printf(597 + 118, 355 + 35/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+          std::string fullValue = "W:" + sensorValue + "mm" + "";
+          it.printf(597 + 125, 356 + 35/2, id(font_source_sans_pro_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
         }
-        // widget:sensor_text id:w_1767329817616_192_70 type:sensor_text x:597 y:382 w:118 h:35 ent:sensor.weatherflow_rainfall_monthly entity_2: title:"Weatherflow Rainfall (Weekly)" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"M: " postfix:"" separator:"~" local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
+        // widget:sensor_text id:w_1767329817616_192_70 type:sensor_text x:597 y:382 w:125 h:35 ent:sensor.weatherflow_rainfall_monthly entity_2: title:"Weatherflow Rainfall (Weekly)" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"M:" postfix:"" separator:"~" local:false text_sensor:false font_family:"Source Sans Pro" font_weight:400 italic:false 
         {
           char buf1[32];
           snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_weatherflow_rainfall_monthly).state);
           std::string val1 = buf1;
           std::string sensorValue = val1;
-          std::string fullValue = "M: " + sensorValue + "mm" + "";
-          it.printf(597 + 118, 382 + 35/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+          std::string fullValue = "M:" + sensorValue + "mm" + "";
+          it.printf(597 + 125, 382 + 35/2, id(font_source_sans_pro_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
         }
-        // widget:sensor_text id:w_1767329837327_370_53 type:sensor_text x:597 y:406 w:118 h:35 ent:sensor.weatherflow_rainfall_yearly entity_2: title:"Weatherflow Rainfall (Weekly)" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"Y: " postfix:"" separator:"~" local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
+        // widget:sensor_text id:w_1767329837327_370_53 type:sensor_text x:597 y:406 w:125 h:35 ent:sensor.weatherflow_rainfall_yearly entity_2: title:"Weatherflow Rainfall (Weekly)" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"Y:" postfix:"" separator:"~" local:false text_sensor:false font_family:"Source Sans Pro" font_weight:400 italic:false 
         {
           char buf1[32];
           snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_weatherflow_rainfall_yearly).state);
           std::string val1 = buf1;
           std::string sensorValue = val1;
-          std::string fullValue = "Y: " + sensorValue + "mm" + "";
-          it.printf(597 + 118, 406 + 35/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+          std::string fullValue = "Y:" + sensorValue + "mm" + "";
+          it.printf(597 + 125, 406 + 35/2, id(font_source_sans_pro_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
         }
-        // widget:icon id:w_1767329895179_437_80 type:icon x:677 y:301 w:38 h:36 code:F0597 size:36 color:black 
-        it.printf(677, 301, id(font_material_design_icons_400_36), COLOR_BLACK, "%s", "\U000F0597");
-        // widget:sensor_text id:w_mjwixkg88gots type:sensor_text x:32 y:372 w:126 h:29 ent:sensor.moon_rise entity_2: title:"Moon Rise" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"" postfix:"" separator:"~" local:false text_sensor:true font_family:"Ubuntu" font_weight:400 italic:false 
+        // widget:icon id:w_1767329895179_437_80 type:icon x:684 y:302 w:38 h:36 code:F0597 size:36 color:black 
+        it.printf(684, 302, id(font_material_design_icons_400_36), COLOR_BLACK, "%s", "\U000F0597");
+        // widget:sensor_text id:w_mjwixkg88gots type:sensor_text x:32 y:372 w:126 h:29 ent:sensor.moon_rise entity_2: title:"Moon Rise" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"" postfix:"" separator:"~" local:false text_sensor:false font_family:"Source Sans Pro" font_weight:400 italic:false 
         {
-          std::string val1 = id(sensor_moon_rise_txt).state;
+          char buf1[32];
+          snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_moon_rise).state);
+          std::string val1 = buf1;
           std::string sensorValue = val1;
           std::string fullValue = "" + sensorValue + "" + "";
-          it.printf(32 + 126, 372 + 29/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+          it.printf(32 + 126, 372 + 29/2, id(font_source_sans_pro_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
         }
-        // widget:sensor_text id:w_mjwiy6t3pul6r type:sensor_text x:37 y:401 w:120 h:40 ent:sensor.moon_set entity_2: title:"Moon Set" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"" postfix:"" separator:"~" local:false text_sensor:true font_family:"Ubuntu" font_weight:400 italic:false 
+        // widget:sensor_text id:w_mjwiy6t3pul6r type:sensor_text x:37 y:401 w:120 h:40 ent:sensor.moon_set entity_2: title:"Moon Set" format:value_only label_font:14 value_font:20 color:black label_align:CENTER_RIGHT value_align:CENTER_RIGHT precision:2 unit:"" hide_unit:false prefix:"" postfix:"" separator:"~" local:false text_sensor:false font_family:"Source Sans Pro" font_weight:400 italic:false 
         {
-          std::string val1 = id(sensor_moon_set_txt).state;
+          char buf1[32];
+          snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_moon_set).state);
+          std::string val1 = buf1;
           std::string sensorValue = val1;
           std::string fullValue = "" + sensorValue + "" + "";
-          it.printf(37 + 120, 401 + 40/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
+          it.printf(37 + 120, 401 + 40/2, id(font_source_sans_pro_400_20), COLOR_BLACK, TextAlign::CENTER_RIGHT, "%s", fullValue.c_str());
         }
         // widget:icon id:w_mjwizyjfzaabf type:icon x:18 y:369 w:38 h:36 code:F1D17 size:29 color:black 
         it.printf(18, 369, id(font_material_design_icons_400_29), COLOR_BLACK, "%s", "\U000F1D17");
         // widget:icon id:w_1767337360808_985_2 type:icon x:18 y:403 w:38 h:36 code:F1D16 size:29 color:black 
         it.printf(18, 403, id(font_material_design_icons_400_29), COLOR_BLACK, "%s", "\U000F1D16");
-        // widget:sensor_text id:w_mjxiwcglqbwon type:sensor_text x:306 y:384 w:188 h:27 ent:sensor.sungrow_sg5kd_daily_import_from_grid entity_2: title:"" format:value_only label_font:14 value_font:20 color:black label_align:CENTER value_align:CENTER precision:2 unit:"" hide_unit:false prefix:"From Grid: " postfix:"" separator:" ~ " local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
+        // widget:sensor_text id:w_mjxiwcglqbwon type:sensor_text x:306 y:384 w:188 h:27 ent:sensor.sungrow_sg5kd_daily_import_from_grid entity_2: title:"" format:value_only label_font:14 value_font:20 color:black label_align:CENTER value_align:CENTER precision:2 unit:"" hide_unit:false prefix:"From Grid: " postfix:"" separator:"~" local:false text_sensor:false font_family:"Source Sans Pro" font_weight:400 italic:false 
         {
           char buf1[32];
           snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_sungrow_sg5kd_daily_import_from_grid).state);
           std::string val1 = buf1;
           std::string sensorValue = val1;
           std::string fullValue = "From Grid: " + sensorValue + "kWh" + "";
-          it.printf(306 + 188/2, 384 + 27/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER, "%s", fullValue.c_str());
+          it.printf(306 + 188/2, 384 + 27/2, id(font_source_sans_pro_400_20), COLOR_BLACK, TextAlign::CENTER, "%s", fullValue.c_str());
         }
-        // widget:sensor_text id:w_1767397781687_178_22 type:sensor_text x:306 y:410 w:188 h:27 ent:sensor.sungrow_sg5kd_daily_export_to_grid entity_2: title:"Sungrow SG5KD Daily Export to Grid" format:value_only label_font:14 value_font:20 color:black label_align:CENTER value_align:CENTER precision:2 unit:"" hide_unit:false prefix:"To Grid: " postfix:"" separator:" ~ " local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
+        // widget:sensor_text id:w_1767397781687_178_22 type:sensor_text x:306 y:410 w:188 h:27 ent:sensor.sungrow_sg5kd_daily_export_to_grid entity_2: title:"Sungrow SG5KD Daily Export to Grid" format:value_only label_font:14 value_font:20 color:black label_align:CENTER value_align:CENTER precision:2 unit:"" hide_unit:false prefix:"To Grid: " postfix:"" separator:"~" local:false text_sensor:false font_family:"Source Sans Pro" font_weight:400 italic:false 
         {
           char buf1[32];
           snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_sungrow_sg5kd_daily_export_to_grid).state);
           std::string val1 = buf1;
           std::string sensorValue = val1;
           std::string fullValue = "To Grid: " + sensorValue + "kWh" + "";
-          it.printf(306 + 188/2, 410 + 27/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER, "%s", fullValue.c_str());
+          it.printf(306 + 188/2, 410 + 27/2, id(font_source_sans_pro_400_20), COLOR_BLACK, TextAlign::CENTER, "%s", fullValue.c_str());
         }
-        // widget:sensor_text id:w_1767397819199_342_44 type:sensor_text x:306 y:357 w:188 h:27 ent:sensor.sungrow_sg5kd_daily_generation entity_2: title:"Sungrow SG5KD Daily Export to Grid" format:value_only label_font:14 value_font:20 color:black label_align:CENTER value_align:CENTER precision:2 unit:"" hide_unit:false prefix:"Gen:  " postfix:"" separator:" ~ " local:false text_sensor:false font_family:"Ubuntu" font_weight:400 italic:false 
+        // widget:sensor_text id:w_1767397819199_342_44 type:sensor_text x:306 y:357 w:188 h:27 ent:sensor.sungrow_sg5kd_daily_generation entity_2: title:"Sungrow SG5KD Daily Export to Grid" format:value_only label_font:14 value_font:20 color:black label_align:CENTER value_align:CENTER precision:2 unit:"" hide_unit:false prefix:"Gen: " postfix:"" separator:"~" local:false text_sensor:false font_family:"Source Sans Pro" font_weight:400 italic:false 
         {
           char buf1[32];
           snprintf(buf1, sizeof(buf1), "%.2f", id(sensor_sungrow_sg5kd_daily_generation).state);
           std::string val1 = buf1;
           std::string sensorValue = val1;
-          std::string fullValue = "Gen:  " + sensorValue + "kWh" + "";
-          it.printf(306 + 188/2, 357 + 27/2, id(font_ubuntu_400_20), COLOR_BLACK, TextAlign::CENTER, "%s", fullValue.c_str());
+          std::string fullValue = "Gen: " + sensorValue + "kWh" + "";
+          it.printf(306 + 188/2, 357 + 27/2, id(font_source_sans_pro_400_20), COLOR_BLACK, TextAlign::CENTER, "%s", fullValue.c_str());
         }
         // widget:datetime id:w_mjxjby3hbicto type:datetime x:359 y:451 w:83 h:28 format:time_only time_size:28 date_size:16 color:white text_align:CENTER italic:false font_family:"Ubuntu" 
         {
@@ -370,6 +382,14 @@ sensor:
     entity_id: sensor.weather_temperature
     internal: true
   - platform: homeassistant
+    id: sensor_weather_temperature_today_minimum_display
+    entity_id: sensor.weather_temperature_today_minimum_display
+    internal: true
+  - platform: homeassistant
+    id: sensor_weather_temperature_today_maximum_display
+    entity_id: sensor.weather_temperature_today_maximum_display
+    internal: true
+  - platform: homeassistant
     id: sensor_weatherflow_rainfall_daily
     entity_id: sensor.weatherflow_rainfall_daily
     internal: true
@@ -384,6 +404,14 @@ sensor:
   - platform: homeassistant
     id: sensor_weatherflow_rainfall_yearly
     entity_id: sensor.weatherflow_rainfall_yearly
+    internal: true
+  - platform: homeassistant
+    id: sensor_moon_rise
+    entity_id: sensor.moon_rise
+    internal: true
+  - platform: homeassistant
+    id: sensor_moon_set
+    entity_id: sensor.moon_set
     internal: true
   - platform: homeassistant
     id: sensor_sungrow_sg5kd_daily_import_from_grid
