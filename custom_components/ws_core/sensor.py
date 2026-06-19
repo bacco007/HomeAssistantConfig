@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
@@ -266,7 +267,16 @@ class WSSensorDescription:
     suggested_display_precision: int | None = None
     value_fn: Callable[[dict[str, Any]], Any] | None = None
     attrs_fn: Callable[[dict[str, Any]], dict[str, Any]] | None = None
+    unit_group: str | None = None
 
+
+# Conversion factors from canonical internal (metric) value to configured unit.
+# wind: from m/s; pressure: from hPa; distance: from km; altitude: from m.
+# Rain accumulation (mm->in) and rain rate (mm/h->in/h) share the 1/25.4 factor.
+_WIND_FACTORS: dict[str, float] = {"m/s": 1.0, "km/h": 3.6, "mph": 2.23694, "kn": 1.94384}
+_PRESSURE_FACTORS: dict[str, float] = {"hPa": 1.0, "inHg": 0.02953, "mmHg": 0.75006}
+_DISTANCE_FACTORS: dict[str, float] = {"km": 1.0, "mi": 0.621371}
+_ALTITUDE_FACTORS: dict[str, float] = {"m": 1.0, "ft": 3.28084}
 
 SENSORS: list[WSSensorDescription] = [
     # =========================================================================
@@ -309,6 +319,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.PRESSURE,
         native_unit=UNIT_PRESSURE_HPA,
         state_class=SensorStateClass.MEASUREMENT,
+        unit_group="pressure",
     ),
     WSSensorDescription(
         key=KEY_SEA_LEVEL_PRESSURE_HPA,
@@ -318,6 +329,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.PRESSURE,
         native_unit=UNIT_PRESSURE_HPA,
         state_class=SensorStateClass.MEASUREMENT,
+        unit_group="pressure",
     ),
     WSSensorDescription(
         key=KEY_NORM_WIND_SPEED_MS,
@@ -327,6 +339,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.WIND_SPEED,
         native_unit=UNIT_WIND_MS,
         state_class=SensorStateClass.MEASUREMENT,
+        unit_group="wind",
     ),
     WSSensorDescription(
         key=KEY_NORM_WIND_GUST_MS,
@@ -336,6 +349,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.WIND_SPEED,
         native_unit=UNIT_WIND_MS,
         state_class=SensorStateClass.MEASUREMENT,
+        unit_group="wind",
     ),
     WSSensorDescription(
         key=KEY_NORM_WIND_DIR_DEG,
@@ -354,6 +368,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.PRECIPITATION,
         native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.TOTAL_INCREASING,  # FIX: cumulative counter
+        unit_group="rain",
     ),
     WSSensorDescription(
         key=KEY_RAIN_RATE_FILT,
@@ -364,6 +379,7 @@ SENSORS: list[WSSensorDescription] = [
         native_unit="mm/h",
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=1,
+        unit_group="rain_rate",
     ),
     WSSensorDescription(
         key=KEY_LUX,
@@ -413,6 +429,7 @@ SENSORS: list[WSSensorDescription] = [
         native_unit="hPa",
         state_class=SensorStateClass.MEASUREMENT,
         entity_category=EntityCategory.DIAGNOSTIC,
+        unit_group="pressure",
     ),
     WSSensorDescription(
         key=KEY_DATA_QUALITY,
@@ -578,6 +595,7 @@ SENSORS: list[WSSensorDescription] = [
         icon="mdi:cloud-arrow-up",
         native_unit="m",
         state_class=SensorStateClass.MEASUREMENT,
+        unit_group="altitude",
         attrs_fn=lambda d: {
             "temp_c": d.get(KEY_NORM_TEMP_C),
             "dew_point_c": d.get(KEY_DEW_POINT_C),
@@ -594,6 +612,7 @@ SENSORS: list[WSSensorDescription] = [
         icon="mdi:snowflake",
         native_unit="m",
         state_class=SensorStateClass.MEASUREMENT,
+        unit_group="altitude",
         attrs_fn=lambda d: {
             "temp_c": d.get(KEY_NORM_TEMP_C),
         },
@@ -929,6 +948,7 @@ SENSORS: list[WSSensorDescription] = [
         icon="mdi:weather-pouring",
         native_unit="mm",
         state_class=SensorStateClass.MEASUREMENT,
+        unit_group="rain",
         attrs_fn=lambda d: {
             "peak_rate_mmph": d.get("_nowcast_peak_rate_mmph"),
             "intensity": d.get(KEY_NOWCAST_INTENSITY),
@@ -994,6 +1014,7 @@ SENSORS: list[WSSensorDescription] = [
         icon="mdi:lightning-bolt-circle",
         native_unit="km",
         state_class=SensorStateClass.MEASUREMENT,
+        unit_group="distance",
         attrs_fn=lambda d: {
             "proximity": d.get(KEY_LIGHTNING_PROXIMITY),
         },
@@ -1154,6 +1175,7 @@ SENSORS: list[WSSensorDescription] = [
         native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=1,
+        unit_group="rain",
     ),
     WSSensorDescription(
         key=KEY_RAIN_ACCUM_24H,
@@ -1164,6 +1186,7 @@ SENSORS: list[WSSensorDescription] = [
         native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=1,
+        unit_group="rain",
     ),
     WSSensorDescription(
         key=KEY_RAIN_TODAY_MM,
@@ -1174,6 +1197,7 @@ SENSORS: list[WSSensorDescription] = [
         native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.MEASUREMENT,
         suggested_display_precision=1,
+        unit_group="rain",
     ),
     # v2.0 — Weekly / monthly / yearly rain accumulators.
     # TOTAL_INCREASING: they accumulate within the period and reset to 0 at the
@@ -1189,6 +1213,7 @@ SENSORS: list[WSSensorDescription] = [
         native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.TOTAL_INCREASING,
         suggested_display_precision=1,
+        unit_group="rain",
     ),
     WSSensorDescription(
         key=KEY_RAIN_THIS_MONTH_MM,
@@ -1199,6 +1224,7 @@ SENSORS: list[WSSensorDescription] = [
         native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.TOTAL_INCREASING,
         suggested_display_precision=1,
+        unit_group="rain",
     ),
     WSSensorDescription(
         key=KEY_RAIN_THIS_YEAR_MM,
@@ -1209,6 +1235,7 @@ SENSORS: list[WSSensorDescription] = [
         native_unit=UNIT_RAIN_MM,
         state_class=SensorStateClass.TOTAL_INCREASING,
         suggested_display_precision=1,
+        unit_group="rain",
     ),
     # v2.0 — Max rain rate in rolling 24h window
     WSSensorDescription(
@@ -1219,6 +1246,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.PRECIPITATION_INTENSITY,
         native_unit="mm/h",
         state_class=SensorStateClass.MEASUREMENT,
+        unit_group="rain_rate",
     ),
     WSSensorDescription(
         key=KEY_PRESSURE_TREND_DISPLAY,
@@ -1314,6 +1342,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.WIND_SPEED,
         native_unit=UNIT_WIND_MS,
         state_class=SensorStateClass.MEASUREMENT,
+        unit_group="wind",
     ),
     # v2.0 Wind gust factor (gust / mean speed ratio)
     WSSensorDescription(
@@ -1548,6 +1577,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.PRECIPITATION,
         native_unit="mm",
         state_class=SensorStateClass.MEASUREMENT,
+        unit_group="rain",
         attrs_fn=lambda d: {
             "et0_hourly_mm": d.get(KEY_ET0_HOURLY_MM),
         },
@@ -1561,6 +1591,7 @@ SENSORS: list[WSSensorDescription] = [
         native_unit="mm",
         state_class=SensorStateClass.MEASUREMENT,
         entity_category=EntityCategory.DIAGNOSTIC,
+        unit_group="rain",
     ),
     # ---------------------------------------------------------------
     # Upload Status  (v0.6.0)
@@ -1907,6 +1938,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.PRECIPITATION,
         native_unit="mm",
         state_class=SensorStateClass.MEASUREMENT,
+        unit_group="rain",
         attrs_fn=lambda d: {
             "hargreaves_et0": d.get(KEY_ET0_DAILY_MM),
         },
@@ -1920,6 +1952,7 @@ SENSORS: list[WSSensorDescription] = [
         device_class=SensorDeviceClass.PRECIPITATION,
         native_unit="mm",
         state_class=SensorStateClass.MEASUREMENT,
+        unit_group="rain",
         attrs_fn=lambda d: {
             "et0_daily_mm": d.get(KEY_ET0_DAILY_MM),
             "rain_today_mm": d.get("_rain_today_mm"),
@@ -2457,7 +2490,18 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             self._attr_name = desc.name
         self._attr_icon = desc.icon
         self._attr_device_class = desc.device_class
-        self._attr_native_unit_of_measurement = desc.native_unit
+        self._unit_group = desc.unit_group
+        if desc.unit_group:
+            self._attr_native_unit_of_measurement = {
+                "wind": coordinator.wind_unit,
+                "pressure": coordinator.pressure_unit,
+                "rain": coordinator.rain_unit,
+                "rain_rate": coordinator.rain_rate_unit,
+                "distance": coordinator.distance_unit,
+                "altitude": coordinator.altitude_unit,
+            }.get(desc.unit_group, desc.native_unit)
+        else:
+            self._attr_native_unit_of_measurement = desc.native_unit
         self._attr_state_class = desc.state_class
         if desc.suggested_display_precision is not None:
             self._attr_suggested_display_precision = desc.suggested_display_precision
@@ -2481,10 +2525,18 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
         if self._desc.key in self._RESTORE_KEYS:
             last_state = await self.async_get_last_state()
             if last_state is not None and last_state.state not in ("unknown", "unavailable", None, ""):
-                try:
-                    self._restored_value = float(last_state.state)
-                except (ValueError, TypeError):
-                    self._restored_value = last_state.state
+                # If the unit changed (e.g. user switched from mm to in), the
+                # stored state value is in the old unit. Discard it to avoid
+                # showing a stale value in the wrong unit until the coordinator
+                # provides the first real reading.
+                last_unit = last_state.attributes.get("unit_of_measurement")
+                if self._unit_group and last_unit and last_unit != self._attr_native_unit_of_measurement:
+                    self._restored_value = None
+                else:
+                    try:
+                        self._restored_value = float(last_state.state)
+                    except (ValueError, TypeError):
+                        self._restored_value = last_state.state
             else:
                 self._restored_value = None
 
@@ -2672,6 +2724,23 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
         # Fallback: strip common prefixes/suffixes for a clean slug
         return key.replace("_mmph", "").replace("_ms", "").replace("_hpa", "").replace("_c", "")
 
+    def _apply_unit_conversion(self, val: float) -> float:
+        unit = self._attr_native_unit_of_measurement
+        group = self._unit_group
+        if group == "wind":
+            return val * _WIND_FACTORS.get(unit, 1.0)
+        if group == "pressure":
+            return val * _PRESSURE_FACTORS.get(unit, 1.0)
+        if group == "rain":
+            return val / 25.4 if unit == "in" else val
+        if group == "rain_rate":
+            return val / 25.4 if unit == "in/h" else val
+        if group == "distance":
+            return val * _DISTANCE_FACTORS.get(unit, 1.0)
+        if group == "altitude":
+            return val * _ALTITUDE_FACTORS.get(unit, 1.0)
+        return val
+
     @property
     def native_value(self):
         d = self.coordinator.data or {}
@@ -2690,6 +2759,10 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
         # Once the coordinator provides a real value, clear the restore cache
         if val is not None and self._restored_value is not None:
             self._restored_value = None
+
+        if self._unit_group and val is not None:
+            with contextlib.suppress(TypeError, ValueError):
+                val = self._apply_unit_conversion(float(val))
 
         return val
 

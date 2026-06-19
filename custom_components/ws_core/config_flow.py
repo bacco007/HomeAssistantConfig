@@ -24,7 +24,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import selector
 
 from .const import (
+    ALTITUDE_UNIT_OPTIONS,
     CLIMATE_REGION_OPTIONS,
+    CONF_ALTITUDE_UNIT,
     CONF_AQI_INTERVAL_MIN,
     CONF_AWEKAS_INTERVAL_MIN,
     CONF_AWEKAS_PASSWORD,
@@ -39,6 +41,7 @@ from .const import (
     CONF_CWOP_PASSCODE,
     CONF_CWOP_PORT,
     CONF_CWOP_SERVER,
+    CONF_DISTANCE_UNIT,
     CONF_ELEVATION_M,
     CONF_ENABLE_ADVANCED_SENSORS,
     # v0.7.0
@@ -89,12 +92,14 @@ from .const import (
     CONF_OWM_STATIONS_STATION_ID,
     CONF_PREFIX,
     CONF_PRESSURE_TREND_WINDOW_H,
+    CONF_PRESSURE_UNIT,
     CONF_PWS_API_KEY,
     CONF_PWS_INTERVAL_MIN,
     CONF_PWS_STATION_ID,
     CONF_RAIN_FILTER_ALPHA,
     CONF_RAIN_PENALTY_HEAVY_MMPH,
     CONF_RAIN_PENALTY_LIGHT_MMPH,
+    CONF_RAIN_UNIT,
     CONF_SEA_TEMP_LAT,
     CONF_SEA_TEMP_LON,
     CONF_SOLAR_INTERVAL_MIN,
@@ -113,6 +118,7 @@ from .const import (
     CONF_WC_API_KEY,
     CONF_WC_INTERVAL_MIN,
     CONF_WC_STATION_ID,
+    CONF_WIND_UNIT,
     CONF_WINDY_API_KEY,
     CONF_WINDY_INTERVAL_MIN,
     CONF_WINDY_STATION_ID,
@@ -123,6 +129,7 @@ from .const import (
     CONF_WU_INTERVAL_MIN,
     CONF_WU_STATION_ID,
     CONFIG_VERSION,
+    DEFAULT_ALTITUDE_UNIT,
     DEFAULT_AQI_INTERVAL_MIN,
     DEFAULT_AWEKAS_INTERVAL_MIN,
     DEFAULT_CAL_HUMIDITY,
@@ -133,6 +140,7 @@ from .const import (
     DEFAULT_CWOP_INTERVAL_MIN,
     DEFAULT_CWOP_PORT,
     DEFAULT_CWOP_SERVER,
+    DEFAULT_DISTANCE_UNIT,
     DEFAULT_ELEVATION_M,
     DEFAULT_ENABLE_ADVANCED_SENSORS,
     DEFAULT_ENABLE_AIR_QUALITY,
@@ -174,10 +182,12 @@ from .const import (
     DEFAULT_OWM_STATIONS_INTERVAL_MIN,
     DEFAULT_PREFIX,
     DEFAULT_PRESSURE_TREND_WINDOW_H,
+    DEFAULT_PRESSURE_UNIT,
     DEFAULT_PWS_INTERVAL_MIN,
     DEFAULT_RAIN_FILTER_ALPHA,
     DEFAULT_RAIN_PENALTY_HEAVY_MMPH,
     DEFAULT_RAIN_PENALTY_LIGHT_MMPH,
+    DEFAULT_RAIN_UNIT,
     DEFAULT_SOLAR_INTERVAL_MIN,
     DEFAULT_SOLAR_PANEL_AZIMUTH,
     DEFAULT_SOLAR_PANEL_TILT,
@@ -189,9 +199,11 @@ from .const import (
     DEFAULT_THRESH_WIND_GUST_MS,
     DEFAULT_UNITS_MODE,
     DEFAULT_WC_INTERVAL_MIN,
+    DEFAULT_WIND_UNIT,
     DEFAULT_WINDY_INTERVAL_MIN,
     DEFAULT_WOW_INTERVAL_MIN,
     DEFAULT_WU_INTERVAL_MIN,
+    DISTANCE_UNIT_OPTIONS,
     DOMAIN,
     FORECAST_PROVIDER_HA_ENTITY,
     FORECAST_PROVIDER_MET_NO,
@@ -202,8 +214,10 @@ from .const import (
     FORECAST_PROVIDER_PIRATE,
     HEMISPHERE_OPTIONS,
     OPTIONAL_SOURCES,
+    PRESSURE_UNIT_OPTIONS,
     PROVIDERS_REQUIRING_API_KEY,
     PROVIDERS_REQUIRING_ENTITY,
+    RAIN_UNIT_OPTIONS,
     REQUIRED_SOURCES,
     SRC_BATTERY,
     SRC_DEW_POINT,
@@ -222,6 +236,7 @@ from .const import (
     VALID_TEMP_MAX_C,
     VALID_TEMP_MIN_C,
     VALID_WIND_GUST_MAX_MS,
+    WIND_UNIT_OPTIONS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -441,20 +456,23 @@ def _is_imperial(units_mode: str, hass: HomeAssistant) -> bool:
         return False
 
 
-def _convert_gust_to_display(ms: float, imperial: bool) -> float:
-    return ms / 0.44704 if imperial else ms
+_GUST_UNIT_FACTORS: dict[str, float] = {"m/s": 1.0, "km/h": 3.6, "mph": 2.23694, "kn": 1.94384}
 
 
-def _convert_gust_to_ms(val: float, imperial: bool) -> float:
-    return val * 0.44704 if imperial else val
+def _convert_gust_to_display(ms: float, wind_unit: str) -> float:
+    return ms * _GUST_UNIT_FACTORS.get(wind_unit, 1.0)
 
 
-def _convert_rain_to_display(mmph: float, imperial: bool) -> float:
-    return mmph / 25.4 if imperial else mmph
+def _convert_gust_to_ms(val: float, wind_unit: str) -> float:
+    return val / _GUST_UNIT_FACTORS.get(wind_unit, 1.0)
 
 
-def _convert_rain_to_mmph(val: float, imperial: bool) -> float:
-    return val * 25.4 if imperial else val
+def _convert_rain_to_display(mmph: float, rain_unit: str) -> float:
+    return mmph / 25.4 if rain_unit == "in" else mmph
+
+
+def _convert_rain_to_mmph(val: float, rain_unit: str) -> float:
+    return val * 25.4 if rain_unit == "in" else val
 
 
 def _convert_temp_to_display(c: float, imperial: bool) -> float:
@@ -710,6 +728,11 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return back
             self._data[CONF_UNITS_MODE] = user_input[CONF_UNITS_MODE]
             self._data[CONF_TEMP_UNIT] = user_input[CONF_TEMP_UNIT]
+            self._data[CONF_WIND_UNIT] = user_input[CONF_WIND_UNIT]
+            self._data[CONF_PRESSURE_UNIT] = user_input[CONF_PRESSURE_UNIT]
+            self._data[CONF_RAIN_UNIT] = user_input[CONF_RAIN_UNIT]
+            self._data[CONF_DISTANCE_UNIT] = user_input[CONF_DISTANCE_UNIT]
+            self._data[CONF_ALTITUDE_UNIT] = user_input[CONF_ALTITUDE_UNIT]
             return await self.async_step_forecast()
 
         # Guess sensible defaults from HA unit system
@@ -741,6 +764,21 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                             ],
                             mode="list",
                         )
+                    ),
+                    vol.Required(CONF_WIND_UNIT, default=DEFAULT_WIND_UNIT): selector.SelectSelector(
+                        selector.SelectSelectorConfig(options=WIND_UNIT_OPTIONS, mode="list")
+                    ),
+                    vol.Required(CONF_PRESSURE_UNIT, default=DEFAULT_PRESSURE_UNIT): selector.SelectSelector(
+                        selector.SelectSelectorConfig(options=PRESSURE_UNIT_OPTIONS, mode="list")
+                    ),
+                    vol.Required(CONF_RAIN_UNIT, default=DEFAULT_RAIN_UNIT): selector.SelectSelector(
+                        selector.SelectSelectorConfig(options=RAIN_UNIT_OPTIONS, mode="list")
+                    ),
+                    vol.Required(CONF_DISTANCE_UNIT, default=DEFAULT_DISTANCE_UNIT): selector.SelectSelector(
+                        selector.SelectSelectorConfig(options=DISTANCE_UNIT_OPTIONS, mode="list")
+                    ),
+                    vol.Required(CONF_ALTITUDE_UNIT, default=DEFAULT_ALTITUDE_UNIT): selector.SelectSelector(
+                        selector.SelectSelectorConfig(options=ALTITUDE_UNIT_OPTIONS, mode="list")
                     ),
                 }
             ),
@@ -1698,23 +1736,29 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_alerts(self, user_input: dict[str, Any] | None = None):
         units_mode = str(self._data.get(CONF_UNITS_MODE, DEFAULT_UNITS_MODE))
         imperial = _is_imperial(units_mode, self.hass)
-        gust_u = "mph" if imperial else "m/s"
-        rain_u = "in/h" if imperial else "mm/h"
-        temp_u = "°F" if imperial else "°C"
+        wind_unit_conf = str(self._data.get(CONF_WIND_UNIT, DEFAULT_WIND_UNIT))
+        rain_unit_conf = str(self._data.get(CONF_RAIN_UNIT, DEFAULT_RAIN_UNIT))
+        temp_unit_conf = str(self._data.get(CONF_TEMP_UNIT, DEFAULT_TEMP_UNIT))
+        gust_u = wind_unit_conf if wind_unit_conf != "auto" else ("mph" if imperial else "m/s")
+        rain_meas = rain_unit_conf if rain_unit_conf != "auto" else ("in" if imperial else "mm")
+        rain_u = "in/h" if rain_meas == "in" else "mm/h"
+        temp_u = ("°F" if temp_unit_conf == "F" else "°C") if temp_unit_conf != "auto" else ("°F" if imperial else "°C")
 
         if user_input is not None:
             back = await self._handle_back(user_input)
             if back:
                 return back
-            errors = self._validate_alert_inputs(user_input, imperial)
+            errors = self._validate_alert_inputs(user_input, gust_u, temp_u)
             if not errors:
                 self._data[CONF_THRESH_WIND_GUST_MS] = _convert_gust_to_ms(
-                    float(user_input[CONF_THRESH_WIND_GUST_MS]), imperial
+                    float(user_input[CONF_THRESH_WIND_GUST_MS]), gust_u
                 )
                 self._data[CONF_THRESH_RAIN_RATE_MMPH] = _convert_rain_to_mmph(
-                    float(user_input[CONF_THRESH_RAIN_RATE_MMPH]), imperial
+                    float(user_input[CONF_THRESH_RAIN_RATE_MMPH]), rain_meas
                 )
-                self._data[CONF_THRESH_FREEZE_C] = _convert_temp_to_c(float(user_input[CONF_THRESH_FREEZE_C]), imperial)
+                self._data[CONF_THRESH_FREEZE_C] = _convert_temp_to_c(
+                    float(user_input[CONF_THRESH_FREEZE_C]), temp_u == "°F"
+                )
                 self._data[CONF_RAIN_FILTER_ALPHA] = float(user_input[CONF_RAIN_FILTER_ALPHA])
                 self._data[CONF_PRESSURE_TREND_WINDOW_H] = int(user_input[CONF_PRESSURE_TREND_WINDOW_H])
                 self._data[CONF_STALENESS_S] = int(user_input[CONF_STALENESS_S])
@@ -1722,7 +1766,7 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 title = self._data.get(CONF_NAME, DEFAULT_NAME)
                 return self.async_create_entry(title=title, data=self._data)
 
-        gust_max = round(_convert_gust_to_display(VALID_WIND_GUST_MAX_MS, imperial), 1)
+        gust_max = round(_convert_gust_to_display(VALID_WIND_GUST_MAX_MS, gust_u), 1)
 
         return self._show_step(
             step_id="alerts",
@@ -1730,7 +1774,7 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Optional(
                         CONF_THRESH_WIND_GUST_MS,
-                        default=round(_convert_gust_to_display(DEFAULT_THRESH_WIND_GUST_MS, imperial), 1),
+                        default=round(_convert_gust_to_display(DEFAULT_THRESH_WIND_GUST_MS, gust_u), 1),
                     ): selector.NumberSelector(
                         selector.NumberSelectorConfig(
                             min=0,
@@ -1742,17 +1786,17 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     ),
                     vol.Optional(
                         CONF_THRESH_RAIN_RATE_MMPH,
-                        default=round(_convert_rain_to_display(DEFAULT_THRESH_RAIN_RATE_MMPH, imperial), 2),
+                        default=round(_convert_rain_to_display(DEFAULT_THRESH_RAIN_RATE_MMPH, rain_meas), 2),
                     ): selector.NumberSelector(
                         selector.NumberSelectorConfig(min=0, max=200, step=0.5, mode="box", unit_of_measurement=rain_u)
                     ),
                     vol.Optional(
                         CONF_THRESH_FREEZE_C,
-                        default=round(_convert_temp_to_display(DEFAULT_THRESH_FREEZE_C, imperial), 1),
+                        default=round(_convert_temp_to_display(DEFAULT_THRESH_FREEZE_C, temp_u == "°F"), 1),
                     ): selector.NumberSelector(
                         selector.NumberSelectorConfig(
-                            min=round(_convert_temp_to_display(-30.0, imperial), 1),
-                            max=round(_convert_temp_to_display(10.0, imperial), 1),
+                            min=round(_convert_temp_to_display(-30.0, temp_u == "°F"), 1),
+                            max=round(_convert_temp_to_display(10.0, temp_u == "°F"), 1),
                             step=0.5,
                             mode="box",
                             unit_of_measurement=temp_u,
@@ -1775,12 +1819,12 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     @staticmethod
-    def _validate_alert_inputs(user_input: dict, imperial: bool) -> dict[str, str]:
+    def _validate_alert_inputs(user_input: dict, gust_u: str, temp_u: str) -> dict[str, str]:
         errors: dict[str, str] = {}
-        gust_ms = _convert_gust_to_ms(float(user_input.get(CONF_THRESH_WIND_GUST_MS, 0)), imperial)
+        gust_ms = _convert_gust_to_ms(float(user_input.get(CONF_THRESH_WIND_GUST_MS, 0)), gust_u)
         if gust_ms > VALID_WIND_GUST_MAX_MS:
             errors[CONF_THRESH_WIND_GUST_MS] = "wind_gust_too_high"
-        freeze_c = _convert_temp_to_c(float(user_input.get(CONF_THRESH_FREEZE_C, 0)), imperial)
+        freeze_c = _convert_temp_to_c(float(user_input.get(CONF_THRESH_FREEZE_C, 0)), temp_u == "°F")
         if not (VALID_TEMP_MIN_C <= freeze_c <= VALID_TEMP_MAX_C):
             errors[CONF_THRESH_FREEZE_C] = "temp_out_of_range"
         return errors
@@ -1803,9 +1847,13 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
     async def async_step_init(self, user_input: dict[str, Any] | None = None):
         units_mode = str(self._get(CONF_UNITS_MODE, DEFAULT_UNITS_MODE))
         imperial = _is_imperial(units_mode, self.hass)
-        gust_u = "mph" if imperial else "m/s"
-        rain_u = "in/h" if imperial else "mm/h"
-        temp_u = "°F" if imperial else "°C"
+        wind_unit_conf = str(self._get(CONF_WIND_UNIT, DEFAULT_WIND_UNIT))
+        rain_unit_conf = str(self._get(CONF_RAIN_UNIT, DEFAULT_RAIN_UNIT))
+        temp_unit_conf = str(self._get(CONF_TEMP_UNIT, DEFAULT_TEMP_UNIT))
+        gust_u = wind_unit_conf if wind_unit_conf != "auto" else ("mph" if imperial else "m/s")
+        rain_meas = rain_unit_conf if rain_unit_conf != "auto" else ("in" if imperial else "mm")
+        rain_u = "in/h" if rain_meas == "in" else "mm/h"
+        temp_u = ("°F" if temp_unit_conf == "F" else "°C") if temp_unit_conf != "auto" else ("°F" if imperial else "°C")
 
         if user_input is not None:
             out = dict(user_input)
@@ -1816,7 +1864,7 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                 if not (VALID_ELEVATION_MIN_M <= elev <= VALID_ELEVATION_MAX_M):
                     return self.async_show_form(
                         step_id="init",
-                        data_schema=self._build_core_schema(imperial, gust_u, rain_u, temp_u),
+                        data_schema=self._build_core_schema(imperial, gust_u, rain_u, temp_u, rain_meas),
                         errors={CONF_ELEVATION_M: "elevation_out_of_range"},
                         last_step=False,
                     )
@@ -1824,19 +1872,19 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                 pass
             # Convert thresholds to canonical metric
             out[CONF_THRESH_WIND_GUST_MS] = _convert_gust_to_ms(
-                float(out.get(CONF_THRESH_WIND_GUST_MS, DEFAULT_THRESH_WIND_GUST_MS)), imperial
+                float(out.get(CONF_THRESH_WIND_GUST_MS, DEFAULT_THRESH_WIND_GUST_MS)), gust_u
             )
             out[CONF_THRESH_RAIN_RATE_MMPH] = _convert_rain_to_mmph(
-                float(out.get(CONF_THRESH_RAIN_RATE_MMPH, DEFAULT_THRESH_RAIN_RATE_MMPH)), imperial
+                float(out.get(CONF_THRESH_RAIN_RATE_MMPH, DEFAULT_THRESH_RAIN_RATE_MMPH)), rain_meas
             )
             out[CONF_THRESH_FREEZE_C] = _convert_temp_to_c(
-                float(out.get(CONF_THRESH_FREEZE_C, DEFAULT_THRESH_FREEZE_C)), imperial
+                float(out.get(CONF_THRESH_FREEZE_C, DEFAULT_THRESH_FREEZE_C)), temp_u == "°F"
             )
             out[CONF_RAIN_PENALTY_LIGHT_MMPH] = _convert_rain_to_mmph(
-                float(out.get(CONF_RAIN_PENALTY_LIGHT_MMPH, DEFAULT_RAIN_PENALTY_LIGHT_MMPH)), imperial
+                float(out.get(CONF_RAIN_PENALTY_LIGHT_MMPH, DEFAULT_RAIN_PENALTY_LIGHT_MMPH)), rain_meas
             )
             out[CONF_RAIN_PENALTY_HEAVY_MMPH] = _convert_rain_to_mmph(
-                float(out.get(CONF_RAIN_PENALTY_HEAVY_MMPH, DEFAULT_RAIN_PENALTY_HEAVY_MMPH)), imperial
+                float(out.get(CONF_RAIN_PENALTY_HEAVY_MMPH, DEFAULT_RAIN_PENALTY_HEAVY_MMPH)), rain_meas
             )
             # Merge into options - source mapping step comes next.
             self._opt: dict[str, Any] = out
@@ -1844,7 +1892,7 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
 
         return self.async_show_form(
             step_id="init",
-            data_schema=self._build_core_schema(imperial, gust_u, rain_u, temp_u),
+            data_schema=self._build_core_schema(imperial, gust_u, rain_u, temp_u, rain_meas),
             last_step=False,
         )
 
@@ -1915,7 +1963,9 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
             last_step=False,
         )
 
-    def _build_core_schema(self, imperial: bool, gust_u: str, rain_u: str, temp_u: str) -> vol.Schema:
+    def _build_core_schema(
+        self, imperial: bool, gust_u: str, rain_u: str, temp_u: str, rain_meas: str = "mm"
+    ) -> vol.Schema:
         g = self._get
         default_lat = getattr(self.hass.config, "latitude", 0.0) or 0.0
         default_lon = getattr(self.hass.config, "longitude", 0.0) or 0.0
@@ -1959,6 +2009,21 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                         mode="list",
                     )
                 ),
+                vol.Optional(CONF_WIND_UNIT, default=g(CONF_WIND_UNIT, DEFAULT_WIND_UNIT)): selector.SelectSelector(
+                    selector.SelectSelectorConfig(options=WIND_UNIT_OPTIONS, mode="list")
+                ),
+                vol.Optional(
+                    CONF_PRESSURE_UNIT, default=g(CONF_PRESSURE_UNIT, DEFAULT_PRESSURE_UNIT)
+                ): selector.SelectSelector(selector.SelectSelectorConfig(options=PRESSURE_UNIT_OPTIONS, mode="list")),
+                vol.Optional(CONF_RAIN_UNIT, default=g(CONF_RAIN_UNIT, DEFAULT_RAIN_UNIT)): selector.SelectSelector(
+                    selector.SelectSelectorConfig(options=RAIN_UNIT_OPTIONS, mode="list")
+                ),
+                vol.Optional(
+                    CONF_DISTANCE_UNIT, default=g(CONF_DISTANCE_UNIT, DEFAULT_DISTANCE_UNIT)
+                ): selector.SelectSelector(selector.SelectSelectorConfig(options=DISTANCE_UNIT_OPTIONS, mode="list")),
+                vol.Optional(
+                    CONF_ALTITUDE_UNIT, default=g(CONF_ALTITUDE_UNIT, DEFAULT_ALTITUDE_UNIT)
+                ): selector.SelectSelector(selector.SelectSelectorConfig(options=ALTITUDE_UNIT_OPTIONS, mode="list")),
                 vol.Optional(
                     CONF_FORECAST_ENABLED, default=g(CONF_FORECAST_ENABLED, DEFAULT_FORECAST_ENABLED)
                 ): selector.BooleanSelector(),
@@ -2000,12 +2065,12 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                     description={"suggested_value": g(CONF_FORECAST_ENTITY, "") or None},
                 ): selector.EntitySelector(selector.EntitySelectorConfig(domain="weather")),
                 vol.Optional(
-                    CONF_THRESH_WIND_GUST_MS, default=round(_convert_gust_to_display(cur_gust_ms, imperial), 1)
+                    CONF_THRESH_WIND_GUST_MS, default=round(_convert_gust_to_display(cur_gust_ms, gust_u), 1)
                 ): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=0, max=120, step=0.1, mode="box", unit_of_measurement=gust_u)
                 ),
                 vol.Optional(
-                    CONF_THRESH_RAIN_RATE_MMPH, default=round(_convert_rain_to_display(cur_rain_mmph, imperial), 2)
+                    CONF_THRESH_RAIN_RATE_MMPH, default=round(_convert_rain_to_display(cur_rain_mmph, rain_meas), 2)
                 ): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=0, max=200, step=0.5, mode="box", unit_of_measurement=rain_u)
                 ),

@@ -12,6 +12,11 @@ CONF_PREFIX = "prefix"
 CONF_SOURCES = "sources"
 CONF_UNITS_MODE = "units_mode"  # auto | metric | imperial
 CONF_TEMP_UNIT = "temp_unit"  # auto | C | F
+CONF_WIND_UNIT = "wind_unit"  # auto | m/s | km/h | mph | kn
+CONF_PRESSURE_UNIT = "pressure_unit"  # auto | hPa | inHg | mmHg
+CONF_RAIN_UNIT = "rain_unit"  # auto | mm | in
+CONF_DISTANCE_UNIT = "distance_unit"  # auto | km | mi
+CONF_ALTITUDE_UNIT = "altitude_unit"  # auto | m | ft
 CONF_ELEVATION_M = "elevation_m"
 CONF_HEMISPHERE = "hemisphere"  # Northern | Southern
 CONF_CLIMATE_REGION = "climate_region"  # for Zambretti wind pattern
@@ -70,6 +75,11 @@ DEFAULT_NAME = "Weather Station"
 DEFAULT_PREFIX = "ws"
 DEFAULT_UNITS_MODE = "auto"
 DEFAULT_TEMP_UNIT = "auto"
+DEFAULT_WIND_UNIT = "auto"
+DEFAULT_PRESSURE_UNIT = "auto"
+DEFAULT_RAIN_UNIT = "auto"
+DEFAULT_DISTANCE_UNIT = "auto"
+DEFAULT_ALTITUDE_UNIT = "auto"
 DEFAULT_ELEVATION_M = 0.0
 DEFAULT_HEMISPHERE = "Northern"
 DEFAULT_CLIMATE_REGION = "Atlantic Europe"
@@ -115,6 +125,11 @@ CLIMATE_REGION_OPTIONS = [
 
 UNITS_MODE_OPTIONS = ["auto", "metric", "imperial"]
 TEMP_UNIT_OPTIONS = ["auto", "C", "F"]
+WIND_UNIT_OPTIONS = ["auto", "m/s", "km/h", "mph", "kn"]
+PRESSURE_UNIT_OPTIONS = ["auto", "hPa", "inHg", "mmHg"]
+RAIN_UNIT_OPTIONS = ["auto", "mm", "in"]
+DISTANCE_UNIT_OPTIONS = ["auto", "km", "mi"]
+ALTITUDE_UNIT_OPTIONS = ["auto", "m", "ft"]
 
 # ---------------------------------------------------------------------------
 # Physical validation limits (WMO / ICAO records)

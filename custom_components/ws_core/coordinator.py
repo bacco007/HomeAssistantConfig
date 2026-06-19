@@ -118,6 +118,7 @@ from .algorithms import (
 from .const import (
     ALERT_DEBOUNCE_OFF_TICKS,
     ALERT_DEBOUNCE_ON_TICKS,
+    CONF_ALTITUDE_UNIT,
     CONF_AQI_INTERVAL_MIN,
     CONF_AWEKAS_INTERVAL_MIN,
     CONF_AWEKAS_PASSWORD,
@@ -132,6 +133,7 @@ from .const import (
     CONF_CWOP_PASSCODE,
     CONF_CWOP_PORT,
     CONF_CWOP_SERVER,
+    CONF_DISTANCE_UNIT,
     CONF_ELEVATION_M,
     CONF_ENABLE_AIR_QUALITY,
     CONF_ENABLE_AWEKAS,
@@ -182,10 +184,12 @@ from .const import (
     CONF_OWM_STATIONS_STATION_ID,
     # Tuning numbers (previously no-op, now wired)
     CONF_PRESSURE_TREND_WINDOW_H,
+    CONF_PRESSURE_UNIT,
     CONF_PWS_API_KEY,
     CONF_PWS_INTERVAL_MIN,
     CONF_PWS_STATION_ID,
     CONF_RAIN_FILTER_ALPHA,
+    CONF_RAIN_UNIT,
     CONF_SEA_TEMP_LAT,
     CONF_SEA_TEMP_LON,
     CONF_SOLAR_INTERVAL_MIN,
@@ -207,6 +211,7 @@ from .const import (
     CONF_WC_API_KEY,
     CONF_WC_INTERVAL_MIN,
     CONF_WC_STATION_ID,
+    CONF_WIND_UNIT,
     CONF_WINDY_API_KEY,
     CONF_WINDY_INTERVAL_MIN,
     CONF_WINDY_STATION_ID,
@@ -216,6 +221,7 @@ from .const import (
     CONF_WU_API_KEY,
     CONF_WU_INTERVAL_MIN,
     CONF_WU_STATION_ID,
+    DEFAULT_ALTITUDE_UNIT,
     DEFAULT_AQI_INTERVAL_MIN,
     DEFAULT_AWEKAS_INTERVAL_MIN,
     DEFAULT_CDD_BASE_C,
@@ -226,6 +232,7 @@ from .const import (
     DEFAULT_CWOP_INTERVAL_MIN,
     DEFAULT_CWOP_PORT,
     DEFAULT_CWOP_SERVER,
+    DEFAULT_DISTANCE_UNIT,
     DEFAULT_ENABLE_AIR_QUALITY,
     DEFAULT_ENABLE_AWEKAS,
     DEFAULT_ENABLE_COMFORT_INDICES,
@@ -263,8 +270,10 @@ from .const import (
     DEFAULT_NOWCAST_INTERVAL_MIN,
     DEFAULT_OWM_STATIONS_INTERVAL_MIN,
     DEFAULT_PRESSURE_TREND_WINDOW_H,
+    DEFAULT_PRESSURE_UNIT,
     DEFAULT_PWS_INTERVAL_MIN,
     DEFAULT_RAIN_FILTER_ALPHA,
+    DEFAULT_RAIN_UNIT,
     DEFAULT_SOLAR_INTERVAL_MIN,
     DEFAULT_SOLAR_PANEL_AZIMUTH,
     DEFAULT_SOLAR_PANEL_TILT,
@@ -276,6 +285,7 @@ from .const import (
     DEFAULT_THRESH_RAIN_RATE_MMPH,
     DEFAULT_THRESH_WIND_GUST_MS,
     DEFAULT_WC_INTERVAL_MIN,
+    DEFAULT_WIND_UNIT,
     DEFAULT_WINDY_INTERVAL_MIN,
     DEFAULT_WOW_INTERVAL_MIN,
     DEFAULT_WU_INTERVAL_MIN,
@@ -613,6 +623,11 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             return self.entry_options.get(key, entry_data.get(key, default))
 
         self.units_mode = str(_get(CONF_UNITS_MODE, "auto"))
+        self._wind_unit_conf = str(_get(CONF_WIND_UNIT, DEFAULT_WIND_UNIT))
+        self._pressure_unit_conf = str(_get(CONF_PRESSURE_UNIT, DEFAULT_PRESSURE_UNIT))
+        self._rain_unit_conf = str(_get(CONF_RAIN_UNIT, DEFAULT_RAIN_UNIT))
+        self._distance_unit_conf = str(_get(CONF_DISTANCE_UNIT, DEFAULT_DISTANCE_UNIT))
+        self._altitude_unit_conf = str(_get(CONF_ALTITUDE_UNIT, DEFAULT_ALTITUDE_UNIT))
         self.elevation_m = float(_get(CONF_ELEVATION_M, 0.0))
         self.hemisphere = str(_get(CONF_HEMISPHERE, DEFAULT_HEMISPHERE))
         self.climate_region = str(_get(CONF_CLIMATE_REGION, DEFAULT_CLIMATE_REGION))
@@ -960,6 +975,46 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         """Entity ID of the HA weather.* entity used as forecast provider."""
         opts = {**self.config_entry.data, **self.config_entry.options}
         return opts.get(CONF_FORECAST_ENTITY) or None
+
+    def _is_imperial(self) -> bool:
+        m = (self.units_mode or "auto").lower()
+        if m == "imperial":
+            return True
+        if m == "metric":
+            return False
+        try:
+            return not self.hass.config.units.is_metric
+        except Exception:
+            return False
+
+    def _resolve_unit(self, conf_val: str, metric_unit: str, imperial_unit: str) -> str:
+        if conf_val != "auto":
+            return conf_val
+        return imperial_unit if self._is_imperial() else metric_unit
+
+    @property
+    def wind_unit(self) -> str:
+        return self._resolve_unit(self._wind_unit_conf, "m/s", "mph")
+
+    @property
+    def pressure_unit(self) -> str:
+        return self._resolve_unit(self._pressure_unit_conf, "hPa", "inHg")
+
+    @property
+    def rain_unit(self) -> str:
+        return self._resolve_unit(self._rain_unit_conf, "mm", "in")
+
+    @property
+    def rain_rate_unit(self) -> str:
+        return "in/h" if self.rain_unit == "in" else "mm/h"
+
+    @property
+    def distance_unit(self) -> str:
+        return self._resolve_unit(self._distance_unit_conf, "km", "mi")
+
+    @property
+    def altitude_unit(self) -> str:
+        return self._resolve_unit(self._altitude_unit_conf, "m", "ft")
 
     # ------------------------------------------------------------------
     # Lifecycle
