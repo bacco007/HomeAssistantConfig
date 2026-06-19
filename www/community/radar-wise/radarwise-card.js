@@ -3,7 +3,7 @@
  * Home Assistant weather dashboard card with forecasts and optional radar.
  */
 
-const CARD_VERSION = "0.8.3";
+const CARD_VERSION = "0.8.5";
 const FORECAST_REFRESH_MS = 15 * 60 * 1000;
 const ENVIRONMENT_REFRESH_MS = 60 * 60 * 1000;
 const CARD_TYPES = ["radarwise-card", "radar-wise-card", "weatherwise-card", "weather-wise-card"];
@@ -98,7 +98,8 @@ const RADARWISE_LANGUAGES = {
   fr: "Français",
   es: "Español",
   de: "Deutsch",
-  pt: "Português"
+  pt: "Português",
+  nl: "Nederlands"
 };
 
 const RADARWISE_TEXT = {
@@ -501,6 +502,86 @@ const RADARWISE_TEXT = {
       "windy variant": "ventoso com nuvens",
       unavailable: "indisponível"
     }
+  },
+  nl: {
+    am: "AM",
+    pm: "PM",
+    currentWeather: "Huidig weer",
+    selectWeatherEntity: "Selecteer een weerentiteit",
+    connectWeather: "Koppel weer in Home Assistant",
+    openEditor: "Open de kaarteditor om de instelling te voltooien",
+    waitingLive: "Wachten op live weergegevens",
+    updated: "Bijgewerkt",
+    forecast: "Verwachting",
+    daily: "Dagelijks",
+    hourly: "Per uur",
+    dayPeriod: "Dag",
+    nightPeriod: "Nacht",
+    humidity: "Luchtvochtigheid",
+    dewPoint: "Dauwpunt",
+    airQuality: "Luchtkwaliteit",
+    uvIndex: "UV-index",
+    pollen: "Pollen",
+    treePollen: "Boompollen",
+    grassPollen: "Graspollen",
+    weedPollen: "Onkruidpollen",
+    moldPollen: "Schimmel",
+    good: "Goed",
+    low: "Laag",
+    moderate: "Matig",
+    high: "Hoog",
+    veryHigh: "Zeer hoog",
+    unhealthySensitive: "Ongezond voor gevoelige groepen",
+    unhealthy: "Ongezond",
+    veryUnhealthy: "Zeer ongezond",
+    hazardous: "Gevaarlijk",
+    extreme: "Extreem",
+    wind: "Wind",
+    sunrise: "Zonsopkomst",
+    sunset: "Zonsondergang",
+    waitingForecast: "Wachten op verwachtingsgegevens van Home Assistant.",
+    relativeTemp: "Relatieve temperatuur binnen de zichtbare verwachtingsregels",
+    radarLoading: "Radar laden...",
+    radarUnavailable: "Radar niet beschikbaar",
+    radarWaiting: "Radar wacht op dashboardindeling",
+    rainviewerUnavailable: "RainViewer-radar niet beschikbaar",
+    currentRadar: "huidige radar",
+    radarLoop: "radarlus",
+    futureRadar: "toekomstige radar",
+    previousRadarFrame: "Vorig radarbeeld",
+    nextRadarFrame: "Volgend radarbeeld",
+    pauseRadarLoop: "Radarlus pauzeren",
+    playRadarLoop: "Radarlus afspelen",
+    weatherAlert: "Weerwaarschuwing",
+    activeWeatherAlert: "actieve weerwaarschuwing",
+    nwsAlertTap: "NWS-waarschuwing - tik voor details",
+    nwsAlertsTap: "NWS-waarschuwingen - tik voor details",
+    severity: "Ernst",
+    unknown: "Onbekend",
+    forecastIntro: "Verwachting",
+    currently: "momenteel",
+    withHigh: "met een maximum rond {temp}",
+    chancePrecip: "en {chance}% kans op neerslag",
+    tonight: "Vanavond wordt het {condition}",
+    withLow: "met een minimum rond {temp}",
+    tomorrow: "Morgen wordt het {condition}",
+    nearTemp: "rond {temp}",
+    conditions: {
+      sunny: "zonnig",
+      "clear night": "helder",
+      "partly cloudy": "gedeeltelijk bewolkt",
+      cloudy: "bewolkt",
+      rainy: "regenachtig",
+      pouring: "zware regen",
+      lightning: "kans op onweer",
+      "lightning rainy": "kans op onweer",
+      snowy: "sneeuw",
+      "snowy rainy": "winterse neerslag",
+      fog: "mistig",
+      windy: "winderig",
+      "windy variant": "winderig met bewolking",
+      unavailable: "niet beschikbaar"
+    }
   }
 };
 
@@ -624,6 +705,7 @@ class RadarWiseCard extends HTMLElement {
       show_forecast: true,
       show_forecast_summary: true,
       show_environment: true,
+      show_custom_sensors: true,
       show_radar: true,
       show_map_controls: true,
       radar_controls: true,
@@ -635,6 +717,7 @@ class RadarWiseCard extends HTMLElement {
       panel_order: ["clock", "weather", "radar"],
       column_widths: [25, 50, 25],
       timeline_autoscroll: false,
+      custom_sensors: [],
       stack_below: 0,
       latitude: 33.688,
       longitude: -78.886,
@@ -1010,6 +1093,7 @@ class RadarWiseCard extends HTMLElement {
       show_forecast: true,
       show_forecast_summary: true,
       show_environment: true,
+      show_custom_sensors: true,
       show_radar: true,
       show_map_controls: true,
       radar_controls: true,
@@ -1066,8 +1150,25 @@ class RadarWiseCard extends HTMLElement {
       })(),
       timeline_autoscroll: config.timeline_autoscroll === true,
       stack_below: Math.max(0, Math.round(Number(config.stack_below) || 0)),
-      radar_speed: Math.max(300, Math.min(3000, Number(config.radar_speed) || 700))
+      radar_speed: Math.max(300, Math.min(3000, Number(config.radar_speed) || 700)),
+      custom_sensors: this._normalizeCustomSensors(config.custom_sensors),
+      show_custom_sensors: config.show_custom_sensors !== false
     };
+  }
+
+  _normalizeCustomSensors(value) {
+    if (!Array.isArray(value)) return [];
+    return value.slice(0, 6).map((item) => {
+      if (!item || typeof item !== "object") return null;
+      const entity = String(item.entity || "").trim();
+      if (!entity) return null;
+      return {
+        entity,
+        name: String(item.name || item.label || "").trim(),
+        icon: String(item.icon || "").trim(),
+        unit: String(item.unit || item.unit_of_measurement || "").trim()
+      };
+    }).filter(Boolean);
   }
 
   _renderKey() {
@@ -1086,6 +1187,19 @@ class RadarWiseCard extends HTMLElement {
       weedPollenEntity: this._config.weed_pollen_entity,
       moldPollenEntity: this._config.mold_pollen_entity,
       environmentSource: this._config.environment_source,
+      customSensors: (this._config.custom_sensors || []).map((sensor) => {
+        const state = this._hass?.states?.[sensor.entity];
+        return [
+          sensor.entity,
+          sensor.name,
+          sensor.icon,
+          sensor.unit,
+          state?.state,
+          state?.attributes?.friendly_name,
+          state?.attributes?.unit_of_measurement,
+          state?.attributes?.icon
+        ].join(":");
+      }).join("|"),
       environmentData: this._environmentData ? {
         loaded: this._environmentData.loaded,
         error: this._environmentData.error,
@@ -1136,6 +1250,7 @@ class RadarWiseCard extends HTMLElement {
         this._config.show_forecast,
         this._config.show_forecast_summary,
         this._config.show_environment,
+        this._config.show_custom_sensors,
         this._config.radar_controls,
         this._config.show_warning_overlay,
         this._config.hourly_count,
@@ -1379,6 +1494,7 @@ class RadarWiseCard extends HTMLElement {
                     ${this._stat("sunrise", text.sunrise, this._shortTime(sun.next_rising))}
                     ${this._stat("sunset", text.sunset, this._shortTime(sun.next_setting))}
                   </div>
+                  ${this._renderCustomSensors()}
                 ` : ""}
               </section>
             ` : ""}
@@ -1764,6 +1880,52 @@ class RadarWiseCard extends HTMLElement {
       sunset: `<svg viewBox="0 0 24 24" fill="none"><path d="M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 15a5 5 0 0 1 10 0" fill="#f59e0b"/><path d="M12 8V4M5 11l3 1M19 11l-3 1" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/></svg>`
     };
     return `<div class="stat"><div class="stat-ico" aria-hidden="true">${icons[kind]}</div><div><div class="stat-lbl">${label}</div><div class="stat-val">${_wwEscape(value || "--")}</div></div></div>`;
+  }
+
+  _renderCustomSensors() {
+    const sensors = Array.isArray(this._config.custom_sensors) ? this._config.custom_sensors : [];
+    if (this._config.show_custom_sensors === false || !sensors.length) return "";
+    const tiles = sensors.map((sensor) => this._customSensorTile(sensor)).filter(Boolean).join("");
+    return tiles ? `<div class="custom-sensors-row">${tiles}</div>` : "";
+  }
+
+  _customSensorTile(sensor) {
+    const entityId = String(sensor?.entity || "").trim();
+    if (!entityId) return "";
+    const state = this._hass?.states?.[entityId];
+    const attrs = state?.attributes || {};
+    const label = sensor.name || attrs.friendly_name || entityId;
+    const value = this._customSensorValue(state, sensor.unit);
+    const icon = this._customSensorIcon(sensor.icon || attrs.icon);
+    return `
+      <div class="stat custom-sensor-stat" title="${_wwEscape(entityId)}">
+        <div class="stat-ico custom-sensor-ico" aria-hidden="true">${icon}</div>
+        <div>
+          <div class="stat-lbl">${_wwEscape(label)}</div>
+          <div class="stat-val">${_wwEscape(value)}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  _customSensorValue(state, overrideUnit = "") {
+    if (!state || state.state === "unknown" || state.state === "unavailable") return "--";
+    const raw = state.state;
+    const unit = String(overrideUnit || state.attributes?.unit_of_measurement || state.attributes?.native_unit_of_measurement || "").trim();
+    const number = this._numberOr(raw, NaN);
+    if (Number.isFinite(number)) {
+      const rounded = Math.abs(number) < 10 ? Math.round(number * 10) / 10 : Math.round(number);
+      return `${rounded}${unit ? ` ${unit}` : ""}`.trim();
+    }
+    return `${this._titleCase(raw)}${unit ? ` ${unit}` : ""}`.trim();
+  }
+
+  _customSensorIcon(icon) {
+    const clean = String(icon || "").trim();
+    if (/^mdi:[a-z0-9-]+$/i.test(clean)) {
+      return `<ha-icon icon="${_wwEscape(clean)}"></ha-icon>`;
+    }
+    return `<svg viewBox="0 0 24 24" fill="none"><path d="M5 17.5h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 14.5c1.6-4.1 3.3-6.1 5-6.1s3.4 2 5 6.1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="8.4" r="2.5" fill="#65b8df"/><path d="M12 12.5v3.5" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/></svg>`;
   }
 
   _renderEnvironmentTiles() {
@@ -2875,10 +3037,13 @@ class RadarWiseCard extends HTMLElement {
       .fc-range{font-size:13px;font-weight:900;color:var(--ww-muted);line-height:1;min-height:14px;text-align:center;white-space:nowrap}
       .fc-precip{font-size:12px;font-weight:900;color:var(--ww-muted);line-height:1;min-height:13px;text-align:center;white-space:nowrap}
       .stats-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:6px;flex-shrink:0}
+      .custom-sensors-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:10px;margin-top:10px;flex-shrink:0}
       .stat{background:var(--ww-panel);border:1px solid var(--ww-line);border-radius:12px;padding:10px 13px;display:flex;align-items:center;gap:11px;min-height:66px;min-width:0}
       .stat>div:last-child{min-width:0}
       .stat-ico{width:27px;height:27px;flex:0 0 27px;color:var(--ww-wave)}
       .stat-ico svg{width:27px;height:27px}
+      .stat-ico ha-icon{width:27px;height:27px;color:var(--ww-wave)}
+      .custom-sensor-stat{min-height:60px}
       .stat-lbl{font-size:12px;color:var(--ww-muted);font-weight:900;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
       .stat-val{font-size:19px;font-weight:900;color:var(--ww-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal;word-break:normal;line-height:1.08}
       .ww-icon{overflow:visible;transform-box:fill-box}
@@ -2981,21 +3146,21 @@ class RadarWiseCard extends HTMLElement {
       .card-grid.content-essentials .center{border-right:0}
       .card-grid.content-essentials .current-row{margin-bottom:10px}
       @container(max-width:1500px){.card-grid{height:var(--radarwise-card-height,clamp(440px,25cqw,520px))}.left{padding:14px 18px 10px}.center{padding:16px 20px}.clock-time{font-size:70px}.clock-date{font-size:18px;margin-bottom:11px}.forecast-summary{margin-bottom:11px}.forecast-summary-text{font-size:12px}.section-title,.current-label{font-size:15px}.temp-now{font-size:58px}.temp-hilo{font-size:18px}.cond-name{font-size:32px}.updated-note{font-size:13px}.daily-strip{min-height:172px;max-height:212px}.fc-day{font-size:20px}.fc-period{font-size:13px}.fc-icon{width:58px;height:58px}.fc-icon svg{width:54px;height:54px}.fc-temp{font-size:43px}.hour-row{grid-template-columns:50px 24px 42px minmax(52px,1fr) minmax(38px,max-content);gap:7px;min-height:32px}.hour-time-left{font-size:14px}.hour-temp-left{font-size:15px}.hour-precip{font-size:11px}.stat{padding:9px 11px;gap:9px;min-height:62px}.stat-lbl{font-size:11px}.stat-val{font-size:17px}}
-      @container ww-center (max-width:680px){.current-row{gap:14px;min-height:74px}.current-icon{width:58px;height:58px}.cond-name{font-size:clamp(24px,8cqw,32px)}.updated-note{font-size:12px;margin-top:5px}.temp-now{font-size:clamp(42px,12cqw,58px)}.temp-hilo{font-size:16px;margin-top:5px}.daily-strip{grid-template-columns:repeat(var(--ww-forecast-count,5),minmax(92px,1fr));gap:8px;min-height:158px;max-height:196px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;flex:none}.daily-strip::-webkit-scrollbar{display:none}.fc-slot{padding:8px 6px}.fc-day{font-size:18px}.fc-period{font-size:11px;min-height:12px}.fc-icon{width:48px;height:48px;margin:2px 0}.fc-icon svg{width:44px;height:44px}.fc-temp{font-size:34px}.fc-range,.fc-precip{font-size:10px;min-height:11px}.stats-row{grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px}.stat{min-height:52px;padding:8px 9px;gap:8px}.stat-ico,.stat-ico svg{width:22px;height:22px}.stat-ico{flex-basis:22px}.stat-lbl{font-size:10px;margin-bottom:2px}.stat-val{font-size:clamp(13px,4.8cqw,16px)}}
-      @container ww-center (max-width:480px){.daily-strip{grid-template-columns:repeat(var(--ww-forecast-count,5),minmax(86px,1fr));min-height:148px}.stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}.stat-val{font-size:14px}.current-row{align-items:flex-start;flex-wrap:wrap}.temp-block{text-align:left}}
+      @container ww-center (max-width:680px){.current-row{gap:14px;min-height:74px}.current-icon{width:58px;height:58px}.cond-name{font-size:clamp(24px,8cqw,32px)}.updated-note{font-size:12px;margin-top:5px}.temp-now{font-size:clamp(42px,12cqw,58px)}.temp-hilo{font-size:16px;margin-top:5px}.daily-strip{grid-template-columns:repeat(var(--ww-forecast-count,5),minmax(92px,1fr));gap:8px;min-height:158px;max-height:196px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;flex:none}.daily-strip::-webkit-scrollbar{display:none}.fc-slot{padding:8px 6px}.fc-day{font-size:18px}.fc-period{font-size:11px;min-height:12px}.fc-icon{width:48px;height:48px;margin:2px 0}.fc-icon svg{width:44px;height:44px}.fc-temp{font-size:34px}.fc-range,.fc-precip{font-size:10px;min-height:11px}.stats-row,.custom-sensors-row{grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px}.custom-sensors-row{margin-top:8px}.stat{min-height:52px;padding:8px 9px;gap:8px}.stat-ico,.stat-ico svg,.stat-ico ha-icon{width:22px;height:22px}.stat-ico{flex-basis:22px}.stat-lbl{font-size:10px;margin-bottom:2px}.stat-val{font-size:clamp(13px,4.8cqw,16px)}}
+      @container ww-center (max-width:480px){.daily-strip{grid-template-columns:repeat(var(--ww-forecast-count,5),minmax(86px,1fr));min-height:148px}.stats-row,.custom-sensors-row{grid-template-columns:repeat(2,minmax(0,1fr))}.stat-val{font-size:14px}.current-row{align-items:flex-start;flex-wrap:wrap}.temp-block{text-align:left}}
       @container(max-width:980px){.card-grid:not(.layout-wide_panel){height:var(--radarwise-card-height,clamp(560px,58cqw,680px))}.card-grid:not(.layout-wide_panel) .center{border-right:0}.card-grid:not(.layout-wide_panel) .right{grid-column:1 / -1;height:240px;border-top:1px solid rgba(255,255,255,0.28);border-radius:0 0 22px 22px}.card-grid:not(.layout-wide_panel) #rmap{height:240px}.card-grid:not(.layout-wide_panel) .daily-strip{min-height:150px;max-height:none}}
       .card-grid.layout-wide_panel{height:var(--radarwise-card-height,clamp(390px,22cqw,500px))}
       .card-grid.layout-stacked,.card-grid.layout-compact{display:flex;flex-direction:column;height:auto;max-height:none}.card-grid.layout-stacked .left,.card-grid.layout-compact .left{display:contents}.card-grid.layout-stacked .clock-panel,.card-grid.layout-compact .clock-panel{order:1;padding:18px 22px 0;background:linear-gradient(90deg,rgba(255,255,255,0.20),rgba(255,255,255,0.08))}.card-grid.layout-stacked .center,.card-grid.layout-compact .center{order:var(--ww-ord-weather,20);border-right:0;overflow:visible}.card-grid.layout-stacked .left>.section-title,.card-grid.layout-compact .left>.section-title{order:var(--ww-ord-clock-title,12);padding:0 22px;margin-top:4px}.card-grid.layout-stacked .hourly-left,.card-grid.layout-compact .hourly-left{order:var(--ww-ord-clock-hourly,13);flex:none;overflow:visible;padding:0 22px 16px}.card-grid.layout-stacked .right,.card-grid.layout-compact .right{order:var(--ww-ord-radar,30);border-top:1px solid rgba(255,255,255,0.28);border-radius:0 0 22px 22px}.card-grid.layout-stacked .right,.card-grid.layout-stacked #rmap{height:300px;min-height:300px}.card-grid.layout-compact .right,.card-grid.layout-compact #rmap{height:220px;min-height:220px}.card-grid.layout-compact .daily-strip{grid-template-columns:repeat(3,minmax(0,1fr));min-height:150px}.card-grid.layout-compact .fc-slot:nth-child(n+4){display:none}
-      @container(max-width:720px){.card-grid:not(.layout-wide_panel),.card-grid.no-radar:not(.layout-wide_panel){display:flex;flex-direction:column;height:auto;max-height:none}.card-grid:not(.layout-wide_panel) .left{display:contents}.card-grid:not(.layout-wide_panel) .clock-panel{order:1;padding:18px 20px 0}.card-grid:not(.layout-wide_panel) .center{order:var(--ww-ord-weather,20);border-right:0;overflow:visible}.card-grid:not(.layout-wide_panel) .left>.section-title{order:var(--ww-ord-clock-title,12);padding:0 20px}.card-grid:not(.layout-wide_panel) .hourly-left{order:var(--ww-ord-clock-hourly,13);flex:none;overflow:visible;padding:0 20px 16px}.card-grid:not(.layout-wide_panel) .right{order:var(--ww-ord-radar,30)}.clock-time{font-size:48px}.current-row{align-items:flex-start;gap:12px;flex-wrap:wrap}.temp-block{text-align:left}.card-grid:not(.layout-wide_panel) .daily-strip{grid-template-columns:repeat(3,minmax(0,1fr));max-height:none}.stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}.right,#rmap{height:300px;min-height:300px}.card-grid.layout-wide_panel{display:grid;grid-template-columns:minmax(120px,24%) minmax(230px,1fr) minmax(150px,28%);height:360px;max-height:360px}.card-grid.layout-wide_panel .left{display:flex;padding:12px 10px}.card-grid.layout-wide_panel .center{padding:12px 10px}.card-grid.layout-wide_panel .clock-time{font-size:38px}.card-grid.layout-wide_panel .clock-date{font-size:12px;margin:5px 0 7px}.card-grid.layout-wide_panel .forecast-summary{min-height:26px;margin-bottom:8px}.card-grid.layout-wide_panel .forecast-summary-text{font-size:11px;padding:6px 14px}.card-grid.layout-wide_panel .current-icon{width:44px;height:44px}.card-grid.layout-wide_panel .cond-name{font-size:21px}.card-grid.layout-wide_panel .temp-now{font-size:38px}.card-grid.layout-wide_panel .daily-strip{grid-template-columns:repeat(var(--ww-forecast-count,5),minmax(70px,1fr));gap:6px;overflow:hidden}.card-grid.layout-wide_panel .fc-temp{font-size:28px}.card-grid.layout-wide_panel .stats-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.card-grid.layout-wide_panel .right,.card-grid.layout-wide_panel #rmap{height:100%;min-height:0}}
+      @container(max-width:720px){.card-grid:not(.layout-wide_panel),.card-grid.no-radar:not(.layout-wide_panel){display:flex;flex-direction:column;height:auto;max-height:none}.card-grid:not(.layout-wide_panel) .left{display:contents}.card-grid:not(.layout-wide_panel) .clock-panel{order:1;padding:18px 20px 0}.card-grid:not(.layout-wide_panel) .center{order:var(--ww-ord-weather,20);border-right:0;overflow:visible}.card-grid:not(.layout-wide_panel) .left>.section-title{order:var(--ww-ord-clock-title,12);padding:0 20px}.card-grid:not(.layout-wide_panel) .hourly-left{order:var(--ww-ord-clock-hourly,13);flex:none;overflow:visible;padding:0 20px 16px}.card-grid:not(.layout-wide_panel) .right{order:var(--ww-ord-radar,30)}.clock-time{font-size:48px}.current-row{align-items:flex-start;gap:12px;flex-wrap:wrap}.temp-block{text-align:left}.card-grid:not(.layout-wide_panel) .daily-strip{grid-template-columns:repeat(3,minmax(0,1fr));max-height:none}.stats-row,.custom-sensors-row{grid-template-columns:repeat(2,minmax(0,1fr))}.right,#rmap{height:300px;min-height:300px}.card-grid.layout-wide_panel{display:grid;grid-template-columns:minmax(120px,24%) minmax(230px,1fr) minmax(150px,28%);height:360px;max-height:360px}.card-grid.layout-wide_panel .left{display:flex;padding:12px 10px}.card-grid.layout-wide_panel .center{padding:12px 10px}.card-grid.layout-wide_panel .clock-time{font-size:38px}.card-grid.layout-wide_panel .clock-date{font-size:12px;margin:5px 0 7px}.card-grid.layout-wide_panel .forecast-summary{min-height:26px;margin-bottom:8px}.card-grid.layout-wide_panel .forecast-summary-text{font-size:11px;padding:6px 14px}.card-grid.layout-wide_panel .current-icon{width:44px;height:44px}.card-grid.layout-wide_panel .cond-name{font-size:21px}.card-grid.layout-wide_panel .temp-now{font-size:38px}.card-grid.layout-wide_panel .daily-strip{grid-template-columns:repeat(var(--ww-forecast-count,5),minmax(70px,1fr));gap:6px;overflow:hidden}.card-grid.layout-wide_panel .fc-temp{font-size:28px}.card-grid.layout-wide_panel .stats-row,.card-grid.layout-wide_panel .custom-sensors-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.card-grid.layout-wide_panel .custom-sensors-row{margin-top:6px}.card-grid.layout-wide_panel .right,.card-grid.layout-wide_panel #rmap{height:100%;min-height:0}}
       @container(max-width:720px){.card-grid.layout-wide_panel .clock-context{grid-template-columns:1fr;gap:6px;margin-bottom:8px}.card-grid.layout-wide_panel .environment-strip{grid-template-columns:1fr;gap:5px}.card-grid.layout-wide_panel .env-tile{grid-template-columns:20px minmax(0,1fr);min-height:40px;padding:5px 7px}.card-grid.layout-wide_panel .env-ico,.card-grid.layout-wide_panel .env-ico svg{width:20px;height:20px}.card-grid.layout-wide_panel .env-lbl,.card-grid.layout-wide_panel .env-note{font-size:9px}.card-grid.layout-wide_panel .env-val{font-size:13px}.card-grid.layout-wide_panel .env-note{display:none}}
-      @media(max-width:760px){.card-grid:not(.layout-wide_panel),.card-grid.no-radar:not(.layout-wide_panel){display:flex;flex-direction:column;height:auto;max-height:none}.card-grid:not(.layout-wide_panel) .left{display:contents}.card-grid:not(.layout-wide_panel) .clock-panel{order:1;padding:18px 20px 0}.card-grid:not(.layout-wide_panel) .center{order:var(--ww-ord-weather,20);border-right:0;overflow:visible}.card-grid:not(.layout-wide_panel) .left>.section-title{order:var(--ww-ord-clock-title,12);padding:0 20px}.card-grid:not(.layout-wide_panel) .hourly-left{order:var(--ww-ord-clock-hourly,13);flex:none;overflow:visible;padding:0 20px 16px}.card-grid:not(.layout-wide_panel) .right{order:var(--ww-ord-radar,30)}.clock-time{font-size:48px}.current-row{align-items:flex-start;gap:12px;flex-wrap:wrap}.temp-block{text-align:left}.card-grid:not(.layout-wide_panel) .daily-strip{grid-template-columns:repeat(3,minmax(0,1fr));max-height:none}.stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}.right,#rmap{height:300px;min-height:300px}}
+      @media(max-width:760px){.card-grid:not(.layout-wide_panel),.card-grid.no-radar:not(.layout-wide_panel){display:flex;flex-direction:column;height:auto;max-height:none}.card-grid:not(.layout-wide_panel) .left{display:contents}.card-grid:not(.layout-wide_panel) .clock-panel{order:1;padding:18px 20px 0}.card-grid:not(.layout-wide_panel) .center{order:var(--ww-ord-weather,20);border-right:0;overflow:visible}.card-grid:not(.layout-wide_panel) .left>.section-title{order:var(--ww-ord-clock-title,12);padding:0 20px}.card-grid:not(.layout-wide_panel) .hourly-left{order:var(--ww-ord-clock-hourly,13);flex:none;overflow:visible;padding:0 20px 16px}.card-grid:not(.layout-wide_panel) .right{order:var(--ww-ord-radar,30)}.clock-time{font-size:48px}.current-row{align-items:flex-start;gap:12px;flex-wrap:wrap}.temp-block{text-align:left}.card-grid:not(.layout-wide_panel) .daily-strip{grid-template-columns:repeat(3,minmax(0,1fr));max-height:none}.stats-row,.custom-sensors-row{grid-template-columns:repeat(2,minmax(0,1fr))}.right,#rmap{height:300px;min-height:300px}}
       @media(prefers-reduced-motion:reduce){:host([animations]) .ww-sun-rays,:host([animations]) .ww-sun-core,:host([animations]) .ww-cloud,:host([animations]) .ww-rain,:host([animations]) .ww-snow,:host([animations]) .ww-bolt,:host([animations]) .ww-moon,:host([animations]) .ww-moon-glow,:host([animations]) .ww-fog,:host([animations]) .hour-row,:host([animations]) .fc-slot,:host([animations]) .forecast-summary-text{animation:none!important}:host([animations]) .hour-bar-fill{transition:none!important}}
       .card-grid.content-radar{height:var(--radarwise-card-height,clamp(310px,20cqw,460px));max-height:var(--radarwise-card-max-height,480px)}
       .card-grid.content-forecast{height:var(--radarwise-card-height,clamp(260px,18cqw,390px));max-height:var(--radarwise-card-max-height,420px)}
       .card-grid.content-timeline{height:var(--radarwise-card-height,clamp(280px,18cqw,420px));max-height:var(--radarwise-card-max-height,440px)}
       .card-grid.content-essentials{height:var(--radarwise-card-height,clamp(220px,16cqw,320px));max-height:var(--radarwise-card-max-height,340px)}
       .card-grid.density-slim{height:var(--radarwise-card-height,clamp(330px,18cqw,430px));max-height:var(--radarwise-card-max-height,450px)}
-      .card-grid.density-slim .left{padding:11px 16px 8px}.card-grid.density-slim .center{padding:12px 18px}.card-grid.density-slim .clock-context{gap:8px;margin-bottom:8px}.card-grid.density-slim .clock-time{font-size:58px}.card-grid.density-slim .clock-ampm{font-size:18px}.card-grid.density-slim .clock-date{font-size:16px;margin-top:7px;margin-bottom:8px}.card-grid.density-slim .environment-strip{gap:6px}.card-grid.density-slim .env-tile{min-height:44px;padding:6px 8px}.card-grid.density-slim .env-ico,.card-grid.density-slim .env-ico svg{width:21px;height:21px}.card-grid.density-slim .env-lbl,.card-grid.density-slim .env-note{font-size:9px}.card-grid.density-slim .env-val{font-size:14px}.card-grid.density-slim .forecast-summary{min-height:25px;margin-bottom:8px}.card-grid.density-slim .forecast-summary-text{font-size:11px;padding:6px 14px}.card-grid.density-slim .section-title,.card-grid.density-slim .current-label{font-size:13px}.card-grid.density-slim .hourly-left{gap:6px}.card-grid.density-slim .hour-row{min-height:28px;max-height:38px;padding:4px 9px;grid-template-columns:46px 22px 38px minmax(45px,1fr) minmax(34px,max-content);gap:6px}.card-grid.density-slim .hour-time-left{font-size:13px}.card-grid.density-slim .hour-temp-left{font-size:14px}.card-grid.density-slim .hour-precip{font-size:10px}.card-grid.density-slim .current-row{min-height:64px;margin-bottom:8px;gap:12px}.card-grid.density-slim .current-icon{width:54px;height:54px}.card-grid.density-slim .cond-name{font-size:27px}.card-grid.density-slim .updated-note{font-size:11px;margin-top:4px}.card-grid.density-slim .temp-now{font-size:48px}.card-grid.density-slim .temp-hilo{font-size:15px;margin-top:4px}.card-grid.density-slim .daily-strip{min-height:130px;max-height:170px;gap:8px;margin-bottom:8px}.card-grid.density-slim .fc-slot{padding:7px 6px}.card-grid.density-slim .fc-day{font-size:17px}.card-grid.density-slim .fc-period{font-size:11px;min-height:12px}.card-grid.density-slim .fc-icon{width:46px;height:46px;margin:2px 0}.card-grid.density-slim .fc-icon svg{width:44px;height:44px}.card-grid.density-slim .fc-temp{font-size:34px}.card-grid.density-slim .fc-range,.card-grid.density-slim .fc-precip{font-size:10px;min-height:11px}.card-grid.density-slim .stats-row{gap:7px}.card-grid.density-slim .stat{min-height:48px;padding:7px 9px;gap:8px}.card-grid.density-slim .stat-ico,.card-grid.density-slim .stat-ico svg{width:22px;height:22px;flex-basis:22px}.card-grid.density-slim .stat-lbl{font-size:10px;margin-bottom:2px}.card-grid.density-slim .stat-val{font-size:15px}
+      .card-grid.density-slim .left{padding:11px 16px 8px}.card-grid.density-slim .center{padding:12px 18px}.card-grid.density-slim .clock-context{gap:8px;margin-bottom:8px}.card-grid.density-slim .clock-time{font-size:58px}.card-grid.density-slim .clock-ampm{font-size:18px}.card-grid.density-slim .clock-date{font-size:16px;margin-top:7px;margin-bottom:8px}.card-grid.density-slim .environment-strip{gap:6px}.card-grid.density-slim .env-tile{min-height:44px;padding:6px 8px}.card-grid.density-slim .env-ico,.card-grid.density-slim .env-ico svg{width:21px;height:21px}.card-grid.density-slim .env-lbl,.card-grid.density-slim .env-note{font-size:9px}.card-grid.density-slim .env-val{font-size:14px}.card-grid.density-slim .forecast-summary{min-height:25px;margin-bottom:8px}.card-grid.density-slim .forecast-summary-text{font-size:11px;padding:6px 14px}.card-grid.density-slim .section-title,.card-grid.density-slim .current-label{font-size:13px}.card-grid.density-slim .hourly-left{gap:6px}.card-grid.density-slim .hour-row{min-height:28px;max-height:38px;padding:4px 9px;grid-template-columns:46px 22px 38px minmax(45px,1fr) minmax(34px,max-content);gap:6px}.card-grid.density-slim .hour-time-left{font-size:13px}.card-grid.density-slim .hour-temp-left{font-size:14px}.card-grid.density-slim .hour-precip{font-size:10px}.card-grid.density-slim .current-row{min-height:64px;margin-bottom:8px;gap:12px}.card-grid.density-slim .current-icon{width:54px;height:54px}.card-grid.density-slim .cond-name{font-size:27px}.card-grid.density-slim .updated-note{font-size:11px;margin-top:4px}.card-grid.density-slim .temp-now{font-size:48px}.card-grid.density-slim .temp-hilo{font-size:15px;margin-top:4px}.card-grid.density-slim .daily-strip{min-height:130px;max-height:170px;gap:8px;margin-bottom:8px}.card-grid.density-slim .fc-slot{padding:7px 6px}.card-grid.density-slim .fc-day{font-size:17px}.card-grid.density-slim .fc-period{font-size:11px;min-height:12px}.card-grid.density-slim .fc-icon{width:46px;height:46px;margin:2px 0}.card-grid.density-slim .fc-icon svg{width:44px;height:44px}.card-grid.density-slim .fc-temp{font-size:34px}.card-grid.density-slim .fc-range,.card-grid.density-slim .fc-precip{font-size:10px;min-height:11px}.card-grid.density-slim .stats-row,.card-grid.density-slim .custom-sensors-row{gap:7px}.card-grid.density-slim .custom-sensors-row{margin-top:7px}.card-grid.density-slim .stat{min-height:48px;padding:7px 9px;gap:8px}.card-grid.density-slim .stat-ico,.card-grid.density-slim .stat-ico svg,.card-grid.density-slim .stat-ico ha-icon{width:22px;height:22px;flex-basis:22px}.card-grid.density-slim .stat-lbl{font-size:10px;margin-bottom:2px}.card-grid.density-slim .stat-val{font-size:15px}
       .card-grid.density-large{height:var(--radarwise-card-height,clamp(500px,28cqw,620px));max-height:var(--radarwise-card-max-height,660px)}
       .card-grid.density-large .clock-time{font-size:88px}.card-grid.density-large .clock-date{font-size:22px}.card-grid.density-large .cond-name{font-size:42px}.card-grid.density-large .temp-now{font-size:78px}.card-grid.density-large .daily-strip{min-height:220px;max-height:270px}.card-grid.density-large .fc-temp{font-size:58px}.card-grid.density-large .stat{min-height:76px}.card-grid.density-large .stat-val{font-size:22px}
       .card-grid.content-radar.density-slim{height:var(--radarwise-card-height,clamp(230px,16cqw,360px))}
@@ -3008,7 +3173,7 @@ class RadarWiseCard extends HTMLElement {
       .card-grid.layout-radar_bottom .center{grid-column:2;grid-row:1;border-right:0;overflow:hidden}
       .card-grid.layout-radar_bottom .right{grid-column:1/-1;grid-row:2;height:340px;min-height:340px;border-top:1px solid rgba(255,255,255,0.28);border-radius:0 0 22px 22px;position:relative;z-index:0}
       .card-grid.layout-radar_bottom #rmap{height:340px;min-height:340px}
-      .card-grid.ww-force-stack:not(.layout-wide_panel),.card-grid.ww-force-stack.no-radar:not(.layout-wide_panel){display:flex;flex-direction:column;height:auto;max-height:none}.card-grid.ww-force-stack:not(.layout-wide_panel) .left{display:contents}.card-grid.ww-force-stack:not(.layout-wide_panel) .clock-panel{order:1;padding:18px 20px 0}.card-grid.ww-force-stack:not(.layout-wide_panel) .center{order:var(--ww-ord-weather,20);border-right:0;overflow:visible}.card-grid.ww-force-stack:not(.layout-wide_panel) .left>.section-title{order:var(--ww-ord-clock-title,12);padding:0 20px}.card-grid.ww-force-stack:not(.layout-wide_panel) .hourly-left{order:var(--ww-ord-clock-hourly,13);flex:none;overflow:visible;padding:0 20px 16px}.card-grid.ww-force-stack:not(.layout-wide_panel) .right{order:var(--ww-ord-radar,30);height:300px;min-height:300px;border-top:1px solid rgba(255,255,255,0.28);border-radius:0 0 22px 22px}.card-grid.ww-force-stack:not(.layout-wide_panel) #rmap{height:300px;min-height:300px}.card-grid.ww-force-stack:not(.layout-wide_panel) .daily-strip{grid-template-columns:repeat(3,minmax(0,1fr));max-height:none}.card-grid.ww-force-stack:not(.layout-wide_panel) .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .card-grid.ww-force-stack:not(.layout-wide_panel),.card-grid.ww-force-stack.no-radar:not(.layout-wide_panel){display:flex;flex-direction:column;height:auto;max-height:none}.card-grid.ww-force-stack:not(.layout-wide_panel) .left{display:contents}.card-grid.ww-force-stack:not(.layout-wide_panel) .clock-panel{order:1;padding:18px 20px 0}.card-grid.ww-force-stack:not(.layout-wide_panel) .center{order:var(--ww-ord-weather,20);border-right:0;overflow:visible}.card-grid.ww-force-stack:not(.layout-wide_panel) .left>.section-title{order:var(--ww-ord-clock-title,12);padding:0 20px}.card-grid.ww-force-stack:not(.layout-wide_panel) .hourly-left{order:var(--ww-ord-clock-hourly,13);flex:none;overflow:visible;padding:0 20px 16px}.card-grid.ww-force-stack:not(.layout-wide_panel) .right{order:var(--ww-ord-radar,30);height:300px;min-height:300px;border-top:1px solid rgba(255,255,255,0.28);border-radius:0 0 22px 22px}.card-grid.ww-force-stack:not(.layout-wide_panel) #rmap{height:300px;min-height:300px}.card-grid.ww-force-stack:not(.layout-wide_panel) .daily-strip{grid-template-columns:repeat(3,minmax(0,1fr));max-height:none}.card-grid.ww-force-stack:not(.layout-wide_panel) .stats-row,.card-grid.ww-force-stack:not(.layout-wide_panel) .custom-sensors-row{grid-template-columns:repeat(2,minmax(0,1fr))}
       @container(max-width:720px){.card-grid.layout-radar_bottom{grid-template-columns:1fr;grid-template-rows:auto auto 300px}.card-grid.layout-radar_bottom .left{grid-column:1;grid-row:1}.card-grid.layout-radar_bottom .center{grid-column:1;grid-row:2;border-right:0}.card-grid.layout-radar_bottom .right{grid-column:1;grid-row:3;height:300px;min-height:300px}.card-grid.layout-radar_bottom #rmap{height:300px;min-height:300px}}
       .card-grid.content-radar,.card-grid.content-forecast,.card-grid.content-timeline,.card-grid.content-essentials{display:grid;grid-template-columns:1fr;grid-template-rows:1fr}
       .card-grid.content-radar .right,.card-grid.content-forecast .center,.card-grid.content-timeline .left,.card-grid.content-essentials .center{grid-column:1;grid-row:1;border-right:0;border-radius:22px}
@@ -3085,6 +3250,12 @@ class RadarWiseCardEditor extends HTMLElement {
     return this._sensorEntities((entityId, state) => isRadarWisePollenEntity(entityId, state, kind));
   }
 
+  _customSensorEntities() {
+    return Object.entries(this._hass?.states || {})
+      .filter(([entityId]) => entityId.startsWith("sensor.") || entityId.startsWith("input_number.") || entityId.startsWith("number."))
+      .sort(([a], [b]) => a.localeCompare(b));
+  }
+
   _sensorOptions(sensors, selected) {
     return sensors.map(([entityId, state]) => {
       const name = state.attributes?.friendly_name || entityId;
@@ -3102,7 +3273,7 @@ class RadarWiseCardEditor extends HTMLElement {
   _editorEntitySignature() {
     const states = this._hass?.states || {};
     return Object.entries(states)
-      .filter(([entityId, state]) => entityId.startsWith("weather.") || isRadarWiseHumidityEntity(entityId, state) || isRadarWiseTemperatureEntity(entityId, state) || isRadarWiseDewPointEntity(entityId, state) || isRadarWiseAirQualityEntity(entityId, state) || isRadarWiseUvIndexEntity(entityId, state) || isRadarWisePollenEntity(entityId, state))
+      .filter(([entityId, state]) => entityId.startsWith("weather.") || entityId.startsWith("sensor.") || entityId.startsWith("input_number.") || entityId.startsWith("number.") || isRadarWiseHumidityEntity(entityId, state) || isRadarWiseTemperatureEntity(entityId, state) || isRadarWiseDewPointEntity(entityId, state) || isRadarWiseAirQualityEntity(entityId, state) || isRadarWiseUvIndexEntity(entityId, state) || isRadarWisePollenEntity(entityId, state))
       .map(([entityId, state]) => `${entityId}:${state.attributes?.friendly_name || ""}:${state.attributes?.device_class || ""}`)
       .sort()
       .join("|");
@@ -3110,15 +3281,38 @@ class RadarWiseCardEditor extends HTMLElement {
 
   _setValue(key, value) {
     const numberKeys = ["latitude", "longitude", "hourly_count", "forecast_count", "radar_zoom", "radar_speed"];
-    const booleanKeys = ["show_radar", "show_map_controls", "radar_controls", "show_warning_overlay", "show_animations", "show_timeline", "show_forecast", "show_forecast_summary", "show_environment", "timeline_autoscroll"];
+    const booleanKeys = ["show_radar", "show_map_controls", "radar_controls", "show_warning_overlay", "show_animations", "show_timeline", "show_forecast", "show_forecast_summary", "show_environment", "show_custom_sensors", "timeline_autoscroll"];
     let nextValue = value;
     if (numberKeys.includes(key)) nextValue = value === "" ? undefined : Number(value);
     if (booleanKeys.includes(key)) nextValue = Boolean(value);
-    const switchesToCustom = ["show_radar", "show_timeline", "show_forecast", "show_forecast_summary", "show_environment"].includes(key);
+    const switchesToCustom = ["show_radar", "show_timeline", "show_forecast", "show_forecast_summary", "show_environment", "show_custom_sensors"].includes(key);
     const fullPresetDefaults = key === "content_mode" && nextValue === "full"
-      ? { show_radar: true, show_timeline: true, show_forecast: true, show_forecast_summary: true, show_environment: true }
+      ? { show_radar: true, show_timeline: true, show_forecast: true, show_forecast_summary: true, show_environment: true, show_custom_sensors: true }
       : {};
     this._config = { ...this._config, ...fullPresetDefaults, ...(switchesToCustom ? { content_mode: "custom" } : {}), [key]: nextValue };
+    this.dispatchEvent(new CustomEvent("config-changed", {
+      detail: { config: this._config },
+      bubbles: true,
+      composed: true
+    }));
+    this._render();
+  }
+
+  _setCustomSensorValue(index, key, value) {
+    const sensors = Array.isArray(this._config.custom_sensors)
+      ? this._config.custom_sensors.map((sensor) => ({ ...(sensor || {}) }))
+      : [];
+    while (sensors.length <= index) sensors.push({});
+    sensors[index][key] = value;
+    const cleaned = sensors
+      .map((sensor) => ({
+        entity: String(sensor.entity || "").trim(),
+        name: String(sensor.name || "").trim(),
+        icon: String(sensor.icon || "").trim(),
+        unit: String(sensor.unit || "").trim()
+      }))
+      .filter((sensor) => sensor.entity || sensor.name || sensor.icon || sensor.unit);
+    this._config = { ...this._config, custom_sensors: cleaned, show_custom_sensors: true };
     this.dispatchEvent(new CustomEvent("config-changed", {
       detail: { config: this._config },
       bubbles: true,
@@ -3142,6 +3336,9 @@ class RadarWiseCardEditor extends HTMLElement {
     const grassPollenSensors = this._pollenEntities("grass");
     const weedPollenSensors = this._pollenEntities("weed");
     const moldPollenSensors = this._pollenEntities("mold");
+    const customSensorEntities = this._customSensorEntities();
+    const customSensorSlots = Array.isArray(config.custom_sensors) ? config.custom_sensors.slice(0, 3) : [];
+    while (customSensorSlots.length < 3) customSensorSlots.push({});
     const hasConfiguredEntity = entities.some(([entityId]) => entityId === config.entity);
     const hasConfiguredHumidityEntity = humiditySensors.some(([entityId]) => entityId === config.humidity_entity);
     const hasConfiguredTemperatureEntity = temperatureSensors.some(([entityId]) => entityId === config.temperature_entity);
@@ -3194,6 +3391,8 @@ class RadarWiseCardEditor extends HTMLElement {
         .hint{font-size:12px;line-height:1.4;color:var(--secondary-text-color,#536b75);margin-top:8px}
         .check{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--primary-text-color,#0a1e28)}
         .check input{width:auto}
+        .custom-sensor-slot{border:1px solid var(--divider-color,rgba(0,0,0,.12));border-radius:10px;padding:10px;margin-top:10px;background:color-mix(in srgb,var(--primary-color,#2a7a94) 4%,var(--card-background-color,#fff))}
+        .slot-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--secondary-text-color,#536b75);margin-bottom:8px}
         @media(max-width:600px){.grid{grid-template-columns:1fr}}
         .layout-label{font-size:13px;font-weight:700;color:var(--secondary-text-color,#536b75);margin:12px 0 8px}
         .layout-picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
@@ -3313,6 +3512,34 @@ class RadarWiseCardEditor extends HTMLElement {
           </div>
           <label class="check" style="margin-top:10px"><input id="show_environment" type="checkbox" ${config.show_environment === false ? "" : "checked"}> Show AQI / pollen beside the clock</label>
           <div class="hint">Use Home Assistant sensors for fully entity-driven data, or Open-Meteo for no-key AQI, UV index, and pollen using the radar latitude/longitude. Open-Meteo does not provide mold; mold remains sensor-only.</div>
+        </div>
+        <div class="section">
+          <div class="section-title">Optional detail blocks</div>
+          <div class="hint" style="margin-top:0">Add up to three Home Assistant sensors in the visual editor. They render below Humidity, Dew Point, Wind, Sunrise, and Sunset in the weather details area. YAML can define up to six.</div>
+          <label class="check" style="margin-top:10px"><input id="show_custom_sensors" type="checkbox" ${config.show_custom_sensors === false ? "" : "checked"}> Show optional detail blocks</label>
+          ${customSensorSlots.map((sensor, index) => {
+            const selected = sensor?.entity || "";
+            const configuredCustomOption = selected && !customSensorEntities.some(([entityId]) => entityId === selected)
+              ? `<option value="${_wwEscape(selected)}" selected>${_wwEscape(selected)}</option>`
+              : "";
+            return `
+              <div class="custom-sensor-slot">
+                <div class="slot-title">Detail block ${index + 1}</div>
+                <label>Entity
+                  <select data-custom-sensor-index="${index}" data-custom-sensor-field="entity">
+                    <option value="">None</option>
+                    ${configuredCustomOption}
+                    ${this._sensorOptions(customSensorEntities, selected)}
+                  </select>
+                </label>
+                <div class="grid" style="margin-top:10px">
+                  <label>Label <input data-custom-sensor-index="${index}" data-custom-sensor-field="name" value="${_wwEscape(sensor?.name || "")}" placeholder="Auto name"></label>
+                  <label>Icon <input data-custom-sensor-index="${index}" data-custom-sensor-field="icon" value="${_wwEscape(sensor?.icon || "")}" placeholder="mdi:pool-thermometer"></label>
+                  <label>Unit override <input data-custom-sensor-index="${index}" data-custom-sensor-field="unit" value="${_wwEscape(sensor?.unit || "")}" placeholder="Auto unit"></label>
+                </div>
+              </div>
+            `;
+          }).join("")}
         </div>
         <div class="section">
           <div class="section-title">Region and radar</div>
@@ -3568,8 +3795,13 @@ class RadarWiseCardEditor extends HTMLElement {
     ["entity", "temperature_entity", "humidity_entity", "dew_point_entity", "air_quality_entity", "uv_index_entity", "pollen_entity", "tree_pollen_entity", "grass_pollen_entity", "weed_pollen_entity", "mold_pollen_entity", "environment_source", "country", "radar_provider", "radar_style", "radar_basemap", "radar_timeline", "title", "units", "theme_mode", "language", "time_format", "font_family", "density", "latitude", "longitude", "hourly_count", "forecast_count", "radar_zoom", "radar_speed"].forEach((id) => {
       this.shadowRoot.getElementById(id)?.addEventListener("change", (event) => this._setValue(id, event.target.value));
     });
-    ["show_radar", "show_map_controls", "radar_controls", "show_warning_overlay", "show_animations", "show_timeline", "show_forecast", "show_forecast_summary", "show_environment", "timeline_autoscroll"].forEach((id) => {
+    ["show_radar", "show_map_controls", "radar_controls", "show_warning_overlay", "show_animations", "show_timeline", "show_forecast", "show_forecast_summary", "show_environment", "show_custom_sensors", "timeline_autoscroll"].forEach((id) => {
       this.shadowRoot.getElementById(id)?.addEventListener("change", (event) => this._setValue(id, event.target.checked));
+    });
+    this.shadowRoot.querySelectorAll("[data-custom-sensor-index][data-custom-sensor-field]").forEach((input) => {
+      input.addEventListener("change", (event) => {
+        this._setCustomSensorValue(Number(input.dataset.customSensorIndex), input.dataset.customSensorField, event.target.value);
+      });
     });
     this.shadowRoot.querySelectorAll("[data-layout]").forEach((tile) => {
       tile.addEventListener("click", () => this._setValue("layout", tile.dataset.layout));
