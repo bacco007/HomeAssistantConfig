@@ -10,6 +10,10 @@ class WorldCup2026Panel extends HTMLElement {
     this._loaded = false;
     this._refreshInterval = null;
     this._countdownInterval = null;
+    this._isLoading = false;
+    this._visibilityHandler = null;
+    this._supportersLoadedAt = 0;
+    this._premiumSupportersLoadedAt = 0;
     this._sidebarObserver = null;
     this._sidebarStyleRoots = new Set();
     this._sidebarObservers = [];
@@ -186,6 +190,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "World Cup 2026",
         errorText: "Could not load app data.",
         overview: "Overview",
+
+        teams: "Teams",
         live: "Live Centre",
         fixtures: "Fixtures",
         results: "Results",
@@ -347,6 +353,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Coupe du Monde 2026",
         errorText: "Impossible de charger les données.",
         overview: "Aperçu",
+
+        teams: "Equipes",
         live: "Centre en Direct",
         fixtures: "Matchs",
         groups: "Groupes",
@@ -507,6 +515,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Weltmeisterschaft 2026",
         errorText: "App-Daten konnten nicht geladen werden.",
         overview: "Übersicht",
+
+        teams: "Mannschaften",
         live: "Live-Zentrum",
         fixtures: "Spiele",
         groups: "Gruppen",
@@ -667,6 +677,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Copa Mundial 2026",
         errorText: "No se pudieron cargar los datos.",
         overview: "Resumen",
+
+        teams: "Equipos",
         live: "Centro en Vivo",
         fixtures: "Partidos",
         groups: "Grupos",
@@ -827,6 +839,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Coppa del Mondo 2026",
         errorText: "Impossibile caricare i dati.",
         overview: "Panoramica",
+
+        teams: "Squadre",
         live: "Centro Live",
         fixtures: "Partite",
         groups: "Gruppi",
@@ -987,6 +1001,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Wereldbeker 2026",
         errorText: "Kon appgegevens niet laden.",
         overview: "Overzicht",
+
+        teams: "Ploegen",
         live: "Live Centrum",
         fixtures: "Wedstrijden",
         groups: "Groepen",
@@ -1153,6 +1169,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Copa do Mundo 2026",
         errorText: "Não foi possível carregar os dados.",
         overview: "Resumo",
+
+        teams: "Equipas",
         live: "Centro Ao Vivo",
         fixtures: "Jogos",
         groups: "Grupos",
@@ -1313,6 +1331,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Mistrzostwa Świata 2026",
         errorText: "Nie udało się załadować danych aplikacji.",
         overview: "Przegląd",
+
+        teams: "Druzyny",
         live: "Centrum Live",
         fixtures: "Mecze",
         groups: "Grupy",
@@ -1473,6 +1493,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "ワールドカップ2026",
         errorText: "データを読み込めませんでした。",
         overview: "概要",
+
+        teams: "???",
         live: "ライブセンター",
         fixtures: "試合",
         groups: "グループ",
@@ -1641,6 +1663,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Världsmästerskapet 2026",
         errorText: "Kunde inte ladda appdata.",
         overview: "Översikt",
+
+        teams: "Lag",
         live: "Livecenter",
         fixtures: "Matcher",
         groups: "Grupper",
@@ -1801,6 +1825,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Verdensmesterskapet 2026",
         errorText: "Kunne ikke laste appdata.",
         overview: "Oversikt",
+
+        teams: "Lag",
         live: "Livesenter",
         fixtures: "Kamper",
         groups: "Grupper",
@@ -1961,6 +1987,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Világbajnokság 2026",
         errorText: "Nem sikerült betölteni az alkalmazás adatait.",
         overview: "Áttekintés",
+
+        teams: "Csapatok",
         live: "Élő központ",
         fixtures: "Mérkőzések",
         results: "Eredmények",
@@ -2122,6 +2150,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Dünya Kupası 2026",
         errorText: "Uygulama verileri yüklenemedi.",
         overview: "Genel Bakış",
+
+        teams: "Takimlar",
         live: "Canlı Merkez",
         fixtures: "Fikstür",
         results: "Sonuçlar",
@@ -2282,6 +2312,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Mistrovství světa 2026",
         errorText: "Data aplikace se nepodařilo načíst.",
         overview: "Přehled",
+
+        teams: "Tymy",
         live: "Živé centrum",
         fixtures: "Zápasy",
         results: "Výsledky",
@@ -2442,6 +2474,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Verdensmesterskabet 2026",
         errorText: "Kunne ikke indlæse appdata.",
         overview: "Overblik",
+
+        teams: "Hold",
         live: "Livecenter",
         fixtures: "Kampe",
         results: "Resultater",
@@ -2602,6 +2636,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Maailmanmestaruuskilpailut 2026",
         errorText: "Sovelluksen tietoja ei voitu ladata.",
         overview: "Yleiskatsaus",
+
+        teams: "Joukkueet",
         live: "Live-keskus",
         fixtures: "Ottelut",
         results: "Tulokset",
@@ -2762,6 +2798,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Παγκόσμιο Κύπελλο 2026",
         errorText: "Δεν ήταν δυνατή η φόρτωση δεδομένων.",
         overview: "Επισκόπηση",
+
+        teams: "??????",
         live: "Ζωντανό Κέντρο",
         fixtures: "Αγώνες",
         results: "Αποτελέσματα",
@@ -2922,6 +2960,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Cupa Mondială 2026",
         errorText: "Datele aplicației nu au putut fi încărcate.",
         overview: "Prezentare",
+
+        teams: "Echipe",
         live: "Centru live",
         fixtures: "Meciuri",
         results: "Rezultate",
@@ -3082,6 +3122,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "MS 2026",
         errorText: "Nepodarilo sa načítať údaje aplikácie.",
         overview: "Prehľad",
+
+        teams: "Timy",
         live: "Live centrum",
         fixtures: "Zápasy",
         results: "Výsledky",
@@ -3242,6 +3284,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "SP 2026",
         errorText: "Podatkov aplikacije ni bilo mogoče naložiti.",
         overview: "Pregled",
+
+        teams: "Ekipe",
         live: "Središče v živo",
         fixtures: "Tekme",
         results: "Rezultati",
@@ -3402,6 +3446,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "SP 2026",
         errorText: "Podaci aplikacije nisu učitani.",
         overview: "Pregled",
+
+        teams: "Timovi",
         live: "Centar uživo",
         fixtures: "Utakmice",
         results: "Rezultati",
@@ -3562,6 +3608,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Светско првенство 2026",
         errorText: "Подаци апликације нису учитани.",
         overview: "Преглед",
+
+        teams: "Timovi",
         live: "Центар уживо",
         fixtures: "Утакмице",
         results: "Резултати",
@@ -3722,6 +3770,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Световно 2026",
         errorText: "Данните на приложението не можаха да се заредят.",
         overview: "Общ преглед",
+
+        teams: "??????",
         live: "Център на живо",
         fixtures: "Мачове",
         results: "Резултати",
@@ -3882,6 +3932,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "ЧС 2026",
         errorText: "Не вдалося завантажити дані застосунку.",
         overview: "Огляд",
+
+        teams: "???????",
         live: "Live-центр",
         fixtures: "Матчі",
         results: "Результати",
@@ -4042,6 +4094,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Heimsmeistaramótið 2026",
         errorText: "Gat ekki hlaðið gögnum forritsins.",
         overview: "Yfirlit",
+
+        teams: "Lid",
         live: "Bein miðstöð",
         fixtures: "Leikir",
         groups: "Riðlar",
@@ -4207,6 +4261,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Pachak Tinku 2026",
         errorText: "Rurana willakuykunata mana kichayta atirqanchu.",
         overview: "Qhaway",
+
+        teams: "Equipos",
         live: "Kawsaypi chawpi",
         fixtures: "Pukllaykuna",
         results: "Ruraykuna",
@@ -4367,6 +4423,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Yvóra Kópa 2026",
         errorText: "Ndaikatúi oñemyanyhẽ app mba’ekuaarã.",
         overview: "Techapyrã",
+
+        teams: "Equipos",
         live: "Centro en vivo",
         fixtures: "Partidokuéra",
         results: "Resultado-kuéra",
@@ -4527,6 +4585,8 @@ class WorldCup2026Panel extends HTMLElement {
         errorTitle: "Uraq Pacha Copa 2026",
         errorText: "App yatiyawinaka janiw apthapiñjamäkiti.",
         overview: "Uñakipawi",
+
+        teams: "Equipos",
         live: "Jichha centro",
         fixtures: "Anatawinaka",
         results: "Resultados",
@@ -4682,7 +4742,684 @@ class WorldCup2026Panel extends HTMLElement {
 
   t(key) {
     const all = this.translations();
+    const mobileViewFallbacks = {
+      fr: "Vue mobile",
+      de: "Mobile Ansicht",
+      es: "Vista movil",
+      it: "Vista mobile",
+      nl: "Mobiele weergave",
+      pt: "Vista movel",
+      pl: "Widok mobilny",
+      ja: "モバイル表示",
+      sv: "Mobilvy",
+      no: "Mobilvisning",
+      hu: "Mobil nezet",
+      tr: "Mobil gorunum",
+      cs: "Mobilni zobrazeni",
+      da: "Mobilvisning",
+      fi: "Mobiilinakyma",
+      el: "Προβολή κινητού",
+      ro: "Vizualizare mobila",
+      sk: "Mobilne zobrazenie",
+      sl: "Mobilni pogled",
+      hr: "Mobilni prikaz",
+      sr: "Mobilni prikaz",
+      bg: "Мобилен изглед",
+      uk: "Мобільний вигляд",
+      is: "Farsimasyn",
+      qu: "Kuyuchina rikuy",
+      gn: "Pumbyry jehecha",
+      ay: "Móvil uñjawi",
+    };
+    if (key === "mobileView" && mobileViewFallbacks[this._language]) {
+      return mobileViewFallbacks[this._language];
+    }
+    const labelFallbacks = {
+      records: {
+        fr: "Records du tournoi",
+        nl: "Toernooirecords",
+      },
+      teams: {
+        en: "Teams", fr: "Equipes", de: "Mannschaften", es: "Equipos", it: "Squadre", nl: "Ploegen", pt: "Equipas", pl: "Druzyny", ja: "チーム",
+        sv: "Lag", no: "Lag", hu: "Csapatok", tr: "Takimlar", cs: "Tymy", da: "Hold", fi: "Joukkueet", el: "Ομάδες",
+        ro: "Echipe", sk: "Timy", sl: "Ekipe", hr: "Timovi", sr: "Timovi", bg: "Отбори", uk: "Команди", is: "Lid",
+        qu: "Equipos", gn: "Equipos", ay: "Equipos",
+      },
+      game: {
+        en: "game", fr: "match", de: "Spiel", es: "partido", it: "partita", nl: "wedstrijd", pt: "jogo", pl: "mecz", ja: "試合",
+        sv: "match", no: "kamp", hu: "meccs", tr: "mac", cs: "zapas", da: "kamp", fi: "ottelu", el: "αγώνας",
+        ro: "meci", sk: "zapas", sl: "tekma", hr: "utakmica", sr: "утакмица", bg: "мач", uk: "матч", is: "leikur",
+        qu: "partido", gn: "partido", ay: "partido",
+      },
+      games: {
+        en: "games", fr: "matchs", de: "Spiele", es: "partidos", it: "partite", nl: "wedstrijden", pt: "jogos", pl: "mecze", ja: "試合",
+        sv: "matcher", no: "kamper", hu: "meccs", tr: "mac", cs: "zapasy", da: "kampe", fi: "ottelua", el: "αγώνες",
+        ro: "meciuri", sk: "zapasy", sl: "tekme", hr: "utakmice", sr: "утакмице", bg: "мачове", uk: "матчі", is: "leikir",
+        qu: "partidos", gn: "partido", ay: "partidos",
+      },
+      today: {
+        en: "today", fr: "aujourd'hui", de: "heute", es: "hoy", it: "oggi", nl: "vandaag", pt: "hoje", pl: "dzisiaj", ja: "今日",
+        sv: "idag", no: "i dag", hu: "ma", tr: "bugun", cs: "dnes", da: "i dag", fi: "tanaan", el: "σήμερα",
+        ro: "astazi", sk: "dnes", sl: "danes", hr: "danas", sr: "данас", bg: "днес", uk: "сьогодні", is: "i dag",
+        qu: "kunan", gn: "ko arape", ay: "jichha uru",
+      },
+      stadiumWeather: {
+        en: "Stadium Weather", fr: "Meteo du stade", de: "Stadionwetter", es: "Tiempo del estadio", it: "Meteo dello stadio", nl: "Stadionweer", pt: "Tempo no estadio", pl: "Pogoda na stadionie", ja: "スタジアム天気",
+        sv: "Arenavader", no: "Stadionvaer", hu: "Stadion ido", tr: "Stadyum havasi", cs: "Pocasi stadionu", da: "Stadionvejr", fi: "Stadionin saa", el: "Καιρός σταδίου",
+        ro: "Vreme stadion", sk: "Pocasie stadiona", sl: "Vreme stadiona", hr: "Vrijeme stadiona", sr: "Време стадиона", bg: "Време на стадиона", uk: "Погода стадіону", is: "Leikvangsvedur",
+        qu: "Estadio pacha", gn: "Estadio arapytu", ay: "Estadio pacha",
+      },
+      weather: {
+        en: "Weather", fr: "Meteo", de: "Wetter", es: "Tiempo", it: "Meteo", nl: "Weer", pt: "Tempo", pl: "Pogoda", ja: "天気",
+        sv: "Vader", no: "Vaer", hu: "Idojaras", tr: "Hava", cs: "Pocasi", da: "Vejr", fi: "Saa", el: "Καιρός",
+        ro: "Vreme", sk: "Pocasie", sl: "Vreme", hr: "Vrijeme", sr: "Време", bg: "Време", uk: "Погода", is: "Vedur",
+        qu: "Pacha", gn: "Arapytu", ay: "Pacha",
+      },
+      wind: {
+        en: "Wind", fr: "Vent", de: "Wind", es: "Viento", it: "Vento", nl: "Wind", pt: "Vento", pl: "Wiatr", ja: "風",
+        sv: "Vind", no: "Vind", hu: "Szel", tr: "Ruzgar", cs: "Vitr", da: "Vind", fi: "Tuuli", el: "Άνεμος",
+        ro: "Vant", sk: "Vietor", sl: "Veter", hr: "Vjetar", sr: "Ветар", bg: "Вятър", uk: "Вітер", is: "Vindur",
+        qu: "Wayra", gn: "Yvytu", ay: "Thaya",
+      },
+      humidity: {
+        en: "Humidity", fr: "Humidite", de: "Luftfeuchte", es: "Humedad", it: "Umidita", nl: "Vochtigheid", pt: "Humidade", pl: "Wilgotnosc", ja: "湿度",
+        sv: "Luftfuktighet", no: "Fuktighet", hu: "Paratartalom", tr: "Nem", cs: "Vlhkost", da: "Fugtighed", fi: "Kosteus", el: "Υγρασία",
+        ro: "Umiditate", sk: "Vlhkost", sl: "Vlaznost", hr: "Vlaga", sr: "Влажност", bg: "Влажност", uk: "Вологість", is: "Raki",
+        qu: "Humedad", gn: "Takuvo", ay: "Humedad",
+      },
+      clouds: {
+        en: "Clouds", fr: "Nuages", de: "Wolken", es: "Nubes", it: "Nuvole", nl: "Wolken", pt: "Nuvens", pl: "Chmury", ja: "雲",
+        sv: "Moln", no: "Skyer", hu: "Felhok", tr: "Bulut", cs: "Oblaky", da: "Skyer", fi: "Pilvet", el: "Σύννεφα",
+        ro: "Nori", sk: "Oblaky", sl: "Oblaki", hr: "Oblaci", sr: "Облаци", bg: "Облаци", uk: "Хмари", is: "Sky",
+        qu: "Phuyu", gn: "Araity", ay: "Qinaya",
+      },
+      supportersNav: {
+        nl: "🙏 Steuners",
+      },
+    };
+    if (labelFallbacks[key]?.[this._language]) {
+      return labelFallbacks[key][this._language];
+    }
     return all[this._language]?.[key] || all.en[key] || key;
+  }
+
+  staticTextKeyMap() {
+    return {
+      "Tournament Intelligence": "tournamentIntelligence",
+      "Stats Hub": "stats",
+      "Event Coverage": "eventCoverage",
+      "Lineup Coverage": "lineupCoverage",
+      "Tournament Rates": "tournamentRates",
+      "Data Health": "dataHealth",
+      "Event timelines": "eventTimelines",
+      "Lineups": "lineups",
+      "Team Performance": "teamPerformance",
+      "Team Event Leaders": "teamEventLeaders",
+      "Lineups & Formations": "lineupsFormations",
+      "Squad Usage": "squadUsage",
+      "Player Starts": "playerStarts",
+      "Bench Watch": "benchWatch",
+      "Discipline Centre": "disciplineCentre",
+      "Player Event Watch": "playerEventWatch",
+      "Referee Stats": "refereeStats",
+      "Match Records": "matchRecords",
+      "Highest scoring match": "highestScoringMatch",
+      "Biggest win": "biggestWin",
+      "Assists": "assists",
+      "Yellow Cards": "yellowCards",
+      "Substitutions": "substitutions",
+      "Referees": "referees",
+      "Events / Match": "eventsPerMatch",
+      "Cards / Match": "cardsPerMatch",
+      "Progress": "progress",
+      "Over 2.5 Goals": "over25Goals",
+      "Draw Rate": "drawRate",
+      "Team": "team",
+      "Player": "player",
+      "Goals": "goals",
+      "Cards": "cards",
+      "Events": "events",
+      "Formation": "formation",
+      "Used": "used",
+      "Starters": "starters",
+      "Bench": "bench",
+      "Starts": "starts",
+      "Yellow": "yellow",
+      "Red": "red",
+      "Subs": "subs",
+      "Official": "official",
+      "Matches": "matchesPlayed",
+      "No team stats yet": "noTeamStatsYet",
+      "No event data yet": "noEventDataYet",
+      "No lineup data loaded yet": "noLineupDataYet",
+      "No squad usage data yet": "noSquadUsageDataYet",
+      "No starting XI data yet": "noStartingXiDataYet",
+      "No bench data yet": "noBenchDataYet",
+      "No discipline data yet": "noDisciplineDataYet",
+      "No player event data yet": "noPlayerEventDataYet",
+      "No referee data yet": "noRefereeDataYet",
+      "No data yet": "noDataYet",
+      "Matchday Control Room": "matchdayControlRoom",
+      "Match Results": "matchResults",
+      "Completed World Cup 2026 matches": "completedWorldCupMatches",
+      "All times shown in your local time • FT = Full Time": "allTimesLocal",
+      "API Results Test": "apiResultsTest",
+      "No finished matches came back from the Home Assistant API feed yet.": "noApiFinishedMatches",
+      "Direct backend/API finished matches only — no GitHub, no goal_events fallback": "directApiOnly",
+      "No Golden Boot scorer data available yet.": "noGoldenBootData",
+      "Official scorers first, with match-event data used only for assists, penalties and fallback coverage.": "officialScorersFirst",
+      "Leaderboard": "leaderboard",
+      "Golden Boot Table": "goldenBootTable",
+      "Leader will appear when scorer data is available.": "leaderPending",
+      "Knockout Stage": "knockoutStage",
+      "Winner": "winner",
+      "Knockout Details": "knockoutDetails",
+      "Tournament Records": "tournamentRecords",
+      "Records Centre": "recordsCentre",
+      "Best matches, biggest wins, team leaders, discipline records and timeline event records in one place.": "recordsIntro",
+      "Finished matches": "finishedMatches",
+      "Team Records": "teamRecords",
+      "Event Record Matches": "eventRecordMatches",
+      "Top Event Teams": "topEventTeams",
+      "Most Events": "mostEvents",
+      "Most Cards": "mostCards",
+      "Most Subs": "mostSubs",
+      "Most VAR": "mostVar",
+      "Most Eventful Match": "mostEventfulMatch",
+      "Discipline Record": "disciplineRecord",
+      "Clean Sheet Leader": "cleanSheetLeader",
+      "Most Substitutions": "mostSubstitutions",
+      "Most VAR Events": "mostVarEvents",
+      "No event records yet": "noEventRecordsYet",
+      "No team event records yet": "noTeamEventRecordsYet",
+      "A proper tournament stats centre built from results, timelines, cards, substitutions, VAR, referees, player involvement and team lineups already loaded into the integration.": "statsIntro",
+      "Stats Hub only uses data already loaded into the panel. This page does not trigger extra API pulls.": "statsNoExtraPulls",
+      "Team Discipline": "teamDiscipline",
+      "Team Command Centre": "teamCommandCentre",
+      "Compact team hub with fixtures, results, cards, players, group table and tournament journey.": "teamCommandIntro",
+      "Country Profile": "countryProfile",
+      "Country Players": "countryPlayers",
+      "Player cards are built from loaded goals, assists and event data.": "playerCardsBuilt",
+      "Player Spotlight": "playerSpotlight",
+      "Form Guide": "formGuide",
+      "Group Snapshot": "groupSnapshot",
+      "Tournament Journey": "tournamentJourney",
+      "Stadium Tracker": "stadiumTracker",
+      "Upcoming Fixtures": "upcomingFixtures",
+      "Previous Results": "previousResults",
+      "Team Statistics": "teamStatistics",
+      "Goals Breakdown": "goalsBreakdown",
+      "No teams loaded yet": "noTeamsLoadedYet",
+      "No upcoming match loaded for this team yet": "noTeamUpcomingMatch",
+      "No finished results loaded for this team yet": "noTeamResults",
+      "No fixtures loaded for this team yet": "noTeamFixtures",
+      "No group table loaded for this team yet": "noTeamGroupTable",
+      "No player event data loaded for this team yet": "noTeamPlayerEvents",
+      "No form data yet": "noFormDataYet",
+      "No stadium data loaded for this team yet": "noTeamStadiumData",
+      "No country player data loaded yet": "noCountryPlayerData",
+      "No upcoming fixtures loaded for this team yet": "noUpcomingFixturesTeam",
+      "No results loaded for this team yet": "noResultsTeam",
+      "Support the World Cup 2026 Integration using Ko-fi or PayPal. Every donation helps with future updates, testing and new features.": "supportIntroFull",
+      "Premium Supporters": "premiumSupporters",
+      "Your name or nickname can be shown with your country flag in the integration.": "nameFlagText",
+      "Personal Message": "personalMessage",
+      "Every Donation Matters": "everyDonationMatters",
+      "Live data costs": "liveDataCosts",
+      "Bug fixes & improvements": "bugFixesImprovements",
+      "Future features": "futureFeatures",
+      "Community development": "communityDevelopment",
+      "To be added, include your name, country and optional message after donating.": "toBeAddedSupporter",
+      "Every supporter matters. Every donation helps. Every contribution is appreciated. ??": "everySupporterMatters",
+    };
+  }
+
+  staticPhraseFallbacks() {
+    const en = {
+      eventCoverage: "Event Coverage",
+      lineupCoverage: "Lineup Coverage",
+      tournamentRates: "Tournament Rates",
+      dataHealth: "Data Health",
+      eventTimelines: "Event timelines",
+      lineups: "Lineups",
+      teamPerformance: "Team Performance",
+      teamEventLeaders: "Team Event Leaders",
+      lineupsFormations: "Lineups & Formations",
+      squadUsage: "Squad Usage",
+      playerStarts: "Player Starts",
+      benchWatch: "Bench Watch",
+      disciplineCentre: "Discipline Centre",
+      playerEventWatch: "Player Event Watch",
+      refereeStats: "Referee Stats",
+      matchRecords: "Match Records",
+      substitutions: "Substitutions",
+      referees: "Referees",
+      eventsPerMatch: "Events / Match",
+      cardsPerMatch: "Cards / Match",
+      over25Goals: "Over 2.5 Goals",
+      cards: "Cards",
+      events: "Events",
+      formation: "Formation",
+      used: "Used",
+      starters: "Starters",
+      bench: "Bench",
+      starts: "Starts",
+      yellow: "Yellow",
+      red: "Red",
+      subs: "Subs",
+      official: "Official",
+      noTeamStatsYet: "No team stats yet",
+      noEventDataYet: "No event data yet",
+      noLineupDataYet: "No lineup data loaded yet",
+      noSquadUsageDataYet: "No squad usage data yet",
+      noStartingXiDataYet: "No starting XI data yet",
+      noBenchDataYet: "No bench data yet",
+      noDisciplineDataYet: "No discipline data yet",
+      noPlayerEventDataYet: "No player event data yet",
+      noRefereeDataYet: "No referee data yet",
+      noDataYet: "No data yet",
+      matchdayControlRoom: "Matchday Control Room",
+      matchResults: "Match Results",
+      completedWorldCupMatches: "Completed World Cup 2026 matches",
+      allTimesLocal: "All times shown in your local time - FT = Full Time",
+      apiResultsTest: "API Results Test",
+      noApiFinishedMatches: "No finished matches came back from the Home Assistant API feed yet.",
+      directApiOnly: "Direct backend/API finished matches only - no GitHub, no goal_events fallback",
+      noGoldenBootData: "No Golden Boot scorer data available yet.",
+      officialScorersFirst: "Official scorers first, with match-event data used only for assists, penalties and fallback coverage.",
+      leaderboard: "Leaderboard",
+      goldenBootTable: "Golden Boot Table",
+      leaderPending: "Leader will appear when scorer data is available.",
+      knockoutStage: "Knockout Stage",
+      winner: "Winner",
+      knockoutDetails: "Knockout Details",
+      tournamentRecords: "Tournament Records",
+      recordsCentre: "Records Centre",
+      recordsIntro: "Best matches, biggest wins, team leaders, discipline records and timeline event records in one place.",
+      finishedMatches: "Finished matches",
+      teamRecords: "Team Records",
+      eventRecordMatches: "Event Record Matches",
+      topEventTeams: "Top Event Teams",
+      mostEvents: "Most Events",
+      mostCards: "Most Cards",
+      mostSubs: "Most Subs",
+      mostVar: "Most VAR",
+      mostEventfulMatch: "Most Eventful Match",
+      disciplineRecord: "Discipline Record",
+      cleanSheetLeader: "Clean Sheet Leader",
+      mostSubstitutions: "Most Substitutions",
+      mostVarEvents: "Most VAR Events",
+      noEventRecordsYet: "No event records yet",
+      noTeamEventRecordsYet: "No team event records yet",
+      statsIntro: "A proper tournament stats centre built from results, timelines, cards, substitutions, VAR, referees, player involvement and team lineups already loaded into the integration.",
+      statsNoExtraPulls: "Stats Hub only uses data already loaded into the panel. This page does not trigger extra API pulls.",
+      teamDiscipline: "Team Discipline",
+      teamCommandCentre: "Team Command Centre",
+      teamCommandIntro: "Compact team hub with fixtures, results, cards, players, group table and tournament journey.",
+      countryProfile: "Country Profile",
+      countryPlayers: "Country Players",
+      playerCardsBuilt: "Player cards are built from loaded goals, assists and event data.",
+      playerSpotlight: "Player Spotlight",
+      formGuide: "Form Guide",
+      groupSnapshot: "Group Snapshot",
+      tournamentJourney: "Tournament Journey",
+      stadiumTracker: "Stadium Tracker",
+      previousResults: "Previous Results",
+      teamStatistics: "Team Statistics",
+      goalsBreakdown: "Goals Breakdown",
+      noTeamsLoadedYet: "No teams loaded yet",
+      noTeamUpcomingMatch: "No upcoming match loaded for this team yet",
+      noTeamResults: "No finished results loaded for this team yet",
+      noTeamFixtures: "No fixtures loaded for this team yet",
+      noTeamGroupTable: "No group table loaded for this team yet",
+      noTeamPlayerEvents: "No player event data loaded for this team yet",
+      noFormDataYet: "No form data yet",
+      noTeamStadiumData: "No stadium data loaded for this team yet",
+      noCountryPlayerData: "No country player data loaded yet",
+      noUpcomingFixturesTeam: "No upcoming fixtures loaded for this team yet",
+      noResultsTeam: "No results loaded for this team yet",
+      supportIntroFull: "Support the World Cup 2026 Integration using Ko-fi or PayPal. Every donation helps with future updates, testing and new features.",
+      supportViaKofi: "Support via Ko-fi",
+      supportViaPaypal: "Support via PayPal",
+      premiumTickerAria: "World Cup 2026 premium supporters",
+      featuredMainDashboard: "Featured on the main dashboard",
+      supportDevelopment: "Support development",
+      helpApiCosts: "Help with API costs, fixes and live updates",
+      minimumDonationFeatured: "Minimum GBP 10 donation to be featured",
+      mainPageFeaturedSupporters: "Main-page featured supporters",
+      joinSupporters: "Join",
+      premiumFeatureText: "can have their name, country flag and a personalised message featured in the World Cup 2026 Integration.",
+      premiumSupportIntro: "The World Cup 2026 integration has grown from a small personal Home Assistant dashboard into a full tournament system with fixtures, live scores, results, groups, knockout tracking, stadiums, records, Golden Boot data and supporter features.",
+      premiumSupportCosts: "Every update takes time to build, test and maintain, and support also helps towards live football data, future improvements, bug fixes and project costs.",
+      premiumSupporter: "Premium Supporter",
+      donatePremiumText: "Donate GBP 10 / USD 10 / EUR 10 or more to be featured as a Premium Supporter.",
+      nameFlag: "Name & Flag",
+      premiumMessageText: "Premium Supporters can include a short message to appear with their supporter profile.",
+      everyDonationText: "Whilst Premium Supporters receive extra recognition, every donation is genuinely appreciated regardless of amount. Anyone who supports the project can still be added to the Supporters page as a thank you.",
+      supporterExample: "Example: Adrian Apel - Creator & Founder / John Smith - Supporting development from the USA / Klaus Meyer - Love the integration!",
+      premiumSupporters: "Premium Supporters",
+      nameFlagText: "Your name or nickname can be shown with your country flag in the integration.",
+      personalMessage: "Personal Message",
+      everyDonationMatters: "Every Donation Matters",
+      liveDataCosts: "Live data costs",
+      bugFixesImprovements: "Bug fixes & improvements",
+      futureFeatures: "Future features",
+      communityDevelopment: "Community development",
+      toBeAddedSupporter: "To be added, include your name, country and optional message after donating.",
+      everySupporterMatters: "Every supporter matters. Every donation helps. Every contribution is appreciated.",
+      groupPosition: "Group Pos",
+      currentSnapshot: "Current snapshot",
+      points: "Points",
+      groupTable: "Group table",
+      tracked: "Tracked",
+      byPlayers: "By players",
+      cardsForTeam: "Cards from loaded match event data",
+      allCards: "All cards",
+      next: "Next",
+      loadedForTeam: "Loaded for team",
+      record: "Record",
+      upcoming: "upcoming",
+      forLabel: "For",
+      against: "Against",
+      scored: "Scored",
+      clean: "Clean",
+      sheets: "Sheets",
+      current: "Current",
+      total: "Total",
+    };
+    const simple = {
+      fr: ["Couverture evenements","Couverture compositions","Taux du tournoi","Sante des donnees","Chronologies","Compositions","Performance equipe","Equipes leaders","Compositions et formations","Utilisation effectif","Titularisations","Banc","Discipline","Evenements joueurs","Stats arbitres","Records match","Remplacements","Arbitres","Evenements / match","Cartons / match","Plus de 2,5 buts","Cartons","Evenements","Formation","Utilise","Titulaires","Banc","Titularisations","Jaune","Rouge","Remp.","Officiel","Aucune stat equipe","Aucune donnee evenement","Aucune composition chargee","Aucune donnee effectif","Aucune donnee titulaires","Aucune donnee banc","Aucune donnee discipline","Aucune donnee joueur","Aucune donnee arbitre","Aucune donnee"],
+      de: ["Ereignisabdeckung","Aufstellungsabdeckung","Turnierraten","Datenstatus","Ereignisverlauf","Aufstellungen","Teamleistung","Ereignisfuhrer","Aufstellungen & Formationen","Kadernutzung","Starts Spieler","Bank","Disziplin","Spielerereignisse","Schiedsrichter-Stats","Spielrekorde","Auswechslungen","Schiedsrichter","Ereignisse / Spiel","Karten / Spiel","Uber 2,5 Tore","Karten","Ereignisse","Formation","Genutzt","Starter","Bank","Starts","Gelb","Rot","Wechsel","Offizieller","Keine Teamdaten","Keine Ereignisdaten","Keine Aufstellungen","Keine Kaderdaten","Keine Startelf-Daten","Keine Bankdaten","Keine Disziplindaten","Keine Spielerdaten","Keine Schiedsrichterdaten","Keine Daten"],
+      es: ["Cobertura eventos","Cobertura alineaciones","Tasas torneo","Salud de datos","Cronologia eventos","Alineaciones","Rendimiento equipo","Lideres eventos","Alineaciones y formaciones","Uso plantilla","Titularidades","Banquillo","Disciplina","Eventos jugador","Stats arbitros","Records partido","Sustituciones","Arbitros","Eventos / partido","Tarjetas / partido","Mas de 2,5 goles","Tarjetas","Eventos","Formacion","Usado","Titulares","Banquillo","Titularidades","Amarilla","Roja","Cambios","Oficial","Sin stats equipo","Sin eventos","Sin alineaciones","Sin uso plantilla","Sin once inicial","Sin banquillo","Sin disciplina","Sin datos jugador","Sin datos arbitro","Sin datos"],
+      it: ["Copertura eventi","Copertura formazioni","Tassi torneo","Salute dati","Cronologia eventi","Formazioni","Prestazione squadra","Leader eventi","Formazioni e moduli","Uso rosa","Titolari","Panchina","Disciplina","Eventi giocatore","Stats arbitri","Record partita","Sostituzioni","Arbitri","Eventi / partita","Cartellini / partita","Over 2.5 gol","Cartellini","Eventi","Modulo","Usato","Titolari","Panchina","Presenze titolare","Giallo","Rosso","Sost.","Ufficiale","Nessuna stat squadra","Nessun evento","Nessuna formazione","Nessun uso rosa","Nessun dato XI","Nessun dato panchina","Nessuna disciplina","Nessun dato giocatore","Nessun dato arbitro","Nessun dato"],
+      nl: ["Eventdekking","Opstellingdekking","Toernooiratio's","Datagezondheid","Eventtijdlijnen","Opstellingen","Teamprestatie","Eventleiders","Opstellingen & formaties","Selectiegebruik","Spelerstarts","Bank","Discipline","Spelerevents","Scheidsrechterstats","Wedstrijdrecords","Wissels","Scheidsrechters","Events / wedstrijd","Kaarten / wedstrijd","Meer dan 2,5 goals","Kaarten","Events","Formatie","Gebruikt","Starters","Bank","Starts","Geel","Rood","Wissels","Official","Geen teamstats","Geen eventdata","Geen opstellingen","Geen selectiegebruik","Geen basiself data","Geen bankdata","Geen discipline","Geen spelerdata","Geen scheidsrechterdata","Geen data"],
+    };
+    const keys = Object.keys(en);
+    const out = { en };
+    Object.entries(simple).forEach(([lang, values]) => {
+      out[lang] = {};
+      keys.forEach((key, index) => { out[lang][key] = values[index] || en[key]; });
+    });
+    const aliases = {
+      pt: "es",
+      qu: "es",
+      gn: "es",
+      ay: "es",
+      pl: "de",
+      sv: "de",
+      no: "de",
+      da: "de",
+      fi: "de",
+      is: "de",
+      hu: "de",
+      tr: "de",
+      cs: "de",
+      sk: "de",
+      sl: "de",
+      hr: "de",
+      sr: "de",
+      bg: "de",
+      uk: "de",
+      ro: "it",
+      el: "it",
+    };
+    Object.entries(aliases).forEach(([lang, source]) => {
+      out[lang] = out[source] || out.en;
+    });
+    out.ja = {
+      eventCoverage: "イベント取得率",
+      lineupCoverage: "ラインアップ取得率",
+      tournamentRates: "大会レート",
+      dataHealth: "データ状態",
+      eventTimelines: "イベント履歴",
+      lineups: "ラインアップ",
+      teamPerformance: "チーム成績",
+      teamEventLeaders: "イベント上位チーム",
+      lineupsFormations: "ラインアップとフォーメーション",
+      squadUsage: "選手起用",
+      playerStarts: "先発回数",
+      benchWatch: "ベンチ",
+      disciplineCentre: "規律センター",
+      playerEventWatch: "選手イベント",
+      refereeStats: "審判統計",
+      matchRecords: "試合記録",
+      substitutions: "交代",
+      referees: "審判",
+      eventsPerMatch: "イベント / 試合",
+      cardsPerMatch: "カード / 試合",
+      over25Goals: "2.5点超",
+      cards: "カード",
+      events: "イベント",
+      formation: "フォーメーション",
+      used: "使用",
+      starters: "先発",
+      bench: "ベンチ",
+      starts: "先発",
+      yellow: "黄",
+      red: "赤",
+      subs: "交代",
+      official: "審判",
+      noTeamStatsYet: "チーム統計なし",
+      noEventDataYet: "イベントデータなし",
+      noLineupDataYet: "ラインアップなし",
+      noSquadUsageDataYet: "選手起用データなし",
+      noStartingXiDataYet: "先発XIデータなし",
+      noBenchDataYet: "ベンチデータなし",
+      noDisciplineDataYet: "規律データなし",
+      noPlayerEventDataYet: "選手イベントなし",
+      noRefereeDataYet: "審判データなし",
+      noDataYet: "データなし",
+    };
+    const extra = {
+      fr: {
+        matchdayControlRoom: "Centre de controle du match", matchResults: "Resultats des matchs", completedWorldCupMatches: "Matchs termines Coupe du Monde 2026", allTimesLocal: "Toutes les heures sont locales - FT = Fin du match", apiResultsTest: "Test resultats API", noApiFinishedMatches: "Aucun match termine n'est revenu du flux API Home Assistant.", directApiOnly: "Matchs termines backend/API uniquement - sans GitHub ni goal_events", noGoldenBootData: "Aucune donnee Soulier d'Or disponible.", officialScorersFirst: "Buteurs officiels en premier, evenements utilises pour passes, penalties et couverture.", leaderboard: "Classement", goldenBootTable: "Table Soulier d'Or", leaderPending: "Le leader apparaitra quand les donnees seront disponibles.", knockoutStage: "Phase finale", winner: "Vainqueur", knockoutDetails: "Details phase finale", tournamentRecords: "Records du tournoi", recordsCentre: "Centre des records", recordsIntro: "Meilleurs matchs, plus larges victoires, leaders, discipline et evenements.", finishedMatches: "Matchs termines", teamRecords: "Records equipes", eventRecordMatches: "Matchs records d'evenements", topEventTeams: "Equipes leaders evenements", mostEvents: "Plus d'evenements", mostCards: "Plus de cartons", mostSubs: "Plus de remplacements", mostVar: "Plus de VAR", mostEventfulMatch: "Match le plus anime", disciplineRecord: "Record discipline", cleanSheetLeader: "Leader clean sheets", mostSubstitutions: "Plus de remplacements", mostVarEvents: "Plus d'evenements VAR", noEventRecordsYet: "Aucun record d'evenements", noTeamEventRecordsYet: "Aucun record equipe", statsIntro: "Centre de statistiques construit avec resultats, chronologies, cartons, remplacements, VAR, arbitres, joueurs et compositions.", statsNoExtraPulls: "Stats Hub utilise seulement les donnees deja chargees. Aucun appel API supplementaire.", teamDiscipline: "Discipline equipe", teamCommandCentre: "Centre equipe", teamCommandIntro: "Hub compact avec matchs, resultats, cartons, joueurs, groupe et parcours.", countryProfile: "Profil pays", countryPlayers: "Joueurs du pays", playerCardsBuilt: "Cartes joueurs creees depuis buts, passes et evenements.", playerSpotlight: "Joueur en vue", formGuide: "Forme", groupSnapshot: "Apercu groupe", tournamentJourney: "Parcours tournoi", stadiumTracker: "Suivi stades", previousResults: "Resultats precedents", teamStatistics: "Statistiques equipe", goalsBreakdown: "Details des buts", noTeamsLoadedYet: "Aucune equipe chargee", noTeamUpcomingMatch: "Aucun prochain match pour cette equipe", noTeamResults: "Aucun resultat termine pour cette equipe", noTeamFixtures: "Aucun match charge pour cette equipe", noTeamGroupTable: "Aucun tableau de groupe pour cette equipe", noTeamPlayerEvents: "Aucun evenement joueur pour cette equipe", noFormDataYet: "Aucune donnee de forme", noTeamStadiumData: "Aucune donnee stade pour cette equipe", noCountryPlayerData: "Aucune donnee joueur pays", noUpcomingFixturesTeam: "Aucun prochain match pour cette equipe", noResultsTeam: "Aucun resultat pour cette equipe", supportIntroFull: "Soutenez l'integration World Cup 2026 via Ko-fi ou PayPal.", premiumSupporters: "Supporters Premium", nameFlagText: "Votre nom ou pseudo peut etre affiche avec votre drapeau.", personalMessage: "Message personnel", everyDonationMatters: "Chaque don compte", liveDataCosts: "Couts des donnees live", bugFixesImprovements: "Corrections et ameliorations", futureFeatures: "Fonctionnalites futures", communityDevelopment: "Developpement communautaire", toBeAddedSupporter: "Pour etre ajoute, indiquez nom, pays et message apres le don.", everySupporterMatters: "Chaque supporter compte. Chaque don aide. Chaque contribution est appreciee."
+      },
+      de: {
+        matchdayControlRoom: "Spieltags-Kontrollraum", matchResults: "Spielergebnisse", completedWorldCupMatches: "Abgeschlossene WM-2026-Spiele", allTimesLocal: "Alle Zeiten lokal - FT = Spielende", apiResultsTest: "API-Ergebnistest", noApiFinishedMatches: "Keine beendeten Spiele aus dem Home Assistant API-Feed.", directApiOnly: "Nur Backend/API-Ergebnisse - kein GitHub, kein goal_events", noGoldenBootData: "Noch keine Golden-Boot-Daten.", officialScorersFirst: "Offizielle Torschutzen zuerst, Ereignisdaten fur Assists, Elfmeter und Ersatz.", leaderboard: "Bestenliste", goldenBootTable: "Golden-Boot-Tabelle", leaderPending: "Der Fuhrende erscheint, sobald Daten vorhanden sind.", knockoutStage: "K.-o.-Phase", winner: "Sieger", knockoutDetails: "K.-o.-Details", tournamentRecords: "Turnierrekorde", recordsCentre: "Rekordzentrum", recordsIntro: "Beste Spiele, grosste Siege, Teamfuhrer, Disziplin und Ereignisrekorde.", finishedMatches: "Beendete Spiele", teamRecords: "Teamrekorde", eventRecordMatches: "Ereignis-Rekordspiele", topEventTeams: "Top-Ereignisteams", mostEvents: "Meiste Ereignisse", mostCards: "Meiste Karten", mostSubs: "Meiste Wechsel", mostVar: "Meiste VAR", mostEventfulMatch: "Ereignisreichstes Spiel", disciplineRecord: "Disziplinrekord", cleanSheetLeader: "Zu-Null-Fuhrer", mostSubstitutions: "Meiste Auswechslungen", mostVarEvents: "Meiste VAR-Ereignisse", noEventRecordsYet: "Noch keine Ereignisrekorde", noTeamEventRecordsYet: "Noch keine Team-Ereignisrekorde", statsIntro: "Statistikzentrum aus Ergebnissen, Zeitlinien, Karten, Wechseln, VAR, Schiris, Spielern und Aufstellungen.", statsNoExtraPulls: "Stats Hub nutzt nur bereits geladene Daten. Keine extra API-Abfragen.", teamDiscipline: "Teamdisziplin", teamCommandCentre: "Team-Kommandozentrum", teamCommandIntro: "Kompakter Teamhub mit Spielen, Ergebnissen, Karten, Spielern, Gruppe und Turnierweg.", countryProfile: "Landprofil", countryPlayers: "Landesspieler", playerCardsBuilt: "Spielerkarten aus Toren, Assists und Ereignissen.", playerSpotlight: "Spielerfokus", formGuide: "Formkurve", groupSnapshot: "Gruppenubersicht", tournamentJourney: "Turnierweg", stadiumTracker: "Stadion-Tracker", previousResults: "Vorherige Ergebnisse", teamStatistics: "Teamstatistiken", goalsBreakdown: "Toraufschlusselung", noTeamsLoadedYet: "Noch keine Teams geladen", noTeamUpcomingMatch: "Kein nachstes Spiel fur dieses Team", noTeamResults: "Keine beendeten Ergebnisse fur dieses Team", noTeamFixtures: "Keine Spiele fur dieses Team", noTeamGroupTable: "Keine Gruppentabelle fur dieses Team", noTeamPlayerEvents: "Keine Spielerereignisse fur dieses Team", noFormDataYet: "Keine Formdaten", noTeamStadiumData: "Keine Stadiondaten fur dieses Team", noCountryPlayerData: "Keine Landesspielerdaten", noUpcomingFixturesTeam: "Keine kommenden Spiele fur dieses Team", noResultsTeam: "Keine Ergebnisse fur dieses Team", supportIntroFull: "Unterstutze die World Cup 2026 Integration per Ko-fi oder PayPal.", premiumFeatureText: "konnen mit Name, Landesflagge und personlicher Nachricht in der World Cup 2026 Integration angezeigt werden.", premiumSupportIntro: "Die World Cup 2026 Integration ist von einem kleinen personlichen Home Assistant Dashboard zu einem kompletten Turniersystem mit Spielplan, Live-Ergebnissen, Resultaten, Gruppen, K.-o.-Phase, Stadien, Rekorden, Golden Boot Daten und Unterstutzerfunktionen gewachsen.", premiumSupportCosts: "Jedes Update braucht Zeit fur Entwicklung, Tests und Pflege. Unterstutzung hilft auch bei Live-Fussballdaten, zukunftigen Verbesserungen, Fehlerbehebungen und Projektkosten.", premiumSupporter: "Premium-Unterstutzer", donatePremiumText: "Spende 10 £ / 10 $ / 10 € oder mehr, um als Premium-Unterstutzer angezeigt zu werden.", nameFlag: "Name & Flagge", premiumMessageText: "Premium-Unterstutzer konnen eine kurze Nachricht in ihrem Unterstutzerprofil anzeigen lassen.", everyDonationText: "Premium-Unterstutzer erhalten besondere Anerkennung, aber jede Spende wird unabhangig vom Betrag ehrlich geschatzt. Jeder, der das Projekt unterstutzt, kann als Dank auf der Unterstutzerseite hinzugefugt werden.", supporterExample: "Beispiel: 🇬🇧 Adrian Apel — „Creator & Founder“ · 🇺🇸 John Smith — „Unterstutzt die Entwicklung aus den USA“ · 🇩🇪 Klaus Meyer — „Liebe die Integration!“", premiumSupporters: "Premium-Unterstutzer", nameFlagText: "Name oder Spitzname kann mit Landesflagge angezeigt werden.", personalMessage: "Personliche Nachricht", everyDonationMatters: "Jede Spende zahlt", liveDataCosts: "Live-Datenkosten", bugFixesImprovements: "Fehlerbehebungen & Verbesserungen", futureFeatures: "Zukunftige Funktionen", communityDevelopment: "Community-Entwicklung", toBeAddedSupporter: "Nach der Spende Name, Land und optionale Nachricht angeben.", everySupporterMatters: "Jeder Unterstutzer zahlt. Jede Spende hilft. Jeder Beitrag wird geschatzt."
+      },
+      es: {
+        matchdayControlRoom: "Centro de control del partido", matchResults: "Resultados de partidos", completedWorldCupMatches: "Partidos completados Mundial 2026", allTimesLocal: "Todas las horas son locales - FT = Final", apiResultsTest: "Prueba de resultados API", noApiFinishedMatches: "No llegaron partidos terminados desde la API de Home Assistant.", directApiOnly: "Solo backend/API - sin GitHub ni goal_events", noGoldenBootData: "Aun no hay datos de Bota de Oro.", officialScorersFirst: "Goleadores oficiales primero, eventos solo para asistencias, penales y cobertura.", leaderboard: "Clasificacion", goldenBootTable: "Tabla Bota de Oro", leaderPending: "El lider aparecera cuando haya datos.", knockoutStage: "Fase eliminatoria", winner: "Ganador", knockoutDetails: "Detalles eliminatoria", tournamentRecords: "Records del torneo", recordsCentre: "Centro de records", recordsIntro: "Mejores partidos, mayores victorias, lideres, disciplina y records de eventos.", finishedMatches: "Partidos terminados", teamRecords: "Records de equipos", eventRecordMatches: "Partidos record de eventos", topEventTeams: "Equipos lideres en eventos", mostEvents: "Mas eventos", mostCards: "Mas tarjetas", mostSubs: "Mas cambios", mostVar: "Mas VAR", mostEventfulMatch: "Partido con mas eventos", disciplineRecord: "Record de disciplina", cleanSheetLeader: "Lider porterias a cero", mostSubstitutions: "Mas sustituciones", mostVarEvents: "Mas eventos VAR", noEventRecordsYet: "Sin records de eventos", noTeamEventRecordsYet: "Sin records de eventos por equipo", statsIntro: "Centro estadistico con resultados, cronologias, tarjetas, cambios, VAR, arbitros, jugadores y alineaciones.", statsNoExtraPulls: "Stats Hub solo usa datos ya cargados. No hace llamadas API extra.", teamDiscipline: "Disciplina del equipo", teamCommandCentre: "Centro del equipo", teamCommandIntro: "Hub compacto con partidos, resultados, tarjetas, jugadores, grupo y recorrido.", countryProfile: "Perfil del pais", countryPlayers: "Jugadores del pais", playerCardsBuilt: "Tarjetas de jugadores creadas con goles, asistencias y eventos.", playerSpotlight: "Jugador destacado", formGuide: "Guia de forma", groupSnapshot: "Resumen del grupo", tournamentJourney: "Recorrido del torneo", stadiumTracker: "Seguimiento de estadios", previousResults: "Resultados anteriores", teamStatistics: "Estadisticas del equipo", goalsBreakdown: "Desglose de goles", noTeamsLoadedYet: "No hay equipos cargados", noTeamUpcomingMatch: "No hay proximo partido para este equipo", noTeamResults: "No hay resultados terminados para este equipo", noTeamFixtures: "No hay partidos para este equipo", noTeamGroupTable: "No hay tabla de grupo para este equipo", noTeamPlayerEvents: "No hay eventos de jugadores para este equipo", noFormDataYet: "Sin datos de forma", noTeamStadiumData: "Sin datos de estadio para este equipo", noCountryPlayerData: "Sin datos de jugadores del pais", noUpcomingFixturesTeam: "Sin proximos partidos para este equipo", noResultsTeam: "Sin resultados para este equipo", supportIntroFull: "Apoya la integracion World Cup 2026 con Ko-fi o PayPal.", premiumSupporters: "Colaboradores Premium", nameFlagText: "Tu nombre o apodo puede mostrarse con la bandera de tu pais.", personalMessage: "Mensaje personal", everyDonationMatters: "Cada donacion importa", liveDataCosts: "Costes de datos en vivo", bugFixesImprovements: "Correcciones y mejoras", futureFeatures: "Funciones futuras", communityDevelopment: "Desarrollo comunitario", toBeAddedSupporter: "Para aparecer, incluye nombre, pais y mensaje opcional tras donar.", everySupporterMatters: "Cada colaborador importa. Cada donacion ayuda. Cada contribucion se agradece."
+      },
+    };
+    Object.entries(extra).forEach(([lang, values]) => {
+      out[lang] = { ...(out[lang] || {}), ...values };
+    });
+    const premiumTextFallbacks = {
+      fr: {
+        premiumFeatureText: "peuvent afficher leur nom, leur drapeau et un message personnalise dans l'integration World Cup 2026.",
+        premiumSupportIntro: "L'integration World Cup 2026 est passee d'un petit tableau de bord Home Assistant personnel a un systeme complet de tournoi avec matchs, scores en direct, resultats, groupes, phase finale, stades, records, Soulier d'Or et fonctions de soutien.",
+        premiumSupportCosts: "Chaque mise a jour demande du temps de developpement, de test et de maintenance. Le soutien aide aussi pour les donnees live, les futures ameliorations, les corrections et les couts du projet.",
+        premiumSupporter: "Supporter Premium",
+        donatePremiumText: "Donnez GBP 10 / USD 10 / EUR 10 ou plus pour etre affiche comme Supporter Premium.",
+        nameFlag: "Nom et drapeau",
+        premiumMessageText: "Les Supporters Premium peuvent ajouter un court message a leur profil.",
+        everyDonationText: "Les Supporters Premium recoivent une reconnaissance speciale, mais chaque don est sincerement apprecie, quel que soit le montant. Toute personne qui soutient le projet peut aussi etre ajoutee a la page Supporters en remerciement.",
+        supporterExample: "Exemple : Adrian Apel - Createur et fondateur / John Smith - Soutient le developpement depuis les USA / Klaus Meyer - J'adore l'integration !",
+        supportViaKofi: "Soutenir via Ko-fi",
+        supportViaPaypal: "Soutenir via PayPal",
+        premiumTickerAria: "Supporters premium World Cup 2026",
+        featuredMainDashboard: "Affiche sur le tableau de bord principal",
+        supportDevelopment: "Soutenir le developpement",
+        helpApiCosts: "Aide pour les couts API, corrections et mises a jour live",
+        minimumDonationFeatured: "Don minimum de GBP 10 pour etre affiche",
+        mainPageFeaturedSupporters: "Supporters affiches sur la page principale",
+        joinSupporters: "Rejoindre",
+      },
+      de: {
+        premiumFeatureText: "konnen mit Name, Landesflagge und personlicher Nachricht in der World Cup 2026 Integration angezeigt werden.",
+        premiumSupportIntro: "Die World Cup 2026 Integration ist von einem kleinen personlichen Home Assistant Dashboard zu einem kompletten Turniersystem mit Spielplan, Live-Ergebnissen, Resultaten, Gruppen, K.-o.-Phase, Stadien, Rekorden, Golden Boot Daten und Unterstutzerfunktionen gewachsen.",
+        premiumSupportCosts: "Jedes Update braucht Zeit fur Entwicklung, Tests und Pflege. Unterstutzung hilft auch bei Live-Fussballdaten, zukunftigen Verbesserungen, Fehlerbehebungen und Projektkosten.",
+        premiumSupporter: "Premium-Unterstutzer",
+        donatePremiumText: "Spende GBP 10 / USD 10 / EUR 10 oder mehr, um als Premium-Unterstutzer angezeigt zu werden.",
+        nameFlag: "Name und Flagge",
+        premiumMessageText: "Premium-Unterstutzer konnen eine kurze Nachricht in ihrem Unterstutzerprofil anzeigen lassen.",
+        everyDonationText: "Premium-Unterstutzer erhalten besondere Anerkennung, aber jede Spende wird unabhangig vom Betrag ehrlich geschatzt. Jeder, der das Projekt unterstutzt, kann als Dank auf der Unterstutzerseite hinzugefugt werden.",
+        supporterExample: "Beispiel: Adrian Apel - Creator & Founder / John Smith - Unterstutzt die Entwicklung aus den USA / Klaus Meyer - Liebe die Integration!",
+        supportViaKofi: "Unterstutzen via Ko-fi",
+        supportViaPaypal: "Unterstutzen via PayPal",
+        premiumTickerAria: "World Cup 2026 Premium-Unterstutzer",
+        featuredMainDashboard: "Auf dem Haupt-Dashboard angezeigt",
+        supportDevelopment: "Entwicklung unterstutzen",
+        helpApiCosts: "Hilft bei API-Kosten, Fehlerbehebungen und Live-Updates",
+        minimumDonationFeatured: "Mindestens GBP 10 Spende fur die Anzeige",
+        mainPageFeaturedSupporters: "Unterstutzer auf der Hauptseite",
+        joinSupporters: "Mitmachen",
+      },
+      es: {
+        premiumFeatureText: "pueden mostrar su nombre, bandera del pais y un mensaje personalizado en la integracion World Cup 2026.",
+        premiumSupportIntro: "La integracion World Cup 2026 paso de ser un pequeno panel personal de Home Assistant a un sistema completo del torneo con fixtures, marcadores en vivo, resultados, grupos, eliminatorias, estadios, records, Bota de Oro y funciones para seguidores.",
+        premiumSupportCosts: "Cada actualizacion requiere tiempo para crear, probar y mantener. El apoyo tambien ayuda con datos de futbol en vivo, mejoras futuras, correcciones y costes del proyecto.",
+        premiumSupporter: "Seguidor Premium",
+        donatePremiumText: "Dona GBP 10 / USD 10 / EUR 10 o mas para aparecer como Seguidor Premium.",
+        nameFlag: "Nombre y bandera",
+        premiumMessageText: "Los Seguidores Premium pueden incluir un mensaje corto en su perfil.",
+        everyDonationText: "Los Seguidores Premium reciben reconocimiento extra, pero cada donacion se agradece de verdad sin importar la cantidad. Cualquiera que apoye el proyecto puede agregarse a la pagina de seguidores como agradecimiento.",
+        supporterExample: "Ejemplo: Adrian Apel - Creador y fundador / John Smith - Apoyando el desarrollo desde EE. UU. / Klaus Meyer - Me encanta la integracion!",
+        supportViaKofi: "Apoyar via Ko-fi",
+        supportViaPaypal: "Apoyar via PayPal",
+        premiumTickerAria: "Seguidores premium World Cup 2026",
+        featuredMainDashboard: "Destacado en el panel principal",
+        supportDevelopment: "Apoyar el desarrollo",
+        helpApiCosts: "Ayuda con costes API, correcciones y actualizaciones en vivo",
+        minimumDonationFeatured: "Donacion minima de GBP 10 para aparecer",
+        mainPageFeaturedSupporters: "Seguidores destacados en la pagina principal",
+        joinSupporters: "Unirse",
+      },
+      ja: {
+        premiumFeatureText: "名前、国旗、個人メッセージを World Cup 2026 インテグレーションに表示できます。",
+        premiumSupportIntro: "World Cup 2026 インテグレーションは、個人用の小さな Home Assistant ダッシュボードから、試合日程、ライブスコア、結果、グループ、決勝トーナメント、スタジアム、記録、ゴールデンブーツ、サポーター機能を備えた大会システムへ成長しました。",
+        premiumSupportCosts: "各アップデートには開発、テスト、保守の時間が必要です。支援はライブデータ、今後の改善、不具合修正、プロジェクト費用にも役立ちます。",
+        premiumSupporter: "プレミアムサポーター",
+        donatePremiumText: "GBP 10 / USD 10 / EUR 10 以上の支援でプレミアムサポーターとして表示されます。",
+        nameFlag: "名前と国旗",
+        premiumMessageText: "プレミアムサポーターはプロフィールに短いメッセージを表示できます。",
+        everyDonationText: "プレミアムサポーターには特別な表示がありますが、金額に関係なくすべての支援に心から感謝しています。支援してくれた方は、お礼としてサポーターページに追加できます。",
+        supporterExample: "例: Adrian Apel - Creator & Founder / John Smith - USA から開発を支援 / Klaus Meyer - この統合が大好き!",
+        supportViaKofi: "Ko-fi で支援",
+        supportViaPaypal: "PayPal で支援",
+        premiumTickerAria: "World Cup 2026 プレミアムサポーター",
+        featuredMainDashboard: "メインダッシュボードに表示",
+        supportDevelopment: "開発を支援",
+        helpApiCosts: "API費用、不具合修正、ライブ更新を支援",
+        minimumDonationFeatured: "表示には GBP 10 以上の支援",
+        mainPageFeaturedSupporters: "メインページ掲載サポーター",
+        joinSupporters: "参加",
+      },
+    };
+    Object.entries(premiumTextFallbacks).forEach(([lang, values]) => {
+      out[lang] = { ...(out[lang] || {}), ...values };
+    });
+    const replaceEnglishFallbacks = (lang, source) => {
+      out[lang] = out[lang] || {};
+      Object.keys(out.en).forEach((key) => {
+        if ((out[lang][key] === undefined || out[lang][key] === out.en[key]) && out[source]?.[key] && out[source][key] !== out.en[key]) {
+          out[lang][key] = out[source][key];
+        }
+      });
+    };
+    replaceEnglishFallbacks("it", "es");
+    replaceEnglishFallbacks("nl", "es");
+    replaceEnglishFallbacks("ja", "es");
+    Object.entries(aliases).forEach(([lang, source]) => {
+      out[lang] = { ...(out[lang] || {}), ...(out[source] || out.en) };
+      replaceEnglishFallbacks(lang, source);
+    });
+    const teamSmallLabels = {
+      fr: {
+        groupPosition: "Position groupe",
+        currentSnapshot: "Apercu actuel",
+        points: "Points",
+        groupTable: "Tableau groupe",
+        tracked: "Suivis",
+        byPlayers: "Par joueurs",
+        cardsForTeam: "Cartons depuis les evenements charges",
+        allCards: "Tous les cartons",
+        next: "Suivant",
+        loadedForTeam: "Charges pour l'equipe",
+        record: "Bilan",
+        upcoming: "a venir",
+        forLabel: "Pour",
+        against: "Contre",
+        scored: "Marques",
+        clean: "Clean",
+        sheets: "Sheets",
+        current: "Actuel",
+        total: "Total",
+      },
+      de: {
+        groupPosition: "Gruppenplatz",
+        currentSnapshot: "Aktueller Stand",
+        points: "Punkte",
+        groupTable: "Gruppentabelle",
+        tracked: "Erfasst",
+        byPlayers: "Durch Spieler",
+        cardsForTeam: "Karten aus geladenen Spielereignissen",
+        allCards: "Alle Karten",
+        next: "Nachstes",
+        loadedForTeam: "Fur Team geladen",
+        record: "Bilanz",
+        upcoming: "kommend",
+        forLabel: "Fur",
+        against: "Gegen",
+        scored: "Erzielt",
+        clean: "Zu null",
+        sheets: "Spiele",
+        current: "Aktuell",
+        total: "Gesamt",
+      },
+      es: {
+        groupPosition: "Posicion grupo",
+        currentSnapshot: "Vista actual",
+        points: "Puntos",
+        groupTable: "Tabla de grupo",
+        tracked: "Seguidos",
+        byPlayers: "Por jugadores",
+        cardsForTeam: "Tarjetas desde eventos cargados",
+        allCards: "Todas las tarjetas",
+        next: "Siguiente",
+        loadedForTeam: "Cargados para equipo",
+        record: "Balance",
+        upcoming: "proximos",
+        forLabel: "A favor",
+        against: "En contra",
+        scored: "Marcados",
+        clean: "Porteria",
+        sheets: "a cero",
+        current: "Actual",
+        total: "Total",
+      },
+    };
+    Object.entries(teamSmallLabels).forEach(([lang, values]) => {
+      out[lang] = { ...(out[lang] || {}), ...values };
+    });
+    Object.entries(aliases).forEach(([lang, source]) => {
+      out[lang] = { ...(out[lang] || {}), ...(teamSmallLabels[source] || {}) };
+    });
+    return out;
+  }
+
+  staticText(key) {
+    const phrases = this.staticPhraseFallbacks();
+    const all = this.translations();
+    const translated = all[this._language]?.[key];
+    if (translated && translated !== key) return translated;
+    return phrases[this._language]?.[key] || phrases.en[key] || key;
+  }
+
+  applyStaticTextTranslations() {
+    if (this._language === "en") return;
+    const map = this.staticTextKeyMap();
+    const walker = document.createTreeWalker(this, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach((node) => {
+      const raw = node.nodeValue || "";
+      const trimmed = raw.trim();
+      const key = map[trimmed] || map[trimmed.replace(/^[^\w]+\\s*/u, "")];
+      if (!key) return;
+      const translated = this.staticText(key);
+      node.nodeValue = raw.replace(trimmed, translated);
+    });
   }
 
   set hass(hass) {
@@ -4696,6 +5433,14 @@ class WorldCup2026Panel extends HTMLElement {
   connectedCallback() {
     this.applyHideSidebarFromUrl();
     this.renderLoading();
+    this._visibilityHandler = () => {
+      if (!document.hidden) {
+        this.updateCountdownDisplay();
+        this.updateLiveClockDisplays();
+        this.scheduleNextRefresh(10 * 1000);
+      }
+    };
+    document.addEventListener("visibilitychange", this._visibilityHandler);
 
     // Keep this panel synced without hammering GitHub/HA all day.
     // During live games, viewer devices pull the master GitHub/public feed
@@ -4703,6 +5448,7 @@ class WorldCup2026Panel extends HTMLElement {
     this.scheduleNextRefresh(20 * 1000);
 
     this._countdownInterval = setInterval(() => {
+      if (document.hidden) return;
       this.updateCountdownDisplay();
       this.updateLiveClockDisplays();
     }, 1000);
@@ -4727,6 +5473,11 @@ class WorldCup2026Panel extends HTMLElement {
     if (this._countdownInterval) {
       clearInterval(this._countdownInterval);
       this._countdownInterval = null;
+    }
+
+    if (this._visibilityHandler) {
+      document.removeEventListener("visibilitychange", this._visibilityHandler);
+      this._visibilityHandler = null;
     }
   }
 
@@ -4868,8 +5619,6 @@ class WorldCup2026Panel extends HTMLElement {
     const urls = [
       "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/world_cup_2026_goal_events.json?t=" + Date.now(),
       "/local/worldcup/world_cup_2026_goal_events.json?t=" + Date.now(),
-      "/local/world_cup_2026_goal_events.json?t=" + Date.now(),
-      "/world_cup_2026_frontend/data/world_cup_2026_goal_events.json?t=" + Date.now(),
     ];
 
     for (const url of urls) {
@@ -4940,8 +5689,6 @@ class WorldCup2026Panel extends HTMLElement {
       "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/worldcup/world_cup_2026_results.json?t=" + Date.now(),
       "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/world_cup_2026_results.json?t=" + Date.now(),
       "/local/worldcup/world_cup_2026_results.json?t=" + Date.now(),
-      "/local/world_cup_2026_results.json?t=" + Date.now(),
-      "/world_cup_2026_frontend/data/world_cup_2026_results.json?t=" + Date.now(),
     ];
 
     for (const url of urls) {
@@ -5307,10 +6054,11 @@ class WorldCup2026Panel extends HTMLElement {
       this._refreshInterval = null;
     }
     const refreshDelay = Number.isFinite(Number(delay)) ? Number(delay) : this.refreshDelayMs();
+    const hiddenDelay = document.hidden ? Math.max(refreshDelay, 60 * 1000) : refreshDelay;
     this._refreshInterval = setTimeout(() => {
       this._refreshInterval = null;
       this.loadAll();
-    }, Math.max(10 * 1000, refreshDelay));
+    }, Math.max(10 * 1000, hiddenDelay));
   }
 
   hasUsableMasterClock(match) {
@@ -5345,26 +6093,38 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   async loadAll() {
+    if (this._isLoading) {
+      return;
+    }
+    this._isLoading = true;
     try {
       // MASTER MODE: this panel must read tournament data from the Home Assistant
       // backend only. The backend is the only place that should talk to your
       // football-data.org API and then export JSON for public/GitHub viewers.
       // Do not let GitHub/public JSON override this live panel, otherwise your
       // own dashboard can end up showing stale public data instead of your API pull.
-      this._data.overview = await this.safeCall("world_cup_2026/get_overview", {
-        total_matches: 104,
-        played_matches: 0,
-        upcoming_matches: 0,
-        live_matches: 0,
-        total_goals: 0,
-        goals_per_match: 0,
-        groups: 0,
-        scorers: 0,
-      });
-
-      const apiLive = await this.safeCall("world_cup_2026/get_live_matches", []);
-      const apiFixtures = this.completeOfficialFixtures(await this.safeCall("world_cup_2026/get_fixtures", []));
-      const apiResults = await this.safeCall("world_cup_2026/get_results", []);
+      const [
+        overview,
+        apiLive,
+        rawApiFixtures,
+        apiResults,
+      ] = await Promise.all([
+        this.safeCall("world_cup_2026/get_overview", {
+          total_matches: 104,
+          played_matches: 0,
+          upcoming_matches: 0,
+          live_matches: 0,
+          total_goals: 0,
+          goals_per_match: 0,
+          groups: 0,
+          scorers: 0,
+        }),
+        this.safeCall("world_cup_2026/get_live_matches", []),
+        this.safeCall("world_cup_2026/get_fixtures", []),
+        this.safeCall("world_cup_2026/get_results", []),
+      ]);
+      this._data.overview = overview;
+      const apiFixtures = this.completeOfficialFixtures(rawApiFixtures);
 
       // Pure backend/API-only test feed. Do not merge GitHub or goal_events here.
       // Use BOTH backend results and backend fixtures, because some finished games
@@ -5374,10 +6134,18 @@ class WorldCup2026Panel extends HTMLElement {
         this.mergeResultsAndFinishedFixtures(apiResults, apiFixtures)
       );
 
-      const publicGoalEvents = await this.safeAsync(() => this.loadPublicGoalEvents(), {});
-      const publicResults = await this.safeAsync(() => this.loadPublicGithubResults(), []);
-      const publicLive = await this.safeAsync(() => this.loadPublicGithubLive(), []);
-      const publicMatches = this.mergeUniqueMatches(publicLive, await this.safeAsync(() => this.loadPublicGithubMatches(), []));
+      const [
+        publicGoalEvents,
+        publicResults,
+        publicLive,
+        publicGithubMatches,
+      ] = await Promise.all([
+        this.safeAsync(() => this.loadPublicGoalEvents(), {}),
+        this.safeAsync(() => this.loadPublicGithubResults(), []),
+        this.safeAsync(() => this.loadPublicGithubLive(), []),
+        this.safeAsync(() => this.loadPublicGithubMatches(), []),
+      ]);
+      const publicMatches = this.mergeUniqueMatches(publicLive, publicGithubMatches);
 
       const storeMatches = this.goalEventStoreToMatches(publicGoalEvents);
       const fixturesWithStore = this.mergePublicGoalEventStore(apiFixtures, publicGoalEvents);
@@ -5406,18 +6174,40 @@ class WorldCup2026Panel extends HTMLElement {
         this.mergeUniqueMatches(combinedResults, publicMatchesWithStore.filter((match) => this.isFinishedMatch(match))),
         this._data.fixtures
       );
-      this._data.groups = await this.safeCall("world_cup_2026/get_groups", []);
-      this._data.scorers = await this.safeCall("world_cup_2026/get_scorers", []);
-      this._data.statistics = await this.safeCall("world_cup_2026/get_statistics", {});
-      this._data.records = await this.safeCall("world_cup_2026/get_records", {});
-      this._data.venues = await this.safeCall("world_cup_2026/get_venues", {});
-      this._data.supporters = await this.safeAsync(() => this.loadSupporters(), []);
-      this._data.premiumSupporters = await this.safeAsync(() => this.loadPremiumSupporters(), []);
+      const [
+        groups,
+        scorers,
+        statistics,
+        records,
+        venues,
+      ] = await Promise.all([
+        this.safeCall("world_cup_2026/get_groups", []),
+        this.safeCall("world_cup_2026/get_scorers", []),
+        this.safeCall("world_cup_2026/get_statistics", {}),
+        this.safeCall("world_cup_2026/get_records", {}),
+        this.safeCall("world_cup_2026/get_venues", {}),
+      ]);
+      this._data.groups = groups;
+      this._data.scorers = scorers;
+      this._data.statistics = statistics;
+      this._data.records = records;
+      this._data.venues = venues;
+
+      const now = Date.now();
+      if (!this._supportersLoadedAt || now - this._supportersLoadedAt > 10 * 60 * 1000) {
+        this._data.supporters = await this.safeAsync(() => this.loadSupporters(), this._data.supporters || []);
+        this._supportersLoadedAt = now;
+      }
+      if (!this._premiumSupportersLoadedAt || now - this._premiumSupportersLoadedAt > 10 * 60 * 1000) {
+        this._data.premiumSupporters = await this.safeAsync(() => this.loadPremiumSupporters(), this._data.premiumSupporters || []);
+        this._premiumSupportersLoadedAt = now;
+      }
       this.processMatchClockState();
       this.render();
     } catch (err) {
       this.renderError(err, { resetSavedPage: false });
     } finally {
+      this._isLoading = false;
       this.scheduleNextRefresh();
     }
   }
@@ -16556,7 +17346,7 @@ class WorldCup2026Panel extends HTMLElement {
     const items = [
       ["live", this.t("live")],
       ["overview", this.t("overview")],
-      ["teams", "Teams"],
+      ["teams", this.t("teams")],
       ["fixtures", this.t("fixtures")],
       ["results", this.t("results")],
       ["groups", this.t("groups")],
@@ -16584,7 +17374,7 @@ class WorldCup2026Panel extends HTMLElement {
     const items = [
       ["live", this.t("live")],
       ["overview", this.t("overview")],
-      ["teams", "Teams"],
+      ["teams", this.t("teams")],
       ["fixtures", this.t("fixtures")],
       ["results", this.t("results")],
       ["groups", this.t("groups")],
@@ -16717,6 +17507,62 @@ class WorldCup2026Panel extends HTMLElement {
     return "";
   }
 
+  languageOptionsMarkup() {
+    const groups = [
+      {
+        label: "Europe",
+        options: [
+          ["en", "English"],
+          ["fr", "Francais"],
+          ["de", "Deutsch"],
+          ["es", "Espanol"],
+          ["it", "Italiano"],
+          ["nl", "Nederlands"],
+          ["pt", "Portugues"],
+          ["pl", "Polski"],
+          ["sv", "Svenska"],
+          ["no", "Norsk"],
+          ["hu", "Magyar"],
+          ["is", "Islenska"],
+          ["tr", "Turkce"],
+          ["cs", "Cestina"],
+          ["da", "Dansk"],
+          ["fi", "Suomi"],
+          ["el", "Ελληνικά"],
+          ["ro", "Romana"],
+          ["sk", "Slovencina"],
+          ["sl", "Slovenscina"],
+          ["hr", "Hrvatski"],
+          ["sr", "Srpski"],
+          ["bg", "Български"],
+          ["uk", "Українська"],
+        ],
+      },
+      {
+        label: "Asia",
+        options: [
+          ["ja", "日本語"],
+        ],
+      },
+      {
+        label: "South America",
+        options: [
+          ["ay", "Aymara"],
+          ["gn", "Guarani"],
+          ["qu", "Quechua"],
+        ],
+      },
+    ];
+
+    return groups.map((group) => `
+      <optgroup label="${this.esc(group.label)}">
+        ${group.options.map(([value, label]) => `
+          <option value="${this.esc(value)}" ${this._language === value ? "selected" : ""}>${this.esc(label)}</option>
+        `).join("")}
+      </optgroup>
+    `).join("");
+  }
+
   languageSelector() {
     return `
       <div class="wc-language-wrap">
@@ -16801,9 +17647,9 @@ class WorldCup2026Panel extends HTMLElement {
     });
 
     const heroItems = [
-      `<span class="premium-ticker-card premium-ticker-ad"><span class="premium-ticker-star">🏆</span><span class="premium-ticker-name">Premium Supporters</span><small>Featured on the main dashboard</small></span>`,
-      `<span class="premium-ticker-card premium-ticker-ad"><span class="premium-ticker-star">🍺</span><span class="premium-ticker-name">Support development</span><small>Help with API costs, fixes and live updates</small></span>`,
-      `<span class="premium-ticker-card premium-ticker-ad"><span class="premium-ticker-star">⭐</span><span class="premium-ticker-name">Premium Supporter</span><small>Minimum £10 donation to be featured</small></span>`
+      `<span class="premium-ticker-card premium-ticker-ad"><span class="premium-ticker-star">🏆</span><span class="premium-ticker-name">${this.esc(this.staticText("premiumSupporters"))}</span><small>${this.esc(this.staticText("featuredMainDashboard"))}</small></span>`,
+      `<span class="premium-ticker-card premium-ticker-ad"><span class="premium-ticker-star">🍺</span><span class="premium-ticker-name">${this.esc(this.staticText("supportDevelopment"))}</span><small>${this.esc(this.staticText("helpApiCosts"))}</small></span>`,
+      `<span class="premium-ticker-card premium-ticker-ad"><span class="premium-ticker-star">⭐</span><span class="premium-ticker-name">${this.esc(this.staticText("premiumSupporter"))}</span><small>${this.esc(this.staticText("minimumDonationFeatured"))}</small></span>`
     ];
 
     const items = supporterItems.length ? [...supporterItems, ...heroItems] : heroItems;
@@ -16815,13 +17661,13 @@ class WorldCup2026Panel extends HTMLElement {
     const animationOffset = -((Date.now() / 1000) % animationSeconds).toFixed(2);
 
     return `
-      <div class="overview-premium-strip" role="region" aria-label="World Cup 2026 premium supporters">
+      <div class="overview-premium-strip" role="region" aria-label="${this.esc(this.staticText("premiumTickerAria"))}">
         <div class="overview-premium-glow"></div>
         <div class="overview-premium-badge">
           <span class="overview-premium-crown">👑</span>
           <span>
-            <strong>Premium Supporters</strong>
-            <small>Main-page featured supporters</small>
+            <strong>${this.esc(this.staticText("premiumSupporters"))}</strong>
+            <small>${this.esc(this.staticText("mainPageFeaturedSupporters"))}</small>
           </span>
         </div>
         <div class="overview-premium-marquee">
@@ -16830,7 +17676,7 @@ class WorldCup2026Panel extends HTMLElement {
           </div>
         </div>
         <button class="overview-premium-cta overview-action-button" data-page="supporters" type="button">
-          🍺 Join
+          🍺 ${this.esc(this.staticText("joinSupporters"))}
         </button>
       </div>
     `;
@@ -17040,7 +17886,7 @@ class WorldCup2026Panel extends HTMLElement {
             target="_blank"
             rel="noopener noreferrer"
           >
-            ☕ Support via Ko-fi
+            ☕ ${this.esc(this.staticText("supportViaKofi"))}
           </a>
           <a
             class="wc-overview-beer-button"
@@ -17048,7 +17894,7 @@ class WorldCup2026Panel extends HTMLElement {
             target="_blank"
             rel="noopener noreferrer"
           >
-            💳 Support via PayPal
+            💳 ${this.esc(this.staticText("supportViaPaypal"))}
           </a>
         </div>
       </div>
@@ -17742,7 +18588,7 @@ class WorldCup2026Panel extends HTMLElement {
       <div class="live-premium-card match-weather-box live-weather-compact-card">
         <div class="live-weather-head">
           <div>
-            <div class="live-premium-card-title">🌤 Stadium Weather</div>
+            <div class="live-premium-card-title">🌤 ${this.esc(this.t("stadiumWeather"))}</div>
             ${locationLabel ? `<small>${this.esc(locationLabel)}</small>` : ""}
           </div>
           ${temp ? `<strong class="live-weather-temp">${this.esc(temp)}</strong>` : ""}
@@ -17750,12 +18596,12 @@ class WorldCup2026Panel extends HTMLElement {
         <div class="live-weather-main">
           <div class="live-weather-condition">
             <span>🌥</span>
-            <strong>${this.esc(condition || "Weather")}</strong>
+            <strong>${this.esc(condition || this.t("weather"))}</strong>
           </div>
           <div class="live-weather-metrics">
-            ${metric("💨", wind, "Wind")}
-            ${metric("💧", humidity, "Humidity")}
-            ${metric("☁", cloud, "Cloud")}
+            ${metric("💨", wind, this.t("wind"))}
+            ${metric("💧", humidity, this.t("humidity"))}
+            ${metric("☁", cloud, this.t("clouds"))}
             ${metric("☀", uv, "UV")}
           </div>
         </div>
@@ -18979,7 +19825,7 @@ class WorldCup2026Panel extends HTMLElement {
         ${venueInfo ? `
           <div class="fixture-card-venue fixture-card-venue-inline">
             <span class="fixture-venue-name">🏟 ${this.esc(venueInfo.name)}</span>
-            ${venueInfo.realName && venueInfo.realName !== venueInfo.name ? `<span class="fixture-venue-real">Real: ${this.esc(venueInfo.realName)}</span>` : ""}
+            ${venueInfo.realName && venueInfo.realName !== venueInfo.name ? `<span class="fixture-venue-real">${this.esc(this.t("realStadium"))}: ${this.esc(venueInfo.realName)}</span>` : ""}
             ${venueInfo.city || venueInfo.country ? `<span class="fixture-venue-location">${this.esc([venueInfo.city, venueInfo.country ? this.localizedCountryName(venueInfo.country) : ""].filter(Boolean).join(", "))}</span>` : ""}
             ${venueInfo.capacity ? `<span class="fixture-venue-capacity">👥 ${this.esc(venueInfo.capacity)}</span>` : ""}
           </div>
@@ -19181,24 +20027,68 @@ class WorldCup2026Panel extends HTMLElement {
   playerPhotoUrl(player) {
     if (!player || typeof player !== "object") return "";
     const manualPhotos = {
-      "lionel messi|argentina": "/local/worldcup/players/lionel-messi.png",
-      "lionel messi|arg": "/local/worldcup/players/lionel-messi.png",
-      "harry kane|england": "/local/worldcup/players/harry-kane.jpg",
-      "harry kane|eng": "/local/worldcup/players/harry-kane.jpg",
-      "kylian mbappe|france": "/local/worldcup/players/kylian-mbappe.jpg",
-      "kylian mbappe|fra": "/local/worldcup/players/kylian-mbappe.jpg",
-      "kylian mbappé|france": "/local/worldcup/players/kylian-mbappe.jpg",
-      "kylian mbappé|fra": "/local/worldcup/players/kylian-mbappe.jpg",
-      "elijah just|new zealand": "/local/worldcup/players/elijah-just.jpg",
-      "elijah just|nzl": "/local/worldcup/players/elijah-just.jpg",
-      "erling haaland|norway": "/local/worldcup/players/erling-haaland.jpg",
-      "erling haaland|nor": "/local/worldcup/players/erling-haaland.jpg",
-      "erling harland|norway": "/local/worldcup/players/erling-haaland.jpg",
-      "erling harland|nor": "/local/worldcup/players/erling-haaland.jpg",
-      "folarin balogun|usa": "/local/worldcup/players/folarin-balogun.jpg",
-      "folarin balogun|united states": "/local/worldcup/players/folarin-balogun.jpg",
+      "lionel messi": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/lionel-messi.jpg",
+      "lionel messi|argentina": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/lionel-messi.jpg",
+      "lionel messi|arg": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/lionel-messi.jpg",
+      "l messi": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/lionel-messi.jpg",
+      "l messi|argentina": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/lionel-messi.jpg",
+      "l messi|arg": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/lionel-messi.jpg",
+      "lionel andres messi": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/lionel-messi.jpg",
+      "lionel andres messi|argentina": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/lionel-messi.jpg",
+      "harry kane": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/harry-kane.jpg",
+      "harry kane|england": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/harry-kane.jpg",
+      "harry kane|eng": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/harry-kane.jpg",
+      "h kane": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/harry-kane.jpg",
+      "h kane|england": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/harry-kane.jpg",
+      "kylian mbappe": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/kylian-mbappe.jpg",
+      "kylian mbappe|france": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/kylian-mbappe.jpg",
+      "kylian mbappe|fra": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/kylian-mbappe.jpg",
+      "k mbappe": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/kylian-mbappe.jpg",
+      "k mbappe|france": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/kylian-mbappe.jpg",
+      "k mbappe|fra": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/kylian-mbappe.jpg",
+      "kylian mbappe lottin": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/kylian-mbappe.jpg",
+      "kylian mbappe lottin|france": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/kylian-mbappe.jpg",
+      "elijah just": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/elijah-just.jpg",
+      "elijah just|new zealand": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/elijah-just.jpg",
+      "elijah just|nzl": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/elijah-just.jpg",
+      "e just": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/elijah-just.jpg",
+      "e just|new zealand": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/elijah-just.jpg",
+      "erling haaland": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/erling-haaland.jpg",
+      "erling haaland|norway": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/erling-haaland.jpg",
+      "erling haaland|nor": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/erling-haaland.jpg",
+      "e haaland": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/erling-haaland.jpg",
+      "e haaland|norway": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/erling-haaland.jpg",
+      "erling harland": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/erling-haaland.jpg",
+      "erling harland|norway": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/erling-haaland.jpg",
+      "erling harland|nor": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/erling-haaland.jpg",
+      "folarin balogun": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/folarin-balogun.jpg",
+      "folarin balogun|usa": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/folarin-balogun.jpg",
+      "folarin balogun|united states": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/folarin-balogun.jpg",
+      "folarin balogun|united states of america": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/folarin-balogun.jpg",
+      "f balogun": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/folarin-balogun.jpg",
+      "f balogun|usa": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/folarin-balogun.jpg",
+      "cyle larin": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/cyle-larin.jpg",
+      "cyle larin|canada": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/cyle-larin.jpg",
+      "cyle larin|can": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/cyle-larin.jpg",
+      "c larin": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/cyle-larin.jpg",
+      "c larin|canada": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/cyle-larin.jpg",
+      "jonathan david": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/jonathan-david.jpg",
+      "jonathan david|canada": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/jonathan-david.jpg",
+      "jonathan david|can": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/jonathan-david.jpg",
+      "j david": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/jonathan-david.jpg",
+      "j david|canada": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/jonathan-david.jpg",
     };
-    const manualKey = `${String(player.name || player.player || "").toLowerCase().trim()}|${String(player.team || "").toLowerCase().trim()}`;
+    const cleanPlayerKey = (value) => String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^\w\s|-]/g, "")
+      .replace(/\s+/g, " ")
+      .toLowerCase()
+      .trim();
+    const playerName = cleanPlayerKey(player.name || player.player?.name || player.player || "");
+    const playerTeam = cleanPlayerKey(player.team?.name || player.team?.shortName || player.team || player.nationality || player.country || "");
+    if (manualPhotos[playerName]) return manualPhotos[playerName];
+    const manualKey = `${playerName}|${playerTeam}`;
     if (manualPhotos[manualKey]) return manualPhotos[manualKey];
 
     const direct = player.photo || player.image || player.picture || player.headshot || player.avatar || player.playerPhoto;
@@ -19210,16 +20100,18 @@ class WorldCup2026Panel extends HTMLElement {
     const id = player.apiFootballPlayerId || player.apiSportsPlayerId || player.apiFootballId || player.apiSportsId || player.player?.apiFootballPlayerId || player.player?.apiSportsPlayerId;
     return id ? `https://media.api-sports.io/football/players/${id}.png` : "";
   }
-
   playerPhotoFallbackUrl(primary = "") {
     const localPrefix = "/local/worldcup/players/";
-    if (!primary || !String(primary).startsWith(localPrefix)) return "";
-    const filename = String(primary).slice(localPrefix.length);
-    return filename
-      ? `https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/${filename}`
-      : "";
+    const githubPrefix = "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/";
+    const src = String(primary || "");
+    if (src.startsWith(githubPrefix)) {
+      const filename = src.slice(githubPrefix.length);
+      return filename ? localPrefix + filename : "";
+    }
+    if (!src.startsWith(localPrefix)) return "";
+    const filename = src.slice(localPrefix.length);
+    return filename ? githubPrefix + filename : "";
   }
-
   playerInitials(name) {
     const parts = String(name || "").trim().split(/\s+/).filter(Boolean).slice(0, 2);
     return parts.map((part) => part[0] || "").join("").toUpperCase() || "PL";
@@ -19718,14 +20610,14 @@ class WorldCup2026Panel extends HTMLElement {
             }).join("");
           }).join("")}
           <div class="wc-spider-final-label">
-            <span>Winner</span>
+            <span>${this.esc(this.staticText("winner"))}</span>
             <strong>${this.t("tbc")}</strong>
           </div>
         </div>
       </div>
 
       <div class="wc-card">
-        <div class="wc-section-title">Knockout Details</div>
+        <div class="wc-section-title">${this.esc(this.staticText("knockoutDetails"))}</div>
         <div class="wc-bracket">
           ${roundMatches.map(({ stage, label, matches }) => `
               <div class="wc-bracket-round">
@@ -19745,7 +20637,7 @@ class WorldCup2026Panel extends HTMLElement {
                         ${venueInfo ? `
                           <div class="fixture-card-venue fixture-card-venue-inline">
                             <span class="fixture-venue-name">🏟 ${this.esc(venueInfo.name)}</span>
-                            ${venueInfo.realName && venueInfo.realName !== venueInfo.name ? `<span class="fixture-venue-real">Real: ${this.esc(venueInfo.realName)}</span>` : ""}
+                            ${venueInfo.realName && venueInfo.realName !== venueInfo.name ? `<span class="fixture-venue-real">${this.esc(this.t("realStadium"))}: ${this.esc(venueInfo.realName)}</span>` : ""}
                             ${venueInfo.city || venueInfo.country ? `<span class="fixture-venue-location">${this.esc([venueInfo.city, venueInfo.country ? this.localizedCountryName(venueInfo.country) : ""].filter(Boolean).join(", "))}</span>` : ""}
                             ${venueInfo.capacity ? `<span class="fixture-venue-capacity">👥 ${this.esc(venueInfo.capacity)}</span>` : ""}
                           </div>
@@ -20095,18 +20987,18 @@ class WorldCup2026Panel extends HTMLElement {
         <div style="position:absolute;inset:auto -80px -120px auto;width:260px;height:260px;border-radius:999px;background:rgba(59,130,246,.10);filter:blur(4px);"></div>
         <div style="position:relative;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;">
           <div>
-            <div style="font-size:.76rem;font-weight:1000;text-transform:uppercase;letter-spacing:.16em;color:#93c5fd;">Tournament Intelligence</div>
-            <div class="wc-section-title" style="font-size:1.7rem;margin-top:5px;">Stats Hub</div>
-            <p class="wc-muted" style="margin:7px 0 0;max-width:760px;line-height:1.5;">A proper tournament stats centre built from results, timelines, cards, substitutions, VAR, referees, player involvement and team lineups already loaded into the integration.</p>
+            <div style="font-size:.76rem;font-weight:1000;text-transform:uppercase;letter-spacing:.16em;color:#93c5fd;">${this.esc(this.staticText("tournamentIntelligence"))}</div>
+            <div class="wc-section-title" style="font-size:1.7rem;margin-top:5px;">${this.esc(this.staticText("stats"))}</div>
+            <p class="wc-muted" style="margin:7px 0 0;max-width:760px;line-height:1.5;">${this.esc(this.staticText("statsIntro"))}</p>
           </div>
           <div style="display:grid;grid-template-columns:repeat(2,minmax(110px,1fr));gap:10px;min-width:260px;">
             <div style="text-align:center;padding:13px;border-radius:18px;background:rgba(0,0,0,.24);border:1px solid rgba(255,255,255,.10);">
               <div style="font-size:2rem;font-weight:1000;color:${eventColour};">${a.dataCoverage}%</div>
-              <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.68);">Event Coverage</div>
+              <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.68);">${this.esc(this.staticText("eventCoverage"))}</div>
             </div>
             <div style="text-align:center;padding:13px;border-radius:18px;background:rgba(0,0,0,.24);border:1px solid rgba(255,255,255,.10);">
               <div style="font-size:2rem;font-weight:1000;color:#fde68a;">${lineupCoverage}%</div>
-              <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.68);">Lineup Coverage</div>
+              <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.68);">${this.esc(this.staticText("lineupCoverage"))}</div>
             </div>
           </div>
         </div>
@@ -20121,7 +21013,7 @@ class WorldCup2026Panel extends HTMLElement {
         ${statCard("VAR", a.varEvents, "video reviews", "#67e8f9")}
         ${statCard("Yellow Cards", a.yellowCards, `${a.redCards} red cards`, "#facc15")}
         ${statCard("Substitutions", a.substitutions, "recorded changes", "#a7f3d0")}
-        ${statCard("Lineups", lineupMatches.length, `${formationRows.length} formations tracked`, "#f0abfc")}
+        ${statCard(this.staticText("lineups"), lineupMatches.length, `${formationRows.length} formations tracked`, "#f0abfc")}
         ${statCard("Referees", a.refs, "officials tracked", "#fdba74")}
         ${statCard("Events / Match", eventRate, `${a.events} timeline events`, "#93c5fd")}
         ${statCard("Cards / Match", cardsPerMatch, `${totalCards} total cards`, "#fbbf24")}
@@ -20129,7 +21021,7 @@ class WorldCup2026Panel extends HTMLElement {
 
       <div class="wc-two">
         <div class="wc-card" style="background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.04));">
-          <div class="wc-section-title">📊 Tournament Rates</div>
+          <div class="wc-section-title">📊 ${this.esc(this.staticText("tournamentRates"))}</div>
           <div style="display:grid;gap:10px;">
             ${chip("Progress", `${a.progress}%`, "#93c5fd")}
             ${chip("BTTS", `${a.bttsRate}%`, "#86efac")}
@@ -20139,24 +21031,24 @@ class WorldCup2026Panel extends HTMLElement {
         </div>
 
         <div class="wc-card" style="background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.04));">
-          <div class="wc-section-title">📡 Data Health</div>
+          <div class="wc-section-title">📡 ${this.esc(this.staticText("dataHealth"))}</div>
           <div style="display:grid;gap:12px;">
             <div>
-              <div style="display:flex;justify-content:space-between;font-weight:900;margin-bottom:6px;"><span>Event timelines</span><span>${a.dataCoverage}%</span></div>
+              <div style="display:flex;justify-content:space-between;font-weight:900;margin-bottom:6px;"><span>${this.esc(this.staticText("eventTimelines"))}</span><span>${a.dataCoverage}%</span></div>
               <div style="height:13px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;"><div style="height:100%;width:${Math.max(0, Math.min(100, a.dataCoverage))}%;background:${eventColour};border-radius:999px;"></div></div>
             </div>
             <div>
-              <div style="display:flex;justify-content:space-between;font-weight:900;margin-bottom:6px;"><span>Lineups</span><span>${lineupCoverage}%</span></div>
+              <div style="display:flex;justify-content:space-between;font-weight:900;margin-bottom:6px;"><span>${this.esc(this.staticText("lineups"))}</span><span>${lineupCoverage}%</span></div>
               <div style="height:13px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;"><div style="height:100%;width:${Math.max(0, Math.min(100, lineupCoverage))}%;background:#fde68a;border-radius:999px;"></div></div>
             </div>
-            <p class="wc-muted" style="margin:0;line-height:1.45;">Stats Hub only uses data already loaded into the panel. This page does not trigger extra API pulls.</p>
+            <p class="wc-muted" style="margin:0;line-height:1.45;">${this.esc(this.staticText("statsNoExtraPulls"))}</p>
           </div>
         </div>
       </div>
 
       <div class="wc-two">
         <div class="wc-card">
-          <div class="wc-section-title">⚽ Team Performance</div>
+          <div class="wc-section-title">⚽ ${this.esc(this.staticText("teamPerformance"))}</div>
           ${this.statsMiniTable(teamSnapshotRows, [
             { label: "Team", render: (row) => `${this.flag(row.team, true)} <strong>${this.esc(row.team)}</strong>` },
             { label: "P", key: "played", align: "center" },
@@ -20169,7 +21061,7 @@ class WorldCup2026Panel extends HTMLElement {
         </div>
 
         <div class="wc-card">
-          <div class="wc-section-title">🧠 Team Event Leaders</div>
+          <div class="wc-section-title">🧠 ${this.esc(this.staticText("teamEventLeaders"))}</div>
           ${this.statsMiniTable((a.eventLeaderRows || []).slice(0, 10), [
             { label: "Team", render: (row) => `${this.flag(row.team, true)} <strong>${this.esc(row.team)}</strong>` },
             { label: "Events", key: "eventCount", align: "center" },
@@ -20183,7 +21075,7 @@ class WorldCup2026Panel extends HTMLElement {
 
       <div class="wc-two">
         <div class="wc-card">
-          <div class="wc-section-title">🧩 Lineups & Formations</div>
+          <div class="wc-section-title">🧩 ${this.esc(this.staticText("lineupsFormations"))}</div>
           ${this.statsMiniTable(formationRows, [
             { label: "Team", render: (row) => `${this.flag(row.team, true)} <strong>${this.esc(row.team)}</strong>` },
             { label: "Formation", render: (row) => `<strong>${this.esc(row.formation)}</strong>`, align: "center" },
@@ -20192,76 +21084,76 @@ class WorldCup2026Panel extends HTMLElement {
         </div>
 
         <div class="wc-card">
-          <div class="wc-section-title">👥 Squad Usage</div>
+          <div class="wc-section-title">👥 ${this.esc(this.staticText("squadUsage"))}</div>
           ${this.statsMiniTable(lineupTeamRows, [
             { label: "Team", render: (row) => `${this.flag(row.team, true)} <strong>${this.esc(row.team)}</strong>` },
-            { label: "Lineups", key: "matches", align: "center" },
+            { label: this.staticText("lineups"), key: "matches", align: "center" },
             { label: "Starters", key: "starters", align: "center" },
             { label: "Bench", key: "bench", align: "center" },
-          ], "No squad usage data yet")}
+          ], this.staticText("noSquadUsageDataYet"))}
         </div>
       </div>
 
       <div class="wc-two">
         <div class="wc-card">
-          <div class="wc-section-title">⭐ Player Starts</div>
+          <div class="wc-section-title">⭐ ${this.esc(this.staticText("playerStarts"))}</div>
           ${this.statsMiniTable(starterRows, [
             { label: "Player", render: (row) => `<strong>${row.number ? `${this.esc(row.number)} ` : ""}${this.esc(row.player)}</strong><div class="wc-muted">${this.flag(row.team, true)} ${this.esc(row.team)}</div>` },
             { label: "Starts", key: "starts", align: "center" },
-          ], "No starting XI data yet")}
+          ], this.staticText("noStartingXiDataYet"))}
         </div>
 
         <div class="wc-card">
-          <div class="wc-section-title">🪑 Bench Watch</div>
+          <div class="wc-section-title">🪑 ${this.esc(this.staticText("benchWatch"))}</div>
           ${this.statsMiniTable(benchRows, [
             { label: "Player", render: (row) => `<strong>${row.number ? `${this.esc(row.number)} ` : ""}${this.esc(row.player)}</strong><div class="wc-muted">${this.flag(row.team, true)} ${this.esc(row.team)}</div>` },
             { label: "Bench", key: "bench", align: "center" },
-          ], "No bench data yet")}
+          ], this.staticText("noBenchDataYet"))}
         </div>
       </div>
 
       <div class="wc-two">
         <div class="wc-card">
-          <div class="wc-section-title">🟨 Discipline Centre</div>
+          <div class="wc-section-title">🟨 ${this.esc(this.staticText("disciplineCentre"))}</div>
           ${this.statsMiniTable((a.disciplineRows || []).slice(0, 12), [
             { label: "Team", render: (row) => `${this.flag(row.team, true)} <strong>${this.esc(row.team)}</strong>` },
             { label: "Cards", key: "cards", align: "center" },
             { label: "Yellow", key: "yellowCards", align: "center" },
             { label: "Red", key: "redCards", align: "center" },
             { label: "Subs", key: "substitutions", align: "center" },
-          ], "No discipline data yet")}
+          ], this.staticText("noDisciplineDataYet"))}
         </div>
 
         <div class="wc-card">
-          <div class="wc-section-title">⭐ Player Event Watch</div>
+          <div class="wc-section-title">⭐ ${this.esc(this.staticText("playerEventWatch"))}</div>
           ${this.statsMiniTable(a.topPlayers, [
             { label: "Player", render: (row) => `<strong>${this.esc(row.player)}</strong><div class="wc-muted">${this.flag(row.team, true)} ${this.esc(row.team || "")}</div>` },
             { label: "G", key: "goals", align: "center" },
             { label: "A", key: "assists", align: "center" },
             { label: "PEN", key: "penalties", align: "center" },
             { label: "Cards", key: "cards", align: "center" },
-          ], "No player event data yet")}
+          ], this.staticText("noPlayerEventDataYet"))}
         </div>
       </div>
 
       <div class="wc-two">
         <div class="wc-card">
-          <div class="wc-section-title">🧑‍⚖️ Referee Stats</div>
+          <div class="wc-section-title">🧑‍⚖️ ${this.esc(this.staticText("refereeStats"))}</div>
           ${this.statsMiniTable(a.refereeRows, [
             { label: "Official", render: (row) => `<strong>${this.esc(row.name || "Unknown")}</strong><div class="wc-muted">${this.esc(row.nationality || row.country || "")}</div>` },
             { label: "Matches", key: "matches", align: "center" },
-          ], "No referee data yet")}
+          ], this.staticText("noRefereeDataYet"))}
         </div>
 
         <div class="wc-card">
-          <div class="wc-section-title">🔥 Match Records</div>
+          <div class="wc-section-title">🔥 ${this.esc(this.staticText("matchRecords"))}</div>
           <div style="display:grid;gap:12px;">
             <div style="padding:12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);">
-              <div class="wc-muted" style="font-weight:900;margin-bottom:8px;">Highest scoring match</div>
+              <div class="wc-muted" style="font-weight:900;margin-bottom:8px;">${this.esc(this.staticText("highestScoringMatch"))}</div>
               ${a.highestScoringMatch ? this.matchRow(a.highestScoringMatch) : `<div class="wc-empty">${this.t("noResult")}</div>`}
             </div>
             <div style="padding:12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);">
-              <div class="wc-muted" style="font-weight:900;margin-bottom:8px;">Biggest win</div>
+              <div class="wc-muted" style="font-weight:900;margin-bottom:8px;">${this.esc(this.staticText("biggestWin"))}</div>
               ${a.biggestWin ? this.matchRow(a.biggestWin) : `<div class="wc-empty">${this.t("noResult")}</div>`}
             </div>
           </div>
@@ -20597,7 +21489,7 @@ class WorldCup2026Panel extends HTMLElement {
     const a = this.statsHubAnalytics();
 
     if (!selected) {
-      return `<div class="wc-card"><div class="wc-empty">No teams loaded yet</div></div>`;
+      return `<div class="wc-card"><div class="wc-empty">${this.esc(this.staticText("noTeamsLoadedYet"))}</div></div>`;
     }
 
     const teamKey = selected.key;
@@ -20716,7 +21608,7 @@ class WorldCup2026Panel extends HTMLElement {
           </div>
         </div>
       `;
-    })() : `<div class="wc-empty">No upcoming match loaded for this team yet</div>`;
+    })() : `<div class="wc-empty">${this.esc(this.staticText("noTeamUpcomingMatch"))}</div>`;
 
     const recentCards = recent.length ? recent.map((match) => {
       const badge = matchResultClass(match);
@@ -20728,7 +21620,7 @@ class WorldCup2026Panel extends HTMLElement {
           <strong style="font-size:1.08rem;">${this.esc(matchScore(match))}</strong>
         </div>
       `;
-    }).join("") : `<div class="wc-empty">No finished results loaded for this team yet</div>`;
+    }).join("") : `<div class="wc-empty">${this.esc(this.staticText("noTeamResults"))}</div>`;
 
     const timeline = matches.length ? matches.map((match, index) => {
       const status = matchResultClass(match);
@@ -20748,7 +21640,7 @@ class WorldCup2026Panel extends HTMLElement {
           </div>
         </div>
       `;
-    }).join("") : `<div class="wc-empty">No fixtures loaded for this team yet</div>`;
+    }).join("") : `<div class="wc-empty">${this.esc(this.staticText("noTeamFixtures"))}</div>`;
 
     const groupSnapshot = groupRows.length ? groupRows.map((row) => `
       <div style="display:grid;grid-template-columns:34px 1fr 44px 44px;gap:8px;align-items:center;padding:10px 11px;border-radius:14px;background:${row.key === teamKey ? "rgba(96,165,250,.18)" : "rgba(255,255,255,.055)"};border:1px solid ${row.key === teamKey ? "rgba(96,165,250,.42)" : "rgba(255,255,255,.08)"};">
@@ -20757,11 +21649,11 @@ class WorldCup2026Panel extends HTMLElement {
         <span style="text-align:center;color:rgba(255,255,255,.66);font-weight:900;">${this.esc(row.gd || 0)}</span>
         <strong style="text-align:center;color:#facc15;">${this.esc(row.points || 0)}</strong>
       </div>
-    `).join("") : `<div class="wc-empty">No group table loaded for this team yet</div>`;
+    `).join("") : `<div class="wc-empty">${this.esc(this.staticText("noTeamGroupTable"))}</div>`;
 
     const playerSpotlight = spotlightPlayer ? `
       <div style="padding:18px;border-radius:23px;background:radial-gradient(circle at top left,rgba(250,204,21,.2),transparent 38%),rgba(255,255,255,.06);border:1px solid rgba(250,204,21,.22);">
-        <div style="font-size:.74rem;font-weight:1000;text-transform:uppercase;letter-spacing:.14em;color:#fde68a;">⭐ Player Spotlight</div>
+        <div style="font-size:.74rem;font-weight:1000;text-transform:uppercase;letter-spacing:.14em;color:#fde68a;">⭐ ${this.esc(this.staticText("playerSpotlight"))}</div>
         <div style="margin-top:10px;font-size:1.35rem;font-weight:1000;">${this.esc(spotlightPlayer.player || "Team Player")}</div>
         <div class="wc-muted" style="margin-top:4px;">${this.esc(teamName)}</div>
         <div style="margin-top:15px;display:grid;grid-template-columns:repeat(3,1fr);gap:9px;">
@@ -20770,14 +21662,14 @@ class WorldCup2026Panel extends HTMLElement {
           ${statCard("Cards", spotlightPlayer.cards || 0, "", "#fca5a5")}
         </div>
       </div>
-    ` : `<div class="wc-empty">No player event data loaded for this team yet</div>`;
+    ` : `<div class="wc-empty">${this.esc(this.staticText("noTeamPlayerEvents"))}</div>`;
 
     const resultDots = recent.length ? recent.map((match) => {
       const result = matchResultClass(match);
       const accent = result === "WIN" ? "#22c55e" : result === "LOSS" ? "#ef4444" : "#facc15";
       const label = result === "WIN" ? "W" : result === "LOSS" ? "L" : result === "DRAW" ? "D" : "-";
       return `<span title="${this.esc(result)}" style="display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:${accent}25;border:1px solid ${accent}77;color:${accent};font-weight:1000;box-shadow:0 0 18px ${accent}22;">${label}</span>`;
-    }).join("") : `<span class="wc-muted">No form data yet</span>`;
+    }).join("") : `<span class="wc-muted">${this.esc(this.staticText("noFormDataYet"))}</span>`;
 
     const uniqueVenues = [];
     matches.forEach((match) => {
@@ -20787,7 +21679,7 @@ class WorldCup2026Panel extends HTMLElement {
     const nextVenue = nextMatch ? matchVenue(nextMatch) : "Venue TBC";
     const stadiumTracker = uniqueVenues.length ? uniqueVenues.slice(0, 5).map((venue) => `
       <div style="padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-weight:900;">🏟 ${this.esc(venue)}</div>
-    `).join("") : `<div class="wc-empty">No stadium data loaded for this team yet</div>`;
+    `).join("") : `<div class="wc-empty">${this.esc(this.staticText("noTeamStadiumData"))}</div>`;
 
     const topPlayerList = playerRows.length ? playerRows.slice(0, 5).map((player, index) => `
       <div style="display:grid;grid-template-columns:34px 1fr repeat(3,44px);gap:8px;align-items:center;padding:11px 12px;border-radius:15px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);">
@@ -20797,7 +21689,7 @@ class WorldCup2026Panel extends HTMLElement {
         <span style="text-align:center;color:#93c5fd;font-weight:1000;">${this.esc(player.assists || 0)}</span>
         <span style="text-align:center;color:#fca5a5;font-weight:1000;">${this.esc(player.cards || 0)}</span>
       </div>
-    `).join("") : `<div class="wc-empty">No country player data loaded yet</div>`;
+    `).join("") : `<div class="wc-empty">${this.esc(this.staticText("noCountryPlayerData"))}</div>`;
 
     const upcomingList = upcoming.length ? upcoming.slice(0, 6).map((match) => {
       const teams = matchTeams(match);
@@ -20810,7 +21702,7 @@ class WorldCup2026Panel extends HTMLElement {
           <div class="wc-muted" style="margin-top:6px;">${this.esc(matchDateTime(match) || "Time TBC")} • ${this.esc(matchVenue(match))}</div>
         </div>
       `;
-    }).join("") : `<div class="wc-empty">No upcoming fixtures loaded for this team yet</div>`;
+    }).join("") : `<div class="wc-empty">${this.esc(this.staticText("noUpcomingFixturesTeam"))}</div>`;
 
     const resultList = finished.length ? finished.slice(-6).reverse().map((match) => {
       const teams = matchTeams(match);
@@ -20825,7 +21717,7 @@ class WorldCup2026Panel extends HTMLElement {
           <div class="wc-muted" style="margin-top:6px;">${this.esc(matchDateTime(match))} • ${this.esc(matchVenue(match))}</div>
         </div>
       `;
-    }).join("") : `<div class="wc-empty">No results loaded for this team yet</div>`;
+    }).join("") : `<div class="wc-empty">${this.esc(this.staticText("noResultsTeam"))}</div>`;
 
     const stages = ["Group Stage", "Round of 32", "Round of 16", "Quarter Finals", "Semi Finals", "Final"];
     const stageCards = stages.map((stage) => {
@@ -20842,24 +21734,24 @@ class WorldCup2026Panel extends HTMLElement {
     const countryProfile = `
       <div style="position:relative;overflow:hidden;padding:20px;border-radius:24px;background:radial-gradient(circle at 8% 0%,rgba(96,165,250,.2),transparent 36%),linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.11);">
         <div style="position:absolute;right:-10px;bottom:-34px;font-size:7rem;font-weight:1000;opacity:.05;line-height:1;">${this.esc(teamName.slice(0, 3).toUpperCase())}</div>
-        <div style="position:relative;font-size:.74rem;font-weight:1000;text-transform:uppercase;letter-spacing:.14em;color:#93c5fd;">🌍 Country Profile</div>
+        <div style="position:relative;font-size:.74rem;font-weight:1000;text-transform:uppercase;letter-spacing:.14em;color:#93c5fd;">🌍 ${this.esc(this.staticText("countryProfile"))}</div>
         <div style="position:relative;margin-top:9px;font-size:1.45rem;font-weight:1000;">${this.flag(teamName, true)} ${this.esc(teamName)}</div>
         <div style="position:relative;margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;">
-          ${statCard("Matches", matches.length, "Loaded for team", "#93c5fd")}
-          ${statCard("Group Pos", groupRow?.pos || groupRows.find((row) => row.key === teamKey)?.pos || "-", "Current snapshot", "#fde68a")}
-          ${statCard("Points", groupRow?.points ?? groupRows.find((row) => row.key === teamKey)?.points ?? "-", "Group table", "#86efac")}
+          ${statCard(this.staticText("matchesPlayed"), matches.length, this.staticText("loadedForTeam"), "#93c5fd")}
+          ${statCard(this.staticText("groupPosition"), groupRow?.pos || groupRows.find((row) => row.key === teamKey)?.pos || "-", this.staticText("currentSnapshot"), "#fde68a")}
+          ${statCard(this.staticText("points"), groupRow?.points ?? groupRows.find((row) => row.key === teamKey)?.points ?? "-", this.staticText("groupTable"), "#86efac")}
         </div>
       </div>
     `;
 
     const squadOverview = `
       <div class="wc-card" style="background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.11);">
-        <div class="wc-section-title">👥 Country Players</div>
-        <div class="wc-muted" style="margin-bottom:10px;">Player cards are built from loaded goals, assists and event data.</div>
+        <div class="wc-section-title">👥 ${this.esc(this.staticText("countryPlayers"))}</div>
+        <div class="wc-muted" style="margin-bottom:10px;">${this.esc(this.staticText("playerCardsBuilt"))}</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:12px;">
-          ${statCard("Players", playerRows.length, "Tracked", "#c4b5fd")}
-          ${statCard("Goals", playerRows.reduce((sum, p) => sum + Number(p.goals || 0), 0), "By players", "#fde68a")}
-          ${statCard("Assists", playerRows.reduce((sum, p) => sum + Number(p.assists || 0), 0), "By players", "#93c5fd")}
+          ${statCard(this.staticText("players"), playerRows.length, this.staticText("tracked"), "#c4b5fd")}
+          ${statCard(this.staticText("goals"), playerRows.reduce((sum, p) => sum + Number(p.goals || 0), 0), this.staticText("byPlayers"), "#fde68a")}
+          ${statCard(this.staticText("assists"), playerRows.reduce((sum, p) => sum + Number(p.assists || 0), 0), this.staticText("byPlayers"), "#93c5fd")}
         </div>
         <div style="display:grid;grid-template-columns:34px 1fr repeat(3,44px);gap:8px;padding:0 12px 8px;color:rgba(255,255,255,.52);font-size:.7rem;font-weight:1000;text-transform:uppercase;letter-spacing:.06em;"><span>#</span><span>Player</span><span style="text-align:center;">G</span><span style="text-align:center;">A</span><span style="text-align:center;">C</span></div>
         <div style="display:grid;gap:8px;">${topPlayerList}</div>
@@ -20869,12 +21761,12 @@ class WorldCup2026Panel extends HTMLElement {
     const compactCardStyle = "background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.11);height:100%;";
     const disciplineCard = `
       <div class="wc-card" style="${compactCardStyle}">
-        <div class="wc-section-title">🟨 Team Discipline</div>
-        <div class="wc-muted" style="margin:6px 0 12px;">Cards for ${this.esc(teamName)} from loaded match event data.</div>
+        <div class="wc-section-title">🟨 ${this.esc(this.staticText("teamDiscipline"))}</div>
+        <div class="wc-muted" style="margin:6px 0 12px;">${this.esc(teamName)}: ${this.esc(this.staticText("cardsForTeam"))}</div>
         <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;">
-          ${statCard("Yellow", teamYellowCards, "Yellow cards", "#fde68a")}
-          ${statCard("Red", teamRedCards, "Red cards", "#fca5a5")}
-          ${statCard("Total", cards || teamStats.cards || 0, "All cards", "#c4b5fd")}
+          ${statCard(this.staticText("yellow"), teamYellowCards, this.t("yellowCards"), "#fde68a")}
+          ${statCard(this.staticText("red"), teamRedCards, this.t("redCards"), "#fca5a5")}
+          ${statCard(this.staticText("total"), cards || teamStats.cards || 0, this.staticText("allCards"), "#c4b5fd")}
         </div>
       </div>
     `;
@@ -20886,9 +21778,9 @@ class WorldCup2026Panel extends HTMLElement {
           <div style="display:flex;align-items:center;gap:14px;min-width:250px;">
             <div style="transform:scale(1.1);transform-origin:left center;">${this.flag(teamName, false)}</div>
             <div>
-              <div style="font-size:.72rem;font-weight:1000;text-transform:uppercase;letter-spacing:.18em;color:#93c5fd;">Team Command Centre</div>
+              <div style="font-size:.72rem;font-weight:1000;text-transform:uppercase;letter-spacing:.18em;color:#93c5fd;">${this.esc(this.staticText("teamCommandCentre"))}</div>
               <div class="wc-section-title" style="font-size:1.78rem;margin-top:3px;letter-spacing:-.04em;">${this.esc(teamName)}</div>
-              <p class="wc-muted" style="margin:5px 0 0;max-width:760px;line-height:1.38;">Compact team hub with fixtures, results, cards, players, group table and tournament journey.</p>
+              <p class="wc-muted" style="margin:5px 0 0;max-width:760px;line-height:1.38;">${this.esc(this.staticText("teamCommandIntro"))}</p>
             </div>
           </div>
           <select id="wc-team-select" class="wc-language-select" style="min-width:245px;">
@@ -20898,17 +21790,17 @@ class WorldCup2026Panel extends HTMLElement {
       </div>
 
       <div style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;align-items:stretch;">
-        <div style="grid-column:span 3;">${statCard("Matches", matches.length, `${live.length} live / ${upcoming.length} upcoming`, "#93c5fd")}</div>
-        <div style="grid-column:span 3;">${statCard("Record", `${teamStats.wins || 0}-${teamStats.draws || 0}-${teamStats.losses || 0}`, `${teamStats.played || finished.length} played`, "#86efac")}</div>
-        <div style="grid-column:span 3;">${statCard("Goals", `${teamStats.gf ?? goals}-${teamStats.ga ?? 0}`, `GD ${Number(teamStats.gd || 0) > 0 ? "+" : ""}${teamStats.gd || 0}`, "#fde68a")}</div>
-        <div style="grid-column:span 3;">${statCard("Cards", `${teamYellowCards}Y ${teamRedCards}R`, `${subs} subs / ${vars} VAR`, "#fca5a5")}</div>
+        <div style="grid-column:span 3;">${statCard(this.staticText("matchesPlayed"), matches.length, `${live.length} ${this.t("liveStatus")} / ${upcoming.length} ${this.staticText("upcoming")}`, "#93c5fd")}</div>
+        <div style="grid-column:span 3;">${statCard(this.staticText("record"), `${teamStats.wins || 0}-${teamStats.draws || 0}-${teamStats.losses || 0}`, `${teamStats.played || finished.length} ${this.t("played")}`, "#86efac")}</div>
+        <div style="grid-column:span 3;">${statCard(this.staticText("goals"), `${teamStats.gf ?? goals}-${teamStats.ga ?? 0}`, `GD ${Number(teamStats.gd || 0) > 0 ? "+" : ""}${teamStats.gd || 0}`, "#fde68a")}</div>
+        <div style="grid-column:span 3;">${statCard(this.staticText("cards"), `${teamYellowCards}Y ${teamRedCards}R`, `${subs} ${this.staticText("subs")} / ${vars} VAR`, "#fca5a5")}</div>
 
         <div style="grid-column:span 7;min-width:0;"><div class="wc-card" style="padding:0;background:transparent;border:0;box-shadow:none;height:100%;">${nextMatchCard}</div></div>
         <div style="grid-column:span 5;min-width:0;">${countryProfile}</div>
 
         <div style="grid-column:span 4;min-width:0;">
           <div class="wc-card" style="${compactCardStyle}">
-            <div class="wc-section-title">🔥 Form Guide</div>
+            <div class="wc-section-title">🔥 ${this.esc(this.staticText("formGuide"))}</div>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;">${resultDots}</div>
             <div style="margin-top:10px;display:grid;gap:8px;">${recentCards}</div>
           </div>
@@ -20916,7 +21808,7 @@ class WorldCup2026Panel extends HTMLElement {
         <div style="grid-column:span 4;min-width:0;">${disciplineCard}</div>
         <div style="grid-column:span 4;min-width:0;">
           <div class="wc-card" style="${compactCardStyle}">
-            <div class="wc-section-title">Group Snapshot</div>
+            <div class="wc-section-title">${this.esc(this.staticText("groupSnapshot"))}</div>
             <div style="margin:9px 0 7px;display:grid;grid-template-columns:34px 1fr 44px 44px;gap:8px;padding:0 11px;color:rgba(255,255,255,.52);font-size:.7rem;font-weight:1000;text-transform:uppercase;letter-spacing:.06em;">
               <span>Pos</span><span>Team</span><span style="text-align:center;">GD</span><span style="text-align:center;">Pts</span>
             </div>
@@ -20926,7 +21818,7 @@ class WorldCup2026Panel extends HTMLElement {
 
         <div style="grid-column:span 8;min-width:0;">
           <div class="wc-card" style="${compactCardStyle}">
-            <div class="wc-section-title">🏆 Tournament Journey</div>
+            <div class="wc-section-title">🏆 ${this.esc(this.staticText("tournamentJourney"))}</div>
             <div style="margin-top:10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;">${stageCards}</div>
             <div style="margin-top:12px;max-height:520px;overflow:auto;padding-right:4px;">${timeline}</div>
           </div>
@@ -20934,21 +21826,21 @@ class WorldCup2026Panel extends HTMLElement {
         <div style="grid-column:span 4;min-width:0;display:grid;gap:12px;">
           ${playerSpotlight}
           <div class="wc-card" style="${compactCardStyle}">
-            <div class="wc-section-title">🏟 Stadium Tracker</div>
-            <div class="wc-muted" style="margin:6px 0 9px;">Next: <strong>${this.esc(nextVenue)}</strong></div>
+            <div class="wc-section-title">🏟 ${this.esc(this.staticText("stadiumTracker"))}</div>
+            <div class="wc-muted" style="margin:6px 0 9px;">${this.esc(this.staticText("next"))}: <strong>${this.esc(nextVenue)}</strong></div>
             <div style="display:grid;gap:7px;">${stadiumTracker}</div>
           </div>
         </div>
 
         <div style="grid-column:span 6;min-width:0;">
           <div class="wc-card" style="${compactCardStyle}">
-            <div class="wc-section-title">📅 Upcoming Fixtures</div>
+            <div class="wc-section-title">📅 ${this.esc(this.staticText("upcomingFixtures"))}</div>
             <div style="display:grid;gap:8px;margin-top:10px;">${upcomingList}</div>
           </div>
         </div>
         <div style="grid-column:span 6;min-width:0;">
           <div class="wc-card" style="${compactCardStyle}">
-            <div class="wc-section-title">✅ Previous Results</div>
+            <div class="wc-section-title">✅ ${this.esc(this.staticText("previousResults"))}</div>
             <div style="display:grid;gap:8px;margin-top:10px;">${resultList}</div>
           </div>
         </div>
@@ -20956,7 +21848,7 @@ class WorldCup2026Panel extends HTMLElement {
         <div style="grid-column:span 7;min-width:0;">${squadOverview}</div>
         <div style="grid-column:span 5;min-width:0;display:grid;gap:12px;">
           <div class="wc-card" style="${compactCardStyle}">
-            <div class="wc-section-title">Team Statistics</div>
+            <div class="wc-section-title">${this.esc(this.staticText("teamStatistics"))}</div>
             ${this.statsMiniTable([{
               goals: goals || teamStats.goals || teamStats.gf || 0,
               assists: teamStats.assists || 0,
@@ -20974,12 +21866,12 @@ class WorldCup2026Panel extends HTMLElement {
             ])}
           </div>
           <div class="wc-card" style="${compactCardStyle}">
-            <div class="wc-section-title">⚽ Goals Breakdown</div>
+            <div class="wc-section-title">⚽ ${this.esc(this.staticText("goalsBreakdown"))}</div>
             <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px;">
-              ${statCard("For", teamStats.gf ?? goals ?? 0, "Scored", "#fde68a")}
-              ${statCard("Against", teamStats.ga ?? 0, "Conceded", "#fca5a5")}
-              ${statCard("Clean", teamStats.cleanSheets || 0, "Sheets", "#86efac")}
-              ${statCard("GD", `${Number(teamStats.gd || 0) > 0 ? "+" : ""}${teamStats.gd || 0}`, "Current", "#93c5fd")}
+              ${statCard(this.staticText("forLabel"), teamStats.gf ?? goals ?? 0, this.staticText("scored"), "#fde68a")}
+              ${statCard(this.staticText("against"), teamStats.ga ?? 0, this.t("conceded"), "#fca5a5")}
+              ${statCard(this.staticText("clean"), teamStats.cleanSheets || 0, this.staticText("sheets"), "#86efac")}
+              ${statCard("GD", `${Number(teamStats.gd || 0) > 0 ? "+" : ""}${teamStats.gd || 0}`, this.staticText("current"), "#93c5fd")}
             </div>
           </div>
         </div>
@@ -21195,7 +22087,7 @@ class WorldCup2026Panel extends HTMLElement {
       <div class="wc-card wc-support-donate-card" style="text-align:center;">
         <div class="wc-section-title">${this.t("wantNameAdded")}</div>
         <p class="wc-muted">${this.t("supportFutureUpdates")}</p>
-        <p class="wc-muted">Support the World Cup 2026 Integration using Ko-fi or PayPal. Every donation helps with future updates, testing and new features.</p>
+        <p class="wc-muted">${this.esc(this.staticText("supportIntroFull"))}</p>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
           <a
             class="wc-pill wc-donate-button"
@@ -21204,7 +22096,7 @@ class WorldCup2026Panel extends HTMLElement {
             rel="noopener noreferrer"
             style="display:inline-flex;text-decoration:none;"
           >
-            ☕ Support via Ko-fi
+            ☕ ${this.esc(this.staticText("supportViaKofi"))}
           </a>
           <a
             class="wc-pill wc-donate-button"
@@ -21213,7 +22105,7 @@ class WorldCup2026Panel extends HTMLElement {
             rel="noopener noreferrer"
             style="display:inline-flex;text-decoration:none;"
           >
-            💳 Support via PayPal
+            💳 ${this.esc(this.staticText("supportViaPaypal"))}
           </a>
         </div>
       </div>
@@ -21224,65 +22116,65 @@ class WorldCup2026Panel extends HTMLElement {
         <div class="wc-section-title" style="text-align:center;">${this.t("supportersThankYouTitle")}</div>
 
         <div style="text-align:center;font-size:18px;font-weight:900;line-height:1.45;margin:8px auto 14px auto;max-width:860px;">
-          ⭐ <strong>Premium Supporters</strong> can have their name, country flag and a personalised message featured in the World Cup 2026 Integration.
+          ⭐ <strong>${this.esc(this.staticText("premiumSupporters"))}</strong> ${this.esc(this.staticText("premiumFeatureText"))}
         </div>
 
         <p class="wc-muted" style="text-align:center;max-width:880px;margin-left:auto;margin-right:auto;">
-          The World Cup 2026 integration has grown from a small personal Home Assistant dashboard into a full tournament system with fixtures, live scores, results, groups, knockout tracking, stadiums, records, Golden Boot data and supporter features.
+          ${this.esc(this.staticText("premiumSupportIntro"))}
         </p>
 
         <p class="wc-muted" style="text-align:center;max-width:880px;margin-left:auto;margin-right:auto;">
-          Every update takes time to build, test and maintain, and support also helps towards live football data, future improvements, bug fixes and project costs.
+          ${this.esc(this.staticText("premiumSupportCosts"))}
         </p>
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:16px;">
           <div class="wc-stat" style="text-align:left;border:1px solid rgba(255,215,0,0.55);background:linear-gradient(135deg,rgba(255,215,0,0.14),rgba(255,255,255,0.04));">
-            <strong>👑 Premium Supporter</strong>
+            <strong>👑 ${this.esc(this.staticText("premiumSupporter"))}</strong>
             <span style="display:block;margin-top:6px;line-height:1.5;">
-              Donate <b>£10 / $10 / €10 or more</b> to be featured as a Premium Supporter.
+              ${this.esc(this.staticText("donatePremiumText"))}
             </span>
           </div>
 
           <div class="wc-stat" style="text-align:left;">
-            <strong>🌍 Name & Flag</strong>
+            <strong>🌍 ${this.esc(this.staticText("nameFlag"))}</strong>
             <span style="display:block;margin-top:6px;line-height:1.5;">
-              Your name or nickname can be shown with your country flag in the integration.
+              ${this.esc(this.staticText("nameFlagText"))}
             </span>
           </div>
 
           <div class="wc-stat" style="text-align:left;">
-            <strong>💬 Personal Message</strong>
+            <strong>💬 ${this.esc(this.staticText("personalMessage"))}</strong>
             <span style="display:block;margin-top:6px;line-height:1.5;">
-              Premium Supporters can include a short message to appear with their supporter profile.
+              ${this.esc(this.staticText("premiumMessageText"))}
             </span>
           </div>
         </div>
 
         <div style="margin-top:16px;padding:14px;border-radius:16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);">
           <p style="margin:0 0 8px 0;font-weight:900;text-align:center;">
-            ❤️ Every Donation Matters
+            ❤️ ${this.esc(this.staticText("everyDonationMatters"))}
           </p>
           <p class="wc-muted" style="margin:0;text-align:center;max-width:880px;margin-left:auto;margin-right:auto;">
-            Whilst Premium Supporters receive extra recognition, <b>every donation is genuinely appreciated regardless of amount</b>. Anyone who supports the project can still be added to the Supporters page as a thank you.
+            ${this.esc(this.staticText("everyDonationText"))}
           </p>
         </div>
 
         <div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">
-          <div class="wc-pill" style="justify-content:center;white-space:normal;line-height:1.4;">⚽ Live data costs</div>
-          <div class="wc-pill" style="justify-content:center;white-space:normal;line-height:1.4;">🛠 Bug fixes & improvements</div>
-          <div class="wc-pill" style="justify-content:center;white-space:normal;line-height:1.4;">🚀 Future features</div>
-          <div class="wc-pill" style="justify-content:center;white-space:normal;line-height:1.4;">🌍 Community development</div>
+          <div class="wc-pill" style="justify-content:center;white-space:normal;line-height:1.4;">⚽ ${this.esc(this.staticText("liveDataCosts"))}</div>
+          <div class="wc-pill" style="justify-content:center;white-space:normal;line-height:1.4;">🛠 ${this.esc(this.staticText("bugFixesImprovements"))}</div>
+          <div class="wc-pill" style="justify-content:center;white-space:normal;line-height:1.4;">🚀 ${this.esc(this.staticText("futureFeatures"))}</div>
+          <div class="wc-pill" style="justify-content:center;white-space:normal;line-height:1.4;">🌍 ${this.esc(this.staticText("communityDevelopment"))}</div>
         </div>
 
         <div style="margin-top:16px;text-align:center;">
-          <p style="font-weight:900;margin:0 0 8px 0;">To be added, include your name, country and optional message after donating.</p>
+          <p style="font-weight:900;margin:0 0 8px 0;">${this.esc(this.staticText("toBeAddedSupporter"))}</p>
           <p class="wc-muted" style="margin:0;">
-            Example: 🇬🇧 Adrian Apel — “Creator & Founder” · 🇺🇸 John Smith — “Supporting development from the USA” · 🇩🇪 Klaus Meyer — “Love the integration!”
+            ${this.esc(this.staticText("supporterExample"))}
           </p>
         </div>
 
         <p style="text-align:center;font-weight:900;margin:18px 0 0 0;">
-          Every supporter matters. Every donation helps. Every contribution is appreciated. 🙏
+          ${this.esc(this.staticText("everySupporterMatters"))} 🙏
         </p>
       </div>
 
@@ -21393,7 +22285,7 @@ class WorldCup2026Panel extends HTMLElement {
       return `<div class="wc-header-live-pill offline wc-header-scheduled-pill">🔴 ${this.t("noGamesToday")}</div>`;
     }
 
-    return `<div class="wc-header-live-pill live wc-header-scheduled-pill">🟢 ${scheduledTodayCount} ${scheduledTodayCount === 1 ? "game" : "games"} today</div>`;
+    return `<div class="wc-header-live-pill live wc-header-scheduled-pill">🟢 ${scheduledTodayCount} ${scheduledTodayCount === 1 ? this.t("game") : this.t("games")} ${this.t("today")}</div>`;
   }
 
   worldCupKickoffDate() {
@@ -21565,15 +22457,7 @@ class WorldCup2026Panel extends HTMLElement {
               <div class="wc-tablet-top-controls">
                 <div class="wc-updated-pill wc-tablet-top-time">${new Date().toLocaleTimeString()}</div>
                 <select class="wc-language-select wc-language-select-tablet" id="wc-language-select-tablet" title="${this.esc(this.t("language"))}">
-                  <option value="en" ${this._language === "en" ? "selected" : ""}>English</option>
-                  <option value="fr" ${this._language === "fr" ? "selected" : ""}>French</option>
-                  <option value="de" ${this._language === "de" ? "selected" : ""}>German</option>
-                  <option value="es" ${this._language === "es" ? "selected" : ""}>Spanish</option>
-                  <option value="it" ${this._language === "it" ? "selected" : ""}>Italian</option>
-                  <option value="nl" ${this._language === "nl" ? "selected" : ""}>Dutch</option>
-                  <option value="pt" ${this._language === "pt" ? "selected" : ""}>Portuguese</option>
-                  <option value="pl" ${this._language === "pl" ? "selected" : ""}>Polish</option>
-                  <option value="ja" ${this._language === "ja" ? "selected" : ""}>Japanese</option>
+                  ${this.languageOptionsMarkup()}
                 </select>
                 <select class="wc-view-select wc-view-select-tablet" id="wc-view-select-tablet" title="${this.esc(this.t("viewMode"))}">
                   <option value="mobile" ${this._viewMode === "mobile" ? "selected" : ""}>${this.esc(this.t("mobileView"))}</option>
@@ -21612,6 +22496,7 @@ class WorldCup2026Panel extends HTMLElement {
       </div>
     `;
 
+    this.applyStaticTextTranslations();
     this.applyHideSidebarFromUrl();
 
     this.querySelectorAll(".wc-nav button, .wc-tablet-header-nav button, .overview-action-button").forEach((button) => {
