@@ -3,7 +3,7 @@
  * Home Assistant weather dashboard card with forecasts and optional radar.
  */
 
-const CARD_VERSION = "0.8.5";
+const CARD_VERSION = "0.8.7";
 const FORECAST_REFRESH_MS = 15 * 60 * 1000;
 const ENVIRONMENT_REFRESH_MS = 60 * 60 * 1000;
 const CARD_TYPES = ["radarwise-card", "radar-wise-card", "weatherwise-card", "weather-wise-card"];
@@ -12,6 +12,7 @@ const RADARWISE_COUNTRIES = {
   us: "United States",
   ca: "Canada",
   uk: "United Kingdom",
+  au: "Australia",
   global: "Global / other"
 };
 
@@ -19,6 +20,7 @@ const RADARWISE_RADAR = {
   auto: "Auto",
   noaa: "US NOAA radar",
   envcanada: "Environment Canada radar",
+  bom: "Australia BOM radar",
   rainviewer: "RainViewer global radar",
   none: "No radar"
 };
@@ -91,6 +93,105 @@ const RADARWISE_FONT_STACKS = {
   condensed: '"Aptos Narrow","Arial Narrow","Roboto Condensed","Segoe UI",Roboto,Arial,sans-serif',
   mono: '"SFMono-Regular","Cascadia Mono",Consolas,"Liberation Mono",monospace'
 };
+
+const BOM_WMTS_BASE = "https://api.bom.gov.au/apikey/v1/mapping/timeseries/wmts";
+const BOM_GIF_HOST = "https://reg.bom.gov.au";
+const BOM_WMTS_LAYER = {
+  id: "atm_surf_air_precip_reflectivity_dbz",
+  matrixSet: "GoogleMapsCompatible_BoM",
+  stepMinutes: 5,
+  lagMinutes: 10
+};
+const BOM_BASEMAPS = {
+  default: "https://api.bom.gov.au/apikey/v1/mapping/basemaps/basemap_default/MapServer/tile/{z}/{y}/{x}?blankTile=false",
+  dark: "https://api.bom.gov.au/apikey/v1/mapping/basemaps/basemap_dark/MapServer/tile/{z}/{y}/{x}?blankTile=false"
+};
+const BOM_HALF_EXTENT = 20037508.342789244;
+const BOM_WORLD_EXTENT = BOM_HALF_EXTENT * 2;
+const BOM_MAX_NATIVE_ZOOM = 8;
+const BOM_MAX_DISPLAY_ZOOM = 10;
+const BOM_AUSTRALIA_BOUNDS = [[-45.5, 108], [-8, 158]];
+const BOM_TILE_MATRIX_SETS = {
+  GoogleMapsCompatible_BoM: [
+    { z: 0, tlx: 11584952, tly: 34168990.685578, w: 1, h: 1 },
+    { z: 1, tlx: 11584952, tly: 14131482.342789, w: 1, h: 1 },
+    { z: 2, tlx: 11584952, tly: 4112728.171395, w: 1, h: 1 },
+    { z: 3, tlx: 11584952, tly: 4112728.171395, w: 2, h: 2 },
+    { z: 4, tlx: 11584952, tly: 1608039.628546, w: 3, h: 3 },
+    { z: 5, tlx: 11584952, tly: 355695.357122, w: 6, h: 5 },
+    { z: 6, tlx: 11584952, tly: -270476.778591, w: 11, h: 9 },
+    { z: 7, tlx: 11584952, tly: -583562.846447, w: 22, h: 17 },
+    { z: 8, tlx: 11584952, tly: -740105.880375, w: 43, h: 33 }
+  ]
+};
+const TRANSPARENT_PIXEL = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+const BOM_RADARS = [
+  { id: "IDR643", name: "Adelaide (Buckland Park)", lat: -34.617, lon: 138.469 },
+  { id: "IDR463", name: "Adelaide (Sellicks Hill)", lat: -35.33, lon: 138.50 },
+  { id: "IDR333", name: "Ceduna", lat: -32.13, lon: 133.70 },
+  { id: "IDR143", name: "Mount Gambier", lat: -37.75, lon: 140.77 },
+  { id: "IDR273", name: "Woomera", lat: -31.16, lon: 136.80 },
+  { id: "IDR713", name: "Sydney (Terrey Hills)", lat: -33.701, lon: 151.210 },
+  { id: "IDR043", name: "Newcastle", lat: -32.730, lon: 152.027 },
+  { id: "IDR033", name: "Wollongong (Appin)", lat: -34.264, lon: 150.874 },
+  { id: "IDR403", name: "Canberra (Captains Flat)", lat: -35.66, lon: 149.51 },
+  { id: "IDR283", name: "Grafton", lat: -29.62, lon: 152.97 },
+  { id: "IDR533", name: "Moree", lat: -29.50, lon: 149.85 },
+  { id: "IDR693", name: "Namoi (Blackjack Mountain)", lat: -31.024, lon: 150.1915 },
+  { id: "IDR553", name: "Wagga Wagga", lat: -35.17, lon: 147.47 },
+  { id: "IDR943", name: "Hillston", lat: -33.55, lon: 145.52 },
+  { id: "IDR963", name: "Yeoval", lat: -32.74, lon: 148.70 },
+  { id: "IDR933", name: "Brewarrina", lat: -29.96, lon: 146.81 },
+  { id: "IDR023", name: "Melbourne", lat: -37.852, lon: 144.752 },
+  { id: "IDR973", name: "Mildura", lat: -34.28, lon: 141.59 },
+  { id: "IDR683", name: "Bairnsdale", lat: -37.89, lon: 147.56 },
+  { id: "IDR953", name: "Rainbow", lat: -35.99, lon: 142.01 },
+  { id: "IDR493", name: "Yarrawonga", lat: -36.03, lon: 146.03 },
+  { id: "IDR663", name: "Brisbane (Mt Stapylton)", lat: -27.718, lon: 153.240 },
+  { id: "IDR503", name: "Brisbane (Marburg)", lat: -27.61, lon: 152.54 },
+  { id: "IDR1083", name: "Toowoomba", lat: -27.274, lon: 151.993 },
+  { id: "IDR193", name: "Cairns", lat: -16.82, lon: 145.68 },
+  { id: "IDR243", name: "Bowen", lat: -19.88, lon: 148.08 },
+  { id: "IDR723", name: "Emerald", lat: -23.5494, lon: 148.2392 },
+  { id: "IDR233", name: "Gladstone", lat: -23.86, lon: 151.26 },
+  { id: "IDR743", name: "Greenvale", lat: -18.99, lon: 144.99 },
+  { id: "IDR083", name: "Gympie", lat: -25.957, lon: 152.577 },
+  { id: "IDR563", name: "Longreach", lat: -23.43, lon: 144.29 },
+  { id: "IDR223", name: "Mackay", lat: -21.12, lon: 149.22 },
+  { id: "IDR363", name: "Mornington Island", lat: -16.67, lon: 139.17 },
+  { id: "IDR753", name: "Mount Isa", lat: -20.7114, lon: 139.5553 },
+  { id: "IDR1073", name: "Richmond", lat: -20.75, lon: 143.14 },
+  { id: "IDR983", name: "Taroom", lat: -25.696, lon: 149.898 },
+  { id: "IDR673", name: "Warrego", lat: -26.44, lon: 147.35 },
+  { id: "IDR783", name: "Weipa", lat: -12.67, lon: 141.92 },
+  { id: "IDR413", name: "Willis Island", lat: -16.288, lon: 149.965 },
+  { id: "IDR703", name: "Perth (Serpentine)", lat: -32.39, lon: 115.87 },
+  { id: "IDR263", name: "Perth Airport", lat: -31.93, lon: 115.98 },
+  { id: "IDR313", name: "Albany", lat: -34.94, lon: 117.80 },
+  { id: "IDR173", name: "Broome", lat: -17.95, lon: 122.23 },
+  { id: "IDR1143", name: "Carnarvon", lat: -24.88, lon: 113.67 },
+  { id: "IDR153", name: "Dampier", lat: -20.65, lon: 116.69 },
+  { id: "IDR583", name: "South Doodlakine", lat: -31.78, lon: 117.95 },
+  { id: "IDR323", name: "Esperance", lat: -33.83, lon: 121.89 },
+  { id: "IDR063", name: "Geraldton", lat: -28.80, lon: 114.70 },
+  { id: "IDR443", name: "Giles", lat: -25.03, lon: 128.30 },
+  { id: "IDR393", name: "Halls Creek", lat: -18.23, lon: 127.66 },
+  { id: "IDR483", name: "Kalgoorlie-Boulder", lat: -30.79, lon: 121.45 },
+  { id: "IDR1113", name: "Karratha", lat: -20.99, lon: 116.87 },
+  { id: "IDR293", name: "Learmonth", lat: -22.10, lon: 114.00 },
+  { id: "IDR383", name: "Newdegate", lat: -33.097, lon: 119.009 },
+  { id: "IDR163", name: "Port Hedland", lat: -20.37, lon: 118.63 },
+  { id: "IDR793", name: "Watheroo", lat: -30.36, lon: 116.29 },
+  { id: "IDR073", name: "Wyndham", lat: -15.45, lon: 128.12 },
+  { id: "IDR763", name: "Hobart (Mt Koonya)", lat: -43.1122, lon: 147.8061 },
+  { id: "IDR523", name: "West Takone", lat: -41.181, lon: 145.579 },
+  { id: "IDR373", name: "Hobart Airport", lat: -42.83, lon: 147.51 },
+  { id: "IDR633", name: "Darwin (Berrimah)", lat: -12.46, lon: 130.93 },
+  { id: "IDR253", name: "Alice Springs", lat: -23.82, lon: 133.90 },
+  { id: "IDR1123", name: "Gove", lat: -12.27, lon: 136.82 },
+  { id: "IDR423", name: "Katherine", lat: -14.51, lon: 132.45 },
+  { id: "IDR773", name: "Warruwi", lat: -11.6494, lon: 133.382 }
+];
 
 const RADARWISE_LANGUAGES = {
   auto: "Auto",
@@ -758,6 +859,8 @@ class RadarWiseCard extends HTMLElement {
     this._radarLabelText = "radar loop";
     this._radarProviderRendered = "";
     this._radarResizeObserver = null;
+    this._bomTileErrorCount = 0;
+    this._bomFallbackStarted = false;
     this._cardResizeObserver = null;
     this._timelineScrollRaf = null;
     this._timelineScrollDir = 1;
@@ -2111,13 +2214,19 @@ class RadarWiseCard extends HTMLElement {
       await this._loadLeaflet();
       if (!window.L || !holder.isConnected) return;
       const { lat, lon } = this._latLon();
+      const isBom = provider === "bom";
       this._radarMap = window.L.map(holder, {
         center: [lat, lon],
-        zoom: Number(this._config.radar_zoom) || 7,
+        zoom: isBom
+          ? Math.max(3, Math.min(BOM_MAX_DISPLAY_ZOOM, Number(this._config.radar_zoom) || 6))
+          : Number(this._config.radar_zoom) || 7,
+        minZoom: isBom ? 3 : undefined,
+        maxZoom: isBom ? BOM_MAX_DISPLAY_ZOOM : undefined,
         zoomControl: this._config.show_map_controls !== false,
         attributionControl: true
       });
-      this._addBasemapLayer();
+      if (isBom) this._addBomBasemapLayer();
+      else this._addBasemapLayer();
       window.L.circleMarker([lat, lon], {
         radius: 5,
         color: "#1a3a50",
@@ -2154,6 +2263,8 @@ class RadarWiseCard extends HTMLElement {
     this._warningLayer = null;
     this._warningPopupMarker = null;
     this._radarIndex = 0;
+    this._bomTileErrorCount = 0;
+    this._bomFallbackStarted = false;
     if (this._radarMap) {
       this._radarMap.remove();
       this._radarMap = null;
@@ -2306,9 +2417,11 @@ class RadarWiseCard extends HTMLElement {
     if (this._config.radar_provider === "none") return "none";
     if (this._config.radar_provider === "noaa") return "noaa";
     if (this._config.radar_provider === "envcanada") return "envcanada";
+    if (this._config.radar_provider === "bom") return "bom";
     if (this._config.radar_provider === "rainviewer") return "rainviewer";
     if (this._config.country === "us") return "noaa";
     if (this._config.country === "ca") return "envcanada";
+    if (this._config.country === "au") return "bom";
     return "rainviewer";
   }
 
@@ -2320,6 +2433,10 @@ class RadarWiseCard extends HTMLElement {
     }
     if (provider === "envcanada") {
       await this._loadEnvCanadaLoop();
+      return;
+    }
+    if (provider === "bom") {
+      await this._loadBomLoop();
       return;
     }
     await this._loadNoaaLoop();
@@ -2389,6 +2506,147 @@ class RadarWiseCard extends HTMLElement {
     this._animateRadar(this._radarLabelText);
   }
 
+  async _loadBomLoop() {
+    const label = this.shadowRoot?.getElementById("radar-lbl");
+    const frames = this._bomFrames();
+    const selectedFrames = this._config.radar_timeline === "latest" || this._config.radar_timeline === "future" ? frames.slice(-1) : frames;
+    this._bomTileErrorCount = 0;
+    this._bomFallbackStarted = false;
+    this._radarLabelText = selectedFrames.length === 1 ? `BOM ${this._t("currentRadar")}` : `BOM ${this._t("radarLoop")}`;
+    this._replaceRadarLayers(selectedFrames.map((frameTime, index, list) => ({
+      time: frameTime,
+      layer: this._createBomTileLayer(this._bomTimestamp(frameTime), {
+        opacity: index === list.length - 1 ? this._bomOpacity() : 0,
+        zIndex: 25,
+        noWrap: true,
+        bounds: BOM_AUSTRALIA_BOUNDS,
+        maxNativeZoom: BOM_MAX_NATIVE_ZOOM,
+        maxZoom: BOM_MAX_DISPLAY_ZOOM,
+        attribution: "Radar &copy; Bureau of Meteorology"
+      })
+    })));
+    if (label) label.textContent = `${this._shortTime(selectedFrames.at(-1))} ${this._radarLabelText}`;
+    this._animateRadar(this._radarLabelText);
+  }
+
+  _bomFrames() {
+    const stepMs = BOM_WMTS_LAYER.stepMinutes * 60 * 1000;
+    const lagMs = BOM_WMTS_LAYER.lagMinutes * 60 * 1000;
+    const roundedNow = Math.floor((Date.now() - lagMs) / stepMs) * stepMs;
+    return Array.from({ length: 12 }, (_, i) => new Date(roundedNow - (11 - i) * stepMs));
+  }
+
+  _bomTimestamp(frameTime) {
+    return frameTime.toISOString().replace(/\.\d{3}Z$/, "Z");
+  }
+
+  _createBomTileLayer(time, options = {}) {
+    const card = this;
+    const BomTileLayer = window.L.TileLayer.extend({
+      getTileUrl(coords) {
+        return card._bomTileUrl(coords, time);
+      },
+      createTile(coords, done) {
+        const tile = document.createElement("img");
+        tile.alt = "";
+        const offset = card._bomTileOffset(coords.z);
+        if (offset) {
+          tile.style.marginLeft = `${offset.xShiftPx}px`;
+          tile.style.marginTop = `${offset.yShiftPx}px`;
+        }
+        const url = this.getTileUrl(coords);
+        if (!url) {
+          tile.src = TRANSPARENT_PIXEL;
+          window.setTimeout(() => done(null, tile), 0);
+          return tile;
+        }
+        let settled = false;
+        const finish = () => {
+          if (settled) return;
+          settled = true;
+          done(null, tile);
+        };
+        tile.onload = finish;
+        tile.onerror = () => {
+          tile.onerror = null;
+          card._bomTileErrorCount += 1;
+          if (card._bomTileErrorCount >= 3) card._scheduleBomGifFallback();
+          tile.src = TRANSPARENT_PIXEL;
+          finish();
+        };
+        tile.src = url;
+        return tile;
+      }
+    });
+    return new BomTileLayer("", options);
+  }
+
+  _scheduleBomGifFallback() {
+    if (this._bomFallbackStarted || this._resolvedRadarProvider() !== "bom") return;
+    this._bomFallbackStarted = true;
+    window.setTimeout(() => this._renderBomGifFallback(), 0);
+  }
+
+  _renderBomGifFallback() {
+    const holder = this.shadowRoot?.getElementById("rmap");
+    const label = this.shadowRoot?.getElementById("radar-lbl");
+    const station = this._bomStation();
+    if (!holder || !station) {
+      if (label) label.textContent = this._t("radarUnavailable");
+      return;
+    }
+    this._teardownRadar();
+    this._bomFallbackStarted = true;
+    const controls = this.shadowRoot?.querySelector(".radar-controls");
+    if (controls) controls.setAttribute("hidden", "");
+    holder.innerHTML = `
+      <div class="bom-fallback-radar">
+        <img class="bom-fallback-image" alt="${_wwEscape(station.name)} BOM radar loop">
+      </div>
+    `;
+    const img = holder.querySelector(".bom-fallback-image");
+    const updateImage = () => {
+      const cacheKey = Math.floor(Date.now() / (5 * 60 * 1000));
+      img.src = `${BOM_GIF_HOST}/radar/${station.id}.gif?_=${cacheKey}`;
+    };
+    img.onload = () => {
+      if (label) label.textContent = `${station.name} BOM ${this._t("radarLoop")}`;
+    };
+    img.onerror = () => {
+      if (label) label.textContent = `BOM ${this._t("radarUnavailable")}`;
+    };
+    updateImage();
+    this._radarTimer = window.setInterval(updateImage, 5 * 60 * 1000);
+  }
+
+  _bomTileUrl(coords, time) {
+    const offset = this._bomTileOffset(coords.z);
+    if (!offset) return "";
+    const col = coords.x - offset.xOffset;
+    const row = coords.y - offset.yOffset;
+    if (col < 0 || col >= offset.width || row < 0 || row >= offset.height) return "";
+    return `${BOM_WMTS_BASE}?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0` +
+      `&LAYER=${BOM_WMTS_LAYER.id}&STYLE=default&FORMAT=image/png` +
+      `&TILEMATRIXSET=${BOM_WMTS_LAYER.matrixSet}&TILEMATRIX=${coords.z}` +
+      `&TILEROW=${row}&TILECOL=${col}&time=${encodeURIComponent(time)}`;
+  }
+
+  _bomTileOffset(z) {
+    const info = BOM_TILE_MATRIX_SETS[BOM_WMTS_LAYER.matrixSet]?.[z];
+    if (!info) return null;
+    const tileSpan = BOM_WORLD_EXTENT / Math.pow(2, z);
+    const xOffset = Math.round((info.tlx + BOM_HALF_EXTENT) / tileSpan);
+    const yOffset = Math.round((BOM_HALF_EXTENT - info.tly) / tileSpan);
+    return {
+      xOffset,
+      yOffset,
+      xShiftPx: (((info.tlx + BOM_HALF_EXTENT) / tileSpan) - xOffset) * 256,
+      yShiftPx: (((BOM_HALF_EXTENT - info.tly) / tileSpan) - yOffset) * 256,
+      width: info.w,
+      height: info.h
+    };
+  }
+
   _replaceRadarLayers(layers) {
     window.clearInterval(this._radarTimer);
     this._radarLayers.forEach((item) => item.layer?.remove?.());
@@ -2437,7 +2695,8 @@ class RadarWiseCard extends HTMLElement {
 
   _showRadarFrame(index) {
     if (!this._radarLayers.length) return;
-    this._radarLayers.forEach((item, layerIndex) => item.layer.setOpacity(layerIndex === index ? this._radarOpacity() : 0));
+    const opacity = this._resolvedRadarProvider() === "bom" ? this._bomOpacity() : this._radarOpacity();
+    this._radarLayers.forEach((item, layerIndex) => item.layer.setOpacity(layerIndex === index ? opacity : 0));
     const active = this._radarLayers[index];
     const label = this.shadowRoot?.getElementById("radar-lbl");
     if (label && active) label.textContent = `${this._shortTime(active.time)} ${this._radarLabelText}`;
@@ -2453,6 +2712,32 @@ class RadarWiseCard extends HTMLElement {
     const stepMs = 6 * 60 * 1000;
     const roundedNow = Math.floor(Date.now() / stepMs) * stepMs;
     return Array.from({ length: 12 }, (_, i) => new Date(roundedNow - (11 - i) * stepMs));
+  }
+
+  _bomStation() {
+    const { lat, lon } = this._latLon();
+    return BOM_RADARS.reduce((nearest, station) => {
+      const distance = this._distanceKm(lat, lon, station.lat, station.lon);
+      return !nearest || distance < nearest.distance ? { ...station, distance } : nearest;
+    }, null);
+  }
+
+  _bomBounds(station) {
+    const rangeKm = 128;
+    const latRadius = rangeKm / 111.32;
+    const lonRadius = rangeKm / (111.32 * Math.max(0.2, Math.cos(station.lat * Math.PI / 180)));
+    return [
+      [station.lat - latRadius, station.lon - lonRadius],
+      [station.lat + latRadius, station.lon + lonRadius]
+    ];
+  }
+
+  _distanceKm(lat1, lon1, lat2, lon2) {
+    const toRad = (value) => value * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+    return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 
   _rainViewerFrames(data) {
@@ -2492,6 +2777,11 @@ class RadarWiseCard extends HTMLElement {
     return values[this._config.radar_style] ?? values.standard;
   }
 
+  _bomOpacity() {
+    const values = { standard: 0.9, vivid: 1, soft: 0.78 };
+    return values[this._config.radar_style] ?? values.standard;
+  }
+
   _addBasemapLayer() {
     const basemap = this._basemap();
     const fallback = this._basemap("light");
@@ -2503,6 +2793,18 @@ class RadarWiseCard extends HTMLElement {
       layer.remove?.();
       window.L.tileLayer(fallback.url, fallback.options).addTo(this._radarMap);
     });
+  }
+
+  _addBomBasemapLayer() {
+    const dark = this._config.radar_basemap === "dark";
+    const url = dark ? BOM_BASEMAPS.dark : BOM_BASEMAPS.default;
+    window.L.tileLayer(url, {
+      maxNativeZoom: 10,
+      maxZoom: BOM_MAX_DISPLAY_ZOOM,
+      noWrap: true,
+      bounds: BOM_AUSTRALIA_BOUNDS,
+      attribution: "&copy; Bureau of Meteorology"
+    }).addTo(this._radarMap);
   }
 
   _basemap(kind = this._config.radar_basemap) {
@@ -3081,6 +3383,8 @@ class RadarWiseCard extends HTMLElement {
       @keyframes ww-summary-drift{0%,8%{transform:translateX(0)}92%,100%{transform:translateX(min(0px, calc(100cqw - 100% - 38px)))}}
       .right{min-width:0;position:relative;overflow:hidden;border-radius:0 22px 22px 0}
       #rmap{width:100%;height:100%;min-height:0}
+      .bom-fallback-radar{width:100%;height:100%;display:grid;place-items:center;background:#d7dee2;overflow:hidden}
+      .bom-fallback-image{display:block;width:100%;height:100%;object-fit:contain;image-rendering:auto}
       .leaflet-container{height:100%;width:100%;position:relative;overflow:hidden;outline-offset:1px;background:#d7dee2;font-family:inherit;font-size:12px;line-height:1.5;z-index:0}
       .leaflet-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile-container,.leaflet-pane>svg,.leaflet-pane>canvas,.leaflet-zoom-box,.leaflet-image-layer,.leaflet-layer{position:absolute;left:0;top:0}
       .leaflet-container img.leaflet-tile,.leaflet-container img.leaflet-image-layer{max-width:none!important;max-height:none!important}
@@ -3104,6 +3408,7 @@ class RadarWiseCard extends HTMLElement {
       .radar-alert:focus-visible{outline:2px solid #b91c1c;outline-offset:2px}
       .radar-alert[hidden]{display:none}
       .radar-controls{position:absolute;top:10px;right:10px;display:flex;gap:6px;z-index:1001}
+      .radar-controls[hidden]{display:none}
       .radar-controls button{width:31px;height:31px;border:1px solid rgba(255,255,255,.62);border-radius:999px;background:rgba(255,255,255,.78);color:#0a1e2e;box-shadow:0 2px 10px rgba(10,30,46,.12);font:800 15px/1 var(--ha-font-family-body,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif);display:grid;place-items:center;cursor:pointer;padding:0}
       .radar-controls button:hover{background:rgba(255,255,255,.94)}
       .leaflet-control-zoom{border:0!important;box-shadow:0 2px 12px rgba(10,30,46,.13)!important}
@@ -3570,7 +3875,7 @@ class RadarWiseCardEditor extends HTMLElement {
               </select>
             </label>
           </div>
-          <div class="hint">Auto uses NOAA radar for the United States, Environment Canada radar for Canada, and RainViewer global radar for the UK and other regions. Future radar is used only when the selected provider exposes future frames.</div>
+          <div class="hint">Auto uses NOAA radar for the United States, Environment Canada radar for Canada, native BOM radar tiles for Australia, and RainViewer global radar for the UK and other regions. Future radar is used only when the selected provider exposes future frames.</div>
         </div>
         <div class="section">
           <div class="section-title">Display</div>
