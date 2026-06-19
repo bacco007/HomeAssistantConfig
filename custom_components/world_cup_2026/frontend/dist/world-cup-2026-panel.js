@@ -13,7 +13,9 @@ class WorldCup2026Panel extends HTMLElement {
     this._sidebarObserver = null;
     this._sidebarStyleRoots = new Set();
     this._sidebarObservers = [];
-    this._language = localStorage.getItem("world_cup_2026_language") || "en";
+    const savedLanguage = localStorage.getItem("world_cup_2026_language") || "en";
+    const validLanguages = new Set(["en", "fr", "de", "es", "it", "nl", "pt", "pl", "ja", "sv", "no", "hu", "tr", "cs", "da", "fi", "el", "ro", "sk", "sl", "hr", "sr", "bg", "uk", "is", "qu", "gn", "ay"]);
+    this._language = validLanguages.has(savedLanguage) ? savedLanguage : "en";
     this._viewMode = localStorage.getItem("world_cup_2026_view_mode") || "pc";
     this._hideSidebar = false;
     try { localStorage.removeItem("world_cup_2026_hide_sidebar"); } catch (e) {}
@@ -1137,964 +1139,10 @@ class WorldCup2026Panel extends HTMLElement {
       },
 
 
-      hi: {
-        title: "फीफा विश्व कप 2026",
-        subtitle: "Home Assistant टूर्नामेंट ऐप",
-        back: "← वापस",
-        updated: "अपडेट किया गया",
-        loading: "विश्व कप 2026 लोड हो रहा है...",
-        errorTitle: "विश्व कप 2026",
-        errorText: "ऐप डेटा लोड नहीं हो सका।",
-        overview: "अवलोकन",
-        live: "लाइव केंद्र",
-        fixtures: "फिक्स्चर",
-        results: "परिणाम",
-        groups: "ग्रुप",
-        knockout: "नॉकआउट",
-        players: "गोल्डन बूट",
-        records: "रिकॉर्ड",
-        stats: "स्टैट्स हब",
-        venues: "वेन्यू",
-        totalMatches: "कुल मैच",
-        loaded: "लोड हुए",
-        played: "खेले गए",
-        remaining: "बाकी",
-        liveNow: "अभी लाइव",
-        totalGoals: "कुल गोल",
-        nextMatch: "अगला मैच",
-        tournamentStatus: "टूर्नामेंट स्थिति",
-        demoMode: "डेमो मोड",
-        on: "चालू",
-        off: "बंद",
-        lastUpdate: "अंतिम अपडेट",
-        ok: "ठीक",
-        failed: "विफल",
-        progress: "प्रगति",
-        topScorer: "शीर्ष स्कोरर",
-        notAvailable: "उपलब्ध नहीं",
-        noUpcomingMatch: "कोई आगामी मैच लोड नहीं है।",
-        noLiveMatches: "अभी कोई मैच लाइव नहीं है।",
-        fixturesResults: "फिक्स्चर और परिणाम",
-        noFixtures: "अभी कोई फिक्स्चर लोड नहीं है।",
-        groupLabel: "ग्रुप",
-        groupsAL: "ग्रुप A-L",
-        noGroups: "अभी कोई ग्रुप तालिका लोड नहीं है।",
-        noTeamsGroup: "इस ग्रुप में अभी कोई टीम लोड नहीं है।",
-        goldenBoot: "गोल्डन बूट रेस",
-        noPlayerStats: "अभी कोई खिलाड़ी आँकड़े लोड नहीं हैं।",
-        knockoutBracket: "नॉकआउट ब्रैकेट",
-        fixturesNotAvailable: "फिक्स्चर अभी उपलब्ध नहीं हैं",
-        highestMatchGoals: "एक मैच में सबसे अधिक गोल",
-        biggestMargin: "सबसे बड़ा अंतर",
-        topTeamGoals: "सबसे अधिक टीम गोल",
-        bestDefenceGA: "सर्वश्रेष्ठ डिफेंस GA",
-        highestScoringMatch: "सबसे अधिक गोल वाला मैच",
-        biggestWin: "सबसे बड़ी जीत",
-        topScoringTeam: "सबसे अधिक गोल करने वाली टीम",
-        bestDefence: "सर्वश्रेष्ठ डिफेंस",
-        noResult: "अभी कोई परिणाम नहीं।",
-        noTeamGoalData: "अभी टीम गोल डेटा नहीं है।",
-        noDefensiveData: "अभी डिफेंस डेटा नहीं है।",
-        matchesPlayed: "खेले गए मैच",
-        yellowCards: "पीले कार्ड",
-        redCards: "लाल कार्ड",
-        minutes: "मिनट",
-        goalsPerMatch: "गोल / मैच",
-        draws: "ड्रॉ",
-        drawRate: "ड्रॉ दर",
-        bttsRate: "दोनों टीम स्कोर दर",
-        over25Rate: "2.5 से अधिक दर",
-        stadiums: "स्टेडियम",
-        usaVenues: "यूएसए वेन्यू",
-        canadaVenues: "कनाडा वेन्यू",
-        mexicoVenues: "मेक्सिको वेन्यू",
-        finalVenue: "फाइनल वेन्यू",
-        capacity: "क्षमता",
-        worldCupStadiums: "विश्व कप स्टेडियम",
-        noVenueData: "कोई वेन्यू डेटा उपलब्ध नहीं।",
-        scheduled: "आगामी",
-        liveStatus: "लाइव",
-        manualTimerNotice: 'लाइव स्कोर अपने आप अपडेट होते हैं। गोल समय मैनुअल मैच घड़ी से लिए जाते हैं और आधिकारिक समय से कुछ मिनट अलग हो सकते हैं।',
-        paused: "रुका हुआ",
-        fullTime: "फुल टाइम",
-        aet: "अतिरिक्त समय के बाद",
-        penalties: "पेनल्टी",
-        postponed: "स्थगित",
-        groupStage: "ग्रुप चरण",
-        round32: "राउंड ऑफ 32",
-        round16: "राउंड ऑफ 16",
-        quarterFinals: "क्वार्टर फाइनल",
-        semiFinals: "सेमी फाइनल",
-        thirdPlace: "तीसरा स्थान",
-        final: "फाइनल",
-        tbc: "TBC",
-        unknown: "अज्ञात",
-        pos: "स्थान",
-        team: "टीम",
-        player: "खिलाड़ी",
-        goals: "गोल",
-        assists: "असिस्ट",
-        language: "डैशबोर्ड भाषा",
-        pcView: "???? ?????",
-        tabletView: "?????? ?????",
-        viewMode: "???????? ?????",
-        controlCentre: "विश्व कप 2026 कंट्रोल सेंटर",
-        overviewSubtitle: "फिक्स्चर, परिणाम, ग्रुप, खिलाड़ी आँकड़े, वेन्यू, रिकॉर्ड और नॉकआउट ट्रैकिंग के साथ लाइव टूर्नामेंट डैशबोर्ड।",
-        tournamentIntelligence: "टूर्नामेंट विश्लेषण",
-        goldenBootCentre: "गोल्डन बूट सेंटर",
-        leaderSpotlight: "लीडर स्पॉटलाइट",
-        playersTracked: "ट्रैक किए गए खिलाड़ी",
-        totalAssists: "कुल असिस्ट",
-        totalYellowCards: "कुल पीले कार्ड",
-        totalRedCards: "कुल लाल कार्ड",
-        upNext: "अगला",
-        matchSpotlight: "मैच स्पॉटलाइट",
-        upcomingFixtures: "आगामी फिक्स्चर",
-        latest: "नवीनतम",
-        recentResults: "हाल के परिणाम",
-        playerWatch: "खिलाड़ी वॉच",
-        fixturesSubtitle: "मैच-दिन सेक्शन, बोल्ड स्कोर कार्ड, झंडे, वेन्यू विवरण और साफ लाइव/परिणाम बैज वाला बेहतर मैच सेंटर।",
-        days: "दिन",
-        versus: "बनाम",
-        supportersNav: "🙏 समर्थक",
-        supportersThankYouTitle: "🙏 समर्थक और धन्यवाद",
-        supportersIntro: "यह प्रोजेक्ट एक निजी Home Assistant डैशबोर्ड के रूप में शुरू हुआ और समुदाय की प्रतिक्रिया, टेस्टिंग, विचारों और समर्थन से बढ़ा।",
-        supportersSpecialThanks: "World Cup 2026 इंटीग्रेशन के विकास का समर्थन करने वाले सभी लोगों को विशेष धन्यवाद।",
-        supportersTitle: "🍺 समर्थक",
-        latestSupporters: "⭐ नवीनतम समर्थक",
-        allSupporters: "🌍 सभी समर्थक",
-        supporterDefaultMessage: "विकास का समर्थन करने के लिए धन्यवाद।",
-        anonymousSupporter: "गुमनाम समर्थक",
-        noSupporters: "अभी कोई समर्थक नहीं जोड़ा गया। सबसे पहले Buy Me a Beer करें और अपना नाम यहाँ दिखाएँ।",
-        wantNameAdded: "अपना नाम यहाँ जोड़ना चाहते हैं?",
-        supportFutureUpdates: "भविष्य के अपडेट, बग फिक्स और नई विश्व कप सुविधाओं का समर्थन करें।",
-        supporterBeerMessage: "🍺 क्या आप अपना नाम समर्थक पेज पर दिखाना चाहते हैं? PayPal के जरिए मुझे एक बीयर खरीदें और विकास समर्थन के धन्यवाद के रूप में आपका नाम World Cup 2026 समर्थक सूची में जोड़ा जा सकता है।",
-        donateBuyBeer: "🍺 दान / मुझे बीयर खरीदें",
-        enjoyingIntegration: "🍺 क्या आपको यह इंटीग्रेशन पसंद आ रहा है?",
-        supportIntegration: "इस इंटीग्रेशन का समर्थन करें",
-        source: "स्रोत",
-        totalSupporters: "कुल समर्थक",
-        countries: "देश",
-        countriesSupporting: "समर्थन करने वाले देश",
-        latestSupportDate: "नवीनतम समर्थन तारीख",
-        playedShort: "खे",
-        winsShort: "जी",
-        drawsShort: "ड्रॉ",
-        lossesShort: "हा",
-        goalsForShort: "GF",
-        goalsAgainstShort: "GA",
-        goalDifferenceShort: "GD",
-        pointsShort: "अंक",
-        noResultsLoaded: "अभी कोई परिणाम लोड नहीं है।",
-        finishedMatchesSubtitle: "समाप्त मैच और पुष्टि किए गए स्कोर।",
-        goldenBootAutoText: "football-data.org द्वारा विश्व कप स्कोरर डेटा प्रकाशित होने पर गोल्डन बूट डेटा अपने-आप दिखाई देगा।",
-        realStadium: "वास्तविक स्टेडियम",
-        matchesHosted: "होस्ट किए गए मैच",
-        communitySupport: "समुदाय समर्थन",
-        supportersAroundWorld: "दुनिया भर के समर्थक",
-        noLiveGames: "कोई लाइव गेम नहीं",
-        noGamesToday: "आज कोई गेम नहीं",
-        conceded: "खाए गए",
-      },
 
-      bn: {
-        title: "ফিফা বিশ্বকাপ ২০২৬",
-        subtitle: "Home Assistant টুর্নামেন্ট অ্যাপ",
-        back: "← ফিরে যান",
-        updated: "আপডেট হয়েছে",
-        loading: "বিশ্বকাপ ২০২৬ লোড হচ্ছে...",
-        errorTitle: "বিশ্বকাপ ২০২৬",
-        errorText: "অ্যাপ ডেটা লোড করা যায়নি।",
-        overview: "সংক্ষিপ্ত বিবরণ",
-        live: "লাইভ সেন্টার",
-        fixtures: "ফিক্সচার",
-        results: "ফলাফল",
-        groups: "গ্রুপ",
-        knockout: "নকআউট",
-        players: "গোল্ডেন বুট",
-        records: "রেকর্ড",
-        stats: "স্ট্যাটস হাব",
-        venues: "ভেন্যু",
-        totalMatches: "মোট ম্যাচ",
-        loaded: "লোড হয়েছে",
-        played: "খেলা হয়েছে",
-        remaining: "বাকি",
-        liveNow: "এখন লাইভ",
-        totalGoals: "মোট গোল",
-        nextMatch: "পরের ম্যাচ",
-        tournamentStatus: "টুর্নামেন্ট অবস্থা",
-        demoMode: "ডেমো মোড",
-        on: "চালু",
-        off: "বন্ধ",
-        lastUpdate: "শেষ আপডেট",
-        ok: "OK",
-        failed: "ব্যর্থ",
-        progress: "অগ্রগতি",
-        topScorer: "সর্বোচ্চ গোলদাতা",
-        notAvailable: "উপলব্ধ নয়",
-        noUpcomingMatch: "কোনো আসন্ন ম্যাচ লোড নেই।",
-        noLiveMatches: "এখন কোনো ম্যাচ লাইভ নেই।",
-        fixturesResults: "ফিক্সচার ও ফলাফল",
-        noFixtures: "এখনও কোনো ফিক্সচার লোড হয়নি।",
-        groupLabel: "গ্রুপ",
-        groupsAL: "গ্রুপ A-L",
-        noGroups: "এখনও কোনো গ্রুপ স্ট্যান্ডিং লোড হয়নি।",
-        noTeamsGroup: "এই গ্রুপে এখনও কোনো দল লোড হয়নি।",
-        goldenBoot: "গোল্ডেন বুট রেস",
-        noPlayerStats: "এখনও কোনো খেলোয়াড়ের পরিসংখ্যান লোড হয়নি।",
-        knockoutBracket: "নকআউট ব্র্যাকেট",
-        fixturesNotAvailable: "ফিক্সচার এখনও উপলব্ধ নয়",
-        highestMatchGoals: "এক ম্যাচে সর্বাধিক গোল",
-        biggestMargin: "সবচেয়ে বড় ব্যবধান",
-        topTeamGoals: "সর্বাধিক দলীয় গোল",
-        bestDefenceGA: "সেরা রক্ষণ GA",
-        highestScoringMatch: "সর্বাধিক গোলের ম্যাচ",
-        biggestWin: "সবচেয়ে বড় জয়",
-        topScoringTeam: "সর্বাধিক গোল করা দল",
-        bestDefence: "সেরা রক্ষণ",
-        noResult: "এখনও কোনো ফলাফল নেই।",
-        noTeamGoalData: "এখনও দলীয় গোল ডেটা নেই।",
-        noDefensiveData: "এখনও রক্ষণ ডেটা নেই।",
-        matchesPlayed: "খেলা ম্যাচ",
-        yellowCards: "হলুদ কার্ড",
-        redCards: "লাল কার্ড",
-        minutes: "মিনিট",
-        goalsPerMatch: "গোল / ম্যাচ",
-        draws: "ড্র",
-        drawRate: "ড্র হার",
-        bttsRate: "দুই দলই গোল হার",
-        over25Rate: "২.৫ এর বেশি হার",
-        stadiums: "স্টেডিয়াম",
-        usaVenues: "যুক্তরাষ্ট্র ভেন্যু",
-        canadaVenues: "কানাডা ভেন্যু",
-        mexicoVenues: "মেক্সিকো ভেন্যু",
-        finalVenue: "ফাইনাল ভেন্যু",
-        capacity: "ধারণক্ষমতা",
-        worldCupStadiums: "বিশ্বকাপ স্টেডিয়াম",
-        noVenueData: "কোনো ভেন্যু ডেটা উপলব্ধ নেই।",
-        scheduled: "আসন্ন",
-        liveStatus: "লাইভ",
-        manualTimerNotice: 'লাইভ স্কোর স্বয়ংক্রিয়ভাবে আপডেট হয়। গোলের সময় ম্যানুয়াল ম্যাচ ঘড়ি ব্যবহার করে এবং অফিসিয়াল সময়ের থেকে কয়েক মিনিট ভিন্ন হতে পারে।',
-        paused: "বিরতি",
-        fullTime: "পূর্ণ সময়",
-        aet: "অতিরিক্ত সময়ের পর",
-        penalties: "পেনাল্টি",
-        postponed: "স্থগিত",
-        groupStage: "গ্রুপ পর্ব",
-        round32: "রাউন্ড অব ৩২",
-        round16: "রাউন্ড অব ১৬",
-        quarterFinals: "কোয়ার্টার ফাইনাল",
-        semiFinals: "সেমি ফাইনাল",
-        thirdPlace: "তৃতীয় স্থান",
-        final: "ফাইনাল",
-        tbc: "TBC",
-        unknown: "অজানা",
-        pos: "স্থান",
-        team: "দল",
-        player: "খেলোয়াড়",
-        goals: "গোল",
-        assists: "অ্যাসিস্ট",
-        language: "ড্যাশবোর্ড ভাষা",
-        pcView: "???? ???",
-        tabletView: "???????? ???",
-        viewMode: "?????????? ???",
-        controlCentre: "বিশ্বকাপ ২০২৬ কন্ট্রোল সেন্টার",
-        overviewSubtitle: "ফিক্সচার, ফলাফল, গ্রুপ, খেলোয়াড় পরিসংখ্যান, ভেন্যু, রেকর্ড ও নকআউট ট্র্যাকিংসহ লাইভ টুর্নামেন্ট ড্যাশবোর্ড।",
-        tournamentIntelligence: "টুর্নামেন্ট বিশ্লেষণ",
-        goldenBootCentre: "গোল্ডেন বুট সেন্টার",
-        leaderSpotlight: "শীর্ষ খেলোয়াড় স্পটলাইট",
-        playersTracked: "ট্র্যাক করা খেলোয়াড়",
-        totalAssists: "মোট অ্যাসিস্ট",
-        totalYellowCards: "মোট হলুদ কার্ড",
-        totalRedCards: "মোট লাল কার্ড",
-        upNext: "পরবর্তী",
-        matchSpotlight: "ম্যাচ স্পটলাইট",
-        upcomingFixtures: "আসন্ন ফিক্সচার",
-        latest: "সর্বশেষ",
-        recentResults: "সাম্প্রতিক ফলাফল",
-        playerWatch: "খেলোয়াড় পর্যবেক্ষণ",
-        fixturesSubtitle: "ম্যাচ-ডে সেকশন, স্পষ্ট স্কোর কার্ড, পতাকা, ভেন্যু বিবরণ ও পরিষ্কার লাইভ/ফলাফল ব্যাজসহ উন্নত ম্যাচ সেন্টার।",
-        days: "দিন",
-        versus: "বনাম",
-        supportersNav: "🙏 সমর্থক",
-        supportersThankYouTitle: "🙏 সমর্থক ও ধন্যবাদ",
-        supportersIntro: "এই প্রজেক্টটি একটি ব্যক্তিগত Home Assistant ড্যাশবোর্ড হিসেবে শুরু হয়েছিল এবং কমিউনিটির মতামত, টেস্টিং, আইডিয়া ও সমর্থনে বড় হয়েছে।",
-        supportersSpecialThanks: "World Cup 2026 ইন্টিগ্রেশনের উন্নয়নে সহায়তা করা সবাইকে বিশেষ ধন্যবাদ।",
-        supportersTitle: "🍺 সমর্থক",
-        latestSupporters: "⭐ সর্বশেষ সমর্থক",
-        allSupporters: "🌍 সব সমর্থক",
-        supporterDefaultMessage: "উন্নয়নে সহায়তার জন্য ধন্যবাদ।",
-        anonymousSupporter: "নামহীন সমর্থক",
-        noSupporters: "এখনও কোনো সমর্থক যোগ করা হয়নি। প্রথম Buy Me a Beer করুন এবং আপনার নাম এখানে দেখান।",
-        wantNameAdded: "আপনার নাম এখানে যোগ করতে চান?",
-        supportFutureUpdates: "ভবিষ্যৎ আপডেট, বাগ ফিক্স এবং নতুন বিশ্বকাপ ফিচার সমর্থন করুন।",
-        supporterBeerMessage: "🍺 আপনার নাম কি সমর্থক পেজে দেখাতে চান? PayPal দিয়ে আমাকে একটি বিয়ার কিনে দিন, উন্নয়নে সমর্থনের ধন্যবাদ হিসেবে আপনার নাম World Cup 2026 সমর্থক তালিকায় যোগ করা যেতে পারে।",
-        donateBuyBeer: "🍺 দান / আমাকে বিয়ার কিনুন",
-        enjoyingIntegration: "🍺 এই ইন্টিগ্রেশন উপভোগ করছেন?",
-        supportIntegration: "এই ইন্টিগ্রেশন সমর্থন করুন",
-        source: "উৎস",
-        totalSupporters: "মোট সমর্থক",
-        countries: "দেশ",
-        countriesSupporting: "সমর্থনকারী দেশ",
-        latestSupportDate: "সর্বশেষ সমর্থন তারিখ",
-        playedShort: "খে",
-        winsShort: "জ",
-        drawsShort: "ড্র",
-        lossesShort: "হা",
-        goalsForShort: "GF",
-        goalsAgainstShort: "GA",
-        goalDifferenceShort: "GD",
-        pointsShort: "পয়েন্ট",
-        noResultsLoaded: "এখনও কোনো ফলাফল লোড হয়নি।",
-        finishedMatchesSubtitle: "শেষ হওয়া ম্যাচ এবং নিশ্চিত স্কোর।",
-        goldenBootAutoText: "football-data.org বিশ্বকাপ গোলদাতা ডেটা প্রকাশ করলে স্বয়ংক্রিয় গোল্ডেন বুট ডেটা দেখা যাবে।",
-        realStadium: "বাস্তব স্টেডিয়াম",
-        matchesHosted: "আয়োজিত ম্যাচ",
-        communitySupport: "কমিউনিটি সমর্থন",
-        supportersAroundWorld: "বিশ্বজুড়ে সমর্থক",
-        noLiveGames: "কোনো লাইভ গেম নেই",
-        noGamesToday: "আজ কোনো গেম নেই",
-        conceded: "হজম করা",
-      },
 
-      ta: {
-        title: "FIFA உலகக் கோப்பை 2026",
-        subtitle: "Home Assistant போட்டி செயலி",
-        back: "← திரும்பு",
-        updated: "புதுப்பிக்கப்பட்டது",
-        loading: "உலகக் கோப்பை 2026 ஏற்றப்படுகிறது...",
-        errorTitle: "உலகக் கோப்பை 2026",
-        errorText: "செயலி தரவை ஏற்ற முடியவில்லை.",
-        overview: "மேலோட்டம்",
-        live: "நேரலை மையம்",
-        fixtures: "போட்டிகள்",
-        results: "முடிவுகள்",
-        groups: "குழுக்கள்",
-        knockout: "நாக்அவுட்",
-        players: "கோல்டன் பூட்",
-        records: "சாதனைகள்",
-        stats: "புள்ளிவிவர மையம்",
-        venues: "மைதானங்கள்",
-        totalMatches: "மொத்த போட்டிகள்",
-        loaded: "ஏற்றப்பட்டது",
-        played: "விளையாடியது",
-        remaining: "மீதமுள்ளது",
-        liveNow: "இப்போது நேரலை",
-        totalGoals: "மொத்த கோல்கள்",
-        nextMatch: "அடுத்த போட்டி",
-        tournamentStatus: "போட்டி நிலை",
-        demoMode: "டெமோ முறை",
-        on: "ஆன்",
-        off: "ஆஃப்",
-        lastUpdate: "கடைசி புதுப்பிப்பு",
-        ok: "OK",
-        failed: "தோல்வி",
-        progress: "முன்னேற்றம்",
-        topScorer: "அதிக கோல் அடித்தவர்",
-        notAvailable: "கிடைக்கவில்லை",
-        noUpcomingMatch: "வரவிருக்கும் போட்டி ஏற்றப்படவில்லை.",
-        noLiveMatches: "இப்போது நேரலை போட்டிகள் இல்லை.",
-        fixturesResults: "போட்டிகள் & முடிவுகள்",
-        noFixtures: "இன்னும் போட்டிகள் ஏற்றப்படவில்லை.",
-        groupLabel: "குழு",
-        groupsAL: "குழுக்கள் A-L",
-        noGroups: "இன்னும் குழு நிலைகள் ஏற்றப்படவில்லை.",
-        noTeamsGroup: "இந்த குழுவில் இன்னும் அணிகள் ஏற்றப்படவில்லை.",
-        goldenBoot: "கோல்டன் பூட் போட்டி",
-        noPlayerStats: "இன்னும் வீரர் புள்ளிவிவரங்கள் ஏற்றப்படவில்லை.",
-        knockoutBracket: "நாக்அவுட் அட்டவணை",
-        fixturesNotAvailable: "போட்டிகள் இன்னும் கிடைக்கவில்லை",
-        highestMatchGoals: "ஒரு போட்டியில் அதிக கோல்கள்",
-        biggestMargin: "பெரிய வித்தியாசம்",
-        topTeamGoals: "அதிக அணி கோல்கள்",
-        bestDefenceGA: "சிறந்த பாதுகாப்பு GA",
-        highestScoringMatch: "அதிக கோல் போட்டி",
-        biggestWin: "பெரிய வெற்றி",
-        topScoringTeam: "அதிக கோல் அடித்த அணி",
-        bestDefence: "சிறந்த பாதுகாப்பு",
-        noResult: "இன்னும் முடிவு இல்லை.",
-        noTeamGoalData: "இன்னும் அணி கோல் தரவு இல்லை.",
-        noDefensiveData: "இன்னும் பாதுகாப்பு தரவு இல்லை.",
-        matchesPlayed: "விளையாடிய போட்டிகள்",
-        yellowCards: "மஞ்சள் அட்டைகள்",
-        redCards: "சிவப்பு அட்டைகள்",
-        minutes: "நிமிடங்கள்",
-        goalsPerMatch: "கோல்கள் / போட்டி",
-        draws: "சமநிலைகள்",
-        drawRate: "சமநிலை விகிதம்",
-        bttsRate: "இரு அணிகளும் கோல் விகிதம்",
-        over25Rate: "2.5 மேல் விகிதம்",
-        stadiums: "ஸ்டேடியங்கள்",
-        usaVenues: "அமெரிக்க மைதானங்கள்",
-        canadaVenues: "கனடா மைதானங்கள்",
-        mexicoVenues: "மெக்சிகோ மைதானங்கள்",
-        finalVenue: "இறுதி மைதானம்",
-        capacity: "கொள்ளளவு",
-        worldCupStadiums: "உலகக் கோப்பை ஸ்டேடியங்கள்",
-        noVenueData: "மைதான தரவு இல்லை.",
-        scheduled: "வரவிருக்கும்",
-        liveStatus: "நேரலை",
-        manualTimerNotice: 'நேரலை ஸ்கோர் தானாக புதுப்பிக்கப்படும். கோல் நேரங்கள் கைமுறை போட்டிக் கடிகாரத்தை பயன்படுத்தும்; அதிகாரப்பூர்வ நேரத்திலிருந்து சில நிமிடங்கள் மாறலாம்.',
-        paused: "இடைநிறுத்தம்",
-        fullTime: "முழு நேரம்",
-        aet: "கூடுதல் நேரத்திற்கு பின்",
-        penalties: "பெனால்டிகள்",
-        postponed: "ஒத்திவைக்கப்பட்டது",
-        groupStage: "குழு நிலை",
-        round32: "32 சுற்று",
-        round16: "16 சுற்று",
-        quarterFinals: "கால் இறுதிகள்",
-        semiFinals: "அரை இறுதிகள்",
-        thirdPlace: "மூன்றாம் இடம்",
-        final: "இறுதி",
-        tbc: "TBC",
-        unknown: "தெரியவில்லை",
-        pos: "இடம்",
-        team: "அணி",
-        player: "வீரர்",
-        goals: "கோல்கள்",
-        assists: "உதவிகள்",
-        language: "டாஷ்போர்டு மொழி",
-        pcView: "PC ??????",
-        tabletView: "???????? ??????",
-        viewMode: "?????????? ??????",
-        controlCentre: "உலகக் கோப்பை 2026 கட்டுப்பாட்டு மையம்",
-        overviewSubtitle: "போட்டிகள், முடிவுகள், குழுக்கள், வீரர் புள்ளிவிவரங்கள், மைதானங்கள், சாதனைகள் மற்றும் நாக்அவுட் கண்காணிப்புடன் நேரலை போட்டி டாஷ்போர்டு.",
-        tournamentIntelligence: "போட்டி பகுப்பாய்வு",
-        goldenBootCentre: "கோல்டன் பூட் மையம்",
-        leaderSpotlight: "முன்னணி வீரர் கவனம்",
-        playersTracked: "கண்காணிக்கப்படும் வீரர்கள்",
-        totalAssists: "மொத்த உதவிகள்",
-        totalYellowCards: "மொத்த மஞ்சள் அட்டைகள்",
-        totalRedCards: "மொத்த சிவப்பு அட்டைகள்",
-        upNext: "அடுத்தது",
-        matchSpotlight: "போட்டி கவனம்",
-        upcomingFixtures: "வரவிருக்கும் போட்டிகள்",
-        latest: "சமீபத்திய",
-        recentResults: "சமீபத்திய முடிவுகள்",
-        playerWatch: "வீரர் கண்காணிப்பு",
-        fixturesSubtitle: "போட்டி நாள் பிரிவுகள், தெளிவான ஸ்கோர் கார்டுகள், கொடிகள், மைதான விவரங்கள் மற்றும் தெளிவான நிலை பேட்ஜ்களுடன் மேம்பட்ட போட்டி மையம்.",
-        days: "நாட்கள்",
-        versus: "எதிராக",
-        supportersNav: "🙏 ஆதரவாளர்கள்",
-        supportersThankYouTitle: "🙏 ஆதரவாளர்கள் & நன்றி",
-        supportersIntro: "இந்த திட்டம் தனிப்பட்ட Home Assistant டாஷ்போர்டாக தொடங்கி, சமூக கருத்து, சோதனை, யோசனைகள் மற்றும் ஆதரவால் வளர்ந்தது.",
-        supportersSpecialThanks: "World Cup 2026 இணைப்பின் வளர்ச்சிக்கு ஆதரவு அளித்த அனைவருக்கும் சிறப்பு நன்றி.",
-        supportersTitle: "🍺 ஆதரவாளர்கள்",
-        latestSupporters: "⭐ சமீபத்திய ஆதரவாளர்கள்",
-        allSupporters: "🌍 அனைத்து ஆதரவாளர்கள்",
-        supporterDefaultMessage: "வளர்ச்சிக்கு ஆதரவு அளித்ததற்கு நன்றி.",
-        anonymousSupporter: "பெயரில்லா ஆதரவாளர்",
-        noSupporters: "இன்னும் ஆதரவாளர்கள் சேர்க்கப்படவில்லை. முதலில் Buy Me a Beer செய்து உங்கள் பெயரை இங்கே காட்டுங்கள்.",
-        wantNameAdded: "உங்கள் பெயரை இங்கே சேர்க்க வேண்டுமா?",
-        supportFutureUpdates: "எதிர்கால புதுப்பிப்புகள், பிழை திருத்தங்கள் மற்றும் புதிய உலகக் கோப்பை அம்சங்களுக்கு ஆதரவு அளிக்கவும்.",
-        supporterBeerMessage: "🍺 உங்கள் பெயர் ஆதரவாளர்கள் பக்கத்தில் வர வேண்டுமா? PayPal மூலம் எனக்கு ஒரு பீர் வாங்கித் தருங்கள்; வளர்ச்சிக்கு ஆதரவு அளித்த நன்றியாக உங்கள் பெயர் World Cup 2026 ஆதரவாளர் பட்டியலில் சேர்க்கப்படும்.",
-        donateBuyBeer: "🍺 நன்கொடை / எனக்கு பீர் வாங்குங்கள்",
-        enjoyingIntegration: "🍺 இந்த இணைப்பை ரசிக்கிறீர்களா?",
-        supportIntegration: "இந்த இணைப்பை ஆதரிக்கவும்",
-        source: "மூலம்",
-        totalSupporters: "மொத்த ஆதரவாளர்கள்",
-        countries: "நாடுகள்",
-        countriesSupporting: "ஆதரிக்கும் நாடுகள்",
-        latestSupportDate: "சமீபத்திய ஆதரவு தேதி",
-        playedShort: "வி",
-        winsShort: "வெ",
-        drawsShort: "ச",
-        lossesShort: "தோ",
-        goalsForShort: "GF",
-        goalsAgainstShort: "GA",
-        goalDifferenceShort: "GD",
-        pointsShort: "புள்ளி",
-        noResultsLoaded: "இன்னும் முடிவுகள் ஏற்றப்படவில்லை.",
-        finishedMatchesSubtitle: "முடிந்த போட்டிகள் மற்றும் உறுதிப்படுத்தப்பட்ட ஸ்கோர்.",
-        goldenBootAutoText: "football-data.org உலகக் கோப்பை கோல் தரவை வெளியிட்டதும் தானியங்கி கோல்டன் பூட் தரவு தோன்றும்.",
-        realStadium: "உண்மையான ஸ்டேடியம்",
-        matchesHosted: "நடத்திய போட்டிகள்",
-        communitySupport: "சமூக ஆதரவு",
-        supportersAroundWorld: "உலகம் முழுவதும் ஆதரவாளர்கள்",
-        noLiveGames: "நேரலை விளையாட்டுகள் இல்லை",
-        noGamesToday: "இன்று விளையாட்டுகள் இல்லை",
-        conceded: "விட்டுக் கொடுத்த",
-      },
 
-      te: {
-        title: "FIFA ప్రపంచ కప్ 2026",
-        subtitle: "Home Assistant టోర్నమెంట్ యాప్",
-        back: "← వెనక్కి",
-        updated: "నవీకరించబడింది",
-        loading: "ప్రపంచ కప్ 2026 లోడ్ అవుతోంది...",
-        errorTitle: "विश्व कप 2026",
-        errorText: "ऐप डेटा लोड नहीं हो सका।",
-        overview: "అవలోకనం",
-        live: "లైవ్ సెంటర్",
-        fixtures: "ఫిక్చర్లు",
-        results: "ఫలితాలు",
-        groups: "గ్రూపులు",
-        knockout: "నాకౌట్",
-        players: "గోల్డెన్ బూట్",
-        records: "రికార్డులు",
-        stats: "గణాంకాల కేంద్రం",
-        venues: "వేదికలు",
-        totalMatches: "మొత్తం మ్యాచ్‌లు",
-        loaded: "लोड हुए",
-        played: "ఆడినవి",
-        remaining: "మిగిలినవి",
-        liveNow: "ఇప్పుడు లైవ్",
-        totalGoals: "మొత్తం గోల్స్",
-        nextMatch: "తదుపరి మ్యాచ్",
-        tournamentStatus: "టోర్నమెంట్ స్థితి",
-        demoMode: "डेमो मोड",
-        on: "चालू",
-        off: "बंद",
-        lastUpdate: "చివరి నవీకరణ",
-        ok: "ठीक",
-        failed: "विफल",
-        progress: "పురోగతి",
-        topScorer: "టాప్ స్కోరర్",
-        notAvailable: "అందుబాటులో లేదు",
-        noUpcomingMatch: "రాబోయే మ్యాచ్ లోడ్ కాలేదు.",
-        noLiveMatches: "ప్రస్తుతం లైవ్ మ్యాచ్‌లు లేవు.",
-        fixturesResults: "ఫిక్చర్లు & ఫలితాలు",
-        noFixtures: "ఇంకా ఫిక్చర్లు లోడ్ కాలేదు.",
-        groupLabel: "గ్రూప్",
-        groupsAL: "గ్రూపులు A-L",
-        noGroups: "अभी कोई ग्रुप तालिका लोड नहीं है।",
-        noTeamsGroup: "इस ग्रुप में अभी कोई टीम लोड नहीं है।",
-        goldenBoot: "గోల్డెన్ బూట్ రేస్",
-        noPlayerStats: "अभी कोई खिलाड़ी आँकड़े लोड नहीं हैं।",
-        knockoutBracket: "నాకౌట్ బ్రాకెట్",
-        fixturesNotAvailable: "फिक्स्चर अभी उपलब्ध नहीं हैं",
-        highestMatchGoals: "एक मैच में सबसे अधिक गोल",
-        biggestMargin: "सबसे बड़ा अंतर",
-        topTeamGoals: "सबसे अधिक टीम गोल",
-        bestDefenceGA: "सर्वश्रेष्ठ डिफेंस GA",
-        highestScoringMatch: "सबसे अधिक गोल वाला मैच",
-        biggestWin: "सबसे बड़ी जीत",
-        topScoringTeam: "सबसे अधिक गोल करने वाली टीम",
-        bestDefence: "सर्वश्रेष्ठ डिफेंस",
-        noResult: "अभी कोई परिणाम नहीं।",
-        noTeamGoalData: "अभी टीम गोल डेटा नहीं है।",
-        noDefensiveData: "अभी डिफेंस डेटा नहीं है।",
-        matchesPlayed: "ఆడిన మ్యాచ్‌లు",
-        yellowCards: "పసుపు కార్డులు",
-        redCards: "ఎరుపు కార్డులు",
-        minutes: "मिनट",
-        goalsPerMatch: "గోల్స్ / మ్యాచ్",
-        draws: "ड्रॉ",
-        drawRate: "ड्रॉ दर",
-        bttsRate: "दोनों टीम स्कोर दर",
-        over25Rate: "2.5 से अधिक दर",
-        stadiums: "స్టేడియంలు",
-        usaVenues: "यूएसए वेन्यू",
-        canadaVenues: "कनाडा वेन्यू",
-        mexicoVenues: "मेक्सिको वेन्यू",
-        finalVenue: "फाइनल वेन्यू",
-        capacity: "సామర్థ్యం",
-        worldCupStadiums: "ప్రపంచ కప్ స్టేడియంలు",
-        noVenueData: "कोई वेन्यू डेटा उपलब्ध नहीं।",
-        scheduled: "రాబోయేవి",
-        liveStatus: "లైవ్",
-        manualTimerNotice: 'లైవ్ స్కోర్లు ఆటోమేటిక్\u200cగా నవీకరించబడతాయి. గోల్ సమయాలు మాన్యువల్ మ్యాచ్ గడియారాన్ని ఉపయోగిస్తాయి మరియు అధికారిక సమయాలకంటే కొన్ని నిమిషాలు మారవచ్చు.',
-        paused: "रुका हुआ",
-        fullTime: "పూర్తి సమయం",
-        aet: "अतिरिक्त समय के बाद",
-        penalties: "पेनल्टी",
-        postponed: "स्थगित",
-        groupStage: "గ్రూప్ దశ",
-        round32: "రౌండ్ ఆఫ్ 32",
-        round16: "రౌండ్ ఆఫ్ 16",
-        quarterFinals: "క్వార్టర్ ఫైనల్స్",
-        semiFinals: "సెమీ ఫైనల్స్",
-        thirdPlace: "మూడో స్థానం",
-        final: "ఫైనల్",
-        tbc: "TBC",
-        unknown: "తెలియదు",
-        pos: "స్థానం",
-        team: "జట్టు",
-        player: "ఆటగాడు",
-        goals: "గోల్స్",
-        assists: "అసిస్ట్లు",
-        language: "డ్యాష్‌బోర్డ్ భాష",
-        pcView: "PC ??????",
-        tabletView: "???????? ??????",
-        viewMode: "????????????? ??????",
-        controlCentre: "ప్రపంచ కప్ 2026 కంట్రోల్ సెంటర్",
-        overviewSubtitle: "फिक्स्चर, परिणाम, ग्रुप, खिलाड़ी आँकड़े, वेन्यू, रिकॉर्ड और नॉकआउट ट्रैकिंग के साथ लाइव टूर्नामेंट डैशबोर्ड।",
-        tournamentIntelligence: "టోర్నమెంట్ విశ్లేషణ",
-        goldenBootCentre: "गोल्डन बूट सेंटर",
-        leaderSpotlight: "लीडर स्पॉटलाइट",
-        playersTracked: "ट्रैक किए गए खिलाड़ी",
-        totalAssists: "कुल असिस्ट",
-        totalYellowCards: "कुल पीले कार्ड",
-        totalRedCards: "कुल लाल कार्ड",
-        upNext: "తదుపరి",
-        matchSpotlight: "మ్యాచ్ స్పాట్‌లైట్",
-        upcomingFixtures: "రాబోయే ఫిక్చర్లు",
-        latest: "తాజా",
-        recentResults: "ఇటీవలి ఫలితాలు",
-        playerWatch: "ఆటగాళ్ల వీక్షణ",
-        fixturesSubtitle: "मैच-दिन सेक्शन, बोल्ड स्कोर कार्ड, झंडे, वेन्यू विवरण और साफ लाइव/परिणाम बैज वाला बेहतर मैच सेंटर।",
-        days: "రోజులు",
-        versus: "వర్సెస్",
-        supportersNav: "🙏 మద్దతుదారులు",
-        supportersThankYouTitle: "🙏 మద్దతుదారులు & ధన్యవాదాలు",
-        supportersIntro: "यह प्रोजेक्ट एक निजी Home Assistant डैशबोर्ड के रूप में शुरू हुआ और समुदाय की प्रतिक्रिया, टेस्टिंग, विचारों और समर्थन से बढ़ा।",
-        supportersSpecialThanks: "World Cup 2026 इंटीग्रेशन के विकास का समर्थन करने वाले सभी लोगों को विशेष धन्यवाद।",
-        supportersTitle: "🍺 మద్దతుదారులు",
-        latestSupporters: "⭐ తాజా మద్దతుదారులు",
-        allSupporters: "🌍 అన్ని మద్దతుదారులు",
-        supporterDefaultMessage: "विकास का समर्थन करने के लिए धन्यवाद।",
-        anonymousSupporter: "गुमनाम समर्थक",
-        noSupporters: "अभी कोई समर्थक नहीं जोड़ा गया। सबसे पहले Buy Me a Beer करें और अपना नाम यहाँ दिखाएँ।",
-        wantNameAdded: "अपना नाम यहाँ जोड़ना चाहते हैं?",
-        supportFutureUpdates: "भविष्य के अपडेट, बग फिक्स और नई विश्व कप सुविधाओं का समर्थन करें।",
-        supporterBeerMessage: "🍺 क्या आप अपना नाम समर्थक पेज पर दिखाना चाहते हैं? PayPal के जरिए मुझे एक बीयर खरीदें और विकास समर्थन के धन्यवाद के रूप में आपका नाम World Cup 2026 समर्थक सूची में जोड़ा जा सकता है।",
-        donateBuyBeer: "🍺 విరాళం / నాకు బీర్ కొనండి",
-        enjoyingIntegration: "🍺 क्या आपको यह इंटीग्रेशन पसंद आ रहा है?",
-        supportIntegration: "ఈ ఇంటిగ్రేషన్‌కు మద్దతు ఇవ్వండి",
-        source: "మూలం",
-        totalSupporters: "మొత్తం మద్దతుదారులు",
-        countries: "దేశాలు",
-        countriesSupporting: "మద్దతు ఇస్తున్న దేశాలు",
-        latestSupportDate: "नवीनतम समर्थन तारीख",
-        playedShort: "खे",
-        winsShort: "जी",
-        drawsShort: "ड्रॉ",
-        lossesShort: "हा",
-        goalsForShort: "GF",
-        goalsAgainstShort: "GA",
-        goalDifferenceShort: "GD",
-        pointsShort: "अंक",
-        noResultsLoaded: "अभी कोई परिणाम लोड नहीं है।",
-        finishedMatchesSubtitle: "समाप्त मैच और पुष्टि किए गए स्कोर।",
-        goldenBootAutoText: "football-data.org द्वारा विश्व कप स्कोरर डेटा प्रकाशित होने पर गोल्डन बूट डेटा अपने-आप दिखाई देगा।",
-        realStadium: "वास्तविक स्टेडियम",
-        matchesHosted: "होस्ट किए गए मैच",
-        communitySupport: "కమ్యూనిటీ మద్దతు",
-        supportersAroundWorld: "ప్రపంచవ్యాప్తంగా మద్దతుదారులు",
-        noLiveGames: "లైవ్ గేమ్స్ లేవు",
-        noGamesToday: "ఈ రోజు గేమ్స్ లేవు",
-        conceded: "అనుమతించిన",
-      },
 
-      pa: {
-        title: "FIFA ਵਰਲਡ ਕੱਪ 2026",
-        subtitle: "Home Assistant ਟੂਰਨਾਮੈਂਟ ਐਪ",
-        back: "← ਵਾਪਸ",
-        updated: "ਅੱਪਡੇਟ ਕੀਤਾ",
-        loading: "ਵਰਲਡ ਕੱਪ 2026 ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
-        errorTitle: "ਵਰਲਡ ਕੱਪ 2026",
-        errorText: "ਐਪ ਡਾਟਾ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ।",
-        overview: "ਝਲਕ",
-        live: "ਲਾਈਵ ਸੈਂਟਰ",
-        fixtures: "ਫਿਕਸਚਰ",
-        results: "ਨਤੀਜੇ",
-        groups: "ਗਰੁੱਪ",
-        knockout: "ਨਾਕਆਉਟ",
-        players: "ਗੋਲਡਨ ਬੂਟ",
-        records: "ਰਿਕਾਰਡ",
-        stats: "ਸਟੈਟਸ ਹੱਬ",
-        venues: "ਵੇਨਿਊ",
-        totalMatches: "ਕੁੱਲ ਮੈਚ",
-        loaded: "ਲੋਡ ਹੋਏ",
-        played: "ਖੇਡੇ ਗਏ",
-        remaining: "ਬਾਕੀ",
-        liveNow: "ਹੁਣ ਲਾਈਵ",
-        totalGoals: "ਕੁੱਲ ਗੋਲ",
-        nextMatch: "ਅਗਲਾ ਮੈਚ",
-        tournamentStatus: "ਟੂਰਨਾਮੈਂਟ ਸਥਿਤੀ",
-        demoMode: "ਡੈਮੋ ਮੋਡ",
-        on: "ਚਾਲੂ",
-        off: "ਬੰਦ",
-        lastUpdate: "ਆਖਰੀ ਅੱਪਡੇਟ",
-        ok: "ठीक",
-        failed: "ਅਸਫਲ",
-        progress: "ਤਰੱਕੀ",
-        topScorer: "ਟਾਪ ਸਕੋਰਰ",
-        notAvailable: "ਉਪਲਬਧ ਨਹੀਂ",
-        noUpcomingMatch: "ਕੋਈ ਆਉਣ ਵਾਲਾ ਮੈਚ ਲੋਡ ਨਹੀਂ।",
-        noLiveMatches: "ਇਸ ਵੇਲੇ ਕੋਈ ਮੈਚ ਲਾਈਵ ਨਹੀਂ।",
-        fixturesResults: "ਫਿਕਸਚਰ ਅਤੇ ਨਤੀਜੇ",
-        noFixtures: "ਹਾਲੇ ਕੋਈ ਫਿਕਸਚਰ ਲੋਡ ਨਹੀਂ।",
-        groupLabel: "ਗਰੁੱਪ",
-        groupsAL: "ਗਰੁੱਪ A-L",
-        noGroups: "ਹਾਲੇ ਕੋਈ ਗਰੁੱਪ ਸਟੈਂਡਿੰਗ ਲੋਡ ਨਹੀਂ।",
-        noTeamsGroup: "ਇਸ ਗਰੁੱਪ ਵਿੱਚ ਹਾਲੇ ਕੋਈ ਟੀਮ ਲੋਡ ਨਹੀਂ।",
-        goldenBoot: "ਗੋਲਡਨ ਬੂਟ ਰੇਸ",
-        noPlayerStats: "ਹਾਲੇ ਕੋਈ ਖਿਡਾਰੀ ਅੰਕੜੇ ਲੋਡ ਨਹੀਂ।",
-        knockoutBracket: "ਨਾਕਆਉਟ ਬ੍ਰੈਕਟ",
-        fixturesNotAvailable: "ਫਿਕਸਚਰ ਹਾਲੇ ਉਪਲਬਧ ਨਹੀਂ",
-        highestMatchGoals: "ਇੱਕ ਮੈਚ ਵਿੱਚ ਸਭ ਤੋਂ ਵੱਧ ਗੋਲ",
-        biggestMargin: "ਸਭ ਤੋਂ ਵੱਡਾ ਫਰਕ",
-        topTeamGoals: "ਸਭ ਤੋਂ ਵੱਧ ਟੀਮ ਗੋਲ",
-        bestDefenceGA: "ਸਭ ਤੋਂ ਵਧੀਆ ਡਿਫੈਂਸ GA",
-        highestScoringMatch: "ਸਭ ਤੋਂ ਵੱਧ ਗੋਲਾਂ ਵਾਲਾ ਮੈਚ",
-        biggestWin: "ਸਭ ਤੋਂ ਵੱਡੀ ਜਿੱਤ",
-        topScoringTeam: "ਸਭ ਤੋਂ ਵੱਧ ਗੋਲ ਕਰਨ ਵਾਲੀ ਟੀਮ",
-        bestDefence: "ਸਭ ਤੋਂ ਵਧੀਆ ਡਿਫੈਂਸ",
-        noResult: "ਹਾਲੇ ਕੋਈ ਨਤੀਜਾ ਨਹੀਂ।",
-        noTeamGoalData: "अभी टीम गोल डेटा नहीं है।",
-        noDefensiveData: "अभी डिफेंस डेटा नहीं है।",
-        matchesPlayed: "ਖੇਡੇ ਗਏ ਮੈਚ",
-        yellowCards: "ਪੀਲੇ ਕਾਰਡ",
-        redCards: "ਲਾਲ ਕਾਰਡ",
-        minutes: "ਮਿੰਟ",
-        goalsPerMatch: "ਗੋਲ / ਮੈਚ",
-        draws: "ਡਰਾਅ",
-        drawRate: "ਡਰਾਅ ਦਰ",
-        bttsRate: "दोनों टीम स्कोर दर",
-        over25Rate: "2.5 से अधिक दर",
-        stadiums: "ਸਟੇਡੀਅਮ",
-        usaVenues: "यूएसए वेन्यू",
-        canadaVenues: "कनाडा वेन्यू",
-        mexicoVenues: "मेक्सिको वेन्यू",
-        finalVenue: "ਫਾਈਨਲ ਵੇਨਿਊ",
-        capacity: "ਸਮਰੱਥਾ",
-        worldCupStadiums: "ਵਰਲਡ ਕੱਪ ਸਟੇਡੀਅਮ",
-        noVenueData: "कोई वेन्यू डेटा उपलब्ध नहीं।",
-        scheduled: "ਆਉਣ ਵਾਲੇ",
-        liveStatus: "ਲਾਈਵ",
-        manualTimerNotice: 'ਲਾਈਵ ਸਕੋਰ ਆਪਣੇ ਆਪ ਅੱਪਡੇਟ ਹੁੰਦੇ ਹਨ। ਗੋਲ ਸਮੇਂ ਮੈਨੂਅਲ ਮੈਚ ਘੜੀ ਤੋਂ ਲਏ ਜਾਂਦੇ ਹਨ ਅਤੇ ਅਧਿਕਾਰਕ ਸਮੇਂ ਤੋਂ ਕੁਝ ਮਿੰਟ ਵੱਖ ਹੋ ਸਕਦੇ ਹਨ।',
-        paused: "ਰੁਕਿਆ",
-        fullTime: "ਫੁੱਲ ਟਾਈਮ",
-        aet: "ਵਾਧੂ ਸਮੇਂ ਤੋਂ ਬਾਅਦ",
-        penalties: "ਪੈਨਲਟੀ",
-        postponed: "ਮੁਲਤਵੀ",
-        groupStage: "ਗਰੁੱਪ ਸਟੇਜ",
-        round32: "ਰਾਊਂਡ ਆਫ 32",
-        round16: "ਰਾਊਂਡ ਆਫ 16",
-        quarterFinals: "ਕੁਆਰਟਰ ਫਾਈਨਲ",
-        semiFinals: "ਸੈਮੀ ਫਾਈਨਲ",
-        thirdPlace: "ਤੀਜਾ ਸਥਾਨ",
-        final: "ਫਾਈਨਲ",
-        tbc: "TBC",
-        unknown: "ਅਣਜਾਣ",
-        pos: "ਸਥਾਨ",
-        team: "ਟੀਮ",
-        player: "ਖਿਡਾਰੀ",
-        goals: "ਗੋਲ",
-        assists: "ਅਸਿਸਟ",
-        language: "ਡੈਸ਼ਬੋਰਡ ਭਾਸ਼ਾ",
-        pcView: "PC ??????",
-        tabletView: "?????? ??????",
-        viewMode: "???????? ??????",
-        controlCentre: "ਵਰਲਡ ਕੱਪ 2026 ਕੰਟਰੋਲ ਸੈਂਟਰ",
-        overviewSubtitle: "फिक्स्चर, परिणाम, ग्रुप, खिलाड़ी आँकड़े, वेन्यू, रिकॉर्ड और नॉकआउट ट्रैकिंग के साथ लाइव टूर्नामेंट डैशबोर्ड।",
-        tournamentIntelligence: "ਟੂਰਨਾਮੈਂਟ ਵਿਸ਼ਲੇਸ਼ਣ",
-        goldenBootCentre: "ਗੋਲਡਨ ਬੂਟ ਸੈਂਟਰ",
-        leaderSpotlight: "लीडर स्पॉटलाइट",
-        playersTracked: "ट्रैक किए गए खिलाड़ी",
-        totalAssists: "कुल असिस्ट",
-        totalYellowCards: "कुल पीले कार्ड",
-        totalRedCards: "कुल लाल कार्ड",
-        upNext: "ਅਗਲਾ",
-        matchSpotlight: "ਮੈਚ ਸਪੌਟਲਾਈਟ",
-        upcomingFixtures: "ਆਉਣ ਵਾਲੇ ਫਿਕਸਚਰ",
-        latest: "ਤਾਜ਼ਾ",
-        recentResults: "ਤਾਜ਼ਾ ਨਤੀਜੇ",
-        playerWatch: "ਖਿਡਾਰੀ ਵਾਚ",
-        fixturesSubtitle: "मैच-दिन सेक्शन, बोल्ड स्कोर कार्ड, झंडे, वेन्यू विवरण और साफ लाइव/परिणाम बैज वाला बेहतर मैच सेंटर।",
-        days: "ਦਿਨ",
-        versus: "ਵਿਰੁੱਧ",
-        supportersNav: "🙏 ਸਮਰਥਕ",
-        supportersThankYouTitle: "🙏 ਸਮਰਥਕ ਅਤੇ ਧੰਨਵਾਦ",
-        supportersIntro: "यह प्रोजेक्ट एक निजी Home Assistant डैशबोर्ड के रूप में शुरू हुआ और समुदाय की प्रतिक्रिया, टेस्टिंग, विचारों और समर्थन से बढ़ा।",
-        supportersSpecialThanks: "World Cup 2026 इंटीग्रेशन के विकास का समर्थन करने वाले सभी लोगों को विशेष धन्यवाद।",
-        supportersTitle: "🍺 ਸਮਰਥਕ",
-        latestSupporters: "⭐ ਤਾਜ਼ਾ ਸਮਰਥਕ",
-        allSupporters: "🌍 ਸਾਰੇ ਸਮਰਥਕ",
-        supporterDefaultMessage: "ਵਿਕਾਸ ਦਾ ਸਮਰਥਨ ਕਰਨ ਲਈ ਧੰਨਵਾਦ।",
-        anonymousSupporter: "ਗੁਮਨਾਮ ਸਮਰਥਕ",
-        noSupporters: "अभी कोई समर्थक नहीं जोड़ा गया। सबसे पहले Buy Me a Beer करें और अपना नाम यहाँ दिखाएँ।",
-        wantNameAdded: "अपना नाम यहाँ जोड़ना चाहते हैं?",
-        supportFutureUpdates: "भविष्य के अपडेट, बग फिक्स और नई विश्व कप सुविधाओं का समर्थन करें।",
-        supporterBeerMessage: "🍺 क्या आप अपना नाम समर्थक पेज पर दिखाना चाहते हैं? PayPal के जरिए मुझे एक बीयर खरीदें और विकास समर्थन के धन्यवाद के रूप में आपका नाम World Cup 2026 समर्थक सूची में जोड़ा जा सकता है।",
-        donateBuyBeer: "🍺 ਦਾਨ / ਮੈਨੂੰ ਬੀਅਰ ਖਰੀਦੋ",
-        enjoyingIntegration: "🍺 क्या आपको यह इंटीग्रेशन पसंद आ रहा है?",
-        supportIntegration: "ਇਸ ਇੰਟੀਗ੍ਰੇਸ਼ਨ ਦਾ ਸਮਰਥਨ ਕਰੋ",
-        source: "ਸਰੋਤ",
-        totalSupporters: "ਕੁੱਲ ਸਮਰਥਕ",
-        countries: "ਦੇਸ਼",
-        countriesSupporting: "ਸਮਰਥਨ ਕਰਨ ਵਾਲੇ ਦੇਸ਼",
-        latestSupportDate: "नवीनतम समर्थन तारीख",
-        playedShort: "खे",
-        winsShort: "जी",
-        drawsShort: "ड्रॉ",
-        lossesShort: "हा",
-        goalsForShort: "GF",
-        goalsAgainstShort: "GA",
-        goalDifferenceShort: "GD",
-        pointsShort: "अंक",
-        noResultsLoaded: "अभी कोई परिणाम लोड नहीं है।",
-        finishedMatchesSubtitle: "समाप्त मैच और पुष्टि किए गए स्कोर।",
-        goldenBootAutoText: "football-data.org द्वारा विश्व कप स्कोरर डेटा प्रकाशित होने पर गोल्डन बूट डेटा अपने-आप दिखाई देगा।",
-        realStadium: "वास्तविक स्टेडियम",
-        matchesHosted: "होस्ट किए गए मैच",
-        communitySupport: "ਕਮਿਊਨਿਟੀ ਸਮਰਥਨ",
-        supportersAroundWorld: "ਦੁਨੀਆ ਭਰ ਦੇ ਸਮਰਥਕ",
-        noLiveGames: "ਕੋਈ ਲਾਈਵ ਗੇਮ ਨਹੀਂ",
-        noGamesToday: "ਅੱਜ ਕੋਈ ਗੇਮ ਨਹੀਂ",
-        conceded: "ਖਾਧੇ ਗਏ",
-      },
-      ar: {
-        title: "كأس العالم FIFA 2026",
-        subtitle: "تطبيق بطولة مخصص لـ Home Assistant",
-        back: "← رجوع",
-        updated: "آخر تحديث",
-        loading: "جاري تحميل كأس العالم 2026...",
-        errorTitle: "كأس العالم 2026",
-        errorText: "تعذر تحميل بيانات التطبيق.",
-        overview: "نظرة عامة",
-        live: "المركز المباشر",
-        fixtures: "المباريات",
-        groups: "المجموعات",
-        knockout: "الأدوار الإقصائية",
-        players: "الحذاء الذهبي",
-        records: "الأرقام القياسية",
-        stats: "الإحصائيات",
-        venues: "الملاعب",
-        totalMatches: "إجمالي المباريات",
-        loaded: "تم التحميل",
-        played: "لُعبت",
-        remaining: "المتبقية",
-        liveNow: "مباشر الآن",
-        totalGoals: "إجمالي الأهداف",
-        nextMatch: "المباراة القادمة",
-        tournamentStatus: "حالة البطولة",
-        demoMode: "وضع العرض",
-        on: "تشغيل",
-        off: "إيقاف",
-        lastUpdate: "آخر تحديث",
-        ok: "جيد",
-        failed: "فشل",
-        progress: "التقدم",
-        topScorer: "الهداف",
-        notAvailable: "غير متاح",
-        noUpcomingMatch: "لا توجد مباراة قادمة.",
-        noLiveMatches: "لا توجد مباريات مباشرة الآن.",
-        fixturesResults: "المباريات والنتائج",
-        noFixtures: "لا توجد مباريات محملة.",
-        groupLabel: "المجموعة",
-        groupsAL: "المجموعات A-L",
-        noGroups: "لا توجد جداول مجموعات.",
-        noTeamsGroup: "لا توجد فرق محملة.",
-        goldenBoot: "سباق الحذاء الذهبي",
-        noPlayerStats: "لا توجد إحصائيات لاعبين.",
-        knockoutBracket: "جدول الإقصائيات",
-        fixturesNotAvailable: "المباريات غير متاحة",
-        highestMatchGoals: "أكثر مباراة أهدافاً",
-        biggestMargin: "أكبر فارق",
-        topTeamGoals: "أكثر فريق تسجيلاً",
-        bestDefenceGA: "أفضل دفاع",
-        highestScoringMatch: "أكثر مباراة أهدافاً",
-        biggestWin: "أكبر فوز",
-        topScoringTeam: "أكثر فريق تسجيلاً",
-        bestDefence: "أفضل دفاع",
-        noResult: "لا توجد نتيجة بعد.",
-        noTeamGoalData: "لا توجد بيانات أهداف.",
-        noDefensiveData: "لا توجد بيانات دفاعية.",
-        matchesPlayed: "المباريات الملعوبة",
-        yellowCards: "البطاقات الصفراء",
-        redCards: "البطاقات الحمراء",
-        minutes: "الدقائق",
-        goalsPerMatch: "أهداف / مباراة",
-        draws: "تعادلات",
-        drawRate: "نسبة التعادل",
-        bttsRate: "كلا الفريقين يسجل",
-        over25Rate: "أكثر من 2.5",
-        stadiums: "الملاعب",
-        usaVenues: "ملاعب أمريكا",
-        canadaVenues: "ملاعب كندا",
-        mexicoVenues: "ملاعب المكسيك",
-        finalVenue: "ملعب النهائي",
-        capacity: "السعة",
-        worldCupStadiums: "ملاعب كأس العالم",
-        noVenueData: "لا توجد بيانات ملاعب.",
-        scheduled: "مجدولة",
-        liveStatus: "مباشر",
-        manualTimerNotice: 'يتم تحديث النتائج المباشرة تلقائيًا. تعتمد أوقات الأهداف على ساعة المباراة اليدوية وقد تختلف عن الأوقات الرسمية ببضع دقائق.',
-        paused: "استراحة",
-        fullTime: "نهاية المباراة",
-        aet: "بعد وقت إضافي",
-        penalties: "ركلات ترجيح",
-        postponed: "مؤجلة",
-        groupStage: "دور المجموعات",
-        round32: "دور 32",
-        round16: "دور 16",
-        quarterFinals: "ربع النهائي",
-        semiFinals: "نصف النهائي",
-        thirdPlace: "المركز الثالث",
-        final: "النهائي",
-        tbc: "يحدد لاحقاً",
-        unknown: "غير معروف",
-        pos: "المركز",
-        team: "الفريق",
-        player: "اللاعب",
-        goals: "الأهداف",
-        assists: "التمريرات",
-        language: "لغة اللوحة",
-        pcView: "??? ?????????",
-        tabletView: "??? ?????? ??????",
-        viewMode: "??? ???? ??????",
-        controlCentre: 'مركز تحكم كأس العالم 2026',
-        overviewSubtitle: 'لوحة بطولة مباشرة تشمل المباريات والنتائج والمجموعات وإحصائيات اللاعبين والملاعب والأرقام والأدوار الإقصائية في مكان واحد.',
-        tournamentIntelligence: 'تحليل البطولة',
-        goldenBootCentre: 'مركز الحذاء الذهبي',
-        leaderSpotlight: 'تسليط الضوء على المتصدر',
-        playersTracked: 'اللاعبون المتابعون',
-        totalAssists: 'إجمالي التمريرات',
-        totalYellowCards: 'إجمالي البطاقات الصفراء',
-        totalRedCards: 'إجمالي البطاقات الحمراء',
-        upNext: 'التالي',
-        matchSpotlight: 'تسليط الضوء على المباراة',
-        upcomingFixtures: 'المباريات القادمة',
-        latest: 'الأحدث',
-        recentResults: 'النتائج الأخيرة',
-        playerWatch: 'متابعة اللاعبين',
-        fixturesSubtitle: 'مركز مباريات أوضح مع أقسام أيام المباريات وبطاقات نتائج وأعلام وتفاصيل ملاعب وحالات مباشرة أوضح.',
-        days: 'أيام',
-        versus: 'ضد',
-        supportersNav: '🙏 الداعمون',
-        supportersThankYouTitle: '🙏 الداعمون والشكر',
-        supportersIntro: 'بدأ هذا المشروع كلوحة Home Assistant شخصية، ونما بفضل الملاحظات والاختبارات والأفكار والدعم من المجتمع.',
-        supportersSpecialThanks: 'شكر خاص لكل من دعم تطوير تكامل كأس العالم 2026.',
-        supportersTitle: '🍺 الداعمون',
-        latestSupporters: "⭐ أحدث الداعمين",
-        allSupporters: "🌍 جميع الداعمين",
-        supporterDefaultMessage: 'شكراً لدعمك التطوير.',
-        anonymousSupporter: 'داعم مجهول',
-        noSupporters: 'لا يوجد داعمون بعد. كن أول من يشتري لي بيرة ويظهر اسمه هنا.',
-        wantNameAdded: 'هل تريد إضافة اسمك هنا؟',
-        supportFutureUpdates: 'ادعم التحديثات المستقبلية وإصلاح الأخطاء وميزات كأس العالم الجديدة.',
-        supporterBeerMessage: '🍺 هل تريد ظهور اسمك في صفحة الداعمين؟ اشترِ لي بيرة عبر PayPal ويمكن إضافة اسمك إلى قائمة داعمي World Cup 2026 كشكر على دعمك للتطوير.',
-        donateBuyBeer: '🍺 تبرع / اشترِ لي بيرة',
-        enjoyingIntegration: '🍺 هل تستمتع بهذا التكامل؟',
-        supportIntegration: 'ادعم هذا التكامل',
-        results: "النتائج",
-        source: "المصدر",
-        totalSupporters: "إجمالي الداعمين",
-        countries: "الدول",
-        countriesSupporting: "الدول الداعمة",
-        latestSupportDate: "آخر تاريخ دعم",
-        playedShort: "لعب",
-        winsShort: "فوز",
-        drawsShort: "تعادل",
-        lossesShort: "خسارة",
-        goalsForShort: "له",
-        goalsAgainstShort: "عليه",
-        goalDifferenceShort: "فارق",
-        pointsShort: "نقاط",
-        noResultsLoaded: "لم يتم تحميل أي نتائج بعد.",
-        finishedMatchesSubtitle: "المباريات المنتهية والنتائج المؤكدة.",
-        goldenBootAutoText: "ستظهر بيانات الحذاء الذهبي تلقائياً عندما ينشر football-data.org بيانات هدافي كأس العالم.",
-        realStadium: "الملعب الحقيقي",
-        matchesHosted: "المباريات المستضافة",
-        communitySupport: "دعم المجتمع",
-        supportersAroundWorld: "الداعمون حول العالم",
-        noLiveGames: "لا توجد مباريات مباشرة",
-        noGamesToday: "لا توجد مباريات اليوم",
-        conceded: "استقبل",
-      },
 
       pt: {
         title: "Copa do Mundo FIFA 2026",
@@ -2578,965 +1626,11 @@ class WorldCup2026Panel extends HTMLElement {
 
 
 
-      zh: {
-        title: '2026 FIFA世界杯',
-        subtitle: 'Home Assistant 专用赛事应用',
-        back: '← 返回',
-        updated: '已更新',
-        loading: '正在加载2026世界杯...',
-        errorTitle: '2026世界杯',
-        errorText: '无法加载应用数据。',
-        overview: '概览',
-        live: '直播中心',
-        fixtures: '赛程',
-        results: "结果",
-        groups: '小组',
-        knockout: '淘汰赛',
-        players: '金靴榜',
-        records: '纪录',
-        stats: '统计中心',
-        venues: '场馆',
-        totalMatches: '总场次',
-        loaded: '已加载',
-        played: '已赛',
-        remaining: '剩余',
-        liveNow: '正在直播',
-        totalGoals: '总进球',
-        nextMatch: '下一场比赛',
-        tournamentStatus: '赛事状态',
-        demoMode: '演示模式',
-        on: '开',
-        off: '关',
-        lastUpdate: '最后更新',
-        ok: '正常',
-        failed: '失败',
-        progress: '进度',
-        topScorer: '最佳射手',
-        notAvailable: '不可用',
-        noUpcomingMatch: '未加载即将进行的比赛。',
-        noLiveMatches: '当前没有直播比赛。',
-        fixturesResults: '赛程与结果',
-        noFixtures: '尚未加载赛程。',
-        groupLabel: '小组',
-        groupsAL: 'A-L组',
-        noGroups: '尚未加载小组积分榜。',
-        noTeamsGroup: '该小组尚未加载球队。',
-        goldenBoot: '金靴之争',
-        noPlayerStats: '尚未加载球员统计。',
-        knockoutBracket: '淘汰赛对阵图',
-        fixturesNotAvailable: '赛程暂不可用',
-        highestMatchGoals: '单场最多进球',
-        biggestMargin: '最大分差',
-        topTeamGoals: '球队进球最多',
-        bestDefenceGA: '最佳防守',
-        highestScoringMatch: '进球最多比赛',
-        biggestWin: '最大胜利',
-        topScoringTeam: '进球最多球队',
-        bestDefence: '最佳防守',
-        noResult: '暂无结果。',
-        noTeamGoalData: '暂无球队进球数据。',
-        noDefensiveData: '暂无防守数据。',
-        matchesPlayed: '已赛场次',
-        yellowCards: '黄牌',
-        redCards: '红牌',
-        minutes: '分钟',
-        goalsPerMatch: '进球 / 场',
-        draws: '平局',
-        drawRate: '平局率',
-        bttsRate: '双方进球率',
-        over25Rate: '超过2.5球率',
-        stadiums: '球场',
-        usaVenues: '美国场馆',
-        canadaVenues: '加拿大场馆',
-        mexicoVenues: '墨西哥场馆',
-        finalVenue: '决赛场馆',
-        capacity: '容量',
-        worldCupStadiums: '世界杯球场',
-        noVenueData: '暂无场馆数据。',
-        scheduled: '即将开始',
-        liveStatus: "直播",
-        manualTimerNotice: '实时比分会自动更新。进球时间使用手动比赛计时器，可能与官方时间相差几分钟。',
-        paused: '暂停',
-        fullTime: '全场结束',
-        aet: '加时后',
-        penalties: '点球',
-        postponed: '延期',
-        groupStage: '小组赛',
-        round32: '32强',
-        round16: '16强',
-        quarterFinals: '四分之一决赛',
-        semiFinals: '半决赛',
-        thirdPlace: '季军赛',
-        final: '决赛',
-        tbc: '待定',
-        unknown: '未知',
-        pos: '排名',
-        team: '球队',
-        player: '球员',
-        goals: '进球',
-        assists: '助攻',
-        language: '仪表盘语言',
-        pcView: "????",
-        tabletView: "????",
-        viewMode: "?????",
-        controlCentre: '2026世界杯控制中心',
-        overviewSubtitle: '一个集赛程、结果、小组、球员统计、场馆、纪录和淘汰赛追踪于一体的实时赛事仪表盘。',
-        tournamentIntelligence: '赛事分析',
-        goldenBootCentre: '金靴中心',
-        leaderSpotlight: '领跑者聚焦',
-        playersTracked: '追踪球员',
-        totalAssists: '总助攻',
-        totalYellowCards: '总黄牌',
-        totalRedCards: '总红牌',
-        upNext: '下一场',
-        matchSpotlight: '焦点比赛',
-        upcomingFixtures: '即将进行的比赛',
-        latest: '最新',
-        recentResults: '近期结果',
-        playerWatch: '球员观察',
-        fixturesSubtitle: '更清晰的世界杯比赛中心，包含比赛日分区、醒目的比分卡、旗帜、场馆详情和清楚的状态标签。',
-        days: '天',
-        versus: '对',
-        supportersNav: '🙏 支持者',
-        supportersThankYouTitle: '🙏 支持者与感谢',
-        supportersIntro: '这个项目最初是个人的 Home Assistant 仪表盘，并因社区反馈、测试、想法和支持而不断成长。',
-        supportersSpecialThanks: '特别感谢所有支持 World Cup 2026 集成开发的人。',
-        supportersTitle: '🍺 支持者',
-        latestSupporters: "⭐ 最新支持者",
-        allSupporters: "🌍 所有支持者",
-        supporterDefaultMessage: '感谢你支持开发。',
-        anonymousSupporter: '匿名支持者',
-        noSupporters: '还没有支持者。成为第一个请我喝啤酒并把名字列在这里的人。',
-        wantNameAdded: '想把你的名字加到这里吗？',
-        supportFutureUpdates: '支持未来更新、错误修复和新的世界杯功能。',
-        supporterBeerMessage: '🍺 想让你的名字出现在支持者页面吗？通过 PayPal 请我喝杯啤酒，你的名字就可以加入 World Cup 2026 支持者名单，作为对开发支持的感谢。',
-        donateBuyBeer: '🍺 捐赠 / 请我喝啤酒',
-        enjoyingIntegration: '🍺 喜欢这个集成吗？',
-        supportIntegration: '支持这个集成',
-        source: "来源",
-        totalSupporters: "支持者总数",
-        countries: "国家",
-        countriesSupporting: "支持国家",
-        latestSupportDate: "最新支持日期",
-        playedShort: "赛",
-        winsShort: "胜",
-        drawsShort: "平",
-        lossesShort: "负",
-        goalsForShort: "进",
-        goalsAgainstShort: "失",
-        goalDifferenceShort: "净",
-        pointsShort: "分",
-        noResultsLoaded: "尚未加载结果。",
-        finishedMatchesSubtitle: "已结束比赛和确认比分。",
-        goldenBootAutoText: "当 football-data.org 发布世界杯射手数据后，自动金靴数据将会显示。",
-        realStadium: "实际球场",
-        matchesHosted: "承办比赛",
-        communitySupport: "社区支持",
-        supportersAroundWorld: "全球支持者",
-        noLiveGames: "没有直播比赛",
-        noGamesToday: "今天没有比赛",
-        conceded: '失球',
-      },
 
-      zh_tw: {
-        title: '2026 FIFA 世界盃',
-        subtitle: 'Home Assistant 專用賽事應用',
-        back: '← 返回',
-        updated: '已更新',
-        loading: '正在載入 2026 世界盃...',
-        errorTitle: '2026世界杯',
-        errorText: '无法加载应用数据。',
-        overview: '總覽',
-        live: '直播中心',
-        fixtures: '賽程',
-        results: "結果",
-        groups: '分組',
-        knockout: '淘汰赛',
-        players: '金靴榜',
-        records: '纪录',
-        stats: '统计中心',
-        venues: '場館',
-        totalMatches: '总场次',
-        loaded: '已載入',
-        played: '已賽',
-        remaining: '剩餘',
-        liveNow: '現正直播',
-        totalGoals: '總入球',
-        nextMatch: '下一場比賽',
-        tournamentStatus: '赛事状态',
-        demoMode: '演示模式',
-        on: '开',
-        off: '关',
-        lastUpdate: '最后更新',
-        ok: '正常',
-        failed: '失败',
-        progress: '进度',
-        topScorer: '最佳射手',
-        notAvailable: '不可用',
-        noUpcomingMatch: '未加载即将进行的比赛。',
-        noLiveMatches: '当前没有直播比赛。',
-        fixturesResults: '赛程与结果',
-        noFixtures: '尚未加载赛程。',
-        groupLabel: '小组',
-        groupsAL: 'A-L组',
-        noGroups: '尚未加载小组积分榜。',
-        noTeamsGroup: '该小组尚未加载球队。',
-        goldenBoot: '金靴之争',
-        noPlayerStats: '尚未加载球员统计。',
-        knockoutBracket: '淘汰赛对阵图',
-        fixturesNotAvailable: '赛程暂不可用',
-        highestMatchGoals: '单场最多进球',
-        biggestMargin: '最大分差',
-        topTeamGoals: '球队进球最多',
-        bestDefenceGA: '最佳防守',
-        highestScoringMatch: '进球最多比赛',
-        biggestWin: '最大胜利',
-        topScoringTeam: '进球最多球队',
-        bestDefence: '最佳防守',
-        noResult: '暂无结果。',
-        noTeamGoalData: '暂无球队进球数据。',
-        noDefensiveData: '暂无防守数据。',
-        matchesPlayed: '已赛场次',
-        yellowCards: '黄牌',
-        redCards: '红牌',
-        minutes: '分钟',
-        goalsPerMatch: '进球 / 场',
-        draws: '平局',
-        drawRate: '平局率',
-        bttsRate: '双方进球率',
-        over25Rate: '超过2.5球率',
-        stadiums: '球场',
-        usaVenues: '美国场馆',
-        canadaVenues: '加拿大场馆',
-        mexicoVenues: '墨西哥场馆',
-        finalVenue: '决赛场馆',
-        capacity: '容量',
-        worldCupStadiums: '世界杯球场',
-        noVenueData: '暂无场馆数据。',
-        scheduled: '即将开始',
-        liveStatus: "直播",
-        manualTimerNotice: "????????????????? API ?????????????????????????",
-        paused: '暂停',
-        fullTime: '全场结束',
-        aet: '加时后',
-        penalties: '点球',
-        postponed: '延期',
-        groupStage: '小组赛',
-        round32: '32强',
-        round16: '16强',
-        quarterFinals: '四分之一决赛',
-        semiFinals: '半决赛',
-        thirdPlace: '季军赛',
-        final: '决赛',
-        tbc: '待定',
-        unknown: '未知',
-        pos: '排名',
-        team: '球队',
-        player: '球员',
-        goals: '进球',
-        assists: '助攻',
-        language: '儀表板語言',
-        pcView: "????",
-        tabletView: "????",
-        viewMode: "?????",
-        controlCentre: '2026世界杯控制中心',
-        overviewSubtitle: '一个集赛程、结果、小组、球员统计、场馆、纪录和淘汰赛追踪于一体的实时赛事仪表盘。',
-        tournamentIntelligence: '赛事分析',
-        goldenBootCentre: '金靴中心',
-        leaderSpotlight: '领跑者聚焦',
-        playersTracked: '追踪球员',
-        totalAssists: '总助攻',
-        totalYellowCards: '总黄牌',
-        totalRedCards: '总红牌',
-        upNext: '下一场',
-        matchSpotlight: '焦点比赛',
-        upcomingFixtures: '即将进行的比赛',
-        latest: '最新',
-        recentResults: '近期结果',
-        playerWatch: '球员观察',
-        fixturesSubtitle: '更清晰的世界杯比赛中心，包含比赛日分区、醒目的比分卡、旗帜、场馆详情和清楚的状态标签。',
-        days: '天',
-        versus: '对',
-        supportersNav: '🙏 支持者',
-        supportersThankYouTitle: '🙏 支持者与感谢',
-        supportersIntro: '这个项目最初是个人的 Home Assistant 仪表盘，并因社区反馈、测试、想法和支持而不断成长。',
-        supportersSpecialThanks: '特别感谢所有支持 World Cup 2026 集成开发的人。',
-        supportersTitle: '🍺 支持者',
-        latestSupporters: "⭐ 最新支持者",
-        allSupporters: "🌍 所有支持者",
-        supporterDefaultMessage: '感谢你支持开发。',
-        anonymousSupporter: '匿名支持者',
-        noSupporters: '还没有支持者。成为第一个请我喝啤酒并把名字列在这里的人。',
-        wantNameAdded: '想把你的名字加到这里吗？',
-        supportFutureUpdates: '支持未来更新、错误修复和新的世界杯功能。',
-        supporterBeerMessage: '🍺 想让你的名字出现在支持者页面吗？通过 PayPal 请我喝杯啤酒，你的名字就可以加入 World Cup 2026 支持者名单，作为对开发支持的感谢。',
-        donateBuyBeer: '🍺 捐赠 / 请我喝啤酒',
-        enjoyingIntegration: '🍺 喜欢这个集成吗？',
-        supportIntegration: '支持这个集成',
-        source: "來源",
-        totalSupporters: "支持者總數",
-        countries: "國家",
-        countriesSupporting: "支持國家",
-        latestSupportDate: "最新支持日期",
-        playedShort: "賽",
-        winsShort: "勝",
-        drawsShort: "和",
-        lossesShort: "負",
-        goalsForShort: "進",
-        goalsAgainstShort: "失",
-        goalDifferenceShort: "淨",
-        pointsShort: "分",
-        noResultsLoaded: "尚未載入結果。",
-        finishedMatchesSubtitle: "已結束賽事與確認比分。",
-        goldenBootAutoText: "當 football-data.org 發布世界盃射手資料後，自動金靴資料將會顯示。",
-        realStadium: "實際球場",
-        matchesHosted: "承辦賽事",
-        communitySupport: "社群支持",
-        supportersAroundWorld: "全球支持者",
-        noLiveGames: "沒有直播賽事",
-        noGamesToday: "今天沒有賽事",
-        conceded: '失球',
-      },
 
-      th: {
-        title: 'ฟุตบอลโลก FIFA 2026',
-        subtitle: 'แอปทัวร์นาเมนต์สำหรับ Home Assistant',
-        back: '← กลับ',
-        updated: 'อัปเดตแล้ว',
-        loading: 'กำลังโหลดฟุตบอลโลก 2026...',
-        errorTitle: 'ฟุตบอลโลก 2026',
-        errorText: 'ไม่สามารถโหลดข้อมูลแอปได้',
-        overview: 'ภาพรวม',
-        live: 'ศูนย์ถ่ายทอดสด',
-        fixtures: 'โปรแกรมแข่ง',
-        results: "ผลการแข่งขัน",
-        groups: 'กลุ่ม',
-        knockout: 'รอบน็อกเอาต์',
-        players: 'รองเท้าทองคำ',
-        records: 'สถิติ',
-        stats: 'ศูนย์สถิติ',
-        venues: 'สนาม',
-        totalMatches: 'จำนวนแมตช์ทั้งหมด',
-        loaded: 'โหลดแล้ว',
-        played: 'แข่งแล้ว',
-        remaining: 'คงเหลือ',
-        liveNow: 'ถ่ายทอดสดตอนนี้',
-        totalGoals: 'ประตูรวม',
-        nextMatch: 'นัดถัดไป',
-        tournamentStatus: 'สถานะทัวร์นาเมนต์',
-        demoMode: 'โหมดสาธิต',
-        on: 'เปิด',
-        off: 'ปิด',
-        lastUpdate: 'อัปเดตล่าสุด',
-        ok: 'OK',
-        failed: 'ล้มเหลว',
-        progress: 'ความคืบหน้า',
-        topScorer: 'ดาวซัลโว',
-        notAvailable: 'ไม่พร้อมใช้งาน',
-        noUpcomingMatch: 'ยังไม่มีแมตช์ถัดไป',
-        noLiveMatches: 'ไม่มีแมตช์ถ่ายทอดสดตอนนี้',
-        fixturesResults: "โปรแกรมและผลการแข่งขัน",
-        noFixtures: 'ยังไม่มีโปรแกรมแข่ง',
-        groupLabel: 'กลุ่ม',
-        groupsAL: 'กลุ่ม A-L',
-        noGroups: "ยังไม่มีตารางกลุ่มที่โหลด",
-        noTeamsGroup: "ยังไม่มีทีมที่โหลดสำหรับกลุ่มนี้",
-        goldenBoot: "การแข่งขันรองเท้าทองคำ",
-        noPlayerStats: "ยังไม่มีสถิติผู้เล่นที่โหลด",
-        knockoutBracket: 'สายรอบน็อกเอาต์',
-        fixturesNotAvailable: "โปรแกรมแข่งยังไม่พร้อมใช้งาน",
-        highestMatchGoals: "ประตูมากที่สุดในนัดเดียว",
-        biggestMargin: "ส่วนต่างมากที่สุด",
-        topTeamGoals: "ทีมที่ยิงประตูมากที่สุด",
-        bestDefenceGA: "เกมรับดีที่สุด",
-        highestScoringMatch: "นัดที่มีประตูมากที่สุด",
-        biggestWin: "ชัยชนะขาดลอยที่สุด",
-        topScoringTeam: "ทีมที่ทำประตูสูงสุด",
-        bestDefence: "เกมรับดีที่สุด",
-        noResult: "ยังไม่มีผลการแข่งขัน",
-        noTeamGoalData: "ยังไม่มีข้อมูลประตูของทีม",
-        noDefensiveData: "ยังไม่มีข้อมูลเกมรับ",
-        matchesPlayed: 'แมตช์ที่แข่งแล้ว',
-        yellowCards: 'ใบเหลือง',
-        redCards: 'ใบแดง',
-        minutes: 'นาที',
-        goalsPerMatch: 'ประตู / นัด',
-        draws: 'เสมอ',
-        drawRate: "อัตราเสมอ",
-        bttsRate: "อัตราทั้งสองทีมยิง",
-        over25Rate: "อัตรามากกว่า 2.5",
-        stadiums: 'สนาม',
-        usaVenues: "สนามในสหรัฐฯ",
-        canadaVenues: "สนามในแคนาดา",
-        mexicoVenues: "สนามในเม็กซิโก",
-        finalVenue: "สนามรอบชิงชนะเลิศ",
-        capacity: 'ความจุ',
-        worldCupStadiums: "สนามฟุตบอลโลก",
-        noVenueData: "ไม่มีข้อมูลสนาม",
-        scheduled: 'กำลังจะมาถึง',
-        liveStatus: "สด",
-        manualTimerNotice: 'คะแนนสดอัปเดตอัตโนมัติ เวลาประตูใช้ตัวจับเวลาการแข่งขันแบบแมนนวล และอาจต่างจากเวลาอย่างเป็นทางการไม่กี่นาที',
-        paused: 'พัก',
-        fullTime: 'จบเกม',
-        aet: "หลังต่อเวลาพิเศษ",
-        penalties: 'จุดโทษ',
-        postponed: "เลื่อนการแข่งขัน",
-        groupStage: 'รอบแบ่งกลุ่ม',
-        round32: 'รอบ 32 ทีม',
-        round16: 'รอบ 16 ทีม',
-        quarterFinals: 'รอบก่อนรองชนะเลิศ',
-        semiFinals: 'รอบรองชนะเลิศ',
-        thirdPlace: 'ชิงอันดับสาม',
-        final: 'รอบชิงชนะเลิศ',
-        tbc: 'รอยืนยัน',
-        unknown: 'ไม่ทราบ',
-        pos: 'อันดับ',
-        team: 'ทีม',
-        player: 'ผู้เล่น',
-        goals: 'ประตู',
-        assists: 'แอสซิสต์',
-        language: "ภาษาแดชบอร์ด",
-        pcView: "??????????",
-        tabletView: "??????????????",
-        viewMode: "??????????????",
-        controlCentre: 'ศูนย์ควบคุมฟุตบอลโลก 2026',
-        overviewSubtitle: "แดชบอร์ดการแข่งขันสดพร้อมโปรแกรม ผลการแข่งขัน กลุ่ม สถิติผู้เล่น สนาม สถิติสูงสุด และรอบน็อกเอาต์ในที่เดียว",
-        tournamentIntelligence: "การวิเคราะห์ทัวร์นาเมนต์",
-        goldenBootCentre: "ศูนย์รองเท้าทองคำ",
-        leaderSpotlight: "ผู้นำเด่น",
-        playersTracked: "ผู้เล่นที่ติดตาม",
-        totalAssists: "แอสซิสต์ทั้งหมด",
-        totalYellowCards: "ใบเหลืองทั้งหมด",
-        totalRedCards: "ใบแดงทั้งหมด",
-        upNext: "ถัดไป",
-        matchSpotlight: "แมตช์เด่น",
-        upcomingFixtures: "โปรแกรมถัดไป",
-        latest: "ล่าสุด",
-        recentResults: "ผลล่าสุด",
-        playerWatch: "ติดตามผู้เล่น",
-        fixturesSubtitle: "ศูนย์การแข่งขันที่ชัดเจนขึ้น พร้อมวันแข่ง การ์ดสกอร์ ธง รายละเอียดสนาม และป้ายสถานะที่อ่านง่าย",
-        days: 'วัน',
-        versus: 'พบ',
-        supportersNav: "🙏 ผู้สนับสนุน",
-        supportersThankYouTitle: "🙏 ผู้สนับสนุนและคำขอบคุณ",
-        supportersIntro: "โปรเจกต์นี้เริ่มจากแดชบอร์ด Home Assistant ส่วนตัว และเติบโตด้วยคำแนะนำ การทดสอบ ไอเดีย และการสนับสนุนจากชุมชน",
-        supportersSpecialThanks: "ขอขอบคุณเป็นพิเศษทุกคนที่สนับสนุนการพัฒนาอินทิเกรชัน World Cup 2026",
-        supportersTitle: "🍺 ผู้สนับสนุน",
-        latestSupporters: "⭐ ผู้สนับสนุนล่าสุด",
-        allSupporters: "🌍 ผู้สนับสนุนทั้งหมด",
-        supporterDefaultMessage: "ขอบคุณที่สนับสนุนการพัฒนา",
-        anonymousSupporter: 'ผู้สนับสนุนนิรนาม',
-        noSupporters: "ยังไม่มีผู้สนับสนุน มาเป็นคนแรกที่เลี้ยงเบียร์ฉันและให้ชื่อของคุณแสดงที่นี่",
-        wantNameAdded: "ต้องการเพิ่มชื่อของคุณที่นี่ไหม?",
-        supportFutureUpdates: "สนับสนุนการอัปเดต การแก้บั๊ก และฟีเจอร์ฟุตบอลโลกใหม่ ๆ ในอนาคต",
-        supporterBeerMessage: "🍺 ต้องการให้ชื่อของคุณแสดงในหน้าผู้สนับสนุนไหม? เลี้ยงเบียร์ฉันผ่าน PayPal แล้วชื่อของคุณสามารถถูกเพิ่มในรายชื่อผู้สนับสนุน World Cup 2026 เพื่อขอบคุณสำหรับการสนับสนุนการพัฒนา",
-        donateBuyBeer: "🍺 บริจาค / เลี้ยงเบียร์ฉัน",
-        enjoyingIntegration: "🍺 ชอบอินทิเกรชันนี้ไหม?",
-        supportIntegration: "สนับสนุนอินทิเกรชันนี้",
-        source: "แหล่งข้อมูล",
-        totalSupporters: "ผู้สนับสนุนทั้งหมด",
-        countries: "ประเทศ",
-        countriesSupporting: "ประเทศที่สนับสนุน",
-        latestSupportDate: "วันที่สนับสนุนล่าสุด",
-        playedShort: "แข่ง",
-        winsShort: "ชนะ",
-        drawsShort: "เสมอ",
-        lossesShort: "แพ้",
-        goalsForShort: "ได้",
-        goalsAgainstShort: "เสีย",
-        goalDifferenceShort: "ต่าง",
-        pointsShort: "แต้ม",
-        noResultsLoaded: "ยังไม่มีผลการแข่งขันที่โหลด",
-        finishedMatchesSubtitle: "การแข่งขันที่จบแล้วและสกอร์ที่ยืนยันแล้ว",
-        goldenBootAutoText: "ข้อมูลรองเท้าทองคำอัตโนมัติจะแสดงเมื่อ football-data.org เผยแพร่ข้อมูลผู้ทำประตูฟุตบอลโลก",
-        realStadium: "สนามจริง",
-        matchesHosted: "แมตช์ที่จัด",
-        communitySupport: "การสนับสนุนจากชุมชน",
-        supportersAroundWorld: "ผู้สนับสนุนทั่วโลก",
-        noLiveGames: "ไม่มีการแข่งขันสด",
-        noGamesToday: "วันนี้ไม่มีการแข่งขัน",
-        conceded: 'เสียประตู',
-      },
 
-      vi: {
-        title: "Giải vô địch bóng đá thế giới FIFA 2026",
-        subtitle: 'Ứng dụng giải đấu cho Home Assistant',
-        back: '← Quay lại',
-        updated: 'Đã cập nhật',
-        loading: 'Đang tải World Cup 2026...',
-        errorTitle: "World Cup 2026",
-        errorText: 'Không thể tải dữ liệu ứng dụng.',
-        overview: 'Tổng quan',
-        live: 'Trung tâm trực tiếp',
-        fixtures: 'Lịch thi đấu',
-        results: "Kết quả",
-        groups: 'Bảng đấu',
-        knockout: 'Vòng loại trực tiếp',
-        players: 'Chiếc giày vàng',
-        records: 'Kỷ lục',
-        stats: 'Trung tâm thống kê',
-        venues: 'Sân vận động',
-        totalMatches: 'Tổng số trận',
-        loaded: 'Đã tải',
-        played: 'Đã đá',
-        remaining: 'Còn lại',
-        liveNow: 'Đang trực tiếp',
-        totalGoals: 'Tổng bàn thắng',
-        nextMatch: 'Trận tiếp theo',
-        tournamentStatus: 'Trạng thái giải đấu',
-        demoMode: 'Chế độ demo',
-        on: 'Bật',
-        off: 'Tắt',
-        lastUpdate: 'Cập nhật cuối',
-        ok: 'OK',
-        failed: 'Thất bại',
-        progress: 'Tiến độ',
-        topScorer: 'Vua phá lưới',
-        notAvailable: 'Không có sẵn',
-        noUpcomingMatch: 'Chưa tải trận sắp tới.',
-        noLiveMatches: 'Hiện không có trận trực tiếp.',
-        fixturesResults: 'Lịch thi đấu & Kết quả',
-        noFixtures: 'Chưa tải lịch thi đấu.',
-        groupLabel: 'Bảng',
-        groupsAL: 'Bảng A-L',
-        noGroups: "Chưa tải bảng xếp hạng bảng đấu.",
-        noTeamsGroup: "Chưa tải đội nào cho bảng này.",
-        goldenBoot: 'Cuộc đua Chiếc giày vàng',
-        noPlayerStats: "Chưa tải thống kê cầu thủ.",
-        knockoutBracket: 'Nhánh loại trực tiếp',
-        fixturesNotAvailable: "Lịch thi đấu chưa có sẵn",
-        highestMatchGoals: "Trận có nhiều bàn nhất",
-        biggestMargin: "Cách biệt lớn nhất",
-        topTeamGoals: "Đội ghi nhiều bàn nhất",
-        bestDefenceGA: "Hàng thủ tốt nhất",
-        highestScoringMatch: "Trận có nhiều bàn nhất",
-        biggestWin: "Chiến thắng lớn nhất",
-        topScoringTeam: "Đội ghi bàn nhiều nhất",
-        bestDefence: "Hàng thủ tốt nhất",
-        noResult: "Chưa có kết quả.",
-        noTeamGoalData: "Chưa có dữ liệu bàn thắng đội.",
-        noDefensiveData: "Chưa có dữ liệu phòng ngự.",
-        matchesPlayed: 'Số trận đã đá',
-        yellowCards: 'Thẻ vàng',
-        redCards: 'Thẻ đỏ',
-        minutes: 'Phút',
-        goalsPerMatch: 'Bàn / trận',
-        draws: 'Hòa',
-        drawRate: 'Tỷ lệ hòa',
-        bttsRate: "Tỷ lệ hai đội cùng ghi bàn",
-        over25Rate: "Tỷ lệ trên 2,5",
-        stadiums: 'Sân vận động',
-        usaVenues: "Sân vận động Hoa Kỳ",
-        canadaVenues: "Sân vận động Canada",
-        mexicoVenues: "Sân vận động Mexico",
-        finalVenue: "Sân vận động chung kết",
-        capacity: 'Sức chứa',
-        worldCupStadiums: "Sân vận động World Cup",
-        noVenueData: "Không có dữ liệu sân vận động.",
-        scheduled: 'Sắp diễn ra',
-        liveStatus: "Trực tiếp",
-        manualTimerNotice: 'Tỉ số trực tiếp tự động cập nhật. Thời điểm ghi bàn dùng đồng hồ trận đấu thủ công và có thể lệch vài phút so với thời gian chính thức.',
-        paused: 'Tạm dừng',
-        fullTime: 'Hết giờ',
-        aet: 'Sau hiệp phụ',
-        penalties: 'Luân lưu',
-        postponed: 'Hoãn',
-        groupStage: 'Vòng bảng',
-        round32: 'Vòng 32 đội',
-        round16: 'Vòng 16 đội',
-        quarterFinals: 'Tứ kết',
-        semiFinals: 'Bán kết',
-        thirdPlace: 'Tranh hạng ba',
-        final: 'Chung kết',
-        tbc: 'Chưa xác định',
-        unknown: 'Không rõ',
-        pos: 'Hạng',
-        team: 'Đội',
-        player: 'Cầu thủ',
-        goals: 'Bàn thắng',
-        assists: 'Kiến tạo',
-        language: 'Ngôn ngữ bảng điều khiển',
-        pcView: "Ch? ?? xem PC",
-        tabletView: "Ch? ?? xem m?y t?nh b?ng",
-        viewMode: "Ch? ?? xem b?ng ?i?u khi?n",
-        controlCentre: 'Trung tâm điều khiển World Cup 2026',
-        overviewSubtitle: "Bảng điều khiển giải đấu trực tiếp với lịch thi đấu, kết quả, bảng đấu, thống kê cầu thủ, sân vận động, kỷ lục và vòng loại trực tiếp ở một nơi.",
-        tournamentIntelligence: "Phân tích giải đấu",
-        goldenBootCentre: "Trung tâm Chiếc giày vàng",
-        leaderSpotlight: "Người dẫn đầu nổi bật",
-        playersTracked: "Cầu thủ được theo dõi",
-        totalAssists: "Tổng kiến tạo",
-        totalYellowCards: "Tổng thẻ vàng",
-        totalRedCards: "Tổng thẻ đỏ",
-        upNext: "Tiếp theo",
-        matchSpotlight: "Trận đấu nổi bật",
-        upcomingFixtures: "Trận sắp tới",
-        latest: "Mới nhất",
-        recentResults: "Kết quả gần đây",
-        playerWatch: "Theo dõi cầu thủ",
-        fixturesSubtitle: "Trung tâm trận đấu rõ ràng hơn với ngày thi đấu, thẻ tỷ số, cờ, chi tiết sân vận động và trạng thái dễ đọc.",
-        days: 'Ngày',
-        versus: 'v',
-        supportersNav: "🙏 Người ủng hộ",
-        supportersThankYouTitle: "🙏 Người ủng hộ và lời cảm ơn",
-        supportersIntro: "Dự án này bắt đầu như một bảng điều khiển Home Assistant cá nhân và phát triển nhờ phản hồi, thử nghiệm, ý tưởng và sự ủng hộ từ cộng đồng.",
-        supportersSpecialThanks: "Xin cảm ơn đặc biệt tới mọi người đã ủng hộ phát triển tích hợp World Cup 2026.",
-        supportersTitle: "🍺 Người ủng hộ",
-        latestSupporters: "⭐ Người ủng hộ mới nhất",
-        allSupporters: "🌍 Tất cả người ủng hộ",
-        supporterDefaultMessage: "Cảm ơn bạn đã ủng hộ phát triển.",
-        anonymousSupporter: 'Người ủng hộ ẩn danh',
-        noSupporters: "Chưa có người ủng hộ nào. Hãy là người đầu tiên mời tôi một cốc bia và để tên bạn xuất hiện ở đây.",
-        wantNameAdded: "Bạn muốn thêm tên của mình ở đây?",
-        supportFutureUpdates: "Ủng hộ các bản cập nhật, sửa lỗi và tính năng World Cup mới trong tương lai.",
-        supporterBeerMessage: "🍺 Muốn tên bạn xuất hiện trên trang Người ủng hộ? Mời tôi một cốc bia qua PayPal và tên bạn có thể được thêm vào danh sách người ủng hộ World Cup 2026 như lời cảm ơn.",
-        donateBuyBeer: "🍺 Quyên góp / Mời tôi một cốc bia",
-        enjoyingIntegration: "🍺 Bạn thích tích hợp này chứ?",
-        supportIntegration: "Ủng hộ tích hợp này",
-        source: "Nguồn",
-        totalSupporters: "Tổng người ủng hộ",
-        countries: "Quốc gia",
-        countriesSupporting: "Quốc gia ủng hộ",
-        latestSupportDate: "Ngày ủng hộ gần nhất",
-        playedShort: "Tr",
-        winsShort: "T",
-        drawsShort: "H",
-        lossesShort: "B",
-        goalsForShort: "BT",
-        goalsAgainstShort: "BB",
-        goalDifferenceShort: "HS",
-        pointsShort: "Đ",
-        noResultsLoaded: "Chưa tải kết quả nào.",
-        finishedMatchesSubtitle: "Các trận đã kết thúc và tỷ số đã xác nhận.",
-        goldenBootAutoText: "Dữ liệu Chiếc giày vàng tự động sẽ xuất hiện khi football-data.org công bố dữ liệu ghi bàn World Cup.",
-        realStadium: "Sân vận động thực tế",
-        matchesHosted: "Trận đã tổ chức",
-        communitySupport: "Ủng hộ cộng đồng",
-        supportersAroundWorld: "Người ủng hộ trên toàn thế giới",
-        noLiveGames: "Không có trận trực tiếp",
-        noGamesToday: "Hôm nay không có trận đấu",
-        conceded: 'thủng lưới',
-      },
 
-      id: {
-        title: 'Piala Dunia FIFA 2026',
-        subtitle: 'Aplikasi turnamen untuk Home Assistant',
-        back: '← Kembali',
-        updated: 'Diperbarui',
-        loading: 'Memuat Piala Dunia 2026...',
-        errorTitle: 'Piala Dunia 2026',
-        errorText: 'Tidak dapat memuat data aplikasi.',
-        overview: 'Ringkasan',
-        live: 'Pusat Live',
-        fixtures: 'Jadwal',
-        results: "Hasil",
-        groups: 'Grup',
-        knockout: 'Babak Gugur',
-        players: 'Sepatu Emas',
-        records: 'Rekor',
-        stats: 'Pusat Statistik',
-        venues: 'Venue',
-        totalMatches: 'Total Pertandingan',
-        loaded: 'Dimuat',
-        played: 'Dimainkan',
-        remaining: 'Tersisa',
-        liveNow: 'Live Sekarang',
-        totalGoals: 'Total Gol',
-        nextMatch: 'Pertandingan Berikutnya',
-        tournamentStatus: 'Status Turnamen',
-        demoMode: 'Mode demo',
-        on: 'Aktif',
-        off: 'Nonaktif',
-        lastUpdate: 'Pembaruan terakhir',
-        ok: 'OK',
-        failed: 'Gagal',
-        progress: 'Progres',
-        topScorer: 'Pencetak gol terbanyak',
-        notAvailable: 'Tidak tersedia',
-        noUpcomingMatch: 'Belum ada pertandingan berikutnya.',
-        noLiveMatches: 'Tidak ada pertandingan live saat ini.',
-        fixturesResults: 'Jadwal & Hasil',
-        noFixtures: 'Belum ada jadwal dimuat.',
-        groupLabel: 'Grup',
-        groupsAL: 'Grup A-L',
-        noGroups: "Klasemen grup belum dimuat.",
-        noTeamsGroup: "Belum ada tim yang dimuat untuk grup ini.",
-        goldenBoot: 'Perburuan Sepatu Emas',
-        noPlayerStats: "Statistik pemain belum dimuat.",
-        knockoutBracket: 'Bagan Babak Gugur',
-        fixturesNotAvailable: "Jadwal belum tersedia",
-        highestMatchGoals: "Gol Terbanyak dalam Satu Laga",
-        biggestMargin: "Selisih Terbesar",
-        topTeamGoals: "Gol Tim Terbanyak",
-        bestDefenceGA: "Pertahanan Terbaik",
-        highestScoringMatch: "Laga dengan Gol Terbanyak",
-        biggestWin: "Kemenangan Terbesar",
-        topScoringTeam: "Tim Tersubur",
-        bestDefence: "Pertahanan Terbaik",
-        noResult: "Belum ada hasil.",
-        noTeamGoalData: "Belum ada data gol tim.",
-        noDefensiveData: "Belum ada data pertahanan.",
-        matchesPlayed: 'Pertandingan Dimainkan',
-        yellowCards: 'Kartu Kuning',
-        redCards: 'Kartu Merah',
-        minutes: 'Menit',
-        goalsPerMatch: 'Gol / Pertandingan',
-        draws: 'Seri',
-        drawRate: 'Persentase Seri',
-        bttsRate: "Tingkat Kedua Tim Mencetak Gol",
-        over25Rate: "Tingkat Lebih dari 2,5",
-        stadiums: 'Stadion',
-        usaVenues: "Stadion AS",
-        canadaVenues: "Stadion Kanada",
-        mexicoVenues: "Stadion Meksiko",
-        finalVenue: "Stadion Final",
-        capacity: 'Kapasitas',
-        worldCupStadiums: "Stadion Piala Dunia",
-        noVenueData: "Tidak ada data stadion.",
-        scheduled: 'Akan Datang',
-        liveStatus: "Live",
-        manualTimerNotice: 'Skor langsung diperbarui otomatis. Waktu gol memakai jam pertandingan manual dan dapat berbeda beberapa menit dari waktu resmi.',
-        paused: 'Jeda',
-        fullTime: 'Purna Waktu',
-        aet: 'Setelah Perpanjangan Waktu',
-        penalties: 'Adu Penalti',
-        postponed: 'Ditunda',
-        groupStage: 'Fase Grup',
-        round32: 'Babak 32 Besar',
-        round16: 'Babak 16 Besar',
-        quarterFinals: 'Perempat Final',
-        semiFinals: 'Semi Final',
-        thirdPlace: 'Perebutan Tempat Ketiga',
-        final: 'Final',
-        tbc: 'TBD',
-        unknown: 'Tidak diketahui',
-        pos: 'Pos',
-        team: 'Tim',
-        player: 'Pemain',
-        goals: 'Gol',
-        assists: 'Assist',
-        language: 'Bahasa Dashboard',
-        pcView: "Tampilan PC",
-        tabletView: "Tampilan tablet",
-        viewMode: "Tampilan dasbor",
-        controlCentre: 'Pusat Kontrol Piala Dunia 2026',
-        overviewSubtitle: "Dasbor turnamen langsung dengan jadwal, hasil, grup, statistik pemain, stadion, rekor, dan fase gugur dalam satu tempat.",
-        tournamentIntelligence: "Analisis Turnamen",
-        goldenBootCentre: "Pusat Sepatu Emas",
-        leaderSpotlight: "Sorotan Pemimpin",
-        playersTracked: "Pemain Dipantau",
-        totalAssists: "Total Assist",
-        totalYellowCards: "Total Kartu Kuning",
-        totalRedCards: "Total Kartu Merah",
-        upNext: "Berikutnya",
-        matchSpotlight: "Sorotan Pertandingan",
-        upcomingFixtures: "Jadwal Mendatang",
-        latest: "Terbaru",
-        recentResults: "Hasil Terbaru",
-        playerWatch: "Pantauan Pemain",
-        fixturesSubtitle: "Pusat pertandingan yang lebih jelas dengan bagian hari pertandingan, kartu skor, bendera, detail stadion, dan lencana status yang mudah dibaca.",
-        days: 'Hari',
-        versus: 'v',
-        supportersNav: '🙏 Pendukung',
-        supportersThankYouTitle: "🙏 Pendukung dan Terima Kasih",
-        supportersIntro: "Proyek ini dimulai sebagai dasbor Home Assistant pribadi dan berkembang berkat masukan, pengujian, ide, dan dukungan komunitas.",
-        supportersSpecialThanks: "Terima kasih khusus kepada semua yang telah mendukung pengembangan integrasi World Cup 2026.",
-        supportersTitle: '🍺 Pendukung',
-        latestSupporters: "⭐ Pendukung Terbaru",
-        allSupporters: "🌍 Semua Pendukung",
-        supporterDefaultMessage: "Terima kasih telah mendukung pengembangan.",
-        anonymousSupporter: 'Pendukung anonim',
-        noSupporters: "Belum ada pendukung yang ditambahkan. Jadilah yang pertama membelikan saya bir dan tampilkan nama Anda di sini.",
-        wantNameAdded: "Ingin nama Anda ditambahkan di sini?",
-        supportFutureUpdates: "Dukung pembaruan mendatang, perbaikan bug, dan fitur Piala Dunia baru.",
-        supporterBeerMessage: "🍺 Ingin nama Anda tampil di halaman Pendukung? Belikan saya bir melalui PayPal dan nama Anda dapat ditambahkan ke daftar Pendukung World Cup 2026 sebagai ucapan terima kasih atas dukungan pengembangan.",
-        donateBuyBeer: "🍺 Donasi / Belikan Saya Bir",
-        enjoyingIntegration: "🍺 Menikmati integrasi ini?",
-        supportIntegration: "Dukung integrasi ini",
-        source: "Sumber",
-        totalSupporters: "Total Pendukung",
-        countries: "Negara",
-        countriesSupporting: "Negara Pendukung",
-        latestSupportDate: "Tanggal Dukungan Terbaru",
-        playedShort: "M",
-        winsShort: "M",
-        drawsShort: "S",
-        lossesShort: "K",
-        goalsForShort: "GM",
-        goalsAgainstShort: "GK",
-        goalDifferenceShort: "SG",
-        pointsShort: "Poin",
-        noResultsLoaded: "Belum ada hasil yang dimuat.",
-        finishedMatchesSubtitle: "Pertandingan selesai dan skor terkonfirmasi.",
-        goldenBootAutoText: "Data Sepatu Emas otomatis akan muncul setelah football-data.org menerbitkan data pencetak gol Piala Dunia.",
-        realStadium: "Stadion sebenarnya",
-        matchesHosted: "Pertandingan yang digelar",
-        communitySupport: "Dukungan Komunitas",
-        supportersAroundWorld: "Pendukung di Seluruh Dunia",
-        noLiveGames: "Tidak ada laga live",
-        noGamesToday: "Tidak ada pertandingan hari ini",
-        conceded: 'kebobolan',
-      },
 
-      ko: {
-        title: "FIFA 월드컵 2026",
-        subtitle: "Home Assistant 전용 대회 앱",
-        back: "← 뒤로",
-        updated: "업데이트",
-        loading: "월드컵 2026 로딩 중...",
-        errorTitle: "월드컵 2026",
-        errorText: "앱 데이터를 불러올 수 없습니다.",
-        overview: "개요",
-        live: "라이브 센터",
-        fixtures: "경기",
-        groups: "조별 순위",
-        knockout: "토너먼트",
-        players: "골든 부트",
-        records: "기록",
-        stats: "통계",
-        venues: "경기장",
-        totalMatches: "총 경기",
-        loaded: "로드됨",
-        played: "진행 완료",
-        remaining: "남은 경기",
-        liveNow: "현재 라이브",
-        totalGoals: "총 득점",
-        nextMatch: "다음 경기",
-        tournamentStatus: "대회 상태",
-        demoMode: "데모 모드",
-        on: "켜짐",
-        off: "꺼짐",
-        lastUpdate: "마지막 업데이트",
-        ok: "OK",
-        failed: "실패",
-        progress: "진행률",
-        topScorer: "득점 선두",
-        notAvailable: "사용 불가",
-        noUpcomingMatch: "예정된 경기가 없습니다.",
-        noLiveMatches: "현재 라이브 경기가 없습니다.",
-        fixturesResults: "경기 및 결과",
-        noFixtures: "경기가 아직 로드되지 않았습니다.",
-        groupLabel: "조",
-        groupsAL: "A-L 조",
-        noGroups: "조별 순위가 없습니다.",
-        noTeamsGroup: "팀이 로드되지 않았습니다.",
-        goldenBoot: "골든 부트 경쟁",
-        noPlayerStats: "선수 통계가 없습니다.",
-        knockoutBracket: "토너먼트 대진표",
-        fixturesNotAvailable: "경기 미정",
-        highestMatchGoals: "최다 득점 경기",
-        biggestMargin: "최대 점수 차",
-        topTeamGoals: "최다 득점 팀",
-        bestDefenceGA: "최고 수비",
-        highestScoringMatch: "최다 득점 경기",
-        biggestWin: "최대 승리",
-        topScoringTeam: "최다 득점 팀",
-        bestDefence: "최고 수비",
-        noResult: "결과가 없습니다.",
-        noTeamGoalData: "득점 데이터가 없습니다.",
-        noDefensiveData: "수비 데이터가 없습니다.",
-        matchesPlayed: "진행된 경기",
-        yellowCards: "옐로카드",
-        redCards: "레드카드",
-        minutes: "출전 시간",
-        goalsPerMatch: "득점 / 경기",
-        draws: "무승부",
-        drawRate: "무승부 비율",
-        bttsRate: "양팀 득점",
-        over25Rate: "2.5 이상",
-        stadiums: "경기장",
-        usaVenues: "미국 경기장",
-        canadaVenues: "캐나다 경기장",
-        mexicoVenues: "멕시코 경기장",
-        finalVenue: "결승 경기장",
-        capacity: "수용 인원",
-        worldCupStadiums: "월드컵 경기장",
-        noVenueData: "경기장 데이터가 없습니다.",
-        scheduled: "예정",
-        liveStatus: "라이브",
-        manualTimerNotice: '라이브 점수는 자동으로 업데이트됩니다. 득점 시간은 수동 경기 시계를 사용하므로 공식 시간과 몇 분 차이 날 수 있습니다.',
-        paused: "일시 중지",
-        fullTime: "경기 종료",
-        aet: "연장 종료",
-        penalties: "승부차기",
-        postponed: "연기",
-        groupStage: "조별리그",
-        round32: "32강",
-        round16: "16강",
-        quarterFinals: "8강",
-        semiFinals: "4강",
-        thirdPlace: "3위 결정전",
-        final: "결승",
-        tbc: "미정",
-        unknown: "알 수 없음",
-        pos: "순위",
-        team: "팀",
-        player: "선수",
-        goals: "골",
-        assists: "도움",
-        language: "대시보드 언어",
-        pcView: "PC ??",
-        tabletView: "??? ??",
-        viewMode: "???? ??",
-        controlCentre: '월드컵 2026 컨트롤 센터',
-        overviewSubtitle: '경기, 결과, 조별 순위, 선수 통계, 경기장, 기록, 토너먼트를 한곳에서 보는 라이브 대회 대시보드입니다.',
-        tournamentIntelligence: '대회 분석',
-        goldenBootCentre: '골든 부트 센터',
-        leaderSpotlight: '선두 선수',
-        playersTracked: '추적 선수',
-        totalAssists: '총 도움',
-        totalYellowCards: '총 옐로카드',
-        totalRedCards: '총 레드카드',
-        upNext: '다음',
-        matchSpotlight: '주목 경기',
-        upcomingFixtures: '예정 경기',
-        latest: '최신',
-        recentResults: '최근 결과',
-        playerWatch: '선수 확인',
-        fixturesSubtitle: '경기일 섹션, 점수 카드, 국기, 경기장 정보, 명확한 상태 배지를 갖춘 더 깔끔한 경기 센터입니다.',
-        days: '일',
-        versus: '대',
-        supportersNav: '🙏 후원자',
-        supportersThankYouTitle: '🙏 후원자 및 감사',
-        supportersIntro: '이 프로젝트는 개인 Home Assistant 대시보드로 시작했으며 커뮤니티의 피드백, 테스트, 아이디어와 지원 덕분에 성장했습니다.',
-        supportersSpecialThanks: 'World Cup 2026 통합 개발을 지원해 주신 모든 분들께 특별히 감사드립니다.',
-        supportersTitle: '🍺 후원자',
-        latestSupporters: "⭐ 최신 후원자",
-        allSupporters: "🌍 모든 후원자",
-        supporterDefaultMessage: '개발을 지원해 주셔서 감사합니다.',
-        anonymousSupporter: '익명 후원자',
-        noSupporters: '아직 후원자가 없습니다. 첫 번째로 맥주 한 잔을 후원하고 여기에 이름을 올려보세요.',
-        wantNameAdded: '여기에 이름을 추가하고 싶으신가요?',
-        supportFutureUpdates: '향후 업데이트, 버그 수정 및 새로운 월드컵 기능을 지원해 주세요.',
-        supporterBeerMessage: '🍺 후원자 페이지에 이름을 올리고 싶으신가요? PayPal로 맥주 한 잔을 후원하면 개발 지원에 대한 감사의 의미로 World Cup 2026 후원자 목록에 이름을 추가할 수 있습니다.',
-        donateBuyBeer: '🍺 기부 / 맥주 사주기',
-        enjoyingIntegration: '🍺 이 통합을 즐기고 계신가요?',
-        supportIntegration: '이 통합 지원',
-        results: "결과",
-        source: "출처",
-        totalSupporters: "총 후원자",
-        countries: "국가",
-        countriesSupporting: "후원 국가",
-        latestSupportDate: "최근 후원일",
-        playedShort: "경기",
-        winsShort: "승",
-        drawsShort: "무",
-        lossesShort: "패",
-        goalsForShort: "득",
-        goalsAgainstShort: "실",
-        goalDifferenceShort: "차",
-        pointsShort: "승점",
-        noResultsLoaded: "아직 결과가 로드되지 않았습니다.",
-        finishedMatchesSubtitle: "종료된 경기와 확정된 점수입니다.",
-        goldenBootAutoText: "football-data.org에서 월드컵 득점자 데이터를 공개하면 자동 골든 부트 데이터가 표시됩니다.",
-        realStadium: "실제 경기장",
-        matchesHosted: "개최 경기",
-        communitySupport: "커뮤니티 지원",
-        supportersAroundWorld: "전 세계 후원자",
-        noLiveGames: "라이브 경기 없음",
-        noGamesToday: "오늘 경기 없음",
-        conceded: "실점",
-      },
 
       sv: {
         title: "FIFA Världsmästerskapet 2026",
@@ -6099,805 +4193,10 @@ class WorldCup2026Panel extends HTMLElement {
         conceded: "fengin á sig",
       },
 
-      sw: {
-        title: "Kombe la Dunia FIFA 2026",
-        subtitle: "Programu maalum ya mashindano kwa Home Assistant",
-        back: "← Rudi",
-        updated: "Imesasishwa",
-        loading: "Inapakia Kombe la Dunia 2026...",
-        errorTitle: "Kombe la Dunia 2026",
-        errorText: "Haikuweza kupakia data ya programu.",
-        overview: "Muhtasari",
-        live: "Kituo cha Moja kwa Moja",
-        fixtures: "Ratiba",
-        results: "Matokeo",
-        groups: "Makundi",
-        knockout: "Mtoano",
-        players: "Kiatu cha Dhahabu",
-        records: "Rekodi",
-        stats: "Kituo cha Takwimu",
-        venues: "Viwanja",
-        totalMatches: "Jumla ya Mechi",
-        loaded: "Zilizopakiwa",
-        played: "Zilizochezwa",
-        remaining: "Zilizosalia",
-        liveNow: "Moja kwa Moja Sasa",
-        totalGoals: "Jumla ya Mabao",
-        nextMatch: "Mechi Inayofuata",
-        tournamentStatus: "Hali ya Mashindano",
-        demoMode: "Hali ya onyesho",
-        on: "Imewashwa",
-        off: "Imezimwa",
-        lastUpdate: "Sasisho la mwisho",
-        ok: "Sawa",
-        failed: "Imeshindikana",
-        progress: "Maendeleo",
-        topScorer: "Mfungaji bora",
-        notAvailable: "Haipatikani",
-        noUpcomingMatch: "Hakuna mechi ijayo iliyopakiwa.",
-        noLiveMatches: "Hakuna mechi za moja kwa moja sasa.",
-        fixturesResults: "Ratiba na Matokeo",
-        noFixtures: "Hakuna ratiba iliyopakiwa bado.",
-        groupLabel: "Kundi",
-        groupsAL: "Makundi A-L",
-        noGroups: "Hakuna msimamo wa makundi uliopakiwa bado.",
-        noTeamsGroup: "Hakuna timu zilizopakiwa kwa kundi hili bado.",
-        goldenBoot: "Mbio za Kiatu cha Dhahabu",
-        noPlayerStats: "Hakuna takwimu za wachezaji zilizopakiwa bado.",
-        knockoutBracket: "Jedwali la Mtoano",
-        fixturesNotAvailable: "Ratiba haipatikani bado",
-        highestMatchGoals: "Mabao Mengi Zaidi Katika Mechi",
-        biggestMargin: "Tofauti Kubwa Zaidi",
-        topTeamGoals: "Timu Yenye Mabao Mengi",
-        bestDefenceGA: "Ulinzi Bora GA",
-        highestScoringMatch: "Mechi Yenye Mabao Mengi",
-        biggestWin: "Ushindi Mkubwa Zaidi",
-        topScoringTeam: "Timu Yenye Kufunga Zaidi",
-        bestDefence: "Ulinzi Bora",
-        noResult: "Hakuna matokeo bado.",
-        noTeamGoalData: "Hakuna data ya mabao ya timu bado.",
-        noDefensiveData: "Hakuna data ya ulinzi bado.",
-        matchesPlayed: "Mechi Zilizochezwa",
-        yellowCards: "Kadi za Njano",
-        redCards: "Kadi Nyekundu",
-        minutes: "Dakika",
-        goalsPerMatch: "Mabao / Mechi",
-        draws: "Sare",
-        drawRate: "Kiwango cha Sare",
-        bttsRate: "Kiwango cha Timu Zote Kufunga",
-        over25Rate: "Zaidi ya 2.5",
-        stadiums: "Viwanja",
-        usaVenues: "Viwanja vya Marekani",
-        canadaVenues: "Viwanja vya Kanada",
-        mexicoVenues: "Viwanja vya Meksiko",
-        finalVenue: "Uwanja wa Fainali",
-        capacity: "Uwezo",
-        worldCupStadiums: "Viwanja vya Kombe la Dunia",
-        noVenueData: "Hakuna data ya viwanja.",
-        scheduled: "Imepangwa",
-        liveStatus: "Moja kwa moja",
-        manualTimerNotice: 'Matokeo ya moja kwa moja husasishwa kiotomatiki. Muda wa mabao hutumia saa ya mechi ya mwongozo na unaweza kutofautiana na muda rasmi kwa dakika chache.',
-        paused: "Imesitishwa",
-        fullTime: "Muda Kamili",
-        aet: "Baada ya Muda wa Ziada",
-        penalties: "Penalti",
-        postponed: "Imeahirishwa",
-        groupStage: "Hatua ya Makundi",
-        round32: "Raundi ya 32",
-        round16: "Raundi ya 16",
-        quarterFinals: "Robo Fainali",
-        semiFinals: "Nusu Fainali",
-        thirdPlace: "Nafasi ya Tatu",
-        final: "Fainali",
-        tbc: "Itathibitishwa",
-        unknown: "Haijulikani",
-        pos: "Nafasi",
-        team: "Timu",
-        player: "Mchezaji",
-        goals: "Mabao",
-        assists: "Asisti",
-        language: "Lugha ya Dashibodi",
-        pcView: "Mwonekano wa PC",
-        tabletView: "Mwonekano wa tableti",
-        viewMode: "Mwonekano wa dashibodi",
-        controlCentre: "Kituo cha Udhibiti Kombe la Dunia 2026",
-        overviewSubtitle: "Dashibodi ya moja kwa moja ya mashindano yenye ratiba, matokeo, makundi, takwimu za wachezaji, viwanja, rekodi na mtoano sehemu moja.",
-        tournamentIntelligence: "Uchambuzi wa Mashindano",
-        goldenBootCentre: "Kituo cha Kiatu cha Dhahabu",
-        leaderSpotlight: "Kiongozi Aliyeangaziwa",
-        playersTracked: "Wachezaji Wanaofuatiliwa",
-        totalAssists: "Jumla ya Asisti",
-        totalYellowCards: "Jumla ya Kadi za Njano",
-        totalRedCards: "Jumla ya Kadi Nyekundu",
-        upNext: "Inayofuata",
-        matchSpotlight: "Mechi Iliyoangaziwa",
-        upcomingFixtures: "Mechi Zijazo",
-        latest: "Ya hivi karibuni",
-        recentResults: "Matokeo ya Karibuni",
-        playerWatch: "Ufuatiliaji wa Wachezaji",
-        fixturesSubtitle: "Kituo safi cha mechi chenye sehemu za siku za mechi, kadi za alama, bendera, maelezo ya viwanja na alama wazi za hali.",
-        days: "Siku",
-        versus: "dhidi ya",
-        supportersNav: "🙏 Wasaidizi",
-        supportersThankYouTitle: "🙏 Wasaidizi na Shukrani",
-        supportersIntro: "Mradi huu ulianza kama dashibodi binafsi ya Home Assistant na umekua kutokana na maoni, majaribio, mawazo na msaada wa jamii.",
-        supportersSpecialThanks: "Shukrani maalum kwa wote waliounga mkono maendeleo ya ujumuishaji wa World Cup 2026.",
-        supportersTitle: "🍺 Wasaidizi",
-        latestSupporters: "⭐ Wasaidizi wa Hivi Karibuni",
-        allSupporters: "🌍 Wasaidizi Wote",
-        supporterDefaultMessage: "Asante kwa kusaidia maendeleo.",
-        anonymousSupporter: "Msaidizi Asiyejulikana",
-        noSupporters: "Hakuna wasaidizi walioongezwa bado. Kuwa wa kwanza kuninunulia bia na jina lako lionekane hapa.",
-        wantNameAdded: "Unataka jina lako liongezwe hapa?",
-        supportFutureUpdates: "Saidia masasisho yajayo, marekebisho ya hitilafu na vipengele vipya vya Kombe la Dunia.",
-        supporterBeerMessage: "🍺 Unataka jina lako lionekane kwenye ukurasa wa Wasaidizi? Ninunulie bia kupitia PayPal na jina lako linaweza kuongezwa kwenye orodha ya Wasaidizi wa World Cup 2026 kama shukrani kwa kusaidia maendeleo.",
-        donateBuyBeer: "🍺 Changia / Ninunulie Bia",
-        enjoyingIntegration: "🍺 Unafurahia ujumuishaji huu?",
-        supportIntegration: "Saidia ujumuishaji huu",
-        source: "Chanzo",
-        totalSupporters: "Jumla ya Wasaidizi",
-        countries: "Nchi",
-        countriesSupporting: "Nchi Zinazounga Mkono",
-        latestSupportDate: "Tarehe ya Hivi Karibuni ya Msaada",
-        playedShort: "MC",
-        winsShort: "SH",
-        drawsShort: "SR",
-        lossesShort: "P",
-        goalsForShort: "GF",
-        goalsAgainstShort: "GA",
-        goalDifferenceShort: "GD",
-        pointsShort: "Pts",
-        noResultsLoaded: "Hakuna matokeo yaliyopakiwa bado.",
-        finishedMatchesSubtitle: "Mechi zilizomalizika na matokeo yaliyothibitishwa.",
-        goldenBootAutoText: "Data ya moja kwa moja ya Kiatu cha Dhahabu itaonekana football-data.org itakapochapisha data ya wafungaji wa Kombe la Dunia.",
-        realStadium: "Uwanja Halisi",
-        matchesHosted: "Mechi Zilizochezeshwa",
-        communitySupport: "Msaada wa Jamii",
-        supportersAroundWorld: "Wasaidizi Duniani Kote",
-        noLiveGames: "Hakuna mechi za moja kwa moja",
-        noGamesToday: "Hakuna mechi leo",
-        conceded: "yaliyofungwa dhidi",
-      },
 
-      am: {
-        title: "የFIFA ዓለም ዋንጫ 2026",
-        subtitle: "ለHome Assistant የተዘጋጀ የውድድር መተግበሪያ",
-        back: "← ተመለስ",
-        updated: "ተዘምኗል",
-        loading: "የዓለም ዋንጫ 2026 በመጫን ላይ...",
-        errorTitle: "የዓለም ዋንጫ 2026",
-        errorText: "የመተግበሪያ ውሂብ መጫን አልተቻለም።",
-        overview: "አጠቃላይ እይታ",
-        live: "ቀጥታ ማዕከል",
-        fixtures: "ጨዋታዎች",
-        results: "ውጤቶች",
-        groups: "ቡድኖች",
-        knockout: "የማስወገድ ዙር",
-        players: "ወርቃማ ጫማ",
-        records: "መዝገቦች",
-        stats: "የስታቲስቲክስ ማዕከል",
-        venues: "ስታዲየሞች",
-        totalMatches: "ጠቅላላ ጨዋታዎች",
-        loaded: "ተጭኗል",
-        played: "ተጫውቷል",
-        remaining: "የቀሩ",
-        liveNow: "አሁን ቀጥታ",
-        totalGoals: "ጠቅላላ ጎሎች",
-        nextMatch: "ቀጣይ ጨዋታ",
-        tournamentStatus: "የውድድር ሁኔታ",
-        demoMode: "የማሳያ ሁነታ",
-        on: "በርቷል",
-        off: "ጠፍቷል",
-        lastUpdate: "የመጨረሻ ዝመና",
-        ok: "እሺ",
-        failed: "አልተሳካም",
-        progress: "እድገት",
-        topScorer: "ከፍተኛ ጎል አስቆጣሪ",
-        notAvailable: "አይገኝም",
-        noUpcomingMatch: "ቀጣይ ጨዋታ አልተጫነም።",
-        noLiveMatches: "አሁን ቀጥታ ጨዋታዎች የሉም።",
-        fixturesResults: "ጨዋታዎች እና ውጤቶች",
-        noFixtures: "ጨዋታዎች ገና አልተጫኑም።",
-        groupLabel: "ቡድን",
-        groupsAL: "ቡድኖች A-L",
-        noGroups: "የቡድን ሰንጠረዦች ገና አልተጫኑም።",
-        noTeamsGroup: "በዚህ ቡድን ምንም ቡድኖች ገና አልተጫኑም።",
-        goldenBoot: "የወርቃማ ጫማ ውድድር",
-        noPlayerStats: "የተጫዋቾች ስታቲስቲክስ ገና አልተጫነም።",
-        knockoutBracket: "የማስወገድ ሰንጠረዥ",
-        fixturesNotAvailable: "ጨዋታዎች ገና አይገኙም",
-        highestMatchGoals: "በጨዋታ ብዙ ጎሎች",
-        biggestMargin: "ትልቁ ልዩነት",
-        topTeamGoals: "ብዙ ጎል ያስቆጠረ ቡድን",
-        bestDefenceGA: "ምርጥ መከላከያ GA",
-        highestScoringMatch: "ብዙ ጎል የተቆጠረበት ጨዋታ",
-        biggestWin: "ትልቁ ድል",
-        topScoringTeam: "ከፍተኛ ጎል ያስቆጠረ ቡድን",
-        bestDefence: "ምርጥ መከላከያ",
-        noResult: "ገና ውጤት የለም።",
-        noTeamGoalData: "የቡድን ጎል ውሂብ ገና የለም።",
-        noDefensiveData: "የመከላከያ ውሂብ ገና የለም።",
-        matchesPlayed: "የተጫወቱ ጨዋታዎች",
-        yellowCards: "ቢጫ ካርዶች",
-        redCards: "ቀይ ካርዶች",
-        minutes: "ደቂቃዎች",
-        goalsPerMatch: "ጎሎች / ጨዋታ",
-        draws: "አቻ",
-        drawRate: "የአቻ መጠን",
-        bttsRate: "ሁለቱም ቡድኖች ያስቆጥራሉ",
-        over25Rate: "ከ2.5 በላይ",
-        stadiums: "ስታዲየሞች",
-        usaVenues: "የአሜሪካ ስታዲየሞች",
-        canadaVenues: "የካናዳ ስታዲየሞች",
-        mexicoVenues: "የሜክሲኮ ስታዲየሞች",
-        finalVenue: "የፍጻሜ ስታዲየም",
-        capacity: "አቅም",
-        worldCupStadiums: "የዓለም ዋንጫ ስታዲየሞች",
-        noVenueData: "የስታዲየም ውሂብ የለም።",
-        scheduled: "ተይዟል",
-        liveStatus: "ቀጥታ",
-        manualTimerNotice: 'የቀጥታ ውጤቶች በራስ-ሰር ይዘምናሉ። የጎል ጊዜዎች የእጅ ሰዓት ይጠቀማሉ እና ከኦፊሴላዊ ጊዜዎች በጥቂት ደቂቃዎች ሊለዩ ይችላሉ።',
-        paused: "ቆሟል",
-        fullTime: "ሙሉ ሰዓት",
-        aet: "ከተጨማሪ ሰዓት በኋላ",
-        penalties: "ፔናልቲዎች",
-        postponed: "ተራዝሟል",
-        groupStage: "የቡድን ደረጃ",
-        round32: "የ32 ዙር",
-        round16: "የ16 ዙር",
-        quarterFinals: "ሩብ ፍጻሜ",
-        semiFinals: "ግማሽ ፍጻሜ",
-        thirdPlace: "ሶስተኛ ደረጃ",
-        final: "ፍጻሜ",
-        tbc: "ይረጋገጣል",
-        unknown: "ያልታወቀ",
-        pos: "ደረጃ",
-        team: "ቡድን",
-        player: "ተጫዋች",
-        goals: "ጎሎች",
-        assists: "አሲስቶች",
-        language: "የዳሽቦርድ ቋንቋ",
-        pcView: "?PC ???",
-        tabletView: "????? ???",
-        viewMode: "?????? ???",
-        controlCentre: "የዓለም ዋንጫ 2026 መቆጣጠሪያ ማዕከል",
-        overviewSubtitle: "ጨዋታዎች፣ ውጤቶች፣ ቡድኖች፣ የተጫዋቾች ስታቲስቲክስ፣ ስታዲየሞች፣ መዝገቦች እና የማስወገድ ዙር በአንድ ቦታ ያለው ቀጥታ የውድድር ዳሽቦርድ።",
-        tournamentIntelligence: "የውድድር ትንተና",
-        goldenBootCentre: "የወርቃማ ጫማ ማዕከል",
-        leaderSpotlight: "መሪ በትኩረት",
-        playersTracked: "የሚከታተሉ ተጫዋቾች",
-        totalAssists: "ጠቅላላ አሲስቶች",
-        totalYellowCards: "ጠቅላላ ቢጫ ካርዶች",
-        totalRedCards: "ጠቅላላ ቀይ ካርዶች",
-        upNext: "ቀጣይ",
-        matchSpotlight: "ጨዋታ በትኩረት",
-        upcomingFixtures: "መጪ ጨዋታዎች",
-        latest: "የቅርብ ጊዜ",
-        recentResults: "የቅርብ ውጤቶች",
-        playerWatch: "የተጫዋቾች ክትትል",
-        fixturesSubtitle: "የጨዋታ ቀን ክፍሎች፣ የውጤት ካርዶች፣ ባንዲራዎች፣ የስታዲየም ዝርዝሮች እና ግልጽ የሁኔታ ምልክቶች ያሉት የተሻለ የጨዋታ ማዕከል።",
-        days: "ቀናት",
-        versus: "በተቃራኒ",
-        supportersNav: "🙏 ደጋፊዎች",
-        supportersThankYouTitle: "🙏 ደጋፊዎች እና ምስጋና",
-        supportersIntro: "ይህ ፕሮጀክት እንደ የግል Home Assistant ዳሽቦርድ ጀመረ እና በማህበረሰቡ አስተያየት፣ ሙከራ፣ ሀሳቦች እና ድጋፍ አደገ።",
-        supportersSpecialThanks: "የWorld Cup 2026 ኢንተግሬሽን ልማትን የደገፉ ሁሉ ልዩ ምስጋና።",
-        supportersTitle: "🍺 ደጋፊዎች",
-        latestSupporters: "⭐ የቅርብ ጊዜ ደጋፊዎች",
-        allSupporters: "🌍 ሁሉም ደጋፊዎች",
-        supporterDefaultMessage: "ልማቱን ስለደገፉ እናመሰግናለን።",
-        anonymousSupporter: "ስም የሌለው ደጋፊ",
-        noSupporters: "ገና ደጋፊዎች አልተጨመሩም። መጀመሪያ ቢራ ግዙልኝ እና ስምዎ እዚህ ይታያል።",
-        wantNameAdded: "ስምዎ እዚህ እንዲጨመር ይፈልጋሉ?",
-        supportFutureUpdates: "የወደፊት ዝመናዎችን፣ የስህተት ማስተካከያዎችን እና አዲስ የዓለም ዋንጫ ባህሪያትን ይደግፉ።",
-        supporterBeerMessage: "🍺 ስምዎ በደጋፊዎች ገጽ ላይ እንዲታይ ይፈልጋሉ? በPayPal ቢራ ግዙልኝ እና ስምዎ ለልማት ድጋፍ እንደ ምስጋና በWorld Cup 2026 ደጋፊዎች ዝርዝር ላይ ሊጨመር ይችላል።",
-        donateBuyBeer: "🍺 ይለግሱ / ቢራ ግዙልኝ",
-        enjoyingIntegration: "🍺 ይህን ኢንተግሬሽን እየተደሰቱ ነው?",
-        supportIntegration: "ይህን ኢንተግሬሽን ይደግፉ",
-        source: "ምንጭ",
-        totalSupporters: "ጠቅላላ ደጋፊዎች",
-        countries: "አገሮች",
-        countriesSupporting: "የሚደግፉ አገሮች",
-        latestSupportDate: "የቅርብ ጊዜ የድጋፍ ቀን",
-        playedShort: "ተጫ",
-        winsShort: "አሸ",
-        drawsShort: "አቻ",
-        lossesShort: "ተሸ",
-        goalsForShort: "GF",
-        goalsAgainstShort: "GA",
-        goalDifferenceShort: "GD",
-        pointsShort: "ነጥብ",
-        noResultsLoaded: "ገና ምንም ውጤቶች አልተጫኑም።",
-        finishedMatchesSubtitle: "የተጠናቀቁ ጨዋታዎች እና የተረጋገጡ ውጤቶች።",
-        goldenBootAutoText: "football-data.org የዓለም ዋንጫ የጎል አስቆጣሪዎች ውሂብ ሲያትም የወርቃማ ጫማ ራስ-ሰር ውሂብ ይታያል።",
-        realStadium: "እውነተኛ ስታዲየም",
-        matchesHosted: "የተካሄዱ ጨዋታዎች",
-        communitySupport: "የማህበረሰብ ድጋፍ",
-        supportersAroundWorld: "በዓለም ዙሪያ ደጋፊዎች",
-        noLiveGames: "ቀጥታ ጨዋታዎች የሉም",
-        noGamesToday: "ዛሬ ጨዋታዎች የሉም",
-        conceded: "የተቀበለ",
-      },
 
-      af: {
-        title: "FIFA Wêreldbeker 2026",
-        subtitle: "Toegewyde toernooi-app vir Home Assistant",
-        back: "← Terug",
-        updated: "Opgedateer",
-        loading: "Laai Wêreldbeker 2026...",
-        errorTitle: "Wêreldbeker 2026",
-        errorText: "Kon nie appdata laai nie.",
-        overview: "Oorsig",
-        live: "Regstreekse Sentrum",
-        fixtures: "Wedstryde",
-        results: "Uitslae",
-        groups: "Groepe",
-        knockout: "Uitklop",
-        players: "Goue Skoen",
-        records: "Rekords",
-        stats: "Statistieksentrum",
-        venues: "Stadions",
-        totalMatches: "Totale Wedstryde",
-        loaded: "Gelaai",
-        played: "Gespeel",
-        remaining: "Oorblywend",
-        liveNow: "Nou Regstreeks",
-        totalGoals: "Totale Doele",
-        nextMatch: "Volgende Wedstryd",
-        tournamentStatus: "Toernooistatus",
-        demoMode: "Demomodus",
-        on: "Aan",
-        off: "Af",
-        lastUpdate: "Laaste opdatering",
-        ok: "OK",
-        failed: "Misluk",
-        progress: "Vordering",
-        topScorer: "Topdoelskieter",
-        notAvailable: "Nie beskikbaar nie",
-        noUpcomingMatch: "Geen komende wedstryd gelaai nie.",
-        noLiveMatches: "Geen regstreekse wedstryde nou nie.",
-        fixturesResults: "Wedstryde en Uitslae",
-        noFixtures: "Geen wedstryde nog gelaai nie.",
-        groupLabel: "Groep",
-        groupsAL: "Groepe A-L",
-        noGroups: "Geen groepstande nog gelaai nie.",
-        noTeamsGroup: "Geen spanne nog vir hierdie groep gelaai nie.",
-        goldenBoot: "Goue Skoen Wedloop",
-        noPlayerStats: "Geen spelerstatistieke nog gelaai nie.",
-        knockoutBracket: "Uitklopskema",
-        fixturesNotAvailable: "Wedstryde nog nie beskikbaar nie",
-        highestMatchGoals: "Meeste Doele in Wedstryd",
-        biggestMargin: "Grootste Marge",
-        topTeamGoals: "Meeste Spandoele",
-        bestDefenceGA: "Beste Verdediging GA",
-        highestScoringMatch: "Wedstryd met Meeste Doele",
-        biggestWin: "Grootste Oorwinning",
-        topScoringTeam: "Span met Meeste Doele",
-        bestDefence: "Beste Verdediging",
-        noResult: "Nog geen uitslag nie.",
-        noTeamGoalData: "Nog geen spandoeldata nie.",
-        noDefensiveData: "Nog geen verdedigingsdata nie.",
-        matchesPlayed: "Wedstryde Gespeel",
-        yellowCards: "Geel Kaarte",
-        redCards: "Rooi Kaarte",
-        minutes: "Minute",
-        goalsPerMatch: "Doele / Wedstryd",
-        draws: "Gelykop",
-        drawRate: "Gelykopkoers",
-        bttsRate: "Albei Span Teken Aan",
-        over25Rate: "Meer as 2.5",
-        stadiums: "Stadions",
-        usaVenues: "VSA Stadions",
-        canadaVenues: "Kanada Stadions",
-        mexicoVenues: "Meksiko Stadions",
-        finalVenue: "Finale Stadion",
-        capacity: "Kapasiteit",
-        worldCupStadiums: "Wêreldbekerstadions",
-        noVenueData: "Geen stadiondata beskikbaar nie.",
-        scheduled: "Geskeduleer",
-        liveStatus: "Regstreeks",
-        manualTimerNotice: 'Regstreekse tellings werk outomaties by. Doeltye gebruik die handmatige wedstrydklok en kan met ’n paar minute van amptelike tye verskil.',
-        paused: "Onderbreek",
-        fullTime: "Voltyd",
-        aet: "Na Ekstra Tyd",
-        penalties: "Strafskoppe",
-        postponed: "Uitgestel",
-        groupStage: "Groepfase",
-        round32: "Ronde van 32",
-        round16: "Ronde van 16",
-        quarterFinals: "Kwarteindronde",
-        semiFinals: "Halfeindronde",
-        thirdPlace: "Derde Plek",
-        final: "Finale",
-        tbc: "Nog te bevestig",
-        unknown: "Onbekend",
-        pos: "Pos",
-        team: "Span",
-        player: "Speler",
-        goals: "Doele",
-        assists: "Hulpdoele",
-        language: "Dashboardtaal",
-        pcView: "PC-aansig",
-        tabletView: "Tablet-aansig",
-        viewMode: "Kontroleskerm-aansig",
-        controlCentre: "Wêreldbeker 2026 Beheersentrum",
-        overviewSubtitle: "Regstreekse toernooidashboard met wedstryde, uitslae, groepe, spelerstatistieke, stadions, rekords en uitklopspoor op een plek.",
-        tournamentIntelligence: "Toernooi-insig",
-        goldenBootCentre: "Goue Skoen Sentrum",
-        leaderSpotlight: "Leier in Fokus",
-        playersTracked: "Spelers Gevolg",
-        totalAssists: "Totale Hulpdoele",
-        totalYellowCards: "Totale Geel Kaarte",
-        totalRedCards: "Totale Rooi Kaarte",
-        upNext: "Volgende",
-        matchSpotlight: "Wedstryd in Fokus",
-        upcomingFixtures: "Komende Wedstryde",
-        latest: "Nuutste",
-        recentResults: "Onlangse Uitslae",
-        playerWatch: "Spelerwag",
-        fixturesSubtitle: "n Duideliker wedstrydsentrum met wedstryddagafdelings, tellingkaarte, vlae, stadionbesonderhede en duideliker statuskentekens.",
-        days: "Dae",
-        versus: "teen",
-        supportersNav: "🙏 Ondersteuners",
-        supportersThankYouTitle: "🙏 Ondersteuners en Dankie",
-        supportersIntro: "Hierdie projek het as ’n persoonlike Home Assistant-dashboard begin en het gegroei danksy terugvoer, toetsing, idees en ondersteuning van die gemeenskap.",
-        supportersSpecialThanks: "Spesiale dank aan almal wat die ontwikkeling van die World Cup 2026-integrasie ondersteun het.",
-        supportersTitle: "🍺 Ondersteuners",
-        latestSupporters: "⭐ Nuutste Ondersteuners",
-        allSupporters: "🌍 Alle Ondersteuners",
-        supporterDefaultMessage: "Dankie dat jy ontwikkeling ondersteun.",
-        anonymousSupporter: "Anonieme Ondersteuner",
-        noSupporters: "Geen ondersteuners nog bygevoeg nie. Wees die eerste om vir my ’n bier te koop en jou naam hier te kry.",
-        wantNameAdded: "Wil jy jou naam hier byvoeg?",
-        supportFutureUpdates: "Ondersteun toekomstige opdaterings, foutregstellings en nuwe Wêreldbekerfunksies.",
-        supporterBeerMessage: "🍺 Wil jy hê jou naam moet op die Ondersteunersblad verskyn? Koop vir my ’n bier via PayPal en jou naam kan by die World Cup 2026-ondersteunerslys gevoeg word as dankie vir jou ondersteuning.",
-        donateBuyBeer: "🍺 Skenk / Koop vir my ’n Bier",
-        enjoyingIntegration: "🍺 Geniet jy hierdie integrasie?",
-        supportIntegration: "Ondersteun hierdie integrasie",
-        source: "Bron",
-        totalSupporters: "Totale Ondersteuners",
-        countries: "Lande",
-        countriesSupporting: "Lande wat Ondersteun",
-        latestSupportDate: "Nuutste Ondersteuningsdatum",
-        playedShort: "G",
-        winsShort: "W",
-        drawsShort: "D",
-        lossesShort: "V",
-        goalsForShort: "DV",
-        goalsAgainstShort: "DT",
-        goalDifferenceShort: "DS",
-        pointsShort: "Pte",
-        noResultsLoaded: "Geen uitslae nog gelaai nie.",
-        finishedMatchesSubtitle: "Voltooide wedstryde en bevestigde uitslae.",
-        goldenBootAutoText: "Outomatiese Goue Skoen-data sal verskyn wanneer football-data.org Wêreldbeker-doelskieterdata publiseer.",
-        realStadium: "Regte Stadion",
-        matchesHosted: "Wedstryde Aangebied",
-        communitySupport: "Gemeenskapsondersteuning",
-        supportersAroundWorld: "Ondersteuners Regoor die Wêreld",
-        noLiveGames: "Geen regstreekse wedstryde",
-        noGamesToday: "Geen wedstryde vandag",
-        conceded: "afgestaan",
-      },
 
-      zu: {
-        title: "Indebe Yomhlaba ye-FIFA 2026",
-        subtitle: "Uhlelo lomqhudelwano lwe-Home Assistant",
-        back: "← Emuva",
-        updated: "Kubuyekeziwe",
-        loading: "Kulayishwa iNdebe Yomhlaba 2026...",
-        errorTitle: "Indebe Yomhlaba 2026",
-        errorText: "Ayikwazanga ukulayisha idatha yohlelo.",
-        overview: "Ukubuka konke",
-        live: "Isikhungo Esibukhoma",
-        fixtures: "Imidlalo",
-        results: "Imiphumela",
-        groups: "Amaqembu",
-        knockout: "Ukukhiphana",
-        players: "Isicathulo Segolide",
-        records: "Amarekhodi",
-        stats: "Isikhungo Sezibalo",
-        venues: "Izinkundla",
-        totalMatches: "Inani Lemidlalo",
-        loaded: "Kulayishiwe",
-        played: "Kudlaliwe",
-        remaining: "Okusele",
-        liveNow: "Bukhoma Manje",
-        totalGoals: "Inani Lamagoli",
-        nextMatch: "Umdlalo Olandelayo",
-        tournamentStatus: "Isimo Somqhudelwano",
-        demoMode: "Imodi yokubonisa",
-        on: "Kuvuliwe",
-        off: "Kuvaliwe",
-        lastUpdate: "Ukubuyekezwa kokugcina",
-        ok: "OK",
-        failed: "Kwehlulekile",
-        progress: "Inqubekelaphambili",
-        topScorer: "Oshaye amagoli amaningi",
-        notAvailable: "Akutholakali",
-        noUpcomingMatch: "Awukho umdlalo ozayo olayishiwe.",
-        noLiveMatches: "Ayikho imidlalo ebukhoma manje.",
-        fixturesResults: "Imidlalo Nemiphumela",
-        noFixtures: "Ayikho imidlalo elayishiwe okwamanje.",
-        groupLabel: "Iqembu",
-        groupsAL: "Amaqembu A-L",
-        noGroups: "Azikho izilinganiso zamaqembu ezilayishiwe okwamanje.",
-        noTeamsGroup: "Awekho amaqembu alayishiwe kuleli qembu okwamanje.",
-        goldenBoot: "Umjaho Wesicathulo Segolide",
-        noPlayerStats: "Azikho izibalo zabadlali ezilayishiwe okwamanje.",
-        knockoutBracket: "Ithebula Lokukhiphana",
-        fixturesNotAvailable: "Imidlalo ayikatholakali",
-        highestMatchGoals: "Amagoli Amaningi Emdlalweni",
-        biggestMargin: "Umehluko Omkhulu",
-        topTeamGoals: "Iqembu Elinamagoli Amaningi",
-        bestDefenceGA: "Ukuvikela Okuhle GA",
-        highestScoringMatch: "Umdlalo Onamagoli Amaningi",
-        biggestWin: "Ukunqoba Okukhulu",
-        topScoringTeam: "Iqembu Elishaya Kakhulu",
-        bestDefence: "Ukuvikela Okuhle",
-        noResult: "Awukho umphumela okwamanje.",
-        noTeamGoalData: "Ayikho idatha yamagoli eqembu okwamanje.",
-        noDefensiveData: "Ayikho idatha yokuvikela okwamanje.",
-        matchesPlayed: "Imidlalo Edlaliwe",
-        yellowCards: "Amakhadi Aphuzi",
-        redCards: "Amakhadi Abomvu",
-        minutes: "Imizuzu",
-        goalsPerMatch: "Amagoli / Umdlalo",
-        draws: "Imidlalo Elingene",
-        drawRate: "Izinga Lokulingana",
-        bttsRate: "Womabili Amaqembu Ayashaya",
-        over25Rate: "Ngaphezu kuka-2.5",
-        stadiums: "Izinkundla",
-        usaVenues: "Izinkundla zase-USA",
-        canadaVenues: "Izinkundla zaseCanada",
-        mexicoVenues: "Izinkundla zaseMexico",
-        finalVenue: "Inkundla Yamanqamu",
-        capacity: "Umthamo",
-        worldCupStadiums: "Izinkundla zeNdebe Yomhlaba",
-        noVenueData: "Ayikho idatha yenkundla.",
-        scheduled: "Kuhleliwe",
-        liveStatus: "Bukhoma",
-        manualTimerNotice: 'Amasikolo abukhoma avuselelwa ngokuzenzakalela. Izikhathi zamagoli zisebenzisa iwashi lomdlalo elenziwa ngesandla futhi zingahluka ngemizuzu embalwa ezikhathini ezisemthethweni.',
-        paused: "Kumiswe isikhashana",
-        fullTime: "Isikhathi Siphelile",
-        aet: "Ngemuva Kwesikhathi Esengeziwe",
-        penalties: "Amaphenalthi",
-        postponed: "Kuhlehlisiwe",
-        groupStage: "Isigaba Samaqembu",
-        round32: "Umjikelezo wama-32",
-        round16: "Umjikelezo wama-16",
-        quarterFinals: "Ama-Quarter Final",
-        semiFinals: "Ama-Semi Final",
-        thirdPlace: "Indawo Yesithathu",
-        final: "Amanqamu",
-        tbc: "Kuzoqinisekiswa",
-        unknown: "Akwaziwa",
-        pos: "Indawo",
-        team: "Iqembu",
-        player: "Umdlali",
-        goals: "Amagoli",
-        assists: "Ama-assist",
-        language: "Ulimi Lwedashibhodi",
-        pcView: "Ukubuka i-PC",
-        tabletView: "Ukubuka ithebhulethi",
-        viewMode: "Ukubuka ideshibhodi",
-        controlCentre: "Isikhungo Sokulawula iNdebe Yomhlaba 2026",
-        overviewSubtitle: "Idashibhodi ebukhoma yomqhudelwano enemidlalo, imiphumela, amaqembu, izibalo zabadlali, izinkundla, amarekhodi nokukhiphana endaweni eyodwa.",
-        tournamentIntelligence: "Ukuhlaziywa Komqhudelwano",
-        goldenBootCentre: "Isikhungo Sesicathulo Segolide",
-        leaderSpotlight: "Umholi Obonakalayo",
-        playersTracked: "Abadlali Abalandelwayo",
-        totalAssists: "Inani Lama-assist",
-        totalYellowCards: "Inani Lamakhadi Aphuzi",
-        totalRedCards: "Inani Lamakhadi Abomvu",
-        upNext: "Okulandelayo",
-        matchSpotlight: "Umdlalo Ovelele",
-        upcomingFixtures: "Imidlalo Ezayo",
-        latest: "Okwakamuva",
-        recentResults: "Imiphumela Yakamuva",
-        playerWatch: "Ukubuka Abadlali",
-        fixturesSubtitle: "Isikhungo semidlalo esicacile esinezigaba zosuku lomdlalo, amakhadi esikolo, amafulegi, imininingwane yezinkundla nezimpawu zesimo ezicacile.",
-        days: "Izinsuku",
-        versus: "vs",
-        supportersNav: "🙏 Abasekeli",
-        supportersThankYouTitle: "🙏 Abasekeli Nokubonga",
-        supportersIntro: "Le phrojekthi yaqala njengedashibhodi yomuntu siqu ye-Home Assistant futhi ikhule ngenxa yemibono, ukuhlolwa, amacebo nokwesekwa komphakathi.",
-        supportersSpecialThanks: "Sibonga kakhulu wonke umuntu osekele ukuthuthukiswa kwe-World Cup 2026 integration.",
-        supportersTitle: "🍺 Abasekeli",
-        latestSupporters: "⭐ Abasekeli Bakamuva",
-        allSupporters: "🌍 Bonke Abasekeli",
-        supporterDefaultMessage: "Siyabonga ngokweseka ukuthuthukiswa.",
-        anonymousSupporter: "Umsekeli Ongaziwa",
-        noSupporters: "Akekho umsekeli ongeziwe okwamanje. Yiba ngowokuqala ukungithengela ubhiya futhi igama lakho livele lapha.",
-        wantNameAdded: "Ufuna igama lakho lengezwe lapha?",
-        supportFutureUpdates: "Sekela izibuyekezo zesikhathi esizayo, ukulungiswa kwamaphutha nezici ezintsha zeNdebe Yomhlaba.",
-        supporterBeerMessage: "🍺 Ufuna igama lakho livele ekhasini Labasekeli? Ngithengele ubhiya nge-PayPal futhi igama lakho lingangezwa ohlwini Labasekeli be-World Cup 2026 njengokubonga.",
-        donateBuyBeer: "🍺 Nikela / Ngithengele Ubhiya",
-        enjoyingIntegration: "🍺 Uyayijabulela le integration?",
-        supportIntegration: "Sekela le integration",
-        source: "Umthombo",
-        totalSupporters: "Inani Labasekeli",
-        countries: "Amazwe",
-        countriesSupporting: "Amazwe Asekelayo",
-        latestSupportDate: "Usuku Lokweseka Lwakamuva",
-        playedShort: "D",
-        winsShort: "W",
-        drawsShort: "L",
-        lossesShort: "H",
-        goalsForShort: "GF",
-        goalsAgainstShort: "GA",
-        goalDifferenceShort: "GD",
-        pointsShort: "Amaph",
-        noResultsLoaded: "Ayikho imiphumela elayishiwe okwamanje.",
-        finishedMatchesSubtitle: "Imidlalo ephelile nemiphumela eqinisekisiwe.",
-        goldenBootAutoText: "Idatha ezenzakalelayo yeSicathulo Segolide izovela lapho football-data.org ishicilela idatha yabashayimagoli beNdebe Yomhlaba.",
-        realStadium: "Inkundla Yangempela",
-        matchesHosted: "Imidlalo Ebisingathiwe",
-        communitySupport: "Ukwesekwa Komphakathi",
-        supportersAroundWorld: "Abasekeli Emhlabeni Wonke",
-        noLiveGames: "Ayikho imidlalo ebukhoma",
-        noGamesToday: "Ayikho imidlalo namuhla",
-        conceded: "avunyelwe",
-      },
 
-      ha: {
-        title: "Kofin Duniya na FIFA 2026",
-        subtitle: "Manhajar gasa ta musamman don Home Assistant",
-        back: "← Koma",
-        updated: "An sabunta",
-        loading: "Ana loda Kofin Duniya 2026...",
-        errorTitle: "Kofin Duniya 2026",
-        errorText: "Ba a iya loda bayanan manhaja ba.",
-        overview: "Takaitawa",
-        live: "Cibiyar Kai Tsaye",
-        fixtures: "Jadawalin Wasanni",
-        results: "Sakamako",
-        groups: "Rukuni",
-        knockout: "Fitarwa",
-        players: "Takalmin Zinariya",
-        records: "Rikodi",
-        stats: "Cibiyar Kididdiga",
-        venues: "Filayen Wasa",
-        totalMatches: "Jimillar Wasanni",
-        loaded: "An Loda",
-        played: "An Buga",
-        remaining: "Sauran",
-        liveNow: "Kai Tsaye Yanzu",
-        totalGoals: "Jimillar Kwallaye",
-        nextMatch: "Wasa na Gaba",
-        tournamentStatus: "Matsayin Gasa",
-        demoMode: "Yanayin gwaji",
-        on: "A kunne",
-        off: "A kashe",
-        lastUpdate: "Sabuntawa ta ƙarshe",
-        ok: "OK",
-        failed: "Ya gaza",
-        progress: "Ci gaba",
-        topScorer: "Mafi yawan zura kwallo",
-        notAvailable: "Babu",
-        noUpcomingMatch: "Babu wasa mai zuwa da aka loda.",
-        noLiveMatches: "Babu wasanni kai tsaye yanzu.",
-        fixturesResults: "Jadawali da Sakamako",
-        noFixtures: "Babu jadawali da aka loda tukuna.",
-        groupLabel: "Rukuni",
-        groupsAL: "Rukuni A-L",
-        noGroups: "Babu matsayi na rukuni da aka loda tukuna.",
-        noTeamsGroup: "Babu ƙungiyoyi da aka loda a wannan rukuni tukuna.",
-        goldenBoot: "Gasar Takalmin Zinariya",
-        noPlayerStats: "Babu kididdigar ‘yan wasa da aka loda tukuna.",
-        knockoutBracket: "Tsarin Fitarwa",
-        fixturesNotAvailable: "Jadawali bai samu ba tukuna",
-        highestMatchGoals: "Mafi Yawan Kwallaye a Wasa",
-        biggestMargin: "Babban Bambanci",
-        topTeamGoals: "Ƙungiya Mai Kwallaye Mafi Yawa",
-        bestDefenceGA: "Mafi Kyawun Tsaro GA",
-        highestScoringMatch: "Wasa Mafi Kwallaye",
-        biggestWin: "Babbar Nasara",
-        topScoringTeam: "Ƙungiya Mafi Zura Kwallo",
-        bestDefence: "Mafi Kyawun Tsaro",
-        noResult: "Babu sakamako tukuna.",
-        noTeamGoalData: "Babu bayanan kwallayen ƙungiya tukuna.",
-        noDefensiveData: "Babu bayanan tsaro tukuna.",
-        matchesPlayed: "Wasannin da Aka Buga",
-        yellowCards: "Katunan Rawaya",
-        redCards: "Katunan Ja",
-        minutes: "Mintuna",
-        goalsPerMatch: "Kwallaye / Wasa",
-        draws: "Canjaras",
-        drawRate: "Kason Canjaras",
-        bttsRate: "Duka Ƙungiyoyi Sun Zura",
-        over25Rate: "Sama da 2.5",
-        stadiums: "Filayen Wasa",
-        usaVenues: "Filayen Amurka",
-        canadaVenues: "Filayen Kanada",
-        mexicoVenues: "Filayen Meksiko",
-        finalVenue: "Filin Karshe",
-        capacity: "Iyawa",
-        worldCupStadiums: "Filayen Kofin Duniya",
-        noVenueData: "Babu bayanan filin wasa.",
-        scheduled: "An tsara",
-        liveStatus: "Kai tsaye",
-        manualTimerNotice: 'Sakamakon kai tsaye suna sabuntawa ta atomatik. Lokutan kwallaye suna amfani da agogon wasa na hannu kuma na iya bambanta da lokacin hukuma da ’yan mintuna.',
-        paused: "An dakata",
-        fullTime: "Lokaci ya cika",
-        aet: "Bayan karin lokaci",
-        penalties: "Fenareti",
-        postponed: "An dage",
-        groupStage: "Matakin Rukuni",
-        round32: "Zagaye na 32",
-        round16: "Zagaye na 16",
-        quarterFinals: "Kwata Fainal",
-        semiFinals: "Semi Fainal",
-        thirdPlace: "Matsayi na Uku",
-        final: "Fainal",
-        tbc: "Za a tabbatar",
-        unknown: "Ba a sani ba",
-        pos: "Matsayi",
-        team: "Ƙungiya",
-        player: "Dan wasa",
-        goals: "Kwallaye",
-        assists: "Taimako",
-        language: "Harshen Dashibodi",
-        pcView: "Kallon PC",
-        tabletView: "Kallon kwamfutar hannu",
-        viewMode: "Kallon dashboard",
-        controlCentre: "Cibiyar Gudanarwa Kofin Duniya 2026",
-        overviewSubtitle: "Dashibodi kai tsaye na gasa tare da jadawali, sakamako, rukuni, kididdigar ‘yan wasa, filaye, rikodi da fitarwa a wuri guda.",
-        tournamentIntelligence: "Binciken Gasa",
-        goldenBootCentre: "Cibiyar Takalmin Zinariya",
-        leaderSpotlight: "Jagora a Haske",
-        playersTracked: "‘Yan Wasa da ake Bi",
-        totalAssists: "Jimillar Taimako",
-        totalYellowCards: "Jimillar Katunan Rawaya",
-        totalRedCards: "Jimillar Katunan Ja",
-        upNext: "Na gaba",
-        matchSpotlight: "Wasa a Haske",
-        upcomingFixtures: "Wasanni Masu Zuwa",
-        latest: "Na baya-bayan nan",
-        recentResults: "Sakamakon Kwanan Nan",
-        playerWatch: "Sa Ido kan ‘Yan Wasa",
-        fixturesSubtitle: "Cibiyar wasa mai tsabta tare da sassan ranakun wasa, katunan maki, tutoci, bayanan filin wasa da alamomin matsayi masu bayyana.",
-        days: "Kwanaki",
-        versus: "da",
-        supportersNav: "🙏 Masu Tallafi",
-        supportersThankYouTitle: "🙏 Masu Tallafi da Godiya",
-        supportersIntro: "Wannan aikin ya fara ne a matsayin dashibodi na Home Assistant na kaina kuma ya girma saboda ra’ayoyi, gwaji, shawarwari da tallafin al’umma.",
-        supportersSpecialThanks: "Godiya ta musamman ga duk waɗanda suka tallafi ci gaban haɗin World Cup 2026.",
-        supportersTitle: "🍺 Masu Tallafi",
-        latestSupporters: "⭐ Sabbin Masu Tallafi",
-        allSupporters: "🌍 Duk Masu Tallafi",
-        supporterDefaultMessage: "Na gode da tallafawa ci gaba.",
-        anonymousSupporter: "Mai Tallafi Ba a Sani ba",
-        noSupporters: "Babu masu tallafi tukuna. Ka zama na farko da zai saya mini giya kuma a nuna sunanka a nan.",
-        wantNameAdded: "Kana son a ƙara sunanka a nan?",
-        supportFutureUpdates: "Tallafa sabuntawa na gaba, gyaran kurakurai da sabbin fasalolin Kofin Duniya.",
-        supporterBeerMessage: "🍺 Kana son sunanka ya bayyana a shafin Masu Tallafi? Saya mini giya ta PayPal kuma za a iya ƙara sunanka cikin jerin Masu Tallafin World Cup 2026 a matsayin godiya.",
-        donateBuyBeer: "🍺 Ba da Gudummawa / Saya Mini Giya",
-        enjoyingIntegration: "🍺 Kana jin daɗin wannan haɗin?",
-        supportIntegration: "Tallafi wannan haɗin",
-        source: "Tushe",
-        totalSupporters: "Jimillar Masu Tallafi",
-        countries: "Kasashe",
-        countriesSupporting: "Kasashen da ke Tallafi",
-        latestSupportDate: "Ranar Tallafi ta Karshe",
-        playedShort: "W",
-        winsShort: "N",
-        drawsShort: "C",
-        lossesShort: "R",
-        goalsForShort: "KF",
-        goalsAgainstShort: "KA",
-        goalDifferenceShort: "BB",
-        pointsShort: "Mak",
-        noResultsLoaded: "Babu sakamako da aka loda tukuna.",
-        finishedMatchesSubtitle: "Wasannin da aka kammala da sakamakon da aka tabbatar.",
-        goldenBootAutoText: "Bayanan Takalmin Zinariya na atomatik za su bayyana idan football-data.org ya wallafa bayanan masu zura kwallo na Kofin Duniya.",
-        realStadium: "Filin Wasa na Gaskiya",
-        matchesHosted: "Wasannin da Aka Dauki Nauyi",
-        communitySupport: "Tallafin Al’umma",
-        supportersAroundWorld: "Masu Tallafi a Duniya",
-        noLiveGames: "Babu wasanni kai tsaye",
-        noGamesToday: "Babu wasa yau",
-        conceded: "an ci su",
-      },
 
       qu: {
         title: "FIFA Pachak Tinku 2026",
@@ -7593,8 +4892,6 @@ class WorldCup2026Panel extends HTMLElement {
       "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/worldcup/world_cup_2026_live.json?t=" + Date.now(),
       "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/world_cup_2026_live.json?t=" + Date.now(),
       "/local/worldcup/world_cup_2026_live.json?t=" + Date.now(),
-      "/local/world_cup_2026_live.json?t=" + Date.now(),
-      "/world_cup_2026_frontend/data/world_cup_2026_live.json?t=" + Date.now(),
     ];
 
     for (const url of urls) {
@@ -7605,7 +4902,7 @@ class WorldCup2026Panel extends HTMLElement {
         const matches = Array.isArray(data)
           ? data
           : (Array.isArray(data?.live) ? data.live : (Array.isArray(data?.matches) ? data.matches : []));
-        if (matches.length) return matches;
+        if (Array.isArray(data) || Array.isArray(data?.live) || Array.isArray(data?.matches)) return matches;
       } catch (err) {
         // Try the next public live path.
       }
@@ -7716,7 +5013,8 @@ class WorldCup2026Panel extends HTMLElement {
         cardEvents: Array.isArray(publicMatch.cardEvents) && publicMatch.cardEvents.length ? publicMatch.cardEvents : match.cardEvents,
         substitutionEvents: Array.isArray(publicMatch.substitutionEvents) && publicMatch.substitutionEvents.length ? publicMatch.substitutionEvents : match.substitutionEvents,
         events: Array.isArray(publicMatch.events) && publicMatch.events.length ? publicMatch.events : (publicHasEvents ? publicGoalEvents : match.events),
-        referees: Array.isArray(publicMatch.referees) && publicMatch.referees.length ? publicMatch.referees : match.referees,
+        referees: Array.isArray(publicMatch.referees) && publicMatch.referees.length ? publicMatch.referees : (Array.isArray(publicMatch.matchDetails?.referees) ? publicMatch.matchDetails.referees : match.referees),
+        officials: Array.isArray(publicMatch.officials) && publicMatch.officials.length ? publicMatch.officials : (Array.isArray(publicMatch.matchDetails?.officials) ? publicMatch.matchDetails.officials : match.officials),
         referee: publicMatch.referee || match.referee,
         attendance: publicMatch.attendance ?? match.attendance,
         liveStatistics: publicMatch.liveStatistics || publicMatch.matchDetails?.liveStatistics || match.liveStatistics,
@@ -7732,8 +5030,8 @@ class WorldCup2026Panel extends HTMLElement {
         awayOffsides: publicMatch.awayOffsides ?? publicMatch.matchDetails?.awayOffsides ?? match.awayOffsides,
         lineups: publicMatch.lineups || publicMatch.lineupsData || publicMatch.matchDetails?.lineups || publicMatch.matchDetails?.lineupsData || match.lineups,
         lineupsData: publicMatch.lineupsData || publicMatch.lineups || publicMatch.matchDetails?.lineupsData || publicMatch.matchDetails?.lineups || match.lineupsData,
-        weather: publicMatch.weather || publicMatch.matchWeather || publicMatch.matchDetails?.weather || match.weather,
-        matchWeather: publicMatch.matchWeather || publicMatch.weather || publicMatch.matchDetails?.weather || match.matchWeather,
+        weather: publicMatch.matchWeather || publicMatch.matchDetails?.weather || publicMatch.weather || match.matchWeather || match.weather,
+        matchWeather: publicMatch.matchWeather || publicMatch.matchDetails?.weather || publicMatch.weather || match.matchWeather || match.weather,
         publicGithubSynced: true,
       };
     });
@@ -7824,6 +5122,7 @@ class WorldCup2026Panel extends HTMLElement {
           cardEvents: Array.isArray(extra.cardEvents) ? extra.cardEvents : [],
           substitutionEvents: Array.isArray(extra.substitutionEvents) ? extra.substitutionEvents : [],
           referees: Array.isArray(extra.referees) ? extra.referees : [],
+          officials: Array.isArray(extra.officials) ? extra.officials : [],
           referee: extra.referee || "",
           venue: extra.venue || extra.stadium || extra.venueName || "",
           stadium: extra.stadium || extra.venue || extra.venueName || "",
@@ -7907,6 +5206,7 @@ class WorldCup2026Panel extends HTMLElement {
             return typeText.includes("subst") || typeText.includes("substitution") || detailText.includes("substitution");
           });
       const referees = Array.isArray(extra.referees) ? extra.referees : [];
+      const officials = Array.isArray(extra.officials) ? extra.officials : [];
 
       const liveApiClockMaster = this.isLiveMatch(match) && (
         match.minute !== null && match.minute !== undefined && match.minute !== ""
@@ -7932,6 +5232,7 @@ class WorldCup2026Panel extends HTMLElement {
         cardEvents: cardEvents.length ? cardEvents : (Array.isArray(match.cardEvents) ? match.cardEvents : []),
         substitutionEvents: substitutionEvents.length ? substitutionEvents : (Array.isArray(match.substitutionEvents) ? match.substitutionEvents : []),
         referees: referees.length ? referees : (Array.isArray(match.referees) ? match.referees : []),
+        officials: officials.length ? officials : (Array.isArray(match.officials) ? match.officials : []),
         referee: extra.referee || match.referee,
         apiFootballFixtureId: extra.apiFootballFixtureId || match.apiFootballFixtureId,
         liveStatistics: extra.liveStatistics || extra.matchDetails?.liveStatistics || match.liveStatistics,
@@ -7947,8 +5248,8 @@ class WorldCup2026Panel extends HTMLElement {
         awayOffsides: extra.awayOffsides ?? extra.matchDetails?.awayOffsides ?? match.awayOffsides,
         lineups: extra.lineups || extra.lineupsData || extra.matchDetails?.lineups || extra.matchDetails?.lineupsData || match.lineups,
         lineupsData: extra.lineupsData || extra.lineups || extra.matchDetails?.lineupsData || extra.matchDetails?.lineups || match.lineupsData,
-        weather: extra.weather || extra.matchWeather || extra.matchDetails?.weather || match.weather,
-        matchWeather: extra.matchWeather || extra.weather || extra.matchDetails?.weather || match.matchWeather,
+        weather: extra.matchWeather || extra.matchDetails?.weather || extra.weather || match.matchWeather || match.weather,
+        matchWeather: extra.matchWeather || extra.matchDetails?.weather || extra.weather || match.matchWeather || match.weather,
         publicGoalEventsSynced: true,
       };
     });
@@ -8144,8 +5445,9 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   changeLanguage(language) {
-    this._language = language;
-    localStorage.setItem("world_cup_2026_language", language);
+    const validLanguages = new Set(["en", "fr", "de", "es", "it", "nl", "pt", "pl", "ja", "sv", "no", "hu", "tr", "cs", "da", "fi", "el", "ro", "sk", "sl", "hr", "sr", "bg", "uk", "is", "qu", "gn", "ay"]);
+    this._language = validLanguages.has(language) ? language : "en";
+    localStorage.setItem("world_cup_2026_language", this._language);
     this.render();
   }
 
@@ -8163,29 +5465,12 @@ class WorldCup2026Panel extends HTMLElement {
       es: "es-ES",
       it: "it-IT",
       nl: "nl-NL",
-      hi: "hi-IN",
-      bn: "bn-IN",
-      ta: "ta-IN",
-      te: "te-IN",
-      pa: "pa-IN",
-      ar: "ar-SA",
-      sw: "sw-KE",
-      am: "am-ET",
-      af: "af-ZA",
-      zu: "zu-ZA",
-      ha: "ha-NG",
       qu: "qu-PE",
       gn: "gn-PY",
       ay: "ay-BO",
       pt: "pt-PT",
       pl: "pl-PL",
       ja: "ja-JP",
-      zh: "zh-CN",
-      zh_tw: "zh-TW",
-      th: "th-TH",
-      vi: "vi-VN",
-      id: "id-ID",
-      ko: "ko-KR",
       sv: "sv-SE",
       no: "nb-NO",
       hu: "hu-HU",
@@ -10033,10 +7318,11 @@ class WorldCup2026Panel extends HTMLElement {
           align-items: stretch;
           gap: 18px;
           background:
-            radial-gradient(circle at 12% 0%, rgba(239,68,68,.26), transparent 35%),
-            radial-gradient(circle at 88% 8%, rgba(34,197,94,.20), transparent 32%),
-            linear-gradient(135deg, rgba(10,18,35,.98), rgba(6,11,25,.94));
-          border: 1px solid rgba(255,255,255,.12);
+            radial-gradient(circle at 12% 0%, rgba(34,197,94,.28), transparent 35%),
+            radial-gradient(circle at 88% 8%, rgba(16,185,129,.22), transparent 32%),
+            linear-gradient(135deg, rgba(6,24,20,.98), rgba(6,11,25,.94));
+          border: 1px solid rgba(74,222,128,.34);
+          box-shadow: 0 0 22px rgba(34,197,94,.18), inset 0 0 0 1px rgba(255,255,255,.035);
         }
 
         .live-kicker {
@@ -10107,15 +7393,24 @@ class WorldCup2026Panel extends HTMLElement {
           border-radius: 24px;
           padding: 14px;
           background:
-            radial-gradient(circle at top left, rgba(239,68,68,.20), transparent 34%),
-            radial-gradient(circle at bottom right, rgba(59,130,246,.16), transparent 38%),
+            radial-gradient(circle at top left, rgba(34,197,94,.20), transparent 34%),
+            radial-gradient(circle at bottom right, rgba(45,212,191,.14), transparent 38%),
             rgba(7,12,24,.94);
-          border: 1px solid rgba(255,255,255,.12);
-          box-shadow: 0 16px 32px rgba(0,0,0,.22);
+          border: 1px solid rgba(74,222,128,.30);
+          box-shadow:
+            0 16px 32px rgba(0,0,0,.24),
+            0 0 20px rgba(34,197,94,.14),
+            inset 0 0 0 1px rgba(255,255,255,.028);
         }
 
         .live-premium-main {
           grid-column: 1 / -1;
+          border-color: rgba(74,222,128,.48);
+          box-shadow:
+            0 18px 38px rgba(0,0,0,.30),
+            0 0 24px rgba(34,197,94,.22),
+            0 0 52px rgba(34,197,94,.10),
+            inset 0 0 0 1px rgba(255,255,255,.04);
         }
 
         .live-premium-topline {
@@ -10138,10 +7433,12 @@ class WorldCup2026Panel extends HTMLElement {
         }
 
         .live-premium-topline .live-on-air {
-          color: #fecaca;
-          background: rgba(239,68,68,.20);
-          border-color: rgba(248,113,113,.38);
-          animation: wcLivePulse 1.4s infinite;
+          color: #ecfdf5;
+          background: linear-gradient(135deg, rgba(34,197,94,.90), rgba(16,185,129,.64));
+          border-color: rgba(134,239,172,.72);
+          box-shadow: 0 0 14px rgba(34,197,94,.55), 0 0 28px rgba(34,197,94,.22);
+          text-shadow: 0 0 8px rgba(0,0,0,.35);
+          animation: wcLivePulse 1.6s ease-in-out infinite;
         }
 
         .live-premium-scoreboard {
@@ -10215,10 +7512,10 @@ class WorldCup2026Panel extends HTMLElement {
         }
 
         .live-premium-lower-grid {
-          margin-top: 12px;
+          margin-top: 14px;
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-          gap: 10px;
+          grid-template-columns: minmax(330px, 1.35fr) minmax(280px, 1fr) minmax(250px, .9fr);
+          gap: 12px;
           align-items: stretch;
         }
 
@@ -10226,10 +7523,20 @@ class WorldCup2026Panel extends HTMLElement {
         .live-premium-lower-grid .match-events-box,
         .live-premium-lower-grid .match-officials-box {
           margin: 0;
-          padding: 11px;
-          border-radius: 17px;
-          background: rgba(255,255,255,.055);
-          border: 1px solid rgba(255,255,255,.10);
+          padding: 13px;
+          border-radius: 18px;
+          background: linear-gradient(145deg, rgba(8,22,42,.74), rgba(8,42,55,.38));
+          border: 1px solid rgba(148,163,184,.24);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 12px 32px rgba(0,0,0,.20);
+          min-width: 0;
+        }
+
+        .live-premium-stats-card {
+          padding: 16px;
+          border-color: rgba(59,130,246,.40);
+          background:
+            radial-gradient(circle at top left, rgba(59,130,246,.18), transparent 34%),
+            linear-gradient(145deg, rgba(8,22,42,.88), rgba(5,35,52,.52));
         }
 
         .live-premium-card-title {
@@ -10244,16 +7551,16 @@ class WorldCup2026Panel extends HTMLElement {
         .live-stat-bars {
           display: flex;
           flex-direction: column;
-          gap: 8px;
+          gap: 13px;
         }
 
         .live-stat-row {
           display: grid;
-          grid-template-columns: 42px 1fr 42px;
-          gap: 8px;
+          grid-template-columns: 54px 1fr 54px;
+          gap: 11px;
           align-items: center;
-          font-weight: 900;
-          font-size: .78rem;
+          font-weight: 1000;
+          font-size: .95rem;
         }
 
         .live-stat-row > span:first-child { text-align: right; }
@@ -10263,7 +7570,7 @@ class WorldCup2026Panel extends HTMLElement {
           display: block;
           text-align: center;
           color: rgba(255,255,255,.62);
-          font-size: .65rem;
+          font-size: .76rem;
           font-weight: 900;
           text-transform: uppercase;
           letter-spacing: .06em;
@@ -10272,7 +7579,7 @@ class WorldCup2026Panel extends HTMLElement {
 
         .live-stat-bar {
           display: flex;
-          height: 7px;
+          height: 11px;
           overflow: hidden;
           border-radius: 999px;
           background: rgba(255,255,255,.08);
@@ -10284,8 +7591,14 @@ class WorldCup2026Panel extends HTMLElement {
           min-width: 4px;
         }
 
-        .live-stat-bar i { background: rgba(34,197,94,.82); }
-        .live-stat-bar b { background: rgba(59,130,246,.82); }
+        .live-stat-bar i {
+          background: linear-gradient(90deg, rgba(34,197,94,.95), rgba(45,212,191,.88));
+          box-shadow: 0 0 12px rgba(34,197,94,.40);
+        }
+        .live-stat-bar b {
+          background: linear-gradient(90deg, rgba(14,165,233,.88), rgba(37,99,235,.95));
+          box-shadow: 0 0 12px rgba(59,130,246,.40);
+        }
 
         .live-premium-timeline {
           display: flex;
@@ -10357,6 +7670,125 @@ class WorldCup2026Panel extends HTMLElement {
           font-weight: 800;
         }
 
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
+        }
+
         @media (max-width: 760px) {
           .live-premium-hero,
           .live-premium-scoreboard {
@@ -10375,16 +7807,35 @@ class WorldCup2026Panel extends HTMLElement {
           .live-premium-feed {
             grid-template-columns: 1fr;
           }
+
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card,
+          .live-premium-lower-grid .match-officials-box {
+            grid-column: 1 / -1;
+          }
+
+          .live-weather-main {
+            grid-template-columns: 1fr;
+          }
+
+          .live-weather-metrics {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+
         }
 
         @keyframes wcLivePulse {
           0%, 100% {
-            box-shadow: 0 0 0 rgba(255,60,60,0);
+            box-shadow: 0 0 8px rgba(34,197,94,0.36), 0 0 18px rgba(34,197,94,0.16);
             transform: scale(1);
           }
           50% {
-            box-shadow: 0 0 16px rgba(255,60,60,0.55);
-            transform: scale(1.04);
+            box-shadow: 0 0 18px rgba(34,197,94,0.78), 0 0 38px rgba(34,197,94,0.34), 0 0 62px rgba(34,197,94,0.16);
+            transform: scale(1.035);
           }
         }
 
@@ -10544,9 +7995,11 @@ class WorldCup2026Panel extends HTMLElement {
         }
 
         .wc-live {
-          background: rgba(255,40,40,0.25);
-          border-color: rgba(255,80,80,0.55);
-          animation: wcLivePulse 1.4s ease-in-out infinite;
+          color: #ecfdf5;
+          background: linear-gradient(135deg, rgba(34,197,94,0.92), rgba(16,185,129,0.62));
+          border-color: rgba(134,239,172,0.78);
+          box-shadow: 0 0 12px rgba(34,197,94,0.58), 0 0 26px rgba(34,197,94,0.24);
+          animation: wcLivePulse 1.6s ease-in-out infinite;
         }
 
         .wc-nav {
@@ -12639,6 +10092,125 @@ class WorldCup2026Panel extends HTMLElement {
           text-transform: uppercase;
         }
 
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
+        }
+
         @media (max-width: 760px) {
           .match-extra-live-data {
             grid-template-columns: 1fr;
@@ -13051,6 +10623,125 @@ class WorldCup2026Panel extends HTMLElement {
           white-space: nowrap;
         }
 
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
+        }
+
         @media (max-width: 760px) {
           .fixture-card-venue-inline {
             grid-template-columns: minmax(0, 1fr) auto;
@@ -13431,6 +11122,107 @@ class WorldCup2026Panel extends HTMLElement {
           min-width: 0;
         }
 
+        .golden-profile-section {
+          border-color: rgba(255,220,120,0.22);
+        }
+
+        .golden-profile-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+          gap: 12px;
+        }
+
+        .golden-profile-card {
+          display: grid;
+          grid-template-columns: 82px 1fr;
+          gap: 12px;
+          align-items: center;
+          min-width: 0;
+          padding: 13px;
+          border-radius: 18px;
+          background: rgba(255,255,255,0.075);
+          border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .golden-profile-photo {
+          position: relative;
+          width: 82px;
+          height: 82px;
+          border-radius: 20px;
+          overflow: hidden;
+          background: rgba(255,220,120,0.18);
+          border: 1px solid rgba(255,220,120,0.28);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 14px 28px rgba(0,0,0,0.22);
+        }
+
+        .golden-profile-photo img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+
+        .golden-profile-fallback {
+          width: 100%;
+          height: 100%;
+          align-items: center;
+          justify-content: center;
+          font-size: 24px;
+          font-weight: 1000;
+          color: #fff7d6;
+        }
+
+        .golden-profile-main {
+          min-width: 0;
+        }
+
+        .golden-profile-rank {
+          display: inline-flex;
+          margin-bottom: 5px;
+          padding: 3px 8px;
+          border-radius: 999px;
+          background: rgba(255,220,120,0.16);
+          color: #fde68a;
+          font-size: 11px;
+          font-weight: 1000;
+        }
+
+        .golden-profile-main h3 {
+          margin: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          font-size: 17px;
+        }
+
+        .golden-profile-main p {
+          margin: 5px 0 9px;
+          opacity: 0.82;
+          font-weight: 800;
+        }
+
+        .golden-profile-stats {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+
+        .golden-profile-stats span {
+          padding: 5px 8px;
+          border-radius: 999px;
+          background: rgba(255,255,255,0.08);
+          font-size: 11px;
+          font-weight: 900;
+        }
+
+        .golden-profile-stats strong {
+          margin-right: 4px;
+          color: #fde68a;
+        }
+
         .golden-table-medal {
           min-width: 22px;
         }
@@ -13807,6 +11599,125 @@ class WorldCup2026Panel extends HTMLElement {
           .golden-layout-polished,
           .golden-showcase {
             grid-template-columns: 1fr;
+          }
+        }
+
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
           }
         }
 
@@ -14546,6 +12457,125 @@ class WorldCup2026Panel extends HTMLElement {
           display: none !important;
         }
 
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
+        }
+
         @media (max-width: 760px) {
           .wc-app.wc-view-tablet .wc-header-title-row > .wc-header-live-pill {
             font-size: 5.5px !important;
@@ -14700,6 +12730,125 @@ class WorldCup2026Panel extends HTMLElement {
           border-radius: 999px !important;
         }
 
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
+        }
+
         @media (max-width: 760px) {
           .wc-app.wc-view-tablet .wc-header {
             padding-right: 245px !important;
@@ -14850,6 +12999,125 @@ class WorldCup2026Panel extends HTMLElement {
           text-overflow: ellipsis !important;
         }
 
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
+        }
+
         @media (max-width: 760px) {
           .wc-app.wc-view-tablet .overview-stat-grid.overview-stat-grid-in-progress {
             grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
@@ -14962,6 +13230,125 @@ class WorldCup2026Panel extends HTMLElement {
         .wc-app.wc-view-tablet .overview-stat-grid.overview-stat-grid-in-progress .overview-stat-tile em {
           font-size: 5.6px !important;
           line-height: 1 !important;
+        }
+
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
         }
 
         @media (max-width: 760px) {
@@ -15112,6 +13499,125 @@ class WorldCup2026Panel extends HTMLElement {
           padding: 0 !important;
         }
 
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
+        }
+
         @media (max-width: 760px) {
           .wc-app.wc-view-tablet .overview-progress-wrap {
             grid-template-columns: 16% minmax(0, 84%) !important;
@@ -15236,6 +13742,125 @@ class WorldCup2026Panel extends HTMLElement {
 
         .wc-app.wc-view-tablet .wc-tablet-progress-controls .wc-back-button {
           width: 46px !important;
+        }
+
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
         }
 
         @media (max-width: 760px) {
@@ -15532,6 +14157,125 @@ class WorldCup2026Panel extends HTMLElement {
           width: 50px !important;
         }
 
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
+        }
+
         @media (max-width: 760px) {
           .wc-app.wc-view-tablet .wc-tablet-header-nav button {
             font-size: 6.4px !important;
@@ -15581,6 +14325,125 @@ class WorldCup2026Panel extends HTMLElement {
           white-space: nowrap !important;
           overflow: hidden !important;
           text-overflow: ellipsis !important;
+        }
+
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
         }
 
         @media (max-width: 760px) {
@@ -15667,6 +14530,125 @@ class WorldCup2026Panel extends HTMLElement {
           margin-top: 0 !important;
         }
 
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
+        }
+
         @media (max-width: 760px) {
           .wc-app.wc-view-tablet .wc-header-title-row {
             grid-template-columns: 68px 68px minmax(0, 1fr) !important;
@@ -15744,6 +14726,125 @@ class WorldCup2026Panel extends HTMLElement {
           grid-row: 2 !important;
           justify-self: center !important;
           margin: 2px auto 0 auto !important;
+        }
+
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
         }
 
         @media (max-width: 760px) {
@@ -15875,6 +14976,125 @@ class WorldCup2026Panel extends HTMLElement {
           justify-self: center !important;
         }
 
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
+        }
+
         @media (max-width: 760px) {
           .wc-app.wc-view-tablet .wc-header-title-row {
             grid-template-columns: 68px 68px minmax(0, 1fr) max-content !important;
@@ -15955,6 +15175,125 @@ class WorldCup2026Panel extends HTMLElement {
           text-overflow: ellipsis !important;
         }
 
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
+        }
+
         @media (max-width: 760px) {
           .wc-app.wc-view-tablet .wc-tablet-progress-title {
             gap: 3px !important;
@@ -16004,6 +15343,125 @@ class WorldCup2026Panel extends HTMLElement {
         .wc-app.wc-view-tablet .wc-tablet-top-controls {
           justify-self: end !important;
           margin-left: 4px !important;
+        }
+
+
+        .live-premium-lower-grid .match-officials-box {
+          grid-column: span 1;
+        }
+
+        .live-weather-compact-card {
+          grid-column: span 2;
+          padding: 13px 15px !important;
+          align-self: stretch;
+          min-height: 0;
+        }
+
+        .live-weather-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+          margin-bottom: 10px;
+        }
+
+        .live-weather-head .live-premium-card-title {
+          margin-bottom: 3px;
+          color: #fde68a;
+        }
+
+        .live-weather-head small {
+          color: rgba(226,232,240,.72);
+          font-weight: 800;
+        }
+
+        .live-weather-temp {
+          flex: 0 0 auto;
+          padding: 7px 13px;
+          border-radius: 999px;
+          font-size: 1.18rem;
+          line-height: 1;
+          color: #fff7ed;
+          background: linear-gradient(135deg, rgba(251,191,36,.32), rgba(14,165,233,.18));
+          border: 1px solid rgba(251,191,36,.32);
+          box-shadow: 0 0 18px rgba(251,191,36,.15);
+        }
+
+        .live-weather-main {
+          display: grid;
+          grid-template-columns: minmax(150px, .8fr) minmax(260px, 1.6fr);
+          gap: 12px;
+          align-items: center;
+        }
+
+        .live-weather-condition {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .live-weather-condition span {
+          font-size: 1.75rem;
+          line-height: 1;
+          filter: drop-shadow(0 0 10px rgba(251,191,36,.22));
+        }
+
+        .live-weather-condition strong {
+          min-width: 0;
+          color: rgba(255,255,255,.92);
+          font-size: .95rem;
+          font-weight: 1000;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metrics {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .live-weather-metric {
+          min-width: 0;
+          padding: 8px 9px;
+          border-radius: 14px;
+          text-align: center;
+          background: rgba(255,255,255,.065);
+          border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .live-weather-metric strong {
+          display: block;
+          color: rgba(255,255,255,.94);
+          font-size: .82rem;
+          font-weight: 1000;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .live-weather-metric span {
+          display: block;
+          margin-top: 3px;
+          color: rgba(226,232,240,.60);
+          font-size: .62rem;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .06em;
+        }
+
+        @media (max-width: 1100px) {
+          .live-premium-lower-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .live-premium-stats-card,
+          .live-weather-compact-card {
+            grid-column: 1 / -1;
+          }
         }
 
         @media (max-width: 760px) {
@@ -16830,6 +16288,265 @@ class WorldCup2026Panel extends HTMLElement {
         }
       }
 
+
+      /* v4.3 premium live look polish - visual only */
+      .wc-nav button.wc-live-nav-button.is-offline,
+      .wc-app.wc-view-tablet .wc-tablet-header-nav button.wc-live-nav-button.is-offline {
+        background: linear-gradient(135deg, rgba(155, 24, 24, 0.46), rgba(80, 10, 18, 0.34)) !important;
+        border: 1px solid rgba(248, 113, 113, 0.82) !important;
+        color: #fff !important;
+        box-shadow:
+          0 0 10px rgba(239, 68, 68, 0.42),
+          0 0 24px rgba(127, 29, 29, 0.26),
+          inset 0 1px 0 rgba(255,255,255,.10) !important;
+        animation: none !important;
+      }
+
+      .wc-nav button.wc-live-nav-button.is-live,
+      .wc-app.wc-view-tablet .wc-tablet-header-nav button.wc-live-nav-button.is-live {
+        background: linear-gradient(135deg, rgba(16,185,129,0.40), rgba(5,150,105,0.22)) !important;
+        border: 1px solid rgba(134,239,172,0.94) !important;
+        color: #fff !important;
+        box-shadow:
+          0 0 12px rgba(34,197,94,.72),
+          0 0 30px rgba(34,197,94,.38),
+          0 0 54px rgba(34,197,94,.18),
+          inset 0 1px 0 rgba(255,255,255,.14) !important;
+        animation: wcLivePremiumButtonPulse 2.1s ease-in-out infinite !important;
+      }
+
+      @keyframes wcLivePremiumButtonPulse {
+        0%, 100% {
+          box-shadow:
+            0 0 10px rgba(34,197,94,.58),
+            0 0 24px rgba(34,197,94,.30),
+            0 0 44px rgba(34,197,94,.14),
+            inset 0 1px 0 rgba(255,255,255,.14);
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          box-shadow:
+            0 0 18px rgba(34,197,94,1),
+            0 0 42px rgba(34,197,94,.62),
+            0 0 76px rgba(34,197,94,.30),
+            inset 0 1px 0 rgba(255,255,255,.18);
+          transform: translateY(-1px) scale(1.018);
+        }
+      }
+
+      .live-premium-main {
+        border-color: rgba(134,239,172,.66) !important;
+        box-shadow:
+          0 18px 42px rgba(0,0,0,.34),
+          0 0 28px rgba(34,197,94,.26),
+          0 0 72px rgba(34,197,94,.14),
+          inset 0 0 0 1px rgba(134,239,172,.09) !important;
+      }
+
+      .live-premium-main .live-premium-scoreboard {
+        position: relative;
+        padding: 18px !important;
+        border-radius: 28px !important;
+        background:
+          radial-gradient(circle at 50% 0%, rgba(34,197,94,.20), transparent 38%),
+          linear-gradient(145deg, rgba(3,10,22,.72), rgba(4,23,30,.82)) !important;
+        border: 2px solid rgba(74,222,128,.82) !important;
+        box-shadow:
+          0 0 14px rgba(34,197,94,.72),
+          0 0 34px rgba(34,197,94,.34),
+          0 0 74px rgba(34,197,94,.16),
+          inset 0 0 34px rgba(34,197,94,.055) !important;
+      }
+
+      .live-premium-main .live-premium-team {
+        background: rgba(255,255,255,.035) !important;
+        border-color: rgba(148,163,184,.18) !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.05) !important;
+      }
+
+      .live-premium-main .live-premium-score-centre {
+        background: rgba(2,6,23,.66) !important;
+        border: 1px solid rgba(74,222,128,.56) !important;
+        box-shadow:
+          0 0 16px rgba(34,197,94,.22),
+          inset 0 0 0 1px rgba(255,255,255,.04) !important;
+      }
+
+      .live-premium-main .live-premium-clock .wc-live,
+      .live-premium-main .live-premium-status .wc-live,
+      .live-premium-topline .live-on-air {
+        color: #ecfdf5 !important;
+        background: linear-gradient(135deg, rgba(34,197,94,.96), rgba(5,150,105,.74)) !important;
+        border: 1px solid rgba(187,247,208,.90) !important;
+        box-shadow:
+          0 0 10px rgba(34,197,94,.88),
+          0 0 24px rgba(34,197,94,.46),
+          0 0 44px rgba(34,197,94,.20) !important;
+        animation: wcLivePremiumBadgePulse 1.8s ease-in-out infinite !important;
+      }
+
+      @keyframes wcLivePremiumBadgePulse {
+        0%, 100% { filter: brightness(1); transform: scale(1); }
+        50% { filter: brightness(1.18); transform: scale(1.035); }
+      }
+
+      .live-premium-lower-grid {
+        grid-template-columns: minmax(390px, 1.55fr) minmax(300px, 1.10fr) minmax(260px, .92fr) !important;
+        gap: 14px !important;
+      }
+
+      .live-premium-stats-card {
+        padding: 18px 20px !important;
+        border-color: rgba(74,222,128,.45) !important;
+        background:
+          radial-gradient(circle at top left, rgba(34,197,94,.18), transparent 34%),
+          radial-gradient(circle at bottom right, rgba(37,99,235,.16), transparent 40%),
+          linear-gradient(145deg, rgba(8,22,42,.92), rgba(4,31,46,.62)) !important;
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,.07),
+          0 16px 36px rgba(0,0,0,.24),
+          0 0 22px rgba(34,197,94,.08) !important;
+      }
+
+      .live-premium-stats-card .live-premium-card-title {
+        color: #dcfce7 !important;
+        font-size: .86rem !important;
+        margin-bottom: 14px !important;
+      }
+
+      .live-stat-bars { gap: 16px !important; }
+
+      .live-stat-row {
+        grid-template-columns: 62px 1fr 62px !important;
+        gap: 14px !important;
+        font-size: 1.08rem !important;
+      }
+
+      .live-stat-bar-wrap small {
+        color: rgba(255,255,255,.84) !important;
+        font-size: .78rem !important;
+        margin-bottom: 5px !important;
+      }
+
+      .live-stat-bar {
+        height: 13px !important;
+        background: rgba(148,163,184,.13) !important;
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,.045) !important;
+      }
+
+      .live-stat-bar i {
+        background: linear-gradient(90deg, rgba(34,197,94,.98), rgba(16,185,129,.94)) !important;
+        box-shadow: 0 0 14px rgba(34,197,94,.52) !important;
+      }
+
+      .live-stat-bar b {
+        background: linear-gradient(90deg, rgba(244,63,94,.86), rgba(190,18,60,.92)) !important;
+        box-shadow: 0 0 14px rgba(244,63,94,.34) !important;
+      }
+
+      .live-premium-timeline-card {
+        position: relative;
+        border-color: rgba(74,222,128,.30) !important;
+      }
+
+      .live-premium-timeline {
+        position: relative;
+        padding-left: 4px;
+      }
+
+      .live-premium-timeline::before {
+        content: "";
+        position: absolute;
+        left: 24px;
+        top: 8px;
+        bottom: 8px;
+        width: 2px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, rgba(34,197,94,.15), rgba(34,197,94,.96), rgba(34,197,94,.15));
+        box-shadow: 0 0 14px rgba(34,197,94,.50);
+      }
+
+      .live-timeline-row {
+        background: rgba(2,6,23,.26) !important;
+      }
+
+      .live-timeline-row b {
+        position: relative;
+        z-index: 1;
+        width: 26px;
+        height: 26px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: rgba(15,23,42,.88);
+        box-shadow: 0 0 0 1px rgba(74,222,128,.36), 0 0 12px rgba(34,197,94,.22);
+      }
+
+      .live-discipline-grid div {
+        border: 1px solid rgba(148,163,184,.18) !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.045) !important;
+      }
+
+      .live-discipline-grid div:nth-child(odd)::after,
+      .live-discipline-grid div:nth-child(even)::after {
+        content: "";
+        display: block;
+        width: 34px;
+        height: 3px;
+        margin: 8px auto 0;
+        border-radius: 999px;
+      }
+
+      .live-discipline-grid div:nth-child(odd)::after {
+        background: #facc15;
+        box-shadow: 0 0 12px rgba(250,204,21,.60);
+      }
+
+      .live-discipline-grid div:nth-child(even)::after {
+        background: #ef4444;
+        box-shadow: 0 0 12px rgba(239,68,68,.60);
+      }
+
+      .live-weather-compact-card {
+        padding: 16px 20px !important;
+        background:
+          radial-gradient(circle at top left, rgba(250,204,21,.12), transparent 35%),
+          linear-gradient(145deg, rgba(8,22,42,.78), rgba(8,42,55,.40)) !important;
+      }
+
+      .live-weather-main {
+        grid-template-columns: minmax(220px,.9fr) minmax(420px,1.8fr) !important;
+      }
+
+      .live-weather-condition span { font-size: 2.15rem !important; }
+      .live-weather-condition strong { font-size: 1rem !important; }
+      .live-weather-metric {
+        background: transparent !important;
+        border-left: 1px solid rgba(255,255,255,.18) !important;
+        border-top: 0 !important;
+        border-right: 0 !important;
+        border-bottom: 0 !important;
+        border-radius: 0 !important;
+      }
+
+      @media (max-width: 1100px) {
+        .live-premium-lower-grid { grid-template-columns: 1fr 1fr !important; }
+        .live-premium-stats-card,
+        .live-weather-compact-card { grid-column: 1 / -1 !important; }
+      }
+
+      @media (max-width: 760px) {
+        .live-premium-main .live-premium-scoreboard {
+          padding: 14px !important;
+          border-radius: 22px !important;
+        }
+        .live-stat-row { grid-template-columns: 46px 1fr 46px !important; gap: 8px !important; }
+        .live-weather-main { grid-template-columns: 1fr !important; }
+        .live-weather-metrics { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+        .live-weather-metric { border: 1px solid rgba(255,255,255,.10) !important; border-radius: 12px !important; background: rgba(255,255,255,.05) !important; }
+      }
+
 </style>
     `;
   }
@@ -17033,29 +16750,6 @@ class WorldCup2026Panel extends HTMLElement {
           </optgroup>
           <optgroup label="Asia">
             <option value="ja" ${this._language === "ja" ? "selected" : ""}>Japanese</option>
-            <option value="ko" ${this._language === "ko" ? "selected" : ""}>Korean</option>
-            <option value="zh" ${this._language === "zh" ? "selected" : ""}>Chinese (Simplified)</option>
-            <option value="zh_tw" ${this._language === "zh_tw" ? "selected" : ""}>Chinese (Traditional)</option>
-            <option value="th" ${this._language === "th" ? "selected" : ""}>Thai</option>
-            <option value="vi" ${this._language === "vi" ? "selected" : ""}>Vietnamese</option>
-            <option value="id" ${this._language === "id" ? "selected" : ""}>Indonesian</option>
-          </optgroup>
-          <optgroup label="India">
-            <option value="hi" ${this._language === "hi" ? "selected" : ""}>Hindi</option>
-            <option value="bn" ${this._language === "bn" ? "selected" : ""}>Bengali</option>
-            <option value="ta" ${this._language === "ta" ? "selected" : ""}>Tamil</option>
-            <option value="te" ${this._language === "te" ? "selected" : ""}>Telugu</option>
-            <option value="pa" ${this._language === "pa" ? "selected" : ""}>Punjabi</option>
-          </optgroup>
-          <optgroup label="Middle East & North Africa">
-            <option value="ar" ${this._language === "ar" ? "selected" : ""}>Arabic</option>
-          </optgroup>
-          <optgroup label="Africa">
-            <option value="af" ${this._language === "af" ? "selected" : ""}>Afrikaans</option>
-            <option value="am" ${this._language === "am" ? "selected" : ""}>Amharic</option>
-            <option value="ha" ${this._language === "ha" ? "selected" : ""}>Hausa</option>
-            <option value="sw" ${this._language === "sw" ? "selected" : ""}>Swahili</option>
-            <option value="zu" ${this._language === "zu" ? "selected" : ""}>Zulu</option>
           </optgroup>
           <optgroup label="South America">
             <option value="ay" ${this._language === "ay" ? "selected" : ""}>Aymara</option>
@@ -17618,8 +17312,26 @@ class WorldCup2026Panel extends HTMLElement {
     if (text.includes("right foot")) return "Right foot";
 
     const detail = this.eventDetailText(event);
-    if (!detail || /^goal$/i.test(detail)) return "Normal Goal";
+    if (!detail || /^(goal|normal goal)$/i.test(detail)) return "";
     return detail;
+  }
+
+  eventDetailRank(event) {
+    const text = [
+      event?.detail,
+      event?.comments,
+      event?.reason,
+      event?.subType,
+      event?.type,
+      event?.rawType,
+    ].map((value) => String(value || "").toLowerCase()).join(" ");
+    let score = 0;
+    if (text.trim() && text.trim() !== "goal" && text.trim() !== "normal goal") score += 1;
+    ["header", "headed", "left foot", "right foot", "free kick", "freekick", "penalty", "own goal"].forEach((marker) => {
+      if (text.includes(marker)) score += 3;
+    });
+    if (event?.assist) score += 1;
+    return score;
   }
 
   eventDetailParts(event) {
@@ -17756,12 +17468,11 @@ class WorldCup2026Panel extends HTMLElement {
         this.fixtureTeamKey(team),
         player.toLowerCase(),
         minuteText || timerSeconds,
-        detailText,
       ].join("|");
 
-      if (!key.trim() || byKey.has(key)) return;
+      if (!key.trim()) return;
 
-      byKey.set(key, {
+      const normalisedEvent = {
         ...event,
         category,
         icon,
@@ -17781,7 +17492,12 @@ class WorldCup2026Panel extends HTMLElement {
         isPenalty,
         isMissedPenalty,
         isDisallowed,
-      });
+      };
+
+      const existingEvent = byKey.get(key);
+      if (existingEvent && this.eventDetailRank(existingEvent) >= this.eventDetailRank(normalisedEvent)) return;
+
+      byKey.set(key, normalisedEvent);
     });
 
     return Array.from(byKey.values()).sort((a, b) => {
@@ -17797,21 +17513,56 @@ class WorldCup2026Panel extends HTMLElement {
 
   matchReferees(match) {
     const refs = [];
+    const genericOfficialWords = new Set(["referee", "ref", "official", "main referee", "assistant referee", "var", "video assistant referee", "match official"]);
+    const countryOnlyOfficialNames = new Set([
+      "sweden", "swedish", "england", "english", "france", "french", "germany", "german", "spain", "spanish",
+      "italy", "italian", "netherlands", "dutch", "portugal", "portuguese", "poland", "polish", "norway",
+      "norwegian", "usa", "united states", "american", "canada", "canadian", "mexico", "mexican",
+      "argentina", "argentinian", "brazil", "brazilian", "uruguay", "uruguayan", "japan", "japanese",
+      "korea", "korean", "australia", "australian", "turkey", "turkish", "qatar", "morocco", "ghana",
+      "panama", "croatia", "austria", "belgium", "egypt", "iran", "iraq", "senegal", "switzerland",
+    ]);
+    const cleanOfficialText = (value) => String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9 ]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const isGenericOfficial = (name, type = "", nationality = "") => {
+      const cleanName = cleanOfficialText(name);
+      const cleanType = cleanOfficialText(type);
+      const cleanNationality = cleanOfficialText(nationality);
+      const nameWithoutRole = cleanName
+        .replace(/\b(referee|ref|official|main|assistant|var|video|match)\b/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      const looksLikeRoleCountry = /\b(referee|official|assistant|var)\b/.test(cleanName)
+        && cleanName.split(" ").some((part) => countryOnlyOfficialNames.has(part));
+      return !cleanName
+        || genericOfficialWords.has(cleanName)
+        || looksLikeRoleCountry
+        || (nameWithoutRole && countryOnlyOfficialNames.has(nameWithoutRole))
+        || (cleanNationality && cleanName === cleanNationality)
+        || (cleanType && cleanName === cleanType);
+    };
 
     const addRef = (ref) => {
       if (!ref) return;
       if (typeof ref === "string") {
         const name = ref.trim();
-        if (name) refs.push({ name });
+        if (name && !isGenericOfficial(name)) refs.push({ name });
         return;
       }
       if (typeof ref === "object") {
         const name = ref.name || ref.referee || ref.fullName || ref.displayName;
-        if (!name) return;
+        const type = ref.type || ref.role || "REFEREE";
+        const nationality = ref.nationality || ref.country || "";
+        if (!name || isGenericOfficial(name, type, nationality)) return;
         refs.push({
           name,
-          type: ref.type || ref.role || "REFEREE",
-          nationality: ref.nationality || ref.country || "",
+          type,
+          nationality,
         });
       }
     };
@@ -17822,23 +17573,56 @@ class WorldCup2026Panel extends HTMLElement {
     (Array.isArray(match?.referees) ? match.referees : []).forEach(addRef);
     (Array.isArray(match?.officials) ? match.officials : []).forEach(addRef);
 
-    const seen = new Set();
-    return refs.filter((ref) => {
-      const key = `${String(ref.name).toLowerCase()}|${String(ref.type || "").toLowerCase()}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
+    const normaliseOfficialName = (value) => String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/\b(referee|ref|official|main|assistant|var|video|match)\b/g, " ")
+      .replace(/[^a-z0-9 ]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const officialNameKey = (value) => {
+      const cleaned = normaliseOfficialName(value);
+      if (!cleaned) return "";
+      const parts = cleaned.split(" ").filter((part) => part && !countryOnlyOfficialNames.has(part));
+      if (parts.length <= 1) return cleaned.replace(/\s/g, "");
+      return `${parts[0]}|${parts[parts.length - 1]}`;
+    };
+
+    const byName = new Map();
+    refs.forEach((ref) => {
+      const key = officialNameKey(ref.name);
+      if (!key) return;
+      const existing = byName.get(key);
+      if (!existing) {
+        byName.set(key, ref);
+        return;
+      }
+      const existingScore = (existing.type ? 1 : 0) + (existing.nationality ? 1 : 0);
+      const nextScore = (ref.type ? 1 : 0) + (ref.nationality ? 1 : 0);
+      if (nextScore > existingScore) byName.set(key, ref);
     });
+    return Array.from(byName.values());
   }
 
   matchOfficialsSection(match) {
-    const refs = this.matchReferees(match);
+    const refs = this.matchReferees(match).filter((ref) => {
+      const name = String(ref?.name || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9 ]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      return name && !["referee", "ref", "official", "main referee", "match official"].includes(name);
+    });
     const attendance = match?.attendance ?? match?.crowd ?? match?.spectators ?? null;
     if (!refs.length && !attendance) return "";
 
     const refsHtml = refs.length
       ? refs.map((ref) => {
-          const type = ref.type ? ` <span>${this.esc(String(ref.type).replaceAll("_", " "))}</span>` : "";
+          const roleText = String(ref.type || "").replaceAll("_", " ");
+          const type = roleText && !/^referee$/i.test(roleText) ? ` <span>${this.esc(roleText)}</span>` : "";
           const nat = ref.nationality ? ` <em>${this.esc(ref.nationality)}</em>` : "";
           return `<div class="match-official-pill">👨‍⚖️ <strong>${this.esc(ref.name)}</strong>${type}${nat}</div>`;
         }).join("")
@@ -17933,36 +17717,46 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   matchWeatherSection(match) {
-    const weather = match?.weather || match?.matchWeather || {};
+    const weather = match?.matchWeather || match?.weather || {};
     if (!weather || typeof weather !== "object" || !Object.keys(weather).length) return "";
 
     const temp = weather.temperature !== null && weather.temperature !== undefined && weather.temperature !== ""
       ? `${weather.temperature}${weather.temperatureUnit || ""}`
       : "";
     const condition = weather.condition ? String(weather.condition).replaceAll("_", " ") : "";
+    const locationLabel = [weather.stadium, weather.city].filter(Boolean).join(" • ");
     const wind = weather.windSpeed !== null && weather.windSpeed !== undefined && weather.windSpeed !== ""
       ? `${weather.windSpeed}${weather.windSpeedUnit ? ` ${weather.windSpeedUnit}` : ""}`
       : "";
-    const details = [
-      weather.humidity !== null && weather.humidity !== undefined && weather.humidity !== "" ? `Humidity: ${weather.humidity}%` : "",
-      wind ? `Wind: ${wind}` : "",
-      weather.cloudCoverage !== null && weather.cloudCoverage !== undefined && weather.cloudCoverage !== "" ? `Cloud: ${weather.cloudCoverage}%` : "",
-      weather.uvIndex !== null && weather.uvIndex !== undefined && weather.uvIndex !== "" ? `UV: ${weather.uvIndex}` : "",
-    ].filter(Boolean).join(" / ");
+    const humidity = weather.humidity !== null && weather.humidity !== undefined && weather.humidity !== "" ? `${weather.humidity}%` : "";
+    const cloud = weather.cloudCoverage !== null && weather.cloudCoverage !== undefined && weather.cloudCoverage !== "" ? `${weather.cloudCoverage}%` : "";
+    const uv = weather.uvIndex !== null && weather.uvIndex !== undefined && weather.uvIndex !== "" ? `${weather.uvIndex}` : "";
 
-    if (!temp && !condition && !details) return "";
+    if (!temp && !condition && !wind && !humidity && !cloud && !uv) return "";
+
+    const metric = (icon, value, label) => value
+      ? `<div class="live-weather-metric"><strong>${this.esc(icon)} ${this.esc(value)}</strong><span>${this.esc(label)}</span></div>`
+      : "";
 
     return `
-      <div class="match-events-box match-weather-box">
-        <div class="match-extra-title">Weather</div>
-        <div class="match-events-list">
-          <div class="match-event-row match-event-weather">
-            <span class="match-event-minute">${this.esc(temp || "-")}</span>
-            <span class="match-event-icon">WX</span>
-            <span class="match-event-main">
-              <strong>${this.esc(condition || weather.name || "Forecast Home")}</strong>
-              ${details ? `<small>${this.esc(details)}</small>` : ""}
-            </span>
+      <div class="live-premium-card match-weather-box live-weather-compact-card">
+        <div class="live-weather-head">
+          <div>
+            <div class="live-premium-card-title">🌤 Stadium Weather</div>
+            ${locationLabel ? `<small>${this.esc(locationLabel)}</small>` : ""}
+          </div>
+          ${temp ? `<strong class="live-weather-temp">${this.esc(temp)}</strong>` : ""}
+        </div>
+        <div class="live-weather-main">
+          <div class="live-weather-condition">
+            <span>🌥</span>
+            <strong>${this.esc(condition || "Weather")}</strong>
+          </div>
+          <div class="live-weather-metrics">
+            ${metric("💨", wind, "Wind")}
+            ${metric("💧", humidity, "Humidity")}
+            ${metric("☁", cloud, "Cloud")}
+            ${metric("☀", uv, "UV")}
           </div>
         </div>
       </div>
@@ -18240,8 +18034,8 @@ class WorldCup2026Panel extends HTMLElement {
               </div>
             </div>
           ` : ""}
-          ${weather}
           ${officials}
+          ${weather}
         </div>
       </div>
     `;
@@ -19384,6 +19178,94 @@ class WorldCup2026Panel extends HTMLElement {
     return undefined;
   }
 
+  playerPhotoUrl(player) {
+    if (!player || typeof player !== "object") return "";
+    const manualPhotos = {
+      "lionel messi|argentina": "/local/worldcup/players/lionel-messi.png",
+      "lionel messi|arg": "/local/worldcup/players/lionel-messi.png",
+      "harry kane|england": "/local/worldcup/players/harry-kane.jpg",
+      "harry kane|eng": "/local/worldcup/players/harry-kane.jpg",
+      "kylian mbappe|france": "/local/worldcup/players/kylian-mbappe.jpg",
+      "kylian mbappe|fra": "/local/worldcup/players/kylian-mbappe.jpg",
+      "kylian mbappé|france": "/local/worldcup/players/kylian-mbappe.jpg",
+      "kylian mbappé|fra": "/local/worldcup/players/kylian-mbappe.jpg",
+      "elijah just|new zealand": "/local/worldcup/players/elijah-just.jpg",
+      "elijah just|nzl": "/local/worldcup/players/elijah-just.jpg",
+      "erling haaland|norway": "/local/worldcup/players/erling-haaland.jpg",
+      "erling haaland|nor": "/local/worldcup/players/erling-haaland.jpg",
+      "erling harland|norway": "/local/worldcup/players/erling-haaland.jpg",
+      "erling harland|nor": "/local/worldcup/players/erling-haaland.jpg",
+      "folarin balogun|usa": "/local/worldcup/players/folarin-balogun.jpg",
+      "folarin balogun|united states": "/local/worldcup/players/folarin-balogun.jpg",
+    };
+    const manualKey = `${String(player.name || player.player || "").toLowerCase().trim()}|${String(player.team || "").toLowerCase().trim()}`;
+    if (manualPhotos[manualKey]) return manualPhotos[manualKey];
+
+    const direct = player.photo || player.image || player.picture || player.headshot || player.avatar || player.playerPhoto;
+    if (direct) return String(direct);
+    const nested = player.player && typeof player.player === "object"
+      ? (player.player.photo || player.player.image || player.player.picture)
+      : "";
+    if (nested) return String(nested);
+    const id = player.apiFootballPlayerId || player.apiSportsPlayerId || player.apiFootballId || player.apiSportsId || player.player?.apiFootballPlayerId || player.player?.apiSportsPlayerId;
+    return id ? `https://media.api-sports.io/football/players/${id}.png` : "";
+  }
+
+  playerPhotoFallbackUrl(primary = "") {
+    const localPrefix = "/local/worldcup/players/";
+    if (!primary || !String(primary).startsWith(localPrefix)) return "";
+    const filename = String(primary).slice(localPrefix.length);
+    return filename
+      ? `https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/${filename}`
+      : "";
+  }
+
+  playerInitials(name) {
+    const parts = String(name || "").trim().split(/\s+/).filter(Boolean).slice(0, 2);
+    return parts.map((part) => part[0] || "").join("").toUpperCase() || "PL";
+  }
+
+  playerProfileCards(players = []) {
+    const cards = players.slice(0, 6);
+    if (!cards.length) return "";
+
+    return `
+      <section class="wc-section golden-profile-section">
+        <div class="golden-card-head">
+          <div>
+            <div class="section-kicker">Player Profiles</div>
+            <h2>Profile Cards</h2>
+          </div>
+        </div>
+        <div class="golden-profile-grid">
+          ${cards.map((player, index) => {
+            const photo = this.playerPhotoUrl(player);
+            const fallbackPhoto = this.playerPhotoFallbackUrl(photo);
+            const initials = this.playerInitials(player.name);
+            return `
+              <article class="golden-profile-card">
+                <div class="golden-profile-photo">
+                  ${photo ? `<img src="${this.esc(photo)}"${fallbackPhoto ? ` data-fallback-src="${this.esc(fallbackPhoto)}"` : ""} alt="${this.esc(player.name)}" loading="lazy" onerror="if(this.dataset.fallbackSrc){this.src=this.dataset.fallbackSrc;this.dataset.fallbackSrc='';}else{this.style.display='none';this.nextElementSibling.style.display='flex';}">` : ""}
+                  <span class="golden-profile-fallback" style="${photo ? "display:none" : ""}">${this.esc(initials)}</span>
+                </div>
+                <div class="golden-profile-main">
+                  <div class="golden-profile-rank">#${index + 1}</div>
+                  <h3>${this.esc(player.name)}</h3>
+                  <p>${this.flag(player.team, true)} ${this.esc(player.team)}</p>
+                  <div class="golden-profile-stats">
+                    <span><strong>${player.goals}</strong>${this.t("goals")}</span>
+                    <span><strong>${player.assists}</strong>${this.t("assists")}</span>
+                    <span><strong>${player.totalInvolvements}</strong>G+A</span>
+                  </div>
+                </div>
+              </article>
+            `;
+          }).join("")}
+        </div>
+      </section>
+    `;
+  }
+
   playersPage() {
     const rawScorers = Array.isArray(this._data.scorers) ? this._data.scorers : [];
     const allMatchSources = [
@@ -19409,7 +19291,7 @@ class WorldCup2026Panel extends HTMLElement {
     const isPenalty = (event) => `${eventText(event, "type")} ${eventText(event, "detail")}`.includes("penalty");
     const eventTeam = (event) => this.localizedTeamName(event?.team || event?.teamName || event?.country || this.t("tbc"));
     const eventPlayer = (event) => event?.player || event?.playerName || event?.name || "";
-    const getOrCreate = (map, name, team) => {
+    const getOrCreate = (map, name, team, source = {}) => {
       const safeName = String(name || "").trim();
       const safeTeam = this.localizedTeamName(team || this.t("tbc"));
       const key = playerKey(safeName, safeTeam);
@@ -19425,7 +19307,13 @@ class WorldCup2026Panel extends HTMLElement {
           totalInvolvements: 0,
           matches: new Set(),
           source: "match events",
+          photo: this.playerPhotoUrl(source),
+          playerId: source.playerId || source.id || source.apiFootballPlayerId || source.apiSportsPlayerId || source.player?.id || "",
         });
+      } else {
+        const existing = map.get(key);
+        if (!existing.photo) existing.photo = this.playerPhotoUrl(source);
+        if (!existing.playerId) existing.playerId = source.playerId || source.id || source.apiFootballPlayerId || source.apiSportsPlayerId || source.player?.id || "";
       }
       return map.get(key);
     };
@@ -19443,7 +19331,7 @@ class WorldCup2026Panel extends HTMLElement {
           ? s.team
           : s.team?.shortName || s.team?.name || s.team?.tla || s.nationality || this.t("tbc");
 
-      const row = getOrCreate(playerMap, playerName, teamName);
+      const row = getOrCreate(playerMap, playerName, teamName, s);
       if (!row) return;
       row.goals = Math.max(row.goals, this.numberValue(this.resolvedPlayerStat(s, "goals", "scored", "goal_count", "total_goals", "totalGoals")));
       row.assists = Math.max(row.assists, this.numberValue(this.resolvedPlayerStat(s, "assists", "assist", "assist_count", "total_assists", "totalAssists")));
@@ -19640,6 +19528,8 @@ class WorldCup2026Panel extends HTMLElement {
           ${miniStat(matchesWithEvents, "event matches")}
         </div>
       </section>
+
+      ${this.playerProfileCards(scorers)}
 
       <section class="wc-section golden-clean-podium">
         <div class="golden-card-head">
@@ -20415,6 +20305,7 @@ class WorldCup2026Panel extends HTMLElement {
           varEvents: Array.isArray(match.varEvents) && match.varEvents.length ? match.varEvents : existing.varEvents,
           matchDetails: match.matchDetails || existing.matchDetails,
           referees: Array.isArray(match.referees) && match.referees.length ? match.referees : existing.referees,
+          officials: Array.isArray(match.officials) && match.officials.length ? match.officials : existing.officials,
         });
       });
     });
@@ -21683,9 +21574,6 @@ class WorldCup2026Panel extends HTMLElement {
                   <option value="pt" ${this._language === "pt" ? "selected" : ""}>Portuguese</option>
                   <option value="pl" ${this._language === "pl" ? "selected" : ""}>Polish</option>
                   <option value="ja" ${this._language === "ja" ? "selected" : ""}>Japanese</option>
-                  <option value="ko" ${this._language === "ko" ? "selected" : ""}>Korean</option>
-                  <option value="zh" ${this._language === "zh" ? "selected" : ""}>Chinese</option>
-                  <option value="ar" ${this._language === "ar" ? "selected" : ""}>Arabic</option>
                 </select>
                 <select class="wc-view-select wc-view-select-tablet" id="wc-view-select-tablet" title="${this.esc(this.t("viewMode"))}">
                   <option value="mobile" ${this._viewMode === "mobile" ? "selected" : ""}>${this.esc(this.t("mobileView"))}</option>

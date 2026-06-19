@@ -27,6 +27,117 @@ TOTAL_WORLD_CUP_MATCHES = 104
 LIVE_STATUSES = {"IN_PLAY", "PAUSED", "LIVE", "1H", "2H", "HT", "HALF_TIME", "ET", "BT", "P", "SUSP", "INT"}
 FINISHED_STATUSES = {"FINISHED", "FT", "AET", "PEN"}
 
+STADIUM_WEATHER_CACHE_SECONDS = 10 * 60
+STADIUM_WEATHER_LOCATIONS = {
+    "atlanta stadium": {"stadium": "Mercedes-Benz Stadium", "city": "Atlanta", "country": "USA", "lat": 33.7554, "lon": -84.4008},
+    "mercedes-benz stadium": {"stadium": "Mercedes-Benz Stadium", "city": "Atlanta", "country": "USA", "lat": 33.7554, "lon": -84.4008},
+    "boston stadium": {"stadium": "Gillette Stadium", "city": "Boston", "country": "USA", "lat": 42.0909, "lon": -71.2643},
+    "gillette stadium": {"stadium": "Gillette Stadium", "city": "Boston", "country": "USA", "lat": 42.0909, "lon": -71.2643},
+    "dallas stadium": {"stadium": "AT&T Stadium", "city": "Dallas", "country": "USA", "lat": 32.7473, "lon": -97.0945},
+    "at&t stadium": {"stadium": "AT&T Stadium", "city": "Dallas", "country": "USA", "lat": 32.7473, "lon": -97.0945},
+    "guadalajara stadium": {"stadium": "Estadio Akron", "city": "Guadalajara", "country": "Mexico", "lat": 20.6818, "lon": -103.4622},
+    "estadio akron": {"stadium": "Estadio Akron", "city": "Guadalajara", "country": "Mexico", "lat": 20.6818, "lon": -103.4622},
+    "houston stadium": {"stadium": "NRG Stadium", "city": "Houston", "country": "USA", "lat": 29.6847, "lon": -95.4107},
+    "nrg stadium": {"stadium": "NRG Stadium", "city": "Houston", "country": "USA", "lat": 29.6847, "lon": -95.4107},
+    "kansas city stadium": {"stadium": "Arrowhead Stadium", "city": "Kansas City", "country": "USA", "lat": 39.0489, "lon": -94.4839},
+    "arrowhead stadium": {"stadium": "Arrowhead Stadium", "city": "Kansas City", "country": "USA", "lat": 39.0489, "lon": -94.4839},
+    "los angeles stadium": {"stadium": "SoFi Stadium", "city": "Los Angeles", "country": "USA", "lat": 33.9535, "lon": -118.3392},
+    "sofi stadium": {"stadium": "SoFi Stadium", "city": "Los Angeles", "country": "USA", "lat": 33.9535, "lon": -118.3392},
+    "mexico city stadium": {"stadium": "Estadio Banorte", "city": "Mexico City", "country": "Mexico", "lat": 19.3030, "lon": -99.1505},
+    "estadio banorte": {"stadium": "Estadio Banorte", "city": "Mexico City", "country": "Mexico", "lat": 19.3030, "lon": -99.1505},
+    "estadio azteca": {"stadium": "Estadio Banorte", "city": "Mexico City", "country": "Mexico", "lat": 19.3030, "lon": -99.1505},
+    "miami stadium": {"stadium": "Hard Rock Stadium", "city": "Miami", "country": "USA", "lat": 25.9580, "lon": -80.2389},
+    "hard rock stadium": {"stadium": "Hard Rock Stadium", "city": "Miami", "country": "USA", "lat": 25.9580, "lon": -80.2389},
+    "monterrey stadium": {"stadium": "Estadio BBVA", "city": "Monterrey", "country": "Mexico", "lat": 25.6682, "lon": -100.2446},
+    "estadio bbva": {"stadium": "Estadio BBVA", "city": "Monterrey", "country": "Mexico", "lat": 25.6682, "lon": -100.2446},
+    "new york new jersey stadium": {"stadium": "MetLife Stadium", "city": "New York/New Jersey", "country": "USA", "lat": 40.8135, "lon": -74.0745},
+    "metlife stadium": {"stadium": "MetLife Stadium", "city": "New York/New Jersey", "country": "USA", "lat": 40.8135, "lon": -74.0745},
+    "philadelphia stadium": {"stadium": "Lincoln Financial Field", "city": "Philadelphia", "country": "USA", "lat": 39.9008, "lon": -75.1675},
+    "lincoln financial field": {"stadium": "Lincoln Financial Field", "city": "Philadelphia", "country": "USA", "lat": 39.9008, "lon": -75.1675},
+    "san francisco bay area stadium": {"stadium": "Levi's Stadium", "city": "San Francisco Bay Area", "country": "USA", "lat": 37.4030, "lon": -121.9700},
+    "levi's stadium": {"stadium": "Levi's Stadium", "city": "San Francisco Bay Area", "country": "USA", "lat": 37.4030, "lon": -121.9700},
+    "seattle stadium": {"stadium": "Lumen Field", "city": "Seattle", "country": "USA", "lat": 47.5952, "lon": -122.3316},
+    "lumen field": {"stadium": "Lumen Field", "city": "Seattle", "country": "USA", "lat": 47.5952, "lon": -122.3316},
+    "toronto stadium": {"stadium": "BMO Field", "city": "Toronto", "country": "Canada", "lat": 43.6332, "lon": -79.4186},
+    "bmo field": {"stadium": "BMO Field", "city": "Toronto", "country": "Canada", "lat": 43.6332, "lon": -79.4186},
+    "vancouver stadium": {"stadium": "BC Place", "city": "Vancouver", "country": "Canada", "lat": 49.2768, "lon": -123.1119},
+    "bc place": {"stadium": "BC Place", "city": "Vancouver", "country": "Canada", "lat": 49.2768, "lon": -123.1119},
+}
+
+FIXTURE_WEATHER_VENUES = {
+    "mexico|south africa": "Mexico City Stadium",
+    "korea|czechia": "Guadalajara Stadium",
+    "canada|bosnia herzegovina": "Toronto Stadium",
+    "united states|paraguay": "Los Angeles Stadium",
+    "qatar|switzerland": "San Francisco Bay Area Stadium",
+    "haiti|scotland": "Boston Stadium",
+    "brazil|morocco": "New York New Jersey Stadium",
+    "australia|turkey": "Vancouver Stadium",
+    "germany|curacao": "Houston Stadium",
+    "netherlands|japan": "Dallas Stadium",
+    "tunisia|sweden": "Monterrey Stadium",
+    "ivory coast|ecuador": "Philadelphia Stadium",
+    "spain|cape verde": "Atlanta Stadium",
+    "belgium|egypt": "Seattle Stadium",
+    "iran|new zealand": "Los Angeles Stadium",
+    "austria|jordan": "San Francisco Bay Area Stadium",
+    "france|senegal": "New York New Jersey Stadium",
+    "norway|iraq": "Boston Stadium",
+    "argentina|algeria": "Kansas City Stadium",
+    "portugal|congo dr": "Houston Stadium",
+    "england|croatia": "Dallas Stadium",
+    "ghana|panama": "Toronto Stadium",
+    "uzbekistan|colombia": "Mexico City Stadium",
+    "canada|qatar": "Vancouver Stadium",
+    "south africa|czechia": "Atlanta Stadium",
+    "switzerland|bosnia herzegovina": "Los Angeles Stadium",
+    "mexico|korea": "Guadalajara Stadium",
+    "scotland|morocco": "Boston Stadium",
+    "brazil|haiti": "Philadelphia Stadium",
+    "united states|australia": "Seattle Stadium",
+    "paraguay|turkey": "San Francisco Bay Area Stadium",
+    "germany|ivory coast": "Toronto Stadium",
+    "tunisia|japan": "Monterrey Stadium",
+    "netherlands|sweden": "Houston Stadium",
+    "ecuador|curacao": "Kansas City Stadium",
+    "new zealand|egypt": "Vancouver Stadium",
+    "spain|saudi arabia": "Atlanta Stadium",
+    "belgium|iran": "Los Angeles Stadium",
+    "uruguay|cape verde": "Miami Stadium",
+    "france|iraq": "Philadelphia Stadium",
+    "norway|senegal": "New York New Jersey Stadium",
+    "jordan|algeria": "San Francisco Bay Area Stadium",
+    "argentina|austria": "Dallas Stadium",
+    "portugal|uzbekistan": "Houston Stadium",
+    "england|ghana": "Boston Stadium",
+    "panama|croatia": "Toronto Stadium",
+    "colombia|congo dr": "Guadalajara Stadium",
+    "canada|switzerland": "Vancouver Stadium",
+    "qatar|bosnia herzegovina": "Seattle Stadium",
+    "morocco|haiti": "Atlanta Stadium",
+    "scotland|brazil": "Miami Stadium",
+    "mexico|czechia": "Mexico City Stadium",
+    "korea|south africa": "Monterrey Stadium",
+    "ecuador|germany": "New York New Jersey Stadium",
+    "curacao|ivory coast": "Philadelphia Stadium",
+    "tunisia|netherlands": "Kansas City Stadium",
+    "japan|sweden": "Dallas Stadium",
+    "united states|turkey": "Los Angeles Stadium",
+    "paraguay|australia": "San Francisco Bay Area Stadium",
+    "senegal|iraq": "Toronto Stadium",
+    "norway|france": "Boston Stadium",
+    "cape verde|saudi arabia": "Houston Stadium",
+    "uruguay|spain": "Guadalajara Stadium",
+    "new zealand|belgium": "Vancouver Stadium",
+    "egypt|iran": "Seattle Stadium",
+    "panama|england": "New York New Jersey Stadium",
+    "croatia|ghana": "Philadelphia Stadium",
+    "colombia|portugal": "Miami Stadium",
+    "uzbekistan|congo dr": "Atlanta Stadium",
+    "jordan|argentina": "Dallas Stadium",
+    "algeria|austria": "Kansas City Stadium",
+}
+
 
 def _country_flag(country):
     """Return the flag emoji for a host country."""
@@ -716,10 +827,9 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             update_interval=SCAN_INTERVAL_NORMAL,
         )
         self.api = api
-        self._live_minutes_cache = {}
-        self._live_minutes_last_fetch = None
         self._live_api_football_cache = {}
         self._live_api_football_last_fetch = None
+        self._live_fixture_status_last_fetch = None
         self._post_match_api_football_cache = {}
         self._post_match_api_football_last_fetch = None
         self._api_football_rate_limited_until = None
@@ -732,6 +842,8 @@ class WorldCupCoordinator(DataUpdateCoordinator):
         self._goal_event_store = {}
         self._goal_event_store_loaded = False
         self._github_payload_hashes = {}
+        self._stadium_weather_cache = {}
+        self._api_football_player_photo_cache = {}
 
     def _api_football_is_rate_limited(self):
         """Return True while API-Football is in rate-limit cool-down."""
@@ -898,40 +1010,137 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             }
         return matches
 
-    def _home_weather_snapshot(self):
-        """Read the local HA weather entity without modifying it."""
-        state = self.hass.states.get("weather.forecast_home")
-        if not state:
+    def _weather_location_key(self, value):
+        return " ".join(
+            "".join(ch if ch.isalnum() else " " for ch in str(value or "").lower()).split()
+        )
+
+    def _match_weather_location(self, match):
+        """Return the best known stadium location for a match."""
+        venue = match.get("venue") or match.get("stadium") or match.get("location") or {}
+        candidates = []
+        if isinstance(venue, dict):
+            candidates.extend([
+                venue.get("real_name"),
+                venue.get("realName"),
+                venue.get("name"),
+                venue.get("stadium"),
+                venue.get("venue"),
+                venue.get("shortName"),
+            ])
+        else:
+            candidates.append(venue)
+
+        candidates.extend([
+            match.get("venueRealName"),
+            match.get("venueName"),
+            match.get("venue"),
+            match.get("stadium"),
+        ])
+
+        for candidate in candidates:
+            key = self._weather_location_key(candidate)
+            if key in STADIUM_WEATHER_LOCATIONS:
+                return STADIUM_WEATHER_LOCATIONS[key]
+
+        home = _normalise_team_name(_team_name(match.get("homeTeam", {})))
+        away = _normalise_team_name(_team_name(match.get("awayTeam", {})))
+        for key in (f"{home}|{away}", f"{away}|{home}"):
+            venue_name = FIXTURE_WEATHER_VENUES.get(key)
+            venue_key = self._weather_location_key(venue_name)
+            if venue_key in STADIUM_WEATHER_LOCATIONS:
+                return STADIUM_WEATHER_LOCATIONS[venue_key]
+
+        return None
+
+    async def _fetch_stadium_weather(self, session, location):
+        """Fetch current stadium weather from met.no without touching HA weather entities."""
+        if not location:
             return None
-        attrs = state.attributes or {}
-        return {
-            "entityId": "weather.forecast_home",
-            "name": attrs.get("friendly_name") or state.name or "Forecast Home",
-            "condition": state.state,
-            "temperature": attrs.get("temperature"),
-            "temperatureUnit": attrs.get("temperature_unit"),
-            "humidity": attrs.get("humidity"),
-            "cloudCoverage": attrs.get("cloud_coverage"),
-            "uvIndex": attrs.get("uv_index"),
-            "pressure": attrs.get("pressure"),
-            "pressureUnit": attrs.get("pressure_unit"),
-            "windBearing": attrs.get("wind_bearing"),
-            "windSpeed": attrs.get("wind_speed"),
-            "windSpeedUnit": attrs.get("wind_speed_unit"),
-            "dewPoint": attrs.get("dew_point"),
-            "attribution": attrs.get("attribution"),
-            "source": "home_assistant",
+
+        cache_key = f"{location.get('lat')},{location.get('lon')}"
+        now = datetime.now(timezone.utc)
+        cached = self._stadium_weather_cache.get(cache_key)
+        if cached and now - cached.get("fetched_at", now) < timedelta(seconds=STADIUM_WEATHER_CACHE_SECONDS):
+            return cached.get("weather")
+
+        url = (
+            "https://api.met.no/weatherapi/locationforecast/2.0/compact"
+            f"?lat={location.get('lat')}&lon={location.get('lon')}"
+        )
+        headers = {
+            "User-Agent": "ha-world-cup-2026/4.2.10 Home Assistant stadium weather",
+            "Accept": "application/json",
         }
 
-    def _add_home_weather_to_live_matches(self, matches):
-        """Attach local home weather to live/pre-live matches for display/export."""
-        weather = self._home_weather_snapshot()
-        if not weather:
+        try:
+            async with session.get(url, headers=headers) as response:
+                if response.status >= 400:
+                    text = await response.text()
+                    _LOGGER.warning("Stadium weather lookup failed for %s: %s %s", location.get("stadium"), response.status, text)
+                    return cached.get("weather") if cached else None
+                payload = await response.json()
+        except Exception as err:  # pylint: disable=broad-exception-caught
+            _LOGGER.warning("Stadium weather lookup failed for %s: %s", location.get("stadium"), err)
+            return cached.get("weather") if cached else None
+
+        timeseries = ((payload.get("properties") or {}).get("timeseries") or [])
+        if not timeseries:
+            return cached.get("weather") if cached else None
+
+        current = timeseries[0] or {}
+        data = current.get("data") or {}
+        instant = (data.get("instant") or {}).get("details") or {}
+        next_hour = data.get("next_1_hours") or data.get("next_6_hours") or {}
+        summary = (next_hour.get("summary") or {}).get("symbol_code")
+
+        weather = {
+            "name": f"{location.get('stadium')} weather",
+            "condition": summary,
+            "temperature": instant.get("air_temperature"),
+            "temperatureUnit": "C",
+            "humidity": instant.get("relative_humidity"),
+            "cloudCoverage": instant.get("cloud_area_fraction"),
+            "pressure": instant.get("air_pressure_at_sea_level"),
+            "pressureUnit": "hPa",
+            "windBearing": instant.get("wind_from_direction"),
+            "windSpeed": instant.get("wind_speed"),
+            "windSpeedUnit": "m/s",
+            "dewPoint": instant.get("dew_point_temperature"),
+            "source": "met_no_stadium",
+            "attribution": "Weather forecast from met.no, delivered by the Norwegian Meteorological Institute.",
+            "stadium": location.get("stadium"),
+            "city": location.get("city"),
+            "country": location.get("country"),
+            "latitude": location.get("lat"),
+            "longitude": location.get("lon"),
+            "observedAt": current.get("time"),
+            "fetchedAt": now.isoformat(),
+        }
+
+        self._stadium_weather_cache[cache_key] = {
+            "fetched_at": now,
+            "weather": weather,
+        }
+        return weather
+
+    async def _add_stadium_weather_to_live_matches(self, matches):
+        """Attach stadium weather to live/pre-live matches for display/export."""
+        live_matches = [match for match in matches or [] if str(match.get("status") or "").upper() in LIVE_STATUSES]
+        if not live_matches:
             return matches
-        for match in matches or []:
-            if str(match.get("status") or "").upper() in LIVE_STATUSES:
-                match["weather"] = weather
-                match["matchWeather"] = weather
+
+        timeout = aiohttp.ClientTimeout(total=20)
+        async with aiohttp.ClientSession(timeout=timeout) as session:
+            for match in live_matches:
+                location = self._match_weather_location(match)
+                weather = await self._fetch_stadium_weather(session, location)
+                if weather:
+                    match["weather"] = weather
+                    match["matchWeather"] = weather
+                else:
+                    match.pop("weather", None)
+                    match.pop("matchWeather", None)
         return matches
 
     def _choose_poll_interval(self, matches):
@@ -1195,13 +1404,49 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             str(event.get("detail") or "").lower().strip(),
         ])
 
+    def _event_base_signature(self, event):
+        return "|".join([
+            str(event.get("matchId") or ""),
+            str(event.get("team") or "").lower().strip(),
+            str(event.get("player") or "").lower().strip(),
+            str(event.get("displayMinute") or event.get("minute") or event.get("timer") or ""),
+        ])
+
+    def _goal_detail_score(self, event):
+        text = " ".join(
+            str(event.get(key) or "").lower()
+            for key in ("detail", "comments", "reason", "subType", "type", "rawType")
+        )
+        score = 0
+        if text and text.strip() not in {"goal", "normal goal"}:
+            score += 1
+        for marker in ("header", "headed", "left foot", "right foot", "free kick", "freekick", "penalty", "own goal"):
+            if marker in text:
+                score += 3
+        if event.get("assist"):
+            score += 1
+        return score
+
     def _merge_goal_events(self, existing, incoming, match=None, clock_seconds=None):
         merged = []
         seen = set()
+        by_base_signature = {}
 
         for raw_event in list(existing or []) + list(incoming or []):
             event = self._normalise_goal_event(raw_event, match=match, clock_seconds=clock_seconds)
             if not event:
+                continue
+
+            base_sig = self._event_base_signature(event)
+            existing_index = by_base_signature.get(base_sig)
+            if existing_index is not None:
+                existing_event = merged[existing_index]
+                if self._goal_detail_score(event) > self._goal_detail_score(existing_event):
+                    old_sig = self._event_signature(existing_event)
+                    if old_sig in seen:
+                        seen.remove(old_sig)
+                    merged[existing_index] = event
+                    seen.add(self._event_signature(event))
                 continue
 
             sig = self._event_signature(event)
@@ -1209,6 +1454,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                 continue
 
             merged.append(event)
+            by_base_signature[base_sig] = len(merged) - 1
             seen.add(sig)
 
         merged.sort(key=lambda event: int(event.get("timerSeconds") or 0))
@@ -1271,19 +1517,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             home_score, away_score = _full_time_score(match)
             home_score = home_score if home_score is not None else 0
             away_score = away_score if away_score is not None else 0
-            old_home = int(state.get("homeScore") or 0)
-            old_away = int(state.get("awayScore") or 0)
             clock_seconds = int(state.get("clock_seconds") or 0)
-            status = match.get("status")
-
-            # Only create fallback events during a live game. Do not backfill
-            # finished games as generic 90' goals. If API-Football supplies
-            # real events, those are merged above instead.
-            can_create_fallback = (
-                status in LIVE_STATUSES
-                and bool(state.get("clock_active"))
-                and not api_events
-            )
 
             # Do not create generic "Goal 90'" fallback events. Goal events
             # are only stored when a real scorer name is available from the
@@ -1452,6 +1686,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                 "cardEvents": public_match.get("cardEvents") or [],
                 "substitutionEvents": public_match.get("substitutionEvents") or [],
                 "referees": public_match.get("referees") or [],
+                "officials": public_match.get("officials") or public_match.get("referees") or [],
                 "apiFootballFixtureId": public_match.get("apiFootballFixtureId"),
                 "goalEventsSource": public_match.get("goalEventsSource"),
                 "liveStatistics": public_match.get("liveStatistics") or {},
@@ -1467,7 +1702,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                 "awayOffsides": public_match.get("awayOffsides"),
                 "lineups": public_match.get("lineups") or public_match.get("lineupsData") or public_match.get("teamLineups") or [],
                 "lineupsData": public_match.get("lineupsData") or public_match.get("lineups") or public_match.get("teamLineups") or [],
-                "weather": public_match.get("weather") or public_match.get("matchWeather") or {},
+                "weather": public_match.get("matchWeather") or public_match.get("weather") or {},
             }
             results.append(public_match)
 
@@ -1665,6 +1900,212 @@ class WorldCupCoordinator(DataUpdateCoordinator):
         settings = await self._async_read_github_settings()
         return settings.get("api_football_key")
 
+    def _scorer_player_name(self, scorer):
+        player = scorer.get("player", {}) if isinstance(scorer, dict) else {}
+        if isinstance(player, dict):
+            return player.get("name") or player.get("firstName") or scorer.get("name")
+        return player or scorer.get("name") if isinstance(scorer, dict) else None
+
+    def _scorer_team_name(self, scorer):
+        team = scorer.get("team", {}) if isinstance(scorer, dict) else {}
+        if isinstance(team, dict):
+            return team.get("shortName") or team.get("name") or team.get("tla") or scorer.get("teamName")
+        return team or scorer.get("teamName") or scorer.get("nationality") if isinstance(scorer, dict) else None
+
+    def _api_football_player_result_matches_team(self, item, team_name):
+        if not team_name:
+            return True
+        for stat in item.get("statistics") or []:
+            stat_team = (stat.get("team") or {}).get("name")
+            if stat_team and _team_names_match(stat_team, team_name):
+                return True
+        return False
+
+    def _api_football_player_searches(self, player_name):
+        """Return API-Football player-photo searches, starting with World Cup then major club leagues."""
+        seasons = [2025, 2024, 2026]
+        major_leagues = [
+            39,   # Premier League
+            140,  # La Liga
+            135,  # Serie A
+            78,   # Bundesliga
+            61,   # Ligue 1
+            253,  # MLS
+            262,  # Liga MX
+            307,  # Saudi Pro League
+            88,   # Eredivisie
+            94,   # Primeira Liga
+            203,  # Turkish Super Lig
+            2,    # UEFA Champions League
+            3,    # UEFA Europa League
+        ]
+
+        searches = [{"endpoint": "players/profiles", "params": {"search": player_name}}]
+        searches.append({"endpoint": "players", "params": {"search": player_name, "league": 1, "season": 2026}})
+        for season in seasons:
+            for league in major_leagues:
+                searches.append({"endpoint": "players", "params": {"search": player_name, "league": league, "season": season}})
+        searches.append({"endpoint": "players", "params": {"search": player_name}})
+        return searches
+
+    def _normalise_person_name(self, value):
+        return " ".join(
+            "".join(
+                ch if ch.isalnum() else " "
+                for ch in str(value or "").lower()
+            ).split()
+        )
+
+    def _api_football_player_name_score(self, api_name, wanted_name):
+        api_norm = self._normalise_person_name(api_name)
+        wanted_norm = self._normalise_person_name(wanted_name)
+        if not api_norm or not wanted_norm:
+            return 0
+        if api_norm == wanted_norm:
+            return 100
+
+        api_parts = api_norm.split()
+        wanted_parts = wanted_norm.split()
+        api_set = set(api_parts)
+        wanted_set = set(wanted_parts)
+        if wanted_set and wanted_set.issubset(api_set):
+            return 75
+        if api_set and api_set.issubset(wanted_set):
+            return 65
+
+        api_last = api_parts[-1] if api_parts else ""
+        wanted_last = wanted_parts[-1] if wanted_parts else ""
+        api_first = api_parts[0] if api_parts else ""
+        wanted_first = wanted_parts[0] if wanted_parts else ""
+        if api_last and api_last == wanted_last:
+            if api_first and wanted_first and api_first[0] == wanted_first[0]:
+                return 80
+            return 55
+        return 0
+
+    def _api_football_player_match_score(self, item, player_name, team_name):
+        player = item.get("player") or {}
+        score = self._api_football_player_name_score(player.get("name"), player_name)
+        if not score:
+            return 0
+
+        nationality = player.get("nationality")
+        if nationality and team_name and _team_names_match(nationality, team_name):
+            score += 30
+        if self._api_football_player_result_matches_team(item, team_name):
+            score += 20
+        if player.get("photo"):
+            score += 10
+        return score
+
+    async def _fetch_api_football_player_photo(self, session, headers, player_name, team_name):
+        """Find the correct API-Football player photo by player name and team."""
+        player_name = str(player_name or "").strip()
+        team_name = str(team_name or "").strip()
+        if not player_name or player_name.lower() == "unknown":
+            return {}
+
+        cache_key = f"{_normalise_team_name(team_name)}|{player_name.lower()}"
+        if cache_key in self._api_football_player_photo_cache:
+            return self._api_football_player_photo_cache.get(cache_key) or {}
+
+        if self._api_football_is_rate_limited():
+            return {}
+
+        matched = None
+        best_score = 0
+        matched_with_photo = None
+        best_photo_score = 0
+
+        for search in self._api_football_player_searches(player_name):
+            endpoint = search.get("endpoint") or "players"
+            params = search.get("params") or {}
+            url = f"https://v3.football.api-sports.io/{endpoint}"
+            try:
+                async with session.get(url, headers=headers, params=params) as response:
+                    if response.status == 429:
+                        await response.text()
+                        self._mark_api_football_rate_limited("API-Football player photo lookup")
+                        return {}
+                    if response.status >= 400:
+                        text = await response.text()
+                        _LOGGER.warning("API-Football player photo lookup failed for %s: %s %s", player_name, response.status, text)
+                        continue
+                    payload = await response.json()
+            except Exception as err:  # pylint: disable=broad-exception-caught
+                _LOGGER.warning("API-Football player photo lookup failed for %s: %s", player_name, err)
+                continue
+
+            for item in payload.get("response", []) or []:
+                if endpoint == "players/profiles":
+                    item = {"player": item.get("player") or item}
+                score = self._api_football_player_match_score(item, player_name, team_name)
+                if score > best_score:
+                    matched = item
+                    best_score = score
+                if ((item.get("player") or {}).get("photo")) and score > best_photo_score:
+                    matched_with_photo = item
+                    best_photo_score = score
+            if matched_with_photo and best_photo_score >= 80:
+                break
+
+        if matched_with_photo:
+            matched = matched_with_photo
+            best_score = best_photo_score
+
+        if best_score < 80:
+            matched = None
+
+        player = (matched or {}).get("player") or {}
+        player_id = player.get("id")
+        photo_url = player.get("photo") or (f"https://media.api-sports.io/football/players/{player_id}.png" if player_id else None)
+        if photo_url:
+            result = {
+                "apiFootballPlayerId": player_id,
+                "photo": photo_url,
+                "image": photo_url,
+                "photoLookup": "matched_with_photo" if player.get("photo") else "matched_with_api_id_photo",
+                "photoScore": best_score,
+                "photoMatchedName": player.get("name"),
+                "photoMatchedId": player_id,
+            }
+        else:
+            result = {
+                "photoLookup": "matched_no_photo" if matched else "no_match",
+                "photoScore": best_score,
+                "photoMatchedName": player.get("name"),
+                "photoMatchedId": player_id,
+            }
+
+        self._api_football_player_photo_cache[cache_key] = result
+        return result
+
+    async def _add_api_football_photos_to_scorers(self, scorers, limit=12):
+        """Attach real API-Football player photos to scorer rows when available."""
+        if not scorers:
+            return scorers
+        api_key = await self._api_football_enabled()
+        if not api_key:
+            return scorers
+
+        enriched = [dict(scorer) for scorer in scorers]
+        headers = {"x-apisports-key": api_key}
+        timeout = aiohttp.ClientTimeout(total=30)
+
+        async with aiohttp.ClientSession(timeout=timeout) as session:
+            for scorer in enriched[:limit]:
+                player_name = self._scorer_player_name(scorer)
+                team_name = self._scorer_team_name(scorer)
+                photo_data = await self._fetch_api_football_player_photo(session, headers, player_name, team_name)
+                if not photo_data:
+                    continue
+                scorer.update(photo_data)
+                player = scorer.get("player")
+                if isinstance(player, dict):
+                    player.update(photo_data)
+
+        return enriched
+
     def _normalise_api_football_event(self, event):
         """Convert one API-Football timeline event into a panel-friendly object."""
         if not isinstance(event, dict):
@@ -1750,6 +2191,50 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             "source": "api_football",
         }
 
+    def _normalise_match_officials(self, *sources):
+        """Merge referee/official lists without losing assistant or VAR roles."""
+        officials = []
+        seen = set()
+
+        def add_official(ref, default_type="REFEREE"):
+            if not ref:
+                return
+            if isinstance(ref, str):
+                name = ref.strip()
+                role = default_type
+                nationality = ""
+            elif isinstance(ref, dict):
+                name = (
+                    ref.get("name")
+                    or ref.get("referee")
+                    or ref.get("fullName")
+                    or ref.get("displayName")
+                )
+                role = ref.get("type") or ref.get("role") or ref.get("position") or default_type
+                nationality = ref.get("nationality") or ref.get("country") or ""
+            else:
+                return
+
+            if not name:
+                return
+            key = f"{str(name).lower().strip()}|{str(role).lower().strip()}"
+            if key in seen:
+                return
+            seen.add(key)
+            item = {"name": name, "type": role}
+            if nationality:
+                item["nationality"] = nationality
+            officials.append(item)
+
+        for source in sources:
+            if isinstance(source, list):
+                for ref in source:
+                    add_official(ref)
+            else:
+                add_official(source)
+
+        return officials
+
     def _normalise_api_football_goal_event(self, event):
         """Return only goal-type events for the scorer display."""
         normalised = self._normalise_api_football_event(event)
@@ -1832,19 +2317,62 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             "substitutionEvents": substitution_events,
         }
 
-    def _stat_value_from_api_football(self, statistics, wanted_type):
+    def _normalise_api_football_stat_name(self, value):
+        """Make API-Football stat names easier to match across wording changes."""
+        return "".join(ch for ch in str(value or "").lower() if ch.isalnum())
+
+    def _stat_value_from_api_football(self, statistics, wanted_type, *aliases):
         """Read one statistic value from an API-Football statistics list."""
-        wanted = str(wanted_type or "").lower()
+        wanted_names = {
+            self._normalise_api_football_stat_name(name)
+            for name in (wanted_type, *aliases)
+            if name
+        }
         for item in statistics or []:
-            if str(item.get("type") or "").lower() == wanted:
+            if self._normalise_api_football_stat_name(item.get("type")) in wanted_names:
                 return item.get("value")
         return None
+
+    def _build_api_football_live_statistics(self, sides, home_name=None, away_name=None):
+        """Build live statistics from an API-Football statistics payload."""
+        if not sides:
+            return {}
+
+        def build_side_stats(raw_stats):
+            return {
+                "corners": self._stat_value_from_api_football(raw_stats, "Corner Kicks", "Corners", "Corner kicks"),
+                "shotsOnGoal": self._stat_value_from_api_football(raw_stats, "Shots on Goal", "Shots on Target"),
+                "shotsOffGoal": self._stat_value_from_api_football(raw_stats, "Shots off Goal", "Shots off Target"),
+                "totalShots": self._stat_value_from_api_football(raw_stats, "Total Shots"),
+                "possession": self._stat_value_from_api_football(raw_stats, "Ball Possession"),
+                "fouls": self._stat_value_from_api_football(raw_stats, "Fouls"),
+                "offsides": self._stat_value_from_api_football(raw_stats, "Offsides"),
+                "yellowCards": self._stat_value_from_api_football(raw_stats, "Yellow Cards"),
+                "redCards": self._stat_value_from_api_football(raw_stats, "Red Cards"),
+            }
+
+        result = {"home": {}, "away": {}}
+        for index, side in enumerate(sides):
+            team_name = ((side.get("team") or {}).get("name") or "")
+            key = "home" if index == 0 else "away"
+            if home_name and _team_names_match(team_name, home_name):
+                key = "home"
+            elif away_name and _team_names_match(team_name, away_name):
+                key = "away"
+            result[key] = build_side_stats(side.get("statistics") or [])
+
+        has_values = any(
+            value is not None
+            for team_stats in result.values()
+            for value in team_stats.values()
+        )
+        return result if has_values else {}
 
     async def _fetch_api_football_statistics_for_fixture(self, session, fixture_id, headers, home_name=None, away_name=None):
         """Fetch live statistics such as corners and shots for one fixture."""
         if not fixture_id:
             return {}
-        if self._api_football_is_rate_limited():
+        if self._api_football_live_is_rate_limited():
             return self._live_statistics_cache_by_fixture.get(str(fixture_id), {})
 
         url = f"https://v3.football.api-sports.io/fixtures/statistics?fixture={fixture_id}"
@@ -1852,7 +2380,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             async with session.get(url, headers=headers) as response:
                 if response.status == 429:
                     await response.text()
-                    self._mark_api_football_rate_limited("API-Football fixture statistics lookup")
+                    self._mark_api_football_live_rate_limited("API-Football fixture statistics lookup")
                     return self._live_statistics_cache_by_fixture.get(str(fixture_id), {})
                 if response.status >= 400:
                     text = await response.text()
@@ -1872,28 +2400,9 @@ class WorldCupCoordinator(DataUpdateCoordinator):
         if not sides:
             return self._live_statistics_cache_by_fixture.get(str(fixture_id), {})
 
-        def build_side_stats(raw_stats):
-            return {
-                "corners": self._stat_value_from_api_football(raw_stats, "Corner Kicks"),
-                "shotsOnGoal": self._stat_value_from_api_football(raw_stats, "Shots on Goal"),
-                "shotsOffGoal": self._stat_value_from_api_football(raw_stats, "Shots off Goal"),
-                "totalShots": self._stat_value_from_api_football(raw_stats, "Total Shots"),
-                "possession": self._stat_value_from_api_football(raw_stats, "Ball Possession"),
-                "fouls": self._stat_value_from_api_football(raw_stats, "Fouls"),
-                "offsides": self._stat_value_from_api_football(raw_stats, "Offsides"),
-                "yellowCards": self._stat_value_from_api_football(raw_stats, "Yellow Cards"),
-                "redCards": self._stat_value_from_api_football(raw_stats, "Red Cards"),
-            }
-
-        result = {"home": {}, "away": {}}
-        for index, side in enumerate(sides):
-            team_name = ((side.get("team") or {}).get("name") or "")
-            key = "home" if index == 0 else "away"
-            if home_name and _team_names_match(team_name, home_name):
-                key = "home"
-            elif away_name and _team_names_match(team_name, away_name):
-                key = "away"
-            result[key] = build_side_stats(side.get("statistics") or [])
+        result = self._build_api_football_live_statistics(sides, home_name, away_name)
+        if not result:
+            return self._live_statistics_cache_by_fixture.get(str(fixture_id), {})
 
         self._live_statistics_cache_by_fixture[str(fixture_id)] = result
         return result
@@ -1948,6 +2457,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                 for item in live_items:
                     fixture = item.get("fixture") or {}
                     fixture_id = fixture.get("id")
+                    fixture_venue = fixture.get("venue") or {}
                     status = fixture.get("status") or {}
                     elapsed = status.get("elapsed")
 
@@ -1991,10 +2501,9 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                     )
                     if should_fetch_fixture_events and not self._api_football_is_rate_limited():
                         last_event_fetch = self._live_events_last_fetch_by_fixture.get(str(fixture_id))
-                        # Keep the main live status/clock endpoint every 10s, but
-                        # throttle the heavier events endpoint so it cannot rate-limit
-                        # the match clock and leave the panel stuck on HT.
-                        if last_event_fetch and now - last_event_fetch < timedelta(seconds=75):
+                        # Keep live events on the same rhythm as the match clock so
+                        # goals/cards/subs/VAR are not minutes behind the live feed.
+                        if last_event_fetch and now - last_event_fetch < timedelta(seconds=10):
                             should_fetch_fixture_events = False
 
                     if should_fetch_fixture_events and not self._api_football_is_rate_limited():
@@ -2011,11 +2520,21 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                             card_events = fixture_event_data.get("cardEvents", [])
                             substitution_events = fixture_event_data.get("substitutionEvents", [])
 
-                    live_statistics = {}
-                    if fixture_id and not self._api_football_is_rate_limited():
+                    live_statistics = self._build_api_football_live_statistics(
+                        item.get("statistics") or [],
+                        home,
+                        away,
+                    )
+                    if live_statistics and fixture_id:
+                        self._live_statistics_cache_by_fixture[str(fixture_id)] = live_statistics
+                    if fixture_id and not self._api_football_live_is_rate_limited():
                         fixture_key = str(fixture_id)
                         last_stats_fetch = self._live_statistics_last_fetch_by_fixture.get(fixture_key)
-                        if not last_stats_fetch or now - last_stats_fetch >= timedelta(seconds=30):
+                        has_corner_stats = any(
+                            (team_stats or {}).get("corners") is not None
+                            for team_stats in live_statistics.values()
+                        )
+                        if not has_corner_stats and (not last_stats_fetch or now - last_stats_fetch >= timedelta(seconds=10)):
                             self._live_statistics_last_fetch_by_fixture[fixture_key] = now
                             live_statistics = await self._fetch_api_football_statistics_for_fixture(
                                 session,
@@ -2024,11 +2543,16 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                                 home,
                                 away,
                             )
-                        else:
+                        elif not live_statistics:
                             live_statistics = self._live_statistics_cache_by_fixture.get(fixture_key, {})
 
-                    fixture_referee = fixture.get("referee")
-                    referees = [{"name": fixture_referee, "type": "REFEREE"}] if fixture_referee else []
+                    referees = self._normalise_match_officials(
+                        item.get("referees"),
+                        item.get("officials"),
+                        fixture.get("referees"),
+                        fixture.get("officials"),
+                        fixture.get("referee"),
+                    )
 
                     goals = item.get("goals") or {}
                     score_data = item.get("score") or {}
@@ -2056,6 +2580,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                         "referees": referees,
                         "liveStatistics": live_statistics,
                         "apiFootballFixtureId": fixture_id,
+                        "venue": fixture_venue,
                     }
 
                     live_data[_match_key_from_names(home, away)] = item_data
@@ -2067,23 +2592,8 @@ class WorldCupCoordinator(DataUpdateCoordinator):
 
         self._live_api_football_cache = live_data
         self._live_api_football_last_fetch = now
-        self._live_minutes_cache = {
-            key: value.get("minute")
-            for key, value in live_data.items()
-            if value.get("minute") is not None
-        }
-        self._live_minutes_last_fetch = now
         _LOGGER.debug("API-Football live data loaded for %s matches", len(live_data))
         return live_data
-
-    async def _fetch_live_minutes_from_api_football(self):
-        """Backward-compatible helper returning only live minutes."""
-        live_data = await self._fetch_live_data_from_api_football()
-        return {
-            key: value.get("minute")
-            for key, value in live_data.items()
-            if value.get("minute") is not None
-        }
 
     async def _fetch_api_football_fixtures_for_date(self, session, match_date, headers):
         """Fetch API-Football fixtures for one World Cup date.
@@ -2117,6 +2627,153 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             return []
 
         return payload.get("response", []) or []
+
+    async def _fetch_active_fixture_status_from_api_football(self, matches):
+        """Backup live status lookup for HT/live matches using the date fixture endpoint.
+
+        API-Football's /fixtures?live=all endpoint can occasionally lag or return
+        no rows around half-time. The date endpoint often has the fixture status
+        already updated, so use it sparingly to unstick HT -> 2H.
+        """
+        api_key = await self._api_football_enabled()
+        if not api_key or self._api_football_is_rate_limited():
+            return {}
+
+        now = datetime.now(timezone.utc)
+        if self._live_fixture_status_last_fetch and now - self._live_fixture_status_last_fetch < timedelta(seconds=60):
+            return {}
+
+        active_matches = []
+        for match in matches or []:
+            status = str(match.get("status") or "").upper()
+            kickoff = parse_datetime_utc(match.get("utcDate"))
+            if status in LIVE_STATUSES:
+                active_matches.append(match)
+            elif kickoff and kickoff - timedelta(minutes=10) <= now <= kickoff + timedelta(hours=3, minutes=15):
+                active_matches.append(match)
+
+        if not active_matches:
+            return {}
+
+        self._live_fixture_status_last_fetch = now
+        headers = {"x-apisports-key": api_key}
+        timeout = aiohttp.ClientTimeout(total=30)
+        date_values = set()
+        for match in active_matches:
+            match_dt = parse_datetime_utc(match.get("utcDate"))
+            if match_dt:
+                date_values.add(match_dt.date().isoformat())
+                date_values.add((match_dt - timedelta(days=1)).date().isoformat())
+                date_values.add((match_dt + timedelta(days=1)).date().isoformat())
+
+        live_data = {}
+        try:
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                for match_date in sorted(date_values):
+                    fixtures = await self._fetch_api_football_fixtures_for_date(session, match_date, headers)
+                    for item in fixtures:
+                        fixture = item.get("fixture") or {}
+                        fixture_venue = fixture.get("venue") or {}
+                        status = fixture.get("status") or {}
+                        api_status = self._status_from_api_football(status.get("short") or status.get("long"))
+                        if not api_status or api_status not in LIVE_STATUSES | FINISHED_STATUSES:
+                            continue
+
+                        teams = item.get("teams") or {}
+                        home = (teams.get("home") or {}).get("name")
+                        away = (teams.get("away") or {}).get("name")
+                        if not home or not away:
+                            continue
+
+                        item_dt = _api_football_item_datetime(item)
+                        matched = any(
+                            _api_fixture_matches_match(home, away, match)
+                            and (
+                                not item_dt
+                                or not parse_datetime_utc(match.get("utcDate"))
+                                or abs((parse_datetime_utc(match.get("utcDate")) - item_dt).total_seconds()) <= 36 * 60 * 60
+                            )
+                            for match in active_matches
+                        )
+                        if not matched:
+                            continue
+
+                        elapsed = status.get("elapsed")
+                        try:
+                            elapsed = int(elapsed) if elapsed is not None else None
+                        except (TypeError, ValueError):
+                            elapsed = None
+
+                        goals = item.get("goals") or {}
+                        score_data = item.get("score") or {}
+                        fulltime = score_data.get("fulltime") or {}
+                        halftime = score_data.get("halftime") or {}
+                        live_home_score = _safe_int(goals.get("home"))
+                        live_away_score = _safe_int(goals.get("away"))
+                        if live_home_score is None:
+                            live_home_score = _safe_int(fulltime.get("home"))
+                        if live_away_score is None:
+                            live_away_score = _safe_int(fulltime.get("away"))
+
+                        fixture_id = fixture.get("id")
+                        live_statistics = self._build_api_football_live_statistics(
+                            item.get("statistics") or [],
+                            home,
+                            away,
+                        )
+                        if live_statistics and fixture_id:
+                            self._live_statistics_cache_by_fixture[str(fixture_id)] = live_statistics
+                        if fixture_id and not self._api_football_live_is_rate_limited():
+                            fixture_key = str(fixture_id)
+                            last_stats_fetch = self._live_statistics_last_fetch_by_fixture.get(fixture_key)
+                            has_corner_stats = any(
+                                (team_stats or {}).get("corners") is not None
+                                for team_stats in live_statistics.values()
+                            )
+                            if not has_corner_stats and (not last_stats_fetch or now - last_stats_fetch >= timedelta(seconds=10)):
+                                self._live_statistics_last_fetch_by_fixture[fixture_key] = now
+                                live_statistics = await self._fetch_api_football_statistics_for_fixture(
+                                    session,
+                                    fixture_id,
+                                    headers,
+                                    home,
+                                    away,
+                                )
+                            elif not live_statistics:
+                                live_statistics = self._live_statistics_cache_by_fixture.get(fixture_key, {})
+
+                        item_data = {
+                            "minute": elapsed,
+                            "homeScore": live_home_score,
+                            "awayScore": live_away_score,
+                            "halfTimeHome": _safe_int(halftime.get("home")),
+                            "halfTimeAway": _safe_int(halftime.get("away")),
+                            "apiFootballStatus": status.get("short") or status.get("long"),
+                            "apiFootballStatusLong": status.get("long"),
+                            "events": [],
+                            "goalEvents": [],
+                            "cardEvents": [],
+                            "substitutionEvents": [],
+                            "referees": self._normalise_match_officials(
+                                item.get("referees"),
+                                item.get("officials"),
+                                fixture.get("referees"),
+                                fixture.get("officials"),
+                                fixture.get("referee"),
+                            ),
+                            "liveStatistics": live_statistics,
+                            "apiFootballFixtureId": fixture_id,
+                            "venue": fixture_venue,
+                        }
+                        live_data[_match_key_from_names(home, away)] = item_data
+                        live_data[_match_key_from_names(away, home)] = item_data
+        except Exception as err:  # pylint: disable=broad-exception-caught
+            _LOGGER.warning("API-Football active fixture status backup failed: %s", err)
+            return {}
+
+        if live_data:
+            _LOGGER.debug("API-Football active fixture status backup loaded for %s matches", len(live_data) // 2)
+        return live_data
 
     def _needs_post_match_events(self, match, now):
         """Return True when a finished match is missing rich timeline data.
@@ -2280,8 +2937,13 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                         for event in substitution_events:
                             event["source"] = "api_football_post_match"
 
-                        fixture_referee = fixture.get("referee")
-                        referees = [{"name": fixture_referee, "type": "REFEREE"}] if fixture_referee else []
+                        referees = self._normalise_match_officials(
+                            item.get("referees"),
+                            item.get("officials"),
+                            fixture.get("referees"),
+                            fixture.get("officials"),
+                            fixture.get("referee"),
+                        )
                         item_data = {
                             "events": all_events,
                             "goalEvents": goal_events,
@@ -2376,7 +3038,13 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             if substitution_events:
                 match["substitutionEvents"] = substitution_events
             if data.get("referees"):
-                match["referees"] = data.get("referees")
+                match["referees"] = self._normalise_match_officials(
+                    match.get("referees"),
+                    match.get("officials"),
+                    match.get("referee"),
+                    data.get("referees"),
+                )
+                match["officials"] = match["referees"]
             if data.get("apiFootballFixtureId"):
                 match["apiFootballFixtureId"] = data.get("apiFootballFixtureId")
 
@@ -2419,13 +3087,20 @@ class WorldCupCoordinator(DataUpdateCoordinator):
         # Master installs must keep checking the live API while a match may be
         # active. Do not let the local poll-window gate stop HT -> 2H updates.
         live_data = await self._fetch_live_data_from_api_football()
+        backup_live_data = {}
         if not live_data:
-            return matches
+            backup_live_data = await self._fetch_active_fixture_status_from_api_football(matches)
+            if not backup_live_data:
+                return matches
+            live_data = backup_live_data
 
         for match in matches:
             home = _team_name(match.get("homeTeam", {}))
             away = _team_name(match.get("awayTeam", {}))
             data = live_data.get(_match_key_from_names(home, away))
+            if not data and not backup_live_data and str(match.get("status") or "").upper() in {"PAUSED", "HT", "HALF_TIME"}:
+                backup_live_data = await self._fetch_active_fixture_status_from_api_football(matches)
+                data = backup_live_data.get(_match_key_from_names(home, away))
 
             if not data:
                 continue
@@ -2514,15 +3189,19 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                 match["homeOffsides"] = home_stats.get("offsides")
                 match["awayOffsides"] = away_stats.get("offsides")
             if data.get("referees"):
-                match["referees"] = data.get("referees")
+                match["referees"] = self._normalise_match_officials(
+                    match.get("referees"),
+                    match.get("officials"),
+                    match.get("referee"),
+                    data.get("referees"),
+                )
+                match["officials"] = match["referees"]
             if data.get("apiFootballFixtureId"):
                 match["apiFootballFixtureId"] = data.get("apiFootballFixtureId")
+            if data.get("venue"):
+                match["venue"] = data.get("venue")
 
         return matches
-
-    async def _add_live_minutes_to_matches(self, matches):
-        """Backward-compatible wrapper for older internal calls."""
-        return await self._add_live_api_football_data_to_matches(matches)
 
     async def _async_update_data(self) -> dict:
         """Fetch all World Cup data and build app-ready derived data."""
@@ -2544,7 +3223,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
         matches = self._add_football_data_live_fields_to_matches(matches)
         matches = await self._add_live_api_football_data_to_matches(matches)
         matches = self._promote_near_kickoff_matches_to_live(matches)
-        matches = self._add_home_weather_to_live_matches(matches)
+        matches = await self._add_stadium_weather_to_live_matches(matches)
 
         # While any match is live/HT/ET, keep the coordinator focused on the
         # lightweight live endpoint. Heavy post-match date/event lookups can hit
@@ -2555,6 +3234,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
         matches = await self._merge_persistent_goal_events_to_matches(matches)
         standings = standings_data.get("standings", [])
         scorers = scorers_data.get("scorers", [])
+        scorers = await self._add_api_football_photos_to_scorers(scorers)
 
         new_interval = self._choose_poll_interval(matches)
 
