@@ -20,6 +20,7 @@ esphome:
     name: esphome.bluetooth-proxy
     version: "24.7.4.1"
 
+  area: Bedroom
 esp32:
   board: esp32dev
   framework:
@@ -43,8 +44,9 @@ logger:
 
 # Enable Home Assistant API
 api:
-  password: ""
-
+  encryption:
+    key: !secret btpb_apikey
+    
 captive_portal:
 
 web_server:
