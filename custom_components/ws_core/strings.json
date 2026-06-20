@@ -54,10 +54,15 @@
       },
       "display": {
         "title": "Display units",
-        "description": "Choose how values are displayed. 'Auto' follows your Home Assistant unit system setting.",
+        "description": "Choose how sensor values are displayed. 'Auto' follows your Home Assistant unit system for each measurement. Individual unit overrides take precedence over the preset.",
         "data": {
-          "units_mode": "Wind / rain / pressure units",
+          "units_mode": "Units preset",
           "temp_unit": "Temperature unit",
+          "wind_unit": "Wind speed unit",
+          "pressure_unit": "Pressure unit",
+          "rain_unit": "Rainfall unit",
+          "distance_unit": "Distance unit",
+          "altitude_unit": "Altitude unit",
           "_go_back": "← Go back to previous step"
         }
       },
@@ -308,8 +313,13 @@
           "hemisphere": "Hemisphere",
           "climate_region": "Climate region",
           "elevation_m": "Station elevation",
-          "units_mode": "Wind / rain / pressure units",
+          "units_mode": "Units preset",
           "temp_unit": "Temperature unit",
+          "wind_unit": "Wind speed unit",
+          "pressure_unit": "Pressure unit",
+          "rain_unit": "Rainfall unit",
+          "distance_unit": "Distance unit",
+          "altitude_unit": "Altitude unit",
           "forecast_enabled": "Enable forecast",
           "forecast_interval_min": "Forecast refresh interval",
           "forecast_lat": "Forecast latitude",
@@ -342,8 +352,13 @@
           "hemisphere": "Hemisphere",
           "climate_region": "Climate region",
           "elevation_m": "Station elevation",
-          "units_mode": "Wind / rain / pressure units",
-          "temp_unit": "Temperature unit",
+          "units_mode": "Sets a baseline unit system. Individual unit overrides below take precedence.",
+          "temp_unit": "Override temperature display. 'Auto' follows your HA unit system.",
+          "wind_unit": "Override wind speed display. 'Auto' follows your HA unit system.",
+          "pressure_unit": "Override pressure display. 'Auto' follows your HA unit system.",
+          "rain_unit": "Override rainfall display. 'Auto' follows your HA unit system.",
+          "distance_unit": "Override distance display (e.g. lightning distance). 'Auto' follows your HA unit system.",
+          "altitude_unit": "Override altitude display (e.g. cloud base, freezing level). 'Auto' follows your HA unit system.",
           "forecast_enabled": "Enable forecast",
           "forecast_interval_min": "Forecast refresh interval",
           "forecast_lat": "Forecast latitude",
@@ -1457,6 +1472,16 @@
           "days_to_new_moon": {
             "name": "Days to new moon"
           }
+        },
+        "state": {
+          "new_moon": "New Moon",
+          "waxing_crescent": "Waxing Crescent",
+          "first_quarter": "First Quarter",
+          "waxing_gibbous": "Waxing Gibbous",
+          "full_moon": "Full Moon",
+          "waning_gibbous": "Waning Gibbous",
+          "last_quarter": "Last Quarter",
+          "waning_crescent": "Waning Crescent"
         }
       },
       "moon_illumination": {
@@ -2127,6 +2152,13 @@
           "soil_moisture_deficit_pct": {
             "name": "Soil moisture deficit (%)"
           }
+        },
+        "state": {
+          "none": "None",
+          "low": "Low",
+          "moderate": "Moderate",
+          "high": "High",
+          "critical": "Critical"
         }
       },
       "irrigation_need_score": {
@@ -2163,6 +2195,24 @@
           "all_clear": {
             "name": "All clear"
           }
+        }
+      },
+      "lightning_azimuth": {
+        "name": "Lightning azimuth"
+      },
+      "vigicrues_river_level": {
+        "name": "{river} - River Level"
+      },
+      "vigicrues_river_flow": {
+        "name": "{river} - River Flow"
+      },
+      "frost_risk": {
+        "name": "Frost Risk",
+        "state": {
+          "no_risk": "No Risk",
+          "unlikely": "Unlikely",
+          "probable": "Probable",
+          "high": "High"
         }
       }
     },
@@ -2397,6 +2447,27 @@
         "imperial": "Imperial (mph, in, inHg)"
       }
     },
+    "rain_unit": {
+      "options": {
+        "auto": "Auto (follow Home Assistant)",
+        "mm": "mm (millimetres)",
+        "in": "in (inches)"
+      }
+    },
+    "distance_unit": {
+      "options": {
+        "auto": "Auto (follow Home Assistant)",
+        "km": "km (kilometres)",
+        "mi": "mi (miles)"
+      }
+    },
+    "altitude_unit": {
+      "options": {
+        "auto": "Auto (follow Home Assistant)",
+        "m": "m (metres)",
+        "ft": "ft (feet)"
+      }
+    },
     "forecast_provider": {
       "options": {
         "open_meteo": "Open-Meteo (free, no key)",
@@ -2406,6 +2477,21 @@
         "pirate_weather": "Pirate Weather (free tier, API key)",
         "meteo_france": "Météo France (free tier, API key)",
         "ha_weather_entity": "Home Assistant weather entity (no API calls)"
+      }
+    },
+    "hemisphere": {
+      "options": {
+        "northern": "Northern",
+        "southern": "Southern"
+      }
+    },
+    "climate_region": {
+      "options": {
+        "tropical": "Tropical",
+        "dry": "Dry",
+        "temperate": "Temperate",
+        "continental": "Continental",
+        "polar": "Polar"
       }
     }
   }

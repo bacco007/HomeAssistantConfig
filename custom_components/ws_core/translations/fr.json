@@ -54,10 +54,15 @@
       },
       "display": {
         "title": "Unités d'affichage",
-        "description": "Choisissez comment les valeurs sont affichées. « Auto » suit les unités de Home Assistant.",
+        "description": "Choisissez comment les valeurs sont affichées. « Auto » suit les unités de Home Assistant. Les paramètres individuels ont priorité sur le préréglage.",
         "data": {
-          "units_mode": "Vent / pluie / pression",
+          "units_mode": "Préréglage d'unités",
           "temp_unit": "Unité de température",
+          "wind_unit": "Unité de vitesse du vent",
+          "pressure_unit": "Unité de pression",
+          "rain_unit": "Unité de précipitation",
+          "distance_unit": "Unité de distance",
+          "altitude_unit": "Unité d'altitude",
           "_go_back": "← Retour à l'étape précédente"
         }
       },
@@ -85,7 +90,7 @@
         },
         "data_description": {
           "forecast_entity": "Choisissez une entité météo déjà configurée dans Home Assistant (ex. weather.home, weather.forecast_home)"
-                }
+        }
       },
       "forecast_api_key": {
         "title": "Clé API du fournisseur de prévisions météo",
@@ -308,8 +313,13 @@
           "hemisphere": "Hémisphère",
           "climate_region": "Région climatique",
           "elevation_m": "Altitude de la station",
-          "units_mode": "Unités : vent, pluie, pression",
+          "units_mode": "Préréglage d'unités",
           "temp_unit": "Unité de température",
+          "wind_unit": "Unité de vitesse du vent",
+          "pressure_unit": "Unité de pression",
+          "rain_unit": "Unité de précipitation",
+          "distance_unit": "Unité de distance",
+          "altitude_unit": "Unité d'altitude",
           "forecast_enabled": "Activer les prévisions",
           "forecast_interval_min": "Intervalle de rafraîchissement des prévisions",
           "forecast_lat": "Latitude des prévisions",
@@ -342,8 +352,13 @@
           "hemisphere": "Hémisphère",
           "climate_region": "Région climatique",
           "elevation_m": "Altitude de la station",
-          "units_mode": "Unités : vent, pluie, pression",
-          "temp_unit": "Unité de température",
+          "units_mode": "Définit un système d'unités de base. Les réglages individuels ci-dessous ont priorité.",
+          "temp_unit": "Remplace l'unité de température. « Auto » suit les paramètres HA.",
+          "wind_unit": "Remplace l'unité de vitesse du vent. « Auto » suit les paramètres HA.",
+          "pressure_unit": "Remplace l'unité de pression. « Auto » suit les paramètres HA.",
+          "rain_unit": "Remplace l'unité de précipitation. « Auto » suit les paramètres HA.",
+          "distance_unit": "Remplace l'unité de distance (ex. distance foudre). « Auto » suit les paramètres HA.",
+          "altitude_unit": "Remplace l'unité d'altitude (ex. base des nuages, niveau de gel). « Auto » suit les paramètres HA.",
           "forecast_enabled": "Activer les prévisions",
           "forecast_interval_min": "Intervalle de rafraîchissement des prévisions",
           "forecast_lat": "Latitude des prévisions",
@@ -456,8 +471,8 @@
           "enable_advanced_sensors": "Code Zambretti (format numérique), ET₀ horaire, direction du vent lissée",
           "enable_nowcast": "Prévision immédiate Open-Meteo à 15 minutes : minutes avant le début/la fin de la pluie, cumul pour la prochaine heure, intensité. Sans clé API."
         }
-       }, 
-       "indoor_rooms_opt": {
+      },
+      "indoor_rooms_opt": {
         "title": "Capteurs intérieurs des différentes pièces",
         "description": "Sélectionnez un capteur de température par pièce pour générer un capteur d'écart de température intérieur/extérieur dédié.",
         "data": {
@@ -480,7 +495,7 @@
           "enable_windy": "Windy.com",
           "enable_cwop": "CWOP / APRS",
           "enable_mqtt": "MQTT"
-         }
+        }
       },
       "sea_temp_opt": {
         "title": "Localisation pour la température de la mer",
@@ -620,9 +635,9 @@
       "description": "Les capteurs suivants n'ont pas été mis à jour pendant le délai d'inactivité autorisé : {sensors}. Vérifiez que les capteurs de votre station météo sont en ligne et connecté."
     },
     "forecast_api_failures": {
-      "title": "Échecs de l'API de prévisions Open-Meteo",
-      "description": "L'API de prévisions Open-Meteo a échoué {failures} fois consécutives. Les données de prévision peuvent être obsolètes. Vérifiez votre connexion Internet. L'intégration réessaiera automatiquement avec un backoff exponentiel."
-       },
+      "title": "Échecs de l'API de prévisions",
+      "description": "Le fournisseur de prévisions ({provider}) a échoué {failures} fois consécutives. Les données de prévision peuvent être obsolètes. Vérifiez votre connexion Internet. L'intégration réessaiera automatiquement avec un backoff exponentiel."
+    },
     "stuck_sensors": {
       "title": "Capteur(s) de la station météo bloqué(s)",
       "description": "Les capteurs suivants ont renvoyé la même valeur pendant une période prolongée et peuvent présenter un défaut matériel : {sensors}. Vérifiez les connexions des capteurs et éliminez toute obstruction (par ex. pluviomètre bouché, anémomètre gelé)."
@@ -768,7 +783,7 @@
       },
       "forecast_daily": {
         "name": "Prévisions quotidiennes"
-              },
+      },
       "forecast_provider": {
         "name": "Fournisseur de prévisions",
         "state_attributes": {
@@ -897,7 +912,7 @@
           "light": "Faible",
           "moderate": "Modérée",
           "heavy": "Forte"
-                  }
+        }
       },
       "nowcast_confidence": {
         "name": "Fiabilité de la prévision à court terme",
@@ -1594,7 +1609,7 @@
             "name": "Moyenne (30 j)"
           }
         }
-              },
+      },
       "temp_anomaly_90d": {
         "name": "Écart aux normales (Temp.; 90 j)"
       },
@@ -1650,7 +1665,7 @@
             "name": "Nombre d'échantillons"
           }
         }
-              },
+      },
       "conditions_summary": {
         "name": "Conditions actuelles",
         "state_attributes": {
@@ -2100,7 +2115,7 @@
             "name": "Humidité"
           }
         }
-              },
+      },
       "soil_moisture": {
         "name": "Humidité du sol",
         "state_attributes": {
@@ -2163,6 +2178,21 @@
           "all_clear": {
             "name": "Aucune anomalie"
           }
+        }
+      },
+      "vigicrues_river_level": {
+        "name": "{river} - Hauteur d'eau"
+      },
+      "vigicrues_river_flow": {
+        "name": "{river} - Débit"
+      },
+      "frost_risk": {
+        "name": "Risque de gel",
+        "state": {
+          "no_risk": "Aucun risque",
+          "unlikely": "Peu probable",
+          "probable": "Probable",
+          "high": "Élevé"
         }
       }
     },
@@ -2289,7 +2319,7 @@
       },
       "ws_enable_indoor": {
         "name": "Capteurs intérieurs"
-              },
+      },
       "ws_enable_soil": {
         "name": "Capteurs de sol"
       },
@@ -2397,6 +2427,27 @@
         "imperial": "Impérial (mph, in, inHg)"
       }
     },
+    "rain_unit": {
+      "options": {
+        "auto": "Automatique (suit Home Assistant)",
+        "mm": "mm (millimètres)",
+        "in": "in (pouces)"
+      }
+    },
+    "distance_unit": {
+      "options": {
+        "auto": "Automatique (suit Home Assistant)",
+        "km": "km (kilomètres)",
+        "mi": "mi (miles)"
+      }
+    },
+    "altitude_unit": {
+      "options": {
+        "auto": "Automatique (suit Home Assistant)",
+        "m": "m (mètres)",
+        "ft": "ft (pieds)"
+      }
+    },
     "forecast_provider": {
       "options": {
         "open_meteo": "Open-Meteo (Gratuit, sans clé)",
@@ -2406,6 +2457,21 @@
         "pirate_weather": "Pirate Weather (Clé API requise, offre gratuite)",
         "meteo_france": "Météo France (Clé API requise, offre gratuite)",
         "ha_weather_entity": "Entité météo de Home Assistant"
+      }
+    },
+    "hemisphere": {
+      "options": {
+        "northern": "Hémisphère Nord",
+        "southern": "Hémisphère Sud"
+      }
+    },
+    "climate_region": {
+      "options": {
+        "tropical": "Tropicale",
+        "dry": "Sèche",
+        "temperate": "Tempérée",
+        "continental": "Continentale",
+        "polar": "Polaire"
       }
     }
   }

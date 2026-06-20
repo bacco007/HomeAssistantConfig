@@ -101,7 +101,6 @@ from .algorithms import (
     humidity_level,
     least_squares_pressure_trend,
     linear_regression_slope,
-    moon_display_string,
     moon_next_phase_days,
     moon_phase_days,
     moon_phase_from_age,
@@ -350,6 +349,7 @@ from .const import (
     KEY_FORECAST_TILES,
     KEY_FREEZING_LEVEL_M,
     KEY_FROST_POINT_C,
+    KEY_FROST_RISK,
     KEY_FROST_STREAK,
     KEY_FWI,
     KEY_FWI_BUI,
@@ -378,6 +378,7 @@ from .const import (
     KEY_IRRIGATION_NEED,
     KEY_IRRIGATION_NEED_SCORE,
     KEY_LEAF_WETNESS,
+    KEY_LIGHTNING_AZIMUTH,
     KEY_LIGHTNING_CLEARANCE_MIN,
     KEY_LIGHTNING_COUNT_1H,
     KEY_LIGHTNING_DISTANCE_KM,
@@ -498,6 +499,7 @@ from .const import (
     SRC_INDOOR_CO2,
     SRC_INDOOR_HUMIDITY,
     SRC_INDOOR_TEMP,
+    SRC_LIGHTNING_AZIMUTH,
     SRC_LIGHTNING_COUNT,
     SRC_LIGHTNING_DISTANCE,
     SRC_LUX,
@@ -2293,15 +2295,15 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         data[KEY_IRRIGATION_NEED_SCORE] = round(score, 0)
 
         if score < 10:
-            need_label = "None"
+            need_label = "none"
         elif score < 25:
-            need_label = "Low"
+            need_label = "low"
         elif score < 50:
-            need_label = "Moderate"
+            need_label = "moderate"
         elif score < 75:
-            need_label = "High"
+            need_label = "high"
         else:
-            need_label = "Critical"
+            need_label = "critical"
         data[KEY_IRRIGATION_NEED] = need_label
 
     async def _async_fetch_neighbor_qc(self) -> None:
@@ -2468,15 +2470,18 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             if SRC_LIGHTNING_DISTANCE not in self._blitzortung_sources and ("distance" in uid or "distance" in eid):
                 self._blitzortung_sources[SRC_LIGHTNING_DISTANCE] = eid
                 _LOGGER.debug("Blitzortung lightning distance auto-detected: %s", eid)
+            if SRC_LIGHTNING_AZIMUTH not in self._blitzortung_sources and ("azimuth" in uid or "azimuth" in eid):
+                self._blitzortung_sources[SRC_LIGHTNING_AZIMUTH] = eid
+                _LOGGER.debug("Blitzortung lightning azimuth auto-detected: %s", eid)
 
     def _compute_lightning(self, data: dict, now: Any) -> None:
         """Derive lightning sensors from optional strike count + distance inputs.  (v2.0)"""
         if not self.lightning_enabled:
             return
 
-        # Retry Blitzortung discovery on every tick until both sources are found;
+        # Retry Blitzortung discovery on every tick until at least count or distance is found;
         # the initial __init__ call may run before Blitzortung has registered its entities.
-        if len(self._blitzortung_sources) < 2:
+        if len(self._blitzortung_sources) < 1:
             self._discover_blitzortung()
 
         # Use physical sensor if mapped; fall back to auto-detected Blitzortung entity
@@ -2488,10 +2493,17 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             self.hass,
             self.sources.get(SRC_LIGHTNING_DISTANCE) or self._blitzortung_sources.get(SRC_LIGHTNING_DISTANCE),
         )
+        azimuth_raw = self._num(
+            self.hass,
+            self.sources.get(SRC_LIGHTNING_AZIMUTH) or self._blitzortung_sources.get(SRC_LIGHTNING_AZIMUTH),
+        )
 
-        # Strike distance passthrough
+        # Strike distance and azimuth passthrough
         if dist_raw is not None:
             data[KEY_LIGHTNING_DISTANCE_KM] = round(float(dist_raw), 1)
+        if azimuth_raw is not None:
+            data[KEY_LIGHTNING_AZIMUTH] = int(float(azimuth_raw))
+        if dist_raw is not None:
             prox_km = self._lightning_proximity_km
             data[KEY_LIGHTNING_PROXIMITY] = "near" if float(dist_raw) <= prox_km else "clear"
 
@@ -2810,6 +2822,32 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     # ------------------------------------------------------------------
     # v1.2.0 - GDD accumulation, streak counters
     # ------------------------------------------------------------------
+
+    def _compute_frost_risk(self, data: dict, tc: float | None) -> None:
+        if tc is None:
+            return
+
+        forecast = data.get(KEY_FORECAST)
+        forecast_min = None
+        if forecast and isinstance(forecast, dict) and forecast.get("daily"):
+            daily = forecast["daily"]
+            if len(daily) > 0:
+                forecast_min = daily[0].get("templow")
+                if forecast_min is None:
+                    forecast_min = daily[0].get("temperature")
+
+        min_temp = float(tc)
+        if forecast_min is not None:
+            min_temp = min(min_temp, float(forecast_min))
+
+        if min_temp < 0:
+            data[KEY_FROST_RISK] = "high"
+        elif min_temp < 2:
+            data[KEY_FROST_RISK] = "probable"
+        elif min_temp < 4:
+            data[KEY_FROST_RISK] = "unlikely"
+        else:
+            data[KEY_FROST_RISK] = "no_risk"
 
     def _compute_streaks(self, data: dict, now: Any) -> None:
         """Update dry/heat/frost streak counters (RestoreEntity-backed in v0.3.0).
@@ -3561,6 +3599,8 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if fc and fc.get("daily"):
             data[KEY_FORECAST_TILES] = self._build_forecast_tiles(fc["daily"])
 
+        # Frost risk
+        self._compute_frost_risk(data, tc)
         # Rain today (resets at local midnight)
         data[KEY_RAIN_TODAY_MM] = self._rain_today_mm
 
@@ -3718,7 +3758,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             illum_pct = round(illum_frac * 100)
             data[KEY_MOON_PHASE] = phase_key
             data[KEY_MOON_ILLUMINATION_PCT] = illum_pct
-            data[KEY_MOON_DISPLAY] = moon_display_string(phase_key, illum_pct)
+            data[KEY_MOON_DISPLAY] = phase_key
             data[KEY_MOON_AGE_DAYS] = age
             data[KEY_MOON_NEXT_FULL] = moon_next_phase_days(local_now.year, local_now.month, local_now.day, 14.77)
             data[KEY_MOON_NEXT_NEW] = moon_next_phase_days(local_now.year, local_now.month, local_now.day, 0.0)

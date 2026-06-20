@@ -52,10 +52,15 @@
       },
       "display": {
         "title": "Anzeigeeinheiten",
-        "description": "Wähle, wie Werte angezeigt werden. 'Auto' folgt der Einheiteneinstellung von Home Assistant.",
+        "description": "Wähle, wie Werte angezeigt werden. 'Auto' folgt der Einheiteneinstellung von Home Assistant. Individuelle Einstellungen haben Vorrang vor der Voreinstellung.",
         "data": {
-          "units_mode": "Wind / Regen / Druck-Einheiten",
+          "units_mode": "Einheiten-Voreinstellung",
           "temp_unit": "Temperatureinheit",
+          "wind_unit": "Wind speed unit",
+          "pressure_unit": "Pressure unit",
+          "rain_unit": "Rainfall unit",
+          "distance_unit": "Distance unit",
+          "altitude_unit": "Altitude unit",
           "_go_back": "← Zurück zum vorherigen Schritt"
         }
       },

@@ -191,6 +191,7 @@ KEY_FORECAST_PROVIDER = "forecast_provider"
 KEY_FEELS_LIKE_C = "feels_like_c"
 KEY_WET_BULB_C = "wet_bulb_c"
 KEY_FROST_POINT_C = "frost_point_c"
+KEY_FROST_RISK = "frost_risk"
 KEY_ZAMBRETTI_FORECAST = "zambretti_forecast"
 KEY_ZAMBRETTI_NUMBER = "zambretti_number"
 KEY_WIND_BEAUFORT = "wind_beaufort"
@@ -284,6 +285,7 @@ SRC_SOLAR_RADIATION = "solar_radiation"  # W/m², optional
 # them; the v2.0 feature sections below reuse these same names).
 SRC_LIGHTNING_COUNT = "lightning_count"  # cumulative strike count
 SRC_LIGHTNING_DISTANCE = "lightning_dist"  # nearest strike distance (km)
+SRC_LIGHTNING_AZIMUTH = "lightning_azimuth"  # strike azimuth (degrees)
 SRC_INDOOR_TEMP = "indoor_temp"
 SRC_INDOOR_HUMIDITY = "indoor_humidity"
 SRC_INDOOR_CO2 = "indoor_co2"
@@ -299,6 +301,7 @@ OPTIONAL_SOURCES = [
     SRC_SOLAR_RADIATION,
     SRC_LIGHTNING_COUNT,
     SRC_LIGHTNING_DISTANCE,
+    SRC_LIGHTNING_AZIMUTH,
     SRC_INDOOR_TEMP,
     SRC_INDOOR_HUMIDITY,
     SRC_INDOOR_CO2,
@@ -827,6 +830,7 @@ DEFAULT_MQTT_INTERVAL_MIN = 1
 # Data keys
 KEY_LIGHTNING_COUNT_1H = "lightning_count_1h"
 KEY_LIGHTNING_DISTANCE_KM = "lightning_distance_km"
+KEY_LIGHTNING_AZIMUTH = "lightning_azimuth"
 KEY_LIGHTNING_RATE_1H = "lightning_rate_1h"  # strikes per minute (avg)
 KEY_LIGHTNING_CLEARANCE_MIN = "lightning_clearance_min"  # minutes since last strike
 KEY_LIGHTNING_PROXIMITY = "lightning_proximity"  # binary "near" / "clear"

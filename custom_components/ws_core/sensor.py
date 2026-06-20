@@ -140,6 +140,7 @@ from .const import (
     KEY_IRRIGATION_NEED,
     KEY_IRRIGATION_NEED_SCORE,
     KEY_LEAF_WETNESS,
+    KEY_LIGHTNING_AZIMUTH,
     KEY_LIGHTNING_CLEARANCE_MIN,
     KEY_LIGHTNING_COUNT_1H,
     KEY_LIGHTNING_DISTANCE_KM,
@@ -532,7 +533,7 @@ SENSORS: list[WSSensorDescription] = [
         icon="mdi:calendar-weather",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda d: (d.get(KEY_FORECAST) or {}).get("provider") if d.get(KEY_FORECAST) else None,
-        attrs_fn=lambda d: d.get(KEY_FORECAST) or {},
+        attrs_fn=lambda d: {"forecast": (d.get(KEY_FORECAST) or {}).get("daily", [])},
     ),
     WSSensorDescription(
         key=KEY_FORECAST_PROVIDER,
@@ -1018,6 +1019,14 @@ SENSORS: list[WSSensorDescription] = [
         attrs_fn=lambda d: {
             "proximity": d.get(KEY_LIGHTNING_PROXIMITY),
         },
+    ),
+    WSSensorDescription(
+        key=KEY_LIGHTNING_AZIMUTH,
+        translation_key="lightning_azimuth",
+        name="WS Lightning Azimuth",
+        icon="mdi:compass",
+        native_unit="°",
+        state_class=SensorStateClass.MEASUREMENT,
     ),
     WSSensorDescription(
         key=KEY_LIGHTNING_RATE_1H,
@@ -1768,6 +1777,8 @@ SENSORS: list[WSSensorDescription] = [
         translation_key="irrigation_need",
         name="WS Irrigation Need",
         icon="mdi:sprinkler",
+        device_class=SensorDeviceClass.ENUM,
+        options=["none", "low", "moderate", "high", "critical"],
         native_unit=None,
         state_class=None,
         attrs_fn=lambda d: {
@@ -1888,6 +1899,17 @@ SENSORS: list[WSSensorDescription] = [
         translation_key="moon",
         name="WS Moon",
         icon="mdi:moon-waxing-crescent",
+        device_class=SensorDeviceClass.ENUM,
+        options=[
+            "new_moon",
+            "waxing_crescent",
+            "first_quarter",
+            "waxing_gibbous",
+            "full_moon",
+            "waning_gibbous",
+            "last_quarter",
+            "waning_crescent",
+        ],
         attrs_fn=lambda d: {
             "phase": d.get(KEY_MOON_PHASE),
             "illumination_pct": d.get(KEY_MOON_ILLUMINATION_PCT),
@@ -2300,6 +2322,7 @@ _FEATURE_TOGGLE_MAP: dict[str, str] = {
     # v2.0 - lightning sensors
     KEY_LIGHTNING_COUNT_1H: CONF_ENABLE_LIGHTNING,
     KEY_LIGHTNING_DISTANCE_KM: CONF_ENABLE_LIGHTNING,
+    KEY_LIGHTNING_AZIMUTH: CONF_ENABLE_LIGHTNING,
     KEY_LIGHTNING_RATE_1H: CONF_ENABLE_LIGHTNING,
     KEY_LIGHTNING_CLEARANCE_MIN: CONF_ENABLE_LIGHTNING,
     KEY_LIGHTNING_PROXIMITY: CONF_ENABLE_LIGHTNING,
@@ -2868,15 +2891,16 @@ class WSRiverSensor(CoordinatorEntity, SensorEntity):
         return (self.coordinator.data or {}).get("_vigicrues_auto_code", "")
 
     @property
-    def name(self) -> str:
-        """River name + level, updated once the coordinator has the metadata."""
+    def translation_key(self) -> str:
+        return "vigicrues_river_level"
+
+    @property
+    def translation_placeholders(self) -> dict[str, str]:
         d = self.coordinator.data or {}
         code = self._resolved_code()
         river = d.get(f"_river_name_{code}") or self._river_name
-        if river:
-            return f"WS River Level — {river}"
         station = d.get(f"_river_station_name_{code}") or self._station_name
-        return f"WS River Level — {station}" if station else "WS River Level"
+        return {"river": river or station or "Unknown"}
 
     @property
     def native_value(self):
@@ -2908,7 +2932,7 @@ class WSRiverFlowSensor(CoordinatorEntity, SensorEntity):
     """
 
     _attr_has_entity_name = True
-    _attr_icon = "mdi:water-flow"
+    _attr_icon = "mdi:water-sync"
     _attr_native_unit_of_measurement = "m³/s"
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_device_class = None
@@ -2944,14 +2968,16 @@ class WSRiverFlowSensor(CoordinatorEntity, SensorEntity):
         return (self.coordinator.data or {}).get("_vigicrues_auto_code", "")
 
     @property
-    def name(self) -> str:
+    def translation_key(self) -> str:
+        return "vigicrues_river_flow"
+
+    @property
+    def translation_placeholders(self) -> dict[str, str]:
         d = self.coordinator.data or {}
         code = self._resolved_code
         river = d.get(f"_river_name_{code}") or self._river_name
-        if river:
-            return f"WS River Flow — {river}"
         station = d.get(f"_river_station_name_{code}") or self._station_name
-        return f"WS River Flow — {station}" if station else "WS River Flow"
+        return {"river": river or station or "Unknown"}
 
     @property
     def native_value(self):
