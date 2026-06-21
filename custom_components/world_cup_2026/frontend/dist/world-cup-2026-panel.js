@@ -20,6 +20,9 @@ class WorldCup2026Panel extends HTMLElement {
     this._sidebarObserver = null;
     this._sidebarStyleRoots = new Set();
     this._sidebarObservers = [];
+    this._fixturesVisibleDays = 5;
+    this._fixturesVisibleMatches = 20;
+    this._knockoutVisibleMatches = 12;
     const savedLanguage = localStorage.getItem("world_cup_2026_language") || "en";
     const validLanguages = new Set(["en", "fr", "de", "es", "it", "nl", "pt", "pl", "ja", "sv", "no", "hu", "tr", "cs", "da", "fi", "el", "ro", "sk", "sl", "hr", "sr", "bg", "uk", "is", "qu", "gn", "ay"]);
     this._language = validLanguages.has(savedLanguage) ? savedLanguage : "en";
@@ -5060,6 +5063,7 @@ class WorldCup2026Panel extends HTMLElement {
       teamCommandCentre: "Team Command Centre",
       teamCommandIntro: "Compact team hub with fixtures, results, cards, players, group table and tournament journey.",
       countryProfile: "Country Profile",
+      upcomingMatches: "Upcoming Matches",
       countryPlayers: "Country Players",
       playerCardsBuilt: "Player cards are built from loaded goals, assists and event data.",
       playerSpotlight: "Player Spotlight",
@@ -5440,7 +5444,7 @@ class WorldCup2026Panel extends HTMLElement {
       if (!document.hidden) {
         this.updateCountdownDisplay();
         this.updateLiveClockDisplays();
-        this.scheduleNextRefresh(10 * 1000);
+        this.scheduleNextRefresh(20 * 1000);
       }
     };
     document.addEventListener("visibilitychange", this._visibilityHandler);
@@ -5637,7 +5641,7 @@ class WorldCup2026Panel extends HTMLElement {
 
 
   async loadPublicGoalEvents() {
-    const ttlMs = (Array.isArray(this._data?.live) && this._data.live.length) ? 10 * 1000 : 60 * 1000;
+    const ttlMs = (Array.isArray(this._data?.live) && this._data.live.length) ? 20 * 1000 : 60 * 1000;
     const urls = [
       "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/world_cup_2026_goal_events.json",
       "/local/worldcup/world_cup_2026_goal_events.json",
@@ -5665,7 +5669,7 @@ class WorldCup2026Panel extends HTMLElement {
 
     for (const url of urls) {
       try {
-        const data = await this.fetchJsonCached(`github-live:${url}`, url, 10 * 1000);
+        const data = await this.fetchJsonCached(`github-live:${url}`, url, 20 * 1000);
         const matches = Array.isArray(data)
           ? data
           : (Array.isArray(data?.live) ? data.live : (Array.isArray(data?.matches) ? data.matches : []));
@@ -5818,6 +5822,58 @@ class WorldCup2026Panel extends HTMLElement {
   mergeUniqueMatches(primary = [], extras = []) {
     const merged = [];
     const seen = new Set();
+    const indexByKey = new Map();
+
+    const mergeRichMatchDetails = (base, extra) => {
+      if (!base || !extra) return base || extra;
+      const mergedMatch = { ...base };
+      [
+        "events",
+        "goalEvents",
+        "cardEvents",
+        "substitutionEvents",
+        "varEvents",
+        "referees",
+        "officials",
+        "lineups",
+        "lineupsData",
+        "apiFootballLineups",
+      ].forEach((key) => {
+        const baseList = Array.isArray(mergedMatch[key]) ? mergedMatch[key] : [];
+        const extraList = Array.isArray(extra[key]) ? extra[key] : [];
+        if (extraList.length > baseList.length) mergedMatch[key] = extraList;
+      });
+      [
+        "apiFootballFixtureId",
+        "goalEventsSource",
+        "liveStatistics",
+        "homeCorners",
+        "awayCorners",
+        "homeShotsOnGoal",
+        "awayShotsOnGoal",
+        "homePossession",
+        "awayPossession",
+        "homeFouls",
+        "awayFouls",
+        "homeOffsides",
+        "awayOffsides",
+        "referee",
+        "venue",
+        "stadium",
+        "matchWeather",
+        "weather",
+      ].forEach((key) => {
+        if (
+          (mergedMatch[key] === undefined || mergedMatch[key] === null || mergedMatch[key] === "" || (Array.isArray(mergedMatch[key]) && !mergedMatch[key].length))
+          && extra[key] !== undefined
+          && extra[key] !== null
+          && extra[key] !== ""
+        ) {
+          mergedMatch[key] = extra[key];
+        }
+      });
+      return mergedMatch;
+    };
 
     const add = (match) => {
       if (!match) return;
@@ -5829,8 +5885,13 @@ class WorldCup2026Panel extends HTMLElement {
         this.fixtureTeamKey(this.getHomeTeam(match)),
         this.fixtureTeamKey(this.getAwayTeam(match)),
       ]);
-      if (seen.has(key)) return;
+      if (seen.has(key)) {
+        const index = indexByKey.get(key);
+        if (index !== undefined) merged[index] = mergeRichMatchDetails(merged[index], match);
+        return;
+      }
       seen.add(key);
+      indexByKey.set(key, merged.length);
       merged.push(match);
     };
 
@@ -6049,7 +6110,7 @@ class WorldCup2026Panel extends HTMLElement {
   refreshDelayMs() {
     const matches = this.allKnownMatches ? this.allKnownMatches() : [];
     const hasLive = matches.some((match) => this.isLiveMatch(match));
-    if (hasLive) return this._page === "live" || this._page === "overview" ? 10 * 1000 : 20 * 1000;
+    if (hasLive) return 20 * 1000;
 
     const next = this.nextKickoffMs(matches);
     if (next !== null) {
@@ -6072,7 +6133,7 @@ class WorldCup2026Panel extends HTMLElement {
     this._refreshInterval = setTimeout(() => {
       this._refreshInterval = null;
       this.loadAll();
-    }, Math.max(10 * 1000, hiddenDelay));
+    }, Math.max(20 * 1000, hiddenDelay));
   }
 
   hasUsableMasterClock(match) {
@@ -6241,6 +6302,13 @@ class WorldCup2026Panel extends HTMLElement {
   changePage(page) {
     const validPages = new Set(["overview", "live", "fixtures", "results", "groups", "knockout", "players", "records", "stats", "teams", "venues", "supporters"]);
     if (!validPages.has(page)) page = "overview";
+    if (page !== this._page && page === "fixtures") {
+      this._fixturesVisibleDays = 5;
+      this._fixturesVisibleMatches = 20;
+    }
+    if (page !== this._page && page === "knockout") {
+      this._knockoutVisibleMatches = 12;
+    }
     this._page = page;
     try { localStorage.setItem("world_cup_2026_last_page", page); } catch (e) {}
     this.render();
@@ -18554,6 +18622,15 @@ class WorldCup2026Panel extends HTMLElement {
       "argentina", "argentinian", "brazil", "brazilian", "uruguay", "uruguayan", "japan", "japanese",
       "korea", "korean", "australia", "australian", "turkey", "turkish", "qatar", "morocco", "ghana",
       "panama", "croatia", "austria", "belgium", "egypt", "iran", "iraq", "senegal", "switzerland",
+      "romania", "romanian",
+      "slovenia", "slovenian", "slovakia", "slovak", "czechia", "czech", "hungary", "hungarian",
+      "serbia", "serbian", "bulgaria", "bulgarian", "ukraine", "ukrainian", "greece", "greek",
+      "denmark", "danish", "finland", "finnish", "iceland", "icelandic", "ireland", "irish",
+      "scotland", "scottish", "wales", "welsh", "chile", "chilean", "colombia", "colombian",
+      "paraguay", "paraguayan", "peru", "peruvian", "venezuela", "venezuelan", "ecuador", "ecuadorian",
+      "bolivia", "bolivian", "costa rica", "costa rican", "honduras", "honduran", "guatemala", "guatemalan",
+      "jamaica", "jamaican", "saudi arabia", "saudi", "uae", "emirati", "china", "chinese",
+      "uzbekistan", "uzbek", "algeria", "algerian", "tunisia", "tunisian", "south africa", "south african",
     ]);
     const cleanOfficialText = (value) => String(value || "")
       .normalize("NFD")
@@ -18639,7 +18716,56 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   matchOfficialsSection(match) {
-    const refs = this.matchReferees(match).filter((ref) => {
+    const cleanRefText = (value) => String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/\b(referee|ref|official|main|assistant|var|video|match)\b/g, " ")
+      .replace(/[^a-z0-9 ]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const stripCountryFromRefName = (name, nationality = "") => {
+      let cleaned = String(name || "").trim();
+      const nat = String(nationality || "").trim();
+      if (nat) {
+        cleaned = cleaned.replace(new RegExp(`\\s*,?\\s*${nat.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i"), "").trim();
+      }
+      const countryWords = new Set([
+        "sweden", "swedish", "england", "english", "france", "french", "germany", "german", "spain", "spanish",
+        "italy", "italian", "netherlands", "dutch", "portugal", "portuguese", "poland", "polish", "norway",
+        "norwegian", "usa", "united states", "american", "canada", "canadian", "mexico", "mexican",
+        "argentina", "argentinian", "brazil", "brazilian", "uruguay", "uruguayan", "japan", "japanese",
+        "korea", "korean", "australia", "australian", "turkey", "turkish", "qatar", "morocco", "ghana",
+        "panama", "croatia", "austria", "belgium", "egypt", "iran", "iraq", "senegal", "switzerland",
+        "romania", "romanian",
+        "slovenia", "slovenian", "slovakia", "slovak", "czechia", "czech", "hungary", "hungarian",
+        "serbia", "serbian", "bulgaria", "bulgarian", "ukraine", "ukrainian", "greece", "greek",
+        "denmark", "danish", "finland", "finnish", "iceland", "icelandic", "ireland", "irish",
+        "scotland", "scottish", "wales", "welsh", "chile", "chilean", "colombia", "colombian",
+        "paraguay", "paraguayan", "peru", "peruvian", "venezuela", "venezuelan", "ecuador", "ecuadorian",
+        "bolivia", "bolivian", "costa rica", "costa rican", "honduras", "honduran", "guatemala", "guatemalan",
+        "jamaica", "jamaican", "saudi arabia", "saudi", "uae", "emirati", "china", "chinese",
+        "uzbekistan", "uzbek", "algeria", "algerian", "tunisia", "tunisian", "south africa", "south african",
+      ]);
+      const parts = cleaned.split(/\s+/).filter(Boolean);
+      while (parts.length > 1 && countryWords.has(cleanRefText(parts[parts.length - 1]))) {
+        parts.pop();
+      }
+      return parts.join(" ").replace(/\s+,/g, ",").trim();
+    };
+    const displayRefs = [];
+    const seenRefs = new Set();
+    this.matchReferees(match).forEach((ref) => {
+      const cleanName = stripCountryFromRefName(ref?.name, ref?.nationality);
+      const normalisedName = cleanRefText(cleanName);
+      if (!normalisedName || ["referee", "ref", "official", "main referee", "match official"].includes(normalisedName)) return;
+      const parts = normalisedName.split(" ").filter(Boolean);
+      const key = parts.length > 1 ? `${parts[0]}|${parts[parts.length - 1]}` : normalisedName;
+      if (seenRefs.has(key)) return;
+      seenRefs.add(key);
+      displayRefs.push({ ...ref, name: cleanName });
+    });
+    const refs = displayRefs.filter((ref) => {
       const name = String(ref?.name || "")
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
@@ -19379,7 +19505,11 @@ class WorldCup2026Panel extends HTMLElement {
     const nextMatch = sortedFixtures.find(m => ["TIMED", "SCHEDULED"].includes(m.status));
     const dayCount = new Set(sortedFixtures.map(m => this.fixtureDateKey(m))).size;
 
-    const grouped = sortedFixtures.reduce((days, match) => {
+    const visibleMatchCount = Math.min(this._fixturesVisibleMatches || 20, sortedFixtures.length);
+    const visibleFixtures = sortedFixtures.slice(0, visibleMatchCount);
+    const hiddenMatchCount = Math.max(sortedFixtures.length - visibleMatchCount, 0);
+
+    const grouped = visibleFixtures.reduce((days, match) => {
       const key = this.fixtureDateKey(match);
       if (!days[key]) {
         days[key] = [];
@@ -19387,6 +19517,7 @@ class WorldCup2026Panel extends HTMLElement {
       days[key].push(match);
       return days;
     }, {});
+    const groupedEntries = Object.entries(grouped);
 
     return `
       <div class="fixtures-page-card wc-card">
@@ -19416,7 +19547,7 @@ class WorldCup2026Panel extends HTMLElement {
         ` : ""}
 
         <div class="fixtures-days">
-          ${Object.entries(grouped).map(([key, matches]) => `
+          ${groupedEntries.map(([key, matches]) => `
             <div class="fixtures-day-block">
               <div class="fixtures-day-heading">
                 <span>${this.esc(this.fixtureDayTitle(matches[0]))}</span>
@@ -19427,6 +19558,13 @@ class WorldCup2026Panel extends HTMLElement {
               </div>
             </div>
           `).join("")}
+          ${hiddenMatchCount ? `
+            <div class="fixtures-load-more-wrap">
+              <button class="overview-action-button fixtures-show-more-button" type="button">
+                + ${Math.min(20, hiddenMatchCount)} ${this.t("fixtures")}
+              </button>
+            </div>
+          ` : ""}
         </div>
       </div>
     `;
@@ -20317,6 +20455,40 @@ class WorldCup2026Panel extends HTMLElement {
       "jonathan david|can": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/jonathan-david.jpg",
       "j david": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/jonathan-david.jpg",
       "j david|canada": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/jonathan-david.jpg",
+      "vinicius junior": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/vinicius-junior.jpg",
+      "vinicius junior|brazil": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/vinicius-junior.jpg",
+      "vinicius junior|bra": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/vinicius-junior.jpg",
+      "v junior": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/vinicius-junior.jpg",
+      "v junior|brazil": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/vinicius-junior.jpg",
+      "vinicius jr": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/vinicius-junior.jpg",
+      "vinicius jr|brazil": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/vinicius-junior.jpg",
+      "vinicius jose paixao de oliveira junior": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/vinicius-junior.jpg",
+      "vinicius jose paixao de oliveira junior|brazil": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/vinicius-junior.jpg",
+      "deniz undav": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/deniz-undav.jpg",
+      "deniz undav|germany": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/deniz-undav.jpg",
+      "deniz undav|ger": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/deniz-undav.jpg",
+      "deniz undav|deu": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/deniz-undav.jpg",
+      "d undav": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/deniz-undav.jpg",
+      "d undav|germany": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/deniz-undav.jpg",
+      "cody gakpo": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/cody-gakpo.jpg",
+      "cody gakpo|netherlands": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/cody-gakpo.jpg",
+      "cody gakpo|nederland": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/cody-gakpo.jpg",
+      "cody gakpo|ned": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/cody-gakpo.jpg",
+      "c gakpo": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/cody-gakpo.jpg",
+      "c gakpo|netherlands": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/cody-gakpo.jpg",
+      "brian brobbey": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/brian-brobbey.jpg",
+      "brian brobbey|netherlands": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/brian-brobbey.jpg",
+      "brian brobbey|nederland": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/brian-brobbey.jpg",
+      "brian brobbey|ned": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/brian-brobbey.jpg",
+      "b brobbey": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/brian-brobbey.jpg",
+      "b brobbey|netherlands": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/brian-brobbey.jpg",
+      "ayase ueda": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/ayase-ueda.jpg",
+      "ayase ueda|japan": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/ayase-ueda.jpg",
+      "ayase ueda|jpn": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/ayase-ueda.jpg",
+      "a ueda": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/ayase-ueda.jpg",
+      "a ueda|japan": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/ayase-ueda.jpg",
+      "ueda": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/ayase-ueda.jpg",
+      "ueda|japan": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/ayase-ueda.jpg",
     };
     const cleanPlayerKey = (value) => String(value || "")
       .normalize("NFD")
@@ -20823,6 +20995,20 @@ class WorldCup2026Panel extends HTMLElement {
         </div>
       `;
     };
+    const detailMatches = [];
+    roundMatches.forEach(({ stage, label, matches }) => {
+      matches.forEach((match, index) => detailMatches.push({ stage, label, match, index }));
+      if (!matches.length) detailMatches.push({ stage, label, match: null, index: 0 });
+    });
+    const knockoutVisibleCount = Math.min(this._knockoutVisibleMatches || 12, detailMatches.length);
+    const visibleDetailMatches = detailMatches.slice(0, knockoutVisibleCount);
+    const hiddenKnockoutCount = Math.max(detailMatches.length - knockoutVisibleCount, 0);
+    const visibleDetailRounds = visibleDetailMatches.reduce((rounds, item) => {
+      const key = `${item.stage}|${item.label}`;
+      if (!rounds[key]) rounds[key] = { stage: item.stage, label: item.label, items: [] };
+      rounds[key].items.push(item);
+      return rounds;
+    }, {});
 
     return `
       <div class="wc-card wc-web-card">
@@ -20859,12 +21045,13 @@ class WorldCup2026Panel extends HTMLElement {
       <div class="wc-card">
         <div class="wc-section-title">${this.esc(this.staticText("knockoutDetails"))}</div>
         <div class="wc-bracket">
-          ${roundMatches.map(({ stage, label, matches }) => `
+          ${Object.values(visibleDetailRounds).map(({ stage, label, items }) => `
               <div class="wc-bracket-round">
                 <div class="wc-round-title">${label}</div>
                 ${
-                  matches.length
-                    ? matches.map((m, index) => {
+                  items.length
+                    ? items.map(({ match: m, index }) => {
+                      if (!m) return `<div class="wc-bracket-match">${this.t("tbc")}<br><span class="wc-muted">${this.t("fixturesNotAvailable")}</span></div>`;
                       const knockoutNumber = this.knockoutDerivedMatchNumber(stage, index, m);
                       const venueInfo = this.fixtureVenueInfo(m, knockoutNumber);
                       return `
@@ -20889,6 +21076,13 @@ class WorldCup2026Panel extends HTMLElement {
               </div>
           `).join("")}
         </div>
+        ${hiddenKnockoutCount ? `
+          <div class="fixtures-load-more-wrap">
+            <button class="overview-action-button knockout-show-more-button" type="button">
+              + ${Math.min(12, hiddenKnockoutCount)} ${this.t("fixtures")}
+            </button>
+          </div>
+        ` : ""}
       </div>
     `;
   }
@@ -21977,7 +22171,7 @@ class WorldCup2026Panel extends HTMLElement {
         <div style="position:relative;font-size:.74rem;font-weight:1000;text-transform:uppercase;letter-spacing:.14em;color:#93c5fd;">🌍 ${this.esc(this.staticText("countryProfile"))}</div>
         <div style="position:relative;margin-top:9px;font-size:1.45rem;font-weight:1000;">${this.flag(teamName, true)} ${this.esc(teamName)}</div>
         <div style="position:relative;margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;">
-          ${statCard(this.staticText("matchesPlayed"), matches.length, this.staticText("loadedForTeam"), "#93c5fd")}
+          ${statCard(this.staticText("upcomingMatches"), upcoming.length, this.staticText("loadedForTeam"), "#93c5fd")}
           ${statCard(this.staticText("groupPosition"), groupRow?.pos || groupRows.find((row) => row.key === teamKey)?.pos || "-", this.staticText("currentSnapshot"), "#fde68a")}
           ${statCard(this.staticText("points"), groupRow?.points ?? groupRows.find((row) => row.key === teamKey)?.points ?? "-", this.staticText("groupTable"), "#86efac")}
         </div>
@@ -22030,7 +22224,7 @@ class WorldCup2026Panel extends HTMLElement {
       </div>
 
       <div style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;align-items:stretch;">
-        <div style="grid-column:span 3;">${statCard(this.staticText("matchesPlayed"), matches.length, `${live.length} ${this.t("liveStatus")} / ${upcoming.length} ${this.staticText("upcoming")}`, "#93c5fd")}</div>
+        <div style="grid-column:span 3;">${statCard(this.staticText("upcomingMatches"), upcoming.length, `${live.length} ${this.t("liveStatus")} / ${finished.length} ${this.t("played")}`, "#93c5fd")}</div>
         <div style="grid-column:span 3;">${statCard(this.staticText("record"), `${teamStats.wins || 0}-${teamStats.draws || 0}-${teamStats.losses || 0}`, `${teamStats.played || finished.length} ${this.t("played")}`, "#86efac")}</div>
         <div style="grid-column:span 3;">${statCard(this.staticText("goals"), `${teamStats.gf ?? goals}-${teamStats.ga ?? 0}`, `GD ${Number(teamStats.gd || 0) > 0 ? "+" : ""}${teamStats.gd || 0}`, "#fde68a")}</div>
         <div style="grid-column:span 3;">${statCard(this.staticText("cards"), `${teamYellowCards}Y ${teamRedCards}R`, `${subs} ${this.staticText("subs")} / ${vars} VAR`, "#fca5a5")}</div>
@@ -22742,6 +22936,17 @@ class WorldCup2026Panel extends HTMLElement {
     this.querySelectorAll(".wc-nav button, .wc-tablet-header-nav button, .overview-action-button").forEach((button) => {
       button.onclick = () => {
         const page = button.getAttribute("data-page");
+        if (button.classList.contains("fixtures-show-more-button")) {
+          this._fixturesVisibleDays = (this._fixturesVisibleDays || 5) + 5;
+          this._fixturesVisibleMatches = (this._fixturesVisibleMatches || 20) + 20;
+          this.render();
+          return;
+        }
+        if (button.classList.contains("knockout-show-more-button")) {
+          this._knockoutVisibleMatches = (this._knockoutVisibleMatches || 12) + 12;
+          this.render();
+          return;
+        }
         this.changePage(page);
       };
     });
