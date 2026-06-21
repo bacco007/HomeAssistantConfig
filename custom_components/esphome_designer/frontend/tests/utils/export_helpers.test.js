@@ -25,18 +25,25 @@ describe('Export Helpers', () => {
             expect(makeSafeId('Sensor.Temp')).toBe('sensor_temp');
         });
 
-        it('truncates very long IDs to ESPHome 63-char limit', () => {
-            const longId = 'sensor.' + 'a'.repeat(100);
-            const safe = makeSafeId(longId);
-            expect(safe.length).toBe(63);
-            expect(safe).toMatch(/^sensor_aaaaa/);
+        it('truncates very long IDs to ESPHome 63-char limit and appends a unique hash', () => {
+            const longId1 = 'sensor.' + 'a'.repeat(100) + '_one';
+            const longId2 = 'sensor.' + 'a'.repeat(100) + '_two';
+            const safe1 = makeSafeId(longId1);
+            const safe2 = makeSafeId(longId2);
+            
+            expect(safe1.length).toBe(63);
+            expect(safe2.length).toBe(63);
+            expect(safe1).not.toBe(safe2);
+            expect(safe1).toMatch(/_[0-9a-z]+$/);
+            expect(safe2).toMatch(/_[0-9a-z]+$/);
         });
 
-        it('truncates based on suffix length', () => {
+        it('truncates based on suffix length and appends a unique hash', () => {
             const longId = 'sensor.' + 'a'.repeat(100);
             const safe = makeSafeId(longId, null, '_txt');
             expect(safe.length).toBe(63);
             expect(safe.endsWith('_txt')).toBe(true);
+            expect(safe).toMatch(/_[0-9a-z]+_txt$/);
         });
 
         it('returns empty string for null/empty input', () => {

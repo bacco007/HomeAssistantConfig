@@ -4,6 +4,16 @@
  */
 import { AppState } from '../core/state';
 
+export function getSimpleHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash).toString(36);
+}
+
 /**
  * Creates a safe ESPHome ID from an entity ID and optional attribute/suffix.
  * @param {string} eid - Entity ID (e.g., 'sensor.temperature')
@@ -19,7 +29,11 @@ export function makeSafeId(eid, attr, suffix = "") {
 
     // ESPHome IDs have a total length limit of 63 characters.
     const maxBaseLen = 63 - suffix.length;
-    if (safe.length > maxBaseLen) safe = safe.substring(0, maxBaseLen);
+    if (safe.length > maxBaseLen) {
+        const hashStr = getSimpleHash(base);
+        const cutIndex = maxBaseLen - hashStr.length - 1;
+        safe = safe.substring(0, cutIndex) + "_" + hashStr;
+    }
 
     return safe + suffix;
 }

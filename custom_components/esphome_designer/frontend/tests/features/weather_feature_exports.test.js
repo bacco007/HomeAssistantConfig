@@ -50,6 +50,8 @@ describe('weather feature exports', () => {
 
         const output = lines.join('\n');
         expect(output).toContain('it.filled_rounded_rectangle(0, 0, 210, 70, 8, Color(white));');
+        expect(output).toContain('auto draw_rrect_border = [&](int x, int y, int w, int h, int r, int t, auto c) {');
+        expect(output).toContain('draw_rrect_border(0, 0, 210, 70, 8, 1, Color(black));');
         expect(output).toContain('auto get_day_name = [](int offset) -> std::string {');
         expect(output).toContain('static const char* weekday_names[] = {"So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"};');
         expect(output).toContain('if (target_day == 0) return "Heute";');

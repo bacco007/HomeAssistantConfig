@@ -1,5 +1,6 @@
 import { AppState } from '@core/state';
 import { getSensorPlatformLines } from '../../js/io/adapters/mqtt_helpers.js';
+import { makeSafeId } from '../../js/utils/export_helpers.js';
 import { HA_TEXT_DOMAINS } from './shared.js';
 
 /** @typedef {Widget & { props?: Record<string, any>, entity_id?: string, entity_id_2?: string }} SensorTextWidget */
@@ -21,16 +22,7 @@ export const onExportTextSensors = (context) => {
             return isNaN(parseFloat(stateStr)) || !isFinite(parseFloat(stateStr));
         };
 
-        // Helper to create safe ESPHome ID (max 59 chars before suffix)
-        // Helper to create safe ESPHome ID (max 59 chars before suffix)
-        /** @param {string} eid @param {string} attr @param {string} [suffix=""] */
-        const makeSafeId = (eid, attr, suffix = "") => {
-            const base = attr ? (eid + "_" + attr) : eid;
-            let safe = base.replace(/[^a-zA-Z0-9_]/g, "_");
-            const maxBase = 63 - suffix.length;
-            if (safe.length > maxBase) safe = safe.substring(0, maxBase);
-            return safe + suffix;
-        };
+
 
         /**
          * @param {string} rawEntityId

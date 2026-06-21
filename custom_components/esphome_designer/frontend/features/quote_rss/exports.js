@@ -1,9 +1,4 @@
-const makeSafeId = (entityId, suffix = "") => {
-    let safe = entityId.replace(/[^a-zA-Z0-9_]/g, "_");
-    const maxBase = 63 - suffix.length;
-    if (safe.length > maxBase) safe = safe.substring(0, maxBase);
-    return safe + suffix;
-};
+import { makeSafeId } from '../../js/utils/export_helpers.js';
 
 function insertTopLevelSectionEntries(lines, sectionName, entryLines, commentLine = '') {
     if (!Array.isArray(lines) || entryLines.length === 0) return;
@@ -35,7 +30,7 @@ function insertTopLevelSectionEntries(lines, sectionName, entryLines, commentLin
 
 export function exportLVGL(w, { common, convertColor, getLVGLFont }) {
     const p = w.props || {};
-    const safeIdPrefix = makeSafeId(`quote_${w.id}`, "");
+    const safeIdPrefix = makeSafeId(`quote_${w.id}`);
     const quoteFontSize = parseInt(p.quote_font_size || 18, 10);
     const fontFamily = p.font_family || "Roboto";
     const fontWeight = parseInt(p.font_weight || 400, 10);
@@ -81,7 +76,7 @@ export function exportDoc(w, context) {
     const fontWeight = parseInt(p.font_weight || 400, 10);
     const color = getColorConst(p.color || "theme_auto");
     const textAlign = p.text_align || "TOP_LEFT";
-    const safeIdPrefix = makeSafeId(`quote_${w.id}`, "");
+    const safeIdPrefix = makeSafeId(`quote_${w.id}`);
     const itemCount = p.item_count || 1;
     const quoteFontId = addFont(fontFamily, fontWeight, quoteFontSize, p.italic_quote !== false);
     const authorFontId = addFont(fontFamily, fontWeight, authorFontSize, false);
@@ -193,7 +188,7 @@ export function exportDoc(w, context) {
 export function onExportGlobals(context) {
     const { lines, widgets } = context;
     widgets.filter((w) => w.type === "quote_rss").forEach((w) => {
-        const safeIdPrefix = makeSafeId(`quote_${w.id}`, "");
+        const safeIdPrefix = makeSafeId(`quote_${w.id}`);
         const itemCount = (w.props && w.props.item_count) || 1;
         for (let index = 0; index < itemCount; index++) {
             const suffix = itemCount === 1 ? "" : `_${index}`;
@@ -225,7 +220,7 @@ export function onExportComponents(context) {
     for (const w of targets) {
         const p = w.props || {};
         const refreshInterval = p.refresh_interval || "1h";
-        const safeIdPrefix = makeSafeId(`quote_${w.id}`, "");
+        const safeIdPrefix = makeSafeId(`quote_${w.id}`);
         const feedUrl = p.feed_url || "https://www.brainyquote.com/link/quotebr.rss";
         const itemCount = p.item_count || 1;
         const random = p.random !== false;
@@ -311,7 +306,7 @@ export function onExportTextSensors(context) {
     lines.push("# Quote RSS Widget Text Sensors (visible in Home Assistant)");
     for (const w of targets) {
         const p = w.props || {};
-        const safeIdPrefix = makeSafeId(`quote_${w.id}`, "");
+        const safeIdPrefix = makeSafeId(`quote_${w.id}`);
         const itemCount = p.item_count || 1;
         for (let index = 0; index < itemCount; index++) {
             const suffix = itemCount === 1 ? "" : `_${index}`;

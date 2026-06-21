@@ -1,4 +1,5 @@
 import { getSensorPlatformLines } from '../../js/io/adapters/mqtt_helpers.js';
+import { makeSafeId } from '../../js/utils/export_helpers.js';
 import { renderWeatherIcon } from './render.js';
 import { renderWeatherIconProperties } from './properties.js';
 import {
@@ -49,15 +50,7 @@ const exportDoc = (w, context) => {
     if (entityId) {
         const attributePath = (p.attribute || "").trim();
         const rootAttr = (attributePath.includes(".") || attributePath.includes("[")) ? attributePath.split(/[.[]/)[0] : attributePath;
-        const makeSafeId = (eid, suffix = "") => {
-            const base = rootAttr ? (eid + "_" + rootAttr) : eid;
-            let safe = base.replace(/[^a-zA-Z0-9_]/g, "_");
-            const maxBase = 63 - suffix.length;
-            if (safe.length > maxBase) safe = safe.substring(0, maxBase);
-            return safe + suffix;
-        };
-
-        const safeId = makeSafeId(entityId, "_txt");
+        const safeId = makeSafeId(entityId, rootAttr, "_txt");
 
         // Centering logic
         const centerX = Math.round(w.x + w.width / 2);
@@ -105,14 +98,7 @@ const onExportTextSensors = (context) => {
     weatherEntities.forEach(({ id, entity_id, attribute, mqtt_topic }) => {
         const attributePath = (attribute || "").trim();
         const rootAttr = (attributePath.includes(".") || attributePath.includes("[")) ? attributePath.split(/[.[]/)[0] : attributePath;
-        const makeSafeId = (eid, suffix = "") => {
-            const base = rootAttr ? (eid + "_" + rootAttr) : eid;
-            let safe = base.replace(/[^a-zA-Z0-9_]/g, "_");
-            const maxBase = 63 - suffix.length;
-            if (safe.length > maxBase) safe = safe.substring(0, maxBase);
-            return safe + suffix;
-        };
-        const safeId = makeSafeId(entity_id, "_txt");
+        const safeId = makeSafeId(entity_id, rootAttr, "_txt");
 
         if (isLvgl && pendingTriggers) {
             if (!pendingTriggers.has(safeId)) pendingTriggers.set(safeId, new Set());
@@ -225,14 +211,7 @@ export default {
             // Helper to create safe ESPHome ID (max 59 chars)
             const attributePath = (p.attribute || "").trim();
             const rootAttr = (attributePath.includes(".") || attributePath.includes("[")) ? attributePath.split(/[.[]/)[0] : attributePath;
-            const makeSafeId = (eid, suffix = "") => {
-                const base = rootAttr ? (eid + "_" + rootAttr) : eid;
-                let safe = base.replace(/[^a-zA-Z0-9_]/g, "_");
-                const maxBase = 63 - suffix.length;
-                if (safe.length > maxBase) safe = safe.substring(0, maxBase);
-                return safe + suffix;
-            };
-            const safeId = makeSafeId(entityId, "_txt");
+            const safeId = makeSafeId(entityId, rootAttr, "_txt");
             lambdaStr = '!lambda |-\n';
             lambdaStr += `              std::string ws = id(${safeId}).state;\n`;
             WEATHER_ICON_OPTIONS.forEach(({ condition, code }) => {

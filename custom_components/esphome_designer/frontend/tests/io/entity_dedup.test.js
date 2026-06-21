@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import { makeSafeId } from '../../js/utils/export_helpers.js';
 import {
     isEntityStateNonNumeric,
     collectNumericSensors,
@@ -104,7 +105,7 @@ describe('Entity Deduplication & Registration', () => {
             const pages = [{ widgets: [{ type: 'sensor_text', entity_id: longId }] }];
             const result = collectNumericSensors(pages, context);
 
-            const expectedId = longId.replace(/[^a-zA-Z0-9_]/g, "_").substring(0, 63);
+            const expectedId = makeSafeId(longId);
             expect(result).toContain(`  id: ${expectedId}`);
         });
 
@@ -349,6 +350,22 @@ describe('Entity Deduplication & Registration', () => {
 
             expect(result).toContain('  entity_id: switch.water_pump');
             expect(result).toContain('  id: switch_water_pump');
+        });
+
+        it('registers switch condition entities as switches', () => {
+            const pages = [{
+                widgets: [{
+                    id: 'image_1',
+                    type: 'image',
+                    condition_entity: 'switch.prise_piscine',
+                    props: {}
+                }]
+            }];
+
+            const result = collectHomeAssistantSwitches(pages, context);
+
+            expect(result).toContain('  entity_id: switch.prise_piscine');
+            expect(result).toContain('  id: switch_prise_piscine');
         });
 
         it('skips numeric sensors', () => {

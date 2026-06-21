@@ -87,6 +87,63 @@ describe('sensor_text export variants', () => {
         expect(output).toContain('%.1f W');
     });
 
+    it('exports direct-mode horizontal layout with same font sizes', () => {
+        const lines = [];
+        exportDirect({
+            id: 'sensor_same_font',
+            x: 10,
+            y: 20,
+            width: 40,
+            height: 60,
+            entity_id: 'room_power',
+            title: 'Power',
+            props: {
+                value_format: 'label_value',
+                label_font_size: 12,
+                value_font_size: 12,
+                precision: 1,
+                text_align: 'TOP_LEFT'
+            }
+        }, {
+            lines,
+            addFont: vi.fn(() => 'sensor_font'),
+            getColorConst: (value) => `Color(${value})`,
+            getConditionCheck: () => '',
+            profile: { name: 'Color Display' }
+        });
+
+        const output = lines.join('\n');
+        expect(output).toContain('it.printf(10, 20, id(sensor_font),');
+    });
+
+    it('exports direct-mode vertical layout with center/middle alignment', () => {
+        const lines = [];
+        exportDirect({
+            id: 'sensor_vertical_center',
+            x: 10,
+            y: 20,
+            width: 100,
+            height: 60,
+            entity_id: 'room_power',
+            title: 'Power',
+            props: {
+                value_format: 'label_newline_value',
+                label_font_size: 12,
+                value_font_size: 14,
+                text_align: 'MIDDLE_CENTER'
+            }
+        }, {
+            lines,
+            addFont: vi.fn(() => 'sensor_font'),
+            getColorConst: (value) => `Color(${value})`,
+            getConditionCheck: () => '',
+            profile: { name: 'Color Display' }
+        });
+
+        const output = lines.join('\n');
+        expect(output).toContain(' + -8,'); // yOff = -16 / 2 = -8
+    });
+
     it('exports direct-mode text attributes and secondary text sensors via safe ids', () => {
         mockAppState.entityStates = {
             'weather.home': {

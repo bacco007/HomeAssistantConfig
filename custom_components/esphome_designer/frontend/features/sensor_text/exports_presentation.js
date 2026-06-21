@@ -1,6 +1,7 @@
 import { AppState } from '@core/state';
 import { TemplateConverter } from '../../js/utils/template_converter.js';
 import { getNestedValue } from '../../js/utils/helpers.js';
+import { makeSafeId } from '../../js/utils/export_helpers.js';
 import { openDisplayTextPosition } from '../../js/io/adapters/opendisplay_helpers.js';
 import { HA_TEXT_DOMAINS, hexToRgb, isColorDisplay, isStrictlyNumeric } from './shared.js';
 
@@ -102,14 +103,7 @@ export const exportLVGL = (w, { common, convertColor, _convertAlign, getLVGLFont
         const attributePath2 = (p.attribute2 || "").trim();
         const rootAttr2 = (attributePath2.includes(".") || attributePath2.includes("[")) ? attributePath2.split(/[.[]/)[0] : attributePath2;
 
-        /** @param {string} eid @param {string} attr @param {string} [suffix=""] */
-        const makeSafeId = (eid, attr, suffix = "") => {
-            const base = attr ? (eid + "_" + attr) : eid;
-            let safe = base.replace(/[^a-zA-Z0-9_]/g, "_");
-            const maxBase = 63 - suffix.length;
-            if (safe.length > maxBase) safe = safe.substring(0, maxBase);
-            return safe + suffix;
-        };
+
 
         const v1 = p.is_local_sensor ? `id(${entityId || "battery_level"}).state` :
             (isText1 ? `id(${makeSafeId(entityId, rootAttr, "_txt")}).state.c_str()` : `id(${makeSafeId(entityId, rootAttr)}).state`);
