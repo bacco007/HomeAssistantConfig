@@ -99,7 +99,7 @@ MQTT_SENSORS: list[tuple[str, str, str, str | None, str | None, str]] = [
     ("et0_pm_daily_mm", "et0_penman_monteith", "ET₀ Penman-Monteith", "mm", "precipitation", "mdi:water-pump"),
     ("irrigation_deficit_mm", "irrigation_deficit", "Irrigation Deficit", "mm", "precipitation", "mdi:water-sync"),
     # Solar
-    ("solar_energy_today_whm2", "solar_energy_today", "Solar Energy Today", "Wh/m²", "energy", "mdi:solar-power"),
+    ("solar_energy_today_whm2", "solar_energy_today", "Solar Energy Today", "Wh/m²", None, "mdi:solar-power"),
     ("max_solar_radiation_wm2", "max_solar_radiation", "Max Solar Radiation", "W/m²", None, "mdi:sun-wireless"),
     ("peak_sun_hours", "peak_sun_hours", "Peak Sun Hours", "h", None, "mdi:weather-sunny"),
     ("clearness_index_kt", "clearness_index", "Clearness Index", None, None, "mdi:weather-sunny"),

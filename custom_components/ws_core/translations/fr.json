@@ -32,8 +32,8 @@
           "dew_point": "Point de rosée (calculé si absent)",
           "battery": "Niveau de batterie",
           "solar_radiation": "Rayonnement solaire (W/m², pour ET₀ Penman-Monteith)",
-          "lightning_count": "Nombre d'impacts de foudre (cumulé, ex: via WH57 ou AS3935)",
-          "lightning_dist": "Distance de l'éclair le plus proche (km, ex: via WH57)",
+          "lightning_count": "Nombre d'impacts de foudre (cumulé, ex: via Capteur physique ou Blitzortung )",
+          "lightning_dist": "Distance de l'éclair le plus proche (km, ex: via Capteur physique ou Blitzortung)",
           "indoor_temp": "Capteur de température intérieure",
           "indoor_humidity": "Capteur d'humidité intérieure",
           "indoor_co2": "Capteur de CO₂ intérieur (ppm)",
@@ -90,7 +90,7 @@
         },
         "data_description": {
           "forecast_entity": "Choisissez une entité météo déjà configurée dans Home Assistant (ex. weather.home, weather.forecast_home)"
-        }
+                }
       },
       "forecast_api_key": {
         "title": "Clé API du fournisseur de prévisions météo",
@@ -139,7 +139,7 @@
           "enable_advanced_sensors": "Capteurs avancés et calculés (code Zambretti, ET₀ horaire, direction du vent lissée)",
           "enable_nowcast": "Prévision immédiate des précipitations (minutes avant le début/la fin de la pluie, via Open-Meteo, sans clé API)",
           "enable_degree_days": "Calcul des Degrés Jours (Chauffage / Climatisation) et humidité du feuillage",
-          "enable_lightning": "Calcul et détection des impacts de foudre (WH57, AS3935 ou autre capteur)",
+          "enable_lightning": "Calcul et détection des impacts de foudre (Capteur physique ou Blitzortung)",
           "enable_indoor": "Capteurs intérieurs (température, humidité, CO₂)",
           "enable_soil": "Capteurs de sol (humidité, température, besoin en irrigation)",
           "enable_weathercloud": "Envoi vers Weathercloud",
@@ -375,16 +375,7 @@
           "cal_temp_c": "Correction de la température",
           "cal_humidity": "Correction de l'humidité",
           "cal_pressure_hpa": "Correction de la pression atmosphérique",
-          "cal_wind_ms": "Correction de la vitesse du vent",
-          "enable_display_sensors": "Capteurs descriptifs (niveaux, tendances, santé)",
-          "enable_fire_risk_score": "Indice de risque d'incendie",
-          "enable_sea_temp": "Température de la mer",
-          "sea_temp_lat": "Latitude pour la température",
-          "sea_temp_lon": "Longitude pour la température",
-          "enable_wunderground": "Envoi vers Weather Underground",
-          "wu_station_id": "ID de la station WU",
-          "wu_api_key": "Clé API WU",
-          "wu_interval_min": "Intervalle d'envoi WU"
+          "cal_wind_ms": "Correction de la vitesse du vent"
         }
       },
       "forecast_api_key_opt": {
@@ -419,8 +410,9 @@
           "dew_point": "Point de rosée (calculé si absent)",
           "battery": "Niveau de batterie",
           "solar_radiation": "Rayonnement solaire (W/m², pour ET₀ Penman-Monteith)",
-          "lightning_count": "Nombre d'impacts de foudre (cumulé, ex: via WH57 ou AS3935)",
-          "lightning_dist": "Distance de l'éclair le plus proche (km, ex: via WH57)",
+          "lightning_count": "Nombre d'impacts de foudre (cumulé, ex: via Capteur physique ou Blitzortung)",
+          "lightning_dist": "Distance de l'éclair le plus proche (km, ex: via Capteur physique ou Blitzortung)",
+          "lightning_azimuth": "Azimut de la foudre (degrés, ex: via Capteur physique ou Blitzortung)",
           "indoor_temp": "Capteur de température intérieure",
           "indoor_humidity": "Capteur d'humidité intérieure",
           "indoor_co2": "Capteur de CO₂ intérieur (ppm)",
@@ -471,8 +463,8 @@
           "enable_advanced_sensors": "Code Zambretti (format numérique), ET₀ horaire, direction du vent lissée",
           "enable_nowcast": "Prévision immédiate Open-Meteo à 15 minutes : minutes avant le début/la fin de la pluie, cumul pour la prochaine heure, intensité. Sans clé API."
         }
-      },
-      "indoor_rooms_opt": {
+       }, 
+       "indoor_rooms_opt": {
         "title": "Capteurs intérieurs des différentes pièces",
         "description": "Sélectionnez un capteur de température par pièce pour générer un capteur d'écart de température intérieur/extérieur dédié.",
         "data": {
@@ -495,7 +487,7 @@
           "enable_windy": "Windy.com",
           "enable_cwop": "CWOP / APRS",
           "enable_mqtt": "MQTT"
-        }
+         }
       },
       "sea_temp_opt": {
         "title": "Localisation pour la température de la mer",
@@ -635,8 +627,8 @@
       "description": "Les capteurs suivants n'ont pas été mis à jour pendant le délai d'inactivité autorisé : {sensors}. Vérifiez que les capteurs de votre station météo sont en ligne et connecté."
     },
     "forecast_api_failures": {
-      "title": "Échecs de l'API de prévisions",
-      "description": "Le fournisseur de prévisions ({provider}) a échoué {failures} fois consécutives. Les données de prévision peuvent être obsolètes. Vérifiez votre connexion Internet. L'intégration réessaiera automatiquement avec un backoff exponentiel."
+      "title": "Échecs de l'API de prévisions ({provider})",
+      "description": "L'API de prévisions ({provider}) a échoué {failures} fois consécutives. Les données de prévision peuvent être obsolètes. Vérifiez votre connexion Internet. L'intégration réessaiera automatiquement avec un backoff exponentiel."
     },
     "stuck_sensors": {
       "title": "Capteur(s) de la station météo bloqué(s)",
@@ -783,7 +775,7 @@
       },
       "forecast_daily": {
         "name": "Prévisions quotidiennes"
-      },
+              },
       "forecast_provider": {
         "name": "Fournisseur de prévisions",
         "state_attributes": {
@@ -912,7 +904,7 @@
           "light": "Faible",
           "moderate": "Modérée",
           "heavy": "Forte"
-        }
+                  }
       },
       "nowcast_confidence": {
         "name": "Fiabilité de la prévision à court terme",
@@ -1472,6 +1464,16 @@
           "days_to_new_moon": {
             "name": "Jours avant la nouvelle lune"
           }
+                  },
+        "state": {
+          "new_moon": "Nouvelle lune",
+          "waxing_crescent": "Premier croissant",
+          "first_quarter": "Premier quartier",
+          "waxing_gibbous": "Lune gibbeuse croissante",
+          "full_moon": "Pleine lune",
+          "waning_gibbous": "Lune gibbeuse décroissante",
+          "last_quarter": "Dernier quartier",
+          "waning_crescent": "Dernier croissant"
         }
       },
       "moon_illumination": {
@@ -1609,7 +1611,7 @@
             "name": "Moyenne (30 j)"
           }
         }
-      },
+              },
       "temp_anomaly_90d": {
         "name": "Écart aux normales (Temp.; 90 j)"
       },
@@ -1665,7 +1667,7 @@
             "name": "Nombre d'échantillons"
           }
         }
-      },
+              },
       "conditions_summary": {
         "name": "Conditions actuelles",
         "state_attributes": {
@@ -2115,7 +2117,7 @@
             "name": "Humidité"
           }
         }
-      },
+              },
       "soil_moisture": {
         "name": "Humidité du sol",
         "state_attributes": {
@@ -2142,6 +2144,13 @@
           "soil_moisture_deficit_pct": {
             "name": "Déficit en eau du sol (%)"
           }
+                  },
+        "state": {
+          "none": "Aucun",
+          "low": "Faible",
+          "moderate": "Modéré",
+          "high": "Elevé",
+          "critical": "Critique"
         }
       },
       "irrigation_need_score": {
@@ -2178,7 +2187,10 @@
           "all_clear": {
             "name": "Aucune anomalie"
           }
-        }
+         }
+      },
+      "lightning_azimuth": {
+        "name": "Azimut de la foudre"
       },
       "vigicrues_river_level": {
         "name": "{river} - Hauteur d'eau"
@@ -2189,10 +2201,10 @@
       "frost_risk": {
         "name": "Risque de gel",
         "state": {
-          "no_risk": "Aucun risque",
-          "unlikely": "Peu probable",
+          "no_risk": "Aucun",
+          "unlikely": "Faible",
           "probable": "Probable",
-          "high": "Élevé"
+          "high": "Elevé"
         }
       }
     },
@@ -2319,7 +2331,7 @@
       },
       "ws_enable_indoor": {
         "name": "Capteurs intérieurs"
-      },
+              },
       "ws_enable_soil": {
         "name": "Capteurs de sol"
       },
@@ -2350,7 +2362,7 @@
     },
     "event": {
       "ws_rain_event": {
-        "name": "Événement de pluie",
+        "name": "Activité pluvieuse",
         "state_attributes": {
           "event_type": {
             "name": "Type d'événement",
@@ -2362,7 +2374,7 @@
         }
       },
       "ws_frost_event": {
-        "name": "Événement de gel",
+        "name": "Épisode de gel",
         "state_attributes": {
           "event_type": {
             "name": "Type d'événement",
@@ -2374,7 +2386,7 @@
         }
       },
       "ws_lightning_event": {
-        "name": "Événement de foudre",
+        "name": "Activité orageuse",
         "state_attributes": {
           "event_type": {
             "name": "Type d'événement",
@@ -2457,20 +2469,20 @@
         "pirate_weather": "Pirate Weather (Clé API requise, offre gratuite)",
         "meteo_france": "Météo France (Clé API requise, offre gratuite)",
         "ha_weather_entity": "Entité météo de Home Assistant"
-      }
+              }
     },
     "hemisphere": {
       "options": {
-        "northern": "Hémisphère Nord",
-        "southern": "Hémisphère Sud"
+        "northern": "Nord",
+        "southern": "Sud"
       }
     },
     "climate_region": {
       "options": {
-        "tropical": "Tropicale",
-        "dry": "Sèche",
-        "temperate": "Tempérée",
-        "continental": "Continentale",
+        "tropical": "Tropical",
+        "dry": "Sec",
+        "temperate": "Tempéré",
+        "continental": "Continental",
         "polar": "Polaire"
       }
     }

@@ -5228,7 +5228,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     need_refresh = True
 
         except (aiohttp.ClientError, TimeoutError, ValueError) as exc:
-            _LOGGER.warning("ws_core Vigicrues fetch error: %s", exc)
+            _LOGGER.warning("ws_core Vigicrues fetch error: %r", exc)
             return
         except Exception as exc:
             _LOGGER.error("ws_core Vigicrues unexpected error: %s", exc, exc_info=True)

@@ -375,16 +375,7 @@
           "cal_temp_c": "Temperature calibration offset",
           "cal_humidity": "Humidity calibration offset",
           "cal_pressure_hpa": "Pressure calibration offset",
-          "cal_wind_ms": "Wind speed calibration offset",
-          "enable_display_sensors": "Display sensors (levels, trends, health)",
-          "enable_fire_risk_score": "Fire risk score",
-          "enable_sea_temp": "Sea surface temperature",
-          "sea_temp_lat": "Sea temperature latitude",
-          "sea_temp_lon": "Sea temperature longitude",
-          "enable_wunderground": "Weather Underground upload",
-          "wu_station_id": "WU Station ID",
-          "wu_api_key": "WU Station key (password)",
-          "wu_interval_min": "WU upload interval"
+          "cal_wind_ms": "Wind speed calibration offset"
         }
       },
       "forecast_api_key_opt": {
@@ -421,6 +412,7 @@
           "solar_radiation": "Solar radiation (W/m², for Penman-Monteith ET₀)",
           "lightning_count": "Lightning strike count (cumulative, e.g. from WH57 or AS3935)",
           "lightning_dist": "Lightning nearest distance (km, e.g. from WH57)",
+          "lightning_azimuth": "Lightning strike azimuth (degrees)",
           "indoor_temp": "Indoor temperature sensor",
           "indoor_humidity": "Indoor humidity sensor",
           "indoor_co2": "Indoor CO₂ sensor (ppm)",

@@ -269,6 +269,7 @@ class WSSensorDescription:
     value_fn: Callable[[dict[str, Any]], Any] | None = None
     attrs_fn: Callable[[dict[str, Any]], dict[str, Any]] | None = None
     unit_group: str | None = None
+    options: list[str] | None = None
 
 
 # Conversion factors from canonical internal (metric) value to configured unit.
@@ -2530,6 +2531,8 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             self._attr_suggested_display_precision = desc.suggested_display_precision
         if desc.entity_category is not None:
             self._attr_entity_category = desc.entity_category
+        if desc.options is not None:
+            self._attr_options = desc.options
 
     @property
     def device_info(self):
