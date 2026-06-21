@@ -338,10 +338,25 @@ def _guess_defaults(hass: HomeAssistant) -> dict[str, str]:
     candidates = [s.entity_id for s in hass.states.async_all()]
 
     def pick(subs: list[str]) -> str | None:
+        # First priority: Match exact weather station integration suffixes
+        for sub in subs:
+            for eid in candidates:
+                if eid.endswith(sub) and (
+                    "outdoor" in eid
+                    or "absolute" in eid
+                    or "wind" in eid
+                    or "rain" in eid
+                    or "precipitation" in eid
+                    or "station" in eid
+                    or "air" in eid
+                ):
+                    return eid
+        # Second priority: Any matching suffix
         for sub in subs:
             for eid in candidates:
                 if eid.endswith(sub):
                     return eid
+        # Fallback: substring match
         for sub in subs:
             for eid in candidates:
                 if sub in eid:
@@ -349,17 +364,31 @@ def _guess_defaults(hass: HomeAssistant) -> dict[str, str]:
         return None
 
     mapping = {
-        SRC_TEMP: ["ws_01_temperature", "ws90_temperature", "temperature"],
-        SRC_HUM: ["ws_01_humidity", "ws90_humidity", "humidity"],
-        SRC_PRESS: ["ws_01_pressure", "ws90_pressure", "pressure"],
-        SRC_WIND: ["ws_01_speed_1", "wind_speed", "speed_1"],
-        SRC_GUST: ["ws_01_speed_2", "wind_gust", "speed_2", "gust"],
-        SRC_WIND_DIR: ["ws_01_direction", "wind_direction", "direction"],
-        SRC_RAIN_TOTAL: ["ws_01_precipitation", "rain_total", "precipitation", "rainfall"],
-        SRC_LUX: ["ws_01_illuminance", "illuminance", "lux"],
-        SRC_UV: ["ws_01_uv_index", "uv_index", "uv"],
-        SRC_DEW_POINT: ["ws_01_dew_point", "dew_point"],
-        SRC_BATTERY: ["ws_01_battery", "ws90_battery", "wh90_battery"],
+        SRC_TEMP: [
+            "_outdoor_temperature",
+            "_air_temperature",
+            "_temp_out",
+            "ws_01_temperature",
+            "ws90_temperature",
+            "temperature",
+        ],
+        SRC_HUM: [
+            "_outdoor_humidity",
+            "_relative_humidity",
+            "_humidity_out",
+            "ws_01_humidity",
+            "ws90_humidity",
+            "humidity",
+        ],
+        SRC_PRESS: ["_absolute_pressure", "_station_pressure", "ws_01_pressure", "ws90_pressure", "pressure"],
+        SRC_WIND: ["_wind_speed", "ws_01_speed_1", "speed_1"],
+        SRC_GUST: ["_wind_gust", "ws_01_speed_2", "speed_2", "gust"],
+        SRC_WIND_DIR: ["_wind_direction", "_wind_dir", "ws_01_direction", "direction"],
+        SRC_RAIN_TOTAL: ["_rain_total", "_precipitation", "_yearly_rain", "ws_01_precipitation", "rainfall"],
+        SRC_LUX: ["_illuminance", "ws_01_illuminance", "lux"],
+        SRC_UV: ["_uv_index", "ws_01_uv_index", "uv"],
+        SRC_DEW_POINT: ["_dew_point", "ws_01_dew_point"],
+        SRC_BATTERY: ["_battery", "ws_01_battery", "ws90_battery", "wh90_battery"],
     }
 
     for k, subs in mapping.items():

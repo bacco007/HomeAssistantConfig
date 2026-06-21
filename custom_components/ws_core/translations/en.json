@@ -301,6 +301,9 @@
       "invalid_api_key": "Invalid API key or credentials rejected",
       "cannot_connect": "Could not connect to API - check network and try again",
       "station_not_found": "Weather Underground station ID not found"
+    },
+    "create_entry": {
+      "default": "Setup complete! Your local forecasts and intelligent weather sensors are now generating.\n\n**Next steps:**\n1. Install the Enhanced Dashboard (from the GitHub repository dashboards/ folder)\n2. Set up a Rain Warning Automation (from the blueprints/ folder)"
     }
   },
   "options": {

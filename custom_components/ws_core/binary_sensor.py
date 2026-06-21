@@ -6,6 +6,7 @@ from homeassistant.components.binary_sensor import BinarySensorDeviceClass, Bina
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
@@ -60,6 +61,7 @@ class WSPackageOK(CoordinatorEntity, BinarySensorEntity):
         self._attr_has_entity_name = True
         self._attr_translation_key = "ws_package_ok"
         self._attr_icon = "mdi:check-decagram"
+        self._attr_entity_category = EntityCategory.DIAGNOSTIC
 
     @property
     def device_info(self):
@@ -141,6 +143,7 @@ class WSProblemBinarySensor(CoordinatorEntity, BinarySensorEntity):
         self._attr_suggested_object_id = f"{prefix}_{slug}"
         self._attr_translation_key = f"ws_{slug}"
         self._attr_icon = icon
+        self._attr_entity_category = EntityCategory.DIAGNOSTIC
 
     @property
     def device_info(self):

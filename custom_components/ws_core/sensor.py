@@ -570,6 +570,7 @@ SENSORS: list[WSSensorDescription] = [
     # Wet-bulb temperature (Stull 2011)
     WSSensorDescription(
         key=KEY_WET_BULB_C,
+        entity_registry_enabled_default=False,
         translation_key="wet_bulb_temperature",
         name="WS Wet-Bulb Temperature",
         icon="mdi:thermometer-water",
@@ -581,6 +582,7 @@ SENSORS: list[WSSensorDescription] = [
     # Frost point (below 0 C uses ice constants)
     WSSensorDescription(
         key=KEY_FROST_POINT_C,
+        entity_registry_enabled_default=False,
         translation_key="frost_point",
         name="WS Frost Point",
         icon="mdi:snowflake-thermometer",
@@ -592,6 +594,7 @@ SENSORS: list[WSSensorDescription] = [
     # v2.0 Cloud base altitude (LCL / Espy formula)
     WSSensorDescription(
         key=KEY_CLOUD_BASE_M,
+        entity_registry_enabled_default=False,
         translation_key="cloud_base",
         name="WS Cloud Base",
         icon="mdi:cloud-arrow-up",
@@ -609,6 +612,7 @@ SENSORS: list[WSSensorDescription] = [
     # v2.0 Freezing level altitude estimate
     WSSensorDescription(
         key=KEY_FREEZING_LEVEL_M,
+        entity_registry_enabled_default=False,
         translation_key="freezing_level",
         name="WS Freezing Level",
         icon="mdi:snowflake",
@@ -655,6 +659,7 @@ SENSORS: list[WSSensorDescription] = [
     # Vapour Pressure Deficit (kPa)
     WSSensorDescription(
         key=KEY_VPD,
+        entity_registry_enabled_default=False,
         translation_key="vpd",
         name="WS Vapour Pressure Deficit",
         icon="mdi:water-percent-alert",
@@ -664,6 +669,7 @@ SENSORS: list[WSSensorDescription] = [
     # Absolute Humidity (g/m³)
     WSSensorDescription(
         key=KEY_ABSOLUTE_HUMIDITY,
+        entity_registry_enabled_default=False,
         translation_key="absolute_humidity",
         name="WS Absolute Humidity",
         icon="mdi:water",
@@ -673,6 +679,7 @@ SENSORS: list[WSSensorDescription] = [
     # Delta-T (dry-bulb minus wet-bulb)
     WSSensorDescription(
         key=KEY_DELTA_T,
+        entity_registry_enabled_default=False,
         translation_key="delta_t",
         name="WS Delta-T",
         icon="mdi:thermometer-lines",
@@ -691,6 +698,7 @@ SENSORS: list[WSSensorDescription] = [
     # Davis THW Index (Heat Index + wind cooling)
     WSSensorDescription(
         key=KEY_THW_INDEX,
+        entity_registry_enabled_default=False,
         translation_key="thw_index",
         name="WS THW Index",
         icon="mdi:thermometer-lines",
@@ -701,6 +709,7 @@ SENSORS: list[WSSensorDescription] = [
     # Davis THSW Index (THW + solar radiation)
     WSSensorDescription(
         key=KEY_THSW_INDEX,
+        entity_registry_enabled_default=False,
         translation_key="thsw_index",
         name="WS THSW Index",
         icon="mdi:sun-thermometer",
@@ -711,6 +720,7 @@ SENSORS: list[WSSensorDescription] = [
     # v2.0 — Air density (comfort indices group)
     WSSensorDescription(
         key=KEY_AIR_DENSITY,
+        entity_registry_enabled_default=False,
         translation_key="air_density",
         name="WS Air Density",
         icon="mdi:air-humidifier",
@@ -724,6 +734,7 @@ SENSORS: list[WSSensorDescription] = [
     # v2.0 — Specific humidity (comfort indices group)
     WSSensorDescription(
         key=KEY_SPECIFIC_HUMIDITY,
+        entity_registry_enabled_default=False,
         translation_key="specific_humidity",
         name="WS Specific Humidity",
         icon="mdi:water-percent",
@@ -794,6 +805,7 @@ SENSORS: list[WSSensorDescription] = [
     # Wind Run (daily km accumulator)
     WSSensorDescription(
         key=KEY_WIND_RUN_KM,
+        entity_registry_enabled_default=False,
         translation_key="wind_run",
         name="WS Wind Run",
         icon="mdi:weather-windy",
@@ -812,6 +824,7 @@ SENSORS: list[WSSensorDescription] = [
     # Chill Hours Today
     WSSensorDescription(
         key=KEY_CHILL_HOURS_TODAY,
+        entity_registry_enabled_default=False,
         translation_key="chill_hours_today",
         name="WS Chill Hours Today",
         icon="mdi:snowflake",
@@ -821,6 +834,7 @@ SENSORS: list[WSSensorDescription] = [
     # Chill Hours Season
     WSSensorDescription(
         key=KEY_CHILL_HOURS_SEASON,
+        entity_registry_enabled_default=False,
         translation_key="chill_hours_season",
         name="WS Chill Hours Season",
         icon="mdi:snowflake-variant",
@@ -897,6 +911,7 @@ SENSORS: list[WSSensorDescription] = [
     # Clearness Index (Kt) - requires solar radiation sensor
     WSSensorDescription(
         key=KEY_CLEARNESS_INDEX,
+        entity_registry_enabled_default=False,
         translation_key="clearness_index",
         name="WS Clearness Index",
         icon="mdi:white-balance-sunny",
@@ -906,6 +921,7 @@ SENSORS: list[WSSensorDescription] = [
     # Cloud Cover Percent - derived from clearness index
     WSSensorDescription(
         key=KEY_CLOUD_COVER_PCT,
+        entity_registry_enabled_default=False,
         translation_key="cloud_cover",
         name="WS Cloud Cover",
         icon="mdi:cloud-percent",
@@ -1076,6 +1092,7 @@ SENSORS: list[WSSensorDescription] = [
     # Zambretti Z-number (numeric, for automations)
     WSSensorDescription(
         key=KEY_ZAMBRETTI_NUMBER,
+        entity_registry_enabled_default=False,
         translation_key="zambretti_number",
         name="WS Zambretti Number",
         icon="mdi:numeric",
@@ -1357,6 +1374,7 @@ SENSORS: list[WSSensorDescription] = [
     # v2.0 Wind gust factor (gust / mean speed ratio)
     WSSensorDescription(
         key=KEY_WIND_GUST_FACTOR,
+        entity_registry_enabled_default=False,
         translation_key="wind_gust_factor",
         name="WS Wind Gust Factor",
         icon="mdi:weather-windy",
@@ -1373,6 +1391,7 @@ SENSORS: list[WSSensorDescription] = [
     # 180° instead of 0°.
     WSSensorDescription(
         key=KEY_DOMINANT_WIND_DIR,
+        entity_registry_enabled_default=False,
         translation_key="dominant_wind_direction",
         name="WS Dominant Wind Direction",
         icon="mdi:compass-rose",
@@ -1386,6 +1405,7 @@ SENSORS: list[WSSensorDescription] = [
     # v2.0 Wind direction variability (circular std dev over 24h)
     WSSensorDescription(
         key=KEY_WIND_DIR_VARIABILITY,
+        entity_registry_enabled_default=False,
         translation_key="wind_direction_variability",
         name="WS Wind Direction Variability",
         icon="mdi:compass-outline",
@@ -1835,6 +1855,7 @@ SENSORS: list[WSSensorDescription] = [
     ),
     WSSensorDescription(
         key=KEY_NO2,
+        entity_registry_enabled_default=False,
         name="WS NO2",
         translation_key="no2",
         icon="mdi:molecule",
@@ -1844,6 +1865,7 @@ SENSORS: list[WSSensorDescription] = [
     ),
     WSSensorDescription(
         key=KEY_OZONE,
+        entity_registry_enabled_default=False,
         name="WS Ozone",
         translation_key="ozone",
         icon="mdi:air-filter",
@@ -1921,6 +1943,7 @@ SENSORS: list[WSSensorDescription] = [
     ),
     WSSensorDescription(
         key=KEY_MOON_ILLUMINATION_PCT,
+        entity_registry_enabled_default=False,
         translation_key="moon_illumination",
         name="WS Moon Illumination",
         icon="mdi:moon-full",
@@ -1969,6 +1992,7 @@ SENSORS: list[WSSensorDescription] = [
     # v2.0 — Irrigation water deficit (ET₀ − rain today)
     WSSensorDescription(
         key=KEY_IRRIGATION_DEFICIT,
+        entity_registry_enabled_default=False,
         translation_key="irrigation_deficit",
         name="WS Irrigation Deficit",
         icon="mdi:water-sync",
@@ -2017,6 +2041,7 @@ SENSORS: list[WSSensorDescription] = [
     # v2.0 — Net radiation (FAO-56), requires solar radiation sensor
     WSSensorDescription(
         key=KEY_NET_RADIATION,
+        entity_registry_enabled_default=False,
         translation_key="net_radiation",
         name="WS Net Radiation",
         icon="mdi:sun-thermometer",
@@ -2030,6 +2055,7 @@ SENSORS: list[WSSensorDescription] = [
     # B1 Fog probability
     WSSensorDescription(
         key=KEY_FOG_PROBABILITY,
+        entity_registry_enabled_default=False,
         translation_key="fog_probability",
         name="WS Fog Probability",
         icon="mdi:weather-fog",
@@ -2043,6 +2069,7 @@ SENSORS: list[WSSensorDescription] = [
     # B2 Thunderstorm risk
     WSSensorDescription(
         key=KEY_THUNDERSTORM_RISK,
+        entity_registry_enabled_default=False,
         translation_key="thunderstorm_risk",
         name="WS Thunderstorm Risk",
         icon="mdi:weather-lightning",
@@ -2115,10 +2142,10 @@ SENSORS: list[WSSensorDescription] = [
     # D1 30-day stats
     WSSensorDescription(
         key=KEY_CLIMATOLOGY_30D,
+        entity_category=EntityCategory.DIAGNOSTIC,
         translation_key="climatology_30d",
         name="WS Climatology (30-day)",
         icon="mdi:calendar-month",
-        entity_category=EntityCategory.DIAGNOSTIC,
         attrs_fn=lambda d: d.get("_climatology_stats") or {},
     ),
     # D2 Anomaly sensors
@@ -2168,17 +2195,18 @@ SENSORS: list[WSSensorDescription] = [
     # A4 Solar lux factor (always on)
     WSSensorDescription(
         key=KEY_SOLAR_LUX_FACTOR,
+        entity_category=EntityCategory.DIAGNOSTIC,
         translation_key="solar_lux_factor",
         name="WS Solar Lux Factor",
         icon="mdi:sun-wireless",
         native_unit="lx/(W/m²)",
         state_class=SensorStateClass.MEASUREMENT,
-        entity_category=EntityCategory.DIAGNOSTIC,
         attrs_fn=lambda d: {"calibration_days": d.get("_solar_lux_factor_n_days", 0)},
     ),
     # Forecast agreement: Zambretti vs Open-Meteo
     WSSensorDescription(
         key=KEY_FORECAST_AGREEMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         translation_key="forecast_agreement",
         name="WS Forecast Agreement",
         icon="mdi:scale-balance",
