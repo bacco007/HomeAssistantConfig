@@ -1,0 +1,22 @@
+{
+  "semantic_profile": {
+    "schema_version": "1.0",
+    "semantic_tags": ["diagnostic.causality", "diagnostic.history_log", "diagnostic.read_only", "whodunnit.attribution"],
+    "operational_boundaries": {
+      "control_mode": "read_only",
+      "enforcement_mode": "advisory",
+      "triggers_automations": "likely",
+      "control_reason": "Whodunnit entities are per-entity diagnostic attribution sensors: each records what and who last caused a monitored entity to change. They are observe-only (there is nothing to actuate), so an agent should read them but never attempt to control them."
+    },
+    "metadata_origin": {
+      "source": "developer",
+      "confidence": 0.95
+    }
+  },
+  "privacy_classification": {
+    "level": "sensitive",
+    "contains_behavioural_data": true,
+    "access_logging_recommended": true,
+    "privacy_note": "Each sensor records who (person name and Home Assistant user id) and what (automation, script, scene, dashboard, physical press, or service) changed a monitored entity, plus a rolling 25-event history. This is attribution and activity data about household members; treat reads as sensitive."
+  }
+}

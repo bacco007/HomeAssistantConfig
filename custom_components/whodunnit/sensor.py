@@ -20,7 +20,7 @@ How HA context chaining works (essential background):
   calls fire. When the target entity's state changes, this sensor looks up the
   change's context in that shared cache to identify the source.
 
-Detection cascade (in _handle_change):
+Detection cascade (in _classify):
   1. Context ID found in cache        -> Automation / Script / Scene / UI action.
                                         For STATE_UI cache entries on bleed platforms
                                         (ESPHome), a "seen" flag distinguishes the
@@ -50,16 +50,24 @@ import asyncio
 import logging
 import time
 from collections import deque
+from dataclasses import dataclass
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import STATE_UNKNOWN, STATE_UNAVAILABLE
-from homeassistant.core import callback
+from homeassistant.core import Context, Event, HomeAssistant, callback
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import EntityCategory
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.util import dt as dt_util
-from homeassistant.helpers.event import async_track_state_change_event
+from homeassistant.helpers.event import (
+    EventStateChangedData,
+    async_track_state_change_event,
+)
 
 from .const import (
+    DOMAIN,
     ATTR_SOURCE_TYPE,
     ATTR_SOURCE_ID,
     ATTR_SOURCE_NAME,
@@ -155,14 +163,37 @@ _ICON_MAP = {
 }
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+@dataclass(frozen=True, slots=True)
+class _Classification:
+    """Result of classifying a single state change.
+
+    A plain value object so the decision logic in _classify() stays free of
+    side effects: _handle_change() is what applies the result to entity state,
+    appends history, writes state, and fires the event.
+    """
+
+    state: str
+    source_type: str | None
+    source_id: str | None
+    source_name: str
+    confidence: str
+    # The cache key that produced this result (ctx.id for a direct hit,
+    # ctx.parent_id for a parent hit), or None when nothing matched.
+    matched_context_id: str | None
+
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddConfigEntryEntitiesCallback,
+) -> None:
     """Create a WhodunnitSensor for each entity listed in the config entry.
 
     Reads the pre-built device_info and target list from hass.data and creates
     the sensor. The shared context and user caches are passed directly so all
     sensors read from the same data populated by the global listeners.
     """
-    domain_data = hass.data[config_entry.domain]
+    domain_data = hass.data[DOMAIN]
     entry_data = domain_data["entries"][config_entry.entry_id]
     async_add_entities([
         WhodunnitSensor(
@@ -188,7 +219,13 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
         STATE_UI, STATE_SCENE, STATE_SCRIPT, STATE_SERVICE,
     ]
 
-    def __init__(self, target_entity, device_info, context_cache, user_cache):
+    def __init__(
+        self,
+        target_entity: str,
+        device_info: DeviceInfo,
+        context_cache: dict,
+        user_cache: dict,
+    ) -> None:
         self._target_entity = target_entity
         self._device_info = device_info
         self._cache = context_cache
@@ -208,11 +245,13 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
         self._confidence = CONFIDENCE_HIGH
 
         self._history_log: deque = deque(maxlen=HISTORY_LOG_SIZE)
-        self._history_list_cache: list = []
 
         self._attr_unique_id = f"{target_entity}_whodunnit"
 
-        self._last_attr_time = 0
+        # Monotonic timestamps (immune to wall-clock/NTP jumps) for throttling
+        # and cache-age diagnostics. event_time below stays wall-clock because
+        # it is a human-facing ISO timestamp, not an interval.
+        self._last_attr_time = 0.0
         self._last_classification_time = 0.0
         self._last_matched_context_id: str | None = None
 
@@ -245,13 +284,27 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
 
         return clean_target
 
+    def _refresh_name(self) -> None:
+        """Recompute the entity name from the current target name.
+
+        Entity.name is a cached_property in HA, so reassigning the translation
+        placeholder is not enough on its own: the cached value must be
+        invalidated, otherwise the next state write keeps serving the name that
+        was computed (and cached) when the entity was first added. Without this
+        the sensor's title would never reflect a renamed target until restart.
+        """
+        self._attr_translation_placeholders = {
+            "target": self._get_clean_target_name()
+        }
+        self.__dict__.pop("name", None)
+
     @property
-    def device_info(self):
+    def device_info(self) -> DeviceInfo:
         """Return device info to attach this sensor to the correct device card."""
         return self._device_info
 
     @property
-    def native_value(self):
+    def native_value(self) -> str:
         """Return the current trigger source slug (e.g. "automation", "ui")."""
         return self._state
 
@@ -262,7 +315,7 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
         return ent_reg.async_get(self._target_entity) is not None
 
     @property
-    def extra_state_attributes(self):
+    def extra_state_attributes(self) -> dict:
         return {
             ATTR_SOURCE_TYPE: self._source_type,
             ATTR_SOURCE_ID: self._source_id,
@@ -271,16 +324,16 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
             ATTR_USER_ID: self._user_id,
             ATTR_EVENT_TIME: self._event_time,
             ATTR_CONFIDENCE: self._confidence,
-            ATTR_HISTORY_LOG: self._history_list_cache,
+            ATTR_HISTORY_LOG: list(self._history_log),
             ATTR_CACHE_DEBUG: self._build_cache_debug(),
         }
 
     @property
-    def icon(self):
+    def icon(self) -> str:
         """Return an icon that reflects the current trigger source type."""
         return _ICON_MAP.get(self._state, "mdi:help-circle-outline")
 
-    async def async_added_to_hass(self):
+    async def async_added_to_hass(self) -> None:
         """Finalise setup after the entity has been added to HA."""
         # Restore persisted state, validating the state slug against known values.
         extra_data = await self.async_get_last_state()
@@ -304,7 +357,6 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
                 restored_log = attrs.get(ATTR_HISTORY_LOG, [])
                 if isinstance(restored_log, list):
                     self._history_log = deque(restored_log, maxlen=HISTORY_LOG_SIZE)
-                    self._history_list_cache = list(self._history_log)
 
         # Cache the bleed-platform check (platform never changes at runtime).
         ent_reg = er.async_get(self.hass)
@@ -320,14 +372,12 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
 
         # Listen for entity registry updates so the sensor title stays in sync.
         @callback
-        def _handle_registry_update(event) -> None:
+        def _handle_registry_update(event: Event) -> None:
             if event.data.get("entity_id") != self._target_entity:
                 return
             if "name" not in event.data.get("changes", {}):
                 return
-            self._attr_translation_placeholders = {
-                "target": self._get_clean_target_name()
-            }
+            self._refresh_name()
             self.async_write_ha_state()
 
         self.async_on_remove(
@@ -336,177 +386,199 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
             )
         )
 
-        self._attr_translation_placeholders = {
-            "target": self._get_clean_target_name()
-        }
+        self._refresh_name()
         self.async_write_ha_state()
 
-    async def _handle_change(self, event):
-        """Identify what triggered a state change on the target entity.
+    async def _handle_change(self, event: Event[EventStateChangedData]) -> None:
+        """React to a state change on the target entity.
 
         Serialised per entity via _change_lock to prevent interleaved field
         writes when an auth lookup yields control between two rapid events.
+        Deciding *what* triggered the change lives in _classify(); this method
+        only filters out noise and applies the result to entity state.
         """
         async with self._change_lock:
+            new_s = event.data.get("new_state")
+            old_s = event.data.get("old_state")
+
+            if not new_s or not old_s:
+                return
+
+            domain = self._target_entity.split(".")[0]
+            watched = _WATCHED_ATTRS.get(domain, frozenset())
+            attr_changed = any(
+                new_s.attributes.get(a) != old_s.attributes.get(a)
+                for a in watched
+            )
+
+            if new_s.state == old_s.state and not attr_changed:
+                return
+
+            now = time.monotonic()
+            if new_s.state == old_s.state and (now - self._last_attr_time) < 2.0:
+                return
+
+            if attr_changed and new_s.state == old_s.state:
+                self._last_attr_time = now
+
+            ctx = event.context
+
+            if ctx and ctx.id == self._context_id and not self._is_bleed:
+                return
+
+            # Only the person/auth lookup inside _classify() can realistically
+            # raise (it touches hass.auth); the rest is pure cache-dict logic.
+            # Scope the catch tightly so a genuine bug is not silently swallowed.
             try:
-                new_s = event.data.get("new_state")
-                old_s = event.data.get("old_state")
-
-                if not new_s or not old_s:
-                    return
-
-                domain = self._target_entity.split(".")[0]
-                watched = _WATCHED_ATTRS.get(domain, frozenset())
-                attr_changed = any(
-                    new_s.attributes.get(a) != old_s.attributes.get(a)
-                    for a in watched
-                )
-
-                if new_s.state == old_s.state and not attr_changed:
-                    return
-
-                now = time.time()
-                if new_s.state == old_s.state and (now - self._last_attr_time) < 2.0:
-                    return
-
-                if attr_changed and new_s.state == old_s.state:
-                    self._last_attr_time = now
-
-                ctx = event.context
-
-                if ctx and ctx.id == self._context_id and not self._is_bleed:
-                    return
-
-                self._event_time = dt_util.now().isoformat()
-                self._context_id = ctx.id if ctx else CONTEXT_ID_DEFAULT
-
-                # --- Detection cascade ---
-
-                # Step 1: Direct cache hit on the context ID.
-                owner = None
-                if ctx:
-                    owner = self._cache.get(ctx.id)
-
-                if owner:
-                    if owner["type"] == STATE_UI:
-                        p_id, p_name, is_service_account = (
-                            await self._get_person_cached(owner["id"])
-                        )
-                        already_seen = owner.get("seen", False)
-                        owner["seen"] = True
-                        self._confidence = (
-                            CONFIDENCE_LOW
-                            if (self._is_bleed and already_seen)
-                            else CONFIDENCE_HIGH
-                        )
-                        self._state = (
-                            STATE_SERVICE if is_service_account else STATE_UI
-                        )
-                        self._source_type = (
-                            SOURCE_TYPE_SERVICE
-                            if is_service_account
-                            else SOURCE_TYPE_USER
-                        )
-                        self._source_id = (
-                            owner["id"]
-                            if is_service_account
-                            else (p_id or owner["id"])
-                        )
-                        self._source_name = p_name
-                    else:
-                        self._confidence = CONFIDENCE_HIGH
-                        self._state = owner["type"]
-                        self._source_type = owner["type"]
-                        self._source_id = owner["id"]
-                        self._source_name = owner["name"]
-
-                elif ctx and ctx.user_id:
-                    # Step 2: user_id present, no cache hit.
-                    p_id, p_name, is_service_account = (
-                        await self._get_person_cached(ctx.user_id)
-                    )
-                    if is_service_account:
-                        self._confidence = CONFIDENCE_HIGH
-                        self._state = STATE_SERVICE
-                        self._source_type = SOURCE_TYPE_SERVICE
-                        self._source_id = ctx.user_id
-                        self._source_name = p_name
-                    else:
-                        self._confidence = CONFIDENCE_HIGH
-                        self._state = STATE_UI
-                        self._source_type = SOURCE_TYPE_USER
-                        self._source_id = p_id or ctx.user_id
-                        self._source_name = p_name
-
-                elif ctx and ctx.parent_id:
-                    # Step 3: parent_id present, check parent in cache.
-                    parent_owner = self._cache.get(ctx.parent_id)
-                    if parent_owner:
-                        self._confidence = CONFIDENCE_HIGH
-                        self._state = parent_owner["type"]
-                        self._source_type = parent_owner["type"]
-                        self._source_id = parent_owner["id"]
-                        self._source_name = parent_owner["name"]
-                    else:
-                        self._confidence = CONFIDENCE_MEDIUM
-                        self._state = STATE_AUTOMATION
-                        self._source_type = STATE_AUTOMATION
-                        self._source_id = ID_INDIRECT_AUTOMATION
-                        self._source_name = NAME_INDIRECT_AUTOMATION
-
-                else:
-                    # Step 4: No user, no parent, no cache hit. Device-originated.
-                    self._confidence = CONFIDENCE_HIGH
-                    self._state = STATE_DEVICE
-                    self._source_type = SOURCE_TYPE_DEVICE
-                    self._source_name = NAME_DEVICE
-                    self._source_id = self._target_entity
-
-                self._user_id = (
-                    ctx.user_id
-                    if ctx and self._state == STATE_UI
-                    else USER_ID_DEFAULT
-                )
-
-                self._last_classification_time = time.time()
-                self._last_matched_context_id = (
-                    ctx.id
-                    if ctx and self._cache.get(ctx.id)
-                    else ctx.parent_id
-                    if ctx and self._cache.get(ctx.parent_id)
-                    else None
-                )
-
-                self._history_log.appendleft({
-                    ATTR_EVENT_TIME: self._event_time,
-                    ATTR_SOURCE_TYPE: self._source_type,
-                    ATTR_SOURCE_ID: self._source_id,
-                    ATTR_SOURCE_NAME: self._source_name,
-                    ATTR_CONFIDENCE: self._confidence,
-                    ATTR_CONTEXT_ID: self._context_id,
-                })
-                self._history_list_cache = list(self._history_log)
-
-                self.async_write_ha_state()
-
-                self.hass.bus.async_fire(
-                    EVENT_TRIGGER_DETECTED,
-                    {
-                        "entity_id": self._target_entity,
-                        "state": self._state,
-                        "source_type": self._source_type,
-                        "source_id": self._source_id,
-                        "source_name": self._source_name,
-                        "confidence": self._confidence,
-                        "context_id": self._context_id,
-                        "event_time": self._event_time,
-                    },
-                )
-
+                result = await self._classify(ctx)
             except Exception:
                 _LOGGER.exception(
                     "Whodunnit: error classifying %s", self._target_entity
                 )
+                return
+
+            self._event_time = dt_util.now().isoformat()
+            self._context_id = ctx.id if ctx else CONTEXT_ID_DEFAULT
+            self._state = result.state
+            self._source_type = result.source_type
+            self._source_id = result.source_id
+            self._source_name = result.source_name
+            self._confidence = result.confidence
+            self._user_id = (
+                ctx.user_id
+                if ctx and result.state == STATE_UI
+                else USER_ID_DEFAULT
+            )
+            self._last_classification_time = now
+            self._last_matched_context_id = result.matched_context_id
+
+            self._history_log.appendleft({
+                ATTR_EVENT_TIME: self._event_time,
+                ATTR_SOURCE_TYPE: self._source_type,
+                ATTR_SOURCE_ID: self._source_id,
+                ATTR_SOURCE_NAME: self._source_name,
+                ATTR_CONFIDENCE: self._confidence,
+                ATTR_CONTEXT_ID: self._context_id,
+            })
+
+            self.async_write_ha_state()
+
+            self.hass.bus.async_fire(
+                EVENT_TRIGGER_DETECTED,
+                {
+                    "entity_id": self._target_entity,
+                    "state": self._state,
+                    "source_type": self._source_type,
+                    "source_id": self._source_id,
+                    "source_name": self._source_name,
+                    "confidence": self._confidence,
+                    "context_id": self._context_id,
+                    "event_time": self._event_time,
+                },
+            )
+
+    async def _classify(self, ctx: Context | None) -> _Classification:
+        """Decide what triggered the change. No side effects on entity state.
+
+        Walks the detection cascade documented at the top of this module and
+        returns a _Classification. The only external dependency is the person/
+        auth lookup in steps 1 and 2; everything else is cache-dict logic. The
+        shared cache entry's "seen" flag is updated here as part of ESPHome
+        bleed detection.
+        """
+        # Step 1: Direct cache hit on the context ID.
+        owner = self._cache.get(ctx.id) if ctx else None
+        if owner:
+            if owner["type"] == STATE_UI:
+                p_id, p_name, is_service_account = (
+                    await self._get_person_cached(owner["id"])
+                )
+                already_seen = owner.get("seen", False)
+                owner["seen"] = True
+                confidence = (
+                    CONFIDENCE_LOW
+                    if (self._is_bleed and already_seen)
+                    else CONFIDENCE_HIGH
+                )
+                if is_service_account:
+                    return _Classification(
+                        state=STATE_SERVICE,
+                        source_type=SOURCE_TYPE_SERVICE,
+                        source_id=owner["id"],
+                        source_name=p_name,
+                        confidence=confidence,
+                        matched_context_id=ctx.id,
+                    )
+                return _Classification(
+                    state=STATE_UI,
+                    source_type=SOURCE_TYPE_USER,
+                    source_id=p_id or owner["id"],
+                    source_name=p_name,
+                    confidence=confidence,
+                    matched_context_id=ctx.id,
+                )
+            return _Classification(
+                state=owner["type"],
+                source_type=owner["type"],
+                source_id=owner["id"],
+                source_name=owner["name"],
+                confidence=CONFIDENCE_HIGH,
+                matched_context_id=ctx.id,
+            )
+
+        # Step 2: user_id present, no cache hit.
+        if ctx and ctx.user_id:
+            p_id, p_name, is_service_account = (
+                await self._get_person_cached(ctx.user_id)
+            )
+            if is_service_account:
+                return _Classification(
+                    state=STATE_SERVICE,
+                    source_type=SOURCE_TYPE_SERVICE,
+                    source_id=ctx.user_id,
+                    source_name=p_name,
+                    confidence=CONFIDENCE_HIGH,
+                    matched_context_id=None,
+                )
+            return _Classification(
+                state=STATE_UI,
+                source_type=SOURCE_TYPE_USER,
+                source_id=p_id or ctx.user_id,
+                source_name=p_name,
+                confidence=CONFIDENCE_HIGH,
+                matched_context_id=None,
+            )
+
+        # Step 3: parent_id present, check parent in cache.
+        if ctx and ctx.parent_id:
+            parent_owner = self._cache.get(ctx.parent_id)
+            if parent_owner:
+                return _Classification(
+                    state=parent_owner["type"],
+                    source_type=parent_owner["type"],
+                    source_id=parent_owner["id"],
+                    source_name=parent_owner["name"],
+                    confidence=CONFIDENCE_HIGH,
+                    matched_context_id=ctx.parent_id,
+                )
+            return _Classification(
+                state=STATE_AUTOMATION,
+                source_type=STATE_AUTOMATION,
+                source_id=ID_INDIRECT_AUTOMATION,
+                source_name=NAME_INDIRECT_AUTOMATION,
+                confidence=CONFIDENCE_MEDIUM,
+                matched_context_id=None,
+            )
+
+        # Step 4: No user, no parent, no cache hit. Device-originated.
+        return _Classification(
+            state=STATE_DEVICE,
+            source_type=SOURCE_TYPE_DEVICE,
+            source_id=self._target_entity,
+            source_name=NAME_DEVICE,
+            confidence=CONFIDENCE_HIGH,
+            matched_context_id=None,
+        )
 
     def _build_cache_debug(self) -> dict:
         """Build a diagnostic snapshot focused on the last classification."""
@@ -517,7 +589,7 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
                 "matched_entry": None,
             }
 
-        now = time.time()
+        now = time.monotonic()
         elapsed = now - self._last_classification_time
 
         matched_entry = None
@@ -540,14 +612,16 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
             "matched_entry": matched_entry,
         }
 
-    async def _get_person_cached(self, user_id):
+    async def _get_person_cached(
+        self, user_id: str
+    ) -> tuple[str | None, str, bool]:
         """Resolve a HA user ID to a person entity ID, display name, and account type.
 
         Results are cached with a TTL so that person renames and account type
         changes are picked up without requiring an HA restart.
         """
         cached = self._user_cache.get(user_id)
-        if cached and time.time() - cached["timestamp"] < USER_CACHE_TTL:
+        if cached and time.monotonic() - cached["timestamp"] < USER_CACHE_TTL:
             return cached["person_id"], cached["name"], cached["is_service_account"]
 
         user = await self.hass.auth.async_get_user(user_id)
@@ -567,6 +641,6 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
             "person_id": p_id,
             "name": name,
             "is_service_account": is_service_account,
-            "timestamp": time.time(),
+            "timestamp": time.monotonic(),
         }
         return p_id, name, is_service_account

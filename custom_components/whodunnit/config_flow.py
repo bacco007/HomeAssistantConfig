@@ -20,8 +20,11 @@ Key design decisions:
     user in practice.
 """
 
+from typing import Any
+
 import voluptuous as vol
 from homeassistant import config_entries
+from homeassistant.config_entries import ConfigFlowResult
 from homeassistant.core import valid_entity_id
 from homeassistant.helpers import entity_registry as er, selector
 from .const import DOMAIN, SUPPORTED_DOMAINS
@@ -34,7 +37,7 @@ class WhodunnitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     # migrating existing config entries (see async_migrate_entry in HA docs).
     VERSION = 1
 
-    def _validate_target(self, target) -> str | None:
+    def _validate_target(self, target: object) -> str | None:
         """Validate a submitted target entity ID, returning an error key or None.
 
         The EntitySelector already enforces these rules in the frontend, but
@@ -57,7 +60,9 @@ class WhodunnitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return "invalid_entity"
         return None
 
-    async def async_step_user(self, user_input=None):
+    async def async_step_user(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Handle the initial (and only) setup step.
 
         This method is called twice during setup:

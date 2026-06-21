@@ -23,7 +23,7 @@ import logging
 import time
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EVENT_CALL_SERVICE
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import Event, HomeAssistant, callback
 from homeassistant.helpers import entity_registry as er, device_registry as dr
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.event import (
@@ -42,7 +42,7 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 
-def _get_friendly(hass, entity_id):
+def _get_friendly(hass: HomeAssistant, entity_id: str) -> str:
     """Return the friendly name for an entity, or a title-cased slug fallback."""
     state = hass.states.get(entity_id)
     return (
@@ -55,18 +55,22 @@ def _get_friendly(hass, entity_id):
     )
 
 
-def _setup_shared_listeners(hass):
+def _setup_shared_listeners(hass: HomeAssistant) -> None:
     """Register global event listeners that populate the shared context cache.
 
     Called once when the first Whodunnit config entry is loaded. A single set
     of listeners serves all WhodunnitSensor instances, avoiding O(N) duplicate
     listeners that would each process every HA event independently.
+
+    All cache timestamps use the monotonic clock so TTL/cleanup logic is immune
+    to wall-clock/NTP jumps; the sensor and diagnostics read them on the same
+    clock.
     """
     cache = hass.data[DOMAIN]["context_cache"]
-    cleanup_state = {"last_time": 0}
+    cleanup_state = {"last_time": 0.0}
 
-    def _cleanup_cache():
-        now = time.time()
+    def _cleanup_cache() -> None:
+        now = time.monotonic()
         if now - cleanup_state["last_time"] < CACHE_CLEANUP_INTERVAL:
             return
         cleanup_state["last_time"] = now
@@ -84,9 +88,11 @@ def _setup_shared_listeners(hass):
                 del cache[k]
 
     @callback
-    def _record_logic_trigger(event):
+    def _record_logic_trigger(event: Event) -> None:
         """Cache an automation_triggered or script_started event."""
-        if not event.context:
+        # Defensive guard: bus events always carry a context, so this branch is
+        # unreachable in practice and intentionally excluded from coverage.
+        if not event.context:  # pragma: no cover
             return
         _cleanup_cache()
         ctx_id = event.context.id
@@ -98,17 +104,18 @@ def _setup_shared_listeners(hass):
                 "id": entity_id,
                 "name": name or _get_friendly(hass, entity_id),
                 "type": domain,
-                "timestamp": time.time(),
+                "timestamp": time.monotonic(),
             }
 
     @callback
-    def _record_service_context(event):
+    def _record_service_context(event: Event) -> None:
         """Cache a service call event for later lookup by sensors."""
         _cleanup_cache()
         domain = event.data.get("domain")
         service = event.data.get("service")
         ctx = event.context
-        if not ctx:
+        # Defensive guard: bus events always carry a context (see above).
+        if not ctx:  # pragma: no cover
             return
 
         if domain in ("automation", "script", "scene"):
@@ -133,7 +140,7 @@ def _setup_shared_listeners(hass):
                     "id": logic_id,
                     "name": _get_friendly(hass, logic_id),
                     "type": domain,
-                    "timestamp": time.time(),
+                    "timestamp": time.monotonic(),
                 }
 
         elif ctx.user_id and ctx.id not in cache:
@@ -141,7 +148,7 @@ def _setup_shared_listeners(hass):
                 "id": ctx.user_id,
                 "name": "",
                 "type": STATE_UI,
-                "timestamp": time.time(),
+                "timestamp": time.monotonic(),
             }
 
     hass.data[DOMAIN]["listener_unsubs"] = [
@@ -184,7 +191,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         return target_entity.split(".")[-1].replace("_", " ").title()
 
     @callback
-    def update_entry_title(event=None) -> None:
+    def update_entry_title(event: Event | None = None) -> None:
         final_title = _get_entity_title()
         if entry.title != final_title:
             hass.config_entries.async_update_entry(entry, title=final_title)
@@ -192,7 +199,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     update_entry_title()
 
     @callback
-    def _on_state_change(event) -> None:
+    def _on_state_change(event: Event) -> None:
         new_state = event.data.get("new_state")
         old_state = event.data.get("old_state")
         new_name = new_state.attributes.get("friendly_name") if new_state else None

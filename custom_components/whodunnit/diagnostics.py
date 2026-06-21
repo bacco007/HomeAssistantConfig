@@ -24,11 +24,13 @@ async def async_get_config_entry_diagnostics(
     entry_data = domain_data.get("entries", {}).get(entry.entry_id, {})
     context_cache = domain_data.get("context_cache", {})
     user_cache = domain_data.get("user_cache", {})
-    now = time.time()
+    # Cache timestamps are written on the monotonic clock (see __init__), so
+    # ages must be computed against the same clock.
+    now = time.monotonic()
 
     user_aliases: dict = {}
 
-    def _alias(user_id) -> str:
+    def _alias(user_id: str) -> str:
         """Map a real user ID to a stable anonymous placeholder."""
         if user_id not in user_aliases:
             user_aliases[user_id] = f"user_{len(user_aliases) + 1}"
@@ -38,13 +40,14 @@ async def async_get_config_entry_diagnostics(
         out = {
             "type": v.get("type"),
             "age_seconds": round(now - v.get("timestamp", 0), 1),
-            "seen": v.get("seen"),
         }
         if v.get("type") == STATE_UI:
             # UI entries store a user UUID in "id" and resolve the name
-            # lazily, so both are identity data - alias / drop them.
+            # lazily, so both are identity data - alias / drop them. The
+            # "seen" bleed flag only exists on UI entries.
             out["id"] = _alias(v.get("id"))
             out["name"] = None
+            out["seen"] = v.get("seen")
         else:
             out["id"] = v.get("id")
             out["name"] = v.get("name")
