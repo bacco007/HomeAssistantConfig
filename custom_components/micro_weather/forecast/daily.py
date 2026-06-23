@@ -208,9 +208,18 @@ class DailyForecastGenerator:
         Returns:
             float: Forecasted temperature in °F
         """
-        # Get temperature trend from historical data (°F per hour)
+        # Get temperature trend from historical data (°F per hour).
+        # analyze_historical_patterns() emits patterns["temperature"] without a
+        # per-hour "trend" key (only volatility/trend_strength/seasonal_factor),
+        # so fall back to the 24h temperature slope carried in
+        # meteorological_state["temp_trends"].  Without this fallback the trend
+        # is always 0 and the day-0 high collapses to the current temp (#35).
         temp_pattern = historical_patterns.get(KEY_TEMPERATURE, {})
-        temp_trend_per_hour = temp_pattern.get("trend", 0)
+        temp_trend_per_hour = temp_pattern.get("trend")
+        if not isinstance(temp_trend_per_hour, (int, float)):
+            temp_trend_per_hour = meteorological_state.get("temp_trends", {}).get(
+                "trend", 0
+            )
         if not isinstance(temp_trend_per_hour, (int, float)):
             temp_trend_per_hour = 0.0
 
@@ -235,11 +244,14 @@ class DailyForecastGenerator:
                 hourly_estimates = [
                     current_temp + temp_trend_per_hour * h for h in range(1, 24)
                 ]
-                hourly_max = (
-                    max(hourly_estimates + [current_temp])
-                    if hourly_estimates
-                    else forecast_temp
-                )
+                candidates = hourly_estimates + [current_temp]
+                # Floor the day-0 high at the recent diurnal peak (the observed
+                # 24h max), so a cool morning/overnight reading does not report
+                # the current temp as the day's high (#35).
+                recent_max = meteorological_state.get("temp_trends", {}).get("max")
+                if isinstance(recent_max, (int, float)):
+                    candidates.append(recent_max)
+                hourly_max = max(candidates) if candidates else forecast_temp
                 forecast_temp = max(forecast_temp, hourly_max)
             except Exception as exc:
                 _LOGGER.debug(

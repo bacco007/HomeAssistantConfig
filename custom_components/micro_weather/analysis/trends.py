@@ -322,15 +322,70 @@ class TrendsAnalyzer:
         return correlations
 
     def analyze_pressure_trends(self, altitude: float = 0.0) -> Dict[str, Any]:
-        """Analyze historical pressure trends.
+        """Analyze historical pressure trends and classify the system.
+
+        The forecast engine (evolution lifecycle, daily/hourly generators)
+        consumes ``current_trend``, ``long_term_trend``, ``pressure_system``
+        and ``storm_probability``.  Those keys must be produced here -- if
+        they are absent, downstream validation silently defaults them to 0,
+        which collapses every forecast lifecycle to a single "stable" phase
+        and makes the whole forecast repeat the current condition (see #46).
+
+        Pressure history is stored in inHg, but the trend thresholds and storm
+        heuristics are expressed in hPa, so the per-hour regression slope is
+        converted to a 3-hour / 24-hour change in hPa.
 
         Args:
             altitude: Altitude in meters (for future pressure correction)
 
         Returns:
-            Dictionary with pressure trend analysis
+            Dictionary with the raw trend statistics plus the classification
+            keys, or an empty dict when there is insufficient history.
         """
-        return self.get_historical_trends("pressure", hours=24)
+        from ..weather_utils import convert_to_hpa
+
+        long_trend = self.get_historical_trends("pressure", hours=24)
+        if not long_trend:
+            return {}
+
+        # Short-term (3h) slope drives current_trend; fall back to the 24h
+        # slope if there is not yet a distinct 3h window of data.
+        short_trend = self.get_historical_trends("pressure", hours=3)
+        short_slope = (
+            short_trend.get("trend", 0.0) if short_trend else long_trend["trend"]
+        )
+        long_slope = long_trend["trend"]
+
+        # inHg/hour slope -> pressure change in hPa over 3h / 24h.
+        current_trend = convert_to_hpa(short_slope * 3.0) or 0.0
+        long_term_trend = convert_to_hpa(long_slope * 24.0) or 0.0
+        current_pressure_hpa = convert_to_hpa(long_trend["current"]) or 1013.25
+
+        # Classify the pressure system by absolute pressure (hPa).
+        if current_pressure_hpa > 1020:
+            pressure_system = "high_pressure"
+        elif current_pressure_hpa < 1000:
+            pressure_system = "low_pressure"
+        else:
+            pressure_system = "normal"
+
+        # Storm probability from falling-pressure heuristics.
+        storm_probability = 0.0
+        if current_trend < -2.0:  # falling > 2 hPa in 3h
+            storm_probability += 40.0
+        if long_term_trend < -5.0:  # falling > 5 hPa in 24h
+            storm_probability += 30.0
+        if current_pressure_hpa < 990:  # deep low
+            storm_probability += 30.0
+        storm_probability = min(100.0, storm_probability)
+
+        return {
+            **long_trend,
+            "current_trend": current_trend,
+            "long_term_trend": long_term_trend,
+            "pressure_system": pressure_system,
+            "storm_probability": storm_probability,
+        }
 
     def compute_pressure_acceleration(self) -> float:
         """Compute pressure trend acceleration from the last 24h of readings.
