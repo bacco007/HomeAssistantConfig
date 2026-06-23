@@ -1,6 +1,6 @@
 // solar-bar-card.js
 // Enhanced Solar Bar Card with battery support and animated flow visualization
-// Version 2.9.9 - Three's Company: Consumer 3 as EV slot alternative
+// Version 3.0.0 - Card tap action for header navigation
 
 import { COLOR_PALETTES, getCardColors, getPaletteOptions } from './solar-bar-card-palettes.js';
 
@@ -191,6 +191,8 @@ class SolarBarCard extends HTMLElement {
       custom_labels: {},
       // Tap actions (object format for backward compatibility)
       tap_actions: {},
+      // Card-level tap action (header title)
+      tap_action_card: null,
       // Stats tile border radius
       stats_border_radius: 8,
       // Stats detail row (history/kWh/battery %)
@@ -586,7 +588,8 @@ class SolarBarCard extends HTMLElement {
       segment_text_battery_charge = null,
       segment_text_export = null,
       segment_text_ev_potential = null,
-      disable_animation = false
+      disable_animation = false,
+      tap_action_card = null
     } = this.config;
 
     // Get colors from palette
@@ -1306,6 +1309,15 @@ class SolarBarCard extends HTMLElement {
           color: var(--secondary-text-color);
         }
 
+        .card-header-tap {
+          cursor: pointer;
+          transition: opacity 0.2s ease;
+        }
+
+        .card-header-tap:hover {
+          opacity: 0.7;
+        }
+
         .power-stats-container {
           display: flex;
           flex-direction: column;
@@ -2018,7 +2030,7 @@ class SolarBarCard extends HTMLElement {
         ${show_header || show_weather || headerSensor1Data || headerSensor2Data ? `
           <div class="card-header">
             ${show_header ? `
-              <div class="card-header-item">
+              <div class="card-header-item${tap_action_card ? ' card-header-tap' : ''}"${tap_action_card ? ' data-card-tap="true"' : ''}>
                 <span>☀️</span>
                 <span>${header_title}</span>
               </div>
@@ -2441,6 +2453,12 @@ class SolarBarCard extends HTMLElement {
     // Set up event delegation for clickable elements (only once)
     if (!this._clickListenerAdded) {
       this.shadowRoot.addEventListener('click', (e) => {
+        // Card-level tap action (header title) — checked before entity taps
+        const cardTapTarget = e.target.closest('[data-card-tap]');
+        if (cardTapTarget) {
+          this.handleCardTapAction();
+          return;
+        }
         const target = e.target.closest('[data-entity]');
         if (target) {
           const entityId = target.getAttribute('data-entity');
@@ -2489,6 +2507,26 @@ class SolarBarCard extends HTMLElement {
 
     event.detail = {
       config: actionConfig,
+      action: "tap"
+    };
+
+    this.dispatchEvent(event);
+  }
+
+  handleCardTapAction() {
+    const tapAction = this.config.tap_action_card;
+    if (!tapAction || tapAction.action === 'none') return;
+
+    const event = new Event("hass-action", {
+      bubbles: true,
+      composed: true,
+    });
+
+    event.detail = {
+      config: {
+        entity: this.config.production_entity || '',
+        tap_action: tapAction
+      },
       action: "tap"
     };
 
@@ -2711,6 +2749,7 @@ class SolarBarCardEditor extends HTMLElement {
       label_ev: "EV Label",
       label_power_flow: "Power Flow Label",
       // Individual tap action fields
+      tap_action_card: "Card Tap Action",
       tap_action_solar: "Solar Tap Action",
       tap_action_import: "Import Tap Action",
       tap_action_export: "Export Tap Action",
@@ -2802,6 +2841,7 @@ class SolarBarCardEditor extends HTMLElement {
       label_ev: "Custom label for EV (leave empty to use auto-detected language translation)",
       label_power_flow: "Custom label for Power Flow (leave empty to use auto-detected language translation)",
       // Individual tap action helpers
+      tap_action_card: "Action when tapping the card header title. Use 'navigate' to go to another dashboard. Requires show_header: true.",
       tap_action_solar: "Action when tapping Solar elements (stats tile, bar, legend). Defaults to showing entity history.",
       tap_action_import: "Action when tapping Import elements (stats tile, grid icon when importing, legend). Defaults to showing entity history.",
       tap_action_export: "Action when tapping Export elements (stats tile, grid icon when exporting, legend). Defaults to showing entity history.",
@@ -3066,6 +3106,7 @@ class SolarBarCardEditor extends HTMLElement {
         expanded: false,
         flatten: true,
         schema: [
+          { name: "tap_action_card", selector: { "ui-action": {} } },
           { name: "tap_action_solar", selector: { "ui-action": {} } },
           { name: "tap_action_import", selector: { "ui-action": {} } },
           { name: "tap_action_export", selector: { "ui-action": {} } },
@@ -3214,7 +3255,7 @@ window.customCards.push({
 });
 
 console.info(
-  '%c SOLAR-BAR-CARD %c v2.9.9 ',
+  '%c SOLAR-BAR-CARD %c v3.0.0 ',
   'color:#fff;background:#f57c00;font-weight:700;padding:2px 4px;border-radius:4px 0 0 4px;',
   'color:#f57c00;background:#fff3e0;font-weight:700;padding:2px 4px;border-radius:0 4px 4px 0;'
 );
