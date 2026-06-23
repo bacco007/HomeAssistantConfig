@@ -8,7 +8,7 @@ Graphite Light:
   # https://github.com/TilmanGriesel/graphite
 
   #------------------------------------------------------
-  # This file was generated at 2026-04-16 11:54:13
+  # This file was generated at 2026-06-08 20:25:15
   #------------------------------------------------------
 
   card-mod-theme: Graphite Light
@@ -40,6 +40,7 @@ Graphite Light:
   token-rgb-blue-grey: 96, 125, 139
   token-rgb-disabled: 189, 189, 189
   token-rgb-state-inactive: 176, 190, 197
+  token-rgb-badge-grey: 155, 161, 174
   token-color-primary: rgb(var(--token-rgb-primary))
   token-color-primary-light: rgb(167 182 199)
   token-color-accent: var(--token-color-primary)
@@ -73,8 +74,10 @@ Graphite Light:
   token-color-background-label-badge-green: rgb(78, 183, 128)
   token-color-background-label-badge-blue: var(--token-color-feedback-info)
   token-color-background-label-badge-yellow: var(--token-color-feedback-warning)
-  token-color-background-label-badge-grey: rgb(83, 90, 103)
+  token-color-background-label-badge-grey: rgb(var(--token-rgb-badge-grey))
   token-color-background-popup-scrim: rgba(0, 0, 0, 0.5)
+  token-color-on-danger-normal: var(--token-color-text-primary)
+  token-color-on-warning-normal: var(--token-color-text-primary)
   token-color-border-card: rgba(0, 0, 0, 0)
   token-color-switch-button-unchecked: rgba(0, 0, 0, 0.5)
   token-color-switch-track-unchecked: rgba(0, 0, 0, 0.25)
@@ -376,6 +379,10 @@ Graphite Light:
   ha-color-form-background-hover: var(--token-color-background-input-base)
   ha-color-form-background-disabled: var(--token-color-background-input-disabled)
   wa-color-surface-raised: var(--token-color-background-card)
+  # Tooltip — ha-color-surface-default falls back to HA's built-in light surface, producing
+  # near-white text on a white background in dark themes. Override explicitly.
+  ha-tooltip-background-color: var(--token-color-background-input-base)
+  ha-tooltip-text-color: var(--token-color-text-primary)
   # Dropdown/menu item hover fills (light defaults are near-white; override for dark themes)
   ha-color-fill-neutral-quiet-resting: var(--token-color-background-card)
   ha-color-fill-neutral-quiet-hover: var(--token-color-background-input-base)
@@ -383,6 +390,17 @@ Graphite Light:
   ha-color-fill-neutral-normal-resting: var(--token-color-background-secondary)
   ha-color-fill-neutral-normal-hover: var(--token-color-background-card)
   ha-color-fill-neutral-normal-active: var(--token-color-background-secondary)
+  # Danger/Warning tag fills — HA's defaults produce out-of-gamut near-white fills
+  # with near-white (grey) text, making both variants nearly invisible. Override to
+  # a 15% tint of the semantic color with the vivid semantic color as foreground.
+  ha-color-fill-danger-normal-resting: rgba(var(--token-rgb-red), 0.15)
+  ha-color-fill-danger-normal-hover: rgba(var(--token-rgb-red), 0.22)
+  ha-color-fill-danger-normal-active: rgba(var(--token-rgb-red), 0.28)
+  ha-color-on-danger-normal: var(--token-color-on-danger-normal)
+  ha-color-fill-warning-normal-resting: rgba(var(--token-rgb-orange), 0.15)
+  ha-color-fill-warning-normal-hover: rgba(var(--token-rgb-orange), 0.22)
+  ha-color-fill-warning-normal-active: rgba(var(--token-rgb-orange), 0.28)
+  ha-color-on-warning-normal: var(--token-color-on-warning-normal)
   # ..............................................................................
   # Markdown
   markdown-code-background-color: var(--code-editor-background-color)
