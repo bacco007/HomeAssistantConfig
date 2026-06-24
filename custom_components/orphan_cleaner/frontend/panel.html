@@ -396,6 +396,36 @@
 </div>
 
 <script>
+// ---------------------------------------------------------------------------
+// Authentication helper — the panel is loaded as an <iframe>, which does not
+// inherit the parent Home Assistant frontend's auth context automatically.
+// We pull the long-lived access token from the parent window's hass object
+// (exposed by the HA frontend to same-origin iframes) and attach it as a
+// Bearer token to every API call.
+// ---------------------------------------------------------------------------
+let _cachedToken = null;
+
+async function getHassToken() {
+  if (_cachedToken) return _cachedToken;
+  try {
+    // HA esposta window.parent.hassConnection come Promise<{auth, conn}>
+    const conn = await window.parent.hassConnection;
+    _cachedToken = conn?.auth?.data?.access_token || null;
+    if (!_cachedToken) console.warn('[OrphanCleaner] hassConnection resolved but no access_token found', conn);
+    return _cachedToken;
+  } catch (e) {
+    console.warn('[OrphanCleaner] could not access window.parent.hassConnection:', e.message);
+    return null;
+  }
+}
+
+async function authedFetch(url, opts = {}) {
+  const token = await getHassToken();
+  const headers = { ...(opts.headers || {}) };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  return fetch(url, { ...opts, credentials: 'same-origin', headers });
+}
+
 let allOrphans       = [];
 let sortField        = null;   // campo corrente di ordinamento
 let sortDir          = 1;      // 1 = asc, -1 = desc
@@ -575,7 +605,9 @@ async function doScan() {
   try {
     const minAge = document.getElementById('min-age')?.value || 24;
     const heur   = document.getElementById('heur-on')?.checked ? 1 : 0;
-    const r    = await fetch('/api/orphan_cleaner/scan?min_age='+minAge+'&heuristic='+heur);
+    const tok = await getHassToken();
+    addLog(tok ? '🔑 Auth token acquired from parent frame.' : '⚠️ Could not acquire auth token from parent frame — requests may be rejected (401).', tok ? 'ok' : 'err');
+    const r    = await authedFetch('/api/orphan_cleaner/scan?min_age='+minAge+'&heuristic='+heur);
     if (!r.ok) throw new Error('HTTP '+r.status);
     const data = await r.json();
     if (data.error) throw new Error(data.error);
@@ -715,7 +747,7 @@ async function doSaveDelete() {
   addLog('Saving backup of '+ids.length+' entities…','info');
   setStatus('Saving backup…');
   try {
-    const er = await fetch('/api/orphan_cleaner/export', {
+    const er = await authedFetch('/api/orphan_cleaner/export', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ entity_ids: ids, orphans: allOrphans })
     });
@@ -741,7 +773,7 @@ async function doDelete() {
   addLog('Deleting '+ids.length+' entities…','info');
   setStatus('Deletion in progress…');
   try {
-    const r    = await fetch('/api/orphan_cleaner/delete', {
+    const r    = await authedFetch('/api/orphan_cleaner/delete', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({entity_ids: ids})
     });
@@ -776,7 +808,7 @@ let savedIgnoreList = [];
 
 async function loadSavedIgnoreList() {
   try {
-    const r = await fetch('/api/orphan_cleaner/ignore_list');
+    const r = await authedFetch('/api/orphan_cleaner/ignore_list');
     if (!r.ok) return;
     const d = await r.json();
     savedIgnoreList = d.ignore_list || [];
@@ -794,7 +826,7 @@ function renderSavedTags() {
 
 async function persistIgnoreList() {
   try {
-    await fetch('/api/orphan_cleaner/ignore_list', {
+    await authedFetch('/api/orphan_cleaner/ignore_list', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ ignore_list: savedIgnoreList })
     });
