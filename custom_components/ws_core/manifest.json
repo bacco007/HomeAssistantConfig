@@ -13,5 +13,5 @@
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/kmich/ha_ws_core/issues",
   "requirements": [],
-  "version": "2.4.0"
+  "version": "2.4.1"
 }

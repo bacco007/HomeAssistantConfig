@@ -223,6 +223,9 @@ from .const import (
     SRC_DEW_POINT,
     SRC_GUST,
     SRC_HUM,
+    SRC_LIGHTNING_AZIMUTH,
+    SRC_LIGHTNING_COUNT,
+    SRC_LIGHTNING_DISTANCE,
     SRC_LUX,
     SRC_PRESS,
     SRC_RAIN_TOTAL,
@@ -521,7 +524,7 @@ _ENTITY_SELECTOR = selector.EntitySelector(selector.EntitySelectorConfig(domain=
 # ---------------------------------------------------------------------------
 
 
-def _validate_numeric_sensor(hass: HomeAssistant, eid: str) -> str | None:
+def _validate_numeric_sensor(hass: HomeAssistant, eid: str, allow_unknown: bool = False) -> str | None:
     """Validate that a sensor entity exists and has a numeric state.
 
     Returns an error key string on failure, or ``None`` when acceptable.
@@ -530,15 +533,29 @@ def _validate_numeric_sensor(hass: HomeAssistant, eid: str) -> str | None:
 
     Shared by both the config flow and the options flow so source-sensor
     validation behaves identically in either (issue #70).
+
+    ``allow_unknown`` relaxes the check for sensors that legitimately sit at
+    "unknown" most of the time (e.g. lightning distance/azimuth/count, which
+    only carry a value during/after a strike). When True, the entity must
+    still exist in HA, but "unknown"/"unavailable" states are accepted
+    instead of being rejected as "entity_not_found" (issue #88).
     """
     st = hass.states.get(eid)
-    if st is None or st.state in ("unknown", "unavailable"):
+    if st is None:
         return "entity_not_found"
+    if st.state in ("unknown", "unavailable"):
+        return None if allow_unknown else "entity_not_found"
     try:
         float(st.state)
     except (ValueError, TypeError):
         return "not_numeric"
     return None
+
+
+# Optional source keys whose sensors are normally idle/"unknown" outside of
+# an active event (currently: lightning distance/azimuth/count). These are
+# exempted from the strict numeric-state check above (issue #88).
+_ALLOW_UNKNOWN_SOURCE_KEYS = {SRC_LIGHTNING_DISTANCE, SRC_LIGHTNING_AZIMUTH, SRC_LIGHTNING_COUNT}
 
 
 # ---------------------------------------------------------------------------
@@ -596,9 +613,15 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return await handler()
         return None
 
-    def _validate_numeric_sensor(self, eid: str) -> str | None:
-        """Validate a source sensor (delegates to the shared module-level helper)."""
-        return _validate_numeric_sensor(self.hass, eid)
+    def _validate_numeric_sensor(self, eid: str, source_key: str | None = None) -> str | None:
+        """Validate a source sensor (delegates to the shared module-level helper).
+
+        When ``source_key`` identifies a sensor that is normally idle/"unknown"
+        outside of an active event (lightning distance/azimuth/count), the
+        "unknown"/"unavailable" state is tolerated (issue #88).
+        """
+        allow_unknown = source_key in _ALLOW_UNKNOWN_SOURCE_KEYS
+        return _validate_numeric_sensor(self.hass, eid, allow_unknown=allow_unknown)
 
     # ------------------------------------------------------------------
     # Step 1: Name & prefix
@@ -638,7 +661,7 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if not eid:
                     errors[k] = "required"
                 else:
-                    err = self._validate_numeric_sensor(eid)
+                    err = self._validate_numeric_sensor(eid, source_key=k)
                     if err:
                         errors[k] = err
             if not errors:
@@ -670,7 +693,7 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 eid = user_input.get(k)
                 if not eid:
                     continue
-                err = self._validate_numeric_sensor(eid)
+                err = self._validate_numeric_sensor(eid, source_key=k)
                 if err:
                     errors[k] = err
                 else:
@@ -1954,7 +1977,7 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                 if not eid:
                     errors[k] = "required"
                 else:
-                    err = _validate_numeric_sensor(self.hass, eid)
+                    err = _validate_numeric_sensor(self.hass, eid, allow_unknown=k in _ALLOW_UNKNOWN_SOURCE_KEYS)
                     if err:
                         errors[k] = err
                     else:
@@ -1982,7 +2005,7 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                 eid = user_input.get(k)
                 if not eid:
                     continue
-                err = _validate_numeric_sensor(self.hass, eid)
+                err = _validate_numeric_sensor(self.hass, eid, allow_unknown=k in _ALLOW_UNKNOWN_SOURCE_KEYS)
                 if err:
                     errors[k] = err
                 else:
