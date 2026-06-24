@@ -7,8 +7,11 @@
         "data": {
           "leagues": "Sports & leagues",
           "poll_interval": "Poll interval",
-          "ticker_speed": "Ticker speed",
+          "ticker_speed": "Ticker speed (lower = faster)",
           "ticker_theme": "Ticker theme"
+        },
+        "data_description": {
+          "ticker_speed": "Sets the scroll duration in seconds. Lower numbers scroll faster; higher numbers scroll slower."
         }
       },
       "favorites": {
@@ -45,8 +48,11 @@
         "data": {
           "leagues": "Sports & leagues",
           "poll_interval": "Poll interval",
-          "ticker_speed": "Ticker speed",
+          "ticker_speed": "Ticker speed (lower = faster)",
           "ticker_theme": "Ticker theme"
+        },
+        "data_description": {
+          "ticker_speed": "Sets the scroll duration in seconds. Lower numbers scroll faster; higher numbers scroll slower."
         }
       },
       "favorites": {
