@@ -8,6 +8,7 @@ active migrations, async_run_migrations returns immediately.
 Active migrations:
   migrate_1_4_0_update_entity_unique_ids       — retire after ~1.10.0
   migrate_1_5_0_container_device_identifiers   — retire after ~1.10.0
+  migrate_1_7_3_entry_scoped_unique_ids        — retire after ~1.11.0
 """
 
 import logging
@@ -42,6 +43,7 @@ def async_run_migrations(
     """
     migrate_1_4_0_update_entity_unique_ids(hass, entry_id, fast_data)
     migrate_1_5_0_container_device_identifiers(hass, entry_id, fast_data)
+    migrate_1_7_3_entry_scoped_unique_ids(hass, entry_id)
 
 
 def _is_hex64(s: str) -> bool:
@@ -213,4 +215,80 @@ def migrate_1_5_0_container_device_identifiers(
             " to name-based scheme",
             migrated_devices,
             migrated_entities,
+        )
+
+
+def migrate_1_7_3_entry_scoped_unique_ids(
+    hass: HomeAssistant,
+    entry_id: str,
+) -> None:
+    """Migrate entity unique_ids to the entry-scoped, env_id-first format.
+
+    Pre-1.7.3 format:  dockhand_{type}_{env_id}_{discriminator}
+    Post-1.7.3 format: {entry_id}_{env_id}_{type}_{discriminator}
+
+    The dockhand_ prefix is replaced with entry_id to scope unique_ids to
+    their config entry, enabling multiple Dockhand instances in one HA
+    installation. The env_id and type tokens are also reordered so the
+    hierarchy reads instance → environment → object type → entity.
+
+    Schedule entities have no env_id:
+      dockhand_sched_{id}_{type}_{suffix} → {entry_id}_sched_{id}_{type}_{suffix}
+
+    Is a no-op once migration is complete, since new-format IDs do not
+    start with "dockhand_".
+    """
+    ent_registry = er.async_get(hass)
+    migrated = 0
+
+    for entity_entry in er.async_entries_for_config_entry(ent_registry, entry_id):
+        uid = entity_entry.unique_id or ""
+        if not uid.startswith("dockhand_"):
+            continue
+
+        # Strip the "dockhand_" prefix to get "{type}_{rest}"
+        without_prefix = uid[len("dockhand_") :]
+        parts = without_prefix.split("_", 2)
+        if not parts:
+            continue
+        type_word = parts[0]
+
+        if type_word == "sched":
+            # dockhand_sched_{id}_{type}_{rest} → {entry_id}_sched_{id}_{type}_{rest}
+            # No env_id involved; token order unchanged after stripping prefix.
+            new_uid = f"{entry_id}_{without_prefix}"
+        elif type_word == "env":
+            # dockhand_env_{env_id}_{rest} → {entry_id}_{env_id}_{rest}
+            # The "env" word is dropped entirely; env-level entities are
+            # distinguished by having no object-type token, not by the word "env".
+            if len(parts) < 3:
+                continue
+            env_id_str = parts[1]
+            if not env_id_str.isdigit():
+                continue
+            rest = parts[2]
+            new_uid = f"{entry_id}_{env_id_str}_{rest}"
+        else:
+            # dockhand_{type}_{env_id}_{rest} → {entry_id}_{env_id}_{type}_{rest}
+            # env_id moves before the type word.
+            if len(parts) < 2:
+                continue
+            env_id_str = parts[1]
+            if not env_id_str.isdigit():
+                continue
+            rest = parts[2] if len(parts) > 2 else ""
+            new_uid = (
+                f"{entry_id}_{env_id_str}_{type_word}_{rest}"
+                if rest
+                else f"{entry_id}_{env_id_str}_{type_word}"
+            )
+
+        ent_registry.async_update_entity(entity_entry.entity_id, new_unique_id=new_uid)
+        _LOGGER.debug("Dockhand: migrated unique_id %s → %s", uid, new_uid)
+        migrated += 1
+
+    if migrated:
+        _LOGGER.info(
+            "Dockhand: migrated %d entity unique_id(s) to entry-scoped format",
+            migrated,
         )

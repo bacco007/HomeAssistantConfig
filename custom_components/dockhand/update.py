@@ -90,7 +90,7 @@ async def async_setup_entry(
                 container_name = item.get("containerName", "")
                 if not container_name:
                     continue
-                uid = f"dockhand_update_{env_id}_{container_name}"
+                uid = f"{entry.entry_id}_{env_id}_update_{container_name}"
                 if uid in seen:
                     continue
                 seen.add(uid)
@@ -98,6 +98,7 @@ async def async_setup_entry(
                     ContainerUpdateEntity(
                         fast_coordinator=fast_coordinator,
                         update_coordinator=update_coordinator,
+                        entry_id=entry.entry_id,
                         env_id=env_id,
                         env_name=env_name,
                         container_name=container_name,
@@ -130,6 +131,7 @@ class ContainerUpdateEntity(CoordinatorEntity[DockhandUpdateCoordinator], Update
         self,
         fast_coordinator: DockhandFastCoordinator,
         update_coordinator: DockhandUpdateCoordinator,
+        entry_id: str,
         env_id: int,
         env_name: str,
         container_name: str,
@@ -140,7 +142,7 @@ class ContainerUpdateEntity(CoordinatorEntity[DockhandUpdateCoordinator], Update
         self._env_id = env_id
         self._container_name = container_name
 
-        self._attr_unique_id = f"dockhand_update_{env_id}_{container_name}"
+        self._attr_unique_id = f"{entry_id}_{env_id}_update_{container_name}"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, f"container_{env_id}_{container_name}")},
         )

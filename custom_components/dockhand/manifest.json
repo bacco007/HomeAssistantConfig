@@ -10,5 +10,5 @@
   "issue_tracker": "https://github.com/raetha/ha-dockhand/issues",
   "loggers": ["custom_components.dockhand"],
   "requirements": [],
-  "version": "1.7.2"
+  "version": "1.7.3"
 }

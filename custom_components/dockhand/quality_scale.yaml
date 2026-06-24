@@ -99,7 +99,8 @@ rules:
     status: done
     comment: >
       Every entity class sets _attr_unique_id in its __init__ using a
-      domain-prefixed string that includes the resource type and identifier.
+      config-entry-scoped string: {entry_id}_{env_id}_{type}_{discriminator}.
+      Scoping by entry_id ensures uniqueness across multiple Dockhand instances.
 
   has-entity-name:
     status: done
@@ -207,14 +208,19 @@ rules:
   test-coverage:
     status: done
     comment: >
-      356 tests across eight files: test_api.py (28), test_config_flow.py (18),
-      test_coordinator.py (24), test_entities.py (137), test_helpers.py (66),
-      test_init.py (41), test_update.py (36), test_workflows.py (6). Covers
-      all API methods, all config flow steps and options flow, legacy migration
-      paths, all three coordinators, all entity classes and platforms, device
-      registration via _ensure_env_devices and _ensure_hub_devices (all
-      branches including idempotency), all URL builders, all DeviceInfo
-      factories, all _container_has_healthcheck / _compose_project /
+      409 tests across nine files: test_api.py (28), test_config_flow.py (18),
+      test_coordinator.py (24), test_entities.py (135), test_helpers.py (77),
+      test_init.py (46), test_migration.py (39), test_update.py (36),
+      test_workflows.py (6). Covers all API methods, all config flow steps
+      and options flow, all three migration functions (_is_hex64,
+      migrate_1_4_0, migrate_1_5_0 including both historical device and
+      entity formats, migrate_1_7_3 per-type rename, no-op on
+      already-migrated IDs, cross-entry isolation, idempotency,
+      async_run_migrations orchestration), all three
+      coordinators, all entity classes and platforms, device registration
+      via _ensure_env_devices and _ensure_hub_devices (all branches
+      including idempotency), all URL builders, all DeviceInfo factories,
+      all _container_has_healthcheck / _compose_project /
       _image_display_name / _sched_key paths, ContainerUpdateEntity
       (_short_digest, installed_version, latest_version, available,
       async_release_notes including ha-alert type verification and
@@ -222,7 +228,7 @@ rules:
       _handle_coordinator_update, async_install including not-found and
       action_failed branches), HomeAssistantError propagation for all action
       methods, setup, and unload. All test files use pure pytest (no
-      unittest.TestCase). Full suite (356 tests) requires Python 3.14.2+ and
+      unittest.TestCase). Full suite (408 tests) requires Python 3.14.2+ and
       PHCC; runs in CI on every push. The Claude sandbox (Python 3.12) runs
       ruff + AST only — pytest requires homeassistant at import time.
 

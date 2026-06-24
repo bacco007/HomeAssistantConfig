@@ -46,7 +46,12 @@ async def async_setup_entry(
                 known_env_update_ids.add(env_id)
                 new.append(
                     DockhandCheckUpdatesButton(
-                        fast, update_coordinator, env_id, env_name, base_url
+                        fast,
+                        update_coordinator,
+                        entry.entry_id,
+                        env_id,
+                        env_name,
+                        base_url,
                     )
                 )
 
@@ -56,7 +61,13 @@ async def async_setup_entry(
                     known_container_keys.add(key)
                     new.append(
                         DockhandContainerRestartButton(
-                            fast, client, env_id, env_name, base_url, container
+                            fast,
+                            client,
+                            entry.entry_id,
+                            env_id,
+                            env_name,
+                            base_url,
+                            container,
                         )
                     )
 
@@ -66,7 +77,13 @@ async def async_setup_entry(
                     known_stack_ids.add(sid)
                     new.append(
                         DockhandStackRestartButton(
-                            fast, client, env_id, env_name, base_url, stack
+                            fast,
+                            client,
+                            entry.entry_id,
+                            env_id,
+                            env_name,
+                            base_url,
+                            stack,
                         )
                     )
 
@@ -89,6 +106,7 @@ class _BaseFastContainerButton(
         self,
         coordinator: DockhandFastCoordinator,
         client: Any,
+        entry_id: str,
         env_id: int,
         env_name: str,
         base_url: str,
@@ -96,6 +114,7 @@ class _BaseFastContainerButton(
     ) -> None:
         super().__init__(coordinator)
         self._client = client
+        self._entry_id = entry_id
         self._env_id = env_id
         self._env_name = env_name
         self._base_url = base_url
@@ -130,6 +149,7 @@ class _BaseFastStackButton(CoordinatorEntity[DockhandFastCoordinator], ButtonEnt
         self,
         coordinator: DockhandFastCoordinator,
         client: Any,
+        entry_id: str,
         env_id: int,
         env_name: str,
         base_url: str,
@@ -137,6 +157,7 @@ class _BaseFastStackButton(CoordinatorEntity[DockhandFastCoordinator], ButtonEnt
     ) -> None:
         super().__init__(coordinator)
         self._client = client
+        self._entry_id = entry_id
         self._env_id = env_id
         self._env_name = env_name
         self._base_url = base_url
@@ -159,14 +180,17 @@ class DockhandContainerRestartButton(_BaseFastContainerButton):
         self,
         coordinator: DockhandFastCoordinator,
         client: Any,
+        entry_id: str,
         env_id: int,
         env_name: str,
         base_url: str,
         container: dict,
     ) -> None:
-        super().__init__(coordinator, client, env_id, env_name, base_url, container)
+        super().__init__(
+            coordinator, client, entry_id, env_id, env_name, base_url, container
+        )
         self._attr_unique_id = (
-            f"dockhand_container_{self._env_id}_{self._container_name}_restart"
+            f"{self._entry_id}_{self._env_id}_container_{self._container_name}_restart"
         )
 
     async def async_press(self) -> None:
@@ -197,14 +221,17 @@ class DockhandStackRestartButton(_BaseFastStackButton):
         self,
         coordinator: DockhandFastCoordinator,
         client: Any,
+        entry_id: str,
         env_id: int,
         env_name: str,
         base_url: str,
         stack: dict,
     ) -> None:
-        super().__init__(coordinator, client, env_id, env_name, base_url, stack)
+        super().__init__(
+            coordinator, client, entry_id, env_id, env_name, base_url, stack
+        )
         self._attr_unique_id = (
-            f"dockhand_stack_{self._env_id}_{self._stack_name}_restart"
+            f"{self._entry_id}_{self._env_id}_stack_{self._stack_name}_restart"
         )
 
     async def async_press(self) -> None:
@@ -241,16 +268,18 @@ class DockhandCheckUpdatesButton(
         self,
         fast_coordinator: DockhandFastCoordinator,
         update_coordinator: DockhandUpdateCoordinator,
+        entry_id: str,
         env_id: int,
         env_name: str,
         base_url: str,
     ) -> None:
         super().__init__(fast_coordinator)
         self._update_coordinator = update_coordinator
+        self._entry_id = entry_id
         self._env_id = env_id
         self._env_name = env_name
         self._base_url = base_url
-        self._attr_unique_id = f"dockhand_env_{env_id}_check_updates"
+        self._attr_unique_id = f"{entry_id}_{env_id}_check_updates"
 
     @property
     def device_info(self) -> DeviceInfo:

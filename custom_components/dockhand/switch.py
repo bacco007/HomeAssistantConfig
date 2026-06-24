@@ -41,7 +41,13 @@ async def async_setup_entry(
                     known_container_keys.add(key)
                     new.append(
                         DockhandContainerRunningSwitch(
-                            fast, client, env_id, env_name, base_url, container
+                            fast,
+                            client,
+                            entry.entry_id,
+                            env_id,
+                            env_name,
+                            base_url,
+                            container,
                         )
                     )
 
@@ -51,7 +57,13 @@ async def async_setup_entry(
                     known_stack_ids.add(sid)
                     new.append(
                         DockhandStackRunningSwitch(
-                            fast, client, env_id, env_name, base_url, stack
+                            fast,
+                            client,
+                            entry.entry_id,
+                            env_id,
+                            env_name,
+                            base_url,
+                            stack,
                         )
                     )
 
@@ -74,6 +86,7 @@ class _BaseFastContainerSwitch(
         self,
         coordinator: DockhandFastCoordinator,
         client: Any,
+        entry_id: str,
         env_id: int,
         env_name: str,
         base_url: str,
@@ -81,6 +94,7 @@ class _BaseFastContainerSwitch(
     ) -> None:
         super().__init__(coordinator)
         self._client = client
+        self._entry_id = entry_id
         self._env_id = env_id
         self._env_name = env_name
         self._base_url = base_url
@@ -115,6 +129,7 @@ class _BaseFastStackSwitch(CoordinatorEntity[DockhandFastCoordinator], SwitchEnt
         self,
         coordinator: DockhandFastCoordinator,
         client: Any,
+        entry_id: str,
         env_id: int,
         env_name: str,
         base_url: str,
@@ -122,6 +137,7 @@ class _BaseFastStackSwitch(CoordinatorEntity[DockhandFastCoordinator], SwitchEnt
     ) -> None:
         super().__init__(coordinator)
         self._client = client
+        self._entry_id = entry_id
         self._env_id = env_id
         self._env_name = env_name
         self._base_url = base_url
@@ -155,14 +171,17 @@ class DockhandContainerRunningSwitch(_BaseFastContainerSwitch):
         self,
         coordinator: DockhandFastCoordinator,
         client: Any,
+        entry_id: str,
         env_id: int,
         env_name: str,
         base_url: str,
         container: dict,
     ) -> None:
-        super().__init__(coordinator, client, env_id, env_name, base_url, container)
+        super().__init__(
+            coordinator, client, entry_id, env_id, env_name, base_url, container
+        )
         self._attr_unique_id = (
-            f"dockhand_container_{self._env_id}_{self._container_name}_running"
+            f"{self._entry_id}_{self._env_id}_container_{self._container_name}_running"
         )
 
     @property
@@ -217,14 +236,17 @@ class DockhandStackRunningSwitch(_BaseFastStackSwitch):
         self,
         coordinator: DockhandFastCoordinator,
         client: Any,
+        entry_id: str,
         env_id: int,
         env_name: str,
         base_url: str,
         stack: dict,
     ) -> None:
-        super().__init__(coordinator, client, env_id, env_name, base_url, stack)
+        super().__init__(
+            coordinator, client, entry_id, env_id, env_name, base_url, stack
+        )
         self._attr_unique_id = (
-            f"dockhand_stack_{self._env_id}_{self._stack_name}_running"
+            f"{self._entry_id}_{self._env_id}_stack_{self._stack_name}_running"
         )
 
     @property

@@ -319,12 +319,13 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
             for img in env_data.get("images") or []:
                 raw_id = img.get("id") or ""
                 short_id = raw_id.split(":")[-1] if ":" in raw_id else raw_id
-                image_uids.add(f"dockhand_image_{env_id}_{short_id}")
+                image_uids.add(f"{entry.entry_id}_{env_id}_image_{short_id}")
             for net in env_data.get("networks") or []:
-                network_uids.add(f"dockhand_network_{env_id}_{net.get('id', '')}")
+                net_id = net.get("id", "")
+                network_uids.add(f"{entry.entry_id}_{env_id}_network_{net_id}")
             for vol in env_data.get("volumes") or []:
                 vname = vol.get("name") or vol.get("Name", "")
-                volume_uids.add(f"dockhand_volume_{env_id}_{vname}")
+                volume_uids.add(f"{entry.entry_id}_{env_id}_volume_{vname}")
 
     # Update-coordinator-derived set.
     update_valid = (
@@ -336,7 +337,7 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
             for item in by_container.values():
                 name = item.get("containerName", "")
                 if name:
-                    update_uids.add(f"dockhand_update_{env_id}_{name}")
+                    update_uids.add(f"{entry.entry_id}_{env_id}_update_{name}")
 
     return {
         "env_ids": env_ids,
@@ -509,11 +510,20 @@ def _cleanup_stale_registry(
     for entity_entry in er.async_entries_for_config_entry(ent_registry, entry.entry_id):
         uid = entity_entry.unique_id or ""
 
-        if uid.startswith("dockhand_image_"):
-            try:
-                env_id = int(uid.split("_")[2])
-            except ValueError:
-                continue
+        # uid format after 1.7.3: {entry_id}_{env_id}_{type}_{discriminator}
+        # entry_id is a UUID containing only hyphens (no underscores), so
+        # splitting on "_" gives: [entry_id, env_id_int, type_word, ...]
+        uid_parts = uid.split("_")
+        if len(uid_parts) < 3:
+            continue
+        try:
+            uid_env_id = int(uid_parts[1])
+        except ValueError:
+            continue
+        uid_type = uid_parts[2]
+
+        if uid_type == "image":
+            env_id = uid_env_id
             if env_id not in live["env_ids"]:
                 # Env deleted — remove regardless of slow coordinator state.
                 _LOGGER.debug("Dockhand: removing stale image entity %s", uid)
@@ -527,11 +537,8 @@ def _cleanup_stale_registry(
                 _LOGGER.debug("Dockhand: removing stale image entity %s", uid)
                 ent_registry.async_remove(entity_entry.entity_id)
 
-        elif uid.startswith("dockhand_network_"):
-            try:
-                env_id = int(uid.split("_")[2])
-            except ValueError:
-                continue
+        elif uid_type == "network":
+            env_id = uid_env_id
             if env_id not in live["env_ids"]:
                 _LOGGER.debug("Dockhand: removing stale network entity %s", uid)
                 ent_registry.async_remove(entity_entry.entity_id)
@@ -543,11 +550,8 @@ def _cleanup_stale_registry(
                 _LOGGER.debug("Dockhand: removing stale network entity %s", uid)
                 ent_registry.async_remove(entity_entry.entity_id)
 
-        elif uid.startswith("dockhand_volume_"):
-            try:
-                env_id = int(uid.split("_")[2])
-            except ValueError:
-                continue
+        elif uid_type == "volume":
+            env_id = uid_env_id
             if env_id not in live["env_ids"]:
                 _LOGGER.debug("Dockhand: removing stale volume entity %s", uid)
                 ent_registry.async_remove(entity_entry.entity_id)
@@ -559,14 +563,10 @@ def _cleanup_stale_registry(
                 _LOGGER.debug("Dockhand: removing stale volume entity %s", uid)
                 ent_registry.async_remove(entity_entry.entity_id)
 
-        elif uid.startswith("dockhand_update_"):
+        elif uid_type == "update":
             if not live["update_valid"]:
                 continue
-            # uid format: dockhand_update_{env_id}_{name}
-            try:
-                env_id = int(uid.split("_")[2])
-            except ValueError:
-                continue
+            env_id = uid_env_id
             # Remove if env deleted, or if env is online and update entity is gone.
             if env_id not in live["env_ids"] or (
                 env_id in live["online_env_ids"] and uid not in live["update_uids"]
