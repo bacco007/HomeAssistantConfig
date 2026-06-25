@@ -115,7 +115,6 @@ def create_subentries(self, config_entry, input_data):
     )
 
     description_placeholders ['title'] = 'title placeholder'    
-
     return description_placeholders
 
 class JourneySubEntryFlowHandler(ConfigSubentryFlow):
@@ -137,7 +136,7 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
                 return "", errors
 
             entity_info = get_device_trackers(hass, data[CONF_ORIGIN_ID])
-            stop_list = data[CONF_DESTINATION_ID]
+            stop_list = data[CONF_DESTINATION_ID].copy()
 
         # CONF_DESTINATION_ID is always going to be a list, but if there's more than one then we can't create a reverse trip also
         else:
@@ -147,7 +146,7 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
                     errors['base'] = "return_journey_multiple_destination_error"
                     return "", errors
 
-            stop_list = data[CONF_DESTINATION_ID]
+            stop_list = data[CONF_DESTINATION_ID].copy()
             stop_list.insert (0, data[CONF_ORIGIN_ID])
 
         try:
@@ -282,7 +281,7 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
                             if existing_subentry.unique_id == unique_id:
                                 errors["base"] = "return_already_configured"
 
-            # Check for errors again - duplicate journeys are an error
+            # Check for errors again - duplicate journeys are an error that might have just been discovered
             if "base" not in errors:
                 # Validation was successful, create the config subentry/subentries
                 
@@ -304,6 +303,11 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
                 config_subentry = self._get_reconfigure_subentry()
                 user_input = dict(config_subentry.data)
 
+                # Capture the subentry title in case the user has renamed it
+                user_input.update(
+                    {"user_title": config_subentry.title}
+                    )
+
                 JOURNEY_DATA_SCHEMA = vol.Schema(
                     {
                         vol.Required(CONF_ORIGIN_ID, default = user_input.get(CONF_ORIGIN_ID, "")): str,
@@ -320,7 +324,6 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
 
         JOURNEY_DATA_SCHEMA = vol.Schema(
             {
-#                vol.Required(CONF_ORIGIN_ID, default = user_input.get(CONF_ORIGIN_ID, "")): str,
                 vol.Required(CONF_ORIGIN_ID, default = user_input.get(CONF_ORIGIN_ID, ""),): selector (
                         {
                             "select": {
@@ -330,7 +333,6 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
                         }
                     }
                 ),
-#                vol.Required(CONF_DESTINATION_ID, default = user_input.get(CONF_DESTINATION_ID, "")): str,
                 vol.Required(CONF_DESTINATION_ID, default = user_input.get(CONF_DESTINATION_ID, ""),): selector (
                         {
                             "select": {
@@ -372,15 +374,20 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
 
             return await self.async_step_sensors()     
 
-        # Are we reconfiguring or is are we creating a new journey?
+        # Are we reconfiguring or are we creating a new journey?
         if user_input is None:
             if self.source == SOURCE_RECONFIGURE:
                 config_subentry = self._get_reconfigure_subentry()
                 user_input = dict(config_subentry.data)
+
+                # Capture the subentry title in case the user has renamed it
+                user_input.update(
+                    {"user_title": config_subentry.title}
+                    )
+
                 self._input_data = user_input
 
                 default_origin_type = convert_transport_types_numeric_to_friendly(user_input[CONF_ORIGIN_TRANSPORT_TYPE])
-
                 default_destination_type = convert_transport_types_numeric_to_friendly(user_input[CONF_DESTINATION_TRANSPORT_TYPE])
 
             else:
@@ -455,12 +462,14 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
             if self.source == SOURCE_RECONFIGURE:
                 # We don't need to recreate the subentry, just refresh and reload the one we're reconfiguring
                 unique_id_destination = '_'.join(self._input_data[CONF_DESTINATION_ID])
+                
+                # Continue to use the existing title, in case the user has renamed it
                 return self.async_update_reload_and_abort(
                     self._get_entry(),
                     self._get_reconfigure_subentry(),
                     unique_id = f"{self._input_data[CONF_ORIGIN_ID]}_{unique_id_destination}",
                     data = self._input_data,
-                    title=f"{self._input_data[CONF_ORIGIN_NAME]} to {self._input_data[CONF_DESTINATION_NAME]}"
+                    title = self._input_data["user_title"]
                 )
 
             else:
@@ -471,7 +480,7 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
 
                 return self.async_abort(
                     reason="subentries_created",
-                    description_placeholders=description_placeholders,
+                    description_placeholders=description_placeholders
                 )
                     
 
@@ -479,6 +488,11 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
             if self.source == SOURCE_RECONFIGURE:
                 config_subentry = self._get_reconfigure_subentry()
                 user_input = dict(config_subentry.data)
+
+                # Capture the subentry title in case the user has renamed it
+                user_input.update(
+                    {"user_title": config_subentry.title}
+                    )
             else:
                 user_input = {}
 
@@ -500,12 +514,17 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
                 }
             )
 
+            multi_destination_suggestion = "\n\nAs this journey has multiple potential destinations you may want to include one of the 'destination name' sensors, otherwise it won't be obvious which destination each journey is using" if len(self._input_data[CONF_DESTINATION_ID]) > 1 else ""
+                
             return self.async_show_form(
                 step_id="sensors",
                 data_schema=STEP_SENSORS_SCHEMA,
                 errors=errors,
                 last_step=False,
-                description_placeholders = {"journey_name": f"{self._input_data[CONF_ORIGIN_NAME]} to {self._input_data[CONF_DESTINATION_NAME]}"}
+                description_placeholders = {
+                    "journey_name": f"{self._input_data[CONF_ORIGIN_NAME]} to {self._input_data[CONF_DESTINATION_NAME]}",
+                    "multi_destination_suggestion": multi_destination_suggestion
+                }
             )
 
     async def async_step_alerts(self, user_input=None):
@@ -523,21 +542,21 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
                 # No more flows to process so we can create/update the subentries as required
                 if self.source == SOURCE_RECONFIGURE:
                     unique_id_destination = '_'.join(self._input_data[CONF_DESTINATION_ID])
+
+                    # Continue to use the existing title, in case the user has renamed it
                     return self.async_update_reload_and_abort(
                         self._get_entry(),
                         self._get_reconfigure_subentry(),
                         unique_id = f"{self._input_data[CONF_ORIGIN_ID]}_{unique_id_destination}",
-                        data = self._input_data,
-                        title=f"{self._input_data[CONF_ORIGIN_NAME]} to {self._input_data[CONF_DESTINATION_NAME]}"
+                        data = self._input_data
                     )
                 else:
                     description_placeholders = create_subentries(self, self._get_entry(), self._input_data)
-
                     await self.hass.config_entries.async_reload(self._get_entry().entry_id)
 
                     return self.async_abort(
                         reason="subentries_created",
-                        description_placeholders=description_placeholders,
+                        description_placeholders=description_placeholders
                     )
 
 
@@ -545,6 +564,11 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
             if self.source == SOURCE_RECONFIGURE:
                 config_subentry = self._get_reconfigure_subentry()
                 user_input = dict(config_subentry.data)
+
+                # Capture the subentry title in case the user has renamed it
+                user_input.update(
+                    {"user_title": config_subentry.title}
+                    )
             else:
                 user_input = {}
 
@@ -588,7 +612,7 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
 
 
     async def async_step_custom_sensors(self, user_input=None):
-        # Handle customer sensors if requested
+        # Handle custom sensors if requested
 
         if user_input is not None:
             if (user_input['device_trackers'][CONF_FIRST_LEG_DEVICE_TRACKER]) or (user_input['device_trackers'][CONF_LAST_LEG_DEVICE_TRACKER] in ['if_not_duplicated', 'always']):
@@ -600,12 +624,13 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
 
             # This is the last step so create the subentries, unless we're reconfiguring in which case just update, reload and abort
             if self.source == SOURCE_RECONFIGURE:
+                # Continue to use the existing title, in case the user has renamed it
                 return self.async_update_reload_and_abort(
                     self._get_entry(),
                     self._get_reconfigure_subentry(),
                     unique_id = f"{self._input_data[CONF_ORIGIN_ID]}_{self._input_data[CONF_DESTINATION_ID]}",
                     data = self._input_data,
-                    title=f"{self._input_data[CONF_ORIGIN_NAME]} to {self._input_data[CONF_DESTINATION_NAME]}"
+                    title = self._input_data["user_title"]
                 )
             else:
                 description_placeholders = create_subentries(self, self._get_entry(), self._input_data)
@@ -633,7 +658,8 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
                     vol.Required(CONF_CHANGES_SENSOR, default = user_input['time_and_change_sensors'].get(CONF_CHANGES_SENSOR,DEFAULT_CHANGES_SENSOR)): bool,
                     vol.Required(CONF_DELAY_SENSOR, default = user_input['time_and_change_sensors'].get(CONF_DELAY_SENSOR,DEFAULT_DELAY_SENSOR)): bool,
                     vol.Required(CONF_FIRST_LEG_DEPARTURE_TIME_SENSOR, default = user_input['time_and_change_sensors'].get(CONF_FIRST_LEG_DEPARTURE_TIME_SENSOR, DEFAULT_FIRST_LEG_DEPARTURE_TIME_SENSOR)): bool,
-                    vol.Required(CONF_LAST_LEG_ARRIVAL_TIME_SENSOR, default = user_input['time_and_change_sensors'].get(CONF_LAST_LEG_ARRIVAL_TIME_SENSOR, DEFAULT_LAST_LEG_ARRIVAL_TIME_SENSOR)): bool
+                    vol.Required(CONF_LAST_LEG_ARRIVAL_TIME_SENSOR, default = user_input['time_and_change_sensors'].get(CONF_LAST_LEG_ARRIVAL_TIME_SENSOR, DEFAULT_LAST_LEG_ARRIVAL_TIME_SENSOR)): bool,
+                    vol.Required(CONF_DURATION_SENSOR, default = user_input['time_and_change_sensors'].get(CONF_DURATION_SENSOR, DEFAULT_DURATION_SENSOR)): bool
                 }
             )
 
@@ -644,6 +670,7 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
                     vol.Required(CONF_FIRST_LEG_LINE_NAME_SENSOR, default = user_input['origin_sensors'].get(CONF_FIRST_LEG_LINE_NAME_SENSOR, DEFAULT_FIRST_LEG_LINE_NAME_SENSOR)): bool,
                     vol.Required(CONF_FIRST_LEG_LINE_NAME_SHORT_SENSOR, default = user_input['origin_sensors'].get(CONF_FIRST_LEG_LINE_NAME_SHORT_SENSOR, DEFAULT_FIRST_LEG_LINE_NAME_SHORT_SENSOR)): bool,
                     vol.Required(CONF_FIRST_LEG_OCCUPANCY_SENSOR, default = user_input['origin_sensors'].get(CONF_FIRST_LEG_OCCUPANCY_SENSOR, DEFAULT_FIRST_LEG_OCCUPANCY_SENSOR)): bool,
+                    vol.Required(CONF_FIRST_LEG_OCCUPANCY_DETAIL_SENSOR, default = user_input['origin_sensors'].get(CONF_FIRST_LEG_OCCUPANCY_DETAIL_SENSOR, DEFAULT_FIRST_LEG_OCCUPANCY_DETAIL_SENSOR)): bool,
                     vol.Required(CONF_FIRST_LEG_TRAIN_SET_SENSOR, default = user_input['origin_sensors'].get(CONF_FIRST_LEG_TRAIN_SET_SENSOR, DEFAULT_FIRST_LEG_TRAIN_SET_SENSOR)): bool
                 }
             )
@@ -655,6 +682,7 @@ class JourneySubEntryFlowHandler(ConfigSubentryFlow):
                     vol.Required(CONF_LAST_LEG_LINE_NAME_SENSOR, default = user_input['destination_sensors'].get(CONF_LAST_LEG_LINE_NAME_SENSOR, DEFAULT_LAST_LEG_LINE_NAME_SENSOR)): bool,
                     vol.Required(CONF_LAST_LEG_LINE_NAME_SHORT_SENSOR, default = user_input['destination_sensors'].get(CONF_LAST_LEG_LINE_NAME_SHORT_SENSOR, DEFAULT_LAST_LEG_LINE_NAME_SHORT_SENSOR)): bool,
                     vol.Required(CONF_LAST_LEG_OCCUPANCY_SENSOR, default = user_input['destination_sensors'].get(CONF_LAST_LEG_OCCUPANCY_SENSOR, DEFAULT_LAST_LEG_OCCUPANCY_SENSOR)): bool,
+                    vol.Required(CONF_LAST_LEG_OCCUPANCY_DETAIL_SENSOR, default = user_input['destination_sensors'].get(CONF_LAST_LEG_OCCUPANCY_DETAIL_SENSOR, DEFAULT_LAST_LEG_OCCUPANCY_DETAIL_SENSOR)): bool,
                     vol.Required(CONF_LAST_LEG_TRAIN_SET_SENSOR, default = user_input['destination_sensors'].get(CONF_LAST_LEG_TRAIN_SET_SENSOR, DEFAULT_LAST_LEG_TRAIN_SET_SENSOR)): bool
                 }
             )

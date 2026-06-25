@@ -28,12 +28,23 @@
       }
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options",
+        "description": "These optional settings impact all of your journeys.",
+        "data": {
+          "request_location_update": "If the journey origin is a device tracker (e.g. a mobile phone), attempt to request a location update at each poll.  Note that this could impact the battery life of the device being polled."
+        }
+      }
+    }
+  },
   "config_subentries": {
 	  "create_entry": {
 		  "entry_type": "entry_type placeholder",
 		  "initiate_flow": {
-			  "user": "xAdd new journey",
-			  "reconfigure": "xChange journey options"
+			  "user": "Add new journey",
+			  "reconfigure": "Change journey options"
 		  },
 		  "step": {
 			  "user" : {
@@ -45,13 +56,14 @@
 	  },
 	  "subentry_journey": {
 		  "entry_type": "",
+          "flow_title": "Transport NSW Mk II",
 		  "abort": {
 			  "already_configured": "You have already added that journey.",
 			  "outbound_already_configured": "You have already added the outbound journey.",
-			  "return_already_configured": "You have alreadty added the return part of that journey",
+			  "return_already_configured": "You have already added the return part of that journey",
               "reconfigure_successful": "Journey reconfiguration successful.",
 			  "subentries_created": "Journey{plural} registered successfully.",
-			  "subentries_reconfigured": "Journey{plural} reconfigured successfully!"
+			  "subentries_reconfigured": "Journey{plural} reconfigured successfully."
 		  },
           "error": {
             "apiratelimitexceeded": "API rate limit exceeded - wait a moment and try again.",
@@ -106,7 +118,7 @@
                   "trips_to_create": "How many trips should be shown (1 to 3)",
 				  "sensor_creation": "Sensors to create"
 				},
-				"description": "Here you can choose if an alerts sensor should be created, how many consecutive journeys should be created and what types of sensors each journey should include - by default only the 'due' sensor and origin/destination device trackers will be created.",
+				"description": "Here you can choose if an alerts sensor should be created, how many consecutive journeys should be created and what types of sensors each journey should include - by default only the 'due' sensor and origin/destination device trackers will be created.{multi_destination_suggestion}",
 				  "title": "{journey_name}"
 			  },
 			  "alerts": {
@@ -126,39 +138,42 @@
 						  "arrival_time": "Arrival time at destination",
 						  "departure_time": "Departure time from origin (including delays)",
 						  "changes": "Journey changes",
-						  "delay": "Delay leaving origin (based on timetable)"
+						  "delay": "Delay leaving origin (based on timetable)",
+						  "duration": "Total journey duration in minutes (based on timetable)"
 						}
 					},
 					"origin_sensors": {
 						"name": "Origin sensors",
 						"description": "Select which origin/first leg-related sensors to create",
 						"data": {
-						  "origin_line_name": "First leg line name (eg T1 North Shore & Western Line)",
-						  "origin_line_name_short": "Short version of first leg line name (eg T1)",
-						  "origin_detail": "The specific origin platform, stop, wharf etc (eg Platform 4)",
-						  "origin_occupancy": "First leg vehicle occupancy (eg Many seats, few seats etc)",
-						  "origin_name": "Origin name (eg Gordon Station, Platform 1, Gordon)",
-						  "origin_train_set": "Origin train set type (eg Tangara, Waratah etc)"
+						  "origin_line_name": "Line name (eg T1 North Shore & Western Line)",
+						  "origin_line_name_short": "Short version of line name (eg T1)",
+						  "origin_name": "Full stop name (eg Gordon Station, Platform 1, Gordon)",
+						  "origin_detail": "The specific platform, stop, wharf etc (eg Platform 4)",
+						  "origin_occupancy": "General vehicle occupancy (eg Many seats, few seats etc)",
+						  "origin_occupancy_detail": "Per-carriage vehicle occupancy",
+						  "origin_train_set": "Vehicle set type (eg Tangara, Waratah etc)"
 						}
 					},
 					"destination_sensors": {
 						"name": "Destination sensors",
 						"description": "Select which destination/last leg-related sensors to create",
 						"data": {
-						  "destination_line_name": "Last leg line name (eg T9 Northern Line)",
-						  "destination_line_name_short": "Short version of last leg line name (eg T9)",
-						  "destination_detail": "The specific destination platform, stop, wharf etc (eg Platform 4)",
-						  "destination_name": "Destination name (eg Gadigal Station, Platform 1, Sydney)",
-						  "destination_occupancy": "Last leg vehicle occupancy (eg Many seats, few seats etc)",
-						  "destination_train_set": "Destination train set type (eg Tangara, Waratah etc)"
+						  "destination_line_name": "Line name (eg T9 Northern Line)",
+						  "destination_line_name_short": "Short version of line name (eg T9)",
+						  "destination_name": "Full stop name (eg Gadigal Station, Platform 1, Sydney)",
+						  "destination_detail": "The specific platform, stop, wharf etc (eg Platform 4)",
+						  "destination_occupancy": "General vehicle occupancy (eg Many seats, few seats etc)",
+						  "destination_occupancy_detail": "Per-carriage vehicle occupancy",
+						  "destination_train_set": "Vehicle set type (eg Tangara, Waratah etc)"
 						}
 					},
 					"device_trackers": {
 						"name": "Device trackers",
 						"description": "Select when device tracker entities should be created",
 						"data": {
-						  "first_leg_device_tracker": "First leg vehicle location (if provided)",
-						  "last_leg_device_tracker": "Last leg vehicle location (if provided)",
+						  "first_leg_device_tracker": "Origin vehicle location (if provided)",
+						  "last_leg_device_tracker": "Destination vehicle location (if provided)",
 						  "origin_device_tracker": "The journey origin, i.e. where the journey starts",
 						  "destination_device_tracker": "The journey destination, i.e. where the journey ends",
 						  "changes_device_tracker": "All journey changes, i.e. anywhere you have to change transport"
