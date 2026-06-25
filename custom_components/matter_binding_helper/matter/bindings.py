@@ -10,8 +10,7 @@ from homeassistant.core import HomeAssistant
 
 from ..const import CLUSTER_BINDING
 from .acl import provision_acl_for_binding, remove_acl_entry
-from .client import get_raw_matter_client
-from .group_keys import _accessing_fabric_index
+from .client import get_client
 from .groups import provision_group_for_binding, teardown_group_for_binding
 from .demo import (
     add_demo_binding,
@@ -26,6 +25,10 @@ from .utils import (
     get_user_friendly_error,
     parse_error_type,
 )
+from .wire import write_fabric_scoped_list
+
+# Binding TargetStruct field name -> TLV tag.
+BINDING_TAGS = {"node": 1, "group": 2, "endpoint": 3, "cluster": 4}
 
 if TYPE_CHECKING:
     from matter_server.client import MatterClient
@@ -46,7 +49,7 @@ async def get_bindings(
         )
         return get_demo_bindings(node_id, endpoint_id)
 
-    client = get_raw_matter_client(hass)
+    client = get_client(hass)
     if not client:
         _LOGGER.warning("get_bindings: Matter client not available")
         return []
@@ -368,7 +371,7 @@ async def verify_bindings(
             bindings_found=len(cached),
         )
 
-    client = get_raw_matter_client(hass)
+    client = get_client(hass)
     if not client:
         return BindingVerificationResult(
             success=False,
@@ -432,40 +435,6 @@ async def verify_bindings(
         )
 
 
-def _binding_entry(
-    target: dict[str, Any], tag_keys: bool, fabric_index: int = 1
-) -> dict[str, Any]:
-    """Render one Binding TargetStruct entry in camelCase or numeric TLV tag keys.
-
-    matter.js only persists tag-keyed list-of-struct entries (Binding tags:
-    node=1, group=2, endpoint=3, cluster=4, fabricIndex=254); python-matter-server
-    accepts either. The fabric index must be the real accessing fabric: chip
-    coerces a 0, but matter.js writes it literally and rs-matter rejects
-    fabricIndex 0 with CONSTRAINT_ERROR.
-    """
-    cluster = target["cluster"]
-    node = target.get("node")
-    endpoint = target.get("endpoint")
-    group = target.get("group")
-    if tag_keys:
-        entry: dict[str, Any] = {"4": cluster, "254": fabric_index}
-        if node is not None:
-            entry["1"] = node
-        if group is not None:
-            entry["2"] = group
-        if endpoint is not None:
-            entry["3"] = endpoint
-        return entry
-    entry = {"cluster": cluster, "fabricIndex": fabric_index}
-    if node is not None:
-        entry["node"] = node
-    if endpoint is not None:
-        entry["endpoint"] = endpoint
-    if group is not None:
-        entry["group"] = group
-    return entry
-
-
 async def create_binding(
     hass: HomeAssistant,
     source_node_id: int,
@@ -519,7 +488,7 @@ async def create_binding(
             bindings_found=len(cached),
         )
 
-    client = get_raw_matter_client(hass)
+    client = get_client(hass)
     if not client:
         _LOGGER.error("create_binding: Matter client not available")
         return BindingVerificationResult(
@@ -578,55 +547,38 @@ async def create_binding(
             }
         )
 
-        # Write the binding attribute. Like GroupKeyMap, Binding is a fabric-scoped
-        # list-of-struct: python-matter-server accepts camelCase field names, but
-        # matter.js silently drops entries it can't map and only persists numeric
-        # TLV tag keys. Write camelCase first, read back, and retry with tag keys
-        # on a miss so both backends work.
+        # Write the binding attribute. Binding is a fabric-scoped list-of-struct;
+        # wire owns the camelCase/tag-key + fabricIndex + cache-lag handling.
+        # Verify through get_bindings (node cache) — the same source the rest of
+        # the integration reads.
         attribute_path = f"{source_endpoint_id}/{CLUSTER_BINDING}/0"
         _LOGGER.info("create_binding: Writing to attribute path: %s", attribute_path)
 
-        # Binding is fabric-scoped: rs-matter rejects fabricIndex 0 with
-        # CONSTRAINT_ERROR when the controller (matter.js) writes it literally.
-        fabric_index = await _accessing_fabric_index(client, source_node_id)
-        for tag_keys in (False, True):
-            binding_list = [_binding_entry(t, tag_keys, fabric_index) for t in targets]
-            _LOGGER.debug(
-                "create_binding: writing binding list (%s keys): %s",
-                "tag" if tag_keys else "name",
-                binding_list,
-            )
-            result = await client.write_attribute(
-                node_id=source_node_id,
-                attribute_path=attribute_path,
-                value=binding_list,
-            )
-            _LOGGER.info("create_binding: write_attribute result: %s", result)
+        async def _read_bindings() -> list[BindingEntry]:
+            return await get_bindings(hass, source_node_id, source_endpoint_id)
 
-            # Poll the readback: matter-server's attribute cache lags a fresh
-            # fabric-scoped write, so a single immediate read can false-negative a
-            # write that succeeded.
-            persisted = False
-            for _ in range(5):
-                read_back = await get_bindings(hass, source_node_id, source_endpoint_id)
-                if any(
-                    binding_matches(
-                        b,
-                        target_node_id,
-                        target_endpoint_id,
-                        target_group_id,
-                        cluster_id,
-                    )
-                    for b in read_back
-                ):
-                    persisted = True
-                    break
-                await asyncio.sleep(1.5)
-            if persisted:
-                if tag_keys:
-                    _LOGGER.info("create_binding: binding accepted using tag keys")
-                break
-        else:
+        def _has_new_binding(read_back: list[BindingEntry]) -> bool:
+            return any(
+                binding_matches(
+                    b,
+                    target_node_id,
+                    target_endpoint_id,
+                    target_group_id,
+                    cluster_id,
+                )
+                for b in read_back
+            )
+
+        persisted, _ = await write_fabric_scoped_list(
+            client,
+            source_node_id,
+            attribute_path,
+            targets,
+            BINDING_TAGS,
+            _has_new_binding,
+            read_entries=_read_bindings,
+        )
+        if not persisted:
             _LOGGER.warning(
                 "create_binding: binding did not persist on node %s after "
                 "camelCase and tag-key writes",
@@ -740,7 +692,7 @@ async def create_binding(
             success=True,
             verified=False,  # Not verified because verify=False
             message="Binding written (verification skipped)",
-            bindings_found=len(binding_list),
+            bindings_found=len(targets),
         )
 
     except Exception as err:
@@ -812,7 +764,7 @@ async def delete_binding(
             bindings_found=len(cached),
         )
 
-    client = get_raw_matter_client(hass)
+    client = get_client(hass)
     if not client:
         return BindingVerificationResult(
             success=False,
@@ -873,12 +825,11 @@ async def delete_binding(
                 bindings_found=len(current_bindings),
             )
 
-        # Rewrite the remaining bindings. Same fabric-scoped/tag-key concerns as
-        # create_binding: use the real accessing fabric index, and retry with tag
-        # keys if matter.js drops the camelCase write.
+        # Rewrite the remaining bindings through wire (same fabric-scoped/tag-key
+        # mechanism as create_binding), verifying the list shrank to the expected
+        # length via get_bindings.
         attribute_path = f"{source_endpoint_id}/{CLUSTER_BINDING}/0"
         _LOGGER.info("delete_binding: Writing to attribute path: %s", attribute_path)
-        fabric_index = await _accessing_fabric_index(client, source_node_id)
         targets = [
             {
                 "cluster": b.cluster_id,
@@ -889,18 +840,18 @@ async def delete_binding(
             for b in filtered_bindings
         ]
 
-        result = None
-        for tag_keys in (False, True):
-            binding_list = [_binding_entry(t, tag_keys, fabric_index) for t in targets]
-            result = await client.write_attribute(
-                node_id=source_node_id,
-                attribute_path=attribute_path,
-                value=binding_list,
-            )
-            read_back = await get_bindings(hass, source_node_id, source_endpoint_id)
-            if len(read_back) == len(filtered_bindings):
-                break
-        _LOGGER.info("delete_binding: write_attribute result: %s", result)
+        async def _read_bindings() -> list[BindingEntry]:
+            return await get_bindings(hass, source_node_id, source_endpoint_id)
+
+        await write_fabric_scoped_list(
+            client,
+            source_node_id,
+            attribute_path,
+            targets,
+            BINDING_TAGS,
+            lambda read_back: len(read_back) == len(filtered_bindings),
+            read_entries=_read_bindings,
+        )
 
         # Remove ACL entry from target device if requested (for unicast bindings)
         if (
@@ -1017,7 +968,7 @@ async def delete_binding(
             success=True,
             verified=False,  # Not verified because verify=False
             message="Binding deletion written (verification skipped)",
-            bindings_found=len(binding_list),
+            bindings_found=len(targets),
         )
 
     except Exception as err:

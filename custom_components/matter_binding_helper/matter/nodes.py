@@ -14,7 +14,7 @@ from ..const import (
     CLUSTER_BINDING,
     CLUSTER_DESCRIPTOR,
 )
-from .client import get_raw_matter_client
+from .client import get_client
 from .demo import get_demo_nodes, is_demo_mode
 from .ha_registry import get_ha_device_info
 
@@ -31,7 +31,7 @@ async def get_nodes(hass: HomeAssistant) -> list[dict[str, Any]]:
         _LOGGER.debug("Demo mode enabled, returning demo nodes")
         return get_demo_nodes()
 
-    client = get_raw_matter_client(hass)
+    client = get_client(hass)
     if not client:
         _LOGGER.error("Matter client not available")
         return []

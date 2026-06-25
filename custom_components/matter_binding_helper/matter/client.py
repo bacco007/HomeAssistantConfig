@@ -71,6 +71,11 @@ class MatterClientProtocol(ABC):
         """Send a device command to a node."""
         ...
 
+    @abstractmethod
+    async def send_raw_command(self, command: str, **kwargs: Any) -> Any:
+        """Send a high-level matter-server WS command by name (e.g. set_acl_entry)."""
+        ...
+
 
 class RealMatterClient(MatterClientProtocol):
     """Wraps the actual python-matter-server client."""
@@ -138,13 +143,34 @@ class RealMatterClient(MatterClientProtocol):
             command=command,
         )
 
+    async def send_raw_command(self, command: str, **kwargs: Any) -> Any:
+        """Send a high-level matter-server WS command by name (e.g. set_acl_entry)."""
+        return await self._client.send_command(command, **kwargs)
+
+
+def _get_direct_client(hass: HomeAssistant) -> "RealMatterServerClient | None":
+    """Return a directly-configured Matter client, if one is connected (#61)."""
+    from ..const import DOMAIN
+
+    for data in hass.data.get(DOMAIN, {}).values():
+        connection = data.get("connection") if isinstance(data, dict) else None
+        if connection is not None and connection.client is not None:
+            return connection.client
+    return None
+
 
 def get_raw_matter_client(hass: HomeAssistant) -> "RealMatterServerClient | None":
     """Get the raw Matter client from Home Assistant.
 
-    This returns the actual python-matter-server client instance,
-    not the wrapped protocol. Use get_client() for the protocol version.
+    Prefers an explicitly-configured direct connection (issue #61) and otherwise
+    falls back to the client owned by HA's Matter integration. Returns the actual
+    python-matter-server client instance, not the wrapped protocol; use
+    get_client() for the protocol version.
     """
+    direct = _get_direct_client(hass)
+    if direct is not None:
+        return direct
+
     try:
         from homeassistant.components.matter import DOMAIN as MATTER_DOMAIN
     except ImportError:

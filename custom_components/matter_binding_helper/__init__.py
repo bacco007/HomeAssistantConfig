@@ -45,13 +45,42 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = {}
 
-    # Check if Matter integration is available (skip in demo mode)
-    from .const import CONF_DEMO_MODE, DEFAULT_DEMO_MODE
+    from .const import (
+        CONF_DEMO_MODE,
+        CONF_MATTER_SERVER_URL,
+        DEFAULT_DEMO_MODE,
+        DEFAULT_MATTER_SERVER_URL,
+    )
 
     demo_mode = entry.options.get(CONF_DEMO_MODE, DEFAULT_DEMO_MODE)
-    if not demo_mode and not hass.config_entries.async_entries(MATTER_DOMAIN):
+    server_url = (
+        entry.options.get(CONF_MATTER_SERVER_URL, DEFAULT_MATTER_SERVER_URL) or ""
+    ).strip()
+
+    # In live mode we need a Matter client: either a directly-configured server
+    # URL (#61) or HA's own Matter integration.
+    if (
+        not demo_mode
+        and not server_url
+        and not hass.config_entries.async_entries(MATTER_DOMAIN)
+    ):
         _LOGGER.error("Matter integration is not set up")
         return False
+
+    # Optional direct connection to a non-default / development server (#61).
+    if not demo_mode and server_url:
+        from homeassistant.exceptions import ConfigEntryNotReady
+
+        from .matter.connection import DirectMatterConnection
+
+        connection = DirectMatterConnection(hass, server_url)
+        try:
+            await connection.async_connect()
+        except Exception as err:  # noqa: BLE001 - surfaced as ConfigEntryNotReady
+            raise ConfigEntryNotReady(
+                f"Could not connect to Matter server at {server_url}: {err}"
+            ) from err
+        hass.data[DOMAIN][entry.entry_id]["connection"] = connection
 
     # Register the frontend panel
     await _async_register_panel(hass)
@@ -94,6 +123,12 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         # Remove services
         hass.services.async_remove(DOMAIN, "submit_survey")
+
+        # Tear down the optional direct Matter connection (#61).
+        entry_data = hass.data[DOMAIN].get(entry.entry_id, {})
+        connection = entry_data.get("connection")
+        if connection is not None:
+            await connection.async_disconnect()
 
         # Clean up stored data
         hass.data[DOMAIN].pop(entry.entry_id, None)

@@ -19,7 +19,7 @@ from homeassistant.core import HomeAssistant
 
 from ..const import CLUSTER_GROUPS, EVENT_GROUP_PROGRESS
 from .acl import provision_group_acl, remove_group_acl
-from .client import get_raw_matter_client
+from .client import get_client
 from .demo import (
     add_demo_group_member,
     create_demo_group,
@@ -172,7 +172,7 @@ async def delete_group(hass: HomeAssistant, group_id: int) -> GroupOperationResu
             error_code=GROUP_NOT_FOUND_CODE,
         )
 
-    client = get_raw_matter_client(hass)
+    client = get_client(hass)
     if client:
         for member in record.members:
             try:
@@ -223,7 +223,7 @@ async def add_to_group(
             error_code=GROUP_NOT_FOUND_CODE,
         )
 
-    client = get_raw_matter_client(hass)
+    client = get_client(hass)
     if not client:
         return _client_unavailable()
 
@@ -292,7 +292,7 @@ async def remove_from_group(
             error_code=GROUP_NOT_FOUND_CODE,
         )
 
-    client = get_raw_matter_client(hass)
+    client = get_client(hass)
     if not client:
         return _client_unavailable()
 

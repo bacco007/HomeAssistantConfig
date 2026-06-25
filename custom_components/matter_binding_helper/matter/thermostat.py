@@ -12,7 +12,7 @@ from ..const import (
     CLUSTER_THERMOSTAT,
     CMD_GET_WEEKLY_SCHEDULE,
 )
-from .client import get_raw_matter_client
+from .client import get_client
 from .demo import is_demo_mode
 from .models import ScheduleTransition, WeeklySchedule
 
@@ -86,7 +86,7 @@ def get_cluster_accepted_commands(
     Returns:
         List of command IDs the cluster accepts, or None if not available
     """
-    client = get_raw_matter_client(hass)
+    client = get_client(hass)
     if not client:
         return None
 
@@ -221,7 +221,7 @@ async def get_thermostat_schedule(
             ],
         )
 
-    client = get_raw_matter_client(hass)
+    client = get_client(hass)
     if not client:
         _LOGGER.error("get_thermostat_schedule: Matter client not available")
         return None
@@ -327,7 +327,7 @@ async def set_thermostat_schedule(
         )
         return True
 
-    client = get_raw_matter_client(hass)
+    client = get_client(hass)
     if not client:
         _LOGGER.error("set_thermostat_schedule: Matter client not available")
         return False
@@ -418,7 +418,7 @@ async def clear_thermostat_schedule(
         )
         return True
 
-    client = get_raw_matter_client(hass)
+    client = get_client(hass)
     if not client:
         _LOGGER.error("clear_thermostat_schedule: Matter client not available")
         return False

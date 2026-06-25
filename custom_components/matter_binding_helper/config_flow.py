@@ -17,8 +17,10 @@ from homeassistant.components.matter import DOMAIN as MATTER_DOMAIN
 
 from .const import (
     CONF_DEMO_MODE,
+    CONF_MATTER_SERVER_URL,
     CONF_TELEMETRY_ENABLED,
     DEFAULT_DEMO_MODE,
+    DEFAULT_MATTER_SERVER_URL,
     DEFAULT_TELEMETRY_ENABLED,
     DOMAIN,
 )
@@ -108,6 +110,15 @@ class MatterBindingHelperOptionsFlow(OptionsFlowWithConfigEntry):
                         CONF_DEMO_MODE,
                         default=self.options.get(CONF_DEMO_MODE, DEFAULT_DEMO_MODE),
                     ): bool,
+                    # Optional: connect directly to this Matter server WS URL
+                    # (e.g. ws://localhost:5580/ws). Empty = use HA's Matter
+                    # integration. Must point at the same server/fabric (#61).
+                    vol.Optional(
+                        CONF_MATTER_SERVER_URL,
+                        default=self.options.get(
+                            CONF_MATTER_SERVER_URL, DEFAULT_MATTER_SERVER_URL
+                        ),
+                    ): str,
                 }
             ),
         )

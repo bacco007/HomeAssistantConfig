@@ -7,6 +7,10 @@ CONF_DEMO_MODE = "demo_mode"
 DEFAULT_DEMO_MODE = False
 CONF_TELEMETRY_ENABLED = "telemetry_enabled"
 DEFAULT_TELEMETRY_ENABLED = True  # Opt-out model: enabled by default
+# Optional override: connect directly to this Matter server WebSocket URL instead
+# of using Home Assistant's Matter integration client (issue #61). Empty = use HA.
+CONF_MATTER_SERVER_URL = "matter_server_url"
+DEFAULT_MATTER_SERVER_URL = ""
 
 # Telemetry settings
 TELEMETRY_URL = "https://matter-survey.org/api/submit"

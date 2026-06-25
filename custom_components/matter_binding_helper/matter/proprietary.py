@@ -11,7 +11,7 @@ from typing import Any
 
 from homeassistant.core import HomeAssistant
 
-from .client import get_raw_matter_client
+from .client import get_client
 from .demo import is_demo_mode
 
 _LOGGER = logging.getLogger(__name__)
@@ -42,7 +42,7 @@ async def get_proprietary_attributes(
     if is_demo_mode(hass):
         return results
 
-    client = get_raw_matter_client(hass)
+    client = get_client(hass)
     if not client:
         _LOGGER.warning("get_proprietary_attributes: Matter client not available")
         return results

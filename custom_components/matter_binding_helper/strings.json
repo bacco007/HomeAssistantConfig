@@ -31,11 +31,13 @@
         "description": "Configure the Matter Binding Helper integration.",
         "data": {
           "telemetry_enabled": "Share anonymized device data",
-          "demo_mode": "Demo Mode"
+          "demo_mode": "Demo Mode",
+          "matter_server_url": "Matter server URL (optional)"
         },
         "data_description": {
           "telemetry_enabled": "Share anonymous device capability data with matter-survey.org to help improve binding suggestions",
-          "demo_mode": "Enable demo mode to show mock Matter devices for UI development. Disable when using real Matter devices."
+          "demo_mode": "Enable demo mode to show mock Matter devices for UI development. Disable when using real Matter devices.",
+          "matter_server_url": "Connect directly to this Matter server (e.g. ws://localhost:5580/ws) instead of Home Assistant's Matter integration. Leave empty to use Home Assistant. Must point at the same server/fabric."
         }
       }
     }

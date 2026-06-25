@@ -19,7 +19,7 @@ from ..const import (
     CLUSTER_ACCESS_CONTROL,
     EVENT_ACL_PROGRESS,
 )
-from .client import get_raw_matter_client
+from .client import get_client
 from .demo import get_demo_acl, is_demo_mode, set_demo_acl
 from .models import (
     ACLEntry,
@@ -163,7 +163,7 @@ async def get_acl(hass: HomeAssistant, node_id: int) -> list[ACLEntry]:
         _LOGGER.debug("Demo mode enabled, returning demo ACL for node %s", node_id)
         return get_demo_acl(node_id)
 
-    client = get_raw_matter_client(hass)
+    client = get_client(hass)
     if not client:
         _LOGGER.warning("get_acl: Matter client not available")
         return []
@@ -599,7 +599,7 @@ async def write_acl(
             acl_entries_count=len(acl_entries),
         )
 
-    client = get_raw_matter_client(hass)
+    client = get_client(hass)
     if not client:
         return ACLProvisioningResult(
             success=False,
@@ -631,7 +631,7 @@ async def write_acl(
 
         # Use the dedicated SET_ACL_ENTRY API for ACL writes
         # This is more reliable than generic write_attribute
-        result = await client.send_command(
+        result = await client.send_raw_command(
             "set_acl_entry",
             node_id=node_id,
             entry=acl_entries,
