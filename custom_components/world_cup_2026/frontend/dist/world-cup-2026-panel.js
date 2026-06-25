@@ -5735,6 +5735,71 @@ class WorldCup2026Panel extends HTMLElement {
     return `${utc}|${home}|${away}`;
   }
 
+  publicMatchKeys(match) {
+    if (!match) return [];
+    const keys = new Set();
+    const add = (value) => {
+      const text = String(value ?? "").trim();
+      if (text) keys.add(text);
+    };
+    const home = this.fixtureTeamKey(this.getHomeTeam(match));
+    const away = this.fixtureTeamKey(this.getAwayTeam(match));
+    const rawDate = match.utcDate || match.date || "";
+    const day = rawDate ? String(rawDate).slice(0, 10) : "";
+    const kickoff = rawDate ? new Date(rawDate).getTime() : NaN;
+
+    add(this.publicMatchKey(match));
+    add(this.matchStorageId ? this.matchStorageId(match) : "");
+    [
+      "id",
+      "matchId",
+      "apiFootballFixtureId",
+      "apiSportsFixtureId",
+      "fixtureId",
+      "fifaMatchNumber",
+      "matchNumber",
+    ].forEach((field) => {
+      if (match[field] !== undefined && match[field] !== null && match[field] !== "") {
+        add(`${field}:${match[field]}`);
+      }
+    });
+    if (home && away && day) {
+      add(`day:${day}|${home}|${away}`);
+      add(`day:${day}|${away}|${home}`);
+    }
+    if (home && away && Number.isFinite(kickoff)) {
+      add(`kick:${Math.round(kickoff / 600000)}|${home}|${away}`);
+      add(`kick:${Math.round(kickoff / 600000)}|${away}|${home}`);
+    }
+    return [...keys];
+  }
+
+  findMatchingPublicMatch(match, publicByKey, publicMatches) {
+    for (const key of this.publicMatchKeys(match)) {
+      const found = publicByKey.get(key);
+      if (found) return found;
+    }
+
+    const home = this.fixtureTeamKey(this.getHomeTeam(match));
+    const away = this.fixtureTeamKey(this.getAwayTeam(match));
+    const kickoff = new Date(match?.utcDate || match?.date || 0).getTime();
+    const matchNumber = this.fixtureMatchNumber ? this.fixtureMatchNumber(match) : (match?.matchNumber || match?.fifaMatchNumber || "");
+
+    return (Array.isArray(publicMatches) ? publicMatches : []).find((candidate) => {
+      const cHome = this.fixtureTeamKey(this.getHomeTeam(candidate));
+      const cAway = this.fixtureTeamKey(this.getAwayTeam(candidate));
+      const sameTeams = home && away && ((home === cHome && away === cAway) || (home === cAway && away === cHome));
+      if (!sameTeams) return false;
+
+      const cNumber = this.fixtureMatchNumber ? this.fixtureMatchNumber(candidate) : (candidate?.matchNumber || candidate?.fifaMatchNumber || "");
+      if (matchNumber && cNumber && String(matchNumber) === String(cNumber)) return true;
+
+      const cKickoff = new Date(candidate?.utcDate || candidate?.date || 0).getTime();
+      if (this.isLiveMatch(match) && this.isLiveMatch(candidate) && (!Number.isFinite(kickoff) || !Number.isFinite(cKickoff))) return true;
+      return Number.isFinite(kickoff) && Number.isFinite(cKickoff) && Math.abs(kickoff - cKickoff) <= 6 * 60 * 60 * 1000;
+    }) || null;
+  }
+
   mergeGithubMatchData(localMatches, publicMatches) {
     const local = Array.isArray(localMatches) ? localMatches : [];
     const pub = Array.isArray(publicMatches) ? publicMatches : [];
@@ -5742,15 +5807,14 @@ class WorldCup2026Panel extends HTMLElement {
 
     const publicByKey = new Map();
     pub.forEach((match) => {
-      const key = this.publicMatchKey(match);
-      if (key) publicByKey.set(key, match);
+      this.publicMatchKeys(match).forEach((key) => publicByKey.set(key, match));
     });
 
     const mergedKeys = new Set();
     const merged = local.map((match) => {
-      const publicMatch = publicByKey.get(this.publicMatchKey(match));
+      const publicMatch = this.findMatchingPublicMatch(match, publicByKey, pub);
       if (!publicMatch) return match;
-      mergedKeys.add(this.publicMatchKey(publicMatch));
+      this.publicMatchKeys(publicMatch).forEach((key) => mergedKeys.add(key));
 
       const rawPublicGoalEvents = Array.isArray(publicMatch.goalEvents) ? publicMatch.goalEvents : [];
       const rawPublicEvents = Array.isArray(publicMatch.events) ? publicMatch.events : [];
@@ -5802,8 +5866,8 @@ class WorldCup2026Panel extends HTMLElement {
     });
 
     pub.forEach((match) => {
-      const key = this.publicMatchKey(match);
-      if (key && !mergedKeys.has(key)) merged.push({ ...match, publicGithubSynced: true });
+      const keys = this.publicMatchKeys(match);
+      if (!keys.some((key) => mergedKeys.has(key))) merged.push({ ...match, publicGithubSynced: true });
     });
 
     return merged;
@@ -5843,6 +5907,49 @@ class WorldCup2026Panel extends HTMLElement {
         const extraList = Array.isArray(extra[key]) ? extra[key] : [];
         if (extraList.length > baseList.length) mergedMatch[key] = extraList;
       });
+      const isMissingLiveValue = (value) => (
+        value === undefined
+        || value === null
+        || value === ""
+        || value === "-"
+        || value === "—"
+        || (Array.isArray(value) && !value.length)
+      );
+      const isUsefulLiveValue = (value) => !isMissingLiveValue(value);
+      const extraMinute = Number(extra.minute);
+      const baseMinute = Number(mergedMatch.minute);
+      [
+        "status",
+        "matchStatus",
+        "score",
+        "homeScore",
+        "awayScore",
+        "home_score",
+        "away_score",
+        "scoreSource",
+        "extra",
+        "lastApiSync",
+        "lastUpdated",
+        "manualClock",
+        "fallbackClock",
+        "fallbackClockText",
+        "clockSource",
+      ].forEach((key) => {
+        if (isMissingLiveValue(mergedMatch[key]) && isUsefulLiveValue(extra[key])) {
+          mergedMatch[key] = extra[key];
+        }
+      });
+      if (Number.isFinite(extraMinute) && (!Number.isFinite(baseMinute) || extraMinute > baseMinute || baseMinute === 0)) {
+        mergedMatch.minute = extra.minute;
+      }
+      if (isUsefulLiveValue(extra.clockSeconds) && (isMissingLiveValue(mergedMatch.clockSeconds) || Number(extra.clockSeconds) > Number(mergedMatch.clockSeconds || 0))) {
+        mergedMatch.clockSeconds = extra.clockSeconds;
+      }
+      const baseDisplayMinute = String(mergedMatch.displayMinute || mergedMatch.manualClockText || "").toLowerCase();
+      const extraDisplayMinute = String(extra.displayMinute || extra.manualClockText || "").trim();
+      if (extraDisplayMinute && (!baseDisplayMinute || baseDisplayMinute.includes("awaiting") || baseDisplayMinute === "0'")) {
+        mergedMatch.displayMinute = extra.displayMinute || extra.manualClockText;
+      }
       [
         "apiFootballFixtureId",
         "goalEventsSource",
@@ -5864,7 +5971,7 @@ class WorldCup2026Panel extends HTMLElement {
         "weather",
       ].forEach((key) => {
         if (
-          (mergedMatch[key] === undefined || mergedMatch[key] === null || mergedMatch[key] === "" || (Array.isArray(mergedMatch[key]) && !mergedMatch[key].length))
+          isMissingLiveValue(mergedMatch[key])
           && extra[key] !== undefined
           && extra[key] !== null
           && extra[key] !== ""
@@ -5877,7 +5984,8 @@ class WorldCup2026Panel extends HTMLElement {
 
     const add = (match) => {
       if (!match) return;
-      const key = this.publicMatchKey(match) || this.matchStorageId(match) || JSON.stringify([
+      const keys = this.publicMatchKeys(match);
+      const key = keys[0] || this.publicMatchKey(match) || this.matchStorageId(match) || JSON.stringify([
         match.id,
         match.matchId,
         match.matchNumber,
@@ -5885,13 +5993,20 @@ class WorldCup2026Panel extends HTMLElement {
         this.fixtureTeamKey(this.getHomeTeam(match)),
         this.fixtureTeamKey(this.getAwayTeam(match)),
       ]);
-      if (seen.has(key)) {
-        const index = indexByKey.get(key);
+      const existingKey = keys.find((candidateKey) => seen.has(candidateKey)) || (seen.has(key) ? key : "");
+      if (existingKey) {
+        const index = indexByKey.get(existingKey);
         if (index !== undefined) merged[index] = mergeRichMatchDetails(merged[index], match);
         return;
       }
-      seen.add(key);
-      indexByKey.set(key, merged.length);
+      keys.forEach((candidateKey) => {
+        seen.add(candidateKey);
+        indexByKey.set(candidateKey, merged.length);
+      });
+      if (!keys.length) {
+        seen.add(key);
+        indexByKey.set(key, merged.length);
+      }
       merged.push(match);
     };
 
@@ -6005,12 +6120,31 @@ class WorldCup2026Panel extends HTMLElement {
     const store = goalEventStore && typeof goalEventStore === "object" && !Array.isArray(goalEventStore)
       ? goalEventStore
       : {};
+    const storeEntries = Object.entries(store).filter(([, extra]) => extra && typeof extra === "object" && !Array.isArray(extra));
+
+    const findStoreExtra = (match) => {
+      const matchId = match.id ?? match.matchId ?? match.matchNumber;
+      if (matchId !== null && matchId !== undefined && store[String(matchId)]) return store[String(matchId)];
+
+      const homeKey = this.fixtureTeamKey(this.getHomeTeam(match));
+      const awayKey = this.fixtureTeamKey(this.getAwayTeam(match));
+      const kickoff = new Date(match?.utcDate || match?.date || 0).getTime();
+      return storeEntries.find(([, extra]) => {
+        const extraHome = this.fixtureTeamKey(extra.homeTeam || extra.home_team || extra.home || extra.team1 || "");
+        const extraAway = this.fixtureTeamKey(extra.awayTeam || extra.away_team || extra.away || extra.team2 || "");
+        const sameTeams = homeKey && awayKey && ((homeKey === extraHome && awayKey === extraAway) || (homeKey === extraAway && awayKey === extraHome));
+        if (!sameTeams) return false;
+
+        const extraKickoff = new Date(extra.utcDate || extra.date || extra.kickoff || extra.startTime || 0).getTime();
+        if (!Number.isFinite(kickoff) || !Number.isFinite(extraKickoff)) return this.isLiveMatch(match);
+        return Math.abs(kickoff - extraKickoff) <= 6 * 60 * 60 * 1000;
+      })?.[1] || null;
+    };
 
     return list.map((match) => {
       if (!match) return match;
 
-      const matchId = match.id ?? match.matchId ?? match.matchNumber;
-      const extra = matchId !== null && matchId !== undefined ? store[String(matchId)] : null;
+      const extra = findStoreExtra(match);
 
       if (!extra || typeof extra !== "object" || Array.isArray(extra)) {
         return match;
@@ -6238,13 +6372,17 @@ class WorldCup2026Panel extends HTMLElement {
         publicGoalEvents
       );
       const publicLiveWithStore = this.liveMatchesFromGithub(publicMatchesWithStore);
+      const publicLiveDetailSource = this.mergeUniqueMatches(
+        publicLiveWithStore,
+        publicMatchesWithStore.filter((match) => this.isLiveMatch(match))
+      );
       const localLiveWithFixtures = this.mergeUniqueMatches(apiLiveWithStore, fixtureLiveWithStore);
-      const mergedLiveFromGithub = this.mergeGithubMatchData(localLiveWithFixtures, publicLiveWithStore).filter((match) => this.isLiveMatch(match));
+      const mergedLiveFromGithub = this.mergeGithubMatchData(localLiveWithFixtures, publicLiveDetailSource).filter((match) => this.isLiveMatch(match));
       // Main/provider dashboards keep their API clock. Viewer dashboards can have
       // a local live row with "Awaiting live API data"; merge the GitHub master
       // live feed so those devices get your exported minute/events every refresh.
       this._data.live = this.backendHasMasterLiveClock(localLiveWithFixtures)
-        ? this.mergeGithubMatchData(localLiveWithFixtures, publicLiveWithStore).filter((match) => this.isLiveMatch(match))
+        ? this.mergeGithubMatchData(localLiveWithFixtures, publicLiveDetailSource).filter((match) => this.isLiveMatch(match))
         : mergedLiveFromGithub;
       this._data.fixtures = this.mergeUniqueMatches(
         this.mergeGithubMatchData(fixturesWithStore, publicMatchesWithStore),
@@ -6391,12 +6529,16 @@ class WorldCup2026Panel extends HTMLElement {
 
   statusLabel(status, match = null) {
     const displayMinute = String(match?.displayMinute || match?.manualClock?.displayMinute || "").trim();
-    if (displayMinute && displayMinute !== "Awaiting live API data" && ["IN_PLAY", "LIVE", "1H", "2H", "ET"].includes(String(status).toUpperCase())) {
-      return displayMinute;
-    }
+    const displayMinuteLower = displayMinute.toLowerCase();
     const minute = match && match.minute !== undefined && match.minute !== null && match.minute !== "" ? Number(match.minute) : null;
     if (minute !== null && Number.isFinite(minute) && ["IN_PLAY", "LIVE", "1H", "2H"].includes(String(status))) {
       return `${minute}'`;
+    }
+    if (displayMinuteLower.includes("awaiting") && ["IN_PLAY", "LIVE", "1H", "2H", "ET"].includes(String(status).toUpperCase())) {
+      return displayMinute;
+    }
+    if (displayMinute && displayMinute !== "Awaiting live API data" && ["IN_PLAY", "LIVE", "1H", "2H", "ET"].includes(String(status).toUpperCase())) {
+      return displayMinute;
     }
 
     const labels = {
@@ -6748,6 +6890,9 @@ class WorldCup2026Panel extends HTMLElement {
     if (status === "AET") return "AET";
     if (status === "PEN" || status === "PENALTY_SHOOTOUT") return "PEN";
 
+    const awaitingDisplay = String(match.displayMinute || match.manualClock?.displayMinute || match.manualClockText || "").trim();
+    const awaitingText = awaitingDisplay.toLowerCase();
+
     // Viewer devices must trust the GitHub/master feed clock. Do this before
     // checking awaitingLiveApiData, because non-provider installs can receive
     // a local awaiting flag while the public GitHub copy already has the minute.
@@ -6755,6 +6900,9 @@ class WorldCup2026Panel extends HTMLElement {
       ? Number(match.minute)
       : null;
     if (Number.isFinite(directMinute)) {
+      if (directMinute === 0 && awaitingText.includes("awaiting")) {
+        return awaitingDisplay || "Awaiting live API data";
+      }
       const extra = match.extra !== undefined && match.extra !== null && match.extra !== ""
         ? Number(match.extra)
         : null;
@@ -8363,6 +8511,12 @@ class WorldCup2026Panel extends HTMLElement {
           color: rgba(255,255,255,.76);
           font-size: .72rem;
           font-weight: 900;
+        }
+
+        .live-premium-topline .live-local-time {
+          color: #dcfce7;
+          background: rgba(34,197,94,.16);
+          border-color: rgba(74,222,128,.32);
         }
 
         .live-premium-topline .live-on-air {
@@ -17575,7 +17729,73 @@ class WorldCup2026Panel extends HTMLElement {
         border-radius: 0 !important;
       }
 
+      .live-premium-feed.has-multiple-live {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        align-items: start !important;
+      }
+
+      .live-premium-feed.has-multiple-live .live-premium-match,
+      .live-premium-feed.has-multiple-live .live-premium-main {
+        grid-column: auto !important;
+        padding: 11px !important;
+        border-radius: 20px !important;
+      }
+
+      .live-premium-feed.has-multiple-live .live-premium-scoreboard,
+      .live-premium-feed.has-multiple-live .live-premium-main .live-premium-scoreboard {
+        padding: 10px !important;
+        border-radius: 20px !important;
+        gap: 10px !important;
+      }
+
+      .live-premium-feed.has-multiple-live .live-premium-team {
+        padding: 9px 7px !important;
+        gap: 6px !important;
+        border-radius: 16px !important;
+      }
+
+      .live-premium-feed.has-multiple-live .live-premium-team strong {
+        font-size: clamp(.92rem, 1.25vw, 1.12rem) !important;
+      }
+
+      .live-premium-feed.has-multiple-live .live-premium-score-centre {
+        min-width: 112px !important;
+        padding: 8px 9px !important;
+        border-radius: 17px !important;
+      }
+
+      .live-premium-feed.has-multiple-live .live-premium-score {
+        font-size: clamp(2rem, 3.2vw, 3.05rem) !important;
+      }
+
+      .live-premium-feed.has-multiple-live .live-premium-lower-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+        margin-top: 10px !important;
+      }
+
+      .live-premium-feed.has-multiple-live .live-premium-stats-card,
+      .live-premium-feed.has-multiple-live .live-weather-compact-card,
+      .live-premium-feed.has-multiple-live .live-premium-lower-grid .match-officials-box {
+        grid-column: 1 / -1 !important;
+      }
+
+      .live-premium-feed.has-multiple-live .live-weather-main {
+        grid-template-columns: 1fr !important;
+      }
+
+      .live-premium-feed.has-multiple-live .live-weather-metrics {
+        grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+      }
+
+      .live-premium-feed.has-multiple-live .live-stat-row {
+        grid-template-columns: 46px 1fr 46px !important;
+        gap: 8px !important;
+        font-size: .9rem !important;
+      }
+
       @media (max-width: 1100px) {
+        .live-premium-feed.has-multiple-live { grid-template-columns: 1fr !important; }
         .live-premium-lower-grid { grid-template-columns: 1fr 1fr !important; }
         .live-premium-stats-card,
         .live-weather-compact-card { grid-column: 1 / -1 !important; }
@@ -18765,7 +18985,25 @@ class WorldCup2026Panel extends HTMLElement {
       seenRefs.add(key);
       displayRefs.push({ ...ref, name: cleanName });
     });
-    const refs = displayRefs.filter((ref) => {
+    const cleanOfficialRole = (value) => String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9 ]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const rolePriority = (role) => {
+      const cleanRole = cleanOfficialRole(role);
+      if (!cleanRole || cleanRole === "referee" || cleanRole === "main referee") return 1;
+      if (cleanRole.includes("assistant") && !cleanRole.includes("video")) return 2;
+      if (cleanRole.includes("var") || cleanRole.includes("video")) return 3;
+      if (cleanRole.includes("fourth")) return 4;
+      return 5;
+    };
+
+    const cleanedRefsByRole = new Map();
+    displayRefs.forEach((ref) => {
       const name = String(ref?.name || "")
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
@@ -18773,8 +19011,34 @@ class WorldCup2026Panel extends HTMLElement {
         .replace(/[^a-z0-9 ]/g, " ")
         .replace(/\s+/g, " ")
         .trim();
-      return name && !["referee", "ref", "official", "main referee", "match official"].includes(name);
+      if (!name || ["referee", "ref", "official", "main referee", "match official"].includes(name)) return;
+
+      const cleanRole = cleanOfficialRole(ref?.type || "referee");
+      const roleKey = (!cleanRole || cleanRole === "referee" || cleanRole === "main referee")
+        ? "main-referee"
+        : cleanRole;
+
+      // API-Football can return the same main referee twice for secondary live
+      // matches. Keep only one official per role/name so game 2 and every other
+      // live match cannot show duplicate referee pills.
+      const existing = cleanedRefsByRole.get(roleKey);
+      if (!existing) {
+        cleanedRefsByRole.set(roleKey, ref);
+        return;
+      }
+
+      const existingHasNationality = Boolean(existing?.nationality);
+      const nextHasNationality = Boolean(ref?.nationality);
+      const existingRoleScore = rolePriority(existing?.type);
+      const nextRoleScore = rolePriority(ref?.type);
+      if ((nextRoleScore < existingRoleScore) || (!existingHasNationality && nextHasNationality)) {
+        cleanedRefsByRole.set(roleKey, ref);
+      }
     });
+
+    const refs = Array.from(cleanedRefsByRole.values())
+      .sort((a, b) => rolePriority(a?.type) - rolePriority(b?.type));
+
     const attendance = match?.attendance ?? match?.crowd ?? match?.spectators ?? null;
     if (!refs.length && !attendance) return "";
 
@@ -18904,7 +19168,14 @@ class WorldCup2026Panel extends HTMLElement {
       ["Offsides", pick(match?.homeOffsides, homeStats, "offsides"), pick(match?.awayOffsides, awayStats, "offsides")],
     ].filter((row) => row[1] !== "" || row[2] !== "");
 
-    if (!rows.length) return "";
+    if (!rows.length) {
+      return `
+        <div class="live-premium-card live-premium-stats-card">
+          <div class="live-premium-card-title">📊 Live Stats</div>
+          <div class="wc-empty">Waiting for live stats feed</div>
+        </div>
+      `;
+    }
 
     return `
       <div class="match-events-box match-live-statistics-box">
@@ -19131,7 +19402,14 @@ class WorldCup2026Panel extends HTMLElement {
       return { ...row, home, away };
     }).filter((row) => row.home !== "" || row.away !== "");
 
-    if (!rows.length) return "";
+    if (!rows.length) {
+      return `
+      <div class="live-premium-card live-premium-stats-card">
+        <div class="live-premium-card-title">📊 Live Stats</div>
+        <div class="wc-empty">Waiting for live stats feed</div>
+      </div>
+    `;
+    }
 
     return `
       <div class="live-premium-card live-premium-stats-card">
@@ -19161,7 +19439,14 @@ class WorldCup2026Panel extends HTMLElement {
 
   livePremiumTimeline(match) {
     const events = this.normalisedMatchEvents(match).slice(-12);
-    if (!events.length) return "";
+    if (!events.length) {
+      return `
+        <div class="live-premium-card live-premium-timeline-card">
+          <div class="live-premium-card-title">⚡ Live Timeline</div>
+          <div class="wc-empty">Waiting for goals, cards, subs and VAR</div>
+        </div>
+      `;
+    }
     return `
       <div class="live-premium-card live-premium-timeline-card">
         <div class="live-premium-card-title">⚡ Live Timeline</div>
@@ -19193,6 +19478,7 @@ class WorldCup2026Panel extends HTMLElement {
     const stage = String(match.group || this.stageLabel(match.stage) || "").replaceAll("_", " ");
     const venueInfo = this.fixtureVenueInfo(match);
     const date = this.formatDate(match.utcDate || match.date);
+    const localTime = this.fixtureTime(match);
     const discipline = this.liveMatchDiscipline(match);
     const clock = this.footballClockHtml(match);
     const scorers = this.matchScorersSection(homeTeam, awayTeam, match);
@@ -19207,6 +19493,7 @@ class WorldCup2026Panel extends HTMLElement {
           <span class="live-on-air">● LIVE</span>
           ${stage ? `<span>${this.esc(stage)}</span>` : ""}
           ${venueInfo?.name ? `<span>🏟 ${this.esc(venueInfo.name)}</span>` : ""}
+          ${localTime ? `<span class="live-local-time">🕒 Local ${this.esc(localTime)}</span>` : ""}
           <span>${this.esc(date)}</span>
         </div>
 
@@ -19235,17 +19522,15 @@ class WorldCup2026Panel extends HTMLElement {
         <div class="live-premium-lower-grid">
           ${stats}
           ${timeline}
-          ${discipline.total ? `
-            <div class="live-premium-card live-premium-discipline-card">
-              <div class="live-premium-card-title">🟨 Discipline</div>
-              <div class="live-discipline-grid">
-                <div><strong>${discipline.homeYellow}</strong><span>${this.esc(this.localizedTeamName(homeTeam))} yellows</span></div>
-                <div><strong>${discipline.homeRed}</strong><span>${this.esc(this.localizedTeamName(homeTeam))} reds</span></div>
-                <div><strong>${discipline.awayYellow}</strong><span>${this.esc(this.localizedTeamName(awayTeam))} yellows</span></div>
-                <div><strong>${discipline.awayRed}</strong><span>${this.esc(this.localizedTeamName(awayTeam))} reds</span></div>
-              </div>
+          <div class="live-premium-card live-premium-discipline-card">
+            <div class="live-premium-card-title">🟨 Discipline</div>
+            <div class="live-discipline-grid">
+              <div><strong>${discipline.homeYellow}</strong><span>${this.esc(this.localizedTeamName(homeTeam))} yellows</span></div>
+              <div><strong>${discipline.homeRed}</strong><span>${this.esc(this.localizedTeamName(homeTeam))} reds</span></div>
+              <div><strong>${discipline.awayYellow}</strong><span>${this.esc(this.localizedTeamName(awayTeam))} yellows</span></div>
+              <div><strong>${discipline.awayRed}</strong><span>${this.esc(this.localizedTeamName(awayTeam))} reds</span></div>
             </div>
-          ` : ""}
+          </div>
           ${officials}
           ${weather}
         </div>
@@ -19292,7 +19577,7 @@ class WorldCup2026Panel extends HTMLElement {
           </div>
         </div>
 
-        <div class="live-premium-feed">
+        <div class="live-premium-feed ${live.length > 1 ? "has-multiple-live" : ""}">
           ${live.map((m, index) => this.livePremiumMatchCard(m, index)).join("")}
         </div>
       </div>
@@ -20489,6 +20774,9 @@ class WorldCup2026Panel extends HTMLElement {
       "a ueda|japan": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/ayase-ueda.jpg",
       "ueda": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/ayase-ueda.jpg",
       "ueda|japan": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/ayase-ueda.jpg",
+      "johan manzambi": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/johan-manzambi.jpg",
+      "johan manzambi|switzerland": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/johan-manzambi.jpg",
+      "johan manzambi|sui": "https://raw.githubusercontent.com/Adya84/ha-world-cup-2026/main/custom_components/world_cup_2026/players/johan-manzambi.jpg",
     };
     const cleanPlayerKey = (value) => String(value || "")
       .normalize("NFD")

@@ -601,7 +601,7 @@ def is_comeback(match: dict) -> bool:
 
 
 def full_time_score(match):
-    score = match.get("score", {}).get("fullTime", {})
+    score = (match.get("score") or {}).get("fullTime") or {}
     home = score.get("home")
     away = score.get("away")
     return home, away

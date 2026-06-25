@@ -95,6 +95,18 @@ def _norm_team(value):
     return " ".join(value.split())
 
 
+def _team_names_match(left, right):
+    left_norm = _norm_team(left)
+    right_norm = _norm_team(right)
+    if not left_norm or not right_norm:
+        return False
+    if left_norm == right_norm:
+        return True
+    left_tokens = set(left_norm.split())
+    right_tokens = set(right_norm.split())
+    return bool(left_tokens and right_tokens and (left_tokens.issubset(right_tokens) or right_tokens.issubset(left_tokens)))
+
+
 _FIXTURE_VENUES = {
     "mexico|south africa": "Mexico City Stadium",
     "korea|czechia": "Guadalajara Stadium",
@@ -325,6 +337,84 @@ def _serialise_match(match):
     }
 
 
+def _goal_store_keys_for_match(match):
+    home = _match_team_name(match.get("homeTeam") or match.get("home") or match.get("home_team") or match.get("team1"))
+    away = _match_team_name(match.get("awayTeam") or match.get("away") or match.get("away_team") or match.get("team2"))
+    pair = f"{_norm_team(home)}|{_norm_team(away)}"
+    reverse_pair = f"{_norm_team(away)}|{_norm_team(home)}"
+    keys = [
+        match.get("id"),
+        match.get("matchId"),
+        match.get("matchNumber"),
+        match.get("fifaMatchNumber"),
+        match.get("apiFootballFixtureId"),
+        match.get("fixtureId"),
+        match.get("fixture_id"),
+        pair,
+        reverse_pair,
+    ]
+    return [str(key) for key in keys if key not in (None, "", [])]
+
+
+def _goal_store_entry_for_match(match, goal_store):
+    if not isinstance(goal_store, dict):
+        return None
+
+    keys = _goal_store_keys_for_match(match)
+    for key in keys:
+        entry = goal_store.get(key)
+        if isinstance(entry, dict):
+            return entry
+
+    home = _match_team_name(match.get("homeTeam") or match.get("home") or match.get("home_team") or match.get("team1"))
+    away = _match_team_name(match.get("awayTeam") or match.get("away") or match.get("away_team") or match.get("team2"))
+    for entry in goal_store.values():
+        if not isinstance(entry, dict):
+            continue
+        entry_home = entry.get("homeTeam") or entry.get("home") or entry.get("home_team")
+        entry_away = entry.get("awayTeam") or entry.get("away") or entry.get("away_team")
+        if (
+            _team_names_match(entry_home, home)
+            and _team_names_match(entry_away, away)
+        ) or (
+            _team_names_match(entry_home, away)
+            and _team_names_match(entry_away, home)
+        ):
+            return entry
+
+    return None
+
+
+def _merge_goal_store_entry(match, entry):
+    if not isinstance(entry, dict):
+        return match
+    merged = dict(match)
+    for key in ("goalEvents", "events", "cardEvents", "substitutionEvents", "referees", "officials"):
+        if entry.get(key) and not merged.get(key):
+            merged[key] = entry.get(key)
+    if entry.get("apiFootballFixtureId") and not merged.get("apiFootballFixtureId"):
+        merged["apiFootballFixtureId"] = entry.get("apiFootballFixtureId")
+    for key in ("homeScore", "awayScore", "home_score", "away_score"):
+        if entry.get(key) is not None and merged.get(key) is None:
+            merged[key] = entry.get(key)
+    for key in (
+        "liveStatistics",
+        "homeCorners",
+        "awayCorners",
+        "homeShotsOnGoal",
+        "awayShotsOnGoal",
+        "homePossession",
+        "awayPossession",
+        "homeFouls",
+        "awayFouls",
+        "homeOffsides",
+        "awayOffsides",
+    ):
+        if entry.get(key) is not None and merged.get(key) is None:
+            merged[key] = entry.get(key)
+    return merged
+
+
 def _normalise_scorer(scorer):
     """Convert football-data.org/local scorer data into frontend format."""
     player = scorer.get("player", {})
@@ -429,7 +519,9 @@ async def websocket_get_overview(hass, connection, msg) -> None:
     scorers = await _get_normalised_scorers(hass, coordinator)
     statistics = data.get("statistics", {})
 
-    live_matches = [m for m in matches if _status_value(m) in LIVE_STATUSES]
+    live_matches = data.get("live_matches")
+    if not isinstance(live_matches, list):
+        live_matches = [m for m in matches if _status_value(m) in LIVE_STATUSES]
     finished_matches = [m for m in matches if _is_finished_match(m)]
 
     connection.send_result(
@@ -461,8 +553,11 @@ async def websocket_get_live_matches(hass, connection, msg) -> None:
         _send_not_loaded(connection, msg)
         return
 
-    matches = (coordinator.data or {}).get("matches", [])
-    live_matches = [m for m in matches if _status_value(m) in LIVE_STATUSES]
+    data = coordinator.data or {}
+    live_matches = data.get("live_matches")
+    if not isinstance(live_matches, list):
+        matches = data.get("matches", [])
+        live_matches = [m for m in matches if _status_value(m) in LIVE_STATUSES]
 
     connection.send_result(
         msg["id"],
@@ -504,6 +599,11 @@ async def websocket_get_results(hass, connection, msg) -> None:
         match
         for match in (coordinator.data or {}).get("matches", [])
         if _is_finished_match(match)
+    ]
+    goal_store = getattr(coordinator, "_goal_event_store", {}) or {}
+    matches = [
+        _merge_goal_store_entry(match, _goal_store_entry_for_match(match, goal_store))
+        for match in matches
     ]
 
     connection.send_result(

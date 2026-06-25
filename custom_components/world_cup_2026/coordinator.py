@@ -19,9 +19,16 @@ from .api import WorldCupAPI
 _LOGGER = logging.getLogger(__name__)
 
 SCAN_INTERVAL_IDLE = timedelta(minutes=30)
-SCAN_INTERVAL_NORMAL = timedelta(minutes=5)
-SCAN_INTERVAL_PRE_MATCH = timedelta(seconds=30)
-SCAN_INTERVAL_LIVE = timedelta(seconds=20)
+SCAN_INTERVAL_NORMAL = timedelta(minutes=30)
+SCAN_INTERVAL_PRE_MATCH = timedelta(seconds=10)
+SCAN_INTERVAL_LIVE = timedelta(seconds=10)
+LIVE_EVENT_FETCH_INTERVAL = timedelta(seconds=10)
+LIVE_STATISTICS_FETCH_INTERVAL = timedelta(seconds=15)
+LIVE_BACKUP_STATUS_INTERVAL = timedelta(seconds=15)
+POST_MATCH_BACKFILL_INTERVAL = timedelta(hours=6)
+ENABLE_API_FOOTBALL_PLAYER_PHOTO_LOOKUP = False
+STANDINGS_FETCH_INTERVAL = timedelta(hours=1)
+SCORERS_FETCH_INTERVAL = timedelta(hours=1)
 
 TOTAL_WORLD_CUP_MATCHES = 104
 LIVE_STATUSES = {"IN_PLAY", "PAUSED", "LIVE", "1H", "2H", "HT", "HALF_TIME", "ET", "BT", "P", "SUSP", "INT"}
@@ -261,6 +268,40 @@ def _normalise_team_name(value):
 
 def _match_key_from_names(home, away):
     return f"{_normalise_team_name(home)}|{_normalise_team_name(away)}"
+
+
+def _find_provider_match_data(match, provider_data):
+    """Find provider details for a match by fixture id or tolerant team names."""
+    if not match or not provider_data:
+        return None
+
+    fixture_id = match.get("apiFootballFixtureId") or match.get("fixtureId")
+    if fixture_id is not None:
+        fixture_id = str(fixture_id)
+        direct_fixture = provider_data.get(f"fixture:{fixture_id}")
+        if direct_fixture:
+            return direct_fixture
+        for data in provider_data.values():
+            if data and str(data.get("apiFootballFixtureId") or "") == fixture_id:
+                return data
+
+    home = _team_name(match.get("homeTeam", {}))
+    away = _team_name(match.get("awayTeam", {}))
+    direct = provider_data.get(_match_key_from_names(home, away))
+    if direct:
+        return direct
+
+    for data in provider_data.values():
+        provider_home = data.get("apiFootballHome")
+        provider_away = data.get("apiFootballAway")
+        if not provider_home or not provider_away:
+            continue
+        same_order = _team_names_match(home, provider_home) and _team_names_match(away, provider_away)
+        reverse_order = _team_names_match(home, provider_away) and _team_names_match(away, provider_home)
+        if same_order or reverse_order:
+            return data
+
+    return None
 
 
 
@@ -849,6 +890,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
         self._api_football_live_rate_limited_until = None
         self._api_football_live_rate_limited_logged = False
         self._live_events_last_fetch_by_fixture = {}
+        self._live_events_cache_by_fixture = {}
         self._live_statistics_cache_by_fixture = {}
         self._live_statistics_last_fetch_by_fixture = {}
         self._goal_event_store = {}
@@ -856,6 +898,10 @@ class WorldCupCoordinator(DataUpdateCoordinator):
         self._github_payload_hashes = {}
         self._stadium_weather_cache = {}
         self._api_football_player_photo_cache = {}
+        self._standings_cache = {"standings": []}
+        self._standings_cache_at = None
+        self._scorers_cache = {"scorers": []}
+        self._scorers_cache_at = None
 
     def _api_football_is_rate_limited(self):
         """Return True while API-Football is in rate-limit cool-down."""
@@ -968,7 +1014,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             kickoff = parse_datetime_utc(match.get("utcDate"))
             if not kickoff:
                 continue
-            if kickoff - timedelta(minutes=30) <= now <= kickoff + timedelta(hours=3, minutes=15):
+            if kickoff - timedelta(minutes=5) <= now <= kickoff + timedelta(hours=3, minutes=15):
                 return True
         return False
 
@@ -1165,12 +1211,36 @@ class WorldCupCoordinator(DataUpdateCoordinator):
 
         next_seconds = self._next_match_seconds(matches, now)
         if next_seconds is not None:
-            if next_seconds <= 60 * 60:
+            if next_seconds <= 5 * 60:
                 return SCAN_INTERVAL_PRE_MATCH
-            if next_seconds <= 3 * 60 * 60:
+            if next_seconds <= 24 * 60 * 60:
                 return SCAN_INTERVAL_NORMAL
 
         return SCAN_INTERVAL_IDLE
+
+    async def _get_cached_standings(self):
+        """Fetch standings sparingly so live polling does not burn quota."""
+        now = datetime.now(timezone.utc)
+        if self._standings_cache_at and now - self._standings_cache_at < STANDINGS_FETCH_INTERVAL:
+            return self._standings_cache
+        try:
+            self._standings_cache = await self.api.get_standings()
+            self._standings_cache_at = now
+        except Exception as err:
+            _LOGGER.warning("Failed to fetch standings (using cache): %s", err)
+        return self._standings_cache
+
+    async def _get_cached_scorers(self):
+        """Fetch scorer table sparingly; manual frontend photos handle headshots."""
+        now = datetime.now(timezone.utc)
+        if self._scorers_cache_at and now - self._scorers_cache_at < SCORERS_FETCH_INTERVAL:
+            return self._scorers_cache
+        try:
+            self._scorers_cache = await self.api.get_scorers()
+            self._scorers_cache_at = now
+        except Exception as err:
+            _LOGGER.warning("Failed to fetch scorers (using cache): %s", err)
+        return self._scorers_cache
 
 
     def _goal_event_store_path(self):
@@ -2094,6 +2164,8 @@ class WorldCupCoordinator(DataUpdateCoordinator):
 
     async def _add_api_football_photos_to_scorers(self, scorers, limit=12):
         """Attach real API-Football player photos to scorer rows when available."""
+        if not ENABLE_API_FOOTBALL_PLAYER_PHOTO_LOOKUP:
+            return scorers
         if not scorers:
             return scorers
         api_key = await self._api_football_enabled()
@@ -2284,7 +2356,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
         if not fixture_id:
             return {"events": [], "goalEvents": [], "cardEvents": []}
         if self._api_football_is_rate_limited():
-            return {"events": [], "goalEvents": [], "cardEvents": [], "substitutionEvents": []}
+            return self._live_events_cache_by_fixture.get(str(fixture_id), {"events": [], "goalEvents": [], "cardEvents": [], "substitutionEvents": []})
 
         url = f"https://v3.football.api-sports.io/fixtures/events?fixture={fixture_id}"
         try:
@@ -2292,7 +2364,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                 if response.status == 429:
                     await response.text()
                     self._mark_api_football_rate_limited("API-Football fixture events lookup")
-                    return {"events": [], "goalEvents": [], "cardEvents": [], "substitutionEvents": []}
+                    return self._live_events_cache_by_fixture.get(str(fixture_id), {"events": [], "goalEvents": [], "cardEvents": [], "substitutionEvents": []})
                 if response.status >= 400:
                     text = await response.text()
                     _LOGGER.warning(
@@ -2301,11 +2373,11 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                         response.status,
                         text,
                     )
-                    return {"events": [], "goalEvents": [], "cardEvents": [], "substitutionEvents": []}
+                    return self._live_events_cache_by_fixture.get(str(fixture_id), {"events": [], "goalEvents": [], "cardEvents": [], "substitutionEvents": []})
                 payload = await response.json()
         except Exception as err:  # pylint: disable=broad-exception-caught
             _LOGGER.warning("API-Football fixture events lookup failed for %s: %s", fixture_id, err)
-            return {"events": [], "goalEvents": [], "cardEvents": []}
+            return self._live_events_cache_by_fixture.get(str(fixture_id), {"events": [], "goalEvents": [], "cardEvents": [], "substitutionEvents": []})
 
         raw_events = payload.get("response", []) or []
         all_events = [event for event in (self._normalise_api_football_event(item) for item in raw_events) if event]
@@ -2322,12 +2394,15 @@ class WorldCupCoordinator(DataUpdateCoordinator):
         card_events.sort(key=lambda event: int(event.get("timerSeconds") or 0))
         substitution_events.sort(key=lambda event: int(event.get("timerSeconds") or 0))
 
-        return {
+        result = {
             "events": all_events,
             "goalEvents": goal_events,
             "cardEvents": card_events,
             "substitutionEvents": substitution_events,
         }
+        if all_events:
+            self._live_events_cache_by_fixture[str(fixture_id)] = result
+        return result if all_events else self._live_events_cache_by_fixture.get(str(fixture_id), result)
 
     def _normalise_api_football_stat_name(self, value):
         """Make API-Football stat names easier to match across wording changes."""
@@ -2436,7 +2511,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             return self._live_api_football_cache
         if (
             self._live_api_football_last_fetch
-            and now - self._live_api_football_last_fetch < timedelta(seconds=8)
+            and now - self._live_api_football_last_fetch < SCAN_INTERVAL_LIVE
         ):
             return self._live_api_football_cache
 
@@ -2504,21 +2579,10 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                     card_events = [event for event in inline_events if event.get("rawType", "").lower() == "card" or event.get("type") in {"Yellow Card", "Red Card", "Card"}]
                     substitution_events = [event for event in inline_events if event.get("rawType", "").lower() in {"subst", "substitution"} or str(event.get("type", "")).lower() == "substitution" or "substitution" in str(event.get("detail", "")).lower()]
 
-                    expected_goals = _expected_goal_count_from_api_football_item(item)
-                    should_fetch_fixture_events = bool(fixture_id) and (
-                        not inline_events
-                        or not goal_events
-                        or (
-                            expected_goals is not None
-                            and expected_goals > 0
-                            and _count_goal_events(goal_events) < expected_goals
-                        )
-                    )
+                    should_fetch_fixture_events = bool(fixture_id)
                     if should_fetch_fixture_events and not self._api_football_is_rate_limited():
                         last_event_fetch = self._live_events_last_fetch_by_fixture.get(str(fixture_id))
-                        # Keep live events on the same rhythm as the match clock,
-                        # but avoid burning API-Football quota during busy periods.
-                        if last_event_fetch and now - last_event_fetch < timedelta(seconds=20):
+                        if last_event_fetch and now - last_event_fetch < LIVE_EVENT_FETCH_INTERVAL:
                             should_fetch_fixture_events = False
 
                     if should_fetch_fixture_events and not self._api_football_is_rate_limited():
@@ -2529,11 +2593,17 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                             headers,
                         )
                         fixture_goal_events = fixture_event_data.get("goalEvents", [])
-                        if fixture_event_data.get("events") and _count_goal_events(fixture_goal_events) >= _count_goal_events(goal_events):
+                        if fixture_event_data.get("events"):
                             inline_events = fixture_event_data.get("events", [])
                             goal_events = fixture_goal_events
                             card_events = fixture_event_data.get("cardEvents", [])
                             substitution_events = fixture_event_data.get("substitutionEvents", [])
+                    elif fixture_id and str(fixture_id) in self._live_events_cache_by_fixture and not inline_events:
+                        fixture_event_data = self._live_events_cache_by_fixture.get(str(fixture_id), {})
+                        inline_events = fixture_event_data.get("events", []) or inline_events
+                        goal_events = fixture_event_data.get("goalEvents", []) or goal_events
+                        card_events = fixture_event_data.get("cardEvents", []) or card_events
+                        substitution_events = fixture_event_data.get("substitutionEvents", []) or substitution_events
 
                     live_statistics = self._build_api_football_live_statistics(
                         item.get("statistics") or [],
@@ -2545,19 +2615,17 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                     if fixture_id and not self._api_football_live_is_rate_limited():
                         fixture_key = str(fixture_id)
                         last_stats_fetch = self._live_statistics_last_fetch_by_fixture.get(fixture_key)
-                        has_corner_stats = any(
-                            (team_stats or {}).get("corners") is not None
-                            for team_stats in live_statistics.values()
-                        )
-                        if not has_corner_stats and (not last_stats_fetch or now - last_stats_fetch >= timedelta(seconds=20)):
+                        if not last_stats_fetch or now - last_stats_fetch >= LIVE_STATISTICS_FETCH_INTERVAL:
                             self._live_statistics_last_fetch_by_fixture[fixture_key] = now
-                            live_statistics = await self._fetch_api_football_statistics_for_fixture(
+                            fetched_statistics = await self._fetch_api_football_statistics_for_fixture(
                                 session,
                                 fixture_id,
                                 headers,
                                 home,
                                 away,
                             )
+                            if fetched_statistics:
+                                live_statistics = fetched_statistics
                         elif not live_statistics:
                             live_statistics = self._live_statistics_cache_by_fixture.get(fixture_key, {})
 
@@ -2595,11 +2663,16 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                         "referees": referees,
                         "liveStatistics": live_statistics,
                         "apiFootballFixtureId": fixture_id,
+                        "apiFootballHome": home,
+                        "apiFootballAway": away,
+                        "apiFootballDate": fixture.get("date"),
                         "venue": fixture_venue,
                     }
 
                     live_data[_match_key_from_names(home, away)] = item_data
                     live_data[_match_key_from_names(away, home)] = item_data
+                    if fixture_id:
+                        live_data[f"fixture:{fixture_id}"] = item_data
 
         except Exception as err:  # pylint: disable=broad-exception-caught
             _LOGGER.warning("API-Football live lookup failed: %s", err)
@@ -2655,7 +2728,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             return {}
 
         now = datetime.now(timezone.utc)
-        if self._live_fixture_status_last_fetch and now - self._live_fixture_status_last_fetch < timedelta(seconds=20):
+        if self._live_fixture_status_last_fetch and now - self._live_fixture_status_last_fetch < LIVE_BACKUP_STATUS_INTERVAL:
             return {}
 
         active_matches = []
@@ -2664,7 +2737,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             kickoff = parse_datetime_utc(match.get("utcDate"))
             if status in LIVE_STATUSES:
                 active_matches.append(match)
-            elif kickoff and kickoff - timedelta(minutes=10) <= now <= kickoff + timedelta(hours=3, minutes=15):
+            elif kickoff and kickoff - timedelta(minutes=5) <= now <= kickoff + timedelta(hours=3, minutes=15):
                 active_matches.append(match)
 
         if not active_matches:
@@ -2741,21 +2814,40 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                         if fixture_id and not self._api_football_live_is_rate_limited():
                             fixture_key = str(fixture_id)
                             last_stats_fetch = self._live_statistics_last_fetch_by_fixture.get(fixture_key)
-                            has_corner_stats = any(
-                                (team_stats or {}).get("corners") is not None
-                                for team_stats in live_statistics.values()
-                            )
-                            if not has_corner_stats and (not last_stats_fetch or now - last_stats_fetch >= timedelta(seconds=20)):
+                            if not last_stats_fetch or now - last_stats_fetch >= LIVE_STATISTICS_FETCH_INTERVAL:
                                 self._live_statistics_last_fetch_by_fixture[fixture_key] = now
-                                live_statistics = await self._fetch_api_football_statistics_for_fixture(
+                                fetched_statistics = await self._fetch_api_football_statistics_for_fixture(
                                     session,
                                     fixture_id,
                                     headers,
                                     home,
                                     away,
                                 )
+                                if fetched_statistics:
+                                    live_statistics = fetched_statistics
                             elif not live_statistics:
                                 live_statistics = self._live_statistics_cache_by_fixture.get(fixture_key, {})
+
+                        inline_events = []
+                        goal_events = []
+                        card_events = []
+                        substitution_events = []
+                        if fixture_id and not self._api_football_is_rate_limited():
+                            fixture_key = str(fixture_id)
+                            last_event_fetch = self._live_events_last_fetch_by_fixture.get(fixture_key)
+                            if not last_event_fetch or now - last_event_fetch >= LIVE_EVENT_FETCH_INTERVAL:
+                                self._live_events_last_fetch_by_fixture[fixture_key] = now
+                                fixture_event_data = await self._fetch_api_football_events_for_fixture(
+                                    session,
+                                    fixture_id,
+                                    headers,
+                                )
+                            else:
+                                fixture_event_data = self._live_events_cache_by_fixture.get(fixture_key, {})
+                            inline_events = fixture_event_data.get("events", []) or []
+                            goal_events = fixture_event_data.get("goalEvents", []) or []
+                            card_events = fixture_event_data.get("cardEvents", []) or []
+                            substitution_events = fixture_event_data.get("substitutionEvents", []) or []
 
                         item_data = {
                             "minute": elapsed,
@@ -2765,10 +2857,10 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                             "halfTimeAway": _safe_int(halftime.get("away")),
                             "apiFootballStatus": status.get("short") or status.get("long"),
                             "apiFootballStatusLong": status.get("long"),
-                            "events": [],
-                            "goalEvents": [],
-                            "cardEvents": [],
-                            "substitutionEvents": [],
+                            "events": inline_events,
+                            "goalEvents": goal_events,
+                            "cardEvents": card_events,
+                            "substitutionEvents": substitution_events,
                             "referees": self._normalise_match_officials(
                                 item.get("referees"),
                                 item.get("officials"),
@@ -2778,10 +2870,15 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                             ),
                             "liveStatistics": live_statistics,
                             "apiFootballFixtureId": fixture_id,
+                            "apiFootballHome": home,
+                            "apiFootballAway": away,
+                            "apiFootballDate": fixture.get("date"),
                             "venue": fixture_venue,
                         }
                         live_data[_match_key_from_names(home, away)] = item_data
                         live_data[_match_key_from_names(away, home)] = item_data
+                        if fixture_id:
+                            live_data[f"fixture:{fixture_id}"] = item_data
         except Exception as err:  # pylint: disable=broad-exception-caught
             _LOGGER.warning("API-Football active fixture status backup failed: %s", err)
             return {}
@@ -2882,7 +2979,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
 
         if (
             self._post_match_api_football_last_fetch
-            and now - self._post_match_api_football_last_fetch < timedelta(minutes=30)
+            and now - self._post_match_api_football_last_fetch < POST_MATCH_BACKFILL_INTERVAL
         ):
             return self._post_match_api_football_cache
 
@@ -3204,6 +3301,59 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             return short
         return None
 
+    def _merge_live_api_football_match_data(self, primary_data, backup_data):
+        """Merge two API-Football live rows for the same fixture.
+
+        The primary /fixtures?live=all row is the live source of truth. The
+        backup date endpoint is allowed to fill missing fields only. This keeps
+        every live match using the same data path as match 1, while stopping a
+        thinner backup row from deleting scorer/card/sub/stat data for match 2.
+        """
+        if not primary_data and not backup_data:
+            return None
+        if primary_data and not backup_data:
+            return dict(primary_data)
+        if backup_data and not primary_data:
+            return dict(backup_data)
+
+        merged = dict(backup_data or {})
+        primary_data = primary_data or {}
+
+        # Rich list/object fields: keep the primary value when it has data;
+        # otherwise let the backup/cached fixture lookup fill the gap.
+        for key in (
+            "events",
+            "goalEvents",
+            "cardEvents",
+            "substitutionEvents",
+            "referees",
+            "liveStatistics",
+            "venue",
+        ):
+            value = primary_data.get(key)
+            if value:
+                merged[key] = value
+
+        # Scalar live fields: primary wins when present. Backup fills only None.
+        for key in (
+            "minute",
+            "homeScore",
+            "awayScore",
+            "halfTimeHome",
+            "halfTimeAway",
+            "apiFootballStatus",
+            "apiFootballStatusLong",
+            "apiFootballFixtureId",
+            "apiFootballHome",
+            "apiFootballAway",
+            "apiFootballDate",
+        ):
+            value = primary_data.get(key)
+            if value is not None and value != "":
+                merged[key] = value
+
+        return merged
+
     async def _add_live_api_football_data_to_matches(self, matches):
         """Overlay API-Football live data onto all known fixtures.
 
@@ -3215,23 +3365,23 @@ class WorldCupCoordinator(DataUpdateCoordinator):
         if not await self._is_main_live_provider():
             return matches
 
-        # Master installs must keep checking the live API while a match may be
-        # active. Do not let the local poll-window gate stop HT -> 2H updates.
-        live_data = await self._fetch_live_data_from_api_football()
-        backup_live_data = {}
-        if not live_data:
-            backup_live_data = await self._fetch_active_fixture_status_from_api_football(matches)
-            if not backup_live_data:
-                return matches
-            live_data = backup_live_data
+        # Primary live data comes from /fixtures?live=all.
+        # The date/fixture lookup is only a backup and must never wipe out rich
+        # per-match data from the primary live pull. Previously the backup dict
+        # was merged over the primary dict, so match 2 could keep only score/HT
+        # while losing its own minute, scorers, cards, subs and stats.
+        primary_live_data = await self._fetch_live_data_from_api_football()
+        backup_live_data = await self._fetch_active_fixture_status_from_api_football(matches)
+
+        if not primary_live_data and not backup_live_data:
+            return matches
 
         for match in matches:
             home = _team_name(match.get("homeTeam", {}))
             away = _team_name(match.get("awayTeam", {}))
-            data = live_data.get(_match_key_from_names(home, away))
-            if not data and not backup_live_data and str(match.get("status") or "").upper() in {"PAUSED", "HT", "HALF_TIME"}:
-                backup_live_data = await self._fetch_active_fixture_status_from_api_football(matches)
-                data = backup_live_data.get(_match_key_from_names(home, away))
+            primary_data = _find_provider_match_data(match, primary_live_data)
+            backup_data = _find_provider_match_data(match, backup_live_data)
+            data = self._merge_live_api_football_match_data(primary_data, backup_data)
 
             if not data:
                 continue
@@ -3257,7 +3407,7 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                     "seconds": minute * 60,
                     "timer": f"{minute}'",
                     "displayMinute": f"{minute}'",
-                    "active": False,
+                    "active": True,
                     "status": match.get("status"),
                     "source": "api_football_live_minute",
                     "lastApiSync": match["lastApiSync"],
@@ -3340,15 +3490,11 @@ class WorldCupCoordinator(DataUpdateCoordinator):
 
         try:
             matches_data = await self.api.get_matches()
-            standings_data = await self.api.get_standings()
         except Exception as err:
             raise UpdateFailed(f"Error fetching World Cup data: {err}") from err
 
-        try:
-            scorers_data = await self.api.get_scorers()
-        except Exception as err:
-            _LOGGER.warning("Failed to fetch scorers (will retry next cycle): %s", err)
-            scorers_data = {"scorers": []}
+        standings_data = await self._get_cached_standings()
+        scorers_data = await self._get_cached_scorers()
 
         matches = matches_data.get("matches", [])
         matches = self._add_football_data_live_fields_to_matches(matches)
