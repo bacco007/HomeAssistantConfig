@@ -51,6 +51,9 @@ async def async_migrate_entry(hass: HomeAssistant, entry) -> bool:
 
     v1 -> v2: Added hemisphere and climate_region fields.
     v2 -> v3 (v0.3.0): Entity registry cleanup + scrub cut config keys.
+    v2 -> v3 (v2.5.0): Slug hemisphere/climate_region values so they can be
+        translated in the UI (issue #104), e.g. "Atlantic Europe" ->
+        "atlantic_europe", "Northern" -> "northern".
     """
     _LOGGER.info("Migrating ws_core config entry from version %s to %s", entry.version, CONFIG_VERSION)
 
@@ -62,7 +65,7 @@ async def async_migrate_entry(hass: HomeAssistant, entry) -> bool:
         if CONF_HEMISPHERE not in new_data:
             try:
                 lat = float(hass.config.latitude)
-                new_data[CONF_HEMISPHERE] = "Southern" if lat < 0 else "Northern"
+                new_data[CONF_HEMISPHERE] = "southern" if lat < 0 else "northern"
             except (TypeError, ValueError):
                 new_data[CONF_HEMISPHERE] = DEFAULT_HEMISPHERE
         if CONF_CLIMATE_REGION not in new_data:
@@ -116,6 +119,27 @@ async def async_migrate_entry(hass: HomeAssistant, entry) -> bool:
         _LOGGER.info(
             "v0.3.0 migration: removed %d deprecated entities, scrubbed %d config keys", removed_count, cut_data_count
         )
+
+        # v2.5.0: slug hemisphere/climate_region so the UI selectors can be
+        # translated (issue #104). Old installs stored human-readable display
+        # values; map them to lowercase slugs. Idempotent - already-slugged or
+        # unknown values are left untouched.
+        _HEMISPHERE_SLUGS = {"Northern": "northern", "Southern": "southern"}
+        _CLIMATE_REGION_SLUGS = {
+            "Atlantic Europe": "atlantic_europe",
+            "Mediterranean": "mediterranean",
+            "Continental Europe": "continental_europe",
+            "Scandinavia": "scandinavia",
+            "North America East": "north_america_east",
+            "North America West": "north_america_west",
+            "Australia": "australia",
+            "Custom": "custom",
+        }
+        for store in (new_data, new_options):
+            if store.get(CONF_HEMISPHERE) in _HEMISPHERE_SLUGS:
+                store[CONF_HEMISPHERE] = _HEMISPHERE_SLUGS[store[CONF_HEMISPHERE]]
+            if store.get(CONF_CLIMATE_REGION) in _CLIMATE_REGION_SLUGS:
+                store[CONF_CLIMATE_REGION] = _CLIMATE_REGION_SLUGS[store[CONF_CLIMATE_REGION]]
 
     hass.config_entries.async_update_entry(
         entry,

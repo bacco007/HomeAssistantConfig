@@ -81,8 +81,8 @@ DEFAULT_RAIN_UNIT = "auto"
 DEFAULT_DISTANCE_UNIT = "auto"
 DEFAULT_ALTITUDE_UNIT = "auto"
 DEFAULT_ELEVATION_M = 0.0
-DEFAULT_HEMISPHERE = "Northern"
-DEFAULT_CLIMATE_REGION = "Atlantic Europe"
+DEFAULT_HEMISPHERE = "northern"
+DEFAULT_CLIMATE_REGION = "atlantic_europe"
 DEFAULT_STALENESS_S = 7200  # 2 hours - many sensors (humidity, pressure) update slowly
 DEFAULT_FORECAST_ENABLED = True
 DEFAULT_FORECAST_INTERVAL_MIN = 30
@@ -110,17 +110,17 @@ DEFAULT_CAL_WIND_MS = 0.0
 # ---------------------------------------------------------------------------
 # Selectable option lists
 # ---------------------------------------------------------------------------
-HEMISPHERE_OPTIONS = ["Northern", "Southern"]
+HEMISPHERE_OPTIONS = ["northern", "southern"]
 
 CLIMATE_REGION_OPTIONS = [
-    "Atlantic Europe",
-    "Mediterranean",
-    "Continental Europe",
-    "Scandinavia",
-    "North America East",
-    "North America West",
-    "Australia",
-    "Custom",
+    "atlantic_europe",
+    "mediterranean",
+    "continental_europe",
+    "scandinavia",
+    "north_america_east",
+    "north_america_west",
+    "australia",
+    "custom",
 ]
 
 UNITS_MODE_OPTIONS = ["auto", "metric", "imperial"]
@@ -358,7 +358,7 @@ DRIFT_STUCK_BUCKET_SAMPLES: int = 240  # 4-hour rolling window
 DRIFT_STUCK_BUCKET_MIN_RATE: float = 0.1  # mm/h minimum to count as non-zero
 DRIFT_STUCK_RATE_RANGE_MAX: float = 0.1  # mm/h max spread to flag as stuck
 
-CONFIG_VERSION = 2
+CONFIG_VERSION = 3
 
 # Alert hysteresis: ticks above/below threshold before state changes
 ALERT_DEBOUNCE_ON_TICKS: int = 2  # consecutive ticks above threshold → fire

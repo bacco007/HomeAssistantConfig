@@ -149,6 +149,9 @@
           "enable_owm_stations": "OpenWeatherMap Stations upload",
           "enable_windy": "Windy.com upload",
           "enable_mqtt": "MQTT Discovery republishing (publish all derived sensors to MQTT broker for Node-RED / external consumers)"
+        },
+        "data_description": {
+          "enable_degree_days": "Calculation of Growing, Heating and Cooling Degree Days plus a leaf-wetness estimate, useful for agriculture and energy tracking."
         }
       },
       "weathercloud": {
@@ -242,7 +245,7 @@
       },
       "air_quality": {
         "title": "Air Quality",
-        "description": "{info}",
+        "description": "Air quality data (PM2.5, PM10, NO₂, ozone) from Open-Meteo. Free, no API key required. Uses forecast lat/lon.",
         "data": {
           "aqi_interval_min": "Refresh interval",
           "_go_back": "← Go back to previous step"
@@ -250,7 +253,7 @@
       },
       "pollen": {
         "title": "Pollen Data",
-        "description": "{info}",
+        "description": "Pollen data is fetched from the Open-Meteo Air Quality API (free, no key). Includes alder, birch, grass, mugwort, olive, and ragweed. Updates piggyback on the AQI fetch.",
         "data": {
           "_go_back": "← Go back to previous step"
         }
@@ -510,14 +513,14 @@
       },
       "air_quality_opt": {
         "title": "Air Quality Settings",
-        "description": "{info}",
+        "description": "Open-Meteo Air Quality API. Free, no key required.",
         "data": {
           "aqi_interval_min": "Refresh interval"
         }
       },
       "pollen_opt": {
         "title": "Pollen Settings",
-        "description": "{info}",
+        "description": "Pollen data via the Open-Meteo Air Quality API (free, no key). Piggybacks on the AQI fetch.",
         "data": {}
       },
       "solar_forecast_opt": {
@@ -781,6 +784,15 @@
       },
       "forecast_provider": {
         "name": "Forecast Provider",
+        "state": {
+          "open_meteo": "Open-Meteo",
+          "met_no": "Met.no",
+          "nws_noaa": "NWS/NOAA",
+          "openweathermap": "OpenWeatherMap",
+          "pirate_weather": "Pirate Weather",
+          "meteo_france": "Météo France",
+          "ha_weather_entity": "Home Assistant weather entity"
+        },
         "state_attributes": {
           "provider_name": {
             "name": "Provider name"
@@ -1564,6 +1576,15 @@
           "threshold_c": {
             "name": "Threshold (°C)"
           }
+        }
+      },
+      "frost_risk": {
+        "name": "Frost Risk",
+        "state": {
+          "high": "High",
+          "probable": "Probable",
+          "unlikely": "Unlikely",
+          "no_risk": "No risk"
         }
       },
       "sensor_drift": {
@@ -2482,11 +2503,14 @@
     },
     "climate_region": {
       "options": {
-        "tropical": "Tropical",
-        "dry": "Dry",
-        "temperate": "Temperate",
-        "continental": "Continental",
-        "polar": "Polar"
+        "atlantic_europe": "Atlantic Europe",
+        "mediterranean": "Mediterranean",
+        "continental_europe": "Continental Europe",
+        "scandinavia": "Scandinavia",
+        "north_america_east": "North America (East)",
+        "north_america_west": "North America (West)",
+        "australia": "Australia",
+        "custom": "Custom"
       }
     }
   }

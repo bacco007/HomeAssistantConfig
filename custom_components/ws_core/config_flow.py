@@ -444,7 +444,7 @@ def _guess_hemisphere(hass: HomeAssistant) -> str:
     """Infer hemisphere from HA system latitude."""
     try:
         lat = float(hass.config.latitude)
-        return "Southern" if lat < 0 else "Northern"
+        return "southern" if lat < 0 else "northern"
     except (TypeError, ValueError):
         return DEFAULT_HEMISPHERE
 
@@ -459,21 +459,21 @@ def _guess_climate_region(hass: HomeAssistant) -> str:
 
     # Southern hemisphere → Australia (only option currently)
     if lat < 0:
-        return "Australia"
+        return "australia"
     # Scandinavia
     if lat > 55 and 5 <= lon <= 32:
-        return "Scandinavia"
+        return "scandinavia"
     # Mediterranean
     if 30 <= lat <= 47 and -5 <= lon <= 40:
-        return "Mediterranean"
+        return "mediterranean"
     # North America
     if -170 <= lon <= -50:
-        return "North America East" if lon > -100 else "North America West"
+        return "north_america_east" if lon > -100 else "north_america_west"
     # Continental Europe (east of 15°E)
     if lon > 15:
-        return "Continental Europe"
+        return "continental_europe"
     # Default Atlantic Europe
-    return "Atlantic Europe"
+    return "atlantic_europe"
 
 
 def _is_imperial(units_mode: str, hass: HomeAssistant) -> bool:
@@ -1244,9 +1244,6 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     ),
                 }
             ),
-            description_placeholders={
-                "info": "Air quality data (PM2.5, PM10, NO₂, ozone) from Open-Meteo. Free, no API key required. Uses forecast lat/lon."
-            },
             last_step=False,
         )
 
@@ -1270,13 +1267,6 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self._show_step(
             step_id="pollen",
             data_schema=vol.Schema({}),
-            description_placeholders={
-                "info": (
-                    "Pollen data is fetched from Open-Meteo Air Quality API "
-                    "(free, no key). Includes alder, birch, grass, mugwort, "
-                    "olive, and ragweed. Updates piggyback on the AQI fetch."
-                )
-            },
             last_step=False,
         )
 
@@ -2784,7 +2774,6 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
                     ),
                 }
             ),
-            description_placeholders={"info": "Open-Meteo Air Quality API. Free, no key required."},
             last_step=False,
         )
 
@@ -2795,9 +2784,6 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
         return self.async_show_form(
             step_id="pollen_opt",
             data_schema=vol.Schema({}),
-            description_placeholders={
-                "info": ("Pollen data via Open-Meteo Air Quality API (free, no key). Piggybacks on AQI fetch.")
-            },
             last_step=False,
         )
 

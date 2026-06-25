@@ -149,6 +149,9 @@
           "enable_owm_stations": "Envoi vers OpenWeatherMap Stations",
           "enable_windy": "Envoi vers Windy.com",
           "enable_mqtt": "MQTT (publier les capteurs sur un broker MQTT pour Node-RED / externes)"
+        },
+        "data_description": {
+          "enable_degree_days": "Calcul des degrés-jours de croissance, de chauffage et de refroidissement, ainsi qu'une estimation de l'humectation foliaire, utiles pour l'agriculture et le suivi énergétique."
         }
       },
       "weathercloud": {
@@ -242,7 +245,7 @@
       },
       "air_quality": {
         "title": "Qualité de l'air",
-        "description": "{info}",
+        "description": "Données de qualité de l'air (PM2.5, PM10, NO₂, ozone) via Open-Meteo. Gratuit, sans clé API. Utilise la latitude/longitude des prévisions.",
         "data": {
           "aqi_interval_min": "Intervalle d'actualisation",
           "_go_back": "← Retour à l'étape précédente"
@@ -250,7 +253,7 @@
       },
       "pollen": {
         "title": "Données de pollen",
-        "description": "{info}",
+        "description": "Les données de pollen proviennent de l'API Open-Meteo Air Quality (gratuit, sans clé). Inclut aulne, bouleau, graminées, armoise, olivier et ambroisie. Les mises à jour sont synchronisées avec la récupération de l'AQI.",
         "data": {
           "_go_back": "← Retour à l'étape précédente"
         }
@@ -507,14 +510,14 @@
       },
       "air_quality_opt": {
         "title": "Qualité de l'air",
-        "description": "{info}",
+        "description": "API Open-Meteo Air Quality. Gratuit, sans clé.",
         "data": {
           "aqi_interval_min": "Intervalle d'actualisation"
         }
       },
       "pollen_opt": {
         "title": "Niveau de pollen",
-        "description": "{info}",
+        "description": "Données de pollen via l'API Open-Meteo Air Quality (gratuit, sans clé). Synchronisées avec la récupération de l'AQI.",
         "data": {}
       },
       "solar_forecast_opt": {
@@ -778,6 +781,15 @@
               },
       "forecast_provider": {
         "name": "Fournisseur de prévisions",
+        "state": {
+          "open_meteo": "Open-Meteo",
+          "met_no": "Met.no",
+          "nws_noaa": "NWS/NOAA",
+          "openweathermap": "OpenWeatherMap",
+          "pirate_weather": "Pirate Weather",
+          "meteo_france": "Météo France",
+          "ha_weather_entity": "Entité météo Home Assistant"
+        },
         "state_attributes": {
           "provider_name": {
             "name": "Nom du fournisseur"
@@ -1561,6 +1573,15 @@
           "threshold_c": {
             "name": "Seuil"
           }
+        }
+      },
+      "frost_risk": {
+        "name": "Risque de gel",
+        "state": {
+          "high": "Élevé",
+          "probable": "Probable",
+          "unlikely": "Peu probable",
+          "no_risk": "Aucun risque"
         }
       },
       "sensor_drift": {
@@ -2479,11 +2500,14 @@
     },
     "climate_region": {
       "options": {
-        "tropical": "Tropical",
-        "dry": "Sec",
-        "temperate": "Tempéré",
-        "continental": "Continental",
-        "polar": "Polaire"
+        "atlantic_europe": "Europe atlantique",
+        "mediterranean": "Méditerranée",
+        "continental_europe": "Europe continentale",
+        "scandinavia": "Scandinavie",
+        "north_america_east": "Amérique du Nord (Est)",
+        "north_america_west": "Amérique du Nord (Ouest)",
+        "australia": "Australie",
+        "custom": "Personnalisé"
       }
     }
   }

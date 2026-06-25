@@ -112,6 +112,7 @@ from .const import (
     KEY_FORECAST_TILES,
     KEY_FREEZING_LEVEL_M,
     KEY_FROST_POINT_C,
+    KEY_FROST_RISK,
     KEY_FROST_STREAK,
     KEY_FWI,
     KEY_FWI_BUI,
@@ -280,6 +281,14 @@ _PRESSURE_FACTORS: dict[str, float] = {"hPa": 1.0, "inHg": 0.02953, "mmHg": 0.75
 _DISTANCE_FACTORS: dict[str, float] = {"km": 1.0, "mi": 0.621371}
 _ALTITUDE_FACTORS: dict[str, float] = {"m": 1.0, "ft": 3.28084}
 
+# SensorDeviceClass.WIND_DIRECTION and SensorStateClass.MEASUREMENT_ANGLE were
+# added in HA 2025.1. We support down to HA 2024.6.0 (see hacs.json), so resolve
+# them defensively: on older cores the wind-direction sensors simply fall back to
+# a plain numeric "°" sensor (no device class / measurement state class) instead
+# of raising AttributeError at import and breaking the whole sensor platform.
+_WIND_DIRECTION_DEVICE_CLASS = getattr(SensorDeviceClass, "WIND_DIRECTION", None)
+_MEASUREMENT_ANGLE_STATE_CLASS = getattr(SensorStateClass, "MEASUREMENT_ANGLE", SensorStateClass.MEASUREMENT)
+
 SENSORS: list[WSSensorDescription] = [
     # =========================================================================
     # CORE MEASUREMENTS
@@ -358,9 +367,9 @@ SENSORS: list[WSSensorDescription] = [
         translation_key="wind_direction",
         name="WS Wind Direction",
         icon="mdi:compass",
-        device_class=SensorDeviceClass.WIND_DIRECTION,
+        device_class=_WIND_DIRECTION_DEVICE_CLASS,
         native_unit="\u00b0",
-        state_class=SensorStateClass.MEASUREMENT_ANGLE,
+        state_class=_MEASUREMENT_ANGLE_STATE_CLASS,
     ),
     WSSensorDescription(
         key=KEY_NORM_RAIN_TOTAL_MM,
@@ -531,7 +540,7 @@ SENSORS: list[WSSensorDescription] = [
         key=KEY_FORECAST,
         translation_key="forecast_daily",
         name="WS Forecast Daily",
-        icon="mdi:calendar-weather",
+        icon="mdi:api",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda d: (d.get(KEY_FORECAST) or {}).get("provider") if d.get(KEY_FORECAST) else None,
         attrs_fn=lambda d: {"forecast": (d.get(KEY_FORECAST) or {}).get("daily", [])},
@@ -1320,7 +1329,7 @@ SENSORS: list[WSSensorDescription] = [
         key=KEY_FORECAST_TILES,
         translation_key="forecast_tiles",
         name="WS Forecast Tiles",
-        icon="mdi:calendar-weather",
+        icon="mdi:weather-partly-cloudy",
         value_fn=lambda d: len(d.get(KEY_FORECAST_TILES) or []),
         attrs_fn=lambda d: {
             "tiles": d.get(KEY_FORECAST_TILES) or [],
@@ -1395,9 +1404,9 @@ SENSORS: list[WSSensorDescription] = [
         translation_key="dominant_wind_direction",
         name="WS Dominant Wind Direction",
         icon="mdi:compass-rose",
-        device_class=SensorDeviceClass.WIND_DIRECTION,
+        device_class=_WIND_DIRECTION_DEVICE_CLASS,
         native_unit="°",
-        state_class=SensorStateClass.MEASUREMENT_ANGLE,
+        state_class=_MEASUREMENT_ANGLE_STATE_CLASS,
         attrs_fn=lambda d: {
             "variability_deg": d.get(KEY_WIND_DIR_VARIABILITY),
         },
@@ -1711,7 +1720,7 @@ SENSORS: list[WSSensorDescription] = [
         key=KEY_INDOOR_HUMIDITY,
         translation_key="indoor_humidity",
         name="WS Indoor Humidity",
-        icon="mdi:home-humidity",
+        icon="mdi:water-percent",
         device_class=SensorDeviceClass.HUMIDITY,
         native_unit="%",
         state_class=SensorStateClass.MEASUREMENT,
@@ -2108,6 +2117,15 @@ SENSORS: list[WSSensorDescription] = [
         native_unit=None,
         state_class=SensorStateClass.MEASUREMENT,
         attrs_fn=lambda d: {"threshold_c": d.get("_frost_streak_threshold_c")},
+    ),
+    # Frost risk category (computed in coordinator._compute_frost_risk; issue #105).
+    WSSensorDescription(
+        key=KEY_FROST_RISK,
+        translation_key="frost_risk",
+        name="WS Frost Risk",
+        icon="mdi:snowflake-alert",
+        native_unit=None,
+        state_class=None,
     ),
     # =========================================================================
     # v1.2.0 - STATION INTELLIGENCE

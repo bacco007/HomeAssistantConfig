@@ -516,8 +516,8 @@ def zambretti_forecast(
     wind_quadrant: str,
     humidity: float,
     month: int,
-    hemisphere: str = "Northern",
-    climate: str = "Mediterranean",
+    hemisphere: str = "northern",
+    climate: str = "mediterranean",
     wind_speed_ms: float | None = None,
     rain_24h_mm: float | None = None,
 ) -> tuple[str, int]:
@@ -570,7 +570,7 @@ def zambretti_forecast(
         z_base = 22.0 + (985.0 - p) / 35.0 * 4.0
 
     # Seasonal adjustment
-    is_winter = (month <= 3 or month >= 10) if hemisphere == "Northern" else (4 <= month <= 9)
+    is_winter = (month <= 3 or month >= 10) if hemisphere == "northern" else (4 <= month <= 9)
     season_adj = 1.0 if is_winter else -1.0
 
     # Pressure trend adjustment
@@ -591,16 +591,16 @@ def zambretti_forecast(
 
     # Wind direction adjustment (climate-region-aware, suppressed at low wind)
     wind_patterns = {
-        "Atlantic Europe": {"good": ["E", "N"], "bad": ["W", "S"]},
-        "Mediterranean": {"good": ["N", "E"], "bad": ["S", "W"]},
-        "Continental Europe": {"good": ["E", "N"], "bad": ["W", "S"]},
-        "Scandinavia": {"good": ["E", "N"], "bad": ["S", "W"]},
-        "North America East": {"good": ["N", "W"], "bad": ["S", "E"]},
-        "North America West": {"good": ["E", "N"], "bad": ["W", "S"]},
-        "Australia": {"good": ["S", "E"], "bad": ["N", "W"]},
-        "Custom": {"good": ["N", "E"], "bad": ["S", "W"]},
+        "atlantic_europe": {"good": ["E", "N"], "bad": ["W", "S"]},
+        "mediterranean": {"good": ["N", "E"], "bad": ["S", "W"]},
+        "continental_europe": {"good": ["E", "N"], "bad": ["W", "S"]},
+        "scandinavia": {"good": ["E", "N"], "bad": ["S", "W"]},
+        "north_america_east": {"good": ["N", "W"], "bad": ["S", "E"]},
+        "north_america_west": {"good": ["E", "N"], "bad": ["W", "S"]},
+        "australia": {"good": ["S", "E"], "bad": ["N", "W"]},
+        "custom": {"good": ["N", "E"], "bad": ["S", "W"]},
     }
-    pattern = wind_patterns.get(climate, wind_patterns["Mediterranean"])
+    pattern = wind_patterns.get(climate, wind_patterns["mediterranean"])
     if wind_speed_ms is not None and wind_speed_ms < 1.0:
         wind_adj = 0.0
     elif wind_quadrant in pattern["good"]:
@@ -642,25 +642,25 @@ def zambretti_forecast(
 
 # Regional pressure thresholds for rain likelihood
 _RAIN_PRESSURE_PROFILES = {
-    "Atlantic Europe": {"low": 1005, "med": 1012, "high": 1020},
-    "Mediterranean": {"low": 1008, "med": 1015, "high": 1022},
-    "Continental Europe": {"low": 1005, "med": 1013, "high": 1020},
-    "Scandinavia": {"low": 1000, "med": 1010, "high": 1018},
-    "North America East": {"low": 1005, "med": 1013, "high": 1020},
-    "North America West": {"low": 1008, "med": 1015, "high": 1022},
-    "Australia": {"low": 1005, "med": 1013, "high": 1020},
-    "Custom": {"low": 1005, "med": 1013, "high": 1020},
+    "atlantic_europe": {"low": 1005, "med": 1012, "high": 1020},
+    "mediterranean": {"low": 1008, "med": 1015, "high": 1022},
+    "continental_europe": {"low": 1005, "med": 1013, "high": 1020},
+    "scandinavia": {"low": 1000, "med": 1010, "high": 1018},
+    "north_america_east": {"low": 1005, "med": 1013, "high": 1020},
+    "north_america_west": {"low": 1008, "med": 1015, "high": 1022},
+    "australia": {"low": 1005, "med": 1013, "high": 1020},
+    "custom": {"low": 1005, "med": 1013, "high": 1020},
 }
 
 _RAIN_WIND_BIAS = {
-    "Atlantic Europe": {"wet": ["W", "S"], "dry": ["E", "N"]},
-    "Mediterranean": {"wet": ["S", "W"], "dry": ["N", "E"]},
-    "Continental Europe": {"wet": ["W", "S"], "dry": ["E", "N"]},
-    "Scandinavia": {"wet": ["S", "W"], "dry": ["N", "E"]},
-    "North America East": {"wet": ["S", "E"], "dry": ["N", "W"]},
-    "North America West": {"wet": ["W", "S"], "dry": ["E", "N"]},
-    "Australia": {"wet": ["N", "W"], "dry": ["S", "E"]},
-    "Custom": {"wet": ["S", "W"], "dry": ["N", "E"]},
+    "atlantic_europe": {"wet": ["W", "S"], "dry": ["E", "N"]},
+    "mediterranean": {"wet": ["S", "W"], "dry": ["N", "E"]},
+    "continental_europe": {"wet": ["W", "S"], "dry": ["E", "N"]},
+    "scandinavia": {"wet": ["S", "W"], "dry": ["N", "E"]},
+    "north_america_east": {"wet": ["S", "E"], "dry": ["N", "W"]},
+    "north_america_west": {"wet": ["W", "S"], "dry": ["E", "N"]},
+    "australia": {"wet": ["N", "W"], "dry": ["S", "E"]},
+    "custom": {"wet": ["S", "W"], "dry": ["N", "E"]},
 }
 
 
@@ -669,7 +669,7 @@ def calculate_rain_probability(
     pressure_trend: float,
     humidity: float,
     wind_quadrant: str,
-    climate_region: str = "Mediterranean",
+    climate_region: str = "mediterranean",
 ) -> int:
     """Heuristic rain probability estimate from local sensor data.
 
@@ -680,8 +680,8 @@ def calculate_rain_probability(
     Disclaimer: Accuracy depends on sensor quality, local topography,
     and climate patterns. Not suitable as a sole forecast source.
     """
-    profile = _RAIN_PRESSURE_PROFILES.get(climate_region, _RAIN_PRESSURE_PROFILES["Custom"])
-    wind_bias = _RAIN_WIND_BIAS.get(climate_region, _RAIN_WIND_BIAS["Custom"])
+    profile = _RAIN_PRESSURE_PROFILES.get(climate_region, _RAIN_PRESSURE_PROFILES["custom"])
+    wind_bias = _RAIN_WIND_BIAS.get(climate_region, _RAIN_WIND_BIAS["custom"])
 
     prob = 0
 

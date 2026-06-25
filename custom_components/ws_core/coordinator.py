@@ -40,6 +40,7 @@ from homeassistant.helpers.event import async_track_state_change_event, async_tr
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.util import dt as dt_util
 
+from . import localize
 from .algorithms import (
     CONDITION_COLORS,
     CONDITION_DESCRIPTIONS,
@@ -2599,13 +2600,15 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         rain_rate = data.get(KEY_RAIN_RATE_FILT) or 0.0
         tc = data.get(KEY_NORM_TEMP_C)
 
+        lang = self.hass.config.language
+
         # Raw trigger flags \u2014 one per alert type (before hysteresis)
         raw_triggers: dict[str, dict] = {}
         if gust_ms is not None and float(gust_ms) >= gust_thr:
             raw_triggers["wind"] = {
                 "type": "wind",
                 "severity": "warning",
-                "message": f"Extreme wind: {float(gust_ms):.1f} m/s",
+                "message": localize.alert(lang, "wind", v=f"{float(gust_ms):.1f}"),
                 "icon": "mdi:weather-windy",
                 "color": "rgba(239,68,68,0.9)",
             }
@@ -2613,7 +2616,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             raw_triggers["rain"] = {
                 "type": "rain",
                 "severity": "warning",
-                "message": f"Heavy rain: {float(rain_rate):.1f} mm/h",
+                "message": localize.alert(lang, "rain", v=f"{float(rain_rate):.1f}"),
                 "icon": "mdi:weather-pouring",
                 "color": "rgba(59,130,246,0.9)",
             }
@@ -2621,7 +2624,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             raw_triggers["freeze"] = {
                 "type": "freeze",
                 "severity": "advisory",
-                "message": f"Freeze risk: {float(tc):.1f}\u00b0C",
+                "message": localize.alert(lang, "freeze", v=f"{float(tc):.1f}"),
                 "icon": "mdi:snowflake-alert",
                 "color": "rgba(147,197,253,0.9)",
             }
@@ -2656,7 +2659,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             data["_alert_color"] = primary["color"]
         else:
             alert_state = "clear"
-            alert_msg = "All clear"
+            alert_msg = localize.alert(lang, "clear")
             data["_alert_icon"] = "mdi:check-circle-outline"
             data["_alert_color"] = "rgba(74,222,128,0.8)"
 
@@ -3096,6 +3099,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         and wind into a terse sentence suitable for Alexa/Google/HA Assist and
         Lovelace display cards.
         """
+        lang = self.hass.config.language
         parts: list[str] = []
         tc = data.get(KEY_NORM_TEMP_C)
         feels = data.get(KEY_FEELS_LIKE_C)
@@ -3109,10 +3113,10 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if tc is not None:
             parts.append(f"{float(tc):.1f}°C")
             if feels is not None and abs(float(feels) - float(tc)) >= 2.0:
-                parts.append(f"feels like {float(feels):.1f}°C")
+                parts.append(localize.summary(lang, "feels_like", v=f"{float(feels):.1f}"))
 
         if float(rain_rate) > 0:
-            parts.append(f"{float(rain_rate):.1f} mm/h rain")
+            parts.append(localize.summary(lang, "rain", v=f"{float(rain_rate):.1f}"))
         elif zambretti and zambretti not in ("Settled fine", "Fine", "Becoming fine"):
             # Only include forecast if it's not obviously sunny
             pass  # zambretti already in forecast_tiles
@@ -3122,13 +3126,13 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             if wind_dir:
                 wind_str += f" {wind_dir}"
             if gust_ms is not None and float(gust_ms) >= float(wind_ms) * 1.5 and float(gust_ms) >= 5.0:
-                wind_str += f" gusting {float(gust_ms):.0f}"
+                wind_str += " " + localize.summary(lang, "gusting", v=f"{float(gust_ms):.0f}")
             parts.append(wind_str)
 
         if humidity is not None:
-            parts.append(f"RH {float(humidity):.0f}%")
+            parts.append(localize.summary(lang, "humidity", v=f"{float(humidity):.0f}"))
 
-        data[KEY_CONDITIONS_SUMMARY] = ", ".join(parts) if parts else "No data"
+        data[KEY_CONDITIONS_SUMMARY] = ", ".join(parts) if parts else localize.summary(lang, "no_data")
 
     # ------------------------------------------------------------------
     # v1.2.0 - Learning sensors: publish EMA results into data dict
