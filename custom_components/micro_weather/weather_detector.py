@@ -28,11 +28,13 @@ from .const import (
     CONF_SOLAR_LUX_SENSOR,
     CONF_SOLAR_RADIATION_SENSOR,
     CONF_SUN_SENSOR,
+    CONF_UPDATE_INTERVAL,
     CONF_UV_INDEX_SENSOR,
     CONF_WIND_DIRECTION_SENSOR,
     CONF_WIND_GUST_SENSOR,
     CONF_WIND_SPEED_SENSOR,
     CONF_ZENITH_MAX_RADIATION,
+    DEFAULT_UPDATE_INTERVAL,
     DEFAULT_ZENITH_MAX_RADIATION,
     KEY_APPARENT_TEMPERATURE,
     KEY_CLOUD_COVERAGE,
@@ -103,6 +105,9 @@ class WeatherDetector:
         sensors: Dictionary mapping sensor types to entity IDs
     """
 
+    HISTORY_RETENTION_HOURS = 48
+    MIN_HISTORY_SAMPLES = 192
+
     def __init__(self, hass: HomeAssistant, options: Mapping[str, Any]) -> None:
         """Initialize the weather detector.
 
@@ -115,9 +120,12 @@ class WeatherDetector:
         self._last_condition = "partly_cloudy"
         self._condition_start_time = datetime.now()
 
-        # Historical data storage (last 48 hours, 15-minute intervals =
-        # ~192 readings)
-        self._history_maxlen = 192  # 48 hours * 4 readings per hour
+        # Historical data storage for the last 48 hours. Size this by the
+        # configured refresh interval so high-frequency polling does not evict
+        # the 24h/48h pressure and temperature history needed by forecasts.
+        self._history_maxlen = self._calculate_history_maxlen(
+            options.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
+        )
         self._sensor_history: Dict[str, deque[Dict[str, Any]]] = {
             KEY_OUTDOOR_TEMP: deque(maxlen=self._history_maxlen),
             KEY_HUMIDITY: deque(maxlen=self._history_maxlen),
@@ -181,6 +189,16 @@ class WeatherDetector:
             KEY_LIGHTNING_DISTANCE: options.get(CONF_LIGHTNING_DISTANCE_SENSOR),
             KEY_LIGHTNING_TIME: options.get(CONF_LIGHTNING_TIME_SENSOR),
         }
+
+    @classmethod
+    def _calculate_history_maxlen(cls, update_interval: Any) -> int:
+        """Calculate sample capacity needed to retain the intended history window."""
+        if not isinstance(update_interval, int) or update_interval < 1:
+            update_interval = DEFAULT_UPDATE_INTERVAL
+
+        samples_per_hour = 60 / update_interval
+        required_samples = int(cls.HISTORY_RETENTION_HOURS * samples_per_hour)
+        return max(cls.MIN_HISTORY_SAMPLES, required_samples)
 
     def get_weather_data(self) -> Dict[str, Any]:
         """Get current weather data from sensors.

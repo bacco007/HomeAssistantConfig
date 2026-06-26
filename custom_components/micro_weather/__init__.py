@@ -15,14 +15,17 @@ License: MIT
 
 from datetime import timedelta
 import logging
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DOMAIN
+from .const import CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL, DOMAIN
+
+if TYPE_CHECKING:
+    from .weather_detector import WeatherDetector
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -143,12 +146,26 @@ class MicroWeatherCoordinator(DataUpdateCoordinator):
             entry: Configuration entry with sensor mappings and settings
         """
         self.entry = entry
+        self._detector: WeatherDetector | None = None
+        self._detector_options: dict[str, Any] | None = None
+        update_interval = self._get_update_interval_minutes(entry)
         super().__init__(
             hass,
             _LOGGER,
             name=DOMAIN,
-            update_interval=timedelta(minutes=5),
+            update_interval=timedelta(minutes=update_interval),
         )
+
+    @staticmethod
+    def _get_update_interval_minutes(entry: ConfigEntry) -> int:
+        """Return the configured coordinator update interval in minutes."""
+        update_interval = entry.options.get(
+            CONF_UPDATE_INTERVAL,
+            entry.data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL),
+        )
+        if not isinstance(update_interval, int) or not 1 <= update_interval <= 60:
+            return DEFAULT_UPDATE_INTERVAL
+        return update_interval
 
     async def _async_update_data(self) -> dict[str, Any]:
         """Update weather data from real sensors.
@@ -166,7 +183,13 @@ class MicroWeatherCoordinator(DataUpdateCoordinator):
         from .weather_detector import WeatherDetector
 
         try:
-            detector = WeatherDetector(self.hass, self.entry.options)
+            options = dict(self.entry.options)
+            detector = self._detector
+            if detector is None or self._detector_options != options:
+                detector = WeatherDetector(self.hass, self.entry.options)
+                self._detector = detector
+                self._detector_options = options
+
             # Store analyzers on coordinator for weather entity access
             self.atmospheric_analyzer = detector.atmospheric_analyzer
             self.solar_analyzer = detector.solar_analyzer
