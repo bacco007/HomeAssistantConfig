@@ -66,47 +66,12 @@ class StandardCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 data["health"] = await client.system.get_health()
                 data["root_folder"] = await client.root_folder.get()
                 data["quality_profile"] = await client.quality_profile.get()
-
-                # Fetch history for events
-                history = await client.history.get(page=1, page_size=10)
-                if history and "records" in history:
-                    records = history["records"]
-                    if self.last_history_id is not None:
-                        for record in reversed(records):  # Process oldest to newest
-                            if record.get("id", 0) > self.last_history_id:
-                                event_data = {
-                                    "app_type": app_type,
-                                    "entry_id": self.config_entry.entry_id,
-                                    "event_type": record.get("eventType"),
-                                    "source_title": record.get("sourceTitle"),
-                                    "date": record.get("date"),
-                                }
-                                self.hass.bus.async_fire(
-                                    "armadarr_history_event", event_data
-                                )
-
-                    if records:
-                        self.last_history_id = max(r.get("id", 0) for r in records)
+                await self._process_history(client, app_type)
 
             # Calendar data
             if app_type in ["Sonarr", "Radarr", "Lidarr", "Readarr", "Whisparr"]:
-                start = datetime.now(tz=UTC)
-                end = start + timedelta(days=upcoming_days)
-                kwargs = {}
-                if app_type in ["Sonarr", "Whisparr"]:
-                    kwargs["includeSeries"] = True
-                elif app_type == "Radarr":
-                    kwargs["includeMovie"] = True
-                elif app_type == "Lidarr":
-                    kwargs["includeArtist"] = True
-                elif app_type == "Readarr":
-                    kwargs["includeAuthor"] = True
-
-                data["calendar"] = await client.calendar.get(
-                    start_date=start,
-                    end_date=end,
-                    unmonitored=True,
-                    **kwargs,
+                data["calendar"] = await self._fetch_calendar(
+                    client, app_type, upcoming_days
                 )
 
             if app_type == "Bazarr":
@@ -118,25 +83,78 @@ class StandardCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 data["indexer_stats"] = await client.indexer.get_stats()
 
             if app_type == "Dispatcharr":
-                data["indexer_status"] = await client.indexer.get()
-                data["channels"] = await client.channels.get()
-                data["streams"] = await client.streams.get()
-                data["vod"] = await client.vod.get_all()
-                data["plugins"] = await client.plugins.get()
-                data["backups"] = await client.backups.get()
-                data["m3u_accounts"] = await client.m3u.get_accounts()
-                data["epg_sources"] = await client.epg.get_sources()
-                data["proxy_status"] = await client.proxy.get_ts_status()
-                data["channel_groups"] = await client.channel_groups.get()
-                data["channel_profiles"] = await client.channel_profiles.get()
-                data["connect_integrations"] = await client.connect.get_integrations()
-                data["hdhr_devices"] = await client.hdhr.get_devices()
+                data.update(await self._fetch_dispatcharr(client))
 
         except Exception as exception:
             msg = f"Error communicating with API: {exception}"
             raise UpdateFailed(msg) from exception
         else:
             return data
+
+    async def _process_history(self, client: Any, app_type: str) -> None:
+        """Fetch recent history and fire events for any new records."""
+        history = await client.history.get(page=1, page_size=10)
+        if not history or "records" not in history:
+            return
+
+        records = history["records"]
+        if self.last_history_id is not None:
+            for record in reversed(records):  # Process oldest to newest
+                if record.get("id", 0) > self.last_history_id:
+                    self.hass.bus.async_fire(
+                        "armadarr_history_event",
+                        {
+                            "app_type": app_type,
+                            "entry_id": self.config_entry.entry_id,
+                            "event_type": record.get("eventType"),
+                            "source_title": record.get("sourceTitle"),
+                            "date": record.get("date"),
+                        },
+                    )
+
+        if records:
+            self.last_history_id = max(r.get("id", 0) for r in records)
+
+    @staticmethod
+    async def _fetch_calendar(client: Any, app_type: str, upcoming_days: int) -> Any:
+        """Fetch calendar entries for the next ``upcoming_days`` days."""
+        start = datetime.now(tz=UTC)
+        end = start + timedelta(days=upcoming_days)
+        kwargs = {}
+        if app_type in ["Sonarr", "Whisparr"]:
+            kwargs["includeSeries"] = True
+        elif app_type == "Radarr":
+            kwargs["includeMovie"] = True
+        elif app_type == "Lidarr":
+            kwargs["includeArtist"] = True
+        elif app_type == "Readarr":
+            kwargs["includeAuthor"] = True
+
+        return await client.calendar.get(
+            start_date=start,
+            end_date=end,
+            unmonitored=True,
+            **kwargs,
+        )
+
+    @staticmethod
+    async def _fetch_dispatcharr(client: Any) -> dict[str, Any]:
+        """Fetch all Dispatcharr-specific data."""
+        return {
+            "indexer_status": await client.indexer.get(),
+            "channels": await client.channels.get(),
+            "streams": await client.streams.get(),
+            "vod": await client.vod.get_all(),
+            "plugins": await client.plugins.get(),
+            "backups": await client.backups.get(),
+            "m3u_accounts": await client.m3u.get_accounts(),
+            "epg_sources": await client.epg.get_sources(),
+            "proxy_status": await client.proxy.get_ts_status(),
+            "channel_groups": await client.channel_groups.get(),
+            "channel_profiles": await client.channel_profiles.get(),
+            "connect_integrations": await client.connect.get_integrations(),
+            "hdhr_devices": await client.hdhr.get_devices(),
+        }
 
 
 class DailyCoordinator(DataUpdateCoordinator[dict[str, Any]]):

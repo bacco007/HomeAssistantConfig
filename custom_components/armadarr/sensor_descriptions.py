@@ -214,8 +214,9 @@ def get_app_specific_sensors(app_type: str) -> list[ArmadarrSensorEntityDescript
                         round(
                             sum(
                                 s.get("averageResponseTime", 0)
-                                for s in data.get("indexer_stats", {})
-                                .get("indexers", [])
+                                for s in data.get("indexer_stats", {}).get(
+                                    "indexers", []
+                                )
                                 if isinstance(s, dict)
                             )
                             / len(data.get("indexer_stats", {}).get("indexers", []))
@@ -445,6 +446,42 @@ def get_app_specific_sensors(app_type: str) -> list[ArmadarrSensorEntityDescript
     return app_sensors.get(app_type, [])
 
 
+def _find_indexer_stat(
+    data: Any, category: str, key_field: str, name: str
+) -> dict[str, Any]:
+    """Return the stats entry in ``category`` whose ``key_field`` matches ``name``."""
+    return next(
+        (
+            entry
+            for entry in data.get("indexer_stats", {}).get(category, [])
+            if entry.get(key_field) == name
+        ),
+        {},
+    )
+
+
+def _make_stat_value_fn(
+    category: str, key_field: str, value_field: str, name: str
+) -> Callable[[Any], Any]:
+    """Build a value_fn returning ``value_field`` for the named stats entry."""
+
+    def _value_fn(data: Any) -> Any:
+        return _find_indexer_stat(data, category, key_field, name).get(value_field, 0)
+
+    return _value_fn
+
+
+def _make_stat_attr_fn(
+    category: str, key_field: str, name: str
+) -> Callable[[Any], dict[str, Any]]:
+    """Build an attr_fn returning the full stats entry for the named entry."""
+
+    def _attr_fn(data: Any) -> dict[str, Any]:
+        return _find_indexer_stat(data, category, key_field, name)
+
+    return _attr_fn
+
+
 def get_prowlarr_stats_sensors(
     stats: dict[str, Any],
 ) -> list[ArmadarrSensorEntityDescription]:
@@ -463,22 +500,10 @@ def get_prowlarr_stats_sensors(
                 name=f"{name} Queries",
                 icon="mdi:format-list-bulleted",
                 state_class=SensorStateClass.MEASUREMENT,
-                value_fn=lambda data, n=name: next(
-                    (
-                        i.get("numberOfQueries", 0)
-                        for i in data.get("indexer_stats", {}).get("indexers", [])
-                        if i.get("indexerName") == n
-                    ),
-                    0,
+                value_fn=_make_stat_value_fn(
+                    "indexers", "indexerName", "numberOfQueries", name
                 ),
-                attr_fn=lambda data, n=name: next(
-                    (
-                        i
-                        for i in data.get("indexer_stats", {}).get("indexers", [])
-                        if i.get("indexerName") == n
-                    ),
-                    {},
-                ),
+                attr_fn=_make_stat_attr_fn("indexers", "indexerName", name),
             )
         )
 
@@ -490,13 +515,8 @@ def get_prowlarr_stats_sensors(
                 icon="mdi:timer-outline",
                 native_unit_of_measurement="ms",
                 state_class=SensorStateClass.MEASUREMENT,
-                value_fn=lambda data, n=name: next(
-                    (
-                        i.get("averageResponseTime", 0)
-                        for i in data.get("indexer_stats", {}).get("indexers", [])
-                        if i.get("indexerName") == n
-                    ),
-                    0,
+                value_fn=_make_stat_value_fn(
+                    "indexers", "indexerName", "averageResponseTime", name
                 ),
             )
         )
@@ -512,22 +532,10 @@ def get_prowlarr_stats_sensors(
                 name=f"UA {name} Queries",
                 icon="mdi:account-search",
                 state_class=SensorStateClass.MEASUREMENT,
-                value_fn=lambda data, n=name: next(
-                    (
-                        a.get("numberOfQueries", 0)
-                        for a in data.get("indexer_stats", {}).get("userAgents", [])
-                        if a.get("userAgent") == n
-                    ),
-                    0,
+                value_fn=_make_stat_value_fn(
+                    "userAgents", "userAgent", "numberOfQueries", name
                 ),
-                attr_fn=lambda data, n=name: next(
-                    (
-                        a
-                        for a in data.get("indexer_stats", {}).get("userAgents", [])
-                        if a.get("userAgent") == n
-                    ),
-                    {},
-                ),
+                attr_fn=_make_stat_attr_fn("userAgents", "userAgent", name),
             )
         )
 
@@ -542,22 +550,8 @@ def get_prowlarr_stats_sensors(
                 name=f"Host {name} Queries",
                 icon="mdi:server",
                 state_class=SensorStateClass.MEASUREMENT,
-                value_fn=lambda data, n=name: next(
-                    (
-                        h.get("numberOfQueries", 0)
-                        for h in data.get("indexer_stats", {}).get("hosts", [])
-                        if h.get("host") == n
-                    ),
-                    0,
-                ),
-                attr_fn=lambda data, n=name: next(
-                    (
-                        h
-                        for h in data.get("indexer_stats", {}).get("hosts", [])
-                        if h.get("host") == n
-                    ),
-                    {},
-                ),
+                value_fn=_make_stat_value_fn("hosts", "host", "numberOfQueries", name),
+                attr_fn=_make_stat_attr_fn("hosts", "host", name),
             )
         )
 

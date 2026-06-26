@@ -139,7 +139,7 @@ class ArmadarrFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(
-        config_entry: config_entries.ConfigEntry,
+        config_entry: config_entries.ConfigEntry,  # noqa: ARG004  # required by HA API
     ) -> ArmadarrOptionsFlowHandler:
         """Get the options flow for this handler."""
         return ArmadarrOptionsFlowHandler()
