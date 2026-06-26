@@ -3,7 +3,7 @@
  * Home Assistant weather dashboard card with forecasts and optional radar.
  */
 
-const CARD_VERSION = "0.8.10";
+const CARD_VERSION = "0.8.11";
 const FORECAST_REFRESH_MS = 15 * 60 * 1000;
 const ENVIRONMENT_REFRESH_MS = 60 * 60 * 1000;
 const CARD_TYPES = ["radarwise-card", "radar-wise-card", "weatherwise-card", "weather-wise-card"];
@@ -730,6 +730,46 @@ function isRadarWiseDewPointEntity(entityId, state) {
     || (looksLikeTemperature && (id.includes("dew") || friendly.includes("dew")));
 }
 
+function isRadarWiseWindSpeedEntity(entityId, state) {
+  if (!entityId) return false;
+  const attrs = state?.attributes || {};
+  const friendly = String(attrs.friendly_name || "").toLowerCase();
+  const deviceClass = String(attrs.device_class || "").toLowerCase();
+  const unit = String(attrs.unit_of_measurement || attrs.native_unit_of_measurement || "").toLowerCase();
+  const id = String(entityId).toLowerCase();
+  const haystack = `${id} ${friendly} ${deviceClass} ${unit}`;
+  const windish = haystack.includes("wind");
+  const speedish = haystack.includes("speed")
+    || haystack.includes("velocity")
+    || haystack.includes("windspeed")
+    || haystack.includes("wind_speed")
+    || haystack.includes("wind speed")
+    || deviceClass === "wind_speed"
+    || ["mph", "mi/h", "km/h", "kmh", "kmph", "kph", "m/s", "ft/s", "kn", "kt", "knots", "bft"].includes(unit);
+  const directionOnly = haystack.includes("direction") || haystack.includes("bearing") || haystack.includes("azimuth");
+  return (windish && speedish && !directionOnly) || deviceClass === "wind_speed";
+}
+
+function isRadarWiseWindDirectionEntity(entityId, state) {
+  if (!entityId) return false;
+  const attrs = state?.attributes || {};
+  const friendly = String(attrs.friendly_name || "").toLowerCase();
+  const deviceClass = String(attrs.device_class || "").toLowerCase();
+  const unit = String(attrs.unit_of_measurement || attrs.native_unit_of_measurement || "").toLowerCase();
+  const id = String(entityId).toLowerCase();
+  const haystack = `${id} ${friendly} ${deviceClass} ${unit}`;
+  const windish = haystack.includes("wind");
+  const directionish = haystack.includes("direction")
+    || haystack.includes("bearing")
+    || haystack.includes("azimuth")
+    || haystack.includes("heading")
+    || haystack.includes("wind_dir")
+    || haystack.includes("winddirection")
+    || deviceClass === "wind_direction";
+  const degreeish = unit.includes("deg") || unit.includes("\u00b0") || unit === "degree" || unit === "degrees";
+  return (windish && (directionish || degreeish)) || deviceClass === "wind_direction";
+}
+
 function isRadarWiseAirQualityEntity(entityId, state) {
   if (!entityId) return false;
   const attrs = state?.attributes || {};
@@ -784,6 +824,8 @@ class RadarWiseCard extends HTMLElement {
       humidity_entity: "",
       temperature_entity: "",
       dew_point_entity: "",
+      wind_speed_entity: "",
+      wind_direction_entity: "",
       air_quality_entity: "",
       uv_index_entity: "",
       pollen_entity: "",
@@ -1185,6 +1227,8 @@ class RadarWiseCard extends HTMLElement {
       humidity_entity: "",
       temperature_entity: "",
       dew_point_entity: "",
+      wind_speed_entity: "",
+      wind_direction_entity: "",
       air_quality_entity: "",
       uv_index_entity: "",
       pollen_entity: "",
@@ -1311,6 +1355,8 @@ class RadarWiseCard extends HTMLElement {
       humidityEntity: this._config.humidity_entity,
       temperatureEntity: this._config.temperature_entity,
       dewPointEntity: this._config.dew_point_entity,
+      windSpeedEntity: this._config.wind_speed_entity,
+      windDirectionEntity: this._config.wind_direction_entity,
       airQualityEntity: this._config.air_quality_entity,
       uvIndexEntity: this._config.uv_index_entity,
       pollenEntity: this._config.pollen_entity,
@@ -1348,6 +1394,10 @@ class RadarWiseCard extends HTMLElement {
       humidityState: this._config.humidity_entity ? this._hass?.states?.[this._config.humidity_entity]?.state : undefined,
       dewPoint: attrs.dew_point ?? attrs.dewpoint ?? attrs.dewPoint,
       dewPointState: this._config.dew_point_entity ? this._hass?.states?.[this._config.dew_point_entity]?.state : undefined,
+      windSpeedState: this._config.wind_speed_entity ? this._hass?.states?.[this._config.wind_speed_entity]?.state : undefined,
+      windSpeedUnit: this._config.wind_speed_entity ? this._hass?.states?.[this._config.wind_speed_entity]?.attributes?.unit_of_measurement : undefined,
+      windDirectionState: this._config.wind_direction_entity ? this._hass?.states?.[this._config.wind_direction_entity]?.state : undefined,
+      windDirectionUnit: this._config.wind_direction_entity ? this._hass?.states?.[this._config.wind_direction_entity]?.attributes?.unit_of_measurement : undefined,
       airQualityState: this._config.air_quality_entity ? this._hass?.states?.[this._config.air_quality_entity]?.state : undefined,
       uvIndexState: this._config.uv_index_entity ? this._hass?.states?.[this._config.uv_index_entity]?.state : undefined,
       pollenState: this._config.pollen_entity ? this._hass?.states?.[this._config.pollen_entity]?.state : undefined,
@@ -1357,6 +1407,7 @@ class RadarWiseCard extends HTMLElement {
       moldPollenState: this._config.mold_pollen_entity ? this._hass?.states?.[this._config.mold_pollen_entity]?.state : undefined,
       wind: attrs.wind_speed,
       bearing: attrs.wind_bearing,
+      windDirection: attrs.wind_direction ?? attrs.windDirection,
       forecast: [
         this._forecasts.hourly?.length || 0,
         this._forecasts.daily?.length || 0,
@@ -1535,7 +1586,8 @@ class RadarWiseCard extends HTMLElement {
     const displayCondition = this._displayCondition(condition, sunStateObj);
     const units = this._unitContext(attrs);
     const temp = this._displayTemp(this._currentTemperature(attrs), units);
-    const wind = this._formatWind(attrs, units);
+    const windInfo = this._windInfo(attrs, units);
+    const wind = windInfo.display;
     const hourly = this._forecasts.hourly || [];
     const daily = this._forecasts.daily || [];
     const twiceDaily = this._forecasts.twice_daily || [];
@@ -1648,7 +1700,7 @@ class RadarWiseCard extends HTMLElement {
               </section>
             ` : ""}
           </div>
-          ${this._renderDebug({ stateObj, attrs, hourly, daily, twiceDaily, provider, units, humidityInfo, dewPointInfo })}
+          ${this._renderDebug({ stateObj, attrs, hourly, daily, twiceDaily, provider, units, humidityInfo, dewPointInfo, windInfo })}
         </div>
       </ha-card>
     `;
@@ -1714,10 +1766,14 @@ class RadarWiseCard extends HTMLElement {
       ["Temperature entity", this._config.temperature_entity || "auto"],
       ["Humidity entity", this._config.humidity_entity || "auto"],
       ["Dew point entity", this._config.dew_point_entity || "auto"],
+      ["Wind speed entity", this._config.wind_speed_entity || "auto"],
+      ["Wind direction entity", this._config.wind_direction_entity || "auto"],
       ["Resolved humidity", `${data.humidityInfo?.display ?? "--"}% via ${data.humidityInfo?.source || "missing"}`],
       ["Resolved humidity raw", debugValue(data.humidityInfo?.raw)],
       ["Resolved dew point", `${data.dewPointInfo?.display ?? "--"} via ${data.dewPointInfo?.source || "missing"}`],
       ["Resolved dew point raw", debugValue(data.dewPointInfo?.raw)],
+      ["Resolved wind", `${data.windInfo?.display ?? "--"} via ${data.windInfo?.source || "missing"}`],
+      ["Resolved wind raw", debugValue(data.windInfo?.raw)],
       ["Weather humidity attrs", debugValue({
         humidity: data.attrs?.humidity,
         relative_humidity: data.attrs?.relative_humidity,
@@ -1730,6 +1786,13 @@ class RadarWiseCard extends HTMLElement {
         dewPoint: data.attrs?.dewPoint,
         native_dew_point: data.attrs?.native_dew_point,
         dew_point_temperature: data.attrs?.dew_point_temperature
+      })],
+      ["Weather wind attrs", debugValue({
+        wind_speed: data.attrs?.wind_speed,
+        wind_speed_unit: data.attrs?.wind_speed_unit,
+        wind_bearing: data.attrs?.wind_bearing,
+        wind_direction: data.attrs?.wind_direction,
+        windDirection: data.attrs?.windDirection
       })],
       ["Air quality entity", this._config.air_quality_entity || "none"],
       ["UV index entity", this._config.uv_index_entity || "auto"],
@@ -1993,17 +2056,33 @@ class RadarWiseCard extends HTMLElement {
   }
 
   _localizedCondition(condition) {
-    const value = String(condition || "weather").replace(/[-_]+/g, " ").trim().toLowerCase();
-    return this._texts().conditions?.[value]
-      || RADARWISE_TEXT.en.conditions[value]
-      || value
+    const key = this._conditionTextKey(condition);
+    return this._texts().conditions?.[key]
+      || RADARWISE_TEXT.en.conditions[key]
+      || key
       || "weather";
   }
 
   _conditionLabel(condition) {
-    if (this._language() === "en") return this._titleCase(condition);
     const localized = this._localizedCondition(condition);
+    if (this._language() === "en") return this._titleCase(localized);
     return localized ? localized.charAt(0).toLocaleUpperCase(this._localeCode()) + localized.slice(1) : "--";
+  }
+
+  _conditionTextKey(condition) {
+    const raw = String(condition || "weather").trim().toLowerCase();
+    const compact = raw.replace(/[-_\s]+/g, "");
+    const aliases = {
+      clearnight: "clear night",
+      partlycloudy: "partly cloudy",
+      partlycloudynight: "partly cloudy",
+      mostlycloudy: "partly cloudy",
+      mostlycloudynight: "partly cloudy",
+      lightningrainy: "lightning rainy",
+      snowyrainy: "snowy rainy",
+      windyvariant: "windy variant"
+    };
+    return aliases[compact] || raw.replace(/[-_]+/g, " ") || "weather";
   }
 
   _stat(kind, label, value) {
@@ -3207,10 +3286,60 @@ class RadarWiseCard extends HTMLElement {
   }
 
   _formatWind(attrs, units) {
-    const speed = this._formatNumber(attrs.wind_speed);
-    const bearing = Number(attrs.wind_bearing);
-    const dir = Number.isFinite(bearing) ? ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][Math.round(bearing / 45) % 8] : "";
-    return `${dir ? `${dir} ` : ""}${speed} ${attrs.wind_speed_unit || units.windSpeedUnit}`;
+    return this._windInfo(attrs, units).display;
+  }
+
+  _windInfo(attrs, units) {
+    const configuredSpeedEntityId = this._config.wind_speed_entity;
+    const configuredDirectionEntityId = this._config.wind_direction_entity;
+    const speedState = configuredSpeedEntityId ? this._hass?.states?.[configuredSpeedEntityId] : null;
+    const directionState = configuredDirectionEntityId ? this._hass?.states?.[configuredDirectionEntityId] : null;
+    const hasConfiguredSpeed = speedState && isRadarWiseWindSpeedEntity(configuredSpeedEntityId, speedState);
+    const hasConfiguredDirection = directionState && isRadarWiseWindDirectionEntity(configuredDirectionEntityId, directionState);
+    const weatherDirection = attrs.wind_direction ?? attrs.windDirection ?? attrs.wind_bearing;
+    const speedRaw = hasConfiguredSpeed ? speedState.state : attrs.wind_speed;
+    const speedValue = this._candidateNumber(speedRaw);
+    const speedUnit = hasConfiguredSpeed
+      ? (speedState.attributes?.unit_of_measurement || speedState.attributes?.native_unit_of_measurement || units.windSpeedUnit)
+      : (attrs.wind_speed_unit || units.windSpeedUnit);
+    const directionRaw = hasConfiguredDirection ? directionState.state : weatherDirection;
+    const direction = this._windDirectionLabel(directionRaw);
+    const displaySpeed = Number.isFinite(speedValue) ? this._formatNumber(speedValue) : "--";
+    const display = `${direction ? `${direction} ` : ""}${displaySpeed} ${speedUnit || units.windSpeedUnit}`.trim();
+    return {
+      display,
+      source: [
+        hasConfiguredSpeed ? `speed.entity.${configuredSpeedEntityId}` : "speed.weather",
+        hasConfiguredDirection ? `direction.entity.${configuredDirectionEntityId}` : "direction.weather"
+      ].join(" + "),
+      raw: {
+        speed: speedRaw,
+        speed_unit: speedUnit,
+        direction: directionRaw
+      }
+    };
+  }
+
+  _windDirectionLabel(value) {
+    if (value === undefined || value === null || value === "") return "";
+    const raw = String(value).trim();
+    const bearing = Number(raw);
+    if (Number.isFinite(bearing)) return this._bearingToCardinal(bearing);
+    const normalized = raw.toUpperCase().replace(/[^A-Z]/g, "");
+    const directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+    if (directions.includes(normalized)) return normalized;
+    const words = normalized
+      .replace("NORTH", "N")
+      .replace("SOUTH", "S")
+      .replace("EAST", "E")
+      .replace("WEST", "W");
+    return directions.includes(words) ? words : raw;
+  }
+
+  _bearingToCardinal(bearing) {
+    const directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+    const normalized = ((Number(bearing) % 360) + 360) % 360;
+    return directions[Math.round(normalized / 22.5) % directions.length];
   }
 
   _candidateNumber(value) {
@@ -3718,6 +3847,14 @@ class RadarWiseCardEditor extends HTMLElement {
     return this._sensorEntities(isRadarWiseDewPointEntity);
   }
 
+  _windSpeedEntities() {
+    return this._sensorEntities(isRadarWiseWindSpeedEntity);
+  }
+
+  _windDirectionEntities() {
+    return this._sensorEntities(isRadarWiseWindDirectionEntity);
+  }
+
   _airQualityEntities() {
     return this._sensorEntities(isRadarWiseAirQualityEntity);
   }
@@ -3753,7 +3890,7 @@ class RadarWiseCardEditor extends HTMLElement {
   _editorEntitySignature() {
     const states = this._hass?.states || {};
     return Object.entries(states)
-      .filter(([entityId, state]) => entityId.startsWith("weather.") || entityId.startsWith("sensor.") || entityId.startsWith("input_number.") || entityId.startsWith("number.") || isRadarWiseHumidityEntity(entityId, state) || isRadarWiseTemperatureEntity(entityId, state) || isRadarWiseDewPointEntity(entityId, state) || isRadarWiseAirQualityEntity(entityId, state) || isRadarWiseUvIndexEntity(entityId, state) || isRadarWisePollenEntity(entityId, state))
+      .filter(([entityId, state]) => entityId.startsWith("weather.") || entityId.startsWith("sensor.") || entityId.startsWith("input_number.") || entityId.startsWith("number.") || isRadarWiseHumidityEntity(entityId, state) || isRadarWiseTemperatureEntity(entityId, state) || isRadarWiseDewPointEntity(entityId, state) || isRadarWiseWindSpeedEntity(entityId, state) || isRadarWiseWindDirectionEntity(entityId, state) || isRadarWiseAirQualityEntity(entityId, state) || isRadarWiseUvIndexEntity(entityId, state) || isRadarWisePollenEntity(entityId, state))
       .map(([entityId, state]) => `${entityId}:${state.attributes?.friendly_name || ""}:${state.attributes?.device_class || ""}`)
       .sort()
       .join("|");
@@ -3809,6 +3946,8 @@ class RadarWiseCardEditor extends HTMLElement {
     const humiditySensors = this._humidityEntities();
     const temperatureSensors = this._temperatureEntities();
     const dewPointSensors = this._dewPointEntities();
+    const windSpeedSensors = this._windSpeedEntities();
+    const windDirectionSensors = this._windDirectionEntities();
     const airQualitySensors = this._airQualityEntities();
     const uvIndexSensors = this._uvIndexEntities();
     const pollenSensors = this._pollenEntities();
@@ -3823,6 +3962,8 @@ class RadarWiseCardEditor extends HTMLElement {
     const hasConfiguredHumidityEntity = humiditySensors.some(([entityId]) => entityId === config.humidity_entity);
     const hasConfiguredTemperatureEntity = temperatureSensors.some(([entityId]) => entityId === config.temperature_entity);
     const hasConfiguredDewPointEntity = dewPointSensors.some(([entityId]) => entityId === config.dew_point_entity);
+    const hasConfiguredWindSpeedEntity = windSpeedSensors.some(([entityId]) => entityId === config.wind_speed_entity);
+    const hasConfiguredWindDirectionEntity = windDirectionSensors.some(([entityId]) => entityId === config.wind_direction_entity);
     const hasConfiguredUvIndexEntity = uvIndexSensors.some(([entityId]) => entityId === config.uv_index_entity);
     const configuredOption = config.entity && !hasConfiguredEntity
       ? `<option value="${_wwEscape(config.entity)}" selected>${_wwEscape(config.entity)}</option>`
@@ -3835,6 +3976,12 @@ class RadarWiseCardEditor extends HTMLElement {
       : "";
     const configuredDewPointOption = config.dew_point_entity && !hasConfiguredDewPointEntity && isRadarWiseDewPointEntity(config.dew_point_entity, this._hass?.states?.[config.dew_point_entity])
       ? `<option value="${_wwEscape(config.dew_point_entity)}" selected>${_wwEscape(config.dew_point_entity)}</option>`
+      : "";
+    const configuredWindSpeedOption = config.wind_speed_entity && !hasConfiguredWindSpeedEntity && isRadarWiseWindSpeedEntity(config.wind_speed_entity, this._hass?.states?.[config.wind_speed_entity])
+      ? `<option value="${_wwEscape(config.wind_speed_entity)}" selected>${_wwEscape(config.wind_speed_entity)}</option>`
+      : "";
+    const configuredWindDirectionOption = config.wind_direction_entity && !hasConfiguredWindDirectionEntity && isRadarWiseWindDirectionEntity(config.wind_direction_entity, this._hass?.states?.[config.wind_direction_entity])
+      ? `<option value="${_wwEscape(config.wind_direction_entity)}" selected>${_wwEscape(config.wind_direction_entity)}</option>`
       : "";
     const configuredAirQualityOption = this._configuredSensorOption(config.air_quality_entity, airQualitySensors, isRadarWiseAirQualityEntity);
     const configuredUvIndexOption = config.uv_index_entity && !hasConfiguredUvIndexEntity && isRadarWiseUvIndexEntity(config.uv_index_entity, this._hass?.states?.[config.uv_index_entity])
@@ -3852,6 +3999,8 @@ class RadarWiseCardEditor extends HTMLElement {
     const temperatureOptions = this._sensorOptions(temperatureSensors, config.temperature_entity);
     const humidityOptions = this._sensorOptions(humiditySensors, config.humidity_entity);
     const dewPointOptions = this._sensorOptions(dewPointSensors, config.dew_point_entity);
+    const windSpeedOptions = this._sensorOptions(windSpeedSensors, config.wind_speed_entity);
+    const windDirectionOptions = this._sensorOptions(windDirectionSensors, config.wind_direction_entity);
     const airQualityOptions = this._sensorOptions(airQualitySensors, config.air_quality_entity);
     const uvIndexOptions = this._sensorOptions(uvIndexSensors, config.uv_index_entity);
     const pollenOptions = this._sensorOptions(pollenSensors, config.pollen_entity);
@@ -3930,7 +4079,23 @@ class RadarWiseCardEditor extends HTMLElement {
               ${dewPointOptions}
             </select>
           </label>
-          <div class="hint">RadarWise reads an existing Home Assistant weather entity and calls Home Assistant's forecast service. Use local temperature, humidity, or dew point sensors when your weather entity differs from the spot you care about.</div>
+          <div class="grid" style="margin-top:10px">
+            <label>Wind speed entity
+              <select id="wind_speed_entity">
+                <option value="">Auto from weather entity</option>
+                ${configuredWindSpeedOption}
+                ${windSpeedOptions}
+              </select>
+            </label>
+            <label>Wind direction entity
+              <select id="wind_direction_entity">
+                <option value="">Auto from weather entity</option>
+                ${configuredWindDirectionOption}
+                ${windDirectionOptions}
+              </select>
+            </label>
+          </div>
+          <div class="hint">RadarWise reads an existing Home Assistant weather entity and calls Home Assistant's forecast service. Use local temperature, humidity, dew point, wind speed, or wind direction sensors when your weather entity differs from the spot you care about.</div>
         </div>
         <div class="section">
           <div class="section-title">Environment sensors</div>
@@ -4277,7 +4442,7 @@ class RadarWiseCardEditor extends HTMLElement {
         </div>
       </div>
     `;
-    ["entity", "temperature_entity", "humidity_entity", "dew_point_entity", "air_quality_entity", "uv_index_entity", "pollen_entity", "tree_pollen_entity", "grass_pollen_entity", "weed_pollen_entity", "mold_pollen_entity", "environment_source", "country", "radar_provider", "radar_style", "radar_basemap", "radar_timeline", "title", "units", "theme_mode", "language", "time_format", "font_family", "density", "latitude", "longitude", "hourly_count", "forecast_count", "card_height", "card_max_height", "radar_zoom", "radar_speed"].forEach((id) => {
+    ["entity", "temperature_entity", "humidity_entity", "dew_point_entity", "wind_speed_entity", "wind_direction_entity", "air_quality_entity", "uv_index_entity", "pollen_entity", "tree_pollen_entity", "grass_pollen_entity", "weed_pollen_entity", "mold_pollen_entity", "environment_source", "country", "radar_provider", "radar_style", "radar_basemap", "radar_timeline", "title", "units", "theme_mode", "language", "time_format", "font_family", "density", "latitude", "longitude", "hourly_count", "forecast_count", "card_height", "card_max_height", "radar_zoom", "radar_speed"].forEach((id) => {
       this.shadowRoot.getElementById(id)?.addEventListener("change", (event) => this._setValue(id, event.target.value));
     });
     ["show_radar", "show_map_controls", "radar_controls", "show_warning_overlay", "show_animations", "show_timeline", "show_forecast", "show_forecast_summary", "show_environment", "show_custom_sensors", "timeline_autoscroll"].forEach((id) => {
