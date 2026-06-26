@@ -335,6 +335,31 @@ async def _fetch_vigicrues_station_options(lat: float, lon: float) -> list[dict]
     return options
 
 
+def _ensure_selected_stations_present(options: list[dict], existing: list[dict]) -> list[dict]:
+    """Make sure previously-selected stations are always selectable.
+
+    `_fetch_vigicrues_station_options` only returns stations within a fixed
+    50 km radius (top 20 results) of the *current* lat/lon. If the forecast
+    location changes, or the API/network is briefly unavailable, a
+    previously-saved station can fall outside that result set. When that
+    happens the SelectSelector silently can't show it as selected, even
+    though `current_codes` still contains its code - it just looks empty
+    in the UI. Re-inject any missing saved stations using their stored
+    name/river so they always remain a valid, selected option.
+    """
+    known_codes = {o["value"] for o in options}
+    for station in existing:
+        code = (station.get("code") or "").strip()
+        if not code or code in known_codes:
+            continue
+        name = station.get("name") or code
+        river = station.get("river") or ""
+        label = f"{name} ({river})" if river else name
+        options.append({"value": code, "label": f"{label} (saved)", "_name": name, "_river": river})
+        known_codes.add(code)
+    return options
+
+
 def _guess_defaults(hass: HomeAssistant) -> dict[str, str]:
     """Best-effort auto-detection of sensor entity IDs by name pattern."""
     guess: dict[str, str] = {}
@@ -1132,6 +1157,8 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return await self.async_step_pollen()
             if self._data.get(CONF_ENABLE_SOLAR_FORECAST):
                 return await self.async_step_solar_forecast()
+            if self._data.get(CONF_ENABLE_VIGICRUES):
+                return await self.async_step_vigicrues_station()
             return await self._next_v2_step()
 
         default_lat = getattr(self.hass.config, "latitude", 0.0) or 0.0
@@ -1195,6 +1222,8 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     return await self.async_step_pollen()
                 if self._data.get(CONF_ENABLE_SOLAR_FORECAST):
                     return await self.async_step_solar_forecast()
+                if self._data.get(CONF_ENABLE_VIGICRUES):
+                    return await self.async_step_vigicrues_station()
                 return await self._next_v2_step()
 
         existing_station = self._data.get(CONF_WU_STATION_ID, "")
@@ -1233,6 +1262,8 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return await self.async_step_pollen()
             if self._data.get(CONF_ENABLE_SOLAR_FORECAST):
                 return await self.async_step_solar_forecast()
+            if self._data.get(CONF_ENABLE_VIGICRUES):
+                return await self.async_step_vigicrues_station()
             return await self._next_v2_step()
 
         return self._show_step(
@@ -1262,6 +1293,8 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return back
             if self._data.get(CONF_ENABLE_SOLAR_FORECAST):
                 return await self.async_step_solar_forecast()
+            if self._data.get(CONF_ENABLE_VIGICRUES):
+                return await self.async_step_vigicrues_station()
             return await self._next_v2_step()
 
         return self._show_step(
@@ -1348,7 +1381,6 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         lat = self._data.get(CONF_FORECAST_LAT) or getattr(self.hass.config, "latitude", 0.0) or 0.0
         lon = self._data.get(CONF_FORECAST_LON) or getattr(self.hass.config, "longitude", 0.0) or 0.0
         options = await _fetch_vigicrues_station_options(lat, lon)
-        self._vigicrues_station_options = options
 
         # Pre-select previously chosen stations (migrate legacy single-code if needed)
         existing: list[dict] = self._data.get(CONF_VIGICRUES_STATIONS) or []
@@ -1356,6 +1388,8 @@ class WSStationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             legacy_code = (self._data.get(CONF_VIGICRUES_STATION_CODE) or "").strip()
             if legacy_code:
                 existing = [{"code": legacy_code}]
+        options = _ensure_selected_stations_present(options, existing)
+        self._vigicrues_station_options = options
         current_codes = [s["code"] for s in existing if s.get("code")]
 
         return self._show_step(
@@ -2866,7 +2900,6 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
             or 0.0
         )
         options = await _fetch_vigicrues_station_options(lat, lon)
-        self._vigicrues_station_options_opt = options
 
         # Pre-select previously chosen stations (migrate legacy single-code if needed)
         existing: list[dict] = self._opt.get(CONF_VIGICRUES_STATIONS) or g(CONF_VIGICRUES_STATIONS, []) or []
@@ -2876,6 +2909,8 @@ class WSStationOptionsFlowHandler(config_entries.OptionsFlow):
             ).strip()
             if legacy_code:
                 existing = [{"code": legacy_code}]
+        options = _ensure_selected_stations_present(options, existing)
+        self._vigicrues_station_options_opt = options
         current_codes = [s["code"] for s in existing if s.get("code")]
 
         return self.async_show_form(

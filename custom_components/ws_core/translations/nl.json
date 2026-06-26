@@ -34,16 +34,258 @@
           "indoor_temp": "Binnentemperatuursensor",
           "indoor_humidity": "Binnenluchtvochtigheidssensor",
           "indoor_co2": "Binnen-CO₂-sensor (ppm)",
+          "soil_moisture": "Bodemvochtigheidssensor (0-100% of 0-1 volumetrisch)",
+          "soil_temperature": "Bodemtemperatuursensor",
           "_go_back": "← Terug naar vorige stap"
         }
       },
       "location": {
         "title": "Locatie & klimaat",
-        "description": "Deze instellingen beïnvloeden drukreductie, Zambretti-windpatronen en seizoenslogica.",
+        "description": "Deze instellingen beïnvloeden drukreductie, Zambretti-windpatronen en seizoenslogica. De hoogte is vooraf ingevuld op basis van je Home Assistant-locatie.",
         "data": {
           "hemisphere": "Halfrond",
           "climate_region": "Klimaatregio (voor Zambretti-windweging)",
           "elevation_m": "Stationshoogte boven zeeniveau",
+          "_go_back": "← Terug naar vorige stap"
+        }
+      },
+      "display": {
+        "title": "Weergave-eenheden",
+        "description": "Kies hoe sensorwaarden worden weergegeven. 'Automatisch' volgt het eenheidssysteem van je Home Assistant. Afzonderlijke eenheidsoverschrijvingen hebben voorrang op de voorinstelling.",
+        "data": {
+          "units_mode": "Eenheidsvoorinstelling",
+          "temp_unit": "Temperatuureenheid",
+          "wind_unit": "Windsnelheidseenheid",
+          "pressure_unit": "Drukeenheid",
+          "rain_unit": "Neerslagseenheid",
+          "distance_unit": "Afstandseenheid",
+          "altitude_unit": "Hoogte-eenheid",
+          "_go_back": "← Terug naar vorige stap"
+        }
+      },
+      "forecast": {
+        "title": "7-daagse verwachting",
+        "description": "Weather Station Core kan een 7-daagse verwachting ophalen. Coördinaten zijn standaard je Home Assistant-locatie.",
+        "data": {
+          "forecast_enabled": "Verwachting inschakelen",
+          "forecast_interval_min": "Verversingsinterval verwachting",
+          "forecast_lat": "Breedtegraad verwachting",
+          "forecast_lon": "Lengtegraad verwachting",
+          "forecast_provider": "Weergegevensleverancier",
+          "_go_back": "← Terug naar vorige stap"
+        },
+        "data_description": {
+          "forecast_provider": "Weergegevensbron. Open-Meteo en Met.no zijn gratis zonder API-sleutel. NWS/NOAA is gratis maar alleen voor de VS. OpenWeatherMap, Pirate Weather en Météo France vereisen een gratis API-sleutel. 'Home Assistant weereentiteit' gebruikt een bestaande weather.*-entiteit - geen extra API-aanroepen."
+        }
+      },
+      "forecast_entity": {
+        "title": "Home Assistant weereentiteit",
+        "description": "Selecteer de Home Assistant weereentiteit die als weergegevensleverancier wordt gebruikt. Er worden geen externe API-aanroepen gedaan.",
+        "data": {
+          "forecast_entity": "Weereentiteit",
+          "_go_back": "← Terug naar vorige stap"
+        },
+        "data_description": {
+          "forecast_entity": "Kies een willekeurige weather.*-entiteit die al is ingesteld in Home Assistant (bijv. weather.home, weather.forecast_home)."
+        }
+      },
+      "forecast_api_key": {
+        "title": "API-sleutel weergegevensleverancier",
+        "description": "Voer de API-sleutel in voor {provider_name}. [Haal je gratis API-sleutel op]({api_url}).",
+        "data": {
+          "forecast_api_key": "API-sleutel",
+          "_go_back": "← Terug naar vorige stap"
+        },
+        "data_description": {
+          "forecast_api_key": "Plak hier je API-sleutel. Deze wordt veilig opgeslagen in je HA-configuratie."
+        }
+      },
+      "alerts": {
+        "title": "Waarschuwingen & geavanceerde opties",
+        "description": "Configureer waarschuwingsdrempels en verfijn algoritmeparameters. De standaardwaarden werken goed voor de meeste stations.",
+        "data": {
+          "thresh_wind_gust_ms": "Drempelwaarde windvlaagwaarschuwing",
+          "thresh_rain_rate_mmph": "Drempelwaarde regenwaarschuwing",
+          "thresh_freeze_c": "Drempelwaarde vorswaarschuwing",
+          "staleness_s": "Time-out sensorverouderd",
+          "rain_filter_alpha": "Kalman-filterafvlakking regenintensiteit",
+          "pressure_trend_window_h": "Venster luchtdruktrend",
+          "_go_back": "← Terug naar vorige stap"
+        }
+      },
+      "features": {
+        "title": "Functies",
+        "description": "Kies welke sensoren je wilt inschakelen. Elke sensor kan afzonderlijk worden in- of uitgeschakeld. Je kunt dit later wijzigen via Configureren.",
+        "data": {
+          "enable_display_sensors": "Weergavesensoren (luchtvochtigheidsniveau, UV-niveau, luchtdruktrend, stationsgezondheid)",
+          "enable_fire_risk_score": "Brandrisicoscore",
+          "enable_sea_temp": "Zeewateroppervlaktetemperatuur (Open-Meteo Marine API)",
+          "enable_wunderground": "Weather Underground upload (deel gegevens met Weather Underground PWS)",
+          "enable_air_quality": "Luchtkwaliteitsindex (Open-Meteo, gratis, geen API-sleutel)",
+          "enable_pollen": "Pollenniveaus (Open-Meteo, gratis, geen API-sleutel)",
+          "enable_moon": "Maanfase & verlichting",
+          "enable_solar_forecast": "Zonnevermogen-voorspelling (forecast.solar, gratis)",
+          "_go_back": "← Terug naar vorige stap",
+          "enable_fog": "Mistkans-sensor",
+          "enable_thunderstorm_risk": "Onweersrisico-sensor (heuristisch; veel fout-positieven)",
+          "enable_comfort_indices": "Comfortindexen (hitte-index, gevoelskou, humidex, VPD, delta-T, windloop, koude-uren, bewolking)",
+          "enable_vigilance_meteo": "Meteo-Vigilance-waarschuwingen (Frankrijk, geen API-sleutel)",
+          "enable_vigicrues": "Vigicrues-rivierpeil (Frankrijk, geen API-sleutel)",
+          "enable_diagnostics": "Stationsdiagnose (sensordrift, consistentie, kwaliteitsvlaggen, voorspellingsvaardigheid/-overeenkomst, zonne-luxfactor, 30-daagse klimatologie)",
+          "enable_fwi_components": "FWI-componenten (FFMC, DMC, DC, ISI, BUI - vereist Brandrisico ingeschakeld)",
+          "enable_advanced_sensors": "Geavanceerde/afgeleide sensoren (Zambretti-nummer, ET₀ per uur, afgevlakte windrichting)",
+          "enable_nowcast": "Neerslag-nowcast (minuten tot regen begint/stopt, via Open-Meteo, geen API-sleutel)",
+          "enable_degree_days": "Graaddagen (HDD, CDD, GDD) en bladnatheid",
+          "enable_lightning": "Bliksemdetectie (compatibel met WH57, AS3935 of elke bliksemteller + afstandssensor)",
+          "enable_indoor": "Binnensensoren (temperatuur, luchtvochtigheid, CO₂-verschil)",
+          "enable_soil": "Bodemmonitoring (vochtigheid, temperatuur, irrigatiebehoefte)",
+          "enable_weathercloud": "Weathercloud upload",
+          "enable_pwsweather": "PWSWeather upload",
+          "enable_wow": "WOW (UK Met Office) upload",
+          "enable_awekas": "AWEKAS upload",
+          "enable_owm_stations": "OpenWeatherMap Stations upload",
+          "enable_windy": "Windy.com upload",
+          "enable_mqtt": "MQTT Discovery herpublicatie (publiceer alle afgeleide sensoren naar MQTT-broker voor Node-RED / externe afnemers)"
+        },
+        "data_description": {
+          "enable_degree_days": "Berekening van groei-, verwarmings- en koelgraaddagen plus een schatting van de bladnatheid, nuttig voor landbouw en energiebeheer."
+        }
+      },
+      "weathercloud": {
+        "title": "Weathercloud upload",
+        "description": "{info}",
+        "data": {
+          "wc_station_id": "Station-ID",
+          "wc_api_key": "API-sleutel",
+          "wc_interval_min": "Uploadinterval",
+          "_go_back": "← Terug naar vorige stap"
+        }
+      },
+      "pwsweather": {
+        "title": "PWSWeather upload",
+        "description": "{info}",
+        "data": {
+          "pws_station_id": "Station-ID",
+          "pws_api_key": "API-sleutel",
+          "pws_interval_min": "Uploadinterval",
+          "_go_back": "← Terug naar vorige stap"
+        }
+      },
+      "wow": {
+        "title": "WOW (UK Met Office) upload",
+        "description": "{info}",
+        "data": {
+          "wow_site_id": "Site-ID",
+          "wow_auth_key": "Authenticatiesleutel",
+          "wow_interval_min": "Uploadinterval",
+          "_go_back": "← Terug naar vorige stap"
+        }
+      },
+      "awekas": {
+        "title": "AWEKAS upload",
+        "description": "{info}",
+        "data": {
+          "awekas_username": "Gebruikersnaam",
+          "awekas_password": "Wachtwoord",
+          "awekas_interval_min": "Uploadinterval",
+          "_go_back": "← Terug naar vorige stap"
+        }
+      },
+      "owm_stations": {
+        "title": "OpenWeatherMap Stations upload",
+        "description": "{info}",
+        "data": {
+          "owm_stations_api_key": "API-sleutel",
+          "owm_stations_station_id": "Station-ID",
+          "owm_stations_interval_min": "Uploadinterval",
+          "_go_back": "← Terug naar vorige stap"
+        }
+      },
+      "windy": {
+        "title": "Windy.com upload",
+        "description": "{info}",
+        "data": {
+          "windy_api_key": "API-sleutel",
+          "windy_station_id": "Station-ID (optioneel)",
+          "windy_interval_min": "Uploadinterval",
+          "_go_back": "← Terug naar vorige stap"
+        }
+      },
+      "mqtt_config": {
+        "title": "MQTT Discovery-configuratie",
+        "description": "{info}",
+        "data": {
+          "mqtt_discovery_prefix": "Discovery-prefix (standaard: homeassistant)",
+          "mqtt_state_prefix": "Statustopic-prefix (standaard: ws_core)",
+          "mqtt_interval_min": "Publicatieinterval",
+          "_go_back": "← Terug naar vorige stap"
+        }
+      },
+      "sea_temp": {
+        "title": "Locatie zeewatertemperatuur",
+        "description": "Coördinaten voor het opvragen van de zeewateroppervlaktetemperatuur. Standaard je Home Assistant-locatie. Overschrijf dit als je thuis landinwaarts ligt of een specifiek kustpunt wilt.",
+        "data": {
+          "sea_temp_lat": "Breedtegraad zeewatertemperatuur",
+          "sea_temp_lon": "Lengtegraad zeewatertemperatuur",
+          "_go_back": "← Terug naar vorige stap"
+        }
+      },
+      "wunderground": {
+        "title": "Weather Underground upload",
+        "description": "Upload waarnemingen naar je persoonlijk weerstation op Weather Underground. Je hebt een station-ID en stationcijfercode (wachtwoord) nodig van je Weather Underground-account (wunderground.com/member/devices). Laat beide velden leeg om over te slaan en later te configureren.",
+        "data": {
+          "wu_station_id": "Station-ID (bijv. IATHEN123) - laat leeg om over te slaan",
+          "wu_api_key": "Stationcijfercode (wachtwoord) - laat leeg om over te slaan",
+          "wu_interval_min": "Uploadinterval",
+          "_go_back": "← Terug naar vorige stap"
+        }
+      },
+      "air_quality": {
+        "title": "Luchtkwaliteit",
+        "description": "Luchtkwaliteitsgegevens (PM2,5, PM10, NO₂, ozon) van Open-Meteo. Gratis, geen API-sleutel vereist. Gebruikt de breedtegraad/lengtegraad van de verwachting.",
+        "data": {
+          "aqi_interval_min": "Verversingsinterval",
+          "_go_back": "← Terug naar vorige stap"
+        }
+      },
+      "pollen": {
+        "title": "Pollengegevens",
+        "description": "Pollengegevens worden opgehaald van de Open-Meteo Air Quality API (gratis, geen sleutel). Bevat els, berk, gras, bijvoet, olijf en ambrosia. Updates lopen mee met de AQI-ophaling.",
+        "data": {
+          "_go_back": "← Terug naar vorige stap"
+        }
+      },
+      "solar_forecast": {
+        "title": "Zonne-voorspelling",
+        "description": "{info}",
+        "data": {
+          "solar_peak_kw": "Piekzonnestroom (kWp)",
+          "solar_panel_azimuth": "Azimut zonnepanelen",
+          "solar_panel_tilt": "Hellingshoek zonnepanelen",
+          "solar_interval_min": "Verversingsinterval",
+          "_go_back": "← Terug naar vorige stap"
+        }
+      },
+      "vigicrues_station": {
+        "title": "Vigicrues-stations",
+        "description": "Kies een of meer hydrografische meetstations, of laat leeg om het dichtstbijzijnde automatisch te detecteren.",
+        "data": {
+          "vigicrues_stations": "Hydrografische meetstations",
+          "_go_back": "← Terug naar vorige stap"
+        },
+        "data_description": {
+          "vigicrues_stations": "Selecteer een of meer stations. Laat leeg om het dichtstbijzijnde station automatisch te detecteren."
+        }
+      },
+      "cwop": {
+        "title": "CWOP (APRS) upload",
+        "description": "{info}",
+        "data": {
+          "cwop_callsign": "CWOP / APRS-roepnaam",
+          "cwop_passcode": "Toegangscode (-1 voor CWOP-ID's)",
+          "cwop_server": "APRS-IS-server",
+          "cwop_port": "Poort",
+          "cwop_interval_min": "Uploadinterval",
           "_go_back": "← Terug naar vorige stap"
         }
       }
@@ -52,12 +294,356 @@
       "entity_not_found": "Entiteit niet gevonden in Home Assistant.",
       "not_numeric": "Entiteitsstatus is geen numerieke waarde.",
       "required": "Dit veld is verplicht.",
+      "wrong_sensor_type": "De device_class van deze entiteit komt niet overeen met het verwachte sensortype. Kies een sensor met de juiste device_class, of gebruik een sensor zonder device_class.",
       "elevation_out_of_range": "Hoogte moet tussen -500 m en 9000 m liggen.",
       "wind_gust_too_high": "Windvlaagdrempel overschrijdt het wereldrecord.",
       "temp_out_of_range": "Temperatuur ligt buiten het fysiek mogelijke bereik.",
       "invalid_api_key": "Ongeldige API-sleutel of inloggegevens geweigerd",
-      "cannot_connect": "Kan geen verbinding maken met API",
+      "cannot_connect": "Kan geen verbinding maken met API - controleer het netwerk en probeer opnieuw",
       "station_not_found": "Weather Underground station-ID niet gevonden"
+    },
+    "create_entry": {
+      "default": "Installatie voltooid! Je lokale voorspellingen en intelligente weersensoren worden nu gegenereerd.\n\n**Volgende stappen:**\n1. Installeer het verbeterde dashboard (uit de dashboards/-map in de GitHub-repository)\n2. Stel een regenwaarsschuwingsautomatisering in (uit de blueprints/-map)"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kerninstellingen",
+        "description": "Identiteit, eenheden, verwachting, waarschuwingen en kalibratie.",
+        "data": {
+          "prefix": "Entiteit-voorvoegsel",
+          "hemisphere": "Halfrond",
+          "climate_region": "Klimaatregio",
+          "elevation_m": "Stationshoogte",
+          "units_mode": "Eenheidsvoorinstelling",
+          "temp_unit": "Temperatuureenheid",
+          "wind_unit": "Windsnelheidseenheid",
+          "pressure_unit": "Drukeenheid",
+          "rain_unit": "Neerslagseenheid",
+          "distance_unit": "Afstandseenheid",
+          "altitude_unit": "Hoogte-eenheid",
+          "forecast_enabled": "Verwachting inschakelen",
+          "forecast_interval_min": "Verversingsinterval verwachting",
+          "forecast_lat": "Breedtegraad verwachting",
+          "forecast_lon": "Lengtegraad verwachting",
+          "forecast_provider": "Weergegevensleverancier",
+          "forecast_api_key": "API-sleutel verwachting",
+          "forecast_entity": "HA weereentiteit (voor Home Assistant-leverancier)",
+          "thresh_wind_gust_ms": "Drempelwaarde windvlaagwaarschuwing",
+          "thresh_rain_rate_mmph": "Drempelwaarde regenwaarschuwing",
+          "thresh_freeze_c": "Drempelwaarde vorswaarschuwing",
+          "staleness_s": "Time-out sensorverouderd",
+          "rain_filter_alpha": "Filterafvlakking regenintensiteit",
+          "pressure_trend_window_h": "Venster luchtdruktrend",
+          "cal_temp_c": "Kalibratie-offset temperatuur",
+          "cal_humidity": "Kalibratie-offset luchtvochtigheid",
+          "cal_pressure_hpa": "Kalibratie-offset luchtdruk",
+          "cal_wind_ms": "Kalibratie-offset windsnelheid",
+          "enable_display_sensors": "Weergavesensoren (niveaus, trends, gezondheid)",
+          "enable_fire_risk_score": "Brandrisicoscore",
+          "enable_sea_temp": "Zeewateroppervlaktetemperatuur",
+          "sea_temp_lat": "Breedtegraad zeewatertemperatuur",
+          "sea_temp_lon": "Lengtegraad zeewatertemperatuur",
+          "enable_wunderground": "Weather Underground upload",
+          "wu_station_id": "WU station-ID",
+          "wu_api_key": "WU stationcijfercode (wachtwoord)",
+          "wu_interval_min": "WU uploadinterval"
+        },
+        "data_description": {
+          "prefix": "Entiteit-voorvoegsel",
+          "hemisphere": "Halfrond",
+          "climate_region": "Klimaatregio",
+          "elevation_m": "Stationshoogte",
+          "units_mode": "Stelt een basiseenheidssysteem in. Afzonderlijke eenheidsoverschrijvingen hieronder hebben voorrang.",
+          "temp_unit": "Temperatuurweergave overschrijven. 'Automatisch' volgt je HA-eenheidssysteem.",
+          "wind_unit": "Windsnelheidsweergave overschrijven. 'Automatisch' volgt je HA-eenheidssysteem.",
+          "pressure_unit": "Drukweergave overschrijven. 'Automatisch' volgt je HA-eenheidssysteem.",
+          "rain_unit": "Neerslagweergave overschrijven. 'Automatisch' volgt je HA-eenheidssysteem.",
+          "distance_unit": "Afstandsweergave overschrijven (bijv. bliksemafstand). 'Automatisch' volgt je HA-eenheidssysteem.",
+          "altitude_unit": "Hoogteweergave overschrijven (bijv. wolkenbasis, vriesniveau). 'Automatisch' volgt je HA-eenheidssysteem.",
+          "forecast_enabled": "Verwachting inschakelen",
+          "forecast_interval_min": "Verversingsinterval verwachting",
+          "forecast_lat": "Breedtegraad verwachting",
+          "forecast_lon": "Lengtegraad verwachting",
+          "forecast_provider": "Weergegevensbron. Open-Meteo en Met.no zijn gratis zonder API-sleutel. NWS/NOAA is gratis maar alleen voor de VS. OpenWeatherMap, Pirate Weather en Météo France vereisen een gratis API-sleutel. 'Home Assistant weereentiteit' gebruikt een bestaande weather.*-entiteit - geen extra API-aanroepen.",
+          "forecast_api_key": "API-sleutel voor de geselecteerde weergegevensleverancier (vereist voor OpenWeatherMap, Pirate Weather en Météo France).",
+          "forecast_entity": "Vereist wanneer 'Home Assistant weereentiteit' is geselecteerd. Kies een willekeurige weather.*-entiteit die al is ingesteld in Home Assistant.",
+          "thresh_wind_gust_ms": "Drempelwaarde windvlaagwaarschuwing",
+          "thresh_rain_rate_mmph": "Drempelwaarde regenwaarschuwing",
+          "thresh_freeze_c": "Drempelwaarde vorswaarschuwing",
+          "staleness_s": "Time-out sensorverouderd",
+          "rain_filter_alpha": "Filterafvlakking regenintensiteit",
+          "pressure_trend_window_h": "Venster luchtdruktrend",
+          "cal_temp_c": "Kalibratie-offset temperatuur",
+          "cal_humidity": "Kalibratie-offset luchtvochtigheid",
+          "cal_pressure_hpa": "Kalibratie-offset luchtdruk",
+          "cal_wind_ms": "Kalibratie-offset windsnelheid"
+        }
+      },
+      "forecast_api_key_opt": {
+        "title": "API-sleutel weergegevensleverancier",
+        "description": "Voer de API-sleutel in voor {provider_name}. [Haal je gratis API-sleutel op]({api_url}).",
+        "data": {
+          "forecast_api_key": "API-sleutel"
+        },
+        "data_description": {
+          "forecast_api_key": "Plak hier je API-sleutel."
+        }
+      },
+      "required_sources_opt": {
+        "title": "Vereiste bronsensoren",
+        "description": "Werk de bronentiteiten bij die door Weather Station Core worden gebruikt. Deze koppelingen kunnen worden gewijzigd bij hardwarevervanging.",
+        "data": {
+          "temperature": "Temperatuursensor",
+          "humidity": "Luchtvochtigheidssensor",
+          "pressure": "Luchtdruksensor",
+          "wind_speed": "Windsnelheidssensor",
+          "wind_gust": "Windvlaagsensor",
+          "wind_direction": "Windrichtingssensor (graden)",
+          "rain_total": "Cumulatieve neerslagsensor"
+        }
+      },
+      "optional_sources_opt": {
+        "title": "Optionele bronsensoren",
+        "description": "Werk optionele bronentiteiten bij. Wis een veld om die optionele bron niet meer te gebruiken.",
+        "data": {
+          "illuminance": "Lichtsterkte / zonnestraling (lux)",
+          "uv_index": "UV-index",
+          "dew_point": "Dauwpunt (indien geleverd door station; anders berekend)",
+          "battery": "Batterijniveau station (%)",
+          "solar_radiation": "Zonnestraling (W/m², voor Penman-Monteith ET₀)",
+          "lightning_count": "Bliksemteller (cumulatief, bijv. WH57 of AS3935)",
+          "lightning_dist": "Dichtstbijzijnde blikseminslag (km)",
+          "lightning_azimuth": "Azimut blikseminslag (graden)",
+          "indoor_temp": "Binnentemperatuursensor",
+          "indoor_humidity": "Binnenluchtvochtigheidssensor",
+          "indoor_co2": "Binnen-CO₂-sensor (ppm)",
+          "soil_moisture": "Bodemvochtigheidssensor (0-100% of 0-1 volumetrisch)",
+          "soil_temperature": "Bodemtemperatuursensor"
+        }
+      },
+      "features_opt": {
+        "title": "Functies",
+        "description": "Schakel berekende sensoren in en beheer gegevensbronopties. Uploadservice-instellingen staan op de volgende pagina.",
+        "data": {
+          "enable_display_sensors": "Weergavesensoren (niveaus, trends, gezondheid)",
+          "enable_fire_risk_score": "Brandrisicoscore",
+          "enable_sea_temp": "Zeewateroppervlaktetemperatuur",
+          "enable_air_quality": "Luchtkwaliteitsindex (Open-Meteo)",
+          "enable_pollen": "Pollenniveaus (Open-Meteo, gratis, geen API-sleutel)",
+          "enable_moon": "Maanfase & verlichting",
+          "enable_solar_forecast": "Zonne-PV-voorspelling (forecast.solar)",
+          "enable_fog": "Mistkans-sensor",
+          "enable_thunderstorm_risk": "Onweersrisico-sensor (heuristisch; veel fout-positieven)",
+          "enable_comfort_indices": "Comfortindexen (hitte-index, gevoelskou, humidex, VPD, delta-T, windloop, koude-uren, bewolking)",
+          "enable_vigilance_meteo": "Meteo-Vigilance-waarschuwingen (Frankrijk, geen API-sleutel)",
+          "enable_vigicrues": "Vigicrues-rivierpeil (Frankrijk, geen API-sleutel)",
+          "enable_diagnostics": "Stationsdiagnose (drift, consistentie, kwaliteit, voorspellingsvaardigheid)",
+          "enable_fwi_components": "FWI-componenten (vereist Brandrisico)",
+          "enable_advanced_sensors": "Geavanceerde/afgeleide sensoren",
+          "enable_nowcast": "Neerslag-nowcast (minuten tot regen)",
+          "enable_degree_days": "Graaddagen (HDD, CDD, GDD) en bladnatheid",
+          "enable_lightning": "Bliksemdetectiesensoren",
+          "enable_indoor": "Binnensensoren (temperatuur, luchtvochtigheid, CO₂)",
+          "enable_soil": "Bodemsensoren (vochtigheid, temperatuur, irrigatiebehoefte)"
+        },
+        "data_description": {
+          "enable_display_sensors": "Weergavesensoren (niveaus, trends, gezondheid)",
+          "enable_fire_risk_score": "Brandrisicoscore",
+          "enable_sea_temp": "Zeewateroppervlaktetemperatuur",
+          "enable_air_quality": "Luchtkwaliteitsindex (Open-Meteo)",
+          "enable_pollen": "Pollenniveaus (Open-Meteo)",
+          "enable_moon": "Maanfase & verlichting",
+          "enable_solar_forecast": "Zonne-PV-voorspelling (forecast.solar)",
+          "enable_fog": "Schakelt mistkans-sensor in (dauwpunt-depressiemodel)",
+          "enable_thunderstorm_risk": "Schakelt onweersrisico-sensor in (oppervlakte-heuristiek)",
+          "enable_comfort_indices": "Schakelt comfortindexen en agrometeorologische sensoren in",
+          "enable_vigilance_meteo": "Schakelt departementale weerwaarschuwingen van Météo-France in (Vigilance Météo)",
+          "enable_vigicrues": "Schakelt het dichtstbijzijnde rivierpeil van Vigicrues in (Hub'Eau v2)",
+          "enable_diagnostics": "Sensordrift, cross-sensorconsistentie, kwaliteitsvlaggen, voorspellingsvaardigheid/-overeenkomst, zonne-luxfactor, 30-daagse klimatologie",
+          "enable_fwi_components": "FWI-tussencodes (FFMC/DMC/DC/ISI/BUI). Vereist Brandrisico ingeschakeld om gegevens te produceren",
+          "enable_advanced_sensors": "Zambretti-nummer (numerieke vorm), uurlijkse ET₀, afgevlakte windrichting",
+          "enable_nowcast": "Open-Meteo 15-minuten neerslag-nowcast: minuten tot regen begint/stopt, totaal volgend uur, intensiteit. Geen API-sleutel"
+        }
+      },
+      "indoor_rooms_opt": {
+        "title": "Binnenruimte-sensoren",
+        "description": "Selecteer per ruimte een temperatuursensor om een aparte binnen/buiten-temperatuurverschilsensor voor elke ruimte te krijgen.",
+        "data": {
+          "indoor_rooms": "Ruimtetemperatuursensoren"
+        },
+        "data_description": {
+          "indoor_rooms": "Voor elke geselecteerde sensor wordt een aparte verschilsensor aangemaakt (bijv. WS Temp Delta - Slaapkamer). Laat leeg om alleen de enkele binnensensor van de vorige stap te gebruiken."
+        }
+      },
+      "upload_services_opt": {
+        "title": "Uploadservices",
+        "description": "Schakel het delen van je weergegevens met externe diensten in. Er verschijnen substappen voor elke ingeschakelde service.",
+        "data": {
+          "enable_wunderground": "Weather Underground upload",
+          "enable_weathercloud": "Weathercloud upload",
+          "enable_pwsweather": "PWSWeather upload",
+          "enable_wow": "WOW (UK Met Office) upload",
+          "enable_awekas": "AWEKAS upload",
+          "enable_owm_stations": "OpenWeatherMap Stations upload",
+          "enable_windy": "Windy.com upload",
+          "enable_cwop": "CWOP / APRS upload",
+          "enable_mqtt": "MQTT Discovery herpublicatie"
+        }
+      },
+      "sea_temp_opt": {
+        "title": "Zeewateroppervlaktetemperatuur",
+        "data": {
+          "sea_temp_lat": "Breedtegraad zeewatertemperatuur",
+          "sea_temp_lon": "Lengtegraad zeewatertemperatuur"
+        }
+      },
+      "wunderground_opt": {
+        "title": "Weather Underground",
+        "description": "{info}",
+        "data": {
+          "wu_station_id": "Station-ID",
+          "wu_api_key": "Stationcijfercode (wachtwoord)",
+          "wu_interval_min": "Uploadinterval"
+        }
+      },
+      "air_quality_opt": {
+        "title": "Luchtkwaliteitsinstellingen",
+        "description": "Open-Meteo Air Quality API. Gratis, geen sleutel vereist.",
+        "data": {
+          "aqi_interval_min": "Verversingsinterval"
+        }
+      },
+      "pollen_opt": {
+        "title": "Polleninstellingen",
+        "description": "Pollengegevens via de Open-Meteo Air Quality API (gratis, geen sleutel). Loopt mee met de AQI-ophaling.",
+        "data": {}
+      },
+      "solar_forecast_opt": {
+        "title": "Instellingen zonne-voorspelling",
+        "description": "{info}",
+        "data": {
+          "solar_peak_kw": "Piekzonnestroom (kWp)",
+          "solar_panel_azimuth": "Azimut zonnepanelen",
+          "solar_panel_tilt": "Hellingshoek zonnepanelen",
+          "solar_interval_min": "Verversingsinterval"
+        }
+      },
+      "vigicrues_station_opt": {
+        "title": "Vigicrues-stations",
+        "description": "Kies een of meer hydrografische meetstations, of laat leeg om het dichtstbijzijnde automatisch te detecteren.",
+        "data": {
+          "vigicrues_stations": "Hydrografische meetstations"
+        },
+        "data_description": {
+          "vigicrues_stations": "Selecteer een of meer stations. Laat leeg om het dichtstbijzijnde station automatisch te detecteren."
+        }
+      },
+      "weathercloud_opt": {
+        "title": "Weathercloud upload",
+        "data": {
+          "wc_station_id": "Station-ID",
+          "wc_api_key": "API-sleutel",
+          "wc_interval_min": "Uploadinterval"
+        }
+      },
+      "pwsweather_opt": {
+        "title": "PWSWeather upload",
+        "data": {
+          "pws_station_id": "Station-ID",
+          "pws_api_key": "API-sleutel",
+          "pws_interval_min": "Uploadinterval"
+        }
+      },
+      "wow_opt": {
+        "title": "WOW (UK Met Office) upload",
+        "data": {
+          "wow_site_id": "Site-ID",
+          "wow_auth_key": "Authenticatiesleutel",
+          "wow_interval_min": "Uploadinterval"
+        }
+      },
+      "awekas_opt": {
+        "title": "AWEKAS upload",
+        "data": {
+          "awekas_username": "Gebruikersnaam",
+          "awekas_password": "Wachtwoord",
+          "awekas_interval_min": "Uploadinterval"
+        }
+      },
+      "owm_stations_opt": {
+        "title": "OpenWeatherMap Stations upload",
+        "data": {
+          "owm_stations_api_key": "API-sleutel",
+          "owm_stations_station_id": "Station-ID",
+          "owm_stations_interval_min": "Uploadinterval"
+        }
+      },
+      "windy_opt": {
+        "title": "Windy.com upload",
+        "data": {
+          "windy_api_key": "API-sleutel",
+          "windy_station_id": "Station-ID (optioneel)",
+          "windy_interval_min": "Uploadinterval"
+        }
+      },
+      "cwop_opt": {
+        "title": "CWOP (APRS) upload",
+        "data": {
+          "cwop_callsign": "CWOP / APRS-roepnaam",
+          "cwop_passcode": "Toegangscode (-1 voor CWOP-ID's)",
+          "cwop_server": "APRS-IS-server",
+          "cwop_port": "Poort",
+          "cwop_interval_min": "Uploadinterval"
+        }
+      },
+      "mqtt_config_opt": {
+        "title": "MQTT Discovery-configuratie",
+        "data": {
+          "mqtt_discovery_prefix": "Discovery-prefix",
+          "mqtt_state_prefix": "Statustopic-prefix",
+          "mqtt_interval_min": "Publicatieinterval"
+        }
+      }
+    },
+    "error": {
+      "entity_not_found": "Entiteit niet gevonden in Home Assistant.",
+      "not_numeric": "Entiteitsstatus is geen numerieke waarde.",
+      "required": "Dit veld is verplicht.",
+      "wrong_sensor_type": "De device_class van deze entiteit komt niet overeen met het verwachte sensortype. Kies een sensor met de juiste device_class, of gebruik een sensor zonder device_class.",
+      "elevation_out_of_range": "Hoogte moet tussen -500 m en 9000 m liggen.",
+      "wind_gust_too_high": "Windvlaagdrempel overschrijdt het wereldrecord.",
+      "temp_out_of_range": "Temperatuur ligt buiten het fysiek mogelijke bereik.",
+      "invalid_api_key": "Ongeldige API-sleutel of inloggegevens geweigerd",
+      "cannot_connect": "Kan geen verbinding maken met API - controleer het netwerk en probeer opnieuw",
+      "station_not_found": "Weather Underground station-ID niet gevonden"
+    }
+  },
+  "issues": {
+    "missing_source_entities": {
+      "title": "Bronentiteiten weerstation niet gevonden",
+      "description": "De volgende bronsensor-entiteiten konden niet worden gevonden in Home Assistant: {entities}. Controleer of de sensor-entiteiten bestaan en niet zijn uitgeschakeld."
+    },
+    "stale_sensors": {
+      "title": "Weerstationsensoren zijn verouderd",
+      "description": "De volgende sensoren zijn niet bijgewerkt binnen de verouderingstijd: {sensors}. Controleer of je weerstatinshardware online en verbonden is."
+    },
+    "forecast_api_failures": {
+      "title": "API-fouten weergegevensleverancier",
+      "description": "De actieve weergegevensleverancier ({provider}) heeft {failures} opeenvolgende mislukkingen gehad. Voorspellingsgegevens kunnen verouderd zijn. Controleer je internetverbinding en leveranciersinstellingen. De integratie probeert het automatisch opnieuw met exponentiële terugval."
+    },
+    "stuck_sensors": {
+      "title": "Weerstationsensor(en) lijken vastgelopen",
+      "description": "De volgende sensoren hebben gedurende een langere periode dezelfde waarde gemeld en kunnen een hardwarefout hebben: {sensors}. Controleer de sensorverbindingen en verwijder eventuele obstakels (bijv. verstopte regenmeter, bevroren anemometer)."
+    },
+    "sensor_drift_detected": {
+      "title": "Sensordrift gedetecteerd",
+      "description": "Monotone drift is gedetecteerd in de volgende sensor(en): {sensors}. Dit kan wijzen op een defecte sensor, losse connector of een kalibratieafwijking die te groot is geworden. Controleer je sensor en overweeg een kalibratie-correctie toe te passen."
+    },
+    "large_calibration_offset": {
+      "title": "Grote kalibratie-offset toegepast",
+      "description": "Een kalibratie-offset van {value} is toegepast op {field}. Grote offsets kunnen wijzen op een hardwaredefect van de sensor in plaats van kalibratiedrift. Overweeg de sensor te vervangen."
     }
   },
   "entity": {
@@ -74,29 +660,131 @@
       "rain_rate": { "name": "Neerslagintensiteit" },
       "illuminance": { "name": "Lichtsterkte" },
       "uv_index": { "name": "UV-index" },
-      "battery": { "name": "Batterij" },
-      "data_quality_banner": { "name": "Datakwaliteitsbanner" },
-      "package_status": { "name": "Pakketstatus" },
-      "sensor_quality_flags": { "name": "Sensorkwaliteitsvlaggen" },
-      "alert_state": { "name": "Waarschuwingsstatus", "state": { "clear": "Vrij", "advisory": "Advies", "warning": "Waarschuwing" } },
-      "alert_message": { "name": "Waarschuwingsbericht" },
+      "battery": {
+        "name": "Batterij",
+        "state_attributes": {
+          "bars": { "name": "Signaalbars" }
+        }
+      },
+      "pressure_trend_raw": { "name": "Luchtdruktrend (ruw)" },
+      "pressure_change_window": { "name": "Luchtdrukverandering (venster)" },
+      "data_quality_banner": {
+        "name": "Datakwaliteitsbanner",
+        "state_attributes": {
+          "package_ok": { "name": "Pakket OK" },
+          "data_quality": { "name": "Datakwaliteit" },
+          "alert_state": { "name": "Waarschuwingsstatus" }
+        }
+      },
+      "package_status": {
+        "name": "Pakketstatus",
+        "state_attributes": {
+          "package_ok": { "name": "Pakket OK" },
+          "data_quality": { "name": "Datakwaliteit" },
+          "alert_state": { "name": "Waarschuwingsstatus" }
+        }
+      },
+      "sensor_quality_flags": {
+        "name": "Sensorkwaliteitsvlaggen",
+        "state_attributes": {
+          "flags": { "name": "Actieve vlaggen" },
+          "all_clear": { "name": "Alles vrij" }
+        }
+      },
+      "alert_state": {
+        "name": "Waarschuwingsstatus",
+        "state": {
+          "clear": "Vrij",
+          "advisory": "Advies",
+          "warning": "Waarschuwing"
+        },
+        "state_attributes": {
+          "message": { "name": "Bericht" },
+          "icon": { "name": "Pictogram" },
+          "color": { "name": "Kleur" },
+          "active_alerts": { "name": "Actieve waarschuwingen" },
+          "alert_count": { "name": "Aantal waarschuwingen" }
+        }
+      },
+      "alert_message": {
+        "name": "Waarschuwingsbericht",
+        "state_attributes": {
+          "alert_state": { "name": "Waarschuwingsstatus" },
+          "icon": { "name": "Pictogram" },
+          "color": { "name": "Kleur" }
+        }
+      },
       "forecast_daily": { "name": "Dagvoorspelling" },
-      "feels_like": { "name": "Gevoelstemperatuur" },
+      "forecast_provider": {
+        "name": "Weergegevensleverancier",
+        "state": {
+          "open_meteo": "Open-Meteo",
+          "met_no": "Met.no",
+          "nws_noaa": "NWS/NOAA",
+          "openweathermap": "OpenWeatherMap",
+          "pirate_weather": "Pirate Weather",
+          "meteo_france": "Météo France",
+          "ha_weather_entity": "Home Assistant weereentiteit"
+        },
+        "state_attributes": {
+          "provider_name": { "name": "Naam leverancier" },
+          "forecast_enabled": { "name": "Verwachting ingeschakeld" }
+        }
+      },
+      "feels_like": {
+        "name": "Gevoelstemperatuur",
+        "state_attributes": {
+          "wind_contribution_ms": { "name": "Windbijdrage (m/s)" },
+          "humidity": { "name": "Luchtvochtigheid (%)" },
+          "actual_temp_c": { "name": "Werkelijke temperatuur (°C)" }
+        }
+      },
       "wet_bulb_temperature": { "name": "Natteboltemperatuur" },
       "frost_point": { "name": "Vriespunt" },
-      "cloud_base": { "name": "Wolkenbasis" },
-      "freezing_level": { "name": "Vriesniveau" },
-      "wind_gust_factor": { "name": "Windvlaagfactor" },
       "heat_index": { "name": "Hitte-index" },
       "wind_chill": { "name": "Gevoelskou" },
       "humidex": { "name": "Humidex" },
       "vpd": { "name": "Dampdruktekort (VPD)" },
       "absolute_humidity": { "name": "Absolute luchtvochtigheid" },
-      "air_density": { "name": "Luchtdichtheid" },
-      "specific_humidity": { "name": "Specifieke vochtigheid" },
-      "wbgt": { "name": "WBGT" },
-      "utci": { "name": "UTCI" },
-      "delta_t": { "name": "Delta-T" },
+      "air_density": {
+        "name": "Luchtdichtheid",
+        "state_attributes": {
+          "temp_c": { "name": "Temperatuur (°C)" },
+          "pressure_hpa": { "name": "Luchtdruk (hPa)" }
+        }
+      },
+      "specific_humidity": {
+        "name": "Specifieke vochtigheid",
+        "state_attributes": {
+          "absolute_humidity_gm3": { "name": "Absolute luchtvochtigheid (g/m³)" }
+        }
+      },
+      "wbgt": {
+        "name": "WBGT",
+        "state_attributes": {
+          "heat_risk": { "name": "Hitterisiconiveau" },
+          "wet_bulb_c": { "name": "Natteboltemperatuur (°C)" }
+        }
+      },
+      "utci": {
+        "name": "UTCI",
+        "state_attributes": {
+          "stress_category": { "name": "Thermische stresscategorie" }
+        }
+      },
+      "delta_t": {
+        "name": "Delta-T",
+        "state_attributes": {
+          "spray_suitability": {
+            "name": "Spuitgeschiktheid",
+            "state": {
+              "unsuitable_too_low": "Ongeschikt (te vochtig)",
+              "ideal": "Ideaal spuitvenster",
+              "unsuitable_too_high": "Ongeschikt (te droog)"
+            }
+          }
+        }
+      },
       "thw_index": { "name": "THW-index" },
       "thsw_index": { "name": "THSW-index" },
       "wind_run": { "name": "Windloop" },
@@ -106,87 +794,662 @@
       "chill_hours_season": { "name": "Koude-uren seizoen" },
       "clearness_index": { "name": "Helderheidsindex" },
       "cloud_cover": { "name": "Bewolking" },
-      "hdd_today": { "name": "Verwarmingsgraaddag" },
+      "hdd_today": {
+        "name": "Verwarmingsgraaddag",
+        "state_attributes": {
+          "base_c": { "name": "Basistemperatuur (°C)" }
+        }
+      },
       "hdd_season": { "name": "Verwarmingsgraaddagen seizoen" },
       "cdd_today": { "name": "Koelgraaddag" },
       "cdd_season": { "name": "Koelgraaddagen seizoen" },
-      "gdd_today": { "name": "Groeigraaddag" },
+      "gdd_today": {
+        "name": "Groeigraaddag",
+        "state_attributes": {
+          "base_c": { "name": "Basistemperatuur (°C)" },
+          "cap_c": { "name": "Bovendrempel (°C)" }
+        }
+      },
       "gdd_season": { "name": "Groeigraaddagen seizoen" },
-      "leaf_wetness": { "name": "Bladnatheid", "state": { "wet": "Nat", "dry": "Droog" } },
-      "dominant_wind_direction": { "name": "Dominante windrichting" },
+      "leaf_wetness": {
+        "name": "Bladnatheid",
+        "state": { "wet": "Nat", "dry": "Droog" },
+        "state_attributes": {
+          "dew_point_c": { "name": "Dauwpunt (°C)" },
+          "humidity_pct": { "name": "Luchtvochtigheid (%)" },
+          "rain_rate_mmph": { "name": "Regenintensiteit (mm/u)" }
+        }
+      },
+      "dominant_wind_direction": {
+        "name": "Dominante windrichting",
+        "state_attributes": {
+          "variability_deg": { "name": "Richtingsvariabiliteit (°)" }
+        }
+      },
       "wind_direction_variability": { "name": "Windrichtingsvariabiliteit" },
-      "solar_energy_today": { "name": "Zonne-energie vandaag" },
+      "solar_energy_today": {
+        "name": "Zonne-energie vandaag",
+        "state_attributes": {
+          "peak_sun_hours": { "name": "Piekzonuren" }
+        }
+      },
       "max_solar_radiation": { "name": "Max. zonnestraling (heldere hemel)" },
       "peak_sun_hours": { "name": "Piekzonuren" },
-      "irrigation_deficit": { "name": "Irrigatietekort" },
-      "et0_daily": { "name": "ET₀ (dagelijks)" },
+      "irrigation_deficit": {
+        "name": "Irrigatietekort",
+        "state_attributes": {
+          "et0_daily_mm": { "name": "ET₀ vandaag (mm)" },
+          "rain_today_mm": { "name": "Regen vandaag (mm)" }
+        }
+      },
+      "et0_daily": {
+        "name": "ET₀ (dagelijks)",
+        "state_attributes": {
+          "et0_hourly_mm": { "name": "ET₀ per uur (mm)" }
+        }
+      },
       "et0_hourly": { "name": "ET₀ (per uur)" },
-      "et0_pm_daily": { "name": "ET₀ Penman-Monteith (dagelijks)" },
-      "fire_risk_score": { "name": "Brandrisicoscore" },
-      "ffdi": { "name": "Bosbrandgevaarindex (FFDI)" },
-      "ffwi": { "name": "Brandweerindex (Fosberg)" },
+      "et0_pm_daily": {
+        "name": "ET₀ Penman-Monteith (dagelijks)",
+        "state_attributes": {
+          "hargreaves_et0": { "name": "Hargreaves ET₀ (mm)" }
+        }
+      },
+      "fire_risk_score": {
+        "name": "Brandrisicoscore",
+        "state_attributes": {
+          "danger_level": { "name": "Gevaarsniveau" },
+          "rain_24h_mm": { "name": "Regen afgelopen 24 u (mm)" },
+          "temperature_c": { "name": "Temperatuur (°C)" },
+          "humidity_pct": { "name": "Luchtvochtigheid (%)" },
+          "wind_ms": { "name": "Windsnelheid (m/s)" },
+          "fwi": { "name": "FWI" },
+          "bui": { "name": "BUI" },
+          "isi": { "name": "ISI" }
+        }
+      },
+      "ffdi": {
+        "name": "Bosbrandgevaarindex (FFDI)",
+        "state_attributes": {
+          "danger_level": { "name": "Gevaarsniveau" },
+          "temperature_c": { "name": "Temperatuur (°C)" },
+          "humidity_pct": { "name": "Luchtvochtigheid (%)" },
+          "wind_kmh": { "name": "Windsnelheid (km/u)" }
+        }
+      },
+      "ffwi": {
+        "name": "Brandweerindex (Fosberg)",
+        "state_attributes": {
+          "temperature_c": { "name": "Temperatuur (°C)" },
+          "humidity_pct": { "name": "Luchtvochtigheid (%)" },
+          "wind_ms": { "name": "Windsnelheid (m/s)" }
+        }
+      },
       "fwi_ffmc": { "name": "FWI Fijn brandstofvochtcode" },
       "fwi_dmc": { "name": "FWI Humusvochtcode" },
       "fwi_dc": { "name": "FWI Droogtecode" },
-      "fwi_isi": { "name": "FWI Aanvankelijke verspreidingsindex" },
-      "fwi_bui": { "name": "FWI Opbouwindex" },
-      "fwi": { "name": "Brandweerindex" },
-      "fwi_dsr": { "name": "FWI Dagelijkse ernstgraad" },
-      "sea_surface_temperature": { "name": "Zeewateroppervlaktetemperatuur" },
-      "wu_status": { "name": "Weather Underground status" },
-      "wc_upload_status": { "name": "Weathercloud status" },
-      "pws_upload_status": { "name": "PWSWeather status" },
-      "wow_upload_status": { "name": "WOW status" },
-      "awekas_upload_status": { "name": "AWEKAS status" },
-      "cwop_status": { "name": "CWOP status" },
-      "owm_stations_status": { "name": "OpenWeatherMap status" },
-      "windy_status": { "name": "Windy status" },
-      "sensor_spike": { "name": "Sensorpiekvlaggen" },
-      "aqi": { "name": "Luchtkwaliteitsindex" },
+      "fwi_isi": {
+        "name": "FWI Aanvankelijke verspreidingsindex",
+        "state_attributes": {
+          "ffmc": { "name": "FFMC" },
+          "wind_kmh": { "name": "Windsnelheid (km/u)" }
+        }
+      },
+      "fwi_bui": {
+        "name": "FWI Opbouwindex",
+        "state_attributes": {
+          "dmc": { "name": "DMC" },
+          "dc": { "name": "DC" }
+        }
+      },
+      "fwi": {
+        "name": "Brandweerindex",
+        "state_attributes": {
+          "isi": { "name": "ISI" },
+          "bui": { "name": "BUI" },
+          "dsr": { "name": "DSR" },
+          "danger_level": { "name": "Gevaarsniveau" }
+        }
+      },
+      "fwi_dsr": {
+        "name": "FWI Dagelijkse ernstgraad",
+        "state_attributes": {
+          "fwi": { "name": "FWI" }
+        }
+      },
+      "sea_surface_temperature": {
+        "name": "Zeewateroppervlaktetemperatuur",
+        "state_attributes": {
+          "comfort": { "name": "Comfortniveau" },
+          "hourly_forecast": { "name": "Uurverwachting" },
+          "grid_latitude": { "name": "Rasterbreedtegraad" },
+          "grid_longitude": { "name": "Rasterlengtegraad" }
+        }
+      },
+      "wu_status": {
+        "name": "Weather Underground status",
+        "state": {
+          "disabled": "Uitgeschakeld",
+          "ok": "OK",
+          "error_http": "HTTP-fout",
+          "error_network": "Netwerkfout",
+          "error": "Fout"
+        },
+        "state_attributes": {
+          "last_upload": { "name": "Laatste geslaagde upload" }
+        }
+      },
+      "wc_upload_status": {
+        "name": "Weathercloud status",
+        "state": {
+          "disabled": "Uitgeschakeld",
+          "ok": "OK",
+          "error_http": "HTTP-fout",
+          "error_network": "Netwerkfout",
+          "error": "Fout"
+        },
+        "state_attributes": {
+          "last_upload": { "name": "Laatste geslaagde upload" }
+        }
+      },
+      "pws_upload_status": {
+        "name": "PWSWeather status",
+        "state": {
+          "disabled": "Uitgeschakeld",
+          "ok": "OK",
+          "error_http": "HTTP-fout",
+          "error_network": "Netwerkfout",
+          "error": "Fout"
+        },
+        "state_attributes": {
+          "last_upload": { "name": "Laatste geslaagde upload" }
+        }
+      },
+      "wow_upload_status": {
+        "name": "WOW status",
+        "state": {
+          "disabled": "Uitgeschakeld",
+          "ok": "OK",
+          "error_http": "HTTP-fout",
+          "error_network": "Netwerkfout",
+          "error": "Fout"
+        },
+        "state_attributes": {
+          "last_upload": { "name": "Laatste geslaagde upload" }
+        }
+      },
+      "awekas_upload_status": {
+        "name": "AWEKAS status",
+        "state": {
+          "disabled": "Uitgeschakeld",
+          "ok": "OK",
+          "error_http": "HTTP-fout",
+          "error_network": "Netwerkfout",
+          "error": "Fout"
+        },
+        "state_attributes": {
+          "last_upload": { "name": "Laatste geslaagde upload" }
+        }
+      },
+      "cwop_status": {
+        "name": "CWOP status",
+        "state": {
+          "disabled": "Uitgeschakeld",
+          "ok": "OK",
+          "error_network": "Netwerkfout",
+          "error": "Fout"
+        },
+        "state_attributes": {
+          "last_upload": { "name": "Laatste geslaagde upload" }
+        }
+      },
+      "owm_stations_status": {
+        "name": "OpenWeatherMap status",
+        "state": {
+          "disabled": "Uitgeschakeld",
+          "ok": "OK",
+          "error_auth": "Authenticatiefout",
+          "error_http": "HTTP-fout",
+          "error_network": "Netwerkfout",
+          "error": "Fout"
+        },
+        "state_attributes": {
+          "last_upload": { "name": "Laatste geslaagde upload" }
+        }
+      },
+      "windy_status": {
+        "name": "Windy status",
+        "state": {
+          "disabled": "Uitgeschakeld",
+          "ok": "OK",
+          "error_auth": "Authenticatiefout",
+          "error_http": "HTTP-fout",
+          "error_network": "Netwerkfout",
+          "error": "Fout"
+        },
+        "state_attributes": {
+          "last_upload": { "name": "Laatste geslaagde upload" }
+        }
+      },
+      "sensor_spike": {
+        "name": "Sensorpiekvlaggen",
+        "state_attributes": {
+          "flags": { "name": "Actieve vlaggen" },
+          "all_clear": { "name": "Alles vrij" }
+        }
+      },
+      "aqi": {
+        "name": "Luchtkwaliteitsindex",
+        "state_attributes": {
+          "level": {
+            "name": "AQI-niveau",
+            "state": {
+              "good": "Goed",
+              "moderate": "Matig",
+              "unhealthy_sensitive": "Ongezond voor gevoelige groepen",
+              "unhealthy": "Ongezond",
+              "very_unhealthy": "Zeer ongezond",
+              "hazardous": "Gevaarlijk"
+            }
+          },
+          "pm2_5_ug_m3": { "name": "PM2,5 (µg/m³)" },
+          "pm10_ug_m3": { "name": "PM10 (µg/m³)" },
+          "no2_ug_m3": { "name": "NO₂ (µg/m³)" },
+          "ozone_ug_m3": { "name": "Ozon (µg/m³)" }
+        }
+      },
       "pm2_5": { "name": "PM2,5" },
       "pm10": { "name": "PM10" },
       "no2": { "name": "NO₂" },
       "ozone": { "name": "Ozon" },
-      "pollen_level": { "name": "Pollenniveau" },
+      "pollen_level": {
+        "name": "Pollenniveau",
+        "state": {
+          "unknown": "Onbekend",
+          "none": "Geen",
+          "very_low": "Zeer laag",
+          "low": "Laag",
+          "medium": "Gemiddeld",
+          "high": "Hoog",
+          "very_high": "Zeer hoog"
+        },
+        "state_attributes": {
+          "grass_index": { "name": "Graspollenindex" },
+          "grass_level": { "name": "Graspollenniveau" },
+          "tree_index": { "name": "Boompollenindex" },
+          "tree_level": { "name": "Boompollenniveau" },
+          "weed_index": { "name": "Onkruidpollenindex" },
+          "weed_level": { "name": "Onkruidpollenniveau" }
+        }
+      },
       "pollen_grass": { "name": "Graspollen" },
       "pollen_tree": { "name": "Boompollen" },
       "pollen_weed": { "name": "Onkruidpollen" },
-      "moon": { "name": "Maan" },
+      "moon": {
+        "name": "Maan",
+        "state": {
+          "new_moon": "Nieuwe maan",
+          "waxing_crescent": "Wassende maansikkel",
+          "first_quarter": "Eerste kwartier",
+          "waxing_gibbous": "Wassende maan (gibbeus)",
+          "full_moon": "Volle maan",
+          "waning_gibbous": "Afnemende maan (gibbeus)",
+          "last_quarter": "Laatste kwartier",
+          "waning_crescent": "Afnemende maansikkel"
+        },
+        "state_attributes": {
+          "phase": {
+            "name": "Maanfase",
+            "state": {
+              "new_moon": "Nieuwe maan",
+              "waxing_crescent": "Wassende maansikkel",
+              "first_quarter": "Eerste kwartier",
+              "waxing_gibbous": "Wassende maan (gibbeus)",
+              "full_moon": "Volle maan",
+              "waning_gibbous": "Afnemende maan (gibbeus)",
+              "last_quarter": "Laatste kwartier",
+              "waning_crescent": "Afnemende maansikkel"
+            }
+          },
+          "illumination_pct": { "name": "Verlichting (%)" },
+          "age_days": { "name": "Leeftijd (dagen)" },
+          "days_to_full_moon": { "name": "Dagen tot volle maan" },
+          "days_to_new_moon": { "name": "Dagen tot nieuwe maan" }
+        }
+      },
       "moon_illumination": { "name": "Maanverlichting" },
-      "solar_forecast_today": { "name": "Zonvoorspelling vandaag" },
+      "solar_forecast_today": {
+        "name": "Zonvoorspelling vandaag",
+        "state_attributes": {
+          "tomorrow_kwh": { "name": "Morgen (kWh)" },
+          "status": { "name": "Status" }
+        }
+      },
       "solar_forecast_tomorrow": { "name": "Zonvoorspelling morgen" },
-      "fog_probability": { "name": "Mistkans" },
-      "thunderstorm_risk": { "name": "Onweersrisico" },
-      "dry_streak": { "name": "Droogteperiode" },
-      "heat_streak": { "name": "Hitteperiode" },
-      "frost_streak": { "name": "Vorstperiode" },
-      "sensor_drift": { "name": "Sensordrift" },
-      "sensor_consistency": { "name": "Sensorconsistentie" },
-      "sensor_stuck": { "name": "Sensor vastgelopen (vlaggen)" },
-      "data_quality_score": { "name": "Datakwaliteitsscore" },
-      "neighbor_qc": { "name": "Buur-QC-vlaggen" },
+      "fog_probability": {
+        "name": "Mistkans",
+        "state_attributes": {
+          "risk_level": {
+            "name": "Risiconiveau",
+            "state": {
+              "probable": "Waarschijnlijk",
+              "likely": "Aannemelijk",
+              "possible": "Mogelijk",
+              "unlikely": "Onwaarschijnlijk"
+            }
+          },
+          "dew_point_depression_c": { "name": "Dauwpuntdepressie (°C)" }
+        }
+      },
+      "thunderstorm_risk": {
+        "name": "Onweersrisico",
+        "state_attributes": {
+          "risk_level": {
+            "name": "Risiconiveau",
+            "state": {
+              "high": "Hoog",
+              "elevated": "Verhoogd",
+              "moderate": "Matig",
+              "low": "Laag",
+              "negligible": "Verwaarloosbaar"
+            }
+          },
+          "contributing_factors": { "name": "Bijdragende factoren" },
+          "caveat": { "name": "Voorbehoud" }
+        }
+      },
+      "dry_streak": {
+        "name": "Droogteperiode",
+        "state_attributes": {
+          "last_rain_date": { "name": "Laatste regendatum" }
+        }
+      },
+      "heat_streak": {
+        "name": "Hitteperiode",
+        "state_attributes": {
+          "threshold_c": { "name": "Drempelwaarde (°C)" }
+        }
+      },
+      "frost_streak": {
+        "name": "Vorstperiode",
+        "state_attributes": {
+          "threshold_c": { "name": "Drempelwaarde (°C)" }
+        }
+      },
+      "frost_risk": {
+        "name": "Vorstrisico",
+        "state": {
+          "high": "Hoog",
+          "probable": "Waarschijnlijk",
+          "unlikely": "Onwaarschijnlijk",
+          "no_risk": "Geen risico"
+        }
+      },
+      "sensor_drift": {
+        "name": "Sensordrift",
+        "state": {
+          "ok": "OK",
+          "warning": "Waarschuwing"
+        },
+        "state_attributes": {
+          "drifting_sensors": { "name": "Driftende sensoren" },
+          "all_clear": { "name": "Alles vrij" }
+        }
+      },
+      "sensor_consistency": {
+        "name": "Sensorconsistentie",
+        "state": {
+          "ok": "OK",
+          "warning": "Waarschuwing"
+        },
+        "state_attributes": {
+          "flags": { "name": "Consistentievlaggen" },
+          "all_clear": { "name": "Alles vrij" }
+        }
+      },
+      "sensor_stuck": {
+        "name": "Sensor vastgelopen (vlaggen)",
+        "state_attributes": {
+          "stuck_sensors": { "name": "Namen vastgelopen sensoren" },
+          "all_clear": { "name": "Alles vrij" }
+        }
+      },
+      "data_quality_score": {
+        "name": "Datakwaliteitsscore",
+        "state_attributes": {
+          "quality_flags": { "name": "Actieve kwaliteitsvlaggen" },
+          "stuck_flags": { "name": "Aantal vastgelopen sensoren" }
+        }
+      },
+      "neighbor_qc": {
+        "name": "Buur-QC-vlaggen",
+        "state_attributes": {
+          "flags": { "name": "Actieve vlaggen" },
+          "all_clear": { "name": "Alles vrij" }
+        }
+      },
       "climatology_30d": { "name": "Klimatologie (30 dagen)" },
-      "temperature_anomaly_30d": { "name": "Temperatuuranomalie (30 dagen)" },
-      "rain_anomaly_30d": { "name": "Neerslaganomalie (30 dagen)" },
-      "solar_lux_factor": { "name": "Zonne-luxfactor" },
-      "forecast_agreement": { "name": "Voorspellingsovereenkomst" },
-      "forecast_skill": { "name": "Voorspellingsvaardigheid" },
-      "vigilance_max_level": { "name": "Meteo-Vigilance" },
-      "fire_danger_vigilance": { "name": "Brandgevaar (Vigilance)" },
+      "temperature_anomaly_30d": {
+        "name": "Temperatuuranomalie (30 dagen)",
+        "state_attributes": {
+          "normal_30d_c": { "name": "30-daags normaal (°C)" }
+        }
+      },
+      "rain_anomaly_30d": {
+        "name": "Neerslaganomalie (30 dagen)",
+        "state_attributes": {
+          "normal_30d_avg_mm": { "name": "30-daags gemiddelde (mm)" }
+        }
+      },
+      "temp_anomaly_90d": { "name": "Temperatuuranomalie (90 dagen)" },
+      "rain_anomaly_90d": { "name": "Neerslaganomalie (90 dagen)" },
+      "solar_lux_factor": {
+        "name": "Zonne-luxfactor",
+        "state_attributes": {
+          "calibration_days": { "name": "Kalibratiedagen" }
+        }
+      },
+      "forecast_agreement": {
+        "name": "Voorspellingsovereenkomst",
+        "state": {
+          "aligned": "Uitgelijnd",
+          "diverging": "Uiteenlopend",
+          "conflict": "Conflict"
+        },
+        "state_attributes": {
+          "zambretti_implied_rain_pct": { "name": "Zambretti geïmpliceerde regen (%)" },
+          "openmeteo_precip_prob": { "name": "Open-Meteo neerslagkans (%)" },
+          "delta_pp": { "name": "Delta (pp)" },
+          "zambretti_forecast": { "name": "Zambretti-voorspelling" }
+        }
+      },
+      "forecast_skill": {
+        "name": "Voorspellingsvaardigheid",
+        "state_attributes": {
+          "brier_score_local": { "name": "Brier-score (lokaal)" },
+          "brier_score_openmeteo": { "name": "Brier-score (Open-Meteo)" },
+          "blend_local": { "name": "Menggewicht (lokaal)" },
+          "blend_openmeteo": { "name": "Menggewicht (Open-Meteo)" },
+          "n_outcomes": { "name": "Steekproefomvang" }
+        }
+      },
+      "vigilance_max_level": {
+        "name": "Meteo-Vigilance",
+        "state": {
+          "vert": "Groen (geen gevaar)",
+          "jaune": "Geel (wees attent)",
+          "orange": "Oranje (wees alert)",
+          "rouge": "Rood (absolute waakzaamheid vereist)"
+        }
+      },
+      "fire_danger_vigilance": {
+        "name": "Brandgevaar (Vigilance)",
+        "state": {
+          "vert": "Groen (geen brandrisico)",
+          "jaune": "Geel (wees attent)",
+          "orange": "Oranje (wees alert)",
+          "rouge": "Rood (extreem brandgevaar)"
+        },
+        "state_attributes": {
+          "department": { "name": "Departement" },
+          "all_phenomena": { "name": "Alle actieve fenomenen" },
+          "fetched_at": { "name": "Laatst bijgewerkt" }
+        }
+      },
       "river_level": { "name": "Rivierpeil" },
       "rain_next_60min": { "name": "Regen komende 60 min" },
       "minutes_until_rain": { "name": "Minuten tot regen" },
       "minutes_until_dry": { "name": "Minuten tot droog" },
-      "nowcast_intensity": { "name": "Nowcast-intensiteit", "state": { "none": "Geen", "light": "Licht", "moderate": "Matig", "heavy": "Zwaar" } },
-      "zambretti_forecast": { "name": "Zambretti-voorspelling" },
+      "nowcast_intensity": {
+        "name": "Nowcast-intensiteit",
+        "state": {
+          "none": "Geen",
+          "light": "Licht",
+          "moderate": "Matig",
+          "heavy": "Zwaar"
+        }
+      },
+      "nowcast_confidence": {
+        "name": "Nowcast-betrouwbaarheid",
+        "state": {
+          "high": "Hoog",
+          "medium": "Gemiddeld",
+          "low": "Laag"
+        }
+      },
+      "zambretti_forecast": {
+        "name": "Zambretti-voorspelling",
+        "state": {
+          "settled_fine": "Bestendig mooi",
+          "fine_weather": "Mooi weer",
+          "becoming_fine": "Opklarend",
+          "fine_becoming_less_settled": "Mooi, later wisselvallig",
+          "fine_possible_showers": "Mooi, kans op buien",
+          "fairly_fine_improving": "Redelijk mooi, verbeterend",
+          "fairly_fine_possible_showers_early": "Redelijk mooi, vroeg kans op buien",
+          "fairly_fine_showery_later": "Redelijk mooi, later buiig",
+          "showery_early_improving": "Vroeg buiig, verbeterend",
+          "changeable_mending": "Wisselvallig, verbeterend",
+          "fairly_fine_possible_showers": "Redelijk mooi, kans op buien",
+          "rather_unsettled_clearing_later": "Vrij wisselvallig, later opklarend",
+          "unsettled_probably_improving": "Wisselvallig, waarschijnlijk verbeterend",
+          "showery_bright_intervals": "Buiig, met zonnige perioden",
+          "showery_becoming_rather_unsettled": "Buiig, later vrij wisselvallig",
+          "changeable_some_rain": "Wisselvallig, enige regen",
+          "unsettled_short_fine_intervals": "Wisselvallig, korte opklaringen",
+          "unsettled_rain_later": "Wisselvallig, later regen",
+          "unsettled_some_rain": "Wisselvallig, enige regen",
+          "mostly_very_unsettled": "Meest zeer wisselvallig",
+          "occasional_rain_worsening": "Af en toe regen, verslechterend",
+          "rain_at_times_very_unsettled": "Soms regen, zeer wisselvallig",
+          "rain_at_frequent_intervals": "Regelmatig regen",
+          "rain_very_unsettled": "Regen, zeer wisselvallig",
+          "stormy_may_improve": "Stormachtig, kan verbeteren",
+          "stormy_much_rain": "Stormachtig, veel regen",
+          "insufficient_data": "Onvoldoende gegevens"
+        },
+        "state_attributes": {
+          "z_number": { "name": "Z-getal" },
+          "mslp_hpa": { "name": "Zeeniveaudruk (hPa)" },
+          "trend_3h_hpa": { "name": "Luchtdruktrend 3 u (hPa/u)" },
+          "wind_quadrant": { "name": "Windkwadrant" },
+          "pressure_trend_display": { "name": "Luchtdruktrend" }
+        }
+      },
       "zambretti_number": { "name": "Zambretti-nummer" },
-      "wind_beaufort": { "name": "Beaufortschaal" },
-      "wind_quadrant": { "name": "Windkwadrant" },
+      "wind_beaufort": {
+        "name": "Beaufortschaal",
+        "state_attributes": {
+          "description": { "name": "Omschrijving" },
+          "speed_ms": { "name": "Windsnelheid (m/s)" },
+          "speed_kmh": { "name": "Windsnelheid (km/u)" },
+          "gust_ms": { "name": "Windvlaag (m/s)" },
+          "gust_kmh": { "name": "Windvlaag (km/u)" }
+        }
+      },
+      "wind_quadrant": {
+        "name": "Windkwadrant",
+        "state_attributes": {
+          "degrees": { "name": "Richting (°)" },
+          "using_smoothed": { "name": "Afgevlakte richting gebruikt" }
+        }
+      },
       "wind_direction_smoothed": { "name": "Gladgestreken windrichting" },
-      "current_condition": { "name": "Huidige weersgesteldheid" },
-      "rain_probability": { "name": "Regenkans" },
-      "rain_probability_combined": { "name": "Regenkans (gecombineerd)" },
-      "rain_display": { "name": "Regenweergave" },
+      "current_condition": {
+        "name": "Huidige weersgesteldheid",
+        "state": {
+          "sunny": "Zonnig",
+          "partly-cloudy": "Half bewolkt",
+          "cloudy": "Bewolkt",
+          "overcast": "Zwaar bewolkt",
+          "clear-night": "Heldere nacht",
+          "overcast-night": "Bewolkte nacht",
+          "sunrise": "Zonsopkomst",
+          "sunset": "Zonsondergang",
+          "golden-hour": "Gouden uur",
+          "clearing-after-rain": "Opklarend na regen",
+          "fog": "Mist",
+          "misty-morning": "Mistige ochtend",
+          "drizzle": "Motregen",
+          "rainy": "Regenachtig",
+          "heavy-rain": "Zware regen",
+          "pre-storm": "Naderend onweer",
+          "thunderstorm": "Onweer",
+          "severe-storm": "Zware storm",
+          "hurricane": "Orkaan",
+          "snow-accumulation": "Sneeuwophoping",
+          "snowy": "Sneeuw",
+          "sleet": "Ijzel",
+          "icy-conditions": "IJzel op de wegen",
+          "windy": "Winderig",
+          "windy-night": "Winderige nacht",
+          "hot": "Warm",
+          "cold": "Koud",
+          "sandstorm": "Zandstorm",
+          "african-dust": "Saharastof"
+        },
+        "state_attributes": {
+          "icon": { "name": "Pictogram" },
+          "mdi_icon": { "name": "MDI-pictogram" },
+          "color": { "name": "Kleur" },
+          "description": { "name": "Omschrijving" },
+          "severity": { "name": "Ernst" },
+          "rain_rate": { "name": "Regenintensiteit (mm/u)" },
+          "wind_gust": { "name": "Windvlaag (m/s)" },
+          "temperature": { "name": "Temperatuur (°C)" }
+        }
+      },
+      "rain_probability": {
+        "name": "Regenkans",
+        "state_attributes": {
+          "mslp_hpa": { "name": "Zeeniveaudruk (hPa)" },
+          "pressure_trend_3h": { "name": "Luchtdruktrend 3 u" },
+          "humidity_pct": { "name": "Luchtvochtigheid (%)" },
+          "wind_quadrant": { "name": "Windkwadrant" }
+        }
+      },
+      "rain_probability_combined": {
+        "name": "Regenkans (gecombineerd)",
+        "state_attributes": {
+          "local_probability_pct": { "name": "Lokale kans (%)" }
+        }
+      },
+      "rain_display": {
+        "name": "Regenweergave",
+        "state": {
+          "dry": "Droog",
+          "drizzle": "Motregen",
+          "light": "Licht",
+          "moderate": "Matig",
+          "heavy": "Zwaar"
+        },
+        "state_attributes": {
+          "rain_rate": { "name": "Regenintensiteit (mm/u)" },
+          "rain_today": { "name": "Regen vandaag (mm)" },
+          "rain_24h": { "name": "Regen afgelopen 24 u (mm)" },
+          "is_raining": { "name": "Regen op dit moment" }
+        }
+      },
       "rain_last_1h": { "name": "Regen laatste 1 uur" },
       "rain_last_24h": { "name": "Regen laatste 24 uur" },
       "rain_today": { "name": "Regen vandaag" },
@@ -194,47 +1457,263 @@
       "rain_this_month": { "name": "Regen deze maand" },
       "rain_this_year": { "name": "Regen dit jaar" },
       "rain_rate_max_24h": { "name": "Max. regenintensiteit (24 u)" },
-      "pressure_trend": { "name": "Luchtdruktrend" },
+      "pressure_trend": {
+        "name": "Luchtdruktrend",
+        "state": {
+          "rising_rapidly": "Snel stijgend",
+          "rising": "Stijgend",
+          "steady": "Stabiel",
+          "falling": "Dalend",
+          "falling_rapidly": "Snel dalend"
+        },
+        "state_attributes": {
+          "change_3h_hpa": { "name": "Verandering 3 u (hPa)" },
+          "change_3h": { "name": "Verandering 3 u (hPa) [alias]" },
+          "trend_rate_hpah": { "name": "Trendsnelheid (hPa/u)" },
+          "mslp_hpa": { "name": "Zeeniveaudruk (hPa)" },
+          "arrow": { "name": "Pijlindicator" },
+          "color": { "name": "Kleur" }
+        }
+      },
       "pressure_trend_raw": { "name": "Luchtdruktrend (ruw)" },
       "pressure_change_window": { "name": "Luchtdrukverandering (venster)" },
-      "station_health": { "name": "Stationsgezondheid" },
-      "forecast_tiles": { "name": "Voorspellingstegels" },
+      "station_health": {
+        "name": "Stationsgezondheid",
+        "state": {
+          "online": "Online",
+          "degraded": "Verminderd",
+          "stale": "Verouderd",
+          "offline": "Offline"
+        },
+        "state_attributes": {
+          "color": { "name": "Kleur" },
+          "battery_pct": { "name": "Batterij (%)" },
+          "data_quality": { "name": "Datakwaliteit" }
+        }
+      },
+      "forecast_tiles": {
+        "name": "Voorspellingstegels",
+        "state_attributes": {
+          "tiles": { "name": "Voorspellingstegels" },
+          "count": { "name": "Aantal tegels" }
+        }
+      },
       "temperature_high_24h": { "name": "Temperatuur max (24 u)" },
       "temperature_low_24h": { "name": "Temperatuur min (24 u)" },
       "temperature_average_24h": { "name": "Temperatuurgemiddelde (24 u)" },
       "wind_gust_max_24h": { "name": "Max. windvlaag (24 u)" },
-      "humidity_level": { "name": "Luchtvochtigheidsniveau" },
-      "uv_level": { "name": "UV-niveau" },
-      "temperature_display": { "name": "Temperatuurweergave" },
-      "lightning_count_1h": { "name": "Bliksemtellingen (1 u)" },
-      "lightning_distance": { "name": "Bliksemafstand" },
+      "humidity_level": {
+        "name": "Luchtvochtigheidsniveau",
+        "state": {
+          "very_humid": "Zeer vochtig",
+          "humid": "Vochtig",
+          "slightly_humid": "Licht vochtig",
+          "comfortable": "Comfortabel",
+          "slightly_dry": "Licht droog",
+          "dry": "Droog",
+          "very_dry": "Zeer droog"
+        }
+      },
+      "uv_level": {
+        "name": "UV-niveau",
+        "state": {
+          "none": "Geen",
+          "low": "Laag",
+          "moderate": "Matig",
+          "high": "Hoog",
+          "very_high": "Zeer hoog",
+          "extreme": "Extreem"
+        },
+        "state_attributes": {
+          "uv_index": { "name": "UV-index" },
+          "recommendation": { "name": "Aanbeveling" },
+          "burn_time_fair_skin": { "name": "Verbrandingstijd (lichte huid, min)" }
+        }
+      },
+      "temperature_display": {
+        "name": "Temperatuurweergave",
+        "state_attributes": {
+          "bar_percent": { "name": "Balkbreedte (%)" },
+          "color": { "name": "Kleur" }
+        }
+      },
+      "lightning_count_1h": {
+        "name": "Bliksemtellingen (1 u)",
+        "state_attributes": {
+          "rate_per_min": { "name": "Inslagfrequentie (per min)" }
+        }
+      },
+      "lightning_distance": {
+        "name": "Bliksemafstand",
+        "state_attributes": {
+          "proximity": { "name": "Nabijheidsstatus" }
+        }
+      },
       "lightning_rate": { "name": "Bliksemfrequentie" },
-      "lightning_clearance": { "name": "Bliksem-veiligheidstijd" },
-      "lightning_proximity": { "name": "Bliksemnabijheid", "state": { "near": "Dichtbij", "clear": "Vrij" } },
-      "indoor_temperature": { "name": "Binnentemperatuur" },
-      "indoor_humidity": { "name": "Binnenluchtvochtigheid" },
+      "lightning_clearance": {
+        "name": "Bliksem-veiligheidstijd",
+        "state_attributes": {
+          "safe": { "name": "Veilig (≥30 min)" }
+        }
+      },
+      "lightning_proximity": {
+        "name": "Bliksemnabijheid",
+        "state": {
+          "near": "Dichtbij (binnen drempel)",
+          "clear": "Vrij"
+        },
+        "state_attributes": {
+          "distance_km": { "name": "Afstand (km)" },
+          "clearance_min": { "name": "Minuten sinds laatste inslag" }
+        }
+      },
+      "lightning_azimuth": { "name": "Azimut blikseminslag" },
+      "indoor_temperature": {
+        "name": "Binnentemperatuur",
+        "state_attributes": {
+          "outdoor_temp_c": { "name": "Buitentemperatuur (°C)" },
+          "delta_c": { "name": "Binnen/buiten-delta (°C)" }
+        }
+      },
+      "indoor_humidity": {
+        "name": "Binnenluchtvochtigheid",
+        "state_attributes": {
+          "outdoor_humidity_pct": { "name": "Buitenluchtsvochtigheid (%)" },
+          "delta_pct": { "name": "Binnen/buiten-delta (%)" }
+        }
+      },
       "indoor_co2": { "name": "Binnen-CO₂" },
       "indoor_temp_delta": { "name": "Binnen/buiten-temperatuurverschil" },
       "indoor_humidity_delta": { "name": "Binnen/buiten-luchtvochtigheidsverschil" },
-      "indoor_comfort": { "name": "Binnencomfortscore" }
+      "indoor_comfort": {
+        "name": "Binnencomfortscore",
+        "state_attributes": {
+          "co2_ppm": { "name": "CO₂ (ppm)" },
+          "temp_c": { "name": "Temperatuur (°C)" },
+          "humidity_pct": { "name": "Luchtvochtigheid (%)" }
+        }
+      },
+      "soil_moisture": {
+        "name": "Bodemvochtigheid",
+        "state_attributes": {
+          "deficit_pct": { "name": "Vochtigheidstekort (%)" }
+        }
+      },
+      "soil_temperature": { "name": "Bodemtemperatuur" },
+      "soil_moisture_deficit": { "name": "Bodemvochtigheidstekort" },
+      "irrigation_need": {
+        "name": "Irrigatiebehoefte",
+        "state": {
+          "none": "Geen",
+          "low": "Laag",
+          "moderate": "Matig",
+          "high": "Hoog",
+          "critical": "Kritiek"
+        },
+        "state_attributes": {
+          "score": { "name": "Irrigatiebehoeftescore" },
+          "soil_moisture_pct": { "name": "Bodemvochtigheid (%)" },
+          "soil_moisture_deficit_pct": { "name": "Bodemvochtigheidstekort (%)" }
+        }
+      },
+      "irrigation_need_score": { "name": "Irrigatiebehoeftescore" },
+      "conditions_summary": {
+        "name": "Huidige omstandigheden",
+        "state_attributes": {
+          "temperature_c": { "name": "Temperatuur (°C)" },
+          "feels_like_c": { "name": "Gevoelstemperatuur (°C)" },
+          "rain_rate_mmph": { "name": "Regenintensiteit (mm/u)" },
+          "wind_speed_ms": { "name": "Windsnelheid (m/s)" },
+          "wind_direction": { "name": "Windrichting" },
+          "condition": { "name": "Toestand" }
+        }
+      },
+      "forecast_brier_local": { "name": "Voorspelling Brier-score (lokaal)" },
+      "forecast_brier_api": { "name": "Voorspelling Brier-score (API)" },
+      "forecast_blend_weight_local": { "name": "Voorspelling menggewicht (lokaal)" },
+      "cloud_base": {
+        "name": "Wolkenbasis",
+        "state_attributes": {
+          "temp_c": { "name": "Temperatuur (°C)" },
+          "dew_point_c": { "name": "Dauwpunt (°C)" },
+          "spread_c": { "name": "Verschil temp-dauwpunt (°C)" }
+        }
+      },
+      "freezing_level": {
+        "name": "Vriesniveau",
+        "state_attributes": {
+          "temp_c": { "name": "Temperatuur (°C)" }
+        }
+      },
+      "wind_gust_factor": {
+        "name": "Windvlaagfactor",
+        "state_attributes": {
+          "gust_ms": { "name": "Windvlaag (m/s)" },
+          "wind_ms": { "name": "Windsnelheid (m/s)" }
+        }
+      },
+      "vigicrues_river_level": { "name": "{river} - Rivierpeil" },
+      "vigicrues_river_flow": { "name": "{river} - Rivierdebiete" }
+    },
+    "select": {
+      "ws_graph_range": {
+        "name": "Grafiekbereik",
+        "state": {
+          "6h": "6 uur",
+          "24h": "24 uur",
+          "3d": "3 dagen"
+        }
+      }
+    },
+    "number": {
+      "ws_thresh_wind_gust": { "name": "Waarschuwing: Windvlaagdrempel" },
+      "ws_thresh_rain_rate": { "name": "Waarschuwing: Regenintensiteitsdrempel" },
+      "ws_thresh_freeze": { "name": "Waarschuwing: Vorstdrempel" },
+      "ws_cal_temp": { "name": "Kalibratie: Temperatuur" },
+      "ws_cal_humidity": { "name": "Kalibratie: Luchtvochtigheid" },
+      "ws_cal_pressure": { "name": "Kalibratie: Luchtdruk" },
+      "ws_cal_wind": { "name": "Kalibratie: Windsnelheid" },
+      "ws_staleness_timeout": { "name": "Afstemming: Time-out verouderd" },
+      "ws_rain_filter_alpha": { "name": "Afstemming: Regenfilterafvlakking" },
+      "ws_pressure_trend_window": { "name": "Afstemming: Venster luchtdruktrend" },
+      "ws_lightning_proximity": { "name": "Waarschuwing: Bliksemnabijheidsdrempel" },
+      "ws_hdd_base": { "name": "Graaddagen: HDD-basistemperatuur" },
+      "ws_cdd_base": { "name": "Graaddagen: CDD-basistemperatuur" },
+      "ws_gdd_base": { "name": "Graaddagen: GDD-basistemperatuur" },
+      "ws_gdd_cap": { "name": "Graaddagen: GDD-bovengrens" }
     },
     "switch": {
+      "ws_enable_animations": { "name": "Dashboard: Animaties" },
       "ws_enable_display_sensors": { "name": "Functie: Weergavesensoren" },
       "ws_enable_fire_risk_score": { "name": "Functie: Brandrisicoscore" },
+      "ws_enable_sea_temp": { "name": "Functie: Zeewateroppervlaktetemperatuur" },
+      "ws_enable_wunderground": { "name": "Functie: Weather Underground" },
+      "ws_enable_air_quality": { "name": "Functie: Luchtkwaliteitsindex" },
+      "ws_enable_pollen": { "name": "Functie: Pollenniveaus" },
+      "ws_enable_moon": { "name": "Functie: Maanfase" },
+      "ws_enable_solar_forecast": { "name": "Functie: Zonne-PV-voorspelling" },
+      "ws_enable_fog": { "name": "Functie: Mistkans" },
+      "ws_enable_thunderstorm_risk": { "name": "Functie: Onweersrisico" },
       "ws_enable_comfort_indices": { "name": "Functie: Comfortindexen" },
+      "ws_enable_vigilance_meteo": { "name": "Functie: Meteo-Vigilance" },
+      "ws_enable_vigicrues": { "name": "Functie: Vigicrues-rivierpeil" },
+      "ws_enable_diagnostics": { "name": "Functie: Stationsdiagnose" },
+      "ws_enable_fwi_components": { "name": "Functie: FWI-componenten" },
+      "ws_enable_advanced_sensors": { "name": "Functie: Geavanceerde sensoren" },
+      "ws_enable_nowcast": { "name": "Functie: Neerslag-nowcast" },
+      "ws_suppress_notifications": { "name": "Instelling: HA-meldingen inschakelen" },
       "ws_enable_degree_days": { "name": "Functie: Graaddagen & bladnatheid" },
       "ws_enable_lightning": { "name": "Functie: Bliksemdetectie" },
       "ws_enable_indoor": { "name": "Functie: Binnensensoren" },
-      "ws_enable_diagnostics": { "name": "Functie: Stationsdiagnose" },
-      "ws_enable_nowcast": { "name": "Functie: Neerslag-nowcast" },
+      "ws_enable_soil": { "name": "Functie: Bodemsensoren" },
       "ws_enable_weathercloud": { "name": "Functie: Weathercloud upload" },
       "ws_enable_pwsweather": { "name": "Functie: PWSWeather upload" },
       "ws_enable_wow": { "name": "Functie: WOW upload" },
       "ws_enable_awekas": { "name": "Functie: AWEKAS upload" },
+      "ws_enable_mqtt": { "name": "Functie: MQTT Discovery" },
       "ws_enable_cwop": { "name": "Functie: CWOP upload" },
       "ws_enable_owm_stations": { "name": "Functie: OpenWeatherMap upload" },
-      "ws_enable_windy": { "name": "Functie: Windy upload" },
-      "ws_enable_mqtt": { "name": "Functie: MQTT Discovery" }
+      "ws_enable_windy": { "name": "Functie: Windy upload" }
     },
     "binary_sensor": {
       "ws_package_ok": { "name": "Pakket OK" },
@@ -249,9 +1728,101 @@
       "ws_dew_exceeds_temp": { "name": "Dauwpunt overschrijdt temperatuur" }
     },
     "event": {
-      "ws_rain_event": { "name": "Regengebeurtenis" },
-      "ws_frost_event": { "name": "Vorstgebeurtenis" },
-      "ws_lightning_event": { "name": "Bliksemgebeurtenis" }
+      "ws_rain_event": {
+        "name": "Regengebeurtenis",
+        "state_attributes": {
+          "event_type": {
+            "name": "Gebeurtenistype",
+            "state": {
+              "started": "Regen begonnen",
+              "stopped": "Regen gestopt"
+            }
+          }
+        }
+      },
+      "ws_frost_event": {
+        "name": "Vorstgebeurtenis",
+        "state_attributes": {
+          "event_type": {
+            "name": "Gebeurtenistype",
+            "state": {
+              "frost": "Vorst / bevriezing",
+              "thaw": "Dooi"
+            }
+          }
+        }
+      },
+      "ws_lightning_event": {
+        "name": "Bliksemgebeurtenis",
+        "state_attributes": {
+          "event_type": {
+            "name": "Gebeurtenistype",
+            "state": {
+              "strike_detected": "Inslag gedetecteerd",
+              "proximity_alert": "Nabijheidswaarschuwing"
+            }
+          }
+        }
+      }
+    }
+  },
+  "selector": {
+    "units_mode": {
+      "options": {
+        "auto": "Automatisch (volgt Home Assistant)",
+        "metric": "Metrisch (km/u, mm, hPa)",
+        "imperial": "Imperiaal (mph, in, inHg)"
+      }
+    },
+    "rain_unit": {
+      "options": {
+        "auto": "Automatisch (volgt Home Assistant)",
+        "mm": "mm (millimeter)",
+        "in": "in (inches)"
+      }
+    },
+    "distance_unit": {
+      "options": {
+        "auto": "Automatisch (volgt Home Assistant)",
+        "km": "km (kilometer)",
+        "mi": "mi (mijl)"
+      }
+    },
+    "altitude_unit": {
+      "options": {
+        "auto": "Automatisch (volgt Home Assistant)",
+        "m": "m (meter)",
+        "ft": "ft (voet)"
+      }
+    },
+    "forecast_provider": {
+      "options": {
+        "open_meteo": "Open-Meteo (gratis, geen sleutel)",
+        "met_no": "Met.no (gratis, geen sleutel)",
+        "nws_noaa": "NWS/NOAA (gratis, geen sleutel, alleen VS)",
+        "openweathermap": "OpenWeatherMap (gratis tier, API-sleutel)",
+        "pirate_weather": "Pirate Weather (gratis tier, API-sleutel)",
+        "meteo_france": "Météo France (gratis tier, API-sleutel)",
+        "ha_weather_entity": "Home Assistant weereentiteit (geen API-aanroepen)"
+      }
+    },
+    "hemisphere": {
+      "options": {
+        "northern": "Noordelijk",
+        "southern": "Zuidelijk"
+      }
+    },
+    "climate_region": {
+      "options": {
+        "atlantic_europe": "Atlantisch Europa",
+        "mediterranean": "Mediterraan",
+        "continental_europe": "Continentaal Europa",
+        "scandinavia": "Scandinavie",
+        "north_america_east": "Noord-Amerika (Oost)",
+        "north_america_west": "Noord-Amerika (West)",
+        "australia": "Australië",
+        "custom": "Aangepast"
+      }
     }
   }
 }

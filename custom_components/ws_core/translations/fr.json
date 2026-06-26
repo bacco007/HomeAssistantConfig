@@ -69,7 +69,7 @@
       },
       "forecast": {
         "title": "Prévisions sur 7 jours",
-        "description": "Prévisions météo sur septs jours. Localisation basée sur Home Assistant.",
+        "description": "Prévisions météo sur sept jours. Localisation basée sur Home Assistant.",
         "data": {
           "forecast_enabled": "Activer les prévisions",
           "forecast_interval_min": "Intervalle de rafraîchissement",
@@ -101,7 +101,7 @@
           "_go_back": "← Retour à l'étape précédente"
         },
         "data_description": {
-          "forecast_api_key": "Collez votre clé API ici. Elle sera stockée de manière sécurisée dans votre configuration Home assistant."
+          "forecast_api_key": "Collez votre clé API ici. Elle sera stockée de manière sécurisée dans votre configuration Home Assistant."
         }
       },
       "alerts": {
@@ -113,7 +113,7 @@
           "thresh_freeze_c": "Seuil de gel",
           "staleness_s": "Délai d'inactivité des capteurs",
           "rain_filter_alpha": "Lissage du taux de précipitation (Kalman)",
-          "pressure_trend_window_h": "Fenêtre d'analyse de la pression atmospherique",
+          "pressure_trend_window_h": "Fenêtre d'analyse de la pression atmosphérique",
           "_go_back": "← Retour à l'étape précédente"
         }
       },
@@ -133,7 +133,7 @@
           "enable_fog": "Probabilité de brouillard",
           "enable_thunderstorm_risk": "Risque d'orage",
           "enable_comfort_indices": "Indices de confort",
-          "enable_vigilance_meteo": "Vigilance Météo France)",
+          "enable_vigilance_meteo": "Vigilance Météo France (FR)",
           "enable_vigicrues": "Surveillance des cours d'eau (FR - Vigicrues)",
           "enable_diagnostics": "Diagnostics de la station météo",
           "enable_fwi_components": "Composantes IFM (Incendies)",
@@ -141,7 +141,7 @@
           "enable_nowcast": "Prévision immédiate des précipitations",
           "enable_degree_days": "Calcul des Degrés Jours et de humidité du feuillage",
           "enable_lightning": "Capteurs de détection de foudre",
-          "enable_indoor": "Prendre en compte les capteurs intérieurs)",
+          "enable_indoor": "Prendre en compte les capteurs intérieurs",
           "enable_soil": "Capteurs de sol (humidité, température, besoin en irrigation)",
           "enable_weathercloud": "Envoi vers Weathercloud",
           "enable_pwsweather": "Envoi vers PWSWeather",
@@ -327,7 +327,7 @@
       "station_not_found": "ID de la station Weather Underground introuvable."
     },
     "create_entry": {
-      "default": "Configuration terminée ! Vos prévisions locales et vos capteurs météo intelligents sont en cours de génération.\n\n**Prochaines étapes :**\nConfigururez le [tableau de bord](https://github.com/kmich/ha_ws_core/tree/main/dashboards)\n et les [automatisations d'alertes](https://github.com/kmich/ha_ws_core/tree/main/blueprints)"
+      "default": "Configuration terminée ! Vos prévisions locales et vos capteurs météo intelligents sont en cours de génération.\n\n**Prochaines étapes :**\nConfigurez le [tableau de bord](https://github.com/kmich/ha_ws_core/tree/main/dashboards)\n et les [automatisations d'alertes](https://github.com/kmich/ha_ws_core/tree/main/blueprints)"
     }
   },
   "options": {
@@ -421,7 +421,7 @@
           "forecast_api_key": "Clé API"
         },
         "data_description": {
-          "forecast_api_key": "Paste your API key here."
+          "forecast_api_key": "Collez votre clé API ici"
         }
       },
       "required_sources_opt": {
@@ -471,7 +471,7 @@
           "enable_thunderstorm_risk": "Risque d'orage",
           "enable_comfort_indices": "Indices de confort et agro-météo",
           "enable_vigilance_meteo": "Vigilance Météo France",
-          "enable_vigicrues": "Surveillance des cours d'eau (FR - Vigicrues )",
+          "enable_vigicrues": "Surveillance des cours d'eau (FR - Vigicrues)",
           "enable_diagnostics": "Diagnostics de la station météo",
           "enable_fwi_components": "Composantes IFM (Incendies)",
           "enable_advanced_sensors": "Algorithmes et prévisions barométriques",
@@ -502,8 +502,9 @@
           "enable_lightning": "Calcule la distance estimée et la fréquence des impacts de foudre détectés à proximité.",
           "enable_indoor": "Permet de lier vos sondes intérieures pour affiner les calculs de confort thermique global.",
           "enable_soil": "Calcule le besoin en eau des plantes, l'évaporation et suit vos sondes d'humidité du sol."
-       }, 
-       "indoor_rooms_opt": {
+        }
+      },
+      "indoor_rooms_opt": {
         "title": "Capteurs intérieurs des différentes pièces",
         "description": "Sélectionnez un capteur de température par pièce pour générer un capteur d'écart de température intérieur/extérieur dédié.",
         "data": {
@@ -2547,5 +2548,4 @@
       }
     }
   }
-}
 }
