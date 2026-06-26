@@ -23,11 +23,11 @@ SCAN_INTERVAL_NORMAL = timedelta(minutes=30)
 SCAN_INTERVAL_PRE_MATCH = timedelta(seconds=10)
 SCAN_INTERVAL_LIVE = timedelta(seconds=10)
 LIVE_EVENT_FETCH_INTERVAL = timedelta(seconds=10)
-LIVE_STATISTICS_FETCH_INTERVAL = timedelta(seconds=15)
-LIVE_BACKUP_STATUS_INTERVAL = timedelta(seconds=15)
-POST_MATCH_BACKFILL_INTERVAL = timedelta(hours=6)
+LIVE_STATISTICS_FETCH_INTERVAL = timedelta(seconds=10)
+LIVE_BACKUP_STATUS_INTERVAL = timedelta(seconds=10)
+POST_MATCH_BACKFILL_INTERVAL = timedelta(minutes=30)
 ENABLE_API_FOOTBALL_PLAYER_PHOTO_LOOKUP = False
-STANDINGS_FETCH_INTERVAL = timedelta(hours=1)
+STANDINGS_FETCH_INTERVAL = timedelta(minutes=30)
 SCORERS_FETCH_INTERVAL = timedelta(hours=1)
 
 TOTAL_WORLD_CUP_MATCHES = 104
@@ -456,6 +456,62 @@ def _count_goal_events(events):
         if "goal" in event_type or "goal" in detail:
             count += 1
     return count
+
+
+def _manual_goal_event(team, player, minute, detail="Normal Goal", assist=None):
+    """Build a small manual goal event for known fixtures missing API events."""
+    timer_seconds = int(minute) * 60
+    return {
+        "type": "Goal",
+        "rawType": "Goal",
+        "team": team,
+        "player": player,
+        "minute": int(minute),
+        "extra": None,
+        "displayMinute": f"{int(minute)}'",
+        "timer": f"{int(minute)}:00",
+        "timerSeconds": timer_seconds,
+        "detail": detail,
+        "comments": detail,
+        "assist": assist,
+        "source": "manual_result_fallback",
+    }
+
+
+def _manual_result_fallback_for_match(match):
+    """Return manual rich data for completed fixtures where providers omit events."""
+    home = _team_name(match.get("homeTeam", {}))
+    away = _team_name(match.get("awayTeam", {}))
+    pair_key = _match_key_from_names(home, away)
+    reverse_key = _match_key_from_names(away, home)
+    expected_goals = _expected_goal_count_from_match(match)
+
+    if {
+        pair_key,
+        reverse_key,
+    }.intersection({
+        "bosnia herzegovina|qatar",
+        "qatar|bosnia herzegovina",
+    }) and expected_goals == 4:
+        bosnia = home if _team_names_match(home, "Bosnia and Herzegovina") else away
+        qatar = away if _team_names_match(away, "Qatar") else home
+        goal_events = [
+            _manual_goal_event(bosnia, "Kerim Alajbegovic", 29, "Normal Goal"),
+            _manual_goal_event(bosnia, "Sultan Al-Brake", 34, "Own Goal"),
+            _manual_goal_event(qatar, "Hassan Al-Haydos", 42, "Normal Goal"),
+            _manual_goal_event(bosnia, "Ermin Mahmic", 80, "Normal Goal"),
+        ]
+        return {
+            "events": goal_events,
+            "goalEvents": goal_events,
+            "cardEvents": match.get("cardEvents") or [],
+            "substitutionEvents": match.get("substitutionEvents") or [],
+            "referees": match.get("referees") or match.get("officials") or [],
+            "liveStatistics": match.get("liveStatistics") or {},
+            "source": "manual_result_fallback",
+        }
+
+    return None
 
 
 def _is_disallowed_goal_event(event):
@@ -2981,7 +3037,27 @@ class WorldCupCoordinator(DataUpdateCoordinator):
             self._post_match_api_football_last_fetch
             and now - self._post_match_api_football_last_fetch < POST_MATCH_BACKFILL_INTERVAL
         ):
-            return self._post_match_api_football_cache
+            uncached_candidates = []
+            for match in candidates:
+                home = _team_name(match.get("homeTeam", {}))
+                away = _team_name(match.get("awayTeam", {}))
+                cached_data = self._post_match_api_football_cache.get(_match_key_from_names(home, away))
+                if not cached_data:
+                    uncached_candidates.append(match)
+                    continue
+
+                expected_goals = _expected_goal_count_from_match(match) or 0
+                cached_goal_count = _count_goal_events(cached_data.get("goalEvents") or cached_data.get("events") or [])
+                if expected_goals and cached_goal_count < expected_goals:
+                    uncached_candidates.append(match)
+                    continue
+                if not cached_data.get("events") or not cached_data.get("substitutionEvents"):
+                    uncached_candidates.append(match)
+
+            if not uncached_candidates:
+                return self._post_match_api_football_cache
+
+            candidates = uncached_candidates
 
         headers = {"x-apisports-key": api_key}
         timeout = aiohttp.ClientTimeout(total=30)
@@ -3032,14 +3108,22 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                     for event in substitution_events:
                         event["source"] = "api_football_post_match_direct"
 
-                    if all_events or goal_events or card_events or substitution_events:
+                    live_statistics = await self._fetch_api_football_statistics_for_fixture(
+                        session,
+                        fixture_id,
+                        headers,
+                        home,
+                        away,
+                    )
+
+                    if all_events or goal_events or card_events or substitution_events or live_statistics or fixture_id:
                         item_data = {
                             "events": all_events,
                             "goalEvents": goal_events,
                             "cardEvents": card_events,
                             "substitutionEvents": substitution_events,
                             "referees": match.get("referees") or match.get("officials") or [],
-                            "liveStatistics": match.get("liveStatistics") or {},
+                            "liveStatistics": live_statistics or match.get("liveStatistics") or {},
                             "apiFootballFixtureId": fixture_id,
                             "apiFootballHome": home,
                             "apiFootballAway": away,
@@ -3206,9 +3290,11 @@ class WorldCupCoordinator(DataUpdateCoordinator):
 
     async def _add_post_match_api_football_events_to_matches(self, matches):
         """Attach post-match API-Football goal events to finished matches."""
-        post_match_data = await self._fetch_post_match_events_from_api_football(matches)
-        if not post_match_data:
-            return matches
+        has_active_match = any(
+            str(match.get("status") or "").upper() in LIVE_STATUSES
+            for match in matches or []
+        )
+        post_match_data = await self._fetch_post_match_events_from_api_football(matches) if has_active_match else {}
 
         for match in matches:
             now = datetime.now(timezone.utc)
@@ -3227,6 +3313,17 @@ class WorldCupCoordinator(DataUpdateCoordinator):
                     ):
                         data = possible
                         break
+            if not data:
+                data = _manual_result_fallback_for_match(match)
+            elif _count_goal_events(data.get("goalEvents") or data.get("events") or []) < (_expected_goal_count_from_match(match) or 0):
+                manual_data = _manual_result_fallback_for_match(match)
+                if manual_data:
+                    data = {
+                        **manual_data,
+                        "referees": data.get("referees") or manual_data.get("referees") or [],
+                        "liveStatistics": data.get("liveStatistics") or manual_data.get("liveStatistics") or {},
+                        "apiFootballFixtureId": data.get("apiFootballFixtureId") or match.get("apiFootballFixtureId"),
+                    }
             if not data:
                 _LOGGER.debug("No API-Football post-match data matched %s v %s", home, away)
                 continue

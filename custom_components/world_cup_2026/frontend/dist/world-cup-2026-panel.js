@@ -20858,6 +20858,144 @@ class WorldCup2026Panel extends HTMLElement {
     `;
   }
 
+  knockoutGroupQualifiers() {
+    const groups = {};
+    const sources = [
+      ...(Array.isArray(this._data.standings) ? this._data.standings : []),
+      ...(Array.isArray(this._data.groups) ? this._data.groups : []),
+    ];
+    const groupLetter = (group, index) => {
+      const raw = String(group?.group || group?.name || group?.stage || "").trim();
+      const match = raw.match(/(?:GROUP|Group)?[\s_-]*([A-L])\b/i) || raw.match(/^([A-L])$/i);
+      return match?.[1] ? match[1].toUpperCase() : "";
+    };
+    const teamName = (row) => {
+      const team = row?.team || row?.name || row;
+      if (typeof team === "string") return team;
+      return team?.name || team?.shortName || team?.tla || "";
+    };
+    const numberValue = (row, ...keys) => {
+      for (const key of keys) {
+        const value = Number(row?.[key]);
+        if (Number.isFinite(value)) return value;
+      }
+      return 0;
+    };
+    const positionValue = (row, index) => {
+      const value = Number(row?.position ?? row?.rank ?? row?.pos);
+      return Number.isFinite(value) && value > 0 ? value : index + 1;
+    };
+
+    sources.forEach((group, groupIndex) => {
+      const letter = groupLetter(group, groupIndex);
+      if (!letter) return;
+      const rows = group?.table || group?.standings || group?.teams || [];
+      if (!Array.isArray(rows) || !rows.length) return;
+      const mapped = rows
+        .map((row, index) => ({
+          team: teamName(row),
+          group: letter,
+          position: positionValue(row, index),
+          points: numberValue(row, "points", "pts"),
+          gd: numberValue(row, "goalDifference", "gd"),
+          gf: numberValue(row, "goalsFor", "gf"),
+        }))
+        .filter((row) => row.team && this.fixtureTeamKey(row.team) !== this.fixtureTeamKey(this.t("tbc")))
+        .sort((a, b) =>
+          a.position - b.position ||
+          b.points - a.points ||
+          b.gd - a.gd ||
+          b.gf - a.gf ||
+          a.team.localeCompare(b.team)
+        );
+      if (!groups[letter] || mapped.length > groups[letter].rows.length) {
+        groups[letter] = {
+          rows: mapped,
+          winner: mapped[0]?.team || "",
+          runnerUp: mapped[1]?.team || "",
+          third: mapped[2]?.team || "",
+        };
+      }
+    });
+
+    const bestThirds = Object.entries(groups)
+      .map(([letter, group]) => group.rows[2] ? { ...group.rows[2], group: letter } : null)
+      .filter(Boolean)
+      .sort((a, b) =>
+        b.points - a.points ||
+        b.gd - a.gd ||
+        b.gf - a.gf ||
+        a.group.localeCompare(b.group)
+      )
+      .slice(0, 8);
+
+    return { groups, bestThirds };
+  }
+
+  knockoutRound32SeedMap() {
+    return {
+      73: ["RU A", "RU B"],
+      74: ["W E", "3 A/B/C/D/F"],
+      75: ["W F", "RU C"],
+      76: ["W C", "RU F"],
+      77: ["W I", "3 C/D/F/G/H"],
+      78: ["RU E", "RU I"],
+      79: ["W A", "3 C/E/F/H/I"],
+      80: ["W L", "3 E/H/I/J/K"],
+      81: ["W D", "3 B/E/F/I/J"],
+      82: ["W G", "3 A/E/H/I/J"],
+      83: ["RU K", "RU L"],
+      84: ["W H", "RU J"],
+      85: ["W B", "3 E/F/G/I/J"],
+      86: ["W J", "RU H"],
+      87: ["W K", "3 D/E/I/J/L"],
+      88: ["RU D", "RU G"],
+    };
+  }
+
+  knockoutTeamFromSeed(seed, qualifiers) {
+    const raw = String(seed || "").trim().toUpperCase();
+    const direct = raw.match(/^(W|RU)\s*([A-L])$/);
+    if (direct) {
+      const group = qualifiers.groups[direct[2]];
+      return direct[1] === "W" ? group?.winner : group?.runnerUp;
+    }
+
+    const third = raw.match(/^3\s+([A-L](?:\/[A-L])*)$/);
+    if (third) {
+      const allowed = third[1].split("/");
+      const possible = qualifiers.bestThirds.filter((row) => allowed.includes(row.group));
+      if (possible.length === 1) return possible[0].team;
+      return `3rd ${allowed.join("/")}`;
+    }
+
+    return "";
+  }
+
+  knockoutSeededPlaceholder(stage, index, match = null) {
+    if (stage !== "LAST_32") return null;
+    const matchNumber = this.knockoutDerivedMatchNumber(stage, index, match || {});
+    const seeds = this.knockoutRound32SeedMap()[matchNumber];
+    if (!seeds) return null;
+    const qualifiers = this.knockoutGroupQualifiers();
+    const home = this.knockoutTeamFromSeed(seeds[0], qualifiers) || seeds[0];
+    const away = this.knockoutTeamFromSeed(seeds[1], qualifiers) || seeds[1];
+    return {
+      id: `wc2026-derived-knockout-${matchNumber}`,
+      matchNumber,
+      fifaMatchNumber: matchNumber,
+      stage: "LAST_32",
+      status: "TIMED",
+      utcDate: match?.utcDate || match?.date || "",
+      date: match?.utcDate || match?.date || "",
+      homeTeam: { name: home },
+      awayTeam: { name: away },
+      score: { fullTime: { home: null, away: null } },
+      venue: match?.venue || match?.stadium || "",
+      source: "standings_knockout_placeholder",
+    };
+  }
+
   playersPage() {
     const rawScorers = Array.isArray(this._data.scorers) ? this._data.scorers : [];
     const allMatchSources = [
@@ -21233,6 +21371,10 @@ class WorldCup2026Panel extends HTMLElement {
       const start = this.knockoutRoundStarts()[stage];
       const slots = Array.from({ length: expected }, () => null);
       const overflow = [];
+      const isUnknownTeam = (team) => {
+        const key = this.fixtureTeamKey(team);
+        return !key || key === this.fixtureTeamKey(this.t("tbc")) || key === "tbc" || key.includes("winner") || key.includes("runner up");
+      };
 
       matches.forEach((match, fallbackIndex) => {
         const matchNumber = this.knockoutDerivedMatchNumber(stage, fallbackIndex, match);
@@ -21248,6 +21390,47 @@ class WorldCup2026Panel extends HTMLElement {
         const emptyIndex = slots.findIndex((slot) => !slot);
         if (emptyIndex >= 0) slots[emptyIndex] = match;
       });
+
+      if (stage === "LAST_32") {
+        const usedTeamKeys = new Set();
+        slots.forEach((match) => {
+          if (!match) return;
+          [this.getHomeTeam(match), this.getAwayTeam(match)].forEach((team) => {
+            if (isUnknownTeam(team)) return;
+            const key = this.fixtureTeamKey(team);
+            if (key) usedTeamKeys.add(key);
+          });
+        });
+
+        slots.forEach((match, index) => {
+          const seeded = this.knockoutSeededPlaceholder(stage, index, match);
+          if (!seeded) return;
+          const safeSeeded = { ...seeded };
+          [this.getHomeTeam(seeded), this.getAwayTeam(seeded)].forEach((team, teamIndex) => {
+            const key = this.fixtureTeamKey(team);
+            if (!key || isUnknownTeam(team) || !usedTeamKeys.has(key)) return;
+            if (teamIndex === 0) safeSeeded.homeTeam = { name: this.knockoutRound32SeedMap()[seeded.matchNumber]?.[0] || this.t("tbc") };
+            if (teamIndex === 1) safeSeeded.awayTeam = { name: this.knockoutRound32SeedMap()[seeded.matchNumber]?.[1] || this.t("tbc") };
+          });
+
+          if (!match) {
+            slots[index] = safeSeeded;
+            return;
+          }
+
+          const homeUnknown = isUnknownTeam(this.getHomeTeam(match));
+          const awayUnknown = isUnknownTeam(this.getAwayTeam(match));
+          if (homeUnknown || awayUnknown) {
+            slots[index] = {
+              ...safeSeeded,
+              ...match,
+              homeTeam: homeUnknown ? safeSeeded.homeTeam : match.homeTeam,
+              awayTeam: awayUnknown ? safeSeeded.awayTeam : match.awayTeam,
+              score: match.score || safeSeeded.score,
+            };
+          }
+        });
+      }
 
       return slots;
     };
@@ -21285,8 +21468,11 @@ class WorldCup2026Panel extends HTMLElement {
     };
     const detailMatches = [];
     roundMatches.forEach(({ stage, label, matches }) => {
-      matches.forEach((match, index) => detailMatches.push({ stage, label, match, index }));
-      if (!matches.length) detailMatches.push({ stage, label, match: null, index: 0 });
+      const displayMatches = stage === "LAST_32"
+        ? spiderSlotsForRound(stage, matches).filter(Boolean)
+        : matches;
+      displayMatches.forEach((match, index) => detailMatches.push({ stage, label, match, index }));
+      if (!displayMatches.length) detailMatches.push({ stage, label, match: null, index: 0 });
     });
     const knockoutVisibleCount = Math.min(this._knockoutVisibleMatches || 12, detailMatches.length);
     const visibleDetailMatches = detailMatches.slice(0, knockoutVisibleCount);
