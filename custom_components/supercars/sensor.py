@@ -14,6 +14,10 @@ from .schedule_coordinator import ScheduleCoordinator
 from .standings_coordinator import StandingsCoordinator
 from .results_coordinator import ResultsCoordinator
 
+def _driver_picture(name: str) -> str:
+    return f"https://www.supercars.com/images/drivers/{name.lower().replace(' ', '-')}.jpg"
+
+
 # ── Timing sensors ────────────────────────────────────────────────────────────
 
 TIMING_SENSOR_DESCRIPTIONS: list[SensorEntityDescription] = [
@@ -92,10 +96,9 @@ class SupercarsSensor(CoordinatorEntity, SensorEntity):
         elif self.entity_description.key == "leader":
             attrs["car_number"] = data.get("leader_car")
             attrs["team"]       = data.get("leader_team")
-            # Simple driver image map for demonstration
             driver = self.native_value
             if driver:
-                attrs["entity_picture"] = f"https://www.supercars.com/images/drivers/{driver.lower().replace(' ', '-')}.jpg"
+                attrs["entity_picture"] = _driver_picture(driver)
         elif self.entity_description.key == "current_lap":
             attrs["total_laps"] = data.get("total_laps")
         return attrs
@@ -127,13 +130,16 @@ class SupercarsStandingsSensor(CoordinatorEntity, SensorEntity):
     @property
     def extra_state_attributes(self) -> dict:
         key = "drivers" if self._type == "driver" else "teams"
-        data = self.coordinator.data.get(key, [])
-        # Add entity_picture to drivers if applicable
+        rows = self.coordinator.data.get(key, [])
         if self._type == "driver":
-            for item in data:
-                if "driver" in item:
-                    item["entity_picture"] = f"https://www.supercars.com/images/drivers/{item['driver'].lower().replace(' ', '-')}.jpg"
-        return {key: data}
+            rows = [
+                {**row, "entity_picture": _driver_picture(row["driver"])}
+                if "driver" in row else dict(row)
+                for row in rows
+            ]
+        else:
+            rows = [dict(row) for row in rows]
+        return {key: rows, "source": self.coordinator.data.get("source")}
 
     @property
     def available(self) -> bool:
@@ -159,11 +165,19 @@ class SupercarsResultsSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def extra_state_attributes(self) -> dict:
-        finishers = self.coordinator.data.get("finishers", [])
-        for f in finishers:
-            if "driver" in f:
-                f["entity_picture"] = f"https://www.supercars.com/images/drivers/{f['driver'].lower().replace(' ', '-')}.jpg"
-        return {"finishers": finishers}
+        data = self.coordinator.data
+        finishers = [
+            {**f, "entity_picture": _driver_picture(f["driver"])}
+            if "driver" in f else dict(f)
+            for f in data.get("finishers", [])
+        ]
+        return {
+            "finishers": finishers,
+            "source":  data.get("source"),
+            "session": data.get("session"),
+            "round":   data.get("round"),
+            "live":    data.get("live", False),
+        }
 
     @property
     def available(self) -> bool:
