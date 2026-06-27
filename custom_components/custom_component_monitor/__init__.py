@@ -24,6 +24,8 @@ from .const import (
     SERVICE_UPDATE_ALL,
     UAT_CARD_JS,
     UAT_CARD_BASE_PATH,
+    RIU_CARD_JS,
+    RIU_CARD_BASE_PATH,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -61,16 +63,21 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     src_uat = Path(__file__).parent / "www" / UAT_CARD_JS
     dest_uat = www_dir / UAT_CARD_JS
 
+    src_riu = Path(__file__).parent / "www" / RIU_CARD_JS
+    dest_riu = www_dir / RIU_CARD_JS
+
     def _copy_cards():
         www_dir.mkdir(parents=True, exist_ok=True)
         shutil.copy2(str(src_ccm), str(dest_ccm))
         shutil.copy2(str(src_uat), str(dest_uat))
+        shutil.copy2(str(src_riu), str(dest_riu))
 
     await hass.async_add_executor_job(_copy_cards)
 
     async def _deferred_register(_event):
         await _register_lovelace_resource(hass, CARD_BASE_PATH, CARD_JS)
         await _register_lovelace_resource(hass, UAT_CARD_BASE_PATH, UAT_CARD_JS)
+        await _register_lovelace_resource(hass, RIU_CARD_BASE_PATH, RIU_CARD_JS)
 
     hass.bus.async_listen_once("homeassistant_started", _deferred_register)
 
@@ -229,6 +236,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         async def handle_update_all(call: ServiceCall) -> None:
             create_actions: bool = call.data.get("create_actions", False)
+            # Optional subset: only update these update entities (the card passes
+            # the currently-filtered set for "Update selected"). Empty = all.
+            selected: set[str] = set(call.data.get("entity_ids", []) or [])
             registry = er.async_get(hass)
 
             targets: list[str] = []
@@ -237,13 +247,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                     continue
                 if state.attributes.get("in_progress"):
                     continue
+                if selected and state.entity_id not in selected:
+                    continue
                 entry_re = registry.async_get(state.entity_id)
                 if entry_re is None or entry_re.platform != "hacs":
                     continue
                 targets.append(state.entity_id)
 
             _LOGGER.info(
-                "update_all: %d HACS component(s) with available updates", len(targets)
+                "update_all: %d HACS component(s) with available updates%s",
+                len(targets),
+                " (selected subset)" if selected else "",
             )
             for entity_id in targets:
                 try:
@@ -268,7 +282,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             DOMAIN,
             SERVICE_UPDATE_ALL,
             handle_update_all,
-            schema=vol.Schema({vol.Optional("create_actions", default=False): cv.boolean}),
+            schema=vol.Schema(
+                {
+                    vol.Optional("create_actions", default=False): cv.boolean,
+                    vol.Optional("entity_ids", default=[]): cv.ensure_list,
+                }
+            ),
         )
 
     return True

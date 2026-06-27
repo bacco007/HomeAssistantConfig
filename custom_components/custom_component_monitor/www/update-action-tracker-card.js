@@ -2,10 +2,10 @@
  * Update Action Tracker Card
  * Lists HACS integrations with pending updates and provides
  * Skip, Update, and Update & Action buttons.
- * v1.6.0
+ * v1.11.0
  */
 
-const CARD_VERSION = "1.6.0";
+const CARD_VERSION = "1.11.0";
 const UAT_DOMAIN = "custom_component_monitor";
 
 /* -- Helpers -------------------------------------------------- */
@@ -72,6 +72,9 @@ class UpdateActionTrackerCard extends HTMLElement {
     this._lastStateHash = "";
     this._progressPollTimer = null;
     this._typeFilter = "all"; // #69: filter updates by component type
+    this._categoryFilter = "all"; // #67: filter by AI category
+    this._categorySort = false; // #67: sort by AI category
+    this._shownEntities = []; // currently-visible set, for "Update selected"
   }
 
   /* -- Lovelace lifecycle ------------------------------------- */
@@ -88,6 +91,7 @@ class UpdateActionTrackerCard extends HTMLElement {
     this._config = Object.assign({ title: "HACS Update Tracker" }, config);
     this._lastStateHash = "";
     if (config && config.default_filter) this._typeFilter = config.default_filter;
+    if (config && config.default_category_filter) this._categoryFilter = config.default_category_filter;
     if (this._hass) this._doRender();
   }
 
@@ -245,6 +249,35 @@ class UpdateActionTrackerCard extends HTMLElement {
     return "other";
   }
 
+  /* -- AI categories & summary (#67) -------------------------- */
+
+  // Build {repoKey|name -> {categories, summary}} from sensor.hacs_updates,
+  // which the integration enriches when AI categorisation is enabled.
+  _buildAiMap() {
+    const byRepo = {}, byName = {};
+    const s = this._hass.states["sensor.hacs_updates"];
+    const updates = (s && s.attributes && s.attributes.updates) || [];
+    for (const u of updates) {
+      const info = {
+        categories: Array.isArray(u.categories) ? u.categories : [],
+        summary: u.summary || "",
+      };
+      const rk = this._repoKey(u.repository);
+      if (rk) byRepo[rk] = info;
+      if (u.name) byName[String(u.name).toLowerCase().trim()] = info;
+    }
+    return { byRepo, byName };
+  }
+
+  _aiOf(entityId, map) {
+    const a = (this._hass.states[entityId] || {}).attributes || {};
+    const rk = this._repoKey(a.release_url);
+    if (rk && map.byRepo[rk]) return map.byRepo[rk];
+    const name = String(a.friendly_name || "").replace(/ update$/i, "").toLowerCase().trim();
+    if (name && map.byName[name]) return map.byName[name];
+    return { categories: [], summary: "" };
+  }
+
   /* -- Progress helper ---------------------------------------- */
 
   _getProgressInfo(entityId) {
@@ -315,20 +348,25 @@ class UpdateActionTrackerCard extends HTMLElement {
   }
 
   async _handleUpdateAll() {
-    const entities = await this._getHacsUpdateEntities();
-    if (!entities.length) return;
-    if (!window.confirm(
-      "Install all " + entities.length + " available HACS update" +
-      (entities.length > 1 ? "s" : "") + " now?"
-    )) return;
-    // Mark each row in progress for immediate feedback.
-    entities.forEach((eid) => { this._actionInProgress[eid] = "update"; });
+    // Act on the currently-visible (filtered) set captured during render.
+    const targets = (this._shownEntities || []).slice();
+    if (!targets.length) return;
+    const filtered = this._typeFilter !== "all" || this._categoryFilter !== "all";
+    const noun = "update" + (targets.length > 1 ? "s" : "");
+    const msg = filtered
+      ? "Install the " + targets.length + " selected HACS " + noun + " now?"
+      : "Install all " + targets.length + " available HACS " + noun + " now?";
+    if (!window.confirm(msg)) return;
+    // Mark each target in progress for immediate feedback.
+    targets.forEach((eid) => { this._actionInProgress[eid] = "update"; });
     this._doRender();
     this._manageProgressPoll();
     try {
-      await this._hass.callService(UAT_DOMAIN, "update_all", {});
+      // Pass the explicit subset when filtered; otherwise let the service update all.
+      const data = filtered ? { entity_ids: targets } : {};
+      await this._hass.callService(UAT_DOMAIN, "update_all", data);
     } catch (_err) {
-      entities.forEach((eid) => { delete this._actionInProgress[eid]; });
+      targets.forEach((eid) => { delete this._actionInProgress[eid]; });
       this._doRender();
     }
   }
@@ -379,15 +417,53 @@ class UpdateActionTrackerCard extends HTMLElement {
     if (this._typeFilter !== "all" && !present.includes(this._typeFilter)) {
       this._typeFilter = "all";
     }
-    const shown = this._typeFilter === "all" ? entities : (cats[this._typeFilter] || []);
+    let shown = this._typeFilter === "all" ? entities : (cats[this._typeFilter] || []);
+
+    /* AI categories (#67): build the per-update map, tally present categories
+       for the chips, then filter/sort the shown list. All a no-op when the AI
+       feature is off (updates carry no categories). */
+    const aiMap = this._buildAiMap();
+    const catCounts = {};
+    let anyCats = false;
+    for (const eid of entities) {
+      const info = this._aiOf(eid, aiMap);
+      if (info.categories && info.categories.length) {
+        anyCats = true;
+        for (const c of info.categories) catCounts[c] = (catCounts[c] || 0) + 1;
+      }
+    }
+    const presentCats = Object.keys(catCounts);
+    if (this._categoryFilter !== "all" && !presentCats.includes(this._categoryFilter)) {
+      this._categoryFilter = "all";
+    }
+    if (this._categoryFilter !== "all") {
+      shown = shown.filter((eid) => {
+        const info = this._aiOf(eid, aiMap);
+        return info.categories && info.categories.includes(this._categoryFilter);
+      });
+    }
+    if (this._categorySort && anyCats) {
+      shown = shown.slice().sort((a, b) => {
+        const ca = (this._aiOf(a, aiMap).categories[0] || "~").toLowerCase();
+        const cb = (this._aiOf(b, aiMap).categories[0] || "~").toLowerCase();
+        if (ca !== cb) return ca < cb ? -1 : 1;
+        const na = (this._hass.states[a].attributes.friendly_name || a).toLowerCase();
+        const nb = (this._hass.states[b].attributes.friendly_name || b).toLowerCase();
+        return na.localeCompare(nb);
+      });
+    }
+
+    // Remember the currently-visible (filtered) set so "Update selected" acts on it.
+    this._shownEntities = shown;
+    const filtered = this._typeFilter !== "all" || this._categoryFilter !== "all";
 
     let contentHtml;
     if (entities.length === 0) {
       contentHtml = '<div class="empty"><ha-icon icon="mdi:check-circle-outline"></ha-icon><span>All HACS integrations are up to date!</span></div>';
     } else if (shown.length === 0) {
-      contentHtml = '<div class="empty"><span>No updates of this type.</span></div>';
+      contentHtml = '<div class="empty"><span>No updates match this filter.</span></div>';
     } else {
-      contentHtml = shown.map((eid) => this._renderItem(eid)).join("");
+      contentHtml = shown.map((eid) => this._renderItem(eid, aiMap)).join("");
     }
 
     /* Filter chips - only when there's more than one type to pick between. */
@@ -407,6 +483,27 @@ class UpdateActionTrackerCard extends HTMLElement {
         "</div>";
     }
 
+    /* Category filter chips + sort toggle (#67) — only when the AI feature has
+       produced categories. Multiple categories per update are supported. */
+    let catFiltersHtml = "";
+    if (entities.length > 0 && anyCats) {
+      const catOrder = ["Bug fixes", "New features", "Documentation", "Translations", "Breaking changes", "Dependencies", "Other"];
+      const ordered = catOrder.filter((c) => presentCats.includes(c))
+        .concat(presentCats.filter((c) => !catOrder.includes(c)).sort());
+      const catChip = (key, lbl, n) =>
+        '<button class="chip cat-chip' + (this._categoryFilter === key ? " active" : "") + '" data-catfilter="' + uatEscapeHtml(key) + '">' +
+        uatEscapeHtml(lbl) + (n != null ? ' <span class="chip-count">' + n + "</span>" : "") + "</button>";
+      const sortChip =
+        '<button class="chip sort-chip' + (this._categorySort ? " active" : "") + '" data-catsort="1" title="Sort by category">' +
+        '<ha-icon icon="mdi:sort-alphabetical-variant"></ha-icon> Sort</button>';
+      catFiltersHtml =
+        '<div class="filters cat-filters">' +
+        catChip("all", "All categories", entities.length) +
+        ordered.map((c) => catChip(c, c, catCounts[c])).join("") +
+        sortChip +
+        "</div>";
+    }
+
     const badgeClass = entities.length > 0 ? "pending" : "clean";
     const badgeText = entities.length > 0
       ? entities.length + " update" + (entities.length > 1 ? "s" : "")
@@ -420,10 +517,14 @@ class UpdateActionTrackerCard extends HTMLElement {
       '<span class="badge ' + badgeClass + '">' + badgeText + '</span>' +
       '</div>' +
       filtersHtml +
-      (entities.length > 0
+      catFiltersHtml +
+      (shown.length > 0
         ? '<div class="update-all-bar">' +
           '<button class="btn btn-update-all" data-action="update-all">' +
-          'Update all (' + entities.length + ')</button></div>'
+          (filtered
+            ? 'Update selected (' + shown.length + ')'
+            : 'Update all (' + entities.length + ')') +
+          '</button></div>'
         : '') +
       '<div class="items">' + contentHtml + '</div>' +
       '</ha-card>';
@@ -431,7 +532,7 @@ class UpdateActionTrackerCard extends HTMLElement {
     this._bindEvents();
   }
 
-  _renderItem(entityId) {
+  _renderItem(entityId, aiMap) {
     const state = this._hass.states[entityId];
     if (!state) return "";
     const attrs = state.attributes;
@@ -442,6 +543,12 @@ class UpdateActionTrackerCard extends HTMLElement {
     const releaseUrl = attrs.release_url || "";
     const isExpanded = this._expandedEntity === entityId;
     const progress = this._getProgressInfo(entityId);
+    const ai = this._aiOf(entityId, aiMap || { byRepo: {}, byName: {} });
+    const catBadgesHtml = (ai.categories && ai.categories.length)
+      ? '<div class="cat-badges">' +
+        ai.categories.map((c) => '<span class="cat-badge">' + uatEscapeHtml(c) + "</span>").join("") +
+        "</div>"
+      : "";
 
     const pictureHtml = picture
       ? '<img class="entity-pic" src="' + uatEscapeHtml(picture) + '" alt="" />'
@@ -479,6 +586,7 @@ class UpdateActionTrackerCard extends HTMLElement {
       '<div class="item-name">' + name + '</div>' +
       '<div class="item-version">' + installedVer + ' \u2192 ' + latestVer + '</div>' +
       '</div>' +
+      catBadgesHtml +
       '<ha-icon class="expand-icon' + (isExpanded ? " open" : "") + '" icon="mdi:chevron-down"></ha-icon>' +
       '</div>';
 
@@ -487,6 +595,13 @@ class UpdateActionTrackerCard extends HTMLElement {
     }
 
     if (isExpanded) {
+      if (ai.summary) {
+        html +=
+          '<div class="ai-summary">' +
+          '<ha-icon icon="mdi:robot-outline"></ha-icon>' +
+          '<span>' + uatEscapeHtml(ai.summary) + '</span>' +
+          '</div>';
+      }
       html += notesHtml;
       if (releaseUrl) {
         html += '<div class="release-link"><a href="' + uatEscapeHtml(releaseUrl) + '" target="_blank" rel="noopener noreferrer">View on GitHub</a></div>';
@@ -601,6 +716,21 @@ class UpdateActionTrackerCard extends HTMLElement {
         self._doRender();
       });
     });
+    this.shadowRoot.querySelectorAll(".chip[data-catfilter]").forEach(function(chip) {
+      chip.addEventListener("click", function(e) {
+        e.stopPropagation();
+        self._categoryFilter = chip.getAttribute("data-catfilter");
+        self._doRender();
+      });
+    });
+    const sortChip = this.shadowRoot.querySelector(".chip[data-catsort]");
+    if (sortChip) {
+      sortChip.addEventListener("click", function(e) {
+        e.stopPropagation();
+        self._categorySort = !self._categorySort;
+        self._doRender();
+      });
+    }
   }
 
   /* -- Styles ------------------------------------------------- */
@@ -626,6 +756,15 @@ class UpdateActionTrackerCard extends HTMLElement {
       ".chip:hover { background:var(--uat-row-hover, rgba(127,127,127,0.16)); }",
       ".chip.active { background:var(--primary-color, #03a9f4); color:#fff; border-color:var(--primary-color, #03a9f4); }",
       ".chip-count { font-size:0.85em; opacity:0.85; }",
+      /* AI category filter row + sort toggle (#67) */
+      ".cat-filters { margin-top:-4px; }",
+      ".sort-chip ha-icon { --mdc-icon-size:16px; vertical-align:middle; }",
+      /* AI category badges — text pills (not colour-coded, for colour-blind a11y) */
+      ".cat-badges { display:flex; flex-wrap:wrap; gap:4px; justify-content:flex-end; align-items:center; max-width:48%; flex-shrink:0; }",
+      ".cat-badge { font-size:0.66em; font-weight:600; padding:2px 7px; border-radius:10px; white-space:nowrap; color:var(--uat-secondary); background:var(--uat-row-bg, rgba(127,127,127,0.12)); border:1px solid var(--divider-color, rgba(127,127,127,0.28)); }",
+      /* AI one-line summary in the expanded row */
+      ".ai-summary { display:flex; align-items:flex-start; gap:6px; margin:0 0 8px 52px; font-size:0.85em; line-height:1.4; color:var(--uat-primary); font-style:italic; }",
+      ".ai-summary ha-icon { --mdc-icon-size:16px; color:var(--uat-accent); flex-shrink:0; margin-top:1px; }",
       ".empty { display:flex; align-items:center; gap:8px; padding:16px 0; color:var(--uat-secondary); font-style:italic; }",
       ".empty ha-icon { --mdc-icon-size:24px; color:var(--uat-green); }",
       ".item { border-bottom:1px solid var(--uat-divider); }",

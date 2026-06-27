@@ -35,3 +35,13 @@ update_all:
       default: false
       selector:
         boolean:
+    entity_ids:
+      name: "Limit to entities"
+      description: >-
+        Only update these update entities. If omitted, every pending HACS update
+        is installed. The card's "Update selected" passes the currently-filtered
+        set here.
+      selector:
+        entity:
+          domain: update
+          multiple: true

@@ -17,9 +17,16 @@
     "step": {
       "init": {
         "title": "Custom Component Monitor options",
-        "description": "Exclude components that are actually in use but get flagged as unused. Pick from the currently-unused list, or type a name/domain for anything else.",
+        "description": "Fine-tune what gets flagged as unused, and optionally let AI summarise and categorise your pending updates.",
         "data": {
-          "exclude": "Excluded components"
+          "exclude": "Components to treat as used",
+          "ai_categorization_enabled": "Summarise & categorise updates with AI",
+          "ai_task_entity": "AI entity"
+        },
+        "data_description": {
+          "exclude": "Components that are actually in use but get flagged as unused. Pick from the currently-unused list, or type a name or domain for anything else.",
+          "ai_categorization_enabled": "Label each pending HACS update with categories and a one-line summary.",
+          "ai_task_entity": "Choose an AI Task entity (Home Assistant 2025.7+) or a Conversation agent. If one doesn't work for your model, try the other."
         }
       }
     }

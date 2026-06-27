@@ -1,0 +1,75 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Custom Component Monitor",
+        "description": "Set up Custom Component Monitor to track HACS-installed components in your Home Assistant installation."
+      }
+    },
+    "error": {
+      "unknown": "Unexpected error occurred."
+    },
+    "abort": {
+      "single_instance_allowed": "Only a single configuration is allowed."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Custom Component Monitor options",
+        "description": "Fine-tune what gets flagged as unused, and optionally let AI summarise and categorise your pending updates.",
+        "data": {
+          "exclude": "Components to treat as used",
+          "ai_categorization_enabled": "Summarise & categorise updates with AI",
+          "ai_task_entity": "AI entity"
+        },
+        "data_description": {
+          "exclude": "Components that are actually in use but get flagged as unused. Pick from the currently-unused list, or type a name or domain for anything else.",
+          "ai_categorization_enabled": "Label each pending HACS update with categories and a one-line summary.",
+          "ai_task_entity": "Choose an AI Task entity (Home Assistant 2025.7+) or a Conversation agent. If one doesn't work for your model, try the other."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "all_hacs_components": {
+        "name": "HACS Installed Components"
+      },
+      "unused_integrations": {
+        "name": "Unused Custom Integrations"
+      },
+      "unused_themes": {
+        "name": "Unused Custom Themes"
+      },
+      "unused_frontend": {
+        "name": "Unused Frontend Resources"
+      }
+    },
+    "todo": {
+      "hacs_update_actions": {
+        "name": "HACS Update Actions"
+      }
+    }
+  },
+  "services": {
+    "scan_now": {
+      "name": "Custom Component Monitor: manual scan",
+      "description": "Trigger an immediate scan of all HACS-installed custom components."
+    },
+    "update_and_action": {
+      "name": "Update and Add Action",
+      "description": "Install the HACS update and add a to-do item to track follow-up actions.",
+      "fields": {
+        "entity_id": {
+          "name": "Update Entity",
+          "description": "The update entity to install (e.g. update.my_integration_update)."
+        },
+        "version": {
+          "name": "Version",
+          "description": "Specific version to install. If omitted, installs the latest version."
+        }
+      }
+    }
+  }
+}

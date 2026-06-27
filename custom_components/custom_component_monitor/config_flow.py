@@ -11,7 +11,12 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
 
-from .const import CONF_EXCLUDE, DOMAIN
+from .const import (
+    CONF_AI_CATEGORIZATION_ENABLED,
+    CONF_AI_TASK_ENTITY,
+    CONF_EXCLUDE,
+    DOMAIN,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -81,9 +86,22 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             if isinstance(exclude, str):
                 exclude = [exclude]
             exclude = [str(x).strip() for x in exclude if str(x).strip()]
-            return self.async_create_entry(title="", data={CONF_EXCLUDE: exclude})
+            return self.async_create_entry(
+                title="",
+                data={
+                    CONF_EXCLUDE: exclude,
+                    CONF_AI_CATEGORIZATION_ENABLED: user_input.get(
+                        CONF_AI_CATEGORIZATION_ENABLED, False
+                    ),
+                    CONF_AI_TASK_ENTITY: user_input.get(CONF_AI_TASK_ENTITY, ""),
+                },
+            )
 
         current = self.config_entry.options.get(CONF_EXCLUDE, []) or []
+        current_ai_enabled = self.config_entry.options.get(
+            CONF_AI_CATEGORIZATION_ENABLED, False
+        )
+        current_ai_entity = self.config_entry.options.get(CONF_AI_TASK_ENTITY, "")
 
         # Offer the currently-unused component names as quick-pick options, while
         # still allowing free-text entries (custom_value) for anything else.
@@ -105,7 +123,17 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                         custom_value=True,
                         mode=selector.SelectSelectorMode.DROPDOWN,
                     )
-                )
+                ),
+                # AI summarise & categorise updates (#67) — optional.
+                vol.Optional(
+                    CONF_AI_CATEGORIZATION_ENABLED, default=current_ai_enabled
+                ): selector.BooleanSelector(),
+                vol.Optional(
+                    CONF_AI_TASK_ENTITY,
+                    description={"suggested_value": current_ai_entity or None},
+                ): selector.EntitySelector(
+                    selector.EntitySelectorConfig(domain=["ai_task", "conversation"])
+                ),
             }
         )
         return self.async_show_form(step_id="init", data_schema=schema)
