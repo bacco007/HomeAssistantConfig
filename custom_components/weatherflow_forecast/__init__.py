@@ -63,6 +63,18 @@ def _get_forecast_hours(config_entry: ConfigEntry) -> int:
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Set up WeatherFlow Forecast as config entry."""
     hass.data.setdefault(DOMAIN, {})
+
+    # Coerce legacy non-string unique_id to a string. Entries created before the
+    # config flow started casting the station id (commit 73213aa) stored it as an
+    # int, which Home Assistant now flags on every load. There is no migration for
+    # those existing entries, so fix them up in place here.
+    if config_entry.unique_id is not None and not isinstance(
+        config_entry.unique_id, str
+    ):
+        hass.config_entries.async_update_entry(
+            config_entry, unique_id=str(config_entry.unique_id)
+        )
+
     integration = await async_get_integration(hass, DOMAIN)
     _LOGGER.info(STARTUP, integration.version, str(config_entry.data[CONF_STATION_ID]))
 
