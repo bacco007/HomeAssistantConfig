@@ -5444,15 +5444,13 @@ class WorldCup2026Panel extends HTMLElement {
       if (!document.hidden) {
         this.updateCountdownDisplay();
         this.updateLiveClockDisplays();
-        this.scheduleNextRefresh(20 * 1000);
+        this.scheduleNextRefresh();
       }
     };
     document.addEventListener("visibilitychange", this._visibilityHandler);
 
     // Keep this panel synced without hammering GitHub/HA all day.
-    // During live games, viewer devices pull the master GitHub/public feed
-    // every 20 seconds so their clocks match the provider dashboard.
-    this.scheduleNextRefresh(20 * 1000);
+    this.scheduleNextRefresh();
 
     this._countdownInterval = setInterval(() => {
       if (document.hidden) return;
@@ -6253,8 +6251,7 @@ class WorldCup2026Panel extends HTMLElement {
       if (until <= 3 * 60 * 60 * 1000) return 5 * 60 * 1000;
     }
 
-    if (this.gameToday(matches)) return 5 * 60 * 1000;
-    return 15 * 60 * 1000;
+    return 30 * 60 * 1000;
   }
 
   scheduleNextRefresh(delay = null) {
@@ -10031,6 +10028,192 @@ class WorldCup2026Panel extends HTMLElement {
             left: auto;
             right: -14px;
           }
+        }
+
+        .wc-page-knockout .wc-web-card {
+          max-width: 100% !important;
+          overflow-x: auto !important;
+          overflow-y: visible !important;
+          overscroll-behavior-x: contain;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-gutter: stable;
+        }
+
+        .wc-page-knockout .wc-knockout-spider {
+          width: max-content;
+          max-width: none;
+          column-gap: 10px !important;
+          min-width: 1160px !important;
+        }
+
+        .wc-page-knockout .wc-web-card::-webkit-scrollbar {
+          height: 10px;
+        }
+
+        .wc-page-knockout .wc-web-card::-webkit-scrollbar-thumb {
+          background: rgba(255,255,255,0.28);
+          border-radius: 999px;
+        }
+
+        .wc-app.wc-view-tablet.wc-page-knockout .wc-web-card,
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-web-card {
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+          padding: 10px !important;
+          border-radius: 12px !important;
+        }
+
+        .wc-app.wc-view-tablet.wc-page-knockout .wc-knockout-spider {
+          min-width: 1060px !important;
+          min-height: 585px !important;
+          column-gap: 8px !important;
+          transform: none;
+          transform-origin: top left;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-knockout-spider {
+          min-width: 940px !important;
+          min-height: 560px !important;
+          grid-template-columns:
+            minmax(118px, 1.05fr)
+            minmax(104px, 0.9fr)
+            minmax(96px, 0.82fr)
+            minmax(90px, 0.78fr)
+            minmax(112px, 0.95fr)
+            minmax(90px, 0.78fr)
+            minmax(96px, 0.82fr)
+            minmax(104px, 0.9fr)
+            minmax(118px, 1.05fr) !important;
+          column-gap: 8px !important;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-spider-match {
+          min-height: 32px !important;
+          padding: 3px 4px !important;
+          grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1fr) !important;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-spider-team {
+          font-size: 9px !important;
+        }
+
+        .wc-page-knockout .wc-web-card {
+          overflow-x: hidden !important;
+        }
+
+        .wc-page-knockout .wc-knockout-spider,
+        .wc-app.wc-view-tablet.wc-page-knockout .wc-knockout-spider,
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-knockout-spider {
+          width: 100% !important;
+          min-width: 0 !important;
+          max-width: 100% !important;
+          grid-template-columns:
+            minmax(0, 1.1fr)
+            minmax(0, 0.92fr)
+            minmax(0, 0.82fr)
+            minmax(0, 0.74fr)
+            minmax(0, 0.86fr)
+            minmax(0, 0.74fr)
+            minmax(0, 0.82fr)
+            minmax(0, 0.92fr)
+            minmax(0, 1.1fr) !important;
+          column-gap: 6px !important;
+          padding-right: 0 !important;
+          box-sizing: border-box !important;
+        }
+
+        .wc-page-knockout .wc-spider-slot:not(.wc-spider-first)::before {
+          left: -6px !important;
+          width: 6px !important;
+        }
+
+        .wc-page-knockout .wc-spider-right:not(.wc-spider-first)::before {
+          left: auto !important;
+          right: -6px !important;
+          width: 6px !important;
+        }
+
+        .wc-page-knockout .wc-spider-slot:not(.wc-spider-first)::after {
+          left: -6px !important;
+        }
+
+        .wc-page-knockout .wc-spider-right:not(.wc-spider-first)::after {
+          left: auto !important;
+          right: -6px !important;
+        }
+
+        .wc-page-knockout .wc-spider-match {
+          grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1fr) !important;
+          gap: 3px !important;
+          padding: 4px 5px !important;
+        }
+
+        .wc-page-knockout .wc-spider-team {
+          gap: 3px !important;
+          font-size: 8.5px !important;
+        }
+
+        .wc-page-knockout .wc-spider-team .group-flag-img,
+        .wc-page-knockout .wc-spider-team .group-flag-missing {
+          width: 12px !important;
+          min-width: 12px !important;
+          height: 8px !important;
+        }
+
+        .wc-page-knockout .wc-spider-vs {
+          font-size: 7px !important;
+        }
+
+        .wc-app.wc-view-tablet.wc-page-knockout .wc-knockout-spider {
+          column-gap: 5px !important;
+          grid-template-rows: 22px repeat(17, minmax(26px, 1fr)) !important;
+          min-height: 545px !important;
+        }
+
+        .wc-app.wc-view-tablet.wc-page-knockout .wc-spider-match {
+          grid-template-columns: minmax(0, 1fr) 22px minmax(0, 1fr) !important;
+          min-height: 30px !important;
+          padding: 3px 4px !important;
+        }
+
+        .wc-app.wc-view-tablet.wc-page-knockout .wc-spider-team {
+          font-size: 7.5px !important;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-knockout-spider {
+          column-gap: 3px !important;
+          grid-template-rows: 18px repeat(17, minmax(22px, 1fr)) !important;
+          min-height: 470px !important;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-spider-round-title {
+          font-size: 6px !important;
+          letter-spacing: 0 !important;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-spider-match {
+          grid-template-columns: minmax(0, 1fr) 16px minmax(0, 1fr) !important;
+          min-height: 24px !important;
+          padding: 2px 2px !important;
+          gap: 1px !important;
+          border-radius: 5px !important;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-spider-team {
+          gap: 1px !important;
+          font-size: 5.8px !important;
+          line-height: 1 !important;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-spider-team .group-flag-img,
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-spider-team .group-flag-missing {
+          width: 8px !important;
+          min-width: 8px !important;
+          height: 6px !important;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-spider-vs {
+          font-size: 5px !important;
         }
 
         .wc-bracket {
@@ -19577,7 +19760,6 @@ class WorldCup2026Panel extends HTMLElement {
               <div class="live-kicker">⚽ Matchday Control Room</div>
               <div class="wc-section-title">${this.t("live")}</div>
               <p>${this.t("manualTimerNotice")}</p>
-              <button class="overview-action-button live-beer-cta" data-page="supporters" type="button">${this.t("donateBuyBeer")}</button>
             </div>
             <div class="live-premium-count"><strong>0</strong><span>${this.t("liveNow")}</span></div>
           </div>
@@ -19597,7 +19779,6 @@ class WorldCup2026Panel extends HTMLElement {
             <div class="live-kicker">⚽ Matchday Control Room</div>
             <div class="wc-section-title">${this.t("live")} <span class="wc-badge wc-live">${this.t("liveStatus")}</span></div>
             <p>${this.t("manualTimerNotice")}</p>
-            <button class="overview-action-button live-beer-cta" data-page="supporters" type="button">${this.t("donateBuyBeer")}</button>
           </div>
           <div class="live-premium-hero-stats">
             <div><strong>${live.length}</strong><span>${this.t("liveNow")}</span></div>
@@ -20988,97 +21169,6 @@ class WorldCup2026Panel extends HTMLElement {
     };
   }
 
-  knockoutOfficialSeedMap() {
-    return {
-      ...this.knockoutRound32SeedMap(),
-      89: ["Winner Match 74", "Winner Match 77"],
-      90: ["Winner Match 73", "Winner Match 75"],
-      91: ["Winner Match 76", "Winner Match 78"],
-      92: ["Winner Match 79", "Winner Match 80"],
-      93: ["Winner Match 83", "Winner Match 84"],
-      94: ["Winner Match 81", "Winner Match 82"],
-      95: ["Winner Match 86", "Winner Match 88"],
-      96: ["Winner Match 85", "Winner Match 87"],
-      97: ["Winner Match 89", "Winner Match 90"],
-      98: ["Winner Match 93", "Winner Match 94"],
-      99: ["Winner Match 91", "Winner Match 92"],
-      100: ["Winner Match 95", "Winner Match 96"],
-      101: ["Winner Match 97", "Winner Match 98"],
-      102: ["Winner Match 99", "Winner Match 100"],
-      104: ["Winner Match 101", "Winner Match 102"],
-    };
-  }
-
-  knockoutSharedManualTeams() {
-    // Edit these names, then upload this frontend file so every panel sees the same bracket.
-    return {
-      73: { home: "", away: "" },
-      74: { home: "", away: "" },
-      75: { home: "", away: "" },
-      76: { home: "", away: "" },
-      77: { home: "", away: "" },
-      78: { home: "", away: "" },
-      79: { home: "", away: "" },
-      80: { home: "", away: "" },
-      81: { home: "", away: "" },
-      82: { home: "", away: "" },
-      83: { home: "", away: "" },
-      84: { home: "", away: "" },
-      85: { home: "", away: "" },
-      86: { home: "", away: "" },
-      87: { home: "", away: "" },
-      88: { home: "", away: "" },
-      89: { home: "", away: "" },
-      90: { home: "", away: "" },
-      91: { home: "", away: "" },
-      92: { home: "", away: "" },
-      93: { home: "", away: "" },
-      94: { home: "", away: "" },
-      95: { home: "", away: "" },
-      96: { home: "", away: "" },
-      97: { home: "", away: "" },
-      98: { home: "", away: "" },
-      99: { home: "", away: "" },
-      100: { home: "", away: "" },
-      101: { home: "", away: "" },
-      102: { home: "", away: "" },
-      104: { home: "", away: "" },
-    };
-  }
-
-  knockoutManualPicks() {
-    return this.loadJsonStorage("world_cup_2026_knockout_manual_teams", {});
-  }
-
-  knockoutManualTeamName(matchNumber, side, fallback = "") {
-    const shared = this.knockoutSharedManualTeams()[matchNumber]?.[side];
-    if (shared) return shared;
-
-    const picks = this.knockoutManualPicks();
-    const selectedKey = picks[`${matchNumber}.${side}`] || "";
-    if (!selectedKey) return fallback;
-    const option = this.teamCentreOptions().find((team) => team.key === selectedKey);
-    return option?.name || fallback;
-  }
-
-  knockoutManualTeamSelect(matchNumber, side, currentTeam = "", seedLabel = "") {
-    const options = this.teamCentreOptions();
-    const picks = this.knockoutManualPicks();
-    const selectedKey = picks[`${matchNumber}.${side}`] || "";
-    const currentKey = this.fixtureTeamKey(currentTeam);
-    const value = selectedKey || (currentKey && currentKey !== "tbc" ? currentKey : "");
-    const label = seedLabel || (side === "home" ? "Home" : "Away");
-    return `
-      <label class="wc-knockout-manual-label">
-        <span>${this.esc(label)}</span>
-        <select class="wc-knockout-manual-select" data-match-number="${this.esc(matchNumber)}" data-side="${this.esc(side)}">
-          <option value="">${this.esc(label)}</option>
-          ${options.map((team) => `<option value="${this.esc(team.key)}" ${team.key === value ? "selected" : ""}>${this.esc(team.name)}</option>`).join("")}
-        </select>
-      </label>
-    `;
-  }
-
   knockoutRound32ResolvedSeedMap() {
     const qualifiers = this.knockoutGroupQualifiers();
     const teamKey = (team) => this.fixtureTeamKey(team);
@@ -21162,10 +21252,8 @@ class WorldCup2026Panel extends HTMLElement {
     const seeds = this.knockoutRound32SeedMap()[matchNumber];
     if (!seeds) return null;
     const qualifiers = this.knockoutGroupQualifiers();
-    const homeSeed = this.knockoutTeamFromSeed(seeds[0], qualifiers) || seeds[0];
-    const awaySeed = this.knockoutTeamFromSeed(seeds[1], qualifiers) || seeds[1];
-    const home = this.knockoutManualTeamName(matchNumber, "home", homeSeed);
-    const away = this.knockoutManualTeamName(matchNumber, "away", awaySeed);
+    const home = this.knockoutTeamFromSeed(seeds[0], qualifiers) || seeds[0];
+    const away = this.knockoutTeamFromSeed(seeds[1], qualifiers) || seeds[1];
     return {
       id: `wc2026-derived-knockout-${matchNumber}`,
       matchNumber,
@@ -21176,36 +21264,9 @@ class WorldCup2026Panel extends HTMLElement {
       date: match?.utcDate || match?.date || "",
       homeTeam: { name: home },
       awayTeam: { name: away },
-      seedLabels: seeds,
       score: { fullTime: { home: null, away: null } },
       venue: match?.venue || match?.stadium || "",
       source: "standings_knockout_placeholder",
-    };
-  }
-
-  knockoutOfficialPlaceholder(stage, index, match = null, forcedMatchNumber = null) {
-    const matchNumber = forcedMatchNumber || this.knockoutDerivedMatchNumber(stage, index, match || {});
-    if (!matchNumber) return null;
-    if (stage === "LAST_32") return this.knockoutSeededPlaceholder(stage, index, match, matchNumber);
-
-    const seeds = this.knockoutOfficialSeedMap()[matchNumber];
-    if (!seeds) return null;
-    const home = this.knockoutManualTeamName(matchNumber, "home", seeds[0]);
-    const away = this.knockoutManualTeamName(matchNumber, "away", seeds[1]);
-    return {
-      id: `wc2026-derived-knockout-${matchNumber}`,
-      matchNumber,
-      fifaMatchNumber: matchNumber,
-      stage,
-      status: "TIMED",
-      utcDate: match?.utcDate || match?.date || "",
-      date: match?.utcDate || match?.date || "",
-      homeTeam: { name: home },
-      awayTeam: { name: away },
-      seedLabels: seeds,
-      score: { fullTime: { home: null, away: null } },
-      venue: match?.venue || match?.stadium || "",
-      source: "manual_knockout_placeholder",
     };
   }
 
@@ -21590,28 +21651,47 @@ class WorldCup2026Panel extends HTMLElement {
         return !key || key === this.fixtureTeamKey(this.t("tbc")) || key === "tbc" || key.includes("winner") || key.includes("runner up");
       };
 
-      if (displayOrder) {
+      if (stage === "LAST_32" && displayOrder) {
         const matchByNumber = new Map();
-        matches.forEach((match) => {
-          const number = this.fixtureMatchNumber(match);
-          if (number && displayOrder.includes(number) && !matchByNumber.has(number)) {
+        const unmatched = [];
+        const mergeSeededWithFixture = (seeded, fixtureMatch, matchNumber) => {
+          if (!fixtureMatch) return seeded;
+          const homeUnknown = isUnknownTeam(this.getHomeTeam(fixtureMatch));
+          const awayUnknown = isUnknownTeam(this.getAwayTeam(fixtureMatch));
+          return {
+            ...seeded,
+            ...fixtureMatch,
+            matchNumber,
+            fifaMatchNumber: matchNumber,
+            homeTeam: homeUnknown ? seeded.homeTeam : fixtureMatch.homeTeam,
+            awayTeam: awayUnknown ? seeded.awayTeam : fixtureMatch.awayTeam,
+            score: fixtureMatch.score || seeded.score,
+            source: fixtureMatch.source || seeded.source,
+          };
+        };
+
+        matches.forEach((match, fallbackIndex) => {
+          const number = this.knockoutDerivedMatchNumber(stage, fallbackIndex, match) || this.fixtureMatchNumber(match);
+          if (number && number >= 73 && number <= 88 && !matchByNumber.has(number)) {
             matchByNumber.set(number, match);
+          } else {
+            unmatched.push(match);
           }
         });
 
         displayOrder.forEach((matchNumber, index) => {
           const fixtureMatch = matchByNumber.get(matchNumber) || null;
-          const seeded = this.knockoutOfficialPlaceholder(stage, index, fixtureMatch, matchNumber);
+          const seeded = this.knockoutSeededPlaceholder(stage, index, fixtureMatch, matchNumber);
           if (!seeded) return;
-          slots[index] = fixtureMatch ? {
-            ...fixtureMatch,
-            matchNumber,
-            fifaMatchNumber: matchNumber,
-            homeTeam: seeded.homeTeam,
-            awayTeam: seeded.awayTeam,
-            score: fixtureMatch.score || seeded.score,
-            source: fixtureMatch.source || seeded.source,
-          } : seeded;
+          slots[index] = mergeSeededWithFixture(seeded, fixtureMatch, matchNumber);
+        });
+
+        unmatched.forEach((match) => {
+          const emptyIndex = slots.findIndex((slot) => !slot || slot.source === "standings_knockout_placeholder");
+          if (emptyIndex < 0) return;
+          const matchNumber = displayOrder[emptyIndex];
+          const seeded = this.knockoutSeededPlaceholder(stage, emptyIndex, match, matchNumber);
+          slots[emptyIndex] = seeded ? mergeSeededWithFixture(seeded, match, matchNumber) : match;
         });
 
         return slots;
@@ -21696,12 +21776,9 @@ class WorldCup2026Panel extends HTMLElement {
       const homeScore = this.getHomeScore(match);
       const awayScore = this.getAwayScore(match);
       const scoreText = homeScore !== "-" || awayScore !== "-" ? `${homeScore} - ${awayScore}` : this.t("versus");
-      const matchNumber = this.fixtureMatchNumber(match) || match.matchNumber || match.fifaMatchNumber || "";
-      const seeds = match.seedLabels || this.knockoutOfficialSeedMap()[matchNumber] || ["Home", "Away"];
 
       return `
         <div class="wc-spider-match">
-          ${matchNumber ? `<div class="wc-spider-match-number">Match ${this.esc(matchNumber)}</div>` : ""}
           <div class="wc-spider-team">
             ${this.flag(homeTeam, true)}
             <span>${this.esc(this.localizedTeamName(homeTeam))}</span>
@@ -21711,12 +21788,6 @@ class WorldCup2026Panel extends HTMLElement {
             ${this.flag(awayTeam, true)}
             <span>${this.esc(this.localizedTeamName(awayTeam))}</span>
           </div>
-          ${matchNumber ? `
-            <div class="wc-knockout-manual-pickers">
-              ${this.knockoutManualTeamSelect(matchNumber, "home", homeTeam, seeds[0])}
-              ${this.knockoutManualTeamSelect(matchNumber, "away", awayTeam, seeds[1])}
-            </div>
-          ` : ""}
         </div>
       `;
     };
