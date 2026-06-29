@@ -10216,6 +10216,304 @@ class WorldCup2026Panel extends HTMLElement {
           font-size: 5px !important;
         }
 
+        .wc-page-knockout .wc-knockout-wiki {
+          display: grid;
+          grid-template-columns: 1.45fr 1.2fr 1fr 0.86fr 1.08fr;
+          gap: 12px;
+          width: 100%;
+          min-width: 0;
+          align-items: stretch;
+          box-sizing: border-box;
+        }
+
+        .wc-page-knockout .wc-wiki-round {
+          min-width: 0;
+          display: grid;
+          grid-template-rows: 22px minmax(0, 1fr);
+          gap: 6px;
+        }
+
+        .wc-page-knockout .wc-wiki-round-title {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 0;
+          min-height: 18px;
+          padding: 3px 5px;
+          color: #062033;
+          background: rgba(255,255,255,0.92);
+          border: 1px solid rgba(255,255,255,0.72);
+          font-size: 9px;
+          font-weight: 950;
+          line-height: 1;
+          text-align: center;
+          text-transform: uppercase;
+          border-radius: 2px;
+          box-shadow: 0 3px 10px rgba(0,0,0,0.20);
+        }
+
+        .wc-page-knockout .wc-wiki-round-stack,
+        .wc-page-knockout .wc-wiki-final-stack {
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          gap: 5px;
+          height: 100%;
+        }
+
+        .wc-page-knockout .wc-wiki-match-wrap {
+          position: relative;
+          min-width: 0;
+        }
+
+        .wc-page-knockout .wc-wiki-round:not(.wc-wiki-round-final) .wc-wiki-match-wrap::after {
+          content: "";
+          position: absolute;
+          top: 50%;
+          right: -12px;
+          width: 12px;
+          height: 2px;
+          transform: translateY(-50%);
+          background: rgba(255,255,255,0.72);
+          pointer-events: none;
+        }
+
+        .wc-page-knockout .wc-wiki-match-meta {
+          display: flex;
+          justify-content: space-between;
+          gap: 4px;
+          min-height: 12px;
+          margin: 0 0 1px;
+          color: #93c5fd;
+          font-size: 7px;
+          font-weight: 900;
+          line-height: 1;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+
+        .wc-page-knockout .wc-wiki-match-meta span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .wc-page-knockout .wc-knockout-wiki .wc-spider-match {
+          min-height: 28px !important;
+          padding: 2px 4px !important;
+          border-radius: 2px !important;
+          grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr) !important;
+          gap: 2px !important;
+          background: rgba(248,250,252,0.94) !important;
+          border: 1px solid rgba(255,255,255,0.76) !important;
+          box-shadow: 0 3px 8px rgba(0,0,0,0.24) !important;
+        }
+
+        .wc-page-knockout .wc-knockout-wiki .wc-spider-match-empty {
+          opacity: 1;
+          background: rgba(248,250,252,0.94) !important;
+          border-style: solid !important;
+        }
+
+        .wc-page-knockout .wc-knockout-wiki .wc-spider-team {
+          gap: 3px !important;
+          color: #071827 !important;
+          font-size: 7.5px !important;
+          font-weight: 950 !important;
+          min-width: 0 !important;
+        }
+
+        .wc-page-knockout .wc-knockout-wiki .wc-spider-team span {
+          color: #071827 !important;
+        }
+
+        .wc-page-knockout .wc-knockout-wiki .wc-spider-vs {
+          color: #1e293b !important;
+          font-size: 6px !important;
+          font-weight: 950 !important;
+        }
+
+        .wc-page-knockout .wc-knockout-wiki .group-flag-img,
+        .wc-page-knockout .wc-knockout-wiki .group-flag-missing {
+          width: 11px !important;
+          min-width: 11px !important;
+          height: 8px !important;
+          border-radius: 1px !important;
+        }
+
+        .wc-page-knockout .wc-wiki-round-final {
+          align-self: stretch;
+        }
+
+        .wc-page-knockout .wc-wiki-round-final .wc-wiki-final-stack {
+          justify-content: center;
+          gap: 32px;
+        }
+
+        .wc-page-knockout .wc-wiki-third-place {
+          display: grid;
+          gap: 5px;
+        }
+
+        .wc-app.wc-view-tablet.wc-page-knockout .wc-knockout-wiki {
+          gap: 7px;
+          grid-template-columns: 1.42fr 1.16fr 0.98fr 0.82fr 1fr;
+        }
+
+        .wc-app.wc-view-tablet.wc-page-knockout .wc-wiki-round-title {
+          font-size: 7px;
+          padding: 2px 3px;
+        }
+
+        .wc-app.wc-view-tablet.wc-page-knockout .wc-wiki-round-stack,
+        .wc-app.wc-view-tablet.wc-page-knockout .wc-wiki-final-stack {
+          gap: 3px;
+        }
+
+        .wc-app.wc-view-tablet.wc-page-knockout .wc-wiki-round:not(.wc-wiki-round-final) .wc-wiki-match-wrap::after {
+          right: -7px;
+          width: 7px;
+        }
+
+        .wc-app.wc-view-tablet.wc-page-knockout .wc-knockout-wiki .wc-spider-team {
+          font-size: 6.4px !important;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-web-card {
+          padding: 7px !important;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-knockout-wiki {
+          gap: 3px;
+          grid-template-columns: 1.36fr 1.1fr 0.92fr 0.76fr 0.9fr;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-wiki-round {
+          grid-template-rows: 16px minmax(0, 1fr);
+          gap: 2px;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-wiki-round-title {
+          min-height: 14px;
+          padding: 1px 2px;
+          font-size: 4.8px;
+          letter-spacing: 0;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-wiki-match-meta {
+          min-height: 8px;
+          font-size: 4.6px;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-knockout-wiki .wc-spider-match {
+          min-height: 20px !important;
+          padding: 1px 1px !important;
+          grid-template-columns: minmax(0, 1fr) 12px minmax(0, 1fr) !important;
+          gap: 1px !important;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-knockout-wiki .wc-spider-team {
+          gap: 1px !important;
+          font-size: 4.5px !important;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-knockout-wiki .wc-spider-vs {
+          font-size: 4px !important;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-knockout-wiki .group-flag-img,
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-knockout-wiki .group-flag-missing {
+          width: 7px !important;
+          min-width: 7px !important;
+          height: 5px !important;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-wiki-round:not(.wc-wiki-round-final) .wc-wiki-match-wrap::after {
+          right: -3px;
+          width: 3px;
+          height: 1px;
+        }
+
+        .wc-app.wc-view-mobile.wc-page-knockout .wc-wiki-round-final .wc-wiki-final-stack {
+          gap: 14px;
+        }
+
+        .wc-page-knockout .wc-knockout-wiki {
+          padding: 10px 4px 4px;
+          border-radius: 14px;
+          background:
+            radial-gradient(circle at 50% 45%, rgba(255,215,90,0.10), transparent 30%),
+            linear-gradient(180deg, rgba(4,12,30,0.18), rgba(2,8,23,0.28));
+        }
+
+        .wc-page-knockout .wc-wiki-round-title {
+          color: rgba(255,255,255,0.96);
+          background:
+            linear-gradient(135deg, rgba(34,211,238,0.26), rgba(59,130,246,0.14)),
+            rgba(10,24,48,0.78);
+          border: 1px solid rgba(125,211,252,0.28);
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.18),
+            0 8px 18px rgba(0,0,0,0.20);
+          text-shadow: 0 2px 8px rgba(0,0,0,0.55);
+        }
+
+        .wc-page-knockout .wc-wiki-match-meta {
+          color: rgba(191,219,254,0.92);
+          text-shadow: 0 1px 5px rgba(0,0,0,0.65);
+        }
+
+        .wc-page-knockout .wc-knockout-wiki .wc-spider-match {
+          background:
+            linear-gradient(135deg, rgba(15,35,67,0.92), rgba(10,24,48,0.76)) !important;
+          border: 1px solid rgba(148,163,184,0.30) !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.10),
+            0 8px 18px rgba(0,0,0,0.28) !important;
+        }
+
+        .wc-page-knockout .wc-knockout-wiki .wc-spider-match-empty {
+          background:
+            linear-gradient(135deg, rgba(15,35,67,0.92), rgba(10,24,48,0.76)) !important;
+          border-style: solid !important;
+          opacity: 1 !important;
+        }
+
+        .wc-page-knockout .wc-knockout-wiki .wc-spider-team,
+        .wc-page-knockout .wc-knockout-wiki .wc-spider-team span {
+          color: rgba(255,255,255,0.96) !important;
+          text-shadow: 0 2px 7px rgba(0,0,0,0.70);
+        }
+
+        .wc-page-knockout .wc-knockout-wiki .wc-spider-vs {
+          color: rgba(226,232,240,0.84) !important;
+        }
+
+        .wc-page-knockout .wc-wiki-round:not(.wc-wiki-round-final) .wc-wiki-match-wrap::after {
+          background:
+            linear-gradient(90deg, rgba(125,211,252,0.70), rgba(255,215,90,0.46));
+          box-shadow: 0 0 10px rgba(56,189,248,0.34);
+        }
+
+        .wc-page-knockout .wc-wiki-round-final .wc-spider-match {
+          border-color: rgba(255,215,90,0.52) !important;
+          background:
+            radial-gradient(circle at top left, rgba(255,215,90,0.24), transparent 44%),
+            linear-gradient(135deg, rgba(30,41,59,0.94), rgba(15,23,42,0.82)) !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.12),
+            0 0 22px rgba(255,215,90,0.18),
+            0 10px 22px rgba(0,0,0,0.32) !important;
+        }
+
+        .wc-page-knockout .wc-wiki-third-place .wc-wiki-round-title {
+          color: rgba(255,237,213,0.96);
+          background:
+            linear-gradient(135deg, rgba(251,146,60,0.24), rgba(234,179,8,0.12)),
+            rgba(15,23,42,0.78);
+          border-color: rgba(251,191,36,0.30);
+        }
+
         .wc-bracket {
           display: grid;
           grid-template-columns: minmax(178px, 1.18fr) repeat(5, minmax(145px, 1fr));
@@ -21765,7 +22063,7 @@ class WorldCup2026Panel extends HTMLElement {
         return `
           <div class="wc-spider-match wc-spider-match-empty">
             <div class="wc-spider-team"><span>${this.t("tbc")}</span></div>
-            <div class="wc-spider-vs">${this.t("versus")}</div>
+            <div class="wc-spider-vs">0 - 0</div>
             <div class="wc-spider-team"><span>${this.t("tbc")}</span></div>
           </div>
         `;
@@ -21775,7 +22073,7 @@ class WorldCup2026Panel extends HTMLElement {
       const awayTeam = this.getAwayTeam(match);
       const homeScore = this.getHomeScore(match);
       const awayScore = this.getAwayScore(match);
-      const scoreText = homeScore !== "-" || awayScore !== "-" ? `${homeScore} - ${awayScore}` : this.t("versus");
+      const scoreText = homeScore !== "-" || awayScore !== "-" ? `${homeScore} - ${awayScore}` : "0 - 0";
 
       return `
         <div class="wc-spider-match">
@@ -21795,28 +22093,37 @@ class WorldCup2026Panel extends HTMLElement {
       const round = roundMatches.find((item) => item.stage === stage);
       return spiderSlotsForRound(stage, round?.matches || []);
     };
-    const left32 = roundSlots("LAST_32").slice(0, 8);
-    const right32 = roundSlots("LAST_32").slice(8, 16);
-    const left16 = roundSlots("LAST_16").slice(0, 4);
-    const right16 = roundSlots("LAST_16").slice(4, 8);
-    const leftQf = roundSlots("QUARTER_FINALS").slice(0, 2);
-    const rightQf = roundSlots("QUARTER_FINALS").slice(2, 4);
-    const leftSemi = roundSlots("SEMI_FINALS").slice(0, 1);
-    const rightSemi = roundSlots("SEMI_FINALS").slice(1, 2);
+    const all32 = roundSlots("LAST_32");
+    const all16 = roundSlots("LAST_16");
+    const allQf = roundSlots("QUARTER_FINALS");
+    const allSemi = roundSlots("SEMI_FINALS");
     const finalSlot = roundSlots("FINAL")[0] || null;
-    const mirrorRound = (matches, column, rows, side, stageKey) => matches.map((match, index) => {
-      const classes = [
-        "wc-spider-slot",
-        side === "left" ? "wc-spider-left" : "wc-spider-right",
-        stageKey === "LAST_32" ? "wc-spider-first" : "",
-        stageKey === "SEMI_FINALS" ? "wc-spider-semi" : "",
-      ].filter(Boolean).join(" ");
+
+    const wikiMatch = (match, stageKey, index) => {
+      const start = this.knockoutRoundStarts()[stageKey];
+      const number = match
+        ? this.knockoutDerivedMatchNumber(stageKey, index, match)
+        : (start ? start + index : null);
+      const venueInfo = match ? this.fixtureVenueInfo(match, number) : null;
       return `
-        <div class="${classes}" style="grid-column:${column};grid-row:${rows[index]};">
+        <div class="wc-wiki-match-wrap">
+          <div class="wc-wiki-match-meta">
+            ${number ? `<span>Match ${this.esc(number)}</span>` : `<span>${this.t("tbc")}</span>`}
+            ${venueInfo?.city ? `<span>${this.esc(venueInfo.city)}</span>` : ""}
+          </div>
           ${spiderMatch(match)}
         </div>
       `;
-    }).join("");
+    };
+
+    const wikiRound = (label, matches, stageKey) => `
+      <div class="wc-wiki-round wc-wiki-round-${stageKey.toLowerCase().replaceAll("_", "-")}">
+        <div class="wc-wiki-round-title">${label}</div>
+        <div class="wc-wiki-round-stack">
+          ${matches.map((match, index) => wikiMatch(match, stageKey, index)).join("")}
+        </div>
+      </div>
+    `;
     const detailMatches = [];
     roundMatches.forEach(({ stage, label, matches }) => {
       const displayMatches = stage === "LAST_32"
@@ -21838,30 +22145,24 @@ class WorldCup2026Panel extends HTMLElement {
     return `
       <div class="wc-card wc-web-card">
         <div class="wc-section-title">Knockout Stage</div>
-        <div class="wc-knockout-spider">
-          <div class="wc-spider-round-title" style="grid-column:1;">${this.t("round32")}</div>
-          <div class="wc-spider-round-title" style="grid-column:2;">${this.t("round16")}</div>
-          <div class="wc-spider-round-title" style="grid-column:3;">${this.t("quarterFinals")}</div>
-          <div class="wc-spider-round-title" style="grid-column:4;">${this.t("semiFinals")}</div>
-          <div class="wc-spider-round-title wc-spider-final-title" style="grid-column:5;">${this.t("final")}</div>
-          <div class="wc-spider-round-title" style="grid-column:6;">${this.t("semiFinals")}</div>
-          <div class="wc-spider-round-title" style="grid-column:7;">${this.t("quarterFinals")}</div>
-          <div class="wc-spider-round-title" style="grid-column:8;">${this.t("round16")}</div>
-          <div class="wc-spider-round-title" style="grid-column:9;">${this.t("round32")}</div>
-          ${mirrorRound(left32, 1, [2, 4, 6, 8, 11, 13, 15, 17], "left", "LAST_32")}
-          ${mirrorRound(left16, 2, [3, 7, 12, 16], "left", "LAST_16")}
-          ${mirrorRound(leftQf, 3, [5, 14], "left", "QUARTER_FINALS")}
-          ${mirrorRound(leftSemi, 4, [9], "left", "SEMI_FINALS")}
-          ${mirrorRound(rightSemi, 6, [9], "right", "SEMI_FINALS")}
-          ${mirrorRound(rightQf, 7, [5, 14], "right", "QUARTER_FINALS")}
-          ${mirrorRound(right16, 8, [3, 7, 12, 16], "right", "LAST_16")}
-          ${mirrorRound(right32, 9, [2, 4, 6, 8, 11, 13, 15, 17], "right", "LAST_32")}
-          <div class="wc-spider-slot wc-spider-final" style="grid-column:5;grid-row:8;">
-            ${spiderMatch(finalSlot)}
-          </div>
-          <div class="wc-spider-final-label">
-            <span>${this.esc(this.staticText("winner"))}</span>
-            <strong>${this.t("tbc")}</strong>
+        <div class="wc-knockout-wiki">
+          ${wikiRound(this.t("round32"), all32, "LAST_32")}
+          ${wikiRound(this.t("round16"), all16, "LAST_16")}
+          ${wikiRound(this.t("quarterFinals"), allQf, "QUARTER_FINALS")}
+          ${wikiRound(this.t("semiFinals"), allSemi, "SEMI_FINALS")}
+          <div class="wc-wiki-round wc-wiki-round-final">
+            <div class="wc-wiki-round-title">${this.t("final")}</div>
+            <div class="wc-wiki-final-stack">
+              ${wikiMatch(finalSlot, "FINAL", 0)}
+              <div class="wc-wiki-third-place">
+                <div class="wc-wiki-round-title">${this.esc(this.staticText("thirdPlace") || "Third place")}</div>
+                <div class="wc-spider-match wc-spider-match-empty">
+                  <div class="wc-spider-team"><span>${this.t("tbc")}</span></div>
+                  <div class="wc-spider-vs">0 - 0</div>
+                  <div class="wc-spider-team"><span>${this.t("tbc")}</span></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
