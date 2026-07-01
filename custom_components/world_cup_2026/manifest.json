@@ -1,7 +1,7 @@
 {
   "domain": "world_cup_2026",
   "name": "World Cup 2026",
-  "version": "4.4.3",
+  "version": "4.4.4",
   "documentation": "https://github.com/Adya84/ha-world-cup-2026",
   "issue_tracker": "https://github.com/Adya84/ha-world-cup-2026/issues",
   "config_flow": true,

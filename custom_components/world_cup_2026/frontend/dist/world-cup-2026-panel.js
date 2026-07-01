@@ -7552,11 +7552,58 @@ class WorldCup2026Panel extends HTMLElement {
   }
 
   officialHomeScore(m) {
-    return m.homeScore ?? m.home_score ?? m.score?.fullTime?.home ?? m.score?.home ?? "-";
+    return this.matchScoreWithoutShootoutPens(m, "home");
   }
 
   officialAwayScore(m) {
-    return m.awayScore ?? m.away_score ?? m.score?.fullTime?.away ?? m.score?.away ?? "-";
+    return this.matchScoreWithoutShootoutPens(m, "away");
+  }
+
+  matchScoreWithoutShootoutPens(m, side) {
+    const score = m?.score || {};
+    const fullTime = score?.fullTime || score?.full_time || {};
+    const regularTime = score?.regularTime || score?.regular_time || {};
+    const afterExtraTime = score?.extraTime || score?.extra_time || score?.afterExtraTime || score?.after_extra_time || {};
+    const status = String(m?.status || m?.matchStatus || "").toUpperCase();
+    const penalties = score?.penalties || score?.penaltyShootout || m?.penalties || m?.penaltyScore || {};
+    const penaltyValue = side === "home"
+      ? Number(penalties.home ?? penalties.homeTeam ?? penalties.home_score)
+      : Number(penalties.away ?? penalties.awayTeam ?? penalties.away_score);
+    const hasShootout = status === "PEN"
+      || status === "PENALTY_SHOOTOUT"
+      || String(score?.duration || m?.duration || "").toUpperCase() === "PENALTY_SHOOTOUT"
+      || penalties.home !== undefined
+      || penalties.away !== undefined
+      || penalties.homeTeam !== undefined
+      || penalties.awayTeam !== undefined;
+    const removeShootout = (value) => {
+      const parsed = Number(value);
+      if (Number.isFinite(parsed) && Number.isFinite(penaltyValue) && penaltyValue > 1 && parsed >= penaltyValue) {
+        return parsed - penaltyValue;
+      }
+      return value;
+    };
+
+    for (const bucket of [fullTime, afterExtraTime, regularTime]) {
+      if (bucket && bucket[side] !== undefined && bucket[side] !== null) {
+        return hasShootout ? removeShootout(bucket[side]) : bucket[side];
+      }
+    }
+
+    const directScore = score && score[side] !== undefined && score[side] !== null ? score[side] : null;
+    if (directScore !== null && !hasShootout) return directScore;
+
+    const keys = side === "home"
+      ? ["homeScore", "home_score", "scoreHome", "homeGoals"]
+      : ["awayScore", "away_score", "scoreAway", "awayGoals"];
+
+    for (const key of keys) {
+      if (m && m[key] !== undefined && m[key] !== null) {
+        return hasShootout ? removeShootout(m[key]) : m[key];
+      }
+    }
+
+    return directScore !== null ? (hasShootout ? removeShootout(directScore) : directScore) : "-";
   }
 
   provisionalLiveScoreFromEvents(m) {
@@ -18981,6 +19028,7 @@ class WorldCup2026Panel extends HTMLElement {
 
     source
       .filter((event) => String(event?.type || "").toLowerCase() === "goal")
+      .filter((event) => !this.isShootoutPenaltyEvent(event))
       .forEach((event) => {
         const key = this.goalEventDedupeKey(event);
         if (!key) return;
@@ -18990,6 +19038,27 @@ class WorldCup2026Panel extends HTMLElement {
     return Array.from(byKey.values())
       .sort((a, b) => Number(a?.timerSeconds ?? a?.minute ?? 0) - Number(b?.timerSeconds ?? b?.minute ?? 0))
       .map((event, index) => ({ ...event, goalNumber: index + 1 }));
+  }
+
+  isShootoutPenaltyEvent(event) {
+    const text = [
+      event?.type,
+      event?.rawType,
+      event?.eventType,
+      event?.kind,
+      event?.detail,
+      event?.comments,
+      event?.reason,
+      event?.subType,
+      event?.period,
+      event?.phase,
+    ].map((value) => String(value || "").toLowerCase()).join(" ");
+
+    return text.includes("shootout")
+      || text.includes("penalty shoot")
+      || text.includes("penalties")
+      || text.includes("penalty scored")
+      || text.includes("penalty converted");
   }
 
   matchGoalEventsForTeam(match, team) {
@@ -19274,12 +19343,18 @@ class WorldCup2026Panel extends HTMLElement {
       const isCard = typeText.includes("card") || detailText.includes("yellow") || detailText.includes("red");
       const isSub = typeText.includes("subst") || detailText.includes("substitution");
       const isVar = isDisallowed || typeText.includes("var") || detailText.includes("var") || detailText.includes("video assistant") || detailText.includes("video review") || String(event.rawType || "").toLowerCase().includes("var");
+      const isShootoutPenalty = combinedText.includes("shootout")
+        || combinedText.includes("penalty shoot")
+        || combinedText.includes("penalties")
+        || combinedText.includes("penalty scored")
+        || combinedText.includes("penalty converted");
       const isPenalty = detailText.includes("penalty") || detailText.includes("pen");
       const isMissedPenalty = detailText.includes("missed penalty") || detailText.includes("penalty missed");
       const isOwnGoal = !isDisallowed && (detailText.includes("own goal") || /\bog\b/i.test(detailText));
 
       let category = "";
       if (isGoal && hasMatchingDisallowed) return;
+      if (isShootoutPenalty) return;
       if (isGoal) category = "goal";
       else if (isCard) category = "card";
       else if (isSub) category = "substitution";
@@ -23221,6 +23296,41 @@ class WorldCup2026Panel extends HTMLElement {
     });
   }
 
+  dedupeTeamCentreMatches(matches, teamKey) {
+    const merged = this.mergeUniqueMatches(Array.isArray(matches) ? matches : [], []);
+    const byKey = new Map();
+    const scoreWeight = (match) => {
+      let weight = 0;
+      if (this.isLiveMatch(match)) weight += 10;
+      if (this.isFinishedMatch(match)) weight += 8;
+      if (this.getHomeScore(match) !== "-" || this.getAwayScore(match) !== "-") weight += 4;
+      if (this.normalisedMatchEvents(match).length) weight += 3;
+      if (match.matchNumber || match.fifaMatchNumber) weight += 2;
+      return weight;
+    };
+
+    merged.forEach((match) => {
+      const homeKey = this.fixtureTeamKey(this.getHomeTeam(match));
+      const awayKey = this.fixtureTeamKey(this.getAwayTeam(match));
+      if (homeKey !== teamKey && awayKey !== teamKey) return;
+      const opponentKey = homeKey === teamKey ? awayKey : homeKey;
+      const rawDate = match.utcDate || match.date || "";
+      const parsedDate = rawDate ? new Date(rawDate) : null;
+      const day = parsedDate && Number.isFinite(parsedDate.getTime()) ? parsedDate.toISOString().slice(0, 10) : "";
+      const number = this.fixtureMatchNumber(match) || "";
+      const stage = this.normaliseKnockoutStage(match.stage) || String(match.group || match.round || match.stage || "").toLowerCase();
+      const key = number
+        ? `number:${number}`
+        : `${teamKey}|${opponentKey}|${day}|${stage}`;
+      const existing = byKey.get(key);
+      if (!existing || scoreWeight(match) > scoreWeight(existing)) {
+        byKey.set(key, existing ? this.mergeUniqueMatches([existing], [match])[0] : match);
+      }
+    });
+
+    return Array.from(byKey.values());
+  }
+
   teamsPage() {
     const selected = this.selectedTeamOption();
     const options = this.teamCentreOptions();
@@ -23232,7 +23342,7 @@ class WorldCup2026Panel extends HTMLElement {
 
     const teamKey = selected.key;
     const teamName = selected.name;
-    const matches = this.statsHubAllMatches()
+    const matches = this.dedupeTeamCentreMatches(this.statsHubAllMatches(), teamKey)
       .filter((match) => this.fixtureTeamKey(this.getHomeTeam(match)) === teamKey || this.fixtureTeamKey(this.getAwayTeam(match)) === teamKey)
       .sort((x, y) => new Date(x.utcDate || x.date || 0) - new Date(y.utcDate || y.date || 0));
     const finished = matches.filter((match) => this.isFinishedMatch(match));

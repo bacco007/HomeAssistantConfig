@@ -460,6 +460,33 @@ def format_match(m, match_number=None):
     }
 
 
+def format_live_match_summary(m, match_number=None):
+    """Small live-match payload for sensor attributes.
+
+    Rich live data is still available through the integration data/websocket.
+    Sensor attributes must stay below Home Assistant recorder limits.
+    """
+    home = m.get("homeTeam", {}) or {}
+    away = m.get("awayTeam", {}) or {}
+    score = (m.get("score") or {}).get("fullTime") or {}
+    home_name = home.get("shortName") or home.get("name") or "TBD"
+    away_name = away.get("shortName") or away.get("name") or "TBD"
+    venue = get_match_venue(home_name, away_name, match_number)
+
+    return {
+        "matchNumber": match_number or m.get("matchNumber") or m.get("fifaMatchNumber"),
+        "utcDate": m.get("utcDate"),
+        "status": m.get("status"),
+        "minute": m.get("minute"),
+        "stage": m.get("stage"),
+        "home": home_name,
+        "away": away_name,
+        "homeScore": score.get("home"),
+        "awayScore": score.get("away"),
+        "venue": venue.get("stadium"),
+    }
+
+
 def format_scorer(s: dict) -> dict:
     player = s.get("player") or {}
     team = s.get("team") or {}
@@ -749,11 +776,14 @@ class WorldCupLiveMatchesSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def extra_state_attributes(self):
+        matches = live_matches(self.coordinator)
         return {
+            "live_count": len(matches),
             "matches": [
-                format_match(m)
-                for m in live_matches(self.coordinator)
-            ]
+                format_live_match_summary(m)
+                for m in matches[:4]
+            ],
+            "attributes_compacted": True,
         }
 
 
@@ -1460,11 +1490,14 @@ class WorldCupLiveGoalsSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def extra_state_attributes(self):
+        matches = live_matches(self.coordinator)
         return {
+            "live_count": len(matches),
             "matches": [
-                format_match(m)
-                for m in live_matches(self.coordinator)
-            ]
+                format_live_match_summary(m)
+                for m in matches[:4]
+            ],
+            "attributes_compacted": True,
         }
 
 
