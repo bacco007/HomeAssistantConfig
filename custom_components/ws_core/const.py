@@ -1,5 +1,7 @@
 """Constants for Weather Station Core."""
 
+from typing import Any
+
 DOMAIN = "ws_core"
 
 PLATFORMS = ["sensor", "binary_sensor", "weather", "select", "switch", "number", "event"]
@@ -358,7 +360,7 @@ DRIFT_STUCK_BUCKET_SAMPLES: int = 240  # 4-hour rolling window
 DRIFT_STUCK_BUCKET_MIN_RATE: float = 0.1  # mm/h minimum to count as non-zero
 DRIFT_STUCK_RATE_RANGE_MAX: float = 0.1  # mm/h max spread to flag as stuck
 
-CONFIG_VERSION = 3
+CONFIG_VERSION = 4
 
 # Alert hysteresis: ticks above/below threshold before state changes
 ALERT_DEBOUNCE_ON_TICKS: int = 2  # consecutive ticks above threshold → fire
@@ -764,9 +766,77 @@ KEY_INDOOR_TEMP_DELTA = "indoor_temp_delta_c"
 KEY_INDOOR_HUMIDITY_DELTA = "indoor_humidity_delta_pct"
 KEY_INDOOR_COMFORT = "indoor_comfort"  # composite score
 
-# Multiple indoor rooms: each entry is a temp sensor entity_id; one delta sensor is created per room
+# Multiple indoor rooms (v2.6.0). Each entry is a room dict:
+#   {"id": str, "name": str, "temp": eid|None, "humidity": eid|None, "co2": eid|None}
+# The stable "id" backs the per-room sensor unique_ids so renaming a room does
+# not churn entities. Legacy installs stored a bare list of temp-sensor
+# entity_ids; async_migrate_entry (v3 -> v4) upconverts them to this shape.
 CONF_INDOOR_ROOMS = "indoor_rooms"
-KEY_INDOOR_ROOMS_DATA = "indoor_rooms_data"  # dict[entity_id, {"temp_c": float, "delta_c": float}]
+# Per-room data keyed by room id:
+#   {room_id: {"name", "temp_c", "delta_c", "humidity_pct", "humidity_delta_pct",
+#              "co2_ppm", "comfort"}}
+KEY_INDOOR_ROOMS_DATA = "indoor_rooms_data"
+
+
+def _room_slug(text: str) -> str:
+    """Lowercase, ASCII-ish slug for room ids derived from names/entity_ids."""
+    out = []
+    for ch in (text or "").strip().lower():
+        if ch.isalnum():
+            out.append(ch)
+        elif ch in (" ", "-", ".", "_"):
+            out.append("_")
+    slug = "".join(out).strip("_")
+    while "__" in slug:
+        slug = slug.replace("__", "_")
+    return slug or "room"
+
+
+def normalize_indoor_rooms(raw: Any) -> list[dict]:
+    """Coerce the stored CONF_INDOOR_ROOMS value into the v2.6.0 room-dict shape.
+
+    Accepts either the legacy ``list[str]`` of temperature-sensor entity_ids or
+    the current ``list[dict]``. Always returns a list of dicts with at least
+    ``id`` and ``name`` populated; missing sensor slots are ``None``. Room ids
+    are de-duplicated so per-room entity unique_ids stay distinct.
+    """
+    rooms: list[dict] = []
+    seen_ids: set[str] = set()
+    for item in raw or []:
+        if isinstance(item, str):
+            # Legacy: a bare temperature-sensor entity_id.
+            eid = item
+            base = eid.split(".", 1)[-1] if "." in eid else eid
+            room = {
+                "id": _room_slug(base),
+                "name": base.replace("_", " ").title(),
+                "temp": eid,
+                "humidity": None,
+                "co2": None,
+            }
+        elif isinstance(item, dict):
+            name = item.get("name") or ""
+            rid = item.get("id") or _room_slug(name) or _room_slug(item.get("temp") or "")
+            room = {
+                "id": rid,
+                "name": name or (rid.replace("_", " ").title() if rid else "Room"),
+                "temp": item.get("temp") or None,
+                "humidity": item.get("humidity") or None,
+                "co2": item.get("co2") or None,
+            }
+        else:
+            continue
+        rid = room["id"] or "room"
+        if rid in seen_ids:
+            suffix = 2
+            while f"{rid}_{suffix}" in seen_ids:
+                suffix += 1
+            rid = f"{rid}_{suffix}"
+            room["id"] = rid
+        seen_ids.add(rid)
+        rooms.append(room)
+    return rooms
+
 
 # ---------------------------------------------------------------------------
 # v2.1 - Soil sensor group (opt-in)

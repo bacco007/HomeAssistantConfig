@@ -100,6 +100,7 @@ from .algorithms import (
     format_rain_display,
     get_condition_severity,
     humidity_level,
+    indoor_comfort_score,
     least_squares_pressure_trend,
     linear_regression_slope,
     moon_next_phase_days,
@@ -520,6 +521,7 @@ from .const import (
     VALID_TEMP_MAX_C,
     VALID_TEMP_MIN_C,
     WIND_SMOOTH_ALPHA,
+    normalize_indoor_rooms,
 )
 from .models import WsData
 from .providers import get_provider
@@ -722,8 +724,10 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # Previous indoor readings for stuck-value detection
         self._indoor_temp_prev: float | None = None
         self._indoor_hum_prev: float | None = None
-        # Per-room temperature sensors for multi-room delta support
-        self._indoor_room_temps: list[str] = list(_get(CONF_INDOOR_ROOMS, []) or [])
+        # Named indoor rooms (v2.6.0). Normalized to the room-dict shape so the
+        # coordinator tolerates both legacy list[str] and the new model even
+        # before async_migrate_entry has run.
+        self._indoor_rooms: list[dict] = normalize_indoor_rooms(_get(CONF_INDOOR_ROOMS, []))
 
         # v2.0: lightning sensor integration
         self.lightning_enabled = bool(_get(CONF_ENABLE_LIGHTNING, DEFAULT_ENABLE_LIGHTNING))
@@ -2231,44 +2235,61 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if indoor_co2_raw is not None:
             data[KEY_INDOOR_CO2_PPM] = round(float(indoor_co2_raw))
 
-        # Composite indoor comfort: penalty for CO₂ > 1000, temp outside 18-24°C, RH outside 40-60%
-        score = 100
-        if indoor_co2_raw is not None:
-            co2 = float(indoor_co2_raw)
-            if co2 > 2000:
-                score -= 40
-            elif co2 > 1500:
-                score -= 25
-            elif co2 > 1000:
-                score -= 10
-        if indoor_temp_raw is not None:
-            indoor_tc_f = data.get(KEY_INDOOR_TEMP_C, 20.0)
-            if indoor_tc_f < 16 or indoor_tc_f > 28:
-                score -= 20
-            elif indoor_tc_f < 18 or indoor_tc_f > 26:
-                score -= 10
-        if indoor_hum_raw is not None:
-            rh_i = float(indoor_hum_raw)
-            if rh_i < 30 or rh_i > 70:
-                score -= 20
-            elif rh_i < 40 or rh_i > 60:
-                score -= 10
-        data[KEY_INDOOR_COMFORT] = max(0, min(100, score))
+        # Composite indoor comfort (shared scoring with per-room comfort below).
+        comfort = indoor_comfort_score(
+            data.get(KEY_INDOOR_TEMP_C) if indoor_temp_raw is not None else None,
+            float(indoor_hum_raw) if indoor_hum_raw is not None else None,
+            float(indoor_co2_raw) if indoor_co2_raw is not None else None,
+        )
+        if comfort is not None:
+            data[KEY_INDOOR_COMFORT] = comfort
 
-        # Per-room temperature deltas (multi-room support, v2.0.5)
-        if self._indoor_room_temps:
+        # Per-room indoor monitoring (named rooms, v2.6.0; issue #115).
+        # Each room may carry temp / humidity / CO2 sensors; we derive
+        # outdoor-relative deltas and a per-room comfort score.
+        if self._indoor_rooms:
             outdoor_tc = data.get(KEY_NORM_TEMP_C)
+            outdoor_rh = data.get(KEY_NORM_HUMIDITY)
             rooms: dict[str, dict] = {}
-            for eid in self._indoor_room_temps:
-                val = self._num(self.hass, eid)
-                if val is None:
+            for room in self._indoor_rooms:
+                rid = room.get("id")
+                if not rid:
                     continue
-                unit = self._uom(self.hass, eid)
-                tc = round(self._to_celsius(float(val), unit), 2)
-                room_data: dict[str, Any] = {"temp_c": tc}
-                if outdoor_tc is not None:
-                    room_data["delta_c"] = round(tc - float(outdoor_tc), 2)
-                rooms[eid] = room_data
+                rd: dict[str, Any] = {"name": room.get("name") or rid}
+
+                temp_eid = room.get("temp")
+                tc = None
+                if temp_eid:
+                    val = self._num(self.hass, temp_eid)
+                    if val is not None:
+                        tc = round(self._to_celsius(float(val), self._uom(self.hass, temp_eid)), 2)
+                        rd["temp_c"] = tc
+                        if outdoor_tc is not None:
+                            rd["delta_c"] = round(tc - float(outdoor_tc), 2)
+
+                hum_eid = room.get("humidity")
+                rh = None
+                if hum_eid:
+                    hval = self._num(self.hass, hum_eid)
+                    if hval is not None:
+                        rh = round(float(hval), 2)
+                        rd["humidity_pct"] = rh
+                        if outdoor_rh is not None:
+                            rd["humidity_delta_pct"] = round(rh - float(outdoor_rh), 2)
+
+                co2_eid = room.get("co2")
+                co2 = None
+                if co2_eid:
+                    cval = self._num(self.hass, co2_eid)
+                    if cval is not None:
+                        co2 = round(float(cval))
+                        rd["co2_ppm"] = co2
+
+                room_comfort = indoor_comfort_score(tc, rh, co2)
+                if room_comfort is not None:
+                    rd["comfort"] = room_comfort
+
+                rooms[rid] = rd
             if rooms:
                 data[KEY_INDOOR_ROOMS_DATA] = rooms
 

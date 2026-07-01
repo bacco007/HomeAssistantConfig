@@ -301,6 +301,43 @@
           "vigicrues_stations": "Sélectionnez une ou plusieurs stations. Laissez vide pour détecter automatiquement la station la plus proche."
         }
       },
+      "indoor_rooms": {
+        "title": "Pièces intérieures",
+        "description": "Définissez des pièces nommées, chacune avec son propre capteur de température, d'humidité et/ou de CO2. Chaque pièce obtient ses propres capteurs d'écart et de confort. Choisissez une action ou sélectionnez Terminé pour continuer.",
+        "menu_options": {
+          "room_add": "Ajouter une pièce",
+          "room_edit": "Modifier une pièce",
+          "room_remove": "Supprimer des pièces",
+          "room_done": "Terminé"
+        }
+      },
+      "room_edit": {
+        "title": "Modifier la pièce",
+        "data": {
+          "room": "Pièce"
+        }
+      },
+      "room_form": {
+        "title": "Détails de la pièce",
+        "description": "Nommez la pièce et attribuez n'importe quelle combinaison de capteurs de température, d'humidité et de CO2. Laissez un capteur vide pour ignorer cette mesure pour cette pièce.",
+        "data": {
+          "name": "Nom de la pièce",
+          "temp": "Capteur de température",
+          "humidity": "Capteur d'humidité",
+          "co2": "Capteur de CO2"
+        },
+        "data_description": {
+          "temp": "Utilisé pour l'écart de température intérieur/extérieur de la pièce.",
+          "humidity": "Utilisé pour l'écart d'humidité intérieur/extérieur de la pièce.",
+          "co2": "Utilisé dans le score de confort de la pièce."
+        }
+      },
+      "room_remove": {
+        "title": "Supprimer des pièces",
+        "data": {
+          "rooms": "Pièces à supprimer"
+        }
+      },
       "cwop": {
         "title": "Envoi vers CWOP (APRS)",
         "description": "{info}",
@@ -324,7 +361,8 @@
       "temp_out_of_range": "La température dépasse les limites physiques possibles.",
       "invalid_api_key": "Clé API invalide ou identifiants rejetés.",
       "cannot_connect": "Impossible de se connecter à l'API - vérifiez le réseau et réessayez.",
-      "station_not_found": "ID de la station Weather Underground introuvable."
+      "station_not_found": "ID de la station Weather Underground introuvable.",
+      "room_name_required": "Veuillez saisir un nom pour la pièce."
     },
     "create_entry": {
       "default": "Configuration terminée ! Vos prévisions locales et vos capteurs météo intelligents sont en cours de génération.\n\n**Prochaines étapes :**\nConfigurez le [tableau de bord](https://github.com/kmich/ha_ws_core/tree/main/dashboards)\n et les [automatisations d'alertes](https://github.com/kmich/ha_ws_core/tree/main/blueprints)"
@@ -505,13 +543,40 @@
         }
       },
       "indoor_rooms_opt": {
-        "title": "Capteurs intérieurs des différentes pièces",
-        "description": "Sélectionnez un capteur de température par pièce pour générer un capteur d'écart de température intérieur/extérieur dédié.",
+        "title": "Pièces intérieures",
+        "description": "Définissez des pièces nommées, chacune avec son propre capteur de température, d'humidité et/ou de CO2. Chaque pièce obtient ses propres capteurs d'écart et de confort. Choisissez une action ou sélectionnez Terminé pour continuer.",
+        "menu_options": {
+          "room_add": "Ajouter une pièce",
+          "room_edit": "Modifier une pièce",
+          "room_remove": "Supprimer des pièces",
+          "room_done": "Terminé"
+        }
+      },
+      "room_edit": {
+        "title": "Modifier la pièce",
         "data": {
-          "indoor_rooms": "Capteurs de température par pièce"
+          "room": "Pièce"
+        }
+      },
+      "room_form": {
+        "title": "Détails de la pièce",
+        "description": "Nommez la pièce et attribuez n'importe quelle combinaison de capteurs de température, d'humidité et de CO2. Laissez un capteur vide pour ignorer cette mesure pour cette pièce.",
+        "data": {
+          "name": "Nom de la pièce",
+          "temp": "Capteur de température",
+          "humidity": "Capteur d'humidité",
+          "co2": "Capteur de CO2"
         },
         "data_description": {
-          "indoor_rooms": "Chaque capteur sélectionné génère un capteur d'écart dédié (ex : Écart temp - Chambre). Laissez vide pour utiliser uniquement le capteur intérieur général de l'étape précédente"
+          "temp": "Utilisé pour l'écart de température intérieur/extérieur de la pièce.",
+          "humidity": "Utilisé pour l'écart d'humidité intérieur/extérieur de la pièce.",
+          "co2": "Utilisé dans le score de confort de la pièce."
+        }
+      },
+      "room_remove": {
+        "title": "Supprimer des pièces",
+        "data": {
+          "rooms": "Pièces à supprimer"
         }
       },
       "upload_services_opt": {
@@ -654,7 +719,8 @@
       "temp_out_of_range": "La température dépasse les limites physiques possibles.",
       "invalid_api_key": "Clé API invalide ou identifiants rejetés.",
       "cannot_connect": "Impossible de se connecter à l'API - vérifiez le réseau et réessayez.",
-      "station_not_found": "ID de la station Weather Underground introuvable."
+      "station_not_found": "ID de la station Weather Underground introuvable.",
+      "room_name_required": "Veuillez saisir un nom pour la pièce."
     }
   },
   "issues": {
@@ -938,7 +1004,7 @@
         "name": "Niveau du cours d'eau"
       },
       "rain_next_60min": {
-        "name": "Pluie dans les 60 min"
+        "name": "Pluie dans l'heure"
       },
       "minutes_until_rain": {
         "name": "Minutes avant la pluie"
@@ -2379,7 +2445,7 @@
         "name": "Prévision immédiate des précipitations"
       },
       "ws_suppress_notifications": {
-        "name": "Bloquer les notifications HA"
+        "name": "Activer les notifications HA"
       },
       "ws_enable_degree_days": {
         "name": "Degrés-jours & humidité du feuillage"

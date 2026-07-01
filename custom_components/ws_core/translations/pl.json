@@ -471,13 +471,40 @@
         }
       },
       "indoor_rooms_opt": {
-        "title": "Czujniki pokojowe wewnętrzne",
-        "description": "Wybierz jeden czujnik temperatury na pokój, aby uzyskać dedykowany czujnik różnicy temperatury wewnątrz/na zewnątrz dla każdego pokoju.",
+        "title": "Pomieszczenia wewnętrzne",
+        "description": "Zdefiniuj nazwane pomieszczenia, każde z własnym czujnikiem temperatury, wilgotności i/lub CO2. Każde pomieszczenie otrzymuje własne czujniki różnicy i komfortu. Wybierz akcję lub wybierz Gotowe, aby kontynuować.",
+        "menu_options": {
+          "room_add": "Dodaj pomieszczenie",
+          "room_edit": "Edytuj pomieszczenie",
+          "room_remove": "Usuń pomieszczenia",
+          "room_done": "Gotowe"
+        }
+      },
+      "room_edit": {
+        "title": "Edytuj pomieszczenie",
         "data": {
-          "indoor_rooms": "Czujniki temperatury pokojowej"
+          "room": "Pomieszczenie"
+        }
+      },
+      "room_form": {
+        "title": "Szczegóły pomieszczenia",
+        "description": "Nazwij pomieszczenie i przypisz dowolną kombinację czujników temperatury, wilgotności i CO2. Pozostaw czujnik pusty, aby pominąć ten pomiar dla tego pomieszczenia.",
+        "data": {
+          "name": "Nazwa pomieszczenia",
+          "temp": "Czujnik temperatury",
+          "humidity": "Czujnik wilgotności",
+          "co2": "Czujnik CO2"
         },
         "data_description": {
-          "indoor_rooms": "Każdy wybrany czujnik tworzy osobny czujnik różnicy (np. WS Temp Delta - Sypialnia). Pozostaw puste, aby używać tylko pojedynczego czujnika wewnętrznego z poprzedniego kroku."
+          "temp": "Używany do różnicy temperatury wewnątrz/na zewnątrz pomieszczenia.",
+          "humidity": "Używany do różnicy wilgotności wewnątrz/na zewnątrz pomieszczenia.",
+          "co2": "Używany w ocenie komfortu pomieszczenia."
+        }
+      },
+      "room_remove": {
+        "title": "Usuń pomieszczenia",
+        "data": {
+          "rooms": "Pomieszczenia do usunięcia"
         }
       },
       "upload_services_opt": {
@@ -620,7 +647,8 @@
       "temp_out_of_range": "Temperatura jest poza fizycznie możliwym zakresem.",
       "invalid_api_key": "Nieprawidłowy klucz API lub odrzucone dane logowania",
       "cannot_connect": "Nie można połączyć się z API - sprawdź sieć i spróbuj ponownie",
-      "station_not_found": "Nie znaleziono identyfikatora stacji Weather Underground"
+      "station_not_found": "Nie znaleziono identyfikatora stacji Weather Underground",
+      "room_name_required": "Wprowadź nazwę pomieszczenia."
     }
   },
   "issues": {

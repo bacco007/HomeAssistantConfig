@@ -468,13 +468,40 @@
         }
       },
       "indoor_rooms_opt": {
-        "title": "Binnenruimte-sensoren",
-        "description": "Selecteer per ruimte een temperatuursensor om een aparte binnen/buiten-temperatuurverschilsensor voor elke ruimte te krijgen.",
+        "title": "Binnenruimtes",
+        "description": "Definieer benoemde ruimtes, elk met een eigen temperatuur-, vochtigheids- en/of CO2-sensor. Elke ruimte krijgt eigen verschil- en comfortsensoren. Kies een actie of selecteer Klaar om door te gaan.",
+        "menu_options": {
+          "room_add": "Ruimte toevoegen",
+          "room_edit": "Ruimte bewerken",
+          "room_remove": "Ruimtes verwijderen",
+          "room_done": "Klaar"
+        }
+      },
+      "room_edit": {
+        "title": "Ruimte bewerken",
         "data": {
-          "indoor_rooms": "Ruimtetemperatuursensoren"
+          "room": "Ruimte"
+        }
+      },
+      "room_form": {
+        "title": "Ruimtedetails",
+        "description": "Geef de ruimte een naam en wijs een willekeurige combinatie van temperatuur-, vochtigheids- en CO2-sensoren toe. Laat een sensor leeg om die meting voor deze ruimte over te slaan.",
+        "data": {
+          "name": "Ruimtenaam",
+          "temp": "Temperatuursensor",
+          "humidity": "Vochtigheidssensor",
+          "co2": "CO2-sensor"
         },
         "data_description": {
-          "indoor_rooms": "Voor elke geselecteerde sensor wordt een aparte verschilsensor aangemaakt (bijv. WS Temp Delta - Slaapkamer). Laat leeg om alleen de enkele binnensensor van de vorige stap te gebruiken."
+          "temp": "Gebruikt voor het binnen/buiten-temperatuurverschil van de ruimte.",
+          "humidity": "Gebruikt voor het binnen/buiten-vochtigheidsverschil van de ruimte.",
+          "co2": "Gebruikt in de comfortscore van de ruimte."
+        }
+      },
+      "room_remove": {
+        "title": "Ruimtes verwijderen",
+        "data": {
+          "rooms": "Te verwijderen ruimtes"
         }
       },
       "upload_services_opt": {
@@ -617,7 +644,8 @@
       "temp_out_of_range": "Temperatuur ligt buiten het fysiek mogelijke bereik.",
       "invalid_api_key": "Ongeldige API-sleutel of inloggegevens geweigerd",
       "cannot_connect": "Kan geen verbinding maken met API - controleer het netwerk en probeer opnieuw",
-      "station_not_found": "Weather Underground station-ID niet gevonden"
+      "station_not_found": "Weather Underground station-ID niet gevonden",
+      "room_name_required": "Voer een naam in voor de ruimte."
     }
   },
   "issues": {

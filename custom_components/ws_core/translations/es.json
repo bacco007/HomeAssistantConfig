@@ -468,13 +468,40 @@
         }
       },
       "indoor_rooms_opt": {
-        "title": "Sensores de habitaciones interiores",
-        "description": "Seleccione un sensor de temperatura por habitación para obtener un sensor de diferencia de temperatura interior/exterior dedicado para cada habitación.",
+        "title": "Habitaciones interiores",
+        "description": "Defina habitaciones con nombre, cada una con su propio sensor de temperatura, humedad y/o CO2. Cada habitación obtiene sus propios sensores de diferencia y confort. Elija una acción o seleccione Hecho para continuar.",
+        "menu_options": {
+          "room_add": "Añadir una habitación",
+          "room_edit": "Editar una habitación",
+          "room_remove": "Eliminar habitaciones",
+          "room_done": "Hecho"
+        }
+      },
+      "room_edit": {
+        "title": "Editar habitación",
         "data": {
-          "indoor_rooms": "Sensores de temperatura por habitación"
+          "room": "Habitación"
+        }
+      },
+      "room_form": {
+        "title": "Detalles de la habitación",
+        "description": "Nombre la habitación y asigne cualquier combinación de sensores de temperatura, humedad y CO2. Deje un sensor en blanco para omitir esa medida en esta habitación.",
+        "data": {
+          "name": "Nombre de la habitación",
+          "temp": "Sensor de temperatura",
+          "humidity": "Sensor de humedad",
+          "co2": "Sensor de CO2"
         },
         "data_description": {
-          "indoor_rooms": "Cada sensor seleccionado crea un sensor delta separado (p. ej. WS Temp Delta - Dormitorio). Deje vacío para usar solo el sensor interior único del paso anterior."
+          "temp": "Se usa para la diferencia de temperatura interior/exterior de la habitación.",
+          "humidity": "Se usa para la diferencia de humedad interior/exterior de la habitación.",
+          "co2": "Se usa en la puntuación de confort de la habitación."
+        }
+      },
+      "room_remove": {
+        "title": "Eliminar habitaciones",
+        "data": {
+          "rooms": "Habitaciones a eliminar"
         }
       },
       "upload_services_opt": {
@@ -617,7 +644,8 @@
       "temp_out_of_range": "La temperatura está fuera del rango físicamente posible.",
       "invalid_api_key": "Clave API no válida o credenciales rechazadas",
       "cannot_connect": "No se pudo conectar con la API - verifique la red e inténtelo de nuevo",
-      "station_not_found": "ID de estación de Weather Underground no encontrado"
+      "station_not_found": "ID de estación de Weather Underground no encontrado",
+      "room_name_required": "Introduzca un nombre para la habitación."
     }
   },
   "issues": {

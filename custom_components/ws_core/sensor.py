@@ -250,6 +250,7 @@ from .const import (
     UNIT_RAIN_MM,
     UNIT_TEMP_C,
     UNIT_WIND_MS,
+    normalize_indoor_rooms,
 )
 
 
@@ -2082,7 +2083,7 @@ SENSORS: list[WSSensorDescription] = [
         translation_key="thunderstorm_risk",
         name="WS Thunderstorm Risk",
         icon="mdi:weather-lightning",
-        native_unit=None,
+        native_unit="%",
         state_class=SensorStateClass.MEASUREMENT,
         attrs_fn=lambda d: {
             "risk_level": d.get("_thunderstorm_level"),
@@ -2460,28 +2461,104 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 
     entities: list[SensorEntity] = [WSSensor(coordinator, entry, desc, prefix) for desc in filtered]
 
-    # v2.0.5: dynamic per-room indoor temperature delta sensors
+    # Named indoor rooms (v2.6.0; issue #115): per-room temp-delta, humidity,
+    # CO2 and comfort sensors. Only the metrics a room actually configures are
+    # created. The temp-delta key matches the v2.0.5 scheme so existing
+    # temperature-only rooms keep their entity ids across the upgrade.
     if opts.get(CONF_ENABLE_INDOOR, False):
-        room_temps: list[str] = list(opts.get(CONF_INDOOR_ROOMS) or [])
-        for eid in room_temps:
-            slug = eid.split(".", 1)[-1] if "." in eid else eid
-            state = hass.states.get(eid)
-            friendly = (state.attributes.get("friendly_name") if state else None) or slug.replace("_", " ").title()
-            desc = WSSensorDescription(
-                key=f"indoor_room_delta_{slug}",
-                name=f"Temp Delta - {friendly}",
-                icon="mdi:thermometer-lines",
-                device_class=SensorDeviceClass.TEMPERATURE,
-                native_unit=UNIT_TEMP_C,
-                state_class=SensorStateClass.MEASUREMENT,
-                entity_category=EntityCategory.DIAGNOSTIC,
-                value_fn=lambda d, _eid=eid: (d.get(KEY_INDOOR_ROOMS_DATA) or {}).get(_eid, {}).get("delta_c"),
-                attrs_fn=lambda d, _eid=eid: {
-                    "indoor_temp_c": (d.get(KEY_INDOOR_ROOMS_DATA) or {}).get(_eid, {}).get("temp_c"),
-                    "source_entity": _eid,
-                },
-            )
-            entities.append(WSSensor(coordinator, entry, desc, prefix))
+        for room in normalize_indoor_rooms(opts.get(CONF_INDOOR_ROOMS)):
+            rid = room["id"]
+            name = room["name"]
+            temp_eid = room.get("temp")
+            hum_eid = room.get("humidity")
+            co2_eid = room.get("co2")
+
+            def _room_field(d, _rid=rid, _field=None):
+                return (d.get(KEY_INDOOR_ROOMS_DATA) or {}).get(_rid, {}).get(_field)
+
+            if temp_eid:
+                entities.append(
+                    WSSensor(
+                        coordinator,
+                        entry,
+                        WSSensorDescription(
+                            key=f"indoor_room_delta_{rid}",
+                            name=f"Temp Delta - {name}",
+                            icon="mdi:thermometer-lines",
+                            device_class=SensorDeviceClass.TEMPERATURE,
+                            native_unit=UNIT_TEMP_C,
+                            state_class=SensorStateClass.MEASUREMENT,
+                            entity_category=EntityCategory.DIAGNOSTIC,
+                            value_fn=lambda d, _rid=rid: _room_field(d, _rid, "delta_c"),
+                            attrs_fn=lambda d, _rid=rid, _eid=temp_eid: {
+                                "indoor_temp_c": _room_field(d, _rid, "temp_c"),
+                                "source_entity": _eid,
+                            },
+                        ),
+                        prefix,
+                    )
+                )
+            if hum_eid:
+                entities.append(
+                    WSSensor(
+                        coordinator,
+                        entry,
+                        WSSensorDescription(
+                            key=f"indoor_room_humidity_{rid}",
+                            name=f"Humidity - {name}",
+                            icon="mdi:water-percent",
+                            device_class=SensorDeviceClass.HUMIDITY,
+                            native_unit="%",
+                            state_class=SensorStateClass.MEASUREMENT,
+                            value_fn=lambda d, _rid=rid: _room_field(d, _rid, "humidity_pct"),
+                            attrs_fn=lambda d, _rid=rid, _eid=hum_eid: {
+                                "delta_pct": _room_field(d, _rid, "humidity_delta_pct"),
+                                "source_entity": _eid,
+                            },
+                        ),
+                        prefix,
+                    )
+                )
+            if co2_eid:
+                entities.append(
+                    WSSensor(
+                        coordinator,
+                        entry,
+                        WSSensorDescription(
+                            key=f"indoor_room_co2_{rid}",
+                            name=f"CO₂ - {name}",
+                            icon="mdi:molecule-co2",
+                            device_class=SensorDeviceClass.CO2,
+                            native_unit="ppm",
+                            state_class=SensorStateClass.MEASUREMENT,
+                            value_fn=lambda d, _rid=rid: _room_field(d, _rid, "co2_ppm"),
+                            attrs_fn=lambda d, _rid=rid, _eid=co2_eid: {"source_entity": _eid},
+                        ),
+                        prefix,
+                    )
+                )
+            if temp_eid or hum_eid or co2_eid:
+                entities.append(
+                    WSSensor(
+                        coordinator,
+                        entry,
+                        WSSensorDescription(
+                            key=f"indoor_room_comfort_{rid}",
+                            name=f"Comfort - {name}",
+                            icon="mdi:home-heart",
+                            native_unit=None,
+                            state_class=SensorStateClass.MEASUREMENT,
+                            entity_category=EntityCategory.DIAGNOSTIC,
+                            value_fn=lambda d, _rid=rid: _room_field(d, _rid, "comfort"),
+                            attrs_fn=lambda d, _rid=rid: {
+                                "temp_c": _room_field(d, _rid, "temp_c"),
+                                "humidity_pct": _room_field(d, _rid, "humidity_pct"),
+                                "co2_ppm": _room_field(d, _rid, "co2_ppm"),
+                            },
+                        ),
+                        prefix,
+                    )
+                )
 
     # v1.9.0: dynamic Vigicrues river sensors — one per configured station
     if opts.get(CONF_ENABLE_VIGICRUES, False):

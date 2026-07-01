@@ -2723,3 +2723,45 @@ def calculate_utci(ta: float, tr: float, va: float, rh: float) -> float | None:
     )
 
     return round(float(ta) + utci_approx, 1)
+
+
+def indoor_comfort_score(
+    temp_c: float | None,
+    humidity_pct: float | None,
+    co2_ppm: float | None,
+) -> int | None:
+    """Composite indoor comfort score (0-100) from temperature, RH and CO2.
+
+    Starts at 100 and applies penalties for values outside comfortable bands:
+      - CO2 (ppm):  >1000 -10, >1500 -25, >2000 -40
+      - Temp (C):   outside 18-26 -10, outside 16-28 -20
+      - RH (%):     outside 40-60 -10, outside 30-70 -20
+
+    Returns ``None`` when no inputs are available so callers can skip the
+    sensor entirely rather than report a misleading perfect score.
+    """
+    if temp_c is None and humidity_pct is None and co2_ppm is None:
+        return None
+
+    score = 100
+    if co2_ppm is not None:
+        co2 = float(co2_ppm)
+        if co2 > 2000:
+            score -= 40
+        elif co2 > 1500:
+            score -= 25
+        elif co2 > 1000:
+            score -= 10
+    if temp_c is not None:
+        t = float(temp_c)
+        if t < 16 or t > 28:
+            score -= 20
+        elif t < 18 or t > 26:
+            score -= 10
+    if humidity_pct is not None:
+        rh = float(humidity_pct)
+        if rh < 30 or rh > 70:
+            score -= 20
+        elif rh < 40 or rh > 60:
+            score -= 10
+    return max(0, min(100, score))

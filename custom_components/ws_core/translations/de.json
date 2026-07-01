@@ -471,13 +471,40 @@
         }
       },
       "indoor_rooms_opt": {
-        "title": "Innenraum-Temperatursensoren",
-        "description": "Wähle einen Temperatursensor pro Raum aus, um einen eigenen Innen/Außen-Temperaturdifferenz-Sensor für jeden Raum zu erhalten.",
+        "title": "Innenräume",
+        "description": "Definieren Sie benannte Räume mit jeweils eigenem Temperatur-, Feuchte- und/oder CO2-Sensor. Jeder Raum erhält eigene Differenz- und Komfortsensoren. Wählen Sie eine Aktion oder Fertig zum Fortfahren.",
+        "menu_options": {
+          "room_add": "Raum hinzufügen",
+          "room_edit": "Raum bearbeiten",
+          "room_remove": "Räume entfernen",
+          "room_done": "Fertig"
+        }
+      },
+      "room_edit": {
+        "title": "Raum bearbeiten",
         "data": {
-          "indoor_rooms": "Raum-Temperatursensoren"
+          "room": "Raum"
+        }
+      },
+      "room_form": {
+        "title": "Raumdetails",
+        "description": "Benennen Sie den Raum und weisen Sie beliebige Kombinationen von Temperatur-, Feuchte- und CO2-Sensoren zu. Lassen Sie einen Sensor leer, um diese Messgröße für diesen Raum zu überspringen.",
+        "data": {
+          "name": "Raumname",
+          "temp": "Temperatursensor",
+          "humidity": "Feuchtesensor",
+          "co2": "CO2-Sensor"
         },
         "data_description": {
-          "indoor_rooms": "Jeder ausgewählte Sensor erzeugt einen eigenen Differenzsensor (z. B. WS Temp Delta - Schlafzimmer). Leer lassen, um nur den einzelnen Innensensor aus dem vorherigen Schritt zu verwenden."
+          "temp": "Wird für die Innen-/Außentemperaturdifferenz des Raums verwendet.",
+          "humidity": "Wird für die Innen-/Außenfeuchtedifferenz des Raums verwendet.",
+          "co2": "Wird im Komfortscore des Raums verwendet."
+        }
+      },
+      "room_remove": {
+        "title": "Räume entfernen",
+        "data": {
+          "rooms": "Zu entfernende Räume"
         }
       },
       "upload_services_opt": {
@@ -620,7 +647,8 @@
       "temp_out_of_range": "Temperatur liegt außerhalb des physikalisch möglichen Bereichs.",
       "invalid_api_key": "Ungültiger API-Schlüssel oder Zugangsdaten abgelehnt",
       "cannot_connect": "Verbindung zur API konnte nicht hergestellt werden – Netzwerk prüfen und erneut versuchen",
-      "station_not_found": "Weather Underground Stations-ID nicht gefunden"
+      "station_not_found": "Weather Underground Stations-ID nicht gefunden",
+      "room_name_required": "Bitte geben Sie einen Namen für den Raum ein."
     }
   },
   "issues": {

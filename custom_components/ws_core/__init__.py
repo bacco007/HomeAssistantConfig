@@ -22,6 +22,7 @@ from .const import (
     CONF_CAL_WIND_MS,
     CONF_CLIMATE_REGION,
     CONF_HEMISPHERE,
+    CONF_INDOOR_ROOMS,
     CONFIG_VERSION,
     DEFAULT_CLIMATE_REGION,
     DEFAULT_HEMISPHERE,
@@ -29,6 +30,7 @@ from .const import (
     DEPRECATED_KEYS_V030,
     DOMAIN,
     PLATFORMS,
+    normalize_indoor_rooms,
 )
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
@@ -54,6 +56,9 @@ async def async_migrate_entry(hass: HomeAssistant, entry) -> bool:
     v2 -> v3 (v2.5.0): Slug hemisphere/climate_region values so they can be
         translated in the UI (issue #104), e.g. "Atlantic Europe" ->
         "atlantic_europe", "Northern" -> "northern".
+    v3 -> v4 (v2.6.0): Upconvert CONF_INDOOR_ROOMS from a bare list of
+        temperature-sensor entity_ids to the named-room dict shape
+        (issue #115).
     """
     _LOGGER.info("Migrating ws_core config entry from version %s to %s", entry.version, CONFIG_VERSION)
 
@@ -140,6 +145,17 @@ async def async_migrate_entry(hass: HomeAssistant, entry) -> bool:
                 store[CONF_HEMISPHERE] = _HEMISPHERE_SLUGS[store[CONF_HEMISPHERE]]
             if store.get(CONF_CLIMATE_REGION) in _CLIMATE_REGION_SLUGS:
                 store[CONF_CLIMATE_REGION] = _CLIMATE_REGION_SLUGS[store[CONF_CLIMATE_REGION]]
+
+    # ---- v3 -> v4 (v2.6.0): named indoor rooms ----
+    if entry.version < 4:
+        for store in (new_data, new_options):
+            if CONF_INDOOR_ROOMS in store:
+                before = store[CONF_INDOOR_ROOMS]
+                store[CONF_INDOOR_ROOMS] = normalize_indoor_rooms(before)
+                _LOGGER.info(
+                    "v2.6.0 migration: normalized %d indoor room(s) to named-room shape",
+                    len(store[CONF_INDOOR_ROOMS]),
+                )
 
     hass.config_entries.async_update_entry(
         entry,

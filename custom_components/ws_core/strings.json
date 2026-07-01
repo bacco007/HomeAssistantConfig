@@ -280,6 +280,43 @@
           "vigicrues_stations": "Select one or more stations. Leave empty to auto-detect the nearest station."
         }
       },
+      "indoor_rooms": {
+        "title": "Indoor Rooms",
+        "description": "Define named rooms, each with its own temperature, humidity and/or CO2 sensor. Every room gets its own delta and comfort sensors. Choose an action, or select Done to continue.",
+        "menu_options": {
+          "room_add": "Add a room",
+          "room_edit": "Edit a room",
+          "room_remove": "Remove rooms",
+          "room_done": "Done"
+        }
+      },
+      "room_edit": {
+        "title": "Edit Room",
+        "data": {
+          "room": "Room"
+        }
+      },
+      "room_form": {
+        "title": "Room Details",
+        "description": "Name the room and assign any combination of temperature, humidity and CO2 sensors. Leave a sensor blank to skip that metric for this room.",
+        "data": {
+          "name": "Room name",
+          "temp": "Temperature sensor",
+          "humidity": "Humidity sensor",
+          "co2": "CO2 sensor"
+        },
+        "data_description": {
+          "temp": "Used for the room's indoor/outdoor temperature delta.",
+          "humidity": "Used for the room's indoor/outdoor humidity delta.",
+          "co2": "Used in the room's comfort score."
+        }
+      },
+      "room_remove": {
+        "title": "Remove Rooms",
+        "data": {
+          "rooms": "Rooms to remove"
+        }
+      },
       "cwop": {
         "title": "CWOP (APRS) Upload",
         "description": "{info}",
@@ -303,7 +340,8 @@
       "temp_out_of_range": "Temperature is outside the physically possible range.",
       "invalid_api_key": "Invalid API key or credentials rejected",
       "cannot_connect": "Could not connect to API - check network and try again",
-      "station_not_found": "Weather Underground station ID not found"
+      "station_not_found": "Weather Underground station ID not found",
+      "room_name_required": "Please enter a name for the room."
     },
     "create_entry": {
       "default": "Setup complete! Your local forecasts and intelligent weather sensors are now generating.\n\n**Next steps:**\n1. Install the Enhanced Dashboard (from the GitHub repository dashboards/ folder)\n2. Set up a Rain Warning Automation (from the blueprints/ folder)"
@@ -471,13 +509,40 @@
         }
       },
       "indoor_rooms_opt": {
-        "title": "Indoor Room Sensors",
-        "description": "Select one temperature sensor per room to get a dedicated indoor/outdoor temperature delta sensor for each room.",
+        "title": "Indoor Rooms",
+        "description": "Define named rooms, each with its own temperature, humidity and/or CO2 sensor. Every room gets its own delta and comfort sensors. Choose an action, or select Done to continue.",
+        "menu_options": {
+          "room_add": "Add a room",
+          "room_edit": "Edit a room",
+          "room_remove": "Remove rooms",
+          "room_done": "Done"
+        }
+      },
+      "room_edit": {
+        "title": "Edit Room",
         "data": {
-          "indoor_rooms": "Room temperature sensors"
+          "room": "Room"
+        }
+      },
+      "room_form": {
+        "title": "Room Details",
+        "description": "Name the room and assign any combination of temperature, humidity and CO2 sensors. Leave a sensor blank to skip that metric for this room.",
+        "data": {
+          "name": "Room name",
+          "temp": "Temperature sensor",
+          "humidity": "Humidity sensor",
+          "co2": "CO2 sensor"
         },
         "data_description": {
-          "indoor_rooms": "Each selected sensor creates a separate delta sensor (e.g. WS Temp Delta - Bedroom). Leave empty to use only the single indoor sensor from the previous step."
+          "temp": "Used for the room's indoor/outdoor temperature delta.",
+          "humidity": "Used for the room's indoor/outdoor humidity delta.",
+          "co2": "Used in the room's comfort score."
+        }
+      },
+      "room_remove": {
+        "title": "Remove Rooms",
+        "data": {
+          "rooms": "Rooms to remove"
         }
       },
       "upload_services_opt": {
@@ -620,7 +685,8 @@
       "temp_out_of_range": "Temperature is outside the physically possible range.",
       "invalid_api_key": "Invalid API key or credentials rejected",
       "cannot_connect": "Could not connect to API - check network and try again",
-      "station_not_found": "Weather Underground station ID not found"
+      "station_not_found": "Weather Underground station ID not found",
+      "room_name_required": "Please enter a name for the room."
     }
   },
   "issues": {

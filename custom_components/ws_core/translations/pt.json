@@ -468,13 +468,40 @@
         }
       },
       "indoor_rooms_opt": {
-        "title": "Sensores de divisões interiores",
-        "description": "Selecione um sensor de temperatura por divisão para obter um sensor dedicado de diferença de temperatura interior/exterior para cada divisão.",
+        "title": "Divisões interiores",
+        "description": "Defina divisões nomeadas, cada uma com o seu próprio sensor de temperatura, humidade e/ou CO2. Cada divisão obtém os seus próprios sensores de diferença e conforto. Escolha uma ação ou selecione Concluído para continuar.",
+        "menu_options": {
+          "room_add": "Adicionar uma divisão",
+          "room_edit": "Editar uma divisão",
+          "room_remove": "Remover divisões",
+          "room_done": "Concluído"
+        }
+      },
+      "room_edit": {
+        "title": "Editar divisão",
         "data": {
-          "indoor_rooms": "Sensores de temperatura por divisão"
+          "room": "Divisão"
+        }
+      },
+      "room_form": {
+        "title": "Detalhes da divisão",
+        "description": "Dê um nome à divisão e atribua qualquer combinação de sensores de temperatura, humidade e CO2. Deixe um sensor em branco para ignorar essa medida nesta divisão.",
+        "data": {
+          "name": "Nome da divisão",
+          "temp": "Sensor de temperatura",
+          "humidity": "Sensor de humidade",
+          "co2": "Sensor de CO2"
         },
         "data_description": {
-          "indoor_rooms": "Cada sensor selecionado cria um sensor de diferença separado (ex. WS Diferença Temp - Quarto). Deixe em branco para usar apenas o sensor interior único do passo anterior."
+          "temp": "Usado para a diferença de temperatura interior/exterior da divisão.",
+          "humidity": "Usado para a diferença de humidade interior/exterior da divisão.",
+          "co2": "Usado na pontuação de conforto da divisão."
+        }
+      },
+      "room_remove": {
+        "title": "Remover divisões",
+        "data": {
+          "rooms": "Divisões a remover"
         }
       },
       "upload_services_opt": {
@@ -617,7 +644,8 @@
       "temp_out_of_range": "A temperatura está fora do intervalo fisicamente possível.",
       "invalid_api_key": "Chave API inválida ou credenciais rejeitadas",
       "cannot_connect": "Não foi possível ligar à API - verifique a rede e tente novamente",
-      "station_not_found": "ID da estação Weather Underground não encontrado"
+      "station_not_found": "ID da estação Weather Underground não encontrado",
+      "room_name_required": "Introduza um nome para a divisão."
     }
   },
   "issues": {

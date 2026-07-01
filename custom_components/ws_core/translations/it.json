@@ -468,13 +468,40 @@
         }
       },
       "indoor_rooms_opt": {
-        "title": "Sensori stanze interne",
-        "description": "Seleziona un sensore di temperatura per stanza per ottenere un sensore dedicato del differenziale di temperatura interno/esterno per ogni stanza.",
+        "title": "Stanze interne",
+        "description": "Definisci stanze con nome, ciascuna con il proprio sensore di temperatura, umidità e/o CO2. Ogni stanza ottiene i propri sensori di differenza e comfort. Scegli un'azione o seleziona Fatto per continuare.",
+        "menu_options": {
+          "room_add": "Aggiungi una stanza",
+          "room_edit": "Modifica una stanza",
+          "room_remove": "Rimuovi stanze",
+          "room_done": "Fatto"
+        }
+      },
+      "room_edit": {
+        "title": "Modifica stanza",
         "data": {
-          "indoor_rooms": "Sensori di temperatura delle stanze"
+          "room": "Stanza"
+        }
+      },
+      "room_form": {
+        "title": "Dettagli stanza",
+        "description": "Assegna un nome alla stanza e qualsiasi combinazione di sensori di temperatura, umidità e CO2. Lascia vuoto un sensore per ignorare quella misura per questa stanza.",
+        "data": {
+          "name": "Nome stanza",
+          "temp": "Sensore di temperatura",
+          "humidity": "Sensore di umidità",
+          "co2": "Sensore di CO2"
         },
         "data_description": {
-          "indoor_rooms": "Ogni sensore selezionato crea un sensore delta separato (es. WS Temp Delta - Camera da letto). Lascia vuoto per usare solo il singolo sensore interno dal passaggio precedente."
+          "temp": "Usato per la differenza di temperatura interno/esterno della stanza.",
+          "humidity": "Usato per la differenza di umidità interno/esterno della stanza.",
+          "co2": "Usato nel punteggio di comfort della stanza."
+        }
+      },
+      "room_remove": {
+        "title": "Rimuovi stanze",
+        "data": {
+          "rooms": "Stanze da rimuovere"
         }
       },
       "upload_services_opt": {
@@ -617,7 +644,8 @@
       "temp_out_of_range": "La temperatura è fuori dall'intervallo fisicamente possibile.",
       "invalid_api_key": "Chiave API non valida o credenziali rifiutate",
       "cannot_connect": "Impossibile connettersi all'API - controlla la rete e riprova",
-      "station_not_found": "ID stazione Weather Underground non trovato"
+      "station_not_found": "ID stazione Weather Underground non trovato",
+      "room_name_required": "Inserisci un nome per la stanza."
     }
   },
   "issues": {
