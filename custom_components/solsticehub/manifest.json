@@ -1,0 +1,12 @@
+{
+  "domain": "solsticehub",
+  "name": "SolsticeHub",
+  "codeowners": ["@moerk-o"],
+  "config_flow": true,
+  "documentation": "https://github.com/moerk-o/SolsticeHub",
+  "integration_type": "service",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/moerk-o/SolsticeHub/issues",
+  "requirements": ["ephem>=4.1.0"],
+  "version": "2.0.0"
+}

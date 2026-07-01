@@ -1,0 +1,173 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure SolsticeHub",
+        "description": "Set up a sun-based calendar system",
+        "data": {
+          "device_type": "Device Type"
+        }
+      },
+      "four_seasons": {
+        "title": "Four Seasons Settings",
+        "description": "Configure the Four Seasons calendar",
+        "data": {
+          "hemisphere": "Hemisphere",
+          "mode": "Calculation mode"
+        }
+      },
+      "cross_quarter": {
+        "title": "Cross-Quarter / Celtic Settings",
+        "description": "Configure the Cross-Quarter calendar",
+        "data": {
+          "mode": "Calculation mode",
+          "naming": "Naming style"
+        }
+      },
+      "chinese": {
+        "title": "Chinese Solar Terms Settings",
+        "description": "Configure the Chinese Solar Terms calendar",
+        "data": {
+          "scope": "Scope",
+          "naming": "Naming style"
+        }
+      }
+    }
+  },
+  "selector": {
+    "device_type": {
+      "options": {
+        "four_seasons": "Four Seasons",
+        "cross_quarter": "Cross-Quarter / Celtic",
+        "chinese": "Chinese Solar Terms"
+      }
+    },
+    "hemisphere": {
+      "options": {
+        "northern": "Northern Hemisphere",
+        "southern": "Southern Hemisphere"
+      }
+    },
+    "mode": {
+      "options": {
+        "astronomical": "Astronomical",
+        "meteorological": "Meteorological (Calendar-based)"
+      }
+    },
+    "cross_quarter_mode": {
+      "options": {
+        "astronomical": "Astronomical (exact midpoints)",
+        "traditional": "Traditional (fixed dates)"
+      }
+    },
+    "naming": {
+      "options": {
+        "system": "System Language",
+        "celtic": "Celtic Names"
+      }
+    },
+    "chinese_naming": {
+      "options": {
+        "system": "System Language",
+        "pinyin": "Pinyin",
+        "hanzi": "Hanzi (Chinese Characters)"
+      }
+    },
+    "scope": {
+      "options": {
+        "all_24": "All 24 Solar Terms",
+        "8_major": "8 Major Terms only"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "solar_longitude": {
+        "name": "Solar Longitude"
+      },
+      "current_season": {
+        "name": "Current Season",
+        "state": {
+          "spring": "Spring",
+          "summer": "Summer",
+          "autumn": "Autumn",
+          "winter": "Winter"
+        }
+      },
+      "spring_equinox": {
+        "name": "Spring Equinox"
+      },
+      "summer_solstice": {
+        "name": "Summer Solstice"
+      },
+      "autumn_equinox": {
+        "name": "Autumn Equinox"
+      },
+      "winter_solstice": {
+        "name": "Winter Solstice"
+      },
+      "daylight_trend": {
+        "name": "Daylight Trend",
+        "state": {
+          "days_getting_longer": "Days getting longer",
+          "days_getting_shorter": "Days getting shorter",
+          "solstice_today": "Solstice today"
+        }
+      },
+      "next_daylight_trend_change": {
+        "name": "Next Trend Change"
+      },
+      "next_season_change": {
+        "name": "Next Season Change"
+      },
+      "current_period": {
+        "name": "Current Period",
+        "state": {
+          "imbolc": "Imbolc",
+          "ostara": "Ostara",
+          "beltane": "Beltane",
+          "litha": "Litha",
+          "lughnasadh": "Lughnasadh",
+          "mabon": "Mabon",
+          "samhain": "Samhain",
+          "yule": "Yule"
+        }
+      },
+      "next_period_change": {
+        "name": "Next Period Change"
+      },
+      "current_term": {
+        "name": "Current Solar Term",
+        "state": {
+          "xiaohan": "Minor Cold",
+          "dahan": "Major Cold",
+          "lichun": "Start of Spring",
+          "yushui": "Rain Water",
+          "jingzhe": "Awakening of Insects",
+          "chunfen": "Spring Equinox",
+          "qingming": "Clear and Bright",
+          "guyu": "Grain Rain",
+          "lixia": "Start of Summer",
+          "xiaoman": "Grain Buds",
+          "mangzhong": "Grain in Ear",
+          "xiazhi": "Summer Solstice",
+          "xiaoshu": "Minor Heat",
+          "dashu": "Major Heat",
+          "liqiu": "Start of Autumn",
+          "chushu": "End of Heat",
+          "bailu": "White Dew",
+          "qiufen": "Autumn Equinox",
+          "hanlu": "Cold Dew",
+          "shuangjiang": "Frost's Descent",
+          "lidong": "Start of Winter",
+          "xiaoxue": "Minor Snow",
+          "daxue": "Major Snow",
+          "dongzhi": "Winter Solstice"
+        }
+      },
+      "next_term_change": {
+        "name": "Next Term Change"
+      }
+    }
+  }
+}

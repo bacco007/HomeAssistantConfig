@@ -1,0 +1,173 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "SolsticeHub konfigurieren",
+        "description": "Sonnenbasiertes Kalendersystem einrichten",
+        "data": {
+          "device_type": "Gerätetyp"
+        }
+      },
+      "four_seasons": {
+        "title": "Vier Jahreszeiten Einstellungen",
+        "description": "Konfiguriere den Vier Jahreszeiten Kalender",
+        "data": {
+          "hemisphere": "Hemisphäre",
+          "mode": "Berechnungsmodus"
+        }
+      },
+      "cross_quarter": {
+        "title": "Cross-Quarter / Keltisch Einstellungen",
+        "description": "Konfiguriere den Cross-Quarter Kalender",
+        "data": {
+          "mode": "Berechnungsmodus",
+          "naming": "Benennung"
+        }
+      },
+      "chinese": {
+        "title": "Chinesische Sonnenterme Einstellungen",
+        "description": "Konfiguriere den chinesischen Sonnenterme-Kalender",
+        "data": {
+          "scope": "Umfang",
+          "naming": "Benennung"
+        }
+      }
+    }
+  },
+  "selector": {
+    "device_type": {
+      "options": {
+        "four_seasons": "Vier Jahreszeiten",
+        "cross_quarter": "Cross-Quarter / Keltisch",
+        "chinese": "Chinesische Sonnenterme"
+      }
+    },
+    "hemisphere": {
+      "options": {
+        "northern": "Nordhalbkugel",
+        "southern": "Südhalbkugel"
+      }
+    },
+    "mode": {
+      "options": {
+        "astronomical": "Astronomisch",
+        "meteorological": "Kalendarisch (Meteorologisch)"
+      }
+    },
+    "cross_quarter_mode": {
+      "options": {
+        "astronomical": "Astronomisch (exakte Mittelpunkte)",
+        "traditional": "Traditionell (feste Daten)"
+      }
+    },
+    "naming": {
+      "options": {
+        "system": "Systemsprache",
+        "celtic": "Keltische Namen"
+      }
+    },
+    "chinese_naming": {
+      "options": {
+        "system": "Systemsprache",
+        "pinyin": "Pinyin",
+        "hanzi": "Hanzi (Chinesische Zeichen)"
+      }
+    },
+    "scope": {
+      "options": {
+        "all_24": "Alle 24 Sonnenterme",
+        "8_major": "Nur 8 Hauptterme"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "solar_longitude": {
+        "name": "Sonnenwinkel"
+      },
+      "current_season": {
+        "name": "Aktuelle Jahreszeit",
+        "state": {
+          "spring": "Frühling",
+          "summer": "Sommer",
+          "autumn": "Herbst",
+          "winter": "Winter"
+        }
+      },
+      "spring_equinox": {
+        "name": "Frühlingsanfang"
+      },
+      "summer_solstice": {
+        "name": "Sommeranfang"
+      },
+      "autumn_equinox": {
+        "name": "Herbstanfang"
+      },
+      "winter_solstice": {
+        "name": "Winteranfang"
+      },
+      "daylight_trend": {
+        "name": "Tageslichttrend",
+        "state": {
+          "days_getting_longer": "Tage werden länger",
+          "days_getting_shorter": "Tage werden kürzer",
+          "solstice_today": "Sonnenwende heute"
+        }
+      },
+      "next_daylight_trend_change": {
+        "name": "Nächste Trendwende"
+      },
+      "next_season_change": {
+        "name": "Nächster Jahreszeitenwechsel"
+      },
+      "current_period": {
+        "name": "Aktuelle Periode",
+        "state": {
+          "imbolc": "Imbolc (Lichtmess)",
+          "ostara": "Ostara (Frühlingstagundnachtgleiche)",
+          "beltane": "Beltane (Walpurgis)",
+          "litha": "Litha (Sommersonnenwende)",
+          "lughnasadh": "Lughnasadh (Schnitterfest)",
+          "mabon": "Mabon (Herbsttagundnachtgleiche)",
+          "samhain": "Samhain (Allerheiligen)",
+          "yule": "Yule (Wintersonnenwende)"
+        }
+      },
+      "next_period_change": {
+        "name": "Nächster Periodenwechsel"
+      },
+      "current_term": {
+        "name": "Aktueller Sonnenterm",
+        "state": {
+          "xiaohan": "Kleine Kälte",
+          "dahan": "Große Kälte",
+          "lichun": "Frühlingsbeginn",
+          "yushui": "Regenwasser",
+          "jingzhe": "Erwachen der Insekten",
+          "chunfen": "Frühlingstagundnachtgleiche",
+          "qingming": "Klar und Hell",
+          "guyu": "Getreideregen",
+          "lixia": "Sommerbeginn",
+          "xiaoman": "Kleine Fülle",
+          "mangzhong": "Granne im Ohr",
+          "xiazhi": "Sommersonnenwende",
+          "xiaoshu": "Kleine Hitze",
+          "dashu": "Große Hitze",
+          "liqiu": "Herbstbeginn",
+          "chushu": "Ende der Hitze",
+          "bailu": "Weißer Tau",
+          "qiufen": "Herbsttagundnachtgleiche",
+          "hanlu": "Kalter Tau",
+          "shuangjiang": "Frost fällt",
+          "lidong": "Winterbeginn",
+          "xiaoxue": "Kleiner Schnee",
+          "daxue": "Großer Schnee",
+          "dongzhi": "Wintersonnenwende"
+        }
+      },
+      "next_term_change": {
+        "name": "Nächster Termwechsel"
+      }
+    }
+  }
+}

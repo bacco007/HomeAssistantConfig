@@ -1,0 +1,173 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "SolsticeHub configureren",
+        "description": "Stel een op de zon gebaseerd kalendersysteem in",
+        "data": {
+          "device_type": "Apparaattype"
+        }
+      },
+      "four_seasons": {
+        "title": "Vier Seizoenen Instellingen",
+        "description": "Configureer de Vier Seizoenen kalender",
+        "data": {
+          "hemisphere": "Halfrond",
+          "mode": "Berekeningsmodus"
+        }
+      },
+      "cross_quarter": {
+        "title": "Cross-Quarter / Keltisch Instellingen",
+        "description": "Configureer de Cross-Quarter kalender",
+        "data": {
+          "mode": "Berekeningsmodus",
+          "naming": "Naamstijl"
+        }
+      },
+      "chinese": {
+        "title": "Chinese Zonnetermijnen Instellingen",
+        "description": "Configureer de Chinese Zonnetermijnen kalender",
+        "data": {
+          "scope": "Omvang",
+          "naming": "Naamstijl"
+        }
+      }
+    }
+  },
+  "selector": {
+    "device_type": {
+      "options": {
+        "four_seasons": "Vier Seizoenen",
+        "cross_quarter": "Cross-Quarter / Keltisch",
+        "chinese": "Chinese Zonnetermijnen"
+      }
+    },
+    "hemisphere": {
+      "options": {
+        "northern": "Noordelijk halfrond",
+        "southern": "Zuidelijk halfrond"
+      }
+    },
+    "mode": {
+      "options": {
+        "astronomical": "Astronomisch",
+        "meteorological": "Meteorologisch (Kalendergebaseerd)"
+      }
+    },
+    "cross_quarter_mode": {
+      "options": {
+        "astronomical": "Astronomisch (exacte middelpunten)",
+        "traditional": "Traditioneel (vaste datums)"
+      }
+    },
+    "naming": {
+      "options": {
+        "system": "Systeemtaal",
+        "celtic": "Keltische namen"
+      }
+    },
+    "chinese_naming": {
+      "options": {
+        "system": "Systeemtaal",
+        "pinyin": "Pinyin",
+        "hanzi": "Hanzi (Chinese karakters)"
+      }
+    },
+    "scope": {
+      "options": {
+        "all_24": "Alle 24 zonnetermijnen",
+        "8_major": "Alleen 8 hoofdtermijnen"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "solar_longitude": {
+        "name": "Zonslengte"
+      },
+      "current_season": {
+        "name": "Huidig seizoen",
+        "state": {
+          "spring": "Lente",
+          "summer": "Zomer",
+          "autumn": "Herfst",
+          "winter": "Winter"
+        }
+      },
+      "spring_equinox": {
+        "name": "Lentenachtevening"
+      },
+      "summer_solstice": {
+        "name": "Zomerzonnewende"
+      },
+      "autumn_equinox": {
+        "name": "Herfstnachtevening"
+      },
+      "winter_solstice": {
+        "name": "Winterzonnewende"
+      },
+      "daylight_trend": {
+        "name": "Daglichttrend",
+        "state": {
+          "days_getting_longer": "Dagen worden langer",
+          "days_getting_shorter": "Dagen worden korter",
+          "solstice_today": "Zonnewende vandaag"
+        }
+      },
+      "next_daylight_trend_change": {
+        "name": "Volgende trendwijziging"
+      },
+      "next_season_change": {
+        "name": "Volgende seizoenswisseling"
+      },
+      "current_period": {
+        "name": "Huidige Periode",
+        "state": {
+          "imbolc": "Imbolc",
+          "ostara": "Ostara",
+          "beltane": "Beltane",
+          "litha": "Litha",
+          "lughnasadh": "Lughnasadh",
+          "mabon": "Mabon",
+          "samhain": "Samhain",
+          "yule": "Yule"
+        }
+      },
+      "next_period_change": {
+        "name": "Volgende Periodewisseling"
+      },
+      "current_term": {
+        "name": "Huidige Zonnetermijn",
+        "state": {
+          "xiaohan": "Kleine Kou",
+          "dahan": "Grote Kou",
+          "lichun": "Begin van de Lente",
+          "yushui": "Regenwater",
+          "jingzhe": "Ontwaken van Insecten",
+          "chunfen": "Lentenachtevening",
+          "qingming": "Helder en Licht",
+          "guyu": "Graanregen",
+          "lixia": "Begin van de Zomer",
+          "xiaoman": "Kleine Volheid",
+          "mangzhong": "Graan in Aar",
+          "xiazhi": "Zomerzonnewende",
+          "xiaoshu": "Kleine Hitte",
+          "dashu": "Grote Hitte",
+          "liqiu": "Begin van de Herfst",
+          "chushu": "Einde van de Hitte",
+          "bailu": "Witte Dauw",
+          "qiufen": "Herfstnachtevening",
+          "hanlu": "Koude Dauw",
+          "shuangjiang": "Vorst Daalt",
+          "lidong": "Begin van de Winter",
+          "xiaoxue": "Kleine Sneeuw",
+          "daxue": "Grote Sneeuw",
+          "dongzhi": "Winterzonnewende"
+        }
+      },
+      "next_term_change": {
+        "name": "Volgende Termwisseling"
+      }
+    }
+  }
+}
