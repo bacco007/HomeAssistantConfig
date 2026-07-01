@@ -1369,7 +1369,7 @@ function delay(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.132.0/helpers/decorate.js
+//#region \0@oxc-project+runtime@0.133.0/helpers/esm/decorate.js
 function __decorate$1(decorators, target, key, desc) {
 	var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -2880,7 +2880,7 @@ var MediaControlService = class {
 	async activatePredefinedGroup(pg) {
 		for (const pgp of pg.entities) {
 			const volume = pgp.volume ?? pg.volume;
-			if (volume) await this.volumeSetSinglePlayer(pgp.player, volume);
+			if (volume !== void 0) await this.volumeSetSinglePlayer(pgp.player, volume);
 			if (pg.unmuteWhenGrouped) await this.setVolumeMute(pgp.player, false, false);
 			await this.applyPredefinedGroupSettings(pgp.player, pg);
 		}
@@ -12156,15 +12156,18 @@ async function performMassSearch(svc, configEntryId, searchText, mediaTypes, lib
 var SearchService = class {
 	constructor(host) {
 		this.host = host;
+		this.searchRequestId = 0;
 	}
 	updateHost(state) {
 		Object.assign(this.host, state);
 	}
 	dispose() {
+		this.searchRequestId += 1;
 		if (this.debounceTimer) clearTimeout(this.debounceTimer);
 	}
 	scheduleSearch(searchText, mediaTypes, libraryFilter, config) {
 		saveSearchState(mediaTypes, searchText, libraryFilter);
+		this.searchRequestId += 1;
 		if (this.debounceTimer) clearTimeout(this.debounceTimer);
 		const { autoSearchMinChars = 2, autoSearchDebounceMs = 1e3 } = config;
 		if (searchText.trim().length < autoSearchMinChars) {
@@ -12178,6 +12181,7 @@ var SearchService = class {
 	}
 	async execute(searchText, mediaTypes, libraryFilter, config) {
 		if (!searchText.trim() || !this.host.massConfigEntryId) return;
+		const requestId = ++this.searchRequestId;
 		this.updateHost({
 			loading: true,
 			error: null
@@ -12185,14 +12189,14 @@ var SearchService = class {
 		const { searchLimit = 50 } = config;
 		try {
 			const results = await performMassSearch(this.host.musicAssistantService, this.host.massConfigEntryId, searchText, mediaTypes, libraryFilter, searchLimit);
-			this.updateHost({ results });
+			if (requestId === this.searchRequestId) this.updateHost({ results });
 		} catch (e) {
-			this.updateHost({
+			if (requestId === this.searchRequestId) this.updateHost({
 				error: `Search failed: ${e instanceof Error ? e.message : "Unknown error"}`,
 				results: []
 			});
 		} finally {
-			this.updateHost({ loading: false });
+			if (requestId === this.searchRequestId) this.updateHost({ loading: false });
 		}
 	}
 	clear(mediaTypes, libraryFilter) {
