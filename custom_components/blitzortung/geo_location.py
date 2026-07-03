@@ -8,7 +8,7 @@ from typing import Any
 
 from homeassistant.components.geo_location import DOMAIN as GEO_LOCATION_PLATFORM
 from homeassistant.components.geo_location import GeolocationEvent
-from homeassistant.const import UnitOfLength
+from homeassistant.const import MATCH_ALL, UnitOfLength
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.dispatcher import (
@@ -65,6 +65,7 @@ class BlitzortungEvent(GeolocationEvent):
     _attr_name = "Lightning Strike"
     _attr_should_poll = False
     _attr_source = DOMAIN
+    _unrecorded_attributes = frozenset({MATCH_ALL})
 
     def __init__(
         self,
@@ -97,6 +98,7 @@ class BlitzortungEvent(GeolocationEvent):
     def _delete_callback(self) -> None:
         """Remove this entity."""
         self._remove_signal_delete()
+        self._remove_signal_delete = None
         self.hass.async_create_task(self.async_remove(force_remove=True))
 
     async def async_added_to_hass(self) -> None:
@@ -106,6 +108,12 @@ class BlitzortungEvent(GeolocationEvent):
             SIGNAL_DELETE_ENTITY.format(self._strike_id),
             self._delete_callback,
         )
+
+    async def async_will_remove_from_hass(self) -> None:
+        """Call when entity will be removed from hass."""
+        if self._remove_signal_delete:
+            self._remove_signal_delete()
+            self._remove_signal_delete = None
 
 
 class Strikes(list):
