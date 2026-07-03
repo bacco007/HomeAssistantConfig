@@ -183,6 +183,45 @@ def match_key(home, away):
     return f"{normalize_team_name(home)} v {normalize_team_name(away)}"
 
 
+KNOCKOUT_MATCH_NUMBER_BY_TEAMS = {
+    frozenset((normalize_team_name("South Africa"), normalize_team_name("Canada"))): 73,
+    frozenset((normalize_team_name("Germany"), normalize_team_name("Paraguay"))): 74,
+    frozenset((normalize_team_name("Netherlands"), normalize_team_name("Morocco"))): 75,
+    frozenset((normalize_team_name("Brazil"), normalize_team_name("Japan"))): 76,
+    frozenset((normalize_team_name("France"), normalize_team_name("Sweden"))): 77,
+    frozenset((normalize_team_name("Cote d'Ivoire"), normalize_team_name("Norway"))): 78,
+    frozenset((normalize_team_name("Mexico"), normalize_team_name("Ecuador"))): 79,
+    frozenset((normalize_team_name("England"), normalize_team_name("Congo - Kinshasa"))): 80,
+    frozenset((normalize_team_name("United States"), normalize_team_name("Bosnia and Herzegovina"))): 81,
+    frozenset((normalize_team_name("Belgium"), normalize_team_name("Senegal"))): 82,
+    frozenset((normalize_team_name("Portugal"), normalize_team_name("Croatia"))): 83,
+    frozenset((normalize_team_name("Spain"), normalize_team_name("Austria"))): 84,
+    frozenset((normalize_team_name("Switzerland"), normalize_team_name("Algeria"))): 85,
+    frozenset((normalize_team_name("Argentina"), normalize_team_name("Cape Verde"))): 86,
+    frozenset((normalize_team_name("Colombia"), normalize_team_name("Ghana"))): 87,
+    frozenset((normalize_team_name("Australia"), normalize_team_name("Egypt"))): 88,
+}
+
+
+def resolve_match_number(match, home_name=None, away_name=None, fallback=None):
+    for key in ("matchNumber", "fifaMatchNumber", "number"):
+        value = match.get(key)
+        if value not in (None, ""):
+            try:
+                return int(value)
+            except (TypeError, ValueError):
+                return value
+
+    if fallback not in (None, ""):
+        return fallback
+
+    if match.get("stage") == "LAST_32" and home_name and away_name:
+        teams = frozenset((normalize_team_name(home_name), normalize_team_name(away_name)))
+        return KNOCKOUT_MATCH_NUMBER_BY_TEAMS.get(teams)
+
+    return None
+
+
 MATCH_VENUES = {
     # Group stage - Matchday 1
     match_key("Mexico", "South Africa"): "Estadio Azteca",
@@ -435,6 +474,7 @@ def format_match(m, match_number=None):
 
     home_name = home.get("shortName") or home.get("name") or "TBD"
     away_name = away.get("shortName") or away.get("name") or "TBD"
+    match_number = resolve_match_number(m, home_name, away_name, match_number)
     venue = get_match_venue(home_name, away_name, match_number)
 
     return {
