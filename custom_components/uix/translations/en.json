@@ -1,0 +1,116 @@
+{
+    "config": {
+        "create_entry": {
+            "refresh_message": "You need to refresh the page after adding UIX for the Frontend resource to load. Click finish and then refresh the page."
+        },
+        "abort": {
+            "single_instance_allowed": "Only a single instance of UIX can be added.",
+            "old_frontend_script_resource": "Conflicting Frontend script resource {resource} is registered as a Dashboard resource. Please remove it before adding UIX.",
+            "old_frontend_script_extra_module": "Conflicting Frontend script resource {resource} is registered as an extra module. Please remove it before adding UIX."
+        },
+        "step": {
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "UIX Settings",
+                "description": "{foundries_docs_link}",
+                "menu_options": {
+                    "foundry_menu": "Manage UI foundries",
+                    "foundry_file_menu": "Manage foundry files",
+                    "performance_settings": "Performance settings"
+                }
+            },
+            "foundry_menu": {
+                "title": "UI Foundries",
+                "description": "{foundries_docs_link}\n\n**Loaded UI foundries:**\n{foundries_list}",
+                "menu_options": {
+                    "add_foundry": "Add a foundry",
+                    "edit_foundry": "Edit a foundry",
+                    "delete_foundry": "Delete a foundry"
+                }
+            },
+            "foundry_file_menu": {
+                "title": "Foundry Files",
+                "description": "{foundries_docs_link}\n\n**Registered foundry files:**\n{foundry_files_list}",
+                "menu_options": {
+                    "register_foundry_file": "Register a foundry file",
+                    "deregister_foundry_file": "Deregister a foundry file",
+                    "reload_foundry_files": "Reload foundry files"
+                }
+            },
+            "performance_settings": {
+                "title": "Performance Settings",
+                "description": "Configure performance optimizations for UIX.",
+                "data": {
+                    "hass_throttle_enable": "Throttle entity state updates",
+                    "hass_throttle_ms": "Throttle interval",
+                    "dialog_apply_after_show": "Delay UIX styling for dialogs until fully shown",
+                    "disable_hash_template_variable": "Disable hash template variable and updates"
+                },
+                "data_description": {
+                    "hass_throttle_enable": "When enabled, reduces the frequency at which the dashboard root re-renders when entity states change rapidly.",
+                    "hass_throttle_ms": "Minimum time between entity state update re-renders. Only applies when throttling is enabled.",
+                    "dialog_apply_after_show": "When enabled, UIX styles for dialogs are applied after the dialog's open animation completes rather than immediately. This can reduce visual flicker on slower devices.",
+                    "disable_hash_template_variable": "When enabled, hash (the part after # in the URL) template variable is not available and hash changes do not trigger UIX template rebinds or UIX Forge updates."
+                }
+            },
+            "add_foundry": {
+                "title": "Add a UI foundry",
+                "description": "Enter a name and configuration for the new UI foundry. The config should be a mapping that may include 'forge', 'element', and/or 'uix' keys.",
+                "data": {
+                    "name": "Foundry name",
+                    "config": "Foundry configuration"
+                }
+            },
+            "edit_foundry": {
+                "title": "Edit a UI foundry",
+                "description": "Select the UI foundry you want to edit.",
+                "data": {
+                    "name": "Foundry to edit"
+                }
+            },
+            "edit_foundry_config": {
+                "title": "Edit UI foundry \"{name}\"",
+                "description": "Update the configuration for this UI foundry.",
+                "data": {
+                    "config": "Foundry configuration"
+                }
+            },
+            "delete_foundry": {
+                "title": "Delete a UI foundry",
+                "data": {
+                    "name": "Foundry to delete"
+                }
+            },
+            "register_foundry_file": {
+                "title": "Register a foundry file",
+                "description": "Enter the path to a YAML file that contains foundries under a top-level 'uix_foundries' key. The path may be absolute or relative to the Home Assistant config directory.",
+                "data": {
+                    "file_path": "File path"
+                }
+            },
+            "deregister_foundry_file": {
+                "title": "Deregister a foundry file",
+                "description": "Select the foundry file to deregister. The file itself is not deleted — only its registration with UIX is removed.",
+                "data": {
+                    "file_path": "File to deregister"
+                }
+            }
+        },
+        "abort": {
+            "no_foundries": "No UI foundries are configured yet. Add one first.",
+            "no_foundry_files": "No foundry files are registered yet. Register one first."
+        },
+        "error": {
+            "invalid_config": "The configuration must be a YAML mapping.",
+            "file_already_added": "This file path is already registered.",
+            "file_not_found": "The file was not found. Check the path and try again.",
+            "file_parse_error": "The file could not be parsed as YAML. Check the file for syntax errors.",
+            "file_invalid_structure": "The file must be a YAML mapping.",
+            "file_missing_key": "The file must have a top-level 'uix_foundries' key.",
+            "file_invalid_foundries": "The 'uix_foundries' key must be a YAML mapping of foundry names to configurations."
+        }
+    }
+}
