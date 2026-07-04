@@ -24,6 +24,7 @@ export default {
         show_events: true,
         prefix_length: 3,
         prefix_separator: ": ",
+        locale: "en",
         group_events_by_day: false,
         width: 335,
         height: 340,

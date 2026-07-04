@@ -78,6 +78,41 @@ export const DEVICE_PROFILES = {
       epaper: true
     }
   },
+  reterminal_e1004: {
+    name: "Seeedstudio reTerminal E1004 13.3\" (Spectra 6)",
+    isComingSoon: true,
+    unavailableReason: "Coming soon - ESPHome support for the Seeed reTerminal E1004 display driver/model is not upstream yet.",
+    displayType: "color",
+    chip: "esp32-s3",
+    board: "esp32-s3-devkitc-1",
+    displayModel: "Seeed-reTerminal-E1004",
+    displayPlatform: "epaper_spi",
+    resolution: { width: 1200, height: 1600 },
+    shape: "rect",
+    psram_mode: "octal",
+    frameworkHint: "ESPHome E1004 firmware/model support is not upstream yet.",
+    pins: {
+      display: { cs: null, dc: null, reset: null, busy: null },
+      i2c: { sda: "GPIO19", scl: "GPIO20" },
+      spi: { clk: "GPIO7", mosi: "GPIO9" },
+      batteryEnable: "GPIO21",
+      batteryAdc: "GPIO1",
+      buzzer: "GPIO45",
+      buttons: { left: "GPIO5", right: "GPIO4", refresh: "GPIO3", home: "GPIO2" }
+    },
+    battery: {
+      attenuation: "12db",
+      multiplier: 2.0,
+      calibration: { min: 3.27, max: 4.15 }
+    },
+    features: {
+      psram: true,
+      buzzer: true,
+      buttons: true,
+      sht4x: true,
+      epaper: true
+    }
+  },
   trmnl_diy_esp32s3: {
     name: "Seeed Studio Trmnl DIY Kit (ESP32-S3)",
     displayType: "binary",
@@ -488,7 +523,7 @@ export const DEVICE_PROFILES = {
 };
 
 /**
- * Returns the currently supported, non-untested device profile IDs.
+ * Returns the currently supported, selectable device profile IDs.
  * Dynamic profile loads reuse this to keep the exported list in sync.
  *
  * @param {Record<string, any>} profiles
@@ -496,7 +531,7 @@ export const DEVICE_PROFILES = {
  */
 export function buildSupportedDeviceIds(profiles = DEVICE_PROFILES) {
   return Object.entries(profiles)
-    .filter(([, profile]) => !profile.isUntestedProfile)
+    .filter(([, profile]) => !profile.isUntestedProfile && !profile.isComingSoon && !profile.isUnavailable)
     .map(([id]) => id);
 }
 

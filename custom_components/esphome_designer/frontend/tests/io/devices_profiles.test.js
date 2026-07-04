@@ -116,6 +116,26 @@ describe('built-in device profiles', async () => {
         expect(devices.SUPPORTED_DEVICE_IDS).toContain('geekmagic_mini_esp8266');
     });
 
+    it('includes the Seeed reTerminal E1004 large color e-paper profile', () => {
+        const profile = devices.DEVICE_PROFILES.reterminal_e1004;
+
+        expect(profile).toMatchObject({
+            name: 'Seeedstudio reTerminal E1004 13.3" (Spectra 6)',
+            displayType: 'color',
+            chip: 'esp32-s3',
+            board: 'esp32-s3-devkitc-1',
+            displayPlatform: 'epaper_spi',
+            displayModel: 'Seeed-reTerminal-E1004',
+            resolution: { width: 1200, height: 1600 }
+        });
+        expect(profile.features.epaper).toBe(true);
+        expect(profile.features.psram).toBe(true);
+        expect(profile.frameworkHint).toContain('E1004');
+        expect(profile.isComingSoon).toBe(true);
+        expect(profile.unavailableReason).toContain('not upstream yet');
+        expect(devices.SUPPORTED_DEVICE_IDS).not.toContain('reterminal_e1004');
+    });
+
     it('recomputes supported ids after loading external profiles', async () => {
         fetchDynamicHardwareProfilesMock.mockResolvedValueOnce([
             {

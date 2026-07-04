@@ -24,6 +24,7 @@ async function loadSplittersModule() {
 describe('splitters', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        localStorage.clear();
         document.body.innerHTML = '';
         setReadyState('complete');
     });
@@ -88,9 +89,96 @@ describe('splitters', () => {
         bottomResizer.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientY: 500 }));
         window.dispatchEvent(new MouseEvent('mousemove', { clientY: 450 }));
         expect(codePanel.style.height).toBe('250px');
+        expect(JSON.parse(localStorage.getItem('esphome-designer-splitter-sizes'))).toMatchObject({
+            left: 360,
+            right: 370,
+            bottom: 250
+        });
 
         expect(mockLogger.log).toHaveBeenCalledWith('[Splitters] Initializing draggable panels...');
         expect(dispatchSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'resize' }));
+    });
+
+    it('restores saved splitter sizes during initialization', async () => {
+        localStorage.setItem('esphome-designer-splitter-sizes', JSON.stringify({
+            left: 280,
+            right: 360,
+            bottom: 240
+        }));
+        document.body.innerHTML = `
+            <div class="app-content">
+              <div class="sidebar" style="min-width:100px; max-width:800px;"></div>
+              <div id="resizer-left"></div>
+              <div class="right-panel" style="min-width:120px; max-width:700px;"></div>
+              <div id="resizer-right"></div>
+              <div class="code-panel" style="min-height:50px; max-height:600px;"></div>
+              <div id="resizer-bottom"></div>
+            </div>
+        `;
+
+        await loadSplittersModule();
+
+        expect(document.querySelector('.sidebar').style.width).toBe('280px');
+        expect(document.querySelector('.right-panel').style.width).toBe('360px');
+        expect(document.querySelector('.code-panel').style.height).toBe('240px');
+    });
+
+    it('ignores malformed saved splitter sizes', async () => {
+        localStorage.setItem('esphome-designer-splitter-sizes', '{not json');
+        document.body.innerHTML = `
+            <div class="app-content">
+              <div class="sidebar" style="min-width:100px; max-width:800px;"></div>
+              <div id="resizer-left"></div>
+              <div class="right-panel" style="min-width:120px; max-width:700px;"></div>
+              <div id="resizer-right"></div>
+            </div>
+        `;
+
+        await loadSplittersModule();
+
+        expect(document.querySelector('.sidebar').style.width).toBe('');
+        expect(document.querySelector('.right-panel').style.width).toBe('');
+    });
+
+    it('keeps resizing even when splitter size persistence fails', async () => {
+        document.body.innerHTML = `
+            <div class="app-content">
+              <div class="sidebar" style="min-width:100px; max-width:800px;"></div>
+              <div id="resizer-left"></div>
+              <div class="right-panel" style="min-width:120px; max-width:700px;"></div>
+              <div id="resizer-right"></div>
+            </div>
+        `;
+        const sidebar = document.querySelector('.sidebar');
+        const leftResizer = document.getElementById('resizer-left');
+        Object.defineProperty(sidebar, 'offsetWidth', { configurable: true, value: 300 });
+        const realLocalStorage = window.localStorage;
+        const fakeLocalStorage = {
+            getItem: vi.fn(() => null),
+            setItem: vi.fn(() => {
+                throw new Error('quota exceeded');
+            })
+        };
+        Object.defineProperty(window, 'localStorage', {
+            configurable: true,
+            value: fakeLocalStorage
+        });
+
+        await loadSplittersModule();
+
+        leftResizer.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 100 }));
+        window.dispatchEvent(new MouseEvent('mousemove', { clientX: 140 }));
+        window.dispatchEvent(new MouseEvent('mouseup'));
+
+        expect(sidebar.style.width).toBe('340px');
+        expect(fakeLocalStorage.setItem).toHaveBeenCalledWith(
+            'esphome-designer-splitter-sizes',
+            JSON.stringify({ left: 340 })
+        );
+        Object.defineProperty(window, 'localStorage', {
+            configurable: true,
+            value: realLocalStorage
+        });
     });
 
     it('waits for DOMContentLoaded when the document is still loading', async () => {

@@ -13,11 +13,13 @@ describe('layout_manager_dom helpers', () => {
     it('escapes markup and resolves device names for supported, unsupported, and fallback models', () => {
         const deviceProfiles = {
             reterminal_e1001: { name: 'E1001' },
+            reterminal_e1004: { name: 'E1004', isComingSoon: true },
             trmnl: { name: 'TRMNL' }
         };
 
         expect(escapeHtml('<b>Kitchen</b>')).toBe('&lt;b&gt;Kitchen&lt;/b&gt;');
         expect(getDeviceDisplayName('reterminal_e1001', deviceProfiles, ['reterminal_e1001'])).toBe('E1001');
+        expect(getDeviceDisplayName('reterminal_e1004', deviceProfiles, ['reterminal_e1001'])).toBe('E1004 (coming soon)');
         expect(getDeviceDisplayName('trmnl', deviceProfiles, ['reterminal_e1001'])).toBe('TRMNL (untested)');
         expect(getDeviceDisplayName('esp32_s3_photopainter', {}, [])).toBe('PhotoPainter (7-Color)');
         expect(getDeviceDisplayName(undefined, deviceProfiles, [])).toBe('Unknown');
@@ -46,6 +48,7 @@ describe('layout_manager_dom helpers', () => {
     it('generates modal markup and device option markup for the layout dialogs', () => {
         const deviceOptionsHtml = generateDeviceOptions({
             reterminal_e1001: { name: 'E1001' },
+            reterminal_e1004: { name: 'E1004', isComingSoon: true, unavailableReason: 'Driver missing' },
             trmnl: { name: 'TRMNL' }
         }, ['reterminal_e1001']);
 
@@ -53,6 +56,8 @@ describe('layout_manager_dom helpers', () => {
         const newLayoutMarkup = createNewLayoutModalMarkup(deviceOptionsHtml);
 
         expect(deviceOptionsHtml).toContain('value="reterminal_e1001"');
+        expect(deviceOptionsHtml).toContain('value="reterminal_e1004" disabled title="Driver missing"');
+        expect(deviceOptionsHtml).toContain('E1004 (coming soon)');
         expect(deviceOptionsHtml).toContain('TRMNL (untested)');
         expect(managerMarkup).toContain('id="layoutManagerTableBody"');
         expect(managerMarkup).toContain('id="layoutManagerFileInput"');

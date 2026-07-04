@@ -122,6 +122,7 @@ describe('lvgl slider plugin', () => {
             entity_id: 'media_player.speaker',
             volume_level: "!lambda 'return x / 100.0;'"
         });
+        expect(mediaPlayer.slider.value).toContain('id(media_player_speaker_volume_level).state * 100.0f');
 
         const defaultLight = plugin.exportLVGL({
             id: 'slider_light_default',
@@ -186,6 +187,7 @@ describe('lvgl slider plugin', () => {
             widgets: [
                 { id: 'slider_light', type: 'lvgl_slider', entity_id: 'light.kitchen', props: { min: 0, max: 255 } },
                 { id: 'slider_light_default', type: 'lvgl_slider', entity_id: 'light.desk', props: { min: 0, max: 100 } },
+                { id: 'slider_media', type: 'lvgl_slider', entity_id: 'media_player.speaker', props: { min: 0, max: 100 } },
                 { id: 'slider_1', type: 'lvgl_slider', entity_id: ' number.manual ' },
                 { id: 'ignore', type: 'lvgl_arc', entity_id: 'sensor.ignored' }
             ],
@@ -206,6 +208,11 @@ describe('lvgl slider plugin', () => {
             '  id: light_desk_brightness',
             '  entity_id: light.desk',
             '  attribute: brightness',
+            '  internal: true',
+            '- platform: homeassistant',
+            '  id: media_player_speaker_volume_level',
+            '  entity_id: media_player.speaker',
+            '  attribute: volume_level',
             '  internal: true'
         ]);
         expect([...pendingTriggers.get('light_kitchen_brightness')]).toEqual([
@@ -225,7 +232,46 @@ describe('lvgl slider plugin', () => {
       if (slider_max <= slider_min) return raw_x;
       return slider_min + ((raw_x / 255.0f) * (slider_max - slider_min));`
         ]);
+        expect([...pendingTriggers.get('media_player_speaker_volume_level')]).toEqual([
+            `- lvgl.slider.update:
+    id: slider_media
+    value: !lambda |-
+      return isnan(x) ? 0.0f : static_cast<float>(x * 100.0f);`
+        ]);
         expect(pendingTriggers.has('light.kitchen')).toBe(false);
+        expect(pendingTriggers.has('media_player.speaker')).toBe(false);
         expect([...pendingTriggers.get('number.manual')]).toEqual(['- lvgl.widget.refresh: slider_1']);
+    });
+
+    it('scales media player volume updates when the slider range is customized', () => {
+        const pendingTriggers = new Map();
+
+        plugin.onExportNumericSensors({
+            widgets: [
+                {
+                    id: 'slider_media_scaled',
+                    type: 'lvgl_slider',
+                    entity_id: 'media_player.office',
+                    props: { min: 20, max: 80 }
+                }
+            ],
+            isLvgl: true,
+            pendingTriggers,
+            lines: [],
+            seenEntityIds: new Set(),
+            seenSensorIds: new Set()
+        });
+
+        expect([...pendingTriggers.get('media_player_office_volume_level')]).toEqual([
+            `- lvgl.slider.update:
+    id: slider_media_scaled
+    value: !lambda |-
+      if (isnan(x)) return static_cast<float>(20);
+      const float slider_min = static_cast<float>(20);
+      const float slider_max = static_cast<float>(80);
+      const float volume = static_cast<float>(x * 100.0f);
+      if (slider_max <= slider_min) return volume;
+      return slider_min + ((volume / 100.0f) * (slider_max - slider_min));`
+        ]);
     });
 });

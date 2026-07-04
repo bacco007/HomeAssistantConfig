@@ -46,10 +46,39 @@ describe('progress_bar render', () => {
 
         expect(labelRow.textContent).toContain('Battery');
         expect(labelRow.textContent).toContain('75%');
-        expect(labelRow.style.justifyContent).toBe('space-between');
+        expect(labelRow.style.justifyContent).toBe('center');
         expect(el.style.color).toBe('rgb(255, 255, 255)');
         expect(barContainer.style.backgroundColor).toBe('rgb(0, 0, 0)');
         expect(barFill.style.width).toBe('75%');
+    });
+
+    it('reflects horizontal label alignment in the canvas preview', () => {
+        const cases = [
+            ['LEFT', 'flex-start', 'left'],
+            ['CENTER', 'center', 'center'],
+            ['RIGHT', 'flex-end', 'right']
+        ];
+
+        for (const [textAlign, justifyContent, cssTextAlign] of cases) {
+            const el = document.createElement('div');
+            renderProgressBar(el, {
+                title: 'Battery',
+                entity_id: '',
+                props: {
+                    show_label: true,
+                    show_percentage: true,
+                    text_align: textAlign,
+                    color: 'black'
+                }
+            }, {
+                getColorStyle: (value) => value,
+                isDark: false
+            });
+
+            const labelRow = /** @type {HTMLDivElement} */ (el.children[0]);
+            expect(labelRow.style.justifyContent).toBe(justifyContent);
+            expect(labelRow.style.textAlign).toBe(cssTextAlign);
+        }
     });
 
     it('renders vertical bars with zero-range clamping and hidden labels', () => {

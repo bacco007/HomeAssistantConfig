@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import * as yaml from 'js-yaml';
 
 vi.mock('../../../js/utils/logger.js', () => ({
     Logger: { log: vi.fn(), warn: vi.fn(), error: vi.fn() }
@@ -67,6 +68,7 @@ describe('display_parser integration', () => {
             '        height: 24',
             '        text: "Native"',
             '        color: 0xFF0000',
+            '        # parser should preserve comment-only lines inside the native block',
             '        widgets:',
             '          - button:',
             '              id: nested_btn',
@@ -199,6 +201,43 @@ describe('display_parser integration', () => {
         });
     });
 
+    it('falls back for malformed inline LVGL mappings and applies parent-relative left alignment', () => {
+        const layout = parseDisplayBlocks([
+            '  - label: {id: broken_label, text: [unterminated}',
+            '  - obj:',
+            '      id: parent_box',
+            '      x: 100',
+            '      y: 50',
+            '      width: 200',
+            '      height: 100',
+            '      widgets:',
+            '        - label:',
+            '            id: child_left',
+            '            width: 40',
+            '            height: 20',
+            '            align: TOP_LEFT',
+            '            x: 5',
+            '            y: 7',
+            '            text: Child'
+        ], [], { device_name: 'Inline Fallback', renderingMode: 'lvgl', width: 800, height: 480 }, () => yaml.DEFAULT_SCHEMA, yaml);
+
+        expect(layout.pages[0].widgets[0]).toMatchObject({
+            id: 'lv_label_0',
+            type: 'lvgl_label',
+            props: {}
+        });
+        expect(layout.pages[0].widgets[2]).toMatchObject({
+            id: 'child_left',
+            type: 'lvgl_label',
+            x: 105,
+            y: 57,
+            props: {
+                text: 'Child',
+                text_align: 'TOP_LEFT'
+            }
+        });
+    });
+
     it('falls back cleanly when native YAML sub-block parsing fails', () => {
         const yaml = {
             load: vi.fn(() => {
@@ -290,6 +329,49 @@ describe('display_parser integration', () => {
             type: 'lvgl_img',
             props: {
                 src: 'old_logo_asset'
+            }
+        });
+    });
+
+    it('parses inline LVGL mappings and positions aligned widgets on the canvas', () => {
+        const layout = parseDisplayBlocks([
+            '  - id: climate_page',
+            '    widgets:',
+            '      - arc: {id: temp_arc, width: 300, height: 300, min_value: 60, max_value: 85, align: CENTER}',
+            '      - label: {id: current_temp_label, text: "Room: --", align: TOP_MID, y: 20}',
+            '      - label: {id: setpoint_label, text: "Target: --", align: BOTTOM_MID, y: -20}'
+        ], [], { device_name: 'Inline LVGL', renderingMode: 'lvgl', width: 800, height: 480 }, () => yaml.DEFAULT_SCHEMA, yaml);
+
+        expect(layout.pages[0].widgets[0]).toMatchObject({
+            id: 'temp_arc',
+            type: 'lvgl_arc',
+            x: 250,
+            y: 90,
+            width: 300,
+            height: 300,
+            props: {
+                min: 60,
+                max: 85
+            }
+        });
+        expect(layout.pages[0].widgets[1]).toMatchObject({
+            id: 'current_temp_label',
+            type: 'lvgl_label',
+            x: 350,
+            y: 20,
+            props: {
+                text: 'Room: --',
+                text_align: 'TOP_MID'
+            }
+        });
+        expect(layout.pages[0].widgets[2]).toMatchObject({
+            id: 'setpoint_label',
+            type: 'lvgl_label',
+            x: 350,
+            y: 430,
+            props: {
+                text: 'Target: --',
+                text_align: 'BOTTOM_MID'
             }
         });
     });

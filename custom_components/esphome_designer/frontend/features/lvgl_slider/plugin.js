@@ -3,10 +3,12 @@
  */
 
 const isLightEntity = (entityId) => String(entityId || "").trim().toLowerCase().startsWith("light.");
+const isMediaPlayerEntity = (entityId) => String(entityId || "").trim().toLowerCase().startsWith("media_player.");
 
 const getSliderSensorId = (entityId) => String(entityId || "").trim().replace(/[^a-zA-Z0-9_]/g, "_");
 
 const getBrightnessSensorId = (entityId) => `${getSliderSensorId(entityId)}_brightness`;
+const getMediaVolumeSensorId = (entityId) => `${getSliderSensorId(entityId)}_volume_level`;
 
 const parseSliderBound = (value, fallback) => {
     const parsed = Number(value);
@@ -59,6 +61,35 @@ const buildLightSliderUpdateAction = (widgetId, minValue, maxValue) => {
       const float slider_max = static_cast<float>(${maxValue});
       if (slider_max <= slider_min) return raw_x;
       return slider_min + ((raw_x / 255.0f) * (slider_max - slider_min));`;
+};
+
+const buildMediaVolumeSliderValueLambda = (sensorId, minValue, maxValue) => {
+    return `!lambda |-
+      if (!id(${sensorId}).has_state()) return static_cast<float>(${minValue});
+      const float slider_min = static_cast<float>(${minValue});
+      const float slider_max = static_cast<float>(${maxValue});
+      const float volume = id(${sensorId}).state * 100.0f;
+      if (slider_max <= slider_min) return volume;
+      return slider_min + ((volume / 100.0f) * (slider_max - slider_min));`;
+};
+
+const buildMediaVolumeSliderUpdateAction = (widgetId, minValue, maxValue) => {
+    if (minValue === 0 && maxValue === 100) {
+        return `- lvgl.slider.update:
+    id: ${widgetId}
+    value: !lambda |-
+      return isnan(x) ? 0.0f : static_cast<float>(x * 100.0f);`;
+    }
+
+    return `- lvgl.slider.update:
+    id: ${widgetId}
+    value: !lambda |-
+      if (isnan(x)) return static_cast<float>(${minValue});
+      const float slider_min = static_cast<float>(${minValue});
+      const float slider_max = static_cast<float>(${maxValue});
+      const float volume = static_cast<float>(x * 100.0f);
+      if (slider_max <= slider_min) return volume;
+      return slider_min + ((volume / 100.0f) * (slider_max - slider_min));`;
 };
 
 const render = (el, widget, { getColorStyle }) => {
@@ -145,6 +176,9 @@ const exportLVGL = (w, { common, convertColor, profile }) => {
         if (isLightEntity(entityId)) {
             const brightnessSensorId = getBrightnessSensorId(entityId);
             sliderValue = buildLightSliderValueLambda(brightnessSensorId, minValue, maxValue);
+        } else if (isMediaPlayerEntity(entityId)) {
+            const volumeSensorId = getMediaVolumeSensorId(entityId);
+            sliderValue = buildMediaVolumeSliderValueLambda(volumeSensorId, minValue, maxValue);
         } else {
             sliderValue = `!lambda "return id(${getSliderSensorId(entityId)}).state;"`;
         }
@@ -229,17 +263,37 @@ const onExportNumericSensors = (context) => {
                     );
                 }
             }
+        } else if (isMediaPlayerEntity(eid)) {
+            const sensorId = getMediaVolumeSensorId(eid);
+            const entityKey = `${eid}__attr__volume_level`;
+            if (seenEntityIds && !seenEntityIds.has(entityKey)) {
+                seenEntityIds.add(entityKey);
+                if (seenSensorIds && !seenSensorIds.has(sensorId)) {
+                    seenSensorIds.add(sensorId);
+                    lines.push(
+                        "- platform: homeassistant",
+                        `  id: ${sensorId}`,
+                        `  entity_id: ${eid}`,
+                        "  attribute: volume_level",
+                        "  internal: true"
+                    );
+                }
+            }
         }
 
         if (isLvgl && pendingTriggers) {
-            const triggerKey = isLightEntity(eid) ? getBrightnessSensorId(eid) : eid;
+            const triggerKey = isLightEntity(eid)
+                ? getBrightnessSensorId(eid)
+                : (isMediaPlayerEntity(eid) ? getMediaVolumeSensorId(eid) : eid);
             if (!pendingTriggers.has(triggerKey)) {
                 pendingTriggers.set(triggerKey, new Set());
             }
             pendingTriggers.get(triggerKey).add(
                 isLightEntity(eid)
                     ? buildLightSliderUpdateAction(w.id, minValue, maxValue)
-                    : `- lvgl.widget.refresh: ${w.id}`
+                    : (isMediaPlayerEntity(eid)
+                        ? buildMediaVolumeSliderUpdateAction(w.id, minValue, maxValue)
+                        : `- lvgl.widget.refresh: ${w.id}`)
             );
         }
     }

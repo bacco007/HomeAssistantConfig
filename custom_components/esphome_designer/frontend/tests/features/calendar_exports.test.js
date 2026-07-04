@@ -72,6 +72,26 @@ describe('calendar exports', () => {
         });
     });
 
+    it('exports localized LVGL calendar labels', () => {
+        const result = exportLVGL({
+            props: {
+                locale: 'de',
+                show_header: true,
+                show_grid: true,
+                background_color: 'white'
+            }
+        }, {
+            common: { id: 'calendar_lvgl' },
+            convertColor: (value) => `Color(${value})`,
+            getLVGLFont: (family, size, weight) => `${family}_${size}_${weight}`
+        });
+
+        const output = JSON.stringify(result);
+        expect(output).toContain('Sonntag');
+        expect(output).toContain('Januar');
+        expect(output).toContain('Dienstag');
+    });
+
     it('exports direct calendars with entity-specific sensor ids and collects fonts', () => {
         const lines = [];
 
@@ -89,6 +109,7 @@ describe('calendar exports', () => {
                 border_color: 'red',
                 text_color: 'black',
                 background_color: 'white',
+                locale: 'fr',
                 font_family: 'Roboto'
             }
         }, {
@@ -105,6 +126,7 @@ describe('calendar exports', () => {
         expect(output).toContain('id(calendar_data_sensor_family_calendar).state');
         expect(output).toContain('it.filled_rectangle(x, y, w, h, Color(white));');
         expect(output).toContain('it.rectangle(1 + 0, 2 + 0, 100 - 0, 80 - 0, Color(red));');
+        expect(output).toContain('Toute la journée');
 
         const addFont = vi.fn();
         collectRequirements({
@@ -186,7 +208,8 @@ describe('calendar exports', () => {
         });
 
         const output = lines.join('\n');
-        expect(output).toContain('it.filled_rounded_rectangle(x, y, w, h, 8, Color(white));');
+        expect(output).not.toContain('filled_rounded_rectangle');
+        expect(output).toContain('draw_filled_rrect(x, y, w, h, 8, Color(white));');
         expect(output).toContain('draw_rrect_border(1, 2, 100, 80, 8, 2, Color(red));');
         expect(output).not.toContain('it.rectangle(1 + 0, 2 + 0, 100 - 0, 80 - 0, Color(red));');
     });

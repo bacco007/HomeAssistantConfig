@@ -104,6 +104,64 @@ export function parseDisplayBlocks(lambdaLines, rawLines, deviceSettings, getESP
         return String(value).trim().replace(/^["']|["']$/g, "");
     };
 
+    const parseInlineYamlValue = (/** @type {string} */ inlineValue) => {
+        if (!inlineValue) return {};
+        try {
+            const parsed = yaml.load(inlineValue, { schema: getESPHomeSchema() });
+            return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : { _inline: unquoteText(parsed) };
+        } catch (e) {
+            Logger.warn("[YAML_IMPORT] Could not parse inline LVGL widget mapping:", e);
+            return { _inline: inlineValue.replace(/^["']|["']$/g, "") };
+        }
+    };
+
+    const parsePositionNumber = (/** @type {unknown} */ value, /** @type {number} */ fallback = 0) => {
+        if (value === undefined || value === null || value === "") return fallback;
+        const parsed = parseInt(String(value), 10);
+        return Number.isFinite(parsed) ? parsed : fallback;
+    };
+
+    const getCanvasSize = () => ({
+        width: parsePositionNumber(deviceSettings?.width, 800),
+        height: parsePositionNumber(deviceSettings?.height, 480)
+    });
+
+    const applyLvglAlignPosition = (
+        /** @type {Record<string, any>} */ widget,
+        /** @type {NativeWidgetProps} */ nativeProps,
+        /** @type {Record<string, any> | null} */ parentWidget = null
+    ) => {
+        const align = String(nativeProps.align || "").trim().toUpperCase();
+        if (!align) return;
+
+        const canvas = getCanvasSize();
+        const parentX = parentWidget ? parsePositionNumber(parentWidget.x, 0) : 0;
+        const parentY = parentWidget ? parsePositionNumber(parentWidget.y, 0) : 0;
+        const parentW = parentWidget ? parsePositionNumber(parentWidget.width, canvas.width) : canvas.width;
+        const parentH = parentWidget ? parsePositionNumber(parentWidget.height, canvas.height) : canvas.height;
+        const offsetX = parsePositionNumber(nativeProps.x, 0);
+        const offsetY = parsePositionNumber(nativeProps.y, 0);
+        const width = parsePositionNumber(widget.width, 0);
+        const height = parsePositionNumber(widget.height, 0);
+
+        const horizontal = align.includes("RIGHT")
+            ? "right"
+            : (align.includes("MID") || align.includes("CENTER") ? "center" : "left");
+        const vertical = align.includes("TOP")
+            ? "top"
+            : (align.includes("BOTTOM")
+                ? "bottom"
+                : (align === "CENTER" || align.includes("_MID") || align.startsWith("MID") ? "center" : "top"));
+
+        if (horizontal === "right") widget.x = parentX + parentW - width + offsetX;
+        else if (horizontal === "center") widget.x = parentX + Math.round((parentW - width) / 2) + offsetX;
+        else widget.x = parentX + offsetX;
+
+        if (vertical === "bottom") widget.y = parentY + parentH - height + offsetY;
+        else if (vertical === "center") widget.y = parentY + Math.round((parentH - height) / 2) + offsetY;
+        else widget.y = parentY + offsetY;
+    };
+
     const makeSafeEntityId = (/** @type {string} */ entityId) => entityId.replace(/[^a-zA-Z0-9_]/g, "_");
 
     const collectHomeAssistantServiceCalls = (/** @type {unknown} */ value, /** @type {Array<{ service: string, entityId: string }>} */ calls = []) => {
@@ -374,7 +432,7 @@ export function parseDisplayBlocks(lambdaLines, rawLines, deviceSettings, getESP
             const inlineValue = mNative[3].trim();
             const widgetType = TAG_MAP[nativeTag] || `lvgl_${nativeTag}`;
             const nativeProps = /** @type {NativeWidgetProps} */ ({});
-            if (inlineValue) nativeProps._inline = inlineValue.replace(/^["']|["']$/g, "");
+            if (inlineValue) Object.assign(nativeProps, parseInlineYamlValue(inlineValue));
             const res = parseYamlSubBlock(lambdaLines, i + 1, indent + 2);
             Object.assign(nativeProps, res.value || {});
             i = res.nextJ - 1;
@@ -383,13 +441,14 @@ export function parseDisplayBlocks(lambdaLines, rawLines, deviceSettings, getESP
             const widget = {
                 id: nativeProps.id || `lv_${nativeTag}_${widgets.length}`,
                 type: widgetType,
-                x: parseInt(String(nativeProps.x || 0), 10), y: parseInt(String(nativeProps.y || 0), 10),
-                width: parseInt(String(nativeProps.width || nativeProps.w || 100), 10),
-                height: parseInt(String(nativeProps.height || nativeProps.h || 30), 10),
+                x: parsePositionNumber(nativeProps.x, 0), y: parsePositionNumber(nativeProps.y, 0),
+                width: parsePositionNumber(nativeProps.width || nativeProps.w, 100),
+                height: parsePositionNumber(nativeProps.height || nativeProps.h, 30),
                 title: nativeProps.title || nativeProps.name || "",
                 entity_id: nativeProps.entity_id || nativeProps.entity || nativeProps.sensor,
                 props: {}
             };
+            applyLvglAlignPosition(widget, nativeProps);
 
             // Reuse the widget prop builder even for native YAML to avoid duplication
             widget.props = buildWidgetProps(widgetType, /** @type {Record<string, string>} */ (/** @type {unknown} */ (nativeProps)), widget);
@@ -406,12 +465,13 @@ export function parseDisplayBlocks(lambdaLines, rawLines, deviceSettings, getESP
                         const nestedWidget = {
                             id: nwProps.id || `lv_${tag}_${widgets.length}`,
                             type: nwType,
-                            x: widget.x + (parseInt(String(nwProps.x || 0), 10)), // Relative to parent
-                            y: widget.y + (parseInt(String(nwProps.y || 0), 10)),
-                            width: parseInt(String(nwProps.width || nwProps.w || 50), 10),
-                            height: parseInt(String(nwProps.height || nwProps.h || 20), 10),
+                            x: widget.x + parsePositionNumber(nwProps.x, 0), // Relative to parent
+                            y: widget.y + parsePositionNumber(nwProps.y, 0),
+                            width: parsePositionNumber(nwProps.width || nwProps.w, 50),
+                            height: parsePositionNumber(nwProps.height || nwProps.h, 20),
                             props: {}
                         };
+                        applyLvglAlignPosition(nestedWidget, /** @type {NativeWidgetProps} */ (nwProps), widget);
                         nestedWidget.props = buildWidgetProps(nwType, nwProps, nestedWidget);
                         widgets.push(nestedWidget);
                     }

@@ -100,6 +100,34 @@ describe('Entity Deduplication & Registration', () => {
             expect(result.length).toBe(0); // Handled by text/binary collectors
         });
 
+        it('does not import action-only LVGL button entities as sensors', () => {
+            const pages = [{
+                widgets: [
+                    { type: 'lvgl_button', entity_id: 'input_button.trigger_sleep_flow' },
+                    { type: 'lvgl_button', entity_id: 'button.doorbell' }
+                ]
+            }];
+            const numericResult = collectNumericSensors(pages, context);
+            const textResult = collectTextSensors(pages, context);
+
+            expect(numericResult).toEqual([]);
+            expect(textResult).toEqual([]);
+        });
+
+        it('lets LVGL media-player sliders own their volume sensor import', () => {
+            const pages = [{
+                widgets: [
+                    { type: 'lvgl_slider', entity_id: 'media_player.office_speaker' }
+                ]
+            }];
+
+            const numericResult = collectNumericSensors(pages, context);
+            const textResult = collectTextSensors(pages, context);
+
+            expect(numericResult).toEqual([]);
+            expect(textResult).toEqual([]);
+        });
+
         it('truncates IDs to 63 characters', () => {
             const longId = 'sensor.' + 'a'.repeat(80);
             const pages = [{ widgets: [{ type: 'sensor_text', entity_id: longId }] }];

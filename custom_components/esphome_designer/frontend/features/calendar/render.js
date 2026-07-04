@@ -1,5 +1,46 @@
 import { AppState } from '@core/state';
 
+const CALENDAR_LOCALES = {
+    en: {
+        weekdaysFull: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        weekdaysShort: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+        months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        allDay: "All Day"
+    },
+    de: {
+        weekdaysFull: ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
+        weekdaysShort: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
+        months: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+        allDay: "Ganztägig"
+    },
+    fr: {
+        weekdaysFull: ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
+        weekdaysShort: ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"],
+        months: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+        allDay: "Toute la journée"
+    },
+    nl: {
+        weekdaysFull: ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"],
+        weekdaysShort: ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"],
+        months: ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"],
+        allDay: "Hele dag"
+    },
+    es: {
+        weekdaysFull: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+        weekdaysShort: ["Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"],
+        months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+        allDay: "Todo el día"
+    },
+    it: {
+        weekdaysFull: ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"],
+        weekdaysShort: ["Lu", "Ma", "Me", "Gi", "Ve", "Sa", "Do"],
+        months: ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
+        allDay: "Tutto il giorno"
+    }
+};
+
+const getCalendarLocale = (locale) => CALENDAR_LOCALES[String(locale || "en").toLowerCase()] || CALENDAR_LOCALES.en;
+
 /**
  * @param {HTMLElement} el
  * @param {Widget} widget
@@ -30,12 +71,11 @@ export const drawCalendarPreview = (el, widget, props, { getColorStyle }) => {
     }
 
     const now = new Date();
+    const locale = getCalendarLocale(props.locale);
     const date = now.getDate();
-    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-    const dayNameText = dayNames[now.getDay()];
-    const monthYearText = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+    const dayNameText = locale.weekdaysFull[now.getDay()];
+    const monthYearText = `${locale.months[now.getMonth()]} ${now.getFullYear()}`;
 
     const header = document.createElement("div");
     header.style.textAlign = "center";
@@ -77,7 +117,7 @@ export const drawCalendarPreview = (el, widget, props, { getColorStyle }) => {
     grid.style.flexShrink = "0";
 
     const gridFontSize = `${props.font_size_grid || 14}px`;
-    ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].forEach((day) => {
+    locale.weekdaysShort.forEach((day) => {
         const cell = document.createElement("div");
         cell.innerText = String(day);
         cell.style.textAlign = "center";
@@ -186,7 +226,7 @@ export const drawCalendarPreview = (el, widget, props, { getColorStyle }) => {
                 if (count >= limit) return;
                 const summary = event.summary || "No Title";
                 const start = event.start || "";
-                let timeText = isAllDay ? "All Day" : "";
+                let timeText = isAllDay ? locale.allDay : "";
                 if (!isAllDay && start.includes("T")) {
                     timeText = start.split("T")[1].substring(0, 5);
                 }

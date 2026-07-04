@@ -19,6 +19,11 @@ vi.mock('../../js/core/state', () => ({
 
 vi.mock('../../js/io/devices.js', () => ({
     DEVICE_PROFILES: {
+        reterminal_e1004: {
+            name: 'reTerminal E1004',
+            isComingSoon: true,
+            unavailableReason: 'Driver is not upstream yet'
+        },
         reterminal_e1001: { name: 'reTerminal e1001' },
         user_profile: { name: 'Imported Profile', isCustomProfile: true }
     },
@@ -52,9 +57,36 @@ describe('device_settings_view', () => {
 
         const options = Array.from(instance.modelInput.options).map((option) => option.textContent);
         expect(options.some((label) => label?.includes('reTerminal e1001'))).toBe(true);
+        const e1004Option = Array.from(instance.modelInput.options).find((option) => option.value === 'reterminal_e1004');
+        expect(e1004Option?.textContent).toContain('coming soon');
+        expect(e1004Option?.disabled).toBe(true);
+        expect(e1004Option?.title).toBe('Driver is not upstream yet');
         expect(options.some((label) => label?.includes('Imported'))).toBe(true);
         expect(options.includes('Custom Profile...')).toBe(true);
         expect(instance.customHardwarePanel.updateVisibility).toHaveBeenCalled();
+    });
+
+    it('falls back to the first enabled device when the current profile is coming soon', async () => {
+        const { populateDeviceSelectView } = await import('../../js/ui/device_settings_view.js');
+        const modelInput = /** @type {HTMLSelectElement} */ (document.getElementById('deviceModel'));
+        modelInput.innerHTML = '<option value="reterminal_e1004">reTerminal E1004</option>';
+        modelInput.value = 'reterminal_e1004';
+
+        populateDeviceSelectView({ modelInput });
+
+        expect(modelInput.value).toBe('reterminal_e1001');
+        expect(modelInput.selectedOptions[0]?.disabled).toBe(false);
+    });
+
+    it('preserves a currently selected enabled device', async () => {
+        const { populateDeviceSelectView } = await import('../../js/ui/device_settings_view.js');
+        const modelInput = /** @type {HTMLSelectElement} */ (document.getElementById('deviceModel'));
+        modelInput.innerHTML = '<option value="reterminal_e1001">reTerminal e1001</option>';
+        modelInput.value = 'reterminal_e1001';
+
+        populateDeviceSelectView({ modelInput });
+
+        expect(modelInput.value).toBe('reterminal_e1001');
     });
 
     it('updates visibility for sleep modes, protocol mode, and LCD dim strategy', async () => {

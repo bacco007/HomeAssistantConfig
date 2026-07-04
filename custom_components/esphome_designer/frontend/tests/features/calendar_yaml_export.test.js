@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { generateSnippet } from '../../features/calendar/yaml_export.js';
+import { exportDirect } from '../../features/calendar/exports.js';
 
 describe('calendar yaml export', () => {
     it('uses widget entity settings and visibility toggles in the generated snippet', () => {
@@ -83,5 +84,36 @@ describe('calendar yaml export', () => {
         const match = result.lambda.match(/"%\.(\d+)s", summary/);
         expect(match).not.toBeNull();
         expect(Number(match?.[1])).toBeGreaterThan(25);
+    });
+
+    it('uses supported display primitives for rounded direct backgrounds', () => {
+        const lines = [];
+        exportDirect({
+            id: 'calendar_rounded',
+            type: 'calendar',
+            x: 10,
+            y: 20,
+            width: 300,
+            height: 200,
+            props: {
+                background_color: 'black',
+                border_radius: 10,
+                show_header: false,
+                show_grid: false,
+                show_events: false
+            }
+        }, {
+            lines,
+            addFont: (family, weight, size) => `font_${family}_${weight}_${size}`.replace(/[^a-zA-Z0-9_]/g, '_'),
+            getColorConst: (value) => `COLOR_${String(value).toUpperCase()}`,
+            addDitherMask: () => {},
+            getConditionCheck: () => '',
+            isEpaper: false
+        });
+
+        const output = lines.join('\n');
+        expect(output).not.toContain('filled_rounded_rectangle');
+        expect(output).toContain('auto draw_filled_rrect');
+        expect(output).toContain('draw_filled_rrect(x, y, w, h, 10, COLOR_BLACK);');
     });
 });

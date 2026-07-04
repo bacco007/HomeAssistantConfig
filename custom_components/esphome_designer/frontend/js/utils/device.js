@@ -89,10 +89,8 @@ export function getAvailableColors() {
     }
 
     const model = getDeviceModel();
-    if (model === "reterminal_e1002") {
-        return colormode_primary;
-    }
-    if (model === "esp32_s3_photopainter") {
+    const profile = deviceProfiles?.[model];
+    if (profile?.displayType === "color" && profile?.features?.epaper) {
         return colormode_primary;
     }
 

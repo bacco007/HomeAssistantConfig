@@ -5,6 +5,16 @@ const mockDeviceProfiles = {
         name: 'reTerminal E1001 Custom',
         features: {}
     },
+    reterminal_e1004: {
+        name: 'reTerminal E1004 Spectra 6',
+        displayType: 'color',
+        features: { epaper: true }
+    },
+    custom_color_epaper: {
+        name: 'Custom Color E-Paper',
+        displayType: 'color',
+        features: { epaper: true }
+    },
     lcd_panel: {
         name: 'LCD Panel',
         features: { lcd: true }
@@ -90,15 +100,15 @@ describe('device utils', () => {
         expect(deviceUtils.getAvailableColors()).toEqual(['theme_auto', 'black', 'white', 'gray']);
     });
 
-    it('returns ESPHome palettes for RGB, six-color, photo painter, and monochrome devices', () => {
+    it('returns ESPHome palettes for RGB, color e-paper, and monochrome devices', () => {
         mockAppState.settings.renderingMode = 'direct';
         mockAppState.deviceModel = 'lcd_panel';
         expect(deviceUtils.getAvailableColors()).toContain('magenta');
 
-        mockAppState.deviceModel = 'reterminal_e1002';
+        mockAppState.deviceModel = 'reterminal_e1004';
         expect(deviceUtils.getAvailableColors()).toEqual(['theme_auto', 'black', 'white', 'gray', 'red', 'green', 'blue', 'yellow']);
 
-        mockAppState.deviceModel = 'esp32_s3_photopainter';
+        mockAppState.deviceModel = 'custom_color_epaper';
         expect(deviceUtils.getAvailableColors()).toEqual(['theme_auto', 'black', 'white', 'gray', 'red', 'green', 'blue', 'yellow']);
 
         mockAppState.deviceModel = 'reterminal_e1001';

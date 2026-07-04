@@ -139,7 +139,12 @@ exports[`Plugin Export Smoke Tests > Export for calendar > should export LVGL wi
         "label": {
           "align": "TOP_MID",
           "height": 28,
-          "text": "!lambda "char buf[16]; id(ha_time).now().strftime(buf, sizeof(buf), '%A'); return buf;"",
+          "text": "!lambda |-
+                          char idx_buf[2];
+                          id(ha_time).now().strftime(idx_buf, sizeof(idx_buf), "%w");
+                          int idx = atoi(idx_buf);
+                          const char* names[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+                          return std::string(names[idx]);",
           "text_color": "Color(theme_auto)",
           "text_font": "font_ptr",
           "y": 76,
@@ -149,7 +154,12 @@ exports[`Plugin Export Smoke Tests > Export for calendar > should export LVGL wi
         "label": {
           "align": "TOP_MID",
           "height": 18,
-          "text": "!lambda "char buf[32]; id(ha_time).now().strftime(buf, sizeof(buf), '%B %Y'); return buf;"",
+          "text": "!lambda |-
+                          auto now = id(ha_time).now();
+                          char year_buf[5];
+                          now.strftime(year_buf, sizeof(year_buf), "%Y");
+                          const char* months[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+                          return std::string(months[now.month - 1]) + " " + year_buf;",
           "text_color": "Color(theme_auto)",
           "text_font": "font_ptr",
           "y": 104,
@@ -265,8 +275,15 @@ exports[`Plugin Export Smoke Tests > Export for calendar > should export standar
   "          // Header",
   "          int headH = 123;",
   "          it.strftime(x + w/2, y + 2, id(font_id), Color(theme_auto), TextAlign::TOP_CENTER, "%d", now);",
-  "          it.strftime(x + w/2, y + 76, id(font_id), Color(theme_auto), TextAlign::TOP_CENTER, "%A", now);",
-  "          it.strftime(x + w/2, y + 104, id(font_id), Color(theme_auto), TextAlign::TOP_CENTER, "%B %Y", now);",
+  "          char calendar_dow_buf[2];",
+  "          now.strftime(calendar_dow_buf, sizeof(calendar_dow_buf), "%w");",
+  "          int calendar_dow = atoi(calendar_dow_buf);",
+  "          const char* calendar_day_names_full[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};",
+  "          const char* calendar_month_names[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};",
+  "          char calendar_month_year[48];",
+  "          snprintf(calendar_month_year, sizeof(calendar_month_year), "%s %d", calendar_month_names[now.month - 1], now.year);",
+  "          it.print(x + w/2, y + 76, id(font_id), Color(theme_auto), TextAlign::TOP_CENTER, calendar_day_names_full[calendar_dow]);",
+  "          it.print(x + w/2, y + 104, id(font_id), Color(theme_auto), TextAlign::TOP_CENTER, calendar_month_year);",
   "          it.line(x, y + headH, x + w, y + headH, Color(theme_auto));",
   "          // Days Grid",
   "          int gridY = y + headH + 5;",

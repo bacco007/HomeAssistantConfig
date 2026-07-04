@@ -119,6 +119,24 @@ describe('lvgl_button service selection', () => {
         expect(noEntity.button.on_click).toBeUndefined();
     });
 
+    it('uses input_button.press for Home Assistant input_button helpers', () => {
+        const auto = plugin.exportLVGL({
+            id: 'input_button_auto',
+            type: 'lvgl_button',
+            entity_id: 'input_button.trigger_sleep_flow',
+            props: { service: 'auto' }
+        }, context);
+        expect(auto.button.on_click[0]['homeassistant.service'].service).toBe('input_button.press');
+
+        const buttonOverride = plugin.exportLVGL({
+            id: 'input_button_override',
+            type: 'lvgl_button',
+            entity_id: 'input_button.trigger_sleep_flow',
+            props: { service: 'button.press' }
+        }, context);
+        expect(buttonOverride.button.on_click[0]['homeassistant.service'].service).toBe('input_button.press');
+    });
+
     it('can mirror binary Home Assistant state onto checkable buttons', () => {
         const result = plugin.exportLVGL({
             id: 'stateful_btn',

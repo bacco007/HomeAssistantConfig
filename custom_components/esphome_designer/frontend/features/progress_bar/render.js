@@ -32,7 +32,7 @@ export const renderProgressBar = (el, widget, tools) => {
     const orientation = props.orientation || "horizontal";
     const isVertical = orientation === "vertical";
     const fontSize = props.font_size || 12;
-    const textAlign = props.text_align || "CENTER";
+    const textAlign = String(props.text_align || "CENTER").toUpperCase();
     const min = parseFloat(props.min !== undefined ? props.min : 0);
     const max = parseFloat(props.max !== undefined ? props.max : 100);
     const range = max - min;
@@ -74,8 +74,13 @@ export const renderProgressBar = (el, widget, tools) => {
     labelRow.style.display = "flex";
     labelRow.style.flexDirection = isVertical ? "column" : "row";
     const bothLabelsShown = (showLabel && label) && showPercentage;
-    labelRow.style.justifyContent = isVertical ? "space-between" : (bothLabelsShown ? "space-between" : (textAlign === "CENTER" ? "center" : (textAlign === "LEFT" ? "flex-start" : "flex-end")));
-    labelRow.style.alignItems = "center";
+    const horizontalAlign = textAlign === "LEFT" ? "flex-start" : (textAlign === "RIGHT" ? "flex-end" : "center");
+    labelRow.style.justifyContent = isVertical
+        ? (bothLabelsShown ? "space-between" : "center")
+        : horizontalAlign;
+    labelRow.style.alignItems = isVertical ? horizontalAlign : "center";
+    labelRow.style.textAlign = textAlign === "LEFT" ? "left" : (textAlign === "RIGHT" ? "right" : "center");
+    labelRow.style.gap = "4px";
     labelRow.style.fontSize = `${fontSize}px`;
     labelRow.style.paddingBottom = isVertical ? "0" : "2px";
     labelRow.style.paddingRight = isVertical ? "2px" : "0";
@@ -135,5 +140,4 @@ export const renderProgressBar = (el, widget, tools) => {
     barContainer.appendChild(barFill);
     el.appendChild(barContainer);
 };
-
 

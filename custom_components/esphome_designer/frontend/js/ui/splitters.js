@@ -4,6 +4,49 @@
 import { Logger } from '../utils/logger.js';
 import { addBrowserEventListener, dispatchBrowserEvent, removeBrowserEventListener } from '../utils/browser_runtime.js';
 
+const STORAGE_KEY = 'esphome-designer-splitter-sizes';
+
+function readSavedSizes() {
+    try {
+        const raw = window.localStorage?.getItem(STORAGE_KEY);
+        if (!raw) return {};
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+        return {};
+    }
+}
+
+function writeSavedSize(key, value) {
+    const numericValue = parseInt(String(value), 10);
+    if (!Number.isFinite(numericValue)) return;
+
+    try {
+        const next = { ...readSavedSizes(), [key]: numericValue };
+        window.localStorage?.setItem(STORAGE_KEY, JSON.stringify(next));
+    } catch {
+        // Ignore storage failures; resizing should still work.
+    }
+}
+
+function getBoundedSize(target, orientation, value) {
+    const numericValue = parseInt(String(value), 10);
+    if (!Number.isFinite(numericValue)) return null;
+
+    const styles = getComputedStyle(target);
+    const min = parseInt(orientation === 'vertical' ? styles.minWidth : styles.minHeight) || 0;
+    const max = parseInt(orientation === 'vertical' ? styles.maxWidth : styles.maxHeight) || Number.MAX_SAFE_INTEGER;
+    return Math.max(min, Math.min(max, numericValue));
+}
+
+function restoreSize(target, orientation, key, savedSizes) {
+    const value = getBoundedSize(target, orientation, savedSizes[key]);
+    if (value === null) return;
+
+    if (orientation === 'vertical') target.style.width = value + 'px';
+    else target.style.height = value + 'px';
+}
+
 function init() {
     const leftResizer = /** @type {HTMLElement | null} */ (document.getElementById('resizer-left'));
     const rightResizer = /** @type {HTMLElement | null} */ (document.getElementById('resizer-right'));
@@ -24,12 +67,17 @@ function init() {
 
     Logger.log("[Splitters] Initializing draggable panels...");
 
+    const savedSizes = readSavedSizes();
+    restoreSize(sidebar, 'vertical', 'left', savedSizes);
+    restoreSize(rightPanel, 'vertical', 'right', savedSizes);
+
     /**
      * @param {HTMLElement} resizer
      * @param {HTMLElement} target
      * @param {'vertical' | 'horizontal'} orientation
+     * @param {string} storageKey
      */
-    function setupResizer(resizer, target, orientation) {
+    function setupResizer(resizer, target, orientation, storageKey) {
         let startPos = 0;
         let startSize = 0;
 
@@ -61,6 +109,7 @@ function init() {
 
                     if (newWidth >= min && newWidth <= max) {
                         target.style.width = newWidth + 'px';
+                        writeSavedSize(storageKey, newWidth);
                     }
                 } else {
                     // Horizontal resizer (bottom panel)
@@ -72,6 +121,7 @@ function init() {
 
                     if (newHeight >= min && newHeight <= max) {
                         target.style.height = newHeight + 'px';
+                        writeSavedSize(storageKey, newHeight);
                     }
                 }
 
@@ -94,10 +144,11 @@ function init() {
     const bottomResizer = /** @type {HTMLElement | null} */ (document.getElementById('resizer-bottom'));
     const codePanel = /** @type {HTMLElement | null} */ (document.querySelector('.code-panel'));
 
-    setupResizer(leftResizer, sidebar, 'vertical');
-    setupResizer(rightResizer, rightPanel, 'vertical');
+    setupResizer(leftResizer, sidebar, 'vertical', 'left');
+    setupResizer(rightResizer, rightPanel, 'vertical', 'right');
     if (bottomResizer && codePanel) {
-        setupResizer(bottomResizer, codePanel, 'horizontal');
+        restoreSize(codePanel, 'horizontal', 'bottom', savedSizes);
+        setupResizer(bottomResizer, codePanel, 'horizontal', 'bottom');
     }
 }
 

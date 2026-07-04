@@ -53,6 +53,11 @@ vi.mock('../../js/core/events.js', () => ({
 vi.mock('../../js/io/devices.js', () => ({
     DEVICE_PROFILES: {
         reterminal_e1001: { name: 'reTerminal e1001' },
+        reterminal_e1004: {
+            name: 'reTerminal E1004',
+            isComingSoon: true,
+            unavailableReason: 'Driver is not upstream yet'
+        },
         lilygo_t5_47: { name: 'Lilygo T5 4.7" E-Paper', isUntestedProfile: true },
         custom_user: { name: 'My Imported', isCustomProfile: true }
     },
@@ -167,6 +172,9 @@ describe('DeviceSettings', () => {
         const options = Array.from(document.getElementById('deviceModel').options).map(o => o.textContent);
 
         expect(options.some(o => o.includes('reTerminal e1001'))).toBe(true);
+        const e1004Option = Array.from(document.getElementById('deviceModel').options).find(o => o.value === 'reterminal_e1004');
+        expect(e1004Option?.textContent).toContain('coming soon');
+        expect(e1004Option?.disabled).toBe(true);
         expect(options.some(o => o.includes('Lilygo T5 4.7" E-Paper (untested)'))).toBe(true);
         expect(options.some(o => o.includes('Imported'))).toBe(true);
         expect(options.some(o => o.includes('Custom Profile'))).toBe(true);

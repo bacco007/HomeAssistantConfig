@@ -48,11 +48,11 @@ export function buildLvglWidgetProps(widgetType, p, widget, props) {
         }
         return {
             ...props,
-            min: parseInt(p.min || 0, 10),
-            max: parseInt(p.max || 100, 10),
+            min: parseInt(p.min_value || p.min || 0, 10),
+            max: parseInt(p.max_value || p.max || 100, 10),
             value: parseInt(p.value || 50, 10),
-            thickness: parseInt(p.thickness || 10, 10),
-            color: p.color || "blue",
+            thickness: parseInt(p.arc_width || p.thickness || 10, 10),
+            color: p.indicator?.arc_color || p.arc_color || p.color || "blue",
             start_angle: parseInt(p.start_angle || 135, 10),
             end_angle: parseInt(p.end_angle || 45, 10),
             mode: p.mode || "normal"

@@ -8,6 +8,7 @@ export const HA_BINARY_DOMAINS = ["binary_sensor.", "switch.", "light.", "input_
 export const DESIGNER_STATE_TRIGGER_MARKER = "# esphome-designer-state-trigger:";
 export const MODE_AWARE_PENDING_TRIGGER_SEPARATOR = "::";
 const HA_SWITCH_ENTITY_RE = /^(automation|fan|humidifier|input_boolean|light|remote|siren|switch)\./;
+const ACTION_ONLY_BUTTON_DOMAINS = ["button.", "input_button.", "script.", "scene."];
 
 import { isEntityStateNonNumeric, makeSafeId } from '../../utils/export_helpers.js';
 import { getSensorPlatformLines } from './mqtt_helpers.js';
@@ -16,6 +17,16 @@ export { isEntityStateNonNumeric };
 
 const isBinaryStateTriggerEntity = (entityId) => HA_BINARY_DOMAINS.some(d => entityId.startsWith(d));
 const isHomeAssistantSwitchEntity = (entityId) => HA_SWITCH_ENTITY_RE.test(entityId);
+const isActionOnlyButtonEntity = (widget, entityId) => {
+    const type = String(widget?.type || "").toLowerCase();
+    if (type !== "button" && type !== "lvgl_button") return false;
+    return ACTION_ONLY_BUTTON_DOMAINS.some((domain) => entityId.startsWith(domain));
+};
+const isPluginManagedControlEntity = (widget, entityId) => {
+    const type = String(widget?.type || "").toLowerCase();
+    if (type === "lvgl_slider" && entityId.startsWith("media_player.")) return true;
+    return false;
+};
 
 const normalizeStateTriggerMode = (entityId, requestedMode = "auto") => {
     const normalized = String(requestedMode || "auto").trim().toLowerCase();
@@ -151,6 +162,9 @@ export const collectNumericSensors = (pages, context) => {
         const stateTriggerSpec = getCustomStateTriggerSpec(w);
 
         if (entityId && !p.is_local_sensor) {
+            if (isActionOnlyButtonEntity(w, entityId)) return;
+            if (isPluginManagedControlEntity(w, entityId)) return;
+
             // Numeric sensor types that should be prefixed with sensor. if domain is missing
             const numericSensorTypes = ["progress_bar", "sensor_text", "graph", "battery_icon", "wifi_signal", "ondevice_temperature", "ondevice_humidity"];
             if (w.type && numericSensorTypes.includes(w.type) && !entityId.includes(".") && !entityId.toLowerCase().startsWith("mqtt:")) {
@@ -239,6 +253,8 @@ export const collectTextSensors = (pages, context) => {
             { ent: secondaryEnt, attr: p.attribute2 }
         ].forEach(({ ent, attr }) => {
             if (!ent || p.is_local_sensor) return;
+            if (isActionOnlyButtonEntity(w, ent)) return;
+            if (isPluginManagedControlEntity(w, ent)) return;
 
             const isTextHa = HA_TEXT_DOMAINS.some(d => ent.startsWith(d)) || ent.toLowerCase().startsWith("mqtt:");
             let isStringCond = false;

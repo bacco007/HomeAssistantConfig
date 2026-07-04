@@ -15,6 +15,10 @@ const isMirrorableEntity = (entityId) => {
 
 const shouldSyncCheckedState = (props, entityId) => !!props.sync_state && isMirrorableEntity(entityId);
 
+const getButtonPressService = (entityId) => String(entityId || '').trim().startsWith("input_button.")
+    ? "input_button.press"
+    : "button.press";
+
 const buildCheckedStateUpdateAction = (widgetId) => `- lvgl.widget.update:
     id: ${widgetId}
     state:
@@ -87,7 +91,10 @@ const exportLVGL = (w, { common, convertColor, formatOpacity, _profile, getLVGLF
 
         if (serviceOverride !== "auto" && serviceOverride !== "") {
             // Use the exact service specified by the user
-            action = [{ "homeassistant.service": { service: serviceOverride, data: { entity_id: entityId } } }];
+            const service = serviceOverride === "button.press"
+                ? getButtonPressService(entityId)
+                : serviceOverride;
+            action = [{ "homeassistant.service": { service, data: { entity_id: entityId } } }];
         } else {
             // Auto-detect based on entity prefix
             if (entityId.startsWith("switch.") || entityId.startsWith("light.") || entityId.startsWith("fan.") || entityId.startsWith("input_boolean.")) {
@@ -95,7 +102,7 @@ const exportLVGL = (w, { common, convertColor, formatOpacity, _profile, getLVGLF
             } else if (entityId.startsWith("script.")) {
                 action = [{ "script.execute": entityId }];
             } else if (entityId.startsWith("button.") || entityId.startsWith("input_button.")) {
-                action = [{ "homeassistant.service": { service: "button.press", data: { entity_id: entityId } } }];
+                action = [{ "homeassistant.service": { service: getButtonPressService(entityId), data: { entity_id: entityId } } }];
             } else if (entityId.startsWith("scene.")) {
                 action = [{ "scene.turn_on": entityId }];
             } else if (entityId.startsWith("cover.")) {
@@ -170,6 +177,7 @@ export default {
                         { value: "cover.stop_cover", label: "Cover: Stop" },
                         { value: "cover.toggle", label: "Cover: Toggle" },
                         { value: "button.press", label: "Button Press" },
+                        { value: "input_button.press", label: "Input Button Press" },
                         { value: "script.execute", label: "Script Execute" }
                     ], default: "auto"
                 }

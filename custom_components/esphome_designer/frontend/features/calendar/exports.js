@@ -1,6 +1,49 @@
 import { clampFontWeight } from '@core/font_weights.js';
 import { getCalendarEventSummaryCharLimit } from './layout.js';
 
+const CALENDAR_LOCALES = {
+    en: {
+        weekdaysFull: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        weekdaysShort: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+        months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        allDay: "All Day"
+    },
+    de: {
+        weekdaysFull: ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
+        weekdaysShort: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
+        months: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+        allDay: "Ganztägig"
+    },
+    fr: {
+        weekdaysFull: ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
+        weekdaysShort: ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"],
+        months: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+        allDay: "Toute la journée"
+    },
+    nl: {
+        weekdaysFull: ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"],
+        weekdaysShort: ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"],
+        months: ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"],
+        allDay: "Hele dag"
+    },
+    es: {
+        weekdaysFull: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+        weekdaysShort: ["Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"],
+        months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+        allDay: "Todo el día"
+    },
+    it: {
+        weekdaysFull: ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"],
+        weekdaysShort: ["Lu", "Ma", "Me", "Gi", "Ve", "Sa", "Do"],
+        months: ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
+        allDay: "Tutto il giorno"
+    }
+};
+
+const getCalendarLocale = (locale) => CALENDAR_LOCALES[String(locale || "en").toLowerCase()] || CALENDAR_LOCALES.en;
+
+const cppStringArray = (values) => values.map((value) => `"${escapeYamlDoubleQuoted(value)}"`).join(", ");
+
 function escapeYamlDoubleQuoted(value) {
     return String(value || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 }
@@ -114,6 +157,7 @@ export const exportLVGL = (w, { common, convertColor, getLVGLFont }) => {
         const dayFS = parseInt(p.font_size_day || 24, 10);
         const gridFS = parseInt(p.font_size_grid || 14, 10);
         const family = p.font_family || "Roboto";
+        const locale = getCalendarLocale(p.locale);
 
         const headH = dateFS + dayFS + gridFS + 15;
 
@@ -135,14 +179,24 @@ export const exportLVGL = (w, { common, convertColor, getLVGLFont }) => {
                 {
                     label: {
                         align: "TOP_MID", y: dateFS + 6, height: dayFS + 4,
-                        text: '!lambda "char buf[16]; id(ha_time).now().strftime(buf, sizeof(buf), \'%A\'); return buf;"',
+                        text: `!lambda |-
+                          char idx_buf[2];
+                          id(ha_time).now().strftime(idx_buf, sizeof(idx_buf), "%w");
+                          int idx = atoi(idx_buf);
+                          const char* names[] = {${cppStringArray(locale.weekdaysFull)}};
+                          return std::string(names[idx]);`,
                         text_font: getLVGLFont(family, dayFS, 700), text_color: color
                     }
                 },
                 {
                     label: {
                         align: "TOP_MID", y: dateFS + dayFS + 10, height: gridFS + 4,
-                        text: '!lambda "char buf[32]; id(ha_time).now().strftime(buf, sizeof(buf), \'%B %Y\'); return buf;"',
+                        text: `!lambda |-
+                          auto now = id(ha_time).now();
+                          char year_buf[5];
+                          now.strftime(year_buf, sizeof(year_buf), "%Y");
+                          const char* months[] = {${cppStringArray(locale.months)}};
+                          return std::string(months[now.month - 1]) + " " + year_buf;`,
                         text_font: getLVGLFont(family, gridFS, 400), text_color: color
                     }
                 },
@@ -162,7 +216,7 @@ export const exportLVGL = (w, { common, convertColor, getLVGLFont }) => {
                     width: "100%", height: "SIZE_CONTENT", y: headH + 5,
                     bg_opa: "transp", border_width: 0,
                     layout: { type: "flex", flex_flow: "row_wrap", flex_align_main: "space_around" },
-                    widgets: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"].map(d => ({
+                    widgets: locale.weekdaysShort.map(d => ({
                         label: { text: `"${d}"`, text_font: getLVGLFont(family, gridFS, 700), text_color: color, width: "14%", align: "center" }
                     }))
                 }
@@ -221,6 +275,7 @@ export const exportDirect = (w, context) => {
         const eventFontSize = parseInt(p.font_size_event || 18, 10);
         const eventSummaryCharLimit = getCalendarEventSummaryCharLimit(w.width, eventFontSize);
         const fontFamily = p.font_family || "Roboto";
+        const locale = getCalendarLocale(p.locale);
 
         const getW = (key, def) => {
             if (p[key] !== undefined) return clampFontWeight(fontFamily, p[key]);
@@ -253,7 +308,19 @@ export const exportDirect = (w, context) => {
         // Background
         if (bgColorProp !== "transparent") {
             if (radius > 0) {
-                lines.push(`          it.filled_rounded_rectangle(x, y, w, h, ${radius}, ${bgColor});`);
+                lines.push("          auto draw_filled_rrect = [&](int x, int y, int w, int h, int r, auto c) {");
+                lines.push("            if (r <= 0) { it.filled_rectangle(x, y, w, h, c); return; }");
+                lines.push("            if (r * 2 > w) r = w / 2;");
+                lines.push("            if (r * 2 > h) r = h / 2;");
+                lines.push("            it.filled_rectangle(x + r, y, w - 2 * r, h, c);");
+                lines.push("            it.filled_rectangle(x, y + r, r, h - 2 * r, c);");
+                lines.push("            it.filled_rectangle(x + w - r, y + r, r, h - 2 * r, c);");
+                lines.push("            it.filled_circle(x + r, y + r, r, c);");
+                lines.push("            it.filled_circle(x + w - r - 1, y + r, r, c);");
+                lines.push("            it.filled_circle(x + r, y + h - r - 1, r, c);");
+                lines.push("            it.filled_circle(x + w - r - 1, y + h - r - 1, r, c);");
+                lines.push("          };");
+                lines.push(`          draw_filled_rrect(x, y, w, h, ${radius}, ${bgColor});`);
             } else {
                 lines.push(`          it.filled_rectangle(x, y, w, h, ${bgColor});`);
             }
@@ -266,8 +333,15 @@ export const exportDirect = (w, context) => {
 
         if (showHeader) {
             lines.push(`          it.strftime(x + w/2, y + 2, id(${fontHeaderDateId}), ${color}, TextAlign::TOP_CENTER, "%d", now);`);
-            lines.push(`          it.strftime(x + w/2, y + ${dateFontSize + 6}, id(${fontHeaderDayId}), ${color}, TextAlign::TOP_CENTER, "%A", now);`);
-            lines.push(`          it.strftime(x + w/2, y + ${dateFontSize + dayFontSize + 10}, id(${fontMonthId}), ${color}, TextAlign::TOP_CENTER, "%B %Y", now);`);
+            lines.push(`          char calendar_dow_buf[2];`);
+            lines.push(`          now.strftime(calendar_dow_buf, sizeof(calendar_dow_buf), "%w");`);
+            lines.push(`          int calendar_dow = atoi(calendar_dow_buf);`);
+            lines.push(`          const char* calendar_day_names_full[] = {${cppStringArray(locale.weekdaysFull)}};`);
+            lines.push(`          const char* calendar_month_names[] = {${cppStringArray(locale.months)}};`);
+            lines.push(`          char calendar_month_year[48];`);
+            lines.push(`          snprintf(calendar_month_year, sizeof(calendar_month_year), "%s %d", calendar_month_names[now.month - 1], now.year);`);
+            lines.push(`          it.print(x + w/2, y + ${dateFontSize + 6}, id(${fontHeaderDayId}), ${color}, TextAlign::TOP_CENTER, calendar_day_names_full[calendar_dow]);`);
+            lines.push(`          it.print(x + w/2, y + ${dateFontSize + dayFontSize + 10}, id(${fontMonthId}), ${color}, TextAlign::TOP_CENTER, calendar_month_year);`);
             lines.push(`          it.line(x, y + headH, x + w, y + headH, ${color});`);
         } else {
             lines.push(`          headH = 0;`); // Reset headH if hidden so subsequent elements flow up
@@ -282,7 +356,7 @@ export const exportDirect = (w, context) => {
         lines.push(`          int r = 1;`); // Init r for layout calculation later even if grid hidden
 
         if (showGrid) {
-            lines.push(`          const char* days[] = {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};`);
+            lines.push(`          const char* days[] = {${cppStringArray(locale.weekdaysShort)}};`);
             lines.push(`          for(int i=0; i<7; i++) {`);
             lines.push(`            it.print(x + i*cellW + cellW/2, gridY, id(${fontGridHeaderId}), ${color}, TextAlign::TOP_CENTER, days[i]);`);
             lines.push(`          }`);
@@ -378,7 +452,7 @@ export const exportDirect = (w, context) => {
             lines.push(``);
             lines.push(`                             // Draw Time`);
             lines.push(`                             if (is_all_day) {`);
-            lines.push(`                                 it.printf(x + w - 10, eventY, id(${fontEventId}), ${color}, TextAlign::TOP_RIGHT, "All Day");`);
+            lines.push(`                                 it.printf(x + w - 10, eventY, id(${fontEventId}), ${color}, TextAlign::TOP_RIGHT, "${escapeYamlDoubleQuoted(locale.allDay)}");`);
             lines.push(`                             } else {`);
             lines.push(`                                 std::string timeStr = extract_time(start);`);
             lines.push(`                                 it.printf(x + w - 10, eventY, id(${fontEventId}), ${color}, TextAlign::TOP_RIGHT, "%s", timeStr.c_str());`);

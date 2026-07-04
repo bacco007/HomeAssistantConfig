@@ -3,8 +3,16 @@ import { DEVICE_PROFILES, SUPPORTED_DEVICE_IDS } from '../io/devices.js';
 import { Logger } from '../utils/logger.js';
 
 /**
- * @typedef {{ name?: string, isCustomProfile?: boolean, isOfflineImport?: boolean }} DeviceSettingsProfile
+ * @typedef {{ name?: string, isCustomProfile?: boolean, isOfflineImport?: boolean, isComingSoon?: boolean, isUnavailable?: boolean, unavailableReason?: string }} DeviceSettingsProfile
  */
+
+/**
+ * @param {DeviceSettingsProfile | undefined} profile
+ * @returns {boolean}
+ */
+function isUnavailableProfile(profile) {
+    return Boolean(profile?.isComingSoon || profile?.isUnavailable);
+}
 
 /**
  * @param {any} instance
@@ -31,19 +39,29 @@ export function populateDeviceSelectView(instance) {
 
     /**
      * @param {string} key
-     * @param {{ name?: string, isCustomProfile?: boolean, isOfflineImport?: boolean }} profile
+     * @param {DeviceSettingsProfile} profile
      * @returns {HTMLOptionElement}
      */
     const createOption = (key, profile) => {
         const opt = document.createElement("option");
         opt.value = key;
         let displayName = profile.name || key;
-        displayName = displayName.replace(/\s*\(Local\)\s*/gi, '').replace(/\s*\(untested\)\s*/gi, '').trim();
+        displayName = displayName
+            .replace(/\s*\(Local\)\s*/gi, '')
+            .replace(/\s*\(untested\)\s*/gi, '')
+            .replace(/\s*\(coming soon\)\s*/gi, '')
+            .trim();
         const suffixes = [];
         if (profile.isCustomProfile || profile.isOfflineImport) suffixes.push("Imported");
-        if (!supportedIds.includes(key)) suffixes.push("untested");
+        if (isUnavailableProfile(profile)) suffixes.push("coming soon");
+        else if (!supportedIds.includes(key)) suffixes.push("untested");
         if (suffixes.length > 0) displayName += ` (${suffixes.join(", ")})`;
         opt.textContent = displayName;
+        if (isUnavailableProfile(profile)) {
+            opt.disabled = true;
+            opt.title = profile.unavailableReason || "Coming soon";
+            opt.style.color = "var(--text-dim)";
+        }
         return opt;
     };
 
@@ -67,8 +85,13 @@ export function populateDeviceSelectView(instance) {
     customOpt.style.color = "var(--accent)";
     instance.modelInput.appendChild(customOpt);
 
-    if (currentVal && (Object.prototype.hasOwnProperty.call(DEVICE_PROFILES, currentVal) || currentVal === 'custom')) instance.modelInput.value = currentVal;
-    else if (!instance.modelInput.value) instance.modelInput.value = 'reterminal_e1001';
+    const currentProfile = /** @type {Record<string, DeviceSettingsProfile>} */ (DEVICE_PROFILES)[currentVal];
+    if (currentVal === 'custom' || (currentProfile && !isUnavailableProfile(currentProfile))) {
+        instance.modelInput.value = currentVal;
+    } else if ((currentProfile && isUnavailableProfile(currentProfile)) || !instance.modelInput.value || instance.modelInput.selectedOptions[0]?.disabled) {
+        const firstEnabled = Array.from(instance.modelInput.options).find((option) => !option.disabled);
+        instance.modelInput.value = firstEnabled?.value || 'reterminal_e1001';
+    }
 
     try {
         if (instance.customHardwarePanel && typeof instance.customHardwarePanel.updateVisibility === "function") {

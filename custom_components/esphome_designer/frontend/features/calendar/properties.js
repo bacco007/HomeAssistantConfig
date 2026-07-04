@@ -124,6 +124,14 @@ template:
         panel.endSection();
 
         panel.createSection("Design", true);
+        panel.addSelect("Language", props.locale || "en", [
+            { value: "en", label: "English" },
+            { value: "de", label: "German" },
+            { value: "fr", label: "French" },
+            { value: "nl", label: "Dutch" },
+            { value: "es", label: "Spanish" },
+            { value: "it", label: "Italian" }
+        ], (v) => updateProp("locale", v));
         panel.addCheckbox("Show Header", props.show_header !== false, (v) => updateProp("show_header", v));
         panel.addCheckbox("Show Grid", props.show_grid !== false, (v) => updateProp("show_grid", v));
         panel.addCheckbox("Show Events", props.show_events !== false, (v) => updateProp("show_events", v));

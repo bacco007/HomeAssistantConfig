@@ -1,6 +1,6 @@
 /**
  * @typedef {{ id: string, name: string, device_model?: string, device_type?: string, page_count: number }} LayoutRow
- * @typedef {{ name?: string }} DeviceProfileSummary
+ * @typedef {{ name?: string, isComingSoon?: boolean, isUnavailable?: boolean, unavailableReason?: string }} DeviceProfileSummary
  */
 
 /**
@@ -14,6 +14,14 @@ export function escapeHtml(text) {
 }
 
 /**
+ * @param {DeviceProfileSummary | undefined} profile
+ * @returns {boolean}
+ */
+function isUnavailableProfile(profile) {
+    return Boolean(profile?.isComingSoon || profile?.isUnavailable);
+}
+
+/**
  * @param {string | undefined} model
  * @param {Record<string, DeviceProfileSummary>} deviceProfiles
  * @param {string[]} supportedIds
@@ -22,7 +30,9 @@ export function escapeHtml(text) {
 export function getDeviceDisplayName(model, deviceProfiles, supportedIds) {
     if (model && deviceProfiles && deviceProfiles[model]) {
         let name = deviceProfiles[model].name || model || "Unknown";
-        if (!supportedIds.includes(model)) {
+        if (isUnavailableProfile(deviceProfiles[model])) {
+            name += " (coming soon)";
+        } else if (!supportedIds.includes(model)) {
             name += " (untested)";
         }
         return name;
@@ -126,10 +136,14 @@ export function generateDeviceOptions(deviceProfiles, supportedIds) {
     if (deviceProfiles) {
         return Object.entries(deviceProfiles).map(([key, profile]) => {
             let displayName = profile.name || key;
-            if (!supportedIds.includes(key)) {
+            const unavailable = isUnavailableProfile(profile);
+            if (unavailable) {
+                displayName += " (coming soon)";
+            } else if (!supportedIds.includes(key)) {
                 displayName += " (untested)";
             }
-            return `<option value="${key}">${displayName}</option>`;
+            const disabledAttr = unavailable ? ` disabled title="${escapeHtml(profile.unavailableReason || "Coming soon")}"` : "";
+            return `<option value="${escapeHtml(key)}"${disabledAttr}>${escapeHtml(displayName)}</option>`;
         }).join("");
     }
 

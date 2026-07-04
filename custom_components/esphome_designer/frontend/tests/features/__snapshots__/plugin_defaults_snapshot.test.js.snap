@@ -33,6 +33,7 @@ exports[`Plugin Defaults Snapshots > should match snapshot for defaults of calen
   "font_weight_month": 400,
   "group_events_by_day": false,
   "height": 340,
+  "locale": "en",
   "opa": 255,
   "prefix_length": 3,
   "prefix_separator": ": ",
@@ -220,14 +221,18 @@ exports[`Plugin Defaults Snapshots > should match snapshot for defaults of lvgl_
 exports[`Plugin Defaults Snapshots > should match snapshot for defaults of lvgl_bar 1`] = `
 {
   "bg_color": "gray",
+  "bottom_text": "",
   "color": "blue",
   "entity_id": "",
+  "label_color": "black",
+  "label_font_size": 12,
   "max": 100,
   "min": 0,
   "mode": "normal",
   "opa": 255,
   "opacity": 255,
   "start_value": 0,
+  "top_text": "",
   "value": 50,
 }
 `;
