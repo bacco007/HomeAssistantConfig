@@ -262,17 +262,27 @@ def clearness_to_cloud_cover(kt: float) -> int:
 # ---------------------------------------------------------------------------
 
 
-def calculate_sea_level_pressure(station_pressure_hpa: float, elevation_m: float, temp_c: float) -> float:
+def calculate_sea_level_pressure(
+    station_pressure_hpa: float,
+    elevation_m: float,
+    temp_c: float,
+    mean_temp_c: float | None = None,
+) -> float:
     """Reduce station pressure to mean sea level (MSLP).
 
     Method: Temperature-corrected hypsometric reduction (WMO No. 8, S3.1.3).
     Formula: MSLP = P_stn * exp(elevation / (T_K * 29.263))
 
     Accuracy: +/-0.3 hPa below 500 m, +/-1 hPa at 2000 m.
-    Limitation: Uses current temperature only; WMO recommends 12h mean
-    temperature for better accuracy at high elevations.
+
+    WMO recommends the 12-hour mean temperature for the reduction, because
+    using the instantaneous temperature injects a spurious diurnal wave into
+    MSLP (and therefore into the pressure trend and Zambretti forecast that
+    consume it). Pass ``mean_temp_c`` with the 12h mean when available; the
+    function falls back to ``temp_c`` when it is not.
     """
-    temp_k = temp_c + 273.15
+    t_reduction = mean_temp_c if mean_temp_c is not None else temp_c
+    temp_k = t_reduction + 273.15
     if temp_k < 1.0:
         temp_k = 1.0  # guard against division by zero
     exponent = elevation_m / (temp_k * 29.263)
@@ -821,6 +831,7 @@ def determine_current_condition(
     is_day,
     pm10=0.0,
     is_wet=False,
+    current_hour=None,
 ) -> str:
     """Classify current weather into one of 36 conditions.
 
@@ -830,6 +841,10 @@ def determine_current_condition(
     Limitation: Uses raw illuminance as cloud proxy without solar-angle
     normalization. Cloud cover estimates are approximate -- accuracy
     improves with higher sun elevation angles.
+
+    ``current_hour`` is the local hour (0-23) in the Home Assistant timezone,
+    used only to distinguish a misty morning from generic fog. Callers should
+    pass ``dt_util.now().hour``; when omitted it falls back to the host clock.
     """
     is_rising = sun_azimuth < 180
     is_golden_hour = -4 < sun_elevation < 10 and is_day
@@ -868,7 +883,7 @@ def determine_current_condition(
 
     # Visibility
     if humidity > 95 and (temp_c - (dew_point_c or temp_c)) < 1 and wind_speed_ms < 1.5:
-        now_h = datetime.now().hour
+        now_h = current_hour if current_hour is not None else datetime.now().hour
         return "misty-morning" if (is_sunrise or 5 <= now_h < 9) else "fog"
 
     # Air quality
@@ -1094,6 +1109,7 @@ def compute_fwi(
     wind_kmh: float,
     rain_24h_mm: float,
     month: int,
+    hemisphere: str = "northern",
 ) -> dict:
     """Canadian Forest Fire Weather Index (FWI) system - Van Wagner 1987.
 
@@ -1115,7 +1131,12 @@ def compute_fwi(
         rh_pct:    Noon relative humidity (%).
         wind_kmh:  Noon wind speed (km/h).
         rain_24h_mm: 24-hour cumulative rainfall (mm).
-        month:     Calendar month (1=January … 12=December), Northern Hemisphere.
+        month:     Calendar month (1=January … 12=December).
+        hemisphere: "northern" or "southern". The DMC/DC day-length tables are
+            defined for the Northern Hemisphere; for "southern" the month index
+            is shifted by six months so seasonal drying matches the local
+            season (e.g. a January in the Southern Hemisphere uses July's
+            day-length factors).
 
     Returns:
         dict with keys: ffmc, dmc, dc, isi, bui, fwi, dsr  (all float, rounded to 1 d.p.)
@@ -1128,6 +1149,10 @@ def compute_fwi(
     P0 = float(dmc_prev)
     D0 = float(dc_prev)
     month_i = max(1, min(12, int(month)))
+    # Day-length tables (Le, Lf below) are Northern-Hemisphere. In the Southern
+    # Hemisphere the seasons are offset by six months, so index them with a
+    # shifted month. day_len_idx is 0-based into the 12-element tables.
+    day_len_idx = (month_i - 1 + 6) % 12 if str(hemisphere).lower() == "southern" else month_i - 1
 
     # -----------------------------------------------------------------------
     # FFMC - Fine Fuel Moisture Code
@@ -1189,7 +1214,7 @@ def compute_fwi(
         P0 = max(pr, 0.0)
 
     if T > -1.1:
-        K = 1.894 * (T + 1.1) * (100.0 - H) * Le[month_i - 1] * 1e-6
+        K = 1.894 * (T + 1.1) * (100.0 - H) * Le[day_len_idx] * 1e-6
         dmc = P0 + 100.0 * K
     else:
         dmc = P0
@@ -1208,7 +1233,7 @@ def compute_fwi(
         Dr = 400.0 * math.log(800.0 / Qr)
         D0 = max(Dr, 0.0)
 
-    V = max(0.0, 0.36 * (T + 2.8) + Lf[month_i - 1]) if T > -2.8 else max(0.0, Lf[month_i - 1])
+    V = max(0.0, 0.36 * (T + 2.8) + Lf[day_len_idx]) if T > -2.8 else max(0.0, Lf[day_len_idx])
     dc = D0 + 0.5 * V
     dc = max(0.0, dc)
 
@@ -1652,6 +1677,7 @@ def et0_penman_monteith(
     solar_radiation_wm2: float,
     elevation_m: float = 0.0,
     day_of_year: int = 180,
+    latitude_deg: float = 0.0,
 ) -> float:
     """Reference evapotranspiration via FAO-56 Penman-Monteith method.
 
@@ -1673,6 +1699,10 @@ def et0_penman_monteith(
         Station elevation above sea-level (m).
     day_of_year : int
         Julian day of year (1-365), used for net longwave correction.
+    latitude_deg : float
+        Station latitude in decimal degrees, used for the extraterrestrial
+        radiation term. Pass the real site latitude; defaults to 0 (equator)
+        only when latitude is unknown.
 
     Returns
     -------
@@ -1717,10 +1747,12 @@ def et0_penman_monteith(
     # Net shortwave radiation Rns  FAO56 Eq 38 (α=0.23 for reference grass)
     Rns = (1 - 0.23) * Rs
 
-    # Extraterrestrial radiation Ra for net longwave estimate  FAO56 Eq 21
-    _phi = math.radians(max(-90, min(90, z)))  # use elevation as lat proxy - caller should pass lat
-    # Simplified Ra (mean for mid-latitudes when lat not separately passed)
-    Ra = extraterrestrial_radiation_mj(37.0, doy)  # fallback 37°N
+    # Extraterrestrial radiation Ra for net longwave estimate  FAO56 Eq 21.
+    # Uses the station's true latitude; callers should pass latitude_deg. A
+    # value of 0 degrees (the equator, and the default) keeps the function
+    # usable when latitude is genuinely unknown.
+    lat = max(-90.0, min(90.0, float(latitude_deg)))
+    Ra = extraterrestrial_radiation_mj(lat, doy)
 
     # Clear-sky solar radiation Rso  FAO56 Eq 37
     Rso = (0.75 + 2e-5 * z) * Ra

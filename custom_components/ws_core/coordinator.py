@@ -1380,6 +1380,20 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         return [v for _, v in history]
 
     @staticmethod
+    def _mean_window(history: deque, now: Any, hours: float, min_samples: int = 1) -> float | None:
+        """Mean of ``(ts, value)`` samples within the last ``hours``.
+
+        Returns ``None`` when fewer than ``min_samples`` samples fall inside the
+        window, so callers can fall back to an instantaneous value instead of a
+        misleading average built from too little history.
+        """
+        cutoff = now - timedelta(hours=hours)
+        vals = [v for ts, v in history if ts >= cutoff]
+        if len(vals) < min_samples:
+            return None
+        return sum(vals) / len(vals)
+
+    @staticmethod
     def _rain_accum_24h_from_totals(history: deque) -> float:
         vals = [v for _, v in history]
         total = 0.0
@@ -1708,7 +1722,12 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         mslp: float | None = None
         if pressure_hpa is not None and tc is not None:
-            mslp = calculate_sea_level_pressure(float(pressure_hpa), self.elevation_m, float(tc))
+            # WMO reduces station pressure with a 12h mean temperature to avoid a
+            # spurious diurnal wave. Use the mean over the last 12h of samples
+            # when we have a meaningful amount of history; otherwise fall back to
+            # the instantaneous reading (e.g. shortly after first setup).
+            mean_temp = self._mean_window(rt.temp_history_24h, now, hours=12.0, min_samples=6)
+            mslp = calculate_sea_level_pressure(float(pressure_hpa), self.elevation_m, float(tc), mean_temp_c=mean_temp)
             data[KEY_SEA_LEVEL_PRESSURE_HPA] = mslp
             rt.last_mslp = mslp
 
@@ -1970,6 +1989,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             sun_elevation=sun_elev,
             sun_azimuth=sun_azimuth,
             is_day=is_day,
+            current_hour=dt_util.now().hour,
         )
         data[KEY_CURRENT_CONDITION] = condition
         data["_condition_icon"] = CONDITION_ICONS.get(condition, "mdi:weather-partly-cloudy")
@@ -3483,6 +3503,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     wind_kmh=wind_kmh,
                     rain_24h_mm=rain_24h,
                     month=fwi_month,
+                    hemisphere=self.hemisphere,
                 )
                 self._learning_state.fwi_ffmc = fwi_result["ffmc"]
                 self._learning_state.fwi_dmc = fwi_result["dmc"]
@@ -3500,6 +3521,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     wind_kmh=wind_kmh,
                     rain_24h_mm=0.0,  # rain already applied today
                     month=fwi_month,
+                    hemisphere=self.hemisphere,
                 )
 
             data[KEY_FWI_FFMC] = fwi_result["ffmc"]
@@ -3816,6 +3838,7 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     solar_radiation_wm2=float(sol_rad),
                     elevation_m=self.elevation_m,
                     day_of_year=doy,
+                    latitude_deg=float(self.forecast_lat),
                 )
                 data[KEY_ET0_PM_DAILY_MM] = et0_pm
 

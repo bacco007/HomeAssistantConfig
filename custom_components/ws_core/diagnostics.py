@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import json
+import pathlib
+import re
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
@@ -14,17 +17,51 @@ from .const import (
     KEY_SENSOR_QUALITY_FLAGS,
 )
 
+REDACTED = "**REDACTED**"
 
-def _redact_coords(d: dict[str, Any]) -> dict[str, Any]:
-    """Redact location data for privacy."""
-    out = dict(d)
-    out.pop("forecast_lat", None)
-    out.pop("forecast_lon", None)
-    return out
+
+def _integration_version() -> str:
+    """Read the integration version from the sibling manifest.json.
+
+    Resolved once at import time (the diagnostics platform module is imported in
+    the executor), so it never reads a file inside the event loop at request
+    time and stays in sync with manifest.json without a hardcoded literal.
+    """
+    try:
+        manifest = pathlib.Path(__file__).parent / "manifest.json"
+        return str(json.loads(manifest.read_text(encoding="utf-8")).get("version", "unknown"))
+    except Exception:  # pragma: no cover - manifest is always present in practice
+        return "unknown"
+
+
+_VERSION = _integration_version()
+
+# Location keys are redacted for privacy; anything whose key name matches this
+# pattern is a credential (API key, password, passcode, auth/secret/token) and
+# must never appear in a diagnostics export that users routinely attach to
+# public bug reports.
+_LOCATION_KEYS = frozenset({"forecast_lat", "forecast_lon", "sea_temp_lat", "sea_temp_lon"})
+_SECRET_KEY_RE = re.compile(r"(key|password|passcode|secret|token|auth)", re.IGNORECASE)
+
+
+def _redact(value: Any, key: str | None = None) -> Any:
+    """Recursively redact secrets and location data.
+
+    A value is redacted when its own key name matches a secret pattern or is a
+    known location field.  Redaction recurses into nested dicts and lists so
+    per-network credential blocks are covered too.
+    """
+    if key is not None and (key in _LOCATION_KEYS or _SECRET_KEY_RE.search(key)):
+        return REDACTED if value not in (None, "") else value
+    if isinstance(value, dict):
+        return {k: _redact(v, k) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_redact(v) for v in value]
+    return value
 
 
 async def async_get_config_entry_diagnostics(hass: HomeAssistant, entry: ConfigEntry) -> dict[str, Any]:
-    """Return diagnostics for a config entry."""
+    """Return diagnostics for a config entry (secrets and coordinates redacted)."""
     coord = hass.data.get(DOMAIN, {}).get(entry.entry_id)
     data = coord.data if coord else None
 
@@ -56,9 +93,9 @@ async def async_get_config_entry_diagnostics(hass: HomeAssistant, entry: ConfigE
 
     return {
         "title": entry.title,
-        "version": "2.6.1",
-        "entry_data": _redact_coords(dict(entry.data)),
-        "entry_options": _redact_coords(dict(entry.options)),
+        "version": _VERSION,
+        "entry_data": _redact(dict(entry.data)),
+        "entry_options": _redact(dict(entry.options)),
         "sources": sources,
         "sensor_stats": sensor_stats,
         "runtime": runtime_info,

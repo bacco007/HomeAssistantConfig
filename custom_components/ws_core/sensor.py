@@ -10,7 +10,6 @@ from typing import Any
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -2663,12 +2662,13 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
 
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
-        desired = f"sensor.{self._attr_suggested_object_id}"
-        if self.entity_id and self.entity_id != desired:
-            reg = er.async_get(self.hass)
-            current = reg.async_get(self.entity_id)
-            if current and current.unique_id == self.unique_id and reg.async_get(desired) is None:
-                reg.async_update_entity(self.entity_id, new_entity_id=desired)
+        # The entity_id is set once at creation from _attr_suggested_object_id
+        # (Home Assistant honours it the first time the entity is registered),
+        # which yields sensor.{prefix}_{key} on a fresh install. We deliberately
+        # do NOT force the entity_id back to that value on later startups: once
+        # an entity exists in the registry, its entity_id belongs to the user,
+        # and rewriting it here would silently revert any manual rename on every
+        # restart and split the entity's recorder history.
 
         # Restore last known value for sensors that are slow to warm up
         if self._desc.key in self._RESTORE_KEYS:

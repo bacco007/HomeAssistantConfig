@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import Any
 
 from homeassistant.components.weather import WeatherEntity
@@ -22,6 +21,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.util import dt as dt_util
 
 from .const import (
     CONF_PREFIX,
@@ -223,7 +223,7 @@ class WSStationWeather(CoordinatorEntity, WeatherEntity):
         fc = d.get(KEY_FORECAST) or {}
         hourly = fc.get("hourly") or []
         if hourly:
-            now_iso = datetime.now().strftime("%Y-%m-%dT%H:00")
+            now_iso = dt_util.now().strftime("%Y-%m-%dT%H:00")
             for item in hourly:
                 if str(item.get("datetime", "")).startswith(now_iso[:13]):
                     h_cond = _weathercode_to_condition(item.get("weathercode"))
@@ -286,7 +286,7 @@ class WSStationWeather(CoordinatorEntity, WeatherEntity):
         local_gust_ms = d.get(KEY_NORM_WIND_GUST_MS)
         local_condition = d.get(KEY_CURRENT_CONDITION)
         local_rain_rate = d.get(KEY_RAIN_RATE_FILT)  # mm/h  → approx mm in 1h
-        now_hour_iso = datetime.now().strftime("%Y-%m-%dT%H")
+        now_hour_iso = dt_util.now().strftime("%Y-%m-%dT%H")
         nowcast_slot = 0  # counts how many hourly slots we've applied local data to
 
         out: list[dict[str, Any]] = []

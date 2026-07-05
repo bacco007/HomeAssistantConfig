@@ -10,8 +10,9 @@
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/kmich/ha_ws_core",
+  "integration_type": "service",
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/kmich/ha_ws_core/issues",
   "requirements": [],
-  "version": "2.6.1"
+  "version": "2.6.2"
 }
