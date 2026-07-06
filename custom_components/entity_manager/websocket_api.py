@@ -385,12 +385,15 @@ async def handle_export_states(
 @websocket_api.websocket_command(
     {
         vol.Required("type"): "entity_manager/import_entity_states",
-        vol.Required("entities"): [
-            {
-                vol.Required("entity_id"): cv.entity_id,
-                vol.Required("is_disabled"): bool,
-            }
-        ],
+        vol.Required("entities"): vol.All(
+            [
+                {
+                    vol.Required("entity_id"): cv.entity_id,
+                    vol.Required("is_disabled"): bool,
+                }
+            ],
+            vol.Length(min=1, max=MAX_BULK_ENTITIES),
+        ),
     }
 )
 @websocket_api.require_admin
@@ -887,6 +890,9 @@ async def handle_update_yaml_references(
             rel = filepath.relative_to(config_path)
             if any(p in _SKIP or p.startswith(".") for p in rel.parts[:-1]):
                 continue
+            # Never touch secrets files (any directory level)
+            if filepath.name == "secrets.yaml":
+                continue
             try:
                 content = filepath.read_text(encoding="utf-8")
                 if old_id not in content:
@@ -894,6 +900,10 @@ async def handle_update_yaml_references(
                 new_content, count = pattern.subn(new_id, content)
                 if count:
                     if not dry_run:
+                        # Keep a one-shot backup of the pre-edit content next to the file
+                        filepath.with_name(filepath.name + ".em-bak").write_text(
+                            content, encoding="utf-8"
+                        )
                         filepath.write_text(new_content, encoding="utf-8")
                     results.append({"file": str(rel), "replacements": count})
             except Exception as exc:  # noqa: BLE001
@@ -1191,6 +1201,9 @@ async def handle_register_template(
             rel = filepath.relative_to(config_path)
             if any(p in _YAML_SKIP or p.startswith(".") for p in rel.parts[:-1]):
                 continue
+            # Never touch secrets files (any directory level)
+            if filepath.name == "secrets.yaml":
+                continue
             try:
                 content = filepath.read_text(encoding="utf-8")
 
@@ -1209,6 +1222,10 @@ async def handle_register_template(
                             content[: m.end()]
                             + f"\n{indent}unique_id: {new_uuid}"
                             + content[m.end() :]
+                        )
+                        # Keep a one-shot backup of the pre-edit content
+                        filepath.with_name(filepath.name + ".em-bak").write_text(
+                            content, encoding="utf-8"
                         )
                         filepath.write_text(new_content, encoding="utf-8")
                         return {
@@ -1229,6 +1246,10 @@ async def handle_register_template(
                         content[: m.end()]
                         + f"\n{indent}  unique_id: {new_uuid}"
                         + content[m.end() :]
+                    )
+                    # Keep a one-shot backup of the pre-edit content
+                    filepath.with_name(filepath.name + ".em-bak").write_text(
+                        content, encoding="utf-8"
                     )
                     filepath.write_text(new_content, encoding="utf-8")
                     return {

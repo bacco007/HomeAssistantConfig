@@ -9,6 +9,7 @@ from homeassistant.config_entries import ConfigEntry  # type: ignore
 from homeassistant.core import HomeAssistant  # type: ignore
 from homeassistant.components import frontend  # type: ignore
 from homeassistant.components.http import StaticPathConfig  # type: ignore
+from homeassistant.exceptions import Unauthorized  # type: ignore
 from homeassistant.helpers import config_validation as cv  # type: ignore
 
 from .const import DOMAIN
@@ -50,6 +51,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Register services (delegates to shared helpers in websocket_api)
     def _make_service_handler(action, fn):
         async def _handler(call):
+            # Admin gate — mirrors @websocket_api.require_admin on the WS commands.
+            # Calls without a user context (automations/scripts run by HA itself)
+            # are system-initiated and allowed, matching core conventions.
+            if call.context.user_id:
+                user = await hass.auth.async_get_user(call.context.user_id)
+                if user is None or not user.is_admin:
+                    raise Unauthorized(context=call.context)
             entity_id = call.data["entity_id"]
             try:
                 fn(hass, entity_id)
