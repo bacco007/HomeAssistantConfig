@@ -48,6 +48,8 @@ rules:
       and options flow. Auth is auto-detected — no checkbox needed. All steps
       include data_description for each field. Connection steps include a
       verify_ssl checkbox (default: True) to support self-signed certs.
+      Poll interval fields enforce sane minimums to reject zero/negative
+      values that would cause tight-loop polling.
 
   config-flow-test-coverage:
     status: done
@@ -208,29 +210,25 @@ rules:
   test-coverage:
     status: done
     comment: >
-      409 tests across nine files: test_api.py (28), test_config_flow.py (18),
-      test_coordinator.py (24), test_entities.py (135), test_helpers.py (77),
-      test_init.py (46), test_migration.py (39), test_update.py (36),
-      test_workflows.py (6). Covers all API methods, all config flow steps
-      and options flow, all three migration functions (_is_hex64,
-      migrate_1_4_0, migrate_1_5_0 including both historical device and
-      entity formats, migrate_1_7_3 per-type rename, no-op on
-      already-migrated IDs, cross-entry isolation, idempotency,
-      async_run_migrations orchestration), all three
-      coordinators, all entity classes and platforms, device registration
-      via _ensure_env_devices and _ensure_hub_devices (all branches
-      including idempotency), all URL builders, all DeviceInfo factories,
-      all _container_has_healthcheck / _compose_project /
-      _image_display_name / _sched_key paths, ContainerUpdateEntity
-      (_short_digest, installed_version, latest_version, available,
-      async_release_notes including ha-alert type verification and
-      scanner+system_container combination, _update_supported_features,
-      _handle_coordinator_update, async_install including not-found and
-      action_failed branches), HomeAssistantError propagation for all action
-      methods, setup, and unload. All test files use pure pytest (no
-      unittest.TestCase). Full suite (408 tests) requires Python 3.14.2+ and
-      PHCC; runs in CI on every push. The Claude sandbox (Python 3.12) runs
-      ruff + AST only — pytest requires homeassistant at import time.
+      Comprehensive pure-pytest suite across ten files (test_api,
+      test_config_flow, test_coordinator, test_diagnostics, test_entities,
+      test_helpers, test_init, test_migration, test_update, test_workflows). Covers all API
+      methods, all config flow steps and options flow (including interval
+      range validation), all migration functions (both historical device and
+      entity formats, per-type rename, no-op on already-migrated IDs,
+      cross-entry isolation, idempotency, orchestration), all three
+      coordinators, all entity classes and platforms, device registration via
+      _ensure_env_devices and _ensure_hub_devices (all branches including
+      idempotency), all URL builders, all DeviceInfo factories, all
+      _container_has_healthcheck / _compose_project / _image_display_name /
+      _sched_key paths, ContainerUpdateEntity (version parsing, availability,
+      release notes including ha-alert type verification, supported-features
+      recomputation, install paths including not-found and action_failed
+      branches), HomeAssistantError propagation for all action methods,
+      diagnostics redaction, setup, and unload. CI is authoritative for test
+      counts and results. The full suite requires Python 3.14.2+ and PHCC;
+      the Claude sandbox runs ruff + AST only, since pytest requires
+      homeassistant at import time.
 
   # ── Gold ──────────────────────────────────────────────────────────────────
 
@@ -254,7 +252,9 @@ rules:
     comment: >
       diagnostics.py implements async_get_config_entry_diagnostics. Returns
       redacted config entry data, per-environment summary counts, and full
-      coordinator data snapshots. api_token is redacted before export.
+      coordinator data snapshots. api_token is redacted from config data and
+      container/image labels are redacted from coordinator snapshots (labels
+      routinely carry secrets such as reverse-proxy auth hashes).
 
   discovery:
     status: exempt

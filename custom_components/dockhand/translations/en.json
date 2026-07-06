@@ -37,14 +37,14 @@
           "poll_interval_updates": "Update check interval (seconds)"
         },
         "data_description": {
-          "poll_interval": "How often to refresh container states, stacks, and environment stats.",
-          "poll_interval_slow": "How often to refresh images, volumes, networks, and schedules.",
+          "poll_interval": "How often to refresh container states, stacks, and environment stats. Minimum: 10.",
+          "poll_interval_slow": "How often to refresh images, volumes, networks, and schedules. Minimum: 30.",
           "enable_schedules": "Create entities for Dockhand scheduled tasks.",
           "enable_images": "Create entities for Docker images on each host.",
           "enable_volumes": "Create entities for Docker volumes on each host.",
           "enable_networks": "Create entities for Docker networks on each host.",
           "enable_updates": "Create update entities showing image update availability, with one-click update support.",
-          "poll_interval_updates": "How often to check container registries for image updates. Keep this infrequent — each check queries the registry for every container."
+          "poll_interval_updates": "How often to check container registries for image updates. Keep this infrequent — each check queries the registry for every container. Minimum: 300."
         }
       },
       "reauth_confirm": {
@@ -98,14 +98,14 @@
           "poll_interval_updates": "Update check interval (seconds)"
         },
         "data_description": {
-          "poll_interval": "How often to refresh container, stack, and environment stats. Default: 60.",
-          "poll_interval_slow": "How often to refresh images, volumes, networks, and schedules. Default: 600.",
+          "poll_interval": "How often to refresh container, stack, and environment stats. Default: 60. Minimum: 10.",
+          "poll_interval_slow": "How often to refresh images, volumes, networks, and schedules. Default: 600. Minimum: 30.",
           "enable_schedules": "Enables sensors for Dockhand maintenance schedules.",
           "enable_images": "Enables sensors for Docker images on each environment.",
           "enable_volumes": "Enables sensors for Docker volumes on each environment.",
           "enable_networks": "Enables sensors for Docker networks on each environment.",
           "enable_updates": "Enables update entities for each container showing image update availability. Triggers real registry queries — see poll_interval_updates.",
-          "poll_interval_updates": "How often to check container registries for image updates (seconds). Default: 86400 (24 hours)."
+          "poll_interval_updates": "How often to check container registries for image updates (seconds). Default: 86400 (24 hours). Minimum: 300."
         }
       }
     }

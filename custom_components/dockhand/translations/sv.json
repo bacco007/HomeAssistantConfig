@@ -37,14 +37,14 @@
           "poll_interval_updates": "Kontrollintervall för uppdateringar (sekunder)"
         },
         "data_description": {
-          "poll_interval": "Hur ofta containertillstånd, stackar och miljöstatistik ska uppdateras.",
-          "poll_interval_slow": "Hur ofta avbilder, volymer, nätverk och scheman ska uppdateras.",
+          "poll_interval": "Hur ofta containertillstånd, stackar och miljöstatistik ska uppdateras. Minimum: 10.",
+          "poll_interval_slow": "Hur ofta avbilder, volymer, nätverk och scheman ska uppdateras. Minimum: 30.",
           "enable_schedules": "Skapa entiteter för schemalagda Dockhand-uppgifter.",
           "enable_images": "Skapa entiteter för Docker-avbilder på varje värd.",
           "enable_volumes": "Skapa entiteter för Docker-volymer på varje värd.",
           "enable_networks": "Skapa entiteter för Docker-nätverk på varje värd.",
           "enable_updates": "Skapa uppdateringsentiteter som visar tillgänglighet för avbildsuppdateringar med stöd för uppdatering med ett klick.",
-          "poll_interval_updates": "Hur ofta containerregister ska kontrolleras för avbildsuppdateringar. Håll detta sällan — varje kontroll frågar registret för varje container."
+          "poll_interval_updates": "Hur ofta containerregister ska kontrolleras för avbildsuppdateringar. Håll detta sällan — varje kontroll frågar registret för varje container. Minimum: 300."
         }
       },
       "reauth_confirm": {
@@ -98,14 +98,14 @@
           "poll_interval_updates": "Intervall för uppdateringskontroll (sekunder)"
         },
         "data_description": {
-          "poll_interval": "Hur ofta statistik uppdateras. Standard: 60.",
-          "poll_interval_slow": "Hur ofta images, volymer, nätverk och scheman uppdateras. Standard: 600.",
+          "poll_interval": "Hur ofta statistik uppdateras. Standard: 60. Minimum: 10.",
+          "poll_interval_slow": "Hur ofta images, volymer, nätverk och scheman uppdateras. Standard: 600. Minimum: 30.",
           "enable_schedules": "Aktiverar sensorer för Dockhands underhållsscheman.",
           "enable_images": "Aktiverar sensorer för Docker-images per miljö.",
           "enable_volumes": "Aktiverar sensorer för Docker-volymer per miljö.",
           "enable_networks": "Aktiverar sensorer för Docker-nätverk per miljö.",
           "enable_updates": "Aktiverar uppdateringsentiteter för varje container som visar tillgängligheten för image-uppdateringar. Utlöser riktiga registerfrågor — se poll_interval_updates.",
-          "poll_interval_updates": "Hur ofta containerregister kontrolleras för image-uppdateringar (sekunder). Varje kontroll frågar registret för varje container. Standard: 86400 (24 timmar)."
+          "poll_interval_updates": "Hur ofta containerregister kontrolleras för image-uppdateringar (sekunder). Varje kontroll frågar registret för varje container. Standard: 86400 (24 timmar). Minimum: 300."
         }
       }
     }

@@ -33,6 +33,9 @@ from .const import (
     DEFAULT_POLL_INTERVAL_SLOW,
     DEFAULT_POLL_INTERVAL_UPDATES,
     DOMAIN,
+    MIN_POLL_INTERVAL,
+    MIN_POLL_INTERVAL_SLOW,
+    MIN_POLL_INTERVAL_UPDATES,
 )
 
 DEFAULT_VERIFY_SSL = True
@@ -90,11 +93,11 @@ def _options_schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
             vol.Optional(
                 CONF_POLL_INTERVAL,
                 default=d.get(CONF_POLL_INTERVAL, DEFAULT_POLL_INTERVAL),
-            ): int,
+            ): vol.All(vol.Coerce(int), vol.Range(min=MIN_POLL_INTERVAL)),
             vol.Optional(
                 CONF_POLL_INTERVAL_SLOW,
                 default=d.get(CONF_POLL_INTERVAL_SLOW, DEFAULT_POLL_INTERVAL_SLOW),
-            ): int,
+            ): vol.All(vol.Coerce(int), vol.Range(min=MIN_POLL_INTERVAL_SLOW)),
             vol.Optional(
                 CONF_ENABLE_SCHEDULES,
                 default=d.get(CONF_ENABLE_SCHEDULES, DEFAULT_ENABLE_SCHEDULES),
@@ -120,7 +123,7 @@ def _options_schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
                 default=d.get(
                     CONF_POLL_INTERVAL_UPDATES, DEFAULT_POLL_INTERVAL_UPDATES
                 ),
-            ): int,
+            ): vol.All(vol.Coerce(int), vol.Range(min=MIN_POLL_INTERVAL_UPDATES)),
         }
     )
 

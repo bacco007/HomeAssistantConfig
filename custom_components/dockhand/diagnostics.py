@@ -4,7 +4,8 @@ When a user opens the integration page and clicks "Download diagnostics",
 HA calls async_get_config_entry_diagnostics and includes the result in a
 ZIP file they can attach to a bug report.
 
-Sensitive fields (API token) are redacted before export.
+Sensitive fields (API token, container/image labels) are redacted before
+export.
 """
 
 from typing import Any
@@ -17,6 +18,13 @@ from .helpers import _compose_project
 
 # Fields to redact from config entry data before including in diagnostics
 TO_REDACT = {"api_token"}
+
+# Fields to redact from raw coordinator data. Docker labels routinely carry
+# secrets (e.g. Traefik basic-auth hashes, tokens in reverse-proxy config),
+# and diagnostics are attached to public bug reports. The compose-vs-
+# freestanding breakdown users need for debugging is already computed into
+# environment_summary before redaction.
+COORDINATOR_TO_REDACT = {"labels"}
 
 
 async def async_get_config_entry_diagnostics(
@@ -83,14 +91,14 @@ async def async_get_config_entry_diagnostics(
                 "last_exception": str(fast.last_exception)
                 if fast.last_exception
                 else None,
-                "data": fast_data,
+                "data": async_redact_data(fast_data, COORDINATOR_TO_REDACT),
             },
             "slow": {
                 "last_update_success": slow.last_update_success,
                 "last_exception": str(slow.last_exception)
                 if slow.last_exception
                 else None,
-                "data": slow_data,
+                "data": async_redact_data(slow_data, COORDINATOR_TO_REDACT),
             },
             "update": {
                 "enabled": update is not None,

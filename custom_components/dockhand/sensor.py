@@ -1,5 +1,5 @@
 import logging
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Any
 
 import homeassistant.util.dt as dt_util
@@ -52,9 +52,7 @@ def _parse_dt(value: str | int | float | None) -> datetime | None:
         return None
     try:
         if isinstance(value, (int, float)):
-            # Use stdlib directly — avoids HA utility dependency.
-
-            return datetime.fromtimestamp(float(value), tz=UTC)
+            return dt_util.utc_from_timestamp(float(value))
         parsed = dt_util.parse_datetime(str(value))
         if parsed is not None and parsed.tzinfo is None:
             parsed = dt_util.as_utc(parsed)
@@ -92,6 +90,12 @@ async def async_setup_entry(
     # add entities for containers/stacks/images created after initial setup
     # without duplicating existing ones.
     known_container_keys: set[str] = set()
+    # Health sensors are tracked separately from the other per-container
+    # sensors: a container can gain a healthcheck after setup (image update
+    # adds a HEALTHCHECK instruction), at which point its key is already in
+    # known_container_keys and the Health sensor would otherwise never be
+    # created until an HA restart.
+    known_health_keys: set[str] = set()
     known_stack_ids: set[str] = set()
     known_env_ids: set[int] = set()
     known_slow_env_ids: set[int] = set()
@@ -148,6 +152,21 @@ async def async_setup_entry(
             # Per-container sensors
             for container in env_data.get("containers") or []:
                 key = f"{env_id}_{container.get('name', '')}"
+                if (
+                    _container_has_healthcheck(container)
+                    and key not in known_health_keys
+                ):
+                    known_health_keys.add(key)
+                    new.append(
+                        DockhandContainerHealthSensor(
+                            fast,
+                            entry.entry_id,
+                            env_id,
+                            env_name,
+                            base_url,
+                            container,
+                        )
+                    )
                 if key not in known_container_keys:
                     known_container_keys.add(key)
                     new.append(
@@ -155,17 +174,6 @@ async def async_setup_entry(
                             fast, entry.entry_id, env_id, env_name, base_url, container
                         )
                     )
-                    if _container_has_healthcheck(container):
-                        new.append(
-                            DockhandContainerHealthSensor(
-                                fast,
-                                entry.entry_id,
-                                env_id,
-                                env_name,
-                                base_url,
-                                container,
-                            )
-                        )
                     # Resource stats sensors — created for every container but
                     # disabled by default.  Users enable the ones they care about.
                     new += [
@@ -303,7 +311,10 @@ async def async_setup_entry(
 
             if enable_networks:
                 for network in env_data.get("networks") or []:
-                    nid = network.get("id", "")
+                    # Env-scoped like images/volumes: two environments pointing
+                    # at the same Docker host report identical network IDs, and
+                    # each env needs its own entity.
+                    nid = f"{env_id}_{network.get('id', '')}"
                     if nid not in known_network_ids:
                         known_network_ids.add(nid)
                         new.append(

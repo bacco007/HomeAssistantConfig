@@ -37,14 +37,14 @@
           "poll_interval_updates": "Controle-interval voor updates (seconden)"
         },
         "data_description": {
-          "poll_interval": "Hoe vaak containerstatus, stacks en omgevingsstatistieken worden vernieuwd.",
-          "poll_interval_slow": "Hoe vaak afbeeldingen, volumes, netwerken en schema's worden vernieuwd.",
+          "poll_interval": "Hoe vaak containerstatus, stacks en omgevingsstatistieken worden vernieuwd. Minimum: 10.",
+          "poll_interval_slow": "Hoe vaak afbeeldingen, volumes, netwerken en schema's worden vernieuwd. Minimum: 30.",
           "enable_schedules": "Entiteiten maken voor geplande Dockhand-taken.",
           "enable_images": "Entiteiten maken voor Docker-afbeeldingen op elke host.",
           "enable_volumes": "Entiteiten maken voor Docker-volumes op elke host.",
           "enable_networks": "Entiteiten maken voor Docker-netwerken op elke host.",
           "enable_updates": "Update-entiteiten maken die de beschikbaarheid van image-updates tonen, met ondersteuning voor updates met één klik.",
-          "poll_interval_updates": "Hoe vaak containerregisters worden gecontroleerd op image-updates. Houd dit zeldzaam — elke controle bevraagt het register voor elke container."
+          "poll_interval_updates": "Hoe vaak containerregisters worden gecontroleerd op image-updates. Houd dit zeldzaam — elke controle bevraagt het register voor elke container. Minimum: 300."
         }
       },
       "reauth_confirm": {
@@ -98,14 +98,14 @@
           "poll_interval_updates": "Controle-interval voor updates (seconden)"
         },
         "data_description": {
-          "poll_interval": "Hoe vaak statistieken worden vernieuwd. Standaard: 60.",
-          "poll_interval_slow": "Hoe vaak images, volumes, netwerken en planningen worden vernieuwd. Standaard: 600.",
+          "poll_interval": "Hoe vaak statistieken worden vernieuwd. Standaard: 60. Minimum: 10.",
+          "poll_interval_slow": "Hoe vaak images, volumes, netwerken en planningen worden vernieuwd. Standaard: 600. Minimum: 30.",
           "enable_schedules": "Schakelt sensoren in voor Dockhand-onderhoudsplanningen.",
           "enable_images": "Schakelt sensoren in voor Docker-images per omgeving.",
           "enable_volumes": "Schakelt sensoren in voor Docker-volumes per omgeving.",
           "enable_networks": "Schakelt sensoren in voor Docker-netwerken per omgeving.",
           "enable_updates": "Schakelt update-entiteiten in voor elke container die de beschikbaarheid van image-updates weergeeft. Activeert echte registerquery's — zie poll_interval_updates.",
-          "poll_interval_updates": "Hoe vaak containerregisters worden gecontroleerd op image-updates (seconden). Elke controle ondervraagt het register voor elke container. Standaard: 86400 (24 uur)."
+          "poll_interval_updates": "Hoe vaak containerregisters worden gecontroleerd op image-updates (seconden). Elke controle ondervraagt het register voor elke container. Standaard: 86400 (24 uur). Minimum: 300."
         }
       }
     }

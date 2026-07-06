@@ -21,6 +21,14 @@ _LEGACY_CONF_SESSION_COOKIE = "session_cookie"
 DEFAULT_POLL_INTERVAL = 60
 DEFAULT_POLL_INTERVAL_SLOW = 600
 DEFAULT_POLL_INTERVAL_UPDATES = 86400  # 24 hours
+
+# Floors for the options-flow interval fields. These exist to reject zero and
+# negative values, which would make DataUpdateCoordinator refresh in a tight
+# loop and hammer the Dockhand API. The update floor is higher because each
+# check performs real registry queries for every container.
+MIN_POLL_INTERVAL = 10
+MIN_POLL_INTERVAL_SLOW = 30
+MIN_POLL_INTERVAL_UPDATES = 300
 DEFAULT_ENABLE_SCHEDULES = False
 DEFAULT_ENABLE_IMAGES = False
 DEFAULT_ENABLE_VOLUMES = False

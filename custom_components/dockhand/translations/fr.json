@@ -37,14 +37,14 @@
           "poll_interval_updates": "Intervalle de vérification des mises à jour (secondes)"
         },
         "data_description": {
-          "poll_interval": "Fréquence de rafraîchissement des états des conteneurs, des piles et des statistiques d'environnement.",
-          "poll_interval_slow": "Fréquence de rafraîchissement des images, volumes, réseaux et planifications.",
+          "poll_interval": "Fréquence de rafraîchissement des états des conteneurs, des piles et des statistiques d'environnement. Minimum : 10.",
+          "poll_interval_slow": "Fréquence de rafraîchissement des images, volumes, réseaux et planifications. Minimum : 30.",
           "enable_schedules": "Créer des entités pour les tâches planifiées Dockhand.",
           "enable_images": "Créer des entités pour les images Docker sur chaque hôte.",
           "enable_volumes": "Créer des entités pour les volumes Docker sur chaque hôte.",
           "enable_networks": "Créer des entités pour les réseaux Docker sur chaque hôte.",
           "enable_updates": "Créer des entités de mise à jour indiquant la disponibilité des mises à jour d'images, avec prise en charge des mises à jour en un clic.",
-          "poll_interval_updates": "Fréquence de vérification des registres de conteneurs pour les mises à jour d'images. Gardez cela peu fréquent — chaque vérification interroge le registre pour chaque conteneur."
+          "poll_interval_updates": "Fréquence de vérification des registres de conteneurs pour les mises à jour d'images. Gardez cela peu fréquent — chaque vérification interroge le registre pour chaque conteneur. Minimum : 300."
         }
       },
       "reauth_confirm": {
@@ -98,14 +98,14 @@
           "poll_interval_updates": "Intervalle de vérification des mises à jour (secondes)"
         },
         "data_description": {
-          "poll_interval": "Fréquence d'actualisation des conteneurs, stacks et statistiques. Défaut : 60.",
-          "poll_interval_slow": "Fréquence d'actualisation des images, volumes, réseaux et planifications. Défaut : 600.",
+          "poll_interval": "Fréquence d'actualisation des conteneurs, stacks et statistiques. Défaut : 60. Minimum : 10.",
+          "poll_interval_slow": "Fréquence d'actualisation des images, volumes, réseaux et planifications. Défaut : 600. Minimum : 30.",
           "enable_schedules": "Active les capteurs pour les planifications de maintenance Dockhand.",
           "enable_images": "Active les capteurs pour les images Docker par environnement.",
           "enable_volumes": "Active les capteurs pour les volumes Docker par environnement.",
           "enable_networks": "Active les capteurs pour les réseaux Docker par environnement.",
           "enable_updates": "Active les entités de mise à jour pour chaque conteneur indiquant la disponibilité des mises à jour d'image. Déclenche de vraies requêtes vers le registre — voir poll_interval_updates.",
-          "poll_interval_updates": "Fréquence de vérification des mises à jour d'image dans les registres de conteneurs (secondes). Chaque vérification interroge le registre pour chaque conteneur. Défaut : 86400 (24 heures)."
+          "poll_interval_updates": "Fréquence de vérification des mises à jour d'image dans les registres de conteneurs (secondes). Chaque vérification interroge le registre pour chaque conteneur. Défaut : 86400 (24 heures). Minimum : 300."
         }
       }
     }

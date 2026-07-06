@@ -37,14 +37,14 @@
           "poll_interval_updates": "更新检查间隔（秒）"
         },
         "data_description": {
-          "poll_interval": "刷新容器状态、堆栈和环境统计的频率。",
-          "poll_interval_slow": "刷新镜像、卷、网络和计划的频率。",
+          "poll_interval": "刷新容器状态、堆栈和环境统计的频率。最小值：10。",
+          "poll_interval_slow": "刷新镜像、卷、网络和计划的频率。最小值：30。",
           "enable_schedules": "为 Dockhand 计划任务创建实体。",
           "enable_images": "为每个主机上的 Docker 镜像创建实体。",
           "enable_volumes": "为每个主机上的 Docker 卷创建实体。",
           "enable_networks": "为每个主机上的 Docker 网络创建实体。",
           "enable_updates": "创建显示镜像更新可用性的更新实体，支持一键更新。",
-          "poll_interval_updates": "检查容器镜像仓库更新的频率。保持低频率——每次检查都会为每个容器查询镜像仓库。"
+          "poll_interval_updates": "检查容器镜像仓库更新的频率。保持低频率——每次检查都会为每个容器查询镜像仓库。最小值：300。"
         }
       },
       "reauth_confirm": {
@@ -98,14 +98,14 @@
           "poll_interval_updates": "更新检查间隔（秒）"
         },
         "data_description": {
-          "poll_interval": "刷新统计信息的频率。默认值：60。",
-          "poll_interval_slow": "刷新镜像、卷、网络和调度的频率。默认值：600。",
+          "poll_interval": "刷新统计信息的频率。默认值：60。最小值：10。",
+          "poll_interval_slow": "刷新镜像、卷、网络和调度的频率。默认值：600。最小值：30。",
           "enable_schedules": "启用 Dockhand 维护调度的传感器。",
           "enable_images": "启用每个环境的 Docker 镜像传感器。",
           "enable_volumes": "启用每个环境的 Docker 卷传感器。",
           "enable_networks": "启用每个环境的 Docker 网络传感器。",
           "enable_updates": "为每个容器启用更新实体，显示镜像更新可用性。将触发对镜像仓库的实际查询——参见 poll_interval_updates。",
-          "poll_interval_updates": "检查容器镜像仓库是否有镜像更新的频率（秒）。每次检查都会查询每个容器的镜像仓库。默认值：86400（24小时）。"
+          "poll_interval_updates": "检查容器镜像仓库是否有镜像更新的频率（秒）。每次检查都会查询每个容器的镜像仓库。默认值：86400（24小时）。最小值：300。"
         }
       }
     }

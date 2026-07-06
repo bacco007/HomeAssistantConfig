@@ -37,14 +37,14 @@
           "poll_interval_updates": "Interwał sprawdzania aktualizacji (sekundy)"
         },
         "data_description": {
-          "poll_interval": "Jak często odświeżać stany kontenerów, stosy i statystyki środowiska.",
-          "poll_interval_slow": "Jak często odświeżać obrazy, wolumeny, sieci i harmonogramy.",
+          "poll_interval": "Jak często odświeżać stany kontenerów, stosy i statystyki środowiska. Minimum: 10.",
+          "poll_interval_slow": "Jak często odświeżać obrazy, wolumeny, sieci i harmonogramy. Minimum: 30.",
           "enable_schedules": "Twórz encje dla zaplanowanych zadań Dockhand.",
           "enable_images": "Twórz encje dla obrazów Docker na każdym hoście.",
           "enable_volumes": "Twórz encje dla wolumenów Docker na każdym hoście.",
           "enable_networks": "Twórz encje dla sieci Docker na każdym hoście.",
           "enable_updates": "Twórz encje aktualizacji pokazujące dostępność aktualizacji obrazów z obsługą aktualizacji jednym kliknięciem.",
-          "poll_interval_updates": "Jak często sprawdzać rejestry kontenerów pod kątem aktualizacji obrazów. Trzymaj to rzadko — każde sprawdzenie odpytuje rejestr dla każdego kontenera."
+          "poll_interval_updates": "Jak często sprawdzać rejestry kontenerów pod kątem aktualizacji obrazów. Trzymaj to rzadko — każde sprawdzenie odpytuje rejestr dla każdego kontenera. Minimum: 300."
         }
       },
       "reauth_confirm": {
@@ -98,14 +98,14 @@
           "poll_interval_updates": "Interwał sprawdzania aktualizacji (sekundy)"
         },
         "data_description": {
-          "poll_interval": "Jak często odświeżać statystyki. Domyślnie: 60.",
-          "poll_interval_slow": "Jak często odświeżać obrazy, wolumeny, sieci i harmonogramy. Domyślnie: 600.",
+          "poll_interval": "Jak często odświeżać statystyki. Domyślnie: 60. Minimum: 10.",
+          "poll_interval_slow": "Jak często odświeżać obrazy, wolumeny, sieci i harmonogramy. Domyślnie: 600. Minimum: 30.",
           "enable_schedules": "Włącza czujniki dla harmonogramów konserwacji Dockhand.",
           "enable_images": "Włącza czujniki dla obrazów Docker na każde środowisko.",
           "enable_volumes": "Włącza czujniki dla wolumenów Docker na każde środowisko.",
           "enable_networks": "Włącza czujniki dla sieci Docker na każde środowisko.",
           "enable_updates": "Włącza encje aktualizacji dla każdego kontenera pokazujące dostępność aktualizacji obrazu. Wyzwala rzeczywiste zapytania do rejestru — patrz poll_interval_updates.",
-          "poll_interval_updates": "Jak często sprawdzać rejestry kontenerów pod kątem aktualizacji obrazów (sekundy). Każde sprawdzenie odpytuje rejestr dla każdego kontenera. Domyślnie: 86400 (24 godziny)."
+          "poll_interval_updates": "Jak często sprawdzać rejestry kontenerów pod kątem aktualizacji obrazów (sekundy). Każde sprawdzenie odpytuje rejestr dla każdego kontenera. Domyślnie: 86400 (24 godziny). Minimum: 300."
         }
       }
     }

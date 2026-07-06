@@ -37,14 +37,14 @@
           "poll_interval_updates": "Intervalo de comprobación de actualizaciones (segundos)"
         },
         "data_description": {
-          "poll_interval": "Con qué frecuencia actualizar estados de contenedores, stacks y estadísticas de entorno.",
-          "poll_interval_slow": "Con qué frecuencia actualizar imágenes, volúmenes, redes y calendarios.",
+          "poll_interval": "Con qué frecuencia actualizar estados de contenedores, stacks y estadísticas de entorno. Mínimo: 10.",
+          "poll_interval_slow": "Con qué frecuencia actualizar imágenes, volúmenes, redes y calendarios. Mínimo: 30.",
           "enable_schedules": "Crear entidades para tareas programadas de Dockhand.",
           "enable_images": "Crear entidades para imágenes Docker en cada host.",
           "enable_volumes": "Crear entidades para volúmenes Docker en cada host.",
           "enable_networks": "Crear entidades para redes Docker en cada host.",
           "enable_updates": "Crear entidades de actualización que muestran la disponibilidad de actualizaciones de imágenes, con soporte de actualización en un clic.",
-          "poll_interval_updates": "Con qué frecuencia comprobar los registros de contenedores para actualizaciones de imágenes. Mantener poco frecuente — cada comprobación consulta el registro para cada contenedor."
+          "poll_interval_updates": "Con qué frecuencia comprobar los registros de contenedores para actualizaciones de imágenes. Mantener poco frecuente — cada comprobación consulta el registro para cada contenedor. Mínimo: 300."
         }
       },
       "reauth_confirm": {
@@ -98,14 +98,14 @@
           "poll_interval_updates": "Intervalo de comprobación de actualizaciones (segundos)"
         },
         "data_description": {
-          "poll_interval": "Con qué frecuencia actualizar estadísticas. Predeterminado: 60.",
-          "poll_interval_slow": "Con qué frecuencia actualizar imágenes, volúmenes, redes y planificaciones. Predeterminado: 600.",
+          "poll_interval": "Con qué frecuencia actualizar estadísticas. Predeterminado: 60. Mínimo: 10.",
+          "poll_interval_slow": "Con qué frecuencia actualizar imágenes, volúmenes, redes y planificaciones. Predeterminado: 600. Mínimo: 30.",
           "enable_schedules": "Activa sensores para las planificaciones de mantenimiento de Dockhand.",
           "enable_images": "Activa sensores para imágenes Docker por entorno.",
           "enable_volumes": "Activa sensores para volúmenes Docker por entorno.",
           "enable_networks": "Activa sensores para redes Docker por entorno.",
           "enable_updates": "Activa entidades de actualización para cada contenedor que muestran la disponibilidad de actualizaciones de imagen. Genera consultas reales al registro — ver poll_interval_updates.",
-          "poll_interval_updates": "Con qué frecuencia se comprueban los registros de contenedores en busca de actualizaciones de imagen (segundos). Cada comprobación consulta el registro para cada contenedor. Predeterminado: 86400 (24 horas)."
+          "poll_interval_updates": "Con qué frecuencia se comprueban los registros de contenedores en busca de actualizaciones de imagen (segundos). Cada comprobación consulta el registro para cada contenedor. Predeterminado: 86400 (24 horas). Mínimo: 300."
         }
       }
     }
