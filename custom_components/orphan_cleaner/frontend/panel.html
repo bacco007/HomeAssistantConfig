@@ -261,10 +261,10 @@
 
   <!-- Stats -->
   <div class="stat-row">
-    <div class="stat">          <div class="s-label">Total entities</div>  <div class="s-val" id="s-total">—</div></div>
-    <div class="stat">           <div class="s-label">Orphans found</div>   <div class="s-val" id="s-orphan">—</div></div>
-    <div class="stat">           <div class="s-label">Heuristic</div>       <div class="s-val" id="s-heur">—</div></div>
-    <div class="stat">           <div class="s-label">Selected</div>        <div class="s-val" id="s-sel">—</div></div>
+    <div class="stat">          <div class="s-label">Total entities</div>  <div class="s-val" id="s-total">-</div></div>
+    <div class="stat">           <div class="s-label">Orphans found</div>   <div class="s-val" id="s-orphan">-</div></div>
+    <div class="stat">           <div class="s-label">Heuristic</div>       <div class="s-val" id="s-heur">-</div></div>
+    <div class="stat">           <div class="s-label">Selected</div>        <div class="s-val" id="s-sel">-</div></div>
   </div>
 
   <!-- Breakdown by detection method -->
@@ -291,7 +291,7 @@
     <div id="ignore-tags" style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;"></div>
   </div>
 
-  <!-- Default ignore list — persistent -->
+  <!-- Default ignore list - persistent -->
   <div class="ignore-section">
     <div class="ignore-header" onclick="toggleIgnoreSection()">
       <span>⚙ Default ignore list</span>
@@ -341,7 +341,7 @@
     <button class="btn-save-del" id="btn-save-del" onclick="confirmSaveDelete()" disabled title="Save a backup JSON before deleting">Save &amp; Delete</button>
   </div>
   <div class="dry-banner" id="dry-banner">
-    🔍 <strong>Dry run mode</strong> — deletion will be simulated, nothing will actually be removed.
+    🔍 <strong>Dry run mode</strong> - deletion will be simulated, nothing will actually be removed.
   </div>
 
   <!-- Table card -->
@@ -373,7 +373,7 @@
     <h3>Available services</h3>
     <div class="service-row">
       <span class="svc-name">orphan_cleaner.scan</span>
-      <span class="svc-desc">Runs the scan and fires the <code>orphan_cleaner_orphans_found</code> event — useful in automations.</span>
+      <span class="svc-desc">Runs the scan and fires the <code>orphan_cleaner_orphans_found</code> event - useful in automations.</span>
     </div>
     <div class="service-row">
       <span class="svc-name">orphan_cleaner.delete_orphans</span>
@@ -397,7 +397,7 @@
 
 <script>
 // ---------------------------------------------------------------------------
-// Authentication helper — the panel is loaded as an <iframe>, which does not
+// Authentication helper - the panel is loaded as an <iframe>, which does not
 // inherit the parent Home Assistant frontend's auth context automatically.
 // We pull the long-lived access token from the parent window's hass object
 // (exposed by the HA frontend to same-origin iframes) and attach it as a
@@ -493,7 +493,7 @@ function setStatus(msg, state='') {
   document.getElementById('dot').className = 'dot' + (state ? ' '+state : '');
 }
 function updateSelCount() {
-  document.getElementById('s-sel').textContent = allOrphans.length ? selected.size : '—';
+  document.getElementById('s-sel').textContent = allOrphans.length ? selected.size : '-';
   document.getElementById('btn-del').disabled      = selected.size === 0;
   document.getElementById('btn-save-del').disabled = selected.size === 0;
 }
@@ -557,13 +557,13 @@ function renderTable(items) {
   const rows = items.map(e => {
     if (e._ignored) {
       const dis = e.disabled_by ? '<span class="badge badge-disabled">disabled</span>' : '';
-      const age = e.age_hours != null ? (e.age_hours >= 24 ? Math.round(e.age_hours/24)+'d' : e.age_hours+'h') : '—';
+      const age = e.age_hours != null ? (e.age_hours >= 24 ? Math.round(e.age_hours/24)+'d' : e.age_hours+'h') : '-';
       return `<tr class="ignored">
         <td class="td-chk"></td>
         <td><span class="eid">${e.entity_id}</span>${dis}</td>
         <td><span class="platform-badge">${e.platform}</span></td>
-        <td class="td-method"><span style="color:var(--text3)">— ignored</span></td>
-        <td class="td-age"><span class="age-text">—</span></td>
+        <td class="td-method"><span style="color:var(--text3)">- ignored</span></td>
+        <td class="td-age"><span class="age-text">-</span></td>
       </tr>`;
     }
     const chk   = selected.has(e.entity_id) ? 'checked' : '';
@@ -575,7 +575,7 @@ function renderTable(items) {
       ? '<span class="badge badge-unavail">unavailable</span>'
       : '<span class="badge badge-heuristic">heuristic</span>';
     const dis   = e.disabled_by ? '<span class="badge badge-disabled">disabled</span>' : '';
-    const age   = e.age_hours != null ? (e.age_hours >= 24 ? Math.round(e.age_hours/24)+'d' : e.age_hours+'h') : '—';
+    const age   = e.age_hours != null ? (e.age_hours >= 24 ? Math.round(e.age_hours/24)+'d' : e.age_hours+'h') : '-';
     return `<tr>
       <td class="td-chk"><input type="checkbox" ${chk} onchange="toggleRow('${e.entity_id}',this.checked)"></td>
       <td><span class="eid">${e.entity_id}</span>${dis}</td>
@@ -606,7 +606,7 @@ async function doScan() {
     const minAge = document.getElementById('min-age')?.value || 24;
     const heur   = document.getElementById('heur-on')?.checked ? 1 : 0;
     const tok = await getHassToken();
-    addLog(tok ? '🔑 Auth token acquired from parent frame.' : '⚠️ Could not acquire auth token from parent frame — requests may be rejected (401).', tok ? 'ok' : 'err');
+    addLog(tok ? '🔑 Auth token acquired from parent frame.' : '⚠️ Could not acquire auth token from parent frame - requests may be rejected (401).', tok ? 'ok' : 'err');
     const r    = await authedFetch('/api/orphan_cleaner/scan?min_age='+minAge+'&heuristic='+heur);
     if (!r.ok) throw new Error('HTTP '+r.status);
     const data = await r.json();
@@ -631,7 +631,7 @@ async function doScan() {
     setStatus('Last scan: '+new Date().toLocaleTimeString('en-GB'),'ok');
   } catch(err) {
     addLog('Error: '+err.message,'err');
-    setStatus('Error — check HA logs','err');
+    setStatus('Error - check HA logs','err');
   } finally {
     btn.disabled = false; btn.textContent = 'Scan';
   }
@@ -659,7 +659,7 @@ function isDryRun() {
 async function doDryRun() {
   const ids = [...selected];
   addLog('🔍 Dry run: simulating deletion of '+ids.length+' entities…', 'info');
-  setStatus('Dry run complete — nothing was deleted.');
+  setStatus('Dry run complete - nothing was deleted.');
   addLog('🔍 Dry run complete: '+ids.length+' would be deleted.', 'ok');
   ids.forEach(id => {
     document.querySelectorAll('tr').forEach(row => {
@@ -756,8 +756,8 @@ async function doSaveDelete() {
     if (ed.error) throw new Error(ed.error);
     addLog('✓ Backup saved: '+ed.filename,'ok');
   } catch(err) {
-    addLog('✗ Backup failed: '+err.message+' — deletion aborted','err');
-    setStatus('Backup failed — deletion aborted','err');
+    addLog('✗ Backup failed: '+err.message+' - deletion aborted','err');
+    setStatus('Backup failed - deletion aborted','err');
     document.getElementById('btn-save-del').disabled = selected.size === 0;
     document.getElementById('btn-del').disabled      = selected.size === 0;
     return;
@@ -790,11 +790,11 @@ async function doDelete() {
     updateSelCount();
     addLog('Done: '+data.deleted_count+' deleted, '+data.failed_count+' failed.',
            data.failed_count > 0 ? 'warn' : 'ok');
-    setStatus('Deletion complete — '+new Date().toLocaleTimeString('en-GB'),
+    setStatus('Deletion complete - '+new Date().toLocaleTimeString('en-GB'),
               data.failed_count > 0 ? 'err' : 'ok');
   } catch(err) {
     addLog('Error: '+err.message,'err');
-    setStatus('Error — check HA logs','err');
+    setStatus('Error - check HA logs','err');
   } finally {
     document.getElementById('btn-del').disabled = selected.size === 0;
   }
@@ -861,12 +861,12 @@ function toggleIgnoreSection() {
 function showGlobHelp() {
   document.getElementById('modal-msg').innerHTML =
     '<strong>Ignore list syntax</strong><br><br>' +
-    '<b>Platform name</b> — ignores all entities of that platform<br>' +
+    '<b>Platform name</b> - ignores all entities of that platform<br>' +
     '<code>tuya</code>, <code>shelly</code>, <code>imou_life</code><br><br>' +
-    '<b>Entity glob</b> — ignores entities matching the pattern<br>' +
-    '<code>sensor.old_*</code> — all sensors starting with old_<br>' +
-    '<code>*_deprecated</code> — any entity ending with _deprecated<br>' +
-    '<code>sensor.*_temp</code> — sensors ending with _temp<br><br>' +
+    '<b>Entity glob</b> - ignores entities matching the pattern<br>' +
+    '<code>sensor.old_*</code> - all sensors starting with old_<br>' +
+    '<code>*_deprecated</code> - any entity ending with _deprecated<br>' +
+    '<code>sensor.*_temp</code> - sensors ending with _temp<br><br>' +
     'Globs use standard Unix fnmatch syntax. <b>*</b> matches any string, <b>?</b> matches one character.';
   document.getElementById('btn-modal-del').style.display = 'none';
   document.getElementById('overlay').classList.add('show');
@@ -874,9 +874,9 @@ function showGlobHelp() {
 document.getElementById('ignore-input').addEventListener('keydown', e => { if (e.key==='Enter') ignoreAdd(); });
 document.getElementById('saved-ig-input').addEventListener('keydown', e => { if (e.key==='Enter') savedIgAdd(); });
 loadSavedIgnoreList();
-// Reset contatori a — ad ogni caricamento pagina
+// Reset contatori a - ad ogni caricamento pagina
 ['s-total','s-orphan','s-heur','s-sel'].forEach(id => {
-  document.getElementById(id).textContent = '—';
+  document.getElementById(id).textContent = '-';
 });
 document.getElementById('s-orphan').closest('.stat').className = 'stat';
 document.getElementById('s-heur').closest('.stat').className   = 'stat';

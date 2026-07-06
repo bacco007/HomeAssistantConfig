@@ -37,7 +37,7 @@ def _get_config_entry(hass: HomeAssistant):
 
 
 # ---------------------------------------------------------------------------
-# Static asset views — no destructive action, served like the panel itself.
+# Static asset views - no destructive action, served like the panel itself.
 # These mirror how HA core serves static panel assets and remain unauthenticated
 # only for the HTML/JS/icon files, never for data-bearing endpoints below.
 # ---------------------------------------------------------------------------
@@ -96,12 +96,12 @@ class OrphanCleanerIconView(HomeAssistantView):
 
 
 # ---------------------------------------------------------------------------
-# Data views — all require authentication. Destructive/mutating ones also
+# Data views - all require authentication. Destructive/mutating ones also
 # require admin privileges.
 # ---------------------------------------------------------------------------
 
 class OrphanCleanerScanView(HomeAssistantView):
-    """GET /api/orphan_cleaner/scan — restituisce le entità orfane in JSON."""
+    """GET /api/orphan_cleaner/scan - restituisce le entità orfane in JSON."""
 
     url           = "/api/orphan_cleaner/scan"
     name          = "api:orphan_cleaner:scan"
@@ -151,7 +151,7 @@ class OrphanCleanerScanView(HomeAssistantView):
 
 
 class OrphanCleanerDeleteView(HomeAssistantView):
-    """POST /api/orphan_cleaner/delete — elimina le entità specificate. Richiede admin."""
+    """POST /api/orphan_cleaner/delete - elimina le entità specificate. Richiede admin."""
 
     url            = "/api/orphan_cleaner/delete"
     name           = "api:orphan_cleaner:delete"
@@ -188,7 +188,7 @@ class OrphanCleanerDeleteView(HomeAssistantView):
 
 
 class OrphanCleanerExportView(HomeAssistantView):
-    """POST /api/orphan_cleaner/export — salva un backup JSON. Richiede admin
+    """POST /api/orphan_cleaner/export - salva un backup JSON. Richiede admin
     perché scrive un file nella directory di configurazione."""
 
     url            = "/api/orphan_cleaner/export"
@@ -233,7 +233,7 @@ class OrphanCleanerExportView(HomeAssistantView):
 
 
 class OrphanCleanerIgnoreListView(HomeAssistantView):
-    """GET/POST /api/orphan_cleaner/ignore_list — legge/salva la lista persistente.
+    """GET/POST /api/orphan_cleaner/ignore_list - legge/salva la lista persistente.
     Lettura richiede solo autenticazione, scrittura richiede admin."""
 
     url           = "/api/orphan_cleaner/ignore_list"

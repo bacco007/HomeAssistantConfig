@@ -69,7 +69,7 @@ async def _handle_scan(call: ServiceCall) -> None:
 
     hass.bus.async_fire(EVENT_ORPHANS_FOUND, payload)
     _LOGGER.info(
-        "Servizio scan: trovate %d entità orfane — evento '%s' sparato",
+        "Servizio scan: trovate %d entità orfane - evento '%s' sparato",
         len(orphans),
         EVENT_ORPHANS_FOUND,
     )
@@ -79,12 +79,12 @@ async def _handle_delete_orphans(call: ServiceCall) -> None:
     """
     orphan_cleaner.delete_orphans
 
-    Elimina le entità specificate in entity_ids, oppure — se omesso —
+    Elimina le entità specificate in entity_ids, oppure - se omesso -
     tutte le orfane rilevate con i parametri correnti.
 
     Parametri:
-      entity_ids  (list, opzionale) — entity_id da eliminare
-      dry_run     (bool, default false) — simula senza toccare nulla
+      entity_ids  (list, opzionale) - entity_id da eliminare
+      dry_run     (bool, default false) - simula senza toccare nulla
     """
     hass      = call.hass
     cfg       = _get_config(hass)

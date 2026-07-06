@@ -87,7 +87,7 @@ def detect_orphans(
             age_h = (now - ts) / 3600
             if age_h >= min_age_hours:
                 orphans.append(OrphanInfo(
-                    entity_id=entry.entity_id, platform=platform or "—",
+                    entity_id=entry.entity_id, platform=platform or "-",
                     method="timestamp", age_hours=round(age_h, 1),
                     disabled_by=entry.disabled_by, state="orphaned",
                 ))
@@ -99,7 +99,7 @@ def detect_orphans(
             cfg_obj = hass.config_entries.async_get_entry(cfg_entry_id)
             if cfg_obj is None or cfg_obj.state in FAILED_STATES:
                 orphans.append(OrphanInfo(
-                    entity_id=entry.entity_id, platform=platform or "—",
+                    entity_id=entry.entity_id, platform=platform or "-",
                     method="dead_entry", age_hours=None,
                     disabled_by=entry.disabled_by,
                 ))
@@ -114,7 +114,7 @@ def detect_orphans(
                 age_h = (datetime.now(timezone.utc) - mod).total_seconds() / 3600 if mod else 0
                 if age_h >= min_age_hours:
                     orphans.append(OrphanInfo(
-                        entity_id=entry.entity_id, platform=platform or "—",
+                        entity_id=entry.entity_id, platform=platform or "-",
                         method="unavailable", age_hours=round(age_h, 1),
                         disabled_by=entry.disabled_by, state="unavailable",
                     ))

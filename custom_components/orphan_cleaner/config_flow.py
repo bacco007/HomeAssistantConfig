@@ -6,7 +6,7 @@ from .const import DOMAIN
 
 
 class OrphanCleanerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Single-step config flow — no parameters needed."""
+    """Single-step config flow - no parameters needed."""
 
     VERSION = 1
 

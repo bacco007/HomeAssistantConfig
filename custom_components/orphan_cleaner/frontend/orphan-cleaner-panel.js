@@ -1,4 +1,4 @@
-// Orphan Entity Cleaner — Custom Panel per Home Assistant
+// Orphan Entity Cleaner - Custom Panel per Home Assistant
 // Registrato come panel_custom: riceve `hass` con il token già autenticato.
 
 class OrphanCleanerPanel extends HTMLElement {
@@ -163,9 +163,9 @@ class OrphanCleanerPanel extends HTMLElement {
   _updateStats() {
     const s = this._state;
     const he = s.allOrphans.filter(o => o.method === "heuristic").length;
-    this._setText("s-total",  s.total != null ? s.total : "—");
-    this._setText("s-orphan", s.allOrphans.length || (s.total != null ? "0" : "—"));
-    this._setText("s-heur",   s.total != null ? he : "—");
+    this._setText("s-total",  s.total != null ? s.total : "-");
+    this._setText("s-orphan", s.allOrphans.length || (s.total != null ? "0" : "-"));
+    this._setText("s-heur",   s.total != null ? he : "-");
     this._setText("s-sel",    s.selected.size);
   }
   _setText(id, val) {
@@ -231,7 +231,7 @@ class OrphanCleanerPanel extends HTMLElement {
         ? `<span class="badge badge-unavail">unavailable</span>`
         : `<span class="badge badge-heuristic">heuristic</span>`;
       const dis   = e.disabled_by ? `<span class="badge badge-disabled">disabled</span>` : "";
-      const age   = e.age_hours != null ? `${e.age_hours}h` : "—";
+      const age   = e.age_hours != null ? `${e.age_hours}h` : "-";
       return `<tr>
         <td class="td-chk"><input type="checkbox" data-eid="${e.entity_id}" ${chk}></td>
         <td><span class="eid">${e.entity_id}</span>${dis}</td>
@@ -417,14 +417,14 @@ class OrphanCleanerPanel extends HTMLElement {
     <div class="topbar-title">Orphan Entity Cleaner</div>
   </div>
   <div class="topbar-spacer"></div>
-  <div class="cfg-pill" id="cfg-pill">—</div>
+  <div class="cfg-pill" id="cfg-pill">-</div>
 </div>
 
 <div class="main">
   <div class="stat-row">
-    <div class="stat">          <div class="s-label">Total entities</div>  <div class="s-val" id="s-total">—</div></div>
-    <div class="stat s-danger"> <div class="s-label">Orphans found</div> <div class="s-val" id="s-orphan">—</div></div>
-    <div class="stat s-warn">   <div class="s-label">Heuristic</div><div class="s-val" id="s-heur">—</div></div>
+    <div class="stat">          <div class="s-label">Total entities</div>  <div class="s-val" id="s-total">-</div></div>
+    <div class="stat s-danger"> <div class="s-label">Orphans found</div> <div class="s-val" id="s-orphan">-</div></div>
+    <div class="stat s-warn">   <div class="s-label">Heuristic</div><div class="s-val" id="s-heur">-</div></div>
     <div class="stat s-ok">     <div class="s-label">Selected</div>    <div class="s-val" id="s-sel">0</div></div>
   </div>
 
@@ -451,7 +451,7 @@ class OrphanCleanerPanel extends HTMLElement {
     <h3>Available services</h3>
     <div class="service-row">
       <span class="svc-name">orphan_cleaner.scan</span>
-      <span class="svc-desc">Scans the registry and fires the <code>orphan_cleaner_orphans_found</code> event — useful in automations.</span>
+      <span class="svc-desc">Scans the registry and fires the <code>orphan_cleaner_orphans_found</code> event - useful in automations.</span>
     </div>
     <div class="service-row">
       <span class="svc-name">orphan_cleaner.delete_orphans</span>
