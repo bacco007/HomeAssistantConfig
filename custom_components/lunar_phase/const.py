@@ -36,6 +36,7 @@ STATE_ATTR_ALTITUDE = "moon_altitude_deg"
 STATE_ATTR_AZIMUTH = "moon_azimuth_deg"
 STATE_ATTR_PARALLACTIC_ANGLE = "moon_parallactic_angle_deg"
 STATE_ATTR_NEXT_PHASE = "next_phase"
+STATE_ATTR_ILLUMINANCE = "moon_illuminance"
 
 EXTRA_ATTR_AZIMUTH = "moon_azimuth_radians"
 EXTRA_ATTR_ALTITUDE = "moon_altitude_radians"
@@ -223,5 +224,16 @@ BASE_LUNAR_SENSORS = {
         [EXTRA_ATTR_NEXT_PHASE],
         None,
         EntityCategory.DIAGNOSTIC,
+    ],
+    STATE_ATTR_ILLUMINANCE: [
+        "Moon Illuminance",
+        STATE_ATTR_ILLUMINANCE,
+        "mdi:brightness-6",
+        SensorDeviceClass.ILLUMINANCE,
+        SensorStateClass.MEASUREMENT,
+        "lx",
+        [],
+        4,
+        None,
     ],
 }

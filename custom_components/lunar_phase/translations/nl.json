@@ -1,11 +1,10 @@
 {
     "config": {
         "abort": {
-            "already_configured": "Apparaat al geconfigureerd"
+            "already_configured": "Integratie is al geconfigureerd"
         },
         "error": {
             "cannot_connect": "Geen verbinding",
-            "city_not_found": "Stad niet gevonden",
             "invalid_auth": "Ongeldige authenticatie",
             "unknown": "Onverwachte fout"
         },
@@ -14,14 +13,7 @@
                 "data": {
                     "city": "Stad",
                     "latitude": "Lengtegraad",
-                    "longitude": "Breedtegraad",
-                    "region": "Regio",
-                    "time_zone": "Tijdzone"
-                }
-            },
-            "user": {
-                "data": {
-                    "city": "Stad"
+                    "longitude": "Breedtegraad"
                 }
             }
         }
@@ -43,11 +35,14 @@
             },
             "next_phase": {
                 "state": {
-                    "first_quarter": "Eesrte kwartier",
+                    "first_quarter": "Eerste kwartier",
                     "full_moon": "Volle maan",
                     "last_quarter": "Laatste kwartier",
                     "new_moon": "Nieuwe maan"
                 }
+            },
+            "moon_illuminance": {
+                "name": "Maanverlichtingssterkte"
             }
         }
     },

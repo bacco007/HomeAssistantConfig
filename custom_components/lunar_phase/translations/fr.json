@@ -1,0 +1,50 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Intégration déjà configurée"
+        },
+        "error": {
+            "cannot_connect": "Impossible de se connecter",
+            "invalid_auth": "Authentification invalide",
+            "unknown": "Erreur inattendue"
+        },
+        "step": {
+            "location": {
+                "data": {
+                    "city": "Ville",
+                    "latitude": "Latitude",
+                    "longitude": "Longitude"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "moon_phase": {
+                "name": "Phase de la lune",
+                "state": {
+                    "first_quarter": "Premier quartier",
+                    "full_moon": "Pleine lune",
+                    "last_quarter": "Dernier quartier",
+                    "new_moon": "Nouvelle lune",
+                    "waning_crescent": "Dernier croissant",
+                    "waning_gibbous": "Gibbeuse décroissante",
+                    "waxing_crescent": "Premier croissant",
+                    "waxing_gibbous": "Gibbeuse croissante"
+                }
+            },
+            "next_phase": {
+                "state": {
+                    "first_quarter": "Premier quartier",
+                    "full_moon": "Pleine lune",
+                    "last_quarter": "Dernier quartier",
+                    "new_moon": "Nouvelle lune"
+                }
+            },
+            "moon_illuminance": {
+                "name": "Éclairement lunaire"
+            }
+        }
+    },
+    "title": "Lunar Phase"
+}

@@ -1,6 +1,8 @@
 import math
 import datetime
 
+import ephem
+
 
 class MoonScript:
     rad = math.pi / 180
@@ -221,25 +223,13 @@ class MoonScript:
         phaseValue = 0.5 + 0.5 * inc * (angle < 0 and -1 or 1) / math.pi
         fraction = (1 + math.cos(inc)) / 2
 
-        # calculate moon cycle details
-        diffBase = date.timestamp() * 1000 - MoonScript.firstNewMoon2000
-        cycleModMs = diffBase % MoonScript.lunarDaysMs
-        if cycleModMs < 0:
-            cycleModMs += MoonScript.lunarDaysMs
-        nextNewMoon = MoonScript.lunarDaysMs - cycleModMs + date.timestamp() * 1000
-        nextFullMoon = MoonScript.lunarDaysMs / 2 - cycleModMs + date.timestamp() * 1000
-        if nextFullMoon < date.timestamp() * 1000:
-            nextFullMoon += MoonScript.lunarDaysMs
-        quater = MoonScript.lunarDaysMs / 4
-        nextFirstQuarter = quater - cycleModMs + date.timestamp() * 1000
-        if nextFirstQuarter < date.timestamp() * 1000:
-            nextFirstQuarter += MoonScript.lunarDaysMs
-
-        nextThirdQuarter = (
-            MoonScript.lunarDaysMs - quater - cycleModMs + date.timestamp() * 1000
-        )
-        if nextThirdQuarter < date.timestamp() * 1000:
-            nextThirdQuarter += MoonScript.lunarDaysMs
+        # use ephem for accurate next phase times (linear arithmetic is off by hours)
+        # ephem.*.datetime() returns naive UTC; replace tzinfo before calling .timestamp()
+        _utc = datetime.timezone.utc
+        nextNewMoon = ephem.next_new_moon(date).datetime().replace(tzinfo=_utc).timestamp() * 1000
+        nextFullMoon = ephem.next_full_moon(date).datetime().replace(tzinfo=_utc).timestamp() * 1000
+        nextFirstQuarter = ephem.next_first_quarter_moon(date).datetime().replace(tzinfo=_utc).timestamp() * 1000
+        nextThirdQuarter = ephem.next_last_quarter_moon(date).datetime().replace(tzinfo=_utc).timestamp() * 1000
 
         next = min(nextNewMoon, nextFirstQuarter, nextFullMoon, nextThirdQuarter)
 

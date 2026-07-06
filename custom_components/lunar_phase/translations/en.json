@@ -1,11 +1,10 @@
 {
     "config": {
         "abort": {
-            "already_configured": "Device is already configured"
+            "already_configured": "Integration is already configured"
         },
         "error": {
             "cannot_connect": "Failed to connect",
-            "city_not_found": "City not found",
             "invalid_auth": "Invalid authentication",
             "unknown": "Unexpected error"
         },
@@ -14,14 +13,7 @@
                 "data": {
                     "city": "City",
                     "latitude": "Latitude",
-                    "longitude": "Longitude",
-                    "region": "Region",
-                    "time_zone": "Timezone"
-                }
-            },
-            "user": {
-                "data": {
-                    "city": "City"
+                    "longitude": "Longitude"
                 }
             }
         }
@@ -48,6 +40,9 @@
                     "last_quarter": "Last quarter",
                     "new_moon": "New moon"
                 }
+            },
+            "moon_illuminance": {
+                "name": "Moon Illuminance"
             }
         }
     },

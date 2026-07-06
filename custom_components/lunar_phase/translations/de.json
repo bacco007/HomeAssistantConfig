@@ -2,27 +2,19 @@
     "title": "Lunar Phase",
     "config": {
         "abort": {
-            "already_configured": "Gerät ist bereits konfiguriert"
+            "already_configured": "Integration ist bereits konfiguriert"
         },
         "error": {
             "cannot_connect": "Verbindung fehlgeschlagen",
             "invalid_auth": "Ungültige Authentifizierung ",
-            "unknown": "Unbekannter Fehler",
-            "city_not_found": "Stadt nicht gefunden"
+            "unknown": "Unbekannter Fehler"
         },
         "step": {
             "location": {
                 "data": {
                     "city": "Stadt",
                     "latitude": "Breitengrad",
-                    "longitude": "Längengrad",
-                    "region": "Region",
-                    "time_zone": "Zeitzone"
-                }
-            },
-            "user": {
-                "data": {
-                    "city": "Stadt"
+                    "longitude": "Längengrad"
                 }
             }
         }
@@ -49,6 +41,9 @@
                     "last_quarter": "Abnehmender Halbmond",
                     "new_moon": "Neumond"
                 }
+            },
+            "moon_illuminance": {
+                "name": "Mondbeleuchtungsstärke"
             }
         }
     }

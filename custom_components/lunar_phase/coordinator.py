@@ -3,6 +3,7 @@
 from datetime import timedelta
 import logging
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -15,7 +16,7 @@ _LOGGER = logging.getLogger(__name__)
 class MoonUpdateCoordinator(DataUpdateCoordinator):
     """Class to calculate the Moon phase."""
 
-    def __init__(self, hass: HomeAssistant, moon_calc: MoonCalc) -> None:
+    def __init__(self, hass: HomeAssistant, moon_calc: MoonCalc, config_entry: ConfigEntry) -> None:
         """Initialize the coordinator."""
         self.hass = hass
         self.moon_calc = moon_calc
@@ -26,6 +27,7 @@ class MoonUpdateCoordinator(DataUpdateCoordinator):
             name=DOMAIN,
             update_interval=timedelta(minutes=1),
             always_update=True,
+            config_entry=config_entry,
         )
 
     async def _async_update_data(self):

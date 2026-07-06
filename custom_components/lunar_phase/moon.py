@@ -2,6 +2,7 @@
 
 import datetime
 import logging
+import math
 
 from astral import LocationInfo
 from dateutil import tz
@@ -19,6 +20,7 @@ from .const import (
     STATE_ATTR_ALTITUDE,
     STATE_ATTR_AZIMUTH,
     STATE_ATTR_DISTANCE_KM,
+    STATE_ATTR_ILLUMINANCE,
     STATE_ATTR_ILLUMINATION_FRACTION,
     STATE_ATTR_NEXT_FIRST,
     STATE_ATTR_NEXT_FULL,
@@ -56,8 +58,7 @@ class MoonCalc:
         self._latitude = latitude
         self._longitude = longitude
         self._timezone = timezone
-        self.today = dt_util.now().replace(tzinfo=tz.UTC)
-        self.date = datetime.datetime.now()
+        self.update_date_variables()
         self.observer = ephem.Observer()
         self.location = None
         self._phase_name = None
@@ -83,13 +84,13 @@ class MoonCalc:
         lon = self.location.longitude
         now = dt_util.now()
         self._moon_position = MoonScript.get_moon_position(now, lat, lon)
-        _LOGGER.debug("now: %s", now)
+        # _LOGGER.debug("now: %s", now)
         return self._moon_position
 
     def get_moon_illumination(self):
         """Return the moon illumination."""
         self._moon_illumination = MoonScript.get_moon_illumination(self.today)
-        _LOGGER.debug("Moon illumination: %s", self._moon_illumination)
+        # _LOGGER.debug("Moon illumination: %s", self._moon_illumination)
         return self._moon_illumination
 
     def get_moon_times(self):
@@ -107,6 +108,8 @@ class MoonCalc:
     def get_event_time(self, event):
         """Return the event time as a timestamp with timezone information."""
         event_time = self._moon_times.get(event)
+        if event_time is None:
+            return None
         config_timezone = tz.gettz(self.location.timezone)
         return event_time.astimezone(config_timezone)
 
@@ -131,7 +134,7 @@ class MoonCalc:
         next_obj = self._moon_illumination.get("next")
         phase_date_str = next_obj.get(phase).get("date")
         phase_date = datetime.datetime.strptime(phase_date_str, "%Y-%m-%dT%H:%M:%S.%fZ")
-        return phase_date.replace(tzinfo=datetime.UTC)
+        return phase_date.replace(tzinfo=tz.UTC)
 
     def get_moon_illumination_fraction(self):
         """Return the fraction of the moon that is illuminated."""
@@ -139,6 +142,21 @@ class MoonCalc:
         if fraction:
             return fraction * 100
         return None
+
+    def get_moon_illuminance(self):
+        """Return estimated moonlight illuminance in lux (Krisciunas-Schaefer model)."""
+        fraction = self._moon_illumination.get("fraction")
+        altitude_deg = self._moon_position.get("altitudeDegrees")
+        distance = self._moon_position.get("distance")
+        if fraction is None or altitude_deg is None or not distance:
+            return None
+        zenith_angle = math.radians(90.0 - altitude_deg)
+        cos_z = math.cos(zenith_angle)
+        if cos_z <= 0:
+            return 0.0
+        avg_distance = 384400.0
+        # E0 = 0.25 lux — full moon at zenith at average distance
+        return round(0.25 * fraction * cos_z * (avg_distance / distance) ** 2, 6)
 
     def get_next_type_phase(self):
         """Return the next type of moon phase."""
@@ -148,8 +166,9 @@ class MoonCalc:
         next_phase = next_obj.get("type")
         next_date_str = next_obj.get("date")
         next_date = datetime.datetime.strptime(next_date_str, "%Y-%m-%dT%H:%M:%S.%fZ")
+        next_date = next_date.replace(tzinfo=tz.UTC)
         self._moon_next_phase = {"type": next_phase, "date": next_date}
-        _LOGGER.debug("Next moon phase: %s", self._moon_next_phase)
+        # _LOGGER.debug("Next moon phase: %s", self._moon_next_phase)
 
     def get_moon_attributes(self):
         """Return the moon attributes."""
@@ -162,6 +181,7 @@ class MoonCalc:
                 "parallacticAngleDegrees"
             ),
             STATE_ATTR_ILLUMINATION_FRACTION: self.get_moon_illumination_fraction(),
+            STATE_ATTR_ILLUMINANCE: self.get_moon_illuminance(),
             STATE_ATTR_NEXT_FULL: self.get_next_moon_phase("fullMoon"),
             STATE_ATTR_NEXT_NEW: self.get_next_moon_phase("newMoon"),
             STATE_ATTR_NEXT_THIRD: self.get_next_moon_phase("thirdQuarter"),
@@ -187,7 +207,19 @@ class MoonCalc:
 
     def update(self):
         """Update the MoonCalc object."""
+        # Update date variables before moon sensors update
+        self.update_date_variables()
+        
+        # Proceed with moon data calculations
         self.get_moon_illumination()
         self.get_moon_position()
         self.get_moon_times()
         self.get_next_type_phase()
+
+    def update_date_variables(self):
+        """Set the current date to the relevant variables."""
+        self.today = dt_util.now().replace(tzinfo=tz.UTC)
+        self.date = datetime.datetime.now()
+
+        if hasattr(self, "observer") and self.observer is not None:
+            self.observer.date = self.today

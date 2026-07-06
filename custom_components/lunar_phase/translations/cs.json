@@ -2,27 +2,19 @@
     "title": "Lunar Phase",
     "config": {
         "abort": {
-            "already_configured": "Zařízení je již nakonfigurováno"
+            "already_configured": "Integrace je již nakonfigurována"
         },
         "error": {
             "cannot_connect": "Nepodařilo se připojit",
             "invalid_auth": "Neplatná autentizace",
-            "unknown": "Neočekávaná chyba",
-            "city_not_found": "Město nebylo nalezeno"
+            "unknown": "Neočekávaná chyba"
         },
         "step": {
             "location": {
                 "data": {
                     "city": "Město",
                     "latitude": "Zeměpisná šířka",
-                    "longitude": "Zeměpisná délka",
-                    "region": "Region",
-                    "time_zone": "Časové pásmo"
-                }
-            },
-            "user": {
-                "data": {
-                    "city": "Město"
+                    "longitude": "Zeměpisná délka"
                 }
             }
         }
@@ -49,6 +41,9 @@
                     "last_quarter": "Poslední čtvrť",
                     "new_moon": "Novoluní"
                 }
+            },
+            "moon_illuminance": {
+                "name": "Měsíční osvětlenost"
             }
         }
     }

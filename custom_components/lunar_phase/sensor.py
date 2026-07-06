@@ -85,6 +85,7 @@ class MainPhaseSensor(CoordinatorEntity[MoonUpdateCoordinator], SensorEntity):
         super().__init__(coordinator, moon_calc)
         self._city = config_entry.data["city"]
         self.moon_calc = moon_calc
+        self._attr_has_entity_name = True
         self._attr_force_update = True
         self._attr_unique_id = f"{config_entry.entry_id}_moon_phase"
         self._attr_device_info = DeviceInfo(
@@ -92,7 +93,6 @@ class MainPhaseSensor(CoordinatorEntity[MoonUpdateCoordinator], SensorEntity):
             manufacturer="Moon",
             entry_type=DeviceEntryType.SERVICE,
         )
-        self._attr_has_entity_name = True
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -121,8 +121,7 @@ class MainPhaseSensor(CoordinatorEntity[MoonUpdateCoordinator], SensorEntity):
         location = self.moon_calc.location
         return {**attributes, "location": location}
 
-    @callback
-    async def async_update(self):
+    async def async_update(self) -> None:
         """Fetch new state data for the entity."""
         await self.coordinator.async_request_refresh()
 
@@ -206,8 +205,6 @@ class AttributeSensor(CoordinatorEntity[MoonUpdateCoordinator], SensorEntity):
         attributes = self.coordinator.data.get("attributes", {})
         return attributes.get(self._state_key)
 
-    @callback
-    async def async_update(self):
+    async def async_update(self) -> None:
         """Fetch new state data for the entity."""
-
         await self.coordinator.async_request_refresh()
