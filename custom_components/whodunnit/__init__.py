@@ -10,6 +10,9 @@ Responsibilities:
     populate a single context cache for all WhodunnitSensor instances
   - Resolve the target entity to its parent device (if any)
   - Keep the config entry title in sync with the target entity's friendly name
+  - Follow entity_id renames of the target (migrating the entry and sensor
+    unique IDs) and remove the entry when the target is deleted from HA,
+    mirroring core helper integrations such as switch_as_x
   - Build the DeviceInfo that sensor.py uses to attach its sensor to the
     correct device card in the HA UI
   - Create a virtual "Whodunnit" device for Helper entities that have no
@@ -28,6 +31,7 @@ from homeassistant.helpers import entity_registry as er, device_registry as dr
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.event import (
     async_track_device_registry_updated_event,
+    async_track_entity_registry_updated_event,
     async_track_state_change_event,
 )
 from .const import (
@@ -38,6 +42,7 @@ from .const import (
     CACHE_MAX_SIZE,
     CACHE_CLEANUP_INTERVAL,
 )
+from .util import entry_unique_id, sensor_unique_id, slug_to_title
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -46,10 +51,7 @@ def _get_friendly(hass: HomeAssistant, entity_id: str) -> str:
     """Return the friendly name for an entity, or a title-cased slug fallback."""
     state = hass.states.get(entity_id)
     return (
-        state.attributes.get(
-            "friendly_name",
-            entity_id.split(".")[-1].replace("_", " ").title(),
-        )
+        state.attributes.get("friendly_name", slug_to_title(entity_id))
         if state
         else entity_id
     )
@@ -95,17 +97,15 @@ def _setup_shared_listeners(hass: HomeAssistant) -> None:
         if not event.context:  # pragma: no cover
             return
         _cleanup_cache()
-        ctx_id = event.context.id
         entity_id = event.data.get("entity_id")
-        name = event.data.get("name")
-        domain = entity_id.split(".")[0] if entity_id else "automation"
-        if entity_id:
-            cache[ctx_id] = {
-                "id": entity_id,
-                "name": name or _get_friendly(hass, entity_id),
-                "type": domain,
-                "timestamp": time.monotonic(),
-            }
+        if not entity_id:
+            return
+        cache[event.context.id] = {
+            "id": entity_id,
+            "name": event.data.get("name") or _get_friendly(hass, entity_id),
+            "type": entity_id.split(".")[0],
+            "timestamp": time.monotonic(),
+        }
 
     @callback
     def _record_service_context(event: Event) -> None:
@@ -172,7 +172,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "context_cache" not in hass.data[DOMAIN]:
         hass.data[DOMAIN]["context_cache"] = {}
         hass.data[DOMAIN]["user_cache"] = {}
-        hass.data[DOMAIN]["entry_count"] = 0
         hass.data[DOMAIN]["entries"] = {}
         _setup_shared_listeners(hass)
 
@@ -188,7 +187,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         state = hass.states.get(target_entity)
         if state and state.attributes.get("friendly_name"):
             return state.attributes["friendly_name"]
-        return target_entity.split(".")[-1].replace("_", " ").title()
+        return slug_to_title(target_entity)
 
     @callback
     def update_entry_title(event: Event | None = None) -> None:
@@ -217,6 +216,45 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 hass, device_id, update_entry_title
             )
         )
+
+    # --- Target renames and removal ---
+
+    async def _async_on_target_registry_change(event: Event) -> None:
+        """Follow entity_id renames of the target; remove the entry if deleted.
+
+        Mirrors core helper integrations (switch_as_x, derivative): awaiting
+        remove/reload inside the registry listener is the core-sanctioned
+        pattern. On rename, the sensor's unique_id is migrated first so the
+        reloaded platform reclaims the same registry entry, preserving the
+        sensor's entity_id, customisations, and history.
+        """
+        data = event.data
+        if data["action"] == "remove":
+            await hass.config_entries.async_remove(entry.entry_id)
+            return
+        if data["action"] != "update" or "entity_id" not in data["changes"]:
+            return
+        new_target = data["entity_id"]
+        reg = er.async_get(hass)
+        sensor_id = reg.async_get_entity_id(
+            "sensor", DOMAIN, sensor_unique_id(target_entity)
+        )
+        if sensor_id:
+            reg.async_update_entity(
+                sensor_id, new_unique_id=sensor_unique_id(new_target)
+            )
+        hass.config_entries.async_update_entry(
+            entry,
+            data={**entry.data, "targets": [new_target]},
+            unique_id=entry_unique_id(new_target),
+        )
+        await hass.config_entries.async_reload(entry.entry_id)
+
+    entry.async_on_unload(
+        async_track_entity_registry_updated_event(
+            hass, target_entity, _async_on_target_registry_change
+        )
+    )
 
     # --- Device info ---
 
@@ -253,9 +291,27 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "device_info": device_info,
     }
 
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-    hass.data[DOMAIN]["entry_count"] += 1
+    try:
+        await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    except Exception:
+        # Unwind so a failed first entry does not leave the shared listeners
+        # subscribed with no loaded entries consuming the cache.
+        hass.data[DOMAIN]["entries"].pop(entry.entry_id, None)
+        _teardown_shared_if_unused(hass)
+        raise
     return True
+
+
+def _teardown_shared_if_unused(hass: HomeAssistant) -> None:
+    """Tear down the shared listeners and caches once no entries remain loaded."""
+    domain_data = hass.data[DOMAIN]
+    if domain_data.get("entries"):
+        return
+    for unsub in domain_data.pop("listener_unsubs", []):
+        unsub()
+    domain_data.pop("context_cache", None)
+    domain_data.pop("user_cache", None)
+    domain_data.pop("entries", None)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -263,15 +319,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
         hass.data[DOMAIN]["entries"].pop(entry.entry_id, None)
-        hass.data[DOMAIN]["entry_count"] -= 1
-        if hass.data[DOMAIN]["entry_count"] <= 0:
-            for unsub in hass.data[DOMAIN].get("listener_unsubs", []):
-                unsub()
-            hass.data[DOMAIN].pop("listener_unsubs", None)
-            hass.data[DOMAIN].pop("context_cache", None)
-            hass.data[DOMAIN].pop("user_cache", None)
-            hass.data[DOMAIN].pop("entries", None)
-            hass.data[DOMAIN]["entry_count"] = 0
+        _teardown_shared_if_unused(hass)
     return unload_ok
 
 

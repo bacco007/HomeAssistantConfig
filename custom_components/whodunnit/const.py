@@ -84,19 +84,12 @@ SOURCE_TYPE_SERVICE = "service"     # Service account (Node-RED, AppDaemon, etc.
 #   event_time   - ISO timestamp of the classification
 EVENT_TRIGGER_DETECTED = "whodunnit_trigger_detected"
 
-# Default Values
-EVENT_TIME_DEFAULT = None
-SOURCE_TYPE_DEFAULT = None
-SOURCE_ID_DEFAULT = None
-USER_ID_DEFAULT = None
-CONTEXT_ID_DEFAULT = None
-
 SUPPORTED_DOMAINS = [
     # Trackable device domains
     "switch", "light", "fan", "media_player",
     "cover", "lock", "vacuum", "siren", "humidifier", "climate",
     "remote", "water_heater", "valve",
-    # Number / select / text - device-side
+    # Number / select - device-side
     "number", "select",
     # Button entities - device-side and Helper
     "button", "input_button",
@@ -115,6 +108,9 @@ CACHE_MAX_SIZE = 200
 CACHE_CLEANUP_INTERVAL = 30
 # How long (seconds) a user identity cache entry remains valid.
 USER_CACHE_TTL = 300
+# Minimum interval (seconds) between attribute-only classifications for one
+# entity. Debounces bursts such as a brightness slider being dragged.
+ATTRIBUTE_CHANGE_THROTTLE = 2.0
 
 # All valid sensor state slugs, used for restored-state validation.
 VALID_STATES = frozenset({

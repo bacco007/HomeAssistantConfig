@@ -20,7 +20,7 @@ How HA context chaining works (essential background):
   calls fire. When the target entity's state changes, this sensor looks up the
   change's context in that shared cache to identify the source.
 
-Detection cascade (in _classify):
+Detection cascade (in _async_classify):
   1. Context ID found in cache        -> Automation / Script / Scene / UI action.
                                         For STATE_UI cache entries on bleed platforms
                                         (ESPHome), a "seen" flag distinguishes the
@@ -51,6 +51,8 @@ import logging
 import time
 from collections import deque
 from dataclasses import dataclass
+from typing import Any
+
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import STATE_UNKNOWN, STATE_UNAVAILABLE
@@ -63,6 +65,7 @@ from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.util import dt as dt_util
 from homeassistant.helpers.event import (
     EventStateChangedData,
+    async_track_entity_registry_updated_event,
     async_track_state_change_event,
 )
 
@@ -76,6 +79,7 @@ from .const import (
     ATTR_EVENT_TIME,
     ATTR_CONFIDENCE,
     ATTR_HISTORY_LOG,
+    ATTRIBUTE_CHANGE_THROTTLE,
     CONFIDENCE_HIGH,
     CONFIDENCE_MEDIUM,
     CONFIDENCE_LOW,
@@ -91,11 +95,6 @@ from .const import (
     NAME_INDIRECT_AUTOMATION,
     NAME_DEVICE,
     NAME_READY,
-    SOURCE_TYPE_DEFAULT,
-    SOURCE_ID_DEFAULT,
-    USER_ID_DEFAULT,
-    CONTEXT_ID_DEFAULT,
-    EVENT_TIME_DEFAULT,
     NAME_UNKNOWN_USER,
     STATE_SERVICE,
     SOURCE_TYPE_USER,
@@ -106,6 +105,7 @@ from .const import (
     USER_CACHE_TTL,
     VALID_STATES,
 )
+from .util import sensor_unique_id, slug_to_title
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -218,13 +218,17 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
         STATE_MONITORING, STATE_AUTOMATION, STATE_DEVICE,
         STATE_UI, STATE_SCENE, STATE_SCRIPT, STATE_SERVICE,
     ]
+    # Excluded from the recorder database: history_log rewrites 25 dicts and
+    # cache_debug changes on every write, which would bloat long-term storage.
+    # Live state attributes and RestoreEntity persistence are unaffected.
+    _unrecorded_attributes = frozenset({ATTR_HISTORY_LOG, ATTR_CACHE_DEBUG})
 
     def __init__(
         self,
         target_entity: str,
         device_info: DeviceInfo,
-        context_cache: dict,
-        user_cache: dict,
+        context_cache: dict[str, dict[str, Any]],
+        user_cache: dict[str, dict[str, Any]],
     ) -> None:
         self._target_entity = target_entity
         self._device_info = device_info
@@ -232,21 +236,21 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
         self._user_cache = user_cache
 
         self._attr_translation_placeholders = {
-            "target": target_entity.split(".")[-1].replace("_", " ").title()
+            "target": slug_to_title(target_entity)
         }
 
         self._state = STATE_MONITORING
-        self._source_type = SOURCE_TYPE_DEFAULT
-        self._source_id = SOURCE_ID_DEFAULT
+        self._source_type: str | None = None
+        self._source_id: str | None = None
         self._source_name = NAME_READY
-        self._context_id = CONTEXT_ID_DEFAULT
-        self._user_id = USER_ID_DEFAULT
-        self._event_time = EVENT_TIME_DEFAULT
+        self._context_id: str | None = None
+        self._user_id: str | None = None
+        self._event_time: str | None = None
         self._confidence = CONFIDENCE_HIGH
 
-        self._history_log: deque = deque(maxlen=HISTORY_LOG_SIZE)
+        self._history_log: deque[dict[str, Any]] = deque(maxlen=HISTORY_LOG_SIZE)
 
-        self._attr_unique_id = f"{target_entity}_whodunnit"
+        self._attr_unique_id = sensor_unique_id(target_entity)
 
         # Monotonic timestamps (immune to wall-clock/NTP jumps) for throttling
         # and cache-age diagnostics. event_time below stays wall-clock because
@@ -271,9 +275,7 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
             if state and state.attributes.get("friendly_name"):
                 target_name = state.attributes["friendly_name"]
             else:
-                target_name = (
-                    self._target_entity.split(".")[-1].replace("_", " ").title()
-                )
+                target_name = slug_to_title(self._target_entity)
 
         if device_name and target_name.startswith(device_name):
             clean_target = target_name[len(device_name):].strip()
@@ -315,7 +317,7 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
         return ent_reg.async_get(self._target_entity) is not None
 
     @property
-    def extra_state_attributes(self) -> dict:
+    def extra_state_attributes(self) -> dict[str, Any]:
         return {
             ATTR_SOURCE_TYPE: self._source_type,
             ATTR_SOURCE_ID: self._source_id,
@@ -347,12 +349,12 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
             else:
                 self._state = extra_data.state
                 attrs = extra_data.attributes
-                self._source_type = attrs.get(ATTR_SOURCE_TYPE, SOURCE_TYPE_DEFAULT)
-                self._source_id = attrs.get(ATTR_SOURCE_ID, SOURCE_ID_DEFAULT)
+                self._source_type = attrs.get(ATTR_SOURCE_TYPE)
+                self._source_id = attrs.get(ATTR_SOURCE_ID)
                 self._source_name = attrs.get(ATTR_SOURCE_NAME, NAME_READY)
-                self._context_id = attrs.get(ATTR_CONTEXT_ID, CONTEXT_ID_DEFAULT)
-                self._user_id = attrs.get(ATTR_USER_ID, USER_ID_DEFAULT)
-                self._event_time = attrs.get(ATTR_EVENT_TIME, EVENT_TIME_DEFAULT)
+                self._context_id = attrs.get(ATTR_CONTEXT_ID)
+                self._user_id = attrs.get(ATTR_USER_ID)
+                self._event_time = attrs.get(ATTR_EVENT_TIME)
                 self._confidence = attrs.get(ATTR_CONFIDENCE, CONFIDENCE_HIGH)
                 restored_log = attrs.get(ATTR_HISTORY_LOG, [])
                 if isinstance(restored_log, list):
@@ -366,36 +368,40 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
         # Listen for state changes on the target entity.
         self.async_on_remove(
             async_track_state_change_event(
-                self.hass, [self._target_entity], self._handle_change
+                self.hass, [self._target_entity], self._async_handle_change
             )
         )
 
-        # Listen for entity registry updates so the sensor title stays in sync.
+        # Track registry updates for the target via the keyed dispatcher (one
+        # shared core listener) instead of a per-sensor global bus listener.
+        # Renames and permanent removal of the target are handled at the config
+        # entry level in __init__.py; here we keep the title in sync and
+        # reflect unavailability immediately while an entry removal is still
+        # in flight.
         @callback
         def _handle_registry_update(event: Event) -> None:
-            if event.data.get("entity_id") != self._target_entity:
-                return
-            if "name" not in event.data.get("changes", {}):
-                return
-            self._refresh_name()
-            self.async_write_ha_state()
+            if event.data["action"] == "remove":
+                self.async_write_ha_state()
+            elif "name" in event.data.get("changes", {}):
+                self._refresh_name()
+                self.async_write_ha_state()
 
         self.async_on_remove(
-            self.hass.bus.async_listen(
-                er.EVENT_ENTITY_REGISTRY_UPDATED, _handle_registry_update
+            async_track_entity_registry_updated_event(
+                self.hass, self._target_entity, _handle_registry_update
             )
         )
 
         self._refresh_name()
         self.async_write_ha_state()
 
-    async def _handle_change(self, event: Event[EventStateChangedData]) -> None:
+    async def _async_handle_change(self, event: Event[EventStateChangedData]) -> None:
         """React to a state change on the target entity.
 
         Serialised per entity via _change_lock to prevent interleaved field
         writes when an auth lookup yields control between two rapid events.
-        Deciding *what* triggered the change lives in _classify(); this method
-        only filters out noise and applies the result to entity state.
+        Deciding *what* triggered the change lives in _async_classify(); this
+        method only filters out noise and applies the result to entity state.
         """
         async with self._change_lock:
             new_s = event.data.get("new_state")
@@ -415,7 +421,10 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
                 return
 
             now = time.monotonic()
-            if new_s.state == old_s.state and (now - self._last_attr_time) < 2.0:
+            if (
+                new_s.state == old_s.state
+                and (now - self._last_attr_time) < ATTRIBUTE_CHANGE_THROTTLE
+            ):
                 return
 
             if attr_changed and new_s.state == old_s.state:
@@ -426,11 +435,12 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
             if ctx and ctx.id == self._context_id and not self._is_bleed:
                 return
 
-            # Only the person/auth lookup inside _classify() can realistically
-            # raise (it touches hass.auth); the rest is pure cache-dict logic.
-            # Scope the catch tightly so a genuine bug is not silently swallowed.
+            # Only the person/auth lookup inside _async_classify() can
+            # realistically raise (it touches hass.auth); the rest is pure
+            # cache-dict logic. Scope the catch tightly so a genuine bug is
+            # not silently swallowed.
             try:
-                result = await self._classify(ctx)
+                result = await self._async_classify(ctx)
             except Exception:
                 _LOGGER.exception(
                     "Whodunnit: error classifying %s", self._target_entity
@@ -438,7 +448,7 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
                 return
 
             self._event_time = dt_util.now().isoformat()
-            self._context_id = ctx.id if ctx else CONTEXT_ID_DEFAULT
+            self._context_id = ctx.id if ctx else None
             self._state = result.state
             self._source_type = result.source_type
             self._source_id = result.source_id
@@ -447,7 +457,7 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
             self._user_id = (
                 ctx.user_id
                 if ctx and result.state == STATE_UI
-                else USER_ID_DEFAULT
+                else None
             )
             self._last_classification_time = now
             self._last_matched_context_id = result.matched_context_id
@@ -477,7 +487,7 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
                 },
             )
 
-    async def _classify(self, ctx: Context | None) -> _Classification:
+    async def _async_classify(self, ctx: Context | None) -> _Classification:
         """Decide what triggered the change. No side effects on entity state.
 
         Walks the detection cascade documented at the top of this module and
@@ -491,7 +501,7 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
         if owner:
             if owner["type"] == STATE_UI:
                 p_id, p_name, is_service_account = (
-                    await self._get_person_cached(owner["id"])
+                    await self._async_get_person_cached(owner["id"])
                 )
                 already_seen = owner.get("seen", False)
                 owner["seen"] = True
@@ -529,7 +539,7 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
         # Step 2: user_id present, no cache hit.
         if ctx and ctx.user_id:
             p_id, p_name, is_service_account = (
-                await self._get_person_cached(ctx.user_id)
+                await self._async_get_person_cached(ctx.user_id)
             )
             if is_service_account:
                 return _Classification(
@@ -580,7 +590,7 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
             matched_context_id=None,
         )
 
-    def _build_cache_debug(self) -> dict:
+    def _build_cache_debug(self) -> dict[str, Any]:
         """Build a diagnostic snapshot focused on the last classification."""
         if self._last_classification_time == 0.0:
             return {
@@ -612,7 +622,7 @@ class WhodunnitSensor(SensorEntity, RestoreEntity):
             "matched_entry": matched_entry,
         }
 
-    async def _get_person_cached(
+    async def _async_get_person_cached(
         self, user_id: str
     ) -> tuple[str | None, str, bool]:
         """Resolve a HA user ID to a person entity ID, display name, and account type.

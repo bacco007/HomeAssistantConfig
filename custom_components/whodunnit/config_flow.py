@@ -28,6 +28,7 @@ from homeassistant.config_entries import ConfigFlowResult
 from homeassistant.core import valid_entity_id
 from homeassistant.helpers import entity_registry as er, selector
 from .const import DOMAIN, SUPPORTED_DOMAINS
+from .util import entry_unique_id, slug_to_title
 
 
 class WhodunnitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -81,9 +82,7 @@ class WhodunnitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 # tracked. This prevents the user from setting up two Whodunnit
                 # instances for the same entity  -  HA will call _abort_if_unique_id_configured
                 # and show the "already_configured" abort message from strings.json.
-                await self.async_set_unique_id(
-                    f"whodunnit_{target.replace('.', '_')}"
-                )
+                await self.async_set_unique_id(entry_unique_id(target))
                 self._abort_if_unique_id_configured()
 
                 # Wrap the single entity_id in a list. The data model uses a list
@@ -95,7 +94,7 @@ class WhodunnitConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 # friendly name is applied by update_entry_title() in __init__.py
                 # as soon as the entry finishes loading, so this value is transient.
                 return self.async_create_entry(
-                    title=target.split(".")[-1].replace("_", " ").title(),
+                    title=slug_to_title(target),
                     data=user_input
                 )
             errors["targets"] = error

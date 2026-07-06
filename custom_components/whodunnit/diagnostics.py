@@ -11,6 +11,8 @@ for diagnosing classification issues.
 """
 
 import time
+from typing import Any
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from .const import DOMAIN, STATE_UI
@@ -18,7 +20,7 @@ from .const import DOMAIN, STATE_UI
 
 async def async_get_config_entry_diagnostics(
     hass: HomeAssistant, entry: ConfigEntry
-) -> dict:
+) -> dict[str, Any]:
     """Return diagnostics for a config entry."""
     domain_data = hass.data.get(DOMAIN, {})
     entry_data = domain_data.get("entries", {}).get(entry.entry_id, {})
@@ -28,7 +30,7 @@ async def async_get_config_entry_diagnostics(
     # ages must be computed against the same clock.
     now = time.monotonic()
 
-    user_aliases: dict = {}
+    user_aliases: dict[str, str] = {}
 
     def _alias(user_id: str) -> str:
         """Map a real user ID to a stable anonymous placeholder."""
@@ -36,7 +38,7 @@ async def async_get_config_entry_diagnostics(
             user_aliases[user_id] = f"user_{len(user_aliases) + 1}"
         return user_aliases[user_id]
 
-    def _context_entry(v: dict) -> dict:
+    def _context_entry(v: dict[str, Any]) -> dict[str, Any]:
         out = {
             "type": v.get("type"),
             "age_seconds": round(now - v.get("timestamp", 0), 1),
@@ -80,5 +82,5 @@ async def async_get_config_entry_diagnostics(
             },
         },
         "shared_listeners_active": "listener_unsubs" in domain_data,
-        "active_entry_count": domain_data.get("entry_count", 0),
+        "active_entry_count": len(domain_data.get("entries", {})),
     }
