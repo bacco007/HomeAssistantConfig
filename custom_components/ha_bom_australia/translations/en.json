@@ -1,0 +1,232 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set Up BOM Australia",
+        "description": "Enter your location to find the nearest Bureau of Meteorology weather station.\n\nBy default, your Home Assistant location is used. Alternatively, you can check the box below to search by Australian postcode instead.",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "use_postcode": "Use Australian postcode instead?",
+          "postcode": "Australian Postcode (e.g., 3000 for Melbourne)"
+        }
+      },
+      "select_location": {
+        "title": "Select Your Location",
+        "description": "Multiple locations found for postcode {postcode}. Please select your specific town or locality.\n\nNote: Each location has its own weather data and warning zone. Selecting the correct location ensures accurate warnings for your area.",
+        "data": {
+          "location_id": "Location"
+        }
+      },
+      "weather_name": {
+        "title": "Configure Entity Prefix",
+        "description": "Nearest BOM location: {location_name}\nObservation station: {station_name} (ID: {station_id})\n\nChoose a prefix for all your BOM entities (weather, sensors, and warnings).\nExample with prefix {default_prefix}:\n  • weather.{default_prefix}\n  • sensor.{default_prefix}_temp\n  • binary_sensor.{default_prefix}_warning_flood",
+        "data": {
+          "entity_prefix": "Entity Prefix (used for all BOM entities)"
+        }
+      },
+      "sensors_create": {
+        "title": "Select Sensor Types",
+        "description": "Choose which types of sensors you would like to create.",
+        "data": {
+          "observations_create": "Create observational sensors?",
+          "warnings_create": "Create warning sensors?",
+          "forecasts_create": "Create forecast sensors?"
+        }
+      },
+      "observations_monitored": {
+        "title": "Observational Sensors",
+        "description": "Choose which observational sensors you would like to create.",
+        "data": {
+          "cloud": "Cloud Cover",
+          "cloud_base_m": "Cloud Base (Meters)",
+          "cloud_oktas": "Cloud (Oktas)",
+          "cloud_type": "Cloud Type",
+          "cloud_type_id": "Cloud Type ID",
+          "condition": "Condition",
+          "delta_t": "Delta T",
+          "dew_point": "Dew Point",
+          "gust_speed_kilometre": "Gust Speed",
+          "gust_speed_knot": "Gust Speed (Knots)",
+          "humidity": "Humidity",
+          "max_temp": "Maximum Temperature",
+          "min_temp": "Minimum Temperature",
+          "pressure": "Pressure",
+          "pressure_msl": "Pressure MSL",
+          "pressure_qnh": "Pressure QNH",
+          "pressure_tend": "Pressure Tendency",
+          "rain_since_9am": "Rain Since 9am",
+          "temp": "Temperature",
+          "temp_feels_like": "Feels Like Temperature",
+          "visibility_km": "Visibility (km)",
+          "weather": "Weather Description",
+          "wind_direction": "Wind Direction",
+          "wind_speed_kilometre": "Wind Speed",
+          "wind_speed_knot": "Wind Speed (Knots)"
+        }
+      },
+      "warnings_monitored": {
+        "title": "Warning Sensors",
+        "description": "Choose which warning types you would like to monitor. Each selected warning will create a binary sensor that turns on when an active warning is issued.",
+        "data": {
+          "flood_watch": "Flood Watch",
+          "flood_warning": "Flood Warning",
+          "sheep_graziers_warning": "Sheep Graziers Warning",
+          "severe_thunderstorm_warning": "Severe Thunderstorm Warning",
+          "severe_weather_warning": "Severe Weather Warning",
+          "marine_wind_warning": "Marine Wind Warning",
+          "hazardous_surf_warning": "Hazardous Surf Warning",
+          "heatwave_warning": "Heatwave Warning",
+          "frost_warning": "Frost Warning",
+          "bushwalkers_alert": "Bushwalkers Alert",
+          "fire_weather_warning": "Fire Weather Warning",
+          "tropical_cyclone_warning": "Tropical Cyclone Warning"
+        }
+      },
+      "forecasts_monitored": {
+        "title": "Forecast Sensors",
+        "description": "Choose which forecast sensors you would like to create and how many days of forecasts to generate (0-7).",
+        "data": {
+          "temp_min": "Minimum Temperature",
+          "temp_max": "Maximum Temperature",
+          "extended_text": "Extended Forecast Text",
+          "icon_descriptor": "Icon Descriptor",
+          "mdi_icon": "MDI Icon",
+          "short_text": "Short Forecast Text",
+          "uv_category": "UV Category",
+          "uv_max_index": "UV Max Index",
+          "uv_start_time": "UV Protection Start Time",
+          "uv_end_time": "UV Protection End Time",
+          "uv_forecast": "UV Forecast Summary",
+          "rain_amount_min": "Rain Amount (Minimum)",
+          "rain_amount_max": "Rain Amount (Maximum)",
+          "rain_amount_range": "Rain Amount Range",
+          "rain_chance": "Chance of Rain",
+          "fire_danger": "Fire Danger",
+          "now_label": "Now Label",
+          "temp_now": "Now Temperature",
+          "later_label": "Later Label",
+          "temp_later": "Later Temperature",
+          "astronomical_sunrise_time": "Sunrise Time",
+          "astronomical_sunset_time": "Sunset Time",
+          "forecasts_days": "Number of Forecast Days (0-7)"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Reconfigure Location",
+        "description": "Update your location coordinates to find a different Bureau of Meteorology weather station.\n\nBy default, enter coordinates directly. Alternatively, you can check the box below to search by Australian postcode instead.",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "use_postcode": "Use Australian postcode instead?",
+          "postcode": "Australian Postcode (e.g., 3000 for Melbourne)"
+        }
+      },
+      "select_location": {
+        "title": "Select Your Location",
+        "description": "Multiple locations found for postcode {postcode}. Please select your specific town or locality.\n\nNote: Each location has its own weather data and warning zone. Selecting the correct location ensures accurate warnings for your area.",
+        "data": {
+          "location_id": "Location"
+        }
+      },
+      "weather_name": {
+        "title": "Configure Entity Prefix",
+        "description": "Nearest BOM location: {location_name}\n\nChoose a prefix for all your BOM entities (weather, sensors, and warnings).\nExample with prefix {default_prefix}:\n  • weather.{default_prefix}\n  • sensor.{default_prefix}_temp\n  • binary_sensor.{default_prefix}_warning_flood",
+        "data": {
+          "entity_prefix": "Entity Prefix (used for all BOM entities)"
+        }
+      },
+      "sensors_create": {
+        "title": "Select Sensor Types",
+        "description": "Choose which types of sensors you would like to create.",
+        "data": {
+          "observations_create": "Create observational sensors?",
+          "warnings_create": "Create warning sensors?",
+          "forecasts_create": "Create forecast sensors?"
+        }
+      },
+      "observations_monitored": {
+        "title": "Observational Sensors",
+        "description": "Choose which observational sensors you would like to create.",
+        "data": {
+          "cloud": "Cloud Cover",
+          "cloud_base_m": "Cloud Base (Meters)",
+          "cloud_oktas": "Cloud (Oktas)",
+          "cloud_type": "Cloud Type",
+          "cloud_type_id": "Cloud Type ID",
+          "condition": "Condition",
+          "delta_t": "Delta T",
+          "dew_point": "Dew Point",
+          "gust_speed_kilometre": "Gust Speed",
+          "gust_speed_knot": "Gust Speed (Knots)",
+          "humidity": "Humidity",
+          "max_temp": "Maximum Temperature",
+          "min_temp": "Minimum Temperature",
+          "pressure": "Pressure",
+          "pressure_msl": "Pressure MSL",
+          "pressure_qnh": "Pressure QNH",
+          "pressure_tend": "Pressure Tendency",
+          "rain_since_9am": "Rain Since 9am",
+          "temp": "Temperature",
+          "temp_feels_like": "Feels Like Temperature",
+          "visibility_km": "Visibility (km)",
+          "weather": "Weather Description",
+          "wind_direction": "Wind Direction",
+          "wind_speed_kilometre": "Wind Speed",
+          "wind_speed_knot": "Wind Speed (Knots)"
+        }
+      },
+      "warnings_monitored": {
+        "title": "Warning Sensors",
+        "description": "Choose which warning types you would like to monitor. Each selected warning will create a binary sensor that turns on when an active warning is issued.",
+        "data": {
+          "flood_watch": "Flood Watch",
+          "flood_warning": "Flood Warning",
+          "sheep_graziers_warning": "Sheep Graziers Warning",
+          "severe_thunderstorm_warning": "Severe Thunderstorm Warning",
+          "severe_weather_warning": "Severe Weather Warning",
+          "marine_wind_warning": "Marine Wind Warning",
+          "hazardous_surf_warning": "Hazardous Surf Warning",
+          "heatwave_warning": "Heatwave Warning",
+          "frost_warning": "Frost Warning",
+          "bushwalkers_alert": "Bushwalkers Alert",
+          "fire_weather_warning": "Fire Weather Warning",
+          "tropical_cyclone_warning": "Tropical Cyclone Warning"
+        }
+      },
+      "forecasts_monitored": {
+        "title": "Forecast Sensors",
+        "description": "Choose which forecast sensors you would like to create and how many days of forecasts to generate (0-7).",
+        "data": {
+          "temp_min": "Minimum Temperature",
+          "temp_max": "Maximum Temperature",
+          "extended_text": "Extended Forecast Text",
+          "icon_descriptor": "Icon Descriptor",
+          "mdi_icon": "MDI Icon",
+          "short_text": "Short Forecast Text",
+          "uv_category": "UV Category",
+          "uv_max_index": "UV Max Index",
+          "uv_start_time": "UV Protection Start Time",
+          "uv_end_time": "UV Protection End Time",
+          "uv_forecast": "UV Forecast Summary",
+          "rain_amount_min": "Rain Amount (Minimum)",
+          "rain_amount_max": "Rain Amount (Maximum)",
+          "rain_amount_range": "Rain Amount Range",
+          "rain_chance": "Chance of Rain",
+          "fire_danger": "Fire Danger",
+          "now_label": "Now Label",
+          "temp_now": "Now Temperature",
+          "later_label": "Later Label",
+          "temp_later": "Later Temperature",
+          "astronomical_sunrise_time": "Sunrise Time",
+          "astronomical_sunset_time": "Sunset Time",
+          "forecasts_days": "Number of Forecast Days (0-7)"
+        }
+      }
+    }
+  }
+}

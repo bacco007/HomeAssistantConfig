@@ -1,0 +1,12 @@
+{
+  "domain": "ha_bom_australia",
+  "name": "Bureau of Meteorology",
+  "codeowners": ["@safepay"],
+  "config_flow": true,
+  "documentation": "https://github.com/safepay/ha_bom_australia",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/safepay/ha_bom_australia/issues",
+  "requirements": ["iso8601"],
+  "version": "1.6.4"
+}
