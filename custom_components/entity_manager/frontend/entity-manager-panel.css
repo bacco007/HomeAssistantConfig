@@ -6308,6 +6308,56 @@ entity-manager-panel[data-theme="dark"] .device-select-checkbox {
   flex: none !important;
 }
 
+/* Section hint — explanatory line at the top of a section body */
+.em-section-hint {
+  padding: 6px 12px 2px;
+  font-size: 11px;
+  opacity: 0.65;
+  margin: 0;
+  line-height: 1.5;
+}
+.em-hint-help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  margin-left: 2px;
+  border: 1px solid var(--em-primary);
+  border-radius: 50%;
+  background: none;
+  color: var(--em-primary);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  vertical-align: text-bottom;
+}
+.em-hint-help:hover {
+  background: var(--em-primary);
+  color: #fff;
+}
+
+/* Click-to-details affordance — only cards representing a real entity */
+.em-mini-card.em-mini-clickable {
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.em-mini-card.em-mini-clickable:hover {
+  border-color: var(--em-primary);
+  background: color-mix(in srgb, var(--em-primary) 4%, transparent);
+}
+
+/* Same affordance for suggestion-style rows (naming, labels, area, mismatch) */
+.em-row-clickable {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.em-row-clickable:hover {
+  background: color-mix(in srgb, var(--em-primary) 5%, transparent);
+}
+
 /* Keep card header on one line — name gets flex:1, right-side chips don't wrap */
 .em-mini-card .entity-card-header {
   flex-wrap: nowrap;

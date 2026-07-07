@@ -1071,12 +1071,21 @@ async def handle_get_config_entry_health(
     connection: websocket_api.ActiveConnection,
     msg: dict[str, Any],
 ) -> None:
-    """Return config entries that are not in a healthy (loaded) state."""
+    """Return config entries that are not in a healthy (loaded) state.
+
+    Deliberate non-loaded states are excluded: entries the user disabled
+    (disabled_by set) and ignored discoveries (source == "ignore") are
+    choices, not errors.
+    """
     try:
         unhealthy: list[dict[str, Any]] = []
         for entry in hass.config_entries.async_entries():
             state_val = entry.state.value
             if state_val == "loaded":
+                continue
+            if entry.disabled_by is not None:
+                continue
+            if entry.source == "ignore":
                 continue
             unhealthy.append(
                 {
