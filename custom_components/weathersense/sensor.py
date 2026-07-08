@@ -1,7 +1,7 @@
 """
 Sensor platform for HA WeatherSense integration.
 
-@license: CC BY-NC-SA 4.0 International
+@license: PolyForm Noncommercial 1.0.0
 @author: SMKRV
 @github: https://github.com/smkrv/ha-weathersense
 @source: https://github.com/smkrv/ha-weathersense
@@ -9,8 +9,7 @@ Sensor platform for HA WeatherSense integration.
 from __future__ import annotations
 
 import logging
-from datetime import datetime
-from typing import Any, Optional
+from typing import Optional
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -19,6 +18,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_state_change_event
@@ -33,6 +33,7 @@ from homeassistant.util import dt as dt_util
 from .const import (
     DOMAIN,
     NAME,
+    METHOD_KEYS,
     CONF_TEMPERATURE_SENSOR,
     CONF_HUMIDITY_SENSOR,
     CONF_WIND_SPEED_SENSOR,
@@ -45,6 +46,8 @@ from .const import (
     CONF_SMOOTHING_FACTOR,
     DEFAULT_SMOOTHING_FACTOR,
     ATTR_COMFORT_LEVEL,
+    ATTR_COMFORT_LEVEL_LOCALIZED,
+    ATTR_CALCULATION_METHOD_KEY,
     ATTR_COMFORT_DESCRIPTION,
     ATTR_COMFORT_EXPLANATION,
     ATTR_CALCULATION_METHOD,
@@ -128,10 +131,6 @@ class WeatherSenseSensor(SensorEntity):
         self._attr_name = name
         self._attr_unique_id = f"{entry_id}_{name}"
 
-        # Get user's preferred temperature unit
-        temp_unit = hass.config.units.temperature_unit
-        self._attr_native_unit_of_measurement = temp_unit
-
         self._temperature_entity_id = temperature_entity_id
         self._humidity_entity_id = humidity_entity_id
         self._wind_speed_entity_id = wind_speed_entity_id
@@ -141,13 +140,17 @@ class WeatherSenseSensor(SensorEntity):
         self._wind_direction_correction_enabled = wind_direction_correction
         self._is_outdoor = is_outdoor
 
-        # Set display unit
+        # The native value is always Celsius; HA converts the displayed state
+        # to the system unit. An explicit display unit choice is expressed
+        # through the entity-registry unit override (see async_added_to_hass),
+        # never by converting the native value.
         if display_unit in [UnitOfTemperature.CELSIUS, UnitOfTemperature.FAHRENHEIT]:
-            self._attr_native_unit_of_measurement = display_unit
+            self._display_unit = display_unit
+            self._attr_suggested_unit_of_measurement = display_unit
         else:
-            # Default to system settings
-            self._attr_native_unit_of_measurement = hass.config.units.temperature_unit
+            self._display_unit = None
 
+        self._attr_available = True
         self._temperature = None
         self._humidity = None
         self._wind_speed = None
@@ -188,6 +191,28 @@ class WeatherSenseSensor(SensorEntity):
         if self._wind_direction_entity_id:
             entities_to_track.append(self._wind_direction_entity_id)
 
+        # suggested_unit_of_measurement only applies on first registration,
+        # so a display unit changed later via the options flow needs the
+        # entity-registry override updated explicitly (same mechanism as the
+        # UI unit setting).
+        if self._display_unit:
+            registry = er.async_get(self.hass)
+            reg_entry = registry.async_get(self.entity_id)
+            if reg_entry and reg_entry.options.get("sensor", {}).get(
+                "unit_of_measurement"
+            ) != self._display_unit:
+                # Merge: async_update_entity_options replaces the whole
+                # per-domain dict, and options["sensor"] also carries
+                # user-set keys like display_precision.
+                registry.async_update_entity_options(
+                    reg_entry.entity_id,
+                    "sensor",
+                    {
+                        **reg_entry.options.get("sensor", {}),
+                        "unit_of_measurement": self._display_unit,
+                    },
+                )
+
         # Initial data fetch
         await self._update_state()
 
@@ -203,11 +228,19 @@ class WeatherSenseSensor(SensorEntity):
         entity_id = event.data.get("entity_id")
         new_state = event.data.get("new_state")
 
-        if new_state is None or new_state.state == "unavailable" or new_state.state == "unknown":
+        # Recompute even for unavailable/unknown states: a vanished required
+        # input must flip this entity to unavailable, and a vanished optional
+        # input must drop its stale attribute instead of serving old data.
+        if new_state is None or new_state.state in ("unavailable", "unknown"):
             _LOGGER.debug("Entity %s has invalid state: %s", entity_id, new_state)
-            return
 
         await self._update_state()
+
+    def _set_unavailable(self) -> None:
+        """Mark the entity unavailable so consumers do not read stale data."""
+        if self._attr_available:
+            self._attr_available = False
+            self.async_write_ha_state()
 
     async def _update_state(self) -> None:
         """Update the state of the sensor."""
@@ -217,6 +250,7 @@ class WeatherSenseSensor(SensorEntity):
 
         if not temp_state or not humidity_state:
             _LOGGER.warning("Required sensor states not available")
+            self._set_unavailable()
             return
 
         try:
@@ -232,10 +266,12 @@ class WeatherSenseSensor(SensorEntity):
             self._humidity = float(humidity_state.state)
         except (ValueError, TypeError):
             _LOGGER.warning("Invalid temperature or humidity values")
+            self._set_unavailable()
             return
 
         # Get optional sensor values
         wind_speed = 0
+        self._wind_speed = None
         if self._wind_speed_entity_id:
             wind_state = self.hass.states.get(self._wind_speed_entity_id)
             if wind_state:
@@ -245,14 +281,28 @@ class WeatherSenseSensor(SensorEntity):
                     wind_unit = wind_state.attributes.get(ATTR_UNIT_OF_MEASUREMENT)
                     if wind_unit == UnitOfSpeed.KILOMETERS_PER_HOUR:
                         wind_speed = wind_speed / 3.6
-                        _LOGGER.debug("Converted wind speed from %s km/h to %s m/s",
-                                     float(wind_state.state), wind_speed)
                     elif wind_unit == UnitOfSpeed.MILES_PER_HOUR:
                         wind_speed = wind_speed * 0.44704
-                        _LOGGER.debug("Converted wind speed from %s mph to %s m/s",
-                                     float(wind_state.state), wind_speed)
+                    elif wind_unit == UnitOfSpeed.KNOTS:
+                        wind_speed = wind_speed * 0.514444
+                    elif wind_unit == UnitOfSpeed.FEET_PER_SECOND:
+                        wind_speed = wind_speed * 0.3048
+                    elif wind_unit == UnitOfSpeed.BEAUFORT:
+                        # Beaufort is not linear: v = 0.836 * B^(3/2) m/s.
+                        # Clamp at 0: a negative reading would produce a
+                        # complex number and crash the update.
+                        wind_speed = 0.836 * max(0.0, wind_speed) ** 1.5
+                    elif wind_unit not in (None, UnitOfSpeed.METERS_PER_SECOND):
+                        _LOGGER.warning(
+                            "Unsupported wind speed unit %s on %s; assuming m/s",
+                            wind_unit, self._wind_speed_entity_id,
+                        )
+                    if wind_unit != UnitOfSpeed.METERS_PER_SECOND:
+                        _LOGGER.debug("Converted wind speed from %s %s to %s m/s",
+                                     float(wind_state.state), wind_unit, wind_speed)
                     self._wind_speed = wind_speed
                 except (ValueError, TypeError):
+                    wind_speed = 0
                     _LOGGER.debug("Invalid wind speed value")
 
         self._pressure = None
@@ -264,19 +314,29 @@ class WeatherSenseSensor(SensorEntity):
 
                     # Convert to kPa if needed
                     pressure_unit = pressure_state.attributes.get(ATTR_UNIT_OF_MEASUREMENT)
-                    if pressure_unit == UnitOfPressure.HPA:
-                        # 1 hPa = 0.1 kPa
+                    if pressure_unit in (UnitOfPressure.HPA, UnitOfPressure.MBAR):
+                        # 1 hPa = 1 mbar = 0.1 kPa
                         pressure_value = pressure_value * 0.1
-                        _LOGGER.debug("Converted pressure from %s hPa to %s kPa",
-                                     float(pressure_state.state), pressure_value)
                     elif pressure_unit == UnitOfPressure.MMHG:
                         pressure_value = pressure_value * 0.133322
-                        _LOGGER.debug("Converted pressure from %s mmHg to %s kPa",
-                                     float(pressure_state.state), pressure_value)
                     elif pressure_unit == UnitOfPressure.INHG:
                         pressure_value = pressure_value * 3.38639
-                        _LOGGER.debug("Converted pressure from %s inHg to %s kPa",
-                                     float(pressure_state.state), pressure_value)
+                    elif pressure_unit == UnitOfPressure.PA:
+                        pressure_value = pressure_value * 0.001
+                    elif pressure_unit == UnitOfPressure.BAR:
+                        pressure_value = pressure_value * 100
+                    elif pressure_unit == UnitOfPressure.CBAR:
+                        pressure_value = pressure_value * 1.0  # 1 cbar = 1 kPa
+                    elif pressure_unit == UnitOfPressure.PSI:
+                        pressure_value = pressure_value * 6.89476
+                    elif pressure_unit not in (None, UnitOfPressure.KPA):
+                        _LOGGER.warning(
+                            "Unsupported pressure unit %s on %s; assuming kPa",
+                            pressure_unit, self._pressure_entity_id,
+                        )
+                    if pressure_unit != UnitOfPressure.KPA:
+                        _LOGGER.debug("Converted pressure from %s %s to %s kPa",
+                                     float(pressure_state.state), pressure_unit, pressure_value)
 
                     self._pressure = pressure_value
                 except (ValueError, TypeError):
@@ -300,8 +360,11 @@ class WeatherSenseSensor(SensorEntity):
             if solar_state:
                 try:
                     self._solar_radiation = float(solar_state.state)
-                    # Estimate cloudiness from solar radiation
-                    # Clear sky ≈ 1000 W/m², full cloud ≈ 0 W/m²
+                    # Estimate cloudiness from solar radiation.
+                    # Clear sky ≈ 1000 W/m², full cloud ≈ 0 W/m². A reading of
+                    # 0 (e.g. at night) is indistinguishable from full
+                    # overcast; harmless, since the nighttime branch of the
+                    # solar correction ignores cloudiness anyway.
                     cloudiness = max(0, min(100, 100 * (1 - self._solar_radiation / 1000)))
                 except (ValueError, TypeError):
                     _LOGGER.debug("Invalid solar radiation value")
@@ -326,11 +389,9 @@ class WeatherSenseSensor(SensorEntity):
         )
         self._wind_direction_correction = wind_dir_correction
 
-        if self._attr_native_unit_of_measurement == UnitOfTemperature.FAHRENHEIT:
-            feels_like_f = (feels_like * 9/5) + 32
-            raw_value = round(feels_like_f, 1)
-        else:
-            raw_value = round(feels_like, 1)
+        # Native value stays in Celsius; HA converts the state to the system
+        # unit or the entity-registry override (see async_added_to_hass).
+        raw_value = round(feels_like, 1)
 
         # Apply EMA smoothing if enabled
         if self._smoothing_enabled and self._previous_smoothed_value is not None:
@@ -360,11 +421,17 @@ class WeatherSenseSensor(SensorEntity):
             is_comfortable
         )
 
+        self._attr_available = True
         self._attr_extra_state_attributes = {
-            ATTR_COMFORT_LEVEL: get_comfort_level(self._comfort_level, self.hass.config.language),
+            # comfort_level is the stable machine-readable key (automations
+            # and the companion card depend on it); localized text lives in
+            # comfort_level_localized.
+            ATTR_COMFORT_LEVEL: self._comfort_level,
+            ATTR_COMFORT_LEVEL_LOCALIZED: get_comfort_level(self._comfort_level, self.hass.config.language),
             ATTR_COMFORT_DESCRIPTION: get_comfort_description(self._comfort_level, self.hass.config.language),
             ATTR_COMFORT_EXPLANATION: get_comfort_explanation(self._comfort_level, self.hass.config.language),
             ATTR_CALCULATION_METHOD: get_calculation_method(self._calculation_method, self.hass.config.language),
+            ATTR_CALCULATION_METHOD_KEY: METHOD_KEYS.get(self._calculation_method, self._calculation_method),
             ATTR_TEMPERATURE: self._temperature,
             ATTR_HUMIDITY: self._humidity,
             ATTR_IS_OUTDOOR: self._is_outdoor,

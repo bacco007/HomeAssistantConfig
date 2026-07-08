@@ -1,7 +1,7 @@
 """
 Localized comfort descriptions and explanations for HA WeatherSense.
 
-@license: CC BY-NC-SA 4.0 International
+@license: PolyForm Noncommercial 1.0.0
 @author: SMKRV
 @github: https://github.com/smkrv/ha-weathersense
 @source: https://github.com/smkrv/ha-weathersense
@@ -342,8 +342,18 @@ CALCULATION_METHOD_I18N = {
 }
 
 
+# Language codes that do not resolve via exact/base/case-insensitive
+# matching. Home Assistant reports Chinese as zh-Hans/zh-Hant (BCP-47
+# script subtags), while the translation tables are keyed zh-CN.
+_LANG_ALIASES = {
+    "zh-hans": "zh-CN",
+    "zh-hant": "zh-CN",  # best effort: only Simplified is shipped
+    "zh": "zh-CN",
+}
+
+
 def _normalize_lang(language: str) -> str:
-    """Normalize language code: zh_Hans → zh-CN, en_US → en, cs → cs."""
+    """Normalize language code: zh-Hans → zh-CN, en_US → en, cs → cs."""
     lang = language.replace("_", "-")
     # Try exact match first, then base language
     for source in (COMFORT_DESCRIPTIONS_I18N,):
@@ -356,7 +366,7 @@ def _normalize_lang(language: str) -> str:
         for key in source:
             if key.lower() == lang.lower():
                 return key
-    return lang
+    return _LANG_ALIASES.get(lang.lower(), lang)
 
 
 def get_comfort_level(comfort_level: str, language: str) -> str:

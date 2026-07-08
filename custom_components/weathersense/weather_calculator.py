@@ -1,7 +1,7 @@
 """
 Weather calculation functions for HA WeatherSense.
 
-@license: CC BY-NC-SA 4.0 International
+@license: PolyForm Noncommercial 1.0.0
 @author: SMKRV
 @github: https://github.com/smkrv/ha-weathersense
 @source: https://github.com/smkrv/ha-weathersense
@@ -37,12 +37,15 @@ def calculate_heat_index(temperature: float, humidity: float) -> float:
     t_f = (temperature * 9/5) + 32
     rh = humidity
 
-    # Simple formula for lower humidity or temperature conditions
-    # 80°F is approximately 27°C
-    if rh < 40 or t_f < 80:
-        hi_f = 0.5 * (t_f + 61.0 + ((t_f - 68.0) * 1.2) + (rh * 0.094))
-        hi_f = (hi_f + t_f) / 2  # Average with actual temperature for more reasonable results
-    else:
+    # NWS/WPC algorithm: the simple (Steadman) formula is computed first and
+    # averaged with the air temperature; only when that result reaches 80°F
+    # does the full Rothfusz regression (with its adjustments) apply. The
+    # previous rh/temperature gate made the low-humidity adjustment below
+    # unreachable dead code.
+    hi_f = 0.5 * (t_f + 61.0 + ((t_f - 68.0) * 1.2) + (rh * 0.094))
+    hi_f = (hi_f + t_f) / 2  # Average with actual temperature per NWS practice
+
+    if hi_f >= 80:
         # Full Rothfusz regression formula (works in Fahrenheit)
         hi_f = -42.379
         hi_f += 2.04901523 * t_f
@@ -180,8 +183,9 @@ def apply_solar_correction(
             hour, solar_intensity, max_solar_correction, cloud_factor, solar_factor
         )
     
-    # Nighttime cooling effect (minor)
-    elif hour >= 19 or hour <= 4:
+    # Nighttime cooling effect (minor); contiguous with the 6-18 daytime
+    # branch so no hour is left without a correction
+    elif hour >= 19 or hour <= 5:
         # Very slight cooling at night / evening
         solar_factor = -0.5
     

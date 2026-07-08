@@ -1,7 +1,7 @@
 """
 The HA WeatherSense integration.
 
-@license: CC BY-NC-SA 4.0 International
+@license: PolyForm Noncommercial 1.0.0
 @author: SMKRV
 @github: https://github.com/smkrv/ha-weathersense
 @source: https://github.com/smkrv/ha-weathersense

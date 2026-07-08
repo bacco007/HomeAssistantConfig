@@ -1,7 +1,7 @@
 """
 Constants for the HA WeatherSense integration.
 
-@license: CC BY-NC-SA 4.0 International
+@license: PolyForm Noncommercial 1.0.0
 @author: SMKRV
 @github: https://github.com/smkrv/ha-weathersense
 @source: https://github.com/smkrv/ha-weathersense
@@ -87,9 +87,11 @@ COMFORT_ICONS = {
 
 # Sensor attributes
 ATTR_COMFORT_LEVEL = "comfort_level"
+ATTR_COMFORT_LEVEL_LOCALIZED = "comfort_level_localized"
 ATTR_COMFORT_DESCRIPTION = "comfort_description"
 ATTR_COMFORT_EXPLANATION = "comfort_explanation"
 ATTR_CALCULATION_METHOD = "calculation_method"
+ATTR_CALCULATION_METHOD_KEY = "calculation_method_key"
 ATTR_TEMPERATURE = "temperature"
 ATTR_HUMIDITY = "humidity"
 ATTR_WIND_SPEED = "wind_speed"
@@ -99,3 +101,12 @@ ATTR_TIME_OF_DAY = "time_of_day"
 ATTR_IS_COMFORTABLE = "is_comfortable"
 ATTR_WIND_DIRECTION = "wind_direction"
 ATTR_WIND_DIRECTION_CORRECTION = "wind_direction_correction_applied"
+
+# Stable machine-readable keys for the calculation methods; the
+# calculation_method attribute carries the localized display text.
+METHOD_KEYS = {
+    "Heat Index": "heat_index",
+    "Wind Chill": "wind_chill",
+    "Steadman Apparent Temperature": "steadman",
+    "Indoor Comfort Model": "indoor",
+}
