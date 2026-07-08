@@ -11,8 +11,14 @@
           "site": "Site",
           "verify_ssl": "Verify SSL Certificate",
           "auto_speedtest": "Run Speedtest Automatically",
-          "auto_speedtest_minutes": "Auto Speedtest Interval (minutes)",
-          "month_reset_day": "Month Reset Day"
+          "auto_speedtest_minutes": "Auto Speedtest Interval (minutes)"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate UniFi WAN",
+        "description": "The API key for {host} is no longer valid. Enter a new API key.",
+        "data": {
+          "api_key": "API Key"
         }
       }
     },
@@ -20,6 +26,10 @@
       "cannot_connect": "Cannot connect. Check Host/IP, API key and Site.",
       "invalid_auth": "Invalid authentication",
       "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "This UniFi controller and site is already configured.",
+      "reauth_successful": "Re-authentication was successful."
     }
   },
   "options": {
@@ -29,22 +39,32 @@
         "description": "Adjust performance and speedtest settings.",
         "data": {
           "host": "Host / IP",
-          "api_key": "API Key",
+          "api_key": "API Key (leave blank to keep current)",
           "site": "Site",
           "verify_ssl": "Verify SSL Certificate",
           "scan_interval": "Scan Interval (seconds)",
           "rate_interval_seconds": "Rate Interval (seconds, 0 to disable)",
           "auto_speedtest": "Run Speedtest Automatically",
-          "auto_speedtest_minutes": "Auto Speedtest Interval (minutes)",
-          "month_reset_day": "Month Reset Day"
+          "auto_speedtest_minutes": "Auto Speedtest Interval (minutes)"
         }
       }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect. Check Host/IP, API key and Site.",
+      "invalid_auth": "Invalid authentication",
+      "unknown": "Unexpected error"
     }
   },
   "services": {
     "run_speedtest": {
       "name": "Run Speedtest",
-      "description": "Trigger a manual speedtest on the active UniFi Gateway immediately."
+      "description": "Trigger a manual speedtest on the active UniFi Gateway immediately.",
+      "fields": {
+        "wan": {
+          "name": "WAN interface",
+          "description": "Optional WAN number to test (e.g. 1 or 2). Omit to test the active WAN."
+        }
+      }
     }
   }
 }

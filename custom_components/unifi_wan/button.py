@@ -1,96 +1,66 @@
 from __future__ import annotations
 
+from typing import Any
+
 from homeassistant.components.button import ButtonEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     shared = hass.data[DOMAIN][entry.entry_id]
-    device_coord = shared["device_coordinator"]
-    meta = shared.get("dev_meta", {})
-    
-    host = shared["host"]
-    site = shared["site"]
-    devname = f"UniFi WAN ({host} / {site})"
+
+    entry_id = entry.entry_id
+    device_info = shared["device_info"]
     wan_numbers = shared["wan_numbers"]
 
-    entities = [RunSpeedtestButton(device_coord, shared, host, site, devname, meta)]
+    entities = [RunSpeedtestButton(shared, entry_id, device_info)]
 
     for wan_number in wan_numbers:
         entities.append(
-            RunSpeedtestWanButton(device_coord, shared, host, site, devname, meta, wan_number)
+            RunSpeedtestWanButton(shared, entry_id, device_info, wan_number)
         )
 
     async_add_entities(entities)
 
 
-class RunSpeedtestButton(CoordinatorEntity, ButtonEntity):
+class UniFiSpeedtestButtonBase(ButtonEntity):
+    _attr_icon = "mdi:speedometer"
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_should_poll = False
+
+    def __init__(self, shared: dict[str, Any], entry_id: str, device_info: dict[str, Any]):
+        self._shared = shared
+        self._attr_device_info = device_info
+
+    def _trigger(self, wan_number: int | None = None) -> None:
+        # Fire and forget: the speedtest runner waits for the result (up to
+        # several minutes), so run it in the background instead of blocking
+        # the button press. Progress is exposed via the In Progress sensor.
+        runner = self._shared.get("run_speedtest_now")
+        if callable(runner):
+            self.hass.async_create_task(runner(wan_number))
+
+
+class RunSpeedtestButton(UniFiSpeedtestButtonBase):
     _attr_name = "UniFi Run Speedtest"
-    _attr_icon = "mdi:speedometer"
-    _attr_entity_category = EntityCategory.DIAGNOSTIC
 
-    def __init__(self, coordinator, shared, host, site, devname, meta):
-        super().__init__(coordinator)
-        self._shared = shared
-        self._host = host
-        self._site = site
-        self._devname = devname
-        self._meta = meta
-
-    @property
-    def unique_id(self):
-        return f"{self._host}_{self._site}_run_speedtest"
-
-    @property
-    def device_info(self):
-        return {
-            "identifiers": {(DOMAIN, self._host, self._site)},
-            "name": self._devname,
-            "manufacturer": "Ubiquiti",
-            "model": self._meta.get("model"),
-        }
+    def __init__(self, shared, entry_id, device_info):
+        super().__init__(shared, entry_id, device_info)
+        self._attr_unique_id = f"{entry_id}_run_speedtest"
 
     async def async_press(self) -> None:
-        runner = self._shared.get("run_speedtest_now")
-        if callable(runner):
-            await runner()
+        self._trigger()
 
 
-class RunSpeedtestWanButton(CoordinatorEntity, ButtonEntity):
-    _attr_icon = "mdi:speedometer"
-    _attr_entity_category = EntityCategory.DIAGNOSTIC
-
-    def __init__(self, coordinator, shared, host, site, devname, meta, wan_number: int):
-        super().__init__(coordinator)
-        self._shared = shared
-        self._host = host
-        self._site = site
-        self._devname = devname
-        self._meta = meta
+class RunSpeedtestWanButton(UniFiSpeedtestButtonBase):
+    def __init__(self, shared, entry_id, device_info, wan_number: int):
+        super().__init__(shared, entry_id, device_info)
         self._wan_number = wan_number
-
-    @property
-    def name(self) -> str:
-        return f"UniFi Run Speedtest WAN{self._wan_number}"
-
-    @property
-    def unique_id(self) -> str:
-        return f"{self._host}_{self._site}_run_speedtest_wan{self._wan_number}"
-
-    @property
-    def device_info(self):
-        return {
-            "identifiers": {(DOMAIN, self._host, self._site)},
-            "name": self._devname,
-            "manufacturer": "Ubiquiti",
-            "model": self._meta.get("model"),
-        }
+        self._attr_name = f"UniFi Run Speedtest WAN{wan_number}"
+        self._attr_unique_id = f"{entry_id}_run_speedtest_wan{wan_number}"
 
     async def async_press(self) -> None:
-        runner = self._shared.get("run_speedtest_now")
-        if callable(runner):
-            await runner(self._wan_number)
+        self._trigger(self._wan_number)

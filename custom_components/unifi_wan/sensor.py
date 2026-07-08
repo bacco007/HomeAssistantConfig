@@ -26,7 +26,7 @@ from . import UniFiWanData
 DATA_RATE_UNIT_MEGABITS_PER_SECOND: Final = "Mbit/s"
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class UniFiSensorDescription(SensorEntityDescription):
     """Description for UniFi Sensors."""
 
@@ -35,11 +35,11 @@ class UniFiSensorDescription(SensorEntityDescription):
     use_rate_coordinator: bool = False
 
 
-def _mbps(val: Any) -> float:
+def _mbps(val: Any) -> float | None:
     try:
         return round(float(val) * 8 / 1_000_000, 2)
-    except Exception:
-        return 0.0
+    except (TypeError, ValueError):
+        return None
 
 
 def _ts_date(val: Any) -> datetime | None:
@@ -47,7 +47,7 @@ def _ts_date(val: Any) -> datetime | None:
         ts = int(val)
         if ts > 0:
             return datetime.fromtimestamp(ts, tz=timezone.utc)
-    except Exception:
+    except (TypeError, ValueError):
         pass
     return None
 
@@ -119,7 +119,7 @@ SENSORS: Final[tuple[UniFiSensorDescription, ...]] = (
         device_class=SensorDeviceClass.DATA_RATE,
         state_class=SensorStateClass.MEASUREMENT,
         native_unit_of_measurement=DATA_RATE_UNIT_MEGABITS_PER_SECOND,
-        value_fn=lambda d: _mbps(d.uplink.get("rx_bytes-r", 0)),
+        value_fn=lambda d: _mbps(d.uplink.get("rx_bytes-r")),
         use_rate_coordinator=True,
     ),
     UniFiSensorDescription(
@@ -129,7 +129,7 @@ SENSORS: Final[tuple[UniFiSensorDescription, ...]] = (
         device_class=SensorDeviceClass.DATA_RATE,
         state_class=SensorStateClass.MEASUREMENT,
         native_unit_of_measurement=DATA_RATE_UNIT_MEGABITS_PER_SECOND,
-        value_fn=lambda d: _mbps(d.uplink.get("tx_bytes-r", 0)),
+        value_fn=lambda d: _mbps(d.uplink.get("tx_bytes-r")),
         use_rate_coordinator=True,
     ),
     UniFiSensorDescription(
@@ -139,7 +139,7 @@ SENSORS: Final[tuple[UniFiSensorDescription, ...]] = (
         device_class=SensorDeviceClass.DATA_RATE,
         state_class=SensorStateClass.MEASUREMENT,
         native_unit_of_measurement=DATA_RATE_UNIT_MEGABITS_PER_SECOND,
-        value_fn=lambda d: _mbps(d.uplink.get("rx_bytes-r", 0)),
+        value_fn=lambda d: _mbps(d.uplink.get("rx_bytes-r")),
     ),
     UniFiSensorDescription(
         key="wan_up_mbps_scan_interval",
@@ -148,7 +148,7 @@ SENSORS: Final[tuple[UniFiSensorDescription, ...]] = (
         device_class=SensorDeviceClass.DATA_RATE,
         state_class=SensorStateClass.MEASUREMENT,
         native_unit_of_measurement=DATA_RATE_UNIT_MEGABITS_PER_SECOND,
-        value_fn=lambda d: _mbps(d.uplink.get("tx_bytes-r", 0)),
+        value_fn=lambda d: _mbps(d.uplink.get("tx_bytes-r")),
     ),
     UniFiSensorDescription(
         key="speedtest_down",
@@ -222,10 +222,8 @@ async def async_setup_entry(
     rates_coord = shared.get("rates_coordinator") or shared["device_coordinator"]
     device_coord = shared["device_coordinator"]
 
-    host = shared["host"]
-    site = shared["site"]
-    meta = shared["dev_meta"]
-    devname = f"UniFi WAN ({host} / {site})"
+    entry_id = entry.entry_id
+    device_info = shared["device_info"]
     wan_numbers = shared["wan_numbers"]
 
     entities: list[UniFiGenericSensor] = []
@@ -234,16 +232,7 @@ async def async_setup_entry(
         coord: DataUpdateCoordinator = (
             rates_coord if desc.use_rate_coordinator else device_coord
         )
-        entities.append(
-            UniFiGenericSensor(
-                coord,
-                host,
-                site,
-                devname,
-                meta,
-                desc,
-            )
-        )
+        entities.append(UniFiGenericSensor(coord, entry_id, device_info, desc))
 
     for wan_number in wan_numbers:
         ipv4 = UniFiSensorDescription(
@@ -252,9 +241,7 @@ async def async_setup_entry(
             icon="mdi:ip",
             value_fn=lambda d, wn=wan_number: d.wan.get(wn, {}).get("ip") or "unknown",
         )
-        entities.append(
-            UniFiGenericSensor(device_coord, host, site, devname, meta, ipv4)
-        )
+        entities.append(UniFiGenericSensor(device_coord, entry_id, device_info, ipv4))
         ipv6 = UniFiSensorDescription(
             key=f"wan{wan_number}_ipv6",
             name=f"UniFi WAN{wan_number} IPv6",
@@ -269,9 +256,7 @@ async def async_setup_entry(
                 "ip6_addresses": (d.wan.get(wn) or {}).get("ip6_addresses"),
             },
         )
-        entities.append(
-            UniFiGenericSensor(device_coord, host, site, devname, meta, ipv6)
-        )
+        entities.append(UniFiGenericSensor(device_coord, entry_id, device_info, ipv6))
 
     async_add_entities(entities)
 
@@ -282,33 +267,14 @@ class UniFiGenericSensor(CoordinatorEntity, SensorEntity):
     def __init__(
         self,
         coordinator: DataUpdateCoordinator,
-        host: str,
-        site: str,
-        devname: str,
-        meta: dict[str, Any],
+        entry_id: str,
+        device_info: dict[str, Any],
         description: UniFiSensorDescription,
     ) -> None:
         super().__init__(coordinator)
-        self._host = host
-        self._site = site
-        self._devname = devname
-        self._meta = meta
+        self._attr_unique_id = f"{entry_id}_{description.key}"
+        self._attr_device_info = device_info
         self.entity_description = description
-
-    @property
-    def unique_id(self) -> str:
-        return f"{self._host}_{self._site}_{self.entity_description.key}"
-
-    @property
-    def device_info(self) -> dict[str, Any]:
-        return {
-            "identifiers": {(DOMAIN, self._host, self._site)},
-            "name": self._devname,
-            "manufacturer": "Ubiquiti",
-            "model": self._meta.get("model"),
-            "sw_version": self._meta.get("sw_version"),
-            "configuration_url": f"https://{self._host}/",
-        }
 
     @property
     def native_value(self) -> Any:

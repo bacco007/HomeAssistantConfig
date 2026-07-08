@@ -35,6 +35,12 @@ PLATFORMS: Final = [
 
 SIGNAL_SPEEDTEST_RUNNING: Final = f"{DOMAIN}_speedtest_running"
 SERVICE_RUN_SPEEDTEST: Final = "run_speedtest"
+ATTR_WAN: Final = "wan"
+
+# How long to wait for a triggered speedtest to finish, and how often to
+# poll the controller for its result while waiting.
+SPEEDTEST_TIMEOUT_SECONDS: Final = 300
+SPEEDTEST_POLL_SECONDS: Final = 15
 
 GATEWAY_DEVICES: Final = ["udm", "ugw", "uxg", "uxg-pro", "ucg-ultra", "ucg"]
 MAX_WAN_INTERFACES: Final = 4

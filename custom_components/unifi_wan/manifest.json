@@ -1,7 +1,7 @@
 {
   "domain": "unifi_wan",
   "name": "UniFi WAN",
-  "version": "1.0.8",
+  "version": "1.2.0",
   "documentation": "https://github.com/holdestmade/Unifi-WAN",
   "issue_tracker": "https://github.com/holdestmade/Unifi-WAN/issues",
   "codeowners": ["@holdestmade"],
@@ -9,6 +9,5 @@
   "iot_class": "local_polling",
   "loggers": ["custom_components.unifi_wan"],
   "requirements": [],
-  "integration_type": "hub",
-  "homeassistant": "2025.10.0"
+  "integration_type": "hub"
 }

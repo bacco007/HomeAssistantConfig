@@ -9,7 +9,7 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntityDescription,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import EntityCategory
@@ -17,7 +17,7 @@ from homeassistant.helpers.entity import EntityCategory
 from .const import DOMAIN
 from . import UniFiWanData
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class UniFiBinaryEntityDescription(BinarySensorEntityDescription):
     value_fn: Callable[[UniFiWanData], bool] = lambda x: False
 
@@ -39,16 +39,14 @@ BINARY_SENSORS: tuple[UniFiBinaryEntityDescription, ...] = (
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     shared = hass.data[DOMAIN][entry.entry_id]
     device = shared["device_coordinator"]
-    meta = shared.get("dev_meta", {})
-    
-    host = shared["host"]
-    site = shared["site"]
-    devname = f"UniFi WAN ({host} / {site})"
+
+    entry_id = entry.entry_id
+    device_info = shared["device_info"]
     wan_numbers = shared["wan_numbers"]
 
     entities = []
     for desc in BINARY_SENSORS:
-        entities.append(UniFiGenericBinary(device, host, site, devname, meta, desc))
+        entities.append(UniFiGenericBinary(device, entry_id, device_info, desc))
 
     for wan_number in wan_numbers:
         # The controller's last_wan_interfaces "alive" flag can stay stale for a
@@ -60,44 +58,27 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
             device_class=BinarySensorDeviceClass.CONNECTIVITY,
             value_fn=lambda d, wn=wan_number: bool(d.wan.get(wn, {}).get("up")) and d.wan_alive.get(wn, bool(d.wan.get(wn, {}).get("ip"))),
         )
-        entities.append(UniFiGenericBinary(device, host, site, devname, meta, internet))
+        entities.append(UniFiGenericBinary(device, entry_id, device_info, internet))
         link = UniFiBinaryEntityDescription(
             key=f"wan{wan_number}_link",
             name=f"UniFi WAN{wan_number} Link",
             device_class=BinarySensorDeviceClass.CONNECTIVITY,
             value_fn=lambda d, wn=wan_number: bool(d.wan.get(wn, {}).get("up")),
         )
-        entities.append(UniFiGenericBinary(device, host, site, devname, meta, link))
+        entities.append(UniFiGenericBinary(device, entry_id, device_info, link))
 
-    entities.append(UniFiSpeedtestInProgress(shared, host, site, devname, meta))
+    entities.append(UniFiSpeedtestInProgress(shared, entry_id, device_info))
     async_add_entities(entities)
 
 
 class UniFiGenericBinary(CoordinatorEntity, BinarySensorEntity):
     entity_description: UniFiBinaryEntityDescription
 
-    def __init__(self, coordinator, host, site, devname, meta, description):
+    def __init__(self, coordinator, entry_id: str, device_info: dict[str, Any], description):
         super().__init__(coordinator)
-        self._host = host
-        self._site = site
-        self._devname = devname
-        self._meta = meta
+        self._attr_unique_id = f"{entry_id}_{description.key}"
+        self._attr_device_info = device_info
         self.entity_description = description
-
-    @property
-    def unique_id(self):
-        return f"{self._host}_{self._site}_{self.entity_description.key}"
-
-    @property
-    def device_info(self):
-        return {
-            "identifiers": {(DOMAIN, self._host, self._site)},
-            "name": self._devname,
-            "manufacturer": "Ubiquiti",
-            "model": self._meta.get("model"),
-            "sw_version": self._meta.get("sw_version"),
-            "configuration_url": f"https://{self._host}/",
-        }
 
     @property
     def is_on(self) -> bool:
@@ -111,37 +92,20 @@ class UniFiSpeedtestInProgress(BinarySensorEntity):
     _attr_should_poll = False
     _attr_entity_category = EntityCategory.DIAGNOSTIC
 
-    def __init__(self, shared, host, site, devname, meta):
+    def __init__(self, shared, entry_id: str, device_info: dict[str, Any]):
         self._shared = shared
-        self._host = host
-        self._site = site
-        self._devname = devname
-        self._meta = meta
-        self._unsub = None
+        self._attr_unique_id = f"{entry_id}_speedtest_in_progress"
+        self._attr_device_info = device_info
 
-    @property
-    def unique_id(self):
-        return f"{self._host}_{self._site}_speedtest_in_progress"
-
-    @property
-    def device_info(self):
-        return {
-            "identifiers": {(DOMAIN, self._host, self._site)},
-            "name": self._devname,
-            "manufacturer": "Ubiquiti",
-            "model": self._meta.get("model"),
-        }
-
-    async def async_added_to_hass(self):
+    async def async_added_to_hass(self) -> None:
         signal = self._shared["speedtest_running_signal"]
-        self._unsub = async_dispatcher_connect(self.hass, signal, self._signal_update)
+        self.async_on_remove(
+            async_dispatcher_connect(self.hass, signal, self._signal_update)
+        )
 
-    async def async_will_remove_from_hass(self):
-        if self._unsub:
-            self._unsub()
-
-    def _signal_update(self):
-        self.schedule_update_ha_state()
+    @callback
+    def _signal_update(self) -> None:
+        self.async_write_ha_state()
 
     @property
     def is_on(self) -> bool:
