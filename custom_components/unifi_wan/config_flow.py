@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import asyncio
 import logging
+import ssl
 from collections.abc import Mapping
 from typing import Any
 
+import aiohttp
 import voluptuous as vol
 
 from homeassistant import config_entries
@@ -34,35 +37,83 @@ _LOGGER = logging.getLogger(__name__)
 
 API_KEY_SELECTOR = selector.selector({"text": {"type": "password"}})
 
+VALIDATE_TIMEOUT = aiohttp.ClientTimeout(total=30)
 
-class CannotConnect(Exception):
+
+class ValidationError(Exception):
+    """Base class for validation failures; error_key maps to translations."""
+
+    error_key = "cannot_connect"
+
+
+class CannotConnect(ValidationError):
     """Error to indicate we cannot connect."""
 
+    error_key = "cannot_connect"
 
-class InvalidAuth(Exception):
+
+class InvalidAuth(ValidationError):
     """Error to indicate the API key was rejected."""
+
+    error_key = "invalid_auth"
+
+
+class InvalidSite(ValidationError):
+    """Error to indicate the API endpoint or site was not found (HTTP 404)."""
+
+    error_key = "invalid_site"
+
+
+class SSLCertError(ValidationError):
+    """Error to indicate SSL certificate verification failed."""
+
+    error_key = "ssl_error"
+
+
+class Timeout(ValidationError):
+    """Error to indicate the console did not answer in time."""
+
+    error_key = "timeout"
+
+
+def _clean_host(host: str) -> str:
+    """Normalize a host: strip whitespace, scheme and any path."""
+    host = (host or "").strip()
+    for scheme in ("https://", "http://"):
+        if host.lower().startswith(scheme):
+            host = host[len(scheme):]
+            break
+    return host.split("/", 1)[0]
 
 
 async def _async_validate(
     hass: HomeAssistant, host: str, api_key: str, site: str, verify_ssl: bool
 ) -> None:
     """Probe /stat/device to check connectivity and basic shape."""
-    host = (host or "").strip().rstrip("/")
+    host = _clean_host(host)
     api_key = (api_key or "").strip()
     site = (site or DEFAULT_SITE).strip()
     session = async_get_clientsession(hass, verify_ssl)
     url = f"https://{host}/proxy/network/api/s/{site}/stat/device"
     headers = {"X-API-Key": api_key}
     try:
-        async with session.get(url, headers=headers) as resp:
+        async with session.get(
+            url, headers=headers, timeout=VALIDATE_TIMEOUT
+        ) as resp:
             if resp.status in (401, 403):
                 raise InvalidAuth(f"HTTP {resp.status}")
+            if resp.status == 404:
+                raise InvalidSite(f"HTTP 404 for {url}")
             text = await resp.text()
             if resp.status != 200:
                 raise CannotConnect(f"HTTP {resp.status}: {text[:200]}")
             js = await resp.json(content_type=None)
-    except (InvalidAuth, CannotConnect):
+    except ValidationError:
         raise
+    except (aiohttp.ClientSSLError, ssl.SSLError) as e:
+        raise SSLCertError(str(e)) from e
+    except (asyncio.TimeoutError, TimeoutError) as e:
+        raise Timeout(f"No response from {host} within 30s") from e
     except Exception as e:
         raise CannotConnect(str(e)) from e
     if not isinstance(js, dict) or "data" not in js:
@@ -78,7 +129,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
 
         if user_input is not None:
-            host = user_input[CONF_HOST]
+            host = _clean_host(user_input[CONF_HOST])
             api_key = user_input[CONF_API_KEY]
             site = user_input.get(CONF_SITE, DEFAULT_SITE)
             verify_ssl = user_input.get(CONF_VERIFY_SSL, DEFAULT_VERIFY_SSL)
@@ -94,16 +145,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             try:
                 await _async_validate(self.hass, host, api_key, site, verify_ssl)
-            except InvalidAuth as e:
-                _LOGGER.warning("Validation failed (auth): %s", e)
-                errors["base"] = "invalid_auth"
-            except CannotConnect as e:
-                _LOGGER.warning("Validation failed: %s", e)
-                errors["base"] = "cannot_connect"
+            except ValidationError as e:
+                _LOGGER.warning("Validation failed (%s): %s", e.error_key, e)
+                errors["base"] = e.error_key
             else:
-                unique_id = (
-                    f"{host.strip().rstrip('/')}-{(site or DEFAULT_SITE).strip()}"
-                )
+                unique_id = f"{host}-{(site or DEFAULT_SITE).strip()}"
                 await self.async_set_unique_id(unique_id)
                 self._abort_if_unique_id_configured()
                 return self.async_create_entry(
@@ -161,10 +207,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             api_key = user_input[CONF_API_KEY]
             try:
                 await _async_validate(self.hass, host, api_key, site, verify_ssl)
-            except InvalidAuth:
-                errors["base"] = "invalid_auth"
-            except CannotConnect:
-                errors["base"] = "cannot_connect"
+            except ValidationError as e:
+                _LOGGER.warning("Reauth validation failed (%s): %s", e.error_key, e)
+                errors["base"] = e.error_key
             else:
                 # The API key may also be stored in options (the options flow
                 # writes it there); update both so the new key takes effect.
@@ -201,7 +246,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         errors: dict[str, str] = {}
 
         if user_input is not None:
-            host = user_input.get(CONF_HOST) or self._opt(CONF_HOST, "")
+            host = _clean_host(user_input.get(CONF_HOST) or self._opt(CONF_HOST, ""))
             # An empty API key field means "keep the stored key"
             api_key = user_input.get(CONF_API_KEY) or self._opt(CONF_API_KEY, "")
             site = user_input.get(CONF_SITE) or self._opt(CONF_SITE, DEFAULT_SITE)
@@ -242,12 +287,9 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
             try:
                 await _async_validate(self.hass, host, api_key, site, verify_ssl)
-            except InvalidAuth as e:
-                _LOGGER.warning("Options validation failed (auth): %s", e)
-                errors["base"] = "invalid_auth"
-            except CannotConnect as e:
-                _LOGGER.warning("Options validation failed: %s", e)
-                errors["base"] = "cannot_connect"
+            except ValidationError as e:
+                _LOGGER.warning("Options validation failed (%s): %s", e.error_key, e)
+                errors["base"] = e.error_key
 
             if not errors:
                 return self.async_create_entry(title="", data=new_options)

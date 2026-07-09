@@ -23,8 +23,11 @@
       }
     },
     "error": {
-      "cannot_connect": "Cannot connect. Check Host/IP, API key and Site.",
-      "invalid_auth": "Invalid authentication",
+      "cannot_connect": "Cannot reach the console. Check the Host/IP (just the address, no https:// or port) and that TCP port 443 is open from Home Assistant to the console.",
+      "invalid_auth": "The API key was rejected. Use a local API key created on the console under Settings > Control Plane > Integrations (requires UniFi Network 9.0+). Keys from unifi.ui.com are not supported.",
+      "invalid_site": "The console returned 404 Not Found. Check the Site name (usually 'default', not the display name) and that the console runs UniFi OS (UDM/UDR/UXG/Cloud Key with firmware 2.x or later).",
+      "ssl_error": "SSL certificate verification failed. Turn off 'Verify SSL Certificate' unless your console has a valid trusted certificate.",
+      "timeout": "The console did not respond within 30 seconds. Check the Host/IP and that no firewall is blocking TCP port 443.",
       "unknown": "Unexpected error"
     },
     "abort": {
@@ -50,8 +53,11 @@
       }
     },
     "error": {
-      "cannot_connect": "Cannot connect. Check Host/IP, API key and Site.",
-      "invalid_auth": "Invalid authentication",
+      "cannot_connect": "Cannot reach the console. Check the Host/IP (just the address, no https:// or port) and that TCP port 443 is open from Home Assistant to the console.",
+      "invalid_auth": "The API key was rejected. Use a local API key created on the console under Settings > Control Plane > Integrations (requires UniFi Network 9.0+). Keys from unifi.ui.com are not supported.",
+      "invalid_site": "The console returned 404 Not Found. Check the Site name (usually 'default', not the display name) and that the console runs UniFi OS (UDM/UDR/UXG/Cloud Key with firmware 2.x or later).",
+      "ssl_error": "SSL certificate verification failed. Turn off 'Verify SSL Certificate' unless your console has a valid trusted certificate.",
+      "timeout": "The console did not respond within 30 seconds. Check the Host/IP and that no firewall is blocking TCP port 443.",
       "unknown": "Unexpected error"
     }
   },
