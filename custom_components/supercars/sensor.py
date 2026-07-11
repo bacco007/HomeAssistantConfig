@@ -5,6 +5,7 @@ from homeassistant.components.sensor import SensorEntity, SensorEntityDescriptio
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
@@ -13,32 +14,31 @@ from .news_coordinator import NewsCoordinator
 from .schedule_coordinator import ScheduleCoordinator
 from .standings_coordinator import StandingsCoordinator
 from .results_coordinator import ResultsCoordinator
+from .weather_coordinator import WeatherCoordinator
 
 def _driver_picture(name: str) -> str:
     return f"https://www.supercars.com/images/drivers/{name.lower().replace(' ', '-')}.jpg"
 
 
 # ── Timing sensors ────────────────────────────────────────────────────────────
+# Live-only values that persist their last received reading across restarts
+# (RestoreEntity). Off-session they keep showing the last race's data — the
+# flag stays "ended", the leader stays the last winner, etc.
 
 TIMING_SENSOR_DESCRIPTIONS: list[SensorEntityDescription] = [
-    SensorEntityDescription(key="flag_state",             name="Flag State",        icon="mdi:flag-checkered"),
-    SensorEntityDescription(key="leader",                 name="Race Leader",       icon="mdi:trophy"),
-    SensorEntityDescription(key="current_lap",            name="Current Lap",       icon="mdi:counter",          native_unit_of_measurement="lap"),
-    SensorEntityDescription(key="session_name",           name="Session",           icon="mdi:racing-helmet"),
-    SensorEntityDescription(key="round_name",             name="Round",             icon="mdi:map-marker"),
-    SensorEntityDescription(key="session_time_remaining", name="Time Remaining",    icon="mdi:timer-outline"),
-    SensorEntityDescription(key="weather_temp",           name="Air Temperature",   icon="mdi:thermometer",      native_unit_of_measurement="°C"),
-    SensorEntityDescription(key="weather_track",          name="Track Temperature", icon="mdi:road",             native_unit_of_measurement="°C"),
+    SensorEntityDescription(key="flag_state",  name="Flag State",  icon="mdi:flag-checkered"),
+    SensorEntityDescription(key="leader",      name="Race Leader", icon="mdi:trophy"),
+    SensorEntityDescription(key="current_lap", name="Current Lap", icon="mdi:counter", native_unit_of_measurement="lap"),
 ]
 
 # ── Schedule countdown sensors ────────────────────────────────────────────────
 
 SCHEDULE_SENSOR_DESCRIPTIONS = [
-    # (unique_key, name, icon, data_key_label, data_key_countdown, data_key_start)
-    ("next_session",    "Next Session",       "mdi:clock-start",       "next_session",    "next_session_countdown_seconds",    "next_session_start"),
-    ("next_practice",   "Next Practice",      "mdi:car-wrench",        "next_practice",   "next_practice_countdown_seconds",   "next_practice_start"),
-    ("next_qualifying", "Next Qualifying",    "mdi:timer-sand",        "next_qualifying", "next_qualifying_countdown_seconds", "next_qualifying_start"),
-    ("next_race",       "Next Race",          "mdi:flag-checkered",    "next_race",       "next_race_countdown_seconds",       "next_race_start"),
+    # (unique_key, name, icon, label_key, countdown_key, start_key, off_week_text)
+    ("next_session",    "Next Session",    "mdi:clock-start",    "next_session",    "next_session_countdown_seconds",    "next_session_start",    "No supercars this week"),
+    ("next_practice",   "Next Practice",   "mdi:car-wrench",     "next_practice",   "next_practice_countdown_seconds",   "next_practice_start",   "Not this week"),
+    ("next_qualifying", "Next Qualifying", "mdi:timer-sand",     "next_qualifying", "next_qualifying_countdown_seconds", "next_qualifying_start", "Not this week"),
+    ("next_race",       "Next Race",       "mdi:flag-checkered", "next_race",       "next_race_countdown_seconds",       "next_race_start",       "Not this week"),
 ]
 
 
@@ -53,9 +53,14 @@ async def async_setup_entry(
     schedule_coord: ScheduleCoordinator = hass.data[DOMAIN][entry.entry_id]["schedule"]
     standings_coord: StandingsCoordinator = hass.data[DOMAIN][entry.entry_id]["standings"]
     results_coord: ResultsCoordinator   = hass.data[DOMAIN][entry.entry_id]["results"]
+    weather_coord: WeatherCoordinator   = hass.data[DOMAIN][entry.entry_id]["weather"]
 
     entities: list[SensorEntity] = []
     entities.extend(SupercarsSensor(timing_coord, d) for d in TIMING_SENSOR_DESCRIPTIONS)
+    entities.append(SupercarsRoundSensor(schedule_coord, timing_coord))
+    entities.append(SupercarsSessionSensor(schedule_coord, timing_coord))
+    entities.append(SupercarsTimeRemainingSensor(schedule_coord, timing_coord))
+    entities.append(SupercarsAirTempSensor(weather_coord))
     entities.append(SupercarsNewsSensor(news_coord))
     entities.append(SupercarsStandingsSensor(standings_coord, "driver", "Driver Standings", "mdi:account-group"))
     entities.append(SupercarsStandingsSensor(standings_coord, "team", "Team Standings", "mdi:account-group"))
@@ -69,19 +74,45 @@ async def async_setup_entry(
 
 # ── Timing sensor ─────────────────────────────────────────────────────────────
 
-class SupercarsSensor(CoordinatorEntity, SensorEntity):
+class SupercarsSensor(CoordinatorEntity, RestoreEntity, SensorEntity):
+    """Live-timing value that persists its last reading.
+
+    While the Natsoft feed has data (during and just after an event) the live
+    value is shown. Off-session — including immediately after a restart, before
+    the feed reconnects — the last received value is restored from disk, so the
+    sensor never falls back to "unknown"/"unavailable".
+    """
+
     def __init__(self, coordinator: NatsoftCoordinator, description: SensorEntityDescription) -> None:
         super().__init__(coordinator)
         self.entity_description = description
         self._attr_unique_id = f"{DOMAIN}_{description.key}"
         self._attr_name = f"Supercars {description.name}"
+        self._restored_state: str | None = None
+        self._restored_attrs: dict = {}
+
+    async def async_added_to_hass(self) -> None:
+        await super().async_added_to_hass()
+        last = await self.async_get_last_state()
+        if last is not None and last.state not in (None, "unknown", "unavailable"):
+            self._restored_state = last.state
+            self._restored_attrs = dict(last.attributes)
+
+    @property
+    def _live(self) -> bool:
+        return bool(self.coordinator.data.get("has_live_data"))
 
     @property
     def native_value(self):
-        return self.coordinator.data.get(self.entity_description.key)
+        if self._live:
+            return self.coordinator.data.get(self.entity_description.key)
+        return self._restored_state
 
     @property
     def extra_state_attributes(self) -> dict:
+        if not self._live:
+            return self._restored_attrs
+
         data = self.coordinator.data
         attrs: dict = {}
         if self.entity_description.key == "flag_state":
@@ -96,7 +127,7 @@ class SupercarsSensor(CoordinatorEntity, SensorEntity):
         elif self.entity_description.key == "leader":
             attrs["car_number"] = data.get("leader_car")
             attrs["team"]       = data.get("leader_team")
-            driver = self.native_value
+            driver = data.get("leader")
             if driver:
                 attrs["entity_picture"] = _driver_picture(driver)
         elif self.entity_description.key == "current_lap":
@@ -105,7 +136,108 @@ class SupercarsSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def available(self) -> bool:
-        return self.coordinator.last_update_success and self.coordinator.data is not None
+        # Always available: shows live data when present, last-known otherwise.
+        return True
+
+
+# ── Round / Session / Time Remaining (live timing, schedule fallback) ─────────
+
+class _ScheduleTimingSensor(CoordinatorEntity, SensorEntity):
+    """Base for context sensors bound to the schedule coordinator that also
+    read the live-timing coordinator. Updates on the schedule's 30s cycle."""
+
+    def __init__(self, schedule_coord: ScheduleCoordinator, timing_coord: NatsoftCoordinator) -> None:
+        super().__init__(schedule_coord)
+        self._timing = timing_coord
+
+    @property
+    def _timing_data(self) -> dict:
+        return self._timing.data or {}
+
+    @property
+    def available(self) -> bool:
+        return True
+
+
+class SupercarsRoundSensor(_ScheduleTimingSensor):
+    _attr_unique_id = f"{DOMAIN}_round_name"
+    _attr_name = "Supercars Round"
+    _attr_icon = "mdi:map-marker"
+
+    @property
+    def native_value(self):
+        s = self.coordinator.data
+        t = self._timing_data
+        # During the event weekend, use the feed's round name; off-week, roll
+        # over to the upcoming event so the Round sensor keeps changing.
+        if s.get("event_in_progress") and t.get("has_live_data") and t.get("round_name"):
+            return t["round_name"]
+        return s.get("event")
+
+
+class SupercarsSessionSensor(_ScheduleTimingSensor):
+    _attr_unique_id = f"{DOMAIN}_session_name"
+    _attr_name = "Supercars Session"
+    _attr_icon = "mdi:racing-helmet"
+
+    @property
+    def native_value(self):
+        s = self.coordinator.data
+        t = self._timing_data
+        if not s.get("event_in_progress"):
+            return "No supercars this week"
+        if t.get("has_live_data") and t.get("session_name"):
+            return t["session_name"]
+        return s.get("next_session") or "No supercars this week"
+
+
+class SupercarsTimeRemainingSensor(_ScheduleTimingSensor):
+    _attr_unique_id = f"{DOMAIN}_session_time_remaining"
+    _attr_name = "Supercars Time Remaining"
+    _attr_icon = "mdi:timer-outline"
+
+    @property
+    def native_value(self):
+        s = self.coordinator.data
+        t = self._timing_data
+        # Live session in progress → the feed's laps/time remaining.
+        if s.get("event_in_progress") and t.get("has_live_data") and t.get("session_time_remaining"):
+            return t["session_time_remaining"]
+        # Otherwise count down to the next session.
+        secs = s.get("next_session_countdown_seconds")
+        if secs is not None:
+            return _fmt_countdown(secs)
+        return "No supercars this week"
+
+
+# ── Air temperature sensor (Open-Meteo, current event venue) ──────────────────
+
+class SupercarsAirTempSensor(CoordinatorEntity, SensorEntity):
+    _attr_unique_id = f"{DOMAIN}_weather_temp"
+    _attr_name = "Supercars Air Temperature"
+    _attr_icon = "mdi:thermometer"
+    _attr_native_unit_of_measurement = "°C"
+    _attr_device_class = "temperature"
+
+    def __init__(self, coordinator: WeatherCoordinator) -> None:
+        super().__init__(coordinator)
+
+    @property
+    def native_value(self):
+        return self.coordinator.data.get("air_temp")
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        data = self.coordinator.data
+        return {"venue": data.get("venue"), "source": data.get("source")}
+
+    @property
+    def available(self) -> bool:
+        return (
+            self.coordinator.last_update_success
+            and self.coordinator.data is not None
+            and self.coordinator.data.get("air_temp") is not None
+        )
 
 
 # ── Standings sensors ─────────────────────────────────────────────────────────
@@ -216,7 +348,7 @@ class SupercarsNewsSensor(CoordinatorEntity, SensorEntity):
 # ── Schedule countdown sensor ─────────────────────────────────────────────────
 
 def _fmt_countdown(seconds: int | None) -> str | None:
-    """Convert seconds to human-readable H:MM:SS or D days H:MM."""
+    """Convert seconds to human-readable "Dd Hh Mm Ss" (labelled units)."""
     if seconds is None:
         return None
     if seconds <= 0:
@@ -225,8 +357,8 @@ def _fmt_countdown(seconds: int | None) -> str | None:
     hours, rem = divmod(rem, 3600)
     mins, secs = divmod(rem, 60)
     if days > 0:
-        return f"{days}d {hours}h {mins:02d}m"
-    return f"{hours}:{mins:02d}:{secs:02d}"
+        return f"{days}d {hours}h {mins:02d}m {secs:02d}s"
+    return f"{hours}h {mins:02d}m {secs:02d}s"
 
 
 class SupercarsCountdownSensor(CoordinatorEntity, SensorEntity):
@@ -241,19 +373,28 @@ class SupercarsCountdownSensor(CoordinatorEntity, SensorEntity):
         label_key: str,
         countdown_key: str,
         start_key: str,
+        off_week_text: str,
     ) -> None:
         super().__init__(coordinator)
         self._label_key     = label_key
         self._countdown_key = countdown_key
         self._start_key     = start_key
+        self._off_week_text = off_week_text
         self._attr_unique_id = f"{DOMAIN}_{unique_suffix}"
         self._attr_name      = f"Supercars {display_name}"
         self._attr_icon      = icon
 
     @property
     def native_value(self) -> str | None:
-        """Human-readable countdown as sensor state."""
+        """Countdown to the next session, or a friendly off-week message.
+
+        When a session time is known this shows the labelled countdown (e.g.
+        "20d 5h 03m 10s"); when none is available it shows the off-week text
+        instead of going unavailable.
+        """
         secs = self.coordinator.data.get(self._countdown_key)
+        if secs is None:
+            return self._off_week_text
         return _fmt_countdown(secs)
 
     @property
@@ -276,8 +417,5 @@ class SupercarsCountdownSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def available(self) -> bool:
-        return (
-            self.coordinator.last_update_success
-            and self.coordinator.data is not None
-            and self.coordinator.data.get(self._countdown_key) is not None
-        )
+        # Always available: shows a countdown when known, off-week text otherwise.
+        return True

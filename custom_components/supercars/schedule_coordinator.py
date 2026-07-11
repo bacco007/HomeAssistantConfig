@@ -3,13 +3,14 @@
 Selects the current or next event from the 2026 calendar by date.
 Session data is loaded from the bundled schedule_2026.json first; if no
 local sessions are found for the event, falls back to fetching and parsing
-the official schedule article from supercars.com.
+the event's official Track Schedule page on supercars.com (a Contentful-
+backed `raceSessionsCollection` embedded as a Next.js flight-chunk JSON blob,
+not a news article — those URLs are not stable enough to hard-code).
 """
 from __future__ import annotations
 
 import json
 import logging
-import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -20,154 +21,164 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DOMAIN
+from .spa_extract import iter_html_json_blobs, search_json
 
 _LOCAL_SCHEDULE_PATH = Path(__file__).parent / "schedule_2026.json"
 
 _LOGGER = logging.getLogger(__name__)
 
+# Real Supercars championship series code in the schedule's Contentful data
+# (support categories like ARC/TCM/T82 use their own natsoftSeriesId).
+_SUPERCARS_SERIES_ID = "SG3"
+
+
+def _schedule_url(slug: str) -> str:
+    return f"https://www.supercars.com/events/{slug}/schedule"
+
+
 # ── 2026 Calendar ─────────────────────────────────────────────────────────────
-# Each entry: (round, name, venue, timezone_str, event_start_date, event_end_date, schedule_url, schedule_timezone)
-# schedule_timezone is the local time zone used in the published schedule tables
+# Each entry: round, name, venue, tz, event_start_date, event_end_date, slug,
+# coords (venue lat/lon, used for the Open-Meteo air-temperature lookup)
 CALENDAR_2026 = [
     {
         "round": 1,
         "name": "Sydney 500",
         "venue": "Sydney Motorsport Park",
         "slug": "2026-sydney",
+        "coords": (-33.8033, 150.8706),
         "tz": "Australia/Sydney",
         "start": (2026, 2, 20),
         "end":   (2026, 2, 22),
-        "schedule_url": "https://www.supercars.com/news/supercars-2026-sydney-500-track-schedule-race-start-times-session-programme",
     },
     {
         "round": 2,
         "name": "Melbourne SuperSprint",
         "venue": "Albert Park Circuit",
         "slug": "2026-melbourne",
+        "coords": (-37.8497, 144.9680),
         "tz": "Australia/Melbourne",
         "start": (2026, 3, 5),
         "end":   (2026, 3, 8),
-        "schedule_url": "https://www.supercars.com/news/supercars-news-2026-melbourne-supersprint-agp-track-schedule-race-times-albert-park",
     },
     {
         "round": 3,
         "name": "ITM Taupō Super 440",
         "venue": "Taupō Motorsport Park",
         "slug": "2026-taupo",
+        "coords": (-38.6653, 176.0447),
         "tz": "Pacific/Auckland",
         "start": (2026, 4, 10),
         "end":   (2026, 4, 12),
-        "schedule_url": "https://www.supercars.com/news/supercars-news-2026-taupo-track-schedule-race-start-times-how-to-watch-session-new-zealand",
     },
     {
         "round": 4,
         "name": "ITM Christchurch Super 440",
         "venue": "Ruapuna Raceway",
         "slug": "2026-christchurch",
+        "coords": (-43.4886, 172.4700),
         "tz": "Pacific/Auckland",
         "start": (2026, 4, 17),
         "end":   (2026, 4, 19),
-        "schedule_url": "https://www.supercars.com/news/supercars-news-2026-christchurch-ruapuna-revised-track-schedule-race-start-times-friday-sprint",
     },
     {
         "round": 5,
         "name": "Tasmania Super 440",
         "venue": "Symmons Plains",
         "slug": "2026-tasmania",
+        "coords": (-41.6497, 147.2508),
         "tz": "Australia/Hobart",
         "start": (2026, 5, 22),
         "end":   (2026, 5, 24),
-        "schedule_url": "https://www.supercars.com/news/supercars-news-2026-tasmania-symmons-plains-track-schedule-race-start-times-session",
     },
     {
         "round": 6,
         "name": "Darwin Triple Crown",
         "venue": "Hidden Valley Raceway",
         "slug": "2026-darwin",
+        "coords": (-12.4247, 130.9153),
         "tz": "Australia/Darwin",
         "start": (2026, 6, 19),
         "end":   (2026, 6, 21),
-        "schedule_url": "https://www.supercars.com/news/supercars-news-2026-darwin-hidden-valley-track-schedule-race-start-times-session",
     },
     {
         "round": 7,
         "name": "Townsville 500",
         "venue": "Reid Park",
         "slug": "2026-townsville",
+        "coords": (-19.2830, 146.8100),
         "tz": "Australia/Brisbane",
         "start": (2026, 7, 10),
         "end":   (2026, 7, 12),
-        "schedule_url": "https://www.supercars.com/news/supercars-news-2026-townsville-500-track-schedule-race-start-times-session",
     },
     {
         "round": 8,
         "name": "Perth Super 440",
         "venue": "Wanneroo Raceway",
         "slug": "2026-perth",
+        "coords": (-31.6636, 115.7869),
         "tz": "Australia/Perth",
         "start": (2026, 7, 31),
         "end":   (2026, 8, 2),
-        "schedule_url": "https://www.supercars.com/news/supercars-news-2026-perth-wanneroo-track-schedule-race-start-times-session",
     },
     {
         "round": 9,
         "name": "Ipswich Super 440",
         "venue": "Queensland Raceway",
         "slug": "2026-ipswich",
+        "coords": (-27.6903, 152.6547),
         "tz": "Australia/Brisbane",
         "start": (2026, 8, 21),
         "end":   (2026, 8, 23),
-        "schedule_url": "https://www.supercars.com/news/supercars-news-2026-ipswich-queensland-raceway-track-schedule-race-start-times-session",
     },
     {
         "round": 10,
         "name": "The Bend 500",
         "venue": "The Bend Motorsport Park",
         "slug": "2026-the-bend",
+        "coords": (-35.2372, 139.3080),
         "tz": "Australia/Adelaide",
         "start": (2026, 9, 18),
         "end":   (2026, 9, 20),
-        "schedule_url": "https://www.supercars.com/news/supercars-news-2026-the-bend-500-track-schedule-race-start-times-session",
     },
     {
         "round": 11,
         "name": "Bathurst 1000",
         "venue": "Mount Panorama",
         "slug": "2026-bathurst",
+        "coords": (-33.4472, 149.5581),
         "tz": "Australia/Sydney",
         "start": (2026, 10, 8),
         "end":   (2026, 10, 11),
-        "schedule_url": "https://www.supercars.com/news/supercars-news-2026-bathurst-1000-track-schedule-race-start-times-session",
     },
     {
         "round": 12,
         "name": "Gold Coast 500",
         "venue": "Surfers Paradise Street Circuit",
         "slug": "2026-gold-coast",
+        "coords": (-27.9990, 153.4290),
         "tz": "Australia/Brisbane",
         "start": (2026, 10, 23),
         "end":   (2026, 10, 25),
-        "schedule_url": "https://www.supercars.com/news/supercars-news-2026-gold-coast-500-track-schedule-race-start-times-session",
     },
     {
         "round": 13,
         "name": "Sandown 500",
         "venue": "Sandown Raceway",
         "slug": "2026-sandown",
+        "coords": (-37.9469, 145.1633),
         "tz": "Australia/Melbourne",
         "start": (2026, 11, 6),
         "end":   (2026, 11, 8),
-        "schedule_url": "https://www.supercars.com/news/supercars-news-2026-sandown-500-track-schedule-race-start-times-session",
     },
     {
         "round": 14,
         "name": "Adelaide Grand Final",
         "venue": "Adelaide Street Circuit",
         "slug": "2026-adelaide",
+        "coords": (-34.9240, 138.6170),
         "tz": "Australia/Adelaide",
         "start": (2026, 11, 27),
         "end":   (2026, 11, 29),
-        "schedule_url": "https://www.supercars.com/news/supercars-news-2026-adelaide-grand-final-track-schedule-race-start-times-session",
     },
 ]
 
@@ -177,53 +188,20 @@ SESSION_TYPE_QUALIFYING = "qualifying"
 SESSION_TYPE_RACE       = "race"
 SESSION_TYPE_SHOOTOUT   = "shootout"
 
-# Keywords to identify Supercars rows vs support categories
-SUPERCARS_KEYWORDS = {"supercars", "v8", "repco"}
-SUPPORT_KEYWORDS   = {"gtnz", "formula ford", "historic", "gt", "events", "entertainment",
-                      "super2", "porsche", "toyota gr cup"}
-
-# Month name → number
-MONTH_MAP = {
-    "jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6,
-    "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12,
-}
-
-
 def _classify_session(label: str) -> str:
+    # Order matters: real labels like "Boost Mobile Qualifying (Race 20)" or
+    # "Boost Mobile TTSO (Race 21)" embed the parent race number, so the
+    # generic "race" check must run last or it swallows qualifying/shootout.
     label_l = label.lower()
-    if any(k in label_l for k in ("shootout", "top ten")):
+    if any(k in label_l for k in ("shootout", "top ten", "ttso")):
         return SESSION_TYPE_SHOOTOUT
-    if "race" in label_l:
-        return SESSION_TYPE_RACE
     if any(k in label_l for k in ("qual", "q1", "q2", "q3")):
         return SESSION_TYPE_QUALIFYING
     if "practice" in label_l or "prac" in label_l:
         return SESSION_TYPE_PRACTICE
+    if "race" in label_l:
+        return SESSION_TYPE_RACE
     return "other"
-
-
-def _is_supercars_row(category: str, session: str) -> bool:
-    combined = (category + " " + session).lower()
-    if any(k in combined for k in SUPPORT_KEYWORDS):
-        return False
-    if any(k in combined for k in SUPERCARS_KEYWORDS):
-        return True
-    # Rows with no category label but a race/qualifying/practice session
-    # are likely Supercars if no support keyword matched
-    if any(k in session.lower() for k in ("race", "qual", "practice", "shootout", "top ten")):
-        return True
-    return False
-
-
-def _parse_time(time_str: str, year: int, month: int, day: int, tz: ZoneInfo) -> datetime | None:
-    """Parse 'HH:MM' into a timezone-aware datetime."""
-    m = re.match(r"(\d{1,2}):(\d{2})", time_str.strip())
-    if not m:
-        return None
-    try:
-        return datetime(year, month, day, int(m.group(1)), int(m.group(2)), tzinfo=tz)
-    except ValueError:
-        return None
 
 
 def _load_local_sessions(slug: str, event_tz: str) -> list[dict]:
@@ -257,104 +235,60 @@ def _load_local_sessions(slug: str, event_tz: str) -> list[dict]:
     return sorted(sessions, key=lambda s: s["start"])
 
 
-def _parse_schedule_html(html: str, event: dict) -> list[dict]:
+def _match_race_sessions(node: Any) -> list[dict] | None:
+    """Matcher for `search_json` — finds `raceSessionsCollection.items`."""
+    if (
+        isinstance(node, dict)
+        and isinstance(node.get("raceSessionsCollection"), dict)
+        and isinstance(node["raceSessionsCollection"].get("items"), list)
+    ):
+        return node["raceSessionsCollection"]["items"]
+    return None
+
+
+def _parse_schedule_json(html: str, event: dict) -> list[dict]:
     """
-    Parse session tables from a supercars.com schedule article.
+    Parse the event's Track Schedule page.
 
-    Tables look like:
-      | Start | Finish | Category | Duration | Session |
-      | 09:35 | 10:20  | Supercars | 0:45    | Practice |
-
-    Day headers look like: **Friday April 17** or **Saturday 18 Apr**
+    supercars.com renders this as a Contentful-backed `raceSessionsCollection`
+    embedded in a Next.js flight-chunk JSON blob (not a plain HTML table).
+    Each item carries an ISO `startDate`/`endDate` and a `series` block;
+    real Supercars championship sessions are identified by
+    `series.natsoftSeriesId == "SG3"` (support categories use their own ids).
     """
     tz = ZoneInfo(event["tz"])
-    year = event["start"][0]
+    items: list[dict] | None = None
+    for blob in iter_html_json_blobs(html):
+        items = search_json(blob, _match_race_sessions)
+        if items:
+            break
+    if not items:
+        return []
+
     sessions: list[dict] = []
-
-    current_day: tuple[int, int, int] | None = None
-
-    # Normalise to lines
-    lines = html.splitlines()
-
-    for line in lines:
-        line = line.strip()
-
-        # ── Day header detection ──────────────────────────────────────────────
-        # e.g. "**Friday April 17**" or "**Saturday 18 Apr**"
-        day_match = re.search(
-            r"\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b"
-            r"[^\d]*(\d{1,2})\s+([a-z]{3,9})|"
-            r"\b([a-z]{3,9})\s+(\d{1,2})\b",
-            line.lower(),
-        )
-        if day_match and re.search(r"\*\*|##|####|---", line):
-            # Try to find a month name and day number
-            nums  = re.findall(r"\d{1,2}", line)
-            words = re.findall(r"[a-z]{3,9}", line.lower())
-            month_num = None
-            day_num   = None
-            for w in words:
-                if w[:3] in MONTH_MAP:
-                    month_num = MONTH_MAP[w[:3]]
-                    break
-            for n in nums:
-                v = int(n)
-                if 1 <= v <= 31:
-                    day_num = v
-                    break
-            if month_num and day_num:
-                current_day = (year, month_num, day_num)
+    for item in items:
+        series = item.get("series") or {}
+        if series.get("natsoftSeriesId") != _SUPERCARS_SERIES_ID:
             continue
 
-        # Also catch plain bold day headers without markdown tables
-        plain_day = re.search(
-            r"(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)[,\s]+(\d{1,2})\s+([a-z]{3,9})",
-            line.lower(),
-        )
-        if plain_day:
-            day_num   = int(plain_day.group(1))
-            month_str = plain_day.group(2)[:3]
-            if month_str in MONTH_MAP and 1 <= day_num <= 31:
-                current_day = (year, MONTH_MAP[month_str], day_num)
-            continue
-
-        # ── Table row detection ───────────────────────────────────────────────
-        if "|" not in line or current_day is None:
-            continue
-
-        cells = [c.strip() for c in line.split("|") if c.strip()]
-        if len(cells) < 3:
-            continue
-
-        # Skip header rows
-        if any(h in cells[0].lower() for h in ("start", "---", "time")):
-            continue
-
-        # Expect: Start | Finish | Category | Duration | Session
-        # or:     Start | Finish | Category | Session  (4 cols)
-        if len(cells) >= 5:
-            start_str, _, category, _, session = cells[0], cells[1], cells[2], cells[3], cells[4]
-        elif len(cells) == 4:
-            start_str, _, category, session = cells[0], cells[1], cells[2], cells[3]
-        else:
-            continue
-
-        if not _is_supercars_row(category, session):
-            continue
-
-        start_dt = _parse_time(start_str, *current_day, tz)
-        if start_dt is None:
-            continue
-
-        stype = _classify_session(session)
+        label = item.get("name") or "Session"
+        stype = _classify_session(label)
         if stype == "other":
-            continue  # skip TV time, event rides, etc.
+            continue  # skip gate times, track crossings, etc.
+
+        start_raw = item.get("startDate")
+        if not start_raw:
+            continue
+        try:
+            start_dt = datetime.fromisoformat(start_raw).astimezone(tz)
+        except ValueError:
+            continue
 
         sessions.append({
-            "label":      session,
-            "type":       stype,
-            "start":      start_dt,
-            "start_iso":  start_dt.isoformat(),
+            "label":       label,
+            "type":        stype,
+            "start":       start_dt,
+            "start_iso":   start_dt.isoformat(),
             "start_local": start_dt.strftime(f"%a %d %b %H:%M {event['tz'].split('/')[-1]}"),
         })
 
@@ -481,6 +415,7 @@ class ScheduleCoordinator(DataUpdateCoordinator):
                 "event": None,
                 "round": None,
                 "venue": None,
+                "event_in_progress": False,
                 "schedule_source": None,
                 "sessions_remaining": 0,
                 "all_sessions": [],
@@ -511,14 +446,15 @@ class ScheduleCoordinator(DataUpdateCoordinator):
                 self._cached_slug = event["slug"]
             else:
                 # Fall back to web scraping
+                url = _schedule_url(event["slug"])
                 _LOGGER.info(
                     "No local sessions for %s; fetching from %s",
                     event["name"],
-                    event["schedule_url"],
+                    url,
                 )
                 try:
-                    html = await self._fetch_schedule(event["schedule_url"])
-                    self._cached_sessions = _parse_schedule_html(html, event)
+                    html = await self._fetch_schedule(url)
+                    self._cached_sessions = _parse_schedule_json(html, event)
                     self._cached_slug = event["slug"]
                     _LOGGER.debug(
                         "Parsed %d Supercars sessions for %s",
@@ -531,13 +467,19 @@ class ScheduleCoordinator(DataUpdateCoordinator):
                         raise UpdateFailed(f"Schedule fetch failed: {err}") from err
                     # Fall through with stale cache
 
+        today = now.date()
+        event_in_progress = (
+            datetime(*event["start"]).date() <= today <= datetime(*event["end"]).date()
+        )
+
         local_now = now.astimezone(ZoneInfo(event["tz"]))
         data = _countdown_data(self._cached_sessions, local_now)
         data.update({
             "event":           event["name"],
             "round":           f"Round {event['round']}",
             "venue":           event["venue"],
-            "schedule_source": event["schedule_url"],
+            "event_in_progress": event_in_progress,
+            "schedule_source": _schedule_url(event["slug"]),
             "event_slug":      event["slug"],
         })
         return data
