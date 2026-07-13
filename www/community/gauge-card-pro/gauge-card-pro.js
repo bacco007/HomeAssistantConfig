@@ -205,7 +205,7 @@ if(super(e),e.type!==xt.ATTRIBUTE||e.name!==`style`||e.strings?.length>2)throw E
     color: var(--secondary-text-color);
     cursor: pointer;
   }
-`})),vr,yr,br=o((()=>{vr=(e,t,n)=>isNaN(e)||isNaN(t)||isNaN(n)?0:e>n?n:e<t?t:e,yr=(e,t,n)=>{let r=n-t;return 100*(e-t)/r}})),xr=o((()=>{})),Sr=o((()=>{kt(),jt(),Nt(),Lt(),zt(),Bt(),Vt(),Ut(),Zt(),Kt(),En(),On(),kn(),An(),jn(),Mn(),Pn(),Ln(),Bn(),Vn(),Hn(),Wt(),Wn(),Gn(),Xn(),Zn(),Qn(),er(),nr(),rr(),pr(),hr(),gr(),_r(),br(),xr()})),Cr=u(f());bt(),Ot(),Sr();const wr=/{%|{{/,Tr=e=>wr.test(e);function Er(e){return typeof e==`string`?(e=e.trim(),!!(/^[mzlhvcsqta]\s*[-+.0-9][^mlhvzcsqta]+/i.test(e)&&/[\dz]$/i.test(e)&&e.length>4)):!1}var Dr=o((()=>{Tn(),D({tap_action:O(fr),hold_action:O(fr),double_tap_action:O(fr)})})),Or=o((()=>{})),kr=o((()=>{}));function Ar(e){return e?e.themes.darkMode:!1}var jr=o((()=>{})),Mr,Nr=o((()=>{Mr=class{constructor(e){this._expiration=e}_expiration;_cache=new Map;get(e){return this._cache.get(e)}set(e,t){this._cache.set(e,t),this._expiration&&window.setTimeout(()=>this._cache.delete(e),this._expiration)}has(e){return this._cache.has(e)}}})),Pr=`2.4.11`,Fr={type:`git`,url:`https://github.com/benjamin-dcs/gauge-card-pro`};function Ir(e){let t=window;t.customCards=t.customCards||[],t.customCards.push({...e,preview:!0,documentationURL:`${Fr.url}/blob/main/README.md`})}var Lr=o((()=>{})),Rr,zr=o((()=>{Rr=()=>{(!customElements.get(`ha-form`)||!customElements.get(`hui-card-features-editor`))&&customElements.get(`hui-tile-card`)?.getConfigElement(),customElements.get(`ha-entity-picker`)||customElements.get(`hui-entities-card`)?.getConfigElement(),customElements.get(`ha-card-conditions-editor`)||customElements.get(`hui-conditional-card`)?.getConfigElement()}})),Br=o((()=>{Dr(),Or(),kr(),jr(),Nr(),Lr(),zr()})),Vr,Hr=o((()=>{Vr={DEFAULT_LOG_LEVEL:1,PREFIX:`🌈 Gauge Card Pro`}}));Br(),Hr();let Ur=!1,Wr=function(e){return e[e.ERROR=0]=`ERROR`,e[e.WARN=1]=`WARN`,e[e.INFO=2]=`INFO`,e[e.DEBUG=3]=`DEBUG`,e}({});const Gr={title:[`background: #424242`,`color: white`,`display: inline-block`,`line-height: 20px`,`text-align: center`,`border-radius: 5px 0 0 5px`,`font-size: 12px`,`font-weight: bold`,`padding: 4px 8px 4px 12px`,`margin: 5px 0`].join(`;`),version:[`background: #4fc3f7`,`color: white`,`display: inline-block`,`line-height: 20px`,`text-align: center`,`border-radius: 0 5px 5px 0`,`font-size: 12px`,`font-weight: bold`,`padding: 4px 12px 4px 8px`,`margin: 5px 0`].join(`;`),prefix:[`color: #4fc3f7`,`font-weight: bold`].join(`;`),error:[`color: #f44336`,`font-weight: bold`].join(`;`),warn:[`color: #ff9800`,`font-weight: bold`].join(`;`)};function Kr(e){qr(e)}function qr(e){Ur||=(console.groupCollapsed(`%c${Vr.PREFIX}%cv${e}`,Gr.title,Gr.version),console.log(`%c Description: %c Build beautiful Gauge cards using 🌈 gradients and 🛠️ templates.  `,`font-weight: bold`,`font-weight: normal`),console.log(`%c GitHub: %c https://github.com/benjamin-dcs/gauge-card-pro `,`font-weight: bold`,`font-weight: normal`),console.groupEnd(),!0)}function Jr(e){let t=e??Vr.DEFAULT_LOG_LEVEL,n=e=>{t=e},r=()=>Wr[t].toLowerCase(),i=(e,n,...r)=>{if(t<0)return;let i=u(n);if(e instanceof Error){let t=e.message||`Unknown error`,[n,a]=l(`Error${typeof i==`string`?` during ${i}`:``}: ${t}`,Gr.error);console.error(n,a),e.stack&&console.error(e.stack),i&&typeof i==`object`&&console.error(`Context:`,{...i,timestamp:new Date().toISOString()}),r.length>0&&console.error(`Additional data:`,...r)}else if(typeof e==`string`){let[t,n]=l(`${e}${typeof i==`string`?` during ${i}`:``}`,Gr.error);i&&typeof i==`object`?console.error(t,n,{context:{...i,timestamp:new Date().toISOString()},...r.length>0?{additionalData:r}:{}}):r.length>0?console.error(t,n,...r):console.error(t,n)}else{let[t,n]=l(`Unknown error${typeof i==`string`?` during ${i}`:``}:`,Gr.error);console.error(t,n,e),i&&typeof i==`object`&&console.error(`Context:`,{...i,timestamp:new Date().toISOString()}),r.length>0&&console.error(`Additional data:`,...r)}},a=(e,...t)=>{c(1,`[warn] ${e}`,Gr.warn,console.warn,...t)},o=(e,...t)=>{c(2,`[info] ${e}`,Gr.prefix,console.info,...t)},s=(e,...t)=>{c(3,`[debug] ${e}`,Gr.prefix,console.debug,...t)};function c(e,n,r,i,...a){if(t<e)return;let[o,s]=l(n,r);a.length>0?i(o,s,...a):i(o,s)}function l(e,t){return[`%c[${Vr.PREFIX}] ${e}`,t]}function u(e){if(e!=null){if(typeof e==`string`)return e;if(typeof e==`object`)try{return{...e}}catch{try{return{value:JSON.stringify(e)}}catch{return{value:String(e)}}}return String(e)}}return{setLogLevel:n,getLogLevelName:r,info:o,debug:s,warn:a,error:i}}function j(e,t){let n=JSON.parse(JSON.stringify(e)),r=t.split(`.`),i=r.pop();if(!i)return{result:e,success:!1};let a=n;for(let e of r){if(typeof a[e]!=`object`||a[e]===null)return{result:n,success:!1};a=a[e]}return a&&i in a?(delete a[i],{result:n,success:!0}):{result:n,success:!1}}var Yr=o((()=>{}));function M(e,t,n,r=!1,i=!1){let a=JSON.parse(JSON.stringify(e)),o=t.split(`.`),s=a;for(let e=0;e<o.length-1;e++){if(typeof s[o[e]]!=`object`||s[o[e]]===null||s[o[e]]===void 0)if(r)s[o[e]]={};else return{result:a,success:!1};s=s[o[e]]}let c=o[o.length-1];return i||s[c]===void 0?(s[c]=n,{result:a,success:!0}):{result:a,success:!1}}var Xr=o((()=>{}));function N(e,t,n,r=!1){let i=JSON.parse(JSON.stringify(e)),a=t.split(`.`),o=i;for(let e=0;e<a.length-1;e++)if(o=o?.[a[e]],typeof o!=`object`||!o)return i;let s=a[a.length-1],c=o?.[s];if(c===void 0)return i;let{result:l,success:u}=M(i,n,c,!0,r),d=l;return u&&!n.startsWith(t+`.`)&&(d=j(d,t).result),d}var Zr=o((()=>{Yr(),Xr()}));function Qr(e){if(!e)return;let t=e;if(t.setpoint!==null&&t.setpoint?.type===void 0&&(typeof t.setpoint?.value==`number`?t=M(t,`setpoint.type`,`number`,!0,!1).result:typeof t.setpoint?.value==`string`&&(t=M(t,`setpoint.type`,`template`,!0,!1).result)),t.icon?.battery!==void 0&&(t=N(t,`icon.battery`,`icon.value`),t=M(t,`icon.type`,`battery`,!0,!1).result),t.icon?.template!==void 0&&(t=N(t,`icon.template`,`icon.value`),t=M(t,`icon.type`,`template`,!0,!1).result),t.shapes?.main_needle_with_inner!==void 0&&(t=N(t,`shapes.main_needle_with_inner`,`shapes.main_needle`)),t.shapes?.main_min_indicator_with_inner!==void 0&&(t=N(t,`shapes.main_min_indicator_with_inner`,`shapes.main_min_indicator`)),t.shapes?.main_max_indicator_with_inner!==void 0&&(t=N(t,`shapes.main_max_indicator_with_inner`,`shapes.main_max_indicator`)),t.shapes?.inner_needle_on_main!==void 0&&(t=N(t,`shapes.inner_needle_on_main`,`shapes.inner_needle`)),t.shapes?.inner_setpoint_needle_on_main&&(t=N(t,`shapes.inner_setpoint_needle_on_main`,`shapes.inner_setpoint_needle`)),t=j(t,`use_new_from_segments_style`).result,t.gradient_resolution===`high`&&(t=M(t,`gradient_resolution`,`auto`,!1,!0).result),t.inner?.gradient_resolution===`high`&&(t=M(t,`inner.gradient_resolution`,`auto`,!1,!0).result),t.icon_tap_action!==void 0){let e=t.icon?.left===!0?`left`:`right`;t=N(t,`icon_tap_action`,`icon_${e}_tap_action`),t=j(t,`icon_tap_action`).result}if(t.icon_hold_action!==void 0){let e=t.icon?.left===!0?`left`:`right`;t=N(t,`icon_hold_action`,`icon_${e}_hold_action`),t=j(t,`icon_hold_action`).result}if(t.icon_double_tap_action!==void 0){let e=t.icon?.left===!0?`left`:`right`;t=N(t,`icon_double_tap_action`,`icon_${e}_double_tap_action`),t=j(t,`icon_double_tap_action`).result}if(t.icon?.type!==void 0){let e=t.icon.left===!0?`left`:`right`;t=j(t,`icon.left`).result,t=N(t,`icon`,`icons.${e}`),t=j(t,`icon`).result}return t=j(t,`inner.marker`).result,t.gradient_resolution===`very_low`&&(t=M(t,`gradient_resolution`,25,!1,!0).result),t.gradient_resolution===`low`&&(t=M(t,`gradient_resolution`,50,!1,!0).result),t.gradient_resolution===`medium`&&(t=M(t,`gradient_resolution`,100,!1,!0).result),t.inner?.gradient_resolution===`very_low`&&(t=M(t,`inner.gradient_resolution`,25,!1,!0).result),t.inner?.gradient_resolution===`low`&&(t=M(t,`inner.gradient_resolution`,50,!1,!0).result),t.inner?.gradient_resolution===`medium`&&(t=M(t,`inner.gradient_resolution`,100,!1,!0).result),t.titles?.primary!==void 0&&typeof t.titles.primary==`string`&&(t=N(t,`titles.primary`,`titles.primary.value`,!0)),t.titles?.primary_color!==void 0&&(t=N(t,`titles.primary_color`,`titles.primary.color`)),t.titles?.primary_font_size!==void 0&&(t=N(t,`titles.primary_font_size`,`titles.primary.font_size`)),t.titles?.secondary!==void 0&&typeof t.titles.secondary==`string`&&(t=N(t,`titles.secondary`,`titles.secondary.value`,!0)),t.titles?.secondary_color!==void 0&&(t=N(t,`titles.secondary_color`,`titles.secondary.color`)),t.titles?.secondary_font_size!==void 0&&(t=N(t,`titles.secondary_font_size`,`titles.secondary.font_size`)),t.value_texts?.primary!==void 0&&typeof t.value_texts.primary==`string`&&(t=N(t,`value_texts.primary`,`value_texts.primary.value`,!0)),t.value_texts?.primary_color!==void 0&&(t=N(t,`value_texts.primary_color`,`value_texts.primary.color`)),t.value_texts?.primary_unit!==void 0&&(t=N(t,`value_texts.primary_unit`,`value_texts.primary.unit_of_measurement`)),t.value_texts?.primary_unit_before_value!==void 0&&(t=N(t,`value_texts.primary_unit_before_value`,`value_texts.primary.unit_before_value`)),t.value_texts?.primary_font_size_reduction!==void 0&&(t=N(t,`value_texts.primary_font_size_reduction`,`value_texts.primary.font_size_reduction`)),t.value_texts?.secondary!==void 0&&typeof t.value_texts.secondary==`string`&&(t=N(t,`value_texts.secondary`,`value_texts.secondary.value`,!0)),t.value_texts?.secondary_color!==void 0&&(t=N(t,`value_texts.secondary_color`,`value_texts.secondary.color`)),t.value_texts?.secondary_unit!==void 0&&(t=N(t,`value_texts.secondary_unit`,`value_texts.secondary.unit_of_measurement`)),t.value_texts?.secondary_unit_before_value!==void 0&&(t=N(t,`value_texts.secondary_unit_before_value`,`value_texts.secondary.unit_before_value`)),t.primary_value_text_tap_action!==void 0&&(t=N(t,`primary_value_text_tap_action`,`value_texts.primary.tap_action`)),t.primary_value_text_hold_action!==void 0&&(t=N(t,`primary_value_text_hold_action`,`value_texts.primary.hold_action`)),t.primary_value_text_double_tap_action!==void 0&&(t=N(t,`primary_value_text_double_tap_action`,`value_texts.primary.double_tap_action`)),t.secondary_value_text_tap_action!==void 0&&(t=N(t,`secondary_value_text_tap_action`,`value_texts.secondary.tap_action`)),t.secondary_value_text_hold_action!==void 0&&(t=N(t,`secondary_value_text_hold_action`,`value_texts.secondary.hold_action`)),t.secondary_value_text_double_tap_action!==void 0&&(t=N(t,`secondary_value_text_double_tap_action`,`value_texts.secondary.double_tap_action`)),t.icon_left_tap_action!==void 0&&(t=N(t,`icon_left_tap_action`,`icons.left.tap_action`)),t.icon_left_hold_action!==void 0&&(t=N(t,`icon_left_hold_action`,`icons.left.hold_action`)),t.icon_left_double_tap_action!==void 0&&(t=N(t,`icon_left_double_tap_action`,`icons.left.double_tap_action`)),t.icon_right_tap_action!==void 0&&(t=N(t,`icon_right_tap_action`,`icons.right.tap_action`)),t.icon_right_hold_action!==void 0&&(t=N(t,`icon_right_hold_action`,`icons.right.hold_action`)),t.icon_right_double_tap_action!==void 0&&(t=N(t,`icon_right_double_tap_action`,`icons.right.double_tap_action`)),t=j(t,`marker`).result,t}var $r=o((()=>{Yr(),Zr(),Xr()}));$r();function ei(e,t){if(!e||!t)return;let n=t.split(`.`),r=e;for(let e of n)r=r?.[e];return r}function ti(e){if(typeof e!=`string`)return String(e);if(!(e.startsWith(`var(`)&&e.endsWith(`)`)))return e;let t=Date.now(),n=ri.get(e);if(n&&t-n.ts<ai)return n.value;ni||=window.getComputedStyle(document.body);let r=e.slice(4,-1).trim(),i=ni.getPropertyValue(r).trim();if(ri.set(e,{value:i,ts:t}),ri.size>ii){let e=ri.keys().next().value;e&&ri.delete(e)}return i}var ni,ri,ii,ai,oi=o((()=>{ni=null,ri=new Map,ii=64,ai=6e4}));function si(){return{error:ci(ti(`var(--error-color)`),`#db4437`),success:ci(ti(`var(--success-color)`),`#43a047`),warning:ci(ti(`var(--warning-color)`),`#ffa600`),info:ci(ti(`var(--info-color)`),`#039be5`)}}var ci,li=o((()=>{oi(),ci=(e,t)=>e||t})),P,ui=o((()=>{li(),P={gradient:{backgroundOpacity:.25,resolution:`auto`,numericalResolution:25,numericalResolutionMin:1,numericalResolutionMax:45},values:{min:0,max:100},ui:{animationSpeed:`normal`,iconColor:`var(--primary-text-color)`,minMaxIndicators:{opacity:.8,fill:`rgb(255, 255, 255)`,labelColor:`#111111`},needleColor:`var(--primary-text-color)`,setpointNeedleColor:`var(--error-color)`,titleColor:`var(--primary-text-color)`,titleFontSizePrimary:`15px`,titleFontSizeSecondary:`14px`,valueTextColor:`var(--primary-text-color)`},inner:{mode:`severity`},severity:{colorMode:`basic`,defaultColor:()=>si().info}}}));ui();const di=`icons.left.value,icons.right.value,inner.max,inner.max_indicator.value,inner.max_indicator.label_color,inner.min,inner.min_indicator.value,inner.min_indicator.label_color,inner.needle_color,inner.segments,inner.setpoint.color,inner.setpoint.value,inner.value,max,max_indicator.value,max_indicator.label_color,min,min_indicator.value,min_indicator.label_color,needle_color,segments,setpoint.color,setpoint.value,shapes.main_needle,shapes.main_min_indicator,shapes.main_max_indicator,shapes.main_setpoint_needle,shapes.inner_needle,shapes.inner_min_indicator,shapes.inner_max_indicator,shapes.inner_setpoint_needle,titles.primary.value,titles.primary.color,titles.primary.font_size,titles.secondary.value,titles.secondary.color,titles.secondary.font_size,value,value_texts.primary.value,value_texts.primary.color,value_texts.primary.unit_of_measurement,value_texts.primary.font_size_reduction,value_texts.secondary.value,value_texts.secondary.color,value_texts.secondary.unit_of_measurement`.split(`,`),fi=new Mr(1e3);w();const pi=v`
+`})),vr,yr,br=o((()=>{vr=(e,t,n)=>isNaN(e)||isNaN(t)||isNaN(n)?0:e>n?n:e<t?t:e,yr=(e,t,n)=>{let r=n-t;return 100*(e-t)/r}})),xr=o((()=>{})),Sr=o((()=>{kt(),jt(),Nt(),Lt(),zt(),Bt(),Vt(),Ut(),Zt(),Kt(),En(),On(),kn(),An(),jn(),Mn(),Pn(),Ln(),Bn(),Vn(),Hn(),Wt(),Wn(),Gn(),Xn(),Zn(),Qn(),er(),nr(),rr(),pr(),hr(),gr(),_r(),br(),xr()})),Cr=u(f());bt(),Ot(),Sr();const wr=/{%|{{/,Tr=e=>wr.test(e);function Er(e){return typeof e==`string`?(e=e.trim(),!!(/^[mzlhvcsqta]\s*[-+.0-9][^mlhvzcsqta]+/i.test(e)&&/[\dz]$/i.test(e)&&e.length>4)):!1}var Dr=o((()=>{Tn(),D({tap_action:O(fr),hold_action:O(fr),double_tap_action:O(fr)})})),Or=o((()=>{})),kr=o((()=>{}));function Ar(e){return e?e.themes.darkMode:!1}var jr=o((()=>{})),Mr,Nr=o((()=>{Mr=class{constructor(e){this._expiration=e}_expiration;_cache=new Map;get(e){return this._cache.get(e)}set(e,t){this._cache.set(e,t),this._expiration&&window.setTimeout(()=>this._cache.delete(e),this._expiration)}has(e){return this._cache.has(e)}}})),Pr=`2.4.12`,Fr={type:`git`,url:`https://github.com/benjamin-dcs/gauge-card-pro`};function Ir(e){let t=window;t.customCards=t.customCards||[],t.customCards.push({...e,preview:!0,documentationURL:`${Fr.url}/blob/main/README.md`})}var Lr=o((()=>{})),Rr,zr=o((()=>{Rr=()=>{(!customElements.get(`ha-form`)||!customElements.get(`hui-card-features-editor`))&&customElements.get(`hui-tile-card`)?.getConfigElement(),customElements.get(`ha-entity-picker`)||customElements.get(`hui-entities-card`)?.getConfigElement(),customElements.get(`ha-card-conditions-editor`)||customElements.get(`hui-conditional-card`)?.getConfigElement()}})),Br=o((()=>{Dr(),Or(),kr(),jr(),Nr(),Lr(),zr()})),Vr,Hr=o((()=>{Vr={DEFAULT_LOG_LEVEL:1,PREFIX:`🌈 Gauge Card Pro`}}));Br(),Hr();let Ur=!1,Wr=function(e){return e[e.ERROR=0]=`ERROR`,e[e.WARN=1]=`WARN`,e[e.INFO=2]=`INFO`,e[e.DEBUG=3]=`DEBUG`,e}({});const Gr={title:[`background: #424242`,`color: white`,`display: inline-block`,`line-height: 20px`,`text-align: center`,`border-radius: 5px 0 0 5px`,`font-size: 12px`,`font-weight: bold`,`padding: 4px 8px 4px 12px`,`margin: 5px 0`].join(`;`),version:[`background: #4fc3f7`,`color: white`,`display: inline-block`,`line-height: 20px`,`text-align: center`,`border-radius: 0 5px 5px 0`,`font-size: 12px`,`font-weight: bold`,`padding: 4px 12px 4px 8px`,`margin: 5px 0`].join(`;`),prefix:[`color: #4fc3f7`,`font-weight: bold`].join(`;`),error:[`color: #f44336`,`font-weight: bold`].join(`;`),warn:[`color: #ff9800`,`font-weight: bold`].join(`;`)};function Kr(e){qr(e)}function qr(e){Ur||=(console.groupCollapsed(`%c${Vr.PREFIX}%cv${e}`,Gr.title,Gr.version),console.log(`%c Description: %c Build beautiful Gauge cards using 🌈 gradients and 🛠️ templates.  `,`font-weight: bold`,`font-weight: normal`),console.log(`%c GitHub: %c https://github.com/benjamin-dcs/gauge-card-pro `,`font-weight: bold`,`font-weight: normal`),console.groupEnd(),!0)}function Jr(e){let t=e??Vr.DEFAULT_LOG_LEVEL,n=e=>{t=e},r=()=>Wr[t].toLowerCase(),i=(e,n,...r)=>{if(t<0)return;let i=u(n);if(e instanceof Error){let t=e.message||`Unknown error`,[n,a]=l(`Error${typeof i==`string`?` during ${i}`:``}: ${t}`,Gr.error);console.error(n,a),e.stack&&console.error(e.stack),i&&typeof i==`object`&&console.error(`Context:`,{...i,timestamp:new Date().toISOString()}),r.length>0&&console.error(`Additional data:`,...r)}else if(typeof e==`string`){let[t,n]=l(`${e}${typeof i==`string`?` during ${i}`:``}`,Gr.error);i&&typeof i==`object`?console.error(t,n,{context:{...i,timestamp:new Date().toISOString()},...r.length>0?{additionalData:r}:{}}):r.length>0?console.error(t,n,...r):console.error(t,n)}else{let[t,n]=l(`Unknown error${typeof i==`string`?` during ${i}`:``}:`,Gr.error);console.error(t,n,e),i&&typeof i==`object`&&console.error(`Context:`,{...i,timestamp:new Date().toISOString()}),r.length>0&&console.error(`Additional data:`,...r)}},a=(e,...t)=>{c(1,`[warn] ${e}`,Gr.warn,console.warn,...t)},o=(e,...t)=>{c(2,`[info] ${e}`,Gr.prefix,console.info,...t)},s=(e,...t)=>{c(3,`[debug] ${e}`,Gr.prefix,console.debug,...t)};function c(e,n,r,i,...a){if(t<e)return;let[o,s]=l(n,r);a.length>0?i(o,s,...a):i(o,s)}function l(e,t){return[`%c[${Vr.PREFIX}] ${e}`,t]}function u(e){if(e!=null){if(typeof e==`string`)return e;if(typeof e==`object`)try{return{...e}}catch{try{return{value:JSON.stringify(e)}}catch{return{value:String(e)}}}return String(e)}}return{setLogLevel:n,getLogLevelName:r,info:o,debug:s,warn:a,error:i}}function j(e,t){let n=JSON.parse(JSON.stringify(e)),r=t.split(`.`),i=r.pop();if(!i)return{result:e,success:!1};let a=n;for(let e of r){if(typeof a[e]!=`object`||a[e]===null)return{result:n,success:!1};a=a[e]}return a&&i in a?(delete a[i],{result:n,success:!0}):{result:n,success:!1}}var Yr=o((()=>{}));function M(e,t,n,r=!1,i=!1){let a=JSON.parse(JSON.stringify(e)),o=t.split(`.`),s=a;for(let e=0;e<o.length-1;e++){if(typeof s[o[e]]!=`object`||s[o[e]]===null||s[o[e]]===void 0)if(r)s[o[e]]={};else return{result:a,success:!1};s=s[o[e]]}let c=o[o.length-1];return i||s[c]===void 0?(s[c]=n,{result:a,success:!0}):{result:a,success:!1}}var Xr=o((()=>{}));function N(e,t,n,r=!1){let i=JSON.parse(JSON.stringify(e)),a=t.split(`.`),o=i;for(let e=0;e<a.length-1;e++)if(o=o?.[a[e]],typeof o!=`object`||!o)return i;let s=a[a.length-1],c=o?.[s];if(c===void 0)return i;let{result:l,success:u}=M(i,n,c,!0,r),d=l;return u&&!n.startsWith(t+`.`)&&(d=j(d,t).result),d}var Zr=o((()=>{Yr(),Xr()}));function Qr(e){if(!e)return;let t=e;if(t.setpoint!==null&&t.setpoint?.type===void 0&&(typeof t.setpoint?.value==`number`?t=M(t,`setpoint.type`,`number`,!0,!1).result:typeof t.setpoint?.value==`string`&&(t=M(t,`setpoint.type`,`template`,!0,!1).result)),t.icon?.battery!==void 0&&(t=N(t,`icon.battery`,`icon.value`),t=M(t,`icon.type`,`battery`,!0,!1).result),t.icon?.template!==void 0&&(t=N(t,`icon.template`,`icon.value`),t=M(t,`icon.type`,`template`,!0,!1).result),t.shapes?.main_needle_with_inner!==void 0&&(t=N(t,`shapes.main_needle_with_inner`,`shapes.main_needle`)),t.shapes?.main_min_indicator_with_inner!==void 0&&(t=N(t,`shapes.main_min_indicator_with_inner`,`shapes.main_min_indicator`)),t.shapes?.main_max_indicator_with_inner!==void 0&&(t=N(t,`shapes.main_max_indicator_with_inner`,`shapes.main_max_indicator`)),t.shapes?.inner_needle_on_main!==void 0&&(t=N(t,`shapes.inner_needle_on_main`,`shapes.inner_needle`)),t.shapes?.inner_setpoint_needle_on_main&&(t=N(t,`shapes.inner_setpoint_needle_on_main`,`shapes.inner_setpoint_needle`)),t=j(t,`use_new_from_segments_style`).result,t.gradient_resolution===`high`&&(t=M(t,`gradient_resolution`,`auto`,!1,!0).result),t.inner?.gradient_resolution===`high`&&(t=M(t,`inner.gradient_resolution`,`auto`,!1,!0).result),t.icon_tap_action!==void 0){let e=t.icon?.left===!0?`left`:`right`;t=N(t,`icon_tap_action`,`icon_${e}_tap_action`),t=j(t,`icon_tap_action`).result}if(t.icon_hold_action!==void 0){let e=t.icon?.left===!0?`left`:`right`;t=N(t,`icon_hold_action`,`icon_${e}_hold_action`),t=j(t,`icon_hold_action`).result}if(t.icon_double_tap_action!==void 0){let e=t.icon?.left===!0?`left`:`right`;t=N(t,`icon_double_tap_action`,`icon_${e}_double_tap_action`),t=j(t,`icon_double_tap_action`).result}if(t.icon?.type!==void 0){let e=t.icon.left===!0?`left`:`right`;t=j(t,`icon.left`).result,t=N(t,`icon`,`icons.${e}`),t=j(t,`icon`).result}return t=j(t,`inner.marker`).result,t.gradient_resolution===`very_low`&&(t=M(t,`gradient_resolution`,25,!1,!0).result),t.gradient_resolution===`low`&&(t=M(t,`gradient_resolution`,50,!1,!0).result),t.gradient_resolution===`medium`&&(t=M(t,`gradient_resolution`,100,!1,!0).result),t.inner?.gradient_resolution===`very_low`&&(t=M(t,`inner.gradient_resolution`,25,!1,!0).result),t.inner?.gradient_resolution===`low`&&(t=M(t,`inner.gradient_resolution`,50,!1,!0).result),t.inner?.gradient_resolution===`medium`&&(t=M(t,`inner.gradient_resolution`,100,!1,!0).result),t.titles?.primary!==void 0&&typeof t.titles.primary==`string`&&(t=N(t,`titles.primary`,`titles.primary.value`,!0)),t.titles?.primary_color!==void 0&&(t=N(t,`titles.primary_color`,`titles.primary.color`)),t.titles?.primary_font_size!==void 0&&(t=N(t,`titles.primary_font_size`,`titles.primary.font_size`)),t.titles?.secondary!==void 0&&typeof t.titles.secondary==`string`&&(t=N(t,`titles.secondary`,`titles.secondary.value`,!0)),t.titles?.secondary_color!==void 0&&(t=N(t,`titles.secondary_color`,`titles.secondary.color`)),t.titles?.secondary_font_size!==void 0&&(t=N(t,`titles.secondary_font_size`,`titles.secondary.font_size`)),t.value_texts?.primary!==void 0&&typeof t.value_texts.primary==`string`&&(t=N(t,`value_texts.primary`,`value_texts.primary.value`,!0)),t.value_texts?.primary_color!==void 0&&(t=N(t,`value_texts.primary_color`,`value_texts.primary.color`)),t.value_texts?.primary_unit!==void 0&&(t=N(t,`value_texts.primary_unit`,`value_texts.primary.unit_of_measurement`)),t.value_texts?.primary_unit_before_value!==void 0&&(t=N(t,`value_texts.primary_unit_before_value`,`value_texts.primary.unit_before_value`)),t.value_texts?.primary_font_size_reduction!==void 0&&(t=N(t,`value_texts.primary_font_size_reduction`,`value_texts.primary.font_size_reduction`)),t.value_texts?.secondary!==void 0&&typeof t.value_texts.secondary==`string`&&(t=N(t,`value_texts.secondary`,`value_texts.secondary.value`,!0)),t.value_texts?.secondary_color!==void 0&&(t=N(t,`value_texts.secondary_color`,`value_texts.secondary.color`)),t.value_texts?.secondary_unit!==void 0&&(t=N(t,`value_texts.secondary_unit`,`value_texts.secondary.unit_of_measurement`)),t.value_texts?.secondary_unit_before_value!==void 0&&(t=N(t,`value_texts.secondary_unit_before_value`,`value_texts.secondary.unit_before_value`)),t.primary_value_text_tap_action!==void 0&&(t=N(t,`primary_value_text_tap_action`,`value_texts.primary.tap_action`)),t.primary_value_text_hold_action!==void 0&&(t=N(t,`primary_value_text_hold_action`,`value_texts.primary.hold_action`)),t.primary_value_text_double_tap_action!==void 0&&(t=N(t,`primary_value_text_double_tap_action`,`value_texts.primary.double_tap_action`)),t.secondary_value_text_tap_action!==void 0&&(t=N(t,`secondary_value_text_tap_action`,`value_texts.secondary.tap_action`)),t.secondary_value_text_hold_action!==void 0&&(t=N(t,`secondary_value_text_hold_action`,`value_texts.secondary.hold_action`)),t.secondary_value_text_double_tap_action!==void 0&&(t=N(t,`secondary_value_text_double_tap_action`,`value_texts.secondary.double_tap_action`)),t.icon_left_tap_action!==void 0&&(t=N(t,`icon_left_tap_action`,`icons.left.tap_action`)),t.icon_left_hold_action!==void 0&&(t=N(t,`icon_left_hold_action`,`icons.left.hold_action`)),t.icon_left_double_tap_action!==void 0&&(t=N(t,`icon_left_double_tap_action`,`icons.left.double_tap_action`)),t.icon_right_tap_action!==void 0&&(t=N(t,`icon_right_tap_action`,`icons.right.tap_action`)),t.icon_right_hold_action!==void 0&&(t=N(t,`icon_right_hold_action`,`icons.right.hold_action`)),t.icon_right_double_tap_action!==void 0&&(t=N(t,`icon_right_double_tap_action`,`icons.right.double_tap_action`)),t=j(t,`marker`).result,t}var $r=o((()=>{Yr(),Zr(),Xr()}));$r();function ei(e,t){if(!e||!t)return;let n=t.split(`.`),r=e;for(let e of n)r=r?.[e];return r}function ti(e){if(typeof e!=`string`)return String(e);if(!(e.startsWith(`var(`)&&e.endsWith(`)`)))return e;let t=Date.now(),n=ri.get(e);if(n&&t-n.ts<ai)return n.value;ni||=window.getComputedStyle(document.body);let r=e.slice(4,-1).trim(),i=ni.getPropertyValue(r).trim();if(ri.set(e,{value:i,ts:t}),ri.size>ii){let e=ri.keys().next().value;e&&ri.delete(e)}return i}var ni,ri,ii,ai,oi=o((()=>{ni=null,ri=new Map,ii=64,ai=6e4}));function si(){return{error:ci(ti(`var(--error-color)`),`#db4437`),success:ci(ti(`var(--success-color)`),`#43a047`),warning:ci(ti(`var(--warning-color)`),`#ffa600`),info:ci(ti(`var(--info-color)`),`#039be5`)}}var ci,li=o((()=>{oi(),ci=(e,t)=>e||t})),P,ui=o((()=>{li(),P={gradient:{backgroundOpacity:.25,resolution:`auto`,numericalResolution:25,numericalResolutionMin:1,numericalResolutionMax:45},values:{min:0,max:100},ui:{animationSpeed:`normal`,iconColor:`var(--primary-text-color)`,minMaxIndicators:{opacity:.8,fill:`rgb(255, 255, 255)`,labelColor:`#111111`},needleColor:`var(--primary-text-color)`,setpointNeedleColor:`var(--error-color)`,titleColor:`var(--primary-text-color)`,titleFontSizePrimary:`15px`,titleFontSizeSecondary:`14px`,valueTextColor:`var(--primary-text-color)`},inner:{mode:`severity`},severity:{colorMode:`basic`,defaultColor:()=>si().info}}}));ui();const di=`icons.left.value,icons.right.value,inner.max,inner.max_indicator.value,inner.max_indicator.label_color,inner.min,inner.min_indicator.value,inner.min_indicator.label_color,inner.needle_color,inner.segments,inner.setpoint.color,inner.setpoint.value,inner.value,max,max_indicator.value,max_indicator.label_color,min,min_indicator.value,min_indicator.label_color,needle_color,segments,setpoint.color,setpoint.value,shapes.main_needle,shapes.main_min_indicator,shapes.main_max_indicator,shapes.main_setpoint_needle,shapes.inner_needle,shapes.inner_min_indicator,shapes.inner_max_indicator,shapes.inner_setpoint_needle,titles.primary.value,titles.primary.color,titles.primary.font_size,titles.secondary.value,titles.secondary.color,titles.secondary.font_size,value,value_texts.primary.value,value_texts.primary.color,value_texts.primary.unit_of_measurement,value_texts.primary.font_size_reduction,value_texts.secondary.value,value_texts.secondary.color,value_texts.secondary.unit_of_measurement`.split(`,`),fi=new Mr(1e3);w();const pi=v`
   ha-card {
     height: 100%;
     overflow: hidden;
@@ -1374,19 +1374,19 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
                   @closed=${e=>e.stopPropagation()}
                 >
                   ${this._currentFanMode?S` <ha-svg-icon
-                        slot="icon"
-                        .path=${kS[X.CLIMATE_FAN_MODES]}
-                      ></ha-svg-icon>`:C}
+                          slot="icon"
+                          .path=${kS[X.CLIMATE_FAN_MODES]}
+                        ></ha-svg-icon>`:C}
                   ${this.modes.map(e=>{let t=`features.fan_modes.${e.toLowerCase()}`,n=Q(this.language,t);return n===t&&(n=e),S`
-                    <ha-list-item .value=${e} graphic="icon">
-                      <ha-svg-icon
-                        slot="graphic"
-                        .path=${pC(e)}
-                      >
-                      </ha-svg-icon>
-                      ${n}
-                    </ha-list-item>
-                  `})}
+                      <ha-list-item .value=${e} graphic="icon">
+                        <ha-svg-icon
+                          slot="graphic"
+                          .path=${pC(e)}
+                        >
+                        </ha-svg-icon>
+                        ${n}
+                      </ha-list-item>
+                    `})}
                 </ha-control-select-menu>`:S`${this.modes.map(e=>this.renderModeButton(e))}`}
       </div>
     `}renderModeButton(e){let t={},n=e===`off`?`var(--grey-color)`:AS[X.CLIMATE_FAN_MODES],r=this._currentFanMode===e&&this._currentFanMode!==this.entity.attributes.fan_mode,i=`features.fan_modes.${e.toLowerCase()}`,a=Q(this.language,i);return a===i&&(a=e),(e===this.entity.attributes.fan_mode||r)&&(t[`--icon-color`]=n,t[`--bg-color`]=`color-mix(in srgb, ${n} 20%, transparent)`),S`
@@ -1435,19 +1435,19 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
                   @closed=${e=>e.stopPropagation()}
                 >
                   ${this._currentHvacMode?C:S` <ha-svg-icon
-                        slot="icon"
-                        .path=${kS[X.CLIMATE_HVAC_MODES]}
-                      ></ha-svg-icon>`}
+                          slot="icon"
+                          .path=${kS[X.CLIMATE_HVAC_MODES]}
+                        ></ha-svg-icon>`}
                   ${this.modes.map(e=>{let t=`features.hvac_modes.${e.toLowerCase()}`,n=Q(this.language,t);return n===t&&(n=e),S`
-                    <ha-list-item .value=${e} graphic="icon">
-                      <ha-svg-icon
-                        slot="graphic"
-                        .path=${gC(e)}
-                      >
-                      </ha-svg-icon>
-                      ${n}
-                    </ha-list-item>
-                  `})}
+                      <ha-list-item .value=${e} graphic="icon">
+                        <ha-svg-icon
+                          slot="graphic"
+                          .path=${gC(e)}
+                        >
+                        </ha-svg-icon>
+                        ${n}
+                      </ha-list-item>
+                    `})}
                 </ha-control-select-menu>`:S`${this.modes.map(e=>this.renderModeButton(e))}`}
       </div>
     `}renderModeButton(e){let t={},n=e===`off`?`var(--grey-color)`:mC(e),r=this._currentHvacMode===e&&this._currentHvacMode!==this.entity.state,i=`features.hvac_modes.${e.toLowerCase()}`,a=Q(this.language,i);return a===i&&(a=e),(e===this.entity.state||r)&&(t[`--icon-color`]=n,t[`--bg-color`]=`color-mix(in srgb, ${n} 20%, transparent)`),S`
@@ -1555,19 +1555,19 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
                   @closed=${e=>e.stopPropagation()}
                 >
                   ${this._currentPresetMode?S` <ha-svg-icon
-                        slot="icon"
-                        .path=${kS[X.CLIMATE_PRESET_MODES]}
-                      ></ha-svg-icon>`:C}
+                          slot="icon"
+                          .path=${kS[X.CLIMATE_PRESET_MODES]}
+                        ></ha-svg-icon>`:C}
                   ${this.modes.map(e=>{let t=`features.preset_modes.${e.toLowerCase()}`,n=Q(this.language,t);return n===t&&(n=e),S`
-                    <ha-list-item .value=${e} graphic="icon">
-                      <ha-svg-icon
-                        slot="graphic"
-                        .path=${vC(e)}
-                      >
-                      </ha-svg-icon>
-                      ${n}
-                    </ha-list-item>
-                  `})}
+                      <ha-list-item .value=${e} graphic="icon">
+                        <ha-svg-icon
+                          slot="graphic"
+                          .path=${vC(e)}
+                        >
+                        </ha-svg-icon>
+                        ${n}
+                      </ha-list-item>
+                    `})}
                 </ha-control-select-menu>`:S`${this.modes.map(e=>this.renderModeButton(e))}`}
       </div>
     `}renderModeButton(e){let t={},n=e===`off`?`var(--grey-color)`:AS[X.CLIMATE_PRESET_MODES],r=this._currentPresetMode===e&&this._currentPresetMode!==this.entity.attributes.preset_mode,i=`features.preset_modes.${e.toLowerCase()}`,a=Q(this.language,i);return a===i&&(a=e),(e===this.entity.attributes.preset_mode||r)&&(t[`--icon-color`]=n,t[`--bg-color`]=`color-mix(in srgb, ${n} 20%, transparent)`),S`
@@ -1616,19 +1616,19 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
                   @closed=${e=>e.stopPropagation()}
                 >
                   ${this._currentSwingMode?S` <ha-svg-icon
-                        slot="icon"
-                        .path=${kS[X.CLIMATE_SWING_MODES]}
-                      ></ha-svg-icon>`:C}
+                          slot="icon"
+                          .path=${kS[X.CLIMATE_SWING_MODES]}
+                        ></ha-svg-icon>`:C}
                   ${this.modes.map(e=>{let t=`features.swing_modes.${e.toLowerCase()}`,n=Q(this.language,t);return n===t&&(n=e),S`
-                    <ha-list-item .value=${e} graphic="icon">
-                      <ha-svg-icon
-                        slot="graphic"
-                        .path=${bC(e)}
-                      >
-                      </ha-svg-icon>
-                      ${n}
-                    </ha-list-item>
-                  `})}
+                      <ha-list-item .value=${e} graphic="icon">
+                        <ha-svg-icon
+                          slot="graphic"
+                          .path=${bC(e)}
+                        >
+                        </ha-svg-icon>
+                        ${n}
+                      </ha-list-item>
+                    `})}
                 </ha-control-select-menu>`:S`${this.modes.map(e=>this.renderModeButton(e))}`}
       </div>
     `}renderModeButton(e){let t={},n=e===`off`?`var(--grey-color)`:AS[X.CLIMATE_SWING_MODES],r=this._currentSwingMode===e&&this._currentSwingMode!==this.entity.attributes.swing_mode,i=`features.swing_modes.${e.toLowerCase()}`,a=Q(this.language,i);return a===i&&(a=e),(e===this.entity.attributes.swing_mode||r)&&(t[`--icon-color`]=n,t[`--bg-color`]=`color-mix(in srgb, ${n} 20%, transparent)`),S`
@@ -1791,48 +1791,48 @@ const Sw=Symbol.for(``),Cw=e=>{if(e?.r===Sw)return e?._$litStatic$},ww=e=>({_$li
           style=${E({"grid-template-columns":c?`36px auto 36px`:void 0,"max-width":c&&l?`300px`:c?`250px`:`208px`})}
         >
           ${c?S` <div style="display: flex; justify-self: start;">
-                <gcp-icon-button
-                  appearance="square"
-                  title="Back to first page"
-                  @click=${t=>e.setFirstFeaturePage(t)}
-                  style=${E({"--icon-color":AS[e._activeFeaturePage],"--bg-color":`color-mix(in srgb, ${AS[e._activeFeaturePage]} 20%, transparent)`})}
-                >
-                  <ha-svg-icon
-                    .path=${kS[e._activeFeaturePage]}
-                  ></ha-svg-icon>
-                </gcp-icon-button>
-              </div>`:C}
+                  <gcp-icon-button
+                    appearance="square"
+                    title="Back to first page"
+                    @click=${t=>e.setFirstFeaturePage(t)}
+                    style=${E({"--icon-color":AS[e._activeFeaturePage],"--bg-color":`color-mix(in srgb, ${AS[e._activeFeaturePage]} 20%, transparent)`})}
+                  >
+                    <ha-svg-icon
+                      .path=${kS[e._activeFeaturePage]}
+                    ></ha-svg-icon>
+                  </gcp-icon-button>
+                </div>`:C}
           ${n&&!e.hasSeparatedOverviewControls?S` <gcp-climate-overview
-                style=${E({display:e._activeFeaturePage===X.CLIMATE_OVERVIEW?void 0:`none`})}
-                .hass=${e.hass}
-                .entity=${t}
-                .hasAdjustTemperatureFeature=${r}
-                .hasClimateHvacModesFeature=${i.enabled}
-                .hasClimateFanModesFeature=${a.enabled}
-                .hasClimateSwingModesFeature=${o.enabled}
-                .hasClimatePresetModesFeature=${s.enabled}
-                .setPage=${(t,n)=>e.setFeaturePage(t,n)}
-              >
-              </gcp-climate-overview>`:C}
+                  style=${E({display:e._activeFeaturePage===X.CLIMATE_OVERVIEW?void 0:`none`})}
+                  .hass=${e.hass}
+                  .entity=${t}
+                  .hasAdjustTemperatureFeature=${r}
+                  .hasClimateHvacModesFeature=${i.enabled}
+                  .hasClimateFanModesFeature=${a.enabled}
+                  .hasClimateSwingModesFeature=${o.enabled}
+                  .hasClimatePresetModesFeature=${s.enabled}
+                  .setPage=${(t,n)=>e.setFeaturePage(t,n)}
+                >
+                </gcp-climate-overview>`:C}
           ${r?S` <gcp-climate-temperature-control
-                style=${E({display:e._activeFeaturePage===X.ADJUST_TEMPERATURE?void 0:`none`})}
-                .callService=${e.hass.callService}
-                .entity=${t}
-                .unitTemp=${e.hass.config.unit_system.temperature}
-              >
-              </gcp-climate-temperature-control>`:C}
+                  style=${E({display:e._activeFeaturePage===X.ADJUST_TEMPERATURE?void 0:`none`})}
+                  .callService=${e.hass.callService}
+                  .entity=${t}
+                  .unitTemp=${e.hass.config.unit_system.temperature}
+                >
+                </gcp-climate-temperature-control>`:C}
           ${i.enabled?Dw(e.hass,`hvac`,t,i.modes,i.style,e._activeFeaturePage):C}
           ${a.enabled?Dw(e.hass,`fan`,t,a.modes,a.style,e._activeFeaturePage):C}
           ${o.enabled?Dw(e.hass,`swing`,t,o.modes,o.style,e._activeFeaturePage):C}
           ${s.enabled?Dw(e.hass,`preset`,t,s.modes,s.style,e._activeFeaturePage):C}
           ${c?S` <div style="display: flex; justify-self: end;">
-                <gcp-icon-button
-                  appearance="plain"
-                  @click=${t=>e.nextFeaturePage(t)}
-                >
-                  <ha-svg-icon .path=${zx}></ha-svg-icon>
-                </gcp-icon-button>
-              </div>`:C}
+                  <gcp-icon-button
+                    appearance="plain"
+                    @click=${t=>e.nextFeaturePage(t)}
+                  >
+                    <ha-svg-icon .path=${zx}></ha-svg-icon>
+                  </gcp-icon-button>
+                </div>`:C}
         </div>`:C}`}function kw(e){let t={enabled:!1,modes:void 0,style:void 0},n={featureEntityObj:void 0,hasClimateOverviewFeature:!1,hasAdjustTemperatureFeature:!1,hvac:t,fan:t,swing:t,preset:t,hasMoreThanOnePage:!1,hasFiveOrMoreIcons:!1};if(!e.featureEntity||!e.enabledFeaturePages?.length)return n;let r=e.enabledFeaturePages,i=r.includes(X.CLIMATE_OVERVIEW),a=r.includes(X.ADJUST_TEMPERATURE),o=r.includes(X.CLIMATE_HVAC_MODES),s=r.includes(X.CLIMATE_FAN_MODES),c=r.includes(X.CLIMATE_SWING_MODES),l=r.includes(X.CLIMATE_PRESET_MODES);if(!(i||a||o||s||c||l))return n;let u=Rt(e.featureEntity)===`climate`?e.hass.states[e.featureEntity]:void 0;if(!u)return{...n,hasClimateOverviewFeature:i,hasAdjustTemperatureFeature:a};let d=Aw(e,u,o),f=jw(e,u,s),p=Mw(e,u,c),m=Nw(e,u,l);return{featureEntityObj:u,hasClimateOverviewFeature:i,hasAdjustTemperatureFeature:a,hvac:d,fan:f,swing:p,preset:m,hasMoreThanOnePage:[a,d.enabled,f.enabled,p.enabled,m.enabled].filter(Boolean).length>1,hasFiveOrMoreIcons:!!(i&&!e.hasSeparatedOverviewControls&&a&&f.enabled&&d.enabled&&m.enabled&&p.enabled||f.enabled&&f.style!==`dropdown`&&f.modes.length>=5||d.enabled&&d.style!==`dropdown`&&d.modes.length>=5||m.enabled&&m.style!==`dropdown`&&m.modes.length>=5||p.enabled&&p.style!==`dropdown`&&p.modes.length>=5)}}function Aw(e,t,n){if(!n)return{enabled:!1,modes:void 0,style:void 0};let r=Y(e._config,X.CLIMATE_HVAC_MODES),i=r?.hvac_modes??t.attributes.hvac_modes??[],a=t.attributes.hvac_modes.filter(e=>i.includes(e)).sort(In);return a.length?{enabled:!0,modes:a,style:r?.style}:{enabled:!1,modes:void 0,style:void 0}}function jw(e,t,n){if(!n)return{enabled:!1,modes:void 0,style:void 0};let r=Y(e._config,X.CLIMATE_FAN_MODES),i=r?.fan_modes??t.attributes.fan_modes??[],a=(t.attributes.fan_modes??[]).filter(e=>i.includes(e));return a.length?{enabled:!0,modes:a,style:r?.style}:{enabled:!1,modes:void 0,style:void 0}}function Mw(e,t,n){if(!n)return{enabled:!1,modes:void 0,style:void 0};let r=Y(e._config,X.CLIMATE_SWING_MODES),i=r?.swing_modes??t.attributes.swing_modes??[],a=(t.attributes.swing_modes??[]).filter(e=>i.includes(e));return a.length?{enabled:!0,modes:a,style:r?.style}:{enabled:!1,modes:void 0,style:void 0}}function Nw(e,t,n){if(!n)return{enabled:!1,modes:void 0,style:void 0};let r=Y(e._config,X.CLIMATE_PRESET_MODES),i=r?.preset_modes??t.attributes.preset_modes??[],a=(t.attributes.preset_modes??[]).filter(e=>i.includes(e));return a.length?{enabled:!0,modes:a,style:r?.style}:{enabled:!1,modes:void 0,style:void 0}}var Pw,Fw,Iw=o((()=>{
 /**
 * @license
@@ -2004,19 +2004,19 @@ tt(),wt(),Pw=class extends Ct{constructor(e){if(super(e),this.it=C,e.type!==xt.C
     ${e.createHAForm(t,zT)}
     ${r?S` <div class="content">
             ${c?S` <ha-expansion-panel
-                  class="expansion-panel"
-                  outlined
-                  expanded
-                  .header="${Q(n,`segments`)}"
-                >
-                  <ha-icon slot="leading-icon" icon="mdi:segment"></ha-icon>
-                  <div class="content">
-                    ${d?e.createConvertSegmentsAlert(`inner`,i,s):C}
-                    ${s===`from`?S`${a.data.map((t,n)=>e.createSegmentPanel(`inner`,`from`,t,n))}`:s===`pos`?S`${o.data.map((t,n)=>e.createSegmentPanel(`inner`,`pos`,t,n))}`:C}
-                    ${e.createButton(Q(n,`add_segment`),()=>e.addSegment(`inner`),`mdi:plus`,`small`,`brand`,`filled`)}
-                    ${l?e.createButton(Q(n,`sort`),()=>e.sortSegments(`inner`),`mdi:sort`,`small`,`neutral`,`plain`):C}
-                  </div>
-                </ha-expansion-panel>`:C}
+                    class="expansion-panel"
+                    outlined
+                    expanded
+                    .header="${Q(n,`segments`)}"
+                  >
+                    <ha-icon slot="leading-icon" icon="mdi:segment"></ha-icon>
+                    <div class="content">
+                      ${d?e.createConvertSegmentsAlert(`inner`,i,s):C}
+                      ${s===`from`?S`${a.data.map((t,n)=>e.createSegmentPanel(`inner`,`from`,t,n))}`:s===`pos`?S`${o.data.map((t,n)=>e.createSegmentPanel(`inner`,`pos`,t,n))}`:C}
+                      ${e.createButton(Q(n,`add_segment`),()=>e.addSegment(`inner`),`mdi:plus`,`small`,`brand`,`filled`)}
+                      ${l?e.createButton(Q(n,`sort`),()=>e.sortSegments(`inner`),`mdi:sort`,`small`,`neutral`,`plain`):C}
+                    </div>
+                  </ha-expansion-panel>`:C}
             ${e.createHAForm(t,f,!0,`inner`)}
           </div>`:C}
   `}var UT=o((()=>{rx(),sx(),VT(),ui(),w(),dC(),PT()})),WT,GT=o((()=>{pT(),DS(),dC(),ui(),JS(),WT=dT((e,t,n,r,i,a)=>[{name:`main_gauge`,iconPath:Rx,type:`expandable`,flatten:!0,expanded:!0,schema:[{name:`gradient_resolution_mode`,disabled:!t,selector:{select:{multiple:!1,mode:`list`,options:[`auto`,`numerical`].map(t=>({value:t,label:Q(e,t)}))}}},...n===`numerical`?[{name:`gradient_resolution`,disabled:!t,selector:{number:{mode:`box`,step:1,min:P.gradient.numericalResolutionMin,max:P.gradient.numericalResolutionMax}}}]:[]]},...r?[{name:`inner`,iconPath:Vx,type:`expandable`,flatten:!1,expanded:!0,schema:[{name:`gradient_resolution_mode`,disabled:!i,selector:{select:{multiple:!1,mode:`list`,options:[`auto`,`numerical`].map(t=>({value:t,label:Q(e,t)}))}}},...a===`numerical`?[{name:`gradient_resolution`,disabled:!t,selector:{number:{mode:`box`,step:1,min:P.gradient.numericalResolutionMin,max:P.gradient.numericalResolutionMax}}}]:[]]}]:[],{name:`ui`,iconPath:sS,type:`expandable`,expanded:!0,flatten:!0,schema:[{name:`animation_speed`,selector:{select:{mode:`dropdown`,options:qS.map(t=>({value:t,label:Q(e,t)}))}}}]},{name:`shapes`,iconPath:pS,type:`expandable`,flatten:!1,schema:[{name:`main_needle`,selector:{template:{}}},{name:`main_min_indicator`,selector:{template:{}}},{name:`main_max_indicator`,selector:{template:{}}},{name:`main_setpoint_needle`,selector:{template:{}}},{name:`inner_needle`,selector:{template:{}}},{name:`inner_min_indicator`,selector:{template:{}}},{name:`inner_max_indicator`,selector:{template:{}}},{name:`inner_setpoint_needle`,selector:{template:{}}}]}])}));function KT(e,t){let n=e.hass.locale.language,r=(t.segments!=null&&(t.needle&&t.gradient||t.gradient_background))??!1,i=Z.isNumeric(t.gradient_resolution)?`numerical`:`auto`,a=t.inner!==void 0,o,s;if(a){let e=t.inner.segments,n=t.inner.mode??P.inner.mode;o=(e!=null&&([`static`,`needle`].includes(n)&&t.inner.gradient||t.inner.gradient_background))??!1,s=Z.isNumeric(t.inner.gradient_resolution)?`numerical`:`auto`}let c=WT(n,r,i,a,o,s);return S` ${e.createHAForm(t,c,!0)}`}var qT=o((()=>{w(),ui(),XS(),GT()})),JT=c({GaugeCardProEditor:()=>XT}),YT,XT,ZT=o((()=>{w(),bt(),Lw(),Tn(),Ot(),rx(),Sr(),Br(),Yr(),Dx(),Xr(),cT(),sx(),ui(),Hr(),dC(),XS(),MT(),RT(),UT(),qT(),IS(),Zr(),rw(),YT=[`general`,`main_gauge`,`inner_gauge`,`advanced`],XT=class extends rt{constructor(...e){super(...e),this._currTab=`general`,this._computeLabel=(e,t=`none`)=>Q(this.hass.locale.language,e.name,t)}connectedCallback(){super.connectedCallback(),Rr()}setConfig(e){e=Qr(e),sn(e,sT),this._config=e,At(this,`config-changed`,{config:e})}get _editorContext(){return{hass:this.hass,createHAForm:this.createHAForm.bind(this),createButton:this.createButton.bind(this),createConvertSegmentsAlert:this.createConvertSegmentsAlert.bind(this),createSegmentPanel:this.createSegmentPanel.bind(this),addSegment:this._addSegment.bind(this),sortSegments:this._sortSegments.bind(this),deleteFeature:this._deleteFeature.bind(this),addFeature:this._addFeature.bind(this)}}createHAForm(e,t,n=!1,r=`none`){return S` <ha-form
@@ -2061,7 +2061,7 @@ tt(),wt(),Pw=class extends Ct{constructor(e){if(super(e),this.it=C,e.type!==xt.C
       ></ha-icon>
 
       <div class="content">
-        <ha-textfield
+        <ha-input
           class="segment-textfield"
           name="${e===`main`?``:`inner.`}segments.${r}.${t}"
           label="${t===`from`?`From`:`Pos`}"
@@ -2070,9 +2070,9 @@ tt(),wt(),Pw=class extends Ct{constructor(e){if(super(e),this.it=C,e.type!==xt.C
           step="0.01"
           @keyup="${this._valueChanged}"
           @change="${this._valueChanged}"
-        ></ha-textfield>
+        ></ha-input>
 
-        <ha-textfield
+        <ha-input
           class="segment-textfield"
           name="${e===`main`?``:`inner.`}segments.${r}.color"
           label="Color"
@@ -2080,7 +2080,7 @@ tt(),wt(),Pw=class extends Ct{constructor(e){if(super(e),this.it=C,e.type!==xt.C
           .value="${n.color}"
           @keyup="${this._valueChanged}"
           @change="${this._valueChanged}"
-        ></ha-textfield>
+        ></ha-input>
       </div>
 
       <div class="button-bottom">
