@@ -2652,7 +2652,8 @@ var Constants = /*#__PURE__*/_createClass(function Constants() {
   _classCallCheck(this, Constants);
 });
 _defineProperty(Constants, "FALLBACK_LOCALIZATION", en);
-_defineProperty(Constants, "DEFAULT_REFRESH_PERIOD", 20 * 1000);
+// Refresh period in seconds
+_defineProperty(Constants, "DEFAULT_REFRESH_PERIOD", 20);
 // 24 hours in milliseconds
 _defineProperty(Constants, "MS_24_HOURS", 24 * 60 * 60 * 1000);
 // 12 hours in milliseconds
@@ -2941,6 +2942,27 @@ var HelperFunctions = /*#__PURE__*/function () {
         tzDate.setMilliseconds(0);
       }
       return tzDate;
+    }
+  }, {
+    key: "noonAtLongitude",
+    value: function noonAtLongitude(date, longitude) {
+      return HelperFunctions.solarTimeAtLongitude(date, 12, longitude);
+    }
+  }, {
+    key: "midnightAtLongitude",
+    value: function midnightAtLongitude(date, longitude) {
+      return HelperFunctions.solarTimeAtLongitude(date, 0, longitude);
+    }
+
+    // Mean-solar-time reference (DST-free; 15°/h, east positive). Returns "hour:00 mean-solar-time
+    // of the local solar day that `date` falls on", mirroring noonAtTimeZone's semantics so the
+    // day-selection logic in readSunTimes keeps working. Only the solar day matters, so no rounding.
+  }, {
+    key: "solarTimeAtLongitude",
+    value: function solarTimeAtLongitude(date, hour, longitude) {
+      var offsetMs = longitude / 15 * 3600000;
+      var local = new Date(date.getTime() + offsetMs);
+      return new Date(Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate(), hour) - offsetMs);
     }
   }, {
     key: "getTimeInTimeZone",
@@ -3321,13 +3343,30 @@ var HorizonCard = _decorate([e$1('horizon-card')], function (_initialize, _LitEl
     function HorizonCard() {
       var _this;
       _classCallCheck(this, HorizonCard);
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
-      _this = _super.call.apply(_super, [this].concat(args));
+      _this = _super.call(this);
       _initialize(_assertThisInitialized(_this));
+      _this.data = Constants.DEFAULT_CARD_DATA;
       return _this;
     }
+
+    /**
+     * called by HASS to properly distribute card in lovelace view. It should return height
+     * of the card as a number where 1 is equivalent of 50 pixels.
+     * @see https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#api
+     */
+
+    /**
+     * Called by HASS to size the card in the Sections view grid. The grid has 12 columns;
+     * a cell is 56px tall with an 8px gap, so rows = ceil((pxHeight + 8) / 64).
+     * @see https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#sizing-in-sections-view
+     */
+
+    // called by HASS whenever config changes
+
+    // Two independent axes: longitude drives the computation reference, time_zone drives display.
+    // Anchor the computation day to the location's solar day only when the user set an explicit
+    // longitude without a time_zone. Reads raw config (not the accessors, which always fall back
+    // to HA values) so every other setup stays byte-identical to before.
     return _createClass(HorizonCard);
   }(_LitElement);
   return {
@@ -3362,9 +3401,7 @@ var HorizonCard = _decorate([e$1('horizon-card')], function (_initialize, _LitEl
       kind: "field",
       decorators: [t()],
       key: "data",
-      value: function value() {
-        return Constants.DEFAULT_CARD_DATA;
-      }
+      value: void 0
     }, {
       kind: "field",
       decorators: [t()],
@@ -3382,9 +3419,32 @@ var HorizonCard = _decorate([e$1('horizon-card')], function (_initialize, _LitEl
       }
     }, {
       kind: "field",
-      key: "wasDisconnected",
+      key: "refreshTimer",
+      value: void 0
+    }, {
+      kind: "field",
+      key: "lastComputeTimestamp",
       value: function value() {
-        return false;
+        return 0;
+      }
+    }, {
+      kind: "field",
+      key: "onVisibilityChange",
+      value: function value() {
+        var _this2 = this;
+        return function () {
+          if (!_this2.config) {
+            return;
+          }
+          if (document.visibilityState !== 'visible') {
+            return;
+          }
+          var p = _this2.refreshPeriodMs();
+          if (p > 0 && Date.now() - _this2.lastComputeTimestamp >= p) {
+            _this2.hasCalculated = false;
+            _this2.requestUpdate();
+          }
+        };
       }
     }, {
       kind: "get",
@@ -3401,13 +3461,15 @@ var HorizonCard = _decorate([e$1('horizon-card')], function (_initialize, _LitEl
           return "set hass :: ".concat(_hass.locale.language, " :: ").concat(_hass.locale.time_format);
         }, 2);
         this.lastHass = _hass;
+        if (!this.config) {
+          return;
+        }
+        var p = this.refreshPeriodMs();
+        if (p > 0 && Date.now() - this.lastComputeTimestamp >= p) {
+          this.hasCalculated = false;
+          this.requestUpdate();
+        }
       }
-
-      /**
-       * called by HASS to properly distribute card in lovelace view. It should return height
-       * of the card as a number where 1 is equivalent of 50 pixels.
-       * @see https://developers.home-assistant.io/docs/frontend/custom-ui/custom-card/#api
-       */
     }, {
       kind: "method",
       key: "getCardSize",
@@ -3437,8 +3499,60 @@ var HorizonCard = _decorate([e$1('horizon-card')], function (_initialize, _LitEl
         }, 2);
         return height;
       }
-
-      // called by HASS whenever config changes
+    }, {
+      kind: "method",
+      key: "getGridOptions",
+      value: function getGridOptions() {
+        var rows = this.computeGridRows();
+        // The row model is calibrated at full (12-column) width. min_columns lets the card
+        // be narrowed to half width; at narrower widths reflowed content may need slightly
+        // more height than reported (a cosmetic clip, never on the default full-width layout).
+        return {
+          rows: rows,
+          columns: 12,
+          min_rows: rows,
+          min_columns: 6
+        };
+      }
+    }, {
+      kind: "method",
+      key: "computeGridRows",
+      value: function computeGridRows() {
+        var _this$config;
+        // Section pixel heights measured at ~480px card width (see PR #158).
+        var height = {
+          graph: 187.08,
+          title: 41,
+          sunrise_sunset: 42.17,
+          dawn_noon_dusk: 48.3,
+          single_azimuth_elevation: 48.3,
+          both_azimuth_elevation: 66.78,
+          // Bumped from PR #158's 48.3: the Playwright visual tests showed the busiest
+          // moon config renders one grid row taller than the raw model, so this keeps
+          // getGridOptions() from ever under-reporting rows (which would clip the card).
+          moon_row: 58
+        };
+        var size = height.graph;
+        var fieldConfig = this.expandedFieldConfig();
+        if ((_this$config = this.config) !== null && _this$config !== void 0 && _this$config.title && this.config.title.length > 0) {
+          size += height.title;
+        }
+        if (fieldConfig.sunrise || fieldConfig.sunset) {
+          size += height.sunrise_sunset;
+        }
+        if (fieldConfig.dawn || fieldConfig.noon || fieldConfig.dusk) {
+          size += height.dawn_noon_dusk;
+        }
+        if (fieldConfig.sun_azimuth && fieldConfig.moon_azimuth || fieldConfig.sun_elevation && fieldConfig.moon_elevation) {
+          size += height.both_azimuth_elevation;
+        } else if (fieldConfig.sun_azimuth || fieldConfig.moon_azimuth || fieldConfig.sun_elevation || fieldConfig.moon_elevation) {
+          size += height.single_azimuth_elevation;
+        }
+        if (fieldConfig.moonrise || fieldConfig.moon_phase || fieldConfig.moonset) {
+          size += height.moon_row;
+        }
+        return Math.ceil((size + 8) / 64);
+      }
     }, {
       kind: "method",
       key: "setConfig",
@@ -3481,7 +3595,6 @@ var HorizonCard = _decorate([e$1('horizon-card')], function (_initialize, _LitEl
       kind: "method",
       key: "updated",
       value: function updated(changedProperties) {
-        var _this2 = this;
         _get(_getPrototypeOf(HorizonCard.prototype), "updated", this).call(this, changedProperties);
         this.debug(function () {
           return "updated() - ".concat(JSON.stringify(Array.from(changedProperties.keys())));
@@ -3495,25 +3608,44 @@ var HorizonCard = _decorate([e$1('horizon-card')], function (_initialize, _LitEl
           this.calculateStatePartial();
         } else if (this.data.partial) {
           this.calculateStateFinal();
-          var refreshPeriod = this.refreshPeriod();
-          if (refreshPeriod > 0) {
-            window.setTimeout(function () {
-              if (!_this2.wasDisconnected) {
-                _this2.debug('refresh via setTimeout()', 2);
-                if (_this2.hasCalculated) {
-                  _this2.calculateStatePartial();
-                }
-              }
-            }, refreshPeriod);
-          }
+          this.scheduleRefresh();
         }
+      }
+    }, {
+      kind: "method",
+      key: "connectedCallback",
+      value: function connectedCallback() {
+        _get(_getPrototypeOf(HorizonCard.prototype), "connectedCallback", this).call(this);
+        // Lit does not re-render on reconnect, so re-arm the calculation loop
+        // unconditionally to immediately refresh when the view is shown again.
+        this.hasCalculated = false;
+        this.requestUpdate();
+        document.addEventListener('visibilitychange', this.onVisibilityChange);
+        this.debug('connectedCallback()', 2);
       }
     }, {
       kind: "method",
       key: "disconnectedCallback",
       value: function disconnectedCallback() {
-        this.wasDisconnected = true;
+        _get(_getPrototypeOf(HorizonCard.prototype), "disconnectedCallback", this).call(this);
+        window.clearTimeout(this.refreshTimer);
+        document.removeEventListener('visibilitychange', this.onVisibilityChange);
         this.debug('disconnectedCallback()', 2);
+      }
+    }, {
+      kind: "method",
+      key: "scheduleRefresh",
+      value: function scheduleRefresh() {
+        var _this3 = this;
+        window.clearTimeout(this.refreshTimer);
+        if (this.refreshPeriodMs() > 0) {
+          this.refreshTimer = window.setTimeout(function () {
+            _this3.debug('refresh via setTimeout()', 2);
+            if (_this3.hasCalculated) {
+              _this3.calculateStatePartial();
+            }
+          }, this.refreshPeriodMs());
+        }
       }
     }, {
       kind: "method",
@@ -3530,12 +3662,13 @@ var HorizonCard = _decorate([e$1('horizon-card')], function (_initialize, _LitEl
       kind: "method",
       key: "calculateStatePartial",
       value: function calculateStatePartial() {
-        var _this3 = this;
+        var _this4 = this;
+        this.lastComputeTimestamp = Date.now();
         var now = this.now();
         var latitude = this.latitude();
         var longitude = this.longitude();
         this.debug(function () {
-          return "calculateStatePartial() :: ".concat(now === null || now === void 0 ? void 0 : now.toISOString(), " ").concat(_this3.timeZone(), " :: ").concat(latitude, ", ").concat(longitude);
+          return "calculateStatePartial() :: ".concat(now === null || now === void 0 ? void 0 : now.toISOString(), " ").concat(_this4.timeZone(), " :: ").concat(latitude, ", ").concat(longitude);
         });
         var times = this.readSunTimes(now, latitude, longitude, this.elevation());
         var sunCalcPosition = SunCalc.getPosition(times.now, latitude, longitude);
@@ -3543,7 +3676,7 @@ var HorizonCard = _decorate([e$1('horizon-card')], function (_initialize, _LitEl
         var elevation = this.roundDegree(sunCalcPosition['altitudeDegrees']);
         var sunPosition = this.computeSunPosition(times, this.isWinterDarkness(latitude, times.now));
         var moonData = this.computeMoonData(times.now, latitude, longitude);
-        var moonPosition = this.computeMoonPosition(moonData);
+        var moonPosition = this.computeMoonPosition(moonData, sunPosition.scaleY);
         var hueReduce = HelperFunctions.rangeScale(-10, 10, elevation, 15);
         var saturationReduce = HelperFunctions.rangeScale(-23, 10, elevation, 50);
         var lightnessReduce = HelperFunctions.rangeScale(-10, 10, elevation, 12);
@@ -3569,8 +3702,8 @@ var HorizonCard = _decorate([e$1('horizon-card')], function (_initialize, _LitEl
       key: "readSunTimes",
       value: function readSunTimes(now, latitude, longitude, elevation) {
         var nowDayBefore = new Date(now.getTime() - Constants.MS_24_HOURS);
-        var sunTimesNow = SunCalc.getSunTimes(HelperFunctions.noonAtTimeZone(now, this.timeZone()), latitude, longitude, elevation, false, false, true);
-        var sunTimesDayBefore = SunCalc.getSunTimes(HelperFunctions.noonAtTimeZone(nowDayBefore, this.timeZone()), latitude, longitude, elevation, false, false, true);
+        var sunTimesNow = SunCalc.getSunTimes(this.useLongitudeForComputation() ? HelperFunctions.noonAtLongitude(now, longitude) : HelperFunctions.noonAtTimeZone(now, this.timeZone()), latitude, longitude, elevation, false, false, true);
+        var sunTimesDayBefore = SunCalc.getSunTimes(this.useLongitudeForComputation() ? HelperFunctions.noonAtLongitude(nowDayBefore, longitude) : HelperFunctions.noonAtTimeZone(nowDayBefore, this.timeZone()), latitude, longitude, elevation, false, false, true);
         var noonDelta = now.getTime() - sunTimesDayBefore.solarNoon.value.getTime();
         if (noonDelta < Constants.MS_12_HOURS) {
           // We are past local standard midnight but previous solar noon was sooner than 12 hours, use previous day's data
@@ -3691,7 +3824,7 @@ var HorizonCard = _decorate([e$1('horizon-card')], function (_initialize, _LitEl
         var moonRawData = SunCalc.getMoonData(now, lat, lon);
         var azimuth = this.roundDegree(moonRawData.azimuthDegrees);
         var elevation = this.roundDegree(moonRawData.altitudeDegrees);
-        var moonRawTimes = SunCalc.getMoonTimes(HelperFunctions.midnightAtTimeZone(now, this.timeZone()), lat, lon, false, true);
+        var moonRawTimes = SunCalc.getMoonTimes(this.useLongitudeForComputation() ? HelperFunctions.midnightAtLongitude(now, lon) : HelperFunctions.midnightAtTimeZone(now, this.timeZone()), lat, lon, false, true);
         var moonPhase = Constants.MOON_PHASES[moonRawData.illumination.phase.id];
         var clampedLat = HelperFunctions.clamp(-66, 66, lat);
         var phaseRotation = (_this$config$moon_pha = this.config.moon_phase_rotation) !== null && _this$config$moon_pha !== void 0 ? _this$config$moon_pha : 90 * clampedLat / 66 - 90;
@@ -3718,19 +3851,22 @@ var HorizonCard = _decorate([e$1('horizon-card')], function (_initialize, _LitEl
       kind: "method",
       key: "computeMoonPosition",
       value: function computeMoonPosition(moonData) {
+        var scaleY = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
         // East to West goes left to right (or right to left, if southern-flipped!), like the Sun.
         // The canvas is 550 units wide, minus 5 units (padding)
         // and minus Constants.MOON_RADIUS on either side to keep the moon inside.
         // Left is 0 degrees, 180 degrees is in the middle.
+        // The southern flip is the same geometric mirror (about the 550-wide viewBox) the Sun uses.
         var availableSpanX = 550 - 2 * (Constants.MOON_RADIUS + 5);
-        var calcAzimuth = this.southernFlip() ? (moonData.azimuth + 180) % 360 : moonData.azimuth;
-        var x = 5 + Constants.MOON_RADIUS + availableSpanX * calcAzimuth / 360;
+        var x0 = 5 + Constants.MOON_RADIUS + availableSpanX * moonData.azimuth / 360;
+        var x = this.southernFlip() ? 550 - x0 : x0;
         var yLimit = Constants.HORIZON_Y - Constants.MOON_RADIUS;
         var calcElevation = Math.abs(moonData.elevation) / 2 + 1;
         var maxLog = 90 / 2 + 1;
 
-        // The Moon's elevation scaled logarithmically to appear higher/lower from the drawn horizon
-        var offset = yLimit * Math.log(calcElevation) / Math.log(maxLog) * Math.sign(moonData.elevation);
+        // The Moon's elevation scaled logarithmically to appear higher/lower from the drawn horizon,
+        // compressed by the sun curve's scaleY so it stays inside the frame in deep winter.
+        var offset = yLimit * Math.log(calcElevation) / Math.log(maxLog) * Math.sign(moonData.elevation) * scaleY;
         var y = Constants.HORIZON_Y - offset;
         return {
           x: x,
@@ -3756,7 +3892,10 @@ var HorizonCard = _decorate([e$1('horizon-card')], function (_initialize, _LitEl
       key: "elevation",
       value: function elevation() {
         var _this$config$elevatio;
-        return (_this$config$elevatio = this.config.elevation) !== null && _this$config$elevatio !== void 0 ? _this$config$elevatio : this.lastHass.config.elevation;
+        // suncalc3 computes the horizon dip as -2.076 * sqrt(elevation) / 60, which is NaN for a
+        // negative elevation. Clamp to sea level so below-sea-level locations (e.g. the Netherlands)
+        // still get valid sun times instead of a blank card. See #101.
+        return Math.max(0, (_this$config$elevatio = this.config.elevation) !== null && _this$config$elevatio !== void 0 ? _this$config$elevatio : this.lastHass.config.elevation);
       }
     }, {
       kind: "method",
@@ -3774,23 +3913,29 @@ var HorizonCard = _decorate([e$1('horizon-card')], function (_initialize, _LitEl
       }
     }, {
       kind: "method",
+      key: "useLongitudeForComputation",
+      value: function useLongitudeForComputation() {
+        return this.config.longitude !== undefined && this.config.time_zone === undefined;
+      }
+    }, {
+      kind: "method",
       key: "now",
       value: function now() {
         return this.config.now !== undefined ? new Date(this.config.now) : new Date();
       }
     }, {
       kind: "method",
-      key: "refreshPeriod",
-      value: function refreshPeriod() {
-        var _this$config$refresh_;
-        return (_this$config$refresh_ = this.config.refresh_period) !== null && _this$config$refresh_ !== void 0 ? _this$config$refresh_ : Constants.DEFAULT_REFRESH_PERIOD;
+      key: "refreshPeriodMs",
+      value: function refreshPeriodMs() {
+        var _this$config$refresh_, _this$config2;
+        return ((_this$config$refresh_ = (_this$config2 = this.config) === null || _this$config2 === void 0 ? void 0 : _this$config2.refresh_period) !== null && _this$config$refresh_ !== void 0 ? _this$config$refresh_ : Constants.DEFAULT_REFRESH_PERIOD) * 1000;
       }
     }, {
       kind: "method",
       key: "debugLevel",
       value: function debugLevel() {
-        var _this$config$debug_le, _this$config;
-        return (_this$config$debug_le = (_this$config = this.config) === null || _this$config === void 0 ? void 0 : _this$config.debug_level) !== null && _this$config$debug_le !== void 0 ? _this$config$debug_le : 0;
+        var _this$config$debug_le, _this$config3;
+        return (_this$config$debug_le = (_this$config3 = this.config) === null || _this$config3 === void 0 ? void 0 : _this$config3.debug_level) !== null && _this$config$debug_le !== void 0 ? _this$config$debug_le : 0;
       }
     }, {
       kind: "method",
@@ -3836,8 +3981,11 @@ var HorizonCard = _decorate([e$1('horizon-card')], function (_initialize, _LitEl
       value: function i18n(config) {
         var display_time_zone;
 
-        // Since 2023.7, HA can show times in the local (for the browser) TZ or the server TZ.
-        if (this.lastHass.locale['time_zone'] === 'local') {
+        // An explicit card `time_zone` always wins, for both computation and display.
+        if (this.config.time_zone !== undefined) {
+          display_time_zone = this.config.time_zone;
+        } else if (this.lastHass.locale['time_zone'] === 'local') {
+          // Since 2023.7, HA can show times in the local (for the browser) TZ or the server TZ.
           display_time_zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         } else {
           // 'server' or missing value (older HA version)
