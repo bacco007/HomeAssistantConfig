@@ -14,3 +14,6 @@ URL_BASE = "/gpm"
 
 GIT_SHORT_HASH_LEN = 7
 DOWNLOAD_CHUNK_SIZE = 5 * 2**20  # 2MB
+
+GITHUB_HOSTNAME = "github.com"
+GITHUB_API_URL = "https://api.github.com"

@@ -34,6 +34,8 @@ from homeassistant.util import slugify
 from .const import (
     DOMAIN,
     DOWNLOAD_CHUNK_SIZE,
+    GITHUB_API_URL,
+    GITHUB_HOSTNAME,
     PATH_CLONE_BASEDIR,
     PATH_INTEGRATION_INSTALL_BASEDIR,
     PATH_RESOURCE_INSTALL_BASEDIR,
@@ -227,6 +229,40 @@ class RepositoryManager:
                 latest_tag = await self._get_latest_tag(only_stable=False)
             self._latest_version_cache = latest_tag or await self._get_latest_commit()
         return self._latest_version_cache
+
+    @functools.cached_property
+    def github_repo(self) -> str | None:
+        """Return the `owner/repo` slug if hosted on GitHub, else None."""
+        parsed_url = urlparse(self.repo_url)
+        if parsed_url.hostname != GITHUB_HOSTNAME:
+            return None
+        path_segments = parsed_url.path.strip("/").split("/")
+        if len(path_segments) < 2:
+            return None
+        return f"{path_segments[0]}/{path_segments[1].removesuffix('.git')}"
+
+    async def get_release_notes(self, version: str) -> str | None:
+        """Return the changelog for `version` from the repo's GitHub release.
+
+        Only supported for repos hosted on GitHub that use standard GitHub
+        releases (i.e. a release exists for the given tag). Returns None
+        otherwise.
+        """
+        if not self.github_repo:
+            return None
+        session = async_get_clientsession(self.hass)
+        url = f"{GITHUB_API_URL}/repos/{self.github_repo}/releases/tags/{version}"
+        try:
+            async with session.get(url) as response:
+                if response.status != 200:
+                    return None
+                data = await response.json()
+        except ClientError:
+            _LOGGER.warning(
+                "Failed to fetch release notes for %s@%s", self.github_repo, version
+            )
+            return None
+        return data.get("body") or None
 
     @ensure_cloned
     async def fetch(self) -> None:

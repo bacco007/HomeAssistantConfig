@@ -46,6 +46,11 @@ class GPMUpdateEntity(UpdateEntity):
         super().__init__()
         self.manager = manager
         self._component_name: str | None = None
+        if (
+            manager.github_repo
+            and manager.update_strategy != UpdateStrategy.LATEST_COMMIT
+        ):
+            self._attr_supported_features |= UpdateEntityFeature.RELEASE_NOTES
 
     async def async_update(self) -> None:
         """Update state."""
@@ -90,3 +95,7 @@ class GPMUpdateEntity(UpdateEntity):
             raise HomeAssistantError(e) from e
         except CheckoutError as e:
             raise HomeAssistantError(f"Version `{version}` not found") from e
+
+    async def async_release_notes(self) -> str | None:
+        """Return the changelog for the latest available version."""
+        return await self.manager.get_release_notes(self.latest_version)
