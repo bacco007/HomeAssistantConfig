@@ -1,0 +1,116 @@
+{
+    "config": {
+        "create_entry": {
+            "refresh_message": "添加 UIX 后，您需要刷新页面以加载前端资源。点击“完成”，然后刷新页面。"
+        },
+        "abort": {
+            "single_instance_allowed": "仅允许添加一个 UIX 实例。",
+            "old_frontend_script_resource": "冲突的前端脚本资源 {resource} 已注册为仪表盘（Dashboard）资源。请在添加 UIX 之前将其移除。",
+            "old_frontend_script_extra_module": "冲突的前端脚本资源 {resource} 已注册为额外模块（extra module）。请在添加 UIX 之前将其移除。"
+        },
+        "step": {
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "UIX 设置",
+                "description": "{foundries_docs_link}",
+                "menu_options": {
+                    "foundry_menu": "管理 UI Foundry",
+                    "foundry_file_menu": "管理 Foundry 文件",
+                    "performance_settings": "性能设置"
+                }
+            },
+            "foundry_menu": {
+                "title": "UI Foundry",
+                "description": "{foundries_docs_link}\n\n**已加载的 UI Foundry：**\n{foundries_list}",
+                "menu_options": {
+                    "add_foundry": "添加 Foundry",
+                    "edit_foundry": "编辑 Foundry",
+                    "delete_foundry": "删除 Foundry"
+                }
+            },
+            "foundry_file_menu": {
+                "title": "Foundry 文件",
+                "description": "{foundries_docs_link}\n\n**已注册的 Foundry 文件：**\n{foundry_files_list}",
+                "menu_options": {
+                    "register_foundry_file": "注册 Foundry 文件",
+                    "deregister_foundry_file": "注销 Foundry 文件",
+                    "reload_foundry_files": "重新加载 Foundry 文件"
+                }
+            },
+            "performance_settings": {
+                "title": "性能设置",
+                "description": "配置 UIX 的性能优化选项。",
+                "data": {
+                    "hass_throttle_enable": "节流实体状态更新",
+                    "hass_throttle_ms": "节流间隔 (毫秒)",
+                    "dialog_apply_after_show": "对话框完全显示后延迟应用 UIX 样式",
+                    "disable_hash_template_variable": "禁用 Hash 模板变量及更新"
+                },
+                "data_description": {
+                    "hass_throttle_enable": "启用后，当实体状态频繁变化时，将降低仪表盘根节点的重绘频率。",
+                    "hass_throttle_ms": "两次实体状态更新重绘之间的最小间隔时间。仅在启用节流时生效。",
+                    "dialog_apply_after_show": "启用后，UIX 对话框样式将在对话框打开动画完成后应用，而非立即应用。这可以减少慢速设备上的视觉闪烁。",
+                    "disable_hash_template_variable": "启用后，Hash（URL 中 # 之后的部分）模板变量将不可用，且 Hash 的更改不会触发 UIX 模板重绑定或 UIX Forge 更新。"
+                }
+            },
+            "add_foundry": {
+                "title": "添加 UI Foundry",
+                "description": "输入新 UI Foundry 的名称和配置。配置应为一个映射（Mapping），可包含 'forge'、'element' 和/或 'uix' 键。",
+                "data": {
+                    "name": "Foundry 名称",
+                    "config": "Foundry 配置"
+                }
+            },
+            "edit_foundry": {
+                "title": "编辑 UI Foundry",
+                "description": "选择您想要编辑的 UI Foundry。",
+                "data": {
+                    "name": "要编辑的 Foundry"
+                }
+            },
+            "edit_foundry_config": {
+                "title": "编辑 UI Foundry \"{name}\"",
+                "description": "更新此 UI Foundry 的配置。",
+                "data": {
+                    "config": "Foundry 配置"
+                }
+            },
+            "delete_foundry": {
+                "title": "删除 UI Foundry",
+                "data": {
+                    "name": "要删除的 Foundry"
+                }
+            },
+            "register_foundry_file": {
+                "title": "注册 Foundry 文件",
+                "description": "输入包含 'uix_foundries' 顶级键的 YAML 文件路径。路径可以是绝对路径，也可以是相对于 Home Assistant 配置目录的相对路径。",
+                "data": {
+                    "file_path": "文件路径"
+                }
+            },
+            "deregister_foundry_file": {
+                "title": "注销 Foundry 文件",
+                "description": "选择要注销的 Foundry 文件。文件本身不会被删除 —— 仅移除其在 UIX 中的注册状态。",
+                "data": {
+                    "file_path": "要注销的文件"
+                }
+            }
+        },
+        "abort": {
+            "no_foundries": "尚未配置任何 UI Foundry。请先添加一个。",
+            "no_foundry_files": "尚未注册任何 Foundry 文件。请先注册一个。"
+        },
+        "error": {
+            "invalid_config": "配置必须是一个 YAML 映射（Mapping）。",
+            "file_already_added": "该文件路径已注册。",
+            "file_not_found": "找不到文件。请检查路径并重试。",
+            "file_parse_error": "无法将文件解析为 YAML。请检查文件的语法错误。",
+            "file_invalid_structure": "文件必须是一个 YAML 映射（Mapping）。",
+            "file_missing_key": "文件必须包含顶级键 'uix_foundries'。",
+            "file_invalid_foundries": "'uix_foundries' 键的内容必须是 Foundry 名称到配置的 YAML 映射。"
+        }
+    }
+}

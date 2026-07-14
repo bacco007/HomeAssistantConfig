@@ -1,0 +1,116 @@
+{
+    "config": {
+        "create_entry": {
+            "refresh_message": "Je moet de pagina vernieuwen nadat je UIX hebt toegevoegd zodat de Frontend‑resource kan laden. Klik op voltooien en vernieuw daarna de pagina."
+        },
+        "abort": {
+            "single_instance_allowed": "Er kan slechts één instantie van UIX worden toegevoegd.",
+            "old_frontend_script_resource": "Conflicterende Frontend‑scriptresource {resource} is geregistreerd als een Dashboard‑resource. Verwijder deze voordat je UIX toevoegt.",
+            "old_frontend_script_extra_module": "Conflicterende Frontend‑scriptresource {resource} is geregistreerd als een extra module. Verwijder deze voordat je UIX toevoegt."
+        },
+        "step": {
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "UIX‑instellingen",
+                "description": "{foundries_docs_link}",
+                "menu_options": {
+                    "foundry_menu": "UI‑foundries beheren",
+                    "foundry_file_menu": "Foundry‑bestanden beheren",
+                    "performance_settings": "Prestatie‑instellingen"
+                }
+            },
+            "foundry_menu": {
+                "title": "UI‑foundries",
+                "description": "{foundries_docs_link}\n\n**Geladen UI‑foundries:**\n{foundries_list}",
+                "menu_options": {
+                    "add_foundry": "Foundry toevoegen",
+                    "edit_foundry": "Foundry bewerken",
+                    "delete_foundry": "Foundry verwijderen"
+                }
+            },
+            "foundry_file_menu": {
+                "title": "Foundry‑bestanden",
+                "description": "{foundries_docs_link}\n\n**Geregistreerde foundry‑bestanden:**\n{foundry_files_list}",
+                "menu_options": {
+                    "register_foundry_file": "Foundry‑bestand registreren",
+                    "deregister_foundry_file": "Foundry‑bestand deregistreren",
+                    "reload_foundry_files": "Foundry‑bestanden herladen"
+                }
+            },
+            "performance_settings": {
+                "title": "Prestatie‑instellingen",
+                "description": "Configureer prestatie‑optimalisaties voor UIX.",
+                "data": {
+                    "hass_throttle_enable": "Entiteitstatus‑updates afremmen",
+                    "hass_throttle_ms": "Afreminterval",
+                    "dialog_apply_after_show": "UIX‑styling voor dialogen pas toepassen nadat ze volledig getoond zijn",
+                    "disable_hash_template_variable": "Hash‑templatevariabele en updates uitschakelen"
+                },
+                "data_description": {
+                    "hass_throttle_enable": "Wanneer ingeschakeld, wordt de frequentie verlaagd waarmee de dashboard‑root opnieuw rendert wanneer entiteitstatussen snel veranderen.",
+                    "hass_throttle_ms": "Minimale tijd tussen her‑renders door entiteitstatusupdates. Alleen van toepassing wanneer afremmen is ingeschakeld.",
+                    "dialog_apply_after_show": "Wanneer ingeschakeld, worden UIX‑stijlen voor dialogen toegepast nadat de open‑animatie van de dialoog is voltooid in plaats van onmiddellijk. Dit kan visuele flikkering verminderen op tragere apparaten.",
+                    "disable_hash_template_variable": "Wanneer ingeschakeld, is de hash (het deel na # in de URL) templatevariabele niet beschikbaar en veroorzaken hash‑wijzigingen geen UIX‑template‑rebinds of UIX Forge‑updates."
+                }
+            },
+            "add_foundry": {
+                "title": "UI‑foundry toevoegen",
+                "description": "Voer een naam en configuratie in voor de nieuwe UI‑foundry. De configuratie moet een mapping zijn die 'forge', 'element' en/of 'uix'‑keys kan bevatten.",
+                "data": {
+                    "name": "Foundry‑naam",
+                    "config": "Foundry‑configuratie"
+                }
+            },
+            "edit_foundry": {
+                "title": "UI‑foundry bewerken",
+                "description": "Selecteer de UI‑foundry die je wilt bewerken.",
+                "data": {
+                    "name": "Foundry om te bewerken"
+                }
+            },
+            "edit_foundry_config": {
+                "title": "UI‑foundry \"{name}\" bewerken",
+                "description": "Werk de configuratie voor deze UI‑foundry bij.",
+                "data": {
+                    "config": "Foundry‑configuratie"
+                }
+            },
+            "delete_foundry": {
+                "title": "UI‑foundry verwijderen",
+                "data": {
+                    "name": "Foundry om te verwijderen"
+                }
+            },
+            "register_foundry_file": {
+                "title": "Foundry‑bestand registreren",
+                "description": "Voer het pad in naar een YAML‑bestand dat foundries bevat onder een top‑level 'uix_foundries'‑key. Het pad mag absoluut zijn of relatief aan de Home Assistant‑configuratiemap.",
+                "data": {
+                    "file_path": "Bestandspad"
+                }
+            },
+            "deregister_foundry_file": {
+                "title": "Foundry‑bestand deregistreren",
+                "description": "Selecteer het foundry‑bestand dat je wilt deregistreren. Het bestand zelf wordt niet verwijderd — alleen de registratie binnen UIX wordt verwijderd.",
+                "data": {
+                    "file_path": "Bestand om te deregistreren"
+                }
+            }
+        },
+        "abort": {
+            "no_foundries": "Er zijn nog geen UI‑foundries geconfigureerd. Voeg er eerst één toe.",
+            "no_foundry_files": "Er zijn nog geen foundry‑bestanden geregistreerd. Registreer er eerst één."
+        },
+        "error": {
+            "invalid_config": "De configuratie moet een YAML‑mapping zijn.",
+            "file_already_added": "Dit bestandspad is al geregistreerd.",
+            "file_not_found": "Het bestand is niet gevonden. Controleer het pad en probeer opnieuw.",
+            "file_parse_error": "Het bestand kon niet als YAML worden geparseerd. Controleer het bestand op syntaxfouten.",
+            "file_invalid_structure": "Het bestand moet een YAML‑mapping zijn.",
+            "file_missing_key": "Het bestand moet een top‑level 'uix_foundries'‑key hebben.",
+            "file_invalid_foundries": "De 'uix_foundries'‑key moet een YAML‑mapping zijn van foundry‑namen naar configuraties."
+        }
+    }
+}
