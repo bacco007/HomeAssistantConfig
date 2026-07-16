@@ -1,0 +1,22 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Football Hub",
+        "description": "Set up Football Hub for a football competition.",
+        "data": {
+          "api_key": "API-Football API Key",
+          "competition": "Competition",
+          "season": "Season",
+          "provider_mode": "Provider Mode"
+        }
+      }
+    },
+    "error": {
+      "invalid_competition": "Invalid competition selected."
+    },
+    "abort": {
+      "already_configured": "This competition is already configured."
+    }
+  }
+}
