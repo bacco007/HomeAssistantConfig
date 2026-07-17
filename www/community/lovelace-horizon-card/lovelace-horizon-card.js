@@ -1743,7 +1743,7 @@ var suncalcExports = requireSuncalc();
 var SunCalc = /*@__PURE__*/getDefaultExportFromCjs(suncalcExports);
 
 var _templateObject$7;
-var cardStyles = i$3(_templateObject$7 || (_templateObject$7 = _taggedTemplateLiteral(["\n  :host {\n    --hc-primary: var(--primary-text-color);\n    --hc-secondary: var(--secondary-text-color);\n\n    --hc-field-name-color: var(--hc-secondary);\n    --hc-field-value-color: var(--hc-primary);\n\n    --hc-day-color: #8ebeeb;\n    --hc-night-color: #393b78;\n\n    --hc-accent: #d7d7d7;\n    --hc-lines: var(--hc-accent);\n\n    --hc-sun-hue: 44;\n    --hc-sun-saturation: 93%;\n    --hc-sun-lightness: 67%;\n    --hc-sun-hue-reduce: 0;\n    --hc-sun-saturation-reduce: 0%;\n    --hc-sun-lightness-reduce: 0%;\n    --hc-sun-color: hsl(\n      calc(var(--hc-sun-hue) - var(--hc-sun-hue-reduce)),\n      calc(var(--hc-sun-saturation) - var(--hc-sun-saturation-reduce)),\n      calc(var(--hc-sun-lightness) - var(--hc-sun-lightness-reduce))\n    );\n\n    --hc-moon-hue: 52;\n    --hc-moon-saturation: 77%;\n    --hc-moon-lightness: 57%;\n    --hc-moon-saturation-reduce: 0%;\n    --hc-moon-lightness-reduce: 0%;\n    --hc-moon-color: hsl(\n      var(--hc-moon-hue),\n      calc(var(--hc-moon-saturation) - var(--hc-moon-saturation-reduce)),\n      calc(var(--hc-moon-lightness) - var(--hc-moon-lightness-reduce))\n    );\n    --hc-moon-shadow-color: #eeeeee;\n    --hc-moon-spot-color: rgba(170, 170, 170, 0.1);\n  }\n\n  :host(.horizon-card-dark) {\n    --hc-accent: #464646;\n    --hc-moon-saturation: 80%;\n    --hc-moon-lightness: 74%;\n    --hc-moon-shadow-color: #272727;\n  }\n\n  .horizon-card {\n    padding: 0.5em;\n    font-family: var(--primary-font-family);\n  }\n\n  .horizon-card-field-row {\n    display: flex;\n    justify-content: space-around;\n    margin-top: 1em;\n    margin-bottom: -0.3em;\n  }\n\n  .horizon-card-text-container {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n  }\n\n  .horizon-card-field-name {\n    color: var(--hc-field-name-color);\n  }\n\n  .horizon-card-field-value {\n    color: var(--hc-field-value-color);\n    font-size: 1.2em;\n    line-height: 1.1em;\n    text-align: center;\n  }\n\n  .horizon-card-field-value-moon-phase {\n    font-size: inherit;\n  }\n\n  .horizon-card-field-moon-phase {\n    --mdc-icon-size: 2em;\n    color: var(--primary-color);\n  }\n\n  .horizon-card-field-value-secondary {\n    font-size: 0.7em;\n  }\n\n  .horizon-card-sun-value:before {\n    content: \"\u2609\";\n    padding-right: 0.5em;\n  }\n\n  .horizon-card-moon-value:before {\n    content: \"\u263D\";\n    padding-right: 0.5em;\n  }\n\n  .horizon-card-header {\n    display: flex;\n    justify-content: space-around;\n    margin-top: 1em;\n    margin-bottom: -0.3em;\n  }\n\n  .horizon-card-header .horizon-card-text-container {\n    font-size: 1.2em;\n  }\n\n  .horizon-card-footer {\n    margin-bottom: 1em;\n  }\n\n  .horizon-card-title {\n    margin: 1em 1em 1em 1em;\n    font-size: 1.5em;\n    color: var(--hc-primary);\n  }\n\n  .horizon-card-graph {\n    margin: 1em 0.5em 1em 0.5em;\n  }\n\n  .horizon-card-graph .dawn {\n    fill: var(--hc-night-color);\n    stroke: var(--hc-night-color);\n  }\n\n  .horizon-card-graph .day {\n    fill: var(--hc-day-color);\n    stroke: var(--hc-day-color);\n  }\n"])));
+var cardStyles = i$3(_templateObject$7 || (_templateObject$7 = _taggedTemplateLiteral(["\n  :host {\n    --hc-primary: var(--primary-text-color);\n    --hc-secondary: var(--secondary-text-color);\n\n    --hc-field-name-color: var(--hc-secondary);\n    --hc-field-value-color: var(--hc-primary);\n\n    --hc-day-color: #8ebeeb;\n    --hc-night-color: #393b78;\n\n    --hc-accent: #d7d7d7;\n    --hc-lines: var(--hc-accent);\n\n    --hc-sun-hue: 44;\n    --hc-sun-saturation: 93%;\n    --hc-sun-lightness: 67%;\n    --hc-sun-hue-reduce: 0;\n    --hc-sun-saturation-reduce: 0%;\n    --hc-sun-lightness-reduce: 0%;\n    --hc-sun-color: hsl(\n      calc(var(--hc-sun-hue) - var(--hc-sun-hue-reduce)),\n      calc(var(--hc-sun-saturation) - var(--hc-sun-saturation-reduce)),\n      calc(var(--hc-sun-lightness) - var(--hc-sun-lightness-reduce))\n    );\n\n    --hc-moon-hue: 52;\n    --hc-moon-saturation: 77%;\n    --hc-moon-lightness: 57%;\n    --hc-moon-saturation-reduce: 0%;\n    --hc-moon-lightness-reduce: 0%;\n    --hc-moon-color: hsl(\n      var(--hc-moon-hue),\n      calc(var(--hc-moon-saturation) - var(--hc-moon-saturation-reduce)),\n      calc(var(--hc-moon-lightness) - var(--hc-moon-lightness-reduce))\n    );\n    --hc-moon-shadow-color: #eeeeee;\n    --hc-moon-spot-color: rgba(170, 170, 170, 0.1);\n  }\n\n  :host(.horizon-card-dark) {\n    --hc-accent: #464646;\n    --hc-moon-saturation: 80%;\n    --hc-moon-lightness: 74%;\n    --hc-moon-shadow-color: #272727;\n  }\n\n  .horizon-card {\n    padding: var(--hc-card-padding, 0.5em);\n    font-family: var(--primary-font-family);\n  }\n\n  .horizon-card-field-row {\n    display: flex;\n    justify-content: space-around;\n    margin-top: 1em;\n    margin-bottom: -0.3em;\n  }\n\n  .horizon-card-text-container {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n  }\n\n  .horizon-card-field-name {\n    color: var(--hc-field-name-color);\n  }\n\n  .horizon-card-field-value {\n    color: var(--hc-field-value-color);\n    font-size: 1.2em;\n    line-height: 1.1em;\n    text-align: center;\n  }\n\n  .horizon-card-field-value-moon-phase {\n    font-size: inherit;\n  }\n\n  .horizon-card-field-moon-phase {\n    --mdc-icon-size: 2em;\n    color: var(--primary-color);\n  }\n\n  .horizon-card-field-value-secondary {\n    font-size: 0.7em;\n  }\n\n  .horizon-card-sun-value:before {\n    content: \"\u2609\";\n    padding-right: 0.5em;\n  }\n\n  .horizon-card-moon-value:before {\n    content: \"\u263D\";\n    padding-right: 0.5em;\n  }\n\n  .horizon-card-header {\n    display: flex;\n    justify-content: space-around;\n    margin-top: 1em;\n    margin-bottom: -0.3em;\n  }\n\n  .horizon-card-header .horizon-card-text-container {\n    font-size: 1.2em;\n  }\n\n  .horizon-card-footer {\n    margin-bottom: var(--hc-footer-margin, 1em);\n  }\n\n  .horizon-card-title {\n    margin: 1em 1em 1em 1em;\n    font-size: 1.5em;\n    color: var(--hc-primary);\n  }\n\n  .horizon-card-graph {\n    margin: var(--hc-graph-margin, 1em 0);\n  }\n\n  .horizon-card-graph .dawn {\n    fill: var(--hc-night-color);\n    stroke: var(--hc-night-color);\n  }\n\n  .horizon-card-graph .day {\n    fill: var(--hc-day-color);\n    stroke: var(--hc-day-color);\n  }\n"])));
 
 var languageName$D = "Bulgarian";
 var azimuth$D = "Азимут";
@@ -3403,6 +3403,8 @@ _defineProperty(Constants, "MOON_PHASES", {
 _defineProperty(Constants, "DEFAULT_CONFIG", {
   type: 'horizon-card',
   moon: true,
+  sun: true,
+  graph: true,
   debug_level: 0,
   refresh_period: _Constants.DEFAULT_REFRESH_PERIOD,
   fields: {
@@ -3788,7 +3790,6 @@ var HorizonCardFooter = /*#__PURE__*/function () {
     this.i18n = i18n;
     this.sunTimes = data.sunData.times;
     this.moonTimes = data.moonData.times;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.fields = config.fields;
     this.azimuths = [];
     if (this.fields.sun_azimuth) {
@@ -3827,7 +3828,13 @@ var HorizonCardFooter = /*#__PURE__*/function () {
       var moonset = this.fields.moonset ? HelperFunctions.renderFieldElement(this.i18n, EHorizonCardI18NKeys.Moonset, this.moonTimes.moonset) : A;
       var moonLeft = this.southern_flip ? moonset : moonrise;
       var moonRight = this.southern_flip ? moonrise : moonset;
-      return b(_templateObject$4 || (_templateObject$4 = _taggedTemplateLiteral(["\n      <div class=\"horizon-card-footer\">\n        ", "\n        ", "\n        ", "\n      </div>\n    "])), this.renderRow(sunLeft, this.fields.noon ? HelperFunctions.renderFieldElement(this.i18n, EHorizonCardI18NKeys.Noon, this.sunTimes.noon) : A, sunRight), this.renderRow(this.fields.sun_azimuth || this.fields.moon_azimuth ? HelperFunctions.renderFieldElements(this.i18n, EHorizonCardI18NKeys.Azimuth, this.azimuths, this.azimuthExtraClasses) : A, this.fields.sun_elevation || this.fields.moon_elevation ? HelperFunctions.renderFieldElements(this.i18n, EHorizonCardI18NKeys.Elevation, this.elevations, this.elevationExtraClasses) : A), this.renderRow(moonLeft, this.fields.moon_phase ? HelperFunctions.renderMoonElement(this.i18n, this.data.moonData.phase, this.data.moonData.phaseRotation) : A, moonRight));
+      var sunRow = this.renderRow(sunLeft, this.fields.noon ? HelperFunctions.renderFieldElement(this.i18n, EHorizonCardI18NKeys.Noon, this.sunTimes.noon) : A, sunRight);
+      var azimuthElevationRow = this.renderRow(this.fields.sun_azimuth || this.fields.moon_azimuth ? HelperFunctions.renderFieldElements(this.i18n, EHorizonCardI18NKeys.Azimuth, this.azimuths, this.azimuthExtraClasses) : A, this.fields.sun_elevation || this.fields.moon_elevation ? HelperFunctions.renderFieldElements(this.i18n, EHorizonCardI18NKeys.Elevation, this.elevations, this.elevationExtraClasses) : A);
+      var moonRow = this.renderRow(moonLeft, this.fields.moon_phase ? HelperFunctions.renderMoonElement(this.i18n, this.data.moonData.phase, this.data.moonData.phaseRotation) : A, moonRight);
+      if (sunRow === A && azimuthElevationRow === A && moonRow === A) {
+        return A;
+      }
+      return b(_templateObject$4 || (_templateObject$4 = _taggedTemplateLiteral(["\n      <div class=\"horizon-card-footer\">\n        ", "\n        ", "\n        ", "\n      </div>\n    "])), sunRow, azimuthElevationRow, moonRow);
     }
   }, {
     key: "renderRow",
@@ -3843,7 +3850,7 @@ var HorizonCardFooter = /*#__PURE__*/function () {
   }]);
 }();
 
-var _templateObject$3, _templateObject2$1, _templateObject3$1, _templateObject4, _templateObject5, _templateObject6, _templateObject7;
+var _templateObject$3, _templateObject2$1, _templateObject3$1, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject0;
 var HorizonCardGraph = /*#__PURE__*/function () {
   function HorizonCardGraph(config, data) {
     _classCallCheck(this, HorizonCardGraph);
@@ -3873,7 +3880,8 @@ var HorizonCardGraph = /*#__PURE__*/function () {
     key: "renderSvg",
     value: function renderSvg() {
       var curve = this.sunCurve(this.sunPosition.scaleY);
-      return w(_templateObject2$1 || (_templateObject2$1 = _taggedTemplateLiteral(["\n      <defs>\n        <!-- Sun defs -->\n        <path id=\"sun-path-unscaled\" d=\"", "\"/>\n        <path id=\"sun-path\" d=\"", "\"/>\n\n        <clipPath id=\"upper-path-mask\">\n          <use href=\"#sun-path\">\n        </clipPath>\n\n        <clipPath id=\"lower-path-mask\">\n          <path d=\"", " V0 H0\"/>\n        </clipPath>\n\n        <!-- Moon defs -->\n        <filter id=\"moon-blur\">\n          <feGaussianBlur in=\"SourceGraphic\"\n                          stdDeviation=\"", "\"/>\n        </filter>\n\n        <circle id=\"moon\"\n                cx=\"", "\" cy=\"", "\"\n                r=\"", "\" stroke=\"none\"/>\n\n        <path id=\"shade\"\n              d=\"M", ",", "\n                a ", ",", "\n                0\n                1,1\n                ", ",0\n                a ", ",", "\n                0\n                1,", "\n                ", ",0\n                Z\"\n              stroke-width=\"0\"/>\n\n        <mask id=\"moon-shadow-mask\">\n          <use href=\"#shade\"\n               stroke=\"white\" fill=\"white\"\n               filter=\"url(#moon-blur)\" stroke-width=\"0\"/>\n        </mask>\n\n        <mask id=\"moon-shadow-mask-inverted\">\n          <circle cx=\"", "\" cy=\"", "\"\n                  r=\"", "\"\n                  fill=\"white\" stroke=\"white\" stroke-width=\"0\"/>\n\n          <use href=\"#shade\"\n               stroke=\"black\" fill=\"black\"\n               filter=\"url(#moon-blur)\" stroke-width=\"0\"/>\n        </mask>\n      </defs>\n\n      ", "\n\n      <!-- Draw the sunrise and sunset markers (the gray vertical lines) -->\n      <g transform=\"scale(", " 1)\" transform-origin=\"center\">\n        <line x1=\"", "\" y1=\"3\"\n              x2=\"", "\" y2=\"72\"\n              stroke=\"var(--hc-lines)\"/>\n        <line x1=\"", "\"\n              y1=\"3\" x2=\"", "\" y2=\"72\"\n              stroke=\"var(--hc-lines)\"/>\n      </g>\n\n      <!-- Main group that shifts up or down to center the horizon vertically -->\n      <g transform=\"translate(0 ", ") scale(", " 1)\" transform-origin=\"center\">\n        <!-- Draw path of the sun across the sky -->\n        <use href=\"#sun-path\"\n             fill=\"none\"\n             stroke=\"var(--hc-lines)\"/>\n\n        <!-- Draw the below horizon passed area, i.e., the dark blue/night part on either side -->\n        <path\n          d=\"M5,", " H", " V150 H5\"\n          clip-path=\"url(#lower-path-mask)\"\n          class=\"dawn\"/>\n\n        <!-- Draw the above horizon passed area, i.e., the light blue/day part in the middle -->\n        <path\n          d=\"M", ",0 H", "\n            V", " H", "\"\n          clip-path=\"url(#upper-path-mask)\"\n          class=\"day\"/>\n\n        <!-- Draw the horizon (the gray horizontal lines) -->\n        <line x1=\"5\" y1=\"", "\"\n              x2=\"545\" y2=\"", "\"\n              stroke=\"var(--hc-lines)\"/>\n\n        <!-- Arrow showing direction of travel -->\n        <path d=\"M535 ", " L545 ", " L535 ", "\"\n              stroke=\"var(--hc-lines)\" fill=\"none\"/>\n\n        <!-- Draw the sun -->\n        <circle\n          cx=\"", "\"\n          cy=\"", "\"\n          r=\"", "\"\n          stroke=\"none\"\n          fill=\"var(--hc-sun-color)\"/>\n\n        ", "\n      </g>\n\n      ", "\n\n      ", "\n\n      ", "\n    "])), this.sunCurve(1), curve, curve, 0.5 - Math.abs(0.5 - this.moonData.fraction), this.moonPosition.x, this.moonPosition.y, Constants.MOON_RADIUS, this.moonPosition.x - Constants.MOON_RADIUS, this.moonPosition.y, Constants.MOON_RADIUS, Constants.MOON_RADIUS, Constants.MOON_RADIUS * 2, Constants.MOON_RADIUS, Math.abs(0.5 - this.moonData.fraction) * 2 * Constants.MOON_RADIUS, this.moonData.fraction > 0.5 ? 1 : 0, -Constants.MOON_RADIUS * 2, this.moonPosition.x, this.moonPosition.y, Constants.MOON_RADIUS, this.debugRect(), this.southernFlip ? -1 : 1, this.sunPosition.sunriseX, this.sunPosition.sunriseX, this.sunPosition.sunsetX, this.sunPosition.sunsetX, this.sunPosition.offsetY, this.southernFlip ? -1 : 1, this.sunPosition.horizonY, this.sunPosition.x, this.sunPosition.sunriseX, this.sunPosition.x, this.sunPosition.horizonY, this.sunPosition.sunriseX, this.sunPosition.horizonY, this.sunPosition.horizonY, this.sunPosition.horizonY - 5, this.sunPosition.horizonY, this.sunPosition.horizonY + 5, this.sunPosition.x, this.sunPosition.y, Constants.SUN_RADIUS, this.debugSun(), this.moon(), this.debugHorizon(), this.debugCurve());
+      var showSun = this.config.sun !== false;
+      return w(_templateObject2$1 || (_templateObject2$1 = _taggedTemplateLiteral(["\n      <defs>\n        <!-- Sun defs -->\n        <path id=\"sun-path-unscaled\" d=\"", "\"/>\n        <path id=\"sun-path\" d=\"", "\"/>\n\n        <clipPath id=\"upper-path-mask\">\n          <use href=\"#sun-path\">\n        </clipPath>\n\n        <clipPath id=\"lower-path-mask\">\n          <path d=\"", " V0 H0\"/>\n        </clipPath>\n\n        <!-- Moon defs -->\n        <filter id=\"moon-blur\">\n          <feGaussianBlur in=\"SourceGraphic\"\n                          stdDeviation=\"", "\"/>\n        </filter>\n\n        <circle id=\"moon\"\n                cx=\"", "\" cy=\"", "\"\n                r=\"", "\" stroke=\"none\"/>\n\n        <path id=\"shade\"\n              d=\"M", ",", "\n                a ", ",", "\n                0\n                1,1\n                ", ",0\n                a ", ",", "\n                0\n                1,", "\n                ", ",0\n                Z\"\n              stroke-width=\"0\"/>\n\n        <mask id=\"moon-shadow-mask\">\n          <use href=\"#shade\"\n               stroke=\"white\" fill=\"white\"\n               filter=\"url(#moon-blur)\" stroke-width=\"0\"/>\n        </mask>\n\n        <mask id=\"moon-shadow-mask-inverted\">\n          <circle cx=\"", "\" cy=\"", "\"\n                  r=\"", "\"\n                  fill=\"white\" stroke=\"white\" stroke-width=\"0\"/>\n\n          <use href=\"#shade\"\n               stroke=\"black\" fill=\"black\"\n               filter=\"url(#moon-blur)\" stroke-width=\"0\"/>\n        </mask>\n      </defs>\n\n      ", "\n\n      ", "\n\n      <!-- Main group that shifts up or down to center the horizon vertically -->\n      <g transform=\"translate(0 ", ") scale(", " 1)\" transform-origin=\"center\">\n        ", "\n\n        <!-- Draw the horizon (the gray horizontal lines) -->\n        <line x1=\"5\" y1=\"", "\"\n              x2=\"545\" y2=\"", "\"\n              stroke=\"var(--hc-lines)\"/>\n\n        <!-- Arrow showing direction of travel -->\n        <path d=\"M535 ", " L545 ", " L535 ", "\"\n              stroke=\"var(--hc-lines)\" fill=\"none\"/>\n\n        ", "\n\n        ", "\n      </g>\n\n      ", "\n\n      ", "\n\n      ", "\n    "])), this.sunCurve(1), curve, curve, 0.5 - Math.abs(0.5 - this.moonData.fraction), this.moonPosition.x, this.moonPosition.y, Constants.MOON_RADIUS, this.moonPosition.x - Constants.MOON_RADIUS, this.moonPosition.y, Constants.MOON_RADIUS, Constants.MOON_RADIUS, Constants.MOON_RADIUS * 2, Constants.MOON_RADIUS, Math.abs(0.5 - this.moonData.fraction) * 2 * Constants.MOON_RADIUS, this.moonData.fraction > 0.5 ? 1 : 0, -Constants.MOON_RADIUS * 2, this.moonPosition.x, this.moonPosition.y, Constants.MOON_RADIUS, this.debugRect(), showSun ? w(_templateObject3$1 || (_templateObject3$1 = _taggedTemplateLiteral(["\n      <!-- Draw the sunrise and sunset markers (the gray vertical lines) -->\n      <g transform=\"scale(", " 1)\" transform-origin=\"center\">\n        <line x1=\"", "\" y1=\"3\"\n              x2=\"", "\" y2=\"72\"\n              stroke=\"var(--hc-lines)\"/>\n        <line x1=\"", "\"\n              y1=\"3\" x2=\"", "\" y2=\"72\"\n              stroke=\"var(--hc-lines)\"/>\n      </g>"])), this.southernFlip ? -1 : 1, this.sunPosition.sunriseX, this.sunPosition.sunriseX, this.sunPosition.sunsetX, this.sunPosition.sunsetX) : A, this.sunPosition.offsetY, this.southernFlip ? -1 : 1, showSun ? w(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["\n        <!-- Draw path of the sun across the sky -->\n        <use href=\"#sun-path\"\n             fill=\"none\"\n             stroke=\"var(--hc-lines)\"/>\n\n        <!-- Draw the below horizon passed area, i.e., the dark blue/night part on either side -->\n        <path\n          d=\"M5,", " H", " V150 H5\"\n          clip-path=\"url(#lower-path-mask)\"\n          class=\"dawn\"/>\n\n        <!-- Draw the above horizon passed area, i.e., the light blue/day part in the middle -->\n        <path\n          d=\"M", ",0 H", "\n            V", " H", "\"\n          clip-path=\"url(#upper-path-mask)\"\n          class=\"day\"/>"])), this.sunPosition.horizonY, this.sunPosition.x, this.sunPosition.sunriseX, this.sunPosition.x, this.sunPosition.horizonY, this.sunPosition.sunriseX) : A, this.sunPosition.horizonY, this.sunPosition.horizonY, this.sunPosition.horizonY - 5, this.sunPosition.horizonY, this.sunPosition.horizonY + 5, showSun ? w(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["\n        <!-- Draw the sun -->\n        <circle\n          cx=\"", "\"\n          cy=\"", "\"\n          r=\"", "\"\n          stroke=\"none\"\n          fill=\"var(--hc-sun-color)\"/>"])), this.sunPosition.x, this.sunPosition.y, Constants.SUN_RADIUS) : A, this.debugSun(), this.moon(), this.debugHorizon(), this.debugCurve());
     }
   }, {
     key: "sunCurve",
@@ -3891,27 +3899,27 @@ var HorizonCardGraph = /*#__PURE__*/function () {
       var bigSpotR = Constants.MOON_RADIUS / 4;
       var hugeSpotR = Constants.MOON_RADIUS / 3;
       var spotFill = 'var(--hc-moon-spot-color)';
-      return this.config.moon ? w(_templateObject3$1 || (_templateObject3$1 = _taggedTemplateLiteral(["<!-- Moon -->\n          <g transform=\"rotate(", " ", " ", ")\">\n            <!-- Moon shadow -->\n            <use href=\"#moon\" fill=\"var(--hc-moon-shadow-color)\"/>\n            <!-- Moon proper -->\n            <use href=\"#moon\" fill=\"var(--hc-moon-color)\" mask=\"url(#moon-shadow-mask)\"/>\n          </g>\n          <!-- Moon spots to approximate the darker parts -->\n          <g transform=\"rotate(", " ", " ", ")\">\n            <circle cx=\"", "\" cy=\"", "\" r=\"", "\"\n                    stroke=\"none\" fill=\"", "\"/>\n            <circle cx=\"", "\" cy=\"", "\" r=\"", "\"\n                    stroke=\"none\" fill=\"", "\"/>\n            <circle cx=\"", "\" cy=\"", "\" r=\"", "\"\n                    stroke=\"none\" fill=\"", "\"/>\n            <circle cx=\"", "\" cy=\"", "\" r=\"", "\"\n                    stroke=\"none\" fill=\"", "\"/>\n          </g>\n        "])), this.moonData.zenithAngle, this.moonPosition.x, this.moonPosition.y, this.moonData.parallacticAngle, this.moonPosition.x, this.moonPosition.y, this.moonPosition.x - bigSpotR, this.moonPosition.y - 1.5 * bigSpotR, hugeSpotR, spotFill, this.moonPosition.x + 1.5 * bigSpotR, this.moonPosition.y - 2 * bigSpotR, bigSpotR, spotFill, this.moonPosition.x - bigSpotR, this.moonPosition.y + bigSpotR, bigSpotR, spotFill, this.moonPosition.x + bigSpotR * 2, this.moonPosition.y, smallSpotR, spotFill) : A;
+      return this.config.moon ? w(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["<!-- Moon -->\n          <g transform=\"rotate(", " ", " ", ")\">\n            <!-- Moon shadow -->\n            <use href=\"#moon\" fill=\"var(--hc-moon-shadow-color)\"/>\n            <!-- Moon proper -->\n            <use href=\"#moon\" fill=\"var(--hc-moon-color)\" mask=\"url(#moon-shadow-mask)\"/>\n          </g>\n          <!-- Moon spots to approximate the darker parts -->\n          <g transform=\"rotate(", " ", " ", ")\">\n            <circle cx=\"", "\" cy=\"", "\" r=\"", "\"\n                    stroke=\"none\" fill=\"", "\"/>\n            <circle cx=\"", "\" cy=\"", "\" r=\"", "\"\n                    stroke=\"none\" fill=\"", "\"/>\n            <circle cx=\"", "\" cy=\"", "\" r=\"", "\"\n                    stroke=\"none\" fill=\"", "\"/>\n            <circle cx=\"", "\" cy=\"", "\" r=\"", "\"\n                    stroke=\"none\" fill=\"", "\"/>\n          </g>\n        "])), this.moonData.zenithAngle, this.moonPosition.x, this.moonPosition.y, this.moonData.parallacticAngle, this.moonPosition.x, this.moonPosition.y, this.moonPosition.x - bigSpotR, this.moonPosition.y - 1.5 * bigSpotR, hugeSpotR, spotFill, this.moonPosition.x + 1.5 * bigSpotR, this.moonPosition.y - 2 * bigSpotR, bigSpotR, spotFill, this.moonPosition.x - bigSpotR, this.moonPosition.y + bigSpotR, bigSpotR, spotFill, this.moonPosition.x + bigSpotR * 2, this.moonPosition.y, smallSpotR, spotFill) : A;
     }
   }, {
     key: "debugCurve",
     value: function debugCurve() {
-      return this.debugLevel >= 1 ? w(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["<use href=\"#sun-path-unscaled\" stroke=\"red\" fill=\"none\" transform=\"translate(0, 0)\">"]))) : A;
+      return this.debugLevel >= 1 ? w(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["<use href=\"#sun-path-unscaled\" stroke=\"red\" fill=\"none\" transform=\"translate(0, 0)\">"]))) : A;
     }
   }, {
     key: "debugRect",
     value: function debugRect() {
-      return this.debugLevel >= 1 ? w(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["<rect x=\"0\" y=\"0\" width=\"550\" height=\"150\" fill=\"none\" stroke=\"red\"/>"]))) : A;
+      return this.debugLevel >= 1 ? w(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["<rect x=\"0\" y=\"0\" width=\"550\" height=\"150\" fill=\"none\" stroke=\"red\"/>"]))) : A;
     }
   }, {
     key: "debugHorizon",
     value: function debugHorizon() {
-      return this.debugLevel >= 1 ? w(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["<line x1=\"5\" y1=\"84\" x2=\"545\" y2=\"84\" stroke=\"red\" stroke-dasharray=\"4 4\"/>"]))) : A;
+      return this.debugLevel >= 1 ? w(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["<line x1=\"5\" y1=\"84\" x2=\"545\" y2=\"84\" stroke=\"red\" stroke-dasharray=\"4 4\"/>"]))) : A;
     }
   }, {
     key: "debugSun",
     value: function debugSun() {
-      return this.debugLevel >= 1 ? w(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["<path d=\"M", " ", "\n                h", "\" stroke=\"red\"/>\n          <path d=\"M", " ", "\n                v", "\" stroke=\"red\"/>\n          <circle cx=\"", "\" cy=\"", "\"\n                  r=\"", "\" stroke=\"red\" fill=\"none\"/>\n        "])), this.sunPosition.x - Constants.SUN_RADIUS, this.sunPosition.y, Constants.SUN_RADIUS * 2, this.sunPosition.x, this.sunPosition.y - Constants.SUN_RADIUS, Constants.SUN_RADIUS * 2, this.sunPosition.x, this.sunPosition.y, Constants.SUN_RADIUS) : A;
+      return this.debugLevel >= 1 ? w(_templateObject0 || (_templateObject0 = _taggedTemplateLiteral(["<path d=\"M", " ", "\n                h", "\" stroke=\"red\"/>\n          <path d=\"M", " ", "\n                v", "\" stroke=\"red\"/>\n          <circle cx=\"", "\" cy=\"", "\"\n                  r=\"", "\" stroke=\"red\" fill=\"none\"/>\n        "])), this.sunPosition.x - Constants.SUN_RADIUS, this.sunPosition.y, Constants.SUN_RADIUS * 2, this.sunPosition.x, this.sunPosition.y - Constants.SUN_RADIUS, Constants.SUN_RADIUS * 2, this.sunPosition.x, this.sunPosition.y, Constants.SUN_RADIUS) : A;
     }
   }]);
 }();
@@ -3926,7 +3934,6 @@ var HorizonCardHeader = /*#__PURE__*/function () {
     _defineProperty(this, "i18n", void 0);
     _defineProperty(this, "southern_flip", void 0);
     this.title = config.title;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.fields = config.fields;
     this.times = data.sunData.times;
     this.i18n = i18n;
@@ -3947,6 +3954,9 @@ var HorizonCardHeader = /*#__PURE__*/function () {
     value: function renderHeader() {
       var sunrise = this.fields.sunrise ? HelperFunctions.renderFieldElement(this.i18n, EHorizonCardI18NKeys.Sunrise, this.times.sunrise) : A;
       var sunset = this.fields.sunset ? HelperFunctions.renderFieldElement(this.i18n, EHorizonCardI18NKeys.Sunset, this.times.sunset) : A;
+      if (sunrise === A && sunset === A) {
+        return A;
+      }
       var left = this.southern_flip ? sunset : sunrise;
       var right = this.southern_flip ? sunrise : sunset;
       return b(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["<div class=\"horizon-card-header\">", "", "</div>"])), left, right);
@@ -3973,7 +3983,7 @@ var HorizonCardContent = /*#__PURE__*/function () {
   return _createClass(HorizonCardContent, [{
     key: "render",
     value: function render() {
-      return b(_templateObject$1 || (_templateObject$1 = _taggedTemplateLiteral(["\n      <ha-card>\n        <div class=\"horizon-card\">\n          ", "\n          ", "\n          ", "\n        </div>\n      </ha-card>\n    "])), this.renderHeader(), this.renderGraph(), this.renderFooter());
+      return b(_templateObject$1 || (_templateObject$1 = _taggedTemplateLiteral(["\n      <ha-card>\n        <div class=\"horizon-card\">\n          ", "\n          ", "\n          ", "\n        </div>\n      </ha-card>\n    "])), this.renderHeader(), this.config.graph !== false ? this.renderGraph() : A, this.renderFooter());
     }
   }, {
     key: "renderHeader",
@@ -4333,6 +4343,14 @@ new (_HorizonCard2 = (_A = /*#__PURE__*/new WeakMap(), _B = /*#__PURE__*/new Wea
   }, {
     key: "computeSunPosition",
     value: function computeSunPosition(times, canBeWinterDarkness, previousScaleY) {
+      var _this$config;
+      if (((_this$config = this.config) === null || _this$config === void 0 ? void 0 : _this$config.graph) === false) {
+        // The graph is not rendered, so its geometry is never drawn and the #sun-path
+        // SVG element does not exist. Skip the path-based position calculation, which
+        // would otherwise read getTotalLength() off a null element.
+        return Constants.DEFAULT_CARD_DATA.sunPosition;
+      }
+
       // Sun position along the curve
       var sunPosition = this.findPointOnCurve(times.now, times.noon);
       var sunsetX = -10;
@@ -4476,19 +4494,38 @@ new (_HorizonCard2 = (_A = /*#__PURE__*/new WeakMap(), _B = /*#__PURE__*/new Wea
   }, {
     key: "refreshPeriodMs",
     value: function refreshPeriodMs() {
-      var _this$config$refresh_, _this$config;
-      return ((_this$config$refresh_ = (_this$config = this.config) === null || _this$config === void 0 ? void 0 : _this$config.refresh_period) !== null && _this$config$refresh_ !== void 0 ? _this$config$refresh_ : Constants.DEFAULT_REFRESH_PERIOD) * 1000;
+      var _this$config$refresh_, _this$config2;
+      return ((_this$config$refresh_ = (_this$config2 = this.config) === null || _this$config2 === void 0 ? void 0 : _this$config2.refresh_period) !== null && _this$config$refresh_ !== void 0 ? _this$config$refresh_ : Constants.DEFAULT_REFRESH_PERIOD) * 1000;
     }
   }, {
     key: "debugLevel",
     value: function debugLevel() {
-      var _this$config$debug_le, _this$config2;
-      return (_this$config$debug_le = (_this$config2 = this.config) === null || _this$config2 === void 0 ? void 0 : _this$config2.debug_level) !== null && _this$config$debug_le !== void 0 ? _this$config$debug_le : 0;
+      var _this$config$debug_le, _this$config3;
+      return (_this$config$debug_le = (_this$config3 = this.config) === null || _this$config3 === void 0 ? void 0 : _this$config3.debug_level) !== null && _this$config$debug_le !== void 0 ? _this$config$debug_le : 0;
     }
   }, {
     key: "expandedFieldConfig",
     value: function expandedFieldConfig() {
       var _fieldConfig$sun_elev, _fieldConfig$moon_ele, _fieldConfig$sun_azim, _fieldConfig$moon_azi;
+      if (this.config.fields === false) {
+        // `fields: false` hides every field at once.
+        return {
+          sunrise: false,
+          sunset: false,
+          dawn: false,
+          noon: false,
+          dusk: false,
+          azimuth: false,
+          sun_azimuth: false,
+          moon_azimuth: false,
+          elevation: false,
+          sun_elevation: false,
+          moon_elevation: false,
+          moonrise: false,
+          moonset: false,
+          moon_phase: false
+        };
+      }
       var fieldConfig = _objectSpread2(_objectSpread2({}, Constants.DEFAULT_CONFIG.fields), this.config.fields);
 
       // Elevation and azimuth have a shared property and a per sun/moon dedicated property too
