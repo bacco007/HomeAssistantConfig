@@ -5,8 +5,8 @@ throughout the weather analysis system. Values are based on meteorological
 research and observational standards.
 """
 
-from dataclasses import dataclass, field
-from typing import Dict
+from dataclasses import dataclass
+from typing import ClassVar, Dict
 
 
 @dataclass(frozen=True)
@@ -845,23 +845,23 @@ class SolarPhysicsConstants:
 class TrendConstants:
     """Constants for trend analysis and seasonal factors."""
 
-    # Seasonal factors (0-1 scale, higher = more variable)
-    SEASONAL_FACTORS: Dict[int, float] = field(
-        default_factory=lambda: {
-            12: 0.8,
-            1: 0.9,
-            2: 0.7,  # Winter
-            3: 0.6,
-            4: 0.5,
-            5: 0.4,  # Spring
-            6: 0.3,
-            7: 0.4,
-            8: 0.5,  # Summer
-            9: 0.6,
-            10: 0.7,
-            11: 0.8,  # Fall
-        }
-    )
+    # Seasonal factors (0-1 scale, higher = more variable).
+    # ClassVar keeps this accessible as TrendConstants.SEASONAL_FACTORS;
+    # a field(default_factory=...) only exists on instances (issue #49).
+    SEASONAL_FACTORS: ClassVar[Dict[int, float]] = {
+        12: 0.8,
+        1: 0.9,
+        2: 0.7,  # Winter
+        3: 0.6,
+        4: 0.5,
+        5: 0.4,  # Spring
+        6: 0.3,
+        7: 0.4,
+        8: 0.5,  # Summer
+        9: 0.6,
+        10: 0.7,
+        11: 0.8,  # Fall
+    }
 
     # Volatility thresholds
     VOLATILITY_ACTIVE: float = 1.0  # Threshold for active weather
