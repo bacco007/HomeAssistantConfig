@@ -46,7 +46,13 @@ from .forecast import (
     MeteorologicalAnalyzer,
 )
 from .version import __version__
-from .weather_utils import convert_to_celsius, convert_to_fahrenheit, get_sun_times
+from .weather_utils import (
+    convert_to_celsius,
+    convert_to_fahrenheit,
+    convert_to_inhg,
+    convert_to_mph,
+    get_sun_times,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -260,10 +266,30 @@ class MicroWeatherEntity(CoordinatorEntity, WeatherEntity):
         # Attributes are empty as all previously extra attributes are now native
         return None
 
+    @staticmethod
+    def _convert_sensor_data_to_imperial(sensor_data: Dict[str, Any]) -> None:
+        """Convert metric coordinator data to the imperial units the
+        forecast generators and meteorological analyzer expect.
+
+        Coordinator data is °C / hPa / km/h; the analysis pipeline works in
+        °F / inHg / mph. Converts in place.
+        """
+        if sensor_data.get(KEY_TEMPERATURE) is not None:
+            sensor_data[KEY_TEMPERATURE] = convert_to_fahrenheit(
+                sensor_data[KEY_TEMPERATURE]
+            )
+        if sensor_data.get(KEY_PRESSURE) is not None:
+            sensor_data[KEY_PRESSURE] = convert_to_inhg(sensor_data[KEY_PRESSURE])
+        if sensor_data.get(KEY_WIND_SPEED) is not None:
+            sensor_data[KEY_WIND_SPEED] = convert_to_mph(sensor_data[KEY_WIND_SPEED])
+
     async def async_forecast_daily(self) -> list[Forecast] | None:
         """Return the daily forecast using comprehensive meteorological analysis."""
-        # First try to use external forecast data if available
-        if self.coordinator.data and KEY_FORECAST in self.coordinator.data:
+        # First try to use the detector-generated forecast if available.
+        # An EMPTY list means detector-side generation failed — fall through
+        # to the local generator instead of returning an empty forecast
+        # (this dead-ended in #49: the card spun forever on []).
+        if self.coordinator.data and self.coordinator.data.get(KEY_FORECAST):
             # Use the provided forecast data directly
             fallback_forecast = []
             for day_data in self.coordinator.data[KEY_FORECAST]:
@@ -311,11 +337,10 @@ class MicroWeatherEntity(CoordinatorEntity, WeatherEntity):
                 else:
                     sensor_data[key] = value
 
-            # Convert temperature from Celsius to Fahrenheit for forecast generation
-            if sensor_data.get(KEY_TEMPERATURE) is not None:
-                sensor_data[KEY_TEMPERATURE] = convert_to_fahrenheit(
-                    sensor_data[KEY_TEMPERATURE]
-                )
+            # Coordinator data is metric (°C / hPa / km/h) but the forecast
+            # generators expect imperial (°F / inHg / mph) — convert all
+            # three, not just temperature.
+            self._convert_sensor_data_to_imperial(sensor_data)
 
             # Get current condition
             current_condition_value = self.coordinator.data.get(
@@ -452,11 +477,11 @@ class MicroWeatherEntity(CoordinatorEntity, WeatherEntity):
                 else:
                     sensor_data[key] = value
 
-            # Convert temperature from Celsius to Fahrenheit for forecast generation
-            if sensor_data.get(KEY_TEMPERATURE) is not None:
-                sensor_data[KEY_TEMPERATURE] = convert_to_fahrenheit(
-                    sensor_data[KEY_TEMPERATURE]
-                )
+            # Coordinator data is metric (°C / hPa / km/h) but the forecast
+            # generators expect imperial (°F / inHg / mph) — convert all
+            # three, not just temperature. Without this the hourly wind was
+            # treated as mph and converted to km/h again (~1.6x too high).
+            self._convert_sensor_data_to_imperial(sensor_data)
 
             # Get sunrise/sunset times for astronomical calculations
             sunrise_time, sunset_time = get_sun_times(self.coordinator.hass)

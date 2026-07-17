@@ -187,6 +187,7 @@
         "menu_options": {
           "atmospheric": "Configurar Sensores Atmosféricos",
           "device_config": "Configuración del Dispositivo",
+          "lightning": "Configurar Sensores de Rayos",
           "rain": "Configurar Sensores de Lluvia",
           "solar": "Configurar Sensores Solares",
           "wind": "Configurar Sensores de Viento"
@@ -220,6 +221,19 @@
           "zenith_max_radiation": "Radiación solar máxima en el cenit (sol directamente overhead). Se utiliza para normalizar las lecturas de radiación solar para cálculos precisos de cobertura de nubes. Valores típicos: 400-1200 W/m² dependiendo de la ubicación y condiciones atmosféricas."
         },
         "title": "Sensores Solares y del Sol"
+      },
+      "lightning": {
+        "data": {
+          "lightning_count_sensor": "Sensor de Conteo de Rayos",
+          "lightning_distance_sensor": "Sensor de Distancia de Rayos",
+          "lightning_time_sensor": "Sensor de Marca de Tiempo de Rayos"
+        },
+        "data_description": {
+          "lightning_count_sensor": "Sensor opcional para detección de rayos en tiempo real usando un detector de hardware (por ejemplo, Ecowitt WH57). Proporciona el número de rayos detectados. Cuando está configurado, reemplaza la detección heurística de rayos basada en patrones de presión y viento.",
+          "lightning_distance_sensor": "Sensor opcional que proporciona la distancia al último rayo detectado. Se usa junto con el sensor de conteo de rayos para determinar si hay rayos cercanos. Compatible con unidades km y mi.",
+          "lightning_time_sensor": "Sensor opcional que proporciona la marca de tiempo del último rayo detectado. Se usa para garantizar que solo los rayos recientes (dentro de los últimos 30 minutos) activen condiciones de rayos, evitando que detecciones antiguas persistan."
+        },
+        "title": "Sensores de Rayos"
       },
       "wind": {
         "data": {

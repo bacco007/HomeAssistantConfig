@@ -10,7 +10,6 @@ This module handles:
 from collections import deque
 from datetime import datetime, timedelta
 import logging
-import statistics
 from typing import Any, Dict, List, Optional
 
 from homeassistant.components.weather import ATTR_CONDITION_FOG
@@ -79,11 +78,15 @@ class AtmosphericAnalyzer:
         # Calculate exponent
         exponent = (g * M) / (R * L)
 
-        # Calculate sea-level pressure
+        # Calculate sea-level pressure. The barometric formula gives
+        # P(station) = P(sea level) * (1 - L*h/T0)^exp, so recovering the
+        # sea-level equivalent from a station reading means DIVIDING by the
+        # altitude factor (< 1) — pressure at altitude is lower, so its
+        # sea-level equivalent is higher. Multiplying (the old behavior)
+        # went the wrong direction and lowered mountain readings further.
         if altitude_m > 0:
-            sea_level_pressure_hpa = (
-                pressure_hpa * (1 - (L * altitude_m) / T0) ** exponent
-            )
+            altitude_factor = (1 - (L * altitude_m) / T0) ** exponent
+            sea_level_pressure_hpa = pressure_hpa / altitude_factor
         else:
             sea_level_pressure_hpa = pressure_hpa
 
@@ -381,11 +384,22 @@ class AtmosphericAnalyzer:
         directions = [entry["value"] for entry in recent_data]
         timestamps = [entry["timestamp"] for entry in recent_data]
 
-        # Calculate stability
+        # Calculate stability using circular statistics. Wind direction is
+        # circular data — a steady northerly oscillating across 0°/360°
+        # has a linear stdev near 180° and would wrongly read as fully
+        # unstable. The mean resultant length R (0 = uniformly scattered,
+        # 1 = perfectly steady) handles the wrap-around correctly.
         try:
-            volatility = statistics.stdev(directions) if len(directions) > 1 else 0
-            stability = max(0.0, 1.0 - (volatility / 180.0))
-        except statistics.StatisticsError:
+            import math
+
+            sin_mean = sum(math.sin(math.radians(d)) for d in directions) / len(
+                directions
+            )
+            cos_mean = sum(math.cos(math.radians(d)) for d in directions) / len(
+                directions
+            )
+            stability = math.sqrt(sin_mean**2 + cos_mean**2)
+        except (ValueError, ZeroDivisionError):
             stability = 0.5
 
         # Calculate change rate

@@ -120,6 +120,15 @@ class TrendsAnalyzer:
                 (t - timestamps[0]).total_seconds() / 3600 for t in timestamps
             ]
 
+        # Require a minimum observation span. A regression slope fit to a
+        # few minutes of data extrapolates sensor noise into huge hourly
+        # rates (e.g. 0.01 inHg over 10 min reads as 4 hPa/3h and fabricates
+        # storm probability right after a restart or reconfigure).
+        # Use min/max so entry ordering does not matter.
+        span_hours = max(time_diffs) - min(time_diffs)
+        if span_hours < 0.5:
+            return {}
+
         try:
             # Basic statistics
             current = values[-1]
@@ -139,6 +148,7 @@ class TrendsAnalyzer:
                 "max": maximum,
                 "volatility": volatility,
                 "sample_count": len(values),
+                "span_hours": span_hours,
             }
         except statistics.StatisticsError:
             return {}
@@ -220,6 +230,28 @@ class TrendsAnalyzer:
             patterns["pressure"] = {
                 "volatility": pressure_volatility,
                 "cyclical_patterns": self.detect_pressure_cycles(pressure_history),
+            }
+
+        # Humidity patterns — consumed by the daily forecast generator
+        # (historical_patterns["humidity"]); without this key the humidity
+        # trend influence silently defaults to zero (see #35/#46 class).
+        if humidity_history:
+            humidity_trend = humidity_history.get("trend", 0)
+            patterns["humidity"] = {
+                "trend": (
+                    humidity_trend if isinstance(humidity_trend, (int, float)) else 0.0
+                ),
+                "volatility": humidity_history.get("volatility", 5.0),
+            }
+
+        # Wind patterns — consumed by the daily forecast generator
+        # (historical_patterns["wind"]).
+        wind_history = self.get_historical_trends("wind_speed", hours=168)
+        if wind_history:
+            wind_trend = wind_history.get("trend", 0)
+            patterns["wind"] = {
+                "trend": (wind_trend if isinstance(wind_trend, (int, float)) else 0.0),
+                "volatility": wind_history.get("volatility", 2.0),
             }
 
         # Correlation analysis
@@ -357,8 +389,12 @@ class TrendsAnalyzer:
         long_slope = long_trend["trend"]
 
         # inHg/hour slope -> pressure change in hPa over 3h / 24h.
+        # Clamp to physically plausible synoptic rates so residual noise or
+        # sensor glitches cannot drive the forecast engine to extremes.
         current_trend = convert_to_hpa(short_slope * 3.0) or 0.0
         long_term_trend = convert_to_hpa(long_slope * 24.0) or 0.0
+        current_trend = max(-15.0, min(15.0, current_trend))
+        long_term_trend = max(-40.0, min(40.0, long_term_trend))
         current_pressure_hpa = convert_to_hpa(long_trend["current"]) or 1013.25
 
         # Classify the pressure system by absolute pressure (hPa).
@@ -379,6 +415,14 @@ class TrendsAnalyzer:
             storm_probability += 30.0
         storm_probability = min(100.0, storm_probability)
 
+        # Confidence dampening for short observation records: with less
+        # than ~6h of pressure history the extrapolated 3h/24h changes are
+        # unreliable, so scale storm probability by record maturity instead
+        # of painting the forecast with storms right after a fresh start.
+        span_hours = long_trend.get("span_hours")
+        if isinstance(span_hours, (int, float)) and span_hours < 6.0:
+            storm_probability *= max(0.0, span_hours / 6.0)
+
         return {
             **long_trend,
             "current_trend": current_trend,
@@ -388,15 +432,17 @@ class TrendsAnalyzer:
         }
 
     def compute_pressure_acceleration(self) -> float:
-        """Compute pressure trend acceleration from the last 24h of readings.
+        """Compute pressure trend acceleration from the stored readings.
 
         Splits pressure history into two equal halves, computes the linear
         trend slope for each using calculate_trend(), and returns the
-        difference (slope_second - slope_first).
+        difference (slope_second - slope_first) converted to hPa/hour so
+        it shares the unit regime of the hPa-based trend thresholds.
 
         Returns:
-            float: Acceleration in inHg/3h² (negative = fall speeding up,
-                   positive = fall slowing, ~0.0 = steady or insufficient data)
+            float: Acceleration in hPa/h per half-window (negative = fall
+                   speeding up, positive = fall slowing, ~0.0 = steady or
+                   insufficient data)
         """
         if "pressure" not in self._sensor_history:
             return 0.0
@@ -420,7 +466,14 @@ class TrendsAnalyzer:
                 ]
             return self.calculate_trend(time_diffs, values)
 
-        return _slope(second_half) - _slope(first_half)
+        # Slopes are in inHg/h (history is stored in inHg); convert the
+        # difference to hPa/h to match the hPa-based lifecycle thresholds.
+        # convert_to_hpa() rounds to 1 decimal, which is too coarse for
+        # acceleration magnitudes, so apply the factor directly.
+        from ..meteorological_constants import PhysicsConstants
+
+        acceleration_inhg = _slope(second_half) - _slope(first_half)
+        return acceleration_inhg * PhysicsConstants.INHG_TO_HPA
 
     def calculate_circular_mean(self, directions: List[float]) -> float:
         """Calculate the circular mean of wind directions.

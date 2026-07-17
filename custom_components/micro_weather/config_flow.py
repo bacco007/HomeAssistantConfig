@@ -131,7 +131,8 @@ class ConfigFlowHandler(ConfigFlow, domain=DOMAIN):
                 ),
                 vol.Optional(CONF_RAIN_RATE_SENSOR): selector.EntitySelector(
                     selector.EntitySelectorConfig(
-                        domain="sensor", device_class="precipitation_intensity"
+                        domain="sensor",
+                        device_class=["precipitation_intensity", "precipitation"],
                     )
                 ),
                 vol.Optional(CONF_RAIN_STATE_SENSOR): selector.EntitySelector(
@@ -488,7 +489,8 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         schema_dict[vol.Optional(CONF_RAIN_RATE_SENSOR, default=vol.UNDEFINED)] = (
             selector.EntitySelector(
                 selector.EntitySelectorConfig(
-                    domain="sensor", device_class="precipitation_intensity"
+                    domain="sensor",
+                    device_class=["precipitation_intensity", "precipitation"],
                 )
             )
         )

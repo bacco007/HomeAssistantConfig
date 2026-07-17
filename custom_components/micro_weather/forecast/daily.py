@@ -97,9 +97,9 @@ class DailyForecastGenerator:
             or sensor_data.get(KEY_OUTDOOR_TEMP)
             or ForecastConstants.DEFAULT_TEMPERATURE
         )
-        current_humidity = sensor_data.get(
-            KEY_HUMIDITY, ForecastConstants.DEFAULT_HUMIDITY
-        )
+        current_humidity = sensor_data.get(KEY_HUMIDITY)
+        if not isinstance(current_humidity, (int, float)):
+            current_humidity = ForecastConstants.DEFAULT_HUMIDITY
         current_wind = sensor_data.get(
             KEY_WIND_SPEED, ForecastConstants.DEFAULT_WIND_SPEED
         )
@@ -125,12 +125,15 @@ class DailyForecastGenerator:
                 system_evolution,
             )
 
-            # Apply day/night condition conversion (similar to hourly forecast)
+            # Daily rows are noon-representative: a daily forecast card must
+            # never show a nighttime condition. Passing the generation
+            # timestamp here made rows generated at night convert sunny →
+            # clear-night. Only the clear-night → sunny direction applies.
             forecast_condition = self._apply_day_night_conversion(
                 forecast_condition,
-                date,
-                sunrise_time,
-                sunset_time,
+                date.replace(hour=12, minute=0, second=0, microsecond=0),
+                None,
+                None,
                 meteorological_state,
             )
 
@@ -381,6 +384,12 @@ class DailyForecastGenerator:
             "pressure_system", "normal"
         )
 
+        # A storm signal measured *now* says little about day 3-4; decay the
+        # override with forecast distance so one noisy reading cannot paint
+        # every day of the board with thunderstorms.
+        if isinstance(storm_probability, (int, float)):
+            storm_probability = storm_probability * max(0.4, 1.0 - 0.15 * day_idx)
+
         # Storm probability override (highest priority)
         if storm_probability >= ForecastConstants.STORM_THRESHOLD_SEVERE:
             if day_idx >= ForecastConstants.POURING_DAY_THRESHOLD:
@@ -450,7 +459,7 @@ class DailyForecastGenerator:
                 cloud_cover = cloud_analysis.get("cloud_cover", 50)
 
                 if (
-                    pressure_trend < -0.3
+                    pressure_trend < -1.0  # hPa/3h
                     or storm_prob > 40
                     or (isinstance(cloud_cover, (int, float)) and cloud_cover >= 60)
                 ):
@@ -526,14 +535,14 @@ class DailyForecastGenerator:
 
         influence = 0.0
 
-        # Rapid pressure fall (< -0.5 inHg/3h) often means approaching cold front
-        if current_trend < -0.5:
+        # Rapid pressure fall (< -1.5 hPa/3h) often means approaching cold front
+        if current_trend < -1.5:
             # Expect cooling after the front passes
             influence = -3.0 * (day_idx + 1)  # More cooling for distant days
-        elif current_trend < -0.2:
+        elif current_trend < -0.6:
             influence = -1.0 * (day_idx + 1)
         # Rising pressure after a fall often means post-frontal clearing
-        elif current_trend > 0.3:
+        elif current_trend > 0.9:
             influence = 1.5 * max(0, 2 - day_idx)  # Warming on first days only
 
         # Pressure system base effect

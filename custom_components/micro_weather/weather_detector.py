@@ -292,14 +292,16 @@ class WeatherDetector:
                     day_forecast["templow"] = convert_to_celsius(
                         day_forecast["templow"]
                     )
-        except Exception as e:
-            _LOGGER.error("Forecast generation failed: %s", e)
+        except Exception:
+            # Full traceback — a bare message cost days of diagnosis in #49.
+            _LOGGER.exception("Forecast generation failed")
             forecast_data = []
 
         # Get or calculate dewpoint
         dewpoint_value = sensor_data.get(KEY_DEWPOINT)
         dewpoint_unit = sensor_data.get("dewpoint_unit")  # Get sensor's native unit
-        if not dewpoint_value:
+        # `is None` — a dewpoint of exactly 0 degrees is a valid reading
+        if dewpoint_value is None:
             # Calculate dewpoint as fallback using temperature and humidity
             temp_f = sensor_data.get(KEY_OUTDOOR_TEMP) or sensor_data.get(
                 KEY_TEMPERATURE

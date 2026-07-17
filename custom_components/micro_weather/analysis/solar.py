@@ -56,6 +56,7 @@ class SolarAnalyzer:
         uv_index: float,
         solar_elevation: float = 45.0,
         pressure_trends: Optional[Dict[str, Any]] = None,
+        update_history: bool = True,
     ) -> float:
         """Estimate cloud cover percentage using solar radiation.
 
@@ -169,12 +170,15 @@ class SolarAnalyzer:
         # Apply hysteresis to prevent extreme jumps
         cloud_cover = self._apply_cloud_cover_hysteresis(cloud_cover)
 
-        # Store for future reference
-        if "cloud_cover" not in self._sensor_history:
-            self._sensor_history["cloud_cover"] = deque(maxlen=50)
-        self._sensor_history["cloud_cover"].append(
-            {"timestamp": datetime.now(), "value": cloud_cover}
-        )
+        # Store for future reference. Only the detection path should write
+        # here — forecast paths pass update_history=False so that repeated
+        # forecast renders cannot pollute the shared history (issue #51).
+        if update_history:
+            if "cloud_cover" not in self._sensor_history:
+                self._sensor_history["cloud_cover"] = deque(maxlen=50)
+            self._sensor_history["cloud_cover"].append(
+                {"timestamp": datetime.now(), "value": cloud_cover}
+            )
 
         return cloud_cover
 
@@ -254,10 +258,20 @@ class SolarAnalyzer:
             ),
         )
 
-        # Weight the measurements
+        # Weight the measurements. Only sensors that actually report data
+        # participate — a missing lux/UV sensor reads 0, which would map to
+        # "100% cloud" and permanently bias the blend (issue #51). Weights
+        # are normalized over the participating sensors.
         if avg_solar_radiation > 10:
-            # Check UV consistency
+            weighted_components = [
+                (solar_cloud_cover, SolarAnalysisConstants.SOLAR_RADIATION_WEIGHT)
+            ]
+            if solar_lux > 0:
+                weighted_components.append(
+                    (lux_cloud_cover, SolarAnalysisConstants.SOLAR_LUX_WEIGHT)
+                )
             if uv_index > 0:
+                # Check UV consistency before including it
                 uv_solar_diff = abs(solar_cloud_cover - uv_cloud_cover)
                 if uv_solar_diff > SolarAnalysisConstants.UV_INCONSISTENCY_THRESHOLD:
                     _LOGGER.debug(
@@ -265,23 +279,15 @@ class SolarAnalyzer:
                         uv_cloud_cover,
                         solar_cloud_cover,
                     )
-                    cloud_cover = (
-                        solar_cloud_cover
-                        * SolarAnalysisConstants.SOLAR_RADIATION_WEIGHT
-                        + lux_cloud_cover * SolarAnalysisConstants.SOLAR_LUX_WEIGHT
-                    )
                 else:
-                    cloud_cover = (
-                        solar_cloud_cover
-                        * SolarAnalysisConstants.SOLAR_RADIATION_WEIGHT
-                        + lux_cloud_cover * SolarAnalysisConstants.SOLAR_LUX_WEIGHT
-                        + uv_cloud_cover * SolarAnalysisConstants.UV_INDEX_WEIGHT
+                    weighted_components.append(
+                        (uv_cloud_cover, SolarAnalysisConstants.UV_INDEX_WEIGHT)
                     )
-            else:
-                cloud_cover = (
-                    solar_cloud_cover * SolarAnalysisConstants.SOLAR_RADIATION_WEIGHT
-                    + lux_cloud_cover * SolarAnalysisConstants.SOLAR_LUX_WEIGHT
-                )
+            total_weight = sum(weight for _, weight in weighted_components)
+            cloud_cover = (
+                sum(value * weight for value, weight in weighted_components)
+                / total_weight
+            )
         elif solar_lux > 100:
             cloud_cover = (
                 lux_cloud_cover * SolarPhysicsConstants.LUX_WEIGHT_SECONDARY
@@ -325,23 +331,21 @@ class SolarAnalyzer:
         # Calculate air mass and atmospheric transmission
         air_mass = self._calculate_air_mass(solar_elevation)
 
-        # Atmospheric extinction components
-        rayleigh_extinction = math.exp(
-            SolarPhysicsConstants.EXTINCTION_RAYLEIGH * air_mass
+        # Atmospheric extinction, normalized to air mass 1. The calibration
+        # value zenith_max_radiation is what the sensor reads at zenith on a
+        # clear day — i.e. it already includes one air mass of extinction.
+        # Applying exp(k*AM) on top of it attenuates the atmosphere twice
+        # (predicting ~467 W/m² at 45° where real clear-sky GHI is ~650),
+        # which made clear days read as "sensor exceeds model". Only the
+        # extinction relative to AM=1, exp(k*(AM-1)), belongs here.
+        total_extinction_coefficient = (
+            SolarPhysicsConstants.EXTINCTION_RAYLEIGH
+            + SolarPhysicsConstants.EXTINCTION_OZONE
+            + SolarPhysicsConstants.EXTINCTION_WATER
+            + SolarPhysicsConstants.EXTINCTION_AEROSOL
         )
-        ozone_extinction = math.exp(SolarPhysicsConstants.EXTINCTION_OZONE * air_mass)
-        water_vapor_extinction = math.exp(
-            SolarPhysicsConstants.EXTINCTION_WATER * air_mass
-        )
-        aerosol_extinction = math.exp(
-            SolarPhysicsConstants.EXTINCTION_AEROSOL * air_mass
-        )
-
-        atmospheric_transmission = (
-            rayleigh_extinction
-            * ozone_extinction
-            * water_vapor_extinction
-            * aerosol_extinction
+        atmospheric_transmission = math.exp(
+            total_extinction_coefficient * (air_mass - 1.0)
         )
 
         # Calculate astronomical scaling
@@ -471,25 +475,28 @@ class SolarAnalyzer:
         long_term_trend = pressure_trends.get("long_term_trend", 0.0)
         pressure_system = pressure_trends.get("pressure_system", "normal")
 
-        # Short-term adjustment
+        # Short-term adjustment. Positive = cloudier: falling pressure means
+        # an approaching system (more cloud), rising pressure means clearing.
         short_term_adjustment = 0.0
         if current_trend < PressureThresholds.TREND_3H_RAPID_FALL:
-            short_term_adjustment = max(
-                -20.0, current_trend * PressureThresholds.SHORT_TERM_MULTIPLIER_FALL
+            short_term_adjustment = min(
+                20.0,
+                abs(current_trend) * PressureThresholds.SHORT_TERM_MULTIPLIER_FALL,
             )
         elif current_trend > PressureThresholds.TREND_3H_MODERATE_RISE:
-            short_term_adjustment = min(
+            short_term_adjustment = -min(
                 20.0, current_trend * PressureThresholds.SHORT_TERM_MULTIPLIER_RISE
             )
 
-        # Long-term adjustment
+        # Long-term adjustment (same sign convention)
         long_term_adjustment = 0.0
         if long_term_trend < PressureThresholds.TREND_24H_RAPID_FALL:
-            long_term_adjustment = max(
-                -25.0, long_term_trend * PressureThresholds.LONG_TERM_MULTIPLIER_FALL
+            long_term_adjustment = min(
+                25.0,
+                abs(long_term_trend) * PressureThresholds.LONG_TERM_MULTIPLIER_FALL,
             )
         elif long_term_trend > PressureThresholds.TREND_24H_MODERATE_RISE:
-            long_term_adjustment = min(
+            long_term_adjustment = -min(
                 25.0, long_term_trend * PressureThresholds.LONG_TERM_MULTIPLIER_RISE
             )
 
@@ -658,6 +665,20 @@ class SolarAnalyzer:
             # still maps to CLOUDY condition (precipitation would override)
             return ATTR_CONDITION_CLOUDY
 
+    def _record_condition(
+        self, condition: str, proposed: str, cloud_cover: float
+    ) -> str:
+        """Append a condition decision to history and return the condition."""
+        self._condition_history.append(
+            {
+                "condition": condition,
+                "proposed": proposed,
+                "cloud_cover": cloud_cover,
+                "timestamp": datetime.now(),
+            }
+        )
+        return condition
+
     def apply_condition_hysteresis(
         self, proposed_condition: str, current_cloud_cover: float
     ) -> str:
@@ -666,6 +687,16 @@ class SolarAnalyzer:
         This method ensures weather conditions are stable before reporting
         a change. It requires a meaningful change in cloud cover before
         allowing a condition transition.
+
+        The cloud-cover change is measured against the cover recorded when
+        the current condition was last established (the start of the current
+        condition run), NOT against the previous reading. Comparing against
+        the previous reading ratchets the baseline forward each cycle, so a
+        gradual change (a few percent per update) could never cross the
+        threshold and the condition would stay stale forever (issue #51).
+
+        As a safety valve, a proposal that persists for three consecutive
+        readings is accepted regardless of the cloud-cover delta.
         """
         # Clean up old entries (keep last 24 hours)
         cutoff_time = datetime.now() - timedelta(hours=24)
@@ -686,28 +717,42 @@ class SolarAnalyzer:
         ]
 
         if not recent_history:
-            self._condition_history.append(
-                {
-                    "condition": proposed_condition,
-                    "cloud_cover": current_cloud_cover,
-                    "timestamp": datetime.now(),
-                }
+            return self._record_condition(
+                proposed_condition, proposed_condition, current_cloud_cover
             )
-            return proposed_condition
 
         last_entry = recent_history[-1]
         last_condition = last_entry["condition"]
-        last_cloud_cover = last_entry["cloud_cover"]
 
         if proposed_condition == last_condition:
-            self._condition_history.append(
-                {
-                    "condition": proposed_condition,
-                    "cloud_cover": current_cloud_cover,
-                    "timestamp": datetime.now(),
-                }
+            return self._record_condition(
+                proposed_condition, proposed_condition, current_cloud_cover
             )
-            return proposed_condition
+
+        # Sustained-proposal acceptance: if the last two readings already
+        # proposed this same condition (and were rejected), accept it now.
+        # This bounds how long a persistent disagreement can be suppressed.
+        recent_proposals = [
+            entry.get("proposed", entry["condition"]) for entry in recent_history[-2:]
+        ]
+        if len(recent_proposals) == 2 and all(
+            proposal == proposed_condition for proposal in recent_proposals
+        ):
+            _LOGGER.debug(
+                "Condition change accepted after sustained proposals: %s -> %s",
+                last_condition,
+                proposed_condition,
+            )
+            return self._record_condition(
+                proposed_condition, proposed_condition, current_cloud_cover
+            )
+
+        # Baseline: cloud cover at the start of the current condition run.
+        last_cloud_cover = last_entry["cloud_cover"]
+        for entry in reversed(self._condition_history):
+            if entry["condition"] != last_condition:
+                break
+            last_cloud_cover = entry["cloud_cover"]
 
         # Calculate cloud cover difference
         cloud_cover_change = abs(current_cloud_cover - last_cloud_cover)
@@ -729,17 +774,6 @@ class SolarAnalyzer:
         transition_key = (last_condition, proposed_condition)
         hysteresis_threshold = hysteresis_thresholds.get(transition_key, 10.0)
 
-        # Also check trend - if multiple recent readings support the change, allow it
-        # Count how many recent readings match the proposed condition
-        recent_matches = sum(
-            1
-            for entry in recent_history[-5:]
-            if entry["condition"] == proposed_condition
-        )
-        if recent_matches >= 2:
-            # The trend supports this change, use lower threshold
-            hysteresis_threshold = hysteresis_threshold * 0.7
-
         if cloud_cover_change >= hysteresis_threshold:
             _LOGGER.debug(
                 "Condition change: %s -> %s (cloud cover: %.1f -> %.1f, change: %.1f >= %.1f)",
@@ -750,29 +784,19 @@ class SolarAnalyzer:
                 cloud_cover_change,
                 hysteresis_threshold,
             )
-            self._condition_history.append(
-                {
-                    "condition": proposed_condition,
-                    "cloud_cover": current_cloud_cover,
-                    "timestamp": datetime.now(),
-                }
+            return self._record_condition(
+                proposed_condition, proposed_condition, current_cloud_cover
             )
-            return proposed_condition
-        else:
-            _LOGGER.debug(
-                "Condition stable: keeping %s (proposed: %s, cloud cover: %.1f -> %.1f, change: %.1f < %.1f)",
-                last_condition,
-                proposed_condition,
-                last_cloud_cover,
-                current_cloud_cover,
-                cloud_cover_change,
-                hysteresis_threshold,
-            )
-            self._condition_history.append(
-                {
-                    "condition": last_condition,
-                    "cloud_cover": current_cloud_cover,
-                    "timestamp": datetime.now(),
-                }
-            )
-            return last_condition
+
+        _LOGGER.debug(
+            "Condition stable: keeping %s (proposed: %s, cloud cover: %.1f -> %.1f, change: %.1f < %.1f)",
+            last_condition,
+            proposed_condition,
+            last_cloud_cover,
+            current_cloud_cover,
+            cloud_cover_change,
+            hysteresis_threshold,
+        )
+        return self._record_condition(
+            last_condition, proposed_condition, current_cloud_cover
+        )

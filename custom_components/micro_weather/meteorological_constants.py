@@ -632,14 +632,17 @@ class DiurnalPatternConstants:
     on solar heating and boundary layer dynamics.
     """
 
-    # Temperature patterns (°C adjustment by time of day)
-    TEMP_DAWN: float = -2.0  # Coolest period before sunrise
-    TEMP_MORNING: float = 1.0  # Warming period
-    TEMP_NOON: float = 3.0  # Peak heating
-    TEMP_AFTERNOON: float = 2.0  # Still warm but decreasing
-    TEMP_EVENING: float = -1.0  # Cooling begins
-    TEMP_NIGHT: float = -3.0  # Cool night period
-    TEMP_MIDNIGHT: float = -2.0  # Late night cooling
+    # Temperature patterns (°F offset from the daily mean, by time of day).
+    # The hourly forecast pipeline operates in °F; these were previously
+    # labeled °C but applied as °F, halving the diurnal swing. Values are
+    # the °F equivalents (±3 °C ≈ ±5.4 °F).
+    TEMP_DAWN: float = -3.6  # Coolest period before sunrise
+    TEMP_MORNING: float = 1.8  # Warming period
+    TEMP_NOON: float = 5.4  # Peak heating
+    TEMP_AFTERNOON: float = 3.6  # Still warm but decreasing
+    TEMP_EVENING: float = -1.8  # Cooling begins
+    TEMP_NIGHT: float = -5.4  # Cool night period
+    TEMP_MIDNIGHT: float = -3.6  # Late night cooling
 
     # Wind patterns (km/h adjustment by time of day)
     WIND_DAWN: float = -1.0  # Light winds at dawn
@@ -727,21 +730,26 @@ class PressureTrendConstants:
 
     Used to classify pressure trends and determine their impact
     on weather evolution and condition changes.
+
+    UNITS: all trend thresholds are in hPa per 3 hours, matching the
+    ``current_trend`` produced by TrendsAnalyzer.analyze_pressure_trends()
+    (which converts the stored inHg slope to hPa — see #46). WMO practice
+    treats |change| < ~1 hPa/3h as steady; a marked front is 2-4+ hPa/3h.
     """
 
-    # Severity classification thresholds (inHg/3h)
-    STABLE_THRESHOLD: float = 0.2  # Below this = stable
-    SLOW_THRESHOLD: float = 0.5  # Slow change threshold
-    MODERATE_THRESHOLD: float = 1.5  # Moderate change threshold
+    # Severity classification thresholds (hPa/3h)
+    STABLE_THRESHOLD: float = 1.0  # Below this = stable (steady barometer)
+    SLOW_THRESHOLD: float = 2.0  # Slow change threshold
+    MODERATE_THRESHOLD: float = 4.0  # Moderate change threshold
     # Above MODERATE_THRESHOLD = rapid
 
-    # Trend direction thresholds (inHg/3h)
-    DIRECTION_STABLE: float = 0.1  # Below this = stable
-    DIRECTION_FALLING_MODERATE: float = -0.5  # Moderate falling
-    DIRECTION_RISING_MODERATE: float = 0.5  # Moderate rising
+    # Trend direction thresholds (hPa/3h)
+    DIRECTION_STABLE: float = 0.5  # Below this = stable
+    DIRECTION_FALLING_MODERATE: float = -1.5  # Moderate falling
+    DIRECTION_RISING_MODERATE: float = 1.5  # Moderate rising
 
-    # Urgency calculation
-    MAX_URGENCY_RATE: float = 3.0  # Maximum trend for urgency calculation
+    # Urgency calculation (hPa/3h)
+    MAX_URGENCY_RATE: float = 6.0  # Maximum trend for urgency calculation
 
     # Cloud cover adjustments by pressure trend
     MAX_CLOUD_COVER: float = 95.0  # Maximum cloud cover limit
@@ -864,8 +872,12 @@ class TrendConstants:
     }
 
     # Volatility thresholds
-    VOLATILITY_ACTIVE: float = 1.0  # Threshold for active weather
-    VOLATILITY_MODERATE: float = 0.5  # Threshold for moderate weather
+    # Pressure volatility thresholds in inHg (pressure history is stored in
+    # inHg; its stdev over the retained window is compared here). The old
+    # values (1.0 / 0.5) were hPa-scale — 1.0 inHg is a ~34 hPa stdev that
+    # never occurs, so cycle_type was permanently "stable".
+    VOLATILITY_ACTIVE: float = 0.12  # ~4 hPa stdev — frequent system changes
+    VOLATILITY_MODERATE: float = 0.06  # ~2 hPa stdev — normal variability
 
     # Correlation coefficients (estimated)
     CORRELATION_TEMP_PRESSURE: float = -0.6  # Inverse relationship

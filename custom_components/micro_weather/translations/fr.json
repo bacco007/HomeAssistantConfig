@@ -187,6 +187,7 @@
         "menu_options": {
           "atmospheric": "Configurer les Capteurs Atmosphériques",
           "device_config": "Configuration de l'Appareil",
+          "lightning": "Configurer les Capteurs de Foudre",
           "rain": "Configurer les Capteurs de Pluie",
           "solar": "Configurer les Capteurs Solaires",
           "wind": "Configurer les Capteurs de Vent"
@@ -220,6 +221,19 @@
           "zenith_max_radiation": "Rayonnement solaire maximum au zénith (soleil directement au-dessus). Utilisé pour normaliser les lectures de rayonnement solaire pour des calculs précis de couverture nuageuse. Valeurs typiques : 400-1200 W/m² selon l'emplacement et les conditions atmosphériques."
         },
         "title": "Capteurs Solaires et du Soleil"
+      },
+      "lightning": {
+        "data": {
+          "lightning_count_sensor": "Capteur de Nombre d'Éclairs",
+          "lightning_distance_sensor": "Capteur de Distance de Foudre",
+          "lightning_time_sensor": "Capteur d'Horodatage de Foudre"
+        },
+        "data_description": {
+          "lightning_count_sensor": "Capteur optionnel pour la détection de foudre en temps réel avec un détecteur matériel (par exemple, Ecowitt WH57). Fournit le nombre d'éclairs détectés. Lorsqu'il est configuré, remplace la détection heuristique de foudre basée sur les modèles de pression et de vent.",
+          "lightning_distance_sensor": "Capteur optionnel fournissant la distance du dernier éclair détecté. Utilisé avec le capteur de nombre d'éclairs pour déterminer si la foudre est proche. Prend en charge les unités km et mi.",
+          "lightning_time_sensor": "Capteur optionnel fournissant l'horodatage du dernier éclair détecté. Utilisé pour garantir que seuls les éclairs récents (dans les 30 dernières minutes) déclenchent des conditions de foudre, évitant la persistance de détections obsolètes."
+        },
+        "title": "Capteurs de Foudre"
       },
       "wind": {
         "data": {

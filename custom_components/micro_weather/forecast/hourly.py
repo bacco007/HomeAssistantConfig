@@ -90,7 +90,8 @@ class HourlyForecastGenerator:
         """Generate comprehensive 24-hour hourly forecast.
 
         Args:
-            current_temp: Current temperature in Celsius
+            current_temp: Current temperature in °F (the forecast pipeline
+                operates in imperial units; the caller converts back to °C)
             current_condition: Current weather condition
             sensor_data: Current sensor data in imperial units
             sunrise_time: Sunrise time for astronomical calculations
@@ -181,7 +182,7 @@ class HourlyForecastGenerator:
         """Generate the main 24-hour forecast loop.
 
         Args:
-            current_temp: Current temperature in Celsius
+            current_temp: Current temperature in °F
             current_condition: Current weather condition
             sensor_data: Current sensor data in imperial units
             sunrise_time: Sunrise time for astronomical calculations
@@ -309,7 +310,7 @@ class HourlyForecastGenerator:
             KEY_TEMPERATURE, {}
         )
 
-        # Default diurnal patterns (temperature adjustment from daily mean)
+        # Default diurnal patterns (temperature offset from the daily mean)
         default_patterns = {
             "dawn": DiurnalPatternConstants.TEMP_DAWN,
             "morning": DiurnalPatternConstants.TEMP_MORNING,
@@ -322,21 +323,16 @@ class HourlyForecastGenerator:
 
         patterns = {**default_patterns, **diurnal_patterns}
 
-        # Map hour to diurnal period
-        if 5 <= hour < 7:
-            diurnal_variation = patterns["dawn"]
-        elif 7 <= hour < 12:
-            diurnal_variation = patterns["morning"]
-        elif 12 <= hour < 15:
-            diurnal_variation = patterns["noon"]
-        elif 15 <= hour < 19:
-            diurnal_variation = patterns["afternoon"]
-        elif 19 <= hour < 22:
-            diurnal_variation = patterns["evening"]
-        elif 22 <= hour < 24 or hour < 2:
-            diurnal_variation = patterns["night"]
-        else:  # 2-5 AM
-            diurnal_variation = patterns["midnight"]
+        # The pattern values are offsets from the DAILY MEAN, but the
+        # forecast is anchored on the CURRENT temperature — which already
+        # contains the current hour's own diurnal offset. Apply the
+        # difference between the target hour's offset and the current
+        # hour's offset, otherwise the whole curve is shifted by however
+        # far from the mean we are right now (e.g. forecasting from a warm
+        # afternoon pushed every night hour ~2°F too warm).
+        target_offset = patterns[self._diurnal_period(hour)]
+        current_offset = patterns[self._diurnal_period(dt_util.now().hour)]
+        diurnal_variation = target_offset - current_offset
 
         # Dampen diurnal variation for distant hours
         diurnal_dampening = max(0.5, 1.0 - (hour_idx * 0.015))
@@ -363,6 +359,23 @@ class HourlyForecastGenerator:
         forecast_temp += evolution_effect
 
         return forecast_temp
+
+    @staticmethod
+    def _diurnal_period(hour: int) -> str:
+        """Map an hour of day (0-23) to its diurnal period name."""
+        if 5 <= hour < 7:
+            return "dawn"
+        if 7 <= hour < 12:
+            return "morning"
+        if 12 <= hour < 15:
+            return "noon"
+        if 15 <= hour < 19:
+            return "afternoon"
+        if 19 <= hour < 22:
+            return "evening"
+        if hour >= 22 or hour < 2:
+            return "night"
+        return "midnight"  # 2-5 AM
 
     def forecast_condition(
         self,
@@ -446,7 +459,7 @@ class HourlyForecastGenerator:
                 cloud_cover = cloud_analysis.get("cloud_cover", 50)
 
                 if (
-                    pressure_trend < -0.3
+                    pressure_trend < -1.0  # hPa/3h
                     or storm_prob > 40
                     or (isinstance(cloud_cover, (int, float)) and cloud_cover >= 60)
                 ):
@@ -531,7 +544,7 @@ class HourlyForecastGenerator:
         else:
             severity = "rapid"
 
-        if abs(current_trend) < 0.1:
+        if abs(current_trend) < PressureTrendConstants.DIRECTION_STABLE:
             direction = "stable"
         elif current_trend < 0:
             direction = "falling"
@@ -545,7 +558,7 @@ class HourlyForecastGenerator:
         else:
             long_term_direction = "rising"
 
-        urgency_factor = min(1.0, current_abs / 3.0)
+        urgency_factor = min(1.0, current_abs / PressureTrendConstants.MAX_URGENCY_RATE)
         trend_agreement = 1.0 - min(1.0, abs(current_trend - long_term_trend) / 5.0)
         confidence = 0.5 + (trend_agreement * 0.5)
 
@@ -609,9 +622,9 @@ class HourlyForecastGenerator:
         pressure_analysis = meteorological_state.get("pressure_analysis", {})
         pressure_trend = pressure_analysis.get("current_trend", 0)
         if isinstance(pressure_trend, (int, float)):
-            if pressure_trend < -0.3:
+            if pressure_trend < -1.0:  # hPa/3h
                 base_precip *= 1.3  # Intensifying
-            elif pressure_trend > 0.2:
+            elif pressure_trend > 0.6:  # hPa/3h
                 base_precip *= 0.7  # Diminishing
 
         # Storm probability boost
@@ -645,7 +658,13 @@ class HourlyForecastGenerator:
         wind_kmh = convert_to_kmh(current_wind) or convert_to_kmh(
             ForecastConstants.DEFAULT_WIND_SPEED
         )
-        hour = (dt_util.now() + timedelta(hours=hour_idx + 1)).hour
+        # Same slot convention as the temperature forecast, and the diurnal
+        # offset is applied relative to the current hour's offset (the
+        # forecast is anchored on the current wind reading).
+        forecast_hour = (
+            dt_util.now().replace(minute=0, second=0, microsecond=0)
+            + timedelta(hours=hour_idx)
+        ).hour
         diurnal_patterns = hourly_patterns.get("diurnal_patterns", {}).get("wind", {})
 
         default_wind_patterns = {
@@ -659,19 +678,10 @@ class HourlyForecastGenerator:
         }
 
         diurnal_patterns = {**default_wind_patterns, **diurnal_patterns}
-
-        if 5 <= hour < 7:
-            diurnal_factor = diurnal_patterns["dawn"]
-        elif 7 <= hour < 12:
-            diurnal_factor = diurnal_patterns["morning"]
-        elif 12 <= hour < 15:
-            diurnal_factor = diurnal_patterns["noon"]
-        elif 15 <= hour < 19:
-            diurnal_factor = diurnal_patterns["afternoon"]
-        elif 19 <= hour < 22:
-            diurnal_factor = diurnal_patterns["evening"]
-        else:
-            diurnal_factor = diurnal_patterns["night"]
+        diurnal_factor = (
+            diurnal_patterns[self._diurnal_period(forecast_hour)]
+            - diurnal_patterns[self._diurnal_period(dt_util.now().hour)]
+        )
 
         wind_kmh += diurnal_factor
 
@@ -713,8 +723,15 @@ class HourlyForecastGenerator:
         if current_humidity is None:
             current_humidity = ForecastConstants.DEFAULT_HUMIDITY
 
-        # Get diurnal pattern
-        hour = (dt_util.now() + timedelta(hours=hour_idx + 1)).hour
+        # Get diurnal pattern. Use the same slot convention as the
+        # temperature forecast (current hour floored + hour_idx — the old
+        # code was offset by one hour from the temperature slots), and
+        # apply the offset RELATIVE to the current hour's own offset since
+        # the forecast is anchored on the current humidity.
+        forecast_hour = (
+            dt_util.now().replace(minute=0, second=0, microsecond=0)
+            + timedelta(hours=hour_idx)
+        ).hour
         diurnal_patterns = hourly_patterns.get("diurnal_patterns", {}).get(
             KEY_HUMIDITY, {}
         )
@@ -730,19 +747,10 @@ class HourlyForecastGenerator:
         }
 
         patterns = {**default_humidity_patterns, **diurnal_patterns}
-
-        if 5 <= hour < 7:
-            diurnal_change = patterns["dawn"]
-        elif 7 <= hour < 12:
-            diurnal_change = patterns["morning"]
-        elif 12 <= hour < 15:
-            diurnal_change = patterns["noon"]
-        elif 15 <= hour < 19:
-            diurnal_change = patterns["afternoon"]
-        elif 19 <= hour < 22:
-            diurnal_change = patterns["evening"]
-        else:
-            diurnal_change = patterns["night"]
+        diurnal_change = (
+            patterns[self._diurnal_period(forecast_hour)]
+            - patterns[self._diurnal_period(dt_util.now().hour)]
+        )
 
         # Target humidity by condition
         condition_humidity = {

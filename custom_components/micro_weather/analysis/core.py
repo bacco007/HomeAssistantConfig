@@ -152,6 +152,10 @@ class WeatherConditionAnalyzer:
         # Extract lightning sensor data (None means sensor not configured)
         lightning_count_raw = sensor_data.get(KEY_LIGHTNING_COUNT)
         lightning_distance_raw = sensor_data.get(KEY_LIGHTNING_DISTANCE)
+        has_solar_measurements = any(
+            sensor_data.get(key) is not None
+            for key in (KEY_SOLAR_RADIATION, KEY_SOLAR_LUX_INTERNAL, KEY_UV_INDEX)
+        )
 
         return {
             "rain_rate": rain_rate,
@@ -161,6 +165,7 @@ class WeatherConditionAnalyzer:
             "solar_radiation": float(sensor_data.get(KEY_SOLAR_RADIATION) or 0.0),
             "solar_lux": float(sensor_data.get(KEY_SOLAR_LUX_INTERNAL) or 0.0),
             "uv_index": float(sensor_data.get(KEY_UV_INDEX) or 0.0),
+            "has_solar_measurements": has_solar_measurements,
             "outdoor_temp": float(sensor_data.get(KEY_OUTDOOR_TEMP) or 70.0),
             "humidity": float(sensor_data.get(KEY_HUMIDITY) or 50.0),
             "pressure": float(sensor_data.get(KEY_PRESSURE) or 29.92),
@@ -227,11 +232,15 @@ class WeatherConditionAnalyzer:
                 (sensors["solar_lux"] > 10 and sensors["solar_lux"] < 100)
                 or (sensors["solar_radiation"] > 1 and sensors["solar_radiation"] < 50)
             ),
+            # The reading is corrected to sea level, so it must be compared
+            # against sea-level thresholds. Correcting the reading AND
+            # lowering the thresholds (the old behavior) double-counted the
+            # altitude and skewed classification at higher stations.
             "adjusted_pressure": self.atmospheric.adjust_pressure_for_altitude(
                 sensors["pressure"], altitude or 0.0, "relative"
             ),
             "pressure_thresholds": self.atmospheric.get_altitude_adjusted_pressure_thresholds(
-                altitude or 0.0
+                0.0
             ),
             "gust_factor": sensors["wind_gust"] / max(sensors["wind_speed"], 1),
         }
@@ -275,7 +284,7 @@ class WeatherConditionAnalyzer:
         # Check if the last strike is recent enough
         if lightning_time is not None:
             try:
-                from datetime import datetime, timedelta
+                from datetime import datetime
 
                 # Handle both datetime objects (after Ecowitt/ha-ecowitt-iot#59)
                 # and raw date strings (e.g. "04/05/2026 22:14:55")
@@ -561,11 +570,16 @@ class WeatherConditionAnalyzer:
                 # Negative trend = temperature falling (favorable for fog)
                 is_cooling = trend_value < -0.5  # Dropping more than 0.5°F/hour
 
-        # Check if it was a clear day - fog doesn't appear immediately after sunset
-        # If conditions were sunny/clear during the day, be more skeptical of fog
-        # in the early evening hours
+        # Check if it was a clear day - fog doesn't appear immediately after
+        # sunset, so be skeptical of fog in the EARLY EVENING hours only.
+        # This gate must not apply through the night: clear day + clear
+        # night + radiative cooling is the classic radiation-fog setup, and
+        # pre-dawn is exactly when that fog peaks.
+        from datetime import datetime
+
         was_clear_day = self._was_recent_day_clear()
-        if was_clear_day and not params["is_daytime"]:
+        is_early_evening = 18 <= datetime.now().hour < 24
+        if was_clear_day and not params["is_daytime"] and is_early_evening:
             _LOGGER.debug(
                 "Skipping fog check: day was clear, fog unlikely in early evening"
             )
@@ -672,11 +686,13 @@ class WeatherConditionAnalyzer:
         pressure = params["adjusted_pressure"]
         gust_factor = params["gust_factor"]
 
-        # Severe turbulence or very low pressure with strong winds
-        is_severe = (
-            gust_factor > WindThresholds.GUST_FACTOR_SEVERE
-            and sensors["wind_gust"] > WindThresholds.GUST_EXTREME
-        ) or sensors["wind_gust"] > WindThresholds.GUST_EXTREME
+        # Dry "lightning" (no precipitation) requires extreme gusts
+        # outright. A high gust factor with only moderate gusts is a normal
+        # breezy day with lulls, not a thunderstorm — see the false-positive
+        # regression test test_detect_gusty_wind_no_lightning. (Unlike
+        # _is_thunderstorm, which can use softer turbulence thresholds
+        # because active precipitation corroborates the storm.)
+        is_severe = sensors["wind_gust"] > WindThresholds.GUST_EXTREME
 
         wind_strong = (
             WindThresholds.FRESH_BREEZE
@@ -713,6 +729,9 @@ class WeatherConditionAnalyzer:
         Returns:
             Daytime weather condition string (sunny, partlycloudy, cloudy, windy)
         """
+        if not sensors["has_solar_measurements"]:
+            return self._atmospheric_fallback_condition(sensors, params)
+
         # Get solar elevation with fallback
         solar_elevation = sensors["solar_elevation"]
         has_solar_data = (

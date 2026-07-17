@@ -203,8 +203,8 @@ class EvolutionModeler:
         - Stable: current -> current -> gradual transition
 
         Args:
-            current_trend: Current pressure trend (inHg/3h)
-            long_term_trend: 24h pressure trend
+            current_trend: Current pressure trend (hPa/3h)
+            long_term_trend: 24h pressure trend (hPa/24h)
             storm_probability: Storm probability percentage
             stability: Atmospheric stability (0-1)
 
@@ -222,9 +222,9 @@ class EvolutionModeler:
                 "stabilizing",
             ]
 
-        # Trend-based evolution
-        if current_trend < -0.5:  # Rapid fall
-            if long_term_trend < -0.3:  # Sustained fall
+        # Trend-based evolution (hPa/3h short-term, hPa/24h long-term)
+        if current_trend < -1.5:  # Rapid fall
+            if long_term_trend < -3.0:  # Sustained fall
                 return [
                     "frontal_approach",
                     "frontal_passage",
@@ -238,19 +238,19 @@ class EvolutionModeler:
                     "frontal_passage",
                     "post_frontal",
                 ]
-        elif current_trend < -0.2:  # Moderate fall
+        elif current_trend < -0.6:  # Moderate fall
             return [
                 "weakening_high",
                 "transitional",
                 "frontal_approach",
                 "frontal_passage",
             ]
-        elif current_trend > 0.5:  # Rapid rise
-            if long_term_trend > 0.3:  # Sustained rise
+        elif current_trend > 1.5:  # Rapid rise
+            if long_term_trend > 3.0:  # Sustained rise
                 return ["post_frontal", "clearing", "stabilizing", "stable_high"]
             else:
                 return ["post_frontal", "clearing", "transitional", "new_pattern"]
-        elif current_trend > 0.2:  # Moderate rise
+        elif current_trend > 0.6:  # Moderate rise
             return ["clearing", "stabilizing", "stable_high", "weakening_high"]
         else:  # Stable pressure
             if stability > 0.7:
@@ -317,11 +317,11 @@ class EvolutionModeler:
         # Base persistence from stability
         persistence = stability * 0.8
 
-        # Strong trends reduce persistence
+        # Strong trends reduce persistence (hPa/3h)
         trend_magnitude = abs(current_trend)
-        if trend_magnitude > 0.5:
+        if trend_magnitude > 1.5:
             persistence *= 0.5
-        elif trend_magnitude > 0.2:
+        elif trend_magnitude > 0.6:
             persistence *= 0.7
 
         # Storm probability indicates rapid change
@@ -365,11 +365,11 @@ class EvolutionModeler:
         if not isinstance(current_trend, (int, float)):
             current_trend = 0.0
 
-        # Evolution rate based on trend magnitude
+        # Evolution rate based on trend magnitude (hPa/3h)
         trend_magnitude = abs(current_trend)
-        if trend_magnitude > 0.5:
+        if trend_magnitude > 1.5:
             base_change_rate = "rapid"
-        elif trend_magnitude > 0.2:
+        elif trend_magnitude > 0.6:
             base_change_rate = "moderate"
         else:
             base_change_rate = "gradual"
@@ -464,8 +464,8 @@ class EvolutionModeler:
         hours (5 days) with no gaps between phases.
 
         Args:
-            trend: Current pressure trend in inHg/3h (negative = falling)
-            acceleration: Trend acceleration in inHg/3h^2 (from
+            trend: Current pressure trend in hPa/3h (negative = falling)
+            acceleration: Trend acceleration in hPa/h (from
                           TrendsAnalyzer.compute_pressure_acceleration)
             storm_prob: Current storm probability 0-100
             current_condition: Current HA condition for the stable phase
@@ -508,14 +508,17 @@ class EvolutionModeler:
 
         abs_trend = max(abs(trend), 0.1)
 
-        # Hours until storm probability threshold is reached
+        # Hours until storm probability threshold is reached. Heuristic:
+        # storm probability grows ~5 points per hour per hPa/3h of fall,
+        # so a 2 hPa/3h fall starting from 0% reaches the severe threshold
+        # (70) in ~7 hours.
         hours_to_frontal = max(
             0.0,
             (ForecastConstants.STORM_THRESHOLD_SEVERE - storm_prob) / (abs_trend * 5.0),
         )
-        # Fast front (high acceleration magnitude) = short peak
-        peak_duration = 6.0 if abs(acceleration) > 0.1 else 12.0
-        rebound_hours = max(6.0, peak_duration * (1.0 + abs(acceleration)))
+        # Fast front (high acceleration magnitude, hPa/h) = short peak
+        peak_duration = 6.0 if abs(acceleration) > 0.2 else 12.0
+        rebound_hours = max(6.0, peak_duration * (1.0 + min(1.0, abs(acceleration))))
 
         # Frontal condition severity based on current storm_prob
         if storm_prob > ForecastConstants.STORM_THRESHOLD_SEVERE:
@@ -594,7 +597,7 @@ class EvolutionModeler:
 
         # Hours until conditions clear (storm_prob -> 0 at current rate)
         hours_to_clear = max(0.0, storm_prob / (abs_trend * 5.0))
-        rebound_hours = max(12.0, 12.0 * (1.0 + abs(acceleration)))
+        rebound_hours = max(12.0, 12.0 * (1.0 + min(1.0, abs(acceleration))))
 
         phases: List[LifecyclePhase] = []
         t = 0.0

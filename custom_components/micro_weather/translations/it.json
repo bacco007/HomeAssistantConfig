@@ -187,6 +187,7 @@
         "menu_options": {
           "atmospheric": "Configura Sensori Atmosferici",
           "device_config": "Configurazione Dispositivo",
+          "lightning": "Configura Sensori Fulmini",
           "rain": "Configura Sensori della Pioggia",
           "solar": "Configura Sensori Solari",
           "wind": "Configura Sensori del Vento"
@@ -220,6 +221,19 @@
           "zenith_max_radiation": "Radiazione solare massima allo zenit (sole direttamente sopra). Utilizzato per normalizzare le letture di radiazione solare per calcoli precisi di copertura nuvolosa. Valori tipici: 400-1200 W/m² a seconda della posizione e delle condizioni atmosferiche."
         },
         "title": "Sensori Solari e del Sole"
+      },
+      "lightning": {
+        "data": {
+          "lightning_count_sensor": "Sensore Conteggio Fulmini",
+          "lightning_distance_sensor": "Sensore Distanza Fulmini",
+          "lightning_time_sensor": "Sensore Timestamp Fulmini"
+        },
+        "data_description": {
+          "lightning_count_sensor": "Sensore opzionale per rilevamento fulmini in tempo reale usando un rilevatore hardware (ad esempio, Ecowitt WH57). Fornisce il numero di fulmini rilevati. Quando configurato, sostituisce il rilevamento euristico dei fulmini basato su modelli di pressione e vento.",
+          "lightning_distance_sensor": "Sensore opzionale che fornisce la distanza dall'ultimo fulmine rilevato. Utilizzato insieme al sensore conteggio fulmini per determinare se i fulmini sono vicini. Supporta unità km e mi.",
+          "lightning_time_sensor": "Sensore opzionale che fornisce il timestamp dell'ultimo fulmine rilevato. Utilizzato per garantire che solo i fulmini recenti (entro gli ultimi 30 minuti) attivino condizioni di fulmini, evitando che rilevamenti obsoleti persistano."
+        },
+        "title": "Sensori Fulmini"
       },
       "wind": {
         "data": {

@@ -29,7 +29,6 @@ from ..meteorological_constants import (
     CloudCoverThresholds,
     DefaultSensorValues,
     MoistureAnalysisConstants,
-    PressureTrendConstants,
     StabilityConstants,
     TemperatureThresholds,
     WindShearConstants,
@@ -549,11 +548,40 @@ class MeteorologicalAnalyzer:
             - cloud_type: Descriptive cloud type (clear, few_clouds, scattered, overcast)
             - solar_efficiency: Solar energy transmission efficiency (0-100)
         """
-        solar_elevation = sensor_data.get("solar_elevation", 45.0)
+        solar_elevation = sensor_data.get("solar_elevation")
+        if not isinstance(solar_elevation, (int, float)):
+            # No sun sensor: estimate elevation from radiation intensity
+            # (same heuristic as the detection path) instead of assuming a
+            # fixed 45°, which overestimates the clear-sky maximum in the
+            # morning/evening and inflates the cloud estimate.
+            if solar_radiation > 600:
+                solar_elevation = 60.0
+            elif solar_radiation > 300:
+                solar_elevation = 45.0
+            elif solar_radiation > 100:
+                solar_elevation = 25.0
+            else:
+                solar_elevation = 15.0
+
+        # Without any solar signal (nighttime, or a forecast path whose
+        # sensor snapshot lacks solar keys) the estimator would read the
+        # zeros as full overcast. Reuse the last cloud cover produced by
+        # the detection path instead of inventing ~100% (issue #51).
+        if solar_radiation <= 0 and solar_lux <= 0 and uv_index <= 0:
+            last_known = self._get_last_known_cloud_cover()
+            if last_known is not None:
+                return self._build_cloud_analysis(last_known)
 
         try:
+            # update_history=False: forecast analysis must not write to the
+            # shared cloud-cover history — that is the detection path's job.
             cloud_cover = self.solar_analyzer.analyze_cloud_cover(
-                solar_radiation, solar_lux, uv_index, solar_elevation, pressure_analysis
+                solar_radiation,
+                solar_lux,
+                uv_index,
+                solar_elevation,
+                pressure_analysis,
+                update_history=False,
             )
             if not isinstance(cloud_cover, (int, float)):
                 cloud_cover = 50.0
@@ -568,27 +596,29 @@ class MeteorologicalAnalyzer:
             else:
                 cloud_cover = 90.0
 
-        # Pressure trend influence
-        pressure_trend = pressure_analysis.get("current_trend", 0)
-        if not isinstance(pressure_trend, (int, float)):
-            pressure_trend = 0.0
-        if pressure_trend < PressureTrendConstants.DIRECTION_FALLING_MODERATE:
-            cloud_cover = min(
-                PressureTrendConstants.MAX_CLOUD_COVER,
-                cloud_cover + PressureTrendConstants.RAPID_FALL_CLOUD_INCREASE,
-            )
-        elif pressure_trend < PressureTrendConstants.DIRECTION_STABLE:
-            cloud_cover = min(
-                PressureTrendConstants.MAX_CLOUD_COVER,
-                cloud_cover + PressureTrendConstants.SLOW_FALL_CLOUD_INCREASE,
-            )
-        elif pressure_trend > PressureTrendConstants.DIRECTION_RISING_MODERATE:
-            cloud_cover = max(
-                PressureTrendConstants.MIN_CLOUD_COVER,
-                cloud_cover - PressureTrendConstants.RISING_CLOUD_DECREASE,
-            )
+        # Note: pressure trend influence is applied inside
+        # analyze_cloud_cover() (pressure_analysis is passed through), so no
+        # second adjustment is made here — doing both double-counted the
+        # pressure trend, and with conflicting signs.
 
-        # Cloud type classification
+        return self._build_cloud_analysis(cloud_cover)
+
+    def _get_last_known_cloud_cover(self) -> Optional[float]:
+        """Return the most recent cloud cover stored by the detection path."""
+        try:
+            history = getattr(self.solar_analyzer, "_sensor_history", None)
+            if not history:
+                return None
+            cloud_history = history.get("cloud_cover")
+            if not cloud_history:
+                return None
+            value = cloud_history[-1].get("value")
+            return value if isinstance(value, (int, float)) else None
+        except (AttributeError, TypeError, IndexError, KeyError):
+            return None
+
+    def _build_cloud_analysis(self, cloud_cover: float) -> Dict[str, Any]:
+        """Classify cloud cover into the cloud_analysis result structure."""
         if cloud_cover < CloudCoverThresholds.FEW:
             cloud_type = "clear"
         elif cloud_cover < CloudCoverThresholds.SCATTERED:
