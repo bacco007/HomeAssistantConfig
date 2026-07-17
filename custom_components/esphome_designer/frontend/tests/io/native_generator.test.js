@@ -135,15 +135,44 @@ describe('Native Generator', () => {
             expect(output).not.toContain('const auto COLOR_WHITE = Color(0, 0, 0); // Inverted for e-ink');
         });
 
-        it('should default to inverted colors for e-paper when layout invertedColors is null', () => {
+    it('should default to inverted colors for e-paper when layout invertedColors is null', () => {
             const epaperProfile = { id: 'epaper', features: { epaper: true, inverted_colors: true } };
             const layoutOverride = { ...mockLayout, invertedColors: null };
             const lines = generateDisplayLambda(mockPages, layoutOverride, epaperProfile, mockContext, mockAdapter);
             const output = lines.join('\n');
 
             expect(output).toContain('const auto COLOR_WHITE = Color(0, 0, 0); // Inverted for e-ink');
-            expect(output).toContain('const auto COLOR_BLACK = Color(255, 255, 255); // Inverted for e-ink');
-        });
+        expect(output).toContain('const auto COLOR_BLACK = Color(255, 255, 255); // Inverted for e-ink');
+    });
+
+    it('uses the E1001 profile hardware palette regardless of the layout override', () => {
+        const e1001Profile = {
+            id: 'reterminal_e1001',
+            displayType: 'binary',
+            features: { epaper: true, inverted_colors: true }
+        };
+        const defaultOutput = generateDisplayLambda(mockPages, { ...mockLayout, invertedColors: null }, e1001Profile, mockContext, mockAdapter).join('\n');
+        const overriddenOutput = generateDisplayLambda(mockPages, { ...mockLayout, invertedColors: false }, e1001Profile, mockContext, mockAdapter).join('\n');
+
+        expect(defaultOutput).toContain('const auto COLOR_WHITE = Color(0, 0, 0); // Inverted for e-ink');
+        expect(overriddenOutput).toContain('const auto COLOR_WHITE = Color(0, 0, 0); // Inverted for e-ink');
+    });
+
+    it('keeps the E1001 hardware palette fixed while dark mode selects semantic colors', () => {
+        const e1001Profile = {
+            id: 'reterminal_e1001',
+            displayType: 'binary',
+            features: { epaper: true, inverted_colors: true }
+        };
+        const lightOutput = generateDisplayLambda(mockPages, { ...mockLayout, darkMode: false, invertedColors: null }, e1001Profile, mockContext, mockAdapter).join('\n');
+        const darkOutput = generateDisplayLambda(mockPages, { ...mockLayout, darkMode: true, invertedColors: null }, e1001Profile, mockContext, mockAdapter).join('\n');
+
+        expect(lightOutput).toContain('const auto COLOR_WHITE = Color(0, 0, 0); // Inverted for e-ink');
+        expect(lightOutput).toContain('it.fill(COLOR_WHITE);');
+        expect(lightOutput).toContain('color_on = COLOR_BLACK;');
+        expect(darkOutput).toContain('it.fill(COLOR_BLACK);');
+        expect(darkOutput).toContain('color_on = COLOR_WHITE;');
+    });
 
         it('should generate color palette for PhotoPainter', () => {
             const painterProfile = { id: 'esp32_s3_photopainter' };
