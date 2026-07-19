@@ -7,6 +7,7 @@ import copy
 from datetime import datetime, timezone
 from datetime import timedelta
 import logging
+import random
 from time import monotonic
 from typing import Any, Awaitable
 
@@ -68,6 +69,7 @@ class FootballHubCoordinator(DataUpdateCoordinator):
         self.cup_engine = FootballHubEngine()
         self._cache: dict[str, Any] = {}
         self._updated_at: dict[str, float] = {}
+        self._random_ttls: dict[str, float] = {}
         self._live_rate_limited_until = 0.0
         self.supported_teams = dict(entry.options.get("supported_teams", {}))
         self.supported_team = self.supported_teams.get(
@@ -75,6 +77,7 @@ class FootballHubCoordinator(DataUpdateCoordinator):
         )
         self.my_clubs = dict(entry.options.get("my_clubs", {}))
         self.my_club = self.my_clubs.get(self.competition_key, "")
+        self.selected_live_fixture = ""
 
         super().__init__(
             hass,
@@ -83,16 +86,22 @@ class FootballHubCoordinator(DataUpdateCoordinator):
             update_interval=timedelta(seconds=30),
         )
 
-    def _is_stale(self, key: str, ttl: int) -> bool:
+    def _is_stale(self, key: str, ttl: int, *, randomise: bool = True) -> bool:
         """Return whether a cached dataset needs refreshing."""
         if key not in self._cache or key not in self._updated_at:
             return True
-        return monotonic() - self._updated_at[key] >= ttl
+        effective_ttl = ttl
+        if randomise:
+            effective_ttl = self._random_ttls.setdefault(
+                key, random.uniform(ttl, ttl * 2)
+            )
+        return monotonic() - self._updated_at[key] >= effective_ttl
 
     def _store(self, key: str, value: Any) -> None:
         """Store a refreshed dataset."""
         self._cache[key] = value
         self._updated_at[key] = monotonic()
+        self._random_ttls.pop(key, None)
 
     def _live_feed_refresh_due(self) -> bool:
         """Use hourly discovery, five-minute pre-match and one-minute live polling."""
@@ -193,6 +202,7 @@ class FootballHubCoordinator(DataUpdateCoordinator):
         self.my_club = self.my_clubs.get(competition_key, "")
         self._cache.clear()
         self._updated_at.clear()
+        self._random_ttls.clear()
         self._live_rate_limited_until = 0.0
         empty_data = {
             "live": [],
@@ -256,6 +266,11 @@ class FootballHubCoordinator(DataUpdateCoordinator):
         self.hass.config_entries.async_update_entry(self.entry, options=options)
         await self.async_request_refresh()
 
+    async def async_set_selected_live_match(self, fixture_id: str) -> None:
+        """Load detailed data for the live match selected in the panel."""
+        self.selected_live_fixture = str(fixture_id or "").strip()
+        await self.async_request_refresh()
+
     def _club_context(self) -> tuple[int | None, int | None, int | None]:
         """Return selected team id, next opponent id and fixture id."""
         team_id = opponent_id = fixture_id = None
@@ -283,13 +298,9 @@ class FootballHubCoordinator(DataUpdateCoordinator):
             requests.append(("fixtures", self.api.get_fixtures(league_id, self.season)))
         if self._is_stale("standings", STANDINGS_TTL):
             requests.append(("standings", self.api.get_standings(league_id, self.season)))
-        if self._is_stale("top_scorers", PLAYERS_TTL):
+        if self._is_stale("player_leaderboards", PLAYERS_TTL):
             requests.append(
-                ("top_scorers", self.api.get_top_scorers(league_id, self.season))
-            )
-        if self._is_stale("top_assists", PLAYERS_TTL):
-            requests.append(
-                ("top_assists", self.api.get_top_assists(league_id, self.season))
+                ("player_leaderboards", self.api.get_player_leaderboards(league_id, self.season))
             )
 
         # Portal feeds are cached independently and never join the one-minute
@@ -334,8 +345,6 @@ class FootballHubCoordinator(DataUpdateCoordinator):
                 ("club_transfers", CLUB_TRANSFERS_TTL, lambda: self.api.get_transfers(team_id)),
                 ("club_history", CLUB_HISTORY_TTL, lambda: self.api.get_team_history(team_id)),
                 ("club_players", CLUB_STATS_TTL, lambda: self.api.get_team_players(team_id, league_id, self.season)),
-                ("club_yellow_cards", PLAYERS_TTL, lambda: self.api.get_top_yellow_cards(league_id, self.season)),
-                ("club_red_cards", PLAYERS_TTL, lambda: self.api.get_top_red_cards(league_id, self.season)),
             ]
             if opponent_id:
                 club_requests.append(("club_head_to_head", CLUB_STATS_TTL, lambda: self.api.get_head_to_head(team_id, opponent_id)))
@@ -399,7 +408,11 @@ class FootballHubCoordinator(DataUpdateCoordinator):
                 if self.supported_team.casefold() in {home_name, away_name}:
                     supported_fixture_id = fixture_id
 
-        detail_fixture_ids = [supported_fixture_id or live_fixture_ids[0]] if live_fixture_ids else []
+        selected_fixture_id = next(
+            (fixture_id for fixture_id in live_fixture_ids if str(fixture_id) == self.selected_live_fixture),
+            None,
+        )
+        detail_fixture_ids = [selected_fixture_id or supported_fixture_id or live_fixture_ids[0]] if live_fixture_ids else []
 
         # World Cup-style per-fixture live caches. This allows the frontend to
         # select any live match while the remaining games stay score-only.
@@ -409,12 +422,15 @@ class FootballHubCoordinator(DataUpdateCoordinator):
                 event_key = f"live_events:{fixture_id}"
                 stats_key = f"live_statistics:{fixture_id}"
                 lineup_key = f"live_lineups:{fixture_id}"
-                if self._is_stale(event_key, LIVE_EVENTS_TTL):
+                info_key = f"live_info:{fixture_id}"
+                if self._is_stale(event_key, LIVE_EVENTS_TTL, randomise=False):
                     detail_requests.append((event_key, fixture_id, "events", self.api.get_fixture_events(fixture_id)))
-                if self._is_stale(stats_key, LIVE_STATISTICS_TTL):
+                if self._is_stale(stats_key, LIVE_STATISTICS_TTL, randomise=False):
                     detail_requests.append((stats_key, fixture_id, "statistics", self.api.get_fixture_statistics(fixture_id)))
-                if self._is_stale(lineup_key, LINEUPS_TTL):
+                if self._is_stale(lineup_key, LINEUPS_TTL, randomise=False):
                     detail_requests.append((lineup_key, fixture_id, "lineups", self.api.get_fixture_lineups(fixture_id)))
+                if self._is_stale(info_key, LIVE_EVENTS_TTL, randomise=False):
+                    detail_requests.append((info_key, fixture_id, "details", self.api.get_fixture_details(fixture_id)))
 
             if detail_requests:
                 detail_results = await asyncio.gather(
@@ -439,6 +455,7 @@ class FootballHubCoordinator(DataUpdateCoordinator):
         live_details: dict[str, dict[str, Any]] = {}
         for fixture_id in detail_fixture_ids:
             live_details[str(fixture_id)] = {
+                **(self._cache.get(f"live_info:{fixture_id}", {}) or {}),
                 "events": self._cache.get(f"live_events:{fixture_id}", []),
                 "statistics": self._cache.get(f"live_statistics:{fixture_id}", []),
                 "lineups": self._cache.get(f"live_lineups:{fixture_id}", []),
@@ -480,8 +497,13 @@ class FootballHubCoordinator(DataUpdateCoordinator):
             "live": raw_live,
             "fixtures": self._cache.get("fixtures", []),
             "standings": self._cache.get("standings", []),
-            "top_scorers": self._cache.get("top_scorers", []),
-            "top_assists": self._cache.get("top_assists", []),
+            "top_scorers": (self._cache.get("player_leaderboards", {}) or {}).get("top_scorers", []),
+            "top_assists": (self._cache.get("player_leaderboards", {}) or {}).get("top_assists", []),
+            "top_yellow_cards": (self._cache.get("player_leaderboards", {}) or {}).get("top_yellow_cards", []),
+            "top_red_cards": (self._cache.get("player_leaderboards", {}) or {}).get("top_red_cards", []),
+            "top_ratings": (self._cache.get("player_leaderboards", {}) or {}).get("top_ratings", []),
+            "top_appearances": (self._cache.get("player_leaderboards", {}) or {}).get("top_appearances", []),
+            "top_minutes": (self._cache.get("player_leaderboards", {}) or {}).get("top_minutes", []),
             "live_events": live_details.get(str(primary_fixture_id), {}).get("events", []),
             "live_statistics": live_details.get(str(primary_fixture_id), {}).get("statistics", []),
             "live_lineups": live_details.get(str(primary_fixture_id), {}).get("lineups", []),
@@ -497,8 +519,8 @@ class FootballHubCoordinator(DataUpdateCoordinator):
             "club_transfers": self._cache.get("club_transfers", []),
             "club_history": self._cache.get("club_history", {}),
             "club_players": self._cache.get("club_players", []),
-            "club_yellow_cards": self._cache.get("club_yellow_cards", []),
-            "club_red_cards": self._cache.get("club_red_cards", []),
+            "club_yellow_cards": (self._cache.get("player_leaderboards", {}) or {}).get("top_yellow_cards", []),
+            "club_red_cards": (self._cache.get("player_leaderboards", {}) or {}).get("top_red_cards", []),
             "club_head_to_head": self._cache.get("club_head_to_head", []),
             "club_prediction": self._cache.get("club_prediction", []),
             "club_player_trophies": self._cache.get("club_player_trophies", []),

@@ -31,7 +31,13 @@ FM_LEAGUES = {
     42: 109,   # League Two
     43: 117,   # National League
     179: 64,   # Scottish Premiership
-    110: 9080, # Cymru Premier
+    110: 116,  # Cymru Premier
+    3010: 130,   # MLS
+    3011: 8972,  # USL Championship
+    3012: 9296,  # USL League One
+    3013: 10282, # MLS Next Pro
+    3014: 10084, # NISA
+    3015: 9134,  # NWSL
     408: 9084, # Northern Ireland Premiership
     357: 126,  # Republic of Ireland Premier Division
     140: 87,   # LaLiga
@@ -50,7 +56,10 @@ FM_LEAGUES = {
     1103: 247,   # Community Shield
     1201: 65,    # Scottish Cup
     1202: 66,    # Scottish League Cup
-    1301: 118,   # Welsh Cup
+    1301: 9166,  # Welsh Cup
+    3101: 9441,  # US Open Cup
+    3102: 10654, # USL Cup
+    3103: 10167, # NWSL Challenge Cup
     1401: 113,   # Irish Cup
     1501: 128,   # FAI Cup
     1601: 138,   # Copa del Rey
@@ -75,6 +84,8 @@ FM_LEAGUES = {
 FM_COUNTRY_CODES = {
     39: "ENG", 40: "ENG", 41: "ENG", 42: "ENG", 43: "ENG",
     179: "SCO", 110: "WAL", 408: "NIR", 357: "IRL",
+    3010: "USA", 3011: "USA", 3012: "USA", 3013: "USA",
+    3014: "USA", 3015: "USA",
     140: "ESP", 78: "GER", 135: "ITA", 61: "FRA", 88: "NED",
     94: "POR", 144: "BEL", 203: "TUR",
 }
@@ -576,10 +587,8 @@ class FMProvider:
         return is_selected_country or is_uefa_club_competition or is_international
 
     async def get_live_feed(self, league_id, season):
-        """Return today's relevant schedule so polling can follow kickoff times."""
-        selected_country = FM_COUNTRY_CODES.get(int(league_id)) if str(league_id).isdigit() else None
-        matches = await self._matches_for_date(datetime.now(timezone.utc))
-        return [item for item in matches if self._live_scope_match(item, selected_country)]
+        """Return today's worldwide schedule so every live match is available."""
+        return await self._matches_for_date(datetime.now(timezone.utc))
 
     async def get_live(self, league_id, season):
         feed = await self.get_live_feed(league_id, season)
@@ -914,9 +923,24 @@ class FMProvider:
     async def get_fixture_events(self, fixture_id):
         data = await self._match_details(fixture_id)
         output = []
-        for event in (data.get("header") or {}).get("events") or []:
+        content = data.get("content") or {}
+        match_facts = content.get("matchFacts") or {}
+        facts_events = match_facts.get("events") or {}
+        events = facts_events.get("events") if isinstance(facts_events, dict) else facts_events
+        if not isinstance(events, list):
+            events = []
+        general = data.get("general") or {}
+        home_team = general.get("homeTeam") or {}
+        away_team = general.get("awayTeam") or {}
+        for event in events:
             player = event.get("player") or {}
-            team = event.get("team") or {}
+            assist = event.get("assist") or event.get("assistedBy") or {}
+            if isinstance(assist, str):
+                assist = {"name": assist}
+            team = event.get("team") or (
+                home_team if event.get("isHome") is True else
+                away_team if event.get("isHome") is False else {}
+            )
             output.append({
                 "time": {
                     "elapsed": event.get("time") or event.get("timeStr"),
@@ -930,10 +954,48 @@ class FMProvider:
                     "id": player.get("id"),
                     "name": player.get("name"),
                 },
+                "assist": {
+                    "id": assist.get("id"),
+                    "name": assist.get("name") or event.get("assistStr"),
+                },
                 "type": event.get("type") or "Event",
-                "detail": event.get("eventType") or event.get("description"),
+                "detail": event.get("eventType") or event.get("description") or event.get("halfStrShort"),
             })
         return output
+
+    async def get_fixture_details(self, fixture_id):
+        """Return venue, referee and live-clock data for a selected match."""
+        data = await self._match_details(fixture_id)
+        header = data.get("header") or {}
+        general = data.get("general") or {}
+        status = header.get("status") or {}
+        facts = ((data.get("content") or {}).get("matchFacts") or {})
+        info_box = facts.get("infoBox") or {}
+        referee = general.get("referee") or facts.get("referee") or info_box.get("Referee") or {}
+        venue = general.get("matchVenue") or general.get("venue") or facts.get("venue") or info_box.get("Stadium") or {}
+        weather = ((data.get("content") or {}).get("weather") or {})
+        if isinstance(referee, str):
+            referee = {"name": referee}
+        if isinstance(venue, str):
+            venue = {"name": venue}
+        live_time = status.get("liveTime") or {}
+        elapsed = live_time.get("short") if isinstance(live_time, dict) else live_time
+        if elapsed in (None, ""):
+            elapsed = status.get("elapsed") or status.get("minutes")
+        return {
+            "elapsed": elapsed,
+            "status_short": status.get("short") or status.get("status") or "LIVE",
+            "status": status.get("reason") or status.get("scoreStr") or "Live",
+            "referee": referee.get("name") or referee.get("text") or "Referee TBC",
+            "stadium": venue.get("name") or venue.get("stadium") or "Venue TBC",
+            "city": venue.get("city") or venue.get("location") or "",
+            "capacity": venue.get("capacity"),
+            "surface": venue.get("surface"),
+            "weather": weather.get("description") or weather.get("defaultTitle"),
+            "temperature": weather.get("temperature"),
+            "humidity": weather.get("relativeHumidity"),
+            "wind_speed": weather.get("windSpeed"),
+        }
 
     async def get_fixture_statistics(self, fixture_id):
         data = await self._match_details(fixture_id)
@@ -947,13 +1009,43 @@ class FMProvider:
         rows = all_period.get("stats") or []
 
         home_stats, away_stats = [], []
+
+        def stat_value(value):
+            """Extract the visible value from FM's nested statistic objects."""
+            if not isinstance(value, dict):
+                return value
+            for key in ("value", "displayValue", "text", "label", "statValue", "formatted"):
+                if value.get(key) is not None:
+                    return stat_value(value[key])
+            return None
+
+        def add_stat(title, values, group=None):
+            if not title or not isinstance(values, list) or len(values) < 2:
+                return
+            home_value = stat_value(values[0])
+            away_value = stat_value(values[1])
+            if home_value is None and away_value is None:
+                return
+            home_stats.append({"type": title, "value": home_value, "group": group})
+            away_stats.append({"type": title, "value": away_value, "group": group})
+
         for row in rows:
             title = row.get("title") or row.get("name")
             values = row.get("stats") or row.get("values") or []
-            if not title or not isinstance(values, list) or len(values) < 2:
-                continue
-            home_stats.append({"type": title, "value": values[0]})
-            away_stats.append({"type": title, "value": values[1]})
+            nested_rows = [
+                item for item in values
+                if isinstance(item, dict)
+                and isinstance(item.get("stats") or item.get("values"), list)
+            ] if isinstance(values, list) else []
+            if nested_rows:
+                for item in nested_rows:
+                    add_stat(
+                        item.get("title") or item.get("name") or title,
+                        item.get("stats") or item.get("values") or [],
+                        title,
+                    )
+            else:
+                add_stat(title, values)
 
         return [
             {
@@ -970,10 +1062,22 @@ class FMProvider:
         data = await self._match_details(fixture_id)
         lineup = ((data.get("content") or {}).get("lineup") or {})
         output = []
-        for raw in lineup.get("lineups") or []:
-            team_id = raw.get("teamId")
+        raw_lineups = lineup.get("lineups") or []
+        if not raw_lineups:
+            raw_lineups = [
+                team for team in (lineup.get("homeTeam"), lineup.get("awayTeam"))
+                if isinstance(team, dict)
+            ]
+        for raw in raw_lineups:
+            team_id = raw.get("teamId") or raw.get("id")
             starters, subs = [], []
-            for item in raw.get("players") or []:
+            raw_players = raw.get("players") or []
+            if not raw_players:
+                raw_players = [
+                    *[dict(item, isSubstitute=False) for item in (raw.get("starters") or [])],
+                    *[dict(item, isSubstitute=True) for item in (raw.get("substitutes") or [])],
+                ]
+            for item in raw_players:
                 player = item.get("player") if isinstance(item.get("player"), dict) else item
                 player_id = player.get("id") or item.get("playerId")
                 position = item.get("position") or player.get("position")
@@ -996,7 +1100,7 @@ class FMProvider:
             output.append({
                 "team": {
                     "id": team_id,
-                    "name": raw.get("teamName"),
+                    "name": raw.get("teamName") or raw.get("name"),
                     "logo": self._logo(team_id),
                 },
                 "formation": raw.get("formation"),
@@ -1013,13 +1117,25 @@ class FMProvider:
 
     async def _league_players(self, league_id, wanted: str):
         data = await self._league_data(league_id)
+        return self._league_players_from_data(data, wanted)
+
+    def _league_players_from_data(self, data: dict, wanted: str):
+        """Extract one leaderboard from an already cached league response."""
         output = []
         seen = set()
+        title_aliases = {
+            "yellow": ("yellow",),
+            "red": ("red",),
+            "rating": ("rating",),
+            "appearances": ("appearance", "matches played", "games played"),
+            "minutes": ("minutes",),
+        }
         for node in self._walk(data):
             if not isinstance(node, dict):
                 continue
             title = self._norm(node.get("title") or node.get("name") or "")
-            if wanted not in title:
+            aliases = title_aliases.get(wanted, (wanted,))
+            if not any(alias in title for alias in aliases):
                 continue
             players = node.get("players") or node.get("items") or []
             if not isinstance(players, list):
@@ -1028,10 +1144,17 @@ class FMProvider:
                 player = row.get("player") if isinstance(row.get("player"), dict) else row
                 player_id = player.get("id") or row.get("playerId")
                 name = player.get("name") or row.get("name")
-                if not name or str(player_id) in seen:
+                player_key = str(player_id or name).casefold()
+                if not name or player_key in seen:
                     continue
-                seen.add(str(player_id))
-                value = row.get("value") or row.get("statValue") or row.get(wanted) or 0
+                seen.add(player_key)
+                value = (
+                    row.get("value")
+                    if row.get("value") is not None
+                    else row.get("statValue")
+                    if row.get("statValue") is not None
+                    else row.get(wanted, 0)
+                )
                 team = row.get("team") or {}
                 output.append({
                     "player": {
@@ -1049,9 +1172,31 @@ class FMProvider:
                             "total": value if wanted == "goals" else 0,
                             "assists": value if wanted == "assists" else 0,
                         },
+                        "cards": {
+                            "yellow": value if wanted == "yellow" else 0,
+                            "red": value if wanted == "red" else 0,
+                        },
+                        "games": {
+                            "appearences": value if wanted == "appearances" else 0,
+                        },
+                        "minutes": value if wanted == "minutes" else 0,
+                        "rating": value if wanted == "rating" else 0,
                     }],
                 })
         return output[:25]
+
+    async def get_player_leaderboards(self, league_id, season):
+        """Return every supported leaderboard from one league-data request."""
+        data = await self._league_data(league_id)
+        return {
+            "top_scorers": self._league_players_from_data(data, "goals"),
+            "top_assists": self._league_players_from_data(data, "assists"),
+            "top_yellow_cards": self._league_players_from_data(data, "yellow"),
+            "top_red_cards": self._league_players_from_data(data, "red"),
+            "top_ratings": self._league_players_from_data(data, "rating"),
+            "top_appearances": self._league_players_from_data(data, "appearances"),
+            "top_minutes": self._league_players_from_data(data, "minutes"),
+        }
 
     async def get_team_statistics(self, team_id, league_id, season):
         fixtures = await self.get_fixtures(league_id, season)
@@ -1487,6 +1632,15 @@ class FMProvider:
 
     async def get_top_red_cards(self, league_id, season):
         return await self._league_players(league_id, "red")
+
+    async def get_top_ratings(self, league_id, season):
+        return await self._league_players(league_id, "rating")
+
+    async def get_top_appearances(self, league_id, season):
+        return await self._league_players(league_id, "appearances")
+
+    async def get_top_minutes(self, league_id, season):
+        return await self._league_players(league_id, "minutes")
 
     async def get_head_to_head(self, team_id, opponent_id):
         matches = []

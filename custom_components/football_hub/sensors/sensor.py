@@ -33,6 +33,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
             FootballHubStandingsSensor(coordinator, entry),
             FootballHubTopScorersSensor(coordinator, entry),
             FootballHubTopAssistsSensor(coordinator, entry),
+            FootballHubPlayerLeaderboardSensor(coordinator, entry, "top_yellow_cards", "Top Yellow Cards"),
+            FootballHubPlayerLeaderboardSensor(coordinator, entry, "top_red_cards", "Top Red Cards"),
+            FootballHubPlayerLeaderboardSensor(coordinator, entry, "top_ratings", "Top Ratings"),
+            FootballHubPlayerLeaderboardSensor(coordinator, entry, "top_appearances", "Top Appearances"),
+            FootballHubPlayerLeaderboardSensor(coordinator, entry, "top_minutes", "Top Minutes Played"),
             FootballHubCupCentreSensor(coordinator, entry),
             FootballHubPortalDataSensor(coordinator, entry, "news", "News"),
             FootballHubPortalDataSensor(coordinator, entry, "tv_guide", "TV Guide"),
@@ -241,7 +246,9 @@ class FootballHubLiveSensor(FootballHubBaseSensor):
     @property
     def extra_state_attributes(self):
         matches = self.engine.live.matches()
-        raw_matches = (self.coordinator.data or {}).get("live", []) or []
+        coordinator_data = self.coordinator.data or {}
+        raw_matches = coordinator_data.get("live", []) or []
+        live_details = coordinator_data.get("live_details", {}) or {}
         raw_by_id = {
             str(((item or {}).get("fixture") or {}).get("id")): item
             for item in raw_matches
@@ -249,7 +256,10 @@ class FootballHubLiveSensor(FootballHubBaseSensor):
         }
         enriched_matches = []
         for match in matches:
-            details = self.engine.live.details(match.get("fixture_id"))
+            fixture_id = str(match.get("fixture_id"))
+            details = live_details.get(fixture_id) or self.engine.live.details(
+                match.get("fixture_id")
+            )
             raw = raw_by_id.get(str(match.get("fixture_id")), {})
             league = (raw.get("league") or {}) if isinstance(raw, dict) else {}
             enriched_matches.append({
@@ -452,6 +462,28 @@ class FootballHubTopAssistsSensor(FootballHubBaseSensor):
         return {
             "total_top_assists": len(self.engine.top_assists),
             "top_assists": limit_items(self.engine.top_assists, ATTRIBUTE_LIMIT),
+        }
+
+
+class FootballHubPlayerLeaderboardSensor(FootballHubBaseSensor):
+    """Expose an optional league player leaderboard."""
+
+    _unrecorded_attributes = frozenset({"players"})
+
+    def __init__(self, coordinator, entry, key: str, name: str):
+        super().__init__(coordinator, entry, key, name)
+        self.key = key
+
+    @property
+    def native_value(self):
+        return len((self.coordinator.data or {}).get(self.key, []) or [])
+
+    @property
+    def extra_state_attributes(self):
+        players = (self.coordinator.data or {}).get(self.key, []) or []
+        return {
+            "players": limit_items(players, 10),
+            self.key: limit_items(players, 10),
         }
 
 
