@@ -99,6 +99,7 @@ const TRANSLATIONS = {
     en: {
         history: 'History',
         error_loading_data: 'Error loading historical data',
+        no_data: 'No data',
         min_label: 'Min',
         max_label: 'Max',
         hours_ago: 'h ago',
@@ -108,6 +109,7 @@ const TRANSLATIONS = {
     fr: {
         history: 'Historique',
         error_loading_data: 'Erreur lors du chargement des données historiques',
+        no_data: 'Aucune donnée',
         min_label: 'Min',
         max_label: 'Max',
         hours_ago: 'h',
@@ -506,23 +508,13 @@ class WaterfallHistoryCard extends i {
             if (processed[i] === null && fwd[i - 1] !== null)
                 processed[i] = fwd[i - 1];
         }
-        // Backward fill - Don't fill FROM unavailable/unknown states
-        // Also don't overwrite unavailable/unknown states with normal states
-        const bwd = fillValues ?? processed;
-        for (let i = processed.length - 2; i >= 0; i--) {
-            if (bwd[i] === null &&
-                bwd[i + 1] !== null &&
-                bwd[i + 1] !== UNKNOWN_STATE &&
-                bwd[i + 1] !== UNAVAILABLE_STATE) {
-                bwd[i] = bwd[i + 1];
-            }
-            if (processed[i] === null &&
-                bwd[i + 1] !== null &&
-                bwd[i + 1] !== UNKNOWN_STATE &&
-                bwd[i + 1] !== UNAVAILABLE_STATE) {
-                processed[i] = bwd[i + 1];
-            }
-        }
+        // NOTE: No backward fill (removed for issue #81). After forward fill, the only
+        // remaining null buckets are leading ones - time before the entity's first
+        // recorded state (entity did not exist yet, or the recorder purged the data).
+        // The HA history API already returns the state active at the window start
+        // (include_start_time_state), which initialState/bucket 0 handling covers, so
+        // backward fill could only ever fabricate values for periods with no data.
+        // Leading nulls now render as transparent "no data" segments.
         return processed.map((value, index) => ({
             time: new Date(startTime + index * timeStep),
             value
@@ -654,8 +646,10 @@ class WaterfallHistoryCard extends i {
         return DEFAULT_THRESHOLDS_BOOLEAN;
     }
     getColorForValue(value, entityConfig) {
+        // Null means no data exists for the bucket (e.g. before the entity was created).
+        // Render transparent so the container background shows through as an empty track.
         if (value === null || isNaN(value))
-            return '#666666';
+            return 'transparent';
         // Handle special states first
         if (value === UNKNOWN_STATE) {
             return entityConfig.color_unknown ?? this.config.color_unknown ?? DEFAULTS.color_unknown;
@@ -819,7 +813,7 @@ class WaterfallHistoryCard extends i {
       ${history.map((value, index) => {
             const isLast = index === history.length - 1;
             const color = this.getColorForValue(value, entityObj);
-            const title = `${this.getTimeLabel(index, intervals, hours, startOffset)} : ${value !== null ? this.displayState(value, entityObj) : this.t('error_loading_data')}`;
+            const title = `${this.getTimeLabel(index, intervals, hours, startOffset)} : ${value !== null ? this.displayState(value, entityObj) : this.t('no_data')}`;
             return b `
           <div
             class="bar-segment ${isLast ? 'last-bar' : ''}"
@@ -1136,7 +1130,7 @@ window.customCards.push({
     description: 'A horizontal waterfall display for historical sensor data with visual editor',
     preview: true,
 });
-console.info(`%c WATERFALL-HISTORY-CARD %c 2026.7.6 `, 'color: black; background: #F2720C; font-weight: 600;', 'color: black; background: #00a5c9; font-weight: 600;');
+console.info(`%c WATERFALL-HISTORY-CARD %c 2026.7.18 `, 'color: black; background: #F2720C; font-weight: 600;', 'color: black; background: #00a5c9; font-weight: 600;');
 
 var NumberFormat;
 (function (NumberFormat) {
