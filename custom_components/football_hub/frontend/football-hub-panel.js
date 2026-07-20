@@ -1447,9 +1447,11 @@ class FootballHubPanel extends HTMLElement {
   }
 
   _tvGuidePage() {
-    const items = this._attrs("tv_guide").items || [];
+    const guide = this._attrs("tv_guide");
+    const items = guide.items || [];
+    const guideCountry = guide.country || this._statusInfo().country || "England";
     return `
-      <section class="page-title"><div><span>UK listings</span><h1>TV Guide</h1></div><strong>${items.length} matches</strong></section>
+      <section class="page-title"><div><span>${this._escape(guideCountry)} listings</span><h1>TV Guide</h1></div><strong>${items.length} matches</strong></section>
       <section class="portal-list">
         ${items.length ? items.map((item) => `
           <article class="page-card tv-row">

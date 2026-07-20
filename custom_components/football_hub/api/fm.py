@@ -90,6 +90,25 @@ FM_COUNTRY_CODES = {
     94: "POR", 144: "BEL", 203: "TUR",
 }
 
+TV_GUIDE_REGIONS = {
+    "England": ("gb", "Europe/London"),
+    "Scotland": ("gb", "Europe/London"),
+    "Wales": ("gb", "Europe/London"),
+    "Northern Ireland": ("gb", "Europe/London"),
+    "Republic of Ireland": ("ie", "Europe/Dublin"),
+    "Ireland": ("ie", "Europe/Dublin"),
+    "France": ("fr", "Europe/Paris"),
+    "Germany": ("de", "Europe/Berlin"),
+    "Spain": ("es", "Europe/Madrid"),
+    "Italy": ("it", "Europe/Rome"),
+    "Netherlands": ("nl", "Europe/Amsterdam"),
+    "Portugal": ("pt", "Europe/Lisbon"),
+    "Belgium": ("be", "Europe/Brussels"),
+    "Turkey": ("tr", "Europe/Istanbul"),
+    "USA": ("us", "America/New_York"),
+    "United States": ("us", "America/New_York"),
+}
+
 LEAGUE_TTL = 6 * 60 * 60
 TODAY_TTL = 60
 MATCH_TTL_LIVE = 60
@@ -362,10 +381,16 @@ class FMProvider:
             })
         return output[:30]
 
-    async def get_tv_guide(self) -> list[dict]:
+    async def get_tv_guide(self, country_name: str = "England") -> list[dict]:
+        country, timezone_name = TV_GUIDE_REGIONS.get(
+            str(country_name or "").strip(),
+            ("gb", "Europe/London"),
+        )
         data = await self._global_fetch(
-            "tv_guide", ("api/data/tvguide", "api/tvguide"),
-            {"country": "gb", "timezone": "Europe/London"}, TV_GUIDE_TTL,
+            f"tv_guide:{country}:{timezone_name}",
+            ("api/data/tvguide", "api/tvguide"),
+            {"country": country, "timezone": timezone_name},
+            TV_GUIDE_TTL,
         )
         output: list[dict] = []
         seen: set[str] = set()
@@ -391,6 +416,8 @@ class FMProvider:
                 "kickoff": node.get("utcTime") or node.get("date") or node.get("time"),
                 "competition": node.get("leagueName") or self._name(node.get("league")),
                 "channels": [item for item in channels if item],
+                "guide_country": country_name,
+                "guide_timezone": timezone_name,
             })
         return output[:60]
 

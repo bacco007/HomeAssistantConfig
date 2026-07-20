@@ -149,7 +149,14 @@ class FootballHubPortalDataSensor(FootballHubBaseSensor):
 
     @property
     def extra_state_attributes(self):
-        return {"items": ((self.coordinator.data or {}).get(self.key, []) or [])[:40]}
+        attributes = {
+            "items": ((self.coordinator.data or {}).get(self.key, []) or [])[:40]
+        }
+        if self.key == "tv_guide":
+            attributes["country"] = (
+                (self.coordinator.data or {}).get("tv_guide_country") or "England"
+            )
+        return attributes
 
 
 class FootballHubTransferMarketSensor(FootballHubBaseSensor):

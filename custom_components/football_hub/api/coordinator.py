@@ -307,7 +307,11 @@ class FootballHubCoordinator(DataUpdateCoordinator):
         # live loop. They refresh only when their own longer TTL expires.
         portal_requests = [
             ("news", NEWS_TTL, self.api.get_trending_news),
-            ("tv_guide", TV_GUIDE_TTL, self.api.get_tv_guide),
+            (
+                "tv_guide",
+                TV_GUIDE_TTL,
+                lambda: self.api.get_tv_guide(self.competition.get("country", "England")),
+            ),
             ("latest_transfers", TRANSFER_MARKET_TTL, self.api.get_latest_transfers),
             ("top_transfers", TRANSFER_MARKET_TTL, self.api.get_top_transfers),
             ("competition_catalogue", COMPETITION_CATALOGUE_TTL, self.api.get_competition_catalogue),
@@ -532,6 +536,7 @@ class FootballHubCoordinator(DataUpdateCoordinator):
             "cup_top_scorers": self._cache.get("cup_top_scorers", []),
             "news": self._cache.get("news", []),
             "tv_guide": self._cache.get("tv_guide", []),
+            "tv_guide_country": self.competition.get("country", "England"),
             "latest_transfers": self._cache.get("latest_transfers", []),
             "top_transfers": self._cache.get("top_transfers", []),
             "competition_catalogue": self._cache.get("competition_catalogue", {}),
