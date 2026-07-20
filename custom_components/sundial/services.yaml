@@ -1,0 +1,45 @@
+apply:
+  name: Apply
+  description: >-
+    Have Sundial apply the scheduled values immediately, ignoring any manual
+    control. Omit entity_id to apply to every controlled light.
+  fields:
+    entity_id:
+      name: Lights
+      description: Light entities to adapt. Defaults to all controlled lights.
+      required: false
+      selector:
+        entity:
+          domain: light
+          multiple: true
+    turn_on:
+      name: Turn on
+      description: >-
+        Turn lights on to their scheduled value if they are currently off. A
+        light scheduled to 0% stays off.
+      required: false
+      default: true
+      selector:
+        boolean:
+
+set_manual_control:
+  name: Set manual control
+  description: >-
+    Mark lights as manually controlled (Sundial pauses for them) or hand
+    control back to Sundial.
+  fields:
+    entity_id:
+      name: Lights
+      description: Light entities to update.
+      required: true
+      selector:
+        entity:
+          domain: light
+          multiple: true
+    manual_control:
+      name: Manual control
+      description: True to pause Sundial, false to resume it.
+      required: true
+      default: true
+      selector:
+        boolean:

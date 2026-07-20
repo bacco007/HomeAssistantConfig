@@ -1,0 +1,57 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Sundial",
+        "description": "Select the lights or light groups to control. Everything else is configured in the Sundial panel in the sidebar.",
+        "data": {
+          "lights": "Lights"
+        }
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Sundial is already configured. Only one instance is supported."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Controlled lights",
+        "description": "Choose which lights or light groups Sundial controls.",
+        "data": {
+          "lights": "Lights"
+        }
+      }
+    }
+  },
+  "services": {
+    "apply": {
+      "name": "Apply",
+      "description": "Have Sundial apply the scheduled values immediately.",
+      "fields": {
+        "entity_id": {
+          "name": "Lights",
+          "description": "Light entities to adapt. Defaults to all controlled lights."
+        },
+        "turn_on": {
+          "name": "Turn on",
+          "description": "Turn lights on to their scheduled value if they are currently off. A light scheduled to 0% stays off."
+        }
+      }
+    },
+    "set_manual_control": {
+      "name": "Set manual control",
+      "description": "Pause or resume Sundial for specific lights.",
+      "fields": {
+        "entity_id": {
+          "name": "Lights",
+          "description": "Light entities to update."
+        },
+        "manual_control": {
+          "name": "Manual control",
+          "description": "True to pause Sundial, false to resume it."
+        }
+      }
+    }
+  }
+}
