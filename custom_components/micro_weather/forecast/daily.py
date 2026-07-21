@@ -231,35 +231,20 @@ class DailyForecastGenerator:
         if not isinstance(temp_volatility, (int, float)):
             temp_volatility = 3.0
 
-        # Extrapolate trend forward (24 hours per day)
-        # But dampen the extrapolation for distant days
-        hours_forward = (day_idx + 1) * 24
-        trend_confidence = self._calculate_trend_confidence(day_idx, temp_pattern)
-
-        # Linear extrapolation with confidence dampening
-        trend_extrapolation = temp_trend_per_hour * hours_forward * trend_confidence
-        forecast_temp = current_temp + trend_extrapolation
-        # For day 0, ensure the daily maximum reflects projected hourly trend peaks
-        # Estimate hourly-forward maxima using the short-term temp trend to avoid
-        # reporting current observed temp as the day's max when a trend exists.
-        if day_idx == 0:
-            try:
-                hourly_estimates = [
-                    current_temp + temp_trend_per_hour * h for h in range(1, 24)
-                ]
-                candidates = hourly_estimates + [current_temp]
-                # Floor the day-0 high at the recent diurnal peak (the observed
-                # 24h max), so a cool morning/overnight reading does not report
-                # the current temp as the day's high (#35).
-                recent_max = meteorological_state.get("temp_trends", {}).get("max")
-                if isinstance(recent_max, (int, float)):
-                    candidates.append(recent_max)
-                hourly_max = max(candidates) if candidates else forecast_temp
-                forecast_temp = max(forecast_temp, hourly_max)
-            except Exception as exc:
-                _LOGGER.debug(
-                    "Could not compute hourly_max for day-0 projection: %s", exc
-                )
+        # The daily forecast value represents the day's HIGH (templow is
+        # derived from it). Anchor it on the diurnal peak, NOT on a linear
+        # extrapolation of the sub-diurnal temperature slope.
+        #
+        # The 24h regression slope (temp_trend_per_hour) is dominated by the
+        # diurnal cycle: during the morning warming ramp it can be
+        # +1-2°F/h, but temperature peaks mid-afternoon and then falls, so
+        # that slope is NOT a multi-day trend. The previous code multiplied
+        # it by (day_idx+1)*24 hours, so a 1.5°F/h morning slope projected a
+        # ~103°F high from a 69°F reading and ramped every subsequent day
+        # toward the warm clamp (issue #51).
+        forecast_temp = self._estimate_daily_high(
+            current_temp, temp_trend_per_hour, meteorological_state
+        )
 
         # Pressure system influence (modifies the trend direction)
         pressure_influence = self._calculate_pressure_temperature_influence(
@@ -282,16 +267,72 @@ class DailyForecastGenerator:
         day_variation = variation_amplitude * variation_pattern[day_idx]
         forecast_temp += day_variation
 
-        # Clamp unreasonable extrapolations for days 1–4.
-        # Day 0 is already bounded by the hourly projection computed above,
-        # so clamping it further would suppress legitimate same-day trend peaks.
+        # Clamp unreasonable extrapolations for days 1–4 around the diurnal
+        # high anchor (not the current reading, which may be a cool morning
+        # value — clamping around it would drag the multi-day highs down).
         if day_idx > 0:
-            max_change = 6.0 * (day_idx + 1)  # ±6°F per day maximum
+            high_anchor = self._estimate_daily_high(
+                current_temp, temp_trend_per_hour, meteorological_state
+            )
+            max_change = 6.0 * day_idx  # ±6°F per day beyond day 0
             forecast_temp = max(
-                current_temp - max_change, min(current_temp + max_change, forecast_temp)
+                high_anchor - max_change,
+                min(high_anchor + max_change, forecast_temp),
             )
 
         return forecast_temp
+
+    # Temperature peaks in mid-afternoon; a morning warming slope is only a
+    # valid predictor for the few hours until that peak, so cap the forward
+    # projection horizon rather than extrapolating across the whole day.
+    DIURNAL_PEAK_HORIZON_HOURS = 6.0
+    # Fallback diurnal swing (°F) when no observed min/max is available.
+    DEFAULT_DIURNAL_AMPLITUDE = 18.0
+
+    def _estimate_daily_high(
+        self,
+        current_temp: float,
+        temp_trend_per_hour: float,
+        meteorological_state: Dict[str, Any],
+    ) -> float:
+        """Estimate the day's high temperature (°F) from the diurnal peak.
+
+        The high is the greater of:
+          * the recent observed 24h maximum (the real diurnal peak), and
+          * the current temperature plus a bounded projection of the current
+            warming slope toward the mid-afternoon peak.
+
+        The projection is capped both by a fixed horizon
+        (``DIURNAL_PEAK_HORIZON_HOURS``) and by the observed diurnal
+        amplitude, so a steep morning slope cannot produce a physically
+        impossible high (issue #51).
+        """
+        temp_trends = meteorological_state.get("temp_trends", {})
+        recent_max = temp_trends.get("max")
+        recent_min = temp_trends.get("min")
+
+        # Diurnal amplitude from observed extremes, else a seasonal default.
+        if (
+            isinstance(recent_max, (int, float))
+            and isinstance(recent_min, (int, float))
+            and recent_max > recent_min
+        ):
+            diurnal_amplitude = recent_max - recent_min
+        else:
+            diurnal_amplitude = self.DEFAULT_DIURNAL_AMPLITUDE
+
+        # Bounded upward projection of the current slope toward the peak.
+        projected_rise = 0.0
+        if isinstance(temp_trend_per_hour, (int, float)) and temp_trend_per_hour > 0:
+            projected_rise = min(
+                temp_trend_per_hour * self.DIURNAL_PEAK_HORIZON_HOURS,
+                diurnal_amplitude,
+            )
+
+        candidates = [current_temp + projected_rise]
+        if isinstance(recent_max, (int, float)):
+            candidates.append(recent_max)
+        return max(candidates)
 
     def _calculate_trend_confidence(
         self, day_idx: int, pattern_data: Dict[str, Any]
