@@ -15,7 +15,7 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import EntityCategory
 
 from .const import DOMAIN
-from . import UniFiWanData
+from . import UniFiWanData, UniFiWanRuntimeData
 
 @dataclass(frozen=True, kw_only=True)
 class UniFiBinaryEntityDescription(BinarySensorEntityDescription):
@@ -37,12 +37,12 @@ BINARY_SENSORS: tuple[UniFiBinaryEntityDescription, ...] = (
 )
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
-    shared = hass.data[DOMAIN][entry.entry_id]
-    device = shared["device_coordinator"]
+    runtime: UniFiWanRuntimeData = hass.data[DOMAIN][entry.entry_id]
+    device = runtime.device_coordinator
 
     entry_id = entry.entry_id
-    device_info = shared["device_info"]
-    wan_numbers = shared["wan_numbers"]
+    device_info = runtime.device_info
+    wan_numbers = runtime.wan_numbers
 
     entities = []
     for desc in BINARY_SENSORS:
@@ -67,7 +67,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         )
         entities.append(UniFiGenericBinary(device, entry_id, device_info, link))
 
-    entities.append(UniFiSpeedtestInProgress(shared, entry_id, device_info))
+    entities.append(UniFiSpeedtestInProgress(runtime, entry_id, device_info))
     async_add_entities(entities)
 
 
@@ -92,13 +92,13 @@ class UniFiSpeedtestInProgress(BinarySensorEntity):
     _attr_should_poll = False
     _attr_entity_category = EntityCategory.DIAGNOSTIC
 
-    def __init__(self, shared, entry_id: str, device_info: dict[str, Any]):
-        self._shared = shared
+    def __init__(self, runtime: UniFiWanRuntimeData, entry_id: str, device_info: dict[str, Any]):
+        self._runtime = runtime
         self._attr_unique_id = f"{entry_id}_speedtest_in_progress"
         self._attr_device_info = device_info
 
     async def async_added_to_hass(self) -> None:
-        signal = self._shared["speedtest_running_signal"]
+        signal = self._runtime.speedtest_running_signal
         self.async_on_remove(
             async_dispatcher_connect(self.hass, signal, self._signal_update)
         )
@@ -109,4 +109,4 @@ class UniFiSpeedtestInProgress(BinarySensorEntity):
 
     @property
     def is_on(self) -> bool:
-        return bool(self._shared["get_speedtest_running"]())
+        return bool(self._runtime.get_speedtest_running())

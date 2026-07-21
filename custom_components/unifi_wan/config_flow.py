@@ -32,6 +32,7 @@ from .const import (
     DEFAULT_AUTO_SPEEDTEST,
     DEFAULT_AUTO_SPEEDTEST_MINUTES,
 )
+from . import merged_option
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -77,12 +78,8 @@ class Timeout(ValidationError):
 
 
 def _clean_host(host: str) -> str:
-    """Normalize a host: strip whitespace, scheme and any path."""
-    host = (host or "").strip()
-    for scheme in ("https://", "http://"):
-        if host.lower().startswith(scheme):
-            host = host[len(scheme):]
-            break
+    """Normalize a host: strip whitespace and scheme, lowercase, drop any path."""
+    host = (host or "").strip().lower().removeprefix("https://").removeprefix("http://")
     return host.split("/", 1)[0]
 
 
@@ -237,8 +234,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 class OptionsFlowHandler(config_entries.OptionsFlow):
     def _opt(self, key: str, default: Any = None) -> Any:
         """Current effective value: options first, then data, then default."""
-        entry = self.config_entry
-        return entry.options.get(key, entry.data.get(key, default))
+        return merged_option(self.config_entry, key, default)
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None

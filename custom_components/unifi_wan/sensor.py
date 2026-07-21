@@ -20,7 +20,7 @@ from homeassistant.helpers.update_coordinator import (
 from homeassistant.config_entries import ConfigEntry
 
 from .const import DOMAIN
-from . import UniFiWanData
+from . import UniFiWanData, UniFiWanRuntimeData
 
 
 DATA_RATE_UNIT_MEGABITS_PER_SECOND: Final = "Mbit/s"
@@ -218,13 +218,13 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    shared = hass.data[DOMAIN][entry.entry_id]
-    rates_coord = shared.get("rates_coordinator") or shared["device_coordinator"]
-    device_coord = shared["device_coordinator"]
+    runtime: UniFiWanRuntimeData = hass.data[DOMAIN][entry.entry_id]
+    rates_coord = runtime.rates_coordinator or runtime.device_coordinator
+    device_coord = runtime.device_coordinator
 
     entry_id = entry.entry_id
-    device_info = shared["device_info"]
-    wan_numbers = shared["wan_numbers"]
+    device_info = runtime.device_info
+    wan_numbers = runtime.wan_numbers
 
     entities: list[UniFiGenericSensor] = []
 

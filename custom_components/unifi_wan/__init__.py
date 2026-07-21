@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from collections.abc import Awaitable, Callable
 from datetime import timedelta
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Final
 
+import aiohttp
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry
@@ -37,6 +39,7 @@ from .const import (
     DEFAULT_AUTO_SPEEDTEST_MINUTES,
     LEGACY_CONF_DEVICE_INTERVAL,
     SIGNAL_SPEEDTEST_RUNNING,
+    SIGNAL_AUTO_SPEEDTEST_CHANGED,
     GATEWAY_DEVICES,
     MAX_WAN_INTERFACES,
     SERVICE_RUN_SPEEDTEST,
@@ -64,6 +67,33 @@ class UniFiWanData:
     wan: dict[int, dict[str, Any]]
     wan_alive: dict[int, bool]
     wan_status: dict[int, str]
+
+
+@dataclass
+class UniFiWanRuntimeData:
+    """Per-config-entry runtime objects shared with the platform entities.
+
+    Stored in ``hass.data[DOMAIN][entry_id]`` instead of a bare dict so entity
+    code accesses fields by attribute (with IDE/type-checker support) rather
+    than hard-coded string keys.
+    """
+    client: UnifiWanClient
+    device_coordinator: DataUpdateCoordinator
+    rates_coordinator: DataUpdateCoordinator | None
+    host: str
+    site: str
+    dev_meta: dict[str, Any]
+    device_info: dict[str, Any]
+    auto_enabled: bool
+    manage_auto: Callable[[bool], None]
+    run_speedtest_now: Callable[[int | None], Awaitable[None]]
+    speedtest_running_signal: str
+    auto_changed_signal: str
+    get_speedtest_running: Callable[[], bool]
+    set_speedtest_running: Callable[[bool], Awaitable[None]]
+    wan_numbers: list[int]
+    reload_signature: dict[str, Any]
+
 
 class UnifiWanClient:
     """Simple HTTP client for UniFi Network endpoints."""
@@ -108,7 +138,10 @@ class UnifiWanClient:
                     return {"ok": False}
                 try:
                     return await resp.json(content_type=None)
-                except Exception:
+                except (aiohttp.ContentTypeError, ValueError):
+                    # A 200 with an empty or non-JSON body still means the
+                    # command was accepted; anything else propagates to the
+                    # outer handler below.
                     return {"ok": True}
         except Exception as e:
             _LOGGER.error("POST failed: %s", e)
@@ -170,7 +203,8 @@ def _is_routable_ipv6(addr: str | None) -> bool:
         return False
     if a in ("::", "::1"):
         return False
-    if a.startswith("fe8") or a.startswith("fe9") or a.startswith("fea") or a.startswith("feb"):
+    # fe80::/10 link-local spans the fe8/fe9/fea/feb prefixes.
+    if a.startswith(("fe8", "fe9", "fea", "feb")):
         return False
     return True
 
@@ -325,20 +359,48 @@ async def _async_migrate_registry(
         )
 
 
+# Config keys whose change requires a full reload of the entry. CONF_AUTO_SPEEDTEST
+# is deliberately excluded: the switch entity applies it live, so persisting it
+# must not tear down every entity.
+RELOAD_OPTION_KEYS: Final = (
+    CONF_HOST,
+    CONF_API_KEY,
+    CONF_SITE,
+    CONF_VERIFY_SSL,
+    CONF_SCAN_INTERVAL,
+    CONF_RATE_INTERVAL,
+    CONF_AUTO_SPEEDTEST_MINUTES,
+)
+
+
+def merged_option(entry: ConfigEntry, key: str, default: Any = None) -> Any:
+    """Effective config value: options first, then data, then default.
+
+    Setup and the options flow both resolve settings this way; centralising it
+    keeps the two paths consistent.
+    """
+    return entry.options.get(key, entry.data.get(key, default))
+
+
+def _reload_signature(entry: ConfigEntry) -> dict[str, Any]:
+    """Snapshot of the config values that require a full reload when changed."""
+    merged = {**entry.data, **entry.options}
+    return {key: merged.get(key) for key in RELOAD_OPTION_KEYS}
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    data = entry.data
     options = entry.options or {}
 
-    host = options.get(CONF_HOST, data.get(CONF_HOST))
-    api_key = options.get(CONF_API_KEY, data.get(CONF_API_KEY))
-    site = options.get(CONF_SITE, data.get(CONF_SITE, DEFAULT_SITE))
-    verify_ssl = options.get(CONF_VERIFY_SSL, data.get(CONF_VERIFY_SSL, DEFAULT_VERIFY_SSL))
+    host = merged_option(entry, CONF_HOST)
+    api_key = merged_option(entry, CONF_API_KEY)
+    site = merged_option(entry, CONF_SITE, DEFAULT_SITE)
+    verify_ssl = merged_option(entry, CONF_VERIFY_SSL, DEFAULT_VERIFY_SSL)
 
     scan_seconds = int(options.get(CONF_SCAN_INTERVAL, options.get(LEGACY_CONF_DEVICE_INTERVAL, DEFAULT_SCAN_INTERVAL)))
     rate_seconds = int(options.get(CONF_RATE_INTERVAL, DEFAULT_RATE_INTERVAL))
 
-    auto_minutes = int(options.get(CONF_AUTO_SPEEDTEST_MINUTES, data.get(CONF_AUTO_SPEEDTEST_MINUTES, DEFAULT_AUTO_SPEEDTEST_MINUTES)))
-    auto_enabled = bool(options.get(CONF_AUTO_SPEEDTEST, data.get(CONF_AUTO_SPEEDTEST, DEFAULT_AUTO_SPEEDTEST)))
+    auto_minutes = int(merged_option(entry, CONF_AUTO_SPEEDTEST_MINUTES, DEFAULT_AUTO_SPEEDTEST_MINUTES))
+    auto_enabled = bool(merged_option(entry, CONF_AUTO_SPEEDTEST, DEFAULT_AUTO_SPEEDTEST))
 
     await _async_migrate_registry(hass, entry, host, site)
 
@@ -384,6 +446,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await rates_coordinator.async_config_entry_first_refresh()
 
     entry_signal = f"{SIGNAL_SPEEDTEST_RUNNING}_{entry.entry_id}"
+    auto_changed_signal = f"{SIGNAL_AUTO_SPEEDTEST_CHANGED}_{entry.entry_id}"
     speedtest_running: bool = False
     unsub_auto: CALLBACK_TYPE | None = None
 
@@ -469,22 +532,24 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "configuration_url": f"https://{host}/",
     }
 
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
-        "client": client,
-        "device_coordinator": device_coordinator,
-        "rates_coordinator": rates_coordinator,
-        "host": host,
-        "site": site,
-        "dev_meta": dev_meta,
-        "device_info": device_info,
-        "auto_enabled": auto_enabled,
-        "manage_auto": _schedule_auto,
-        "run_speedtest_now": _run_speedtest_now,
-        "speedtest_running_signal": entry_signal,
-        "get_speedtest_running": lambda: speedtest_running,
-        "set_speedtest_running": set_speedtest_running,
-        "wan_numbers": wan_numbers,
-    }
+    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = UniFiWanRuntimeData(
+        client=client,
+        device_coordinator=device_coordinator,
+        rates_coordinator=rates_coordinator,
+        host=host,
+        site=site,
+        dev_meta=dev_meta,
+        device_info=device_info,
+        auto_enabled=auto_enabled,
+        manage_auto=_schedule_auto,
+        run_speedtest_now=_run_speedtest_now,
+        speedtest_running_signal=entry_signal,
+        auto_changed_signal=auto_changed_signal,
+        get_speedtest_running=lambda: speedtest_running,
+        set_speedtest_running=set_speedtest_running,
+        wan_numbers=wan_numbers,
+        reload_signature=_reload_signature(entry),
+    )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
@@ -495,8 +560,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if not hass.services.has_service(DOMAIN, SERVICE_RUN_SPEEDTEST):
         async def handle_run_speedtest(call: ServiceCall) -> None:
             wan_number = call.data.get(ATTR_WAN)
-            for shared_data in list(hass.data.get(DOMAIN, {}).values()):
-                hass.async_create_task(shared_data["run_speedtest_now"](wan_number))
+            for runtime_data in list(hass.data.get(DOMAIN, {}).values()):
+                hass.async_create_task(runtime_data.run_speedtest_now(wan_number))
 
         hass.services.async_register(
             DOMAIN,
@@ -509,9 +574,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    shared = hass.data.get(DOMAIN, {}).get(entry.entry_id)
-    if shared:
-        shared["manage_auto"](False)
+    runtime: UniFiWanRuntimeData | None = hass.data.get(DOMAIN, {}).get(entry.entry_id)
+    if runtime is not None:
+        runtime.manage_auto(False)
 
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
@@ -524,4 +589,17 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    runtime: UniFiWanRuntimeData | None = hass.data.get(DOMAIN, {}).get(entry.entry_id)
+    if runtime is not None and _reload_signature(entry) == runtime.reload_signature:
+        # Nothing that requires a fresh setup changed. The auto-speedtest enable
+        # flag is the only live-managed option: the switch entity applies it
+        # directly, and when it is changed through the options dialog we apply it
+        # here too. Either way we avoid a full reload that would briefly mark
+        # every entity unavailable.
+        enabled = bool(merged_option(entry, CONF_AUTO_SPEEDTEST, DEFAULT_AUTO_SPEEDTEST))
+        if enabled != runtime.auto_enabled:
+            runtime.manage_auto(enabled)
+            runtime.auto_enabled = enabled
+            async_dispatcher_send(hass, runtime.auto_changed_signal)
+        return
     await hass.config_entries.async_reload(entry.entry_id)

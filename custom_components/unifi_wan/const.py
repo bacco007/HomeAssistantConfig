@@ -34,6 +34,7 @@ PLATFORMS: Final = [
 ]
 
 SIGNAL_SPEEDTEST_RUNNING: Final = f"{DOMAIN}_speedtest_running"
+SIGNAL_AUTO_SPEEDTEST_CHANGED: Final = f"{DOMAIN}_auto_speedtest_changed"
 SERVICE_RUN_SPEEDTEST: Final = "run_speedtest"
 ATTR_WAN: Final = "wan"
 
