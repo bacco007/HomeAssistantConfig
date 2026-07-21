@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { YamlGenerator } from '../../js/io/adapters/yaml_generator.js';
 import { resolveAdapterProfile } from '../../js/io/adapters/esphome_adapter_profile.js';
-import { generateBinarySensorSection, generatePSRAMSection } from '../../js/io/hardware_generators.js';
+import { generateBinarySensorSection, generateOutputSection, generatePSRAMSection } from '../../js/io/hardware_generators.js';
 
 const fetchDynamicHardwareProfilesMock = vi.fn(async () => []);
 const getOfflineProfilesFromStorageMock = vi.fn(() => ({}));
@@ -43,9 +43,18 @@ describe('built-in device profiles', async () => {
         expect(profile.id).toBe('reterminal_e1001');
     });
 
-    it('uses the vendor E1001 model and avoids the E1003 IT8951 GPIO21 conflict', () => {
+    it('uses the vendor E1001 model and configures E1003 battery and touch hardware without GPIO21 conflicts', () => {
         expect(devices.DEVICE_PROFILES.reterminal_e1001.displayModel).toBe('7.50inv2p');
-        expect(devices.DEVICE_PROFILES.reterminal_e1003.pins.batteryEnable).toBeUndefined();
+        const e1003 = devices.DEVICE_PROFILES.reterminal_e1003;
+        expect(e1003.pins.batteryEnable).toBe('GPIO40');
+        expect(e1003.touch).toMatchObject({
+            platform: 'gt911',
+            i2c_id: 'bus_a',
+            address: '0x5D',
+            interrupt_pin: 'GPIO2',
+            reset_pin: 'GPIO48'
+        });
+        expect(generateOutputSection(e1003).join('\n')).toContain('pin: GPIO40\n    id: bsp_battery_enable\n    restore_mode: ALWAYS_ON');
     });
 
     it('excludes untested built-ins from the tested profile id list', () => {
@@ -185,6 +194,11 @@ describe('built-in device profiles', async () => {
         expect(e1003.pins.spi).toEqual({ clk: 'GPIO7', mosi: 'GPIO9', miso: 'GPIO8' });
         expect(e1003.features.epaper).toBe(true);
         expect(e1003.features.inverted_colors).toBe(false);
+        // #449: Home GPIO2 removed to avoid conflict with GT911 touch controller
+        expect(e1003.pins.buttons.home).toBeUndefined();
+        // GT911 touchscreen added per #449 user report
+        expect(e1003.features.touch).toBe(true);
+        expect(e1003.touch).toMatchObject({ platform: 'gt911' });
 
         expect(picoW).toMatchObject({ chip: 'rp2040', board: 'rpipicow', displayModel: '2.13inv3', rotation_offset: 90 });
         expect(pico2W).toMatchObject({ chip: 'rp2350', board: 'rpipico2w', displayModel: '2.13inv3', rotation_offset: 90 });

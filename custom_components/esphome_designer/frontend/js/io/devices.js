@@ -102,22 +102,32 @@ export const DEVICE_PROFILES = {
     pins: {
       i2c: { sda: "GPIO19", scl: "GPIO20" },
       spi: { clk: "GPIO7", mosi: "GPIO9", miso: "GPIO8" },
+      batteryEnable: "GPIO40",
       batteryAdc: "GPIO1",
       buzzer: "GPIO45",
-      buttons: { left: "GPIO5", right: "GPIO4", refresh: "GPIO3", home: "GPIO2" }
+      buttons: { left: "GPIO5", right: "GPIO4", refresh: "GPIO3" }
     },
     battery: {
       attenuation: "12db",
       multiplier: 2.0,
       calibration: { min: 3.27, max: 4.15 }
     },
+    batteryEnableAlwaysOn: true,
     features: {
       psram: true,
       buzzer: true,
       buttons: true,
       sht4x: true,
       epaper: true,
+      touch: true,
       inverted_colors: false
+    },
+    touch: {
+      platform: "gt911",
+      i2c_id: "bus_a",
+      address: "0x5D",
+      interrupt_pin: "GPIO2",
+      reset_pin: "GPIO48"
     }
   },
   reterminal_e1004: {
