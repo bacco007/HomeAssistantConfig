@@ -394,14 +394,150 @@ class FootballHubPanel extends HTMLElement {
       tr:{"COMMUNITY SUPPORT":"TOPLULUK DESTEĞİ","Supporters":"Destekçiler","HELP BUILD THE FUTURE":"GELECEĞİ KURMAYA YARDIM ET","Support Football Hub":"Football Hub’ı destekle","This project started as a personal Home Assistant football dashboard and has grown thanks to community feedback, testing, ideas and support.":"Bu proje kişisel bir Home Assistant futbol paneli olarak başladı ve topluluk geri bildirimi, testleri, fikirleri ve desteğiyle büyüdü.","Support via Ko-fi":"Ko-fi ile destekle","Support via PayPal":"PayPal ile destekle","Thank you":"Teşekkürler","Every contribution helps":"Her katkı yardımcı olur","Live data costs":"Canlı veri maliyetleri","Helps cover reliable football data and matchday services.":"Güvenilir futbol verileri ve maç günü hizmetlerinin maliyetini karşılamaya yardımcı olur.","Fixes & improvements":"Düzeltmeler ve iyileştirmeler","Supports testing, maintenance and regular updates.":"Testleri, bakımı ve düzenli güncellemeleri destekler.","Future features":"Gelecek özellikler","Helps build more competitions, statistics and dashboard tools.":"Daha fazla lig, istatistik ve panel aracı oluşturmaya yardımcı olur.","Community development":"Topluluk geliştirmesi","Keeps the project community-led and available to Home Assistant users.":"Projeyi topluluk odaklı ve Home Assistant kullanıcılarına açık tutar.","PREMIUM SUPPORTERS":"PREMİUM DESTEKÇİLER","Extra recognition inside Football Hub":"Football Hub içinde ek görünürlük","Premium profile":"Premium profil","Name & country flag":"Ad ve ülke bayrağı","Personal message":"Kişisel mesaj","LATEST THANK YOUS":"SON TEŞEKKÜRLER","THE COMMUNITY":"TOPLULUK","To be added as a supporter":"Destekçi olarak eklenmek için","After donating, include your name, country and optional short message.":"Bağıştan sonra adınızı, ülkenizi ve isteğe bağlı kısa mesajınızı belirtin."},
     };
     Object.assign(phrases[this._language] || {}, supporterTranslations[this._language] || {});
+    const languageOrder = ["es", "de", "fr", "it", "nl", "pt", "tr"];
+    const completePagePhrases = {
+      "Cups":["Copas","Pokale","Coupes","Coppe","Bekers","Taças","Kupalar"],
+      "News":["Noticias","Nachrichten","Actualités","Notizie","Nieuws","Notícias","Haberler"],
+      "TV Guide":["Guía TV","TV-Programm","Programme TV","Guida TV","TV-gids","Guia TV","TV Rehberi"],
+      "Transfers":["Fichajes","Transfers","Transferts","Trasferimenti","Transfers","Transferências","Transferler"],
+      "Football News":["Noticias de fútbol","Fußballnachrichten","Actualités football","Notizie di calcio","Voetbalnieuws","Notícias de futebol","Futbol Haberleri"],
+      "Transfer Market":["Mercado de fichajes","Transfermarkt","Marché des transferts","Calciomercato","Transfermarkt","Mercado de transferências","Transfer Pazarı"],
+      "Latest stories":["Últimas noticias","Neueste Meldungen","Dernières actualités","Ultime notizie","Laatste verhalen","Últimas notícias","Son haberler"],
+      "Latest transfers":["Últimos fichajes","Neueste Transfers","Derniers transferts","Ultimi trasferimenti","Laatste transfers","Transferências recentes","Son transferler"],
+      "Top transfers":["Principales fichajes","Top-Transfers","Principaux transferts","Trasferimenti principali","Toptransfers","Principais transferências","En büyük transferler"],
+      "Transfer centre":["Mercado de fichajes","Transferzentrale","Centre des transferts","Centro trasferimenti","Transfercentrum","Centro de transferências","Transfer merkezi"],
+      "LIVE AROUND THE WORLD":["DIRECTO EN TODO EL MUNDO","LIVE WELTWEIT","DIRECT DANS LE MONDE","LIVE NEL MONDO","LIVE WERELDWIJD","DIRETO EM TODO O MUNDO","DÜNYADAN CANLI"],
+      "All live scores":["Todos los marcadores en vivo","Alle Live-Ergebnisse","Tous les scores en direct","Tutti i risultati live","Alle live-scores","Todos os resultados em direto","Tüm canlı skorlar"],
+      "Live now":["En directo","Jetzt live","En direct","In diretta","Nu live","Em direto","Canlı"],
+      "Goals":["Goles","Tore","Buts","Gol","Doelpunten","Golos","Goller"],
+      "Selected events":["Eventos seleccionados","Ausgewählte Ereignisse","Événements sélectionnés","Eventi selezionati","Geselecteerde gebeurtenissen","Eventos selecionados","Seçili olaylar"],
+      "MATCHDAY CONTROL ROOM":["CENTRO DE CONTROL DEL PARTIDO","SPIELTAG-KONTROLLZENTRALE","CENTRE DE CONTRÔLE DU MATCH","SALA DI CONTROLLO PARTITA","WEDSTRIJDCENTRALE","CENTRO DE CONTROLO DO JOGO","MAÇ KONTROL MERKEZİ"],
+      "Scores, incidents, statistics and team sheets update automatically.":["Los marcadores, incidentes, estadísticas y alineaciones se actualizan automáticamente.","Ergebnisse, Ereignisse, Statistiken und Aufstellungen werden automatisch aktualisiert.","Les scores, incidents, statistiques et compositions sont actualisés automatiquement.","Risultati, eventi, statistiche e formazioni si aggiornano automaticamente.","Scores, gebeurtenissen, statistieken en opstellingen worden automatisch bijgewerkt.","Resultados, incidentes, estatísticas e equipas atualizam automaticamente.","Skorlar, olaylar, istatistikler ve kadrolar otomatik güncellenir."],
+      "Match timeline":["Cronología del partido","Spielverlauf","Chronologie du match","Cronologia partita","Wedstrijdverloop","Cronologia do jogo","Maç zaman çizelgesi"],
+      "Statistics":["Estadísticas","Statistiken","Statistiques","Statistiche","Statistieken","Estatísticas","İstatistikler"],
+      "Match statistics":["Estadísticas del partido","Spielstatistiken","Statistiques du match","Statistiche partita","Wedstrijdstatistieken","Estatísticas do jogo","Maç istatistikleri"],
+      "Starting line-ups":["Alineaciones iniciales","Startaufstellungen","Compositions de départ","Formazioni iniziali","Basisopstellingen","Equipas iniciais","İlk 11'ler"],
+      "Statistics not available yet.":["Las estadísticas aún no están disponibles.","Statistiken sind noch nicht verfügbar.","Les statistiques ne sont pas encore disponibles.","Le statistiche non sono ancora disponibili.","Statistieken zijn nog niet beschikbaar.","As estatísticas ainda não estão disponíveis.","İstatistikler henüz mevcut değil."],
+      "Line-ups not available yet.":["Las alineaciones aún no están disponibles.","Aufstellungen sind noch nicht verfügbar.","Les compositions ne sont pas encore disponibles.","Le formazioni non sono ancora disponibili.","Opstellingen zijn nog niet beschikbaar.","As equipas ainda não estão disponíveis.","Kadrolar henüz mevcut değil."],
+      "No match events yet.":["Aún no hay eventos del partido.","Noch keine Spielereignisse.","Aucun événement de match pour le moment.","Nessun evento partita.","Nog geen wedstrijdgebeurtenissen.","Ainda não há eventos do jogo.","Henüz maç olayı yok."],
+      "Most appearances":["Más partidos","Meiste Einsätze","Plus d'apparitions","Più presenze","Meeste wedstrijden","Mais jogos","En çok forma giyenler"],
+      "Most minutes played":["Más minutos jugados","Meiste Spielminuten","Plus de minutes jouées","Più minuti giocati","Meeste speelminuten","Mais minutos jogados","En çok dakika"],
+      "Top yellow cards":["Más tarjetas amarillas","Meiste gelbe Karten","Plus de cartons jaunes","Più cartellini gialli","Meeste gele kaarten","Mais cartões amarelos","En çok sarı kart"],
+      "Top red cards":["Más tarjetas rojas","Meiste rote Karten","Plus de cartons rouges","Più cartellini rossi","Meeste rode kaarten","Mais cartões vermelhos","En çok kırmızı kart"],
+      "Top ratings":["Mejores valoraciones","Beste Bewertungen","Meilleures notes","Migliori valutazioni","Beste beoordelingen","Melhores avaliações","En yüksek puanlar"],
+      "CUP COMPETITIONS":["COMPETICIONES DE COPA","POKALWETTBEWERBE","COMPÉTITIONS DE COUPE","COMPETIZIONI DI COPPA","BEKERCOMPETITIES","COMPETIÇÕES DE TAÇA","KUPA ORGANİZASYONLARI"],
+      "Choose a country, then select the cup you want Football Hub to follow.":["Elige un país y después la copa que quieres seguir.","Wähle ein Land und anschließend den gewünschten Pokal.","Choisissez un pays, puis la coupe à suivre.","Scegli un paese, poi la coppa da seguire.","Kies een land en daarna de beker die je wilt volgen.","Escolha um país e depois a taça que pretende seguir.","Bir ülke ve ardından takip edilecek kupayı seçin."],
+      "Country / region":["País / región","Land / Region","Pays / région","Paese / regione","Land / regio","País / região","Ülke / bölge"],
+      "Choose a competition":["Elige una competición","Wettbewerb auswählen","Choisir une compétition","Scegli una competizione","Kies een competitie","Escolha uma competição","Organizasyon seç"],
+      "SELECTED COMPETITION":["COMPETICIÓN SELECCIONADA","AUSGEWÄHLTER WETTBEWERB","COMPÉTITION SÉLECTIONNÉE","COMPETIZIONE SELEZIONATA","GESELECTEERDE COMPETITIE","COMPETIÇÃO SELECIONADA","SEÇİLİ ORGANİZASYON"],
+      "Table / phase standings":["Tabla / clasificación de fase","Tabelle / Phasenstand","Classement / phase","Classifica / fase","Stand / fase","Tabela / classificação da fase","Tablo / aşama sıralaması"],
+      "Knockout competition":["Competición eliminatoria","K.-o.-Wettbewerb","Compétition à élimination directe","Competizione a eliminazione","Knock-outcompetitie","Competição a eliminar","Eleme organizasyonu"],
+      "Open":["Abrir","Öffnen","Ouvrir","Apri","Openen","Abrir","Aç"],
+      "View all":["Ver todo","Alle anzeigen","Tout afficher","Vedi tutto","Alles bekijken","Ver tudo","Tümünü gör"],
+      "View full table":["Ver tabla completa","Ganze Tabelle","Voir le classement complet","Classifica completa","Volledige stand","Ver tabela completa","Tam tablo"],
+      "View full fixtures":["Ver todos los partidos","Alle Spiele","Voir tous les matchs","Tutte le partite","Alle wedstrijden","Ver todos os jogos","Tüm fikstür"],
+      "View all results":["Ver todos los resultados","Alle Ergebnisse","Voir tous les résultats","Tutti i risultati","Alle uitslagen","Ver todos os resultados","Tüm sonuçlar"],
+      "View all players":["Ver todos los jugadores","Alle Spieler","Voir tous les joueurs","Tutti i giocatori","Alle spelers","Ver todos os jogadores","Tüm oyuncular"],
+      "View all news":["Ver todas las noticias","Alle Nachrichten","Voir toutes les actualités","Tutte le notizie","Al het nieuws","Ver todas as notícias","Tüm haberler"],
+      "Channel to be confirmed":["Canal por confirmar","Sender noch offen","Chaîne à confirmer","Canale da confermare","Zender nog niet bevestigd","Canal por confirmar","Kanal henüz belli değil"],
+      "To be confirmed":["Por confirmar","Noch offen","À confirmer","Da confermare","Nog te bevestigen","Por confirmar","Henüz belli değil"],
+      "Venue TBC":["Estadio por confirmar","Spielort noch offen","Stade à confirmer","Stadio da confermare","Stadion nog te bevestigen","Estádio por confirmar","Stadyum belli değil"],
+      "Referee TBC":["Árbitro por confirmar","Schiedsrichter noch offen","Arbitre à confirmer","Arbitro da confermare","Scheidsrechter nog te bevestigen","Árbitro por confirmar","Hakem belli değil"],
+      "Online":["En línea","Online","En ligne","Online","Online","Online","Çevrimiçi"],
+      "Substitution":["Sustitución","Auswechslung","Remplacement","Sostituzione","Wissel","Substituição","Oyuncu değişikliği"],
+      "Half-time":["Descanso","Halbzeit","Mi-temps","Intervallo","Rust","Intervalo","İlk yarı"],
+      "Full-time":["Final","Abpfiff","Fin du match","Fine partita","Afgelopen","Fim do jogo","Maç sonu"],
+      "Grass":["Césped","Rasen","Pelouse","Erba","Gras","Relva","Çim"],
+      "Mostly Cloudy":["Mayormente nublado","Überwiegend bewölkt","Généralement nuageux","Prevalentemente nuvoloso","Overwegend bewolkt","Maioritariamente nublado","Çoğunlukla bulutlu"],
+      "Clear":["Despejado","Klar","Dégagé","Sereno","Helder","Céu limpo","Açık"],
+      "Rain":["Lluvia","Regen","Pluie","Pioggia","Regen","Chuva","Yağmur"],
+      "Ball possession":["Posesión","Ballbesitz","Possession","Possesso palla","Balbezit","Posse de bola","Topa sahip olma"],
+      "Total shots":["Tiros totales","Schüsse gesamt","Tirs totaux","Tiri totali","Totaal schoten","Remates totais","Toplam şut"],
+      "Shots on target":["Tiros a puerta","Schüsse aufs Tor","Tirs cadrés","Tiri in porta","Schoten op doel","Remates à baliza","İsabetli şut"],
+      "Shots off target":["Tiros fuera","Schüsse daneben","Tirs non cadrés","Tiri fuori","Schoten naast","Remates para fora","İsabetsiz şut"],
+      "Blocked shots":["Tiros bloqueados","Geblockte Schüsse","Tirs bloqués","Tiri respinti","Geblokkeerde schoten","Remates bloqueados","Engellenen şut"],
+      "Shots inside box":["Tiros dentro del área","Schüsse im Strafraum","Tirs dans la surface","Tiri in area","Schoten in het strafschopgebied","Remates na área","Ceza sahası içinden şut"],
+      "Shots outside box":["Tiros fuera del área","Schüsse außerhalb","Tirs hors surface","Tiri fuori area","Schoten buiten het strafschopgebied","Remates fora da área","Ceza sahası dışından şut"],
+      "Corners":["Córners","Ecken","Corners","Calci d'angolo","Corners","Cantos","Kornerler"],
+      "Fouls":["Faltas","Fouls","Fautes","Falli","Overtredingen","Faltas","Fauller"],
+      "Yellow cards":["Tarjetas amarillas","Gelbe Karten","Cartons jaunes","Cartellini gialli","Gele kaarten","Cartões amarelos","Sarı kartlar"],
+      "Red cards":["Tarjetas rojas","Rote Karten","Cartons rouges","Cartellini rossi","Rode kaarten","Cartões vermelhos","Kırmızı kartlar"],
+      "Passes":["Pases","Pässe","Passes","Passaggi","Passes","Passes","Paslar"],
+      "Accurate passes":["Pases precisos","Erfolgreiche Pässe","Passes réussies","Passaggi riusciti","Nauwkeurige passes","Passes certos","İsabetli paslar"],
+      "No TV listings are available right now.":["No hay programación de TV disponible.","Derzeit ist kein TV-Programm verfügbar.","Aucun programme TV n'est disponible actuellement.","Nessuna programmazione TV disponibile.","Er zijn momenteel geen tv-uitzendingen beschikbaar.","Não há programação televisiva disponível.","Şu anda TV yayını yok."],
+      "News is loading.":["Cargando noticias.","Nachrichten werden geladen.","Chargement des actualités.","Caricamento notizie.","Nieuws wordt geladen.","A carregar notícias.","Haberler yükleniyor."],
+      "Transfer data is loading.":["Cargando fichajes.","Transferdaten werden geladen.","Chargement des transferts.","Caricamento trasferimenti.","Transfergegevens worden geladen.","A carregar transferências.","Transfer verileri yükleniyor."],
+      "Fee undisclosed":["Importe no revelado","Ablöse unbekannt","Montant non communiqué","Costo non comunicato","Bedrag niet bekendgemaakt","Valor não divulgado","Ücret açıklanmadı"],
+      "On loan":["Cedido","Ausgeliehen","En prêt","In prestito","Gehuurd","Por empréstimo","Kiralık"],
+      "Your fixtures, results, league position and players will appear here.":["Tus partidos, resultados, posición y jugadores aparecerán aquí.","Deine Spiele, Ergebnisse, Tabellenposition und Spieler erscheinen hier.","Vos matchs, résultats, classement et joueurs apparaîtront ici.","Partite, risultati, posizione e giocatori appariranno qui.","Je wedstrijden, resultaten, positie en spelers verschijnen hier.","Os seus jogos, resultados, posição e jogadores aparecerão aqui.","Fikstür, sonuçlar, lig sırası ve oyuncular burada görünecek."],
+      "Stadium information":["Información del estadio","Stadioninformationen","Informations sur le stade","Informazioni stadio","Stadioninformatie","Informações do estádio","Stadyum bilgileri"],
+      "Opened":["Inaugurado","Eröffnet","Ouvert","Inaugurato","Geopend","Inaugurado","Açılış"],
+      "Seasons recorded":["Temporadas registradas","Erfasste Saisons","Saisons enregistrées","Stagioni registrate","Geregistreerde seizoenen","Épocas registadas","Kayıtlı sezonlar"],
+      "Losses":["Derrotas","Niederlagen","Défaites","Sconfitte","Nederlagen","Derrotas","Mağlubiyetler"],
+      "Points per game":["Puntos por partido","Punkte pro Spiel","Points par match","Punti per partita","Punten per wedstrijd","Pontos por jogo","Maç başına puan"],
+      "Total trophies":["Trofeos totales","Titel gesamt","Total des trophées","Trofei totali","Totaal prijzen","Total de troféus","Toplam kupa"],
+      "Competitions won":["Competiciones ganadas","Gewonnene Wettbewerbe","Compétitions remportées","Competizioni vinte","Gewonnen competities","Competições ganhas","Kazanılan organizasyonlar"],
+      "League seasons recorded":["Temporadas de liga registradas","Erfasste Ligasaisons","Saisons de championnat enregistrées","Stagioni di campionato registrate","Geregistreerde competitieseizoenen","Épocas de liga registadas","Kayıtlı lig sezonları"],
+      "Buy me a beer":["Invítame a una cerveza","Spendiere mir ein Bier","Offrez-moi une bière","Offrimi una birra","Trakteer me op een biertje","Pague-me uma cerveja","Bana bir bira ısmarla"],
+      "Enjoying Football Hub?":["¿Te gusta Football Hub?","Gefällt dir Football Hub?","Vous aimez Football Hub ?","Ti piace Football Hub?","Bevalt Football Hub?","Gosta do Football Hub?","Football Hub'ı beğendiniz mi?"],
+      "Help support its development and buy me a beer.":["Ayuda a su desarrollo e invítame a una cerveza.","Unterstütze die Entwicklung und spendiere mir ein Bier.","Soutenez son développement et offrez-moi une bière.","Sostieni lo sviluppo e offrimi una birra.","Steun de ontwikkeling en trakteer me op een biertje.","Apoie o desenvolvimento e pague-me uma cerveja.","Gelişimi destekleyin ve bana bir bira ısmarlayın."],
+      "Football Hub · Built for Home Assistant":["Football Hub · Creado para Home Assistant","Football Hub · Für Home Assistant entwickelt","Football Hub · Conçu pour Home Assistant","Football Hub · Creato per Home Assistant","Football Hub · Gebouwd voor Home Assistant","Football Hub · Criado para Home Assistant","Football Hub · Home Assistant için geliştirildi"]
+    };
+    const languageIndex = languageOrder.indexOf(this._language);
+    if (languageIndex >= 0) {
+      for (const [english, values] of Object.entries(completePagePhrases)) {
+        phrases[this._language][english] = values[languageIndex];
+      }
+    }
     const active = phrases[this._language];
     if (!active) return;
+    for (const country of ["England","Scotland","Wales","Northern Ireland","Republic of Ireland","France","Germany","Spain","Italy","Netherlands","Portugal","Belgium","Turkey","USA","Europe"]) {
+      active[country] = this._displayCountry(country);
+    }
+    const insensitive = new Map(Object.entries(active).map(([key, value]) => [key.toLocaleLowerCase("en"), value]));
     const walker = document.createTreeWalker(this.shadowRoot, NodeFilter.SHOW_TEXT);
     let node;
     while ((node = walker.nextNode())) {
       const raw = node.nodeValue || "";
       const trimmed = raw.trim();
-      if (active[trimmed]) node.nodeValue = raw.replace(trimmed, active[trimmed]);
+      const direct = active[trimmed] || insensitive.get(trimmed.toLocaleLowerCase("en"));
+      if (direct) {
+        node.nodeValue = raw.replace(trimmed, direct);
+        continue;
+      }
+      const decorated = trimmed.match(/^([^A-Za-zÀ-ž]*)(.+)$/);
+      const decoratedTranslation = decorated && insensitive.get(decorated[2].toLocaleLowerCase("en"));
+      if (decoratedTranslation) {
+        node.nodeValue = raw.replace(trimmed, `${decorated[1]}${decoratedTranslation}`);
+        continue;
+      }
+      const countMatch = trimmed.match(/^(\d+)\s+(matches|moves|stories|players|live)$/i);
+      if (countMatch) {
+        const countWords = {
+          es:{matches:"partidos",moves:"movimientos",stories:"noticias",players:"jugadores",live:"en directo"},
+          de:{matches:"Spiele",moves:"Transfers",stories:"Meldungen",players:"Spieler",live:"live"},
+          fr:{matches:"matchs",moves:"transferts",stories:"actualités",players:"joueurs",live:"en direct"},
+          it:{matches:"partite",moves:"trasferimenti",stories:"notizie",players:"giocatori",live:"live"},
+          nl:{matches:"wedstrijden",moves:"transfers",stories:"berichten",players:"spelers",live:"live"},
+          pt:{matches:"jogos",moves:"transferências",stories:"notícias",players:"jogadores",live:"em direto"},
+          tr:{matches:"maç",moves:"transfer",stories:"haber",players:"oyuncu",live:"canlı"}
+        };
+        const word = countWords[this._language]?.[countMatch[2].toLowerCase()];
+        if (word) node.nodeValue = raw.replace(trimmed, `${countMatch[1]} ${word}`);
+        continue;
+      }
+      const capacityMatch = trimmed.match(/^([\d,.]+)\s+capacity$/i);
+      if (capacityMatch) {
+        const word = {es:"capacidad",de:"Kapazität",fr:"places",it:"posti",nl:"capaciteit",pt:"capacidade",tr:"kapasite"}[this._language];
+        if (word) node.nodeValue = raw.replace(trimmed, `${capacityMatch[1]} ${word}`);
+        continue;
+      }
+      for (const weather of ["Mostly Cloudy", "Clear", "Rain"]) {
+        if (trimmed.toLocaleLowerCase("en").startsWith(weather.toLocaleLowerCase("en"))) {
+          node.nodeValue = raw.replace(weather, active[weather] || weather);
+          break;
+        }
+      }
     }
   }
 
@@ -516,12 +652,38 @@ class FootballHubPanel extends HTMLElement {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return String(value);
 
-    return new Intl.DateTimeFormat(undefined, {
+    const locales = {
+      en: "en-GB", es: "es-ES", de: "de-DE", fr: "fr-FR",
+      it: "it-IT", nl: "nl-NL", pt: "pt-PT", tr: "tr-TR",
+    };
+    return new Intl.DateTimeFormat(locales[this._language] || "en-GB", {
       weekday: "short",
       day: "numeric",
       month: "short",
       ...(includeTime ? { hour: "2-digit", minute: "2-digit" } : {}),
     }).format(date);
+  }
+
+  _displayCountry(country) {
+    const name = String(country || "");
+    if (this._language === "en") return name;
+    const special = {
+      England:{es:"Inglaterra",de:"England",fr:"Angleterre",it:"Inghilterra",nl:"Engeland",pt:"Inglaterra",tr:"İngiltere"},
+      Scotland:{es:"Escocia",de:"Schottland",fr:"Écosse",it:"Scozia",nl:"Schotland",pt:"Escócia",tr:"İskoçya"},
+      Wales:{es:"Gales",de:"Wales",fr:"Pays de Galles",it:"Galles",nl:"Wales",pt:"País de Gales",tr:"Galler"},
+      "Northern Ireland":{es:"Irlanda del Norte",de:"Nordirland",fr:"Irlande du Nord",it:"Irlanda del Nord",nl:"Noord-Ierland",pt:"Irlanda do Norte",tr:"Kuzey İrlanda"},
+      "Republic of Ireland":{es:"Irlanda",de:"Irland",fr:"Irlande",it:"Irlanda",nl:"Ierland",pt:"Irlanda",tr:"İrlanda"},
+      USA:{es:"Estados Unidos",de:"USA",fr:"États-Unis",it:"Stati Uniti",nl:"Verenigde Staten",pt:"Estados Unidos",tr:"ABD"},
+      Europe:{es:"Europa",de:"Europa",fr:"Europe",it:"Europa",nl:"Europa",pt:"Europa",tr:"Avrupa"},
+    };
+    if (special[name]?.[this._language]) return special[name][this._language];
+    const regions = {France:"FR",Germany:"DE",Spain:"ES",Italy:"IT",Netherlands:"NL",Portugal:"PT",Belgium:"BE",Turkey:"TR"};
+    const locales = {es:"es-ES",de:"de-DE",fr:"fr-FR",it:"it-IT",nl:"nl-NL",pt:"pt-PT",tr:"tr-TR"};
+    try {
+      return regions[name] ? new Intl.DisplayNames([locales[this._language]], {type:"region"}).of(regions[name]) : name;
+    } catch (_) {
+      return name;
+    }
   }
 
   _logo(url, name, size = "56") {
@@ -628,7 +790,7 @@ class FootballHubPanel extends HTMLElement {
           ${catalogue.length ? `
             <div class="competition-picker">
               <label><span>${this._t("country")}</span><select id="country-select" aria-label="Country">
-                ${countries.map((country) => `<option value="${this._escape(country)}" ${country === this._selectedCountry ? "selected" : ""}>${this._escape(country)}</option>`).join("")}
+                ${countries.map((country) => `<option value="${this._escape(country)}" ${country === this._selectedCountry ? "selected" : ""}>${this._escape(this._displayCountry(country))}</option>`).join("")}
               </select></label>
               <label><span>${this._t("league")}</span><select id="league-select" aria-label="League">
                 ${countryLeagues.map((league) => `<option value="${this._escape(league.key)}" ${league.key === status.competition_key ? "selected" : ""}>${this._escape(league.name)}</option>`).join("")}
@@ -1398,7 +1560,7 @@ class FootballHubPanel extends HTMLElement {
       </section>
       <section class="page-card cups-picker">
         <label><span>Country / region</span><select id="cup-country-select" aria-label="Cup country">
-          ${countries.map((country) => `<option value="${this._escape(country)}" ${country === this._selectedCupCountry ? "selected" : ""}>${this._escape(country)}</option>`).join("")}
+          ${countries.map((country) => `<option value="${this._escape(country)}" ${country === this._selectedCupCountry ? "selected" : ""}>${this._escape(this._displayCountry(country))}</option>`).join("")}
         </select></label>
         <label><span>Competition</span><select id="cup-competition-select" aria-label="Cup competition">
           <option value="">Choose a competition</option>
@@ -1449,7 +1611,7 @@ class FootballHubPanel extends HTMLElement {
   _tvGuidePage() {
     const guide = this._attrs("tv_guide");
     const items = guide.items || [];
-    const guideCountry = guide.country || this._statusInfo().country || "England";
+    const guideCountry = this._displayCountry(guide.country || this._statusInfo().country || "England");
     return `
       <section class="page-title"><div><span>${this._escape(guideCountry)} listings</span><h1>TV Guide</h1></div><strong>${items.length} matches</strong></section>
       <section class="portal-list">

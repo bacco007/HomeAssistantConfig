@@ -14,7 +14,7 @@ from .const import DOMAIN
 PLATFORMS = ["sensor"]
 PANEL_URL = "football-hub"
 PANEL_NAME = "football-hub-panel"
-PANEL_VERSION = "0.4.3-country-tv-guide"
+PANEL_VERSION = "0.4.5-complete-dynamic-translations"
 PANEL_STATIC_URL = "/football_hub/football-hub-panel.js"
 PANEL_MODULE_URL = f"{PANEL_STATIC_URL}?v={PANEL_VERSION}"
 PANEL_SCRIPT_PATH = Path(__file__).parent / "frontend" / "football-hub-panel.js"

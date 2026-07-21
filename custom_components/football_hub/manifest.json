@@ -8,5 +8,5 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/Adya84/ha-football-hub/issues",
   "requirements": ["aiohttp"],
-  "version": "0.4.4"
+  "version": "0.4.5"
 }
