@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
 from dataclasses import dataclass
 import logging
-from typing import TYPE_CHECKING, Final, Optional
+from typing import TYPE_CHECKING, Final
 from urllib.parse import urljoin
 
 import aiohttp
@@ -12,6 +11,8 @@ from homeassistant.const import STATE_PROBLEM, STATE_UNKNOWN
 from homeassistant.helpers.reload import async_setup_reload_service
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.typing import ConfigType
 
@@ -20,7 +21,7 @@ from .const import DOMAIN, PLATFORMS
 _LOGGER: Final = logging.getLogger(__name__)
 
 
-async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+async def async_setup(hass: HomeAssistant, _: ConfigType) -> bool:
     """Set up the prometheus-sensor integration."""
     await async_setup_reload_service(hass, DOMAIN, PLATFORMS)
     return True
@@ -28,8 +29,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
 @dataclass(frozen=True)
 class QueryResult:
-    value: Optional[float] = None
-    error: Optional[str] = None
+    value: float | None = None
+    error: str | None = None
 
 
 class Prometheus:
@@ -50,13 +51,15 @@ class Prometheus:
         """Query expression response."""
         try:
             response = await self._session.get(
-                self._url, params={"query": expr}, headers=self._headers
+                self._url,
+                params={"query": expr},
+                headers=self._headers,
             )
-        except aiohttp.ClientError as error:
-            _LOGGER.error("Error querying %s: %s", self._url, error)
+        except aiohttp.ClientError:
+            _LOGGER.exception("Error querying %s", self._url)
             return QueryResult(error=STATE_PROBLEM)
 
-        if response.status != 200:
+        if response.status != 200:  # noqa: PLR2004
             _LOGGER.error(
                 "Unexpected HTTP status code %s for expression '%s'",
                 response.status,
@@ -66,14 +69,14 @@ class Prometheus:
 
         try:
             result = (await response.json())["data"]["result"]
-        except (ValueError, KeyError) as error:
-            _LOGGER.error("Invalid query response: %s", error)
+        except ValueError, KeyError:
+            _LOGGER.exception("Invalid query response")
             return QueryResult(error=STATE_UNKNOWN)
 
         if not result:
             _LOGGER.error("Expression '%s' yielded no result", expr)
             return QueryResult(error=STATE_PROBLEM)
-        elif len(result) > 1:
+        if len(result) > 1:
             _LOGGER.error("Expression '%s' yielded multiple metrics", expr)
             return QueryResult(error=STATE_PROBLEM)
 

@@ -23,7 +23,7 @@ from homeassistant.const import (
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
 
-from . import Prometheus
+from . import Prometheus, const
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -32,13 +32,9 @@ if TYPE_CHECKING:
 
     from . import QueryResult
 
-from .const import (
-    CONF_EXPR,
-    CONF_HEADERS,
-    CONF_QUERIES,
-    DEFAULT_URL,
-    SCAN_INTERVAL as SCAN_INTERVAL,
-)
+from .const import CONF_EXPR, CONF_HEADERS, CONF_QUERIES, DEFAULT_URL
+
+SCAN_INTERVAL = const.SCAN_INTERVAL
 
 _QUERY_SCHEMA: Final = vol.Schema(
     {
@@ -48,7 +44,7 @@ _QUERY_SCHEMA: Final = vol.Schema(
         vol.Required(CONF_EXPR): cv.string,
         vol.Optional(CONF_DEVICE_CLASS): vol.Coerce(SensorDeviceClass),
         vol.Optional(CONF_STATE_CLASS): vol.Coerce(SensorStateClass),
-    }
+    },
 )
 
 PLATFORM_SCHEMA: Final = SENSOR_PLATFORM_SCHEMA.extend(
@@ -56,7 +52,7 @@ PLATFORM_SCHEMA: Final = SENSOR_PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_URL, default=DEFAULT_URL): cv.string,
         vol.Optional(CONF_HEADERS): vol.Schema({cv.string: cv.string}),
         vol.Required(CONF_QUERIES): [_QUERY_SCHEMA],
-    }
+    },
 )
 
 
@@ -64,8 +60,8 @@ async def async_setup_platform(
     hass: HomeAssistant,
     config: ConfigType,
     async_add_entities: AddEntitiesCallback,
-    discovery_info: DiscoveryInfoType | None = None,
-):
+    _: DiscoveryInfoType | None = None,
+) -> None:
     """Set up the sensor platform."""
     session = async_get_clientsession(hass)
     url = config[CONF_URL]

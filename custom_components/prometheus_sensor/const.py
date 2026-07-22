@@ -1,8 +1,10 @@
 from datetime import timedelta
 from typing import Final
 
+from homeassistant.const import Platform
+
 DOMAIN = "prometheus_sensor"
-PLATFORMS = ["binary_sensor", "sensor"]
+PLATFORMS = [Platform.BINARY_SENSOR, Platform.SENSOR]
 
 # Match the default scrape_interval in Prometheus
 SCAN_INTERVAL: Final = timedelta(seconds=15)
