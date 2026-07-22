@@ -56,7 +56,7 @@ async def async_setup_entry(
     url = entry.data[CONF_URL]
     api_key = entry.data[CONF_API_KEY]
     verify_ssl = entry.data.get(CONF_VERIFY_SSL, True)
-    session: Any = async_get_clientsession(hass)
+    session: Any = async_get_clientsession(hass, verify_ssl=verify_ssl)
 
     # Register services for this app type if not already registered
     await async_setup_services(hass, app_type)

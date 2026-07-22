@@ -153,7 +153,7 @@ class ArmadarrFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         verify_ssl: bool,
     ) -> None:
         """Validate connection."""
-        session: Any = async_get_clientsession(self.hass)
+        session: Any = async_get_clientsession(self.hass, verify_ssl=verify_ssl)
         client: Any
         if app_type == "Sonarr":
             client = AsyncSonarr(
