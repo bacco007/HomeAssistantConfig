@@ -14,6 +14,75 @@ from homeassistant.helpers.entity import DeviceInfo
 
 from .const import DOMAIN
 
+# Unique_id suffixes for the 8 container-stat sensors (CPU/memory/network/
+# block-I/O), matching how each builds self._attr_unique_id in sensor.py.
+# Consolidated here from three previously-separate copies (__init__.py,
+# migration.py, sensor.py) that had drifted subtly inconsistent — notably,
+# sensor.py's copy lacked the leading underscore migration.py's had, and
+# was passed straight to str.endswith() without adding one, which
+# happened to still work (a bare substring match rather than a real
+# suffix-boundary check) but wasn't doing what it looked like it was
+# doing. Each string here includes its own leading underscore so every
+# call site can use the plain, direct `uid.endswith(CONTAINER_STATS_SUFFIXES)`
+# form — str.endswith() natively accepts a tuple of alternatives — rather
+# than every caller needing to reconstruct the separator itself.
+CONTAINER_STATS_SUFFIXES = (
+    "_cpu_percent",
+    "_memory_usage",
+    "_memory_percent",
+    "_memory_limit",
+    "_network_rx",
+    "_network_tx",
+    "_block_read",
+    "_block_write",
+)
+
+# "_memory_limit" here is a deliberate exact collision with a runtime
+# control entity of the same name (number.py) — disambiguated by entity
+# domain (number vs sensor) wherever both are in scope, not by suffix
+# alone. See __init__.py's entity-registry cleanup pass for the actual
+# disambiguation and ARCHITECTURE.md §2 for the full writeup.
+
+
+def _all_envs(data: dict[str, Any] | None) -> dict[int, dict[str, Any]]:
+    """Safely get every environment's slice of a coordinator's data, for
+    iterating all of them.
+
+    Null-safe against Dockhand sending an explicit `null` rather than
+    omitting a key — `(data or {}).get("environments") or {}`, not
+    `data.get("environments", {})`, so an explicit null doesn't crash the
+    next `.items()`/`.keys()`/`.values()` call. Real, reported bug
+    (github.com/raetha/ha-dockhand/issues/20) that turned out broader
+    than the original report suspected — it hit an environment-level
+    sensor too, not just per-container ones.
+    """
+    return (data or {}).get("environments") or {}
+
+
+def _coordinator_env(data: dict[str, Any] | None, env_id: int) -> dict[str, Any]:
+    """Safely get one environment's slice of a coordinator's data — the
+    single-environment counterpart to _all_envs() above, built on it
+    rather than duplicating its unwrap logic.
+
+    Works identically for the fast, slow, and update coordinators — all
+    three now share the same {"environments": {env_id: {...}}} top-level
+    shape, so there's nothing coordinator-specific left for this function
+    to need to know. (Previously two near-identical functions, _fast_env
+    and _slow_env, kept separate on the reasoning that each name
+    documented which coordinator a call site expected. That reasoning
+    didn't hold up in practice: plenty of call sites had already stopped
+    calling either function and used a locally-unwrapped variable
+    instead, which undermined the "name as documentation" argument it was
+    kept for, while also being outright wrong in six of those places —
+    unwrapping "environments" a second time from something already
+    unwrapped, silently returning empty every time. One function that
+    isn't coordinator-specific removes the "which one do I call" question
+    entirely rather than relying on every call site getting a naming
+    convention right.)
+    """
+    return _all_envs(data).get(env_id) or {}
+
+
 # --------------------------------------------------------------------------- #
 # Section URL helpers
 # --------------------------------------------------------------------------- #
@@ -44,8 +113,15 @@ def _image_url(base_url: str) -> str | None:
     return _section_url(base_url, "images")
 
 
-def _env_url(base_url: str) -> str | None:
-    return _section_url(base_url, "environments")
+def _env_settings_url(base_url: str, env_id: int) -> str | None:
+    """Deep link straight to this environment's edit form.
+
+    Matches Dockhand's own dashboard settings-gear behavior exactly (traced
+    from dashboard-header.svelte's openSettings(): goto(`/settings?tab=
+    environments&edit=${environmentId}`)).
+    """
+    base = _section_url(base_url, "settings")
+    return f"{base}?tab=environments&edit={env_id}" if base else None
 
 
 def _schedules_url(base_url: str) -> str | None:
@@ -65,7 +141,7 @@ def _env_device(
         "name": env_name,
         "manufacturer": "Dockhand",
         "model": "Environment",
-        "configuration_url": _env_url(base_url),
+        "configuration_url": _env_settings_url(base_url, env_id),
         "entry_type": DeviceEntryType.SERVICE,
     }
     if stats:
@@ -75,12 +151,36 @@ def _env_device(
     return DeviceInfo(**info)
 
 
+def _containers_group_device(env_id: int, env_name: str, base_url: str) -> DeviceInfo:
+    return DeviceInfo(
+        identifiers={(DOMAIN, f"env_{env_id}_Containers")},
+        name=f"{env_name} – Containers",
+        manufacturer="Dockhand",
+        model="Environment Group",
+        configuration_url=_container_url(base_url),
+        via_device=(DOMAIN, f"env_{env_id}"),
+        entry_type=DeviceEntryType.SERVICE,
+    )
+
+
+def _stacks_group_device(env_id: int, env_name: str, base_url: str) -> DeviceInfo:
+    return DeviceInfo(
+        identifiers={(DOMAIN, f"env_{env_id}_Stacks")},
+        name=f"{env_name} – Stacks",
+        manufacturer="Dockhand",
+        model="Environment Group",
+        configuration_url=_stack_url(base_url),
+        via_device=(DOMAIN, f"env_{env_id}"),
+        entry_type=DeviceEntryType.SERVICE,
+    )
+
+
 def _network_group_device(env_id: int, env_name: str, base_url: str) -> DeviceInfo:
     return DeviceInfo(
         identifiers={(DOMAIN, f"env_{env_id}_Networks")},
         name=f"{env_name} – Networks",
         manufacturer="Dockhand",
-        model="Environment",
+        model="Environment Group",
         configuration_url=_network_url(base_url),
         via_device=(DOMAIN, f"env_{env_id}"),
         entry_type=DeviceEntryType.SERVICE,
@@ -92,7 +192,7 @@ def _volume_group_device(env_id: int, env_name: str, base_url: str) -> DeviceInf
         identifiers={(DOMAIN, f"env_{env_id}_Volumes")},
         name=f"{env_name} – Volumes",
         manufacturer="Dockhand",
-        model="Environment",
+        model="Environment Group",
         configuration_url=_volume_url(base_url),
         via_device=(DOMAIN, f"env_{env_id}"),
         entry_type=DeviceEntryType.SERVICE,
@@ -134,20 +234,48 @@ def _container_device(
     )
 
 
+_STACK_MODEL_BY_SOURCE_TYPE = {
+    "internal": "Internal Stack",
+    "git": "Git Stack",
+    "external": "Untracked Stack",
+}
+
+
 def _stack_device(
-    stack_name: str, env_id: int, env_name: str, base_url: str
+    stack_name: str,
+    env_id: int,
+    env_name: str,
+    base_url: str,
+    source_type: str | None = None,
 ) -> DeviceInfo:
     """Device info for a Compose stack.
 
     Name format: "{env_name} – Stacks – {stack_name}"
     HA slugifies this to "{env_slug}_stacks_{name}", producing entity_ids
     unambiguous alongside container entities.
+
+    model reflects Dockhand's own sourceType ('internal'/'git'/'external')
+    when known — this is how a user tells at a glance why one stack has
+    the extra git-stack entities and another doesn't, without needing to
+    dig into an attribute. Confirmed from Dockhand's own frontend source
+    (routes/stacks/+page.svelte's getStackSource()) that a stack with no
+    stackSources DB record at all — one Dockhand only ever discovered via
+    running containers, never explicitly created/adopted/git-tracked
+    through its own UI — is treated there as sourceType 'external' by
+    default (not "unknown"), and displayed there as "Untracked". We match
+    that exactly: source_type absent defaults to 'external', which maps
+    to "Untracked Stack" here, same as an explicit sourceType='external'
+    record. Likely the common case for most self-hosted setups, since
+    stacks that predate installing Dockhand were never explicitly
+    recorded in its database.
     """
     return DeviceInfo(
         identifiers={(DOMAIN, f"stack_{env_id}_{stack_name}")},
         name=f"{env_name} – Stacks – {stack_name}",
         manufacturer="Dockhand",
-        model="Stack",
+        model=_STACK_MODEL_BY_SOURCE_TYPE.get(
+            source_type or "external", "Untracked Stack"
+        ),
         configuration_url=_stack_url(base_url),
         via_device=(DOMAIN, f"env_{env_id}_Stacks"),
         entry_type=DeviceEntryType.SERVICE,
@@ -159,7 +287,7 @@ def _image_group_device(env_id: int, env_name: str, base_url: str) -> DeviceInfo
         identifiers={(DOMAIN, f"env_{env_id}_Images")},
         name=f"{env_name} – Images",
         manufacturer="Dockhand",
-        model="Environment",
+        model="Environment Group",
         configuration_url=_image_url(base_url),
         via_device=(DOMAIN, f"env_{env_id}"),
         entry_type=DeviceEntryType.SERVICE,
@@ -225,6 +353,64 @@ def _container_has_healthcheck(container: dict) -> bool:
     return bool(h) and h not in ("none", "unknown")
 
 
+_TRUTHY_LABEL_VALUES = {"true", "yes", "1"}
+_FALSY_LABEL_VALUES = {"false", "no", "0"}
+
+
+def _stack_has_system_container(stack: dict | None, all_containers: list) -> bool:
+    """True if any container belonging to this stack is a Dockhand
+    system container (dockhand itself, or a Hawser agent).
+
+    Cross-references the stack's container list against the
+    environment's full container list, which already has Dockhand's own
+    precomputed systemContainer field (GET /api/containers) — same
+    preference for authoritative API data over re-deriving it (there's no
+    equivalent field on the stack's own containerDetails, only on the
+    plain containers list).
+
+    IMPORTANT: despite the field's plural-noun name, ComposeStackInfo's
+    "containers" field is a list of Docker container IDs, not names —
+    confirmed from Dockhand's own source (stacks.ts populates it via
+    `Array.from(containerIds)`, where containerIds is a Set matched
+    against `c.id`, not `c.name`). Matching against container_id here,
+    not container_name — this exact mismatch (comparing this list
+    against container names) was a real bug that shipped: stack-level
+    system-container detection silently never matched anything, for any
+    stack, ever.
+
+    Used to suppress destructive actions (restart, running switch) at the
+    stack level for any stack that includes Dockhand's own infrastructure
+    — restarting or stopping the whole stack would take those containers
+    down too. Dockhand's own UI doesn't apply this restriction at the
+    stack level (only at the individual-container level, where the
+    equivalent client-side check already exists) — we're intentionally
+    more conservative here, since a stack action affects every container
+    in it, including ones the user may not realize are Dockhand
+    infrastructure.
+    """
+    if not stack:
+        return False
+    stack_container_ids = set(stack.get("containers") or [])
+    if not stack_container_ids:
+        return False
+    for c in all_containers or []:
+        if c.get("id") in stack_container_ids and c.get("systemContainer"):
+            return True
+    return False
+
+
+def _is_update_disabled_by_label(labels: dict | None) -> bool:
+    """True only if dockhand.update is explicitly false/no/0 (opt-out model —
+    replicates Dockhand's own isUpdateDisabledByLabel() exactly, including
+    case-insensitivity and the same truthy/falsy value sets)."""
+    if not labels:
+        return False
+    value = labels.get("dockhand.update")
+    if value is None:
+        return False
+    return value.strip().lower() in _FALSY_LABEL_VALUES
+
+
 def _compose_project(container: dict | None) -> str | None:
     """Return the Compose project name for a container, or None if freestanding.
 
@@ -235,6 +421,29 @@ def _compose_project(container: dict | None) -> str | None:
     if not container:
         return None
     return (container.get("labels") or {}).get("com.docker.compose.project")
+
+
+def _extract_runtime_config(inspect_data: dict) -> dict[str, Any]:
+    """Pull the small HostConfig subset runtime-control entities need out of
+    a full Docker inspect response (GET /api/containers/{id}/inspect).
+
+    Returns {"memory": int, "nano_cpus": int, "pids_limit": int,
+    "restart_policy": str}. Missing/falsy values become the Docker-native
+    "unlimited"/"unset" sentinel for that field (0 for memory and CPU, -1
+    for pids_limit is preserved as-is since Docker already uses -1 there,
+    "" for restart policy) rather than None, so entities have a real
+    starting value to display instead of unknown.
+    """
+    host_config = inspect_data.get("HostConfig") or {}
+    restart_policy = host_config.get("RestartPolicy") or {}
+    return {
+        "memory": host_config.get("Memory") or 0,
+        "nano_cpus": host_config.get("NanoCpus") or 0,
+        "pids_limit": host_config.get("PidsLimit")
+        if host_config.get("PidsLimit") is not None
+        else -1,
+        "restart_policy": restart_policy.get("Name") or "no",
+    }
 
 
 # --------------------------------------------------------------------------- #
@@ -327,7 +536,15 @@ def _ensure_env_devices(
             created for each entry in `stacks`.
         stacks: Fast coordinator stack list. Required to register the Stacks group
             and individual stack devices (needed before Compose container entities
-            reference them as via_device).
+            reference them as via_device). Builds each device via the same
+            _stack_device()/_stacks_group_device() factories entity device_info
+            properties use — this function still runs on every coordinator
+            update while entities' device_info only runs once at entity-add
+            time (see module docstring), but there is now only one place that
+            actually constructs the DeviceInfo fields, so the two call sites
+            can no longer drift out of sync the way they once did (a stack's
+            model briefly showing correctly after a reload, then reverting to
+            a stale hardcoded value on the next coordinator update).
         networks / images / volumes: Slow coordinator resource lists. Each group
             device is only created when the corresponding enable_* flag is True
             AND the list is non-empty.
@@ -342,12 +559,7 @@ def _ensure_env_devices(
     # as a separator — a hyphen could appear in the resource name itself.
     registry.async_get_or_create(
         config_entry_id=entry_id,
-        identifiers={(DOMAIN, f"env_{env_id}")},
-        name=env_name,
-        manufacturer="Dockhand",
-        model="Environment",
-        configuration_url=_env_url(base_url),
-        entry_type=DeviceEntryType.SERVICE,
+        **_env_device(env_id, env_name, base_url),
     )
 
     # ── Containers group — only when freestanding containers exist ───────────
@@ -356,13 +568,7 @@ def _ensure_env_devices(
         if has_freestanding:
             registry.async_get_or_create(
                 config_entry_id=entry_id,
-                identifiers={(DOMAIN, f"env_{env_id}_Containers")},
-                name=f"{env_name} – Containers",
-                manufacturer="Dockhand",
-                model="Environment",
-                configuration_url=_container_url(base_url),
-                via_device=(DOMAIN, f"env_{env_id}"),
-                entry_type=DeviceEntryType.SERVICE,
+                **_containers_group_device(env_id, env_name, base_url),
             )
 
     # ── Stacks group + individual stack devices ──────────────────────────────
@@ -371,59 +577,35 @@ def _ensure_env_devices(
     if stacks:
         registry.async_get_or_create(
             config_entry_id=entry_id,
-            identifiers={(DOMAIN, f"env_{env_id}_Stacks")},
-            name=f"{env_name} – Stacks",
-            manufacturer="Dockhand",
-            model="Environment",
-            configuration_url=_stack_url(base_url),
-            via_device=(DOMAIN, f"env_{env_id}"),
-            entry_type=DeviceEntryType.SERVICE,
+            **_stacks_group_device(env_id, env_name, base_url),
         )
         for stack in stacks:
             stack_name = stack.get("name", "")
             if stack_name:
                 registry.async_get_or_create(
                     config_entry_id=entry_id,
-                    identifiers={(DOMAIN, f"stack_{env_id}_{stack_name}")},
-                    name=f"{env_name} – Stacks – {stack_name}",
-                    manufacturer="Dockhand",
-                    model="Stack",
-                    configuration_url=_stack_url(base_url),
-                    via_device=(DOMAIN, f"env_{env_id}_Stacks"),
-                    entry_type=DeviceEntryType.SERVICE,
+                    **_stack_device(
+                        stack_name,
+                        env_id,
+                        env_name,
+                        base_url,
+                        source_type=stack.get("sourceType"),
+                    ),
                 )
 
     # ── Optional slow-coordinator group devices ──────────────────────────────
     if enable_networks and networks:
         registry.async_get_or_create(
             config_entry_id=entry_id,
-            identifiers={(DOMAIN, f"env_{env_id}_Networks")},
-            name=f"{env_name} – Networks",
-            manufacturer="Dockhand",
-            model="Environment",
-            configuration_url=_network_url(base_url),
-            via_device=(DOMAIN, f"env_{env_id}"),
-            entry_type=DeviceEntryType.SERVICE,
+            **_network_group_device(env_id, env_name, base_url),
         )
     if enable_images and images:
         registry.async_get_or_create(
             config_entry_id=entry_id,
-            identifiers={(DOMAIN, f"env_{env_id}_Images")},
-            name=f"{env_name} – Images",
-            manufacturer="Dockhand",
-            model="Environment",
-            configuration_url=_image_url(base_url),
-            via_device=(DOMAIN, f"env_{env_id}"),
-            entry_type=DeviceEntryType.SERVICE,
+            **_image_group_device(env_id, env_name, base_url),
         )
     if enable_volumes and volumes:
         registry.async_get_or_create(
             config_entry_id=entry_id,
-            identifiers={(DOMAIN, f"env_{env_id}_Volumes")},
-            name=f"{env_name} – Volumes",
-            manufacturer="Dockhand",
-            model="Environment",
-            configuration_url=_volume_url(base_url),
-            via_device=(DOMAIN, f"env_{env_id}"),
-            entry_type=DeviceEntryType.SERVICE,
+            **_volume_group_device(env_id, env_name, base_url),
         )

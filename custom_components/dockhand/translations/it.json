@@ -94,8 +94,10 @@
           "enable_images": "Abilita sensori immagini",
           "enable_volumes": "Abilita sensori volumi",
           "enable_networks": "Abilita sensori reti",
-          "enable_updates": "Abilita entità di aggiornamento contenitori",
-          "poll_interval_updates": "Intervallo di controllo aggiornamenti (secondi)"
+          "poll_interval_updates": "Intervallo di controllo aggiornamenti (secondi)",
+          "enable_runtime_controls": "Abilita controlli runtime (avanzato)",
+          "enable_precise_updates": "Abilita versioni di aggiornamento precise",
+          "enable_container_stats": "Abilita sensori CPU/memoria/rete/I-O disco per container"
         },
         "data_description": {
           "poll_interval": "Con quale frequenza aggiornare le statistiche. Predefinito: 60. Minimo: 10.",
@@ -104,8 +106,10 @@
           "enable_images": "Abilita i sensori per le immagini Docker per ogni ambiente.",
           "enable_volumes": "Abilita i sensori per i volumi Docker per ogni ambiente.",
           "enable_networks": "Abilita i sensori per le reti Docker per ogni ambiente.",
-          "enable_updates": "Abilita entità di aggiornamento per ogni contenitore che mostrano la disponibilità di aggiornamenti dell'immagine. Attiva query reali al registro — vedere poll_interval_updates.",
-          "poll_interval_updates": "Con quale frequenza controllare i registri dei contenitori per aggiornamenti delle immagini (secondi). Ogni controllo interroga il registro per ogni contenitore. Predefinito: 86400 (24 ore). Minimo: 300."
+          "poll_interval_updates": "Con quale frequenza eseguire le query al registro reali abilitate sopra (secondi). Predefinito: 86400 (24 ore). Minimo: 300. Rilevante solo se \"Abilita versioni di aggiornamento precise\" è attivo.",
+          "enable_runtime_controls": "Abilita entità number/select per modificare in tempo reale il limite di memoria, il limite CPU, il limite di processi e il criterio di riavvio di un container autonomo, senza ricrearlo. Non disponibile per i container gestiti da uno stack Compose. Richiede una chiamata API aggiuntiva per container autonomo a ogni polling lento per leggere i valori attuali.",
+          "enable_precise_updates": "Le entità di aggiornamento esistono già automaticamente per ogni container in un ambiente in cui il controllo aggiornamenti è abilitato in Dockhand stesso, mostrando un tag immagine e uno stato \"update-pending\" dai risultati già memorizzati nella cache da Dockhand — senza costi API aggiuntivi. Attivando questa opzione si aggiungono vere query al registro nell'intervallo indicato sotto, aggiornando le stesse entità per mostrare numeri di versione precisi (digest delle immagini).",
+          "enable_container_stats": "Crea i sensori per container di CPU, memoria, rete e I/O a blocchi, invece di non crearli affatto finché non lo attivi. Controlla anche la chiamata API di statistiche sottostante stessa — disattivato significa che la chiamata non viene effettuata, non solo che le entità sono nascoste. Disabilitato per impostazione predefinita poiché sono molte entità di cui la maggior parte delle persone non ha bisogno. Un container fermo, o che esce dalla risposta delle statistiche per qualsiasi altro motivo, segnala questi sensori come non disponibili invece di una lettura obsoleta o pari a zero. Disattivare questo rimuove anche le entità statistiche create in precedenza."
         }
       }
     }
@@ -133,11 +137,8 @@
       "network_count": {
         "name": "Numero reti"
       },
-      "containers_disk_usage": {
-        "name": "Utilizzo disco container"
-      },
-      "build_cache_size": {
-        "name": "Dimensione cache build"
+      "disk_usage": {
+        "name": "Utilizzo del disco"
       },
       "activity_events": {
         "name": "Eventi di attività"
@@ -186,6 +187,39 @@
       },
       "container_block_write": {
         "name": "Disco scrittura"
+      },
+      "git_stack_sync_status": {
+        "name": "Stato sincronizzazione",
+        "state": {
+          "pending": "In attesa",
+          "syncing": "Sincronizzazione in corso",
+          "synced": "Sincronizzato",
+          "error": "Errore"
+        }
+      },
+      "git_stack_last_sync": {
+        "name": "Ultima sincronizzazione"
+      },
+      "host_platform": {
+        "name": "Piattaforma host"
+      },
+      "host_docker_version": {
+        "name": "Versione Docker"
+      },
+      "uptime": {
+        "name": "Tempo di attività"
+      },
+      "vulnerabilities": {
+        "name": "Vulnerabilità"
+      },
+      "connection_type": {
+        "name": "Tipo di connessione",
+        "state": {
+          "socket": "Socket Unix",
+          "direct": "Connessione diretta",
+          "hawser-standard": "Agente Hawser (standard)",
+          "hawser-edge": "Agente Hawser (edge)"
+        }
       }
     },
     "binary_sensor": {
@@ -193,7 +227,7 @@
         "name": "Online"
       },
       "activity_logging": {
-        "name": "Registrazione attività"
+        "name": "Raccolta attività"
       },
       "metrics_collection": {
         "name": "Raccolta metriche"
@@ -209,15 +243,59 @@
       },
       "image_pruning": {
         "name": "Pulizia immagini"
+      },
+      "git_stack_sync_error": {
+        "name": "Errore di sincronizzazione"
+      },
+      "stack_updates_available": {
+        "name": "Aggiornamenti disponibili"
       }
     },
-    "switch": {},
+    "switch": {
+      "container_auto_update": {
+        "name": "Aggiornamento automatico"
+      },
+      "git_stack_auto_deploy": {
+        "name": "Distribuzione automatica"
+      }
+    },
     "button": {
       "check_updates": {
         "name": "Controlla aggiornamenti immagini"
       },
       "restart": {
         "name": "Riavvia"
+      },
+      "git_stack_deploy": {
+        "name": "Distribuisci"
+      },
+      "stack_deploy": {
+        "name": "Ridistribuisci"
+      },
+      "env_bulk_update": {
+        "name": "Aggiorna tutti i container"
+      }
+    },
+    "number": {
+      "container_memory_limit": {
+        "name": "Limite di memoria"
+      },
+      "container_cpu_limit": {
+        "name": "Limite CPU"
+      },
+      "container_pids_limit": {
+        "name": "Limite processi"
+      }
+    },
+    "select": {
+      "container_restart_policy": {
+        "name": "Criterio di riavvio",
+        "state": {
+          "no": "No",
+          "always": "Sempre",
+          "unless-stopped": "Salvo se arrestato",
+          "on-failure": "In caso di errore"
+        }
       }
     }
   },
@@ -227,6 +305,19 @@
     },
     "container_not_found": {
       "message": "Container non trovato — potrebbe essere stato rimosso"
+    },
+    "git_stack_not_found": {
+      "message": "Stack git non trovato — potrebbe essere stato rimosso"
+    }
+  },
+  "issues": {
+    "runtime_update_warning": {
+      "title": "Dockhand ha segnalato un avviso durante l'aggiornamento di {container}",
+      "description": "La modifica di {field} sul container \"{container}\" è riuscita, ma la chiamata sottostante di Dockhand al motore Docker ha restituito un avviso, il che potrebbe significare che non è stata applicata completamente: {warnings}\n\nControlla il container nell'interfaccia di Dockhand per confermare il valore attuale."
+    },
+    "runtime_memory_reverted": {
+      "title": "Limite di memoria ripristinato automaticamente per {container}",
+      "description": "Il container \"{container}\" ha smesso di funzionare poco dopo l'abbassamento del suo limite di memoria, il che può accadere quando il nuovo limite è inferiore all'utilizzo effettivo del container e il kernel lo applica immediatamente. Il limite di memoria è stato ripristinato automaticamente al suo valore precedente ({memory_bytes} byte). Controlla i log e lo stato di salute attuale del container in Dockhand."
     }
   }
 }

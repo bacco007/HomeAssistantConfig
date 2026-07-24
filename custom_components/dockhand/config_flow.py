@@ -15,19 +15,23 @@ from .api import DockhandAuthError, DockhandClient
 from .const import (
     CONF_API_TOKEN,
     CONF_API_URL,
+    CONF_ENABLE_CONTAINER_STATS,
     CONF_ENABLE_IMAGES,
     CONF_ENABLE_NETWORKS,
+    CONF_ENABLE_PRECISE_UPDATES,
+    CONF_ENABLE_RUNTIME_CONTROLS,
     CONF_ENABLE_SCHEDULES,
-    CONF_ENABLE_UPDATES,
     CONF_ENABLE_VOLUMES,
     CONF_POLL_INTERVAL,
     CONF_POLL_INTERVAL_SLOW,
     CONF_POLL_INTERVAL_UPDATES,
     CONF_VERIFY_SSL,
+    DEFAULT_ENABLE_CONTAINER_STATS,
     DEFAULT_ENABLE_IMAGES,
     DEFAULT_ENABLE_NETWORKS,
+    DEFAULT_ENABLE_PRECISE_UPDATES,
+    DEFAULT_ENABLE_RUNTIME_CONTROLS,
     DEFAULT_ENABLE_SCHEDULES,
-    DEFAULT_ENABLE_UPDATES,
     DEFAULT_ENABLE_VOLUMES,
     DEFAULT_POLL_INTERVAL,
     DEFAULT_POLL_INTERVAL_SLOW,
@@ -115,8 +119,16 @@ def _options_schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
                 default=d.get(CONF_ENABLE_NETWORKS, DEFAULT_ENABLE_NETWORKS),
             ): bool,
             vol.Optional(
-                CONF_ENABLE_UPDATES,
-                default=d.get(CONF_ENABLE_UPDATES, DEFAULT_ENABLE_UPDATES),
+                CONF_ENABLE_CONTAINER_STATS,
+                default=d.get(
+                    CONF_ENABLE_CONTAINER_STATS, DEFAULT_ENABLE_CONTAINER_STATS
+                ),
+            ): bool,
+            vol.Optional(
+                CONF_ENABLE_PRECISE_UPDATES,
+                default=d.get(
+                    CONF_ENABLE_PRECISE_UPDATES, DEFAULT_ENABLE_PRECISE_UPDATES
+                ),
             ): bool,
             vol.Optional(
                 CONF_POLL_INTERVAL_UPDATES,
@@ -124,12 +136,23 @@ def _options_schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
                     CONF_POLL_INTERVAL_UPDATES, DEFAULT_POLL_INTERVAL_UPDATES
                 ),
             ): vol.All(vol.Coerce(int), vol.Range(min=MIN_POLL_INTERVAL_UPDATES)),
+            # Deliberately last: a genuinely advanced setting (exposes
+            # write-capable number/select entities that change a
+            # container's actual runtime config), unlike everything above
+            # it, which is either a poll-interval tweak or a read-only
+            # visibility toggle for data most users want fairly often.
+            vol.Optional(
+                CONF_ENABLE_RUNTIME_CONTROLS,
+                default=d.get(
+                    CONF_ENABLE_RUNTIME_CONTROLS, DEFAULT_ENABLE_RUNTIME_CONTROLS
+                ),
+            ): bool,
         }
     )
 
 
 class DockhandConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    VERSION = 1
+    VERSION = 2
 
     def __init__(self) -> None:
         # Accumulates data across multi-step flows.
@@ -212,8 +235,11 @@ class DockhandConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     self.context["entry_id"]
                 )
                 if entry:
+                    # async_update_entry() alone is enough now — __init__.py
+                    # registers an update listener that reloads the entry
+                    # whenever data/options change, so an explicit reload
+                    # here would just be a redundant second one.
                     self.hass.config_entries.async_update_entry(entry, data=merged)
-                    await self.hass.config_entries.async_reload(entry.entry_id)
                 reason = (
                     "reauth_successful"
                     if self._flow_origin == "reauth"
@@ -253,8 +279,10 @@ class DockhandConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             client = DockhandClient(session, merged)
             try:
                 await client.async_probe()
+                # async_update_entry() alone triggers a reload via
+                # __init__.py's update listener now — an explicit reload
+                # here would be redundant.
                 self.hass.config_entries.async_update_entry(entry, data=merged)
-                await self.hass.config_entries.async_reload(entry.entry_id)
                 return self.async_abort(reason="reauth_successful")
             except DockhandAuthError:
                 errors["base"] = "invalid_auth"
@@ -325,8 +353,10 @@ class DockhandConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 updated = {**entry.data, **probe_data}
                 if not submitted_token:
                     updated.pop(CONF_API_TOKEN, None)
+                # async_update_entry() alone triggers a reload via
+                # __init__.py's update listener now — an explicit reload
+                # here would be redundant.
                 self.hass.config_entries.async_update_entry(entry, data=updated)
-                await self.hass.config_entries.async_reload(entry.entry_id)
                 return self.async_abort(reason="reconfigure_successful")
             except DockhandAuthError:
                 # Auth still required — prompt for token.

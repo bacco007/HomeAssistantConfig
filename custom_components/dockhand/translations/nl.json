@@ -94,8 +94,10 @@
           "enable_images": "Image-sensoren inschakelen",
           "enable_volumes": "Volume-sensoren inschakelen",
           "enable_networks": "Netwerksensoren inschakelen",
-          "enable_updates": "Container-update-entiteiten inschakelen",
-          "poll_interval_updates": "Controle-interval voor updates (seconden)"
+          "poll_interval_updates": "Controle-interval voor updates (seconden)",
+          "enable_runtime_controls": "Runtime-besturing inschakelen (geavanceerd)",
+          "enable_precise_updates": "Precieze updateversies inschakelen",
+          "enable_container_stats": "Container CPU-/geheugen-/netwerk-/schijf-I/O-sensoren inschakelen"
         },
         "data_description": {
           "poll_interval": "Hoe vaak statistieken worden vernieuwd. Standaard: 60. Minimum: 10.",
@@ -104,8 +106,10 @@
           "enable_images": "Schakelt sensoren in voor Docker-images per omgeving.",
           "enable_volumes": "Schakelt sensoren in voor Docker-volumes per omgeving.",
           "enable_networks": "Schakelt sensoren in voor Docker-netwerken per omgeving.",
-          "enable_updates": "Schakelt update-entiteiten in voor elke container die de beschikbaarheid van image-updates weergeeft. Activeert echte registerquery's — zie poll_interval_updates.",
-          "poll_interval_updates": "Hoe vaak containerregisters worden gecontroleerd op image-updates (seconden). Elke controle ondervraagt het register voor elke container. Standaard: 86400 (24 uur). Minimum: 300."
+          "poll_interval_updates": "Hoe vaak de hierboven ingeschakelde echte registry-aanvragen worden uitgevoerd (seconden). Standaard: 86400 (24 uur). Minimum: 300. Alleen relevant als \"Precieze updateversies inschakelen\" aanstaat.",
+          "enable_runtime_controls": "Schakelt number-/select-entiteiten in om de geheugenlimiet, CPU-limiet, proceslimiet en herstartbeleid van een zelfstandige container live te wijzigen, zonder deze opnieuw aan te maken. Niet beschikbaar voor containers die worden beheerd door een Compose-stack. Vereist één extra API-aanroep per zelfstandige container bij elke trage polling om huidige waarden te lezen.",
+          "enable_precise_updates": "Update-entiteiten bestaan al automatisch voor elke container in een omgeving waar update-controle is ingeschakeld in Dockhand zelf, met een image-tag en een \"update-pending\"-status op basis van Dockhands eigen gecachte resultaten — zonder extra API-kosten. Dit inschakelen voegt echte registry-aanvragen toe met het onderstaande interval, waardoor dezelfde entiteiten worden bijgewerkt met precieze versienummers (image-digests).",
+          "enable_container_stats": "Maakt de sensoren per container voor CPU, geheugen, netwerk en block-I/O aan, in plaats van ze helemaal niet aan te maken totdat u dit inschakelt. Bepaalt ook de onderliggende statistieken-API-aanroep zelf — uit betekent dat de aanroep niet wordt gedaan, niet alleen dat de entiteiten verborgen zijn. Standaard uitgeschakeld omdat het veel entiteiten zijn die de meeste mensen niet nodig hebben. Een container die gestopt is, of om een andere reden uit de statistiekenrespons valt, meldt deze sensoren als niet beschikbaar in plaats van een verouderde of nulwaarde. Dit uitschakelen verwijdert ook eerder aangemaakte statistiekentiteiten."
         }
       }
     }
@@ -133,11 +137,8 @@
       "network_count": {
         "name": "Aantal netwerken"
       },
-      "containers_disk_usage": {
-        "name": "Schijfgebruik containers"
-      },
-      "build_cache_size": {
-        "name": "Buildcachegrootte"
+      "disk_usage": {
+        "name": "Schijfgebruik"
       },
       "activity_events": {
         "name": "Activiteitsgebeurtenissen"
@@ -186,6 +187,39 @@
       },
       "container_block_write": {
         "name": "Schijf schrijven"
+      },
+      "git_stack_sync_status": {
+        "name": "Synchronisatiestatus",
+        "state": {
+          "pending": "In behandeling",
+          "syncing": "Bezig met synchroniseren",
+          "synced": "Gesynchroniseerd",
+          "error": "Fout"
+        }
+      },
+      "git_stack_last_sync": {
+        "name": "Laatste synchronisatie"
+      },
+      "host_platform": {
+        "name": "Hostplatform"
+      },
+      "host_docker_version": {
+        "name": "Docker-versie"
+      },
+      "uptime": {
+        "name": "Uptime"
+      },
+      "vulnerabilities": {
+        "name": "Kwetsbaarheden"
+      },
+      "connection_type": {
+        "name": "Verbindingstype",
+        "state": {
+          "socket": "Unix-socket",
+          "direct": "Directe verbinding",
+          "hawser-standard": "Hawser-agent (standaard)",
+          "hawser-edge": "Hawser-agent (edge)"
+        }
       }
     },
     "binary_sensor": {
@@ -193,7 +227,7 @@
         "name": "Online"
       },
       "activity_logging": {
-        "name": "Activiteitsregistratie"
+        "name": "Activiteitenverzameling"
       },
       "metrics_collection": {
         "name": "Metriekenverzameling"
@@ -209,15 +243,59 @@
       },
       "image_pruning": {
         "name": "Image-opschoning"
+      },
+      "git_stack_sync_error": {
+        "name": "Synchronisatiefout"
+      },
+      "stack_updates_available": {
+        "name": "Updates beschikbaar"
       }
     },
-    "switch": {},
+    "switch": {
+      "container_auto_update": {
+        "name": "Automatisch bijwerken"
+      },
+      "git_stack_auto_deploy": {
+        "name": "Automatisch implementeren"
+      }
+    },
     "button": {
       "check_updates": {
         "name": "Controleren op image-updates"
       },
       "restart": {
         "name": "Herstart"
+      },
+      "git_stack_deploy": {
+        "name": "Implementeren"
+      },
+      "stack_deploy": {
+        "name": "Opnieuw implementeren"
+      },
+      "env_bulk_update": {
+        "name": "Alle containers bijwerken"
+      }
+    },
+    "number": {
+      "container_memory_limit": {
+        "name": "Geheugenlimiet"
+      },
+      "container_cpu_limit": {
+        "name": "CPU-limiet"
+      },
+      "container_pids_limit": {
+        "name": "Proceslimiet"
+      }
+    },
+    "select": {
+      "container_restart_policy": {
+        "name": "Herstartbeleid",
+        "state": {
+          "no": "Nee",
+          "always": "Altijd",
+          "unless-stopped": "Tenzij gestopt",
+          "on-failure": "Bij fout"
+        }
       }
     }
   },
@@ -227,6 +305,19 @@
     },
     "container_not_found": {
       "message": "Container niet gevonden — het is mogelijk verwijderd"
+    },
+    "git_stack_not_found": {
+      "message": "Git-stack niet gevonden — deze is mogelijk verwijderd"
+    }
+  },
+  "issues": {
+    "runtime_update_warning": {
+      "title": "Dockhand meldde een waarschuwing bij het bijwerken van {container}",
+      "description": "Het wijzigen van {field} op container \"{container}\" is gelukt, maar de onderliggende Docker Engine-aanroep van Dockhand gaf een waarschuwing terug, wat kan betekenen dat het niet volledig is toegepast: {warnings}\n\nControleer de container in de Dockhand-interface om de huidige waarde te bevestigen."
+    },
+    "runtime_memory_reverted": {
+      "title": "Geheugenlimiet automatisch teruggezet voor {container}",
+      "description": "Container \"{container}\" stopte kort na het verlagen van de geheugenlimiet, wat kan gebeuren wanneer de nieuwe limiet lager is dan het werkelijke gebruik van de container en de kernel deze onmiddellijk afdwingt. De geheugenlimiet is automatisch teruggezet naar de vorige waarde ({memory_bytes} bytes). Controleer de logboeken en huidige status van de container in Dockhand."
     }
   }
 }

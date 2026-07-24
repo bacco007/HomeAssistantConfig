@@ -38,19 +38,16 @@
         "default": "mdi:layers-triple"
       },
       "image_count": {
-        "default": "mdi:package-variant-closed"
+        "default": "mdi:image-multiple"
       },
       "volume_count": {
-        "default": "mdi:database"
-      },
-      "containers_disk_usage": {
         "default": "mdi:harddisk"
       },
-      "build_cache_size": {
-        "default": "mdi:cached"
+      "disk_usage": {
+        "default": "mdi:harddisk"
       },
       "activity_events": {
-        "default": "mdi:timeline-text"
+        "default": "mdi:pulse"
       },
       "state": {
         "default": "mdi:docker",
@@ -92,42 +89,107 @@
       },
       "network_count": {
         "default": "mdi:lan"
+      },
+      "git_stack_sync_status": {
+        "default": "mdi:source-branch-sync"
+      },
+      "git_stack_last_sync": {
+        "default": "mdi:clock-check-outline"
+      },
+      "host_platform": {
+        "default": "mdi:laptop"
+      },
+      "host_docker_version": {
+        "default": "mdi:docker"
+      },
+      "uptime": {
+        "default": "mdi:restart"
+      },
+      "vulnerabilities": {
+        "default": "mdi:shield-bug"
+      },
+      "connection_type": {
+        "default": "mdi:help-network",
+        "state": {
+          "socket": "mdi:power-plug",
+          "direct": "mdi:docker",
+          "hawser-standard": "mdi:transit-connection-variant",
+          "hawser-edge": "mdi:undo-variant"
+        }
       }
     },
     "binary_sensor": {
       "online": {
-        "default": "mdi:server-network",
+        "default": "mdi:wifi",
         "state": {
-          "true": "mdi:server-network",
-          "false": "mdi:server-network-off"
+          "true": "mdi:wifi",
+          "false": "mdi:wifi-off"
         }
       },
       "activity_logging": {
-        "default": "mdi:clipboard-list"
+        "default": "mdi:pulse"
       },
       "metrics_collection": {
-        "default": "mdi:chart-line"
+        "default": "mdi:cpu-64-bit"
       },
       "vulnerability_scanning": {
-        "default": "mdi:shield-search"
+        "default": "mdi:shield-check"
       },
       "update_checks": {
-        "default": "mdi:update"
+        "default": "mdi:arrow-up-circle-outline"
       },
       "auto_update": {
-        "default": "mdi:arrow-up-circle-outline"
+        "default": "mdi:arrow-up-circle"
       },
       "image_pruning": {
         "default": "mdi:broom"
+      },
+      "git_stack_sync_error": {
+        "default": "mdi:source-branch-remove"
+      },
+      "stack_updates_available": {
+        "default": "mdi:package-up"
       }
     },
-    "switch": {},
+    "switch": {
+      "container_auto_update": {
+        "default": "mdi:update"
+      },
+      "git_stack_auto_deploy": {
+        "default": "mdi:source-branch-check"
+      }
+    },
     "button": {
       "check_updates": {
         "default": "mdi:cloud-search"
       },
       "restart": {
         "default": "mdi:restart"
+      },
+      "git_stack_deploy": {
+        "default": "mdi:rocket-launch-outline"
+      },
+      "stack_deploy": {
+        "default": "mdi:rocket-launch-outline"
+      },
+      "env_bulk_update": {
+        "default": "mdi:package-up"
+      }
+    },
+    "number": {
+      "container_memory_limit": {
+        "default": "mdi:memory"
+      },
+      "container_cpu_limit": {
+        "default": "mdi:chip"
+      },
+      "container_pids_limit": {
+        "default": "mdi:sitemap-outline"
+      }
+    },
+    "select": {
+      "container_restart_policy": {
+        "default": "mdi:restart-alert"
       }
     }
   }

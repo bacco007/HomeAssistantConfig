@@ -94,8 +94,10 @@
           "enable_images": "Activer les capteurs d'images",
           "enable_volumes": "Activer les capteurs de volumes",
           "enable_networks": "Activer les capteurs de réseaux",
-          "enable_updates": "Activer les entités de mise à jour des conteneurs",
-          "poll_interval_updates": "Intervalle de vérification des mises à jour (secondes)"
+          "poll_interval_updates": "Intervalle de vérification des mises à jour (secondes)",
+          "enable_runtime_controls": "Activer les contrôles d'exécution (avancé)",
+          "enable_precise_updates": "Activer les versions de mise à jour précises",
+          "enable_container_stats": "Activer les capteurs CPU/mémoire/réseau/E-S disque par conteneur"
         },
         "data_description": {
           "poll_interval": "Fréquence d'actualisation des conteneurs, stacks et statistiques. Défaut : 60. Minimum : 10.",
@@ -104,8 +106,10 @@
           "enable_images": "Active les capteurs pour les images Docker par environnement.",
           "enable_volumes": "Active les capteurs pour les volumes Docker par environnement.",
           "enable_networks": "Active les capteurs pour les réseaux Docker par environnement.",
-          "enable_updates": "Active les entités de mise à jour pour chaque conteneur indiquant la disponibilité des mises à jour d'image. Déclenche de vraies requêtes vers le registre — voir poll_interval_updates.",
-          "poll_interval_updates": "Fréquence de vérification des mises à jour d'image dans les registres de conteneurs (secondes). Chaque vérification interroge le registre pour chaque conteneur. Défaut : 86400 (24 heures). Minimum : 300."
+          "poll_interval_updates": "Fréquence des véritables requêtes au registre activées ci-dessus (secondes). Par défaut : 86400 (24 heures). Minimum : 300. Pertinent uniquement si \"Activer les versions de mise à jour précises\" est activé.",
+          "enable_runtime_controls": "Active des entités number/select pour modifier en direct la limite de mémoire, la limite de CPU, la limite de processus et la politique de redémarrage d'un conteneur autonome, sans le recréer. Non disponible pour les conteneurs gérés par un stack Compose. Nécessite un appel API supplémentaire par conteneur autonome à chaque sondage lent pour lire les valeurs actuelles.",
+          "enable_precise_updates": "Des entités de mise à jour existent déjà automatiquement pour chaque conteneur dans un environnement où la vérification des mises à jour est activée dans Dockhand lui-même, affichant une étiquette d'image et un état \"update-pending\" à partir des résultats mis en cache par Dockhand — sans coût d'API supplémentaire. Activer cette option ajoute de véritables requêtes au registre selon l'intervalle ci-dessous, améliorant ces mêmes entités pour afficher des numéros de version précis (empreintes d'image).",
+          "enable_container_stats": "Crée les capteurs par conteneur pour le CPU, la mémoire, le réseau et les E/S bloc, au lieu de ne pas les créer du tout jusqu'à activation. Contrôle aussi l'appel API de statistiques sous-jacent lui-même — désactivé signifie que l'appel n'est pas effectué, pas seulement que les entités sont masquées. Désactivé par défaut car cela représente beaucoup d'entités dont la plupart des gens n'ont pas besoin. Un conteneur arrêté, ou qui disparaît de la réponse des statistiques pour toute autre raison, signale ces capteurs comme indisponibles plutôt qu'une lecture obsolète ou nulle. Désactiver ceci supprime aussi les entités de statistiques créées précédemment."
         }
       }
     }
@@ -133,11 +137,8 @@
       "network_count": {
         "name": "Nombre de réseaux"
       },
-      "containers_disk_usage": {
-        "name": "Utilisation disque des conteneurs"
-      },
-      "build_cache_size": {
-        "name": "Taille du cache de build"
+      "disk_usage": {
+        "name": "Utilisation du disque"
       },
       "activity_events": {
         "name": "Événements d'activité"
@@ -186,6 +187,39 @@
       },
       "container_block_write": {
         "name": "Disque écriture"
+      },
+      "git_stack_sync_status": {
+        "name": "État de synchronisation",
+        "state": {
+          "pending": "En attente",
+          "syncing": "Synchronisation en cours",
+          "synced": "Synchronisé",
+          "error": "Erreur"
+        }
+      },
+      "git_stack_last_sync": {
+        "name": "Dernière synchronisation"
+      },
+      "host_platform": {
+        "name": "Plateforme de l'hôte"
+      },
+      "host_docker_version": {
+        "name": "Version de Docker"
+      },
+      "uptime": {
+        "name": "Temps de fonctionnement"
+      },
+      "vulnerabilities": {
+        "name": "Vulnérabilités"
+      },
+      "connection_type": {
+        "name": "Type de connexion",
+        "state": {
+          "socket": "Socket Unix",
+          "direct": "Connexion directe",
+          "hawser-standard": "Agent Hawser (standard)",
+          "hawser-edge": "Agent Hawser (edge)"
+        }
       }
     },
     "binary_sensor": {
@@ -193,7 +227,7 @@
         "name": "En ligne"
       },
       "activity_logging": {
-        "name": "Journalisation d'activité"
+        "name": "Collecte d'activité"
       },
       "metrics_collection": {
         "name": "Collecte de métriques"
@@ -209,15 +243,59 @@
       },
       "image_pruning": {
         "name": "Élagage des images"
+      },
+      "git_stack_sync_error": {
+        "name": "Erreur de synchronisation"
+      },
+      "stack_updates_available": {
+        "name": "Mises à jour disponibles"
       }
     },
-    "switch": {},
+    "switch": {
+      "container_auto_update": {
+        "name": "Mise à jour automatique"
+      },
+      "git_stack_auto_deploy": {
+        "name": "Déploiement automatique"
+      }
+    },
     "button": {
       "check_updates": {
         "name": "Rechercher des mises à jour d'images"
       },
       "restart": {
         "name": "Redémarrer"
+      },
+      "git_stack_deploy": {
+        "name": "Déployer"
+      },
+      "stack_deploy": {
+        "name": "Redéployer"
+      },
+      "env_bulk_update": {
+        "name": "Mettre à jour tous les conteneurs"
+      }
+    },
+    "number": {
+      "container_memory_limit": {
+        "name": "Limite de mémoire"
+      },
+      "container_cpu_limit": {
+        "name": "Limite de CPU"
+      },
+      "container_pids_limit": {
+        "name": "Limite de processus"
+      }
+    },
+    "select": {
+      "container_restart_policy": {
+        "name": "Politique de redémarrage",
+        "state": {
+          "no": "Non",
+          "always": "Toujours",
+          "unless-stopped": "Sauf si arrêté",
+          "on-failure": "En cas d'échec"
+        }
       }
     }
   },
@@ -227,6 +305,19 @@
     },
     "container_not_found": {
       "message": "Conteneur introuvable — il a peut-être été supprimé"
+    },
+    "git_stack_not_found": {
+      "message": "Stack git introuvable — il a peut-être été supprimé"
+    }
+  },
+  "issues": {
+    "runtime_update_warning": {
+      "title": "Dockhand a signalé un avertissement lors de la mise à jour de {container}",
+      "description": "La modification de {field} sur le conteneur \"{container}\" a réussi, mais l'appel sous-jacent de Dockhand au moteur Docker a renvoyé un avertissement, ce qui peut signifier qu'elle n'a pas été entièrement appliquée : {warnings}\n\nVérifiez le conteneur dans l'interface de Dockhand pour confirmer la valeur actuelle."
+    },
+    "runtime_memory_reverted": {
+      "title": "Limite de mémoire rétablie automatiquement pour {container}",
+      "description": "Le conteneur \"{container}\" a cessé de fonctionner peu après l'abaissement de sa limite de mémoire, ce qui peut se produire lorsque la nouvelle limite est inférieure à l'utilisation réelle du conteneur et que le noyau l'applique immédiatement. La limite de mémoire a été automatiquement rétablie à sa valeur précédente ({memory_bytes} octets). Vérifiez les journaux et l'état de santé actuel du conteneur dans Dockhand."
     }
   }
 }

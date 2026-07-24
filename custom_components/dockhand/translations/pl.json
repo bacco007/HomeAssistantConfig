@@ -94,8 +94,10 @@
           "enable_images": "Włącz czujniki obrazów",
           "enable_volumes": "Włącz czujniki wolumenów",
           "enable_networks": "Włącz czujniki sieci",
-          "enable_updates": "Włącz encje aktualizacji kontenerów",
-          "poll_interval_updates": "Interwał sprawdzania aktualizacji (sekundy)"
+          "poll_interval_updates": "Interwał sprawdzania aktualizacji (sekundy)",
+          "enable_runtime_controls": "Włącz sterowanie w czasie działania (zaawansowane)",
+          "enable_precise_updates": "Włącz precyzyjne wersje aktualizacji",
+          "enable_container_stats": "Włącz czujniki CPU/pamięci/sieci/we-wy dysku kontenera"
         },
         "data_description": {
           "poll_interval": "Jak często odświeżać statystyki. Domyślnie: 60. Minimum: 10.",
@@ -104,8 +106,10 @@
           "enable_images": "Włącza czujniki dla obrazów Docker na każde środowisko.",
           "enable_volumes": "Włącza czujniki dla wolumenów Docker na każde środowisko.",
           "enable_networks": "Włącza czujniki dla sieci Docker na każde środowisko.",
-          "enable_updates": "Włącza encje aktualizacji dla każdego kontenera pokazujące dostępność aktualizacji obrazu. Wyzwala rzeczywiste zapytania do rejestru — patrz poll_interval_updates.",
-          "poll_interval_updates": "Jak często sprawdzać rejestry kontenerów pod kątem aktualizacji obrazów (sekundy). Każde sprawdzenie odpytuje rejestr dla każdego kontenera. Domyślnie: 86400 (24 godziny). Minimum: 300."
+          "poll_interval_updates": "Jak często wykonywane są rzeczywiste zapytania do rejestru włączone powyżej (sekundy). Domyślnie: 86400 (24 godziny). Minimum: 300. Istotne tylko, gdy włączona jest opcja \"Włącz precyzyjne wersje aktualizacji\".",
+          "enable_runtime_controls": "Włącza encje number/select do zmiany limitu pamięci, limitu CPU, limitu procesów i zasad ponownego uruchamiania samodzielnego kontenera na żywo, bez jego odtwarzania. Niedostępne dla kontenerów zarządzanych przez stos Compose. Wymaga jednego dodatkowego wywołania API na samodzielny kontener przy każdym wolnym odpytywaniu w celu odczytu bieżących wartości.",
+          "enable_precise_updates": "Encje aktualizacji już istnieją automatycznie dla każdego kontenera w środowisku, w którym sprawdzanie aktualizacji jest włączone w samym Dockhand, pokazując tag obrazu oraz status \"update-pending\" na podstawie własnych zbuforowanych wyników Dockhand — bez dodatkowego kosztu API. Włączenie tej opcji dodaje rzeczywiste zapytania do rejestru z poniższym interwałem, aktualizując te same encje, aby pokazywały precyzyjne numery wersji (skróty obrazów).",
+          "enable_container_stats": "Tworzy czujniki CPU, pamięci, sieci i we/wy bloków dla każdego kontenera, zamiast w ogóle ich nie tworzyć, dopóki tego nie włączysz. Kontroluje też samo podstawowe wywołanie API statystyk — wyłączone oznacza, że wywołanie nie jest wykonywane, a nie tylko że encje są ukryte. Domyślnie wyłączone, ponieważ to dużo encji, których większość osób nie potrzebuje. Zatrzymany kontener, lub taki, który z innego powodu zniknie z odpowiedzi statystyk, zgłasza te czujniki jako niedostępne zamiast nieaktualnego lub zerowego odczytu. Wyłączenie tego usuwa również wcześniej utworzone encje statystyk."
         }
       }
     }
@@ -133,11 +137,8 @@
       "network_count": {
         "name": "Liczba sieci"
       },
-      "containers_disk_usage": {
-        "name": "Użycie dysku kontenerów"
-      },
-      "build_cache_size": {
-        "name": "Rozmiar pamięci podręcznej kompilacji"
+      "disk_usage": {
+        "name": "Wykorzystanie dysku"
       },
       "activity_events": {
         "name": "Zdarzenia aktywności"
@@ -186,6 +187,39 @@
       },
       "container_block_write": {
         "name": "Dysk zapis"
+      },
+      "git_stack_sync_status": {
+        "name": "Status synchronizacji",
+        "state": {
+          "pending": "Oczekuje",
+          "syncing": "Synchronizowanie",
+          "synced": "Zsynchronizowano",
+          "error": "Błąd"
+        }
+      },
+      "git_stack_last_sync": {
+        "name": "Ostatnia synchronizacja"
+      },
+      "host_platform": {
+        "name": "Platforma hosta"
+      },
+      "host_docker_version": {
+        "name": "Wersja Dockera"
+      },
+      "uptime": {
+        "name": "Czas działania"
+      },
+      "vulnerabilities": {
+        "name": "Podatności"
+      },
+      "connection_type": {
+        "name": "Typ połączenia",
+        "state": {
+          "socket": "Gniazdo Unix",
+          "direct": "Połączenie bezpośrednie",
+          "hawser-standard": "Agent Hawser (standardowy)",
+          "hawser-edge": "Agent Hawser (edge)"
+        }
       }
     },
     "binary_sensor": {
@@ -193,7 +227,7 @@
         "name": "Online"
       },
       "activity_logging": {
-        "name": "Rejestrowanie aktywności"
+        "name": "Zbieranie aktywności"
       },
       "metrics_collection": {
         "name": "Zbieranie metryk"
@@ -209,15 +243,59 @@
       },
       "image_pruning": {
         "name": "Czyszczenie obrazów"
+      },
+      "git_stack_sync_error": {
+        "name": "Błąd synchronizacji"
+      },
+      "stack_updates_available": {
+        "name": "Dostępne aktualizacje"
       }
     },
-    "switch": {},
+    "switch": {
+      "container_auto_update": {
+        "name": "Automatyczna aktualizacja"
+      },
+      "git_stack_auto_deploy": {
+        "name": "Automatyczne wdrażanie"
+      }
+    },
     "button": {
       "check_updates": {
         "name": "Sprawdź aktualizacje obrazów"
       },
       "restart": {
         "name": "Uruchom ponownie"
+      },
+      "git_stack_deploy": {
+        "name": "Wdróż"
+      },
+      "stack_deploy": {
+        "name": "Wdróż ponownie"
+      },
+      "env_bulk_update": {
+        "name": "Zaktualizuj wszystkie kontenery"
+      }
+    },
+    "number": {
+      "container_memory_limit": {
+        "name": "Limit pamięci"
+      },
+      "container_cpu_limit": {
+        "name": "Limit CPU"
+      },
+      "container_pids_limit": {
+        "name": "Limit procesów"
+      }
+    },
+    "select": {
+      "container_restart_policy": {
+        "name": "Zasady ponownego uruchamiania",
+        "state": {
+          "no": "Nie",
+          "always": "Zawsze",
+          "unless-stopped": "Chyba że zatrzymano",
+          "on-failure": "Przy błędzie"
+        }
       }
     }
   },
@@ -227,6 +305,19 @@
     },
     "container_not_found": {
       "message": "Kontener nie znaleziony — mógł zostać usunięty"
+    },
+    "git_stack_not_found": {
+      "message": "Nie znaleziono stosu git — mógł zostać usunięty"
+    }
+  },
+  "issues": {
+    "runtime_update_warning": {
+      "title": "Dockhand zgłosił ostrzeżenie podczas aktualizacji {container}",
+      "description": "Zmiana {field} w kontenerze \"{container}\" powiodła się, ale bazowe wywołanie Dockhand do silnika Docker zwróciło ostrzeżenie, co może oznaczać, że nie zostało w pełni zastosowane: {warnings}\n\nSprawdź kontener w interfejsie Dockhand, aby potwierdzić bieżącą wartość."
+    },
+    "runtime_memory_reverted": {
+      "title": "Limit pamięci automatycznie przywrócony dla {container}",
+      "description": "Kontener \"{container}\" przestał działać wkrótce po obniżeniu limitu pamięci, co może się zdarzyć, gdy nowy limit jest niższy niż rzeczywiste zużycie kontenera, a jądro systemu natychmiast go egzekwuje. Limit pamięci został automatycznie przywrócony do poprzedniej wartości ({memory_bytes} bajtów). Sprawdź dzienniki i bieżący stan kontenera w Dockhand."
     }
   }
 }

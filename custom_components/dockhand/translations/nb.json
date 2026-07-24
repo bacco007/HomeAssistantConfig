@@ -94,8 +94,10 @@
           "enable_images": "Aktiver imagesensorer",
           "enable_volumes": "Aktiver volumsensorer",
           "enable_networks": "Aktiver nettverkssensorer",
-          "enable_updates": "Aktiver oppdateringsentiteter for containere",
-          "poll_interval_updates": "Intervall for oppdateringssjekk (sekunder)"
+          "poll_interval_updates": "Intervall for oppdateringssjekk (sekunder)",
+          "enable_runtime_controls": "Aktiver kjøretidskontroller (avansert)",
+          "enable_precise_updates": "Aktiver presise oppdateringsversjoner",
+          "enable_container_stats": "Aktiver CPU/minne/nettverk/disk-I/U-sensorer per container"
         },
         "data_description": {
           "poll_interval": "Hvor ofte statistikk oppdateres. Standard: 60. Minimum: 10.",
@@ -104,8 +106,10 @@
           "enable_images": "Aktiverer sensorer for Docker-images per miljø.",
           "enable_volumes": "Aktiverer sensorer for Docker-volumer per miljø.",
           "enable_networks": "Aktiverer sensorer for Docker-nettverk per miljø.",
-          "enable_updates": "Aktiverer oppdateringsentiteter for hver container som viser tilgjengeligheten av image-oppdateringer. Utløser ekte registerforespørsler — se poll_interval_updates.",
-          "poll_interval_updates": "Hvor ofte containerregistre sjekkes for image-oppdateringer (sekunder). Hver sjekk spør registeret for hver container. Standard: 86400 (24 timer). Minimum: 300."
+          "poll_interval_updates": "Hvor ofte de ekte registerforespørslene aktivert ovenfor kjøres (sekunder). Standard: 86400 (24 timer). Minimum: 300. Bare relevant når \"Aktiver presise oppdateringsversjoner\" er på.",
+          "enable_runtime_controls": "Aktiverer number/select-enheter for å endre minnegrense, CPU-grense, prosessgrense og omstartspolicy for en frittstående container direkte, uten å gjenopprette den. Ikke tilgjengelig for containere som administreres av en Compose-stack. Krever ett ekstra API-kall per frittstående container ved hver trege spørring for å lese gjeldende verdier.",
+          "enable_precise_updates": "Oppdateringsenheter finnes allerede automatisk for hver container i et miljø der oppdateringssjekk er aktivert i Dockhand selv, og viser en image-tag og en \"update-pending\"-status fra Dockhands egne bufrede resultater — uten ekstra API-kostnad. Å aktivere dette legger til ekte registerforespørsler med intervallet nedenfor, og oppgraderer de samme enhetene til å vise presise versjonsnumre (image-digest).",
+          "enable_container_stats": "Oppretter per-container-sensorene for CPU, minne, nettverk og blokk-I/U, i stedet for å ikke opprette dem i det hele tatt før du slår dette på. Styrer også selve det underliggende statistikk-API-kallet — av betyr at kallet ikke gjøres, ikke bare at enhetene er skjult. Deaktivert som standard siden det er mange enheter de fleste ikke trenger. En container som er stoppet, eller som faller ut av statistikkresponsen av annen grunn, rapporterer disse sensorene som utilgjengelige i stedet for en foreldet eller null-verdi. Å slå dette av fjerner også tidligere opprettede statistikkenheter."
         }
       }
     }
@@ -133,11 +137,8 @@
       "network_count": {
         "name": "Antall nettverk"
       },
-      "containers_disk_usage": {
-        "name": "Diskbruk for beholdere"
-      },
-      "build_cache_size": {
-        "name": "Build-cachestørrelse"
+      "disk_usage": {
+        "name": "Diskbruk"
       },
       "activity_events": {
         "name": "Aktivitetshendelser"
@@ -186,6 +187,39 @@
       },
       "container_block_write": {
         "name": "Disk skrive"
+      },
+      "git_stack_sync_status": {
+        "name": "Synkroniseringsstatus",
+        "state": {
+          "pending": "Venter",
+          "syncing": "Synkroniserer",
+          "synced": "Synkronisert",
+          "error": "Feil"
+        }
+      },
+      "git_stack_last_sync": {
+        "name": "Siste synkronisering"
+      },
+      "host_platform": {
+        "name": "Vertsplattform"
+      },
+      "host_docker_version": {
+        "name": "Docker-versjon"
+      },
+      "uptime": {
+        "name": "Oppetid"
+      },
+      "vulnerabilities": {
+        "name": "Sårbarheter"
+      },
+      "connection_type": {
+        "name": "Tilkoblingstype",
+        "state": {
+          "socket": "Unix-socket",
+          "direct": "Direkte tilkobling",
+          "hawser-standard": "Hawser-agent (standard)",
+          "hawser-edge": "Hawser-agent (edge)"
+        }
       }
     },
     "binary_sensor": {
@@ -193,7 +227,7 @@
         "name": "Tilkoblet"
       },
       "activity_logging": {
-        "name": "Aktivitetslogging"
+        "name": "Aktivitetsinnsamling"
       },
       "metrics_collection": {
         "name": "Metrikinnsamling"
@@ -209,15 +243,59 @@
       },
       "image_pruning": {
         "name": "Rydding av images"
+      },
+      "git_stack_sync_error": {
+        "name": "Synkroniseringsfeil"
+      },
+      "stack_updates_available": {
+        "name": "Oppdateringer tilgjengelig"
       }
     },
-    "switch": {},
+    "switch": {
+      "container_auto_update": {
+        "name": "Automatisk oppdatering"
+      },
+      "git_stack_auto_deploy": {
+        "name": "Automatisk distribusjon"
+      }
+    },
     "button": {
       "check_updates": {
         "name": "Se etter image-oppdateringer"
       },
       "restart": {
         "name": "Start på nytt"
+      },
+      "git_stack_deploy": {
+        "name": "Distribuer"
+      },
+      "stack_deploy": {
+        "name": "Distribuer på nytt"
+      },
+      "env_bulk_update": {
+        "name": "Oppdater alle containere"
+      }
+    },
+    "number": {
+      "container_memory_limit": {
+        "name": "Minnegrense"
+      },
+      "container_cpu_limit": {
+        "name": "CPU-grense"
+      },
+      "container_pids_limit": {
+        "name": "Prosessgrense"
+      }
+    },
+    "select": {
+      "container_restart_policy": {
+        "name": "Omstartspolicy",
+        "state": {
+          "no": "Nei",
+          "always": "Alltid",
+          "unless-stopped": "Med mindre stoppet",
+          "on-failure": "Ved feil"
+        }
       }
     }
   },
@@ -227,6 +305,19 @@
     },
     "container_not_found": {
       "message": "Container ikke funnet — den kan ha blitt fjernet"
+    },
+    "git_stack_not_found": {
+      "message": "Git-stack ikke funnet — den kan ha blitt fjernet"
+    }
+  },
+  "issues": {
+    "runtime_update_warning": {
+      "title": "Dockhand rapporterte en advarsel ved oppdatering av {container}",
+      "description": "Endring av {field} på container \"{container}\" var vellykket, men Dockhands underliggende Docker Engine-kall returnerte en advarsel, noe som kan bety at endringen ikke ble fullstendig anvendt: {warnings}\n\nSjekk containeren i Dockhand-grensesnittet for å bekrefte gjeldende verdi."
+    },
+    "runtime_memory_reverted": {
+      "title": "Minnegrense tilbakestilt automatisk for {container}",
+      "description": "Container \"{container}\" sluttet å kjøre kort tid etter at minnegrensen ble senket, noe som kan skje når den nye grensen er lavere enn containerens faktiske bruk og kjernen håndhever den umiddelbart. Minnegrensen er automatisk tilbakestilt til forrige verdi ({memory_bytes} bytes). Sjekk containerens logger og gjeldende helsetilstand i Dockhand."
     }
   }
 }

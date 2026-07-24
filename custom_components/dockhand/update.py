@@ -1,29 +1,59 @@
 """Update platform for Dockhand container image updates.
 
-Each container gets an UpdateEntity that reflects whether a newer image
-digest is available. The "Install" button triggers a pull-and-recreate
-via POST /api/containers/batch-update. Note: this API endpoint does not
-apply vulnerability scanning or criteria evaluation — that workflow is
-only available through the Dockhand UI. A warning is shown in the entity's
-release summary when scanning is enabled on the environment.
+Two-tier design:
+
+  Tier 1 (always on, no config option): update entities exist for every
+  container in any environment where Dockhand itself has update-check
+  enabled (env_data["stats"]["updateCheckEnabled"], from dashboard/stats,
+  already polled by the fast coordinator — no separate check needed).
+  installed_version shows the image tag (no digest available at this
+  tier). latest_version flips to the "update-pending" sentinel when the
+  fast coordinator's cheap GET /api/containers/pending-updates poll
+  (Dockhand's own cached scheduled-check results, no registry query of
+  its own) flags this container. Install works fully at this tier —
+  POST /api/containers/batch-update-stream only needs a container ID,
+  never a digest.
+
+  Tier 2 (CONF_ENABLE_PRECISE_UPDATES, purely additive): also runs
+  DockhandUpdateCoordinator, a real (deliberately infrequent, default
+  24h) POST /api/containers/check-updates registry query per environment.
+  When present, its data layers precise digest-based installed_version/
+  latest_version onto the *same* entities Tier 1 already created — it
+  does not create separate entities.
+
+The "Install" button triggers a pull-and-recreate via
+POST /api/containers/batch-update-stream, which (unlike the older
+batch-update endpoint) runs vulnerability scanning when a scanner is
+configured on the environment, and blocks the update per the environment's
+configured vulnerabilityCriteria. Progress is reported via
+update_percentage, derived from polling GET /api/jobs/{id}.
 
 Version string strategy:
-  installed_version — first 12 hex chars of the sha256 from currentDigest.
-                      currentDigest format: "image@sha256:<hex>"
-  latest_version    — same as installed_version when up to date.
-                      When hasUpdate=True, first 12 hex chars of newDigest.
-                      newDigest format: "sha256:<hex>" (no image prefix).
+  installed_version — Tier 2: first 12 hex chars of the sha256 from
+                      currentDigest ("image@sha256:<hex>"). Tier 1
+                      (no Tier 2 data yet): the container's image tag.
+  latest_version    — Tier 2 hasUpdate=True: first 12 hex chars of
+                      newDigest ("sha256:<hex>", no image prefix).
+                      Tier 1 only, cache flagged: "update-pending"
+                      (deliberately not a real digest/version string).
+                      Otherwise: same as installed_version.
 
-Both digest fields are present in the API response. newDigest only appears
-when hasUpdate=True; it is absent (not null) when no update is available.
-
-Install is suppressed for:
-  - updateDisabled=True  (dockhand.update=false label on the container)
-  - systemContainer!=None (Dockhand infrastructure containers like hawser
-                           that cannot be updated through the batch-update API)
+systemContainer/updateDisabled (whether Install is offered at all) used
+to only be known via check-updates. systemContainer is Dockhand's own
+precomputed field on the regular containers list already (GET
+/api/containers) — the same isSystemContainer(imageName) classification
+Dockhand's UI itself uses, image-name matching we don't need to
+replicate and can't get out of sync with (if Dockhand adds a new system
+container type, this field reflects it automatically). updateDisabled
+has no such precomputed field on that endpoint, so it's still computed
+client-side from the `dockhand.update` label — see
+helpers._is_update_disabled_by_label, kept in sync with Dockhand's own
+matching logic. Both work identically whether or not Tier 2 is enabled.
 """
 
+import asyncio
 import logging
+from typing import Any
 
 from homeassistant.components.update import UpdateEntity, UpdateEntityFeature
 from homeassistant.core import HomeAssistant
@@ -35,12 +65,39 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from . import DockhandConfigEntry
 from .const import DOMAIN
 from .coordinator import DockhandFastCoordinator, DockhandUpdateCoordinator
+from .helpers import _all_envs, _coordinator_env, _is_update_disabled_by_label
 
 _LOGGER = logging.getLogger(__name__)
 
 # Updates trigger pull-and-recreate via the API — serialise to avoid concurrent
 # pulls on the same host. 0 = coordinator manages updates, no HA-level limit.
 PARALLEL_UPDATES = 0
+
+# How often to poll GET /api/jobs/{id} while an install is running.
+_JOB_POLL_INTERVAL_SECONDS = 2
+# Upper bound on total wait — protects against a job stuck in "running"
+# forever (e.g. a Dockhand-side crash mid-job). Generous because a scan
+# plus a large image pull can legitimately take several minutes.
+_JOB_POLL_MAX_ATTEMPTS = 900  # 900 * 2s = 30 minutes
+
+# Dockhand's own "current"/"total" on batch-update-stream progress lines
+# are a batch-index counter (current = i+1 over containerIds.length), NOT
+# intra-container progress — meaningless here since we always send exactly
+# one container ID, so total is always 1 and current/total hits 100% on
+# the very first progress line (step="pulling"), long before the actual
+# pull/scan/recreate work happens. We derive our own percentage instead,
+# from the fixed, known pipeline of "step" values Dockhand's route always
+# emits in this order for a single container: pulling -> scanning (only
+# if a scanner is configured) -> creating -> done. Monotonically
+# increasing only, in case of any out-of-order duplicate step events
+# (e.g. "creating" is sent more than once via a progress callback during
+# the actual recreate call).
+_STEP_PERCENTAGES = {
+    "pulling": 20,
+    "scanning": 45,
+    "creating": 75,
+    "done": 100,
+}
 
 
 def _short_digest(digest: str) -> str:
@@ -65,29 +122,41 @@ async def async_setup_entry(
     entry: DockhandConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up container update entities."""
-    data = entry.runtime_data
-    update_coordinator = data.update_coordinator
-    fast_coordinator = data.fast_coordinator
+    """Set up container update entities.
 
-    if update_coordinator is None:
-        return
+    Tier 1 entities are created for every container in an environment
+    with updateCheckEnabled=True, sourced entirely from the fast
+    coordinator — independent of whether Tier 2 (update_coordinator) is
+    configured at all.
+
+    Removal (when updateCheckEnabled turns off for an environment, or a
+    container disappears) is centralized in __init__.py's
+    _cleanup_stale_registry/_build_live_sets, alongside every other
+    conditionally-present entity type (images, networks, volumes,
+    runtime controls, git stack entities) — not handled here. That
+    function already distinguishes "environment confirmed online but
+    this item is genuinely gone" from "poll failed / environment
+    offline" (which must never trigger cleanup), so update entities
+    reuse that same safety logic rather than duplicating it.
+    """
+    data = entry.runtime_data
+    fast_coordinator = data.fast_coordinator
+    update_coordinator = data.update_coordinator  # Tier 2, may be None
 
     seen: set[str] = set()
 
     def _add_new_entities() -> None:
-        nonlocal seen
-        update_data = update_coordinator.data or {}
-        fast_data = fast_coordinator.data or {}
+        fast_data = _all_envs(fast_coordinator.data)
         new_entities = []
 
-        for env_id, by_container_id in update_data.items():
-            env_fast = fast_data.get(env_id, {})
-            stats = env_fast.get("stats") or {}
+        for env_id, env_data in fast_data.items():
+            stats = env_data.get("stats") or {}
+            if not stats.get("updateCheckEnabled"):
+                continue
             env_name = stats.get("name", f"Environment {env_id}")
 
-            for _container_id, item in by_container_id.items():
-                container_name = item.get("containerName", "")
+            for container in env_data.get("containers") or []:
+                container_name = container.get("name", "")
                 if not container_name:
                     continue
                 uid = f"{entry.entry_id}_{env_id}_update_{container_name}"
@@ -102,7 +171,6 @@ async def async_setup_entry(
                         env_id=env_id,
                         env_name=env_name,
                         container_name=container_name,
-                        item=item,
                     )
                 )
 
@@ -112,17 +180,23 @@ async def async_setup_entry(
     # Add entities for initial data
     _add_new_entities()
 
-    # Re-run on each coordinator update to pick up new containers
-    entry.async_on_unload(update_coordinator.async_add_listener(_add_new_entities))
+    # Re-run on each fast-coordinator update to pick up new containers or
+    # environments that just had update-check turned on in Dockhand.
+    entry.async_on_unload(fast_coordinator.async_add_listener(_add_new_entities))
 
 
-class ContainerUpdateEntity(CoordinatorEntity[DockhandUpdateCoordinator], UpdateEntity):
+class ContainerUpdateEntity(CoordinatorEntity[DockhandFastCoordinator], UpdateEntity):
     """Update entity for a single container's image update status.
 
     Both identity (unique_id) and device attachment use (env_id, container_name).
     Docker enforces unique container names per host, so this is stable across
     container recreation (image updates), preserving historical entity data and
     automations.
+
+    Primary coordinator is the fast one — Tier 1 works off it alone.
+    update_coordinator (Tier 2) is optional and only consulted directly for
+    richer digest data when present; it is never required for this entity
+    to exist, be available, or support Install.
     """
 
     _attr_has_entity_name = True
@@ -130,15 +204,15 @@ class ContainerUpdateEntity(CoordinatorEntity[DockhandUpdateCoordinator], Update
     def __init__(
         self,
         fast_coordinator: DockhandFastCoordinator,
-        update_coordinator: DockhandUpdateCoordinator,
+        update_coordinator: DockhandUpdateCoordinator | None,
         entry_id: str,
         env_id: int,
         env_name: str,
         container_name: str,
-        item: dict,
     ) -> None:
-        super().__init__(update_coordinator)
-        self._fast_coordinator = fast_coordinator
+        super().__init__(fast_coordinator)
+        self._update_coordinator = update_coordinator
+        self._entry_id = entry_id
         self._env_id = env_id
         self._container_name = container_name
 
@@ -149,15 +223,28 @@ class ContainerUpdateEntity(CoordinatorEntity[DockhandUpdateCoordinator], Update
 
         self._update_supported_features()
 
-    def _item(self) -> dict:
-        """Return the current update payload for this container.
+    def _container(self) -> dict | None:
+        """Look up the current container dict by name from the fast
+        coordinator — name is stable across container recreation."""
+        fast_data = _all_envs(self.coordinator.data)
+        for c in (fast_data.get(self._env_id) or {}).get("containers") or []:
+            if c.get("name") == self._container_name:
+                return c
+        return None
 
-        Looks up by container name across the current coordinator data for this
-        environment, since the container_id changes after every image update.
-        Returns empty dict if the container is not currently present.
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        return {"name": self._container_name}
+
+    def _check_updates_item(self) -> dict:
+        """Return the current Tier 2 (check-updates) payload for this
+        container, if update_coordinator is configured and has data for
+        it. Empty dict otherwise — Tier 1 properties all handle that
+        gracefully, since Tier 2 is purely additive.
         """
-        update_data = self.coordinator.data or {}
-        env_data = update_data.get(self._env_id, {})
+        if self._update_coordinator is None:
+            return {}
+        env_data = _coordinator_env(self._update_coordinator.data, self._env_id)
         # env_data is indexed by container_id — scan for matching name.
         for item in env_data.values():
             if item.get("containerName") == self._container_name:
@@ -165,36 +252,58 @@ class ContainerUpdateEntity(CoordinatorEntity[DockhandUpdateCoordinator], Update
         return {}
 
     def _update_supported_features(self) -> None:
-        item = self._item()
-        update_disabled = item.get("updateDisabled", False)
-        is_system = item.get("systemContainer") is not None
+        c = self._container() or {}
+        labels = c.get("labels") or {}
+        update_disabled = _is_update_disabled_by_label(labels)
+        is_system = bool(c.get("systemContainer"))
         if update_disabled or is_system:
             self._attr_supported_features = UpdateEntityFeature.RELEASE_NOTES
         else:
             self._attr_supported_features = (
-                UpdateEntityFeature.INSTALL | UpdateEntityFeature.RELEASE_NOTES
+                UpdateEntityFeature.INSTALL
+                | UpdateEntityFeature.RELEASE_NOTES
+                | UpdateEntityFeature.PROGRESS
             )
 
     @property
     def installed_version(self) -> str | None:
-        item = self._item()
-        digest = item.get("currentDigest", "")
-        return _short_digest(digest) if digest else None
+        digest = self._check_updates_item().get("currentDigest", "")
+        if digest:
+            return _short_digest(digest)
+        # Tier 1 fallback: no real digest available yet, show the image
+        # tag instead — still meaningful, just not a precise version.
+        c = self._container()
+        return (c or {}).get("image") or None
+
+    def _pending_via_dockhand_cache(self) -> bool:
+        """True if Dockhand's own (cheap, no-registry-query) pending-updates
+        cache already flags this container, keyed by its current container
+        ID from the fast coordinator's container list."""
+        fast_data = _all_envs(self.coordinator.data)
+        env_data = fast_data.get(self._env_id) or {}
+        pending_ids = env_data.get("pending_update_container_ids") or set()
+        if not pending_ids:
+            return False
+        c = self._container()
+        return bool(c) and c.get("id") in pending_ids
 
     @property
     def latest_version(self) -> str | None:
-        item = self._item()
-        if not item:
-            return self.installed_version
+        item = self._check_updates_item()
         if item.get("hasUpdate"):
             new_digest = item.get("newDigest", "")
             return _short_digest(new_digest) if new_digest else self.installed_version
+        if self._pending_via_dockhand_cache():
+            # Deliberately not a real digest — see module docstring. This
+            # is Tier 1's own signal, present whether or not Tier 2 (real
+            # digest data) is configured at all.
+            return "update-pending"
         return self.installed_version
 
     def _scanner_enabled(self) -> bool:
         """Return True if vulnerability scanning is enabled on this environment."""
-        fast_data = self._fast_coordinator.data or {}
-        stats = fast_data.get(self._env_id, {}).get("stats") or {}
+        fast_data = _all_envs(self.coordinator.data)
+        stats = (fast_data.get(self._env_id) or {}).get("stats") or {}
         return bool(stats.get("scannerEnabled", False))
 
     @property
@@ -204,26 +313,31 @@ class ContainerUpdateEntity(CoordinatorEntity[DockhandUpdateCoordinator], Update
 
     async def async_release_notes(self) -> str | None:
         """Full release notes shown in the more-info dialog — supports Markdown."""
-        item = self._item()
-        if not item:
+        c = self._container()
+        if not c:
             return None
         parts = []
 
-        image_name = item.get("imageName")
+        image_name = c.get("image")
         if image_name:
             parts.append(f"Image: {image_name}")
 
         if self._scanner_enabled():
-            msg = "Vulnerability scanning will not be performed via this update method."
-            parts.append(f"<ha-alert alert-type='warning'>{msg}</ha-alert>")
+            msg = (
+                "This environment scans images for vulnerabilities before"
+                " updating. Depending on its configured policy, this update"
+                " may be blocked if findings exceed the threshold."
+            )
+            parts.append(f"<ha-alert alert-type='info'>{msg}</ha-alert>")
 
-        if item.get("systemContainer"):
+        labels = c.get("labels") or {}
+        if c.get("systemContainer"):
             msg = (
                 "This is a system container and must be updated"
                 " directly on the docker host."
             )
             parts.append(f"<ha-alert alert-type='warning'>{msg}</ha-alert>")
-        elif item.get("updateDisabled"):
+        elif _is_update_disabled_by_label(labels):
             msg = "Updates disabled via `dockhand.update=false` label."
             parts.append(f"<ha-alert alert-type='info'>{msg}</ha-alert>")
 
@@ -231,35 +345,42 @@ class ContainerUpdateEntity(CoordinatorEntity[DockhandUpdateCoordinator], Update
 
     @property
     def available(self) -> bool:
-        # Check by name in fast data — name is stable across container recreation.
-        fast_data = self._fast_coordinator.data or {}
-        env_containers = fast_data.get(self._env_id, {}).get("containers") or []
-        container_exists = any(
-            c.get("name") == self._container_name for c in env_containers
-        )
-        return container_exists and super().available
+        return self._container() is not None and super().available
 
     def _handle_coordinator_update(self) -> None:
         self._update_supported_features()
         super()._handle_coordinator_update()
 
     async def async_install(self, version: str | None, backup: bool, **kwargs) -> None:
-        """Trigger a pull-and-recreate update for this container via Dockhand."""
-        # Find the current container_id by name — it may have changed since init.
-        item = self._item()
-        container_id = item.get("containerId", "") if item else ""
+        """Trigger a scanned pull-and-recreate update via Dockhand's job API.
+
+        Only ever needs the container's current ID — never a digest — so
+        this works identically whether Tier 2 has ever run for this
+        container or not.
+        """
+        c = self._container()
+        container_id = c.get("id", "") if c else ""
         if not container_id:
             raise HomeAssistantError(
                 translation_domain="dockhand",
                 translation_key="container_not_found",
             )
+
+        self._attr_in_progress = True
+        self._attr_update_percentage = 0
+        self.async_write_ha_state()
+
         try:
-            await self.coordinator.client.async_batch_update_container(
-                self._env_id, container_id
+            criteria = await self._vulnerability_criteria()
+            job_id = await self.coordinator.client.async_start_batch_update_stream(
+                self._env_id, [container_id], vulnerability_criteria=criteria
             )
+            await self._poll_job(job_id, container_id)
+        except HomeAssistantError:
+            raise
         except Exception as err:
             _LOGGER.error(
-                "batch-update failed for container '%s' (env %s, id %s): %s: %s",
+                "batch-update-stream failed for container '%s' (env %s, id %s): %s: %s",
                 self._container_name,
                 self._env_id,
                 container_id,
@@ -271,5 +392,102 @@ class ContainerUpdateEntity(CoordinatorEntity[DockhandUpdateCoordinator], Update
                 translation_key="action_failed",
                 translation_placeholders={"error": str(err)},
             ) from err
-        # Request a refresh so the entity state reflects the result.
-        await self.coordinator.async_request_refresh()
+        finally:
+            self._attr_in_progress = False
+            self._attr_update_percentage = None
+            self.async_write_ha_state()
+        # Request a refresh so the entity state reflects the result. Also
+        # nudge Tier 2 if configured, so a precise digest shows up sooner
+        # than its own (up to 24h) schedule would otherwise provide.
+        # Deliberately async_refresh(), not async_request_refresh() — see
+        # DockhandCheckUpdatesButton's docstring in button.py for why the
+        # latter can silently no-op here (a live, non-obvious debouncer
+        # cooldown gotcha, not a hypothetical).
+        await self.coordinator.async_refresh()
+        if self._update_coordinator is not None:
+            await self._update_coordinator.async_refresh()
+
+    async def _vulnerability_criteria(self) -> str | None:
+        """Fetch this environment's configured vulnerability blocking policy.
+
+        Best-effort: falls back to None (Dockhand's own server-side default,
+        "never" — scan but don't block) if the settings call fails, so a
+        transient error here doesn't prevent the update itself from running.
+        """
+        try:
+            settings = await self.coordinator.client.async_get_update_check_settings(
+                self._env_id
+            )
+            return settings.get("vulnerabilityCriteria")
+        except Exception as err:
+            _LOGGER.warning(
+                "Could not fetch vulnerability criteria for env %s — Dockhand"
+                " will use its own default ('never': scan but don't block): %s",
+                self._env_id,
+                err,
+            )
+            return None
+
+    async def _poll_job(self, job_id: str, container_id: str) -> None:
+        """Poll GET /api/jobs/{id} until the job finishes, reporting progress.
+
+        Dockhand's job endpoint returns the full accumulated "lines" array on
+        every call rather than a stream — we re-scan it each poll, which is
+        cheap since a single-container update produces at most a handful of
+        lines. Raises HomeAssistantError on a blocked update, a per-container
+        failure, a job-level error, or a timeout.
+        """
+        for _ in range(_JOB_POLL_MAX_ATTEMPTS):
+            job = await self.coordinator.client.async_get_job(job_id)
+
+            for line in job.get("lines") or []:
+                data = line.get("data") or {}
+                if data.get("containerId") not in (container_id, None):
+                    continue
+
+                step = data.get("step")
+                new_pct = _STEP_PERCENTAGES.get(step)
+                if new_pct is not None and (
+                    self._attr_update_percentage is None
+                    or new_pct > self._attr_update_percentage
+                ):
+                    self._attr_update_percentage = new_pct
+                    self.async_write_ha_state()
+
+                event_type = data.get("type")
+                if event_type == "blocked":
+                    reason = data.get("blockReason", "vulnerability findings")
+                    raise HomeAssistantError(
+                        translation_domain="dockhand",
+                        translation_key="action_failed",
+                        translation_placeholders={"error": f"Update blocked: {reason}"},
+                    )
+                if event_type == "progress" and data.get("step") == "failed":
+                    raise HomeAssistantError(
+                        translation_domain="dockhand",
+                        translation_key="action_failed",
+                        translation_placeholders={
+                            "error": data.get("error", "update failed")
+                        },
+                    )
+
+            status = job.get("status")
+            if status == "done":
+                return
+            if status == "error":
+                result = job.get("result") or {}
+                raise HomeAssistantError(
+                    translation_domain="dockhand",
+                    translation_key="action_failed",
+                    translation_placeholders={
+                        "error": result.get("error", "update job failed")
+                    },
+                )
+
+            await asyncio.sleep(_JOB_POLL_INTERVAL_SECONDS)
+
+        raise HomeAssistantError(
+            translation_domain="dockhand",
+            translation_key="action_failed",
+            translation_placeholders={"error": "update timed out waiting for Dockhand"},
+        )

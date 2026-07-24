@@ -94,8 +94,10 @@
           "enable_images": "Enable image sensors",
           "enable_volumes": "Enable volume sensors",
           "enable_networks": "Enable network sensors",
-          "enable_updates": "Enable container update entities",
-          "poll_interval_updates": "Update check interval (seconds)"
+          "poll_interval_updates": "Update check interval (seconds)",
+          "enable_runtime_controls": "Enable runtime controls (advanced)",
+          "enable_precise_updates": "Enable precise update versions",
+          "enable_container_stats": "Enable container CPU/memory/network/disk I/O sensors"
         },
         "data_description": {
           "poll_interval": "How often to refresh container, stack, and environment stats. Default: 60. Minimum: 10.",
@@ -104,8 +106,10 @@
           "enable_images": "Enables sensors for Docker images on each environment.",
           "enable_volumes": "Enables sensors for Docker volumes on each environment.",
           "enable_networks": "Enables sensors for Docker networks on each environment.",
-          "enable_updates": "Enables update entities for each container showing image update availability. Triggers real registry queries — see poll_interval_updates.",
-          "poll_interval_updates": "How often to check container registries for image updates (seconds). Default: 86400 (24 hours). Minimum: 300."
+          "poll_interval_updates": "How often to run the real registry queries enabled above (seconds). Default: 86400 (24 hours). Minimum: 300. Only relevant when 'Enable precise update versions' is on.",
+          "enable_runtime_controls": "Enables number/select entities to change a stack-less container's memory limit, CPU limit, process limit, and restart policy live, without recreating it. Not available for containers managed by a Compose stack. Requires one extra API call per stack-less container on each slow poll to read current values.",
+          "enable_precise_updates": "Update entities already exist automatically for every container in an environment where update-check is enabled in Dockhand itself, showing an image tag and an 'update-pending' status from Dockhand's own cached results — no extra API cost. Turning this on adds real registry queries on the interval below, upgrading those same entities to show precise version numbers (image digests) instead.",
+          "enable_container_stats": "Creates the per-container CPU, memory, network, and block I/O sensors, instead of not creating them at all until you turn this on. Also gates the underlying stats API call itself — off means the call is not made, not just that the entities are hidden. Off by default since it is a lot of entities most people don't need. A container that is stopped, or drops out of the stats response for any other reason, reports these sensors as unavailable rather than a stale or zero reading. Turning this off also removes any previously-created stats entities."
         }
       }
     }
@@ -133,11 +137,8 @@
       "network_count": {
         "name": "Network count"
       },
-      "containers_disk_usage": {
-        "name": "Containers disk usage"
-      },
-      "build_cache_size": {
-        "name": "Build cache size"
+      "disk_usage": {
+        "name": "Disk usage"
       },
       "activity_events": {
         "name": "Activity events"
@@ -186,6 +187,39 @@
       },
       "container_block_write": {
         "name": "Disk write"
+      },
+      "git_stack_sync_status": {
+        "name": "Sync status",
+        "state": {
+          "pending": "Pending",
+          "syncing": "Syncing",
+          "synced": "Synced",
+          "error": "Error"
+        }
+      },
+      "git_stack_last_sync": {
+        "name": "Last sync"
+      },
+      "host_platform": {
+        "name": "Host platform"
+      },
+      "host_docker_version": {
+        "name": "Docker version"
+      },
+      "uptime": {
+        "name": "Uptime"
+      },
+      "vulnerabilities": {
+        "name": "Vulnerabilities"
+      },
+      "connection_type": {
+        "name": "Connection type",
+        "state": {
+          "socket": "Unix socket",
+          "direct": "Direct connection",
+          "hawser-standard": "Hawser agent (standard)",
+          "hawser-edge": "Hawser agent (edge)"
+        }
       }
     },
     "binary_sensor": {
@@ -193,7 +227,7 @@
         "name": "Online"
       },
       "activity_logging": {
-        "name": "Activity logging"
+        "name": "Activity collection"
       },
       "metrics_collection": {
         "name": "Metrics collection"
@@ -209,15 +243,59 @@
       },
       "image_pruning": {
         "name": "Image pruning"
+      },
+      "git_stack_sync_error": {
+        "name": "Sync error"
+      },
+      "stack_updates_available": {
+        "name": "Updates available"
       }
     },
-    "switch": {},
+    "switch": {
+      "container_auto_update": {
+        "name": "Auto update"
+      },
+      "git_stack_auto_deploy": {
+        "name": "Auto deploy"
+      }
+    },
     "button": {
       "check_updates": {
         "name": "Check for image updates"
       },
       "restart": {
         "name": "Restart"
+      },
+      "git_stack_deploy": {
+        "name": "Deploy"
+      },
+      "stack_deploy": {
+        "name": "Redeploy"
+      },
+      "env_bulk_update": {
+        "name": "Update all containers"
+      }
+    },
+    "number": {
+      "container_memory_limit": {
+        "name": "Memory limit"
+      },
+      "container_cpu_limit": {
+        "name": "CPU limit"
+      },
+      "container_pids_limit": {
+        "name": "Process limit"
+      }
+    },
+    "select": {
+      "container_restart_policy": {
+        "name": "Restart policy",
+        "state": {
+          "no": "No",
+          "always": "Always",
+          "unless-stopped": "Unless stopped",
+          "on-failure": "On failure"
+        }
       }
     }
   },
@@ -227,6 +305,19 @@
     },
     "container_not_found": {
       "message": "Container not found — it may have been removed"
+    },
+    "git_stack_not_found": {
+      "message": "Git stack not found — it may have been removed"
+    }
+  },
+  "issues": {
+    "runtime_update_warning": {
+      "title": "Dockhand reported a warning updating {container}",
+      "description": "Changing {field} on container \"{container}\" succeeded, but Dockhand's underlying Docker Engine call returned a warning, which may mean it wasn't fully applied: {warnings}\n\nCheck the container in the Dockhand UI to confirm the current value."
+    },
+    "runtime_memory_reverted": {
+      "title": "Memory limit auto-reverted for {container}",
+      "description": "Container \"{container}\" stopped running shortly after its memory limit was lowered, which can happen when the new limit is below the container's actual usage and the kernel enforces it immediately. The memory limit has been automatically reverted to its previous value ({memory_bytes} bytes). Check the container's logs and current health in Dockhand."
     }
   }
 }

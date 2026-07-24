@@ -94,8 +94,10 @@
           "enable_images": "启用镜像传感器",
           "enable_volumes": "启用卷传感器",
           "enable_networks": "启用网络传感器",
-          "enable_updates": "启用容器更新实体",
-          "poll_interval_updates": "更新检查间隔（秒）"
+          "poll_interval_updates": "更新检查间隔（秒）",
+          "enable_runtime_controls": "启用运行时控制（高级）",
+          "enable_precise_updates": "启用精确的更新版本",
+          "enable_container_stats": "启用容器 CPU/内存/网络/磁盘 I/O 传感器"
         },
         "data_description": {
           "poll_interval": "刷新统计信息的频率。默认值：60。最小值：10。",
@@ -104,8 +106,10 @@
           "enable_images": "启用每个环境的 Docker 镜像传感器。",
           "enable_volumes": "启用每个环境的 Docker 卷传感器。",
           "enable_networks": "启用每个环境的 Docker 网络传感器。",
-          "enable_updates": "为每个容器启用更新实体，显示镜像更新可用性。将触发对镜像仓库的实际查询——参见 poll_interval_updates。",
-          "poll_interval_updates": "检查容器镜像仓库是否有镜像更新的频率（秒）。每次检查都会查询每个容器的镜像仓库。默认值：86400（24小时）。最小值：300。"
+          "poll_interval_updates": "上方启用的真实镜像仓库查询的执行频率（秒）。默认值：86400（24 小时）。最小值：300。仅在启用“启用精确的更新版本”时相关。",
+          "enable_runtime_controls": "启用 number/select 实体，可实时更改独立容器（非 Compose 管理）的内存限制、CPU 限制、进程数限制和重启策略，而无需重建容器。不适用于由 Compose 堆栈管理的容器。每次慢速轮询时，每个独立容器都需要一次额外的 API 调用以读取当前值。",
+          "enable_precise_updates": "在 Dockhand 中已启用更新检查的环境里，更新实体已自动为每个容器创建，显示镜像标签以及来自 Dockhand 自身缓存结果的“update-pending”状态——不产生额外的 API 开销。启用此选项会按下方的时间间隔添加真实的镜像仓库查询，将这些相同的实体升级为显示精确的版本号（镜像摘要）。",
+          "enable_container_stats": "为每个容器创建 CPU、内存、网络和块 I/O 传感器，而不是在您启用此选项之前完全不创建它们。同时控制底层统计 API 调用本身——关闭表示不会发起该调用，而不仅仅是隐藏实体。默认关闭，因为这是许多大多数人不需要的实体。已停止的容器，或因其他原因从统计响应中消失的容器，会将这些传感器报告为不可用，而不是显示过时或零值。关闭此选项还会移除先前创建的统计实体。"
         }
       }
     }
@@ -133,11 +137,8 @@
       "network_count": {
         "name": "网络数量"
       },
-      "containers_disk_usage": {
-        "name": "容器磁盘使用量"
-      },
-      "build_cache_size": {
-        "name": "构建缓存大小"
+      "disk_usage": {
+        "name": "磁盘使用情况"
       },
       "activity_events": {
         "name": "活动事件"
@@ -186,6 +187,39 @@
       },
       "container_block_write": {
         "name": "磁盘写入"
+      },
+      "git_stack_sync_status": {
+        "name": "同步状态",
+        "state": {
+          "pending": "等待中",
+          "syncing": "同步中",
+          "synced": "已同步",
+          "error": "错误"
+        }
+      },
+      "git_stack_last_sync": {
+        "name": "上次同步时间"
+      },
+      "host_platform": {
+        "name": "主机平台"
+      },
+      "host_docker_version": {
+        "name": "Docker 版本"
+      },
+      "uptime": {
+        "name": "正常运行时间"
+      },
+      "vulnerabilities": {
+        "name": "漏洞"
+      },
+      "connection_type": {
+        "name": "连接类型",
+        "state": {
+          "socket": "Unix 套接字",
+          "direct": "直接连接",
+          "hawser-standard": "Hawser 代理（标准）",
+          "hawser-edge": "Hawser 代理（边缘）"
+        }
       }
     },
     "binary_sensor": {
@@ -193,7 +227,7 @@
         "name": "在线"
       },
       "activity_logging": {
-        "name": "活动日志记录"
+        "name": "活动收集"
       },
       "metrics_collection": {
         "name": "指标收集"
@@ -209,15 +243,59 @@
       },
       "image_pruning": {
         "name": "镜像清理"
+      },
+      "git_stack_sync_error": {
+        "name": "同步错误"
+      },
+      "stack_updates_available": {
+        "name": "有可用更新"
       }
     },
-    "switch": {},
+    "switch": {
+      "container_auto_update": {
+        "name": "自动更新"
+      },
+      "git_stack_auto_deploy": {
+        "name": "自动部署"
+      }
+    },
     "button": {
       "check_updates": {
         "name": "检查镜像更新"
       },
       "restart": {
         "name": "重启"
+      },
+      "git_stack_deploy": {
+        "name": "部署"
+      },
+      "stack_deploy": {
+        "name": "重新部署"
+      },
+      "env_bulk_update": {
+        "name": "更新所有容器"
+      }
+    },
+    "number": {
+      "container_memory_limit": {
+        "name": "内存限制"
+      },
+      "container_cpu_limit": {
+        "name": "CPU 限制"
+      },
+      "container_pids_limit": {
+        "name": "进程数限制"
+      }
+    },
+    "select": {
+      "container_restart_policy": {
+        "name": "重启策略",
+        "state": {
+          "no": "不重启",
+          "always": "总是",
+          "unless-stopped": "除非手动停止",
+          "on-failure": "失败时"
+        }
       }
     }
   },
@@ -227,6 +305,19 @@
     },
     "container_not_found": {
       "message": "未找到容器 — 它可能已被删除"
+    },
+    "git_stack_not_found": {
+      "message": "未找到 Git 堆栈 — 可能已被移除"
+    }
+  },
+  "issues": {
+    "runtime_update_warning": {
+      "title": "Dockhand 在更新 {container} 时报告了一个警告",
+      "description": "在容器 \"{container}\" 上更改 {field} 已成功，但 Dockhand 底层的 Docker Engine 调用返回了警告，这可能意味着更改未完全生效：{warnings}\n\n请在 Dockhand 界面中检查该容器以确认当前值。"
+    },
+    "runtime_memory_reverted": {
+      "title": "已自动恢复 {container} 的内存限制",
+      "description": "容器 \"{container}\" 在其内存限制被降低后不久就停止运行，当新限制低于容器实际使用量时，内核会立即强制执行该限制，从而导致此情况。内存限制已自动恢复为先前的值（{memory_bytes} 字节）。请在 Dockhand 中检查该容器的日志和当前健康状态。"
     }
   }
 }

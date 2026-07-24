@@ -6,44 +6,62 @@ the function and remove it from async_run_migrations. If there are no
 active migrations, async_run_migrations returns immediately.
 
 Active migrations:
-  migrate_1_4_0_update_entity_unique_ids       — retire after ~1.10.0
-  migrate_1_5_0_container_device_identifiers   — retire after ~1.10.0
-  migrate_1_7_3_entry_scoped_unique_ids        — retire after ~1.11.0
+  migrate_1_4_0_update_entity_unique_ids            — retire after ~1.10.0
+  migrate_1_5_0_container_device_identifiers        — retire after ~1.10.0
+  migrate_1_7_3_entry_scoped_unique_ids             — retire after ~1.11.0
+  migrate_1_8_0_container_stats_option              — retire after ~1.11.0
+  migrate_1_8_0_reenable_container_stats_entities   — retire after ~1.11.0
+  migrate_1_8_0_remove_consolidated_disk_sensors    — retire after ~1.11.0
+
+Migrations are for entity/device registry changes between released
+versions only (e.g. 1.7.3 -> 1.8.0) — never add one for churn within an
+unreleased dev cycle (an entity added and removed before ever shipping).
+Raetha's own testing doesn't rely on these at all (she reloads/re-adds
+the integration during development), so a migration for interim-build-only
+artifacts adds permanent maintenance cost for zero real benefit.
 """
 
 import logging
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
 
-from .const import DOMAIN
+from .const import CONF_ENABLE_CONTAINER_STATS, DOMAIN
+from .helpers import CONTAINER_STATS_SUFFIXES
 
 _LOGGER = logging.getLogger(__name__)
 
 
 def async_run_migrations(
     hass: HomeAssistant,
-    entry_id: str,
+    entry: ConfigEntry,
     fast_data: dict,
 ) -> None:
     """Run all active one-time migrations in order.
 
     Called once from async_setup_entry after the fast coordinator's first
-    refresh. Each migration is idempotent — it detects whether it has
-    anything to do and returns immediately if not.
+    refresh, before platforms are set up — so any option this changes
+    (see migrate_1_8_0_container_stats_option) is already in place by the
+    time sensor.py reads it. Each migration is idempotent — it detects
+    whether it has anything to do and returns immediately if not.
 
     To add a migration: define a new migrate_X_Y_Z_* function below and
-    call it here.
+    call it here. Only for changes between released versions — see module
+    docstring.
 
     To retire a migration: delete the function and remove its call from
     this function. If no migrations remain, this function body should be
     just `pass` — do not delete the function itself, as __init__.py
     imports and calls it unconditionally.
     """
-    migrate_1_4_0_update_entity_unique_ids(hass, entry_id, fast_data)
-    migrate_1_5_0_container_device_identifiers(hass, entry_id, fast_data)
-    migrate_1_7_3_entry_scoped_unique_ids(hass, entry_id)
+    migrate_1_4_0_update_entity_unique_ids(hass, entry.entry_id, fast_data)
+    migrate_1_5_0_container_device_identifiers(hass, entry.entry_id, fast_data)
+    migrate_1_7_3_entry_scoped_unique_ids(hass, entry.entry_id)
+    migrate_1_8_0_container_stats_option(hass, entry)
+    migrate_1_8_0_reenable_container_stats_entities(hass, entry)
+    migrate_1_8_0_remove_consolidated_disk_sensors(hass, entry)
 
 
 def _is_hex64(s: str) -> bool:
@@ -292,3 +310,149 @@ def migrate_1_7_3_entry_scoped_unique_ids(
             "Dockhand: migrated %d entity unique_id(s) to entry-scoped format",
             migrated,
         )
+
+
+def migrate_1_8_0_container_stats_option(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+) -> None:
+    """Reconcile the "Enable container stats" option with entities a user
+    already had manually enabled before this option existed.
+
+    Pre-1.8.0, the 8 per-container CPU/memory/network/block-I/O sensors
+    were always created (for every container) but disabled by default —
+    a user could manually enable individual ones. 1.8.0 changed these to
+    only be created at all when "Enable container stats" is on, so the
+    existing central cleanup system can remove them when it's off (see
+    CHANGELOG's Unreleased section for why — they weren't being cleaned
+    up before). Without this migration, a 1.7.x user who'd manually
+    enabled even one of these sensors would silently lose it on upgrade,
+    since the option defaults to off and the entity would no longer be
+    produced at all.
+
+    Only acts when the option has never been explicitly set (distinct
+    from "explicitly set to False", which must be respected) — checked by
+    the key being entirely absent from entry.options. Idempotent: once
+    the option is set (by this migration or by the user), it's always
+    present in options going forward, so this becomes a no-op.
+    """
+    if CONF_ENABLE_CONTAINER_STATS in entry.options:
+        return  # Already decided, either by the user or a prior run of this.
+
+    ent_registry = er.async_get(hass)
+    any_enabled = any(
+        not entity_entry.disabled
+        and "_container_" in (entity_entry.unique_id or "")
+        and (entity_entry.unique_id or "").endswith(CONTAINER_STATS_SUFFIXES)
+        for entity_entry in er.async_entries_for_config_entry(
+            ent_registry, entry.entry_id
+        )
+    )
+    if not any_enabled:
+        return
+
+    hass.config_entries.async_update_entry(
+        entry, options={**entry.options, CONF_ENABLE_CONTAINER_STATS: True}
+    )
+    _LOGGER.info(
+        "Dockhand: found manually-enabled container stats sensor(s) from before "
+        "the 'Enable container stats' option existed — turned it on automatically "
+        "so they aren't removed"
+    )
+
+
+def migrate_1_8_0_reenable_container_stats_entities(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+) -> None:
+    """Fix a real, reported issue: container-stats entities from before
+    1.8.0 can come back still disabled once a user turns "Enable
+    container stats" on, even though these sensors are meant to default
+    to enabled now. Not a bug in this integration's own entity setup —
+    it's Home Assistant's own DeletedRegistryEntry mechanism, which
+    intentionally restores an entity's prior disabled_by when a matching
+    unique_id is re-registered, to preserve deliberate user
+    customizations across integration reloads/removals. The problem is
+    it can't distinguish "the user chose to disable this" from "this was
+    only ever disabled because of the pre-1.8.0 default."
+
+    A genuine one-time migration, not a per-load reconciliation (an
+    earlier version of this fix ran on every setup instead) — within
+    1.8.0's own architecture, these entities are only ever created with
+    enabled_default=True (gated entirely on the option itself; see
+    sensor.py's creation loop), so there is no code path going forward
+    that produces a fresh RegistryEntryDisabler.INTEGRATION entry for
+    one of them. The only entities that can ever carry that specific
+    disabled_by are pre-1.8.0 leftovers — a fixed population fully
+    addressed once, not ongoing drift needing to be checked on every
+    load. (Toggling the option off and back on within 1.8.0+ itself
+    doesn't hit this at all: cleanup removes entities via
+    async_remove(), which records whatever disabled_by they actually had
+    at that moment — None, for anything the user hadn't touched — so
+    DeletedRegistryEntry correctly restores None on recreation, not
+    INTEGRATION.)
+
+    The distinguishing signal that lets us safely fix only the stale
+    cases: RegistryEntryDisabler.INTEGRATION specifically means "disabled
+    because the entity's own enabled-by-default flag said so" — never a
+    user's deliberate choice (that's RegistryEntryDisabler.USER). Only
+    entities still carrying that specific reason get re-enabled; a
+    genuine user disable is left untouched.
+    """
+    ent_registry = er.async_get(hass)
+    for entity_entry in er.async_entries_for_config_entry(ent_registry, entry.entry_id):
+        uid = entity_entry.unique_id or ""
+        if (
+            entity_entry.disabled_by == er.RegistryEntryDisabler.INTEGRATION
+            and "_container_" in uid
+            and uid.endswith(CONTAINER_STATS_SUFFIXES)
+        ):
+            ent_registry.async_update_entity(entity_entry.entity_id, disabled_by=None)
+            _LOGGER.info(
+                "Dockhand: re-enabled container stats entity %s — was disabled "
+                "only due to the pre-1.8.0 default, not a user choice",
+                entity_entry.entity_id,
+            )
+
+
+# unique_id suffixes for the two pre-1.8.0 sensors that got consolidated
+# into the single "disk_usage" sensor's attributes (images/volumes/
+# containers/build-cache sizes all on one entity now, instead of two
+# separate ones). Their entity classes were removed from sensor.py
+# entirely, but nothing ever removed their registry entries — orphaned
+# entities that HA would eventually flag on a future restart, forcing
+# manual cleanup, rather than being cleanly gone the moment a user
+# upgrades.
+#
+# Verified directly against the actual released v1.7.4 source
+# (github.com/raetha/ha-dockhand, tag v1.7.4) rather than assumed from
+# the translation_key naming — those two aren't the same thing, and
+# guessing wrong here was a real, reported bug: the disk sensor's
+# unique_id used "_containers_size", not "_containers_disk_usage" (its
+# translation_key, used only for the UI label). build_cache_size's
+# unique_id suffix happened to match its own translation_key exactly,
+# which is the only reason that one worked while this one didn't.
+_RETIRED_DISK_SENSOR_SUFFIXES = ("_containers_size", "_build_cache_size")
+
+
+def migrate_1_8_0_remove_consolidated_disk_sensors(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+) -> None:
+    """Remove the pre-1.8.0 "Containers disk usage" and "Build cache
+    size" sensors, now that both are attributes on the single "Disk
+    usage" sensor instead of separate entities. A genuine one-time
+    migration — this is a fixed, one-time population from before the
+    consolidation, not something that can recur, the same reasoning as
+    migrate_1_8_0_reenable_container_stats_entities above.
+    """
+    ent_registry = er.async_get(hass)
+    for entity_entry in er.async_entries_for_config_entry(ent_registry, entry.entry_id):
+        uid = entity_entry.unique_id or ""
+        if uid.endswith(_RETIRED_DISK_SENSOR_SUFFIXES):
+            ent_registry.async_remove(entity_entry.entity_id)
+            _LOGGER.info(
+                "Dockhand: removed retired entity %s — consolidated into "
+                "the single disk_usage sensor's attributes in 1.8.0",
+                entity_entry.entity_id,
+            )
