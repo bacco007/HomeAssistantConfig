@@ -20,5 +20,20 @@
     "abort": {
       "already_configured": "This API key is already configured"
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "EmergencyAPI options",
+        "description": "Adjust how often EmergencyAPI is polled and the area it monitors.",
+        "data": {
+          "radius": "Monitoring radius (km)",
+          "scan_interval": "Update interval (minutes)"
+        },
+        "data_description": {
+          "scan_interval": "The free tier allows 5,000 calls per month. 10 minutes stays within it; shorter intervals use more calls."
+        }
+      }
+    }
   }
 }

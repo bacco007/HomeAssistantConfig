@@ -3,8 +3,8 @@ from typing import Any
 
 import aiohttp
 import voluptuous as vol
-from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
-from homeassistant.core import HomeAssistant
+from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResult, OptionsFlow
+from homeassistant.core import HomeAssistant, callback
 
 from .const import (
     CONF_API_KEY,
@@ -30,6 +30,13 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
     }
 )
 
+OPTIONS_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_RADIUS): vol.All(vol.Coerce(int), vol.Range(min=1, max=500)),
+        vol.Required(CONF_SCAN_INTERVAL): vol.All(vol.Coerce(int), vol.Range(min=2, max=60)),
+    }
+)
+
 
 async def validate_api_key(hass: HomeAssistant, api_key: str) -> bool:
     url = f"{API_BASE_URL}/incidents?limit=1"
@@ -47,7 +54,12 @@ async def validate_api_key(hass: HomeAssistant, api_key: str) -> bool:
 
 
 class EmergencyAPIConfigFlow(ConfigFlow, domain=DOMAIN):
-    VERSION = 1
+    VERSION = 2
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry: ConfigEntry) -> "EmergencyAPIOptionsFlow":
+        return EmergencyAPIOptionsFlow()
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -73,4 +85,22 @@ class EmergencyAPIConfigFlow(ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=STEP_USER_DATA_SCHEMA,
             errors=errors,
+        )
+
+
+class EmergencyAPIOptionsFlow(OptionsFlow):
+    """Let users change the poll interval and radius after setup."""
+
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        if user_input is not None:
+            return self.async_create_entry(data=user_input)
+
+        return self.async_show_form(
+            step_id="init",
+            data_schema=self.add_suggested_values_to_schema(
+                OPTIONS_SCHEMA,
+                {**self.config_entry.data, **self.config_entry.options},
+            ),
         )
