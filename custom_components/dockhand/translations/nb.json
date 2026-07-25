@@ -27,24 +27,30 @@
         "title": "Konfigurer polling og funksjoner",
         "description": "Angi hvor ofte Dockhand skal polles og hvilke valgfrie entitetsgrupper som skal aktiveres. Alt dette kan endres senere via Konfigurer.",
         "data": {
-          "poll_interval": "Raskt pollingintervall (sekunder)",
-          "poll_interval_slow": "Sakte pollingintervall (sekunder)",
-          "enable_schedules": "Aktiver planlagte oppgaver",
-          "enable_images": "Aktiver bilder",
-          "enable_volumes": "Aktiver volumer",
-          "enable_networks": "Aktiver nettverk",
-          "enable_updates": "Aktiver containeroppdateringer",
-          "poll_interval_updates": "Intervall for oppdateringssjekk (sekunder)"
+          "poll_interval": "Raskt pollingintervall (sekunder) — statistikk, beholdere og stacks",
+          "poll_interval_slow": "Langsomt pollingintervall (sekunder) — images, volumer, nettverk, tidsplaner",
+          "enable_schedules": "Aktiver tidsplansensorer",
+          "enable_images": "Aktiver imagesensorer",
+          "enable_volumes": "Aktiver volumsensorer",
+          "enable_networks": "Aktiver nettverkssensorer",
+          "enable_runtime_controls": "Aktiver kjøretidskontroller (avansert)",
+          "enable_container_stats": "Aktiver CPU/minne/nettverk/disk-I/U-sensorer per container",
+          "poll_interval_updates": "Intervall for oppdateringssjekk (sekunder)",
+          "enable_update_entities": "Aktiver oppdateringsenheter",
+          "enable_precise_updates": "Aktiver presise oppdateringsversjoner"
         },
         "data_description": {
-          "poll_interval": "Hvor ofte containertilstander, stabler og miljøstatistikk skal oppdateres. Minimum: 10.",
-          "poll_interval_slow": "Hvor ofte bilder, volumer, nettverk og planlagte oppgaver skal oppdateres. Minimum: 30.",
-          "enable_schedules": "Opprett entiteter for planlagte Dockhand-oppgaver.",
-          "enable_images": "Opprett entiteter for Docker-bilder på hver vert.",
-          "enable_volumes": "Opprett entiteter for Docker-volumer på hver vert.",
-          "enable_networks": "Opprett entiteter for Docker-nettverk på hver vert.",
-          "enable_updates": "Opprett oppdateringsentiteter som viser tilgjengelighet av bildeoppdateringer, med støtte for oppdatering med ett klikk.",
-          "poll_interval_updates": "Hvor ofte containerregistre skal sjekkes for bildeoppdateringer. Hold dette sjeldent — hver sjekk spør registeret for hver container. Minimum: 300."
+          "poll_interval": "Hvor ofte statistikk oppdateres. Standard: 60. Minimum: 10.",
+          "poll_interval_slow": "Hvor ofte images, volumer, nettverk og tidsplaner oppdateres. Standard: 600. Minimum: 30.",
+          "enable_schedules": "Aktiverer sensorer for Dockhands vedlikeholdsplaner.",
+          "enable_images": "Aktiverer sensorer for Docker-images per miljø.",
+          "enable_volumes": "Aktiverer sensorer for Docker-volumer per miljø.",
+          "enable_networks": "Aktiverer sensorer for Docker-nettverk per miljø.",
+          "enable_runtime_controls": "Oppretter number/select-enheter for å endre CPU-, minne- og prosessgrenser, samt omstartspolicy, for en frittstående container direkte. Ikke tilgjengelig for containere styrt av Compose.",
+          "enable_container_stats": "Oppretter CPU-, minne-, nettverk- og disk-I/O-sensorer per container. Av som standard siden det er mange enheter de fleste ikke trenger; å slå det av fjerner også allerede opprettede sensorer.",
+          "poll_interval_updates": "Hvor ofte registerspørringene ovenfor kjøres (sekunder). Standard: 86400 (24 timer). Minimum: 300.",
+          "enable_update_entities": "Oppretter en Home Assistant-oppdateringsenhet for hver container. Slå dette av hvis du håndterer oppdateringer på en annen måte og ikke vil at Dockhands containere skal vises i HAs egen oppdateringshåndtering. Skjuler også «Oppdater alle»-knappen; «Se etter oppdateringer» fungerer likevel fortsatt.",
+          "enable_precise_updates": "Oppgraderer oppdateringsenheter til å vise presise versjonsnumre (image-digests) via periodiske registerspørringer, i stedet for bare en image-tag. Krever «Aktiver oppdateringsenheter» ovenfor."
         }
       },
       "reauth_confirm": {
@@ -94,10 +100,11 @@
           "enable_images": "Aktiver imagesensorer",
           "enable_volumes": "Aktiver volumsensorer",
           "enable_networks": "Aktiver nettverkssensorer",
-          "poll_interval_updates": "Intervall for oppdateringssjekk (sekunder)",
           "enable_runtime_controls": "Aktiver kjøretidskontroller (avansert)",
-          "enable_precise_updates": "Aktiver presise oppdateringsversjoner",
-          "enable_container_stats": "Aktiver CPU/minne/nettverk/disk-I/U-sensorer per container"
+          "enable_container_stats": "Aktiver CPU/minne/nettverk/disk-I/U-sensorer per container",
+          "poll_interval_updates": "Intervall for oppdateringssjekk (sekunder)",
+          "enable_update_entities": "Aktiver oppdateringsenheter",
+          "enable_precise_updates": "Aktiver presise oppdateringsversjoner"
         },
         "data_description": {
           "poll_interval": "Hvor ofte statistikk oppdateres. Standard: 60. Minimum: 10.",
@@ -106,10 +113,11 @@
           "enable_images": "Aktiverer sensorer for Docker-images per miljø.",
           "enable_volumes": "Aktiverer sensorer for Docker-volumer per miljø.",
           "enable_networks": "Aktiverer sensorer for Docker-nettverk per miljø.",
-          "poll_interval_updates": "Hvor ofte de ekte registerforespørslene aktivert ovenfor kjøres (sekunder). Standard: 86400 (24 timer). Minimum: 300. Bare relevant når \"Aktiver presise oppdateringsversjoner\" er på.",
-          "enable_runtime_controls": "Aktiverer number/select-enheter for å endre minnegrense, CPU-grense, prosessgrense og omstartspolicy for en frittstående container direkte, uten å gjenopprette den. Ikke tilgjengelig for containere som administreres av en Compose-stack. Krever ett ekstra API-kall per frittstående container ved hver trege spørring for å lese gjeldende verdier.",
-          "enable_precise_updates": "Oppdateringsenheter finnes allerede automatisk for hver container i et miljø der oppdateringssjekk er aktivert i Dockhand selv, og viser en image-tag og en \"update-pending\"-status fra Dockhands egne bufrede resultater — uten ekstra API-kostnad. Å aktivere dette legger til ekte registerforespørsler med intervallet nedenfor, og oppgraderer de samme enhetene til å vise presise versjonsnumre (image-digest).",
-          "enable_container_stats": "Oppretter per-container-sensorene for CPU, minne, nettverk og blokk-I/U, i stedet for å ikke opprette dem i det hele tatt før du slår dette på. Styrer også selve det underliggende statistikk-API-kallet — av betyr at kallet ikke gjøres, ikke bare at enhetene er skjult. Deaktivert som standard siden det er mange enheter de fleste ikke trenger. En container som er stoppet, eller som faller ut av statistikkresponsen av annen grunn, rapporterer disse sensorene som utilgjengelige i stedet for en foreldet eller null-verdi. Å slå dette av fjerner også tidligere opprettede statistikkenheter."
+          "enable_runtime_controls": "Oppretter number/select-enheter for å endre CPU-, minne- og prosessgrenser, samt omstartspolicy, for en frittstående container direkte. Ikke tilgjengelig for containere styrt av Compose.",
+          "enable_container_stats": "Oppretter CPU-, minne-, nettverk- og disk-I/O-sensorer per container. Av som standard siden det er mange enheter de fleste ikke trenger; å slå det av fjerner også allerede opprettede sensorer.",
+          "poll_interval_updates": "Hvor ofte registerspørringene ovenfor kjøres (sekunder). Standard: 86400 (24 timer). Minimum: 300.",
+          "enable_update_entities": "Oppretter en Home Assistant-oppdateringsenhet for hver container. Slå dette av hvis du håndterer oppdateringer på en annen måte og ikke vil at Dockhands containere skal vises i HAs egen oppdateringshåndtering. Skjuler også «Oppdater alle»-knappen; «Se etter oppdateringer» fungerer likevel fortsatt.",
+          "enable_precise_updates": "Oppgraderer oppdateringsenheter til å vise presise versjonsnumre (image-digests) via periodiske registerspørringer, i stedet for bare en image-tag. Krever «Aktiver oppdateringsenheter» ovenfor."
         }
       }
     }

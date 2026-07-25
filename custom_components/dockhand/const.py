@@ -8,6 +8,7 @@ CONF_ENABLE_SCHEDULES = "enable_schedules"
 CONF_ENABLE_IMAGES = "enable_images"
 CONF_ENABLE_VOLUMES = "enable_volumes"
 CONF_ENABLE_NETWORKS = "enable_networks"
+CONF_ENABLE_UPDATE_ENTITIES = "enable_update_entities"
 CONF_ENABLE_PRECISE_UPDATES = "enable_precise_updates"
 CONF_POLL_INTERVAL_UPDATES = "poll_interval_updates"
 CONF_ENABLE_RUNTIME_CONTROLS = "enable_runtime_controls"
@@ -42,6 +43,15 @@ DEFAULT_ENABLE_SCHEDULES = False
 DEFAULT_ENABLE_IMAGES = False
 DEFAULT_ENABLE_VOLUMES = False
 DEFAULT_ENABLE_NETWORKS = False
+# Default True: preserves existing behavior for upgrading users, since
+# Tier 1 update entities have been unconditionally created since 1.8.0
+# with no way to opt out (github.com/raetha/ha-dockhand/issues/23) — this
+# is the option that was missing, not a replacement for
+# CONF_ENABLE_PRECISE_UPDATES (which only ever controlled Tier 2 and
+# still does; see the 1.8.0 rename comment on _LEGACY_CONF_ENABLE_UPDATES
+# above for that history). This one gates the update platform itself —
+# Tier 1 and Tier 2 both — off entirely.
+DEFAULT_ENABLE_UPDATE_ENTITIES = True
 DEFAULT_ENABLE_PRECISE_UPDATES = False
 # Runtime controls (number/select entities for update-runtime) require an
 # extra GET .../inspect call per stack-less container per slow-poll cycle —

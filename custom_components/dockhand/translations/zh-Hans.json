@@ -27,24 +27,30 @@
         "title": "配置轮询和功能",
         "description": "设置轮询 Dockhand 的频率以及要启用的可选实体组。所有这些都可以在以后通过“配置”进行更改。",
         "data": {
-          "poll_interval": "快速轮询间隔（秒）",
-          "poll_interval_slow": "慢速轮询间隔（秒）",
-          "enable_schedules": "启用计划任务",
-          "enable_images": "启用镜像",
-          "enable_volumes": "启用卷",
-          "enable_networks": "启用网络",
-          "enable_updates": "启用容器更新",
-          "poll_interval_updates": "更新检查间隔（秒）"
+          "poll_interval": "快速轮询间隔（秒）— 统计信息、容器和堆栈",
+          "poll_interval_slow": "慢速轮询间隔（秒）— 镜像、卷、网络、调度",
+          "enable_schedules": "启用调度传感器",
+          "enable_images": "启用镜像传感器",
+          "enable_volumes": "启用卷传感器",
+          "enable_networks": "启用网络传感器",
+          "enable_runtime_controls": "启用运行时控制（高级）",
+          "enable_container_stats": "启用容器 CPU/内存/网络/磁盘 I/O 传感器",
+          "poll_interval_updates": "更新检查间隔（秒）",
+          "enable_update_entities": "启用更新实体",
+          "enable_precise_updates": "启用精确的更新版本"
         },
         "data_description": {
-          "poll_interval": "刷新容器状态、堆栈和环境统计的频率。最小值：10。",
-          "poll_interval_slow": "刷新镜像、卷、网络和计划的频率。最小值：30。",
-          "enable_schedules": "为 Dockhand 计划任务创建实体。",
-          "enable_images": "为每个主机上的 Docker 镜像创建实体。",
-          "enable_volumes": "为每个主机上的 Docker 卷创建实体。",
-          "enable_networks": "为每个主机上的 Docker 网络创建实体。",
-          "enable_updates": "创建显示镜像更新可用性的更新实体，支持一键更新。",
-          "poll_interval_updates": "检查容器镜像仓库更新的频率。保持低频率——每次检查都会为每个容器查询镜像仓库。最小值：300。"
+          "poll_interval": "刷新统计信息的频率。默认值：60。最小值：10。",
+          "poll_interval_slow": "刷新镜像、卷、网络和调度的频率。默认值：600。最小值：30。",
+          "enable_schedules": "启用 Dockhand 维护调度的传感器。",
+          "enable_images": "启用每个环境的 Docker 镜像传感器。",
+          "enable_volumes": "启用每个环境的 Docker 卷传感器。",
+          "enable_networks": "启用每个环境的 Docker 网络传感器。",
+          "enable_runtime_controls": "为无堆栈容器创建 number/select 实体，可实时更改其 CPU、内存和进程限制以及重启策略。不适用于由 Compose 管理的容器。",
+          "enable_container_stats": "为每个容器创建 CPU、内存、网络和磁盘 I/O 传感器。默认关闭，因为这会产生大量大多数人不需要的实体；关闭后也会移除已创建的传感器。",
+          "poll_interval_updates": "上方镜像仓库查询的执行频率（秒）。默认值：86400（24 小时）。最小值：300。",
+          "enable_update_entities": "为每个容器创建一个 Home Assistant 更新实体。如果你以其他方式管理更新，且不希望 Dockhand 的容器出现在 HA 自身的更新管理中，可关闭此选项。这也会隐藏“全部更新”按钮；“检查更新”仍会照常工作。",
+          "enable_precise_updates": "通过定期查询镜像仓库，将更新实体升级为显示精确的版本号（镜像摘要），而不仅仅是镜像标签。需要先开启上方的“启用更新实体”。"
         }
       },
       "reauth_confirm": {
@@ -94,10 +100,11 @@
           "enable_images": "启用镜像传感器",
           "enable_volumes": "启用卷传感器",
           "enable_networks": "启用网络传感器",
-          "poll_interval_updates": "更新检查间隔（秒）",
           "enable_runtime_controls": "启用运行时控制（高级）",
-          "enable_precise_updates": "启用精确的更新版本",
-          "enable_container_stats": "启用容器 CPU/内存/网络/磁盘 I/O 传感器"
+          "enable_container_stats": "启用容器 CPU/内存/网络/磁盘 I/O 传感器",
+          "poll_interval_updates": "更新检查间隔（秒）",
+          "enable_update_entities": "启用更新实体",
+          "enable_precise_updates": "启用精确的更新版本"
         },
         "data_description": {
           "poll_interval": "刷新统计信息的频率。默认值：60。最小值：10。",
@@ -106,10 +113,11 @@
           "enable_images": "启用每个环境的 Docker 镜像传感器。",
           "enable_volumes": "启用每个环境的 Docker 卷传感器。",
           "enable_networks": "启用每个环境的 Docker 网络传感器。",
-          "poll_interval_updates": "上方启用的真实镜像仓库查询的执行频率（秒）。默认值：86400（24 小时）。最小值：300。仅在启用“启用精确的更新版本”时相关。",
-          "enable_runtime_controls": "启用 number/select 实体，可实时更改独立容器（非 Compose 管理）的内存限制、CPU 限制、进程数限制和重启策略，而无需重建容器。不适用于由 Compose 堆栈管理的容器。每次慢速轮询时，每个独立容器都需要一次额外的 API 调用以读取当前值。",
-          "enable_precise_updates": "在 Dockhand 中已启用更新检查的环境里，更新实体已自动为每个容器创建，显示镜像标签以及来自 Dockhand 自身缓存结果的“update-pending”状态——不产生额外的 API 开销。启用此选项会按下方的时间间隔添加真实的镜像仓库查询，将这些相同的实体升级为显示精确的版本号（镜像摘要）。",
-          "enable_container_stats": "为每个容器创建 CPU、内存、网络和块 I/O 传感器，而不是在您启用此选项之前完全不创建它们。同时控制底层统计 API 调用本身——关闭表示不会发起该调用，而不仅仅是隐藏实体。默认关闭，因为这是许多大多数人不需要的实体。已停止的容器，或因其他原因从统计响应中消失的容器，会将这些传感器报告为不可用，而不是显示过时或零值。关闭此选项还会移除先前创建的统计实体。"
+          "enable_runtime_controls": "为无堆栈容器创建 number/select 实体，可实时更改其 CPU、内存和进程限制以及重启策略。不适用于由 Compose 管理的容器。",
+          "enable_container_stats": "为每个容器创建 CPU、内存、网络和磁盘 I/O 传感器。默认关闭，因为这会产生大量大多数人不需要的实体；关闭后也会移除已创建的传感器。",
+          "poll_interval_updates": "上方镜像仓库查询的执行频率（秒）。默认值：86400（24 小时）。最小值：300。",
+          "enable_update_entities": "为每个容器创建一个 Home Assistant 更新实体。如果你以其他方式管理更新，且不希望 Dockhand 的容器出现在 HA 自身的更新管理中，可关闭此选项。这也会隐藏“全部更新”按钮；“检查更新”仍会照常工作。",
+          "enable_precise_updates": "通过定期查询镜像仓库，将更新实体升级为显示精确的版本号（镜像摘要），而不仅仅是镜像标签。需要先开启上方的“启用更新实体”。"
         }
       }
     }

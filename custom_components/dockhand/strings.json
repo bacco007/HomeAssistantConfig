@@ -27,24 +27,30 @@
         "title": "Configure polling and features",
         "description": "Set how often to poll Dockhand and which optional entity groups to enable. All of these can be changed later via Configure.",
         "data": {
-          "poll_interval": "Fast poll interval (seconds)",
-          "poll_interval_slow": "Slow poll interval (seconds)",
-          "enable_schedules": "Enable schedules",
-          "enable_images": "Enable images",
-          "enable_volumes": "Enable volumes",
-          "enable_networks": "Enable networks",
-          "enable_updates": "Enable container updates",
+          "poll_interval": "Fast poll interval (seconds) — stats, containers & stacks",
+          "poll_interval_slow": "Slow poll interval (seconds) — images, volumes, networks, schedules",
+          "enable_schedules": "Enable schedule sensors",
+          "enable_images": "Enable image sensors",
+          "enable_volumes": "Enable volume sensors",
+          "enable_networks": "Enable network sensors",
+          "enable_runtime_controls": "Enable runtime controls (advanced)",
+          "enable_container_stats": "Enable container CPU/memory/network/disk I/O sensors",
+          "enable_update_entities": "Enable update entities",
+          "enable_precise_updates": "Enable precise update versions",
           "poll_interval_updates": "Update check interval (seconds)"
         },
         "data_description": {
-          "poll_interval": "How often to refresh container states, stacks, and environment stats. Minimum: 10.",
-          "poll_interval_slow": "How often to refresh images, volumes, networks, and schedules. Minimum: 30.",
-          "enable_schedules": "Create entities for Dockhand scheduled tasks.",
-          "enable_images": "Create entities for Docker images on each host.",
-          "enable_volumes": "Create entities for Docker volumes on each host.",
-          "enable_networks": "Create entities for Docker networks on each host.",
-          "enable_updates": "Create update entities showing image update availability, with one-click update support.",
-          "poll_interval_updates": "How often to check container registries for image updates. Keep this infrequent — each check queries the registry for every container. Minimum: 300."
+          "poll_interval": "How often to refresh container, stack, and environment stats. Default: 60. Minimum: 10.",
+          "poll_interval_slow": "How often to refresh images, volumes, networks, and schedules. Default: 600. Minimum: 30.",
+          "enable_schedules": "Enables sensors for Dockhand maintenance schedules.",
+          "enable_images": "Enables sensors for Docker images on each environment.",
+          "enable_volumes": "Enables sensors for Docker volumes on each environment.",
+          "enable_networks": "Enables sensors for Docker networks on each environment.",
+          "enable_runtime_controls": "Creates number/select entities to change a stack-less container's CPU, memory, and process limits, and restart policy, live. Not available for Compose-managed containers.",
+          "enable_container_stats": "Creates per-container CPU, memory, network, and disk I/O sensors. Off by default since it's a lot of entities most people don't need; turning it off also removes any already-created ones.",
+          "enable_update_entities": "Creates a Home Assistant update entity for every container. Turn this off if you manage updates another way and don't want Dockhand's containers in HA's own update management. Also hides the 'Update all' button; 'Check for updates' keeps working either way.",
+          "enable_precise_updates": "Upgrades update entities to show precise version numbers (image digests) via periodic registry queries, instead of just an image tag. Requires 'Enable update entities' above.",
+          "poll_interval_updates": "How often to run the registry queries above (seconds). Default: 86400 (24 hours). Minimum: 300."
         }
       },
       "reauth_confirm": {
@@ -94,10 +100,11 @@
           "enable_images": "Enable image sensors",
           "enable_volumes": "Enable volume sensors",
           "enable_networks": "Enable network sensors",
-          "poll_interval_updates": "Update check interval (seconds)",
           "enable_runtime_controls": "Enable runtime controls (advanced)",
+          "enable_container_stats": "Enable container CPU/memory/network/disk I/O sensors",
+          "enable_update_entities": "Enable update entities",
           "enable_precise_updates": "Enable precise update versions",
-          "enable_container_stats": "Enable container CPU/memory/network/disk I/O sensors"
+          "poll_interval_updates": "Update check interval (seconds)"
         },
         "data_description": {
           "poll_interval": "How often to refresh container, stack, and environment stats. Default: 60. Minimum: 10.",
@@ -106,10 +113,11 @@
           "enable_images": "Enables sensors for Docker images on each environment.",
           "enable_volumes": "Enables sensors for Docker volumes on each environment.",
           "enable_networks": "Enables sensors for Docker networks on each environment.",
-          "poll_interval_updates": "How often to run the real registry queries enabled above (seconds). Default: 86400 (24 hours). Minimum: 300. Only relevant when 'Enable precise update versions' is on.",
-          "enable_runtime_controls": "Enables number/select entities to change a stack-less container's memory limit, CPU limit, process limit, and restart policy live, without recreating it. Not available for containers managed by a Compose stack. Requires one extra API call per stack-less container on each slow poll to read current values.",
-          "enable_precise_updates": "Update entities already exist automatically for every container in an environment where update-check is enabled in Dockhand itself, showing an image tag and an 'update-pending' status from Dockhand's own cached results — no extra API cost. Turning this on adds real registry queries on the interval below, upgrading those same entities to show precise version numbers (image digests) instead.",
-          "enable_container_stats": "Creates the per-container CPU, memory, network, and block I/O sensors, instead of not creating them at all until you turn this on. Also gates the underlying stats API call itself — off means the call is not made, not just that the entities are hidden. Off by default since it is a lot of entities most people don't need. A container that is stopped, or drops out of the stats response for any other reason, reports these sensors as unavailable rather than a stale or zero reading. Turning this off also removes any previously-created stats entities."
+          "enable_runtime_controls": "Creates number/select entities to change a stack-less container's CPU, memory, and process limits, and restart policy, live. Not available for Compose-managed containers.",
+          "enable_container_stats": "Creates per-container CPU, memory, network, and disk I/O sensors. Off by default since it's a lot of entities most people don't need; turning it off also removes any already-created ones.",
+          "enable_update_entities": "Creates a Home Assistant update entity for every container. Turn this off if you manage updates another way and don't want Dockhand's containers in HA's own update management. Also hides the 'Update all' button; 'Check for updates' keeps working either way.",
+          "enable_precise_updates": "Upgrades update entities to show precise version numbers (image digests) via periodic registry queries, instead of just an image tag. Requires 'Enable update entities' above.",
+          "poll_interval_updates": "How often to run the registry queries above (seconds). Default: 86400 (24 hours). Minimum: 300."
         }
       }
     }

@@ -23,9 +23,11 @@ from .const import (
     CONF_ENABLE_PRECISE_UPDATES,
     CONF_ENABLE_RUNTIME_CONTROLS,
     CONF_ENABLE_SCHEDULES,
+    CONF_ENABLE_UPDATE_ENTITIES,
     CONF_ENABLE_VOLUMES,
     CONF_VERIFY_SSL,
     DEFAULT_ENABLE_CONTAINER_STATS,
+    DEFAULT_ENABLE_UPDATE_ENTITIES,
     DOMAIN,
     PLATFORMS,
 )
@@ -39,6 +41,7 @@ from .helpers import (
     _all_envs,
     _compose_project,
     _container_has_healthcheck,
+    _container_has_pending_update,
     _coordinator_env,
     _ensure_env_devices,
     _ensure_hub_devices,
@@ -123,6 +126,14 @@ async def async_migrate_entry(hass: HomeAssistant, entry: DockhandConfigEntry) -
     versions via real registry queries), even before the rename. Carries
     over an existing user's stored value under the old key, if present,
     rather than silently reverting them to the default.
+
+    (A 2 -> 3 step briefly existed in an unreleased 1.8.1 dev cycle,
+    grouping enable_precise_updates/poll_interval_updates into a
+    section() alongside the new enable_update_entities — reverted before
+    release after the section's field labels wouldn't render correctly
+    in a live instance and the exact cause couldn't be pinned down. See
+    docs/BACKLOG.md. Nothing ever shipped at version 3, so there's
+    nothing to migrate away from; VERSION is back to 2.)
     """
     if entry.version == 1:
         new_options = dict(entry.options)
@@ -189,7 +200,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: DockhandConfigEntry) -> 
         hass, client, config, fast_coordinator, entry=entry
     )
 
-    # Update coordinator is optional — only created when the feature is enabled.
+    # Update coordinator (Tier 2) is optional — created whenever
+    # CONF_ENABLE_PRECISE_UPDATES is on, regardless of
+    # CONF_ENABLE_UPDATE_ENTITIES. Deliberately NOT AND'd with the
+    # update-entities toggle: the env-level "Check for updates" button
+    # (button.py's DockhandCheckUpdatesButton) forces a real registry
+    # check that also refreshes Dockhand's own cached values — which
+    # other things (e.g. the stack binary sensor's pending-updates
+    # attributes) still consume even with update entities turned off, so
+    # that button and this coordinator should keep working either way.
+    # It's specifically the *bulk "Update all" button* that must not
+    # exist without update entities (see button.py/__init__.py's
+    # _build_live_sets) — that's the actual "backdoor to performing
+    # updates from HA" concern from github.com/raetha/ha-dockhand/issues/23,
+    # not this read-only check.
     update_coordinator: DockhandUpdateCoordinator | None = None
     if config.get(CONF_ENABLE_PRECISE_UPDATES):
         update_coordinator = DockhandUpdateCoordinator(
@@ -421,10 +445,11 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
     # relying purely on device-removal cascade.
     runtime_control_uids: set[str] = set()
     container_stats_uids: set[str] = set()
-    # Tier 1 update entities — live whenever the environment has
-    # updateCheckEnabled=True, entirely from fast data (Tier 2/update
-    # coordinator is purely additive and has no bearing on which update
-    # entities should exist — see update.py's module docstring).
+    # Tier 1 update entities — live whenever CONF_ENABLE_UPDATE_ENTITIES is
+    # on (default True) and the environment has updateCheckEnabled=True.
+    # Entirely fast-data-derived; Tier 2/update coordinator is purely
+    # additive and has no bearing on which update entities should exist —
+    # see update.py's module docstring.
     update_uids: set[str] = set()
     # Running switch + restart button + auto-update switch — live on the
     # container's/stack's own device, but suppressed for system containers
@@ -449,9 +474,36 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
     health_uids: set[str] = set()
     # Bulk "Update all" button — env-level, conditionally present (not
     # just conditionally enabled) matching Dockhand's own {#if
-    # updatableContainersCount > 0} gating: live only while at least one
-    # non-system-container pending update exists in the environment.
+    # updatableContainersCount > 0} gating: live only while
+    # CONF_ENABLE_UPDATE_ENTITIES is on AND at least one non-system-
+    # container pending update exists in the environment.
+    #
+    # Considers both Tier 1 (pending_updates) and Tier 2 (update_coordinator,
+    # when configured) via the shared _container_has_pending_update()
+    # helper, matching button.py's creation gate exactly — this MUST stay
+    # in sync with that gate, since a mismatch here means the button
+    # either never gets removed once created (this set too permissive) or
+    # gets removed the instant it's created (this set too strict). Safe to
+    # include Tier 2 because that helper looks it up by each container's
+    # current id — a stale entry from a since-recreated container is
+    # keyed under an id nothing currently has, so it can't keep this uid
+    # alive past the point the update actually resolved.
     bulk_update_uids: set[str] = set()
+    update_coordinator = entry.runtime_data.update_coordinator
+    update_data = _all_envs(update_coordinator.data if update_coordinator else None)
+    # Tier 1's own pending-updates fetch is intentionally NOT gated on this
+    # option (it's cheap, and other consumers — e.g. the stack
+    # updates-available binary sensor's pending_container_names attribute
+    # — legitimately want it regardless of whether update ENTITIES are
+    # shown) — so pending_update_container_ids can still be non-empty here
+    # even with the platform off. Both update_uids and bulk_update_uids
+    # below must check this explicitly rather than relying on Tier 1/Tier 2
+    # data being absent, or a user who disabled update entities entirely
+    # (github.com/raetha/ha-dockhand/issues/23) would still see the
+    # env-level "Update all" button reappear from Tier 1 data alone.
+    update_entities_enabled = entry.options.get(
+        CONF_ENABLE_UPDATE_ENTITIES, DEFAULT_ENABLE_UPDATE_ENTITIES
+    )
 
     for env_id, env_data in fast_data.items():
         has_freestanding = False
@@ -464,13 +516,18 @@ def _build_live_sets(entry: DockhandConfigEntry) -> dict[str, Any]:
             for c in env_containers
             if c.get("systemContainer") and c.get("id")
         }
-        if pending_updates - system_ids:
+        update_env_data = update_data.get(env_id)
+        if update_entities_enabled and any(
+            _container_has_pending_update(c, pending_updates, update_env_data)
+            for c in env_containers
+            if c.get("id") not in system_ids
+        ):
             bulk_update_uids.add(f"{entry.entry_id}_{env_id}_bulk_update")
         for c in env_containers:
             name = c.get("name", "")
             if name:
                 containers.add(f"container_{env_id}_{name}")
-                if update_check_enabled:
+                if update_entities_enabled and update_check_enabled:
                     update_uids.add(f"{entry.entry_id}_{env_id}_update_{name}")
                 if not c.get("systemContainer"):
                     for suffix in _CONTAINER_ACTION_SUFFIXES:
@@ -619,13 +676,18 @@ def _cleanup_stale_registry(
     - Image, network, volume, and git stack entity cleanup uses the same
       two-case logic, guarded by slow coordinator validity so a failed poll
       doesn't trigger false cleanup.
-    - Update (Tier 1) and runtime control entity cleanup uses the same
-      two-case logic but is fast-data-derived (same reliability as
-      containers/stacks) — no separate coordinator-validity guard needed
-      beyond the top-level fast_data check. Tier 2 (the optional
-      update_coordinator, real registry queries) has no bearing on cleanup
-      at all — it only ever enriches already-existing Tier 1 entities,
-      never creates or removes them.
+    - Update (Tier 1) entity cleanup and runtime control entity cleanup use
+      the same two-case logic and are fast-data-derived (same reliability
+      as containers/stacks) — no separate coordinator-validity guard
+      needed beyond the top-level fast_data check. Tier 2 (the optional
+      update_coordinator, real registry queries) never creates or removes
+      the per-container update entities themselves — it only enriches
+      already-existing Tier 1 ones. It DOES factor into the env-level
+      bulk "Update all" button specifically (via the shared
+      _container_has_pending_update() helper, looked up by each
+      container's current id so a stale Tier 2 entry from a since-
+      recreated container can't keep the button alive past when its
+      update actually resolved) — see bulk_update_uids below.
     - Container stats entity cleanup (the 8 CPU/memory/network/block-I/O
       sensors) uses the same two-case logic, same fast-data reliability —
       turning "Enable container stats" off removes any already created

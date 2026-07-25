@@ -1,10 +1,31 @@
 """Update platform for Dockhand container image updates.
 
-Two-tier design:
+Whole platform gated on CONF_ENABLE_UPDATE_ENTITIES (default True, for
+upgrade compatibility — Tier 1 was unconditional before this option
+existed). Off entirely disables both tiers' ENTITIES below, and the
+env-level bulk "Update all" button (button.py/__init__.py) since it has
+nothing to act on without them — that's the actual "backdoor to
+performing updates from HA" concern behind this option. It does NOT
+disable the update_coordinator (Tier 2) object itself or the env-level
+"Check for updates" button: that button is read-only (forces a real
+registry check, refreshing Dockhand's own cached values that other
+things — e.g. the stack binary sensor's pending-updates attributes —
+still consume regardless of whether update entities exist), so it keeps
+working whenever CONF_ENABLE_PRECISE_UPDATES is on, independent of this
+toggle. See __init__.py's update_coordinator construction for that
+split. Added in response to github.com/raetha/ha-dockhand/issues/23 —
+some users manage container updates outside HA entirely and don't want
+these entities cluttering HA's own update management.
 
-  Tier 1 (always on, no config option): update entities exist for every
-  container in any environment where Dockhand itself has update-check
-  enabled (env_data["stats"]["updateCheckEnabled"], from dashboard/stats,
+Two-tier design for entity DISPLAY (both tiers require
+CONF_ENABLE_UPDATE_ENTITIES to be on — Tier 2 alone, e.g. via a manual
+"Check for updates" press with entities disabled, has nothing to show
+its data on):
+
+  Tier 1 (no separate config option beyond the platform gate above):
+  update entities exist for every container in any environment where
+  Dockhand itself has update-check enabled
+  (env_data["stats"]["updateCheckEnabled"], from dashboard/stats,
   already polled by the fast coordinator — no separate check needed).
   installed_version shows the image tag (no digest available at this
   tier). latest_version flips to the "update-pending" sentinel when the
@@ -63,7 +84,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import DockhandConfigEntry
-from .const import DOMAIN
+from .const import CONF_ENABLE_UPDATE_ENTITIES, DEFAULT_ENABLE_UPDATE_ENTITIES, DOMAIN
 from .coordinator import DockhandFastCoordinator, DockhandUpdateCoordinator
 from .helpers import _all_envs, _coordinator_env, _is_update_disabled_by_label
 
@@ -129,8 +150,9 @@ async def async_setup_entry(
     coordinator — independent of whether Tier 2 (update_coordinator) is
     configured at all.
 
-    Removal (when updateCheckEnabled turns off for an environment, or a
-    container disappears) is centralized in __init__.py's
+    Removal (when updateCheckEnabled turns off for an environment, a
+    container disappears, or CONF_ENABLE_UPDATE_ENTITIES itself is
+    turned off) is centralized in __init__.py's
     _cleanup_stale_registry/_build_live_sets, alongside every other
     conditionally-present entity type (images, networks, volumes,
     runtime controls, git stack entities) — not handled here. That
@@ -139,6 +161,11 @@ async def async_setup_entry(
     offline" (which must never trigger cleanup), so update entities
     reuse that same safety logic rather than duplicating it.
     """
+    if not entry.options.get(
+        CONF_ENABLE_UPDATE_ENTITIES, DEFAULT_ENABLE_UPDATE_ENTITIES
+    ):
+        return
+
     data = entry.runtime_data
     fast_coordinator = data.fast_coordinator
     update_coordinator = data.update_coordinator  # Tier 2, may be None
@@ -241,15 +268,26 @@ class ContainerUpdateEntity(CoordinatorEntity[DockhandFastCoordinator], UpdateEn
         container, if update_coordinator is configured and has data for
         it. Empty dict otherwise — Tier 1 properties all handle that
         gracefully, since Tier 2 is purely additive.
+
+        Looked up by the container's *current* id (from Tier 1's fresh
+        container list), not by name. Tier 2's data is keyed by
+        container_id at fetch time; a container recreated since Tier 2
+        last ran (the normal effect of an image update) gets a new id,
+        so its stale entry — still sitting under the old id — simply
+        won't be found here. Previously this scanned by containerName
+        instead, which meant a resolved update kept showing as pending
+        for up to 24h (Tier 2's poll interval) after the container was
+        actually recreated with the update already applied, since the
+        name-matched stale entry doesn't know it's describing a
+        container that no longer exists. Real bug, reported by Raetha.
         """
         if self._update_coordinator is None:
             return {}
+        c = self._container()
+        if not c or not c.get("id"):
+            return {}
         env_data = _coordinator_env(self._update_coordinator.data, self._env_id)
-        # env_data is indexed by container_id — scan for matching name.
-        for item in env_data.values():
-            if item.get("containerName") == self._container_name:
-                return item
-        return {}
+        return env_data.get(c["id"]) or {}
 
     def _update_supported_features(self) -> None:
         c = self._container() or {}

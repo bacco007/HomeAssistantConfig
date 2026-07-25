@@ -399,6 +399,45 @@ def _stack_has_system_container(stack: dict | None, all_containers: list) -> boo
     return False
 
 
+def _container_has_pending_update(
+    container: dict,
+    pending_ids: set[str],
+    update_env_data: dict[str, dict] | None,
+) -> bool:
+    """True if this specific container currently needs an update, per
+    either Tier 1 (Dockhand's own cached pending-updates check) or Tier 2
+    (the optional precise digest-based check-updates coordinator).
+
+    Shared by the update entity (update.py) and the env-level bulk
+    "Update all" button (button.py, __init__.py's cleanup) so both agree
+    on the exact same definition of "needs an update" — previously each
+    re-derived this independently and drifted (the button was Tier-1-only
+    while the entity preferred Tier 2, and Tier 2's own name-based lookup
+    could resurrect a since-recreated container's stale data).
+
+    update_env_data must already be keyed by container_id (the shape
+    DockhandUpdateCoordinator's data is fetched in) and, critically, this
+    looks it up by the container's *current* id, not by name. A container
+    recreated since Tier 2 last ran (the normal effect of an image
+    update) gets a new id — its old Tier 2 entry, still sitting under the
+    old id, simply won't be found by this lookup, so a resolved update
+    can never resurface as "still pending" here just because Tier 2
+    hasn't re-polled yet. This self-invalidation is what makes it safe
+    to fold Tier 2 into the bulk button's gating at all: a stale entry
+    can never contribute a false "yes".
+    """
+    container_id = container.get("id")
+    if not container_id:
+        return False
+    if container_id in pending_ids:
+        return True
+    if update_env_data:
+        item = update_env_data.get(container_id)
+        if item and item.get("hasUpdate"):
+            return True
+    return False
+
+
 def _is_update_disabled_by_label(labels: dict | None) -> bool:
     """True only if dockhand.update is explicitly false/no/0 (opt-out model —
     replicates Dockhand's own isUpdateDisabledByLabel() exactly, including

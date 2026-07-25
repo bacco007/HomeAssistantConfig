@@ -21,6 +21,7 @@ from .const import (
     CONF_ENABLE_PRECISE_UPDATES,
     CONF_ENABLE_RUNTIME_CONTROLS,
     CONF_ENABLE_SCHEDULES,
+    CONF_ENABLE_UPDATE_ENTITIES,
     CONF_ENABLE_VOLUMES,
     CONF_POLL_INTERVAL,
     CONF_POLL_INTERVAL_SLOW,
@@ -32,6 +33,7 @@ from .const import (
     DEFAULT_ENABLE_PRECISE_UPDATES,
     DEFAULT_ENABLE_RUNTIME_CONTROLS,
     DEFAULT_ENABLE_SCHEDULES,
+    DEFAULT_ENABLE_UPDATE_ENTITIES,
     DEFAULT_ENABLE_VOLUMES,
     DEFAULT_POLL_INTERVAL,
     DEFAULT_POLL_INTERVAL_SLOW,
@@ -122,6 +124,22 @@ def _options_schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
                 CONF_ENABLE_CONTAINER_STATS,
                 default=d.get(
                     CONF_ENABLE_CONTAINER_STATS, DEFAULT_ENABLE_CONTAINER_STATS
+                ),
+            ): bool,
+            # Placed directly above enable_precise_updates and poll_interval_updates,
+            # which are both refinements of this one — they have no effect at all
+            # when this is off. Was briefly grouped via a HA section() (config
+            # entry VERSION 3) to make that relationship visually obvious, but
+            # reverted (see docs/BACKLOG.md "Group update options via section()")
+            # after two different translation-structure attempts both failed to
+            # render field labels/help text correctly in a live instance and the
+            # actual cause couldn't be confirmed — not worth the schema-version
+            # churn for a grouping that doesn't work yet. The relationship is
+            # communicated via field order and description text only for now.
+            vol.Optional(
+                CONF_ENABLE_UPDATE_ENTITIES,
+                default=d.get(
+                    CONF_ENABLE_UPDATE_ENTITIES, DEFAULT_ENABLE_UPDATE_ENTITIES
                 ),
             ): bool,
             vol.Optional(

@@ -27,24 +27,30 @@
         "title": "Configura polling e funzionalità",
         "description": "Imposta la frequenza di polling di Dockhand e i gruppi di entità opzionali da abilitare. Tutto questo può essere modificato in seguito tramite Configura.",
         "data": {
-          "poll_interval": "Intervallo di polling veloce (secondi)",
-          "poll_interval_slow": "Intervallo di polling lento (secondi)",
-          "enable_schedules": "Abilita pianificazioni",
-          "enable_images": "Abilita immagini",
-          "enable_volumes": "Abilita volumi",
-          "enable_networks": "Abilita reti",
-          "enable_updates": "Abilita aggiornamenti container",
-          "poll_interval_updates": "Intervallo di controllo aggiornamenti (secondi)"
+          "poll_interval": "Intervallo di polling rapido (secondi) — statistiche, container e stack",
+          "poll_interval_slow": "Intervallo di polling lento (secondi) — immagini, volumi, reti, pianificazioni",
+          "enable_schedules": "Abilita sensori pianificazione",
+          "enable_images": "Abilita sensori immagini",
+          "enable_volumes": "Abilita sensori volumi",
+          "enable_networks": "Abilita sensori reti",
+          "enable_runtime_controls": "Abilita controlli runtime (avanzato)",
+          "enable_container_stats": "Abilita sensori CPU/memoria/rete/I-O disco per container",
+          "poll_interval_updates": "Intervallo di controllo aggiornamenti (secondi)",
+          "enable_update_entities": "Abilita entità di aggiornamento",
+          "enable_precise_updates": "Abilita versioni di aggiornamento precise"
         },
         "data_description": {
-          "poll_interval": "Con quale frequenza aggiornare gli stati dei container, gli stack e le statistiche dell'ambiente. Minimo: 10.",
-          "poll_interval_slow": "Con quale frequenza aggiornare immagini, volumi, reti e pianificazioni. Minimo: 30.",
-          "enable_schedules": "Crea entità per le attività pianificate di Dockhand.",
-          "enable_images": "Crea entità per le immagini Docker su ogni host.",
-          "enable_volumes": "Crea entità per i volumi Docker su ogni host.",
-          "enable_networks": "Crea entità per le reti Docker su ogni host.",
-          "enable_updates": "Crea entità di aggiornamento che mostrano la disponibilità di aggiornamenti delle immagini, con supporto aggiornamento con un clic.",
-          "poll_interval_updates": "Con quale frequenza controllare i registry dei container per aggiornamenti delle immagini. Tenerla bassa — ogni controllo interroga il registry per ogni container. Minimo: 300."
+          "poll_interval": "Con quale frequenza aggiornare le statistiche. Predefinito: 60. Minimo: 10.",
+          "poll_interval_slow": "Con quale frequenza aggiornare immagini, volumi, reti e pianificazioni. Predefinito: 600. Minimo: 30.",
+          "enable_schedules": "Abilita i sensori per le pianificazioni di manutenzione Dockhand.",
+          "enable_images": "Abilita i sensori per le immagini Docker per ogni ambiente.",
+          "enable_volumes": "Abilita i sensori per i volumi Docker per ogni ambiente.",
+          "enable_networks": "Abilita i sensori per le reti Docker per ogni ambiente.",
+          "enable_runtime_controls": "Crea entità number/select per modificare in tempo reale i limiti di CPU, memoria e processi, e la policy di riavvio, di un container senza stack. Non disponibile per i container gestiti da Compose.",
+          "enable_container_stats": "Crea sensori di CPU, memoria, rete e I/O disco per ogni container. Disattivato per impostazione predefinita poiché sono molte entità che la maggior parte delle persone non necessita; disattivarlo rimuove anche quelli già creati.",
+          "poll_interval_updates": "Con quale frequenza vengono eseguite le query al registro sopra indicate (secondi). Predefinito: 86400 (24 ore). Minimo: 300.",
+          "enable_update_entities": "Crea un'entità di aggiornamento di Home Assistant per ogni container. Disattiva questa opzione se gestisci gli aggiornamenti in un altro modo e non vuoi che i container di Dockhand appaiano nella gestione aggiornamenti di HA. Nasconde anche il pulsante \"Aggiorna tutto\"; \"Controlla aggiornamenti\" continua comunque a funzionare.",
+          "enable_precise_updates": "Aggiorna le entità di aggiornamento per mostrare numeri di versione precisi (digest immagine) tramite query periodiche al registro, invece di un semplice tag immagine. Richiede \"Abilita entità di aggiornamento\" sopra."
         }
       },
       "reauth_confirm": {
@@ -94,10 +100,11 @@
           "enable_images": "Abilita sensori immagini",
           "enable_volumes": "Abilita sensori volumi",
           "enable_networks": "Abilita sensori reti",
-          "poll_interval_updates": "Intervallo di controllo aggiornamenti (secondi)",
           "enable_runtime_controls": "Abilita controlli runtime (avanzato)",
-          "enable_precise_updates": "Abilita versioni di aggiornamento precise",
-          "enable_container_stats": "Abilita sensori CPU/memoria/rete/I-O disco per container"
+          "enable_container_stats": "Abilita sensori CPU/memoria/rete/I-O disco per container",
+          "poll_interval_updates": "Intervallo di controllo aggiornamenti (secondi)",
+          "enable_update_entities": "Abilita entità di aggiornamento",
+          "enable_precise_updates": "Abilita versioni di aggiornamento precise"
         },
         "data_description": {
           "poll_interval": "Con quale frequenza aggiornare le statistiche. Predefinito: 60. Minimo: 10.",
@@ -106,10 +113,11 @@
           "enable_images": "Abilita i sensori per le immagini Docker per ogni ambiente.",
           "enable_volumes": "Abilita i sensori per i volumi Docker per ogni ambiente.",
           "enable_networks": "Abilita i sensori per le reti Docker per ogni ambiente.",
-          "poll_interval_updates": "Con quale frequenza eseguire le query al registro reali abilitate sopra (secondi). Predefinito: 86400 (24 ore). Minimo: 300. Rilevante solo se \"Abilita versioni di aggiornamento precise\" è attivo.",
-          "enable_runtime_controls": "Abilita entità number/select per modificare in tempo reale il limite di memoria, il limite CPU, il limite di processi e il criterio di riavvio di un container autonomo, senza ricrearlo. Non disponibile per i container gestiti da uno stack Compose. Richiede una chiamata API aggiuntiva per container autonomo a ogni polling lento per leggere i valori attuali.",
-          "enable_precise_updates": "Le entità di aggiornamento esistono già automaticamente per ogni container in un ambiente in cui il controllo aggiornamenti è abilitato in Dockhand stesso, mostrando un tag immagine e uno stato \"update-pending\" dai risultati già memorizzati nella cache da Dockhand — senza costi API aggiuntivi. Attivando questa opzione si aggiungono vere query al registro nell'intervallo indicato sotto, aggiornando le stesse entità per mostrare numeri di versione precisi (digest delle immagini).",
-          "enable_container_stats": "Crea i sensori per container di CPU, memoria, rete e I/O a blocchi, invece di non crearli affatto finché non lo attivi. Controlla anche la chiamata API di statistiche sottostante stessa — disattivato significa che la chiamata non viene effettuata, non solo che le entità sono nascoste. Disabilitato per impostazione predefinita poiché sono molte entità di cui la maggior parte delle persone non ha bisogno. Un container fermo, o che esce dalla risposta delle statistiche per qualsiasi altro motivo, segnala questi sensori come non disponibili invece di una lettura obsoleta o pari a zero. Disattivare questo rimuove anche le entità statistiche create in precedenza."
+          "enable_runtime_controls": "Crea entità number/select per modificare in tempo reale i limiti di CPU, memoria e processi, e la policy di riavvio, di un container senza stack. Non disponibile per i container gestiti da Compose.",
+          "enable_container_stats": "Crea sensori di CPU, memoria, rete e I/O disco per ogni container. Disattivato per impostazione predefinita poiché sono molte entità che la maggior parte delle persone non necessita; disattivarlo rimuove anche quelli già creati.",
+          "poll_interval_updates": "Con quale frequenza vengono eseguite le query al registro sopra indicate (secondi). Predefinito: 86400 (24 ore). Minimo: 300.",
+          "enable_update_entities": "Crea un'entità di aggiornamento di Home Assistant per ogni container. Disattiva questa opzione se gestisci gli aggiornamenti in un altro modo e non vuoi che i container di Dockhand appaiano nella gestione aggiornamenti di HA. Nasconde anche il pulsante \"Aggiorna tutto\"; \"Controlla aggiornamenti\" continua comunque a funzionare.",
+          "enable_precise_updates": "Aggiorna le entità di aggiornamento per mostrare numeri di versione precisi (digest immagine) tramite query periodiche al registro, invece di un semplice tag immagine. Richiede \"Abilita entità di aggiornamento\" sopra."
         }
       }
     }

@@ -10,7 +10,11 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import DockhandConfigEntry
-from .const import CONF_API_URL
+from .const import (
+    CONF_API_URL,
+    CONF_ENABLE_UPDATE_ENTITIES,
+    DEFAULT_ENABLE_UPDATE_ENTITIES,
+)
 from .coordinator import (
     DockhandFastCoordinator,
     DockhandSlowCoordinator,
@@ -20,6 +24,7 @@ from .helpers import (
     _all_envs,
     _compose_project,
     _container_device,
+    _container_has_pending_update,
     _coordinator_env,
     _env_device,
     _stack_device,
@@ -49,6 +54,15 @@ async def async_setup_entry(
     )
     client = entry.runtime_data.client
     base_url: str = entry.data.get(CONF_API_URL, "")
+    # Tier 1's own pending-updates fetch isn't gated on this option (see
+    # __init__.py's _build_live_sets for why), so pending data can still
+    # be non-empty here even with the platform off — has_updatable below
+    # must check this explicitly, or the bulk button could reappear from
+    # Tier 1 data alone for a user who disabled update entities entirely
+    # (github.com/raetha/ha-dockhand/issues/23).
+    update_entities_enabled = entry.options.get(
+        CONF_ENABLE_UPDATE_ENTITIES, DEFAULT_ENABLE_UPDATE_ENTITIES
+    )
 
     known_container_keys: set[str] = set()
     known_stack_ids: set[str] = set()
@@ -63,14 +77,22 @@ async def async_setup_entry(
             stats = env_data.get("stats") or {}
             env_name = stats.get("name", f"Environment {env_id}")
 
-            # Per-environment "Check for image updates" button — only when
-            # the update coordinator is active.
-            if update_coordinator is not None and env_id not in known_env_update_ids:
+            # Per-environment "Check for updates" button — always present,
+            # regardless of CONF_ENABLE_PRECISE_UPDATES or
+            # CONF_ENABLE_UPDATE_ENTITIES (github.com/raetha/ha-dockhand/issues/23
+            # design discussion): it's a read-only, user-initiated, one-off
+            # forced check, not a way to perform updates, so neither option
+            # needs to gate its existence. What each option controls is
+            # only what happens to the *result* — see DockhandCheckUpdatesButton
+            # itself.
+            if env_id not in known_env_update_ids:
                 known_env_update_ids.add(env_id)
                 new.append(
                     DockhandCheckUpdatesButton(
                         fast,
+                        client,
                         update_coordinator,
+                        update_entities_enabled,
                         entry.entry_id,
                         env_id,
                         env_name,
@@ -79,23 +101,47 @@ async def async_setup_entry(
                 )
 
             # Bulk "Update all" button — conditionally present, not just
-            # conditionally enabled: only created while there is at least
-            # one non-system-container pending update in this environment,
-            # matching Dockhand's own {#if updatableContainersCount > 0}
-            # gating for its own "Update all" button. Removed via the
-            # central cleanup system the moment that's no longer true.
+            # conditionally enabled: only created while CONF_ENABLE_UPDATE_ENTITIES
+            # is on and there is at least one non-system-container pending
+            # update in this environment, matching Dockhand's own {#if
+            # updatableContainersCount > 0} gating for its own "Update all"
+            # button. Removed via the central cleanup system the moment
+            # that's no longer true.
+            #
+            # Considers both Tier 1 (pending_update_container_ids) and
+            # Tier 2 (update_coordinator, when configured) via the shared
+            # _container_has_pending_update() helper — same definition of
+            # "needs an update" the update entities themselves use, so
+            # this can never disagree with what's actually shown per
+            # container. Safe to fold Tier 2 in here specifically because
+            # that helper looks Tier 2 up by each container's *current*
+            # id: a stale entry left over from a since-recreated
+            # container is keyed under an id that no longer exists on
+            # any current container, so it can never cause this button
+            # to appear for an update that's already resolved.
             pending = env_data.get("pending_update_container_ids") or set()
+            env_containers = env_data.get("containers") or []
             system_ids = {
                 c.get("id")
-                for c in env_data.get("containers") or []
+                for c in env_containers
                 if c.get("systemContainer") and c.get("id")
             }
-            has_updatable = bool(pending - system_ids)
+            update_env_data = (
+                _coordinator_env(update_coordinator.data, env_id)
+                if update_coordinator is not None
+                else None
+            )
+            has_updatable = update_entities_enabled and any(
+                _container_has_pending_update(c, pending, update_env_data)
+                for c in env_containers
+                if c.get("id") not in system_ids
+            )
             if has_updatable and env_id not in known_env_bulk_update_ids:
                 known_env_bulk_update_ids.add(env_id)
                 new.append(
                     DockhandEnvBulkUpdateButton(
                         fast,
+                        update_coordinator,
                         client,
                         entry.entry_id,
                         env_id,
@@ -435,6 +481,17 @@ class DockhandEnvBulkUpdateButton(
     mirroring how the button disappears in Dockhand's own UI rather than
     just going idle/disabled.
 
+    "Pending update" here means either Tier 1 (Dockhand's own cached
+    pending-updates check) or Tier 2 (the optional precise digest-based
+    check-updates coordinator) — via the shared _container_has_pending_update()
+    helper, same definition update.py's own entities use. Folding Tier 2
+    in is safe against staleness specifically because that helper looks
+    Tier 2 up by each container's *current* id: a container recreated
+    since Tier 2 last polled (the normal effect of an image update) gets
+    a new id, so Tier 2's old entry — still under the old id — is never
+    found and can't keep this button alive, or its own container list,
+    past the point an update actually resolved.
+
     Named "Update all containers" — a static name via translation_key,
     not a live count in the name. An earlier version showed "Update all
     (N)" matching Dockhand's own wording, but a changing friendly_name on
@@ -449,6 +506,7 @@ class DockhandEnvBulkUpdateButton(
     def __init__(
         self,
         fast_coordinator: DockhandFastCoordinator,
+        update_coordinator: DockhandUpdateCoordinator | None,
         client: Any,
         entry_id: str,
         env_id: int,
@@ -456,6 +514,7 @@ class DockhandEnvBulkUpdateButton(
         base_url: str,
     ) -> None:
         super().__init__(fast_coordinator)
+        self._update_coordinator = update_coordinator
         self._client = client
         self._entry_id = entry_id
         self._env_id = env_id
@@ -466,16 +525,35 @@ class DockhandEnvBulkUpdateButton(
     def _updatable_container_ids(self) -> list[str]:
         """Pending-update container IDs for this env, excluding system
         containers — same exclusion Dockhand's own "Update all" applies
-        (confirmed from its frontend: `!container.systemContainer`)."""
+        (confirmed from its frontend: `!container.systemContainer`).
+
+        Uses the same combined Tier 1 + Tier 2 _container_has_pending_update()
+        definition as this button's own creation gate (see async_setup_entry
+        above) and the update entities in update.py, so the button can
+        never exist while reporting nothing to actually update, and never
+        omit a container Tier 2 alone flagged. Install itself doesn't care
+        which tier flagged a container — batch-update-stream only needs a
+        container id — so there's no reason the trigger list should be
+        more restrictive than the button's own visibility.
+        """
         env_data = _coordinator_env(self.coordinator.data, self._env_id)
-        pending = env_data.get("pending_update_container_ids") or set()
-        if not pending:
-            return []
         containers = env_data.get("containers") or []
+        pending = env_data.get("pending_update_container_ids") or set()
         system_ids = {
             c.get("id") for c in containers if c.get("systemContainer") and c.get("id")
         }
-        return [cid for cid in pending if cid not in system_ids]
+        update_env_data = (
+            _coordinator_env(self._update_coordinator.data, self._env_id)
+            if self._update_coordinator is not None
+            else None
+        )
+        return [
+            c["id"]
+            for c in containers
+            if c.get("id") not in system_ids
+            and c.get("id")
+            and _container_has_pending_update(c, pending, update_env_data)
+        ]
 
     @property
     def available(self) -> bool:
@@ -577,22 +655,47 @@ class DockhandEnvBulkUpdateButton(
 class DockhandCheckUpdatesButton(
     CoordinatorEntity[DockhandFastCoordinator], ButtonEntity
 ):
-    """Trigger an immediate image update check for this environment only.
+    """Trigger an immediate, one-off, user-forced image update check for
+    this environment only — always present, regardless of
+    CONF_ENABLE_PRECISE_UPDATES or CONF_ENABLE_UPDATE_ENTITIES.
 
-    Attached to the environment device, and genuinely scoped to just that
-    environment — calls DockhandUpdateCoordinator.async_check_environment(),
-    which checks only this environment and merges the result into the
-    coordinator's data via async_set_updated_data(), leaving every other
-    environment's data untouched.
+    Design settled on for github.com/raetha/ha-dockhand/issues/23: this
+    button is an isolated action, deliberately decoupled from
+    DockhandUpdateCoordinator's own scheduled background polling (that
+    coordinator may not even exist). Pressing it always calls Dockhand's
+    real check-updates API for this environment via the client directly
+    — that's the entire point of the button, forcing Dockhand to refresh
+    its own cached values right now, which is useful on its own even if
+    neither tier is configured to consume the result locally. What
+    happens to the *result* then depends on what's actually enabled:
 
-    This wasn't the original design: pressing this button used to call
-    async_refresh() on the whole coordinator, which always checks every
-    environment in one gather — so pressing environment 1's button
-    silently also re-checked environments 2 and 3. That seemed like a
-    reasonable "be smart about it" shortcut at the time (Dockhand's own
-    API doesn't expose a bulk endpoint, but the coordinator conveniently
-    already gathers everything), but it's a real mismatch between what
-    the button's device implies and what pressing it actually does — a
+      - CONF_ENABLE_PRECISE_UPDATES on (update_coordinator exists): the
+        result also updates Tier 2's data, via
+        DockhandUpdateCoordinator.async_merge_check_results() — same
+        end effect the button always had, just fed with the response
+        already in hand instead of triggering a second, redundant check.
+
+      - CONF_ENABLE_UPDATE_ENTITIES on: the result also updates Tier 1's
+        pending_update_container_ids for this environment immediately,
+        via DockhandFastCoordinator.async_merge_pending_updates_from_check()
+        — this is new: previously Tier 1 had no way to reflect a forced
+        check at all until its own next 60s poll happened to line up
+        with whatever Dockhand's own cache ended up holding.
+
+      - Neither on: the check still runs (Dockhand's cache still gets
+        refreshed), but nothing local captures the response — there's
+        nothing configured to show it.
+
+    Attached to the environment device, and genuinely scoped to just
+    that environment. This wasn't the original design: pressing this
+    button used to call async_refresh() on the whole
+    DockhandUpdateCoordinator, which always checks every environment in
+    one gather — so pressing environment 1's button silently also
+    re-checked environments 2 and 3. That seemed like a reasonable "be
+    smart about it" shortcut at the time (Dockhand's own API doesn't
+    expose a bulk endpoint, but the coordinator conveniently already
+    gathers everything), but it's a real mismatch between what the
+    button's device implies and what pressing it actually does — a
     button on environment 1's device visibly changing environment 3's
     update state is a legitimately confusing side effect, not a clever
     optimization. Reverted to matching Dockhand's own UI exactly, which
@@ -603,12 +706,10 @@ class DockhandCheckUpdatesButton(
     when that's what's wanted — it's just no longer a hidden side effect
     of pressing just one.
 
-    async_check_environment() itself (not async_refresh()) — see its own
-    docstring in coordinator.py for the full reasoning, including why it
-    raises on failure rather than silently falling back to stale data
-    the way the coordinator's own background periodic refresh does.
-
-    Only created when CONF_ENABLE_PRECISE_UPDATES is True.
+    Raises on failure — this is an explicit user action, and a failed
+    check should tell the user it failed rather than silently doing
+    nothing, unlike the coordinator's own resilient background refresh
+    (see coordinator.py's docstrings for that distinction).
     """
 
     _attr_has_entity_name = True
@@ -618,14 +719,18 @@ class DockhandCheckUpdatesButton(
     def __init__(
         self,
         fast_coordinator: DockhandFastCoordinator,
-        update_coordinator: DockhandUpdateCoordinator,
+        client: Any,
+        update_coordinator: DockhandUpdateCoordinator | None,
+        update_entities_enabled: bool,
         entry_id: str,
         env_id: int,
         env_name: str,
         base_url: str,
     ) -> None:
         super().__init__(fast_coordinator)
+        self._client = client
         self._update_coordinator = update_coordinator
+        self._update_entities_enabled = update_entities_enabled
         self._entry_id = entry_id
         self._env_id = env_id
         self._env_name = env_name
@@ -638,13 +743,26 @@ class DockhandCheckUpdatesButton(
 
     async def async_press(self) -> None:
         try:
-            await self._update_coordinator.async_check_environment(self._env_id)
+            items = await self._client.async_check_container_updates(self._env_id)
         except Exception as err:
             raise HomeAssistantError(
                 translation_domain="dockhand",
                 translation_key="action_failed",
                 translation_placeholders={"error": str(err)},
             ) from err
+
+        if self._update_coordinator is not None:
+            self._update_coordinator.async_merge_check_results(self._env_id, items)
+
+        if self._update_entities_enabled:
+            pending_ids = {
+                item["containerId"]
+                for item in items
+                if item.get("hasUpdate") and item.get("containerId")
+            }
+            self.coordinator.async_merge_pending_updates_from_check(
+                self._env_id, pending_ids
+            )
 
 
 class _BaseSlowGitStackButton(CoordinatorEntity[DockhandSlowCoordinator], ButtonEntity):

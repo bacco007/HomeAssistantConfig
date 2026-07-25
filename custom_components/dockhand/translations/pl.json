@@ -27,24 +27,30 @@
         "title": "Konfiguracja odpytywania i funkcji",
         "description": "Ustaw, jak często Dockhand ma być odpytywany i które opcjonalne grupy encji mają być włączone. Wszystko to można zmienić później przez Konfiguruj.",
         "data": {
-          "poll_interval": "Szybki interwał odpytywania (sekundy)",
-          "poll_interval_slow": "Wolny interwał odpytywania (sekundy)",
-          "enable_schedules": "Włącz harmonogramy",
-          "enable_images": "Włącz obrazy",
-          "enable_volumes": "Włącz wolumeny",
-          "enable_networks": "Włącz sieci",
-          "enable_updates": "Włącz aktualizacje kontenerów",
-          "poll_interval_updates": "Interwał sprawdzania aktualizacji (sekundy)"
+          "poll_interval": "Szybki interwał odpytywania (sekundy) — statystyki, kontenery i stosy",
+          "poll_interval_slow": "Wolny interwał odpytywania (sekundy) — obrazy, wolumeny, sieci, harmonogramy",
+          "enable_schedules": "Włącz czujniki harmonogramów",
+          "enable_images": "Włącz czujniki obrazów",
+          "enable_volumes": "Włącz czujniki wolumenów",
+          "enable_networks": "Włącz czujniki sieci",
+          "enable_runtime_controls": "Włącz sterowanie w czasie działania (zaawansowane)",
+          "enable_container_stats": "Włącz czujniki CPU/pamięci/sieci/we-wy dysku kontenera",
+          "poll_interval_updates": "Interwał sprawdzania aktualizacji (sekundy)",
+          "enable_update_entities": "Włącz encje aktualizacji",
+          "enable_precise_updates": "Włącz precyzyjne wersje aktualizacji"
         },
         "data_description": {
-          "poll_interval": "Jak często odświeżać stany kontenerów, stosy i statystyki środowiska. Minimum: 10.",
-          "poll_interval_slow": "Jak często odświeżać obrazy, wolumeny, sieci i harmonogramy. Minimum: 30.",
-          "enable_schedules": "Twórz encje dla zaplanowanych zadań Dockhand.",
-          "enable_images": "Twórz encje dla obrazów Docker na każdym hoście.",
-          "enable_volumes": "Twórz encje dla wolumenów Docker na każdym hoście.",
-          "enable_networks": "Twórz encje dla sieci Docker na każdym hoście.",
-          "enable_updates": "Twórz encje aktualizacji pokazujące dostępność aktualizacji obrazów z obsługą aktualizacji jednym kliknięciem.",
-          "poll_interval_updates": "Jak często sprawdzać rejestry kontenerów pod kątem aktualizacji obrazów. Trzymaj to rzadko — każde sprawdzenie odpytuje rejestr dla każdego kontenera. Minimum: 300."
+          "poll_interval": "Jak często odświeżać statystyki. Domyślnie: 60. Minimum: 10.",
+          "poll_interval_slow": "Jak często odświeżać obrazy, wolumeny, sieci i harmonogramy. Domyślnie: 600. Minimum: 30.",
+          "enable_schedules": "Włącza czujniki dla harmonogramów konserwacji Dockhand.",
+          "enable_images": "Włącza czujniki dla obrazów Docker na każde środowisko.",
+          "enable_volumes": "Włącza czujniki dla wolumenów Docker na każde środowisko.",
+          "enable_networks": "Włącza czujniki dla sieci Docker na każde środowisko.",
+          "enable_runtime_controls": "Tworzy encje number/select do zmiany na żywo limitów CPU, pamięci i procesów oraz zasad ponownego uruchamiania samodzielnego kontenera. Niedostępne dla kontenerów zarządzanych przez Compose.",
+          "enable_container_stats": "Tworzy czujniki CPU, pamięci, sieci i we/wy dysku dla każdego kontenera. Domyślnie wyłączone, ponieważ to dużo encji, których większość osób nie potrzebuje; wyłączenie usuwa też już utworzone czujniki.",
+          "poll_interval_updates": "Jak często wykonywane są powyższe zapytania do rejestru (sekundy). Domyślnie: 86400 (24 godziny). Minimum: 300.",
+          "enable_update_entities": "Tworzy encję aktualizacji Home Assistant dla każdego kontenera. Wyłącz tę opcję, jeśli zarządzasz aktualizacjami w inny sposób i nie chcesz, aby kontenery Dockhand pojawiały się we własnym zarządzaniu aktualizacjami HA. Ukrywa też przycisk „Zaktualizuj wszystko”; „Sprawdź aktualizacje” nadal działa.",
+          "enable_precise_updates": "Aktualizuje encje aktualizacji, aby pokazywały precyzyjne numery wersji (skróty obrazu) dzięki okresowym zapytaniom do rejestru, zamiast samego tagu obrazu. Wymaga włączonej powyżej opcji „Włącz encje aktualizacji”."
         }
       },
       "reauth_confirm": {
@@ -94,10 +100,11 @@
           "enable_images": "Włącz czujniki obrazów",
           "enable_volumes": "Włącz czujniki wolumenów",
           "enable_networks": "Włącz czujniki sieci",
-          "poll_interval_updates": "Interwał sprawdzania aktualizacji (sekundy)",
           "enable_runtime_controls": "Włącz sterowanie w czasie działania (zaawansowane)",
-          "enable_precise_updates": "Włącz precyzyjne wersje aktualizacji",
-          "enable_container_stats": "Włącz czujniki CPU/pamięci/sieci/we-wy dysku kontenera"
+          "enable_container_stats": "Włącz czujniki CPU/pamięci/sieci/we-wy dysku kontenera",
+          "poll_interval_updates": "Interwał sprawdzania aktualizacji (sekundy)",
+          "enable_update_entities": "Włącz encje aktualizacji",
+          "enable_precise_updates": "Włącz precyzyjne wersje aktualizacji"
         },
         "data_description": {
           "poll_interval": "Jak często odświeżać statystyki. Domyślnie: 60. Minimum: 10.",
@@ -106,10 +113,11 @@
           "enable_images": "Włącza czujniki dla obrazów Docker na każde środowisko.",
           "enable_volumes": "Włącza czujniki dla wolumenów Docker na każde środowisko.",
           "enable_networks": "Włącza czujniki dla sieci Docker na każde środowisko.",
-          "poll_interval_updates": "Jak często wykonywane są rzeczywiste zapytania do rejestru włączone powyżej (sekundy). Domyślnie: 86400 (24 godziny). Minimum: 300. Istotne tylko, gdy włączona jest opcja \"Włącz precyzyjne wersje aktualizacji\".",
-          "enable_runtime_controls": "Włącza encje number/select do zmiany limitu pamięci, limitu CPU, limitu procesów i zasad ponownego uruchamiania samodzielnego kontenera na żywo, bez jego odtwarzania. Niedostępne dla kontenerów zarządzanych przez stos Compose. Wymaga jednego dodatkowego wywołania API na samodzielny kontener przy każdym wolnym odpytywaniu w celu odczytu bieżących wartości.",
-          "enable_precise_updates": "Encje aktualizacji już istnieją automatycznie dla każdego kontenera w środowisku, w którym sprawdzanie aktualizacji jest włączone w samym Dockhand, pokazując tag obrazu oraz status \"update-pending\" na podstawie własnych zbuforowanych wyników Dockhand — bez dodatkowego kosztu API. Włączenie tej opcji dodaje rzeczywiste zapytania do rejestru z poniższym interwałem, aktualizując te same encje, aby pokazywały precyzyjne numery wersji (skróty obrazów).",
-          "enable_container_stats": "Tworzy czujniki CPU, pamięci, sieci i we/wy bloków dla każdego kontenera, zamiast w ogóle ich nie tworzyć, dopóki tego nie włączysz. Kontroluje też samo podstawowe wywołanie API statystyk — wyłączone oznacza, że wywołanie nie jest wykonywane, a nie tylko że encje są ukryte. Domyślnie wyłączone, ponieważ to dużo encji, których większość osób nie potrzebuje. Zatrzymany kontener, lub taki, który z innego powodu zniknie z odpowiedzi statystyk, zgłasza te czujniki jako niedostępne zamiast nieaktualnego lub zerowego odczytu. Wyłączenie tego usuwa również wcześniej utworzone encje statystyk."
+          "enable_runtime_controls": "Tworzy encje number/select do zmiany na żywo limitów CPU, pamięci i procesów oraz zasad ponownego uruchamiania samodzielnego kontenera. Niedostępne dla kontenerów zarządzanych przez Compose.",
+          "enable_container_stats": "Tworzy czujniki CPU, pamięci, sieci i we/wy dysku dla każdego kontenera. Domyślnie wyłączone, ponieważ to dużo encji, których większość osób nie potrzebuje; wyłączenie usuwa też już utworzone czujniki.",
+          "poll_interval_updates": "Jak często wykonywane są powyższe zapytania do rejestru (sekundy). Domyślnie: 86400 (24 godziny). Minimum: 300.",
+          "enable_update_entities": "Tworzy encję aktualizacji Home Assistant dla każdego kontenera. Wyłącz tę opcję, jeśli zarządzasz aktualizacjami w inny sposób i nie chcesz, aby kontenery Dockhand pojawiały się we własnym zarządzaniu aktualizacjami HA. Ukrywa też przycisk „Zaktualizuj wszystko”; „Sprawdź aktualizacje” nadal działa.",
+          "enable_precise_updates": "Aktualizuje encje aktualizacji, aby pokazywały precyzyjne numery wersji (skróty obrazu) dzięki okresowym zapytaniom do rejestru, zamiast samego tagu obrazu. Wymaga włączonej powyżej opcji „Włącz encje aktualizacji”."
         }
       }
     }

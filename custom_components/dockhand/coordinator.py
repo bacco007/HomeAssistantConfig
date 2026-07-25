@@ -232,6 +232,36 @@ class DockhandFastCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         # (non-per-environment) data without another reshape.
         return {"environments": out}
 
+    def async_merge_pending_updates_from_check(
+        self, env_id: int, container_ids_with_updates: set[str]
+    ) -> None:
+        """Merge a fresh Tier 1 pending-update signal for one environment,
+        obtained from an on-demand real registry check (the env-level
+        "Check for updates" button, DockhandCheckUpdatesButton), directly
+        into this coordinator's existing data — without waiting for this
+        environment's next scheduled 60s poll.
+
+        Uses async_set_updated_data() rather than a full refresh, same
+        reasoning as DockhandUpdateCoordinator.async_check_environment():
+        replaces just this one field for this one environment, leaves
+        every other environment and every other field of this
+        environment's data untouched, and notifies listeners without
+        triggering a full refresh of anything else.
+
+        A no-op if this coordinator has no data yet for the environment
+        (e.g. it's offline, or this coordinator hasn't completed its own
+        first refresh yet) — nothing safe to merge into in that case;
+        the next successful poll will populate it normally instead.
+        """
+        environments = dict(_all_envs(self.data))
+        env_data = environments.get(env_id)
+        if not env_data:
+            return
+        new_env_data = dict(env_data)
+        new_env_data["pending_update_container_ids"] = set(container_ids_with_updates)
+        environments[env_id] = new_env_data
+        self.async_set_updated_data({"environments": environments})
+
 
 class DockhandSlowCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Polls 600s: images, volumes, networks, schedules, runtime controls
@@ -648,6 +678,28 @@ class DockhandUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 out[env_id] = data
         return {"environments": out}
 
+    def async_merge_check_results(self, env_id: int, items: list[dict]) -> None:
+        """Merge already-fetched check-updates results for one environment
+        into this coordinator's data — same end effect as
+        async_check_environment() below, but for a caller that already
+        has the raw items in hand and shouldn't trigger a second,
+        redundant registry query to get them again.
+
+        Used by DockhandCheckUpdatesButton: since 1.8.1 that button
+        always fires the real check itself directly against the client
+        (so it has something to feed Tier 1 with too, even when this
+        coordinator doesn't exist at all — see button.py), then hands
+        the same response here to update Tier 2 if this coordinator is
+        present, rather than calling async_check_environment() and
+        paying for the same check twice.
+        """
+        indexed = {
+            item["containerId"]: item for item in items if item.get("containerId")
+        }
+        merged_environments = dict(_all_envs(self.data))
+        merged_environments[env_id] = indexed
+        self.async_set_updated_data({"environments": merged_environments})
+
     async def async_check_environment(self, env_id: int) -> None:
         """Check just one environment for updates — the real fix for a
         design mismatch: this coordinator's periodic/full refresh
@@ -664,22 +716,17 @@ class DockhandUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         longer pretending to be more capable than Dockhand itself.
 
         Raises on failure (unlike _fetch()'s per-environment resilience)
-        — this is an explicit user action via a button press, and the
-        caller (DockhandCheckUpdatesButton.async_press) already converts
-        any exception into a visible HomeAssistantError. Silently falling
-        back to stale data here would make a failed check look like
-        nothing happened, the opposite of what a user pressing a button
-        wants to know.
+        — this is an explicit user action, and any caller should convert
+        the exception into something visible to the user rather than
+        silently falling back to stale data, which would make a failed
+        check look like nothing happened.
 
-        Uses async_set_updated_data() rather than going through the
-        normal _async_update_data()/_fetch() cycle — that's the
-        documented way to publish data fetched through a means other
-        than the coordinator's own update method: replaces just this one
-        environment's slice, leaves every other environment's existing
-        data untouched, marks the coordinator successful, and notifies
-        listeners, all without triggering a full refresh of anything else.
+        A standalone convenience wrapping a client fetch + merge in one
+        call — DockhandCheckUpdatesButton itself no longer calls this
+        directly (it needs the raw items for Tier 1 too, so it fetches
+        once itself and calls async_merge_check_results() above instead),
+        but this remains available for anything else that just wants
+        "refresh this one environment's Tier 2 data" in a single call.
         """
-        env_data = await self._fetch_one_env(env_id)
-        merged_environments = dict(_all_envs(self.data))
-        merged_environments[env_id] = env_data
-        self.async_set_updated_data({"environments": merged_environments})
+        items = await self.client.async_check_container_updates(env_id)
+        self.async_merge_check_results(env_id, items)
