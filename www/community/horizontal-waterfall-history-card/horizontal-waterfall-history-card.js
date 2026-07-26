@@ -1,4 +1,4 @@
-/* Waterfall History Card v4.4.1 */
+/* Waterfall History Card v4.9.0 */
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -763,8 +763,11 @@ class WaterfallHistoryCard extends i {
             return b `<div class="error">Entity not found: ${entityId}</div>`;
         }
         const name = entityObj.name || entity.attributes.friendly_name || entityId;
-        // Resolve icon
-        let icon = entity.attributes?.icon;
+        // Resolve icon. Precedence: per-entity configured icon, then global
+        // configured icon, then the entity's own icon attribute, then a
+        // domain-based default. The configured overrides must win so that the
+        // "Custom Icon" editor field (e.g. mdi:power-cycle) actually takes effect.
+        let icon = entityObj.icon || this.config.icon || entity.attributes?.icon;
         if (!icon) {
             const domain = entityId.split('.')[0];
             icon = DEFAULT_DOMAIN_ICONS[domain] || 'mdi:bookmark';
@@ -1130,7 +1133,7 @@ window.customCards.push({
     description: 'A horizontal waterfall display for historical sensor data with visual editor',
     preview: true,
 });
-console.info(`%c WATERFALL-HISTORY-CARD %c 2026.7.18 `, 'color: black; background: #F2720C; font-weight: 600;', 'color: black; background: #00a5c9; font-weight: 600;');
+console.info(`%c WATERFALL-HISTORY-CARD %c 2026.7.25 `, 'color: black; background: #F2720C; font-weight: 600;', 'color: black; background: #00a5c9; font-weight: 600;');
 
 var NumberFormat;
 (function (NumberFormat) {
