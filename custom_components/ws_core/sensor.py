@@ -218,7 +218,18 @@ from .const import (
     KEY_TEMP_AVG_24H,
     KEY_TEMP_DISPLAY,
     KEY_TEMP_HIGH_24H,
+    KEY_TEMP_HIGH_ALL_TIME,
+    KEY_TEMP_HIGH_MONTH,
+    KEY_TEMP_HIGH_WEEK,
+    KEY_TEMP_HIGH_YEAR,
     KEY_TEMP_LOW_24H,
+    KEY_TEMP_LOW_ALL_TIME,
+    KEY_TEMP_LOW_MONTH,
+    KEY_TEMP_LOW_WEEK,
+    KEY_TEMP_LOW_YEAR,
+    KEY_TEMP_MONTH_REF,
+    KEY_TEMP_WEEK_REF,
+    KEY_TEMP_YEAR_REF,
     KEY_THSW_INDEX,
     KEY_THUNDERSTORM_RISK,
     KEY_THW_INDEX,
@@ -237,6 +248,11 @@ from .const import (
     KEY_WIND_DIR_VARIABILITY,
     KEY_WIND_GUST_FACTOR,
     KEY_WIND_GUST_MAX_24H,
+    KEY_WIND_GUST_MAX_ALL_TIME,
+    KEY_WIND_GUST_MAX_MONTH,
+    KEY_WIND_GUST_MAX_YEAR,
+    KEY_WIND_GUST_MONTH_REF,
+    KEY_WIND_GUST_YEAR_REF,
     KEY_WIND_QUADRANT,
     KEY_WIND_RUN_KM,
     KEY_WIND_RUN_MONTH_KM,
@@ -264,6 +280,7 @@ class WSSensorDescription:
     icon: str | None = None
     name: str | None = None
     translation_key: str | None = None
+    translation_placeholders: dict[str, str] | None = None
     native_unit: str | None = None
     state_class: SensorStateClass | None = None
     suggested_display_precision: int | None = None
@@ -1380,6 +1397,133 @@ SENSORS: list[WSSensorDescription] = [
         state_class=SensorStateClass.MEASUREMENT,
         unit_group="wind",
     ),
+    # =========================================================================
+    # YEARLY / ALL-TIME TEMPERATURE EXTREMES (issue #124)
+    # =========================================================================
+    WSSensorDescription(
+        key=KEY_TEMP_HIGH_YEAR,
+        translation_key="temperature_high_year",
+        name="WS Temperature High Year",
+        icon="mdi:thermometer-high",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
+        attrs_fn=lambda d: {"year_ref": d.get(KEY_TEMP_YEAR_REF)},
+    ),
+    WSSensorDescription(
+        key=KEY_TEMP_LOW_YEAR,
+        translation_key="temperature_low_year",
+        name="WS Temperature Low Year",
+        icon="mdi:thermometer-low",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
+        attrs_fn=lambda d: {"year_ref": d.get(KEY_TEMP_YEAR_REF)},
+    ),
+    WSSensorDescription(
+        key=KEY_TEMP_HIGH_ALL_TIME,
+        translation_key="temperature_high_all_time",
+        name="WS Temperature High All Time",
+        icon="mdi:thermometer-chevron-up",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
+    ),
+    WSSensorDescription(
+        key=KEY_TEMP_LOW_ALL_TIME,
+        translation_key="temperature_low_all_time",
+        name="WS Temperature Low All Time",
+        icon="mdi:thermometer-chevron-down",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
+    ),
+    # =========================================================================
+    # WEEKLY / MONTHLY TEMPERATURE EXTREMES (issue #127)
+    # =========================================================================
+    WSSensorDescription(
+        key=KEY_TEMP_HIGH_WEEK,
+        translation_key="temperature_high_week",
+        name="WS Temperature High Week",
+        icon="mdi:thermometer-high",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
+        attrs_fn=lambda d: {"week_ref": d.get(KEY_TEMP_WEEK_REF)},
+    ),
+    WSSensorDescription(
+        key=KEY_TEMP_LOW_WEEK,
+        translation_key="temperature_low_week",
+        name="WS Temperature Low Week",
+        icon="mdi:thermometer-low",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
+        attrs_fn=lambda d: {"week_ref": d.get(KEY_TEMP_WEEK_REF)},
+    ),
+    WSSensorDescription(
+        key=KEY_TEMP_HIGH_MONTH,
+        translation_key="temperature_high_month",
+        name="WS Temperature High Month",
+        icon="mdi:thermometer-high",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
+        attrs_fn=lambda d: {"month_ref": d.get(KEY_TEMP_MONTH_REF)},
+    ),
+    WSSensorDescription(
+        key=KEY_TEMP_LOW_MONTH,
+        translation_key="temperature_low_month",
+        name="WS Temperature Low Month",
+        icon="mdi:thermometer-low",
+        device_class=SensorDeviceClass.TEMPERATURE,
+        native_unit=UNIT_TEMP_C,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
+        attrs_fn=lambda d: {"month_ref": d.get(KEY_TEMP_MONTH_REF)},
+    ),
+    # =========================================================================
+    # MONTHLY / YEARLY / ALL-TIME WIND GUST MAX (issue #127)
+    # =========================================================================
+    WSSensorDescription(
+        key=KEY_WIND_GUST_MAX_MONTH,
+        translation_key="wind_gust_max_month",
+        name="WS Wind Gust Max Month",
+        icon="mdi:weather-windy-variant",
+        device_class=SensorDeviceClass.WIND_SPEED,
+        native_unit=UNIT_WIND_MS,
+        state_class=SensorStateClass.MEASUREMENT,
+        unit_group="wind",
+        attrs_fn=lambda d: {"month_ref": d.get(KEY_WIND_GUST_MONTH_REF)},
+    ),
+    WSSensorDescription(
+        key=KEY_WIND_GUST_MAX_YEAR,
+        translation_key="wind_gust_max_year",
+        name="WS Wind Gust Max Year",
+        icon="mdi:weather-windy-variant",
+        device_class=SensorDeviceClass.WIND_SPEED,
+        native_unit=UNIT_WIND_MS,
+        state_class=SensorStateClass.MEASUREMENT,
+        unit_group="wind",
+        attrs_fn=lambda d: {"year_ref": d.get(KEY_WIND_GUST_YEAR_REF)},
+    ),
+    WSSensorDescription(
+        key=KEY_WIND_GUST_MAX_ALL_TIME,
+        translation_key="wind_gust_max_all_time",
+        name="WS Wind Gust Max All Time",
+        icon="mdi:weather-windy-variant",
+        device_class=SensorDeviceClass.WIND_SPEED,
+        native_unit=UNIT_WIND_MS,
+        state_class=SensorStateClass.MEASUREMENT,
+        unit_group="wind",
+    ),
     # v2.0 Wind gust factor (gust / mean speed ratio)
     WSSensorDescription(
         key=KEY_WIND_GUST_FACTOR,
@@ -2483,6 +2627,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
                         WSSensorDescription(
                             key=f"indoor_room_delta_{rid}",
                             name=f"Temp Delta - {name}",
+                            translation_key="indoor_room_delta",
+                            translation_placeholders={"room_name": name},
                             icon="mdi:thermometer-lines",
                             device_class=SensorDeviceClass.TEMPERATURE,
                             native_unit=UNIT_TEMP_C,
@@ -2505,6 +2651,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
                         WSSensorDescription(
                             key=f"indoor_room_humidity_{rid}",
                             name=f"Humidity - {name}",
+                            translation_key="indoor_room_humidity",
+                            translation_placeholders={"room_name": name},
                             icon="mdi:water-percent",
                             device_class=SensorDeviceClass.HUMIDITY,
                             native_unit="%",
@@ -2526,6 +2674,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
                         WSSensorDescription(
                             key=f"indoor_room_co2_{rid}",
                             name=f"CO₂ - {name}",
+                            translation_key="indoor_room_co2",
+                            translation_placeholders={"room_name": name},
                             icon="mdi:molecule-co2",
                             device_class=SensorDeviceClass.CO2,
                             native_unit="ppm",
@@ -2544,6 +2694,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
                         WSSensorDescription(
                             key=f"indoor_room_comfort_{rid}",
                             name=f"Comfort - {name}",
+                            translation_key="indoor_room_comfort",
+                            translation_placeholders={"room_name": name},
                             icon="mdi:home-heart",
                             native_unit=None,
                             state_class=SensorStateClass.MEASUREMENT,
@@ -2600,6 +2752,20 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
         KEY_TEMP_LOW_24H,
         KEY_TEMP_AVG_24H,
         KEY_WIND_GUST_MAX_24H,
+        # v2.7 (issue #124): yearly / all-time temperature extremes
+        KEY_TEMP_HIGH_YEAR,
+        KEY_TEMP_LOW_YEAR,
+        KEY_TEMP_HIGH_ALL_TIME,
+        KEY_TEMP_LOW_ALL_TIME,
+        # v2.7 (issue #127): weekly / monthly temperature extremes
+        KEY_TEMP_HIGH_WEEK,
+        KEY_TEMP_LOW_WEEK,
+        KEY_TEMP_HIGH_MONTH,
+        KEY_TEMP_LOW_MONTH,
+        # v2.7 (issue #127): monthly / yearly / all-time gust max
+        KEY_WIND_GUST_MAX_MONTH,
+        KEY_WIND_GUST_MAX_YEAR,
+        KEY_WIND_GUST_MAX_ALL_TIME,
         KEY_RAIN_ACCUM_1H,
         KEY_RAIN_ACCUM_24H,
         # v1.3.0: removed cut keys (HDD/CDD/METAR) from restore set
@@ -2632,6 +2798,8 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
         self._attr_suggested_object_id = f"{prefix}_{self._slug_for_key(desc.key)}"
         if desc.translation_key:
             self._attr_translation_key = desc.translation_key
+            if desc.translation_placeholders:
+                self._attr_translation_placeholders = desc.translation_placeholders
         else:
             self._attr_name = desc.name
         self._attr_icon = desc.icon
@@ -2726,6 +2894,17 @@ class WSSensor(RestoreEntity, CoordinatorEntity, SensorEntity):
             KEY_TEMP_LOW_24H: "temperature_low_24h",
             KEY_TEMP_AVG_24H: "temperature_avg_24h",
             KEY_WIND_GUST_MAX_24H: "wind_gust_max_24h",
+            KEY_TEMP_HIGH_YEAR: "temperature_high_year",
+            KEY_TEMP_LOW_YEAR: "temperature_low_year",
+            KEY_TEMP_HIGH_ALL_TIME: "temperature_high_all_time",
+            KEY_TEMP_LOW_ALL_TIME: "temperature_low_all_time",
+            KEY_TEMP_HIGH_WEEK: "temperature_high_week",
+            KEY_TEMP_LOW_WEEK: "temperature_low_week",
+            KEY_TEMP_HIGH_MONTH: "temperature_high_month",
+            KEY_TEMP_LOW_MONTH: "temperature_low_month",
+            KEY_WIND_GUST_MAX_MONTH: "wind_gust_max_month",
+            KEY_WIND_GUST_MAX_YEAR: "wind_gust_max_year",
+            KEY_WIND_GUST_MAX_ALL_TIME: "wind_gust_max_all_time",
             KEY_HUMIDITY_LEVEL_DISPLAY: "humidity_level",
             KEY_UV_LEVEL_DISPLAY: "uv_level",
             KEY_TEMP_DISPLAY: "temperature_display",

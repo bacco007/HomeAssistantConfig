@@ -1269,6 +1269,39 @@
       "wind_gust_max_24h": {
         "name": "Wind Gust Max (24h)"
       },
+      "temperature_high_year": {
+        "name": "Temperature High (Year)"
+      },
+      "temperature_low_year": {
+        "name": "Temperature Low (Year)"
+      },
+      "temperature_high_all_time": {
+        "name": "Temperature High (All-Time)"
+      },
+      "temperature_low_all_time": {
+        "name": "Temperature Low (All-Time)"
+      },
+      "temperature_high_week": {
+        "name": "Temperature High (Week)"
+      },
+      "temperature_low_week": {
+        "name": "Temperature Low (Week)"
+      },
+      "temperature_high_month": {
+        "name": "Temperature High (Month)"
+      },
+      "temperature_low_month": {
+        "name": "Temperature Low (Month)"
+      },
+      "wind_gust_max_month": {
+        "name": "Wind Gust Max (Month)"
+      },
+      "wind_gust_max_year": {
+        "name": "Wind Gust Max (Year)"
+      },
+      "wind_gust_max_all_time": {
+        "name": "Wind Gust Max (All-Time)"
+      },
       "humidity_level": {
         "name": "Humidity Level",
         "state": {
@@ -2207,6 +2240,18 @@
             "name": "Humidity (%)"
           }
         }
+      },
+      "indoor_room_delta": {
+        "name": "Temp Delta - {room_name}"
+      },
+      "indoor_room_humidity": {
+        "name": "Humidity - {room_name}"
+      },
+      "indoor_room_co2": {
+        "name": "CO₂ - {room_name}"
+      },
+      "indoor_room_comfort": {
+        "name": "Comfort - {room_name}"
       },
       "soil_moisture": {
         "name": "Soil Moisture",

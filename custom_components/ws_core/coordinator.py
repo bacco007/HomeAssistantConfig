@@ -460,7 +460,18 @@ from .const import (
     KEY_TEMP_AVG_24H,
     KEY_TEMP_DISPLAY,
     KEY_TEMP_HIGH_24H,
+    KEY_TEMP_HIGH_ALL_TIME,
+    KEY_TEMP_HIGH_MONTH,
+    KEY_TEMP_HIGH_WEEK,
+    KEY_TEMP_HIGH_YEAR,
     KEY_TEMP_LOW_24H,
+    KEY_TEMP_LOW_ALL_TIME,
+    KEY_TEMP_LOW_MONTH,
+    KEY_TEMP_LOW_WEEK,
+    KEY_TEMP_LOW_YEAR,
+    KEY_TEMP_MONTH_REF,
+    KEY_TEMP_WEEK_REF,
+    KEY_TEMP_YEAR_REF,
     KEY_THSW_INDEX,
     KEY_THUNDERSTORM_RISK,
     KEY_THW_INDEX,
@@ -479,6 +490,11 @@ from .const import (
     KEY_WIND_DIR_VARIABILITY,
     KEY_WIND_GUST_FACTOR,
     KEY_WIND_GUST_MAX_24H,
+    KEY_WIND_GUST_MAX_ALL_TIME,
+    KEY_WIND_GUST_MAX_MONTH,
+    KEY_WIND_GUST_MAX_YEAR,
+    KEY_WIND_GUST_MONTH_REF,
+    KEY_WIND_GUST_YEAR_REF,
     KEY_WIND_QUADRANT,
     KEY_WIND_RUN_KM,
     KEY_WIND_RUN_MONTH_KM,
@@ -787,6 +803,30 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._rain_this_year_mm: float = 0.0
         self._rain_this_year_key: str = ""  # "YYYY"
         self._rain_this_year_last_total: float | None = None
+
+        # Yearly / all-time temperature extremes (issue #124). Yearly resets
+        # when the current year no longer matches _temp_year_key; all-time
+        # never resets automatically.
+        self._temp_high_year: float | None = None
+        self._temp_low_year: float | None = None
+        self._temp_year_key: str = ""  # "YYYY"
+        self._temp_high_all_time: float | None = None
+        self._temp_low_all_time: float | None = None
+
+        # Weekly / monthly temperature extremes (issue #127).
+        self._temp_high_week: float | None = None
+        self._temp_low_week: float | None = None
+        self._temp_week_isoweek: str = ""  # "GGGG-Www"
+        self._temp_high_month: float | None = None
+        self._temp_low_month: float | None = None
+        self._temp_month_key: str = ""  # "YYYY-MM"
+
+        # Monthly / yearly / all-time wind gust max (issue #127).
+        self._gust_max_month: float | None = None
+        self._gust_month_key: str = ""  # "YYYY-MM"
+        self._gust_max_year: float | None = None
+        self._gust_year_key: str = ""  # "YYYY"
+        self._gust_max_all_time: float | None = None
 
         # v2.0 max rain rate over rolling 24h window
         self._rain_rate_history_24h: deque = deque()
@@ -1634,6 +1674,12 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         if tc is not None and rh is not None and pressure_hpa_now is not None:
             data[KEY_SPECIFIC_HUMIDITY] = calculate_specific_humidity(float(tc), float(rh), float(pressure_hpa_now))
 
+        # Yearly / all-time temperature extremes (issue #124). Hooked into the
+        # raw reading before it feeds the 24h rolling window below, so these
+        # track every accepted reading rather than the 24h-windowed subset.
+        self._update_temp_year_all_time(data, tc)
+        self._update_temp_week_month(data, tc)
+
         # 24h rolling stats
         if tc is not None:
             self._append_and_prune_24h(rt.temp_history_24h, now, float(tc))
@@ -1711,6 +1757,79 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 data[KEY_UTCI] = utci
 
         return dew_c
+
+    def _update_temp_year_all_time(self, data: dict, tc: float | None) -> None:
+        """Update yearly and all-time temperature high/low extremes (issue #124).
+
+        Yearly extremes reset the first time a reading arrives in a new
+        calendar year (detected via ``_temp_year_key``, exposed as the
+        ``year_ref`` attribute on the yearly sensors). All-time extremes never
+        reset automatically - they persist for the life of the config entry.
+        """
+        if tc is None:
+            return
+        temp = float(tc)
+
+        year_key = dt_util.now().strftime("%Y")
+        if year_key != self._temp_year_key:
+            self._temp_high_year = temp
+            self._temp_low_year = temp
+            self._temp_year_key = year_key
+        else:
+            if self._temp_high_year is None or temp > self._temp_high_year:
+                self._temp_high_year = temp
+            if self._temp_low_year is None or temp < self._temp_low_year:
+                self._temp_low_year = temp
+        data[KEY_TEMP_HIGH_YEAR] = round(self._temp_high_year, 1)
+        data[KEY_TEMP_LOW_YEAR] = round(self._temp_low_year, 1)
+        data[KEY_TEMP_YEAR_REF] = self._temp_year_key
+
+        if self._temp_high_all_time is None or temp > self._temp_high_all_time:
+            self._temp_high_all_time = temp
+        if self._temp_low_all_time is None or temp < self._temp_low_all_time:
+            self._temp_low_all_time = temp
+        data[KEY_TEMP_HIGH_ALL_TIME] = round(self._temp_high_all_time, 1)
+        data[KEY_TEMP_LOW_ALL_TIME] = round(self._temp_low_all_time, 1)
+
+    def _update_temp_week_month(self, data: dict, tc: float | None) -> None:
+        """Update this-week and this-month temperature high/low extremes (issue #127).
+
+        Weekly extremes reset on the ISO week boundary (Monday), exposed as
+        the ``week_ref`` attribute. Monthly extremes reset on the 1st,
+        exposed as ``month_ref``.
+        """
+        if tc is None:
+            return
+        temp = float(tc)
+        now_local = dt_util.now()
+        iso_week = now_local.strftime("%G-W%V")
+        month_key = now_local.strftime("%Y-%m")
+
+        if iso_week != self._temp_week_isoweek:
+            self._temp_high_week = temp
+            self._temp_low_week = temp
+            self._temp_week_isoweek = iso_week
+        else:
+            if self._temp_high_week is None or temp > self._temp_high_week:
+                self._temp_high_week = temp
+            if self._temp_low_week is None or temp < self._temp_low_week:
+                self._temp_low_week = temp
+        data[KEY_TEMP_HIGH_WEEK] = round(self._temp_high_week, 1)
+        data[KEY_TEMP_LOW_WEEK] = round(self._temp_low_week, 1)
+        data[KEY_TEMP_WEEK_REF] = self._temp_week_isoweek
+
+        if month_key != self._temp_month_key:
+            self._temp_high_month = temp
+            self._temp_low_month = temp
+            self._temp_month_key = month_key
+        else:
+            if self._temp_high_month is None or temp > self._temp_high_month:
+                self._temp_high_month = temp
+            if self._temp_low_month is None or temp < self._temp_low_month:
+                self._temp_low_month = temp
+        data[KEY_TEMP_HIGH_MONTH] = round(self._temp_high_month, 1)
+        data[KEY_TEMP_LOW_MONTH] = round(self._temp_low_month, 1)
+        data[KEY_TEMP_MONTH_REF] = self._temp_month_key
 
     def _compute_derived_pressure(
         self, data: dict, now: Any, tc: float | None, pressure_hpa: float | None, rh: float | None
@@ -1821,6 +1940,9 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             if gust_vals:
                 data[KEY_WIND_GUST_MAX_24H] = round(max(gust_vals), 1)
 
+        # Monthly / yearly / all-time gust max (issue #127)
+        self._update_gust_month_year_all_time(data, gust_ms)
+
         # v2.0 wind gust factor
         if wind_ms is not None and gust_ms is not None:
             gf = calculate_wind_gust_factor(float(gust_ms), float(wind_ms))
@@ -1838,6 +1960,40 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             var = calculate_wind_direction_variability(dir_vals)
             if var is not None:
                 data[KEY_WIND_DIR_VARIABILITY] = var
+
+    def _update_gust_month_year_all_time(self, data: dict, gust_ms: float | None) -> None:
+        """Update monthly, yearly and all-time wind gust max (issue #127).
+
+        Monthly resets on the 1st, yearly on Jan 1st (each exposing a
+        ``*_ref`` attribute with the period key). All-time never resets
+        automatically.
+        """
+        if gust_ms is None:
+            return
+        gust = float(gust_ms)
+        now_local = dt_util.now()
+        month_key = now_local.strftime("%Y-%m")
+        year_key = now_local.strftime("%Y")
+
+        if month_key != self._gust_month_key:
+            self._gust_max_month = gust
+            self._gust_month_key = month_key
+        elif self._gust_max_month is None or gust > self._gust_max_month:
+            self._gust_max_month = gust
+        data[KEY_WIND_GUST_MAX_MONTH] = round(self._gust_max_month, 1)
+        data[KEY_WIND_GUST_MONTH_REF] = self._gust_month_key
+
+        if year_key != self._gust_year_key:
+            self._gust_max_year = gust
+            self._gust_year_key = year_key
+        elif self._gust_max_year is None or gust > self._gust_max_year:
+            self._gust_max_year = gust
+        data[KEY_WIND_GUST_MAX_YEAR] = round(self._gust_max_year, 1)
+        data[KEY_WIND_GUST_YEAR_REF] = self._gust_year_key
+
+        if self._gust_max_all_time is None or gust > self._gust_max_all_time:
+            self._gust_max_all_time = gust
+        data[KEY_WIND_GUST_MAX_ALL_TIME] = round(self._gust_max_all_time, 1)
 
     def _compute_derived_precipitation(self, data: dict, now: Any, rain_total_mm: float | None) -> float:
         """Rain rate (Kalman-filtered), rain display. Returns rain_rate (filtered)."""
@@ -3314,6 +3470,25 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "rain_this_year_mm": self._rain_this_year_mm,
             "rain_this_year_key": self._rain_this_year_key,
             "rain_this_year_last_total": self._rain_this_year_last_total,
+            # Yearly / all-time temperature extremes (issue #124)
+            "temp_high_year": self._temp_high_year,
+            "temp_low_year": self._temp_low_year,
+            "temp_year_key": self._temp_year_key,
+            "temp_high_all_time": self._temp_high_all_time,
+            "temp_low_all_time": self._temp_low_all_time,
+            # Weekly / monthly temperature extremes (issue #127)
+            "temp_high_week": self._temp_high_week,
+            "temp_low_week": self._temp_low_week,
+            "temp_week_isoweek": self._temp_week_isoweek,
+            "temp_high_month": self._temp_high_month,
+            "temp_low_month": self._temp_low_month,
+            "temp_month_key": self._temp_month_key,
+            # Monthly / yearly / all-time wind gust max (issue #127)
+            "gust_max_month": self._gust_max_month,
+            "gust_month_key": self._gust_month_key,
+            "gust_max_year": self._gust_max_year,
+            "gust_year_key": self._gust_year_key,
+            "gust_max_all_time": self._gust_max_all_time,
             # v2.0 degree-day accumulators (season totals must survive restarts)
             "hdd_today": self._hdd_today,
             "hdd_today_date": self._hdd_today_date,
@@ -3424,6 +3599,50 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             self._rain_this_year_key = year_key
             lt = data.get("rain_this_year_last_total")
             self._rain_this_year_last_total = float(lt) if lt is not None else None
+
+        # Yearly / all-time temperature extremes (issue #124): restored
+        # unconditionally, even if the saved year_key is stale - the first
+        # reading processed by _update_temp_year_all_time compares the saved
+        # key against the current year and resets the yearly high/low itself
+        # if a year boundary was crossed while HA was stopped. All-time
+        # extremes are restored unconditionally and never reset.
+        th_year = data.get("temp_high_year")
+        self._temp_high_year = float(th_year) if th_year is not None else None
+        tl_year = data.get("temp_low_year")
+        self._temp_low_year = float(tl_year) if tl_year is not None else None
+        self._temp_year_key = data.get("temp_year_key") or ""
+        th_all = data.get("temp_high_all_time")
+        self._temp_high_all_time = float(th_all) if th_all is not None else None
+        tl_all = data.get("temp_low_all_time")
+        self._temp_low_all_time = float(tl_all) if tl_all is not None else None
+
+        # Weekly / monthly temperature extremes (issue #127): restore only
+        # when still the same period, mirroring the rain week/month restore.
+        if data.get("temp_week_isoweek") == iso_week:
+            th_week = data.get("temp_high_week")
+            self._temp_high_week = float(th_week) if th_week is not None else None
+            tl_week = data.get("temp_low_week")
+            self._temp_low_week = float(tl_week) if tl_week is not None else None
+            self._temp_week_isoweek = iso_week
+        if data.get("temp_month_key") == month_key:
+            th_month = data.get("temp_high_month")
+            self._temp_high_month = float(th_month) if th_month is not None else None
+            tl_month = data.get("temp_low_month")
+            self._temp_low_month = float(tl_month) if tl_month is not None else None
+            self._temp_month_key = month_key
+
+        # Monthly / yearly / all-time wind gust max (issue #127): monthly and
+        # yearly restore only within the same period; all-time is unconditional.
+        if data.get("gust_month_key") == month_key:
+            gm = data.get("gust_max_month")
+            self._gust_max_month = float(gm) if gm is not None else None
+            self._gust_month_key = month_key
+        if data.get("gust_year_key") == year_key:
+            gy = data.get("gust_max_year")
+            self._gust_max_year = float(gy) if gy is not None else None
+            self._gust_year_key = year_key
+        ga = data.get("gust_max_all_time")
+        self._gust_max_all_time = float(ga) if ga is not None else None
 
         # v2.0 degree days: 'today' values continue only within the same day;
         # 'season' totals are restored unconditionally (their own reset logic,

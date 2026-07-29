@@ -83,6 +83,15 @@ class WsData(dict):
     wind_gust_max_24h: float | None
 
     # ------------------------------------------------------------------
+    # Yearly / all-time temperature extremes (issue #124)
+    # ------------------------------------------------------------------
+    temp_high_year: float | None
+    temp_low_year: float | None
+    temp_year_ref: str | None
+    temp_high_all_time: float | None
+    temp_low_all_time: float | None
+
+    # ------------------------------------------------------------------
     # Display / format sensors
     # ------------------------------------------------------------------
     uv_level_display: str | None
