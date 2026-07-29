@@ -89,7 +89,18 @@ def _coordinator_env(data: dict[str, Any] | None, env_id: int) -> dict[str, Any]
 
 
 def _section_url(base_url: str, section: str) -> str | None:
-    """Return a Dockhand section URL, or None if base_url is not configured."""
+    """Return a Dockhand section URL, or None if base_url is not configured.
+
+    Strips base_url defensively even though the config flow now also
+    strips it at entry — this is the one place every _*_url() helper in
+    this file routes through, so it's the cheapest single point to guard
+    against an already-stored config entry that predates that fix (a URL
+    with incidental leading/trailing whitespace silently breaks every
+    "open in Dockhand" link this integration sets, with no visible error
+    anywhere — worth being defensive about even though the real fix is
+    stopping it from ever being stored that way in the first place).
+    """
+    base_url = base_url.strip() if base_url else base_url
     return f"{base_url.rstrip('/')}/{section}" if base_url else None
 
 
@@ -436,6 +447,59 @@ def _container_has_pending_update(
         if item and item.get("hasUpdate"):
             return True
     return False
+
+
+def _container_is_bulk_update_eligible(container: dict) -> bool:
+    """True unless this is a Dockhand system container (dockhand itself,
+    or a Hawser agent) — same `!container.systemContainer` check
+    Dockhand's own frontend applies before offering its "Update all"
+    button, and the same reasoning ha-dockhand's bulk-update button
+    already applied inline in two separate places before this was
+    pulled out as its own named check: bulk-updating infrastructure
+    containers like the update-checker itself is genuinely unsafe, not
+    just untidy. This function's only job is to answer that one
+    question — it deliberately says nothing about whether the container
+    has a pending update at all, so it composes with
+    _actionable_pending_update_container_ids() below rather than
+    duplicating that check.
+
+    A single named predicate here, rather than each caller building its
+    own `{c.get("id") for c in containers if c.get("systemContainer")}`
+    set inline, exists specifically so "never offer this for bulk
+    update" is something a caller opts into by calling this function,
+    not something they have to independently remember and re-derive
+    correctly every time a new caller needs the same guarantee.
+    """
+    return not container.get("systemContainer")
+
+
+def _actionable_pending_update_container_ids(
+    containers: list[dict],
+    pending_ids: set[str],
+    update_env_data: dict[str, dict] | None,
+) -> list[str]:
+    """Container ids in this environment eligible for an actual bulk
+    update action right now: has a pending update per
+    _container_has_pending_update() above, AND is not a system container
+    per _container_is_bulk_update_eligible() above. The one function
+    anything that's about to *act* on a set of containers (a bulk-update
+    button's own gating, or the actual list of ids it sends to Dockhand's
+    batch-update API) should call, instead of combining the two checks
+    inline — see that function's own docstring for why this exists as a
+    named function rather than a convention every caller has to
+    remember. Pure display/counting code (e.g. a sensor's own
+    pending-updates attribute) should call _container_has_pending_update()
+    directly instead, without this function's system-container exclusion
+    — a system container's own pending update is real and worth knowing
+    about, just never something to bulk-act on.
+    """
+    return [
+        c["id"]
+        for c in containers
+        if c.get("id")
+        and _container_is_bulk_update_eligible(c)
+        and _container_has_pending_update(c, pending_ids, update_env_data)
+    ]
 
 
 def _is_update_disabled_by_label(labels: dict | None) -> bool:

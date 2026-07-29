@@ -199,6 +199,14 @@ class DockhandConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """First step: URL and settings. Probe server to detect auth requirement."""
         errors: dict[str, str] = {}
         if user_input is not None:
+            # Stripped here, once, rather than at each of the several
+            # places this value gets used below (unique_id, the API
+            # client, the stored config entry) — a URL with incidental
+            # leading/trailing whitespace (e.g. from copy-pasting) would
+            # otherwise get baked into every device's configuration_url
+            # this integration ever sets, silently breaking every
+            # "open in Dockhand" link without any visible error anywhere.
+            user_input[CONF_API_URL] = user_input[CONF_API_URL].strip()
             unique_id = user_input[CONF_API_URL].rstrip("/").lower()
             await self.async_set_unique_id(unique_id)
             self._abort_if_unique_id_configured()
@@ -354,6 +362,7 @@ class DockhandConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         entry = self.hass.config_entries.async_get_entry(self.context["entry_id"])
         if user_input is not None and entry:
+            user_input[CONF_API_URL] = user_input[CONF_API_URL].strip()
             submitted_token = (user_input.get(CONF_API_TOKEN) or "").strip()
 
             probe_data = {

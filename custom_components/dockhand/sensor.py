@@ -24,12 +24,18 @@ from .const import (
     CONF_ENABLE_VOLUMES,
     DEFAULT_ENABLE_CONTAINER_STATS,
 )
-from .coordinator import DockhandFastCoordinator, DockhandSlowCoordinator
+from .coordinator import (
+    DockhandFastCoordinator,
+    DockhandSlowCoordinator,
+    DockhandUpdateCoordinator,
+)
 from .helpers import (
+    _actionable_pending_update_container_ids,
     _all_envs,
     _compose_project,
     _container_device,
     _container_has_healthcheck,
+    _container_has_pending_update,
     _coordinator_env,
     _ensure_env_devices,
     _ensure_hub_devices,
@@ -80,6 +86,9 @@ async def async_setup_entry(
 ) -> None:
     fast: DockhandFastCoordinator = entry.runtime_data.fast_coordinator
     slow: DockhandSlowCoordinator = entry.runtime_data.slow_coordinator
+    update_coordinator: DockhandUpdateCoordinator | None = (
+        entry.runtime_data.update_coordinator
+    )
     base_url: str = entry.data.get(CONF_API_URL, "")
 
     def _opt(key: str, default: Any) -> Any:
@@ -135,7 +144,12 @@ async def async_setup_entry(
                         fast, entry.entry_id, env_id, env_name, base_url
                     ),
                     DockhandEnvContainerCountSensor(
-                        fast, entry.entry_id, env_id, env_name, base_url
+                        fast,
+                        update_coordinator,
+                        entry.entry_id,
+                        env_id,
+                        env_name,
+                        base_url,
                     ),
                     DockhandEnvStacksSensor(
                         fast, entry.entry_id, env_id, env_name, base_url
@@ -810,12 +824,14 @@ class DockhandEnvContainerCountSensor(BaseFastEnvSensor):
     def __init__(
         self,
         coordinator: DockhandFastCoordinator,
+        update_coordinator: DockhandUpdateCoordinator | None,
         entry_id: str,
         env_id: int,
         env_name: str,
         base_url: str,
     ) -> None:
         super().__init__(coordinator, entry_id, env_id, env_name, base_url)
+        self._update_coordinator = update_coordinator
         self._attr_unique_id = f"{self._entry_id}_{env_id}_containers_running"
 
     @property
@@ -825,13 +841,83 @@ class DockhandEnvContainerCountSensor(BaseFastEnvSensor):
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
         c = self._stats().get("containers") or {}
+        # Three related but distinct counts, kept structurally separate
+        # rather than one attribute trying to serve two different
+        # purposes:
+        #
+        # - pending_updates: containers eligible for an actual bulk
+        #   update right now — computed with
+        #   _actionable_pending_update_container_ids() (helpers.py), the
+        #   exact same function this integration's own bulk-update
+        #   button uses to decide both whether to exist and what to
+        #   actually send to Dockhand's batch-update API. This name is
+        #   deliberately the "plain," unqualified one: anything reading
+        #   `pending_updates` and assuming it represents what a bulk
+        #   action would touch is correct, not subtly wrong. This
+        #   excludes system containers by construction, not by
+        #   convention — see that helper's own docstring.
+        # - pending_system_updates: system containers only, with their
+        #   own pending update — informational, never bulk-actionable.
+        #   A system container's own pending update is real and worth
+        #   surfacing (individually actionable via its own update
+        #   entity), just never something this integration will ever
+        #   offer to bulk-update, or silently fold into a count that
+        #   might be mistaken for one.
+        # - pending_updates_total: the sum — "how many containers need
+        #   any attention at all," for pure display/counting purposes
+        #   (e.g. ha-dockhand-cards' Updates card, whose own per-
+        #   container rows already include system containers, uses this
+        #   one to decide whether it has anything to show).
+        #
+        # Previously a single pending_updates attribute tried to serve
+        # both the "what can I bulk-update" and "how many things need
+        # attention" questions at different points in this attribute's
+        # own history — first by relaying Dockhand's own
+        # stats.containers.pendingUpdates (undercounted system
+        # containers for *either* purpose), then, briefly, by counting
+        # every container regardless of system status (correct for the
+        # display purpose, but meant a consumer had no way to tell "this
+        # number is safe to treat as bulk-actionable" from "it isn't"
+        # without separately knowing which convention this attribute
+        # happened to follow this release). Splitting the two meanings
+        # into differently-named attributes removes that ambiguity
+        # instead of documenting around it.
+        env_data = _coordinator_env(self.coordinator.data, self._env_id)
+        pending_ids = env_data.get("pending_update_container_ids") or set()
+        env_containers = env_data.get("containers") or []
+        update_env_data = (
+            _coordinator_env(self._update_coordinator.data, self._env_id)
+            if self._update_coordinator is not None
+            else None
+        )
+        # Refresh timing: this entity only actively subscribes to the
+        # fast coordinator (BaseFastEnvSensor's own CoordinatorEntity
+        # base) — update_coordinator's own poll cycle can complete
+        # without pushing a refresh here, so a Tier 2 change is only
+        # picked up the next time the fast coordinator happens to poll,
+        # not the instant Tier 2 itself updates. Same accepted tradeoff
+        # as DockhandEnvCpuSensor's cpu_count attribute (also read
+        # opportunistically from a coordinator this entity doesn't
+        # subscribe to) — the fast coordinator's own interval is short
+        # enough that this bounded delay isn't worth the complexity of
+        # subscribing to two coordinators for one attribute.
+        actionable_ids = _actionable_pending_update_container_ids(
+            env_containers, pending_ids, update_env_data
+        )
+        total_pending = sum(
+            1
+            for container in env_containers
+            if _container_has_pending_update(container, pending_ids, update_env_data)
+        )
         return {
             "running": c.get("running"),
             "stopped": c.get("stopped"),
             "paused": c.get("paused"),
             "restarting": c.get("restarting"),
             "unhealthy": c.get("unhealthy"),
-            "pending_updates": c.get("pendingUpdates"),
+            "pending_updates": len(actionable_ids),
+            "pending_system_updates": total_pending - len(actionable_ids),
+            "pending_updates_total": total_pending,
         }
 
 

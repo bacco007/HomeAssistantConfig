@@ -1,9 +1,27 @@
 import logging
 from typing import Any
+from urllib.parse import quote
 
 from aiohttp import ClientSession, ClientTimeout
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def _q(value: Any) -> str:
+    """URL-encode a value before interpolating it into a path or query
+    string. Every identifier this client builds URLs from (env_id,
+    container_id, stack_name, ...) ultimately comes from Dockhand's own
+    API responses, not directly from user input — but defense in depth
+    matters here specifically: if a Dockhand release were ever compromised,
+    a malicious response could return a crafted identifier (e.g. containing
+    `&` or `?`) specifically to inject extra query parameters into the next
+    request this integration makes back to it. quote() with safe="" encodes
+    everything including "/", appropriate since every value passed through
+    here is meant to be one path segment or one query value, never a
+    sub-path. Applied even to values that are normally plain integers
+    (env_id, job_id, ...) — cheap, and doesn't assume Dockhand's API can
+    never change a field's type."""
+    return quote(str(value), safe="")
 
 
 class DockhandError(Exception):
@@ -90,7 +108,7 @@ class DockhandClient:
         return await self._request("GET", "/api/environments")
 
     async def async_get_dashboard_stats(self, env_id: int) -> dict[str, Any]:
-        return await self._request("GET", f"/api/dashboard/stats?env={env_id}")
+        return await self._request("GET", f"/api/dashboard/stats?env={_q(env_id)}")
 
     async def async_get_all_dashboard_stats(self) -> list[dict[str, Any]]:
         """Fetch dashboard stats for all environments in a single call.
@@ -115,7 +133,9 @@ class DockhandClient:
         summary: {total, critical, high, medium, low, imagesScanned,
         totalImages}, options: {...}}. We only use `summary`.
         """
-        return await self._request("GET", f"/api/vulnerabilities/count?env={env_id}")
+        return await self._request(
+            "GET", f"/api/vulnerabilities/count?env={_q(env_id)}"
+        )
 
     async def async_get_recent_activity(
         self, env_id: int, limit: int = 10
@@ -131,7 +151,7 @@ class DockhandClient:
         other per-environment endpoint here).
         """
         return await self._request(
-            "GET", f"/api/activity?environmentId={env_id}&limit={limit}"
+            "GET", f"/api/activity?environmentId={_q(env_id)}&limit={_q(limit)}"
         )
 
     async def async_get_host_info(self, env_id: int) -> dict[str, Any]:
@@ -150,7 +170,7 @@ class DockhandClient:
         Returns keys including hostname, dockerVersion, uptime, and a
         nested "environment" object with hawserVersion.
         """
-        result = await self._request("GET", f"/api/host?env={env_id}")
+        result = await self._request("GET", f"/api/host?env={_q(env_id)}")
         return result if isinstance(result, dict) else {}
 
     async def async_get_container_stats(self, env_id: int) -> list[dict[str, Any]]:
@@ -177,20 +197,20 @@ class DockhandClient:
             blockRead     int   — cumulative bytes read from block devices
             blockWrite    int   — cumulative bytes written to block devices
         """
-        result = await self._request("GET", f"/api/containers/stats?env={env_id}")
+        result = await self._request("GET", f"/api/containers/stats?env={_q(env_id)}")
         return result if isinstance(result, list) else []
 
     async def async_get_containers(self, env_id: int) -> list[dict[str, Any]]:
-        return await self._request("GET", f"/api/containers?env={env_id}")
+        return await self._request("GET", f"/api/containers?env={_q(env_id)}")
 
     async def async_get_stacks(self, env_id: int) -> list[dict[str, Any]]:
-        return await self._request("GET", f"/api/stacks?env={env_id}")
+        return await self._request("GET", f"/api/stacks?env={_q(env_id)}")
 
     async def async_get_networks(self, env_id: int) -> list[dict[str, Any]]:
-        return await self._request("GET", f"/api/networks?env={env_id}")
+        return await self._request("GET", f"/api/networks?env={_q(env_id)}")
 
     async def async_get_images(self, env_id: int) -> list[dict[str, Any]]:
-        return await self._request("GET", f"/api/images?env={env_id}")
+        return await self._request("GET", f"/api/images?env={_q(env_id)}")
 
     async def async_get_schedules(self) -> list[dict[str, Any]]:
         """Return all schedules (global, not per-environment). GET /api/schedules"""
@@ -201,7 +221,7 @@ class DockhandClient:
 
     async def async_get_volumes(self, env_id: int) -> list[dict[str, Any]]:
         """Return volumes for an environment. GET /api/volumes?env=X"""
-        return await self._request("GET", f"/api/volumes?env={env_id}")
+        return await self._request("GET", f"/api/volumes?env={_q(env_id)}")
 
     # ------------------------------------------------------------------ #
     # Container actions
@@ -210,17 +230,19 @@ class DockhandClient:
     async def async_start_container(self, env_id: int, container_id: str) -> None:
         """Start a stopped container. POST /api/containers/[id]/start?env=X"""
         await self._request(
-            "POST", f"/api/containers/{container_id}/start?env={env_id}"
+            "POST", f"/api/containers/{_q(container_id)}/start?env={_q(env_id)}"
         )
 
     async def async_stop_container(self, env_id: int, container_id: str) -> None:
         """Stop a running container. POST /api/containers/[id]/stop?env=X"""
-        await self._request("POST", f"/api/containers/{container_id}/stop?env={env_id}")
+        await self._request(
+            "POST", f"/api/containers/{_q(container_id)}/stop?env={_q(env_id)}"
+        )
 
     async def async_restart_container(self, env_id: int, container_id: str) -> None:
         """Restart a running container. POST /api/containers/[id]/restart?env=X"""
         await self._request(
-            "POST", f"/api/containers/{container_id}/restart?env={env_id}"
+            "POST", f"/api/containers/{_q(container_id)}/restart?env={_q(env_id)}"
         )
 
     async def async_update_container_runtime(
@@ -248,7 +270,7 @@ class DockhandClient:
         """
         result = await self._request(
             "POST",
-            f"/api/containers/{container_id}/update-runtime?env={env_id}",
+            f"/api/containers/{_q(container_id)}/update-runtime?env={_q(env_id)}",
             json=updates,
         )
         return result if isinstance(result, dict) else {}
@@ -290,7 +312,7 @@ class DockhandClient:
         # was still visibly running server-side for close to a minute.
         data = await self._request(
             "POST",
-            f"/api/containers/check-updates?env={env_id}",
+            f"/api/containers/check-updates?env={_q(env_id)}",
             timeout_seconds=180,
         )
         results = data.get("results") if isinstance(data, dict) else data
@@ -332,7 +354,7 @@ class DockhandClient:
         scheme to signal that explicitly.
         """
         data = await self._request(
-            "GET", f"/api/containers/pending-updates?env={env_id}"
+            "GET", f"/api/containers/pending-updates?env={_q(env_id)}"
         )
         results = data.get("pendingUpdates") if isinstance(data, dict) else None
         return results if isinstance(results, list) else []
@@ -354,7 +376,7 @@ class DockhandClient:
         coordinator rather than the fast one.
         """
         result = await self._request(
-            "GET", f"/api/containers/{container_id}/inspect?env={env_id}"
+            "GET", f"/api/containers/{_q(container_id)}/inspect?env={_q(env_id)}"
         )
         return result if isinstance(result, dict) else {}
 
@@ -371,7 +393,9 @@ class DockhandClient:
         configured at all). Not exposed on /api/environments or
         /api/dashboard/stats, hence the dedicated call.
         """
-        result = await self._request("GET", f"/api/environments/{env_id}/update-check")
+        result = await self._request(
+            "GET", f"/api/environments/{_q(env_id)}/update-check"
+        )
         settings = result.get("settings") if isinstance(result, dict) else None
         return settings if isinstance(settings, dict) else {}
 
@@ -406,7 +430,7 @@ class DockhandClient:
             body["vulnerabilityCriteria"] = vulnerability_criteria
         result = await self._request(
             "POST",
-            f"/api/containers/batch-update-stream?env={env_id}",
+            f"/api/containers/batch-update-stream?env={_q(env_id)}",
             json=body,
         )
         job_id = result.get("jobId") if isinstance(result, dict) else None
@@ -426,7 +450,7 @@ class DockhandClient:
         Dockhand's memory 10 minutes after they stop running, so callers
         should not expect to poll a completed job indefinitely.
         """
-        result = await self._request("GET", f"/api/jobs/{job_id}")
+        result = await self._request("GET", f"/api/jobs/{_q(job_id)}")
         return result if isinstance(result, dict) else {}
 
     # ------------------------------------------------------------------ #
@@ -441,15 +465,21 @@ class DockhandClient:
 
     async def async_start_stack(self, env_id: int, stack_name: str) -> None:
         """Start a stopped stack. POST /api/stacks/[name]/start?env=X"""
-        await self._request("POST", f"/api/stacks/{stack_name}/start?env={env_id}")
+        await self._request(
+            "POST", f"/api/stacks/{_q(stack_name)}/start?env={_q(env_id)}"
+        )
 
     async def async_stop_stack(self, env_id: int, stack_name: str) -> None:
         """Stop a running stack. POST /api/stacks/[name]/stop?env=X"""
-        await self._request("POST", f"/api/stacks/{stack_name}/stop?env={env_id}")
+        await self._request(
+            "POST", f"/api/stacks/{_q(stack_name)}/stop?env={_q(env_id)}"
+        )
 
     async def async_restart_stack(self, env_id: int, stack_name: str) -> None:
         """Restart a running stack. POST /api/stacks/[name]/restart?env=X"""
-        await self._request("POST", f"/api/stacks/{stack_name}/restart?env={env_id}")
+        await self._request(
+            "POST", f"/api/stacks/{_q(stack_name)}/restart?env={_q(env_id)}"
+        )
 
     # ------------------------------------------------------------------ #
     # Git stacks
@@ -462,7 +492,7 @@ class DockhandClient:
         'synced'|'error'), syncError, autoUpdate, webhookEnabled — none of
         which are present on the plain /api/stacks list.
         """
-        result = await self._request("GET", f"/api/git/stacks?env={env_id}")
+        result = await self._request("GET", f"/api/git/stacks?env={_q(env_id)}")
         return result if isinstance(result, list) else []
 
     async def async_deploy_git_stack(self, git_stack_id: int) -> dict[str, Any]:
@@ -474,7 +504,7 @@ class DockhandClient:
         the same backward-compat path our other stack actions rely on.
         """
         result = await self._request(
-            "POST", f"/api/git/stacks/{git_stack_id}/deploy", timeout_seconds=300
+            "POST", f"/api/git/stacks/{_q(git_stack_id)}/deploy", timeout_seconds=300
         )
         return result if isinstance(result, dict) else {}
 
@@ -501,7 +531,7 @@ class DockhandClient:
         """
         result = await self._request(
             "POST",
-            f"/api/stacks/{stack_name}/deploy?env={env_id}",
+            f"/api/stacks/{_q(stack_name)}/deploy?env={_q(env_id)}",
             json={"pull": True, "build": False, "forceRecreate": False},
             timeout_seconds=300,
         )
@@ -517,7 +547,7 @@ class DockhandClient:
         omitted fields are left alone rather than cleared.
         """
         result = await self._request(
-            "PUT", f"/api/git/stacks/{git_stack_id}", json=updates
+            "PUT", f"/api/git/stacks/{_q(git_stack_id)}", json=updates
         )
         return result if isinstance(result, dict) else {}
 
@@ -538,7 +568,7 @@ class DockhandClient:
         container ID, so it survives container recreation (image updates,
         stack redeploys) the same way our own entity unique_ids do.
         """
-        result = await self._request("GET", f"/api/auto-update?env={env_id}")
+        result = await self._request("GET", f"/api/auto-update?env={_q(env_id)}")
         return result if isinstance(result, dict) else {}
 
     async def async_set_container_auto_update(
@@ -560,7 +590,7 @@ class DockhandClient:
             body["vulnerabilityCriteria"] = "never"
         result = await self._request(
             "POST",
-            f"/api/auto-update/{container_name}?env={env_id}",
+            f"/api/auto-update/{_q(container_name)}?env={_q(env_id)}",
             json=body,
         )
         return result if isinstance(result, dict) else {}

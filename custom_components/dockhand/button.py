@@ -21,10 +21,10 @@ from .coordinator import (
     DockhandUpdateCoordinator,
 )
 from .helpers import (
+    _actionable_pending_update_container_ids,
     _all_envs,
     _compose_project,
     _container_device,
-    _container_has_pending_update,
     _coordinator_env,
     _env_device,
     _stack_device,
@@ -108,33 +108,30 @@ async def async_setup_entry(
             # button. Removed via the central cleanup system the moment
             # that's no longer true.
             #
-            # Considers both Tier 1 (pending_update_container_ids) and
-            # Tier 2 (update_coordinator, when configured) via the shared
+            # _actionable_pending_update_container_ids() already combines
+            # Tier 1 (pending_update_container_ids) and Tier 2
+            # (update_coordinator, when configured) via the shared
             # _container_has_pending_update() helper — same definition of
             # "needs an update" the update entities themselves use, so
             # this can never disagree with what's actually shown per
-            # container. Safe to fold Tier 2 in here specifically because
-            # that helper looks Tier 2 up by each container's *current*
-            # id: a stale entry left over from a since-recreated
-            # container is keyed under an id that no longer exists on
-            # any current container, so it can never cause this button
-            # to appear for an update that's already resolved.
+            # container — and excludes system containers, the same
+            # exclusion this button's own _updatable_container_ids()
+            # applies before actually sending anything to Dockhand's
+            # batch-update API. One shared function for both, rather than
+            # each independently rebuilding the same system-container
+            # exclusion inline, is what keeps a future change to either
+            # check from silently drifting out of sync with the other.
             pending = env_data.get("pending_update_container_ids") or set()
             env_containers = env_data.get("containers") or []
-            system_ids = {
-                c.get("id")
-                for c in env_containers
-                if c.get("systemContainer") and c.get("id")
-            }
             update_env_data = (
                 _coordinator_env(update_coordinator.data, env_id)
                 if update_coordinator is not None
                 else None
             )
-            has_updatable = update_entities_enabled and any(
-                _container_has_pending_update(c, pending, update_env_data)
-                for c in env_containers
-                if c.get("id") not in system_ids
+            has_updatable = update_entities_enabled and bool(
+                _actionable_pending_update_container_ids(
+                    env_containers, pending, update_env_data
+                )
             )
             if has_updatable and env_id not in known_env_bulk_update_ids:
                 known_env_bulk_update_ids.add(env_id)
@@ -525,35 +522,29 @@ class DockhandEnvBulkUpdateButton(
     def _updatable_container_ids(self) -> list[str]:
         """Pending-update container IDs for this env, excluding system
         containers — same exclusion Dockhand's own "Update all" applies
-        (confirmed from its frontend: `!container.systemContainer`).
-
-        Uses the same combined Tier 1 + Tier 2 _container_has_pending_update()
-        definition as this button's own creation gate (see async_setup_entry
-        above) and the update entities in update.py, so the button can
-        never exist while reporting nothing to actually update, and never
-        omit a container Tier 2 alone flagged. Install itself doesn't care
-        which tier flagged a container — batch-update-stream only needs a
-        container id — so there's no reason the trigger list should be
-        more restrictive than the button's own visibility.
+        (confirmed from its frontend: `!container.systemContainer`), via
+        the shared _actionable_pending_update_container_ids() helper (see
+        helpers.py) rather than rebuilding that exclusion inline here —
+        the same combined Tier 1 + Tier 2 definition as this button's own
+        creation gate (see async_setup_entry above) and the update
+        entities in update.py, so the button can never exist while
+        reporting nothing to actually update, and never omit a container
+        Tier 2 alone flagged. Install itself doesn't care which tier
+        flagged a container — batch-update-stream only needs a container
+        id — so there's no reason the trigger list should be more
+        restrictive than the button's own visibility.
         """
         env_data = _coordinator_env(self.coordinator.data, self._env_id)
         containers = env_data.get("containers") or []
         pending = env_data.get("pending_update_container_ids") or set()
-        system_ids = {
-            c.get("id") for c in containers if c.get("systemContainer") and c.get("id")
-        }
         update_env_data = (
             _coordinator_env(self._update_coordinator.data, self._env_id)
             if self._update_coordinator is not None
             else None
         )
-        return [
-            c["id"]
-            for c in containers
-            if c.get("id") not in system_ids
-            and c.get("id")
-            and _container_has_pending_update(c, pending, update_env_data)
-        ]
+        return _actionable_pending_update_container_ids(
+            containers, pending, update_env_data
+        )
 
     @property
     def available(self) -> bool:
