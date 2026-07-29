@@ -638,6 +638,15 @@ class FootballHubPanel extends HTMLElement {
     this._render();
   }
 
+  _removeFavouriteClub(team, competition) {
+    const status = this._statusInfo();
+    this._hass?.callService("football_hub", "remove_favourite_club", {
+      team,
+      competition,
+      entry_id: status.config_entry_id || "",
+    }).catch(() => {});
+  }
+
   _escape(value) {
     return String(value ?? "")
       .replaceAll("&", "&amp;")
@@ -1397,6 +1406,9 @@ class FootballHubPanel extends HTMLElement {
 
   _myClubPage() {
     const club = this._selectedClub;
+    const favourites = Array.isArray(this._statusInfo().favourite_clubs)
+      ? this._statusInfo().favourite_clubs
+      : [];
     const fixtures = this._attrs("fixtures").fixtures || [];
     const resultsAttrs = this._attrs("results");
     const results = resultsAttrs.latest_5 || [];
@@ -1478,6 +1490,15 @@ class FootballHubPanel extends HTMLElement {
             <option value="">Select a team</option>
             ${teams.map((team) => `<option value="${this._escape(team)}" ${team === club ? "selected" : ""}>${this._escape(team)}</option>`).join("")}
           </select>
+        </div>
+        <div class="favourite-club-list">
+          <strong>My Clubs (${favourites.length}/5)</strong>
+          ${favourites.length ? favourites.map((item) => `
+            <span class="favourite-club-chip">
+              <button type="button" class="favourite-club-open" data-team="${this._escape(item.team)}" data-competition="${this._escape(item.competition)}">${this._escape(item.team)}</button>
+              <small>${this._escape(item.country || "")} · ${this._escape(item.competition || "")}</small>
+              <button type="button" class="favourite-club-remove" data-team="${this._escape(item.team)}" data-competition="${this._escape(item.competition)}" title="Remove favourite">×</button>
+            </span>`).join("") : `<span class="empty">Choose a club to add your first favourite.</span>`}
         </div>
       </section>
       ${!club ? `<section class="page-card centred"><ha-icon class="huge-icon" icon="mdi:shield-star-outline"></ha-icon><h2>Choose your club</h2><p>Your fixtures, results, league position and players will appear here.</p></section>` : `
@@ -1776,6 +1797,19 @@ class FootballHubPanel extends HTMLElement {
 
     this.shadowRoot.querySelector("#my-club-select")?.addEventListener("change", (event) => {
       this._setMyClub(event.target.value);
+    });
+    this.shadowRoot.querySelectorAll(".favourite-club-remove").forEach((button) => {
+      button.addEventListener("click", () => this._removeFavouriteClub(button.dataset.team, button.dataset.competition));
+    });
+    this.shadowRoot.querySelectorAll(".favourite-club-open").forEach((button) => {
+      button.addEventListener("click", () => {
+        if (button.dataset.competition && button.dataset.competition !== this._statusInfo().competition_key) {
+          this._setLeague(button.dataset.competition);
+        }
+        this._selectedClub = button.dataset.team;
+        localStorage.setItem("football_hub_my_club", this._selectedClub);
+        this._render();
+      });
     });
 
     this.shadowRoot.querySelector("#competition-select")?.addEventListener("change", (event) => {
@@ -3182,6 +3216,12 @@ class FootballHubPanel extends HTMLElement {
       .compact-news img { width:88px; height:48px; object-fit:cover; border-radius:4px; }
       .compact-news a span { display:flex; min-width:0; flex-direction:column; gap:4px; }
       .compact-news small { color:var(--secondary-text-color); }
+      .favourite-club-list { display:flex; flex:1 1 100%; flex-wrap:wrap; align-items:center; gap:8px; margin-top:14px; }
+      .favourite-club-chip { display:grid; grid-template-columns:auto auto 28px; align-items:center; gap:8px; padding:5px 6px 5px 10px; border:1px solid rgba(0,183,255,.35); border-radius:999px; background:rgba(0,42,82,.56); }
+      .favourite-club-chip button { color:inherit; border:0; background:none; cursor:pointer; font-weight:800; }
+      .favourite-club-chip small { color:var(--secondary-text-color); }
+      .favourite-club-chip .favourite-club-remove { width:26px; height:26px; padding:0; border-radius:50%; color:#ff9aa6; font-size:1.15rem; }
+      .favourite-club-chip .favourite-club-remove:hover { color:#fff; background:#a51f34; }
 
       @media (max-width:900px) {
         .app-shell.view-desktop { display:block; }

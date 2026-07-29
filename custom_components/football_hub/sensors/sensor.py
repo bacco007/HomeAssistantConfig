@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import re
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
@@ -19,8 +20,7 @@ ATTRIBUTE_LIMIT = 5
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     """Set up Football Hub sensors."""
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
-    async_add_entities(
-        [
+    entities = [
             FootballHubStatusSensor(coordinator, entry),
             FootballHubLiveSensor(coordinator, entry),
             FootballHubLiveMatchSensor(coordinator, entry),
@@ -59,7 +59,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
             FootballHubClubDataSensor(coordinator, entry, "club_coach_trophies", "My Club Coach Trophies"),
             FootballHubClubDataSensor(coordinator, entry, "club_sidelined", "My Club Sidelined"),
         ]
-    )
+    for favourite in coordinator.favourite_clubs:
+        for kind, label in (
+            ("next_fixture", "Next Fixture"),
+            ("last_result", "Last Result"),
+            ("live_match", "Live Match"),
+            ("events", "Live Events"),
+            ("statistics", "Live Statistics"),
+            ("standing", "League Position"),
+        ):
+            entities.append(FootballHubFavouriteClubSensor(coordinator, entry, favourite, kind, label))
+    async_add_entities(entities)
 
 
 class FootballHubBaseSensor(CoordinatorEntity, SensorEntity):
@@ -131,6 +141,70 @@ class FootballHubClubDataSensor(FootballHubBaseSensor):
             "team_id": (self.coordinator.data or {}).get("my_club_team_id"),
             "dataset": self.key,
             "data": safe_value,
+        }
+
+
+class FootballHubFavouriteClubSensor(FootballHubBaseSensor):
+    """Expose permanent, separately addressable data for one favourite club."""
+
+    _unrecorded_attributes = frozenset({"data"})
+
+    def __init__(self, coordinator, entry, favourite: dict, kind: str, label: str):
+        self.favourite = dict(favourite)
+        self.team = str(favourite.get("team") or "Unknown club")
+        self.competition_key = str(favourite.get("competition") or "")
+        self.kind = kind
+        slug = re.sub(r"[^a-z0-9]+", "_", self.team.casefold()).strip("_")
+        super().__init__(coordinator, entry, f"favourite_{self.competition_key}_{slug}_{kind}", f"{self.team} {label}")
+
+    @property
+    def _club_data(self) -> dict:
+        key = f"{self.competition_key}:{self.team.casefold()}"
+        return ((self.coordinator.data or {}).get("favourite_clubs_data", {}) or {}).get(key, {}) or {}
+
+    @property
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, f"{self.entry.entry_id}_{self.competition_key}_{self.team.casefold()}")},
+            "name": f"Football Hub – {self.team}",
+            "manufacturer": "Football Hub",
+            "model": self._club_data.get("competition_name") or "Favourite Club",
+        }
+
+    @property
+    def native_value(self):
+        data = self._club_data
+        if self.kind == "standing":
+            standing = data.get("standing") or {}
+            return standing.get("rank") or standing.get("position") or "Unavailable"
+        if self.kind in {"events", "statistics"}:
+            details = data.get("live_details") or {}
+            value = details.get(self.kind) or []
+            return len(value)
+        match = data.get(self.kind)
+        if not match:
+            return "No live match" if self.kind == "live_match" else "Unavailable"
+        fixture = (match.get("fixture") or {}) if isinstance(match, dict) else {}
+        status = (fixture.get("status") or {}).get("short")
+        teams = (match.get("teams") or {}) if isinstance(match, dict) else {}
+        home = (teams.get("home") or {}).get("name", "")
+        away = (teams.get("away") or {}).get("name", "")
+        goals = match.get("goals") or {}
+        if self.kind in {"live_match", "last_result"}:
+            return f"{home} {goals.get('home', '-')}–{goals.get('away', '-')} {away}"
+        return f"{home} v {away}" if home or away else status or "Available"
+
+    @property
+    def extra_state_attributes(self):
+        data = self._club_data
+        value = data.get("live_details", {}).get(self.kind, []) if self.kind in {"events", "statistics"} else data.get(self.kind)
+        return {
+            "club": self.team,
+            "team_id": data.get("team_id"),
+            "competition": data.get("competition_name"),
+            "competition_key": self.competition_key,
+            "country": data.get("country"),
+            "data": limit_items(value, 20) if isinstance(value, list) else value,
         }
 
 
@@ -235,6 +309,7 @@ class FootballHubStatusSensor(FootballHubBaseSensor):
             "provider_mode": self.entry.data.get("provider_mode"),
             "my_club": self.coordinator.my_club,
             "my_club_team_id": (self.coordinator.data or {}).get("my_club_team_id"),
+            "favourite_clubs": self.coordinator.favourite_clubs,
             "live_count": len(self.engine.live.matches()),
             "fixtures_count": len(self.engine.fixtures.all()),
             "results_count": len(self.engine.results.all()),
