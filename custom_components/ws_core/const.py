@@ -512,6 +512,10 @@ KEY_GDD_SEASON = "gdd_season"
 KEY_DRY_STREAK = "dry_streak_days"
 KEY_HEAT_STREAK = "heat_streak_days"
 KEY_FROST_STREAK = "frost_streak_days"
+# All-time longest streak ever recorded (issue #127); never resets.
+KEY_DRY_STREAK_RECORD = "dry_streak_record"
+KEY_HEAT_STREAK_RECORD = "heat_streak_record"
+KEY_FROST_STREAK_RECORD = "frost_streak_record"
 
 # Data keys - v1.2.0 Station intelligence
 KEY_SENSOR_DRIFT_FLAGS = "sensor_drift_flags"

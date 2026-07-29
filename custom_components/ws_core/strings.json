@@ -1677,6 +1677,25 @@
           }
         }
       },
+      "dry_streak_record": {
+        "name": "Dry Streak Record"
+      },
+      "heat_streak_record": {
+        "name": "Heat Streak Record",
+        "state_attributes": {
+          "threshold_c": {
+            "name": "Threshold (°C)"
+          }
+        }
+      },
+      "frost_streak_record": {
+        "name": "Frost Streak Record",
+        "state_attributes": {
+          "threshold_c": {
+            "name": "Threshold (°C)"
+          }
+        }
+      },
       "frost_risk": {
         "name": "Frost Risk",
         "state": {

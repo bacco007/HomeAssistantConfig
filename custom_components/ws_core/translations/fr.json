@@ -1711,6 +1711,25 @@
           }
         }
       },
+      "dry_streak_record": {
+        "name": "Record de sécheresse"
+      },
+      "heat_streak_record": {
+        "name": "Record de forte chaleur",
+        "state_attributes": {
+          "threshold_c": {
+            "name": "Seuil"
+          }
+        }
+      },
+      "frost_streak_record": {
+        "name": "Record de gel",
+        "state_attributes": {
+          "threshold_c": {
+            "name": "Seuil"
+          }
+        }
+      },
       "frost_risk": {
         "name": "Risque de gel",
         "state": {

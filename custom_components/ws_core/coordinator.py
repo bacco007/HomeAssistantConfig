@@ -332,6 +332,7 @@ from .const import (
     KEY_DEW_POINT_C,
     KEY_DOMINANT_WIND_DIR,
     KEY_DRY_STREAK,
+    KEY_DRY_STREAK_RECORD,
     KEY_ET0_DAILY_MM,
     KEY_ET0_HOURLY_MM,
     KEY_ET0_PM_DAILY_MM,
@@ -353,6 +354,7 @@ from .const import (
     KEY_FROST_POINT_C,
     KEY_FROST_RISK,
     KEY_FROST_STREAK,
+    KEY_FROST_STREAK_RECORD,
     KEY_FWI,
     KEY_FWI_BUI,
     KEY_FWI_DC,
@@ -367,6 +369,7 @@ from .const import (
     KEY_HEALTH_DISPLAY,
     KEY_HEAT_INDEX,
     KEY_HEAT_STREAK,
+    KEY_HEAT_STREAK_RECORD,
     KEY_HUMIDEX,
     KEY_HUMIDITY_LEVEL_DISPLAY,
     KEY_INDOOR_CO2_PPM,
@@ -3100,6 +3103,11 @@ class WSStationCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         data["_heat_streak_threshold_c"] = self.thresh_heat_day_c
         data[KEY_FROST_STREAK] = self._learning_state.frost_streak_days
         data["_frost_streak_threshold_c"] = float(self.entry_options.get(CONF_THRESH_FREEZE_C, DEFAULT_THRESH_FREEZE_C))
+
+        # All-time longest streak ever recorded (issue #127); never resets.
+        data[KEY_DRY_STREAK_RECORD] = self._learning_state.dry_streak_record
+        data[KEY_HEAT_STREAK_RECORD] = self._learning_state.heat_streak_record
+        data[KEY_FROST_STREAK_RECORD] = self._learning_state.frost_streak_record
 
     # ------------------------------------------------------------------
     # v1.2.0 - 30-day rolling climatology

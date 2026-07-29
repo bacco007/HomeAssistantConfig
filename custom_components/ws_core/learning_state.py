@@ -58,6 +58,10 @@ class LearningState:
     heat_streak_last_hot_date: str = ""
     frost_streak_days: int = 0
     frost_streak_last_frost_date: str = ""
+    # v2.7 (issue #127): all-time longest streak ever recorded, never resets
+    dry_streak_record: int = 0
+    heat_streak_record: int = 0
+    frost_streak_record: int = 0
     # v1.6.6: persisted guard so streaks are counted exactly once per completed
     # calendar day, surviving restarts/reloads (replaces in-memory guard)
     streak_last_counted_date: str = ""
@@ -279,6 +283,8 @@ def update_daily_streaks(
     else:
         state.dry_streak_days = 0
         state.dry_streak_last_rain_date = date_str
+    if state.dry_streak_days > state.dry_streak_record:
+        state.dry_streak_record = state.dry_streak_days
 
     # ── Heat streak ──────────────────────────────────────────────────────────
     if t_high is not None and t_high > thresh_heat_c:
@@ -287,6 +293,8 @@ def update_daily_streaks(
             state.heat_streak_last_hot_date = date_str
     else:
         state.heat_streak_days = 0
+    if state.heat_streak_days > state.heat_streak_record:
+        state.heat_streak_record = state.heat_streak_days
 
     # ── Frost streak ─────────────────────────────────────────────────────────
     if t_low is not None and t_low <= thresh_freeze_c:
@@ -295,6 +303,8 @@ def update_daily_streaks(
             state.frost_streak_last_frost_date = date_str
     else:
         state.frost_streak_days = 0
+    if state.frost_streak_days > state.frost_streak_record:
+        state.frost_streak_record = state.frost_streak_days
 
 
 # ---------------------------------------------------------------------------
