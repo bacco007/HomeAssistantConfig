@@ -366,6 +366,50 @@ class FootballHubCoordinator(DataUpdateCoordinator):
             (results if status in {"FT", "AET", "PEN"} else upcoming).append(item)
         return team_id, upcoming, results
 
+    def _merge_finished_live_friendlies(self, feed: list[dict[str, Any]]) -> None:
+        """Move completed friendlies into the active league's result dataset."""
+        fixtures = self._cache.get("fixtures", []) or []
+        league_teams = {
+            str(team.get("name") or "").casefold()
+            for item in fixtures
+            for team in (
+                (((item or {}).get("teams") or {}).get("home") or {}),
+                (((item or {}).get("teams") or {}).get("away") or {}),
+            )
+            if team.get("name")
+        }
+        # Welsh fallback tables can be available before their first fixture.
+        for wrapper in self._cache.get("teams", []) or []:
+            team = (wrapper or {}).get("team") or wrapper or {}
+            if team.get("name"):
+                league_teams.add(str(team["name"]).casefold())
+
+        merged = {
+            str(((item or {}).get("fixture") or {}).get("id")): item
+            for item in fixtures
+            if ((item or {}).get("fixture") or {}).get("id") not in (None, "")
+        }
+        for item in feed or []:
+            league_name = str(((item or {}).get("league") or {}).get("name") or "").casefold()
+            status = ((((item or {}).get("fixture") or {}).get("status") or {}).get("short"))
+            sides = (item or {}).get("teams") or {}
+            names = {
+                str((sides.get("home") or {}).get("name") or "").casefold(),
+                str((sides.get("away") or {}).get("name") or "").casefold(),
+            }
+            fixture_id = ((item or {}).get("fixture") or {}).get("id")
+            if (
+                "friend" in league_name
+                and status in {"FT", "AET", "PEN"}
+                and fixture_id not in (None, "")
+                and bool(names & league_teams)
+            ):
+                merged[str(fixture_id)] = item
+        self._cache["fixtures"] = sorted(
+            merged.values(),
+            key=lambda item: (((item or {}).get("fixture") or {}).get("timestamp") or 0),
+        )
+
     async def _async_update_data(self):
         """Refresh only datasets whose cache period has expired."""
         league_id = self.competition["league_id"]
@@ -485,10 +529,18 @@ class FootballHubCoordinator(DataUpdateCoordinator):
                     _LOGGER.warning("Football Hub %s refresh failed: %s", key, result)
                 else:
                     self._store(key, result)
+                    if key == "live_feed" and isinstance(result, list):
+                        self._merge_finished_live_friendlies(result)
 
-            # The integration cannot work without fixture data on the first load.
+            # A lower-league provider can temporarily return no dataset. Keep
+            # the coordinator online so the status entity retains the complete
+            # country/competition catalogue and users can still change league.
             if failures and "fixtures" not in self._cache:
-                raise UpdateFailed("; ".join(failures))
+                self._store("fixtures", [])
+            if failures and "standings" not in self._cache:
+                self._store("standings", [])
+            if failures and "player_leaderboards" not in self._cache:
+                self._store("player_leaderboards", {})
 
         raw_live = [
             item for item in (self._cache.get("live_feed", []) or [])

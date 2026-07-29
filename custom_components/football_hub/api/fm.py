@@ -17,6 +17,8 @@ import aiohttp
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.storage import Store
 
+from .all_wales_sport import ALL_WALES_COMPETITIONS, fetch_competition
+
 _LOGGER = logging.getLogger(__name__)
 
 FM_BASE = "https://www.fotmob.com"
@@ -31,6 +33,10 @@ FM_LEAGUES = {
     42: 109,   # League Two
     43: 117,   # National League
     179: 64,   # Scottish Premiership
+    180: 123,  # Scottish Championship
+    181: 124,  # Scottish League One
+    182: 125,  # Scottish League Two
+    183: 9545, # Scottish Highland / Lowland leagues
     110: 116,  # Cymru Premier
     3010: 130,   # MLS
     3011: 8972,  # USL Championship
@@ -83,7 +89,8 @@ FM_LEAGUES = {
 
 FM_COUNTRY_CODES = {
     39: "ENG", 40: "ENG", 41: "ENG", 42: "ENG", 43: "ENG",
-    179: "SCO", 110: "WAL", 408: "NIR", 357: "IRL",
+    179: "SCO", 180: "SCO", 181: "SCO", 182: "SCO", 183: "SCO",
+    110: "WAL", 408: "NIR", 357: "IRL",
     3010: "USA", 3011: "USA", 3012: "USA", 3013: "USA",
     3014: "USA", 3015: "USA",
     140: "ESP", 78: "GER", 135: "ITA", 61: "FRA", 88: "NED",
@@ -113,6 +120,11 @@ LEAGUE_TTL = 6 * 60 * 60
 TODAY_TTL = 60
 MATCH_TTL_LIVE = 60
 MATCH_TTL_FINISHED = 24 * 60 * 60
+
+# Only competitions exposed by Football Hub's dropdown catalogue enter the
+# domestic live feed. Friendlies and international football are allowed by
+# name because FM gives those shared regional competition IDs.
+LIVE_COMPETITION_IDS = {str(value) for value in FM_LEAGUES.values()}
 TEAM_PROFILE_TTL = 30 * 24 * 60 * 60
 TEAM_SQUAD_TTL = 7 * 24 * 60 * 60
 TEAM_TRANSFERS_TTL = 24 * 60 * 60
@@ -120,6 +132,7 @@ NEWS_TTL = 60 * 60
 TV_GUIDE_TTL = 6 * 60 * 60
 TRANSFER_MARKET_TTL = 60 * 60
 COMPETITION_CATALOGUE_TTL = 7 * 24 * 60 * 60
+FRIENDLY_RESULTS_TTL = 370 * 24 * 60 * 60
 
 
 class FMProviderError(Exception):
@@ -455,11 +468,37 @@ class FMProvider:
     @staticmethod
     def _status(match: dict) -> dict:
         status = match.get("status") or {}
+        status_text = " ".join(
+            str(value or "").casefold()
+            for value in (
+                status.get("reason"), status.get("status"),
+                status.get("state"), status.get("liveTime"),
+            )
+        )
+        explicitly_live = bool(
+            status.get("started") or status.get("ongoing") or status.get("live")
+            or any(label in status_text for label in ("live", "first half", "second half", "half time"))
+        )
+
+        # Some club friendlies are present in FM's daily feed but their
+        # `started` flag arrives late. During the normal three-hour match
+        # window, treat a past kickoff as live unless it is finished/cancelled.
+        inferred_live = False
+        kickoff = status.get("utcTime") or match.get("utcTime") or match.get("date")
+        try:
+            kickoff_dt = datetime.fromisoformat(str(kickoff).replace("Z", "+00:00"))
+            if kickoff_dt.tzinfo is None:
+                kickoff_dt = kickoff_dt.replace(tzinfo=timezone.utc)
+            age = datetime.now(timezone.utc) - kickoff_dt.astimezone(timezone.utc)
+            inferred_live = timedelta(0) <= age <= timedelta(hours=3)
+        except (TypeError, ValueError):
+            pass
+
         if status.get("cancelled"):
             short = "CANC"
         elif status.get("finished"):
             short = "FT"
-        elif status.get("started"):
+        elif explicitly_live or inferred_live:
             short = "LIVE"
         else:
             short = "NS"
@@ -575,6 +614,24 @@ class FMProvider:
         await self._persistent_put("league_data", str(fm_id), data)
         return self._cache_put(key, data)
 
+    async def _all_wales_data(self, league_id: Any) -> dict:
+        """Return cached Cymru North/South data from All Wales Sport."""
+        competition_id = int(league_id)
+        if competition_id not in ALL_WALES_COMPETITIONS:
+            raise FMProviderError(f"All Wales Sport mapping is unavailable for {league_id}")
+        # v2 bypasses any previously persisted empty website response.
+        key = f"all-wales-v2:{competition_id}"
+        cached = self._cache_get(key, LEAGUE_TTL)
+        if cached is not None:
+            return cached
+        persistent_key = f"all-wales-v2:{competition_id}"
+        persisted = await self._persistent_get("league_data", persistent_key, LEAGUE_TTL)
+        if isinstance(persisted, dict):
+            return self._cache_put(key, persisted)
+        data = await fetch_competition(self.session, competition_id)
+        await self._persistent_put("league_data", persistent_key, data)
+        return self._cache_put(key, data)
+
     async def _matches_for_date(self, date: datetime) -> list[dict]:
         day = date.strftime("%Y%m%d")
         key = f"matches:{day}"
@@ -592,6 +649,86 @@ class FMProvider:
                 if item:
                     output.append(item)
         return self._cache_put(key, output)
+
+    @staticmethod
+    def _is_friendly(item: dict) -> bool:
+        """Return whether a fixture belongs to a friendly competition."""
+        name = str(((item or {}).get("league") or {}).get("name") or "").casefold()
+        return "friendly" in name or "friendlies" in name
+
+    async def _remember_finished_friendlies(self, matches: list[dict]) -> None:
+        """Persist completed friendlies so they remain on club result pages."""
+        finished = {}
+        for item in matches or []:
+            status = ((((item or {}).get("fixture") or {}).get("status") or {}).get("short"))
+            fixture_id = ((item or {}).get("fixture") or {}).get("id")
+            if fixture_id not in (None, "") and status in {"FT", "AET", "PEN"} and self._is_friendly(item):
+                finished[str(fixture_id)] = item
+        if not finished:
+            return
+
+        await self._ensure_loaded()
+        existing = await self._persistent_get(
+            "global_data", "friendly-results-v1", FRIENDLY_RESULTS_TTL
+        )
+        merged = dict(existing) if isinstance(existing, dict) else {}
+        changed = any(merged.get(key) != value for key, value in finished.items())
+        if not changed:
+            return
+        merged.update(finished)
+        # Keep the store bounded while retaining roughly a full season.
+        ordered = sorted(
+            merged.items(),
+            key=lambda pair: (((pair[1] or {}).get("fixture") or {}).get("timestamp") or 0),
+        )[-500:]
+        await self._persistent_put("global_data", "friendly-results-v1", dict(ordered))
+
+    async def _stored_friendly_results(self) -> list[dict]:
+        stored = await self._persistent_get(
+            "global_data", "friendly-results-v1", FRIENDLY_RESULTS_TTL
+        )
+        return list(stored.values()) if isinstance(stored, dict) else []
+
+    async def _merge_friendly_results(
+        self, fixtures: list[dict], teams: list[dict] | None = None
+    ) -> list[dict]:
+        """Add stored friendlies involving clubs from this league."""
+        output = {
+            str(((item or {}).get("fixture") or {}).get("id")): item
+            for item in fixtures or []
+            if ((item or {}).get("fixture") or {}).get("id") not in (None, "")
+        }
+        club_ids: set[str] = set()
+        club_names: set[str] = set()
+        for item in fixtures or []:
+            for team in (((item or {}).get("teams") or {}).get("home") or {},
+                         ((item or {}).get("teams") or {}).get("away") or {}):
+                if team.get("id") not in (None, ""):
+                    club_ids.add(str(team["id"]))
+                if team.get("name"):
+                    club_names.add(self._norm(team["name"]))
+        for wrapper in teams or []:
+            team = (wrapper or {}).get("team") or wrapper or {}
+            if team.get("id") not in (None, ""):
+                club_ids.add(str(team["id"]))
+            if team.get("name"):
+                club_names.add(self._norm(team["name"]))
+
+        for item in await self._stored_friendly_results():
+            sides = (item or {}).get("teams") or {}
+            participants = [sides.get("home") or {}, sides.get("away") or {}]
+            belongs = any(
+                (team.get("id") not in (None, "") and str(team["id"]) in club_ids)
+                or (team.get("name") and self._norm(team["name"]) in club_names)
+                for team in participants
+            )
+            fixture_id = ((item or {}).get("fixture") or {}).get("id")
+            if belongs and fixture_id not in (None, ""):
+                output[str(fixture_id)] = item
+        return sorted(
+            output.values(),
+            key=lambda item: ((item.get("fixture") or {}).get("timestamp") or 0),
+        )
 
     @staticmethod
     def _live_scope_match(item: dict, selected_country: str | None) -> bool:
@@ -614,8 +751,25 @@ class FMProvider:
         return is_selected_country or is_uefa_club_competition or is_international
 
     async def get_live_feed(self, league_id, season):
-        """Return today's worldwide schedule so every live match is available."""
-        return await self._matches_for_date(datetime.now(timezone.utc))
+        """Return today's configured competitions and supported friendlies."""
+        matches = await self._matches_for_date(datetime.now(timezone.utc))
+        await self._remember_finished_friendlies(matches)
+        output = []
+        for item in matches:
+            league = item.get("league") or {}
+            competition_id = str(league.get("id") or "")
+            name = str(league.get("name") or "").casefold()
+            is_uefa_or_international = any(
+                label in name
+                for label in (
+                    "champions league", "europa league", "conference league",
+                    "nations league", "european championship", "euro qualification",
+                    "world cup", "international friendly", "friendlies",
+                )
+            )
+            if competition_id in LIVE_COMPETITION_IDS or is_uefa_or_international:
+                output.append(item)
+        return output
 
     async def get_live(self, league_id, season):
         feed = await self.get_live_feed(league_id, season)
@@ -625,6 +779,11 @@ class FMProvider:
         ]
 
     async def get_fixtures(self, league_id, season):
+        if int(league_id) in ALL_WALES_COMPETITIONS:
+            data = await self._all_wales_data(league_id)
+            return await self._merge_friendly_results(
+                data.get("fixtures", []), data.get("teams", [])
+            )
         fm_id = self._league_id(league_id)
         data = await self._league_data(league_id)
         output: dict[str, dict] = {}
@@ -651,13 +810,13 @@ class FMProvider:
             if (item.get("league") or {}).get("id") in (fm_id, str(fm_id), None):
                 output[str((item.get("fixture") or {}).get("id"))] = item
 
-        return sorted(
-            output.values(),
-            key=lambda item: (item.get("fixture") or {}).get("timestamp") or 0,
-        )
+        return await self._merge_friendly_results(list(output.values()))
 
     async def get_standings(self, league_id, season):
         """Return the current FM league table."""
+        if int(league_id) in ALL_WALES_COMPETITIONS:
+            return (await self._all_wales_data(league_id)).get("standings", [])
+        fm_id = self._league_id(league_id)
         data = await self._league_data(league_id)
         rows = []
 
@@ -671,8 +830,13 @@ class FMProvider:
                 section_data = section.get("data") if isinstance(section, dict) else None
                 section_table = section_data.get("table") if isinstance(section_data, dict) else None
                 if isinstance(section_table, dict) and isinstance(section_table.get("all"), list):
-                    table_rows = section_table["all"]
-                    break
+                    if fm_id == 9545:
+                        # FM exposes Highland and Lowland as two tables under
+                        # one competition. Include both divisions.
+                        table_rows.extend(section_table["all"])
+                    else:
+                        table_rows = section_table["all"]
+                        break
             if not table_rows and table and all(
                 isinstance(item, dict) and (item.get("teamId") or item.get("id"))
                 for item in table
@@ -785,6 +949,13 @@ class FMProvider:
 
     async def get_teams(self, league_id, season):
         """Return teams for the selected league and populate dropdowns."""
+        if int(league_id) in ALL_WALES_COMPETITIONS:
+            teams = (await self._all_wales_data(league_id)).get("teams", [])
+            for item in teams:
+                team = item.get("team") or {}
+                if team.get("id") is not None and team.get("name"):
+                    self._team_names[str(team["id"])] = team["name"]
+            return teams
         data = await self._league_data(league_id)
         found: dict[str, dict] = {}
 
@@ -1143,6 +1314,8 @@ class FMProvider:
         return await self._league_players(league_id, "assists")
 
     async def _league_players(self, league_id, wanted: str):
+        if int(league_id) in ALL_WALES_COMPETITIONS:
+            return []
         data = await self._league_data(league_id)
         return self._league_players_from_data(data, wanted)
 
@@ -1214,6 +1387,16 @@ class FMProvider:
 
     async def get_player_leaderboards(self, league_id, season):
         """Return every supported leaderboard from one league-data request."""
+        if int(league_id) in ALL_WALES_COMPETITIONS:
+            return {
+                "top_scorers": [],
+                "top_assists": [],
+                "top_yellow_cards": [],
+                "top_red_cards": [],
+                "top_ratings": [],
+                "top_appearances": [],
+                "top_minutes": [],
+            }
         data = await self._league_data(league_id)
         return {
             "top_scorers": self._league_players_from_data(data, "goals"),

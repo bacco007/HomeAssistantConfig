@@ -318,6 +318,7 @@ class FootballHubStatusSensor(FootballHubBaseSensor):
 
 
 class FootballHubLiveSensor(FootballHubBaseSensor):
+    _unrecorded_attributes = frozenset({"primary_live_match", "matches"})
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry, "live_matches", "Live Matches")
 
@@ -360,6 +361,8 @@ class FootballHubLiveSensor(FootballHubBaseSensor):
 
 class FootballHubLiveMatchSensor(FootballHubBaseSensor):
     """Expose the primary live match as a dedicated entity."""
+
+    _unrecorded_attributes = frozenset({"events", "statistics", "lineups"})
 
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry, "live_match", "Live Match")
