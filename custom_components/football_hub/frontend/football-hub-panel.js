@@ -1,4 +1,5 @@
-const PANEL_VERSION = "0.12.2-visual-match-statistics";
+const PANEL_VERSION = "0.13.14-lms-private-email";
+const LMS_SHARE_SERVICE = "https://football-hub-lms.zesty-flame-5295.chatgpt.site";
 
 class FootballHubPanel extends HTMLElement {
   constructor() {
@@ -24,7 +25,7 @@ class FootballHubPanel extends HTMLElement {
       }, 0);
     }, true);
     const savedTab = localStorage.getItem("football_hub_active_page") || "overview";
-    this._activeTab = ["overview", "live", "fixtures", "results", "table", "players", "my-club", "cups", "news", "tv-guide", "transfers", "supporters", "settings"].includes(savedTab)
+    this._activeTab = ["overview", "live", "fixtures", "results", "table", "players", "my-club", "cups", "last-man-standing", "news", "tv-guide", "transfers", "supporters", "settings"].includes(savedTab)
       ? savedTab
       : "overview";
     this._selectedFixtureTeam = localStorage.getItem("football_hub_fixture_team") || "__all__";
@@ -46,7 +47,27 @@ class FootballHubPanel extends HTMLElement {
     this._supporters = [];
     this._supportersLoading = false;
     this._supportersLoaded = false;
+    this._lmsMode = localStorage.getItem("football_hub_lms_mode") || "private";
+    this._lmsActiveLeague = localStorage.getItem("football_hub_lms_active_league") || "";
+    this._lmsPageView = localStorage.getItem("football_hub_lms_page_view") || "picks";
+    try {
+      this._lmsCompetition = JSON.parse(localStorage.getItem("football_hub_lms_private") || "null");
+    } catch (_error) {
+      this._lmsCompetition = null;
+    }
+    try {
+      this._lmsLeagueCache = JSON.parse(localStorage.getItem("football_hub_lms_league_cache") || "{}");
+    } catch (_error) {
+      this._lmsLeagueCache = {};
+    }
     this._lastRenderSig = null;
+    this._lmsCountdownTimer = null;
+    this._lmsSharePullTimer = null;
+    this._lmsShareSyncTimer = null;
+    this._lmsShareBusy = false;
+    this._lmsShareLastPull = 0;
+    this._lmsAdminUnlocked = false;
+    this._lmsAutoCheckBusy = false;
   }
 
   _footballStateSignature() {
@@ -115,6 +136,20 @@ class FootballHubPanel extends HTMLElement {
   connectedCallback() {
     this._render();
     this._loadSupporters();
+    clearInterval(this._lmsCountdownTimer);
+    this._lmsCountdownTimer = setInterval(() => this._updateLmsCountdown(), 1000);
+    clearInterval(this._lmsSharePullTimer);
+    this._lmsSharePullTimer = setInterval(() => this._pullLmsSharePicks(), 30000);
+    queueMicrotask(() => this._pullLmsSharePicks());
+  }
+
+  disconnectedCallback() {
+    clearInterval(this._lmsCountdownTimer);
+    this._lmsCountdownTimer = null;
+    clearInterval(this._lmsSharePullTimer);
+    this._lmsSharePullTimer = null;
+    clearTimeout(this._lmsShareSyncTimer);
+    this._lmsShareSyncTimer = null;
   }
 
   async _loadSupporters() {
@@ -262,6 +297,700 @@ class FootballHubPanel extends HTMLElement {
     const date = typeof supporter === "string" ? "" : supporter?.date;
     const message = typeof supporter === "string" ? "" : supporter?.message;
     return `<article class="supporter-card"><div class="supporter-avatar">${this._countryFlag(country, "supporter-avatar-flag")}</div><div class="supporter-copy"><strong>${this._escape(name || "Anonymous Supporter")}</strong><div class="supporter-meta">${country ? `<span class="supporter-country">${this._escape(country)}</span>` : ""}${date ? `<span>${this._escape(date)}</span>` : ""}</div>${message ? `<p>${this._escape(message)}</p>` : ""}</div></article>`;
+  }
+
+  _saveLms() {
+    if (this._lmsCompetition) {
+      localStorage.setItem("football_hub_lms_private", JSON.stringify(this._lmsCompetition));
+      this._queueLmsShareSync();
+    } else {
+      localStorage.removeItem("football_hub_lms_private");
+    }
+  }
+
+  _lmsSharePayload() {
+    const competition = this._lmsCompetition;
+    if (!competition) return null;
+    const teamGroups = this._lmsTeamGroups().map((group) => ({
+      key: group.key,
+      name: group.name,
+      country: group.country,
+      teams: [...(group.teams || [])],
+    }));
+    const roundFixtures = this._lmsRoundFixtureGroups().map((group) => ({
+      key: group.key,
+      name: group.name,
+      country: group.country,
+      fixtures: [...(group.roundFixtures || [])],
+    }));
+    const payload = JSON.parse(JSON.stringify(competition));
+    delete payload.adminPasswordHash;
+    delete payload.shareEditToken;
+    delete payload.shareUrl;
+    delete payload.shareId;
+    payload.teamGroups = teamGroups;
+    payload.roundFixtures = roundFixtures;
+    return payload;
+  }
+
+  _applyLmsPlayerLinks(playerLinks = []) {
+    const competition = this._lmsCompetition;
+    if (!competition) return;
+    const byId = new Map(playerLinks.map((item) => [String(item.playerId), item]));
+    for (const player of competition.players || []) {
+      const link = byId.get(String(player.id));
+      if (link?.url) player.pickUrl = link.url;
+    }
+  }
+
+  async _copyText(text) {
+    if (!text) return false;
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (_error) {
+      // Home Assistant may be opened over HTTP, where Clipboard API access is blocked.
+    }
+    const field = document.createElement("textarea");
+    field.value = text;
+    field.setAttribute("readonly", "");
+    field.style.position = "fixed";
+    field.style.left = "-9999px";
+    document.body.appendChild(field);
+    field.focus();
+    field.select();
+    let copied = false;
+    try {
+      copied = document.execCommand("copy");
+    } catch (_error) {
+      copied = false;
+    }
+    field.remove();
+    return copied;
+  }
+
+  _lmsEmailServices() {
+    const services = this._hass?.services?.notify || {};
+    return Object.entries(services)
+      .filter(([service]) => service !== "send_message")
+      .map(([service, details]) => ({
+        value: `notify.${service}`,
+        label: details?.name || details?.description || service.replaceAll("_", " "),
+      }))
+      .sort((a, b) => String(a.label).localeCompare(String(b.label)));
+  }
+
+  _lmsEmailDeadline() {
+    const deadline = this._lmsDeadlineState();
+    return deadline.timestamp
+      ? new Date(deadline.timestamp * 1000).toLocaleString([], { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })
+      : "the first match of the round";
+  }
+
+  async _sendLmsPlayerEmail(player, quiet = false) {
+    const competition = this._lmsCompetition;
+    const action = String(competition?.emailNotifyService || "");
+    if (!player?.email || !player?.pickUrl || !action || !this._hass?.callService) {
+      if (!quiet) window.alert(!player?.email ? "Add an email address for this player first." : !player?.pickUrl ? "Generate the public competition link first." : "Choose a Home Assistant email service first.");
+      return false;
+    }
+    const [domain, ...serviceParts] = action.split(".");
+    const service = serviceParts.join(".");
+    if (domain !== "notify" || !service) {
+      if (!quiet) window.alert("The selected email service is not valid.");
+      return false;
+    }
+    try {
+      await this._hass.callService(domain, service, {
+        title: `${competition.name} - Round ${competition.round} team selection`,
+        message: `Hi ${player.name},\n\nChoose your Last Man Standing team for Round ${competition.round}:\n${player.pickUrl}\n\nYour deadline is ${this._lmsEmailDeadline()} local time. Teams already used cannot be selected again.\n\nFootball Hub`,
+        target: [player.email],
+      });
+      player.lastEmailSent = Math.floor(Date.now() / 1000);
+      this._saveLms();
+      if (!quiet) window.alert(`Pick link emailed to ${player.name}.`);
+      return true;
+    } catch (error) {
+      console.warn("Football Hub LMS email failed", error);
+      if (!quiet) window.alert(`Email could not be sent to ${player.name}. Check the selected Home Assistant email service.`);
+      return false;
+    }
+  }
+
+  async _sendLmsOutstandingEmails(includeSelected = false) {
+    const competition = this._lmsCompetition;
+    if (!competition) return 0;
+    const roundKey = String(competition.round || 1);
+    const players = (competition.players || []).filter((player) => player.alive && player.email && player.pickUrl && (includeSelected || !player.picks?.[roundKey]));
+    let sent = 0;
+    for (const player of players) if (await this._sendLmsPlayerEmail(player, true)) sent += 1;
+    return sent;
+  }
+
+  async _createLmsShare() {
+    if (!this._isLmsAdmin() || !this._lmsCompetition || !LMS_SHARE_SERVICE || this._lmsShareBusy) return;
+    this._lmsShareBusy = true;
+    try {
+      const response = await fetch(`${LMS_SHARE_SERVICE}/api/competitions`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ competition: this._lmsSharePayload() }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Unable to generate share link");
+      this._lmsCompetition.shareId = result.shareId;
+      this._lmsCompetition.shareEditToken = result.editToken;
+      this._lmsCompetition.shareUrl = result.shareUrl;
+      this._applyLmsPlayerLinks(result.playerLinks);
+      localStorage.setItem("football_hub_lms_private", JSON.stringify(this._lmsCompetition));
+      this._render();
+      const emailed = this._lmsCompetition.emailNotifyService ? await this._sendLmsOutstandingEmails(true) : 0;
+      const copied = await this._copyText(result.shareUrl);
+      if (copied) window.alert(`Competition link generated and copied.${emailed ? ` Pick links emailed to ${emailed} player${emailed === 1 ? "" : "s"}.` : ""}`);
+      else window.prompt("Competition link generated. Copy this link:", result.shareUrl);
+    } catch (error) {
+      window.alert(error?.message || "Unable to generate the competition link.");
+    } finally {
+      this._lmsShareBusy = false;
+    }
+  }
+
+  _queueLmsShareSync() {
+    if (!this._lmsCompetition?.shareId || !this._lmsCompetition?.shareEditToken || !LMS_SHARE_SERVICE) return;
+    clearTimeout(this._lmsShareSyncTimer);
+    this._lmsShareSyncTimer = setTimeout(() => this._syncLmsShare(), 1200);
+  }
+
+  async _syncLmsShare() {
+    const competition = this._lmsCompetition;
+    if (!competition?.shareId || !competition?.shareEditToken || !LMS_SHARE_SERVICE || this._lmsShareBusy) return;
+    this._lmsShareBusy = true;
+    try {
+      const response = await fetch(`${LMS_SHARE_SERVICE}/api/competitions/${encodeURIComponent(competition.shareId)}`, {
+        method: "PUT",
+        headers: {
+          "content-type": "application/json",
+          "authorization": `Bearer ${competition.shareEditToken}`,
+        },
+        body: JSON.stringify({ competition: this._lmsSharePayload() }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Share update failed");
+      this._applyLmsPlayerLinks(result.playerLinks);
+      localStorage.setItem("football_hub_lms_private", JSON.stringify(competition));
+    } catch (error) {
+      console.warn("Football Hub LMS share update failed", error);
+    } finally {
+      this._lmsShareBusy = false;
+    }
+  }
+
+  async _pullLmsSharePicks(force = false) {
+    const competition = this._lmsCompetition;
+    if (this._activeTab !== "last-man-standing" || !competition?.shareId || !LMS_SHARE_SERVICE || this._lmsShareBusy) return;
+    if (!force && Date.now() - this._lmsShareLastPull < 25000) return;
+    this._lmsShareLastPull = Date.now();
+    this._lmsShareBusy = true;
+    try {
+      const response = await fetch(`${LMS_SHARE_SERVICE}/api/competitions/${encodeURIComponent(competition.shareId)}`, {
+        cache: "no-store",
+        headers: competition.shareEditToken ? { "authorization": `Bearer ${competition.shareEditToken}` } : {},
+      });
+      if (!response.ok) return;
+      const remote = (await response.json()).competition;
+      const remotePlayers = new Map((remote?.players || []).map((player) => [String(player.id), player]));
+      let changed = false;
+      for (const player of competition.players || []) {
+        const remotePlayer = remotePlayers.get(String(player.id));
+        if (!remotePlayer?.picks) continue;
+        const localPicks = JSON.stringify(player.picks || {});
+        const remotePicks = JSON.stringify(remotePlayer.picks || {});
+        if (localPicks !== remotePicks) {
+          player.picks = { ...(remotePlayer.picks || {}) };
+          changed = true;
+        }
+      }
+      if (changed) {
+        localStorage.setItem("football_hub_lms_private", JSON.stringify(competition));
+        this._render();
+      }
+    } catch (error) {
+      console.warn("Football Hub LMS player picks refresh failed", error);
+    } finally {
+      this._lmsShareBusy = false;
+    }
+  }
+
+  async _lmsPasswordHash(password) {
+    const value = String(password || "");
+    if (globalThis.crypto?.subtle) {
+      const bytes = new TextEncoder().encode(`football-hub-lms:${value}`);
+      const digest = await globalThis.crypto.subtle.digest("SHA-256", bytes);
+      return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+    }
+    let hash = 2166136261;
+    for (const character of `football-hub-lms:${value}`) {
+      hash ^= character.charCodeAt(0);
+      hash = Math.imul(hash, 16777619);
+    }
+    return `fallback-${(hash >>> 0).toString(16)}`;
+  }
+
+  _isLmsAdmin() {
+    return Boolean(this._lmsCompetition?.adminPasswordHash && this._lmsAdminUnlocked);
+  }
+
+  async _setLmsAdminPassword(password, confirmation) {
+    const competition = this._lmsCompetition;
+    if (!competition || competition.adminPasswordHash) return;
+    if (String(password || "").length < 4) {
+      window.alert("Choose an administrator password with at least 4 characters.");
+      return;
+    }
+    if (password !== confirmation) {
+      window.alert("The administrator passwords do not match.");
+      return;
+    }
+    competition.adminPasswordHash = await this._lmsPasswordHash(password);
+    this._lmsAdminUnlocked = true;
+    this._saveLms();
+    this._render();
+  }
+
+  async _unlockLmsAdmin(password) {
+    const competition = this._lmsCompetition;
+    if (!competition?.adminPasswordHash) return;
+    const valid = (await this._lmsPasswordHash(password)) === competition.adminPasswordHash;
+    if (!valid) {
+      window.alert("Incorrect administrator password.");
+      return;
+    }
+    this._lmsAdminUnlocked = true;
+    this._render();
+  }
+
+  _lmsFixtureTimestamp(fixture) {
+    const raw = fixture?.timestamp ?? fixture?.kickoff ?? fixture?.utc_time ?? fixture?.date;
+    if (raw === null || raw === undefined || raw === "") return 0;
+    const numeric = Number(raw);
+    if (Number.isFinite(numeric) && numeric > 0) return numeric > 100000000000 ? Math.floor(numeric / 1000) : Math.floor(numeric);
+    const parsed = new Date(raw).getTime();
+    return Number.isFinite(parsed) ? Math.floor(parsed / 1000) : 0;
+  }
+
+  _ensureLmsDeadline() {
+    const competition = this._lmsCompetition;
+    if (!competition) return 0;
+    const roundKey = String(competition.round || 1);
+    competition.deadlines = competition.deadlines || {};
+    if (Number(competition.deadlines[roundKey]) > 0) return Number(competition.deadlines[roundKey]);
+    const roundStarted = Number(competition.roundStarted || 0);
+    const fixtures = this._lmsTeamGroups().flatMap((league) => league.fixtures || []);
+    const timestamps = fixtures
+      .map((fixture) => this._lmsFixtureTimestamp(fixture))
+      .filter((timestamp) => timestamp >= roundStarted - 300)
+      .sort((a, b) => a - b);
+    if (!timestamps.length) return 0;
+    competition.deadlines[roundKey] = timestamps[0];
+    this._saveLms();
+    return timestamps[0];
+  }
+
+  _lmsDeadlineState() {
+    const timestamp = this._ensureLmsDeadline();
+    const remaining = timestamp ? (timestamp * 1000) - Date.now() : 0;
+    return { timestamp, remaining, locked: Boolean(timestamp && remaining <= 0) };
+  }
+
+  _formatLmsCountdown(milliseconds) {
+    if (milliseconds <= 0) return "PICKS LOCKED";
+    const seconds = Math.floor(milliseconds / 1000);
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${days ? `${days}d ` : ""}${String(hours).padStart(2, "0")}h ${String(minutes).padStart(2, "0")}m ${String(secs).padStart(2, "0")}s`;
+  }
+
+  _updateLmsCountdown() {
+    const countdown = this.shadowRoot?.querySelector("#lms-countdown");
+    if (!countdown) return;
+    const state = this._lmsDeadlineState();
+    countdown.textContent = state.timestamp ? this._formatLmsCountdown(state.remaining) : "Waiting for fixture times";
+    const warning = countdown.closest(".lms-deadline");
+    warning?.classList.toggle("locked", state.locked);
+    this.shadowRoot.querySelectorAll(".lms-pick").forEach((select) => {
+      if (state.locked) select.disabled = true;
+    });
+  }
+
+  _lmsTeams() {
+    const status = this._statusInfo();
+    const wantedLeague = this._lmsActiveLeague || this._lmsCompetition?.leagues?.[0]?.key || "";
+    if (wantedLeague && status.competition_key !== wantedLeague) return [];
+    const tableTeams = (this._attrs("standings").table || []).map((row) => row.team || row.team_name);
+    const fixtureTeams = (this._attrs("fixtures").fixtures || []).flatMap((match) => [match.home_team, match.away_team]);
+    return [...new Set([...tableTeams, ...fixtureTeams].filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  }
+
+  _captureLmsLeagueData() {
+    const competition = this._lmsCompetition;
+    const status = this._statusInfo();
+    if (!competition?.leagues?.some((league) => league.key === status.competition_key)) return;
+    const teams = this._lmsTeams();
+    const fixtures = this._attrs("fixtures").fixtures || [];
+    if (!teams.length) return;
+    this._lmsLeagueCache[status.competition_key] = { teams, fixtures, updated: Date.now() };
+    localStorage.setItem("football_hub_lms_league_cache", JSON.stringify(this._lmsLeagueCache));
+    this._ensureLmsDeadline();
+    queueMicrotask(() => this._maybeAutoSettleLmsRound());
+  }
+
+  _lmsTeamGroups() {
+    const competition = this._lmsCompetition;
+    if (!competition) return [];
+    return (competition.leagues || []).map((league) => ({
+      ...league,
+      teams: this._lmsLeagueCache?.[league.key]?.teams || [],
+      fixtures: this._lmsLeagueCache?.[league.key]?.fixtures || [],
+    }));
+  }
+
+  _lmsRoundFixtureGroups() {
+    const competition = this._lmsCompetition;
+    if (!competition) return [];
+    const roundStarted = Number(competition.roundStarted || 0);
+    return this._lmsTeamGroups().map((league) => {
+      const candidates = (league.fixtures || [])
+        .filter((fixture) => {
+          const timestamp = this._lmsFixtureTimestamp(fixture);
+          return timestamp >= roundStarted - 300;
+        })
+        .sort((a, b) => this._lmsFixtureTimestamp(a) - this._lmsFixtureTimestamp(b));
+      const first = candidates[0];
+      if (!first) return { ...league, roundFixtures: [] };
+      const roundValue = first.round ?? first.round_name ?? first.roundName ?? first.matchday ?? first.round_number;
+      const firstTimestamp = this._lmsFixtureTimestamp(first);
+      const roundFixtures = candidates.filter((fixture) => {
+        const fixtureRound = fixture.round ?? fixture.round_name ?? fixture.roundName ?? fixture.matchday ?? fixture.round_number;
+        if (roundValue !== undefined && roundValue !== null && roundValue !== "") return String(fixtureRound) === String(roundValue);
+        return this._lmsFixtureTimestamp(fixture) <= firstTimestamp + (4 * 86400);
+      });
+      return { ...league, roundFixtures };
+    });
+  }
+
+  async _createLmsCompetition(name, leagueKeys = [], password = "", confirmation = "", entryFee = 5) {
+    const status = this._statusInfo();
+    const catalogue = Array.isArray(status.available_competitions) ? status.available_competitions : [];
+    const selectedLeagues = catalogue
+      .filter((item) => leagueKeys.includes(item.key) && (item.type || "league") === "league")
+      .map((item) => ({ key: item.key, name: item.name, country: item.country }));
+    if (!selectedLeagues.length) return;
+    if (String(password).length < 4) {
+      window.alert("Choose an administrator password with at least 4 characters.");
+      return;
+    }
+    if (password !== confirmation) {
+      window.alert("The administrator passwords do not match.");
+      return;
+    }
+    this._lmsCompetition = {
+      id: `lms-${Date.now()}`,
+      name: String(name || "Private Competition").trim() || "Private Competition",
+      competitionKey: status.competition_key || "",
+      competitionName: status.competition || "Selected league",
+      leagues: selectedLeagues,
+      round: 1,
+      roundStarted: Math.floor(Date.now() / 1000),
+      deadlines: {},
+      entryFee: Math.max(0, Number(entryFee) || 0),
+      carriedPrize: 0,
+      edition: 1,
+      completed: false,
+      adminPasswordHash: await this._lmsPasswordHash(password),
+      created: new Date().toISOString(),
+      players: [],
+    };
+    this._lmsActiveLeague = selectedLeagues[0].key;
+    this._lmsAdminUnlocked = true;
+    localStorage.setItem("football_hub_lms_active_league", this._lmsActiveLeague);
+    this._saveLms();
+    if (status.competition_key !== this._lmsActiveLeague) this._setLeague(this._lmsActiveLeague);
+    this._render();
+  }
+
+  _addLmsPlayer(name, email = "") {
+    if (!this._isLmsAdmin()) return;
+    const clean = String(name || "").trim();
+    const cleanEmail = String(email || "").trim();
+    if (!clean || !this._lmsCompetition) return;
+    if (this._lmsCompetition.players.some((player) => player.name.toLowerCase() === clean.toLowerCase())) return;
+    this._lmsCompetition.players.push({ id: `player-${Date.now()}`, name: clean, email: cleanEmail, alive: true, paid: false, picks: {}, results: {} });
+    this._saveLms();
+    this._render();
+  }
+
+  _setLmsPick(playerId, team) {
+    const competition = this._lmsCompetition;
+    if (!this._isLmsAdmin()) return;
+    if (this._lmsDeadlineState().locked) return;
+    const player = competition?.players?.find((item) => item.id === playerId);
+    if (!player || !player.alive) return;
+    const roundKey = String(competition.round);
+    const used = Object.entries(player.picks || {}).some(([round, picked]) => round !== roundKey && picked === team);
+    if (used) return;
+    player.picks[roundKey] = team;
+    this._saveLms();
+    this._render();
+  }
+
+  _setLmsEarlyPick(playerId, team) {
+    const competition = this._lmsCompetition;
+    if (!competition || competition.completed || !this._isLmsAdmin()) return;
+    const player = competition.players?.find((item) => item.id === playerId);
+    const currentRound = String(competition.round);
+    const nextRound = String(Number(competition.round) + 1);
+    if (!player?.alive || player.results?.[currentRound] !== "survived") return;
+    const used = Object.entries(player.picks || {}).some(([round, picked]) => round !== nextRound && picked === team);
+    if (used) return;
+    player.picks = player.picks || {};
+    if (team) player.picks[nextRound] = team;
+    else delete player.picks[nextRound];
+    this._saveLms();
+    this._render();
+  }
+
+  _toggleLmsPaid(playerId) {
+    if (!this._isLmsAdmin()) return;
+    const player = this._lmsCompetition?.players?.find((item) => item.id === playerId);
+    if (!player) return;
+    player.paid = !player.paid;
+    this._saveLms();
+    this._render();
+  }
+
+  _canLmsBuyBack(player) {
+    const competition = this._lmsCompetition;
+    if (!competition || !player || player.alive || player.buyBackRounds?.["1"]) return false;
+    if (!String(player.results?.["1"] || "").startsWith("eliminated")) return false;
+    if (competition.completed && Number(competition.round) === 1) return true;
+    if (Number(competition.round) === 1) return true;
+    return Number(competition.round) === 2 && !this._lmsDeadlineState().locked;
+  }
+
+  _buyBackLmsPlayer(playerId) {
+    const competition = this._lmsCompetition;
+    if (!competition || !this._isLmsAdmin()) return;
+    const player = competition.players?.find((item) => item.id === playerId);
+    if (!this._canLmsBuyBack(player)) return;
+    const fee = Number(competition.entryFee ?? 5);
+    if (!window.confirm(`Buy ${player.name} back into the competition for £${fee.toFixed(2)}? Their first team will remain used.`)) return;
+    player.buyBacks = Number(player.buyBacks || 0) + 1;
+    player.buyBackRounds = { ...(player.buyBackRounds || {}), "1": true };
+    player.paid = true;
+    player.alive = true;
+    player.results = player.results || {};
+    player.results["1"] = "bought-back";
+    if (competition.completed && Number(competition.round) === 1) {
+      competition.completed = false;
+      competition.winnerId = "";
+      competition.round = 2;
+      competition.roundStarted = Math.floor(Date.now() / 1000);
+    }
+    this._saveLms();
+    this._render();
+  }
+
+  _setLmsEntryFee(value) {
+    if (!this._isLmsAdmin() || !this._lmsCompetition) return;
+    this._lmsCompetition.entryFee = Math.max(0, Number(value) || 0);
+    this._saveLms();
+    this._render();
+  }
+
+  _rolloverLmsCompetition() {
+    const competition = this._lmsCompetition;
+    if (!competition || !this._isLmsAdmin()) return;
+    const paidCount = competition.players.filter((player) => player.paid).length;
+    const buyBackCount = competition.players.reduce((total, player) => total + Number(player.buyBacks || 0), 0);
+    const currentPrize = Number(competition.carriedPrize || 0) + ((paidCount + buyBackCount) * Number(competition.entryFee ?? 5));
+    if (!window.confirm(`Rollover £${currentPrize.toFixed(2)} into a new competition? Every player will need to pay and choose again.`)) return;
+    competition.archives = competition.archives || [];
+    competition.archives.push({
+      edition: Number(competition.edition || 1),
+      completed: new Date().toISOString(),
+      prizeFund: currentPrize,
+      players: competition.players.map((player) => ({ ...player })),
+    });
+    competition.carriedPrize = currentPrize;
+    competition.edition = Number(competition.edition || 1) + 1;
+    competition.round = 1;
+    competition.roundStarted = Math.floor(Date.now() / 1000);
+    competition.deadlines = {};
+    competition.completed = false;
+    competition.winnerId = "";
+    competition.players = competition.players.map((player) => ({ ...player, alive: true, paid: false, buyBacks: 0, buyBackRounds: {}, picks: {}, results: {} }));
+    this._lmsPageView = "picks";
+    localStorage.setItem("football_hub_lms_page_view", this._lmsPageView);
+    this._saveLms();
+    this._render();
+  }
+
+  _maybeAutoSettleLmsRound() {
+    const competition = this._lmsCompetition;
+    if (!competition || competition.completed || this._lmsAutoCheckBusy || !this._lmsDeadlineState().locked) return;
+    const groups = this._lmsRoundFixtureGroups();
+    if (!(competition.leagues || []).length || groups.some((league) => !league.roundFixtures.length)) return;
+    const fixtures = groups.flatMap((league) => league.roundFixtures);
+    const finished = new Set(["FT", "AET", "PEN"]);
+    if (!fixtures.length) return;
+    const roundKey = String(competition.round);
+    const hasNewResult = competition.players.some((player) => {
+      if (!player.alive || player.results?.[roundKey]) return false;
+      const pick = player.picks?.[roundKey];
+      if (!pick) return true;
+      const match = fixtures.find((fixture) => fixture.home_team === pick || fixture.away_team === pick);
+      return Boolean(match && finished.has(String(match.status_short || match.status || "").toUpperCase()));
+    });
+    if (!hasNewResult) return;
+    this._lmsAutoCheckBusy = true;
+    try {
+      this._settleLmsRound(true);
+    } finally {
+      this._lmsAutoCheckBusy = false;
+    }
+  }
+
+  _settleLmsRound(automatic = false) {
+    const competition = this._lmsCompetition;
+    if (!competition || competition.completed || (!automatic && !this._isLmsAdmin())) return;
+    const roundKey = String(competition.round);
+    this._captureLmsLeagueData();
+    const fixtures = this._lmsRoundFixtureGroups().flatMap((league) => league.roundFixtures || []);
+    let waiting = false;
+    for (const player of competition.players) {
+      if (!player.alive) continue;
+      const pick = player.picks?.[roundKey];
+      if (!pick) {
+        if (this._lmsDeadlineState().locked) {
+          player.results = player.results || {};
+          player.results[roundKey] = "eliminated-no-pick";
+          player.alive = false;
+        } else {
+          waiting = true;
+        }
+        continue;
+      }
+      const roundStarted = Number(competition.roundStarted || 0);
+      const candidates = fixtures
+        .filter((item) => (item.home_team === pick || item.away_team === pick) && this._lmsFixtureTimestamp(item) >= roundStarted - 86400)
+        .sort((a, b) => this._lmsFixtureTimestamp(a) - this._lmsFixtureTimestamp(b));
+      const match = candidates[0];
+      const finished = ["FT", "AET", "PEN"].includes(String(match?.status_short || match?.status || "").toUpperCase());
+      if (!match || !finished) {
+        waiting = true;
+        continue;
+      }
+      const home = Number(match.home_goals);
+      const away = Number(match.away_goals);
+      const won = (match.home_team === pick && home > away) || (match.away_team === pick && away > home);
+      player.results = player.results || {};
+      player.results[roundKey] = won ? "survived" : "eliminated";
+      if (!won) player.alive = false;
+    }
+    const unresolved = competition.players.some((player) => player.alive && player.picks?.[roundKey] && !player.results?.[roundKey]);
+    const roundFinished = fixtures.length > 0 && fixtures.every((fixture) => ["FT", "AET", "PEN"].includes(String(fixture.status_short || fixture.status || "").toUpperCase()));
+    if (roundFinished && !waiting && !unresolved) {
+      const survivors = competition.players.filter((player) => player.alive);
+      if (survivors.length <= 1 && competition.players.length > 0) {
+        competition.completed = true;
+        competition.winnerId = survivors[0]?.id || "";
+      } else {
+        competition.round += 1;
+        competition.roundStarted = Math.floor(Date.now() / 1000);
+      }
+    }
+    this._saveLms();
+    this._render();
+  }
+
+  _lastManStandingPage() {
+    const competition = this._lmsCompetition;
+    const status = this._statusInfo();
+    const leagueCatalogue = (Array.isArray(status.available_competitions) ? status.available_competitions : [])
+      .filter((item) => (item.type || "league") === "league")
+      .sort((a, b) => String(a.country).localeCompare(String(b.country)) || String(a.name).localeCompare(String(b.name)));
+    const leagueCountries = [...new Set(leagueCatalogue.map((item) => item.country).filter(Boolean))];
+    this._captureLmsLeagueData();
+    const teamGroups = this._lmsTeamGroups();
+    const teams = [...new Set(teamGroups.flatMap((league) => league.teams || []))];
+    const roundKey = String(competition?.round || 1);
+    const alive = competition?.players?.filter((player) => player.alive).length || 0;
+    const pickedThisRound = competition?.players?.filter((player) => player.alive && player.picks?.[roundKey]).length || 0;
+    const paidCount = competition?.players?.filter((player) => player.paid).length || 0;
+    const buyBackCount = competition?.players?.reduce((total, player) => total + Number(player.buyBacks || 0), 0) || 0;
+    const entryFee = Number(competition?.entryFee ?? 5);
+    const carriedPrize = Number(competition?.carriedPrize || 0);
+    const prizeFund = carriedPrize + ((paidCount + buyBackCount) * entryFee);
+    const winner = competition?.players?.find((player) => player.id === competition.winnerId);
+    const selectedLmsLeague = this._lmsActiveLeague || competition?.leagues?.[0]?.key || "";
+    const loadedLmsLeague = status.competition_key === selectedLmsLeague;
+    const deadline = this._lmsDeadlineState();
+    const adminUnlocked = this._isLmsAdmin();
+    const needsAdminPassword = Boolean(competition && !competition.adminPasswordHash);
+    const roundFixtureGroups = this._lmsRoundFixtureGroups();
+    const roundFixtureCount = roundFixtureGroups.reduce((total, league) => total + league.roundFixtures.length, 0);
+    const emailServices = this._lmsEmailServices();
+    const selectedEmailService = String(competition?.emailNotifyService || "");
+    const deadlineLocal = deadline.timestamp ? new Date(deadline.timestamp * 1000).toLocaleString([], { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "Waiting for fixture times";
+    return `
+      <section class="page-heading"><div><span class="eyebrow">SURVIVE EVERY ROUND</span><h2>Last Man Standing</h2></div>${competition ? `<div class="count-badge">${alive} remaining</div>` : ""}</section>
+      <section class="lms-mode-grid">
+        <button class="page-card lms-mode ${this._lmsMode === "private" ? "active" : ""}" data-lms-mode="private"><ha-icon icon="mdi:account-group-lock-outline"></ha-icon><strong>Private Competition</strong><span>Create a competition for friends and manage their weekly picks.</span></button>
+        <button class="page-card lms-mode ${this._lmsMode === "global" ? "active" : ""}" data-lms-mode="global"><ha-icon icon="mdi:earth"></ha-icon><strong>Football Hub Global</strong><span>Compete with Football Hub players around the world.</span><em>Coming soon</em></button>
+      </section>
+      ${this._lmsMode === "global" ? `
+        <section class="page-card centred lms-coming"><ha-icon class="huge-icon" icon="mdi:earth"></ha-icon><h2>Football Hub Global</h2><p>The worldwide competition requires a secure shared player and deadline service. The page is ready for that connection and will be enabled in a future release.</p></section>
+      ` : !competition ? `
+        <section class="page-card lms-create"><div><span class="eyebrow">NEW PRIVATE GAME</span><h2>Create your competition</h2><p>Win to survive. A draw or defeat eliminates the player, and a team cannot be selected twice.</p></div><div class="lms-form"><input id="lms-name" maxlength="60" placeholder="Competition name"><label class="lms-fee-input"><span>Entry fee</span><b>£</b><input id="lms-entry-fee" type="number" min="0" step="0.50" value="5"></label></div><div class="lms-password-setup"><label><span>Administrator password</span><input id="lms-admin-password" type="password" minlength="4" autocomplete="new-password" placeholder="Create password"></label><label><span>Confirm password</span><input id="lms-admin-confirm" type="password" minlength="4" autocomplete="new-password" placeholder="Repeat password"></label><small>Only the administrator can change players, picks or results.</small></div><div class="lms-league-heading"><strong>Choose the leagues included</strong><span>Tick one or more leagues</span></div><div class="lms-league-groups">${leagueCountries.map((country) => `<fieldset><legend>${this._escape(country)}</legend>${leagueCatalogue.filter((item) => item.country === country).map((item) => `<label><input type="checkbox" class="lms-league-check" value="${this._escape(item.key)}" ${item.key === status.competition_key ? "checked" : ""}><span>${this._escape(item.name)}</span></label>`).join("")}</fieldset>`).join("")}</div><button id="lms-create" class="lms-create-button">Create competition</button><small>Football Hub will use the selected leagues for team picks and results.</small></section>
+      ` : `
+        <section class="page-card lms-summary"><div><span class="eyebrow">PRIVATE COMPETITION · EDITION ${Number(competition.edition || 1)}</span><h2>${this._escape(competition.name)}</h2><p>${this._escape((competition.leagues || []).map((item) => item.name).join(" · ") || competition.competitionName)} · Round ${competition.round}</p></div><div class="lms-summary-stats"><span><b>${(competition.leagues || []).length || 1}</b> leagues</span><span><b>${competition.players.length}</b> players</span><span><b>${alive}</b> remaining</span><span class="lms-picked-total"><b>${pickedThisRound}/${alive}</b> selected</span>${adminUnlocked ? `<button id="lms-admin-lock"><ha-icon icon="mdi:lock-outline"></ha-icon> Lock admin</button><button id="lms-delete" class="danger">Delete</button>` : `<span class="lms-admin-status"><ha-icon icon="mdi:shield-lock-outline"></ha-icon> ${needsAdminPassword ? "Password setup required" : "Admin locked"}</span>`}</div></section>
+        <section class="page-card lms-prize"><div><span class="eyebrow">PRIZE FUND</span><strong>£${prizeFund.toFixed(2)}</strong><small>${paidCount} entries${buyBackCount ? ` + ${buyBackCount} buy-back${buyBackCount === 1 ? "" : "s"}` : ""} × £${entryFee.toFixed(2)}${carriedPrize ? ` + £${carriedPrize.toFixed(2)} rollover` : ""}</small></div>${adminUnlocked ? `<label><span>Entry fee</span><b>£</b><input id="lms-edit-entry-fee" type="number" min="0" step="0.50" value="${entryFee.toFixed(2)}"></label><button id="lms-rollover"><ha-icon icon="mdi:cash-sync"></ha-icon> Rollover competition</button>` : `<span>${paidCount}/${competition.players.length} players paid</span>`}</section>
+        <section class="page-card lms-share"><ha-icon icon="mdi:share-variant-outline"></ha-icon><div><span class="eyebrow">SHARE THIS COMPETITION</span><strong>${competition.shareUrl ? "Public competition page is live" : "Create a read-only public page"}</strong><small>Players can view standings, picks, round fixtures, results, countdown and prize fund without Home Assistant.</small>${competition.shareUrl ? `<a href="${this._escape(competition.shareUrl)}" target="_blank" rel="noopener noreferrer">${this._escape(competition.shareUrl)}</a>` : ""}</div>${adminUnlocked ? competition.shareUrl ? `<button id="lms-copy-share"><ha-icon icon="mdi:content-copy"></ha-icon> Copy link</button><button id="lms-share-sync"><ha-icon icon="mdi:sync"></ha-icon> Update now</button>` : `<button id="lms-create-share" ${LMS_SHARE_SERVICE ? "" : "disabled"}><ha-icon icon="mdi:link-plus"></ha-icon> Generate link</button>` : ""}</section>
+        <section class="page-card lms-email"><ha-icon icon="mdi:email-fast-outline"></ha-icon><div><span class="eyebrow">PLAYER EMAILS</span><strong>Send private pick links through Home Assistant</strong><small>${emailServices.length ? "Choose the email notification service configured on this Home Assistant installation." : "No compatible Home Assistant email notification service was found. Add the SMTP integration first."}</small></div>${adminUnlocked ? `<label><span>Email service</span><select id="lms-email-service"><option value="">Choose email service</option>${emailServices.map((item) => `<option value="${this._escape(item.value)}" ${item.value === selectedEmailService ? "selected" : ""}>${this._escape(item.label)} (${this._escape(item.value)})</option>`).join("")}</select></label><button id="lms-email-outstanding" ${selectedEmailService && competition.shareUrl ? "" : "disabled"}><ha-icon icon="mdi:email-sync-outline"></ha-icon> Email outstanding picks</button>` : ""}</section>
+        ${competition.completed ? `<section class="page-card lms-winner"><ha-icon icon="mdi:trophy-award"></ha-icon><div><span class="eyebrow">COMPETITION COMPLETE</span><h2>${winner ? `${this._escape(winner.name)} wins!` : "No surviving player"}</h2><p>Final prize fund: £${prizeFund.toFixed(2)}</p></div></section>` : ""}
+        ${needsAdminPassword ? `<section class="page-card lms-admin-unlock"><ha-icon icon="mdi:shield-key-outline"></ha-icon><div><strong>Protect this competition</strong><span>Create the administrator password before making further changes.</span></div><input id="lms-existing-admin-password" type="password" minlength="4" autocomplete="new-password" placeholder="Create password"><input id="lms-existing-admin-confirm" type="password" minlength="4" autocomplete="new-password" placeholder="Repeat password"><button id="lms-existing-admin-save">Save password</button></section>` : adminUnlocked ? "" : `<section class="page-card lms-admin-unlock"><ha-icon icon="mdi:shield-key-outline"></ha-icon><div><strong>Administrator access required</strong><span>Enter the setup password to make changes.</span></div><input id="lms-admin-unlock-password" type="password" autocomplete="current-password" placeholder="Administrator password"><button id="lms-admin-unlock">Unlock</button></section>`}
+        <section class="page-card lms-deadline ${deadline.locked ? "locked" : ""}"><ha-icon icon="${deadline.locked ? "mdi:lock" : "mdi:timer-alert-outline"}"></ha-icon><div><span class="eyebrow">ROUND ${competition.round} PICK DEADLINE</span><strong>${this._escape(deadlineLocal)} local time</strong><small>All players must choose before the first match kicks off.</small></div><b id="lms-countdown">${deadline.timestamp ? this._formatLmsCountdown(deadline.remaining) : "Waiting for fixture times"}</b></section>
+        <section class="page-card lms-rules"><strong>Rules</strong><span>Win = survive</span><span>Draw or loss = eliminated</span><span>No team can be used twice</span><span>All picks remain private until the round deadline</span><span>Players may change a submitted pick once</span><span>Further changes require administrator approval</span><span>Round 1 elimination = one buy-back at the same entry fee</span><span>A buy-back does not restore the losing team</span><span>Buy-back closes at the Round 2 deadline</span><span>Unfinished/postponed picks remain pending</span></section>
+        <nav class="lms-page-tabs"><button class="${this._lmsPageView === "picks" ? "active" : ""}" data-lms-view="picks"><ha-icon icon="mdi:account-check-outline"></ha-icon> Players & picks</button><button class="${this._lmsPageView === "fixtures" ? "active" : ""}" data-lms-view="fixtures"><ha-icon icon="mdi:calendar-month-outline"></ha-icon> Round ${competition.round} fixtures <b>${roundFixtureCount}</b></button><button class="${this._lmsPageView === "standings" ? "active" : ""}" data-lms-view="standings"><ha-icon icon="mdi:format-list-numbered"></ha-icon> Standings</button></nav>
+        ${this._lmsPageView === "fixtures" ? `<section class="lms-round-fixtures">${roundFixtureGroups.map((league) => `<article class="page-card lms-round-league"><header><div><span class="eyebrow">${this._escape(league.country || "")}</span><h3>${this._escape(league.name)}</h3></div><b>${league.roundFixtures.length} matches</b></header>${league.roundFixtures.length ? `<div class="lms-round-match-list">${league.roundFixtures.map((fixture) => { const kickoff = this._lmsFixtureTimestamp(fixture); const localKickoff = kickoff ? new Date(kickoff * 1000).toLocaleString([], { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "Time TBC"; const status = String(fixture.status_short || fixture.status || "NS").toUpperCase(); const hasScore = fixture.home_goals !== null && fixture.home_goals !== undefined && fixture.away_goals !== null && fixture.away_goals !== undefined && !["NS", "TBD", "PST"].includes(status); const score = hasScore ? `${fixture.home_goals} - ${fixture.away_goals}` : "vs"; const matchState = ["FT", "AET", "PEN"].includes(status) ? `Full time · ${status}` : hasScore ? `${status}${fixture.elapsed ? ` · ${fixture.elapsed}'` : ""}` : localKickoff; return `<div class="lms-round-match ${hasScore ? "has-score" : ""}"><span class="home">${this._escape(fixture.home_team)}${this._logo(fixture.home_logo, fixture.home_team, "30")}</span><strong>${this._escape(score)}</strong><span class="away">${this._logo(fixture.away_logo, fixture.away_team, "30")}${this._escape(fixture.away_team)}</span><time>${this._escape(matchState)}</time></div>`; }).join("")}</div>` : `<div class="empty">Load this league to collect its next round of fixtures.</div>`}</article>`).join("") || `<div class="page-card empty">No round fixtures are available yet.</div>`}</section>` : this._lmsPageView === "standings" ? `<section class="page-card lms-standings"><header><div><span class="eyebrow">COMPETITION STATUS</span><h2>Players through and out</h2></div><b>${alive} still standing</b></header><div class="lms-standings-table"><div class="lms-standings-row heading"><span>#</span><span>Player</span><span>Status</span><span>Current pick</span><span>Teams used</span><span>Entry</span></div>${[...competition.players].sort((a, b) => Number(b.alive) - Number(a.alive) || a.name.localeCompare(b.name)).map((player, index) => { const currentPick = player.picks?.[roundKey] || "Not selected"; const usedTeams = Object.entries(player.picks || {}).sort(([a], [b]) => Number(a) - Number(b)).map(([round, team]) => `R${round}: ${team}`).join(" · ") || "None"; const playerResult = player.results?.[roundKey] || ""; const throughText = !player.alive ? (playerResult === "eliminated-no-pick" ? "Out · No pick" : "Out") : playerResult === "bought-back" ? "Bought back · Through" : playerResult === "survived" ? "Through" : currentPick !== "Not selected" ? (deadline.locked ? "Waiting for result" : "Pick made") : "Awaiting pick"; return `<div class="lms-standings-row ${player.alive ? "through" : "eliminated"}"><span>${index + 1}</span><strong>${this._escape(player.name)}</strong><span><b>${this._escape(throughText)}</b></span><span>${this._escape(currentPick)}</span><span>${this._escape(usedTeams)}</span><span>${player.paid ? (player.buyBacks ? "Paid + buy-back" : "Paid") : "Due"}</span></div>`; }).join("") || `<div class="empty">No players added yet.</div>`}</div></section>` : `
+        <section class="page-card lms-league-switch"><label><span>Choose teams from</span><select id="lms-active-league">${(competition.leagues || []).map((league) => `<option value="${this._escape(league.key)}" ${league.key === selectedLmsLeague ? "selected" : ""}>${this._escape(league.country)} · ${this._escape(league.name)}</option>`).join("")}</select></label>${loadedLmsLeague ? `<strong>${this._escape(teams.length)} teams loaded</strong>` : `<strong class="lms-loading">Loading selected league teams…</strong>`}</section>
+        ${adminUnlocked ? `<section class="page-card lms-add-player"><input id="lms-player-name" maxlength="50" placeholder="Player name"><input id="lms-player-email" type="email" maxlength="120" placeholder="Email (for pick link)"><button id="lms-add-player">Add player</button><button id="lms-settle">Check round results</button></section>` : ""}
+        <section class="lms-player-list">${competition.players.length ? competition.players.map((player) => {
+          const used = new Set(Object.entries(player.picks || {}).filter(([round]) => round !== roundKey).map(([, team]) => team));
+          const pick = player.picks?.[roundKey] || "";
+          const result = player.results?.[roundKey] || "";
+          const groupedOptions = teamGroups.map((league) => `<optgroup label="${this._escape(league.name)} · ${this._escape(league.teams.length)} teams">${league.teams.map((team) => `<option value="${this._escape(team)}" ${pick === team ? "selected" : ""} ${used.has(team) ? "disabled" : ""}>${this._escape(team)}${used.has(team) ? " · used" : ""}</option>`).join("")}</optgroup>`).join("");
+          const pickLocked = deadline.locked || !adminUnlocked;
+          const nextRoundKey = String(Number(competition.round) + 1);
+          const earlyPick = player.picks?.[nextRoundKey] || "";
+          const allUsedTeams = new Set(Object.entries(player.picks || {}).filter(([round]) => round !== nextRoundKey).map(([, team]) => team));
+          const earlyOptions = teamGroups.map((league) => `<optgroup label="${this._escape(league.name)} · ${this._escape(league.teams.length)} teams">${league.teams.map((team) => `<option value="${this._escape(team)}" ${earlyPick === team ? "selected" : ""} ${allUsedTeams.has(team) ? "disabled" : ""}>${this._escape(team)}${allUsedTeams.has(team) ? " · used" : ""}</option>`).join("")}</optgroup>`).join("");
+          const boughtBack = result === "bought-back";
+          const statusClass = !player.alive ? "eliminated" : ["survived", "bought-back"].includes(result) ? "survived" : pick ? (deadline.locked ? "waiting" : "selected") : "awaiting";
+          const statusIcon = statusClass === "eliminated" ? "mdi:close-circle" : ["awaiting", "waiting"].includes(statusClass) ? "mdi:clock-alert-outline" : "mdi:check-circle";
+          const statusText = statusClass === "eliminated" ? "Out" : boughtBack ? "Bought back · Through" : statusClass === "survived" ? "Through" : statusClass === "waiting" ? "Waiting for result · Still in" : statusClass === "selected" ? "Team selected · Still in" : "No team selected · Still in";
+          const canPickEarly = player.alive && ["survived", "bought-back"].includes(result) && !competition.completed;
+          const canBuyBack = this._canLmsBuyBack(player);
+          const email = String(player.email || "");
+          const maskedEmail = email ? email.replace(/^(.{1,2}).*(@.*)$/, "$1*****$2") : "No email added";
+          return `<article class="page-card lms-player ${player.alive ? "alive" : "out"} ${statusClass}"><div class="lms-player-name"><ha-icon icon="${player.alive ? "mdi:shield-check-outline" : "mdi:close-octagon-outline"}"></ha-icon><div><strong>${this._escape(player.name)}</strong><span>Round ${competition.round}</span></div><span class="lms-payment-status ${player.paid ? "paid" : "unpaid"}">${player.paid ? `£ Paid${player.buyBacks ? " + buy-back" : ""}` : "Payment due"}</span>${adminUnlocked ? `<button class="lms-toggle-paid" data-player-id="${this._escape(player.id)}">${player.paid ? "Mark unpaid" : "Mark paid"}</button>` : ""}${adminUnlocked && player.pickUrl ? `<button class="lms-copy-player-link" data-player-id="${this._escape(player.id)}"><ha-icon icon="mdi:email-fast-outline"></ha-icon> Copy pick link</button>` : ""}${adminUnlocked && canBuyBack ? `<button class="lms-buy-back" data-player-id="${this._escape(player.id)}"><ha-icon icon="mdi:account-reactivate-outline"></ha-icon> Buy back £${entryFee.toFixed(2)}</button>` : ""}<span class="lms-pick-status ${statusClass}"><ha-icon icon="${statusIcon}"></ha-icon>${statusText}</span></div>${player.alive ? `<label><span>Round ${competition.round} pick</span><select class="lms-pick" data-player-id="${this._escape(player.id)}" ${pickLocked ? "disabled" : ""}><option value="">${deadline.locked ? "Picks locked" : !adminUnlocked ? "Administrator locked" : "Choose a team"}</option>${groupedOptions}</select></label>` : ""}${canPickEarly ? `<label class="lms-early-pick"><span><ha-icon icon="mdi:fast-forward-outline"></ha-icon> Through — choose Round ${Number(competition.round) + 1} early</span><select class="lms-next-pick" data-player-id="${this._escape(player.id)}" ${!adminUnlocked ? "disabled" : ""}><option value="">${!adminUnlocked ? "Administrator locked" : "Choose next-round team"}</option>${earlyOptions}</select></label>` : ""}<div class="lms-history">${Object.entries(player.picks || {}).map(([round, team]) => `<span>R${this._escape(round)} · ${this._escape(team)} · ${this._escape(player.results?.[round] || (round === nextRoundKey ? "early pick" : "pending"))}</span>`).join("") || `<span>No picks yet</span>`}</div><div class="lms-player-email"><ha-icon icon="mdi:email-lock-outline"></ha-icon><span>${this._escape(adminUnlocked ? (email || "No email added") : maskedEmail)}</span>${adminUnlocked ? `<small>Administrator view</small>` : `<small>Hidden until administrator unlocks</small>`}</div></article>`;
+        }).join("") : `<div class="page-card empty">Add the players taking part in this competition.</div>`}</section>`}
+      `}
+    `;
   }
 
   _supportersPage() {
@@ -834,6 +1563,7 @@ class FootballHubPanel extends HTMLElement {
       ["table", "mdi:table-large", this._t("table")],
       ["players", "mdi:account-star-outline", this._t("players")],
       ["cups", "mdi:trophy-variant-outline", "Cups"],
+      ["last-man-standing", "mdi:account-multiple-check-outline", "LMS"],
       ["news", "mdi:newspaper-variant-outline", "News"],
       ["tv-guide", "mdi:television-guide", "TV Guide"],
       ["transfers", "mdi:swap-horizontal-bold", "Transfers"],
@@ -1718,6 +2448,8 @@ class FootballHubPanel extends HTMLElement {
         return this._myClubPage();
       case "cups":
         return this._cupsPage();
+      case "last-man-standing":
+        return this._lastManStandingPage();
       case "news":
         return this._newsPage();
       case "tv-guide":
@@ -1853,6 +2585,122 @@ class FootballHubPanel extends HTMLElement {
         this._render();
       });
     });
+
+    this.shadowRoot.querySelectorAll("[data-lms-mode]").forEach((button) => {
+      button.addEventListener("click", () => {
+        this._lmsMode = button.dataset.lmsMode;
+        localStorage.setItem("football_hub_lms_mode", this._lmsMode);
+        this._render();
+      });
+    });
+    this.shadowRoot.querySelector("#lms-create")?.addEventListener("click", async () => {
+      const leagues = [...this.shadowRoot.querySelectorAll(".lms-league-check:checked")].map((input) => input.value);
+      await this._createLmsCompetition(
+        this.shadowRoot.querySelector("#lms-name")?.value,
+        leagues,
+        this.shadowRoot.querySelector("#lms-admin-password")?.value,
+        this.shadowRoot.querySelector("#lms-admin-confirm")?.value,
+        this.shadowRoot.querySelector("#lms-entry-fee")?.value,
+      );
+    });
+    this.shadowRoot.querySelectorAll("[data-lms-view]").forEach((button) => {
+      button.addEventListener("click", () => {
+        this._lmsPageView = button.dataset.lmsView;
+        localStorage.setItem("football_hub_lms_page_view", this._lmsPageView);
+        this._render();
+      });
+    });
+    this.shadowRoot.querySelectorAll(".lms-toggle-paid").forEach((button) => {
+      button.addEventListener("click", () => this._toggleLmsPaid(button.dataset.playerId));
+    });
+    this.shadowRoot.querySelectorAll(".lms-buy-back").forEach((button) => {
+      button.addEventListener("click", () => this._buyBackLmsPlayer(button.dataset.playerId));
+    });
+    this.shadowRoot.querySelector("#lms-edit-entry-fee")?.addEventListener("change", (event) => this._setLmsEntryFee(event.target.value));
+    this.shadowRoot.querySelector("#lms-rollover")?.addEventListener("click", () => this._rolloverLmsCompetition());
+    this.shadowRoot.querySelector("#lms-admin-unlock")?.addEventListener("click", async () => {
+      await this._unlockLmsAdmin(this.shadowRoot.querySelector("#lms-admin-unlock-password")?.value);
+    });
+    this.shadowRoot.querySelector("#lms-existing-admin-save")?.addEventListener("click", async () => {
+      await this._setLmsAdminPassword(
+        this.shadowRoot.querySelector("#lms-existing-admin-password")?.value,
+        this.shadowRoot.querySelector("#lms-existing-admin-confirm")?.value,
+      );
+    });
+    this.shadowRoot.querySelector("#lms-admin-unlock-password")?.addEventListener("keydown", async (event) => {
+      if (event.key === "Enter") await this._unlockLmsAdmin(event.target.value);
+    });
+    this.shadowRoot.querySelector("#lms-admin-lock")?.addEventListener("click", () => {
+      this._lmsAdminUnlocked = false;
+      this._render();
+    });
+    this.shadowRoot.querySelector("#lms-add-player")?.addEventListener("click", () => {
+      this._addLmsPlayer(
+        this.shadowRoot.querySelector("#lms-player-name")?.value,
+        this.shadowRoot.querySelector("#lms-player-email")?.value,
+      );
+    });
+    this.shadowRoot.querySelector("#lms-create-share")?.addEventListener("click", () => this._createLmsShare());
+    this.shadowRoot.querySelector("#lms-share-sync")?.addEventListener("click", async () => {
+      await this._pullLmsSharePicks(true);
+      await this._syncLmsShare();
+      window.alert("Competition page updated.");
+    });
+    this.shadowRoot.querySelector("#lms-copy-share")?.addEventListener("click", async () => {
+      if (!this._lmsCompetition?.shareUrl) return;
+      const copied = await this._copyText(this._lmsCompetition.shareUrl);
+      if (copied) window.alert("Competition link copied.");
+      else window.prompt("Copy the competition link:", this._lmsCompetition.shareUrl);
+    });
+    this.shadowRoot.querySelector("#lms-email-service")?.addEventListener("change", (event) => {
+      if (!this._isLmsAdmin() || !this._lmsCompetition) return;
+      this._lmsCompetition.emailNotifyService = event.target.value;
+      this._saveLms();
+      this._render();
+    });
+    this.shadowRoot.querySelector("#lms-email-outstanding")?.addEventListener("click", async () => {
+      if (!window.confirm("Email a private pick-link reminder to every active player who has not selected a team?")) return;
+      const sent = await this._sendLmsOutstandingEmails(false);
+      window.alert(sent ? `Reminder emailed to ${sent} player${sent === 1 ? "" : "s"}.` : "No outstanding players with an email address were found.");
+    });
+    this.shadowRoot.querySelectorAll(".lms-copy-player-link").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const player = this._lmsCompetition?.players?.find((item) => item.id === button.dataset.playerId);
+        if (!player?.pickUrl) return;
+        const copied = await this._copyText(player.pickUrl);
+        if (copied) window.alert(`${player.name}'s private pick link copied.`);
+        else window.prompt(`Copy ${player.name}'s private pick link:`, player.pickUrl);
+      });
+      const player = this._lmsCompetition?.players?.find((item) => item.id === button.dataset.playerId);
+      if (player?.email && player?.pickUrl) {
+        const emailButton = document.createElement("button");
+        emailButton.className = "lms-email-player-link";
+        emailButton.dataset.playerId = player.id;
+        emailButton.disabled = !this._lmsCompetition?.emailNotifyService;
+        emailButton.innerHTML = '<ha-icon icon="mdi:email-send-outline"></ha-icon> Email pick link';
+        emailButton.addEventListener("click", () => this._sendLmsPlayerEmail(player));
+        button.after(emailButton);
+      }
+    });
+    this.shadowRoot.querySelector("#lms-active-league")?.addEventListener("change", (event) => {
+      this._lmsActiveLeague = event.target.value;
+      localStorage.setItem("football_hub_lms_active_league", this._lmsActiveLeague);
+      this._setLeague(this._lmsActiveLeague);
+    });
+    this.shadowRoot.querySelector("#lms-settle")?.addEventListener("click", () => this._settleLmsRound());
+    this.shadowRoot.querySelector("#lms-delete")?.addEventListener("click", () => {
+      if (!this._isLmsAdmin()) return;
+      if (!window.confirm("Delete this Last Man Standing competition?")) return;
+      this._lmsCompetition = null;
+      this._saveLms();
+      this._render();
+    });
+    this.shadowRoot.querySelectorAll(".lms-pick").forEach((select) => {
+      select.addEventListener("change", () => this._setLmsPick(select.dataset.playerId, select.value));
+    });
+    this.shadowRoot.querySelectorAll(".lms-next-pick").forEach((select) => {
+      select.addEventListener("change", () => this._setLmsEarlyPick(select.dataset.playerId, select.value));
+    });
   }
 
   _styles() {
@@ -1879,6 +2727,137 @@ class FootballHubPanel extends HTMLElement {
       }
       .club-profile-head { display:flex; align-items:center; gap:18px; margin-bottom:18px; }
       .club-profile-head h2 { margin:4px 0; }
+      .lms-mode-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-bottom:18px; }
+      .lms-mode { color:inherit; text-align:left; cursor:pointer; display:grid; grid-template-columns:auto 1fr; gap:7px 14px; align-items:center; }
+      .lms-mode ha-icon { grid-row:1/4; --mdc-icon-size:38px; color:var(--fh-cyan); }
+      .lms-mode span { color:var(--secondary-text-color); }
+      .lms-mode em { color:#6fffb0; font-style:normal; font-weight:900; text-transform:uppercase; font-size:.7rem; }
+      .lms-mode.active { border-color:var(--fh-cyan); box-shadow:0 0 22px rgba(0,183,255,.16); }
+      .lms-coming { min-height:340px; }
+      .lms-create, .lms-summary { display:flex; justify-content:space-between; align-items:center; gap:20px; }
+      .lms-create { display:grid; align-items:stretch; }
+      .lms-form, .lms-add-player { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+      .lms-form input, .lms-add-player input { min-width:240px; flex:1; }
+      .lms-fee-input { display:grid; grid-template-columns:auto auto minmax(90px,130px); align-items:center; gap:7px; color:var(--secondary-text-color); }
+      .lms-fee-input input { min-width:90px; width:130px; }
+      .lms-create input, .lms-add-player input, .lms-player select, .lms-admin-unlock input { min-height:44px; border:1px solid var(--fh-border); border-radius:10px; padding:0 13px; color:#fff; background:rgba(1,13,27,.9); }
+      .lms-create button, .lms-add-player button, .lms-summary button { min-height:44px; border:1px solid rgba(0,183,255,.55); border-radius:10px; padding:0 16px; color:#fff; background:rgba(0,126,190,.3); cursor:pointer; font-weight:850; }
+      .lms-summary-stats { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+      .lms-league-heading { display:flex; align-items:end; justify-content:space-between; gap:12px; }
+      .lms-league-heading span { color:var(--secondary-text-color); font-size:.8rem; }
+      .lms-league-groups { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+      .lms-league-groups fieldset { min-width:0; padding:12px; border:1px solid var(--fh-border); border-radius:10px; background:rgba(0,16,34,.46); }
+      .lms-league-groups legend { padding:0 6px; color:var(--fh-cyan); font-weight:900; }
+      .lms-league-groups label { display:flex; align-items:center; gap:9px; padding:7px 4px; color:var(--secondary-text-color); cursor:pointer; }
+      .lms-league-groups input { width:18px; height:18px; accent-color:#22df7c; }
+      .lms-create-button { justify-self:start; }
+      .lms-password-setup { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+      .lms-password-setup label { display:flex; flex-direction:column; gap:6px; color:var(--secondary-text-color); }
+      .lms-password-setup small { grid-column:1/-1; color:#ffc85c; }
+      .lms-admin-unlock { display:grid; grid-template-columns:auto 1fr minmax(220px,360px) auto; align-items:center; gap:14px; margin:14px 0; border-color:rgba(255,196,72,.5); }
+      .lms-admin-unlock > ha-icon { color:#ffc448; --mdc-icon-size:34px; }
+      .lms-admin-unlock div { display:flex; flex-direction:column; gap:4px; }
+      .lms-admin-unlock span { color:var(--secondary-text-color); }
+      .lms-admin-unlock button { min-height:44px; border:1px solid rgba(255,196,72,.55); border-radius:10px; padding:0 18px; color:#fff; background:rgba(180,117,0,.25); font-weight:900; cursor:pointer; }
+      .lms-summary button ha-icon, .lms-admin-status ha-icon { vertical-align:middle; --mdc-icon-size:18px; }
+      .lms-summary-stats span { padding:10px 14px; border:1px solid var(--fh-border); border-radius:10px; }
+      .lms-summary .danger { border-color:rgba(255,77,77,.6); background:rgba(255,77,77,.14); }
+      .lms-prize { display:flex; align-items:center; justify-content:space-between; gap:18px; margin:14px 0; border-color:rgba(73,236,143,.48); background:linear-gradient(100deg,rgba(34,203,112,.14),rgba(2,17,34,.82)); }
+      .lms-prize > div { display:flex; flex-direction:column; gap:3px; }
+      .lms-prize > div > strong { color:#62ffa8; font-size:2rem; }
+      .lms-prize small { color:var(--secondary-text-color); }
+      .lms-prize label { display:grid; grid-template-columns:auto auto 100px; align-items:center; gap:7px; }
+      .lms-prize input { min-height:42px; min-width:0; width:100px; border:1px solid var(--fh-border); border-radius:9px; padding:0 10px; color:#fff; background:rgba(1,13,27,.9); }
+      .lms-prize button { min-height:44px; border:1px solid rgba(73,236,143,.5); border-radius:10px; padding:0 15px; color:#fff; background:rgba(34,203,112,.16); font-weight:900; cursor:pointer; }
+      .lms-share { display:flex; align-items:center; gap:16px; margin:14px 0; border-color:rgba(0,183,255,.45); }
+      .lms-share > ha-icon { --mdc-icon-size:38px; color:var(--fh-cyan); }
+      .lms-share > div { display:grid; gap:4px; flex:1; min-width:0; }
+      .lms-share small { color:var(--secondary-text-color); }
+      .lms-share a { color:#62ffa8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+      .lms-share button, .lms-copy-player-link { min-height:42px; border:1px solid rgba(0,183,255,.52); border-radius:10px; padding:0 13px; color:#fff; background:rgba(0,126,190,.24); font-weight:900; cursor:pointer; }
+      .lms-share button:disabled { opacity:.45; cursor:not-allowed; }
+      .lms-email { display:flex; align-items:center; gap:16px; margin:14px 0; border-color:rgba(73,236,143,.42); }
+      .lms-email > ha-icon { --mdc-icon-size:38px; color:#62ffa8; }
+      .lms-email > div { display:grid; gap:4px; flex:1; min-width:220px; }
+      .lms-email small { color:var(--secondary-text-color); }
+      .lms-email label { display:grid; gap:5px; min-width:280px; }
+      .lms-email select { min-height:42px; border:1px solid var(--fh-border); border-radius:10px; padding:0 10px; color:#fff; background:rgba(1,13,27,.9); }
+      .lms-email button, .lms-email-player-link { min-height:42px; border:1px solid rgba(73,236,143,.52); border-radius:10px; padding:0 13px; color:#fff; background:rgba(34,203,112,.16); font-weight:900; cursor:pointer; }
+      .lms-email button:disabled, .lms-email-player-link:disabled { opacity:.45; cursor:not-allowed; }
+      .lms-winner { display:flex; align-items:center; gap:18px; margin:14px 0; border-color:rgba(255,207,56,.65); background:linear-gradient(100deg,rgba(255,191,26,.2),rgba(2,17,34,.82)); }
+      .lms-winner > ha-icon { color:#ffd34e; --mdc-icon-size:52px; }
+      .lms-winner h2, .lms-winner p { margin:4px 0; }
+      .lms-rules { display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin:14px 0; }
+      .lms-rules span { padding:7px 10px; border-radius:999px; background:rgba(49,233,129,.08); color:var(--secondary-text-color); }
+      .lms-deadline { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:16px; margin:14px 0; border-color:rgba(255,196,72,.55); background:linear-gradient(100deg,rgba(255,164,35,.15),rgba(2,17,34,.82)); }
+      .lms-deadline ha-icon { color:#ffc448; --mdc-icon-size:34px; }
+      .lms-deadline div { display:flex; flex-direction:column; gap:4px; }
+      .lms-deadline strong { font-size:1rem; }
+      .lms-deadline small { color:var(--secondary-text-color); }
+      .lms-deadline > b { color:#ffc448; font-size:1.15rem; letter-spacing:.04em; text-align:right; }
+      .lms-deadline.locked { border-color:rgba(255,77,77,.62); background:linear-gradient(100deg,rgba(255,55,65,.17),rgba(2,17,34,.86)); }
+      .lms-deadline.locked ha-icon, .lms-deadline.locked > b { color:#ff626c; }
+      .lms-league-switch { display:flex; align-items:end; justify-content:space-between; gap:16px; margin-bottom:14px; }
+      .lms-league-switch label { display:flex; min-width:min(460px,100%); flex-direction:column; gap:6px; }
+      .lms-league-switch select { min-height:44px; border:1px solid var(--fh-border); border-radius:10px; padding:0 13px; color:#fff; background:rgba(1,13,27,.9); }
+      .lms-page-tabs { display:flex; gap:10px; margin:14px 0; }
+      .lms-page-tabs button { display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:0 16px; border:1px solid var(--fh-border); border-radius:10px; color:var(--secondary-text-color); background:rgba(1,13,27,.72); font-weight:900; cursor:pointer; }
+      .lms-page-tabs button.active { color:#fff; border-color:var(--fh-cyan); background:rgba(0,126,190,.28); box-shadow:0 0 18px rgba(0,183,255,.12); }
+      .lms-page-tabs b { min-width:24px; padding:3px 7px; border-radius:999px; background:rgba(255,255,255,.1); }
+      .lms-round-fixtures { display:grid; gap:14px; }
+      .lms-round-league { padding:0; overflow:hidden; }
+      .lms-round-league > header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:15px 18px; border-bottom:1px solid var(--fh-border); background:rgba(0,93,158,.14); }
+      .lms-round-league h3 { margin:3px 0 0; }
+      .lms-round-league > header > b { color:#62ffa8; }
+      .lms-round-match { display:grid; grid-template-columns:minmax(0,1fr) 35px minmax(0,1fr) minmax(150px,190px); align-items:center; gap:12px; min-height:58px; padding:8px 18px; border-bottom:1px solid rgba(255,255,255,.08); }
+      .lms-round-match:last-child { border-bottom:0; }
+      .lms-round-match > span { display:flex; align-items:center; gap:9px; font-weight:850; }
+      .lms-round-match .home { justify-content:flex-end; text-align:right; }
+      .lms-round-match .away { justify-content:flex-start; }
+      .lms-round-match > strong { color:var(--fh-cyan); text-align:center; }
+      .lms-round-match.has-score > strong { color:#62ffa8; font-size:1.05rem; }
+      .lms-round-match time { color:var(--secondary-text-color); text-align:right; }
+      .lms-standings { padding:0; overflow:hidden; }
+      .lms-standings > header { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:18px; border-bottom:1px solid var(--fh-border); }
+      .lms-standings h2 { margin:4px 0 0; }
+      .lms-standings > header > b { color:#62ffa8; }
+      .lms-standings-table { overflow-x:auto; }
+      .lms-standings-row { display:grid; grid-template-columns:45px minmax(140px,1fr) minmax(120px,.8fr) minmax(150px,1fr) minmax(260px,2fr) 75px; align-items:center; gap:12px; min-width:900px; padding:13px 18px; border-bottom:1px solid rgba(255,255,255,.08); }
+      .lms-standings-row.heading { color:var(--secondary-text-color); font-size:.72rem; font-weight:900; text-transform:uppercase; background:rgba(0,93,158,.12); }
+      .lms-standings-row.through > span:nth-child(3) b { color:#62ffa8; }
+      .lms-standings-row.eliminated { opacity:.68; background:rgba(255,55,65,.05); }
+      .lms-standings-row.eliminated > span:nth-child(3) b { color:#ff7078; }
+      .lms-loading { color:#ffc85c; }
+      .lms-player-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:16px; }
+      .lms-player { display:grid; gap:14px; }
+      .lms-player.out { opacity:.62; border-color:rgba(255,77,77,.35); }
+      .lms-player-name { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+      .lms-player-name > div { flex:1; min-width:0; }
+      .lms-player-name ha-icon { color:#54f5a0; --mdc-icon-size:32px; }
+      .lms-player.out .lms-player-name ha-icon { color:#ff5b65; }
+      .lms-player-name div, .lms-player label { display:flex; flex-direction:column; gap:5px; }
+      .lms-player-name span, .lms-player label span, .lms-history { color:var(--secondary-text-color); font-size:.78rem; }
+      .lms-pick-status { display:inline-flex !important; flex:0 0 auto; flex-direction:row !important; align-items:center; gap:6px; padding:7px 10px; border:1px solid; border-radius:999px; font-weight:900; white-space:nowrap; }
+      .lms-pick-status ha-icon { --mdc-icon-size:17px; }
+      .lms-pick-status.selected, .lms-pick-status.survived { color:#5dffa6; border-color:rgba(63,242,142,.5); background:rgba(31,203,108,.12); }
+      .lms-pick-status.awaiting, .lms-pick-status.waiting { color:#ffc85c; border-color:rgba(255,196,72,.5); background:rgba(255,164,35,.12); }
+      .lms-pick-status.eliminated { color:#ff7078; border-color:rgba(255,77,77,.5); background:rgba(255,55,65,.12); }
+      .lms-payment-status { padding:6px 9px; border:1px solid; border-radius:999px; font-size:.72rem !important; font-weight:900; white-space:nowrap; }
+      .lms-payment-status.paid { color:#62ffa8; border-color:rgba(63,242,142,.45); background:rgba(31,203,108,.1); }
+      .lms-payment-status.unpaid { color:#ffc85c; border-color:rgba(255,196,72,.45); background:rgba(255,164,35,.1); }
+      .lms-toggle-paid { min-height:32px; border:1px solid var(--fh-border); border-radius:8px; padding:0 9px; color:#fff; background:rgba(255,255,255,.06); cursor:pointer; }
+      .lms-buy-back { display:inline-flex; align-items:center; gap:6px; min-height:34px; border:1px solid rgba(255,196,72,.58); border-radius:8px; padding:0 10px; color:#ffd06a; background:rgba(255,164,35,.13); font-weight:900; cursor:pointer; }
+      .lms-buy-back ha-icon { --mdc-icon-size:18px; }
+      .lms-early-pick { padding:12px; border:1px solid rgba(63,242,142,.48); border-radius:10px; background:rgba(31,203,108,.09); }
+      .lms-early-pick > span { display:flex; align-items:center; gap:7px; color:#62ffa8 !important; font-weight:900; }
+      .lms-early-pick ha-icon { --mdc-icon-size:18px; }
+      .lms-picked-total { border-color:rgba(63,242,142,.45) !important; }
+      .lms-history { display:flex; flex-wrap:wrap; gap:6px; }
+      .lms-history span { padding:6px 8px; border:1px solid var(--fh-border); border-radius:8px; }
+      .lms-player-email { display:flex; align-items:center; gap:8px; margin-top:auto; padding-top:12px; border-top:1px solid var(--fh-border); color:var(--secondary-text-color); font-size:.78rem; min-width:0; }
+      .lms-player-email ha-icon { flex:0 0 auto; color:#2fdcff; --mdc-icon-size:18px; }
+      .lms-player-email span { min-width:0; overflow-wrap:anywhere; }
+      .lms-player-email small { margin-left:auto; color:#62ffa8; white-space:nowrap; }
 
       .news-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
       .news-card { padding:0; overflow:hidden; color:inherit; text-decoration:none; min-width:0; }
@@ -3236,6 +4215,19 @@ class FootballHubPanel extends HTMLElement {
         .compact-fixtures > div { grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr); padding-right:4px; padding-bottom:30px; }
         .compact-fixtures time { right:auto; bottom:6px; left:4px; width:auto; text-align:left; }
         .nav-live-dot { margin-left:2px; }
+        .lms-mode-grid, .lms-player-list { grid-template-columns:1fr; }
+        .lms-league-groups { grid-template-columns:1fr; }
+        .lms-create, .lms-summary { align-items:stretch; flex-direction:column; }
+        .lms-form, .lms-add-player { align-items:stretch; flex-direction:column; }
+        .lms-prize, .lms-share, .lms-email { align-items:stretch; flex-direction:column; }
+        .lms-page-tabs { flex-direction:column; }
+        .lms-round-match { grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr); padding:10px; }
+        .lms-round-match time { grid-column:1/-1; text-align:center; }
+        .lms-password-setup { grid-template-columns:1fr; }
+        .lms-password-setup small { grid-column:auto; }
+        .lms-admin-unlock { grid-template-columns:1fr; align-items:stretch; }
+        .lms-league-switch { align-items:stretch; flex-direction:column; }
+        .lms-form input, .lms-add-player input { min-width:0; width:100%; }
       }
     `;
   }
