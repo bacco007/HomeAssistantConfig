@@ -1,0 +1,220 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ADSB Aircraft Tracker Setup",
+        "description": "Connect to your ADSB feeder to track aircraft in real-time. This integration works with dump1090, tar1090, and compatible feeders on your network.\n\n**Quick Setup:** Most users can simply enter their ADSB feeder's IP address and use the defaults.",
+        "data": {
+          "adsb_host": "ADSB Feeder IP Address",
+          "adsb_port": "Port Number",
+          "update_interval": "Update Frequency (seconds)",
+          "distance_limit": "Aircraft Range Filter (miles/km)"
+        },
+        "data_description": {
+          "adsb_host": "IP address of your ADSB feeder (e.g., 192.168.1.100). Find this in your feeder's web interface or network settings.",
+          "adsb_port": "Port number where your feeder serves aircraft data. Default is 8085 for tar1090. Check your feeder's configuration if unsure.",
+          "update_interval": "How often to refresh aircraft data. Recommended: 10 seconds (range: 5-300). Lower values = more real-time data but higher system load.",
+          "distance_limit": "Maximum distance to track aircraft. Units (miles/kilometers) depend on your Home Assistant unit system. Set to 0 for unlimited range (tracks all aircraft your feeder can see). Typical range: 50-200 miles or 80-320 km depending on your antenna setup."
+        }
+      },
+      "summary": {
+        "title": "Setup Complete!",
+        "description": "{summary_text}\n\nYour ADSB feeder connection has been validated successfully. You can now choose to configure notifications or finish the basic setup.",
+        "data": {
+          "setup_choice": "Choose Your Next Step"
+        }
+      },
+      "notifications": {
+        "title": "Configure Key Notifications",
+        "description": "Set up the most important alerts for your ADSB tracker. You can configure additional settings later in the integration options.",
+        "data": {
+          "notification_device": "📱 Mobile Device for Alerts",
+          "external_url": "🗺️ External ADSB Website",
+          "military_notifications": "🪖 Military Aircraft Alerts",
+          "emergency_notifications": "🚨 Emergency Squawk Alerts",
+          "close_aircraft_enabled": "✈️ Close Aircraft Alerts"
+        },
+        "data_description": {
+          "notification_device": "Select your mobile device to receive aircraft alerts. Leave empty to disable notifications. Only shows devices with the Home Assistant mobile app installed.",
+          "external_url": "Website URL to open when tapping notification alerts. Default uses your local ADSB feeder. Popular options: https://globe.adsb.fi or https://tar1090.adsbexchange.com for global aircraft tracking.",
+          "military_notifications": "Get notified when military aircraft are detected nearby. Uses verified database with 16,000+ confirmed military aircraft to prevent false positives. Perfect for aviation enthusiasts and plane spotters.",
+          "emergency_notifications": "Receive immediate alerts for aviation emergency codes: 7700 (general emergency), 7600 (radio failure), 7500 (hijack). These are critical aviation safety signals that are rare but important to monitor.",
+          "close_aircraft_enabled": "Receive alerts when aircraft pass very close overhead or at low altitude. Great for spotting interesting aircraft in your immediate area and monitoring air traffic patterns."
+        }
+      }
+    },
+    "error": {
+      "connection_refused": "Connection refused by your feeder. The host was reached but nothing is listening on that port. Verify your ADSB feeder is running and the port number is correct.",
+      "timeout": "Connection timed out. The host may be unreachable from Home Assistant. Verify the IP address is correct and try opening http://YOUR_IP:PORT/data/aircraft.json in your browser.",
+      "cannot_resolve": "Could not resolve hostname. Check for typos in the address.",
+      "cannot_connect": "Could not connect to ADSB source. Check that the IP address and port are correct and that your feeder is reachable from Home Assistant.",
+      "invalid_host": "Connected to the host but received an unexpected response. This may not be an ADSB feeder, or the port may be serving a different application.",
+      "invalid_adsb_data": "Connected successfully but the response doesn't contain valid ADSB data. Ensure your feeder is dump1090/tar1090 compatible.",
+      "unknown": "Unexpected error occurred."
+    },
+    "abort": {
+      "already_configured": "This ADSB source is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ADSB Aircraft Tracker Settings",
+        "description": "Fine-tune your aircraft tracking experience. Currently connected to: **{current_host}:{current_port}**\n\n💡 Tip: Changes apply immediately without restarting Home Assistant.",
+        "data": {
+          "config_area": "Configuration Area"
+        }
+      },
+      "basic_settings": {
+        "title": "Basic Connection & Data Settings",
+        "description": "Configure how often data is updated and the tracking range for your ADSB feeder.\n\n💡 **Tip:** Lower update intervals provide more real-time data but use more system resources.",
+        "data": {
+          "update_interval": "⏱️ Data Refresh Rate (seconds)",
+          "distance_limit": "📍 Aircraft Range Limit"
+        },
+        "data_description": {
+          "update_interval": "How frequently to refresh aircraft data, in seconds. Recommended: 10 seconds for balance of real-time data vs system performance. Range: 5-300 seconds.",
+          "distance_limit": "Maximum tracking range. Units (miles/kilometers) depend on your Home Assistant unit system. Set to 0 for unlimited (all aircraft your feeder detects). Typical range: 50-200 miles or 80-320 km depending on your antenna setup."
+        }
+      },
+      "notifications_settings": {
+        "title": "Notifications & Alert Settings",
+        "description": "Configure aircraft alerts and notifications. Fine-tune which events trigger notifications and how they're delivered.\n\n🔔 **Note:** You need the Home Assistant mobile app installed to receive notifications.",
+        "data": {
+          "notification_device": "📱 Mobile Device for Alerts",
+          "external_url": "🗺️ External ADSB Website",
+          "military_notifications": "🪖 Military Aircraft Alerts",
+          "close_aircraft_enabled": "✈️ Close Aircraft Alerts",
+          "close_aircraft_distance": "📏 Alert Distance Threshold",
+          "close_aircraft_altitude": "📐 Alert Altitude Threshold",
+          "emergency_notifications": "🚨 Emergency Squawk Alerts"
+        },
+        "data_description": {
+          "notification_device": "Select your mobile device to receive aircraft alerts. Leave empty to disable notifications. Only shows devices with the Home Assistant mobile app installed.",
+          "external_url": "Website URL to open when tapping notification alerts. Default uses your local ADSB feeder. Popular options: https://globe.adsb.fi or https://tar1090.adsbexchange.com for global aircraft tracking.",
+          "military_notifications": "Get notified when military aircraft are detected nearby. Uses verified database with 16,000+ confirmed military aircraft to prevent false positives. Perfect for aviation enthusiasts and plane spotters.",
+          "close_aircraft_enabled": "Receive alerts when aircraft pass very close overhead or at low altitude. Great for spotting interesting aircraft in your immediate area and monitoring air traffic patterns.",
+          "close_aircraft_distance": "Maximum distance for close aircraft notifications. Aircraft within this range (and below altitude threshold) will trigger alerts. Units match your Home Assistant system setting.",
+          "close_aircraft_altitude": "Maximum altitude for close aircraft notifications, in feet. Aircraft flying lower than this height will trigger alerts if also within distance range. Recommended: 1000-5000 feet.",
+          "emergency_notifications": "Receive immediate alerts for aviation emergency codes: 7700 (general emergency), 7600 (radio failure), 7500 (hijack). These are critical aviation safety signals that are rare but important to monitor."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "total_aircraft_tracked": {
+        "name": "Total Aircraft Tracked"
+      },
+      "aircraft_in_range": {
+        "name": "Aircraft in Range"
+      },
+      "closest_aircraft": {
+        "name": "Closest Aircraft"
+      },
+      "military_aircraft": {
+        "name": "Military Aircraft"
+      },
+      "emergency_aircraft": {
+        "name": "Emergency Aircraft"
+      },
+      "tracked_entities": {
+        "name": "Tracked Entities"
+      },
+      "feeder_status": {
+        "name": "Feeder Status"
+      },
+      "closest_aircraft_distance": {
+        "name": "Closest Aircraft Distance"
+      },
+      "closest_aircraft_altitude": {
+        "name": "Closest Aircraft Altitude"
+      },
+      "closest_aircraft_heading": {
+        "name": "Closest Aircraft Heading"
+      },
+      "closest_aircraft_speed": {
+        "name": "Closest Aircraft Speed"
+      },
+      "closest_aircraft_type": {
+        "name": "Closest Aircraft Type"
+      },
+      "closest_aircraft_registration": {
+        "name": "Closest Aircraft Registration"
+      },
+      "closest_aircraft_last_seen": {
+        "name": "Closest Aircraft Last Seen"
+      },
+      "high_altitude_aircraft": {
+        "name": "High Altitude Aircraft"
+      },
+      "low_altitude_aircraft": {
+        "name": "Low Altitude Aircraft"
+      },
+      "helicopters": {
+        "name": "Helicopters"
+      },
+      "general_aviation": {
+        "name": "General Aviation"
+      },
+      "commercial_aircraft": {
+        "name": "Commercial Aircraft"
+      },
+      "average_altitude": {
+        "name": "Average Altitude"
+      },
+      "max_range_detected": {
+        "name": "Max Range Detected"
+      },
+      "aircraft_with_squawk": {
+        "name": "Aircraft with Squawk"
+      },
+      "identified_aircraft": {
+        "name": "Identified Aircraft"
+      },
+      "unidentified_aircraft": {
+        "name": "Unidentified Aircraft"
+      },
+      "database_aircraft_types": {
+        "name": "Database Aircraft Types"
+      },
+      "last_data_update": {
+        "name": "Last Data Update"
+      }
+    },
+    "binary_sensor": {
+      "military_aircraft_detected": {
+        "name": "Military Aircraft Detected"
+      },
+      "emergency_squawk_detected": {
+        "name": "Emergency Squawk Detected"
+      },
+      "close_aircraft_detected": {
+        "name": "Close Aircraft Detected"
+      },
+      "feeder_connected": {
+        "name": "Feeder Connected"
+      }
+    }
+  },
+  "services": {
+    "refresh_data": {
+      "name": "Refresh Data",
+      "description": "Manually refresh aircraft data from the ADSB feeder"
+    },
+    "send_test_notification": {
+      "name": "Send Test Notification",
+      "description": "Send a test notification to verify your device setup",
+      "fields": {
+        "message": {
+          "name": "Message",
+          "description": "Custom test message to send (optional)"
+        }
+      }
+    },
+    "install_sentences": {
+      "name": "Install Voice Sentences",
+      "description": "Install custom sentence triggers for aircraft voice queries. Restart Home Assistant after running for sentences to take effect."
+    }
+  }
+}

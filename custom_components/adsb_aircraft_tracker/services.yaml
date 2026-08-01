@@ -1,0 +1,37 @@
+refresh_data:
+  name: Refresh ADSB Data
+  description: Manually refresh aircraft data from ADSB source
+
+test_military_detection:
+  name: Test Military Detection
+  description: Test military aircraft detection logic with current data
+  response:
+    optional: true
+
+get_aircraft_details:
+  name: Get Aircraft Details
+  description: Get detailed information about a specific aircraft by hex code
+  fields:
+    hex_code:
+      name: Aircraft Hex Code
+      description: ICAO hex identifier of the aircraft
+      required: true
+      selector:
+        text:
+  response:
+    optional: true
+
+load_military_database:
+  name: Load Military Database
+  description: Manually load the military aircraft database from tar1090-db
+  response:
+    optional: true
+
+install_sentences:
+  name: Install Voice Sentences
+  description: >
+    Write the custom sentences YAML file to config/custom_sentences/en/ so
+    Home Assistant Assist can recognize aircraft queries like "what plane is that?"
+    Restart Home Assistant after running this service for sentences to take effect.
+  response:
+    optional: true

@@ -1,0 +1,76 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ADSB Aircraft Tracker Setup",
+        "description": "Connect to your ADSB feeder to track aircraft in real-time. This integration works with dump1090, tar1090, and compatible feeders on your network.\n\n**Quick Setup:** Most users can simply enter their ADSB feeder's IP address and use the defaults.",
+        "data": {
+          "adsb_host": "ADSB Feeder IP Address",
+          "adsb_port": "Port Number",
+          "update_interval": "Update Frequency (seconds)",
+          "distance_limit": "Aircraft Range Filter (miles/km)"
+        },
+        "data_description": {
+          "adsb_host": "IP address of your ADSB feeder (e.g., 192.168.1.100). Find this in your feeder's web interface or network settings.",
+          "adsb_port": "Port number where your feeder serves aircraft data. Default is 8085 for tar1090. Check your feeder's configuration if unsure.",
+          "update_interval": "How often to refresh aircraft data. Recommended: 10 seconds (range: 5-300). Lower values = more real-time data but higher system load.",
+          "distance_limit": "Maximum distance to track aircraft. Units (miles/kilometers) depend on your Home Assistant unit system. Set to 0 for unlimited range (tracks all aircraft your feeder can see). Typical range: 50-200 miles or 80-320 km depending on your antenna setup."
+        }
+      },
+      "summary": {
+        "title": "Setup Complete!",
+        "description": "{summary_text}\n\nYour ADSB feeder connection has been validated successfully. You can now choose to configure notifications or finish the basic setup.",
+        "data": {
+          "setup_choice": "Choose Your Next Step"
+        }
+      },
+      "notifications": {
+        "title": "Configure Key Notifications",
+        "description": "Set up the most important alerts for your ADSB tracker. You can configure additional settings later in the integration options.",
+        "data": {
+          "notification_device": "📱 Mobile Device for Alerts",
+          "external_url": "🗺️ External ADSB Website",
+          "military_notifications": "🪖 Military Aircraft Alerts",
+          "emergency_notifications": "🚨 Emergency Squawk Alerts",
+          "close_aircraft_enabled": "✈️ Close Aircraft Alerts"
+        },
+        "data_description": {
+          "notification_device": "Select your mobile device to receive aircraft alerts. Leave empty to disable notifications. Only shows devices with the Home Assistant mobile app installed.",
+          "external_url": "Website URL to open when tapping notification alerts. Default uses your local ADSB feeder. Popular options: https://globe.adsb.fi or https://tar1090.adsbexchange.com for global aircraft tracking.",
+          "military_notifications": "Get notified when military aircraft are detected nearby. Uses verified database with 16,000+ confirmed military aircraft to prevent false positives. Perfect for aviation enthusiasts and plane spotters.",
+          "emergency_notifications": "Receive immediate alerts for aviation emergency codes: 7700 (general emergency), 7600 (radio failure), 7500 (hijack). These are critical aviation safety signals that are rare but important to monitor.",
+          "close_aircraft_enabled": "Receive alerts when aircraft pass very close overhead or at low altitude. Great for spotting interesting aircraft in your immediate area and monitoring air traffic patterns."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to ADSB source. Check host and port.",
+      "invalid_host": "Invalid host or port configuration.",
+      "invalid_adsb_data": "Invalid ADSB data format. Ensure your feeder is compatible.",
+      "unknown": "Unexpected error occurred."
+    },
+    "abort": {
+      "already_configured": "This ADSB source is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ADSB Aircraft Tracker - Advanced Options",
+        "description": "Fine-tune your aircraft tracking experience. Currently connected to: **{current_host}:{current_port}**\n\n💡 **Tip:** Changes apply immediately without restarting Home Assistant.",
+        "data": {
+          "update_interval": "Data Refresh Rate",
+          "distance_limit": "Aircraft Range Limit",
+          "notification_device": "📱 Mobile Device for Alerts",
+          "external_url": "🗺️ External ADSB Website"
+        },
+        "data_description": {
+          "update_interval": "How frequently to refresh aircraft data, in seconds. Current: every {update_interval}s. Recommended: 10 seconds for balance of real-time data vs system performance.",
+          "distance_limit": "Maximum tracking range. Units (miles/kilometers) depend on your Home Assistant unit system. Set to 0 for unlimited (all aircraft your feeder detects). Current range captures aircraft within your feeder's coverage area.",
+          "notification_device": "Select your mobile device to receive aircraft alerts. Leave empty to disable notifications. Only shows devices with the Home Assistant mobile app installed.",
+          "external_url": "Website URL to open when tapping notification alerts. Default uses your local ADSB feeder. Popular option: https://adsb.hook.technology or similar public ADSB site."
+        }
+      }
+    }
+  }
+}
