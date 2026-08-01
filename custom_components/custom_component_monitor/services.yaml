@@ -45,3 +45,38 @@ update_all:
         entity:
           domain: update
           multiple: true
+
+generate_summaries:
+  name: "Generate AI summaries"
+  description: >-
+    Generate the missing AI summaries and categories for pending HACS updates.
+    Only updates that don't already have a summary are sent to the AI, unless
+    "Force" is enabled. Requires AI summaries to be enabled in the integration
+    options.
+  fields:
+    entity_ids:
+      name: "Limit to entities"
+      description: >-
+        Only summarise these update entities. If omitted, every pending update
+        that is missing a summary is processed. The card's "Generate summaries"
+        button passes the currently-shown set here.
+      selector:
+        entity:
+          domain: update
+          multiple: true
+    force:
+      name: "Force"
+      description: >-
+        Regenerate even when a summary already exists, and ignore the retry
+        backoff after previous failures. Costs one AI call per update.
+      default: false
+      selector:
+        boolean:
+    max_items:
+      name: "Maximum updates"
+      description: Stop after this many AI calls. Omit for no limit.
+      selector:
+        number:
+          min: 1
+          max: 100
+          mode: box

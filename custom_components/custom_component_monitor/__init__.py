@@ -13,13 +13,15 @@ import voluptuous as vol
 from homeassistant.components.todo import TodoItem, TodoItemStatus
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.core import HomeAssistant, ServiceCall, SupportsResponse
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.typing import ConfigType
 import homeassistant.helpers.config_validation as cv
 
 from .const import (
     DOMAIN,
+    SERVICE_GENERATE_SUMMARIES,
     SERVICE_UPDATE_AND_ACTION,
     SERVICE_UPDATE_ALL,
     UAT_CARD_JS,
@@ -41,6 +43,14 @@ SERVICE_UPDATE_AND_ACTION_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_id,
         vol.Optional("version"): cv.string,
+    }
+)
+
+SERVICE_GENERATE_SUMMARIES_SCHEMA = vol.Schema(
+    {
+        vol.Optional("entity_ids", default=[]): cv.ensure_list,
+        vol.Optional("force", default=False): cv.boolean,
+        vol.Optional("max_items"): vol.All(vol.Coerce(int), vol.Range(min=1, max=100)),
     }
 )
 
@@ -290,11 +300,51 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             ),
         )
 
+    # --- generate_summaries service: fill in any missing AI summaries (#91) ---
+    if not hass.services.has_service(DOMAIN, SERVICE_GENERATE_SUMMARIES):
+
+        async def handle_generate_summaries(call: ServiceCall) -> dict[str, int]:
+            coordinator = hass.data[DOMAIN].get("coordinator")
+            if coordinator is None:
+                raise HomeAssistantError(
+                    "Custom Component Monitor is still starting up — no scan "
+                    "coordinator is available yet."
+                )
+            if not coordinator.ai_enabled:
+                raise HomeAssistantError(
+                    "AI summaries are switched off. Enable them in the Custom "
+                    "Component Monitor options and pick an AI Task or "
+                    "conversation entity first."
+                )
+            entity_ids = set(call.data.get("entity_ids") or [])
+            # The card renders live update.* entities, so it can legitimately
+            # know about an update the last hourly scan didn't. Re-scan rather
+            # than shrug (#91).
+            if entity_ids and not entity_ids <= coordinator.known_update_entity_ids():
+                await coordinator.async_refresh()
+            return await coordinator.async_generate_summaries(
+                entity_ids=entity_ids or None,
+                force=call.data.get("force", False),
+                limit=call.data.get("max_items"),
+            )
+
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_GENERATE_SUMMARIES,
+            handle_generate_summaries,
+            schema=SERVICE_GENERATE_SUMMARIES_SCHEMA,
+            supports_response=SupportsResponse.OPTIONAL,
+        )
+
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
+    coordinator = hass.data.get(DOMAIN, {}).get("coordinator")
+    if coordinator is not None:
+        coordinator.async_cancel_ai_run()
+
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id, None)
@@ -306,4 +356,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             hass.services.async_remove(DOMAIN, SERVICE_UPDATE_AND_ACTION)
         if hass.services.has_service(DOMAIN, SERVICE_UPDATE_ALL):
             hass.services.async_remove(DOMAIN, SERVICE_UPDATE_ALL)
+        if hass.services.has_service(DOMAIN, SERVICE_GENERATE_SUMMARIES):
+            hass.services.async_remove(DOMAIN, SERVICE_GENERATE_SUMMARIES)
     return unload_ok

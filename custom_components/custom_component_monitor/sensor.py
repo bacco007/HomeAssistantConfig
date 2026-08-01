@@ -8,7 +8,7 @@ import re
 import yaml
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 from homeassistant.components.sensor import (
     SensorEntity,
@@ -29,13 +29,26 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.util import dt as dt_util
 
 from .const import (
+    AI_CACHE_MAX_AGE_DAYS,
+    AI_CACHE_MAX_ENTRIES,
     AI_CACHE_STORAGE_KEY,
+    AI_CACHE_STORAGE_VERSION,
     AI_CALL_TIMEOUT,
     AI_CATEGORY_ALIASES,
     AI_CATEGORY_OPTIONS,
+    AI_FAILURE_BACKOFF_MINUTES,
+    AI_MAX_ATTEMPTS,
+    AI_MAX_PER_SCAN,
+    ATTR_AI_ENABLED,
+    ATTR_AI_IN_PROGRESS,
+    ATTR_AI_LAST_ERROR,
+    ATTR_AI_LAST_RUN,
+    ATTR_AI_PENDING,
     ATTR_CATEGORIES,
     ATTR_COMPONENTS,
+    ATTR_ENTITY_ID,
     ATTR_EXCLUDED_COMPONENTS,
+    ATTR_INSTALL_DATES_SINCE,
     ATTR_SUMMARY,
     ATTR_TOTAL_COMPONENTS,
     ATTR_UNUSED_COMPONENTS,
@@ -52,8 +65,8 @@ from .const import (
     SENSOR_UNUSED_FRONTEND,
     SENSOR_UNUSED_INTEGRATIONS,
     SENSOR_UNUSED_THEMES,
-    STORAGE_VERSION,
 )
+from .install_dates import InstallDateRegistry
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -61,18 +74,82 @@ SCAN_INTERVAL = timedelta(seconds=DEFAULT_SCAN_INTERVAL)
 
 
 # ---------------------------------------------------------------------------
+# Matching helpers — shared by the scanner, the coordinator and the card
+# ---------------------------------------------------------------------------
+
+
+def norm_name(value: Any) -> str:
+    """Normalise an update name for matching (drop ' update', punctuation)."""
+    text = re.sub(r"\s+update$", "", str(value or ""), flags=re.IGNORECASE)
+    return re.sub(r"[^a-z0-9]+", "", text.lower())
+
+
+def norm_version(value: Any) -> str:
+    """Normalise a version string (strip a leading 'v', lower-case)."""
+    return re.sub(r"^v", "", str(value or "").strip().lower())
+
+
+def repo_key(url: Any) -> str:
+    """Return ``owner/repo`` from a GitHub URL, lower-cased.
+
+    Mirrors ``_repoKey`` in the cards so the backend and the frontend key the
+    same update the same way — a release URL and a repository URL both reduce
+    to the same identity (#91).
+    """
+    match = re.search(
+        r"github\.com/([^/]+/[^/#?]+)", str(url or ""), flags=re.IGNORECASE
+    )
+    return re.sub(r"\.git$", "", match.group(1).lower()) if match else ""
+
+
+class AiCacheStore(Store):
+    """The AI summary cache store, with its v1 -> v2 migration (#91).
+
+    v1 was a flat ``{name|version: {categories, summary}}`` dict. v2 keys on
+    repo identity and carries retry bookkeeping, so the old rows are parked
+    under ``legacy`` and promoted lazily as each update is next looked up —
+    nobody pays twice for a summary they already have.
+    """
+
+    async def _async_migrate_func(
+        self, old_major_version: int, old_minor_version: int, old_data: dict[str, Any]
+    ) -> dict[str, Any]:
+        if old_major_version == 1:
+            return {"entries": {}, "legacy": old_data or {}}
+        return old_data
+
+
+# ---------------------------------------------------------------------------
 # ComponentScanner — reads HACS data and enriches it
 # ---------------------------------------------------------------------------
+
+
+class InstallInfo(NamedTuple):
+    """Where a component lives on disk and how long it has been installed."""
+
+    path: Path | None
+    days: int | None
+    estimated: bool
 
 
 class ComponentScanner:
     """Scanner for HACS-installed custom components."""
 
-    def __init__(self, hass: HomeAssistant) -> None:
-        """Initialize the scanner."""
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        install_dates: InstallDateRegistry | None = None,
+    ) -> None:
+        """Initialize the scanner.
+
+        *install_dates* is optional so the scanner stays independently
+        constructible; without it, install ages fall back to the filesystem
+        estimate and are always reported as estimated.
+        """
         self.hass = hass
         self.config_dir = Path(hass.config.config_dir)
         self._hacs_repositories: dict[str, Any] | None = None
+        self._install_dates = install_dates
 
     # -- storage helpers -----------------------------------------------------
 
@@ -168,6 +245,10 @@ class ComponentScanner:
 
         On Linux ``st_birthtime`` is unavailable, so we use
         ``min(st_ctime, st_mtime)`` as an approximation.
+
+        This is only ever an *estimate*: a HACS update rewrites the directory
+        and resets it. It seeds :class:`InstallDateRegistry`, which is what
+        actually answers "how long has this been installed" (#93).
         """
         try:
             if not path.exists():
@@ -254,6 +335,36 @@ class ComponentScanner:
                     return candidate
 
         return None
+
+    def _resolve_install_path_and_timestamp(
+        self, repo: dict[str, Any]
+    ) -> tuple[Path | None, float | None]:
+        """Install path plus its filesystem timestamp, in one executor hop."""
+        path = self._resolve_install_path(repo)
+        if path is None:
+            return None, None
+        return path, self._get_install_timestamp(path)
+
+    async def _install_info(
+        self, repo: dict[str, Any], now: datetime
+    ) -> InstallInfo:
+        """Return where *repo* lives on disk and how long it has been installed.
+
+        The filesystem timestamp is only a seed; the install-date registry is
+        the authority, because a HACS update resets the files (#93).
+        """
+        path, timestamp = await self.hass.async_add_executor_job(
+            self._resolve_install_path_and_timestamp, repo
+        )
+        if self._install_dates is not None:
+            days, estimated = self._install_dates.observe(repo, timestamp, now)
+            return InstallInfo(path, days, estimated)
+
+        days = None
+        if timestamp is not None:
+            installed_dt = datetime.fromtimestamp(timestamp, tz=now.tzinfo)
+            days = max(0, (now - installed_dt).days)
+        return InstallInfo(path, days, True)
 
     # -- theme helpers -------------------------------------------------------
 
@@ -444,22 +555,12 @@ class ComponentScanner:
                 or (full_name.split("/")[-1] if "/" in full_name else full_name)
             )
 
-            install_path = await self.hass.async_add_executor_job(
-                self._resolve_install_path, repo
-            )
-            days_installed: int | None = None
-            if install_path is not None:
-                ts = await self.hass.async_add_executor_job(
-                    self._get_install_timestamp, install_path
-                )
-                if ts is not None:
-                    installed_dt = datetime.fromtimestamp(ts, tz=now.tzinfo)
-                    days_installed = (now - installed_dt).days
+            install = await self._install_info(repo, now)
 
             # Get variant names from the actual YAML file(s)
             variants: list[str] = []
-            if install_path is not None:
-                variants = await self._get_theme_variants(install_path)
+            if install.path is not None:
+                variants = await self._get_theme_variants(install.path)
 
             # The repo is "used" if ANY of its variants appear in used_names
             is_used = False
@@ -479,7 +580,8 @@ class ComponentScanner:
                     f"https://github.com/{full_name}" if full_name else ""
                 ),
                 "version": repo.get("version_installed", "unknown"),
-                "days_installed": days_installed,
+                "days_installed": install.days,
+                "install_date_estimated": install.estimated,
                 "variants": len(variants),
             }
 
@@ -850,17 +952,7 @@ class ComponentScanner:
                 or (full_name.split("/")[-1] if "/" in full_name else full_name)
             )
 
-            install_path = await self.hass.async_add_executor_job(
-                self._resolve_install_path, repo
-            )
-            days_installed: int | None = None
-            if install_path is not None:
-                ts = await self.hass.async_add_executor_job(
-                    self._get_install_timestamp, install_path
-                )
-                if ts is not None:
-                    installed_dt = datetime.fromtimestamp(ts, tz=now.tzinfo)
-                    days_installed = (now - installed_dt).days
+            install = await self._install_info(repo, now)
 
             card_types = await self.hass.async_add_executor_job(
                 self._derive_card_types, repo
@@ -936,7 +1028,8 @@ class ComponentScanner:
                     f"https://github.com/{full_name}" if full_name else ""
                 ),
                 "version": repo.get("version_installed", "unknown"),
-                "days_installed": days_installed,
+                "days_installed": install.days,
+                "install_date_estimated": install.estimated,
                 "card_type": (
                     f"custom:{card_types[0]}" if card_types else "unknown"
                 ),
@@ -1016,17 +1109,7 @@ class ComponentScanner:
                 or (full_name.split("/")[-1] if "/" in full_name else full_name)
             )
 
-            install_path = await self.hass.async_add_executor_job(
-                self._resolve_install_path, repo
-            )
-            days_installed: int | None = None
-            if install_path is not None:
-                ts = await self.hass.async_add_executor_job(
-                    self._get_install_timestamp, install_path
-                )
-                if ts is not None:
-                    installed_dt = datetime.fromtimestamp(ts, tz=now.tzinfo)
-                    days_installed = (now - installed_dt).days
+            install = await self._install_info(repo, now)
 
             is_used = domain in configured
 
@@ -1036,7 +1119,8 @@ class ComponentScanner:
                     f"https://github.com/{full_name}" if full_name else ""
                 ),
                 "version": repo.get("version_installed", "unknown"),
-                "days_installed": days_installed,
+                "days_installed": install.days,
+                "install_date_estimated": install.estimated,
                 "domain": domain,
             }
 
@@ -1078,18 +1162,7 @@ class ComponentScanner:
                 or (full_name.split("/")[-1] if "/" in full_name else full_name)
             )
 
-            # Resolve install path and compute days since install
-            install_path = await self.hass.async_add_executor_job(
-                self._resolve_install_path, repo
-            )
-            days_installed: int | None = None
-            if install_path is not None:
-                ts = await self.hass.async_add_executor_job(
-                    self._get_install_timestamp, install_path
-                )
-                if ts is not None:
-                    installed_dt = datetime.fromtimestamp(ts, tz=now.tzinfo)
-                    days_installed = (now - installed_dt).days
+            install = await self._install_info(repo, now)
 
             components.append(
                 {
@@ -1099,7 +1172,8 @@ class ComponentScanner:
                         f"https://github.com/{full_name}" if full_name else ""
                     ),
                     "version": repo.get("version_installed", "unknown"),
-                    "days_installed": days_installed,
+                    "days_installed": install.days,
+                    "install_date_estimated": install.estimated,
                 }
             )
 
@@ -1138,12 +1212,157 @@ class ComponentScanner:
 
         return None
 
+    def _live_hacs_updates(self) -> list[dict[str, Any]]:
+        """Return the live HACS ``update.*`` entities as plain dicts (#91).
+
+        ``.storage/hacs.repositories`` is a snapshot HACS writes periodically
+        and it demonstrably lags reality — it can miss an update that HACS has
+        already surfaced as an entity, and keep listing one the user installed
+        hours ago. The entities are the authority, so they are read here and
+        reconciled with the snapshot in :meth:`_reconcile_updates`.
+
+        Entities in ``unavailable``/``unknown`` are skipped rather than treated
+        as "no update": a flapping entity must not wipe a genuine pending
+        update out of the list.
+        """
+        registry = er.async_get(self.hass)
+        live: list[dict[str, Any]] = []
+        for state in self.hass.states.async_all("update"):
+            if state.state not in ("on", "off"):
+                continue
+            entry = registry.async_get(state.entity_id)
+            if entry is None or entry.platform != "hacs":
+                continue
+            attrs = state.attributes
+            live.append(
+                {
+                    "entity_id": state.entity_id,
+                    "on": state.state == "on",
+                    "name": re.sub(
+                        r"\s+update$",
+                        "",
+                        str(attrs.get("friendly_name") or "").strip(),
+                        flags=re.IGNORECASE,
+                    ),
+                    "installed_version": attrs.get("installed_version") or "",
+                    "latest_version": attrs.get("latest_version") or "",
+                    "release_url": attrs.get("release_url") or "",
+                }
+            )
+        return live
+
+    @staticmethod
+    def _installed_repo_index(hacs_repos: dict[str, Any]) -> dict[str, str]:
+        """Map ``owner/repo`` to its HACS category, for every installed repo.
+
+        Used to give a live-only update (one the snapshot hasn't caught up
+        with) the right display type instead of a bare "Other" (#91).
+        """
+        index: dict[str, str] = {}
+        for repo in hacs_repos.values():
+            if not isinstance(repo, dict) or not repo.get("installed", False):
+                continue
+            full_name = str(repo.get("full_name") or "").lower()
+            if full_name:
+                index[full_name] = repo.get("category", "")
+        return index
+
+    def _reconcile_updates(
+        self,
+        updates: list[dict[str, Any]],
+        hacs_repos: dict[str, Any],
+        live: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        """Reconcile the snapshot-derived list against the live entities (#91).
+
+        The card renders rows from the live ``update.*`` entities, so anything
+        the two sources disagree about is either an update that can never be
+        summarised (live-only) or a phantom row for a component the user already
+        updated (snapshot-only). Both are fixed here so the sensor and the card
+        always describe the same set.
+        """
+        if not live:
+            # HACS entities aren't loaded yet (very early in startup). Trust the
+            # snapshot rather than flapping the sensor to zero.
+            return updates
+
+        # Three ways in, in descending order of confidence. Deliberately NOT
+        # by version alone: version strings collide across components ("1.0.0"),
+        # and a wrong match here either deletes a genuine pending update or
+        # pins another component's release notes to it. An unmatched pair costs
+        # a visible duplicate row, which is the far cheaper failure.
+        live_by_repo: dict[str, dict[str, Any]] = {}
+        live_by_name: dict[str, dict[str, Any]] = {}
+        live_by_slug: dict[str, dict[str, Any]] = {}
+        for entry in live:
+            key = repo_key(entry["release_url"])
+            if key:
+                live_by_repo.setdefault(key, entry)
+            name = norm_name(entry["name"])
+            if name:
+                live_by_name.setdefault(name, entry)
+            # The entity id keeps the repo name even when the friendly name has
+            # drifted — "update.dad_jokes_update" vs a HACS manifest_name of
+            # "Dad Jokes" but a friendly name of just "Jokes". The id is
+            # snake_case, so strip the "_update" suffix before normalising.
+            object_id = re.sub(
+                r"_update$", "", entry["entity_id"].split(".", 1)[-1]
+            )
+            slug = norm_name(object_id)
+            if slug:
+                live_by_slug.setdefault(slug, entry)
+
+        reconciled: list[dict[str, Any]] = []
+        matched: set[str] = set()
+        for item in updates:
+            item_name = norm_name(item.get("name"))
+            match = (
+                live_by_repo.get(repo_key(item.get("repository")))
+                or live_by_name.get(item_name)
+                or live_by_slug.get(item_name)
+            )
+            if match is None:
+                # No entity to contradict it — keep the snapshot's word.
+                reconciled.append(item)
+                continue
+            matched.add(match["entity_id"])
+            if not match["on"]:
+                continue  # already updated (or skipped); drop the phantom row
+            item[ATTR_ENTITY_ID] = match["entity_id"]
+            if match["installed_version"]:
+                item["current_version"] = match["installed_version"]
+            if match["latest_version"]:
+                item["available_version"] = match["latest_version"]
+            reconciled.append(item)
+
+        # Live updates the snapshot hasn't caught up with yet.
+        repo_categories = self._installed_repo_index(hacs_repos)
+        for entry in live:
+            if not entry["on"] or entry["entity_id"] in matched:
+                continue
+            key = repo_key(entry["release_url"])
+            category = repo_categories.get(key, "")
+            reconciled.append(
+                {
+                    "name": entry["name"] or entry["entity_id"],
+                    "type": CATEGORY_MAP.get(
+                        category, category.replace("_", " ").title() or "Other"
+                    ),
+                    "repository": f"https://github.com/{key}" if key else "",
+                    "current_version": entry["installed_version"],
+                    "available_version": entry["latest_version"],
+                    ATTR_ENTITY_ID: entry["entity_id"],
+                }
+            )
+
+        return reconciled
+
     async def scan_updates(self) -> dict[str, Any]:
         """Scan HACS-installed components for pending updates.
 
         Returns ``{"count": int, "updates": [...]}`` where each update entry
         lists the component name, type, repository and current/available
-        versions.
+        versions, plus the matching ``update.*`` entity id when one is known.
         """
         hacs_repos = await self._load_hacs_repositories()
         updates: list[dict[str, Any]] = []
@@ -1182,6 +1401,10 @@ class ComponentScanner:
                 }
             )
 
+        updates = self._reconcile_updates(
+            updates, hacs_repos, self._live_hacs_updates()
+        )
+
         # Sort alphabetically by type then name
         updates.sort(key=lambda c: (c["type"], c["name"].lower()))
         return {"count": len(updates), "updates": updates}
@@ -1197,10 +1420,21 @@ class CustomComponentMonitorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry | None = None) -> None:
         """Initialize."""
-        self.scanner = ComponentScanner(hass)
+        self.install_dates = InstallDateRegistry(hass)
+        self.scanner = ComponentScanner(hass, self.install_dates)
         self.entry = entry
         self._ai_store: Store | None = None
+        self._ai_cache: dict[str, dict[str, Any]] = {}
+        self._ai_legacy: dict[str, Any] = {}
+        self._ai_loaded = False
         self._ai_last_error: str | None = None
+        self._ai_lock = asyncio.Lock()
+        self._ai_task: asyncio.Task | None = None
+        # None = untested; False = this backend can't do structured output, so
+        # stop paying for the structured call before every text call (#91).
+        self._ai_structured_ok: bool | None = None
+        self.ai_in_progress = False
+        self.ai_last_run: str | None = None
         super().__init__(
             hass,
             _LOGGER,
@@ -1240,7 +1474,12 @@ class CustomComponentMonitorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     async def _async_update_data(self) -> dict[str, Any]:
         """Fetch data from HACS storage."""
         try:
+            # Idempotent, but load it here as well as at setup: seeding from an
+            # empty in-memory registry would overwrite every recorded install
+            # date on disk (#93).
+            await self.install_dates.async_load()
             self.scanner._invalidate_cache()
+            self.install_dates.begin_scan()
 
             all_components = await self.scanner.scan_all_hacs_components()
             _LOGGER.debug(
@@ -1271,81 +1510,400 @@ class CustomComponentMonitorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 len(integrations["unused"]),
             )
 
+            # Close the install-date cycle before the update scan, so a failure
+            # fetching updates can't throw away this cycle's observations.
+            self.install_dates.end_scan()
+
             updates = await self.scanner.scan_updates()
             _LOGGER.debug("Update scan: %d pending updates", updates["count"])
 
-            # Optionally enrich each update with AI summary + categories (#67).
-            updates = await self._async_categorise_updates(updates)
+            # Stamp cached AI summaries + categories on (#67). The AI calls
+            # themselves run in a background worker so a cold cache can never
+            # stall the refresh — and, at startup, blow the platform setup
+            # timeout and lose every summary it had generated (#91).
+            self._apply_cached_ai(updates)
 
-            return {
+            data = {
                 "all_components": all_components,
                 "themes": themes,
                 "frontend": frontend,
                 "integrations": integrations,
                 "updates": updates,
                 "last_scan": dt_util.now().isoformat(),
+                "install_dates_since": self.install_dates.seeded_at,
             }
         except Exception as exc:
             _LOGGER.error("Error scanning custom components: %s", exc)
             raise UpdateFailed(exc) from exc
 
+        # Only wake the worker for updates it would actually attempt. Counting
+        # `ai_pending` here instead would re-spawn a no-op task every hour once
+        # an update had exhausted its retries (#91).
+        if updates.get("ai_retryable"):
+            self._schedule_ai_run()
+        return data
+
     # -- AI summarise & categorise updates (#67) ----------------------------
 
-    async def _async_categorise_updates(
-        self, updates: dict[str, Any]
-    ) -> dict[str, Any]:
-        """Enrich each pending update with AI categories + summary (#67).
+    def _ai_settings(self) -> tuple[bool, str]:
+        """Return ``(enabled, ai_entity)`` from the config entry options."""
+        if self.entry is None:
+            return False, ""
+        enabled = bool(self.entry.options.get(CONF_AI_CATEGORIZATION_ENABLED, False))
+        ai_entity = str(self.entry.options.get(CONF_AI_TASK_ENTITY) or "")
+        return enabled and bool(ai_entity), ai_entity
 
-        Opt-in: only runs when enabled in options and an AI Task entity is
-        configured. Results are cached per ``name|available_version`` so an
-        unchanged update never triggers a fresh AI call. Failures degrade
-        gracefully — the update is simply left without categories and retried
-        on the next scan; nothing here is allowed to raise.
+    @property
+    def ai_enabled(self) -> bool:
+        """Whether AI enrichment is switched on and pointed at an entity."""
+        return self._ai_settings()[0]
+
+    @property
+    def ai_last_error(self) -> str | None:
+        """Last AI failure message, or None when the last run was clean."""
+        return self._ai_last_error
+
+    @staticmethod
+    def _cache_key(item: dict[str, Any]) -> str:
+        """Stable cache key for an update: repo identity + target version (#91).
+
+        Keying on the display name (as v1.11.0 did) meant a rename, a HACS
+        manifest change or a ``v``-prefix difference silently invalidated a
+        perfectly good summary and paid for it again.
+        """
+        version = norm_version(item.get("available_version"))
+        key = repo_key(item.get("repository"))
+        if key:
+            return f"{key}|{version}"
+        return f"name:{norm_name(item.get('name'))}|{version}"
+
+    @staticmethod
+    def _legacy_key(item: dict[str, Any]) -> str:
+        """The v1.11.0 cache key, so existing summaries survive the upgrade."""
+        return f"{item.get('name', '')}|{item.get('available_version', '')}"
+
+    @staticmethod
+    def _record_is_complete(record: dict[str, Any] | None) -> bool:
+        """True when a cached record already carries a usable summary.
+
+        This is the guard that keeps already-summarised updates out of the AI
+        queue. v1.11.0 tested the record for truthiness, so a record holding
+        categories but an empty summary counted as done and that update never
+        got a summary again (#91).
+        """
+        return bool(record) and bool(str(record.get("summary") or "").strip())
+
+    def _cache_get(self, item: dict[str, Any]) -> dict[str, Any] | None:
+        """Look a record up, promoting a v1 record to the v2 key on the way."""
+        key = self._cache_key(item)
+        record = self._ai_cache.get(key)
+        if record is not None:
+            return record
+        legacy = self._ai_legacy.pop(self._legacy_key(item), None)
+        if not isinstance(legacy, dict):
+            return None
+        record = {
+            "categories": legacy.get("categories", []),
+            "summary": legacy.get("summary", ""),
+            "status": "ok" if str(legacy.get("summary") or "").strip() else "partial",
+            "attempts": 0,
+            "first_seen": dt_util.utcnow().isoformat(),
+            "updated": dt_util.utcnow().isoformat(),
+            "last_attempt": None,
+            "last_error": None,
+            "name": item.get("name", ""),
+        }
+        self._ai_cache[key] = record
+        return record
+
+    def _should_retry(self, record: dict[str, Any] | None, force: bool) -> bool:
+        """Whether an incomplete update is due another AI call (#91).
+
+        Failures used to be discarded entirely, so a component the model could
+        never summarise was re-sent on every single hourly scan forever. Now a
+        failure is recorded and backs off; the manual action always forces.
+        """
+        if force:
+            return True
+        if record is None:
+            return True
+        if record.get("attempts", 0) >= AI_MAX_ATTEMPTS:
+            return False
+        last_attempt = record.get("last_attempt")
+        if not last_attempt:
+            return True
+        parsed = dt_util.parse_datetime(str(last_attempt))
+        if parsed is None:
+            return True
+        index = min(
+            max(record.get("attempts", 1) - 1, 0), len(AI_FAILURE_BACKOFF_MINUTES) - 1
+        )
+        wait = timedelta(minutes=AI_FAILURE_BACKOFF_MINUTES[index])
+        return dt_util.utcnow() - parsed >= wait
+
+    def _apply_cached_ai(self, updates: dict[str, Any]) -> None:
+        """Stamp cached categories/summaries onto a fresh scan result (#91).
+
+        Synchronous and cheap — this is all ``_async_update_data`` does with
+        the AI cache. ``ai_pending`` is what the user sees: how many updates
+        still lack a summary. ``ai_retryable`` is the subset the automatic
+        worker would actually attempt right now (the rest are in backoff or
+        out of attempts) and is what drives scheduling.
         """
         items: list[dict[str, Any]] = updates.get("updates", [])
-        if not items or self.entry is None:
-            return updates
+        enabled, _ = self._ai_settings()
+        if not enabled:
+            updates["ai_pending"] = 0
+            updates["ai_retryable"] = 0
+            return
 
-        enabled = self.entry.options.get(CONF_AI_CATEGORIZATION_ENABLED, False)
-        ai_entity = self.entry.options.get(CONF_AI_TASK_ENTITY) or ""
-        if not enabled or not ai_entity:
-            return updates
-
-        if self._ai_store is None:
-            self._ai_store = Store(self.hass, STORAGE_VERSION, AI_CACHE_STORAGE_KEY)
-        try:
-            cache: dict[str, Any] = (await self._ai_store.async_load()) or {}
-        except Exception:  # pragma: no cover - storage read should not break scan
-            cache = {}
-
-        entity_by_key = self._build_update_entity_map()
-
-        new_calls = 0
-        current_keys: set[str] = set()
+        pending = 0
+        retryable = 0
         for item in items:
-            key = f"{item.get('name', '')}|{item.get('available_version', '')}"
-            current_keys.add(key)
-            cached = cache.get(key)
-            if cached:
-                item[ATTR_CATEGORIES] = cached.get("categories", [])
-                item[ATTR_SUMMARY] = cached.get("summary", "")
-                continue
-            result = await self._async_categorise_one(item, ai_entity, entity_by_key)
-            if result is not None:
-                item[ATTR_CATEGORIES] = result.get("categories", [])
-                item[ATTR_SUMMARY] = result.get("summary", "")
-                cache[key] = result
-                new_calls += 1
+            record = self._cache_get(item)
+            if record is not None:
+                item[ATTR_CATEGORIES] = record.get("categories", [])
+                item[ATTR_SUMMARY] = record.get("summary", "")
+            if not self._record_is_complete(record):
+                pending += 1
+                if self._should_retry(record, force=False):
+                    retryable += 1
+        updates["ai_pending"] = pending
+        updates["ai_retryable"] = retryable
 
-        # Keep the cache bounded: drop entries for updates no longer pending.
-        cache = {k: v for k, v in cache.items() if k in current_keys}
+    async def _async_load_ai_cache(self) -> None:
+        """Load the AI cache once, migrating a v1 store on the way (#91)."""
+        if self._ai_loaded:
+            return
+        if self._ai_store is None:
+            self._ai_store = AiCacheStore(
+                self.hass, AI_CACHE_STORAGE_VERSION, AI_CACHE_STORAGE_KEY
+            )
         try:
-            await self._ai_store.async_save(cache)
-        except Exception:  # pragma: no cover
-            _LOGGER.debug("Failed to persist AI category cache", exc_info=True)
-        if new_calls:
-            _LOGGER.debug("AI categorised %d new update(s)", new_calls)
-        return updates
+            raw = await self._ai_store.async_load() or {}
+        except Exception:  # pragma: no cover - a bad store must not break setup
+            _LOGGER.warning(
+                "Could not read the AI summary cache; summaries will be "
+                "regenerated",
+                exc_info=True,
+            )
+            raw = {}
+        self._ai_cache = raw.get("entries") or {}
+        self._ai_legacy = raw.get("legacy") or {}
+        self._ai_loaded = True
+
+    def _save_ai_cache(self) -> None:
+        """Persist the cache, coalescing bursts of per-item writes (#91)."""
+        if self._ai_store is None:
+            return
+        self._ai_store.async_delay_save(
+            lambda: {"entries": self._ai_cache, "legacy": self._ai_legacy}, 5
+        )
+
+    def _evict_ai_cache(self, current_keys: set[str]) -> None:
+        """Age- and size-bound the cache (#91).
+
+        v1.11.0 hard-pruned to the currently-pending set on every scan. Because
+        the HACS snapshot flaps, an update that briefly dropped out lost its
+        summary permanently and was regenerated — a large part of why the same
+        components kept hitting the AI.
+        """
+        cutoff = dt_util.utcnow() - timedelta(days=AI_CACHE_MAX_AGE_DAYS)
+        for key in list(self._ai_cache):
+            if key in current_keys:
+                continue
+            updated = dt_util.parse_datetime(str(self._ai_cache[key].get("updated")))
+            if updated is None or updated < cutoff:
+                del self._ai_cache[key]
+
+        if len(self._ai_cache) > AI_CACHE_MAX_ENTRIES:
+            ordered = sorted(
+                self._ai_cache.items(),
+                key=lambda kv: str(kv[1].get("updated") or ""),
+            )
+            for key, _record in ordered[: len(self._ai_cache) - AI_CACHE_MAX_ENTRIES]:
+                if key not in current_keys:
+                    del self._ai_cache[key]
+
+    def _schedule_ai_run(self) -> None:
+        """Kick off a bounded background enrichment pass, if none is running."""
+        if not self.ai_enabled:
+            return
+        if self._ai_task is not None and not self._ai_task.done():
+            return
+        self._ai_task = self.hass.async_create_background_task(
+            self._async_deferred_ai_run(), name=f"{DOMAIN}_ai_summaries"
+        )
+
+    async def _async_deferred_ai_run(self) -> None:
+        """Run an enrichment pass once the coordinator has published its data.
+
+        Background tasks start eagerly, so without this yield the pass would
+        run synchronously inside ``_async_update_data`` — before
+        ``DataUpdateCoordinator`` assigns ``self.data``, which means it would
+        either see no data at all (first refresh) or the *previous* scan's
+        items and stamp its results onto dicts about to be thrown away (#91).
+        """
+        await asyncio.sleep(0)
+        await self.async_generate_summaries(limit=AI_MAX_PER_SCAN)
+
+    def async_cancel_ai_run(self) -> None:
+        """Cancel any in-flight enrichment pass (called on unload)."""
+        if self._ai_task is not None and not self._ai_task.done():
+            self._ai_task.cancel()
+        self._ai_task = None
+
+    async def async_generate_summaries(
+        self,
+        *,
+        entity_ids: set[str] | None = None,
+        force: bool = False,
+        limit: int | None = None,
+    ) -> dict[str, int]:
+        """Generate the missing AI summaries for pending updates (#91).
+
+        Only updates without a usable summary are sent to the AI unless *force*
+        is set. Each result is written to the cache and pushed to listeners as
+        it lands, so a slow local model fills the card in progressively instead
+        of losing everything if the run is cancelled part-way.
+        """
+        counts = {"generated": 0, "failed": 0, "skipped": 0, "remaining": 0}
+        enabled, ai_entity = self._ai_settings()
+        if not enabled or not self.data:
+            return counts
+
+        async with self._ai_lock:
+            await self._async_load_ai_cache()
+            items: list[dict[str, Any]] = self.data.get("updates", {}).get("updates", [])
+            entity_by_key = self._build_update_entity_map()
+
+            todo: list[dict[str, Any]] = []
+            requested = set(entity_ids or ())
+            for item in items:
+                if entity_ids and item.get(ATTR_ENTITY_ID) not in entity_ids:
+                    continue
+                requested.discard(item.get(ATTR_ENTITY_ID))
+                record = self._cache_get(item)
+                if not force and self._record_is_complete(record):
+                    counts["skipped"] += 1
+                    continue
+                if not self._should_retry(record, force):
+                    counts["skipped"] += 1
+                    continue
+                todo.append(item)
+
+            if requested:
+                # Asked about updates this scan doesn't know about. Say so
+                # rather than returning all zeros and looking like a dead
+                # button (#91).
+                counts["skipped"] += len(requested)
+                _LOGGER.warning(
+                    "Cannot generate summaries for %s — the last scan didn't "
+                    "list them. Run custom_component_monitor.scan_now and try "
+                    "again.",
+                    ", ".join(sorted(requested)),
+                )
+
+            if limit is not None and len(todo) > limit:
+                counts["remaining"] = len(todo) - limit
+                todo = todo[:limit]
+
+            if not todo:
+                return counts
+
+            self.ai_in_progress = True
+            self.async_update_listeners()
+            try:
+                for item in todo:
+                    result = await self._async_categorise_one(
+                        item, ai_entity, entity_by_key
+                    )
+                    self._record_result(item, result)
+                    if result is not None and str(result.get("summary") or "").strip():
+                        counts["generated"] += 1
+                    else:
+                        counts["failed"] += 1
+                    self._save_ai_cache()
+                    self.async_update_listeners()
+            finally:
+                self.ai_in_progress = False
+                self.ai_last_run = dt_util.utcnow().isoformat()
+                self._evict_ai_cache({self._cache_key(i) for i in items})
+                self._recount_pending()
+                self._save_ai_cache()
+                self.async_update_listeners()
+
+        _LOGGER.debug(
+            "AI summaries: %d generated, %d failed, %d skipped, %d remaining",
+            counts["generated"],
+            counts["failed"],
+            counts["skipped"],
+            counts["remaining"],
+        )
+        return counts
+
+    def _record_result(
+        self, item: dict[str, Any], result: dict[str, Any] | None
+    ) -> None:
+        """Write an attempt's outcome to the cache and stamp it on *item*."""
+        now = dt_util.utcnow().isoformat()
+        key = self._cache_key(item)
+        record = self._ai_cache.get(key) or {
+            "categories": [],
+            "summary": "",
+            "attempts": 0,
+            "first_seen": now,
+        }
+        categories = list(result.get("categories") or []) if result else []
+        summary = str(result.get("summary") or "").strip() if result else ""
+        # Never trade a good value for an empty one — a retry that only returns
+        # categories must not wipe an earlier partial summary, and vice versa.
+        record["categories"] = categories or record.get("categories", [])
+        record["summary"] = summary or record.get("summary", "")
+        record["attempts"] = record.get("attempts", 0) + 1
+        record["last_attempt"] = now
+        record["updated"] = now
+        record["name"] = item.get("name", "")
+        if item.get(ATTR_ENTITY_ID):
+            record[ATTR_ENTITY_ID] = item[ATTR_ENTITY_ID]
+        if record["summary"]:
+            record["status"] = "ok"
+            record["last_error"] = None
+        elif record["categories"]:
+            record["status"] = "partial"
+            record["last_error"] = self._ai_last_error
+        else:
+            record["status"] = "failed"
+            record["last_error"] = self._ai_last_error
+        self._ai_cache[key] = record
+
+        item[ATTR_CATEGORIES] = record["categories"]
+        item[ATTR_SUMMARY] = record["summary"]
+
+    def known_update_entity_ids(self) -> set[str]:
+        """The ``update.*`` entities the last scan actually knows about (#91)."""
+        if not self.data:
+            return set()
+        return {
+            item[ATTR_ENTITY_ID]
+            for item in self.data.get("updates", {}).get("updates", [])
+            if item.get(ATTR_ENTITY_ID)
+        }
+
+    def _recount_pending(self) -> None:
+        """Refresh ``ai_pending``/``ai_retryable`` on the data after a run."""
+        if not self.data:
+            return
+        updates = self.data.get("updates", {})
+        incomplete = [
+            self._cache_get(item)
+            for item in updates.get("updates", [])
+            if not self._record_is_complete(self._cache_get(item))
+        ]
+        updates["ai_pending"] = len(incomplete)
+        updates["ai_retryable"] = sum(
+            1 for record in incomplete if self._should_retry(record, force=False)
+        )
 
     def _build_update_entity_map(self) -> dict[str, dict[str, str]]:
         """Map HACS ``update.*`` entities by normalised name and by version (#67).
@@ -1368,24 +1926,13 @@ class CustomComponentMonitorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 or state.attributes.get("friendly_name")
                 or ""
             )
-            norm = self._norm_name(title)
+            norm = norm_name(title)
             if norm:
                 by_name.setdefault(norm, state.entity_id)
-            latest = self._norm_version(state.attributes.get("latest_version"))
+            latest = norm_version(state.attributes.get("latest_version"))
             if latest:
                 by_version.setdefault(latest, state.entity_id)
         return {"by_name": by_name, "by_version": by_version}
-
-    @staticmethod
-    def _norm_name(value: Any) -> str:
-        """Normalise an update name for matching (drop ' update', punctuation)."""
-        text = re.sub(r"\s+update$", "", str(value or ""), flags=re.IGNORECASE)
-        return re.sub(r"[^a-z0-9]+", "", text.lower())
-
-    @staticmethod
-    def _norm_version(value: Any) -> str:
-        """Normalise a version string (strip a leading 'v', lower-case)."""
-        return re.sub(r"^v", "", str(value or "").strip().lower())
 
     @staticmethod
     def _finalise(parsed: dict[str, Any], note_cats: list[str]) -> dict[str, Any]:
@@ -1437,12 +1984,15 @@ class CustomComponentMonitorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         current = item.get("current_version", "")
         utype = item.get("type", "")
 
-        # Best-effort release notes from the matching update entity: by
-        # normalised name, falling back to the available version.
+        # Best-effort release notes from the matching update entity. The scan
+        # now resolves the entity itself (#91); the name/version maps remain as
+        # a fallback for entries the reconcile couldn't match.
         notes = ""
-        entity_id = entity_by_key["by_name"].get(
-            self._norm_name(name)
-        ) or entity_by_key["by_version"].get(self._norm_version(version))
+        entity_id = (
+            item.get(ATTR_ENTITY_ID)
+            or entity_by_key["by_name"].get(norm_name(name))
+            or entity_by_key["by_version"].get(norm_version(version))
+        )
         if entity_id:
             notes = await self._async_release_notes(entity_id) or ""
         note_cats = self._categories_from_notes(notes)
@@ -1489,6 +2039,8 @@ class CustomComponentMonitorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         # AI Task source. 1) Preferred: structured output (works where the
         # provider supports strict JSON schema, e.g. official OpenAI/Ollama).
+        #    Skipped entirely once this backend has proved it can't do it, so a
+        #    self-hosted setup pays for one generation per update, not two (#91).
         structure = {
             "categories": {
                 "description": "All change categories that apply to this update",
@@ -1503,15 +2055,30 @@ class CustomComponentMonitorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 "selector": {"text": {"multiline": True}},
             },
         }
-        try:
-            parsed = self._parse_ai_data(
-                await self._async_ai_call(ai_entity, base, structure)
-            )
-            if parsed is not None:
-                self._ai_last_error = None
-                return self._finalise(parsed, note_cats)
-        except Exception as err:  # provider/model/transport failure
-            last_err = err
+        best: dict[str, Any] | None = None
+        if self._ai_structured_ok is not False:
+            try:
+                parsed = self._parse_ai_data(
+                    await self._async_ai_call(ai_entity, base, structure)
+                )
+                if parsed is not None and str(parsed.get("summary") or "").strip():
+                    self._ai_structured_ok = True
+                    self._ai_last_error = None
+                    return self._finalise(parsed, note_cats)
+                # Reached the model but got no summary out of it — keep any
+                # categories and stop paying for the structured call.
+                best = parsed
+                self._ai_structured_ok = False
+            except asyncio.CancelledError:
+                raise
+            except TimeoutError as err:
+                # A slow response says nothing about whether the backend
+                # supports structured output — don't latch it off for the rest
+                # of the session over one hiccup (#91).
+                last_err = err
+            except Exception as err:  # provider/model/transport failure
+                last_err = err
+                self._ai_structured_ok = False
 
         # 2) Fallback: plain text + an explicit JSON request, then parse it.
         #    Rescues backends that can't do strict structured output but can
@@ -1522,12 +2089,28 @@ class CustomComponentMonitorCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             )
             if parsed is not None:
                 self._ai_last_error = None
-                return self._finalise(parsed, note_cats)
+                return self._finalise(self._merge_parsed(best, parsed), note_cats)
         except Exception as err:
             last_err = err
 
+        if best is not None:
+            self._note_ai_error(name, last_err)
+            return self._finalise(best, note_cats)
+
         self._note_ai_error(name, last_err)
         return None
+
+    @staticmethod
+    def _merge_parsed(
+        first: dict[str, Any] | None, second: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Keep the best of two attempts — never trade a value for a blank."""
+        if not first:
+            return second
+        return {
+            "categories": second.get("categories") or first.get("categories") or [],
+            "summary": second.get("summary") or first.get("summary") or "",
+        }
 
     async def _async_conversation_call(self, agent_id: str, text: str) -> str | None:
         """Call conversation.process and return the agent's reply text (#67)."""
@@ -1722,6 +2305,12 @@ async def async_setup_entry(
     """Set up the sensor platform."""
     coordinator = CustomComponentMonitorCoordinator(hass, config_entry)
     try:
+        # Load the AI cache before the first refresh so cached summaries are
+        # stamped on straight away and no AI call happens during setup (#91).
+        await coordinator._async_load_ai_cache()
+        # And the install dates, so the first scan sees what is already
+        # recorded rather than re-seeding over it (#93).
+        await coordinator.install_dates.async_load()
         await coordinator.async_config_entry_first_refresh()
     except Exception as exc:
         raise ConfigEntryNotReady(
@@ -1799,6 +2388,11 @@ class CustomComponentMonitorSensor(CoordinatorEntity, SensorEntity):
             components = self.coordinator.data.get("all_components", [])
             attrs[ATTR_TOTAL_COMPONENTS] = len(components)
             attrs[ATTR_COMPONENTS] = components
+            # When exact install-date tracking began; the cards use it to
+            # explain why older components carry an estimated date (#93).
+            attrs[ATTR_INSTALL_DATES_SINCE] = self.coordinator.data.get(
+                "install_dates_since"
+            )
 
         elif key in (
             SENSOR_UNUSED_INTEGRATIONS,
@@ -1820,6 +2414,13 @@ class CustomComponentMonitorSensor(CoordinatorEntity, SensorEntity):
         elif key == SENSOR_HACS_UPDATES:
             data = self.coordinator.data.get("updates", {})
             attrs[ATTR_UPDATES] = data.get("updates", [])
+            # Small scalars, kept recorded so automations can act on the AI
+            # backlog and the card can show progress (#91).
+            attrs[ATTR_AI_ENABLED] = self.coordinator.ai_enabled
+            attrs[ATTR_AI_PENDING] = data.get("ai_pending", 0)
+            attrs[ATTR_AI_IN_PROGRESS] = self.coordinator.ai_in_progress
+            attrs[ATTR_AI_LAST_ERROR] = self.coordinator.ai_last_error
+            attrs[ATTR_AI_LAST_RUN] = self.coordinator.ai_last_run
 
         if "last_scan" in self.coordinator.data:
             attrs["last_scan"] = self.coordinator.data["last_scan"]

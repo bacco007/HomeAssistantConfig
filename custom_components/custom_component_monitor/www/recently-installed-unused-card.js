@@ -1,14 +1,26 @@
 /**
- * Recently Installed but Unused Card
+ * Recently installed but unused Card
  * A Lovelace card that surfaces HACS components installed within a recent
  * window (default 30 days) that are still unused - the "I installed this and
  * forgot to wire it up" view. It reads the same unused_* sensors as the main
  * Custom Component Monitor card and filters each unused list by days_installed.
  */
-var CARD_VERSION = "1.11.0";
+var CARD_VERSION = "1.13.0";
 
 var RIU_ALL_SECTIONS = ["integrations", "themes", "frontend"];
 var RIU_DEFAULT_WINDOW = 30;
+var RIU_TITLE = "Recently installed but unused";
+// v1.12.0 and earlier baked this Title Case string into saved dashboards via
+// getStubConfig(), so it is dropped on load and the new default applies.
+var RIU_LEGACY_TITLE = "Recently Installed but Unused";
+
+// Strip the old baked-in default so those users pick up the new title. A title
+// the user typed themselves is left alone.
+function _riu_migrateConfig(config) {
+  var out = Object.assign({}, config);
+  if (out.title === RIU_LEGACY_TITLE) { delete out.title; }
+  return out;
+}
 
 function _riu_escapeHtml(text) {
   var el = document.createElement("span");
@@ -30,13 +42,15 @@ class RecentlyInstalledUnusedCard extends HTMLElement {
   }
 
   static getStubConfig() {
-    return { title: "Recently Installed but Unused", days_window: RIU_DEFAULT_WINDOW, sections: ["integrations", "themes", "frontend"] };
+    // No title: the card's own default applies, so renaming it later doesn't
+    // leave the old string frozen in everyone's dashboard.
+    return { days_window: RIU_DEFAULT_WINDOW, sections: ["integrations", "themes", "frontend"] };
   }
 
   setConfig(config) {
     this._config = Object.assign(
-      { title: "Recently Installed but Unused", days_window: RIU_DEFAULT_WINDOW, sections: RIU_ALL_SECTIONS.slice() },
-      config
+      { title: RIU_TITLE, days_window: RIU_DEFAULT_WINDOW, sections: RIU_ALL_SECTIONS.slice() },
+      _riu_migrateConfig(config)
     );
     var w = parseInt(this._config.days_window, 10);
     this._window = (!isNaN(w) && w > 0) ? w : RIU_DEFAULT_WINDOW;
@@ -94,27 +108,38 @@ class RecentlyInstalledUnusedCard extends HTMLElement {
 
   // Items for a section: unused entries whose install age is known and within
   // the window, newest installs first. Tracks how many were skipped because
-  // their install date couldn't be resolved (days_installed == null).
+  // their install date couldn't be resolved (days_installed == null), and how
+  // many of the shown items carry an estimated date (install_date_estimated) —
+  // components that were already installed before the integration started
+  // recording first-seen dates.
   _sectionItems(section) {
     var sensor = section.sensor;
     var unused = (sensor && sensor.attributes.unused_components) || [];
     var items = [];
     var unknown = 0;
+    var estimated = 0;
     for (var i = 0; i < unused.length; i++) {
       var it = unused[i];
       var days = it.days_installed;
       if (days == null || days < 0) { unknown++; continue; }
-      if (days <= this._window) { items.push(it); }
+      if (days <= this._window) {
+        items.push(it);
+        if (it.install_date_estimated) { estimated++; }
+      }
     }
     items.sort(function(a, b) {
       var da = a.days_installed;
       var db = b.days_installed;
       if (da !== db) { return da - db; }
+      // Same age: a date we actually watched beats one we guessed at.
+      var ea = a.install_date_estimated ? 1 : 0;
+      var eb = b.install_date_estimated ? 1 : 0;
+      if (ea !== eb) { return ea - eb; }
       var na = (a.name || "").toLowerCase();
       var nb = (b.name || "").toLowerCase();
       return na < nb ? -1 : (na > nb ? 1 : 0);
     });
-    return { items: items, unknown: unknown };
+    return { items: items, unknown: unknown, estimated: estimated };
   }
 
   _render() {
@@ -122,16 +147,19 @@ class RecentlyInstalledUnusedCard extends HTMLElement {
 
     var allComponents = this._getSensor("sensor.hacs_installed_components");
     var lastScan = allComponents ? (allComponents.attributes.last_scan || "") : "";
+    var datesSince = allComponents ? (allComponents.attributes.install_dates_since || "") : "";
 
     var sections = this._getVisibleSections();
 
     var totalRecent = 0;
     var totalUnknown = 0;
+    var totalEstimated = 0;
     var sectionData = [];
     for (var i = 0; i < sections.length; i++) {
       var res = this._sectionItems(sections[i]);
       totalRecent += res.items.length;
       totalUnknown += res.unknown;
+      totalEstimated += res.estimated;
       sectionData.push({ section: sections[i], items: res.items });
     }
 
@@ -160,6 +188,12 @@ class RecentlyInstalledUnusedCard extends HTMLElement {
     if (lastScan) { footerBits.push("Last scan: " + this._formatTime(lastScan)); }
     if (totalUnknown > 0) {
       footerBits.push(totalUnknown + " unused item" + (totalUnknown !== 1 ? "s" : "") + " hidden (install date unknown)");
+    }
+    if (totalEstimated > 0) {
+      footerBits.push(
+        "~ estimated" +
+        (datesSince ? (" &middot; exact dates from " + this._formatDate(datesSince)) : "")
+      );
     }
     var footerHtml = footerBits.join(" &middot; ");
 
@@ -195,6 +229,7 @@ class RecentlyInstalledUnusedCard extends HTMLElement {
       ".item-detail { font-size:0.75em; color:var(--secondary); }",
       ".item-detail a { color:var(--accent); text-decoration:none; }",
       ".item-days { font-size:0.75em; color:var(--secondary); white-space:nowrap; flex-shrink:0; }",
+      ".item-days.est { font-style:italic; opacity:0.8; }",
       ".footer { margin-top:8px; font-size:0.7em; color:var(--secondary); text-align:right; }",
       ".empty-all { padding:16px 8px; font-size:0.9em; color:var(--secondary); text-align:center; }",
       "</style>",
@@ -239,6 +274,14 @@ class RecentlyInstalledUnusedCard extends HTMLElement {
     } else {
       daysStr = days + "d ago";
     }
+    // A date the integration didn't watch happen — estimated from the files on
+    // disk, which a HACS update rewrites. Marked rather than presented as fact.
+    var estimated = !!item.install_date_estimated;
+    var daysClass = estimated ? "item-days est" : "item-days";
+    var daysTitle = estimated
+      ? ' title="Estimated from the files on disk - a HACS update can reset this"'
+      : "";
+    if (estimated) { daysStr = "~" + daysStr; }
     var detail = "";
     if (detailKey && item[detailKey] != null) {
       if (detailKey === "variants") {
@@ -260,7 +303,7 @@ class RecentlyInstalledUnusedCard extends HTMLElement {
       '    <div class="item-name">' + _riu_escapeHtml(item.name || "Unknown") + "</div>",
       '    <div class="item-detail">' + _riu_escapeHtml(detail) + sep1 + repoLink + versionStr + "</div>",
       "  </div>",
-      '  <div class="item-days">' + daysStr + "</div>",
+      '  <div class="' + daysClass + '"' + daysTitle + ">" + daysStr + "</div>",
       "</div>"
     ].join("\n");
   }
@@ -269,6 +312,14 @@ class RecentlyInstalledUnusedCard extends HTMLElement {
     try {
       var d = new Date(iso);
       return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    } catch (e) {
+      return iso;
+    }
+  }
+
+  _formatDate(iso) {
+    try {
+      return new Date(iso).toLocaleDateString();
     } catch (e) {
       return iso;
     }
@@ -284,7 +335,7 @@ class RecentlyInstalledUnusedCardEditor extends HTMLElement {
   }
 
   setConfig(config) {
-    this._config = Object.assign({}, config);
+    this._config = _riu_migrateConfig(config);
     this._render();
   }
 
@@ -293,7 +344,7 @@ class RecentlyInstalledUnusedCardEditor extends HTMLElement {
   }
 
   _render() {
-    var titleVal = _riu_escapeHtml(this._config.title || "Recently Installed but Unused");
+    var titleVal = _riu_escapeHtml(this._config.title || RIU_TITLE);
     var windowVal = this._config.days_window != null ? this._config.days_window : RIU_DEFAULT_WINDOW;
     var secs = this._config.sections || RIU_ALL_SECTIONS.slice();
 
@@ -367,7 +418,7 @@ customElements.define("recently-installed-unused-card", RecentlyInstalledUnusedC
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: "recently-installed-unused-card",
-  name: "Recently Installed but Unused",
+  name: "Recently installed but unused",
   description: "Shows HACS integrations, themes and cards installed recently that are still unused",
   preview: true
 });

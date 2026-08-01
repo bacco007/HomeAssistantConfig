@@ -2,10 +2,10 @@
  * Update Action Tracker Card
  * Lists HACS integrations with pending updates and provides
  * Skip, Update, and Update & Action buttons.
- * v1.11.0
+ * v1.12.0
  */
 
-const CARD_VERSION = "1.11.0";
+const CARD_VERSION = "1.13.0";
 const UAT_DOMAIN = "custom_component_monitor";
 
 /* -- Helpers -------------------------------------------------- */
@@ -75,6 +75,7 @@ class UpdateActionTrackerCard extends HTMLElement {
     this._categoryFilter = "all"; // #67: filter by AI category
     this._categorySort = false; // #67: sort by AI category
     this._shownEntities = []; // currently-visible set, for "Update selected"
+    this._aiBusy = false; // #91: a generate_summaries call is in flight
   }
 
   /* -- Lovelace lifecycle ------------------------------------- */
@@ -122,6 +123,22 @@ class UpdateActionTrackerCard extends HTMLElement {
         // update_percentage drives the determinate progress bar (#66); include
         // it so percentage changes during an install trigger a re-render.
         parts.push(eid + "=" + s.state + "|" + (s.attributes.installed_version || "") + "|" + (s.attributes.latest_version || "") + "|" + String(prog) + "|" + String(s.attributes.update_percentage));
+      }
+    }
+    // #91: AI summaries live on sensor.hacs_updates, not on the update.*
+    // entities. Without this the card never re-renders when a summary lands.
+    // Hash the summary length (not last_scan) so an hourly no-op scan doesn't
+    // force a pointless re-render but a new summary does.
+    const sensor = this._hass.states["sensor.hacs_updates"];
+    if (sensor) {
+      const a = sensor.attributes || {};
+      parts.push("ai=" + String(a.ai_enabled) + "|" + String(a.ai_pending) + "|" + String(a.ai_in_progress));
+      for (const u of a.updates || []) {
+        parts.push(
+          "u:" + (u.entity_id || u.repository || u.name) +
+          "|" + ((u.summary || "").length) +
+          "|" + ((u.categories || []).join(","))
+        );
       }
     }
     return parts.sort().join("||");
@@ -228,19 +245,23 @@ class UpdateActionTrackerCard extends HTMLElement {
   // Build {repoKey|name -> category} from this integration's sensor.hacs_updates,
   // since the HACS update.* entities themselves carry no type/category.
   _buildTypeMap() {
-    const byRepo = {}, byName = {};
+    const byEntity = {}, byRepo = {}, byName = {};
     const s = this._hass.states["sensor.hacs_updates"];
     const updates = (s && s.attributes && s.attributes.updates) || [];
     for (const u of updates) {
       const cat = this._catOf(u.type);
+      if (u.entity_id) byEntity[u.entity_id] = cat;
       const rk = this._repoKey(u.repository);
       if (rk) byRepo[rk] = cat;
       if (u.name) byName[String(u.name).toLowerCase().trim()] = cat;
     }
-    return { byRepo, byName };
+    return { byEntity, byRepo, byName };
   }
 
   _typeOf(entityId, map) {
+    // #91: the scan now resolves the update entity itself, so prefer that exact
+    // match over the repo-URL and friendly-name heuristics.
+    if (map.byEntity && map.byEntity[entityId]) return map.byEntity[entityId];
     const a = (this._hass.states[entityId] || {}).attributes || {};
     const rk = this._repoKey(a.release_url);
     if (rk && map.byRepo[rk]) return map.byRepo[rk];
@@ -254,7 +275,7 @@ class UpdateActionTrackerCard extends HTMLElement {
   // Build {repoKey|name -> {categories, summary}} from sensor.hacs_updates,
   // which the integration enriches when AI categorisation is enabled.
   _buildAiMap() {
-    const byRepo = {}, byName = {};
+    const byEntity = {}, byRepo = {}, byName = {};
     const s = this._hass.states["sensor.hacs_updates"];
     const updates = (s && s.attributes && s.attributes.updates) || [];
     for (const u of updates) {
@@ -262,14 +283,18 @@ class UpdateActionTrackerCard extends HTMLElement {
         categories: Array.isArray(u.categories) ? u.categories : [],
         summary: u.summary || "",
       };
+      if (u.entity_id) byEntity[u.entity_id] = info;
       const rk = this._repoKey(u.repository);
       if (rk) byRepo[rk] = info;
       if (u.name) byName[String(u.name).toLowerCase().trim()] = info;
     }
-    return { byRepo, byName };
+    return { byEntity, byRepo, byName };
   }
 
   _aiOf(entityId, map) {
+    // #91: exact entity match first — the friendly-name fallback misses cases
+    // like "Jokes Update" vs the HACS name "Dad Jokes".
+    if (map.byEntity && map.byEntity[entityId]) return map.byEntity[entityId];
     const a = (this._hass.states[entityId] || {}).attributes || {};
     const rk = this._repoKey(a.release_url);
     if (rk && map.byRepo[rk]) return map.byRepo[rk];
@@ -369,6 +394,40 @@ class UpdateActionTrackerCard extends HTMLElement {
       targets.forEach((eid) => { delete this._actionInProgress[eid]; });
       this._doRender();
     }
+  }
+
+  /* -- AI summaries (#91) -------------------------------------- */
+
+  _aiRunning() {
+    const s = this._hass && this._hass.states["sensor.hacs_updates"];
+    return this._aiBusy || !!(s && s.attributes && s.attributes.ai_in_progress);
+  }
+
+  async _handleGenerateSummaries() {
+    const aiMap = this._buildAiMap();
+    // Only ask for the ones actually missing a summary — the service filters
+    // again server-side, but this keeps the request honest and cheap.
+    const targets = (this._shownEntities || []).filter(
+      (eid) => !this._aiOf(eid, aiMap).summary
+    );
+    if (!targets.length) return;
+    this._aiBusy = true;
+    this._doRender();
+    try {
+      // force: an explicit click should retry updates the automatic worker has
+      // backed off or given up on. It can't cost a redundant call — `targets`
+      // only ever holds rows that have no summary.
+      await this._hass.callService(UAT_DOMAIN, "generate_summaries", {
+        entity_ids: targets,
+        force: true,
+      });
+    } catch (_err) {
+      /* HA surfaces the failure in its own toast. */
+    }
+    this._aiBusy = false;
+    // Summaries arrive via sensor.hacs_updates; force the next push through.
+    this._lastStateHash = "";
+    this._doRender();
   }
 
   async _fetchReleaseNotes(entityId) {
@@ -504,6 +563,23 @@ class UpdateActionTrackerCard extends HTMLElement {
         "</div>";
     }
 
+    /* "Generate summaries" (#91): the AI enrichment runs in the background and
+       can leave gaps (a slow model, a transient provider error, a backed-off
+       retry). Offer an explicit way to fill them in. Only ever targets updates
+       that are actually missing a summary. */
+    const sensorAttrs = (this._hass.states["sensor.hacs_updates"] || {}).attributes || {};
+    const missingSummaries = shown.filter((eid) => !this._aiOf(eid, aiMap).summary);
+    const aiBusy = this._aiBusy || !!sensorAttrs.ai_in_progress;
+    const aiBtnHtml =
+      sensorAttrs.ai_enabled && (missingSummaries.length > 0 || aiBusy)
+        ? '<button class="btn btn-ai" data-action="generate-summaries"' +
+          (aiBusy || missingSummaries.length === 0 ? " disabled" : "") + ">" +
+          (aiBusy
+            ? "Generating…"
+            : "Generate summaries (" + missingSummaries.length + ")") +
+          "</button>"
+        : "";
+
     const badgeClass = entities.length > 0 ? "pending" : "clean";
     const badgeText = entities.length > 0
       ? entities.length + " update" + (entities.length > 1 ? "s" : "")
@@ -520,6 +596,7 @@ class UpdateActionTrackerCard extends HTMLElement {
       catFiltersHtml +
       (shown.length > 0
         ? '<div class="update-all-bar">' +
+          aiBtnHtml +
           '<button class="btn btn-update-all" data-action="update-all">' +
           (filtered
             ? 'Update selected (' + shown.length + ')'
@@ -600,6 +677,14 @@ class UpdateActionTrackerCard extends HTMLElement {
           '<div class="ai-summary">' +
           '<ha-icon icon="mdi:robot-outline"></ha-icon>' +
           '<span>' + uatEscapeHtml(ai.summary) + '</span>' +
+          '</div>';
+      } else if (this._aiRunning()) {
+        // #91: summaries land one at a time, so show which rows are still
+        // waiting rather than an unexplained blank.
+        html +=
+          '<div class="ai-summary pending">' +
+          '<ha-icon icon="mdi:robot-outline"></ha-icon>' +
+          '<span>Summarising…</span>' +
           '</div>';
       }
       html += notesHtml;
@@ -707,6 +792,7 @@ class UpdateActionTrackerCard extends HTMLElement {
         else if (action === "update") self._handleUpdate(eid);
         else if (action === "update_action") self._handleUpdateAndAction(eid);
         else if (action === "update-all") self._handleUpdateAll();
+        else if (action === "generate-summaries") self._handleGenerateSummaries();
       });
     });
     this.shadowRoot.querySelectorAll(".chip[data-filter]").forEach(function(chip) {
@@ -765,6 +851,7 @@ class UpdateActionTrackerCard extends HTMLElement {
       /* AI one-line summary in the expanded row */
       ".ai-summary { display:flex; align-items:flex-start; gap:6px; margin:0 0 8px 52px; font-size:0.85em; line-height:1.4; color:var(--uat-primary); font-style:italic; }",
       ".ai-summary ha-icon { --mdc-icon-size:16px; color:var(--uat-accent); flex-shrink:0; margin-top:1px; }",
+      ".ai-summary.pending { opacity:0.6; }",
       ".empty { display:flex; align-items:center; gap:8px; padding:16px 0; color:var(--uat-secondary); font-style:italic; }",
       ".empty ha-icon { --mdc-icon-size:24px; color:var(--uat-green); }",
       ".item { border-bottom:1px solid var(--uat-divider); }",
@@ -814,8 +901,9 @@ class UpdateActionTrackerCard extends HTMLElement {
       ".btn-skip { background:var(--uat-secondary); }",
       ".btn-update { background:var(--uat-accent); }",
       ".btn-action { background:var(--uat-green); }",
-      ".update-all-bar { display:flex; justify-content:flex-end; margin-bottom:12px; }",
+      ".update-all-bar { display:flex; justify-content:flex-end; gap:8px; margin-bottom:12px; }",
       ".btn-update-all { background:var(--uat-green); font-weight:600; }",
+      ".btn-ai { background:var(--uat-accent); margin-right:auto; }",
     ].join("\n");
   }
 }

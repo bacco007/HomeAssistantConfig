@@ -2,7 +2,7 @@
  * Custom Component Monitor Card
  * A Lovelace card that displays unused HACS components.
  */
-var CARD_VERSION = "1.11.0";
+var CARD_VERSION = "1.13.0";
 
 var ALL_SECTIONS = ["integrations", "themes", "frontend"];
 
@@ -358,7 +358,11 @@ class CustomComponentMonitorCard extends HTMLElement {
 
   _renderItem(item, detailKey) {
     var days = item.days_installed;
-    var daysStr = (days != null && days >= 0) ? (days + "d installed") : "";
+    // "~" marks a date estimated from the files on disk rather than one the
+    // integration watched happen (components installed before v1.13.0).
+    var daysStr = (days != null && days >= 0)
+      ? ((item.install_date_estimated ? "~" : "") + days + "d installed")
+      : "";
     var detail = "";
     if (detailKey && item[detailKey] != null) {
       if (detailKey === "variants") {
