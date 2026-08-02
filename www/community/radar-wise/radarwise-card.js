@@ -3,7 +3,7 @@
  * Home Assistant weather dashboard card with forecasts and optional radar.
  */
 
-const CARD_VERSION = "0.8.12";
+const CARD_VERSION = "0.8.15";
 const FORECAST_REFRESH_MS = 15 * 60 * 1000;
 const ENVIRONMENT_REFRESH_MS = 60 * 60 * 1000;
 const CARD_TYPES = ["radarwise-card", "radar-wise-card", "weatherwise-card", "weather-wise-card"];
@@ -49,6 +49,12 @@ const RADARWISE_ENVIRONMENT_SOURCES = {
   disabled: "Disabled"
 };
 
+const RADARWISE_FORECAST_MODES = {
+  auto: "Automatic (twice-daily first)",
+  daily: "Daily",
+  twice_daily: "Twice daily"
+};
+
 const RADARWISE_LAYOUTS = {
   auto: "Auto",
   wide_panel: "Wide panel",
@@ -76,6 +82,12 @@ const RADARWISE_TIME_FORMATS = {
   auto: "Auto",
   "12": "12-hour",
   "24": "24-hour"
+};
+
+const RADARWISE_TIME_ZONE_MODES = {
+  browser: "Browser / device",
+  home_assistant: "Home Assistant location",
+  custom: "Custom IANA time zone"
 };
 
 const RADARWISE_FONT_FAMILIES = {
@@ -842,6 +854,8 @@ class RadarWiseCard extends HTMLElement {
       theme_mode: "radarwise",
       units: "auto",
       language: "auto",
+      time_zone_mode: "browser",
+      time_zone: "",
       layout: "auto",
       content_mode: "full",
       density: "comfortable",
@@ -849,9 +863,15 @@ class RadarWiseCard extends HTMLElement {
       card_max_height: "",
       hourly_count: 5,
       forecast_count: 5,
+      forecast_mode: "auto",
       show_timeline: true,
       show_forecast: true,
       show_forecast_summary: true,
+      show_humidity: true,
+      show_dew_point: true,
+      show_wind: true,
+      show_sunrise: true,
+      show_sunset: true,
       show_environment: true,
       show_custom_sensors: true,
       show_radar: true,
@@ -1222,7 +1242,9 @@ class RadarWiseCard extends HTMLElement {
     const layout = String(config.layout || "auto").toLowerCase();
     const language = String(config.language || config.forecast_summary_language || "auto").toLowerCase();
     const environmentSource = String(config.environment_source || "sensors").toLowerCase();
+    const forecastMode = String(config.forecast_mode || "auto").toLowerCase();
     const timeFormat = String(config.time_format || "auto").toLowerCase();
+    const timeZoneMode = String(config.time_zone_mode || "browser").toLowerCase();
     const fontFamily = String(config.font_family || "auto").toLowerCase();
     return {
       title: "Local Weather",
@@ -1244,12 +1266,20 @@ class RadarWiseCard extends HTMLElement {
       theme_mode: themeMode,
       units,
       time_format: "auto",
+      time_zone_mode: "browser",
+      time_zone: "",
       font_family: "auto",
       hourly_count: 5,
       forecast_count: 5,
+      forecast_mode: "auto",
       show_timeline: true,
       show_forecast: true,
       show_forecast_summary: true,
+      show_humidity: true,
+      show_dew_point: true,
+      show_wind: true,
+      show_sunrise: true,
+      show_sunset: true,
       show_environment: true,
       show_custom_sensors: true,
       show_radar: true,
@@ -1274,8 +1304,11 @@ class RadarWiseCard extends HTMLElement {
       card_max_height: this._normalizeCardPixels(config.card_max_height),
       language: RADARWISE_LANGUAGES[language] ? language : "auto",
       time_format: RADARWISE_TIME_FORMATS[timeFormat] ? timeFormat : "auto",
+      time_zone_mode: RADARWISE_TIME_ZONE_MODES[timeZoneMode] ? timeZoneMode : "browser",
+      time_zone: String(config.time_zone || "").trim(),
       font_family: RADARWISE_FONT_FAMILIES[fontFamily] ? fontFamily : "auto",
       environment_source: RADARWISE_ENVIRONMENT_SOURCES[environmentSource] ? environmentSource : "sensors",
+      forecast_mode: RADARWISE_FORECAST_MODES[forecastMode] ? forecastMode : "auto",
       latitude: this._numberOr(config.latitude, undefined),
       longitude: this._numberOr(config.longitude, undefined),
       hourly_count: Math.max(1, Math.min(24, Number(config.hourly_count) || 5)),
@@ -1283,6 +1316,11 @@ class RadarWiseCard extends HTMLElement {
       show_timeline: config.show_timeline !== false,
       show_forecast: config.show_forecast !== false,
       show_forecast_summary: config.show_forecast_summary !== false,
+      show_humidity: config.show_humidity !== false,
+      show_dew_point: config.show_dew_point !== false,
+      show_wind: config.show_wind !== false,
+      show_sunrise: config.show_sunrise !== false,
+      show_sunset: config.show_sunset !== false,
       show_environment: config.show_environment !== false,
       show_radar: config.show_radar !== false,
       show_map_controls: config.show_map_controls !== false,
@@ -1431,11 +1469,20 @@ class RadarWiseCard extends HTMLElement {
         this._config.units,
         this._language(),
         this._config.time_format,
+        this._config.time_zone_mode,
+        this._config.time_zone,
+        this._resolvedTimeZone(),
         this._config.font_family,
         this._config.show_radar,
         this._config.show_timeline,
         this._config.show_forecast,
         this._config.show_forecast_summary,
+        this._config.forecast_mode,
+        this._config.show_humidity,
+        this._config.show_dew_point,
+        this._config.show_wind,
+        this._config.show_sunrise,
+        this._config.show_sunset,
         this._config.show_environment,
         this._config.show_custom_sensors,
         this._config.radar_controls,
@@ -1577,6 +1624,16 @@ class RadarWiseCard extends HTMLElement {
     return next;
   }
 
+  _mainForecastPeriods(hourly = [], daily = [], twiceDaily = []) {
+    if (this._config.forecast_mode === "daily") {
+      return daily.length ? daily : twiceDaily.length ? twiceDaily : hourly;
+    }
+    if (this._config.forecast_mode === "twice_daily") {
+      return twiceDaily.length ? twiceDaily : daily.length ? daily : hourly;
+    }
+    return twiceDaily.length ? twiceDaily : daily.length ? daily : hourly;
+  }
+
   _render() {
     if (!this.shadowRoot) return;
     this._stopTimelineScroll();
@@ -1600,7 +1657,7 @@ class RadarWiseCard extends HTMLElement {
     const dewPoint = dewPointInfo.display;
     const timeline = hourly.length ? hourly : twiceDaily.length ? twiceDaily : daily;
     const timelineMode = hourly.length ? "hourly" : twiceDaily.length ? "twice_daily" : daily.length ? "daily" : "hourly";
-    const mainPeriods = twiceDaily.length ? twiceDaily : daily.length ? daily : hourly;
+    const mainPeriods = this._mainForecastPeriods(hourly, daily, twiceDaily);
     const hiLo = this._formatHiLo(daily, hourly, units);
     const sun = sunStateObj?.attributes || {};
     const now = new Date();
@@ -1675,14 +1732,7 @@ class RadarWiseCard extends HTMLElement {
                   </div>
                 ` : ""}
                 ${content.forecast ? `<div class="daily-strip">${this._renderDaily(mainPeriods, units)}</div>` : ""}
-                ${content.stats ? this._renderDetailsGrid([
-                  this._stat("humidity", text.humidity, `${humidity}%`),
-                  this._stat("dewpoint", text.dewPoint, dewPoint),
-                  this._stat("wind", text.wind, wind),
-                  this._stat("sunrise", text.sunrise, this._shortTime(sun.next_rising)),
-                  this._stat("sunset", text.sunset, this._shortTime(sun.next_setting)),
-                  ...this._customSensorTiles()
-                ]) : ""}
+                ${content.stats ? this._renderDetailsGrid(this._weatherDetailTiles({ text, humidity, dewPoint, wind, sun })) : ""}
               </section>
             ` : ""}
             ${content.right ? `
@@ -1816,13 +1866,14 @@ class RadarWiseCard extends HTMLElement {
       ["Weed pollen entity", this._config.weed_pollen_entity || "none"],
       ["Mold pollen entity", this._config.mold_pollen_entity || "none"],
       ["Environment source", this._config.environment_source || "sensors"],
-      ["Environment updated", this._environmentData?.loaded ? new Date(this._environmentData.loaded).toLocaleString() : "never"],
+      ["Environment updated", this._environmentData?.loaded ? this._dateTime(this._environmentData.loaded) : "never"],
       ["Environment error", this._environmentData?.error || "none"],
       ["Country", this._config.country],
       ["Radar", data.provider],
       ["Content mode", this._config.content_mode],
       ["Density", this._config.density],
       ["Time format", this._config.time_format],
+      ["Time zone", this._timeZoneLabel()],
       ["Font family", this._config.font_family],
       ["Units", data.units.temperatureUnit],
       ["Hourly count", data.hourly.length],
@@ -2113,6 +2164,17 @@ class RadarWiseCard extends HTMLElement {
   _renderDetailsGrid(tiles = []) {
     const rendered = tiles.filter(Boolean).join("");
     return rendered ? `<div class="details-grid">${rendered}</div>` : "";
+  }
+
+  _weatherDetailTiles({ text, humidity, dewPoint, wind, sun = {} }) {
+    return [
+      this._config.show_humidity !== false ? this._stat("humidity", text.humidity, `${humidity}%`) : "",
+      this._config.show_dew_point !== false ? this._stat("dewpoint", text.dewPoint, dewPoint) : "",
+      this._config.show_wind !== false ? this._stat("wind", text.wind, wind) : "",
+      this._config.show_sunrise !== false ? this._stat("sunrise", text.sunrise, this._shortTime(sun.next_rising)) : "",
+      this._config.show_sunset !== false ? this._stat("sunset", text.sunset, this._shortTime(sun.next_setting)) : "",
+      ...this._customSensorTiles()
+    ];
   }
 
   _customSensorTiles() {
@@ -3495,26 +3557,83 @@ class RadarWiseCard extends HTMLElement {
   }
 
   _clockTime(date) {
-    if (this._uses24HourTime()) return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-    return `${(date.getHours() % 12) || 12}:${String(date.getMinutes()).padStart(2, "0")}`;
+    const parts = this._timeParts(date);
+    if (!parts) return "--";
+    if (this._uses24HourTime()) return `${String(parts.hour).padStart(2, "0")}:${String(parts.minute).padStart(2, "0")}`;
+    return `${(parts.hour % 12) || 12}:${String(parts.minute).padStart(2, "0")}`;
   }
 
   _clockAmPm(date) {
-    return this._uses24HourTime() ? "" : date.getHours() >= 12 ? this._t("pm") : this._t("am");
+    const parts = this._timeParts(date);
+    return this._uses24HourTime() || !parts ? "" : parts.hour >= 12 ? this._t("pm") : this._t("am");
   }
 
   _shortTime(dateLike) {
-    const date = new Date(dateLike);
-    if (Number.isNaN(date.getTime())) return "--";
-    if (this._uses24HourTime()) return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-    return `${(date.getHours() % 12) || 12}:${String(date.getMinutes()).padStart(2, "0")} ${date.getHours() >= 12 ? this._t("pm") : this._t("am")}`;
+    const parts = this._timeParts(dateLike);
+    if (!parts) return "--";
+    if (this._uses24HourTime()) return `${String(parts.hour).padStart(2, "0")}:${String(parts.minute).padStart(2, "0")}`;
+    return `${(parts.hour % 12) || 12}:${String(parts.minute).padStart(2, "0")} ${parts.hour >= 12 ? this._t("pm") : this._t("am")}`;
   }
 
   _hour(dateLike) {
-    const date = new Date(dateLike);
+    const parts = this._timeParts(dateLike);
+    if (!parts) return "--";
+    if (this._uses24HourTime()) return `${String(parts.hour).padStart(2, "0")}:00`;
+    return `${(parts.hour % 12) || 12} ${parts.hour >= 12 ? this._t("pm") : this._t("am")}`;
+  }
+
+  _resolvedTimeZone() {
+    const mode = String(this._config.time_zone_mode || "browser");
+    if (mode === "home_assistant") return this._validTimeZone(this._hass?.config?.time_zone);
+    if (mode === "custom") return this._validTimeZone(this._config.time_zone);
+    return undefined;
+  }
+
+  _validTimeZone(value) {
+    const timeZone = String(value || "").trim();
+    if (!timeZone) return undefined;
+    try {
+      new Intl.DateTimeFormat("en-US", { timeZone }).format(new Date(0));
+      return timeZone;
+    } catch (err) {
+      return undefined;
+    }
+  }
+
+  _timeZoneOptions(options = {}) {
+    const timeZone = this._resolvedTimeZone();
+    return timeZone ? { ...options, timeZone } : options;
+  }
+
+  _timeParts(dateLike) {
+    const date = dateLike instanceof Date ? dateLike : new Date(dateLike);
+    if (Number.isNaN(date.getTime())) return null;
+    const parts = new Intl.DateTimeFormat("en-US", this._timeZoneOptions({
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23"
+    })).formatToParts(date);
+    const valueFor = (type) => Number(parts.find((part) => part.type === type)?.value);
+    const hour = valueFor("hour");
+    const minute = valueFor("minute");
+    return Number.isFinite(hour) && Number.isFinite(minute) ? { hour, minute } : null;
+  }
+
+  _timeZoneLabel() {
+    const configured = this._resolvedTimeZone();
+    if (configured) return configured;
+    const browser = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const mode = String(this._config.time_zone_mode || "browser");
+    return mode === "browser" ? (browser || "browser local") : `${browser || "browser local"} (fallback)`;
+  }
+
+  _dateTime(dateLike) {
+    const date = dateLike instanceof Date ? dateLike : new Date(dateLike);
     if (Number.isNaN(date.getTime())) return "--";
-    if (this._uses24HourTime()) return `${String(date.getHours()).padStart(2, "0")}:00`;
-    return `${(date.getHours() % 12) || 12} ${date.getHours() >= 12 ? this._t("pm") : this._t("am")}`;
+    return new Intl.DateTimeFormat(this._localeCode(), this._timeZoneOptions({
+      dateStyle: "short",
+      timeStyle: "short"
+    })).format(date);
   }
 
   _uses24HourTime() {
@@ -3537,16 +3656,16 @@ class RadarWiseCard extends HTMLElement {
   _dayName(dateLike) {
     const date = new Date(dateLike);
     if (Number.isNaN(date.getTime())) return "--";
-    return new Intl.DateTimeFormat(this._localeCode(), { weekday: "short" }).format(date);
+    return new Intl.DateTimeFormat(this._localeCode(), this._timeZoneOptions({ weekday: "short" })).format(date);
   }
 
   _longDate(date) {
-    return new Intl.DateTimeFormat(this._localeCode(), {
+    return new Intl.DateTimeFormat(this._localeCode(), this._timeZoneOptions({
       weekday: "long",
       month: "long",
       day: "numeric",
       year: "numeric"
-    }).format(date);
+    })).format(date);
   }
 
   _titleCase(text) {
@@ -3927,13 +4046,13 @@ class RadarWiseCardEditor extends HTMLElement {
 
   _setValue(key, value) {
     const numberKeys = ["latitude", "longitude", "hourly_count", "forecast_count", "card_height", "card_max_height", "radar_zoom", "radar_speed"];
-    const booleanKeys = ["show_radar", "show_map_controls", "radar_controls", "show_warning_overlay", "show_animations", "show_timeline", "show_forecast", "show_forecast_summary", "show_environment", "show_custom_sensors", "timeline_autoscroll"];
+    const booleanKeys = ["show_radar", "show_map_controls", "radar_controls", "show_warning_overlay", "show_animations", "show_timeline", "show_forecast", "show_forecast_summary", "show_humidity", "show_dew_point", "show_wind", "show_sunrise", "show_sunset", "show_environment", "show_custom_sensors", "timeline_autoscroll"];
     let nextValue = value;
     if (numberKeys.includes(key)) nextValue = value === "" ? undefined : Number(value);
     if (booleanKeys.includes(key)) nextValue = Boolean(value);
-    const switchesToCustom = ["show_radar", "show_timeline", "show_forecast", "show_forecast_summary", "show_environment", "show_custom_sensors"].includes(key);
+    const switchesToCustom = ["show_radar", "show_timeline", "show_forecast", "show_forecast_summary", "show_humidity", "show_dew_point", "show_wind", "show_sunrise", "show_sunset", "show_environment", "show_custom_sensors"].includes(key);
     const fullPresetDefaults = key === "content_mode" && nextValue === "full"
-      ? { show_radar: true, show_timeline: true, show_forecast: true, show_forecast_summary: true, show_environment: true, show_custom_sensors: true }
+      ? { show_radar: true, show_timeline: true, show_forecast: true, show_forecast_summary: true, show_humidity: true, show_dew_point: true, show_wind: true, show_sunrise: true, show_sunset: true, show_environment: true, show_custom_sensors: true }
       : {};
     this._config = { ...this._config, ...fullPresetDefaults, ...(switchesToCustom ? { content_mode: "custom" } : {}), [key]: nextValue };
     this.dispatchEvent(new CustomEvent("config-changed", {
@@ -4188,9 +4307,16 @@ class RadarWiseCardEditor extends HTMLElement {
           <div class="hint">Use Home Assistant sensors for fully entity-driven data, or Open-Meteo for no-key AQI, UV index, and pollen using the radar latitude/longitude. Open-Meteo does not provide mold; mold remains sensor-only.</div>
         </div>
         <div class="section">
-          <div class="section-title">Optional detail blocks</div>
-          <div class="hint" style="margin-top:0">Add up to three Home Assistant sensors in the visual editor. They render below Humidity, Dew Point, Wind, Sunrise, and Sunset in the weather details area. YAML can define up to six.</div>
-          <label class="check" style="margin-top:10px"><input id="show_custom_sensors" type="checkbox" ${config.show_custom_sensors === false ? "" : "checked"}> Show optional detail blocks</label>
+          <div class="section-title">Weather detail tiles</div>
+          <div class="hint" style="margin-top:0">Choose which built-in weather details appear, then add up to three Home Assistant sensors in the visual editor. YAML can define up to six optional sensors.</div>
+          <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+            <label class="check"><input id="show_humidity" type="checkbox" ${config.show_humidity === false ? "" : "checked"}> Show humidity</label>
+            <label class="check"><input id="show_dew_point" type="checkbox" ${config.show_dew_point === false ? "" : "checked"}> Show dew point</label>
+            <label class="check"><input id="show_wind" type="checkbox" ${config.show_wind === false ? "" : "checked"}> Show wind</label>
+            <label class="check"><input id="show_sunrise" type="checkbox" ${config.show_sunrise === false ? "" : "checked"}> Show sunrise</label>
+            <label class="check"><input id="show_sunset" type="checkbox" ${config.show_sunset === false ? "" : "checked"}> Show sunset</label>
+          </div>
+          <label class="check" style="margin-top:10px"><input id="show_custom_sensors" type="checkbox" ${config.show_custom_sensors === false ? "" : "checked"}> Show custom sensor blocks</label>
           ${customSensorSlots.map((sensor, index) => {
             const selected = sensor?.entity || "";
             const configuredCustomOption = selected && !customSensorEntities.some(([entityId]) => entityId === selected)
@@ -4273,6 +4399,12 @@ class RadarWiseCardEditor extends HTMLElement {
                 ${Object.entries(RADARWISE_TIME_FORMATS).map(([value, label]) => `<option value="${value}" ${(config.time_format || "auto") === value ? "selected" : ""}>${label}</option>`).join("")}
               </select>
             </label>
+            <label>Time zone source
+              <select id="time_zone_mode">
+                ${Object.entries(RADARWISE_TIME_ZONE_MODES).map(([value, label]) => `<option value="${value}" ${(config.time_zone_mode || "browser") === value ? "selected" : ""}>${label}</option>`).join("")}
+              </select>
+            </label>
+            <label>Custom time zone <input id="time_zone" value="${_wwEscape(config.time_zone || "")}" placeholder="America/New_York"></label>
             <label>Font
               <select id="font_family">
                 ${Object.entries(RADARWISE_FONT_FAMILIES).map(([value, label]) => `<option value="${value}" ${(config.font_family || "auto") === value ? "selected" : ""}>${label}</option>`).join("")}
@@ -4285,7 +4417,13 @@ class RadarWiseCardEditor extends HTMLElement {
             </label>
             <label>Forecast list rows <input id="hourly_count" type="number" min="1" max="24" value="${_wwEscape(config.hourly_count || 5)}"></label>
             <label>Forecast cards <input id="forecast_count" type="number" min="1" max="7" value="${_wwEscape(config.forecast_count || 5)}"></label>
+            <label>Forecast card frequency
+              <select id="forecast_mode">
+                ${Object.entries(RADARWISE_FORECAST_MODES).map(([value, label]) => `<option value="${value}" ${(config.forecast_mode || "auto") === value ? "selected" : ""}>${label}</option>`).join("")}
+              </select>
+            </label>
           </div>
+          <div class="hint">The custom time zone uses an IANA name such as America/New_York and applies only when Custom is selected. Invalid or unavailable zones safely fall back to browser time. Daily and twice-daily choices are preferences; RadarWise falls back automatically when the weather provider does not supply the selected forecast type.</div>
           <div class="layout-label">Content focus</div>
           <div class="layout-picker">
             ${Object.entries({
@@ -4471,10 +4609,10 @@ class RadarWiseCardEditor extends HTMLElement {
         </div>
       </div>
     `;
-    ["entity", "temperature_entity", "humidity_entity", "dew_point_entity", "wind_speed_entity", "wind_direction_entity", "air_quality_entity", "uv_index_entity", "pollen_entity", "tree_pollen_entity", "grass_pollen_entity", "weed_pollen_entity", "mold_pollen_entity", "environment_source", "country", "radar_provider", "radar_style", "radar_basemap", "radar_timeline", "title", "units", "theme_mode", "language", "time_format", "font_family", "density", "latitude", "longitude", "hourly_count", "forecast_count", "card_height", "card_max_height", "radar_zoom", "radar_speed"].forEach((id) => {
+    ["entity", "temperature_entity", "humidity_entity", "dew_point_entity", "wind_speed_entity", "wind_direction_entity", "air_quality_entity", "uv_index_entity", "pollen_entity", "tree_pollen_entity", "grass_pollen_entity", "weed_pollen_entity", "mold_pollen_entity", "environment_source", "country", "radar_provider", "radar_style", "radar_basemap", "radar_timeline", "title", "units", "theme_mode", "language", "time_format", "time_zone_mode", "time_zone", "font_family", "density", "latitude", "longitude", "hourly_count", "forecast_count", "forecast_mode", "card_height", "card_max_height", "radar_zoom", "radar_speed"].forEach((id) => {
       this.shadowRoot.getElementById(id)?.addEventListener("change", (event) => this._setValue(id, event.target.value));
     });
-    ["show_radar", "show_map_controls", "radar_controls", "show_warning_overlay", "show_animations", "show_timeline", "show_forecast", "show_forecast_summary", "show_environment", "show_custom_sensors", "timeline_autoscroll"].forEach((id) => {
+    ["show_radar", "show_map_controls", "radar_controls", "show_warning_overlay", "show_animations", "show_timeline", "show_forecast", "show_forecast_summary", "show_humidity", "show_dew_point", "show_wind", "show_sunrise", "show_sunset", "show_environment", "show_custom_sensors", "timeline_autoscroll"].forEach((id) => {
       this.shadowRoot.getElementById(id)?.addEventListener("change", (event) => this._setValue(id, event.target.checked));
     });
     this.shadowRoot.querySelectorAll("[data-custom-sensor-index][data-custom-sensor-field]").forEach((input) => {
