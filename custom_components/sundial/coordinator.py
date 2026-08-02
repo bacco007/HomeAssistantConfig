@@ -87,6 +87,21 @@ _RGB_MODES = frozenset(
     }
 )
 
+# Why a light is under manual control, for the panel's status section.
+MANUAL_EXPLICIT_TURN_ON = "explicit_turn_on"
+MANUAL_DIVERGED = "diverged"
+MANUAL_TURNED_ON_WHILE_OFF = "turned_on_while_scheduled_off"
+MANUAL_SERVICE = "service"
+
+# What the last adaptation pass did with a light, for the status section.
+OUTCOME_APPLIED = "applied"
+OUTCOME_TURNED_OFF = "turned_off"
+OUTCOME_DISABLED = "skipped_disabled"
+OUTCOME_MANUAL = "skipped_manual"
+OUTCOME_NO_STATE = "skipped_no_state"
+OUTCOME_AT_TARGET = "skipped_at_target"
+OUTCOME_LIGHT_OFF = "skipped_light_off"
+
 
 @dataclass
 class LightRuntime:
@@ -98,6 +113,14 @@ class LightRuntime:
     # Monotonic deadline until which our own write is still settling, so the
     # light's resulting state report isn't read as a manual override.
     settle_deadline: float = 0.0
+    # Diagnostics for the panel's status section. All wall-clock UTC, all
+    # in-memory: they describe what just happened, not what to restore.
+    manual_reason: str | None = None
+    manual_since: datetime | None = None
+    auto_reset_at: datetime | None = None
+    last_applied_at: datetime | None = None
+    last_evaluated_at: datetime | None = None
+    last_outcome: str | None = None
 
 
 class SundialCoordinator:
@@ -132,6 +155,12 @@ class SundialCoordinator:
         # apart from manual changes. Bounded to avoid unbounded growth.
         self._our_contexts: deque[str] = deque(maxlen=1024)
         self._our_context_set: set[str] = set()
+
+        # Diagnostics for the panel's status section: when the last full pass
+        # ran, and the instant the interval timer was armed (its ticks are
+        # multiples of the interval from there, so the next one is derivable).
+        self._last_pass_at: datetime | None = None
+        self._interval_anchor: datetime | None = None
 
     # --- configuration accessors --------------------------------------------
 
@@ -214,6 +243,7 @@ class SundialCoordinator:
         if self._unsub_interval:
             self._unsub_interval()
         self._interval_seconds = self.settings.interval
+        self._interval_anchor = dt_util.utcnow()
         self._unsub_interval = async_track_time_interval(
             self.hass,
             self._handle_interval,
@@ -252,6 +282,7 @@ class SundialCoordinator:
     async def async_adapt_all(self) -> None:
         async with self._adapt_lock:
             now = dt_util.utcnow()
+            self._last_pass_at = now
             drives = self._sun_drives(self.data.active_schema.sun, now)
             for entity_id in self._lights:
                 await self.async_adapt_one(entity_id, now=now, drives=drives)
@@ -311,18 +342,22 @@ class SundialCoordinator:
         initial: bool = False,
         allow_turn_on: bool = False,
     ) -> None:
-        if not self.enabled:
-            return
         rt = self._runtime.get(entity_id)
         if rt is None:
             return
+        if now is None:
+            now = dt_util.utcnow()
+        rt.last_evaluated_at = now
+        if not self.enabled:
+            rt.last_outcome = OUTCOME_DISABLED
+            return
         if rt.manual_control and not force:
+            rt.last_outcome = OUTCOME_MANUAL
             return
         state = self.hass.states.get(entity_id)
         if state is None:
+            rt.last_outcome = OUTCOME_NO_STATE
             return
-        if now is None:
-            now = dt_util.utcnow()
         target = self._compute_target(entity_id, now, drives)
         if (
             initial
@@ -333,7 +368,10 @@ class SundialCoordinator:
             # user — their intent wins. Flag it manual so the periodic pass
             # doesn't switch it off either; auto-reset (if configured) hands
             # it back to the schedule later.
-            self._set_manual_control(entity_id, True)
+            self._set_manual_control(
+                entity_id, True, reason=MANUAL_TURNED_ON_WHILE_OFF
+            )
+            rt.last_outcome = OUTCOME_MANUAL
             return
         if (
             not force
@@ -343,7 +381,11 @@ class SundialCoordinator:
             and target == rt.last_target
             and self._already_at_target(state, target)
         ):
-            return  # nothing changed since our last write; skip the re-send
+            # Nothing changed since our last write; skip the re-send.
+            rt.last_outcome = (
+                OUTCOME_AT_TARGET if state.state == STATE_ON else OUTCOME_LIGHT_OFF
+            )
+            return
         light_cfg = self.data.active_schema.light_config(entity_id)
         # Turn-on, forced apply and preview-off snap quickly; the periodic
         # interval pass eases over the longer transition.
@@ -352,6 +394,7 @@ class SundialCoordinator:
             if (force or initial)
             else self.settings.transition
         )
+        scheduled_off = target.brightness_pct is not None and target.brightness_pct <= 0
         if await self._drive_light(
             entity_id,
             light_cfg,
@@ -361,8 +404,14 @@ class SundialCoordinator:
             allow_turn_on,
         ):
             rt.last_target = target
+            rt.last_applied_at = now
+            rt.last_outcome = OUTCOME_TURNED_OFF if scheduled_off else OUTCOME_APPLIED
             rt.settle_deadline = self.hass.loop.time() + transition + SETTLE_GRACE
             self._last_preview_targets.pop(entity_id, None)
+        else:
+            # _drive_light declined: the light is off and we never switch one on
+            # just to adapt it (or to realise a scheduled 0%).
+            rt.last_outcome = OUTCOME_LIGHT_OFF
 
     def _compute_target(
         self,
@@ -374,7 +423,7 @@ class SundialCoordinator:
         if drives is None:
             drives = self._sun_drives(schema.sun, now)
         light_cfg = schema.light_config(entity_id)
-        return engine.light_target(light_cfg, schema.sun, drives, _local_hour(now))
+        return engine.light_target(light_cfg, schema.sun, drives, local_hour(now))
 
     def _already_at_target(self, state, target: Target) -> bool:
         """Whether re-sending ``target`` would be a no-op.
@@ -643,7 +692,7 @@ class SundialCoordinator:
         if self.settings.take_over_control and self._is_significant_change(
             entity_id, new_state
         ):
-            self._set_manual_control(entity_id, True)
+            self._set_manual_control(entity_id, True, reason=MANUAL_DIVERGED)
 
     def _is_significant_change(self, entity_id: str, new_state) -> bool:
         rt = self._runtime.get(entity_id)
@@ -665,19 +714,34 @@ class SundialCoordinator:
     def note_manual_turn_on(self, entity_id: str) -> None:
         """Flag a light as manually controlled (called by the interceptor)."""
         if entity_id in self._runtime and self.settings.take_over_control:
-            self._set_manual_control(entity_id, True)
+            self._set_manual_control(
+                entity_id, True, reason=MANUAL_EXPLICIT_TURN_ON
+            )
 
     @callback
-    def _set_manual_control(self, entity_id: str, manual: bool) -> None:
+    def _set_manual_control(
+        self, entity_id: str, manual: bool, reason: str | None = None
+    ) -> None:
         rt = self._runtime.get(entity_id)
         if rt is None:
             return
         changed = rt.manual_control != manual
         rt.manual_control = manual
 
+        if manual:
+            rt.manual_reason = reason
+            # "Manual since" dates from the first manual event of the run, not
+            # from every re-arm — the auto-reset window slides, this doesn't.
+            if changed or rt.manual_since is None:
+                rt.manual_since = dt_util.utcnow()
+        else:
+            rt.manual_reason = None
+            rt.manual_since = None
+
         if rt.auto_reset_unsub:
             rt.auto_reset_unsub()
             rt.auto_reset_unsub = None
+        rt.auto_reset_at = None
 
         # (Re)armed on every manual event, not only the first, so the reset
         # counts from the *last* manual change — a sliding window.
@@ -686,6 +750,9 @@ class SundialCoordinator:
                 self.hass,
                 self.settings.autoreset_control,
                 partial(self._auto_reset, entity_id),
+            )
+            rt.auto_reset_at = dt_util.utcnow() + timedelta(
+                seconds=self.settings.autoreset_control
             )
 
         if not changed:
@@ -704,11 +771,63 @@ class SundialCoordinator:
 
     def set_manual_control(self, entity_id: str, manual: bool) -> None:
         """Public setter used by the ``sundial.set_manual_control`` service."""
-        self._set_manual_control(entity_id, manual)
+        self._set_manual_control(entity_id, manual, reason=MANUAL_SERVICE)
 
     def supports_rgb(self, entity_id: str) -> bool:
         """Whether the light can take an RGB colour (for the web-ui editor)."""
         return self._supported_modes(entity_id)[2]
+
+    # --- diagnostics (the web-ui status section) ----------------------------
+
+    def runtime(self, entity_id: str) -> LightRuntime | None:
+        """The live per-light runtime state, for the panel's status section."""
+        return self._runtime.get(entity_id)
+
+    def supported_modes(self, entity_id: str) -> tuple[bool, bool, bool]:
+        """(supports_brightness, supports_color_temp, supports_rgb)."""
+        return self._supported_modes(entity_id)
+
+    def compute_target(self, entity_id: str, now: datetime) -> Target:
+        """What the active schema wants for ``entity_id`` at ``now``."""
+        return self._compute_target(entity_id, now)
+
+    def is_settling(self, entity_id: str) -> bool:
+        """Whether our last write to ``entity_id`` is still settling."""
+        rt = self._runtime.get(entity_id)
+        return rt is not None and self.hass.loop.time() < rt.settle_deadline
+
+    def sun_state(
+        self, sun: SunConfig, now: datetime
+    ) -> tuple[engine.SunSnapshot, DriveSignal]:
+        """The sun's snapshot and drive signal at this exact moment.
+
+        :meth:`_sun_drives` samples the 24 whole hours for the timeline; this is
+        the single-moment variant the status section needs.
+        """
+        snap = engine.sun_snapshot(now, self._sun_events(sun, now))
+        return snap, engine.sun_drive(now, snap, sun)
+
+    @property
+    def last_pass_at(self) -> datetime | None:
+        """When the last full adaptation pass ran."""
+        return self._last_pass_at
+
+    @property
+    def next_pass_at(self) -> datetime | None:
+        """When the interval timer fires next (ticks are multiples of the
+        interval from the moment it was armed)."""
+        if self._interval_anchor is None or not self._interval_seconds:
+            return None
+        elapsed = (dt_util.utcnow() - self._interval_anchor).total_seconds()
+        ticks = int(elapsed // self._interval_seconds) + 1
+        return self._interval_anchor + timedelta(
+            seconds=ticks * self._interval_seconds
+        )
+
+    @property
+    def pass_running(self) -> bool:
+        """Whether an adaptation/preview pass is in flight right now."""
+        return self._adapt_lock.locked()
 
     # --- web-ui timeline + stepping preview ---------------------------------
 
@@ -762,7 +881,7 @@ class SundialCoordinator:
             return targets
 
 
-def _local_hour(now: datetime) -> float:
+def local_hour(now: datetime) -> float:
     """Fractional local hour-of-day (0..24) for ``now``."""
     local = dt_util.as_local(now)
     return local.hour + local.minute / 60.0 + local.second / 3600.0

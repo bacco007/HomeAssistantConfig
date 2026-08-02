@@ -7,18 +7,29 @@ coordinator so the running adaptation reflects changes immediately.
 
 from __future__ import annotations
 
+from datetime import datetime
 import hashlib
 import os
 
 from homeassistant.components import frontend, websocket_api
 from homeassistant.components.http import StaticPathConfig
+from homeassistant.components.light import (
+    ATTR_BRIGHTNESS,
+    ATTR_COLOR_MODE,
+    ATTR_COLOR_TEMP_KELVIN,
+    ATTR_RGB_COLOR,
+    ATTR_SUPPORTED_COLOR_MODES,
+)
+from homeassistant.const import STATE_UNAVAILABLE, STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import area_registry as ar
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
 from homeassistant.loader import async_get_integration
+import homeassistant.util.dt as dt_util
 import voluptuous as vol
 
+from . import engine
 from .const import (
     DEFAULT_SCHEMA_ID,
     DOMAIN,
@@ -28,7 +39,8 @@ from .const import (
     PANEL_TITLE,
     PANEL_URL_PATH,
 )
-from .coordinator import SundialCoordinator, get_coordinator
+from .coordinator import SundialCoordinator, get_coordinator, local_hour
+from .engine import Target
 from .models import GlobalSettings, Schema, StoreData
 
 # The manifest version, resolved once at panel setup (single instance) so the
@@ -110,12 +122,17 @@ def _lights_payload(hass: HomeAssistant, coordinator: SundialCoordinator) -> lis
             if area_id and (area := area_reg.async_get_area(area_id)):
                 area_name = area.name
         attrs = state.attributes if state else {}
+        _, supports_color_temp, supports_rgb = coordinator.supported_modes(entity_id)
         lights.append(
             {
                 "entity_id": entity_id,
                 "name": state.name if state else entity_id,
                 "area_name": area_name,
-                "supports_rgb": coordinator.supports_rgb(entity_id),
+                "supports_rgb": supports_rgb,
+                # A light that can render neither a colour temperature nor an
+                # RGB colour only takes brightness — the editor hides its
+                # colour controls and the timeline drops the warmth colouring.
+                "supports_color_temp": supports_color_temp,
                 # The bulb's own supported colour-temperature range (None for
                 # RGB-only lights or while unavailable) — the editor uses it
                 # as the default bounds.
@@ -149,6 +166,155 @@ def _config_payload(hass: HomeAssistant, coordinator: SundialCoordinator) -> dic
     }
 
 
+def _iso(value: datetime | None) -> str | None:
+    return value.isoformat() if value is not None else None
+
+
+def _values_payload(
+    brightness_pct: int | None,
+    color_temp_kelvin: int | None,
+    rgb_color=None,
+) -> dict:
+    return {
+        "brightness_pct": brightness_pct,
+        "color_temp_kelvin": color_temp_kelvin,
+        "rgb_color": list(rgb_color) if rgb_color else None,
+    }
+
+
+def _target_payload(target: Target | None) -> dict | None:
+    if target is None:
+        return None
+    return _values_payload(
+        target.brightness_pct, target.color_temp_kelvin, target.rgb_color
+    )
+
+
+def _reported_payload(state) -> dict:
+    """What the light itself currently reports, in our own units."""
+    attrs = state.attributes if state else {}
+    brightness = attrs.get(ATTR_BRIGHTNESS)
+    payload = _values_payload(
+        round(brightness / 255 * 100) if brightness is not None else None,
+        attrs.get(ATTR_COLOR_TEMP_KELVIN),
+        attrs.get(ATTR_RGB_COLOR),
+    )
+    payload["color_mode"] = attrs.get(ATTR_COLOR_MODE)
+    return payload
+
+
+def _light_status(
+    hass: HomeAssistant, coordinator: SundialCoordinator, entity_id: str, now: datetime
+) -> dict:
+    state = hass.states.get(entity_id)
+    rt = coordinator.runtime(entity_id)
+    brightness, color_temp, rgb = coordinator.supported_modes(entity_id)
+    cfg = coordinator.data.active_schema.light_config(entity_id)
+    attrs = state.attributes if state else {}
+    return {
+        "state": state.state if state else None,
+        "manual_control": bool(rt and rt.manual_control),
+        "manual_reason": rt.manual_reason if rt else None,
+        "manual_since": _iso(rt.manual_since if rt else None),
+        "auto_reset_at": _iso(rt.auto_reset_at if rt else None),
+        "target": _target_payload(coordinator.compute_target(entity_id, now)),
+        "reported": _reported_payload(state),
+        "last_applied": _target_payload(rt.last_target if rt else None),
+        "last_applied_at": _iso(rt.last_applied_at if rt else None),
+        "last_evaluated_at": _iso(rt.last_evaluated_at if rt else None),
+        "last_outcome": rt.last_outcome if rt else None,
+        "settling": coordinator.is_settling(entity_id),
+        "supports": {
+            "brightness": brightness,
+            "color_temp": color_temp,
+            "rgb": rgb,
+        },
+        "supported_color_modes": list(attrs.get(ATTR_SUPPORTED_COLOR_MODES) or []),
+        "config": {
+            "min_brightness": cfg.min_brightness,
+            "max_brightness": cfg.max_brightness,
+            "min_color_temp": cfg.min_color_temp,
+            "max_color_temp": cfg.max_color_temp,
+            "limit_mode": cfg.limit_mode,
+            "render_mode": cfg.render_mode,
+            "separate_turn_on_commands": cfg.separate_turn_on_commands,
+        },
+    }
+
+
+def _sun_status(
+    hass: HomeAssistant, coordinator: SundialCoordinator, now: datetime
+) -> dict:
+    sun = coordinator.data.active_schema.sun
+    snap, drive = coordinator.sun_state(sun, now)
+    sun_brightness, sun_color_temp = engine.drive_to_values(
+        drive,
+        sun.min_brightness,
+        sun.max_brightness,
+        sun.min_color_temp,
+        sun.max_color_temp,
+    )
+    settings = coordinator.settings
+    custom_coords = (
+        settings.sun_latitude is not None and settings.sun_longitude is not None
+    )
+    return {
+        "position": round(snap.position, 4),
+        "is_day": snap.is_day,
+        "nearest_sunrise": _iso(snap.nearest_sunrise),
+        "nearest_sunset": _iso(snap.nearest_sunset),
+        "sunrise_source": "fixed" if sun.sunrise_time else "astral",
+        "sunset_source": "fixed" if sun.sunset_time else "astral",
+        "latitude": settings.sun_latitude if custom_coords else hass.config.latitude,
+        "longitude": settings.sun_longitude if custom_coords else hass.config.longitude,
+        "coordinates_source": "settings" if custom_coords else "home",
+        "drive": {
+            "brightness": round(drive.brightness, 4),
+            "warmth": round(drive.warmth, 4),
+        },
+        "values": _values_payload(
+            int(round(sun_brightness)), int(round(sun_color_temp / 5) * 5)
+        ),
+    }
+
+
+def _status_payload(hass: HomeAssistant, coordinator: SundialCoordinator) -> dict:
+    """A live snapshot of what the integration is doing, for the panel's
+    per-item Status section. Read-only and never persisted."""
+    now = dt_util.utcnow()
+    schema = coordinator.data.active_schema
+    lights = {
+        entity_id: _light_status(hass, coordinator, entity_id, now)
+        for entity_id in coordinator.controlled_lights
+    }
+    return {
+        "now": now.isoformat(),
+        "local_hour": round(local_hour(now), 4),
+        "sun": _sun_status(hass, coordinator, now),
+        "lights": lights,
+        "global": {
+            "enabled": coordinator.enabled,
+            "active_schema_id": schema.id,
+            "active_schema_name": schema.name,
+            "interval": coordinator.settings.interval,
+            "transition": coordinator.settings.transition,
+            "initial_transition": coordinator.settings.initial_transition,
+            "take_over_control": coordinator.settings.take_over_control,
+            "autoreset_control": coordinator.settings.autoreset_control,
+            "last_pass_at": _iso(coordinator.last_pass_at),
+            "next_pass_at": _iso(coordinator.next_pass_at),
+            "pass_running": coordinator.pass_running,
+            "light_count": len(lights),
+            "manual_count": sum(1 for s in lights.values() if s["manual_control"]),
+            "unavailable_count": sum(
+                1
+                for s in lights.values()
+                if s["state"] in (None, STATE_UNAVAILABLE, STATE_UNKNOWN)
+            ),
+        },
+    }
+
+
 def _error_if_not_ready(connection, msg) -> SundialCoordinator | None:
     coordinator = get_coordinator(connection.hass)
     if coordinator is None:
@@ -172,6 +338,8 @@ def _register_ws_commands(hass: HomeAssistant) -> None:
         ws_apply,
         ws_export,
         ws_import,
+        ws_status,
+        ws_set_manual_control,
     ):
         websocket_api.async_register_command(hass, handler)
 
@@ -353,3 +521,33 @@ async def ws_import(hass, connection, msg) -> None:
     coordinator.store.data = StoreData.from_dict(msg["data"])
     await coordinator.async_apply_config_change()
     connection.send_result(msg["id"], _config_payload(hass, coordinator))
+
+
+@websocket_api.websocket_command({vol.Required("type"): "sundial/status"})
+@websocket_api.async_response
+async def ws_status(hass, connection, msg) -> None:
+    """Live diagnostics for the panel's Status section (polled while open)."""
+    coordinator = _error_if_not_ready(connection, msg)
+    if coordinator is not None:
+        connection.send_result(msg["id"], _status_payload(hass, coordinator))
+
+
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "sundial/set_manual_control",
+        vol.Required("entity_id"): str,
+        vol.Required("manual"): bool,
+    }
+)
+@websocket_api.async_response
+async def ws_set_manual_control(hass, connection, msg) -> None:
+    """Hand a light back to the schedule (or take it away) from the panel.
+
+    Returns the refreshed status so the section updates immediately instead of
+    waiting for the next poll.
+    """
+    coordinator = _error_if_not_ready(connection, msg)
+    if coordinator is None:
+        return
+    coordinator.set_manual_control(msg["entity_id"], msg["manual"])
+    connection.send_result(msg["id"], _status_payload(hass, coordinator))
