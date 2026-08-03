@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from datetime import datetime
 import logging
-from typing import TYPE_CHECKING, Any
+from typing import Any
 from homeassistant.util import dt as dt_util
 
 from homeassistant.components.weather import (
@@ -20,7 +20,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import (
     ATTRIBUTION,
@@ -34,22 +34,24 @@ from .const import (
     DEFAULT_SENSOR_PREFIX,
     DOMAIN,
     MANUFACTURER,
+    MODEL_STATION,
+    VERSION,
 )
-from .coordinator import WillyWeatherDataUpdateCoordinator
-
-if TYPE_CHECKING:
-    from homeassistant.config_entries import ConfigEntry
+from .coordinator import (
+    WillyWeatherConfigEntry,
+    WillyWeatherDataUpdateCoordinator,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback,
+    entry: WillyWeatherConfigEntry,
+    async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up WillyWeather weather entity based on a config entry."""
-    coordinator: WillyWeatherDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = entry.runtime_data
 
     # For backward compatibility: if CONF_SENSOR_PREFIX is not in options (existing installations),
     # use empty string. New installations will have it set to DEFAULT_SENSOR_PREFIX ("ww_").
@@ -97,7 +99,9 @@ class WillyWeatherEntity(SingleCoordinatorWeatherEntity):
             entry_type=DeviceEntryType.SERVICE,
             identifiers={(DOMAIN, self._station_id)},
             manufacturer=MANUFACTURER,
+            model=MODEL_STATION,
             name=self._station_name,
+            sw_version=VERSION,
         )
 
     @property

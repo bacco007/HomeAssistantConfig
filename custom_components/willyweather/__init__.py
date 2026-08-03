@@ -2,9 +2,8 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
 
-from homeassistant.const import CONF_API_KEY, Platform
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.device_registry import async_get as async_get_device_registry
@@ -17,11 +16,13 @@ from .const import (
     DEFAULT_SENSOR_PREFIX,
     DOMAIN,
     MANUFACTURER,
+    MODEL_STATION,
+    VERSION,
 )
-from .coordinator import WillyWeatherDataUpdateCoordinator
-
-if TYPE_CHECKING:
-    from homeassistant.config_entries import ConfigEntry
+from .coordinator import (
+    WillyWeatherConfigEntry,
+    WillyWeatherDataUpdateCoordinator,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,7 +31,9 @@ PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.WEATHER, Platform.BINARY_
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 
-async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+async def async_migrate_entry(
+    hass: HomeAssistant, config_entry: WillyWeatherConfigEntry
+) -> bool:
     """Migrate old entry."""
     _LOGGER.debug(
         "Migrating configuration from version %s.%s",
@@ -75,13 +78,12 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
     return True
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: WillyWeatherConfigEntry) -> bool:
     """Set up WillyWeather from a config entry."""
     coordinator = WillyWeatherDataUpdateCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
 
-    hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][entry.entry_id] = coordinator
+    entry.runtime_data = coordinator
 
     # Create main parent device
     station_id = entry.data.get(CONF_STATION_ID)
@@ -98,7 +100,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, station_id)},
         manufacturer=MANUFACTURER,
+        model=MODEL_STATION,
         name=device_name,
+        sw_version=VERSION,
     )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -109,16 +113,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: WillyWeatherConfigEntry) -> bool:
     """Unload a config entry."""
-    if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
-        coordinator = hass.data[DOMAIN].pop(entry.entry_id)
-        await coordinator.async_shutdown()
-
-    return unload_ok
+    # The coordinator registers its own shutdown against the entry, so unloading
+    # the platforms is all that is left to do here.
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 
-async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+async def async_reload_entry(hass: HomeAssistant, entry: WillyWeatherConfigEntry) -> None:
     """Reload config entry when options change."""
     # Clean up entities that are no longer enabled
     await async_cleanup_disabled_entities(hass, entry)
@@ -126,7 +128,9 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     await hass.config_entries.async_reload(entry.entry_id)
 
 
-async def async_cleanup_disabled_entities(hass: HomeAssistant, entry: ConfigEntry) -> None:
+async def async_cleanup_disabled_entities(
+    hass: HomeAssistant, entry: WillyWeatherConfigEntry
+) -> None:
     """Remove entities for disabled sensor types."""
     entity_registry = async_get_entity_registry(hass)
     station_id = entry.data.get(CONF_STATION_ID)

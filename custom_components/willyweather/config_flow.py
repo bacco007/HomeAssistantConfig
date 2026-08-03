@@ -119,7 +119,7 @@ class WillyWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=data_schema,
             errors=errors,
             description_placeholders={
-                "api_url": "https://www.willyweather.com.au/info/api.html"
+                "api_register_url": "https://www.willyweather.com.au/api/register.html"
             },
         )
 

@@ -4,13 +4,14 @@ from __future__ import annotations
 import asyncio
 from datetime import timedelta
 import logging
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 import aiohttp
-import async_timeout
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util import dt as dt_util
 
@@ -43,22 +44,24 @@ from .const import (
     UPDATE_INTERVAL_OBSERVATION,
 )
 
-if TYPE_CHECKING:
-    from homeassistant.config_entries import ConfigEntry
-
 _LOGGER = logging.getLogger(__name__)
 
+# The coordinator is stored on the entry itself rather than in hass.data, so the
+# alias is what gives every platform a typed handle on it via entry.runtime_data.
+type WillyWeatherConfigEntry = ConfigEntry["WillyWeatherDataUpdateCoordinator"]
 
-class WillyWeatherDataUpdateCoordinator(DataUpdateCoordinator):
+
+class WillyWeatherDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Class to manage fetching WillyWeather data from the API."""
 
-    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+    def __init__(self, hass: HomeAssistant, entry: WillyWeatherConfigEntry) -> None:
         """Initialize."""
-        self.hass = hass
         self.entry = entry
         self.api_key = entry.data[CONF_API_KEY]
         self.station_id = entry.data[CONF_STATION_ID]
-        self._session = aiohttp.ClientSession()
+        # The shared Home Assistant session is used rather than a private one so
+        # that connections are pooled with the rest of HA and torn down for us.
+        self._session = async_get_clientsession(hass)
         self._last_forecast_fetch: dt_util.dt.datetime | None = None
 
         _LOGGER.debug(
@@ -71,6 +74,9 @@ class WillyWeatherDataUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER,
             name=f"{DOMAIN}_{self.station_id}",
             update_interval=self._get_update_interval(),
+            # Required from Home Assistant 2026.8; without it the coordinator
+            # cannot tie its refresh task or reauth flow back to the entry.
+            config_entry=entry,
         )
 
     def _get_update_interval(self) -> timedelta:
@@ -284,7 +290,7 @@ class WillyWeatherDataUpdateCoordinator(DataUpdateCoordinator):
         _LOGGER.debug("Fetching observational data from: %s", url)
 
         try:
-            async with async_timeout.timeout(API_TIMEOUT):
+            async with asyncio.timeout(API_TIMEOUT):
                 async with self._session.get(url, params=params) as response:
                     response_text = await response.text()
                     
@@ -333,7 +339,7 @@ class WillyWeatherDataUpdateCoordinator(DataUpdateCoordinator):
 
         _LOGGER.info("Retrying forecast fetch with core types only: %s", forecast_types)
 
-        async with async_timeout.timeout(API_TIMEOUT):
+        async with asyncio.timeout(API_TIMEOUT):
             async with self._session.get(url, params=params) as response:
                 if response.status != 200:
                     response_text = await response.text()
@@ -374,7 +380,7 @@ class WillyWeatherDataUpdateCoordinator(DataUpdateCoordinator):
         _LOGGER.debug("Fetching forecast data with types: %s", forecast_types)
 
         try:
-            async with async_timeout.timeout(API_TIMEOUT):
+            async with asyncio.timeout(API_TIMEOUT):
                 async with self._session.get(url, params=params) as response:
                     response_text = await response.text()
 
@@ -452,7 +458,7 @@ class WillyWeatherDataUpdateCoordinator(DataUpdateCoordinator):
         _LOGGER.debug("Fetching regionPrecis data for %s days starting from %s", days, today)
 
         try:
-            async with async_timeout.timeout(API_TIMEOUT):
+            async with asyncio.timeout(API_TIMEOUT):
                 async with self._session.get(url, headers=headers) as response:
                     if response.status != 200:
                         response_text = await response.text()
@@ -495,7 +501,7 @@ class WillyWeatherDataUpdateCoordinator(DataUpdateCoordinator):
         _LOGGER.debug("Fetching warning data from: %s", url)
 
         try:
-            async with async_timeout.timeout(API_TIMEOUT):
+            async with asyncio.timeout(API_TIMEOUT):
                 async with self._session.get(url) as response:
                     if response.status == 401:
                         _LOGGER.error("API key is invalid (401 Unauthorized)")
@@ -530,10 +536,6 @@ class WillyWeatherDataUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER.debug("Network error fetching warning data: %s", err)
             return {"warnings": []}
 
-    async def async_shutdown(self) -> None:
-        """Close the aiohttp session."""
-        await self._session.close()
-
 
 async def async_get_station_id(
     hass: HomeAssistant, lat: float, lng: float, api_key: str
@@ -548,40 +550,41 @@ async def async_get_station_id(
 
     _LOGGER.debug("Searching for station at lat=%s, lng=%s", lat, lng)
 
+    session = async_get_clientsession(hass)
+
     try:
         # Use 30 second timeout for station search (one-time operation during setup)
-        async with async_timeout.timeout(30):
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url, params=params) as response:
-                    if response.status == 401:
-                        _LOGGER.error("API key is invalid (401 Unauthorized)")
-                        return None
-                    elif response.status == 403:
-                        _LOGGER.error("API key does not have access (403 Forbidden)")
-                        return None
-                    elif response.status != 200:
-                        _LOGGER.error(
-                            "Error finding closest station: HTTP %s",
-                            response.status,
-                        )
-                        return None
+        async with asyncio.timeout(30):
+            async with session.get(url, params=params) as response:
+                if response.status == 401:
+                    _LOGGER.error("API key is invalid (401 Unauthorized)")
+                    return None
+                elif response.status == 403:
+                    _LOGGER.error("API key does not have access (403 Forbidden)")
+                    return None
+                elif response.status != 200:
+                    _LOGGER.error(
+                        "Error finding closest station: HTTP %s",
+                        response.status,
+                    )
+                    return None
 
-                    data = await response.json()
-                    location = data.get("location")
-                    if location:
-                        station_id = str(location.get("id"))
-                        station_name = location.get("name")
-                        distance = location.get("distance")
-                        _LOGGER.info(
-                            "Found closest station: %s (ID: %s) at %.1f km",
-                            station_name,
-                            station_id,
-                            distance if distance else 0,
-                        )
-                        return station_id
-                    else:
-                        _LOGGER.error("No location data in search response")
-                        return None
+                data = await response.json()
+                location = data.get("location")
+                if location:
+                    station_id = str(location.get("id"))
+                    station_name = location.get("name")
+                    distance = location.get("distance")
+                    _LOGGER.info(
+                        "Found closest station: %s (ID: %s) at %.1f km",
+                        station_name,
+                        station_id,
+                        distance if distance else 0,
+                    )
+                    return station_id
+                else:
+                    _LOGGER.error("No location data in search response")
+                    return None
 
     except asyncio.TimeoutError:
         _LOGGER.error("Timeout while searching for station (30s limit)")
@@ -606,38 +609,39 @@ async def async_get_station_name(
 
     _LOGGER.debug("Fetching station name for ID: %s", station_id)
 
+    session = async_get_clientsession(hass)
+
     try:
         # Use 30 second timeout for station name fetch (one-time operation during setup)
-        async with async_timeout.timeout(30):
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url, params=params) as response:
-                    if response.status == 401:
-                        _LOGGER.error("API key is invalid (401 Unauthorized)")
-                        return None
-                    elif response.status == 403:
-                        _LOGGER.error("API key does not have access (403 Forbidden)")
-                        return None
-                    elif response.status == 404:
-                        _LOGGER.error("Station ID %s not found (404)", station_id)
-                        return None
-                    elif response.status != 200:
-                        _LOGGER.error(
-                            "Error fetching station info: HTTP %s",
-                            response.status,
-                        )
-                        return None
-                    
-                    data = await response.json()
-                    location = data.get("location", {})
-                    station_name = location.get("name")
-                    
-                    if station_name:
-                        _LOGGER.info("Station name: %s", station_name)
-                        return station_name
-                    else:
-                        _LOGGER.warning("No station name found in response")
-                        return f"Station {station_id}"
-                    
+        async with asyncio.timeout(30):
+            async with session.get(url, params=params) as response:
+                if response.status == 401:
+                    _LOGGER.error("API key is invalid (401 Unauthorized)")
+                    return None
+                elif response.status == 403:
+                    _LOGGER.error("API key does not have access (403 Forbidden)")
+                    return None
+                elif response.status == 404:
+                    _LOGGER.error("Station ID %s not found (404)", station_id)
+                    return None
+                elif response.status != 200:
+                    _LOGGER.error(
+                        "Error fetching station info: HTTP %s",
+                        response.status,
+                    )
+                    return None
+
+                data = await response.json()
+                location = data.get("location", {})
+                station_name = location.get("name")
+
+                if station_name:
+                    _LOGGER.info("Station name: %s", station_name)
+                    return station_name
+                else:
+                    _LOGGER.warning("No station name found in response")
+                    return f"Station {station_id}"
+
     except asyncio.TimeoutError:
         _LOGGER.error("Timeout while fetching station info")
         return None

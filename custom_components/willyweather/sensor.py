@@ -3,13 +3,13 @@ from __future__ import annotations
 
 from datetime import datetime
 import logging
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
 
@@ -30,6 +30,8 @@ from .const import (
     DOMAIN,
     FORECAST_SENSOR_TYPES,
     MANUFACTURER,
+    MODEL_FORECAST_SENSORS,
+    MODEL_SENSORS,
     SENSOR_TYPES,
     SUNMOON_SENSOR_TYPES,
     SWELL_SENSOR_TYPES,
@@ -37,21 +39,21 @@ from .const import (
     UV_SENSOR_TYPES,
     WIND_FORECAST_TYPES,
 )
-from .coordinator import WillyWeatherDataUpdateCoordinator
-
-if TYPE_CHECKING:
-    from homeassistant.config_entries import ConfigEntry
+from .coordinator import (
+    WillyWeatherConfigEntry,
+    WillyWeatherDataUpdateCoordinator,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback,
+    entry: WillyWeatherConfigEntry,
+    async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up WillyWeather sensor based on a config entry."""
-    coordinator: WillyWeatherDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = entry.runtime_data
 
     entities = []
 
@@ -222,6 +224,7 @@ class WillyWeatherSensor(CoordinatorEntity, SensorEntity):
             entry_type=DeviceEntryType.SERVICE,
             identifiers={(DOMAIN, f"{station_id}_sensors")},
             manufacturer=MANUFACTURER,
+            model=MODEL_SENSORS,
             name=f"{station_name} Sensors",
             via_device=(DOMAIN, station_id),
         )
@@ -326,6 +329,7 @@ class WillyWeatherSunMoonSensor(CoordinatorEntity, SensorEntity):
             entry_type=DeviceEntryType.SERVICE,
             identifiers={(DOMAIN, f"{station_id}_sensors")},
             manufacturer=MANUFACTURER,
+            model=MODEL_SENSORS,
             name=f"{station_name} Sensors",
             via_device=(DOMAIN, station_id),
             )
@@ -483,6 +487,7 @@ class WillyWeatherTideSensor(CoordinatorEntity, SensorEntity):
             entry_type=DeviceEntryType.SERVICE,
             identifiers={(DOMAIN, f"{station_id}_sensors")},
             manufacturer=MANUFACTURER,
+            model=MODEL_SENSORS,
             name=f"{station_name} Sensors",
             via_device=(DOMAIN, station_id),
             )
@@ -641,6 +646,7 @@ class WillyWeatherUVSensor(CoordinatorEntity, SensorEntity):
             entry_type=DeviceEntryType.SERVICE,
             identifiers={(DOMAIN, f"{station_id}_sensors")},
             manufacturer=MANUFACTURER,
+            model=MODEL_SENSORS,
             name=f"{station_name} Sensors",
             via_device=(DOMAIN, station_id),
             )
@@ -751,6 +757,7 @@ class WillyWeatherWindForecastSensor(CoordinatorEntity, SensorEntity):
             entry_type=DeviceEntryType.SERVICE,
             identifiers={(DOMAIN, f"{station_id}_sensors")},
             manufacturer=MANUFACTURER,
+            model=MODEL_SENSORS,
             name=f"{station_name} Sensors",
             via_device=(DOMAIN, station_id),
             )
@@ -846,6 +853,7 @@ class WillyWeatherSwellSensor(CoordinatorEntity, SensorEntity):
             entry_type=DeviceEntryType.SERVICE,
             identifiers={(DOMAIN, f"{station_id}_sensors")},
             manufacturer=MANUFACTURER,
+            model=MODEL_SENSORS,
             name=f"{station_name} Sensors",
             via_device=(DOMAIN, station_id),
             )
@@ -983,6 +991,7 @@ class WillyWeatherForecastSensor(CoordinatorEntity, SensorEntity):
             entry_type=DeviceEntryType.SERVICE,
             identifiers={(DOMAIN, f"{station_id}_forecast_sensors")},
             manufacturer=MANUFACTURER,
+            model=MODEL_FORECAST_SENSORS,
             name=f"{station_name} Forecast Sensors",
             via_device=(DOMAIN, station_id),
         )
