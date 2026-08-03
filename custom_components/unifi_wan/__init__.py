@@ -40,6 +40,7 @@ from .const import (
     LEGACY_CONF_DEVICE_INTERVAL,
     SIGNAL_SPEEDTEST_RUNNING,
     SIGNAL_AUTO_SPEEDTEST_CHANGED,
+    SIGNAL_SPEEDTEST_RESULT,
     GATEWAY_DEVICES,
     MAX_WAN_INTERFACES,
     SERVICE_RUN_SPEEDTEST,
@@ -93,6 +94,8 @@ class UniFiWanRuntimeData:
     set_speedtest_running: Callable[[bool], Awaitable[None]]
     wan_numbers: list[int]
     reload_signature: dict[str, Any]
+    speedtest_results: dict[int, dict[str, Any]]
+    speedtest_result_signal: str
 
 
 class UnifiWanClient:
@@ -328,6 +331,54 @@ def _extract_wan_data(payload: dict[str, Any] | None) -> UniFiWanData:
     )
 
 
+def resolve_active_wan(d: UniFiWanData) -> tuple[int | None, str]:
+    """Resolve which WAN number is the active uplink, and how it was matched.
+
+    This is the single source of truth used by both the Active WAN ID and
+    Active WAN Name sensors, so the two can never point at different
+    interfaces. Match order: the uplink's IP against each WAN section's IP,
+    then the uplink's port name against each WAN section's ifname, and
+    finally the only WAN that is up. In load-balanced dual-WAN setups the
+    controller's uplink object can mix fields from both interfaces, which
+    is why the IP match takes precedence over the port name.
+    """
+    u_ip = d.uplink.get("ip")
+    if u_ip:
+        for wan_number, wan_data in d.wan.items():
+            if u_ip == wan_data.get("ip"):
+                return wan_number, "uplink_ip"
+    u_name = str(d.uplink.get("name") or "").strip().lower()
+    if u_name:
+        for wan_number, wan_data in d.wan.items():
+            if u_name == str(wan_data.get("ifname") or "").strip().lower():
+                return wan_number, "uplink_ifname"
+    up_numbers = [n for n, wan_data in d.wan.items() if wan_data.get("up")]
+    if len(up_numbers) == 1:
+        return up_numbers[0], "only_wan_up"
+    return None, "no_match"
+
+
+def _interface_to_wan_number(iface: Any, wan: dict[int, dict[str, Any]]) -> int | None:
+    """Map a controller-reported speedtest interface to a WAN number.
+
+    Handles the "wan"/"wan2" naming used by the speedtest command as well
+    as physical port names (e.g. "eth8") that some firmware reports.
+    """
+    if not isinstance(iface, str):
+        return None
+    s = iface.strip().lower()
+    if not s:
+        return None
+    if s == "wan":
+        return 1
+    if s.startswith("wan") and s[3:].isdigit():
+        return int(s[3:])
+    for wan_number, wan_data in wan.items():
+        if s == str(wan_data.get("ifname") or "").strip().lower():
+            return wan_number
+    return None
+
+
 async def _async_migrate_registry(
     hass: HomeAssistant, entry: ConfigEntry, host: str, site: str
 ) -> None:
@@ -447,11 +498,66 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     entry_signal = f"{SIGNAL_SPEEDTEST_RUNNING}_{entry.entry_id}"
     auto_changed_signal = f"{SIGNAL_AUTO_SPEEDTEST_CHANGED}_{entry.entry_id}"
+    result_signal = f"{SIGNAL_SPEEDTEST_RESULT}_{entry.entry_id}"
     speedtest_running: bool = False
     unsub_auto: CALLBACK_TYPE | None = None
 
+    # Per-WAN speedtest results latched by _process_speedtest_result. The
+    # controller only stores the latest result (on the uplink object), so the
+    # integration attributes each completed run to a WAN and keeps it here.
+    speedtest_results: dict[int, dict[str, Any]] = {}
+    # WAN number requested for the speedtest currently in flight, if any.
+    pending_speedtest_wan: int | None = None
+    # Seed with the result already on the controller so a stale run isn't
+    # re-attributed after every restart; per-WAN sensors restore their own
+    # previous state instead.
+    last_attributed_run = device_coordinator.data.uplink.get("speedtest_lastrun")
+
     def _dispatch_running():
         async_dispatcher_send(hass, entry_signal)
+
+    @callback
+    def _process_speedtest_result() -> None:
+        """Attribute a freshly completed speedtest to a WAN interface.
+
+        Runs on every device coordinator refresh. Attribution order: the
+        controller-reported speedtest interface, then the WAN the in-flight
+        request targeted, then the resolved active WAN.
+        """
+        nonlocal last_attributed_run
+        data: UniFiWanData | None = device_coordinator.data
+        if not data or not data.uplink:
+            return
+        lastrun = data.uplink.get("speedtest_lastrun")
+        if not lastrun or lastrun == last_attributed_run:
+            return
+        last_attributed_run = lastrun
+        down = data.uplink.get("xput_down")
+        up = data.uplink.get("xput_up")
+        if down is None and up is None:
+            return
+        wan_number = _interface_to_wan_number(
+            data.uplink.get("speedtest_interface"), data.wan
+        )
+        if wan_number is None:
+            wan_number = pending_speedtest_wan
+        if wan_number is None:
+            wan_number, _ = resolve_active_wan(data)
+        if wan_number is None:
+            _LOGGER.debug("Speedtest result could not be attributed to a WAN")
+            return
+        speedtest_results[wan_number] = {
+            "down": down,
+            "up": up,
+            "ping": data.uplink.get("speedtest_ping"),
+            "lastrun": lastrun,
+        }
+        _LOGGER.debug("Attributed speedtest result to WAN%s", wan_number)
+        async_dispatcher_send(hass, result_signal)
+
+    entry.async_on_unload(
+        device_coordinator.async_add_listener(_process_speedtest_result)
+    )
 
     async def set_speedtest_running(is_running: bool) -> None:
         nonlocal speedtest_running
@@ -464,11 +570,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         """Trigger a speedtest, optionally on a specific WAN interface, and
         wait (with a timeout) for the controller to report a fresh result.
         """
+        nonlocal pending_speedtest_wan
         if speedtest_running:
             _LOGGER.debug("Speedtest already in progress; ignoring trigger")
             return
 
         await set_speedtest_running(True)
+        pending_speedtest_wan = wan_number
         try:
             gw_data = device_coordinator.data
             mac_local = gw_data.gateway.get("mac") if gw_data.gateway else None
@@ -502,12 +610,32 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         except Exception as e:
             _LOGGER.error("Speedtest trigger failed: %s", e)
         finally:
+            pending_speedtest_wan = None
             if rates_coordinator:
                 await rates_coordinator.async_request_refresh()
             await set_speedtest_running(False)
 
+    auto_wan_index = 0
+
     async def _auto_speedtest_callback(_now) -> None:
-        await _run_speedtest_now()
+        """Run the scheduled speedtest, cycling through the WAN interfaces
+        that currently have link so each WAN accumulates its own results.
+        With a single WAN the plain speedtest command is kept for maximum
+        firmware compatibility.
+        """
+        nonlocal auto_wan_index
+        data: UniFiWanData | None = device_coordinator.data
+        candidates = [
+            n for n in wan_numbers if (data.wan.get(n) or {}).get("up")
+        ] if data else []
+        if not candidates:
+            candidates = list(wan_numbers)
+        if len(candidates) > 1:
+            wan_number = candidates[auto_wan_index % len(candidates)]
+            auto_wan_index += 1
+            await _run_speedtest_now(wan_number)
+        else:
+            await _run_speedtest_now()
 
     def _schedule_auto(enabled: bool) -> None:
         nonlocal unsub_auto
@@ -549,6 +677,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         set_speedtest_running=set_speedtest_running,
         wan_numbers=wan_numbers,
         reload_signature=_reload_signature(entry),
+        speedtest_results=speedtest_results,
+        speedtest_result_signal=result_signal,
     )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
