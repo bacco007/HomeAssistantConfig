@@ -8,6 +8,7 @@ from typing import Any, Final
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE
 from homeassistant.core import Event, HomeAssistant, callback
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import debounce
 from homeassistant.helpers import device_registry as dr
@@ -60,8 +61,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
         if "forecasts_basename" in new:
             new[CONF_WEATHER_NAME] = config_entry.data["forecasts_basename"]
 
-        config_entry.version = 2
-        hass.config_entries.async_update_entry(config_entry, data=new)
+        hass.config_entries.async_update_entry(config_entry, data=new, version=2)
 
     _LOGGER.info("Migration to version %s successful", config_entry.version)
     return True
@@ -69,7 +69,11 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up BOM from a config entry."""
-    collector = Collector(entry.data[CONF_LATITUDE], entry.data[CONF_LONGITUDE])
+    collector = Collector(
+        entry.data[CONF_LATITUDE],
+        entry.data[CONF_LONGITUDE],
+        async_get_clientsession(hass),
+    )
 
     coordinator = BomDataUpdateCoordinator(hass=hass, collector=collector, config_entry=entry)
     await coordinator.async_load_temps()

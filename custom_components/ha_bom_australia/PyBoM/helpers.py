@@ -1,7 +1,23 @@
 """Helpers functions for PyBom."""
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from typing import Any
+
+def parse_iso_datetime(value: Any) -> datetime:
+    """Parse an ISO 8601 timestamp, defaulting to UTC when no offset is given.
+
+    Raises ValueError if the value is not a valid timestamp, including when it
+    is not a string at all. BOM omits timestamp fields routinely, so callers
+    guarding with `except ValueError` need a null to land there too rather than
+    escaping as the TypeError datetime.fromisoformat would raise.
+    """
+    if not isinstance(value, str):
+        raise ValueError(f"not a timestamp string: {value!r}")
+    parsed = datetime.fromisoformat(value)
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed
 
 def flatten_dict(keys: list[str], dict: dict[str, Any]) -> dict[str, Any]:
     """Flatten nested dictionary keys."""

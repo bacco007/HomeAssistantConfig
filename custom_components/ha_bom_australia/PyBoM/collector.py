@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import aiohttp
 import asyncio
+import copy
 import logging
 import math
 import time
@@ -24,15 +25,25 @@ MAX_RETRIES = 3
 RETRY_DELAY_BASE = 2  # seconds
 MAX_CACHE_AGE = 86400  # 24 hours in seconds
 
+HEADERS = {"User-Agent": USER_AGENT}
+
 class Collector:
     """Collector for PyBoM."""
 
-    def __init__(self, latitude: float, longitude: float, geohash: str | None = None) -> None:
+    def __init__(
+        self,
+        latitude: float,
+        longitude: float,
+        session: aiohttp.ClientSession,
+        geohash: str | None = None,
+    ) -> None:
         """Init collector.
 
         Args:
             latitude: Latitude coordinate
             longitude: Longitude coordinate
+            session: Shared aiohttp session, owned by the caller. The collector
+                    never closes it.
             geohash: Optional BOM-provided geohash. If provided, this will be used
                     instead of calculating one. This ensures we use the exact same
                     geohash that BOM's location search returns, which may differ
@@ -41,6 +52,7 @@ class Collector:
         """
         self.latitude = latitude
         self.longitude = longitude
+        self._session = session
         self.locations_data = None
         self.observations_data = None
         self.daily_forecasts_data = None
@@ -67,15 +79,19 @@ class Collector:
             "warnings": {"data": None, "timestamp": 0},
         }
 
-    async def _fetch_with_retry(self, session: aiohttp.ClientSession, url: str, cache_key: str) -> dict[str, Any] | None:
+    async def _fetch_with_retry(self, url: str, cache_key: str) -> dict[str, Any] | None:
         """Fetch data with retry mechanism and store in cache if successful."""
         for attempt in range(MAX_RETRIES):
             try:
-                async with session.get(url) as response:
+                async with self._session.get(url, headers=HEADERS) as response:
                     if response.status == 200:
                         data = await response.json()
-                        # Update cache with new data and timestamp
-                        self._cache[cache_key]["data"] = data
+                        # Cache a pristine copy, not the object we hand back.
+                        # Callers reshape the response in place (flatten_dict
+                        # pops "rain", "uv" and friends), so sharing one object
+                        # would leave the cache already flattened and make a
+                        # later replay raise KeyError in the formatters.
+                        self._cache[cache_key]["data"] = copy.deepcopy(data)
                         self._cache[cache_key]["timestamp"] = time.time()
                         return data
                     else:
@@ -102,7 +118,10 @@ class Collector:
                         _LOGGER.info(
                             f"Returning cached {cache_key} data from {int(cache_age/60)} minutes ago"
                         )
-                        return cached
+                        # Copy on the way out too, so the caller's in-place
+                        # reshaping does not corrupt the cache for the next
+                        # replay.
+                        return copy.deepcopy(cached)
                     else:
                         _LOGGER.error(f"No cached {cache_key} data available")
                         return None
@@ -110,14 +129,10 @@ class Collector:
 
     async def get_locations_data(self) -> None:
         """Get JSON location name from BOM API endpoint."""
-        headers = {"User-Agent": USER_AGENT}
         try:
-            async with aiohttp.ClientSession(headers=headers) as session:
-                data = await self._fetch_with_retry(
-                    session, URL_BASE + self.geohash, "locations"
-                )
-                if data:
-                    self.locations_data = data
+            data = await self._fetch_with_retry(URL_BASE + self.geohash, "locations")
+            if data:
+                self.locations_data = data
         except Exception as err:
             _LOGGER.error(f"Unexpected error in get_locations_data: {err}")
 
@@ -186,87 +201,87 @@ class Collector:
 
     async def async_update(self) -> None:
         """Refresh the data on the collector object."""
-        headers = {"User-Agent": USER_AGENT}
-        
         try:
-            async with aiohttp.ClientSession(headers=headers) as session:
-                # Get location data if not already available
-                if self.locations_data is None:
-                    data = await self._fetch_with_retry(
-                        session, URL_BASE + self.geohash, "locations"
-                    )
-                    if data:
-                        self.locations_data = data
-                
-                # Get observations data
+            # Get location data if not already available
+            if self.locations_data is None:
                 data = await self._fetch_with_retry(
-                    session, URL_BASE + self.geohash + URL_OBSERVATIONS, "observations"
+                    URL_BASE + self.geohash, "locations"
                 )
                 if data:
-                    self.observations_data = data
-                    if self.observations_data["data"]["wind"] is not None:
-                        flatten_dict(["wind"], self.observations_data["data"])
-                    else:
-                        self.observations_data["data"]["wind_direction"] = "unavailable"
-                        self.observations_data["data"]["wind_speed_kilometre"] = "unavailable"
-                        self.observations_data["data"]["wind_speed_knot"] = "unavailable"
-                    if self.observations_data["data"]["gust"] is not None:
-                        flatten_dict(["gust"], self.observations_data["data"])
-                    else:
-                        self.observations_data["data"]["gust_speed_kilometre"] = "unavailable"
-                        self.observations_data["data"]["gust_speed_knot"] = "unavailable"
+                    self.locations_data = data
 
-                    # Calculate dew point using Magnus-Tetens formula
-                    temp = self.observations_data["data"].get("temp")
-                    humidity = self.observations_data["data"].get("humidity")
-                    if temp is not None and humidity is not None:
-                        try:
-                            # Magnus-Tetens approximation
-                            a = 17.27
-                            b = 237.7
-                            gamma = (a * temp / (b + temp)) + math.log(humidity / 100.0)
-                            dew_point = (b * gamma) / (a - gamma)
-                            self.observations_data["data"]["dew_point"] = round(dew_point, 1)
-                        except (TypeError, ValueError, ZeroDivisionError) as err:
-                            _LOGGER.debug(f"Error calculating dew point: {err}")
-                            self.observations_data["data"]["dew_point"] = None
-                    else:
+            # Get observations data
+            data = await self._fetch_with_retry(
+                URL_BASE + self.geohash + URL_OBSERVATIONS, "observations"
+            )
+            if data:
+                self.observations_data = data
+                if self.observations_data["data"]["wind"] is not None:
+                    flatten_dict(["wind"], self.observations_data["data"])
+                else:
+                    # The speeds must stay None rather than a placeholder string:
+                    # they are numeric sensors, and the sensor platform rejects a
+                    # non-numeric value for one with a unit and a device class.
+                    self.observations_data["data"]["wind_direction"] = "unavailable"
+                    self.observations_data["data"]["wind_speed_kilometre"] = None
+                    self.observations_data["data"]["wind_speed_knot"] = None
+                if self.observations_data["data"]["gust"] is not None:
+                    flatten_dict(["gust"], self.observations_data["data"])
+                else:
+                    self.observations_data["data"]["gust_speed_kilometre"] = None
+                    self.observations_data["data"]["gust_speed_knot"] = None
+
+                # Calculate dew point using Magnus-Tetens formula
+                temp = self.observations_data["data"].get("temp")
+                humidity = self.observations_data["data"].get("humidity")
+                if temp is not None and humidity is not None:
+                    try:
+                        # Magnus-Tetens approximation
+                        a = 17.27
+                        b = 237.7
+                        gamma = (a * temp / (b + temp)) + math.log(humidity / 100.0)
+                        dew_point = (b * gamma) / (a - gamma)
+                        self.observations_data["data"]["dew_point"] = round(dew_point, 1)
+                    except (TypeError, ValueError, ZeroDivisionError) as err:
+                        _LOGGER.debug(f"Error calculating dew point: {err}")
                         self.observations_data["data"]["dew_point"] = None
+                else:
+                    self.observations_data["data"]["dew_point"] = None
 
-                    # Calculate Delta-T (temperature - dew point)
-                    temp = self.observations_data["data"].get("temp")
-                    dew_point = self.observations_data["data"].get("dew_point")
-                    if temp is not None and dew_point is not None:
-                        try:
-                            self.observations_data["data"]["delta_t"] = round(temp - dew_point, 1)
-                        except (TypeError, ValueError):
-                            self.observations_data["data"]["delta_t"] = None
-                    else:
+                # Calculate Delta-T (temperature - dew point)
+                temp = self.observations_data["data"].get("temp")
+                dew_point = self.observations_data["data"].get("dew_point")
+                if temp is not None and dew_point is not None:
+                    try:
+                        self.observations_data["data"]["delta_t"] = round(temp - dew_point, 1)
+                    except (TypeError, ValueError):
                         self.observations_data["data"]["delta_t"] = None
+                else:
+                    self.observations_data["data"]["delta_t"] = None
 
-                # Get daily forecast data
-                data = await self._fetch_with_retry(
-                    session, URL_BASE + self.geohash + URL_DAILY, "daily_forecasts"
-                )
-                if data:
-                    self.daily_forecasts_data = data
-                    await self.format_daily_forecast_data()
+            # Get daily forecast data
+            data = await self._fetch_with_retry(
+                URL_BASE + self.geohash + URL_DAILY, "daily_forecasts"
+            )
+            if data:
+                self.daily_forecasts_data = data
+                await self.format_daily_forecast_data()
 
-                # Get hourly forecast data
-                data = await self._fetch_with_retry(
-                    session, URL_BASE + self.geohash + URL_HOURLY, "hourly_forecasts"
-                )
-                if data:
-                    self.hourly_forecasts_data = data
-                    await self.format_hourly_forecast_data()
+            # Get hourly forecast data
+            data = await self._fetch_with_retry(
+                URL_BASE + self.geohash + URL_HOURLY, "hourly_forecasts"
+            )
+            if data:
+                self.hourly_forecasts_data = data
+                await self.format_hourly_forecast_data()
 
-                # Get warnings data
-                data = await self._fetch_with_retry(
-                    session, URL_BASE + self.geohash + URL_WARNINGS, "warnings"
-                )
-                if data:
-                    self.warnings_data = data
-                    
+            # Get warnings data
+            data = await self._fetch_with_retry(
+                URL_BASE + self.geohash + URL_WARNINGS, "warnings"
+            )
+            if data:
+                self.warnings_data = data
+
         except Exception as err:
             _LOGGER.error(f"Unexpected error during async_update: {err}")
             # Even if we have an unexpected error, we still have our cached data

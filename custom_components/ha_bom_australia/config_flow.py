@@ -9,6 +9,7 @@ import voluptuous as vol
 from homeassistant import config_entries, exceptions
 from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     CONF_ENTITY_PREFIX,
@@ -67,35 +68,34 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if use_postcode:
                     if postcode and postcode.strip():
                         # Query BOM API for locations in this postcode
-                        import aiohttp
                         try:
-                            async with aiohttp.ClientSession() as session:
-                                url = f"https://api.weather.bom.gov.au/v1/locations?search={postcode.strip()}"
-                                headers = {"User-Agent": "MakeThisAPIOpenSource/1.0.0"}
-                                async with session.get(url, headers=headers) as resp:
-                                    if resp.status == 200:
-                                        result = await resp.json()
-                                        locations = result.get("data", [])
+                            session = async_get_clientsession(self.hass)
+                            url = f"https://api.weather.bom.gov.au/v1/locations?search={postcode.strip()}"
+                            headers = {"User-Agent": "MakeThisAPIOpenSource/1.0.0"}
+                            async with session.get(url, headers=headers) as resp:
+                                if resp.status == 200:
+                                    result = await resp.json()
+                                    locations = result.get("data", [])
 
-                                        if not locations:
-                                            _LOGGER.debug(f"No locations found for postcode: {postcode}")
-                                            errors["base"] = "invalid_postcode"
-                                        elif len(locations) == 1:
-                                            # Only one location, use it directly
-                                            location = locations[0]
-                                            self.postcode_location = location
-                                            # Store postcode for later use
-                                            self.postcode = postcode.strip()
-                                            # Move to weather_name step (will extract coords from geohash there)
-                                            return await self.async_step_weather_name()
-                                        else:
-                                            # Multiple locations, let user choose
-                                            self.postcode_locations = locations
-                                            self.postcode = postcode.strip()
-                                            return await self.async_step_select_location()
-                                    else:
-                                        _LOGGER.debug(f"BOM API returned status {resp.status} for postcode: {postcode}")
+                                    if not locations:
+                                        _LOGGER.debug(f"No locations found for postcode: {postcode}")
                                         errors["base"] = "invalid_postcode"
+                                    elif len(locations) == 1:
+                                        # Only one location, use it directly
+                                        location = locations[0]
+                                        self.postcode_location = location
+                                        # Store postcode for later use
+                                        self.postcode = postcode.strip()
+                                        # Move to weather_name step (will extract coords from geohash there)
+                                        return await self.async_step_weather_name()
+                                    else:
+                                        # Multiple locations, let user choose
+                                        self.postcode_locations = locations
+                                        self.postcode = postcode.strip()
+                                        return await self.async_step_select_location()
+                                else:
+                                    _LOGGER.debug(f"BOM API returned status {resp.status} for postcode: {postcode}")
+                                    errors["base"] = "invalid_postcode"
                         except Exception as e:
                             _LOGGER.exception(f"Error querying BOM API for postcode {postcode}: {e}")
                             errors["base"] = "cannot_connect"
@@ -108,6 +108,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     self.collector = Collector(
                         float(latitude),
                         float(longitude),
+                        async_get_clientsession(self.hass),
                     )
 
                     # Save the coordinates to data
@@ -194,6 +195,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self.collector = Collector(
                 float(latitude),
                 float(longitude),
+                async_get_clientsession(self.hass),
                 geohash=geohash  # Pass BOM's geohash directly
             )
 
@@ -503,33 +505,32 @@ class BomOptionsFlow(config_entries.OptionsFlow):
                 if use_postcode:
                     if postcode and postcode.strip():
                         # Query BOM API for locations in this postcode
-                        import aiohttp
                         try:
-                            async with aiohttp.ClientSession() as session:
-                                url = f"https://api.weather.bom.gov.au/v1/locations?search={postcode.strip()}"
-                                headers = {"User-Agent": "MakeThisAPIOpenSource/1.0.0"}
-                                async with session.get(url, headers=headers) as resp:
-                                    if resp.status == 200:
-                                        result = await resp.json()
-                                        locations = result.get("data", [])
+                            session = async_get_clientsession(self.hass)
+                            url = f"https://api.weather.bom.gov.au/v1/locations?search={postcode.strip()}"
+                            headers = {"User-Agent": "MakeThisAPIOpenSource/1.0.0"}
+                            async with session.get(url, headers=headers) as resp:
+                                if resp.status == 200:
+                                    result = await resp.json()
+                                    locations = result.get("data", [])
 
-                                        if not locations:
-                                            _LOGGER.debug(f"No locations found for postcode: {postcode}")
-                                            errors["base"] = "invalid_postcode"
-                                        elif len(locations) == 1:
-                                            # Only one location, use it directly
-                                            location = locations[0]
-                                            self.postcode_location = location
-                                            self.postcode = postcode.strip()
-                                            return await self.async_step_weather_name()
-                                        else:
-                                            # Multiple locations, let user choose
-                                            self.postcode_locations = locations
-                                            self.postcode = postcode.strip()
-                                            return await self.async_step_select_location()
-                                    else:
-                                        _LOGGER.debug(f"BOM API returned status {resp.status} for postcode: {postcode}")
+                                    if not locations:
+                                        _LOGGER.debug(f"No locations found for postcode: {postcode}")
                                         errors["base"] = "invalid_postcode"
+                                    elif len(locations) == 1:
+                                        # Only one location, use it directly
+                                        location = locations[0]
+                                        self.postcode_location = location
+                                        self.postcode = postcode.strip()
+                                        return await self.async_step_weather_name()
+                                    else:
+                                        # Multiple locations, let user choose
+                                        self.postcode_locations = locations
+                                        self.postcode = postcode.strip()
+                                        return await self.async_step_select_location()
+                                else:
+                                    _LOGGER.debug(f"BOM API returned status {resp.status} for postcode: {postcode}")
+                                    errors["base"] = "invalid_postcode"
                         except Exception as e:
                             _LOGGER.exception(f"Error querying BOM API for postcode {postcode}: {e}")
                             errors["base"] = "cannot_connect"
@@ -542,6 +543,7 @@ class BomOptionsFlow(config_entries.OptionsFlow):
                     self.collector = Collector(
                         user_input[CONF_LATITUDE],
                         user_input[CONF_LONGITUDE],
+                        async_get_clientsession(self.hass),
                     )
 
                     # Save the user input into self.data so it's retained
@@ -622,6 +624,7 @@ class BomOptionsFlow(config_entries.OptionsFlow):
             self.collector = Collector(
                 float(latitude),
                 float(longitude),
+                async_get_clientsession(self.hass),
                 geohash=geohash  # Pass BOM's geohash directly
             )
 
